@@ -73,6 +73,7 @@ subroutine regeec(nomres, resgen, nomsst)
     character(len=14) :: nume_gene
     character(len=24) :: crefe(2), chamol, chamba
     character(len=24) :: valk(2), seliai, sizlia, sst
+    character(len=3) :: typesca
     complex(kind=8) :: cbid
     character(len=24), pointer :: refa(:) => null()
     integer, pointer :: nueq(:) => null()
@@ -235,6 +236,10 @@ subroutine regeec(nomres, resgen, nomsst)
 !
 ! ----- REQUETTE NOM ET ADRESSE CHAMNO GENERALISE
         call dcapno(resgen, depl, iord, chamol)
+        call dismoi('TYPE_SCA', chamol(1:19), 'CHAM_NO', repk=typesca)
+        if (typesca .ne. "R") then
+            call utmess('F', 'SOUSTRUC_84')
+        endif
         call jeveuo(chamol, 'L', llchol)
 !-- SI ELIMINATION, ON RESTITUE D'ABORD LES MODES GENERALISES
         if (elim .ne. 0) then

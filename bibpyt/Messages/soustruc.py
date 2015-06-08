@@ -365,9 +365,9 @@ cata_msg = {
  nombre ddl interface insuffisant ou nombre modes identifies trop élevé, nombre ddl interface : %(i1)d ,nombre modes identifies : %(i2)d
 """),
 
-
-
-
+    84: _(u"""
+Cette fonctionnalité n'est pas disponible pour les modes complexes.
+    """),
 
     85: _(u"""
   au noeud de choc:  %(k1)s
