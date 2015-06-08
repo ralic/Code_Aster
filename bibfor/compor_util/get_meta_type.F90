@@ -1,5 +1,7 @@
 subroutine get_meta_type(meta_type, nb_phasis)
 !
+use module_calcul, only : ca_iactif_
+!
 implicit none
 !
 #include "asterfort/rcvarc.h"
@@ -40,7 +42,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=8) :: steel, zirc
+    character(len=8) :: steel, zirc, fami
     integer :: kpg, ksp
     integer :: iret_steel, iret_zirc
     real(kind=8) :: r8dummy
@@ -54,14 +56,22 @@ implicit none
     ksp       = 1
     meta_type = 0
     nb_phasis = 0
-
-    call rcvarc(' ', steel, '+', 'RIGI', kpg,&
+!
+! - Choice of integration scheme: for CALC_POINT_MAT is PMAT !
+!
+    if (ca_iactif_ .eq. 2) then
+        fami = 'PMAT'
+    else
+        fami = 'RIGI'
+    endif
+!
+    call rcvarc(' ', steel, '+', fami, kpg,&
                 ksp, r8dummy, iret_steel)
     if (iret_steel .eq. 0) then
         meta_type = 1
         nb_phasis = 5
     else
-        call rcvarc(' ', zirc, '+', 'RIGI', kpg,&
+        call rcvarc(' ', zirc, '+', fami, kpg,&
                     ksp, r8dummy, iret_zirc)
         if (iret_zirc .eq. 0) then
             meta_type = 2
