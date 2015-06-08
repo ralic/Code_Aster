@@ -22,6 +22,7 @@ subroutine dismcn(questi, nomobz, repi, repkz, ierd)
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
+#include "asterfort/dismgd.h"
 #include "asterfort/dismpn.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
@@ -58,15 +59,15 @@ subroutine dismcn(questi, nomobz, repi, repkz, ierd)
     nomob = nomobz
     questl = questi
 !
-    if (questi .eq. 'NB_EQUA') then
+    if (questl .eq. 'NB_EQUA') then
         call jelira(nomob//'.VALE', 'LONMAX', repi)
-    else if (questi.eq.'NOM_MAILLA') then
+    else if (questl.eq.'NOM_MAILLA') then
         call jeveuo(nomob//'.REFE', 'L', iarefe)
         repk = zk24(iarefe-1+1) (1:8)
-    else if (questi.eq.'NB_DDLACT') then
+    else if (questl.eq.'NB_DDLACT') then
         call jeveuo(nomob//'.REFE', 'L', iarefe)
-        call dismpn(questi, zk24(iarefe-1+2)(1:8)//'.NUME      ', repi, repk, ierd)
-    else if (questi.eq.'TYPE_CHAMP') then
+        call dismpn(questl, zk24(iarefe-1+2)(1:8)//'.NUME      ', repi, repk, ierd)
+    else if (questl.eq.'TYPE_CHAMP') then
         repk = 'NOEU'
     else if (questl(1:7).eq.'NUM_GD ') then
         call jeveuo(nomob//'.DESC', 'L', iadesc)
@@ -74,11 +75,15 @@ subroutine dismcn(questi, nomobz, repi, repkz, ierd)
     else if (questl(1:7).eq.'NOM_GD ') then
         call jeveuo(nomob//'.DESC', 'L', iadesc)
         call jenuno(jexnum('&CATA.GD.NOMGD', zi(iadesc)), repk)
-    else if (questi.eq.'TYPE_SUPERVIS') then
+    else if (questl.eq.'TYPE_SUPERVIS' .or. questl.eq.'TYPE_SCA') then
         call jeveuo(nomob//'.DESC', 'L', iadesc)
         call jenuno(jexnum('&CATA.GD.NOMGD', zi(iadesc)), nogd)
-        repk='CHAM_NO_'//nogd
-    else if (questi.eq.'PROF_CHNO') then
+        if (questl.eq.'TYPE_SUPERVIS') then
+            repk='CHAM_NO_'//nogd
+        else
+            call dismgd(questl, nogd, repi, repk, ierd)
+        endif
+    else if (questl.eq.'PROF_CHNO') then
         call jeveuo(nomob//'.REFE', 'L', iarefe)
         repk = zk24(iarefe+1)
     else
