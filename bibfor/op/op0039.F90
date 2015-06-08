@@ -28,6 +28,7 @@ subroutine op0039()
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
+#include "asterfort/deprecated_algom.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
@@ -121,6 +122,7 @@ subroutine op0039()
     versio = 0
     lcasts = .false.
     if (form .eq. 'CASTEM') then
+        call deprecated_algom(form)
         lcasts = .true.
         call getvis(' ', 'NIVE_GIBI', scal=nive, nbret=ngibi)
     else if (form(1:5) .eq. 'IDEAS') then

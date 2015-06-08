@@ -7,6 +7,8 @@ subroutine comp_meca_read(l_etat_init, info_comp_valk, info_comp_vali, &
 #include "asterc/getexm.h"
 #include "asterc/getfac.h"
 #include "asterc/mfront_get_nbvari.h"
+#include "asterfort/deprecated_algom.h"
+#include "asterfort/deprecated_behavior.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
@@ -98,10 +100,12 @@ subroutine comp_meca_read(l_etat_init, info_comp_valk, info_comp_vali, &
 ! ----- Get RELATION from command file
 !
         call getvtx(keywordfact, 'RELATION', iocc = iocc, scal = rela_comp)
+        call deprecated_behavior(rela_comp)
 !
 ! ----- Get DEFORMATION from command file
 !
         call getvtx(keywordfact, 'DEFORMATION', iocc = iocc, scal = defo_comp)
+        call deprecated_algom(defo_comp)
 !
 ! ----- Modified matrix
 !

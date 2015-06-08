@@ -28,6 +28,7 @@ subroutine op0096()
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
 #include "asterfort/codent.h"
+#include "asterfort/deprecated_command.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
@@ -109,6 +110,7 @@ subroutine op0096()
     ndim = 3
 !
     call getres(surfac, typres, opera)
+    call deprecated_command(opera)
     call getvr8(' ', 'PRECISION', scal=epsi, nbret=n)
     call getvis(' ', 'INFO', scal=info, nbret=n)
     call getvid(' ', 'MAILLAGE', scal=nomail, nbret=n)

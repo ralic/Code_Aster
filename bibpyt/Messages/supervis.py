@@ -54,11 +54,14 @@ Ces fichiers n'ont pas de sens lors d'un nouveau calcul (DEBUT)."""),
     9: _(u"""
 Fonctionnalité obsolète : %(k1)s
 
-La fonctionnalité mentionnée ci-dessus est obsolète et son utilisation est déconseillée dans la version du code que vous utilisez. Elle sera supprimée dans la version %(i1)d.%(i2)d.
+La fonctionnalité mentionnée ci-dessus est obsolète et son utilisation
+est déconseillée dans la version du code que vous utilisez.
+Elle sera supprimée dans la version %(i1)d.
 
-Conseils : 
-- pour assurer la pérennité de votre étude, modifiez votre fichier de commandes;
-- si vous avez un besoin impérieux de cette fonctionnalité, rapprochez-vous de votre correspondant Club utilisateur ou de l'équipe de développement.
+Conseils :
+- pour assurer la pérennité de votre étude, modifiez votre fichier de commandes ;
+- si vous avez un besoin impérieux de cette fonctionnalité,
+  rapprochez-vous de votre correspondant Club utilisateur ou de l'équipe de développement.
 
 """),
 

@@ -22,6 +22,8 @@ subroutine op0050()
 !
 ! ----------------------------------------------------------------------
 #include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterfort/deprecated_command.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/i2chem.h"
@@ -29,12 +31,17 @@ subroutine op0050()
 #include "asterfort/infmaj.h"
 #include "asterfort/utmess.h"
     integer :: nbparm, nbpars, nbpara, n1
-    character(len=8) :: k8b, nomail
+    character(len=8) :: k8b, nomail, surfac
+    character(len=16) :: opera, typres
 !----------------------------------------------------------------------
 !
 !----------------------------------------------------------------------
 !
     call infmaj()
+!
+    call getres(surfac, typres, opera)
+    call deprecated_command(opera)
+!
 !----------------------------------------------------------------------
 !
 !                 LE MAILLAGE DOIT ETRE 2D OU PLAN

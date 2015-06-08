@@ -13,6 +13,7 @@ subroutine op0018()
 #include "asterfort/cetucr.h"
 #include "asterfort/cormgi.h"
 #include "asterfort/crevge.h"
+#include "asterfort/deprecated_model.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getnode.h"
@@ -242,6 +243,7 @@ subroutine op0018()
                 call jedetr(list_node)
                 call getnode(mesh   , keywordfact, iaffe , ' ', list_node,&
                              nb_node, elem_excl = .true._1)
+                call deprecated_model('NOEUD')
             endif
 !
 ! --------- Loop on modelisations
@@ -251,6 +253,7 @@ subroutine op0018()
 ! ------------- Current modelisation
 !
                 modeli = list_modelisa(imodel)
+                call deprecated_model(modeli)
                 call jenonu(jexnom('&CATA.'//phenom(1:13)//'.MODL', modeli), idx_modelisa)
                 call jeveuo(jexnum('&CATA.'//phenom, idx_modelisa), 'L', vi = p_cata_model)
                 phemod = phenom//modeli
@@ -266,7 +269,7 @@ subroutine op0018()
                     endif
                 endif
 !
-! ------------- Loop on elements 
+! ------------- Loop on elements
 !
                 if (nb_elem .ne. 0) then
                     ASSERT(nb_node.eq.0)
@@ -286,7 +289,7 @@ subroutine op0018()
                     end do
                 endif
 !
-! ------------- Loop on nodes 
+! ------------- Loop on nodes
 !
                 if (nb_node .ne. 0) then
                     ASSERT(nb_elem.eq.0)
@@ -406,7 +409,7 @@ subroutine op0018()
         endif
         if (nb_elem_affe .eq. 0) then
             call utmess('F', 'MODELE1_6', sk=mesh)
-        endif 
+        endif
 !
 ! ----- Create LIEL
 !

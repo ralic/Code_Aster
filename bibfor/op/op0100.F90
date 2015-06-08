@@ -40,6 +40,7 @@ subroutine op0100()
 #include "asterfort/cgleco.h"
 #include "asterfort/cglect.h"
 #include "asterfort/cglemu.h"
+#include "asterfort/deprecated_algom.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/gcou2d.h"
@@ -138,6 +139,7 @@ subroutine op0100()
                 typfis, nomfis, fonoeu, chfond, basfon,&
                 taillr, config, lnoff, liss, ndeg, typdis)
 !
+    call deprecated_algom(option)
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
     nomno = noma//'.NOMNOE'
     coorn = noma//'.COORDO    .VALE'

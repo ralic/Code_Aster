@@ -23,6 +23,7 @@ subroutine cazofm(char, motfac, iform, nzoco)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cazouu.h"
+#include "asterfort/deprecated_algom.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
@@ -129,6 +130,7 @@ subroutine cazofm(char, motfac, iform, nzoco)
 !
             else if (algof(1:10) .eq. 'LAGRANGIEN') then
                 ifrot = 2
+                call deprecated_algom('LAGR_FROT')
 !
                 if (algoc(1:8) .eq. 'LAGRANGI') then
                     icont = 5
@@ -153,6 +155,7 @@ subroutine cazofm(char, motfac, iform, nzoco)
 !
             else if (algoc(1:8) .eq. 'LAGRANGI') then
                 icont = 5
+                call deprecated_algom('LAGR_CONT')
 !
             else
                 ASSERT(.false.)

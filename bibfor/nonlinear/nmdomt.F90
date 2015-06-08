@@ -5,6 +5,7 @@ implicit none
 #include "asterc/getfac.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
+#include "asterfort/deprecated_algom.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
@@ -67,9 +68,8 @@ implicit none
     real(kind=8) :: pas_mini_elas, resi_line_rela
     real(kind=8) :: reli_rho_mini, reli_rho_maxi, reli_rho_excl
     integer :: ifm, niv
-    integer :: iret, nocc, vali(2)
+    integer :: iret, nocc
     character(len=16) :: reli_meth, keywf
-    character(len=32) :: valk
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -89,11 +89,8 @@ implicit none
             algo_meth(5) = algo_meth(2)
         endif
         if (algo_meth(5) .eq. 'DEPL_CALCULE') then
-            vali(1) = 13
-            vali(2) = 4
-            valk    = "PREDICTION='DEPL_CALCULE'"
-            call utmess('A', 'SUPERVIS_9', sk = valk, ni = 2, vali = vali) 
-            call utmess('A', 'MECANONLINE5_57') 
+            call deprecated_algom(algo_meth(5))
+            call utmess('A', 'MECANONLINE5_57')
             call getvid(keywf, 'EVOL_NOLI', iocc=1, scal=algo_meth(6), nbret=iret)
             if (iret .le. 0) then
                 call utmess('F', 'MECANONLINE5_45')

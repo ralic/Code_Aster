@@ -33,6 +33,7 @@ subroutine op0005()
 #include "asterc/getres.h"
 #include "asterfort/aniver.h"
 #include "asterfort/codent.h"
+#include "asterfort/deprecated_material.h"
 #include "asterfort/getvid.h"
 #include "asterfort/indk32.h"
 #include "asterfort/infmaj.h"
@@ -126,6 +127,7 @@ subroutine op0005()
     krc = nbmati
     do irc = 1, nbrcme
         nomrc = motcle(irc)
+        call deprecated_material(nomrc)
         ind = index(nomrc,'_FO')
         if (ind .gt. 0) then
             nomrc(ind:ind+2) = '   '
