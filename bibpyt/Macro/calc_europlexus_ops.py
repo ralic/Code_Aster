@@ -80,6 +80,9 @@ def calc_europlexus_ops(self, EXCIT, COMPORTEMENT, ARCHIVAGE, CALCUL,
     # Ligne de commande d'Europlexus
     EXEC = args['LOGICIEL']
 
+    # Version d'Europlexus
+    VERS = args['VERSION_EUROPLEXUS']
+
     # Chemin du repertoire REPE_OUT de l'execution courante d'Aster
     REPE_OUT = os.path.join(os.getcwd(), 'REPE_OUT')
 
@@ -104,7 +107,7 @@ def calc_europlexus_ops(self, EXCIT, COMPORTEMENT, ARCHIVAGE, CALCUL,
     EPX = EUROPLEXUS(ETAT_INIT, MODELE, CARA_ELEM, CHAM_MATER, COMPORTEMENT,
                      FONC_PARASOL, EXCIT, OBSERVATION, ARCHIVAGE, COURBE,
                      CALCUL, AMORTISSEMENT, DOMAINES, INTERFACES, REPE='REPE_OUT',
-                     EXEC=EXEC, INFO=INFO, REPE_epx=REPE_epx, NOM_RESU=nom_resu,
+                     EXEC=EXEC, VERS=VERS, INFO=INFO, REPE_epx=REPE_epx, NOM_RESU=nom_resu,
                      args=args)
 
     #
@@ -167,8 +170,8 @@ class EUROPLEXUS:
 
     def __init__(self, ETAT_INIT, MODELE, CARA_ELEM, CHAM_MATER, COMPORTEMENT,
                  FONC_PARASOL, EXCIT, OBSERVATION, ARCHIVAGE, COURBE,
-                 CALCUL, AMORTISSEMENT, DOMAINES, INTERFACES, REPE, EXEC, INFO,
-                 REPE_epx, NOM_RESU, args):
+                 CALCUL, AMORTISSEMENT, DOMAINES, INTERFACES, REPE, EXEC, VERS,
+                  INFO, REPE_epx, NOM_RESU, args):
         """
             Met toutes les entrées en attributs.
             Crée les directives EPX.
@@ -258,6 +261,7 @@ class EUROPLEXUS:
         self.CALCUL = CALCUL
         self.DOMAINES = DOMAINES
         self.INTERFACES = INTERFACES
+        self.VERS = VERS
         self.INFO = INFO
         self.COMPORTEMENT = COMPORTEMENT
         self.AMORTISSEMENT = AMORTISSEMENT
@@ -1031,7 +1035,7 @@ class EUROPLEXUS:
         from Cata.cata import EXEC_LOGICIEL
         fichier_epx = osp.abspath(self.nom_fichiers['COMMANDE'])
         EXEC_LOGICIEL(LOGICIEL=self.EXEC,
-                      ARGUMENT=(fichier_epx, self.REPE_epx),
+                      ARGUMENT=(fichier_epx, self.VERS, self.REPE_epx),
                       CODE_RETOUR_MAXI=-1,
                       INFO=2)
 #-----------------------------------------------------------------------
