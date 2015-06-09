@@ -11,7 +11,7 @@ waf install -p
 
 import os
 ASTER_ROOT = os.environ['ASTER_ROOT']
-YAMMROOT = ASTER_ROOT + '/public/V7_5_1_201502'
+YAMMROOT = ASTER_ROOT + '/public/V7_6_0_201506'
 
 import intel
 
@@ -27,21 +27,21 @@ def configure(self):
 
     self.env.append_value('LIBPATH', [
         '/usr/lib/atlas-base/atlas',                # for NumPy, see issue18751
-        YAMMROOT + '/prerequisites/Python_273/lib',
-        YAMMROOT + '/prerequisites/Hdf5_1810/lib',
-        YAMMROOT + '/tools/Medfichier_308/lib',
-        YAMMROOT + '/prerequisites/Metis_40/lib',
-        YAMMROOT + '/prerequisites/Mfront_TFEL201/lib',
-        YAMMROOT + '/prerequisites/Mumps_20151/lib',
-        YAMMROOT + '/prerequisites/Scotch_5111/lib'])
+        YAMMROOT + '/prerequisites/Python-273/lib',
+        YAMMROOT + '/prerequisites/Hdf5-1810/lib',
+        YAMMROOT + '/tools/Medfichier-308/lib',
+        YAMMROOT + '/prerequisites/Metis-40/lib',
+        YAMMROOT + '/prerequisites/Mfront-TFEL202/lib',
+        YAMMROOT + '/prerequisites/Mumps-20151/lib',
+        YAMMROOT + '/prerequisites/Scotch-5111/lib'])
 
     self.env.append_value('INCLUDES', [
-        YAMMROOT + '/prerequisites/Python_273/include/python2.7',
-        YAMMROOT + '/prerequisites/Hdf5_1810/include',
-        YAMMROOT + '/tools/Medfichier_308/include',
-        YAMMROOT + '/prerequisites/Metis_40/Lib',
-        YAMMROOT + '/prerequisites/Mfront_TFEL201/include',
-        YAMMROOT + '/prerequisites/Scotch_5111/include'])
+        YAMMROOT + '/prerequisites/Python-273/include/python2.7',
+        YAMMROOT + '/prerequisites/Hdf5-1810/include',
+        YAMMROOT + '/tools/Medfichier-08/include',
+        YAMMROOT + '/prerequisites/Metis-40/Lib',
+        YAMMROOT + '/prerequisites/Mfront-TFEL202/include',
+        YAMMROOT + '/prerequisites/Scotch-5111/include'])
 
     # to fail if not found
     opts.enable_hdf5 = True

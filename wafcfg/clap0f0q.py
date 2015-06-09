@@ -11,7 +11,7 @@ waf install -p
 
 import os
 ASTER_ROOT = os.environ['ASTER_ROOT']
-YAMMROOT = ASTER_ROOT + '/public/V7_5_1_201502'
+YAMMROOT = ASTER_ROOT + '/public/V7_6_0_201506'
 
 def configure(self):
     opts = self.options
@@ -22,23 +22,23 @@ def configure(self):
         '. ' + ASTER_ROOT + '/etc/codeaster/profile_gcc47.sh'])
 
     self.env.append_value('LIBPATH', [
-        YAMMROOT + '/prerequisites/Python_273/lib',
-        YAMMROOT + '/prerequisites/Hdf5_1810/lib',
-        YAMMROOT + '/tools/Medfichier_308/lib',
-        YAMMROOT + '/prerequisites/Metis_40/lib',
-        YAMMROOT + '/prerequisites/Mfront_TFEL201/lib',
-        YAMMROOT + '/prerequisites/Mumps_20151/lib',
-        YAMMROOT + '/prerequisites/Scotch_5111/lib',
+        YAMMROOT + '/prerequisites/Python-273/lib',
+        YAMMROOT + '/prerequisites/Hdf5-1810/lib',
+        YAMMROOT + '/tools/Medfichier-308/lib',
+        YAMMROOT + '/prerequisites/Metis-40/lib',
+        YAMMROOT + '/prerequisites/Mfront-TFEL202/lib',
+        YAMMROOT + '/prerequisites/Mumps-20151/lib',
+        YAMMROOT + '/prerequisites/Scotch-5111/lib',
         # for openblas
         ASTER_ROOT + '/public/lib',])
 
     self.env.append_value('INCLUDES', [
-        YAMMROOT + '/prerequisites/Python_273/include/python2.7',
-        YAMMROOT + '/prerequisites/Hdf5_1810/include',
-        YAMMROOT + '/tools/Medfichier_308/include',
-        YAMMROOT + '/prerequisites/Metis_40/Lib',
-        YAMMROOT + '/prerequisites/Mfront_TFEL201/include',
-        YAMMROOT + '/prerequisites/Scotch_5111/include'])
+        YAMMROOT + '/prerequisites/Python-273/include/python2.7',
+        YAMMROOT + '/prerequisites/Hdf5-1810/include',
+        YAMMROOT + '/tools/Medfichier-308/include',
+        YAMMROOT + '/prerequisites/Metis-40/Lib',
+        YAMMROOT + '/prerequisites/Mfront-TFEL202/include',
+        YAMMROOT + '/prerequisites/Scotch-5111/include'])
 
     # openblas from $ASTER_ROOT/public/lib embeds lapack
     opts.maths_libs = 'openblas'
