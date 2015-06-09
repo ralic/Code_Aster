@@ -67,6 +67,12 @@ subroutine entete()
 #else
     call utmess('I', 'SUPERVIS2_17')
 #endif
+#ifndef _DISABLE_MFRONT
+#   define vers0 MFRONT_VERSION
+    call utmess('I', 'SUPERVIS2_27', sk=vers0)
+#else
+    call utmess('I', 'SUPERVIS2_28')
+#endif
 ! --- LIBRARIES SOLVEURS
 ! for backward compatibility
 #ifdef _HAVE_MUMPS

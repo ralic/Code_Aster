@@ -136,7 +136,7 @@ def check_mfront(self):
     # remove some g++ options if icpc is used
     if 'icc' in self.env.CXX_NAME.lower():
         self.safe_remove('CXXFLAGS_MFRONT_ONLY', '-ftree-vectorize')
-    self.check_mfront_version( (2, 0, 1) )
+    self.check_mfront_version( (2, 0, 2) )
     self.check_mfront_libs()
     self.check_mfront_obsolete_source()
 
@@ -160,8 +160,10 @@ def check_mfront_version(self, minver=None):
     result = LooseVersion(mfrver) >= LooseVersion(minver_str)
     self.msg("Checking for mfront version >= %s" % minver_str, mfrver,
              result and 'GREEN' or 'YELLOW')
-    if not result:
-        raise Errors.ConfigurationError('The Mfront version is too old, expecting %r' % minver_str)
+    if result:
+        self.define('MFRONT_VERSION', mfrver)
+    else:
+        raise Errors.ConfigurationError('The Mfront version is too old, required >= %r' % minver_str)
 
 @Configure.conf
 def check_mfront_libs(self):

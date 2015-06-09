@@ -164,6 +164,14 @@ dernière au format HDF (mot clé FORMAT_HDF="OUI" dans la commande FIN).
             'flags': 'CENTER | ALL_UNIT',
             },
 
+    27: {
+        'message' : _(u"""Version de la librairie MFront : %(k1)s"""),
+        'flags': 'CENTER | ALL_UNIT',
+    },
+
+    28 : {  'message' : _(u"""Librairie MFront : non disponible"""),
+            'flags': 'CENTER | ALL_UNIT',
+            },
 
     # Affichage des commandes
     70 : u"""  # ------------------------------------------------------------------------------------------""",
