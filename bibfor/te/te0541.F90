@@ -94,7 +94,7 @@ subroutine te0541(option, nomte)
     call jevech('PSTANO', 'L', jstno)
 !     PROPRE AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     call teattr('S', 'XFEM', enr, ibid)
-    if (enr(1:2).eq.'XH') call jevech('PHEA_NO', 'L', jheavn)
+    if (enr(1:2).eq.'XH' .or. enr(1:2).eq.'XT') call jevech('PHEA_NO', 'L', jheavn)
     if ((ibid.eq.0) .and.&
         (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC') .and. .not.iselli(elref)) &
     call jevech('PPMILTO', 'L', jpmilt)

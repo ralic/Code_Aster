@@ -105,7 +105,7 @@ subroutine xsidep(nnop, nfh, nfe, ddlc, ddlm,&
 !     NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
     nbsig = nbsigm()
 !
-    if (nfh.gt.0) then
+    if (nfh.gt.0 .or. nfe.gt.0) then
       call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
                 itab=jtab)
       ncompn = jtab(2)/jtab(3)

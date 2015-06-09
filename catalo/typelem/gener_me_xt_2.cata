@@ -55,6 +55,7 @@ MODE_LOCAL__
    
     E6NEUTI  = N128_I   ELEM__         (X[6])
     E10NEUTI = N120_I    ELEM__         (X[10]     )
+    N5NEUTI  = N120_I   ELNO__ IDEN__  (X[5]     )
     E36NEUI  = N512_I   ELEM__         (X[36])
    
     E12NEUTR = N132_R   ELEM__         (X[12])
@@ -83,22 +84,22 @@ OPTION__
                           OUT__ EGTHETA  PGTHETA
     CHAR_MECA_FF2D3D  36  IN__  E36NEUI  PCNSETO  CFORCEF  PFF2D3D  NGEOMER  PGEOMER  E6NEUTI  PHEAVTO  
                                 E10NEUTI  PLONCHA  N1NEUT_R PLSN     N1NEUT_R PLST     E12NEUTR PPINTTO  
-                                STANO_I  PSTANO   CTEMPSR  PTEMPSR
+                                STANO_I  PSTANO   CTEMPSR  PTEMPSR  N5NEUTI  PHEA_NO  E6NEUTI  PHEA_SE
                                 E33NEUTR PPMILTO
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_FR2D3D  36  IN__  E36NEUI  PCNSETO  EFORCNO  PFR2D3D  NGEOMER  PGEOMER  E6NEUTI  PHEAVTO  
                                 E10NEUTI  PLONCHA  N1NEUT_R PLSN     N1NEUT_R PLST     E12NEUTR PPINTTO  
-                                STANO_I  PSTANO  
+                                STANO_I  PSTANO   N5NEUTI  PHEA_NO  E6NEUTI  PHEA_SE
                                 E33NEUTR PPMILTO
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_PRES_F  36  IN__  E36NEUI  PCNSETO  NGEOMER  PGEOMER  E6NEUTI  PHEAVTO  E10NEUTI  PLONCHA  
                                 N1NEUT_R PLSN     N1NEUT_R PLST     E12NEUTR PPINTTO  CPRESSF  PPRESSF  
-                                STANO_I  PSTANO   CTEMPSR  PTEMPSR
+                                STANO_I  PSTANO   CTEMPSR  PTEMPSR  N5NEUTI  PHEA_NO  E6NEUTI  PHEA_SE
                                 E33NEUTR PPMILTO
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_PRES_R  36  IN__  E36NEUI  PCNSETO  NGEOMER  PGEOMER  E6NEUTI  PHEAVTO  E10NEUTI  PLONCHA  
                                 N1NEUT_R PLSN     N1NEUT_R PLST     E12NEUTR PPINTTO  EPRESNO  PPRESSR  
-                                     STANO_I  PSTANO
+                                STANO_I  PSTANO   N5NEUTI  PHEA_NO  E6NEUTI  PHEA_SE
                                 E33NEUTR PPMILTO
                               OUT__  MVECTUR  PVECTUR
     INI_XFEM_ELNO     99  IN__    OUT__  N1NEUT_R PLSN     N1NEUT_R PLST     STANO_I  PSTANO   
@@ -109,3 +110,5 @@ OPTION__
                               OUT__  CPRES_R  PPRES_R
     TOU_INI_ELNO      99  IN__  
                           OUT__ ENNEUT_F PNEUT_F  ENNEUT_R PNEUT_R  EPRESNO  PPRES_R
+    TOPONO           120  IN__  E36NEUI  PCNSETO  E6NEUTI  PHEAVTO  E10NEUTI  PLONCHA  N1NEUT_R PLEVSET
+                          OUT__ N5NEUTI  PHEA_NO  E6NEUTI  PHEA_SE

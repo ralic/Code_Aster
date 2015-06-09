@@ -96,7 +96,7 @@ subroutine xbsig(ndim, nnop, nfh, nfe,&
     call elrefe_info(elrefe=elrese(ndim+irese),fami=fami(ndim+irese),nno=nno,npg=npg)
 !
 !   RECUPERATION DE LA DEFINITION DES FONCTIONS HEAVISIDES
-    if (nfh.gt.0) then
+    if (nfh.gt.0 .or. nfe.gt.0) then
       call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
                 itab=jtab)
       ncompn = jtab(2)/jtab(3)

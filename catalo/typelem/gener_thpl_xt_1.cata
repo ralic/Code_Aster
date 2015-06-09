@@ -30,6 +30,7 @@ MODE_LOCAL__
    
     E2NEUTI  = N128_I   ELEM__         (X[2])
     E10NEUTI = N120_I    ELEM__         (X[10]     )
+    N5NEUTI  = N120_I   ELNO__ IDEN__  (X[5]     )
     E4NEUTR  = N480_R   ELEM__         (X[4])
     E6NEUTI  = N512_I   ELEM__         (X[6])
     E6NEUTR  = N132_R   ELEM__         (X[6])
@@ -50,3 +51,5 @@ OPTION__
     TOPOSE           514  IN__  NGEOMER  PGEOMER  N1NEUT_R PLEVSET
                           OUT__ E6NEUTI  PCNSETO  E2NEUTI  PHEAVTO  E10NEUTI  PLONCHA  E6NEUTR  PPINTTO
                                 E4NEUTR  PPMILTO
+    TOPONO           120  IN__  E6NEUTI  PCNSETO  E2NEUTI  PHEAVTO  E10NEUTI  PLONCHA  N1NEUT_R PLEVSET
+                          OUT__ N5NEUTI  PHEA_NO  E2NEUTI  PHEA_SE

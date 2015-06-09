@@ -63,7 +63,7 @@ function xtest_code(id1, id2, lfno, nfh, nfissmax, fno1, fno2)
       up2(1:n2)=xextr_uplet(n2,id2)
       n1_red=count(fno1(1:n1).gt.0)
       n2_red=count(fno2(1:n2).gt.0)
-      ASSERT((n1_red.ge.nfh).or.(n2_red.ge.nfh))
+      ASSERT((n1_red.ge.nfh).and.(n2_red.ge.nfh))
       up1(1:n1_red)=up1(pack(fno1(1:n1_red),fno1(1:n1).gt.0))
       up2(1:n2_red)=up2(pack(fno2(1:n2_red),fno2(1:n2).gt.0)) 
       do idigi=1,nfh

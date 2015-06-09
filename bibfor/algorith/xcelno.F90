@@ -59,9 +59,9 @@ subroutine xcelno(noma, modelx, cel_hno, opt, npa)
     integer :: nbno, nbma, ibid, ino, nuno, numa, nusd
     integer :: nbpt, ncmp, deca, ilcnx1, ifh, nncp
     integer :: jcesd, jcesv, jcesl, iad
-    integer :: jcesd_fno, jcesv_fno, jcesl_fno, iad_fno
-    integer :: ier, nfh, cpt, ncompn, deca_fno, iad2, pos, iad5, id1, id2
-    character(len=19) :: ces_hno, ces_fno
+    integer :: jcesd_fno, jcesv_fno, jcesl_fno, iad_fno, jcesl_stno, jcesd_stno, jcesv_stno
+    integer :: ier, nfh, cpt, ncompn, deca_fno, iad2, pos, iad5, id1, id2, iad_stno, nfh2
+    character(len=19) :: ces_hno, ces_fno, ces_stno
     aster_logical :: lfno, limpr
     aster_logical, pointer :: is_nfh_no(:) => null()
     integer, pointer :: list_sd_no(:) => null(), count_sd_no(:) => null(), connex(:) => null()
@@ -95,11 +95,16 @@ subroutine xcelno(noma, modelx, cel_hno, opt, npa)
     call jeexin(modelx(1:8)//'.FISSNO    .CELD', ier)
     if (ier.ne.0) then
        lfno=.true.
-       ces_fno='&&XCELNO.FISSNO'
+       ces_fno = '&&XCELNO.FNO'
        call celces(modelx(1:8)//'.FISSNO', 'V', ces_fno)
        call jeveuo(ces_fno//'.CESL', 'L', jcesl_fno)
        call jeveuo(ces_fno//'.CESD', 'L', jcesd_fno)
        call jeveuo(ces_fno//'.CESV', 'L', jcesv_fno)
+       ces_stno = '&&XCELNO.STNO'
+       call celces(modelx(1:8)//'.STNO', 'V', ces_stno)
+       call jeveuo(ces_stno//'.CESL', 'L', jcesl_stno)
+       call jeveuo(ces_stno//'.CESD', 'L', jcesd_stno)
+       call jeveuo(ces_stno//'.CESV', 'L', jcesv_stno)
     endif 
 !
     id1=xcalc_code(1,he_inte=[-1])
@@ -115,18 +120,35 @@ subroutine xcelno(noma, modelx, cel_hno, opt, npa)
     AS_ALLOCATE(vl=is_no_mono,size=nbno)
     is_no_mono(1:nbno)=.true.
 !
-    do numa = 1, nbma
+    do 5 numa = 1, nbma
       nbpt = zi(jcesd-1+5+4* (numa-1)+1)
       ncmp  = zi(jcesd-1+5+4* (numa-1)+3)
       if (ncmp .eq. 0) goto 5
       is_ma_xfem(numa)=.true. 
-      if (lfno) nfh = zi(jcesd_fno-1+5+4* (numa-1)+2)
-      do ino =1, nbpt
+      if (lfno) then
+        nfh = zi(jcesd_fno-1+5+4*(numa-1)+2)
+      endif
+      do 55 ino =1, nbpt
         nuno = connex(1+zi(ilcnx1-1+numa)-2+ino)
-        is_nfh_no(nfissmax*(nuno-1)+nfh)=.true.
-      enddo
-5   continue
-    enddo
+        if (.not.lfno) then
+           is_nfh_no(nfissmax*(nuno-1)+1)=.true.
+           goto 55
+        endif
+        nfh2=0
+        do cpt=1,nfh
+          call cesexi('C', jcesd_fno, jcesl_fno, numa, ino,&
+                      cpt, 1, iad_fno)
+          ifiss=1
+          if (iad_fno.gt.0) then
+           if (zi(jcesv_fno-1+iad_fno).gt.0) ifiss=zi(jcesv_fno-1+iad_fno)
+          endif
+          call cesexi('C', jcesd_stno, jcesl_stno, numa, ino,&
+                      ifiss, 1, iad_stno)
+          if (zi(jcesv_stno-1+iad_stno).gt.0) nfh2=nfh2+1
+        enddo
+        if (nfh2.gt.0) is_nfh_no(nfissmax*(nuno-1)+nfh2)=.true.
+55     continue
+5    continue
 !
     AS_ALLOCATE(vi=nfh_ref,size=nbno) 
     do nuno=1,nbno

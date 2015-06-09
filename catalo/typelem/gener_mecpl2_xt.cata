@@ -69,6 +69,7 @@ MODE_LOCAL__
     DDL_NOZ1 = SIZZ_R   ELNO__ IDEN__  (SIZZ     )
     E3NEUTI  = N120_I   ELEM__         (X[3]     )
     E10NEUTI = N120_I    ELEM__         (X[10]     )
+    N5NEUTI  = N120_I   ELNO__ IDEN__  (X[5]     )
     E6NEUTI  = N128_I   ELEM__         (X[6]     )
     E9NEUTI  = N120_I   ELEM__         (X[9]     )
     E18NEUI  = N120_I   ELEM__         (X[18]    )
@@ -211,6 +212,7 @@ OPTION__
                                 NGEOMER  PGEOMER  E6NEUTI  PHEAVTO  E10NEUTI  PLONCHA  N1NEUT_R PLSN
                                 N1NEUT_R PLST     CMATERC  PMATERC  E6NEUTR  PPINTTO  E22NEUTR PPMILTO
                                 STANO_I  PSTANO   CTEMPSR  PTEMPSR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
+                                N5NEUTI  PHEA_NO
                           OUT__ ECONTPG  PCONTRT  MVECTUR  PVECTUR
     CHVOIS_XFEM      400  IN__  E36NEUI  PCNSETO  E10NEUTI  PLONCHA
                           OUT__ E18NEUI  PCVOISX
@@ -229,7 +231,7 @@ OPTION__
     FORC_NODA        542  IN__  N6NEUT_R PBASLOR  E36NEUI  PCNSETO  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR
                                 DDL_MECA PDEPLMR  NGEOMER  PGEOMER  E6NEUTI  PHEAVTO  E10NEUTI  PLONCHA
                                 N1NEUT_R PLSN     N1NEUT_R PLST     E6NEUTR  PPINTTO  E22NEUTR PPMILTO
-                                STANO_I  PSTANO   ZVARCPG  PVARCPR
+                                STANO_I  PSTANO   ZVARCPG  PVARCPR  N5NEUTI  PHEA_NO
                           OUT__ MVECTUR  PVECTUR
     INI_XFEM_ELNO    99   IN__    OUT__  N6NEUT_R PBASLOR  STANO_I  PSTANO   N1NEUT_R PLSN     N1NEUT_R PLST  FISNO_I  PFISNO  
     FULL_MECA        539  IN__  N6NEUT_R PBASLOR  CCAMASS  PCAMASS  CCARCRI  PCARCRI  E36NEUI  PCNSETO
@@ -280,7 +282,7 @@ OPTION__
                                 DDL_MECA PDEPLAR  FISNO_I  PFISNO   NGEOMER  PGEOMER  E6NEUTI  PHEAVTO
                                 E10NEUTI  PLONCHA  N1NEUT_R PLSN     N1NEUT_R PLST     CMATERC  PMATERC
                                 E6NEUTR  PPINTTO  E22NEUTR PPMILTO  STANO_I  PSTANO   ZVARCPG  PVARCPR
-                                ZVARCPG  PVARCRR
+                                ZVARCPG  PVARCRR  N5NEUTI  PHEA_NO
                           OUT__ ECONTPG  PCONTRR
     SIEF_ELNO        289  IN__  E36NEUI  PCNSETO  ECONTPG  PCONTRR  E10NEUTI  PLONCHA  ZVARCPG  PVARCPR
                           OUT__ ECONTNC  PSIEFNOC ECONTNO  PSIEFNOR
@@ -305,6 +307,8 @@ OPTION__
     XFEM_XPG          46  IN__  E36NEUI  PCNSETO  NGEOMER  PGEOMER  E6NEUTI  PHEAVTO  E10NEUTI  PLONCHA
                                 E6NEUTR  PPINTTO  E22NEUTR PPMILTO
                           OUT__ XFGEOM_R PXFGEOM
+    TOPONO           120  IN__  E36NEUI  PCNSETO  E6NEUTI  PHEAVTO  E10NEUTI  PLONCHA  N1NEUT_R PLEVSET
+                          OUT__ N5NEUTI  PHEA_NO  E6NEUTI  PHEA_SE
     DEPL_XPG         566  IN__  DDL_MECA PDEPLNO  XFGEOM_R PXFGEOM  E10NEUTI PLONCHA  E6NEUTI  PHEAVTO
                                 N6NEUT_R PBASLOR  N1NEUT_R PLSN     N1NEUT_R PLST
                           OUT__ EDEPLPG  PDEPLPG

@@ -73,7 +73,7 @@ subroutine te0578(option, nomte)
     call xthini(nomte, nfh, nfe)
 !
 !   RECUPERATION DE LA DEFINITION DES FONCTIONS HEAVISIDES
-    if (nfh.gt.0) then
+    if (nfh.gt.0 .or. nfe.gt.0) then
       call jevech('PHEA_NO', 'L', jheavn)
       call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
                 itab=jtab)

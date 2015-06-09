@@ -121,7 +121,7 @@ subroutine te0036(option, nomte)
     nfh = 0
     nfiss = 1
     call teattr('S', 'XFEM', enr, ier)
-    if (enr(1:2) .eq. 'XH') then
+    if (enr(1:2).eq.'XH') then
 ! --- NOMBRE DE FISSURES
         call tecach('NOO', 'PHEAVTO', 'L', iret, nval=7,&
                     itab=jtab)
@@ -193,7 +193,7 @@ subroutine te0036(option, nomte)
     if (nfiss .gt. 1) call jevech('PFISNO', 'L', jfisno)
 !
 !   LECTURE DES DONNES TOPOLOGIQUE DES FONCTIONS HEAVISIDE
-    if (enr(1:2).eq.'XH'.or.pre1) then
+    if (enr(1:2).eq.'XH' .or. pre1 .or. enr(1:2).eq.'XT') then
         call jevech('PHEA_NO', 'L', jheavn)
         call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
                 itab=jtab)

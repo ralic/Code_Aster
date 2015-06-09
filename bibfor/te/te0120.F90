@@ -65,7 +65,7 @@ subroutine te0120(nomopt, nomte)
     ASSERT(nomopt.eq.'TOPONO')
 !
     call teattr('S', 'XFEM', enr, ibid)
-    ASSERT(enr(1:2).eq.'XH'.or.enr.eq.'XTC')
+    ASSERT(enr(1:2).eq.'XH'.or.enr(1:2).eq.'XT')
 !
     if (enr .eq. 'XH1C' .or. enr .eq. 'XH2C' .or. enr .eq. 'XH3C' .or. enr .eq. 'XH4C') then
         multi_contact=.true.

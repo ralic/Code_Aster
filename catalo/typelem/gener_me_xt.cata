@@ -97,6 +97,7 @@ MODE_LOCAL__
    
     E3NEUTI  = N120_I   ELEM__         (X[3]     )
     E10NEUTI = N120_I    ELEM__         (X[10]     )
+    N5NEUTI  = N120_I   ELNO__ IDEN__  (X[5]     )
     E90NEUTI = N120_I   ELEM__         (X[90]    )
     E102NEUT = N120_R   ELEM__         (X[102]   )
    
@@ -240,6 +241,7 @@ OPTION__
                                 N1NEUT_R PLST     CMATERC  PMATERC  E33NEUTR PPINTTO  STANO_I  PSTANO   
                                 CTEMPSR  PTEMPSR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  
                                 E198NEUT PPMILTO
+                                N5NEUTI  PHEA_NO
                           OUT__ ECONTPG  PCONTRT  MVECTUR  PVECTUR  
     COOR_ELGA        481  IN__  NGEOMER  PGEOMER  E320NEUI PCNSETO  E10NEUTI PLONCHA  E33NEUTR PPINTTO
                                 E198NEUT PPMILTO
@@ -251,7 +253,7 @@ OPTION__
     FORC_NODA        542  IN__  N9NEUT_R PBASLOR  E320NEUI PCNSETO  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  
                                 DDL_MECA PDEPLMR  NGEOMER  PGEOMER  E32NEUTI PHEAVTO  E10NEUTI  PLONCHA  
                                 N1NEUT_R PLSN     N1NEUT_R PLST     E33NEUTR PPINTTO  STANO_I  PSTANO   
-                                ZVARCPG  PVARCPR  E198NEUT PPMILTO
+                                ZVARCPG  PVARCPR  E198NEUT PPMILTO  N5NEUTI  PHEA_NO
                           OUT__ MVECTUR  PVECTUR  
     INI_XFEM_ELNO    99   IN__    OUT__  N9NEUT_R PBASLOR  STANO_I  PSTANO   N1NEUT_R PLSN     N1NEUT_R PLST  FISNO_I  PFISNO  
     FULL_MECA        539  IN__  N9NEUT_R PBASLOR  CCAMASS  PCAMASS  CCARCRI  PCARCRI  E320NEUI PCNSETO  
@@ -306,7 +308,7 @@ OPTION__
     SIEF_ELGA        261  IN__  N9NEUT_R PBASLOR  CCAMASS  PCAMASS  E320NEUI PCNSETO  CCOMPOR  PCOMPOR  
                                 DDL_MECA PDEPLAR  FISNO_I  PFISNO   NGEOMER  PGEOMER  E32NEUTI PHEAVTO  
                                 E10NEUTI  PLONCHA  N1NEUT_R PLSN     N1NEUT_R PLST     CMATERC  PMATERC  
-                                E33NEUTR PPINTTO  STANO_I  PSTANO   ZVARCPG  PVARCPR  
+                                E33NEUTR PPINTTO  STANO_I  PSTANO   ZVARCPG  PVARCPR  N5NEUTI  PHEA_NO
                                 ZVARCPG  PVARCRR  
                                 E198NEUT PPMILTO
                           OUT__ ECONTPG  PCONTRR  
@@ -334,6 +336,8 @@ OPTION__
                                 E33NEUTR PPINTTO  
                                 E198NEUT PPMILTO
                           OUT__ XFGEOM_R PXFGEOM
+    TOPONO           120  IN__  E320NEUI PCNSETO  E32NEUTI  PHEAVTO  E10NEUTI  PLONCHA  N1NEUT_R PLEVSET
+                          OUT__ N5NEUTI  PHEA_NO  E32NEUTI  PHEA_SE
     DEPL_XPG         566  IN__  DDL_MECA PDEPLNO  XFGEOM_R  PXFGEOM  E10NEUTI  PLONCHA  E32NEUTI PHEAVTO
                                 N9NEUT_R PBASLOR  N1NEUT_R  PLSN     N1NEUT_R  PLST
                           OUT__ EDEPLPG  PDEPLPG
