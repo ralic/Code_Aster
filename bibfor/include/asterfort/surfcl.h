@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine surfcl(char, noma, ifm)
-        character(len=8) :: char
-        character(len=8) :: noma
-        integer :: ifm
+    subroutine surfcl(sdcont, mesh, unit_msg)
+        character(len=8), intent(in) :: sdcont
+        character(len=8), intent(in) :: mesh
+        integer, intent(in) :: unit_msg
     end subroutine surfcl
 end interface

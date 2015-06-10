@@ -1,4 +1,14 @@
-subroutine surfc3(char, noma, ifm)
+subroutine surfc3(sdcont, mesh, unit_msg)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,178 +28,127 @@ subroutine surfc3(char, noma, ifm)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
+    character(len=8), intent(in) :: sdcont
+    character(len=8), intent(in) :: mesh
+    integer, intent(in) :: unit_msg
 !
-#include "asterfort/cfdisi.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/cfmmvd.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
-    character(len=8) :: noma, char
-    integer :: ifm
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! DEFI_CONTACT
 !
-! ROUTINE CONTACT (METHODE XFEM   - AFFICHAGE DONNEES)
+! Print debug for XFEM formulation
 !
-! AFFICHAGE LES INFOS CONTENUES DANS LA SD CONTACT POUR LA FORMULATION
-! XFEM
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! In  sdcont           : name of contact concept (DEFI_CONTACT)
+! In  mesh             : name of mesh
+! In  unit_msg         : logical unit for messages (print)
 !
+! --------------------------------------------------------------------------------------------------
 !
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
-! IN  IFM    : UNITE D'IMPRESSION
-!
-!
-!
-!
+    aster_logical :: l_cont_xfem_gg
+    integer :: nb_cont_zone
+    integer :: i_zone, statut
+    character(len=24) :: sdcont_defi
+    character(len=8) :: elem_slav_name, zone_name
+    integer :: i_elem_slav, nt_elem_slav, elem_slav_nume
+    character(len=24) :: sdcont_caraxf
+    real(kind=8), pointer :: v_sdcont_caraxf(:) => null()
+    character(len=24) :: sdcont_xfimai
+    character(len=8), pointer :: v_sdcont_xfimai(:) => null()
+    character(len=24) :: sdcont_maescx
+    integer, pointer :: v_sdcont_maescx(:) => null()
     integer :: zcmxf, zmesx
-    aster_logical :: ltfcm
-    integer :: nzoco
-    integer :: izone, statut
-    character(len=24) :: mailma, defico
-    character(len=8) :: nommae, nomzon
-    integer :: imae, ntmae, nummae
 !
-    character(len=24) :: caraxf, maescx
-    integer :: jcmxf, jmaesx
+! --------------------------------------------------------------------------------------------------
 !
-!      CHARACTER*24 XFIESC,XSIESC,XSIMAI
-!      INTEGER      JFIESC,JSIESC,JSIMAI
-    character(len=24) :: xfimai
-    integer :: jfimai
+    sdcont_defi = sdcont(1:8)//'.CONTACT'
 !
-! ----------------------------------------------------------------------
+! - Datastructure for contact definition
 !
-    call jemarq()
-!
-! --- INITIALISATIONS
-!
-    defico = char(1:8)//'.CONTACT'
-    nzoco = cfdisi(defico,'NZOCO')
-    ltfcm = cfdisl(defico,'CONT_XFEM_GG')
-    ntmae = cfdisi(defico,'NTMAE')
-!
-! --- ACCES SD DU MAILLAGE
-!
-    mailma = noma(1:8)//'.NOMMAI'
-!
-! --- COMMUNS AVEC FORM. CONTINUE
-!
-    caraxf = defico(1:16)//'.CARAXF'
-    call jeveuo(caraxf, 'L', jcmxf)
-!
+    sdcont_caraxf = sdcont_defi(1:16)//'.CARAXF'
+    sdcont_xfimai = sdcont_defi(1:16)//'.XFIMAI'
+    sdcont_maescx = sdcont_defi(1:16)//'.MAESCX'
+    call jeveuo(sdcont_caraxf, 'L', vr = v_sdcont_caraxf)
+    call jeveuo(sdcont_xfimai, 'L', vk8 = v_sdcont_xfimai)
     zcmxf = cfmmvd('ZCMXF')
+    zmesx = cfmmvd('ZMESX')
 !
-! --- SPECIFIQUES XFEM
+! - Parameters
 !
-!     XFIESC = DEFICO(1:16)//'.XFIESC'
-!     XSIESC = DEFICO(1:16)//'.XSIESC'
-!     XSIMAI = DEFICO(1:16)//'.XSIMAI'
-    xfimai = defico(1:16)//'.XFIMAI'
+    nb_cont_zone   = cfdisi(sdcont_defi,'NZOCO')
+    l_cont_xfem_gg = cfdisl(sdcont_defi,'CONT_XFEM_GG')
+    nt_elem_slav   = cfdisi(sdcont_defi,'NTMAE')
 !
-    call jeveuo(xfimai, 'L', jfimai)
-!     CALL JEVEUO(XFIESC,'L',JFIESC)
-!     CALL JEVEUO(XSIESC,'L',JSIESC)
-!     CALL JEVEUO(XSIMAI,'L',JSIMAI)
+! - User print
 !
+    write (unit_msg,*)
+    write (unit_msg,*) '<CONTACT> INFOS SPECIFIQUES SUR LA FORMULATION XFEM'
+    write (unit_msg,*)
 !
-! --- IMPRESSIONS POUR L'UTILISATEUR
+    write (unit_msg,*) '<CONTACT> ... ZONES XFEM.'
+    do  i_zone = 1, nb_cont_zone
+        write (unit_msg,*) '<CONTACT> ...... ZONE : ', i_zone
+        write (unit_msg,110) v_sdcont_xfimai(i_zone)
+    end do
 !
-    write (ifm,*)
-    write (ifm,*) '<CONTACT> INFOS SPECIFIQUES SUR LA FORMULATION'//&
-     &              ' XFEM'
-    write (ifm,*)
+110 format (' <CONTACT> ...... FISS. MAITRE : ',a18)
 !
-    write (ifm,*) '<CONTACT> ... ZONES XFEM.'
-    do 610 izone = 1, nzoco
-        write (ifm,*) '<CONTACT> ...... ZONE : ',izone
-        write (ifm,1010) zk8(jfimai-1+izone)
-!        WRITE (IFM,1011) ZI(JSIMAI-1+IZONE)
-!       WRITE (IFM,1090) ZK8(JFIESC-1+IZONE)
-!       WRITE (IFM,1091) ZI(JSIESC-1+IZONE)
-610 end do
+! - Print variables parameters
 !
-    1010 format (' <CONTACT> ...... FISS. MAITRE : ',a18)
+    write (unit_msg,*) '<CONTACT> ... PARAMETRES VARIABLES SUIVANT LES ZONES'
+    do i_zone = 1, nb_cont_zone
+        write (unit_msg,*) '<CONTACT> ...... ZONE : ',i_zone
+        write (unit_msg,171) 'INTEGRATION     ',v_sdcont_caraxf(zcmxf*(i_zone-1)+1)
+        write (unit_msg,171) 'COEF_REGU_CONT  ',v_sdcont_caraxf(zcmxf*(i_zone-1)+2)
+        write (unit_msg,171) 'COEF_REGU_FROT  ',v_sdcont_caraxf(zcmxf*(i_zone-1)+3)
+        write (unit_msg,171) 'COEF_STAB_CONT  ',v_sdcont_caraxf(zcmxf*(i_zone-1)+11)
+        write (unit_msg,171) 'COEF_PENA_CONT  ',v_sdcont_caraxf(zcmxf*(i_zone-1)+12)
+        write (unit_msg,171) 'COEF_STAB_FROT  ',v_sdcont_caraxf(zcmxf*(i_zone-1)+13)
+        write (unit_msg,171) 'COEF_PENA_CONT  ',v_sdcont_caraxf(zcmxf*(i_zone-1)+14)
+        write (unit_msg,171) 'FROTTEMENT      ',v_sdcont_caraxf(zcmxf*(i_zone-1)+5)
+        write (unit_msg,171) 'COULOMB         ',v_sdcont_caraxf(zcmxf*(i_zone-1)+4)
+        write (unit_msg,171) 'SEUIL_INIT      ',v_sdcont_caraxf(zcmxf*(i_zone-1)+6)
+        write (unit_msg,171) 'CONTACT_INIT    ',v_sdcont_caraxf(zcmxf*(i_zone-1)+7)
+        write (unit_msg,171) 'COEF_ECHELLE    ',v_sdcont_caraxf(zcmxf*(i_zone-1)+8)
+        write (unit_msg,171) 'ALGO_LAGR       ',v_sdcont_caraxf(zcmxf*(i_zone-1)+9)
+        write (unit_msg,171) 'GLISSIERE       ',v_sdcont_caraxf(zcmxf*(i_zone-1)+10)
+    end do
 !
-! --- IMPRESSIONS POUR LES PARAMETRES VARIABLES
+! - Slave elements
 !
-    write (ifm,*) '<CONTACT> ... PARAMETRES VARIABLES SUIVANT '//&
-     &              ' LES ZONES'
-    do 320 izone = 1, nzoco
-        write (ifm,*) '<CONTACT> ...... ZONE : ',izone
-!
-        write (ifm,1071) 'INTEGRATION     ',zr(jcmxf+zcmxf*(izone-1)+1-1)
-        write (ifm,1071) 'COEF_REGU_CONT  ',zr(jcmxf+zcmxf*(izone-1)+2-1)
-        write (ifm,1071) 'COEF_REGU_FROT  ',zr(jcmxf+zcmxf*(izone-1)+3-1)
-        write (ifm,1071) 'COEF_STAB_CONT  ',zr(jcmxf+zcmxf*(izone-1)+11-1)
-        write (ifm,1071) 'COEF_PENA_CONT  ',zr(jcmxf+zcmxf*(izone-1)+12-1)
-        write (ifm,1071) 'COEF_STAB_FROT  ',zr(jcmxf+zcmxf*(izone-1)+13-1)
-        write (ifm,1071) 'COEF_PENA_CONT  ',zr(jcmxf+zcmxf*(izone-1)+14-1)
-        write (ifm,1071) 'FROTTEMENT      ',zr(jcmxf+zcmxf*(izone-1)+5-1)
-        write (ifm,1071) 'COULOMB         ',zr(jcmxf+zcmxf*(izone-1)+4-1)
-        write (ifm,1071) 'SEUIL_INIT      ',zr(jcmxf+zcmxf*(izone-1)+6-1)
-        write (ifm,1071) 'CONTACT_INIT    ',zr(jcmxf+zcmxf*(izone-1)+7-1)
-        write (ifm,1071) 'COEF_ECHELLE    ',zr(jcmxf+zcmxf*(izone-1)+8-1)
-        write (ifm,1071) 'ALGO_LAGR       ',zr(jcmxf+zcmxf*(izone-1)+9-1)
-        write (ifm,1071) 'GLISSIERE       ',zr(jcmxf+zcmxf*(izone-1)+10-1)
-320 end do
-!
-! ---  MAILLES ESCLAVES SPECIFIQUES
-!
-    if (ltfcm) then
-        maescx = defico(1:16)//'.MAESCX'
-        zmesx = cfmmvd('ZMESX')
-        call jeveuo(maescx, 'L', jmaesx)
-        write (ifm,*) '<CONTACT> ... INFORMATIONS SUR MAILLES ESCLAVES'
-        do 900 izone = 1, nzoco
-            nomzon = zk8(jfimai-1+izone)
-            write (ifm,*) '<CONTACT> ...... ZONE : ',izone
-            write (ifm,1010) nomzon
-            do 901 imae = 1, ntmae
-!
-                nummae = zi(jmaesx+zmesx*(imae-1)+1-1)
-                call jenuno(jexnum(mailma, nummae), nommae)
-                write (ifm,1080) nommae
-!
-!
-                write (ifm,1070) 'ZONE            ',&
-     &           zi(jmaesx+zmesx*(imae-1)+2-1)
-                write (ifm,1070) 'NB. PTS. INT.   ',&
-     &           zi(jmaesx+zmesx*(imae-1)+3-1)
-!
-                statut = zi(jmaesx+zmesx*(imae-1)+1-1)
-!
+    if (l_cont_xfem_gg) then
+        call jeveuo(sdcont_maescx, 'L', vi = v_sdcont_maescx)
+        write (unit_msg,*) '<CONTACT> ... INFORMATIONS SUR MAILLES ESCLAVES'
+        do i_zone = 1, nb_cont_zone
+            zone_name = v_sdcont_xfimai(i_zone)
+            write (unit_msg,*) '<CONTACT> ...... ZONE : ',i_zone
+            write (unit_msg,110) zone_name
+            do i_elem_slav = 1, nt_elem_slav
+                elem_slav_nume = v_sdcont_maescx(zmesx*(i_elem_slav-1)+1)
+                call jenuno(jexnum(mesh(1:8)//'.NOMMAI', elem_slav_nume), elem_slav_name)
+                write (unit_msg,180) elem_slav_name
+                write (unit_msg,170) 'ZONE            ',v_sdcont_maescx(zmesx*(i_elem_slav-1)+2)
+                write (unit_msg,170) 'NB. PTS. INT.   ',v_sdcont_maescx(zmesx*(i_elem_slav-1)+3)
+                statut = v_sdcont_maescx(zmesx*(i_elem_slav-1)+4)
                 if (statut .eq. 0) then
-                    write (ifm,1040) 'PAS DE FOND. FISS.'
+                    write (unit_msg,104) 'PAS DE FOND. FISS.'
                 else if (statut.eq.1) then
-                    write (ifm,1040) 'HEAVISIDE'
+                    write (unit_msg,104) 'HEAVISIDE'
                 else if (statut.eq.-2) then
-                    write (ifm,1040) 'CRACK-TIP'
+                    write (unit_msg,104) 'CRACK-TIP'
                 else if (statut.eq.3) then
-                    write (ifm,1040) 'HEAVISIDE + CRACK-TIP'
+                    write (unit_msg,104) 'HEAVISIDE + CRACK-TIP'
                 else
-                    write (ifm,1070) 'STATUT          ',statut
+                    write (unit_msg,170) 'STATUT          ',statut
                 endif
-!
-!
-!
-!
-901         continue
-900     continue
+            end do
+        end do
     endif
 !
-    1040 format (' <CONTACT> ...... ',a25)
-    1070 format (' <CONTACT> ...... PARAM. : ',a16,' - VAL. : ',i5)
-    1071 format (' <CONTACT> ...... PARAM. : ',a16,' - VAL. : ',e12.5)
-    1080 format (' <CONTACT> ... MAILLE : ',a8)
+104 format (' <CONTACT> ...... ',a25)
+170 format (' <CONTACT> ...... PARAM. : ',a16,' - VAL. : ',i5)
+171 format (' <CONTACT> ...... PARAM. : ',a16,' - VAL. : ',e12.5)
+180 format (' <CONTACT> ... MAILLE : ',a8)
 !
-    call jedema()
 end subroutine

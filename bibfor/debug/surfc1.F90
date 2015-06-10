@@ -1,4 +1,13 @@
-subroutine surfc1(char, ifm)
+subroutine surfc1(sdcont, unit_msg)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfdisr.h"
+#include "asterfort/mminfl.h"
+#include "asterfort/mminfr.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,121 +27,99 @@ subroutine surfc1(char, ifm)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/cfdisr.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/mminfl.h"
-#include "asterfort/mminfr.h"
-    character(len=8) :: char
-    integer :: ifm
+    character(len=8), intent(in) :: sdcont
+    integer, intent(in) :: unit_msg
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (METHODE DISCRETE - AFFICHAGE DONNEES)
+! DEFI_CONTACT
 !
-! AFFICHAGE LES INFOS CONTENUES DANS LA SD CONTACT POUR LA FORMULATION
-! DISCRETE
+! Print debug for discrete formulation
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sdcont           : name of contact concept (DEFI_CONTACT)
+! In  unit_msg         : logical unit for messages (print)
 !
-! IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
-! IN  IFM    : UNITE D'IMPRESSION
+! --------------------------------------------------------------------------------------------------
 !
+    integer :: nb_cont_zone
+    integer :: i_zone
+    character(len=24) :: sdcont_defi
+    aster_logical :: l_veri, l_cont_gcp, l_gliss
+    integer :: stop_singular, nb_resol, gcp_maxi, gcp_precond, gcp_rech_line
+    real(kind=8) :: tole_interp, gcp_resi, gcp_coef_resi, glis_alarm
+    real(kind=8) :: coef_pena_cont, coef_pena_frot, coef_frot, coef_matr_frot
 !
+! --------------------------------------------------------------------------------------------------
 !
+    sdcont_defi = sdcont(1:8)//'.CONTACT'
 !
-    integer :: nzoco
-    integer :: izone
-    character(len=24) :: defico
-    aster_logical :: lveri, lgcp, lgliss
-    integer :: isto, lgbloc, gcpmax, gcppre, gcprec
-    real(kind=8) :: tolint, precis, gcpres, aljeu
-    real(kind=8) :: coefpn, coefpt, coefff, coefte
+! - Parameters
 !
-! ----------------------------------------------------------------------
+    nb_cont_zone  = cfdisi(sdcont_defi,'NZOCO')
+    stop_singular = cfdisi(sdcont_defi,'STOP_SINGULIER')
+    nb_resol      = cfdisi(sdcont_defi,'NB_RESOL')
+    l_cont_gcp    = cfdisl(sdcont_defi,'CONT_GCP' )
+    gcp_resi      = cfdisr(sdcont_defi,'RESI_ABSO')
+    gcp_maxi      = cfdisi(sdcont_defi,'ITER_GCP_MAXI')
+    gcp_precond   = cfdisi(sdcont_defi,'PRE_COND')
+    gcp_coef_resi = cfdisr(sdcont_defi,'COEF_RESI')
+    gcp_rech_line = cfdisi(sdcont_defi,'RECH_LINEAIRE')
+    l_gliss       = cfdisl(sdcont_defi,'CONT_DISC_GLIS')
+    glis_alarm    = cfdisr(sdcont_defi,'ALARME_JEU')
 !
-    call jemarq()
+! - User print
 !
-! --- INITIALISATIONS
+    write (unit_msg,*)
+    write (unit_msg,*) '<CONTACT> INFOS SPECIFIQUES SUR LA FORMULATION DISCRETE'
+    write (unit_msg,*)
 !
-    defico = char(1:8)//'.CONTACT'
+! - Print constant parameters
 !
-! --- INITIALISATIONS
-!
-    nzoco = cfdisi(defico,'NZOCO')
-    isto = cfdisi(defico,'STOP_SINGULIER')
-    lgbloc = cfdisi(defico,'NB_RESOL')
-    lgcp = cfdisl(defico,'CONT_GCP' )
-    precis = cfdisr(defico,'RESI_ABSO')
-    gcpmax = cfdisi(defico,'ITER_GCP_MAXI')
-    gcppre = cfdisi(defico,'PRE_COND')
-    gcpres = cfdisr(defico,'COEF_RESI')
-    gcprec = cfdisi(defico,'RECH_LINEAIRE')
-    lgliss = cfdisl(defico,'CONT_DISC_GLIS')
-    aljeu = cfdisr(defico,'ALARME_JEU')
-!
-! --- IMPRESSIONS POUR L'UTILISATEUR
-!
-    write (ifm,*)
-    write (ifm,*) '<CONTACT> INFOS SPECIFIQUES SUR LA FORMULATION'//&
-     &              ' DISCRETE'
-    write (ifm,*)
-!
-! --- IMPRESSIONS POUR LES PARAMETRES CONSTANTS
-!
-    write (ifm,*) '<CONTACT> ... PARAMETRES CONSTANTS SUR TOUTES '//&
-     &              ' LES ZONES'
-!
-    write (ifm,1070) 'STOP_SINGULIER  ',isto
-    write (ifm,1070) 'NB_RESOL        ',lgbloc
-    if (lgliss) then
-        write (ifm,*) '<CONTACT> ...... GLISSIERE : OUI'
+    write (unit_msg,*) '<CONTACT> ... PARAMETRES CONSTANTS SUR TOUTES LES ZONES'
+    write (unit_msg,170) 'STOP_SINGULIER  ',stop_singular
+    write (unit_msg,170) 'NB_RESOL        ',nb_resol
+    if (l_gliss) then
+        write (unit_msg,*) '<CONTACT> ...... GLISSIERE : OUI'
     else
-        write (ifm,*) '<CONTACT> ...... GLISSIERE : NON'
+        write (unit_msg,*) '<CONTACT> ...... GLISSIERE : NON'
     endif
-    if (lgliss) then
-        write (ifm,1071) 'ALARME_JEU     ',aljeu
+    if (l_gliss) then
+        write (unit_msg,171) 'ALARME_JEU     ',glis_alarm
+    endif
+    if (l_cont_gcp) then
+        write (unit_msg,170) 'PRE_COND        ',gcp_precond
+        write (unit_msg,170) 'RECH_LINEAIRE   ',gcp_rech_line
+        write (unit_msg,171) 'RESI_ABSO       ',gcp_resi
+        write (unit_msg,170) 'ITER_GCP_MAXI   ',gcp_maxi
+        write (unit_msg,171) 'COEF_RESI       ',gcp_coef_resi
     endif
 !
-    if (lgcp) then
-        write (ifm,1070) 'PRE_COND        ',gcppre
-        write (ifm,1070) 'RECH_LINEAIRE   ',gcprec
-        write (ifm,1071) 'RESI_ABSO       ',precis
-        write (ifm,1070) 'ITER_GCP_MAXI   ',gcpmax
-        write (ifm,1071) 'COEF_RESI       ',gcpres
-    endif
+! - Print variables parameters
 !
-! --- IMPRESSIONS POUR LES PARAMETRES VARIABLES
-!
-    write (ifm,*) '<CONTACT> ... PARAMETRES VARIABLES / ZONE'
-    do 50 izone = 1, nzoco
-        write (ifm,*) '<CONTACT> ...... ZONE : ',izone
-        lveri = mminfl(defico,'VERIF',izone )
-        if (lveri) then
-            write (ifm,*) '<CONTACT> ...... ZONE DE VERIFICATION'
-            tolint = mminfr(defico,'TOLE_INTERP',izone)
-            write (ifm,1071) 'TOLE_INTERP     ',tolint
+    write (unit_msg,*) '<CONTACT> ... PARAMETRES VARIABLES / ZONE'
+    do i_zone = 1, nb_cont_zone
+        write (unit_msg,*) '<CONTACT> ...... ZONE : ',i_zone
+        l_veri = mminfl(sdcont_defi,'VERIF', i_zone)
+        if (l_veri) then
+            write (unit_msg,*) '<CONTACT> ...... ZONE DE VERIFICATION'
+            tole_interp = mminfr(sdcont_defi,'TOLE_INTERP',i_zone)
+            write (unit_msg,171) 'TOLE_INTERP     ',tole_interp
         else
-            write (ifm,*) '<CONTACT> ...... ZONE DE CALCUL'
-            coefpn = mminfr(defico,'E_N',izone)
-            coefpt = mminfr(defico,'E_T',izone)
-            coefff = mminfr(defico,'COEF_COULOMB',izone)
-            coefte = mminfr(defico,'COEF_MATR_FROT',izone)
-            write (ifm,1071) 'COEF_MATR_FROT  ',coefte
-            write (ifm,1071) 'E_N             ',coefpn
-            write (ifm,1071) 'E_T             ',coefpt
-            write (ifm,1071) 'COULOMB         ',coefff
+            write (unit_msg,*) '<CONTACT> ...... ZONE DE CALCUL'
+            coef_pena_cont = mminfr(sdcont_defi,'E_N',i_zone)
+            coef_pena_frot = mminfr(sdcont_defi,'E_T',i_zone)
+            coef_frot      = mminfr(sdcont_defi,'COEF_COULOMB',i_zone)
+            coef_matr_frot = mminfr(sdcont_defi,'COEF_MATR_FROT',i_zone)
+            write (unit_msg,171) 'COEF_MATR_FROT  ',coef_matr_frot
+            write (unit_msg,171) 'E_N             ',coef_pena_cont
+            write (unit_msg,171) 'E_T             ',coef_pena_frot
+            write (unit_msg,171) 'COULOMB         ',coef_frot
         endif
- 50 end do
+    end do
 !
-    1070 format (' <CONTACT> ...... PARAM. : ',a16,' - VAL. : ',i5)
-    1071 format (' <CONTACT> ...... PARAM. : ',a16,' - VAL. : ',e12.5)
+170 format (' <CONTACT> ...... PARAM. : ',a16,' - VAL. : ',i5)
+171 format (' <CONTACT> ...... PARAM. : ',a16,' - VAL. : ',e12.5)
 !
-    call jedema()
 end subroutine

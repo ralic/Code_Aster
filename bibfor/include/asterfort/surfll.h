@@ -16,13 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine surfll(defico, noma, ifm, nzoco, nmaco,&
-                      nnoco)
-        character(len=24) :: defico
-        character(len=8) :: noma
-        integer :: ifm
-        integer :: nzoco
-        integer :: nmaco
-        integer :: nnoco
+    subroutine surfll(sdcont_defi , mesh, unit_msg, nb_cont_zone, nb_cont_elem,&
+                      nb_cont_node)
+        character(len=24), intent(in) :: sdcont_defi
+        character(len=8), intent(in) :: mesh
+        integer, intent(in) :: unit_msg
+        integer, intent(in) :: nb_cont_elem
+        integer, intent(in) :: nb_cont_node
+        integer, intent(in) :: nb_cont_zone
     end subroutine surfll
 end interface

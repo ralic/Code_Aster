@@ -1,5 +1,18 @@
-subroutine surfll(defico, noma, ifm, nzoco, nmaco,&
-                  nnoco)
+subroutine surfll(sdcont_defi , mesh, unit_msg, nb_cont_zone, nb_cont_elem,&
+                  nb_cont_node)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/cfnbsf.h"
+#include "asterfort/cfzone.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,178 +32,154 @@ subroutine surfll(defico, noma, ifm, nzoco, nmaco,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
+    character(len=24), intent(in) :: sdcont_defi
+    character(len=8), intent(in) :: mesh
+    integer, intent(in) :: unit_msg
+    integer, intent(in) :: nb_cont_elem
+    integer, intent(in) :: nb_cont_node
+    integer, intent(in) :: nb_cont_zone
 !
-#include "asterfort/cfnbsf.h"
-#include "asterfort/cfzone.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
-    character(len=24) :: defico
-    character(len=8) :: noma
-    integer :: ifm
-    integer :: nmaco, nnoco, nzoco
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! DEFI_CONTACT
 !
-! ROUTINE CONTACT (METHODES MAILLEES - AFFICHAGE DONNEES)
+! Print list of elements and list of nodes
 !
-! LISTE DES MAILLES ET DES NOEUDS
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  mesh             : name of mesh
+! In  unit_msg         : logical unit for messages (print)
+! In  nb_cont_zone     : number of zones of contact
+! In  nb_cont_node     : number of nodes of contact
+! In  nb_cont_elem     : number of elements of contact
 !
+! --------------------------------------------------------------------------------------------------
 !
-! IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  IFM    : UNITE D'IMPRESSION
-! IN  NZOCO  : NOMBRE DE ZONES DE CONTACT
-! IN  NMACO  : NOMBRE DE MAILLES DE CONTACT
-! IN  NNOCO  : NOMBRE DE NOEUDS DE CONTACT
-!
-!
-!
-!
-    integer :: nbmail, nbnoeu
-    integer :: izone, isuco, ima, ino
-    integer :: nbma, nbno
+    integer :: nb_elem, nb_node
+    integer :: i_zone, i_surf, i_elem, i_node
     integer :: jdecma, jdecno
-    integer :: numma, numno
-!
+    integer :: elem_nume, node_nume
     character(len=8) :: chain1, chain2
-    character(len=24) :: noeuma, mailma
-!
-    character(len=24) :: psurma, psurno, contma, contno, pzone
-    integer :: jsuma, jsuno, jmaco, jnoco, jzone
-    character(len=8), pointer :: travma(:) => null()
-    character(len=8), pointer :: travno(:) => null()
+    character(len=24) :: sdcont_pzoneco
+    integer, pointer :: v_sdcont_pzoneco(:) => null()
+    character(len=24) :: sdcont_mailco
+    integer, pointer :: v_sdcont_mailco(:) => null()
+    character(len=24) :: sdcont_noeuco
+    integer, pointer :: v_sdcont_noeuco(:) => null()
+    character(len=24) :: sdcont_psumaco
+    integer, pointer :: v_sdcont_psumaco(:) => null()
+    character(len=24) :: sdcont_psunoco
+    integer, pointer :: v_sdcont_psunoco(:) => null()
+    character(len=8), pointer :: v_trav_elem(:) => null()
+    character(len=8), pointer :: v_work_node(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
 !
-! --- ACCES SD DU MAILLAGE
+! - Datastructure for contact definition
 !
-    mailma = noma(1:8)//'.NOMMAI'
-    noeuma = noma(1:8)//'.NOMNOE'
+    sdcont_pzoneco = sdcont_defi(1:16)//'.PZONECO'
+    sdcont_mailco  = sdcont_defi(1:16)//'.MAILCO'
+    sdcont_noeuco  = sdcont_defi(1:16)//'.NOEUCO'
+    sdcont_psumaco = sdcont_defi(1:16)//'.PSUMACO'
+    sdcont_psunoco = sdcont_defi(1:16)//'.PSUNOCO'
+    call jeveuo(sdcont_pzoneco, 'L', vi = v_sdcont_pzoneco)
+    call jeveuo(sdcont_mailco , 'L', vi = v_sdcont_mailco)
+    call jeveuo(sdcont_noeuco , 'L', vi = v_sdcont_noeuco)
+    call jeveuo(sdcont_psumaco, 'L', vi = v_sdcont_psumaco)
+    call jeveuo(sdcont_psunoco, 'L', vi = v_sdcont_psunoco)
 !
-! --- COMMUNS AVEC FORM. MAILLEES (DISCRET ET CONTINUE MAIS PAS XFEM)
+! - Temporary vectors
 !
-    pzone = defico(1:16)//'.PZONECO'
-    psurma = defico(1:16)//'.PSUMACO'
-    psurno = defico(1:16)//'.PSUNOCO'
-    contma = defico(1:16)//'.MAILCO'
-    contno = defico(1:16)//'.NOEUCO'
+    AS_ALLOCATE(vk8=v_trav_elem, size=nb_cont_elem)
+    AS_ALLOCATE(vk8=v_work_node, size=nb_cont_node)
 !
-    call jeveuo(pzone, 'L', jzone)
-    call jeveuo(psurma, 'L', jsuma)
-    call jeveuo(psurno, 'L', jsuno)
-    call jeveuo(contma, 'L', jmaco)
-    call jeveuo(contno, 'L', jnoco)
+! - Global parameters
 !
-! --- CREATION VECTEURS TEMPORAIRES
+    write (unit_msg,*)
+    write (unit_msg,*) '<CONTACT> INFOS SUR LES SURFACES MAILLEES '
+    write (unit_msg,*)
+    do i_zone = 1, nb_cont_zone
 !
-    AS_ALLOCATE(vk8=travma, size=nmaco)
-    AS_ALLOCATE(vk8=travno, size=nnoco)
+! ----- Zone
 !
-! --- IMPRESSIONS GLOBALES (TOUTES ZONES)
+        write (unit_msg,*) '<CONTACT> ZONE : ', i_zone
+        nb_elem = v_sdcont_psumaco(v_sdcont_pzoneco(i_zone+1)+1) - &
+                  v_sdcont_psumaco(v_sdcont_pzoneco(i_zone)+1)
+        write (unit_msg,*) '<CONTACT> ... NOMBRE DE MAILLES          : ',nb_elem
+        nb_node = v_sdcont_psunoco(v_sdcont_pzoneco(i_zone+1)+1) - &
+                  v_sdcont_psunoco(v_sdcont_pzoneco(i_zone)+1)
+        write (unit_msg,*) '<CONTACT> ... NOMBRE DE NOEUDS           : ',nb_node
 !
+! ----- Master surface
 !
-    write (ifm,*)
-    write (ifm,*) '<CONTACT> INFOS SUR LES SURFACES MAILLEES '
-    write (ifm,*)
-!
-    do 10 izone = 1, nzoco
-!
-        write (ifm,*) '<CONTACT> ZONE : ',izone
-!
-        nbmail = zi(jsuma+zi(jzone+izone))-zi(jsuma+zi(jzone+izone-1))
-        write (ifm,*) '<CONTACT> ... NOMBRE DE MAILLES          : ',&
-     &                  nbmail
-!
-        nbnoeu = zi(jsuno+zi(jzone+izone))-zi(jsuno+zi(jzone+izone-1))
-        write (ifm,*) '<CONTACT> ... NOMBRE DE NOEUDS           : ',&
-     &                  nbnoeu
-!
-        write (ifm,*) '<CONTACT> ...... SURFACE MAITRE '
-        call cfzone(defico, izone, 'MAIT', isuco)
-        call cfnbsf(defico, isuco, 'MAIL', nbma, jdecma)
-        call cfnbsf(defico, isuco, 'NOEU', nbno, jdecno)
-!
-        if (nbma .le. 1) then
+        write (unit_msg,*) '<CONTACT> ...... SURFACE MAITRE '
+        call cfzone(sdcont_defi, i_zone, 'MAIT', i_surf)
+        call cfnbsf(sdcont_defi, i_surf, 'MAIL', nb_elem, jdecma)
+        call cfnbsf(sdcont_defi, i_surf, 'NOEU', nb_node, jdecno)
+        if (nb_elem .le. 1) then
             chain1 = ' MAILLE '
         else
             chain1 = ' MAILLES'
         endif
-        if (nbno .le. 1) then
+        if (nb_node .le. 1) then
             chain2 = ' NOEUD  '
         else
             chain2 = ' NOEUDS '
         endif
+        write (unit_msg,135) nb_elem, chain1,' ET ',nb_node,chain2
+        do i_elem = 1, nb_elem
+            elem_nume = v_sdcont_mailco(jdecma+i_elem)
+            call jenuno(jexnum(mesh(1:8)//'.NOMMAI', elem_nume), v_trav_elem(i_elem))
+        end do
+        write (unit_msg,104) '     LISTE DES MAILLES : '
+        write (unit_msg,105) (v_trav_elem(i_elem), i_elem = 1,nb_elem)
+        do i_node = 1, nb_node
+            node_nume = v_sdcont_noeuco(jdecno+i_node)
+            call jenuno(jexnum(mesh(1:8)//'.NOMNOE', node_nume), v_work_node(i_node))
+        end do
+        write (unit_msg,104) '     LISTE DES NOEUDS  : '
+        write (unit_msg,105) (v_work_node(i_node), i_node = 1,nb_node)
 !
-        write (ifm,1035) nbma, chain1,' ET ',nbno,chain2
+! ----- Slave surface
 !
-        do 30 ima = 1, nbma
-            numma = zi(jmaco+jdecma+ima-1)
-            call jenuno(jexnum(mailma, numma), travma(ima))
-30      continue
-        write (ifm,1040) '     LISTE DES MAILLES : '
-        write (ifm,1050) (travma(ima), ima = 1,nbma)
-!
-        do 40 ino = 1, nbno
-            numno = zi(jnoco+jdecno+ino-1)
-            call jenuno(jexnum(noeuma, numno), travno(ino))
-40      continue
-        write (ifm,1040) '     LISTE DES NOEUDS  : '
-        write (ifm,1050) (travno(ino), ino = 1,nbno)
-!
-        write (ifm,*) '<CONTACT> ...... SURFACE ESCLAVE '
-        call cfzone(defico, izone, 'ESCL', isuco)
-        call cfnbsf(defico, isuco, 'MAIL', nbma, jdecma)
-        call cfnbsf(defico, isuco, 'NOEU', nbno, jdecno)
-!
-        if (nbma .le. 1) then
+        write (unit_msg,*) '<CONTACT> ...... SURFACE ESCLAVE '
+        call cfzone(sdcont_defi, i_zone, 'ESCL', i_surf)
+        call cfnbsf(sdcont_defi, i_surf, 'MAIL', nb_elem, jdecma)
+        call cfnbsf(sdcont_defi, i_surf, 'NOEU', nb_node, jdecno)
+        if (nb_elem .le. 1) then
             chain1 = ' MAILLE '
         else
             chain1 = ' MAILLES'
         endif
-        if (nbno .le. 1) then
+        if (nb_node .le. 1) then
             chain2 = ' NOEUD  '
         else
             chain2 = ' NOEUDS '
         endif
+        write (unit_msg,135) nb_elem, chain1,' ET ',nb_node,chain2
+        do i_elem = 1, nb_elem
+            elem_nume = v_sdcont_mailco(jdecma+i_elem)
+            call jenuno(jexnum(mesh(1:8)//'.NOMMAI', elem_nume), v_trav_elem(i_elem))
+        end do
+        write (unit_msg,104) '     LISTE DES MAILLES : '
+        write (unit_msg,105) (v_trav_elem(i_elem), i_elem = 1,nb_elem)
+        do i_node = 1, nb_node
+            node_nume = v_sdcont_noeuco(jdecno+i_node)
+            call jenuno(jexnum(mesh(1:8)//'.NOMNOE', node_nume), v_work_node(i_node))
+        end do
+        write (unit_msg,104) '     LISTE DES NOEUDS  : '
+        write (unit_msg,105) (v_work_node(i_node), i_node = 1,nb_node)
+    end do
 !
-        write (ifm,1035) nbma, chain1,' ET ',nbno,chain2
+135 format (' <CONTACT> ...... ',i5,a8,a4,i5,a8)
+104 format (' <CONTACT> ...... ',a25)
+105 format ((' <CONTACT> ...... ',17x,4(a8,1x)))
 !
-        do 31 ima = 1, nbma
-            numma = zi(jmaco+jdecma+ima-1)
-            call jenuno(jexnum(mailma, numma), travma(ima))
-31      continue
-        write (ifm,1040) '     LISTE DES MAILLES : '
-        write (ifm,1050) (travma(ima), ima = 1,nbma)
+! - Clean
 !
-        do 41 ino = 1, nbno
-            numno = zi(jnoco+jdecno+ino-1)
-            call jenuno(jexnum(noeuma, numno), travno(ino))
-41      continue
-        write (ifm,1040) '     LISTE DES NOEUDS  : '
-        write (ifm,1050) (travno(ino), ino = 1,nbno)
-10  end do
+    AS_DEALLOCATE(vk8=v_trav_elem)
+    AS_DEALLOCATE(vk8=v_work_node)
 !
-    1035 format (' <CONTACT> ...... ',i5,a8,a4,i5,a8)
-    1040 format (' <CONTACT> ...... ',a25)
-    1050 format ((' <CONTACT> ...... ',17x,4(a8,1x)))
-!
-! --- MENAGE
-!
-    AS_DEALLOCATE(vk8=travma)
-    AS_DEALLOCATE(vk8=travno)
-!
-    call jedema()
 end subroutine

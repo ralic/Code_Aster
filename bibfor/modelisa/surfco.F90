@@ -1,4 +1,16 @@
-subroutine surfco(char, noma)
+subroutine surfco(sdcont, mesh)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/infniv.h"
+#include "asterfort/surfc1.h"
+#include "asterfort/surfc2.h"
+#include "asterfort/surfc3.h"
+#include "asterfort/surfcl.h"
+#include "asterfort/surfcp.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,76 +30,53 @@ subroutine surfco(char, noma)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/infniv.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/surfc1.h"
-#include "asterfort/surfc2.h"
-#include "asterfort/surfc3.h"
-#include "asterfort/surfcl.h"
-#include "asterfort/surfcp.h"
-    character(len=8) :: char
-    character(len=8) :: noma
+    character(len=8), intent(in) :: sdcont
+    character(len=8), intent(in) :: mesh
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (TOUTES METHODES - AFFICHAGE DONNEES)
+! DEFI_CONTACT
 !
-! AFFICHAGE LES INFOS CONTENUES DANS LA SD CONTACT
+! Print debug
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  mesh             : name of mesh
+! In  sdcont           : name of contact concept (DEFI_CONTACT)
 !
-! IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
-! IN  NOMA   : NOM DU MAILLAGE
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+    integer :: unit_msg, lvel_msg
+    character(len=24) :: sdcont_defi
+    integer :: cont_form
 !
-    integer :: ifm, niv
-    aster_logical :: lmail
-    character(len=24) :: defico
-    integer :: iform
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+    call infniv(unit_msg, lvel_msg)
 !
-    call jemarq()
-    call infniv(ifm, niv)
+! - Datastructure for contact definition
 !
-    if (niv .le. 1) then
-        goto 999
+    sdcont_defi = sdcont(1:8)//'.CONTACT'
+!
+! - Parameters
+!
+    cont_form   = cfdisi(sdcont_defi,'FORMULATION')
+!
+! - Debug print
+!
+    if (lvel_msg .ge. 2) then
+        call surfcp(sdcont, unit_msg)
+        if (cont_form .eq. 1) then
+            call surfcl(sdcont, mesh, unit_msg)
+            call surfc1(sdcont, unit_msg)
+        else if (cont_form.eq.2) then
+            call surfcl(sdcont, mesh, unit_msg)
+            call surfc2(sdcont, mesh)
+        else if (cont_form.eq.3) then
+            call surfc3(sdcont, mesh, unit_msg)
+        else
+            ASSERT(.false.)
+        endif
     endif
 !
-! --- INITIALISATIONS
-!
-    defico = char(1:8)//'.CONTACT'
-!
-! --- TYPE DE FORMULATION (DISCRETE/CONTINUE/XFEM)
-!
-    iform = cfdisi(defico,'FORMULATION')
-    lmail = (iform.eq.1).or.(iform.eq.2)
-!
-    call surfcp(char, ifm)
-!
-    if (lmail) then
-        call surfcl(char, noma, ifm)
-    endif
-!
-    if (iform .eq. 1) then
-        call surfc1(char, ifm)
-    else if (iform.eq.2) then
-        call surfc2(char, noma, ifm)
-    else if (iform.eq.3) then
-        call surfc3(char, noma, ifm)
-    else
-        ASSERT(.false.)
-    endif
-!
-999 continue
-!
-    call jedema()
 end subroutine

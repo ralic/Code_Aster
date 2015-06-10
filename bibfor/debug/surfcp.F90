@@ -1,4 +1,11 @@
-subroutine surfcp(char, ifm)
+subroutine surfcp(sdcont, unit_msg)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdisr.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,140 +25,122 @@ subroutine surfcp(char, ifm)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit    none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/cfdisr.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-    character(len=8) :: char
-    integer :: ifm
+    character(len=8), intent(in) :: sdcont
+    integer, intent(in) :: unit_msg
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (TOUTES METHODES - AFFICHAGE DONNEES)
+! DEFI_CONTACT
 !
-! AFFICHAGE LES INFOS CONTENUES DANS LA SD CONTACT POUR TOUTES LES
-! FORMULATIONS
+! Print debug for all formulations
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sdcont           : name of contact concept (DEFI_CONTACT)
+! In  unit_msg         : logical unit for messages (print)
 !
-! IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
-! IN  IFM    : UNITE D'IMPRESSION
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+    integer :: cont_form, algo_cont, algo_frot
+    character(len=24) :: sdcont_defi
+    integer :: cont_mult, frot_maxi, geom_maxi, cont_maxi
+    integer :: geom_nbiter
+    real(kind=8) :: geom_resi, frot_resi
+    integer :: algo_reso_cont, algo_reso_frot, algo_reso_geom
 !
-    integer :: iform, icont, ifrot
-    character(len=24) :: defico
-    integer :: reacca, reacbs, reacbg, reacmx
-    integer :: nbreag
-    real(kind=8) :: resige, resifr
-    integer :: iresoc, iresof, iresog
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+    sdcont_defi = sdcont(1:8)//'.CONTACT'
 !
-    call jemarq()
+! - Parameters
 !
-! --- INITIALISATIONS
+    cont_form      = cfdisi(sdcont_defi,'FORMULATION')
+    algo_cont      = cfdisi(sdcont_defi,'ALGO_CONT')
+    algo_frot      = cfdisi(sdcont_defi,'ALGO_FROT')
+    algo_reso_cont = cfdisi(sdcont_defi,'ALGO_RESO_CONT')
+    algo_reso_frot = cfdisi(sdcont_defi,'ALGO_RESO_FROT')
+    algo_reso_geom = cfdisi(sdcont_defi,'ALGO_RESO_GEOM')
+    geom_nbiter    = cfdisi(sdcont_defi,'NB_ITER_GEOM')
+    geom_maxi      = cfdisi(sdcont_defi,'ITER_GEOM_MAXI')
+    geom_resi      = cfdisr(sdcont_defi,'RESI_GEOM')
+    cont_mult      = cfdisi(sdcont_defi,'ITER_CONT_MULT')
+    cont_maxi      = cfdisi(sdcont_defi,'ITER_CONT_MAXI')
+    frot_maxi      = cfdisi(sdcont_defi,'ITER_FROT_MAXI')
+    frot_resi      = cfdisr(sdcont_defi,'RESI_FROT')
 !
-    defico = char(1:8)//'.CONTACT'
+! - User print
 !
-! --- INITIALISATIONS
+    write (unit_msg,*)
+    write (unit_msg,*) '<CONTACT> INFOS GENERALES'
+    write (unit_msg,*)
 !
-    iform = cfdisi(defico,'FORMULATION')
-    icont = cfdisi(defico,'ALGO_CONT')
-    ifrot = cfdisi(defico,'ALGO_FROT')
-    iresoc = cfdisi(defico,'ALGO_RESO_CONT')
-    iresof = cfdisi(defico,'ALGO_RESO_FROT')
-    iresog = cfdisi(defico,'ALGO_RESO_GEOM')
+! - Contact formulation
 !
-    nbreag = cfdisi(defico,'NB_ITER_GEOM')
-    reacbg = cfdisi(defico,'ITER_GEOM_MAXI')
-    resige = cfdisr(defico,'RESI_GEOM')
-!
-    reacca = cfdisi(defico,'ITER_CONT_MULT')
-    reacmx = cfdisi(defico,'ITER_CONT_MAXI')
-!
-    reacbs = cfdisi(defico,'ITER_FROT_MAXI')
-    resifr = cfdisr(defico,'RESI_FROT')
-!
-! --- IMPRESSIONS POUR L'UTILISATEUR
-!
-    write (ifm,*)
-    write (ifm,*) '<CONTACT> INFOS GENERALES'
-    write (ifm,*)
-!
-! --- FORMULATION
-!
-    write (ifm,*) '<CONTACT> FORMULATION'
-    if (iform .eq. 1) then
-        write (ifm,*) '<CONTACT> ... FORMULATION DISCRETE (MAILLEE)'
-    else if (iform.eq.2) then
-        write (ifm,*) '<CONTACT> ... FORMULATION CONTINUE (MAILLEE)'
-    else if (iform.eq.3) then
-        write (ifm,*) '<CONTACT> ... FORMULATION XFEM (NON MAILLEE)'
+    write (unit_msg,*) '<CONTACT> FORMULATION'
+    if (cont_form .eq. 1) then
+        write (unit_msg,*) '<CONTACT> ... FORMULATION DISCRETE (MAILLEE)'
+    else if (cont_form.eq.2) then
+        write (unit_msg,*) '<CONTACT> ... FORMULATION CONTINUE (MAILLEE)'
+    else if (cont_form.eq.3) then
+        write (unit_msg,*) '<CONTACT> ... FORMULATION XFEM (NON MAILLEE)'
     else
         ASSERT(.false.)
     endif
 !
-! --- ALGORITHMES
+! - Algorithms
 !
-    write (ifm,*) '<CONTACT> MODELE'
-    write (ifm,1070) 'ALGO_CONT       ',icont
-    write (ifm,1070) 'ALGO_FROT       ',ifrot
+    write (unit_msg,*) '<CONTACT> MODELE'
+    write (unit_msg,170) 'ALGO_CONT       ',algo_cont
+    write (unit_msg,170) 'ALGO_FROT       ',algo_frot
 !
-! --- GEOMETRIE
+! - Geometry algorithm and parameters
 !
-    write (ifm,*) '<CONTACT> ALGORITHMES'
-    if (iresog .eq. 0) then
-        write (ifm,*) '<CONTACT> ... ALGO. GEOMETRIQUE - POINT FIXE'
-        if (nbreag .eq. 0) then
-            write (ifm,*) '<CONTACT> ...... PAS DE REAC. GEOM.'
-        else if (nbreag.eq.-1) then
-            write (ifm,*) '<CONTACT> ...... REAC. GEOM. AUTO.'
+    write (unit_msg,*) '<CONTACT> ALGORITHMES'
+    if (algo_reso_geom .eq. 0) then
+        write (unit_msg,*) '<CONTACT> ... ALGO. GEOMETRIQUE - POINT FIXE'
+        if (geom_nbiter .eq. 0) then
+            write (unit_msg,*) '<CONTACT> ...... PAS DE REAC. GEOM.'
+        else if (geom_nbiter.eq.-1) then
+            write (unit_msg,*) '<CONTACT> ...... REAC. GEOM. AUTO.'
         else
-            write (ifm,*) '<CONTACT> ...... REAC. GEOM. MANUEL: ',&
-            nbreag
+            write (unit_msg,*) '<CONTACT> ...... REAC. GEOM. MANUEL: ',geom_nbiter
         endif
-        write (ifm,1070) 'ITER_GEOM_MAXI  ',reacbg
-        write (ifm,1071) 'RESI_GEOM       ',resige
-        write (ifm,1070) 'NB_ITER_GEOM    ',nbreag
-    else if (iresog.eq.1) then
-        write (ifm,*) '<CONTACT> ... ALGO. GEOMETRIQUE - NEWTON'
-        write (ifm,1071) 'RESI_GEOM       ',resige
+        write (unit_msg,170) 'ITER_GEOM_MAXI  ',geom_maxi
+        write (unit_msg,171) 'RESI_GEOM       ',geom_resi
+        write (unit_msg,170) 'NB_ITER_GEOM    ',geom_nbiter
+    else if (algo_reso_geom.eq.1) then
+        write (unit_msg,*) '<CONTACT> ... ALGO. GEOMETRIQUE - NEWTON'
+        write (unit_msg,171) 'RESI_GEOM       ',geom_resi
     else
         ASSERT(.false.)
     endif
 !
-! --- FROTTEMENT
+! - Friction algorithm and parameters
 !
-    if (iresof .eq. 0) then
-        write (ifm,*) '<CONTACT> ... ALGO. FROTTEMENT - POINT FIXE'
-        write (ifm,1070) 'ITER_FROT_MAXI  ',reacbs
-        write (ifm,1071) 'RESI_FROT       ',resifr
-    else if (iresof.eq.1) then
-        write (ifm,*) '<CONTACT> ... ALGO. FROTTEMENT - NEWTON'
-        write (ifm,1071) 'RESI_FROT       ',resifr
+    if (algo_reso_frot .eq. 0) then
+        write (unit_msg,*) '<CONTACT> ... ALGO. FROTTEMENT - POINT FIXE'
+        write (unit_msg,170) 'ITER_FROT_MAXI  ',frot_maxi
+        write (unit_msg,171) 'RESI_FROT       ',frot_resi
+    else if (algo_reso_frot.eq.1) then
+        write (unit_msg,*) '<CONTACT> ... ALGO. FROTTEMENT - NEWTON'
+        write (unit_msg,171) 'RESI_FROT       ',frot_resi
     else
         ASSERT(.false.)
     endif
 !
-! --- CONTACT
+! - Contact algorithm and parameters
 !
-    if (iresoc .eq. 0) then
-        write (ifm,*) '<CONTACT> ... ALGO. CONTACT - POINT FIXE'
-        write (ifm,1070) 'ITER_CONT_MULT  ',reacca
-        write (ifm,1070) 'ITER_CONT_MAXI  ',reacmx
-    else if (iresoc.eq.1) then
-        write (ifm,*) '<CONTACT> ... ALGO. CONTACT - NEWTON'
+    if (algo_reso_cont .eq. 0) then
+        write (unit_msg,*) '<CONTACT> ... ALGO. CONTACT - POINT FIXE'
+        write (unit_msg,170) 'ITER_CONT_MULT  ',cont_mult
+        write (unit_msg,170) 'ITER_CONT_MAXI  ',cont_maxi
+    else if (algo_reso_cont.eq.1) then
+        write (unit_msg,*) '<CONTACT> ... ALGO. CONTACT - NEWTON'
     else
         ASSERT(.false.)
     endif
 !
-    1070 format (' <CONTACT> ...... PARAM. : ',a16,' - VAL. : ',i5)
-    1071 format (' <CONTACT> ...... PARAM. : ',a16,' - VAL. : ',e12.5)
+170 format (' <CONTACT> ...... PARAM. : ',a16,' - VAL. : ',i5)
+171 format (' <CONTACT> ...... PARAM. : ',a16,' - VAL. : ',e12.5)
 !
-    call jedema()
 end subroutine
