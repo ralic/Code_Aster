@@ -16,11 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine tablco(char, noma, nsuco, nmaco, nnoco)
-        character(len=8) :: char
-        character(len=8) :: noma
-        integer :: nsuco
-        integer :: nmaco
-        integer :: nnoco
+    subroutine tablco(sdcont, mesh, nb_cont_surf, nb_cont_elem, nb_cont_node)
+        character(len=8), intent(in) :: sdcont
+        character(len=8), intent(in) :: mesh
+        integer, intent(in) :: nb_cont_surf
+        integer, intent(in) :: nb_cont_elem
+        integer, intent(in) :: nb_cont_node
     end subroutine tablco
 end interface
