@@ -1,4 +1,19 @@
-subroutine mmprel(char, noma, nomo, ligret)
+subroutine mmprel(sdcont, mesh, model, ligret)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/ajellt.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mminfi.h"
+#include "asterfort/mminfl.h"
+#include "asterfort/wkvect.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,135 +33,105 @@ subroutine mmprel(char, noma, nomo, ligret)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/ajellt.h"
-#include "asterfort/assert.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/mminfi.h"
-#include "asterfort/mminfl.h"
-#include "asterfort/mmmaxi.h"
-#include "asterfort/wkvect.h"
-    character(len=8) :: char, noma, nomo
-    character(len=19) :: ligret
+    character(len=8), intent(in) :: sdcont
+    character(len=8), intent(in) :: model
+    character(len=8), intent(in) :: mesh
+    character(len=19), intent(in) :: ligret
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (METHODE CONTINUE - LECTURE DONNEES)
+! DEFI_CONTACT
 !
-! CREATION DES ELEMENTS ESCLAVES TARDIFS
+! Continue method - Create slave elements
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sdcont           : name of contact concept (DEFI_CONTACT)
+! In  model            : name of model
+! In  mesh             : name of mesh
+! In  ligret           : special LIGREL for slaves elements (CONTINUE formulation)
 !
-! IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  NOMO   : NOM DU MODELE
-! OUT LIGRET : LIGREL D'ELEMENTS TARDIFS DU CONTACT
+! --------------------------------------------------------------------------------------------------
 !
-!
-!
-!
-    character(len=24) :: paraci, contma
-    integer :: jparci, jmaco
-    aster_logical :: lfrot, laxis, lveri
-    character(len=24) :: lismae, defico
+    aster_logical :: l_frot_zone, l_veri
+    character(len=24) :: sdcont_defi
+    character(len=24) :: sdcont_mailco
+    integer, pointer :: v_sdcont_mailco(:) => null()
     character(len=16) :: modeli, phenom
-    integer :: jdecme, jlist, izone
-    integer :: nzoco, ndimg, nmaco, ntmaec
-    integer :: imae, posmae, nummae, nbmae
-    aster_logical :: lallv
+    integer :: jdecme, i_zone
+    integer :: nb_cont_zone, model_ndim, nb_cont_elem, nt_elem_slav
+    integer :: i_elem_slav, elem_slav_idx, elem_slav_nume, nb_elem_slav
+    aster_logical :: l_verif_all
+    character(len=24) :: list_elem
+    integer, pointer :: v_list_elem(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
+    list_elem = '&&MMPREL.LISTE_MAILLES'
+    call dismoi('PHENOMENE', model, 'MODELE', repk=phenom)
 !
-! --- INITIALISATIONS
+! - Datastructure for contact definition
 !
-    lismae = '&&MMPREL.LISTE_MAILLES'
-    defico = char(1:8)//'.CONTACT'
+    sdcont_defi   = sdcont(1:8)//'.CONTACT'
+    sdcont_mailco = sdcont_defi(1:16)//'.MAILCO'
+    call jeveuo(sdcont_mailco, 'L', vi = v_sdcont_mailco)
 !
-! --- TYPES DE CONTACT
+! - Parameters
 !
-    lallv = cfdisl(defico,'ALL_VERIF')
-    if (lallv) then
-        goto 99
-    endif
+    model_ndim   = cfdisi(sdcont_defi,'NDIM')
+    nb_cont_elem = cfdisi(sdcont_defi,'NMACO')
+    nt_elem_slav = cfdisi(sdcont_defi,'NTMAEC')
+    nb_cont_zone = cfdisi(sdcont_defi,'NZOCO')
+    l_verif_all  = cfdisl(sdcont_defi,'ALL_VERIF')
 !
-! --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
+! - Add elements
 !
-    contma = defico(1:16)//'.MAILCO'
-    paraci = defico(1:16)//'.PARACI'
-    call jeveuo(contma, 'L', jmaco)
-    call jeveuo(paraci, 'E', jparci)
+    if (.not.l_verif_all) then
 !
-! --- RECUPERATION DU NOM DU PHENOMENE ET DE LA  MODELISATION
+! ----- Create list of slave elements
+!       
+        call wkvect(list_elem, 'V V I', nt_elem_slav, vi = v_list_elem)
 !
-    call dismoi('PHENOMENE', nomo, 'MODELE', repk=phenom)
+! ----- Set list of slave elements
 !
-! --- INFOS DE LA ZONE
+        do i_zone = 1, nb_cont_zone
 !
-    ndimg = cfdisi(defico,'NDIM' )
-    nmaco = cfdisi(defico,'NMACO' )
-    ntmaec = cfdisi(defico,'NTMAEC')
-    nzoco = cfdisi(defico,'NZOCO' )
+! --------- Type of model
 !
-! --- MAILLES AXISYMETRIQUES ?
-!
-    laxis = .false.
-    if (ndimg .eq. 2) then
-        laxis = mmmaxi(defico, nomo, noma)
-    endif
-    if (laxis) then
-        zi(jparci+16-1) = 1
-    else
-        zi(jparci+16-1) = 0
-    endif
-!
-! --- AJOUT DES ELEMENTS TARDIFS AU LIGREL
-!
-    call wkvect(lismae, 'V V I', ntmaec, jlist)
-    do izone = 1, nzoco
-        lfrot = mminfl(defico,'FROTTEMENT_ZONE',izone)
-        lveri = mminfl(defico,'VERIF',izone )
-        if (ndimg .eq. 2) then
-            if (lfrot) then
-                modeli = 'COFR_DVP_2D'
+            l_frot_zone = mminfl(sdcont_defi,'FROTTEMENT_ZONE',i_zone)
+            l_veri = mminfl(sdcont_defi,'VERIF',i_zone)
+            if (model_ndim .eq. 2) then
+                if (l_frot_zone) then
+                    modeli = 'FROT_2D'
+                else
+                    modeli = 'CONT_2D'
+                endif
+            else if (model_ndim.eq. 3) then
+                if (l_frot_zone) then
+                    modeli = 'FROT_3D'
+                else
+                    modeli = 'CONT_3D'
+                endif
             else
-                modeli = 'CONT_DVP_2D'
+                ASSERT(.false.)
             endif
-        else if (ndimg.eq. 3) then
-            if (lfrot) then
-                modeli = 'COFR_DVP_3D'
-            else
-                modeli = 'CONT_DVP_3D'
+!
+! --------- Type of model
+!
+            if (.not.l_veri) then
+                nb_elem_slav = mminfi(sdcont_defi,'NBMAE' ,i_zone)
+                jdecme       = mminfi(sdcont_defi,'JDECME',i_zone)
+                        ASSERT(nb_elem_slav.le.nt_elem_slav)
+                do i_elem_slav = 1, nb_elem_slav
+                    elem_slav_idx  = jdecme+i_elem_slav
+                    elem_slav_nume = v_sdcont_mailco(elem_slav_idx)
+                    v_list_elem(i_elem_slav) = elem_slav_nume
+                end do
+                call ajellt(ligret, mesh, nb_elem_slav, list_elem, ' ',&
+                            phenom, modeli, 0, ' ')
             endif
-        else
-            ASSERT(.false.)
-        endif
+        end do
+        call jedetr(list_elem)
+    endif
 !
-        if (.not.lveri) then
-            nbmae = mminfi(defico,'NBMAE' ,izone )
-            jdecme = mminfi(defico,'JDECME' ,izone )
-            do imae = 1, nbmae
-                posmae = jdecme+imae
-                nummae = zi(jmaco+posmae-1)
-                zi(jlist+imae-1) = nummae
-            end do
-            call ajellt(ligret, noma, nbmae, lismae, ' ',&
-                        phenom, modeli, 0, ' ')
-        endif
-    end do
-!
- 99 continue
-!
-    call jedetr(lismae)
-    call jedema()
 end subroutine

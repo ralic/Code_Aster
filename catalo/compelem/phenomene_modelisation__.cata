@@ -268,15 +268,15 @@ PHENOMENE_MODELISATION__
               MAILLE__ TRIA3     ELEMENT__ VF1T3
               MAILLE__ QUAD4     ELEMENT__ VF1Q4
 
-       MODELISATION__ 'CONT_DVP_2D'      DIM__ 1 2   CODE__ 'CT2'
+       MODELISATION__ 'CONT_2D'          DIM__ 1 2   CODE__ 'CT2'
               MAILLE__ SEG2      ELEMENT__ COS2E2D
               MAILLE__ SEG3      ELEMENT__ COS3E2D
 
-       MODELISATION__ 'COFR_DVP_2D'      DIM__ 1 2   CODE__ 'CF2'
+       MODELISATION__ 'FROT_2D'          DIM__ 1 2   CODE__ 'CF2'
               MAILLE__ SEG2      ELEMENT__ CFS2E2D
               MAILLE__ SEG3      ELEMENT__ CFS3E2D
 
-       MODELISATION__ 'CONT_DVP_3D'      DIM__ 2 3  CODE__ 'CT3'
+       MODELISATION__ 'CONT_3D'          DIM__ 2 3  CODE__ 'CT3'
               MAILLE__ TRIA3     ELEMENT__ COT3E3D
               MAILLE__ QUAD4     ELEMENT__ COQ4E3D
               MAILLE__ QUAD8     ELEMENT__ COQ8E3D
@@ -284,7 +284,7 @@ PHENOMENE_MODELISATION__
               MAILLE__ QUAD9     ELEMENT__ COQ9E3D
               MAILLE__ SEG2      ELEMENT__ COP2E3D
 
-       MODELISATION__ 'COFR_DVP_3D'      DIM__ 2 3  CODE__ 'CF3'
+       MODELISATION__ 'FROT_3D'          DIM__ 2 3  CODE__ 'CF3'
               MAILLE__ TRIA3     ELEMENT__ CFT3E3D
               MAILLE__ QUAD4     ELEMENT__ CFQ4E3D
               MAILLE__ QUAD8     ELEMENT__ CFQ8E3D

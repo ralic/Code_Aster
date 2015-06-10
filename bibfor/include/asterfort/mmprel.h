@@ -16,10 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mmprel(char, noma, nomo, ligret)
-        character(len=8) :: char
-        character(len=8) :: noma
-        character(len=8) :: nomo
-        character(len=19) :: ligret
+    subroutine mmprel(sdcont, mesh, model, ligret)
+        character(len=8), intent(in) :: sdcont
+        character(len=8), intent(in) :: model
+        character(len=8), intent(in) :: mesh
+        character(len=19), intent(in) :: ligret
     end subroutine mmprel
 end interface
