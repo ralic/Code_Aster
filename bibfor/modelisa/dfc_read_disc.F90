@@ -5,11 +5,10 @@ implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/dfc_read_zone.h"
+#include "asterfort/dfc_save_dime.h"
 #include "asterfort/cfnodb.h"
 #include "asterfort/cfbord.h"
 #include "asterfort/chckco.h"
-#include "asterfort/dimeco.h"
-#include "asterfort/dimecz.h"
 #include "asterfort/quadco.h"
 #include "asterfort/elimcq.h"
 #include "asterfort/tablco.h"
@@ -66,11 +65,11 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nb_cont_surf, nb_cont_elem, nb_cont_node
-    integer :: cont_form, indqua
+    integer :: indqua
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    cont_form = 1
+
 !
 ! - Quadratic elements (indqua = 0 if need linearization, see CACOEQ)
 !
@@ -97,14 +96,10 @@ implicit none
 !
     call tablco(sdcont, mesh, nb_cont_surf, nb_cont_elem, nb_cont_node)
 !
-! - Information by zone
+! - Save contact counters
 !
-    call dimecz(sdcont, mesh, nb_cont_zone, cont_form)
-!
-! - Information for vectors length
-!
-    call dimeco(sdcont      , model_ndim, nb_cont_zone, nb_cont_surf, nb_cont_elem,&
-                nb_cont_node)
+    call dfc_save_dime(sdcont      , mesh        , model_ndim, nb_cont_zone, nb_cont_surf,&
+                       nb_cont_elem, nb_cont_node)
 !
 ! - Keyword SANS_GROUP_NO
 !

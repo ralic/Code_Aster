@@ -16,10 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine dimecz(char, noma, nzoco, iform)
-        character(len=8) :: char
-        character(len=8) :: noma
-        integer :: nzoco
-        integer :: iform
+    subroutine dimecz(sdcont, mesh, nb_cont_zone)
+        character(len=8), intent(in) :: sdcont
+        character(len=8), intent(in) :: mesh
+        integer, intent(in) :: nb_cont_zone
     end subroutine dimecz
 end interface

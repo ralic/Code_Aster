@@ -1,4 +1,17 @@
-subroutine dimecz(char, noma, nzoco, iform)
+subroutine dimecz(sdcont, mesh, nb_cont_zone)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/cfnbsf.h"
+#include "asterfort/cfzone.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mmnbnz.h"
+#include "asterfort/mminfi.h"
+#include "asterfort/mminfl.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,158 +31,126 @@ subroutine dimecz(char, noma, nzoco, iform)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/cfmmvd.h"
-#include "asterfort/cfnbsf.h"
-#include "asterfort/cfnumm.h"
-#include "asterfort/cfzone.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/mmelin.h"
-#include "asterfort/mminfi.h"
-#include "asterfort/mminfl.h"
-    character(len=8) :: char, noma
-    integer :: nzoco, iform
+    character(len=8), intent(in) :: sdcont
+    character(len=8), intent(in) :: mesh
+    integer, intent(in) :: nb_cont_zone
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (METHODES MAILLEES - LECTURE DONNEES)
+! DEFI_CONTACT
 !
-! CONSTRUCTION DU VECTEUR D'INFORMATION SUR LES LONGUEURS PAR ZONE
+! Save contact counters - Counters by zone
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sdcont           : name of contact concept (DEFI_CONTACT)
+! In  mesh             : name of mesh
+! In  nb_cont_zone     : number of zones of contact
 !
-! IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  NZOCO  : NOMBRE DE ZONES DE CONTACT
-! IN  IFORM  : FORMULATION DISCRETE(1) OU CONTINUE(2)
+! --------------------------------------------------------------------------------------------------
 !
-!
-!
-!
-    character(len=24) :: methco
-    integer :: jmeth
+    character(len=24) :: sdcont_methco
+    integer, pointer :: v_sdcont_methco(:) => null()
     integer :: zmeth
-    integer :: izone, imae
+    integer :: i_zone
     integer :: jdecme, jdecmm, jdecne, jdecnm
-    integer :: isumae, isumam
-    integer :: posmae, nummae
-    integer :: nbnom, nbnoe, nbmam, nbmae
-    integer :: nbnomc, nbnoec, nbmamc, nbmaec
-    integer :: nbpt, nnint
-    character(len=24) :: defico
-    integer :: typint
-    aster_logical :: lveri
-    integer :: nbpc
+    integer :: i_surf_escl, i_surf_mast
+    integer :: nb_node_mast, nb_node_slav, nb_elem_mast, nb_elem_slav
+    integer :: nb_node_mastc, nb_node_slavc, nb_elem_mastc, nb_elem_slavc
+    integer :: nb_cont_poin
+    character(len=24) :: sdcont_defi
+    integer :: cont_form
+    aster_logical :: l_verif
+    integer :: nb_cont_poinc
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
+    nb_elem_slav  = 0
+    nb_node_slav  = 0
+    nb_elem_mast  = 0
+    nb_elem_slav  = 0
+    nb_cont_poin  = 0
+    nb_elem_slavc = 0
+    nb_node_slavc = 0
+    nb_elem_mastc = 0
+    nb_elem_slavc = 0
+    nb_cont_poinc = 0
+    sdcont_defi   = sdcont(1:8)//'.CONTACT'
 !
-! --- INITIALISATIONS
+! - Parameters
 !
-    defico = char(1:8)//'.CONTACT'
-    nbmae = 0
-    nbnoe = 0
-    nbmam = 0
-    nbmae = 0
-    nbpt = 0
-    nbpc = 0
+    cont_form     = cfdisi(sdcont_defi, 'FORMULATION')
 !
-! --- ACCES AUX STRUCTURES DE DONNEES DE CONTACT
+! - Datastructure for contact
 !
-    methco = defico(1:16)//'.METHCO'
-    call jeveuo(methco, 'E', jmeth)
+    sdcont_methco = sdcont_defi(1:16)//'.METHCO'
+    call jeveuo(sdcont_methco, 'E', vi = v_sdcont_methco)
     zmeth = cfmmvd('ZMETH')
 !
-! --- NOMBRE DE NOEUDS ET DE MAILLES (TOTAL) PAR ZONE
-! --- DECALAGES PAR ZONE
+! - Total number elements/zones and nodes / zones
 !
-    do 30 izone = 1, nzoco
-        call cfzone(defico, izone, 'ESCL', isumae)
-        call cfnbsf(defico, isumae, 'MAIL', nbmae, jdecme)
-        call cfnbsf(defico, isumae, 'NOEU', nbnoe, jdecne)
-        call cfzone(defico, izone, 'MAIT', isumam)
-        call cfnbsf(defico, isumam, 'MAIL', nbmam, jdecmm)
-        call cfnbsf(defico, isumam, 'NOEU', nbnom, jdecnm)
-!
-        lveri = mminfl(defico,'VERIF',izone )
-        if (lveri) then
-            nbmaec = 0
-            nbmamc = 0
-            nbnoec = 0
-            nbnomc = 0
+    do i_zone = 1, nb_cont_zone
+        call cfzone(sdcont_defi, i_zone, 'ESCL', i_surf_escl)
+        call cfnbsf(sdcont_defi, i_surf_escl, 'MAIL', nb_elem_slav, jdecme)
+        call cfnbsf(sdcont_defi, i_surf_escl, 'NOEU', nb_node_slav, jdecne)
+        call cfzone(sdcont_defi, i_zone, 'MAIT', i_surf_mast)
+        call cfnbsf(sdcont_defi, i_surf_mast, 'MAIL', nb_elem_mast, jdecmm)
+        call cfnbsf(sdcont_defi, i_surf_mast, 'NOEU', nb_node_mast, jdecnm)
+        l_verif = mminfl(sdcont_defi, 'VERIF', i_zone)
+        if (l_verif) then
+            nb_elem_slavc = 0
+            nb_elem_mastc = 0
+            nb_node_slavc = 0
+            nb_node_mastc = 0
         else
-            nbmaec = nbmae
-            nbmamc = nbmam
-            nbnoec = nbnoe
-            nbnomc = nbnom
+            nb_elem_slavc = nb_elem_slav
+            nb_elem_mastc = nb_elem_mast
+            nb_node_slavc = nb_node_slav
+            nb_node_mastc = nb_node_mast
         endif
+        v_sdcont_methco(zmeth*(i_zone-1)+8 ) = nb_elem_slav
+        v_sdcont_methco(zmeth*(i_zone-1)+9 ) = nb_node_slav
+        v_sdcont_methco(zmeth*(i_zone-1)+10) = nb_elem_mast
+        v_sdcont_methco(zmeth*(i_zone-1)+11) = nb_node_mast
+        v_sdcont_methco(zmeth*(i_zone-1)+12) = nb_elem_slavc
+        v_sdcont_methco(zmeth*(i_zone-1)+13) = nb_node_slavc
+        v_sdcont_methco(zmeth*(i_zone-1)+14) = nb_elem_mastc
+        v_sdcont_methco(zmeth*(i_zone-1)+15) = nb_node_mastc
+    end do
 !
-        zi(jmeth+zmeth*(izone-1)+8 -1) = nbmae
-        zi(jmeth+zmeth*(izone-1)+9 -1) = nbnoe
-        zi(jmeth+zmeth*(izone-1)+10-1) = nbmam
-        zi(jmeth+zmeth*(izone-1)+11-1) = nbnom
-        zi(jmeth+zmeth*(izone-1)+12-1) = nbmaec
-        zi(jmeth+zmeth*(izone-1)+13-1) = nbnoec
-        zi(jmeth+zmeth*(izone-1)+14-1) = nbmamc
-        zi(jmeth+zmeth*(izone-1)+15-1) = nbnomc
- 30 end do
+! - Shift/zone
 !
-! --- DECALAGES PAR ZONE
+    do i_zone = 1, nb_cont_zone
+        call cfzone(sdcont_defi, i_zone, 'ESCL', i_surf_escl)
+        call cfnbsf(sdcont_defi, i_surf_escl, 'MAIL', nb_elem_slav, jdecme)
+        call cfnbsf(sdcont_defi, i_surf_escl, 'NOEU', nb_node_slav, jdecne)
+        call cfzone(sdcont_defi, i_zone, 'MAIT', i_surf_mast)
+        call cfnbsf(sdcont_defi, i_surf_mast, 'MAIL', nb_elem_mast, jdecmm)
+        call cfnbsf(sdcont_defi, i_surf_mast, 'NOEU', nb_node_mast, jdecnm)
+        v_sdcont_methco(zmeth*(i_zone-1)+16) = jdecme
+        v_sdcont_methco(zmeth*(i_zone-1)+17) = jdecmm
+        v_sdcont_methco(zmeth*(i_zone-1)+18) = jdecne
+        v_sdcont_methco(zmeth*(i_zone-1)+19) = jdecnm
+    end do
 !
-    do 31 izone = 1, nzoco
-        call cfzone(defico, izone, 'ESCL', isumae)
-        call cfnbsf(defico, isumae, 'MAIL', nbmae, jdecme)
-        call cfnbsf(defico, isumae, 'NOEU', nbnoe, jdecne)
-        call cfzone(defico, izone, 'MAIT', isumam)
-        call cfnbsf(defico, isumam, 'MAIL', nbmam, jdecmm)
-        call cfnbsf(defico, isumam, 'NOEU', nbnom, jdecnm)
-        zi(jmeth+zmeth*(izone-1)+16-1) = jdecme
-        zi(jmeth+zmeth*(izone-1)+17-1) = jdecmm
-        zi(jmeth+zmeth*(izone-1)+18-1) = jdecne
-        zi(jmeth+zmeth*(izone-1)+19-1) = jdecnm
- 31 end do
+! - Number of contact points/zone
 !
-! --- NOMBRE DE POINTS DE CONTACT PAR ZONE
+    do i_zone = 1, nb_cont_zone
+        call mmnbnz(mesh, sdcont_defi, i_zone, nb_cont_poin)
+        v_sdcont_methco(zmeth*(i_zone-1)+20) = nb_cont_poin
+    end do
 !
-    do 40 izone = 1, nzoco
-        if (iform .eq. 1) then
-            nbpt = mminfi(defico,'NBNOE' ,izone )
-        else if (iform.eq.2) then
-            nbmae = mminfi(defico,'NBMAE' ,izone )
-            jdecme = mminfi(defico,'JDECME' ,izone )
-            typint = mminfi(defico,'INTEGRATION',izone )
-            nbpt = 0
-            do 45 imae = 1, nbmae
-                posmae = imae + jdecme
-                call cfnumm(defico, posmae, nummae)
-                call mmelin(noma, nummae, typint, nnint)
-                nbpt = nbpt + nnint
- 45         continue
+! - No computation mode
+!
+    do i_zone = 1, nb_cont_zone
+        nb_cont_poin = v_sdcont_methco(zmeth*(i_zone-1)+20)
+        l_verif = mminfl(sdcont_defi, 'VERIF', i_zone)
+        if (l_verif) then
+            nb_cont_poinc = 0
         else
-            ASSERT(.false.)
+            nb_cont_poinc = nb_cont_poin
         endif
+        v_sdcont_methco(zmeth*(i_zone-1)+21) = nb_cont_poinc
+    end do
 !
-        zi(jmeth+zmeth*(izone-1)+20-1) = nbpt
-!
-! --- CONTACT EFFECTIF
-!
-        lveri = mminfl(defico,'VERIF',izone )
-        if (lveri) then
-            nbpc = 0
-        else
-            nbpc = nbpt
-        endif
-!
-        zi(jmeth+zmeth*(izone-1)+21-1) = nbpc
-!
- 40 end do
-!
-    call jedema()
 end subroutine

@@ -1,5 +1,12 @@
-subroutine dimeco(char, ndim, nzoco, nsuco, nmaco,&
-                  nnoco)
+subroutine dimeco(sdcont      , model_ndim, nb_cont_zone, nb_cont_surf, nb_cont_elem,&
+                  nb_cont_node)
+!
+implicit none
+!
+#include "asterfort/assert.h"
+#include "asterfort/cfnben.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mminfi.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,181 +26,149 @@ subroutine dimeco(char, ndim, nzoco, nsuco, nmaco,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/cfnben.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/mminfi.h"
-#include "asterfort/utmess.h"
-    character(len=8) :: char
-    integer :: ndim
-    integer :: nzoco
-    integer :: nsuco
-    integer :: nmaco
-    integer :: nnoco
+    character(len=8), intent(in) :: sdcont
+    integer, intent(in) :: model_ndim
+    integer, intent(in) :: nb_cont_zone
+    integer, intent(in) :: nb_cont_surf
+    integer, intent(in) :: nb_cont_elem
+    integer, intent(in) :: nb_cont_node
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (METHODES MAILLEES - LECTURE DONNEES)
+! DEFI_CONTACT
 !
-! CONSTRUCTION DU VECTEUR D'INFORMATION SUR LES LONGUEURS
+! Save contact counters - Total counters
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sdcont           : name of contact concept (DEFI_CONTACT)
+! IO  model_ndim       : dimension of model
+! In  nb_cont_zone     : number of zones of contact
+! In  nb_cont_surf     : number of surfaces of contact
+! In  nb_cont_elem     : number of elements of contact
+! In  nb_cont_node     : number of nodes of contact
 !
-! IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  NDIM   : DIMENSION DU PROBLEME
-! IN  NZOCO  : NOMBRE DE ZONES DE CONTACT
-! IN  NSUCO  : NOMBRE TOTAL DE SURFACES DE CONTACT
-! IN  NMACO  : NOMBRE TOTAL DE MAILLES DES SURFACES
-! IN  NNOCO  : NOMBRE TOTAL DE NOEUDS DES SURFACES
+! --------------------------------------------------------------------------------------------------
 !
+    integer :: ibid
+    integer :: nt_elem_node
+    integer :: nb_cont_point, nb_cont_poinc
+    integer :: nt_cont_point, nt_cont_poinc
+    integer :: i_zone, i_elem_mast, i_elem_slav
+    integer :: nb_node_slav, nb_node_mast, nb_elem_slav, nb_elem_mast
+    integer :: nt_node_slav, nt_node_mast, nt_elem_slav, nt_elem_mast
+    integer :: nb_node_slavc, nb_node_mastc, nb_elem_slavc, nb_elem_mastc
+    integer :: nt_node_esclc, nt_node_mastc, nt_elem_esclc, nt_elem_mastc
+    integer :: node_nbelem
+    integer :: jdecme, jdecmm, elem_slav_indx, elem_mast_indx
+    character(len=24) :: sdcont_defi
+    character(len=24) :: sdcont_ndimco
+    integer, pointer :: v_sdcont_ndimco(:) => null()
 !
+! --------------------------------------------------------------------------------------------------
 !
+    ibid = 0
 !
-    character(len=24) :: ndimco
-    integer :: jdim
-    integer :: ntmano
-    integer :: ntpc, ntpt
-    integer :: izone, ibid, imam, imae
-    integer :: nbnoe, nbnom, nbmae, nbmam
-    integer :: ntnoe, ntnom, ntmae, ntmam
-    integer :: nbnoec, nbnomc, nbmaec, nbmamc
-    integer :: ntnoec, ntnomc, ntmaec, ntmamc
-    integer :: nbpt, nbpc
-    integer :: nnomae, nnomam
-    integer :: jdecme, jdecmm, posmae, posmam
-    character(len=24) :: defico
+! - Datastructure for contact
 !
-! ----------------------------------------------------------------------
+    sdcont_defi   = sdcont(1:8)//'.CONTACT'
+    sdcont_ndimco = sdcont_defi(1:16)//'.NDIMCO'
+    call jeveuo(sdcont_ndimco, 'E', vi = v_sdcont_ndimco)
 !
-    call jemarq()
+! - Set global parameters
 !
-! --- INITIALISATIONS
+    v_sdcont_ndimco(1) = model_ndim
+    v_sdcont_ndimco(2) = nb_cont_zone
+    v_sdcont_ndimco(3) = nb_cont_surf
+    v_sdcont_ndimco(4) = nb_cont_elem
+    v_sdcont_ndimco(5) = nb_cont_node
+    v_sdcont_ndimco(6) = 0
+    v_sdcont_ndimco(7) = 0
 !
-    defico = char(1:8)//'.CONTACT'
+! - Total number of nodes and elements for all contact zones
 !
-! --- ACCES AUX STRUCTURES DE DONNEES DE CONTACT
+    nt_node_slav = 0
+    nt_elem_slav = 0
+    nt_node_mast = 0
+    nt_elem_mast = 0
+    do i_zone = 1, nb_cont_zone
+        nb_elem_slav = mminfi(sdcont_defi, 'NBMAE', i_zone)
+        nb_node_slav = mminfi(sdcont_defi, 'NBNOE', i_zone)
+        nb_elem_mast = mminfi(sdcont_defi, 'NBMAM', i_zone)
+        nb_node_mast = mminfi(sdcont_defi, 'NBNOM', i_zone)
+        nt_node_slav = nt_node_slav + nb_node_slav
+        nt_elem_slav = nt_elem_slav + nb_elem_slav
+        nt_node_mast = nt_node_mast + nb_node_mast
+        nt_elem_mast = nt_elem_mast + nb_elem_mast
+    end do
 !
-    ndimco = defico(1:16)//'.NDIMCO'
-    call jeveuo(ndimco, 'E', jdim)
+    v_sdcont_ndimco(8 ) = nt_node_slav
+    v_sdcont_ndimco(9 ) = nt_elem_slav
+    v_sdcont_ndimco(10) = nt_node_mast
+    v_sdcont_ndimco(11) = nt_elem_mast
 !
-! --- DIMENSION DE L'ESPACE
+! - Total number of nodes and elements for computation contact zone
 !
-    if (ndim .gt. 3) then
-        call utmess('A', 'CONTACT_84')
-        if (ndim .eq. 1003) then
-            ndim = 3
-        else if (ndim.eq.1002) then
-            ndim = 2
-        else if (ndim.eq.23) then
-            ndim = 2
-        else
-            ASSERT(.false.)
-        endif
-    endif
+    nt_node_esclc = 0
+    nt_elem_esclc = 0
+    nt_node_mastc = 0
+    nt_elem_mastc = 0
+    do i_zone = 1, nb_cont_zone
+        nb_elem_slavc = mminfi(sdcont_defi, 'NBMAEC', i_zone)
+        nb_node_slavc = mminfi(sdcont_defi, 'NBNOEC', i_zone)
+        nb_elem_mastc = mminfi(sdcont_defi, 'NBMAMC', i_zone)
+        nb_node_mastc = mminfi(sdcont_defi, 'NBNOMC', i_zone)
+        nt_node_esclc = nt_node_esclc + nb_node_slavc
+        nt_elem_esclc = nt_elem_esclc + nb_elem_slavc
+        nt_node_mastc = nt_node_mastc + nb_node_mastc
+        nt_elem_mastc = nt_elem_mastc + nb_elem_mastc
+    end do
 !
-! --- TABLEAU CONTENANT LES LONGUEURS DES DIFFERENTS VECTEURS
-! --- ET LE NOMBRE DE NOEUDS ESCLAVES MAXIMUM POUR CHAQUE ZONE
+    v_sdcont_ndimco(12) = nt_node_esclc
+    v_sdcont_ndimco(13) = nt_elem_esclc
+    v_sdcont_ndimco(14) = nt_node_mastc
+    v_sdcont_ndimco(15) = nt_elem_mastc
 !
-    zi(jdim+1-1) = ndim
-    zi(jdim+2-1) = nzoco
-    zi(jdim+3-1) = nsuco
-    zi(jdim+4-1) = nmaco
-    zi(jdim+5-1) = nnoco
-    zi(jdim+6-1) = 0
-    zi(jdim+7-1) = 0
+! - Total number of contact point
 !
+    nt_cont_point = 0
+    do i_zone = 1, nb_cont_zone
+        nb_cont_point = mminfi(sdcont_defi, 'NBPT', i_zone)
+        nt_cont_point = nt_cont_point + nb_cont_point
+    end do
 !
-! --- CALCUL DU NOMBRE TOTAL DE NOEUDS/MAILLES ESCLAVES/MAITRES
+    v_sdcont_ndimco(16) = nt_cont_point
 !
-    ntnoe = 0
-    ntmae = 0
-    ntnom = 0
-    ntmam = 0
-    do 20 izone = 1, nzoco
-        nbmae = mminfi(defico,'NBMAE' ,izone )
-        nbnoe = mminfi(defico,'NBNOE' ,izone )
-        nbmam = mminfi(defico,'NBMAM' ,izone )
-        nbnom = mminfi(defico,'NBNOM' ,izone )
-        ntnoe = ntnoe + nbnoe
-        ntmae = ntmae + nbmae
-        ntnom = ntnom + nbnom
-        ntmam = ntmam + nbmam
-20  end do
+! - Total number of contact point for computation
 !
-    zi(jdim+8 -1) = ntnoe
-    zi(jdim+9 -1) = ntmae
-    zi(jdim+10-1) = ntnom
-    zi(jdim+11-1) = ntmam
+    nt_cont_poinc = 0
+    do i_zone = 1, nb_cont_zone
+        nb_cont_poinc = mminfi(sdcont_defi, 'NBPC', i_zone)
+        nt_cont_poinc = nt_cont_poinc + nb_cont_poinc
+    end do
 !
-! --- CALCUL DU NOMBRE TOTAL DE NOEUDS/MAILLES ESCL/MAIT AVEC CALCUL
+    v_sdcont_ndimco(17) = nt_cont_poinc
 !
-    ntnoec = 0
-    ntmaec = 0
-    ntnomc = 0
-    ntmamc = 0
-    do 21 izone = 1, nzoco
-        nbmaec = mminfi(defico,'NBMAEC' ,izone )
-        nbnoec = mminfi(defico,'NBNOEC' ,izone )
-        nbmamc = mminfi(defico,'NBMAMC' ,izone )
-        nbnomc = mminfi(defico,'NBNOMC' ,izone )
-        ntnoec = ntnoec + nbnoec
-        ntmaec = ntmaec + nbmaec
-        ntnomc = ntnomc + nbnomc
-        ntmamc = ntmamc + nbmamc
-21  end do
+! - Total number of nodes by element (ELNO)
 !
-    zi(jdim+12-1) = ntnoec
-    zi(jdim+13-1) = ntmaec
-    zi(jdim+14-1) = ntnomc
-    zi(jdim+15-1) = ntmamc
+    nt_elem_node = 0
+    do i_zone = 1, nb_cont_zone
+        jdecme       = mminfi(sdcont_defi, 'JDECME', i_zone)
+        nb_elem_slav = mminfi(sdcont_defi, 'NBMAE' , i_zone)
+        do i_elem_slav = 1, nb_elem_slav
+            elem_slav_indx = jdecme + i_elem_slav
+            call cfnben(sdcont_defi, elem_slav_indx, 'CONNEX', node_nbelem, ibid)
+            nt_elem_node = nt_elem_node + node_nbelem
+        end do
+        jdecmm       = mminfi(sdcont_defi, 'JDECMM', i_zone)
+        nb_elem_mast = mminfi(sdcont_defi, 'NBMAM' , i_zone)
+        do i_elem_mast = 1, nb_elem_mast
+            elem_mast_indx = jdecmm + i_elem_mast
+            call cfnben(sdcont_defi, elem_mast_indx, 'CONNEX', node_nbelem, ibid)
+            nt_elem_node = nt_elem_node + node_nbelem
+        end do
+    end do
 !
-! --- NOMBRE TOTAL DE POINTS DE CONTACT
+    v_sdcont_ndimco(18) = nt_elem_node
 !
-    ntpt = 0
-    do 41 izone = 1, nzoco
-        nbpt = mminfi(defico,'NBPT' ,izone )
-        ntpt = ntpt + nbpt
-41  end do
-!
-    zi(jdim+16-1) = ntpt
-!
-! --- NOMBRE TOTAL DE POINTS DE CONTACT EFFECTIF (CALCUL)
-!
-    ntpc = 0
-    do 42 izone = 1, nzoco
-        nbpc = mminfi(defico,'NBPC' ,izone )
-        ntpc = ntpc + nbpc
-42  end do
-!
-    zi(jdim+17-1) = ntpc
-!
-! --- NOMBRE TOTAL DE NOEUD AUX ELEMENTS (ELNO)
-!
-    ntmano = 0
-    do 30 izone = 1, nzoco
-        jdecme = mminfi(defico,'JDECME',izone )
-        nbmae = mminfi(defico,'NBMAE' ,izone )
-        do 31 imae = 1, nbmae
-            posmae = jdecme + imae
-            call cfnben(defico, posmae, 'CONNEX', nnomae, ibid)
-            ntmano = ntmano + nnomae
-31      continue
-        jdecmm = mminfi(defico,'JDECMM',izone )
-        nbmam = mminfi(defico,'NBMAM' ,izone )
-        do 32 imam = 1, nbmam
-            posmam = jdecmm + imam
-            call cfnben(defico, posmam, 'CONNEX', nnomam, ibid)
-            ntmano = ntmano + nnomam
-32      continue
-30  end do
-!
-    zi(jdim+18-1) = ntmano
-!
-    call jedema()
 end subroutine

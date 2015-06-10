@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,13 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine dimeco(sdcont      , model_ndim, nb_cont_zone, nb_cont_surf, nb_cont_elem,&
-                      nb_cont_node)
-        character(len=8), intent(in) :: sdcont
-        integer, intent(in) :: model_ndim
-        integer, intent(in) :: nb_cont_zone
-        integer, intent(in) :: nb_cont_surf
-        integer, intent(in) :: nb_cont_elem
-        integer, intent(in) :: nb_cont_node
-    end subroutine dimeco
+    subroutine mmnbnz(mesh, sdcont_defi, i_zone, nb_cont_poin)
+        character(len=8), intent(in) :: mesh
+        character(len=24), intent(in) :: sdcont_defi
+        integer, intent(in) :: i_zone
+        integer, intent(out) :: nb_cont_poin
+    end subroutine mmnbnz
 end interface
