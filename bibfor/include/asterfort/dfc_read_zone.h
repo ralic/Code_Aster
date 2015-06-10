@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -15,15 +15,18 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
-    subroutine limaco(sdcont      , keywf , mesh, model, model_ndim,&
-                      nb_cont_zone, ligret)
+    subroutine dfc_read_zone(sdcont      , keywf       , mesh        , model        ,nb_cont_zone,&
+                             nb_cont_surf, nb_cont_elem, nb_cont_node)
         character(len=8), intent(in) :: sdcont
         character(len=8), intent(in) :: mesh
         character(len=8), intent(in) :: model
         character(len=16), intent(in) :: keywf
-        character(len=19), intent(in) :: ligret
         integer, intent(in) :: nb_cont_zone
-        integer, intent(in) :: model_ndim
-    end subroutine limaco
+        integer, intent(out) :: nb_cont_surf
+        integer, intent(out) :: nb_cont_elem
+        integer, intent(out) :: nb_cont_node
+    end subroutine dfc_read_zone
 end interface

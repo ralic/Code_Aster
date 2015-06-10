@@ -1,17 +1,14 @@
-subroutine limaco(sdcont      , keywf , mesh, model, model_ndim,&
-                  nb_cont_zone, ligret)
+subroutine dfc_read_zone(sdcont      , keywf       , mesh        , model        , nb_cont_zone,&
+                         nb_cont_surf, nb_cont_elem, nb_cont_node)
 !
 implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/dfc_read_cont.h"
-#include "asterfort/dfc_read_disc.h"
-#include "asterfort/dfc_read_xfem.h"
+#include "asterfort/poinco.h"
+#include "asterfort/listco.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,47 +29,41 @@ implicit none
     character(len=8), intent(in) :: mesh
     character(len=8), intent(in) :: model
     character(len=16), intent(in) :: keywf
-    character(len=19), intent(in) :: ligret
     integer, intent(in) :: nb_cont_zone
-    integer, intent(in) :: model_ndim
+    integer, intent(out) :: nb_cont_surf
+    integer, intent(out) :: nb_cont_elem
+    integer, intent(out) :: nb_cont_node
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! DEFI_CONTACT
 !
-! Get elements and nodes of contact, checkings
+! Read zone: nodes and elements
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  keywf            : factor keyword to read
 ! In  sdcont           : name of contact concept (DEFI_CONTACT)
-! In  nb_cont_zone     : number of zones of contact
-! In  model            : name of model
+! In  keywf            : factor keyword to read
 ! In  mesh             : name of mesh
-! In  model_ndim       : dimension of model
-! In  ligret           : special LIGREL for slaves elements (CONTINUE formulation)
+! In  model            : name of model
+! In  nb_cont_zone     : number of zones of contact
+! Out nb_cont_surf     : number of surfaces of contact
+! Out nb_cont_elem     : number of elements of contact
+! Out nb_cont_node     : number of nodes of contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: cont_form
-    character(len=24) :: sdcont_defi
+    nb_cont_surf  = 0
+    nb_cont_elem  = 0
+    nb_cont_node  = 0
 !
-! --------------------------------------------------------------------------------------------------
+! - Total number of surfaces
 !
-    sdcont_defi = sdcont(1:8)//'.CONTACT'
-    cont_form   = cfdisi(sdcont_defi,'FORMULATION')
+    call poinco(sdcont, keywf, mesh, nb_cont_zone, nb_cont_surf)
 !
-    if (cont_form.eq.1) then
-        call dfc_read_disc(sdcont      , keywf, mesh, model, model_ndim,&
-                           nb_cont_zone)
-    elseif (cont_form.eq.2) then
-        call dfc_read_cont(sdcont, keywf       , mesh, model, model_ndim  ,&
-                           ligret, nb_cont_zone)
-    elseif (cont_form.eq.3) then
-        call dfc_read_xfem(sdcont      , keywf, mesh, model, model_ndim,&
-                           nb_cont_zone)
-    else
-        ASSERT(.false.)
-    endif
+! - Count and save nodes and elements
+!
+    call listco(sdcont      , keywf       , mesh, model, nb_cont_zone,&
+                nb_cont_elem, nb_cont_node)
 !
 end subroutine

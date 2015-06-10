@@ -1,17 +1,17 @@
-subroutine limaco(sdcont      , keywf , mesh, model, model_ndim,&
-                  nb_cont_zone, ligret)
+subroutine dfc_read_xfem(sdcont      , keywf, mesh, model, model_ndim,&
+                         nb_cont_zone)
 !
 implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/dfc_read_cont.h"
-#include "asterfort/dfc_read_disc.h"
-#include "asterfort/dfc_read_xfem.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/limacx.h"
+#include "asterfort/xmacon.h"
+#include "asterfort/xconta.h"
+#include "asterfort/xfem_rel_lin.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,47 +32,51 @@ implicit none
     character(len=8), intent(in) :: mesh
     character(len=8), intent(in) :: model
     character(len=16), intent(in) :: keywf
-    character(len=19), intent(in) :: ligret
-    integer, intent(in) :: nb_cont_zone
     integer, intent(in) :: model_ndim
+    integer, intent(in) :: nb_cont_zone
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! DEFI_CONTACT
 !
-! Get elements and nodes of contact, checkings
+! XFEM method - Read contact data
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  keywf            : factor keyword to read
 ! In  sdcont           : name of contact concept (DEFI_CONTACT)
-! In  nb_cont_zone     : number of zones of contact
-! In  model            : name of model
+! In  keywf            : factor keyword to read
 ! In  mesh             : name of mesh
+! In  model            : name of model
 ! In  model_ndim       : dimension of model
-! In  ligret           : special LIGREL for slaves elements (CONTINUE formulation)
+! In  nb_cont_zone     : number of zones of contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: cont_form
+    aster_logical :: l_cont_xfem_gg
     character(len=24) :: sdcont_defi
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    sdcont_defi = sdcont(1:8)//'.CONTACT'
-    cont_form   = cfdisi(sdcont_defi,'FORMULATION')
+    sdcont_defi    = sdcont(1:8)//'.CONTACT'
+    l_cont_xfem_gg = cfdisl(sdcont_defi,'CONT_XFEM_GG')
 !
-    if (cont_form.eq.1) then
-        call dfc_read_disc(sdcont      , keywf, mesh, model, model_ndim,&
-                           nb_cont_zone)
-    elseif (cont_form.eq.2) then
-        call dfc_read_cont(sdcont, keywf       , mesh, model, model_ndim  ,&
-                           ligret, nb_cont_zone)
-    elseif (cont_form.eq.3) then
-        call dfc_read_xfem(sdcont      , keywf, mesh, model, model_ndim,&
-                           nb_cont_zone)
-    else
-        ASSERT(.false.)
+! - Read cracks
+!
+    call limacx(sdcont, keywf, model_ndim, nb_cont_zone)
+!
+! - Create/modify contact datastructure
+!
+    if (l_cont_xfem_gg) then
+        call xmacon(sdcont, mesh, model)
     endif
 !
+! - Prepare informations for linear relations for LBB condition
+!
+    call xconta(sdcont, mesh, model, model_ndim)
+!
+! - Set linear relations between contact unknonws for LBB condition
+!
+    call xfem_rel_lin(sdcont, mesh, model, model_ndim)
+!
 end subroutine
+
