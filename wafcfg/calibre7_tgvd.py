@@ -38,7 +38,7 @@ def configure(self):
     self.env.append_value('INCLUDES', [
         YAMMROOT + '/prerequisites/Python-273/include/python2.7',
         YAMMROOT + '/prerequisites/Hdf5-1810/include',
-        YAMMROOT + '/tools/Medfichier-08/include',
+        YAMMROOT + '/tools/Medfichier-308/include',
         YAMMROOT + '/prerequisites/Metis-40/Lib',
         YAMMROOT + '/prerequisites/Mfront-TFEL202/include',
         YAMMROOT + '/prerequisites/Scotch-5111/include'])
