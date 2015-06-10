@@ -1,4 +1,14 @@
-subroutine cfleqa(noma, defico, nzoco, nnoqua)
+subroutine cfleqa(mesh, sdcont_defi, nb_cont_zone, nt_node_middle)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfnbsf.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mminfl.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,124 +28,111 @@ subroutine cfleqa(noma, defico, nzoco, nnoqua)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
+    character(len=8), intent(in) :: mesh
+    character(len=24), intent(in) :: sdcont_defi
+    integer, intent(in) :: nb_cont_zone
+    integer, intent(out) :: nt_node_middle
 !
-#include "asterfort/assert.h"
-#include "asterfort/cfnbsf.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/mminfl.h"
-    character(len=8) :: noma
-    integer :: nzoco
-    character(len=24) :: defico
-    integer :: nnoqua
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! DEFI_CONTACT
 !
-! ROUTINE CONTACT (METHODES MAILLEES - LECTURE DONNEES - QUAD8)
+! Suppress quadratic middle nodes of QUAD8 - Total number of middle nodes
 !
-! NOMBRE TOTAL DE NOEUDS QUADRATIQUES
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! In  mesh             : name of mesh
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  nb_cont_zone     : number of zones of contact
+! Out nt_node middle   : number of middle nodes from QUAD8 elements!
 !
+! --------------------------------------------------------------------------------------------------
 !
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  DEFICO : NOM SD CONTACT DEFINITION
-! IN  NZOCO  : NOMBRE TOTAL DE ZONES DE CONTACT
-! OUT NNOQUA : NOMBRE TOTAL DE NOEUDS QUADRATIQUES DES SURFACES
+    integer :: jdecma, elem_nume, type_nume
+    integer :: i_surf_curr, i_zone, i_elem, i_surf
+    integer :: nb_surf, nb_elem,nb_node_middle
+    character(len=8) :: type_name
+    aster_logical :: l_veri
+    integer, pointer :: v_mesh_typmail(:) => null()
+    character(len=24) :: sdcont_mailco
+    integer, pointer :: v_sdcont_mailco(:) => null()
+    character(len=24) :: sdcont_pzoneco
+    integer, pointer :: v_sdcont_pzoneco(:) => null()
 !
+! --------------------------------------------------------------------------------------------------
 !
+    nt_node_middle = 0
+    nb_node_middle = 0
 !
+! - Datastructure for contact definition
 !
-    character(len=24) :: pzone
-    integer :: jzone
-    character(len=24) :: contma
-    integer :: jmaco
-    integer :: jdecma, nummai, posmai
-    integer :: isurf, izone, ima, nutyp, isuco
-    integer :: nbsurf, nbma
-    integer :: iatyma, itypma
-    character(len=8) :: nomtm
-    integer :: nbnomi
-    aster_logical :: lveri
+    sdcont_pzoneco = sdcont_defi(1:16)//'.PZONECO'
+    sdcont_mailco  = sdcont_defi(1:16)//'.MAILCO'
+    call jeveuo(sdcont_pzoneco, 'L', vi = v_sdcont_pzoneco)
+    call jeveuo(sdcont_mailco , 'L', vi = v_sdcont_mailco)
 !
-! ----------------------------------------------------------------------
+! - Access to mesh
 !
-    call jemarq()
+    call jeveuo(mesh(1:8)//'.TYPMAIL', 'L', vi = v_mesh_typmail)
 !
-! --- ACCES AUX STRUCTURES DE DONNEES DE CONTACT
+! - Number of middle nodes for each contact surface
 !
-    contma = defico(1:16)//'.MAILCO'
-    pzone = defico(1:16)//'.PZONECO'
-    call jeveuo(contma, 'L', jmaco)
-    call jeveuo(pzone, 'L', jzone)
+    do i_zone = 1, nb_cont_zone
 !
-! --- INITIALISATIONS
+! ----- No computation
 !
-    nnoqua = 0
-    nbnomi = 0
-    call jeveuo(noma(1:8)//'.TYPMAIL', 'L', iatyma)
-!
-! --- DECOMPTE DES NOEUDS MILIEUX POUR CHAQUE SURFACE
-!
-    do 10 izone = 1, nzoco
-!
-        lveri = mminfl(defico,'VERIF',izone )
-        if (lveri) then
+        l_veri = mminfl(sdcont_defi, 'VERIF', i_zone)
+        if (l_veri) then
             goto 21
         endif
 !
-! ----- NOMBRE DE SURFACES DE CONTACT
+! ----- Number of contact surfaces
 !
-        nbsurf = zi(jzone+izone) - zi(jzone+izone-1)
-        ASSERT(nbsurf.eq.2)
+        nb_surf = v_sdcont_pzoneco(i_zone+1) - v_sdcont_pzoneco(i_zone)
+        ASSERT(nb_surf.eq.2)
 !
-        do 20 isuco = 1, nbsurf
+! ----- Loop on surfaces
 !
-            isurf = nbsurf*(izone-1)+isuco
+        do i_surf = 1, nb_surf
 !
-            call cfnbsf(defico, isurf, 'MAIL', nbma, jdecma)
+! --------- Parameters of current surface
 !
-            do 30 ima = 1, nbma
+            i_surf_curr = nb_surf*(i_zone-1)+i_surf
+            call cfnbsf(sdcont_defi, i_surf_curr, 'MAIL', nb_elem, jdecma)
 !
-! --------- NUMERO MAILLE COURANTE
+! --------- Loop on elements
 !
-                posmai = jdecma+ima
-                nummai = zi(jmaco+posmai-1)
+            do i_elem = 1, nb_elem
 !
-! --------- TYPE MAILLE COURANTE
+! ------------- Current element
 !
-                itypma = iatyma - 1 + nummai
-                nutyp = zi(itypma)
-                call jenuno(jexnum('&CATA.TM.NOMTM', nutyp ), nomtm)
+                elem_nume = v_sdcont_mailco(jdecma+i_elem)
 !
-! --------- NOMBRE DE NOEUDS MILIEUX A STOCKER A PART SUR LA MAILLE
+! ------------- Type of element
 !
-                if (nomtm(1:5) .eq. 'QUAD9') then
-                    nbnomi = 0
-                else if (nomtm(1:5).eq.'TRIA7') then
-                    nbnomi = 0
-                else if (nomtm(1:5).eq.'QUAD8') then
-                    nbnomi = 4
-                else if (nomtm(1:5).eq.'TRIA6') then
-                    nbnomi = 0
+                type_nume = v_mesh_typmail(elem_nume)
+                call jenuno(jexnum('&CATA.TM.NOMTM', type_nume), type_name)
+!
+! ------------- Number of middle nodes
+!
+                if (type_name(1:5) .eq. 'QUAD9') then
+                    nb_node_middle = 0
+                else if (type_name(1:5).eq.'TRIA7') then
+                    nb_node_middle = 0
+                else if (type_name(1:5).eq.'QUAD8') then
+                    nb_node_middle = 4
+                else if (type_name(1:5).eq.'TRIA6') then
+                    nb_node_middle = 0
                 else
-                    nbnomi = 0
+                    nb_node_middle = 0
                 endif
 !
-! --------- NOMBRE _TOTAL_ DE NOEUDS MILIEUX A STOCKER A PART
+! ------------- Total number of middle nodes
 !
-                nnoqua = nnoqua + nbnomi
-!
- 30         continue
- 20     continue
+                nt_node_middle = nt_node_middle + nb_node_middle
+            end do
+        end do
  21     continue
- 10 end do
+    end do
 !
-    call jedema()
 end subroutine

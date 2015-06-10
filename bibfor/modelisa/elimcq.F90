@@ -1,5 +1,12 @@
-subroutine elimcq(char, noma, indqua, nzoco, nsuco,&
-                  nnoco)
+subroutine elimcq(sdcont, mesh, nb_cont_zone, nb_cont_surf, nb_cont_node)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/cfleq8.h"
+#include "asterfort/cfmeno.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,77 +26,51 @@ subroutine elimcq(char, noma, indqua, nzoco, nsuco,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/cfleq8.h"
-#include "asterfort/cfmeno_prov.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jemarq.h"
-    character(len=8) :: char
-    character(len=8) :: noma
-    integer :: indqua
-    integer :: nzoco, nsuco, nnoco
+    character(len=8), intent(in) :: sdcont
+    character(len=8), intent(in) :: mesh
+    integer, intent(in) :: nb_cont_zone
+    integer, intent(in) :: nb_cont_surf
+    integer, intent(inout) :: nb_cont_node
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (METHODES MAILLEES - LECTURE DONNEES)
+! DEFI_CONTACT
 !
-! ELIMINATION AU SEIN DE CHAQUE SURFACE DE CONTACT POTENTIELLE DES
-! NOEUDS ET MAILLES REDONDANTS. MODIFICATION DES POINTEURS ASSOCIES.
+! Suppress middle nodes from QUAD8
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sdcont           : name of contact concept (DEFI_CONTACT)
+! In  mesh             : name of mesh
+! In  nb_cont_zone     : number of zones of contact
+! In  nb_cont_surf     : number of surfaces of contact
+! IO  nb_cont_node     : number of nodes of contact
 !
-! IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  INDQUA : VAUT 0 LORSQUE L'ON DOIT TRAITER LES NOEUDS MILIEUX
-!                     A PART
-!              VAUT 1 LORSQUE L'ON DOIT TRAITER LES NOEUDS MILIEUX
-!                     NORMALEMENT
-! IN  NZOCO  : NOMBRE TOTAL DE ZONES DE CONTACT
-! IN  NSUCO  : NOMBRE TOTAL DE SURFACES DE CONTACT
-! I/O NNOCO  : NOMBRE TOTAL DE NOEUDS DES SURFACES
+! --------------------------------------------------------------------------------------------------
 !
+    integer :: nb_cont_node0
+    character(len=24) :: sdcont_defi
+    integer, pointer :: v_poin_node(:) => null()
+    integer, pointer :: v_list_node(:) => null()
 !
+! --------------------------------------------------------------------------------------------------
 !
+    sdcont_defi   = sdcont(1:8)//'.CONTACT'
 !
-    integer :: nnoco0
-    character(len=24) :: defico
-    character(len=24) :: poinsn, listno
+! - Create list of middle nodes
 !
-! ----------------------------------------------------------------------
+    nb_cont_node0 = nb_cont_node
+    call cfleq8(mesh         , sdcont_defi, nb_cont_zone, nb_cont_surf, nb_cont_node,&
+                nb_cont_node0, v_list_node, v_poin_node )
 !
-    call jemarq()
+! - List of nodes update
 !
-! --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
-!
-    defico = char(1:8)//'.CONTACT'
-    listno = '&&ELIMCQ.TRAVNO'
-    poinsn = '&&ELIMCQ.ELIMNO'
-!
-! --- CAS DES QUAD8
-!
-    if (indqua .eq. 0) then
-!
-! ----- CREATION D'UNE LISTE DES NOEUDS MILIEUX DES ARETES POUR
-! ----- LES MAILLES QUADRATIQUES
-!
-        nnoco0 = nnoco
-        call cfleq8(noma, defico, nzoco, nsuco, nnoco,&
-                    nnoco0, listno, poinsn)
-!
-! ----- MISE A JOUR DE LA LISTE DES NOEUDS APRES ELIMINATION
-!
-        if (nnoco0 .ne. nnoco) then
-            call cfmeno_prov(defico, nsuco, nnoco0, listno, poinsn,&
-                             nnoco)
-        endif
-!
+    if (nb_cont_node0 .ne. nb_cont_node) then
+        call cfmeno(sdcont_defi, nb_cont_surf, nb_cont_node0, v_list_node, v_poin_node,&
+                    nb_cont_node)
     endif
 !
-    call jedetr(listno)
-    call jedetr(poinsn)
+    AS_DEALLOCATE(vi=v_poin_node)
+    AS_DEALLOCATE(vi=v_list_node)
 !
-    call jedema()
 end subroutine

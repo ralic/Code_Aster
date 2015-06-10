@@ -1,4 +1,24 @@
-subroutine cacoeq(chargz, nomaz)
+subroutine cacoeq(sdcont, mesh)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/aflrch.h"
+#include "asterfort/afrela.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfmmex.h"
+#include "asterfort/cfsuex.h"
+#include "asterfort/cncinv.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/wkvect.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,216 +38,206 @@ subroutine cacoeq(chargz, nomaz)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
+    character(len=8), intent(in) :: sdcont
+    character(len=8), intent(in) :: mesh
 !
-#include "asterfort/aflrch.h"
-#include "asterfort/afrela.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/cfmmex.h"
-#include "asterfort/cfsuex.h"
-#include "asterfort/cncinv.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexatr.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/wkvect.h"
-    character(len=*) :: chargz, nomaz
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! DEFI_CONTACT
 !
-! ROUTINE CONTACT (METHODES MAILLEES - LECTURE DONNEES)
+! Discrete method - Create QUAD8 linear relations
 !
-! REALISATION DES LIAISONS LINEAIRES POUR MAILLES QUADRATIQUES
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! In  sdcont           : name of contact concept (DEFI_CONTACT)
+! In  mesh             : name of mesh
 !
+! --------------------------------------------------------------------------------------------------
 !
-! IN  CHARGE : NOM UTILISATEUR DU CONCEPT DE CHARGE
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  FONREE : FONC OU REEL SUIVANT L'OPERATEUR
-!
-!
-!
-!
-    integer :: no(3), ii, jj, iret, jnoqu, kk
-    complex(kind=8) :: betac, coemuc(3)
-    character(len=2) :: typlag
-    character(len=4) :: fonree, typcoe
-    character(len=8) :: betaf, ddl(3), nono(3), char, noma, type1, type2
-    character(len=19) :: lisrel
-    character(len=24) :: conoqu, noesup, coninv
-    integer :: iexcl, nbexcl
-    real(kind=8) :: coemur(3), direct(6), beta
-    integer :: idim(3), nbelqu, nmap, jjinv, jjinp, jnoes
-    integer :: numail, ityp, iatyma, nutyp
+    integer :: node_nume(3), iret
+    complex(kind=8) :: vale_cplx, coef_cplx(3)
+    character(len=2) :: type_lagr
+    character(len=4) :: vale_type, type_coef
+    character(len=8) :: vale_func, dof_name(3), node_name(3), type_name, type_name_c
+    character(len=19) :: list_rela
+    aster_logical :: l_line_rela
+    real(kind=8) :: coef_real(3), repe_defi(6), vale_real
+    integer :: i_excl, i_zone, i_node_quad, i_elem, i_elem_c
+    integer :: elem_nume, type_nume, repe_type(3)
     integer :: suppo1, suppo2, suppo3
-    integer :: izone, nzoco, nnoco
-    character(len=24) :: defico
-    aster_logical :: lreli
-    data direct/0.0d0,0.0d0,0.0d0,0.0d0,0.0d0,0.0d0/
+    integer :: nb_cont_zone, nb_cont_node, nb_node_quad, nb_node_elem, nb_excl
+    integer, pointer :: v_list_excl(:) => null()
+    character(len=19) :: connex_inv
+    integer, pointer :: v_coninv(:) => null()
+    integer, pointer :: v_coninv_longcum(:) => null()
+    integer, pointer :: v_mesh_typmail(:) => null()
+    character(len=24) :: sdcont_defi
+    character(len=24) :: sdcont_noeuqu
+    integer, pointer :: v_sdcont_noeuqu(:) => null()
 !
-! ----------------------------------------------------------------------
+    data repe_defi /0.0d0,0.0d0,0.0d0,0.0d0,0.0d0,0.0d0/
 !
-    call jemarq()
+! --------------------------------------------------------------------------------------------------
 !
-! --- INITIALISATIONS
+    vale_type    = 'REEL'
+    vale_func    = '&FOZERO'
+    vale_cplx    = (0.0d0,0.0d0)
+    vale_real    = 0.0d0
+    coef_cplx(1) = (1.0d0,0.0d0)
+    coef_cplx(2) = (-0.5d0,0.0d0)
+    coef_cplx(2) = (-0.5d0,0.0d0)
+    coef_real(1) = 1.0d0
+    coef_real(2) = -0.5d0
+    coef_real(3) = -0.5d0
+    repe_type(1) = 0
+    repe_type(2) = 0
+    repe_type(3) = 0
+    type_lagr = '12'
+    type_coef = 'REEL'
+    list_rela = '&&CACOEQ.RLLISTE'
+    connex_inv = '&&CACOEQ.CONINV'
+    nb_node_quad = 0
 !
-    fonree = 'REEL'
-    char = chargz
-    noma = nomaz
-    betaf = '&FOZERO'
-    betac = (0.0d0,0.0d0)
-    beta = 0.0d0
-    coemuc(1) = (1.0d0,0.0d0)
-    coemuc(2) = (-0.5d0,0.0d0)
-    coemuc(2) = (-0.5d0,0.0d0)
-    coemur(1) = 1.0d0
-    coemur(2) = -0.5d0
-    coemur(3) = -0.5d0
-    idim(1) = 0
-    idim(2) = 0
-    idim(3) = 0
-    typlag = '12'
-    typcoe = 'REEL'
-    lisrel = '&&CACOEQ.RLLISTE'
-    nbelqu = 0
-    defico = char(1:8)//'.CONTACT'
-    nzoco = cfdisi(defico,'NZOCO')
-    nnoco = cfdisi(defico,'NNOCO')
+! - Access to datastructure
 !
-! --- ACCES OBJETS
-!
-    conoqu = defico(1:16)//'.NOEUQU'
-!
-    call jeexin(conoqu, iret)
+    sdcont_defi   = sdcont(1:8)//'.CONTACT'
+    sdcont_noeuqu = sdcont_defi(1:16)//'.NOEUQU'
+    call jeexin(sdcont_noeuqu, iret)
     if (iret .eq. 0) then
-        nbelqu = 0
+        nb_node_quad = 0
     else
-        call jeveuo(conoqu, 'L', jnoqu)
-        call jelira(conoqu, 'LONUTI', nbelqu)
+        call jeveuo(sdcont_noeuqu , 'L', vi = v_sdcont_noeuqu)
+        call jelira(sdcont_noeuqu , 'LONUTI', nb_node_quad)
     endif
 !
-! --- PAS DE LIAISON SI PAS DE NOEUDS QUADRA
+! - No QUAD8 nodes -> exit
 !
-    if ((iret.eq.0) .or. (nbelqu.eq.0)) then
-        goto 40
+        if ((iret.eq.0) .or. (nb_node_quad.eq.0)) then
+        goto 99
     endif
 !
-! --- CONSTRUCTION DE LA CONNECTIVITE INVERSE
+! - Parameters
 !
-    coninv = '&&CACOEQ.CONINV'
-    noesup = '&&CACOEQ.NOESUP'
-    call cncinv(noma, [0], 0, 'V', coninv)
-    call jeveuo(noma//'.TYPMAIL', 'L', iatyma)
+    nb_cont_zone = cfdisi(sdcont_defi,'NZOCO')
+    nb_cont_node = cfdisi(sdcont_defi,'NNOCO')
 !
-! --- BOUCLE SUR LES NOEUDS A LIAISONNER
+! - Construct inverse connectivity
 !
-    nbelqu = nbelqu/3
-    call wkvect(noesup, 'V V I', nnoco, jnoes)
-    iexcl = 1
-    do 30 ii = 1, nbelqu
-        no(1) = zi(jnoqu+3* (ii-1)-1+1)
-        no(2) = zi(jnoqu+3* (ii-1)-1+2)
-        no(3) = zi(jnoqu+3* (ii-1)-1+3)
-        call jenuno(jexnum(noma//'.NOMNOE', no(1)), nono(1))
+    call cncinv(mesh, [0], 0, 'V', connex_inv)
 !
-        if (no(2) .eq. 0) then
-            lreli = .false.
+! - Access to mesh
+!
+    call jeveuo(mesh//'.TYPMAIL', 'L', vi = v_mesh_typmail)
+!
+! - List of nodes to suppress
+!
+    AS_ALLOCATE(vi = v_list_excl, size=nb_cont_node)
+!
+! - Loop on nodes to link
+!
+    nb_node_quad = nb_node_quad/3
+    i_excl       = 1
+    nb_excl      = 0
+    do i_node_quad = 1, nb_node_quad
+!
+! ----- Get the two nodes to link with the middle one
+!
+        node_nume(1) = v_sdcont_noeuqu(3*(i_node_quad-1)+1)
+        node_nume(2) = v_sdcont_noeuqu(3*(i_node_quad-1)+2)
+        node_nume(3) = v_sdcont_noeuqu(3*(i_node_quad-1)+3)
+!
+! ----- Nodes to link ?
+!
+        if (node_nume(2) .eq. 0) then
+            l_line_rela = .false.
             goto 30
         else
-            lreli = .true.
+            l_line_rela = .true.
         endif
 !
-        call jenuno(jexnum(noma//'.NOMNOE', no(2)), nono(2))
-        call jenuno(jexnum(noma//'.NOMNOE', no(3)), nono(3))
+! ----- Name of the three nodes
 !
-! --- VERIFICATION QUE LE NOEUD LIE AU NOEUD MILIEU N'EST PAS
-! --- EXCLU DU CONTACT (SANS_GROUP_NO)
-! --- ON NE FAIT PAS LA LIAISON SI SANS_NOEUD_QUAD='OUI'
+        call jenuno(jexnum(mesh//'.NOMNOE', node_nume(1)), node_name(1))
+        call jenuno(jexnum(mesh//'.NOMNOE', node_nume(2)), node_name(2))
+        call jenuno(jexnum(mesh//'.NOMNOE', node_nume(3)), node_name(3))
 !
-        do 20 izone = 1, nzoco
-            call cfmmex(defico, 'CONT', izone, no(1), suppo1)
-            call cfmmex(defico, 'CONT', izone, no(2), suppo2)
-            call cfmmex(defico, 'CONT', izone, no(3), suppo3)
+! ----- Is node to link with the middle one belongs to SANS_GROUP_NO ?
+!
+        do i_zone = 1, nb_cont_zone
+            call cfmmex(sdcont_defi, 'CONT', i_zone, node_nume(1), suppo1)
+            call cfmmex(sdcont_defi, 'CONT', i_zone, node_nume(2), suppo2)
+            call cfmmex(sdcont_defi, 'CONT', i_zone, node_nume(3), suppo3)
             if ((suppo1.eq.1) .or. (suppo2.eq.1) .or. (suppo3.eq.1)) then
-                lreli = .false.
+                l_line_rela = .false.
                 goto 30
             endif
- 20     continue
+        end do
 !
-! --- CAS DES MAILLAGES MIXTES TRIA6/QUAD8
-! --- SI NOEUD PARTAGE ENTRE TRIA6/QUAD8: ON STOCKE POUR ELIMINER NOEUD
-! --- DU CONTACT (CFSUEX)
+! ----- Loop on elements connected to middle node
 !
-        call jeveuo(jexatr(coninv, 'LONCUM'), 'L', jjinp)
-        nmap = zi(jjinp + no(1)+1-1) -zi(jjinp + no(1)-1)
+        call jeveuo(jexatr(connex_inv, 'LONCUM'), 'L', vi = v_coninv_longcum)
+        nb_node_elem = v_coninv_longcum(node_nume(1)+1) - v_coninv_longcum(node_nume(1))
+        call jeveuo(jexnum(connex_inv, node_nume(1)), 'L', vi = v_coninv)
+        do i_elem = 1, nb_node_elem
 !
-        call jeveuo(jexnum(coninv, no(1)), 'L', jjinv)
-        do 25 jj = 1, nmap
-            numail = zi(jjinv-1+jj)
-            ityp = iatyma - 1 + numail
-            nutyp = zi(ityp)
-            call jenuno(jexnum('&CATA.TM.NOMTM', nutyp), type1)
+! --------- Type of element
 !
-            if (type1(1:5) .eq. 'QUAD8') then
-                do 26 kk = 1, nmap
-                    if (jj .ne. kk) then
-                        numail = zi(jjinv-1+kk)
-                        ityp = iatyma - 1 + numail
-                        nutyp = zi(ityp)
-                        call jenuno(jexnum('&CATA.TM.NOMTM', nutyp), type2)
+            elem_nume = v_coninv(i_elem)
+            type_nume = v_mesh_typmail(elem_nume)
+            call jenuno(jexnum('&CATA.TM.NOMTM', type_nume), type_name)
 !
-                        if ((type2(1:5).eq.'TRIA6') .or. (type2(1:5) .eq.'TRIA7') .or.&
-                            (type2(1:5).eq.'QUAD9')) then
-                            zi(jnoes-1+iexcl) = no(1)
-                            iexcl = iexcl + 1
+! --------- If middle node belongs to QUAD8 and TRIA*/QUAD9 -> save it to suppress in contact
+!
+            if (type_name(1:5) .eq. 'QUAD8') then
+                do i_elem_c = 1, nb_node_elem
+                    if (i_elem .ne. i_elem_c) then
+                        elem_nume = v_coninv(i_elem_c)
+                        type_nume = v_mesh_typmail(elem_nume)
+                        call jenuno(jexnum('&CATA.TM.NOMTM', type_nume), type_name_c)
+                        if ((type_name_c(1:5).eq.'TRIA6') .or.&
+                            (type_name_c(1:5).eq.'TRIA7') .or.&
+                            (type_name_c(1:5).eq.'QUAD9')) then
+                            v_list_excl(i_excl) = node_nume(1)
+                            i_excl  = i_excl + 1
+                            nb_excl = nb_excl + 1
                             goto 25
                         endif
                     endif
-!
- 26             continue
+                end do
             endif
- 25     continue
+ 25         continue
+        end do
 !
-! --- RELATION LINEAIRE
+! ----- Linear relations
 !
-        ddl(1) = 'DX'
-        ddl(2) = 'DX'
-        ddl(3) = 'DX'
-        call afrela(coemur, coemuc, ddl, nono, idim,&
-                    direct, 3, beta, betac, betaf,&
-                    typcoe, fonree, typlag, 0.d0, lisrel)
-        ddl(1) = 'DY'
-        ddl(2) = 'DY'
-        ddl(3) = 'DY'
-        call afrela(coemur, coemuc, ddl, nono, idim,&
-                    direct, 3, beta, betac, betaf,&
-                    typcoe, fonree, typlag, 0.d0, lisrel)
-        ddl(1) = 'DZ'
-        ddl(2) = 'DZ'
-        ddl(3) = 'DZ'
-        call afrela(coemur, coemuc, ddl, nono, idim,&
-                    direct, 3, beta, betac, betaf,&
-                    typcoe, fonree, typlag, 0.d0, lisrel)
- 30 end do
+        dof_name(1) = 'DX'
+        dof_name(2) = 'DX'
+        dof_name(3) = 'DX'
+        call afrela(coef_real, coef_cplx, dof_name , node_name, repe_type,&
+                    repe_defi, 3        , vale_real, vale_cplx, vale_func,&
+                    type_coef, vale_type, type_lagr, 0.d0     , list_rela)
+        dof_name(1) = 'DY'
+        dof_name(2) = 'DY'
+        dof_name(3) = 'DY'
+        call afrela(coef_real, coef_cplx, dof_name , node_name, repe_type,&
+                    repe_defi, 3        , vale_real, vale_cplx, vale_func,&
+                    type_coef, vale_type, type_lagr, 0.d0     , list_rela)
+        dof_name(1) = 'DZ'
+        dof_name(2) = 'DZ'
+        dof_name(3) = 'DZ'
+        call afrela(coef_real, coef_cplx, dof_name , node_name, repe_type,&
+                    repe_defi, 3        , vale_real, vale_cplx, vale_func,&
+                    type_coef, vale_type, type_lagr, 0.d0     , list_rela)
+ 30     continue
+    end do
 !
-    if (lreli) then
-        call aflrch(lisrel, char)
-        nbexcl = iexcl - 1
-        call cfsuex(defico, noesup, nbexcl, nzoco)
-        call jedetr(coninv)
-        call jedetr(noesup)
+    if (l_line_rela) then
+        call aflrch(list_rela, sdcont)
+        call cfsuex(sdcont_defi, v_list_excl, nb_excl, nb_cont_zone)
+        call jedetr(connex_inv)
+        AS_DEALLOCATE(vi = v_list_excl)
     endif
 !
- 40 continue
+ 99 continue
 !
-!
-    call jedema()
 end subroutine

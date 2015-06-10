@@ -63,12 +63,10 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nb_cont_surf, nb_cont_elem, nb_cont_node, nb_node_coq3d
-    integer :: indqua
     aster_logical :: l_elim_coq3d
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    indqua       = 1
     l_elim_coq3d = .false.
 !
 ! - Read zone: nodes and elements

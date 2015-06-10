@@ -16,15 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfleqc(noma, defico, nzoco, nnoco, nsuco,&
-                      poinsn, indino, elimno)
-        character(len=8) :: noma
-        character(len=24) :: defico
-        integer :: nzoco
-        integer :: nnoco
-        integer :: nsuco
-        character(len=24) :: poinsn
-        character(len=24) :: indino
-        integer :: elimno
+    subroutine cfleqc(mesh       , sdcont_defi, nb_cont_zone, nb_cont_node, nb_cont_surf,&
+                      v_poin_node, v_indi_node, nb_node_elim)
+        character(len=8), intent(in) :: mesh
+        character(len=24), intent(in) :: sdcont_defi
+        integer, intent(in) :: nb_cont_zone
+        integer, intent(in) :: nb_cont_surf
+        integer, intent(in) :: nb_cont_node
+        integer, pointer, intent(out) :: v_poin_node(:)
+        integer, pointer, intent(out) :: v_indi_node(:)
+        integer, intent(out) :: nb_node_elim
     end subroutine cfleqc
 end interface

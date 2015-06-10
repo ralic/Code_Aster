@@ -15,9 +15,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
-    subroutine quadco(char, indqua)
-        character(len=8) :: char
-        integer :: indqua
+    subroutine quadco(sdcont, l_node_q8)
+        character(len=8), intent(in) :: sdcont
+        aster_logical, intent(out) :: l_node_q8
     end subroutine quadco
 end interface

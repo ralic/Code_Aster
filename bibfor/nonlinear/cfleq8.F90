@@ -1,5 +1,17 @@
-subroutine cfleq8(noma, defico, nzoco, nsuco, nnoco,&
-                  nnoco0, listno, poinsn)
+subroutine cfleq8(mesh         , sdcont_defi, nb_cont_zone, nb_cont_surf, nb_cont_node,&
+                  nb_cont_node0, v_list_node, v_poin_node)
+!
+implicit none
+!
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfleqa.h"
+#include "asterfort/cfleqb.h"
+#include "asterfort/cfleqc.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/utmess.h"
+#include "asterfort/wkvect.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,112 +31,87 @@ subroutine cfleq8(noma, defico, nzoco, nsuco, nnoco,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/cfleqa.h"
-#include "asterfort/cfleqb.h"
-#include "asterfort/cfleqc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
-    character(len=8) :: noma
-    integer :: nnoco0, nsuco, nnoco, nzoco
-    character(len=24) :: defico
-    character(len=24) :: listno
-    character(len=24) :: poinsn
+    character(len=8), intent(in) :: mesh
+    character(len=24), intent(in) :: sdcont_defi
+    integer, intent(in) :: nb_cont_zone
+    integer, intent(in) :: nb_cont_surf
+    integer, intent(in) :: nb_cont_node0
+    integer, intent(inout) :: nb_cont_node
+    integer, pointer, intent(out) :: v_poin_node(:)
+    integer, pointer, intent(out) :: v_list_node(:)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (METHODES MAILLEES - LECTURE DONNEES )
+! DEFI_CONTACT
 !
-! CREATION D'UNE LISTE DES NOEUDS MILIEUX DES ARETES POUR LES MAILLES
-! QUADRATIQUES
+! Suppress quadratic middle nodes of QUAD8 - Create list of middle nodes
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  mesh             : name of mesh
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  nb_cont_zone     : number of zones of contact
+! In  nb_cont_surf     : number of surfaces of contact
+! In  nb_cont_node0    : number of nodes of contact (before detection of middle nodes)
+! IO  nb_cont_node     : number of nodes of contact (after detection of middle nodes)
+! Out v_list_node      : pointer to list of non-double nodes
+! Out v_poin_node      : pointer to pointer of contact surface
 !
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  DEFICO : NOM SD CONTACT DEFINITION
-! IN  NZOCO  : NOMBRE TOTAL DE ZONES DE CONTACT
-! IN  NSUCO  : NOMBRE TOTAL DE SURFACES DE CONTACT
-! IN  NNOCO0 : NOMBRE DE NOEUDS INITIAL
-! OUT POINSN : POINTEUR MISE A JOUR POUR PSURNO
-! OUT LISTNO : LISTE DES NOEUDS RESTANTES (LONGUEUR NNOCO
-! OUT NNOCO  : NOMBRE DE NOEUDS FINAL
+! --------------------------------------------------------------------------------------------------
 !
+    integer, pointer :: v_indi_node(:) => null()
+    character(len=24) :: sdcont_noeuco
+    integer, pointer :: v_sdcont_noeuco(:) => null()
+    integer :: nb_node_elim, nt_node_middle, k, i_node
 !
+! --------------------------------------------------------------------------------------------------
 !
+    nt_node_middle = 0
+    nb_node_elim   = 0
 !
-    character(len=24) :: contno
-    integer :: jnoco
-    character(len=24) :: indino
-    integer :: jindno
-    integer :: jno
-    integer :: ino, k
-    integer :: elimno, nnoqua
+! - Datastructure for contact definition
 !
-! ----------------------------------------------------------------------
+    sdcont_noeuco  = sdcont_defi(1:16)//'.NOEUCO'
+    call jeveuo(sdcont_noeuco , 'L', vi = v_sdcont_noeuco)
 !
-    call jemarq()
+! - Total number of middle nodes
 !
-! --- ACCES AUX STRUCTURES DE DONNEES DE CONTACT
-!
-    contno = defico(1:16)//'.NOEUCO'
-    call jeveuo(contno, 'L', jnoco)
-!
-! --- INITIALISATIONS
-!
-    nnoqua = 0
-    elimno = 0
-    indino = '&&CFLEQ8.INDINO'
-!
-! --- NOMBRE TOTAL DE NOEUDS QUADRATIQUES
-!
-    call cfleqa(noma, defico, nzoco, nnoqua)
-!
-! --- PAS DE QUAD8
-!
-    if (nnoqua .eq. 0) then
+    call cfleqa(mesh, sdcont_defi, nb_cont_zone, nt_node_middle)
+    if (nt_node_middle .eq. 0) then
         goto 999
     else
         call utmess('A', 'CONTACT_8')
     endif
 !
-! --- ECRITURE LISTE DES NOEUDS QUADRATIQUES
+! - Save list in contact datastructure
 !
-    call cfleqb(noma, defico, nzoco, nnoqua)
+    call cfleqb(mesh, sdcont_defi, nb_cont_zone, nt_node_middle)
 !
-! --- ELIMINATION DES NOEUDS MILIEUX DES ARETES DES QUAD8
+! - Create list of (middle) nodes to suppress
 !
-    call cfleqc(noma, defico, nzoco, nnoco, nsuco,&
-                poinsn, indino, elimno)
+    call cfleqc(mesh       , sdcont_defi, nb_cont_zone, nb_cont_node, nb_cont_surf,&
+                v_poin_node, v_indi_node, nb_node_elim)
 !
-! --- RECOPIE DES NOEUDS NON ELIMINES DANS TABLEAU DE TRAVAIL
+! - Non-suppressed nodes vector
 !
-    nnoco = nnoco0 - elimno
-    call wkvect(listno, 'V V I', nnoco, jno)
+    nb_cont_node = nb_cont_node0 - nb_node_elim
+    AS_ALLOCATE(vi=v_list_node, size=nb_cont_node)
 !
-! --- TRAITEMENT DES NOEUDS MILIEUX DES ARETES DES QUAD8
+! - Create list of nodes to suppress
 !
     k = 0
-    call jeveuo(indino, 'L', jindno)
-    do 120 ino = 1, nnoco0
-        if (zi(jindno+ino-1) .eq. 0) then
+    do i_node = 1, nb_cont_node0
+        if (v_indi_node(i_node) .eq. 0) then
             k = k + 1
-            zi(jno+k-1) = zi(jnoco+ino-1)
+            v_list_node(k) = v_sdcont_noeuco(i_node)
         endif
-120  end do
-    ASSERT(k.eq.nnoco)
+    end do
+    ASSERT(k.eq.nb_cont_node)
 !
-999  continue
+999 continue
 !
-! --- DESTRUCTION DU VECTEUR DE TRAVAIL TEMPORAIRE
+! - Clean
 !
-    call jedetr(indino)
+    AS_DEALLOCATE(vi=v_indi_node)
 !
-    call jedema()
 end subroutine

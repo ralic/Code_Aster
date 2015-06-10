@@ -16,8 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cacoeq(chargz, nomaz)
-        character(len=*) :: chargz
-        character(len=*) :: nomaz
+    subroutine cacoeq(sdcont, mesh)
+        character(len=8), intent(in) :: sdcont
+        character(len=8), intent(in) :: mesh
     end subroutine cacoeq
 end interface

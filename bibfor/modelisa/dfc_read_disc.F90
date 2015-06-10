@@ -63,16 +63,16 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nb_cont_surf, nb_cont_elem, nb_cont_node
-    integer :: indqua
-    aster_logical :: l_elim_coq3d
+    aster_logical :: l_elim_coq3d, l_node_q8
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    l_node_q8    = .true.
     l_elim_coq3d = .true.
 !
-! - Quadratic elements (indqua = 0 if need linearization, see CACOEQ)
+! - QUAD8 specific treatment activation (l_node_q8 = .true. if need linearization, see CACOEQ)
 !
-    call quadco(sdcont, indqua)
+    call quadco(sdcont, l_node_q8)
 !
 ! - Read zone: nodes and elements
 !
@@ -84,10 +84,11 @@ implicit none
     call elimco(sdcont      , mesh        , model  , nb_cont_surf,&
                 nb_cont_elem, nb_cont_node, l_elim_coq3d)
 !
-! - Suppress middle nodes from QUAD8
+! - QUAD8 specific treatment: suppress middle nodes in contact lists
 !
-    call elimcq(sdcont, mesh, indqua, nb_cont_zone, nb_cont_surf,&
-                nb_cont_node)
+    if (l_node_q8) then
+        call elimcq(sdcont, mesh, nb_cont_zone, nb_cont_surf, nb_cont_node)
+    endif
 !
 ! - Inverse connectivities
 !
@@ -118,9 +119,9 @@ implicit none
 !
     call cacoco(sdcont, keywf, mesh)
 !
-! - Linear relations for quadratic elements
+! - Create QUAD8 linear relations
 !
-    if (indqua.eq.0) then
+    if (l_node_q8) then
         call cacoeq(sdcont, mesh)
     endif
 !

@@ -1,4 +1,10 @@
-subroutine quadco(char, indqua)
+subroutine quadco(sdcont, l_node_q8)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisl.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,76 +24,42 @@ subroutine quadco(char, indqua)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-    character(len=8) :: char
-    integer :: indqua
+    character(len=8), intent(in) :: sdcont
+    aster_logical, intent(out) :: l_node_q8
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (TOUTES METHODES - LECTURE DONNEES)
+! DEFI_CONTACT
 !
-! TRAITEMENT DU CAS DES MAILLES QUADRATIQUES
+! Discrete method - QUAD8 specific treatment activation
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sdcont           : name of contact concept (DEFI_CONTACT)
+! Out l_node_q8        : .true. if nead linearization for QUAD8
 !
-! INDQUA VAUT 0 SI L'ON DOIT CONSIDERER LES NOEUDS MILIEUX A PART
-! DANS CE CAS, PERMETTRA DE FAIRE LA LIAISON LINEAIRE DANS CACOEQ
-! MASI UNIQUEMENT POUR LES QUAD8 EN SOLIDE.
+! --------------------------------------------------------------------------------------------------
 !
+    character(len=24) :: sdcont_defi
+    aster_logical :: l_all_verif, l_pena_cont, l_gliss
 !
-! IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE)
-! OUT INDQUA : VAUT 0 LORSQUE L'ON DOIT TRAITER LES NOEUDS MILIEUX
-!                     A PART
-!              VAUT 1 LORSQUE L'ON DOIT TRAITER LES NOEUDS MILIEUX
-!                     NORMALEMENT
+! --------------------------------------------------------------------------------------------------
 !
+    l_node_q8   = .true.
+    sdcont_defi = sdcont(1:8)//'.CONTACT'
 !
+! - Parameters
 !
+    l_all_verif = cfdisl(sdcont_defi,'ALL_VERIF')
+    l_pena_cont = cfdisl(sdcont_defi,'CONT_PENA')
+    l_gliss     = cfdisl(sdcont_defi,'CONT_DISC_GLIS')
 !
-    integer :: iform
-    character(len=24) :: defico
-    aster_logical :: lallv, lpenac, lgliss
+! - Activate elimination of QUAD8 middle nodes
 !
-! ----------------------------------------------------------------------
-!
-    call jemarq()
-!
-! --- INITIALISATIONS
-!
-    indqua = 0
-    defico = char(1:8)//'.CONTACT'
-!
-! --- TYPES DE CONTACT
-!
-    lallv = cfdisl(defico,'ALL_VERIF')
-    iform = cfdisi(defico,'FORMULATION')
-    lpenac = cfdisl(defico,'CONT_PENA')
-    lgliss = cfdisl(defico,'CONT_DISC_GLIS')
-!
-! --- TRAITEMENT DU CAS DES MAILLES QUADRATIQUES
-!
-    indqua = 0
-    if (iform .eq. 1) then
-        if (lallv .or. lpenac .or. lgliss) then
-            indqua = 1
-        else
-            indqua = 0
-        endif
-    else if (iform.eq.2) then
-        indqua = 1
-    else if (iform.eq.3) then
-        indqua = 1
+    if (l_all_verif .or. l_pena_cont .or. l_gliss) then
+        l_node_q8 = .false.
     else
-        ASSERT(.false.)
+        l_node_q8 = .true.
     endif
 !
-    call jedema()
 end subroutine

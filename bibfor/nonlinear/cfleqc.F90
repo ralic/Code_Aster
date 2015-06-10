@@ -1,5 +1,18 @@
-subroutine cfleqc(noma, defico, nzoco, nnoco, nsuco,&
-                  poinsn, indino, elimno)
+subroutine cfleqc(mesh       , sdcont_defi, nb_cont_zone, nb_cont_node, nb_cont_surf,&
+                  v_poin_node, v_indi_node, nb_node_elim)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfnbsf.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mminfl.h"
+#include "asterfort/wkvect.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,150 +32,147 @@ subroutine cfleqc(noma, defico, nzoco, nnoco, nsuco,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
+    character(len=8), intent(in) :: mesh
+    character(len=24), intent(in) :: sdcont_defi
+    integer, intent(in) :: nb_cont_zone
+    integer, intent(in) :: nb_cont_surf
+    integer, intent(in) :: nb_cont_node
+    integer, pointer, intent(out) :: v_poin_node(:)
+    integer, pointer, intent(out) :: v_indi_node(:)
+    integer, intent(out) :: nb_node_elim
 !
-#include "asterfort/assert.h"
-#include "asterfort/cfnbsf.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/mminfl.h"
-#include "asterfort/wkvect.h"
-    character(len=8) :: noma
-    integer :: nzoco, nnoco, nsuco
-    character(len=24) :: defico
-    character(len=24) :: poinsn, indino
-    integer :: elimno
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! DEFI_CONTACT
 !
-! ROUTINE CONTACT (METHODES MAILLEES - LECTURE DONNEES - QUAD8)
+! Suppress quadratic middle nodes of QUAD8 - Create list of (middle) nodes to suppress
 !
-! LSITE DES NOEUDS MILIEUX A ELIMINER
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! In  mesh             : name of mesh
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  nb_cont_zone     : number of zones of contact
+! In  nb_cont_surf     : number of surfaces of contact
+! In  nb_cont_node     : number of nodes of contact (after detection of middle nodes)
+! Out v_indi_node      : pointer to indicator of middle nodes
+! Out v_poin_node      : pointer to pointer of contact surface
+! Out nb_node_elim     : number of nodes to suppress
 !
+! --------------------------------------------------------------------------------------------------
 !
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  DEFICO : NOM SD CONTACT DEFINITION
-! IN  NZOCO  : NOMBRE TOTAL DE ZONES DE CONTACT
-! IN  NNOCO  : NOMBRE TOTAL DE NOEUDS DE CONTACT
-! IN  NSUCO  : NOMBRE TOTAL DE SURFACES DE CONTACT
-! OUT ELIMNO : NOMBRE DE NOEUDS A ELIMINER
-! OUT POINSN : POINTEUR MISE A JOUR POUR INDINO
-! OUT INDINO : NOEUDS A ELIMINER POUR CHAQUE SURFACE
+    integer :: elem_nume, type_nume
+    integer :: i_surf_curr, i_zone, i_elem, i_node, i_node_quad, i_surf
+    integer :: nb_surf, nb_elem, nb_node_quad, nb_node
+    character(len=8) :: type_name
+    aster_logical :: l_veri
+    integer :: jdecma, jdecno, jdecqu
+    integer :: node_nume_1, node_nume_2
+    integer, pointer :: v_mesh_typmail(:) => null()
+    character(len=24) :: sdcont_mailco
+    integer, pointer :: v_sdcont_mailco(:) => null()
+    character(len=24) :: sdcont_noeuco
+    integer, pointer :: v_sdcont_noeuco(:) => null()
+    character(len=24) :: sdcont_pzoneco
+    integer, pointer :: v_sdcont_pzoneco(:) => null()
+    character(len=24) :: sdcont_pnoeuqu
+    integer, pointer :: v_sdcont_pnoeuqu(:) => null()
+    character(len=24) :: sdcont_noeuqu
+    integer, pointer :: v_sdcont_noeuqu(:) => null()
 !
+! --------------------------------------------------------------------------------------------------
 !
+    nb_node_elim = 0
+    jdecqu       = 0
 !
+! - Create vectors to use in cfmeno subroutine
 !
-    character(len=24) :: pzone
-    integer :: jzone
-    character(len=24) :: contma, contno, conoqu, pnoqua
-    integer :: jmaco, jnoco, jnoqu, jnoqua
-    integer :: jdecma, nummai, posmai
-    integer :: isurf, izone, ima, ino, nutyp, inoqua, isuco
-    integer :: nbsurf, nbma, nbnoq, nbno
-    integer :: iatyma, itypma
-    character(len=8) :: nomtm
-    aster_logical :: lveri
-    integer :: jindno, jelino
-    integer :: jdecno, jdecqu
-    integer :: posno, numno1, numno2
+    AS_ALLOCATE(vi=v_poin_node, size=nb_cont_surf+1)
+    AS_ALLOCATE(vi=v_indi_node, size=nb_cont_node)
 !
-! ----------------------------------------------------------------------
+! - Datastructure for contact definition
 !
-    call jemarq()
+    sdcont_pzoneco = sdcont_defi(1:16)//'.PZONECO'
+    sdcont_mailco  = sdcont_defi(1:16)//'.MAILCO'
+    sdcont_noeuco  = sdcont_defi(1:16)//'.NOEUCO'
+    sdcont_pnoeuqu = sdcont_defi(1:16)//'.PNOEUQU'
+    sdcont_noeuqu  = sdcont_defi(1:16)//'.NOEUQU'
+    call jeveuo(sdcont_pzoneco, 'L', vi = v_sdcont_pzoneco)
+    call jeveuo(sdcont_mailco , 'L', vi = v_sdcont_mailco)
+    call jeveuo(sdcont_noeuco , 'L', vi = v_sdcont_noeuco)
+    call jeveuo(sdcont_pnoeuqu, 'L', vi = v_sdcont_pnoeuqu)
+    call jeveuo(sdcont_noeuqu , 'L', vi = v_sdcont_noeuqu)
 !
-! --- CREATION DES SD
+! - Access to mesh
 !
-    call wkvect(indino, 'V V I', nnoco, jindno)
-    call wkvect(poinsn, 'V V I', nsuco+1, jelino)
+    call jeveuo(mesh(1:8)//'.TYPMAIL', 'L', vi = v_mesh_typmail)
 !
-! --- ACCES AUX STRUCTURES DE DONNEES DE CONTACT
+! - Loop on contact zones
 !
-    conoqu = defico(1:16)//'.NOEUQU'
-    call jeveuo(conoqu, 'L', jnoqu)
-    pnoqua = defico(1:16)//'.PNOEUQU'
-    call jeveuo(pnoqua, 'L', jnoqua)
-    contma = defico(1:16)//'.MAILCO'
-    contno = defico(1:16)//'.NOEUCO'
-    pzone = defico(1:16)//'.PZONECO'
-    call jeveuo(contma, 'L', jmaco)
-    call jeveuo(contno, 'L', jnoco)
-    call jeveuo(pzone, 'L', jzone)
+    do i_zone = 1, nb_cont_zone
 !
-! --- INITIALISATIONS
+! ----- No computation
 !
-    elimno = 0
-    jdecqu = 0
-    call jeveuo(noma(1:8)//'.TYPMAIL', 'L', iatyma)
-!
-! --- LISTE DES NOEUDS MILIEUX POUR CHAQUE ZONE
-!
-    do 10 izone = 1, nzoco
-!
-        lveri = mminfl(defico,'VERIF',izone )
-        if (lveri) then
+        l_veri = mminfl(sdcont_defi,'VERIF',i_zone )
+        if (l_veri) then
             goto 21
         endif
 !
-! ----- NOMBRE DE SURFACES DE CONTACT
+! ----- Number of contact surfaces
 !
-        nbsurf = zi(jzone+izone) - zi(jzone+izone-1)
-        ASSERT(nbsurf.eq.2)
+        nb_surf = v_sdcont_pzoneco(i_zone+1) - v_sdcont_pzoneco(i_zone)
+        ASSERT(nb_surf.eq.2)
 !
-        do 20 isuco = 1, nbsurf
-            isurf = nbsurf*(izone-1)+isuco
+! ----- Loop on surfaces
 !
-            zi(jelino+isurf) = zi(jelino+isurf-1)
+        do i_surf = 1, nb_surf
 !
-            call cfnbsf(defico, isurf, 'MAIL', nbma, jdecma)
+! --------- Parameters of current surface
 !
-            do 30 ima = 1, nbma
+            i_surf_curr = nb_surf*(i_zone-1)+i_surf
+            call cfnbsf(sdcont_defi, i_surf_curr, 'MAIL', nb_elem, jdecma)
 !
-! --------- NUMERO MAILLE COURANTE
+! --------- Change pointer
 !
-                posmai = jdecma+ima
-                nummai = zi(jmaco+posmai-1)
+            v_poin_node(i_surf_curr+1) = v_poin_node(i_surf_curr)
 !
-! --------- TYPE MAILLE COURANTE
+! --------- Loop on elements
 !
-                itypma = iatyma - 1 + nummai
-                nutyp = zi(itypma)
-                call jenuno(jexnum('&CATA.TM.NOMTM', nutyp ), nomtm)
+            do i_elem = 1, nb_elem
 !
-! --------- ELIMINATION DES NOEUDS MILIEUX DES ARETES DES QUAD8
+! ------------- Current element
 !
-                if (nomtm(1:5) .eq. 'QUAD8') then
-                    nbnoq = zi(jnoqua+izone) - zi(jnoqua+izone-1)
-                    jdecqu = zi(jnoqua+izone-1)
-                    call cfnbsf(defico, isurf, 'NOEU', nbno, jdecno)
-                    nbnoq = nbnoq/3
-                    do 70 inoqua = 1, nbnoq
-                        numno1 = zi(jnoqu+jdecqu+3*(inoqua-1)+1-1)
-                        do 80 ino = 1, nbno
-                            posno = jdecno+ino
-                            numno2 = zi(jnoco+posno-1)
-                            if (numno1 .eq. numno2) then
-                                if (zi(jindno+posno-1) .eq. 0) then
-                                    zi(jindno+posno-1) = 1
-                                    zi(jelino+isurf) = zi(jelino+ isurf)+1
-                                    elimno = elimno + 1
+                elem_nume = v_sdcont_mailco(jdecma+i_elem)
+!
+! ------------- Type of element
+!
+                type_nume = v_mesh_typmail(elem_nume)
+                call jenuno(jexnum('&CATA.TM.NOMTM', type_nume), type_name)
+!
+! ------------- Suppress middle nodes of QUAD8
+!
+                if (type_name(1:5) .eq. 'QUAD8') then
+                    nb_node_quad = (v_sdcont_pnoeuqu(i_zone+1) - v_sdcont_pnoeuqu(i_zone))/3
+                    jdecqu       = v_sdcont_pnoeuqu(i_zone)
+                    call cfnbsf(sdcont_defi, i_surf_curr, 'NOEU', nb_node, jdecno)
+                    do i_node_quad = 1, nb_node_quad
+                        node_nume_1 = v_sdcont_noeuqu(jdecqu+3*(i_node_quad-1)+1)
+                        do i_node = 1, nb_node
+                            node_nume_2 = v_sdcont_noeuco(jdecno+i_node)
+                            if (node_nume_1 .eq. node_nume_2) then
+                                if (v_indi_node(jdecno+i_node) .eq. 0) then
+                                    v_indi_node(jdecno+i_node) = 1
+                                    v_poin_node(i_surf_curr+1) = v_poin_node(i_surf_curr+1)+1
+                                    nb_node_elim = nb_node_elim + 1
                                 endif
                             endif
- 80                     continue
- 70                 continue
+                        end do
+                    end do
                 endif
- 30         continue
- 20     continue
+            end do
+        end do
  21     continue
- 10 end do
+    end do
 !
-    ASSERT((2*nzoco).eq.nsuco)
+    ASSERT((2*nb_cont_zone).eq.nb_cont_surf)
 !
-    call jedema()
 end subroutine

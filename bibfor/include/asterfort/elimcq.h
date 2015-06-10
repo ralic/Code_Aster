@@ -16,13 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine elimcq(char, noma, indqua, nzoco, nsuco,&
-                      nnoco)
-        character(len=8) :: char
-        character(len=8) :: noma
-        integer :: indqua
-        integer :: nzoco
-        integer :: nsuco
-        integer :: nnoco
+    subroutine elimcq(sdcont, mesh, nb_cont_zone, nb_cont_surf, nb_cont_node)
+        character(len=8), intent(in) :: sdcont
+        character(len=8), intent(in) :: mesh
+        integer, intent(in) :: nb_cont_zone
+        integer, intent(in) :: nb_cont_surf
+        integer, intent(inout) :: nb_cont_node
     end subroutine elimcq
 end interface

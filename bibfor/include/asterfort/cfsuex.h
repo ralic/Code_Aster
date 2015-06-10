@@ -16,10 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfsuex(defico, noesup, nbexcl, nzoco)
-        character(len=24) :: defico
-        character(len=24) :: noesup
-        integer :: nbexcl
-        integer :: nzoco
+    subroutine cfsuex(sdcont_defi, v_list_excl, nb_excl, nb_cont_zone)
+        character(len=24), intent(in) :: sdcont_defi
+        integer, pointer, intent(in) :: v_list_excl(:)
+        integer, intent(in) :: nb_excl
+        integer, intent(in) :: nb_cont_zone
     end subroutine cfsuex
 end interface
