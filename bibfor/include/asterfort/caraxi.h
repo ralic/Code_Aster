@@ -16,9 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine caraxi(sdcont, model, model_ndim)
+    subroutine caraxi(sdcont, model, mesh, model_ndim)
         character(len=8), intent(in) :: sdcont
         character(len=8), intent(in) :: model
+        character(len=8), intent(in) :: mesh
         integer, intent(in) :: model_ndim
     end subroutine caraxi
 end interface

@@ -117,7 +117,7 @@ implicit none
 !
 ! - Check if axi-symmetric
 !
-    call caraxi(sdcont, model, model_ndim)
+    call caraxi(sdcont, model, mesh, model_ndim)
 !
 ! - Create slave elements in model
 !

@@ -1,4 +1,4 @@
-subroutine caraxi(sdcont, model, model_ndim)
+subroutine caraxi(sdcont, model, mesh, model_ndim)
 !
 implicit none
 !
@@ -28,6 +28,7 @@ implicit none
 !
     character(len=8), intent(in) :: sdcont
     character(len=8), intent(in) :: model
+    character(len=8), intent(in) :: mesh
     integer, intent(in) :: model_ndim
 !
 ! --------------------------------------------------------------------------------------------------
@@ -38,27 +39,27 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sdcont      : name of contact concept (DEFI_CONTACT)
-! In  model       : name of model
-! In  model_ndim  : dimension of model
+! In  sdcont           : name of contact concept (DEFI_CONTACT)
+! In  model            : name of model
+! In  mesh             : name of mesh
+! In  model_ndim       : dimension of model
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: sdcont_defi
-    character(len=24) :: cont_paraci, cont_contma
-    integer, pointer :: v_cont_paraci(:) => null()
     aster_logical :: l_verif_all, l_elem_axis
     integer :: nb_cont_elem
+    character(len=24) :: sdcont_defi
+    character(len=24) :: sdcont_paraci
+    integer, pointer :: v_sdcont_paraci(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    sdcont_defi = sdcont(1:8)//'.CONTACT'
 !
 ! - Datastructure for contact definition
 !
-    sdcont_defi = sdcont(1:8)//'.CONTACT'
-    cont_paraci = sdcont_defi(1:16)//'.PARACI'
-    cont_contma = sdcont_defi(1:16)//'.MAILCO'
-    call jeveuo(cont_paraci, 'E', vi=v_cont_paraci)
+    sdcont_paraci = sdcont_defi(1:16)//'.PARACI'
+    call jeveuo(sdcont_paraci, 'E', vi=v_sdcont_paraci)
 !
 ! - Parameters
 !
@@ -70,13 +71,12 @@ implicit none
     if (.not.l_verif_all) then
         l_elem_axis = .false.
         if (model_ndim .eq. 2) then
-            l_elem_axis = mmmaxi(model, cont_contma, nb_cont_elem)
+            l_elem_axis = mmmaxi(sdcont_defi, model, mesh)
         endif
         if (l_elem_axis) then
-            v_cont_paraci(16) = 1
+            v_sdcont_paraci(16) = 1
         else
-            v_cont_paraci(16) = 0
+            v_sdcont_paraci(16) = 0
         endif
     endif
-!
 end subroutine

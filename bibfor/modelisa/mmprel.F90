@@ -102,7 +102,7 @@ subroutine mmprel(char, noma, nomo, ligret)
 !
     laxis = .false.
     if (ndimg .eq. 2) then
-        laxis = mmmaxi(nomo ,contma,nmaco)
+        laxis = mmmaxi(defico, nomo, noma)
     endif
     if (laxis) then
         zi(jparci+16-1) = 1

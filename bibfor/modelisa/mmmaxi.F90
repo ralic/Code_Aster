@@ -1,4 +1,18 @@
-function mmmaxi(modelz, lisma, nbma)
+function mmmaxi(sdcont_defi, model, mesh)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/infbav.h"
+#include "asterfort/infmue.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/utmasu.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,116 +32,100 @@ function mmmaxi(modelz, lisma, nbma)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/infbav.h"
-#include "asterfort/infmue.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/lteatt.h"
-#include "asterfort/utmasu.h"
-#include "asterfort/utmess.h"
     aster_logical :: mmmaxi
+    character(len=24), intent(in) :: sdcont_defi
+    character(len=8), intent(in) :: mesh
+    character(len=8), intent(in) :: model
 !
-    character(len=8) :: modelz
-    character(len=24) :: lisma
-    integer :: nbma
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! DEFI_CONTACT
 !
-! ROUTINE CONTACT (METHODE CONTINUE - UTILITAIRE)
+! Continue method - Check if all elements in contact surface are axisymmetric
 !
-! CETTE FONCTION PERMET DE DETERMINER SI LES ELEMENTS D'UN GROUPE DE
-! MAILLES DE CONTACT SONT TOUS AXISYMETRIQUES
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  model            : name of model
+! In  mesh             : name of mesh
 !
+! function mmmaxi      : .true. if all elements in list are axisymmetric
+!                        .false. if all elements in list are NOT axisymmetric
+!                        error if some elements are axisymmetric
 !
-! IN  MODELE : NOM DU MODELE
-! IN  LISMA  : LISTE DES MAILLES A VERIFIER
-! IN  NBMA   : NOMBRE DE MAILLES CONTENU DANS LA LISTE LISMA
-! OUT MMMAXI : .TRUE.  LE GROUPE DE MAILLE NE CONTIENT QUE DES ELEMENTS
-!                      AXISYMETRIQUES
-!              .FALSE. LE GROUPE DE MAILLE NE CONTIENT QUE DES ELEMENTS
-!                      NON AXIS
-!              ERREUR <F> LE GROUPE DE MAILLE CONTIENT UN MELANGE
-!                         D'ELEMENT AXIS ET NON AXIS
+! --------------------------------------------------------------------------------------------------
 !
+    character(len=16) :: elem_type_name, list_elem_supp
+    integer :: elem_nume, elem_type_nume
+    integer :: i_elem, nb_cont_elem
+    integer :: elem_supp_nume, nb_elem_axis, ivdummy(1)
+    real(kind=8), pointer :: v_geom_vale(:) => null()
+    character(len=24) :: model_maille
+    integer, pointer :: v_model_maille(:) => null()
+    integer, pointer :: v_list_elem_supp(:) => null()
+    character(len=24) :: sdcont_mailco
+    integer, pointer :: v_sdcont_mailco(:) => null()
 !
+! --------------------------------------------------------------------------------------------------
 !
+    nb_elem_axis   = 0
+    mmmaxi         = .false.
+    list_elem_supp = '&&MMMAXI.MAISUP'
 !
-    character(len=8) :: noma, modele
-    character(len=16) :: notype, maisup
-    character(len=24) :: typele
-    integer :: numail, nutyel
-    integer :: ima
-    integer :: numsup, nbaxis, mailvo(1)
-    integer :: jmaisu, ilmail, itypel
-    real(kind=8), pointer :: vale(:) => null()
+! - Datastructure for contact definition
 !
-! ----------------------------------------------------------------------
+    sdcont_mailco  = sdcont_defi(1:16)//'.MAILCO'
+    call jeveuo(sdcont_mailco , 'L', vi = v_sdcont_mailco)
 !
-    call jemarq()
+! - Parameters
 !
-! --- INITIALISATIONS
+    nb_cont_elem  = cfdisi(sdcont_defi,'NMACO' )
 !
-    modele = modelz
-    nbaxis = 0
-    mmmaxi = .false.
-    typele = modele(1:8)//'.MAILLE'
-    maisup = '&&MMMAXI.MAISUP'
-    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
+! - Access to model
 !
-! --- RECHERCHE DES MAILLES 2D SUPPORTS DES MAILLES DE LISMA
+    model_maille = model(1:8)//'.MAILLE'
+    call jeveuo(model_maille, 'L', vi = v_model_maille)
 !
-    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
-    call jeveuo(lisma, 'L', ilmail)
+! - Get support elements of skin elements
+!
+    call jeveuo(mesh//'.COORDO    .VALE', 'L', vr=v_geom_vale)
     call infmue()
-    call utmasu(noma, '2D', nbma, zi(ilmail), maisup,&
-                vale, 0, mailvo, .false._1)
+    call utmasu(mesh, '2D', nb_cont_elem, v_sdcont_mailco, list_elem_supp,&
+                v_geom_vale, 0, ivdummy, .false._1)
     call infbav()
-    call jeveuo(maisup, 'L', jmaisu)
+    call jeveuo(list_elem_supp, 'L', vi = v_list_elem_supp)
 !
-! --- DETERMINATION DU TYPE DES MAILLES DE LISMA
+! - Loop on elements
 !
-    call jeveuo(typele, 'L', itypel)
-!
-    do ima = 1, nbma
-        numsup = zi(jmaisu-1+ima)
-        if (numsup .ne. 0) then
-            nutyel = zi(itypel-1+numsup)
-            if (nutyel .ne. 0) then
+    do i_elem = 1, nb_cont_elem
+        elem_supp_nume = v_list_elem_supp(i_elem)
+        if (elem_supp_nume .ne. 0) then
+            elem_type_nume = v_model_maille(elem_supp_nume)
+            if (elem_type_nume .ne. 0) then
                 goto 50
             endif
         endif
-        numail = zi(ilmail-1+ima)
-        nutyel = zi(itypel-1+numail)
-        if (nutyel .eq. 0) then
+        elem_nume      = v_sdcont_mailco(i_elem)
+        elem_type_nume = v_model_maille(elem_nume)
+        if (elem_type_nume .eq. 0) then
             goto 100
         endif
  50     continue
-        call jenuno(jexnum('&CATA.TE.NOMTE', nutyel), notype)
-        if (lteatt('AXIS','OUI', typel=notype)) then
-            nbaxis = nbaxis +1
+        call jenuno(jexnum('&CATA.TE.NOMTE', elem_type_nume), elem_type_name)
+        if (lteatt('AXIS','OUI', typel=elem_type_name)) then
+            nb_elem_axis = nb_elem_axis +1
         endif
 100     continue
     end do
 !
-    if (nbaxis .eq. nbma) then
+    if (nb_elem_axis .eq. nb_cont_elem) then
         mmmaxi = .true.
-    else if (nbaxis.eq.0) then
+    else if (nb_elem_axis.eq.0) then
         mmmaxi = .false.
     else
         call utmess('F', 'CONTACT2_12')
     endif
 !
-    call jedetr(maisup)
-    call jedema()
+    call jedetr(list_elem_supp)
 !
 end function

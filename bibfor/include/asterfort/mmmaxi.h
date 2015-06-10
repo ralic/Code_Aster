@@ -18,10 +18,10 @@
 #include "asterf_types.h"
 !
 interface
-    function mmmaxi(modelz, lisma, nbma)
-        character(len=8) :: modelz
-        character(len=24) :: lisma
-        integer :: nbma
+    function mmmaxi(sdcont_defi, model, mesh)
         aster_logical :: mmmaxi
+        character(len=24), intent(in) :: sdcont_defi
+        character(len=8), intent(in) :: mesh
+        character(len=8), intent(in) :: model
     end function mmmaxi
 end interface
