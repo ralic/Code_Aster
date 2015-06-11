@@ -138,8 +138,8 @@ extern void DEFSSSSPPS(PRCOCH,prcoch,char *,STRING_SIZE,char *,STRING_SIZE,char 
 #define CALL_UTGTME(a,b,c,d) CALLPSPP(UTGTME,utgtme,a,b,c,d)
 extern void DEFPSPP(UTGTME, utgtme, INTEGER *, char *,  STRING_SIZE,  DOUBLE *, INTEGER *);
 
-#define CALL_UTPTME(a,b,c,d) CALLPSPP(UTPTME,utptme,a,b,c,d)
-extern void DEFPSPP(UTpTME, utptme, INTEGER *, char *,  STRING_SIZE,  DOUBLE *, INTEGER *);
+#define CALL_UTPTME(a,b,c) CALLSPP(UTPTME,utptme,a,b,c)
+extern void DEFSPP(UTPTME, utptme, char *,  STRING_SIZE,  DOUBLE *, INTEGER *);
 
 /* routines de manipulation de la SD RESULTAT */
 extern void DEFSPPSPPPSP(RSACPA,rsacpa,char *, STRING_SIZE, INTEGER *, INTEGER *,

@@ -359,7 +359,7 @@ PyObject *self; /* Not used */
 PyObject *args;
 {
     /*
-     *  Interface d'appel à la routine fortran UTGTME
+     *  Interface d'appel à la routine fortran UTPTME
      */
     PyObject *tup_par, *tup_val;
     PyObject *res;
@@ -389,7 +389,7 @@ PyObject *args;
     values = (DOUBLE *)malloc(inbval*sizeof(DOUBLE));
     convr8(inbval, tup_val, values);
 
-    CALL_UTPTME(&nbpar, nompar, values, &codret);
+    CALL_UTPTME(nompar, values, &codret);
 
     /* retour de la fonction */
     res = PyInt_FromLong((long)codret);
