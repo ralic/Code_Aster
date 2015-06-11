@@ -512,6 +512,9 @@ def imprime_ojb(file, capy):
     # Pour verifier que les options et leurs parametres servent a quelque chose :
     PbOptions(capy)
 
+    # Pour verifier que les type_elements ont ete ajoutes dans PHENOMENE_MODELISATION__ :
+    verif_phenmode(capy)
+
     #  TOUCOMLIBR = objet contenant tous les commentaires libres :
     #-------------------------------------------------------------
     TOUCOMLIBR = ut.cree_co(
@@ -1747,3 +1750,34 @@ def nomte_nomtm(nomfic, capy):
             x1 = "%-17s" % (liattr[2 * k] + "=" + liattr[2 * k + 1],)
             l1 = l1 + x1 + " "
         file.write(note + ' ' + notm + l1 + '\n')
+
+
+#-------------------------------------------------------------------------
+def verif_phenmode(capy):
+    # verifie que les elements se retrouvent dans PHENOMENE_MODELISATION :
+    #-------------------------------------------------------------------------
+    dic1 = {}
+    for cata in capy.te:
+        entete, modlocs, opts = cata.cata_te
+        note = entete[0]
+        dic1[note]=1
+
+
+    dic2 = {}
+    for (ph, lmod, codph) in capy.ph.l_pheno:
+        for (mod, laffe, codmod, (d1, d2), lattrib) in lmod:
+            for (tyma, tyel) in laffe:
+                dic2[tyel]=1
+
+    s1=set(dic1.keys())
+    s2=set(dic2.keys())
+
+    s3=s1.difference(s2)
+    for tyel in s3 :
+        if tyel[0:8] in ('D_DEPL_R', 'D_TEMP_R', 'D_PRES_C') : continue
+        ERR.mess('E', "L'element "+tyel+" doit figurer dans la catalogue PHENOMENE_MODELISATION__ .")
+
+    s3=s2.difference(s1)
+    for tyel in s3 :
+        ERR.mess('E', "L'element "+tyel+" n'est pas decrit dans un catalogue d'element .")
+
