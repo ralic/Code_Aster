@@ -23,3 +23,5 @@ OPTION__
         PNEUTER  NEUT_R
    OUT__
         PGNEUTR  NEUT_R ELNO__
+        
+   COND_CALCUL__   PLUS__  PHENO='PR'

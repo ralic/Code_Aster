@@ -26,4 +26,7 @@ OPTION__
         PONDPLA  NEUT_K8  << WAVE FUNCTION >>
         PONDPLR  NEUT_R   << WAVE TYPE AND DIRECTION >>
    OUT__
-PVECTUR VDEP_R RESL__
+        PVECTUR VDEP_R RESL__
+        
+   COND_CALCUL__   PLUS__  MODELI='3DA' 
+                   PLUS__  MODELI='DPA' 

@@ -35,3 +35,5 @@ OPTION__
         PNEWGEM  N120_R ELEM__
         PBASESC  N480_R ELEM__
         PBASMAI  N480_R ELEM__
+        
+   COND_CALCUL__   PLUS__  PHENO='ME' LXFEM='OUI' CONTACT='OUI'

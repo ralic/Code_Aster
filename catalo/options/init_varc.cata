@@ -28,3 +28,15 @@ OPTION__
 
    OUT__
         PVARCPR  VARI_R  ELGA__   <<  PVARCPR : VARIABLES DE COMMANDE POUR LE MATERIAU >>
+
+   COND_CALCUL__   PLUS__   PHENO='ME'  BORD='0'
+                   PLUS__   PHENO='TH'  BORD='0'
+                   PLUS__   PHENO='ME'  BORD_ISO='OUI'
+                   MOINS__  PHENO='ME'  MODELI='FLS'
+                   MOINS__  PHENO='ME'  MODELI='3FL'
+                   MOINS__  PHENO='ME'  MODELI='2FL'
+                   MOINS__  PHENO='ME'  MODELI='FS2'
+                   MOINS__  PHENO='ME'  MODELI='3DA'
+                   MOINS__  PHENO='ME'  MODELI='DPA'
+                   MOINS__  PHENO='ME'  MODELI='3FA'
+                   MOINS__  PHENO='ME'  MODELI='2FA'

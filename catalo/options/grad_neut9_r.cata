@@ -23,3 +23,6 @@ OPTION__
         PNEUTER  NEUT_R
    OUT__
         PGNEUTR  NEUT_R ELGA__
+        
+   COND_CALCUL__   PLUS__   PHENO='ME' BORD='0'
+                   MOINS__  PHENO='ME' DISCRET='OUI'

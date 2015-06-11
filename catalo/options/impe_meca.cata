@@ -23,4 +23,10 @@ OPTION__
         PMATERC  ADRSJEVE 'CHMA!.MATE_CODE' <<  PMATERC : CHAMP DE MATERIAU  >>
         PIMPEDR  IMPE_R
    OUT__
-PMATUUR MDEP_R RESL__
+        PMATUUR MDEP_R RESL__
+        
+   COND_CALCUL__   PLUS__  MODELI='3FA' 
+                   PLUS__  MODELI='2FA' 
+                   PLUS__  MODELI='3FL'  BORD='-1' 
+                   PLUS__  MODELI='2FL'  BORD='-1'
+                   PLUS__  MODELI='AXF'  BORD='-1' 

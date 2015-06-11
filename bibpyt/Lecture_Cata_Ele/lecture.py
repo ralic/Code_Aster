@@ -250,10 +250,6 @@ class MonParser(GenericASTBuilder):
         cata        ::=  cata_tm
         cata        ::=  cata_gd
         cata        ::=  cata_ph
-        cata_op     ::=  cmodif ident            OPTION__  IN__                 OUT__     l_opou1
-        cata_op     ::=  cmodif ident  comlibr   OPTION__  IN__                 OUT__     l_opou1
-        cata_op     ::=  cmodif ident            OPTION__  IN__      l_opin1    OUT__     l_opou1
-        cata_op     ::=  cmodif ident  comlibr   OPTION__  IN__      l_opin1    OUT__     l_opou1
 
         cata_op     ::=  cmodif ident            OPTION__  IN__                 OUT__     l_opou1   cond_calcul
         cata_op     ::=  cmodif ident  comlibr   OPTION__  IN__                 OUT__     l_opou1   cond_calcul
@@ -897,20 +893,13 @@ class creer_capy(GenericASTTraversal):
         node.cond_calcul = node[1].l_cond_calc
 
     def n_cata_op(self, node):
-        #                        0      1      2         3         4          5          6         7           8
-        # cata_op     ::=  cmodif ident            OPTION__  IN__                 OUT__     l_opou1     #6
-        # cata_op     ::=  cmodif ident  comlibr   OPTION__  IN__                 OUT__     l_opou1     #7
-        # cata_op     ::=  cmodif ident            OPTION__  IN__      l_opin1    OUT__     l_opou1     #7
-        # cata_op     ::=  cmodif ident  comlibr   OPTION__  IN__      l_opin1
-        # OUT__     l_opou1     #8
-
         # cata_op     ::=  cmodif ident            OPTION__  IN__                 OUT__     l_opou1   cond_calcul  #7
         # cata_op     ::=  cmodif ident  comlibr   OPTION__  IN__                 OUT__     l_opou1   cond_calcul  #8
         # cata_op     ::=  cmodif ident            OPTION__  IN__      l_opin1    OUT__     l_opou1   cond_calcul  #8
-        # cata_op     ::=  cmodif ident  comlibr   OPTION__  IN__      l_opin1
-        # OUT__     l_opou1   cond_calcul  #9
+        # cata_op     ::=  cmodif ident  comlibr   OPTION__  IN__      l_opin1    OUT__     l_opou1   cond_calcul  #9
         node.cmodif = node[0].attr
         exi_cond_calcul = hasattr(node[-1], 'cond_calcul')
+        assert exi_cond_calcul
         if exi_cond_calcul:
             if len(node) == 7:
                 node.cata_op = (
@@ -925,19 +914,6 @@ class creer_capy(GenericASTTraversal):
             elif len(node) == 9:
                 node.cata_op = (node[1].attr, node[5].l_opin1, node[
                                 7].l_opou1, node[2].attr, node[8].cond_calcul)
-        else:
-            if len(node) == 6:
-                node.cata_op = (node[1].attr, [], node[5].l_opou1, None, None)
-            elif len(node) == 7:
-                if node[4].type == "IN__":
-                    node.cata_op = (
-                        node[1].attr, [], node[6].l_opou1, node[2].attr, None)
-                else:
-                    node.cata_op = (
-                        node[1].attr, node[4].l_opin1, node[6].l_opou1, None, None)
-            elif len(node) == 8:
-                node.cata_op = (
-                    node[1].attr, node[5].l_opin1, node[7].l_opou1, node[2].attr, None)
 
 
 #   pour construire le catalogue des GRANDEUR :

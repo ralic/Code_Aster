@@ -26,4 +26,14 @@ OPTION__
         PCOMPOR  COMPOR   << LE COMPORTEMENT PERMET DE DETERMINER NCMP_DYN >>
         PNBSP_I  NBSP_I   << LE CHAMP DE NBSP_I PERMET DE DETERMINER NPG_DYN >>
    OUT__
-PDCEL_I DCEL_I ELEM__
+        PDCEL_I DCEL_I ELEM__
+
+   COND_CALCUL__   PLUS__   PHENO='ME'  BORD='0'
+                   PLUS__   PHENO='TH'  BORD='0'
+                   PLUS__   PHENO='ME'  BORD_ISO='OUI'
+                   MOINS__  PHENO='ME'  MODELI='FLS'
+                   MOINS__  PHENO='ME'  MODELI='FS2'
+                   MOINS__  PHENO='ME'  MODELI='3DA'
+                   MOINS__  PHENO='ME'  MODELI='DPA'
+                   MOINS__  PHENO='ME'  MODELI='3FA'
+                   MOINS__  PHENO='ME'  MODELI='2FA'   

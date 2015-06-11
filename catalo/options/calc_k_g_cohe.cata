@@ -31,4 +31,6 @@ OPTION__
         PLST     NEUT_R
         PHEA_NO  N120_I
     OUT__
-PGTHETA G ELEM__
+        PGTHETA G ELEM__
+        
+   COND_CALCUL__   PLUS__  PHENO='ME' LXFEM='OUI' CONTACT='OUI'

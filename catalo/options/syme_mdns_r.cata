@@ -18,9 +18,6 @@
 % ======================================================================
 SYME_MDNS_R
 << SYMETRISATION DES MATRICES DE DEPL_R
-   Remarque :
-     Il ne faut ajouter cette option que dans le catalogue des elements
-     qui calculent des matrices non-symetriques.
 >>
 
 OPTION__
@@ -29,7 +26,13 @@ OPTION__
    OUT__
         PSYM MDEP_R RESL__   << MATRICE SYMETRIQUE RESULTAT DE LA SYMETRISATION>>
 
-% AL_AR15.1 :
-% On aimerait que TOUS les elements mecaniques calculent SYME_MDNS_R.
-% Mais malheureusement il existe aussi des elements XFEM caches (et donc sans phenomene) qui calculent cette option ...
-% COND_CALCUL__  PLUS__  PHENO='ME'
+   COND_CALCUL__   PLUS__  PHENO='ME' BORD='0'
+                   PLUS__  PHENO='ME' BORD_ISO='OUI'
+                   MOINS__  PHENO='ME'  MODELI='FLS'
+                   MOINS__  PHENO='ME'  MODELI='3FL'
+                   MOINS__  PHENO='ME'  MODELI='2FL'
+                   MOINS__  PHENO='ME'  MODELI='FS2'
+                   MOINS__  PHENO='ME'  MODELI='3DA'
+                   MOINS__  PHENO='ME'  MODELI='DPA'
+                   MOINS__  PHENO='ME'  MODELI='3FA'
+                   MOINS__  PHENO='ME'  MODELI='2FA'   
