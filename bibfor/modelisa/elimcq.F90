@@ -22,7 +22,7 @@ subroutine elimcq(char, noma, indqua, nzoco, nsuco,&
     implicit     none
 #include "jeveux.h"
 #include "asterfort/cfleq8.h"
-#include "asterfort/cfmeno.h"
+#include "asterfort/cfmeno_prov.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -82,8 +82,8 @@ subroutine elimcq(char, noma, indqua, nzoco, nsuco,&
 ! ----- MISE A JOUR DE LA LISTE DES NOEUDS APRES ELIMINATION
 !
         if (nnoco0 .ne. nnoco) then
-            call cfmeno(defico, nsuco, nnoco0, listno, poinsn,&
-                        nnoco)
+            call cfmeno_prov(defico, nsuco, nnoco0, listno, poinsn,&
+                             nnoco)
         endif
 !
     endif

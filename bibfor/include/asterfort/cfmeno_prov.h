@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,13 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfleno(sdcont_defi , nb_cont_surf, nb_cont_node0, v_list_node, v_poin_node,&
-                      nb_cont_node)
-        character(len=24), intent(in) :: sdcont_defi
-        integer, intent(in) :: nb_cont_surf
-        integer, intent(in) :: nb_cont_node0
-        integer, intent(inout) :: nb_cont_node
-        integer, pointer, intent(out) :: v_poin_node(:)
-        integer, pointer, intent(out) :: v_list_node(:)
-    end subroutine cfleno
+    subroutine cfmeno_prov(defico, nsuco, nnoco0, listno, poinsn,&
+                      nnoco)
+        character(len=24) :: defico
+        integer :: nsuco
+        integer :: nnoco0
+        character(len=24) :: listno
+        character(len=24) :: poinsn
+        integer :: nnoco
+    end subroutine cfmeno_prov
 end interface

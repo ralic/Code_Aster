@@ -1,5 +1,10 @@
-subroutine cfmeno(defico, nsuco, nnoco0, listno, poinsn,&
-                  nnoco)
+subroutine cfmeno(sdcont_defi , nb_cont_surf, nb_cont_node0, v_list_node, v_poin_node,&
+                  nb_cont_node)
+!
+implicit none
+!
+#include "asterfort/jeecra.h"
+#include "asterfort/jeveuo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,74 +24,63 @@ subroutine cfmeno(defico, nsuco, nnoco0, listno, poinsn,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jeecra.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-    integer :: nsuco
-    integer :: nnoco0, nnoco
-    character(len=24) :: defico
-    character(len=24) :: listno
-    character(len=24) :: poinsn
+    character(len=24), intent(in) :: sdcont_defi
+    integer, intent(in) :: nb_cont_surf
+    integer, intent(in) :: nb_cont_node0
+    integer, intent(in) :: nb_cont_node
+    integer, pointer, intent(in) :: v_poin_node(:)
+    integer, pointer, intent(in) :: v_list_node(:)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (METHODES NOEUDES - LECTURE DONNEES - ELIMINATION)
+! DEFI_CONTACT
 !
-! MISE A JOUR DE LA LISTE DES NOEUDS APRES ELIMINATION
+! Suppress multiple nodes - Copy in contact datastructure
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  nb_cont_surf     : number of surfaces of contact
+! In  nb_cont_node0    : number of nodes of contact (before detection of multiple node)
+! In  nb_cont_node     : number of nodes of contact (after detection of multiple node)
+! In  v_list_node      : pointer to list of non-double nodes
+! In  v_poin_node      : pointer to pointer of contact surface
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: i_surf, i_node
+    character(len=24) :: sdcont_noeuco
+    integer, pointer :: v_sdcont_noeuco(:) => null()
+    character(len=24) :: sdcont_psunoco
+    integer, pointer :: v_sdcont_psunoco(:) => null()
+!
+! --------------------------------------------------------------------------------------------------
 !
 !
-! IN  DEFICO : NOM SD CONTACT DEFINITION
-! IN  NSUCO  : NOMBRE TOTAL DE SURFACES DE CONTACT
-! IN  NNOCO0 : NOMBRE TOTAL DE NOEUDS DES SURFACES
-! IN  POINSN : POINTEUR MISE A JOUR POUR PSURNO
-! IN  LISTNO : LISTE DES NOEUDS RESTANTES (LONGUEUR NNOCO
-! IN  NNOCO  : NOMBRE DE NOEUDS AU FINAL
+! - Datastructure for contact definition
 !
+    sdcont_noeuco  = sdcont_defi(1:16)//'.NOEUCO'
+    sdcont_psunoco = sdcont_defi(1:16)//'.PSUNOCO'
+    call jeveuo(sdcont_noeuco , 'E', vi = v_sdcont_noeuco)
+    call jeveuo(sdcont_psunoco, 'E', vi = v_sdcont_psunoco)
+
+! - PSUNOCO pointer modification
 !
+    do i_surf = 1, nb_cont_surf
+        v_sdcont_psunoco(i_surf+1) = v_sdcont_psunoco(i_surf+1) - v_poin_node(i_surf+1)
+    end do
 !
+! - Copy of nodes
 !
-    character(len=24) :: contno, psurno
-    integer :: jnoco, jsuno
-    integer :: jelino, jno
-    integer :: isuco, i
+    do i_node = 1, nb_cont_node
+        v_sdcont_noeuco(i_node) = v_list_node(i_node)
+    end do
 !
-! ----------------------------------------------------------------------
+! - New length of NOEUCO
 !
-    call jemarq()
+    do i_node = nb_cont_node + 1, nb_cont_node0
+        v_sdcont_noeuco(i_node) = 0
+    end do
+    call jeecra(sdcont_noeuco, 'LONUTI', ival=nb_cont_node)
 !
-! --- ACCES SD
-!
-    call jeveuo(listno, 'L', jno)
-    call jeveuo(poinsn, 'L', jelino)
-!
-    contno = defico(1:16)//'.NOEUCO'
-    psurno = defico(1:16)//'.PSUNOCO'
-    call jeveuo(psurno, 'E', jsuno)
-    call jeveuo(contno, 'E', jnoco)
-!
-! --- MODIFICATION DU POINTEUR PSURNO
-!
-    do 160 isuco = 1, nsuco
-        zi(jsuno+isuco) = zi(jsuno+isuco) - zi(jelino+isuco)
-160  end do
-!
-! --- TRANSFERT DES VECTEURS DE TRAVAIL DANS CONTNO
-!
-    do 170 i = 1, nnoco
-        zi(jnoco+i-1) = zi(jno+i-1)
-170  end do
-!
-! --- MAZ ET MODIFICATION DE L'ATTRIBUT LONUTI
-!
-    do 180 i = nnoco + 1, nnoco0
-        zi(jnoco+i-1) = 0
-180  end do
-    call jeecra(contno, 'LONUTI', ival=nnoco)
-!
-    call jedema()
 end subroutine

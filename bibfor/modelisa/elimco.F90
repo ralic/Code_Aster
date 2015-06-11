@@ -1,5 +1,19 @@
-subroutine elimco(char, noma, nomo, indqua, nzoco,&
-                  nsuco, nmaco, nnoco)
+subroutine elimco(sdcont      , mesh        , model       , nb_cont_surf,&
+                  nb_cont_elem, nb_cont_node, l_elim_coq3d, nb_node_coq3d_)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cflecq.h"
+#include "asterfort/cflema.h"
+#include "asterfort/cfleno.h"
+#include "asterfort/cfmema.h"
+#include "asterfort/cfmeno.h"
+#include "asterfort/jedetr.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,124 +33,95 @@ subroutine elimco(char, noma, nomo, indqua, nzoco,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/cflecq.h"
-#include "asterfort/cflema.h"
-#include "asterfort/cfleno.h"
-#include "asterfort/cfmema.h"
-#include "asterfort/cfmeno.h"
-#include "asterfort/elimcq.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jemarq.h"
-    character(len=8) :: char
-    character(len=8) :: noma, nomo
-    integer :: indqua
-    integer :: nzoco, nsuco, nmaco, nnoco
+    character(len=8), intent(in) :: sdcont
+    character(len=8), intent(in) :: mesh
+    character(len=8), intent(in) :: model
+    integer, intent(in) :: nb_cont_surf
+    integer, intent(inout) :: nb_cont_elem
+    integer, intent(inout) :: nb_cont_node
+    aster_logical, intent(in) :: l_elim_coq3d
+    integer, optional, intent(out) :: nb_node_coq3d_
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (METHODES MAILLEES - LECTURE DONNEES)
+! DEFI_CONTACT
 !
-! ELIMINATION AU SEIN DE CHAQUE SURFACE DE CONTACT POTENTIELLE DES
-! NOEUDS ET MAILLES REDONDANTS. MODIFICATION DES POINTEURS ASSOCIES.
+! Suppress multiple nodes/elements
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sdcont           : name of contact concept (DEFI_CONTACT)
+! In  mesh             : name of mesh
+! In  model            : name of model
+! In  nb_cont_surf     : number of surfaces of contact
+! IO  nb_cont_node     : number of nodes of contact
+! IO  nb_elem_node     : number of elements of contact
+! In  l_elim_coq3d     : .true. to suppress COQUE_3D nodes
+! Out nb_node_coq3d    : number of nodes belongs to COQUE_3D
 !
-! IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  NOMO   : NOM DU MODELE
-! IN  INDQUA : VAUT 0 LORSQUE L'ON DOIT TRAITER LES NOEUDS MILIEUX
-!                     A PART
-!              VAUT 1 LORSQUE L'ON DOIT TRAITER LES NOEUDS MILIEUX
-!                     NORMALEMENT
-! IN  NZOCO  : NOMBRE TOTAL DE ZONES DE CONTACT
-! IN  NSUCO  : NOMBRE TOTAL DE SURFACES DE CONTACT
-! I/O NMACO  : NOMBRE TOTAL DE MAILLES DES SURFACES
-! I/O NNOCO  : NOMBRE TOTAL DE NOEUDS DES SURFACES
+! --------------------------------------------------------------------------------------------------
 !
+    integer :: nb_cont_node0, nb_cont_elem0, nb_node_coq3d
+    character(len=24) :: sdcont_defi
+    integer, pointer :: v_poin_elem(:) => null()
+    integer, pointer :: v_list_elem(:) => null()
+    integer, pointer :: v_poin_node(:) => null()
+    integer, pointer :: v_list_node(:) => null()
 !
+! --------------------------------------------------------------------------------------------------
 !
+    sdcont_defi   = sdcont(1:8)//'.CONTACT'
+    nb_cont_elem0 = nb_cont_elem
+    nb_cont_node0 = nb_cont_node
+    nb_node_coq3d = 0
 !
-    integer :: nnoco0, nmaco0
-    character(len=24) :: defico
-    character(len=24) :: poinsm, listma
-    character(len=24) :: poinsn, listno
-    integer :: iform
+! - Detection of double elements
 !
-! ----------------------------------------------------------------------
+    call cflema(sdcont_defi , nb_cont_surf, nb_cont_elem0, v_list_elem, v_poin_elem,&
+                nb_cont_elem)
 !
-    call jemarq()
+! - Suppress double elements
 !
-! --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
-!
-    defico = char(1:8)//'.CONTACT'
-!
-! --- TYPE DE FORMULATION (DISCRETE/CONTINUE/XFEM)
-!
-    iform = cfdisi(defico,'FORMULATION')
-!
-! --- NOMBRE INITIAL
-!
-    nmaco0 = nmaco
-    nnoco0 = nnoco
-!
-! --- REPERAGE DES MAILLES REDONDANTES
-!
-    listma = '&&ELIMCO.TRAVMA'
-    poinsm = '&&ELIMCO.ELIMMA'
-    call cflema(defico, nsuco, nmaco0, listma, poinsm,&
-                nmaco)
-!
-! --- MISE A JOUR DE LA LISTE DES MAILLES APRES ELIMINATION
-!
-    if (nmaco0 .ne. nmaco) then
-        call cfmema(defico, nsuco, nmaco0, listma, poinsm,&
-                    nmaco)
+    if (nb_cont_elem0 .ne. nb_cont_elem) then
+        call cfmema(sdcont_defi, nb_cont_surf, nb_cont_elem0, v_list_elem, v_poin_elem,&
+                    nb_cont_elem)
     endif
-    call jedetr(listma)
-    call jedetr(poinsm)
+    AS_DEALLOCATE(vi=v_poin_elem)
+    AS_DEALLOCATE(vi=v_list_elem)
 !
-! --- REPERAGE DES NOEUDS REDONDANTS
+! - Detection of double nodes
 !
-    listno = '&&ELIMCO.TRAVNO'
-    poinsn = '&&ELIMCO.ELIMNO'
-    call cfleno(defico, nsuco, nnoco0, listno, poinsn,&
-                nnoco)
+    call cfleno(sdcont_defi , nb_cont_surf, nb_cont_node0, v_list_node, v_poin_node,&
+                nb_cont_node)
 !
-! --- MISE A JOUR DE LA LISTE DES NOEUDS APRES ELIMINATION
+! - Suppress double nodes
 !
-    if (nnoco0 .ne. nnoco) then
-        call cfmeno(defico, nsuco, nnoco0, listno, poinsn,&
-                    nnoco)
+    if (nb_cont_node0 .ne. nb_cont_node) then
+        call cfmeno(sdcont_defi, nb_cont_surf, nb_cont_node0, v_list_node, v_poin_node,&
+                    nb_cont_node)
     endif
-    call jedetr(listno)
-    call jedetr(poinsn)
+    AS_DEALLOCATE(vi=v_poin_node)
+    AS_DEALLOCATE(vi=v_list_node)
 !
-! --- CAS DES COQUES 3D (ON REPERE LE NOEUD MILIEU DES TRIA7/QUAD9)
+! - List of nodes for COQUE_3D
 !
-    nnoco0 = nnoco
-    call cflecq(iform, noma, nomo, defico, nsuco,&
-                nnoco0, listno, poinsn, nnoco)
+    nb_cont_node0 = nb_cont_node
+    call cflecq(mesh       , model      , sdcont_defi , nb_cont_surf , nb_cont_node0,&
+                v_list_node, v_poin_node, nb_cont_node, nb_node_coq3d)
 !
-! --- MISE A JOUR DE LA LISTE DES NOEUDS APRES ELIMINATION
+! - Suppress nodes for COQUE_3D
 !
-    if (nnoco0 .ne. nnoco) then
-        call cfmeno(defico, nsuco, nnoco0, listno, poinsn,&
-                    nnoco)
+    if (l_elim_coq3d) then
+        if (nb_cont_node0 .ne. nb_cont_node) then
+            call cfmeno(sdcont_defi , nb_cont_surf, nb_cont_node0, v_list_node, v_poin_node,&
+                        nb_cont_node)
+        endif
     endif
-    call jedetr(listno)
-    call jedetr(poinsn)
+    AS_DEALLOCATE(vi=v_poin_node)
+    AS_DEALLOCATE(vi=v_list_node)
 !
-! --- TRAITEMENT MOT-CLEFS SPECIFIQUES FORMULATION DISCRETE
-!
-    if (iform .eq. 1) then
-        call elimcq(char, noma, indqua, nzoco, nsuco,&
-                    nnoco)
+    if (present(nb_node_coq3d_)) then
+        nb_node_coq3d_ = nb_node_coq3d
     endif
 !
-    call jedema()
 end subroutine

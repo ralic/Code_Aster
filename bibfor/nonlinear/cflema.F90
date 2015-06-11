@@ -1,5 +1,14 @@
-subroutine cflema(defico, nsuco, nmaco0, listma, poinsm,&
-                  nmaco)
+subroutine cflema(sdcont_defi , nb_cont_surf, nb_cont_elem0, v_list_elem, v_poin_elem,&
+                  nb_cont_elem)
+!
+implicit none
+!
+#include "asterfort/assert.h"
+#include "asterfort/cfnbsf.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,107 +28,88 @@ subroutine cflema(defico, nsuco, nmaco0, listma, poinsm,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/cfnbsf.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
-    integer :: nsuco
-    integer :: nmaco0, nmaco
-    character(len=24) :: defico
-    character(len=24) :: listma
-    character(len=24) :: poinsm
+    character(len=24), intent(in) :: sdcont_defi
+    integer, intent(in) :: nb_cont_surf
+    integer, intent(in) :: nb_cont_elem0
+    integer, intent(inout) :: nb_cont_elem
+    integer, pointer, intent(out) :: v_poin_elem(:)
+    integer, pointer, intent(out) :: v_list_elem(:)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (METHODES MAILLEES - LECTURE DONNEES - ELIMINATION)
+! DEFI_CONTACT
 !
-! CREATION D'UNE LISTE DES MAILLES EN DOUBLES AU SEIN D'UNE SURFACE
-! DE CONTACT
+! Suppress multiple elements - Create list of double elements in the same contact surface
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  nb_cont_surf     : number of surfaces of contact
+! In  nb_cont_elem0    : number of elements of contact (before detection of multiple element)
+! IO  nb_cont_elem     : number of elements of contact (after detection of multiple element)
+! Out v_list_elem      : pointer to list of non-double elements
+! Out v_poin_elem      : pointer to pointer of contact surface
 !
-! IN  DEFICO : NOM SD CONTACT DEFINITION
-! IN  NSUCO  : NOMBRE TOTAL DE SURFACES DE CONTACT
-! IN  NMACO0 : NOMBRE TOTAL DE MAILLES DES SURFACES
-! OUT POINSM : POINTEUR MISE A JOUR POUR PSURMA
-! OUT LISTMA : LISTE DES MAILLES RESTANTES (LONGUEUR NMACO
-! OUT NMACO  : NOMBRE DE MAILLES AU FINAL
+! --------------------------------------------------------------------------------------------------
 !
+    integer :: jdecma
+    integer :: i_surf, i_elem, ii, elem_nume_1, elem_nume_2, k
+    integer :: nb_elem_elim, nb_elem
+    integer, pointer :: v_elem_indx(:) => null()
+    character(len=24) :: sdcont_mailco
+    integer, pointer :: v_sdcont_mailco(:) => null()
 !
+! --------------------------------------------------------------------------------------------------
 !
+    nb_elem_elim = 0
 !
-    character(len=24) :: contma
-    integer :: jmaco
-    integer ::  jelima
-    integer :: jdecma, jma
-    integer :: isuco, i, ii, ima1, ima2, k
-    integer :: elimma, nbma
-    integer, pointer :: indima(:) => null()
+! - Datastructure for contact definition
 !
-! ----------------------------------------------------------------------
+    sdcont_mailco = sdcont_defi(1:16)//'.MAILCO'
+    call jeveuo(sdcont_mailco, 'E', vi = v_sdcont_mailco)
 !
-    call jemarq()
+! - Temporary vectors
 !
-! --- CREATION DES VECTEURS DE TRAVAIL TEMPORAIRES
+    AS_ALLOCATE(vi=v_elem_indx, size=nb_cont_elem)
+    AS_ALLOCATE(vi=v_poin_elem, size=nb_cont_surf+1)
 !
-    AS_ALLOCATE(vi=indima, size=nmaco)
-    call wkvect(poinsm, 'V V I', nsuco+1, jelima)
+! - Double-element detection
 !
-! --- ACCES AUX STRUCTURES DE DONNEES DE CONTACT
-!
-    contma = defico(1:16)//'.MAILCO'
-    call jeveuo(contma, 'L', jmaco)
-!
-! --- INITIALISATIONS
-!
-    elimma = 0
-!
-! --- REPERAGE DES MAILLES REDONDANTES POUR CHAQUE SURFACE
-!
-    do 110 isuco = 1, nsuco
-        zi(jelima+isuco) = zi(jelima+isuco-1)
-        call cfnbsf(defico, isuco, 'MAIL', nbma, jdecma)
-        do 20 i = 1, nbma
-            ima1 = zi(jmaco+jdecma+i-1)
-            do 10 ii = 1, i - 1
-                ima2 = zi(jmaco+jdecma+ii-1)
-                if (ima1 .eq. ima2) then
-                    indima(1+jdecma+i-1) = 1
-                    zi(jelima+isuco) = zi(jelima+isuco) + 1
-                    elimma = elimma + 1
+    do i_surf = 1, nb_cont_surf
+        v_poin_elem(i_surf+1) = v_poin_elem(i_surf)
+        call cfnbsf(sdcont_defi, i_surf, 'MAIL', nb_elem, jdecma)
+        do 20 i_elem = 1, nb_elem
+            elem_nume_1 = v_sdcont_mailco(jdecma+i_elem)
+            do ii = 1, i_elem - 1
+                elem_nume_2 = v_sdcont_mailco(jdecma+ii)
+                if (elem_nume_1 .eq. elem_nume_2) then
+                    v_elem_indx(jdecma+i_elem) = 1
+                    v_poin_elem(i_surf+1) = v_poin_elem(i_surf+1) + 1
+                    nb_elem_elim = nb_elem_elim + 1
                     goto 20
                 endif
-10          continue
+            end do
 20      continue
-110  end do
+    end do
 !
-! --- RECOPIE DES MAILLES NON ELIMINES DANS TABLEAU DE TRAVAIL
+! - Non-suppressed elements vector
 !
-    nmaco = nmaco0 - elimma
-    call wkvect(listma, 'V V I', nmaco, jma)
+    nb_cont_elem = nb_cont_elem0 - nb_elem_elim
+    AS_ALLOCATE(vi=v_list_elem, size=nb_cont_elem)
 !
-! --- TRAITEMENT DES MAILLES
+! - Copy list of non-suppressed elements
 !
     k = 0
-    do 120 i = 1, nmaco0
-        if (indima(i) .eq. 0) then
+    do i_elem = 1, nb_cont_elem0
+        if (v_elem_indx(i_elem) .eq. 0) then
             k = k + 1
-            zi(jma+k-1) = zi(jmaco+i-1)
+            v_list_elem(k) = v_sdcont_mailco(i_elem)
         endif
-120  end do
-    ASSERT(k.eq.nmaco)
+    end do
+    ASSERT(k.eq.nb_cont_elem)
 !
-! --- DESTRUCTION DES VECTEURS DE TRAVAIL TEMPORAIRES
+! - Clean
 !
-    AS_DEALLOCATE(vi=indima)
+    AS_DEALLOCATE(vi=v_elem_indx)
 !
-    call jedema()
 end subroutine

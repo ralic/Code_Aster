@@ -15,16 +15,18 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
-    subroutine elimco(char, noma, nomo, indqua, nzoco,&
-                      nsuco, nmaco, nnoco)
-        character(len=8) :: char
-        character(len=8) :: noma
-        character(len=8) :: nomo
-        integer :: indqua
-        integer :: nzoco
-        integer :: nsuco
-        integer :: nmaco
-        integer :: nnoco
+    subroutine elimco(sdcont      , mesh        , model       , nb_cont_surf,&
+                      nb_cont_elem, nb_cont_node, l_elim_coq3d, nb_node_coq3d_)
+        character(len=8), intent(in) :: sdcont
+        character(len=8), intent(in) :: mesh
+        character(len=8), intent(in) :: model
+        integer, intent(in) :: nb_cont_surf
+        integer, intent(inout) :: nb_cont_elem
+        integer, intent(inout) :: nb_cont_node
+        aster_logical, intent(in) :: l_elim_coq3d
+        integer, optional, intent(out) :: nb_node_coq3d_
     end subroutine elimco
 end interface

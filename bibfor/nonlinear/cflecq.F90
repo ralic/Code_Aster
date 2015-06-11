@@ -1,5 +1,20 @@
-subroutine cflecq(iform, noma, nomo, defico, nsuco,&
-                  nnoco0, listno, poinsn, nnoco)
+subroutine cflecq(mesh       , model      , sdcont_defi , nb_cont_surf , nb_cont_node0,&
+                  v_list_node, v_poin_node, nb_cont_node, nb_node_coq3d)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfnbsf.h"
+#include "asterfort/iscoqu.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/utmess.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,169 +34,128 @@ subroutine cflecq(iform, noma, nomo, defico, nsuco,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/cfnbsf.h"
-#include "asterfort/iscoqu.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
+    character(len=8), intent(in) :: mesh
+    character(len=8), intent(in) :: model
+    character(len=24), intent(in) :: sdcont_defi
+    integer, intent(in) :: nb_cont_surf
+    integer, intent(in) :: nb_cont_node0
+    integer, pointer, intent(out) :: v_poin_node(:)
+    integer, pointer, intent(out) :: v_list_node(:)
+    integer, intent(out) :: nb_cont_node
+    integer, intent(out) :: nb_node_coq3d
 !
-    character(len=8) :: nomo, noma
-    integer :: iform, nsuco
-    integer :: nnoco0, nnoco
-    character(len=24) :: defico
-    character(len=24) :: listno
-    character(len=24) :: poinsn
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! DEFI_CONTACT
 !
-! ROUTINE CONTACT (METHODES MAILLEES - LECTURE DONNEES - ELIMINATION)
+! List of nodes for COQUE_3D
 !
-! CREATION D'UNE LISTE DES NOEUDS MILIEUX DES FACES DES COQUES_3D
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  mesh             : name of mesh
+! In  model            : name of model
+! In  nb_cont_surf     : number of surfaces of contact
+! In  nb_cont_node0    : initial number of nodes of contact
+! Out v_list_node      : pointer to list of COQUE_3D nodes
+! Out v_poin_node      : pointer to pointer of contact surface
+! Out nb_cont_node     : new number of nodes of contact
+! Out nb_node_coq3d    : number of nodes belongs to COQUE_3D
 !
+! --------------------------------------------------------------------------------------------------
 !
-! IN  IFORM  : FORMULATION DISCRETE (1) OU CONTINUE (2)
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  NOMO   : NOM DU MODELE
-! IN  DEFICO : NOM SD CONTACT DEFINITION
-! IN  NSUCO  : NOMBRE TOTAL DE SURFACES DE CONTACT
-! IN  NNOCO0 : NOMBRE TOTAL DE NOEUDS DES SURFACES
-! OUT POINSN : POINTEUR MISE A JOUR POUR PSURNO
-! OUT LISTNO : LISTE DES NOEUDS RESTANTES (LONGUEUR NNOCO)
-! OUT NNOCO  : NOMBRE DE NOEUDS AU FINAL
+    integer :: jdecno, jdecma
+    integer :: i_surf, nume_node_2, i_node, k, i_elem, type_nume, node_middle_nume
+    integer :: nb_elem, nb_node
+    integer :: elem_nume, node_nume
+    character(len=8) :: type_name, elem_name, node_name
+    aster_logical :: l_coq3d
+    integer, pointer :: v_mesh_typmail(:) => null()
+    integer, pointer :: v_mesh_connex(:) => null()
+    integer, pointer :: v_node_indx(:) => null()
+    character(len=24) :: sdcont_noeuco
+    integer, pointer :: v_sdcont_noeuco(:) => null()
+    character(len=24) :: sdcont_mailco
+    integer, pointer :: v_sdcont_mailco(:) => null()
 !
+! --------------------------------------------------------------------------------------------------
 !
+    nb_node_coq3d = 0
 !
+! - Datastructure for contact definition
 !
-    character(len=24) :: contno, contma
-    integer :: jnoco, jmaco
-    integer :: jelino
-    integer :: jdecno, jno
-    integer :: jdecma
-    integer :: isuco, i, ino, k, ima, nutyp, noeumi
-    integer :: elimno, nbma, nbno
-    integer :: iatyma, itypma
-    integer :: nummai, numnoe
-    character(len=8) :: nomtm, nommai, nomnoe
-    aster_logical :: lcoque
-    integer, pointer :: indino(:) => null()
+    sdcont_noeuco = sdcont_defi(1:16)//'.NOEUCO'
+    sdcont_mailco = sdcont_defi(1:16)//'.MAILCO'
+    call jeveuo(sdcont_noeuco, 'L', vi = v_sdcont_noeuco)
+    call jeveuo(sdcont_mailco, 'L', vi = v_sdcont_mailco)
 !
-! ----------------------------------------------------------------------
+! - Temporary vectors
 !
-    call jemarq()
+    AS_ALLOCATE(vi=v_node_indx, size=nb_cont_node)
+    AS_ALLOCATE(vi=v_poin_node, size=nb_cont_surf+1)
 !
-! --- CREATION DES VECTEURS DE TRAVAIL TEMPORAIRES
+! - Access to mesh
 !
-    AS_ALLOCATE(vi=indino, size=nnoco)
-    call wkvect(poinsn, 'V V I', nsuco+1, jelino)
+    call jeveuo(mesh(1:8)//'.TYPMAIL', 'L', vi = v_mesh_typmail)
 !
-! --- ACCES AUX STRUCTURES DE DONNEES DE CONTACT
+! - Identify middle nodes
 !
-    contno = defico(1:16)//'.NOEUCO'
-    contma = defico(1:16)//'.MAILCO'
-    call jeveuo(contma, 'L', jmaco)
-    call jeveuo(contno, 'L', jnoco)
-!
-! --- INITIALISATIONS
-!
-    elimno = 0
-    call jeveuo(noma(1:8)//'.TYPMAIL', 'L', iatyma)
-!
-! --- REPERAGE DES NOEUDS MILIEUX POUR CHAQUE SURFACE
-!
-    do 110 isuco = 1, nsuco
-!
-        call cfnbsf(defico, isuco, 'MAIL', nbma, jdecma)
-        zi(jelino+isuco) = zi(jelino+isuco-1)
-!
-        do 90 ima = 1, nbma
-!
-!         --- NUMERO MAILLE COURANTE
-!
-            nummai = zi(jmaco+jdecma+ima-1)
-!
-!         --- TYPE MAILLE COURANTE
-!
-            itypma = iatyma - 1 + nummai
-            nutyp = zi(itypma)
-            call jenuno(jexnum('&CATA.TM.NOMTM', nutyp), nomtm)
-            call jenuno(jexnum(noma//'.NOMMAI', nummai), nommai)
-!
-            if (nomtm(1:5) .eq. 'QUAD9') then
-                call iscoqu(nomo, nummai, lcoque)
-                noeumi = 9
-            else if (nomtm(1:5).eq.'TRIA7') then
-                call iscoqu(nomo, nummai, lcoque)
-                noeumi = 7
+    do i_surf = 1, nb_cont_surf
+        call cfnbsf(sdcont_defi, i_surf, 'MAIL', nb_elem, jdecma)
+        v_poin_node(i_surf+1) = v_poin_node(i_surf)
+        do i_elem = 1, nb_elem
+            elem_nume = v_sdcont_mailco(jdecma+i_elem)
+            type_nume = v_mesh_typmail(elem_nume)
+            call jenuno(jexnum('&CATA.TM.NOMTM', type_nume), type_name)
+            call jenuno(jexnum(mesh//'.NOMMAI', elem_nume), elem_name)
+            if (type_name(1:5) .eq. 'QUAD9') then
+                call iscoqu(model, elem_nume, l_coq3d)
+                node_middle_nume = 9
+            else if (type_name(1:5).eq.'TRIA7') then
+                call iscoqu(model, elem_nume, l_coq3d)
+                node_middle_nume = 7
             else
-                lcoque = .false.
+                l_coq3d = .false.
             endif
-!
-!         --- NUMERO ABSOLU DU NOEUD VISE
-!
-            if (lcoque) then
-                call jeveuo(jexnum(noma//'.CONNEX', nummai), 'L', jdecno)
-                numnoe = zi(jdecno+noeumi-1)
-                call jenuno(jexnum(noma//'.NOMNOE', numnoe), nomnoe)
+            if (l_coq3d) then
+                call jeveuo(jexnum(mesh//'.CONNEX', elem_nume), 'L', vi = v_mesh_connex)
+                node_nume = v_mesh_connex(node_middle_nume)
+                call jenuno(jexnum(mesh//'.NOMNOE', node_nume), node_name)
             endif
-!
-!         --- ELIMINATION NOEUD MILIEU
-!
-            if (lcoque) then
-                call cfnbsf(defico, isuco, 'NOEU', nbno, jdecno)
-                do 20 i = 1, nbno
-                    ino = zi(jnoco+jdecno+i-1)
-                    if (ino .eq. numnoe) then
-                        indino(1+jdecno+i-1) = 1
-                        zi(jelino+isuco) = zi(jelino+isuco) + 1
-                        elimno = elimno + 1
+            if (l_coq3d) then
+                call cfnbsf(sdcont_defi, i_surf, 'NOEU', nb_node, jdecno)
+                do i_node = 1, nb_node
+                    nume_node_2 = v_sdcont_noeuco(jdecno+i_node)
+                    if (nume_node_2 .eq. node_nume) then
+                        v_node_indx(jdecno+i_node) = 1
+                        v_poin_node(i_surf+1) = v_poin_node(i_surf+1) + 1
+                        nb_node_coq3d = nb_node_coq3d + 1
                         goto 90
                     endif
- 20             continue
+                end do
             endif
-!
  90     continue
+        end do
+    end do
 !
+! - Non-suppressed nodes vector
 !
-110 end do
+    nb_cont_node = nb_cont_node0 - nb_node_coq3d
+    AS_ALLOCATE(vi=v_list_node, size=nb_cont_node)
 !
-! --- COQUE_3D NON UTILISABLE EN FORMULATION CONTINUE
-!
-    if ((iform.eq.2) .and. (elimno.gt.0)) then
-        call utmess('F', 'CONTACT_94')
-    endif
-!
-! --- RECOPIE DES NOEUDS NON ELIMINES DANS TABLEAU DE TRAVAIL
-!
-    nnoco = nnoco0 - elimno
-    call wkvect(listno, 'V V I', nnoco, jno)
-!
-! --- TRAITEMENT DES NOEUDS
+! - Copy list of non-suppressed nodes
 !
     k = 0
-    do 120 i = 1, nnoco0
-        if (indino(i) .eq. 0) then
+    do i_node = 1, nb_cont_node0
+        if (v_node_indx(i_node) .eq. 0) then
             k = k + 1
-            zi(jno+k-1) = zi(jnoco+i-1)
+            v_list_node(k) = v_sdcont_noeuco(i_node)
         endif
-120 end do
-    ASSERT(k.eq.nnoco)
+    end do
+    ASSERT(k.eq.nb_cont_node)
 !
-! --- DESTRUCTION DES VECTEURS DE TRAVAIL TEMPORAIRES
+! - Clean
 !
-    AS_DEALLOCATE(vi=indino)
+    AS_DEALLOCATE(vi=v_node_indx)
 !
-    call jedema()
 end subroutine

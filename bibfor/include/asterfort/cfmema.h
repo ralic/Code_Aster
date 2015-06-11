@@ -16,13 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfmema(defico, nsuco, nmaco0, listma, poinsm,&
-                      nmaco)
-        character(len=24) :: defico
-        integer :: nsuco
-        integer :: nmaco0
-        character(len=24) :: listma
-        character(len=24) :: poinsm
-        integer :: nmaco
+    subroutine cfmema(sdcont_defi , nb_cont_surf, nb_cont_elem0, v_list_elem, v_poin_elem,&
+                      nb_cont_elem)
+        character(len=24), intent(in) :: sdcont_defi
+        integer, intent(in) :: nb_cont_surf
+        integer, intent(in) :: nb_cont_elem0
+        integer, intent(in) :: nb_cont_elem
+        integer, pointer, intent(in) :: v_poin_elem(:)
+        integer, pointer, intent(in) :: v_list_elem(:)
     end subroutine cfmema
 end interface

@@ -1,5 +1,10 @@
-subroutine cfmema(defico, nsuco, nmaco0, listma, poinsm,&
-                  nmaco)
+subroutine cfmema(sdcont_defi , nb_cont_surf, nb_cont_elem0, v_list_elem, v_poin_elem,&
+                  nb_cont_elem)
+!
+implicit none
+!
+#include "asterfort/jeecra.h"
+#include "asterfort/jeveuo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,74 +24,63 @@ subroutine cfmema(defico, nsuco, nmaco0, listma, poinsm,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jeecra.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-    integer :: nsuco
-    integer :: nmaco0, nmaco
-    character(len=24) :: defico
-    character(len=24) :: listma
-    character(len=24) :: poinsm
+    character(len=24), intent(in) :: sdcont_defi
+    integer, intent(in) :: nb_cont_surf
+    integer, intent(in) :: nb_cont_elem0
+    integer, intent(in) :: nb_cont_elem
+    integer, pointer, intent(in) :: v_poin_elem(:)
+    integer, pointer, intent(in) :: v_list_elem(:)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (METHODES MAILLEES - LECTURE DONNEES - ELIMINATION)
+! DEFI_CONTACT
 !
-! MISE A JOUR DE LA LISTE DES MAILLES APRES ELIMINATION
+! Suppress multiple elements - Copy in contact datastructure
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  nb_cont_surf     : number of surfaces of contact
+! In  nb_cont_elem0    : number of elements of contact (before detection of multiple element)
+! In  nb_cont_elem     : number of elements of contact (after detection of multiple element)
+! In  v_list_elem      : pointer to list of non-double elements
+! In  v_poin_elem      : pointer to pointer of contact surface
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: i_surf, i_elem
+    character(len=24) :: sdcont_mailco
+    integer, pointer :: v_sdcont_mailco(:) => null()
+    character(len=24) :: sdcont_psumaco
+    integer, pointer :: v_sdcont_psumaco(:) => null()
+!
+! --------------------------------------------------------------------------------------------------
 !
 !
-! IN  DEFICO : NOM SD CONTACT DEFINITION
-! IN  NSUCO  : NOMBRE TOTAL DE SURFACES DE CONTACT
-! IN  NMACO0 : NOMBRE TOTAL DE MAILLES DES SURFACES
-! IN  POINSM : POINTEUR MISE A JOUR POUR PSURMA
-! IN  LISTMA : LISTE DES MAILLES RESTANTES (LONGUEUR NMACO
-! IN  NMACO  : NOMBRE DE MAILLES AU FINAL
+! - Datastructure for contact definition
 !
+    sdcont_mailco  = sdcont_defi(1:16)//'.MAILCO'
+    sdcont_psumaco = sdcont_defi(1:16)//'.PSUMACO'
+    call jeveuo(sdcont_mailco , 'E', vi = v_sdcont_mailco)
+    call jeveuo(sdcont_psumaco, 'E', vi = v_sdcont_psumaco)
 !
+! - PSUMACO pointer modification
 !
+    do i_surf = 1, nb_cont_surf
+        v_sdcont_psumaco(i_surf+1) = v_sdcont_psumaco(i_surf+1) - v_poin_elem(i_surf+1)
+    end do
 !
-    character(len=24) :: contma, psurma
-    integer :: jmaco, jsuma
-    integer :: jelima, jma
-    integer :: isuco, i
+! - Copy of elements
 !
-! ----------------------------------------------------------------------
+    do i_elem = 1, nb_cont_elem
+        v_sdcont_mailco(i_elem) = v_list_elem(i_elem)
+    end do
 !
-    call jemarq()
+! - New length of MAILCO
 !
-! --- ACCES SD
+    do i_elem = nb_cont_elem + 1, nb_cont_elem0
+        v_sdcont_mailco(i_elem) = 0
+    end do
+    call jeecra(sdcont_mailco, 'LONUTI', ival=nb_cont_elem)
 !
-    call jeveuo(listma, 'L', jma)
-    call jeveuo(poinsm, 'L', jelima)
-!
-    contma = defico(1:16)//'.MAILCO'
-    psurma = defico(1:16)//'.PSUMACO'
-    call jeveuo(psurma, 'E', jsuma)
-    call jeveuo(contma, 'E', jmaco)
-!
-! --- MODIFICATION DU POINTEUR PSURMA
-!
-    do 160 isuco = 1, nsuco
-        zi(jsuma+isuco) = zi(jsuma+isuco) - zi(jelima+isuco)
-160  end do
-!
-! --- TRANSFERT DES VECTEURS DE TRAVAIL DANS CONTMA
-!
-    do 170 i = 1, nmaco
-        zi(jmaco+i-1) = zi(jma+i-1)
-170  end do
-!
-! --- MAZ ET MODIFICATION DE L'ATTRIBUT LONUTI
-!
-    do 180 i = nmaco + 1, nmaco0
-        zi(jmaco+i-1) = 0
-180  end do
-    call jeecra(contma, 'LONUTI', ival=nmaco)
-!
-    call jedema()
 end subroutine

@@ -62,12 +62,14 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_cont_surf, nb_cont_elem, nb_cont_node
+    integer :: nb_cont_surf, nb_cont_elem, nb_cont_node, nb_node_coq3d
     integer :: indqua
+    aster_logical :: l_elim_coq3d
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    indqua    = 1
+    indqua       = 1
+    l_elim_coq3d = .false.
 !
 ! - Read zone: nodes and elements
 !
@@ -76,8 +78,11 @@ implicit none
 !
 ! - Cleaning nodes and elements
 !
-    call elimco(sdcont      , mesh        , model        , indqua,  nb_cont_zone,&
-                nb_cont_surf, nb_cont_elem, nb_cont_node )
+    call elimco(sdcont      , mesh        , model  , nb_cont_surf,&
+                nb_cont_elem, nb_cont_node, l_elim_coq3d, nb_node_coq3d_ = nb_node_coq3d)
+    if (nb_node_coq3d.ne.0) then
+        call utmess('F','CONTACT_94')
+    endif
 !
 ! - Inverse connectivities
 !

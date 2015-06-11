@@ -1,5 +1,15 @@
-subroutine cfleno(defico, nsuco, nnoco0, listno, poinsn,&
-                  nnoco)
+subroutine cfleno(sdcont_defi , nb_cont_surf, nb_cont_node0, v_list_node, v_poin_node,&
+                  nb_cont_node)
+!
+implicit none
+!
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfnbsf.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/wkvect.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,109 +29,88 @@ subroutine cfleno(defico, nsuco, nnoco0, listno, poinsn,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/cfnbsf.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
-    integer :: nsuco
-    integer :: nnoco0, nnoco
-    character(len=24) :: defico
-    character(len=24) :: listno
-    character(len=24) :: poinsn
+    character(len=24), intent(in) :: sdcont_defi
+    integer, intent(in) :: nb_cont_surf
+    integer, intent(in) :: nb_cont_node0
+    integer, intent(inout) :: nb_cont_node
+    integer, pointer, intent(out) :: v_poin_node(:)
+    integer, pointer, intent(out) :: v_list_node(:)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (METHODES MAILLEES - LECTURE DONNEES - ELIMINATION)
+! DEFI_CONTACT
 !
-! CREATION D'UNE LISTE DES NOEUDS EN DOUBLE AU SEIN D'UNE SURFACE
-! DE CONTACT
+! Suppress multiple nodes - Create list of double nodes in the same contact surface
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  nb_cont_surf     : number of surfaces of contact
+! In  nb_cont_node0    : number of nodes of contact (before detection of multiple nodes)
+! IO  nb_cont_node     : number of nodes of contact (after detection of multiple nodes)
+! Out v_list_node      : pointer to list of non-double nodes
+! Out v_poin_node      : pointer to pointer of contact surface
 !
-! IN  DEFICO : NOM SD CONTACT DEFINITION
-! IN  NSUCO  : NOMBRE TOTAL DE SURFACES DE CONTACT
-! IN  NNOCO0 : NOMBRE TOTAL DE NOEUDS DES SURFACES
-! OUT POINSN : POINTEUR MISE A JOUR POUR PSURNO
-!               ZI(JELINO+ISUCO) - ZI(JELINO+ISUCO-1)
-!                NOMBRE DE NOEUDS SUPPRIMES POUR LA SURFACE ISUCO
-! OUT LISTNO : LISTE DES NOEUDS RESTANTES (LONGUEUR NNOCO
-! OUT NNOCO  : NOMBRE DE NOEUDS AU FINAL
+! --------------------------------------------------------------------------------------------------
 !
+    integer :: jdecno
+    integer :: i_surf, i_node, ii, node_nume_1, node_nume_2, k
+    integer :: nb_node_elim, nb_node
+    integer, pointer :: v_node_indx(:) => null()
+    character(len=24) :: sdcont_noeuco
+    integer, pointer :: v_sdcont_noeuco(:) => null()
 !
+! --------------------------------------------------------------------------------------------------
 !
+    nb_node_elim = 0
 !
-    character(len=24) :: contno
-    integer :: jnoco
-    integer ::  jelino
-    integer :: jdecno, jno
-    integer :: isuco, i, ii, ino1, ino2, k
-    integer :: elimno, nbno
-    integer, pointer :: indino(:) => null()
+! - Datastructure for contact definition
 !
-! ----------------------------------------------------------------------
+    sdcont_noeuco = sdcont_defi(1:16)//'.NOEUCO'
+    call jeveuo(sdcont_noeuco, 'E', vi = v_sdcont_noeuco)
 !
-    call jemarq()
+! - Temporary vectors
 !
-! --- CREATION DES VECTEURS DE TRAVAIL TEMPORAIRES
+    AS_ALLOCATE(vi=v_node_indx, size=nb_cont_node)
+    AS_ALLOCATE(vi=v_poin_node, size=nb_cont_surf+1)
 !
-    AS_ALLOCATE(vi=indino, size=nnoco)
-    call wkvect(poinsn, 'V V I', nsuco+1, jelino)
+! - Double-node detection
 !
-! --- ACCES AUX STRUCTURES DE DONNEES DE CONTACT
-!
-    contno = defico(1:16)//'.NOEUCO'
-    call jeveuo(contno, 'L', jnoco)
-!
-! --- INITIALISATIONS
-!
-    elimno = 0
-!
-! --- REPERAGE DES NOEUDS REDONDANTS POUR CHAQUE SURFACE
-!
-    do 110 isuco = 1, nsuco
-        zi(jelino+isuco) = zi(jelino+isuco-1)
-        call cfnbsf(defico, isuco, 'NOEU', nbno, jdecno)
-        do 20 i = 1, nbno
-            ino1 = zi(jnoco+jdecno+i-1)
-            do 10 ii = 1, i - 1
-                ino2 = zi(jnoco+jdecno+ii-1)
-                if (ino1 .eq. ino2) then
-                    indino(1+jdecno+i-1) = 1
-                    zi(jelino+isuco) = zi(jelino+isuco) + 1
-                    elimno = elimno + 1
+    do i_surf = 1, nb_cont_surf
+        v_poin_node(i_surf+1) = v_poin_node(i_surf)
+        call cfnbsf(sdcont_defi, i_surf, 'NOEU', nb_node, jdecno)
+        do 20 i_node = 1, nb_node
+            node_nume_1 = v_sdcont_noeuco(jdecno+i_node)
+            do ii = 1, i_node - 1
+                node_nume_2 = v_sdcont_noeuco(jdecno+ii)
+                if (node_nume_1 .eq. node_nume_2) then
+                    v_node_indx(jdecno+i_node) = 1
+                    v_poin_node(i_surf+1) = v_poin_node(i_surf+1) + 1
+                    nb_node_elim = nb_node_elim + 1
                     goto 20
                 endif
-10          continue
+            end do
 20      continue
-110  end do
+    end do
 !
-! --- RECOPIE DES NOEUDS NON ELIMINES DANS TABLEAU DE TRAVAIL
+! - Non-suppressed nodes vector
 !
-    nnoco = nnoco0 - elimno
-    call wkvect(listno, 'V V I', nnoco, jno)
+    nb_cont_node = nb_cont_node0 - nb_node_elim
+    AS_ALLOCATE(vi=v_list_node, size=nb_cont_node)
 !
-! --- TRAITEMENT DES NOEUDS
+! - Copy list of non-suppressed nodes
 !
     k = 0
-    do 120 i = 1, nnoco0
-        if (indino(i) .eq. 0) then
+    do i_node = 1, nb_cont_node0
+        if (v_node_indx(i_node) .eq. 0) then
             k = k + 1
-            zi(jno+k-1) = zi(jnoco+i-1)
+            v_list_node(k) = v_sdcont_noeuco(i_node)
         endif
-120  end do
-    ASSERT(k.eq.nnoco)
+    end do
+    ASSERT(k.eq.nb_cont_node)
 !
-! --- DESTRUCTION DES VECTEURS DE TRAVAIL TEMPORAIRES
+! - Clean
 !
-    AS_DEALLOCATE(vi=indino)
+    AS_DEALLOCATE(vi=v_node_indx)
 !
-    call jedema()
 end subroutine

@@ -64,10 +64,11 @@ implicit none
 !
     integer :: nb_cont_surf, nb_cont_elem, nb_cont_node
     integer :: indqua
+    aster_logical :: l_elim_coq3d
 !
 ! --------------------------------------------------------------------------------------------------
 !
-
+    l_elim_coq3d = .true.
 !
 ! - Quadratic elements (indqua = 0 if need linearization, see CACOEQ)
 !
@@ -80,15 +81,13 @@ implicit none
 !
 ! - Cleaning nodes and elements
 !
-    call elimco(sdcont      , mesh        , model        , indqua,  nb_cont_zone,&
-                nb_cont_surf, nb_cont_elem, nb_cont_node )
+    call elimco(sdcont      , mesh        , model  , nb_cont_surf,&
+                nb_cont_elem, nb_cont_node, l_elim_coq3d)
 !
 ! - Suppress middle nodes from QUAD8
 !
-    if (indqua.eq.0) then
-        call elimcq(sdcont      , mesh, indqua, nb_cont_zone, nb_cont_surf,&
-                    nb_cont_node)
-    endif
+    call elimcq(sdcont, mesh, indqua, nb_cont_zone, nb_cont_surf,&
+                nb_cont_node)
 !
 ! - Inverse connectivities
 !
