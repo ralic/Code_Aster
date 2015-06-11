@@ -814,22 +814,32 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
                 smin=smin+ds
 !
 !              MANAGE THE CHANGING OF THE CRACK FRONT SEGMENT
-                if ((smin.lt.0.d0) .and. (jmin.gt.jlimsx)) then
-                    jmin=jmin-1
-                    smin=1.d0
-                else if ((smin.lt.0.d0).and.(jmin.eq.jlimsx)) then
-                    smin=0.d0
-                    endpnt = .true.
-                    goto 207
+!              smin est-il egal a 0 ?
+               near = abs(smin) .le. atol
+
+               if (smin .lt. 0.d0 .and. .not. near) then
+                   if (jmin.gt.jlimsx) then
+                       jmin=jmin-1
+                       smin=1.d0
+                   else if (jmin.eq.jlimsx) then
+                       smin=0.d0
+                       endpnt = .true.
+                       goto 207
+                   endif
                 endif
-!
-                if ((smin.gt.1.d0) .and. (jmin.lt.jlimdx)) then
-                    jmin=jmin+1
-                    smin=0.d0
-                else if ((smin.gt.1.d0).and.(jmin.eq.jlimdx)) then
-                    smin=1.d0
-                    endpnt = .true.
-                    goto 207
+
+!               smin est-il egal a 1 ?
+                near = abs(smin-1.d0) .le. atol
+
+                if (smin .gt. 1.d0 .and. .not. near) then
+                    if (jmin.lt.jlimdx) then
+                        jmin=jmin+1
+                        smin=0.d0
+                    else if (jmin.eq.jlimdx) then
+                        smin=1.d0
+                        endpnt = .true.
+                        goto 207
+                    endif
                 endif
 !
                 dprec=d
