@@ -16,8 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine capoco(char, motfac)
-        character(len=8) :: char
-        character(len=16) :: motfac
+    subroutine capoco(sdcont, keywf)
+        character(len=8), intent(in) :: sdcont
+        character(len=16), intent(in) :: keywf
     end subroutine capoco
 end interface

@@ -1,4 +1,22 @@
-subroutine capoco(char, motfac)
+subroutine capoco(sdcont, keywf)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterc/indik8.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/carces.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/getvid.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mminfi.h"
+#include "asterfort/mminfl.h"
+#include "asterfort/utmess.h"
+#include "asterfort/wkvect.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,184 +36,151 @@ subroutine capoco(char, motfac)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/indik8.h"
-#include "asterfort/assert.h"
-#include "asterfort/carces.h"
-#include "asterfort/cesexi.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/detrsd.h"
-#include "asterfort/getvid.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/mminfi.h"
-#include "asterfort/mminfl.h"
-#include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
-    character(len=8) :: char
-    character(len=16) :: motfac
+    character(len=8), intent(in) :: sdcont
+    character(len=16), intent(in) :: keywf
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (METHODES MAILLEES - LECTURE DONNEES)
+! DEFI_CONTACT
 !
-! LECTURE DES CARACTERISTIQUES DE POUTRE
-! REMPLISSAGE DE LA SD DEFICO(1:16)//'.JEUPOU'
+! Get supplementary gap: beams
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sdcont           : name of contact concept (DEFI_CONTACT)
+! In  keywf            : factor keyword to read
 !
-! IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
-! IN  MOTFAC : MOT-CLE FACTEUR (VALANT 'CONTACT')
+! --------------------------------------------------------------------------------------------------
 !
-!
-!
-!
-    integer :: iret, noc
-    integer :: icesd, icesl, npmax, isec
-    integer :: posmae, nummae
+    integer :: iret, noc, i_beam_sect
+    integer :: elem_slav_indx, elem_slav_nume
     integer :: jdecme
-    integer :: izone, imae
-    integer :: nbmae
-    integer :: rangr0, rangr1, rangr2, iad1, iad2
-    real(kind=8) :: r1, r2, rayon
-    aster_logical :: ya
-    integer :: nzoco, nmaco
-    character(len=8) :: carael
-    character(len=24) :: defico
-    character(len=24) :: jeupou, contma
-    integer :: jmaco, jjpou
-    character(len=19) :: carsd, carte
-    aster_logical :: ldpou
-    real(kind=8), pointer :: cesv(:) => null()
-    character(len=8), pointer :: cesc(:) => null()
+    integer :: i_zone, i_slav_elem
+    integer :: nb_slav_elem, nb_cont_zone, nb_cont_elem, nb_para_maxi
+    integer :: beam_tsec_indx, beam_r1_indx, beam_r2_indx, iad1, iad2
+    real(kind=8) :: beam_radius_1, beam_radius_2, beam_radius
+    aster_logical :: l_dist_exist
+    character(len=8) :: cara_elem
+    character(len=19) :: cara_elem_s
+    aster_logical :: l_dist_beam
+    real(kind=8), pointer :: v_caraelem_cesv(:) => null()
+    character(len=8), pointer :: v_caraelem_cesc(:) => null()
+    integer :: j_caraelem_cesd, j_caraelem_cesl
+    character(len=24) :: sdcont_defi
+    character(len=24) :: sdcont_mailco
+    integer, pointer :: v_sdcont_mailco(:) => null()
+    character(len=24) :: sdcont_jeupou
+    real(kind=8), pointer :: v_sdcont_jeupou(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
+    cara_elem_s = '&&CAPOCO.CARGEOPO'
 !
-! --- INITIALISATIONS
+! - Datastructure for contact definition
 !
-    defico = char(1:8)//'.CONTACT'
-    nzoco = cfdisi(defico,'NZOCO')
-    nmaco = cfdisi(defico,'NMACO')
+    sdcont_defi = sdcont(1:8)//'.CONTACT'
+    sdcont_mailco = sdcont_defi(1:16)//'.MAILCO'
+    sdcont_jeupou = sdcont_defi(1:16)//'.JEUPOU'
+    call jeveuo(sdcont_mailco, 'L', vi = v_sdcont_mailco)
 !
-! --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
+! - Parameters
 !
-    contma = defico(1:16)//'.MAILCO'
-    call jeveuo(contma, 'L', jmaco)
+    nb_cont_zone = cfdisi(sdcont_defi, 'NZOCO')
+    nb_cont_elem = cfdisi(sdcont_defi, 'NMACO')
 !
-! --- CREATION VECTEUR
+! - Create beam gap datastructure
 !
-    jeupou = defico(1:16)//'.JEUPOU'
-    call wkvect(jeupou, 'G V R', nmaco, jjpou)
+    call wkvect(sdcont_jeupou, 'G V R', nb_cont_elem, vr = v_sdcont_jeupou)
 !
-! --- RECUPERATION DU CARA_ELEM
+! - Get elementary characteristics datastructure
 !
-    ya = .false.
-    do 10 izone = 1, nzoco
-        ldpou = mminfl(defico,'DIST_POUTRE',izone )
-        if (ldpou) then
-            ya = .true.
-            call getvid(motfac, 'CARA_ELEM', iocc=izone, scal=carael, nbret=noc)
-            if (noc .eq. 0) then
-                ASSERT(.false.)
-            endif
+    l_dist_exist = .false.
+    do i_zone = 1, nb_cont_zone
+        l_dist_beam = mminfl(sdcont_defi, 'DIST_POUTRE', i_zone)
+        if (l_dist_beam) then
+            l_dist_exist = .true.
+            call getvid(keywf, 'CARA_ELEM', iocc=i_zone, scal=cara_elem, nbret=noc)
+            ASSERT(noc.ne.0)
         endif
- 10 end do
+    end do
 !
-    if (.not. ya) then
+    if (.not. l_dist_exist) then
         goto 999
     endif
 !
-! --- TRANSFO. CARTE CARA_ELEM EN CHAM_ELEM_S
+! - Access to elementary characteristics
 !
-    carte = carael//'.CARGEOPO'
-    carsd = '&&CAPOCO.CARGEOPO'
-    call carces(carte, 'ELEM', ' ', 'V', carsd,&
+    call carces(cara_elem//'.CARGEOPO', 'ELEM', ' ', 'V', cara_elem_s,&
                 'A', iret)
+    call jeveuo(cara_elem_s//'.CESC', 'L', vk8=v_caraelem_cesc)
+    call jeveuo(cara_elem_s//'.CESD', 'L', j_caraelem_cesd)
+    call jeveuo(cara_elem_s//'.CESL', 'L', j_caraelem_cesl)
+    call jeveuo(cara_elem_s//'.CESV', 'L', vr=v_caraelem_cesv)
 !
-! --- RECUPERATION DES GRANDEURS (TSEC, R1, R2)
-! --- REFERENCEE PAR LA CARTE CARGEOPO
+! - Get index for storing beam parameters
 !
-    call jeveuo(carsd//'.CESC', 'L', vk8=cesc)
-    call jeveuo(carsd//'.CESD', 'L', icesd)
-    call jeveuo(carsd//'.CESL', 'L', icesl)
-    call jeveuo(carsd//'.CESV', 'L', vr=cesv)
+    nb_para_maxi   = zi(j_caraelem_cesd-1+2)
+    beam_tsec_indx = indik8(v_caraelem_cesc,'TSEC    ',1,nb_para_maxi)
+    beam_r1_indx   = indik8(v_caraelem_cesc,'R1      ',1,nb_para_maxi)
+    beam_r2_indx   = indik8(v_caraelem_cesc,'R2      ',1,nb_para_maxi)
 !
-! --- ON RECUPERE LE RAYON EXTERIEUR DE LA POUTRE
+! - Loop on contact zones
 !
-    npmax = zi(icesd-1+2)
-    rangr0 = indik8(cesc,'TSEC    ',1,npmax)
-    rangr1 = indik8(cesc,'R1      ',1,npmax)
-    rangr2 = indik8(cesc,'R2      ',1,npmax)
+    do i_zone = 1, nb_cont_zone
+        l_dist_beam = mminfl(sdcont_defi, 'DIST_POUTRE', i_zone)
+        if (l_dist_beam) then
+            nb_slav_elem = mminfi(sdcont_defi, 'NBMAE' , i_zone)
+            jdecme       = mminfi(sdcont_defi, 'JDECME', i_zone)
+            do i_slav_elem = 1, nb_slav_elem
 !
-    do 20 izone = 1, nzoco
-        ldpou = mminfl(defico,'DIST_POUTRE',izone )
+! ------------- Current element
 !
+                elem_slav_indx = jdecme+i_slav_elem
+                elem_slav_nume = v_sdcont_mailco(elem_slav_indx)
 !
-        if (ldpou) then
+! ------------- Beam section shape
 !
-            nbmae = mminfi(defico,'NBMAE' ,izone )
-            jdecme = mminfi(defico,'JDECME',izone )
-!
-            do 30 imae = 1, nbmae
-!
-                posmae = jdecme+imae
-                nummae = zi(jmaco+posmae-1)
-!
-! --- TYPE DE SECTION (UNIQUEMENT CIRCULAIRE !)
-!
-                call cesexi('C', icesd, icesl, nummae, 1,&
-                            1, rangr0, iad1)
+                call cesexi('C', j_caraelem_cesd, j_caraelem_cesl, elem_slav_nume, 1,&
+                            1, beam_tsec_indx, iad1)
                 if (iad1 .gt. 0) then
-                    isec = nint( cesv(abs(iad1)) )
+                    i_beam_sect = nint(v_caraelem_cesv(abs(iad1)))
                 else
-                    isec = 0
+                    i_beam_sect = 0
                 endif
-                if (isec .ne. 2) then
+!
+! ------------- Beam section shape is only circular !
+!
+                if (i_beam_sect .ne. 2) then
                     call utmess('F', 'CONTACT3_32')
                 endif
 !
-! --- RECUPERATION RAYON
+! ------------- Get radius
 !
-                call cesexi('C', icesd, icesl, nummae, 1,&
-                            1, rangr1, iad1)
-                call cesexi('C', icesd, icesl, nummae, 1,&
-                            1, rangr2, iad2)
+                call cesexi('C', j_caraelem_cesd, j_caraelem_cesl, elem_slav_nume, 1,&
+                            1, beam_r1_indx, iad1)
+                ASSERT(iad1.gt.0)
+                beam_radius_1 = v_caraelem_cesv(iad1)
+                call cesexi('C', j_caraelem_cesd, j_caraelem_cesl, elem_slav_nume, 1,&
+                            1, beam_r2_indx, iad2)
+                ASSERT(iad2.gt.0)
+                beam_radius_2 = v_caraelem_cesv(iad2)
 !
-                if (iad1 .gt. 0) then
-                    r1 = cesv(iad1)
-                else
-                    ASSERT(.false.)
-                endif
+! ------------- Different radius: mean value
 !
-                if (iad2 .gt. 0) then
-                    r2 = cesv(iad2)
-                else
-                    ASSERT(.false.)
-                endif
-!
-                if (r1 .ne. r2) then
+                if (abs(beam_radius_1 - beam_radius_2).gt.r8prem()) then
                     call utmess('I', 'CONTACT3_37')
                 endif
+                beam_radius = (beam_radius_1+beam_radius_2)/2.d0
 !
-                rayon = (r1+r2)/2.d0
+! ------------- Save value
 !
-! --- STOCKAGE
-!
-                zr(jjpou+posmae-1) = rayon
- 30         continue
+                v_sdcont_jeupou(elem_slav_indx) = beam_radius
+            end do
         endif
- 20 end do
-!
-    call detrsd('CHAM_ELEM_S', carsd)
+    end do
 !
 999 continue
 !
-    call jedema()
+    call detrsd('CHAM_ELEM_S', cara_elem_s)
 !
 end subroutine

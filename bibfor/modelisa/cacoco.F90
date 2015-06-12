@@ -1,4 +1,25 @@
-subroutine cacoco(char, motfac, noma)
+subroutine cacoco(sdcont, keywf, mesh)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterc/indik8.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/carces.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/getvid.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mminfi.h"
+#include "asterfort/mminfl.h"
+#include "asterfort/utmess.h"
+#include "asterfort/wkvect.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,174 +39,142 @@ subroutine cacoco(char, motfac, noma)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/indik8.h"
-#include "asterfort/assert.h"
-#include "asterfort/carces.h"
-#include "asterfort/cesexi.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/detrsd.h"
-#include "asterfort/getvid.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/mminfi.h"
-#include "asterfort/mminfl.h"
-#include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
+    character(len=8), intent(in) :: sdcont
+    character(len=16), intent(in) :: keywf
+    character(len=8), intent(in) :: mesh
 !
-    character(len=8) :: char, noma
-    character(len=16) :: motfac
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! DEFI_CONTACT
 !
-! ROUTINE CONTACT (METHODES MAILLEES - LECTURE DONNEES)
+! Get supplementary gap: shells
 !
-! LECTURE DES CARACTERISTIQUES DE COQUE
-! REMPLISSAGE DE LA SD DEFICO(1:16)//'.JEUCOQ'
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! In  sdcont           : name of contact concept (DEFI_CONTACT)
+! In  keywf            : factor keyword to read
+! In  mesh             : name of mesh
 !
+! --------------------------------------------------------------------------------------------------
 !
-! IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
-! IN  MOTFAC : MOT-CLE FACTEUR (VALANT 'CONTACT')
-! IN  NOMA   : NOM DU MAILLAGE
-!
-!
-!
-!
-    integer :: iret, noc, nbnma, iacnex
-    integer :: icesd, icesl, npmax
-    integer :: rangr0, rangr1, iad1
-    integer :: nzoco, nbmae
-    integer :: posmae, nummae
+    integer :: iret, noc
+    integer :: nb_para_maxi, nb_cont_elem, nb_cont_zone, nb_slav_elem
+    integer :: shell_ep_indx, shell_exc_indx, iad1
+    integer :: elem_slav_indx, elem_slav_nume
     integer :: jdecme
-    integer :: izone, imae, nmaco
-    real(kind=8) :: ep, exc
-    aster_logical :: ya
-    character(len=8) :: carael, nommae
-    character(len=24) :: defico
-    character(len=24) :: contma, jeucoq
-    integer :: jmaco, jjcoq
-    character(len=19) :: carsd, carte
-    aster_logical :: ldcoq
-    real(kind=8), pointer :: cesv(:) => null()
-    character(len=8), pointer :: cesc(:) => null()
+    integer :: i_zone, i_slav_elem
+    real(kind=8) :: shell_ep, shell_excent
+    aster_logical :: l_dist_exist
+    character(len=8) :: cara_elem, elem_slav_name
+    character(len=19) :: cara_elem_s
+    aster_logical :: l_dist_shell
+    real(kind=8), pointer :: v_caraelem_cesv(:) => null()
+    character(len=8), pointer :: v_caraelem_cesc(:) => null()
+    integer :: j_caraelem_cesd, j_caraelem_cesl
+    character(len=24) :: sdcont_defi
+    character(len=24) :: sdcont_mailco
+    integer, pointer :: v_sdcont_mailco(:) => null()
+    character(len=24) :: sdcont_jeucoq
+    real(kind=8), pointer :: v_sdcont_jeucoq(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
+    cara_elem_s = '&&CAPOCO.CARGEOPO'
 !
-! --- INITIALISATIONS
+! - Datastructure for contact definition
 !
-    defico = char(1:8)//'.CONTACT'
-    nzoco = cfdisi(defico,'NZOCO')
-    nmaco = cfdisi(defico,'NMACO')
+    sdcont_defi = sdcont(1:8)//'.CONTACT'
+    sdcont_mailco = sdcont_defi(1:16)//'.MAILCO'
+    sdcont_jeucoq = sdcont_defi(1:16)//'.JEUCOQ'
+    call jeveuo(sdcont_mailco, 'L', vi = v_sdcont_mailco)
 !
-! --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
+! - Parameters
 !
-    contma = defico(1:16)//'.MAILCO'
-    call jeveuo(contma, 'L', jmaco)
+    nb_cont_zone = cfdisi(sdcont_defi, 'NZOCO')
+    nb_cont_elem = cfdisi(sdcont_defi, 'NMACO')
 !
-! --- CREATION VECTEUR
+! - Create shell gap datastructure
 !
-    jeucoq = defico(1:16)//'.JEUCOQ'
-    call wkvect(jeucoq, 'G V R', nmaco, jjcoq)
+    call wkvect(sdcont_jeucoq, 'G V R', nb_cont_elem, vr = v_sdcont_jeucoq)
 !
-! --- RECUPERATION DU CARA_ELEM
+! - Get elementary characteristics datastructure
 !
-    ya = .false.
-    do 10 izone = 1, nzoco
-        ldcoq = mminfl(defico,'DIST_COQUE',izone )
-        if (ldcoq) then
-            ya = .true.
-            call getvid(motfac, 'CARA_ELEM', iocc=izone, scal=carael, nbret=noc)
-            if (noc .eq. 0) then
-                ASSERT(.false.)
-            endif
+    l_dist_exist = .false.
+    do i_zone = 1, nb_cont_zone
+        l_dist_shell = mminfl(sdcont_defi, 'DIST_COQUE', i_zone)
+        if (l_dist_shell) then
+            l_dist_exist = .true.
+            call getvid(keywf, 'CARA_ELEM', iocc=i_zone, scal=cara_elem, nbret=noc)
+            ASSERT(noc.ne.0)
         endif
- 10 end do
+    end do
 !
-    if (.not. ya) then
+    if (.not. l_dist_exist) then
         goto 999
     endif
 !
-    carte = carael//'.CARCOQUE'
-    carsd = '&&CACOCO.CARCOQUE'
-    call carces(carte, 'ELEM', ' ', 'V', carsd,&
+! - Access to elementary characteristics
+!
+    call carces(cara_elem//'.CARCOQUE', 'ELEM', ' ', 'V', cara_elem_s,&
                 'A', iret)
+    call jeveuo(cara_elem_s//'.CESC', 'L', vk8=v_caraelem_cesc)
+    call jeveuo(cara_elem_s//'.CESD', 'L', j_caraelem_cesd)
+    call jeveuo(cara_elem_s//'.CESL', 'L', j_caraelem_cesl)
+    call jeveuo(cara_elem_s//'.CESV', 'L', vr=v_caraelem_cesv)
 !
-! --- RECUPERATION DES GRANDEURS (EPAIS, EXCENT)
-! --- REFERENCEE PAR LA CARTE CARGEOPO
+! - Get index for storing shell parameters
 !
-    call jeveuo(carsd//'.CESC', 'L', vk8=cesc)
-    call jeveuo(carsd//'.CESD', 'L', icesd)
-    call jeveuo(carsd//'.CESL', 'L', icesl)
-    call jeveuo(carsd//'.CESV', 'L', vr=cesv)
+    nb_para_maxi   = zi(j_caraelem_cesd-1+2)
+    shell_ep_indx  = indik8(v_caraelem_cesc,'EP      ',1,nb_para_maxi)
+    shell_exc_indx = indik8(v_caraelem_cesc,'EXCENT  ',1,nb_para_maxi)
 !
-! --- ON RECUPERE L'EPAISSEUR DE LA COQUE
+! - Loop on contact zones
 !
-    npmax = zi(icesd-1+2)
-    rangr0 = indik8(cesc,'EP      ',1,npmax)
-    rangr1 = indik8(cesc,'EXCENT  ',1,npmax)
+    do i_zone = 1, nb_cont_zone
+        l_dist_shell = mminfl(sdcont_defi, 'DIST_COQUE', i_zone)
+        if (l_dist_shell) then
+            nb_slav_elem = mminfi(sdcont_defi, 'NBMAE' , i_zone)
+            jdecme       = mminfi(sdcont_defi, 'JDECME', i_zone)
+            do i_slav_elem = 1, nb_slav_elem
 !
-    do 20 izone = 1, nzoco
-        ldcoq = mminfl(defico,'DIST_COQUE',izone )
-        if (ldcoq) then
+! ------------- Current element
 !
-            nbmae = mminfi(defico,'NBMAE' ,izone )
-            jdecme = mminfi(defico,'JDECME',izone )
+                elem_slav_indx = jdecme+i_slav_elem
+                elem_slav_nume = v_sdcont_mailco(elem_slav_indx)
+                call jenuno(jexnum(mesh//'.NOMMAI', elem_slav_nume), elem_slav_name)
 !
-            do 30 imae = 1, nbmae
+! ------------- Get thickness
 !
-                posmae = jdecme+imae
-                nummae = zi(jmaco+posmae-1)
-                call jenuno(jexnum(noma//'.NOMMAI', nummae), nommae)
-!
-! --- RECUPERATION EPAISSEUR
-!
-                call cesexi('C', icesd, icesl, nummae, 1,&
-                            1, rangr0, iad1)
+                call cesexi('C', j_caraelem_cesd, j_caraelem_cesl, elem_slav_nume, 1,&
+                            1, shell_ep_indx, iad1)
                 if (iad1 .gt. 0) then
-                    ep = cesv(iad1)
+                    shell_ep = v_caraelem_cesv(iad1)
                 else
-                    call utmess('F', 'CONTACT3_39', sk=nommae)
+                    call utmess('F', 'CONTACT3_39', sk=elem_slav_name)
                 endif
 !
-! --- RECUPERATION EXCENTRICITE
+! ------------- Get excentricity
 !
-                call cesexi('C', icesd, icesl, nummae, 1,&
-                            1, rangr1, iad1)
+                call cesexi('C', j_caraelem_cesd, j_caraelem_cesl, elem_slav_nume, 1,&
+                            1, shell_exc_indx, iad1)
                 if (iad1 .gt. 0) then
-                    exc = cesv(iad1)
-                    if (exc .ne. 0.d0) then
-                        call utmess('F', 'CONTACT3_40', sk=nommae)
+                    shell_excent = v_caraelem_cesv(iad1)
+                    if (shell_excent .ge. r8prem()) then
+                        call utmess('F', 'CONTACT3_40', sk=elem_slav_name)
                     endif
                 else
-                    call utmess('F', 'CONTACT3_41', sk=nommae)
+                    call utmess('F', 'CONTACT3_41', sk=elem_slav_name)
                 endif
 !
-! --- NOEUDS DE LA MAILLE
+! ------------- Save
 !
-                call jeveuo(jexnum(noma//'.CONNEX', nummae), 'L', iacnex)
-                call jelira(jexnum(noma//'.CONNEX', nummae), 'LONMAX', nbnma)
-!
-! --- STOCKAGE
-!
-                zr(jjcoq+posmae-1) = 0.5d0 * ep
- 30         continue
+                v_sdcont_jeucoq(elem_slav_indx) = 0.5d0 * shell_ep
+            end do
         endif
- 20 end do
-!
-    call detrsd('CHAM_ELEM_S', carsd)
+    end do
 !
 999 continue
 !
-    call jedema()
+    call detrsd('CHAM_ELEM_S', cara_elem_s)
 !
 end subroutine
