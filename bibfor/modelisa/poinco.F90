@@ -1,4 +1,9 @@
-subroutine poinco(char, motfac, noma, nzoco, nsuco)
+subroutine poinco(sdcont, keywf, mesh, nb_cont_zone, nb_cont_surf)
+!
+implicit none
+!
+#include "asterfort/nbzoco.h"
+#include "asterfort/wkvect.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,72 +23,58 @@ subroutine poinco(char, motfac, noma, nzoco, nsuco)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/nbzoco.h"
-#include "asterfort/wkvect.h"
-    character(len=8) :: char
-    character(len=16) :: motfac
-    character(len=8) :: noma
-    integer :: nzoco
-    integer :: nsuco
+    character(len=8), intent(in) :: sdcont
+    character(len=8), intent(in) :: mesh
+    character(len=16), intent(in) :: keywf
+    integer, intent(in) :: nb_cont_zone
+    integer, intent(out) :: nb_cont_surf
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (METHODES MAILLEES - LECTURE DONNEES)
+! DEFI_CONTACT
 !
-! DETERMINATION DU NOMBRE DE ZONES DE CONTACT ET DU NOMBRE TOTAL DE
-! MAILLES ET DE NOEUDS DE CONTACT.
-! REMPLISSAGE DES POINTEURS ASSOCIES: PZONE,PSURMA,PSURNO,PNOQUA
+! Surfaces of contact
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sdcont           : name of contact concept (DEFI_CONTACT)
+! In  keywf            : factor keyword to read
+! In  mesh             : name of mesh
+! In  nb_cont_zone     : number of zones of contact
+! Out nb_cont_surf     : number of surfaces of contact
 !
-! IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
-! IN  MOTFAC : MOT-CLE FACTEUR
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  NZOCO  : NOMBRE DE ZONES DE CONTACT
-! OUT NSUCO  : NOMBRE TOTAL DE SURFACES DE CONTACT
+! --------------------------------------------------------------------------------------------------
 !
+    integer :: i_zone, nb_surf
+    character(len=24) :: sdcont_pzoneco
+    integer, pointer :: v_sdcont_pzoneco(:) => null()
+    character(len=24) :: sdcont_psumaco, sdcont_psunoco
+    integer :: j_sdcont_psumaco, j_sdcont_psunoco
+    character(len=24) :: sdcont_defi
 !
+! --------------------------------------------------------------------------------------------------
 !
+    nb_cont_surf = 0
 !
-    integer :: izone
-    character(len=24) :: pzone, psurma, psurno
-    integer :: jzone, jsuma, jsuno
-    character(len=24) :: defico
+! - Datastructures for contact
 !
-! ----------------------------------------------------------------------
+    sdcont_defi    = sdcont(1:8)//'.CONTACT'
+    sdcont_pzoneco = sdcont_defi(1:16)//'.PZONECO'
+    sdcont_psumaco = sdcont_defi(1:16)//'.PSUMACO'
+    sdcont_psunoco = sdcont_defi(1:16)//'.PSUNOCO'
 !
-    call jemarq()
+! - Number of zones of contact
 !
-! --- INITIALISATIONS
+    call wkvect(sdcont_pzoneco, 'G V I', nb_cont_zone+1, vi = v_sdcont_pzoneco)
+    do i_zone = 1, nb_cont_zone
+        call nbzoco(keywf, mesh, i_zone, nb_surf)
+        nb_cont_surf = nb_cont_surf + nb_surf
+        v_sdcont_pzoneco(i_zone+1) = nb_cont_surf
+    end do
 !
-    defico = char(1:8)//'.CONTACT'
+! - Create datastructures: pointers to elements and nodes of contact
 !
-! --- ACCES AUX STRUCTURES DE DONNEES DE CONTACT
+    call wkvect(sdcont_psumaco, 'G V I', nb_cont_surf+1, j_sdcont_psumaco)
+    call wkvect(sdcont_psunoco, 'G V I', nb_cont_surf+1, j_sdcont_psunoco)
 !
-    pzone = defico(1:16)//'.PZONECO'
-    psurma = defico(1:16)//'.PSUMACO'
-    psurno = defico(1:16)//'.PSUNOCO'
-!
-! --- INITIALISATIONS
-!
-    nsuco = 0
-!
-! --- DETERMINATION DU NOMBRE DE SURFACES
-!
-    call wkvect(pzone, 'G V I', nzoco+1, jzone)
-    do 2 izone = 1, nzoco
-        call nbzoco(motfac, noma, izone, jzone, nsuco)
- 2  end do
-!
-! --- TABLEAUX DU NOMBRE DE MAILLES ET DE NOEUDS DE CONTACT
-!
-    call wkvect(psurma, 'G V I', nsuco+1, jsuma)
-    call wkvect(psurno, 'G V I', nsuco+1, jsuno)
-!
-    call jedema()
 end subroutine

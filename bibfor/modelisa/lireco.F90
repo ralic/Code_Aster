@@ -1,6 +1,10 @@
-subroutine lireco(motfac, noma, nomo, izone, listme,&
-                  listmm, listne, listnm, nbmaes, nbnoes,&
-                  nbmama, nbnoma)
+subroutine lireco(keywf         , mesh          , model         , i_zone      , list_elem_slav,&
+                  list_elem_mast, list_node_slav, list_node_mast, nb_elem_slav, nb_node_slav  ,&
+                  nb_elem_mast  , nb_node_mast)
+!
+implicit none
+!
+#include "asterfort/reliem.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,97 +24,76 @@ subroutine lireco(motfac, noma, nomo, izone, listme,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
+    character(len=8), intent(in) :: mesh
+    character(len=8), intent(in) :: model
+    character(len=16), intent(in) :: keywf
+    integer, intent(in) :: i_zone
+    character(len=24), intent(in) :: list_elem_slav
+    character(len=24), intent(in) :: list_elem_mast
+    character(len=24), intent(in) :: list_node_slav
+    character(len=24), intent(in) :: list_node_mast
+    integer, intent(out) :: nb_elem_slav
+    integer, intent(out) :: nb_node_slav
+    integer, intent(out) :: nb_elem_mast
+    integer, intent(out) :: nb_node_mast
 !
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/reliem.h"
-    character(len=16) :: motfac
-    character(len=8) :: noma, nomo
-    integer :: izone
-    character(len=24) :: listme, listmm
-    character(len=24) :: listne, listnm
-    integer :: nbmaes, nbnoes
-    integer :: nbmama, nbnoma
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! DEFI_CONTACT
 !
-! ROUTINE CONTACT (TOUTES METHODES - LECTURE DONNEES)
+! Read slave and master surfaces
 !
-! LECTURE DES SURFACES DE CONTACT
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! In  keywf            : factor keyword to read
+! In  mesh             : name of mesh
+! In  model            : name of model
+! In  list_elem_slav   : name of JEVEUX object for list of slave elements
+! In  list_elem_mast   : name of JEVEUX object for list of master elements
+! In  list_node_slav   : name of JEVEUX object for list of slave nodes
+! In  list_node_mast   : name of JEVEUX object for list of master nodes
+! Out nb_elem_slav     : number of slave elements
+! Out nb_elem_mast     : number of master elements
+! Out nb_node_slav     : number of slave nodes
+! Out nb_node_mast     : number of master nodes
 !
+! --------------------------------------------------------------------------------------------------
 !
-! IN  MOTFAC : MOT-CLE FACTEUR (VALANT 'CONTACT')
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  NOMO   : NOM DU MODELE
-! IN  IZONE  : INDICE DE LA ZONE DE CONTACT
-! I/O LISTME : NOM DE LA LISTE CONTENANT LES MAILLES ESCLAVES
-! I/O LISTMM : NOM DE LA LISTE CONTENANT LES MAILLES MAITRES
-! I/O LISTNE : NOM DE LA LISTE CONTENANT LES NOEUDS ESCLAVES
-! I/O LISTNM : NOM DE LA LISTE CONTENANT LES NOEUDS MAITRES
-! OUT NBMAES : NOMBRE DE MAILLES ESCLAVES
-! OUT NBMAMA : NOMBRE DE MAILLES MAITRES
-! OUT NBMAES : NOMBRE DE MAILLES ESCLAVES
-! OUT NBMAMA : NOMBRE DE MAILLES MAITRES
-!
-!
-!
-!
-!
-    integer :: nbmocl
+    integer :: nb_keyw
     character(len=8) :: k8bla
-    character(len=16) :: limocl(2), tymocl(2)
+    character(len=16) :: keyw_name(2), keyw_type(2)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
+    nb_elem_slav = 0
+    nb_elem_mast = 0
+    nb_node_slav = 0
+    nb_node_mast = 0
+    k8bla        = ' '
+    nb_keyw      = 2
+    keyw_type(1) = 'GROUP_MA'
+    keyw_type(2) = 'MAILLE'
 !
-! --- INITIALISATIONS
+! - Elements
 !
-    nbmocl = 2
-    nbmaes = 0
-    nbmama = 0
-    nbnoes = 0
-    nbnoma = 0
-    k8bla = ' '
+    keyw_name(1) = 'GROUP_MA_ESCL'
+    keyw_name(2) = 'MAILLE_ESCL'
+    call reliem(k8bla  , mesh     , 'NU_MAILLE', keywf         , i_zone      ,&
+                nb_keyw, keyw_name, keyw_type  , list_elem_slav, nb_elem_slav)
+    keyw_name(1) = 'GROUP_MA_MAIT'
+    keyw_name(2) = 'MAILLE_MAIT'
+    call reliem(k8bla  , mesh     , 'NU_MAILLE', keywf         , i_zone      ,&
+                nb_keyw, keyw_name, keyw_type  , list_elem_mast, nb_elem_mast)
 !
-! --- MAILLES
+! - Nodes
 !
-    tymocl(1) = 'GROUP_MA'
-    tymocl(2) = 'MAILLE'
-!
-! --- MAILLES ESCLAVES
-!
-    limocl(1) = 'GROUP_MA_ESCL'
-    limocl(2) = 'MAILLE_ESCL'
-    call reliem(k8bla, noma, 'NU_MAILLE', motfac, izone,&
-                nbmocl, limocl, tymocl, listme, nbmaes)
-!
-! --- MAILLES MAITRES
-!
-    limocl(1) = 'GROUP_MA_MAIT'
-    limocl(2) = 'MAILLE_MAIT'
-    call reliem(k8bla, noma, 'NU_MAILLE', motfac, izone,&
-                nbmocl, limocl, tymocl, listmm, nbmama)
-!
-! --- NOEUDS ESCLAVES
-!
-    limocl(1) = 'GROUP_MA_ESCL'
-    limocl(2) = 'MAILLE_ESCL'
-    call reliem(nomo, noma, 'NU_NOEUD', motfac, izone,&
-                nbmocl, limocl, tymocl, listne, nbnoes)
-!
-! --- NOEUDS MAITRES
-!
-    limocl(1) = 'GROUP_MA_MAIT'
-    limocl(2) = 'MAILLE_MAIT'
-    call reliem(nomo, noma, 'NU_NOEUD', motfac, izone,&
-                nbmocl, limocl, tymocl, listnm, nbnoma)
-!
-! --- MENAGES
-!
-    call jedema()
+    keyw_name(1) = 'GROUP_MA_ESCL'
+    keyw_name(2) = 'MAILLE_ESCL'
+    call reliem(model  , mesh     , 'NU_NOEUD', keywf         , i_zone      ,&
+                nb_keyw, keyw_name, keyw_type , list_node_slav, nb_node_slav)
+    keyw_name(1) = 'GROUP_MA_MAIT'
+    keyw_name(2) = 'MAILLE_MAIT'
+    call reliem(model  , mesh     , 'NU_NOEUD', keywf         , i_zone      ,&
+                nb_keyw, keyw_name, keyw_type , list_node_mast, nb_node_mast)
+
 end subroutine

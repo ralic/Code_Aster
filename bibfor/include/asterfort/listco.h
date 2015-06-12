@@ -16,14 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine listco(char, motfac, noma, nomo, nzoco,&
-                      nmaco, nnoco)
-        character(len=8) :: char
-        character(len=16) :: motfac
-        character(len=8) :: noma
-        character(len=8) :: nomo
-        integer :: nzoco
-        integer :: nmaco
-        integer :: nnoco
+    subroutine listco(sdcont      , keywf       , mesh, model, nb_cont_zone,&
+                      nb_cont_elem, nb_cont_node)
+        character(len=8), intent(in) :: sdcont
+        character(len=8), intent(in) :: mesh
+        character(len=8), intent(in) :: model
+        character(len=16), intent(in) :: keywf
+        integer, intent(in) :: nb_cont_zone
+        integer, intent(out) :: nb_cont_elem
+        integer, intent(out) :: nb_cont_node
     end subroutine listco
 end interface

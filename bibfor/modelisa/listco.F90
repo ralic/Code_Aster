@@ -1,5 +1,10 @@
-subroutine listco(char, motfac, noma, nomo, nzoco,&
-                  nmaco, nnoco)
+subroutine listco(sdcont      , keywf       , mesh, model, nb_cont_zone,&
+                  nb_cont_elem, nb_cont_node)
+!
+implicit none
+!
+#include "asterfort/liexco.h"
+#include "asterfort/nbsuco.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,51 +22,44 @@ subroutine listco(char, motfac, noma, nomo, nzoco,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/liexco.h"
-#include "asterfort/nbsuco.h"
-    character(len=8) :: char
-    character(len=16) :: motfac
-    character(len=8) :: noma, nomo
-    integer :: nzoco
-    integer :: nmaco
-    integer :: nnoco
+    character(len=8), intent(in) :: sdcont
+    character(len=8), intent(in) :: mesh
+    character(len=8), intent(in) :: model
+    character(len=16), intent(in) :: keywf
+    integer, intent(in) :: nb_cont_zone
+    integer, intent(out) :: nb_cont_elem
+    integer, intent(out) :: nb_cont_node
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (METHODES MAILLEES - LECTURE DONNEES)
+! DEFI_CONTACT
 !
-! STOCKAGE DES MAILLES ET NOEUDS DE CONTACT
+! Count and save nodes and elements
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sdcont           : name of contact concept (DEFI_CONTACT)
+! In  keywf            : factor keyword to read
+! In  mesh             : name of mesh
+! In  model            : name of model
+! In  nb_cont_zone     : number of zones of contact
+! Out nb_cont_elem     : number of elements of contact
+! Out nb_cont_node     : number of nodes of contact
 !
-! IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
-! IN  MOTFAC : MOT-CLE FACTEUR (VALANT 'CONTACT')
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  NOMO   : NOM DU MODELE
-! IN  NZOCO  : NOMBRE DE ZONES DE CONTACT
-! OUT NMACO  : NOMBRE TOTAL DE MAILLES DES SURFACES DE CONTACT
-! OUT NNOCO  : NOMBRE TOTAL DE NOEUDS DES SURFACES DE CONTACT
+! --------------------------------------------------------------------------------------------------
 !
+
 !
+! - Count elements/nodes of contact
 !
+    call nbsuco(sdcont      , keywf       , mesh, model, nb_cont_zone,&
+                nb_cont_elem, nb_cont_node)
 !
-    call jemarq()
+! - Save elements/nodes of contact
 !
-! --- ON COMPTE LES MAILLES/NOEUDS DES ZONES DE CONTACT
-!
-    call nbsuco(char, motfac, noma, nomo, nzoco,&
-                nmaco, nnoco)
-!
-! --- ON STOCKE LES MAILLES/NOEUDS DES ZONES DE CONTACT
-!
-    call liexco(char, motfac, noma, nomo, nzoco,&
-                nmaco, nnoco)
-!
-    call jedema()
+    call liexco(sdcont      , keywf       , mesh, model, nb_cont_zone,&
+                nb_cont_elem, nb_cont_node)
+
 end subroutine

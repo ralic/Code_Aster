@@ -16,11 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine poinco(char, motfac, noma, nzoco, nsuco)
-        character(len=8) :: char
-        character(len=16) :: motfac
-        character(len=8) :: noma
-        integer :: nzoco
-        integer :: nsuco
+    subroutine poinco(sdcont, keywf, mesh, nb_cont_zone, nb_cont_surf)
+        character(len=8), intent(in) :: sdcont
+        character(len=8), intent(in) :: mesh
+        character(len=16), intent(in) :: keywf
+        integer, intent(in) :: nb_cont_zone
+        integer, intent(out) :: nb_cont_surf
     end subroutine poinco
 end interface

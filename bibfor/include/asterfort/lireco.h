@@ -16,20 +16,20 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine lireco(motfac, noma, nomo, izone, listme,&
-                      listmm, listne, listnm, nbmaes, nbnoes,&
-                      nbmama, nbnoma)
-        character(len=16) :: motfac
-        character(len=8) :: noma
-        character(len=8) :: nomo
-        integer :: izone
-        character(len=24) :: listme
-        character(len=24) :: listmm
-        character(len=24) :: listne
-        character(len=24) :: listnm
-        integer :: nbmaes
-        integer :: nbnoes
-        integer :: nbmama
-        integer :: nbnoma
+    subroutine lireco(keywf         , mesh          , model         , i_zone      , list_elem_slav,&
+                      list_elem_mast, list_node_slav, list_node_mast, nb_elem_slav, nb_node_slav  ,&
+                      nb_elem_mast  , nb_node_mast)
+        character(len=8), intent(in) :: mesh
+        character(len=8), intent(in) :: model
+        character(len=16), intent(in) :: keywf
+        integer, intent(in) :: i_zone
+        character(len=24), intent(in) :: list_elem_slav
+        character(len=24), intent(in) :: list_elem_mast
+        character(len=24), intent(in) :: list_node_slav
+        character(len=24), intent(in) :: list_node_mast
+        integer, intent(out) :: nb_elem_slav
+        integer, intent(out) :: nb_node_slav
+        integer, intent(out) :: nb_elem_mast
+        integer, intent(out) :: nb_node_mast
     end subroutine lireco
 end interface

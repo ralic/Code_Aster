@@ -16,11 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nbzoco(motfac, noma, izone, jzone, nsuco)
-        character(len=16) :: motfac
-        character(len=8) :: noma
-        integer :: izone
-        integer :: jzone
-        integer :: nsuco
+    subroutine nbzoco(keywf, mesh, i_zone, nb_cont_surf)
+        character(len=8), intent(in) :: mesh
+        character(len=16), intent(in) :: keywf
+        integer, intent(in) :: i_zone
+        integer, intent(out) :: nb_cont_surf
     end subroutine nbzoco
 end interface

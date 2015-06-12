@@ -1,5 +1,11 @@
-subroutine nbsuco(char, motfac, noma, nomo, nzoco,&
-                  nmaco, nnoco)
+subroutine nbsuco(sdcont      , keywf       , mesh, model, nb_cont_zone,&
+                  nb_cont_elem, nb_cont_node)
+!
+implicit none
+!
+#include "asterfort/jedetr.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/lireco.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,100 +25,89 @@ subroutine nbsuco(char, motfac, noma, nomo, nzoco,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/lireco.h"
-    character(len=8) :: char
-    character(len=16) :: motfac
-    character(len=8) :: noma, nomo
-    integer :: nzoco, nmaco, nnoco
+    character(len=8), intent(in) :: sdcont
+    character(len=8), intent(in) :: mesh
+    character(len=8), intent(in) :: model
+    character(len=16), intent(in) :: keywf
+    integer, intent(in) :: nb_cont_zone
+    integer, intent(out) :: nb_cont_elem
+    integer, intent(out) :: nb_cont_node
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (METHODES MAILLEES - LECTURE DONNEES)
+! DEFI_CONTACT
 !
-! DETERMINATION DU NOMBRE DE MAILLES ET DE NOEUDS DE CONTACT
-! REMPLISSAGE DES POINTEURS ASSOCIES JSUMA,JSUNO
+! Count nodes and elements
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sdcont           : name of contact concept (DEFI_CONTACT)
+! In  keywf            : factor keyword to read
+! In  mesh             : name of mesh
+! In  model            : name of model
+! In  nb_cont_zone     : number of zones of contact
+! Out nb_cont_elem     : number of elements of contact
+! Out nb_cont_node     : number of nodes of contact
 !
-! IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
-! IN  MOTFAC : MOT-CLE FACTEUR (VALANT 'CONTACT')
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  NOMO   : NOM DU MODELE
-! IN  NZOCO  : NOMBRE DE ZONES DE CONTACT
-! OUT NMACO  : NOMBRE TOTAL DE MAILLES DES SURFACES DE CONTACT
-! OUT NNOCO  : NOMBRE TOTAL DE NOEUDS DES SURFACES DE CONTACT
+! --------------------------------------------------------------------------------------------------
 !
+    integer :: i_zone, i_surf
+    integer :: nb_elem_slav, nb_node_slav
+    integer :: nb_elem_mast, nb_node_mast
+    character(len=24) :: list_elem_slav, list_elem_mast
+    character(len=24) :: list_node_slav, list_node_mast
+    character(len=24) :: sdcont_defi
+    character(len=24) :: sdcont_psumaco
+    integer, pointer :: v_sdcont_psumaco(:) => null()
+    character(len=24) :: sdcont_psunoco
+    integer, pointer :: v_sdcont_psunoco(:) => null()
 !
+! --------------------------------------------------------------------------------------------------
 !
+    nb_cont_node = 0
+    nb_cont_elem = 0
+    i_surf       = 1
 !
-    character(len=24) :: defico
-    character(len=24) :: psurma, psurno
-    integer :: jsuma, jsuno
-    integer :: izone, isuco
-    integer :: nbmaes, nbnoes
-    integer :: nbmama, nbnoma
-    character(len=24) :: listme, listmm
-    character(len=24) :: listne, listnm
+! - Datastructure for contact definition
 !
-! ----------------------------------------------------------------------
+    sdcont_defi    = sdcont(1:8)//'.CONTACT'
+    sdcont_psumaco = sdcont_defi(1:16)//'.PSUMACO'
+    sdcont_psunoco = sdcont_defi(1:16)//'.PSUNOCO'
+    call jeveuo(sdcont_psumaco, 'E', vi = v_sdcont_psumaco)
+    call jeveuo(sdcont_psunoco, 'E', vi = v_sdcont_psunoco)
 !
-    call jemarq()
+! - Temporary datastructures
 !
-! --- INITIALISATIONS
+    list_elem_mast = '&&NBSUCO.MAIL.MAIT'
+    list_elem_slav = '&&NBSUCO.MAIL.ESCL'
+    list_node_mast = '&&NBSUCO.NOEU.MAIT'
+    list_node_slav = '&&NBSUCO.NOEU.ESCL'
 !
-    nnoco = 0
-    nmaco = 0
-    isuco = 1
-    defico = char(1:8)//'.CONTACT'
+! - Number of nodes/elements
 !
-! --- ACCES AUX STRUCTURES DE DONNEES DE CONTACT
+    do i_zone = 1, nb_cont_zone
+        call lireco(keywf         , mesh          , model         , i_zone      , list_elem_slav,&
+                    list_elem_mast, list_node_slav, list_node_mast, nb_elem_slav, nb_node_slav  ,&
+                    nb_elem_mast  , nb_node_mast)
+        nb_cont_node = nb_cont_node+nb_node_mast+nb_node_slav
+        nb_cont_elem = nb_cont_elem+nb_elem_mast+nb_elem_slav
 !
-    psurma = defico(1:16)//'.PSUMACO'
-    psurno = defico(1:16)//'.PSUNOCO'
-    call jeveuo(psurma, 'E', jsuma)
-    call jeveuo(psurno, 'E', jsuno)
+! ----- Number of master nodes/elements
 !
-! --- NOM DES SD TEMPORAIRES
+        v_sdcont_psumaco(i_surf+1) = v_sdcont_psumaco(i_surf) + nb_elem_mast
+        v_sdcont_psunoco(i_surf+1) = v_sdcont_psunoco(i_surf) + nb_node_mast
+        i_surf = i_surf + 1
 !
-    listmm = '&&NBSUCO.MAIL.MAIT'
-    listme = '&&NBSUCO.MAIL.ESCL'
-    listnm = '&&NBSUCO.NOEU.MAIT'
-    listne = '&&NBSUCO.NOEU.ESCL'
+! ----- Number of slave nodes/elements
 !
-! --- ON COMPTE LES MAILLES/NOEUDS DES ZONES DE CONTACT
+        v_sdcont_psumaco(i_surf+1) = v_sdcont_psumaco(i_surf) + nb_elem_slav
+        v_sdcont_psunoco(i_surf+1) = v_sdcont_psunoco(i_surf) + nb_node_slav
+        i_surf = i_surf + 1
+    end do
 !
-    do 10 izone = 1, nzoco
-        call lireco(motfac, noma, nomo, izone, listme,&
-                    listmm, listne, listnm, nbmaes, nbnoes,&
-                    nbmama, nbnoma)
-        nnoco = nnoco+nbnoma+nbnoes
-        nmaco = nmaco+nbmama+nbmaes
+    call jedetr(list_elem_slav)
+    call jedetr(list_elem_mast)
+    call jedetr(list_node_slav)
+    call jedetr(list_node_mast)
 !
-! --- NOMBRE DE MAILLES ET DE NOEUDS MAITRES
-!
-        zi(jsuma+isuco) = zi(jsuma+isuco-1) + nbmama
-        zi(jsuno+isuco) = zi(jsuno+isuco-1) + nbnoma
-        isuco = isuco + 1
-!
-! --- NOMBRE DE MAILLES ET DE NOEUDS ESCLAVES
-!
-        zi(jsuma+isuco) = zi(jsuma+isuco-1) + nbmaes
-        zi(jsuno+isuco) = zi(jsuno+isuco-1) + nbnoes
-        isuco = isuco + 1
-!
-10  end do
-!
-    call jedetr(listme)
-    call jedetr(listmm)
-    call jedetr(listne)
-    call jedetr(listnm)
-!
-    call jedema()
 end subroutine

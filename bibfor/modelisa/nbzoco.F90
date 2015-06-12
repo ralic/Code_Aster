@@ -1,4 +1,9 @@
-subroutine nbzoco(motfac, noma, izone, jzone, nsuco)
+subroutine nbzoco(keywf, mesh, i_zone, nb_cont_surf)
+!
+implicit none
+!
+#include "asterfort/getvtx.h"
+#include "asterfort/verima.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,73 +23,76 @@ subroutine nbzoco(motfac, noma, izone, jzone, nsuco)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/getvem.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-    character(len=8) :: noma
-    character(len=16) :: motfac
-    integer :: izone
-    integer :: jzone
-    integer :: nsuco
+    character(len=8), intent(in) :: mesh
+    character(len=16), intent(in) :: keywf
+    integer, intent(in) :: i_zone
+    integer, intent(out) :: nb_cont_surf
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (METHODES MAILLEES - LECTURE DONNEES)
+! DEFI_CONTACT
 !
-! DETERMINATION DU NOMBRE DE SURFACES DE CONTACT
-! REMPLISSAGE DU POINTEUR ASSOCIE JZONE
+! Count number of surfaces of contact
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  keywf            : factor keyword to read
+! In  mesh             : name of mesh
+! In  i_zone           : index of contact zone
+! Out nb_cont_surf     : number of surfaces of contact
 !
-! IN  MOTFAC : MOT-CLE FACTEUR (VALANT 'CONTACT')
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  IZONE  : INDICE POUR LIRE LES DONNEES DANS AFFE_CHAR_MECA
-! IN  JZONE  : POINTEUR DES ZONES DE CONTACT
-! I/O NSUCO  : REPERE DU NOMBRE DE SURFACES DE CONTACT POUR CETTE
-!              ZONE DE CONTACT
+! --------------------------------------------------------------------------------------------------
 !
+    integer :: nb_group_mast, nb_group_slav, nb_mast, nb_slav
+    character(len=24) :: list_elem
 !
+! --------------------------------------------------------------------------------------------------
 !
+    nb_cont_surf  = 0
+    nb_group_mast = 0
+    nb_group_slav = 0
+    nb_mast       = 0
+    nb_slav       = 0
 !
-    character(len=8) :: k8bid
-    integer :: ngmait, ngescl, nmmait, nmescl
-    integer :: iarg
+! - Number of master elements
 !
-! ----------------------------------------------------------------------
+    call getvtx(keywf, 'GROUP_MA_MAIT', iocc=i_zone, vect=list_elem,&
+                nbret=nb_group_mast)
+    if (nb_group_mast .ne. 0) then
+        call verima(mesh, list_elem, nb_group_mast, 'GROUP_MA')
+    endif
+    call getvtx(keywf, 'MAILLE_MAIT', iocc=i_zone, vect=list_elem,&
+                nbret=nb_mast)
+    if (nb_mast .ne. 0) then
+        call verima(mesh, list_elem, nb_mast, 'MAILLE')
+    endif
 !
-    call jemarq()
+! - Number of slave elements
 !
-! --- INITIALISATIONS
+    call getvtx(keywf, 'GROUP_MA_ESCL', iocc=i_zone, vect=list_elem,&
+                nbret=nb_group_slav)
+    if (nb_group_slav .ne. 0) then
+        call verima(mesh, list_elem, nb_group_slav, 'GROUP_MA')
+    endif
+    call getvtx(keywf, 'MAILLE_ESCL', iocc=i_zone, vect=list_elem,&
+                nbret=nb_slav)
+    if (nb_group_slav .ne. 0) then
+        call verima(mesh, list_elem, nb_slav, 'MAILLE')
+    endif
 !
-    ngmait = 0
-    ngescl = 0
-    nmmait = 0
-    nmescl = 0
+! - Total number of contact surfaces
 !
-! --- DETERMINATION DU NOMBRE TOTAL DE SURFACES
+    if (nb_group_mast .ne. 0) then
+        nb_cont_surf = nb_cont_surf + 1
+    endif
+    if (nb_group_slav .ne. 0) then
+        nb_cont_surf = nb_cont_surf + 1
+    endif
+    if (nb_mast .ne. 0) then
+        nb_cont_surf = nb_cont_surf + 1
+    endif
+    if (nb_slav .ne. 0) then
+        nb_cont_surf = nb_cont_surf + 1
+    endif
 !
-    call getvem(noma, 'GROUP_MA', motfac, 'GROUP_MA_MAIT', izone,&
-                iarg, 0, k8bid, ngmait)
-    call getvem(noma, 'GROUP_MA', motfac, 'GROUP_MA_ESCL', izone,&
-                iarg, 0, k8bid, ngescl)
-    call getvem(noma, 'MAILLE', motfac, 'MAILLE_MAIT', izone,&
-                iarg, 0, k8bid, nmmait)
-    call getvem(noma, 'MAILLE', motfac, 'MAILLE_ESCL', izone,&
-                iarg, 0, k8bid, nmescl)
-!
-! --- NOMBRE TOTAL DE SURFACES DE CONTACT
-!
-    if (ngmait .ne. 0) nsuco = nsuco + 1
-    if (ngescl .ne. 0) nsuco = nsuco + 1
-    if (nmmait .ne. 0) nsuco = nsuco + 1
-    if (nmescl .ne. 0) nsuco = nsuco + 1
-!
-! --- MISE A JOUR DU POINTEUR SUR LES SURFACES DE CONTACT DE LA ZONE
-!
-    zi(jzone+izone) = nsuco
-!
-    call jedema()
 end subroutine
