@@ -1,4 +1,13 @@
-subroutine caramx(char, iform, nzoco)
+subroutine caramx(sdcont, cont_form, nb_cont_zone)
+!
+implicit none
+!
+#include "asterfort/assert.h"
+#include "asterfort/caracc.h"
+#include "asterfort/caracd.h"
+#include "asterfort/caracm.h"
+#include "asterfort/caracp.h"
+#include "asterfort/caracx.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,49 +27,48 @@ subroutine caramx(char, iform, nzoco)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterfort/assert.h"
-#include "asterfort/caracc.h"
-#include "asterfort/caracd.h"
-#include "asterfort/caracm.h"
-#include "asterfort/caracp.h"
-#include "asterfort/caracx.h"
-    character(len=8) :: char
-    integer :: nzoco
-    integer :: iform
+    character(len=8), intent(in) :: sdcont
+    integer, intent(in) :: cont_form
+    integer, intent(in) :: nb_cont_zone
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (TOUTES METHODES - LECTURE DONNEES)
+! DEFI_CONTACT
 !
-! CREATION DES SDS DE DEFINITION DU CONTACT (DEFICO)
+! Creation of datastructures
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sdcont           : name of contact concept (DEFI_CONTACT)
+! In  cont_form        : formulation of contact
+! In  nb_cont_zone     : number of zones of contact
 !
-! IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
-! IN  IFORM  : TYPE DE FORMULATION
-! IN  NZOCO  : NOMBRE DE ZONES DE CONTACT
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+    aster_logical :: l_cont_mesh
 !
+! --------------------------------------------------------------------------------------------------
 !
-! --- CREATION SD PARAMETRES GENERAUX (NE DEPENDANT PAS DE LA ZONE)
+    l_cont_mesh = (cont_form.eq.1).or.(cont_form.eq.2)
 !
-    call caracp(char)
+! - Datastructures for all formulations (Not depending on contact zone)
 !
-! --- CREATION SD PARAMETRES GENERAUX (DEPENDANT DE LA ZONE)
+    call caracp(sdcont)
 !
-    call caracm(char, nzoco, iform)
+! - Datastructures for meshed formulations (depending on contact zone)
 !
-! --- CREATION DES SD DEDIEES PAR FORMULATION
+    if (l_cont_mesh) then
+        call caracm(sdcont, nb_cont_zone)
+    endif
 !
-    if (iform .eq. 1) then
-        call caracd(char, nzoco)
-    else if (iform.eq.2) then
-        call caracc(char, nzoco)
-    else if (iform.eq.3) then
-        call caracx(char, nzoco)
+! - Datastructures for formulations
+!
+    if (cont_form .eq. 1) then
+        call caracd(sdcont, nb_cont_zone)
+    else if (cont_form.eq.2) then
+        call caracc(sdcont, nb_cont_zone)
+    else if (cont_form.eq.3) then
+        call caracx(sdcont, nb_cont_zone)
     else
         ASSERT(.false.)
     endif

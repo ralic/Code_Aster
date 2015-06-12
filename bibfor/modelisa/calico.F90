@@ -1,5 +1,15 @@
-subroutine calico(charz, nomaz, nomoz, ndim, iform,&
+subroutine calico(sdcont, mesh, model, model_ndim_, cont_form,&
                   ligret)
+!
+implicit none
+!
+#include "asterc/getfac.h"
+#include "asterfort/assert.h"
+#include "asterfort/caraco.h"
+#include "asterfort/limaco.h"
+#include "asterfort/surfco.h"
+#include "asterfort/caramx.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,78 +29,80 @@ subroutine calico(charz, nomaz, nomoz, ndim, iform,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
-#include "jeveux.h"
-#include "asterc/getfac.h"
-#include "asterfort/caraco.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/limaco.h"
-#include "asterfort/surfco.h"
-    character(len=*) :: charz
-    character(len=*) :: nomaz
-    character(len=*) :: nomoz
-    integer :: ndim, iform
-    character(len=19) :: ligret
+    character(len=8), intent(in) :: sdcont
+    character(len=8), intent(in) :: mesh
+    character(len=8), intent(in) :: model
+    integer, intent(in) :: model_ndim_
+    integer, intent(in) :: cont_form
+    character(len=19), intent(in) :: ligret
+!
+! --------------------------------------------------------------------------------------------------
+!
+! DEFI_CONTACT
+!
+! Get all informations in command
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  sdcont           : name of contact concept (DEFI_CONTACT)
+! In  model            : name of model
+! In  mesh             : name of mesh
+! In  model_ndim_      : dimension of model
+! In  cont_form        : formulation of contact
+! In  ligret           : name of special LIGREL for slave elements (CONTINUE formulation)
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: nb_cont_zone, model_ndim
+    character(len=16) :: keywf
 !
 ! ----------------------------------------------------------------------
 !
-! ROUTINE CONTACT
+    model_ndim   = 0
+    nb_cont_zone = 0
+    keywf        = 'ZONE'
 !
-! TRAITEMENT DU CONTACT DANS DEFI_CONTACT
+! - Number of contact zones
 !
-! ----------------------------------------------------------------------
-!
-!
-! IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  NOMO   : NOM DU MODELE
-! IN  NDIM   : NOMBRE DE DIMENSIONS DU PROBLEME
-! IN  IFORM  : TYPE DE FORMULATION (DISCRETE/CONTINUE/XFEM)
-! OUT LIGRET : LIGREL D'ELEMENTS TARDIFS DU CONTACT
-!
-!
-!
-!
-    character(len=8) :: char, noma, nomo
-    character(len=16) :: motfac
-    integer :: nzoco
-!
-! ----------------------------------------------------------------------
-!
-    call jemarq()
-!
-! --- INITIALISATIONS
-!
-    nomo = nomoz(1:8)
-    char = charz
-    noma = nomaz
-    nzoco = 0
-    motfac = 'ZONE'
-!
-! --- RECUPERATION DU NOMBRE DE ZONES DE CONTACT (NOMBRE D'OCCURENCES)
-!
-    call getfac(motfac, nzoco)
-!
-    if (nzoco .eq. 0) then
+    call getfac(keywf, nb_cont_zone)
+    if (nb_cont_zone .eq. 0) then
         goto 999
     endif
 !
-! --- RECUPERATION DES CARACTERISTIQUES DU CONTACT
+! - Adapt space dimension
 !
-    call caraco(char, nomo, motfac, nzoco, iform)
+    if (model_ndim_ .gt. 3) then
+        call utmess('A', 'CONTACT_84')
+        if (model_ndim_ .eq. 1003) then
+            model_ndim = 3
+        else if (model_ndim_.eq.1002) then
+            model_ndim = 2
+        else if (model_ndim_.eq.23) then
+            model_ndim = 2
+        else
+            ASSERT(.false.)
+        endif
+    else
+        model_ndim = model_ndim_
+    endif
 !
-! --- LECTURE DES MAILLES DE CONTACT  ET CREATION DES SDS
+! - Creation of datastructures
 !
-    call limaco(char, motfac, noma, nomo, ndim,&
-                nzoco, ligret)
+    call caramx(sdcont, cont_form, nb_cont_zone)
 !
-! --- IMPRESSIONS SUR LES ZONES/SURFACES/MAILLES/NOEUDS DE CONTACT
+! - Get parameters of contact
 !
-    call surfco(char, noma)
+    call caraco(sdcont, model, keywf, cont_form, nb_cont_zone)
 !
-999  continue
+! - Get elements and nodes of contact, checkings
 !
-    call jedema()
+    call limaco(sdcont      , keywf, mesh, model, model_ndim,&
+                nb_cont_zone, ligret)
+!
+! - Debug print
+!
+    call surfco(sdcont, mesh)
+!
+999 continue
 !
 end subroutine

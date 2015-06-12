@@ -1,4 +1,15 @@
-subroutine cazouu(motfac, nzoco, nommcz)
+subroutine cazouu(keywf, nb_cont_zone, keyw_)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterc/getmjm.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,124 +29,120 @@ subroutine cazouu(motfac, nzoco, nommcz)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "asterc/getmjm.h"
-#include "asterfort/assert.h"
-#include "asterfort/getvis.h"
-#include "asterfort/getvr8.h"
-#include "asterfort/getvtx.h"
-#include "asterfort/utmess.h"
-    character(len=16) :: motfac
-    integer :: nzoco
-    character(len=*) :: nommcz
+    character(len=16), intent(in) :: keywf
+    integer, intent(in) :: nb_cont_zone
+    character(len=*), intent(in) :: keyw_
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (TOUTES METHODES - LECTURE DONNEES)
+! DEFI_CONTACT
 !
-! VERIFICATION DE L'UNICITE SUR TOUTES LES ZONES
-! TRAITEMENT D'UN MOT-CLEF
+! Check if keyword is the same for all contact zones
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  keywf            : factor keyword to read
+! In  nb_cont_zone     : number of zones of contact
+! In  keyw             : keyword
 !
-! IN  MOTFAC : MOT-CLE FACTEUR
-! IN  NZOCO  : NOMBRE DE ZONES DE CONTACT
-! IN  NOMMC  : NOM MOT-CLEF SIMPLE QUI DOIT ETRE IDENTIQUE
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+    integer :: nb_keyw
+    parameter   (nb_keyw=99)
+    character(len=3) :: keyw_type(nb_keyw)
+    character(len=16) :: keyw_name(nb_keyw)
 !
-    integer :: nmocl
-    parameter   (nmocl=99)
+    character(len=1) :: s_keyw_cata_type
+    character(len=8) :: keyw_cata_type
+    character(len=16) :: keyw
+    aster_logical :: l_error
+    integer :: i_zone, noc, nb_keyw_cata, i_keyw_cata, n
+    real(kind=8) :: vale_r
+    integer :: vale_i
+    character(len=16) :: vale_k
+    real(kind=8) :: vale_refe_r
+    integer :: vale_refe_i
+    character(len=16) :: vale_refe_k
 !
-    character(len=1) :: tt
-    character(len=8) :: typmc
-    character(len=16) :: nommc
-    character(len=3) :: tymocl(nmocl)
-    character(len=16) :: motcle(nmocl)
-    aster_logical :: error
-    integer :: izone, noc, nval, ival, n
-    real(kind=8) :: parar
-    integer :: parai
-    character(len=16) :: parak
-    real(kind=8) :: parar1
-    integer :: parai1
-    character(len=16) :: parak1
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+    l_error = .false.
+    i_zone  = 1
+    keyw    = keyw_
 !
-    error = .false.
-    izone = 1
-    nommc = nommcz
-    call getmjm(motfac, izone, 1, motcle, tymocl,&
-                nval)
+! - Get list of keywords in catalog
 !
-    nval = abs(nval)
-    ASSERT(nval.lt.nmocl)
+    call getmjm(keywf       , i_zone, 1, keyw_name, keyw_type,&
+                nb_keyw_cata)
+    nb_keyw_cata = abs(nb_keyw_cata)
+    ASSERT(nb_keyw_cata.lt.nb_keyw)
 !
-    if (nval .ne. 0) then
-        do 15 izone = 1, nzoco
-            call getmjm(motfac, izone, nval, motcle, tymocl,&
+    if (nb_keyw_cata .ne. 0) then
+!
+! ----- Loop on contact zones
+!
+        do i_zone = 1, nb_cont_zone
+            call getmjm(keywf, i_zone, nb_keyw_cata, keyw_name, keyw_type,&
                         n)
-            do 16 ival = 1, nval
-                if (motcle(ival) .eq. nommc) then
-                    typmc = tymocl(ival)
-                    parai = 0
-                    parar = 0.d0
-                    parak = ' '
-                    if (typmc(1:1) .eq. 'I') then
-                        tt = 'I'
-                        call getvis(motfac, nommc, iocc=izone, scal=parai, nbret=noc)
-                    else if (typmc(1:2).eq.'TX') then
-                        tt = 'T'
-                        call getvtx(motfac, nommc, iocc=izone, scal=parak, nbret=noc)
-                    else if (typmc(1:2).eq.'R8') then
-                        tt = 'R'
-                        call getvr8(motfac, nommc, iocc=izone, scal=parar, nbret=noc)
+!
+! --------- Loop on keywords in catalog
+!
+            do i_keyw_cata = 1, nb_keyw_cata
+                if (keyw_name(i_keyw_cata) .eq. keyw) then
+!
+! ----------------- Read value (depends on type)
+!
+                    keyw_cata_type = keyw_type(i_keyw_cata)
+                    vale_i         = 0
+                    vale_r         = 0.d0
+                    vale_k         = ' '
+                    if (keyw_cata_type(1:1) .eq. 'I') then
+                        s_keyw_cata_type = 'I'
+                        call getvis(keywf, keyw, iocc=i_zone, scal=vale_i, nbret=noc)
+                    else if (keyw_cata_type(1:2).eq.'TX') then
+                        s_keyw_cata_type = 'T'
+                        call getvtx(keywf, keyw, iocc=i_zone, scal=vale_k, nbret=noc)
+                    else if (keyw_cata_type(1:2).eq.'R8') then
+                        s_keyw_cata_type = 'R'
+                        call getvr8(keywf, keyw, iocc=i_zone, scal=vale_r, nbret=noc)
                     else
                         ASSERT(.false.)
                     endif
-                    if (noc .eq. 0) then
-                        goto 14
-                    endif
-!
-                    if (izone .eq. 1) then
-                        parai1 = parai
-                        parar1 = parar
-                        parak1 = parak
-                    else
-                        if (tt .eq. 'I') then
-                            if (parai .ne. parai1) then
-                                error = .true.
-                                goto 20
-                            endif
-                        else if (tt.eq.'R') then
-                            if (parar .ne. parar1) then
-                                error = .true.
-                                goto 20
-                            endif
-                        else if (tt.eq.'T') then
-                            if (parak .ne. parak1) then
-                                error = .true.
-                                goto 20
-                            endif
+                    if (noc .ne. 0) then
+                        if (i_zone .eq. 1) then
+                            vale_refe_i = vale_i
+                            vale_refe_r = vale_r
+                            vale_refe_k = vale_k
                         else
-                            ASSERT(.false.)
+                            if (s_keyw_cata_type .eq. 'I') then
+                                if (vale_i .ne. vale_refe_i) then
+                                    l_error = .true.
+                                    goto 99
+                                endif
+                            else if (s_keyw_cata_type.eq.'R') then
+                                if (abs(vale_r - vale_refe_r).le.r8prem()) then
+                                    l_error = .true.
+                                    goto 99
+                                endif
+                            else if (s_keyw_cata_type.eq.'T') then
+                                if (vale_k .ne. vale_refe_k) then
+                                    l_error = .true.
+                                    goto 99
+                                endif
+                            else
+                                ASSERT(.false.)
+                            endif
                         endif
                     endif
- 14                 continue
                 endif
- 16         continue
- 15     continue
+            end do
+        end do
     endif
 !
- 20 continue
+ 99 continue
 !
-    if (error) then
-        call utmess('F', 'CONTACT3_4', sk=nommc)
+    if (l_error) then
+        call utmess('F', 'CONTACT3_4', sk=keyw)
     endif
-!
-!
 !
 end subroutine

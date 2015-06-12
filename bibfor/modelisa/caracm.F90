@@ -1,4 +1,10 @@
-subroutine caracm(char, nzoco, iform)
+subroutine caracm(sdcont, nb_cont_zone)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/wkvect.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,73 +24,57 @@ subroutine caracm(char, nzoco, iform)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/cfmmvd.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/wkvect.h"
-    character(len=8) :: char
-    integer :: nzoco
-    integer :: iform
+    character(len=8), intent(in) :: sdcont
+    integer, intent(in) :: nb_cont_zone
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (METHODES MAILLEES - LECTURE DONNEES)
+! DEFI_CONTACT
 !
-! CREATION DES SDS DE DEFINITION DU CONTACT
-! SDS DEDIEES AUX METHODES MAILLEES
+! Creation of datastructures for meshed formulations (depending on contact zone)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sdcont           : name of contact concept (DEFI_CONTACT)
+! In  nb_cont_zone     : number of zones of contact
 !
-! IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
-! IN  IFORM  : TYPE DE FORMULATION (DISCRET/CONTINU/XFEM)
-! IN  NZOCO  : NOMBRE DE ZONES DE CONTACT
+! --------------------------------------------------------------------------------------------------
 !
-!
-!
-!
-    aster_logical :: lmail
-    character(len=24) :: defico
+    character(len=1) :: jv_base
+    character(len=24) :: sdcont_defi
     integer :: ztole, zdirn, zmeth
-    character(len=24) :: methco, dirapp, toleco, dirnor
-    integer :: jmeth, jdirap, jtole, jdirno
-    character(len=24) :: jeufo1, jeufo2
-    integer :: jjfo1, jjfo2
+    character(len=24) :: sdcont_methco, sdcont_dirapp, sdcont_toleco, sdcont_dirnor
+    integer :: j_sdcont_methco, j_sdcont_dirapp, j_sdcont_toleco, j_sdcont_dirnor
+    character(len=24) :: sdcont_jeufo1, sdcont_jeufo2
+    integer :: j_sdcont_jeufo1, j_sdcont_jeufo2
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
+    jv_base = 'G'
+    sdcont_defi = sdcont(1:8)//'.CONTACT'
 !
-! --- INITIALISATIONS
+! - Datastructure for contact definition
 !
-    defico = char(1:8)//'.CONTACT'
-    lmail = (iform.eq.1).or.(iform.eq.2)
+    sdcont_methco = sdcont_defi(1:16)//'.METHCO'
+    sdcont_dirapp = sdcont_defi(1:16)//'.DIRAPP'
+    sdcont_dirnor = sdcont_defi(1:16)//'.DIRNOR'
+    sdcont_jeufo1 = sdcont_defi(1:16)//'.JFO1CO'
+    sdcont_jeufo2 = sdcont_defi(1:16)//'.JFO2CO'
+    sdcont_toleco = sdcont_defi(1:16)//'.TOLECO'
 !
-! --- CREATION DES SD DE BASE
-!
-    methco = defico(1:16)//'.METHCO'
-    dirapp = defico(1:16)//'.DIRAPP'
-    dirnor = defico(1:16)//'.DIRNOR'
-    jeufo1 = defico(1:16)//'.JFO1CO'
-    jeufo2 = defico(1:16)//'.JFO2CO'
-    toleco = defico(1:16)//'.TOLECO'
+! - Sizes
 !
     zmeth = cfmmvd('ZMETH')
     zdirn = cfmmvd('ZDIRN')
     ztole = cfmmvd('ZTOLE')
 !
-    if (lmail) then
-        call wkvect(methco, 'G V I', zmeth*nzoco, jmeth)
-        call wkvect(dirapp, 'G V R', 3*nzoco, jdirap)
-        call wkvect(dirnor, 'G V R', zdirn*nzoco, jdirno)
-        call wkvect(jeufo1, 'G V K8', nzoco, jjfo1)
-        call wkvect(jeufo2, 'G V K8', nzoco, jjfo2)
-        call wkvect(toleco, 'G V R', ztole*nzoco, jtole)
-    endif
+! - Creation
 !
-    call jedema()
+    call wkvect(sdcont_methco, jv_base//' V I', zmeth*nb_cont_zone, j_sdcont_methco)
+    call wkvect(sdcont_dirapp, jv_base//' V R', 3*nb_cont_zone, j_sdcont_dirapp)
+    call wkvect(sdcont_dirnor, jv_base//' V R', zdirn*nb_cont_zone, j_sdcont_dirnor)
+    call wkvect(sdcont_jeufo1, jv_base//' V K8', nb_cont_zone, j_sdcont_jeufo1)
+    call wkvect(sdcont_jeufo2, jv_base//' V K8', nb_cont_zone, j_sdcont_jeufo2)
+    call wkvect(sdcont_toleco, jv_base//' V R', ztole*nb_cont_zone, j_sdcont_toleco)
 !
 end subroutine

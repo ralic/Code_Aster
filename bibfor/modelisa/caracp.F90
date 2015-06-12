@@ -1,4 +1,9 @@
-subroutine caracp(char)
+subroutine caracp(sdcont)
+!
+implicit none
+!
+#include "asterfort/cfmmvd.h"
+#include "asterfort/wkvect.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,56 +23,47 @@ subroutine caracp(char)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/cfmmvd.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/wkvect.h"
-    character(len=8) :: char
+    character(len=8), intent(in) :: sdcont
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (TOUTES METHODES - SD)
+! DEFI_CONTACT
 !
-! CREATION DES SDS DE DEFINITION DU CONTACT DEDIEES AUX
-! PARAMETRES GENERAUX (NE DEPENDANT PAS DE LA ZONE DE CONTACT)
+! Creation of datastructures for all formulations (Not depending on contact zone)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sdcont           : name of contact concept (DEFI_CONTACT)
 !
-! IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
+! --------------------------------------------------------------------------------------------------
 !
-!
-!
-!
-    character(len=24) :: defico
-    character(len=24) :: ndimco, paracr, paraci
-    integer :: jdim, jparcr, jparci
+    character(len=1) :: jv_base
+    character(len=24) :: sdcont_defi
+    character(len=24) :: sdcont_paraci, sdcont_paracr, sdcont_ndimco
+    integer :: j_sdcont_paracr, j_sdcont_paraci, j_sdcont_ndimco
     integer :: zparr, zpari, zdime
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
+    jv_base = 'G'
 !
-! --- INITIALISATIONS
+! - Datastructure for contact definition
 !
-    defico = char(1:8)//'.CONTACT'
+    sdcont_defi = sdcont(1:8)//'.CONTACT'
+    sdcont_paraci = sdcont_defi(1:16)//'.PARACI'
+    sdcont_paracr = sdcont_defi(1:16)//'.PARACR'
+    sdcont_ndimco = sdcont_defi(1:16)//'.NDIMCO'
 !
-! --- NOMS SDS
-!
-    paracr = defico(1:16)//'.PARACR'
-    paraci = defico(1:16)//'.PARACI'
-    ndimco = defico(1:16)//'.NDIMCO'
+! - Sizes
 !
     zparr = cfmmvd('ZPARR')
     zpari = cfmmvd('ZPARI')
     zdime = cfmmvd('ZDIME')
 !
-    call wkvect(paracr, 'G V R', zparr, jparcr)
-    call wkvect(paraci, 'G V I', zpari, jparci)
-    call wkvect(ndimco, 'G V I', zdime, jdim)
+! - Creation
 !
-    call jedema()
+    call wkvect(sdcont_paracr, jv_base//' V R', zparr, j_sdcont_paracr)
+    call wkvect(sdcont_paraci, jv_base//' V I', zpari, j_sdcont_paraci)
+    call wkvect(sdcont_ndimco, jv_base//' V I', zdime, j_sdcont_ndimco)
 !
 end subroutine

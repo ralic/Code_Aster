@@ -1,4 +1,9 @@
-subroutine caracc(char, nzoco)
+subroutine caracc(sdcont, nb_cont_zone)
+!
+implicit none
+!
+#include "asterfort/cfmmvd.h"
+#include "asterfort/wkvect.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,53 +23,46 @@ subroutine caracc(char, nzoco)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/cfmmvd.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/wkvect.h"
-    character(len=8) :: char
-    integer :: nzoco
+    character(len=8), intent(in) :: sdcont
+    integer, intent(in) :: nb_cont_zone
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (METHODE CONTINUE - SD)
+! DEFI_CONTACT
 !
-! CREATION DES SDS DE DEFINITION DU CONTACT DEDIEES A LA
-! FORMULATION CONTINUE
+! Creation of datastructures for continue formulation (depending on contact zone)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sdcont           : name of contact concept (DEFI_CONTACT)
+! In  nb_cont_zone     : number of zones of contact
 !
-! IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
-! IN  NZOCO  : NOMBRE DE ZONES DE CONTACT
+! --------------------------------------------------------------------------------------------------
 !
-!
-!
-!
-    character(len=24) :: defico
+    character(len=1) :: jv_base
+    character(len=24) :: sdcont_defi
     integer :: zcmcf, zexcl
-    character(len=24) :: caracf, exclfr
-    integer :: jcmcf, jexclf
+    character(len=24) :: sdcont_caracf, sdcont_exclfr
+    integer :: j_sdcont_caracf, j_sdcont_exclfr
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
+    jv_base     = 'G'
+    sdcont_defi = sdcont(1:8)//'.CONTACT'
 !
-! --- INITIALISATIONS
+! - Sizes
 !
-    defico = char(1:8)//'.CONTACT'
-!
-! --- SPECIFIQUE CONTINU
-!
-    caracf = defico(1:16)//'.CARACF'
     zcmcf = cfmmvd('ZCMCF')
-    call wkvect(caracf, 'G V R', zcmcf*nzoco, jcmcf)
-    exclfr = defico(1:16)//'.EXCLFR'
     zexcl = cfmmvd('ZEXCL')
-    call wkvect(exclfr, 'G V R', zexcl*nzoco, jexclf)
 !
-    call jedema()
+! - Datastructure for contact definition
+!
+    sdcont_caracf = sdcont_defi(1:16)//'.CARACF'
+    sdcont_exclfr = sdcont_defi(1:16)//'.EXCLFR'
+!
+! - Creation
+!
+    call wkvect(sdcont_caracf, jv_base//' V R', zcmcf*nb_cont_zone, j_sdcont_caracf)
+    call wkvect(sdcont_exclfr, jv_base//' V R', zexcl*nb_cont_zone, j_sdcont_exclfr)
 !
 end subroutine

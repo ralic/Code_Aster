@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cazouu(motfac, nzoco, nommcz)
-        character(len=16) :: motfac
-        integer :: nzoco
-        character(len=*) :: nommcz
+    subroutine cazouu(keywf, nb_cont_zone, keyw_)
+        character(len=16), intent(in) :: keywf
+        integer, intent(in) :: nb_cont_zone
+        character(len=*), intent(in) :: keyw_
     end subroutine cazouu
 end interface

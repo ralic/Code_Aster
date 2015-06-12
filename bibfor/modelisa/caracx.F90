@@ -1,4 +1,9 @@
-subroutine caracx(char, nzoco)
+subroutine caracx(sdcont, nb_cont_zone)
+!
+implicit none
+!
+#include "asterfort/cfmmvd.h"
+#include "asterfort/wkvect.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,52 +23,46 @@ subroutine caracx(char, nzoco)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/cfmmvd.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/wkvect.h"
-    character(len=8) :: char
-    integer :: nzoco
+    character(len=8), intent(in) :: sdcont
+    integer, intent(in) :: nb_cont_zone
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (METHODE XFEM - SD)
+! DEFI_CONTACT
 !
-! CREATION DES SDS DE DEFINITION DU CONTACT DEDIEES A LA
-! FORMULATION XFEM
+! Creation of datastructures for XFEM formulation (depending on contact zone)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sdcont           : name of contact concept (DEFI_CONTACT)
+! In  nb_cont_zone     : number of zones of contact
 !
-! IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
-! IN  NZOCO  : NOMBRE DE ZONES DE CONTACT
+! --------------------------------------------------------------------------------------------------
 !
+    character(len=1) :: jv_base
+    character(len=24) :: sdcont_defi
+    integer :: zcmxf, ztole
+    character(len=24) :: sdcont_caraxf, sdcont_toleco
+    integer :: j_sdcont_caraxf, j_sdcont_toleco
 !
+! --------------------------------------------------------------------------------------------------
 !
+    jv_base     = 'G'
+    sdcont_defi = sdcont(1:8)//'.CONTACT'
 !
-    character(len=24) :: defico
-    integer :: zcmxf
-    character(len=24) :: caraxf, modcon
-    integer :: jcmxf, jmoco
+! - Sizes
 !
-! ----------------------------------------------------------------------
-!
-    call jemarq()
-!
-! --- INITIALISATIONS
-!
-    defico = char(1:8)//'.CONTACT'
-!
-! --- SPECIFIQUE XFEM
-!
-    caraxf = defico(1:16)//'.CARAXF'
     zcmxf = cfmmvd('ZCMXF')
-    call wkvect(caraxf, 'G V R', zcmxf*nzoco, jcmxf)
-    modcon = defico(1:16)//'.MODELX'
-    call wkvect(modcon, 'G V K8', 1, jmoco)
+    ztole = cfmmvd('ZTOLE')
 !
-    call jedema()
+! - Datastructure for contact definition
+!
+    sdcont_caraxf = sdcont_defi(1:16)//'.CARAXF'
+    sdcont_toleco = sdcont_defi(1:16)//'.TOLECO'
+!
+! - Creation
+!
+    call wkvect(sdcont_caraxf, jv_base//' V R' , zcmxf*nb_cont_zone, j_sdcont_caraxf)
+    call wkvect(sdcont_toleco, jv_base//' V R' , ztole*nb_cont_zone, j_sdcont_toleco)
 !
 end subroutine

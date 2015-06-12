@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine caralv(char, nzoco, iform)
-        character(len=8) :: char
-        integer :: nzoco
-        integer :: iform
+    subroutine caralv(sdcont, nb_cont_zone, cont_form)
+        character(len=8), intent(in) :: sdcont
+        integer, intent(in) :: cont_form
+        integer, intent(in) :: nb_cont_zone
     end subroutine caralv
 end interface

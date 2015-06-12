@@ -1,4 +1,12 @@
-subroutine caraco(char, nomo, motfac, nzoco, iform)
+subroutine caraco(sdcont, model, keywf, cont_form, nb_cont_zone)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/caralv.h"
+#include "asterfort/cazoco.h"
+#include "asterfort/cazocp.h"
+#include "asterfort/cazofm.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,67 +26,50 @@ subroutine caraco(char, nomo, motfac, nzoco, iform)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/caralv.h"
-#include "asterfort/caramx.h"
-#include "asterfort/cazoco.h"
-#include "asterfort/cazocp.h"
-#include "asterfort/cazofm.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-    character(len=8) :: char, nomo
-    character(len=16) :: motfac
-    integer :: nzoco, iform
+    character(len=8), intent(in) :: sdcont
+    character(len=8), intent(in) :: model
+    character(len=16), intent(in) :: keywf
+    integer, intent(in) :: cont_form
+    integer, intent(in) :: nb_cont_zone
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (TOUTES METHODES - LECTURE DONNEES)
+! DEFI_CONTACT
 !
-! LECTURE DES PRINCIPALES CARACTERISTIQUES DU CONTACT (SURFACE IREAD)
-! REMPLISSAGE DE LA SD 'DEFICO' (SURFACE IWRITE)
+! Get parameters of contact
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sdcont           : name of contact concept (DEFI_CONTACT)
+! In  model            : name of model
+! In  keywf            : factor keyword to read
+! In  cont_form        : formulation of contact
+! In  nb_cont_zone     : number of zones of contact
 !
-! IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
-! IN  NOMO   : NOM DU MODELE
-! IN  MOTFAC : MOT-CLE FACTEUR (VALANT 'CONTACT')
-! IN  NZOCO  : NOMBRE DE ZONES DE CONTACT
-! IN  IFORM  : TYPE DE FORMULATION (DISCRETE/CONTINUE/XFEM)
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: i_zone
+!
+! --------------------------------------------------------------------------------------------------
 !
 !
+! - Get method of contact
 !
+    call cazofm(sdcont, keywf, cont_form, nb_cont_zone)
 !
-    integer :: izone
+! - Get parameters (not depending on contact zones)
 !
-! ----------------------------------------------------------------------
+    call cazocp(sdcont)
 !
-    call jemarq()
+! - Get parameters (depending on contact zones)
 !
-! --- CREATION DES SD DEFINITION DU CONTACT
+    do i_zone = 1, nb_cont_zone
+        call cazoco(sdcont      , model, keywf, cont_form, i_zone,&
+                    nb_cont_zone)
+    end do
 !
-    call caramx(char, iform, nzoco)
+! - Set automatic parameters
 !
-! --- AFFECTATION FORMULATION/METHODE DE CONTACT
-!
-    call cazofm(char, motfac, iform, nzoco)
-!
-! --- LECTURE PARAMETRES GENERAUX
-!
-    call cazocp(char)
-!
-! --- LECTURE DES DONNEES PAR ZONE
-!
-    do 8 izone = 1, nzoco
-        call cazoco(char, nomo, motfac, iform, izone,&
-                    nzoco)
- 8  end do
-!
-! --- QUELQUES PARAMETRES GLOBAUX
-!
-    call caralv(char, nzoco, iform)
-!
-    call jedema()
+    call caralv(sdcont, nb_cont_zone, cont_form)
 !
 end subroutine

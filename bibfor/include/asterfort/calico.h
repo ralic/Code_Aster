@@ -16,13 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine calico(charz, nomaz, nomoz, ndim, iform,&
+    subroutine calico(sdcont, mesh, model, model_ndim_, cont_form,&
                       ligret)
-        character(len=*) :: charz
-        character(len=*) :: nomaz
-        character(len=*) :: nomoz
-        integer :: ndim
-        integer :: iform
-        character(len=19) :: ligret
+        character(len=8), intent(in) :: sdcont
+        character(len=8), intent(in) :: mesh
+        character(len=8), intent(in) :: model
+        integer, intent(in) :: model_ndim_
+        integer, intent(in) :: cont_form
+        character(len=19), intent(in) :: ligret
     end subroutine calico
 end interface

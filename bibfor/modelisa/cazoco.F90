@@ -1,5 +1,14 @@
-subroutine cazoco(char, nomo, motfac, iform, izone,&
-                  nzoco)
+subroutine cazoco(sdcont      , model, keywf, cont_form, i_zone,&
+                  nb_cont_zone)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/cazocc.h"
+#include "asterfort/cazocd.h"
+#include "asterfort/cazocm.h"
+#include "asterfort/cazocx.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,55 +28,50 @@ subroutine cazoco(char, nomo, motfac, iform, izone,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "asterfort/assert.h"
-#include "asterfort/cazocc.h"
-#include "asterfort/cazocd.h"
-#include "asterfort/cazocm.h"
-#include "asterfort/cazocx.h"
-    character(len=8) :: char, nomo
-    character(len=16) :: motfac
-    integer :: iform, izone, nzoco
+    character(len=8), intent(in) :: sdcont
+    character(len=8), intent(in) :: model
+    character(len=16), intent(in) :: keywf
+    integer, intent(in) :: nb_cont_zone
+    integer, intent(in) :: cont_form
+    integer, intent(in) :: i_zone
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (TOUTES METHODES - LECTURE DONNEES)
+! DEFI_CONTACT
 !
-! LECTURE DES CARACTERISTIQUES DU CONTACT
+! Get parameters (depending on contact zones)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sdcont           : name of contact concept (DEFI_CONTACT)
+! In  model            : name of model
+! In  keywf            : factor keyword to read
+! In  nb_cont_zone     : number of zones of contact
+! In  cont_form        : formulation of contact
+! In  i_zone           : index of contact zone
 !
-! IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
-! IN  NOMO   : NOM DU MODELE
-! IN  MOTFAC : MOT-CLE FACTEUR (VALANT 'ZONE')
-! IN  IFORM  : TYPE DE FORMULATION DE CONTACT
-! IN  IZONE  : INDICE POUR LIRE LES DONNEES
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+    aster_logical :: l_cont_mesh
 !
-    aster_logical :: lmail
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+    l_cont_mesh = (cont_form.eq.1).or.(cont_form.eq.2)
 !
-    lmail = (iform.eq.1).or.(iform.eq.2)
+! - Main parameters for pairing
 !
-! --- LECTURE DES PRINCIPALES CARACTERISTIQUES DU CONTACT
-! --- CONCERNANT L'APPARIEMENT ET SES OPTIONS
-!
-    if (lmail) then
-        call cazocm(char, motfac, izone)
+    if (l_cont_mesh) then
+        call cazocm(sdcont, keywf, i_zone)
     endif
 !
-! --- LECTURE PARAMETRES SPECIFIQUES SUIVANT FORMULATION
+! - Other parameters depending on formulation
 !
-    if (iform .eq. 1) then
-        call cazocd(char, motfac, izone, nzoco)
-    else if (iform.eq.2) then
-        call cazocc(char, motfac, izone)
-    else if (iform.eq.3) then
-        call cazocx(char, nomo, motfac, izone)
+    if (cont_form .eq. 1) then
+        call cazocd(sdcont, keywf, i_zone, nb_cont_zone)
+    else if (cont_form.eq.2) then
+        call cazocc(sdcont, keywf, i_zone)
+    else if (cont_form.eq.3) then
+        call cazocx(sdcont, model, keywf, i_zone)
     else
         ASSERT(.false.)
     endif

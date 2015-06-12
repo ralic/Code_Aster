@@ -16,10 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cazofm(char, motfac, iform, nzoco)
-        character(len=8) :: char
-        character(len=16) :: motfac
-        integer :: iform
-        integer :: nzoco
+    subroutine cazofm(sdcont, keywf, cont_form, cont_nbzone)
+        character(len=8), intent(in) :: sdcont
+        integer, intent(in) :: cont_form
+        integer, intent(in) :: cont_nbzone
+        character(len=16), intent(in) :: keywf
     end subroutine cazofm
 end interface

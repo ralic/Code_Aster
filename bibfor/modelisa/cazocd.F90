@@ -1,4 +1,15 @@
-subroutine cazocd(char, motfac, izone, nzoco)
+subroutine cazocd(sdcont, keywf, i_zone, nb_cont_zone)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/cazouu.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
+#include "asterfort/jeveuo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,117 +29,92 @@ subroutine cazocd(char, motfac, izone, nzoco)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/cazouu.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/cfmmvd.h"
-#include "asterfort/getvr8.h"
-#include "asterfort/getvtx.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-    character(len=8) :: char
-    character(len=16) :: motfac
-    integer :: izone, nzoco
+    character(len=8), intent(in) :: sdcont
+    integer, intent(in) :: i_zone
+    character(len=16), intent(in) :: keywf
+    integer, intent(in) :: nb_cont_zone
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (METHODE DISCRETE - LECTURE DONNEES)
+! DEFI_CONTACT
 !
-! LECTURE DES PRINCIPALES CARACTERISTIQUES DU CONTACT (SURFACE IZONE)
+! Discrete methods - Get parameters of contact zone
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
-! IN  MOTFAC : MOT-CLE FACTEUR
-! IN  IZONE  : INDICE DE ZONE
-! IN  NZOCO  : NOMBRE DE ZONES DE CONTACT
+! In  sdcont           : name of contact concept (DEFI_CONTACT)
+! In  keywf            : factor keyword to read
+! In  i_zone           : index of contact zone
+! In  nb_cont_zone     : number of zones of contact
 !
-!
-!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: zcmdf
-    character(len=24) :: defico
-    integer :: noc, nocn
-    character(len=24) :: caradf
-    integer :: jcmdf
-    character(len=16) :: glis
-    real(kind=8) :: aljeu
-    real(kind=8) :: coefpt, coefpn, coefff, coefte
-    aster_logical :: lcact, lfrot, lpenac, lpenaf
+    character(len=24) :: sdcont_defi
+    integer :: noc
+    character(len=16) :: s_glis
+    real(kind=8) :: glis_alarm
+    real(kind=8) :: coef_pena_frot, coef_pena_cont, coef_frot, coef_matr_frot
+    aster_logical :: l_cont_acti, l_frot, l_cont_pena, l_frot_pena
+    real(kind=8), pointer :: v_sdcont_caradf(:) => null()
+    character(len=24) :: sdcont_caradf
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
+    coef_pena_frot = 0.d0
+    coef_pena_cont = 0.d0
+    coef_frot      = 0.d0
+    coef_matr_frot = 0.d0
+    glis_alarm     = 0.d0
+    s_glis         = ' '
 !
-! --- INITIALISATIONS
+! - Datastructure for contact definition
 !
-    defico = char(1:8)//'.CONTACT'
-    coefpt = 0.d0
-    coefpn = 0.d0
-    coefff = 0.d0
-    coefte = 0.d0
-    aljeu = 0.d0
-    lcact = cfdisl(defico,'CONT_ACTI')
-    lfrot = cfdisl(defico,'FROTTEMENT')
-    lpenaf = cfdisl(defico,'FROT_PENA')
-    lpenac = cfdisl(defico,'CONT_PENA')
-!
-! --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
-!
-    caradf = defico(1:16)//'.CARADF'
+    sdcont_defi   = sdcont(1:8)//'.CONTACT'
+    sdcont_caradf = sdcont_defi(1:16)//'.CARADF'
+    call jeveuo(sdcont_caradf, 'E', vr = v_sdcont_caradf)
     zcmdf = cfmmvd('ZCMDF')
-    call jeveuo(caradf, 'E', jcmdf)
 !
-! --- PARAMETRES DU FROTTEMENT
+! - Parameters
 !
-    if (lfrot) then
-        call getvr8(motfac, 'COULOMB', iocc=izone, scal=coefff, nbret=noc)
-        zr(jcmdf+zcmdf*(izone-1)+4-1) = coefff
-        call getvr8(motfac, 'COEF_MATR_FROT', iocc=izone, scal=coefte, nbret=noc)
-        zr(jcmdf+zcmdf*(izone-1)+1-1) = coefte
+    l_cont_acti = cfdisl(sdcont_defi,'CONT_ACTI')
+    l_frot      = cfdisl(sdcont_defi,'FROTTEMENT')
+    l_frot_pena = cfdisl(sdcont_defi,'FROT_PENA')
+    l_cont_pena = cfdisl(sdcont_defi,'CONT_PENA')
+!
+! - Friction
+!
+    if (l_frot) then
+        call getvr8(keywf, 'COULOMB', iocc=i_zone, scal=coef_frot)
+        v_sdcont_caradf(zcmdf*(i_zone-1)+4) = coef_frot
+        call getvr8(keywf, 'COEF_MATR_FROT', iocc=i_zone, scal=coef_matr_frot)
+        v_sdcont_caradf(zcmdf*(i_zone-1)+1) = coef_matr_frot
     endif
 !
-! --- CARACTERISTIQUES POUR LES METHODES AVEC PENALISATION
+! - Parameters of penalization
 !
-    if (lpenac) then
-        call getvr8(motfac, 'E_N', iocc=izone, scal=coefpn, nbret=nocn)
-        if (nocn .eq. 0) then
-            ASSERT(.false.)
-        else
-            zr(jcmdf+zcmdf*(izone-1)+2-1) = coefpn
+    if (l_cont_pena) then
+        call getvr8(keywf, 'E_N', iocc=i_zone, scal=coef_pena_cont, nbret=noc)
+        ASSERT(noc.gt.0)
+        v_sdcont_caradf(zcmdf*(i_zone-1)+2) = coef_pena_cont
+    endif
+!
+    if (l_frot_pena) then
+        call getvr8(keywf, 'E_T', iocc=i_zone, scal=coef_pena_frot, nbret=noc)
+        v_sdcont_caradf(zcmdf*(i_zone-1)+3) = coef_pena_frot
+    endif
+!
+! - Bilateral contact: on all zones
+!
+    if (l_cont_acti) then
+        call cazouu(keywf, nb_cont_zone, 'GLISSIERE')
+        call getvtx(keywf, 'GLISSIERE', iocc=1, scal=s_glis)
+        if (s_glis .eq. 'OUI') then
+            v_sdcont_caradf(zcmdf*(i_zone-1)+6) = 1.d0
+            call cazouu(keywf, nb_cont_zone, 'ALARME_JEU')
+            call getvr8(keywf, 'ALARME_JEU', iocc=1, scal=glis_alarm)
+            v_sdcont_caradf(zcmdf*(i_zone-1)+5) = glis_alarm
         endif
     endif
-!
-    if (lpenaf) then
-        call getvr8(motfac, 'E_T', iocc=izone, scal=coefpt, nbret=nocn)
-        if (nocn .eq. 0) then
-            ASSERT(.false.)
-        else
-            zr(jcmdf+zcmdf*(izone-1)+3-1) = coefpt
-        endif
-    endif
-!
-! --- OPTION GLISSIERE (POUR CONTRAINTE) : UNIQUE
-!
-    if (lcact) then
-        call cazouu(motfac, nzoco, 'GLISSIERE')
-        call getvtx(motfac, 'GLISSIERE', iocc=1, scal=glis, nbret=noc)
-        if (glis(1:3) .eq. 'OUI') then
-            zr(jcmdf+zcmdf*(izone-1)+6-1) = 1.d0
-            call cazouu(motfac, nzoco, 'ALARME_JEU')
-            call getvr8(motfac, 'ALARME_JEU', iocc=1, scal=aljeu, nbret=noc)
-            zr(jcmdf+zcmdf*(izone-1)+5-1) = aljeu
-        else if ((glis(1:3) .eq. 'NON').or.(noc.eq.0)) then
-            zr(jcmdf+zcmdf*(izone-1)+6-1) = 0.d0
-        else
-            ASSERT(.false.)
-        endif
-    endif
-!
-    call jedema()
 !
 end subroutine

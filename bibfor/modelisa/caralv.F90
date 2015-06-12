@@ -1,4 +1,13 @@
-subroutine caralv(char, nzoco, iform)
+subroutine caralv(sdcont, nb_cont_zone, cont_form)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mminfi.h"
+#include "asterfort/mminfl.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,173 +27,162 @@ subroutine caralv(char, nzoco, iform)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/mminfi.h"
-#include "asterfort/mminfl.h"
-#include "asterfort/utmess.h"
-    character(len=8) :: char
-    integer :: nzoco, iform
+    character(len=8), intent(in) :: sdcont
+    integer, intent(in) :: cont_form
+    integer, intent(in) :: nb_cont_zone
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (TOUTES METHODES - LECTURE DONNEES)
+! DEFI_CONTACT
 !
-! QUELQUES PARAMETRES GLOBAUX
+! Set automatic parameters
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sdcont           : name of contact concept (DEFI_CONTACT)
+! In  cont_form        : formulation of contact
+! In  nb_cont_zone     : number of zones of contact
 !
-! IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
-! IN  NZOCO  : NOMBRE DE ZONES DE CONTACT
-! IN  IFORM  : TYPE DE FORMULATION (DISCRETE/CONTINUE/XFEM)
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+    integer :: i_zone
+    aster_logical :: l_cont_mesh
+    aster_logical :: l_all, l_exist
+    aster_logical :: l_verif, l_newt_geom, l_geom_hpp, l_pena, l_node, l_glis_zone
+    aster_logical :: l_cont_xczm
+    integer :: i_cont_init
+    character(len=24) :: sdcont_defi
+    character(len=24) :: sdcont_paraci
+    integer, pointer :: v_sdcont_paraci(:) => null()
 !
-    integer :: izone
-    aster_logical :: lmail, lglis
-    aster_logical :: lveri, lall, lsans, lexis, lpena, lnoeu, lxczm
-    aster_logical :: lnewtg
-    aster_logical :: lcinit
-    integer :: ctcini
-    character(len=24) :: defico
-    character(len=24) :: paraci
-    integer :: jparci
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+    sdcont_defi = sdcont(1:8)//'.CONTACT'
 !
-    call jemarq()
+! - Datastructure for contact definition
 !
-! --- INITIALISATIONS
+    sdcont_paraci = sdcont_defi(1:16)//'.PARACI'
+    call jeveuo(sdcont_paraci, 'E', vi=v_sdcont_paraci)
 !
-    defico = char(1:8)//'.CONTACT'
-    lmail = (iform.eq.1) .or. (iform.eq.2)
+! - Formulation
 !
-! --- ACCES SD CONTACT
+    l_cont_mesh = (cont_form.eq.1).or.(cont_form.eq.2)
 !
-    paraci = defico(1:16)//'.PARACI'
-    call jeveuo(paraci, 'E', jparci)
+! - All zones are only contact verification ?
 !
-! --- ALL VERIF ?
-!
-    if (lmail) then
-        izone = 1
-        lall = mminfl(defico,'VERIF',izone)
-        do 10 izone = 2, nzoco
-            lveri = mminfl(defico,'VERIF',izone )
-            lall = lall.and.lveri
- 10     continue
-        if (lall) then
-            zi(jparci+8-1) = 1
+    if (l_cont_mesh) then
+        i_zone = 1
+        l_all  = mminfl(sdcont_defi,'VERIF',i_zone)
+        do i_zone = 2, nb_cont_zone
+            l_verif = mminfl(sdcont_defi,'VERIF',i_zone)
+            l_all   = l_all.and.l_verif
+        end do
+        if (l_all) then
+            v_sdcont_paraci(8) = 1
         endif
 !
-        lexis = .false.
-        do 20 izone = 1, nzoco
-            lveri = mminfl(defico,'VERIF',izone )
-            lexis = lexis.or.lveri
- 20     continue
-        if (lexis) then
-            zi(jparci+23-1) = 1
-        endif
+! ----- If contact verification : REAC_GEOM= 'SANS' / ALGO_RESO_GEOM='POINT_FIXE'
 !
-! ----- REAC_GEOM= 'SANS' / ALGO_RESO_GEOM='POINT_FIXE' FORCES
-! ----- SI TOUT EN MODE VERIF
-!
-        if (lall) then
-            lnewtg = cfdisl(defico,'GEOM_NEWTON')
-            if (lnewtg) then
-                zi(jparci+1-1) = 0
-                zi(jparci+9-1) = 0
+        if (l_all) then
+            l_newt_geom = cfdisl(sdcont_defi,'GEOM_NEWTON')
+            if (l_newt_geom) then
+                v_sdcont_paraci(1) = 0
+                v_sdcont_paraci(9) = 0
                 call utmess('I', 'CONTACT2_3')
                 call utmess('I', 'CONTACT2_4')
             else
-                lsans = cfdisl(defico,'REAC_GEOM_SANS')
-                if (.not. lsans) then
-                    zi(jparci+1-1) = 0
+                l_geom_hpp = cfdisl(sdcont_defi,'REAC_GEOM_SANS')
+                if (.not. l_geom_hpp) then
+                    v_sdcont_paraci(1) = 0
                     call utmess('I', 'CONTACT2_3')
                 endif
             endif
         endif
     endif
 !
-! --- Y-A-T IL DE LA PENALISATION (-> MATRICE NON-SYME) ?
+! - At least one zone is contact verification ?
 !
-    if ((iform.eq.2) .or. (iform.eq.3)) then
-        lexis = .false.
-        do 40 izone = 1, nzoco
-            lpena = (&
-                    mminfl(defico,'ALGO_CONT_PENA',izone ) .or.&
-                    mminfl(defico,'ALGO_FROT_PENA',izone )&
-                    )
-            lexis = lexis.or.lpena
- 40     continue
-        if (lexis) then
-            zi(jparci+22-1) = 1
+    if (l_cont_mesh) then
+        l_exist = .false.
+        do i_zone = 1, nb_cont_zone
+            l_verif = mminfl(sdcont_defi,'VERIF',i_zone)
+            l_exist = l_exist.or.l_verif
+        end do
+        if (l_exist) then
+            v_sdcont_paraci(23) = 1
         endif
     endif
 !
-! --- TOUT INTEGRE AUX NOEUDS ?
+! - Penalization ? (non-symmetric matrix)
 !
-    if (iform .eq. 2) then
-        izone = 1
-        lall = (mminfi(defico,'INTEGRATION' ,izone ).eq.1)
-        do 50 izone = 2, nzoco
-            lnoeu = (mminfi(defico,'INTEGRATION' ,izone ).eq.1)
-            lall = lall.and.lnoeu
- 50     continue
-        if (lall) then
-            zi(jparci+24-1) = 1
-        endif
-    else if (iform.eq.1) then
-        zi(jparci+24-1) = 1
-    else if (iform.eq.3) then
-        zi(jparci+24-1) = 1
-    endif
-!
-! --- Y-A-T IL GLISSIERE ?
-!
-    if (iform .eq. 2) then
-        lexis = .false.
-        do 60 izone = 1, nzoco
-            lglis = mminfl(defico,'GLISSIERE_ZONE',izone )
-            lexis = lexis.or.lglis
- 60     continue
-        if (lexis) then
-            zi(jparci+26-1) = 1
+    if ((cont_form.eq.2) .or. (cont_form.eq.3)) then
+        l_exist = .false.
+        do i_zone = 1, nb_cont_zone
+            l_pena = (&
+                    mminfl(sdcont_defi,'ALGO_CONT_PENA',i_zone) .or.&
+                    mminfl(sdcont_defi,'ALGO_FROT_PENA',i_zone))
+            l_exist = l_exist.or.l_pena
+                end do
+        if (l_exist) then
+            v_sdcont_paraci(22) = 1
         endif
     endif
 !
-! --- EXISTE-T-IL AU MOINS UNE ZONE EN XFEM+CZM ?
+! - Integration scheme for CONTINUE formulation: nodes ?
 !
-    if (iform .eq. 3) then
-        lexis = .false.
-        do 70 izone = 1, nzoco
-            lxczm = mminfl(defico,'CONT_XFEM_CZM',izone )
-            lexis = lexis.or.lxczm
- 70     continue
-        if (lexis) then
-            zi(jparci+21-1) = 1
+    if (cont_form .eq. 2) then
+        i_zone = 1
+        l_all  = (mminfi(sdcont_defi,'INTEGRATION' ,i_zone).eq.1)
+        do i_zone = 2, nb_cont_zone
+            l_node = (mminfi(sdcont_defi,'INTEGRATION' ,i_zone).eq.1)
+            l_all = l_all.and.l_node
+                end do
+        if (l_all) then
+            v_sdcont_paraci(24) = 1
+        endif
+    else if (cont_form.eq.1) then
+        v_sdcont_paraci(24) = 1
+    else if (cont_form.eq.3) then
+        v_sdcont_paraci(24) = 1
+    endif
+!
+! - Bilateral contact ?
+!
+    if (cont_form .eq. 2) then
+        l_exist = .false.
+        do i_zone = 1, nb_cont_zone
+            l_glis_zone  = mminfl(sdcont_defi,'GLISSIERE_ZONE',i_zone)
+            l_exist      = l_exist.or.l_glis_zone
+                end do
+        if (l_exist) then
+            v_sdcont_paraci(26) = 1
         endif
     endif
 !
-! --- EST-CE QUE TOUTES LES ZONES SONT EN CONTACT_INIT INTERPENETRE ?
+! - At least one zone with XFEM+CZM ?
 !
-    if (iform .eq. 2) then
-        lcinit = .true.
-        do 80 izone = 1, nzoco
-            ctcini = mminfi(defico,'CONTACT_INIT',izone )
-            lcinit = lcinit.and.(ctcini.eq.2)
- 80     continue
-        if (lcinit) then
-            zi(jparci-1+11) = 1
+    if (cont_form .eq. 3) then
+        l_exist = .false.
+        do i_zone = 1, nb_cont_zone
+            l_cont_xczm = mminfl(sdcont_defi,'CONT_XFEM_CZM',i_zone)
+            l_exist     = l_exist.or.l_cont_xczm
+                end do
+        if (l_exist) then
+            v_sdcont_paraci(21) = 1
         endif
     endif
 !
-    call jedema()
+! - All zones ares CONTACT_INIT INTERPENETRE ?
+!
+    if (cont_form .eq. 2) then
+        l_all = .true.
+        do i_zone = 1, nb_cont_zone
+            i_cont_init = mminfi(sdcont_defi,'CONTACT_INIT',i_zone)
+            l_all       = l_all .and.(i_cont_init.eq.2)
+        end do
+        if (l_all) then
+            v_sdcont_paraci(11) = 1
+        endif
+    endif
 !
 end subroutine
