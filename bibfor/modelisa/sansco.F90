@@ -1,4 +1,8 @@
-subroutine sansco(char, motfac, noma)
+subroutine sansco(sdcont, keywf, mesh)
+!
+implicit none
+!
+#include "asterfort/sansno.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,58 +20,51 @@ subroutine sansco(char, motfac, noma)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! REPONSABLE
+! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
-#include "jeveux.h"
-#include "asterfort/sansno.h"
-    character(len=8) :: char
-    character(len=16) :: motfac
-    character(len=8) :: noma
+    character(len=8), intent(in) :: sdcont
+    character(len=8), intent(in) :: mesh
+    character(len=16), intent(in) :: keywf
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (METHODES MAILLEES - LECTURE DONNEES)
+! DEFI_CONTACT
 !
-! LECTURE: DES NOEUDS DANS LE MOT-CLEF SANS_*
+! Get SANS_ parameters for contact
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  keywf            : factor keyword to read
+! In  sdcont           : name of contact concept (DEFI_CONTACT)
+! In  mesh             : name of mesh
 !
-! IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
-! IN  MOTFAC : MOT-CLE FACTEUR (VALANT 'CONTACT')
-! IN  NOMA   : NOM DU MAILLAGE
+! --------------------------------------------------------------------------------------------------
 !
+    integer :: nb_keyw
+    parameter (nb_keyw=4)
+    character(len=16) :: keyw_name(nb_keyw), keyw_type(nb_keyw)
 !
+    character(len=24) :: sdcont_defi
+    character(len=24) :: sdcont_ssnoco, sdcont_pssnoco
 !
+! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: sansn, psans
-    character(len=24) :: defico
-    integer :: nbmocl
-    character(len=16) :: limocl(4), tymocl(4)
+    keyw_type(1) = 'GROUP_NO'
+    keyw_type(2) = 'NOEUD'
+    keyw_type(3) = 'GROUP_MA'
+    keyw_type(4) = 'MAILLE'
+    keyw_name(1) = 'SANS_GROUP_NO'
+    keyw_name(2) = 'SANS_NOEUD'
+    keyw_name(3) = 'SANS_GROUP_MA'
+    keyw_name(4) = 'SANS_MAILLE'
 !
-! ----------------------------------------------------------------------
+! - Datastructure for contact
 !
+    sdcont_defi    = sdcont(1:8)//'.CONTACT'
+    sdcont_ssnoco  = sdcont_defi(1:16)//'.SSNOCO'
+    sdcont_pssnoco = sdcont_defi(1:16)//'.PSSNOCO'
 !
-! --- INITIALISATIONS
-!
-    defico = char(1:8)//'.CONTACT'
-    nbmocl = 4
-    tymocl(1) = 'GROUP_NO'
-    tymocl(2) = 'NOEUD'
-    tymocl(3) = 'GROUP_MA'
-    tymocl(4) = 'MAILLE'
-    limocl(1) = 'SANS_GROUP_NO'
-    limocl(2) = 'SANS_NOEUD'
-    limocl(3) = 'SANS_GROUP_MA'
-    limocl(4) = 'SANS_MAILLE'
-!
-! --- TRAITEMENT MOT-CLEF SANS_GROUP_NO/SANS_NOEUD
-!
-    sansn = defico(1:16)//'.SSNOCO'
-    psans = defico(1:16)//'.PSSNOCO'
-!
-    call sansno(char, motfac, noma, sansn, psans,&
-                nbmocl, tymocl, limocl)
+    call sansno(sdcont , keywf    , mesh     , sdcont_ssnoco, sdcont_pssnoco,&
+                nb_keyw, keyw_type, keyw_name)
 !
 end subroutine

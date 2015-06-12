@@ -1,4 +1,8 @@
-subroutine sanscc(char, motfac, noma)
+subroutine sanscc(sdcont, keywf, mesh)
+!
+implicit none
+!
+#include "asterfort/sansno.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,55 +20,49 @@ subroutine sanscc(char, motfac, noma)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! REPONSABLE
+! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/sansno.h"
-    character(len=8) :: char, noma
-    character(len=16) :: motfac
+    character(len=8), intent(in) :: sdcont
+    character(len=8), intent(in) :: mesh
+    character(len=16), intent(in) :: keywf
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (METHODE CONTINUE - LECTURE DONNEES)
+! DEFI_CONTACT
 !
-! TRAITEMENT MOT-CLEFS SANS_GROUP_NO_FR/SANS_NOEUD_FR
+! Get SANS_ parameters for friction
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
-! IN  MOTFAC : MOT-CLE FACTEUR (VALANT 'CONTACT')
-! IN  NOMA   : NOM DU MAILLAGE
+! In  keywf            : factor keyword to read
+! In  sdcont           : name of contact concept (DEFI_CONTACT)
+! In  mesh             : name of mesh
 !
+! --------------------------------------------------------------------------------------------------
 !
+    integer :: nb_keyw
+    parameter (nb_keyw=2)
+    character(len=16) :: keyw_name(nb_keyw), keyw_type(nb_keyw)
 !
+    character(len=24) :: sdcont_defi
+    character(len=24) :: sdcont_sanofr, sdcont_psanofr
 !
-    character(len=24) :: defico
-    character(len=24) :: frotno, pfrot
-    integer :: nbmocl
-    character(len=16) :: limocl(2), tymocl(2)
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+    keyw_type(1) = 'GROUP_NO'
+    keyw_type(2) = 'NOEUD'
+    keyw_name(1) = 'SANS_GROUP_NO_FR'
+    keyw_name(2) = 'SANS_NOEUD_FR'
 !
-    call jemarq()
+! - Datastructure for contact
 !
-! --- INITIALISATIONS
+    sdcont_defi    = sdcont(1:8)//'.CONTACT'
+    sdcont_sanofr  = sdcont_defi(1:16)//'.SANOFR'
+    sdcont_psanofr = sdcont_defi(1:16)//'.PSANOFR'
 !
-    defico = char(1:8)//'.CONTACT'
-    nbmocl = 2
-    tymocl(1) = 'GROUP_NO'
-    tymocl(2) = 'NOEUD'
+! - Read list of nodes and save them
 !
-! --- TRAITEMENT MOT-CLEF SANS_GROUP_NO_FR/SANS_NOEUD_FR
+    call sansno(sdcont , keywf    , mesh     , sdcont_sanofr, sdcont_psanofr,&
+                nb_keyw, keyw_type, keyw_name)
 !
-    frotno = defico(1:16)//'.SANOFR'
-    pfrot = defico(1:16)//'.PSANOFR'
-    limocl(1) = 'SANS_GROUP_NO_FR'
-    limocl(2) = 'SANS_NOEUD_FR'
-    call sansno(char, motfac, noma, frotno, pfrot,&
-                nbmocl, tymocl, limocl)
-!
-    call jedema()
 end subroutine

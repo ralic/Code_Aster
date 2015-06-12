@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine sansco(char, motfac, noma)
-        character(len=8) :: char
-        character(len=16) :: motfac
-        character(len=8) :: noma
+    subroutine sansco(sdcont, keywf, mesh)
+        character(len=8), intent(in) :: sdcont
+        character(len=8), intent(in) :: mesh
+        character(len=16), intent(in) :: keywf
     end subroutine sansco
 end interface

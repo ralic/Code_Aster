@@ -16,15 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine sansno(char, motfac, noma, sans, psans,&
-                      nbmocl, tymocl, limocl)
-        integer :: nbmocl
-        character(len=8) :: char
-        character(len=16) :: motfac
-        character(len=8) :: noma
-        character(len=24) :: sans
-        character(len=24) :: psans
-        character(len=16) :: tymocl(nbmocl)
-        character(len=16) :: limocl(nbmocl)
+    subroutine sansno(sdcont , keywf    , mesh     , sans, psans,&
+                      nb_keyw, keyw_type, keyw_name)
+        character(len=8), intent(in) :: sdcont
+        character(len=16), intent(in) :: keywf
+        character(len=24), intent(in) :: sans
+        character(len=24), intent(in) :: psans
+        character(len=8), intent(in) :: mesh
+        integer, intent(in) :: nb_keyw
+        character(len=16), intent(in) :: keyw_type(nb_keyw)
+        character(len=16), intent(in) :: keyw_name(nb_keyw)
     end subroutine sansno
 end interface
