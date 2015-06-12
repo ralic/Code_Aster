@@ -64,9 +64,9 @@ subroutine aceaor(noma, nomo, lmax, nbepo, ntyele, nomele, ivr, nbocc)
 #include "blas/ddot.h"
 !
 ! --------------------------------------------------------------------------------------------------
-    integer :: ii, ifm, ioc, ixma, ixno, iarg
+    integer :: ii, ifm, ioc, ixma, iarg
     integer :: jj, jad, jin, jdcmpo, jdco, jdgm, nbid
-    integer :: jdls, jdme, jdne, jdno, jdori, jdtm, jinit
+    integer :: jdls, jdme, jdno, jdori, jdtm, jinit
     integer :: jdvlvo, nbmagr, nbmail
     integer :: nbval, ncar, ng
     integer :: nm, no1, no2, nocaor, ntpoi, ntseg, ntseg3, ntseg4
@@ -83,7 +83,7 @@ subroutine aceaor(noma, nomo, lmax, nbepo, ntyele, nomele, ivr, nbocc)
     character(len=19) :: cartor
     character(len=24) :: tmpnor, tmpvor, tmpori,tmpini
     character(len=24) :: mlgnma, mlgnno, mlgtma, mlggno, mlggma, mlgcoo, mlgcnx
-    character(len=24) :: modnoe, modmai, nommai
+    character(len=24) :: modmai, nommai
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -100,7 +100,6 @@ subroutine aceaor(noma, nomo, lmax, nbepo, ntyele, nomele, ivr, nbocc)
 !
 !   RECONSTRUCTION DES NOMS JEVEUX DU CONCEPT MODELE
     modmai = nomo//'.MAILLE'
-    modnoe = nomo//'.NOEUD'
 !
 !   RECONSTRUCTION DES NOMS JEVEUX DU CONCEPT MAILLAGE ASSOCIE
     mlgnma = noma//'.NOMMAI'
@@ -113,9 +112,7 @@ subroutine aceaor(noma, nomo, lmax, nbepo, ntyele, nomele, ivr, nbocc)
 !
     call jelira(mlgnma, 'NOMMAX', nbmail)
     call jeexin(modmai, ixma)
-    call jeexin(modnoe, ixno)
     if (ixma .ne. 0) call jeveuo(modmai, 'L', jdme)
-    if (ixno .ne. 0) call jeveuo(modnoe, 'L', jdne)
 ! --------------------------------------------------------------------------------------------------
 !   Récupération des adresses jeveux utiles
     call jeveuo(mlgtma, 'L', jdtm)

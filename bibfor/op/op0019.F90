@@ -115,12 +115,12 @@ subroutine op0019()
     integer :: lxmr, noemf3
     integer :: npoutr, ncable, nbarre, nbdisc
     integer :: iclf, ioc, icle, ng
-    integer :: depart, jdnm, ixnw
+    integer :: depart, jdnm
     aster_logical :: locaco, locagb, locamb
     character(len=8) :: ver(3), nomu, nomo, noma, lpain(3), lpaout(1)
     character(len=16) :: concep, cmd, mclef, k16bid
     character(len=19) :: cartcf, ligrmo, lchin(3), lchout(1)
-    character(len=24) :: mlgnma, modnom, modnem, tmpncf, mlgnno
+    character(len=24) :: mlgnma, modnom, tmpncf, mlgnno
 !
 ! --------------------------------------------------------------------------------------------------
     integer, pointer            :: affe_mail(:) => null()
@@ -140,11 +140,6 @@ subroutine op0019()
     zk8(jadr) = nomo
 !   Construction des noms jeveux du concept modèle
     modnom = nomo//'.MODELE    .LGRF'
-    modnem = nomo//'.MODELE    .NEMA'
-    call jeexin(modnem, ixnw)
-    if ( ixnw .ne. 0 ) then
-        call utmess('F', 'AFFECARAELEM_1')
-    endif
 !   Récupération du nom du maillage associé
     call jeveuo(modnom, 'L', jdnm)
     noma = zk8(jdnm)

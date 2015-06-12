@@ -56,9 +56,6 @@ implicit none
     else if (model .eq. 'POU_C_T') then
         vali = 13
         valk    = "MODELISATION='POU_C_T'"
-    else if (model .eq. 'NOEUD') then
-        vali = 13
-        valk    = "AFFE_MODELE/AFFE/NOEUD/GROUP_NO"
 !
     else
         goto 999

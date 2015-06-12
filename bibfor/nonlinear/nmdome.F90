@@ -106,15 +106,6 @@ implicit none
             modele = nomo
         endif
 !
-! ------ LE MODELE NE DOIT PAS CONTENIR DE MAILLES TARDIVES POUR OP0070:
-!
-        call jeexin(modele(1:8)//'.MODELE    .NEMA', iret)
-        if (iret .gt. 0) then
-            if ((nomcmd.eq.'STAT_NON_LINE') .or. ( nomcmd.eq.'DYNA_NON_LINE')) then
-                call utmess('F', 'CALCULEL3_51', sk=nomcmd)
-            endif
-        endif
-!
 ! ------ LE MATERIAU
 !
         materi = ' '

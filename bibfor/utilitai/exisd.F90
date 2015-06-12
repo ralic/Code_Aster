@@ -69,9 +69,8 @@ subroutine exisd(typesd, nomsd, iret)
 !     ------------------------------
         ch8 = nomsd
         call jeexin(ch8//'.MAILLE', i1)
-        call jeexin(ch8//'.NOEUD', i2)
-        call jeexin(ch8//'.MODELE    .LIEL', i3)
-        if (i1*i2*i3 .ne. 0) goto 20
+        call jeexin(ch8//'.MODELE    .LIEL', i2)
+        if (i1*i2 .ne. 0) goto 20
 !
 !
     else if (typ2sd.eq.'CARTE') then

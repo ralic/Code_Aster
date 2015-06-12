@@ -104,7 +104,9 @@ MODES=CALC_MODES(MATR_RIGI=RIGIASSE,
 PRE_IDEAS( UNITE_IDEAS=33, UNITE_MAILLAGE = 21 )
 
 #
-MAILMESU=LIRE_MAILLAGE(UNITE=21)
+MAILMES0=LIRE_MAILLAGE(UNITE=21)
+MAILMESU=CREA_MAILLAGE(MAILLAGE=MAILMES0,
+         CREA_POI1= _F(NOM_GROUP_MA='N2N3',   NOEUD=('N2','N3'), ))
 
 
 #
@@ -112,7 +114,7 @@ MODLMESU=AFFE_MODELE(   MAILLAGE=MAILMESU,AFFE=(
                               _F( MAILLE = ('M1','M2',),
                                     PHENOMENE = 'MECANIQUE',
                                     MODELISATION = 'DIS_T'),
-                              _F( NOEUD = ('N2','N3',),
+                              _F( GROUP_MA = ('N2N3',),
                                     PHENOMENE = 'MECANIQUE',
                                     MODELISATION = 'DIS_T'))        )
 

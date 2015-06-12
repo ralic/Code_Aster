@@ -239,18 +239,9 @@ Erreur utilisateur (EXTR_RESU / RESTREINT) :
  La commande a besoin d'un nom de modèle.
 """),
 
-    51 : _(u"""
-  Erreur Utilisateur :
-    On essaie d'utiliser dans la commande %(k1)s
-    un modèle pour lequel des éléments finis ont été affectés directement
-    sur des noeuds (AFFE_MODELE / AFFE / GROUP_NO).
-    Ceci est interdit.
 
-  Conseils :
-    Il faut définir le modèle avec les mots clé GROUP_MA et MAILLE.
-    Pour cela, il faut créer dans le maillage des mailles de type POI1.
-    C'est possible avec la commande CREA_MAILLAGE / CREA_POI1.
-"""),
+
+
 
     52 : _(u"""
  le champ doit être un CHAM_ELEM.

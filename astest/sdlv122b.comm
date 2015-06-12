@@ -158,14 +158,16 @@ BASE=CALC_CHAMP(reuse=BASE,
 PRE_IDEAS( UNITE_IDEAS = 33, UNITE_MAILLAGE = 21)
 
 #
-MAILMESU=LIRE_MAILLAGE(UNITE=21)
+MAILMES0=LIRE_MAILLAGE(UNITE=21)
+MAILMESU=CREA_MAILLAGE(MAILLAGE=MAILMES0,
+         CREA_POI1= _F(NOM_GROUP_MA='N3N4N5',   NOEUD=('N3','N4','N5'), ))
 
 #
 MODLMESU=AFFE_MODELE(   MAILLAGE=MAILMESU,AFFE=(
                               _F( MAILLE = ('M3','M4','M5',),
                                     PHENOMENE = 'MECANIQUE',
                                     MODELISATION = 'DIS_T'),
-                              _F( NOEUD = ('N3','N4','N5',),
+                              _F( GROUP_MA = ('N3N4N5',),
                                     PHENOMENE = 'MECANIQUE',
                                     MODELISATION = 'DIS_T'))          )
 

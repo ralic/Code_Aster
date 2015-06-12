@@ -420,7 +420,6 @@ subroutine copisd(typesd, base, sd1, sd2)
         call copis2('LIGREL', bas2, k81//'.MODELE', k82//'.MODELE')
         call copis2('L_TABLE', bas2, k81, k82)
 !
-        call jedup1(k81//'.NOEUD', bas2, k82//'.NOEUD')
         call jedup1(k81//'.MAILLE', bas2, k82//'.MAILLE')
         call jedup1(k81//'.PARTIT', bas2, k82//'.PARTIT')
 !

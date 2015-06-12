@@ -283,7 +283,6 @@ subroutine detrsd(typesd, nomsd)
         call detrs2('L_TABLE', k8)
 !
         call jedetr(k8//'           .TITR')
-        call jedetr(k8//'.NOEUD')
         call jedetr(k8//'.MAILLE')
         call jedetr(k8//'.PARTIT')
 !

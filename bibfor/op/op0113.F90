@@ -241,7 +241,7 @@ subroutine op0113()
 !
 !-----------------------------------------------------------------------
 !     5) DUPLICATION DU .NOMA, .NBNO
-!                ET DES .NEMA, .SSSA, .NOEUD S'ILS EXISTENT
+!                ET DES .NEMA, .SSSA S'ILS EXISTENT
 !        PUIS .REPE, .PRNM ET .PRNS AVEC CALL ADALIG CORMGI ET INITEL
 !-----------------------------------------------------------------------
 !
@@ -252,7 +252,6 @@ subroutine op0113()
 !
     call jedup1(mod1//'.NEMA', 'G', modelx//'.NEMA')
     call jedup1(mod1//'.SSSA', 'G', modelx//'.SSSA')
-    call jedup1(mod1//'.NOEUD', 'G', modelx//'.NOEUD')
 !
     call adalig(ligr2)
     call cormgi('G', ligr2)

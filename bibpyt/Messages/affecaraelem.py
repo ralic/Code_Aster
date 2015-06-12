@@ -20,17 +20,6 @@
 cata_msg = {
 
 # Messages dans OP0019
-    1 : _(u"""AFFE_CARA_ELEM
-Le modèle contient des noeuds tardifs, ils ne sont pas autorisés dans cette commande.
-
-Les noeuds tardifs correspondent à des noeuds ou groupes de noeuds sur lesquels vous
-avez affecté un modèle avec la commande AFFE_MODELE/AFFE/NOEUD ou GROUP_NO.
-
-Solution : il faut créer un groupe de maille de POI1 correspondant à ces noeuds à l'aide
-           de la commande CREA_MAILLAGE/CREA_POI1 et ensuite affecter sur ce groupe de maille
-           un modèle avec la commande AFFE_MODELE/AFFE/GROUP_MA
-"""),
-
     2 : _(u"""AFFE_CARA_ELEM
 Aucune affectation n'est réalisée sur des GROUP_MA ou des MAILLES.
 

@@ -49,18 +49,6 @@ def EXTR_MATR(matrrr,vall) :
         nomail=nomail[0:8]
         nomodel=nomodel[0:8]
 
-        nnumerot=nomail+'.NOMNOE                 '
-        nnumerut=nomodel+'.NOEUD                  '
-        
-        numerot=aster.getvectjev(nnumerot)
-        numerut=aster.getvectjev(nnumerut)
-#        import pdb ; pdb.set_trace()
-
-        vectnum=['']*len(numerut)
-        kk=0
-        for ii in range(0,len(numerut)):
-                vectnum[kk]=numerot[ii]        
-                kk=kk+1
 
 
 # calc nbre de ddl au total et vect contenant le nbre de ddl pr chaque noeud (ex : barre =3, poutre=6...)
@@ -98,7 +86,7 @@ def EXTR_MATR(matrrr,vall) :
                 for hh in range(0,limm):
                     if (vecc[hh]==1):
                         indint[gg]=ii+hh
-                        vectddl[gg]=vectnum[pp]+refddl[hh]
+                        vectddl[gg]=refddl[hh]
                         gg=gg+1
                     vecc[hh]=1
                 ste=0                

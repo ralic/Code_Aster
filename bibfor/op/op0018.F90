@@ -16,7 +16,6 @@ subroutine op0018()
 #include "asterfort/deprecated_model.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
-#include "asterfort/getnode.h"
 #include "asterfort/getelem.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
@@ -68,7 +67,6 @@ subroutine op0018()
 ! REMARQUES ET RESTRICTIONS D UTILISATION:
 !       LES SEULES VERIFICATIONS FAITES ( FAUX=EXIT ), PORTENT SUR:
 !       - L AFFECTATION D ELEMENTS FINIS A TOUTES LES MAILLES DEMANDEES
-!       - L AFFECTATION D ELEMENTS FINIS A TOUS LES NOEUDS DEMANDES
 !       - L AFFECTATION D ELEMENTS FINIS SUR UNE MAILLE AU MOINS
 !
 ! --------------------------------------------------------------------------------------------------
@@ -76,21 +74,18 @@ subroutine op0018()
     integer :: dim_topo_curr, dim_topo_init
     integer :: ifm, niv
     character(len=8) :: mesh, model
-    character(len=8) :: name_elem, name_node
+    character(len=8) :: name_elem
     character(len=16) :: k16dummy, name_type_geom, repk, valk(2)
     character(len=16) :: phenom, modeli, list_modelisa(10), keywordfact
     character(len=19) :: ligrel
-    character(len=24) :: mesh_name_elem, mesh_name_node
+    character(len=24) :: mesh_name_elem
     character(len=32) :: phemod
     character(len=24) :: list_elem
     integer, pointer :: p_list_elem(:) => null()
     integer :: nb_elem
-    character(len=24) :: list_node
-    integer, pointer :: p_list_node(:) => null()
-    integer :: nb_node
-    aster_logical :: l_elem, l_node, l_grandeur_cara
+    aster_logical :: l_elem, l_grandeur_cara
     aster_logical :: l_calc_rigi, l_veri_elem, l_need_neigh
-    integer :: inode, ielem, iaffe
+    integer :: ielem, iaffe
     integer :: vali(4), ico, imodel, idx_modelisa
     integer, pointer :: p_cata_dim(:) => null()
     integer, pointer :: p_cata_model(:) => null()
@@ -99,22 +94,17 @@ subroutine op0018()
     integer, pointer :: p_wk_mail1(:) => null()
     integer, pointer :: p_wk_mail2(:) => null()
     integer, pointer :: p_wk_mail3(:) => null()
-    integer, pointer :: p_wk_node(:) => null()
     character(len=24) :: model_liel
     integer, pointer :: p_model_liel(:) => null()
-    character(len=24) :: model_nema
-    integer, pointer :: p_model_nema(:) => null()
     character(len=24) :: model_maille
     integer, pointer :: p_model_maille(:) => null()
-    character(len=24) :: model_noeud
-    integer, pointer :: p_model_noeud(:) => null()
     character(len=8), pointer :: p_model_lgrf(:) => null()
     integer, pointer :: p_model_nbno(:) => null()
     integer :: lont_liel, lont_nema, nb_grel, nb_elem_affe, nb_mesh_elem
-    integer :: nb_elem_naffe, nb_node_affe, nb_mesh_node, nb_node_naffe
+    integer :: nb_elem_naffe
     integer :: nb_affe, nb_affe_ss, nbocc
     integer :: long_grel, nb_modelisa, nume_type_poi1, nume_grel
-    integer :: nume_elem, nume_node, numsup, idx_in_grel, nume_type_model, nume_type_geom
+    integer :: nume_elem, numsup, idx_in_grel, nume_type_model, nume_type_geom
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -125,9 +115,7 @@ subroutine op0018()
 ! - Initializations
 !
     l_elem = .false.
-    l_node = .false.
     list_elem = '&&OP0018.LIST_ELEM'
-    list_node = '&&OP0018.LIST_NODE'
 !
 ! - Get command parameters
 !
@@ -188,36 +176,29 @@ subroutine op0018()
 ! ----- Access to mesh objects
 !
         mesh_name_elem = mesh//'.NOMMAI'
-        mesh_name_node = mesh//'.NOMNOE'
         mesh_type_geom = mesh//'.TYPMAIL'
         call jelira(mesh_name_elem, 'NOMMAX', nb_mesh_elem)
-        call jelira(mesh_name_node, 'NOMMAX', nb_mesh_node)
         call jeveuo(mesh_type_geom, 'L', vi = p_mesh_type_geom)
 !
 ! ----- Name of objects for model
 !
         model_maille = model//'.MAILLE'
-        model_noeud = model//'.NOEUD'
         model_liel = model//'.MODELE    .LIEL'
-        model_nema = model//'.MODELE    .NEMA'
 !
 ! ----- Create main objects for model
 !
         call wkvect(model_maille, 'G V I', nb_mesh_elem, vi = p_model_maille)
-        call wkvect(model_noeud, 'G V I', nb_mesh_node, vi = p_model_noeud)
 !
 ! ----- Working objects
 !
         AS_ALLOCATE(vi = p_wk_mail1, size = nb_mesh_elem)
         AS_ALLOCATE(vi = p_wk_mail2, size = nb_mesh_elem)
         AS_ALLOCATE(vi = p_wk_mail3, size = nb_mesh_elem)
-        AS_ALLOCATE(vi = p_wk_node , size = nb_mesh_node)
 !
 ! ----- Loop on AFFE keyword
 !
         do iaffe = 1, nb_affe
 !
-            nb_node = 0
             nb_elem = 0
             dim_topo_init=-99
             p_wk_mail2(1:nb_mesh_elem) = 0
@@ -236,15 +217,7 @@ subroutine op0018()
             call jedetr(list_elem)
             call getelem(mesh, keywordfact, iaffe, ' ', list_elem,&
                          nb_elem)
-!
-! --------- Get nodes
-!
-            if (nb_elem.eq.0) then
-                call jedetr(list_node)
-                call getnode(mesh   , keywordfact, iaffe , ' ', list_node,&
-                             nb_node, elem_excl = .true._1)
-                call deprecated_model('NOEUD')
-            endif
+            ASSERT(nb_elem.gt.0)
 !
 ! --------- Loop on modelisations
 !
@@ -272,7 +245,6 @@ subroutine op0018()
 ! ------------- Loop on elements
 !
                 if (nb_elem .ne. 0) then
-                    ASSERT(nb_node.eq.0)
                     l_elem = .true.
                     call jeveuo(list_elem, 'L', vi = p_list_elem)
                     do ielem = 1, nb_elem
@@ -286,21 +258,6 @@ subroutine op0018()
                         if (p_cata_dim(nume_type_geom) .eq. dim_topo_init) then
                             p_wk_mail2(nume_elem) = 1
                         endif
-                    end do
-                endif
-!
-! ------------- Loop on nodes
-!
-                if (nb_node .ne. 0) then
-                    ASSERT(nb_elem.eq.0)
-                    l_node = .true.
-                    call jeveuo(list_node, 'L', vi = p_list_node)
-                    do inode = 1, nb_node
-                        nume_node = p_list_node(inode)
-                        if (p_cata_model(nume_type_poi1) .gt. 0) then
-                            p_model_noeud(nume_node)= p_cata_model(nume_type_poi1)
-                        endif
-                        p_wk_node(nume_node) = 1
                     end do
                 endif
 !
@@ -341,22 +298,6 @@ subroutine op0018()
                     endif
                 endif
             end do
-!
-! --------- Check if user nodes have been affected
-!
-            nb_node_naffe = 0
-            do inode = 1, nb_mesh_node
-                nume_node = inode
-                if (p_wk_node(nume_node) .eq. 1) then
-                    if (p_model_noeud(nume_node) .eq. 0) then
-                        nb_node_naffe = nb_node_naffe+1
-                        call jenuno(jexnum(mesh_name_node, nume_node), name_node)
-                        if (niv .eq. 2) then
-                            call utmess('I', 'MODELE1_3', sk = name_node)
-                        endif
-                    endif
-                endif
-            end do
         end do
 !
 ! ----- Count number of GREL
@@ -378,21 +319,6 @@ subroutine op0018()
             endif
         end do
 !
-! ----- Count number of GREL - Nodes
-!
-        nb_node_affe = 0
-        nume_type_model = 0
-        do inode = 1, nb_mesh_node
-            nume_node = inode
-            if (p_model_noeud(nume_node) .ne. 0) then
-                nb_node_affe = nb_node_affe+1
-                if (p_model_noeud(nume_node) .ne. nume_type_model) then
-                    nume_type_model = p_model_noeud(nume_node)
-                    nb_grel = nb_grel+1
-                endif
-            endif
-        end do
-!
 ! ----- Printing informations
 !
         if (l_elem) then
@@ -401,19 +327,13 @@ subroutine op0018()
             vali(3) = nb_elem_affe
             call utmess('I', 'MODELE1_4', sk=mesh, ni = 3, vali = vali)
         endif
-        if (l_node) then
-            vali(1) = nb_mesh_node
-            vali(2) = nb_node_affe+nb_node_naffe
-            vali(3) = nb_node_affe
-            call utmess('I', 'MODELE1_5', sk=mesh, ni = 3, vali = vali)
-        endif
         if (nb_elem_affe .eq. 0) then
             call utmess('F', 'MODELE1_6', sk=mesh)
         endif
 !
 ! ----- Create LIEL
 !
-        lont_liel = nb_grel+nb_elem_affe+nb_node_affe
+        lont_liel = nb_grel+nb_elem_affe
         call jecrec(model_liel, 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
                     nb_grel)
         call jeecra(model_liel, 'LONT', lont_liel)
@@ -461,79 +381,9 @@ subroutine op0018()
             endif
         end do
 !
-! ----- Store GREL in LIEL - Nodes
-!
-        nume_type_model=0
-        numsup = 0
-        long_grel = 0
-        do nume_node = 1, nb_mesh_node
-            if (p_model_noeud(nume_node) .ne. 0) then
-!
-! ------------- Create new GREL
-!
-                if (p_model_noeud(nume_node) .ne. nume_type_model .and. nume_type_model&
-                    .ne. 0) then
-                    nume_grel = nume_grel+1
-                    long_grel = long_grel+1
-                    idx_in_grel = idx_in_grel+1
-                    p_model_liel(idx_in_grel) = nume_type_model
-                    call jecroc(jexnum(model_liel, nume_grel))
-                    call jeecra(jexnum(model_liel, nume_grel), 'LONMAX', long_grel)
-                    long_grel = 0
-                endif
-!
-! ------------- Add node in GREL
-!
-                long_grel = long_grel+1
-                idx_in_grel = idx_in_grel+1
-                numsup = numsup+1
-                p_model_liel(idx_in_grel) = -numsup
-                nume_type_model = p_model_noeud(nume_node)
-            endif
-!
-! --------- Last node
-!
-            if (nume_node .eq. nb_mesh_node .and. long_grel .ne. 0) then
-                nume_grel = nume_grel+1
-                long_grel = long_grel+1
-                idx_in_grel = idx_in_grel+1
-                p_model_liel(idx_in_grel) = nume_type_model
-                call jecroc(jexnum(model_liel, nume_grel))
-                call jeecra(jexnum(model_liel, nume_grel), 'LONMAX', long_grel)
-            endif
-        end do
-!
-! ----- Create NEMA
-!
-        lont_nema = nb_node_affe*2
-        if (nb_node_affe .ne. 0) then
-            call jecrec(model_nema, 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
-                        nb_node_affe)
-            call jeecra(model_nema, 'LONT', lont_nema)
-            call jeveuo(model_nema, 'E', vi = p_model_nema)
-        endif
-!
-! ----- Store nodes in NEMA
-!
-        if (nb_node_affe .ne. 0) then
-            idx_in_grel = 0
-            numsup = 0
-            do nume_node = 1, nb_mesh_node
-                if (p_model_noeud(nume_node) .ne. 0) then
-                    p_model_nema(idx_in_grel+1) = nume_node
-                    p_model_nema(idx_in_grel+2) = nume_type_poi1
-                    idx_in_grel = idx_in_grel+2
-                    numsup = numsup+1
-                    call jecroc(jexnum(model_nema, numsup))
-                    call jeecra(jexnum(model_nema, numsup), 'LONMAX', 2)
-                endif
-            end do
-        endif
-!
         AS_DEALLOCATE(vi = p_wk_mail1)
         AS_DEALLOCATE(vi = p_wk_mail2)
         AS_DEALLOCATE(vi = p_wk_mail3)
-        AS_DEALLOCATE(vi = p_wk_node )
     endif
 !
 ! - AFFE_SOUS_STRUCT
