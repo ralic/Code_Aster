@@ -86,40 +86,40 @@ subroutine crea_nume_erc(baseno, numnu,matprod,nom_nume_erc,nom_matr_erc,nom_vec
 ! --- SOLVEUR
     solveu=nom_nume_erc//'.SOLV'
     call cresol(solveu)
-    call wkvect(nom_nume_erc//'.NSLV', 'G V K24', 1, jnslv)
+    call wkvect(nom_nume_erc//'.NSLV', 'V V K24', 1, jnslv)
     zk24(jnslv)=solveu
 ! --- CREATION DU PROF_GENE
     prgene=nom_nume_erc//'.NUME'
 ! --- DESC
-    call wkvect(prgene//'.DESC', 'G V I', 1, lddesc)
+    call wkvect(prgene//'.DESC', 'V V I', 1, lddesc)
     zi(lddesc)=2
 ! --- NEQU
-    call wkvect(prgene//'.NEQU', 'G V I', 1, ldnequ)
+    call wkvect(prgene//'.NEQU', 'V V I', 1, ldnequ)
     zi(ldnequ)=2*neq
 ! --- REFN
-    call wkvect(prgene//'.REFN', 'G V K24', 4, jrefn)
+    call wkvect(prgene//'.REFN', 'V V K24', 4, jrefn)
     zk24(jrefn+1)='DEPL_R'
 ! --- DEEQ
-    call wkvect(prgene//'.DEEQ', 'G V I', 4*neq, lddeeq)
+    call wkvect(prgene//'.DEEQ', 'V V I', 4*neq, lddeeq)
     do k = 1, 2*neq
         zi(lddeeq-1+(k-1)*2+1)=k
         zi(lddeeq-1+(k-1)*2+2)=1
     end do
 ! --- DELG --> cet objet est apparamment inutile. On peut le supprimer?
-    call wkvect(prgene//'.DELG', 'G V I', 2*neq, lddelg)
+    call wkvect(prgene//'.DELG', 'V V I', 2*neq, lddelg)
 ! --- LILI
-    call jecreo(prgene//'.LILI', 'G N K8')
+    call jecreo(prgene//'.LILI', 'V N K8')
     call jeecra(prgene//'.LILI', 'NOMMAX', 2, k8bid)
     call jecroc(jexnom(prgene//'.LILI', '&SOUSSTR'))
     call jecroc(jexnom(prgene//'.LILI', 'LIAISONS'))
 ! --- NUEQ
-    call wkvect(prgene//'.NUEQ', 'G V I', 2*neq, ldnueq)
+    call wkvect(prgene//'.NUEQ', 'V V I', 2*neq, ldnueq)
     do k = 1, 2*neq
         zi(ldnueq-1+k)=k
     end do
 ! --- PRNO
-    call jecrec(prgene//'.PRNO', 'G V I', 'NU', 'DISPERSE', 'VARIABLE',2)
-    call jecrec(prgene//'.ORIG', 'G V I', 'NU', 'DISPERSE', 'VARIABLE',2)
+    call jecrec(prgene//'.PRNO', 'V V I', 'NU', 'DISPERSE', 'VARIABLE',2)
+    call jecrec(prgene//'.ORIG', 'V V I', 'NU', 'DISPERSE', 'VARIABLE',2)
     call jenonu(jexnom(prgene//'.LILI', '&SOUSSTR'), ibid)
     call jeecra(jexnum(prgene//'.PRNO', ibid), 'LONMAX', 2, ' ')
     call jeveuo(jexnum(prgene//'.PRNO', ibid), 'E', ldprno)
@@ -143,12 +143,12 @@ subroutine crea_nume_erc(baseno, numnu,matprod,nom_nume_erc,nom_matr_erc,nom_vec
 !
 ! --- --- CALCUL DU NOMBRE DE VALEURS STOCKES DANS LA DEMIE MATRICE SUPERIEURE
 
-   call wkvect(nom_nume_erc//'.SMOS.SMDE','G V I', 3, inewsmde)
+   call wkvect(nom_nume_erc//'.SMOS.SMDE','V V I', 3, inewsmde)
    zi(inewsmde)= 2*neq
    zi(inewsmde+1)= nozero
    zi(inewsmde+2)= 1
-   call wkvect(nom_nume_erc//'.SMOS.SMDI','G V I', 2*neq, inewsmdi)
-   call wkvect(nom_nume_erc//'.SMOS.SMHC','G V S', nozero, inewsmhc)   
+   call wkvect(nom_nume_erc//'.SMOS.SMDI','V V I', 2*neq, inewsmdi)
+   call wkvect(nom_nume_erc//'.SMOS.SMHC','V V S', nozero, inewsmhc)   
 !
 ! ----- LE PREMIER BLOC DE LA MATRICE EST IDENTIQUE A CELUI DE LA MATRICE DE RIGIDITE (OU IMPEDANCE)
 ! ----- ON LES RECOPIE 
@@ -221,7 +221,7 @@ subroutine crea_nume_erc(baseno, numnu,matprod,nom_nume_erc,nom_matr_erc,nom_vec
 !
     nom_matr_erc=baseno//'.AA.ASS.ERC'
 ! --- REFA
-    call wkvect(nom_matr_erc//'.REFA', 'G V K24', 20, mrefa)
+    call wkvect(nom_matr_erc//'.REFA', 'V V K24', 20, mrefa)
     zk24(mrefa-1+1)=''
     zk24(mrefa-1+2)=nom_nume_erc
     zk24(mrefa-1+3)=''
@@ -235,12 +235,12 @@ subroutine crea_nume_erc(baseno, numnu,matprod,nom_nume_erc,nom_matr_erc,nom_vec
     zk24(mrefa-1+10)='GENE'
     zk24(mrefa-1+11)='MPI_COMPLET'
 ! --- DESC
-    call wkvect(nom_matr_erc//'.DESC', 'G V I', 3, mdesc)
+    call wkvect(nom_matr_erc//'.DESC', 'V V I', 3, mdesc)
     zi(mdesc-1+1)=2
     zi(mdesc-1+2)=2*neq
     zi(mdesc-1+3)=2
 ! --- VALE (INITIALISE MAIS REMPLI DANS asse_matr_erc)
-    call jecrec(nom_matr_erc//'.VALM', 'G V R', 'NU', 'DISPERSE', 'VARIABLE',1)
+    call jecrec(nom_matr_erc//'.VALM', 'V V R', 'NU', 'DISPERSE', 'VARIABLE',1)
     call jeecra(jexnum(nom_matr_erc//'.VALM', 1), 'LONMAX', nozero, ' ')
     call jeveuo(jexnum(nom_matr_erc//'.VALM', 1), 'E', mvale)
 ! --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
@@ -248,13 +248,13 @@ subroutine crea_nume_erc(baseno, numnu,matprod,nom_nume_erc,nom_matr_erc,nom_vec
 ! --- CREATION DU VECT_ASSE_GENE ASSOCIEE A LA RESOLUTION DE L'ERC
     nom_vect_erc=baseno//'.BB.ASS.ERC'
 ! --- DESC
-    call wkvect(nom_vect_erc//'.DESC', 'G V I', 3, vdesc)
+    call wkvect(nom_vect_erc//'.DESC', 'V V I', 3, vdesc)
     zi(vdesc-1+1)=1
     zi(vdesc-1+2)=2*neq
     zi(vdesc-1+3)=2
 ! --- VALE (INITIALISE MAIS REMPLI DANS asse_vect_erc)       
 
-    call wkvect(nom_vect_erc//'.VALE', 'G V R', 2*neq, vvale)
+    call wkvect(nom_vect_erc//'.VALE', 'V V R', 2*neq, vvale)
     call r8inir(neq,0.d0,zr(vvale),1)
 
 
