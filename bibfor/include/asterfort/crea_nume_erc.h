@@ -16,10 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface 
-    subroutine crea_nume_erc(baseno, numnu,matprod,nom_nume_erc,nom_matr_erc,nom_vect_erc,solveu)
+    subroutine crea_nume_erc(baseno, numnu,matprod,nom_nume_erc,nom_matr_erc,nom_vect_erc,&
+                             solveu,valei)
       character(len=8),intent(in) ::  numnu,baseno
       character(len=24),intent(in) ::matprod(4)
       character(len=14),intent(out) :: nom_nume_erc
       character(len=19),intent(out) :: nom_matr_erc,nom_vect_erc,solveu
+      integer,intent(out) :: valei(8)
+
     end subroutine crea_nume_erc
 end interface 
+

@@ -67,7 +67,7 @@ subroutine op0066()
     real(kind=8) ::  tps1(4),rtab(2),deuxpi,freq,omega,gamma,alpha,coef_gamma,m_omega2
     real(kind=8) ::  mycoef(2),cout_fon,cout_uv
     complex(kind=8) :: cbid
-    integer :: obsdim(3), nbfreq, ifreq,lfreq,iret,ibid,ivecterc,ii,ladpa
+    integer :: obsdim(3), nbfreq, ifreq,lfreq,iret,ibid,ivecterc,ii,ladpa,valei(8)
     aster_logical :: amor,eval
 !
 ! ----------------------------------------------------------------------
@@ -105,7 +105,16 @@ subroutine op0066()
 !
 ! --- --- CREATION DU NUME_DDL_GENE ET INITIALISATION DU MATR/VECT_ASSE_GENE
 
-    call crea_nume_erc(baseno, numnu,matprod,nom_nume_erc,nom_matr_erc,nom_vect_erc,solveu)
+    call crea_nume_erc(baseno, numnu,matprod,nom_nume_erc,nom_matr_erc,nom_vect_erc,solveu,valei)
+
+! --- PRINT DES DIMENSIONS DU PROBLEME D'ERC
+    valei(1)=nbfreq
+    valei(2)=obsdim(2)
+    valei(4)=obsdim(1)
+    valei(5)=obsdim(3)
+    call utmess('I', 'ALGELINE7_22', ni=8, vali=valei)
+!
+
 !
 ! --- BOUCLE SUR LES FREQUENCES ---
 !====
