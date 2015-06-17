@@ -95,18 +95,7 @@ subroutine te0431(option, nomte)
         lgpg = max(jtab(6),1)*jtab(7)
         call jevech('PVARIMR', 'L', ivarim)
         call jevech('PVARIMP', 'L', ivarix)
-!
-! --- ORIENTATION DU MASSIF
-!
-        call tecach('NNN', 'PCAMASS', 'L', iret, iad=icamas)
         call r8inir(3, r8nnem(), angmas, 1)
-        if (icamas .gt. 0) then
-            if (zr(icamas) .gt. 0.d0) then
-                angmas(1) = zr(icamas+1)*r8dgrd()
-                angmas(2) = zr(icamas+2)*r8dgrd()
-                angmas(3) = zr(icamas+3)*r8dgrd()
-            endif
-        endif
     endif
 !
 ! - PARAMETRES EN SORTIE
