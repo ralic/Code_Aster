@@ -127,7 +127,10 @@ def post_dyna_alea_ops(self, INTERSPECTRE, FRAGILITE, TITRE, INFO, **args):
         Nbval = len(liste_indic)
         test1 = NP.equal(None, liste_indic)
         if test1.any() or test2.any():
-            UTMESS('F', 'TABLE0_14', valk=('DEFA', 'PARA_NOCI'))
+            if dicta.has_key('DEFA'):
+                UTMESS('F', 'TABLE0_14', valk=('DEFA', 'PARA_NOCI'))
+            elif dicta.has_key('DEMANDE'):
+                UTMESS('F', 'TABLE0_14', valk=('DEMANDE', 'PARA_NOCI'))
 
         if FRAGILITE['METHODE'] == "EMV":
         # 1) estimation paramètres maximum de vraisemblance
@@ -145,6 +148,10 @@ def post_dyna_alea_ops(self, INTERSPECTRE, FRAGILITE, TITRE, INFO, **args):
         # 2) estimation paramètres REGRESSION
             para_b, para_a, sigma, = linregress(
                 NP.log(NP.array(liste_indic)), NP.log(NP.array(liste_dem)))
+            if INFO == 2:
+                texte = 'PARAMETRES REGRESSION : ' + str(para_b) + ' ' + str(exp(para_a)) + '\n'
+                aster.affiche('MESSAGE', texte)
+
             Am = exp((log(FRAGILITE['SEUIL']) - para_a) / para_b)
             beta = sigma / para_b
             xopt = [Am, beta]

@@ -647,7 +647,7 @@ def itersim_SRO(self, FONC_DSP, NB_TIRAGE=1, **SRO_args):
         tole = listev[1] * 100.
         erre = abs(listev[-1])
         if abs(erre) > tole:
-            nbi = len(listev) - 2
+            nbi = ind_opt
             UTMESS('A', 'SEISME_36', vali=nbi,  valk=keys, valr=(erre, tole))
     return f_dsp_opt, list_rv
 
