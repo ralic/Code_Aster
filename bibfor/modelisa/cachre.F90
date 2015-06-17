@@ -145,9 +145,6 @@ subroutine cachre(char, ligrmo, noma, ndim, fonree,&
                     call getvc8(motclf, 'N', iocc=iocc, scal=cfx, nbret=nfx)
                     call getvc8(motclf, 'VY', iocc=iocc, scal=cfy, nbret=nfy)
                     call getvc8(motclf, 'VZ', iocc=iocc, scal=cfz, nbret=nfz)
-!                 CALL GETVC8 ( MOTCLF, 'MT' , IOCC,IARG, 1, CMX, NMX )
-!                 CALL GETVC8 ( MOTCLF, 'MFY', IOCC,IARG, 1, CMY, NMY )
-!                 CALL GETVC8 ( MOTCLF, 'MFZ', IOCC,IARG, 1, CMZ, NMZ )
                 else if (motclf .eq. 'FORCE_COQUE') then
                     nrep = 1
                     call getvc8(motclf, 'PRES', iocc=iocc, scal=cvpre, nbret=nfz)
@@ -210,7 +207,8 @@ subroutine cachre(char, ligrmo, noma, ndim, fonree,&
             call getvr8(motclf, 'FX', iocc=iocc, scal=fx, nbret=nfx)
             call getvr8(motclf, 'FY', iocc=iocc, scal=fy, nbret=nfy)
             call getvr8(motclf, 'FZ', iocc=iocc, scal=fz, nbret=nfz)
-            if (motclf .ne. 'FORCE_INTERNE' .and. motclf .ne. 'FORCE_FACE') then
+            if (motclf .ne. 'FORCE_INTERNE' .and. motclf .ne. 'FORCE_FACE' &
+                .and. motclf .ne. 'FORCE_CONTOUR') then
                 call getvr8(motclf, 'MX', iocc=iocc, scal=mx, nbret=nmx)
                 call getvr8(motclf, 'MY', iocc=iocc, scal=my, nbret=nmy)
                 call getvr8(motclf, 'MZ', iocc=iocc, scal=mz, nbret=nmz)
@@ -288,7 +286,8 @@ subroutine cachre(char, ligrmo, noma, ndim, fonree,&
             call getvid(motclf, 'FX', iocc=iocc, scal=kfx, nbret=nfx)
             call getvid(motclf, 'FY', iocc=iocc, scal=kfy, nbret=nfy)
             call getvid(motclf, 'FZ', iocc=iocc, scal=kfz, nbret=nfz)
-            if (motclf .ne. 'FORCE_INTERNE' .and. motclf .ne. 'FORCE_FACE') then
+            if (motclf .ne. 'FORCE_INTERNE' .and. motclf .ne. 'FORCE_FACE' &
+                .and. motclf .ne. 'FORCE_CONTOUR') then
                 call getvid(motclf, 'MX', iocc=iocc, scal=kmx, nbret=nmx)
                 call getvid(motclf, 'MY', iocc=iocc, scal=kmy, nbret=nmy)
                 call getvid(motclf, 'MZ', iocc=iocc, scal=kmz, nbret=nmz)
