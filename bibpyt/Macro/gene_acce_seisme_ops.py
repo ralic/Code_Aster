@@ -931,7 +931,7 @@ class SimulatorSPECScalar(Simulator):
         if 'FREQ_PENTE' in DSP_args:
             fonc_dsp_opt, liste_rv = itersim_SRO(generator,
                         DSP_args['FONC_DSP'], NB_TIRAGE=self.nbtirage,
-                        **SRO_args)
+                        **generator.SRO_args)
             vop, amo, R0, R2, f_FIT = DSP2FR(fonc_dsp_opt, DSP_args['FC'])
             DSP_args.update({'FREQ_FOND': vop, 'AMORT': amo,
                              'para_R0': R0, 'para_R2': R2,
