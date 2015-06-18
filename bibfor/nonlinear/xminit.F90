@@ -1,24 +1,20 @@
-subroutine mminit(model     , mesh  , sdcont_defi, sdcont_solv, sddyna  ,&
-                  hat_valinc, sdtime, sdstat     , sdnume     , nume_dof,&
-                  nume_inst)
+subroutine xminit(mesh  , model , sdcont_defi, sdcont_solv, nume_inst,&
+                  sdtime, sdstat, sddyna     , hat_valinc , nume_dof)
 !
 implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/cfdisi.h"
+#include "asterfort/assert.h"
 #include "asterfort/cfdisl.h"
-#include "asterfort/cfmmvd.h"
 #include "asterfort/copisd.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/misazl.h"
-#include "asterfort/mm_cycl_init.h"
-#include "asterfort/mmbouc.h"
+#include "asterfort/xmiszl.h"
 #include "asterfort/ndynlo.h"
 #include "asterfort/nmchex.h"
-#include "asterfort/mmapin.h"
+#include "asterfort/xmapin.h"
+#include "asterfort/mmbouc.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -39,19 +35,18 @@ implicit none
     character(len=24), intent(in) :: model
     character(len=24), intent(in) :: sdcont_defi
     character(len=24), intent(in) :: sdcont_solv
-    character(len=19), intent(in) :: hat_valinc(*)
     character(len=24), intent(in) :: sdtime
-    character(len=24), intent(in) :: sdstat
-    character(len=19), intent(in) :: sddyna
-    character(len=19), intent(in) :: sdnume    
-    character(len=24), intent(in) :: nume_dof   
+    character(len=24), intent(in) :: sdstat  
     integer, intent(in) :: nume_inst
+    character(len=19), intent(in) :: hat_valinc(*)
+    character(len=19), intent(in) :: sddyna
+    character(len=24), intent(in) :: nume_dof 
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Contact - Solve
 !
-! Continue method - Initializations
+! XFEM method - Initializations
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -65,68 +60,46 @@ implicit none
 ! In  sdtime           : datastructure for timers
 ! In  sdstat           : datastructure for statistics
 ! In  sddyna           : datastructure for dynamic
-! In  sdnume           : name of dof positions datastructure
+! In  nume_dof         : name of numbering object (NUME_DDL)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: l_dyna
-    character(len=19) :: sdcont_depgeo, sdcont_deplam, sdcont_depini
-    character(len=19) :: sdcont_vitini, sdcont_accini
-    character(len=19) :: disp_prev, acce_curr, vite_curr
-    character(len=24) :: sdcont_tabfin
-    real(kind=8), pointer :: v_sdcont_tabfin(:) => null()
-    character(len=24) :: sdcont_etatct
-    real(kind=8), pointer :: v_sdcont_etatct(:) => null()
-    integer :: ztabf, zetat
-    integer :: ipc, nb_inte_poin
+    aster_logical :: l_dyna, l_cont_xfem_gg
+    character(len=19) :: sdcont_depgeo, sdcont_deplam
+    character(len=19) :: disp_prev    
+    character(len=19) :: xseuco, xseucp
+    character(len=19) :: xindco, xmemco, xindcp, xmemcp, xcohes, xcohep
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_dyna       = ndynlo(sddyna,'DYNAMIQUE')
-    ztabf        = cfmmvd('ZTABF')
-    zetat        = cfmmvd('ZETAT')
-    nb_inte_poin = cfdisi(sdcont_defi,'NTPC' )
-!
-! - Geometric loop counter initialization
-!
-    call mmbouc(sdcont_solv, 'GEOM', 'INIT')
+    l_dyna         = ndynlo(sddyna,'DYNAMIQUE')
+    l_cont_xfem_gg = cfdisl(sdcont_defi,'CONT_XFEM_GG')
+    ASSERT(.not.l_dyna)
 !
 ! - Get field names in hat-variables
 !
     call nmchex(hat_valinc, 'VALINC', 'DEPMOI', disp_prev)
-    call nmchex(hat_valinc, 'VALINC', 'VITPLU', vite_curr)
-    call nmchex(hat_valinc, 'VALINC', 'ACCPLU', acce_curr)
 !
 ! - Lagrangians initialized (LAMBDA TOTAUX)
 !
-    sdcont_depini = sdcont_solv(1:14)//'.INIT'
-    call copisd('CHAMP_GD', 'V', disp_prev, sdcont_depini)
-    call misazl(sdnume, disp_prev)
-    if (l_dyna) then
-        call misazl(sdnume, acce_curr)
-        call misazl(sdnume, vite_curr)
+    if (l_cont_xfem_gg) then
+        call xmiszl(disp_prev, sdcont_defi, mesh)
     endif
 !
 ! - Management of status for time cut
 !
-    sdcont_tabfin = sdcont_solv(1:14)//'.TABFIN'
-    sdcont_etatct = sdcont_solv(1:14)//'.ETATCT'
-    call jeveuo(sdcont_tabfin, 'E', vr = v_sdcont_tabfin)
-    call jeveuo(sdcont_etatct, 'L', vr = v_sdcont_etatct)
-    do ipc = 1, nb_inte_poin
-        v_sdcont_tabfin(ztabf*(ipc-1)+23) = v_sdcont_etatct(zetat*(ipc-1)+1)
-        v_sdcont_tabfin(ztabf*(ipc-1)+17) = v_sdcont_etatct(zetat*(ipc-1)+2)
-        v_sdcont_tabfin(ztabf*(ipc-1)+18) = v_sdcont_etatct(zetat*(ipc-1)+3)
-    end do
-!
-! - Save speed and acceleration
-!
-    sdcont_vitini = sdcont_solv(1:14)//'.VITI'
-    sdcont_accini = sdcont_solv(1:14)//'.ACCI'
-    if (l_dyna) then
-        call copisd('CHAMP_GD', 'V', vite_curr, sdcont_vitini)
-        call copisd('CHAMP_GD', 'V', acce_curr, sdcont_accini)
-    endif
+    xindco = sdcont_solv(1:14)//'.XFIN'
+    xmemco = sdcont_solv(1:14)//'.XMEM'
+    xindcp = sdcont_solv(1:14)//'.XFIP'
+    xmemcp = sdcont_solv(1:14)//'.XMEP'
+    xseuco = sdcont_solv(1:14)//'.XFSE'
+    xseucp = sdcont_solv(1:14)//'.XFSP'
+    xcohes = sdcont_solv(1:14)//'.XCOH'
+    xcohep = sdcont_solv(1:14)//'.XCOP'
+    call copisd('CHAMP_GD', 'V', xindcp, xindco)
+    call copisd('CHAMP_GD', 'V', xmemcp, xmemco)
+    call copisd('CHAMP_GD', 'V', xseucp, xseuco)
+    call copisd('CHAMP_GD', 'V', xcohep, xcohes)
 !
 ! - Save displacements for geometric loop
 !
@@ -138,10 +111,16 @@ implicit none
     sdcont_deplam = sdcont_solv(1:14)//'.DEPF'
     call copisd('CHAMP_GD', 'V', disp_prev, sdcont_deplam)
 !
+! - Geometric loop counter initialization
+!
+    call mmbouc(sdcont_solv, 'GEOM', 'INIT')
+!
 ! - Initializations (pairing and others)
 !
-    call mmapin(model    , mesh  , sdcont_defi, sdcont_solv, nume_dof,&
-                nume_inst, sdtime, sdstat)
+    if (l_cont_xfem_gg) then
+        call xmapin(mesh  , model , sdcont_defi, sdcont_solv, nume_inst,&
+                    sdtime, sdstat, nume_dof)
+    endif
 !
 ! - First geometric loop counter
 !    

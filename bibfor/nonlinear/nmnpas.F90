@@ -21,22 +21,18 @@ subroutine nmnpas(modele, noma  , mate  , carele, fonact,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-! aslint: disable=W1504
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/isnnem.h"
 #include "asterc/r8vide.h"
-#include "asterfort/cfinit.h"
 #include "asterfort/copisd.h"
 #include "asterfort/diinst.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/initia.h"
 #include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/mmapin.h"
+#include "asterfort/cont_init.h"
 #include "asterfort/ndnpas.h"
 #include "asterfort/ndynlo.h"
 #include "asterfort/nmchex.h"
@@ -99,10 +95,6 @@ subroutine nmnpas(modele, noma  , mate  , carele, fonact,&
     real(kind=8), pointer :: depp(:) => null()
 !
 ! ----------------------------------------------------------------------
-!
-    call jemarq()
-!
-! --- INITIALISATIONS
 !
     call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
     scotch = .false.
@@ -187,20 +179,12 @@ subroutine nmnpas(modele, noma  , mate  , carele, fonact,&
         call nmnkft(solveu, sddisc, iterat)
     endif
 !
-! --- INITIALISATIONS POUR LE CONTACT
+! - Initializations of contact for current time step
 !
     if (lcont) then
-        call cfinit(noma, fonact, defico, resoco, numins,&
-                    sddyna, valinc, sdnume)
+        call cont_init(noma  , modele, defico, resoco, numins,&
+                       sdtime, sdstat, sddyna, valinc, sdnume,&
+                       numedd, fonact)
     endif
-!
-! --- APPARIEMENT INITIAL POUR CONTACT CONTINU
-!
-    if (leltc) then
-        call mmapin(modele, noma, defico, resoco, numedd,&
-                    numins, sdstat, sdtime)
-    endif
-!
-    call jedema()
 !
 end subroutine

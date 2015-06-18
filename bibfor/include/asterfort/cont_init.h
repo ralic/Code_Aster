@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,15 +16,20 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mmapin(model    , mesh  , sdcont_defi, sdcont_solv, nume_dof,&
-                      nume_inst, sdtime, sdstat)
+    subroutine cont_init(mesh     , model         , sdcont_defi, sdcont_solv, nume_inst,&
+                         sdtime   , sdstat        , sddyna     , hat_valinc , sdnume   ,&
+                         nume_dof , list_func_acti)
         character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: model
         character(len=24), intent(in) :: sdcont_defi
         character(len=24), intent(in) :: sdcont_solv
-        character(len=24), intent(in) :: nume_dof   
-        integer, intent(in) :: nume_inst
         character(len=24), intent(in) :: sdtime
-        character(len=24), intent(in) :: sdstat         
-    end subroutine mmapin
+        character(len=24), intent(in) :: sdstat  
+        integer, intent(in) :: nume_inst
+        character(len=19), intent(in) :: hat_valinc(*)
+        character(len=19), intent(in) :: sddyna
+        integer, intent(in) :: list_func_acti(*)
+        character(len=19), intent(in) :: sdnume
+        character(len=24), intent(in) :: nume_dof 
+    end subroutine cont_init
 end interface

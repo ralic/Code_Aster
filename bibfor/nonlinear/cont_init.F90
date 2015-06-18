@@ -1,14 +1,17 @@
-subroutine mmapin(model    , mesh  , sdcont_defi, sdcont_solv, nume_dof,&
-                  nume_inst, sdtime, sdstat)
+subroutine cont_init(mesh     , model         , sdcont_defi, sdcont_solv, nume_inst,&
+                     sdtime   , sdstat        , sddyna     , hat_valinc , sdnume   ,&
+                     nume_dof , list_func_acti)
 !
 implicit none
 !
-#include "asterf_types.h"
 #include "asterfort/cfdisl.h"
-#include "asterfort/nmctcg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/xminit.h"
+#include "asterfort/mminit.h"
+#include "asterfort/cfinit.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -30,15 +33,19 @@ implicit none
     character(len=24), intent(in) :: sdcont_defi
     character(len=24), intent(in) :: sdcont_solv
     character(len=24), intent(in) :: sdtime
-    character(len=24), intent(in) :: sdstat    
-    character(len=24), intent(in) :: nume_dof   
+    character(len=24), intent(in) :: sdstat  
     integer, intent(in) :: nume_inst
+    character(len=19), intent(in) :: hat_valinc(*)
+    character(len=19), intent(in) :: sddyna
+    integer, intent(in) :: list_func_acti(*)
+    character(len=19), intent(in) :: sdnume
+    character(len=24), intent(in) :: nume_dof    
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Contact - Solve
 !
-! Continue method - Initializations (pairing and others)
+! All methods - Initializations for current time step
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,28 +53,48 @@ implicit none
 ! In  model            : name of model
 ! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
 ! In  sdcont_solv      : name of contact solving datastructure
+! In  nume_inst        : index of current step time
+! In  hat_valinc       : hat variable for algorithm fields
 ! In  nume_dof         : name of numbering object (NUME_DDL)
 ! In  sdtime           : datastructure for timers
 ! In  sdstat           : datastructure for statistics
-! In  nume_inst        : index of current time step
+! In  sddyna           : datastructure for dynamic
+! In  sdnume           : name of dof positions datastructure
+! In  list_func_acti   : list of active functionnalities
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: l_cont_allv, l_step_first
+    aster_logical :: l_cont_disc, l_cont_allv, l_cont_cont, l_cont_xfem
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_cont_allv  = cfdisl(sdcont_defi,'ALL_VERIF')
-!
-! - Using *_INIT options (like SEUIL_INIT)
-!
-    l_step_first = nume_inst .eq. 1
-!
-! - Initializations (pairing and others)
-!
+    l_cont_disc = isfonc(list_func_acti,'CONT_DISCRET')
+    l_cont_cont = isfonc(list_func_acti,'CONT_CONTINU')
+    l_cont_xfem = isfonc(list_func_acti,'CONT_XFEM')
+    l_cont_allv = cfdisl(sdcont_defi,'ALL_VERIF')
+!    
     if (.not.l_cont_allv) then
-        call nmctcg(model , mesh  , sdcont_defi, sdcont_solv, l_step_first,&
-                    sdstat, sdtime, nume_dof)
+!
+! ----- For discrete contact
+!
+        if (l_cont_disc) then
+            call cfinit(sdcont_defi, sdcont_solv, nume_inst)
+        endif
+!
+! ----- For continue contact
+!
+        if (l_cont_cont) then
+            call mminit(model     , mesh  , sdcont_defi, sdcont_solv, sddyna  ,&
+                        hat_valinc, sdtime, sdstat     , sdnume     , nume_dof,&
+                        nume_inst)
+        endif
+!
+! ----- For XFEM contact
+!
+        if (l_cont_xfem) then
+            call xminit(mesh  , model , sdcont_defi, sdcont_solv, nume_inst,&
+                        sdtime, sdstat, sddyna     , hat_valinc , nume_dof)
+        endif   
     endif
 !
 end subroutine

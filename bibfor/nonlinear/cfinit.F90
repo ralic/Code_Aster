@@ -1,14 +1,10 @@
-subroutine cfinit(noma, fonact, defico, resoco, numins,&
-                  sddyna, valinc, sdnume)
+subroutine cfinit(sdcont_defi, sdcont_solv, nume_inst)
 !
 implicit none
 !
-#include "jeveux.h"
 #include "asterf_types.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mmbouc.h"
 #include "asterfort/mminit.h"
@@ -32,100 +28,69 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=8), intent(in) :: noma
-    character(len=24), intent(in) :: defico
-    character(len=24), intent(in) :: resoco
-    integer, intent(in) :: numins
-    integer, intent(in) :: fonact(*)
-    character(len=19), intent(in) :: valinc(*)
-    character(len=19), intent(in) :: sddyna
-    character(len=19), intent(in) :: sdnume
+    character(len=24), intent(in) :: sdcont_defi
+    character(len=24), intent(in) :: sdcont_solv
+    integer, intent(in) :: nume_inst
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (INITIALISATION CONTACT)
+! Contact - Solve
 !
-! INITIALISATION DES PARAMETRES DE CONTACT POUR LE NOUVEAU PAS DE
-! TEMPS
+! Discrete methods - Initializations for current time step
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  sdcont_solv      : name of contact solving datastructure
+! In  nume_inst        : index of current step time
 !
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  FONACT : FONCTIONNALITES ACTIVEES
-! IN  DEFICO : SD DEFINITION DU CONTACT
-! IN  RESOCO : SD RESOLUTION DU CONTACT
-! IN  SDDYNA : SD DYNAMIQUE
-! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
-! IN  NUMINS : NUMERO INSTANT COURANT
+! --------------------------------------------------------------------------------------------------
 !
+    aster_logical :: l_reac_geom(3)
+    character(len=24) :: sdcont_clreac
+    aster_logical, pointer :: v_sdcont_clreac(:) => null()
+    character(len=24) :: sdcont_autoc1, sdcont_autoc2
 !
+! --------------------------------------------------------------------------------------------------
 !
+
 !
-    aster_logical :: lreac(3)
-    character(len=24) :: clreac
-    integer :: jclrea
-    character(len=24) :: autoc1, autoc2
-    aster_logical :: leltc, lctcd, lallv
+! - Datastructure for contact solving
 !
-! ----------------------------------------------------------------------
+    sdcont_clreac = sdcont_solv(1:14)//'.REAL'
+    call jeveuo(sdcont_clreac, 'E', vl = v_sdcont_clreac)
+    sdcont_autoc1 = sdcont_solv(1:14)//'.REA1'
+    sdcont_autoc2 = sdcont_solv(1:14)//'.REA2'
 !
-    call jemarq()
+! - Geometric parameters
 !
-! --- FONCTIONNALITES ACTIVEES
-!
-    lctcd = isfonc(fonact,'CONT_DISCRET')
-    leltc = isfonc(fonact,'ELT_CONTACT')
-    lallv = cfdisl(defico,'ALL_VERIF')
-    if (lallv) goto 99
-!
-! --- INITIALISATIONS POUR CONTACT DISCRET
-!
-    if (lctcd) then
-!
-! ----- ACCES OBJETS
-!
-        autoc1 = resoco(1:14)//'.REA1'
-        autoc2 = resoco(1:14)//'.REA2'
-        clreac = resoco(1:14)//'.REAL'
-        call jeveuo(clreac, 'E', jclrea)
-!
-! ----- PARAMETRES DE REACTUALISATION GEOMETRIQUE
-!
-        lreac(1) = .true.
-        lreac(2) = .false.
-        lreac(3) = .true.
-        if (cfdisl(defico,'REAC_GEOM_SANS')) then
-            if (numins .ne. 1) then
-                lreac(1) = .false.
-                lreac(3) = .false.
-            endif
+    l_reac_geom(1) = .true.
+    l_reac_geom(2) = .false.
+    l_reac_geom(3) = .true.
+    if (cfdisl(sdcont_defi,'REAC_GEOM_SANS')) then
+        if (nume_inst .ne. 1) then
+            l_reac_geom(1) = .false.
+            l_reac_geom(3) = .false.
         endif
-!
-        call mmbouc(resoco, 'GEOM', 'INIT')
-        call mmbouc(resoco, 'GEOM', 'INCR')
-!
-! ----- INITIALISATION DES VECTEURS POUR REAC_GEOM
-!
-        call vtzero(autoc1)
-        call vtzero(autoc2)
-!
-! ----- SAUVEGARDE
-!
-        zl(jclrea-1+1) = lreac(1)
-        zl(jclrea-1+2) = lreac(2)
-        zl(jclrea-1+3) = lreac(3)
     endif
 !
-! --- INITIALISATIONS POUR CONTACT CONTINU ET XFEM
+! - Geometric loop counter initialization
 !
-    if (leltc) then
-        call mminit(noma, defico, resoco, sddyna, valinc,&
-                    sdnume)
-    endif
+    call mmbouc(sdcont_solv, 'GEOM', 'INIT')
 !
- 99 continue
+! - First geometric loop counter
+!    
+    call mmbouc(sdcont_solv, 'GEOM', 'INCR')
 !
-    call jedema()
+! - Vector initialization for REAC_GEOM
+!
+    call vtzero(sdcont_autoc1)
+    call vtzero(sdcont_autoc2)
+!
+! - Save parameters
+!
+    v_sdcont_clreac(1) = l_reac_geom(1)
+    v_sdcont_clreac(2) = l_reac_geom(2)
+    v_sdcont_clreac(3) = l_reac_geom(3)
 !
 end subroutine

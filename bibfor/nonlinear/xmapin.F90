@@ -1,14 +1,14 @@
-subroutine mmapin(model    , mesh  , sdcont_defi, sdcont_solv, nume_dof,&
-                  nume_inst, sdtime, sdstat)
+subroutine xmapin(mesh  , model , sdcont_defi, sdcont_solv, nume_inst,&
+                  sdtime, sdstat, nume_dof)
 !
 implicit none
-!
+!          
 #include "asterf_types.h"
 #include "asterfort/cfdisl.h"
-#include "asterfort/nmctcg.h"
+#include "asterfort/nmctcg.h"                 
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,19 +26,19 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
-    character(len=24), intent(in) :: model
+    character(len=24), intent(in) :: model    
     character(len=24), intent(in) :: sdcont_defi
     character(len=24), intent(in) :: sdcont_solv
     character(len=24), intent(in) :: sdtime
-    character(len=24), intent(in) :: sdstat    
-    character(len=24), intent(in) :: nume_dof   
+    character(len=24), intent(in) :: sdstat  
     integer, intent(in) :: nume_inst
+    character(len=24), intent(in) :: nume_dof 
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Contact - Solve
 !
-! Continue method - Initializations (pairing and others)
+! XFEM (not HPP) method - Initializations (pairing and others)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,10 +46,10 @@ implicit none
 ! In  model            : name of model
 ! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
 ! In  sdcont_solv      : name of contact solving datastructure
-! In  nume_dof         : name of numbering object (NUME_DDL)
 ! In  sdtime           : datastructure for timers
 ! In  sdstat           : datastructure for statistics
 ! In  nume_inst        : index of current time step
+! In  nume_dof         : name of numbering object (NUME_DDL)
 !
 ! --------------------------------------------------------------------------------------------------
 !

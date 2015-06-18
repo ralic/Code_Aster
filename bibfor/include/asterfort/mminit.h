@@ -16,12 +16,19 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mminit(noma, defico, resoco, sddyna, valinc,&
-                      sdnume)
-        character(len=8), intent(in) :: noma
-        character(len=24), intent(in) :: defico, resoco
-        character(len=19), intent(in) :: valinc(*)
+    subroutine mminit(model     , mesh  , sdcont_defi, sdcont_solv, sddyna  ,&
+                      hat_valinc, sdtime, sdstat     , sdnume     , nume_dof,&
+                      nume_inst)
+        character(len=8), intent(in) :: mesh
+        character(len=24), intent(in) :: model
+        character(len=24), intent(in) :: sdcont_defi
+        character(len=24), intent(in) :: sdcont_solv
+        character(len=19), intent(in) :: hat_valinc(*)
+        character(len=24), intent(in) :: sdtime
+        character(len=24), intent(in) :: sdstat
         character(len=19), intent(in) :: sddyna
-        character(len=19), intent(in) :: sdnume
+        character(len=19), intent(in) :: sdnume    
+        character(len=24), intent(in) :: nume_dof   
+        integer, intent(in) :: nume_inst
     end subroutine mminit
 end interface

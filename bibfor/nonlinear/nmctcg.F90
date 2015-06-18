@@ -76,8 +76,7 @@ subroutine nmctcg(modele, noma, defico, resoco, loptin,&
 ! --- AFFICHAGE
 !
     if (niv .ge. 2) then
-        write (ifm,*)&
-     &     '<MECANONLINE> BOUCLE DE REACTUALISATION GEOMETRIQUE'
+        write (ifm,*) '<MECANONLINE> BOUCLE DE REACTUALISATION GEOMETRIQUE'
     endif
 !
 ! --- REACTUALISATION DE LA GEOMETRIE ET APPARIEMENT

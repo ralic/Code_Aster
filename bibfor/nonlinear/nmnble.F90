@@ -96,7 +96,7 @@ subroutine nmnble(numins, modele, noma, numedd, sdstat,&
     call mmbouc(resoco, 'GEOM', 'READ', mmitgo)
     call mmbouc(resoco, 'FROT', 'READ', mmitfr)
     call mmbouc(resoco, 'CONT', 'READ', mmitca)
-    loptin = (numins.le.1) .and. (mmitgo.eq.0) .and. (mmitfr.eq.1) .and. (mmitca.eq.1)
+    loptin = (numins.le.1) .and. (mmitgo.eq.1) .and. (mmitfr.eq.1) .and. (mmitca.eq.1)
 !
 ! --- INITIALISATIONS
 !

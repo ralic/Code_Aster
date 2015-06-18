@@ -16,15 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfinit(noma, fonact, defico, resoco, numins,&
-                      sddyna, valinc, sdnume)
-        character(len=8), intent(in) :: noma
-        character(len=24), intent(in) :: defico
-        character(len=24), intent(in) :: resoco
-        integer, intent(in) :: numins
-        integer, intent(in) :: fonact(*)
-        character(len=19), intent(in) :: valinc(*)
-        character(len=19), intent(in) :: sddyna
-        character(len=19), intent(in) :: sdnume
+    subroutine cfinit(sdcont_defi, sdcont_solv, nume_inst)
+        character(len=24), intent(in) :: sdcont_defi
+        character(len=24), intent(in) :: sdcont_solv
+        integer, intent(in) :: nume_inst
     end subroutine cfinit
 end interface

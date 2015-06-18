@@ -1,6 +1,5 @@
-subroutine nmible(modele, noma, defico, resoco, fonact,&
-                  numins, niveau, numedd, sdstat, sdtime,&
-                  sdimpr)
+subroutine nmible(modele, noma  , defico, resoco, fonact,&
+                  niveau, numedd, sdstat, sdtime, sdimpr)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,7 +28,7 @@ subroutine nmible(modele, noma, defico, resoco, fonact,&
 #include "asterfort/mmbouc.h"
 #include "asterfort/nmctcg.h"
 #include "asterfort/nmimci.h"
-    integer :: numins, niveau
+    integer :: niveau
     character(len=8) :: noma
     character(len=24) :: defico, resoco
     character(len=24) :: sdstat, sdtime, sdimpr
@@ -53,7 +52,6 @@ subroutine nmible(modele, noma, defico, resoco, fonact,&
 !                  3     BOUCLE GEOMETRIE
 !                  2     BOUCLE SEUILS DE FROTTEMENT
 !                  1     BOUCLE CONTRAINTES ACTIVES
-! IN  NUMINS : NUMERO D'INSTANT
 ! IN  MODELE : NOM DU MODELE
 ! IN  NOMA   : NOM DU MAILLAGE
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
