@@ -121,8 +121,8 @@ implicit none
     icompt=0
     inbmat=0
     do i = 1, nbgrp
-!        -- IL NE PEUT PAS Y AVOIR PLUS DE 28 MATERIAUX
-        do j = 1, 28
+!        -- IL NE PEUT PAS Y AVOIR PLUS DE 26 MATERIAUX
+        do j = 1, 26
             k=(i-1)*nbcmp+j
             if (vale(k) .eq. 'TREF=>') goto 30
             if (vale(k) .ne. ' ') then

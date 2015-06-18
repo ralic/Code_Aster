@@ -59,7 +59,8 @@ subroutine cmtref(chmat, nomail)
     integer :: ico, nm, nbma, ninter, codint, ncm1, ntrf
     real(kind=8) :: tref, valr(2)
     character(len=8) :: mater, nocp
-    character(len=8) :: ktref, nomgd
+    character(len=8) ::  nomgd
+    character(len=24) :: ktref
     character(len=19) :: carcm1, carcm2, cartrf
     integer, pointer :: lismail(:) => null()
     character(len=8), pointer :: valv(:) => null()
@@ -115,10 +116,10 @@ subroutine cmtref(chmat, nomail)
         codcm1 = dcm1(3+2* (kcm1-1)+1)
         ASSERT(codcm1.eq.1 .or. codcm1.eq.3)
         nucm1 = dcm1(3+2* (kcm1-1)+2)
-!        -- ON STOCKE LES NOMS DES MATERIAUX AFFECTES (28 MAX) :
+!        -- ON STOCKE LES NOMS DES MATERIAUX AFFECTES (26 MAX) :
         ico = 0
         nocp='MATXX'
-        do kk = 1, 28
+        do kk = 1, 26
             mater = vcm1(nccm1* (kcm1-1)+kk)
             if (mater .eq. ' ') goto 20
             ico = ico + 1
@@ -128,12 +129,16 @@ subroutine cmtref(chmat, nomail)
  20         continue
         end do
         nm = ico
-        ASSERT(nm.gt.0 .and. nm.le.28)
+        ASSERT(nm.gt.0 .and. nm.le.26)
         ncmp(nm+1) = 'LREF'
         valv(nm+1) = 'TREF=>'
-        ncmp(nm+2) = 'VREF'
-!
-!        -- LISTE DES MAILLES CONCERNEES PAR KCM1 :
+        ncmp(nm+2) = 'VREF1'
+        ncmp(nm+3) = 'VREF2'
+        ncmp(nm+4) = 'VREF3'
+
+
+!       -- liste des mailles concernees par kcm1 :
+!       --------------------------------------------
         if (codcm1 .eq. 3) then
             call jeveuo(jexnum(carcm1//'.LIMA', nucm1), 'L', jlcm1)
             call jelira(jexnum(carcm1//'.LIMA', nucm1), 'LONMAX', ncm1)
@@ -141,17 +146,22 @@ subroutine cmtref(chmat, nomail)
             jlcm1 = 1
             ncm1 = 0
         endif
+
+
 !       -- POUR NE PAS PERDRE LES MAILLES QUI NE SONT
 !          CONCERNEES PAR AUCUN KTRF :
+!       ---------------------------------------------
         valv(nm+2) = 'NAN'
+        valv(nm+3) = ' '
+        valv(nm+4) = ' '
         if (codcm1 .eq. 1) then
-            call nocart(carcm2, 1, nm+2)
-!
+            call nocart(carcm2, 1, nm+4)
         else
-            call nocart(carcm2, 3, nm+2, mode='NUM', nma=ncm1,&
+            call nocart(carcm2, 3, nm+4, mode='NUM', nma=ncm1,&
                         limanu=zi(jlcm1))
         endif
-!
+
+
         do ktrf = 1, nbtrf
             codtrf = dtrf(3+2* (ktrf-1)+1)
             ASSERT(codtrf.eq.1 .or. codtrf.eq.3)
@@ -160,14 +170,11 @@ subroutine cmtref(chmat, nomail)
             if (tref .eq. r8vide()) then
                 ktref='NAN'
             else
-                valr(1) = -275.d0
-                valr(2) = 4000.d0
-                if (tref .le. valr(1) .and. tref .ge. valr(2)) then
-                    call utmess('F', 'MODELISA_22', nr=2, valr=valr)
-                endif
-                write (ktref,'(F8.2)') tref
+                write (ktref,'(1PE22.15)') tref
             endif
-            valv(nm+2) = ktref
+            valv(nm+2) = ktref(1:8)
+            valv(nm+3) = ktref(9:16)
+            valv(nm+4) = ktref(17:24)
 !           -- LISTE DES MAILLES CONCERNEES PAR KTRF :
             if (codtrf .eq. 3) then
                 call jeveuo(jexnum(cartrf//'.LIMA', nutrf), 'L', jltrf)
@@ -183,10 +190,10 @@ subroutine cmtref(chmat, nomail)
             if (ninter .eq. 0) goto 30
 !
             if (codint .eq. 1) then
-                call nocart(carcm2, 1, nm+2)
+                call nocart(carcm2, 1, nm+4)
 !
             else
-                call nocart(carcm2, 3, nm+2, mode='NUM', nma=ninter,&
+                call nocart(carcm2, 3, nm+4, mode='NUM', nma=ninter,&
                             limanu=lismail)
             endif
 !

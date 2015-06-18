@@ -138,18 +138,19 @@ class sd_cham_mater(AsBase):
                 if x1 == '':
                     continue
 
-                # cas particulier : 'TREF=>', '25.0'
+                # cas particulier : 'TREF=>', suivi de la temperature de reference ecrite sur 3 k8
                 if x1 == 'TREF=>':
                     ktref = k1
                     continue
                 if ktref:
                     assert k1 == ktref + 1, (k1, ktref)
                     # on doit retrouver la valeur de TREF :
+                    x1=v1[k1]+v1[k1+1]+v1[k1+2]
                     try:
                         tref = float(x1)
                     except:
                         assert 0, ' On doit trouver la valeur de TREF: ' + x1
-                    continue
+                    break
 
                 # cas général : x1 est un nom de sd_mater
                 sd2 = sd_mater(x1)

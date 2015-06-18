@@ -1471,9 +1471,10 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        ...
        MAT28 : nom du materiau 28
        LREF  : Toujours egal a 'TREF=>'
-       VREF  : valeur de TREF (reel code dans un K8 au format 'F8.2')
+       VREF1, VREF2, VREF3 : 3 K8 qui, concatenes, donne la valeur de TREF
+                             (reel code sur 3 K8 au format '1PE22.15')
 >>
-    NOMMATER   = K8   MAT[28]  LREF  VREF
+    NOMMATER   = K8   MAT[26]  LREF  VREF[3]
 %
 %
 <<  NUMC_I Type:I Pour les coques multi-couches

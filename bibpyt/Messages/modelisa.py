@@ -109,9 +109,9 @@ Risques et conseils :
  le noeud  %(k1)s  extrémité d'un des discrets n'existe pas dans la surface donnée par GROUP_MA.
 """),
 
-    22 : _(u"""
- La température de référence doit être comprise entre %(r1)f et %(r2)f.
-"""),
+
+
+
 
     23 : _(u"""
 AFFE_CARA_ELEM :

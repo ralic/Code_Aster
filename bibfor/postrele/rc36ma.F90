@@ -80,7 +80,8 @@ subroutine rc36ma(nommat, noma)
     integer :: icodre(nbcmp)
     character(len=8) :: k8b, nomgd, mater, nopa, nopb, typeke
     character(len=16) :: nocmp(nbcmp)
-    character(len=8) :: licmp(2), ktref
+    character(len=8) :: licmp(4)
+    character(len=24) :: ktref
     character(len=16) :: motcl1, motcl2
     character(len=19) :: chnmat, chsmat, chsma2
     character(len=24) :: chmata, chmatb
@@ -93,8 +94,7 @@ subroutine rc36ma(nommat, noma)
     call getfac(motcl1, nbsitu)
     call getfac(motcl2, nbseis)
     ndim = nbsitu + nbseis
-!
-!    RECUP TYPE KE
+
     call getvtx(' ', 'TYPE_KE', scal=typeke, nbret=nb)
     if (typeke .eq. 'KE_MECA') then
         tke=-1.d0
@@ -102,27 +102,30 @@ subroutine rc36ma(nommat, noma)
         tke=1.d0
     endif
     para(9)=tke
-!
+
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbmail)
-!
+
     call wkvect('&&RC3600.MATERIAU', 'V V K24', 2*ndim, jchmat)
     call wkvect('&&RC3600.NOM_MATERIAU', 'V V K8', nbmail, jmater)
-!
+
     chnmat = nommat//'.CHAMP_MAT '
     chsmat = '&&RC36MA.CHSMAT'
     chsma2 = '&&RC36MA.CHSMA2'
     k8b = ' '
     call carces(chnmat, 'ELEM', k8b, 'V', chsmat,&
                 'A', ier)
-    if (ier .ne. 0) then
-        call utmess('F', 'POSTRCCM_13')
-    endif
-!     -- ON NE GARDE DANS LE CHAMP DE MATERIAU QUE LES CMPS
-!      X1 : NOM DU MATERIAU
-!      X30: TEMP_REF
+    if (ier .ne. 0)  call utmess('F', 'POSTRCCM_13')
+
+
+!   -- on ne garde dans le champ de materiau que les cmps
+!      x1 : nom du materiau
+!      x28,x29,x30: temp_ref
+!   -------------------------------------------------------
     licmp(1)='MAT1'
-    licmp(2)='VREF'
-    call cesred(chsmat, 0, [0], 2, licmp,&
+    licmp(2)='VREF1'
+    licmp(3)='VREF2'
+    licmp(4)='VREF3'
+    call cesred(chsmat, 0, [0], 4, licmp,&
                 'V', chsma2)
     call detrsd('CHAM_ELEM_S', chsmat)
 !
@@ -133,8 +136,8 @@ subroutine rc36ma(nommat, noma)
     if (ier .ne. 0) then
         call utmess('F', 'POSTRCCM_14')
     endif
-!
-!
+
+
 ! --- E_AMBI, NU, ALPHA : A LA TEMPERATURE DE REFERENCE
 ! --- E, SM, M_KE, N_KE : A LA TEMPERATURE DE CALCUL
 !
@@ -205,11 +208,13 @@ subroutine rc36ma(nommat, noma)
             call cesexi('C', jcesdm, jceslm, im, 1,&
                         1, 2, iad)
             if (iad .gt. 0) then
-                ktref = cesvm(iad)
-                if (ktref .eq. 'NAN') then
+                ktref(1:8) = cesvm(iad)
+                ktref(9:16) = cesvm(iad+1)
+                ktref(17:24) = cesvm(iad+2)
+                if (ktref(1:3) .eq. 'NAN') then
                     tempra=r8vide()
                 else
-                    read (ktref,'(F8.2)') tempra
+                    read (ktref,'(1PE22.15)') tempra
                 endif
             else
                 tempra=r8vide()
@@ -357,11 +362,13 @@ subroutine rc36ma(nommat, noma)
             call cesexi('C', jcesdm, jceslm, im, 1,&
                         1, 2, iad)
             if (iad .gt. 0) then
-                ktref = cesvm(iad)
-                if (ktref .eq. 'NAN') then
+                ktref(1:8) = cesvm(iad)
+                ktref(9:16) = cesvm(iad+1)
+                ktref(17:24) = cesvm(iad+2)
+                if (ktref(1:3) .eq. 'NAN') then
                     tempra=r8vide()
                 else
-                    read (ktref,'(F8.2)') tempra
+                    read (ktref,'(1PE22.15)') tempra
                 endif
             else
                 tempra=r8vide()

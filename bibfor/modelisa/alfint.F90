@@ -70,7 +70,8 @@ subroutine alfint(chmatz, imate, nommaz, tdef, noparz,&
     character(len=19) :: ch19
 ! -----  VARIABLES LOCALES
     integer :: icodre(1)
-    character(len=8) :: k8b, chmat, nommat, ktref, nomgd, valk(2)
+    character(len=8) :: k8b, chmat, nommat, nomgd, valk(2)
+    character(len=24) :: ktref
     character(len=32) :: phenom
     character(len=16) :: typres, nomcmd, nopara
     character(len=19) :: chwork
@@ -108,19 +109,22 @@ subroutine alfint(chmatz, imate, nommaz, tdef, noparz,&
     call jelira(jexnom('&CATA.GD.NOMCMP', 'NOMMATER'), 'LONMAX', ncmp)
     call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nbec)
     ngdmax=desc(2)
-!     TREF EST SUR LE 1ER ENTIER CODE :
+
+!   -- TREF EST SUR LE 1ER ENTIER CODE :
     ec1=desc(3+2*ngdmax+nbec*(imate-1)+1)
     k=0
     do kk = 1, 30
         if (exisdg([ec1],kk)) k=k+1
     end do
-    if (zk8(jvale+ncmp*(imate-1)+k-2) .ne. 'TREF=>') then
+    if (zk8(jvale+ncmp*(imate-1)+k-4) .ne. 'TREF=>') then
         call utmess('F', 'CALCULEL6_56', sk=chmat)
     endif
-    ktref = zk8(jvale+ncmp*(imate-1)+k-1)
-    if (ktref .eq. 'NAN') goto 9998
+    ktref(1:8)   = zk8(jvale+ncmp*(imate-1)+k-3)
+    ktref(9:16)  = zk8(jvale+ncmp*(imate-1)+k-2)
+    ktref(17:24) = zk8(jvale+ncmp*(imate-1)+k-1)
+    if (ktref(1:3) .eq. 'NAN') goto 9998
 !
-    read (ktref,'(F8.2)') tref
+    read (ktref,'(1PE22.15)') tref
 !
 ! --- RECUPERATION DU NOM DU PHENOMENE ASSOCIE AU MATERIAU :
 !     ----------------------------------------------------
