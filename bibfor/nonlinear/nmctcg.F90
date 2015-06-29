@@ -60,10 +60,6 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-
-!
-! - Contact parameters
-!
     cont_form   = cfdisi(sdcont_defi,'FORMULATION')
     l_cont_allv = cfdisl(sdcont_defi,'ALL_VERIF')
 !
@@ -74,8 +70,8 @@ implicit none
             call mmctcg(mesh  , sdcont_defi, sdcont_solv, nume_dof, sdstat,&
                         sdtime)
         elseif (cont_form .eq. 3) then
-            call xmctcg(model, mesh, sdcont_defi, sdcont_solv, l_step_first,&
-                        sdstat, sdtime)
+            call xmctcg(model , mesh, sdcont_defi, sdcont_solv, sdstat,&
+                        sdtime)
         endif
     endif
 !

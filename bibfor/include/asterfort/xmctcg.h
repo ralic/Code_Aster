@@ -18,13 +18,12 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine xmctcg(model , mesh  , sdcont_defi, sdcont_solv, l_step_first,&
-                      sdstat, sdtime)
+    subroutine xmctcg(model , mesh, sdcont_defi, sdcont_solv, sdstat,&
+                      sdtime)
         character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: model
         character(len=24), intent(in) :: sdcont_defi
         character(len=24), intent(in) :: sdcont_solv
-        aster_logical, intent(in) :: l_step_first
         character(len=24), intent(in) :: sdtime
         character(len=24), intent(in) :: sdstat
     end subroutine xmctcg

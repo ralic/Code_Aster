@@ -1,4 +1,4 @@
-subroutine xappar(mesh, model, sdcont_defi, sdcont_solv)
+subroutine xoptin(mesh, model, sdcont_defi, sdcont_solv)
 !
 implicit none
 !
@@ -17,12 +17,7 @@ implicit none
 #include "asterfort/mmgaus.h"
 #include "asterfort/mminfi.h"
 #include "asterfort/mminfl.h"
-#include "asterfort/normev.h"
-#include "asterfort/provec.h"
-#include "asterfort/xcopco.h"
 #include "asterfort/xmcoor.h"
-#include "asterfort/xmrema.h"
-#include "asterfort/xmrept.h"
 #include "asterfort/xmrlst.h"
 #include "asterfort/xpivit.h"
 #include "asterfort/xxmmvd.h"
@@ -53,7 +48,7 @@ implicit none
 !
 ! Contact - Solve
 !
-! XFEM method - Pairing
+! XFEM method - Initial options (*_INIT)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,24 +63,22 @@ implicit none
 !
     integer :: zmesx, ztabf, zxain
     integer :: ifm, niv
-    integer :: i, i_cont_poin, type_inte
-    integer :: model_ndim, nt_elem_slav,  nt_cont_poin, nb_cont_poin
-    integer :: i_facet, i_elem_slav, i_zone, ifamin
+    integer :: i_cont_poin, type_inte, i
+    integer :: model_ndim, nt_elem_slav, nt_cont_poin, nb_cont_poin
+    integer :: i_facet, i_elem_slav, i_zone
     integer :: jcesd(10), jcesv(10), jcesl(10), iad
-    integer :: mmait, amait, nmait, state_slave, stamin
-    integer :: elem_slav_nume, elem_mast_nume
-    integer :: nb_poin_facet, nb_facet
-    real(kind=8) :: geom(3), ksipc1, ksipc2, wpc
-    real(kind=8) :: t1min(3), t2min(3), ximin, yimin
-    real(kind=8) :: jeumin, coor(3), norm(3), noor
-    real(kind=8) :: rrm
+    integer :: group, state_slave
+    integer :: elem_slav_nume
+    integer :: nb_poin_facet, nb_facet, nvit, naret
+    real(kind=8) :: ksipc1, ksipc2, r8dummy
+    real(kind=8) :: rre, coor(3)
     character(len=8) :: elem_type
     character(len=19) :: chs(7)
     character(len=24) :: xfimai, cncte
     character(len=24) :: tabfin, maescx
-    integer :: jtabf, jmaesx, ninter
-    aster_logical :: projin
-    integer :: jfimai, i_crack, ifism, i_poin_facet, numpi
+    integer :: jtabf, jmaesx
+    aster_logical :: l_cont_init, l_gliss
+    integer :: jfimai, i_crack, i_poin_facet, numpi
     integer, pointer :: xfem_cont(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
@@ -93,22 +86,18 @@ implicit none
     call jemarq()
     call infdbg('CONTACT', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> .. Pairing'
+        write (ifm,*) '<CONTACT> . Initial options'
     endif
 !
 ! - Initializations
 !
-    chs(1) = '&&XAPPAR.CHSLO'
-    chs(2) = '&&XAPPAR.CHSAI'
-    chs(3) = '&&XAPPAR.CHSPI'
-    chs(4) = '&&XAPPAR.CHSCF'
-    chs(5) = '&&XAPPAR.CHSGE'
-    chs(6) = '&&XAPPAR.CHSGM'
-    chs(7) = '&&XAPPAR.CHSLT'
-     nt_cont_poin = 0
-    geom(1:3) = 0.d0
-    t1min(1:3) = 0.d0
-    t2min(1:3) = 0.d0
+    chs(1) = '&&XOPTIN.CHSLO'
+    chs(2) = '&&XOPTIN.CHSAI'
+    chs(3) = '&&XOPTIN.CHSPI'
+    chs(4) = '&&XOPTIN.CHSCF'
+    chs(5) = '&&XOPTIN.CHSGE'
+    chs(6) = '&&XOPTIN.CHSGM'
+    chs(7) = '&&XOPTIN.CHSLT'
 !
 ! - Parameters
 !
@@ -155,8 +144,10 @@ implicit none
 !
 ! ----- Parameters
 !
-        type_inte = mminfi(sdcont_defi,'INTEGRATION' ,i_zone )
-        cncte     = zk8(jfimai-1+i_zone)//'.CNCTE'
+        type_inte   =  mminfi(sdcont_defi, 'INTEGRATION'   , i_zone)
+        l_gliss     =  mminfl(sdcont_defi, 'GLISSIERE_ZONE', i_zone)
+        l_cont_init = (mminfi(sdcont_defi, 'CONTACT_INIT'  , i_zone).eq.1)
+        cncte       = zk8(jfimai-1+i_zone)//'.CNCTE'
 !
 ! ----- Current slave element
 !
@@ -174,13 +165,6 @@ implicit none
             if (xfem_cont(1) .le. 2) elem_type='TR3'
             if (xfem_cont(1) .eq. 3) elem_type='TR3'
         endif
-!
-! ----- Number of intersection points
-!
-        call cesexi('C', jcesd(1), jcesl(1), elem_slav_nume, 1,&
-                    i_crack, 1, iad)
-        ASSERT(iad.gt.0)
-        ninter = zi(jcesv(1)-1+iad)
 !
 ! ----- Number of points for each facet
 !
@@ -207,10 +191,6 @@ implicit none
 ! --------- Loop on contact points
 !
             do i_cont_poin = 1, nb_cont_poin
-!
-! ------------- COORDONNEES DANS ELEMENT DE REFERENCE ET POIDS DU POINT DE CONTACT
-! ------------- FAUX POINT D'INTEGRATION (POUR L'ELIMINATION DES DDL EN TROP)
-!
                 if (state_slave .lt. 0) then
                     do i_poin_facet = 1, nb_poin_facet
                         call cesexi('S', jcesd(4), jcesl(4), elem_slav_nume, 1,&
@@ -226,128 +206,71 @@ implicit none
                     ASSERT(.false.)
 130                 continue
                     call mmgaus(elem_type, type_inte, i_poin_facet, ksipc1, ksipc2,&
-                                wpc)
+                                r8dummy)
                 else
                     call mmgaus(elem_type, type_inte, i_cont_poin, ksipc1, ksipc2,&
-                                wpc)
+                                r8dummy)
                 endif
 !
-! ------------- Coordinates of contact point
+! ------------- Local index for slave crack
 !
-                call xcopco(jcesd        , jcesv         , jcesl  , i_crack, elem_type,&
-                            model_ndim   , elem_slav_nume, i_facet, ksipc1 , ksipc2   ,&
-                            nb_poin_facet, geom)
+                zr(jtabf+ztabf*nt_cont_poin+ztabf*(i_cont_poin-1)+33) = i_crack
 !
-! ------------ Get nearest integration point on master side nearest contact point
+! ------------- Coordinates in reference slave element
 !
-                if (state_slave .gt. 0 .and. state_slave .ne. 2) then
-                    call xmrept(jcesd      , jcesv, jcesl      , i_zone, model_ndim,&
-                                sdcont_defi, geom , state_slave, mmait , amait     ,&
-                                nmait)
-                endif
-!
-! ------------- Projection of contact point on nearest master element
-!
-                call xmrema(jcesd         , jcesv      , jcesl      , mesh     , model_ndim    ,&
-                            i_crack       , sdcont_defi, i_zone     , elem_type, mmait         ,&
-                            amait         , nmait      , state_slave, geom     , elem_mast_nume,&
-                            elem_slav_nume, ifamin     , i_facet    , jeumin   , t1min         ,&
-                            t2min         , ximin      , yimin      , projin   , stamin        ,&
-                            ifism)
-!
-! ------------- Save elements index
-!
-                zr(jtabf+ztabf* nt_cont_poin+ztabf*(i_cont_poin-1)+1) = elem_slav_nume
-                zr(jtabf+ztabf* nt_cont_poin+ztabf*(i_cont_poin-1)+2) = elem_mast_nume
-!
-! ------------- Save contact point coordinates
-!
-                zr(jtabf+ztabf* nt_cont_poin+ztabf*(i_cont_poin-1)+3) = ksipc1
-                zr(jtabf+ztabf* nt_cont_poin+ztabf*(i_cont_poin-1)+12) = ksipc2
-!
-! ------------- Local basis at contact point
-!
-                if (model_ndim .eq. 3) then
-                    call provec(t1min, t2min, norm)
-                    call normev(norm, noor)
-                    if (abs(norm(1)) .ne. 1) then
-                        t1min(1) = 1-norm(1)**2
-                        t1min(2) = -norm(1)*norm(2)
-                        t1min(3) = -norm(1)*norm(3)
-                    else
-                        t1min(1) = -norm(2)*norm(1)
-                        t1min(2) = 1-norm(2)**2
-                        t1min(3) = -norm(2)*norm(3)
-                    endif
-                    call provec(norm, t1min, t2min)
-                    call normev(t1min, noor)
-                    call normev(t2min, noor)
-                endif
-                zr(jtabf+ztabf* nt_cont_poin+ztabf*(i_cont_poin-1)+6)  = t1min(1)
-                zr(jtabf+ztabf* nt_cont_poin+ztabf*(i_cont_poin-1)+7)  = t1min(2)
-                zr(jtabf+ztabf* nt_cont_poin+ztabf*(i_cont_poin-1)+8)  = t1min(3)
-                zr(jtabf+ztabf* nt_cont_poin+ztabf*(i_cont_poin-1)+9)  = t2min(1)
-                zr(jtabf+ztabf* nt_cont_poin+ztabf*(i_cont_poin-1)+10) = t2min(2)
-                zr(jtabf+ztabf* nt_cont_poin+ztabf*(i_cont_poin-1)+11) = t2min(3)
-!
-! ------------- Contact zone index for current crack
-!
-                zr(jtabf+ztabf* nt_cont_poin+ztabf*(i_cont_poin-1)+15) = i_zone
-!
-! ------------- Contact point weight
-!
-                zr(jtabf+ztabf* nt_cont_poin+ztabf*(i_cont_poin-1)+16) = wpc
-!
-! ------------- Number of slave intersection points
-!
-                zr(jtabf+ztabf* nt_cont_poin+ztabf*(i_cont_poin-1)+24) = nb_poin_facet
-                zr(jtabf+ztabf* nt_cont_poin+ztabf*(i_cont_poin-1)+14) = ninter
-!
-! ------------- Index of slave facet 
-!
-                zr(jtabf+ztabf* nt_cont_poin+ztabf*(i_cont_poin-1)+25) = i_facet
-!
-! ------------- Number of slave facets
-!
-                zr(jtabf+ztabf* nt_cont_poin+ztabf*(i_cont_poin-1)+26) = nb_facet
-!
-! ------------- Coordinates in master element
-!
-                call xmcoor(jcesd        , jcesv         , jcesl , ifism, model_ndim,&
-                            nb_poin_facet, elem_mast_nume, ifamin, ximin, yimin     ,&
+                call xmcoor(jcesd        , jcesv         , jcesl  , i_crack, model_ndim,&
+                            nb_poin_facet, elem_slav_nume, i_facet, ksipc1 , ksipc2    ,&
                             coor)
-                zr(jtabf+ztabf* nt_cont_poin+ztabf*(i_cont_poin-1)+20) = coor(1)
-                zr(jtabf+ztabf* nt_cont_poin+ztabf*(i_cont_poin-1)+21) = coor(2)
-                zr(jtabf+ztabf* nt_cont_poin+ztabf*(i_cont_poin-1)+23) = coor(3)
+                zr(jtabf+ztabf*nt_cont_poin+ztabf*(i_cont_poin-1)+17) = coor(1)
+                zr(jtabf+ztabf*nt_cont_poin+ztabf*(i_cont_poin-1)+18) = coor(2)
+                zr(jtabf+ztabf*nt_cont_poin+ztabf*(i_cont_poin-1)+19) = coor(3)
 !
-! ------------- State of master element
+! ------------- Compute sqrt(level_set) of slave contact point
 !
-                zr(jtabf+ztabf* nt_cont_poin+ztabf*(i_cont_poin-1)+32) = stamin
+                call xmrlst(jcesd, jcesv, jcesl, mesh, elem_slav_nume,&
+                            coor , rre)
+                zr(jtabf+ztabf*nt_cont_poin+ztabf*(i_cont_poin-1)+30) = rre
 !
-! ------------- Compute sqrt(level_set) of master contact point
+! ------------- Essential integration point
 !
-                call xmrlst(jcesd, jcesv, jcesl, mesh, elem_mast_nume,&
-                            coor , rrm)
-                zr(jtabf+ztabf* nt_cont_poin+ztabf*(i_cont_poin-1)+31) = rrm
-!
-! ------------- Local index of slave crack
-!
-                zr(jtabf+ztabf* nt_cont_poin+ztabf*(i_cont_poin-1)+34) = ifism
-!
-! ------------- Outside projction
-!
-                if (.not. projin) then
-                    zr(jtabf+ztabf* nt_cont_poin+ztabf*(i_cont_poin-1)+22) = 1.d0
+                if (mod(type_inte,10) .eq. 2) then
+                    nvit  = 1
+                    group = 0
+                    naret = 0
                 else
-                    zr(jtabf+ztabf* nt_cont_poin+ztabf*(i_cont_poin-1)+22) = 0.d0
+                    call xpivit(jcesd      , jcesv         , jcesl  , i_crack, cncte ,&
+                                model_ndim , elem_slav_nume, i_facet, ksipc1 , ksipc2,&
+                                nvit       , group         , naret)
+                    if (state_slave .lt. 0) then
+                        nvit = 0
+                    endif
+                endif
+                zr(jtabf+ztabf*nt_cont_poin+ztabf*(i_cont_poin-1)+27) = nvit
+                zr(jtabf+ztabf*nt_cont_poin+ztabf*(i_cont_poin-1)+4)  = group
+                zr(jtabf+ztabf*nt_cont_poin+ztabf*(i_cont_poin-1)+5)  = naret
+!
+! ------------- Initial contact state
+!
+                if (l_cont_init) then
+                    zr(jtabf+ztabf*nt_cont_poin+ztabf*(i_cont_poin-1)+13) = 1.d0
+                    zr(jtabf+ztabf*nt_cont_poin+ztabf*(i_cont_poin-1)+28) = 1.d0
+                else
+                    zr(jtabf+ztabf*nt_cont_poin+ztabf*(i_cont_poin-1)+13) = 0.d0
+                    zr(jtabf+ztabf*nt_cont_poin+ztabf*(i_cont_poin-1)+28) = 0.d0
+                endif
+!
+! ------------- For bilateral contact
+!
+                if (l_gliss) then
+                    zr(jtabf+ztabf*nt_cont_poin+ztabf*(i_cont_poin-1)+29) = 1.d0
+                else
+                    zr(jtabf+ztabf*nt_cont_poin+ztabf*(i_cont_poin-1)+29) = 0.d0
                 endif
             end do
-             nt_cont_poin =  nt_cont_poin + nb_cont_poin
+            nt_cont_poin = nt_cont_poin + nb_cont_poin
         end do
 100     continue
     end do
-    zr(jtabf) =  nt_cont_poin
-    ASSERT( nt_cont_poin.eq.cfdisi(sdcont_defi, 'NTPC'))
 !
 ! - Clean
 !

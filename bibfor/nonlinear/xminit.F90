@@ -12,6 +12,7 @@ implicit none
 #include "asterfort/nmchex.h"
 #include "asterfort/xmapin.h"
 #include "asterfort/xmelem.h"
+#include "asterfort/xoptin.h"
 #include "asterfort/mmbouc.h"
 !
 ! ======================================================================
@@ -36,9 +37,9 @@ implicit none
     character(len=24), intent(in) :: model
     character(len=24), intent(in) :: sdcont_defi
     character(len=24), intent(in) :: sdcont_solv
-    character(len=24), intent(in) :: sdtime
-    character(len=24), intent(in) :: sdstat  
     integer, intent(in) :: nume_inst
+    character(len=24), intent(in) :: sdtime
+    character(len=24), intent(in) :: sdstat
     character(len=19), intent(in) :: hat_valinc(*)
     character(len=19), intent(in) :: sddyna
 !
@@ -62,7 +63,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: l_dyna, l_cont_xfem_gg
+    aster_logical :: l_dyna, l_cont_xfem_gg, l_step_first
     character(len=19) :: sdcont_depgeo, sdcont_deplam
     character(len=19) :: disp_prev    
     character(len=19) :: xseuco, xseucp
@@ -73,6 +74,10 @@ implicit none
     l_dyna         = ndynlo(sddyna,'DYNAMIQUE')
     l_cont_xfem_gg = cfdisl(sdcont_defi,'CONT_XFEM_GG')
     ASSERT(.not.l_dyna)
+!
+! - Using *_INIT options (like SEUIL_INIT)
+!
+    l_step_first = nume_inst .eq. 1
 !
 ! - Get field names in hat-variables
 !
@@ -117,11 +122,17 @@ implicit none
 !
     call mmbouc(sdcont_solv, 'GEOM', 'INCR')
 !
-! - Initializations (pairing and others)
+! - Initial pairing
 !
     if (l_cont_xfem_gg) then
-        call xmapin(mesh  , model , sdcont_defi, sdcont_solv, nume_inst,&
-                    sdtime, sdstat)
+        call xmapin(mesh  , model , sdcont_defi, sdcont_solv, sdtime,&
+                    sdstat)
+    endif
+!
+! - Initial options
+!
+    if (l_cont_xfem_gg.and.l_step_first) then
+        call xoptin(mesh, model, sdcont_defi, sdcont_solv)
     endif
 !
 ! - Create fields

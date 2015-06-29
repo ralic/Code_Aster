@@ -15,11 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+!
 interface
-    subroutine xappar(mesh, model, sdcont_defi, sdcont_solv)
+    subroutine xoptin(mesh, model, sdcont_defi, sdcont_solv)
         character(len=8), intent(in) :: mesh
         character(len=8), intent(in) :: model
         character(len=24), intent(in) :: sdcont_defi
         character(len=24), intent(in) :: sdcont_solv
-    end subroutine xappar
+    end subroutine xoptin
 end interface

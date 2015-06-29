@@ -1,5 +1,5 @@
-subroutine xmapin(mesh  , model , sdcont_defi, sdcont_solv, nume_inst,&
-                  sdtime, sdstat)
+subroutine xmapin(mesh  , model , sdcont_defi, sdcont_solv, sdtime,&
+                  sdstat)
 !
 implicit none
 !          
@@ -30,8 +30,7 @@ implicit none
     character(len=24), intent(in) :: sdcont_defi
     character(len=24), intent(in) :: sdcont_solv
     character(len=24), intent(in) :: sdtime
-    character(len=24), intent(in) :: sdstat  
-    integer, intent(in) :: nume_inst
+    character(len=24), intent(in) :: sdstat
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -47,25 +46,20 @@ implicit none
 ! In  sdcont_solv      : name of contact solving datastructure
 ! In  sdtime           : datastructure for timers
 ! In  sdstat           : datastructure for statistics
-! In  nume_inst        : index of current time step
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: l_cont_allv, l_step_first
+    aster_logical :: l_cont_allv
 !
 ! --------------------------------------------------------------------------------------------------
 !
     l_cont_allv  = cfdisl(sdcont_defi,'ALL_VERIF')
 !
-! - Using *_INIT options (like SEUIL_INIT)
-!
-    l_step_first = nume_inst .eq. 1
-!
 ! - Pairing and initial options
 !
     if (.not.l_cont_allv) then
-        call xmctcg(model , mesh  , sdcont_defi, sdcont_solv, l_step_first,&
-                    sdstat, sdtime)
+        call xmctcg(model , mesh  , sdcont_defi, sdcont_solv, sdstat,&
+                    sdtime)
     endif
 !
 end subroutine

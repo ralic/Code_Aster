@@ -1,5 +1,5 @@
-subroutine xmctcg(model , mesh  , sdcont_defi, sdcont_solv, l_step_first,&
-                  sdstat, sdtime)
+subroutine xmctcg(model , mesh, sdcont_defi, sdcont_solv, sdstat,&
+                  sdtime)
 !
 implicit none
 !
@@ -32,7 +32,6 @@ implicit none
     character(len=24), intent(in) :: model
     character(len=24), intent(in) :: sdcont_defi
     character(len=24), intent(in) :: sdcont_solv
-    aster_logical, intent(in) :: l_step_first
     character(len=24), intent(in) :: sdtime
     character(len=24), intent(in) :: sdstat
 !
@@ -48,7 +47,6 @@ implicit none
 ! In  model            : name of model
 ! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
 ! In  sdcont_solv      : name of contact solving datastructure
-! In  l_step_first     : true if first step time (for *_INIT options)
 ! In  sdtime           : datastructure for timers
 ! In  sdstat           : datastructure for statistics
 !
@@ -76,9 +74,9 @@ implicit none
 !
     call xreacg(model, sdcont_solv)
 !
-! - Pairing and initial options
+! - Pairing
 !
-    call xappar(l_step_first, mesh, model, sdcont_defi, sdcont_solv)
+    call xappar(mesh, model, sdcont_defi, sdcont_solv)
 !
 ! - Geometric loop: end timer
 !

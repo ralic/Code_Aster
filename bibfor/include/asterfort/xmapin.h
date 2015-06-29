@@ -16,14 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xmapin(mesh  , model , sdcont_defi, sdcont_solv, nume_inst,&
-                      sdtime, sdstat)
+    subroutine xmapin(mesh  , model , sdcont_defi, sdcont_solv, sdtime,&
+                      sdstat)
         character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: model    
         character(len=24), intent(in) :: sdcont_defi
         character(len=24), intent(in) :: sdcont_solv
         character(len=24), intent(in) :: sdtime
-        character(len=24), intent(in) :: sdstat  
-        integer, intent(in) :: nume_inst
+        character(len=24), intent(in) :: sdstat
     end subroutine xmapin
 end interface
