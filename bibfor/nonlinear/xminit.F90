@@ -1,5 +1,5 @@
 subroutine xminit(mesh  , model , sdcont_defi, sdcont_solv, nume_inst,&
-                  sdtime, sdstat, sddyna     , hat_valinc , nume_dof)
+                  sdtime, sdstat, sddyna     , hat_valinc )
 !
 implicit none
 !
@@ -11,6 +11,7 @@ implicit none
 #include "asterfort/ndynlo.h"
 #include "asterfort/nmchex.h"
 #include "asterfort/xmapin.h"
+#include "asterfort/xmelem.h"
 #include "asterfort/mmbouc.h"
 !
 ! ======================================================================
@@ -40,7 +41,6 @@ implicit none
     integer, intent(in) :: nume_inst
     character(len=19), intent(in) :: hat_valinc(*)
     character(len=19), intent(in) :: sddyna
-    character(len=24), intent(in) :: nume_dof 
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,11 +56,9 @@ implicit none
 ! In  sdcont_solv      : name of contact solving datastructure
 ! In  nume_inst        : index of current step time
 ! In  hat_valinc       : hat variable for algorithm fields
-! In  nume_dof         : name of numbering object (NUME_DDL)
 ! In  sdtime           : datastructure for timers
 ! In  sdstat           : datastructure for statistics
 ! In  sddyna           : datastructure for dynamic
-! In  nume_dof         : name of numbering object (NUME_DDL)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -115,15 +113,19 @@ implicit none
 !
     call mmbouc(sdcont_solv, 'GEOM', 'INIT')
 !
+! - First geometric loop counter
+!
+    call mmbouc(sdcont_solv, 'GEOM', 'INCR')
+!
 ! - Initializations (pairing and others)
 !
     if (l_cont_xfem_gg) then
         call xmapin(mesh  , model , sdcont_defi, sdcont_solv, nume_inst,&
-                    sdtime, sdstat, nume_dof)
+                    sdtime, sdstat)
     endif
 !
-! - First geometric loop counter
-!    
-    call mmbouc(sdcont_solv, 'GEOM', 'INCR')
+! - Create fields
+!
+    call xmelem(mesh, model, sdcont_defi, sdcont_solv)
 !
 end subroutine

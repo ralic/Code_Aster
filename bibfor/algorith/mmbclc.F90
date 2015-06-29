@@ -11,11 +11,10 @@ subroutine mmbclc(noma, nomo, numedd, iterat, numins,&
 #include "asterfort/copisd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/mmappa.h"
 #include "asterfort/mmchml.h"
 #include "asterfort/mmligr.h"
 #include "asterfort/mmmbca.h"
-#include "asterfort/mreacg.h"
+#include "asterfort/mmctcg.h"
 #include "asterfort/nmchex.h"
 #include "asterfort/nmimci.h"
 #include "asterfort/nmrinc.h"
@@ -76,17 +75,12 @@ subroutine mmbclc(noma, nomo, numedd, iterat, numins,&
 ! ----------------------------------------------------------------------
 !
     aster_logical :: lallv, lnewtc, lnewtg
-    aster_logical :: loptin
     integer :: ctcsta
     character(len=19) :: depgeo, depplu
 !
 ! ----------------------------------------------------------------------
 !
     call jemarq()
-!
-! --- ACTIVATION DES OPTIONS *_INIT
-!
-    loptin = .false.
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
@@ -108,12 +102,8 @@ subroutine mmbclc(noma, nomo, numedd, iterat, numins,&
 !
     if (lnewtg) then
         call copisd('CHAMP_GD', 'V', depplu, depgeo)
-        call nmtime(sdtime, 'INI', 'CONT_GEOM')
-        call nmtime(sdtime, 'RUN', 'CONT_GEOM')
-        call mreacg(noma, resoco)
-        call mmappa(loptin, noma, numedd, defico, resoco)
-        call nmtime(sdtime, 'END', 'CONT_GEOM')
-        call nmrinc(sdstat, 'CONT_GEOM')
+        call mmctcg(noma  , defico, resoco, numedd, sdstat,&
+                    sdtime)
     endif
 !
 ! --- NOUVELLE NUMEROTATION (ELEMENTS TARDIFS DE CONTACT)

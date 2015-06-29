@@ -66,7 +66,7 @@ subroutine nmible(modele, noma  , defico, resoco, fonact,&
 !
     integer :: mmitgo, mmitca, mmitfr
     aster_logical :: lboucf, lboucg, lboucc
-    aster_logical :: lappa, loptin
+    aster_logical :: l_pair, l_step_first
 !
 ! ----------------------------------------------------------------------
 !
@@ -76,15 +76,17 @@ subroutine nmible(modele, noma  , defico, resoco, fonact,&
         goto 999
     endif
 !
-! --- PAS D'ACTIVATION DES OPTIONS *_INIT (FAIT DANS MMAPIN)
+! - Don't *_INIT options (like SEUIL_INIT)
 !
-    loptin = .false.
+    l_step_first = .false.
 !
-! --- PAS D'APPARIEMENT AU PREMIER COUP (FAIT DANS MMAPIN)
+! - No pairing at first iteration (see mminit/xminit)
 !
-    lappa = .true.
+    l_pair = .true.
     call mmbouc(resoco, 'GEOM', 'READ', mmitgo)
-    if (mmitgo .eq. 1) lappa = .false.
+    if (mmitgo .eq. 1) then
+        l_pair = .false.
+    endif
 !
 ! --- INFOS SUR LES BOUCLES
 !
@@ -104,9 +106,9 @@ subroutine nmible(modele, noma  , defico, resoco, fonact,&
 !
         if (lboucg) then
             niveau = 3
-            if (lappa) then
-                call nmctcg(modele, noma, defico, resoco, loptin,&
-                            sdstat, sdtime, numedd)
+            if (l_pair) then
+                call nmctcg(modele, noma  , defico      , resoco, sdstat,&
+                            sdtime, numedd, l_step_first)
             endif
         endif
 !

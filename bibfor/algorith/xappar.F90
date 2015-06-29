@@ -47,7 +47,7 @@ subroutine xappar(loptin, noma, modele, defico, resoco)
     character(len=8) :: noma, modele
     character(len=24) :: defico, resoco
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE XFEM (CONTACT - GRANDS GLISSEMENTS)
 !
@@ -56,8 +56,7 @@ subroutine xappar(loptin, noma, modele, defico, resoco)
 !
 ! TRAVAIL EFFECTUE EN COLLABORATION AVEC I.F.P.
 !
-! ----------------------------------------------------------------------
-!
+! --------------------------------------------------------------------------------------------------
 !
 ! METHODE : POUR CHAQUE POINT DE CONTACT (SUR UNE MAILLE ESCLAVE ET
 ! AVEC UN SCHEMA D'INTEGRATION DONNE), ON RECHERCHE LE NOEUD MAITRE LE
@@ -71,7 +70,7 @@ subroutine xappar(loptin, noma, modele, defico, resoco)
 ! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
 ! IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     integer :: zmesx, ztabf, zxain
     integer :: ifm, niv
@@ -95,15 +94,12 @@ subroutine xappar(loptin, noma, modele, defico, resoco)
     integer :: jfimai, ifiss, ifism, ipc2, numpi
     integer, pointer :: xfem_cont(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-    call infdbg('XFEM', ifm, niv)
-!
-! --- AFFICHAGE
-!
+    call infdbg('CONTACT', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<XFEM> ... APPARIEMENT'
+        write (ifm,*) '<CONTACT> .. Pairing'
     endif
 !
 ! --- RECUPERATION DE QUELQUES DONNEES

@@ -1,6 +1,5 @@
-subroutine mminit(model     , mesh  , sdcont_defi, sdcont_solv, sddyna  ,&
-                  hat_valinc, sdtime, sdstat     , sdnume     , nume_dof,&
-                  nume_inst)
+subroutine mminit(mesh  , sdcont_defi, sdcont_solv, sddyna  , hat_valinc,&
+                  sdtime, sdstat     , sdnume     , nume_dof, nume_inst)
 !
 implicit none
 !
@@ -13,6 +12,7 @@ implicit none
 #include "asterfort/misazl.h"
 #include "asterfort/mm_cycl_init.h"
 #include "asterfort/mmbouc.h"
+#include "asterfort/mmopti.h"
 #include "asterfort/ndynlo.h"
 #include "asterfort/nmchex.h"
 #include "asterfort/mmapin.h"
@@ -36,7 +36,6 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
-    character(len=24), intent(in) :: model
     character(len=24), intent(in) :: sdcont_defi
     character(len=24), intent(in) :: sdcont_solv
     character(len=19), intent(in) :: hat_valinc(*)
@@ -44,7 +43,7 @@ implicit none
     character(len=24), intent(in) :: sdstat
     character(len=19), intent(in) :: sddyna
     character(len=19), intent(in) :: sdnume    
-    character(len=24), intent(in) :: nume_dof   
+    character(len=24), intent(in) :: nume_dof
     integer, intent(in) :: nume_inst
 !
 ! --------------------------------------------------------------------------------------------------
@@ -56,20 +55,19 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  mesh             : name of mesh
-! In  model            : name of model
 ! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
 ! In  sdcont_solv      : name of contact solving datastructure
-! In  nume_inst        : index of current step time
 ! In  hat_valinc       : hat variable for algorithm fields
 ! In  nume_dof         : name of numbering object (NUME_DDL)
 ! In  sdtime           : datastructure for timers
 ! In  sdstat           : datastructure for statistics
 ! In  sddyna           : datastructure for dynamic
 ! In  sdnume           : name of dof positions datastructure
+! In  nume_inst        : index of current step time
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: l_dyna
+    aster_logical :: l_dyna, l_cont_allv, l_step_first
     character(len=19) :: sdcont_depgeo, sdcont_deplam, sdcont_depini
     character(len=19) :: sdcont_vitini, sdcont_accini
     character(len=19) :: disp_prev, acce_curr, vite_curr
@@ -82,14 +80,23 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    l_cont_allv  = cfdisl(sdcont_defi,'ALL_VERIF')
     l_dyna       = ndynlo(sddyna,'DYNAMIQUE')
     ztabf        = cfmmvd('ZTABF')
     zetat        = cfmmvd('ZETAT')
     nb_inte_poin = cfdisi(sdcont_defi,'NTPC' )
 !
+! - Using *_INIT options (like SEUIL_INIT)
+!
+    l_step_first = nume_inst .eq. 1
+!
 ! - Geometric loop counter initialization
 !
     call mmbouc(sdcont_solv, 'GEOM', 'INIT')
+!
+! - First geometric loop counter
+!
+    call mmbouc(sdcont_solv, 'GEOM', 'INCR')
 !
 ! - Get field names in hat-variables
 !
@@ -138,13 +145,15 @@ implicit none
     sdcont_deplam = sdcont_solv(1:14)//'.DEPF'
     call copisd('CHAMP_GD', 'V', disp_prev, sdcont_deplam)
 !
-! - Initializations (pairing and others)
+! - Initial pairing
 !
-    call mmapin(model    , mesh  , sdcont_defi, sdcont_solv, nume_dof,&
-                nume_inst, sdtime, sdstat)
+    call mmapin(mesh  , sdcont_defi, sdcont_solv, nume_dof, sdtime,&
+                sdstat)
 !
-! - First geometric loop counter
-!    
-    call mmbouc(sdcont_solv, 'GEOM', 'INCR')
+! - Initial options
+!
+    if (.not.l_cont_allv.and.l_step_first) then
+        call mmopti(mesh, sdcont_defi, sdcont_solv)
+    endif
 !
 end subroutine

@@ -18,15 +18,9 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine mmopti(loptin,l_auto_seuil, resoco, seuili, ctcini, lgliss,&
-                      iptc, epsint, jeusgn,pres_cont)
-        aster_logical :: loptin,l_auto_seuil
-        character(len=24) :: resoco
-        real(kind=8) :: seuili,pres_cont
-        integer :: ctcini
-        aster_logical :: lgliss
-        integer :: iptc
-        real(kind=8) :: epsint
-        real(kind=8) :: jeusgn
+    subroutine mmopti(mesh, sdcont_defi, sdcont_solv)
+        character(len=8), intent(in) :: mesh
+        character(len=24), intent(in) :: sdcont_defi
+        character(len=24), intent(in) :: sdcont_solv
     end subroutine mmopti
 end interface

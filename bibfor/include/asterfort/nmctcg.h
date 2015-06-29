@@ -18,15 +18,15 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmctcg(modele, noma, defico, resoco, loptin,&
-                      sdstat, sdtime, numedd)
-        character(len=24) :: modele
-        character(len=8) :: noma
-        character(len=24) :: defico
-        character(len=24) :: resoco
-        aster_logical :: loptin
-        character(len=24) :: sdstat
-        character(len=24) :: sdtime
-        character(len=24) :: numedd
+    subroutine nmctcg(model , mesh    , sdcont_defi , sdcont_solv, sdstat,&
+                      sdtime, nume_dof, l_step_first)
+        character(len=8), intent(in) :: mesh
+        character(len=24), intent(in) :: model
+        character(len=24), intent(in) :: sdcont_defi 
+        character(len=24), intent(in) :: sdcont_solv
+        character(len=24), intent(in) :: nume_dof
+        character(len=24), intent(in) :: sdtime
+        character(len=24), intent(in) :: sdstat
+        aster_logical, intent(in) :: l_step_first
     end subroutine nmctcg
 end interface

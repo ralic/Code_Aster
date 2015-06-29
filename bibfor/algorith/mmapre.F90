@@ -1,5 +1,4 @@
-subroutine mmapre(loptin, noma, numedd, defico, resoco,&
-                  sdappa)
+subroutine mmapre(noma, numedd, defico, resoco, sdappa)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,6 +28,7 @@ subroutine mmapre(loptin, noma, numedd, defico, resoco,&
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfnumm.h"
+#include "asterfort/cfmmvd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
@@ -50,7 +50,6 @@ subroutine mmapre(loptin, noma, numedd, defico, resoco,&
 #include "asterfort/nmchex.h"
 #include "asterfort/mmvalp.h"
 #include "blas/ddot.h"
-    aster_logical :: loptin
     character(len=8) :: noma
     character(len=24) :: numedd, defico, resoco
     character(len=19) :: sdappa
@@ -64,7 +63,6 @@ subroutine mmapre(loptin, noma, numedd, defico, resoco,&
 ! ----------------------------------------------------------------------
 !
 !
-! IN  LOPTIN : VAUT .TRUE. SI ACTIVATION DES OPTIONS *_INIT
 ! IN  NOMA   : NOM DU MAILLAGE
 ! IN  SDAPPA : NOM DE LA SD APPARIEMENT
 ! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
@@ -75,26 +73,19 @@ subroutine mmapre(loptin, noma, numedd, defico, resoco,&
     integer :: ifm, niv
     integer :: nzoco, ndimg
     character(len=24) :: tabfin, crnudd
-    character(len=19) :: cnsplu, cnscon
     integer :: jtabf, jcrnud
-    integer :: izone, ip, imae, iptm
+    integer :: izone, ip, imae, iptm, ztabf
     integer :: iptc
     integer :: ntpc, nbpt, nbmae, nptm, neq, nnomae
     real(kind=8) :: tau1m(3), tau2m(3), norm(3)
     real(kind=8) :: ksipr1, ksipr2
-    real(kind=8) :: vectpm(3), jeusgn
-    real(kind=8) :: seuili, epsint
-    real(kind=8) :: armini
-    real(kind=8) :: mlagc(9)
     character(len=8) :: aliase, nommam
-    character(len=19) :: depmoi
     aster_logical :: lveri
     integer :: ibid
     integer :: jdecme
-    integer :: ctcini, typint, typapp, entapp
+    integer :: typint, typapp, entapp
     integer :: posmae, nummae, posmam, nummam
-    real(kind=8) :: lambdc(1)
-    aster_logical :: lappar, lgliss, lexfro,l_auto_seuil
+    aster_logical :: lappar, l_excl_frot, l_node_excl
     integer :: ndexfr
 !
 ! ----------------------------------------------------------------------
@@ -129,42 +120,17 @@ subroutine mmapre(loptin, noma, numedd, defico, resoco,&
     crnudd = resoco(1:14)//'.NUDD'
     call jeveuo(tabfin, 'E', jtabf)
     call jeveuo(crnudd, 'E', jcrnud)
-!
-! --- TOLERANCE POUR LA DETECTION DU CONTACT INITIAL
-!
-    armini = armin(noma)
-    epsint = 1.d-6*armini
+    ztabf = cfmmvd('ZTABF')
 !
 ! --- BOUCLE SUR LES ZONES
 !
-    cnsplu = '&&APINIT.CNSPLU'
-    cnscon = '&&APINIT.CNSCON'
     ip = 1
     do izone = 1, nzoco
 !
 ! ----- INFORMATION SUR LA ZONE
 !
         jdecme = mminfi(defico,'JDECME',izone )
-        nbmae = mminfi(defico,'NBMAE' ,izone )
-        lgliss = mminfl(defico,'GLISSIERE_ZONE' ,izone )
-        l_auto_seuil = mminfl(defico,'SEUIL_AUTO' ,izone )
-
-! MODE_FORCE : L_AUTO_SEUIL = FALSE
-!
-! --- TRANSFORMATION DU CHAMP DEPMOI ISSU DU CALCUL PRECEDENT EN CHAM_NO_S
-!           ET REDUCTION SUR LES LAGRANGES
-!
-! MODE_AUTO  : L_AUTO_SEUIL = TRUE, RECUPERATION DU SEUIL_INIT UTILISATEUR
-        if (l_auto_seuil) then
-            depmoi =  resoco(1:14)//'.INIT'
-            call cnocns(depmoi, 'V', cnsplu)
-            call cnsred(cnsplu, 0, [0], 1, 'LAGS_C',&
-                        'V', cnscon)
-        else
-            seuili = mminfr(defico,'SEUIL_INIT' ,izone )
-            seuili = -abs(seuili)
-        endif
-        ctcini = mminfi(defico,'CONTACT_INIT' ,izone )
+        nbmae  = mminfi(defico,'NBMAE' ,izone )
         typint = mminfi(defico,'INTEGRATION' ,izone )
 !
 ! ----- MODE VERIF: ON SAUTE LES POINTS
@@ -196,13 +162,6 @@ subroutine mmapre(loptin, noma, numedd, defico, resoco,&
 ! ------- NOEUDS EXCLUS PAR SANS_GROUP_NO_FR OU SANS_NOEUD_FR
 !
             call mminfm(posmae, defico, 'NDEXFR', ndexfr)
-
-!
-! ------- MULTIPLICATEURS DE CONTACT SUR LES NOEUDS ESCLAVES
-!
-            if (loptin .and. l_auto_seuil) then
-                call mmextm(defico, cnscon, posmae, mlagc)
-            endif
 !
 ! ------- BOUCLE SUR LES POINTS
 !
@@ -216,17 +175,30 @@ subroutine mmapre(loptin, noma, numedd, defico, resoco,&
                 call apinfr(sdappa, 'APPARI_PROJ_KSI2', ip, ksipr2)
                 call apvect(sdappa, 'APPARI_TAU1', ip, tau1m)
                 call apvect(sdappa, 'APPARI_TAU2', ip, tau2m)
-                call apvect(sdappa, 'APPARI_VECTPM', ip, vectpm)
-!
-! --------- TRAITEMENT DES NOEUDS EXCLUS
-!
-                call mmexcl(resoco, typint, iptc, iptm, ndexfr,&
-                            typapp, lexfro)
 !
 ! --------- APPARIEMENT NODAL INTERDIT !
 !
                 if (typapp .eq. 1) then
                     ASSERT(.false.)
+                endif
+!
+! ------------- Excluded nodes
+!       
+                call mmexcl(typint     , typapp, iptm, ndexfr,&
+                            l_node_excl, l_excl_frot)
+                zr(jtabf+ztabf*(iptc-1)+18) = 0.d0
+                zr(jtabf+ztabf*(iptc-1)+19) = 0.d0
+                if (l_node_excl) then
+                    zr(jtabf+ztabf*(iptc-1)+18) = 1.d0
+                endif
+                if (l_excl_frot) then
+                    zr(jtabf+ztabf*(iptc-1)+19) = ndexfr
+                endif
+!
+! ------------- Excluded nodes => no contact !
+!
+                if (l_node_excl) then
+                    zr(jtabf+ztabf*(iptc-1)+22) = 0.d0
                 endif
 !
 ! --------- NUMEROS DE LA MAILLE MAITRE
@@ -237,27 +209,10 @@ subroutine mmapre(loptin, noma, numedd, defico, resoco,&
 ! --------- SAUVEGARDE APPARIEMENT
 !
                 call mmapma(noma, defico, resoco, ndimg, izone,&
-                            lexfro, typint, aliase, posmae, nummae,&
+                            l_excl_frot, typint, aliase, posmae, nummae,&
                             nnomae, posmam, nummam, ksipr1, ksipr2,&
                             tau1m, tau2m, iptm, iptc, norm,&
                             nommam)
-!
-! --------- JEU SIGNE
-!
-                jeusgn = ddot(ndimg ,norm ,1 ,vectpm,1 )
-
-
-!
-! --------- MULTIPLICATEUR DE LAGRANGE DE CONTACT DU POINT
-!
-                if (l_auto_seuil) &
-                    call mmvalp(ndimg, aliase, nnomae, 1, ksipr1,&
-                            ksipr2, mlagc, lambdc)
-!
-! --------- TRAITEMENT DES OPTIONS
-!
-                call mmopti(loptin,l_auto_seuil, resoco, seuili, ctcini, lgliss,&
-                            iptc, epsint, jeusgn,lambdc(1))
 !
 ! --------- LIAISON DE CONTACT EFFECTIVE
 !
@@ -289,6 +244,6 @@ subroutine mmapre(loptin, noma, numedd, defico, resoco,&
     endif
 !
     call jedema()
-    call detrsd('CHAM_NO_S', cnsplu)
-    call detrsd('CHAM_NO_S', cnscon)
+!    call detrsd('CHAM_NO_S', cnsplu)
+!    call detrsd('CHAM_NO_S', cnscon)
 end subroutine

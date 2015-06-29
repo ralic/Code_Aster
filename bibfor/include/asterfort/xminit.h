@@ -17,7 +17,7 @@
 !
 interface
     subroutine xminit(mesh  , model , sdcont_defi, sdcont_solv, nume_inst,&
-                      sdtime, sdstat, sddyna     , hat_valinc , nume_dof)
+                      sdtime, sdstat, sddyna     , hat_valinc )
         character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: model
         character(len=24), intent(in) :: sdcont_defi
@@ -27,6 +27,5 @@ interface
         integer, intent(in) :: nume_inst
         character(len=19), intent(in) :: hat_valinc(*)
         character(len=19), intent(in) :: sddyna
-        character(len=24), intent(in) :: nume_dof
     end subroutine xminit
 end interface

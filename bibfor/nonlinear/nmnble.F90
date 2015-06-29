@@ -76,8 +76,7 @@ subroutine nmnble(numins, modele, noma, numedd, sdstat,&
     character(len=19) :: depmoi, depplu
     character(len=19) :: depdel, ddepla
     character(len=19) :: vitini, accini, vitplu, accplu
-    aster_logical :: loptin, lallv, leltc, ldyna
-    integer :: mmitgo, mmitfr, mmitca
+    aster_logical :: lallv, leltc, ldyna
     real(kind=8), pointer :: ddepl(:) => null()
     real(kind=8), pointer :: depde(:) => null()
 !
@@ -90,13 +89,6 @@ subroutine nmnble(numins, modele, noma, numedd, sdstat,&
     leltc = isfonc(fonact,'ELT_CONTACT')
     ldyna = ndynlo(sddyna,'DYNAMIQUE')
     if (.not.leltc) goto 999
-!
-! --- ACTIVATION DES OPTIONS *_INIT ?
-!
-    call mmbouc(resoco, 'GEOM', 'READ', mmitgo)
-    call mmbouc(resoco, 'FROT', 'READ', mmitfr)
-    call mmbouc(resoco, 'CONT', 'READ', mmitca)
-    loptin = (numins.le.1) .and. (mmitgo.eq.1) .and. (mmitfr.eq.1) .and. (mmitca.eq.1)
 !
 ! --- INITIALISATIONS
 !
@@ -138,7 +130,7 @@ subroutine nmnble(numins, modele, noma, numedd, sdstat,&
     call nmtime(sdtime, 'INI', 'CTCC_PREP')
     call nmtime(sdtime, 'RUN', 'CTCC_PREP')
     call nmctcl(numins, modele, noma, defico, resoco,&
-                sddyna, sddisc, loptin)
+                sddyna, sddisc)
     call nmtime(sdtime, 'END', 'CTCC_PREP')
     call nmrinc(sdstat, 'CTCC_PREP')
 !

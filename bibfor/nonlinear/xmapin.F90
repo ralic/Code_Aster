@@ -1,11 +1,11 @@
 subroutine xmapin(mesh  , model , sdcont_defi, sdcont_solv, nume_inst,&
-                  sdtime, sdstat, nume_dof)
+                  sdtime, sdstat)
 !
 implicit none
 !          
 #include "asterf_types.h"
 #include "asterfort/cfdisl.h"
-#include "asterfort/nmctcg.h"                 
+#include "asterfort/xmctcg.h"                 
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,13 +32,12 @@ implicit none
     character(len=24), intent(in) :: sdtime
     character(len=24), intent(in) :: sdstat  
     integer, intent(in) :: nume_inst
-    character(len=24), intent(in) :: nume_dof 
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Contact - Solve
 !
-! XFEM (not HPP) method - Initializations (pairing and others)
+! XFEM (not HPP) method - Initial pairing and initial options
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,7 +48,6 @@ implicit none
 ! In  sdtime           : datastructure for timers
 ! In  sdstat           : datastructure for statistics
 ! In  nume_inst        : index of current time step
-! In  nume_dof         : name of numbering object (NUME_DDL)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -63,11 +61,11 @@ implicit none
 !
     l_step_first = nume_inst .eq. 1
 !
-! - Initializations (pairing and others)
+! - Pairing and initial options
 !
     if (.not.l_cont_allv) then
-        call nmctcg(model , mesh  , sdcont_defi, sdcont_solv, l_step_first,&
-                    sdstat, sdtime, nume_dof)
+        call xmctcg(model , mesh  , sdcont_defi, sdcont_solv, l_step_first,&
+                    sdstat, sdtime)
     endif
 !
 end subroutine

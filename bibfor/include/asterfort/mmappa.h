@@ -18,11 +18,10 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine mmappa(loptin, noma, numedd, defico, resoco)
-        aster_logical :: loptin
-        character(len=8) :: noma
-        character(len=24) :: numedd
-        character(len=24) :: defico
-        character(len=24) :: resoco
+    subroutine mmappa(mesh, nume_dof, sdcont_defi, sdcont_solv)
+        character(len=8), intent(in) :: mesh
+        character(len=24), intent(in) :: nume_dof
+        character(len=24), intent(in) :: sdcont_defi 
+        character(len=24), intent(in) :: sdcont_solv
     end subroutine mmappa
 end interface

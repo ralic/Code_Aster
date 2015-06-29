@@ -1,11 +1,11 @@
-subroutine mmapin(model    , mesh  , sdcont_defi, sdcont_solv, nume_dof,&
-                  nume_inst, sdtime, sdstat)
+subroutine mmapin(mesh  , sdcont_defi, sdcont_solv, nume_dof, sdtime,&
+                  sdstat)
 !
 implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/cfdisl.h"
-#include "asterfort/nmctcg.h"
+#include "asterfort/mmctcg.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,48 +26,40 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
-    character(len=24), intent(in) :: model
     character(len=24), intent(in) :: sdcont_defi
     character(len=24), intent(in) :: sdcont_solv
     character(len=24), intent(in) :: sdtime
     character(len=24), intent(in) :: sdstat    
-    character(len=24), intent(in) :: nume_dof   
-    integer, intent(in) :: nume_inst
+    character(len=24), intent(in) :: nume_dof
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Contact - Solve
 !
-! Continue method - Initializations (pairing and others)
+! Continue method - Initial pairing
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  mesh             : name of mesh
-! In  model            : name of model
 ! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
 ! In  sdcont_solv      : name of contact solving datastructure
 ! In  nume_dof         : name of numbering object (NUME_DDL)
 ! In  sdtime           : datastructure for timers
 ! In  sdstat           : datastructure for statistics
-! In  nume_inst        : index of current time step
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: l_cont_allv, l_step_first
+    aster_logical :: l_cont_allv
 !
 ! --------------------------------------------------------------------------------------------------
 !
     l_cont_allv  = cfdisl(sdcont_defi,'ALL_VERIF')
 !
-! - Using *_INIT options (like SEUIL_INIT)
-!
-    l_step_first = nume_inst .eq. 1
-!
-! - Initializations (pairing and others)
+! - Geometric actualisation and pairing 
 !
     if (.not.l_cont_allv) then
-        call nmctcg(model , mesh  , sdcont_defi, sdcont_solv, l_step_first,&
-                    sdstat, sdtime, nume_dof)
+        call mmctcg(mesh  , sdcont_defi, sdcont_solv, nume_dof, sdstat,&
+                    sdtime)
     endif
 !
 end subroutine

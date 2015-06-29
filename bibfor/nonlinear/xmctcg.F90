@@ -1,14 +1,14 @@
-subroutine cont_init(mesh     , model         , sdcont_defi, sdcont_solv, nume_inst,&
-                     sdtime   , sdstat        , sddyna     , hat_valinc , sdnume   ,&
-                     nume_dof , list_func_acti)
+subroutine xmctcg(model , mesh  , sdcont_defi, sdcont_solv, l_step_first,&
+                  sdstat, sdtime)
 !
 implicit none
 !
-#include "asterfort/cfdisl.h"
-#include "asterfort/isfonc.h"
-#include "asterfort/xminit.h"
-#include "asterfort/mminit.h"
-#include "asterfort/cfinit.h"
+#include "asterf_types.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/xappar.h"
+#include "asterfort/xreacg.h"
+#include "asterfort/nmrinc.h"
+#include "asterfort/nmtime.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,20 +32,15 @@ implicit none
     character(len=24), intent(in) :: model
     character(len=24), intent(in) :: sdcont_defi
     character(len=24), intent(in) :: sdcont_solv
+    aster_logical, intent(in) :: l_step_first
     character(len=24), intent(in) :: sdtime
-    character(len=24), intent(in) :: sdstat  
-    integer, intent(in) :: nume_inst
-    character(len=19), intent(in) :: hat_valinc(*)
-    character(len=19), intent(in) :: sddyna
-    integer, intent(in) :: list_func_acti(*)
-    character(len=19), intent(in) :: sdnume
-    character(len=24), intent(in) :: nume_dof    
+    character(len=24), intent(in) :: sdstat
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Contact - Solve
 !
-! All methods - Initializations for current time step
+! XFEM method - Geometric loop: geometric actualisation and pairing 
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,47 +48,40 @@ implicit none
 ! In  model            : name of model
 ! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
 ! In  sdcont_solv      : name of contact solving datastructure
-! In  nume_inst        : index of current step time
-! In  hat_valinc       : hat variable for algorithm fields
-! In  nume_dof         : name of numbering object (NUME_DDL)
+! In  l_step_first     : true if first step time (for *_INIT options)
 ! In  sdtime           : datastructure for timers
 ! In  sdstat           : datastructure for statistics
-! In  sddyna           : datastructure for dynamic
-! In  sdnume           : name of dof positions datastructure
-! In  list_func_acti   : list of active functionnalities
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: l_cont_disc, l_cont_allv, l_cont_cont, l_cont_xfem
+    integer :: ifm, niv
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_cont_disc = isfonc(list_func_acti,'CONT_DISCRET')
-    l_cont_cont = isfonc(list_func_acti,'CONT_CONTINU')
-    l_cont_xfem = isfonc(list_func_acti,'CONT_XFEM')
-    l_cont_allv = cfdisl(sdcont_defi,'ALL_VERIF')
-!    
-    if (.not.l_cont_allv) then
-!
-! ----- For discrete contact
-!
-        if (l_cont_disc) then
-            call cfinit(sdcont_defi, sdcont_solv, nume_inst)
-        endif
-!
-! ----- For continue contact
-!
-        if (l_cont_cont) then
-            call mminit(mesh  , sdcont_defi, sdcont_solv, sddyna  , hat_valinc,&
-                        sdtime, sdstat     , sdnume     , nume_dof, nume_inst)
-        endif
-!
-! ----- For XFEM contact
-!
-        if (l_cont_xfem) then
-            call xminit(mesh  , model , sdcont_defi, sdcont_solv, nume_inst,&
-                        sdtime, sdstat, sddyna     , hat_valinc )
-        endif   
+    call infdbg('CONTACT', ifm, niv)
+    if (niv .ge. 2) then
+        write (ifm,*) '<CONTACT> . Geometric actualisation and pairing'
     endif
+!
+! - Geometric loop: new geometric iteration for statistics
+!
+    call nmrinc(sdstat, 'CONT_GEOM')
+!
+! - Geometric loop: begin timer
+!
+    call nmtime(sdtime, 'INI', 'CONT_GEOM')
+    call nmtime(sdtime, 'RUN', 'CONT_GEOM')
+!
+! - Geometric actualisation
+!
+    call xreacg(model, sdcont_solv)
+!
+! - Pairing and initial options
+!
+    call xappar(l_step_first, mesh, model, sdcont_defi, sdcont_solv)
+!
+! - Geometric loop: end timer
+!
+    call nmtime(sdtime, 'END', 'CONT_GEOM')
 !
 end subroutine

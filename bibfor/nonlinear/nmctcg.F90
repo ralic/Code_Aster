@@ -1,5 +1,13 @@
-subroutine nmctcg(modele, noma, defico, resoco, loptin,&
-                  sdstat, sdtime, numedd)
+subroutine nmctcg(model , mesh    , sdcont_defi , sdcont_solv, sdstat,&
+                  sdtime, nume_dof, l_step_first)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/xmctcg.h"
+#include "asterfort/mmctcg.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,80 +27,56 @@ subroutine nmctcg(modele, noma, defico, resoco, loptin,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/mmappa.h"
-#include "asterfort/mreacg.h"
-#include "asterfort/nmrinc.h"
-#include "asterfort/nmtime.h"
-#include "asterfort/xappar.h"
-#include "asterfort/xreacg.h"
-    character(len=8) :: noma
-    character(len=24) :: modele
-    character(len=24) :: defico, resoco
-    character(len=24) :: sdstat, sdtime
-    character(len=24) :: numedd
-    aster_logical :: loptin
+    character(len=8), intent(in) :: mesh
+    character(len=24), intent(in) :: model
+    character(len=24), intent(in) :: sdcont_defi 
+    character(len=24), intent(in) :: sdcont_solv
+    character(len=24), intent(in) :: nume_dof
+    character(len=24), intent(in) :: sdtime
+    character(len=24), intent(in) :: sdstat
+    aster_logical, intent(in) :: l_step_first
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (ALGO - BOUCLE CONTACT)
+! Contact - Solve
 !
-! BOUCLE DE POINT FIXE GEOMETRIQUE - APPARIEMENT
+! Continue/XFEM method - Geometric loop: geometric actualisation and pairing 
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  mesh             : name of mesh
+! In  model            : name of model
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  sdcont_solv      : name of contact solving datastructure
+! In  nume_dof         : name of numbering object (NUME_DDL)
+! In  sdtime           : datastructure for timers
+! In  sdstat           : datastructure for statistics
+! In  l_step_first     : true if first step time (for *_INIT options)
 !
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  MODELE : NOM DU MODELE
-! IN  LOPTIN : VAUT .TRUE. SI ACTIVATION DES OPTIONS *_INIT
-! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
-! IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
-! IN  NUMEDD : NOM DU NUME_DDL
-! IN  SDTIME : SD TIMER
-! IN  SDSTAT : SD STATISTIQUES
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+    integer :: cont_form
+    aster_logical :: l_cont_allv
 !
-    integer :: ifm, niv
-    character(len=8) :: nomo
-    integer :: iform
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+
 !
-    call infdbg('MECANONLINE', ifm, niv)
+! - Contact parameters
 !
-! --- INITIALISATIONS
+    cont_form   = cfdisi(sdcont_defi,'FORMULATION')
+    l_cont_allv = cfdisl(sdcont_defi,'ALL_VERIF')
 !
-    nomo = modele(1:8)
+! - Geometric loop: geometric actualisation and pairing
 !
-! --- TYPE DE CONTACT
-!
-    iform = cfdisi(defico,'FORMULATION')
-    if (iform .eq. 1) goto 99
-!
-! --- AFFICHAGE
-!
-    if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> BOUCLE DE REACTUALISATION GEOMETRIQUE'
+    if (.not.l_cont_allv) then
+        if (cont_form .eq. 2) then
+            call mmctcg(mesh  , sdcont_defi, sdcont_solv, nume_dof, sdstat,&
+                        sdtime)
+        elseif (cont_form .eq. 3) then
+            call xmctcg(model, mesh, sdcont_defi, sdcont_solv, l_step_first,&
+                        sdstat, sdtime)
+        endif
     endif
-!
-! --- REACTUALISATION DE LA GEOMETRIE ET APPARIEMENT
-!
-    call nmtime(sdtime, 'INI', 'CONT_GEOM')
-    call nmtime(sdtime, 'RUN', 'CONT_GEOM')
-    if (iform .eq. 3) then
-        call xreacg(nomo, resoco)
-        call xappar(loptin, noma, nomo, defico, resoco)
-    else if (iform.eq.2) then
-        call mreacg(noma, resoco)
-        call mmappa(loptin, noma, numedd, defico, resoco)
-    endif
-    call nmtime(sdtime, 'END', 'CONT_GEOM')
-    call nmrinc(sdstat, 'CONT_GEOM')
-!
- 99 continue
 !
 end subroutine

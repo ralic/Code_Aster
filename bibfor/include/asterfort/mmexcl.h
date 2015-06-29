@@ -18,14 +18,13 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine mmexcl(resoco, typint, iptc, iptm, ndexfr,&
-                      typapp, lexfro)
-        character(len=24) :: resoco
-        integer :: typint
-        integer :: iptc
-        integer :: iptm
-        integer :: ndexfr
-        integer :: typapp
-        aster_logical :: lexfro
+    subroutine mmexcl(type_inte  , pair_type  , i_poin_elem, ndexfr,&
+                      l_node_excl, l_excl_frot)
+        integer, intent(in) :: type_inte
+        integer, intent(in) :: pair_type
+        integer, intent(in) :: i_poin_elem
+        integer, intent(in) :: ndexfr
+        aster_logical, intent(out) :: l_node_excl
+        aster_logical, intent(out) :: l_excl_frot
     end subroutine mmexcl
 end interface

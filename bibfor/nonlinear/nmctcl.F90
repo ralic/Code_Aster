@@ -1,5 +1,5 @@
 subroutine nmctcl(numins, modele, noma, defico, resoco,&
-                  sddyna, sddisc, loptin)
+                  sddyna, sddisc)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,9 +30,7 @@ subroutine nmctcl(numins, modele, noma, defico, resoco,&
 #include "asterfort/mmchml.h"
 #include "asterfort/mmligr.h"
 #include "asterfort/xmcart.h"
-#include "asterfort/xmelem.h"
 #include "asterfort/xmligr.h"
-    aster_logical :: loptin
     character(len=8) :: noma
     character(len=24) :: modele
     character(len=24) :: defico, resoco
@@ -72,8 +70,7 @@ subroutine nmctcl(numins, modele, noma, defico, resoco,&
 ! --- AFFICHAGE
 !
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> CREATION ET INITIALISATION'//&
-        ' DES OBJETS POUR LE CONTACT'
+        write (ifm,*) '<MECANONLINE> CREATION ET INITIALISATION DES OBJETS POUR LE CONTACT'
     endif
 !
 ! --- TYPE DE CONTACT
@@ -84,9 +81,6 @@ subroutine nmctcl(numins, modele, noma, defico, resoco,&
     nomo = modele(1:8)
 !
     if (lxfcm) then
-        if (loptin) then
-            call xmelem(noma, nomo, defico, resoco)
-        endif
         if (ltfcm) then
             call xmligr(noma, nomo, resoco)
             call xmcart(noma, defico, nomo, resoco)
@@ -98,7 +92,6 @@ subroutine nmctcl(numins, modele, noma, defico, resoco,&
     else
         ASSERT(.false.)
     endif
-!
 !
     call jedema()
 end subroutine

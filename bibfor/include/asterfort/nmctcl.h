@@ -19,7 +19,7 @@
 !
 interface
     subroutine nmctcl(numins, modele, noma, defico, resoco,&
-                      sddyna, sddisc, loptin)
+                      sddyna, sddisc)
         integer :: numins
         character(len=24) :: modele
         character(len=8) :: noma
@@ -27,6 +27,5 @@ interface
         character(len=24) :: resoco
         character(len=19) :: sddyna
         character(len=19) :: sddisc
-        aster_logical :: loptin
     end subroutine nmctcl
 end interface

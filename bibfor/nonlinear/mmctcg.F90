@@ -1,15 +1,17 @@
-subroutine mmappa(mesh, nume_dof, sdcont_defi, sdcont_solv)
+subroutine mmctcg(mesh  , sdcont_defi, sdcont_solv, nume_dof, sdstat,&
+                  sdtime)
 !
 implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/apcalc.h"
 #include "asterfort/infdbg.h"
-#include "asterfort/mmapre.h"
-#include "asterfort/mmpoin.h"
+#include "asterfort/mmappa.h"
+#include "asterfort/mreacg.h"
+#include "asterfort/nmrinc.h"
+#include "asterfort/nmtime.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -27,54 +29,57 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
-    character(len=24), intent(in) :: nume_dof
     character(len=24), intent(in) :: sdcont_defi 
     character(len=24), intent(in) :: sdcont_solv
+    character(len=24), intent(in) :: nume_dof
+    character(len=24), intent(in) :: sdtime
+    character(len=24), intent(in) :: sdstat
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Contact - Solve
 !
-! Continue method - Pairing 
+! Continue method - Geometric loop: geometric actualisation and pairing 
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  mesh             : name of mesh
-! In  nume_dof         : name of numbering object (NUME_DDL)
 ! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
 ! In  sdcont_solv      : name of contact solving datastructure
+! In  nume_dof         : name of numbering object (NUME_DDL)
+! In  sdtime           : datastructure for timers
+! In  sdstat           : datastructure for statistics
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=19) :: sdappa
-    character(len=19) :: newgeo
     integer :: ifm, niv
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call infdbg('CONTACT', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> .. Pairing'
+        write (ifm,*) '<CONTACT> . Geometric actualisation and pairing'
     endif
 !
-! - Pairing datastructure
+! - Geometric loop: new geometric iteration for statistics
 !
-    sdappa = sdcont_solv(1:14)//'.APPA'
+    call nmrinc(sdstat, 'CONT_GEOM')
 !
-! - New geometry name
+! - Geometric loop: begin timer
 !
-    newgeo = sdcont_solv(1:14)//'.NEWG'
+    call nmtime(sdtime, 'INI', 'CONT_GEOM')
+    call nmtime(sdtime, 'RUN', 'CONT_GEOM')
 !
-! - Set pairing datastructure
+! - Geometric actualisation
 !
-    call mmpoin(mesh, sdcont_defi, newgeo, sdappa)
+    call mreacg(mesh, sdcont_solv)
 !
 ! - Pairing
 !
-    call apcalc(sdappa)
+    call mmappa(mesh, nume_dof, sdcont_defi, sdcont_solv)
 !
-! - Save pairing in contact datastructures
+! - Geometric loop: end timer
 !
-    call mmapre(mesh, nume_dof, sdcont_defi, sdcont_solv, sdappa)
+    call nmtime(sdtime, 'END', 'CONT_GEOM')
 !
 end subroutine

@@ -18,9 +18,7 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine mmapre(loptin, noma, numedd, defico, resoco,&
-                      sdappa)
-        aster_logical :: loptin
+    subroutine mmapre(noma, numedd, defico, resoco, sdappa)
         character(len=8) :: noma
         character(len=24) :: numedd
         character(len=24) :: defico

@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -15,15 +15,16 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
-    subroutine xmapin(mesh  , model , sdcont_defi, sdcont_solv, nume_inst,&
-                      sdtime, sdstat)
+    subroutine mmctcg(mesh  , sdcont_defi, sdcont_solv, nume_dof, sdstat,&
+                      sdtime)
         character(len=8), intent(in) :: mesh
-        character(len=24), intent(in) :: model    
-        character(len=24), intent(in) :: sdcont_defi
+        character(len=24), intent(in) :: sdcont_defi 
         character(len=24), intent(in) :: sdcont_solv
+        character(len=24), intent(in) :: nume_dof
         character(len=24), intent(in) :: sdtime
-        character(len=24), intent(in) :: sdstat  
-        integer, intent(in) :: nume_inst
-    end subroutine xmapin
+        character(len=24), intent(in) :: sdstat
+    end subroutine mmctcg
 end interface

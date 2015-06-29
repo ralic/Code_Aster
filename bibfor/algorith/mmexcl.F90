@@ -1,5 +1,11 @@
-subroutine mmexcl(resoco, typint, iptc, iptm, ndexfr,&
-                  typapp, lexfro)
+subroutine mmexcl(type_inte  , pair_type  , i_poin_elem, ndexfr,&
+                  l_node_excl, l_excl_frot)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/isdeco.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,114 +25,74 @@ subroutine mmexcl(resoco, typint, iptc, iptm, ndexfr,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/cfmmvd.h"
-#include "asterfort/isdeco.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-    character(len=24) :: resoco
-    integer :: typint
-    integer :: ndexfr
-    integer :: iptc, iptm
-    integer :: typapp
-    aster_logical :: lexfro
+    integer, intent(in) :: type_inte
+    integer, intent(in) :: pair_type
+    integer, intent(in) :: i_poin_elem
+    integer, intent(in) :: ndexfr
+    aster_logical, intent(out) :: l_node_excl
+    aster_logical, intent(out) :: l_excl_frot
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (METHODE CONTINUE - APPARIEMENT)
+! Contact - Solve
 !
-! REMPLIT LA SD APPARIEMENT POUR LES CAS D'EXCLUSION
+! Continue method - Get informations for excluded contact point
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  type_inte        : type of integration scheme
+! In  pair_type        : type of pairing
+! In  i_poin_elem      : index of point in the element
+! In  ndexfr           : coded integer for friction nodes
+! Out l_node_excl      : .true. if contact point is excluded
+! Out l_excl_frot      : .true. if contact point is excluded for friction
 !
-! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
-! IN  TYPINT : TYPE D'INTEGRATION
-! IN  TYPAPP : TYPE D'APPARIEMENT
-!                -1 EXCLU - SANS_NOEUD
-!                -2 EXCLU - TOLE_APPA
-!                -3 EXCLU - TOLE_PROJ_EXT
-!                 1 APPARIEMENT MAIT/ESCL
-!                 2 APPARIEMENT NODAL
-! IN  IPTM   : NUMERO DU POINT D'INTEGRATION DANS LA MAILLE
-! IN  IPTC   : NUMERO DE LA LIAISON DE CONTACT
-! IN  NDEXFR : ENTIER CODE POUR LES NOEUDS INTERDITS DANS
-!              SANS_GROUP_NO_FR OU SANS_NOEUD_FR
-! OUT LEXFRO : .TRUE. SI LE POINT D'INTEGRATION DOIT ETRE EXCLUS DU
-!                     FROTTEMENT
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
-!
-    integer :: ztabf
-    character(len=24) :: tabfin
-    integer :: jtabf
     integer :: lnexfr(9)
-    aster_logical :: prtole, projin
+    aster_logical :: l_tole_appa, l_tole_exte
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
+    l_tole_appa = .true.
+    l_tole_exte = .true.
+    l_node_excl = .false.
+    l_excl_frot = .false.
 !
-! --- ACCES SD CONTACT
+! - From pairing
 !
-    tabfin = resoco(1:14)//'.TABFIN'
-    call jeveuo(tabfin, 'E', jtabf)
-!
-    ztabf = cfmmvd('ZTABF')
-!
-! --- INITIALISATIONS
-!
-    prtole = .true.
-    projin = .true.
-!
-! --- TRAITEMENT DES NOEUDS EXCLUS
-!
-    if (typapp .eq. -2) then
-        prtole = .false.
-    else if (typapp.eq.-3) then
-        projin = .false.
+    if (pair_type .eq. -2) then
+        l_tole_appa = .false.
+    else if (pair_type.eq.-3) then
+        l_tole_exte = .false.
     endif
 !
-! --- PAS DE NOEUDS EXCLU
+! - SANS_GROUP_NO nodes
 !
-    zr(jtabf+ztabf*(iptc-1)+18) = 0.d0
-!
-! --- NOEUD EXCLUS PAR SANS_GROUP_NO (TYPAPP=-1)
-!
-    if (typapp .eq. -1) then
-        ASSERT(typint.eq.1)
-        zr(jtabf+ztabf*(iptc-1)+18) = 1.d0
+    if (pair_type .eq. -1) then
+        ASSERT(type_inte.eq.1)
+        l_node_excl = .true.
     endif
 !
-! --- POINTS DE CONTACT EXCLUS PAR TOLE_APPA
+! - TOLE_APPA projection
 !
-    if (.not.prtole) then
-        zr(jtabf+ztabf*(iptc-1)+18) = 1.d0
+    if (.not.l_tole_appa) then
+        l_node_excl = .true.
     endif
 !
-! --- POINTS DE CONTACT EXCLUS PAR PROJECTION HORS ZONE
+! - TOLE_EXTE projection
 !
-    if (.not. projin) then
-        zr(jtabf+ztabf*(iptc-1)+18) = 1.d0
+    if (.not. l_tole_exte) then
+        l_node_excl = .true.
     endif
 !
-! --- NOEUDS EXCLUS PAR SANS_GROUP_NO_FR
+! - Excluded for friction
 !
-    lexfro = .false.
-    zr(jtabf+ztabf*(iptc-1)+19) = 0.d0
-!     -- SEULS LES 9 PREMIERS NOEUDS EXISTENT DANS LA MAILLE
-    if (iptm .le. 9) then
+    if (i_poin_elem .le. 9) then
         call isdeco([ndexfr], lnexfr, 9)
-        if (lnexfr(iptm) .eq. 1) then
-            lexfro = .true.
-            zr(jtabf+ztabf*(iptc-1)+19) = ndexfr
+        if (lnexfr(i_poin_elem) .eq. 1) then
+            l_excl_frot = .true.
         endif
     endif
-!
-    call jedema()
 !
 end subroutine
