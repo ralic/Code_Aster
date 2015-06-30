@@ -1,5 +1,5 @@
 subroutine nmctcg(model , mesh    , sdcont_defi , sdcont_solv, sdstat,&
-                  sdtime, nume_dof, l_step_first)
+                  sdtime, nume_dof)
 !
 implicit none
 !
@@ -34,7 +34,6 @@ implicit none
     character(len=24), intent(in) :: nume_dof
     character(len=24), intent(in) :: sdtime
     character(len=24), intent(in) :: sdstat
-    aster_logical, intent(in) :: l_step_first
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,7 +50,6 @@ implicit none
 ! In  nume_dof         : name of numbering object (NUME_DDL)
 ! In  sdtime           : datastructure for timers
 ! In  sdstat           : datastructure for statistics
-! In  l_step_first     : true if first step time (for *_INIT options)
 !
 ! --------------------------------------------------------------------------------------------------
 !

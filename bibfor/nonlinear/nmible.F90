@@ -1,5 +1,13 @@
-subroutine nmible(modele, noma  , defico, resoco, fonact,&
-                  niveau, numedd, sdstat, sdtime, sdimpr)
+subroutine nmible(cont_loop     , model   , mesh  , sdcont_defi, sdcont_solv,&
+                  list_func_acti, nume_dof, sdstat, sdtime     , sdimpr)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/mmbouc.h"
+#include "asterfort/nmctcg.h"
+#include "asterfort/nmimci.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,137 +27,103 @@ subroutine nmible(modele, noma  , defico, resoco, fonact,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/mmbouc.h"
-#include "asterfort/nmctcg.h"
-#include "asterfort/nmimci.h"
-    integer :: niveau
-    character(len=8) :: noma
-    character(len=24) :: defico, resoco
-    character(len=24) :: sdstat, sdtime, sdimpr
-    character(len=24) :: modele, numedd
-    integer :: fonact(*)
+    integer, intent(inout) :: cont_loop
+    character(len=24), intent(in) :: model
+    character(len=8), intent(in) :: mesh
+    character(len=24), intent(in) :: sdcont_defi
+    character(len=24), intent(in) :: sdcont_solv
+    integer, intent(in):: list_func_acti(*)
+    character(len=24), intent(in) :: nume_dof
+    character(len=24), intent(in) :: sdstat
+    character(len=24), intent(in) :: sdtime
+    character(len=24), intent(in) :: sdimpr
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (ALGORITHME)
+! MECA_NON_LINE - Algo
 !
-! GESTION DEBUT DE BOUCLE POINTS FIXES
+! Contact loop management - BEGIN
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! IO  cont_loop        : level of loop for contact (see nmtble.F90)
+!                        0 - Not use (not cotnact)
+!                        1 - Loop for contact status
+!                        2 - Loop for friction triggers
+!                        3 - Loop for geometry
+! In  model            : name of model
+! In  mesh             : name of mesh
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  sdcont_solv      : name of contact solving datastructure
+! In  list_func_acti   : list of active functionnalities
+! In  nume_dof         : name of numbering object (NUME_DDL)
+! In  sdstat           : datastructure for statistics
+! In  sdtime           : datastructure for timers
+! In  sdimpr           : datastructure for print informations
 !
-! LES ITERATIONS ONT LIEU ENTRE CETTE ROUTINE ET SA COUSINE
-! (NMTBLE) QUI COMMUNIQUENT PAR LA VARIABLE NIVEAU
+! --------------------------------------------------------------------------------------------------
 !
-! I/O NIVEAU : INDICATEUR D'UTILISATION DE LA BOUCLE DE POINT FIXE
-!                  0     ON N'UTILISE PAS CETTE BOUCLE
-!                  3     BOUCLE GEOMETRIE
-!                  2     BOUCLE SEUILS DE FROTTEMENT
-!                  1     BOUCLE CONTRAINTES ACTIVES
-! IN  MODELE : NOM DU MODELE
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  FONACT : FONCTIONNALITES ACTIVEES
-! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
-! IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
-! IN  SDTIME : SD TIMER
-! IN  SDSTAT : SD STATISTIQUES
-! IN  SDIMPR : SD AFFICHAGE
-! IN  NUMEDD : NOM DU NUME_DDL
+    integer :: i_loop_geom, i_loop_cont, i_loop_frot
+    aster_logical :: l_loop_frot, l_loop_geom, l_loop_cont
+    aster_logical :: l_pair
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    integer :: mmitgo, mmitca, mmitfr
-    aster_logical :: lboucf, lboucg, lboucc
-    aster_logical :: l_pair, l_step_first
-!
-! ----------------------------------------------------------------------
-!
-    call jemarq()
-!
-    if (niveau .eq. 0) then
+    if (cont_loop .eq. 0) then
         goto 999
     endif
 !
-! - Don't *_INIT options (like SEUIL_INIT)
+! - Print geometric loop iteration
 !
-    l_step_first = .false.
+    call mmbouc(sdcont_solv, 'GEOM', 'READ', i_loop_geom)
+    call nmimci(sdimpr, 'BOUC_GEOM', i_loop_geom, .true._1)
 !
 ! - No pairing at first iteration (see mminit/xminit)
 !
-    l_pair = .true.
-    call mmbouc(resoco, 'GEOM', 'READ', mmitgo)
-    if (mmitgo .eq. 1) then
-        l_pair = .false.
-    endif
+    l_pair = (i_loop_geom .gt. 1)
 !
-! --- INFOS SUR LES BOUCLES
+! - Contact loops
 !
-    lboucf = isfonc(fonact,'BOUCLE_EXT_FROT')
-    lboucg = isfonc(fonact,'BOUCLE_EXT_GEOM')
-    lboucc = isfonc(fonact,'BOUCLE_EXT_CONT')
+    l_loop_frot = isfonc(list_func_acti, 'BOUCLE_EXT_FROT')
+    l_loop_geom = isfonc(list_func_acti, 'BOUCLE_EXT_GEOM')
+    l_loop_cont = isfonc(list_func_acti, 'BOUCLE_EXT_CONT')
 !
-! --- NIVEAU: 3   BOUCLE GEOMETRIE
+! - <3 - BEGIN> - Geometric loop
 !
-    if (niveau .ge. 3) then
-!
-! --- ECRITURE NUMERO ITERATION
-!
-        call nmimci(sdimpr, 'BOUC_GEOM', mmitgo, .true._1)
-!
-! --- NOUVELLE ITERATION DE GEOMETRIE
-!
-        if (lboucg) then
-            niveau = 3
+    if (cont_loop .ge. 3) then
+        if (l_loop_geom) then
+            cont_loop = 3
             if (l_pair) then
-                call nmctcg(modele, noma  , defico      , resoco, sdstat,&
-                            sdtime, numedd, l_step_first)
+                call nmctcg(model , mesh    , sdcont_defi, sdcont_solv, sdstat,&
+                            sdtime, nume_dof)
             endif
         endif
-!
-! --- PREMIERE ITERATION DE FROTTEMENT
-!
-        call mmbouc(resoco, 'FROT', 'INIT')
-        call mmbouc(resoco, 'FROT', 'INCR')
-        call mmbouc(resoco, 'FROT', 'READ', mmitfr)
-        call nmimci(sdimpr, 'BOUC_FROT', mmitfr, .true._1)
+        call mmbouc(sdcont_solv, 'FROT', 'INIT')
+        call mmbouc(sdcont_solv, 'FROT', 'INCR')
+        call mmbouc(sdcont_solv, 'FROT', 'READ', i_loop_frot)
+        call nmimci(sdimpr, 'BOUC_FROT', i_loop_frot, .true._1)
     endif
 !
-! --- NIVEAU: 2   BOUCLE SEUILS DE FROTTEMENT
+! - <2> - Friction loop
 !
-    if (niveau .ge. 2) then
-!
-! --- NOUVELLE ITERATION DE FROTTEMENT
-!
-        if (lboucf) then
-            niveau = 2
+    if (cont_loop .ge. 2) then
+        if (l_loop_frot) then
+            cont_loop = 2
         endif
-!
-! --- PREMIERE ITERATION DE CONTACT
-!
-        call mmbouc(resoco, 'CONT', 'INIT')
-        call mmbouc(resoco, 'CONT', 'INCR')
-        call mmbouc(resoco, 'CONT', 'READ', mmitca)
-        call nmimci(sdimpr, 'BOUC_CONT', mmitca, .true._1)
+        call mmbouc(sdcont_solv, 'CONT', 'INIT')
+        call mmbouc(sdcont_solv, 'CONT', 'INCR')
+        call mmbouc(sdcont_solv, 'CONT', 'READ', i_loop_cont)
+        call nmimci(sdimpr, 'BOUC_CONT', i_loop_cont, .true._1)
     endif
 !
-! --- NIVEAU: 1   BOUCLE CONTACT
+! - <1> - Contact loop
 !
-    if (niveau .ge. 1) then
-!
-! --- NOUVELLE ITERATION DE CONTACT
-!
-        if (lboucc) then
-            niveau = 1
+    if (cont_loop .ge. 1) then
+        if (l_loop_cont) then
+            cont_loop = 1
         endif
     endif
 !
 999 continue
 !
-    call jedema()
 end subroutine

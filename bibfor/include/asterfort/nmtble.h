@@ -16,26 +16,26 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmtble(modele, noma, mate, defico, resoco,&
-                      niveau, fonact, sdimpr, sdstat, sdtime,&
-                      sddyna, sderro, sdconv, sddisc, numins,&
-                      valinc, solalg)
-        character(len=24) :: modele
-        character(len=8) :: noma
-        character(len=24) :: mate
-        character(len=24) :: defico
-        character(len=24) :: resoco
-        integer :: niveau
-        integer :: fonact(*)
-        character(len=24) :: sdimpr
-        character(len=24) :: sdstat
-        character(len=24) :: sdtime
-        character(len=19) :: sddyna
-        character(len=24) :: sderro
-        character(len=24) :: sdconv
-        character(len=19) :: sddisc
-        character(len=19) :: valinc(*)
-        integer :: numins
-        character(len=19) :: solalg(*)
+    subroutine nmtble(cont_loop  , model         , mesh  , mate  , sdcont_defi,&
+                      sdcont_solv, list_func_acti, sdimpr, sdstat, sdtime     ,&
+                      sddyna     , sderro        , sdconv, sddisc, nume_inst  ,&
+                      hval_incr  , hval_algo)
+        integer, intent(inout) :: cont_loop
+        character(len=24), intent(in) :: model
+        character(len=8), intent(in) :: mesh
+        character(len=24), intent(in) :: mate
+        character(len=24), intent(in) :: sdcont_defi
+        character(len=24), intent(in) :: sdcont_solv
+        integer, intent(in) :: list_func_acti(*)
+        character(len=24), intent(in) :: sdimpr
+        character(len=24), intent(in) :: sdstat
+        character(len=24), intent(in) :: sdtime
+        character(len=19), intent(in) :: sddyna
+        character(len=24), intent(in) :: sderro
+        character(len=24), intent(in) :: sdconv
+        character(len=19), intent(in) :: sddisc
+        integer, intent(in) :: nume_inst
+        character(len=19), intent(in) :: hval_incr(*)
+        character(len=19), intent(in) :: hval_algo(*)
     end subroutine nmtble
 end interface

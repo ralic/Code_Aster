@@ -19,7 +19,7 @@
 !
 interface
     subroutine nmctcg(model , mesh    , sdcont_defi , sdcont_solv, sdstat,&
-                      sdtime, nume_dof, l_step_first)
+                      sdtime, nume_dof)
         character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: model
         character(len=24), intent(in) :: sdcont_defi 
@@ -27,6 +27,5 @@ interface
         character(len=24), intent(in) :: nume_dof
         character(len=24), intent(in) :: sdtime
         character(len=24), intent(in) :: sdstat
-        aster_logical, intent(in) :: l_step_first
     end subroutine nmctcg
 end interface

@@ -200,8 +200,8 @@ subroutine nmnewt(noma, modele, numins, numedd, numfix,&
 !
 ! --- GESTION DEBUT DE BOUCLE POINTS FIXES
 !
-    call nmible(modele, noma  , defico, resoco, fonact,&
-                niveau, numedd, sdstat, sdtime, sdimpr)
+    call nmible(niveau, modele, noma  , defico, resoco,&
+                fonact, numedd, sdstat, sdtime, sdimpr)
 !
 ! --- CREATION OBJETS POUR CONTACT CONTINU
 !
@@ -371,8 +371,8 @@ subroutine nmnewt(noma, modele, numins, numedd, numfix,&
 !
 ! --- GESTION FIN DE BOUCLE POINTS FIXES
 !
-    call nmtble(modele, noma, mate, defico, resoco,&
-                niveau, fonact, sdimpr, sdstat, sdtime,&
+    call nmtble(niveau, modele, noma  , mate  , defico, &
+                resoco, fonact, sdimpr, sdstat, sdtime,&
                 sddyna, sderro, sdconv, sddisc, numins,&
                 valinc, solalg)
 !

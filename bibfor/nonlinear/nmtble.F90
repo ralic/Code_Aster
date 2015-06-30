@@ -1,16 +1,13 @@
-subroutine nmtble(modele, noma, mate, defico, resoco,&
-                  niveau, fonact, sdimpr, sdstat, sdtime,&
-                  sddyna, sderro, sdconv, sddisc, numins,&
-                  valinc, solalg)
+subroutine nmtble(cont_loop  , model         , mesh  , mate  , sdcont_defi,&
+                  sdcont_solv, list_func_acti, sdimpr, sdstat, sdtime     ,&
+                  sddyna     , sderro        , sdconv, sddisc, nume_inst  ,&
+                  hval_incr  , hval_algo)
 !
-    implicit none
+implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/diinst.h"
 #include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/mmbouc.h"
 #include "asterfort/mm_cycl_erase.h"
 #include "asterfort/mm_cycl_init.h"
@@ -42,181 +39,180 @@ subroutine nmtble(modele, noma, mate, defico, resoco,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    integer :: niveau
-    integer :: numins
-    character(len=8) :: noma
-    character(len=24) :: defico, resoco
-    character(len=24) :: sdstat, sdimpr, sdtime, sderro, sdconv
-    character(len=24) :: modele, mate
-    character(len=19) :: sddyna, sddisc, valinc(*), solalg(*)
-    integer :: fonact(*)
+    integer, intent(inout) :: cont_loop
+    character(len=24), intent(in) :: model
+    character(len=8), intent(in) :: mesh
+    character(len=24), intent(in) :: mate
+    character(len=24), intent(in) :: sdcont_defi
+    character(len=24), intent(in) :: sdcont_solv
+    integer, intent(in) :: list_func_acti(*)
+    character(len=24), intent(in) :: sdimpr
+    character(len=24), intent(in) :: sdstat
+    character(len=24), intent(in) :: sdtime
+    character(len=19), intent(in) :: sddyna
+    character(len=24), intent(in) :: sderro
+    character(len=24), intent(in) :: sdconv
+    character(len=19), intent(in) :: sddisc
+    integer, intent(in) :: nume_inst
+    character(len=19), intent(in) :: hval_incr(*)
+    character(len=19), intent(in) :: hval_algo(*)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (ALGORITHME)
+! MECA_NON_LINE - Algo
 !
-! GESTION DEBUT DE BOUCLE POINTS FIXES
+! Contact loop management - END
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! IO  cont_loop        : level of loop for contact (see nmible.F90)
+!                        0 - Not use (not cotnact)
+!                        1 - Loop for contact status
+!                        2 - Loop for friction triggers
+!                        3 - Loop for geometry
+! In  model            : name of model
+! In  mesh             : name of mesh
+! In  mate             : name of material characteristics (field)
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  sdcont_solv      : name of contact solving datastructure
+! In  list_func_acti   : list of active functionnalities
+! In  sdimpr           : datastructure for print informations
+! In  sdstat           : datastructure for statistics
+! In  sdtime           : datastructure for timers
+! In  sddyna           : dynamic parameters datastructure
+! In  sderro           : datastructure for errors during algorithm
+! In  sdconv           : datastructure for convergence status
+! In  sddisc           : datastructure for time discretization
+! In  nume_inst        : index of current step time
+! In  hval_incr        : hat-variable for incremental values fields
+! In  hval_algo        : hat-variable for algorithms fields
 !
-! LES ITERATIONS ONT LIEU ENTRE CETTE ROUTINE ET SA COUSINE
-! (NMIBLE) QUI COMMUNIQUENT PAR LA VARIABLE NIVEAU
+! --------------------------------------------------------------------------------------------------
 !
-! I/O NIVEAU : INDICATEUR D'UTILISATION DE LA BOUCLE DE POINT FIXE
-!                  0     ON N'UTILISE PAS CETTE BOUCLE
-!                  3     BOUCLE GEOMETRIE
-!                  2     BOUCLE SEUILS DE FROTTEMENT
-!                  1     BOUCLE CONTRAINTES ACTIVES
-! IN  MODELE : NOM DU MODELE
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  MATE   : SD MATERIAU
-! IN  FONACT : FONCTIONNALITES ACTIVEES
-! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
-! IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
-! IN  SDIMPR : SD AFFICHAGE
-! IN  SDTIME : SD TIMER
-! IN  SDSTAT : SD STATISTIQUES
-! IN  SDDYNA : SD POUR DYNAMIQUE
-! IN  SDERRO : SD ERREUR
-! IN  SDCONV : SD CONVERGENCE
-! IN  SDDISC : SD DISCRETISATION TEMPORELLE
-! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
-! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
+    aster_logical :: loop_cont_conv, loop_frot_conv, loop_geom_conv
+    aster_logical :: l_loop_frot, l_loop_geom, l_loop_cont
+    integer :: i_loop_geom, i_loop_frot, i_loop_cont
+    character(len=4) :: state_newt
+    real(kind=8) :: time_curr
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: mmcvca, mmcvfr, mmcvgo
-    aster_logical :: lboucf, lboucg, lboucc
-    integer :: mmitgo, mmitfr, mmitco
-    character(len=4) :: etnewt
-    real(kind=8) :: instan
-!
-! ----------------------------------------------------------------------
-!
-    call jemarq()
-!
-! --- NEWTON A NECESSAIREMENT CONVERGE
-!
-    call nmleeb(sderro, 'NEWT', etnewt)
-    if ((niveau.eq.0) .or. (etnewt.ne.'CONV')) then
-        goto 998
+    if (cont_loop.eq.0) then
+        goto 999
     endif
 !
-! --- INFOS SUR LES BOUCLES
+! - State of Newton loop
 !
-    lboucf = isfonc(fonact,'BOUCLE_EXT_FROT')
-    lboucg = isfonc(fonact,'BOUCLE_EXT_GEOM')
-    lboucc = isfonc(fonact,'BOUCLE_EXT_CONT')
+    call nmleeb(sderro, 'NEWT', state_newt)
 !
-! --- INITIALISATIONS
+! - To evaluate contact loops: Newton has covnerged
 !
-    mmcvca = .false.
-    mmcvfr = .false.
-    mmcvgo = .false.
-    instan = diinst(sddisc,numins)
+    if (state_newt.ne.'CONV') then
+        goto 999
+    endif
 !
-! --- NIVEAU: 1   BOUCLE CONTRAINTES ACTIVES
+! - Contact loops
 !
-    if (niveau .le. 1) then
+    l_loop_frot = isfonc(list_func_acti, 'BOUCLE_EXT_FROT')
+    l_loop_geom = isfonc(list_func_acti, 'BOUCLE_EXT_GEOM')
+    l_loop_cont = isfonc(list_func_acti, 'BOUCLE_EXT_CONT')
 !
-! --- EVALUATION STATUTS DU CONTACT
+! - Initializations
 !
-        if (lboucc) then
-            niveau = 1
+    loop_cont_conv = .false.
+    loop_frot_conv = .false.
+    loop_geom_conv = .false.
+    time_curr = diinst(sddisc,nume_inst)
+!
+! - <1> - Contact loop
+!
+    if (cont_loop .le. 1) then
+        if (l_loop_cont) then
+            cont_loop = 1
             call nmtime(sdtime, 'INI', 'CTCC_CONT')
             call nmtime(sdtime, 'RUN', 'CTCC_CONT')
-            call nmctcc(noma, modele, mate, sddyna, sderro,&
-                        sdstat, defico, resoco, valinc, solalg,&
-                        mmcvca, instan)
+            call nmctcc(mesh, model, mate, sddyna, sderro,&
+                        sdstat, sdcont_defi, sdcont_solv, hval_incr, hval_algo,&
+                        loop_cont_conv, time_curr)
             call nmtime(sdtime, 'END', 'CTCC_CONT')
             call nmrinc(sdstat, 'CTCC_CONT')
-!
-! ----- ON CONTINUE LA BOUCLE
-!
-            if (.not.mmcvca) then
-                niveau = 1
-                goto 999
+            if (.not.loop_cont_conv) then
+                cont_loop = 1
+                goto 500
             endif
         endif
     endif
 !
-! --- NIVEAU: 2   BOUCLE SEUILS DE FROTTEMENT
+! - <2> - Friction loop
 !
-    if (niveau .le. 2) then
-!
-! --- CALCUL SEUILS DE FROTTEMENT
-!
-        if (lboucf) then
-            niveau = 2
+    if (cont_loop .le. 2) then
+        if (l_loop_frot) then
+            cont_loop = 2
             call nmtime(sdtime, 'INI', 'CTCC_FROT')
             call nmtime(sdtime, 'RUN', 'CTCC_FROT')
-            call nmctcf(noma, modele, sdimpr, sderro, defico,&
-                        resoco, valinc, mmcvfr)
+            call nmctcf(mesh, model, sdimpr, sderro, sdcont_defi,&
+                        sdcont_solv, hval_incr, loop_frot_conv)
             call nmtime(sdtime, 'END', 'CTCC_FROT')
             call nmrinc(sdstat, 'CTCC_FROT')
-!
-! ----- ON CONTINUE LA BOUCLE
-!
-            if (.not.mmcvfr) then
-                niveau = 2
-                goto 999
+            if (.not.loop_frot_conv) then
+                cont_loop = 2
+                goto 500
             endif
         endif
     endif
 !
-! --- NIVEAU: 3   BOUCLE GEOMETRIE
+! - <3> - Geometric loop
 !
-    if (niveau .le. 3) then
-!
-! --- CALCUL SEUILS DE GEOMETRIE
-!
-        if (lboucg) then
-            niveau = 3
-            call nmctgo(noma, sdimpr, sderro, defico, resoco,&
-                        valinc, mmcvgo)
-!
-! ----- ON CONTINUE LA BOUCLE
-!
-            if (.not.mmcvgo) then
-                niveau = 3
-                goto 999
+    if (cont_loop .le. 3) then
+        if (l_loop_geom) then
+            cont_loop = 3
+            call nmctgo(mesh, sdimpr, sderro, sdcont_defi, sdcont_solv,&
+                        hval_incr, loop_geom_conv)
+            if (.not.loop_geom_conv) then
+                cont_loop = 3
+                goto 500
             endif
         endif
     endif
 !
-999 continue
+500 continue
 !
 ! - Initialization of data structures for cycling detection and treatment
 !
-    if (mmcvca .or. mmcvfr .or. mmcvgo) then
-        call mm_cycl_erase(defico, resoco, 0, 0)
+    if (loop_cont_conv .or. loop_frot_conv .or. loop_geom_conv) then
+        call mm_cycl_erase(sdcont_defi, sdcont_solv, 0, 0)
     endif
 !
-! --- AFFICHAGES PENDANT LA BOUCLE DE POINT FIXE
+! - Print line
 !
-    call nmaffi(fonact, sdconv, sdimpr, sderro, sddisc,&
+    call nmaffi(list_func_acti, sdconv, sdimpr, sderro, sddisc,&
                 'FIXE')
 !
-! --- INCREMENTATION DES COMPTEURS
+! - New iteration in loops
 !
-    if (.not.mmcvca .and. niveau .eq. 1) call mmbouc(resoco, 'CONT', 'INCR')
-    if (.not.mmcvfr .and. niveau .eq. 2) call mmbouc(resoco, 'FROT', 'INCR')
-    if (.not.mmcvgo .and. niveau .eq. 3) call mmbouc(resoco, 'GEOM', 'INCR')
+    if (.not.loop_cont_conv .and. cont_loop .eq. 1) then
+        call mmbouc(sdcont_solv, 'CONT', 'INCR')
+    endif
+    if (.not.loop_frot_conv .and. cont_loop .eq. 2) then 
+        call mmbouc(sdcont_solv, 'FROT', 'INCR')
+    endif
+    if (.not.loop_geom_conv .and. cont_loop .eq. 3) then 
+        call mmbouc(sdcont_solv, 'GEOM', 'INCR')
+    endif
 !
-! --- MISE A JOUR DES ITERATEURS DE BOUCLE
+! - Set iteration in loops for print
 !
-    call mmbouc(resoco, 'CONT', 'READ', mmitco)
-    call mmbouc(resoco, 'FROT', 'READ', mmitfr)
-    call mmbouc(resoco, 'GEOM', 'READ', mmitgo)
-    call nmimci(sdimpr, 'BOUC_CONT', mmitco, .true._1)
-    call nmimci(sdimpr, 'BOUC_FROT', mmitfr, .true._1)
-    call nmimci(sdimpr, 'BOUC_GEOM', mmitgo, .true._1)
+    call mmbouc(sdcont_solv, 'CONT', 'READ', i_loop_cont)
+    call mmbouc(sdcont_solv, 'FROT', 'READ', i_loop_frot)
+    call mmbouc(sdcont_solv, 'GEOM', 'READ', i_loop_geom)
+    call nmimci(sdimpr, 'BOUC_CONT', i_loop_cont, .true._1)
+    call nmimci(sdimpr, 'BOUC_FROT', i_loop_frot, .true._1)
+    call nmimci(sdimpr, 'BOUC_GEOM', i_loop_geom, .true._1)
 !
-! --- ETAT DE LA CONVERGENCE POINT FIXE
+999 continue
 !
-998 continue
-    call nmevcv(sderro, fonact, 'FIXE')
+! - Set loop state
 !
-    call jedema()
+    call nmevcv(sderro, list_func_acti, 'FIXE')
+!
 end subroutine
