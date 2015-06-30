@@ -16,16 +16,16 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mmlige(noma, defico, resoco, typelt, nbtyp,&
-                      comptc, comptf, nndtot, nbgrel)
-        integer :: nbtyp
-        character(len=8) :: noma
-        character(len=24) :: defico
-        character(len=24) :: resoco
-        character(len=24) :: typelt
-        integer :: comptc(nbtyp)
-        integer :: comptf(nbtyp)
-        integer :: nndtot
-        integer :: nbgrel
+    subroutine mmlige(mesh      , sdcont_defi, sdcont_solv, v_list_elem, nb_cont_type,&
+                      v_cnt_cont, v_cnt_frot , nt_node    , nb_grel)
+        character(len=8), intent(in) :: mesh
+        character(len=24), intent(in) :: sdcont_defi
+        character(len=24), intent(in) :: sdcont_solv
+        integer, intent(out), pointer :: v_list_elem(:)
+        integer, intent(out) :: nb_cont_type
+        integer, intent(out), pointer :: v_cnt_cont(:)
+        integer, intent(out), pointer :: v_cnt_frot(:)
+        integer, intent(out) :: nt_node
+        integer, intent(out) :: nb_grel
     end subroutine mmlige
 end interface
