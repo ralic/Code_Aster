@@ -513,7 +513,9 @@ BAMO2=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=mode_ri1, NMAX_MODE=24.,), #36,),
                        NUME_REF=nume_ddl,);                       
                                               
 NDDLGEN2 = NUME_DDL_GENE( BASE= BAMO2, STOCKAGE= 'PLEIN',);
-                        
+
+from math import pi
+p_alpha = 0.5 / 2. / pi                        
 FSEISX=CALC_MISS(MODELE=MODELB, TYPE_RESU='CHARGE', INFO=2,
                         VARI='OUI',
                         ISSF='OUI', 
@@ -522,7 +524,7 @@ FSEISX=CALC_MISS(MODELE=MODELB, TYPE_RESU='CHARGE', INFO=2,
                         MATR_GENE=_F(BASE=BAMO2, NUME_DDL_GENE=NDDLGEN2),
                         MATR_COHE=_F(TYPE='MITA_LUCO',     
                                   VITE_ONDE = 600. ,
-                                  PARA_ALPHA = 0.5,
+                                  PARA_ALPHA = p_alpha,
                                      ),
                         NOM_CMP='DX',
                         UNITE_RESU_FORC=28,

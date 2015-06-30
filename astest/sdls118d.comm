@@ -361,7 +361,9 @@ DETRUIRE(CONCEPT=_F(NOM=(ssi_1_b)),INFO=1)
 
 #---------------------------------------------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------------------------------------------
-#ALPHA=0.7     
+#ALPHA=0.7 
+from math import pi
+p_alpha = 0.7 / 2. / pi    
 # MITA et LUCO
 # test:  cas avec frequence de fin de calcul superieure a la frequence de coupure
 #---------------------------------------------------------------------------------------------------------------------------
@@ -379,7 +381,7 @@ ssi_2_a = DYNA_ISS_VARI(
                        MATR_COHE = _F(
                                   TYPE =    'MITA_LUCO', 
                                   VITE_ONDE = 200. ,
-                                  PARA_ALPHA =0.7,),
+                                  PARA_ALPHA = p_alpha,),
                        UNITE_RESU_IMPE = 32,
                        UNITE_RESU_FORC = 33,                
                        MATR_GENE = _F(
@@ -415,7 +417,7 @@ ssi_2_b = DYNA_ISS_VARI(
                        MATR_COHE = _F(
                                   TYPE =    'MITA_LUCO',    
                                   VITE_ONDE = 200. ,
-                                  PARA_ALPHA =0.7,),
+                                  PARA_ALPHA = p_alpha,),
                        UNITE_RESU_IMPE = 32,
                        UNITE_RESU_FORC = 33,                
                        MATR_GENE = _F(

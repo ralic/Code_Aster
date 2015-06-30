@@ -282,7 +282,8 @@ Trg1i = DYNA_ISS_VARI(
 ax253i = RECU_FONCTION ( RESU_GENE = Trg1i, NOM_CHAM = 'ACCE',
                         NOEUD = 'N253', NOM_CMP = 'DX', );
 
-
+from math import pi
+p_alpha = 0.5 / 2. / pi
 Trg1 = DYNA_ISS_VARI(
                       FREQ_MAX  =fmax,  FREQ_PAS = pas_f ,
                       NOM_CMP =  'DX' ,  PRECISION  =  0.9 ,
@@ -294,7 +295,7 @@ Trg1 = DYNA_ISS_VARI(
                        MATR_COHE = _F(
                                   TYPE='MITA_LUCO',
                                   VITE_ONDE = 600. ,
-                                  PARA_ALPHA =0.5,
+                                  PARA_ALPHA = p_alpha,
                                   ),
                        UNITE_RESU_IMPE = 25, TYPE='BINAIRE',
                        UNITE_RESU_FORC = 28,
@@ -404,7 +405,7 @@ Spg1 = DYNA_ISS_VARI(
                        MATR_COHE = _F(
                                   TYPE='MITA_LUCO',
                                   VITE_ONDE = 600. ,
-                                  PARA_ALPHA =0.5,
+                                  PARA_ALPHA = p_alpha,
                                   ),
                        UNITE_RESU_IMPE = 25, TYPE='BINAIRE',
                        UNITE_RESU_FORC = 28,

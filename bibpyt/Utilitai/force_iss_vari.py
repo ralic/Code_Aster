@@ -161,7 +161,7 @@ def force_iss_vari(self,imod,MATR_GENE,NOM_CMP,ISSF,INFO,UNITE_RESU_FORC,
           DX=XR-XRT
           DY=YR-YRT
           DIST=DX**2+DY**2
-          COHE=NP.exp(-(DIST*(alpha*freqk/VITE_ONDE)**2.))
+          COHE=NP.exp(-(DIST*(alpha*freqk*2*pi/VITE_ONDE)**2.))
 
       elif MODEL=='ABRAHAMSON' :
      #----ABRAHAMSON (EPRI)

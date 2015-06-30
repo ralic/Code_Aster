@@ -356,6 +356,8 @@ RESU1Z = DYNA_ISS_VARI(
 
 #------------------------------------------------------
 #ALPHA=0.5
+from math import pi
+p_alpha = 0.5/2./pi
 RESU2X = DYNA_ISS_VARI(
                        FREQ_INIT  =fmin, NB_FREQ  = NF, FREQ_PAS = df ,
                        NOM_CMP =  'DX' ,  PRECISION  =  0.999 ,
@@ -364,7 +366,7 @@ RESU2X = DYNA_ISS_VARI(
                                 MODE_INTERF ='QUELCONQUE',),
                        MATR_COHE = _F(TYPE =    'MITA_LUCO',    
                                   VITE_ONDE = 600. ,
-                                  PARA_ALPHA =0.5,),
+                                  PARA_ALPHA = p_alpha,),
                        UNITE_RESU_IMPE = 32,
                        MATR_GENE = _F(
                                  MATR_MASS = MASSGEN,
@@ -380,7 +382,7 @@ RESU2Z = DYNA_ISS_VARI(
                                 MODE_INTERF ='QUELCONQUE',),
                        MATR_COHE = _F(TYPE =    'MITA_LUCO',    
                                   VITE_ONDE = 600. ,
-                                  PARA_ALPHA =0.5,),
+                                  PARA_ALPHA = p_alpha,),
                        UNITE_RESU_IMPE = 32,
 #                        UNITE_RESU_FORC = 33,
                        MATR_GENE = _F(
