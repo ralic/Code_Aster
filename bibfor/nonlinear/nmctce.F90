@@ -1,4 +1,5 @@
-subroutine nmctcl(model, mesh, sdcont_defi, sdcont_solv)
+subroutine nmctce(model , mesh     , sdcont_defi, sdcont_solv, sddyna,&
+                  sddisc, nume_inst)
 !
 implicit none
 !
@@ -7,8 +8,8 @@ implicit none
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/infdbg.h"
-#include "asterfort/mmligr.h"
-#include "asterfort/xmligr.h"
+#include "asterfort/mmchml.h"
+#include "asterfort/xmcart.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,6 +33,9 @@ implicit none
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: sdcont_defi 
     character(len=24), intent(in) :: sdcont_solv
+    character(len=19), intent(in)  :: sddyna
+    character(len=19), intent(in)  :: sddisc
+    integer, intent(in) :: nume_inst
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -45,6 +49,9 @@ implicit none
 ! In  mesh             : name of mesh
 ! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
 ! In  sdcont_solv      : name of contact solving datastructure
+! In  sddyna           : dynamic parameters datastructure
+! In  sddisc           : datastructure for time discretization
+! In  nume_inst        : index of current step time
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -57,7 +64,7 @@ implicit none
 !
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> Create elements for contact'
+        write (ifm,*) '<MECANONLINE> Create input fields for contact'
     endif
 !
 ! - Parameters
@@ -66,13 +73,14 @@ implicit none
     l_cont_xfem_gg = cfdisl(sdcont_defi,'CONT_XFEM_GG')
     nomo           = model(1:8)
 !
-! - Create elements for contact
+! - Create input fields for contact
 !
     if (cont_form .eq. 2) then
-        call mmligr(mesh, nomo, sdcont_defi, sdcont_solv)
+        call mmchml(mesh, sdcont_defi, sdcont_solv, sddisc, sddyna,&
+                    nume_inst)
     elseif  (cont_form .eq. 3) then
         if (l_cont_xfem_gg) then
-            call xmligr(mesh, nomo, sdcont_solv)
+            call xmcart(mesh, sdcont_defi, nomo, sdcont_solv)
         endif
     else
         ASSERT(.false.)

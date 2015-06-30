@@ -33,6 +33,7 @@ subroutine nmnble(numins, modele, noma, numedd, sdstat,&
 #include "asterfort/mmbouc.h"
 #include "asterfort/ndynlo.h"
 #include "asterfort/nmchex.h"
+#include "asterfort/nmctce.h"
 #include "asterfort/nmctcl.h"
 #include "asterfort/nmrinc.h"
 #include "asterfort/nmtime.h"
@@ -125,12 +126,16 @@ subroutine nmnble(numins, modele, noma, numedd, sdstat,&
         call copisd('CHAMP_GD', 'V', accini, accplu)
     endif
 !
-! --- CREATION ELEMENTS TARDIFS ET CARTE
+! - Create elements for contact
 !
     call nmtime(sdtime, 'INI', 'CTCC_PREP')
     call nmtime(sdtime, 'RUN', 'CTCC_PREP')
-    call nmctcl(numins, modele, noma, defico, resoco,&
-                sddyna, sddisc)
+    call nmctcl(modele, noma, defico, resoco)
+!
+! - Create input fields for contact
+!
+    call nmctce(modele, noma  , defico, resoco, sddyna,&
+                sddisc, numins)
     call nmtime(sdtime, 'END', 'CTCC_PREP')
     call nmrinc(sdstat, 'CTCC_PREP')
 !

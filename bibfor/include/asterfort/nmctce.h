@@ -18,10 +18,14 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmctcl(model, mesh, sdcont_defi, sdcont_solv)
-        character(len=8), intent(in) :: model
+    subroutine nmctce(model , mesh     , sdcont_defi, sdcont_solv, sddyna,&
+                      sddisc, nume_inst)
         character(len=8), intent(in) :: mesh
+        character(len=8), intent(in) :: model
         character(len=24), intent(in) :: sdcont_defi 
         character(len=24), intent(in) :: sdcont_solv
-    end subroutine nmctcl
+        character(len=19), intent(in)  :: sddyna
+        character(len=19), intent(in)  :: sddisc
+        integer, intent(in) :: nume_inst
+    end subroutine nmctce
 end interface
