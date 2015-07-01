@@ -87,7 +87,7 @@ subroutine cftanr(noma, ndimg, defico, resoco, izone,&
 !
     aster_logical :: lliss, lmfixe, lefixe, lmait, lescl
     aster_logical :: lpoutr, lpoint
-    integer :: ima, ibid
+    integer :: ima
     integer :: posmam, posmae, nummae, nummam
     integer :: itypem, itypee
     character(len=8) :: aliase, aliasm, nommam, nommae
@@ -152,7 +152,7 @@ subroutine cftanr(noma, ndimg, defico, resoco, izone,&
         call cfinvm(defico, jdeciv, ima, posmae)
         call cfnumm(defico, posmae, nummae)
         call cfnomm(noma, defico, 'MAIL', posmae, nommae)
-        call mmelty(noma, nummae, aliase, ibid, ibid)
+        call mmelty(noma, nummae, aliase)
     endif
 !
 ! --- DIMENSION MAILLE MAITRE
@@ -170,7 +170,7 @@ subroutine cftanr(noma, ndimg, defico, resoco, izone,&
         endif
         call cfnumm(defico, posmam, nummam)
         call cfnomm(noma, defico, 'MAIL', posmam, nommam)
-        call mmelty(noma, nummam, aliasm, ibid, ibid)
+        call mmelty(noma, nummam, aliasm)
     endif
 !
 ! --- RECUPERATION TANGENTES ESCLAVES SI NECESSSAIRE

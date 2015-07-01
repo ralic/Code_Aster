@@ -1,4 +1,11 @@
-subroutine mmelty(noma, numa, alias, nno, ndim)
+subroutine mmelty(mesh, elem_nume, elem_type_, nb_node_, nb_dim_)
+!
+implicit none
+!
+#include "asterfort/assert.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,109 +25,96 @@ subroutine mmelty(noma, numa, alias, nno, ndim)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
+    character(len=8), intent(in) :: mesh
+    integer, intent(in) :: elem_nume
+    character(len=8), optional, intent(out) :: elem_type_
+    integer, optional, intent(out)  :: nb_node_
+    integer, optional, intent(out)  :: nb_dim_
 !
-#include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
-    character(len=8) :: noma
-    integer :: numa
-    character(len=8) :: alias
-    integer :: nno
-    integer :: ndim
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! Contact - Utility
 !
-! ROUTINE CONTACT (METHODE CONTINUE - UTILITAIRE)
+! Continue method - Get informations about element
 !
-! RETOURNE UN ALIAS POUR UN TYPE D'ELEMENT, LE NOMBRE DE NOEUDS
-! DE CET ELEMENT ET SA DIMENSION
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! In  mesh             : name of mesh
+! In  elem_nume        : index of element in mesh
+! Out elem_type        : type of element
+!                         'PO1' 'SE2' 'SE3'
+!                         'TR3' 'TR6' 'TR7'
+!                         'QU4' 'QU8' 'QU9'
+! Out nb_node          : number of nodes
+! Out nb_dim           : dimension of element
 !
+! --------------------------------------------------------------------------------------------------
 !
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  NUMA   : NUMERO ABSOLU DE LA MAILLE
-! OUT ALIAS  : TYPE DE L'ELEMENT
-!               'PO1'
-!               'SE2'
-!               'SE3'
-!               'TR3'
-!               'TR6'
-!               'TR7'
-!               'QU4'
-!               'QU8'
-!               'QU9'
-! OUT NNO    : NOMBRE DE NOEUDS DE CET ELEMENT
-! OUT NDIM   : DIMENSION DE LA MAILLE
+    integer :: elem_type_nume, nb_node, nb_dim
+    character(len=8) :: elem_type_name, elem_type
+    integer, pointer :: v_mesh_typmail(:) => null()
 !
+! --------------------------------------------------------------------------------------------------
 !
+    elem_type_name = ' '
 !
+! - Access to mesh
 !
-    integer :: iatyma, ityp, nutyp
-    character(len=8) :: nomtm
+    call jeveuo(mesh//'.TYPMAIL', 'L', vi = v_mesh_typmail)
+    elem_type_nume = v_mesh_typmail(elem_nume)
 !
-! ----------------------------------------------------------------------
+! - Paramters
 !
-    call jemarq()
+    call jenuno(jexnum('&CATA.TM.NOMTM', elem_type_nume), elem_type_name)
 !
-! --- INITIALISATIONS
-!
-    nomtm = ' '
-!
-! --- CODE TYPE DE LA MAILLE
-!
-    call jeveuo(noma//'.TYPMAIL', 'L', iatyma)
-    ityp = iatyma - 1 + numa
-    nutyp = zi(ityp)
-!
-! --- NOM CATALOGUE
-!
-    call jenuno(jexnum('&CATA.TM.NOMTM', nutyp), nomtm)
-!
-    if (nomtm .eq. 'POI1') then
-        alias = 'PO1'
-        nno = 1
-        ndim = 1
-    else if (nomtm .eq. 'SEG2') then
-        alias = 'SE2'
-        nno = 2
-        ndim = 2
-    else if (nomtm .eq. 'SEG3') then
-        alias = 'SE3'
-        nno = 3
-        ndim = 2
-    else if (nomtm .eq. 'TRIA3') then
-        alias = 'TR3'
-        nno = 3
-        ndim = 3
-    else if (nomtm .eq. 'TRIA6') then
-        alias = 'TR6'
-        nno = 6
-        ndim = 3
-    else if (nomtm .eq. 'TRIA7') then
-        alias = 'TR7'
-        nno = 7
-        ndim = 3
-    else if (nomtm .eq. 'QUAD4') then
-        alias = 'QU4'
-        nno = 4
-        ndim = 3
-    else if (nomtm .eq. 'QUAD8') then
-        alias = 'QU8'
-        nno = 8
-        ndim = 3
-    else if (nomtm .eq. 'QUAD9') then
-        alias = 'QU9'
-        nno = 9
-        ndim = 3
+    if (elem_type_name .eq. 'POI1') then
+        elem_type = 'PO1'
+        nb_node   = 1
+        nb_dim    = 1
+    else if (elem_type_name .eq. 'SEG2') then
+        elem_type = 'SE2'
+        nb_node   = 2
+        nb_dim    = 2
+    else if (elem_type_name .eq. 'SEG3') then
+        elem_type = 'SE3'
+        nb_node   = 3
+        nb_dim    = 2
+    else if (elem_type_name .eq. 'TRIA3') then
+        elem_type = 'TR3'
+        nb_node   = 3
+        nb_dim    = 3
+    else if (elem_type_name .eq. 'TRIA6') then
+        elem_type = 'TR6'
+        nb_node   = 6
+        nb_dim    = 3
+    else if (elem_type_name .eq. 'TRIA7') then
+        elem_type = 'TR7'
+        nb_node   = 7
+        nb_dim    = 3
+    else if (elem_type_name .eq. 'QUAD4') then
+        elem_type = 'QU4'
+        nb_node   = 4
+        nb_dim    = 3
+    else if (elem_type_name .eq. 'QUAD8') then
+        elem_type = 'QU8'
+        nb_node   = 8
+        nb_dim    = 3
+    else if (elem_type_name .eq. 'QUAD9') then
+        elem_type = 'QU9'
+        nb_node   = 9
+        nb_dim    = 3
     else
         ASSERT(.false.)
     endif
 !
-    call jedema()
+    if (present(elem_type_)) then
+        elem_type_ = elem_type
+    endif
+    if (present(nb_node_)) then
+        nb_node_ = nb_node
+    endif
+    if (present(nb_dim_)) then
+        nb_dim_ = nb_dim
+    endif
+!
 end subroutine

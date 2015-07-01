@@ -92,7 +92,6 @@ subroutine mmveri(noma, defico, resoco, newgeo, sdappa,&
     integer :: izone, imae, ip, iptm, ipt
     integer :: ndimg, nzoco
     integer :: nptm, nbmae, nbpc, nnomae, npt0
-    integer :: ibid
     real(kind=8) :: geomp(3), coorpc(3)
     real(kind=8) :: tau1m(3), tau2m(3)
     real(kind=8) :: tau1(3), tau2(3)
@@ -162,7 +161,7 @@ subroutine mmveri(noma, defico, resoco, newgeo, sdappa,&
 !
 ! ------- INFOS SUR LA MAILLE ESCLAVE
 !
-            call mmelty(noma, nummae, aliase, nnomae, ibid)
+            call mmelty(noma, nummae, aliase, nnomae)
             call jenuno(jexnum(noma//'.NOMMAI', nummae), nommae)
             call mminfm(posmae, defico, 'NDEXFR', ndexfr)
             lexfro = (ndexfr.ne.0)

@@ -81,7 +81,6 @@ subroutine mmapre(noma, numedd, defico, resoco, sdappa)
     real(kind=8) :: ksipr1, ksipr2
     character(len=8) :: aliase, nommam
     aster_logical :: lveri
-    integer :: ibid
     integer :: jdecme
     integer :: typint, typapp, entapp
     integer :: posmae, nummae, posmam, nummam
@@ -157,7 +156,7 @@ subroutine mmapre(noma, numedd, defico, resoco, sdappa)
 !
 ! ------- INFOS SUR LA MAILLE ESCLAVE
 !
-            call mmelty(noma, nummae, aliase, nnomae, ibid)
+            call mmelty(noma, nummae, aliase, nnomae)
 !
 ! ------- NOEUDS EXCLUS PAR SANS_GROUP_NO_FR OU SANS_NOEUD_FR
 !

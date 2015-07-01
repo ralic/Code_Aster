@@ -61,7 +61,7 @@ subroutine typeco(char, noma)
     integer :: posnom, posnoe
     integer :: posmam, posmae, nummae, nummam
     integer :: indmae, indmam
-    integer :: ino, ima, posno, posma, ibid
+    integer :: ino, ima, posno, posma
     integer :: ndexfr(1), typint, nptm
     character(len=24) :: defico
     character(len=8) :: alias, nommae, nommam
@@ -133,7 +133,7 @@ subroutine typeco(char, noma)
             zi(jtypma+ztypm*(posmam-1)+2-1) = indmam
             if (iform .eq. 2) then
                 call cfnumm(defico, posmam, nummam)
-                call mmelty(noma, nummam, alias, ibid, ibid)
+                call mmelty(noma, nummam, alias)
                 if (alias .eq. 'PO1') then
                     call jenuno(jexnum(noma//'.NOMMAI', nummam), nommam)
                     call utmess('F', 'CONTACT3_2', sk=nommam)
@@ -148,7 +148,7 @@ subroutine typeco(char, noma)
             zi(jtypma+ztypm*(posmae-1)+2-1) = indmae
             if (iform .eq. 2) then
                 call cfnumm(defico, posmae, nummae)
-                call mmelty(noma, nummae, alias, ibid, ibid)
+                call mmelty(noma, nummae, alias)
                 if (alias .eq. 'PO1') then
                     call jenuno(jexnum(noma//'.NOMMAI', nummae), nommae)
                     call utmess('F', 'CONTACT3_2', sk=nommae)

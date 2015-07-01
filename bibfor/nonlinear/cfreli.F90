@@ -51,21 +51,17 @@ subroutine cfreli(noma, nummai, nbnom, ksi1, ksi2,&
     parameter  ( zero   =  0.0d0  )
     parameter  ( un     =  1.0d0  )
     real(kind=8) :: ksi(3)
-    integer :: k, ibid
+    integer :: ibid
     real(kind=8) :: ff(9)
     character(len=8) :: alias
 !
 ! ----------------------------------------------------------------------
 !
-! --- INITIALISATIONS
-!
-    do 10 k = 1, 9
-        coefno(k) = zero
-10  end do
+    coefno(1:9) = zero
 !
 ! --- CARACTERISTIQUE DE LA MAILLE
 !
-    call mmelty(noma, nummai, alias, ibid, ibid)
+    call mmelty(noma, nummai, alias)
 !
 ! --- COEFFICIENTS SUR NOEUD MAITRE SUIVANT TYPE APPARIEMENT/ELEMENT
 !

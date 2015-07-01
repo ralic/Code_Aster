@@ -91,6 +91,7 @@ subroutine mmreas(noma, defico, resoco, valinc)
 !
     ndimg = cfdisi(defico,'NDIM' )
     nzoco = cfdisi(defico,'NZOCO')
+    ibid = 0
 !
 ! --- RECUPERATION DES QCQS DONNEES
 !
@@ -113,7 +114,7 @@ subroutine mmreas(noma, defico, resoco, valinc)
 ! --- BOUCLE SUR LES ZONES
 !
     iptc = 1
-    do 10 izone = 1, nzoco
+    do izone = 1, nzoco
 !
 ! --- OPTIONS SUR LA ZONE DE CONTACT
 !
@@ -139,7 +140,7 @@ subroutine mmreas(noma, defico, resoco, valinc)
 !
 ! ------- INFOS SUR LA MAILLE
 !
-            call mmelty(noma, nummae, aliase, nne, ibid)
+            call mmelty(noma, nummae, aliase, nne)
 !
 ! ------- MULTIPLICATEURS DE CONTACT SUR LES NOEUDS DE LA MAILLE ESCLAVE
 !
@@ -173,7 +174,7 @@ subroutine mmreas(noma, defico, resoco, valinc)
  30         continue
  20     continue
  25     continue
- 10 end do
+    end do
 !
     call detrsd('CHAM_NO_S', cnsplu)
     call detrsd('CHAM_NO_S', cnslbd)

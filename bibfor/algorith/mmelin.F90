@@ -48,11 +48,11 @@ subroutine mmelin(noma, numa, typint, nnint)
 ! ----------------------------------------------------------------------
 !
     character(len=8) :: alias
-    integer :: ibid, param
+    integer :: param
 !
 ! ----------------------------------------------------------------------
 !
-    call mmelty(noma, numa, alias, ibid, ibid)
+    call mmelty(noma, numa, alias)
 !
 !     'AUTO'
     if (typint .eq. 1) then

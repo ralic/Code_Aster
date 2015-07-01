@@ -1,5 +1,9 @@
 subroutine mmtypm(noma, numma, nnosd, alias, ndim)
 !
+implicit none
+!
+#include "asterfort/mmelty.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,11 +22,6 @@ subroutine mmtypm(noma, numma, nnosd, alias, ndim)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/mmelty.h"
     integer :: numma
     integer :: nnosd, ndim
     character(len=8) :: noma
@@ -55,7 +54,7 @@ subroutine mmtypm(noma, numma, nnosd, alias, ndim)
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
+
 !
 ! --- TYPE GEOMETRIQUE DE LA MAILLE
 !
@@ -75,7 +74,5 @@ subroutine mmtypm(noma, numma, nnosd, alias, ndim)
     if ((nno .eq.8) .and. (nnosd .eq.4)) then
         alias = 'QU4'
     endif
-!
-    call jedema()
 !
 end subroutine

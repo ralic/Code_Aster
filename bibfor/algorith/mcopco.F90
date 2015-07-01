@@ -55,7 +55,7 @@ subroutine mcopco(noma, newgeo, ndim, nummai, ksi1,&
 !
 !
     integer ::  jdes
-    integer :: nno, ino, no(9), icmp, ibid
+    integer :: nno, ino, no(9)
     real(kind=8) :: coor(27)
     character(len=8) :: alias
     real(kind=8), pointer :: vale(:) => null()
@@ -71,27 +71,25 @@ subroutine mcopco(noma, newgeo, ndim, nummai, ksi1,&
 !
 ! --- INITIALISATIONS
 !
-    do 10 icmp = 1, 3
-        geom(icmp) = 0.d0
-10  end do
+    geom(1:3) = 0.d0
 !
 ! --- INFOS SUR LA MAILLE
 !
-    call mmelty(noma, nummai, alias, nno, ibid)
+    call mmelty(noma, nummai, alias, nno)
 !
 ! --- NUMEROS ABSOLUS DES NOEUDS DE LA MAILLE
 !
-    do 23 ino = 1, nno
+    do ino = 1, nno
         no(ino) = zi(jdes+ino-1)
-23  end do
+    end do
 !
 ! --- COORDONNEES DES NOEUDS DE LA MAILLE
 !
-    do 20 ino = 1, nno
+    do ino = 1, nno
         coor(3*(ino-1)+1) = vale(1+3*(no(ino)-1))
         coor(3*(ino-1)+2) = vale(1+3*(no(ino)-1)+1)
         coor(3*(ino-1)+3) = vale(1+3*(no(ino)-1)+2)
-20  end do
+    end do
 !
 ! --- CALCUL DES COORDONNEES
 !

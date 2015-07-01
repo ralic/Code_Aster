@@ -66,7 +66,7 @@ implicit none
     character(len=19) :: disp_init, cnsplu, cnscon
     real(kind=8) :: jeusgn, tau1(3), tau2(3), norm(3), noor
     real(kind=8) :: mlagc(9), pres_cont(1), flag_cont
-    integer :: i_zone, i_elem_slav, i_poin_appa, i_poin_elem, i_cont_poin, ibid
+    integer :: i_zone, i_elem_slav, i_poin_appa, i_poin_elem, i_cont_poin
     integer :: nb_cont_zone, nb_poin_elem, nb_elem_slav, model_ndim
     integer :: elem_slav_indx, elem_slav_nume, elem_slav_nbno
     real(kind=8) :: vectpm(3), seuil_init, epsint, armini, ksipr1, ksipr2
@@ -163,7 +163,7 @@ implicit none
 ! --------- Informations about slave element
 !
             call cfnumm(sdcont_defi, elem_slav_indx, elem_slav_nume)
-            call mmelty(mesh, elem_slav_nume, elem_slav_type, elem_slav_nbno, ibid)
+            call mmelty(mesh, elem_slav_nume, elem_slav_type, elem_slav_nbno)
 !
 ! --------- Number of integration points on element
 !

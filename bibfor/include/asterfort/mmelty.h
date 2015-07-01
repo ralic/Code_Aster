@@ -16,11 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mmelty(noma, numa, alias, nno, ndim)
-        character(len=8) :: noma
-        integer :: numa
-        character(len=8) :: alias
-        integer :: nno
-        integer :: ndim
+    subroutine mmelty(mesh, elem_nume, elem_type_, nb_node_, nb_dim_)
+        character(len=8), intent(in) :: mesh
+        integer, intent(in) :: elem_nume
+        character(len=8), optional, intent(out) :: elem_type_
+        integer, optional, intent(out)  :: nb_node_
+        integer, optional, intent(out)  :: nb_dim_
     end subroutine mmelty
 end interface

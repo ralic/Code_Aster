@@ -54,7 +54,7 @@ subroutine mcomce(noma, newgeo, nummai, coor, alias,&
 !
 !
     integer ::  jdes
-    integer :: ino, no(9), i, ibid
+    integer :: ino, no(9)
     real(kind=8), pointer :: vale(:) => null()
 !
 !-----------------------------------------------------------------------
@@ -66,27 +66,25 @@ subroutine mcomce(noma, newgeo, nummai, coor, alias,&
 !
 ! --- INITIALISATIONS
 !
-    do 10 i = 1, 27
-        coor(i) = 0.d0
-10  end do
+    coor(1:27) = 0.d0
 !
 ! --- INFOS SUR LA MAILLE
 !
-    call mmelty(noma, nummai, alias, nno, ibid)
+    call mmelty(noma, nummai, alias, nno)
 !
 ! --- NUMEROS ABSOLUS DES NOEUDS DE LA MAILLE
 !
-    do 23 ino = 1, nno
+    do ino = 1, nno
         no(ino) = zi(jdes+ino-1)
-23  end do
+    end do
 !
 ! --- COORDONNEES DES NOEUDS DE LA MAILLE
 !
-    do 20 ino = 1, nno
+    do ino = 1, nno
         coor(3*(ino-1)+1) = vale(1+3*(no(ino)-1))
         coor(3*(ino-1)+2) = vale(1+3*(no(ino)-1)+1)
         coor(3*(ino-1)+3) = vale(1+3*(no(ino)-1)+2)
-20  end do
+    end do
 !
     call jedema()
 end subroutine

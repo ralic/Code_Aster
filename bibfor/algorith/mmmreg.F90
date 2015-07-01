@@ -66,7 +66,7 @@ subroutine mmmreg(noma, defico, resoco, depcn, ndd1,&
     integer :: ndimg, nzoco, ntpc
     integer :: nne, nnm, nbmae, nptm
     integer :: izone, imae, iptc, iptm, i
-    integer :: nuno, ibid, jdecme
+    integer :: nuno, jdecme
     integer :: posmae, nummae, nummam
     integer :: ilong
     real(kind=8) :: ksipc1, ksipc2, ksipr1, ksipr2
@@ -122,7 +122,7 @@ subroutine mmmreg(noma, defico, resoco, depcn, ndd1,&
 ! --- DES MAILLES
 !
     iptc = 1
-    do 10 izone = 1, nzoco
+    do izone = 1, nzoco
 !
 ! --- OPTIONS SUR LA ZONE DE CONTACT
 !
@@ -172,7 +172,7 @@ subroutine mmmreg(noma, defico, resoco, depcn, ndd1,&
 !
 ! --------- DEPLACEMENT DU NOEUD ESCLAVE DE LA MAILLE ESCLAVE
 !
-                call mmelty(noma, nummae, aliase, nne, ibid)
+                call mmelty(noma, nummae, aliase, nne)
                 call mmnonf(ndimg, nne, aliase, ksipc1, ksipc2,&
                             ff)
                 deplpe(1) = 0.d0
@@ -192,7 +192,7 @@ subroutine mmmreg(noma, defico, resoco, depcn, ndd1,&
 ! --------- DEPLACEMENT DU NOEUD MAITRE,
 ! --------- PROJETE DU NOEUD ESCLAVE SUR LA MAILLE MAITRE
 !
-                call mmelty(noma, nummam, aliasm, nnm, ibid)
+                call mmelty(noma, nummam, aliasm, nnm)
                 call mmnonf(ndimg, nnm, aliasm, ksipr1, ksipr2,&
                             ff)
                 deplpm(1) = 0.d0
@@ -202,7 +202,7 @@ subroutine mmmreg(noma, defico, resoco, depcn, ndd1,&
 ! --------- DEPLACEMENT DE LA PROJECTION DU NOEUD ESCLAVE
 ! --------- SUR LA MAILLE MAITRE
 !
-                do 40 i = 1, nnm
+                do i = 1, nnm
                     nuno = connex(1+zi(ilong-1+nummam)+i-2)
                     ASSERT(zl(jdepdl-1+ndd1*(nuno-1)+1))
                     ASSERT(zl(jdepdl-1+ndd1*(nuno-1)+2))
@@ -212,7 +212,7 @@ subroutine mmmreg(noma, defico, resoco, depcn, ndd1,&
                         ASSERT(zl(jdepdl-1+ndd1*(nuno-1)+3))
                         deplpm(3) = deplpm(3)+cnsv(ndd1*(nuno- 1)+3)*ff(i)
                     endif
- 40             continue
+                end do
 !
 ! --------- ECRITURE DES GLISSEMENTS
 !
@@ -238,7 +238,7 @@ subroutine mmmreg(noma, defico, resoco, depcn, ndd1,&
  30         continue
  20     continue
  25     continue
- 10 end do
+    end do
 !
     call jedema()
 end subroutine
