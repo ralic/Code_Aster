@@ -1,6 +1,6 @@
-subroutine cfmxr0(defico, resoco, noma)
+subroutine cfmxr0(sdcont_defi, sdcont_solv, mesh)
 !
-    implicit none
+implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -37,161 +37,148 @@ subroutine cfmxr0(defico, resoco, noma)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=24), intent(in) :: defico
-    character(len=24), intent(in) :: resoco
-    character(len=8), intent(in) :: noma
+    character(len=24), intent(in) :: sdcont_defi
+    character(len=24), intent(in) :: sdcont_solv
+    character(len=8), intent(in) :: mesh
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (TOUTES METHODES - POST-TRAITEMENT)
+! Contact - Solve
 !
-! CREER LE VALE_CONT POUR L'ARCHIVAGE DU CONTACT
+! Create VALE_CONT for storing contact results
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  sdcont_solv      : name of contact solving datastructure
+! In  mesh             : name of mesh
 !
-! IN  DEFICO : SD DE DEFINITION DU CONTACT
-! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
-! IN  NOMA   : NOM DU MAILLAGE
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
-!
-    integer :: nbcmp
-    parameter    (nbcmp = 30)
-    character(len=8) :: nomcmp(nbcmp)
-    integer :: nbper
-    parameter    (nbper = 4)
-    character(len=8) :: nomper(nbper)
+    integer, parameter :: nb_cmp = 30
+    integer, parameter:: nb_per = 4
 !
     integer :: zresu, zperc
     integer :: ifm, niv
-    integer :: izone, icmp, inoe, ibid
-    integer :: nbnoe, posnoe(1), numnoe(1)
-    integer :: nbno, ino, numno
-    integer :: nzoco
-    character(len=24) :: nochco
-    integer :: jnochc
+    integer :: i_zone, i_cmp, i_node_slav, ibid
+    integer :: nb_node_slav, node_slav_indx(1), node_slav_nume(1)
+    integer :: nb_node_mesh, i_node, node_nume
+    integer :: nb_cont_zone
+    character(len=24) :: sdcont_nochco
+    character(len=24), pointer :: v_sdcont_nochco(:) => null()
     character(len=19) :: cnsinr, cnsper, cnoinr
     integer :: jcnslr
     integer :: jcnslp
     integer :: jdecne
-    aster_logical :: lctcc, lctcd, lmail
+    aster_logical :: l_cont_cont, l_cont_disc
     real(kind=8), pointer :: cnsvp(:) => null()
     real(kind=8), pointer :: cnsvr(:) => null()
-! ----------------------------------------------------------------------
-    data nomcmp&
-     &   / 'CONT'  ,'JEU'   ,'RN'    ,&
-     &     'RNX'   ,'RNY'   ,'RNZ'   ,&
-     &     'GLIX'  ,'GLIY'  ,'GLI'   ,&
-     &     'RTAX'  ,'RTAY'  ,'RTAZ'  ,&
-     &     'RTGX'  ,'RTGY'  ,'RTGZ'  ,&
-     &     'RX'    ,'RY'    ,'RZ'    ,&
-     &     'R'     ,'HN'    ,'I'     ,&
-     &     'IX'    ,'IY'    ,'IZ'    ,&
-     &     'PT_X'  ,'PT_Y'  ,'PT_Z'  ,&
-     &     'PROJ_X','PROJ_Y','PROJ_Z'/
-! ----------------------------------------------------------------------
-    data nomper&
-     &   / 'V1','V2','V3','V4'/
+    character(len=8), parameter, dimension(nb_cmp) :: list_cmp = (/&
+        'CONT    ','JEU     ','RN      ',&
+        'RNX     ','RNY     ','RNZ     ',&
+        'GLIX    ','GLIY    ','GLI     ',&
+        'RTAX    ','RTAY    ','RTAZ    ',&
+        'RTGX    ','RTGY    ','RTGZ    ',&
+        'RX      ','RY      ','RZ      ',&
+        'R       ','HN      ','I       ',&
+        'IX      ','IY      ','IZ      ',&
+        'PT_X    ','PT_Y    ','PT_Z    ',&
+        'PROJ_X  ','PROJ_Y  ','PROJ_Z  '/)
+    character(len=8), parameter, dimension(nb_per) :: list_cmp_per = (/&
+        'V1      ','V2      ','V3      ','V4      '/)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     call infdbg('CONTACT', ifm, niv)
 !
-! --- INITIALISATIONS
+! - Parameters
 !
-    nzoco = cfdisi(defico,'NZOCO' )
-    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbno)
+    l_cont_cont  = cfdisl(sdcont_defi,'FORMUL_CONTINUE')
+    l_cont_disc  = cfdisl(sdcont_defi,'FORMUL_DISCRETE')
+    nb_cont_zone = cfdisi(sdcont_defi,'NZOCO' )
+    call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi=nb_node_mesh)
+!
+! - Initializations
+!
     cnsinr = '&&CFMXR0.CNSINR'
     cnoinr = '&&CFMXR0.CNOINR'
     cnsper = '&&CFMXR0.CNSPER'
 !
-! --- NOM DES CHAM_NO
+! - Save fields name
 !
-    nochco = resoco(1:14)//'.NOCHCO'
-    call wkvect(nochco, 'V V K24', 3, jnochc)
-    zk24(jnochc+1-1) = cnsinr
-    zk24(jnochc+2-1) = cnoinr
-    zk24(jnochc+3-1) = cnsper
+    sdcont_nochco = sdcont_solv(1:14)//'.NOCHCO'
+    call wkvect(sdcont_nochco, 'V V K24', 3, vk24 = v_sdcont_nochco)
+    v_sdcont_nochco(1) = cnsinr
+    v_sdcont_nochco(2) = cnoinr
+    v_sdcont_nochco(3) = cnsper
 !
-! --- TAILLES
+! - Sizex
 !
     zresu = cfmmvd('ZRESU')
     zperc = cfmmvd('ZPERC')
-    if (zresu .ne. nbcmp) then
-        ASSERT(.false.)
-    endif
-    if (zperc .ne. nbper) then
-        ASSERT(.false.)
-    endif
+    ASSERT(zresu .eq. nb_cmp)
+    ASSERT(zperc .eq. nb_per)
 !
-! --- TYPE DE CONTACT
+! - Create VALE_CONT
 !
-    lctcc = cfdisl(defico,'FORMUL_CONTINUE')
-    lctcd = cfdisl(defico,'FORMUL_DISCRETE')
-    lmail = lctcc.or.lctcd
-!
-! --- CREATION DU CHAM_NO_S VALE_CONT
-!
-    call cnscre(noma, 'INFC_R', zresu, nomcmp, 'V',&
+    call cnscre(mesh, 'INFC_R', zresu, list_cmp, 'V',&
                 cnsinr)
     call jeveuo(cnsinr(1:19)//'.CNSV', 'E', vr=cnsvr)
     call jeveuo(cnsinr(1:19)//'.CNSL', 'E', jcnslr)
 !
-! --- INITIALISATION DU CHAM_NO_S VALE_CONT
+! - Init VALE_CONT
 !
-    if (lmail) then
-        do izone = 1, nzoco
-            jdecne = mminfi(defico,'JDECNE',izone )
-            nbnoe = mminfi(defico,'NBNOE' ,izone )
-            do inoe = 1, nbnoe
-                posnoe(1) = inoe + jdecne
-                call cfnumn(defico, 1, posnoe(1), numnoe(1))
-                do icmp = 1, zresu
-                    cnsvr(zresu*(numnoe(1)-1)+icmp) = 0.d0
-                    zl(jcnslr-1+zresu*(numnoe(1)-1)+icmp) = .true.
+    if (l_cont_cont.or.l_cont_disc) then
+        do i_zone = 1, nb_cont_zone
+            jdecne       = mminfi(sdcont_defi, 'JDECNE', i_zone)
+            nb_node_slav = mminfi(sdcont_defi, 'NBNOE' , i_zone)
+            do i_node_slav = 1, nb_node_slav
+                node_slav_indx(1) = i_node_slav + jdecne
+                call cfnumn(sdcont_defi, 1, node_slav_indx(1), node_slav_nume(1))
+                do i_cmp = 1, zresu
+                    cnsvr(zresu*(node_slav_nume(1)-1)+i_cmp)       = 0.d0
+                    zl(jcnslr-1+zresu*(node_slav_nume(1)-1)+i_cmp) = .true.
                 end do
             end do
         end do
     else
-        do ino = 1, nbno
-            numno = ino
-            do icmp = 1, zresu
-                cnsvr(zresu*(numno-1)+icmp) = 0.d0
-                zl(jcnslr-1+zresu*(numno-1)+icmp) = .true.
+        do i_node = 1, nb_node_mesh
+            node_nume = i_node
+            do i_cmp = 1, zresu
+                cnsvr(zresu*(node_nume-1)+i_cmp)       = 0.d0
+                zl(jcnslr-1+zresu*(node_nume-1)+i_cmp) = .true.
             end do
         end do
     endif
 !
-! --- CREATION DU CHAM_NO_S PERCUSSION
+! - Create VALE_CONT_PERC
 !
-    if (lmail) then
-        call cnscre(noma, 'VARI_R', zperc, nomper, 'V',&
+    if (l_cont_cont.or.l_cont_disc) then
+        call cnscre(mesh, 'VARI_R', zperc, list_cmp_per, 'V',&
                     cnsper)
-    endif
-!
-! --- INITIALISATION DU CHAM_NO_S PERCUSSION
-! --- ON NE REMET PAS A ZERO D'UN PAS A L'AUTRE
-!
-    if (lmail) then
         call jeveuo(cnsper(1:19)//'.CNSV', 'E', vr=cnsvp)
         call jeveuo(cnsper(1:19)//'.CNSL', 'E', jcnslp)
-        do izone = 1, nzoco
-            jdecne = mminfi(defico,'JDECNE',izone )
-            nbnoe = mminfi(defico,'NBNOE' ,izone )
-            do inoe = 1, nbnoe
-                posnoe(1) = inoe + jdecne
-                call cfnumn(defico, 1, posnoe(1), numnoe(1))
-                do icmp = 1, zperc
-                    cnsvp(zperc*(numnoe(1)-1)+icmp) = 0.d0
-                    zl(jcnslp-1+zperc*(numnoe(1)-1)+icmp) = .false.
+    endif
+!
+! - Init VALE_CONT_PERC
+!
+    if (l_cont_cont.or.l_cont_disc) then
+        do i_zone = 1, nb_cont_zone
+            jdecne       = mminfi(sdcont_defi, 'JDECNE', i_zone)
+            nb_node_slav = mminfi(sdcont_defi, 'NBNOE' , i_zone)
+            do i_node_slav = 1, nb_node_slav
+                node_slav_indx(1) = i_node_slav + jdecne
+                call cfnumn(sdcont_defi, 1, node_slav_indx(1), node_slav_nume(1))
+                do i_cmp = 1, zperc
+                    cnsvp(zperc*(node_slav_nume(1)-1)+i_cmp)       = 0.d0
+                    zl(jcnslp-1+zperc*(node_slav_nume(1)-1)+i_cmp) = .false.
                 end do
             end do
         end do
     endif
 !
-! --- TRANSFO. EN CHAM_NO
+! - Transform VALE_CONT in CHAM_NO
 !
     call cnscno(cnsinr, ' ', 'NON', 'V', cnoinr,&
                 'F', ibid)
