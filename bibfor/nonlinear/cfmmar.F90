@@ -1,5 +1,21 @@
-subroutine cfmmar(noma, defico, newgeo, sdappa, nzoco,&
-                  ntpt, ndimg, ntma, ntno, ntmano)
+subroutine cfmmar(mesh   , sdcont_defi , sdcont_solv , nb_cont_zone, model_ndim,&
+                  nt_poin, nb_cont_elem, nb_cont_node, nt_elem_node)
+!
+implicit none
+!
+#include "asterfort/apmmvd.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfcald.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdisr.h"
+#include "asterfort/cfnben.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mminfi.h"
+#include "asterfort/mminfr.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,199 +35,182 @@ subroutine cfmmar(noma, defico, newgeo, sdappa, nzoco,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
+    character(len=8), intent(in) :: mesh
+    character(len=24), intent(in) :: sdcont_defi
+    character(len=24), intent(in) :: sdcont_solv
+    integer, intent(in) :: model_ndim
+    integer, intent(in) :: nb_cont_zone
+    integer, intent(in) :: nt_poin    
+    integer, intent(in) :: nb_cont_elem
+    integer, intent(in) :: nb_cont_node
+    integer, intent(in) :: nt_elem_node
 !
-#include "asterfort/apmmvd.h"
-#include "asterfort/assert.h"
-#include "asterfort/cfcald.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/cfdisr.h"
-#include "asterfort/cfnben.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jecroc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jeecra.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/mminfi.h"
-#include "asterfort/mminfr.h"
-    character(len=8) :: noma
-    character(len=19) :: sdappa
-    character(len=24) :: defico
-    character(len=19) :: newgeo
-    integer :: nzoco, ntpt, ndimg, ntma, ntmano, ntno
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! Contact - Solve
 !
-! ROUTINE CONTACT (METHODES MAILLEES - SD APPARIEMENT)
+! Continue/Discrete method - Fill pairing datastructure
 !
-! REMPLISSAGE DE LA SD POUR L'APPARIEMENT
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! /!\ Except point coordinates (see mmpoin/cfpoin)
 !
-! /!\ SAUF COORDONNNEES DES POINTS (VOIR MMPOIN ET CFPOIN)
+! In  mesh             : name of mesh
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  sdcont_solv      : name of contact solving datastructure
+! In  model_ndim       : size of model
+! In  nb_cont_zone     : number of contact zones
+! In  nt_poin          : total number of points (contact and non-contact)
+! In  nb_cont_elem     : total number of contact elements
+! In  nb_cont_node     : total number of contact nodes
+! In  nt_elem_node     : total number of nodes at all contact elements
 !
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
-! IN  SDAPPA : NOM DE LA SD APPARIEMENT
-! IN  NEWGEO : GEOMETRIE ACTUALISEE
-! IN  NZOCO  : NOMBRE DE ZONES
-! IN  NTPT   : NOMBRE TOTAL DE POINT A APPARIER
-! IN  NDIMG  : DIMENSION DE L'ESPACE
-! IN  NTMA   : NOMBRE TOTAL DE MAILLES
-! IN  NTNO   : NOMBRE TOTAL DE NOEUDS
-! IN  NTMANO : NOMBRE TOTAL DE NOEUD AUX ELEMENTS (ELNO)
-!
-!
-!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    character(len=24) :: nomsd
-    integer :: jnomsd
-    character(len=24) :: apinzi, apinzr
-    integer :: jpinzi, jpinzr
-    character(len=24) :: apinfi, apinfr
-    integer :: jpinfi, jpinfr
-    integer :: izone
-    integer :: iappa, itypa, itypee, itypem
-    integer :: nbpt, nbnom, nbnoe, nbmam, nbmae
+    character(len=19) :: sdappa, newgeo
+    character(len=24) :: sdappa_nosd
+    character(len=24), pointer :: v_sdappa_nosd(:) => null()
+    character(len=24) :: sdappa_inzi
+    integer, pointer :: v_sdappa_inzi(:) => null()
+    character(len=24) :: sdappa_inzr
+    real(kind=8), pointer :: v_sdappa_inzr(:) => null()
+    character(len=24) :: sdappa_infi
+    integer, pointer :: v_sdappa_infi(:) => null()
+    character(len=24) :: sdappa_infr
+    real(kind=8), pointer :: v_sdappa_infr(:) => null()
+    integer :: i_zone
+    integer :: i_pair, type_pair, vect_slav_type, vect_mast_type
+    integer :: nb_poin, nb_node_mast, nb_node_slav, nb_elem_mast, nb_elem_slav
     integer :: jdecnm, jdecmm, jdecne, jdecme
-    character(len=24) :: aptgel
-    integer :: longc, longt, nnosd, ibid, posma, ima
+    character(len=24) :: sdappa_tgel
+    integer :: longc, longt, nnosd, ibid, elem_indx, i_cont_elem
     integer :: zinzr, zinzi
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('CONTACT', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> ...... REMPLISSAGE SD APPARIEMENT'
+        write (ifm,*) '<CONTACT> .. Fill pairing datastructures for DISCRETE/CONTINUE methods'
     endif
 !
-! --- SD NOMS
+! - Pairing datastructure
 !
-    nomsd = sdappa(1:19)//'.NOSD'
-    call jeveuo(nomsd, 'E', jnomsd)
+    sdappa = sdcont_solv(1:14)//'.APPA'
 !
-    zk24(jnomsd+1 -1) = noma
-    zk24(jnomsd+2 -1) = newgeo
-    zk24(jnomsd+3 -1) = defico
+! - Displacement field for geometry update
 !
-! --- SD INFORMATIONS GLOBALES
+    newgeo = sdcont_solv(1:14)//'.NEWG'
 !
-    apinfi = sdappa(1:19)//'.INFI'
-    apinfr = sdappa(1:19)//'.INFR'
-    call jeveuo(apinfi, 'E', jpinfi)
-    call jeveuo(apinfr, 'E', jpinfr)
+! - Create datastructure to save names of datastructures
+!
+    sdappa_nosd = sdappa(1:19)//'.NOSD'
+    call jeveuo(sdappa_nosd, 'E', vk24 = v_sdappa_nosd)
+    v_sdappa_nosd(1) = mesh
+    v_sdappa_nosd(2) = newgeo
+    v_sdappa_nosd(3) = sdcont_defi
+!
+! - Create datastructure for general parameters
+!
+    sdappa_infi = sdappa(1:19)//'.INFI'
+    sdappa_infr = sdappa(1:19)//'.INFR'
+    call jeveuo(sdappa_infi, 'E', vi = v_sdappa_infi)
+    call jeveuo(sdappa_infr, 'E', vr = v_sdappa_infr)
     zinzr = apmmvd('ZINZR')
     zinzi = apmmvd('ZINZI')
+    v_sdappa_infi(1) = nb_cont_zone
+    v_sdappa_infi(2) = nt_poin
+    v_sdappa_infi(3) = nb_cont_elem
+    v_sdappa_infi(4) = cfdisi(sdcont_defi,'PROJ_NEWT_ITER')
+    v_sdappa_infi(5) = model_ndim
+    v_sdappa_infi(6) = nb_cont_node
+    v_sdappa_infr(1) = cfdisr(sdcont_defi,'PROJ_NEWT_RESI')
 !
-    zi(jpinfi+1-1) = nzoco
-    zi(jpinfi+2-1) = ntpt
-    zi(jpinfi+3-1) = ntma
-    zi(jpinfi+4-1) = cfdisi(defico,'PROJ_NEWT_ITER')
-    zi(jpinfi+5-1) = ndimg
-    zi(jpinfi+6-1) = ntno
+! - Create datastructure for each contact zone
 !
-    zr(jpinfr+1-1) = cfdisr(defico,'PROJ_NEWT_RESI')
+    sdappa_inzi = sdappa(1:19)//'.INZI'
+    sdappa_inzr = sdappa(1:19)//'.INZR'
+    call jeveuo(sdappa_inzi, 'E', vi = v_sdappa_inzi)
+    call jeveuo(sdappa_inzr, 'E', vr = v_sdappa_inzr)
+    do i_zone = 1, nb_cont_zone
 !
-! --- SD INFORMATIONS PAR ZONE
+! ----- Set parameters
 !
-    apinzi = sdappa(1:19)//'.INZI'
-    apinzr = sdappa(1:19)//'.INZR'
-    call jeveuo(apinzi, 'E', jpinzi)
-    call jeveuo(apinzr, 'E', jpinzr)
-    do 30 izone = 1, nzoco
+        nb_poin      = mminfi(sdcont_defi, 'NBPT' , i_zone)
+        nb_node_mast = mminfi(sdcont_defi, 'NBNOM', i_zone)
+        nb_node_slav = mminfi(sdcont_defi, 'NBNOE', i_zone)
+        nb_elem_mast = mminfi(sdcont_defi, 'NBMAM', i_zone)
+        nb_elem_slav = mminfi(sdcont_defi, 'NBMAE', i_zone)
+        jdecnm       = mminfi(sdcont_defi, 'JDECNM', i_zone)
+        jdecmm       = mminfi(sdcont_defi, 'JDECMM', i_zone)
+        jdecne       = mminfi(sdcont_defi, 'JDECNE', i_zone)
+        jdecme       = mminfi(sdcont_defi, 'JDECME', i_zone)
+        v_sdappa_inzi(zinzi*(i_zone-1)+1) = nb_poin
+        v_sdappa_inzi(zinzi*(i_zone-1)+2) = nb_node_mast
+        v_sdappa_inzi(zinzi*(i_zone-1)+3) = nb_node_slav
+        v_sdappa_inzi(zinzi*(i_zone-1)+4) = nb_elem_mast
+        v_sdappa_inzi(zinzi*(i_zone-1)+5) = nb_elem_slav
+        v_sdappa_inzi(zinzi*(i_zone-1)+6) = jdecnm
+        v_sdappa_inzi(zinzi*(i_zone-1)+7) = jdecmm
+        v_sdappa_inzi(zinzi*(i_zone-1)+8) = jdecne
+        v_sdappa_inzi(zinzi*(i_zone-1)+9) = jdecme
 !
-! ----- DIMENSIONS GENERALES
+! ----- Pairing options
 !
-        nbpt = mminfi(defico,'NBPT' ,izone )
-        nbnom = mminfi(defico,'NBNOM' ,izone )
-        nbnoe = mminfi(defico,'NBNOE' ,izone )
-        nbmam = mminfi(defico,'NBMAM' ,izone )
-        nbmae = mminfi(defico,'NBMAE' ,izone )
-        jdecnm = mminfi(defico,'JDECNM',izone )
-        jdecmm = mminfi(defico,'JDECMM',izone )
-        jdecne = mminfi(defico,'JDECNE',izone )
-        jdecme = mminfi(defico,'JDECME',izone )
-        zi(jpinzi+zinzi*(izone-1)+1 -1) = nbpt
-        zi(jpinzi+zinzi*(izone-1)+2 -1) = nbnom
-        zi(jpinzi+zinzi*(izone-1)+3 -1) = nbnoe
-        zi(jpinzi+zinzi*(izone-1)+4 -1) = nbmam
-        zi(jpinzi+zinzi*(izone-1)+5 -1) = nbmae
-        zi(jpinzi+zinzi*(izone-1)+6 -1) = jdecnm
-        zi(jpinzi+zinzi*(izone-1)+7 -1) = jdecmm
-        zi(jpinzi+zinzi*(izone-1)+8 -1) = jdecne
-        zi(jpinzi+zinzi*(izone-1)+9 -1) = jdecme
-!
-! ----- TOLERANCES ET TYPE APPARIEMENT
-!
-        itypa = mminfi(defico,'TYPE_APPA' ,izone )
-        zi(jpinzi+zinzi*(izone-1)+10-1) = itypa
-        iappa = mminfi(defico,'APPARIEMENT',izone)
-        zi(jpinzi+zinzi*(izone-1)+11-1) = iappa
-        zr(jpinzr+zinzr*(izone-1)+4 -1) = mminfr(defico,'TOLE_APPA' ,izone )
-        zr(jpinzr+zinzr*(izone-1)+5 -1)= mminfr(defico,&
-        'TOLE_PROJ_EXT' ,izone )
-        if (itypa .eq. 1) then
-            zr(jpinzr+zinzr*(izone-1)+1 -1) = mminfr( defico, 'TYPE_APPA_DIRX',izone)
-            zr(jpinzr+zinzr*(izone-1)+2 -1) = mminfr( defico, 'TYPE_APPA_DIRY',izone)
-            zr(jpinzr+zinzr*(izone-1)+3 -1)= mminfr(defico,&
-            'TYPE_APPA_DIRZ',izone )
+        type_pair = mminfi(sdcont_defi, 'TYPE_APPA'  , i_zone)
+        i_pair    = mminfi(sdcont_defi, 'APPARIEMENT', i_zone)
+        v_sdappa_inzi(zinzi*(i_zone-1)+10) = type_pair
+        v_sdappa_inzi(zinzi*(i_zone-1)+11) = i_pair
+        v_sdappa_inzr(zinzr*(i_zone-1)+4)  = mminfr(sdcont_defi, 'TOLE_APPA'    , i_zone)
+        v_sdappa_inzr(zinzr*(i_zone-1)+5)  = mminfr(sdcont_defi, 'TOLE_PROJ_EXT', i_zone)
+        if (type_pair .eq. 1) then
+            v_sdappa_inzr(zinzr*(i_zone-1)+1) = mminfr(sdcont_defi, 'TYPE_APPA_DIRX', i_zone)
+            v_sdappa_inzr(zinzr*(i_zone-1)+2) = mminfr(sdcont_defi, 'TYPE_APPA_DIRY', i_zone)
+            v_sdappa_inzr(zinzr*(i_zone-1)+3) = mminfr(sdcont_defi, 'TYPE_APPA_DIRZ', i_zone)
         endif
 !
-! ----- ORIENTATION BASE LOCALE (AUTO, FIXE, VECT_Y) - MAITRE
+! ----- Local basis for master side
 !
-        itypem = mminfi(defico,'VECT_MAIT',izone )
-        zi(jpinzi+zinzi*(izone-1)+12-1) = itypem
-        if (itypem .ne. 0) then
-            zr(jpinzr+zinzr*(izone-1)+6 -1) = mminfr( defico, 'VECT_MAIT_DIRX',izone)
-            zr(jpinzr+zinzr*(izone-1)+7 -1) = mminfr( defico, 'VECT_MAIT_DIRY',izone)
-            zr(jpinzr+zinzr*(izone-1)+8 -1)= mminfr(defico,&
-            'VECT_MAIT_DIRZ',izone )
+        vect_mast_type = mminfi(sdcont_defi, 'VECT_MAIT', i_zone)
+        v_sdappa_inzi(zinzi*(i_zone-1)+12) = vect_mast_type
+        if (vect_mast_type .ne. 0) then
+            v_sdappa_inzr(zinzr*(i_zone-1)+6) = mminfr(sdcont_defi, 'VECT_MAIT_DIRX', i_zone)
+            v_sdappa_inzr(zinzr*(i_zone-1)+7) = mminfr(sdcont_defi, 'VECT_MAIT_DIRY', i_zone)
+            v_sdappa_inzr(zinzr*(i_zone-1)+8) = mminfr(sdcont_defi, 'VECT_MAIT_DIRZ', i_zone)
         endif
 !
-! ----- ORIENTATION BASE LOCALE (AUTO, FIXE, VECT_Y) - ESCLAVE
+! ----- Local basis for slave side
 !
-        itypee = mminfi(defico,'VECT_ESCL',izone )
-        zi(jpinzi+zinzi*(izone-1)+13-1) = itypee
-        if (itypee .ne. 0) then
-            zr(jpinzr+zinzr*(izone-1)+9 -1) = mminfr( defico, 'VECT_ESCL_DIRX',izone)
-            zr(jpinzr+zinzr*(izone-1)+10-1) = mminfr( defico, 'VECT_ESCL_DIRY',izone)
-            zr(jpinzr+zinzr*(izone-1)+11-1)= mminfr(defico,&
-            'VECT_ESCL_DIRZ',izone )
+        vect_slav_type = mminfi(sdcont_defi, 'VECT_ESCL', i_zone)
+        v_sdappa_inzi(zinzi*(i_zone-1)+13) = vect_slav_type
+        if (vect_slav_type .ne. 0) then
+            v_sdappa_inzr(zinzr*(i_zone-1)+9 ) = mminfr(sdcont_defi, 'VECT_ESCL_DIRX', i_zone)
+            v_sdappa_inzr(zinzr*(i_zone-1)+10) = mminfr(sdcont_defi, 'VECT_ESCL_DIRY', i_zone)
+            v_sdappa_inzr(zinzr*(i_zone-1)+11) = mminfr(sdcont_defi, 'VECT_ESCL_DIRZ', i_zone)
         endif
 !
-! ----- CALCUL AUTORISE MAITRE/ESCLAVE
+! ----- Compute which side ?
 !
-        if (cfcald(defico,izone,'ESCL')) then
-            zi(jpinzi+zinzi*(izone-1)+14-1) = 1
+        if (cfcald(sdcont_defi,i_zone,'ESCL')) then
+            v_sdappa_inzi(zinzi*(i_zone-1)+14) = 1
         endif
-        if (cfcald(defico,izone,'MAIT')) then
-            zi(jpinzi+zinzi*(izone-1)+15-1) = 1
+        if (cfcald(sdcont_defi,i_zone,'MAIT')) then
+            v_sdappa_inzi(zinzi*(i_zone-1)+15) = 1
         endif
+    end do
 !
-30  end do
+! - Tangents at nodes for each element
 !
-! --- TANGENTES AUX NOEUDS PAR ELEMENT
-!
-    aptgel = sdappa(1:19)//'.TGEL'
-    longt = 0
-    do 20 ima = 1, ntma
-        posma = ima
-        call cfnben(defico, posma, 'CONNEX', nnosd, ibid)
+    sdappa_tgel = sdappa(1:19)//'.TGEL'
+    longt       = 0
+    do i_cont_elem = 1, nb_cont_elem
+        elem_indx = i_cont_elem
+        call cfnben(sdcont_defi, elem_indx, 'CONNEX', nnosd, ibid)
         longc = 6*nnosd
-        call jeecra(jexnum(aptgel, ima), 'LONMAX', ival=longc)
-        call jecroc(jexnum(aptgel, ima))
+        call jeecra(jexnum(sdappa_tgel, i_cont_elem), 'LONMAX', ival=longc)
+        call jecroc(jexnum(sdappa_tgel, i_cont_elem))
         longt = longt + longc
-20  end do
-    ASSERT(longt.eq.6*ntmano)
-!
-    call jedema()
+    end do
+    ASSERT(longt.eq.6*nt_elem_node)
 !
 end subroutine

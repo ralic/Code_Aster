@@ -74,11 +74,8 @@ subroutine apcrsd(sdappa, nbzone, ntpt, ntma, ntno,&
 !
     call jemarq()
     call infdbg('APPARIEMENT', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
-        write (ifm,*) '<APPARIEMENT> CREATION DE LA SD APPARIEMENT'
+        write (ifm,*) '<PAIRING> Create datastructure'
     endif
 !
 ! --- LONGUEURS DES SDAPPA

@@ -16,8 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfmmma(defico, resoco)
-        character(len=24) :: defico
-        character(len=24) :: resoco
+    subroutine cfmmma(sdcont_defi, sdcont_solv)
+        character(len=24), intent(in) :: sdcont_defi
+        character(len=24), intent(in) :: sdcont_solv
     end subroutine cfmmma
 end interface

@@ -16,17 +16,16 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfmmar(noma, defico, newgeo, sdappa, nzoco,&
-                      ntpt, ndimg, ntma, ntno, ntmano)
-        character(len=8) :: noma
-        character(len=24) :: defico
-        character(len=19) :: newgeo
-        character(len=19) :: sdappa
-        integer :: nzoco
-        integer :: ntpt
-        integer :: ndimg
-        integer :: ntma
-        integer :: ntno
-        integer :: ntmano
+    subroutine cfmmar(mesh   , sdcont_defi , sdcont_solv , nb_cont_zone, model_ndim,&
+                      nt_poin, nb_cont_elem, nb_cont_node, nt_elem_node)
+        character(len=8), intent(in) :: mesh
+        character(len=24), intent(in) :: sdcont_defi
+        character(len=24), intent(in) :: sdcont_solv
+        integer, intent(in) :: model_ndim
+        integer, intent(in) :: nb_cont_zone
+        integer, intent(in) :: nt_poin    
+        integer, intent(in) :: nb_cont_elem
+        integer, intent(in) :: nb_cont_node
+        integer, intent(in) :: nt_elem_node
     end subroutine cfmmar
 end interface

@@ -1,4 +1,13 @@
-subroutine cfmmma(defico, resoco)
+subroutine cfmmma(sdcont_defi, sdcont_solv)
+!
+implicit none
+!
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/cfmmci.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/utmess.h"
+#include "asterfort/wkvect.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,75 +27,72 @@ subroutine cfmmma(defico, resoco)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/cfmmvd.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
-    character(len=24) :: defico, resoco
+    character(len=24), intent(in) :: sdcont_defi
+    character(len=24), intent(in) :: sdcont_solv
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (METHODES MAILLEES)
+! Contact - Solve
 !
-! CREATION SD DE RESOLUTION
+! Continue/Discrete method - Create datastructures for DISCRETE/CONTINUE methods
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  sdcont_solv      : name of contact solving datastructure
 !
-! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
-! IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
-!
-!
-!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    integer :: ntpc, ntnoec, nzoco
-    character(len=24) :: jeusup, ctevco, ctevpe
-    integer :: jjsup, jctevc, jctevp
-    integer :: zeven
+    integer :: nb_cont_poin, nb_cont_node_c, nb_cont_zone
+    integer :: zeven, ztaco
+    character(len=24) :: sdcont_evenco
+    real(kind=8), pointer :: v_sdcont_evenco(:) => null()
+    character(len=24) :: sdcont_evenpe
+    real(kind=8), pointer :: v_sdcont_evenpe(:) => null()
+    character(len=24) :: sdcont_jsupco
+    real(kind=8), pointer :: v_sdcont_jsupco(:) => null()
+    character(len=24) :: sdcont_tabcof
+    real(kind=8), pointer :: v_sdcont_tabcof(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('CONTACT', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> ... CREATION DES SD POUR LES '//&
-        ' FORMULATIONS MAILLEES'
+        write (ifm,*) '<CONTACT> . Create contact datastructures for DISCRETE/CONTINUE methods'
     endif
 !
-! --- INITIALISATIONS
+! - Get parameters
 !
-    ntpc = cfdisi(defico,'NTPC' )
-    ntnoec = cfdisi(defico,'NTNOEC')
-    nzoco = cfdisi(defico,'NZOCO' )
-    zeven = cfmmvd('ZEVEN')
+    nb_cont_poin   = cfdisi(sdcont_defi,'NTPC' )
+    nb_cont_node_c = cfdisi(sdcont_defi,'NTNOEC')
+    nb_cont_zone   = cfdisi(sdcont_defi,'NZOCO' )
+    zeven          = cfmmvd('ZEVEN')
+    ztaco          = cfmmvd('ZTACO')
 !
-! --- JEU SUPPLEMENTAIRE (DIST_*)
+! - Create datastructure for user's gaps
 !
-    jeusup = resoco(1:14)//'.JSUPCO'
-    call wkvect(jeusup, 'V V R', ntpc, jjsup)
+    sdcont_jsupco = sdcont_solv(1:14)//'.JSUPCO'
+    call wkvect(sdcont_jsupco, 'V V R', nb_cont_poin, vr = v_sdcont_jsupco)
 !
-! --- INFORMATIONS POUR L'EVENT-DRIVEN - COLLISION
+! - Create datastructure for event-driven management
 !
-    ctevco = resoco(1:14)//'.EVENCO'
-    call wkvect(ctevco, 'V V R', zeven*ntpc, jctevc)
+    sdcont_evenco = sdcont_solv(1:14)//'.EVENCO'
+    call wkvect(sdcont_evenco, 'V V R', zeven*nb_cont_poin, vr = v_sdcont_evenco)
+    sdcont_evenpe = sdcont_solv(1:14)//'.EVENPE'
+    call wkvect(sdcont_evenpe, 'V V R', 3*nb_cont_zone    , vr = v_sdcont_evenpe)
 !
-! --- INFORMATIONS POUR L'EVENT-DRIVEN - INTERPENETRATION
+! - Print
 !
-    ctevpe = resoco(1:14)//'.EVENPE'
-    call wkvect(ctevpe, 'V V R', 3*nzoco, jctevp)
+    call utmess('I', 'MECANONLINE6_5', si=nb_cont_node_c)
 !
-! --- AFFICHAGE
+! - Create datastructure for coefficients
+! 
+    sdcont_tabcof = sdcont_solv(1:14)//'.TABL.COEF'
+    call wkvect(sdcont_tabcof, 'V V R', nb_cont_zone*ztaco, vr = v_sdcont_tabcof)
 !
-    call utmess('I', 'MECANONLINE6_5', si=ntnoec)
+! - Init coefficients
 !
-    call jedema()
+    call cfmmci(sdcont_defi, sdcont_solv)
+!
 end subroutine

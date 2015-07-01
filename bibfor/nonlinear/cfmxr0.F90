@@ -91,6 +91,9 @@ implicit none
 !
     call jemarq()
     call infdbg('CONTACT', ifm, niv)
+    if (niv .ge. 2) then
+        write (ifm,*) '<CONTACT> . Create contact field for post-treatment'
+    endif
 !
 ! - Parameters
 !

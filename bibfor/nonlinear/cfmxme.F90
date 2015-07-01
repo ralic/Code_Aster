@@ -1,16 +1,13 @@
-subroutine cfmxme(numedd, sddyna, defico, resoco)
+subroutine cfmxme(nume_dof, sddyna, sdcont_defi, sdcont_solv)
 !
-    implicit none
+implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/cfmmvd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/mm_cycl_crsd.h"
 #include "asterfort/mm_cycl_init.h"
 #include "asterfort/ndynlo.h"
@@ -36,103 +33,95 @@ subroutine cfmxme(numedd, sddyna, defico, resoco)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=24), intent(in) :: numedd
+    character(len=24), intent(in) :: nume_dof
     character(len=19), intent(in) :: sddyna
-    character(len=24), intent(in) :: defico
-    character(len=24), intent(in) :: resoco
+    character(len=24), intent(in) :: sdcont_defi
+    character(len=24), intent(in) :: sdcont_solv
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (METHODES CONTINUE)
+! Contact - Solve
 !
-! CREATION SD DE RESOLUTION RESOCO
+! Continue method - Create datastructures for CONTINUE method
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  nume_dof         : name of numbering object (NUME_DDL)
+! In  sddyna           : name of dynamic solving datastructure
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  sdcont_solv      : name of contact solving datastructure
 !
-! IN  NUMEDD : NUME_DDL DE LA MATRICE TANGENTE GLOBALE
-! IN  SDDYNA : SD DYNAMIQUE
-! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
-! IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
-!
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    integer :: ntpc
-    aster_logical :: ldyna, lnoeu
-    character(len=24) :: mdecol, etatct
-    integer :: jmdeco, jetat
-    character(len=24) :: tabfin, apjeu
-    integer :: jtabf, japjeu
-    character(len=24) :: vitini, accini
+    integer :: nt_cont_poin
+    aster_logical :: l_dyna, l_inte_node
+    character(len=24) :: sdcont_mdecol
+    aster_logical, pointer :: v_sdcont_mdecol(:) => null()
+    character(len=24) :: sdcont_etatct
+    real(kind=8), pointer :: v_sdcont_etatct(:) => null()
+    character(len=24) :: sdcont_tabfin
+    real(kind=8), pointer :: v_sdcont_tabfin(:) => null()
+    character(len=24) :: sdcont_apjeu
+    real(kind=8), pointer :: v_sdcont_apjeu(:) => null()
+    character(len=24) :: sdcont_vitini, sdcont_accini
     integer :: ztabf, zetat
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('CONTACT', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> ... CREATION DES SD POUR LA '//&
-        ' FORMULATION CONTINUE'
+        write (ifm,*) '<CONTACT> . Create contact datastructures for CONTINUE method'
     endif
 !
-! --- INITIALISATIONS
+! - Get parameters
 !
-    ntpc = cfdisi(defico,'NTPC' )
-    ldyna = ndynlo(sddyna,'DYNAMIQUE')
+    nt_cont_poin = cfdisi(sdcont_defi,'NTPC')
+    l_dyna       = ndynlo(sddyna,'DYNAMIQUE')
 !
-! --- TABLEAU CONTENANT LES INFORMATIONS DIVERSES
+! - Create datastructure for general informations about contact
 !
-    tabfin = resoco(1:14)//'.TABFIN'
+    sdcont_tabfin = sdcont_solv(1:14)//'.TABFIN'
     ztabf = cfmmvd('ZTABF')
-    call wkvect(tabfin, 'V V R', ztabf*ntpc+1, jtabf)
-    zr(jtabf) = ntpc
+    call wkvect(sdcont_tabfin, 'V V R', ztabf*nt_cont_poin+1, vr = v_sdcont_tabfin)
+    v_sdcont_tabfin(1) = nt_cont_poin
 !
-! --- CREATION INDICATEUR DE DECOLLEMENT DANS COMPLIANCE
+! - Create datastructure for get-off indicator
 !
-    mdecol = resoco(1:14)//'.MDECOL'
-    call wkvect(mdecol, 'V V L', 1, jmdeco)
-    zl(jmdeco+1-1) = .false.
+    sdcont_mdecol = sdcont_solv(1:14)//'.MDECOL'
+    call wkvect(sdcont_mdecol, 'V V L', 1, vl = v_sdcont_mdecol)
+    v_sdcont_mdecol(1) = .false.
 !
-! --- VECTEUR POUR LA DYNAMIQUE A L INSTANT MOINS
-! --- UTILE UNIQUEMENT AFIN D ARCHIVER LE DERNIER INSTANT CALCULE
-! --- SI PLANTE POUR LE NOUVEAU PAS DE TEMPS DANS
-! --- LES ITERATIONS DE NEWTON
+! - Create fields for dynamic management
 !
-    if (ldyna) then
-        vitini = resoco(1:14)//'.VITI'
-        accini = resoco(1:14)//'.ACCI'
-        call vtcreb(vitini, 'V', 'R',&
-                    nume_ddlz = numedd)
-        call vtcreb(accini, 'V', 'R',&
-                    nume_ddlz = numedd)
+    if (l_dyna) then
+        sdcont_vitini = sdcont_solv(1:14)//'.VITI'
+        sdcont_accini = sdcont_solv(1:14)//'.ACCI'
+        call vtcreb(sdcont_vitini, 'V', 'R', nume_ddlz = nume_dof)
+        call vtcreb(sdcont_accini, 'V', 'R', nume_ddlz = nume_dof)
     endif
 !
-! --- OBJET DE SAUVEGARDE DE L ETAT DE CONTACT
+! - Create datastructure to save contact states (step cutting management)
 !
-    zetat = cfmmvd('ZETAT')
-    etatct = resoco(1:14)//'.ETATCT'
-    call wkvect(etatct, 'V V R', zetat*ntpc, jetat)
+    zetat         = cfmmvd('ZETAT')
+    sdcont_etatct = sdcont_solv(1:14)//'.ETATCT'
+    call wkvect(sdcont_etatct, 'V V R', zetat*nt_cont_poin, vr = v_sdcont_etatct)
 !
-! - Creating data structures for cycling detection and treatment
+! - Create datastructure for cycling detection and treatment
 !
-    call mm_cycl_crsd(defico, resoco)
-    call mm_cycl_init(defico, resoco)
+    call mm_cycl_crsd(sdcont_defi, sdcont_solv)
+    call mm_cycl_init(sdcont_defi, sdcont_solv)
 !
-! --- JEU TOTAL
+! - Create datastructure to save gaps
 !
-    apjeu = resoco(1:14)//'.APJEU'
-    call wkvect(apjeu, 'V V R', ntpc, japjeu)
+    sdcont_apjeu = sdcont_solv(1:14)//'.APJEU'
+    call wkvect(sdcont_apjeu, 'V V R', nt_cont_poin, vr = v_sdcont_apjeu)
 !
-! --- TOUTES LES ZONES EN INTEGRATION AUX NOEUDS ?
+! - Warning if not node integration (=> no VALE_CONT)
 !
-    lnoeu = cfdisl(defico,'ALL_INTEG_NOEUD')
-    if (.not.lnoeu) then
+    l_inte_node = cfdisl(sdcont_defi,'ALL_INTEG_NOEUD')
+    if (.not.l_inte_node) then
         call utmess('A', 'CONTACT3_16')
     endif
 !
-    call jedema()
 end subroutine

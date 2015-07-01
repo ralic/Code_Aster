@@ -1,4 +1,12 @@
-subroutine cfmmap(noma, defico, resoco)
+subroutine cfmmap(mesh, sdcont_defi, sdcont_solv)
+!
+implicit none
+!
+#include "asterfort/apcrsd.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfmmar.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infdbg.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,75 +26,58 @@ subroutine cfmmap(noma, defico, resoco)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/apcrsd.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/cfmmar.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-    character(len=8) :: noma
-    character(len=24) :: defico, resoco
+    character(len=8), intent(in) :: mesh
+    character(len=24), intent(in) :: sdcont_defi
+    character(len=24), intent(in) :: sdcont_solv
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (METHODES MAILLEES - SD APPARIEMENT)
+! Contact - Solve
 !
-! CREATION DE LA SD POUR L'APPARIEMENT
+! Continue/Discrete method - Prepare pairing datastructures
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  mesh             : name of mesh
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  sdcont_solv      : name of contact solving datastructure
 !
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
-! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
+! --------------------------------------------------------------------------------------------------
 !
-!
-!
-!
+    character(len=19) :: sdappa
     integer :: ifm, niv
-    integer :: nzoco, ntpt, ndimg, ntmano, ntma, nnoco
-    integer :: nbno
-    character(len=19) :: sdappa, newgeo
+    integer :: nb_cont_zone, nt_poin, model_ndim, nt_elem_node, nb_cont_elem, nb_cont_node
+    integer :: nb_node_mesh
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('CONTACT', ifm, niv)
-!
-! --- INITIALISATIONS
-!
-    nzoco = cfdisi(defico,'NZOCO' )
-    nnoco = cfdisi(defico,'NNOCO' )
-    ntpt = cfdisi(defico,'NTPT' )
-    ndimg = cfdisi(defico,'NDIM' )
-    ntma = cfdisi(defico,'NMACO' )
-    ntmano = cfdisi(defico,'NTMANO')
-    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbno)
-!
-! --- NOM DES SD
-!
-    sdappa = resoco(1:14)//'.APPA'
-    newgeo = resoco(1:14)//'.NEWG'
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> ...... CREATION SD APPARIEMENT'
+        write (ifm,*) '<CONTACT> . Prepare pairing datastructures for DISCRETE/CONTINUE methods'
     endif
 !
-! --- CREATION DE LA SD APPARIEMENT
+! - Parameters
 !
-    call apcrsd(sdappa, nzoco, ntpt, ntma, nnoco,&
-                ntmano, nbno)
+    nb_cont_zone = cfdisi(sdcont_defi,'NZOCO' )
+    nb_cont_node = cfdisi(sdcont_defi,'NNOCO' )
+    nt_poin      = cfdisi(sdcont_defi,'NTPT'  )
+    model_ndim   = cfdisi(sdcont_defi,'NDIM'  )
+    nb_cont_elem = cfdisi(sdcont_defi,'NMACO' )
+    nt_elem_node = cfdisi(sdcont_defi,'NTMANO')
+    call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi=nb_node_mesh)
 !
-! --- REMPLISSAGE DE LA SD APPARIEMENT
+! - Pairing datastructure
 !
-    call cfmmar(noma, defico, newgeo, sdappa, nzoco,&
-                ntpt, ndimg, ntma, nnoco, ntmano)
+    sdappa = sdcont_solv(1:14)//'.APPA'
 !
-    call jedema()
+! - Create pairing datastructure
+!
+    call apcrsd(sdappa      , nb_cont_zone, nt_poin, nb_cont_elem, nb_cont_node,&
+                nt_elem_node, nb_node_mesh)
+!
+! - Fill pairing datastructure
+!
+    call cfmmar(mesh   , sdcont_defi , sdcont_solv , nb_cont_zone, model_ndim,&
+                nt_poin, nb_cont_elem, nb_cont_node, nt_elem_node)
 !
 end subroutine
