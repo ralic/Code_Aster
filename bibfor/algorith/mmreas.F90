@@ -36,7 +36,7 @@ subroutine mmreas(noma, defico, resoco, valinc)
 #include "asterfort/mminfi.h"
 #include "asterfort/mminfl.h"
 #include "asterfort/mminfm.h"
-#include "asterfort/mmvalp.h"
+#include "asterfort/mmvalp_scal.h"
 #include "asterfort/nmchex.h"
     character(len=8) :: noma
     character(len=24) :: defico, resoco
@@ -68,7 +68,7 @@ subroutine mmreas(noma, defico, resoco, valinc)
     integer :: nne, nbmae, nptm
     integer :: ndimg, nzoco
     aster_logical :: lveri
-    real(kind=8) :: lambdc(1), ksipc1, ksipc2
+    real(kind=8) :: lambdc, ksipc1, ksipc2
     real(kind=8) :: mlagc(9)
     character(len=8) :: aliase
     character(len=19) :: cnsplu, cnslbd, depplu
@@ -161,12 +161,12 @@ subroutine mmreas(noma, defico, resoco, valinc)
 !
 ! --------- MULTIPLICATEUR DE LAGRANGE DE CONTACT DU POINT
 !
-                call mmvalp(ndimg, aliase, nne, 1, ksipc1,&
-                            ksipc2, mlagc, lambdc)
+                call mmvalp_scal(ndimg, aliase, nne, ksipc1,&
+                                 ksipc2, mlagc, lambdc)
 !
 ! --------- SAUVEGARDE
 !
-                zr(jtabf+ztabf*(iptc-1)+16) = lambdc(1)
+                zr(jtabf+ztabf*(iptc-1)+16) = lambdc
 !
 ! --------- LIAISON DE CONTACT SUIVANTE
 !

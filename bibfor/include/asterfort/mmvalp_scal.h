@@ -16,15 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mmvalp(nb_dim, elem_type, elem_nbno, nb_cmp, ksi1,&
-                      ksi2  , vale_node, vale_poin)
+    subroutine mmvalp_scal(nb_dim   , elem_type, elem_nbno, ksi1, ksi2,&
+                           vale_node, vale_poin)
         integer, intent(in) :: nb_dim
         character(len=8), intent(in) :: elem_type
         integer, intent(in) :: elem_nbno
-        integer, intent(in) :: nb_cmp
         real(kind=8), intent(in) :: ksi1
         real(kind=8), intent(in) :: ksi2
         real(kind=8), intent(in) :: vale_node(*)
-        real(kind=8), intent(out) :: vale_poin(*)
-    end subroutine mmvalp
+        real(kind=8), intent(out) :: vale_poin
+    end subroutine mmvalp_scal
 end interface

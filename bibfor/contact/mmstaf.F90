@@ -12,7 +12,7 @@ subroutine mmstaf(mesh, ndim, chdepd, coef_frot, lpenaf,&
 #include "asterfort/jemarq.h"
 #include "asterfort/matini.h"
 #include "asterfort/mcopco.h"
-#include "asterfort/mmvalp.h"
+#include "asterfort/mmvalp_scal.h"
 #include "asterfort/mm_cycl_laugf.h"
 !
 ! ======================================================================
@@ -127,10 +127,10 @@ subroutine mmstaf(mesh, ndim, chdepd, coef_frot, lpenaf,&
 !
 ! - Lagrange multiplier for friction at current contact point
 !
-    call mmvalp(ndim, aliase, nne, 1, ksipc1,&
+    call mmvalp_scal(ndim, aliase, nne, ksipc1,&
                 ksipc2, mult_lagr_f1, dlagrf(1))
     if (ndim .eq. 3) then
-        call mmvalp(ndim, aliase, nne, 1, ksipc1,&
+        call mmvalp_scal(ndim, aliase, nne, ksipc1,&
                     ksipc2, mult_lagr_f2, dlagrf(2))
     endif
 !

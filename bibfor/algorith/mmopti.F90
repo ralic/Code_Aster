@@ -16,7 +16,7 @@ implicit none
 #include "asterfort/cnocns.h"
 #include "asterfort/cnsred.h"
 #include "asterfort/mmextm.h"
-#include "asterfort/mmvalp.h"
+#include "asterfort/mmvalp_scal.h"
 #include "asterfort/apinfr.h"
 #include "asterfort/mminfm.h"
 #include "asterfort/mminfi.h"
@@ -65,7 +65,7 @@ implicit none
     integer :: ifm, niv
     character(len=19) :: disp_init, cnsplu, cnscon
     real(kind=8) :: jeusgn, tau1(3), tau2(3), norm(3), noor
-    real(kind=8) :: mlagc(9), pres_cont(1), flag_cont
+    real(kind=8) :: mlagc(9), pres_cont, flag_cont
     integer :: i_zone, i_elem_slav, i_poin_appa, i_poin_elem, i_cont_poin
     integer :: nb_cont_zone, nb_poin_elem, nb_elem_slav, model_ndim
     integer :: elem_slav_indx, elem_slav_nume, elem_slav_nbno
@@ -210,9 +210,9 @@ implicit none
 !
                 if (l_auto_seuil) then
                     call mmextm(sdcont_defi, cnscon, elem_slav_indx, mlagc)
-                    call mmvalp(model_ndim, elem_slav_type, elem_slav_nbno, 1, ksipr1,&
-                                ksipr2    , mlagc         , pres_cont)
-                    v_sdcont_tabfin(ztabf*(i_cont_poin-1)+17) = pres_cont(1)
+                    call mmvalp_scal(model_ndim, elem_slav_type, elem_slav_nbno, ksipr1,&
+                                     ksipr2    , mlagc         , pres_cont)
+                    v_sdcont_tabfin(ztabf*(i_cont_poin-1)+17) = pres_cont
                 else
                     v_sdcont_tabfin(ztabf*(i_cont_poin-1)+17) = seuil_init
                 endif

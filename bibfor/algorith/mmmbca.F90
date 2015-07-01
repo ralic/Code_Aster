@@ -42,6 +42,7 @@ subroutine mmmbca(noma, sddyna, iterat, defico, resoco,&
 #include "asterfort/mmnorm.h"
 #include "asterfort/mmstaf.h"
 #include "asterfort/mmvalp.h"
+#include "asterfort/mmvalp_scal.h"
 #include "asterfort/ndynlo.h"
 #include "asterfort/nmchex.h"
 #include "asterfort/utmess.h"
@@ -116,7 +117,7 @@ subroutine mmmbca(noma, sddyna, iterat, defico, resoco,&
     real(kind=8) :: norm(3), tau1(3), tau2(3)
     real(kind=8) :: mlagc(9), mlagf1(9), mlagf2(9)
     real(kind=8) :: coorme(27)
-    real(kind=8) :: lambdc(1)
+    real(kind=8) :: lambdc
     real(kind=8) :: noor
     real(kind=8) :: jeu, jeuvit, dist
     real(kind=8) :: pres_frot(3), dist_frot(3)
@@ -348,15 +349,15 @@ subroutine mmmbca(noma, sddyna, iterat, defico, resoco,&
 !
 ! --------- NOEUDS EXCLUS -> ON SORT DIRECT
 !
-                if (zr(jtabf+ztabf*(iptc-1)+18) .eq. 1.d0) then
+                if (nint(zr(jtabf+ztabf*(iptc-1)+18)) .eq. 1) then
                     indi_cont_curr = 0
                     goto 19
                 endif
 !
 ! --------- MULTIPLICATEUR DE LAGRANGE DE CONTACT DU POINT
 !
-                call mmvalp(ndimg, aliase, nne, 1, ksipc1,&
-                            ksipc2, mlagc, lambdc)
+                call mmvalp_scal(ndimg, aliase, nne, ksipc1,&
+                                 ksipc2, mlagc, lambdc)
 !
 ! --------- FORMULATION EN VITESSE
 !
@@ -376,7 +377,7 @@ subroutine mmmbca(noma, sddyna, iterat, defico, resoco,&
 !
 ! ------------- Evaluate contact status
 !
-                call mmstac(jeu, lambdc(1), coef_cont, indi_cont_eval)
+                call mmstac(jeu, lambdc, coef_cont, indi_cont_eval)
 !
 ! ------------- Evaluate friction status
 !
@@ -392,7 +393,7 @@ subroutine mmmbca(noma, sddyna, iterat, defico, resoco,&
 !
                 call mmalgo(defico, resoco, lboucc, lfrotz, lvites,&
                             lglini, l_coef_adap, izone, iptc, indi_cont_init,&
-                            indi_cont_eval, indi_frot_eval, jeu, jeuvit, lambdc(1),&
+                            indi_cont_eval, indi_frot_eval, jeu, jeuvit, lambdc,&
                             dist_frot, pres_frot, zr(jcyhis), zr(jcycoe), indi_cont_curr,&
                             indi_frot_curr, ctcsta, mmcvca, scotch)
 !
@@ -408,7 +409,7 @@ subroutine mmmbca(noma, sddyna, iterat, defico, resoco,&
                 if (niv .ge. 2) then
                     call mmimp4(ifm, noma, nummae, iptm, indi_cont_prev,&
                                 indi_cont_curr, indi_frot_prev, indi_frot_curr, lfrot, lvites,&
-                                lgliss, jeu, jeuvit, lambdc(1))
+                                lgliss, jeu, jeuvit, lambdc)
                 endif
 !
 ! --------- LIAISON DE CONTACT SUIVANTE
