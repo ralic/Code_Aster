@@ -16,8 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mreacg(mesh, sdcont_solv)
+    subroutine mreacg(mesh, sdcont_solv, field_update_)
         character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: sdcont_solv
+        character(len=*), optional, intent(in) :: field_update_
     end subroutine mreacg
 end interface

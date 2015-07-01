@@ -36,7 +36,7 @@ subroutine cfmmve(noma, defico, resoco, valinc, instan)
 #include "asterfort/mmpoin.h"
 #include "asterfort/mmveri.h"
 #include "asterfort/nmchex.h"
-#include "asterfort/mmfield_prep.h"
+#include "asterfort/mreacg.h"
     character(len=8) :: noma
     character(len=24) :: defico, resoco
     character(len=19) :: valinc(*)
@@ -61,7 +61,7 @@ subroutine cfmmve(noma, defico, resoco, valinc, instan)
 !
 !
     integer :: ifm, niv
-    character(len=19) :: sdappa, oldgeo, newgeo, depplu
+    character(len=19) :: sdappa, newgeo, depplu
     aster_logical :: lctcc, lctcd, lallv
     character(len=24) :: jeux, loca, enti, zone
     integer :: npt
@@ -85,7 +85,6 @@ subroutine cfmmve(noma, defico, resoco, valinc, instan)
 !
 ! --- DECOMPACTION VARIABLES CHAPEAUX
 !
-    oldgeo = noma(1:8)//'.COORDO'
     call nmchex(valinc, 'VALINC', 'DEPPLU', depplu)
 !
 ! --- NOM DES SDs
@@ -96,8 +95,7 @@ subroutine cfmmve(noma, defico, resoco, valinc, instan)
 ! - Geometry update
 !
     if (lallv) then
-        call mmfield_prep(oldgeo, newgeo,&
-                          l_update_ = .true._1, field_update_ = depplu, alpha_ = 1.d0)
+        call mreacg(noma, resoco, field_update_ = depplu)
     endif
 !
 ! --- CREATION SD APPARIEMENT EN MODE ALL VERIF

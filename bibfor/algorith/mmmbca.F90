@@ -35,6 +35,7 @@ implicit none
 #include "asterfort/ndynlo.h"
 #include "asterfort/nmchex.h"
 #include "asterfort/mmfield_prep.h"
+#include "asterfort/mreacg.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -177,12 +178,11 @@ implicit none
 !
     scotch = v_sdcont_mdecol(1)
 !
-! - Geometric actualisation
+! - Geometric update
 !
     oldgeo = mesh//'.COORDO'
     newgeo = sdcont_solv(1:14)//'.NEWG'
-    call mmfield_prep(oldgeo, newgeo,&
-                      l_update_ = .true._1, field_update_ = depplu, alpha_ = 1.d0)
+    call mreacg(mesh, sdcont_solv, field_update_ = depplu)
 !
 ! - Create speed field
 !    

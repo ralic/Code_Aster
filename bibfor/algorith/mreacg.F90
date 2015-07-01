@@ -1,4 +1,4 @@
-subroutine mreacg(mesh, sdcont_solv)
+subroutine mreacg(mesh, sdcont_solv, field_update_)
 !
 implicit none
 !
@@ -25,6 +25,7 @@ implicit none
 !
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: sdcont_solv
+    character(len=*), optional, intent(in) :: field_update_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -36,12 +37,13 @@ implicit none
 !
 ! In  mesh             : name of mesh
 ! In  sdcont_solv      : name of contact solving datastructure
+! In  field_update     : displacement field to use for update. If not present, using DEPGEO
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
     character(len=24) :: depgeo, oldgeo
-    character(len=19) :: newgeo
+    character(len=19) :: newgeo, field_update
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,10 +57,15 @@ implicit none
     oldgeo = mesh(1:8)//'.COORDO'
     depgeo = sdcont_solv(1:14)//'.DEPG'
     newgeo = sdcont_solv(1:14)//'.NEWG'
+    if (present(field_update_)) then
+        field_update = field_update_
+    else
+        field_update = depgeo(1:19)
+    endif
 !
 ! - Update
 !
     call mmfield_prep(oldgeo, newgeo,&
-                      l_update_ = .true._1, field_update_ = depgeo, alpha_ = 1.d0)
+                      l_update_ = .true._1, field_update_ = field_update, alpha_ = 1.d0)
 !
 end subroutine
