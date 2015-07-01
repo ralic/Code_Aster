@@ -1,10 +1,10 @@
 subroutine mmalgo(sd_cont_defi, sd_cont_solv, l_loop_cont, l_frot_zone, l_vite,&
                   l_glis_init, l_coef_adap, zone_index, point_index, indi_cont_init,&
                   indi_cont_eval, indi_frot_eval, dist_cont_curr, vite_cont_curr, pres_cont_curr,&
-                  dist_frot_curr, pres_frot_curr, cycl_hist, cycl_coef, indi_cont_curr,&
+                  dist_frot_curr, pres_frot_curr, v_sdcont_cychis, v_sdcont_cyccoe, indi_cont_curr,&
                   indi_frot_curr, ctcsta, mmcvca, scotch)
 !
-    implicit none
+implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -47,8 +47,8 @@ subroutine mmalgo(sd_cont_defi, sd_cont_solv, l_loop_cont, l_frot_zone, l_vite,&
     real(kind=8), intent(in) :: pres_cont_curr
     real(kind=8), intent(in) :: dist_frot_curr(3)
     real(kind=8), intent(in) :: pres_frot_curr(3)
-    real(kind=8), intent(inout) :: cycl_hist(*)
-    real(kind=8), intent(inout) :: cycl_coef(*)
+    real(kind=8), pointer, intent(in) :: v_sdcont_cychis(:)
+    real(kind=8), pointer, intent(in) :: v_sdcont_cyccoe(:)
     integer, intent(out) :: indi_cont_curr
     integer, intent(out) :: indi_frot_curr
     integer, intent(out) :: ctcsta
@@ -63,30 +63,29 @@ subroutine mmalgo(sd_cont_defi, sd_cont_solv, l_loop_cont, l_frot_zone, l_vite,&
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!
-! In  sd_cont_solv   : data structure for contact solving
-! In  sd_cont_defi   : data structure from contact definition
-! In  l_frot_zone    : .true. if friction on zone
-! In  l_loop_cont    : .true. if fixed poitn on contact loop
-! In  l_coef_adap    : .true. if automatic lagrangian adaptation
-! In  l_vite         : .true. if velocity scheme (dynamic)
-! In  l_glis_init    : .true. if bilateral contact for first step
-! In  point_index    : contact point index
-! In  indi_cont_init : previous contact status (but not for cycling)
-! In  indi_cont_eval : evaluation of new contact status
-! In  indi_frot_eval : evaluation of new friction status
-! In  dist_cont_curr : current contact gap
-! In  vite_cont_curr : current contact velocity gap
-! In  pres_cont_curr : current contact pressure
-! In  dist_frot_curr : current friction distance
-! In  pres_frot_curr : current friction pressure
-! I/O cycl_hist      : cycling history
-! I/O cycl_coef      : coefficient history
-! Out indi_cont_curr : current contact status
-! Out indi_frot_curr : current friction status
-! Out mmcvca         : .true. if contact loop converged
-! Out ctcsta         : number of contact points has changed their status
-! Out scotch         : .true. if contact point glued
+! In  sd_cont_solv     : data structure for contact solving
+! In  sd_cont_defi     : data structure from contact definition
+! In  l_frot_zone      : .true. if friction on zone
+! In  l_loop_cont      : .true. if fixed poitn on contact loop
+! In  l_coef_adap      : .true. if automatic lagrangian adaptation
+! In  l_vite           : .true. if velocity scheme (dynamic)
+! In  l_glis_init      : .true. if bilateral contact for first step
+! In  point_index      : contact point index
+! In  indi_cont_init   : previous contact status (but not for cycling)
+! In  indi_cont_eval   : evaluation of new contact status
+! In  indi_frot_eval   : evaluation of new friction status
+! In  dist_cont_curr   : current contact gap
+! In  vite_cont_curr   : current contact velocity gap
+! In  pres_cont_curr   : current contact pressure
+! In  dist_frot_curr   : current friction distance
+! In  pres_frot_curr   : current friction pressure
+! In  v_sdcont_cychis  : pointer to cycling history
+! In  v_sdcont_cyccoe  : pointer to coefficient history
+! Out indi_cont_curr   : current contact status
+! Out indi_frot_curr   : current friction status
+! Out mmcvca           : .true. if contact loop converged
+! Out ctcsta           : number of contact points has changed their status
+! Out scotch           : .true. if contact point glued
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -116,29 +115,30 @@ subroutine mmalgo(sd_cont_defi, sd_cont_solv, l_loop_cont, l_frot_zone, l_vite,&
 ! - Save old history
 !
     do hist_index = 1, 12
-        cycl_hist(25*(point_index-1)+12+hist_index) = cycl_hist(25*(point_index-1)+hist_index)
+        v_sdcont_cychis(25*(point_index-1)+12+hist_index) = &
+            v_sdcont_cychis(25*(point_index-1)+hist_index)
     enddo
 !
 ! - Previous informations
 !
-    indi_cont_prev = nint(cycl_hist(25*(point_index-1)+12+1))
-    coef_cont_prev = cycl_hist(25*(point_index-1)+12+2)
-    pres_cont_prev = cycl_hist(25*(point_index-1)+12+3)
-    dist_cont_prev = cycl_hist(25*(point_index-1)+12+4)
-! XXX next value seems uninitiliased in ssnp121i
-    indi_frot_prev = nint(cycl_hist(25*(point_index-1)+12+5))
-    coef_frot_prev = cycl_hist(25*(point_index-1)+12+6)
-    pres_frot_prev(1) = cycl_hist(25*(point_index-1)+12+7)
-    pres_frot_prev(2) = cycl_hist(25*(point_index-1)+12+8)
-    pres_frot_prev(3) = cycl_hist(25*(point_index-1)+12+9)
-    dist_frot_prev(1) = cycl_hist(25*(point_index-1)+12+10)
-    dist_frot_prev(2) = cycl_hist(25*(point_index-1)+12+11)
-    dist_frot_prev(3) = cycl_hist(25*(point_index-1)+12+12)
+    indi_cont_prev = nint(v_sdcont_cychis(25*(point_index-1)+12+1))
+    coef_cont_prev = v_sdcont_cychis(25*(point_index-1)+12+2)
+    pres_cont_prev = v_sdcont_cychis(25*(point_index-1)+12+3)
+    dist_cont_prev = v_sdcont_cychis(25*(point_index-1)+12+4)
+! XXX next value seems uniniatiliased in ssnp121i
+    indi_frot_prev = nint(v_sdcont_cychis(25*(point_index-1)+12+5))
+    coef_frot_prev = v_sdcont_cychis(25*(point_index-1)+12+6)
+    pres_frot_prev(1) = v_sdcont_cychis(25*(point_index-1)+12+7)
+    pres_frot_prev(2) = v_sdcont_cychis(25*(point_index-1)+12+8)
+    pres_frot_prev(3) = v_sdcont_cychis(25*(point_index-1)+12+9)
+    dist_frot_prev(1) = v_sdcont_cychis(25*(point_index-1)+12+10)
+    dist_frot_prev(2) = v_sdcont_cychis(25*(point_index-1)+12+11)
+    dist_frot_prev(3) = v_sdcont_cychis(25*(point_index-1)+12+12)
 !
 ! - Current max/min ratio
 !
-    coef_frot_mini = cycl_coef(6*(zone_index-1)+5)
-    coef_frot_maxi = cycl_coef(6*(zone_index-1)+6)
+    coef_frot_mini = v_sdcont_cyccoe(6*(zone_index-1)+5)
+    coef_frot_maxi = v_sdcont_cyccoe(6*(zone_index-1)+6)
 !
 ! - Cycling detection
 !
@@ -165,8 +165,8 @@ subroutine mmalgo(sd_cont_defi, sd_cont_solv, l_loop_cont, l_frot_zone, l_vite,&
 !
     if (coef_frot_curr .ge. coef_frot_maxi) coef_frot_maxi = coef_frot_curr
     if (coef_frot_curr .le. coef_frot_mini) coef_frot_mini = coef_frot_curr
-    cycl_coef(6*(zone_index-1)+5) = coef_frot_mini
-    cycl_coef(6*(zone_index-1)+6) = coef_frot_maxi
+    v_sdcont_cyccoe(6*(zone_index-1)+5) = coef_frot_mini
+    v_sdcont_cyccoe(6*(zone_index-1)+6) = coef_frot_maxi
 !
 ! - Special treatment if velocity scheme
 !
@@ -182,18 +182,18 @@ subroutine mmalgo(sd_cont_defi, sd_cont_solv, l_loop_cont, l_frot_zone, l_vite,&
 !
 ! - Save history for automatic cycling algorithm
 !
-    cycl_hist(25*(point_index-1)+1) = indi_cont_curr
-    cycl_hist(25*(point_index-1)+2) = coef_cont_curr
-    cycl_hist(25*(point_index-1)+3) = pres_cont_curr
-    cycl_hist(25*(point_index-1)+4) = dist_cont_curr
-    cycl_hist(25*(point_index-1)+5) = indi_frot_curr
-    cycl_hist(25*(point_index-1)+6) = coef_frot_curr
-    cycl_hist(25*(point_index-1)+7) = pres_frot_curr(1)
-    cycl_hist(25*(point_index-1)+8) = pres_frot_curr(2)
-    cycl_hist(25*(point_index-1)+9) = pres_frot_curr(3)
-    cycl_hist(25*(point_index-1)+10) = dist_frot_curr(1)
-    cycl_hist(25*(point_index-1)+11) = dist_frot_curr(2)
-    cycl_hist(25*(point_index-1)+12) = dist_frot_curr(3)
+    v_sdcont_cychis(25*(point_index-1)+1) = indi_cont_curr
+    v_sdcont_cychis(25*(point_index-1)+2) = coef_cont_curr
+    v_sdcont_cychis(25*(point_index-1)+3) = pres_cont_curr
+    v_sdcont_cychis(25*(point_index-1)+4) = dist_cont_curr
+    v_sdcont_cychis(25*(point_index-1)+5) = indi_frot_curr
+    v_sdcont_cychis(25*(point_index-1)+6) = coef_frot_curr
+    v_sdcont_cychis(25*(point_index-1)+7) = pres_frot_curr(1)
+    v_sdcont_cychis(25*(point_index-1)+8) = pres_frot_curr(2)
+    v_sdcont_cychis(25*(point_index-1)+9) = pres_frot_curr(3)
+    v_sdcont_cychis(25*(point_index-1)+10) = dist_frot_curr(1)
+    v_sdcont_cychis(25*(point_index-1)+11) = dist_frot_curr(2)
+    v_sdcont_cychis(25*(point_index-1)+12) = dist_frot_curr(3)
 !
 ! - Convergence ?
 !

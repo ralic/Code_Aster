@@ -118,9 +118,8 @@ implicit none
     aster_logical :: l_frot_zone, l_pena_frot, l_frot
     integer :: i_loop_geom, i_loop_frot, i_loop_cont
     character(len=24) :: sdcont_cychis, sdcont_cyccoe
-    !real(kind=8), pointer :: v_sdcont_cychis(:) => null()
-    !real(kind=8), pointer :: v_sdcont_cyccoe(:) => null()
-    integer :: jcyhis, jcycoe
+    real(kind=8), pointer :: v_sdcont_cychis(:) => null()
+    real(kind=8), pointer :: v_sdcont_cyccoe(:) => null()
     character(len=24) :: sdcont_tabfin, sdcont_jsupco, sdcont_apjeu
     real(kind=8), pointer :: v_sdcont_tabfin(:) => null()
     real(kind=8), pointer :: v_sdcont_jsupco(:) => null()
@@ -165,8 +164,8 @@ implicit none
 !
     sdcont_cychis = sdcont_solv(1:14)//'.CYCHIS'
     sdcont_cyccoe = sdcont_solv(1:14)//'.CYCCOE'
-    call jeveuo(sdcont_cychis, 'E', jcyhis)
-    call jeveuo(sdcont_cyccoe, 'E', jcycoe)
+    call jeveuo(sdcont_cychis, 'E', vr = v_sdcont_cychis)
+    call jeveuo(sdcont_cyccoe, 'E', vr = v_sdcont_cyccoe)
 !
 ! - Get hat variables
 !
@@ -314,8 +313,8 @@ implicit none
                 if (l_frot_zone) then
                     indi_frot_init = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+24))
                 endif
-                coef_cont = zr(jcyhis-1+25*(i_cont_poin-1)+2)
-                coef_frot = zr(jcyhis-1+25*(i_cont_poin-1)+6)
+                coef_cont = v_sdcont_cychis(25*(i_cont_poin-1)+2)
+                coef_frot = v_sdcont_cychis(25*(i_cont_poin-1)+6)
 !
 ! ------------- Initial bilateral contact ?
 !
@@ -356,7 +355,7 @@ implicit none
                 call mmalgo(sdcont_defi, sdcont_solv, l_loop_cont, l_frot_zone, l_speed,&
                             l_glis_init, l_coef_adap, i_zone, i_cont_poin, indi_cont_init,&
                             indi_cont_eval, indi_frot_eval, gap, gap_speed, lagr_cont_poin,&
-                            gap_user_frot, pres_frot, zr(jcyhis), zr(jcycoe), indi_cont_curr,&
+                       gap_user_frot, pres_frot, v_sdcont_cychis, v_sdcont_cyccoe, indi_cont_curr,&
                             indi_frot_curr, loop_cont_node, loop_cont_conv, scotch)
 !
  19             continue
@@ -397,7 +396,7 @@ implicit none
 ! - Propagation of coefficient
 !
     if (l_coef_adap) then
-        call mm_cycl_prop(sdcont_defi, sdcont_solv, zr(jcyhis), zr(jcycoe))
+        call mm_cycl_prop(sdcont_defi, sdcont_solv)
     endif
 !
 ! - Event management for impact
