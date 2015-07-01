@@ -102,7 +102,7 @@ subroutine cfveri(noma, defico, resoco, newgeo, sdappa,&
     real(kind=8) :: norm(3), noor
     real(kind=8) :: ksipr1, ksipr2
     real(kind=8) :: r8bid
-    real(kind=8) :: jeu, dist
+    real(kind=8) :: jeu, gap_user
     character(len=8) :: nomnoe, nommam, nomnom, k8bla
     character(len=16) :: nompt, noment
     aster_logical :: lveri
@@ -223,12 +223,12 @@ subroutine cfveri(noma, defico, resoco, newgeo, sdappa,&
 !
 ! --------- CALCUL DU JEU FICTIF DE LA ZONE
 !
-                call cfdist(defico, 'DISCRETE', izone, posnoe(1), posmae,&
-                            coorpc, dist, instan)
+                call cfdist(defico, izone, posmae, coorpc, instan,&
+                            gap_user, node_slav_indx_ = posnoe(1))
 !
 ! --------- JEU TOTAL
 !
-                jeu = jeu+dist
+                jeu = jeu+gap_user
             else if (typapp.eq.1) then
 !
 ! --------- NOEUD MAITRE
@@ -264,12 +264,12 @@ subroutine cfveri(noma, defico, resoco, newgeo, sdappa,&
 !
 ! --------- CALCUL DU JEU FICTIF DE LA ZONE
 !
-                call cfdist(defico, 'DISCRETE', izone, posnoe(1), posmae,&
-                            coorpc, dist, instan)
+                call cfdist(defico, izone, posmae, coorpc, instan,&
+                            gap_user, node_slav_indx_ = posnoe(1))
 !
 ! --------- JEU TOTAL
 !
-                jeu = jeu+dist
+                jeu = jeu+gap_user
 !
             else if (typapp.eq.-1) then
                 noment = 'EXCLU'

@@ -111,7 +111,6 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: node_slav_indx
     real(kind=8) :: noor
     real(kind=8) :: poin_slav_coor(3), poin_proj_coor(3)
     real(kind=8) :: speed_mast_poin(3), speed_slav_poin(3)
@@ -120,8 +119,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    node_slav_indx = 0
-    newgeo         = sdcont_solv(1:14)//'.NEWG'
+    newgeo = sdcont_solv(1:14)//'.NEWG'
 !
 ! - Coordinates of the contact point 
 !
@@ -147,8 +145,8 @@ implicit none
 !
 ! - Get user gap
 !
-    call cfdist(sdcont_defi   , 'CONTINUE', i_zone, node_slav_indx, elem_slav_indx,&
-                poin_slav_coor, gap_user, time_curr)
+    call cfdist(sdcont_defi, i_zone, elem_slav_indx, poin_slav_coor, time_curr,&
+                gap_user   )
 !
 ! - Interpolate contact pressure (Lagrange) at point
 !

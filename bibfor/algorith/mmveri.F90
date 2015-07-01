@@ -97,7 +97,7 @@ subroutine mmveri(noma, defico, resoco, newgeo, sdappa,&
     real(kind=8) :: tau1(3), tau2(3)
     real(kind=8) :: norm(3), noor
     real(kind=8) :: ksipr1, ksipr2
-    real(kind=8) :: jeu, dist
+    real(kind=8) :: jeu, gap_user
     character(len=8) :: nommae, nommam, aliase
     character(len=16) :: nompt, noment
     aster_logical :: lveri, lexfro
@@ -230,8 +230,8 @@ subroutine mmveri(noma, defico, resoco, newgeo, sdappa,&
 !
 ! --------- CALCUL DU JEU FICTIF AU POINT DE CONTACT
 !
-                call cfdist(defico, 'CONTINUE', izone, posnoe, posmae,&
-                            coorpc, dist, instan)
+                call cfdist(defico, izone, posmae, coorpc, instan, &
+                            gap_user)
 !
 ! --------- NOM DU POINT DE CONTACT
 !
@@ -241,7 +241,7 @@ subroutine mmveri(noma, defico, resoco, newgeo, sdappa,&
 !
                 if (typapp .eq. 2) then
                     noment = nommam
-                    jeu = jeu+dist
+                    jeu = jeu+gap_user
                 else if (typapp.eq.-1) then
                     noment = 'EXCLU'
                     jeu = r8vide()

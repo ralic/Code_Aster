@@ -16,15 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfdist(defico, method, izone, posnoe, posmae,&
-                      coord, dist, instan)
-        character(len=24) :: defico
-        character(len=8) :: method
-        integer :: izone
-        integer :: posnoe
-        integer :: posmae
-        real(kind=8) :: coord(3)
-        real(kind=8) :: dist
-        real(kind=8) :: instan
+    subroutine cfdist(sdcont_defi, i_zone         , elem_slav_indx, poin_coor, time_curr,&
+                      gap_user   , node_slav_indx_)
+        character(len=24), intent(in) :: sdcont_defi
+        integer, intent(in) :: i_zone
+        integer, intent(in) :: elem_slav_indx
+        real(kind=8), intent(in) :: poin_coor(3)
+        real(kind=8), intent(in) :: time_curr
+        real(kind=8), intent(out) :: gap_user
+        integer, optional, intent(in) :: node_slav_indx_
     end subroutine cfdist
 end interface

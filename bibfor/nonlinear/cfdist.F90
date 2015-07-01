@@ -1,5 +1,14 @@
-subroutine cfdist(defico, method, izone, posnoe, posmae,&
-                  coord, dist, instan)
+subroutine cfdist(sdcont_defi, i_zone         , elem_slav_indx, poin_coor, time_curr,&
+                  gap_user   , node_slav_indx_)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdism.h"
+#include "asterfort/fointe.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mminfl.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,134 +28,116 @@ subroutine cfdist(defico, method, izone, posnoe, posmae,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/cfdism.h"
-#include "asterfort/fointe.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/mminfl.h"
-    character(len=24) :: defico
-    character(len=8) :: method
-    integer :: izone
-    integer :: posnoe, posmae
-    real(kind=8) :: dist, coord(3), instan
+    character(len=24), intent(in) :: sdcont_defi
+    integer, intent(in) :: i_zone
+    integer, intent(in) :: elem_slav_indx
+    real(kind=8), intent(in) :: poin_coor(3)
+    real(kind=8), intent(in) :: time_curr
+    real(kind=8), intent(out) :: gap_user
+    integer, optional, intent(in) :: node_slav_indx_
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (METHODES MAILLEES - APPARIEMENT)
+! Contact - Solve
 !
-! CALCUL DU JEU SUPPLEMENTAIRE
+! Continue/Discrete method - Compute user gap
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  i_zone           : index of contact zone
+! In  elem_slav_indx   : index of slave element (in contact datastructure)
+! In  time_curr        : current time
+! In  poin_coor        : coordinates of (contact) point
+! In  node_slav_indx   : index of slave node (in contact datastructure)
+! Out gap_user         : user gap (from DIST_* keywords)
 !
-! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
-! IN  METHOD : METHODE DE CONTACT
-!               'CONTINUE'
-!               'DISCRETE'
-! IN  IZONE  : ZONE DE CONTACT
-! IN  POSNOE : INDICE DU NOEUD ESCLAVE DANS CONTNO
-! IN  POSMAE : INDICE DE LA MAILLE ESCLAVE DANS CONTMA
-! IN  COORD  : VALEUR DES COORDONNEES DU NOEUD COURANT
-! IN  INSTAN : INST Component
-! OUT DIST   : JEU SUPPLEMENTAIRE
-!
-!
-!
-!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: ier
-    character(len=24) :: jeupou, jeucoq
-    integer :: jjpou, jjcoq
-    character(len=24) :: jeufo1, jeufo2
-    integer :: jjfo1, jjfo2
-    character(len=8) :: jeuf1, jeuf2
-    character(len=8) :: nompar(4)
-    real(kind=8) :: valpar(4)
-    real(kind=8) :: dist1, dist2, distst
-    aster_logical :: ldpou, ldcoq, ldescl, ldmait
+    character(len=8) :: para_name(4)
+    real(kind=8) :: para_vale(4)
+    real(kind=8) :: gap_user_mast, gap_user_slav, gap_structural
+    character(len=8) :: gap_mast_func, gap_slav_func
+    aster_logical :: l_dist_beam, l_dist_shell, l_dist_slav, l_dist_mast
+    character(len=24) :: sdcont_jeucoq
+    real(kind=8), pointer :: v_sdcont_jeucoq(:) => null()
+    character(len=24) :: sdcont_jeupou
+    real(kind=8), pointer :: v_sdcont_jeupou(:) => null()
+    character(len=24) :: sdcont_jeufo1
+    character(len=8), pointer :: v_sdcont_jeufo1(:) => null()
+    character(len=24) :: sdcont_jeufo2
+    character(len=8), pointer :: v_sdcont_jeufo2(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
+    gap_user       = 0.d0
+    gap_user_mast  = 0.d0
+    gap_user_slav  = 0.d0
+    gap_structural = 0.d0
 !
-! --- LECTURE DES SD POUR LE CONTACT POTENTIEL
+! - Acces to contact objects
 !
-    jeucoq = defico(1:16)//'.JEUCOQ'
-    jeupou = defico(1:16)//'.JEUPOU'
-    jeufo1 = defico(1:16)//'.JFO1CO'
-    jeufo2 = defico(1:16)//'.JFO2CO'
+    sdcont_jeucoq = sdcont_defi(1:16)//'.JEUCOQ'
+    sdcont_jeupou = sdcont_defi(1:16)//'.JEUPOU'
+    sdcont_jeufo1 = sdcont_defi(1:16)//'.JFO1CO'
+    sdcont_jeufo2 = sdcont_defi(1:16)//'.JFO2CO'
+    call jeveuo(sdcont_jeucoq, 'L', vr  = v_sdcont_jeucoq)
+    call jeveuo(sdcont_jeupou, 'L', vr  = v_sdcont_jeupou)
+    call jeveuo(sdcont_jeufo1, 'L', vk8 = v_sdcont_jeufo1)
+    call jeveuo(sdcont_jeufo2, 'L', vk8 = v_sdcont_jeufo2)
 !
-    call jeveuo(jeupou, 'L', jjpou)
-    call jeveuo(jeucoq, 'L', jjcoq)
-    call jeveuo(jeufo1, 'L', jjfo1)
-    call jeveuo(jeufo2, 'L', jjfo2)
+! - Set parameters for evaluate functions
 !
-! --- INITIALISATIONS
+    para_name(1) = 'X'
+    para_name(2) = 'Y'
+    para_name(3) = 'Z'
+    para_name(4) = 'INST'
+    para_vale(1) = poin_coor(1)
+    para_vale(2) = poin_coor(2)
+    para_vale(3) = poin_coor(3)
+    para_vale(4) = time_curr
 !
-    dist1 = 0.d0
-    dist2 = 0.d0
-    distst = 0.d0
+! - Supplementary gaps
 !
-! --- EN VUE DE L'INTERPOLATION DU JEU PAR DES VARIABLES D'ESPACE
+    l_dist_beam  = mminfl(sdcont_defi, 'DIST_POUTRE', i_zone)
+    l_dist_shell = mminfl(sdcont_defi, 'DIST_COQUE' , i_zone)
+    l_dist_mast  = mminfl(sdcont_defi, 'DIST_MAIT'  , i_zone)
+    l_dist_slav  = mminfl(sdcont_defi, 'DIST_ESCL'  , i_zone)
 !
-    nompar(1) = 'X'
-    nompar(2) = 'Y'
-    nompar(3) = 'Z'
-    nompar(4) = 'INST'
-    valpar(1) = coord(1)
-    valpar(2) = coord(2)
-    valpar(3) = coord(3)
-    valpar(4) = instan
+! - Evaluate DIST_MAIT
 !
-! --- TYPES DE JEUX SUPS
-!
-    ldpou = mminfl(defico,'DIST_POUTRE',izone)
-    ldcoq = mminfl(defico,'DIST_COQUE' ,izone)
-    ldmait = mminfl(defico,'DIST_MAIT' ,izone)
-    ldescl = mminfl(defico,'DIST_ESCL' ,izone)
-!
-! --- VALEUR DU JEU SUPPLEMENTAIRE SI C'EST UNE FONCTION DE L'ESPACE
-!
-    if (ldmait) then
-        jeuf1 = zk8(jjfo1+izone-1)
-        call fointe('F', jeuf1, 4, nompar, valpar,&
-                    dist1, ier)
+    if (l_dist_mast) then
+        gap_mast_func = v_sdcont_jeufo1(i_zone)
+        call fointe('F', gap_mast_func, 4, para_name, para_vale,&
+                    gap_user_mast, ier)
     endif
 !
-! --- VALEUR DU JEU SUPPLEMENTAIRE SI C'EST UNE FONCTION DE L'ESPACE
+! - Evaluate DIST_ESCL
 !
-    if (ldescl) then
-        jeuf2 = zk8(jjfo2+izone-1)
-        call fointe('F', jeuf2, 4, nompar, valpar,&
-                    dist2, ier)
+    if (l_dist_slav) then
+        gap_slav_func = v_sdcont_jeufo2(i_zone)
+        call fointe('F', gap_slav_func, 4, para_name, para_vale,&
+                    gap_user_slav, ier)
     endif
 !
-! --- VALEUR DU JEU SUPPLEMENTAIRE SI DIST_POUTRE/DIST_COQUE
+! - Evaluate DIST_POUTRE/DIST_COQUE
 !
-    if (ldcoq .or. ldpou) then
-        if (method .eq. 'DISCRETE') then
-            call cfdism(defico, ldpou, ldcoq, posnoe, distst)
-        else if (method.eq.'CONTINUE') then
-            ASSERT(posnoe.eq.0)
-            if (ldpou) then
-                distst = distst+zr(jjpou-1+posmae)
-            endif
-            if (ldcoq) then
-                distst = distst+zr(jjcoq-1+posmae)
-            endif
+    if (l_dist_shell .or. l_dist_beam) then
+        if (present(node_slav_indx_)) then
+            call cfdism(sdcont_defi, l_dist_beam, l_dist_shell, node_slav_indx_, gap_structural)
         else
-            ASSERT(.false.)
+            if (l_dist_beam) then
+                gap_structural = gap_structural+v_sdcont_jeupou(elem_slav_indx)
+            endif
+            if (l_dist_shell) then
+                gap_structural = gap_structural+v_sdcont_jeucoq(elem_slav_indx)
+            endif
         endif
     endif
 !
-! --- TOTAL JEU SUPPLEMENTAIRE
+! - Total user gap
 !
-    dist = dist1 + dist2 + distst
+    gap_user = gap_user_mast + gap_user_slav + gap_structural
 !
-    call jedema()
 end subroutine

@@ -84,7 +84,7 @@ subroutine cfapre(noma, defico, resoco, newgeo, sdappa,&
     aster_logical :: lveri
     character(len=8) :: nomnoe
     real(kind=8) :: ksipr1, ksipr2, tau1m(3), tau2m(3)
-    real(kind=8) :: coorne(3), dissup
+    real(kind=8) :: coorne(3), gap_user
     real(kind=8) :: coefff, coefpn, coefpt, coefte
 !
 ! ----------------------------------------------------------------------
@@ -203,13 +203,13 @@ subroutine cfapre(noma, defico, resoco, newgeo, sdappa,&
 !
 ! ------- CALCUL DU JEU FICTIF DE LA ZONE
 !
-            call cfdist(defico, 'DISCRETE', izone, posnoe(1), posmae,&
-                        coorne, dissup, instan)
+            call cfdist(defico, izone, posmae, coorne, instan, &
+                        gap_user, node_slav_indx_ = posnoe(1))
 !
 ! ------- CARACTERISTIQUES DE LA LIAISON POUR LA ZONE
 !
             call cfparz(resoco, iliai, coefff, coefpn, coefpt,&
-                        coefte, dissup, izone, ip, numnoe(1),&
+                        coefte, gap_user, izone, ip, numnoe(1),&
                         posnoe(1))
 !
  35         continue
