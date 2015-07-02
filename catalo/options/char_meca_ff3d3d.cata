@@ -27,7 +27,13 @@ OPTION__
         PTEMPSR  INST_R
         OUT__
         PVECTUR  VDEP_R  RESL__
-                                                                                                                            
-COND_CALCUL__  PLUS__  PHENO='ME' BORD='0' DIM_COOR_MODELI='3'
-               MOINS__ PHENO='ME' BORD='0' INTERFACE='OUI'
+
+COND_CALCUL__  PLUS__  PHENO='ME' BORD='0' DIM_TOPO_MODELI='3'
+
+               % L'attribut INTERFACE='OUI' designe les elements "ecrases".
+               % Ils n'ont pas de "volume" et ne peuvent pas calculer ce chargement.
+               MOINS__ PHENO='ME' INTERFACE='OUI'
+
+               % La modelisation 3D_DIL ('D3D') se "superpose" a une autre modelisation.
+               % Ce n'est pas a elle de calculer les chargements repartis :
                MOINS__ PHENO='ME' MODELI='D3D'

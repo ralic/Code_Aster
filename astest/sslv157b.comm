@@ -92,7 +92,9 @@ B0P0=AFFE_CHAR_MECA(MODELE=MODMECA,
 CHARGE1=AFFE_CHAR_MECA(MODELE=MODMECA,
         FORCE_NODALE=(
                   _F(GROUP_NO='GNO00004',FX=-0.123456701636,FY=-0.246913403273,FZ=-0.370370090008,),),
-                       )                      
+        # ne sert a rien, sauf a verifier la correction de issue23939 :
+        FORCE_INTERNE= _F(GROUP_MA='GMA00001', FZ=0.0,), 
+        )                      
                        
 CAEL=AFFE_CARA_ELEM(MODELE=MODMECA,
         DISCRET=(

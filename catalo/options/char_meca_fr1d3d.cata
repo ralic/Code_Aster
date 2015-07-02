@@ -26,6 +26,6 @@ OPTION__
         PFR1D3D  FORC_R
    OUT__
 PVECTUR VDEP_R RESL__
-                                                                                                                            
-COND_CALCUL__  PLUS__  PHENO='ME' BORD='-2' DIM_COOR_MODELI='3'
-               PLUS__  PHENO='ME' BORD='-1' COQUE='OUI'
+                                                                                                                                                                                                                                                        
+COND_CALCUL__  PLUS__  PHENO='ME' BORD='-2' DIM_TOPO_MODELI='3'
+               PLUS__  PHENO='ME' BORD='-1' DIM_TOPO_MODELI='2'
