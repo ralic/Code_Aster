@@ -43,7 +43,6 @@ subroutine mmapre(noma, numedd, defico, resoco, sdappa)
 #include "asterfort/mminfm.h"
 #include "asterfort/mminfr.h"
 #include "asterfort/mmopti.h"
-#include "asterfort/cnocns.h"
 #include "asterfort/mmextm.h"
 #include "asterfort/cnsred.h"
 #include "asterfort/detrsd.h"

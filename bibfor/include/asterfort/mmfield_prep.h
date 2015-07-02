@@ -15,9 +15,19 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
-    subroutine mreacg(mesh, sdcont_solv)
-        character(len=8), intent(in) :: mesh
-        character(len=24), intent(in) :: sdcont_solv
-    end subroutine mreacg
+    subroutine mmfield_prep(field_in    , field_out    ,&
+                            l_update_   , field_update_, alpha_   ,&
+                            l_sort_     , nb_cmp_      , list_cmp_)
+        character(len=*), intent(in) :: field_in
+        character(len=*), intent(in) :: field_out
+        aster_logical, optional, intent(in) :: l_update_
+        aster_logical, optional, intent(in) :: l_sort_
+        integer, optional, intent(in) :: nb_cmp_
+        character(len=8), optional, intent(in):: list_cmp_(*)
+        character(len=*), optional, intent(in) :: field_update_
+        real(kind=8), optional, intent(in) :: alpha_
+    end subroutine mmfield_prep
 end interface

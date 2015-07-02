@@ -24,8 +24,7 @@ subroutine mmreas(noma, defico, resoco, valinc)
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfmmvd.h"
 #include "asterfort/cfnumm.h"
-#include "asterfort/cnocns.h"
-#include "asterfort/cnsred.h"
+#include "asterfort/mmfield_prep.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
@@ -71,7 +70,7 @@ subroutine mmreas(noma, defico, resoco, valinc)
     real(kind=8) :: lambdc, ksipc1, ksipc2
     real(kind=8) :: mlagc(9)
     character(len=8) :: aliase
-    character(len=19) :: cnsplu, cnslbd, depplu
+    character(len=19) :: cnslbd, depplu
     character(len=24) :: tabfin
     integer :: jtabf
 !
@@ -79,12 +78,8 @@ subroutine mmreas(noma, defico, resoco, valinc)
 !
     call jemarq()
     call infdbg('CONTACT', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> ... MISE A JOUR DES SEUILS DE '//&
-        'FROTTEMENT'
+        write (ifm,*) '<CONTACT> ... MISE A JOUR DES SEUILS DE FROTTEMENT'
     endif
 !
 ! --- INITIALISATIONS
@@ -105,11 +100,9 @@ subroutine mmreas(noma, defico, resoco, valinc)
 !
 ! --- TRANSFORMATION DEPPLU EN CHAM_NO_S ET REDUCTION SUR LES LAGRANGES
 !
-    cnsplu = '&&REACLM.CNSPLU'
-    call cnocns(depplu, 'V', cnsplu)
     cnslbd = '&&REACLM.CNSLBD'
-    call cnsred(cnsplu, 0, [ibid], 1, 'LAGS_C',&
-                'V', cnslbd)
+    call mmfield_prep(depplu, cnslbd,&
+                      l_sort_ = .true._1, nb_cmp_ = 1, list_cmp_ = ['LAGS_C  '])
 !
 ! --- BOUCLE SUR LES ZONES
 !
@@ -176,7 +169,6 @@ subroutine mmreas(noma, defico, resoco, valinc)
  25     continue
     end do
 !
-    call detrsd('CHAM_NO_S', cnsplu)
     call detrsd('CHAM_NO_S', cnslbd)
     call jedema()
 end subroutine

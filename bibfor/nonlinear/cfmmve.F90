@@ -36,7 +36,7 @@ subroutine cfmmve(noma, defico, resoco, valinc, instan)
 #include "asterfort/mmpoin.h"
 #include "asterfort/mmveri.h"
 #include "asterfort/nmchex.h"
-#include "asterfort/vtgpld.h"
+#include "asterfort/mmfield_prep.h"
     character(len=8) :: noma
     character(len=24) :: defico, resoco
     character(len=19) :: valinc(*)
@@ -93,11 +93,11 @@ subroutine cfmmve(noma, defico, resoco, valinc, instan)
     sdappa = resoco(1:14)//'.APPA'
     newgeo = resoco(1:14)//'.NEWG'
 !
-! --- MAJ GEOMETRIE
+! - Geometry update
 !
     if (lallv) then
-        call vtgpld('CUMU', oldgeo, 1.d0, depplu, 'V',&
-                    newgeo)
+        call mmfield_prep(oldgeo, newgeo,&
+                          l_update_ = .true._1, field_update_ = depplu, alpha_ = 1.d0)
     endif
 !
 ! --- CREATION SD APPARIEMENT EN MODE ALL VERIF

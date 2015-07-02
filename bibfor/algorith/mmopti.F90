@@ -13,8 +13,7 @@ implicit none
 #include "asterfort/mmelty.h"
 #include "asterfort/armin.h"
 #include "asterfort/infdbg.h"
-#include "asterfort/cnocns.h"
-#include "asterfort/cnsred.h"
+#include "asterfort/mmfield_prep.h"
 #include "asterfort/mmextm.h"
 #include "asterfort/mmvalp_scal.h"
 #include "asterfort/apinfr.h"
@@ -63,7 +62,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    character(len=19) :: disp_init, cnsplu, cnscon
+    character(len=19) :: disp_init, cnscon
     real(kind=8) :: jeusgn, tau1(3), tau2(3), norm(3), noor
     real(kind=8) :: mlagc(9), pres_cont, flag_cont
     integer :: i_zone, i_elem_slav, i_poin_appa, i_poin_elem, i_cont_poin
@@ -90,7 +89,6 @@ implicit none
 !
 ! - Initializations
 !
-    cnsplu       = '&&MMOPTI.CNSPLU'
     cnscon       = '&&MMOPTI.CNSCON'
     i_poin_appa  = 1
     i_cont_poin  = 1
@@ -121,8 +119,8 @@ implicit none
         l_auto_seuil = mminfl(sdcont_defi,'SEUIL_AUTO', i_zone)
         if (l_auto_seuil) then
             disp_init =  sdcont_solv(1:14)//'.INIT'
-            call cnocns(disp_init, 'V', cnsplu)
-            call cnsred(cnsplu, 0, [0], 1, 'LAGS_C', 'V', cnscon)
+            call mmfield_prep(disp_init, cnscon,&
+                              l_sort_ = .true._1, nb_cmp_ = 1, list_cmp_ = ['LAGS_C  '])
             goto 30
         endif
     end do
@@ -265,7 +263,6 @@ implicit none
  25     continue
     end do
 !
-    call detrsd('CHAM_NO_S', cnsplu)
     call detrsd('CHAM_NO_S', cnscon)
 !
 end subroutine

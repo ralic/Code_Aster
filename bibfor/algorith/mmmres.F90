@@ -26,8 +26,6 @@ subroutine mmmres(noma, inst, defico, resoco, depplu,&
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/cfmmvd.h"
-#include "asterfort/cnocns.h"
-#include "asterfort/cnsred.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/infniv.h"
 #include "asterfort/iseven.h"
@@ -44,6 +42,7 @@ subroutine mmmres(noma, inst, defico, resoco, depplu,&
 #include "asterfort/mmmreg.h"
 #include "asterfort/nmchex.h"
 #include "asterfort/utmess.h"
+#include "asterfort/mmfield_prep.h"
     character(len=8) :: noma
     real(kind=8) :: inst(*)
     character(len=19) :: cnsinr, cnsper, sddisc
@@ -93,7 +92,7 @@ subroutine mmmres(noma, inst, defico, resoco, depplu,&
     real(kind=8) :: cont, lagsf
     real(kind=8) :: ksipr1, ksipr2, proj(3)
     character(len=8) :: licnt3(3)
-    character(len=19) :: fconts, ffrots, depdes, depcn
+    character(len=19) :: depdes, depcn
     character(len=19) :: fctcn, ffrocn
     character(len=19) :: fcont, ffrot
     character(len=19) :: newgeo
@@ -157,10 +156,8 @@ subroutine mmmres(noma, inst, defico, resoco, depplu,&
 ! --- NOM DES OBJETS LOCAUX
 !
     fcont = '&&MMMRES.CONT'
-    fconts = '&&MMMRES.CONT_S'
     fctcn = '&&MMMRES.FCTCN'
     ffrot = '&&MMMRES.FROT'
-    ffrots = '&&MMMRES.FROT_S'
     ffrocn = '&&MMMRES.FROTCN'
     depdes = '&&MMMRES.DEPDES'
     depcn = '&&MMMRES.DEPCN'
@@ -207,25 +204,23 @@ subroutine mmmres(noma, inst, defico, resoco, depplu,&
 ! --- FORCES NODALES DE CONTACT
 !
     call nmchex(veasse, 'VEASSE', 'CNELTC', fcont)
-    call cnocns(fcont, 'V', fconts)
-    call cnsred(fconts, 0, [0], ndimg, licnt3,&
-                'V', fctcn)
+    call mmfield_prep(fcont, fctcn,&
+                      l_sort_ = .true._1, nb_cmp_ = ndimg, list_cmp_ = licnt3)
     call jeveuo(fctcn//'.CNSV', 'L', vr=vcont)
 !
 ! --- FORCES NODALES DE FROTTEMENT
 !
     if (lfrot) then
         call nmchex(veasse, 'VEASSE', 'CNELTF', ffrot)
-        call cnocns(ffrot, 'V', ffrots)
-        call cnsred(ffrots, 0, [0], ndimg, licnt3,&
-                    'V', ffrocn)
+        call mmfield_prep(ffrot, ffrocn,&
+                          l_sort_ = .true._1, nb_cmp_ = ndimg, list_cmp_ = licnt3)
         call jeveuo(ffrocn//'.CNSV', 'L', vr=frot)
     endif
 !
 ! --- BOUCLE SUR LES ZONES
 !
     iptc = 1
-    do 10 izone = 1, nzoco
+    do izone = 1, nzoco
 !
 ! --- OPTIONS SUR LA ZONE DE CONTACT
 !
@@ -517,15 +512,13 @@ subroutine mmmres(noma, inst, defico, resoco, depplu,&
  30         continue
  20     continue
  25     continue
- 10 end do
+    end do
 !
 ! --- MENAGE
 !
     call jedetr(fcont)
-    call detrsd('CHAMP', fconts)
     call detrsd('CHAMP', fctcn)
     call jedetr(ffrot)
-    call detrsd('CHAMP', ffrots)
     call detrsd('CHAMP', ffrocn)
     call detrsd('CHAMP', depdes)
     call detrsd('CHAMP', depcn)

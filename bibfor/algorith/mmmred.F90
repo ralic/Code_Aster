@@ -1,5 +1,11 @@
 subroutine mmmred(ndimg, lctfc, champ, champr, ndd1)
 !
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/mmfield_prep.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,15 +24,6 @@ subroutine mmmred(ndimg, lctfc, champ, champr, ndd1)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/cnocns.h"
-#include "asterfort/cnsred.h"
-#include "asterfort/detrsd.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
     integer :: ndimg
     character(len=19) :: champ, champr
     aster_logical :: lctfc
@@ -50,49 +47,36 @@ subroutine mmmred(ndimg, lctfc, champ, champr, ndd1)
 !
 !
 !
-    character(len=8) :: licmp4(4), licmp6(6)
-    character(len=19) :: champs
-! ----------------------------------------------------------------------
-    data licmp4&
-     &   / 'DX'     ,'DY'      ,&
-     &     'LAGS_C' ,'LAGS_F1' /
-    data licmp6&
-     &   / 'DX'     ,'DY'      ,'DZ'      ,&
-     &     'LAGS_C' ,'LAGS_F1' ,'LAGS_F2' /
-!
-! ----------------------------------------------------------------------
-!
-    call jemarq()
-!
-! --- TRANSFORMATION DU CHAM_NO EN CHAM_NO_S
-!
-    champs = '&&MMMRED.CHAMPS'
-    call cnocns(champ, 'V', champs)
-!
-! --- REDUCTION DU CHAM_NO_S DES DDL EN UN CHAM_NO_S DES LAGRANGES
-! --- DE CONTACT/FROTTEMENT
-!
     if (ndimg .eq. 3) then
         if (lctfc) then
             ndd1 = 6
+            call mmfield_prep(champ, champr,&
+                              l_sort_ = .true._1, nb_cmp_ = ndd1,&
+                              list_cmp_ = ['DX      ','DY      ','DZ      ',&
+                                           'LAGS_C  ','LAGS_F1 ','LAGS_F2 '])
         else
             ndd1 = 4
+            call mmfield_prep(champ, champr,&
+                              l_sort_ = .true._1, nb_cmp_ = ndd1,&
+                              list_cmp_ = ['DX      ','DY      ','DZ      ',&
+                                           'LAGS_C  '])
         endif
-        call cnsred(champs, 0, [0], ndd1, licmp6,&
-                    'V', champr)
     else if (ndimg.eq.2) then
         if (lctfc) then
             ndd1 = 4
+            call mmfield_prep(champ, champr,&
+                              l_sort_ = .true._1, nb_cmp_ = ndd1,&
+                              list_cmp_ = ['DX      ','DY      ',&
+                                           'LAGS_C  ','LAGS_F1 '])
         else
             ndd1 = 3
+            call mmfield_prep(champ, champr,&
+                              l_sort_ = .true._1, nb_cmp_ = ndd1,&
+                              list_cmp_ = ['DX      ','DY      ',&
+                                           'LAGS_C  '])
         endif
-        call cnsred(champs, 0, [0], ndd1, licmp4,&
-                    'V', champr)
     else
         ASSERT(.false.)
     endif
 !
-    call detrsd('CHAMP', champs)
-!
-    call jedema()
 end subroutine

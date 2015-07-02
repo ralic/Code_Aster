@@ -11,8 +11,6 @@ implicit none
 #include "asterfort/cfdisl.h"
 #include "asterfort/cfmmvd.h"
 #include "asterfort/cfnumm.h"
-#include "asterfort/cnocns.h"
-#include "asterfort/cnsred.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
@@ -36,7 +34,7 @@ implicit none
 #include "asterfort/mmstaf.h"
 #include "asterfort/ndynlo.h"
 #include "asterfort/nmchex.h"
-#include "asterfort/vtgpld.h"
+#include "asterfort/mmfield_prep.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -108,7 +106,6 @@ implicit none
     real(kind=8) :: pres_frot(3), gap_user_frot(3)
     real(kind=8) :: coef_cont, coef_frot
     character(len=8) :: elem_slav_type
-    character(len=19) :: cnsplu, cnsdel
     character(len=19) :: cnscon, cnsfr1, cnsfr2
     character(len=24) :: sdcont_mdecol
     aster_logical, pointer :: v_sdcont_mdecol(:) => null()
@@ -184,41 +181,37 @@ implicit none
 !
     oldgeo = mesh//'.COORDO'
     newgeo = sdcont_solv(1:14)//'.NEWG'
-    call vtgpld('CUMU', oldgeo, 1.d0, depplu, 'V',&
-                newgeo)
+    call mmfield_prep(oldgeo, newgeo,&
+                      l_update_ = .true._1, field_update_ = depplu, alpha_ = 1.d0)
 !
 ! - Create speed field
 !    
     speed_field = '&&MMMBCA.ACTUVIT'
     if (l_speed) then
-        call vtgpld('ZERO', oldgeo, 1.d0, vitplu, 'V',&
-                    speed_field)
+        call mmfield_prep(oldgeo, speed_field,&
+                          l_update_ = .true._1, field_update_ = vitplu)
     endif
 !
 ! - Prepare displacement field to get contact Lagrangien multiplier
 !
-    cnsplu = '&&MMMBCA.CNSPLU'
-    call cnocns(depplu, 'V', cnsplu)
     cnscon = '&&MMMBCA.CNSCON'
-    call cnsred(cnsplu, 0, [0], 1, 'LAGS_C',&
-                'V', cnscon)
+    call mmfield_prep(depplu, cnscon,&
+                      l_sort_ = .true._1, nb_cmp_ = 1, list_cmp_ = ['LAGS_C  '])
 !
 ! - Prepare displacement field to get friction Lagrangien multiplier
 !
-    cnsdel = '&&MMMBCA.CNSDEL'
     chdepd = '&&MMMBCA.CHDEPD'
     cnsfr1 = '&&MMMBCA.CNSFR1'
     cnsfr2 = '&&MMMBCA.CNSFR2'
     if (l_frot) then
-        call cnocns(depdel, 'V', cnsdel)
-        call cnsred(cnsdel, 0, [0], 1, 'LAGS_F1',&
-                    'V', cnsfr1)
+        call mmfield_prep(depdel, cnsfr1,&
+                          l_sort_ = .true._1, nb_cmp_ = 1, list_cmp_ = ['LAGS_F1 '])
         if (model_ndim .eq. 3) then
-            call cnsred(cnsdel, 0, [0], 1, 'LAGS_F2',&
-                        'V', cnsfr2)
+            call mmfield_prep(depdel, cnsfr2,&
+                              l_sort_ = .true._1, nb_cmp_ = 1, list_cmp_ = ['LAGS_F2 '])
         endif
-        call vtgpld('ZERO', oldgeo, 1.d0, depdel, 'V',&
-                    chdepd)
+        call mmfield_prep(oldgeo, chdepd,&
+                          l_update_ = .true._1, field_update_ = depdel)
     endif
 !
 ! - Loop on contact zones
@@ -428,8 +421,6 @@ implicit none
     call jedetr(newgeo)
     call jedetr(speed_field)
     call jedetr(chdepd)
-    call detrsd('CHAM_NO_S', cnsplu)
-    call detrsd('CHAM_NO_S', cnsdel)
     call detrsd('CHAM_NO_S', cnscon)
     call detrsd('CHAM_NO_S', cnsfr1)
     call detrsd('CHAM_NO_S', cnsfr2)

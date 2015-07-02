@@ -39,7 +39,7 @@ implicit none
 !
 ! Contact - Solve
 !
-! Continue method - Geometric loop: geometric actualisation and pairing 
+! Continue method - Geometric loop: geometry update and pairing 
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -70,7 +70,7 @@ implicit none
     call nmtime(sdtime, 'INI', 'CONT_GEOM')
     call nmtime(sdtime, 'RUN', 'CONT_GEOM')
 !
-! - Geometric actualisation
+! - Geometry update
 !
     call mreacg(mesh, sdcont_solv)
 !

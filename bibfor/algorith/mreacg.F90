@@ -1,4 +1,9 @@
-subroutine mreacg(noma, resoco)
+subroutine mreacg(mesh, sdcont_solv)
+!
+implicit none
+!
+#include "asterfort/infdbg.h"
+#include "asterfort/mmfield_prep.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,53 +23,42 @@ subroutine mreacg(noma, resoco)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit   none
-#include "jeveux.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/vtgpld.h"
-    character(len=8) :: noma
-    character(len=24) :: resoco
+    character(len=8), intent(in) :: mesh
+    character(len=24), intent(in) :: sdcont_solv
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (METHODE CONTINUE - GEOMETRIE)
+! Contact - Solve
 !
-! REACTUALISER LA GEOMETRIE
+! Continue method - Geometry update
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  mesh             : name of mesh
+! In  sdcont_solv      : name of contact solving datastructure
 !
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
-!
-!
+    integer :: ifm, niv
     character(len=24) :: depgeo, oldgeo
     character(len=19) :: newgeo
-    integer :: ifm, niv
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('CONTACT', ifm, niv)
-!
-! --- NOM DES OBJETS
-!
-    oldgeo = noma(1:8)//'.COORDO'
-    depgeo = resoco(1:14)//'.DEPG'
-    newgeo = resoco(1:14)//'.NEWG'
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> ... REACTUALISATION DES DEPLACEMENTS'
+        write (ifm,*) '<CONTACT> ... Geometry update'
     endif
 !
-    call vtgpld('CUMU', oldgeo, 1.d0, depgeo, 'V',&
-                newgeo)
+! - Name of objects
 !
-    call jedema()
+    oldgeo = mesh(1:8)//'.COORDO'
+    depgeo = sdcont_solv(1:14)//'.DEPG'
+    newgeo = sdcont_solv(1:14)//'.NEWG'
+!
+! - Update
+!
+    call mmfield_prep(oldgeo, newgeo,&
+                      l_update_ = .true._1, field_update_ = depgeo, alpha_ = 1.d0)
+!
 end subroutine
