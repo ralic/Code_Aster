@@ -121,8 +121,8 @@ subroutine mmbclc(noma, nomo, numedd, iterat, numins,&
         call nmtime(sdtime, 'INI', 'CTCC_CONT')
         call nmtime(sdtime, 'RUN', 'CTCC_CONT')
         call mmmbca(noma, sddyna, iterat, defico, resoco,&
-                    sdstat, valinc, solalg, ctcsta, mmcvca,&
-                    instan)
+                    sdstat, valinc, solalg, instan, ctcsta,&
+                    mmcvca)
         call nmtime(sdtime, 'END', 'CTCC_CONT')
         call nmrinc(sdstat, 'CTCC_CONT')
     endif

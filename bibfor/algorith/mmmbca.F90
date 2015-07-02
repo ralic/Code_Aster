@@ -1,16 +1,14 @@
-subroutine mmmbca(noma, sddyna, iterat, defico, resoco,&
-                  sdstat, valinc, solalg, ctcsta, mmcvca,&
-                  instan)
+subroutine mmmbca(mesh          , sddyna   , iter_newt, sdcont_defi, sdcont_solv   ,&
+                  sdstat        , hval_incr, hval_algo, time_curr  , loop_cont_node,&
+                  loop_cont_conv)
 !
-    implicit none
+implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfdisl.h"
-#include "asterfort/cfdist.h"
-#include "asterfort/cfmmco.h"
 #include "asterfort/cfmmvd.h"
 #include "asterfort/cfnumm.h"
 #include "asterfort/cnocns.h"
@@ -20,15 +18,13 @@ subroutine mmmbca(noma, sddyna, iterat, defico, resoco,&
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/mcomce.h"
-#include "asterfort/mcopco.h"
 #include "asterfort/mmalgo.h"
 #include "asterfort/mmbouc.h"
 #include "asterfort/mm_cycl_prop.h"
 #include "asterfort/mm_cycl_stat.h"
+#include "asterfort/mmeval_prep.h"
 #include "asterfort/mmstac.h"
 #include "asterfort/mmeven.h"
 #include "asterfort/mmextm.h"
@@ -37,15 +33,9 @@ subroutine mmmbca(noma, sddyna, iterat, defico, resoco,&
 #include "asterfort/mminfi.h"
 #include "asterfort/mminfl.h"
 #include "asterfort/mminfm.h"
-#include "asterfort/mmmjev.h"
-#include "asterfort/mmnewj.h"
-#include "asterfort/mmnorm.h"
 #include "asterfort/mmstaf.h"
-#include "asterfort/mmvalp.h"
-#include "asterfort/mmvalp_scal.h"
 #include "asterfort/ndynlo.h"
 #include "asterfort/nmchex.h"
-#include "asterfort/utmess.h"
 #include "asterfort/vtgpld.h"
 !
 ! ======================================================================
@@ -66,149 +56,146 @@ subroutine mmmbca(noma, sddyna, iterat, defico, resoco,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=8), intent(in) :: noma
+    character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: sddyna
-    integer, intent(in) :: iterat
-    character(len=24), intent(in) :: defico
-    character(len=24), intent(in) :: resoco
+    integer, intent(in) :: iter_newt
+    character(len=24), intent(in) :: sdcont_defi
+    character(len=24), intent(in) :: sdcont_solv
     character(len=24), intent(in) :: sdstat
-    character(len=19), intent(in) :: valinc(*)
-    character(len=19), intent(in) :: solalg(*)
-    aster_logical, intent(out) :: mmcvca
-    integer, intent(out) :: ctcsta
-    real(kind=8), intent(in) :: instan
+    character(len=19), intent(in) :: hval_incr(*)
+    character(len=19), intent(in) :: hval_algo(*)
+    real(kind=8), intent(in) :: time_curr
+    aster_logical, intent(out) :: loop_cont_conv
+    integer, intent(out) :: loop_cont_node
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (METHODE CONTINUE)
+! Contact - Solve
 !
-! ALGO. DES CONTRAINTES ACTIVES POUR LE CONTACT METHODE CONTINUE
+! Continue method - Management of contact loop
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  mesh             : name of mesh
+! In  sddyna           : dynamic parameters datastructure
+! In  iter_newt        : index of current Newton iteration
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  sdcont_solv      : name of contact solving datastructure
+! In  sdstat           : datastructure for statistics
+! In  hval_incr        : hat-variable for incremental values fields
+! In  hval_algo        : hat-variable for algorithms fields
+! In  time_curr        : current time
+! Out loop_cont_conv   : .true. if contact loop converged
+! Out loop_cont_node   : number of contact state changing
 !
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  SDDYNA : SD POUR DYNAMIQUE
-! IN  ITERAT : NUMERO D'ITERATION DE NEWTON
-! IN  DEFICO : SD DE DEFINITION DU CONTACT
-! IN  RESOCO : SD DE RESOLUTION DU CONTACT
-! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
-! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
-! OUT CTCSTA : NOMBRE DE POINTS AYANT CHANGE DE STATUT DE CONTACT
-! OUT MMCVCA : INDICATEUR DE CONVERGENCE POUR BOUCLE DES
-!              CONTRAINTES ACTIVES
-!               .TRUE. SI LA BOUCLE DES CONTRAINTES ACTIVES A CONVERGE
-! IN INSTAN  : INST VALUE
-!
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     integer :: ztabf
     integer :: ifm, niv
-    integer :: jdecme, posmae, nummae, nummam, posnoe
+    integer :: jdecme, elem_slav_indx, elem_slav_nume, elem_mast_nume
     integer :: indi_cont_curr, indi_cont_prev, indi_frot_prev, indi_frot_curr
-    integer :: izone, imae, iptc, iptm
-    integer :: ndimg, nzoco
-    integer :: nne, nptm, nbmae
+    integer :: i_zone, i_elem_slav, i_cont_poin, i_poin_elem
+    integer :: model_ndim, nb_cont_zone
+    integer :: elem_slav_nbno, nb_poin_elem, nb_elem_slav
     integer :: indi_cont_eval, indi_frot_eval
     integer :: indi_cont_init, indi_frot_init
     real(kind=8) :: ksipr1, ksipr2, ksipc1, ksipc2
-    real(kind=8) :: geomp(3), geome(3)
-    real(kind=8) :: vitpm(3), vitpe(3)
     real(kind=8) :: norm(3), tau1(3), tau2(3)
-    real(kind=8) :: mlagc(9), mlagf1(9), mlagf2(9)
-    real(kind=8) :: coorme(27)
-    real(kind=8) :: lambdc
-    real(kind=8) :: noor
-    real(kind=8) :: jeu, jeuvit, dist
-    real(kind=8) :: pres_frot(3), dist_frot(3)
+    real(kind=8) :: lagr_cont_node(9), lagr_fro1_node(9), lagr_fro2_node(9)
+    real(kind=8) :: elem_slav_coor(27)
+    real(kind=8) :: lagr_cont_poin
+    real(kind=8) :: gap, gap_speed, gap_user
+    real(kind=8) :: pres_frot(3), gap_user_frot(3)
     real(kind=8) :: coef_cont, coef_frot
-    character(len=8) :: nommai, aliase
+    character(len=8) :: elem_slav_type
     character(len=19) :: cnsplu, cnsdel
     character(len=19) :: cnscon, cnsfr1, cnsfr2
-    character(len=24) :: tabfin, jeusup, mdecol, apjeu
-    integer :: jtabf, jjsup, jmdeco, japjeu
+    character(len=24) :: sdcont_mdecol
+    aster_logical, pointer :: v_sdcont_mdecol(:) => null()
     character(len=19) :: oldgeo, newgeo
-    character(len=19) :: chavit, chdepd
+    character(len=19) :: speed_field, chdepd
     character(len=19) :: depdel, depplu, vitplu
-    aster_logical :: lgliss, lvites, scotch
-    aster_logical :: lglini, lveri, lexig, lboucc, l_coef_adap
-    aster_logical :: lfrotz, lpenaf, lfrot
-    integer :: mmitgo, mmitfr, mmitca
-    character(len=24) :: sd_cycl_his, sd_cycl_coe
+    aster_logical :: l_glis, l_speed, scotch
+    aster_logical :: l_glis_init, l_veri, l_exis_glis, l_loop_cont, l_coef_adap
+    aster_logical :: l_frot_zone, l_pena_frot, l_frot
+    integer :: i_loop_geom, i_loop_frot, i_loop_cont
+    character(len=24) :: sdcont_cychis, sdcont_cyccoe
+    !real(kind=8), pointer :: v_sdcont_cychis(:) => null()
+    !real(kind=8), pointer :: v_sdcont_cyccoe(:) => null()
     integer :: jcyhis, jcycoe
+    character(len=24) :: sdcont_tabfin, sdcont_jsupco, sdcont_apjeu
+    real(kind=8), pointer :: v_sdcont_tabfin(:) => null()
+    real(kind=8), pointer :: v_sdcont_jsupco(:) => null()
+    real(kind=8), pointer :: v_sdcont_apjeu(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     call infdbg('CONTACT', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<CONTACT> ... ACTIVATION/DESACTIVATION'
     endif
 !
-! --- FONCTIONNALITES ACTIVEES
+! - Initializations
 !
-    lexig = cfdisl(defico,'EXIS_GLISSIERE')
-    lboucc = cfdisl(defico,'CONT_BOUCLE')
-    l_coef_adap = cfdisl(defico,'COEF_ADAPT')
+    loop_cont_conv = .true.
+    loop_cont_node = 0
+!
+! - Parameters
+!
+    l_speed      = ndynlo(sddyna,'FORMUL_VITE')
+    l_exis_glis  = cfdisl(sdcont_defi,'EXIS_GLISSIERE')
+    l_loop_cont  = cfdisl(sdcont_defi,'CONT_BOUCLE')
+    l_coef_adap  = cfdisl(sdcont_defi,'COEF_ADAPT')
+    model_ndim   = cfdisi(sdcont_defi,'NDIM' )
+    nb_cont_zone = cfdisi(sdcont_defi,'NZOCO')
+    l_frot       = cfdisl(sdcont_defi,'FROTTEMENT')
 !
 ! - Acces to contact objects
 !
-    tabfin = resoco(1:14)//'.TABFIN'
-    jeusup = resoco(1:14)//'.JSUPCO'
-    apjeu = resoco(1:14)//'.APJEU'
-    call jeveuo(tabfin, 'E', jtabf)
-    call jeveuo(jeusup, 'E', jjsup)
-    call jeveuo(apjeu, 'E', japjeu)
     ztabf = cfmmvd('ZTABF')
+    sdcont_tabfin = sdcont_solv(1:14)//'.TABFIN'
+    sdcont_jsupco = sdcont_solv(1:14)//'.JSUPCO'
+    sdcont_apjeu  = sdcont_solv(1:14)//'.APJEU'
+    sdcont_mdecol = sdcont_solv(1:14)//'.MDECOL'
+    call jeveuo(sdcont_tabfin, 'E', vr = v_sdcont_tabfin)
+    call jeveuo(sdcont_jsupco, 'E', vr = v_sdcont_jsupco)
+    call jeveuo(sdcont_apjeu , 'E', vr = v_sdcont_apjeu)
+    call jeveuo(sdcont_mdecol, 'E', vl = v_sdcont_mdecol)
 !
 ! - Acces to cycling objects
 !
-    sd_cycl_his = resoco(1:14)//'.CYCHIS'
-    sd_cycl_coe = resoco(1:14)//'.CYCCOE'
-    call jeveuo(sd_cycl_his, 'E', jcyhis)
-    call jeveuo(sd_cycl_coe, 'E', jcycoe)
+    sdcont_cychis = sdcont_solv(1:14)//'.CYCHIS'
+    sdcont_cyccoe = sdcont_solv(1:14)//'.CYCCOE'
+    call jeveuo(sdcont_cychis, 'E', jcyhis)
+    call jeveuo(sdcont_cyccoe, 'E', jcycoe)
 !
-! --- DECOMPACTION DES VARIABLES CHAPEAUX
+! - Get hat variables
 !
-    call nmchex(valinc, 'VALINC', 'DEPPLU', depplu)
-    call nmchex(valinc, 'VALINC', 'VITPLU', vitplu)
-    call nmchex(solalg, 'SOLALG', 'DEPDEL', depdel)
+    call nmchex(hval_incr, 'VALINC', 'DEPPLU', depplu)
+    call nmchex(hval_incr, 'VALINC', 'VITPLU', vitplu)
+    call nmchex(hval_algo, 'SOLALG', 'DEPDEL', depdel)
 !
-! --- INDICATEUR DE DECOLLEMENT POUR LE THETA-SCHEMA
+! - Get off indicator for speed schemes
 !
-    mdecol = resoco(1:14)//'.MDECOL'
-    call jeveuo(mdecol, 'E', jmdeco)
-    scotch = zl(jmdeco+1-1)
+    scotch = v_sdcont_mdecol(1)
 !
-! --- REACTUALISATION DE LA GEOMETRIE
+! - Geometric actualisation
 !
-    oldgeo = noma//'.COORDO'
-    newgeo = resoco(1:14)//'.NEWG'
+    oldgeo = mesh//'.COORDO'
+    newgeo = sdcont_solv(1:14)//'.NEWG'
     call vtgpld('CUMU', oldgeo, 1.d0, depplu, 'V',&
                 newgeo)
 !
-! --- POUR LA FORMULATION VITESSE, ON CREEE UN CHAMP DE VITESSE
-!
-    lvites = ndynlo(sddyna,'FORMUL_VITE')
-    chavit = '&&MMMBCA.ACTUVIT'
-    if (lvites) then
+! - Create speed field
+!    
+    speed_field = '&&MMMBCA.ACTUVIT'
+    if (l_speed) then
         call vtgpld('ZERO', oldgeo, 1.d0, vitplu, 'V',&
-                    chavit)
+                    speed_field)
     endif
 !
-! --- INITIALISATIONS
-!
-    ndimg = cfdisi(defico,'NDIM' )
-    nzoco = cfdisi(defico,'NZOCO')
-    mmcvca = .true.
-    lfrot = cfdisl(defico,'FROTTEMENT')
-    posnoe = 0
-    ctcsta = 0
-!
-! --- TRANSFORMATION DEPPLU EN CHAM_NO_S ET REDUCTION SUR LES LAGRANGES
+! - Prepare displacement field to get contact Lagrangien multiplier
 !
     cnsplu = '&&MMMBCA.CNSPLU'
     call cnocns(depplu, 'V', cnsplu)
@@ -216,17 +203,17 @@ subroutine mmmbca(noma, sddyna, iterat, defico, resoco,&
     call cnsred(cnsplu, 0, [0], 1, 'LAGS_C',&
                 'V', cnscon)
 !
-! --- TRANSFORMATION DEPDEL EN CHAM_NO_S ET REDUCTION SUR LES LAGRANGES
+! - Prepare displacement field to get friction Lagrangien multiplier
 !
     cnsdel = '&&MMMBCA.CNSDEL'
     chdepd = '&&MMMBCA.CHDEPD'
     cnsfr1 = '&&MMMBCA.CNSFR1'
     cnsfr2 = '&&MMMBCA.CNSFR2'
-    if (lfrot) then
+    if (l_frot) then
         call cnocns(depdel, 'V', cnsdel)
         call cnsred(cnsdel, 0, [0], 1, 'LAGS_F1',&
                     'V', cnsfr1)
-        if (ndimg .eq. 3) then
+        if (model_ndim .eq. 3) then
             call cnsred(cnsdel, 0, [0], 1, 'LAGS_F2',&
                         'V', cnsfr2)
         endif
@@ -234,226 +221,212 @@ subroutine mmmbca(noma, sddyna, iterat, defico, resoco,&
                     chdepd)
     endif
 !
-! --- BOUCLE SUR LES ZONES
+! - Loop on contact zones
 !
-    iptc = 1
-    do izone = 1, nzoco
+    i_cont_poin = 1
+    do i_zone = 1, nb_cont_zone
 !
-! --- OPTIONS SUR LA ZONE DE CONTACT
+! ----- Parameters of zone
 !
-        lgliss = mminfl(defico,'GLISSIERE_ZONE' ,izone )
-        lveri = mminfl(defico,'VERIF' ,izone )
-        nbmae = mminfi(defico,'NBMAE' ,izone )
-        jdecme = mminfi(defico,'JDECME',izone )
-        lfrotz = mminfl(defico,'FROTTEMENT_ZONE',izone)
-        lpenaf = mminfl(defico,'ALGO_FROT_PENA',izone )
+        l_glis       = mminfl(sdcont_defi,'GLISSIERE_ZONE' , i_zone)
+        l_veri       = mminfl(sdcont_defi,'VERIF'          , i_zone)
+        nb_elem_slav = mminfi(sdcont_defi,'NBMAE'          , i_zone)
+        jdecme       = mminfi(sdcont_defi,'JDECME'         , i_zone)
+        l_frot_zone  = mminfl(sdcont_defi,'FROTTEMENT_ZONE', i_zone)
+        l_pena_frot  = mminfl(sdcont_defi,'ALGO_FROT_PENA' , i_zone)
 !
-! ----- MODE VERIF: ON SAUTE LES POINTS
+! ----- No computation: no contact point
 !
-        if (lveri) then
+        if (l_veri) then
             goto 25
         endif
 !
-! ----- BOUCLE SUR LES MAILLES ESCLAVES
+! ----- Loop on slave elements
 !
-        do imae = 1, nbmae
+        do i_elem_slav = 1, nb_elem_slav
 !
-! ------- NUMERO ABSOLU DE LA MAILLE ESCLAVE
+! --------- Slave element index in contact datastructure
 !
-            posmae = jdecme + imae
-            call cfnumm(defico, posmae, nummae)
+            elem_slav_indx = jdecme + i_elem_slav
 !
-! ------- COORDONNNEES DES NOEUDS DE LA MAILLE ESCLAVE
+! --------- Informations about slave element
 !
-            call mcomce(noma, newgeo, nummae, coorme, aliase,&
-                        nne)
+            call cfnumm(sdcont_defi, elem_slav_indx, elem_slav_nume)
 !
-! ------- MULTIPLICATEURS DE CONTACT SUR LES NOEUDS ESCLAVES
+! --------- Number of integration points on element
 !
-            call mmextm(defico, cnscon, posmae, mlagc)
+            call mminfm(elem_slav_indx, sdcont_defi, 'NPTM', nb_poin_elem)
 !
-! ------- MULTIPLICATEURS DE FROTTEMENT SUR LES NOEUDS ESCLAVES
+! --------- Get coordinates of slave element
 !
-            if (lfrotz) then
-                call mmextm(defico, cnsfr1, posmae, mlagf1)
-                if (ndimg .eq. 3) then
-                    call mmextm(defico, cnsfr2, posmae, mlagf2)
+            call mcomce(mesh          , newgeo, elem_slav_nume, elem_slav_coor, elem_slav_type,&
+                        elem_slav_nbno)
+!
+! --------- Get value of contact lagrangian multiplier at slave nodes
+!
+            call mmextm(sdcont_defi, cnscon, elem_slav_indx, lagr_cont_node)
+!
+! --------- Get value of friction lagrangian multipliers at slave nodes
+!
+            if (l_frot_zone) then
+                call mmextm(sdcont_defi, cnsfr1, elem_slav_indx, lagr_fro1_node)
+                if (model_ndim .eq. 3) then
+                    call mmextm(sdcont_defi, cnsfr2, elem_slav_indx, lagr_fro2_node)
                 endif
-            endif
+            endif       
 !
-! ------- NOMBRE DE POINTS SUR LA MAILLE ESCLAVE
+! --------- Loop on integration points
 !
-            call mminfm(posmae, defico, 'NPTM', nptm)
+            do i_poin_elem = 1, nb_poin_elem
 !
-! ------- BOUCLE SUR LES POINTS
+! ------------- Current master element
 !
-            do iptm = 1, nptm
+                elem_mast_nume = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+3))
 !
-! --------- COORDONNEES ACTUALISEES DU POINT DE CONTACT
+! ------------- Get coordinates of the contact point 
 !
-                ksipc1 = zr(jtabf+ztabf*(iptc-1)+3 )
-                ksipc2 = zr(jtabf+ztabf*(iptc-1)+4 )
-                call mmvalp(ndimg, aliase, nne, 3, ksipc1,&
-                            ksipc2, coorme, geome)
+                ksipc1 = v_sdcont_tabfin(ztabf*(i_cont_poin-1)+4)
+                ksipc2 = v_sdcont_tabfin(ztabf*(i_cont_poin-1)+5)
 !
-! --------- COORDONNEES ACTUALISEES DE LA PROJECTION DU POINT DE CONTACT
+! ------------- Get coordinates of the projection of contact point 
 !
-                ksipr1 = zr(jtabf+ztabf*(iptc-1)+5 )
-                ksipr2 = zr(jtabf+ztabf*(iptc-1)+6 )
-                nummam = nint(zr(jtabf+ztabf*(iptc-1)+2))
-                call mcopco(noma, newgeo, ndimg, nummam, ksipr1,&
-                            ksipr2, geomp)
+                ksipr1 = v_sdcont_tabfin(ztabf*(i_cont_poin-1)+6)
+                ksipr2 = v_sdcont_tabfin(ztabf*(i_cont_poin-1)+7)
 !
-! --------- TANGENTES AU POINT DE CONTACT PROJETE SUR LA MAILLE MAITRE
+! ------------- Get local basis
 !
-                tau1(1) = zr(jtabf+ztabf*(iptc-1)+7 )
-                tau1(2) = zr(jtabf+ztabf*(iptc-1)+8 )
-                tau1(3) = zr(jtabf+ztabf*(iptc-1)+9 )
-                tau2(1) = zr(jtabf+ztabf*(iptc-1)+10)
-                tau2(2) = zr(jtabf+ztabf*(iptc-1)+11)
-                tau2(3) = zr(jtabf+ztabf*(iptc-1)+12)
+                tau1(1) = v_sdcont_tabfin(ztabf*(i_cont_poin-1)+8)
+                tau1(2) = v_sdcont_tabfin(ztabf*(i_cont_poin-1)+9)
+                tau1(3) = v_sdcont_tabfin(ztabf*(i_cont_poin-1)+10)
+                tau2(1) = v_sdcont_tabfin(ztabf*(i_cont_poin-1)+11)
+                tau2(2) = v_sdcont_tabfin(ztabf*(i_cont_poin-1)+12)
+                tau2(3) = v_sdcont_tabfin(ztabf*(i_cont_poin-1)+13)
 !
-! ------------- Previous status
+! ------------- Compute gap and contact pressure
 !
-                indi_cont_init = nint(zr(jtabf+ztabf*(iptc-1)+22))
-                if (lfrotz) indi_frot_init = nint(zr(jtabf+ztabf*(iptc-1)+23))
-                coef_cont = zr(jcyhis-1+25*(iptc-1)+2)
-                coef_frot = zr(jcyhis-1+25*(iptc-1)+6)
+                call mmeval_prep(mesh   , time_curr  , model_ndim     , sdcont_defi , sdcont_solv,&
+                                 l_speed, speed_field, i_zone         ,&
+                                 ksipc1 , ksipc2     , ksipr1         , ksipr2     ,&
+                                 tau1   , tau2       ,&
+                                 elem_slav_indx, elem_slav_nume, elem_slav_nbno,&
+                                 elem_slav_type, elem_slav_coor,&
+                                 elem_mast_nume,&
+                                 lagr_cont_node,&
+                                 norm   , &
+                                 gap    , gap_user, gap_speed, lagr_cont_poin)
 !
-! --------- GLISSIERE ACTIVEE ?
+! ------------- Previous status and coefficients
 !
-                lglini = nint(zr(jtabf+ztabf*(iptc-1)+17)).eq.1
-!
-! --------- CALCUL DE LA NORMALE
-!
-                call mmnorm(ndimg, tau1, tau2, norm, noor)
-                if (noor .le. r8prem()) then
-                    call jenuno(jexnum(noma//'.NOMMAI', nummam), nommai)
-                    call utmess('F', 'CONTACT3_23', sk=nommai, nr=3, valr=geomp)
+                indi_cont_init = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+23))
+                if (l_frot_zone) then
+                    indi_frot_init = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+24))
                 endif
+                coef_cont = zr(jcyhis-1+25*(i_cont_poin-1)+2)
+                coef_frot = zr(jcyhis-1+25*(i_cont_poin-1)+6)
 !
-! --------- CALCUL DU JEU ACTUALISE AU POINT DE CONTACT
+! ------------- Initial bilateral contact ?
 !
-                call mmnewj(ndimg, geome, geomp, norm, jeu)
+                l_glis_init = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+18)).eq.1
 !
-! --------- CALCUL DU JEU FICTIF AU POINT DE CONTACT
+! ------------- Total gap
 !
-                call cfdist(defico, 'CONTINUE', izone, posnoe, posmae,&
-                            geome, dist, instan)
-                zr(jjsup+iptc-1) = dist
+                gap = gap+gap_user
 !
-! --------- JEU TOTAL
+! ------------- Save gaps
 !
-                zr(japjeu+iptc-1) = jeu+dist
-                jeu = zr(japjeu+iptc-1)
+                v_sdcont_jsupco(i_cont_poin) = gap_user
+                v_sdcont_apjeu(i_cont_poin)  = gap
 !
-! --------- NOEUDS EXCLUS -> ON SORT DIRECT
+! ------------- Excluded nodes => no contact !
 !
-                if (nint(zr(jtabf+ztabf*(iptc-1)+18)) .eq. 1) then
+                if (nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+19)) .eq. 1) then
                     indi_cont_curr = 0
                     goto 19
                 endif
 !
-! --------- MULTIPLICATEUR DE LAGRANGE DE CONTACT DU POINT
-!
-                call mmvalp_scal(ndimg, aliase, nne, ksipc1,&
-                                 ksipc2, mlagc, lambdc)
-!
-! --------- FORMULATION EN VITESSE
-!
-                if (lvites) then
-!
-! ----------- COORDONNEES ACTUALISEES DU POINT DE CONTACT ET DU PROJETE
-!
-                    call mcopco(noma, chavit, ndimg, nummae, ksipc1,&
-                                ksipc2, vitpe)
-                    call mcopco(noma, chavit, ndimg, nummam, ksipr1,&
-                                ksipr2, vitpm)
-!
-! ----------- CALCUL DU GAP DES VITESSES NORMALES
-!
-                    call mmmjev(ndimg, norm, vitpe, vitpm, jeuvit)
-                endif
-!
 ! ------------- Evaluate contact status
 !
-                call mmstac(jeu, lambdc, coef_cont, indi_cont_eval)
+                call mmstac(gap, lagr_cont_poin, coef_cont, indi_cont_eval)
 !
 ! ------------- Evaluate friction status
 !
-                if (lfrotz) then
-                    call mmstaf(noma, ndimg, chdepd, coef_frot, lpenaf,&
-                                nummae, aliase, nne, nummam, ksipc1,&
-                                ksipc2, ksipr1, ksipr2, mlagf1, mlagf2,&
-                                tau1, tau2, norm, pres_frot, dist_frot,&
+                if (l_frot_zone) then
+                    call mmstaf(mesh, model_ndim, chdepd, coef_frot, l_pena_frot,&
+                          elem_slav_nume, elem_slav_type, elem_slav_nbno, elem_mast_nume, ksipc1,&
+                                ksipc2, ksipr1, ksipr2, lagr_fro1_node, lagr_fro2_node,&
+                                tau1, tau2, norm, pres_frot, gap_user_frot,&
                                 indi_frot_eval)
                 endif
 !
 ! ------------- Status treatment
 !
-                call mmalgo(defico, resoco, lboucc, lfrotz, lvites,&
-                            lglini, l_coef_adap, izone, iptc, indi_cont_init,&
-                            indi_cont_eval, indi_frot_eval, jeu, jeuvit, lambdc,&
-                            dist_frot, pres_frot, zr(jcyhis), zr(jcycoe), indi_cont_curr,&
-                            indi_frot_curr, ctcsta, mmcvca, scotch)
+                call mmalgo(sdcont_defi, sdcont_solv, l_loop_cont, l_frot_zone, l_speed,&
+                            l_glis_init, l_coef_adap, i_zone, i_cont_poin, indi_cont_init,&
+                            indi_cont_eval, indi_frot_eval, gap, gap_speed, lagr_cont_poin,&
+                            gap_user_frot, pres_frot, zr(jcyhis), zr(jcycoe), indi_cont_curr,&
+                            indi_frot_curr, loop_cont_node, loop_cont_conv, scotch)
 !
  19             continue
 !
 ! ------------- Save status
 !
-                zr(jtabf+ztabf*(iptc-1)+22) = indi_cont_curr
-                if (lfrotz) zr(jtabf+ztabf*(iptc-1)+23) = indi_frot_curr
-!
-! --------- AFFICHAGE ETAT DU CONTACT
-!
-                if (niv .ge. 2) then
-                    call mmimp4(ifm, noma, nummae, iptm, indi_cont_prev,&
-                                indi_cont_curr, indi_frot_prev, indi_frot_curr, lfrot, lvites,&
-                                lgliss, jeu, jeuvit, lambdc)
+                v_sdcont_tabfin(ztabf*(i_cont_poin-1)+23) = indi_cont_curr
+                if (l_frot_zone) then
+                    v_sdcont_tabfin(ztabf*(i_cont_poin-1)+24) = indi_frot_curr
                 endif
 !
-! --------- LIAISON DE CONTACT SUIVANTE
+! ------------- Print status
 !
-                iptc = iptc + 1
+                if (niv .ge. 2) then
+                    call mmimp4(ifm, mesh, elem_slav_nume, i_poin_elem, indi_cont_prev,&
+                                indi_cont_curr, indi_frot_prev, indi_frot_curr, l_frot, l_speed,&
+                                l_glis, gap, gap_speed, lagr_cont_poin)
+                endif
+!
+! ------------- Next contact point
+!
+                i_cont_poin = i_cont_poin + 1
             end do
         end do
  25     continue
     end do
 !
-! --- GESTION DE LA GLISSIERE
+! - Bilateral contact management
 !
-    if (mmcvca .and. lexig) then
-        call mmglis(defico, resoco)
+    if (loop_cont_conv .and. l_exis_glis) then
+        call mmglis(sdcont_defi, sdcont_solv)
     endif
 !
 ! - Statistics for cycling
 !
-    call mm_cycl_stat(sdstat, defico, resoco)
+    call mm_cycl_stat(sdstat, sdcont_defi, sdcont_solv)
 !
 ! - Propagation of coefficient
 !
     if (l_coef_adap) then
-        call mm_cycl_prop(defico, resoco, zr(jcyhis), zr(jcycoe))
+        call mm_cycl_prop(sdcont_defi, sdcont_solv, zr(jcyhis), zr(jcycoe))
     endif
 !
-! - GESTION DES EVENT POUR LA COLLISION
+! - Event management for impact
 !
-    call mmbouc(resoco, 'GEOM', 'READ', mmitgo)
-    call mmbouc(resoco, 'FROT', 'READ', mmitfr)
-    call mmbouc(resoco, 'CONT', 'READ', mmitca)
-!
-    if ((iterat.eq.0) .and. (mmitgo.eq.1) .and. (mmitfr.eq.1) .and. (mmitca.eq.1)) then
-        call mmeven('INI', defico, resoco)
+    call mmbouc(sdcont_solv, 'GEOM', 'READ', i_loop_geom)
+    call mmbouc(sdcont_solv, 'FROT', 'READ', i_loop_frot)
+    call mmbouc(sdcont_solv, 'CONT', 'READ', i_loop_cont)
+    if ((iter_newt.eq.0) .and.&
+        (i_loop_geom.eq.1) .and. (i_loop_frot.eq.1) .and. (i_loop_cont.eq.1)) then
+        call mmeven('INI', sdcont_defi, sdcont_solv)
     else
-        call mmeven('FIN', defico, resoco)
+        call mmeven('FIN', sdcont_defi, sdcont_solv)
     endif
 !
-! --- SAUVEGARDE DECOLLEMENT POUR LE THETA-SCHEMA
+! - Get off indicator for speed schemes
 !
-    zl(jmdeco+1-1) = scotch
+    v_sdcont_mdecol(1) = scotch
+!
+! - Cleaning
 !
     call jedetr(newgeo)
-    call jedetr(chavit)
+    call jedetr(speed_field)
     call jedetr(chdepd)
     call detrsd('CHAM_NO_S', cnsplu)
     call detrsd('CHAM_NO_S', cnsdel)

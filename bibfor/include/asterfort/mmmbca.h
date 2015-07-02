@@ -18,19 +18,19 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine mmmbca(noma  , sddyna, iterat, defico, resoco, &
-                      sdstat, valinc, solalg, ctcsta, mmcvca,&
-                      instan)
-        character(len=8), intent(in) :: noma
+    subroutine mmmbca(mesh          , sddyna   , iter_newt, sdcont_defi, sdcont_solv   ,&
+                      sdstat        , hval_incr, hval_algo, time_curr  , loop_cont_node,&
+                      loop_cont_conv)
+        character(len=8), intent(in) :: mesh
         character(len=19), intent(in) :: sddyna
-        integer, intent(in) :: iterat
-        character(len=24), intent(in) :: defico
-        character(len=24), intent(in) :: resoco
+        integer, intent(in) :: iter_newt
+        character(len=24), intent(in) :: sdcont_defi
+        character(len=24), intent(in) :: sdcont_solv
         character(len=24), intent(in) :: sdstat
-        character(len=19), intent(in) :: valinc(*)
-        character(len=19), intent(in) :: solalg(*)
-        integer, intent(out) :: ctcsta
-        aster_logical, intent(out) :: mmcvca
-        real(kind=8), intent(in) :: instan
+        character(len=19), intent(in) :: hval_incr(*)
+        character(len=19), intent(in) :: hval_algo(*)
+        real(kind=8), intent(in) :: time_curr
+        aster_logical, intent(out) :: loop_cont_conv
+        integer, intent(out) :: loop_cont_node
     end subroutine mmmbca
 end interface

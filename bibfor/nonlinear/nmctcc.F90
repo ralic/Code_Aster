@@ -126,9 +126,9 @@ subroutine nmctcc(noma, modele, mate, sddyna, sderro,&
                         mmcvca)
         endif
     else if (lctcc) then
-        call mmmbca(noma, sddyna, iterat, defico, resoco,&
-                    sdstat, valinc, solalg, ctcsta, mmcvca,&
-                    instan)
+        call mmmbca(noma  , sddyna, iterat, defico, resoco,&
+                    sdstat, valinc, solalg, instan, ctcsta,&
+                    mmcvca)
         call mm_cycl_flip(defico, resoco, cycl_flip)
 ! ----- FLIP-FLOP: ON FORCE LA CONVERGENCE
         if (cycl_flip) mmcvca = .true.
