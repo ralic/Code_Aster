@@ -106,8 +106,6 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                   "CABLE_POULIE",    # RESP. : None
                                   "COQUE_3D",        # RESP. : DESROCHES X.DESROCHES
                                   "COQUE_AXIS",      # RESP. : DESROCHES X.DESROCHES
-                                  "COQUE_C_PLAN",    # RESP. : DESROCHES X.DESROCHES
-                                  "COQUE_D_PLAN",    # RESP. : DESROCHES X.DESROCHES
                                   "D_PLAN",          # RESP. : LEFEBVRE J.P.LEFEBVRE
                                   "D_PLAN_GRAD_EPSI",# RESP. : MICHEL S.MICHEL
                                   "D_PLAN_GRAD_VARI",# RESP. : MICHEL S.MICHEL

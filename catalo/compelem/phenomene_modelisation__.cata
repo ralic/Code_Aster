@@ -295,14 +295,6 @@ PHENOMENE_MODELISATION__
               ATTRIBUT__  AXIS='OUI' TYPMOD='C_PLAN' COQUE='OUI' EFGE='OUI'
               MAILLE__ SEG3      ELEMENT__ MECXSE3
 
-       MODELISATION__ 'COQUE_C_PLAN'     DIM__ 1 2   CODE__ 'CQC'
-              ATTRIBUT__  TYPMOD='C_PLAN' COQUE='OUI' EFGE='OUI'
-              MAILLE__ SEG3      ELEMENT__ METCSE3
-
-       MODELISATION__ 'COQUE_D_PLAN'     DIM__ 1 2   CODE__ 'CQD'
-              ATTRIBUT__  TYPMOD='C_PLAN' COQUE='OUI' EFGE='OUI'
-              MAILLE__ SEG3      ELEMENT__ METDSE3
-
        MODELISATION__ '3D_SI'            DIM__ 3 3   CODE__ '3DS'
               ATTRIBUT__  NBSIGM='6' TYPMOD='COMP3D'
               MAILLE__ HEXA20    ELEMENT__ MECA_HEXS20
