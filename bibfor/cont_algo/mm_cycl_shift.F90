@@ -1,8 +1,9 @@
-subroutine mmstac(dist_cont, pres_cont, coef_cont, indi_cont_eval)
+subroutine mm_cycl_shift(cycl_long_acti, cycl_ecod, cycl_long)
 !
-    implicit none
+implicit none
 !
-#include "asterc/r8prem.h"
+#include "asterfort/iscode.h"
+#include "asterfort/isdeco.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,43 +23,37 @@ subroutine mmstac(dist_cont, pres_cont, coef_cont, indi_cont_eval)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    real(kind=8), intent(in) :: dist_cont
-    real(kind=8), intent(in) :: pres_cont
-    real(kind=8), intent(in) :: coef_cont
-    integer, intent(out) :: indi_cont_eval
+    integer, intent(in) :: cycl_long_acti
+    integer, intent(inout) :: cycl_ecod
+    integer, intent(inout) :: cycl_long
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Contact (continue method)
+! Contact - Solve - Cycling
 !
-! Evaluate contact status
-!
-! --------------------------------------------------------------------------------------------------
-!
-!
-! In  dist_cont      : contact gap
-! In  pres_cont      : contact pressure
-! In  coef_cont      : augmented ratio for contact
-! Out indi_cont_eval : evaluation of new contact status
+! Shift detection (index greater than cycling length)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    real(kind=8) :: laug_cont
+! In  cycl_long_acti   : length of cycling to detect
+! IO  cycl_ecod        : coded integer for cycling
+! IO  cycl_long        : cycling length
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    integer :: statut(30)
+    integer :: cycl_index
+    integer :: cycl_ecodi(1)
 !
+! --------------------------------------------------------------------------------------------------
 !
-! - Augmented lagrangian for contact
-!
-    laug_cont = pres_cont - coef_cont * dist_cont
-!
-! - New status of contact (sign of augmented lagrangian)
-!
-    if (laug_cont .le. r8prem()) then
-        indi_cont_eval = 1
-    else
-        indi_cont_eval = 0
-    endif
-!
+    cycl_ecodi(1) = cycl_ecod
+    call isdeco(cycl_ecodi(1), statut, 30)
+    do cycl_index = 1, cycl_long_acti-1
+        statut(cycl_index) = statut(cycl_index+1)
+    end do
+    call iscode(statut, cycl_ecodi(1), 30)
+    cycl_long = cycl_long_acti - 1
+    cycl_ecod = cycl_ecodi(1)
+
 end subroutine

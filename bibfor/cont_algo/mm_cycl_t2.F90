@@ -2,7 +2,7 @@ subroutine mm_cycl_t2(pres_frot_prev, dist_frot_prev, coef_frot_prev, cycl_stat_
                       pres_frot_curr, dist_frot_curr, &
                       coef_frot_curr, cycl_stat_curr)
 !
-    implicit     none
+implicit none
 !
 #include "asterc/r8prem.h"
 #include "asterfort/mm_cycl_adaf.h"
@@ -38,20 +38,20 @@ subroutine mm_cycl_t2(pres_frot_prev, dist_frot_prev, coef_frot_prev, cycl_stat_
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Contact (continue method) - Cycling
+! Contact - Solve - Cycling
 !
 ! Treatment: sticking/sliding
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  pres_frot_prev : previous friction pressure in cycle
-! In  dist_frot_prev : previous friction distance in cycle
-! In  coef_frot_prev : previous augmented ratio for friction
-! In  cycl_stat_prev : previous state of cycle
-! In  pres_frot_curr : current friction pressure
-! In  dist_frot_curr : current friction distance
-! Out coef_frot_curr : current augmented ratio for friction
-! Out cycl_stat_curr : state of treatment
+! In  pres_frot_prev   : previous friction pressure in cycle
+! In  dist_frot_prev   : previous friction distance in cycle
+! In  coef_frot_prev   : previous augmented ratio for friction
+! In  cycl_stat_prev   : previous state of cycle
+! In  pres_frot_curr   : current friction pressure
+! In  dist_frot_curr   : current friction distance
+! Out coef_frot_curr   : current augmented ratio for friction
+! Out cycl_stat_curr   : state of treatment
 !                      -10 : Failure during adaptation
 !                      -02 : Cannot adapt
 !                      -01 : has been adapted

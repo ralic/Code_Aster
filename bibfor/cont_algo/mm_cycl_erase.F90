@@ -1,6 +1,6 @@
-subroutine mm_cycl_erase(sd_cont_defi, sd_cont_solv, cycl_type, point_curr)
+subroutine mm_cycl_erase(sdcont_defi, sdcont_solv, cycl_type, point_curr)
 !
-    implicit none
+implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -28,83 +28,83 @@ subroutine mm_cycl_erase(sd_cont_defi, sd_cont_solv, cycl_type, point_curr)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=24), intent(in) :: sd_cont_defi
-    character(len=24), intent(in) :: sd_cont_solv
+    character(len=24), intent(in) :: sdcont_defi
+    character(len=24), intent(in) :: sdcont_solv
     integer, intent(in) :: cycl_type
     integer, intent(in) :: point_curr
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Contact (continue method) - Cycling
+! Contact - Solve - Cycling
 !
 ! Erase cycling informations
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sd_cont_solv : data structure for contact solving
-! In  sd_cont_defi : data structure from contact definition
-! In  cycl_type    : type of cycling to erase
+! In  sdcont_solv      : name of contact solving datastructure
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  cycl_type        : type of cycling to erase
 !                     0 - for erasing for all cycles
-! In  point_curr   : contact point to erasing
+! In  point_curr       : contact point to erasing
 !                     0 - when erasing all cycles
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: sd_cycl_lis
-    integer, pointer :: p_cycl_lis(:) => null()
-    character(len=24) :: sd_cycl_nbr
-    integer, pointer :: p_cycl_nbr(:) => null()
-    character(len=24) :: sd_cycl_eta
-    integer, pointer :: p_cycl_eta(:) => null()
-    integer :: point_number, point_index
+    character(len=24) :: sdcont_cyclis
+    integer, pointer :: p_sdcont_cyclis(:) => null()
+    character(len=24) :: sdcont_cycnbr
+    integer, pointer :: p_sdcont_cycnbr(:) => null()
+    character(len=24) :: sdcont_cyceta
+    integer, pointer :: p_sdcont_cyceta(:) => null()
+    integer :: nb_cont_poin, i_cont_poin
     integer :: cycl_index
     aster_logical :: lctcc
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-    lctcc = cfdisl(sd_cont_defi,'FORMUL_CONTINUE')
+    lctcc = cfdisl(sdcont_defi,'FORMUL_CONTINUE')
     if (.not.lctcc) then
         goto 99
     endif
 !
 ! - Name of cycling objects
 !
-    sd_cycl_lis = sd_cont_solv(1:14)//'.CYCLIS'
-    sd_cycl_nbr = sd_cont_solv(1:14)//'.CYCNBR'
-    sd_cycl_eta = sd_cont_solv(1:14)//'.CYCETA'
+    sdcont_cyclis = sdcont_solv(1:14)//'.CYCLIS'
+    sdcont_cycnbr = sdcont_solv(1:14)//'.CYCNBR'
+    sdcont_cyceta = sdcont_solv(1:14)//'.CYCETA'
 !
 ! - Access to cycling objects
 !
-    call jeveuo(sd_cycl_lis, 'E', vi = p_cycl_lis)
-    call jeveuo(sd_cycl_nbr, 'E', vi = p_cycl_nbr)
-    call jeveuo(sd_cycl_eta, 'E', vi = p_cycl_eta)
+    call jeveuo(sdcont_cyclis, 'E', vi = p_sdcont_cyclis)
+    call jeveuo(sdcont_cycnbr, 'E', vi = p_sdcont_cycnbr)
+    call jeveuo(sdcont_cyceta, 'E', vi = p_sdcont_cyceta)
 !
 ! - Initializations
 !
-    point_number = cfdisi(sd_cont_defi,'NTPC' )
+    nb_cont_poin = cfdisi(sdcont_defi,'NTPC' )
 !
 ! - Erasing cycling information
 !
     if (cycl_type .eq. 0) then
         ASSERT(point_curr.eq.0)
         do cycl_index = 1, 4
-            do point_index = 1, point_number
-                p_cycl_lis(4*(point_index-1)+cycl_index) = 0
-                p_cycl_nbr(4*(point_index-1)+cycl_index) = 0
-                p_cycl_eta(4*(point_index-1)+cycl_index) = 0
+            do i_cont_poin = 1, nb_cont_poin
+                p_sdcont_cyclis(4*(i_cont_poin-1)+cycl_index) = 0
+                p_sdcont_cycnbr(4*(i_cont_poin-1)+cycl_index) = 0
+                p_sdcont_cyceta(4*(i_cont_poin-1)+cycl_index) = 0
             enddo
         end do
     else if (cycl_type.gt.0) then
-        ASSERT(point_curr.le.point_number)
+        ASSERT(point_curr.le.nb_cont_poin)
         ASSERT(point_curr.ge.1)
         ASSERT(cycl_type.ge.1)
         ASSERT(cycl_type.le.4)
         cycl_index = cycl_type
-        point_index = point_curr
-        p_cycl_lis(4*(point_index-1)+cycl_index) = 0
-        p_cycl_nbr(4*(point_index-1)+cycl_index) = 0
-        p_cycl_eta(4*(point_index-1)+cycl_index) = 0
+        i_cont_poin = point_curr
+        p_sdcont_cyclis(4*(i_cont_poin-1)+cycl_index) = 0
+        p_sdcont_cycnbr(4*(i_cont_poin-1)+cycl_index) = 0
+        p_sdcont_cyceta(4*(i_cont_poin-1)+cycl_index) = 0
     else
         ASSERT(.false.)
     endif

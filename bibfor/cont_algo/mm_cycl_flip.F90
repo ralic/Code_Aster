@@ -1,9 +1,12 @@
-subroutine mm_cycl_shift(cycl_long_acti, cycl_ecod, cycl_long)
+subroutine mm_cycl_flip(sdcont_defi, sdcont_solv, cycl_flip)
 !
-    implicit     none
+implicit none
 !
-#include "asterfort/iscode.h"
-#include "asterfort/isdeco.h"
+#include "asterf_types.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,37 +26,50 @@ subroutine mm_cycl_shift(cycl_long_acti, cycl_ecod, cycl_long)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    integer, intent(in) :: cycl_long_acti
-    integer, intent(inout) :: cycl_ecod
-    integer, intent(inout) :: cycl_long
+    character(len=24), intent(in) :: sdcont_defi
+    character(len=24), intent(in) :: sdcont_solv
+    aster_logical, intent(out) :: cycl_flip
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Contact (continue method) - Cycling
+! Contact - Solve - Cycling
 !
-! Shift detection (index greater than cycling length)
-!
-! --------------------------------------------------------------------------------------------------
-!
-! In  cycl_long_acti : length of cycling to detect
-! IO  cycl_ecod      : coded integer for cycling
-! IO  cycl_long      : cycling length
+! Is flip-flop cycling ?
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: statut(30)
-    integer :: cycl_index
-    integer :: cycl_ecodi(1)
+! In  sdcont_solv      : name of contact solving datastructure
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! Out cycl_flip        : .true. if flip-flop cycling activated
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    cycl_ecodi(1) = cycl_ecod
-    call isdeco(cycl_ecodi(1), statut, 30)
-    do cycl_index = 1, cycl_long_acti-1
-        statut(cycl_index) = statut(cycl_index+1)
+    character(len=24) :: sdcont_cyceta
+    integer, pointer :: p_sdcont_cyceta(:) => null()
+    integer :: cycl_index, cycl_stat
+    integer :: nb_cont_poin, i_cont_poin
+!
+! --------------------------------------------------------------------------------------------------
+!
+    call jemarq()
+!
+! - Initializations
+!
+    cycl_flip = .false.
+    cycl_index = 4
+!
+! - Cycling objects
+!
+    sdcont_cyceta = sdcont_solv(1:14)//'.CYCETA'
+    call jeveuo(sdcont_cyceta, 'L', vi = p_sdcont_cyceta)
+!
+! - Flip-flop dectected ?
+!
+    nb_cont_poin = cfdisi(sdcont_defi,'NTPC' )
+    do i_cont_poin = 1, nb_cont_poin
+        cycl_stat = p_sdcont_cyceta(4*(i_cont_poin-1)+cycl_index)
+        if (cycl_stat .gt. 0) cycl_flip = .true.
     end do
-    call iscode(statut, cycl_ecodi(1), 30)
-    cycl_long = cycl_long_acti - 1
-    cycl_ecod = cycl_ecodi(1)
-
+!
+    call jedema()
 end subroutine

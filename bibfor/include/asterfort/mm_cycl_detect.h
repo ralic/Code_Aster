@@ -18,17 +18,17 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine mm_cycl_detect(sd_cont_defi  , sd_cont_solv  , &
-                              l_loop_cont, l_frot_zone, point_index, &
+    subroutine mm_cycl_detect(sdcont_defi  , sdcont_solv  , &
+                              l_loop_cont, l_frot_zone, i_cont_poin, &
                               coef_cont     , pres_cont_prev, dist_cont_prev, &
                               indi_frot_prev, dist_frot_prev, &
                               indi_cont_eval, indi_frot_eval, &
                               dist_cont_curr, pres_cont_curr, dist_frot_curr)
-        character(len=24), intent(in) :: sd_cont_defi
-        character(len=24), intent(in) :: sd_cont_solv
+        character(len=24), intent(in) :: sdcont_defi
+        character(len=24), intent(in) :: sdcont_solv
         aster_logical, intent(in) :: l_loop_cont
         aster_logical, intent(in) :: l_frot_zone
-        integer, intent(in) :: point_index
+        integer, intent(in) :: i_cont_poin
         real(kind=8), intent(in) :: coef_cont
         real(kind=8), intent(in) :: pres_cont_prev
         real(kind=8), intent(in) :: dist_cont_prev

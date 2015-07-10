@@ -35,14 +35,14 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Contact (continue method) - Cycling
+! Contact - Solve - Cycling
 !
 ! Propagating adapted ratio
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sdcont_solv   : data structure for contact solving
-! In  sdcont_defi   : data structure from contact definition
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  sdcont_solv      : name of contact solving datastructure
 !
 ! --------------------------------------------------------------------------------------------------
 !

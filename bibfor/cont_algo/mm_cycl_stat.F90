@@ -1,4 +1,4 @@
-subroutine mm_cycl_stat(sd_stat, sd_cont_defi, sd_cont_solv)
+subroutine mm_cycl_stat(sdstat, sdcont_defi, sdcont_solv)
 !
     implicit none
 !
@@ -30,28 +30,28 @@ subroutine mm_cycl_stat(sd_stat, sd_cont_defi, sd_cont_solv)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=24), intent(in) :: sd_stat
-    character(len=24), intent(in) :: sd_cont_defi
-    character(len=24), intent(in) :: sd_cont_solv
+    character(len=24), intent(in) :: sdstat
+    character(len=24), intent(in) :: sdcont_defi
+    character(len=24), intent(in) :: sdcont_solv
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Contact (continue method) - Cycling
+! Contact - Solve - Cycling
 !
 ! Statistics
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sd_stat      : data structure for non-linear stats
-! In  sd_cont_solv : data structure for contact solving
-! In  sd_cont_defi : data structure from contact definition
+! In  sdstat           : datastructure for statistics
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  sdcont_solv      : name of contact solving datastructure
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: sd_cycl_eta
-    integer, pointer :: p_cycl_eta(:) => null()
+    character(len=24) :: sdcont_cyceta
+    integer, pointer :: p_sdcont_cyceta(:) => null()
     integer :: cycl_index, cycl_stat
-    integer :: point_index, point_number
+    integer :: i_cont_poin, nb_cont_poin
     aster_logical :: cont_disc, cont_xfem
     integer :: cycl_nb(4)
 !
@@ -61,8 +61,8 @@ subroutine mm_cycl_stat(sd_stat, sd_cont_defi, sd_cont_solv)
 !
 ! - Formulation of contact
 !
-    cont_disc = cfdisl(sd_cont_defi,'FORMUL_DISCRETE')
-    cont_xfem = cfdisl(sd_cont_defi,'FORMUL_XFEM')
+    cont_disc = cfdisl(sdcont_defi,'FORMUL_DISCRETE')
+    cont_xfem = cfdisl(sdcont_defi,'FORMUL_XFEM')
     if (cont_disc .or. cont_xfem) goto 99
 !
 ! - Initializations
@@ -73,30 +73,30 @@ subroutine mm_cycl_stat(sd_stat, sd_cont_defi, sd_cont_solv)
 !
 ! - Acces to cycling objects
 !
-    sd_cycl_eta = sd_cont_solv(1:14)//'.CYCETA'
-    call jeveuo(sd_cycl_eta, 'L', vi = p_cycl_eta)
+    sdcont_cyceta = sdcont_solv(1:14)//'.CYCETA'
+    call jeveuo(sdcont_cyceta, 'L', vi = p_sdcont_cyceta)
 !
 ! - Counting cycles
 !
-    point_number = cfdisi(sd_cont_defi,'NTPC' )
-    do point_index = 1, point_number
+    nb_cont_poin = cfdisi(sdcont_defi,'NTPC' )
+    do i_cont_poin = 1, nb_cont_poin
         do cycl_index = 1, 4
-            cycl_stat = p_cycl_eta(4*(point_index-1)+cycl_index)
+            cycl_stat = p_sdcont_cyceta(4*(i_cont_poin-1)+cycl_index)
             if (cycl_stat .ne. 0) then
                 cycl_nb(cycl_index) = cycl_nb(cycl_index) + 1
             endif
             if (cycl_stat .lt. 0) then
-                call mm_cycl_erase(sd_cont_defi, sd_cont_solv, cycl_index, point_index)
+                call mm_cycl_erase(sdcont_defi, sdcont_solv, cycl_index, i_cont_poin)
             endif
         end do
     end do
 !
 ! - Saving for statistics
 !
-    call nmrvai(sd_stat, 'CTCC_CYCL_1', 'E', cycl_nb(1))
-    call nmrvai(sd_stat, 'CTCC_CYCL_2', 'E', cycl_nb(2))
-    call nmrvai(sd_stat, 'CTCC_CYCL_3', 'E', cycl_nb(3))
-    call nmrvai(sd_stat, 'CTCC_CYCL_4', 'E', cycl_nb(4))
+    call nmrvai(sdstat, 'CTCC_CYCL_1', 'E', cycl_nb(1))
+    call nmrvai(sdstat, 'CTCC_CYCL_2', 'E', cycl_nb(2))
+    call nmrvai(sdstat, 'CTCC_CYCL_3', 'E', cycl_nb(3))
+    call nmrvai(sdstat, 'CTCC_CYCL_4', 'E', cycl_nb(4))
 !
  99 continue
 !

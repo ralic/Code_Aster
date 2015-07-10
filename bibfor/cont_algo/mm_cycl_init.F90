@@ -1,6 +1,6 @@
-subroutine mm_cycl_init(sd_cont_defi, sd_cont_solv)
+subroutine mm_cycl_init(sdcont_defi, sdcont_solv)
 !
-    implicit none
+implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -31,28 +31,28 @@ subroutine mm_cycl_init(sd_cont_defi, sd_cont_solv)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=24), intent(in) :: sd_cont_defi
-    character(len=24), intent(in) :: sd_cont_solv
+    character(len=24), intent(in) :: sdcont_defi
+    character(len=24), intent(in) :: sdcont_solv
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Contact (continue method) - Cycling
+! Contact - Solve - Cycling
 !
 ! Initialization of data structures
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sd_cont_solv : data structure for contact solving
-! In  sd_cont_defi : data structure from contact definition
+! In  sdcont_solv      : name of contact solving datastructure
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: sd_cycl_his
-    real(kind=8), pointer :: p_cycl_his(:) => null()
-    character(len=24) :: sd_cycl_coe
-    real(kind=8), pointer :: p_cycl_coe(:) => null()
-    integer :: point_index
-    integer :: zone_index, zone_number
+    character(len=24) :: sdcont_cychis
+    real(kind=8), pointer :: p_sdcont_cychis(:) => null()
+    character(len=24) :: sdcont_cyccoe
+    real(kind=8), pointer :: p_sdcont_cyccoe(:) => null()
+    integer :: i_cont_poin
+    integer :: zone_index, nb_cont_zone
     integer :: slave_elt_index, slave_elt_nb, slave_elt_shift, slave_elt_num
     integer :: slave_pt_index, slave_pt_nb
     real(kind=8) :: coef_cont, coef_frot
@@ -64,30 +64,30 @@ subroutine mm_cycl_init(sd_cont_defi, sd_cont_solv)
 !
 ! - Initializations
 !
-    zone_number = cfdisi(sd_cont_defi,'NZOCO' )
+    nb_cont_zone = cfdisi(sdcont_defi,'NZOCO' )
 !
 ! - Access to cycling objects
 !
-    sd_cycl_his = sd_cont_solv(1:14)//'.CYCHIS'
-    sd_cycl_coe = sd_cont_solv(1:14)//'.CYCCOE'
-    call jeveuo(sd_cycl_his, 'E', vr = p_cycl_his)
-    call jeveuo(sd_cycl_coe, 'E', vr = p_cycl_coe)
+    sdcont_cychis = sdcont_solv(1:14)//'.CYCHIS'
+    sdcont_cyccoe = sdcont_solv(1:14)//'.CYCCOE'
+    call jeveuo(sdcont_cychis, 'E', vr = p_sdcont_cychis)
+    call jeveuo(sdcont_cyccoe, 'E', vr = p_sdcont_cyccoe)
 !
 ! - Init history
 !
-    point_index = 1
-    do zone_index = 1, zone_number
-        lveri = mminfl(sd_cont_defi,'VERIF' ,zone_index)
-        slave_elt_nb = mminfi(sd_cont_defi,'NBMAE' ,zone_index)
-        slave_elt_shift = mminfi(sd_cont_defi,'JDECME',zone_index)
-        coef_cont = mminfr(sd_cont_defi,'COEF_AUGM_CONT',zone_index)
-        coef_frot = mminfr(sd_cont_defi,'COEF_AUGM_FROT',zone_index)
-        p_cycl_coe(6*(zone_index-1)+1) = coef_cont
-        p_cycl_coe(6*(zone_index-1)+2) = coef_frot
-        p_cycl_coe(6*(zone_index-1)+3) = +1.d99
-        p_cycl_coe(6*(zone_index-1)+4) = -1.d99
-        p_cycl_coe(6*(zone_index-1)+5) = +1.d99
-        p_cycl_coe(6*(zone_index-1)+6) = -1.d99
+    i_cont_poin = 1
+    do zone_index = 1, nb_cont_zone
+        lveri = mminfl(sdcont_defi,'VERIF' ,zone_index)
+        slave_elt_nb = mminfi(sdcont_defi,'NBMAE' ,zone_index)
+        slave_elt_shift = mminfi(sdcont_defi,'JDECME',zone_index)
+        coef_cont = mminfr(sdcont_defi,'COEF_AUGM_CONT',zone_index)
+        coef_frot = mminfr(sdcont_defi,'COEF_AUGM_FROT',zone_index)
+        p_sdcont_cyccoe(6*(zone_index-1)+1) = coef_cont
+        p_sdcont_cyccoe(6*(zone_index-1)+2) = coef_frot
+        p_sdcont_cyccoe(6*(zone_index-1)+3) = +1.d99
+        p_sdcont_cyccoe(6*(zone_index-1)+4) = -1.d99
+        p_sdcont_cyccoe(6*(zone_index-1)+5) = +1.d99
+        p_sdcont_cyccoe(6*(zone_index-1)+6) = -1.d99
         if (lveri) goto 25
 !
 ! ----- Loop on slave elements
@@ -100,15 +100,15 @@ subroutine mm_cycl_init(sd_cont_defi, sd_cont_solv)
 !
 ! --------- Number of points on slave element
 !
-            call mminfm(slave_elt_num, sd_cont_defi, 'NPTM', slave_pt_nb)
+            call mminfm(slave_elt_num, sdcont_defi, 'NPTM', slave_pt_nb)
 !
 ! --------- Loop on points
 !
             do slave_pt_index = 1, slave_pt_nb
-                p_cycl_his(25*(point_index-1)+2) = coef_cont
-                p_cycl_his(25*(point_index-1)+6) = coef_frot
-                p_cycl_his(25*(point_index-1)+25) = zone_index
-                point_index = point_index + 1
+                p_sdcont_cychis(25*(i_cont_poin-1)+2) = coef_cont
+                p_sdcont_cychis(25*(i_cont_poin-1)+6) = coef_frot
+                p_sdcont_cychis(25*(i_cont_poin-1)+25) = zone_index
+                i_cont_poin = i_cont_poin + 1
             end do
         end do
  25     continue

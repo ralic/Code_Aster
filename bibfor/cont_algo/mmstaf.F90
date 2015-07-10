@@ -4,7 +4,7 @@ subroutine mmstaf(mesh, ndim, chdepd, coef_frot, lpenaf,&
                   tang_1, tang_2, norm, pres_frot, dist_frot,&
                   indi_frot_eval)
 !
-    implicit none
+implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -64,28 +64,27 @@ subroutine mmstaf(mesh, ndim, chdepd, coef_frot, lpenaf,&
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!
-! In  mesh           : name of mesh
-! In  ndim           : space size
-! In  chdepd         : cumulated displacement
-! In  coef_frot      : augmented ratio for friction
-! In  lpenaf         : .true. if penalized friction
-! In  nummae         : number of slave element
-! In  aliase         : type of slave element
-! In  nne            : number of nodes of slave element
-! In  nummam         : number of master element
-! In  kspic1         : first parametric coord. of contact point (in slave element)
-! In  kspic2         : second parametric coord. of contact point (in slave element)
-! In  kspir1         : first parametric coord. of projection of contact point (in master element)
-! In  kspir2         : second parametric coord. of projection of contact point (in master element)
-! In  mult_lagr_f1   : first lagrange multiplier for friction at nodes
-! In  mult_lagr_f2   : second lagrange multiplier for friction at nodes
-! In  tang_1         : first tangent vector
-! In  tang_2         : second tangent vector
-! In  norm           : normal
-! Out pres_frot      : friction pressure
-! Out dist_frot      : friction distance
-! Out indi_frot_eval : evaluation of new friction status
+! In  mesh             : name of mesh
+! In  ndim             : space size
+! In  chdepd           : cumulated displacement
+! In  coef_frot        : augmented ratio for friction
+! In  lpenaf           : .true. if penalized friction
+! In  nummae           : number of slave element
+! In  aliase           : type of slave element
+! In  nne              : number of nodes of slave element
+! In  nummam           : number of master element
+! In  kspic1           : first parametric coord. of contact point (in slave element)
+! In  kspic2           : second parametric coord. of contact point (in slave element)
+! In  kspir1           : first parametric coord. of projection of contact point (in master element)
+! In  kspir2           : second parametric coord. of projection of contact point (in master element)
+! In  mult_lagr_f1     : first lagrange multiplier for friction at nodes
+! In  mult_lagr_f2     : second lagrange multiplier for friction at nodes
+! In  tang_1           : first tangent vector
+! In  tang_2           : second tangent vector
+! In  norm             : normal
+! Out pres_frot        : friction pressure
+! Out dist_frot        : friction distance
+! Out indi_frot_eval   : evaluation of new friction status
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -169,7 +168,7 @@ subroutine mmstaf(mesh, ndim, chdepd, coef_frot, lpenaf,&
         end do
     else
         ASSERT(.false.)
-    endif 
+    endif
 !
 ! - Norm of the augmented lagrangian for friction
 !

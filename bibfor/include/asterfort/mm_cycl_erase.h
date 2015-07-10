@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mm_cycl_erase(sd_cont_defi, sd_cont_solv, cycl_type, point_curr)
-        character(len=24), intent(in) :: sd_cont_defi
-        character(len=24), intent(in) :: sd_cont_solv
+    subroutine mm_cycl_erase(sdcont_defi, sdcont_solv, cycl_type, point_curr)
+        character(len=24), intent(in) :: sdcont_defi
+        character(len=24), intent(in) :: sdcont_solv
         integer, intent(in) :: cycl_type
         integer, intent(in) :: point_curr
     end subroutine mm_cycl_erase

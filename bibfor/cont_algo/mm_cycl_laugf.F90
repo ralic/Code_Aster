@@ -1,5 +1,7 @@
 subroutine mm_cycl_laugf(pres, dist, coef_augm, lagr_norm)
 !
+implicit none
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +20,6 @@ subroutine mm_cycl_laugf(pres, dist, coef_augm, lagr_norm)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
     real(kind=8), intent(in) :: pres(3)
     real(kind=8), intent(in) :: dist(3)
     real(kind=8), intent(in) :: coef_augm
@@ -26,7 +27,7 @@ subroutine mm_cycl_laugf(pres, dist, coef_augm, lagr_norm)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Contact (continue method) - Cycling
+! Contact - Solve - Cycling
 !
 ! Augmented lagrangian (vectorial version)
 !

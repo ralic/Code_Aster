@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mm_cycl_d4(sd_cont_solv, point_index, indi_cont_eval)
-        character(len=24), intent(in) :: sd_cont_solv
-        integer, intent(in) :: point_index
+    subroutine mm_cycl_d4(sdcont_solv, i_cont_poin, indi_cont_eval)
+        character(len=24), intent(in) :: sdcont_solv
+        integer, intent(in) :: i_cont_poin
         integer, intent(in) :: indi_cont_eval
     end subroutine mm_cycl_d4
 end interface

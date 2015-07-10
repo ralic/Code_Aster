@@ -1,7 +1,7 @@
 subroutine mm_cycl_d1_ss(pres_near, laug_cont_prev, laug_cont_curr, zone_cont_prev, zone_cont_curr,&
                          cycl_sub_type)
 !
-    implicit     none
+implicit none
 !
 #include "asterfort/mm_cycl_zonc.h"
 !
@@ -32,19 +32,18 @@ subroutine mm_cycl_d1_ss(pres_near, laug_cont_prev, laug_cont_curr, zone_cont_pr
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Contact (continue method) - Cycling
+! Contact - Solve - Cycling
 !
 ! Detection: contact/no-contact sub-cycling
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!
-! In  pres_near      : tolerance for "near" contact - pressure
-! In  laug_cont_prev : previous augmented lagrangien for contact
-! In  laug_cont_curr : current augmented lagrangien for contact
-! Out zone_cont_prev : previous zone of contact
-! Out zone_cont_curr : current zone of contact
-! Out cycl_sub_type  : sub-cycling type
+! In  pres_near        : tolerance for "near" contact - pressure
+! In  laug_cont_prev   : previous augmented lagrangien for contact
+! In  laug_cont_curr   : current augmented lagrangien for contact
+! Out zone_cont_prev   : previous zone of contact
+! Out zone_cont_curr   : current zone of contact
+! Out cycl_sub_type    : sub-cycling type
 !
 ! --------------------------------------------------------------------------------------------------
 !

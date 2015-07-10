@@ -18,9 +18,9 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine mm_cycl_flip(sd_cont_defi, sd_cont_solv, cycl_flip)
-        character(len=24), intent(in) :: sd_cont_defi
-        character(len=24), intent(in) :: sd_cont_solv
+    subroutine mm_cycl_flip(sdcont_defi, sdcont_solv, cycl_flip)
+        character(len=24), intent(in) :: sdcont_defi
+        character(len=24), intent(in) :: sdcont_solv
         aster_logical, intent(out) :: cycl_flip
     end subroutine mm_cycl_flip
 end interface

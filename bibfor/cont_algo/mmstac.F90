@@ -1,12 +1,8 @@
-subroutine mm_cycl_flip(sd_cont_defi, sd_cont_solv, cycl_flip)
+subroutine mmstac(dist_cont, pres_cont, coef_cont, indi_cont_eval)
 !
-    implicit none
+implicit none
 !
-#include "asterf_types.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
+#include "asterc/r8prem.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,50 +22,42 @@ subroutine mm_cycl_flip(sd_cont_defi, sd_cont_solv, cycl_flip)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=24), intent(in) :: sd_cont_defi
-    character(len=24), intent(in) :: sd_cont_solv
-    aster_logical, intent(out) :: cycl_flip
+    real(kind=8), intent(in) :: dist_cont
+    real(kind=8), intent(in) :: pres_cont
+    real(kind=8), intent(in) :: coef_cont
+    integer, intent(out) :: indi_cont_eval
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Contact (continue method) - Cycling
+! Contact (continue method)
 !
-! Is flip-flop cycling ?
-!
-! --------------------------------------------------------------------------------------------------
-!
-! In  sd_cont_solv : data structure for contact solving
-! In  sd_cont_defi : data structure from contact definition
-! Out cycl_flip    : .true. if flip-flop cycling activated
+! Evaluate contact status
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: sd_cycl_eta
-    integer, pointer :: p_cycl_eta(:) => null()
-    integer :: cycl_index, cycl_stat
-    integer :: point_number, point_index
+! In  dist_cont        : contact gap
+! In  pres_cont        : contact pressure
+! In  coef_cont        : augmented ratio for contact
+! Out indi_cont_eval   : evaluation of new contact status
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
+    real(kind=8) :: laug_cont
 !
-! - Initializations
+! --------------------------------------------------------------------------------------------------
 !
-    cycl_flip = .false.
-    cycl_index = 4
 !
-! - Cycling objects
 !
-    sd_cycl_eta = sd_cont_solv(1:14)//'.CYCETA'
-    call jeveuo(sd_cycl_eta, 'L', vi = p_cycl_eta)
+! - Augmented lagrangian for contact
 !
-! - Flip-flop dectected ?
+    laug_cont = pres_cont - coef_cont * dist_cont
 !
-    point_number = cfdisi(sd_cont_defi,'NTPC' )
-    do point_index = 1, point_number
-        cycl_stat = p_cycl_eta(4*(point_index-1)+cycl_index)
-        if (cycl_stat .gt. 0) cycl_flip = .true.
-    end do
+! - New status of contact (sign of augmented lagrangian)
 !
-    call jedema()
+    if (laug_cont .le. r8prem()) then
+        indi_cont_eval = 1
+    else
+        indi_cont_eval = 0
+    endif
+!
 end subroutine

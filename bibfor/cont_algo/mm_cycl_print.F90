@@ -1,9 +1,9 @@
-subroutine mm_cycl_zonc(pres_near, laug_cont, zone_cont)
+subroutine mm_cycl_print(sdimpr, sdstat)
 !
-    implicit     none
+implicit none
 !
-#include "asterc/r8prem.h"
-#include "asterfort/assert.h"
+#include "asterfort/nmrvai.h"
+#include "asterfort/nmimci.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,35 +23,31 @@ subroutine mm_cycl_zonc(pres_near, laug_cont, zone_cont)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    real(kind=8), intent(in) :: laug_cont
-    real(kind=8), intent(in) :: pres_near
-    integer, intent(out) :: zone_cont
+    character(len=24), intent(in) :: sdstat
+    character(len=24), intent(in) :: sdimpr
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Contact (continue method) - Cycling
+! Contact - Solve - Cycling
 !
-! Detection of zone for contact
-!
-! --------------------------------------------------------------------------------------------------
-!
-!
-! In  laug_cont : augmented lagrangian for contact
-! In  pres_near : tolerance for "near" contact - pressure
-! Out zone_cont : zone of contact
+! Informations printing in convergence table
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if (laug_cont.gt.pres_near) then
-        zone_cont = 1
-    elseif ((laug_cont.le.pres_near).and.(laug_cont.ge.r8prem())) then
-        zone_cont = 2
-    elseif ((laug_cont.ge.-pres_near).and.(laug_cont.le.r8prem())) then
-        zone_cont = 3
-    elseif (laug_cont.lt.-pres_near) then
-        zone_cont = 4
-    else
-        ASSERT(.false.)
-    endif
+! In  sdstat           : datastructure for statistics
+! In  sdimpr           : datastructure for print informations
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: cycl_nb(4),cycl_nb_tot
+!
+! --------------------------------------------------------------------------------------------------
+!
+    call nmrvai(sdstat, 'CTCC_CYCL_1', 'N', cycl_nb(1))
+    call nmrvai(sdstat, 'CTCC_CYCL_2', 'N', cycl_nb(2))
+    call nmrvai(sdstat, 'CTCC_CYCL_3', 'N', cycl_nb(3))
+    call nmrvai(sdstat, 'CTCC_CYCL_4', 'N', cycl_nb(4))
+    cycl_nb_tot = cycl_nb(1) + cycl_nb(2) + cycl_nb(3) + cycl_nb(4)
+    call nmimci(sdimpr, 'CTCC_CYCL', cycl_nb_tot, .true._1)
 
 end subroutine

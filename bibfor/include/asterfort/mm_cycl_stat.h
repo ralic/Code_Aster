@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mm_cycl_stat(sd_stat, sd_cont_defi, sd_cont_solv)
-        character(len=24), intent(in) :: sd_stat
-        character(len=24), intent(in) :: sd_cont_defi
-        character(len=24), intent(in) :: sd_cont_solv
+    subroutine mm_cycl_stat(sdstat, sdcont_defi, sdcont_solv)
+        character(len=24), intent(in) :: sdstat
+        character(len=24), intent(in) :: sdcont_defi
+        character(len=24), intent(in) :: sdcont_solv
     end subroutine mm_cycl_stat
 end interface

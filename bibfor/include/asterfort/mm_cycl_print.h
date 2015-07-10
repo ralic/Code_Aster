@@ -16,7 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mm_cycl_print(sd_impr, sd_stat)
-        character(len=24), intent(in) :: sd_impr, sd_stat
+    subroutine mm_cycl_print(sdimpr, sdstat)
+        character(len=24), intent(in) :: sdimpr, sdstat
     end subroutine mm_cycl_print
 end interface

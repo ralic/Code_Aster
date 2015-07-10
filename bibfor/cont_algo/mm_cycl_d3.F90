@@ -1,9 +1,9 @@
-subroutine mm_cycl_d3(sd_cont_defi  , sd_cont_solv  , point_index, &
+subroutine mm_cycl_d3(sdcont_defi  , sdcont_solv  , i_cont_poin, &
                       indi_frot_prev, dist_frot_prev, &
                       indi_cont_eval, indi_frot_eval, &
                       dist_frot_curr)
 !
-    implicit     none
+implicit none
 !
 #include "asterc/r8prem.h"
 #include "asterc/r8rddg.h"
@@ -34,9 +34,9 @@ subroutine mm_cycl_d3(sd_cont_defi  , sd_cont_solv  , point_index, &
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=24), intent(in) :: sd_cont_defi
-    character(len=24), intent(in) :: sd_cont_solv
-    integer, intent(in) :: point_index
+    character(len=24), intent(in) :: sdcont_defi
+    character(len=24), intent(in) :: sdcont_solv
+    integer, intent(in) :: i_cont_poin
     integer, intent(in) :: indi_frot_prev
     real(kind=8), intent(in) :: dist_frot_prev(3)
     integer, intent(in) :: indi_cont_eval
@@ -45,30 +45,29 @@ subroutine mm_cycl_d3(sd_cont_defi  , sd_cont_solv  , point_index, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Contact (continue method) - Cycling
+! Contact - Solve - Cycling
 !
 ! Detection: sliding forward/backward
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!
-! In  sd_cont_solv   : data structure for contact solving
-! In  sd_cont_defi   : data structure from contact definition
-! In  point_index    : contact point index
-! In  indi_frot_prev : previous friction indicator
-! In  dist_frot_prev : previous friction distance
-! In  indi_cont_eval : evaluation of new contact status
-! In  indi_frot_eval : evaluation of new friction status
-! In  dist_frot_curr  : current friction distance
+! In  sdcont_solv      : name of contact solving datastructure
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  i_cont_poin      : contact point index
+! In  indi_frot_prev   : previous friction indicator
+! In  dist_frot_prev   : previous friction distance
+! In  indi_cont_eval   : evaluation of new contact status
+! In  indi_frot_eval   : evaluation of new friction status
+! In  dist_frot_curr   : current friction distance
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: sd_cycl_lis
-    integer, pointer :: p_cycl_lis(:) => null()
-    character(len=24) :: sd_cycl_nbr
-    integer, pointer :: p_cycl_nbr(:) => null()
-    character(len=24) :: sd_cycl_eta
-    integer, pointer :: p_cycl_eta(:) => null()
+    character(len=24) :: sdcont_cyclis
+    integer, pointer :: p_sdcont_cyclis(:) => null()
+    character(len=24) :: sdcont_cycnbr
+    integer, pointer :: p_sdcont_cycnbr(:) => null()
+    character(len=24) :: sdcont_cyceta
+    integer, pointer :: p_sdcont_cyceta(:) => null()
     real(kind=8) :: module_prev, module_curr
     real(kind=8) :: angle, prosca, val, tole_angl
     integer :: cycl_type, cycl_ecod, cycl_long, cycl_stat
@@ -87,19 +86,19 @@ subroutine mm_cycl_d3(sd_cont_defi  , sd_cont_solv  , point_index, &
 !
 ! - Access to cycling objects
 !
-    sd_cycl_lis = sd_cont_solv(1:14)//'.CYCLIS'
-    sd_cycl_nbr = sd_cont_solv(1:14)//'.CYCNBR'
-    sd_cycl_eta = sd_cont_solv(1:14)//'.CYCETA'
-    call jeveuo(sd_cycl_lis, 'E', vi = p_cycl_lis)
-    call jeveuo(sd_cycl_nbr, 'E', vi = p_cycl_nbr)
-    call jeveuo(sd_cycl_eta, 'E', vi = p_cycl_eta)
+    sdcont_cyclis = sdcont_solv(1:14)//'.CYCLIS'
+    sdcont_cycnbr = sdcont_solv(1:14)//'.CYCNBR'
+    sdcont_cyceta = sdcont_solv(1:14)//'.CYCETA'
+    call jeveuo(sdcont_cyclis, 'E', vi = p_sdcont_cyclis)
+    call jeveuo(sdcont_cycnbr, 'E', vi = p_sdcont_cycnbr)
+    call jeveuo(sdcont_cyceta, 'E', vi = p_sdcont_cyceta)
 !
 ! - Cycling break if: no contact, sticking or previous state was sticking
 !
     if ((indi_cont_eval .eq. 0).or.&
         (indi_frot_eval .eq. 1).or.&
         (indi_frot_prev .eq. 1)) then
-        call mm_cycl_erase(sd_cont_defi, sd_cont_solv, cycl_type, point_index)
+        call mm_cycl_erase(sdcont_defi, sdcont_solv, cycl_type, i_cont_poin)
         goto 99
     endif
 !
@@ -134,9 +133,9 @@ subroutine mm_cycl_d3(sd_cont_defi  , sd_cont_solv  , point_index, &
 !
 ! - Cycling save
 !
-    p_cycl_eta(4*(point_index-1)+cycl_type) = cycl_stat
-    p_cycl_lis(4*(point_index-1)+cycl_type) = cycl_ecod
-    p_cycl_nbr(4*(point_index-1)+cycl_type) = cycl_long
+    p_sdcont_cyceta(4*(i_cont_poin-1)+cycl_type) = cycl_stat
+    p_sdcont_cyclis(4*(i_cont_poin-1)+cycl_type) = cycl_ecod
+    p_sdcont_cycnbr(4*(i_cont_poin-1)+cycl_type) = cycl_long
 !
 99  continue
 !

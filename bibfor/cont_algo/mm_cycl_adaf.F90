@@ -1,7 +1,7 @@
 subroutine mm_cycl_adaf(adap_type, tole_stick, tole_slide, coef_init, pres_frot,&
                         dist_frot, coef_adap, stat_adap)
 !
-    implicit none
+implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -36,7 +36,7 @@ subroutine mm_cycl_adaf(adap_type, tole_stick, tole_slide, coef_init, pres_frot,
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Contact (continue method) - Cycling
+! Contact - Solve - Cycling
 !
 ! Adaptation of augmented ratio for friction
 !

@@ -1,6 +1,6 @@
-subroutine mm_cycl_crsd(sd_cont_defi,sd_cont_solv)
+subroutine mm_cycl_crsd(sdcont_defi, sdcont_solv)
 !
-    implicit     none
+implicit none
 !
 #include "asterfort/cfdisi.h"
 #include "asterfort/jedema.h"
@@ -25,34 +25,33 @@ subroutine mm_cycl_crsd(sd_cont_defi,sd_cont_solv)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=24), intent(in) :: sd_cont_defi
-    character(len=24), intent(in) :: sd_cont_solv
+    character(len=24), intent(in) :: sdcont_defi
+    character(len=24), intent(in) :: sdcont_solv
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Contact (continue method) - Cycling
+! Contact - Solve - Cycling
 !
 ! Creating data structures
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!
-! In  sd_cont_solv : data structure for contact solving
-! In  sd_cont_defi : data structure from contact definition 
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  sdcont_solv      : name of contact solving datastructure
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: point_number, zone_number
-    character(len=24) :: sd_cycl_lis
-    integer, pointer :: p_cycl_lis(:) => null()
-    character(len=24) :: sd_cycl_nbr
-    integer, pointer :: p_cycl_nbr(:) => null()
-    character(len=24) :: sd_cycl_eta
-    integer, pointer :: p_cycl_eta(:) => null()
-    character(len=24) :: sd_cycl_his
-    real(kind=8), pointer :: p_cycl_his(:) => null()
-    character(len=24) :: sd_cycl_coe
-    real(kind=8), pointer :: p_cycl_coe(:) => null()
+    integer :: nb_cont_poin, nb_cont_zone
+    character(len=24) :: sdcont_cyclis
+    integer, pointer :: p_sdcont_cyclis(:) => null()
+    character(len=24) :: sdcont_cycnbr
+    integer, pointer :: p_sdcont_cycnbr(:) => null()
+    character(len=24) :: sdcont_cyceta
+    integer, pointer :: p_sdcont_cyceta(:) => null()
+    character(len=24) :: sdcont_cychis
+    real(kind=8), pointer :: p_sdcont_cychis(:) => null()
+    character(len=24) :: sdcont_cyccoe
+    real(kind=8), pointer :: p_sdcont_cyccoe(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -60,36 +59,36 @@ subroutine mm_cycl_crsd(sd_cont_defi,sd_cont_solv)
 !
 ! - Initializations
 !
-    point_number = cfdisi(sd_cont_defi,'NTPC' )
-    zone_number  = cfdisi(sd_cont_defi,'NZOCO' )
+    nb_cont_poin = cfdisi(sdcont_defi,'NTPC' )
+    nb_cont_zone  = cfdisi(sdcont_defi,'NZOCO' )
 !
 ! - Status saving (coded integer)
 !
-    sd_cycl_lis = sd_cont_solv(1:14)//'.CYCLIS'
+    sdcont_cyclis = sdcont_solv(1:14)//'.CYCLIS'
 !
 ! - Cycling length
 !
-    sd_cycl_nbr = sd_cont_solv(1:14)//'.CYCNBR'
+    sdcont_cycnbr = sdcont_solv(1:14)//'.CYCNBR'
 !
 ! - Cycling state
 !
-    sd_cycl_eta = sd_cont_solv(1:14)//'.CYCETA'
+    sdcont_cyceta = sdcont_solv(1:14)//'.CYCETA'
 !
-! - Cycling history 
+! - Cycling history
 !
-    sd_cycl_his = sd_cont_solv(1:14)//'.CYCHIS'
+    sdcont_cychis = sdcont_solv(1:14)//'.CYCHIS'
 !
-! - Informations about ratios 
+! - Informations about ratios
 !
-    sd_cycl_coe = sd_cont_solv(1:14)//'.CYCCOE'
+    sdcont_cyccoe = sdcont_solv(1:14)//'.CYCCOE'
 !
 ! - Creating cycling objects
 !
-    call wkvect(sd_cycl_lis, 'V V I', 4*point_number, vi = p_cycl_lis)
-    call wkvect(sd_cycl_nbr, 'V V I', 4*point_number, vi = p_cycl_nbr)
-    call wkvect(sd_cycl_eta, 'V V I', 4*point_number, vi = p_cycl_eta)
-    call wkvect(sd_cycl_his, 'V V R', 25*point_number, vr = p_cycl_his)
-    call wkvect(sd_cycl_coe, 'V V R', 6*zone_number, vr = p_cycl_coe)
+    call wkvect(sdcont_cyclis, 'V V I', 4*nb_cont_poin, vi = p_sdcont_cyclis)
+    call wkvect(sdcont_cycnbr, 'V V I', 4*nb_cont_poin, vi = p_sdcont_cycnbr)
+    call wkvect(sdcont_cyceta, 'V V I', 4*nb_cont_poin, vi = p_sdcont_cyceta)
+    call wkvect(sdcont_cychis, 'V V R', 25*nb_cont_poin, vr = p_sdcont_cychis)
+    call wkvect(sdcont_cyccoe, 'V V R', 6*nb_cont_zone, vr = p_sdcont_cyccoe)
 !
     call jedema()
 end subroutine
