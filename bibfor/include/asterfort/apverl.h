@@ -16,7 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine apverl(sdappa)
+    subroutine apverl(sdappa, mesh, sdcont_defi)
         character(len=19), intent(in) :: sdappa
+        character(len=8), intent(in) :: mesh
+        character(len=24), intent(in) :: sdcont_defi
     end subroutine apverl
 end interface

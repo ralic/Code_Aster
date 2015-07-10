@@ -1,4 +1,10 @@
-subroutine apforc(sdappa)
+subroutine apforc(sdappa, mesh, sdcont_defi, newgeo)
+!
+implicit none
+!
+#include "asterfort/aprema.h"
+#include "asterfort/aprend.h"
+#include "asterfort/infdbg.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,52 +24,41 @@ subroutine apforc(sdappa)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/aprema.h"
-#include "asterfort/aprend.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-    character(len=19) :: sdappa
+    character(len=19), intent(in) :: sdappa
+    character(len=8), intent(in) :: mesh
+    character(len=24), intent(in) :: sdcont_defi
+    character(len=19), intent(in) :: newgeo
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE APPARIEMENT - APPARIEMENT
+! Contact - Pairing
 !
-! METHODE FORCE BRUTE: DOUBLE BOUCLE
-!   - NOEUD LE PLUS PROCHE
-!   - BOUCLE SUR LES MAILLES ATTACHEES AU NOEUD LE PLUS PROCHE
+! Pairing by "brute" force
 !
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! In  sdappa           : name of pairing datastructure
+! In  mesh             : name of mesh
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  newgeo           : name of field for geometry update from initial coordinates of nodes
 !
-! IN  SDAPPA : NOM DE LA SD APPARIEMENT
-!
-!
-!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('APPARIEMENT', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<APPARIEMENT> FORCE BRUTE'
     endif
 !
-! --- RECHERCHE NOEUD MAITRE LE PLUS PROCHE DU POINT
+! - Find nearest master node from current contact point
 !
-    call aprend(sdappa)
+    call aprend(sdappa, sdcont_defi, newgeo)
 !
-! --- RECHERCHE MAILLE MAITRE LA PLUS PROCHE DU POINT
+! - Find nearest element from current contact point
 !
-    call aprema(sdappa)
-!
-    call jedema()
+    call aprema(sdappa, mesh, sdcont_defi, newgeo)
 !
 end subroutine

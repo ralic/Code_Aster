@@ -71,13 +71,12 @@ subroutine cfappa(noma, defico, resoco, instan)
 !
     call cfpoin(noma, defico, newgeo, sdappa)
 !
-! --- REALISATION DE L'APPARIEMENT
+! - Pairing
 !
     if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> ......... REALISATION DE ' //&
-        'L''APPARIEMENT'
+        write (ifm,*) '<CONTACT> ......... REALISATION DE L''APPARIEMENT'
     endif
-    call apcalc(sdappa)
+    call apcalc(sdappa, noma, defico, newgeo)
 !
 ! --- RECOPIE APPARIEMENT POUR CONTACT
 !

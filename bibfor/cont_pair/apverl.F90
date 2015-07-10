@@ -1,6 +1,6 @@
-subroutine apverl(sdappa)
+subroutine apverl(sdappa, mesh, sdcont_defi)
 !
-    implicit none
+implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -9,7 +9,6 @@ subroutine apverl(sdappa)
 #include "asterfort/apatta.h"
 #include "asterfort/apninv.h"
 #include "asterfort/apnndm.h"
-#include "asterfort/apnomk.h"
 #include "asterfort/apnumm.h"
 #include "asterfort/apnumn.h"
 #include "asterfort/appari.h"
@@ -45,22 +44,23 @@ subroutine apverl(sdappa)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=19), intent(in) :: sdappa
+    character(len=8), intent(in) :: mesh
+    character(len=24), intent(in) :: sdcont_defi
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE APPARIEMENT - NORMALES
+! Contact - Pairing
 !
-! VERIFICATION DISCRETISATION NORMALES
+! Check normals discontinuity
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! IN  SDAPPA : NOM DE LA SD APPARIEMENT
+! In  sdappa           : name of pairing datastructure
+! In  mesh             : name of mesh
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: rnomsd
-    character(len=8) :: noma
-    character(len=24) :: defico
     character(len=8) :: nomnom, nommam, oldnom
     integer :: nbzone, ndimg
     integer :: izone
@@ -81,15 +81,9 @@ subroutine apverl(sdappa)
     integer :: inoeu
     aster_logical :: apcald
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-!
-! --- NOM SD MAILLAGE
-!
-    call apnomk(sdappa, 'NOMA', rnomsd)
-    noma = rnomsd(1:8)
-    call apnomk(sdappa, 'DEFICO', defico)
 !
 ! --- SD VERIFICATION FACETTISATION
 !
@@ -126,8 +120,8 @@ subroutine apverl(sdappa)
         do inom = 1, nbnom
 !
             posnom(1) = inom+jdecnm
-            call apnumn(defico, posnom(1), numnom(1))
-            call jenuno(jexnum(noma//'.NOMNOE', numnom(1)), nomnom)
+            call apnumn(sdcont_defi, posnom(1), numnom(1))
+            call jenuno(jexnum(mesh//'.NOMNOE', numnom(1)), nomnom)
 !
 ! ------- TANGENTES SUR CE NOEUD
 !
@@ -144,20 +138,20 @@ subroutine apverl(sdappa)
 !
 ! ------- NOMBRE DE MAILLES ATTACHEES AU NOEUD
 !
-            call apninv(sdappa, defico, posnom(1), 'NMANOM', nmanom)
+            call apninv(sdappa, sdcont_defi, posnom(1), 'NMANOM', nmanom)
 !
 ! ------- DECALAGE POUR CONNECTIVITE INVERSE
 !
-            call apninv(sdappa, defico, posnom(1), 'JDECIV', jdeciv)
+            call apninv(sdappa, sdcont_defi, posnom(1), 'JDECIV', jdeciv)
 !
 ! ------- BOUCLE SUR LES MAILLES ATTACHEES
 !
             do ima = 1, nmanom
-                call apatta(sdappa, defico, jdeciv, ima, posmam)
-                call apnumm(sdappa, defico, posmam, nummam)
-                call jenuno(jexnum(noma//'.NOMMAI', nummam), nommam)
-                call apnndm(sdappa, defico, posmam, nnosdm)
-                call jeveuo(jexnum(noma//'.CONNEX', nummam), 'L', jdec)
+                call apatta(sdappa, sdcont_defi, jdeciv, ima, posmam)
+                call apnumm(sdappa, sdcont_defi, posmam, nummam)
+                call jenuno(jexnum(mesh//'.NOMMAI', nummam), nommam)
+                call apnndm(sdappa, sdcont_defi, posmam, nnosdm)
+                call jeveuo(jexnum(mesh//'.CONNEX', nummam), 'L', jdec)
                 call jeveuo(jexnum(aptgel, posmam), 'L', jtgeln)
 !
 ! --------- TRANSFERT NUMERO ABSOLU DU NOEUD -> NUMERO DANS LA CONNEC DE

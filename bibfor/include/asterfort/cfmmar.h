@@ -16,9 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfmmar(mesh   , sdcont_defi , sdcont_solv , nb_cont_zone, model_ndim,&
-                      nt_poin, nb_cont_elem, nb_cont_node, nt_elem_node)
-        character(len=8), intent(in) :: mesh
+    subroutine cfmmar(sdcont_defi , sdcont_solv , nb_cont_zone, model_ndim, nt_poin,&
+                      nb_cont_elem, nb_cont_node, nt_elem_node)
         character(len=24), intent(in) :: sdcont_defi
         character(len=24), intent(in) :: sdcont_solv
         integer, intent(in) :: model_ndim

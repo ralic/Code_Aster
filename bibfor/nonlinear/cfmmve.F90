@@ -112,9 +112,9 @@ subroutine cfmmve(noma, defico, resoco, valinc, instan)
             ASSERT(.false.)
         endif
 !
-! ----- REALISATION DE L'APPARIEMENT
+! ----- Pairing
 !
-        call apcalc(sdappa)
+        call apcalc(sdappa, noma, defico, newgeo)
 !
     endif
 !

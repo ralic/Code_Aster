@@ -77,7 +77,7 @@ implicit none
 !
 ! - Fill pairing datastructure
 !
-    call cfmmar(mesh   , sdcont_defi , sdcont_solv , nb_cont_zone, model_ndim,&
-                nt_poin, nb_cont_elem, nb_cont_node, nt_elem_node)
+    call cfmmar(sdcont_defi , sdcont_solv , nb_cont_zone, model_ndim, nt_poin,&
+                nb_cont_elem, nb_cont_node, nt_elem_node)
 !
 end subroutine

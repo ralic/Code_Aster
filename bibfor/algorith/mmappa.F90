@@ -71,7 +71,7 @@ implicit none
 !
 ! - Pairing
 !
-    call apcalc(sdappa)
+    call apcalc(sdappa, mesh, sdcont_defi, newgeo)
 !
 ! - Save pairing in contact datastructures
 !

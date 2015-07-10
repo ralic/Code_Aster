@@ -52,8 +52,8 @@ subroutine apcrsd(sdappa, nbzone, ntpt, ntma, ntno,&
 !
 !
     integer :: ifm, niv
-    character(len=24) :: nomsd, appar
-    integer :: jnomsd, jappa
+    character(len=24) :: appar
+    integer :: jappa
     character(len=24) :: apinzi, apinzr
     integer :: jpinzi, jpinzr
     character(len=24) :: apinfi, apinfr
@@ -84,11 +84,6 @@ subroutine apcrsd(sdappa, nbzone, ntpt, ntma, ntno,&
     zinzi = apmmvd('ZINZI')
     zinfr = apmmvd('ZINFR')
     zinfi = apmmvd('ZINFI')
-!
-! --- CREATION SD NOMS
-!
-    nomsd = sdappa(1:19)//'.NOSD'
-    call wkvect(nomsd, 'V V K24', 3, jnomsd)
 !
 ! --- CREATION SD APPARIEMENT
 !

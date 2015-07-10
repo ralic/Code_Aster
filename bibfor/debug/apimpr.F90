@@ -1,12 +1,11 @@
-subroutine apimpr(sdappa, ifm)
+subroutine apimpr(sdappa, ifm, mesh, sdcont_defi)
 !
-    implicit     none
+implicit none
 !
 #include "jeveux.h"
 #include "asterfort/apcopt.h"
 #include "asterfort/apinfi.h"
 #include "asterfort/apinfr.h"
-#include "asterfort/apnomk.h"
 #include "asterfort/apnomp.h"
 #include "asterfort/apnumm.h"
 #include "asterfort/apnumn.h"
@@ -38,22 +37,24 @@ subroutine apimpr(sdappa, ifm)
 !
     character(len=19), intent(in) :: sdappa
     integer, intent(in) :: ifm
+    character(len=8), intent(in) :: mesh
+    character(len=24), intent(in) :: sdcont_defi
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE APPARIEMENT (UTILITAIRE)
+! Contact - Pairing
 !
-! IMPRESSION DES INFOS DETAILLES DE L'APPARIEMENT
+! Debug print
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sdappa           : name of pairing datastructure
+! In  ifm              : unit for message
+! In  mesh             : name of mesh
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
 !
-! IN  SDAPPA : NOM DE LA SD APPARIEMENT
-! IN  IFM    : UNITE D'IMPRESSION DU MESSAGE
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
-!
-    character(len=24) :: rnomsd, defico
     integer :: nbzone, ntpt, nbpt
     integer :: typapp, entapp
     real(kind=8) :: coorpt(3)
@@ -62,17 +63,11 @@ subroutine apimpr(sdappa, ifm)
     integer :: izone, ip, k, i
     integer :: numnom(1), nummam
     integer :: posnom(1), posmam
-    character(len=8) :: noma, nomnom, nommam
+    character(len=8) :: nomnom, nommam
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-!
-! --- NOM SD MAILLAGE
-!
-    call apnomk(sdappa, 'NOMA', rnomsd)
-    noma = rnomsd(1:8)
-    call apnomk(sdappa, 'DEFICO', defico)
 !
 ! --- INITIALISATIONS
 !
@@ -132,15 +127,15 @@ subroutine apimpr(sdappa, ifm)
             else if (typapp.eq.1) then
                 write(ifm,401) coorpt(1),coorpt(2),coorpt(3)
                 posnom = entapp
-                call apnumn(defico, posnom(1), numnom(1))
-                call jenuno(jexnum(noma//'.NOMNOE', numnom(1)), nomnom)
+                call apnumn(sdcont_defi, posnom(1), numnom(1))
+                call jenuno(jexnum(mesh//'.NOMNOE', numnom(1)), nomnom)
                 write(ifm,601) nomnom
                 write(ifm,801) dist
             else if (typapp.eq.2) then
                 write(ifm,401) coorpt(1),coorpt(2),coorpt(3)
                 posmam = entapp
-                call apnumm(sdappa, defico, posmam, nummam)
-                call jenuno(jexnum(noma//'.NOMMAI', nummam), nommam)
+                call apnumm(sdappa, sdcont_defi, posmam, nummam)
+                call jenuno(jexnum(mesh//'.NOMMAI', nummam), nommam)
                 write(ifm,602) nommam
 !
                 write(ifm,701) ksi1,ksi2

@@ -1,4 +1,17 @@
-subroutine aptgno(sdappa)
+subroutine aptgno(sdappa, mesh, sdcont_defi)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/appari.h"
+#include "asterfort/aptgnn.h"
+#include "asterfort/apzoni.h"
+#include "asterfort/apzonl.h"
+#include "asterfort/apzonv.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,37 +31,25 @@ subroutine aptgno(sdappa)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/apnomk.h"
-#include "asterfort/appari.h"
-#include "asterfort/aptgnn.h"
-#include "asterfort/apzoni.h"
-#include "asterfort/apzonl.h"
-#include "asterfort/apzonv.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-    character(len=19) :: sdappa
+    character(len=19), intent(in) :: sdappa
+    character(len=8), intent(in) :: mesh
+    character(len=24), intent(in) :: sdcont_defi
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE APPARIEMENT - TANGENTES
+! Contact - Pairing
 !
-! CALCUL DES VECTEURS TANGENTS EN CHAQUE NOEUD (MOYENNE)
+! Compute tangents at each node (average)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sdappa           : name of pairing datastructure
+! In  mesh             : name of mesh
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
 !
-! IN  SDAPPA : NOM DE LA SD APPARIEMENT
-!
-!
-!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    character(len=8) :: noma
-    character(len=24) :: rnomsd, defico
     integer :: nbzone, ndimg
     integer :: izone, itype
     integer :: jdecnm, nbnom
@@ -56,29 +57,22 @@ subroutine aptgno(sdappa)
     aster_logical :: apcald
     real(kind=8) :: vector(3)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     call infdbg('APPARIEMENT', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
-        write (ifm,*) '<APPARIEMENT> ...... TANGENTES SUR' //&
-     &  ' LES NOEUDS'
+        write (ifm,*) '<APPARIEMENT> ...... TANGENTES SUR LES NOEUDS'
     endif
 !
 ! --- INITIALISATIONS
 !
-    call apnomk(sdappa, 'NOMA', rnomsd)
-    noma = rnomsd(1:8)
-    call apnomk(sdappa, 'DEFICO', defico)
     call appari(sdappa, 'APPARI_NDIMG', ndimg)
     call appari(sdappa, 'APPARI_NBZONE', nbzone)
 !
 ! --- BOUCLE SUR LES ZONES
 !
-    do 10 izone = 1, nbzone
+    do izone = 1, nbzone
 !
 ! ----- INFORMATION SUR LA ZONE MAITRE
 !
@@ -91,7 +85,7 @@ subroutine aptgno(sdappa)
 !
         call apzonl(sdappa, izone, 'CALC_NORM_MAIT', apcald)
         if (apcald) then
-            call aptgnn(sdappa, noma, defico, ndimg, jdecnm,&
+            call aptgnn(sdappa, mesh, sdcont_defi, ndimg, jdecnm,&
                         nbnom, itype, vector)
         endif
 !
@@ -106,10 +100,10 @@ subroutine aptgno(sdappa)
 !
         call apzonl(sdappa, izone, 'CALC_NORM_ESCL', apcald)
         if (apcald) then
-            call aptgnn(sdappa, noma, defico, ndimg, jdecne,&
+            call aptgnn(sdappa, mesh, sdcont_defi, ndimg, jdecne,&
                         nbnoe, itype, vector)
         endif
- 10 end do
+    end do
 !
     call jedema()
 end subroutine

@@ -1,4 +1,11 @@
-subroutine apcaln(sdappa)
+subroutine apcaln(sdappa, mesh, sdcont_defi, newgeo)
+!
+implicit none
+!
+#include "asterfort/aptgen.h"
+#include "asterfort/aptgno.h"
+#include "asterfort/apverl.h"
+#include "asterfort/infdbg.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,55 +25,45 @@ subroutine apcaln(sdappa)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/aptgen.h"
-#include "asterfort/aptgno.h"
-#include "asterfort/apverl.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-    character(len=19) :: sdappa
+    character(len=19), intent(in) :: sdappa
+    character(len=8), intent(in) :: mesh
+    character(len=24), intent(in) :: sdcont_defi
+    character(len=19), intent(in) :: newgeo
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE APPARIEMENT - NORMALES
+! Contact - Pairing
 !
-! PRE-CALCUL DES NORMALES
+! Compute tangents
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! IN  SDAPPA : NOM DE LA SD APPARIEMENT
+! In  sdappa           : name of pairing datastructure
+! In  mesh             : name of mesh
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  newgeo           : name of field for geometry update from initial coordinates of nodes
 !
-!
-!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('APPARIEMENT', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
-        write (ifm,*) '<APPARIEMENT> ... CALCUL DES TANGENTES SUR' //&
-        ' TOUS LES NOEUDS'
+        write (ifm,*) '<APPARIEMENT> ... CALCUL DES TANGENTES SUR TOUS LES NOEUDS'
     endif
 !
-! --- CALCUL DES VECTEURS TANGENTS EN CHAQUE NOEUD POUR CHAQUE ELEMENT
+! - Compute tangents at each node for each element
 !
-    call aptgen(sdappa)
+    call aptgen(sdappa, mesh, sdcont_defi, newgeo)
 !
-! --- CALCUL DES VECTEURS TANGENTS EN CHAQUE NOEUD (MOYENNE)
+! - Compute tangents at each node (average)
 !
-    call aptgno(sdappa)
+    call aptgno(sdappa, mesh, sdcont_defi)
 !
-! --- VERIFICATION FACETTISATION SURFACE MAITRE
+! - Check normals discontinuity
 !
-    call apverl(sdappa)
-!
-    call jedema()
+    call apverl(sdappa, mesh, sdcont_defi)
 !
 end subroutine

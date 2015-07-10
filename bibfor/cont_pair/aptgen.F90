@@ -1,4 +1,17 @@
-subroutine aptgen(sdappa)
+subroutine aptgen(sdappa, mesh, sdcont_defi, newgeo)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/appari.h"
+#include "asterfort/apparr.h"
+#include "asterfort/aptgem.h"
+#include "asterfort/apzoni.h"
+#include "asterfort/apzonl.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,37 +31,26 @@ subroutine aptgen(sdappa)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/apnomk.h"
-#include "asterfort/appari.h"
-#include "asterfort/apparr.h"
-#include "asterfort/aptgem.h"
-#include "asterfort/apzoni.h"
-#include "asterfort/apzonl.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-    character(len=19) :: sdappa
+    character(len=19), intent(in) :: sdappa
+    character(len=8), intent(in) :: mesh
+    character(len=24), intent(in) :: sdcont_defi
+    character(len=19), intent(in) :: newgeo
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE APPARIEMENT - TANGENTES
+! Contact - Pairing
 !
-! CALCUL DES VECTEURS TANGENTS EN CHAQUE NOEUD POUR CHAQUE ELEMENT
+! Compute tangents at each node for each element
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sdappa           : name of pairing datastructure
+! In  mesh             : name of mesh
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  newgeo           : name of field for geometry update from initial coordinates of nodes
 !
-! IN  SDAPPA : NOM DE LA SD APPARIEMENT
+! --------------------------------------------------------------------------------------------------
 !
-!
-!
-!
-    character(len=24) :: rnomsd, defico
-    character(len=19) :: newgeo
-    character(len=8) :: noma
     integer :: nbzone, ndimg
     integer :: ifm, niv
     integer :: izone
@@ -59,25 +61,16 @@ subroutine aptgen(sdappa)
     real(kind=8) :: epsmax
     integer :: itemax
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     call infdbg('APPARIEMENT', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
-        write (ifm,*) '<APPARIEMENT> ...... TANGENTES SUR' //&
-     &  ' LES NOEUDS PAR ELEMENT (ELNO)'
+        write (ifm,*) '<APPARIEMENT> ...... TANGENTES SUR LES NOEUDS PAR ELEMENT (ELNO)'
     endif
 !
 ! --- INITIALISATIONS
 !
-    call apnomk(sdappa, 'NOMA', rnomsd)
-    noma = rnomsd(1:8)
-    call apnomk(sdappa, 'NEWGEO', rnomsd)
-    newgeo = rnomsd(1:19)
-    call apnomk(sdappa, 'DEFICO', defico)
     call apparr(sdappa, 'PROJ_NEWT_RESI', epsmax)
     call appari(sdappa, 'PROJ_NEWT_ITER', itemax)
     call appari(sdappa, 'APPARI_NDIMG', ndimg)
@@ -85,7 +78,7 @@ subroutine aptgen(sdappa)
 !
 ! --- BOUCLE SUR LES ZONES
 !
-    do 10 izone = 1, nbzone
+    do izone = 1, nbzone
 !
 ! ----- INFORMATION SUR LA ZONE MAITRE
 !
@@ -97,7 +90,7 @@ subroutine aptgen(sdappa)
 !
         call apzonl(sdappa, izone, 'CALC_NORM_MAIT', apcald)
         if (apcald) then
-            call aptgem(sdappa, noma, newgeo, defico, ndimg,&
+            call aptgem(sdappa, mesh, newgeo, sdcont_defi, ndimg,&
                         izone, typzon, itemax, epsmax, jdecmm,&
                         nbmam)
         endif
@@ -112,11 +105,11 @@ subroutine aptgen(sdappa)
 !
         call apzonl(sdappa, izone, 'CALC_NORM_ESCL', apcald)
         if (apcald) then
-            call aptgem(sdappa, noma, newgeo, defico, ndimg,&
+            call aptgem(sdappa, mesh, newgeo, sdcont_defi, ndimg,&
                         izone, typzon, itemax, epsmax, jdecme,&
                         nbmae)
         endif
- 10 end do
+    end do
 !
     call jedema()
 end subroutine

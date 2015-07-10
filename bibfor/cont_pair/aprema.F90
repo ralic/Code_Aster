@@ -1,4 +1,24 @@
-subroutine aprema(sdappa)
+subroutine aprema(sdappa, mesh, sdcont_defi, newgeo)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/apcopt.h"
+#include "asterfort/apinfi.h"
+#include "asterfort/aporth.h"
+#include "asterfort/appari.h"
+#include "asterfort/apparr.h"
+#include "asterfort/approj.h"
+#include "asterfort/apsauv.h"
+#include "asterfort/apzoni.h"
+#include "asterfort/apzonl.h"
+#include "asterfort/apzonr.h"
+#include "asterfort/apzonv.h"
+#include "asterfort/assert.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,45 +38,27 @@ subroutine aprema(sdappa)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/apcopt.h"
-#include "asterfort/apinfi.h"
-#include "asterfort/apnomk.h"
-#include "asterfort/aporth.h"
-#include "asterfort/appari.h"
-#include "asterfort/apparr.h"
-#include "asterfort/approj.h"
-#include "asterfort/apsauv.h"
-#include "asterfort/apzoni.h"
-#include "asterfort/apzonl.h"
-#include "asterfort/apzonr.h"
-#include "asterfort/apzonv.h"
-#include "asterfort/assert.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-    character(len=19) :: sdappa
+    character(len=19), intent(in) :: sdappa
+    character(len=8), intent(in) :: mesh
+    character(len=24), intent(in) :: sdcont_defi
+    character(len=19), intent(in) :: newgeo
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE APPARIEMENT (ALGO)
+! Contact - Pairing
 !
-! RECHERCHE DE LA MAILLE MAITRE LA PLUS PROCHE DU POINT COURANT
+! Find nearest element from current contact point
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sdappa           : name of pairing datastructure
+! In  mesh             : name of mesh
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  newgeo           : name of field for geometry update from initial coordinates of nodes
 !
-! IN  SDAPPA : NOM DE LA SD APPARIEMENT
-!
-!
-!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    character(len=24) :: rnomsd, defico
-    character(len=19) :: newgeo
-    character(len=8) :: noma
     integer :: izone, ip, i, posnom
     integer :: nbzone, ndimg, ntpt
     integer :: nbpt, posmam, iprojm
@@ -68,24 +70,16 @@ subroutine aprema(sdappa)
     integer :: vali(2)
     real(kind=8) :: valr(12)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     call infdbg('APPARIEMENT', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<APPARIEMENT> RECH. MAILLE PLUS PROCHE'
     endif
 !
 ! --- PARAMETRES
 !
-    call apnomk(sdappa, 'NOMA', rnomsd)
-    noma = rnomsd(1:8)
-    call apnomk(sdappa, 'NEWGEO', rnomsd)
-    newgeo = rnomsd(1:19)
-    call apnomk(sdappa, 'DEFICO', defico)
     call appari(sdappa, 'APPARI_NBZONE', nbzone)
     call appari(sdappa, 'PROJ_NEWT_ITER', itemax)
     call apparr(sdappa, 'PROJ_NEWT_RESI', epsmax)
@@ -95,7 +89,7 @@ subroutine aprema(sdappa)
 ! --- BOUCLE SUR LES ZONES
 !
     ip = 1
-    do 10 izone = 1, nbzone
+    do izone = 1, nbzone
 !
 ! ----- INFORMATION SUR LA ZONE
 !
@@ -109,7 +103,7 @@ subroutine aprema(sdappa)
 !
 ! ----- BOUCLE SUR LES POINTS
 !
-        do 20 i = 1, nbpt
+        do i = 1, nbpt
 !
 ! ------- LE POINT DOIT-IL ETRE APPARIE ?
 !
@@ -131,14 +125,14 @@ subroutine aprema(sdappa)
 !
 ! --------- PROJECTION SUR LA MAILLE MAITRE
 !
-                call approj(sdappa, noma, newgeo, defico, posnom,&
+                call approj(sdappa, mesh, newgeo, sdcont_defi, posnom,&
                             dirapp, dir, itemax, epsmax, toleou,&
                             coorpt, posmam, iprojm, ksi1m, ksi2m,&
                             tau1m, tau2m, distm, vecpmm)
 !
 ! --------- ORTHOGONALISATION VECTEURS TANGENTS
 !
-                call aporth(sdappa, noma, defico, ndimg, posmam,&
+                call aporth(sdappa, mesh, sdcont_defi, ndimg, posmam,&
                             coorpt, tau1m, tau2m)
 !
                 if (typapp .eq. 1) then
@@ -177,8 +171,8 @@ subroutine aprema(sdappa)
 ! ------- POINT SUIVANT
 !
             ip = ip + 1
- 20     continue
- 10 end do
+        end do
+    end do
 !
     call jedema()
 !

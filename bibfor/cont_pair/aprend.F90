@@ -1,4 +1,23 @@
-subroutine aprend(sdappa)
+subroutine aprend(sdappa, sdcont_defi, newgeo)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterc/r8gaem.h"
+#include "asterfort/apcopt.h"
+#include "asterfort/appari.h"
+#include "asterfort/apsauv.h"
+#include "asterfort/apzoni.h"
+#include "asterfort/apzonl.h"
+#include "asterfort/apzonr.h"
+#include "asterfort/apzonv.h"
+#include "asterfort/assert.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "blas/dcopy.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,42 +37,26 @@ subroutine aprend(sdappa)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/r8gaem.h"
-#include "asterfort/apcopt.h"
-#include "asterfort/apnomk.h"
-#include "asterfort/appari.h"
-#include "asterfort/apsauv.h"
-#include "asterfort/apzoni.h"
-#include "asterfort/apzonl.h"
-#include "asterfort/apzonr.h"
-#include "asterfort/apzonv.h"
-#include "asterfort/assert.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "blas/dcopy.h"
-    character(len=19) :: sdappa
+    character(len=19), intent(in) :: sdappa
+    character(len=24), intent(in) :: sdcont_defi
+    character(len=19), intent(in) :: newgeo
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE APPARIEMENT (ALGO)
+! Contact - Pairing
 !
-! RECHERCHE DU NOEUD MAITRE LE PLUS PROCHE DU POINT COURANT
+! Find nearest master node from current contact point
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sdappa           : name of pairing datastructure
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  newgeo           : name of field for geometry update from initial coordinates of nodes
 !
-! IN  SDAPPA : NOM DE LA SD APPARIEMENT
-!
-!
-!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    character(len=24) :: apinfp, contno, coordo, defico, newgeo
+    character(len=24) :: apinfp, contno, coordo
     integer :: jinfp, jnoco, jcoor
     integer :: inom, izone, i, ip
     integer :: nbzone, ntpt
@@ -68,13 +71,10 @@ subroutine aprend(sdappa)
     integer :: vali(2)
     real(kind=8) :: valr(4)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     call infdbg('APPARIEMENT', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<APPARIEMENT> RECH. NOEUD PLUS PROCHE'
     endif
@@ -83,10 +83,8 @@ subroutine aprend(sdappa)
 !
     apinfp = sdappa(1:19)//'.INFP'
     call jeveuo(apinfp, 'L', jinfp)
-    call apnomk(sdappa, 'DEFICO', defico)
-    contno = defico(1:16)//'.NOEUCO'
+    contno = sdcont_defi(1:16)//'.NOEUCO'
     call jeveuo(contno, 'L', jnoco)
-    call apnomk(sdappa, 'NEWGEO', newgeo)
     coordo = newgeo(1:19)//'.VALE'
     call jeveuo(coordo, 'L', jcoor)
 !
@@ -98,7 +96,7 @@ subroutine aprend(sdappa)
 ! --- BOUCLE SUR LES ZONES
 !
     ip = 1
-    do 10 izone = 1, nbzone
+    do izone = 1, nbzone
 !
 ! ----- INFORMATION SUR LA ZONE
 !
@@ -113,7 +111,7 @@ subroutine aprend(sdappa)
 !
 ! ----- BOUCLE SUR LES POINTS
 !
-        do 20 i = 1, nbpt
+        do i = 1, nbpt
 !
 ! ------- INITIALISATIONS
 !
@@ -135,7 +133,7 @@ subroutine aprend(sdappa)
 !
 ! ------- BOUCLE SUR LES NOEUDS MAITRES DE LA ZONE
 !
-            do 30 inom = 1, nbnom
+            do inom = 1, nbnom
 !
 ! --------- POSITION DU NOEUD
 !
@@ -197,8 +195,7 @@ subroutine aprend(sdappa)
                         prtole = .true.
                     endif
                 endif
-!
- 30         continue
+            end do
 !
 ! ------- APPARIEMENT HORS TOLE_APPA ?
 !
@@ -236,8 +233,8 @@ subroutine aprend(sdappa)
 ! ------- POINT SUIVANT
 !
             ip = ip + 1
- 20     continue
- 10 end do
+        end do
+    end do
 !
     ASSERT((ip-1).eq.ntpt)
 !

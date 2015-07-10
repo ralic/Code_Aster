@@ -1,4 +1,12 @@
-subroutine apcalc(sdappa)
+subroutine apcalc(sdappa, mesh, sdcont_defi, newgeo)
+!
+implicit none
+!
+#include "asterfort/apcaln.h"
+#include "asterfort/apforc.h"
+#include "asterfort/apimpr.h"
+#include "asterfort/apvepa.h"
+#include "asterfort/infdbg.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,49 +26,42 @@ subroutine apcalc(sdappa)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/apcaln.h"
-#include "asterfort/apforc.h"
-#include "asterfort/apimpr.h"
-#include "asterfort/apvepa.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-    character(len=19) :: sdappa
+    character(len=19), intent(in) :: sdappa
+    character(len=8), intent(in) :: mesh
+    character(len=24), intent(in) :: sdcont_defi
+    character(len=19), intent(in) :: newgeo
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE APPARIEMENT
+! Contact - Pairing
 !
-! REALISATION DE L'APPARIEMENT ENTRE DEUX SURFACES MAILLEES
+! Pairing
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! IN  SDAPPA : NOM DE LA SD APPARIEMENT
+! In  sdappa           : name of pairing datastructure
+! In  mesh             : name of mesh
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  newgeo           : name of field for geometry update from initial coordinates of nodes
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('APPARIEMENT', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<APPARIEMENT> REALISATION DE L''APPARIEMENT'
     endif
 !
-! --- CALCUL DES TANGENTES
+! - Compute tangents
 !
-    call apcaln(sdappa)
+    call apcaln(sdappa, mesh, sdcont_defi, newgeo)
 !
-! --- APPARIEMENT METHODE FORCE BRUTE
+! - Pairing by "brute" force
 !
-    call apforc(sdappa)
+    call apforc(sdappa, mesh, sdcont_defi, newgeo)
 !
 ! --- VERIFICATIONS APPARIEMENT
 !
@@ -69,9 +70,7 @@ subroutine apcalc(sdappa)
 ! --- AFFICHAGE
 !
     if (niv .ge. 2) then
-        call apimpr(sdappa, ifm)
+        call apimpr(sdappa, ifm, mesh, sdcont_defi)
     endif
-!
-    call jedema()
 !
 end subroutine

@@ -1,5 +1,5 @@
-subroutine cfmmar(mesh   , sdcont_defi , sdcont_solv , nb_cont_zone, model_ndim,&
-                  nt_poin, nb_cont_elem, nb_cont_node, nt_elem_node)
+subroutine cfmmar(sdcont_defi , sdcont_solv , nb_cont_zone, model_ndim, nt_poin,&
+                  nb_cont_elem, nb_cont_node, nt_elem_node)
 !
 implicit none
 !
@@ -35,7 +35,6 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: sdcont_defi
     character(len=24), intent(in) :: sdcont_solv
     integer, intent(in) :: model_ndim
@@ -55,7 +54,6 @@ implicit none
 !
 ! /!\ Except point coordinates (see mmpoin/cfpoin)
 !
-! In  mesh             : name of mesh
 ! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
 ! In  sdcont_solv      : name of contact solving datastructure
 ! In  model_ndim       : size of model
@@ -68,9 +66,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    character(len=19) :: sdappa, newgeo
-    character(len=24) :: sdappa_nosd
-    character(len=24), pointer :: v_sdappa_nosd(:) => null()
+    character(len=19) :: sdappa
     character(len=24) :: sdappa_inzi
     integer, pointer :: v_sdappa_inzi(:) => null()
     character(len=24) :: sdappa_inzr
@@ -97,18 +93,6 @@ implicit none
 ! - Pairing datastructure
 !
     sdappa = sdcont_solv(1:14)//'.APPA'
-!
-! - Displacement field for geometry update
-!
-    newgeo = sdcont_solv(1:14)//'.NEWG'
-!
-! - Create datastructure to save names of datastructures
-!
-    sdappa_nosd = sdappa(1:19)//'.NOSD'
-    call jeveuo(sdappa_nosd, 'E', vk24 = v_sdappa_nosd)
-    v_sdappa_nosd(1) = mesh
-    v_sdappa_nosd(2) = newgeo
-    v_sdappa_nosd(3) = sdcont_defi
 !
 ! - Create datastructure for general parameters
 !
