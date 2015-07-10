@@ -37,9 +37,9 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Contact - Solve
+! MECA_NON_LINE - Continue/XFEM method
 !
-! Continue/XFEM method - Geometric loop: geometric actualisation and pairing 
+! Geometric loop: geometric actualisation and pairing 
 !
 ! --------------------------------------------------------------------------------------------------
 !

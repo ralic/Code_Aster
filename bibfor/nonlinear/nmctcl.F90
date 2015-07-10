@@ -35,9 +35,9 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Contact - Solve
+! MECA_NON_LINE - Continue/XFEM method
 !
-! Continue/XFEM method - Create elements for contact
+! Create elements for contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
