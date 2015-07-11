@@ -70,8 +70,7 @@ subroutine cfcarm(noma, defico, newgeo, posmai, typmai,&
     parameter   (nbnmax = 9)
 !
     integer :: no(nbnmax)
-    integer :: ino, i, ibid
-    integer :: jdec
+    integer :: ino, jdec
     real(kind=8), pointer :: vale(:) => null()
 !
 ! ----------------------------------------------------------------------
@@ -84,9 +83,7 @@ subroutine cfcarm(noma, defico, newgeo, posmai, typmai,&
 !
 ! --- INITIALISATIONS
 !
-    do 7 i = 1, 27
-        coorma(i) = 0.d0
- 7  end do
+    coorma(1:27) = 0.d0
 !
 ! --- TYPE DE LA MAILLE
 !
@@ -98,7 +95,7 @@ subroutine cfcarm(noma, defico, newgeo, posmai, typmai,&
 !
 ! --- NOMBRE DE NOEUDS DE LA MAILLE
 !
-    call cfnben(defico, posmai, 'CONNEX', nnomam, ibid)
+    call cfnben(defico, posmai, 'CONNEX', nnomam)
     if (nnomam .gt. nbnmax) then
         ASSERT(.false.)
     endif
@@ -110,17 +107,17 @@ subroutine cfcarm(noma, defico, newgeo, posmai, typmai,&
 ! --- NUMEROS ABSOLUS DES NOEUDS DE LA MAILLE
 !
     call jeveuo(jexnum(noma//'.CONNEX', nummai), 'L', jdec)
-    do 61 ino = 1, nnomam
+    do ino = 1, nnomam
         no(ino) = zi(jdec+ino-1)
-61  end do
+    end do
 !
 ! --- COORDONNEES DES NOEUDS DE LA MAILLE
 !
-    do 70 ino = 1, nnomam
+    do ino = 1, nnomam
         coorma(3*(ino-1)+1) = vale(1+3*(no(ino)-1))
         coorma(3*(ino-1)+2) = vale(1+3*(no(ino)-1)+1)
         coorma(3*(ino-1)+3) = vale(1+3*(no(ino)-1)+2)
-70  end do
+    end do
 !
 ! --- NOM DE LA MAILLE
 !

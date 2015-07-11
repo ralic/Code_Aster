@@ -19,11 +19,8 @@ subroutine apninv(sdappa, defico, posnom, questz, vali)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-#include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfnben.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
     character(len=19) :: sdappa
     character(len=24) :: defico
     character(len=*) :: questz
@@ -54,23 +51,18 @@ subroutine apninv(sdappa, defico, posnom, questz, vali)
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
-!
-! --- INITIALISATIONS
-!
     vali = 0
     questi = questz
 !
     if (questi .eq. 'NMANOM') then
-        call cfnben(defico, posnom, 'CONINV', nmanom, ibid)
+        call cfnben(defico, posnom, 'CONINV', nmanom)
         vali = nmanom
     else if (questi.eq.'JDECIV') then
-        call cfnben(defico, posnom, 'CONINV', ibid, jdeciv)
+        call cfnben(defico, posnom, 'CONINV', enti_jdec_ = jdeciv)
         vali = jdeciv
     else
         ASSERT(.false.)
     endif
 !
-    call jedema()
 !
 end subroutine

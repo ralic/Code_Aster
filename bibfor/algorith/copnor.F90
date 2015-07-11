@@ -93,11 +93,11 @@ subroutine copnor(noma, defico, resoco, posmai, ksi1,&
 !
 ! --- INITIALISATIONS
 !
-    do 40 idim = 1, 3
+    do idim = 1, 3
         tau1(idim) = zero
         tau2(idim) = zero
         norm(idim) = zero
-40  end do
+    end do
 !
 ! --- MAILLE COURANTE
 !
@@ -107,21 +107,21 @@ subroutine copnor(noma, defico, resoco, posmai, ksi1,&
 !
 ! --- RECUPERATIONS DES TANGENTES AU NOEUD
 !
-    do 10 ino = 1, nno
+    do ino = 1, nno
         posno = zi(jnoma+jdecno+ino-1)
         call apvect(sdappa, 'APPARI_NOEUD_TAU1', posno, tau1)
         call apvect(sdappa, 'APPARI_NOEUD_TAU2', posno, tau2)
-        do 11 idim = 1, 3
+        do idim = 1, 3
             vecta1(3*(ino-1)+idim) = tau1(idim)
             vecta2(3*(ino-1)+idim) = tau2(idim)
-11      continue
-10  end do
+        end do
+    end do
 !
 ! --- VECTEURS NORMAUX LISSES AUX NOEUDS DE LA MAILLE (DEJA NORMES)
 !
-    do 20 ino = 1, nno
+    do ino = 1, nno
         call mmnorm(ndim, vecta1(3*(ino-1)+1), vecta2(3*(ino-1)+1), vecnor(3*(ino-1)+1), noor)
-20  end do
+    end do
 !
 ! --- NORMALE EN CE POINT PAR INTERPOLATION A PARTIR DES VALEURS NODALES
 !

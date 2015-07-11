@@ -39,7 +39,7 @@ implicit none
     character(len=24), intent(in) :: sdcont_solv
     integer, intent(in) :: model_ndim
     integer, intent(in) :: nb_cont_zone
-    integer, intent(in) :: nt_poin    
+    integer, intent(in) :: nt_poin
     integer, intent(in) :: nb_cont_elem
     integer, intent(in) :: nb_cont_node
     integer, intent(in) :: nt_elem_node
@@ -80,7 +80,7 @@ implicit none
     integer :: nb_poin, nb_node_mast, nb_node_slav, nb_elem_mast, nb_elem_slav
     integer :: jdecnm, jdecmm, jdecne, jdecme
     character(len=24) :: sdappa_tgel
-    integer :: longc, longt, nnosd, ibid, elem_indx, i_cont_elem
+    integer :: longc, longt, nnosd, elem_indx, i_cont_elem
     integer :: zinzr, zinzi
 !
 ! --------------------------------------------------------------------------------------------------
@@ -189,7 +189,7 @@ implicit none
     longt       = 0
     do i_cont_elem = 1, nb_cont_elem
         elem_indx = i_cont_elem
-        call cfnben(sdcont_defi, elem_indx, 'CONNEX', nnosd, ibid)
+        call cfnben(sdcont_defi, elem_indx, 'CONNEX', nnosd)
         longc = 6*nnosd
         call jeecra(jexnum(sdappa_tgel, i_cont_elem), 'LONMAX', ival=longc)
         call jecroc(jexnum(sdappa_tgel, i_cont_elem))

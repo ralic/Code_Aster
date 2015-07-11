@@ -16,11 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfnben(defico, posent, typent, nbent, jdecen)
-        character(len=24) :: defico
-        integer :: posent
-        character(len=6) :: typent
-        integer :: nbent
-        integer :: jdecen
+    subroutine cfnben(sdcont_defi, enti_indx, enti_type, enti_nb_, enti_jdec_)
+        character(len=24), intent(in) :: sdcont_defi
+        character(len=6), intent(in) :: enti_type
+        integer, intent(in) :: enti_indx
+        integer, optional, intent(out) :: enti_nb_
+        integer, optional, intent(out) :: enti_jdec_
     end subroutine cfnben
 end interface

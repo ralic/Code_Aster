@@ -52,7 +52,7 @@ subroutine cfposn(defico, posmai, posnno, nnomai)
 !
     character(len=24) :: nomaco, pnoma
     integer :: jnoma, jpono
-    integer :: ino, ibid, jdec
+    integer :: ino, jdec
 !
 ! ----------------------------------------------------------------------
 !
@@ -67,15 +67,15 @@ subroutine cfposn(defico, posmai, posnno, nnomai)
 !
 ! --- NOMBRE DE NOEUDS ATTACHES A CETTE MAILLE
 !
-    call cfnben(defico, posmai, 'CONNEX', nnomai, ibid)
+    call cfnben(defico, posmai, 'CONNEX', nnomai)
     ASSERT(nnomai.le.nbnmax)
 !
 ! --- NUMERO DES NOEUDS ATTACHES A CETTE MAILLE
 !
     jdec = zi(jpono+posmai-1)
-    do 10 ino = 1, nnomai
+    do ino = 1, nnomai
         posnno(ino) = zi(jnoma+jdec+ino-1)
-10  end do
+    end do
 !
     call jedema()
 end subroutine

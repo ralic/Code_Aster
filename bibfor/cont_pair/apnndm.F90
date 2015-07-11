@@ -42,16 +42,10 @@ subroutine apnndm(sdappa, defico, posmai, nnosdm)
 !
 !
 !
-    integer :: ibid
 !
 ! ----------------------------------------------------------------------
 !
-! --- INITIALISATIONS
-!
     nnosdm = 0
-!
-! --- NOMBRE D'ENTITES
-!
-    call cfnben(defico, posmai, 'CONNEX', nnosdm, ibid)
+    call cfnben(defico, posmai, 'CONNEX', nnosdm)
 !
 end subroutine

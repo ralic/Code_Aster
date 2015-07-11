@@ -50,7 +50,6 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ibid
     integer :: nt_elem_node
     integer :: nb_cont_point, nb_cont_poinc
     integer :: nt_cont_point, nt_cont_poinc
@@ -67,7 +66,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ibid = 0
+
 !
 ! - Datastructure for contact
 !
@@ -157,14 +156,14 @@ implicit none
         nb_elem_slav = mminfi(sdcont_defi, 'NBMAE' , i_zone)
         do i_elem_slav = 1, nb_elem_slav
             elem_slav_indx = jdecme + i_elem_slav
-            call cfnben(sdcont_defi, elem_slav_indx, 'CONNEX', node_nbelem, ibid)
+            call cfnben(sdcont_defi, elem_slav_indx, 'CONNEX', node_nbelem)
             nt_elem_node = nt_elem_node + node_nbelem
         end do
         jdecmm       = mminfi(sdcont_defi, 'JDECMM', i_zone)
         nb_elem_mast = mminfi(sdcont_defi, 'NBMAM' , i_zone)
         do i_elem_mast = 1, nb_elem_mast
             elem_mast_indx = jdecmm + i_elem_mast
-            call cfnben(sdcont_defi, elem_mast_indx, 'CONNEX', node_nbelem, ibid)
+            call cfnben(sdcont_defi, elem_mast_indx, 'CONNEX', node_nbelem)
             nt_elem_node = nt_elem_node + node_nbelem
         end do
     end do
