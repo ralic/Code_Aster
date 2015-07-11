@@ -1,13 +1,14 @@
-subroutine aptgnn(sdappa, noma, defico, ndimg, jdecno,&
-                  nbno, itype, vector)
-    implicit none
+subroutine aptgnn(sdappa, noma , sdcont_defi, ndimg, jdecno,&
+                  nbno  , itype, vector)
+!
+implicit none
+!
 #include "jeveux.h"
 #include "asterc/r8prem.h"
-#include "asterfort/apatta.h"
-#include "asterfort/apninv.h"
-#include "asterfort/apnndm.h"
-#include "asterfort/apnumm.h"
-#include "asterfort/apnumn.h"
+#include "asterfort/cfinvm.h"
+#include "asterfort/cfnben.h"
+#include "asterfort/cfnumm.h"
+#include "asterfort/cfnumn.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -42,7 +43,7 @@ subroutine aptgnn(sdappa, noma, defico, ndimg, jdecno,&
 !
     character(len=19) :: sdappa
     character(len=8) :: noma
-    character(len=24) :: defico
+    character(len=24) :: sdcont_defi
     integer :: ndimg, jdecno, nbno, itype
     real(kind=8) :: vector(3)
 !
@@ -66,8 +67,8 @@ subroutine aptgnn(sdappa, noma, defico, ndimg, jdecno,&
 !
 ! ----------------------------------------------------------------------
 !
-    character(len=8) :: nomnoe, nommai, valk(2)
-    integer :: posmai, nummai, posno(1), numno(1)
+    character(len=8) :: node_name, elem_name, valk(2)
+    integer :: elem_indx, elem_nume, posno(1), numno(1)
     integer :: nmanom, nnosdm
     integer :: jdeciv, jdec
     integer :: ino, ima, inocou, inomai
@@ -110,43 +111,39 @@ subroutine aptgnn(sdappa, noma, defico, ndimg, jdecno,&
 !
 ! ----- NUMERO ABSOLU ET NOM DU NOEUD
 !
-        call apnumn(defico, posno(1), numno(1))
-        call jenuno(jexnum(noma//'.NOMNOE', numno(1)), nomnoe)
+        call cfnumn(sdcont_defi, 1, posno(1), numno(1))
+        call jenuno(jexnum(noma//'.NOMNOE', numno(1)), node_name)
 !
-! ----- NOMBRE DE MAILLES ATTACHEES AU NOEUD
+! ----- Number of elements attached to node
 !
-        call apninv(sdappa, defico, posno(1), 'NMANOM', nmanom)
-!
-! ----- DECALAGE POUR CONNECTIVITE INVERSE
-!
-        call apninv(sdappa, defico, posno(1), 'JDECIV', jdeciv)
+        call cfnben(sdcont_defi, posno(1), 'CONINV', nmanom, jdeciv)
 !
 ! ----- BOUCLE SUR LES MAILLES ATTACHEES
 !
         do ima = 1, nmanom
 !
-! ------- POSITION DE LA MAILLE ATTACHEE
+! --------- Get elements attached to current node
 !
-            call apatta(sdappa, defico, jdeciv, ima, posmai)
+            call cfinvm(sdcont_defi, jdeciv, ima, elem_indx)
 !
-! ------- NUMERO ABSOLU ET NOM DE LA MAILLE ATTACHEE
+! --------- Index and name of element
 !
-            call apnumm(sdappa, defico, posmai, nummai)
-            call jenuno(jexnum(noma//'.NOMMAI', nummai), nommai)
-            valk(1) = nommai
-            valk(2) = nomnoe
+            call cfnumm(sdcont_defi, elem_indx, elem_nume)
+            call jenuno(jexnum(noma//'.NOMMAI', elem_nume), elem_name)
+            valk(1) = elem_name
+            valk(2) = node_name
 !
 ! ------- ACCES CONNECTIVITE DE LA MAILLE ATTACHEE
 !
-            call jeveuo(jexnum(noma//'.CONNEX', nummai), 'L', jdec)
+            call jeveuo(jexnum(noma//'.CONNEX', elem_nume), 'L', jdec)
 !
-! ------- NOMBRE DE NOEUDS DE LA MAILLE ATTACHEE
+! --------- Number of nodes
 !
-            call apnndm(sdappa, defico, posmai, nnosdm)
+            call cfnben(sdcont_defi, elem_indx, 'CONNEX', nnosdm)
 !
 ! ------- ACCES TANGENTES MAILLE COURANTE
 !
-            call jeveuo(jexnum(aptgel, posmai), 'L', jtgeln)
+            call jeveuo(jexnum(aptgel, elem_indx), 'L', jtgeln)
 !
 ! ------- TRANSFERT NUMERO ABSOLU DU NOEUD -> NUMERO DANS LA CONNEC DE
 ! ------- LA MAILLE
@@ -192,7 +189,7 @@ subroutine aptgnn(sdappa, noma, defico, ndimg, jdecno,&
 !
         call normev(normal, normn)
         if (normn .le. r8prem()) then
-            call utmess('F', 'APPARIEMENT_16', sk=nomnoe)
+            call utmess('F', 'APPARIEMENT_16', sk=node_name)
         endif
 !
 ! ----- RE-CONSTRUCTION DES VECTEURS TANGENTS APRES LISSAGE
@@ -210,7 +207,7 @@ subroutine aptgnn(sdappa, noma, defico, ndimg, jdecno,&
 !
         call mmtann(ndimg, taund1, taund2, niverr)
         if (niverr .eq. 1) then
-            call utmess('F', 'APPARIEMENT_17', sk=nomnoe)
+            call utmess('F', 'APPARIEMENT_17', sk=node_name)
         endif
 !
 ! ----- STOCKAGE DES VECTEURS TANGENTS EXTERIEURS SUR LE NOEUD

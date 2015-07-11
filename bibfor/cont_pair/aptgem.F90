@@ -1,5 +1,5 @@
-subroutine aptgem(sdappa, noma, newgeo, defico, ndimg,&
-                  izone, typzon, itemax, epsmax, jdecma,&
+subroutine aptgem(sdappa, noma  , newgeo, sdcont_defi, ndimg ,&
+                  izone , typzon, itemax, epsmax     , jdecma,&
                   nbma)
 !
 ! ======================================================================
@@ -28,8 +28,8 @@ subroutine aptgem(sdappa, noma, newgeo, defico, ndimg,&
 #include "asterfort/apcond.h"
 #include "asterfort/apcpoi.h"
 #include "asterfort/apcpou.h"
-#include "asterfort/apnndm.h"
-#include "asterfort/apnumm.h"
+#include "asterfort/cfnben.h"
+#include "asterfort/cfnumm.h"
 #include "asterfort/aptypm.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
@@ -41,7 +41,7 @@ subroutine aptgem(sdappa, noma, newgeo, defico, ndimg,&
 #include "asterfort/mmtann.h"
 #include "asterfort/utmess.h"
 !
-    character(len=24) :: defico
+    character(len=24) :: sdcont_defi
     character(len=19) :: sdappa, newgeo
     character(len=8) :: noma
     integer :: ndimg, izone, jdecma, nbma
@@ -73,13 +73,13 @@ subroutine aptgem(sdappa, noma, newgeo, defico, ndimg,&
 !
 !
 !
-    character(len=8) :: alias, nommai, nomnoe, valk(2)
+    character(len=8) :: alias, elem_name, node_name, valk(2)
     integer :: numno(9), longc
     integer :: nnosdm, niverr
     aster_logical :: lpoutr, lpoint
     integer :: jtgeln, jdec
     integer :: ino, ima, ndim
-    integer :: posmai, nummai
+    integer :: elem_indx, elem_nume
     real(kind=8) :: tau1(3), tau2(3)
     character(len=24) :: aptgel
     real(kind=8) :: coorma(27), coorno(3)
@@ -94,40 +94,38 @@ subroutine aptgem(sdappa, noma, newgeo, defico, ndimg,&
 !
 ! --- BOUCLE SUR LES MAILLES
 !
-    do 20 ima = 1, nbma
+    do ima = 1, nbma
 !
-! ----- MAILLE COURANTE
+        elem_indx = ima+jdecma
 !
-        posmai = ima+jdecma
+! ----- Index of element
 !
-! ----- NUMERO ABSOLU DE LA MAILLE
+        call cfnumm(sdcont_defi, elem_indx, elem_nume)
 !
-        call apnumm(sdappa, defico, posmai, nummai)
+! ----- Number of nodes
 !
-! ----- NOMBRE DE NOEUDS DE LA MAILLE
-!
-        call apnndm(sdappa, defico, posmai, nnosdm)
+        call cfnben(sdcont_defi, elem_indx, 'CONNEX', nnosdm)
 !
 ! ----- CARACTERISTIQUES DE LA MAILLE MAITRE
 !
-        call aptypm(sdappa, noma, nummai, ndim, nnosdm,&
-                    alias, nommai)
+        call aptypm(sdappa, noma, elem_nume, ndim, nnosdm,&
+                    alias, elem_name)
 !
 ! ----- COORDONNNEES DE LA MAILLE MAITRE
 !
-        call apcoma(sdappa, noma, newgeo, nummai, nnosdm,&
+        call apcoma(sdappa, noma, newgeo, elem_nume, nnosdm,&
                     coorma)
 !
 ! ----- NUMEROS ABSOLUS DES NOEUDS DE LA MAILLE
 !
-        call jeveuo(jexnum(noma//'.CONNEX', nummai), 'L', jdec)
-        do 30 ino = 1, nnosdm
+        call jeveuo(jexnum(noma//'.CONNEX', elem_nume), 'L', jdec)
+        do ino = 1, nnosdm
             numno(ino) = zi(jdec+ino-1)
- 30     continue
+        end do
 !
 ! ----- LONGUEUR EFFECTIVE
 !
-        call jelira(jexnum(aptgel, posmai), 'LONMAX', longc)
+        call jelira(jexnum(aptgel, elem_indx), 'LONMAX', longc)
         longc = longc /6
 !
 ! ----- TYPE DE MAILLE
@@ -137,18 +135,18 @@ subroutine aptgem(sdappa, noma, newgeo, defico, ndimg,&
 !
 ! ----- ACCES MAILLE COURANTE
 !
-        call jeveuo(jexnum(aptgel, posmai), 'E', jtgeln)
+        call jeveuo(jexnum(aptgel, elem_indx), 'E', jtgeln)
 !
 ! ----- BOUCLE SUR LES NOEUDS DE LA MAILLE
 !
-        do 10 ino = 1, nnosdm
+        do ino = 1, nnosdm
 !
 ! ------- COORDONNNEES ET NOM DU NOEUD
 !
             call apcond(sdappa, newgeo, numno(ino), coorno)
-            call jenuno(jexnum(noma//'.NOMNOE', numno(ino)), nomnoe)
-            valk(1) = nommai
-            valk(2) = nomnoe
+            call jenuno(jexnum(noma//'.NOMNOE', numno(ino)), node_name)
+            valk(1) = elem_name
+            valk(2) = node_name
 !
 ! ------- INITIALISATIONS
 !
@@ -165,20 +163,20 @@ subroutine aptgem(sdappa, noma, newgeo, defico, ndimg,&
 !
 ! --------- ELEMENT POINT
 !
-                call apcpoi(sdappa, ndimg, izone, nommai, typzon,&
+                call apcpoi(sdappa, ndimg, izone, elem_name, typzon,&
                             tau1, tau2)
             else
 !
 ! --------- AUTRES ELEMENTS
 !
-                call mmctan(nommai, alias, nnosdm, ndim, coorma,&
+                call mmctan(elem_name, alias, nnosdm, ndim, coorma,&
                             coorno, itemax, epsmax, tau1, tau2)
 !
                 if (lpoutr) then
 !
 ! --------- CAS PARTICULIER : ELEMENT POUTRE
 !
-                    call apcpou(sdappa, izone, nommai, typzon, tau1,&
+                    call apcpou(sdappa, izone, elem_name, typzon, tau1,&
                                 tau2)
                 endif
 !
@@ -203,9 +201,8 @@ subroutine aptgem(sdappa, noma, newgeo, defico, ndimg,&
                 zr(jtgeln+6*(ino-1)+5 -1) = tau2(2)
                 zr(jtgeln+6*(ino-1)+6 -1) = tau2(3)
             endif
-!
- 10     continue
- 20 end do
+        end do
+    end do
 !
     call jedema()
 end subroutine

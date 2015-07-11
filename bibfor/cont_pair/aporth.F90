@@ -1,4 +1,4 @@
-subroutine aporth(sdappa, noma, defico, ndimg, posmam,&
+subroutine aporth(sdappa, noma , sdcont_defi, ndimg, elem_mast_indx,&
                   coorpt, tau1m, tau2m)
 !
 ! ======================================================================
@@ -23,8 +23,8 @@ subroutine aporth(sdappa, noma, defico, ndimg, posmam,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
-#include "asterfort/apnndm.h"
-#include "asterfort/apnumm.h"
+#include "asterfort/cfnben.h"
+#include "asterfort/cfnumm.h"
 #include "asterfort/aptypm.h"
 #include "asterfort/assert.h"
 #include "asterfort/cforth.h"
@@ -34,9 +34,9 @@ subroutine aporth(sdappa, noma, defico, ndimg, posmam,&
 #include "asterfort/utmess.h"
     character(len=19) :: sdappa
     character(len=8) :: noma
-    character(len=24) :: defico
+    character(len=24) :: sdcont_defi
     integer :: ndimg
-    integer :: posmam
+    integer :: elem_mast_indx
     real(kind=8) :: coorpt(3)
     real(kind=8) :: tau1m(3), tau2m(3)
 !
@@ -66,7 +66,7 @@ subroutine aporth(sdappa, noma, defico, ndimg, posmam,&
     character(len=8) :: nommam
     real(kind=8) :: noor
     integer :: niverr, ndim
-    integer :: nummam, nnosdm
+    integer :: elem_mast_nume, nnosdm
 !
 ! ----------------------------------------------------------------------
 !
@@ -74,16 +74,19 @@ subroutine aporth(sdappa, noma, defico, ndimg, posmam,&
 !
 ! --- POINT NON PROJETE
 !
-    ASSERT(posmam.ne.0)
+    ASSERT(elem_mast_indx.ne.0)
 !
-! --- NOMBRE DE NOEUDS DE LA MAILLE
+! - Number of nodes
 !
-    call apnndm(sdappa, defico, posmam, nnosdm)
+    call cfnben(sdcont_defi, elem_mast_indx, 'CONNEX', nnosdm)
 !
-! --- CARACTERISTIQUES MAILLE MAITRE
+! - Index of master element
 !
-    call apnumm(sdappa, defico, posmam, nummam)
-    call aptypm(sdappa, noma, nummam, ndim, nnosdm,&
+    call cfnumm(sdcont_defi, elem_mast_indx, elem_mast_nume)
+!
+! - Parameters of master element
+!
+    call aptypm(sdappa, noma, elem_mast_nume, ndim, nnosdm,&
                 aliasm, nommam)
     lpoutr = (aliasm(1:2).eq.'SE').and.(ndimg.eq.3)
 !

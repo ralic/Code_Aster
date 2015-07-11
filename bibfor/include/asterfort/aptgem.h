@@ -16,13 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine aptgem(sdappa, noma, newgeo, defico, ndimg,&
-                      izone, typzon, itemax, epsmax, jdecma,&
+    subroutine aptgem(sdappa, noma  , newgeo, sdcont_defi, ndimg ,&
+                      izone , typzon, itemax, epsmax     , jdecma,&
                       nbma)
         character(len=19) :: sdappa
         character(len=8) :: noma
         character(len=19) :: newgeo
-        character(len=24) :: defico
+        character(len=24) :: sdcont_defi
         integer :: ndimg
         integer :: izone
         character(len=4) :: typzon

@@ -18,14 +18,14 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine approj(sdappa, noma, newgeo, defico, posnom,&
+    subroutine approj(sdappa, noma, newgeo, sdcont_defi, posnom,&
                       dirapp, dir, itemax, epsmax, toleou,&
-                      coorpt, posmam, iprojm, ksi1m, ksi2m,&
+                      coorpt, elem_mast_indx, iprojm, ksi1m, ksi2m,&
                       tau1m, tau2m, distm, vecpmm)
         character(len=19) :: sdappa
         character(len=8) :: noma
         character(len=19) :: newgeo
-        character(len=24) :: defico
+        character(len=24) :: sdcont_defi
         integer :: posnom
         aster_logical :: dirapp
         real(kind=8) :: dir(3)
@@ -33,7 +33,7 @@ interface
         real(kind=8) :: epsmax
         real(kind=8) :: toleou
         real(kind=8) :: coorpt(3)
-        integer :: posmam
+        integer :: elem_mast_indx
         integer :: iprojm
         real(kind=8) :: ksi1m
         real(kind=8) :: ksi2m

@@ -6,11 +6,10 @@ implicit none
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterc/r8rddg.h"
-#include "asterfort/apatta.h"
-#include "asterfort/apninv.h"
-#include "asterfort/apnndm.h"
-#include "asterfort/apnumm.h"
-#include "asterfort/apnumn.h"
+#include "asterfort/cfinvm.h"
+#include "asterfort/cfnben.h"
+#include "asterfort/cfnumm.h"
+#include "asterfort/cfnumn.h"
 #include "asterfort/appari.h"
 #include "asterfort/apzoni.h"
 #include "asterfort/apzonl.h"
@@ -67,7 +66,7 @@ implicit none
     integer :: jdecnm, nbnom
     integer :: inom, ima, inocou, inomai
     integer :: jdec, jdeciv
-    integer :: posmam, nummam, posnom(1), numnom(1)
+    integer :: elem_mast_indx, elem_mast_nume, posnom(1), numnom(1)
     integer :: nmanom, nnosdm
     real(kind=8) :: tau1(3), tau2(3), norm(3)
     real(kind=8) :: taund1(3), taund2(3), normnd(3)
@@ -119,8 +118,8 @@ implicit none
 !
         do inom = 1, nbnom
 !
-            posnom(1) = inom+jdecnm
-            call apnumn(sdcont_defi, posnom(1), numnom(1))
+            posnom(1) = inom+jdecnm 
+            call cfnumn(sdcont_defi, 1, posnom(1), numnom(1))
             call jenuno(jexnum(mesh//'.NOMNOE', numnom(1)), nomnom)
 !
 ! ------- TANGENTES SUR CE NOEUD
@@ -136,23 +135,19 @@ implicit none
 !
             call mmnorm(ndimg, taund1, taund2, normnd, noor2)
 !
-! ------- NOMBRE DE MAILLES ATTACHEES AU NOEUD
+! --------- Number of elements attached to node
 !
-            call apninv(sdappa, sdcont_defi, posnom(1), 'NMANOM', nmanom)
-!
-! ------- DECALAGE POUR CONNECTIVITE INVERSE
-!
-            call apninv(sdappa, sdcont_defi, posnom(1), 'JDECIV', jdeciv)
+            call cfnben(sdcont_defi, posnom(1), 'CONINV', nmanom, jdeciv)
 !
 ! ------- BOUCLE SUR LES MAILLES ATTACHEES
 !
             do ima = 1, nmanom
-                call apatta(sdappa, sdcont_defi, jdeciv, ima, posmam)
-                call apnumm(sdappa, sdcont_defi, posmam, nummam)
-                call jenuno(jexnum(mesh//'.NOMMAI', nummam), nommam)
-                call apnndm(sdappa, sdcont_defi, posmam, nnosdm)
-                call jeveuo(jexnum(mesh//'.CONNEX', nummam), 'L', jdec)
-                call jeveuo(jexnum(aptgel, posmam), 'L', jtgeln)
+                call cfinvm(sdcont_defi, jdeciv, ima, elem_mast_indx)
+                call cfnumm(sdcont_defi, elem_mast_indx, elem_mast_nume)
+                call jenuno(jexnum(mesh//'.NOMMAI', elem_mast_nume), nommam)
+                call cfnben(sdcont_defi, elem_mast_indx, 'CONNEX', nnosdm)
+                call jeveuo(jexnum(mesh//'.CONNEX', elem_mast_nume), 'L', jdec)
+                call jeveuo(jexnum(aptgel, elem_mast_indx), 'L', jtgeln)
 !
 ! --------- TRANSFERT NUMERO ABSOLU DU NOEUD -> NUMERO DANS LA CONNEC DE
 ! --------- LA MAILLE

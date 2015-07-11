@@ -1,6 +1,6 @@
-subroutine approj(sdappa, noma, newgeo, defico, posnom,&
+subroutine approj(sdappa, noma, newgeo, sdcont_defi, posnom,&
                   dirapp, dir, itemax, epsmax, toleou,&
-                  coorpt, posmam, iprojm, ksi1m, ksi2m,&
+                  coorpt, elem_mast_indx, iprojm, ksi1m, ksi2m,&
                   tau1m, tau2m, distm, vecpmm)
 !
 ! ======================================================================
@@ -25,13 +25,12 @@ subroutine approj(sdappa, noma, newgeo, defico, posnom,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8gaem.h"
-#include "asterfort/apatta.h"
+#include "asterfort/cfinvm.h"
 #include "asterfort/apchoi.h"
 #include "asterfort/apcoma.h"
 #include "asterfort/apdist.h"
-#include "asterfort/apninv.h"
-#include "asterfort/apnndm.h"
-#include "asterfort/apnumm.h"
+#include "asterfort/cfnben.h"
+#include "asterfort/cfnumm.h"
 #include "asterfort/aptypm.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -40,7 +39,7 @@ subroutine approj(sdappa, noma, newgeo, defico, posnom,&
 #include "asterfort/utmess.h"
     character(len=19) :: sdappa, newgeo
     character(len=8) :: noma
-    character(len=24) :: defico
+    character(len=24) :: sdcont_defi
     integer :: posnom
     integer :: itemax
     aster_logical :: dirapp
@@ -48,7 +47,7 @@ subroutine approj(sdappa, noma, newgeo, defico, posnom,&
     real(kind=8) :: dir(3), coorpt(3)
     real(kind=8) :: tau1m(3), tau2m(3), vecpmm(3)
     real(kind=8) :: ksi1m, ksi2m, distm
-    integer :: iprojm, posmam
+    integer :: iprojm, elem_mast_indx
 !
 ! ----------------------------------------------------------------------
 !
@@ -112,7 +111,7 @@ subroutine approj(sdappa, noma, newgeo, defico, posnom,&
     vecpmm(1) = 0.d0
     vecpmm(2) = 0.d0
     vecpmm(3) = 0.d0
-    posmam = 0
+    elem_mast_indx = 0
     nmanom = 0
     iprojm = -1
 !
@@ -120,29 +119,25 @@ subroutine approj(sdappa, noma, newgeo, defico, posnom,&
 !
     ASSERT(posnom.ne.0)
 !
-! --- NOMBRE DE MAILLES ATTACHEES AU NOEUD MAITRE LE PLUS PROCHE
+! - Number of elements attached to master node
 !
-    call apninv(sdappa, defico, posnom, 'NMANOM', nmanom)
+    call cfnben(sdcont_defi, posnom, 'CONINV', nmanom, jdeciv)
 !
-! --- DECALAGE POUR CONNECTIVITE INVERSE
+! - BOUCLE SUR LES MAILLES MAITRES
 !
-    call apninv(sdappa, defico, posnom, 'JDECIV', jdeciv)
+    do imam = 1, nmanom
 !
-! --- BOUCLE SUR LES MAILLES MAITRES
+! ----- Get master elements attached to current master node
 !
-    do 10 imam = 1, nmanom
+        call cfinvm(sdcont_defi, jdeciv, imam, posmal)
 !
-! ----- POSITION DE LA MAILLE ATTACHEE
+! ----- Index of master element
 !
-        call apatta(sdappa, defico, jdeciv, imam, posmal)
+        call cfnumm(sdcont_defi, posmal, nummal)
 !
-! ----- NUMERO ABSOLU DE LA MAILLE ATTACHEE
+! ----- Number of nodes
 !
-        call apnumm(sdappa, defico, posmal, nummal)
-!
-! ----- NOMBRE DE NOEUDS DE LA MAILLE
-!
-        call apnndm(sdappa, defico, posmal, nnosdm)
+        call cfnben(sdcont_defi, posmal, 'CONNEX', nnosdm)
 !
 ! ----- CARACTERISTIQUES DE LA MAILLE MAITRE
 !
@@ -181,12 +176,12 @@ subroutine approj(sdappa, noma, newgeo, defico, posnom,&
 !
 ! ----- CHOIX DE L'APPARIEMENT SUIVANT LE RESULTAT DE LA PROJECTION
 !
-        call apchoi(distl, distm, posmal, posmam, tau1l,&
+        call apchoi(distl, distm, posmal, elem_mast_indx, tau1l,&
                     tau1m, tau2l, tau2m, ksi1l, ksi1m,&
                     ksi2l, ksi2m, iprojl, iprojm, vecpml,&
                     vecpmm)
 !
- 10 end do
+    end do
 !
     call jedema()
 !

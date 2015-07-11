@@ -16,11 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine aptgnn(sdappa, noma, defico, ndimg, jdecno,&
-                      nbno, itype, vector)
+    subroutine aptgnn(sdappa, noma , sdcont_defi, ndimg, jdecno,&
+                      nbno  , itype, vector)
         character(len=19) :: sdappa
         character(len=8) :: noma
-        character(len=24) :: defico
+        character(len=24) :: sdcont_defi
         integer :: ndimg
         integer :: jdecno
         integer :: nbno
