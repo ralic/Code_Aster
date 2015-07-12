@@ -1,4 +1,9 @@
-subroutine apinfr(sdappa, questz, ip, valr)
+subroutine apinfr(sdappa, questi_, i_poin, valr)
+!
+implicit none
+!
+#include "asterfort/assert.h"
+#include "asterfort/jeveuo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,75 +23,50 @@ subroutine apinfr(sdappa, questz, ip, valr)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-    character(len=19) :: sdappa
-    integer :: ip
-    real(kind=8) :: valr
-    character(len=*) :: questz
+    character(len=19), intent(in) :: sdappa
+    character(len=*), intent(in) :: questi_
+    integer, intent(in) :: i_poin
+    real(kind=8), intent(out) :: valr
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE APPARIEMENT (UTILITAIRE)
+! Contact - Pairing
 !
-! INTERROGATION DE LA SDAPPA - REEL
+! Ask datastructure - By point - Integer
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sdappa           : name of pairing datastructure
+! In  questi           : question
+!                       'APPARI_PROJ_KSI1'  first para. coor. of projection of point
+!                       'APPARI_PROJ_KSI2'  second para. coor. of projection of point
+!                       'APPARI_DIST'       distance point-projection
+! In  i_poin           : index of point (contact or non-contact)
+! Out valr             : answer
 !
-! IN  SDAPPA : NOM DE LA SD APPARIEMENT
-! IN  QUESTI : QUESTION
-!              APPARI_PROJ_KSI1 : COORD. PARAM. 1 PROJECTION DU PT
-!              APPARI_PROJ_KSI2 : COORD. PARAM. 2 PROJECTION DU PT
-!              APPARI_DIST      : DISTANCE PT - PROJECTION
-! IN  IP     : INDICE DU POINT
-! OUT VALR   : REPONSE A LA QUESTION
+! --------------------------------------------------------------------------------------------------
 !
+    character(len=24) :: sdappa_dist
+    real(kind=8), pointer :: v_sdappa_dist(:) => null()
+    character(len=24) :: sdappa_proj
+    real(kind=8), pointer :: v_sdappa_proj(:) => null()
 !
-!
-!
-    integer :: ifm, niv
-    character(len=24) :: apdist, approj
-    integer :: jdist, jproj
-    character(len=16) :: questi
-!
-! ----------------------------------------------------------------------
-!
-    call jemarq()
-    call infdbg('APPARIEMENT', ifm, niv)
-!
-! --- ACCES SDAPPA
-!
-    approj = sdappa(1:19)//'.PROJ'
-    apdist = sdappa(1:19)//'.DIST'
-!
-! --- INITIALISATIONS
+! --------------------------------------------------------------------------------------------------
 !
     valr = 0.d0
-    questi = questz
+    sdappa_proj = sdappa(1:19)//'.PROJ'
+    sdappa_dist = sdappa(1:19)//'.DIST'
+    call jeveuo(sdappa_proj, 'L', vr = v_sdappa_proj)
+    call jeveuo(sdappa_dist, 'L', vr = v_sdappa_dist)
 !
-! --- QUESTION
-!
-    if (questi .eq. 'APPARI_PROJ_KSI1') then
-        call jeveuo(approj, 'L', jproj)
-        valr = zr(jproj+2*(ip-1)+1-1)
-    else if (questi.eq.'APPARI_PROJ_KSI2') then
-        call jeveuo(approj, 'L', jproj)
-        valr = zr(jproj+2*(ip-1)+2-1)
-!
-    else if (questi.eq.'APPARI_DIST') then
-        call jeveuo(apdist, 'L', jdist)
-        valr = zr(jdist+4*(ip-1)+1-1)
-!
+    if (questi_ .eq. 'APPARI_PROJ_KSI1') then
+        valr = v_sdappa_proj(2*(i_poin-1)+1)
+    else if (questi_.eq.'APPARI_PROJ_KSI2') then
+        valr = v_sdappa_proj(2*(i_poin-1)+2)
+    else if (questi_.eq.'APPARI_DIST') then
+        valr = v_sdappa_dist(4*(i_poin-1)+1)
     else
         ASSERT(.false.)
     endif
-!
-    call jedema()
 !
 end subroutine

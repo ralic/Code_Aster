@@ -18,10 +18,10 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine apzonl(sdappa, izone, questz, vall)
-        character(len=19) :: sdappa
-        integer :: izone
-        character(len=*) :: questz
-        aster_logical :: vall
+    subroutine apzonl(sdappa, i_zone, questi_, vall)
+        character(len=19), intent(in) :: sdappa
+        character(len=*), intent(in) :: questi_
+        integer, intent(in) :: i_zone
+        aster_logical, intent(out) :: vall
     end subroutine apzonl
 end interface

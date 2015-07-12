@@ -1,4 +1,10 @@
-subroutine apzonv(sdappa, izone, questz, valr)
+subroutine apzonv(sdappa, i_zone, questi_, valr)
+!
+implicit none
+!
+#include "asterfort/apmmvd.h"
+#include "asterfort/assert.h"
+#include "asterfort/jeveuo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,78 +24,51 @@ subroutine apzonv(sdappa, izone, questz, valr)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/apmmvd.h"
-#include "asterfort/assert.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-    character(len=19) :: sdappa
-    integer :: izone
-    real(kind=8) :: valr(3)
-    character(len=*) :: questz
+    character(len=19), intent(in) :: sdappa
+    character(len=*), intent(in) :: questi_
+    integer, intent(in) :: i_zone
+    real(kind=8), intent(out) :: valr(3)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE APPARIEMENT (UTILITAIRE)
+! Contact - Pairing
 !
-! INFO. DE TYPE VECEUR DE REELS (3) SUR LA ZONE COURANTE
+! Ask datastructure - By zone - Vector real
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sdappa           : name of pairing datastructure
+! In  questi           : question
+! In  i_zone           : index of contact zone
+! Out valr             : answer
 !
-! IN  SDAPPA : NOM DE LA SD APPARIEMENT
-! IN  IZONE  : NUMERO DE LA ZONE
-! IN  QUESTI : QUESTION
-! OUT VALR   : REPONSE A LA QUESTION
+! --------------------------------------------------------------------------------------------------
 !
-!
-!
-!
-    integer :: ifm, niv
-    character(len=24) :: apinzr
-    integer :: jpinzr
-    character(len=24) :: questi
     integer :: zinzr
+    character(len=24) :: sdappa_inzr
+    real(kind=8), pointer :: v_sdappa_inzr(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
-    call infdbg('APPARIEMENT', ifm, niv)
+    valr(1:3)   = 0.d0
+    zinzr       = apmmvd('ZINZR')
+    sdappa_inzr = sdappa(1:19)//'.INZR'
+    call jeveuo(sdappa_inzr, 'L', vr = v_sdappa_inzr)
 !
-! --- ACCES SDAPPA
-!
-    apinzr = sdappa(1:19)//'.INZR'
-    call jeveuo(apinzr, 'L', jpinzr)
-!
-! --- INITIALISATIONS
-!
-    questi = questz
-    valr(1) = 0.d0
-    valr(2) = 0.d0
-    valr(3) = 0.d0
-    zinzr = apmmvd('ZINZR')
-!
-! --- REPONSE
-!
-    if (questi .eq. 'DIRE_APPA_VECT') then
-        valr(1) = zr(jpinzr+zinzr*(izone-1)+1 -1)
-        valr(2) = zr(jpinzr+zinzr*(izone-1)+2 -1)
-        valr(3) = zr(jpinzr+zinzr*(izone-1)+3 -1)
-    else if (questi.eq.'VECT_MAIT') then
-        valr(1) = zr(jpinzr+zinzr*(izone-1)+6 -1)
-        valr(2) = zr(jpinzr+zinzr*(izone-1)+7 -1)
-        valr(3) = zr(jpinzr+zinzr*(izone-1)+8 -1)
-    else if (questi.eq.'VECT_ESCL') then
-        valr(1) = zr(jpinzr+zinzr*(izone-1)+9 -1)
-        valr(2) = zr(jpinzr+zinzr*(izone-1)+10-1)
-        valr(3) = zr(jpinzr+zinzr*(izone-1)+11-1)
+    if (questi_ .eq. 'DIRE_APPA_VECT') then
+        valr(1) = v_sdappa_inzr(zinzr*(i_zone-1)+1 )
+        valr(2) = v_sdappa_inzr(zinzr*(i_zone-1)+2 )
+        valr(3) = v_sdappa_inzr(zinzr*(i_zone-1)+3 )
+    else if (questi_.eq.'VECT_MAIT') then
+        valr(1) = v_sdappa_inzr(zinzr*(i_zone-1)+6 )
+        valr(2) = v_sdappa_inzr(zinzr*(i_zone-1)+7 )
+        valr(3) = v_sdappa_inzr(zinzr*(i_zone-1)+8 )
+    else if (questi_.eq.'VECT_ESCL') then
+        valr(1) = v_sdappa_inzr(zinzr*(i_zone-1)+9 )
+        valr(2) = v_sdappa_inzr(zinzr*(i_zone-1)+10)
+        valr(3) = v_sdappa_inzr(zinzr*(i_zone-1)+11)
     else
         ASSERT(.false.)
     endif
-!
-    call jedema()
 !
 end subroutine

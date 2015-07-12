@@ -26,8 +26,8 @@ interface
         character(len=24), intent(in) :: resoco
         character(len=19), intent(in) :: newgeo
         real(kind=8), intent(in) :: coorne(3)
-        real(kind=8), intent(in) :: tau1m(3)
-        real(kind=8), intent(in) :: tau2m(3)
+        real(kind=8), intent(out) :: tau1m(3)
+        real(kind=8), intent(out) :: tau2m(3)
         integer, intent(in) :: izone
         integer, intent(in) :: ndimg
         integer, intent(in) :: posnom(1)

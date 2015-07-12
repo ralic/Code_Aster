@@ -1,4 +1,10 @@
-subroutine apzoni(sdappa, izone, questz, vali)
+subroutine apzoni(sdappa, i_zone, questi_, vali)
+!
+implicit none
+!
+#include "asterfort/apmmvd.h"
+#include "asterfort/assert.h"
+#include "asterfort/jeveuo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,30 +24,21 @@ subroutine apzoni(sdappa, izone, questz, vali)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/apmmvd.h"
-#include "asterfort/assert.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-    character(len=19) :: sdappa
-    integer :: izone, vali
-    character(len=*) :: questz
+    character(len=19), intent(in) :: sdappa
+    character(len=*), intent(in) :: questi_
+    integer, intent(in) :: i_zone
+    integer, intent(out) :: vali
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE APPARIEMENT (UTILITAIRE)
+! Contact - Pairing
 !
-! INFO. DE TYPE ENTIER SUR LA ZONE COURANTE
+! Ask datastructure - By zone - Integer
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-!
-! IN  SDAPPA : NOM DE LA SD APPARIEMENT
-! IN  IZONE  : NUMERO DE LA ZONE
-! IN  QUESTI : QUESTION
+! In  sdappa           : name of pairing datastructure
+! In  questi           : question
 !      NBPT             NBRE DE POINTS DE LA ZONE
 !      NBNOM            NBRE NOEUDS ATTACHES A LA SURFACE MAITRE
 !      NBMAM            NBRE MAILLES ATTACHEES A LA SURFACE MAITRE
@@ -73,72 +70,54 @@ subroutine apzoni(sdappa, izone, questz, vali)
 !                       0 SINON
 !      CALC_NORM_MAIT   1 SI CALCUL DE LA NORMALE SUR NOEUD MAITRE
 !                       0 SINON
-! OUT VALI   : REPONSE A LA QUESTION
+! In  i_zone           : index of contact zone
+! Out vali             : answer
 !
+! --------------------------------------------------------------------------------------------------
 !
-!
-!
-    integer :: ifm, niv
-    character(len=24) :: apinzi
-    integer :: jpinzi
-    character(len=24) :: questi
     integer :: zinzi
+    character(len=24) :: sdappa_inzi
+    integer, pointer :: v_sdappa_inzi(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
-    call infdbg('APPARIEMENT', ifm, niv)
-!
-! --- ACCES SDAPPA
-!
-    apinzi = sdappa(1:19)//'.INZI'
-    call jeveuo(apinzi, 'L', jpinzi)
-!
-! --- INITIALISATIONS
-!
-    vali = 0
-    questi = questz
+    vali  = 0
     zinzi = apmmvd('ZINZI')
+    sdappa_inzi = sdappa(1:19)//'.INZI'
+    call jeveuo(sdappa_inzi, 'L', vi = v_sdappa_inzi)
 !
-! --- REPONSE
-!
-    if (questi .eq. 'NBPT') then
-        vali = zi(jpinzi+zinzi*(izone-1)+1 -1)
-    else if (questi.eq.'NBNOM') then
-        vali = zi(jpinzi+zinzi*(izone-1)+2 -1)
-    else if (questi.eq.'NBNOE') then
-        vali = zi(jpinzi+zinzi*(izone-1)+3 -1)
-    else if (questi.eq.'NBMAM') then
-        vali = zi(jpinzi+zinzi*(izone-1)+4 -1)
-    else if (questi.eq.'NBMAE') then
-        vali = zi(jpinzi+zinzi*(izone-1)+5 -1)
-    else if (questi.eq.'JDECNM') then
-        vali = zi(jpinzi+zinzi*(izone-1)+6 -1)
-    else if (questi.eq.'JDECMM') then
-        vali = zi(jpinzi+zinzi*(izone-1)+7 -1)
-    else if (questi.eq.'JDECNE') then
-        vali = zi(jpinzi+zinzi*(izone-1)+8 -1)
-    else if (questi.eq.'JDECME') then
-        vali = zi(jpinzi+zinzi*(izone-1)+9 -1)
-!
-    else if (questi.eq.'DIRE_APPA') then
-        vali = zi(jpinzi+zinzi*(izone-1)+10-1)
-    else if (questi.eq.'TYPE_APPA') then
-        vali = zi(jpinzi+zinzi*(izone-1)+11-1)
-!
-    else if (questi.eq.'TYPE_NORM_MAIT') then
-        vali = zi(jpinzi+zinzi*(izone-1)+12-1)
-    else if (questi.eq.'TYPE_NORM_ESCL') then
-        vali = zi(jpinzi+zinzi*(izone-1)+13-1)
-!
-    else if (questi.eq.'CALC_NORM_ESCL') then
-        vali = zi(jpinzi+zinzi*(izone-1)+14-1)
-    else if (questi.eq.'CALC_NORM_MAIT') then
-        vali = zi(jpinzi+zinzi*(izone-1)+15-1)
+    if (questi_ .eq. 'NBPT') then
+        vali = v_sdappa_inzi(zinzi*(i_zone-1)+1)
+    else if (questi_.eq.'NBNOM') then
+        vali = v_sdappa_inzi(zinzi*(i_zone-1)+2)
+    else if (questi_.eq.'NBNOE') then
+        vali = v_sdappa_inzi(zinzi*(i_zone-1)+3)
+    else if (questi_.eq.'NBMAM') then
+        vali = v_sdappa_inzi(zinzi*(i_zone-1)+4)
+    else if (questi_.eq.'NBMAE') then
+        vali = v_sdappa_inzi(zinzi*(i_zone-1)+5 )
+    else if (questi_.eq.'JDECNM') then
+        vali = v_sdappa_inzi(zinzi*(i_zone-1)+6 )
+    else if (questi_.eq.'JDECMM') then
+        vali = v_sdappa_inzi(zinzi*(i_zone-1)+7 )
+    else if (questi_.eq.'JDECNE') then
+        vali = v_sdappa_inzi(zinzi*(i_zone-1)+8 )
+    else if (questi_.eq.'JDECME') then
+        vali = v_sdappa_inzi(zinzi*(i_zone-1)+9 )
+    else if (questi_.eq.'DIRE_APPA') then
+        vali = v_sdappa_inzi(zinzi*(i_zone-1)+10)
+    else if (questi_.eq.'TYPE_APPA') then
+        vali = v_sdappa_inzi(zinzi*(i_zone-1)+11)
+    else if (questi_.eq.'TYPE_NORM_MAIT') then
+        vali = v_sdappa_inzi(zinzi*(i_zone-1)+12)
+    else if (questi_.eq.'TYPE_NORM_ESCL') then
+        vali = v_sdappa_inzi(zinzi*(i_zone-1)+13)
+    else if (questi_.eq.'CALC_NORM_ESCL') then
+        vali = v_sdappa_inzi(zinzi*(i_zone-1)+14)
+    else if (questi_.eq.'CALC_NORM_MAIT') then
+        vali = v_sdappa_inzi(zinzi*(i_zone-1)+15)
     else
         ASSERT(.false.)
     endif
-!
-    call jedema()
 !
 end subroutine

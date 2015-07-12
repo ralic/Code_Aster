@@ -1,4 +1,9 @@
-subroutine appari(sdappa, questz, vali)
+subroutine appari(sdappa, questi_, vali)
+!
+implicit none
+!
+#include "asterfort/assert.h"
+#include "asterfort/jeveuo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,75 +23,51 @@ subroutine appari(sdappa, questz, vali)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-    character(len=19) :: sdappa
-    integer :: vali
-    character(len=*) :: questz
+    character(len=19), intent(in) :: sdappa
+    character(len=*), intent(in) :: questi_
+    integer, intent(out) :: vali
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE APPARIEMENT (UTILITAIRE)
+! Contact - Pairing
 !
-! CONSTANTES - PARAMETRE ENTIER
+! Ask datastructure - Global - Integer
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sdappa           : name of pairing datastructure
+! In  questi           : question
+!                       APPARI_NBZONE      NBRE DE ZONES
+!                       APPARI_NDIMG       DIMENSION DE L'ESPACE
+!                       APPARI_NTPT        NBRE DE POINTS
+!                       PROJ_NEWT_ITER     NBRE ITERATION POUR NEWTON PROJECTION
+! Out vali             : answer
 !
-! IN  SDAPPA : NOM DE LA SD APPARIEMENT
-! IN  QUESTI : QUESTION
-!               APPARI_NBZONE      NBRE DE ZONES
-!               APPARI_NDIMG       DIMENSION DE L'ESPACE
-!               APPARI_NTPT        NBRE DE POINTS
-!               PROJ_NEWT_ITER     NBRE ITERATION POUR NEWTON PROJECTION
-! OUT VALI   : REPONSE A LA QUESTION
+! --------------------------------------------------------------------------------------------------
 !
+    character(len=24) :: sdappa_infi
+    integer, pointer :: v_sdappa_infi(:) => null()
 !
-!
-!
-    integer :: ifm, niv
-    character(len=24) :: apinfi
-    integer :: jpinfi
-    character(len=24) :: questi
-!
-! ----------------------------------------------------------------------
-!
-    call jemarq()
-    call infdbg('APPARIEMENT', ifm, niv)
-!
-! --- ACCES SDAPPA
-!
-    apinfi = sdappa(1:19)//'.INFI'
-    call jeveuo(apinfi, 'L', jpinfi)
-!
-! --- INITIALISATIONS
+! --------------------------------------------------------------------------------------------------
 !
     vali = 0
-    questi = questz
+    sdappa_infi = sdappa(1:19)//'.INFI'
+    call jeveuo(sdappa_infi, 'L', vi = v_sdappa_infi)
 !
-! --- QUESTION
-!
-    if (questi .eq. 'APPARI_NBZONE') then
-        vali = zi(jpinfi+1-1)
-    else if (questi.eq.'APPARI_NTPT') then
-        vali = zi(jpinfi+2-1)
-    else if (questi.eq.'APPARI_NTMA') then
-        vali = zi(jpinfi+3-1)
-    else if (questi.eq.'PROJ_NEWT_ITER') then
-        vali = zi(jpinfi+4-1)
-    else if (questi.eq.'APPARI_NDIMG') then
-        vali = zi(jpinfi+5-1)
-    else if (questi.eq.'APPARI_NTNO') then
-        vali = zi(jpinfi+6-1)
+    if (questi_ .eq. 'APPARI_NBZONE') then
+        vali = v_sdappa_infi(1)
+    else if (questi_.eq.'APPARI_NTPT') then
+        vali = v_sdappa_infi(2)
+    else if (questi_.eq.'APPARI_NTMA') then
+        vali = v_sdappa_infi(3)
+    else if (questi_.eq.'PROJ_NEWT_ITER') then
+        vali = v_sdappa_infi(4)
+    else if (questi_.eq.'APPARI_NDIMG') then
+        vali = v_sdappa_infi(5)
+    else if (questi_.eq.'APPARI_NTNO') then
+        vali = v_sdappa_infi(6)
     else
         ASSERT(.false.)
     endif
-!
-    call jedema()
 !
 end subroutine

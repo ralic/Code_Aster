@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine appari(sdappa, questz, vali)
-        character(len=19) :: sdappa
-        character(len=*) :: questz
-        integer :: vali
+    subroutine appari(sdappa, questi_, vali)
+        character(len=19), intent(in) :: sdappa
+        character(len=*), intent(in) :: questi_
+        integer, intent(out) :: vali
     end subroutine appari
 end interface

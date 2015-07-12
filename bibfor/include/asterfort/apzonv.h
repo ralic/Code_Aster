@@ -16,10 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine apzonv(sdappa, izone, questz, valr)
-        character(len=19) :: sdappa
-        integer :: izone
-        character(len=*) :: questz
-        real(kind=8) :: valr(3)
+    subroutine apzonv(sdappa, i_zone, questi_, valr)
+        character(len=19), intent(in) :: sdappa
+        character(len=*), intent(in) :: questi_
+        integer, intent(in) :: i_zone
+        real(kind=8), intent(out) :: valr(3)
     end subroutine apzonv
 end interface

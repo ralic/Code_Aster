@@ -1,4 +1,9 @@
-subroutine apvect(sdappa, questz, ip, valr)
+subroutine apvect(sdappa, questi_, i_poin, valr)
+!
+implicit none
+!
+#include "asterfort/assert.h"
+#include "asterfort/jeveuo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,100 +23,74 @@ subroutine apvect(sdappa, questz, ip, valr)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-    character(len=19) :: sdappa
-    integer :: ip
-    real(kind=8) :: valr(3)
-    character(len=*) :: questz
+    character(len=19), intent(in) :: sdappa
+    character(len=*), intent(in) :: questi_
+    integer, intent(in) :: i_poin
+    real(kind=8), intent(out) :: valr(3)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE APPARIEMENT (UTILITAIRE)
+! Contact - Pairing
 !
-! INTERROGATION DE LA SDAPPA - VECTEUR (LONGEUER 3)
+! Ask datastructure - By point - Vector
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sdappa           : name of pairing datastructure
+! In  questi           : question
+!                       'APPARI_TAU1'           first tangent at projection of point
+!                       'APPARI_TAU2'           second tangent at projection of point
+!                       'APPARI_NOEUD_TAU1'     first tangent at node
+!                       'APPARI_NOEUD_TAU2'     second tangent at node
+!                       'APPARI_VECTPM'         vector between point and its projection
+! In  i_poin           : index of point (contact or non-contact)
+! Out valr             : answer
 !
-! IN  SDAPPA : NOM DE LA SD APPARIEMENT
-! IN  QUESTI : QUESTION
-!              APPARI_TAU1          : TANGENTE 1 AU PT PROJETE
-!              APPARI_TAU2          : TANGENTE 2 AU PT PROJETE
-!              APPARI_VECTPM        : VECTEUR PT -> PROJECTION
-!              APPARI_NOEUD_TAU1    : TANGENTE 1 AU NOEUD
-!              APPARI_NOEUD_TAU2    : TANGENTE 2 AU NOEUD
-! IN  IP     : INDICE DU POINT OU POSITION DU NOEUD
-! OUT VALR   : REPONSE A LA QUESTION
+! --------------------------------------------------------------------------------------------------
 !
+    character(len=24) :: sdappa_dist
+    real(kind=8), pointer :: v_sdappa_dist(:) => null()
+    character(len=24) :: sdappa_tau1
+    real(kind=8), pointer :: v_sdappa_tau1(:) => null()
+    character(len=24) :: sdappa_tau2
+    real(kind=8), pointer :: v_sdappa_tau2(:) => null()
+    character(len=24) :: sdappa_tgno
+    real(kind=8), pointer :: v_sdappa_tgno(:) => null()
 !
+! --------------------------------------------------------------------------------------------------
 !
+    sdappa_tau1 = sdappa(1:19)//'.TAU1'
+    sdappa_tau2 = sdappa(1:19)//'.TAU2'
+    sdappa_dist = sdappa(1:19)//'.DIST'
+    sdappa_tgno = sdappa(1:19)//'.TGNO'
+    call jeveuo(sdappa_tau1, 'L', vr = v_sdappa_tau1)
+    call jeveuo(sdappa_tau2, 'L', vr = v_sdappa_tau2)
+    call jeveuo(sdappa_dist, 'L', vr = v_sdappa_dist)
+    call jeveuo(sdappa_tgno, 'L', vr = v_sdappa_tgno)
+    valr(1:3) = 0.d0
 !
-    character(len=24) :: apdist, aptau1, aptau2, aptgno
-    integer :: jdist, jtau1, jtau2, jptgno
-    character(len=24) :: questi
-    integer :: posno
-!
-! ----------------------------------------------------------------------
-!
-    call jemarq()
-!
-! --- ACCES SDAPPA
-!
-    aptau1 = sdappa(1:19)//'.TAU1'
-    aptau2 = sdappa(1:19)//'.TAU2'
-    apdist = sdappa(1:19)//'.DIST'
-    aptgno = sdappa(1:19)//'.TGNO'
-!
-! --- INITIALISATIONS
-!
-    valr(1) = 0.d0
-    valr(2) = 0.d0
-    valr(3) = 0.d0
-    questi = questz
-!
-! --- QUESTION
-!
-    if (questi .eq. 'APPARI_TAU1') then
-        call jeveuo(aptau1, 'L', jtau1)
-        valr(1) = zr(jtau1+3*(ip-1)+1-1)
-        valr(2) = zr(jtau1+3*(ip-1)+2-1)
-        valr(3) = zr(jtau1+3*(ip-1)+3-1)
-!
-    else if (questi.eq.'APPARI_TAU2') then
-        call jeveuo(aptau2, 'L', jtau2)
-        valr(1) = zr(jtau2+3*(ip-1)+1-1)
-        valr(2) = zr(jtau2+3*(ip-1)+2-1)
-        valr(3) = zr(jtau2+3*(ip-1)+3-1)
-!
-    else if (questi.eq.'APPARI_VECTPM') then
-        call jeveuo(apdist, 'L', jdist)
-        valr(1) = zr(jdist+4*(ip-1)+2-1)
-        valr(2) = zr(jdist+4*(ip-1)+3-1)
-        valr(3) = zr(jdist+4*(ip-1)+4-1)
-!
-    else if (questi.eq.'APPARI_NOEUD_TAU1') then
-        call jeveuo(aptgno, 'L', jptgno)
-        posno = ip
-        valr(1) = zr(jptgno+6*(posno-1)+1-1)
-        valr(2) = zr(jptgno+6*(posno-1)+2-1)
-        valr(3) = zr(jptgno+6*(posno-1)+3-1)
-!
-    else if (questi.eq.'APPARI_NOEUD_TAU2') then
-        call jeveuo(aptgno, 'L', jptgno)
-        posno = ip
-        valr(1) = zr(jptgno+6*(posno-1)+4-1)
-        valr(2) = zr(jptgno+6*(posno-1)+5-1)
-        valr(3) = zr(jptgno+6*(posno-1)+6-1)
-!
+    if (questi_ .eq. 'APPARI_TAU1') then
+        valr(1) = v_sdappa_tau1(3*(i_poin-1)+1)
+        valr(2) = v_sdappa_tau1(3*(i_poin-1)+2)
+        valr(3) = v_sdappa_tau1(3*(i_poin-1)+3)
+    else if (questi_.eq.'APPARI_TAU2') then
+        valr(1) = v_sdappa_tau2(3*(i_poin-1)+1)
+        valr(2) = v_sdappa_tau2(3*(i_poin-1)+2)
+        valr(3) = v_sdappa_tau2(3*(i_poin-1)+3)
+    else if (questi_.eq.'APPARI_VECTPM') then
+        valr(1) = v_sdappa_dist(4*(i_poin-1)+2)
+        valr(2) = v_sdappa_dist(4*(i_poin-1)+3)
+        valr(3) = v_sdappa_dist(4*(i_poin-1)+4)
+    else if (questi_.eq.'APPARI_NOEUD_TAU1') then
+        valr(1) = v_sdappa_tgno(6*(i_poin-1)+1)
+        valr(2) = v_sdappa_tgno(6*(i_poin-1)+2)
+        valr(3) = v_sdappa_tgno(6*(i_poin-1)+3)
+    else if (questi_.eq.'APPARI_NOEUD_TAU2') then
+        valr(1) = v_sdappa_tgno(6*(i_poin-1)+4)
+        valr(2) = v_sdappa_tgno(6*(i_poin-1)+5)
+        valr(3) = v_sdappa_tgno(6*(i_poin-1)+6)
     else
         ASSERT(.false.)
     endif
-!
-    call jedema()
 !
 end subroutine

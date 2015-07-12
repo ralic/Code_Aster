@@ -1,4 +1,9 @@
-subroutine apinfi(sdappa, questz, ip, vali)
+subroutine apinfi(sdappa, questi_, i_poin, vali)
+!
+implicit none
+!
+#include "asterfort/assert.h"
+#include "asterfort/jeveuo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,77 +23,49 @@ subroutine apinfi(sdappa, questz, ip, vali)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-    character(len=19) :: sdappa
-    integer :: ip
-    integer :: vali
-    character(len=*) :: questz
+    character(len=19), intent(in) :: sdappa
+    character(len=*), intent(in) :: questi_
+    integer, intent(in) :: i_poin
+    integer, intent(out) :: vali
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE APPARIEMENT (UTILITAIRE)
+! Contact - Pairing
 !
-! INTERROGATION DE LA SDAPPA - ENTIER
+! Ask datastructure - By point - Integer
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sdappa           : name of pairing datastructure
+! In  questi           : question
+!                       'APPARI_TYPE'     type of pairing
+!                       'APPARI_ENTITE'   index of entity paired
+!                       'APPARI_ZONE'     index of zone
+!                       'APPARI_MAILLE'   element of point
+! In  i_poin           : index of point (contact or non-contact)
+! Out vali             : answer
 !
-! IN  SDAPPA : NOM DE LA SD APPARIEMENT
-! IN  QUESTI : QUESTION
-!              'APPARI_TYPE'     TYPE D'APPARIEMENT (ND, MAILLE, ETC)
-!              'APPARI_ENTITE'   NUMERO D'ENTITE APPARIEE
-!              'APPARI_ZONE'     ZONE SUPPORT DU POINT
-!              'APPARI_MAILLE'   MAILLE SUPPORT DU POINT
-!              'APPARI_NOEUD'    NOEUD SUPPORT DU POINT
-! IN  IP     : INDICE DU POINT
-! OUT VALI   : REPONSE A LA QUESTION
+! --------------------------------------------------------------------------------------------------
 !
+    character(len=24) :: sdappa_appa
+    integer, pointer :: v_sdappa_appa(:) => null()
 !
-!
-!
-    integer :: ifm, niv
-    character(len=24) :: appar
-    integer :: jappa
-    character(len=16) :: questi
-!
-! ----------------------------------------------------------------------
-!
-    call jemarq()
-    call infdbg('APPARIEMENT', ifm, niv)
-!
-! --- ACCES SDAPPA
-!
-    appar = sdappa(1:19)//'.APPA'
-!
-! --- INITIALISATIONS
+! --------------------------------------------------------------------------------------------------
 !
     vali = 0
-    questi = questz
+    sdappa_appa = sdappa(1:19)//'.APPA'
+    call jeveuo(sdappa_appa, 'L', vi = v_sdappa_appa)
 !
-! --- QUESTION
-!
-    if (questi .eq. 'APPARI_TYPE') then
-        call jeveuo(appar, 'L', jappa)
-        vali = zi(jappa+4*(ip-1)+1-1)
-    else if (questi.eq.'APPARI_ENTITE') then
-        call jeveuo(appar, 'L', jappa)
-        vali = zi(jappa+4*(ip-1)+2-1)
-    else if (questi.eq.'APPARI_ZONE') then
-        call jeveuo(appar, 'L', jappa)
-        vali = zi(jappa+4*(ip-1)+3-1)
-    else if (questi.eq.'APPARI_MAILLE') then
-        call jeveuo(appar, 'L', jappa)
-        vali = zi(jappa+4*(ip-1)+4-1)
+    if (questi_ .eq. 'APPARI_TYPE') then
+        vali = v_sdappa_appa(4*(i_poin-1)+1)
+    else if (questi_.eq.'APPARI_ENTITE') then
+        vali = v_sdappa_appa(4*(i_poin-1)+2)
+    else if (questi_.eq.'APPARI_ZONE') then
+        vali = v_sdappa_appa(4*(i_poin-1)+3)
+    else if (questi_.eq.'APPARI_MAILLE') then
+        vali = v_sdappa_appa(4*(i_poin-1)+4)
     else
         ASSERT(.false.)
     endif
-!
-    call jedema()
 !
 end subroutine

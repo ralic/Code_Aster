@@ -1,4 +1,9 @@
-subroutine apparr(sdappa, questz, valr)
+subroutine apparr(sdappa, questi_, valr)
+!
+implicit none
+!
+#include "asterfort/assert.h"
+#include "asterfort/jeveuo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,62 +23,38 @@ subroutine apparr(sdappa, questz, valr)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-    character(len=19) :: sdappa
-    real(kind=8) :: valr
-    character(len=*) :: questz
+    character(len=19), intent(in) :: sdappa
+    character(len=*), intent(in) :: questi_
+    real(kind=8), intent(out) :: valr
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE APPARIEMENT (UTILITAIRE)
+! Contact - Pairing
 !
-! CONSTANTES - PARAMETRE REEL
+! Ask datastructure - Global - Real
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sdappa           : name of pairing datastructure
+! In  questi           : question
+!                       PROJ_NEWT_RESI     TOLERANCE POUR NEWTON PROJECTION
+! Out valr             : answer
 !
-! IN  SDAPPA : NOM DE LA SD APPARIEMENT
-! IN  QUESTI : QUESTION
-!               PROJ_NEWT_RESI     TOLERANCE POUR NEWTON PROJECTION
-! OUT VALR   : REPONSE A LA QUESTION
+! --------------------------------------------------------------------------------------------------
 !
+    character(len=24) :: sdappa_infr
+    real(kind=8), pointer :: v_sdappa_infr(:) => null()
 !
-!
-!
-    integer :: ifm, niv
-    character(len=24) :: apinfr
-    integer :: jpinfr
-    character(len=16) :: questi
-!
-! ----------------------------------------------------------------------
-!
-    call jemarq()
-    call infdbg('APPARIEMENT', ifm, niv)
-!
-! --- ACCES SDAPPA
-!
-    apinfr = sdappa(1:19)//'.INFR'
-    call jeveuo(apinfr, 'L', jpinfr)
-!
-! --- INITIALISATIONS
+! --------------------------------------------------------------------------------------------------
 !
     valr = 0.d0
-    questi = questz
+    sdappa_infr = sdappa(1:19)//'.INFR'
+    call jeveuo(sdappa_infr, 'L', vr = v_sdappa_infr)
 !
-! --- QUESTION
-!
-    if (questi .eq. 'PROJ_NEWT_RESI') then
-        valr = zr(jpinfr+1-1)
+    if (questi_ .eq. 'PROJ_NEWT_RESI') then
+        valr = v_sdappa_infr(1)
     else
         ASSERT(.false.)
     endif
-!
-    call jedema()
 !
 end subroutine
