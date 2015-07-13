@@ -6,9 +6,7 @@ implicit none
 #include "asterf_types.h"
 #include "asterfort/dfc_read_zone.h"
 #include "asterfort/dfc_save_dime.h"
-#include "asterfort/cfnodb.h"
-#include "asterfort/cfbord.h"
-#include "asterfort/chckco.h"
+#include "asterfort/dfc_chck.h"
 #include "asterfort/tablco.h"
 #include "asterfort/utmess.h"
 #include "asterfort/cacoco.h"
@@ -102,17 +100,9 @@ implicit none
 !
     call typeco(sdcont, mesh)
 !
-! - Check common nodes
+! - Some checks
 !
-    call cfnodb(sdcont)
-!
-! - Check dimension of elements versus model dimension
-!
-    call cfbord(sdcont, mesh)
-!
-! - Check normals/tangents
-!
-    call chckco(sdcont, mesh, model_ndim)
+    call dfc_chck(sdcont, mesh, model_ndim)
 !
 ! - Gap for beams
 !

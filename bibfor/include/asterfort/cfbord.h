@@ -16,8 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfbord(char, noma)
-        character(len=8) :: char
-        character(len=8) :: noma
+    subroutine cfbord(sdcont, mesh)
+        character(len=8), intent(in) :: sdcont
+        character(len=8), intent(in) :: mesh
     end subroutine cfbord
 end interface
