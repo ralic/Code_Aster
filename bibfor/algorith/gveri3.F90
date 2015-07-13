@@ -1,5 +1,5 @@
-subroutine gveri3(chfond, taillr, config, lnoff, thlagr,&
-                  thlag2, ndeg, trav1, trav2, trav3,&
+subroutine gveri3(chfond, taillr, config, lnoff, liss,&
+                  ndeg, trav1, trav2, trav3,&
                   typdis)
 !
 ! ======================================================================
@@ -41,8 +41,7 @@ subroutine gveri3(chfond, taillr, config, lnoff, thlagr,&
 !        TAILLR : TAILLES DE MAILLES CONNECTEES AUX NOEUDS
 !        CONFIG : CONFIGURATION DE LA FISSURE EN FEM
 !        LNOFF  : NOMBRE DE NOEUD DE GAMM0
-!        THLAGR : SI THETA_LAGRANGE  THLAGR = .TRUE.
-!        THLAG2 : SI THETA_LAGRANGE_REGU  THLAG2 = .TRUE.
+!        LISS   : TYPE DE LISSAGE
 !        NDEG   : DEGRE DES POLYNOMES DE LEGENDRE
 !
 ! SORTIE:
@@ -64,7 +63,7 @@ subroutine gveri3(chfond, taillr, config, lnoff, thlagr,&
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=16) :: typdis
-    character(len=24) :: trav0, trav1, trav2, trav3, chfond, absgam, taillr
+    character(len=24) :: trav0, trav1, trav2, trav3, chfond, absgam, taillr, liss
     character(len=8) :: config, nompar(1), rinff, rsupf
 !
     integer :: lnoff, ndeg, nbre, nr, nrf, nbpar, i, j
@@ -74,14 +73,12 @@ subroutine gveri3(chfond, taillr, config, lnoff, thlagr,&
     real(kind=8) :: maxtai, mintai, rinf, rsup, xl, valpar(1), valres
     real(kind=8) :: valr(2)
 !
-    aster_logical :: thlagr, thlag2
-!
 !
     call jemarq()
 !
-    if (thlag2) then
+    if (liss.eq.'LAGRANGE_REGU') then
         nbre = 1+lnoff/2 - 1
-    else if (thlagr) then
+    else if ((liss.eq.'LAGRANGE').or.(liss.eq.'LAGRANGE_NO_NO').or.(liss.eq.'MIXTE')) then
         nbre = lnoff - 1
     else
         nbre = ndeg
@@ -140,7 +137,8 @@ subroutine gveri3(chfond, taillr, config, lnoff, thlagr,&
  10 end do
     xl=zr(iadabs-1+(lnoff-1)+1)
 !
-    if (.not.thlagr .and. .not.thlag2) then
+    if ((liss.ne.'LAGRANGE').and.(liss.ne.'LAGRANGE_NO_NO').and.(liss.ne.'MIXTE')&
+         .and.(liss.ne.'LAGRANGE_REGU')) then
 !
 ! METHODE THETA_LEGENDRE
 !
@@ -167,7 +165,8 @@ subroutine gveri3(chfond, taillr, config, lnoff, thlagr,&
 !
         call glegen(nbre, lnoff, xl, absgam, zr(iadrt3))
 !
-    else if (thlagr.or.thlag2) then
+    else if ((liss.eq.'LAGRANGE').or.(liss.eq.'LAGRANGE_NO_NO')&
+              .or.(liss.eq.'MIXTE').or.(liss.eq.'LAGRANGE_REGU')) then
 !
 ! METHODES THETA_LAGRANGE,THETA_LAGRANGE_REGU
 !

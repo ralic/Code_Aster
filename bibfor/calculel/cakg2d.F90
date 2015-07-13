@@ -102,14 +102,14 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
     parameter   (nbinmx=50,nboumx=1)
     character(len=8) :: lpain(nbinmx), lpaout(nboumx)
     character(len=24) :: lchin(nbinmx), lchout(nboumx)
-    integer :: i, ibid,  inorma, nsig, ifm, niv, jnor, jbasfo
+    integer :: i, ibid,  inorma, nsig, ifm, niv, jnor, jbasfo, ibid2
     integer :: iadrma, iadrff, icoode, iadrco, iadrno, ino1, ino2, inga
     integer :: lobj2, ndimte, nunoff, ndim, nchin, jfond, numfon
     integer :: iret, livi(nbmxpa), nbchar, pbtype
     real(kind=8) :: fic(5), rcmp(4), livr(nbmxpa), girwin
     integer :: mxstac
     complex(kind=8) :: livc(nbmxpa)
-    aster_logical :: lfonc, lxfem
+    aster_logical :: lfonc, lxfem, ltheta
     parameter   (mxstac=1000)
     character(len=2) :: codret
     character(len=8) :: noma, fond, licmp(4), typmo, fiss, mosain
@@ -148,6 +148,10 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
     call getvid('THETA', 'FISSURE', iocc=1, scal=fiss, nbret=ibid)
     lxfem = .false.
     if (ibid .ne. 0) lxfem = .true.
+!   cas THETA
+    call getvid('THETA', 'THETA', iocc=1, scal=fiss, nbret=ibid2)
+    ltheta = .false.
+    if (ibid2 .ne. 0) ltheta = .true.   
 
 !   RECUPERATION DU CHAMP GEOMETRIQUE
     call megeom(modele, chgeom)
@@ -299,6 +303,10 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
     licmp(2) = 'YA'
     licmp(3) = 'XNORM'
     licmp(4) = 'YNORM'
+
+!Recuperation du numero du fond de fissure pour FEM et XFEM
+    call getvis('THETA', 'NUME_FOND', iocc=1, scal=numfon, nbret=ibid)
+    
     if (.not.lxfem) then
 !       cas FEM    
         rcmp(1) = zr(iadrco+ndim* (nunoff-1))
@@ -306,7 +314,6 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
     else
 !       cas X-FEM    
         call jeveuo(fiss//'.FONDFISS', 'L', jfond)
-        call getvis('THETA', 'NUME_FOND', iocc=1, scal=numfon, nbret=ibid)
         rcmp(1) = zr(jfond-1+4*(numfon-1)+1)
         rcmp(2) = zr(jfond-1+4*(numfon-1)+2)
         call jeveuo(fiss//'.BASEFOND', 'L', jnor)
@@ -492,10 +499,17 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
         call impfic(valg, zk8(iadrno), rcmp, ifm, lxfem)
     endif
 !
-    if (lxfem .and. (option(1:8).eq.'CALC_K_G') .and. (.not.lmoda)) then
+!    if (lxfem .and. (option(1:8).eq.'CALC_K_G') .and. (.not.lmoda)) then
+!     call tbajvi(result, nbprup, 'NUME_FOND', numfon, livi)
+!    endif
+!
+    if (.not.ltheta) then
         call tbajvi(result, nbprup, 'NUME_FOND', numfon, livi)
     endif
-!
+
+    if (.not.lxfem) then
+        call tbajvk(result, nbprup, 'NOEUD', zk8(iadrno), livk)
+    endif
     if (lmelas) then
         call tbajvi(result, nbprup, 'NUME_CAS', iord, livi)
         call tbajvk(result, nbprup, 'NOM_CAS', nomcas, livk)
@@ -505,7 +519,8 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
         call tbajvi(result, nbprup, 'NUME_ORDRE', iord, livi)
         call tbajvr(result, nbprup, 'INST', time, livr)
     endif
-!
+    call tbajvr(result, nbprup, 'COOR_X', rcmp(1), livr)
+    call tbajvr(result, nbprup, 'COOR_Y', rcmp(2), livr)
     call tbajvr(result, nbprup, 'K1', valg(1+3), livr)
     call tbajvr(result, nbprup, 'K2', valg(1+4), livr)
     call tbajvr(result, nbprup, 'G', valg(1), livr)

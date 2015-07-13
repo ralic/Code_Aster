@@ -20,7 +20,7 @@
 interface
     subroutine mbilgl(option, result, modele, depla1, depla2,&
                       thetai, mate, lischa, symech,chfond,&
-                      nnoff , ndeg, thlagr, glagr,thlag2,&
+                      nnoff , ndeg, liss,&
                       milieu, ndimte, pair, extim,timeu,&
                       timev , indi, indj, nbprup,noprup,&
                       lmelas, nomcas, fonoeu)
@@ -36,9 +36,7 @@ interface
         character(len=24) :: chfond
         integer :: nnoff
         integer :: ndeg
-        aster_logical :: thlagr
-        aster_logical :: glagr
-        aster_logical :: thlag2
+        character(len=24) :: liss
         aster_logical :: milieu
         integer :: ndimte
         aster_logical :: pair

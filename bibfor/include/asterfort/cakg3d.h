@@ -21,10 +21,10 @@ interface
     subroutine cakg3d(option, result, modele, depla, thetai,&
                       mate, compor, lischa, symech,&
                       chfond, nnoff, basloc, courb, iord,&
-                      ndeg, thlagr, glagr, thlag2, pair,&
-                      ndimte, extim, time, nbprup, noprup,&
+                      ndeg, liss, pair, ndimte, extim,&
+                      time, nbprup, noprup,&
                       fiss, lmelas, nomcas, lmoda, puls,&
-                      milieu, connex, typdis)
+                      milieu, connex, coor, iadnoe, typdis)
         character(len=16) :: option
         character(len=8) :: result
         character(len=8) :: modele
@@ -40,9 +40,7 @@ interface
         character(len=24) :: courb
         integer :: iord
         integer :: ndeg
-        aster_logical :: thlagr
-        aster_logical :: glagr
-        aster_logical :: thlag2
+        character(len=24) :: liss
         aster_logical :: pair
         integer :: ndimte
         aster_logical :: extim
@@ -56,6 +54,8 @@ interface
         real(kind=8) :: puls
         aster_logical :: milieu
         aster_logical :: connex
+        integer :: coor
+        integer :: iadnoe        
         character(len=16), intent(in), optional :: typdis
     end subroutine cakg3d
 end interface

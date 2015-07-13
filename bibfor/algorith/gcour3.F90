@@ -1,6 +1,6 @@
 subroutine gcour3(resu, noma, coorn, lnoff, trav1,&
                   trav2, trav3, chfond, connex, grlt,&
-                  thlagr, thlag2, basfon, nbre, milieu,&
+                  liss, basfon, nbre, milieu,&
                   pair, ndimte, typdis, nomfis)
     implicit none
 !
@@ -40,21 +40,20 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1,&
 !        COORN  : NOM DE L'OBJET CONTENANT LES COORDONNEES DU MAILLAGE
 !        LNOFF  : NOMBRE DE NOEUDS DE GAMM0
 !        CHFOND : NOMS DES NOEUDS DU FOND DE FISSURE
-!        CONNEX: .TRUE.  : FOND DE FISSURE FERME
-!                .FALSE. : FOND DE FISSURE DEBOUCHANT
+!        CONNEX : .TRUE.  : FOND DE FISSURE FERME
+!                 .FALSE. : FOND DE FISSURE DEBOUCHANT
 !        GRLT   : GRADIENT DE LA LEVEL-SET TANGENTE
 !        TRAV1  : RINF
 !        TRAV2  : RSUP
-!        THLAGR  : SI PRESENCE DU MOT CLE THETA_LAGRANGE
-!        THLAG2  : SI PRESENCE DU MOT CLE THETA_LAGRANGE_REGU
-!        BASFON  : BASE LOCALE AUX POINTS DU FOND DE FISSURE
+!        LISS   : TYPE DE LISSAGE
+!        BASFON : BASE LOCALE AUX POINTS DU FOND DE FISSURE
 !        NBRE   : DEGRE DES POLYNOMES DE LEGENDRE
 !                     SINON 0
 ! SORTIE:
 !                 LISTE DE CHAMPS_NO THETA
-!        TRAV3 : MODULE(THETA)
-!        MILIEU: .TRUE.  : ELEMENT QUADRATIQUE
-!                .FALSE. : ELEMENT LINEAIRE
+!        TRAV3  : MODULE(THETA)
+!        MILIEU : .TRUE.  : ELEMENT QUADRATIQUE
+!                 .FALSE. : ELEMENT LINEAIRE
 !     ------------------------------------------------------------------
 !
 !
@@ -84,7 +83,7 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1,&
 #include "asterfort/wkvect.h"
 !
     character(len=24) :: trav1, trav2, trav3, chfond, chamno, coorn
-    character(len=24) :: basfon
+    character(len=24) :: basfon, liss
     character(len=19) :: cnsgt, grlt
     character(len=16) :: typdis
     character(len=8) :: resu, noma, nomfis
@@ -104,7 +103,7 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1,&
     integer :: jcnsl, jstn, jstnl, stano
     data  licmp /'DX','DY','DZ'/
 !
-    aster_logical :: thlagr, milieu, debug, thlag2, pair, connex
+    aster_logical :: milieu, debug, pair, connex
 !
 !-----------------------------------------------------------------------
     integer :: iadrtt, jbas, kno
@@ -147,7 +146,7 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1,&
 ! ALLOCATION DES OBJETS POUR STOCKER LE CHAMP_NO THETA ET LA DIRECTION
 ! TYPE CHAM_NO ( DEPL_R) AVEC PROFIL NOEUD CONSTANT (3 DDL)
 !
-    if (thlag2) then
+    if (liss .eq. 'LAGRANGE_REGU') then
         pair = .false.
         if (mod(lnoff,2) .eq. 1) ndimte = (lnoff+1)/2
         if (mod(lnoff,2) .eq. 0) then
@@ -155,7 +154,7 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1,&
             pair = .true.
             if (connex) call utmess('F', 'RUPTURE1_1')
         endif
-    else if (thlagr) then
+    else if ((liss.eq.'LAGRANGE').or.(liss.eq.'LAGRANGE_NO_NO').or.(liss.eq.'MIXTE')) then
         ndimte = lnoff
     else
         ndimte = nbre + 1
@@ -183,7 +182,7 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1,&
 !       VOIR RÉFÉRENCE BOOK I (05/01/2004)
         if (k .ne. (ndimte+1)) then
 !
-            if (thlag2) then
+            if (liss .eq. 'LAGRANGE_REGU') then
                 kno = 2*k-1
                 if ((k.eq. ndimte) .and. pair) then
                     kno = lnoff
@@ -222,7 +221,7 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1,&
                     zr(iadrtt+1) = (zr(ifon-1+4*(1-1+1)+4)-s1)/(s0- s1)
                 endif
 !
-            else if (thlagr) then
+            else if ((liss.eq.'LAGRANGE').or.(liss.eq.'LAGRANGE_NO_NO').or.(liss.eq.'MIXTE')) then
                 zr(iadrt3-1+(k-1)*lnoff+k) = 1.d0
             endif
 !         BOUCLE SUR LES NOEUDS M COURANTS DU MAILLAGE

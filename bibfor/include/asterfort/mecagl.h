@@ -20,10 +20,10 @@
 interface
     subroutine mecagl(option, result, modele, depla, thetai,&
                       mate, compor, lischa, symech, chfond, &
-                      nnoff, iord, ndeg, thlagr, glagr, &
-                      thlag2, milieu, ndimte, pair, extim, &
+                      nnoff, iord, ndeg, liss, &
+                      milieu, ndimte, pair, extim, &
                       time, nbprup, noprup, chvite, chacce, &
-                      lmelas, nomcas, kcalc, fonoeu, lincr)
+                      lmelas, nomcas, kcalc, fonoeu, lincr, coor)
         character(len=16) :: option
         character(len=8) :: result
         character(len=8) :: modele
@@ -38,9 +38,7 @@ interface
         integer :: iord
         integer :: ndeg
         aster_logical :: lincr
-        aster_logical :: thlagr
-        aster_logical :: glagr
-        aster_logical :: thlag2
+        character(len=24) :: liss
         aster_logical :: milieu
         integer :: ndimte
         aster_logical :: pair
@@ -54,5 +52,6 @@ interface
         character(len=16) :: nomcas
         character(len=8) :: kcalc
         character(len=24) :: fonoeu
+        integer :: coor
     end subroutine mecagl
 end interface

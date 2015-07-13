@@ -18,16 +18,17 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine cgcrtb(table, option, lmelas, cas, typfis,&
-                      lmoda, nbprup, noprup, typrup)
-        integer :: nbprup
+    subroutine cgcrtb(table, option, lmelas, cas, typfis, nxpara,&
+                      lmoda, nbpara, linopa, litypa)
+        integer :: nbpara
         character(len=8) :: table
         character(len=16) :: option
         aster_logical :: lmelas
         character(len=16) :: cas
         character(len=8) :: typfis
+        integer :: nxpara
         aster_logical :: lmoda
-        character(len=16) :: noprup(nbprup)
-        character(len=8) :: typrup(nbprup)
+        character(len=*) :: linopa(nxpara)
+        character(len=*) :: litypa(nxpara)
     end subroutine cgcrtb
 end interface

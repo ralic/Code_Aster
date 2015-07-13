@@ -1,8 +1,7 @@
 subroutine mbilgl(option, result, modele, depla1, depla2,&
                   thetai, mate, lischa, symech, chfond,&
-                  nnoff, ndeg, thlagr, glagr, thlag2,&
-                  milieu, ndimte, pair, extim, timeu,&
-                  timev, indi, indj, nbprup, noprup,&
+                  nnoff, ndeg, liss, milieu, ndimte, pair,&
+                  extim, timeu, timev, indi, indj, nbprup, noprup,&
                   lmelas, nomcas, fonoeu)
 ! aslint: disable=W1504
     implicit none
@@ -46,10 +45,10 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
     character(len=8) :: modele, thetai
     character(len=8) :: result, symech
     character(len=16) :: option, noprup(*), nomcas
-    character(len=24) :: depla1, depla2, chfond, mate, fonoeu
+    character(len=24) :: depla1, depla2, chfond, mate, fonoeu, liss
 !
-    aster_logical :: extim, thlagr, glagr, milieu, pair
-    aster_logical :: ufonc, vfonc, thlag2, lmelas
+    aster_logical :: extim, milieu, pair
+    aster_logical :: ufonc, vfonc, lmelas
 ! ......................................................................
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -84,9 +83,7 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
 !                   NOEUDS DU FOND DE FISSURE
 !  IN    NNOFF  --> NOMBRE DE NOEUDS DU FOND DE FISSURE
 !  IN    TIME   --> INSTANT DE CALCUL
-!  IN    THLAGR --> VRAI SI LISSAGE THETA_LAGRANGE
-!  IN    THLAG2 --> VRAI SI LISSAGE THETA_LAGRANGE_REGU
-!  IN    GLAGR  --> VRAI SI LISSAGE G_LAGRANGE
+!  IN    LISS   --> TYPE DE LISSAGE
 !  IN    NDEG   --> DEGRE DU POLYNOME DE LEGENDRE
 !  IN    MILIEU --> .TRUE.  : ELEMENT QUADRATIQUE
 !                   .FALSE. : ELEMENT LINEAIRE
@@ -215,9 +212,9 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
 !
 !- CALCUL DES G(THETA_I) AVEC I=1,NDIMTE  NDIMTE = NNOFF  SI TH-LAGRANGE
 !                                         NDIMTE = NDEG+1 SI TH-LEGENDRE
-    if (thlag2) then
+    if (liss.eq.'LAGRANGE_REGU') then
         ndimte = ndimte
-    else if (thlagr) then
+    else if ((liss.eq.'LAGRANGE').or.(liss.eq.'LAGRANGE_NO_NO').or.(liss.eq.'MIXTE')) then
         ndimte = nnoff
     else
         ndimte = ndeg + 1
@@ -309,21 +306,21 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
 !- DEUXIEME METHODE: G_LAGRANGE ET THETA_LAGRANGE
 !
     AS_ALLOCATE(vr=valg_s, size=nnoff)
-    if (glagr .or. thlag2) then
+    if ((liss.eq.'LAGRANGE').or.(liss.eq.'LAGRANGE_NO_NO').or.(liss.eq.'LAGRANGE_REGU')) then
         call wkvect('&&MBILGL.VALGI', 'V V R8', nnoff, iadgi)
     else
         call wkvect('&&MBILGL.VALGI', 'V V R8', ndeg+1, iadgi)
     endif
 !
-    if (thlag2) then
+    if (liss.eq.'LAGRANGE_REGU') then
         num = 5
         call gmeth4(nnoff, ndimte, fonoeu, zr(iadrg), milieu,&
                     pair, valg_s, objcur, zr(iadgi), .false._1)
-    else if ((.not.glagr) .and. (.not.thlagr)) then
+    else if ((liss.ne.'LAGRANGE').and.(liss.ne.'LAGRANGE_NO_NO').and.(liss.ne.'MIXTE')) then
         num = 1
         call gmeth1(nnoff, ndeg, zr(iadrg), valg_s, objcur,&
                     xl, zr( iadgi))
-    else if (glagr .and. thlagr) then
+    else if ((liss.eq.'LAGRANGE').or.(liss.eq.'LAGRANGE_NO_NO')) then
         call gmeth3(nnoff, fonoeu, zr(iadrg), milieu, valg_s,&
                     objcur, zr(iadgi), num, .false._1)
     endif

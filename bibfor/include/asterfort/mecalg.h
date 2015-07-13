@@ -21,7 +21,7 @@ interface
     subroutine mecalg(optioz, result, modele, depla, theta,&
                       mate, lischa, symech, compor, incr, &
                       time, iord, nbprup, noprup, chvite, &
-                      chacce, lmelas, nomcas, kcalc)
+                      chacce, lmelas, nomcas, kcalc, coor, iadnoe)
         character(len=16) :: optioz
         character(len=8) :: result
         character(len=8) :: modele
@@ -41,5 +41,7 @@ interface
         aster_logical :: lmelas
         character(len=16) :: nomcas
         character(len=8) :: kcalc
+        integer :: coor
+        integer :: iadnoe
     end subroutine mecalg
 end interface

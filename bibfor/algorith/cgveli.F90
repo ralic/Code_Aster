@@ -37,6 +37,8 @@ subroutine cgveli(typfis, typdis, cas, option, lnoff, liss,&
 !             ('THETA' OU 'FONDIFSS' OU 'FISSURE')
 !     CAS    : '2D', '3D LOCAL' OU '3D GLOBAL'
 !     LNOFF  : NOMBRE DE NOEUDS (OU POINTS) DU FOND DE FISSURE
+!     TYPDIS : TYPE DE DISCONTINUITE SI FISSURE XFEM 
+!              'FISSURE' OU 'COHESIF'
 !  OUT :
 !     LISS   : TYPE DE LISSAGE (NOM CONTRACTE)
 !     NDEG   : DEBRE DES POLYNOMES DE LEGENDRE

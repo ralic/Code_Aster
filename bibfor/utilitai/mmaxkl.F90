@@ -1,9 +1,9 @@
 subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
                   symech, chfond, nnoff, basloc, courb,&
-                  ndeg, thlagr, glagr, thlag2, pair,&
+                  ndeg, liss, pair,&
                   ndimte, nbprup, noprup, fiss, lonvec,&
                   ivec, resuco, lmelas, lncas, lord,&
-                  milieu, connex, lischa)
+                  milieu, connex, lischa, coor, iadnoe)
 ! aslint: disable=W1504
     implicit none
 !
@@ -34,13 +34,13 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    integer :: nbprup, lonvec, ivec, nnoff, ndeg, ndimte
+    integer :: nbprup, lonvec, ivec, nnoff, ndeg, ndimte, coor, iadnoe   
     character(len=8) :: modele, thetai, fiss, latabl
     character(len=8) :: symech, resuco
     character(len=16) :: noprup(*)
     character(len=19) :: lischa
-    character(len=24) :: chfond, mate, compor, basloc, courb
-    aster_logical :: thlagr, glagr, pair, thlag2, lmelas, lncas, lord(lonvec)
+    character(len=24) :: chfond, mate, compor, basloc, courb, liss
+    aster_logical :: pair, lmelas, lncas, lord(lonvec)
     aster_logical :: milieu, connex
 !
 ! ======================================================================
@@ -78,8 +78,7 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
 !  IN    BASLOC --> BASE LOCALE
 !  IN    COURB  --> NOM DU TENSEUR DE COURBURE
 !  IN    NDEG   --> DEGRE DU POLYNOME DE LEGENDRE
-!  IN    THLAGR --> VRAI SI LISSAGE THETA_LAGRANGE (SINON LEGENDRE)
-!  IN    GLAGR  --> VRAI SI LISSAGE G_LAGRANGE (SINON LEGENDRE)
+!  IN    LISS   --> TYPE DE LISSAGE
 !  IN    FISS   --> NOM DE LA SD FISS_XFEM OU SD FOND_FISS
 !  IN    LONVEC --> NOMBRE DE CHAMPS DE DEPLACEMENTS
 !  IN    LMELAS --> TRUE SI LE TYPE DE LA SD RESULTAT EST MULT_ELAS
@@ -167,10 +166,10 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
         call cakg3d(optio2, latabl, modele, depla, thetai,&
                     mate, compor, lischa, symech, chfond,&
                     nnoff, basloc, courb, iord, ndeg,&
-                    thlagr, glagr, thlag2, pair, ndimte,&
+                    liss, pair, ndimte,&
                     exitim, time, nbprup, noprup, fiss,&
                     lmelas, nomcas, lmoda, puls, milieu,&
-                    connex)
+                    connex, coor, iadnoe)
   1 continue
 !
 ! EXTRACTION DES RESULTATS DE LA TABLE
@@ -274,10 +273,10 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
     call cakg3d(optio2, latabl, modele, depmax, thetai,&
                 mate, compor, lischa, symech, chfond,&
                 nnoff, basloc, courb, 1, ndeg,&
-                thlagr, glagr, thlag2, pair, ndimte,&
+                liss, pair, ndimte,&
                 exitim, time, nbprup, noprup, fiss,&
                 lmelas, k16bid, lmoda, puls, milieu,&
-                connex)
+                connex, coor, iadnoe)
 !
     call tbexve(latabl, 'G', '&&MMAXKL.GMAX', 'V', nbval,&
                 k8b)

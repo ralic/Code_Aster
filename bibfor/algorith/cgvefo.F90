@@ -38,6 +38,8 @@ subroutine cgvefo(option, typfis, nomfis, typdis)
 !    TYPFIS : TYPE DE LA SD DECRIVANT LE FOND DE FISSURE
 !             ('THETA' OU 'FONDIFSS' OU 'FISSURE')
 !    NOMFIS : NOM DE LA SD DECRIVANT LE FOND DE FISSURE
+!    TYPDIS : TYPE DE DISCONTINUITE SI FISSURE XFEM 
+!             'FISSURE' OU 'COHESIF'
 ! ======================================================================
 !
     integer :: ier

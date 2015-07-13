@@ -1,7 +1,7 @@
 subroutine mecalg(optioz, result, modele, depla, theta,&
                   mate, lischa, symech, compor, incr,&
                   time, iord, nbprup, noprup, chvite,&
-                  chacce, lmelas, nomcas, kcalc)
+                  chacce, lmelas, nomcas, kcalc, coor, iadnoe)
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,6 +41,9 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
 !                                  ET D'ENERGIE DE LA SD RESULTAT
 !                        = 'OUI' :ON RECALCULE LES CHAMPS DE CONTRAINTES
 !                                  ET D'ENERGIE
+! IN    COOR         --> COORDONNEES ET ABSCISSES CURVILIGNES DES NOEUDS
+!                   DU FOND DE FISSURE (IADFIS DANS OP0100)
+! IN    IADNOE      --> ADRESSE DU FOND DE FISSURE (IADFIS DANS OP0100)
 !----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
 !
@@ -80,7 +83,7 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
     character(len=24) :: depla, mate, compor, theta
     character(len=24) :: chvite, chacce
     real(kind=8) :: time
-    integer :: iord, nbprup
+    integer :: iord, nbprup, iadnoe
     aster_logical :: lmelas, incr
 !
 !
@@ -93,11 +96,11 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
     integer :: nbmxpa
     parameter (nbmxpa = 20)
 !
-    integer :: ibid, iret, nres, numfon, livi(nbmxpa)
+    integer :: ibid, iret, nres, numfon, livi(nbmxpa), coor, ibid2
     integer :: nchin, nsig, ino1, ino2, inga, pbtype
     real(kind=8) :: g(1), livr(nbmxpa)
     complex(kind=8) :: livc(nbmxpa)
-    aster_logical :: lfonc, lxfem
+    aster_logical :: lfonc, lxfem, ltheta
     character(len=8) :: resu, lpain(50), lpaout(2), k8b, resuco
     character(len=8) :: fiss
     character(len=16) :: option
@@ -139,6 +142,10 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
     call getvid('THETA', 'FISSURE', iocc=1, scal=fiss, nbret=ibid)
     lxfem = .false.
     if (ibid .ne. 0) lxfem = .true.
+!   cas THETA
+    call getvid('THETA', 'THETA', iocc=1, scal=fiss, nbret=ibid2)
+    ltheta = .false.
+    if (ibid2 .ne. 0) ltheta = .true.    
 !
 !   RECUPERATION DU CHAMP GEOMETRIQUE
     call megeom(modele, chgeom)
@@ -420,9 +427,13 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
 !- IMPRESSION DE G ET ECRITURE DANS LA TABLE RESULT
 !
     call getvis('THETA', 'NUME_FOND', iocc=1, scal=numfon, nbret=ibid)
-!
-    if (lxfem) then
+    if ((.not.ltheta).and.(option.ne.'CALC_G_GLOB')) then
         call tbajvi(result, nbprup, 'NUME_FOND', numfon, livi)
+    endif
+    
+! NOM DES NOEUDS DU FOND
+    if ((.not.lxfem).and.(.not.ltheta).and.(option.ne.'CALC_G_GLOB')) then
+        call tbajvk(result, nbprup, 'NOEUD', zk8(iadnoe), livk)
     endif
 !
     if (lmelas) then
@@ -433,6 +444,10 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
         call tbajvr(result, nbprup, 'INST', time, livr)
     endif
 !
+    if ((.not.ltheta).and.(option.ne.'CALC_G_GLOB')) then
+        call tbajvr(result, nbprup, 'COOR_X', zr(coor), livr)
+        call tbajvr(result, nbprup, 'COOR_Y', zr(coor+1), livr)
+    endif
     call tbajvr(result, nbprup, 'G', g(1), livr)
     call tbajli(result, nbprup, noprup, livi, livr,&
                 livc, livk, 0)

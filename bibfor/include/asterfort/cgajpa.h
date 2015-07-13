@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,17 +18,12 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine gveri3(chfond, taillr, config, lnoff, liss,&
-                      ndeg, trav1, trav2, trav3, typdis)
-        character(len=24) :: chfond
-        character(len=24) :: taillr
-        character(len=8) :: config
-        integer :: lnoff
-        character(len=24) :: liss
-        integer :: ndeg
-        character(len=24) :: trav1
-        character(len=24) :: trav2
-        character(len=24) :: trav3
-        character(len=16) :: typdis
-    end subroutine gveri3
+    subroutine cgajpa(para, notype, nbpara, linopa, litypa, nxpara)
+        character(len=*) :: para
+        character(len=*) :: notype       
+        integer :: nbpara
+        character(len=*) :: linopa(nxpara)
+        character(len=*) :: litypa(nxpara)
+        integer :: nxpara
+    end subroutine cgajpa
 end interface

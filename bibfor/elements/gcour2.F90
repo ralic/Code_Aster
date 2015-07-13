@@ -1,6 +1,6 @@
 subroutine gcour2(resu, noma, nomo, nomno, coorn,&
                   nbnoeu, trav1, trav2, trav3, chfond,&
-                  fond, connex, stok4, thlagr, thlag2,&
+                  fond, connex, stok4, liss,&
                   nbre, milieu, ndimte, pair)
     implicit none
 !     ------------------------------------------------------------------
@@ -44,17 +44,17 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
 !        FOND   : NOM DU CONCEPT FOND_FISS
 !        TRAV1  : RINF
 !        TRAV2  : RSUP
-!        THLAGR  : SI PRESENCE DU MOT CLE THETA_LOCAL
+!        LISS   : TYPE DE LISSAGE
 !        NBRE   : DEGRE DES POLYNOMES DE LEGENDRE
 !                     SINON 0
-!        CONNEX: .TRUE.  : FOND DE FISSURE FERME
-!                .FALSE. : FOND DE FISSURE DEBOUCHANT
+!        CONNEX : .TRUE.  : FOND DE FISSURE FERME
+!                 .FALSE. : FOND DE FISSURE DEBOUCHANT
 ! SORTIE:
 !        STOK4  : DIRECTION DU CHAMP THETA
 !                 LISTE DE CHAMPS_NO THETA
-!        TRAV3 : MODULE(THETA)
-!        MILIEU: .TRUE.  : ELEMENT QUADRATIQUE
-!                .FALSE. : ELEMENT LINEAIRE
+!        TRAV3  : MODULE(THETA)
+!        MILIEU : .TRUE.  : ELEMENT QUADRATIQUE
+!                 .FALSE. : ELEMENT LINEAIRE
 !     ------------------------------------------------------------------
 !
 !
@@ -89,7 +89,7 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
     character(len=24) :: trav1, trav2, trav3, objor, objex, chfond, repk
     character(len=24) :: obj3, norm, numgam, chamno
     character(len=24) :: stok4, dire4, coorn, nomno, dire5, indicg
-    character(len=24) :: absgam
+    character(len=24) :: absgam, liss
     character(len=16) :: k16b, nomcmd
     character(len=8) :: fond, resu, noma, nomo, k8b
     character(len=6) :: kiord
@@ -106,7 +106,7 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
     real(kind=8) :: rii, rsi, alpha, valx, valy, valz, norm2, psca
     real(kind=8) :: norme, vecx, vecy, vecz, xl, tmpv(3)
 !
-    aster_logical :: thlagr, milieu, connex, thlag2, pair
+    aster_logical :: milieu, connex, pair
 !
 !-----------------------------------------------------------------------
     integer :: i, i1, idesc, idiri, idirs, ielsup
@@ -320,7 +320,7 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
 ! ALLOCATION DES OBJETS POUR STOCKER LE CHAMP_NO THETA ET LA DIRECTION
 ! TYPE CHAM_NO ( DEPL_R) AVEC PROFIL NOEUD CONSTANT (3 DDL)
 !
-    if (thlag2) then
+    if (liss .eq. 'LAGRANGE_REGU') then
         pair = .false.
         nbnos = nbnoeu
         if (milieu) nbnos = (nbnoeu+1)/2
@@ -332,7 +332,7 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
                 call utmess('F', 'RUPTURE1_1')
             endif
         endif
-    else if (thlagr) then
+    else if ((liss.eq.'LAGRANGE').or.(liss.eq.'LAGRANGE_NO_NO').or.(liss.eq.'MIXTE')) then
         ndimte = nbnoeu
     else
         ndimte = nbre + 1
@@ -375,7 +375,7 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
 !
         if (k .ne. (ndimte+1)) then
 !
-            if (thlag2) then
+            if (liss .eq. 'LAGRANGE_REGU') then
 !
                 do i = 1, nbnoeu
                     num = zi(iadnum+i-1)
@@ -513,7 +513,7 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
                     end do
                 endif
 !
-            else if (thlagr) then
+            else if ((liss.eq.'LAGRANGE').or.(liss.eq.'LAGRANGE_NO_NO').or.(liss.eq.'MIXTE')) then
 !
                 do i = 1, nbnoeu
                     num = zi(iadnum+i-1)

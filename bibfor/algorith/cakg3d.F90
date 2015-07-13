@@ -1,11 +1,11 @@
 subroutine cakg3d(option, result, modele, depla, thetai,&
                   mate, compor, lischa, symech, chfond,&
                   nnoff, basloc, courb, iord, ndeg,&
-                  thlagr, glagr, thlag2, pair, ndimte,&
+                  liss, pair, ndimte,&
                   extim, time, nbprup, noprup, fiss,&
                   lmelas, nomcas, lmoda, puls, milieu,&
-                  connex, typdis)
-! aslint: disable=W1504
+                  connex, coor, iadnoe, typdis)
+
     implicit none
 !
 #include "asterf_types.h"
@@ -46,15 +46,15 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 #include "asterfort/vrcref.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: iord, nbprup, ndimte
+    integer :: iord, nbprup, ndimte, coor, iadnoe
     real(kind=8) :: puls
     character(len=8) :: modele, thetai, fiss
     character(len=8) :: result, symech
     character(len=16) :: option, noprup(*), nomcas
     character(len=16), intent(in), optional :: typdis
     character(len=19) :: lischa
-    character(len=24) :: depla, chfond, mate, compor, basloc, courb, chpuls
-    aster_logical :: extim, thlagr, glagr, thlag2, pair, lmelas, lmoda, milieu, connex
+    character(len=24) :: depla, chfond, mate, compor, basloc, courb, chpuls, liss
+    aster_logical :: extim, pair, lmelas, lmoda, milieu, connex
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -90,9 +90,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 !  IN    COURB  --> NOM DU TENSEUR DE COURBURE
 !  IN    IORD   --> NUMERO D'ORDRE DE LA SD
 !  IN    NDEG   --> DEGRE DU POLYNOME DE LEGENDRE
-!  IN    THLAGR --> VRAI SI LISSAGE THETA EST LAGRANGE OU LAGRANGE_NO_NO
-!  IN    THLAG2 --> VRAI SI LISSAGE THETA EST LAGRANGE_REGU
-!  IN    GLAGR  --> VRAI SI LISSAGE G EST LAGRANGE
+!  IN    LISS   --> TYPE DE LISSAGE
 !  IN    TIME   --> INSTANT DE CALCUL
 !  IN    FISS   --> NOM DE LA SD FISS_XFEM
 !  IN    LMELAS --> TRUE SI LE TYPE DE LA SD RESULTAT EST MULT_ELAS
@@ -101,8 +99,12 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 !                   .FALSE. : ELEMENT LINEAIRE
 !  IN    CONNEX --> .TRUE.  : SI FOND FERME
 !                   .FALSE. : SI FOND OUVERT
-!
-!
+!  IN    COOR   --> COORDONNEES ET ABSCISSES CURVILIGNES DES NOEUDS
+!                   DU FOND DE FISSURE (IADFIS DANS OP0100)
+!  IN    IADNOE --> NOM DES NOEUDS DE FOND DE FISSURE
+!  IN    TYPDIS --> TYPE DE DISCONTINUITE SI FISSURE XFEM 
+!                   'FISSURE' OU 'COHESIF'
+! ======================================================================
     integer :: nbmxpa
     parameter (nbmxpa = 20)
 !
@@ -111,14 +113,15 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
     character(len=8) :: lpain(nbinmx), lpaout(nboumx)
     character(len=24) :: lchin(nbinmx), lchout(nboumx)
 !
-    integer :: i, j, ibid, iadrgk, iadgks, iret, jresu, nchin
+    integer :: i, j, ibid, iadrgk, iadgks, iret, jresu, nchin, ibid2
     integer :: nnoff, num, ino1, ino2, inga
 !     integer :: incr, nres
     integer :: ndeg, nsig, livi(nbmxpa),pbtype
     integer :: iadgki, iadabs, ifm, niv
     real(kind=8) :: gkthi(8), time, livr(nbmxpa), diff2g, difrel
+!    real(kind=8) :: xi(nnoff-1), yi(nnoff-1), zi(nnoff-1)
     complex(kind=8) :: livc(nbmxpa)
-    aster_logical :: lfonc,lxfem
+    aster_logical :: lfonc, lxfem, ltheta
     character(len=2) :: codret
 !    character(len=8) :: resu
 !    character(len=24) :: chsig, chepsp, chvari, type
@@ -153,6 +156,11 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
     call getvid('THETA', 'FISSURE', iocc=1, scal=fiss, nbret=ibid)
     lxfem = .false.
     if (ibid .ne. 0) lxfem = .true.
+!   cas THETA
+    call getvid('THETA', 'THETA', iocc=1, scal=fiss, nbret=ibid2)
+    ltheta = .false.
+    if (ibid2 .ne. 0) ltheta = .true. 
+
 !
 !   RECUPERATION DU CHAMP GEOMETRIQUE
     call megeom(modele, chgeom)
@@ -311,9 +319,9 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 !     NDIMTE = NDEG+1 SI TH-LEGENDRE
 !
 !   pourquoi modifier NDIMTE (argument d'entree)
-    if (thlag2) then
+    if (liss .eq. 'LAGRANGE_REGU') then
         ndimte = ndimte
-    else if (thlagr) then
+    else if ((liss.eq.'LAGRANGE').or.(liss.eq.'LAGRANGE_NO_NO').or.(liss.eq.'MIXTE')) then
         ndimte = nnoff
     else
         ndimte = ndeg + 1
@@ -470,10 +478,10 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 !
     call wkvect('&&CAKG3D.VALGK_S', 'V V R8', nnoff*6, iadgks)
 !
-    if (glagr .or. thlag2) then
-        if (glagr) then
+    if ((liss.eq.'LAGRANGE').or.(liss.eq.'LAGRANGE_NO_NO').or.(liss.eq.'LAGRANGE_REGU')) then
+        if ((liss.eq.'LAGRANGE').or.(liss.eq.'LAGRANGE_NO_NO')) then
             call wkvect('&&CAKG3D.VALGKI', 'V V R8', nnoff*5, iadgki)
-        else if (thlag2) then
+        else if (liss .eq. 'LAGRANGE_REGU') then
             call wkvect('&&CAKG3D.VALGKI', 'V V R8', ndimte*5, iadgki)
         endif
     else
@@ -488,18 +496,19 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 !     TROISIEME METHODE: G_LAGRANGE ET THETA_LAGRANGE
 !                       (OU G_LAGRANGE_NO_NO ET THETA_LAGRANGE)
 !
-    if (thlag2) then
+!
+    if (liss.eq.'LAGRANGE_REGU') then
         num = 5
         call gkmet4(nnoff, ndimte, chfond, pair, iadrgk,&
                     milieu, connex, iadgks, iadgki, abscur,&
                     num)
-    else if ((.not.glagr) .and. (.not.thlagr)) then
+    else if ((liss.ne.'LAGRANGE').and.(liss.ne.'LAGRANGE_NO_NO').and.(liss.ne.'MIXTE')) then
         num = 1
         call gkmet1(ndeg, nnoff, chfond, iadrgk, iadgks,&
                     iadgki, abscur)
 !
-    else if (thlagr) then
-        if (.not.glagr) then
+    else if ((liss.eq.'LAGRANGE').or.(liss.eq.'LAGRANGE_NO_NO').or.(liss.eq.'MIXTE')) then
+        if ((liss.ne.'LAGRANGE').and.(liss.ne.'LAGRANGE_NO_NO')) then
             num = 2
             call utmess('F', 'RUPTURE1_17')
         else
@@ -520,24 +529,32 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 !     ECRITURE DE LA TABLE DE G(S), K1(S), K2(S) ET K3(S)
     call getvis('THETA', 'NUME_FOND', iocc=1, scal=numfon, nbret=ibid)
 !
+    if (.not.ltheta) then
+        call tbajvi(result, nbprup, 'NUME_FOND', numfon, livi)
+    endif
+    
     if (lmelas) then
         call tbajvi(result, nbprup, 'NUME_CAS', iord, livi)
         call tbajvk(result, nbprup, 'NOM_CAS', nomcas, livk)
-        call tbajvi(result, nbprup, 'NUME_FOND', numfon, livi)
     else if (lmoda) then
         call tbajvi(result, nbprup, 'NUME_MODE', iord, livi)
     else
         call tbajvi(result, nbprup, 'NUME_ORDRE', iord, livi)
         call tbajvr(result, nbprup, 'INST', time, livr)
-        call tbajvi(result, nbprup, 'NUME_FOND', numfon, livi)
     endif
 !
     diff2g = 0.d0
     difrel = 0.d0
 !
     do i = 1, nnoff
+        if (.not.lxfem) then
+            call tbajvk(result, nbprup, 'NOEUD', zk8(iadnoe-1+i), livk)
+        endif
         call tbajvi(result, nbprup, 'NUM_PT', i, livi)
-        call tbajvr(result, nbprup, 'ABSC_CURV', zr(iadabs-1+i), livr)
+        call tbajvr(result, nbprup, 'ABSC_CURV', zr(coor-1+4*(i-1)+4), livr)
+        call tbajvr(result, nbprup, 'COOR_X', zr(coor-1+4*(i-1)+1), livr)
+        call tbajvr(result, nbprup, 'COOR_Y', zr(coor-1+4*(i-1)+2), livr)
+        call tbajvr(result, nbprup, 'COOR_Z', zr(coor-1+4*(i-1)+3), livr)
         call tbajvr(result, nbprup, 'K1', zr(iadgks-1+6*(i-1)+2), livr)
         call tbajvr(result, nbprup, 'K2', zr(iadgks-1+6*(i-1)+3), livr)
         call tbajvr(result, nbprup, 'K3', zr(iadgks-1+6*(i-1)+4), livr)

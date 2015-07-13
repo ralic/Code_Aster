@@ -19,8 +19,8 @@
 !
 interface
     subroutine gcour3(resu, noma, coorn, lnoff, trav1,&
-                      trav2, trav3, chfond, connex, grlt, thlagr,&
-                      thlag2, basfon, nbre, milieu, pair,&
+                      trav2, trav3, chfond, connex, grlt, liss, &
+                      basfon, nbre, milieu, pair,&
                       ndimte, typdis, nomfis)
         character(len=8) :: resu
         character(len=8) :: noma
@@ -32,8 +32,7 @@ interface
         character(len=24) :: chfond
         aster_logical :: connex
         character(len=19) :: grlt
-        aster_logical :: thlagr
-        aster_logical :: thlag2
+        character(len=24) :: liss
         character(len=24) :: basfon
         integer :: nbre
         aster_logical :: milieu

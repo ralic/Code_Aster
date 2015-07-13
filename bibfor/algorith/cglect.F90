@@ -18,6 +18,7 @@ subroutine cglect(resu, modele, ndim, option, cas,&
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/utmess.h"
     integer :: ndim, lnoff, ndeg
     character(len=8) :: resu, modele, typfis, nomfis, conf
     character(len=16) :: option, cas, typdis
@@ -63,6 +64,8 @@ subroutine cglect(resu, modele, ndim, option, cas,&
 !
 !     LNOFF  : NOMBRE DE NOEUDS (OU POINTS) DU FOND DE FISSURE
 !     LISS   : TYPE DE LISSAGE (NOM UNIQUE CONTRACTE)
+!     TYPDIS : TYPE DE DISCONTINUITE SI FISSURE XFEM 
+!              'FISSURE' OU 'COHESIF'
 ! ======================================================================
 !
     integer :: ier, nexci
@@ -91,7 +94,12 @@ subroutine cglect(resu, modele, ndim, option, cas,&
     call dismoi('DIM_GEOM', modele, 'MODELE', repi=ndim)
 !
 !     VERIFICATION DE LA COMPATIBILITE ENTRE NDIM ET OPTION
-    call cgvedo(ndim, option, typdis)
+    call cgvedo(ndim, option)
+!
+!   CALCUL COHESIF OUVERT EN 3D UNIQUEMENT POUR L INSTANT
+    if(ndim.eq.2.and.typdis.eq.'COHESIF') then
+        call utmess('F', 'RUPTURE2_5')
+    endif
 !
 !     DETERMINATION DU CAS : 2D, 3D LOCAL OU 3D GLOBAL
     call cgveca(ndim, option, cas)

@@ -20,10 +20,10 @@
 interface
     subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
                       symech, chfond, nnoff, basloc, courb, &
-                      ndeg, thlagr, glagr, thlag2, pair, &
+                      ndeg, liss, pair, &
                       ndimte, nbprup, noprup, fiss, lonvec, &
                       ivec, resuco, lmelas, lncas, lord, &
-                      milieu, connex, lischa)
+                      milieu, connex, lischa, coor, iadnoe)
         integer :: lonvec
         character(len=8) :: latabl
         character(len=8) :: modele
@@ -36,9 +36,7 @@ interface
         character(len=24) :: basloc
         character(len=24) :: courb
         integer :: ndeg
-        aster_logical :: thlagr
-        aster_logical :: glagr
-        aster_logical :: thlag2
+        character(len=24) :: liss
         aster_logical :: pair
         integer :: ndimte
         integer :: nbprup
@@ -51,6 +49,8 @@ interface
         aster_logical :: lord(lonvec)
         aster_logical :: milieu
         aster_logical :: connex
-        character(len=19) :: lischa
+        character(len=19) :: lischa              
+        integer :: coor
+        integer :: iadnoe
     end subroutine mmaxkl
 end interface

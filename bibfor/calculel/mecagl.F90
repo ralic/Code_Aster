@@ -1,9 +1,9 @@
 subroutine mecagl(option, result, modele, depla, thetai,&
                   mate, compor, lischa, symech, chfond,&
-                  nnoff, iord, ndeg, thlagr, glagr,&
-                  thlag2, milieu, ndimte, pair, extim,&
+                  nnoff, iord, ndeg, liss,&
+                  milieu, ndimte, pair, extim,&
                   time, nbprup, noprup, chvite, chacce,&
-                  lmelas, nomcas, kcalc, fonoeu, lincr)
+                  lmelas, nomcas, kcalc, fonoeu, lincr, coor)
 ! aslint: disable=W1504
     implicit none
 !
@@ -45,7 +45,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    integer :: iord, nbprup, ndimte
+    integer :: iord, nbprup, ndimte, coor
 !
     real(kind=8) :: time
 !
@@ -54,9 +54,9 @@ subroutine mecagl(option, result, modele, depla, thetai,&
     character(len=8) :: result, symech, kcalc
     character(len=16) :: option, noprup(*), nomcas
     character(len=24) :: depla, chfond, mate, compor
-    character(len=24) :: chvite, chacce, fonoeu
+    character(len=24) :: chvite, chacce, fonoeu, liss
 !
-    aster_logical :: extim, thlagr, glagr, milieu, pair, thlag2, lmelas, lincr
+    aster_logical :: extim, milieu, pair, lmelas, lincr
 ! ......................................................................
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -93,9 +93,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
 !  IN    NNOFF  --> NOMBRE DE NOEUDS DU FOND DE FISSURE
 !  IN    TIME   --> INSTANT DE CALCUL
 !  IN    IORD   --> NUMERO D'ORDRE DE LA SD
-!  IN    THLAGR --> VRAI SI LISSAGE THETA_LAGRANGE
-!  IN    THLAG2 --> VRAI SI LISSAGE THETA_LAGRANGE_REGU
-!  IN    GLAGR  --> VRAI SI LISSAGE G_LAGRANGE
+!  IN    LISS   --> TYPE DE LISSAGE
 !  IN    NDEG   --> DEGRE DU POLYNOME DE LEGENDRE
 !  IN    LMELAS --> TRUE SI LE TYPE DE LA SD RESULTAT EST MULT_ELAS
 !  IN    NOMCAS --> NOM DU CAS DE CHARGE SI LMELAS
@@ -104,18 +102,20 @@ subroutine mecagl(option, result, modele, depla, thetai,&
 !                   = 'OUI' : ON RECALCULE LES CHAMPS DE CONTRAINTES
 !                             ET D'ENERGIE
 !  IN    FONOEU --> NOM DES NOEUDS DE FOND DE FISSURE
+!  IN    COOR   --> COORDONNEES ET ABSCISSES CURVILIGNES DES NOEUDS
+!                   DU FOND DE FISSURE (IADFIS DANS OP0100)
 ! ......................................................................
 !
     integer :: nbmxpa
     parameter (nbmxpa = 20)
 !
-    integer :: i, ibid, iadrg, iret, jresu, nchin
+    integer :: i, ibid, iadrg, iret, jresu, nchin, ibid2
     integer :: nnoff, num, incr, nres, nsig, ino1, ino2, inga
     integer :: ndeg, livi(nbmxpa), numfon
     integer :: iadrno, iadgi, iadabs, ifm, niv, ifon
     real(kind=8) :: gthi(1), livr(nbmxpa), xl
     complex(kind=8) :: livc(nbmxpa)
-    aster_logical :: fonc, lxfem
+    aster_logical :: fonc, lxfem, ltheta
     character(len=2) :: codret
     character(len=8) :: resu, fiss
     character(len=8) :: lpain(31), lpaout(1)
@@ -149,6 +149,10 @@ subroutine mecagl(option, result, modele, depla, thetai,&
     call getvid('THETA', 'FISSURE', iocc=1, scal=fiss, nbret=ibid)
     lxfem = .false.
     if (ibid .ne. 0) lxfem = .true.
+!   cas THETA
+    call getvid('THETA', 'THETA', iocc=1, scal=fiss, nbret=ibid2)
+    ltheta = .false.
+    if (ibid2 .ne. 0) ltheta = .true.    
 !
 !- RECUPERATION DU COMPORTEMENT
 !
@@ -232,9 +236,9 @@ subroutine mecagl(option, result, modele, depla, thetai,&
 !
 !- CALCUL DES G(THETA_I) AVEC I=1,NDIMTE  NDIMTE = NNOFF  SI TH-LAGRANGE
 !                                         NDIMTE = NDEG+1 SI TH-LEGENDRE
-    if (thlag2) then
+    if (liss .eq. 'LAGRANGE_REGU') then
         ndimte = ndimte
-    else if (thlagr) then
+    else if ((liss.eq.'LAGRANGE').or.(liss.eq.'LAGRANGE_NO_NO').or.(liss.eq.'MIXTE')) then
         ndimte = nnoff
     else
         ndimte = ndeg + 1
@@ -399,7 +403,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
 !- QUATRIEME METHODE: G_LAGRANGE_REGU ET THETA_LAGRANGE_REGU
 !
     AS_ALLOCATE(vr=valg_s, size=nnoff)
-    if (glagr .or. thlag2) then
+    if ((liss.eq.'LAGRANGE').or.(liss.eq.'LAGRANGE_NO_NO').or.(liss.eq.'LAGRANGE_REGU')) then
         call wkvect('&&MECAGL.VALGI', 'V V R8', nnoff, iadgi)
     else
         call wkvect('&&MECAGL.VALGI', 'V V R8', ndeg+1, iadgi)
@@ -416,18 +420,18 @@ subroutine mecagl(option, result, modele, depla, thetai,&
 ! NOM DES NOEUDS DU FOND
     if (.not.lxfem) call jeveuo(fonoeu, 'L', iadrno)
 !
-    if (thlag2) then
+    if (liss .eq. 'LAGRANGE_REGU') then
         num = 5
         call gmeth4(nnoff, ndimte, fonoeu, zr(iadrg), milieu,&
                     pair, valg_s, objcur, zr(iadgi), lxfem)
-    else if ((.not.glagr) .and. (.not.thlagr)) then
+    else if ((liss.ne.'LAGRANGE').and.(liss.ne.'LAGRANGE_NO_NO').and.(liss.ne.'MIXTE')) then
         num = 1
         call gmeth1(nnoff, ndeg, zr(iadrg), valg_s, objcur,&
                     xl, zr( iadgi))
-    else if (thlagr) then
+    else if ((liss.eq.'LAGRANGE').or.(liss.eq.'LAGRANGE_NO_NO').or.(liss.eq.'MIXTE')) then
         normff = zk24(jresu+nnoff+1-1)
         normff(20:24) = '.VALE'
-        if (.not.glagr) then
+        if ((liss.ne.'LAGRANGE').and.(liss.ne.'LAGRANGE_NO_NO')) then
             num = 2
             call gmeth2(modele, nnoff, ndeg, normff, fonoeu,&
                         zr(iadrg), valg_s, objcur, xl, zr(iadgi))
@@ -456,7 +460,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
 !
     call getvis('THETA', 'NUME_FOND', iocc=1, scal=numfon, nbret=ibid)
 !
-    if (lxfem) then
+    if (.not.ltheta) then
         call tbajvi(result, nbprup, 'NUME_FOND', numfon, livi)
     endif
 !
@@ -469,12 +473,16 @@ subroutine mecagl(option, result, modele, depla, thetai,&
     endif
 !
     do i = 1, nnoff
-        if (lxfem) then
+        if (.not.ltheta) then
+            if (.not.lxfem) then
+                call tbajvk(result, nbprup, 'NOEUD', zk8(iadrno+i-1), livk)
+            endif
             call tbajvi(result, nbprup, 'NUM_PT', i, livi)
-        else
-            call tbajvk(result, nbprup, 'NOEUD', zk8(iadrno+i-1), livk)
+            call tbajvr(result, nbprup, 'ABSC_CURV', zr(coor-1+4*(i-1)+4), livr)
+            call tbajvr(result, nbprup, 'COOR_X', zr(coor-1+4*(i-1)+1), livr)
+            call tbajvr(result, nbprup, 'COOR_Y', zr(coor-1+4*(i-1)+2), livr)
+            call tbajvr(result, nbprup, 'COOR_Z', zr(coor-1+4*(i-1)+3), livr)
         endif
-        call tbajvr(result, nbprup, 'ABSC_CURV', zr(iadabs-1+i), livr)
         call tbajvr(result, nbprup, 'G', valg_s(i), livr)
         call tbajli(result, nbprup, noprup, livi, livr,&
                     livc, livk, 0)
