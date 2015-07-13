@@ -16,6 +16,8 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/verift.h"
 #include "asterfort/zerop3.h"
+#include "asterfort/get_meta_type.h"
+#include "asterfort/get_meta_phasis.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -82,8 +84,8 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jprol, jvale, nbval(5), maxval, nz
-    integer :: i, j, k, l, mode, ire2, iret2
+    integer :: jprol, jvale, nbval(5), maxval, nb_phasis, meta_type
+    integer :: i, j, k, l, mode, iret2
     integer :: ind(3, 3), nbr
     real(kind=8) :: phase(5), phasm(5), zalpha
     real(kind=8) :: temp, dt, epsthe(3)
@@ -104,12 +106,12 @@ implicit none
     real(kind=8) :: coeff1, coeff2, coeff3, coeff4, coeff5, coeff6, coeff7
     real(kind=8) :: coeff8, coeff9, dv, rb, n0(5)
     real(kind=8) :: mat0(3, 3), mat1(3, 3), mat2(6, 3, 3), mat3(3, 3)
-    real(kind=8) :: rbid, precr
+    real(kind=8) :: rbid
     real(kind=8) :: valres(20), val(1)
-    character(len=1) :: c1
+    character(len=1) :: poum
     integer :: icodre(20), test
     character(len=16) :: nomres(20)
-    character(len=8) :: nomcle(5), acier(4)
+    character(len=8) :: nomcle(5)
     real(kind=8), parameter :: kr(6) = (/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/)
     real(kind=8), parameter :: pdtsca(6) = (/1.d0,1.d0,1.d0,2.d0,2.d0,2.d0/)
     aster_logical :: resi, rigi
@@ -117,7 +119,6 @@ implicit none
     data ind   /1,4,5,&
                 4,2,6,&
                 5,6,3/
-    data acier /'PFERRITE','PPERLITE','PBAINITE','PMARTENS'/
 !
 ! SIGNIFICATION DES VARIABLES LOCALES
 !
@@ -132,63 +133,42 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    vip(1:8)            = 0.d0
     do i = 1, 2*ndim
         sigp(i) = 0.d0
-    end do 
+    end do
+    vip(1:8)            = 0.d0
     dsigdf(1:6,1:3,1:3) = 0.d0
     iret                = 0
+    resi                = option(1:4).eq.'RAPH' .or. option(1:4).eq.'FULL'
+    rigi                = option(1:4).eq.'RIGI' .or. option(1:4).eq.'FULL'
+    dt                  = instap-instam
 !
-    resi = option(1:4).eq.'RAPH' .or. option(1:4).eq.'FULL'
-    rigi = option(1:4).eq.'RIGI' .or. option(1:4).eq.'FULL'
+! - Get metallurgy type
 !
-    dt=instap-instam
+    call get_meta_type(meta_type, nb_phasis)
+    ASSERT(meta_type.eq.1)
+    ASSERT(nb_phasis.eq.5)
 !
-! 1.1 - NOMBRE DE PHASES
-!
-    nz=5
-!
-! 1.2 - RECUPERATION DES PHASES
+! - Get phasis
 !
     if (resi) then
-!
-        c1='+'
-        do 5 k = 1, nz-1
-            call rcvarc(' ', acier(k), '+', fami, kpg,&
-                        ksp, phase(k), ire2)
-            if (ire2 .eq. 1) phase(k)=0.d0
-            call rcvarc(' ', acier(k), '-', fami, kpg,&
-                        ksp, phasm(k), ire2)
-            if (ire2 .eq. 1) phasm(k)=0.d0
-  5     continue
-!
+        poum = '+'
+        call get_meta_phasis(fami     , '+'  , kpg   , ksp , meta_type,&
+                             nb_phasis, phase, zcold_ = zalpha)
+        call get_meta_phasis(fami     , '-'  , kpg   , ksp , meta_type,&
+                             nb_phasis, phasm)
     else
-!
-        c1='-'
-        do 10 k = 1, nz-1
-            call rcvarc(' ', acier(k), '-', fami, kpg,&
-                        ksp, phase(k), ire2)
-            if (ire2 .eq. 1) phase(k)=0.d0
- 10     continue
-!
+        poum = '-'
+        call get_meta_phasis(fami     , '-'  , kpg   , ksp , meta_type,&
+                             nb_phasis, phase, zcold_ = zalpha)
     endif
 !
-    call verift(fami, kpg, ksp, c1, imat,&
+! - Compute thermic strain
+!
+    call verift(fami, kpg, ksp, poum, imat,&
                 vepsth=epsthe)
-    call rcvarc(' ', 'TEMP', c1, fami, kpg,&
+    call rcvarc(' ', 'TEMP', poum, fami, kpg,&
                 ksp, temp, iret2)
-    zalpha=phase(1)+phase(2)+phase(3)+phase(4)
-    phase(nz)=1.d0-zalpha
-!
-! 1.3 - TEST SUR LES PHASES
-!
-    precr=r8prem()
-    do k = 1, nz
-        if (phase(k) .le. precr) phase(k)=0.d0
-        if (phase(k) .ge. 1.d0) phase(k)=1.d0
-    end do
-    if (zalpha .le. precr) zalpha=0.d0
-    if (zalpha .ge. 1.d0) zalpha=1.d0
 !
 ! ****************************************
 ! 2 - RECUPERATION DES CARACTERISTIQUES
@@ -208,11 +188,11 @@ implicit none
                 6, nomres, valres, icodre, 2)
     mum=valres(1)/(2.d0*(1.d0+valres(2)))
 !
-    call rcvalb(fami, kpg, ksp, c1, imat,&
+    call rcvalb(fami, kpg, ksp, poum, imat,&
                 ' ', 'ELAS_META', 0, ' ', [0.d0],&
                 6, nomres, valres, icodre, 2)
-    epsth = phase(nz)*(epsthe(1)-(1.d0-valres(5))*valres(6)) + zalpha*(epsthe(2)+valres(5)*valres&
-            &(6))
+    epsth = phase(nb_phasis)*(epsthe(1)-(1.d0-valres(5))*valres(6)) +&
+            zalpha*(epsthe(2)+valres(5)*valres(6))
     e=valres(1)
     nu=valres(2)
     mu=e/(2.d0*(1.d0+nu))
@@ -246,11 +226,11 @@ implicit none
             fmel = zalpha
         else
             fmel = val(1)
-        endif 
+        endif
 !
 ! 2.3 - LIMITE D ELASTICITE
 !
-        call rcvalb(fami, kpg, ksp, c1, imat,&
+        call rcvalb(fami, kpg, ksp, poum, imat,&
                     ' ', 'ELAS_META', 0, ' ', [0.d0],&
                     5, nomres, sy, icodre, 2)
         if (resi) then
@@ -271,7 +251,7 @@ implicit none
                 nomres(6) ='F2_C_THETA'
                 nomres(7) ='F3_C_THETA'
                 nomres(8) ='F4_C_THETA'
-                call rcvalb(fami, kpg, ksp, c1, imat,&
+                call rcvalb(fami, kpg, ksp, poum, imat,&
                             ' ', 'META_RE', 0, '  ', [0.d0],&
                             8, nomres, theta, icodre, 2)
             else
@@ -303,23 +283,23 @@ implicit none
                 nomres(18) = 'F3_M'
                 nomres(19) = 'F4_M'
                 nomres(20) = 'C_M'
-                call rcvalb(fami, kpg, ksp, c1, imat,&
+                call rcvalb(fami, kpg, ksp, poum, imat,&
                             ' ', 'META_VISC', 0, ' ', [0.d0],&
                             10, nomres, valres, icodre, 2)
-                call rcvalb(fami, kpg, ksp, c1, imat,&
+                call rcvalb(fami, kpg, ksp, poum, imat,&
                             ' ', 'META_VISC', 0, ' ', [0.d0],&
                             10, nomres(11), valres(11), icodre(11), 0)
-                do k = 1, nz
+                do k = 1, nb_phasis
                     eta(k) = valres(k)
-                    n(k) = valres(nz+k)
+                    n(k) = valres(nb_phasis+k)
                     unsurn(k)=1/n(k)
-                    if (icodre(2*nz+k) .ne. 0) valres(2*nz+k)=0.d0
-                    c(k) =valres(2*nz+k)
-                    if (icodre(3*nz+k) .ne. 0) valres(3*nz+k)=20.d0
-                    m(k) = valres(3*nz+k)
+                    if (icodre(2*nb_phasis+k) .ne. 0) valres(2*nb_phasis+k)=0.d0
+                    c(k) =valres(2*nb_phasis+k)
+                    if (icodre(3*nb_phasis+k) .ne. 0) valres(3*nb_phasis+k)=20.d0
+                    m(k) = valres(3*nb_phasis+k)
                 end do
             else
-                do k = 1, nz
+                do k = 1, nb_phasis
                     eta(k) = 0.d0
                     n(k)= 20.d0
                     unsurn(k)= 1.d0
@@ -330,7 +310,7 @@ implicit none
 !
 ! 2.6 - CALCUL DE VIM+DG-DS
 !
-            do k = 1, nz-1
+            do k = 1, nb_phasis-1
                 dz(k)= phase(k)-phasm(k)
                 if (dz(k) .ge. 0.d0) then
                     dz1(k)=dz(k)
@@ -340,21 +320,21 @@ implicit none
                     dz2(k)=-dz(k)
                 endif
             end do
-            if (phase(nz) .gt. 0.d0) then
+            if (phase(nb_phasis) .gt. 0.d0) then
                 dvin=0.d0
-                do k = 1, nz-1
-                    dvin=dvin+dz2(k)*(theta(4+k)*vim(k)-vim(nz))/&
-                    phase(nz)
+                do k = 1, nb_phasis-1
+                    dvin=dvin+dz2(k)*(theta(4+k)*vim(k)-vim(nb_phasis))/&
+                    phase(nb_phasis)
                 end do
-                vi(nz)=vim(nz)+dvin
-                vimoy=phase(nz)*vi(nz)
+                vi(nb_phasis)=vim(nb_phasis)+dvin
+                vimoy=phase(nb_phasis)*vi(nb_phasis)
             else
-                vi(nz) = 0.d0
+                vi(nb_phasis) = 0.d0
                 vimoy=0.d0
             endif
-            do k = 1, nz-1
+            do k = 1, nb_phasis-1
                 if (phase(k) .gt. 0.d0) then
-                    dvin=dz1(k)*(theta(k)*vim(nz)-vim(k))/phase(k)
+                    dvin=dz1(k)*(theta(k)*vim(nb_phasis)-vim(k))/phase(k)
                     vi(k)=vim(k)+dvin
                     vimoy=vimoy+phase(k)*vi(k)
                 else
@@ -366,7 +346,7 @@ implicit none
 !
             cmoy=0.d0
             mmoy=0.d0
-            do k = 1, nz
+            do k = 1, nb_phasis
                 cmoy=cmoy+phase(k)*c(k)
                 mmoy=mmoy+phase(k)*m(k)
             end do
@@ -376,7 +356,7 @@ implicit none
             else
                 ds= dt*(cr**mmoy)
             endif
-            do k = 1, nz
+            do k = 1, nb_phasis
                 if (phase(k) .gt. 0.d0) then
                     vi(k)=vi(k)-ds
                     if (vi(k) .le. 0.d0) vi(k)=0.d0
@@ -400,10 +380,10 @@ implicit none
                 nomres(6) = 'F2_D_F_META'
                 nomres(7) = 'F3_D_F_META'
                 nomres(8) = 'F4_D_F_META'
-                call rcvalb(fami, kpg, ksp, c1, imat,&
+                call rcvalb(fami, kpg, ksp, poum, imat,&
                             ' ', 'META_PT', 0, ' ', [0.d0],&
                             4, nomres, valres, icodre, 2)
-                do k = 1, nz-1
+                do k = 1, nb_phasis-1
                     kpt (k) = valres(k)
                     zvarim = phasm(k)
                     zvarip = phase(k)
@@ -419,7 +399,7 @@ implicit none
             endif
         else
             trans=0.d0
-            do k = 1, nz
+            do k = 1, nb_phasis
                 vi(k)=vim(k)
             end do
         endif
@@ -432,7 +412,7 @@ implicit none
             nomres(3) ='F3_D_SIGM_EPSI'
             nomres(4) ='F4_D_SIGM_EPSI'
             nomres(5) ='C_D_SIGM_EPSI'
-            call rcvalb(fami, kpg, ksp, c1, imat,&
+            call rcvalb(fami, kpg, ksp, poum, imat,&
                         ' ', 'META_ECRO_LINE', 0, ' ', [0.d0],&
                         5, nomres, h, icodre, 2)
             h(1)=h(1)*e/(e-h(1))
@@ -440,7 +420,7 @@ implicit none
             h(3)=h(3)*e/(e-h(3))
             h(4)=h(4)*e/(e-h(4))
             h(5)=h(5)*e/(e-h(5))
-            do k = 1, nz
+            do k = 1, nb_phasis
                 r(k) = h(k)*vi(k)+sy(k)
             end do
         endif
@@ -453,7 +433,7 @@ implicit none
             if (iret2 .eq. 1) then
                 call utmess('F', 'CALCULEL_31')
             endif
-            do k = 1, nz
+            do k = 1, nb_phasis
                 call rctrac(imat, 2, nomcle(k), temp, jprol,&
                             jvale, nbval( k), rbid)
                 call rcfonc('V', 2, jprol, jvale, nbval(k),&
@@ -471,8 +451,8 @@ implicit none
             rmoy = 0.d0
             hmoy = 0.d0
         endif
-        rmoy =(1.d0-fmel)*r(nz)+fmel*rmoy
-        hmoy = (1.d0-fmel)*h(nz)+fmel*hmoy
+        rmoy =(1.d0-fmel)*r(nb_phasis)+fmel*rmoy
+        hmoy = (1.d0-fmel)*h(nb_phasis)+fmel*hmoy
     else
         trans=0.d0
         plasti=0.d0
@@ -585,7 +565,7 @@ implicit none
         else
             vip(6)=1.d0
             mutild=2.d0*mu*trbel/3.d0
-            call nzcalc(crit, phase, nz, fmel, seuil,&
+            call nzcalc(crit, phase, nb_phasis, fmel, seuil,&
                         dt, trans, hmoy, mutild, eta,&
                         unsurn, dp, iret)
             if (iret .eq. 1) goto 999
@@ -597,7 +577,7 @@ implicit none
                 'META_V_INL') then
                 do j = 1, maxval
                     test=0
-                    do k = 1, nz
+                    do k = 1, nb_phasis
                         if (phase(k) .gt. 0.d0) then
                             vip(k)=vi(k)+dp
                             hplus(k)=h(k)
@@ -609,14 +589,14 @@ implicit none
                             call rcfonc('V', 2, jprol, jvale, nbval(k),&
                                         p = vip(k), rp = r(k), rprim = h(k))
                             r(k)=r(k)+sy(k)
-                            if (abs(h(k)-hplus(k)) .gt. precr) test= 1
+                            if (abs(h(k)-hplus(k)) .gt. r8prem()) test= 1
                         endif
                     end do
                     if (test .eq. 0) goto 600
                     hmoy=0.d0
                     rmoy=0.d0
                     if (zalpha .gt. 0.d0) then
-                        do k = 1, nz-1
+                        do k = 1, nb_phasis-1
                             if (phase(k) .gt. 0.d0) then
                                 rmoy = rmoy + phase(k)*(r(k)-h(k)* dp)
                                 hmoy = hmoy + phase(k)*h(k)
@@ -625,12 +605,12 @@ implicit none
                         rmoy=fmel*rmoy/zalpha
                         hmoy=fmel*hmoy/zalpha
                     endif
-                    if (phase(nz) .gt. 0.d0) then
-                        rmoy = (1.d0-fmel)*(r(nz)-h(nz)*dp)+rmoy
-                        hmoy = (1.d0-fmel)*h(nz)+hmoy
+                    if (phase(nb_phasis) .gt. 0.d0) then
+                        rmoy = (1.d0-fmel)*(r(nb_phasis)-h(nb_phasis)*dp)+rmoy
+                        hmoy = (1.d0-fmel)*h(nb_phasis)+hmoy
                     endif
                     seuil=eqtel-(1.d0+mu*trans*trbel)*rmoy
-                    call nzcalc(crit, phase, nz, fmel, seuil,&
+                    call nzcalc(crit, phase, nb_phasis, fmel, seuil,&
                                 dt, trans, hmoy, mutild, eta,&
                                 unsurn, dp, iret)
                     if (iret .eq. 1) goto 999
@@ -658,7 +638,7 @@ implicit none
 !
 ! 4.2.3 - CALCUL DE VIP ET RMOY
 !
-        do k = 1, nz
+        do k = 1, nb_phasis
             if (phase(k) .gt. 0.d0) then
                 vip(k)=vi(k)+dp
             else
@@ -666,16 +646,16 @@ implicit none
             endif
         end do
         vip(7)=0.d0
-        if (phase(nz) .gt. 0.d0) then
+        if (phase(nb_phasis) .gt. 0.d0) then
             if (compor(1)(1:9) .eq. 'META_P_IL' .or. compor(1)(1:9) .eq. 'META_V_IL') then
-                vip(7)=vip(7)+(1-fmel)*h(nz)*vip(nz)
+                vip(7)=vip(7)+(1-fmel)*h(nb_phasis)*vip(nb_phasis)
             endif
             if (compor(1)(1:10) .eq. 'META_P_INL' .or. compor(1)(1:10) .eq.'META_V_INL') then
-                vip(7)=vip(7)+(1-fmel)*(r(nz)-sy(nz))
+                vip(7)=vip(7)+(1-fmel)*(r(nb_phasis)-sy(nb_phasis))
             endif
         endif
         if (zalpha .gt. 0.d0) then
-            do k = 1, nz-1
+            do k = 1, nb_phasis-1
                 if (compor(1)(1:9) .eq. 'META_P_IL' .or. compor(1)(1: 9) .eq.'META_V_IL') then
                     vip(7)=vip(7)+fmel*phase(k)*h(k)*vip(k)/zalpha
                 endif
@@ -776,12 +756,13 @@ implicit none
             if (compor(1)(1:6) .eq. 'META_V') mode=1
             if (mode .eq. 1) then
                 if (dp .gt. 0.d0) then
-                    do i = 1, nz
+                    do i = 1, nb_phasis
                         n0(i) = (1-n(i))/n(i)
                     end do
-                    dv = (1-fmel)*phase(nz)*(eta(nz)/n(nz)/dt) * ((dp/dt)**n0(nz))
+                    dv = (1-fmel)*phase(nb_phasis)*(eta(nb_phasis)/n(nb_phasis)/dt) *&
+                         ((dp/dt)**n0(nb_phasis))
                     if (zalpha .gt. 0.d0) then
-                        do i = 1, nz-1
+                        do i = 1, nb_phasis-1
                             if (phase(i) .gt. 0.d0) dv = dv+fmel*&
                                                          (phase(i)/zalpha)*(eta(i)/n(i)/dt)*&
                                                          ((dp/dt)**n0(i))

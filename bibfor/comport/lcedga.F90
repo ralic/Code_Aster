@@ -7,6 +7,7 @@ implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
+#include "asterfort/assert.h"
 #include "asterfort/edgani.h"
 #include "asterfort/edgequ.h"
 #include "asterfort/edgini.h"
@@ -15,6 +16,7 @@ implicit none
 #include "asterfort/mgauss.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/verift.h"
+#include "asterfort/get_meta_type.h"
 #include "asterfort/get_meta_phasis.h"
 !
 ! ======================================================================
@@ -89,12 +91,12 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, j, k, nz, ndimsi
+    integer :: i, j, k, nb_phasis, ndimsi, meta_type
     integer :: ire2
-    integer :: iter, itemax, nb_phasis, meta_type
+    integer :: iter, itemax
     real(kind=8) :: tm, tp, tref, temp, dt
-    real(kind=8) :: phase(3), phasm(3), zalpha
-    real(kind=8) :: zero, prec, rbid
+    real(kind=8) :: phase(5), phasm(5), zalpha
+    real(kind=8) :: zero, prec, rbid, tole_bound
     real(kind=8) :: mum, mu, troiskm, troisk, anic(6, 6)
     real(kind=8) :: ani(6, 6)
     real(kind=8) :: m(3), n(3), gamma(3), depsth
@@ -107,7 +109,7 @@ implicit none
     real(kind=8) :: y(2*ndim+1), g(2*ndim+1), maxg, dgdy(2*ndim+1, 2*ndim+1)
     real(kind=8) :: vect(2*ndim), mat(2*ndim+1, 2*ndim+1)
     real(kind=8) :: r1(2*ndim+1, 2*ndim), h1(2*ndim, 2*ndim)
-    character(len=1) :: c1
+    character(len=1) :: poum
     aster_logical :: resi, rigi
     logical :: zcylin
     real(kind=8), parameter :: kron(6) = (/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/)
@@ -127,18 +129,12 @@ implicit none
     vip(1:2)        = 0.d0
     dsidep(1:6,1:6) = 0.d0
     iret            = 0
-    resi = option(1:4).eq.'RAPH' .or. option(1:4).eq.'FULL'
-    rigi = option(1:4).eq.'RIGI' .or. option(1:4).eq.'FULL'
-!
-    if (ndim .eq. 2) then
-        ndimsi=4
-    else
-        ndimsi=6
-    endif
-!
-    zero = 100.d0*r8prem()
-    dt   = instap-instam
-    iret = 0
+    ndimsi          = 2*ndim
+    resi            = option(1:4).eq.'RAPH' .or. option(1:4).eq.'FULL'
+    rigi            = option(1:4).eq.'RIGI' .or. option(1:4).eq.'FULL'
+    dt              = instap-instam
+    zero            = 100.d0*r8prem()
+    tole_bound      = 100.d0*r8prem()
 !
 ! - Get temperatures
 !
@@ -150,32 +146,29 @@ implicit none
                 ksp, tp, ire2)
     if (resi) then
         temp=tp
-        c1='+'
+        poum='+'
     else
         temp=tm
-        c1='-'
+        poum='-'
     endif
 !
-! - Get metallurgical phasis
+! - Get metallurgy type
 !
-    meta_type = 2
-    nz        = 3
-    nb_phasis = 2
+    call get_meta_type(meta_type, nb_phasis)
+    ASSERT(meta_type.eq.2)
+    ASSERT(nb_phasis.eq.3)
+!
+! - Get phasis
+!
     if (resi) then
         call get_meta_phasis(fami     , '+'  , kpg   , ksp , meta_type,&
-                             nb_phasis, phase, zcold_ = zalpha, zhot_ = phase(nz))
+                             nb_phasis, phase, zcold_ = zalpha, tole_bound_ = tole_bound)
         call get_meta_phasis(fami     , '-'  , kpg   , ksp , meta_type,&
                              nb_phasis, phasm)
     else
         call get_meta_phasis(fami     , '-'  , kpg   , ksp , meta_type,&
-                             nb_phasis, phase, zcold_ = zalpha, zhot_ = phase(nz))
+                             nb_phasis, phase, zcold_ = zalpha, tole_bound_ = tole_bound)
     endif
-    do k = 1, nz
-        if (phase(k) .le. zero) phase(k)=0.d0
-        if (phase(k) .ge. 1.d0) phase(k)=1.d0
-    end do
-    if (zalpha .le. zero) zalpha=0.d0
-    if (zalpha .ge. 1.d0) zalpha=1.d0
 !
 ! **************************************
 ! 2 - RECUPERATION DES CARACTERISTIQUES
@@ -184,7 +177,7 @@ implicit none
 ! REPERE (R - T - Z) DONC IL FAUT FAIRE UN CHANGEMENT DE REPERE
 ! EN AXI C EST SIMPLE CAR IL SUFFIT D INVERSER LES TERMES 2 ET 3
 !
-    call edgmat(fami   , kpg   , ksp   , imat  , c1 ,&
+    call edgmat(fami   , kpg   , ksp   , imat  , poum ,&
                 zalpha , temp  , dt    , mum   , mu ,&
                 troiskm, troisk, anic  , m     , n  ,&
                 gamma  , zcylin)
@@ -227,7 +220,7 @@ implicit none
 !
         call verift(fami, kpg, ksp, 'T', imat,&
                     vepsth=epsthe)
-        depsth = phase(nz)*epsthe(1) + zalpha*epsthe(2)
+        depsth = phase(nb_phasis)*epsthe(1) + zalpha*epsthe(2)
         trdeps = (deps(1)+deps(2)+deps(3))/3.d0
         trsigm = (sigm(1)+sigm(2)+sigm(3))/3.d0
         trsigp = trsigm*troisk/troiskm + troisk*(trdeps-depsth)

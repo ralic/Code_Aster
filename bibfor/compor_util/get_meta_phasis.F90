@@ -97,17 +97,6 @@ implicit none
         endif
     end do
 !
-! - Project phasis proportion on boundary
-!
-    do i_phasis = 1, nb_phasis
-        if (phasis(i_phasis) .le. tole_bound) then
-            phasis(i_phasis) = 0.d0
-        endif
-        if (phasis(i_phasis) .ge. 1.d0) then
-            phasis(i_phasis) = 1.d0
-        endif
-    end do
-!
 ! - Sum of cold phasis
 !
     zcold = 0.d0
@@ -131,6 +120,17 @@ implicit none
     if (zhot .ge. 1.d0) then
         zhot = 1.d0
     endif
+!
+! - Project phasis proportion on boundary
+!
+    do i_phasis = 1, nb_phasis
+        if (phasis(i_phasis) .le. tole_bound) then
+            phasis(i_phasis) = 0.d0
+        endif
+        if (phasis(i_phasis) .ge. 1.d0) then
+            phasis(i_phasis) = 1.d0
+        endif
+    end do
 !
     if (present(phasis_)) then
         phasis_(1:nb_phasis) = phasis(1:nb_phasis)
