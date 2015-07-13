@@ -245,14 +245,12 @@ implicit none
             call jeexin(lchin, iret)
             if (iret .ne. 0) then
                 if (load_apply(1:4) .eq. 'SUIV') then
-                    call utmess('F', 'CHARGES_23', sk=load_name)
-!
+                    info_type = 'DIRI_SUIV'
                 else if (load_apply.eq.'FIXE_PIL') then
                     call dismoi('PARA_INST', lchin(1:19), 'CARTE', repk=parcha)
                     if (parcha(1:3) .eq. 'OUI') then
                         call utmess('F', 'CHARGES_28', sk=load_name)
                     endif
-!
                     if (load_type(5:7) .eq. '_FT') then
                         call utmess('F', 'CHARGES_28', sk=load_name)
                     else if (load_type(5:7).eq.'_FO') then

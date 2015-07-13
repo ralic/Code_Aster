@@ -141,7 +141,7 @@ implicit none
     do i_load = 1, nb_load
         load_name = v_load_name(i_load)(1:8)
         load_nume = v_load_info(i_load+1)  
-        if ((load_nume.gt.0) .and. (load_nume.le.3)) then
+        if ((load_nume.gt.0) .and. (load_nume.le.4)) then
             ligrch   = load_name//'.CHME.LIGRE'
 !
 ! --------- Input field
@@ -161,6 +161,10 @@ implicit none
             else if (load_nume.eq.3) then
                 option = 'MECA_DDLI_F'
                 lpain(3) = 'PDDLIMF'
+            else if (load_nume.eq.4) then
+                ASSERT(typres.eq.'R')
+                option = 'MECA_DDLI_R'
+                lpain(3) = 'PDDLIMR'
             else
                 ASSERT(.false.)
             endif
