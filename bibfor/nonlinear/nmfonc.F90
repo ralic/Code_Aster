@@ -523,8 +523,8 @@ implicit none
 !
 ! ----- Loads
 !
-        if (isfonc(list_func_acti,'FORCE_SUIVEUSE')) then
-            write (ifm,*) '<MECANONLINE> ...... CHARGEMENTS SUIVEURS'   
+        if (isfonc(list_func_acti,'NEUM_UNDEAD')) then
+            write (ifm,*) '<MECANONLINE> ...... CHARGEMENTS SUIVEURS DE TYPE NEUMANN'
         endif
         if (isfonc(list_func_acti,'DIDI')) then
             write (ifm,*) '<MECANONLINE> ...... CHARGEMENTS DE DIRICHLET DIFFERENTIEL' 

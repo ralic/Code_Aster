@@ -121,7 +121,7 @@ implicit none
 ! ----------------------------------------------------------------------
 !
     aster_logical :: reasma, lcamor
-    aster_logical :: ldyna, lamor, lsuiv, lcrigi, lcfint, larigi
+    aster_logical :: ldyna, lamor, l_neum_undead, lcrigi, lcfint, larigi
     character(len=16) :: metcor, metpre
     character(len=16) :: optrig, optamo
     character(len=19) :: vefint, cnfint
@@ -154,9 +154,9 @@ implicit none
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
-    ldyna = ndynlo(sddyna,'DYNAMIQUE')
-    lamor = ndynlo(sddyna,'MAT_AMORT')
-    lsuiv = isfonc(fonact,'FORCE_SUIVEUSE')
+    ldyna         = ndynlo(sddyna,'DYNAMIQUE')
+    lamor         = ndynlo(sddyna,'MAT_AMORT')
+    l_neum_undead = isfonc(fonact,'NEUM_UNDEAD')
 !
 ! --- CHOIX DE REASSEMBLAGE DE LA MATRICE GLOBALE
 !
@@ -226,7 +226,7 @@ implicit none
 !
 ! --- CALCUL DES MATR-ELEM DES CHARGEMENTS SUIVEURS
 !
-    if (lsuiv) then
+    if (l_neum_undead) then
         call nmcmat('MESUIV', ' ', ' ', .true._1,&
                     .false._1, nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
                     list_l_calc, list_l_asse)

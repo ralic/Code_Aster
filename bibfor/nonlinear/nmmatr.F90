@@ -71,7 +71,7 @@ subroutine nmmatr(phasez, fonact, lischa, numedd,&
 ! ----------------------------------------------------------------------
 !
     integer :: ifm, niv
-    aster_logical :: ldyna, lctcd, lexpl, lamor, lsuiv, lshima, lprem
+    aster_logical :: ldyna, lctcd, lexpl, lamor, l_neum_undead, lshima, lprem
     real(kind=8) :: coerig, coeamo, coemas, coeshi
     character(len=8) :: nomddl
     real(kind=8) :: coemat(3)
@@ -108,12 +108,12 @@ subroutine nmmatr(phasez, fonact, lischa, numedd,&
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
-    lctcd = isfonc(fonact,'CONT_DISCRET')
-    lsuiv = isfonc(fonact,'FORCE_SUIVEUSE')
-    lamor = ndynlo(sddyna,'MAT_AMORT')
-    ldyna = ndynlo(sddyna,'DYNAMIQUE')
-    lexpl = ndynlo(sddyna,'EXPLICITE')
-    lshima = ndynlo(sddyna,'COEF_MASS_SHIFT')
+    lctcd         = isfonc(fonact,'CONT_DISCRET')
+    l_neum_undead = isfonc(fonact,'NEUM_UNDEAD')
+    lamor         = ndynlo(sddyna,'MAT_AMORT')
+    ldyna         = ndynlo(sddyna,'DYNAMIQUE')
+    lexpl         = ndynlo(sddyna,'EXPLICITE')
+    lshima        = ndynlo(sddyna,'COEF_MASS_SHIFT')
 !
 ! --- PREMIER PAS DE TEMPS ?
 !
@@ -213,7 +213,7 @@ subroutine nmmatr(phasez, fonact, lischa, numedd,&
 !
 ! --- PRISE EN COMPTE DE LA MATRICE TANGENTE DES FORCES SUIVEUSES
 !
-    if (lsuiv) then
+    if (l_neum_undead) then
         call ascoma(meelem, numedd, lischa, matass)
     endif
 !

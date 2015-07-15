@@ -106,7 +106,7 @@ implicit none
 !
     aster_logical :: reasma
     aster_logical :: lcrigi, lcfint, lcamor, larigi, lprem
-    aster_logical :: lamor, lsuiv, lshima, lprmo
+    aster_logical :: lamor, l_neum_undead, lshima, lprmo
     character(len=16) :: metpre
     character(len=16) :: optrig, optamo
     integer :: ifm, niv, ibid
@@ -136,10 +136,10 @@ implicit none
 !
 ! - Active functionnalities
 !
-    lamor = ndynlo(sddyna,'MAT_AMORT')
-    lprmo = ndynlo(sddyna,'PROJ_MODAL')
-    lsuiv = isfonc(fonact,'FORCE_SUIVEUSE')
-    lshima = ndynlo(sddyna,'COEF_MASS_SHIFT')
+    lamor         = ndynlo(sddyna,'MAT_AMORT')
+    lprmo         = ndynlo(sddyna,'PROJ_MODAL')
+    l_neum_undead = isfonc(fonact,'NEUM_UNDEAD')
+    lshima        = ndynlo(sddyna,'COEF_MASS_SHIFT')
 !
 ! - First step ?
 !
@@ -208,7 +208,7 @@ implicit none
 !
 ! --- CALCUL DES MATR-ELEM DES CHARGEMENTS
 !
-    if (lsuiv) then
+    if (l_neum_undead) then
         call nmcmat('MESUIV', ' ', ' ', .true._1,&
                     .false._1, nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
                     list_l_calc, list_l_asse)

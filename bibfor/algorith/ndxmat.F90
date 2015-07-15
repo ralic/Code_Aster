@@ -63,7 +63,7 @@ subroutine ndxmat(fonact, lischa, solveu, numedd, sddyna,&
 ! ----------------------------------------------------------------------
 !
     integer :: ifm, niv
-    aster_logical :: lsuiv, lshima, lprem
+    aster_logical :: l_neum_undead, lshima, lprem
     real(kind=8) :: coemas, coeshi
     character(len=8) :: nomddl
     real(kind=8) :: coemat
@@ -98,8 +98,8 @@ subroutine ndxmat(fonact, lischa, solveu, numedd, sddyna,&
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
-    lsuiv = isfonc(fonact,'FORCE_SUIVEUSE')
-    lshima = ndynlo(sddyna,'COEF_MASS_SHIFT')
+    l_neum_undead = isfonc(fonact,'NEUM_UNDEAD')
+    lshima        = ndynlo(sddyna,'COEF_MASS_SHIFT')
 !
 ! --- SUPPRESSION ANCIENNE MATRICE ASSEMBLEE
 !
@@ -142,7 +142,7 @@ subroutine ndxmat(fonact, lischa, solveu, numedd, sddyna,&
 !
 ! --- PRISE EN COMPTE DE LA MATRICE TANGENTE DES FORCES SUIVEUSES
 !
-    if (lsuiv) then
+    if (l_neum_undead) then
         call ascoma(meelem, numedd, lischa, matass)
     endif
 !

@@ -131,7 +131,7 @@ implicit none
 !
     aster_logical :: reasma
     aster_logical :: lcrigi, lcfint, lmacr
-    aster_logical :: lsuiv
+    aster_logical :: l_neum_undead
     character(len=16) :: optrig
     integer :: reincr, iterat
     character(len=8) :: tdiag, syme
@@ -172,8 +172,8 @@ implicit none
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
-    lsuiv = isfonc(fonact,'FORCE_SUIVEUSE')
-    lmacr = isfonc(fonact,'MACR_ELEM_STAT')
+    l_neum_undead = isfonc(fonact,'NEUM_UNDEAD')
+    lmacr         = isfonc(fonact,'MACR_ELEM_STAT')
 !
 ! --- DECOMPACTION DES VARIABLES CHAPEAUX
 !
@@ -245,7 +245,7 @@ implicit none
 !
 ! --- CALCUL DES MATR-ELEM DES CHARGEMENTS SUIVEURS
 !
-    if (lsuiv) then
+    if (l_neum_undead) then
         call nmcmat('MESUIV', ' ', ' ', .true._1,&
                     .false._1, nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
                     list_l_calc, list_l_asse)
@@ -290,7 +290,7 @@ implicit none
 ! --- PRISE EN COMPTE DE LA MATRICE TANGENTE DES FORCES SUIVEUSES
 !
     if (reasma) then
-        if (lsuiv) then
+        if (l_neum_undead) then
             call ascoma(meelem, numedd, lischa, matass)
         endif
     endif

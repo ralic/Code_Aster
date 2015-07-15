@@ -79,7 +79,7 @@ implicit none
 !       RESI_COMP          :  CONVERGENCE NORME PAR FORCE NODALE CMP
 !       DIRI_CINE          :  PRESENCE DE CHARGEMENTS DE DIRICHLET
 !                             DE TYPE ELIMINATION (AFFE_CHAR_CINE)
-!       FORCE_SUIVEUSE     :  CHARGEMENT SUIVEUR
+!       NEUM_UNDEAD        :  undead Neumann load
 !       LAPLACE            :  FORCE DE LAPLACE
 !       DIDI               :  FORCE DE TYPE DIFF. DIRICHLET
 !       THM                :  MODELISATION THM
@@ -172,7 +172,7 @@ implicit none
         isfonc = list_func_acti(35).eq.1
     else if (func_name.eq.'DIRI_CINE') then
         isfonc = list_func_acti(36).eq.1
-    else if (func_name.eq.'FORCE_SUIVEUSE') then
+    else if (func_name.eq.'NEUM_UNDEAD') then
         isfonc = list_func_acti(13).eq.1
     else if (func_name.eq.'LAPLACE') then
         isfonc = list_func_acti(20).eq.1
