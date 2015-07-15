@@ -1,6 +1,11 @@
-subroutine nmcmat(oper, typmaz, optcaz, optasz, lcalc,&
-                  lasse, nbmatr, ltypma, loptme, loptma,&
-                  lcalme, lassme)
+subroutine nmcmat(matr_type_ , calc_opti_    , asse_opti_    , l_calc        , l_asse     ,&
+                  nb_matr    , list_matr_type, list_calc_opti, list_asse_opti, list_l_calc,&
+                  list_l_asse)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,30 +25,28 @@ subroutine nmcmat(oper, typmaz, optcaz, optasz, lcalc,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "asterfort/assert.h"
-    character(len=4) :: oper
-    character(len=*) :: optcaz, optasz, typmaz
-    aster_logical :: lasse, lcalc
-    integer :: nbmatr
-    character(len=6) :: ltypma(20)
-    character(len=16) :: loptme(20), loptma(20)
-    aster_logical :: lassme(20), lcalme(20)
+    character(len=*), intent(in) :: matr_type_
+    character(len=*), intent(in) :: calc_opti_    
+    character(len=*), intent(in) :: asse_opti_
+    aster_logical, intent(in) :: l_calc
+    aster_logical, intent(in) :: l_asse
+    integer, intent(inout) :: nb_matr
+    character(len=6), intent(inout)  :: list_matr_type(20)
+    character(len=16), intent(inout) :: list_calc_opti(20) 
+    character(len=16), intent(inout) :: list_asse_opti(20)
+    aster_logical, intent(inout) :: list_l_asse(20)
+    aster_logical, intent(inout) :: list_l_calc(20)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (CALCUL - UTILITAIRE)
+! MECA_NON_LINE - Computation
 !
-! GESTION DE LA LISTE DES MATR_ELEM A CALCULER ET ASSEMBLER
+! Mangement of list of matrix to compute/assembly
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-!
-! IN  OPER   : OPERATION SUR LA LISTE
-!                INIT
-!                AJOU
-! IN  TYPMAT : TYPE DES MATRICES CONCERNEES
+! In  mesh             : name of mesh
+! In  matr_type        : type of matrix
 !                MERIGI  - MATRICE POUR RIGIDITE
 !                MEDIRI  - MATRICE POUR CL DIRICHLET LAGRANGE
 !                MEGEOM  - MATRICE POUR NON-LIN. GEOMETRIQUE
@@ -57,53 +60,25 @@ subroutine nmcmat(oper, typmaz, optcaz, optasz, lcalc,&
 !                MEXFEF  - MATRICE POUR FROTTEMENT XFEM
 !                MEXFTC  - MATRICE POUR CONTACT XFEM (GRD GLIS)
 !                MEXFTF  - MATRICE POUR FROTT. XFEM (GRD GLIS)
-! IN  OPTCAL : OPTION DE CALCUL DU MATR_ELEM
-! IN  OPTASS : OPTION D'ASSEMBLAGE DU MATR_ASSS
-! IN  LCALC  : LE MATR_ELEM SERA A CALCULER
-! IN  LASSE  : LE MATR_ELEM SERA A ASSEMBLER
-! I/O NBMATR : NOMBRE DE MATR_ELEM DANS LA LISTE
-! I/O LTYPMA : LISTE DES NOMS DES MATR_ELEM
-! I/O LOPTME : LISTE DES OPTIONS DES MATR_ELEM
-! I/O LOPTMA : LISTE DES OPTIONS DES MATR_ASSE
-! I/O LCALME : SI MATR_ELEM A CALCULER
-! I/O LASSME : SI MATR_ELEM A ASSEMBLER
+! In  calc_opti        : option for matr_elem
+! In  asse_opti        : option for matr_asse
+! In  l_calc           : .true. to compute matr_elem
+! In  l_asse           : .true. to assembly matr_elem in matr_asse
+! IO  nb_matr          : number of matrix in list
+! IO  list_matr_type   : list of matrix
+! IO  list_calc_opti   : list of options for matr_elem
+! IO  list_asse_opti   : list of options for matr_asse
+! IO  list_l_calc      : list of flags to compute matr_elem
+! IO  list_l_asse      : list of flags to assembly matr_elem in matr_asse
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    character(len=16) :: optcal, optass
-    character(len=6) :: k6bla, typmat
-    integer :: i
-!
-! ----------------------------------------------------------------------
-!
-!
-!
-! --- INITIALISATIONS
-!
-    optcal = optcaz
-    optass = optasz
-    typmat = typmaz
-    k6bla = ' '
-!
-! --- OPERATIONS
-!
-    if (oper .eq. 'INIT') then
-        do 10 i = 1, 20
-            ltypma(i) = k6bla
- 10     continue
-        nbmatr = 0
-    else if (oper.eq.'AJOU') then
-        nbmatr = nbmatr + 1
-        if (nbmatr .eq. 21) then
-            ASSERT(.false.)
-        endif
-        ltypma(nbmatr) = typmat
-        loptme(nbmatr) = optcal
-        loptma(nbmatr) = optass
-        lassme(nbmatr) = lasse
-        lcalme(nbmatr) = lcalc
-    else
-        ASSERT(.false.)
-    endif
+    nb_matr = nb_matr + 1
+    ASSERT(nb_matr.le.20)
+    list_matr_type(nb_matr) = matr_type_
+    list_calc_opti(nb_matr) = calc_opti_
+    list_asse_opti(nb_matr) = asse_opti_
+    list_l_asse(nb_matr)    = l_asse
+    list_l_calc(nb_matr)    = l_calc
 !
 end subroutine

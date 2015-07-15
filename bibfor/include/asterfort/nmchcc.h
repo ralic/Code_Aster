@@ -18,14 +18,14 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmchcc(fonact, nbmatr, ltypma, loptme, loptma,&
-                      lassme, lcalme)
-        integer :: fonact(*)
-        integer :: nbmatr
-        character(len=6) :: ltypma(20)
-        character(len=16) :: loptme(20)
-        character(len=16) :: loptma(20)
-        aster_logical :: lassme(20)
-        aster_logical :: lcalme(20)
+    subroutine nmchcc(list_func_acti, nb_matr    , list_matr_type, list_calc_opti, list_asse_opti,&
+                      list_l_asse  , list_l_calc)
+        integer, intent(in) :: list_func_acti(*)
+        integer, intent(inout) :: nb_matr
+        character(len=6), intent(inout)  :: list_matr_type(20)
+        character(len=16), intent(inout) :: list_calc_opti(20)
+        character(len=16), intent(inout) :: list_asse_opti(20)
+        aster_logical, intent(inout) :: list_l_asse(20)
+        aster_logical, intent(inout) :: list_l_calc(20)
     end subroutine nmchcc
 end interface

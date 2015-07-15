@@ -111,11 +111,11 @@ implicit none
     character(len=16) :: optrig, optamo
     integer :: ifm, niv, ibid
     integer :: iterat
-    integer :: nbmatr
+    integer :: nb_matr
     character(len=24) :: k24bla
-    character(len=6) :: ltypma(20)
-    character(len=16) :: loptme(20), loptma(20)
-    aster_logical :: lassme(20), lcalme(20)
+    character(len=6) :: list_matr_type(20)
+    character(len=16) :: list_calc_opti(20), list_asse_opti(20)
+    aster_logical :: list_l_asse(20), list_l_calc(20)
 !
 ! ----------------------------------------------------------------------
 !
@@ -124,14 +124,24 @@ implicit none
         write (ifm,*) '<MECANONLINE> ... CALCUL MATRICE'
     endif
 !
-! --- FONCTIONNALITES ACTIVEES
+! - Initializations
+!
+    nb_matr              = 0
+    list_matr_type(1:20) = ' '
+    faccvg = -1
+    ldccvg = -1
+    iterat = 0
+    lcamor = .false.
+    k24bla = ' '
+!
+! - Active functionnalities
 !
     lamor = ndynlo(sddyna,'MAT_AMORT')
     lprmo = ndynlo(sddyna,'PROJ_MODAL')
     lsuiv = isfonc(fonact,'FORCE_SUIVEUSE')
     lshima = ndynlo(sddyna,'COEF_MASS_SHIFT')
 !
-! --- PREMIER PAS DE TEMPS ?
+! - First step ?
 !
     lprem = numins.le.1
 !
@@ -141,17 +151,6 @@ implicit none
     if (metpre .ne. 'TANGENTE') then
         call utmess('F', 'MECANONLINE5_1')
     endif
-!
-! --- INITIALISATIONS
-!
-    call nmcmat('INIT', ' ', ' ', ' ', .false._1,&
-                .false._1, nbmatr, ltypma, loptme, loptma,&
-                lcalme, lassme)
-    faccvg = -1
-    ldccvg = -1
-    iterat = 0
-    lcamor = .false.
-    k24bla = ' '
 !
 ! --- CHOIX DE REASSEMBLAGE DE LA MATRICE GLOBALE
 !
@@ -194,42 +193,44 @@ implicit none
 ! --- CALCUL DES MATR-ELEM DE RIGIDITE
 !
     if (lcrigi) then
-        call nmcmat('AJOU', 'MERIGI', optrig, ' ', .true._1,&
-                    larigi, nbmatr, ltypma, loptme, loptma,&
-                    lcalme, lassme)
+        call nmcmat('MERIGI', optrig, ' ', .true._1,&
+                    larigi, nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
+                    list_l_calc, list_l_asse)
     endif
 !
 ! --- CALCUL ET ASSEMBLAGE DES MATR-ELEM D'AMORTISSEMENT DE RAYLEIGH
 !
     if (lcamor) then
-        call nmcmat('AJOU', 'MEAMOR', optamo, ' ', .true._1,&
-                    .true._1, nbmatr, ltypma, loptme, loptma,&
-                    lcalme, lassme)
+        call nmcmat('MEAMOR', optamo, ' ', .true._1,&
+                    .true._1, nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
+                    list_l_calc, list_l_asse)
     endif
 !
 ! --- CALCUL DES MATR-ELEM DES CHARGEMENTS
 !
     if (lsuiv) then
-        call nmcmat('AJOU', 'MESUIV', ' ', ' ', .true._1,&
-                    .false._1, nbmatr, ltypma, loptme, loptma,&
-                    lcalme, lassme)
+        call nmcmat('MESUIV', ' ', ' ', .true._1,&
+                    .false._1, nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
+                    list_l_calc, list_l_asse)
     endif
 !
 ! --- CALCUL ET ASSEMBLAGE DES MATR_ELEM DE LA LISTE
 !
-    if (nbmatr .gt. 0) then
+    if (nb_matr .gt. 0) then
         call nmxmat(modelz, mate, carele, compor, carcri,&
                     sddisc, sddyna, fonact, numins, iterat,&
                     valinc, solalg, lischa, comref, k24bla,&
                     k24bla, numedd, numfix, sdstat,&
-                    sdtime, nbmatr, ltypma, loptme, loptma,&
-                    lcalme, lassme, lcfint, meelem, measse,&
+                    sdtime, nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
+                    list_l_calc, list_l_asse, lcfint, meelem, measse,&
                     veelem, ldccvg, codere)
     endif
 !
 ! --- ERREUR SANS POSSIBILITE DE CONTINUER
 !
-    if (ldccvg .eq. 1) goto 999
+    if (ldccvg .eq. 1) then
+        goto 999
+    endif
 !
 ! --- CALCUL DE LA MATRICE ASSEMBLEE GLOBALE
 !

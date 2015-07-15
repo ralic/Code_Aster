@@ -128,10 +128,10 @@ implicit none
     character(len=24) :: modele
     aster_logical :: renume
     integer :: ifm, niv
-    integer :: nbmatr
-    character(len=6) :: ltypma(20)
-    character(len=16) :: loptme(20), loptma(20)
-    aster_logical :: lassme(20), lcalme(20)
+    integer :: nb_matr
+    character(len=6) :: list_matr_type(20)
+    character(len=16) :: list_calc_opti(20), list_asse_opti(20)
+    aster_logical :: list_l_asse(20), list_l_calc(20)
 !
 ! ----------------------------------------------------------------------
 !
@@ -140,11 +140,10 @@ implicit none
         write (ifm,*) '<MECANONLINE> ...... CALCUL MATRICE'
     endif
 !
-! --- INTIIALISATIONS
+! - Initializations
 !
-    call nmcmat('INIT', '      ', ' ', ' ', .false._1,&
-                .false._1, nbmatr, ltypma, loptme, loptma,&
-                lcalme, lassme)
+    nb_matr              = 0
+    list_matr_type(1:20) = ' '
     modele = modelz
     faccvg = -1
     ldccvg = -1
@@ -205,41 +204,41 @@ implicit none
 !
 ! --- CALCUL DES MATR_ELEM CONTACT/XFEM_CONTACT
 !
-    call nmchcc(fonact, nbmatr, ltypma, loptme, loptma,&
-                lassme, lcalme)
+    call nmchcc(fonact, nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
+                list_l_asse, list_l_calc)
 !
 ! --- ASSEMBLAGE DES MATR-ELEM DE RIGIDITE
 !
     if (larigi) then
-        call nmcmat('AJOU', 'MERIGI', optrig, ' ', .false._1,&
-                    larigi, nbmatr, ltypma, loptme, loptma,&
-                    lcalme, lassme)
+        call nmcmat('MERIGI', optrig, ' ', .false._1,&
+                    larigi, nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
+                    list_l_calc, list_l_asse)
     endif
 !
 ! --- CALCUL DES MATR-ELEM D'AMORTISSEMENT DE RAYLEIGH A CALCULER
 ! --- NECESSAIRE SI MATR_ELEM RIGIDITE CHANGE !
 !
     if (lcamor) then
-        call nmcmat('AJOU', 'MEAMOR', optamo, ' ', .true._1,&
-                    .true._1, nbmatr, ltypma, loptme, loptma,&
-                    lcalme, lassme)
+        call nmcmat('MEAMOR', optamo, ' ', .true._1,&
+                    .true._1, nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
+                    list_l_calc, list_l_asse)
     endif
 !
 ! --- CALCUL DES MATR-ELEM DES CHARGEMENTS SUIVEURS
 !
     if (lsuiv) then
-        call nmcmat('AJOU', 'MESUIV', ' ', ' ', .true._1,&
-                    .false._1, nbmatr, ltypma, loptme, loptma,&
-                    lcalme, lassme)
+        call nmcmat('MESUIV', ' ', ' ', .true._1,&
+                    .false._1, nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
+                    list_l_calc, list_l_asse)
     endif
 !
 ! --- RE-CREATION MATRICE MASSE SI NECESSAIRE (NOUVEAU NUME_DDL)
 !
     if (renume) then
         if (ldyna) then
-            call nmcmat('AJOU', 'MEMASS', ' ', ' ', .false._1,&
-                        .true._1, nbmatr, ltypma, loptme, loptma,&
-                        lcalme, lassme)
+            call nmcmat('MEMASS', ' ', ' ', .false._1,&
+                        .true._1, nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
+                        list_l_calc, list_l_asse)
         endif
         if (.not.reasma) then
             ASSERT(.false.)
@@ -248,13 +247,13 @@ implicit none
 !
 ! --- CALCUL ET ASSEMBLAGE DES MATR_ELEM DE LA LISTE
 !
-    if (nbmatr .gt. 0) then
+    if (nb_matr .gt. 0) then
         call nmxmat(modelz, mate, carele, compor, carcri,&
                     sddisc, sddyna, fonact, numins, iterat,&
                     valinc, solalg, lischa, comref, defico,&
                     resoco, numedd, numfix, sdstat,&
-                    sdtime, nbmatr, ltypma, loptme, loptma,&
-                    lcalme, lassme, lcfint, meelem, measse,&
+                    sdtime, nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
+                    list_l_calc, list_l_asse, lcfint, meelem, measse,&
                     veelem, ldccvg, codere)
     endif
 !

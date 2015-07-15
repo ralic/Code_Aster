@@ -1,5 +1,11 @@
-subroutine nmchcc(fonact, nbmatr, ltypma, loptme, loptma,&
-                  lassme, lcalme)
+subroutine nmchcc(list_func_acti, nb_matr    , list_matr_type, list_calc_opti, list_asse_opti,&
+                  list_l_asse   , list_l_calc)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/nmcmat.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,15 +25,13 @@ subroutine nmchcc(fonact, nbmatr, ltypma, loptme, loptma,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "asterfort/isfonc.h"
-#include "asterfort/nmcmat.h"
-    integer :: fonact(*)
-    integer :: nbmatr
-    character(len=6) :: ltypma(20)
-    character(len=16) :: loptme(20), loptma(20)
-    aster_logical :: lassme(20), lcalme(20)
+    integer, intent(in) :: list_func_acti(*)
+    integer, intent(inout) :: nb_matr
+    character(len=6), intent(inout)  :: list_matr_type(20)
+    character(len=16), intent(inout) :: list_calc_opti(20)
+    character(len=16), intent(inout) :: list_asse_opti(20)
+    aster_logical, intent(inout) :: list_l_asse(20)
+    aster_logical, intent(inout) :: list_l_calc(20)
 !
 ! ----------------------------------------------------------------------
 !
@@ -52,26 +56,23 @@ subroutine nmchcc(fonact, nbmatr, ltypma, loptme, loptma,&
 !
 ! ----------------------------------------------------------------------
 !
-!
-! --- FONCTIONNALITES ACTIVEES
-!
-    leltc = isfonc(fonact,'ELT_CONTACT')
-    leltf = isfonc(fonact,'ELT_FROTTEMENT')
+    leltc = isfonc(list_func_acti,'ELT_CONTACT')
+    leltf = isfonc(list_func_acti,'ELT_FROTTEMENT')
 !
 ! --- ELEMENTS DE CONTACT (XFEM+CONTINU)
 !
     if (leltc) then
-        call nmcmat('AJOU', 'MEELTC', ' ', ' ', .true._1,&
-                    .false._1, nbmatr, ltypma, loptme, loptma,&
-                    lcalme, lassme)
+        call nmcmat('MEELTC', ' ', ' ', .true._1,&
+                    .false._1, nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
+                    list_l_calc, list_l_asse)
     endif
 !
 ! --- ELEMENTS DE FROTTEMENT (XFEM+CONTINU)
 !
     if (leltf) then
-        call nmcmat('AJOU', 'MEELTF', ' ', ' ', .true._1,&
-                    .false._1, nbmatr, ltypma, loptme, loptma,&
-                    lcalme, lassme)
+        call nmcmat('MEELTF', ' ', ' ', .true._1,&
+                    .false._1, nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
+                    list_l_calc, list_l_asse)
     endif
 !
 end subroutine

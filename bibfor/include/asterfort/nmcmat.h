@@ -18,20 +18,19 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmcmat(oper, typmaz, optcaz, optasz, lcalc,&
-                      lasse, nbmatr, ltypma, loptme, loptma,&
-                      lcalme, lassme)
-        character(len=4) :: oper
-        character(len=*) :: typmaz
-        character(len=*) :: optcaz
-        character(len=*) :: optasz
-        aster_logical :: lcalc
-        aster_logical :: lasse
-        integer :: nbmatr
-        character(len=6) :: ltypma(20)
-        character(len=16) :: loptme(20)
-        character(len=16) :: loptma(20)
-        aster_logical :: lcalme(20)
-        aster_logical :: lassme(20)
+    subroutine nmcmat(matr_type_ , calc_opti_    , asse_opti_    , l_calc        , l_asse     ,&
+                      nb_matr    , list_matr_type, list_calc_opti, list_asse_opti, list_l_calc,&
+                      list_l_asse)
+        character(len=*), intent(in) :: matr_type_
+        character(len=*), intent(in) :: calc_opti_    
+        character(len=*), intent(in) :: asse_opti_
+        aster_logical, intent(in) :: l_calc
+        aster_logical, intent(in) :: l_asse
+        integer, intent(inout) :: nb_matr
+        character(len=6), intent(inout)  :: list_matr_type(20)
+        character(len=16), intent(inout) :: list_calc_opti(20) 
+        character(len=16), intent(inout) :: list_asse_opti(20)
+        aster_logical, intent(inout) :: list_l_asse(20)
+        aster_logical, intent(inout) :: list_l_calc(20)
     end subroutine nmcmat
 end interface
