@@ -332,7 +332,7 @@ implicit none
 ! SOLUTION: VTEMPP = T+,I+1 - T+,I
 !
     call nxnewt(model      , mate       , cara_elem  , list_load, nume_dof,&
-                solver     , tpsthe     , time       , neq      , matass  ,&
+                solver     , tpsthe     , time       , matass   ,&
                 maprec     , cnchci     , varc_curr  , vtemp    , vtempm  ,&
                 vtempp     , vec2nd     , mediri     , conver   , vhydr   ,&
                 vhydrp     , tmpchi     , tmpchf     , compor   , vabtla  ,&
