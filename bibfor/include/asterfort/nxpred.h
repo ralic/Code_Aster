@@ -23,8 +23,8 @@ interface
     subroutine nxpred(model , mate     , cara_elem, list_load, nume_dof ,&
                       solver, lostat   , tpsthe   , time     , matass   ,&
                       lonch , maprec   , varc_curr, temp_prev, temp_iter,&
-                      vtempp, hydr_prev, hydr_curr, dry_prev , dry_curr ,&
-                      compor, cndirp   , cnchci   , vec2nd   , vec2ni)
+                      cn2mbr, hydr_prev, hydr_curr, dry_prev , dry_curr ,&
+                      compor, cndirp   , cnchci   , vec2nd   , vec2ni   )
         character(len=24), intent(in) :: model
         character(len=24), intent(in) :: mate
         character(len=24), intent(in) :: cara_elem
@@ -40,7 +40,6 @@ interface
         character(len=19) :: maprec
         character(len=24) :: temp_prev
         character(len=24) :: temp_iter
-        character(len=24) :: vtempp
         character(len=24) :: hydr_prev
         character(len=24) :: hydr_curr
         character(len=24) :: dry_prev
@@ -48,6 +47,7 @@ interface
         character(len=24) :: compor
         character(len=24) :: cndirp
         character(len=24) :: cnchci
+        character(len=24), intent(in) :: cn2mbr
         character(len=24) :: vec2nd
         character(len=24) :: vec2ni
     end subroutine nxpred

@@ -82,7 +82,7 @@ implicit none
     character(len=19) :: solver, maprec, sddisc, sdcrit, varc_curr
     character(len=24) :: model, mate, cara_elem, result
     character(len=24) :: time, tmpchi, tmpchf, compor, vtemp, vtempm, vtempp
-    character(len=24) :: vtempr, vec2nd, vec2ni, nume_dof, mediri, matass, cndirp
+    character(len=24) :: vtempr, vec2nd, vec2ni, nume_dof, mediri, matass, cndirp, cn2mbr
     character(len=24) :: cnchci, cnresi, vabtla, vhydr, vhydrp
     character(len=24) :: sdieto, tpscvt
     character(len=76) :: fmt2, fmt3, fmt4
@@ -97,6 +97,7 @@ implicit none
     data cnchci/1*' '/
     data vec2nd/'&&OP0186.2ND'/
     data vec2ni/'&&OP0186.2NI'/
+    data cn2mbr/'&&OP0186.2MBRE'/
     data tmpchi,tmpchf/'&&OP0186.TCHI','&&OP0186.TCHF'/
     data vhydr,vhydrp/'&&OP0186.HY','&&OP0186.HYP'/
     data mediri/' '/
@@ -168,6 +169,10 @@ implicit none
     call copisd('CHAMP_GD', 'V', vtemp(1:19), vec2nd(1:19))
     call copisd('CHAMP_GD', 'V', vtemp(1:19), vec2ni(1:19))
     call copisd('CHAMP_GD', 'V', vhydr(1:19), vhydrp(1:19))
+!
+! - Total second member
+!
+    call copisd('CHAMP_GD', 'V', vtemp(1:19), cn2mbr(1:19))
 !
 ! --- CALCUL DES MATRICES ELEMENTAIRES DES DIRICHLETS
     call medith(model, list_load, mediri)
@@ -297,8 +302,8 @@ implicit none
     call nxpred(model , mate  , cara_elem, list_load, nume_dof,&
                 solver, lostat, tpsthe   , time     , matass  ,&
                 neq   , maprec, varc_curr, vtemp    , vtempm  ,&
-                vtempp, vhydr , vhydrp   , tmpchi   , tmpchf  ,&
-                compor, cndirp, cnchci   , vec2nd   , vec2ni)
+                cn2mbr, vhydr , vhydrp   , tmpchi   , tmpchf  ,&
+                compor, cndirp, cnchci   , vec2nd   , vec2ni  )
 !
 ! ======================================================================
 !              ITERATIONS DE LA METHODE DE NEWTON-RAPHSON
@@ -332,7 +337,7 @@ implicit none
 ! SOLUTION: VTEMPP = T+,I+1 - T+,I
 !
     call nxnewt(model      , mate       , cara_elem  , list_load, nume_dof,&
-                solver     , tpsthe     , time       , matass   ,&
+                solver     , tpsthe     , time       , matass   , cn2mbr  ,&
                 maprec     , cnchci     , varc_curr  , vtemp    , vtempm  ,&
                 vtempp     , vec2nd     , mediri     , conver   , vhydr   ,&
                 vhydrp     , tmpchi     , tmpchf     , compor   , vabtla  ,&

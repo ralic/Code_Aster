@@ -1,8 +1,8 @@
 subroutine nxpred(model , mate     , cara_elem, list_load, nume_dof ,&
                   solver, lostat   , tpsthe   , time     , matass   ,&
                   lonch , maprec   , varc_curr, temp_prev, temp_iter,&
-                  vtempp, hydr_prev, hydr_curr, dry_prev , dry_curr ,&
-                  compor, cndirp   , cnchci   , vec2nd   , vec2ni)
+                  cn2mbr, hydr_prev, hydr_curr, dry_prev , dry_curr ,&
+                  compor, cndirp   , cnchci   , vec2nd   , vec2ni   )
 !
 implicit none
 !
@@ -50,9 +50,10 @@ implicit none
     integer :: lonch
     character(len=19) :: maprec
     character(len=24) :: matass, cndirp, cnchci, cnresi
-    character(len=24) :: temp_iter, vtempp, temp_prev, vec2nd, vec2ni
+    character(len=24) :: temp_iter, temp_prev, vec2nd, vec2ni
     character(len=24) :: hydr_prev, hydr_curr, compor, dry_prev, dry_curr
     aster_logical :: lostat
+    character(len=24), intent(in) :: cn2mbr
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,7 +62,8 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 !     VAR temp_iter : ITERE PRECEDENT DU CHAMP DE TEMPERATURE
-!     OUT VTEMPP : ITERE COURANT   DU CHAMP DE TEMPERATURE
+!
+! In  cn2mbr : name of vector for second member
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -77,9 +79,9 @@ implicit none
     character(len=24) :: vebuem, vabuem, cnvabt, cnvabu
     character(len=24) :: lload_name, lload_info
     integer :: iret
+    real(kind=8), pointer :: v_cn2mbr(:) => null()
     real(kind=8), pointer :: btla(:) => null()
     real(kind=8), pointer :: dirp(:) => null()
-    real(kind=8), pointer :: tempp(:) => null()
     real(kind=8), pointer :: temp(:) => null()
     real(kind=8), pointer :: vare(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
@@ -108,9 +110,9 @@ implicit none
 ! --- RECUPERATION D'ADRESSES
 !
     call jeveuo(vec2nd(1:19)//'.VALE', 'L', j2nd)
+    call jeveuo(cn2mbr(1:19)//'.VALE', 'E', vr = v_cn2mbr)
     call jeveuo(vec2ni(1:19)//'.VALE', 'L', j2ni)
     call jeveuo(cndirp(1:19)//'.VALE', 'L', vr=dirp)
-    call jeveuo(vtempp(1:19)//'.VALE', 'E', vr=tempp)
     call jeveuo(temp_iter(1:19)//'.VALE', 'E', jtempm)
     call jeveuo(temp_prev(1:19)//'.VALE', 'L', vr=temp)
 !
@@ -152,13 +154,13 @@ implicit none
         call jeveuo(cnvabu(1:19)//'.VALE', 'L', jbuem)
 !
         do k = 1, lonch
-            tempp(k) = zr(j2nd+k-1) - vare(k) + dirp(k) - btla(k)- zr(jbuem+k-1)
+            v_cn2mbr(k) = zr(j2nd+k-1) - vare(k) + dirp(k) - btla(k)- zr(jbuem+k-1)
         end do
 !
-! --- RESOLUTION (VTEMPP CONTIENT LE SECOND MEMBRE, CHSOL LA SOLUTION)
+! --- RESOLUTION (CN2MBR CONTIENT LE SECOND MEMBRE, CHSOL LA SOLUTION)
 !
         call resoud(matass, maprec, solver, cnchci, 0,&
-                    vtempp, chsol, 'V', [0.d0], [cbid],&
+                    cn2mbr, chsol, 'V', [0.d0], [cbid],&
                     criter, .true._1, 0, iret)
 !
 ! --- RECOPIE DANS temp_iter DU CHAMP SOLUTION CHSOL
@@ -176,13 +178,13 @@ implicit none
 !=======================================================================
 !
         do k = 1, lonch
-            tempp(k) = zr(j2ni+k-1) + dirp(k)
+            v_cn2mbr(k) = zr(j2ni+k-1) + dirp(k)
         end do
 !
-! --- RESOLUTION (VTEMPP CONTIENT LE SECOND MEMBRE, CHSOL LA SOLUTION)
+! --- RESOLUTION (CN2MBR CONTIENT LE SECOND MEMBRE, CHSOL LA SOLUTION)
 !
         call resoud(matass, maprec, solver, cnchci, 0,&
-                    vtempp, chsol, 'V', [0.d0], [cbid],&
+                    cn2mbr, chsol, 'V', [0.d0], [cbid],&
                     criter, .true._1, 0, iret)
 !
 ! --- RECOPIE DANS temp_iter DU CHAMP SOLUTION CHSOL

@@ -1,5 +1,5 @@
 subroutine nxnewt(model    , mate       , cara_elem  , list_load, nume_dof ,&
-                  solver   , tpsthe     , time       , matass   ,&
+                  solver   , tpsthe     , time       , matass   , cn2mbr   ,&
                   maprec   , cnchci     , varc_curr  , temp_prev, temp_iter,&
                   vtempp   , vec2nd     , mediri     , conver   , hydr_prev,&
                   hydr_curr, dry_prev   , dry_curr   , compor   , cnvabt   ,&
@@ -54,7 +54,7 @@ implicit none
     character(len=19), intent(in) :: varc_curr
     aster_logical :: conver, reasma
     character(len=19) :: maprec
-    character(len=24) :: matass, cnchci, cnresi, temp_prev, temp_iter, vtempp, vec2nd
+    character(len=24) :: matass, cnchci, cnresi, temp_prev, temp_iter, vtempp, vec2nd, cn2mbr
     character(len=24) :: hydr_prev, hydr_curr, compor, dry_prev, dry_curr
     integer :: ther_crit_i(*)
     real(kind=8) :: ther_crit_r(*)
@@ -126,8 +126,9 @@ implicit none
 ! - Evaluate residuals
 !
     call nxresi(ther_crit_i, ther_crit_r, vec2nd, cnvabt, cnresi,&
-                temp_iter  , vtempp     , testr , testm , conver)
+                cn2mbr     , testr      , testm , conver)
     if (conver) then
+        call copisd('CHAMP_GD', 'V', temp_iter, vtempp)
         goto 999
     endif
 !
@@ -169,7 +170,7 @@ implicit none
 ! --- RESOLUTION (VTEMPP CONTIENT LE SECOND MEMBRE, CHSOL LA SOLUTION)
 !
     call resoud(matass, maprec, solver, cnchci, 0,&
-                vtempp, chsol, 'V', [0.d0], [cbid],&
+                cn2mbr, chsol, 'V', [0.d0], [cbid],&
                 criter, .true._1, 0, iret)
 !
 ! --- RECOPIE DANS VTEMPP DU CHAMP SOLUTION CHSOL,

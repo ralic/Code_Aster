@@ -21,7 +21,7 @@
 !
 interface
     subroutine nxnewt(model    , mate       , cara_elem  , list_load, nume_dof ,&
-                      solver   , tpsthe     , time       , matass   ,&
+                      solver   , tpsthe     , time       , matass   , cn2mbr   ,&
                       maprec   , cnchci     , varc_curr  , temp_prev, temp_iter,&
                       vtempp   , vec2nd     , mediri     , conver   , hydr_prev,&
                       hydr_curr, dry_prev   , dry_curr   , compor   , cnvabt   ,&
@@ -39,6 +39,7 @@ interface
         character(len=24) :: matass
         character(len=19) :: maprec
         character(len=24) :: cnchci
+        character(len=24) :: cn2mbr
         character(len=24) :: temp_prev
         character(len=24) :: temp_iter
         character(len=24) :: vtempp
