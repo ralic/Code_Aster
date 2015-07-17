@@ -298,7 +298,6 @@ subroutine appcpr(kptsc)
         if (ierr .ne. 0) then
             call utmess('F', 'PETSC_19', sk=precon)
         endif
-        call PetscOptionsSetValue('-pc_type', 'ml', ierr)
         ASSERT(ierr.eq.0)
 !        CHOIX DE LA RESTRICTION (UNCOUPLED UNIQUEMENT ACTUELLEMENT)
         call PetscOptionsSetValue('-pc_ml_CoarsenScheme', 'Uncoupled', ierr)

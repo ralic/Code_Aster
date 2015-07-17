@@ -383,10 +383,6 @@ subroutine detrsd(typesd, nomsd)
                             0, ibid, iret)
             endif
             call elg_gest_common('EFFACE', ' ', matas, ' ')
-#ifdef _HAVE_PETSC
-            call apetsc('FIN',  ' ', ' ', [0.d0], ' ',&
-                            0, 0 , iret)
-#endif
         endif
 !
         call jedetr(matas//'.CCID')
