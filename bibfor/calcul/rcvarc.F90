@@ -23,7 +23,6 @@ implicit none
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 #include "jeveux.h"
-#include "asterc/iisnan.h"
 #include "asterc/indik8.h"
 #include "asterc/r8nnem.h"
 #include "asterfort/assert.h"
@@ -208,7 +207,7 @@ implicit none
         kpgvrc=(kpgmat-1)*nbsp+ksp
         valvrp=zr(itabp(1) -1 + (kpgvrc-1)*ca_nbcvrc_ + kcvrc)
 
-        if ((iisnan(valvrm).eq.0) .and. (iisnan(valvrp).eq.0)) then
+        if ((.not.isnan(valvrm)) .and. (.not.isnan(valvrp))) then
             if (poum .eq. '-') then
                 valvrc=valvrm+(ca_td1_-ca_timed1_)*(valvrp-valvrm)/(ca_timef1_-&
                 ca_timed1_)
@@ -227,7 +226,7 @@ implicit none
     endif
 
     iret=0
-    if (iisnan(valvrc) .gt. 0) iret=1
+    if (isnan(valvrc)) iret=1
 
 
 !   5) traitement si iret=1

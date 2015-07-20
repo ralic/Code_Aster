@@ -54,7 +54,6 @@ subroutine lcdedi(fami, kpg, ksp, nmat, materd,&
 !       OUT     DEPSM   INCREMENT DE DEFORMATION MECANIQUE
 !               EPSDM   DEFORMATION MECANIQUE A T
 !       ----------------------------------------------------------------
-#include "asterc/iisnan.h"
 #include "asterc/r8vide.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/utmess.h"
@@ -68,7 +67,7 @@ subroutine lcdedi(fami, kpg, ksp, nmat, materd,&
 !       ----------------------------------------------------------------
     common /tdim/   ndt  , ndi
 !       ----------------------------------------------------------------
-    if (iisnan(tref) .eq. 0) then
+    if (.not.isnan(tref)) then
         if (tref .eq. r8vide()) then
             call rcvarc(' ', 'TEMP', '-', fami, kpg,&
                         ksp, td, iret)
@@ -87,8 +86,8 @@ subroutine lcdedi(fami, kpg, ksp, nmat, materd,&
         tr=tref
     endif
 !
-    if ((iisnan(tf).eq.0) .and. (iisnan(td).eq.0)) then
-        if (iisnan(tr) .ne. 0) then
+    if ((.not.isnan(tf)) .and. (.not.isnan(td))) then
+        if (isnan(tr)) then
             call utmess('F', 'COMPOR5_43')
         else
             if (materd(nmat,1) .eq. 0) then

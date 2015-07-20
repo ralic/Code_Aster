@@ -1,7 +1,6 @@
 subroutine juvinn(ojb)
     implicit none
 #include "jeveux.h"
-#include "asterc/iisnan.h"
 #include "asterc/r8nnem.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
@@ -49,7 +48,7 @@ subroutine juvinn(ojb)
     rvid=r8vide()
     rnan=r8nnem()
     do 1, k=1,n1
-    if (iisnan(zr(jojb-1+k)) .eq. 0) then
+    if (.not.isnan(zr(jojb-1+k))) then
         if (zr(jojb-1+k) .eq. rvid) zr(jojb-1+k)=rnan
     endif
     1 end do

@@ -102,7 +102,6 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
 !
 !  ----------------------------------------------------------------
 #include "asterf_types.h"
-#include "asterc/iisnan.h"
 #include "asterc/r8prem.h"
 #include "asterc/r8vide.h"
 #include "asterfort/hujcrd.h"
@@ -197,7 +196,7 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
 ! ---> COEF DE DILATATION LE MEME A TPLUS ET TMOINS
     if (materf(17,1) .eq. un) then
 !
-        if (((iisnan(tempm).gt.0) .or. (iisnan(tref).gt.0)) .and. ( materf(3,1).ne.zero)) then
+        if (((isnan(tempm)) .or. (isnan(tref))) .and. ( materf(3,1).ne.zero)) then
             call utmess('F', 'CALCULEL_15')
         endif
 !
@@ -210,7 +209,7 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
         alpha(1) = materf(10,1)
         alpha(2) = materf(11,1)
         alpha(3) = materf(12,1)
-        if (((iisnan(tempm).gt.0) .or. (iisnan(tref).gt.0)) .and.&
+        if (((isnan(tempm)) .or. (isnan(tref))) .and.&
             ( (alpha(1).ne.zero) .or. (alpha(2).ne.zero) .or. (alpha(3) .ne.zero) )) then
             call utmess('F', 'CALCULEL_15')
         endif
@@ -219,7 +218,7 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
         call utmess('F', 'COMPOR1_33')
     endif
 !
-    if ((iisnan(tempm).gt.0) .or. (iisnan(tempf).gt.0) .or. (iisnan(tref) .gt.0)) then
+    if ((isnan(tempm)) .or. (isnan(tempf)) .or. (isnan(tref))) then
 !
         do 20 i = 1, ndi
             depsth(i) = deps(i)

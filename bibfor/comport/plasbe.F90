@@ -149,7 +149,6 @@ subroutine plasbe(fami, kpg, ksp, typmod, imat,&
 !       ----------------------------------------------------------------
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/iisnan.h"
 #include "asterc/r8nnem.h"
 #include "asterfort/assert.h"
 #include "asterfort/betcvx.h"
@@ -230,14 +229,14 @@ subroutine plasbe(fami, kpg, ksp, typmod, imat,&
 !
 ! --    C'EST INTERDIT DE MELANGER DEUX MODELISATIONS AVEC OU SANS
 ! --      DEPENDENCE DES PARAMETRES DE LA TEMPERATURE
-    if ((iisnan(tempd).eq.0) .and. (iisnan(tempf).eq.1)) then
+    if ((.not.isnan(tempd)) .and. (isnan(tempf))) then
         call utmess('F', 'ALGORITH9_100')
-    else if ((iisnan(tempd).eq.1).and.(iisnan(tempf).eq.0)) then
+    else if ((isnan(tempd)).and.(.not.isnan(tempf))) then
         call utmess('F', 'ALGORITH9_100')
-    else if ((vind(3).eq.tneg).and.(iisnan(tempf).eq.0)) then
+    else if ((vind(3).eq.tneg).and.(.not.isnan(tempf))) then
         call utmess('F', 'ALGORITH9_100')
     else
-        istemp = iisnan(tempd).eq.0 .and. iisnan(tempf).eq.0
+        istemp = .not.isnan(tempd) .and. .not.isnan(tempf)
     endif
 !
 ! --    OPTION SUPPRIMEE CAR TYPMA EST IMPOSE SUIVANT QUE L'ON EST EN

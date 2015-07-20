@@ -28,7 +28,6 @@ subroutine op0023()
 ! ----------------------------------------------------------------------
 #include "asterf_types.h"
 #include "asterc/getfac.h"
-#include "asterc/iisnan.h"
 #include "asterc/r8nnem.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
@@ -53,7 +52,7 @@ subroutine op0023()
     if (repons .eq. 'OUI') then
         tstnan = r8nnem ( )
         resnan = tstnan*1.d0
-        if (iisnan(resnan) .ne. 0) resnan = 0.d0
+        if (isnan(resnan)) resnan = 0.d0
     endif
 
     call infmaj()

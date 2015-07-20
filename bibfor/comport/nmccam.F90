@@ -24,7 +24,6 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/iisnan.h"
 #include "asterc/r8miem.h"
 #include "asterfort/matini.h"
 #include "asterfort/mgauss.h"
@@ -146,8 +145,8 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
                     valpam, 1, nomres(1), valres(1), icodre(1),&
                     0)
 !
-        if ((iisnan(tp).eq.0) .and. (iisnan(tm).gt.0)) then
-            if ((iisnan(tref).gt.0) .or. (icodre(1) .ne.0)) then
+        if ((.not.isnan(tp)) .and. (isnan(tm))) then
+            if ((isnan(tref)) .or. (icodre(1).ne.0)) then
                 call utmess('F', 'COMPOR5_42')
             else
                 coef = valres(1)*(tp-tref) - valres(1)*(tm-tref)

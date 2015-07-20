@@ -21,7 +21,6 @@ subroutine celces(celz, basez, cesz, copy_nan)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/cheksd.h"
-#include "asterc/iisnan.h"
 #include "asterfort/assert.h"
 #include "asterfort/cescre.h"
 #include "asterfort/cesexi.h"
@@ -299,7 +298,7 @@ subroutine celces(celz, basez, cesz, copy_nan)
                                       &t) + ico
 !
                                 if (tsca .eq. 'R') then
-                                    if ((iisnan(zr(jcelv-1+ieq)) .ne. 0) .and. &
+                                    if ((isnan(zr(jcelv-1+ieq))) .and. &
                                         (.not.l_copy_nan)) then
                                         zl(jcesl-1+iad) = .false.
                                     else

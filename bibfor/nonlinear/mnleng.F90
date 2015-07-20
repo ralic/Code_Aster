@@ -55,7 +55,6 @@ subroutine mnleng(imat, xcdl, parcho, xus, ninc,&
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
 #include "blas/dscal.h"
-#include "asterc/iisnan.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"

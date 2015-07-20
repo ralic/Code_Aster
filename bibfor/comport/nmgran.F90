@@ -21,7 +21,6 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
 !
     implicit none
 #include "asterf_types.h"
-#include "asterc/iisnan.h"
 #include "asterc/r8t0.h"
 #include "asterfort/ftprim.h"
 #include "asterfort/granvi.h"
@@ -157,8 +156,8 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
     call rcvalb(fami, kpg, ksp, '-', imate,&
                 ' ', 'ELAS', 1, nompar, [valpam],&
                 1, nomres(3), valres(3), icodre(3), 2)
-    if ((iisnan(tp).eq.0) .and. (iisnan(tm).eq.0)) then
-        if ((icodre(3).ne.0) .or. (iisnan(tref).ne.0)) then
+    if ((.not.isnan(tp)) .and. (.not.isnan(tm))) then
+        if ((icodre(3).ne.0) .or. (isnan(tref))) then
             call utmess('F', 'COMPOR5_42')
         else
             epsthm = valres(3)*(tm-tref)
@@ -184,8 +183,7 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
     if (icodre(3) .ne. 0) then
         valres(3) = 0.d0
         epsthp = 0.d0
-    elseif (((iisnan(tp).gt.0).or.(iisnan(tm).gt.0).or.(iisnan(tref).gt.0)).and.&
-             (icodre(3) .eq. 0 )) then
+        elseif (((isnan(tp)).or.(isnan(tm)).or. (isnan(tref))).and.(icodre(3) .eq. 0 )) then
         call utmess('F', 'COMPOR5_42')
     else
         epsthp = valres(3)*(tp-tref)

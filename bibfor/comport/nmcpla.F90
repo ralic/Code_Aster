@@ -83,7 +83,6 @@ subroutine nmcpla(fami, kpg, ksp, ndim, typmod,&
 !       ----------------------------------------------------------------
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/iisnan.h"
 #include "asterc/lccree.h"
 #include "asterc/lcinfo.h"
 #include "asterc/lcdiscard.h"
@@ -196,7 +195,7 @@ subroutine nmcpla(fami, kpg, ksp, ndim, typmod,&
 !
     tmpdmx = tempd
     tmpfmx = tempf
-    if (((iret1+iret2).eq.0) .and. (iisnan(vind(nvi1+3)).eq.0) .and.&
+    if (((iret1+iret2).eq.0) .and. (.not.isnan(vind(nvi1+3))) .and.&
         (cmp2(1)(1:15).eq. 'BETON_DOUBLE_DP' )) then
         if (tmpdmx .lt. vind(nvi1+3)) tmpdmx = vind(nvi1+3)
         if (tmpfmx .lt. vind(nvi1+3)) tmpfmx = vind(nvi1+3)

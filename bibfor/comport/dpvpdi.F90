@@ -23,7 +23,6 @@ subroutine dpvpdi(nbmat, mater, td, tf, tr,&
 ! --- RETRAIT DE LA DEFORMATION DUE A LA DILATATION THERMIQUE ---------
 ! =====================================================================
     implicit none
-#include "asterc/iisnan.h"
 #include "asterfort/utmess.h"
     integer :: nbmat
     real(kind=8) :: mater(nbmat, 2), td, tf, tr, depst(6), deps(6)
@@ -52,15 +51,15 @@ subroutine dpvpdi(nbmat, mater, td, tf, tr,&
  5  continue
 !
 !
-    if ((iisnan(tr).eq.0) .and. (iisnan(tf).eq.0) .and. (iisnan(td).eq.0)) then
+    if ((.not.isnan(tr)) .and. (.not.isnan(tf)) .and. (.not.isnan(td))) then
         do 10 ii = 1, ndi
             deps(ii) = depst(ii) - ( alpha*(tf-tr) - alpha*(td-tr))
 10      continue
         do 20 ii = ndi+1, ndt
             deps(ii) = depst(ii)
 20      continue
-        elseif (((iisnan(tr).eq.0).or.(iisnan(td).eq.0).or. (iisnan(tf)&
-    .eq.0)).and.(alpha.ne.0.d0)) then
+        elseif (((.not.isnan(tr)).or.(.not.isnan(td)).or. (.not.isnan(tf))) &
+                  .and.(alpha.ne.0.d0)) then
         call utmess('F', 'CALCULEL_15')
     endif
 ! =====================================================================

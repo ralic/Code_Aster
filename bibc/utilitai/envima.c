@@ -157,14 +157,6 @@ DOUBLE DEF0(R8RDDG,r8rddg) { return (DOUBLE)((DOUBLE)180./(DOUBLE)R8_PI); }
 /* ------------------------------------ LONGUEUR de BLOC pour MULT_FRONT */
 INTEGER DEF0(LLBLOC,llbloc) { return OPT_TAILLE_BLOC_MULT_FRONT; }
 
-/* ----------------------------------------  Pour tester un NaN */
-/* on fait un chapeau (iisnan) à la fonction C isnan  pour éviter le
- * conflit avec la fonction intrinsèque (logique) isnan de fortran 95 */
-INTEGER DEFP(IISNAN, iisnan, DOUBLE *x) {
-    if ( isnan(*x) ) return (INTEGER)1;
-    return (INTEGER)0;
-}
-
 /* -------------------------------------- VALEUR MAXIMALE REELLE R4*/
 DOUBLE DEF0(R4MAEM,r4maem) { return R4MAX; }
 

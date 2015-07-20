@@ -22,7 +22,6 @@ subroutine lc0033(fami, kpg, ksp, ndim, imate,&
 ! ======================================================================
 ! aslint: disable=W1504
     implicit none
-#include "asterc/iisnan.h"
 #include "asterc/r8vide.h"
 #include "asterfort/plasti.h"
 #include "asterfort/rcvarc.h"
@@ -36,7 +35,7 @@ subroutine lc0033(fami, kpg, ksp, ndim, imate,&
 !
 ! APPEL DE RCVARC POUR LE CALCUL DE LA TEMPERATURE
 ! RAISON: CETTE ROUTINE EST APPELEE EN THM AUSSI... (CALCME)
-    if (iisnan(tref) .eq. 0) then
+    if (.not.isnan(tref)) then
         if (tref .eq. r8vide()) then
             call rcvarc(' ', 'TEMP', '-', fami, kpg,&
                         ksp, tm, iret)

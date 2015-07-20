@@ -22,7 +22,6 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
 ! ======================================================================
     implicit none
 #include "asterf_types.h"
-#include "asterc/iisnan.h"
 #include "asterc/r8nnem.h"
 #include "asterfort/bptobg.h"
 #include "asterfort/jacobi.h"
@@ -139,7 +138,7 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
         call rcvarc(' ', 'SECH', '+', fami, kpg,&
                     ksp, sech, iret)
         if (iret .ne. 0) sech=0.d0
-        if (iisnan(tp) .gt. 0) then
+        if (isnan(tp)) then
             tmax = r8nnem()
             vip(idc+3) = 0.d0
         else
@@ -171,8 +170,8 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
     call rcvalb(fami, kpg, ksp, poum, imate,&
                 ' ', 'ELAS', 1, nompar, [valpar],&
                 1, nomres(3), valres(3), icodre(3), 0)
-    if ((iisnan(tp).eq.0) .and. (iisnan(tm).eq.0)) then
-        if ((iisnan(tref).ne.0) .or. (icodre(3).ne.0)) then
+    if ((.not.isnan(tp)) .and. (.not.isnan(tm))) then
+        if ((isnan(tref)) .or. (icodre(3).ne.0)) then
             call utmess('F', 'CALCULEL_15')
         else
             epsthe = valres(3)*(temp-tref)

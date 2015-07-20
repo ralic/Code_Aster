@@ -20,7 +20,6 @@ subroutine lcumfe(fami, kpg, ksp, ndim, typmod,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-#include "asterc/iisnan.h"
 #include "asterfort/lcmzge.h"
 #include "asterfort/lcumef.h"
 #include "asterfort/lcummd.h"
@@ -302,15 +301,15 @@ subroutine lcumfe(fami, kpg, ksp, ndim, typmod,&
 !
 !      IF ((OPTION(2).EQ.'MAZARS') .OR.
 !     &    (OPTION(2).EQ.'ENDO_ISOT_BETON')) THEN
-    if ((iisnan(tref).eq.1) .or. (icodre(3).ne.0) .or. (icodre(4).ne.0)) then
+    if ((isnan(tref)) .or. (icodre(3).ne.0) .or. (icodre(4).ne.0)) then
         call utmess('F', 'CALCULEL_15')
     else
-        if (iisnan(tm) .eq. 0) then
+        if (.not.isnan(tm)) then
             epsthm = valres(3) * (tm - tref)
         else
             epsthm = 0.d0
         endif
-        if (iisnan(tp) .eq. 0) then
+        if (.not.isnan(tp)) then
             epsthp = valres(4) * (tp - tref)
         else
             epsthp = 0.d0

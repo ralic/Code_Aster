@@ -19,7 +19,6 @@ subroutine celver(celz, typver, arret, iret)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/iisnan.h"
 #include "asterc/isnnem.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -125,11 +124,11 @@ subroutine celver(celz, typver, arret, iret)
 !
         if (tsca .eq. 'R') then
             do k = 1, nb1
-                if (iisnan(zr(jcelv-1+k)) .eq. 1) lnan=.true.
+                if (isnan(zr(jcelv-1+k))) lnan=.true.
             end do
         else if (tsca.eq.'C') then
             do k = 1, nb1
-                if (iisnan(dble(zc(jcelv-1+k))) .eq. 1) lnan=.true.
+                if (isnan(dble(zc(jcelv-1+k)))) lnan=.true.
             end do
         else if (tsca.eq.'I') then
             do k = 1, nb1

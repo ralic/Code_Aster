@@ -40,7 +40,6 @@ subroutine tstvec(perm, iad, nlong, type, sommi,&
 #include "asterf_types.h"
 #include "jeveux.h"
 !
-#include "asterc/iisnan.h"
 #include "asterfort/tstk2i.h"
     character(len=3) :: type
     real(kind=8) :: sommr
@@ -73,7 +72,7 @@ subroutine tstvec(perm, iad, nlong, type, sommi,&
     if (type .eq. 'R') then
         do 10 k = 1, nlong
             x = zr(iad-1+k)
-            if (iisnan(x) .eq. 0) then
+            if (.not.isnan(x)) then
                 if (abs(x) .lt. 1.d300) then
                     ico=ico+1
                     sommr = sommr + (c1*mod(k,3)+1)*x
@@ -85,14 +84,14 @@ subroutine tstvec(perm, iad, nlong, type, sommi,&
     if (type .eq. 'C') then
         do 20 k = 1, nlong
             x = dble(zc(iad-1+k))
-            if (iisnan(x) .eq. 0) then
+            if (.not.isnan(x)) then
                 if (abs(x) .lt. 1.d300) then
                     ico=ico+1
                     sommr = sommr + (c1*mod(k,3)+1)*x
                 endif
             endif
             x = dimag(zc(iad-1+k))
-            if (iisnan(x) .eq. 0) then
+            if (.not.isnan(x)) then
                 if (abs(x) .lt. 1.d300) then
                     ico=ico+1
                     sommr = sommr + (c1*mod(k,3)+1)*x

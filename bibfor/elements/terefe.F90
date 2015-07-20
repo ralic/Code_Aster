@@ -3,7 +3,6 @@ subroutine terefe(refe_name, type_elem, refe_vale)
 implicit none
 !
 #include "jeveux.h"
-#include "asterc/iisnan.h"
 #include "asterc/r8nnem.h"
 #include "asterfort/assert.h"
 #include "asterfort/jevech.h"
@@ -167,7 +166,7 @@ implicit none
 ! - Get and check value
 !
     val = zr(jvrefe+index-1)
-    if (iisnan(val) .eq. 1) then
+    if (isnan(val)) then
         kmess(1) = type_elem
         kmess(2) = refe_name
         call utmess('F', 'MECANONLINE5_55', nk=2, valk=kmess)

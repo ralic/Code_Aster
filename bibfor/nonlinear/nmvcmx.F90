@@ -20,7 +20,6 @@ subroutine nmvcmx(mate, mailla, comref, comval)
 !
     implicit none
 #include "jeveux.h"
-#include "asterc/iisnan.h"
 #include "asterc/r8maem.h"
 #include "asterfort/celces.h"
 #include "asterfort/cesexi.h"
@@ -140,7 +139,7 @@ subroutine nmvcmx(mate, mailla, comref, comval)
                 isp, icmp, iad)
     if (iad .gt. 0) then
         valeur = cesv(iad)
-        if (iisnan(valeur) .ne. 0) goto 20
+        if (isnan(valeur)) goto 20
 !
         if (iref .eq. 1) then
             valeur=abs(valeur-valref)

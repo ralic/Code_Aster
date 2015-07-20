@@ -46,7 +46,6 @@ subroutine betmat(fami, kpg, ksp, mod, imat,&
 !           NR     :  NB DE COMPOSANTES SYSTEME NL
 !           NVI    :  NB DE VARIABLES INTERNES
 !       ----------------------------------------------------------------
-#include "asterc/iisnan.h"
 #include "asterc/r8nnem.h"
 #include "asterfort/betnvi.h"
 #include "asterfort/r8inir.h"
@@ -94,7 +93,7 @@ subroutine betmat(fami, kpg, ksp, mod, imat,&
 ! -     THEMIQUE THETA (T+DT)
 !
     theta = tempf
-    if ((iisnan(tempd).ne.0) .or. (iisnan(tempf).ne.0)) then
+    if ((isnan(tempd)) .or. (isnan(tempf))) then
         theta=r8nnem()
     else
         if (tempd .gt. tempf) theta = tempd

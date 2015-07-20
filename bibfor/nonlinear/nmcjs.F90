@@ -97,7 +97,6 @@ subroutine nmcjs(typmod, imat, comp, crit, instam,&
 !
 !       ----------------------------------------------------------------
 #include "asterf_types.h"
-#include "asterc/iisnan.h"
 #include "asterfort/cjsela.h"
 #include "asterfort/cjsinp.h"
 #include "asterfort/cjsmat.h"
@@ -178,7 +177,7 @@ subroutine nmcjs(typmod, imat, comp, crit, instam,&
 !     --  CALCUL DE DEPSTH ET EPSDTH
 !     --------------------------------
 !
-    if (((iisnan(tempm).gt.0).or.(iisnan(tref).gt.0)) .and. (materf(3,1).ne.0.d0)) then
+    if (((isnan(tempm)).or.(isnan(tref))) .and. (materf(3,1).ne.0.d0)) then
         call utmess('F', 'CALCULEL_15')
     else if (materf(3,1).eq.0.d0) then
         epsthe = 0.d0

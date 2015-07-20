@@ -23,7 +23,6 @@ implicit none
 !     ----------
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/iisnan.h"
 #include "asterc/indik8.h"
 #include "asterc/isnnem.h"
 #include "asterc/r8nnem.h"
@@ -120,10 +119,10 @@ implicit none
 !
 !
             if (typsca .eq. 'R') then
-                if (iisnan(zr(iachlo-1+debugr-1+lggrel+1)) .eq. 0) ecras=.true.
+                if (.not.isnan(zr(iachlo-1+debugr-1+lggrel+1))) ecras=.true.
             else if (typsca.eq.'C') then
-                if (iisnan(dble(zc(iachlo-1+debugr-1+lggrel+1))) .eq. 0) ecras=.true.
-                if (iisnan(dimag(zc(iachlo-1+debugr-1+lggrel+1))) .eq. 0) ecras=.true.
+                if (.not.isnan(dble(zc(iachlo-1+debugr-1+lggrel+1)))) ecras=.true.
+                if (.not.isnan(dimag(zc(iachlo-1+debugr-1+lggrel+1)))) ecras=.true.
             else if (typsca.eq.'I') then
                 if (zi(iachlo-1+debugr-1+lggrel+1) .ne. innem) ecras= .true.
             else

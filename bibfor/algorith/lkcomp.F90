@@ -4,7 +4,6 @@ subroutine lkcomp(mod, imate, instam, instap, tm,&
                   invi)
 !
     implicit none
-#include "asterc/iisnan.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/lcdevi.h"
@@ -168,8 +167,8 @@ subroutine lkcomp(mod, imate, instam, instap, tm,&
 !
     alpha = materd(3,1)
 !
-    if ((iisnan(tp).eq.0) .and. (iisnan(tm).gt.0)) then
-        if ((iisnan(tref).gt.0) .and. (indal .eq. 0)) then
+    if ((.not.isnan(tp)) .and. (isnan(tm))) then
+        if ((isnan(tref)) .and. (indal.eq.0)) then
             call utmess('F', 'COMPOR5_41')
         else
             coef = alpha*(tp-tref) - alpha*(tm-tref)

@@ -21,7 +21,6 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
 ! ======================================================================
 !
     implicit none
-#include "asterc/iisnan.h"
 #include "asterfort/lceibt.h"
 #include "asterfort/lcldsb.h"
 #include "asterfort/lcmaza.h"
@@ -323,15 +322,15 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
 !  -------CALCUL DES DEFORMATIONS THERMIQUES
 !
     if ((option(2).eq.'MAZARS') .or. (option(2).eq.'ENDO_ISOT_BETON')) then
-        if ((iisnan(tref).eq.1) .or. (icodre(3).ne.0) .or. (icodre(4) .ne.0)) then
+        if ((isnan(tref)) .or. (icodre(3).ne.0) .or. (icodre(4).ne.0)) then
             call utmess('F', 'CALCULEL_15')
         else
-            if (iisnan(tm) .eq. 0) then
+            if (.not.isnan(tm)) then
                 epsthm = valres(3) * (tm - tref)
             else
                 epsthm = 0.d0
             endif
-            if (iisnan(tp) .eq. 0) then
+            if (.not.isnan(tp)) then
                 epsthp = valres(4) * (tp - tref)
             else
                 epsthp = 0.d0
