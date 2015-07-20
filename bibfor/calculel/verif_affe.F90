@@ -134,7 +134,7 @@ subroutine verif_affe(modele,sd)
             enddo
 
         else
-            write(6,*) 'AJACOT A faire ... typres=',sd,typres
+            write(6,*) 'A faire ... typres=',sd,typres
             ASSERT(.false.)
         endif
 
