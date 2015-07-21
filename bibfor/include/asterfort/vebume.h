@@ -16,11 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine vebume(modelz, matasz, deplaz, lischa, vecelz)
-        character(len=*) :: modelz
-        character(len=*) :: matasz
-        character(len=*) :: deplaz
-        character(len=19) :: lischa
-        character(len=*) :: vecelz
+    subroutine vebume(model_, matass_, disp_, list_load, vect_elemz)
+        character(len=*), intent(in) :: model_
+        character(len=*), intent(in) :: matass_
+        character(len=*), intent(in) :: disp_
+        character(len=19), intent(in) :: list_load
+        character(len=*), intent(in) :: vect_elemz
     end subroutine vebume
 end interface

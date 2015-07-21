@@ -1,4 +1,24 @@
-subroutine vebume(modelz, matasz, deplaz, lischa, vecelz)
+subroutine vebume(model_, matass_, disp_, list_load, vect_elemz)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/calcul.h"
+#include "asterfort/conlag.h"
+#include "asterfort/corich.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/exisd.h"
+#include "asterfort/gcnco2.h"
+#include "asterfort/load_list_info.h"
+#include "asterfort/inical.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mecact.h"
+#include "asterfort/memare.h"
+#include "asterfort/reajre.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,149 +38,132 @@ subroutine vebume(modelz, matasz, deplaz, lischa, vecelz)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/calcul.h"
-#include "asterfort/conlag.h"
-#include "asterfort/corich.h"
-#include "asterfort/dbgcal.h"
-#include "asterfort/detrsd.h"
-#include "asterfort/exisd.h"
-#include "asterfort/gcnco2.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/inical.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/mecact.h"
-#include "asterfort/memare.h"
-#include "asterfort/reajre.h"
+    character(len=*), intent(in) :: model_
+    character(len=*), intent(in) :: matass_
+    character(len=*), intent(in) :: disp_
+    character(len=19), intent(in) :: list_load
+    character(len=*), intent(in) :: vect_elemz
 !
-    character(len=*) :: modelz, matasz, deplaz, vecelz
-    character(len=19) :: lischa
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! Compute Dirichlet loads
 !
-! ROUTINE MECA_NON_LINE (CALCUL)
+! For Lagrange elements (AFFE_CHAR_MECA) - B . U 
 !
-! CALCUL DES VECTEURS ELEMENTAIRES B.U - ELEMENTS DE LAGRANGE
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! In  model            : name of model
+! In  list_load        : name of datastructure for list of loads
+! In  disp             : displacements
+! In  matass           : matrix
+! In  vect_elem        : name of vect_elem result
 !
-!
-! IN  MODELE : NOM DU MODELE
-! IN  DEPLA  : CHAMP DE DEPLACEMENTS
-! IN  LISCHA : SD L_CHARGES
-! OUT VECELE : VECTEURS ELEMENTAIRES
-!
-!
-!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: nbout, nbin
     parameter    (nbout=1, nbin=3)
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
-    integer :: iret, nchar, ndir, icha, ibid
-    integer :: ifmdbg, nivdbg
-    real(kind=8) :: alpha
-    character(len=8) :: nomcha, masque, modele
+    integer :: iret, ibid, nb_load, i_load, load_nume
+    character(len=24), pointer :: v_load_name(:) => null()
+    integer, pointer :: v_load_info(:) => null()
+    aster_logical :: load_empty
+    character(len=8) :: load_name, newnom, model
     character(len=16) :: option
-    character(len=19) :: depla, vecele, matass
+    character(len=19) :: disp, vect_elem, matass, resu_elem
     character(len=24) :: ligrch, chalph
-    aster_logical :: debug
-    integer, pointer :: infc(:) => null()
-    character(len=24), pointer :: lcha(:) => null()
+    real(kind=8) :: alpha
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-    call infdbg('PRE_CALCUL', ifmdbg, nivdbg)
 !
-! --- INITIALISATIONS
+! - Initializations
 !
-    masque = '.0000000'
-    vecele = vecelz
-    matass = matasz
-    modele = modelz
-    depla = deplaz
-    option = 'MECA_BU_R'
-    if (nivdbg .ge. 2) then
-        debug = .true.
-    else
-        debug = .false.
-    endif
+    vect_elem = vect_elemz
+    matass    = matass_
+    model     = model_
+    disp      = disp_
+    newnom    = '.0000000'
+    chalph    = '&&VEBUME.CH_NEUT_R'
+    resu_elem = '&&VEBUME.???????'
+    option    = 'MECA_BU_R'
 !
-! --- INITIALISATION DES CHAMPS POUR CALCUL
+! - Init fields
 !
     call inical(nbin, lpain, lchin, nbout, lpaout,&
                 lchout)
 !
-! --- ACCES AUX CHARGES
+! - Loads
 !
-    call jeexin(lischa(1:19)//'.LCHA', iret)
-    if (iret .eq. 0) goto 9999
-    call jelira(lischa(1:19)//'.LCHA', 'LONMAX', nchar)
-    call jeveuo(lischa(1:19)//'.LCHA', 'L', vk24=lcha)
-    call jeveuo(lischa(1:19)//'.INFC', 'L', vi=infc)
+    call load_list_info(load_empty, nb_load    , v_load_name, v_load_info,&
+                        list_load_ = list_load)
+    if (load_empty) then
+        goto 99
+    endif
 !
-! --- ALLOCATION DE LA CARTE DU CONDITIONNEMENT DES LAGRANGES
+! - Cart for Lagrange conditionner
 !
-!      CALL UTIMSD(6,0,.TRUE.,.FALSE.,'&&OP0070',1,'V')
-    call conlag(matass, alpha)
-    chalph = '&&VEBUME.CH_NEUT_R'
-    call mecact('V', chalph, 'MODELE', modele, 'NEUT_R  ',&
+    call conlag(matass, alpha)  
+    call mecact('V', chalph, 'MODELE', model, 'NEUT_R  ',&
                 ncmp=1, nomcmp='X1', sr=alpha)
 !
-! --- ALLOCATION DU VECT_ELEM RESULTAT :
+! - Allocate result
 !
-    call detrsd('VECT_ELEM', vecele)
-    call memare('V', vecele, modele(1:8), ' ', ' ',&
+    call detrsd('VECT_ELEM', vect_elem)
+    call memare('V', vect_elem, model, ' ', ' ',&
                 'CHAR_MECA')
-    call reajre(vecele, ' ', 'V')
+    call reajre(vect_elem, ' ', 'V')
 !
-! --- CALCUL DE L'OPTION B.U
+! - Input fields
+! 
+    lpain(1) = 'PDDLIMR'
+    lchin(1) = disp
+    lpain(2) = 'PALPHAR'
+    lchin(2) = chalph(1:19)
 !
-    ndir = 0
-    do 10 icha = 1, nchar
-        if (infc(icha+1) .le. 0) goto 10
-        nomcha = lcha(icha) (1:8)
-        ligrch = nomcha//'.CHME.LIGRE'
-        call jeexin(nomcha//'.CHME.LIGRE.LIEL', iret)
-        if (iret .le. 0) goto 10
-        call exisd('CHAMP_GD', nomcha//'.CHME.CMULT', iret)
-        if (iret .le. 0) goto 10
+! - Output fields
+! 
+    lpaout(1) = 'PVECTUR'
 !
-        lpain(1) = 'PDDLMUR'
-        lchin(1) = nomcha(1:8)//'.CHME.CMULT'
-        lpain(2) = 'PDDLIMR'
-        lchin(2) = depla
-        lpain(3) = 'PALPHAR'
-        lchin(3) = chalph
-        lpaout(1) = 'PVECTUR'
-        lchout(1) = '&&VEBUME.???????'
-        call gcnco2(masque)
-        lchout(1)(10:16) = masque(2:8)
-        call corich('E', lchout(1), icha, ibid)
+! - Computation
 !
-        call calcul('S', option, ligrch, nbin, lchin,&
-                    lpain, nbout, lchout, lpaout, 'V',&
-                    'OUI')
+    do i_load = 1, nb_load
+        load_name = v_load_name(i_load)(1:8)
+        load_nume = v_load_info(i_load+1)  
+        if (load_nume.gt.0) then
+            ligrch = load_name//'.CHME.LIGRE'
+            call jeexin(load_name//'.CHME.LIGRE.LIEL', iret)
+            if (iret .le. 0) cycle
+            call exisd('CHAMP_GD', load_name//'.CHME.CMULT', iret)
+            if (iret .le. 0) cycle
 !
-        if (debug) then
-            call dbgcal(option, ifmdbg, nbin, lpain, lchin,&
-                        nbout, lpaout, lchout)
+! --------- Input field
+!
+            lpain(3) = 'PDDLMUR'
+            lchin(3) = load_name(1:8)//'.CHME.CMULT'
+!
+! --------- Generate new RESU_ELEM name
+!
+            call gcnco2(newnom)
+            resu_elem(10:16) = newnom(2:8)
+            call corich('E', resu_elem, i_load, ibid)
+            lchout(1) = resu_elem
+!
+! --------- Computation
+!
+            call calcul('S', option, ligrch, nbin, lchin,&
+                        lpain, nbout, lchout, lpaout, 'V',&
+                        'OUI')
+!
+! --------- Copying output field
+!
+            call reajre(vect_elem, lchout(1), 'V')
         endif
+    end do
 !
-        ndir = ndir + 1
-        call reajre(vecele, lchout(1), 'V')
- 10 end do
-!
-!
-9999 continue
+ 99 continue
 !
     call jedema()
 end subroutine
