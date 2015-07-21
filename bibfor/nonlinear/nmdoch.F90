@@ -4,8 +4,7 @@ implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/getexm.h"
-#include "asterc/getfac.h"
+#include "asterfort/nmdoch_nbload.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
@@ -19,7 +18,6 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/liscad.h"
 #include "asterfort/lisccr.h"
-#include "asterfort/liscli.h"
 #include "asterfort/lisexp.h"
 #include "asterfort/lislfc.h"
 #include "asterfort/utmess.h"
@@ -74,8 +72,8 @@ implicit none
     character(len=6) :: nomlig(nbtych)
 !
     integer :: itych
-    integer :: n1, nocc, iexc, iret2
-    integer :: npilo, nexci, nb_load
+    integer :: n1
+    integer :: npilo, nb_excit, nb_load
     integer :: infmax, indic, i_load, iret, infc, j, i_load_new
     integer :: jlisdb, ichd
     character(len=5) :: suffix
@@ -87,11 +85,11 @@ implicit none
     character(len=19) :: lisdbl
     character(len=24) :: ligrch, lchin
     integer :: i_neum_lapl
-    aster_logical :: lfcplx, lacce
+    aster_logical :: lfcplx, lacce, l_zero_allowed
     integer :: nb_info_type
-    integer, pointer :: infc2(:) => null()
-    integer, pointer :: infch(:) => null()
-    character(len=24), pointer :: lcha2(:) => null()
+    integer, pointer :: v_ll_infc(:) => null()
+    integer, pointer :: v_llresu_infc(:) => null()
+    character(len=24), pointer :: v_llresu_lcha(:) => null()
 !
     data nomlig  /'.FORNO','.F3D3D','.F2D3D','.F1D3D',&
                   '.F2D2D','.F1D2D','.F1D1D','.PESAN',&
@@ -104,62 +102,52 @@ implicit none
     call jemarq()
     call getres(k8bid, typesd, nomcmd)
 !
-! --- INITIALISATIONS
+! - Initializations
 !
-    nb_load = 0
-    infmax = 0
-    fctcsr = '&&NMDOME'
-    lisdbl = '&&NMDOME.LISDBL'
-    lfcplx = .false.
-    lacce = .false.
-    info_type = 'RIEN'
-    npilo = 0
-    indic = 0
-    nexci = 0
-    i_load_new = 0
+    nb_load        = 0
+    infmax         = 0
+    fctcsr         = '&&NMDOME'
+    lisdbl         = '&&NMDOME.LISDBL'
+    lfcplx         = .false.
+    lacce          = .false.
+    info_type      = 'RIEN'
+    npilo          = 0
+    indic          = 0
+    nb_excit       = 0
+    i_load_new     = 0
 !
-! --- NOMBRE DE CHARGES
+! - Can we create "zero-load" list of loads datastructure ?
 !
+    l_zero_allowed = .false.
     if (l_load_user) then
-        if (getexm('EXCIT','CHARGE') .eq. 1) then
-            call getfac('EXCIT', nexci)
-        else
-            nexci=0
-        endif
-        if (nexci .gt. 0) then
-            do iexc = 1, nexci
-                call getvid('EXCIT', 'CHARGE', iocc=iexc, scal=load_name, nbret=nocc)
-!
-! --- GLUTE POUR LE CAS DEFI_CABLE_BP: MELANGE
-! --- CINEMATIQUE/NEUMANN
-!
-                call jeexin(load_name//'.CHME.SIGIN.VALE', iret)
-                if (iret .ne. 0) then
-                    call jeexin(load_name//'.CHME.CIMPO.DESC', iret2)
-                else
-                    iret2 = 1
-                endif
-!
-                if ((nocc.eq.1) .and. (iret2.ne.0)) then
-                    nb_load = nb_load + 1
-                endif
-            end do
-        else
-! --- CAS OU LE CHARGEMENT PEUT NE PAS ETRE OBLIGATOIRE (DYNA_NON_LINE)
-!     ON CREE UNE SD CHARGE CONTENANT 1 CHARGE FICTIVE
-            if (nomcmd .eq. 'DYNA_NON_LINE') then
-                call lisccr('MECA', list_load, 1, 'V')
-                call jeveuo(list_load(1:19)//'.INFC', 'E', vi=infch)
-                nb_load=0
-                infch(1) = nb_load
-            else if (nomcmd.eq.'STAT_NON_LINE') then
-                call utmess('F', 'CHARGES_2')
-            endif
-        endif
+        l_zero_allowed = nomcmd.eq.'DYNA_NON_LINE'.or.&
+                         nomcmd.eq.'CALC_FORC_NONL'.or.&
+                         nomcmd.eq.'CALC_CHAMP'.or.&
+                         nomcmd.eq.'POST_ELEM'.or.&
+                         nomcmd.eq.'LIRE_RESU'.or.&
+                         nomcmd.eq.'CREA_RESU'
     else
-        call jeveuo(list_load_resu(1:19)//'.INFC', 'L', vi=infc2)
-        nb_load = infc2(1)
-        call jeveuo(list_load_resu(1:19)//'.LCHA', 'L', vk24=lcha2)
+        l_zero_allowed = .true.
+    endif
+!
+! - Get number of loads for loads datastructure
+!
+    call nmdoch_nbload(l_load_user, list_load_resu, l_zero_allowed, nb_load,&
+                       nb_excit)
+!
+! - Create "zero-load" list of loads datastructure
+!
+    if (nb_load.eq.0) then
+        call lisccr('MECA', list_load, 1, 'V')
+        call jeveuo(list_load(1:19)//'.INFC', 'E', vi=v_ll_infc)
+        v_ll_infc(1) = nb_load
+    endif
+!
+! - Access to saved list of loads datastructure
+!
+    if (.not.l_load_user) then
+        call jeveuo(list_load_resu(1:19)//'.INFC', 'L', vi   = v_llresu_infc)
+        call jeveuo(list_load_resu(1:19)//'.LCHA', 'L', vk24 = v_llresu_lcha)
     endif
 !
     if (nb_load .ne. 0) then
@@ -191,7 +179,7 @@ implicit none
                     goto 30
                 endif
             else
-                load_name = lcha2(i_load)(1:8)
+                load_name = v_llresu_lcha(i_load)(1:8)
             endif
             zk8(jlisdb+i_load-1) = load_name
 !
@@ -210,11 +198,13 @@ implicit none
             else
                 typcha = 'FIXE_CST'
                 if (nomcmd .eq. 'CALC_CHAMP') then
-                    if (infc2(i_load+1) .eq. 4 .or. infc2(1+nb_load+i_load) .eq. 4) then
+                    if (v_llresu_infc(i_load+1) .eq. 4 .or.&
+                        v_llresu_infc(1+nb_load+i_load) .eq. 4) then
                         typcha = 'SUIV'
-                    elseif (infc2(i_load+1).eq.5 .or. infc2(1+nb_load+i_load).eq.5) then
+                    elseif (v_llresu_infc(i_load+1).eq.5 .or.&
+                            v_llresu_infc(1+nb_load+i_load).eq.5) then
                         typcha = 'FIXE_PIL'
-                    else if (infc2(1+3*nb_load+2+i_load).eq.1) then
+                    else if (v_llresu_infc(1+3*nb_load+2+i_load).eq.1) then
                         typcha = 'DIDI'
                     endif
                 endif
@@ -240,7 +230,7 @@ implicit none
                      ( nomcmd.eq.'LIRE_RESU' .and. typesd.eq.'DYNA_HARMO' )&
                      )
             lacce = (nomcmd.eq.'DYNA_NON_LINE'.or. nomcmd.eq.'LIRE_RESU')
-            call lislfc(list_load_resu, i_load, indic, l_load_user, nexci,&
+            call lislfc(list_load_resu, i_load, indic, l_load_user, nb_excit,&
                         lfcplx, lacce, fctcsr, nomfct)
             if (nomfct .ne. fctcsr) then
                 if (typcha .eq. 'FIXE_PIL') then
