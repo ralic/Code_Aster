@@ -14,10 +14,13 @@ implicit none
 #include "asterfort/liscad.h"
 #include "asterfort/lisccr.h"
 #include "asterfort/jeexin.h"
+#include "asterfort/load_list_getp.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/load_neut_iden.h"
 #include "asterfort/load_neut_data.h"
 #include "asterfort/utmess.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -63,26 +66,29 @@ implicit none
     parameter   (nb_type_neum = 10)
     aster_logical :: list_load_keyw(nb_type_neum)
 !
-    aster_logical :: l_func_mult, l_load_user
+    aster_logical :: l_func_mult, l_load_user, l_apply_user
     integer :: nb_info_type
     character(len=24) :: info_type
-    integer :: nb_load, n1, i_load, i_type_neum, iret
+    integer :: nb_load, n1, i_load, i_type_neum, iret, i_excit
     character(len=24) :: ligrch, const_func
     character(len=10) :: load_obje(2)
     character(len=19) :: cart_name
-    character(len=24) :: load_name, load_type, load_para, load_func, load_keyw
+    character(len=8) :: load_name
+    character(len=24) :: load_type, load_para, load_func, load_keyw
     real (kind=8) :: rcoef
-    character(len=16) :: pheno, load_opti_f
-    character(len=24) :: lloadr_name, lloadr_func
-    integer, pointer :: v_loadr_info(:) => null()
-    character(len=24), pointer :: v_loadr_name(:) => null()
-    character(len=24), pointer :: v_loadr_func(:) => null()
+    character(len=16) :: load_opti_f
+    integer, pointer :: v_llresu_info(:) => null()
+    character(len=24), pointer :: v_llresu_name(:) => null()
+    character(len=24), pointer :: v_llresu_func(:) => null()
+    character(len=8), pointer :: v_list_dble(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nb_load     = 0
-    const_func  = '&&NTDOCH'
-    l_load_user = .true.
+    nb_load      = 0
+    i_excit      = 0
+    const_func   = '&&NTDOCH'
+    l_load_user  = .true.
+    l_apply_user = .true. 
     if (present(l_load_user_)) then
         l_load_user = l_load_user_
     endif
@@ -92,8 +98,8 @@ implicit none
     if (l_load_user) then
         call getfac('EXCIT', nb_load)
     else
-        call jeveuo(list_load_resu//'.INFC', 'L', vi   = v_loadr_info)
-        nb_load = v_loadr_info(1)
+        call jeveuo(list_load_resu//'.INFC', 'L', vi   = v_llresu_info)
+        nb_load = v_llresu_info(1)
     endif
 !
     if (nb_load .ne. 0) then
@@ -102,47 +108,33 @@ implicit none
 !
         call lisccr('THER', list_load, nb_load, 'V')
 !
-! ----- Datastructure access
+! ----- List of loads to avoid same loads
 !
-        lloadr_name = list_load_resu(1:19)//'.LCHA'
-        lloadr_func = list_load_resu(1:19)//'.FCHA'
+        AS_ALLOCATE(vk8 = v_list_dble, size = nb_load)
+!
+! ----- Access to saved list of loads datastructure
+!
         if (.not.l_load_user) then
-            call jeveuo(lloadr_name, 'L', vk24 = v_loadr_name)
-            call jeveuo(lloadr_func, 'L', vk24 = v_loadr_func)
+            call jeveuo(list_load_resu(1:19)//'.INFC', 'L', vi   = v_llresu_info)
+            call jeveuo(list_load_resu(1:19)//'.LCHA', 'L', vk24 = v_llresu_name)
+            call jeveuo(list_load_resu(1:19)//'.FCHA', 'L', vk24 = v_llresu_func)
         endif
 !
 ! ----- Loop on loads
 !
         do i_load = 1 , nb_load
 !
-! --------- Name of load
+! --------- Get parameters for construct list of loads
 !
-            if (l_load_user) then
-                call getvid('EXCIT', 'CHARGE', iocc=i_load, scal=load_name)
-            else
-                call jeveuo(list_load_resu//'.LCHA', 'L', vk24=v_loadr_name)
-                load_name = v_loadr_name(i_load)
-            endif
-!
-! --------- Only thermics loads
-!
-            call dismoi('TYPE_CHARGE', load_name, 'CHARGE', repk=load_type)
-            call dismoi('PHENOMENE'  , load_name, 'CHARGE', repk=pheno)
-            if (pheno.ne.'THERMIQUE') then
-                call utmess('F', 'CHARGES_21', sk=load_name)
-            endif
-!
-! --------- LIGREL of load
-!
-            ligrch = load_name(1:8)//'.CHTH.LIGRE'
+            call load_list_getp('THER'      , l_load_user , v_llresu_info, v_llresu_name,&
+                                v_list_dble , l_apply_user, i_load       , nb_load      ,&
+                                i_excit     , load_name   , load_type    , ligrch)
 !
 ! --------- Dirichlet loads (AFFE_CHAR_CINE)
 !
             nb_info_type = 0
             info_type    = 'RIEN'
             if (load_type(1:5) .eq. 'CITH_') then
-                call jeexin(load_name(1:19)//'.AFCK', iret)
-                ASSERT(iret.ne.0)
                 if (load_type(5:7) .eq. '_FT') then
                     info_type = 'CINE_FT'
                 else if (load_type(5:7).eq.'_FO') then
@@ -191,8 +183,8 @@ implicit none
                     call focste(const_func, 'TOUTRESU', rcoef, 'V')
                 endif
             else
-                call jeveuo(list_load_resu//'.FCHA', 'L', vk24=v_loadr_func)
-                load_func = v_loadr_func(i_load)
+                call jeveuo(list_load_resu//'.FCHA', 'L', vk24=v_llresu_func)
+                load_func = v_llresu_func(i_load)
                 if (load_func(1:2) .ne. '&&') then
                     l_func_mult = .true.
                 endif
@@ -237,7 +229,7 @@ implicit none
                 endif
             end do
 !
-! --------- Add load
+! --------- Add new load(s) in list
 !
             if (nb_info_type .gt. 0) then
                 call liscad('THER'      , list_load     , i_load, load_name, load_func, &
@@ -245,5 +237,7 @@ implicit none
             endif
         end do
     endif
+!
+    AS_DEALLOCATE(vk8 = v_list_dble)
 
 end subroutine
