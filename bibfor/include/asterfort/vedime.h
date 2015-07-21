@@ -16,13 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine vedime(modele, charge, infcha, instap, typres,&
-                      vecelz)
-        character(len=24) :: modele
-        character(len=24) :: charge
-        character(len=24) :: infcha
-        real(kind=8) :: instap
-        character(len=*) :: typres
-        character(len=*) :: vecelz
+    subroutine vedime(model     , lload_name, lload_info, time, typres,&
+                      vect_elemz)
+        character(len=24), intent(in) :: model
+        character(len=24), intent(in) :: lload_name
+        character(len=24), intent(in) :: lload_info
+        real(kind=8), intent(in) :: time
+        character(len=*), intent(in) :: typres
+        character(len=*), intent(inout) :: vect_elemz
     end subroutine vedime
 end interface
