@@ -7,13 +7,10 @@ subroutine ntreso(model , mate  , cara_elem, list_load, nume_dof,&
 implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/getres.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
-#include "asterfort/infniv.h"
 #include "asterfort/nxacmv.h"
-#include "asterfort/resoud.h"
+#include "asterfort/nxreso.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -48,31 +45,19 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    character(len=16) :: k16b1, k16b2
     character(len=19) :: chsol, varc_curr
-    character(len=24) :: mediri, vhydr, tmpchi, tmpchf, vec2ni, criter, result
+    character(len=24) :: mediri, vhydr, tmpchi, tmpchf, vec2ni
     character(len=24) :: vtemp
-    complex(kind=8) :: c16bid
-    integer :: iret
-    character(len=24) :: lload_name, lload_info, lload_func
-    c16bid = dcmplx(0.d0, 0.d0)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call infniv(ifm, niv)
 !
-    lload_name = list_load(1:19)//'.LCHA'
-    lload_info = list_load(1:19)//'.INFC'
-    lload_func = list_load(1:19)//'.FCHA'
-    chsol = '&&NTRESO_SOLUTION  '
-    criter = '&&NTRESO_RESGRA_GCPC    '
+    chsol     = '&&NTRESO_SOLUTION'
     varc_curr = '&&NTRESO.CHVARC'
+    vtemp     ='&&NXLECTVAR_____'
 !
-    call getres(result, k16b1, k16b2)
-    vtemp='&&NXLECTVAR_____'
+! - Construct second member
 !
-! 1 ==> ASSEMBLAGE DU SECOND MEMBRE
     call nxacmv(model , mate  , cara_elem, list_load, nume_dof,&
                 solver, lostat, time     , tpsthe   , reasvc  ,&
                 reasvt, reasmt, reasrg   , reasms   , creas   ,&
@@ -80,17 +65,14 @@ implicit none
                 vec2nd, vec2ni, matass   , maprec   , cndirp  ,&
                 cnchci, mediri, compor)
 !
-! 2 ==> RESOLUTION AVEC VEC2ND COMME SECOND MEMBRE
-    call resoud(matass, maprec, solver, cnchci, 0,&
-                vec2nd, chsol, 'V', [0.d0], [c16bid],&
-                criter, .true._1, 0, iret)
+! - Solve linear system
 !
-! 3. ==> SAUVEGARDE DE LA SOLUTION
+    call nxreso(matass, maprec, solver, cnchci, vec2nd,&
+                chsol)
 !
-! 4.1 ==> SAUVEGARDE DU CHAMP SOLUTION CHSOL DANS VTEMP
-    call copisd('CHAMP_GD', 'V', chsol(1:19), vtemp(1:19))
+! - Save solution
 !
-! 4.2 ==> DESTRUCTION DU CHAMP SOLUTION CHSOL
+    call copisd('CHAMP_GD', 'V', chsol, vtemp)
     call detrsd('CHAMP_GD', chsol)
 !
 end subroutine

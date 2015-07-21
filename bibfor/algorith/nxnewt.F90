@@ -14,13 +14,13 @@ implicit none
 #include "asterfort/ascova.h"
 #include "asterfort/asmatr.h"
 #include "asterfort/copisd.h"
+#include "asterfort/nxreso.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/merxth.h"
 #include "asterfort/nxresi.h"
 #include "asterfort/preres.h"
-#include "asterfort/resoud.h"
 #include "asterfort/verstp.h"
 #include "asterfort/vethbt.h"
 !
@@ -71,19 +71,16 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    complex(kind=8) :: cbid
     integer :: ibid
     integer :: jmed, jmer, nbmat, ierr
     real(kind=8) :: r8bid
     character(len=1) :: typres
     character(len=19) :: chsol
-    character(len=24) :: bidon, veresi, varesi, vabtla, vebtla, criter
+    character(len=24) :: bidon, veresi, varesi, vabtla, vebtla
     character(len=24) :: tlimat(2), mediri, merigi, cnvabt
     real(kind=8) :: testr, testm
     real(kind=8) :: time_curr
     character(len=24) :: lload_name, lload_info
-    integer :: iret
-    cbid = dcmplx(0.d0, 0.d0)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -92,7 +89,6 @@ implicit none
     vabtla = '&&VATBTL'
     cnresi = ' '
     cnvabt = ' '
-    criter = '&&RESGRA_GCPC'
     typres = 'R'
     chsol  = '&&NXNEWT.SOLUTION'
     bidon  = '&&FOMULT.BIDON'
@@ -166,12 +162,10 @@ implicit none
 !
     endif
 !
-!==========================================================
-! --- RESOLUTION (VTEMPP CONTIENT LE SECOND MEMBRE, CHSOL LA SOLUTION)
+! - Solve linear system
 !
-    call resoud(matass, maprec, solver, cnchci, 0,&
-                cn2mbr, chsol, 'V', [0.d0], [cbid],&
-                criter, .true._1, 0, iret)
+    call nxreso(matass, maprec, solver, cnchci, cn2mbr,&
+                chsol)
 !
 ! --- RECOPIE DANS VTEMPP DU CHAMP SOLUTION CHSOL,
 !     INCREMENT DE TEMPERATURE

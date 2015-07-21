@@ -12,6 +12,7 @@ implicit none
 #include "asterfort/ascova.h"
 #include "asterfort/copisd.h"
 #include "asterfort/jedema.h"
+#include "asterfort/nxreso.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/resoud.h"
@@ -67,7 +68,6 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    complex(kind=8) :: cbid
     integer :: k, j2nd, j2ni
     integer :: jtempm
     integer :: jbuem
@@ -75,23 +75,19 @@ implicit none
     real(kind=8) :: time_curr
     character(len=1) :: typres
     character(len=19) :: chsol
-    character(len=24) :: bidon, veresi, varesi, vabtla, vebtla, criter
+    character(len=24) :: bidon, veresi, varesi, vabtla, vebtla
     character(len=24) :: vebuem, vabuem, cnvabt, cnvabu
     character(len=24) :: lload_name, lload_info
-    integer :: iret
     real(kind=8), pointer :: v_cn2mbr(:) => null()
     real(kind=8), pointer :: btla(:) => null()
     real(kind=8), pointer :: dirp(:) => null()
     real(kind=8), pointer :: temp(:) => null()
     real(kind=8), pointer :: vare(:) => null()
-    cbid = dcmplx(0.d0, 0.d0)
-
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     varesi = '&&VARESI'
-    criter = '&&RESGRA_GCPC'
     cnvabt = ' '
     cnvabu = ' '
     typres = 'R'
@@ -157,11 +153,10 @@ implicit none
             v_cn2mbr(k) = zr(j2nd+k-1) - vare(k) + dirp(k) - btla(k)- zr(jbuem+k-1)
         end do
 !
-! --- RESOLUTION (CN2MBR CONTIENT LE SECOND MEMBRE, CHSOL LA SOLUTION)
+! ----- Solve linear system
 !
-        call resoud(matass, maprec, solver, cnchci, 0,&
-                    cn2mbr, chsol, 'V', [0.d0], [cbid],&
-                    criter, .true._1, 0, iret)
+        call nxreso(matass, maprec, solver, cnchci, cn2mbr,&
+                    chsol)
 !
 ! --- RECOPIE DANS temp_iter DU CHAMP SOLUTION CHSOL
 !
@@ -180,12 +175,12 @@ implicit none
         do k = 1, lonch
             v_cn2mbr(k) = zr(j2ni+k-1) + dirp(k)
         end do
+
 !
-! --- RESOLUTION (CN2MBR CONTIENT LE SECOND MEMBRE, CHSOL LA SOLUTION)
+! ----- Solve linear system
 !
-        call resoud(matass, maprec, solver, cnchci, 0,&
-                    cn2mbr, chsol, 'V', [0.d0], [cbid],&
-                    criter, .true._1, 0, iret)
+        call nxreso(matass, maprec, solver, cnchci, cn2mbr,&
+                    chsol)
 !
 ! --- RECOPIE DANS temp_iter DU CHAMP SOLUTION CHSOL
 !
