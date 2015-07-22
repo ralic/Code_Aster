@@ -1,6 +1,6 @@
 subroutine charth(load, vale_type)
 !
-    implicit none
+implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/adalig.h"
@@ -137,23 +137,23 @@ subroutine charth(load, vale_type)
 !
 ! ----- LIAISON_DDL
 !
-        call caliai(vale_type, load)
+        call caliai(vale_type, load, 'THER')
 !
 ! ----- LIAISON_GROUP
 !
-        call caliag(vale_type, load)
+        call caliag(vale_type, load, 'THER')
 !
 ! ----- LIAISON_UNIF
 !
-        call cagrou(load, mesh, vale_type)
+        call cagrou(load, mesh, vale_type, 'THER')
 !
 ! ----- LIAISON_CHAMNO
 !
-        call calich(load)
+        call calich(load, 'THER')
 !
 ! ----- LIAISON_MAIL
 !
-        call calirc(load)
+        call calirc(load, 'THER')
 !
     else if (vale_type .eq. 'FONC') then
 !
@@ -201,15 +201,15 @@ subroutine charth(load, vale_type)
 !
 ! ----- LIAISON_DDL
 !
-        call caliai(vale_type, load)
+        call caliai(vale_type, load, 'THER')
 !
 ! ----- LIAISON_GROUP
 !
-        call caliag(vale_type, load)
+        call caliag(vale_type, load, 'THER')
 !
 ! ----- LIAISON_UNIF
 !
-        call cagrou(load, mesh, vale_type)
+        call cagrou(load, mesh, vale_type, 'THER')
     else
         ASSERT(.false.)
     endif
@@ -225,8 +225,9 @@ subroutine charth(load, vale_type)
         call jeveuo(ligrch//'.LGRF', 'E', vk8 = p_ligrch_lgrf)
         p_ligrch_lgrf(2) = model
     endif
-
-! - Audit assignments :
+!
+! - Audit assignments
+!
     call verif_affe(modele=model,sd=load)
 !
 end subroutine

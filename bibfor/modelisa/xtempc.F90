@@ -18,7 +18,6 @@ subroutine xtempc(nfiss, fiss, fonree, char)
     implicit none
 #include "jeveux.h"
 #include "asterfort/aflrch.h"
-#include "asterfort/agdual.h"
 #include "asterfort/afrela.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -140,7 +139,6 @@ subroutine xtempc(nfiss, fiss, fonree, char)
 ! --- AFFECTATION DES RELATIONS LINEAIRES DANS LE LIGREL DE CHARGE
 !
     ASSERT(nrel.gt.0)
-    call agdual(char,1,'LIN')
     call aflrch(lisrel, char)
 !
     call jedema()

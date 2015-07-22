@@ -1,6 +1,6 @@
 subroutine charme(load, vale_type)
 !
-    implicit none
+implicit none
 !
 #include "asterfort/adalig.h"
 #include "asterfort/assert.h"
@@ -293,11 +293,11 @@ subroutine charme(load, vale_type)
 !
 ! ----- LIAISON_DDL
 !
-        call caliai(vale_type, load)
+        call caliai(vale_type, load, 'MECA')
 !
 ! ----- LIAISON_MAIL
 !
-        call calirc(load)
+        call calirc(load, 'MECA')
 !
 ! --- LIAISON_PROJ ---
 !
@@ -313,7 +313,7 @@ subroutine charme(load, vale_type)
 !
 ! ----- LIAISON_CHAMNO
 !
-        call calich(load)
+        call calich(load, 'MECA')
 !
 ! ----- CHAMNO_IMPO
 !
@@ -329,11 +329,11 @@ subroutine charme(load, vale_type)
 !
 ! ----- LIAISON_GROUP
 !
-        call caliag(vale_type, load)
+        call caliag(vale_type, load, 'MECA')
 !
 ! ----- LIAISON_UNIF
 !
-        call cagrou(load, mesh, vale_type)
+        call cagrou(load, mesh, vale_type, 'MECA')
 !
 ! ----- LIAISON_SOLIDE
 !
@@ -352,7 +352,7 @@ subroutine charme(load, vale_type)
 !
 ! ----- LIAISON_DDL
 !
-        call caliai(vale_type, load)
+        call caliai(vale_type, load, 'MECA')
 ! --------------------------------------------------------------------------------------------------
     else if (vale_type .eq. 'FONC') then
 !
@@ -367,7 +367,7 @@ subroutine charme(load, vale_type)
 !
 ! ----- LIAISON_DDL
 !
-        call caliai(vale_type, load)
+        call caliai(vale_type, load, 'MECA')
 !
 ! ----- LIAISON_OBLIQUE
 !
@@ -375,11 +375,11 @@ subroutine charme(load, vale_type)
 !
 ! ----- LIAISON_GROUP
 !
-        call caliag(vale_type, load)
+        call caliag(vale_type, load, 'MECA')
 !
 ! ----- LIAISON_UNIF
 !
-        call cagrou(load, mesh, vale_type)
+        call cagrou(load, mesh, vale_type, 'MECA')
 !
 ! ----- LIAISON_SOLIDE
 !
@@ -410,8 +410,9 @@ subroutine charme(load, vale_type)
     if (vale_type .ne. 'COMP') then
         call chveno(vale_type, mesh, model)
     endif
-
-! - Audit assignments :
+!
+! - Audit assignments
+!
     call verif_affe(modele=model,sd=load)
 !
 end subroutine

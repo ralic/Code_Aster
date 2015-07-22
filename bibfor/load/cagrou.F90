@@ -1,4 +1,4 @@
-subroutine cagrou(load, mesh, vale_type)
+subroutine cagrou(load, mesh, vale_type, phenom)
 !
 implicit none
 !
@@ -41,6 +41,7 @@ implicit none
     character(len=8), intent(in) :: load
     character(len=8), intent(in) :: mesh
     character(len=4), intent(in) :: vale_type
+    character(len=4), intent(in) :: phenom
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -165,7 +166,9 @@ implicit none
 !
 ! - Final linear relation affectation
 !
-    call agdual(load,1,'LIN')
+    if (phenom.eq.'MECA') then
+        call agdual(load,1,'LIN')
+    endif
     call aflrch(list_rela, load)
 !
 999  continue

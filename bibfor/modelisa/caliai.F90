@@ -1,4 +1,4 @@
-subroutine caliai(fonree, charge)
+subroutine caliai(fonree, charge, phenom)
 !
 implicit none
 !
@@ -30,9 +30,6 @@ implicit none
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    character(len=4) :: fonree
-    character(len=8) :: charge
-! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,6 +47,10 @@ implicit none
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
+    character(len=4), intent(in) :: fonree
+    character(len=8), intent(in) :: charge
+    character(len=4), intent(in) :: phenom
+
 !     TRAITER LE MOT CLE LIAISON_DDL DE AFFE_CHAR_XXX
 !     ET ENRICHIR LA CHARGE (CHARGE) AVEC LES RELATIONS LINEAIRES
 !
@@ -309,7 +310,9 @@ implicit none
 !
 !     -- AFFECTATION DE LA LISTE_RELA A LA CHARGE :
 !     ---------------------------------------------
-    call agdual(charge,1,'LIN')
+    if (phenom.eq.'MECA') then
+        call agdual(charge,1,'LIN')
+    endif
     call aflrch(lisrel, charge)
 !
 !     -- MENAGE :

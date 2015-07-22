@@ -1,6 +1,6 @@
 subroutine charac(load, vale_type)
 !
-    implicit none
+implicit none
 !
 #include "asterfort/adalig.h"
 #include "asterfort/caddli.h"
@@ -31,7 +31,7 @@ subroutine charac(load, vale_type)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_loadge: mickael.abbas at edf.fr
+! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=4), intent(in) :: vale_type
     character(len=8), intent(in) :: load
@@ -85,7 +85,7 @@ subroutine charac(load, vale_type)
 !
 ! - LIAISON_UNIF
 !
-    call cagrou(load, mesh, vale_type)
+    call cagrou(load, mesh, vale_type, 'ACOU')
 !
 ! - Update loads <LIGREL>
 !

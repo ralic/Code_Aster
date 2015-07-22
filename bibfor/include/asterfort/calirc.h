@@ -15,8 +15,9 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-          interface 
-            subroutine calirc(chargz)
-              character(len=*) :: chargz
-            end subroutine calirc
-          end interface 
+interface
+    subroutine calirc(chargz, phenom)
+        character(len=*), intent(in) :: chargz
+        character(len=4), intent(in) :: phenom
+    end subroutine calirc
+end interface

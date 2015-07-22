@@ -279,7 +279,9 @@ implicit none
 !
 ! - Final linear relation affectation
 !
-    call agdual(load,1,'LIN')
+    if (keywordfact.eq.'DDL_IMPO') then
+        call agdual(load,1,'LIN')
+    endif
     call aflrch(list_rela, load)
 !
     call jedetr('&&CADDLI.DIRECT')

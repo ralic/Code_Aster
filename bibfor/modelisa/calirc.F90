@@ -1,5 +1,7 @@
-subroutine calirc(chargz)
-    implicit none
+subroutine calirc(chargz, phenom)
+!
+implicit none
+!
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
@@ -37,9 +39,6 @@ subroutine calirc(chargz)
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    character(len=*) :: chargz
-! ----------------------------------------------------------------------
-! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,6 +55,11 @@ subroutine calirc(chargz)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! aslint: disable=W1501
+! person_in_charge: jacques.pellet at edf.fr
+!
+    character(len=*), intent(in) :: chargz
+    character(len=4), intent(in) :: phenom
 !
 !     CREER LES CARTES CHAR.CHXX.CMULT ET CHAR.CHXX.CIMPO
 !          ET REMPLIR LIGRCH, POUR LE MOT-CLE LIAISON_MAIL
@@ -707,7 +711,9 @@ subroutine calirc(chargz)
 !
 ! --- AFFECTATION DE LA LISTE DE RELATIONS A LA CHARGE :
 !     ------------------------------------------------
-    call agdual(charge,1,'LIN')
+    if (phenom.eq.'MECA') then
+        call agdual(charge,1,'LIN')
+    endif
     call aflrch(lisrel, charge)
 !
 320 continue
