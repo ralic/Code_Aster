@@ -16,14 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine vebtla(base, modelz, mate, carele, deplaz,&
-                      lischa, vecelz)
-        character(len=1) :: base
-        character(len=*) :: modelz
-        character(len=24) :: mate
-        character(len=24) :: carele
-        character(len=*) :: deplaz
-        character(len=19) :: lischa
-        character(len=*) :: vecelz
+    subroutine vebtla(base     , model_    , mate, cara_elem, disp_,&
+                      list_load, vect_elemz)
+        character(len=1), intent(in) :: base
+        character(len=*), intent(in) :: model_
+        character(len=24), intent(in) :: mate
+        character(len=24), intent(in) :: cara_elem
+        character(len=*), intent(in) :: disp_
+        character(len=19), intent(in) :: list_load
+        character(len=*), intent(in) :: vect_elemz
     end subroutine vebtla
 end interface
