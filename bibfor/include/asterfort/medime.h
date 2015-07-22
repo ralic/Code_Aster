@@ -16,11 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine medime(base, cumul, modele, lischa, mediri)
-        character(len=1) :: base
-        character(len=4) :: cumul
-        character(len=24) :: modele
-        character(len=19) :: lischa
-        character(len=19) :: mediri
+    subroutine medime(base, cumul, model, list_load, matr_elem)
+        character(len=1), intent(in) :: base
+        character(len=4), intent(in) :: cumul
+        character(len=24), intent(in) :: model
+        character(len=19), intent(in) :: list_load
+        character(len=19), intent(in) :: matr_elem
     end subroutine medime
 end interface

@@ -1,4 +1,22 @@
-subroutine medime(base, cumul, modele, lischa, mediri)
+subroutine medime(base, cumul, model, list_load, matr_elem)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/calcul.h"
+#include "asterfort/codent.h"
+#include "asterfort/exisd.h"
+#include "asterfort/inical.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/load_list_info.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/memare.h"
+#include "asterfort/reajre.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,157 +36,125 @@ subroutine medime(base, cumul, modele, lischa, mediri)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/calcul.h"
-#include "asterfort/codent.h"
-#include "asterfort/dbgcal.h"
-#include "asterfort/exisd.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/inical.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/memare.h"
-#include "asterfort/reajre.h"
-    character(len=1) :: base
-    character(len=4) :: cumul
-    character(len=24) :: modele
-    character(len=19) :: mediri
-    character(len=19) :: lischa
+    character(len=1), intent(in) :: base
+    character(len=4), intent(in) :: cumul
+    character(len=24), intent(in) :: model
+    character(len=19), intent(in) :: list_load
+    character(len=19), intent(in) :: matr_elem
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (CALCUL)
+! Mechanics - Load
 !
-! CALCUL DES MATRICES ELEMENTAIRES DES ELEMENTS DE LAGRANGE
+! Elementary matrix for Dirichlet BC
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  base             : JEVEUX base to create vect_elem
+! In  cumul            : option to add/erase matr_elem
+!                      'ZERO' - Erase old matr_elem
+!                      'CUMU' - Add matr_elem to old ones
+! In  model            : name of model
+! In  list_load        : name of datastructure for list of loads
+! In  matr_elem        : elementary matrix
 !
-! IN  BASE    : BASE 'V' OU BASE OU SONT CREES LES OBJETS EN SORTIE
-! IN  CUMUL   : /'ZERO' : ON INITIALISE LE MATR_ELEM
-!               /'CUMU' : ON AJOUTE UN NOUVEAU MATR_ELEM AUX EXISTANTS
-! IN  MODELE  : NOM DU MODELE
-! IN  LISCHA  : SD L_CHARGES
-! OUT MEDIRI  : MATRICES ELEMENTAIRES
-!
-!
-!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: nbout, nbin
     parameter    (nbout=1, nbin=1)
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
-    character(len=8) :: nomcha
+    character(len=8) :: load_name
     character(len=16) :: option
-    character(len=19) :: ligrch
-    integer :: iret, icha, ilires
-    integer :: nchar, nluti
-    integer :: ifmdbg, nivdbg
-    aster_logical :: debug
-    character(len=24), pointer :: lcha(:) => null()
-    integer, pointer :: infc(:) => null()
+    character(len=19) :: ligrch, resu_elem
+    integer :: iret, ilires, load_nume
+    integer :: nluti, nb_load, i_load
+    character(len=24), pointer :: v_load_name(:) => null()
+    integer, pointer :: v_load_info(:) => null()
+    aster_logical :: load_empty
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-    call infdbg('PRE_CALCUL', ifmdbg, nivdbg)
 !
-! --- INITIALISATIONS
+! - Initializations
 !
-    option = 'MECA_DDLM_R'
-    if (nivdbg .ge. 2) then
-        debug = .true.
-    else
-        debug = .false.
-    endif
+    option    = 'MECA_DDLM_R'
+    resu_elem = matr_elem(1:8)//'.???????'
 !
-! --- INITIALISATION DES CHAMPS POUR CALCUL
+! - Init fields
 !
     call inical(nbin, lpain, lchin, nbout, lpaout,&
                 lchout)
 !
-! --- ACCES AUX CHARGEMENTS
+! - Loads
 !
-    call jeexin(lischa(1:19)//'.LCHA', iret)
-    if (iret .eq. 0) then
-        nchar = 0
-        goto 20
-    else
-        call jelira(lischa(1:19)//'.LCHA', 'LONMAX', nchar)
-        call jeveuo(lischa(1:19)//'.LCHA', 'L', vk24=lcha)
-        call jeveuo(lischa(1:19)//'.INFC', 'L', vi=infc)
+    call load_list_info(load_empty, nb_load    , v_load_name, v_load_info,&
+                        list_load_ = list_load)
+    if (load_empty) then
+        goto 99
     endif
 !
-! --- PREPARATION DES MATR_ELEM
-!
-    if (cumul .eq. 'ZERO') then
-        call jedetr(mediri//'.RELR')
-        call memare(base, mediri, modele(1:8), ' ', ' ',&
-                    'RIGI_MECA')
-        call reajre(mediri, ' ', base)
-    endif
-!
-! --- CHAMPS DE SORTIE
+! - Output field
 !
     lpaout(1) = 'PMATUUR'
-    lchout(1) = mediri(1:15)//'.'
 !
+! - Allocate result
+!
+    if (cumul .eq. 'ZERO') then
+        call jedetr(matr_elem//'.RELR')
+        call memare(base, matr_elem, model, ' ', ' ',&
+                    'RIGI_MECA')
+        call reajre(matr_elem, ' ', base)
+    endif
     if (cumul .eq. 'ZERO') then
         nluti = 1
     else if (cumul.eq.'CUMU') then
-        call jelira(mediri//'.RELR', 'LONUTI', nluti)
+        call jelira(matr_elem//'.RELR', 'LONUTI', nluti)
         nluti = nluti+1
         call codent(nluti+1, 'D0', lchout(1) (12:14))
     else
         ASSERT(.false.)
     endif
+!3
+! - Computation
 !
     ilires = nluti-1
-    do 10 icha = 1, nchar
-        if (infc(icha+1) .ne. 0) then
-            nomcha = lcha(icha) (1:8)
-            ligrch = nomcha(1:8)//'.CHME.LIGRE'
+    do i_load = 1, nb_load
+        load_name = v_load_name(i_load)(1:8)
+        load_nume = v_load_info(i_load+1) 
+        if (load_nume .ne. 0) then
+            ligrch = load_name(1:8)//'.CHME.LIGRE'
             call jeexin(ligrch(1:19)//'.LIEL', iret)
-            if (iret .le. 0) goto 10
-            call exisd('CHAMP_GD', nomcha(1:8)//'.CHME.CMULT', iret)
-            if (iret .le. 0) goto 10
+            if (iret .le. 0) cycle
+            call exisd('CHAMP_GD', load_name(1:8)//'.CHME.CMULT', iret)
+            if (iret .le. 0) cycle
 !
-! ---     CHAMPS IN
+! --------- Input field
 !
             lpain(1) = 'PDDLMUR'
-            lchin(1) = nomcha//'.CHME.CMULT'
+            lchin(1) = load_name//'.CHME.CMULT'
 !
-! ---     CHAMPS OUT
+! --------- Generate new RESU_ELEM name
 !
-            lpaout(1) = 'PMATUUR'
-            call codent(ilires+1, 'D0', lchout(1) (17:19))
+            ASSERT(ilires+1.le.9999999)
+            call codent(ilires+1, 'D0', resu_elem(10:16))
+            lchout(1) = resu_elem
 !
-! ---     APPEL A CALCUL
+! --------- Computation
 !
-            if (debug) then
-                call dbgcal(option, ifmdbg, nbin, lpain, lchin,&
-                            nbout, lpaout, lchout)
-            endif
-!
-            call calcul('S', option, ligrch, nbin, lchin,&
+            call calcul('S'  , option, ligrch, nbin, lchin,&
                         lpain, nbout, lchout, lpaout, base,&
                         'OUI')
 !
-! ---     STOCKAGE DES RESU_ELEM
+! --------- Copying resu_elem
 !
-            call reajre(mediri, lchout(1), base)
+            call reajre(matr_elem, lchout(1), base)
             ilires = ilires + 1
         endif
- 10 end do
- 20 continue
+    end do
+ 99 continue
 !
     call jedema()
 end subroutine
