@@ -432,4 +432,10 @@ FIN()
    Sinon, utiliser STAT_NON_LINE sur un maillage adéquat.
 """),
 
+    93 : _(u"""
+   Quand on utilise PETIT_REAC dans SIMU_POINT_MAT, il n'est pas possible d'imposer exactement une déformation donnée.
+   Les déformations à la fin du calcul seront différentes de celles que l'on a donné, sauf en petites déformations.
+   Si vous voulez simuler des grandes déformations, utilisez plutôt GDEF_LOG.
+"""),
+
 }

@@ -61,6 +61,7 @@ subroutine op0033()
 #include "asterfort/r8inir.h"
 #include "asterfort/tnsvec.h"
 #include "asterfort/utbtab.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vrcinp.h"
 #include "asterfort/wkvect.h"
 #include "blas/daxpy.h"
@@ -164,6 +165,14 @@ subroutine op0033()
                 pred, matrel, imptgt, option, zk8(lnomvi),&
                 nbvita, nbvrcm, sderro)
     call r8inir(54, 0.d0, dsidep, 1)
+!
+! - Message if PETIT_REAC
+!
+    if (defimp.gt.0) then
+        if (compor(3).eq.'PETIT_REAC') then
+            call utmess('I', 'COMPOR2_93')
+        endif
+    endif
 !
 ! --- CREATION DE LA SD POUR ARCHIVAGE DES INFORMATIONS DE CONVERGENCE
 !
