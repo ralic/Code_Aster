@@ -664,6 +664,13 @@ cata_charge = {
         'COEF_MULT'  : -1,
         'ENTITE'     : ['GROUP_MA'],
                   },
+    'FORCE_NODALE' : {
+        'TYPE_CHAR' : 'FACTO',
+        'MOT_CLE_EPX': ['FORCE'],
+        'ASTER': ['FX', 'FY', 'FZ', 'MX', 'MY', 'MZ'],
+        'EPX': ['1', '2', '3', '4', '5', '6'],
+        'ENTITE'     : ['GROUP_NO'],
+                  },
 }
 
 

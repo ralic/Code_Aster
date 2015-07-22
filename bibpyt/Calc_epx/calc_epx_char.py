@@ -164,6 +164,7 @@ def export_charge(epx, EXCIT, MAILLAGE):
                         bloc_donnees = ecri_rela_cine(cable_bp, mot_cle_epx, type_epx)
                     else:
                         vale_tmp = ch[cle]
+                    nb_cle += 1
                     if nb_cle > nb_cle_max:
                         UTMESS(
                             'F', 'PLEXUS_29', valk=(char, ','.join(cle_aster)),
@@ -180,7 +181,7 @@ def export_charge(epx, EXCIT, MAILLAGE):
                             vale = coef_mult * vale
                     if cle_epx:
                         info_epx += cle_epx[ind]
-                    nb_cle += 1
+                    
                 if directive == 'LINK' and l_fonc:
                     l_cara.append('FONC')
                     l_vale.append(ifonc + 1)
