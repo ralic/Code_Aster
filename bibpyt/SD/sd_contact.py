@@ -18,6 +18,7 @@
 
 from SD import *
 from SD.sd_char_meca import sd_char_chme
+from SD.sd_char_meca import sd_char_dual
 from SD.sd_ligrel import sd_ligrel
 from sd_prof_chno import sd_prof_chno
 from SD.sd_champ import sd_champ
@@ -267,6 +268,9 @@ class sd_contact(AsBase):
     CARAXF = Facultatif(AsVR(SDNom(nomj='.CONTACT.CARAXF')))
     XFIMAI = Facultatif(AsVK8(SDNom(nomj='.CONTACT.XFIMAI')))
     XNRELL = Facultatif(AsVK24(SDNom(nomj='.CONTACT.XNRELL')))
+
+#   Relations linéaires pour LBB
+    RELLBB = Facultatif(sd_char_dual(SDNom(nomj='.DUAL')))
 
 #   Objet spécifique grands glissements
     MAESCX = Facultatif(AsVI(SDNom(nomj='.CONTACT.MAESCX')))
