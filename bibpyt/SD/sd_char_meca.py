@@ -52,7 +52,8 @@ class sd_char_dual(AsBase):
         if nbl > 0 :
            rctyr=self.RCTYR.get_stripped()
            for typ1 in rctyr[0:nbl] :
-               assert typ1 in ('LIN','?','2D2','2D1','3D3','3D2','3D1','TRAN','2D0ROTA','3D0ROTA')
+               print typ1
+               assert typ1 in ('LIN','?','2D2','2D1','2D0','3D3','3D2','3D1','3D0','TRAN','2D0ROTA','3D0ROTA')
 #              'LIN' : Le paquet ne contient que des relations TOUJOURS lineaires. Ex : FACE_IMPO
 
 #              '?' : Le paquet est peut etre sensible à TYPE_CHARGE='SUIV'. => erreur <F> par prudence
