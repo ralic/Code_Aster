@@ -33,7 +33,7 @@ subroutine varecr(gamp, nbmat, mater, parame)
 ! OUT : PARAME : VARIABLE D'ECROUISSAGE S(GAMP) ------------------------
 ! ------------ : SGAMP, AGAMP, KGAMP, MGAMP, OMEGA ---------------------
 ! ======================================================================
-    real(kind=8) :: sgamp, agamp, kgamp, mgamp, omega, epsult
+    real(kind=8) :: sgamp, agamp, kgamp, mgamp, omega
     real(kind=8) :: gamult, gammae, mult, me, ae, mpic, apic, eta, sigc, zero
     real(kind=8) :: sigp1, sigp2, fact1, fact2, fact3, puis1, un, deux, trois
 ! ======================================================================
@@ -43,7 +43,6 @@ subroutine varecr(gamp, nbmat, mater, parame)
     parameter       ( un     = 1.0d0   )
     parameter       ( deux   = 2.0d0   )
     parameter       ( trois  = 3.0d0   )
-    parameter       ( epsult = 1.0d-03 )
 ! ======================================================================
     call jemarq()
 ! ======================================================================
@@ -63,7 +62,7 @@ subroutine varecr(gamp, nbmat, mater, parame)
 ! ======================================================================
 ! CALCUL DES VARIABLES D'ECROUISSAGES POUR LE CAS GAMP > GAMULT(1-EPS) -
 ! ======================================================================
-    if (gamp .gt. (gamult*(un-epsult))) then
+    if (gamp .gt. gamult) then
         sgamp = zero
         omega = zero
         agamp = un
@@ -80,12 +79,12 @@ subroutine varecr(gamp, nbmat, mater, parame)
 ! ======================================================================
         fact1 = (gamp/gammae)**eta
         fact2 = (ae-apic)/(un-ae)
-        fact3 = (gamult-gammae)/(gamult-gamp)
+        fact3 = gamult-gammae
         omega = fact1*fact2*fact3
 ! ======================================================================
 ! --- CALCUL DE A(GAMP) = (APIC+OMEGA(GAMP))/(1+OMEGA(GAMP)) -----------
 ! ======================================================================
-        agamp = (apic+omega)/(un+omega)
+        agamp = (apic*(gamult-gamp)+omega)/(gamult-gamp+omega)
 ! ======================================================================
 ! --- CALCUL DE K(GAMP) = (2/3)**(1/(2*A(GAMP))) -----------------------
 ! ======================================================================

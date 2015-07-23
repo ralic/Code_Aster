@@ -57,17 +57,15 @@ subroutine calcpj(nbmat, mater, gamp, evp, sigd,&
 ! ======================================================================
     integer :: jpara, jpara2, ndt, ndi
     real(kind=8) :: mu, sigc, sig(6), sd(6), sgamp, mgamp
-    real(kind=8) :: zero, un, deux, trois, se(6)
-    real(kind=8) :: sigii, siie, invar, epsult, gamult, k
+    real(kind=8) :: zero, deux, trois, se(6)
+    real(kind=8) :: sigii, siie, invar, gamult, k
     character(len=16) :: parecr, parec2
 ! ======================================================================
 ! --- INITIALISATION DE PARAMETRE --------------------------------------
 ! ======================================================================
     parameter       ( zero     =  0.0d0   )
-    parameter       ( un       =  1.0d0   )
     parameter       ( deux     =  2.0d0   )
     parameter       ( trois    =  3.0d0   )
-    parameter       ( epsult   =  1.0d-03 )
 ! ======================================================================
     common /tdim/   ndt , ndi
 ! ======================================================================
@@ -103,7 +101,7 @@ subroutine calcpj(nbmat, mater, gamp, evp, sigd,&
 ! ======================================================================
 ! --- CAS OU GAMP > GAMULT(1-EPS) --------------------------------------
 ! ======================================================================
-    if (gamp .gt. (gamult*(un-epsult))) then
+    if (gamp .gt. gamult) then
         b = zero
     else
 ! ======================================================================

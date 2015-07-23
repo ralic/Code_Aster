@@ -34,7 +34,7 @@ subroutine dervar(gamp, nbmat, mater, parame, derpar)
 ! OUT : DERPAR : DERIVE DES VARIABLES D'ECROUISSAGE PAR RAPPORT A GAMP -
 ! ------------ : (DS/DGAMP,DA/DGAMP,DK/DGAMP,DM/DGAMP,DO/DGAMP) --------
 ! ======================================================================
-    real(kind=8) :: mun, zero, un, deux, trois, epsult
+    real(kind=8) :: mun, zero, un, deux, trois
     real(kind=8) :: gamult, gammae, me, ae, mpic, apic, eta, sigc, sigp1, sigp2
     real(kind=8) :: agamp, omega
     real(kind=8) :: ds, domega, dado, da, dk, dmds, dmda, dm
@@ -47,7 +47,6 @@ subroutine dervar(gamp, nbmat, mater, parame, derpar)
     parameter       ( un     =   1.0d0   )
     parameter       ( deux   =   2.0d0   )
     parameter       ( trois  =   3.0d0   )
-    parameter       ( epsult =   1.0d-03 )
 ! ======================================================================
     call jemarq()
 ! ======================================================================
@@ -72,7 +71,7 @@ subroutine dervar(gamp, nbmat, mater, parame, derpar)
 ! --- CALCUL DES DERIVEES DES VARIABLES D'ECROUISSAGES -----------------
 ! --- POUR LE CAS GAMP > GAMULT(1-EPS) ---------------------------------
 ! ======================================================================
-    if (gamp .gt. (gamult*(un-epsult))) then
+    if (gamp .gt. gamult) then
         ds = zero
         da = zero
         dk = zero
@@ -96,13 +95,13 @@ subroutine dervar(gamp, nbmat, mater, parame, derpar)
 ! ======================================================================
         fact1 = (gamult-gammae)/(gammae**eta)
         fact2 = (ae-apic)/(un-ae)
-        fact3 = eta*(gamp**(eta-un))/(gamult-gamp)
-        fact4 = (gamp**eta)/((gamult-gamp)*(gamult-gamp))
+        fact3 = eta*(gamp**(eta-un))*(gamult-gamp)
+        fact4 = gamp**eta
         domega = fact1*fact2*(fact3+fact4)
 ! ======================================================================
 ! --- CALCUL DE DA/DOMEGA = (1-APIC)/(1+OMEGA(GAMP))**2 ----------------
 ! ======================================================================
-        dado = (un-apic)/((un+omega)*(un+omega))
+        dado = (un-apic)/((gamult-gamp+omega)*(gamult-gamp+omega))
 ! ======================================================================
 ! --- CALCUL DE DA/DGAMP = DA/DOMEGA * DOMEGA/DGAMP --------------------
 ! ======================================================================

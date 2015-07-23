@@ -42,14 +42,12 @@ subroutine solrei(gamp, s, i1n, parame, nbmat,&
 ! --- : VECN   : VECTEUR N POUR PROJECTION SUR LE DOMAINE --------------
 ! ======================================================================
     integer :: ndt, ndi
-    real(kind=8) :: zero, un, epsult, gamult, gamcjs, pref, epssig
+    real(kind=8) :: zero, gamult, gamcjs, pref, epssig
     real(kind=8) :: b
 ! ======================================================================
 ! --- INITIALISATION DE PARAMETRE --------------------------------------
 ! ======================================================================
     parameter       ( zero     =  0.0d0   )
-    parameter       ( un       =  1.0d0   )
-    parameter       ( epsult   =  1.0d-03 )
     parameter       ( epssig   =  1.0d-8  )
 ! ======================================================================
     common /tdim/   ndt , ndi
@@ -72,7 +70,7 @@ subroutine solrei(gamp, s, i1n, parame, nbmat,&
 ! ======================================================================
 ! --- CAS OU GAMP > GAMULT(1-EPS) --------------------------------------
 ! ======================================================================
-    if (gamp .gt. (gamult*(un-epsult))) then
+    if (gamp .gt. gamult) then
         b = zero
     else
 ! ======================================================================

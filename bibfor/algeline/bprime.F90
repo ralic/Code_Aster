@@ -43,8 +43,8 @@ function bprime(nbmat, mater, parame, invar1, s,&
 ! ------------ : DU MATERIAU -------------------------------------------
 ! ======================================================================
     integer :: ndt, ndi
-    real(kind=8) :: mun, un, deux, trois, six, epstol
-    real(kind=8) :: mult, sigc, gamma, ksi, pref
+    real(kind=8) :: mun, un, deux, trois, six, epstol, un_m_rcos2
+    real(kind=8) :: mult, sigc, gamma, ksi, pref, prec
     real(kind=8) :: sgamp, agamp, mgamp, sii, fact1, fact2
     real(kind=8) :: rcos3t
     real(kind=8) :: phi0, c0, sigt0, sig1, sig2, sig3, alpha, sinpsi
@@ -110,9 +110,18 @@ function bprime(nbmat, mater, parame, invar1, s,&
 ! --- CALCULS DE INTERMEDIAIRE -----------------------------------------
 ! ======================================================================
     sig1 = invar1/trois + sqrt(deux/trois)*sii*rcos3t
-    sig2 = invar1/trois - sqrt(deux/trois)*sii* ( rcos3t/deux+sqrt(trois*(un-rcos3t*rcos3t))/deux&
+!
+!   Variabilite machine: on met a 0 si un-rcos3t*rcos3t trop petit
+    un_m_rcos2 = un - rcos3t*rcos3t
+    prec = 100.d0*r8prem()
+!
+    if(un_m_rcos2.lt.prec) then
+        un_m_rcos2 = 0.d0
+    endif
+!
+    sig2 = invar1/trois - sqrt(deux/trois)*sii* ( rcos3t/deux+sqrt(trois*(un_m_rcos2))/deux&
            & )
-    sig3 = invar1/trois + sqrt(deux/trois)*sii* (-rcos3t/deux+sqrt(trois*(un-rcos3t*rcos3t))/deux&
+    sig3 = invar1/trois + sqrt(deux/trois)*sii* (-rcos3t/deux+sqrt(trois*(un_m_rcos2))/deux&
            & )
 ! ======================================================================
 ! --- RECUPERATION DE SIG1 (MAX) ET SIG3 (MIN) -------------------------
