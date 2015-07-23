@@ -48,7 +48,7 @@ subroutine d2cro2(zimat, nmnbn, nmplas, nmdpla, nmddpl,&
 #include "asterfort/dclass.h"
 #include "asterfort/dfplgl.h"
 #include "asterfort/dfuuss.h"
-#include "asterfort/dracsy.h"
+#include "asterfort/dracs2.h"
 #include "asterfort/fplass.h"
 #include "asterfort/hplass.h"
 #include "asterfort/matmul.h"
@@ -196,8 +196,10 @@ subroutine d2cro2(zimat, nmnbn, nmplas, nmdpla, nmddpl,&
     ff(2)=f(1)+f(2)
 !
 !     EVALUE LES RACINES DU POLYNOME
-    call dracsy(aa, bb, cc, dd, ee,&
+!     NOUVELLE ROUTINE
+    call dracs2(aa, bb, cc, dd, ee,&
                 ff, nbroot, x, y)
+    !  si trop de racines on les affiche
 !
     if (nbroot .eq. 0) then
         cier=4

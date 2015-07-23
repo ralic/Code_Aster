@@ -16,10 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine draacn(deg, poly, nbroot, root)
-        integer :: deg
-        real(kind=8) :: poly(deg+1)
-        integer :: nbroot
-        real(kind=8) :: root(deg)
-    end subroutine draacn
+    subroutine decompose_conic(m0, nline, line1, line2, indic)
+        real(kind=8), intent(in) :: m0(3,3)
+        integer, intent(out) :: nline
+        real(kind=8), intent(out) :: line1(3)
+        real(kind=8), intent(out) :: line2(3)
+        real(kind=8), intent(out), optional :: indic
+    end subroutine decompose_conic
 end interface

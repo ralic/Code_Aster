@@ -16,9 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nwtpol(deg, coef, rac)
-        integer :: deg
-        real(kind=8) :: coef(deg+1)
-        real(kind=8) :: rac
-    end subroutine nwtpol
+    function cubic_root(x)
+        real(kind=8),intent(in) :: x
+        real(kind=8) :: bprime
+    end function cubic_root
 end interface

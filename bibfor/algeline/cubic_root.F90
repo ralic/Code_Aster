@@ -1,6 +1,10 @@
-subroutine nwtpol(deg, coef, rac)
+function cubic_root(x) 
 !
-    implicit none
+      implicit none
+!
+      real(kind=8), intent(in) :: x
+      real(kind=8) :: cubic_root
+!
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,47 +23,15 @@ subroutine nwtpol(deg, coef, rac)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !======================================================================
 !
-!     RECHERCHE DU ZERO D UN POLYNOME PAR LA METHODE DE NEWTON
+!    RACINE CUBIQUE 
 !
-! IN  DEG : DEGRE DU POLYNOME
-! IN  COEF : COEFFICIENT DU POLYNOME
+! IN  X : NOMBRE
 !
-! OUT RAC : VALEUR DE LA RACINE TROUVEE
+      if(x.lt.0.d0) then
+          cubic_root = -((-x)**(1.d0/3.d0))
+      else
+          cubic_root = x**(1.d0/3.d0)
+      endif
 !
-#include "asterfort/dpolyh.h"
-#include "asterfort/dpolyn.h"
-    integer :: deg, itermx, i
-    real(kind=8) :: coef(deg+1), rac
-    real(kind=8) :: rac0, tole, fx, dfx, err, fx0
 !
-    itermx = 10
-    tole = 1.d-15
-!
-!     EVALUATION DU POLYNOME A X = RAC
-    fx = dpolyh(deg,coef,rac)
-!
-    err = abs(fx)
-    rac0 = rac
-    fx0 = fx
-!
-    do 9, i = 1, itermx+1
-!
-!     CRITERE DE CONVERGENCE
-    if (err .le. tole) goto 10
-!
-!     EVALUATION DE LA DERIVEE DU POLYNOME A X = RAC
-    dfx = dpolyn(deg,coef,rac)
-!
-    if (abs(dfx) .lt. 1.d-12) then
-        if (abs(fx0) .lt. abs(fx)) rac = rac0
-        goto 10
-    endif
-!
-    rac = rac - fx/dfx
-    fx = dpolyh(deg,coef,rac)
-    err = abs(fx)
-    9 end do
-!
-10  continue
-!
-end subroutine
+end function
