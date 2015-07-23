@@ -107,8 +107,8 @@ subroutine fornpd(option, nomte)
 !
     call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
 !
-    if (phenom .ne. 'ELAS') then
-        call utmess('F', 'ELEMENTS_45', sk=phenom)
+    if (phenom .ne. 'ELAS'.and.phenom.ne.'ELAS_ORTH') then
+        call utmess('F', 'ELEMENTS_44', sk=phenom)
     endif
 !
     call vectan(nb1, nb2, zr(jgeom), zr(lzr), vecta,&

@@ -32,6 +32,8 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1,&
 #include "asterfort/mahsf.h"
 #include "asterfort/mahsms.h"
 #include "asterfort/matrkb.h"
+#include "asterfort/moytpg.h"
+#include "asterfort/matrc2.h"
 #include "asterfort/nmcomp.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rccoma.h"
@@ -66,6 +68,7 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1,&
     real(kind=8) :: epsi(5), depsi(5), eps2d(4), deps2d(4)
     real(kind=8) :: dtild(5, 5), sgmtd(5), effint(42), vecl(48), vecll(51)
     real(kind=8) :: sign(4), sigma(4), dsidep(6, 6), angmas(3), rbid(1)
+    real(kind=8) :: matc(5,5),valpar
     aster_logical :: vecteu, matric
 !-----------------------------------------------------------------------
     integer :: i, ib, icarcr, icompo, icontm, icontp, icou
@@ -167,8 +170,8 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1,&
 !
     call rccoma(zi(imate), 'ELAS', 1, phenom, valret(1))
 !
-    if (phenom .ne. 'ELAS') then
-        call utmess('F', 'ELEMENTS_45', sk=phenom)
+    if (phenom .ne. 'ELAS'.and.phenom.ne.'ELAS_ORTH') then
+        call utmess('F', 'ELEMENTS_44', sk=phenom)
     endif
 !
 !===============================================================
@@ -267,23 +270,33 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1,&
 ! - LOI DE COMPORTEMENT
 ! --- ANGLE DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
 ! --- INITIALISE A R8VIDE (ON NE S'EN SERT PAS)
-                call r8inir(3, r8vide(), angmas, 1)
-! -    APPEL A LA LOI DE COMPORTEMENT
-                ksp= (icou-1)*npge + inte
-                call nmcomp('MASS', intsn, ksp, 2, typmod,&
-                            zi(imate), zk16(icompo), zr(icarcr), zr(iinstm), zr(iinstp),&
-                            4, eps2d, deps2d, 4, sign,&
-                            zr(ivarim+k2), option, angmas, 1, [0.d0],&
-                            sigma, zr(ivarip+k2), 36, dsidep, 1,&
-                            rbid, cod)
 !
-                if (phenom .eq. 'ELAS') then
+                call r8inir(3, r8vide(), angmas, 1)
+!
+! -    APPEL A LA LOI DE COMPORTEMENT
+!
+                ksp= (icou-1)*npge + inte
+                cisail=0.d0
+
+                if (phenom.eq.'ELAS') then
+                    call nmcomp('MASS', intsn, ksp, 2, typmod,&
+                                zi(imate), zk16(icompo), zr(icarcr), zr(iinstm), zr(iinstp),&
+                                4, eps2d, deps2d, 4, sign,&
+                                zr(ivarim+k2), option, angmas, 1, [0.d0],&
+                                sigma, zr(ivarip+k2), 36, dsidep, 1,&
+                                rbid, cod)
+!           COD=1 : ECHEC INTEGRATION LOI DE COMPORTEMENT
+!           COD=3 : C_PLAN DEBORST SIGZZ NON NUL
+                    if (cod .ne. 0) then
+                        if (codret .ne. 1) then
+                            codret=cod
+                        endif
+                        if (cod .eq. 1) goto 999
+                    endif
+
                     nbv = 2
                     nomres(1) = 'E'
                     nomres(2) = 'NU'
-                else
-                    call utmess('F', 'ELEMENTS_45', sk=phenom)
-                endif
 !
                 call rcvalb('MASS', intsn, ksp, '+', zi(imate),&
                             ' ', phenom, 0, ' ', [0.d0],&
@@ -291,18 +304,16 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1,&
 !
                 cisail = valres(1)/ (1.d0+valres(2))
 !
-!           COD=1 : ECHEC INTEGRATION LOI DE COMPORTEMENT
-!           COD=3 : C_PLAN DEBORST SIGZZ NON NUL
-                if (cod .ne. 0) then
-                    if (codret .ne. 1) then
-                        codret=cod
-                    endif
-                    if (cod .eq. 1) goto 999
+                else if (phenom.eq.'ELAS_ORTH') then
+                    call moytpg('RIGI', intsn, 3, '+', valpar,&
+                                iret)
+                    call matrc2(1, 'TEMP    ', [valpar], kappa, matc, vectt)
                 endif
 !
 !    CALCULS DE LA MATRICE TANGENTE : BOUCLE SUR L'EPAISSEUR
                 if (matric) then
 !
+                  if (phenom .eq. 'ELAS') then                    
                     dtild(1,1) = dsidep(1,1)
                     dtild(1,2) = dsidep(1,2)
                     dtild(1,3) = dsidep(1,4)/rac2
@@ -333,6 +344,38 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1,&
                     dtild(5,4) = 0.d0
                     dtild(5,5) = cisail*kappa/2.d0
 !
+                else if(phenom.eq.'ELAS_ORTH') then
+                    dtild(1,1) = matc(1,1)
+                    dtild(1,2) = matc(1,2)
+                    dtild(1,3) = matc(1,3)
+                    dtild(1,4) = 0.d0
+                    dtild(1,5) = 0.d0
+!
+                    dtild(2,1) = matc(2,1)
+                    dtild(2,2) = matc(2,2)
+                    dtild(2,3) = matc(2,3)
+                    dtild(2,4) = 0.d0
+                    dtild(2,5) = 0.d0
+!
+                    dtild(3,1) = matc(3,1)
+                    dtild(3,2) = matc(3,2)
+                    dtild(3,3) = matc(3,3)
+                    dtild(3,4) = 0.d0
+                    dtild(3,5) = 0.d0
+!
+                    dtild(4,1) = 0.d0
+                    dtild(4,2) = 0.d0
+                    dtild(4,3) = 0.d0
+                    dtild(4,4) = matc(4,4)
+                    dtild(4,5) = matc(4,5)
+!
+                    dtild(5,1) = 0.d0
+                    dtild(5,2) = 0.d0
+                    dtild(5,3) = 0.d0
+                    dtild(5,4) = matc(5,4)
+                    dtild(5,5) = matc(5,5)
+                endif
+
                     call dscal(25, wgt, dtild, 1)
 !
                     call btkb(5, 42, nddle, dtild, btild,&
@@ -347,20 +390,43 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1,&
 !
                 if (vecteu) then
 !
-                    do i = 1, 3
-                        zr(icontp-1+k1+i) = sigma(i)
-                    end do
-                    zr(icontp-1+k1+4) = sigma(4)/rac2
-                    zr(icontp-1+k1+5) = cisail*kappa*gxz/2.d0
-                    zr(icontp-1+k1+6) = cisail*kappa*gyz/2.d0
+                    if (phenom .eq. 'ELAS') then
+                       do i = 1, 3
+                          zr(icontp-1+k1+i) = sigma(i)
+                       end do
+                       zr(icontp-1+k1+4) = sigma(4)/rac2
+                       zr(icontp-1+k1+5) = cisail*kappa*gxz/2.d0
+                       zr(icontp-1+k1+6) = cisail*kappa*gyz/2.d0
 !
 !    CALCULS DES EFFORTS INTERIEURS
-                    sgmtd(1) = zr(icontp-1+k1+1)
-                    sgmtd(2) = zr(icontp-1+k1+2)
-                    sgmtd(3) = zr(icontp-1+k1+4)
-                    sgmtd(4) = cisail*kappa*gxz/2.d0
-                    sgmtd(5) = cisail*kappa*gyz/2.d0
+                       sgmtd(1) = zr(icontp-1+k1+1)
+                       sgmtd(2) = zr(icontp-1+k1+2)
+                       sgmtd(3) = zr(icontp-1+k1+4)
+                       sgmtd(4) = cisail*kappa*gxz/2.d0
+                       sgmtd(5) = cisail*kappa*gyz/2.d0
 !
+                    else if(phenom.eq.'ELAS_ORTH') then
+                       zr(icontp-1+k1+1) = (epsi(1)+depsi(1))*matc(1,1) + &
+                                           (epsi(2)+depsi(2))*matc(1,2) + &
+                                           (epsi(3)+depsi(3))*matc(1,3) 
+                       zr(icontp-1+k1+2) = (epsi(1)+depsi(1))*matc(2,1) + &
+                                           (epsi(2)+depsi(2))*matc(2,2) + &
+                                           (epsi(3)+depsi(3))*matc(2,3) 
+                       zr(icontp-1+k1+3) = 0.d0 
+                       zr(icontp-1+k1+4) = (epsi(1)+depsi(1))*matc(3,1) + &
+                                           (epsi(2)+depsi(2))*matc(3,2) + &
+                                           (epsi(3)+depsi(3))*matc(3,3) 
+                       zr(icontp-1+k1+5) = matc(4,4)*gxz+matc(4,5)*gyz
+                       zr(icontp-1+k1+6) = matc(5,4)*gxz+matc(5,5)*gyz
+!
+!    CALCULS DES EFFORTS INTERIEURS
+                       sgmtd(1) = zr(icontp-1+k1+1)
+                       sgmtd(2) = zr(icontp-1+k1+2)
+                       sgmtd(3) = zr(icontp-1+k1+4)
+                       sgmtd(4) = dtild(4,4)*gxz
+                       sgmtd(5) = dtild(5,5)*gyz
+                    endif
+
                     call epseff('EFFORI', nb1, x, btild, sgmtd,&
                                 x, wgt, effint)
 !
