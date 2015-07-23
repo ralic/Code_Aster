@@ -145,6 +145,12 @@ subroutine te0404(option, nomte)
                         multic, coupmf, t2iu, t2ui, t1ve)
             nu = dm(1,2)/dm(1,1)
             e = (1.d0-nu**2)*dm(1,1)/epais
+        else if  (elas_keyword .eq. 'ELAS_MEMBRANE') then
+            nomres(1) = 'M_LLLL'
+            call rcvalb(fami, 1, 1, '+', zi(imate),&
+                        ' ', elas_keyword, 0, ' ', [0.d0],&
+                        1, nomres, valres, codres, 1)
+            e = valres(1)
         endif
     else
         call utmess('F', 'DYNAMIQUE_32')
