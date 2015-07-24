@@ -10,6 +10,7 @@ implicit none
 #include "asterfort/exisd.h"
 #include "asterfort/gcnco2.h"
 #include "asterfort/load_list_info.h"
+#include "asterfort/ischar_iden.h"
 #include "asterfort/inical.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
@@ -65,7 +66,7 @@ implicit none
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
-    integer :: iret, ibid, nb_load, i_load, load_nume
+    integer :: iret, ibid, nb_load, i_load
     character(len=24), pointer :: v_load_name(:) => null()
     integer, pointer :: v_load_info(:) => null()
     aster_logical :: load_empty
@@ -130,9 +131,9 @@ implicit none
 ! - Computation
 !
     do i_load = 1, nb_load
-        load_name = v_load_name(i_load)(1:8)
-        load_nume = v_load_info(i_load+1)  
-        if (load_nume.gt.0) then
+        load_name = v_load_name(i_load)(1:8) 
+        if (      ischar_iden(v_load_info, i_load, nb_load, 'DIRI', 'DUAL') .and.&
+            .not. ischar_iden(v_load_info, i_load, nb_load, 'DIRI', 'SUIV')) then
             ligrch = load_name//'.CHME.LIGRE'
             call jeexin(load_name//'.CHME.LIGRE.LIEL', iret)
             if (iret .le. 0) cycle
