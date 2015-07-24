@@ -43,7 +43,6 @@ M1=DEFI_GROUP(reuse =M1,
                              _F(GROUP_MA='BIELB',),
                              _F(GROUP_MA='BIELC',),),);
 
-
 MA=CREA_MAILLAGE(MAILLAGE=M1,
                  MODI_MAILLE=_F(GROUP_MA=('POUTRES','COUDES',),
                                 OPTION='SEG3_4',),);

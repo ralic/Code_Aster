@@ -27,15 +27,21 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MA=LIRE_MAILLAGE( )
+MA0=LIRE_MAILLAGE( )
 
-MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
+MA0=DEFI_GROUP( reuse=MA0,   MAILLAGE=MA0,
   CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+
+MA=CREA_MAILLAGE(MAILLAGE=MA0,
+    CREA_POI1=(
+        _F(NOM_GROUP_MA='N200',   NOEUD = 'N200', ),
+    ),
+)
 
 MO=AFFE_MODELE(  MAILLAGE=MA,AFFE=(
                   _F(  TOUT = 'OUI', PHENOMENE = 'MECANIQUE',
                          MODELISATION = 'POU_D_E'),
-                       _F(  NOEUD = 'N200',
+                       _F(  GROUP_MA = 'N200',
                        PHENOMENE = 'MECANIQUE',
                          MODELISATION = 'DIS_TR'))  )
 
@@ -49,11 +55,11 @@ CLEMCAS1=AFFE_CARA_ELEM(  MODELE=MO,
  SECTION = 'CERCLE',
                         CARA = ('R','EP',),
                         VALE = ( 0.175,  0.015, )),
-              DISCRET=(_F(  NOEUD = 'N200',  CARA = 'M_TR_D_N',
+              DISCRET=(_F(  GROUP_MA = 'N200',  CARA = 'M_TR_D_N',
          #           M    IXX IYY IZZ IXY IYZ IZX  EX  EY  EZ
              VALE = ( 1000., 0., 0., 0., 0., 0., 0., 0., 0., 0., )),
-                       _F(  NOEUD = 'N200',  CARA = 'K_TR_D_N',
-         #           
+                       _F(  GROUP_MA = 'N200',  CARA = 'K_TR_D_N',
+         #
              VALE = ( 0., 0., 0., 0., 0., 0., ))
       ))
 
@@ -65,12 +71,12 @@ CLEMCAS2=AFFE_CARA_ELEM(  MODELE=MO,
                         CARA = ('R','EP',),
                         VALE = ( 0.175,  0.015, )),
               DISCRET=(
-            _F(  NOEUD = 'N200',  CARA = 'M_TR_D_N',
+            _F(  GROUP_MA = 'N200',  CARA = 'M_TR_D_N',
          #           M    IXX IYY IZZ IXY IYZ IZX  EX  EY  EZ
              VALE = ( 1000., 0., 0., 0., 0., 0., 0., 0., 1., 0., )),
 
-             _F(  NOEUD = 'N200',  CARA = 'K_TR_D_N',
-         #           
+             _F(  GROUP_MA = 'N200',  CARA = 'K_TR_D_N',
+         #
              VALE = (  0., 0., 0., 0., 0., 0.,)),
   ) )
 

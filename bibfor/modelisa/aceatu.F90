@@ -1,5 +1,5 @@
-subroutine aceatu(noma, nomo, nbepo, ntyele, ivr,&
-                  ifm, nbocc)
+subroutine aceatu(noma, nomo, nbepo, ntyele, ivr, ifm, nbocc)
+    use cara_elem_module
     implicit none
 #include "jeveux.h"
 #include "asterc/getres.h"
@@ -91,8 +91,7 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr,&
     ier = 0
     call getres(nomu, concep, cmd)
 !
-! --- RECONSTRUCTION DES NOMS JEVEUX DU CONCEPT MAILLAGE ASSOCIE
-!
+!   Reconstruction des noms jeveux du concept maillage associe
     mlgnma = noma//'.NOMMAI'
     mlgnno = noma//'.NOMNOE'
     mlgcnx = noma//'.CONNEX'
@@ -105,12 +104,11 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr,&
     call jeexin(modmai, ixma)
     if (ixma .ne. 0) call jeveuo(modmai, 'L', jdme)
 !
-! --- COMPTAGE DES MET3SEG3
-!
+!   Comptage des MET3SEG3
     nbtuy=0
-    do 10 ima = 1, nbmail
+    do ima = 1, nbmail
         nutyel = zi(jdme+ima-1)
-        do 12 j = 1, nbepo
+        do j = 1, nbepo
             if (nutyel .eq. ntyele(j)) then
                 call jenuno(jexnum('&CATA.TE.NOMTE', nutyel), nunoel)
                 if ((nunoel.eq.'MET3SEG3') .or. ( nunoel.eq.'MET6SEG3') .or.&
@@ -118,19 +116,17 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr,&
                     nbtuy=nbtuy+1
                 endif
             endif
-12      continue
-10  end do
+        enddo
+    enddo
 !
-! --- STOCKAGE DES ELEMENTS MET3SEG3 ET DES NOEUDS
-!
+!   Stockage des éléments MET3SEG3 et des noeuds
     AS_ALLOCATE(vi=notuy, size=nbtuy*4)
     AS_ALLOCATE(vi=eltuy, size=nbtuy)
-!
     nno=0
     nbtuy=0
-    do 20 ima = 1, nbmail
+    do ima = 1, nbmail
         nutyel = zi(jdme+ima-1)
-        do 22 j = 1, nbepo
+        do j = 1, nbepo
             if (nutyel .eq. ntyele(j)) then
                 call jenuno(jexnum('&CATA.TE.NOMTE', nutyel), nunoel)
                 if ((nunoel.eq.'MET3SEG3') .or. ( nunoel.eq.'MET6SEG3')) then
@@ -143,13 +139,13 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr,&
                     notuy(3*nbtuy )=zi(jdno+2)
                 endif
             endif
-22      continue
-20  end do
+        enddo
+    enddo
 !
     nbtuy4=0
-    do 30 ima = 1, nbmail
+    do ima = 1, nbmail
         nutyel = zi(jdme+ima-1)
-        do 32 j = 1, nbepo
+        do j = 1, nbepo
             if (nutyel .eq. ntyele(j)) then
                 call jenuno(jexnum('&CATA.TE.NOMTE', nutyel), nunoel)
                 if (nunoel .eq. 'MET3SEG4') then
@@ -163,8 +159,8 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr,&
                     notuy(4*nbtuy4 )=zi(jdno+3)
                 endif
             endif
-32      continue
-30  end do
+        enddo
+    enddo
 !
     if (nbtuy4 .ne. 0) then
         if (nbtuy .ne. 0) then
@@ -174,17 +170,15 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr,&
         endif
     endif
 !
-! --- COMPTAGE DES PARTIES CONNEXES
-!     HYPOTHESE : LES MAILLES SONT TOUTES ORIENTEES DANS LE MEME SENS
-!
+!   Comptage des parties connexes. HYPOTHESE : LES MAILLES SONT TOUTES ORIENTÉES DANS LE MÊME SENS
     nbext1=0
     nbext2=0
-    do 40 ima = 1, nbtuy
+    do ima = 1, nbtuy
         iext1=0
         iext2=0
         ni1 = notuy(nno*(ima-1)+1)
         ni2 = notuy(nno*(ima-1)+2)
-        do 42 jma = 1, nbtuy
+        do jma = 1, nbtuy
             if (jma .ne. ima) then
                 nj1 = notuy(nno*(jma-1)+1)
                 nj2 = notuy(nno*(jma-1)+2)
@@ -195,15 +189,14 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr,&
                     iext2=1
                 endif
             endif
-42      continue
+        enddo
         if (iext1 .eq. 0) then
             nbext1=nbext1+1
         endif
         if (iext2 .eq. 0) then
             nbext2=nbext2+1
         endif
-40  end do
-!      ASSERT(NBEXT1.EQ.NBEXT2)
+    enddo
     if (nbext1 .ne. nbext2) then
         call utmess('F', 'MODELISA10_4')
     endif
@@ -212,9 +205,7 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr,&
         write(ifm,*) 'NOMBRE DE PARTIES CONNEXES DE TUYAU : ',nbpart
     endif
 !
-! --- VERIFICATION ET STOCKAGE DES PARTIES CONNEXES
-!     HYPOTHESE : LES MAILLES SONT TOUTES ORIENTEES DANS LE MEME SENS
-!
+!   Vérification et stockage des parties connexes.
     AS_ALLOCATE(vi=sens, size=nbpart)
     AS_ALLOCATE(vi=nbmapart, size=nbpart)
     AS_ALLOCATE(vi=noext1, size=nbpart)
@@ -222,41 +213,29 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr,&
     AS_ALLOCATE(vi=lismapart, size=nbpart*nbtuy)
     AS_ALLOCATE(vi=lisnopart, size=nbpart*nbtuy*nno)
     call wkvect('&&ACEATU.ZKPART', 'V V I', nbpart*nbtuy*nno, jzkpar)
-    call aceat2(nbtuy, eltuy, notuy, nbpart, noext1,&
-                noext2, nbmapart, lismapart, lisnopart, nno)
+    call aceat2(nbtuy, eltuy, notuy, nbpart, noext1, noext2, nbmapart, lismapart, lisnopart, nno)
 !
-!   LECTURE DE MODI_METRIQUE
-!
+!   Lecture de MODI_METRIQUE
     AS_ALLOCATE(vi=mmt, size=nbmail)
     call acemmt(noma,mmt)
 !
-!     LECTURE DU MOT-CLE GENE_TUYAU
-!
+!   Lecture du mot-clef GENE_TUYAU
     inn=0
-!
-!     VALEURS PAR DEFAUT COHERENTES AVEC LE CATALOGUE
-!
+!   Valeurs par défaut cohérentes avec le catalogue
     epsi=1.d-4
     crit='RELATIF'
-!
-!     POUR NE PAS PASSER DES VARIABLES NON-INITIALISEES EN ARGUMENT
+!   Pour ne pas passer des variables non-initialisées en argument
     jnozk = 1
     jcozk = 1
-!
-    if (nbocc(4) .ne. 0) then
-        call wkvect('&&ACEATU.LISNOZK', 'V V I', nbocc(4), jnozk)
-        call wkvect('&&ACEATU.LISCOZK', 'V V R', 3*nbocc(4), jcozk)
-        do 50 ioc = 1, nbocc(4)
-!
-!         UN SEUL NOEUD PERMIS
-!
-            call getvem(noma, 'GROUP_NO', 'ORIENTATION', 'GROUP_NO', ioc,&
-                        iarg, 1, nomlu, nj)
-            call getvem(noma, 'NOEUD', 'ORIENTATION', 'NOEUD', ioc,&
-                        iarg, 1, nomlu, nn)
+    if (nbocc(ACE_ORIENTATION) .ne. 0) then
+        call wkvect('&&ACEATU.LISNOZK', 'V V I', nbocc(ACE_ORIENTATION), jnozk)
+        call wkvect('&&ACEATU.LISCOZK', 'V V R', 3*nbocc(ACE_ORIENTATION), jcozk)
+        do ioc = 1, nbocc(ACE_ORIENTATION)
+!           Un seul noeud permis
+            call getvem(noma, 'GROUP_NO', 'ORIENTATION', 'GROUP_NO', ioc, iarg, 1, nomlu, nj)
+            call getvem(noma, 'NOEUD', 'ORIENTATION', 'NOEUD', ioc, iarg, 1, nomlu, nn)
             call getvtx('ORIENTATION', 'CARA', iocc=ioc, scal=car, nbret=ncar)
-            call getvr8('ORIENTATION', 'VALE', iocc=ioc, nbval=3, vect=val,&
-                        nbret=nval)
+            call getvr8('ORIENTATION', 'VALE', iocc=ioc, nbval=3, vect=val, nbret=nval)
             call getvr8('ORIENTATION', 'PRECISION', iocc=ioc, scal=epsi, nbret=ibid)
             if (ibid .eq. 0) then
                 epsi=1.d-4
@@ -276,11 +255,11 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr,&
                             zr(jcozk-1+3*inn )=val(3)
                         else
                             ier=1
-                            goto 9998
+                            goto 999
                         endif
                     else
                         ier=1
-                        goto 9998
+                        goto 999
                     endif
                 endif
                 if (nn .gt. 0) then
@@ -294,25 +273,23 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr,&
                         zr(jcozk-1+3*inn )=val(3)
                     else
                         ier=1
-                        goto 9998
+                        goto 999
                     endif
                 endif
             endif
-50      continue
+        enddo
     endif
     call aceat3(noma, nomu, nbtuy, nbpart, nbmapart,&
                 lismapart, lisnopart, ivr, ifm, inn,&
                 zi(jnozk), zr(jcozk), sens, zr(jdco), epsi,&
                 crit, nno,mmt)
 !
-9998  continue
+999 continue
     if (ier .ne. 0) then
         call utmess('F', 'MODELISA_28')
     endif
 !
-!
-! --- MENAGE
-!
+!   Ménage
     AS_DEALLOCATE(vi=notuy)
     AS_DEALLOCATE(vi=eltuy)
     AS_DEALLOCATE(vi=sens)

@@ -25,14 +25,12 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 #
 MAIL=LIRE_MAILLAGE(FORMAT='MED', )
-
 #
 MO=AFFE_MODELE(   MAILLAGE=MAIL,
                         AFFE=_F( TOUT = 'OUI',
                               PHENOMENE = 'MECANIQUE',
                               MODELISATION = 'TUYAU_6M')
                   )
-
 #
 #---------------------------------------------------------------------
 #                     CARACTERISTIQUES ELEMENTAIRES

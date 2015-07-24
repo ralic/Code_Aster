@@ -31,7 +31,7 @@
 # PRISE EN COMPTE DE L'AMORTISSEMENT).
 #
 # A PARTIR DU NUME_DDL_GENE, ON DUPLIQUE LE CALCUL CALC_MODES(L'UN BASE SUR LES
-# MODES CALCULES PAR METHODE DE SOUS-ESPACE ET L'AUTRE BASE SUR LA METHODE DES 
+# MODES CALCULES PAR METHODE DE SOUS-ESPACE ET L'AUTRE BASE SUR LA METHODE DES
 # PUISSANCES INVERSES) POUR TESTER L'ISOFONCTIONNALITE DES 2 OPERATEURS EN CAS DE
 # NUME_DDL_GENE. D'AUTRE PART ON CHOISIT (A TORT) L'USAGE DU SOLVEUR
 # LINEAIRE MULT_FRONT POUR FORCER LE CHANGEMENT EN INTERNE OPERATEUR
@@ -41,14 +41,20 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #
-MAILLA=LIRE_MAILLAGE( )
+MAILLA0=LIRE_MAILLAGE( )
 
 #
+MAILLA=CREA_MAILLAGE(MAILLAGE=MAILLA0,
+    CREA_POI1=(
+        _F(NOM_GROUP_MA='MASSE',   GROUP_NO='MASSE', ),
+    ),
+)
+
 MODELE=AFFE_MODELE(  MAILLAGE=MAILLA,AFFE=(
                             _F( GROUP_MA = 'RESSORT',
                                   PHENOMENE = 'MECANIQUE',
                                   MODELISATION = 'DIS_TR'),
-                            _F( GROUP_NO = 'MASSE',
+                            _F( GROUP_MA = 'MASSE',
                                   PHENOMENE = 'MECANIQUE',
                                   MODELISATION = 'DIS_T')))
 
@@ -63,7 +69,7 @@ PARAM=AFFE_CARA_ELEM(    MODELE=MODELE,DISCRET=(
                                         0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
                                         0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
                                         0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),),
-                            _F( GROUP_NO = 'MASSE',
+                            _F( GROUP_MA = 'MASSE',
                                      CARA = 'M_T_D_N',
                                      VALE = (1., ))))
 

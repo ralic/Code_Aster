@@ -20,10 +20,21 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
-MA=LIRE_MAILLAGE(FORMAT='MED', )
+MA0=LIRE_MAILLAGE(FORMAT='MED', )
 
-MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
+MA0=DEFI_GROUP( reuse=MA0,   MAILLAGE=MA0,
   CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+
+
+MA=CREA_MAILLAGE(MAILLAGE=MA0,
+    CREA_POI1=(
+        _F(NOM_GROUP_MA='N1',   NOEUD = 'N1',),
+        _F(NOM_GROUP_MA='N11',  NOEUD = 'N11',),
+        _F(NOM_GROUP_MA='N111', NOEUD = 'N111',),
+        _F(NOM_GROUP_MA='N121', NOEUD = 'N121',),
+    ),
+)
+
 
 #====================================================================
 MAT=DEFI_MATERIAU( ELAS=_F(  E = 2.1E+11,  NU = 0.3,  RHO = 7800.) )
@@ -37,7 +48,7 @@ CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
 MO2=AFFE_MODELE(  MAILLAGE=MA,AFFE=(
                    _F(  TOUT = 'OUI', PHENOMENE = 'MECANIQUE',
                           MODELISATION = 'Q4G'),
-                        _F(  NOEUD = ('N1', 'N11', 'N111', 'N121',),
+                        _F(  GROUP_MA = ('N1', 'N11', 'N111', 'N121',),
                           PHENOMENE = 'MECANIQUE',
                           MODELISATION = 'DIS_T'))
                  )
@@ -48,17 +59,17 @@ CA2=AFFE_CARA_ELEM(   MODELE=MO2,
                           COQUE=_F(
        GROUP_MA = 'TOUT',
  EPAIS = 0.01),
-                        DISCRET=(_F(  NOEUD = ('N1', 'N11', 'N111', 'N121',),
+                        DISCRET=(_F(  GROUP_MA = ('N1', 'N11', 'N111', 'N121',),
                                   CARA = 'K_T_D_N',
                                   REPERE = 'LOCAL',
                                   VALE = ( RIG,   0.,     0., )),
-                                  _F(  NOEUD = ('N1', 'N11', 'N111', 'N121',),
+                                  _F(  GROUP_MA = ('N1', 'N11', 'N111', 'N121',),
                                   CARA = 'M_T_D_N',
                                   REPERE = 'LOCAL',
                                   VALE = ( 0., )),),
                          ORIENTATION=_F(  CARA = 'ANGL_NAUT',
                                        VALE = (60., 0., 0.,),
-                                       NOEUD = ('N1', 'N11', 'N111', 'N121',))
+                                       GROUP_MA = ('N1', 'N11', 'N111', 'N121',))
                      )
 
 CH2=AFFE_CHAR_MECA(  MODELE=MO2,DDL_IMPO=(
@@ -109,7 +120,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 MO4=AFFE_MODELE(  MAILLAGE=MA,AFFE=(
                    _F(  TOUT = 'OUI', PHENOMENE = 'MECANIQUE',
                           MODELISATION = 'DST'),
-                        _F(  NOEUD = ('N1', 'N11', 'N111', 'N121',),
+                        _F(  GROUP_MA = ('N1', 'N11', 'N111', 'N121',),
                           PHENOMENE = 'MECANIQUE',
                           MODELISATION = 'DIS_T'))
                  )
@@ -120,17 +131,17 @@ CA4=AFFE_CARA_ELEM(   MODELE=MO4,
  EPAIS = 0.01),
                          ORIENTATION=_F(  CARA = 'ANGL_NAUT',
                                        VALE = (60., 0., 0.,),
-                                       NOEUD = ('N1', 'N11', 'N111', 'N121',)),DISCRET=(
-                        _F(  NOEUD = ('N1', 'N11',),    CARA = 'K_T_D_N',
+                                       GROUP_MA = ('N1', 'N11', 'N111', 'N121',)),DISCRET=(
+                        _F(  GROUP_MA = ('N1', 'N11',),    CARA = 'K_T_D_N',
                                   VALE = ( 0.25E2, 0.,     0., ),
-                                  REPERE = 'LOCAL'),                         
-                        _F(  NOEUD = ('N1', 'N11',),    CARA = 'M_T_D_N',
+                                  REPERE = 'LOCAL'),
+                        _F(  GROUP_MA = ('N1', 'N11',),    CARA = 'M_T_D_N',
                                   VALE = ( 0., ),
                                   REPERE = 'LOCAL'),
-                        _F(  NOEUD = ('N111', 'N121',), CARA = 'K_T_D_N',
+                        _F(  GROUP_MA = ('N111', 'N121',), CARA = 'K_T_D_N',
                                   VALE = ( 0.25E2, 0.,     0., ),
                                   REPERE = 'LOCAL'),
-                        _F(  NOEUD = ('N111', 'N121',), CARA = 'M_T_D_N',
+                        _F(  GROUP_MA = ('N111', 'N121',), CARA = 'M_T_D_N',
                                   VALE = ( 0., ),
                                   REPERE = 'LOCAL'),
                         )
@@ -178,7 +189,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 MO6=AFFE_MODELE(  MAILLAGE=MA,AFFE=(
                    _F(  TOUT = 'OUI', PHENOMENE = 'MECANIQUE',
                           MODELISATION = 'DKT'),
-                        _F(  NOEUD = ('N1', 'N11', 'N111', 'N121',),
+                        _F(  GROUP_MA = ('N1', 'N11', 'N111', 'N121',),
                           PHENOMENE = 'MECANIQUE',
                           MODELISATION = 'DIS_T'))
                  )
@@ -189,17 +200,17 @@ CA6=AFFE_CARA_ELEM(   MODELE=MO6,
  EPAIS = 0.01),
                          ORIENTATION=_F(  CARA = 'ANGL_NAUT',
                                        VALE = (60., 0., 0.,),
-                                       NOEUD = ('N1', 'N11', 'N111', 'N121',)),DISCRET=(
-                        _F(  NOEUD = ('N1', 'N11',),    CARA = 'K_T_D_N',
+                                       GROUP_MA = ('N1', 'N11', 'N111', 'N121',)),DISCRET=(
+                        _F(  GROUP_MA = ('N1', 'N11',),    CARA = 'K_T_D_N',
                                   VALE = ( 0.25E2, 0.,     0., ),
                                   REPERE = 'LOCAL'),
-                        _F(  NOEUD = ('N1', 'N11',),    CARA = 'M_T_D_N',
+                        _F(  GROUP_MA = ('N1', 'N11',),    CARA = 'M_T_D_N',
                                   VALE = ( 0., ),
                                   REPERE = 'LOCAL'),
-                        _F(  NOEUD = ('N111', 'N121',), CARA = 'K_T_D_N',
+                        _F(  GROUP_MA = ('N111', 'N121',), CARA = 'K_T_D_N',
                                   VALE = ( 0.25E2, 0.,     0., ),
                                   REPERE = 'LOCAL'),
-                        _F(  NOEUD = ('N111', 'N121',), CARA = 'M_T_D_N',
+                        _F(  GROUP_MA = ('N111', 'N121',), CARA = 'M_T_D_N',
                                   VALE = ( 0., ),
                                   REPERE = 'LOCAL'))
                      )

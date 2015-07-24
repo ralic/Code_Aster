@@ -724,14 +724,11 @@ class tuyauterie(OAR_element):
             self.no = [val.rstrip() for val in mapy.correspondance_noeuds]
 
             self.dictMailleNoeuds = dict()
-            for val in self.ma:
-                self.dictMailleNoeuds[val] = list()
-
             for i in range(0, len(mapy.co)):
-                self.dictMailleNoeuds[self.ma[i]].append(
-                    self.no[mapy.co[i][0]])
-                self.dictMailleNoeuds[self.ma[i]].append(
-                    self.no[mapy.co[i][1]])
+                if ( len(mapy.co[i]) >= 2 ): # Seulement les mailles à plus de 2 noeuds. (Pas les POI1)
+                    self.dictMailleNoeuds[self.ma[i]] = list()
+                    self.dictMailleNoeuds[self.ma[i]].append( self.no[mapy.co[i][0]] )
+                    self.dictMailleNoeuds[self.ma[i]].append( self.no[mapy.co[i][1]] )
 
             self.dictNoeudValTorseur = dict()
             self.buildTableTorseur()

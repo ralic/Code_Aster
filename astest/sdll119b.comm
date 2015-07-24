@@ -36,13 +36,18 @@ DEBUT(   CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #
 
-POUTRE=LIRE_MAILLAGE(FORMAT='MED', )
+POUTRE0=LIRE_MAILLAGE(FORMAT='MED', )
 
 # Pour obtenir les memes resultats sur toutes les machines, on desymetrise le probleme
 # en modifiant legerement la geometrie du maillage :
-MODI_MAILLAGE(reuse =POUTRE, MAILLAGE=POUTRE, DEFORME=_F(OPTION='TRAN', ALEA=1.e-8,),)
+MODI_MAILLAGE(reuse =POUTRE0, MAILLAGE=POUTRE0, DEFORME=_F(OPTION='TRAN', ALEA=1.e-8,),)
 
 #
+POUTRE=CREA_MAILLAGE(MAILLAGE=POUTRE0,
+    CREA_POI1=(
+        _F(NOM_GROUP_MA='BASEEXTR',  GROUP_NO = ('NO_BASE',  'NO_EXTR',),),
+    ),
+)
 
 MODELE=AFFE_MODELE(
                 MAILLAGE=POUTRE,AFFE=(
@@ -51,7 +56,7 @@ MODELE=AFFE_MODELE(
                 PHENOMENE = 'MECANIQUE',
                 MODELISATION = 'POU_D_T'),
                     _F(
-                GROUP_NO = ('NO_BASE',  'NO_EXTR',),
+                GROUP_MA='BASEEXTR',
                 PHENOMENE = 'MECANIQUE',
                 MODELISATION = 'DIS_TR'))
                         )
@@ -84,11 +89,11 @@ CARA=AFFE_CARA_ELEM(
                 CARA = 'R',
                 VALE = 1.0E-03)),
                 DISCRET=(_F(
-                GROUP_NO = ('NO_BASE',  'NO_EXTR',),
+                GROUP_MA='BASEEXTR',
                 CARA = 'K_TR_D_N',
                 VALE = (0.,  0.,  0.,  0.,  6.29,  6.29,)),
                 _F(
-                GROUP_NO = ('NO_BASE',  'NO_EXTR',),
+                GROUP_MA='BASEEXTR',
                 CARA = 'M_TR_D_N',
                 VALE = (0.,0.,0.,0.,0.,0.,0.,0.,0.,0.)),
                            ))

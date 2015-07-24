@@ -28,11 +28,19 @@
 # ----------------------------------------------------------------------
 DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MA=LIRE_MAILLAGE( )
+MA0=LIRE_MAILLAGE( )
+
+MA=CREA_MAILLAGE(MAILLAGE=MA0,
+    CREA_POI1=(
+        _F(NOM_GROUP_MA='GROUP_NO_P',   GROUP_NO='GROUP_NO_P', ),
+        _F(NOM_GROUP_MA='P1',  NOEUD = 'P1', ),
+        _F(NOM_GROUP_MA='P8',  NOEUD = 'P8', ),
+    ),
+)
 
 MO=AFFE_MODELE(  MAILLAGE=MA,AFFE=(
        _F(  TOUT = 'OUI',    PHENOMENE = 'MECANIQUE',  MODELISATION = 'DIS_T'),
-            _F(  GROUP_NO = 'GROUP_NO_P',   MODELISATION = 'DIS_T',
+            _F(  GROUP_MA = 'GROUP_NO_P',   MODELISATION = 'DIS_T',
             PHENOMENE = 'MECANIQUE')) )
 
 CH=AFFE_CHAR_MECA(  MODELE=MO,
@@ -49,7 +57,7 @@ CH=AFFE_CHAR_MECA(  MODELE=MO,
                    )
 
 CARELEM=AFFE_CARA_ELEM(   MODELE=MO,
-       ORIENTATION=_F(  GROUP_NO = 'GROUP_NO_P',     CARA = 'ANGL_NAUT',
+       ORIENTATION=_F(  GROUP_MA = 'GROUP_NO_P',     CARA = 'ANGL_NAUT',
                                      VALE = ( 53.130102,  0.,   0.,  )),DISCRET=(
 
           _F(  CARA = 'K_T_L',   REPERE = 'LOCAL',      GROUP_MA = 'GROUP_MA_GRMA',
@@ -63,9 +71,9 @@ CARELEM=AFFE_CARA_ELEM(   MODELE=MO,
                                  0.,   0.,   0.,   0.,   0.,
                                  0.,   0.,   0.,   0.,   0.,     )),
 
-          _F(  CARA = 'K_T_N',   REPERE = 'LOCAL',      NOEUD = ( 'P1',  'P8', ),
+          _F(  CARA = 'K_T_N',   REPERE = 'LOCAL',      GROUP_MA = ( 'P1',  'P8', ),
                            VALE = ( 1.E+5, 0.,  0.,  0.,   0.,   0.,  )),
-          _F(  CARA = 'M_T_N',   REPERE = 'LOCAL',      NOEUD = ( 'P1',  'P8', ),
+          _F(  CARA = 'M_T_N',   REPERE = 'LOCAL',      GROUP_MA = ( 'P1',  'P8', ),
                            VALE = ( 0. , 0.,  0.,  0.,   0.,   0.,  )),
 
           _F(  CARA = 'A_T_L',   REPERE = 'LOCAL',      GROUP_MA = 'GROUP_MA_GRMA',
@@ -73,11 +81,11 @@ CARELEM=AFFE_CARA_ELEM(   MODELE=MO,
                                 -50.,  0.,   0.,   50.,  0.,
                                  0.,   0.,   0.,   0.,   0.,
                                  0.,   0.,   0.,   0.,   0.,     )),
-          _F(  CARA = 'A_T_N',   REPERE = 'LOCAL',      NOEUD = 'P1',
+          _F(  CARA = 'A_T_N',   REPERE = 'LOCAL',      GROUP_MA = 'P1',
                            VALE = ( 250.,  0.,  0.,  0.,   0.,   0.,  )),
-          _F(  CARA = 'A_T_N',   REPERE = 'LOCAL',      NOEUD = 'P8',
+          _F(  CARA = 'A_T_N',   REPERE = 'LOCAL',      GROUP_MA = 'P8',
                            VALE = ( 25.,  0.,  0.,   0.,   0.,   0.,  )),
-          _F(  CARA = 'M_T_N',   REPERE = 'GLOBAL',     GROUP_NO = 'GROUP_NO_P',
+          _F(  CARA = 'M_T_N',   REPERE = 'GLOBAL',     GROUP_MA = 'GROUP_NO_P',
                            VALE = ( 10.,  0.,  10.,  0.,  0.,  10., ))) )
 
 # --------------------------------------------------------------------

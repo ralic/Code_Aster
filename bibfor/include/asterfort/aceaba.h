@@ -18,7 +18,7 @@
 interface
     subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
                       mclf, nbtel, ntyele, ivr, ifm,&
-                      jdlm)
+                      zjdlm)
         character(len=8) :: noma
         character(len=8) :: nomo
         integer :: lmax
@@ -29,6 +29,6 @@ interface
         integer :: ntyele(*)
         integer :: ivr(*)
         integer :: ifm
-        integer :: jdlm
+        integer :: zjdlm(*)
     end subroutine aceaba
 end interface

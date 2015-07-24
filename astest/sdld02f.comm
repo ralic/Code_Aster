@@ -32,11 +32,11 @@
 
 DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MA=LIRE_MAILLAGE( )
+MA0=LIRE_MAILLAGE( )
 
 # POUR TESTER LA COMMANDE DEFI_GROUP :
 
-MA=DEFI_GROUP(reuse=MA,  MAILLAGE=MA,CREA_GROUP_MA=(
+MA0=DEFI_GROUP(reuse=MA0,  MAILLAGE=MA0,CREA_GROUP_MA=(
       _F( NOM = 'GM1', MAILLE = ('S1','S2','S3','S4',)),
       _F( NOM = 'GM2', DIFFE = ('GRMA','GM1',   )),
       _F( NOM = 'GM3', INTERSEC = ('GM1','GRMA',   )),
@@ -50,10 +50,19 @@ MA=DEFI_GROUP(reuse=MA,  MAILLAGE=MA,CREA_GROUP_MA=(
       _F( NOM = 'GN4',  UNION = ('GN3','GN2', )))
       )
 
+
+MA=CREA_MAILLAGE(MAILLAGE=MA0,
+    CREA_POI1=(
+        _F(NOM_GROUP_MA='GN4',   GROUP_NO = ('GN4',) ),
+        _F(NOM_GROUP_MA='P1P8',  NOEUD = ( 'P1','P8',) ),
+    ),
+)
+
+
 MO=AFFE_MODELE(  MAILLAGE=MA,
                  AFFE=(_F(  TOUT = 'OUI',     PHENOMENE = 'MECANIQUE',
                             MODELISATION = '2D_DIS_TR'),
-                       _F(  GROUP_NO = 'GN4', PHENOMENE = 'MECANIQUE',
+                       _F(  GROUP_MA = 'GN4', PHENOMENE = 'MECANIQUE',
                             MODELISATION = '2D_DIS_TR')) )
 
 CH=AFFE_CHAR_MECA(  MODELE=MO,
@@ -71,7 +80,7 @@ CH=AFFE_CHAR_MECA(  MODELE=MO,
 
 # Pour des questions de couverture de code GM4 est 2 fois
 CARELEM=AFFE_CARA_ELEM(   MODELE=MO,
-        ORIENTATION=_F(  GROUP_NO = 'GN4',   CARA = 'ANGL_NAUT',
+        ORIENTATION=_F(  GROUP_MA = 'GN4',   CARA = 'ANGL_NAUT',
                          VALE = ( 53.130102,  0.,   0.,  )),
         DISCRET_2D=(_F(  CARA = 'K_TR_D_L',   REPERE = 'LOCAL',
                          GROUP_MA = 'GM4',    VALE = (1.E5,0.,0., )),
@@ -81,11 +90,11 @@ CARELEM=AFFE_CARA_ELEM(   MODELE=MO,
                     _F(  CARA = 'M_TR_D_L',   REPERE = 'LOCAL',
                          GROUP_MA = 'GM4',    VALE = (0., 0.,)),
                     _F(  CARA = 'K_TR_D_N',   REPERE = 'LOCAL',
-                         NOEUD = ( 'P1','P8',),   VALE = (1.E5,0.,0., )),
+                         GROUP_MA='P1P8',   VALE = (1.E5,0.,0., )),
                     _F(  CARA = 'M_TR_N',     REPERE = 'LOCAL',
-                         NOEUD = ( 'P1','P8',),   VALE = (0. ,0. ,0., 0. ,0. ,0., )),
+                         GROUP_MA='P1P8',   VALE = (0. ,0. ,0., 0. ,0. ,0., )),
                     _F(  CARA = 'M_TR_D_N',   REPERE = 'GLOBAL',
-                         GROUP_NO = 'GN4',    VALE = (10.,10.,0.,0.,)),)
+                         GROUP_MA = 'GN4',    VALE = (10.,10.,0.,0.,)),)
                          )
 
 # --------------------------------------------------------------------

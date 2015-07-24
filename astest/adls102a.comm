@@ -21,8 +21,11 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MAYA=LIRE_MAILLAGE(FORMAT='MED',)
+MAYA0=LIRE_MAILLAGE(FORMAT='MED',)
 
+MAYA=CREA_MAILLAGE(MAILLAGE=MAYA0,
+    CREA_POI1=_F(NOM_GROUP_MA='MASSPONC', GROUP_NO = ('MASSPONC',) )
+)
 
 MODELE=AFFE_MODELE(  MAILLAGE=MAYA,INFO=2,AFFE=(
                       _F( GROUP_MA = 'EFLUIDE',
@@ -38,7 +41,7 @@ MODELE=AFFE_MODELE(  MAILLAGE=MAYA,INFO=2,AFFE=(
                       _F( GROUP_MA = ('AMORPONC'),
                              PHENOMENE = 'MECANIQUE',
                              MODELISATION = '2D_DIS_T'),
-                      _F( GROUP_NO = ('MASSPONC',),
+                      _F( GROUP_MA = ('MASSPONC',),
                              PHENOMENE = 'MECANIQUE',
                              MODELISATION = '2D_DIS_T'),),
 
@@ -78,13 +81,13 @@ CHAMPMAT=AFFE_MATERIAU(   MAILLAGE=MAYA,AFFE=(
 # AFFECTATION DES CARACTERISTIQUES ELEMENTAIRES
 
 CARA_ELE=AFFE_CARA_ELEM( MODELE=MODELE,
-            DISCRET_2D=(_F( GROUP_NO='MASSPONC',
+            DISCRET_2D=(_F( GROUP_MA='MASSPONC',
                         CARA='K_T_D_N',
                         REPERE='GLOBAL',VALE=(0.,50.E+09,),),
-                     _F( GROUP_NO='MASSPONC',
+                     _F( GROUP_MA='MASSPONC',
                         CARA='M_T_D_N',
                         VALE=200.E+03),
-                     _F( GROUP_NO='MASSPONC',
+                     _F( GROUP_MA='MASSPONC',
                         CARA='A_T_D_N',
                         VALE=(0.,0.),),
                     _F( GROUP_MA='AMORPONC',

@@ -24,17 +24,24 @@ DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #
 
-MASRES=LIRE_MAILLAGE( )
+MASRES0=LIRE_MAILLAGE( )
 
-MASRES=DEFI_GROUP( reuse=MASRES,   MAILLAGE=MASRES,
+MASRES0=DEFI_GROUP( reuse=MASRES0,   MAILLAGE=MASRES0,
   CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
 
 #
 
+MASRES=CREA_MAILLAGE(MAILLAGE=MASRES0,
+    CREA_POI1=(
+        _F(NOM_GROUP_MA='B',   NOEUD = 'B', ),
+        _F(NOM_GROUP_MA='C',   NOEUD = 'C', ),
+    ),
+)
+
 MODELE=AFFE_MODELE(  MAILLAGE=MASRES,AFFE=(
                        _F(  TOUT = 'OUI', PHENOMENE = 'MECANIQUE',
                               MODELISATION = 'POU_D_T'),
-              _F(  NOEUD = ('B','C',),  PHENOMENE = 'MECANIQUE',
+              _F(  GROUP_MA = ('B','C',),  PHENOMENE = 'MECANIQUE',
         MODELISATION = 'DIS_T'))       )
 
 #
@@ -56,16 +63,16 @@ RIGMAS=AFFE_CARA_ELEM(  MODELE=MODELE,
   SECTION = 'RECTANGLE',
                           CARA = ('H',), VALE = (1.,)),DISCRET=(
 
-                _F(  NOEUD = 'B',
+                _F(  GROUP_MA = 'B',
                           CARA = 'M_T_D_N',
                           VALE = ( 10.,)),
-                _F(  NOEUD = 'B',
+                _F(  GROUP_MA = 'B',
                           CARA = 'K_T_D_N',
                           VALE = ( 0.,0.,0.,)),
-                _F(  NOEUD = 'C',
+                _F(  GROUP_MA = 'C',
                           CARA = 'M_T_D_N',
                           VALE = ( 5.,)),
-                _F(  NOEUD = 'C',
+                _F(  GROUP_MA = 'C',
                           CARA = 'K_T_D_N',
                           VALE = ( 0.,0.,0.,))
                  )

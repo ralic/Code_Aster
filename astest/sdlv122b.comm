@@ -42,14 +42,20 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 PRE_IDEAS()
 
 #
-MAIL=LIRE_MAILLAGE( )
+MAIL0=LIRE_MAILLAGE( )
+MAIL=CREA_MAILLAGE(MAILLAGE=MAIL0,
+    CREA_POI1=(
+        _F(NOM_GROUP_MA='NPOINT1', GROUP_NO=('NPOINT1',),),
+        _F(NOM_GROUP_MA='NPOINT2', GROUP_NO=('NPOINT2',),),
+    ),
+)
 
 #
 MODELE=AFFE_MODELE(   MAILLAGE=MAIL,AFFE=(
                             _F( TOUT = 'OUI',
                                   PHENOMENE = 'MECANIQUE',
                                   MODELISATION = '3D'),
-                            _F( GROUP_NO = ('NPOINT1', 'NPOINT2',),
+                            _F( GROUP_MA = ('NPOINT1', 'NPOINT2',),
                                   PHENOMENE = 'MECANIQUE',
                                   MODELISATION = 'DIS_TR'))           )
 
@@ -63,10 +69,10 @@ MATER=AFFE_MATERIAU(   MAILLAGE=MAIL,
 
 #
 CARAELEM=AFFE_CARA_ELEM(    MODELE=MODELE,
-                             DISCRET=(_F( GROUP_NO = ('NPOINT1', 'NPOINT2',),
+                             DISCRET=(_F( GROUP_MA = ('NPOINT1', 'NPOINT2',),
                                       CARA = 'K_TR_D_N',
                                       VALE = (0., 0., 0., 0., 0., 0.,)),
-                                      _F( GROUP_NO = ('NPOINT1', 'NPOINT2',),
+                                      _F( GROUP_MA = ('NPOINT1', 'NPOINT2',),
                                       CARA = 'M_TR_D_N',
                                       VALE = (0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,)),))
 

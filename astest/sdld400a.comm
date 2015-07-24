@@ -20,13 +20,19 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'))
 
-MAYA=LIRE_MAILLAGE( )
+MAYA0=LIRE_MAILLAGE( )
+
+MAYA=CREA_MAILLAGE(MAILLAGE=MAYA0,
+    CREA_POI1=(
+        _F(NOM_GROUP_MA='GROUP_NO_TOUT_NO',   GROUP_NO = 'GROUP_NO_TOUT_NO',),
+    ),
+)
 
 STRUCTUR=AFFE_MODELE(    MAILLAGE=MAYA,AFFE=(
                                _F(  TOUT = 'OUI',
                                       MODELISATION = 'DIS_TR',
                                       PHENOMENE = 'MECANIQUE'),
-                                    _F(  GROUP_NO = 'GROUP_NO_TOUT_NO',
+                                    _F(  GROUP_MA = 'GROUP_NO_TOUT_NO',
                                     PHENOMENE = 'MECANIQUE',
                                       MODELISATION = 'DIS_TR')))
 
@@ -71,7 +77,7 @@ CARA=AFFE_CARA_ELEM(    MODELE=STRUCTUR,DISCRET=(
                        0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0., )),
 
                      _F(  CARA = 'M_TR_D_N',
-                       GROUP_NO = 'GROUP_NO_TOUT_NO',
+                       GROUP_MA = 'GROUP_NO_TOUT_NO',
                        REPERE = 'LOCAL',
                   VALE = ( 10.,10.,10.,10.,0.,0.,0.,0.,0.,0., ))),ORIENTATION=(
 

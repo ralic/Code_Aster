@@ -31,12 +31,19 @@ DEBUT(   CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
 
 #
 
-POUTRE=LIRE_MAILLAGE(FORMAT='MED', )
+POUTRE0=LIRE_MAILLAGE(FORMAT='MED', )
 
-POUTRE=DEFI_GROUP( reuse=POUTRE,   MAILLAGE=POUTRE,
+POUTRE0=DEFI_GROUP( reuse=POUTRE0,   MAILLAGE=POUTRE0,
   CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
 
 #
+
+POUTRE=CREA_MAILLAGE(MAILLAGE=POUTRE0,
+    CREA_POI1=(
+        _F(NOM_GROUP_MA='N1',   NOEUD = 'N1', ),
+        _F(NOM_GROUP_MA='N101', NOEUD = 'N101', ),
+    ),
+)
 
 MODELE=AFFE_MODELE(
                 MAILLAGE=POUTRE,AFFE=(
@@ -45,7 +52,7 @@ MODELE=AFFE_MODELE(
                 PHENOMENE = 'MECANIQUE',
                 MODELISATION = 'POU_D_T'),
                     _F(
-                NOEUD = ('N1',  'N101',),
+                GROUP_MA = ('N1',  'N101',),
                 PHENOMENE = 'MECANIQUE',
                 MODELISATION = 'DIS_TR'))
                         )
@@ -66,11 +73,11 @@ CARA=AFFE_CARA_ELEM(
                 CARA = ( 'R', 'EP',),
                 VALE = (6.50E-03, 2.10E-03,)),
                 DISCRET=(_F(
-                NOEUD = ('N1',  'N101',),
+                GROUP_MA = ('N1',  'N101',),
                 CARA = 'K_TR_D_N',
                 VALE = (0.,  0.,  0.,  6.29,  0.,  6.29,)),
                         _F(
-                NOEUD = ('N1',  'N101',),
+                GROUP_MA = ('N1',  'N101',),
                 CARA = 'M_TR_D_N',
                 VALE = (0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,)),
                            ))

@@ -24,13 +24,20 @@
 #
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'))
 
-MAILLAGE=LIRE_MAILLAGE(FORMAT='MED', )
+MAILLAG0=LIRE_MAILLAGE(FORMAT='MED', )
+
+MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAILLAG0,
+    CREA_POI1=(
+        _F(NOM_GROUP_MA='MASSES',   GROUP_NO = ('MASSES',) ),
+        _F(NOM_GROUP_MA='N020304',  NOEUD = ('N02',  'N03',  'N04',), ),
+    ),
+)
 
 MODELE=AFFE_MODELE(  MAILLAGE=MAILLAGE,AFFE=(
                   _F(  PHENOMENE = 'MECANIQUE',  MODELISATION = 'DIS_T',
                          GROUP_MA = 'LIAI_NOE'),
                        _F(  PHENOMENE = 'MECANIQUE',  MODELISATION = 'DIS_T',
-                         GROUP_NO = 'MASSES'))
+                         GROUP_MA = 'MASSES'))
                     )
 
 #
@@ -43,9 +50,9 @@ CON_LIM=AFFE_CHAR_MECA( MODELE=MODELE,
 
 #
 CARA_ELE=AFFE_CARA_ELEM(  MODELE=MODELE,
-                          DISCRET=(_F(  NOEUD = ('N02',  'N03',  'N04',),
+                          DISCRET=(_F(  GROUP_MA='N020304',
                                         CARA = 'M_T_D_N',  VALE = 1.),
-                                   _F(  NOEUD = ('N02',  'N03',  'N04',),
+                                   _F(  GROUP_MA='N020304',
                                         CARA = 'K_T_D_N',  VALE = (0.,0.,0.,)),
                                    _F(  GROUP_MA = 'RLN_1',  CARA = 'K_T_D_L',
                                         VALE = (1000., 0., 0.,),  REPERE = 'GLOBAL'))

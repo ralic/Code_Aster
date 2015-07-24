@@ -14,38 +14,16 @@
 ! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-interface 
-    subroutine acecel(noma, nomo, nbocc, nbepo, nbedi,&
-                      nbeco, nbeca, nbeba, nbema, nbegb,&
-                      nbemb, nbthm1, nbthm2, ntyele, npoutr,&
-                      ndiscr, ncoque, ncable, nbarre, nmassi,&
-                      ngrill, ngribt, nmembr, jdlm, jdln,&
-                      ier)
+interface
+    subroutine acecel(noma, nomo, nbocc, nbtel, ele_sup_num, ele_sup_typ, nb_ty_el, zjdlm, ier)
         character(len=8) :: noma
         character(len=8) :: nomo
         integer :: nbocc(*)
-        integer :: nbepo
-        integer :: nbedi
-        integer :: nbeco
-        integer :: nbeca
-        integer :: nbeba
-        integer :: nbema
-        integer :: nbegb
-        integer :: nbemb
-        integer :: nbthm1
-        integer :: nbthm2
-        integer :: ntyele(*)
-        integer :: npoutr
-        integer :: ndiscr
-        integer :: ncoque
-        integer :: ncable
-        integer :: nbarre
-        integer :: nmassi
-        integer :: ngrill
-        integer :: ngribt
-        integer :: nmembr
-        integer :: jdlm
-        integer :: jdln
+        integer :: nbtel
+        integer :: ele_sup_num(*)
+        integer :: ele_sup_typ(*)
+        integer :: nb_ty_el(*)
+        integer :: zjdlm(*)
         integer :: ier
     end subroutine acecel
-end interface 
+end interface

@@ -20,10 +20,17 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MA=LIRE_MAILLAGE(FORMAT='MED', )
+MA0=LIRE_MAILLAGE(FORMAT='MED', )
 
-MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
+MA0=DEFI_GROUP( reuse=MA0,   MAILLAGE=MA0,
   CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+
+MA=CREA_MAILLAGE(MAILLAGE=MA0,
+    CREA_POI1=(
+        _F(NOM_GROUP_MA='BORD2',  GROUP_NO = 'BORD2', ),
+        _F(NOM_GROUP_MA='NOEUDS', NOEUD = ('N1', 'N11', 'N111', 'N121',), ),
+    ),
+)
 
 #====================================================================
 MAT=DEFI_MATERIAU( ELAS=_F(  E = 2.1E+11,  NU = 0.3,  RHO = 7800.) )
@@ -33,6 +40,7 @@ CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
 
 #====================================================================
 # ---- PLAQUE DKT APPUYEE SUR LES BORDS
+
 
 MO=AFFE_MODELE(      MAILLAGE=MA,
                       AFFE=_F(  TOUT = 'OUI',  PHENOMENE = 'MECANIQUE',
@@ -121,7 +129,7 @@ TEST_RESU(RESU=(_F(PARA='FREQ',
 MO2=AFFE_MODELE(  MAILLAGE=MA,AFFE=(
                    _F(  TOUT = 'OUI', PHENOMENE = 'MECANIQUE',
                           MODELISATION = 'DKT'),
-                        _F(  NOEUD = ('N1', 'N11', 'N111', 'N121',),
+                        _F(  GROUP_MA='NOEUDS',
                           PHENOMENE = 'MECANIQUE',
                           MODELISATION = 'DIS_T'))
                  )
@@ -132,9 +140,9 @@ CA2=AFFE_CARA_ELEM(   MODELE=MO2,
                           COQUE=_F(
        GROUP_MA = 'TOUT',
  EPAIS = 0.01),
-                        DISCRET=(_F(  GROUP_NO = 'BORD2',    CARA = 'K_T_D_N',
+                        DISCRET=(_F(  GROUP_MA = 'BORD2',    CARA = 'K_T_D_N',
                                   VALE = ( RIG,   0.,     0., )),
-                                  _F(  GROUP_NO = 'BORD2',    CARA = 'M_T_D_N',
+                                  _F(  GROUP_MA = 'BORD2',    CARA = 'M_T_D_N',
                                   VALE = ( 0.,)),)
                      )
 
@@ -266,7 +274,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=4,
 MO4=AFFE_MODELE(  MAILLAGE=MA,AFFE=(
                    _F(  TOUT = 'OUI', PHENOMENE = 'MECANIQUE',
                           MODELISATION = 'DST'),
-                        _F(  NOEUD = ('N1', 'N11', 'N111', 'N121',),
+                        _F(   GROUP_MA='NOEUDS',
                           PHENOMENE = 'MECANIQUE',
                           MODELISATION = 'DIS_T'))
                  )
@@ -275,9 +283,9 @@ CA4=AFFE_CARA_ELEM(   MODELE=MO4,
                           COQUE=_F(
        GROUP_MA = 'TOUT',
  EPAIS = 0.01),
-                        DISCRET=(_F(  GROUP_NO = 'BORD2',    CARA = 'K_T_D_N',
+                        DISCRET=(_F(  GROUP_MA = 'BORD2',    CARA = 'K_T_D_N',
                                   VALE = ( RIG,   0.,     0., )),
-                                  _F(  GROUP_NO = 'BORD2',    CARA = 'M_T_D_N',
+                                  _F(  GROUP_MA = 'BORD2',    CARA = 'M_T_D_N',
                                   VALE = ( 0., )),
                                   )
                      )

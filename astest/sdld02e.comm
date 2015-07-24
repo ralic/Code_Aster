@@ -32,12 +32,12 @@ DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
       DEBUG=_F(SDVERI='OUI',),);
 
-MA=LIRE_MAILLAGE();
+MA0=LIRE_MAILLAGE();
 
 # POUR TESTER LA COMMANDE DEFI_GROUP :
 
-MA=DEFI_GROUP(reuse =MA,
-              MAILLAGE=MA,
+MA0=DEFI_GROUP(reuse =MA0,
+              MAILLAGE=MA0,
               CREA_GROUP_MA=(_F(NOM='GM1',
                                 MAILLE=('S1','S2','S3','S4',),),
                              _F(NOM='GM2',
@@ -58,11 +58,20 @@ MA=DEFI_GROUP(reuse =MA,
                              _F(UNION=('GN3','GN2',),
                                 NOM='GN4',),),);
 
+MA=CREA_MAILLAGE(MAILLAGE=MA0,
+    CREA_POI1=(
+        _F(NOM_GROUP_MA='GN4',   GROUP_NO = ('GN4',) ),
+        _F(NOM_GROUP_MA='P1P8',  NOEUD = ( 'P1','P8',) ),
+    ),
+)
+
+
+
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=(_F(TOUT='OUI',
                         PHENOMENE='MECANIQUE',
                         MODELISATION='2D_DIS_T',),
-                     _F(GROUP_NO='GN4',
+                     _F(GROUP_MA='GN4',
                         PHENOMENE='MECANIQUE',
                         MODELISATION='2D_DIS_T',),),);
 
@@ -111,17 +120,17 @@ CARELEM=AFFE_CARA_ELEM(MODELE=MO,
                                       VALE=(0.,),),
                                    _F(REPERE='LOCAL',
                                       CARA='K_T_D_N',
-                                      NOEUD=('P1','P8',),
+                                      GROUP_MA='P1P8',
                                       VALE=(1.E5,0.,),),
                                    _F(REPERE='LOCAL',
                                       CARA='M_T_D_N',
-                                      NOEUD=('P1','P8',),
+                                      GROUP_MA='P1P8',
                                       VALE=(0.,),),
                                    _F(REPERE='GLOBAL',
                                       CARA='M_T_D_N',
-                                      GROUP_NO='GN4',
+                                      GROUP_MA='GN4',
                                       VALE=10.,),),
-                       ORIENTATION=_F(GROUP_NO='GN4',
+                       ORIENTATION=_F(GROUP_MA='GN4',
                                       CARA='ANGL_NAUT',
                                       VALE=(53.130102,0.,0.,),),);
 

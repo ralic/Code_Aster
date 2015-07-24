@@ -27,11 +27,11 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
 # CALCUL DE LA BASE DE PROJECTION
 #********************************
 
-MAYAFEM=LIRE_MAILLAGE(UNITE=20);
+MAYAFE0=LIRE_MAILLAGE(UNITE=20);
 
 
-MAYAFEM=DEFI_GROUP(reuse =MAYAFEM,
-                   MAILLAGE=MAYAFEM,
+MAYAFE0=DEFI_GROUP(reuse =MAYAFE0,
+                   MAILLAGE=MAYAFE0,
                    CREA_GROUP_MA=_F(NOM='ALL_EL',
                                     TOUT='OUI',),
                    CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
@@ -44,6 +44,13 @@ MATER2=DEFI_MATERIAU(ELAS=_F(E=210000000000.0,
                              NU=0.29,
                              RHO=7800.0,),);
 
+MAYAFEM=CREA_MAILLAGE(MAILLAGE=MAYAFE0,
+    CREA_POI1=(
+        _F(NOM_GROUP_MA='GROUP10', GROUP_NO = 'GROUP10', ),
+    ),
+)
+
+
 MODFEM=AFFE_MODELE(MAILLAGE=MAYAFEM,
                    AFFE=(_F(GROUP_MA=('GROUP1','GROUP2','GROUP3','GROUP4','GROUP5','GROUP6','GROUP7','GROUP8',),
                             PHENOMENE='MECANIQUE',
@@ -51,7 +58,7 @@ MODFEM=AFFE_MODELE(MAILLAGE=MAYAFEM,
                          _F(GROUP_MA='GROUP9',
                             PHENOMENE='MECANIQUE',
                             MODELISATION='DIS_TR',),
-                         _F(GROUP_NO='GROUP10',
+                         _F(GROUP_MA='GROUP10',
                             PHENOMENE='MECANIQUE',
                             MODELISATION='DIS_T',),),);
 
@@ -81,7 +88,7 @@ CHCAR=AFFE_CARA_ELEM(MODELE=MODFEM,
                                  0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
                                  0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
                                  0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),),
-                              _F(GROUP_NO='GROUP10',
+                              _F(GROUP_MA='GROUP10',
                                  CARA='M_T_D_N',
                                  VALE=0.5,),),);
 

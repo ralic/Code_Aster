@@ -100,13 +100,6 @@ Risques et conseils :
  caractéristique  %(k1)s  non admise actuellement
 """),
 
-    18 : _(u"""
- le noeud  %(k1)s  non modélisé par un discret
-"""),
-
-    19 : _(u"""
- pas de noeuds du Radier modélisés par des discrets
-"""),
 
     20 : _(u"""
  le discret  %(k1)s  n'a pas le bon nombre de noeuds.
@@ -188,10 +181,6 @@ La caractéristique %(k1)s, coefficient de cisaillement, pour les poutres doit t
  qui ne contient pas un seul élément GRILLE
 """),
 
-    37 : _(u"""
- impossible d'affecter des caractéristiques à des noeuds de ce modèle
- car aucun noeud ne supporte un élément
-"""),
 
     38 : _(u"""
  la maille  %(k1)s  n'a pas été affectée par des caractéristiques de poutre.
@@ -213,9 +202,6 @@ La caractéristique %(k1)s, coefficient de cisaillement, pour les poutres doit t
  la maille  %(k1)s  n'a pas été affectée par des caractéristiques de grille.
 """),
 
-    43 : _(u"""
- le noeud  %(k1)s  n'a pas été affecté par une matrice.
-"""),
 
     44 : _(u"""
  BARRE :
@@ -291,6 +277,7 @@ La caractéristique %(k1)s, coefficient de cisaillement, pour les poutres doit t
  vous ne pouvez affecter des valeurs de type "MEMBRANE" au modèle  %(k1)s
  qui ne contient pas un seul élément MEMBRANE
 """),
+
 
     56 : _(u"""
  impossibilité, la maille  %(k1)s  doit être une maille de type  %(k2)s , et elle est de type :  %(k3)s  pour la caractéristique  %(k4)s

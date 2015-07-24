@@ -28,18 +28,26 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
           BASE=_F( FICHIER = 'GLOBALE',  LONG_REPE = 20000)
         )
 
-MAILLAGE=LIRE_MAILLAGE( )
+MAILLAG0=LIRE_MAILLAGE( )
 
-MAILLAGE=DEFI_GROUP(reuse=MAILLAGE,
-                    MAILLAGE=MAILLAGE,
+MAILLAG0=DEFI_GROUP(reuse=MAILLAG0,
+                    MAILLAGE=MAILLAG0,
                     CREA_GROUP_NO=_F( NOM='GROUP_NO_GN5',
                                       NOEUD=('NO5',),),);
+
+
+MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAILLAG0,
+    CREA_POI1=(
+        _F(NOM_GROUP_MA='GROUP_NO_MASSES',   GROUP_NO='GROUP_NO_MASSES', ),
+    ),
+)
+
 
 MODELE=AFFE_MODELE(  MAILLAGE=MAILLAGE,AFFE=(
          _F(  PHENOMENE = 'MECANIQUE', MODELISATION = 'DIS_T',
                 GROUP_MA = 'GROUP_MA_RESSORT'),
               _F(  PHENOMENE = 'MECANIQUE', MODELISATION = 'DIS_T',
-                GROUP_NO = 'GROUP_NO_MASSES'))
+                GROUP_MA = 'GROUP_NO_MASSES'))
                     )
 
 #
@@ -51,7 +59,7 @@ CARA_ELE=AFFE_CARA_ELEM(  MODELE=MODELE,DISCRET=(
                           GROUP_MA = 'GROUP_MA_RESSORT',
                           VALE = (0., 0., 0., 0., 0., 0., 0., 0., 0.,
                           0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., )),
-                        _F(  CARA = 'M_T_D_N',  GROUP_NO = 'GROUP_NO_MASSES',  VALE = 10.))
+                        _F(  CARA = 'M_T_D_N',  GROUP_MA = 'GROUP_NO_MASSES',  VALE = 10.))
                          )
 
 #

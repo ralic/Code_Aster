@@ -52,7 +52,7 @@ CARELEM=AFFE_CARA_ELEM(   MODELE=MODELE,
                                    CARA = ('R', 'EP',),
                                    VALE = (0.010, 0.002,),
                               MODI_METRIQUE = 'OUI'),
-                            ORIENTATION=_F( NOEUD = 'NO1',
+                            ORIENTATION=_F( GROUP_NO = 'D',
                                          CARA = 'GENE_TUYAU',
                                          VALE = (0., 0., 1.,))
                           )

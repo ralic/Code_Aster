@@ -44,30 +44,47 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
       DEBUG=_F(SDVERI='OUI'),
       LANG='FR')
 
-MAILLAGE=LIRE_MAILLAGE()
+MAILL0=LIRE_MAILLAGE()
 
-MAILLAGE=DEFI_GROUP(reuse=MAILLAGE,
-                    MAILLAGE=MAILLAGE,
+MAILL0=DEFI_GROUP(reuse=MAILL0,
+                    MAILLAGE=MAILL0,
                     CREA_GROUP_NO=(_F(NOEUD='NO2',
                                       NOM='MASSES',),
                                    _F(NOEUD='NO1',
                                       NOM='ENCASTRE',),),)
 
-MAILLA2=LIRE_MAILLAGE(UNITE=21,)
+
+MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAILL0,
+    CREA_POI1=(
+        _F(NOM_GROUP_MA='MASSES',  GROUP_NO = ('MASSES',) ),
+    ),
+)
+
 
 MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
                    AFFE=(_F(GROUP_MA='RESSORT',
                             PHENOMENE='MECANIQUE',
                             MODELISATION='DIS_T',),
-                         _F(GROUP_NO='MASSES',
+                         _F(GROUP_MA='MASSES',
                             PHENOMENE='MECANIQUE',
                             MODELISATION='DIS_T',),),)
+
+
+
+MAILLA20=LIRE_MAILLAGE(UNITE=21,)
+
+MAILLA2=CREA_MAILLAGE(MAILLAGE=MAILLA20,
+    CREA_POI1=(
+        _F(NOM_GROUP_MA='MASSES1', GROUP_NO = ('MASSES1',) ),
+        _F(NOM_GROUP_MA='MASSES2', GROUP_NO = ('MASSES2',) ),
+    ),
+)
 
 BICHOC=AFFE_MODELE(MAILLAGE=MAILLA2,
                    AFFE=(_F(GROUP_MA='RESSORTS',
                             PHENOMENE='MECANIQUE',
                             MODELISATION='DIS_T',),
-                         _F(GROUP_NO=('MASSES1','MASSES2',),
+                         _F(GROUP_MA=('MASSES1','MASSES2',),
                             PHENOMENE='MECANIQUE',
                             MODELISATION='DIS_T',),),)
 VAL = 98696.0
@@ -84,7 +101,7 @@ CARA_ELE=AFFE_CARA_ELEM(MODELE=MODELE,
                                     VALE=(0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
                                     0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
                                     0.0,0.0,0.0,),),
-                                 _F(GROUP_NO='MASSES',
+                                 _F(GROUP_MA='MASSES',
                                     CARA='M_T_D_N',
                                     VALE=25.0,),),)
 
@@ -99,10 +116,10 @@ CARA_BIC=AFFE_CARA_ELEM(MODELE=BICHOC,
                                     VALE=(0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
                                     0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
                                     0.0,0.0,0.0,),),
-                                 _F(GROUP_NO='MASSES1',
+                                 _F(GROUP_MA='MASSES1',
                                     CARA='M_T_D_N',
                                     VALE=25.0,),
-                                 _F(GROUP_NO='MASSES2',
+                                 _F(GROUP_MA='MASSES2',
                                     CARA='M_T_D_N',
                                     VALE=25.0,),),)
 

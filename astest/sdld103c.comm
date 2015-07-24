@@ -17,7 +17,7 @@
 # ======================================================================
 # ----------------------------------------------------------------------
 # SYSTEME 3 MASSES, 4 RESSORTS ENCASTRES-ENCASTRES SOUMIS A DES
-# ACCE_IMPO DIFFERENTES (STRUCTURE MULTI-SUPPORTEE) 
+# ACCE_IMPO DIFFERENTES (STRUCTURE MULTI-SUPPORTEE)
 # AVEC UTILISATION DE MACR_SPECTRE
 #    ACCE_IMPO = ACCELER1 (A.T*T) EN Z=0 (NO1) ET
 #    ACCE_IMPO = ACCELER2 (0) EN Z=4 (NO5)
@@ -28,12 +28,19 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
           BASE=_F( FICHIER = 'GLOBALE',  LONG_REPE = 20000))
 
-MAILLAGE=LIRE_MAILLAGE( )
+MAILLAG0=LIRE_MAILLAGE( )
 
-MAILLAGE=DEFI_GROUP(reuse=MAILLAGE,
-                    MAILLAGE=MAILLAGE,
+MAILLAG0=DEFI_GROUP(reuse=MAILLAG0,
+                    MAILLAGE=MAILLAG0,
                     CREA_GROUP_NO=_F( NOM='GROUP_NO_GN5',
                                       NOEUD=('NO5',),),);
+
+
+MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAILLAG0,
+    CREA_POI1=(
+        _F(NOM_GROUP_MA='GROUP_NO_MASSES',   GROUP_NO='GROUP_NO_MASSES', ),
+    ),
+)
 
 MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
                    AFFE=(_F(PHENOMENE = 'MECANIQUE',
@@ -41,7 +48,7 @@ MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
                             GROUP_MA = 'GROUP_MA_RESSORT'),
                          _F(PHENOMENE = 'MECANIQUE',
                             MODELISATION = 'DIS_T',
-                            GROUP_NO = 'GROUP_NO_MASSES')));
+                            GROUP_MA = 'GROUP_NO_MASSES')));
 
 #
 CARA_ELE=AFFE_CARA_ELEM(  MODELE=MODELE,DISCRET=(
@@ -52,7 +59,7 @@ CARA_ELE=AFFE_CARA_ELEM(  MODELE=MODELE,DISCRET=(
                      GROUP_MA = 'GROUP_MA_RESSORT',
                      VALE = (0., 0., 0., 0., 0., 0., 0., 0., 0.,
                              0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., )),
-                _F(  CARA = 'M_T_D_N',  GROUP_NO = 'GROUP_NO_MASSES',  VALE = 10.)));
+                _F(  CARA = 'M_T_D_N',  GROUP_MA = 'GROUP_NO_MASSES',  VALE = 10.)));
 
 #
 CON_LIM=AFFE_CHAR_MECA(  MODELE=MODELE,DDL_IMPO=(
@@ -61,13 +68,13 @@ CON_LIM=AFFE_CHAR_MECA(  MODELE=MODELE,DDL_IMPO=(
                _F(  GROUP_NO = 'GROUP_NO_MASSES',    DY = 0.,  DZ = 0.)));
 
 #
-ASSEMBLAGE(MODELE=MODELE,   
-           CHARGE=CON_LIM,   
+ASSEMBLAGE(MODELE=MODELE,
+           CHARGE=CON_LIM,
            CARA_ELEM=CARA_ELE,
            NUME_DDL=CO("NUMEDDL"),
            MATR_ASSE=(_F(MATRICE = CO("RIGIDITE"),
                          OPTION = 'RIGI_MECA'),
-                      _F(MATRICE = CO("MASSE"),     
+                      _F(MATRICE = CO("MASSE"),
                          OPTION = 'MASS_MECA')))
 
 #
@@ -80,8 +87,8 @@ MODE_MEC=CALC_MODES(MATR_RIGI=RIGIDITE,
                     MATR_MASS=MASSE,
                     )
 
-MODE_MEC=NORM_MODE(reuse=MODE_MEC,  
-                   MODE=MODE_MEC,   
+MODE_MEC=NORM_MODE(reuse=MODE_MEC,
+                   MODE=MODE_MEC,
                    NORME='MASS_GENE' )
 
 #
@@ -102,7 +109,7 @@ L_FREQ=DEFI_LIST_REEL(VALE=(0.10,0.20,0.30,0.41,0.52))
 # DESCRIPTION DES ACCELEROGRAMMES:
 #---------------------------------
 ACCE1 = FORMULE(NOM_PARA='INST',VALE='2.E+05*INST**2')
-ACCELER1=CALC_FONC_INTERP(FONCTION=ACCE1, 
+ACCELER1=CALC_FONC_INTERP(FONCTION=ACCE1,
                           LIST_PARA=L_INST,
                           NOM_PARA = 'INST',
                           PROL_DROITE='LINEAIRE',
@@ -121,7 +128,7 @@ ACCELER2=CALC_FONC_INTERP(FONCTION=ACCE2,
 # INTEGRATION DES ACCELEROGRAMMES:
 #---------------------------------
 VITE1 = FORMULE(NOM_PARA='INST',VALE='(2.E+05*INST**3)/3.')
-VITESSE1=CALC_FONC_INTERP(FONCTION=VITE1, 
+VITESSE1=CALC_FONC_INTERP(FONCTION=VITE1,
                           LIST_PARA=L_INST,
                           NOM_PARA='INST',
                           PROL_DROITE='LINEAIRE',
@@ -129,7 +136,7 @@ VITESSE1=CALC_FONC_INTERP(FONCTION=VITE1,
                           NOM_RESU='VITE')
 
 DEPL1 = FORMULE(NOM_PARA='INST',VALE='(2.E+05*INST**4)/12.')
-DEPLACE1=CALC_FONC_INTERP(FONCTION=DEPL1, 
+DEPLACE1=CALC_FONC_INTERP(FONCTION=DEPL1,
                           LIST_PARA=L_INST,
                           NOM_PARA='INST',
                           PROL_DROITE='LINEAIRE',
@@ -157,11 +164,11 @@ DEPLACE2=CALC_FONC_INTERP(FONCTION=DEPL2, LIST_PARA=L_INST,
 MULT_X=CALC_CHAR_SEISME(MATR_MASS=MASSE,MONO_APPUI = 'OUI',
                          DIRECTION=( 1., 0., 0.,), )
 # EN MULTI APPUI
-MULT_X1=CALC_CHAR_SEISME(MATR_MASS=MASSE,   
+MULT_X1=CALC_CHAR_SEISME(MATR_MASS=MASSE,
                          DIRECTION=( 1., 0., 0.,),
-                         MODE_STAT=MODE_STA,   
+                         MODE_STAT=MODE_STA,
                          NOEUD='NO1', )
-MULT_X2=CALC_CHAR_SEISME(MATR_MASS=MASSE,   
+MULT_X2=CALC_CHAR_SEISME(MATR_MASS=MASSE,
                          DIRECTION=( 1., 0., 0.,),
                          MODE_STAT=MODE_STA,
                          NOEUD='NO5' )
@@ -195,10 +202,10 @@ PROJ_BASE(BASE=MODE_MEC,
 # -------------------------------------------
 TRANMONO=DYNA_VIBRA(TYPE_CALCUL='TRAN',
                     BASE_CALCUL='GENE',
-                    MATR_MASS=MASSMONO,   
+                    MATR_MASS=MASSMONO,
                     MATR_RIGI=RIGIMONO,
                     SCHEMA_TEMPS=_F(SCHEMA='EULER',),
-                    EXCIT=(_F(VECT_ASSE_GENE=VECT_X,  
+                    EXCIT=(_F(VECT_ASSE_GENE=VECT_X,
                               FONC_MULT = ACCELER1,),),
                     INCREMENT=_F(  LIST_INST=L_INST,),)
 
@@ -255,8 +262,8 @@ TEST_TABLE(
 
 # 1. RECUPERATION DES ACCELERATIONS ABSOLUES CALCULEES
 # ----------------------------------------------
-AN2MONO=RECU_FONCTION(NOEUD='NO2',  
-                       NOM_CMP='DX',   
+AN2MONO=RECU_FONCTION(NOEUD='NO2',
+                       NOM_CMP='DX',
                        NOM_CHAM='ACCE_ABSOLU',
                        RESULTAT=RESPHYA,
                        PROL_DROITE='CONSTANT',
@@ -269,7 +276,7 @@ AN3MONO=RECU_FONCTION(NOEUD='NO3',
                        NOM_CHAM='ACCE_ABSOLU',
                        RESULTAT=RESPHYA,
                        PROL_DROITE='CONSTANT',
-                       PROL_GAUCHE='CONSTANT', 
+                       PROL_GAUCHE='CONSTANT',
                        TOUT_ORDRE='OUI',
                        INTERPOL='LIN')
 
@@ -282,7 +289,7 @@ AN4MONO=RECU_FONCTION(NOEUD='NO4',
                        TOUT_ORDRE='OUI',
                        INTERPOL='LIN')
 #
-# 2. CALCUL DES SRO RELATIFS AUX ACCELERATIONS ABSOLUES AUX NOEUDS 
+# 2. CALCUL DES SRO RELATIFS AUX ACCELERATIONS ABSOLUES AUX NOEUDS
 # -----------------------------------------------------------
 
 AN2SRMO=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=AN2MONO,
@@ -298,12 +305,12 @@ AN4SRMO=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=AN4MONO,
                                 LIST_FREQ=L_FREQ,
                                 NORME=9.81,),);
 #
-# 3. CALCUL DE L'ENVELOPPE DES SRO 
+# 3. CALCUL DE L'ENVELOPPE DES SRO
 # -----------------------------------------------------------
 ENVEMO=CALC_FONCTION(ENVELOPPE=_F(FONCTION=(AN2SRMO,AN3SRMO,AN4SRMO,),
                                 CRITERE='SUP',),);
 #
-# 4. IMPRESSION 
+# 4. IMPRESSION
 # -----------------------------------------------------------
 IMPR_FONCTION(FORMAT='TABLEAU',
               COURBE=(_F(FONCTION=ENVEMO,),),
@@ -319,23 +326,23 @@ IMPR_FONCTION(FORMAT='TABLEAU',
 # -------------------------------------------
 TRANMOMU=DYNA_VIBRA(TYPE_CALCUL='TRAN',
                     BASE_CALCUL='GENE',
-                    MATR_MASS=MASSMULT,   
+                    MATR_MASS=MASSMULT,
                     MATR_RIGI=RIGIMULT,
                     SCHEMA_TEMPS=_F(SCHEMA='EULER',),
                     MODE_STAT=MODE_STA,
-                    EXCIT=(_F(VECT_ASSE_GENE=VECT_X1,  
+                    EXCIT=(_F(VECT_ASSE_GENE=VECT_X1,
                               ACCE = ACCELER1,
                               VITE=VITESSE1,
                               DEPL = DEPLACE1,
                               MULT_APPUI = 'OUI',
-                              DIRECTION = ( 1., 0., 0.,), 
+                              DIRECTION = ( 1., 0., 0.,),
                               NOEUD = 'NO1',),
-                           _F(VECT_ASSE_GENE=VECT_X2,  
+                           _F(VECT_ASSE_GENE=VECT_X2,
                               ACCE = ACCELER1,
                               VITE=VITESSE1,
                               DEPL = DEPLACE1,
                               MULT_APPUI = 'OUI',
-                              DIRECTION = ( 1., 0., 0.,), 
+                              DIRECTION = ( 1., 0., 0.,),
                               NOEUD = 'NO5',),),
                     INCREMENT=_F(  LIST_INST=L_INST,),)
 
@@ -353,7 +360,7 @@ TBMACMO=MACR_SPECTRE(MAILLAGE=MAILLAGE,
                       AMOR_SPEC=(0.05),
                       MULT_APPUI='OUI',)
 #
-# 2. IMPRESSION 
+# 2. IMPRESSION
 # -----------------------------------------------------------
 IMPR_TABLE(TABLE=TBMACMO)
 
@@ -414,16 +421,16 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
 # -------------------------------------------
 TRANMULT=DYNA_VIBRA(TYPE_CALCUL='TRAN',
                     BASE_CALCUL='GENE',
-                    MATR_MASS=MASSMULT,   
+                    MATR_MASS=MASSMULT,
                     MATR_RIGI=RIGIMULT,
                     SCHEMA_TEMPS=_F(SCHEMA='EULER',),
                     MODE_STAT=MODE_STA,
-                    EXCIT=(_F(VECT_ASSE_GENE=VECT_X1,  
+                    EXCIT=(_F(VECT_ASSE_GENE=VECT_X1,
                               ACCE = ACCELER1,
                               VITE = VITESSE1,
                               DEPL = DEPLACE1,
                               MULT_APPUI = 'OUI',
-                              DIRECTION = ( 1., 0., 0.,), 
+                              DIRECTION = ( 1., 0., 0.,),
                               NOEUD = 'NO1',),
                            _F(VECT_ASSE_GENE=VECT_X2,
                               ACCE = ACCELER2,
@@ -436,7 +443,7 @@ TRANMULT=DYNA_VIBRA(TYPE_CALCUL='TRAN',
 
 #
 PGP_MUA= POST_GENE_PHYS(RESU_GENE=TRANMULT,
-                          OBSERVATION=( 
+                          OBSERVATION=(
                                       _F(LIST_INST=L_INST1,
                                          NOM_CHAM = 'ACCE_ABSOLU',
                                          NOM_CMP = 'DX',
@@ -501,7 +508,7 @@ TBMACMU=MACR_SPECTRE(MAILLAGE=MAILLAGE,
                       AMOR_SPEC=(0.05),
                       MULT_APPUI='OUI',)
 #
-# 2. IMPRESSION 
+# 2. IMPRESSION
 # -----------------------------------------------------------
 IMPR_TABLE(TABLE=TBMACMU)
 

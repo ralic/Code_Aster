@@ -29,11 +29,19 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MA=LIRE_MAILLAGE( )
+MA0=LIRE_MAILLAGE( )
+
+MA=CREA_MAILLAGE(MAILLAGE=MA0,
+    CREA_POI1=(
+        _F(NOM_GROUP_MA='P',   GROUP_NO='P', ),
+        _F(NOM_GROUP_MA='P1',  NOEUD = 'P1', ),
+        _F(NOM_GROUP_MA='P8',  NOEUD = 'P8', ),
+    ),
+)
 
 MO=AFFE_MODELE(  MAILLAGE=MA,AFFE=(
        _F(  TOUT = 'OUI',    PHENOMENE = 'MECANIQUE',  MODELISATION = 'DIS_T'),
-            _F(  GROUP_NO = 'P',   MODELISATION = 'DIS_T',
+            _F(  GROUP_MA = 'P',   MODELISATION = 'DIS_T',
             PHENOMENE = 'MECANIQUE')) )
 
 CH=AFFE_CHAR_MECA(  MODELE=MO,
@@ -50,33 +58,33 @@ CH=AFFE_CHAR_MECA(  MODELE=MO,
                    )
 
 CARELEM=AFFE_CARA_ELEM(   MODELE=MO,
-       ORIENTATION=_F(  GROUP_NO = 'P',     CARA = 'ANGL_NAUT',
+       ORIENTATION=_F(  GROUP_MA = 'P',     CARA = 'ANGL_NAUT',
                                      VALE = ( 53.130102,  0.,   0.,  )),DISCRET=(
 
          _F(  CARA = 'K_T_D_L',   REPERE = 'LOCAL',
                             GROUP_MA = 'GRMA',   VALE = (1.E5,0.,  0.,  )),
          _F(  CARA = 'M_T_L',   REPERE = 'LOCAL',
-                            GROUP_MA = 'GRMA',   VALE = (0., 0.,  0., 0., 0.,  0., 0., 0.,  0., 
+                            GROUP_MA = 'GRMA',   VALE = (0., 0.,  0., 0., 0.,  0., 0., 0.,  0.,
                             0., 0.,  0., 0., 0.,  0., 0., 0.,  0., 0., 0.,  0.,  )),
-                            
+
          _F(  CARA = 'K_T_D_N',   REPERE = 'LOCAL',
-                            NOEUD = ( 'P1','P8',),   VALE = (1.E5,0.,  0.,  )),                                    
+                            GROUP_MA = ( 'P1','P8',),   VALE = (1.E5,0.,  0.,  )),
          _F(  CARA = 'M_T_D_N',   REPERE = 'LOCAL',
-                            NOEUD = ( 'P1','P8',),   VALE = (0.,  )),        
-                                                
+                            GROUP_MA = ( 'P1','P8',),   VALE = (0.,  )),
+
          _F(  CARA = 'K_T_D_N',   REPERE = 'LOCAL',
-                            NOEUD = ( 'P1','P8',),   VALE = (1.E5,0.,  0.,  )),
+                            GROUP_MA = ( 'P1','P8',),   VALE = (1.E5,0.,  0.,  )),
          _F(  CARA = 'M_T_D_N',   REPERE = 'LOCAL',
-                            NOEUD = ( 'P1','P8',),   VALE = (0.,  )),
-                            
+                            GROUP_MA = ( 'P1','P8',),   VALE = (0.,  )),
+
          _F(  CARA = 'A_T_D_L', REPERE = 'LOCAL',
                             GROUP_MA = 'GRMA',   VALE = ( 50.,0.,  0.,  )),
          _F(  CARA = 'A_T_D_N', REPERE = 'LOCAL',
-                            NOEUD = 'P1',        VALE = (250.,0.,  0.,  )),
+                            GROUP_MA = 'P1',        VALE = (250.,0.,  0.,  )),
          _F(  CARA = 'A_T_D_N', REPERE = 'LOCAL',
-                            NOEUD = 'P8',        VALE = ( 25.,0.,  0.,  )),
+                            GROUP_MA = 'P8',        VALE = ( 25.,0.,  0.,  )),
          _F(  CARA = 'M_T_D_N', REPERE = 'GLOBAL',
-                            GROUP_NO = 'P',      VALE = 10.)) )
+                            GROUP_MA = 'P',      VALE = 10.)) )
 
 # --------------------------------------------------------------------
 MELR=CALC_MATR_ELEM(  MODELE=MO,  CHARGE=CH, OPTION='RIGI_MECA',

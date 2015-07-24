@@ -25,7 +25,13 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 #*********************************************************************#
 # *****LECTURE DU MAILLAGE********************************************#
 #*********************************************************************#
-MA1=LIRE_MAILLAGE( )
+MA10=LIRE_MAILLAGE( )
+
+MA1=CREA_MAILLAGE(MAILLAGE=MA10,
+    CREA_POI1=(
+        _F(NOM_GROUP_MA='NOEUDS', NOEUD = ('A','P1','P2','P3','P4','P5','P6','P7','P8','B',),),
+    ),
+)
 
 #*********************************************************************#
 # *****AFFECTATION D ELEMENTS SUR LES MAILLES*************************#
@@ -34,7 +40,7 @@ MO1=AFFE_MODELE(  MAILLAGE=MA1,AFFE=(
        _F(                TOUT = 'OUI',
                             PHENOMENE = 'MECANIQUE',
                             MODELISATION = 'DIS_T'),
-       _F(                NOEUD = ('A', 'P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7', 'P8', 'B',),
+       _F(                GROUP_MA='NOEUDS',
                             PHENOMENE = 'MECANIQUE',
                             MODELISATION = 'DIS_T'))
                             )
@@ -43,13 +49,13 @@ MO1=AFFE_MODELE(  MAILLAGE=MA1,AFFE=(
 # *****CARACTERISTIQUES DES ELEMENTS DE POUTRE ET DE MASSE************#
 #*********************************************************************#
 CARELEM1=AFFE_CARA_ELEM(   MODELE=MO1,DISCRET=(
-     _F(  NOEUD = ( 'A', 'P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7', 'P8', 'B',),
+     _F(  GROUP_MA='NOEUDS',
                CARA = 'M_T_D_N',
                VALE = (10., )),
-     _F(  NOEUD = ( 'A', 'P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7', 'P8', 'B',),
+     _F(  GROUP_MA='NOEUDS',
                CARA = 'K_T_D_N',
                VALE = (0.,0.,0., )),
-     _F(  NOEUD = ( 'A', 'P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7', 'P8', 'B',),
+     _F(  GROUP_MA='NOEUDS',
                CARA = 'A_T_D_N',
                VALE = (0.,0.,0., )),
      _F(  MAILLE = ('M1', 'M2', 'M3', 'M4', 'M5', 'M6', 'M7', 'M8', 'M9',),

@@ -19,20 +19,28 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
-MeshLin=LIRE_MAILLAGE(FORMAT='MED',UNITE=20,)
+MeshLin0=LIRE_MAILLAGE(FORMAT='MED',UNITE=20,)
 
 # definition d'un group_ma sur lequel on fera le calcul de ferraillage :
-MeshLin=DEFI_GROUP( reuse=MeshLin, MAILLAGE=MeshLin,
+MeshLin0=DEFI_GROUP( reuse=MeshLin0, MAILLAGE=MeshLin0,
      CREA_GROUP_MA=_F(  NOM = 'CALCFER',
                    MAILLE = ( 'M1113', 'M1115', 'M1173', 'M1373', 'M1391',
                               'M462', 'M516', 'M562',),
                  ))
 # Type de calcul
+
+MeshLin=CREA_MAILLAGE(MAILLAGE=MeshLin0,
+    CREA_POI1=(
+        _F(NOM_GROUP_MA='BASEN',   GROUP_NO='BASEN', ),
+    ),
+)
+
+
 FEMLin=AFFE_MODELE(MAILLAGE=MeshLin,
                    AFFE=(_F(GROUP_MA=('COTEX','COTEX1','COTEY1','COTEY','BASE',),
                             PHENOMENE='MECANIQUE',
                             MODELISATION='DKT',),
-                         _F(GROUP_NO='BASEN',
+                         _F(GROUP_MA='BASEN',
                             PHENOMENE='MECANIQUE',
                             MODELISATION='DIS_T',),),);
 
@@ -65,9 +73,9 @@ AFFECARA=AFFE_CARA_ELEM(MODELE=FEMLin,
                                   EPAIS=0.4,
                                   ANGL_REP=(90.0,0.0,),),),
                         DISCRET=_F(CARA='M_T_D_N',
-                                   GROUP_NO='BASEN',
+                                   GROUP_MA='BASEN',
                                    VALE=0.0,),
-                        RIGI_PARASOL=_F(GROUP_MA='BASE',
+                        RIGI_PARASOL=_F(GROUP_MA='BASE',GROUP_MA_POI1='BASEN',
                                         COEF_GROUP=1.0,
                                         CARA='K_T_D_N',
                                         VALE=(5000E6,5000E6,5000E6,),

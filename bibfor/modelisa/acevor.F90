@@ -1,13 +1,5 @@
-subroutine acevor(nbocc, nlm, nlg, nln, nlj,&
-                  ier)
-    implicit none
-#include "asterc/getres.h"
-#include "asterfort/codent.h"
-#include "asterfort/getvr8.h"
-#include "asterfort/getvtx.h"
-#include "asterfort/utmess.h"
-    integer :: nbocc, nlm, nlg, nln, nlj, ier
-! ----------------------------------------------------------------------
+subroutine acevor(nbocc, nlm, nlg, nln, nlj, ier)
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,21 +16,36 @@ subroutine acevor(nbocc, nlm, nlg, nln, nlj,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! ----------------------------------------------------------------------
+!
+    implicit none
+    integer :: nbocc, nlm, nlg, nln, nlj, ier
+!
+! --------------------------------------------------------------------------------------------------
+!
 !     AFFE_CARA_ELEM
 !     VERIFICATION DES MOTS CLES POUR LES ORIENTATIONS
-! ----------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
+!
 ! IN  : NBOCC  : NOMBRE D'OCCURENCE
 ! OUT : NLM    : NOMBRE TOTAL DE MAILLE
 ! OUT : NLG    : NOMBRE TOTAL DE GROUPE DE MAILLE
 ! OUT : NLN    :
 ! OUT : NLJ    :
-! ----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-    integer :: ioc, j, k, nbcar, nbval, nc, ncar
+!
+! --------------------------------------------------------------------------------------------------
+! person_in_charge: jean-luc.flejou at edf.fr
+!
+#include "asterc/getres.h"
+#include "asterfort/codent.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
+#include "asterfort/utmess.h"
+! --------------------------------------------------------------------------------------------------
+    integer :: ioc, jj, kk, nbcar, nbval, nc, ncar
     integer :: nco, ng, nj, nm, nn, nsom, nv
     integer :: nval
-!-----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
     parameter ( nbcar = 100 , nbval = 1000 , nco = 4 )
     real(kind=8) :: val(nbval)
     character(len=6) :: kioc
@@ -46,7 +53,7 @@ subroutine acevor(nbocc, nlm, nlg, nln, nlj,&
     character(len=16) :: cmd, concep
     character(len=24) :: valk(2)
     data carori  /'VECT_Y  ','VECT_X_Y','ANGL_NAU','ANGL_VRI'/
-!     ------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call getres(nomu, concep, cmd)
     nlm = 0
@@ -54,20 +61,17 @@ subroutine acevor(nbocc, nlm, nlg, nln, nlj,&
     nln = 0
     nlj = 0
 !
-    do 10 ioc = 1, nbocc
+    nj = 0
+    nn = 0
+    do ioc = 1, nbocc
         call codent(ioc, 'G', kioc)
         call getvtx('ORIENTATION', 'GROUP_MA', iocc=ioc, nbval=0, nbret=ng)
         call getvtx('ORIENTATION', 'MAILLE', iocc=ioc, nbval=0, nbret=nm)
-        call getvtx('ORIENTATION', 'GROUP_NO', iocc=ioc, nbval=0, nbret=nj)
-        call getvtx('ORIENTATION', 'NOEUD', iocc=ioc, nbval=0, nbret=nn)
         call getvtx('ORIENTATION', 'CARA', iocc=ioc, nbval=0, nbret=nc)
-        call getvtx('ORIENTATION', 'CARA', iocc=ioc, nbval=nbcar, vect=car,&
-                    nbret=ncar)
+        call getvtx('ORIENTATION', 'CARA', iocc=ioc, nbval=nbcar, vect=car, nbret=ncar)
         call getvr8('ORIENTATION', 'VALE', iocc=ioc, nbval=0, nbret=nv)
-        call getvr8('ORIENTATION', 'VALE', iocc=ioc, nbval=nbval, vect=val,&
-                    nbret=nval)
+        call getvr8('ORIENTATION', 'VALE', iocc=ioc, nbval=nbval, vect=val, nbret=nval)
 !
-! -- IOC = 1
         if (ioc .eq. 1) then
             if (nv .eq. 0) then
                 call utmess('E', 'MODELISA_57')
@@ -78,26 +82,23 @@ subroutine acevor(nbocc, nlm, nlg, nln, nlj,&
                 ier = ier + 1
             endif
         endif
-!
-! -- CARA
+!       CARA
+        kk = 0
         if (ncar .gt. 0) then
-!-DEL       NCARAC = NCAR
             if (nval .eq. 0) then
                 call utmess('E', 'MODELISA_59', sk=kioc)
                 ier = ier + 1
             endif
-            k = 0
-            do 20 j = 1, nco
-                if (car(1) .eq. carori(j)) k = j
-20          continue
+            do jj = 1, nco
+                if (car(1) .eq. carori(jj)) kk = jj
+            enddo
         endif
-!
-! -- VALE
+!       VALE
         if (nval .gt. 0) then
-            if ((k.eq.1.and.nval.ne.3) .or. (k.eq.2.and.nval.ne.6) .or.&
-                (k.eq.3.and.nval.ne.3) .or. (k.eq.4.and.nval.ne.1)) then
+            if ((kk.eq.1.and.nval.ne.3) .or. (kk.eq.2.and.nval.ne.6) .or.&
+                (kk.eq.3.and.nval.ne.3) .or. (kk.eq.4.and.nval.ne.1)) then
                 valk(1) = kioc
-                valk(2) = carori(k)
+                valk(2) = carori(kk)
                 call utmess('E', 'MODELISA_60', nk=2, valk=valk)
                 ier = ier + 1
             endif
@@ -110,6 +111,6 @@ subroutine acevor(nbocc, nlm, nlg, nln, nlj,&
             nln = max(nln,-nn)
             nlj = max(nlj,-nj)
         endif
-10  end do
+    enddo
 !
 end subroutine

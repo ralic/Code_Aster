@@ -29,11 +29,11 @@
 #=======================================================================
 
 DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
-MA=LIRE_MAILLAGE( )
+MA0=LIRE_MAILLAGE( )
 
 # POUR TESTER LA COMMANDE DEFI_GROUP :
 
-MA=DEFI_GROUP(reuse=MA,  MAILLAGE=MA,CREA_GROUP_MA=(
+MA0=DEFI_GROUP(reuse=MA0,  MAILLAGE=MA0,CREA_GROUP_MA=(
       _F( NOM = 'GM1', MAILLE = ('S1','S2','S3','S4',),     ),
       _F( NOM = 'GM2', DIFFE = ('GRMA','GM1',   ),      ),
       _F( NOM = 'GM3', INTERSEC = ('GM1','GRMA',   ),   ),
@@ -47,9 +47,19 @@ MA=DEFI_GROUP(reuse=MA,  MAILLAGE=MA,CREA_GROUP_MA=(
       _F( NOM = 'GN4',   UNION = ('GN3','GN2', ),       ))
       )
 
+
+
+MA=CREA_MAILLAGE(MAILLAGE=MA0,
+    CREA_POI1=(
+        _F(NOM_GROUP_MA='GN4',  GROUP_NO = ('GN4',) ),
+        _F(NOM_GROUP_MA='P1P8',  NOEUD = ( 'P1','P8',) ),
+    ),
+)
+
+
 MO=AFFE_MODELE(  MAILLAGE=MA,AFFE=(
        _F(  TOUT = 'OUI',    PHENOMENE = 'MECANIQUE',  MODELISATION = 'DIS_T',),
-          _F(  GROUP_NO = 'GN4',  PHENOMENE = 'MECANIQUE', MODELISATION = 'DIS_T',)))
+          _F(  GROUP_MA = 'GN4',  PHENOMENE = 'MECANIQUE', MODELISATION = 'DIS_T',)))
 
 CH=AFFE_CHAR_MECA(  MODELE=MO,
       DDL_IMPO=_F(  TOUT = 'OUI',        DZ = 0.,     ),LIAISON_DDL=(
@@ -65,7 +75,7 @@ CH=AFFE_CHAR_MECA(  MODELE=MO,
                    )
 
 CARELEM=AFFE_CARA_ELEM(   MODELE=MO,
-       ORIENTATION=_F(  GROUP_NO = 'GN4',    CARA = 'ANGL_NAUT',
+       ORIENTATION=_F(  GROUP_MA = 'GN4',    CARA = 'ANGL_NAUT',
                                      VALE = ( 53.130102,  0.,   0.,  ), ),DISCRET=(
 
          _F(  CARA = 'K_T_D_L',   REPERE = 'LOCAL',
@@ -74,15 +84,15 @@ CARELEM=AFFE_CARA_ELEM(   MODELE=MO,
          _F(  CARA = 'M_T_L',   REPERE = 'LOCAL',
                             GROUP_MA = 'GM4',     VALE = (0., 0., 0., 0., 0., 0.,0., 0., 0.,
                             0., 0., 0.,0., 0., 0.,0., 0., 0.,0., 0., 0., ), ),
-         
+
          _F(  CARA = 'K_T_D_N',   REPERE = 'LOCAL',
-                            NOEUD = ( 'P1','P8',),   VALE = (1.E5,0.,  0.,  ), ),
-         
+                            GROUP_MA = 'P1P8',   VALE = (1.E5,0.,  0.,  ), ),
+
          _F(  CARA = 'M_T_D_N',   REPERE = 'LOCAL',
-                            NOEUD = ( 'P1','P8',),   VALE = (0.,  ), ),
-         
+                            GROUP_MA = 'P1P8',   VALE = (0.,  ), ),
+
          _F(  CARA = 'M_T_D_N', REPERE = 'GLOBAL',
-                            GROUP_NO = 'GN4',     VALE = 10.,              ))
+                            GROUP_MA = 'GN4',     VALE = 10.,              ))
                          )
 
 # --------------------------------------------------------------------
@@ -115,7 +125,7 @@ FREQ2=EXTR_RESU(     RESULTAT=FREQ,
                    )
 
 # COMPARAISON STURM ET APM SUR GEP SYM REEL (RESULTATS ATTENDUS 0, 4 ET 8)
-# METHODE DE STURM 
+# METHODE DE STURM
 # ON TESTE ICI EN PLUS LA BASCULE AUTOMATIQUE  GEP SYM REEL --> STURM
 # AVEC METHODE='AUTO'
 # ON PANACHE AUSSI LES SOLVEURS LINEAIRES DIRECTS POUR TESTER LEUR ADEQUATION
@@ -133,7 +143,7 @@ NBMOD04 = INFO_MODE(MATR_A=MATASSR,MATR_B=MATASSM,TYPE_MODE='GENERAL',
                     CHAR_CRIT=(0.,(2*pi*f3)**2),
                     COMPTAGE=_F(METHODE='AUTO'),
                     SOLVEUR=_F(METHODE='MUMPS'))
-                         
+
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC_I=0,
            VALE_REFE_I=0,
@@ -176,7 +186,7 @@ NBMOD13 = INFO_MODE(MATR_RIGI=MATASSR,MATR_MASS=MATASSM,TYPE_MODE='MODE_COMPLEXE
 NBMOD14 = INFO_MODE(MATR_A=MATASSR,MATR_B=MATASSM,TYPE_MODE='GENERAL',
       CHAR_CRIT=(0.,4.043E+04),
       COMPTAGE=_F(METHODE='AUTO',),SOLVEUR=_F(METHODE='MUMPS'))
-      
+
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC_I=0,
            VALE_REFE_I=0,
@@ -194,13 +204,13 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_REFE_I=8,
            NOM_PARA='NB_MODE',
            TABLE=NBMOD13,)
-           
+
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC_I=8,
            VALE_REFE_I=8,
            NOM_PARA='NB_MODE',
            TABLE=NBMOD14,)
-           
+
 # DEUX CALCULS SUPPLEMENTAIRES AVEC CERCLE NON CENTRE A L'ORIGINE
 # (RESULTATS ATTENDUS 1 ET 0)
 NBMOD4 = INFO_MODE(MATR_RIGI=MATASSR,MATR_MASS=MATASSM,TYPE_MODE='MODE_COMPLEXE',
@@ -212,7 +222,7 @@ NBMOD5 = INFO_MODE(MATR_RIGI=MATASSR,MATR_MASS=MATASSM,TYPE_MODE='MODE_COMPLEXE'
 NBMOD6 = INFO_MODE(MATR_A=MATASSR,MATR_B=MATASSM,TYPE_MODE='GENERAL',
       CHAR_CRIT=(0.,900.),
       COMPTAGE=_F(METHODE='APM',),SOLVEUR=_F(METHODE='MUMPS'))
-      
+
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC_I=1,
            VALE_REFE_I=1,

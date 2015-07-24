@@ -123,7 +123,7 @@ CH5=AFFE_CHAR_MECA(  MODELE=MO5,
 
 
 CELEM1=AFFE_CARA_ELEM(   MODELE=MO1,
-                         VERIF=( 'MAILLE',  'NOEUD',  ),
+                         VERIF=( 'MAILLE',  ),
             POUTRE=
                _F(  GROUP_MA = 'TOUT',
                     SECTION = 'GENERALE', VARI_SECT = 'HOMOTHETIQUE',
@@ -136,7 +136,7 @@ CELEM1=AFFE_CARA_ELEM(   MODELE=MO1,
                      )
 
 CELEM2=AFFE_CARA_ELEM(   MODELE=MO2,
-                         VERIF=( 'MAILLE',  'NOEUD',  ),
+                         VERIF=( 'MAILLE', ),
             POUTRE=
                _F(  GROUP_MA = 'TOUT',
                     SECTION = 'GENERALE', VARI_SECT = 'HOMOTHETIQUE',
@@ -149,7 +149,7 @@ CELEM2=AFFE_CARA_ELEM(   MODELE=MO2,
                      )
 
 CELEM3=AFFE_CARA_ELEM(   MODELE=MO3,
-                         VERIF=( 'MAILLE',  'NOEUD',  ),
+                         VERIF=( 'MAILLE',  ),
             POUTRE=
                _F(  GROUP_MA = 'TOUT',
                     SECTION = 'GENERALE', VARI_SECT = 'HOMOTHETIQUE',
@@ -162,7 +162,7 @@ CELEM3=AFFE_CARA_ELEM(   MODELE=MO3,
                      )
 
 CELEM4=AFFE_CARA_ELEM(   MODELE=MO4,
-                         VERIF=( 'MAILLE',  'NOEUD',  ),
+                         VERIF=( 'MAILLE',  ),
             POUTRE=
                _F(  GROUP_MA = 'TOUT',
                     SECTION = 'GENERALE', VARI_SECT = 'HOMOTHETIQUE',
@@ -178,7 +178,7 @@ CELEM4=AFFE_CARA_ELEM(   MODELE=MO4,
                      )
 
 CELEM5=AFFE_CARA_ELEM(   MODELE=MO5,
-                         VERIF=( 'MAILLE',  'NOEUD',  ),
+                         VERIF=( 'MAILLE',  ),
             POUTRE=
                _F(  GROUP_MA = 'TOUT',
                     SECTION = 'GENERALE', VARI_SECT = 'HOMOTHETIQUE',

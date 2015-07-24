@@ -18,7 +18,7 @@
 interface
     subroutine aceapo(noma, nomo, lmax, npoutr, nbocc,&
                       mclf, nbepo, ntyele, ivr, ifm,&
-                      jdlm)
+                      zjdlm)
         character(len=8) :: noma
         character(len=8) :: nomo
         integer :: lmax
@@ -29,6 +29,6 @@ interface
         integer :: ntyele(*)
         integer :: ivr(*)
         integer :: ifm
-        integer :: jdlm
+        integer :: zjdlm(*)
     end subroutine aceapo
 end interface

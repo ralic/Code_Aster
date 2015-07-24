@@ -19,14 +19,20 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
               DEBUG=_F(SDVERI='NON',),);
 
 #
-MAILLA=LIRE_MAILLAGE(UNITE=20,);
+MAILLA0=LIRE_MAILLAGE(UNITE=20,);
+
+MAILLA=CREA_MAILLAGE(MAILLAGE=MAILLA0,
+    CREA_POI1=(
+        _F(NOM_GROUP_MA='MASSE',   GROUP_NO='MASSE', ),
+    ),
+)
 
 # CONSTRUCTION DU MODELE NUMERIQUE
 MODNUM=AFFE_MODELE(MAILLAGE=MAILLA,
                    AFFE=(_F(GROUP_MA='RESSORT',
                             PHENOMENE='MECANIQUE',
                             MODELISATION='DIS_T',),
-                         _F(GROUP_NO='MASSE',
+                         _F(GROUP_MA='MASSE',
                             PHENOMENE='MECANIQUE',
                             MODELISATION='DIS_T',),),);
 
@@ -38,7 +44,7 @@ CARE=AFFE_CARA_ELEM(MODELE=MODNUM,
                                   GROUP_MA='RESSORT',
                                   VALE = (0.,),),
                               _F(CARA='M_T_D_N',
-                                 GROUP_NO='MASSE',
+                                 GROUP_MA='MASSE',
                                  VALE=1.,),),);
 
 CHARGE_L=AFFE_CHAR_MECA(MODELE=MODNUM,
@@ -52,7 +58,7 @@ CHARGE_L=AFFE_CHAR_MECA(MODELE=MODNUM,
 
 
 
-# CONSTRUCTION DES MATRICES DU MODELE MECANIQUE 
+# CONSTRUCTION DES MATRICES DU MODELE MECANIQUE
 
 ASSEMBLAGE(MODELE=MODNUM,
            CARA_ELEM=CARE,
@@ -89,12 +95,12 @@ NUME_RED=NUME_DDL_GENE(BASE=MOD_STA,STOCKAGE='PLEIN');
 MA_RE=PROJ_MATR_BASE(BASE=MOD_STA,NUME_DDL_GENE=NUME_RED,MATR_ASSE=M);
 K_RE=PROJ_MATR_BASE(BASE=MOD_STA,NUME_DDL_GENE=NUME_RED,MATR_ASSE=K);
 
-# ON CHOISIT LA MATRICE NORME COMME UNE COMBINAISON DES MATRICES 
-# REDUITES DE MASSE ET RAIDEUR 
+# ON CHOISIT LA MATRICE NORME COMME UNE COMBINAISON DES MATRICES
+# REDUITES DE MASSE ET RAIDEUR
 G_GUY=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE = MA_RE,COEF_R = 1.),
                              _F(MATR_ASSE = K_RE, COEF_R = 1.),),);
 
-### CREATION SYNTHETIQUE DE LA MESURE 
+### CREATION SYNTHETIQUE DE LA MESURE
 #(CES INFORMATIONS SONT NORMALEMENT OBTENUES PAR LECTURE
 # D'UN FICHIER CONTENANT DES DONNES D'ESSAI AVEC P.E. LIRE_RESU)
 
@@ -170,7 +176,7 @@ ERC=CALC_ERC_DYN( EVAL_FONC='OUI',
                   INFO=1,
                   SOLVEUR=_F(METHODE='MUMPS',),);
 
-### test sur le champ u 
+### test sur le champ u
 TEST_RESU(RESU=(_F(NUME_ORDRE=3,
                    VALE_CALC=-0.957415448053491,
                    VALE_REFE=-0.957415448053491,
@@ -196,7 +202,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=3,
                    NOEUD='NO4',
                    NOM_CMP='DX',),),);
 
-### test sur le champ u-v 
+### test sur le champ u-v
 TEST_RESU(RESU=(_F(NUME_ORDRE=4,
                    VALE_CALC=0.223608826207038,
                    VALE_REFE=0.223608826207038,
@@ -222,7 +228,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=4,
                    NOEUD='NO4',
                    NOM_CMP='DX',),),);
 
-########## POST-TRAITEMENTS 
+########## POST-TRAITEMENTS
 
 ### Si on s'interesse a l'expansion de donnees sur le modele, les champs solution
 ### sont stockes directement dans le concept de sortie de CALC_ERC_DYN:
@@ -251,7 +257,7 @@ TEST_TABLE( TABLE   = F_COUT,
             TYPE_TEST = 'MIN',
             REFERENCE='ANALYTIQUE',
             VALE_REFE = 0.,
-            VALE_CALC = 2.13860631521E-31, 
+            VALE_CALC = 2.13860631521E-31,
             CRITERE   = 'ABSOLU',)
 
 TEST_TABLE( TABLE   = F_COUT,

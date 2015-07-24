@@ -29,10 +29,17 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 MATER1=DEFI_MATERIAU(  ELAS=_F(  E = 200000.,   NU = 0.3,
                                   RHO = 10000.) )
 
-MA=LIRE_MAILLAGE(FORMAT='MED', )
+MA0=LIRE_MAILLAGE(FORMAT='MED', )
+
+MA=CREA_MAILLAGE(MAILLAGE=MA0,
+    CREA_POI1=(
+        _F(NOM_GROUP_MA='C',   GROUP_NO='C', ),
+    ),
+)
 
 CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
              AFFE=_F(  GROUP_MA = ('POU3D','AB',),    MATER = MATER1)  )
+
 
 MOD=AFFE_MODELE(  MAILLAGE=MA,AFFE=(
              _F(  GROUP_MA = 'POU3D',
@@ -41,21 +48,21 @@ MOD=AFFE_MODELE(  MAILLAGE=MA,AFFE=(
              _F(  GROUP_MA = ('AB',),
                    MODELISATION = 'POU_D_E',
                    PHENOMENE = 'MECANIQUE'),
-             _F(  GROUP_NO = 'C',
+             _F(  GROUP_MA = 'C',
                    MODELISATION = 'DIS_TR',
                    PHENOMENE = 'MECANIQUE'))
                    )
 
 CELEM=AFFE_CARA_ELEM(   MODELE=MOD,
-               VERIF=( 'MAILLE',  'NOEUD',  ),
+               VERIF=( 'MAILLE',),
                POUTRE=_F(  GROUP_MA = ('AB',), SECTION = 'RECTANGLE',
                         CARA = ( 'HY',  'HZ', ),
                         VALE = (  3.,    2.,   )),
-                DISCRET=(_F(  GROUP_NO = 'C',
+                DISCRET=(_F(  GROUP_MA = 'C',
                           CARA = 'K_TR_D_N',
                           VALE = (0., 0., 0.,
                                   0., 0., 0., )),
-                         _F(  GROUP_NO = 'C',
+                         _F(  GROUP_MA = 'C',
                           CARA = 'M_TR_D_N',
                           VALE = (0., 0., 0.,
                                   0., 0., 0.,

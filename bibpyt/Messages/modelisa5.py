@@ -76,6 +76,25 @@ cata_msg = {
    Les champs que l'on cherche à combiner doivent tous s'appuyer sur le même maillage.
 """),
 
+
+
+
+
+
+    20 : _(u"""AFFE_CARA_ELEM
+ Le modèle contient des noeuds tardifs, ils ne sont pas autorisés dans cette commande.
+
+ Les noeuds tardifs correspondent à des noeuds ou groupes de noeuds sur lesquels vous
+ avez affecté un modèle avec la commande AFFE_MODELE/AFFE/NOEUD ou GROUP_NO.
+
+ Solution : il faut créer un groupe de maille de POI1 correspondant à ces noeuds à l'aide
+            de la commande CREA_MAILLAGE/CREA_POI1 et ensuite affecter sur ce groupe de maille
+            un modèle avec la commande AFFE_MODELE/AFFE/GROUP_MA
+"""),
+
+
+
+
     36 : _(u"""
  un GROUP_MA n'a pas de nom, suppression de ce groupe.
 """),
@@ -149,19 +168,15 @@ La maille numéro %(i1)d du groupe %(k1)s sur lequel des caractéristiques de po
 à section circulaire et homothétique sont affectés n'est pas connectée à la maille
 précédente ou n'est pas orientée de la même manière.
 
-Conseil et solution : 
+Conseil et solution :
     - vérifier que les mailles sont correctement ordonnées dans le groupe
-    définissant la poutre 
+    définissant la poutre
     - réorienter les mailles du groupe avec MODI_MAILLAGE/ORIE_LIGNE.
 """),
 
     54 : _(u"""
 Poutre circulaire à section homothétique :
 La présence de la caractéristique %(k1)s est obligatoire.
-"""),
-
-    55 : _(u"""
- VERIF : 2 arguments max
 """),
 
     56 : _(u"""

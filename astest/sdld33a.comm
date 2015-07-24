@@ -28,15 +28,22 @@ DEBUT(CODE=_F(
 
 #
 
-MAILLAGE=LIRE_MAILLAGE();
+MAILLAG0=LIRE_MAILLAGE();
 
 #
+MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAILLAG0,
+    CREA_POI1=(
+        _F(NOM_GROUP_MA='GROUP_NO_MASSE',   GROUP_NO = 'GROUP_NO_MASSE',),
+        _F(NOM_GROUP_MA='P2', NOEUD = 'P2',),
+        _F(NOM_GROUP_MA='P4', NOEUD = 'P4',),
+    ),
+)
 
 MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
                    AFFE=(_F(GROUP_MA=('GROUP_MA_RESK','GROUP_MA_RES2K',),
                             PHENOMENE='MECANIQUE',
                             MODELISATION='DIS_T',),
-                         _F(GROUP_NO=('GROUP_NO_MASSE',),
+                         _F(GROUP_MA=('GROUP_NO_MASSE',),
                             PHENOMENE='MECANIQUE',
                             MODELISATION='DIS_T',),),VERI_JACOBIEN='OUI',
                      );
@@ -92,11 +99,11 @@ CARA=AFFE_CARA_ELEM(MODELE=MODELE,
                                 VALE=(0.,0.,0.,0.,0.,0.,0.,0.,0.,
                                 0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),),
 
-                             _F(NOEUD='P2',
+                             _F(GROUP_MA='P2',
                                 CARA='M_T_D_N',
                                 SYME='OUI',
                                 VALE=10.0),
-                             _F(NOEUD='P4',
+                             _F(GROUP_MA='P4',
                                 CARA='M_T_D_N',
                                 SYME='OUI',
                                 VALE=10.0,),),);

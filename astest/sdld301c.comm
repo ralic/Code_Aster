@@ -30,13 +30,21 @@ alpha = 2.*xi/(w1+w2)
 beta = 2.*xi*w1*w2/(w1+w2)
 
 
-MAILLAGE=LIRE_MAILLAGE();
+MAILLAG0=LIRE_MAILLAGE();
+
+
+MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAILLAG0,
+    CREA_POI1=(
+        _F(NOM_GROUP_MA='MASSE',   GROUP_NO = 'MASSE', ),
+    ),
+)
+
 
 MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
                    AFFE=(_F(GROUP_MA=('RESK','RES2K',),
                             PHENOMENE='MECANIQUE',
                             MODELISATION='DIS_T',),
-                         _F(GROUP_NO='MASSE',
+                         _F(GROUP_MA='MASSE',
                             PHENOMENE='MECANIQUE',
                             MODELISATION='DIS_T',),),);
 
@@ -54,7 +62,7 @@ CARA=AFFE_CARA_ELEM(MODELE=MODELE,
                                 GROUP_MA='RES2K',
                                 VALE=(0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,),),
                              _F(CARA='M_T_D_N',
-                                GROUP_NO='MASSE',
+                                GROUP_MA='MASSE',
                                 VALE=m,),),);
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=160000000000.0,

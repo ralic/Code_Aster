@@ -51,7 +51,7 @@ calbar=AFFE_CARA_ELEM(
     MODELE=affect,
     VERIF='MAILLE',
     BARRE=_F(GROUP_MA='Group_barre', SECTION='GENERALE', CARA='A', VALE=0.0001,),
-    CABLE=_F(GROUP_MA='Group_cable', SECTION=Cable_Aire,),
+    CABLE=_F(GROUP_MA='Group_cable', SECTION=Cable_Aire,N_INIT=5000.0,),
 )
 
 # Création des champs de température

@@ -150,11 +150,11 @@ CARA=AFFE_CARA_ELEM(MODELE=MO,
                               CARA=('R','EP',),
                               VALE=(0.3,0.3,),),
                     CABLE=(_F(GROUP_MA=('GROUP_MA_CC1','GROUP_MA_CC2',),
-                              SECTION=0.00171,),
+                              SECTION=0.00171,N_INIT=5000.0,),
                            _F(GROUP_MA='GROUP_MA_CH1',
-                              SECTION=0.000628,),
+                              SECTION=0.000628,N_INIT=5000.0,),
                            _F(GROUP_MA='GROUP_MA_CH2',
-                              SECTION=0.000942,),),);
+                              SECTION=0.000942,N_INIT=5000.0,),),);
 
 F1=DEFI_FONC_ELEC(SIGNAL='CONTINU',
                   COUR=_F(INTE_CC_1=54559.0,

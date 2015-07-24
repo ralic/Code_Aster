@@ -1,37 +1,7 @@
 subroutine rairep(noma, ioc, km, rigi, nbgr,&
                   ligrma, nbno, tabnoe, rignoe, rigto,&
                   amoto, rirot, ndim)
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/compma.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/fointe.h"
-#include "asterfort/getvem.h"
-#include "asterfort/getvid.h"
-#include "asterfort/getvr8.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/provec.h"
-#include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
-#include "blas/ddot.h"
 !
-    integer :: ioc, nbgr, nbno, ndim
-    character(len=8) :: noma, tabnoe(*), km
-    character(len=24) :: ligrma(nbgr)
-    real(kind=8) :: rignoe(*), rigto(*), amoto(*), rirot(3)
-!     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,8 +18,40 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!     ------------------------------------------------------------------
 !
+    implicit none
+    integer :: ioc, nbgr, nbno, ndim
+    character(len=8) :: noma, tabnoe(*), km
+    character(len=24) :: ligrma(nbgr)
+    real(kind=8) :: rignoe(*), rigto(*), amoto(*), rirot(3)
+!
+! --------------------------------------------------------------------------------------------------
+! person_in_charge: jean-luc.flejou at edf.fr
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/compma.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/fointe.h"
+#include "asterfort/getvem.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/provec.h"
+#include "asterfort/utmess.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
+#include "blas/ddot.h"
+!
+! --------------------------------------------------------------------------------------------------
     character(len=8) :: k8b
     character(len=8) :: nomnoe, typm
     character(len=24) :: nomgr, magrno, manono, magrma, manoma, matyma
@@ -57,8 +59,7 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
     real(kind=8) :: a(3), b(3), c(3), u(3)
     aster_logical :: lfonc, trans
     integer :: iarg, appui
-!
-!-----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
     integer :: i, ii
     integer :: ij, im, in, inoe, iret
     integer :: ldgm, ldgn, ldnm, ltyp, nb, nbma, ncg
@@ -74,16 +75,13 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
     integer, pointer :: parno(:) => null()
     real(kind=8), pointer :: surmai(:) => null()
     real(kind=8), pointer :: vale(:) => null()
-!-----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
     call jemarq()
     zero = 0.d0
     lfonc = .false.
 !
-!
-!     --- ON RECUPERE LES POINTS D'ANCRAGE ---
-!
-!
-!        --- ON ECLATE LE GROUP_NO EN NOEUDS ---
+!   Récupere les points d'ancrage ---
+!   eclate le GROUP_NO en noeuds
     call compma(noma, nbgr, ligrma, nbma)
     magrno = noma//'.GROUPENO'
     manono = noma//'.NOMNOE'
@@ -92,62 +90,54 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
     matyma = noma//'.TYPMAIL'
 !
     noemax = 0
-!
-!
-!     --- DESCRIPTION NOEUDS STRUCTURE ---
+!   Description noeuds structure ---
     call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
 !
-!       RECUPERATION DU CENTRE
-!
+!   Récupération du centre
     call getvr8('RIGI_PARASOL', 'COOR_CENTRE', iocc=ioc, nbval=0, nbret=ncg)
-    call getvem(noma, 'NOEUD', 'RIGI_PARASOL', 'NOEUD_CENTRE', ioc,&
-                iarg, 0, k8b, nno)
-    call getvem(noma, 'GROUP_NO', 'RIGI_PARASOL', 'GROUP_NO_CENTRE', ioc,&
-                iarg, 0, k8b, ngn)
+    call getvem(noma, 'NOEUD', 'RIGI_PARASOL', 'NOEUD_CENTRE', ioc, iarg, 0, k8b, nno)
+    call getvem(noma, 'GROUP_NO', 'RIGI_PARASOL', 'GROUP_NO_CENTRE', ioc, iarg, 0, k8b, ngn)
+    xg = 0.0
+    yg = 0.0
+    zg = 0.0
     if (ncg .ne. 0) then
-        call getvr8('RIGI_PARASOL', 'COOR_CENTRE', iocc=ioc, nbval=3, vect=c,&
-                    nbret=ncg)
+        call getvr8('RIGI_PARASOL', 'COOR_CENTRE', iocc=ioc, nbval=3, vect=c, nbret=ncg)
         xg = c(1)
         yg = c(2)
         zg = c(3)
     else if (nno.ne.0) then
-        call getvem(noma, 'NOEUD', 'RIGI_PARASOL', 'NOEUD_CENTRE', ioc,&
-                    iarg, 1, nomnoe, nno)
+        call getvem(noma, 'NOEUD', 'RIGI_PARASOL', 'NOEUD_CENTRE', ioc, iarg, 1, nomnoe, nno)
         call jenonu(jexnom(manono, nomnoe), inoe)
         xg = vale(1+3*(inoe-1)+1-1)
         yg = vale(1+3*(inoe-1)+2-1)
         zg = vale(1+3*(inoe-1)+3-1)
     else if (ngn.ne.0) then
-        call getvem(noma, 'GROUP_NO', 'RIGI_PARASOL', 'GROUP_NO_CENTRE', ioc,&
-                    iarg, 1, nomgr, ngn)
+        call getvem(noma, 'GROUP_NO', 'RIGI_PARASOL', 'GROUP_NO_CENTRE', ioc, iarg, 1, nomgr, ngn)
         call jeveuo(jexnom(magrno, nomgr), 'L', ldgn)
         inoe = zi(ldgn)
         call jenuno(jexnum(manono, inoe), nomnoe)
         xg = vale(1+3*(inoe-1)+1-1)
         yg = vale(1+3*(inoe-1)+2-1)
         zg = vale(1+3*(inoe-1)+3-1)
+    else
+        ASSERT( ASTER_FALSE )
     endif
 !
-!       RECUPERATION DES COEFS OU FONCTIONS DE GROUPE
-!
+!   Récuperation des coefs ou fonctions de groupe
     call getvr8('RIGI_PARASOL', 'COEF_GROUP', iocc=ioc, nbval=0, nbret=ncg)
     if (ncg .ne. 0) then
         AS_ALLOCATE(vr=coegro, size=nbgr)
-        call getvr8('RIGI_PARASOL', 'COEF_GROUP', iocc=ioc, nbval=nbgr, vect=coegro,&
-                    nbret=ncg)
+        call getvr8('RIGI_PARASOL', 'COEF_GROUP', iocc=ioc, nbval=nbgr, vect=coegro, nbret=ncg)
     else
         AS_ALLOCATE(vk8=fongro, size=nbgr)
         lfonc = .true.
-        call getvid('RIGI_PARASOL', 'FONC_GROUP', iocc=ioc, nbval=nbgr, vect=fongro,&
-                    nbret=nfg)
+        call getvid('RIGI_PARASOL', 'FONC_GROUP', iocc=ioc, nbval=nbgr, vect=fongro, nbret=nfg)
     endif
-!
-!
 !
     if (ndim .eq. 2) then
         appui=1
     else
-!     LA DIMENSION DE L'APPUI N'EST PAS ENCORE DETERMINEE
+!       la dimension de l'appui n'est pas encore determinée
         appui=-1
     endif
 !
@@ -160,12 +150,11 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
             ASSERT(numa.gt.0)
             call jelira(jexnum(manoma, numa), 'LONMAX', nm)
             call jeveuo(jexnum(manoma, numa), 'L', ldnm)
-!
             call jenuno(jexnum('&CATA.TM.NOMTM', zi(ltyp-1+numa)), typm)
             call dismoi('DIM_TOPO', typm, 'TYPE_MAILLE', repi=ntopo)
 !
             if (appui .eq. -1) then
-!            LA DIMENSION DE LA PREMIERE MAILLE DEFINIT L'APPUI
+!               la dimension de la première maille définit l'appui
                 appui=ntopo
             else if ((appui.eq.1).or.(appui.eq.2)) then
                 if (appui .ne. ntopo) then
@@ -177,20 +166,15 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
             do nn = 1, nm
                 inoe = zi(ldnm+nn-1)
                 noemax = max(noemax,inoe)
-            end do
-        end do
-    end do
+            enddo
+        enddo
+    enddo
     ASSERT(appui.ne.-1)
 !
     AS_ALLOCATE(vr=coeno, size=noemax)
-!
-!        TABLEAU DE PARTICIPATION DES NOEUDS DE L INTERFACE
-!
+!   Tableau de participation des noeuds de l interface
     AS_ALLOCATE(vi=parno, size=noemax)
-!
-!
-!     CALCUL DES SURFACES ELEMENTAIRES ET DE LA SURFACE TOTALE
-!
+!   Calcul des surfaces élémentaires et de la surface totale
     AS_ALLOCATE(vr=surmai, size=nbma)
     im = 0
     surtot = zero
@@ -213,7 +197,7 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
                 xc = xc + x(nn)
                 yc = yc + y(nn)
                 hc = hc + z(nn)
-            end do
+            enddo
             xc = xc/nm
             yc = yc/nm
             hc = hc/nm
@@ -259,11 +243,10 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
             endif
             surtot = surtot + surmai(im)
             surmai(im) = surmai(im)/nm
-        end do
-    end do
+        enddo
+    enddo
 !
-!     CALCUL DES PONDERATIONS ELEMENTAIRES
-!
+!   Calcul des pondérations élémentaires
     im = 0
     do i = 1, nbgr
         call jelira(jexnom(magrma, ligrma(i)), 'LONUTI', nb)
@@ -273,20 +256,18 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
             call jelira(jexnum(manoma, zi(ldgm+in)), 'LONMAX', nm)
             call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
             do nn = 1, nm
-                do ij = 1, noemax
-                    if (parno(ij) .eq. 0) goto 37
-                    if (zi(ldnm+nn-1) .eq. ij) then
+                cij1: do ij = 1, noemax
+                    if (parno(ij).eq.0) cycle cij1
+                    if (zi(ldnm+nn-1).eq.ij) then
                         coeno(ij) = coeno(ij) + surmai(im)/surtot
                     endif
- 37                 continue
-                end do
-            end do
-        end do
-    end do
+                enddo cij1
+            enddo
+        enddo
+    enddo
     nbma = im
 !
-!     CALCUL DES RAIDEURS DE ROTATION
-!
+!   Calcul des raideurs de rotation
     ii = 0
     rig4 = zero
     rig5 = zero
@@ -295,8 +276,8 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
     rig46 = zero
     rig56 = zero
     rig3 = 0.d0
-    do ij = 1, noemax
-        if (parno(ij) .eq. 0) goto 50
+    cij2: do ij = 1, noemax
+        if (parno(ij).eq.0) cycle cij2
         ii = ii + 1
         xx = vale(1+3*(ij-1)+1-1) - xg
         yy = vale(1+3*(ij-1)+2-1) - yg
@@ -312,16 +293,14 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
         else
             rig3 = rig3 + (rigi(2)*xx**2+rigi(1)*yy**2)*coeno(ij)
         endif
-!
- 50     continue
-    end do
+    enddo cij2
     nbno = ii
 !
     trans=(km(1:7) .eq. 'K_T_D_N').or.(km(1:7) .eq. 'K_T_D_L').or.&
-     &      (km(1:7) .eq. 'A_T_D_N').or.(km(1:7) .eq. 'A_T_D_L')
+          (km(1:7) .eq. 'A_T_D_N').or.(km(1:7) .eq. 'A_T_D_L')
 !
     if (trans) then
-!        PAS DE RAIDEUR EN ROTATION SUR LES DISCRETS
+!       pas de raideur en rotation sur les discrets
         if (ndim .eq. 2) then
             rigi(3)=zero
             rig3 =zero
@@ -350,8 +329,8 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
     endif
 !
     ii = 0
-    do ij = 1, noemax
-        if (parno(ij) .eq. 0) goto 51
+    cij3: do ij = 1, noemax
+        if (parno(ij) .eq. 0) cycle cij3
         ii = ii + 1
         r1 = rigi(1)*coeno(ij)
         r2 = rigi(2)*coeno(ij)
@@ -401,8 +380,7 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
         rignoe(6*(ii-1)+5) = r5
         rignoe(6*(ii-1)+6) = r6
         tabnoe(ii) = nomnoe
- 51     continue
-    end do
+    enddo cij3
 !
     AS_DEALLOCATE(vr=coegro)
     AS_DEALLOCATE(vk8=fongro)

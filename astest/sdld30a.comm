@@ -56,13 +56,22 @@ A2_F2 = 6.0;
 DDS2 = 0.06;
 
 
-MAILLAGE=LIRE_MAILLAGE();
+MAILLAG0=LIRE_MAILLAGE();
+
+
+MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAILLAG0,
+    CREA_POI1=(
+        _F(NOM_GROUP_MA='MASSES',   GROUP_NO = 'MASSES', ),
+        _F(NOM_GROUP_MA='NO2',   NOEUD = 'NO2', ),
+        _F(NOM_GROUP_MA='NO3',   NOEUD = 'NO3', ),
+    ),
+)
 
 MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
                    AFFE=(_F(GROUP_MA='RESSORT',
                             PHENOMENE='MECANIQUE',
                             MODELISATION='DIS_T',),
-                         _F(GROUP_NO='MASSES',
+                         _F(GROUP_MA='MASSES',
                             PHENOMENE='MECANIQUE',
                             MODELISATION='DIS_T',),),);
 
@@ -97,10 +106,10 @@ CARA_ELE=AFFE_CARA_ELEM(MODELE=MODELE,
                                     VALE=(0.,0.,0.,0.,0.,0.,0.,0.,0.,
                                     0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),),
                                  _F(CARA='M_T_D_N',
-                                    NOEUD='NO2',
+                                    GROUP_MA='NO2',
                                     VALE=M2,),
                                  _F(CARA='M_T_D_N',
-                                    NOEUD='NO3',
+                                    GROUP_MA='NO3',
                                     VALE=M3,),),);
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=1.6E+11,

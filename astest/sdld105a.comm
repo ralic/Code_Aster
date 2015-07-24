@@ -22,13 +22,20 @@ tfin = 20.0;
 fex = 2.0;
 
 
-MAILLAGE=LIRE_MAILLAGE(FORMAT='MED',);
+MAILLAG0=LIRE_MAILLAGE(FORMAT='MED',);
+
+MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAILLAG0,
+    CREA_POI1=(
+        _F(NOM_GROUP_MA='MASSES',   GROUP_NO='MASSES', ),
+        _F(NOM_GROUP_MA='N020304',   NOEUD=('N02','N03','N04',), ),
+    ),
+)
 
 MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
                    AFFE=(_F(GROUP_MA='LIAI_NOE',
                             PHENOMENE='MECANIQUE',
                             MODELISATION='DIS_T',),
-                         _F(GROUP_NO='MASSES',
+                         _F(GROUP_MA='MASSES',
                             PHENOMENE='MECANIQUE',
                             MODELISATION='DIS_T',),),);
 
@@ -46,10 +53,10 @@ CON_LIM=AFFE_CHAR_MECA(MODELE=MODELE,
 
 CARA_ELE=AFFE_CARA_ELEM(MODELE=MODELE,
                         DISCRET=(_F(CARA='M_T_D_N',
-                                    NOEUD=('N02','N03','N04',),
+                                    GROUP_MA='N020304',
                                     VALE=1.,),
                                  _F(CARA='K_T_D_N',
-                                    NOEUD=('N02','N03','N04',),
+                                    GROUP_MA='N020304',
                                     VALE=(0.,0.,0.,)),
                                  _F(REPERE='GLOBAL',
                                     CARA='K_T_D_L',

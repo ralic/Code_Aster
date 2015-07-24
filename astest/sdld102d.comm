@@ -51,15 +51,20 @@ PRE_IDEAS(UNITE_IDEAS=19,
 
 #
 
-MAILLA=LIRE_MAILLAGE(UNITE=21,);
+MAILLA0=LIRE_MAILLAGE(UNITE=21,);
 
 #
+MAILLA=CREA_MAILLAGE(MAILLAGE=MAILLA0,
+    CREA_POI1=(
+        _F(NOM_GROUP_MA='MASSE',   GROUP_NO='MASSE', ),
+    ),
+)
 
 MODELE=AFFE_MODELE(MAILLAGE=MAILLA,
                    AFFE=(_F(GROUP_MA='RESSORT',
                             PHENOMENE='MECANIQUE',
                             MODELISATION='DIS_TR',),
-                         _F(GROUP_NO='MASSE',
+                         _F(GROUP_MA='MASSE',
                             PHENOMENE='MECANIQUE',
                             MODELISATION='DIS_T',),),);
 
@@ -76,7 +81,7 @@ PARAM=AFFE_CARA_ELEM(MODELE=MODELE,
                                         0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
                                         0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),),
                               _F(CARA='M_T_D_N',
-                                 GROUP_NO='MASSE',
+                                 GROUP_MA='MASSE',
                                  VALE=1.,),),);
 
 #

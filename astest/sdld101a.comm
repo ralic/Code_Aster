@@ -21,7 +21,14 @@ DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 #*********************************************************************#
 # *****LECTURE DU MAILLAGE********************************************#
 #*********************************************************************#
-MA1=LIRE_MAILLAGE( )
+MA10=LIRE_MAILLAGE( )
+
+MA1=CREA_MAILLAGE(MAILLAGE=MA10,
+    CREA_POI1=(
+        _F(NOM_GROUP_MA='P1P2',   NOEUD = ('P1', 'P2'), ),
+    ),
+)
+
 
 #*********************************************************************#
 # *****AFFECTATION D ELEMENTS SUR LES MAILLES*************************#
@@ -30,7 +37,7 @@ MO1=AFFE_MODELE(  MAILLAGE=MA1,AFFE=(
        _F(                TOUT = 'OUI',
                             PHENOMENE = 'MECANIQUE',
                             MODELISATION = 'DIS_T'),
-       _F(                NOEUD = ('P1', 'P2'),
+       _F(                GROUP_MA='P1P2',
                             PHENOMENE = 'MECANIQUE',
                             MODELISATION = 'DIS_T')))
 
@@ -38,10 +45,10 @@ MO1=AFFE_MODELE(  MAILLAGE=MA1,AFFE=(
 # *****CARACTERISTIQUES DES ELEMENTS DE POUTRE ET DE MASSE************#
 #*********************************************************************#
 CARELEM1=AFFE_CARA_ELEM(   MODELE=MO1,DISCRET=(
-     _F(  NOEUD = ('P1', 'P2'),
+     _F(  GROUP_MA='P1P2',
                CARA = 'M_T_D_N',
                VALE = (100.)),
-     _F(  NOEUD = ('P1', 'P2'),
+     _F(  GROUP_MA='P1P2',
                CARA = 'K_T_D_N',
                VALE = (0.,0.,0.)),
      _F(  MAILLE = ('M1'),
@@ -144,7 +151,7 @@ INTERRE1=REST_SPEC_PHYS(         MODE_MECA=FREQ1,
                                     NUME_ORDRE=1,
                                 INTE_SPEC_GENE=DYNALEA1,
                                      MODE_STAT=MODESTA1,
-                                 EXCIT=_F(   GROUP_NO = 'GR_P1',
+                                 EXCIT=_F(   NOEUD = 'P1',
                                           NOM_CMP = 'DX'),
                                      MOUVEMENT = 'ABSOLU',
                                          NOEUD = 'P2',

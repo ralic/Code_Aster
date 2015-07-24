@@ -24,12 +24,20 @@
 
 DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MAILLAGE=LIRE_MAILLAGE( )
+MAILLAG0=LIRE_MAILLAGE( )
 
-MAILLAGE=DEFI_GROUP( reuse=MAILLAGE,   MAILLAGE=MAILLAGE,
+MAILLAG0=DEFI_GROUP( reuse=MAILLAG0,   MAILLAGE=MAILLAG0,
                            CREA_GROUP_MA=_F(  NOM = 'MAILLAGE',
                                            MAILLE = ( 'E01', 'E02', ))
                         )
+
+MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAILLAG0,
+    CREA_POI1=(
+        _F(NOM_GROUP_MA='MASSE',  GROUP_NO = 'MASSE', ),
+        _F(NOM_GROUP_MA='B', NOEUD = 'B', ),
+        _F(NOM_GROUP_MA='C', NOEUD = 'C', ),
+    ),
+)
 
 MAT=DEFI_MATERIAU( ELAS=_F(  E = 2.E+11,  NU = 0.3,  RHO = 0.) )
 
@@ -39,7 +47,7 @@ CH_MATE=AFFE_MATERIAU(  MAILLAGE=MAILLAGE,
 MODELE=AFFE_MODELE(  MAILLAGE=MAILLAGE,AFFE=(
                         _F(  GROUP_MA = 'M_POUT', PHENOMENE = 'MECANIQUE',
                                MODELISATION = 'POU_D_E'),
-                             _F(  GROUP_NO = 'MASSE',  PHENOMENE = 'MECANIQUE',
+                             _F(  GROUP_MA = 'MASSE',  PHENOMENE = 'MECANIQUE',
                                MODELISATION = 'DIS_T')) )
 
 CARA_ELE=AFFE_CARA_ELEM(  MODELE=MODELE,
@@ -47,9 +55,9 @@ CARA_ELE=AFFE_CARA_ELEM(  MODELE=MODELE,
                          CARA = (   'A',     'IY',      'IZ',      'JX',   ),
                          VALE = ( 78.1E-4, 5696.E-8, 2003.E-8, 7699.E-8,)),
                 DISCRET=(
-                        _F(  NOEUD = 'B',  CARA = 'M_T_D_N', VALE = 50000.),
-                        _F(  NOEUD = 'B',  CARA = 'K_T_D_N', VALE = (0.,0.,0.)),
-                        _F(  NOEUD = 'C',  CARA = 'M_T_D_N', VALE = 5000.)) )
+                        _F(  GROUP_MA = 'B',  CARA = 'M_T_D_N', VALE = 50000.),
+                        _F(  GROUP_MA = 'B',  CARA = 'K_T_D_N', VALE = (0.,0.,0.)),
+                        _F(  GROUP_MA = 'C',  CARA = 'M_T_D_N', VALE = 5000.)) )
 
 COND_LIM=AFFE_CHAR_MECA(  MODELE=MODELE,
                   DDL_IMPO=_F(  NOEUD = 'A',   DX = 0.,  DY = 0.,  DZ = 0.,

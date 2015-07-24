@@ -34,14 +34,20 @@ DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
 
 #
 
-RESSORT=LIRE_MAILLAGE( )
+RESSORT0=LIRE_MAILLAGE( )
 
 #
+RESSORT=CREA_MAILLAGE(MAILLAGE=RESSORT0,
+    CREA_POI1=(
+        _F(NOM_GROUP_MA='N2', NOEUD = 'N2',),
+        _F(NOM_GROUP_MA='N3', NOEUD = 'N3',),
+    ),
+)
 
 MODELE=AFFE_MODELE(   MAILLAGE=RESSORT,AFFE=(
                      _F( MAILLE=('AC', 'CB'),  PHENOMENE = 'MECANIQUE',
                                MODELISATION = 'DIS_T'),
-                     _F( NOEUD=('N2', 'N3'),   PHENOMENE = 'MECANIQUE',
+                     _F( GROUP_MA=('N2', 'N3'),   PHENOMENE = 'MECANIQUE',
                                MODELISATION = 'DIS_T'))            )
 
 #
@@ -66,7 +72,7 @@ ELEMNT=AFFE_CARA_ELEM(  MODELE=MODELE,DISCRET=(
                            CARA = 'A_T_D_L',
                            VALE = (50., 0., 0., )),
 
-                 _F(  NOEUD = ( 'N2', 'N3', ),
+                 _F(  GROUP_MA = ( 'N2', 'N3', ),
                            CARA = 'M_T_D_N',
                            VALE = 10.))
                           )

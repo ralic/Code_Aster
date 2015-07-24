@@ -3,17 +3,17 @@
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #
 ######################################################################
@@ -43,14 +43,21 @@ DEBUT(  CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI') )
 PRE_IDEAS()
 
 #
-MAIL=LIRE_MAILLAGE( )
+MAIL0=LIRE_MAILLAGE( )
+
+MAIL=CREA_MAILLAGE(MAILLAGE=MAIL0,
+    CREA_POI1=(
+        _F(NOM_GROUP_MA='NPOINT1', GROUP_NO = 'NPOINT1', ),
+        _F(NOM_GROUP_MA='NPOINT2', GROUP_NO = 'NPOINT2', ),
+    ),
+)
 
 #
 MODELE=AFFE_MODELE(   MAILLAGE=MAIL,AFFE=(
                             _F( TOUT = 'OUI',
                                   PHENOMENE = 'MECANIQUE',
                                   MODELISATION = '3D'),
-                            _F( GROUP_NO = ('NPOINT1', 'NPOINT2',),
+                            _F( GROUP_MA = ('NPOINT1', 'NPOINT2',),
                                   PHENOMENE = 'MECANIQUE',
                                   MODELISATION = 'DIS_TR'))           )
 
@@ -64,10 +71,10 @@ MATER=AFFE_MATERIAU(   MAILLAGE=MAIL,
 
 #
 CARAELEM=AFFE_CARA_ELEM(    MODELE=MODELE,
-                             DISCRET=(_F( GROUP_NO = ('NPOINT1', 'NPOINT2',),
+                             DISCRET=(_F( GROUP_MA = ('NPOINT1', 'NPOINT2',),
                                       CARA = 'K_TR_D_N',
                                       VALE = (0., 0., 0., 0., 0., 0.,)),
-                                      _F( GROUP_NO = ('NPOINT1', 'NPOINT2',),
+                                      _F( GROUP_MA = ('NPOINT1', 'NPOINT2',),
                                       CARA = 'M_TR_D_N',
                                       VALE = (0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,)),))
 
@@ -174,7 +181,7 @@ REPGENE=PROJ_MESU_MODAL(
                         )
 
 #
-# RESTITUTION DES RESULTATS 
+# RESTITUTION DES RESULTATS
 # =========================
 #
 #DEPLACE = REST_GENE_PHYS (RESU_GENE : REPGENE
@@ -208,7 +215,7 @@ T_SIGM=POST_GENE_PHYS(RESU_GENE=REPGENE,
                                        ),
                                    ),
                        )
-#IMPR_TABLE(TABLE=T_SIGM) 
+#IMPR_TABLE(TABLE=T_SIGM)
 
 DEPL3=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL3',
                       GROUP_NO=('NRES3'),
@@ -487,7 +494,7 @@ TEST_TABLE(CRITERE='ABSOLU',
            TABLE=T3,)
 
 #
-# TEST DES RESULTATS 
+# TEST DES RESULTATS
 # ==================
 TEST_RESU(RESU=(_F(NUME_ORDRE=90,
                    GROUP_NO='NRES2',

@@ -18,17 +18,24 @@
 
 DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'))
 
-MAILLAGE = LIRE_MAILLAGE(FORMAT='MED') ;
+MAILLAG0 = LIRE_MAILLAGE(FORMAT='MED') ;
 #
-MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
-                MAILLAGE=MAILLAGE,
+MAILLAG0=DEFI_GROUP(reuse =MAILLAG0,
+                MAILLAGE=MAILLAG0,
                 CREA_GROUP_NO=_F(GROUP_MA=('SBASE','SEXTER'),
                                 ),
                );
 
+MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAILLAG0,
+    CREA_POI1=(
+        _F(NOM_GROUP_MA='PB', GROUP_NO = 'PB', ),
+        _F(NOM_GROUP_MA='PB2', GROUP_NO = 'PB2', ),
+    ),
+)
+
 MODELE = AFFE_MODELE( MAILLAGE= MAILLAGE,
           AFFE=(
-                _F(GROUP_NO='PB',
+                _F(GROUP_MA='PB',
                             PHENOMENE='MECANIQUE',
                             MODELISATION='DIS_TR'),
                 _F(GROUP_MA='VOLUM',
@@ -81,13 +88,13 @@ charge6 = AFFE_CHAR_MECA( MODELE= MODELE,
 
 caraele = AFFE_CARA_ELEM( MODELE=MODELE,
                         DISCRET=(
-                                 _F(GROUP_NO='PB',
+                                 _F(GROUP_MA='PB',
                                     CARA='M_TR_D_N',
                                     VALE=(0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0)),
-                                 _F(GROUP_NO='PB',
+                                 _F(GROUP_MA='PB',
                                     CARA='K_TR_D_N',
                                     VALE=(0.0,0.0,0.0,0.0,0.0,0.0)),
-                                 _F(GROUP_NO='PB',
+                                 _F(GROUP_MA='PB',
                                     CARA='A_TR_D_N',
                                     VALE=(0.0,0.0,0.0,0.0,0.0,0.0)),
                                   ),
@@ -261,7 +268,7 @@ MODELEB = AFFE_MODELE( MAILLAGE= MAILLAGE,
 
 MODELE2 = AFFE_MODELE( MAILLAGE= MAILLAGE,
           AFFE=(
-                _F(GROUP_NO='PB2',
+                _F(GROUP_MA='PB2',
                             PHENOMENE='MECANIQUE',
                             MODELISATION='DIS_TR'),
                 _F(GROUP_MA='RESSORT',
@@ -330,10 +337,10 @@ caraele2 = AFFE_CARA_ELEM( MODELE=MODELE2,
                                  ANGL_REP=(45.,45.),
                                  EPAIS=0.00001),
                         DISCRET=(
-                                 _F(GROUP_NO='PB2',
+                                 _F(GROUP_MA='PB2',
                                     CARA='M_TR_D_N',
                                     VALE=(0.01,0.01,0.01,0.01,0.0,0.0,0.0,0.0,0.0,0.0)),
-                                 _F(GROUP_NO='PB2',
+                                 _F(GROUP_MA='PB2',
                                     CARA='K_TR_D_N',
                                     VALE=(0.0,0.0,0.0,0.0,0.0,0.0)),
                                  _F(GROUP_MA='RESSORT',

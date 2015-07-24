@@ -1,27 +1,5 @@
-subroutine acecel(noma, nomo, nbocc, nbepo, nbedi,&
-                  nbeco, nbeca, nbeba, nbema, nbegb,&
-                  nbemb, nbthm1, nbthm2, ntyele, npoutr,&
-                  ndiscr, ncoque, ncable, nbarre, nmassi,&
-                  ngrill, ngribt, nmembr, jdlm, jdln,&
-                  ier)
+subroutine acecel(noma, nomo, nbocc, nbtel, ele_sup_num, ele_sup_typ, nb_ty_el, zjdlm, ier)
 !
-! aslint: disable=W1504
-    implicit none
-!
-#include "jeveux.h"
-#include "asterc/getres.h"
-#include "asterfort/iunifi.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/utmess.h"
-    integer :: nbocc(*), nbepo, nbedi, nbeco, nbeca, nbeba, nbema, nbegb, nbemb, nbthm1, nbthm2
-    integer :: ntyele(*), npoutr, ndiscr, ncoque, ncable, nbarre, nmassi, ngrill, ngribt, nmembr
-!
-    character(len=8) :: noma, nomo
-! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,160 +17,119 @@ subroutine acecel(noma, nomo, nbocc, nbepo, nbedi,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-! ----------------------------------------------------------------------
+    use cara_elem_module
+    implicit none
+    character(len=8) :: noma, nomo
+    integer :: nbocc(*), nbtel, ele_sup_num(*), ele_sup_typ(*), nb_ty_el(*), zjdlm(*), ier
+!
+! --------------------------------------------------------------------------------------------------
+!
 !     AFFE_CARA_ELEM
 !     COMPTEUR D'ELEMENTS
-! ----------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
+!
 ! IN  : NOMA   : NOM DU MAILLAGE
 ! IN  : NOMO   : NOM DU MODELE
-! ----------------------------------------------------------------------
-    character(len=8) :: nomu
-    character(len=16) :: concep, cmd
-    character(len=24) :: mlgnma, modmai, modnoe, modnem
-!     ------------------------------------------------------------------
 !
-!-----------------------------------------------------------------------
-    integer :: i, ier, ifm, ixma, ixno, ixnw
-    integer :: jdlm, jdln, jdme, jdne, jdnw, k, nbmail
-    integer :: nbmtrd, nummai, numnoe, nutyel
-!-----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+! person_in_charge: jean-luc.flejou at edf.fr
+!
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterfort/assert.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/utmess.h"
+!
+! --------------------------------------------------------------------------------------------------
+    integer :: ii, ifm, ixma, tt, jdme, nbmail, nummai, nutyel
+!
+    character(len=8)  :: nomu
+    character(len=16) :: concep, cmd
+    character(len=24) :: mlgnma, modmai
+! --------------------------------------------------------------------------------------------------
+!
     call jemarq()
+!
     call getres(nomu, concep, cmd)
     modmai = nomo//'.MAILLE'
-    modnoe = nomo//'.NOEUD'
-    modnem = nomo//'.MODELE    .NEMA'
     mlgnma = noma//'.NOMMAI'
-    call jeexin(modnem, ixnw)
     call jeexin(modmai, ixma)
-    call jeexin(modnoe, ixno)
     call jelira(mlgnma, 'NOMMAX', nbmail)
-    nbmtrd = 0
-    if (ixnw .ne. 0) then
-        call jelira(modnem, 'NMAXOC', nbmtrd)
-        call jeveuo(modnem, 'L', jdnw)
-    endif
-    if (ixma .ne. 0) call jeveuo(modmai, 'L', jdme)
-    if (ixno .ne. 0) call jeveuo(modnoe, 'L', jdne)
+    ASSERT( ixma .ne. 0 )
+    call jeveuo(modmai, 'L', jdme)
+!
     ifm = iunifi('MESSAGE')
 !
-    npoutr = 0
-    ndiscr = 0
-    ncoque = 0
-    ncable = 0
-    nbarre = 0
-    nmassi = 0
-    ngrill = 0
-    ngribt = 0
-    nmembr = 0
+    nb_ty_el(1:ACE_NB_ELEMENT) = 0
 !
-    do 40 nummai = 1, nbmail
+    do nummai = 1, nbmail
         nutyel = zi(jdme+nummai-1)
-        zi(jdlm+nummai-1) = nutyel
-        do 41 i = 1, nbepo
-            if (nutyel .eq. ntyele(i)) npoutr = npoutr + 1
-41      continue
-        do 42 i = nbepo+1, nbepo+nbedi
-            if (nutyel .eq. ntyele(i)) ndiscr = ndiscr + 1
-42      continue
-        do 43 i = nbepo+nbedi+1, nbepo+nbedi+nbeco
-            if (nutyel .eq. ntyele(i)) ncoque = ncoque + 1
-43      continue
-        do 44 i = nbepo+nbedi+nbeco+1, nbepo+nbedi+nbeco+nbeca
-            if(nutyel.eq.ntyele(i))ncable = ncable + 1
-44      continue
-        do 45 i = nbepo+nbedi+nbeco+nbeca+1, nbepo+nbedi+nbeco+nbeca+ nbeba
-            if(nutyel.eq.ntyele(i))nbarre = nbarre + 1
-45      continue
-        do 46 i = nbepo+nbedi+nbeco+nbeca+nbeba+1, nbepo+nbedi+nbeco+ nbeca+nbeba+nbema
-            if(nutyel.eq.ntyele(i))nmassi = nmassi + 1
-46      continue
-        do 48 i = nbepo+nbedi+nbeco+nbeca+nbeba+nbema+1, nbepo+nbedi+ nbeco+nbeca+nbeba+nbema+nbegb
-            if(nutyel.eq.ntyele(i))ngribt = ngribt + 1
-48      continue
-        do 49 i = nbepo+nbedi+nbeco+nbeca+nbeba+nbema+nbegb+1, &
-                  nbepo+nbedi+nbeco+nbeca+nbeba+nbema+nbegb+nbemb
-            if(nutyel.eq.ntyele(i))nmembr = nmembr + 1
-49      continue
+        zjdlm(nummai) = nutyel
 !
-        do 60 i = nbepo+nbedi+nbeco+nbeca+nbeba+nbema+nbegb+nbemb+1, &
-                  nbepo+nbedi+nbeco+nbeca+nbeba+nbema+nbegb+nbemb+nbthm1
-            if(nutyel.eq.ntyele(i))nmassi = nmassi + 1
-60      continue
-        do 61 i= nbepo+nbedi+nbeco+nbeca+nbeba+nbema+ nbegb+nbemb+&
-        nbthm1+1, nbepo+nbedi+nbeco+nbeca+nbeba+nbema+ nbegb+nbemb+&
-        nbthm1+nbthm2
-        if(nutyel.eq.ntyele(i))nmassi = nmassi + 1
-61      continue
+        do ii = 1 , nbtel
+            if ( nutyel .eq. ele_sup_num(ii) ) then
+                tt = ele_sup_typ(ii)
+                nb_ty_el(tt) = nb_ty_el(tt) + 1
+                exit
+            endif
+        enddo
+    enddo
 !
-40  end do
-    if (ixnw .ne. 0) then
-        do 50 k = 1, nbmtrd
-            numnoe = zi(jdnw+k*2-2)
-            nutyel = zi(jdne+numnoe-1)
-            zi(jdln+k-1) = nutyel
-            do 52 i = nbepo+1, nbepo+nbedi
-                if(nutyel.eq.ntyele(i))ndiscr = ndiscr + 1
-52          continue
-50      continue
-    endif
-    write(ifm,1000)nomo
-    if (npoutr .gt. 0) write(ifm,1041)npoutr
-    if (ndiscr .gt. 0) write(ifm,1042)ndiscr
-    if (ncoque .gt. 0) write(ifm,1043)ncoque
-    if (ncable .gt. 0) write(ifm,1044)ncable
-    if (nbarre .gt. 0) write(ifm,1045)nbarre
-    if (ngrill .gt. 0) write(ifm,1047)ngrill
-    if (ngribt .gt. 0) write(ifm,1048)ngribt
-    if (nmembr .gt. 0) write(ifm,1049)nmembr
-    1000 format(/,5x,'LE MODELE ',a8,' CONTIENT : ')
-    1041 format(35x,i6,' ELEMENT(S) POUTRE')
-    1042 format(35x,i6,' ELEMENT(S) DISCRET')
-    1043 format(35x,i6,' ELEMENT(S) COQUE')
-    1044 format(35x,i6,' ELEMENT(S) CABLE')
-    1045 format(35x,i6,' ELEMENT(S) BARRE')
-    1047 format(35x,i6,' ELEMENT(S) ASSE_GRIL')
-    1048 format(35x,i6,' ELEMENT(S) GRILLE')
-    1049 format(35x,i6,' ELEMENT(S) MEMBRANE')
+    write(ifm,100) nomo
+    do ii=1 ,ACE_NB_ELEMENT
+        if ( nb_ty_el(ii) .gt. 0 ) then
+            write(ifm,110) nb_ty_el(ii),ACE_NM_ELEMENT(ii)
+        endif
+    enddo
+100 format(/,5x,'LE MODELE ',a8,' CONTIENT : ')
+110 format(35x,i6,' ELEMENT(S) ',A16)
 !
-! --- VERIFICATION DE LA COHERENCE DES  AFFECTATIONS
-!     ----------------------------------------------
-    if (nbocc(1) .ne. 0 .and. npoutr .eq. 0) then
+!   Vérification de la cohérence des affectations
+    if (nbocc(ACE_POUTRE).ne.0 .and. nb_ty_el(ACE_NU_POUTRE).eq.0) then
         call utmess('E', 'MODELISA_29', sk=nomo)
         ier = ier + 1
     endif
-    if (nbocc(2) .ne. 0 .and. ncoque .eq. 0) then
+    if (nbocc(ACE_COQUE).ne.0 .and. nb_ty_el(ACE_NU_COQUE).eq.0) then
         call utmess('E', 'MODELISA_30', sk=nomo)
         ier = ier + 1
     endif
-    if ((nbocc(3).ne.0 .or. nbocc(13).ne.0) .and. ndiscr .eq. 0) then
+    if ((nbocc(ACE_DISCRET).ne.0 .or. nbocc(ACE_DISCRET_2D).ne.0) .and. &
+         nb_ty_el(ACE_NU_DISCRET).eq.0) then
         call utmess('E', 'MODELISA_31', sk=nomo)
         ier = ier + 1
     endif
-    if (nbocc(4) .ne. 0 .and. npoutr .eq. 0 .and. ndiscr .eq. 0 .and. nbarre .eq. 0) then
+    if (nbocc(ACE_ORIENTATION).ne.0 .and. nb_ty_el(ACE_NU_POUTRE).eq.0 .and. &
+        nb_ty_el(ACE_NU_DISCRET).eq.0 .and. nb_ty_el(ACE_NU_BARRE).eq.0) then
         call utmess('E', 'MODELISA_32', sk=nomo)
         ier = ier + 1
     endif
-    if (nbocc(5) .ne. 0 .and. npoutr .eq. 0) then
+    if (nbocc(ACE_DEFI_ARC).ne.0 .and. nb_ty_el(ACE_NU_POUTRE).eq.0) then
         call utmess('E', 'MODELISA_29', sk=nomo)
         ier = ier + 1
     endif
-    if (nbocc(6) .ne. 0 .and. ncable .eq. 0) then
+    if (nbocc(ACE_CABLE).ne.0 .and. nb_ty_el(ACE_NU_CABLE).eq.0) then
         call utmess('E', 'MODELISA_33', sk=nomo)
         ier = ier + 1
     endif
-    if (nbocc(7) .ne. 0 .and. nbarre .eq. 0) then
+    if (nbocc(ACE_BARRE).ne.0 .and. nb_ty_el(ACE_NU_BARRE).eq.0) then
         call utmess('E', 'MODELISA_34', sk=nomo)
         ier = ier + 1
     endif
-    if (nbocc(8) .ne. 0 .and. nmassi .eq. 0) then
+    if (nbocc(ACE_MASSIF).ne.0 .and. (nb_ty_el(ACE_NU_MASSIF)+nb_ty_el(ACE_NU_THHMM)).eq.0) then
         call utmess('E', 'MODELISA_35', sk=nomo)
         ier = ier + 1
     endif
-    if (nbocc(11) .ne. 0 .and. ngribt .eq. 0) then
+    if (nbocc(ACE_GRILLE).ne.0 .and. nb_ty_el(ACE_NU_GRILLE).eq.0) then
         call utmess('E', 'MODELISA_36', sk=nomo)
         ier = ier + 1
     endif
-    if (nbocc(14) .ne. 0 .and. nmembr .eq. 0) then
+    if (nbocc(ACE_MEMBRANE).ne.0 .and. nb_ty_el(ACE_NU_MEMBRANE).eq.0) then
         call utmess('E', 'MODELISA_55', sk=nomo)
         ier = ier + 1
     endif

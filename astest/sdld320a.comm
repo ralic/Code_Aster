@@ -27,15 +27,24 @@ DEBUT(CODE=_F(
 
 #
 
-RESSORT=LIRE_MAILLAGE();
+RESSORT0=LIRE_MAILLAGE();
 
 #
+
+RESSORT=CREA_MAILLAGE(MAILLAGE=RESSORT0,
+    CREA_POI1=(
+        _F(NOM_GROUP_MA='NOEUDS',   GROUP_NO = 'NOEUDS', ),
+        _F(NOM_GROUP_MA='P1',   NOEUD = 'P1', ),
+        _F(NOM_GROUP_MA='P2',   NOEUD = 'P2', ),
+        _F(NOM_GROUP_MA='P3',   NOEUD = 'P3', ),
+    ),
+)
 
 MODELE=AFFE_MODELE(MAILLAGE=RESSORT,
                    AFFE=(_F(TOUT='OUI',
                             PHENOMENE='MECANIQUE',
                             MODELISATION='DIS_TR',),
-                         _F(GROUP_NO='NOEUDS',
+                         _F(GROUP_MA='NOEUDS',
                             PHENOMENE='MECANIQUE',
                             MODELISATION='DIS_TR',),),);
 
@@ -67,10 +76,10 @@ ELEMNT=AFFE_CARA_ELEM(MODELE=MODELE,
                                   MAILLE='E2',
                                   VALE=(9.0478E6,0.,0.,0.,0.,0.,),),
                                _F(CARA='M_TR_D_N',
-                                  NOEUD=('P2','P3',),
+                                  GROUP_MA=('P2','P3',),
                                   VALE=(12.E6,12.E6,12.E6,12.E6,0.,0.,0.,0.,0.,0.,),),
                                _F(CARA='M_TR_D_N',
-                                  NOEUD='P1',
+                                  GROUP_MA='P1',
                                   VALE=(1.E6,1.E6,1.E6,1.E6,0.,0.,0.,0.,0.,0.,),),),);
 
 #

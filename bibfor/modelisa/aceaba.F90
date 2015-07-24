@@ -1,6 +1,6 @@
 subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
                   mclf, nbtel, ntyele, ivr, ifm,&
-                  jdlm)
+                  zjdlm)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,7 +21,7 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
 !
 implicit none
 !
-    integer :: lmax, nbarre, nbocc, nbtel, ifm, jdlm
+    integer :: lmax, nbarre, nbocc, nbtel, ifm, zjdlm(*)
     integer :: ntyele(*), ivr(*)
     character(len=8) :: noma, nomo
     character(len=*) :: mclf
@@ -271,12 +271,12 @@ implicit none
 !   IMPRESSION DES VALEURS AFFECTEES DANS LE TAMPON SI DEMANDE
     if (ivr(3) .eq. 1) then
 !       IMPRESSION DES DONNEES GENERALES
-        write(ifm,2000)
+        write(ifm,200)
         do i = 1, nbaaff
             call jenuno(jexnum(tmpgen, i), nommai)
             call jeveuo(jexnum(tmpgen, i), 'L', jdge)
             isec = nint(zr(jdge+nbo-1))
-            write(ifm,2001)nommai,zr(jdge),isec
+            write(ifm,201)nommai,zr(jdge),isec
         enddo
 !       IMPRESSION DES DONNEES GEOMETRIQUES
         idw = 0
@@ -286,35 +286,35 @@ implicit none
             isec = nint(zr(jdge+nbo-1))
             if (isec .eq. 1) then
                 if (idw .eq. 0) then
-                    write(ifm,2010)
+                    write(ifm,210)
                     idw = 1
                 endif
-                write(ifm,2012)nommai,(zr(jdge+j-1),j=2,5),isec
+                write(ifm,212)nommai,(zr(jdge+j-1),j=2,5),isec
             else if (isec.eq.2) then
                 if (idw .eq. 0) then
-                    write(ifm,2020)
+                    write(ifm,220)
                     idw = 1
                 endif
-                write(ifm,2022)nommai,(zr(jdge+j-1),j=6,7),isec
+                write(ifm,222)nommai,(zr(jdge+j-1),j=6,7),isec
             endif
             call jenuno(jexnum(tmpgef, i), nommai)
             call jeveuo(jexnum(tmpgef, i), 'L', jdgef)
             write(ifm,*) 'CX : ', zk8(jdgef)
         enddo
     endif
-    2000  format(/,3x,&
-     &  '<SECTION> VALEURS DE TYPE GENERALE AFFECTEES AUX BARRES'&
-     &  ,//,3x,'MAILLE   A              TSEC')
-    2001  format(3x,a8,1x,1pd12.5,1x,i6)
-    2010  format(/,3x,&
-     &  '<SECTION> VALEURS DE TYPE GEOMETRIQUE AFFECTEES AUX BARRES'&
-     &  ,//,3x,'MAILLE   HY          HZ          EPY         EPZ',&
-     &                  '            TSEC')
-    2012  format(3x,a8,1x,4(1pd12.5,1x),i6)
-    2020  format(/,3x,&
-     &  '<SECTION> VALEURS DE TYPE GEOMETRIQUE AFFECTEES AUX BARRES'&
-     &  ,//,3x,'MAILLE   R           EP             TSEC')
-    2022  format(3x,a8,1x,2(1pd12.5,1x),i6)
+200 format(/,3x,&
+        '<SECTION> VALEURS DE TYPE GENERALE AFFECTEES AUX BARRES'&
+        ,//,3x,'MAILLE   A              TSEC')
+201 format(3x,a8,1x,1pd12.5,1x,i6)
+210 format(/,3x,&
+        '<SECTION> VALEURS DE TYPE GEOMETRIQUE AFFECTEES AUX BARRES'&
+        ,//,3x,'MAILLE   HY          HZ          EPY         EPZ',&
+        '            TSEC')
+212 format(3x,a8,1x,4(1pd12.5,1x),i6)
+220 format(/,3x,&
+        '<SECTION> VALEURS DE TYPE GEOMETRIQUE AFFECTEES AUX BARRES'&
+        ,//,3x,'MAILLE   R           EP             TSEC')
+222 format(3x,a8,1x,2(1pd12.5,1x),i6)
 !
 !   ALLOCATION DE LA CARTE
     call alcart('G', cartba, noma, 'CAGNBA')
@@ -330,7 +330,7 @@ implicit none
     do i = 1, nbaaff
         call jenuno(jexnum(tmpgen, i), nommai)
         call jenonu(jexnom(mlgnma, nommai), nummai)
-        zi(jdlm+nummai-1) = -1
+        zjdlm(nummai) = -1
         call jeveuo(jexnum(tmpgen, i), 'L', jdge)
         zr(jdvba) = zr(jdge)
         call jeveuo(jexnum(tmpgef, i), 'L', jdgef)

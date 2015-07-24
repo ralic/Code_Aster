@@ -21,8 +21,8 @@ interface
     subroutine aceinc(noma, nomo, nbmcf, mclf, ntyele,&
                       nbocc, ivr, nbepo, nbedi, nbeco,&
                       nbeca, nbeba, nbema, nbegb, nbemb,&
-                      nbtel, locaco, locagb, locamb, jdlm,&
-                      jdln, lmax, ier)
+                      nbtel, locaco, locagb, locamb, zjdlm,&
+                      lmax, ier)
         character(len=8) :: noma
         character(len=8) :: nomo
         integer :: nbmcf
@@ -42,8 +42,7 @@ interface
         aster_logical :: locaco
         aster_logical :: locagb
         aster_logical :: locamb
-        integer :: jdlm
-        integer :: jdln
+        integer :: zjdlm(*)
         integer :: lmax
         integer :: ier
     end subroutine aceinc

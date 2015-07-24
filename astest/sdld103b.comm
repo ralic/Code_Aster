@@ -26,13 +26,20 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), BASE=_F(FICHIER='GLOBALE', LONG_REPE=20000), DEBUG=_F(SDVERI='OUI'))
 
-MAILLAGE=LIRE_MAILLAGE( )
+MAILLAG0=LIRE_MAILLAGE( )
+
+MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAILLAG0,
+    CREA_POI1=(
+        _F(NOM_GROUP_MA='MASSES',   GROUP_NO='MASSES', ),
+    ),
+)
+
 
 MODELE=AFFE_MODELE(  MAILLAGE=MAILLAGE,AFFE=(
          _F(  PHENOMENE = 'MECANIQUE', MODELISATION = 'DIS_TR',
                 GROUP_MA = 'RESSORT'),
               _F(  PHENOMENE = 'MECANIQUE', MODELISATION = 'DIS_TR',
-                GROUP_NO = 'MASSES'))
+                GROUP_MA = 'MASSES'))
                     )
 
 #
@@ -50,7 +57,7 @@ CARA_ELE=AFFE_CARA_ELEM(  MODELE=MODELE,DISCRET=(
                           0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
                           0., 0., 0., 0., 0., 0., 0., 0., 0.,
                           0., 0., 0., 0., 0., 0., 0., 0., 0.,  )),
-                        _F(  GROUP_NO = 'MASSES',
+                        _F(  GROUP_MA = 'MASSES',
                           CARA = 'M_TR_N',
                           VALE = ( 0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0., 10.,
                                  0.,  0.,  0.,  0., 10.,  0.,  0.,  0.,  0.,  0.,
