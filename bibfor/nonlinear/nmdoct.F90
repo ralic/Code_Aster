@@ -188,7 +188,9 @@ implicit none
             ligrel_link = load_cont(1:8)
             call jeexin(ligrel_link//'.CHME.LIGRE.LGRF', rel_lin_xfem)
             if (rel_lin_xfem .ne. 0) then
-                nb_load_new = nb_load_new+1
+                if (.not.l_cont_xfem_gg) then
+                    nb_load_new = nb_load_new+1
+                endif
             endif
         endif
     endif
@@ -239,6 +241,7 @@ implicit none
                 i_load = nb_load_init + 1
                 call liscad('MECA'        ,list_load_new, i_load, ligrel_link_slav, func_const,&
                             info_typez = 'ELEM_TARDIF')
+
                 i_load = nb_load_init + 2
                 call liscad('MECA'        ,list_load_new, i_load, ligrel_link_xfem, func_const,&
                             info_typez = 'ELEM_TARDIF')
