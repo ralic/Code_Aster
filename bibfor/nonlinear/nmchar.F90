@@ -84,7 +84,7 @@ implicit none
 !
     aster_logical :: ldyna, lexpl
     aster_logical :: londe, llapl, lammo, lsstf, lviss
-    aster_logical :: limpe, lpilo, lmacr, limpex
+    aster_logical :: limpe, lpilo, lmacr, limpex, l_diri_undead
     character(len=10) :: phase
     integer :: nbvect
     character(len=16) :: loptve(20)
@@ -105,19 +105,20 @@ implicit none
     call nmcvec('INIT', ' ', ' ', .false._1, .false._1,&
                 nbvect, ltypve, loptve, lcalve, lassve)
 !
-! --- FONCTIONNALITES ACTIVEES
+! - Active functionnalities
 !
-    londe = ndynlo(sddyna,'ONDE_PLANE')
-    ldyna = ndynlo(sddyna,'DYNAMIQUE')
-    lexpl = ndynlo(sddyna,'EXPLICITE')
-    llapl = isfonc(fonact,'LAPLACE')
-    limpe = ndynlo(sddyna,'IMPE_ABSO')
-    lammo = ndynlo(sddyna,'AMOR_MODAL')
-    lpilo = isfonc(fonact,'PILOTAGE')
-    limpex = isfonc(fonact,'IMPLEX')
-    lmacr = isfonc(fonact,'MACR_ELEM_STAT')
-    lsstf = isfonc(fonact,'SOUS_STRUC')
-    lviss = ndynlo(sddyna,'VECT_ISS')
+    londe         = ndynlo(sddyna,'ONDE_PLANE')
+    ldyna         = ndynlo(sddyna,'DYNAMIQUE')
+    lexpl         = ndynlo(sddyna,'EXPLICITE')
+    llapl         = isfonc(fonact,'LAPLACE')
+    limpe         = ndynlo(sddyna,'IMPE_ABSO')
+    lammo         = ndynlo(sddyna,'AMOR_MODAL')
+    lpilo         = isfonc(fonact,'PILOTAGE')
+    limpex        = isfonc(fonact,'IMPLEX')
+    lmacr         = isfonc(fonact,'MACR_ELEM_STAT')
+    lsstf         = isfonc(fonact,'SOUS_STRUC')
+    lviss         = ndynlo(sddyna,'VECT_ISS')
+    l_diri_undead = isfonc(fonact,'DIRI_UNDEAD')
 !
 ! --- CHARGEMENTS FIXES PENDANT LE PAS DE TEMPS (ON EST EN PREDICTION)
 !
@@ -208,6 +209,13 @@ implicit none
 ! --- CHARGEMENTS VARIABLES PENDANT LE PAS DE TEMPS
 !
     else if (mode.eq.'VARI') then
+!
+! --- DEPLACEMENTS IMPOSES DONNES
+!
+        if (l_diri_undead) then
+        call nmcvec('AJOU', 'CNDIDO', ' ', .true._1, .true._1,&
+                    nbvect, ltypve, loptve, lcalve, lassve)
+        endif
 !
 ! --- FORCES NODALES (POUR METHODE IMPLEX)
 !
