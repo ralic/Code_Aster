@@ -1,4 +1,4 @@
-subroutine aceaor(noma, nomo, lmax, nbepo, nbtel, ntyele, nomele, ivr, ifm, nbocc)
+subroutine aceaor(noma, nomo, lmax, nbepo, ntyele, nomele, ivr, nbocc)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,12 +17,6 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbtel, ntyele, nomele, ivr, ifm, nboc
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    use cara_elem_module
-    implicit none
-    integer :: lmax, nbepo, ntyele(*), ivr(*), nbocc(*)
-    character(len=8) :: noma, nomo
-    character(len=16) :: nomele(*)
-!
 ! --------------------------------------------------------------------------------------------------
 !
 !     AFFE_CARA_ELEM
@@ -35,6 +29,12 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbtel, ntyele, nomele, ivr, ifm, nboc
 !
 ! --------------------------------------------------------------------------------------------------
 ! person_in_charge: jean-luc.flejou at edf.fr
+!
+    use cara_elem_parameter_module
+    implicit none
+    integer :: lmax, nbepo, ntyele(*), ivr(*), nbocc(*)
+    character(len=8) :: noma, nomo
+    character(len=16) :: nomele(*)
 !
 #include "jeveux.h"
 #include "asterc/getres.h"
@@ -68,7 +68,7 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbtel, ntyele, nomele, ivr, ifm, nboc
     integer :: jj, jad, jin, jdcmpo, jdco, jdgm, nbid
     integer :: jdls, jdme, jdne, jdno, jdori, jdtm, jinit
     integer :: jdvlvo, nbmagr, nbmail
-    integer :: nbtel, nbval, ncar, ng
+    integer :: nbval, ncar, ng
     integer :: nm, no1, no2, nocaor, ntpoi, ntseg, ntseg3, ntseg4
     integer :: nummai, nutyel, nutyma, nbalarme
     integer :: nval
@@ -220,13 +220,14 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbtel, ntyele, nomele, ivr, ifm, nboc
 ! --------------------------------------------------------------------------------------------------
 !   Impression des valeurs des orientations si demandé
     nocaor = 0
-    if (ivr(3) .eq. 1) write(ifm,100)
+    ifm = ivr(4)
+    if (ivr(3) .eq. 2) write(ifm,100)
     cnum1: do nummai = 1, nbmail
         nutyel = zi(jdme+nummai-1)
-        do jj = 1, nbtel
+        do jj = 1, ACE_NB_TYPE_ELEM
             if (nutyel .eq. ntyele(jj)) then
                 nocaor = nocaor + 1
-                if (ivr(3) .eq. 1) then
+                if (ivr(3) .eq. 2) then
                     call jenuno(jexnum(mlgnma, nummai), nommai)
                     jad = jdori + (nummai-1)*3
                     alpha = rddg * zr(jad)
@@ -256,7 +257,7 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbtel, ntyele, nomele, ivr, ifm, nboc
 !       Affectation des mailles du maillage (poutre, barre ou discret)
         cnum2: do nummai = 1, nbmail
             nutyel = zi(jdme+nummai-1)
-            do jj = 1, nbtel
+            do jj = 1, ACE_NB_TYPE_ELEM
                 if (nutyel .eq. ntyele(jj)) then
 !                   Recuperation des numeros des noms des elements
                     call jenuno(jexnum('&CATA.TE.NOMTE', nutyel), nunoel)
@@ -277,7 +278,7 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbtel, ntyele, nomele, ivr, ifm, nboc
 !   Affectation des elements tuyaux
     call dismoi('EXI_TUYAU', nomo, 'MODELE', repk=exituy)
     if (exituy .eq. 'OUI') then
-        call aceatu(noma, nomo, nbepo, ntyele, ivr, ifm, nbocc)
+        call aceatu(noma, nomo, nbepo, ntyele, ivr, nbocc)
     endif
 ! --------------------------------------------------------------------------------------------------
 !

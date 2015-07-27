@@ -15,19 +15,18 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+! --------------------------------------------------------------------------------------------------
+! person_in_charge: jean-luc.flejou at edf.fr
+!
 interface
-    subroutine aceaor(noma, nomo, lmax, nbepo, &
-                      nbtel, ntyele, nomele, ivr, ifm,&
-                      nbocc)
+    subroutine aceaor(noma, nomo, lmax, nbepo, ntyele, nomele, ivr, nbocc)
         character(len=8) :: noma
         character(len=8) :: nomo
         integer :: lmax
         integer :: nbepo
-        integer :: nbtel
         integer :: ntyele(*)
         character(len=16) :: nomele(*)
         integer :: ivr(*)
-        integer :: ifm
         integer :: nbocc(*)
     end subroutine aceaor
 end interface

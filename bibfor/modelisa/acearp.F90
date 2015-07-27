@@ -1,4 +1,4 @@
-subroutine acearp(noma, nomo, lmax, noemaf, nbocc, ivr, ifm)
+subroutine acearp(infdonn, lmax, noemaf, nbocc, infcarte, ivr)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,46 +17,33 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc, ivr, ifm)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit none
-!
-    integer :: ifm, lmax, noemaf, nbocc, ivr(*)
-    character(len=8) :: noma, nomo
-!
 ! --------------------------------------------------------------------------------------------------
 !
 !     AFFE_CARA_ELEM
-!     AFFECTATION DES CARACTERISTIQUES POUR LES ELEMENTS DISCRET PAR
-!     RAIDEUR REPARTIE
 !
-! --------------------------------------------------------------------------------------------------
-!
-! IN  : NOMA   : NOM DU MAILLAGE
-!       NOMO   : NOM DU MODELE
-!       LMAX   : NOMBRE MAX DE MAILLE OU GROUPE DE MAILLE
-!       NBOCC  : NOMBRE D'OCCURRENCES DU MOT CLE RIGI_PARASOL
-!       IVR    : TABLEAU DES INDICES DE VERIFICATION
+!     AFFECTATION DES CARACTERISTIQUES POUR LES ELEMENTS DISCRET PAR RAIDEUR REPARTIE
 !
 ! --------------------------------------------------------------------------------------------------
 ! person_in_charge: jean-luc.flejou at edf.fr
 !
+    use cara_elem_parameter_module
+    use cara_elem_info_type
+    use cara_elem_carte_type
+    implicit none
+    type (cara_elem_info) :: infdonn
+    integer :: lmax, noemaf, nbocc, ivr(*)
+    type (cara_elem_carte) :: infcarte(*)
+!
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/getfac.h"
-#include "asterc/getres.h"
 #include "asterfort/affdis.h"
-#include "asterfort/alcart.h"
 #include "asterfort/assert.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/getvem.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/infdis.h"
-#include "asterfort/infniv.h"
-#include "asterfort/iunifi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
@@ -68,42 +55,47 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc, ivr, ifm)
 #include "asterfort/rairep.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
 ! --------------------------------------------------------------------------------------------------
     integer :: nbcar, nbval, nrd
     parameter    ( nbcar = 100 , nbval = 12 , nrd = 2 )
-    integer :: jdc(3), jdv(3), ibid, niv, ir, ia, iunite
+    integer :: jdc(3), jdv(3), ibid, ir, ia, iunite, ifm
     integer :: jdcinf, jdvinf
     integer :: i, iamto, ier, ii, in, inbn, ino, inoe, ioc, irep
     integer :: irgno, irgto, isym, itbmp, itbno, iv
     integer :: irepn, irepv, iaepn, iaepv
-    integer :: ixci, ixckma, j, jd, jdls, jj, jn
+    integer :: j, jd, jdls, jj, jn
     integer :: l, ldgm, ldnm, lokm, lorep, nbnma
-    integer :: nbno, nbnoeu, nborm, nc, ncar, ncmp, nbomp
+    integer :: nbno, nbnoeu, nc, ncar, ncmp
     integer :: ndim, ng, ngp, nma, nrep, nval, dimcar
     integer :: vali(2)
 ! --------------------------------------------------------------------------------------------------
-    real(kind=8) :: val(nbval), eta, vale(nbval), rirot(3), r8bid
+    real(kind=8) :: val(nbval), eta, vale(nbval), rirot(3)
     character(len=1) :: kma(3)
-    character(len=8) :: nomnoe, nommai, k8bid, nomu, car(nbcar), lamass
-    character(len=16) :: rep, repdis(nrd), concep, cmd
-    character(len=19) :: cart(3), ligmo, cartdi
+    character(len=8) :: nomnoe, nommai, k8bid, nomu, car(nbcar), lamass, noma
+    character(len=16) :: rep, repdis(nrd)
+    character(len=19) :: cart(3), cartdi
     character(len=19) :: vrepxv, vrepxn, vaepxv, vaepxn
-    character(len=24) :: tmpnd(3), tmpvd(3), nogp
-    character(len=24) :: tmpdis, mlgnno, mlgnma, tmcinf, tmvinf
+    character(len=24) :: nogp
+    character(len=24) :: mlgnno, mlgnma
 ! --------------------------------------------------------------------------------------------------
     aster_logical :: transl, trarot, eurplx, lbid
     integer :: iarg
+!
     data repdis  /'GLOBAL          ','LOCAL           '/
     data kma     /'K','M','A'/
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-    call getres(nomu, concep, cmd)
 !
-    tmpdis = nomu//'.DISCRET'
+    nomu = infdonn%nomu
+    noma = infdonn%maillage
+    ndim = infdonn%dimmod
+!   Pour les discrets c'est obligatoirement du 2D ou 3D
+    ASSERT((ndim.eq.2).or.(ndim.eq.3))
+!
     mlgnno = noma//'.NOMNOE'
     mlgnma = noma//'.NOMMAI'
-    ligmo = nomo//'.MODELE    '
 !
     call wkvect('&&TMPDISCRET', 'V V K24', lmax, jdls)
     call wkvect('&&TMPTABNO', 'V V K8', lmax, itbno)
@@ -134,61 +126,26 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc, ivr, ifm)
         call wkvect(vaepxn, 'G V K8', lmax, iaepn)
     endif
 !
-    ifm = iunifi('MESSAGE')
-!   Récupération de la dimension géométrique du modèle
-    call dismoi('DIM_GEOM', nomo, 'MODELE', repi=ibid)
-    ndim=ibid
-    if (ibid .ge. 100) then
-        ibid = ibid - 100
-        ndim=1
-    endif
-    if (ibid .ge. 20) then
-        ibid = ibid - 20
-        ndim=2
-    endif
-    if (ibid .eq. 3) ndim=3
-!   Pour les discrets c'est obligatoirement du 2d ou 3d
-    ASSERT((ndim.eq.2).or.(ndim.eq.3))
+!   Les cartes sont déjà construites : ace_crea_carte
+    cartdi = infcarte(ACE_CAR_DINFO)%nom_carte
+    jdcinf = infcarte(ACE_CAR_DINFO)%adr_cmp
+    jdvinf = infcarte(ACE_CAR_DINFO)%adr_val
+    dimcar = infcarte(ACE_CAR_DINFO)%nbr_cmp
 !
-!   Construction des cartes et allocation
-    cartdi = nomu//'.CARDINFO'
-    tmcinf = cartdi//'.NCMP'
-    tmvinf = cartdi//'.VALV'
-!   Si la carte n'existe pas on la cree
-    call jeexin(tmcinf, ixci)
-    if (ixci .eq. 0) call alcart('G', cartdi, noma, 'CINFDI')
-    call jeveuo(tmcinf, 'E', jdcinf)
-    call jeveuo(tmvinf, 'E', jdvinf)
-!   Par défaut pour M, A, K : repère global, matrice symétrique, pas affectée
-    call infdis('DIMC', dimcar, r8bid, k8bid)
-    do i = 1, 3
-        zk8(jdcinf+i-1) = 'REP'//kma(i)//'    '
-        call infdis('INIT', ibid, zr(jdvinf+i-1), zk8(jdcinf+i-1))
-        zk8(jdcinf+i+2) = 'SYM'//kma(i)//'    '
-        call infdis('INIT', ibid, zr(jdvinf+i+2), zk8(jdcinf+i+2))
-        zk8(jdcinf+i+5) = 'DIS'//kma(i)//'    '
-        call infdis('INIT', ibid, zr(jdvinf+i+5), zk8(jdcinf+i+5))
-    enddo
-    zk8(jdcinf+9) = 'ETAK    '
-    call infdis('INIT', ibid, zr(jdvinf+9), zk8(jdcinf+9))
-    zk8(jdcinf+10) = 'TYDI    '
-    call infdis('INIT', ibid, zr(jdvinf+10), zk8(jdcinf+10))
-!   Création des cartes
-    do i = 1, 3
-        cart(i) = nomu//'.CARDISC'//kma(i)
-        tmpnd(i) = cart(i)//'.NCMP'
-        tmpvd(i) = cart(i)//'.VALV'
-!       si les cartes n'existent pas on les crées
-        call jeexin(tmpnd(i), ixckma)
-        if (ixckma .eq. 0) then
-            call alcart('G', cart(i), noma, 'CADIS'//kma(i))
-        endif
-        call jeveuo(tmpnd(i), 'E', jdc(i))
-        call jeveuo(tmpvd(i), 'E', jdv(i))
-    enddo
+    cart(1) = infcarte(ACE_CAR_DISCK)%nom_carte
+    jdc(1)  = infcarte(ACE_CAR_DISCK)%adr_cmp
+    jdv(1)  = infcarte(ACE_CAR_DISCK)%adr_val
 !
-!   Récupération du niveau d'impression
-    call infniv(ibid, niv)
+    cart(2) = infcarte(ACE_CAR_DISCM)%nom_carte
+    jdc(2)  = infcarte(ACE_CAR_DISCM)%adr_cmp
+    jdv(2)  = infcarte(ACE_CAR_DISCM)%adr_val
+!
+    cart(3) = infcarte(ACE_CAR_DISCA)%nom_carte
+    jdc(3)  = infcarte(ACE_CAR_DISCA)%adr_cmp
+    jdv(3)  = infcarte(ACE_CAR_DISCA)%adr_val
+!
+    ifm = ivr(4)
+!
 !   Raideur et amortissement pour EUROPLEXUS
     ir = 0
     ia = 0
@@ -196,9 +153,7 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc, ivr, ifm)
     do ioc = 1, nbocc
         eta = 0.0d0
 !       Par défaut on est dans le repère global, matrices symétriques
-        irep = 1
-        isym = 1
-        rep = repdis(1)
+        irep = 1; isym = 1; rep = repdis(1)
 !
         call getvem(noma, 'GROUP_MA', 'RIGI_PARASOL', 'GROUP_MA', ioc, iarg, lmax, zk24(jdls), ng)
         call getvtx('RIGI_PARASOL', 'CARA', iocc=ioc, nbval=nbcar, vect=car, nbret=ncar)
@@ -419,7 +374,7 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc, ivr, ifm)
 !               Affectation des valeurs réparties
                 call affdis(ndim, irep, eta, car(nc), zr(irgno+6*i-6),&
                             jdc, jdv, ivr, iv, kma,&
-                            ncmp, l, jdcinf, jdvinf, isym, ifm)
+                            ncmp, l, jdcinf, jdvinf, isym )
                 call nocart(cartdi, 3, dimcar, mode='NOM', nma=1, limano=[zk8(jd)])
                 call nocart(cart(l), 3, ncmp, mode='NOM', nma=1, limano=[zk8(jd)])
 !               affectation de matrice masse nulle
@@ -427,7 +382,7 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc, ivr, ifm)
                 call r8inir(nbval, 0.0d0, vale, 1)
                 call affdis(ndim, irep, eta, lamass, vale,&
                             jdc, jdv, ivr, iv, kma,&
-                            ncmp, l, jdcinf, jdvinf, isym, ifm)
+                            ncmp, l, jdcinf, jdvinf, isym )
                 call nocart(cartdi, 3, dimcar, mode='NOM', nma=1, limano=[zk8(jd)])
                 call nocart(cart(l), 3, ncmp, mode='NOM', nma=1, limano=[zk8(jd)])
             enddo
@@ -444,16 +399,6 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc, ivr, ifm)
     call jedetr('&&TMPRIGTO')
     call jedetr('&&TMPAMOTO')
     call jedetr('&&TMPTABMP')
-    call getfac('RIGI_MISS_3D', nborm)
-    call getfac('MASS_AJOU', nbomp)
-    if (nborm .eq. 0 .and. nbomp .eq. 0) then
-        do i = 1, 3
-            call jedetr(tmpnd(i))
-            call jedetr(tmpvd(i))
-        enddo
-        call jedetr(tmcinf)
-        call jedetr(tmvinf)
-    endif
 !
     call jedema()
 !

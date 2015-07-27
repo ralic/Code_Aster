@@ -17,7 +17,7 @@
 # person_in_charge: jean-luc.flejou at edf.fr
 
 
-def affe_cara_elem_prod(self,POUTRE,BARRE,COQUE,CABLE,DISCRET,DISCRET_2D,GRILLE,**args):
+def affe_cara_elem_prod(self,POUTRE,BARRE,COQUE,CABLE,DISCRET,DISCRET_2D,GRILLE,MASS_REP,**args):
     """Fonction sdprod de AFFE_CARA_ELEM"""
     from Noyau.N_types import force_tuple
     # fonctions locales pour le sdprod de AFFE_CARA_ELEM
@@ -248,6 +248,14 @@ def affe_cara_elem_prod(self,POUTRE,BARRE,COQUE,CABLE,DISCRET,DISCRET_2D,GRILLE,
             if 'EXCENTREMENT' in mclf :
                 vale =  mclf['EXCENTREMENT']
                 check( vale>=0.0, defErr, 'GRILLE', i1, 'EXCENTREMENT')
+    # - - - - - - - - - - - - - - -
+    if MASS_REP != None:
+        for i in range(len(MASS_REP)):
+            i1 = i + 1
+            mclf = MASS_REP[i]
+            if 'VALE' in mclf :
+                vale =  mclf['VALE']
+                check( vale>0.0, defErr, 'MASS_REP', i1, 'VALE')
     #
     # Tout est ok
     return cara_elem
@@ -261,7 +269,7 @@ AFFE_CARA_ELEM=MACRO(nom="AFFE_CARA_ELEM",
    reentrant='n',
    UIinfo ={"groupes":("Modélisation",)},
    regles = (AU_MOINS_UN('POUTRE','BARRE','COQUE','CABLE','DISCRET','DISCRET_2D','MASSIF',
-                         'GRILLE','MEMBRANE','MULTIFIBRE','RIGI_PARASOL'),
+                         'GRILLE','MEMBRANE','MULTIFIBRE','RIGI_PARASOL','MASS_REP',),
              PRESENT_PRESENT('MULTIFIBRE','GEOM_FIBRE'),
              EXCLUS('DISCRET','DISCRET_2D'),),
    MODELE = SIMP(statut='o',typ=modele_sdaster ),
@@ -808,7 +816,7 @@ AFFE_CARA_ELEM=MACRO(nom="AFFE_CARA_ELEM",
     RIGI_PARASOL = FACT(statut='f',max='**',
         regles  = (UN_PARMI('COEF_GROUP','FONC_GROUP'),
                    UN_PARMI('COOR_CENTRE','NOEUD_CENTRE','GROUP_NO_CENTRE'),
-                   EXCLUS('GROUP_MA_POI1','GROUP_MA_SEG2'),),
+                   UN_PARMI('GROUP_MA_POI1','GROUP_MA_SEG2'),),
         GROUP_MA      = SIMP(statut='o',typ=grma,validators=NoRepeat(),max='**',
                              fr=tr("Surface servant à répartir les caractéristiques des discrets")),
         GROUP_MA_POI1 = SIMP(statut='f',typ=grma,validators=NoRepeat(),max=1,
@@ -843,11 +851,26 @@ AFFE_CARA_ELEM=MACRO(nom="AFFE_CARA_ELEM",
 #
 # ==============================================================================
     MASS_AJOU = FACT(statut='f',max='**',
-        GROUP_MA      = SIMP(statut='o',typ=grma,validators=NoRepeat(),max='**',
+        GROUP_MA      = SIMP(statut='o',typ=grma,validators=NoRepeat(),max=1,
                              fr = tr("Surface servant à répartir les caractéristiques des discrets")),
         GROUP_MA_POI1 = SIMP(statut='o',typ=grma,validators=NoRepeat(),max=1,
                              fr = tr("Mailles de type point correspondant aux discrets")),
         FONC_GROUP    = SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+    ),
+#
+# ==============================================================================
+    MASS_REP = FACT(statut='f',max='**',
+        fr = tr("Masse répartie sur des POI1, pondérée par la surface des mailles connectées."),
+        GROUP_MA         = SIMP(statut='o',typ=grma,validators=NoRepeat(),max=1,
+                            fr = tr("Surface ou ligne servant à répartir la masse"),),
+        GROUP_MA_POI1    = SIMP(statut='o',typ=grma,validators=NoRepeat(),max=1,
+                            fr = tr("Mailles de type POI1 correspondant aux masses."),),
+        VALE             = SIMP(statut='o',typ='R',max=1,
+                            fr = tr("Valeur de la masse à répartir sur les mailles de GROUP_MA."),),
+        TYPE             = SIMP(statut='o',typ='TXM',max=1, into=('TOTALE','LINEIQUE','SURFACIQUE'),
+                            fr = tr("Type de la masse à répartir."),),
+        FONC_MULT        = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),max=1,
+                            fr = tr("Fonction (X,Y,Z) multiplicatrice de la masse."),),
     ),
 #
 # ==============================================================================

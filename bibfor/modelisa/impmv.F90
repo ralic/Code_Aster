@@ -1,9 +1,5 @@
-subroutine impmv(ifm, txt, mv, n, isym)
-    implicit   none
-    integer :: ifm, n, isym
-    real(kind=8) :: mv(n)
-    character(len=8) :: txt
-! --- -------------------------------------------------------------
+subroutine impmv(ifm, txt, mv, nn, isym)
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,55 +16,66 @@ subroutine impmv(ifm, txt, mv, n, isym)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! --- -------------------------------------------------------------
-!       IMPRESSION MATRICE STOCKEE COLONNE
-!       IN     MV    =  MATRICE STOCKE COLONNE
-!              N     =  LONGEUR DU VECTEUR MATRICE NON-SYMETRIQUE
-!              TXT   =  TEXTE
-!              IFM   =  UNITE D'IMPRESSION
-!              ISYM  =  (1) SYMETRIQUE   (2) NON-SYMETRIQUE
-! --- -------------------------------------------------------------
-    integer :: i, j, k, m
+!
+! --------------------------------------------------------------------------------------------------
+!
+!       Impression d'une matrice stockée en colonne
+!
+!           mv    =  matrice stockée colonne
+!           nn    =  longeur du vecteur de la matrice
+!           txt   =  texte à afficher
+!           ifm   =  unité d'impression
+!           isym  =  (1) matrice symétrique
+!                    (2) matrice non-symétrique
+!
+! --------------------------------------------------------------------------------------------------
+!
+    implicit   none
+    integer :: ifm, nn, isym
+    real(kind=8) :: mv(nn)
+    character(len=8) :: txt
+! --------------------------------------------------------------------------------------------------
+    integer :: ii, jj, kk, dimmp
     real(kind=8) :: mp(12, 12)
+! --------------------------------------------------------------------------------------------------
 !
-    if (n .eq. 0) goto 9999
+    if (nn .eq. 0) goto 999
 !
-    if (n .eq. 4) m = 2
-    if (n .eq. 9) m = 3
-    if (n .eq. 16) m = 4
-    if (n .eq. 36) m = 6
-    if (n .eq. 144) m = 12
+    if (nn .eq. 4) dimmp = 2
+    if (nn .eq. 9) dimmp = 3
+    if (nn .eq. 16) dimmp = 4
+    if (nn .eq. 36) dimmp = 6
+    if (nn .eq. 144) dimmp = 12
 !
     if (isym .eq. 1) then
-! -- --  SYMETRIQUE PAR COLONNE
-        k = 0
-        do 10 j = 1, m
-            do 20 i = 1, j
-                k = k + 1
-                mp(i,j) = mv(k)
-                mp(j,i) = mv(k)
-20          continue
-10      continue
+!       Symétrique par colonne
+        kk = 0
+        do jj = 1, dimmp
+            do  ii = 1, jj
+                kk = kk + 1
+                mp(ii,jj) = mv(kk)
+                mp(jj,ii) = mv(kk)
+            enddo
+        enddo
         write(ifm,100) txt,'SYMETRIQUE'
     else
-! -- --  NON SYMETRIQUE PAR COLONNE
-        k = 0
-        do 15 j = 1, m
-            do 25 i = 1, m
-                k = k + 1
-                mp(i,j) = mv(k)
-25          continue
-15      continue
+!      Non-symétrique par colonne
+        kk = 0
+        do jj = 1, dimmp
+            do ii = 1, dimmp
+                kk = kk + 1
+                mp(ii,jj) = mv(kk)
+            enddo
+        enddo
         write(ifm,100) txt,'NON SYMETRIQUE'
     endif
 !
-    do 30 i = 1, m
-        write(ifm,201) (mp(i,j),j=1,m)
-30  end do
-    write(ifm,*)' '
+    do ii = 1, dimmp
+        write(ifm,201) (mp(ii,jj),jj=1,dimmp)
+    enddo
 !
-    100 format(/,3x,a8,3x,a20)
-    201 format(12(2x,1pd10.3))
+100 format(3x,a8,3x,a20)
+201 format(12(2x,1pd10.3))
 !
-9999  continue
+999  continue
 end subroutine

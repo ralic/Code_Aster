@@ -19,14 +19,12 @@
 ! person_in_charge: jean-luc.flejou at edf.fr
 !
 interface
-    subroutine aceamr(infdonn, lmax, noemaf, nbocc, infcarte, ivr)
-        use cara_elem_info_type
-        use cara_elem_carte_type
-        type (cara_elem_info) :: infdonn
-        integer :: lmax
-        integer :: noemaf
-        integer :: nbocc
-        type (cara_elem_carte) :: infcarte(*)
-        integer :: ivr(*)
-    end subroutine aceamr
+    function is_in_liste_entier(val,liste,indx)
+        integer :: val,liste(:)
+        logical :: is_in_liste_entier
+!
+        integer,intent(out),optional :: indx
+    end function is_in_liste_entier
 end interface
+
+

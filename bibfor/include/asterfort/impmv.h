@@ -16,11 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine impmv(ifm, txt, mv, n, isym)
-        integer :: n
+    subroutine impmv(ifm, txt, mv, nn, isym)
+        integer :: nn
         integer :: ifm
         character(len=8) :: txt
-        real(kind=8) :: mv(n)
+        real(kind=8) :: mv(nn)
         integer :: isym
     end subroutine impmv
 end interface

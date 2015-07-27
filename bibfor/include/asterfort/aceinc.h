@@ -18,27 +18,13 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine aceinc(noma, nomo, nbmcf, mclf, ntyele,&
-                      nbocc, ivr, nbepo, nbedi, nbeco,&
-                      nbeca, nbeba, nbema, nbegb, nbemb,&
-                      nbtel, locaco, locagb, locamb, zjdlm,&
-                      lmax, ier)
+    subroutine aceinc(noma, nomo, ntyele, nbocc, ivr, &
+                      locaco, locagb, locamb, zjdlm, lmax, ier)
         character(len=8) :: noma
         character(len=8) :: nomo
-        integer :: nbmcf
-        character(len=16) :: mclf(*)
         integer :: ntyele(*)
         integer :: nbocc(*)
         integer :: ivr(*)
-        integer :: nbepo
-        integer :: nbedi
-        integer :: nbeco
-        integer :: nbeca
-        integer :: nbeba
-        integer :: nbema
-        integer :: nbegb
-        integer :: nbemb
-        integer :: nbtel
         aster_logical :: locaco
         aster_logical :: locagb
         aster_logical :: locamb

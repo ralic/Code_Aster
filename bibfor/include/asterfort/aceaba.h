@@ -15,10 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+! --------------------------------------------------------------------------------------------------
+! person_in_charge: jean-luc.flejou at edf.fr
+!
 interface
     subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
-                      mclf, nbtel, ntyele, ivr, ifm,&
-                      zjdlm)
+                      mclf, nbtel, ntyele, ivr, zjdlm)
         character(len=8) :: noma
         character(len=8) :: nomo
         integer :: lmax
@@ -28,7 +30,6 @@ interface
         integer :: nbtel
         integer :: ntyele(*)
         integer :: ivr(*)
-        integer :: ifm
         integer :: zjdlm(*)
     end subroutine aceaba
 end interface

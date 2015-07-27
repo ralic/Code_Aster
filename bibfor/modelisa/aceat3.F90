@@ -1,5 +1,5 @@
 subroutine aceat3(noma, nomu, nbtuy, nbpart, nbmap,&
-                  elpar, nopar, ivr, ifm, nbzk,&
+                  elpar, nopar, ivr, nbzk,&
                   nozk, cozk, isens, coor, epsi,&
                   crit, nno, nmmt)
     implicit none
@@ -18,7 +18,7 @@ subroutine aceat3(noma, nomu, nbtuy, nbpart, nbmap,&
 !
 !
     character(len=8) :: noma, nomu, crit
-    integer :: nbpart, nbtuy, nbmap(nbpart), elpar(nbpart, nbtuy), ivr(3)
+    integer :: nbpart, nbtuy, nbmap(nbpart), elpar(nbpart, nbtuy), ivr(*)
     integer :: nmmt(*), nno, icmp, iavant, no4, nbcmp, icoud2
     integer :: nopar(nbpart, nno, nbtuy), nbzk, nozk(nbzk), isens(nbpart), ifm
     real(kind=8) :: cozk(3*nbzk), coor(*), coor3(12), zk1(3), zk2(3), zk3(3)
@@ -108,13 +108,13 @@ subroutine aceat3(noma, nomu, nbtuy, nbpart, nbmap,&
 !     LES NOEUDS ASSOCIES A GENE_TUYAUX DOIVENT ETRE UNE
 !     DES EXTREMITES
 !
-    do 62 ipa = 1, nbpart
+    do ipa = 1, nbpart
         isens(ipa)=0
-62  end do
-    do 60 izk = 1, nbzk
+    enddo
+    do izk = 1, nbzk
         iok1=0
         iok2=0
-        do 61 ipa = 1, nbpart
+        do ipa = 1, nbpart
             imfin=nbmap(ipa)
             if (nozk(izk) .eq. (nopar(ipa,1,1))) then
                 iok1=1
@@ -132,11 +132,11 @@ subroutine aceat3(noma, nomu, nbtuy, nbpart, nbmap,&
                     call utmess('F', 'MODELISA_24')
                 endif
             endif
-61      continue
+        enddo
         if ((iok1+iok2) .ne. 1) then
             call utmess('F', 'MODELISA_25')
         endif
-60  end do
+    enddo
 !
 !     STOCKAGE DANS LA CARTE DES PARAMETRES GEOMETRIQUES CALCULES
 !     PAR ANGCOU ET DE LA GENERATRICE CONTINUE SUR LES TUYAUX
@@ -144,8 +144,9 @@ subroutine aceat3(noma, nomu, nbtuy, nbpart, nbmap,&
     nbdroi=0
     nbcoud=0
 !
-    do 68 ipa = 1, nbpart
-        if (ivr(3) .eq. 1) write(ifm,1000) ipa,nbmap(ipa)
+    ifm = ivr(4)
+    do ipa = 1, nbpart
+        if (ivr(3) .eq. 2) write(ifm,100) ipa,nbmap(ipa)
         izk=isens(ipa)
         if (izk .eq. 0) then
 !
@@ -167,13 +168,13 @@ subroutine aceat3(noma, nomu, nbtuy, nbpart, nbmap,&
                 call normev(zk1, norme)
             endif
         else
-            do 64 i = 1, 3
+            do i = 1, 3
                 zk1(i)=cozk(3*(abs(izk)-1)+i)
-64          continue
+            enddo
             call normev(zk1, norme)
         endif
         iavant=-1
-        do 67 im0 = 1, nbmap(ipa)
+        do im0 = 1, nbmap(ipa)
             if (izk .ge. 0) then
                 ima=im0
             else
@@ -186,39 +187,39 @@ subroutine aceat3(noma, nomu, nbtuy, nbpart, nbmap,&
                 no4=nopar(ipa,4,ima)
             endif
             nummai=elpar(ipa,ima)
-            do 65 i = 1, 3
+            do i = 1, 3
                 coor3(i )=coor(3*no1-3+i)
                 coor3(3+i)=coor(3*no2-3+i)
                 coor3(6+i)=coor(3*no3-3+i)
                 if (nno .eq. 4) then
                     coor3(9+i)=coor(3*no4-3+i)
                 endif
-65          continue
+            enddo
             if (nno .eq. 3) then
                 call angcou(coor3, zk1, izk, icoude, zk2,&
                             rayon, theta, angl1, angl2, angl3,&
                             pgl1, pgl2, pgl3, omega, dn1n2,&
                             epsi, crit, zk3)
-                do 631 i = 1, 3
+                do i = 1, 3
                     angl4(i)=0.d0
-631              continue
+                enddo
             else if (nno.eq.4) then
                 call angco4(coor3, zk1, izk, icoude, zk2,&
                             rayon, theta, angl1, angl2, angl3,&
                             angl4, pgl1, pgl2, pgl3, pgl4,&
                             omega, dn1n2, epsi, crit)
             endif
-            do 63 i = 1, 3
+            do i = 1, 3
                 zr(jdvlvo-1+ i)= angl1(i)
                 zr(jdvlvo-1+3+i)= angl2(i)
                 zr(jdvlvo-1+6+i)= angl3(i)
-63          continue
+            enddo
             icmp=9
             nbcmp=14
             if (nno .eq. 4) then
-                do 74 i = 1, 3
+                do i = 1, 3
                     zr(jdvlvo-1+9+i)= angl4(i)
-74              continue
+                enddo
                 icmp=12
                 nbcmp=17
             endif
@@ -231,6 +232,7 @@ subroutine aceat3(noma, nomu, nbtuy, nbpart, nbmap,&
 !
 !              MODI_METRIQUE
 !
+            icoud2=0
             if (nmmt(nummai) .eq. 0) then
                 icoud2=icoude+10
             else if (nmmt(nummai).eq.1) then
@@ -246,10 +248,9 @@ subroutine aceat3(noma, nomu, nbtuy, nbpart, nbmap,&
             zr(jdvlvo-1+icmp+4) = theta
             zr(jdvlvo-1+icmp+5) = omega
 !
-            call nocart(cartor, 3, nbcmp, mode='NUM', nma=1,&
-                        limanu=[nummai])
+            call nocart(cartor, 3, nbcmp, mode='NUM', nma=1, limanu=[nummai])
 !
-            if (ivr(3) .eq. 1) then
+            if (ivr(3) .eq. 2) then
                 call jenuno(jexnum(mlgnma, nummai), nommai)
                 call jenuno(jexnum(mlgnno, no1), nomno1)
                 call jenuno(jexnum(mlgnno, no2), nomno2)
@@ -262,54 +263,54 @@ subroutine aceat3(noma, nomu, nbtuy, nbpart, nbmap,&
                 if (icoude .ne. iavant) then
                     if (nno .eq. 3) then
                         if (icoude .eq. 0) then
-                            write(ifm,1031)
+                            write(ifm,131)
                         else
-                            write(ifm,1032)
+                            write(ifm,132)
                         endif
                     else if (nno.eq.4) then
                         if (icoude .eq. 0) then
-                            write(ifm,1031)
+                            write(ifm,131)
                         else
-                            write(ifm,1032)
+                            write(ifm,132)
                         endif
                     endif
                     iavant=icoude
                 endif
                 if (izk .ge. 0) then
                     if (icoude .eq. 0) then
-                        write(ifm,1010) nommai,nomno1,nomno2,nomno3,&
+                        write(ifm,110) nommai,nomno1,nomno2,nomno3,&
                         nomno4, (zk1(i),i=1,3),(angl1(i),i=1,3)
                     else
-                        write(ifm,1011) nommai,nomno1,nomno2,nomno3,&
+                        write(ifm,111) nommai,nomno1,nomno2,nomno3,&
                         nomno4, (zk1(i),i=1,3),(zk2(i),i=1,3),rayon,&
                         theta,omega ,(angl1(i),i=1,3),(angl2(i),i=1,3)&
                         ,(angl3(i),i=1,3)
                     endif
                 else
                     if (icoude .eq. 0) then
-                        write(ifm,1010) nommai,nomno1,nomno2,nomno3,&
+                        write(ifm,110) nommai,nomno1,nomno2,nomno3,&
                         nomno4, (zk1(i),i=1,3),(angl1(i),i=1,3)
                     else
-                        write(ifm,1011) nommai,nomno1,nomno2,nomno3,&
+                        write(ifm,111) nommai,nomno1,nomno2,nomno3,&
                         nomno4, (zk2(i),i=1,3),(zk1(i),i=1,3),rayon,&
                         theta,omega ,(angl1(i),i=1,3),(angl2(i),i=1,3)&
                         ,(angl3(i),i=1,3)
                     endif
                 endif
             endif
-            do 69 i = 1, 3
+            do i = 1, 3
                 zk1(i)=zk2(i)
-69          continue
-67      continue
-68  end do
+            enddo
+        enddo
+    enddo
 !
-    write(ifm,1055) nbdroi
-    write(ifm,1056) nbcoud
+    write(ifm,155) nbdroi
+    write(ifm,156) nbcoud
 !
-    1031 format(&
+131 format(&
      &3x,'MAILLE  NOEUD1  NOEUD2  NOEUD3  NOEUD4   TYPE   ',&
      &'Z1_X',8x,'Z1_Y',8x,'Z1_Z',8x,'ALPHA1',6x,'BETA1',7x,'GAMMA1')
-    1032 format(&
+132 format(&
      &3x,'MAILLE  NOEUD1  NOEUD2  NOEUD3  NOEUD4   TYPE   ',&
      &'Z1_X',8x,'Z1_Y',8x,'Z1_Z',8x,'Z2_X',8x,'Z2_Y',8x,'Z2_Z',&
      &8x,'RAYON',7x,'ANGLE',7x,'OMEGA',&
@@ -317,13 +318,13 @@ subroutine aceat3(noma, nomu, nbtuy, nbpart, nbmap,&
      &6x,'ALPHA2',6x,'BETA2',7x,'GAMMA2',&
      &6x,'ALPHA3',6x,'BETA3',7x,'GAMMA3')
 !
-    1000 format(3x,'TUYAUTERIE NUMERO : ',i6,' NOMBRE DE MAILLES : ',i6)
+100 format(3x,'TUYAUTERIE NUMERO : ',i6,' NOMBRE DE MAILLES : ',i6)
 !
-    1010 format(3x,5a8,1x,'DROIT',1x,9(d11.4,1x))
-    1011 format(3x,5a8,1x,'COUDE',1x,18(d11.4,1x))
+110 format(3x,5a8,1x,'DROIT',1x,9(d11.4,1x))
+111 format(3x,5a8,1x,'COUDE',1x,18(d11.4,1x))
 !
-    1055 format(3x,'NOMBRE TOTAL D ELEMENTS TUYAU DROITS ',1x,i6)
-    1056 format(3x,'NOMBRE TOTAL D ELEMENTS TUYAU COUDES ',1x,i6)
+155 format(3x,'NOMBRE TOTAL D ELEMENTS TUYAU DROITS ',1x,i6)
+156 format(3x,'NOMBRE TOTAL D ELEMENTS TUYAU COUDES ',1x,i6)
 !
     call jedetr(tmpnor)
     call jedetr(tmpvor)

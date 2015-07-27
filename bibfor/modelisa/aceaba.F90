@@ -1,6 +1,5 @@
 subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
-                  mclf, nbtel, ntyele, ivr, ifm,&
-                  zjdlm)
+                  mclf, nbtel, ntyele, ivr, zjdlm)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,8 +18,27 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-implicit none
+! --------------------------------------------------------------------------------------------------
 !
+!              AFFE_CARA_ELEM : AFFECTATION DES CARACTERISTIQUES POUR L'ELEMENT BARRE
+!
+! --------------------------------------------------------------------------------------------------
+! IN  :
+!       NOMA    : Nom du maillage
+!       NOMO    : Nom du modèle
+!       LMAX    : Nombre max de maille ou groupe de maille
+!       NBARRE  : Nombre de barre du modele
+!       NBOCC   : Nombre d'occurences du mot clef BARRE
+!       MCLF    : Ici c'est 'BARRE'
+!       NBTEL   : Nombre total d'élément
+!       NTYELE  : Tableau des types d'éléments
+!       IVR     : Tableau des indices de vérification
+!       IFM     : Unité pour l'écriture des caractéristiques des barres données en entrées
+!       JDLM    : Adresse des mailles
+! --------------------------------------------------------------------------------------------------
+! person_in_charge: jean-luc.flejou at edf.fr
+!
+    implicit none
     integer :: lmax, nbarre, nbocc, nbtel, ifm, zjdlm(*)
     integer :: ntyele(*), ivr(*)
     character(len=8) :: noma, nomo
@@ -28,6 +46,7 @@ implicit none
 !
 #include "jeveux.h"
 #include "asterc/getres.h"
+!
 #include "asterfort/acedat.h"
 #include "asterfort/affbar.h"
 #include "asterfort/alcart.h"
@@ -53,24 +72,6 @@ implicit none
 #include "asterfort/jexnum.h"
 #include "asterfort/nocart.h"
 #include "asterfort/utmess.h"
-!
-! --------------------------------------------------------------------------------------------------
-!
-!              AFFE_CARA_ELEM : AFFECTATION DES CARACTERISTIQUES POUR L'ELEMENT BARRE
-!
-! --------------------------------------------------------------------------------------------------
-! IN  :
-!       NOMA    : Nom du maillage
-!       NOMO    : Nom du modèle
-!       LMAX    : Nombre max de maille ou groupe de maille
-!       NBARRE  : Nombre de barre du modele
-!       NBOCC   : Nombre d'occurences du mot clef BARRE
-!       MCLF    : Ici c'est 'BARRE'
-!       NBTEL   : Nombre total d'élément
-!       NTYELE  : Tableau des types d'éléments
-!       IVR     : Tableau des indices de vérification
-!       IFM     : Unité pour l'écriture des caractéristiques des barres données en entrées
-!       JDLM    : Adresse des mailles
 ! --------------------------------------------------------------------------------------------------
     integer :: i, idw, ier, iisec, ioc, isec, itabl, iarg
     integer :: ivect, ixma, j
@@ -269,7 +270,8 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !   IMPRESSION DES VALEURS AFFECTEES DANS LE TAMPON SI DEMANDE
-    if (ivr(3) .eq. 1) then
+    if (ivr(3) .eq. 2) then
+        ifm = ivr(4)
 !       IMPRESSION DES DONNEES GENERALES
         write(ifm,200)
         do i = 1, nbaaff
@@ -303,16 +305,16 @@ implicit none
         enddo
     endif
 200 format(/,3x,&
-        '<SECTION> VALEURS DE TYPE GENERALE AFFECTEES AUX BARRES'&
+        '<SECTION> VALEURS DE TYPE GENERALE AFFECTEES AUX BARRES' &
         ,//,3x,'MAILLE   A              TSEC')
 201 format(3x,a8,1x,1pd12.5,1x,i6)
 210 format(/,3x,&
-        '<SECTION> VALEURS DE TYPE GEOMETRIQUE AFFECTEES AUX BARRES'&
-        ,//,3x,'MAILLE   HY          HZ          EPY         EPZ',&
+        '<SECTION> VALEURS DE TYPE GEOMETRIQUE AFFECTEES AUX BARRES' &
+        ,//,3x,'MAILLE   HY          HZ          EPY         EPZ', &
         '            TSEC')
 212 format(3x,a8,1x,4(1pd12.5,1x),i6)
 220 format(/,3x,&
-        '<SECTION> VALEURS DE TYPE GEOMETRIQUE AFFECTEES AUX BARRES'&
+        '<SECTION> VALEURS DE TYPE GEOMETRIQUE AFFECTEES AUX BARRES' &
         ,//,3x,'MAILLE   R           EP             TSEC')
 222 format(3x,a8,1x,2(1pd12.5,1x),i6)
 !

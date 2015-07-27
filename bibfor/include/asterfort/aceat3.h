@@ -17,7 +17,7 @@
 !
 interface
     subroutine aceat3(noma, nomu, nbtuy, nbpart, nbmap,&
-                      elpar, nopar, ivr, ifm, nbzk,&
+                      elpar, nopar, ivr, nbzk,&
                       nozk, cozk, isens, coor, epsi,&
                       crit, nno, nmmt)
         integer :: nno
@@ -29,7 +29,7 @@ interface
         integer :: nbmap(nbpart)
         integer :: elpar(nbpart, nbtuy)
         integer :: nopar(nbpart, nno, nbtuy)
-        integer :: ivr(3)
+        integer :: ivr(*)
         integer :: ifm
         integer :: nozk(nbzk)
         real(kind=8) :: cozk(3*nbzk)

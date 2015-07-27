@@ -24,15 +24,16 @@ subroutine op0019()
 ! --------------------------------------------------------------------------------------------------
 ! person_in_charge: jean-luc.flejou at edf.fr
 !
-    use cara_elem_module
+    use cara_elem_parameter_module
+    use cara_elem_info_type
+    use cara_elem_carte_type
     implicit none
 !
-! aslint: disable=W1502
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterfort/assert.h"
+!
 #include "asterfort/aceaba.h"
 #include "asterfort/aceaca.h"
 #include "asterfort/aceaco.h"
@@ -48,9 +49,10 @@ subroutine op0019()
 #include "asterfort/acearm.h"
 #include "asterfort/acearp.h"
 #include "asterfort/acecel.h"
+#include "asterfort/ace_crea_carte.h"
 #include "asterfort/aceinc.h"
+#include "asterfort/ace_masse_repartie.h"
 #include "asterfort/acevba.h"
-#include "asterfort/acevca.h"
 #include "asterfort/acevco.h"
 #include "asterfort/acevdi.h"
 #include "asterfort/acevgb.h"
@@ -64,8 +66,14 @@ subroutine op0019()
 #include "asterfort/acevrm.h"
 #include "asterfort/acevrp.h"
 #include "asterfort/alcart.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/coqucf.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/detrsd_vide.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
@@ -81,32 +89,30 @@ subroutine op0019()
 #include "asterfort/pmfd00.h"
 #include "asterfort/tecart.h"
 #include "asterfort/utmess.h"
+#include "asterfort/verif_affe.h"
 #include "asterfort/verima.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/verif_affe.h"
-#include "asterfort/detrsd_vide.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
 ! --------------------------------------------------------------------------------------------------
-    integer :: nbtel, nbtel0
-    parameter  (nbtel0=ACE_NB_POUTRE + ACE_NB_DISCRET + ACE_NB_COQUE + ACE_NB_CABLE + &
-                       ACE_NB_BARRE + ACE_NB_MASSIF + ACE_NB_GRILLE + ACE_NB_MEMBRANE + &
-                       ACE_NB_THHMM)
 !
-    integer             :: element_support_num(nbtel0)
-    character(len=16)   :: element_support_nom(nbtel0)
-    integer             :: element_support_typ(nbtel0)
+    integer             :: element_support_num(ACE_NB_TYPE_ELEM)
+    character(len=16)   :: element_support_nom(ACE_NB_TYPE_ELEM)
+    integer             :: element_support_typ(ACE_NB_TYPE_ELEM)
     integer             :: nombre_type_element(ACE_NB_ELEMENT)
-
+! --------------------------------------------------------------------------------------------------
+!   Pour les cartes :
+    type (cara_elem_carte)   :: info_carte(ACE_NB_CARTE)
+!   Infomation sur le concept : maillage, modele, nb noeuds, nb mailles, ...
+    type (cara_elem_info) :: info_concept
+!
 ! --------------------------------------------------------------------------------------------------
     integer :: nbocc(ACE_NB_MCLEF)
     character(len=8) :: mclef_type
 !
-    integer :: ivr(3), nbcart, iret, jadr, ii
+    integer :: ivr(4), nbcart, iret, jadr, ii, nbtel, ireponse, nbelemdi
     integer :: nbver, nlm, nlg, lxc, lxo, nln, nlj, lxa
     integer :: lxb, lxm, lxpf, lxgb, lxmb, lmax, ifm, niv, lxp, nbvm
-    integer :: lxd, nboccd, lxrp, noemaf, lxrm, noemf2, nbmail
+    integer :: lxd, nboccd, lxrp, noemaf, lxrm, noemf2, nbmail, nbnoeu
     integer :: lxmr, noemf3
     integer :: npoutr, ncable, nbarre
     integer :: iclf, ioc, icle, ng
@@ -115,11 +121,11 @@ subroutine op0019()
     character(len=8) :: ver(3), nomu, nomo, noma, lpain(3), lpaout(1)
     character(len=16) :: concep, cmd, mclef, k16bid
     character(len=19) :: cartcf, ligrmo, lchin(3), lchout(1)
-    character(len=24) :: mlgnma, modnom, modnem, tmpncf
+    character(len=24) :: mlgnma, modnom, modnem, tmpncf, mlgnno
 !
 ! --------------------------------------------------------------------------------------------------
-    integer, pointer            :: zjdlm(:) => null()
-    character(len=24), pointer  :: zjdls(:) => null()
+    integer, pointer            :: affe_mail(:) => null()
+    character(len=24), pointer  :: grp_lmax(:)  => null()
 ! --------------------------------------------------------------------------------------------------
     call jemarq()
 !   CALL ONERRF('ABORT', K16BID, IRET)
@@ -138,25 +144,59 @@ subroutine op0019()
     modnem = nomo//'.MODELE    .NEMA'
     call jeexin(modnem, ixnw)
     if ( ixnw .ne. 0 ) then
-        call utmess('F', 'MODELISA5_20')
+        call utmess('F', 'AFFECARAELEM_1')
     endif
 !   Récupération du nom du maillage associé
     call jeveuo(modnom, 'L', jdnm)
     noma = zk8(jdnm)
 !   Construction des noms jeveux du concept maillage associé
     mlgnma = noma//'.NOMMAI'
+    mlgnno = noma//'.NOMNOE'
 !   Nombre de mailles du maillage
     call jelira(mlgnma, 'NOMMAX', nbmail)
+!   Nombre de noeuds du maillage
+    call jelira(mlgnno, 'NOMMAX', nbnoeu)
+!   Récupération de la dimension géométrique du modèle
+    call dismoi('DIM_GEOM', nomo, 'MODELE', repi=ireponse)
+    info_concept%dimmod = ireponse
+    if (ireponse .ge. 100) then
+        ireponse = ireponse - 100
+        info_concept%dimmod = 1
+    endif
+    if (ireponse .ge. 20) then
+        ireponse = ireponse - 20
+        info_concept%dimmod = 2
+    endif
+    if (ireponse .eq. 3) info_concept%dimmod = 3
+!   Mémorisation des informations pour ne plus le refaire
+    info_concept%nomu     = nomu
+    info_concept%concept  = concep
+    info_concept%commande = cmd
+    info_concept%modele   = nomo
+    info_concept%maillage = noma
+    info_concept%nbmail   = nbmail
+    info_concept%nbnoeu   = nbnoeu
 !
 ! --------------------------------------------------------------------------------------------------
-!   Vérifications supplémentaires de syntaxe
+!   Pour faire des vérifications de cohérence d'affectation
     call getvtx(' ', 'VERIF', nbval=2, vect=ver, nbret=nbver)
     ivr(:)=0
+!   ivr(1)=1    : vérification MAILLES
+!   ivr(2)      : libre
+!   ivr(3)=niv  : niveau d'impression
+!   ivr(4)=ifm  : unité d'impression
+
     if (nbver .gt. 0) then
         do ii = 1, nbver
             if (ver(ii) .eq. 'MAILLE  ') ivr(1) = 1
         enddo
     endif
+!   Récupération du niveau d'impression
+    call infmaj()
+    call infniv(ifm, niv)
+    ivr(3) = niv
+    ivr(4) = ifm
+    info_concept%ivr(:)   = ivr(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !   Occurence des mots clefs facteur
@@ -221,10 +261,10 @@ subroutine op0019()
         element_support_typ(ii) = ACE_NU_THHMM
     enddo
     nbtel = nbtel + ACE_NB_THHMM
-    ASSERT( nbtel .eq. nbtel0 )
+    ASSERT( nbtel .eq. ACE_NB_TYPE_ELEM )
 ! --------------------------------------------------------------------------------------------------
-!   Récuperation des numéros des types éléments
-    do ii = 1, nbtel
+!   Récupération des numéros des types éléments
+    do ii = 1, ACE_NB_TYPE_ELEM
         call jenonu(jexnom('&CATA.TE.NOMTE', element_support_nom(ii)), element_support_num(ii))
     enddo
 !
@@ -239,33 +279,40 @@ subroutine op0019()
             do icle = 1, ACE_NB_GRMA_MA
                 ii = MCLEF_GRP_MA(icle + (iclf-1)*ACE_NB_GRMA_MA)
                 if ( ii .ne. ACE_NOTHING ) then
-                    mclef      = ACE_GRMA_MA( ii )
+                    mclef = ACE_GRMA_MA( ii )
                     call getvtx(ACE_MCLEF(iclf), mclef, iocc=ioc, nbval=0, nbret=ng)
                     lmax = max(lmax,-ng)
                 endif
             enddo
         enddo
     enddo
-    ASSERT( lmax.ge. 0 )
+    if ( lmax .le. 0 ) then
+        call utmess('F', 'AFFECARAELEM_2')
+    endif
 !   Vérification
-    if ( lmax .ge. 1 ) then
-        AS_ALLOCATE(vk24=zjdls, size=lmax)
-        do iclf = 1, ACE_NB_MCLEF
-            do ioc = 1, nbocc(iclf)
-                do icle = 1, ACE_NB_GRMA_MA
-                    ii = MCLEF_GRP_MA(icle + (iclf-1)*ACE_NB_GRMA_MA)
-                    if ( ii .ne. ACE_NOTHING ) then
-                        mclef      = ACE_GRMA_MA( ii )
-                        mclef_type = ACE_GRMA_TY( ii )
-                        call getvtx(ACE_MCLEF(iclf), mclef, iocc=ioc, nbval=lmax, vect=zjdls,&
-                                nbret=ng)
-                        call verima(noma, zjdls, ng, mclef_type)
-                    endif
-                enddo
+    AS_ALLOCATE(vk24=grp_lmax, size=lmax)
+    do iclf = 1, ACE_NB_MCLEF
+        do ioc = 1, nbocc(iclf)
+            do icle = 1, ACE_NB_GRMA_MA
+                ii = MCLEF_GRP_MA(icle + (iclf-1)*ACE_NB_GRMA_MA)
+                if ( ii .ne. ACE_NOTHING ) then
+                    mclef      = ACE_GRMA_MA( ii )
+                    mclef_type = ACE_GRMA_TY( ii )
+                    call getvtx(ACE_MCLEF(iclf), mclef, iocc=ioc, nbval=lmax, vect=grp_lmax,&
+                            nbret=ng)
+                    call verima(noma, grp_lmax, ng, mclef_type)
+                endif
             enddo
         enddo
-        AS_DEALLOCATE(vk24=zjdls)
-    endif
+    enddo
+!
+! --------------------------------------------------------------------------------------------------
+!   Pour mémoriser les mailles affectées.
+!           Si traité affe_mail(i)=element_support_num sinon 0
+    AS_ALLOCATE(vi=affe_mail, size=nbmail)
+! --------------------------------------------------------------------------------------------------
+!   Création des cartes utilisées
+    call ace_crea_carte(info_concept,info_carte)
 !
 ! --------------------------------------------------------------------------------------------------
 !   Vérification de la syntaxe pour :
@@ -341,11 +388,7 @@ subroutine op0019()
 ! --------------------------------------------------------------------------------------------------
 !   LONGUEUR MAXIMUM D UNE LISTE DE MAILLE/NOEUD/GROUP_MA/GROUP_NO
     lmax = max(lmax,lxp,lxc,lxo,lxa,lxb,lxm,lxpf,lxgb,lxmb)
-! --------------------------------------------------------------------------------------------------
-!   RECUPERATION DU NIVEAU D'IMPRESSION
-    call infmaj()
-    call infniv(ifm, niv)
-    if (niv .eq. 2) ivr(3) = 1
+!
 ! --------------------------------------------------------------------------------------------------
 !   VERIFICATION DE LA SYNTAXE DES ELEMENTS DISCRET
     lxd = 0
@@ -380,13 +423,9 @@ subroutine op0019()
     endif
 !
 ! --------------------------------------------------------------------------------------------------
-!   Pour mémoriser les éléments affectés. Si traité zjdlm(i)=element_support_num sinon 0
-    AS_ALLOCATE(vi=zjdlm, size=nbmail)
-!
-! --------------------------------------------------------------------------------------------------
 !   COMPTEUR D'ELEMENTS ET VERIFICATION COHERENCE DES AFFECTATIONS
-    call acecel(noma, nomo, nbocc, nbtel, element_support_num, element_support_typ, &
-                nombre_type_element, zjdlm, iret)
+    call acecel(noma, nomo, nbocc, element_support_num, element_support_typ, &
+                nombre_type_element, affe_mail, iret)
 !
     npoutr = nombre_type_element(ACE_NU_POUTRE)
     ncable = nombre_type_element(ACE_NU_CABLE)
@@ -402,11 +441,8 @@ subroutine op0019()
 !     INCREMENTATION DES COMPTEURS D APPELS A NOCART (DISCRET,COQUE,
 !     DEFI_ARC,CABLE,POUTRE,BARRE)
     iret=0
-    call aceinc(noma, nomo, ACE_NB_MCLEF, ACE_MCLEF, element_support_num,&
-                nbocc, ivr, ACE_NB_POUTRE, ACE_NB_DISCRET, ACE_NB_COQUE,&
-                ACE_NB_CABLE, ACE_NB_BARRE, ACE_NB_MASSIF, ACE_NB_GRILLE, ACE_NB_MEMBRANE, &
-                nbtel, locaco, locagb, locamb, zjdlm,&
-                lmax, iret)
+    call aceinc(noma, nomo, element_support_num, nbocc, ivr, &
+                locaco, locagb, locamb, affe_mail, lmax, iret)
     if (iret .ne. 0) then
         call utmess('F', 'MODELISA5_59')
     endif
@@ -429,13 +465,18 @@ subroutine op0019()
     if ((nbocc(ACE_CABLE).eq.0) .and. (ncable.ne.0)) then
         call utmess('A', 'MODELISA5_62')
     endif
+!
+! --------------------------------------------------------------------------------------------------
+!   Traitement des masses réparties
+    call ace_masse_repartie(nbocc(ACE_MASS_REP), info_concept, grp_lmax, lmax, info_carte )
+!
 ! --------------------------------------------------------------------------------------------------
 !   AFFECTATION DES ORIENTATIONS AUX ELEMENTS POUTRES ET DISCRETS  ET
 !     BARRES ET AFFECTATION DE LA CARTE ORIENTATION
     if (nbocc(ACE_POUTRE).ne.0 .or. nbocc(ACE_DISCRET).ne.0 .or. nbocc(ACE_DISCRET_2D).ne.0 .or. &
         nbocc(ACE_BARRE).ne.0 .or.  nbocc(ACE_RIGI_PARASOL).ne.0) then
-        call aceaor(noma, nomo, lmax, ACE_NB_POUTRE, nbtel, &
-                    element_support_num, element_support_nom, ivr, ifm, nbocc)
+        call aceaor(noma, nomo, lmax, ACE_NB_POUTRE, &
+                    element_support_num, element_support_nom, ivr, nbocc)
     endif
 ! --------------------------------------------------------------------------------------------------
 !   AFFECTATION DES CARACTERISTIQUES AUX ELEMENTS POUTRES
@@ -444,7 +485,7 @@ subroutine op0019()
         depart = 1
         call aceapo(noma, nomo, lmax, npoutr, nbocc(ACE_POUTRE),&
                     ACE_MCLEF(ACE_POUTRE), ACE_NB_POUTRE, &
-                    element_support_num(depart), ivr, ifm, zjdlm)
+                    element_support_num(depart), ivr, affe_mail)
     endif
 ! --------------------------------------------------------------------------------------------------
 !   AFFECTATION DES EPAISSEURS/COURBURES/ANGLES AUX ELEMENTS COQUES
@@ -457,7 +498,7 @@ subroutine op0019()
         nboccd = nbocc(ACE_DISCRET) + nbocc(ACE_DISCRET_2D)
         if (nbocc(ACE_DISCRET) .ne. 0)    k16bid = ACE_MCLEF(ACE_DISCRET)
         if (nbocc(ACE_DISCRET_2D) .ne. 0) k16bid = ACE_MCLEF(ACE_DISCRET_2D)
-        call aceadi(noma, nomo, k16bid, lmax, nboccd, ivr, ifm)
+        call aceadi(noma, nomo, k16bid, lmax, nboccd, info_carte, ivr)
     endif
 ! --------------------------------------------------------------------------------------------------
 !   AFFECTATION DES COURBURES AUX ELEMENTS POUTRES COURBES
@@ -476,7 +517,7 @@ subroutine op0019()
         depart = ACE_NB_POUTRE + ACE_NB_DISCRET + ACE_NB_COQUE + ACE_NB_CABLE + 1
         call aceaba(noma, nomo, lmax, nbarre, nbocc(ACE_BARRE),&
                     ACE_MCLEF(ACE_BARRE), ACE_NB_BARRE, &
-                    element_support_num(depart), ivr, ifm, zjdlm)
+                    element_support_num(depart), ivr, affe_mail)
     endif
 
 ! --------------------------------------------------------------------------------------------------
@@ -492,7 +533,7 @@ subroutine op0019()
 ! --------------------------------------------------------------------------------------------------
 !   AFFECTATION DES MATRICES AUX RAIDEURS REPARTIES
     if (nbocc(ACE_RIGI_PARASOL) .ne. 0) then
-        call acearp(noma, nomo, lmax, noemaf, nbocc(ACE_RIGI_PARASOL), ivr, ifm)
+        call acearp(info_concept, lmax, noemaf, nbocc(ACE_RIGI_PARASOL), info_carte, ivr)
     endif
 ! --------------------------------------------------------------------------------------------------
 !   AFFECTATION DES CARACTERISTIQUES POUR L'ELEMENT "GRILLE"
@@ -502,7 +543,7 @@ subroutine op0019()
 ! --------------------------------------------------------------------------------------------------
 !   AFFECTATION DES MATRICES AUX RAIDEURS MISS
     if (nbocc(ACE_RIGI_MISS_3D) .ne. 0) then
-        call acearm(noma, nomo, lmax, noemf2, nbocc(ACE_RIGI_MISS_3D), ivr, ifm)
+        call acearm(info_concept, lmax, noemf2, nbocc(ACE_RIGI_MISS_3D), info_carte, ivr)
     endif
 ! --------------------------------------------------------------------------------------------------
 !   AFFECTATION DES CARACTERISTIQUES POUR L'ELEMENT "MEMBRANE"
@@ -512,7 +553,7 @@ subroutine op0019()
 ! --------------------------------------------------------------------------------------------------
 !   AFFECTATION DES MATRICES AUX MASSES REPARTIES
     if (nbocc(ACE_MASS_AJOU) .ne. 0) then
-        call aceamr(noma, nomo, lmax, noemf3, nbocc(ACE_MASS_AJOU), ivr, ifm)
+        call aceamr(info_concept, lmax, noemf3, nbocc(ACE_MASS_AJOU), info_carte, ivr)
     endif
 ! --------------------------------------------------------------------------------------------------
 !   COMPACTAGE DE LA CARTE : '.CVENTCXF'
@@ -538,8 +579,7 @@ subroutine op0019()
 !           COQUE       /  COQUE_NCOU
 !           GRILLE      /  COQUE_NCOU
 !           MEMBRANE    /  COQUE_NCOU
-!           POUTRE      /  TUYAU_NCOU
-!           POUTRE      /  TUYAU_NSEC
+!           POUTRE      /  TUYAU_NCOU  TUYAU_NSEC
     call pmfd00()
 ! --------------------------------------------------------------------------------------------------
 !   APPEL DE L'OPTION DE VERIFICATION VERI_CARA_ELEM :
@@ -551,14 +591,29 @@ subroutine op0019()
     call calcul('C', 'VERI_CARA_ELEM', ligrmo, 1, lchin,&
                 lpain, 1, lchout, lpaout, 'V', 'OUI')
 ! --------------------------------------------------------------------------------------------------
-!   Certaines cartes peuvent etre vides : il faut les detruire :
-    call detrsd_vide('CARTE',nomu//'.CARDISCA')
+!   Certaines cartes peuvent etre vides : il faut les detruire.
+    do ii = 1 , ACE_NB_CARTE
+        call detrsd_vide('CARTE',info_carte(ii)%nom_carte)
+    enddo
+!
+!   Destruction sélective des CARTES, si elles n'ont pas lieu d'être
+    nbelemdi = nbocc(ACE_DISCRET) + nbocc(ACE_DISCRET_2D) + nbocc(ACE_RIGI_PARASOL) + &
+               nbocc(ACE_RIGI_MISS_3D) + nbocc(ACE_MASS_AJOU) + nbocc(ACE_MASS_REP)
+    if ( nbelemdi.eq.0 ) then
+        do ii = 1 , ACE_NB_CARTE
+            if ( ACE_CARTE(3 + (ii-1)*ACE_NB_CARTE_CMP).eq.'DISCRET' ) then
+                call detrsd('CHAMP',info_carte(ii)%nom_carte)
+            endif
+        enddo
+    endif
 
 
-! - Audit assignments :
+! --------------------------------------------------------------------------------------------------
+!   Audit assignments
     call verif_affe(modele=nomo,sd=nomu)
 !
-    AS_DEALLOCATE(vi=zjdlm)
+    AS_DEALLOCATE(vi=affe_mail)
+    AS_DEALLOCATE(vk24=grp_lmax)
 !
     call jedema()
 end subroutine

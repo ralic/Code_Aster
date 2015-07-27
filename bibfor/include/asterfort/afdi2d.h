@@ -18,7 +18,7 @@
 interface
     subroutine afdi2d(irep, eta, car, val, jdc,&
                       jdv, ivr, iv, kma, ncmp,&
-                      ntp, jdcinf, jdvinf, isym, ifm)
+                      ntp, jdcinf, jdvinf, isym)
         integer :: irep
         real(kind=8) :: eta
         character(len=*) :: car
@@ -33,6 +33,5 @@ interface
         integer :: jdcinf
         integer :: jdvinf
         integer :: isym
-        integer :: ifm
     end subroutine afdi2d
 end interface

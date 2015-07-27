@@ -1,5 +1,5 @@
-subroutine aceatu(noma, nomo, nbepo, ntyele, ivr, ifm, nbocc)
-    use cara_elem_module
+subroutine aceatu(noma, nomo, nbepo, ntyele, ivr, nbocc)
+    use cara_elem_parameter_module
     implicit none
 #include "jeveux.h"
 #include "asterc/getres.h"
@@ -24,7 +24,7 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr, ifm, nbocc)
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    integer :: nbepo, ntyele(*), nbocc(*), ivr(3), ifm
+    integer :: nbepo, ntyele(*), nbocc(*), ivr(*), ifm
     character(len=8) :: noma, nomo
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -201,7 +201,8 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr, ifm, nbocc)
         call utmess('F', 'MODELISA10_4')
     endif
     nbpart=nbext1
-    if (ivr(3) .eq. 1) then
+    ifm = ivr(4)
+    if (ivr(3) .eq. 2) then
         write(ifm,*) 'NOMBRE DE PARTIES CONNEXES DE TUYAU : ',nbpart
     endif
 !
@@ -280,7 +281,7 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr, ifm, nbocc)
         enddo
     endif
     call aceat3(noma, nomu, nbtuy, nbpart, nbmapart,&
-                lismapart, lisnopart, ivr, ifm, inn,&
+                lismapart, lisnopart, ivr, inn,&
                 zi(jnozk), zr(jcozk), sens, zr(jdco), epsi,&
                 crit, nno,mmt)
 !

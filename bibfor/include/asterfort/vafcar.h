@@ -16,21 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine vafcar(tpgz, mclfz, nmobjz, npo, ndi,&
-                      nco, nca, nba, nma, ngb,&
-                      nmb, nutyel, ntyele, car, ncar,&
-                      ivr, kioc, ier)
+    subroutine vafcar(tpgz, imclf, nmobjz, nutyel, ntyele, car, ncar, ivr, kioc, ier)
         character(len=*) :: tpgz
-        character(len=*) :: mclfz
+        integer :: imclf
         character(len=*) :: nmobjz
-        integer :: npo
-        integer :: ndi
-        integer :: nco
-        integer :: nca
-        integer :: nba
-        integer :: nma
-        integer :: ngb
-        integer :: nmb
         integer :: nutyel
         integer :: ntyele(*)
         character(len=*) :: car(*)

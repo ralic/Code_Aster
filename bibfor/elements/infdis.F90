@@ -1,16 +1,5 @@
 subroutine infdis(quest, ivale, rvale, kvale)
-    implicit none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/jevech.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/tecael.h"
-#include "asterfort/utmess.h"
 !
-    character(len=4) :: quest
-    character(len=*) :: kvale
-    integer :: ivale
-    real(kind=8) :: rvale
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,11 +16,15 @@ subroutine infdis(quest, ivale, rvale, kvale)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: jean-luc.flejou at edf.fr
-! --- ------------------------------------------------------------------
 !
-!              INTERROGE LA CARTE DES 'CINFDI' DES DISCRETS
-!              INFORMATIONS ANNEXES SUR LES DISCRETS
+! --------------------------------------------------------------------------------------------------
+!
+!              Interroge la carte des 'cinfdi' des discrets
+!              Informations annexes sur les discrets
+!
+!              Tous les discrets sont concernés
+!
+! --------------------------------------------------------------------------------------------------
 !
 !  IN
 !     QUEST : INFORMATION QUE L'ON SOUHAITE RECUPERER
@@ -50,6 +43,7 @@ subroutine infdis(quest, ivale, rvale, kvale)
 !           =  INIT        : VALEUR INITIALE DE KVALE
 !     KVALE : SI QUEST=CODE, DOIT CONTENIR LE NOM DU DISCRET
 !             SI QUEST=INIT, DOIT CONTENIR LE PARAMETRE A INITIALISER
+!
 !  OUT
 !     IVALE : SI REP[K|M|A] : REPERE GLOBAL(=1) OU LOCAL(=2)
 !           : SI SYM[K|M|A] : MATRICE SYMETRIQUE(=1), NON-SYSMETRE(=2)
@@ -59,52 +53,62 @@ subroutine infdis(quest, ivale, rvale, kvale)
 !           : SI CODE : LE CODE ENTIER DU DISCRET
 !     RVALE : SI ETAK : COEFFICIENT AMORTISSEMENT HYSTERETIQUE
 !
-! --- ------------------------------------------------------------------
-!     ELEMENTS CONCERNES : TOUS LES DISCREST
-! --- ------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+! person_in_charge: jean-luc.flejou at edf.fr
 !
+implicit none
+!
+    character(len=4) :: quest
+    character(len=*) :: kvale
+    integer :: ivale
+    real(kind=8) :: rvale
+!
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/tecael.h"
+#include "asterfort/utmess.h"
+!
+! --------------------------------------------------------------------------------------------------
     integer :: nbelem, ii, jdc, jj, kk, iadzi, iazk24, icoord
-    parameter     (nbelem=8)
+    parameter  (nbelem=8)
     integer :: lenmnd(nbelem), lenmdd(nbelem)
     character(len=13) :: elemnd(nbelem), elemdd(nbelem)
     character(len=20) :: caracz
-!
+! --------------------------------------------------------------------------------------------------
     character(len=8) :: nommai, mailla
     integer :: nbnoeu
+! --------------------------------------------------------------------------------------------------
+    data elemnd /'_DIS_T_N     ', '_DIS_TR_N    ', '_DIS_T_L     ', '_DIS_TR_L    ',&
+                 '2D_DIS_T_N   ', '2D_DIS_TR_N  ', '2D_DIS_T_L   ', '2D_DIS_TR_L  ' /
+    data lenmnd /8, 9, 8, 9,10,11,10,11/
 !
-    data elemnd /  '_DIS_T_N     ','_DIS_TR_N    ',&
-     &               '_DIS_T_L     ','_DIS_TR_L    ',&
-     &               '2D_DIS_T_N   ','2D_DIS_TR_N  ',&
-     &               '2D_DIS_T_L   ','2D_DIS_TR_L  '/
-    data lenmnd /   8, 9, 8, 9,10,11,10,11/
-    data elemdd /  '_DIS_T_D_N   ','_DIS_TR_D_N  ',&
-     &               '_DIS_T_D_L   ','_DIS_TR_D_L  ',&
-     &               '2D_DIS_T_D_N ','2D_DIS_TR_D_N',&
-     &               '2D_DIS_T_D_L ','2D_DIS_TR_D_L'/
-    data lenmdd /  10,11,10,11,12,13,12,13/
-!
-!     ORDRE DE STOCKAGE DANS LA CARTE : CINFDI
+    data elemdd /'_DIS_T_D_N   ', '_DIS_TR_D_N  ', '_DIS_T_D_L   ', '_DIS_TR_D_L  ', &
+                 '2D_DIS_T_D_N ', '2D_DIS_TR_D_N', '2D_DIS_T_D_L ', '2D_DIS_TR_D_L'/
+    data lenmdd /10,11,10,11,12,13,12,13/
+! --------------------------------------------------------------------------------------------------
+!     Ordre de stockage dans la carte : CINFDI
 !     0     1     2     3     4     5     6     7     8     9     10
 !     REPK  REPM  REPA  SYMK  SYMM  SYMA  DISK  DISM  DISA  ETAK  TYDI
-!
-!
+! --------------------------------------------------------------------------------------------------
     caracz = ' '
     if (quest .eq. 'DIMC') then
         ivale = 11
         rvale = 11.0d0
-        goto 9999
+        goto 999
     else if (quest .eq. 'DMXM') then
         ivale = 144
         rvale = 144.0d0
-        goto 9999
+        goto 999
     else if (quest .eq. 'DUMP') then
         call tecael(iadzi, iazk24)
-        nommai = zk24(iazk24-1+3)
+        nommai = zk24(iazk24-1+3)(1:8)
         nbnoeu = zi(iadzi+1)
         call utmess(kvale(1:1)//'+', 'DISCRETS_30', sk=nommai, si=nbnoeu)
-        mailla = zk24(iazk24)
+        mailla = zk24(iazk24)(1:8)
         call jeveuo(mailla//'.COORDO    .VALE', 'L', icoord)
-        do 10 jj = 1, nbnoeu
+        do jj = 1, nbnoeu
             ii = zi(iadzi+1+jj)
             if (jj .eq. nbnoeu) then
                 call utmess(kvale(1:1), 'DISCRETS_31', sk=zk24(iazk24-1+ 3+jj), nr=3,&
@@ -113,41 +117,41 @@ subroutine infdis(quest, ivale, rvale, kvale)
                 call utmess(kvale(1:1)//'+', 'DISCRETS_31', sk=zk24( iazk24-1+3+jj), nr=3,&
                             valr=zr(icoord+3*(ii-1)))
             endif
-10      continue
-        goto 9999
+        enddo
+        goto 999
     else if (quest .eq. 'CODE') then
         caracz = kvale
         kk=len( caracz )
-        do 20 ii = kk, 1, -1
+        do ii = kk, 1, -1
             if (caracz(ii:ii) .ne. ' ') then
                 kk=ii
-                goto 9995
+                goto 995
             endif
-20      continue
+        enddo
         ASSERT(.false.)
-9995      continue
+995     continue
         ivale = 0
         rvale = 0.0d0
-        do 25 ii = 1, nbelem
+        do ii = 1, nbelem
             jj=lenmnd(ii)
             if (kk .ge. jj) then
                 if (caracz(kk-jj+1:kk) .eq. elemnd(ii)) then
                     ivale = ii
                     rvale = ivale
-                    goto 9999
+                    goto 999
                 endif
             endif
-25      continue
-        do 30 ii = 1, nbelem
+        enddo
+        do ii = 1, nbelem
             jj=lenmdd(ii)
             if (kk .ge. jj) then
                 if (caracz(kk-jj+1:kk) .eq. elemdd(ii)) then
                     ivale = ii
                     rvale = ivale
-                    goto 9999
+                    goto 999
                 endif
             endif
-30      continue
+        enddo
         ASSERT(ivale.ne.0)
     else if (quest .eq. 'INIT') then
         caracz = kvale
@@ -165,7 +169,7 @@ subroutine infdis(quest, ivale, rvale, kvale)
             ASSERT(.false.)
         endif
         rvale = ivale
-        goto 9999
+        goto 999
     endif
 !
     rvale = 0.0d0
@@ -194,7 +198,7 @@ subroutine infdis(quest, ivale, rvale, kvale)
 !
     else if (quest .eq. 'ETAK') then
         rvale = zr(jdc+9)
-        goto 9999
+        goto 999
 !
     else if (quest .eq. 'TYDI') then
         rvale = zr(jdc+10)
@@ -206,5 +210,5 @@ subroutine infdis(quest, ivale, rvale, kvale)
     endif
 !
     ivale = nint(rvale)
-9999  continue
+999 continue
 end subroutine

@@ -19,14 +19,12 @@
 ! person_in_charge: jean-luc.flejou at edf.fr
 !
 interface
-    subroutine aceamr(infdonn, lmax, noemaf, nbocc, infcarte, ivr)
-        use cara_elem_info_type
-        use cara_elem_carte_type
-        type (cara_elem_info) :: infdonn
-        integer :: lmax
-        integer :: noemaf
-        integer :: nbocc
-        type (cara_elem_carte) :: infcarte(*)
-        integer :: ivr(*)
-    end subroutine aceamr
+    subroutine calcul_cara_maille( coord, noeuds, topologie, surface, centre, normale )
+        real(kind=8),intent(in)    :: coord(*)
+        integer,intent(in)         :: noeuds(:)
+        integer,intent(in)         :: topologie
+        real(kind=8),optional,intent(out)   :: surface(*)
+        real(kind=8),optional,intent(out)   :: centre(*)
+        real(kind=8),optional,intent(out)   :: normale(*)
+    end subroutine calcul_cara_maille
 end interface

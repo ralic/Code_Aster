@@ -1,4 +1,4 @@
-subroutine acecel(noma, nomo, nbocc, nbtel, ele_sup_num, ele_sup_typ, nb_ty_el, zjdlm, ier)
+subroutine acecel(noma, nomo, nbocc, ele_sup_num, ele_sup_typ, nb_ty_el, zjdlm, ier)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,11 +17,6 @@ subroutine acecel(noma, nomo, nbocc, nbtel, ele_sup_num, ele_sup_typ, nb_ty_el, 
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    use cara_elem_module
-    implicit none
-    character(len=8) :: noma, nomo
-    integer :: nbocc(*), nbtel, ele_sup_num(*), ele_sup_typ(*), nb_ty_el(*), zjdlm(*), ier
-!
 ! --------------------------------------------------------------------------------------------------
 !
 !     AFFE_CARA_ELEM
@@ -35,8 +30,12 @@ subroutine acecel(noma, nomo, nbocc, nbtel, ele_sup_num, ele_sup_typ, nb_ty_el, 
 ! --------------------------------------------------------------------------------------------------
 ! person_in_charge: jean-luc.flejou at edf.fr
 !
+    use cara_elem_parameter_module
+    implicit none
+    character(len=8) :: noma, nomo
+    integer :: nbocc(*), ele_sup_num(*), ele_sup_typ(*), nb_ty_el(*), zjdlm(*), ier
+!
 #include "jeveux.h"
-#include "asterc/getres.h"
 #include "asterfort/assert.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/jedema.h"
@@ -49,14 +48,11 @@ subroutine acecel(noma, nomo, nbocc, nbtel, ele_sup_num, ele_sup_typ, nb_ty_el, 
 ! --------------------------------------------------------------------------------------------------
     integer :: ii, ifm, ixma, tt, jdme, nbmail, nummai, nutyel
 !
-    character(len=8)  :: nomu
-    character(len=16) :: concep, cmd
     character(len=24) :: mlgnma, modmai
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 !
-    call getres(nomu, concep, cmd)
     modmai = nomo//'.MAILLE'
     mlgnma = noma//'.NOMMAI'
     call jeexin(modmai, ixma)
@@ -72,7 +68,7 @@ subroutine acecel(noma, nomo, nbocc, nbtel, ele_sup_num, ele_sup_typ, nb_ty_el, 
         nutyel = zi(jdme+nummai-1)
         zjdlm(nummai) = nutyel
 !
-        do ii = 1 , nbtel
+        do ii = 1 , ACE_NB_TYPE_ELEM
             if ( nutyel .eq. ele_sup_num(ii) ) then
                 tt = ele_sup_typ(ii)
                 nb_ty_el(tt) = nb_ty_el(tt) + 1
@@ -99,13 +95,13 @@ subroutine acecel(noma, nomo, nbocc, nbtel, ele_sup_num, ele_sup_typ, nb_ty_el, 
         call utmess('E', 'MODELISA_30', sk=nomo)
         ier = ier + 1
     endif
-    if ((nbocc(ACE_DISCRET).ne.0 .or. nbocc(ACE_DISCRET_2D).ne.0) .and. &
+    if ((nbocc(ACE_DISCRET)+nbocc(ACE_DISCRET_2D)).ne.0 .and. &
          nb_ty_el(ACE_NU_DISCRET).eq.0) then
         call utmess('E', 'MODELISA_31', sk=nomo)
         ier = ier + 1
     endif
-    if (nbocc(ACE_ORIENTATION).ne.0 .and. nb_ty_el(ACE_NU_POUTRE).eq.0 .and. &
-        nb_ty_el(ACE_NU_DISCRET).eq.0 .and. nb_ty_el(ACE_NU_BARRE).eq.0) then
+    if (nbocc(ACE_ORIENTATION).ne.0 .and. (nb_ty_el(ACE_NU_POUTRE) + &
+        nb_ty_el(ACE_NU_DISCRET)+nb_ty_el(ACE_NU_BARRE)).eq.0) then
         call utmess('E', 'MODELISA_32', sk=nomo)
         ier = ier + 1
     endif
@@ -131,6 +127,10 @@ subroutine acecel(noma, nomo, nbocc, nbtel, ele_sup_num, ele_sup_typ, nb_ty_el, 
     endif
     if (nbocc(ACE_MEMBRANE).ne.0 .and. nb_ty_el(ACE_NU_MEMBRANE).eq.0) then
         call utmess('E', 'MODELISA_55', sk=nomo)
+        ier = ier + 1
+    endif
+    if (nbocc(ACE_MASS_REP).ne.0 .and. nb_ty_el(ACE_NU_DISCRET).eq.0 ) then
+        call utmess('E', 'MODELISA_31', sk=nomo)
         ier = ier + 1
     endif
 !

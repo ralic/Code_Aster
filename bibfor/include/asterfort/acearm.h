@@ -15,15 +15,18 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+! --------------------------------------------------------------------------------------------------
+! person_in_charge: jean-luc.flejou at edf.fr
+!
 interface
-    subroutine acearm(noma, nomo, lmax, noemaf, nbocc,&
-                      ivr, impr)
-        character(len=8) :: noma
-        character(len=8) :: nomo
+    subroutine acearm(infdonn, lmax, noemaf, nbocc, infcarte, ivr )
+        use cara_elem_info_type
+        use cara_elem_carte_type
+        type (cara_elem_info) :: infdonn
         integer :: lmax
         integer :: noemaf
         integer :: nbocc
+        type (cara_elem_carte) :: infcarte(*)
         integer :: ivr(*)
-        integer :: impr
     end subroutine acearm
 end interface

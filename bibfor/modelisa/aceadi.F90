@@ -1,4 +1,4 @@
-subroutine aceadi(noma, nomo, mcf, lmax, nbocc, ivr, ifm)
+subroutine aceadi(noma, nomo, mcf, lmax, nbocc, infcarte, ivr)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,11 +17,6 @@ subroutine aceadi(noma, nomo, mcf, lmax, nbocc, ivr, ifm)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit none
-    character(len=8) :: noma, nomo
-    integer :: lmax, nbocc, ivr(*), ifm
-    character(len=*) :: mcf
-!
 ! --------------------------------------------------------------------------------------------------
 !
 !     AFFE_CARA_ELEM
@@ -39,43 +34,46 @@ subroutine aceadi(noma, nomo, mcf, lmax, nbocc, ivr, ifm)
 ! --------------------------------------------------------------------------------------------------
 ! person_in_charge: jean-luc.flejou at edf.fr
 !
+    use cara_elem_parameter_module
+    use cara_elem_carte_type
+    implicit none
+    character(len=8) :: noma, nomo
+    integer :: lmax, nbocc, ivr(*), ifm
+    type (cara_elem_carte) :: infcarte(*)
+    character(len=*) :: mcf
+!
 #include "jeveux.h"
-#include "asterc/getfac.h"
+!
 #include "asterc/getres.h"
+!
 #include "asterfort/affdis.h"
-#include "asterfort/alcart.h"
 #include "asterfort/assert.h"
-#include "asterfort/codent.h"
 #include "asterfort/getvem.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/infdis.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/nocart.h"
 #include "asterfort/verdis.h"
 #include "asterfort/wkvect.h"
 !
 ! --------------------------------------------------------------------------------------------------
-    integer :: nbcar, nbval, nrd
+    integer :: nbcar, nbval, nrd, iarg
     parameter    ( nbcar = 100 , nbval = 1000 , nrd = 2 )
-    integer :: jdc(3), jdv(3), dimmat, dimcar, nm, ii, l, iv, ndim
-    integer :: jdcinf, jdvinf, nborm, nborp, ncmp, ibid, nn
+    integer :: jdc(3), jdv(3), dimcar, nm, ii, l, iv, ndim
+    integer :: jdcinf, jdvinf, ncmp, nn
     integer :: nsym, neta, nrep, i3d, i2d, ier
-    integer :: jdls, i, j, ioc, irep, isym, ng, nj, ncar
-    integer :: nval, nbomp, jdls2
-    real(kind=8) :: val(nbval), eta, r8bid
+    integer :: jdls, i, ioc, irep, isym, ng, nj, ncar
+    integer :: nval, jdls2
+    real(kind=8) :: val(nbval), eta
     character(len=1) :: kma(3)
-    character(len=6) :: ki
-    character(len=8) :: nomu, k8bid
+    character(len=8) :: nomu
     character(len=9) :: car(nbcar)
     character(len=16) :: rep, repdis(nrd), concep, cmd, sym, symdis(nrd)
     character(len=19) :: cart(3), ligmo, cartdi
-    character(len=24) :: tmpnd(3), tmpvd(3), tmpdis, mlggno, mlgnno
-    character(len=24) :: tmcinf, tmvinf
-    integer :: iarg
+    character(len=24) :: tmpdis, mlggno, mlgnno
+!
 ! --------------------------------------------------------------------------------------------------
     data repdis /'GLOBAL          ','LOCAL           '/
     data symdis /'OUI             ','NON             '/
@@ -87,7 +85,7 @@ subroutine aceadi(noma, nomo, mcf, lmax, nbocc, ivr, ifm)
     tmpdis = nomu//'.DISCRET'
     mlggno = noma//'.GROUPENO'
     mlgnno = noma//'.NOMNOE'
-    ligmo = nomo//'.MODELE    '
+    ligmo  = nomo//'.MODELE    '
 !
 !   Vérification des dimensions / modélisations
     ier = 0
@@ -97,53 +95,25 @@ subroutine aceadi(noma, nomo, mcf, lmax, nbocc, ivr, ifm)
     call wkvect('&&TMPDISCRET', 'V V K24', lmax, jdls)
     call wkvect('&&TMPDISCRET2', 'V V K8', lmax, jdls2)
 !
-!   construction des cartes et allocation
-!   Carte info pour tous les discrets
-    cartdi = nomu//'.CARDINFO'
-    call alcart('G', cartdi, noma, 'CINFDI')
-    tmcinf = cartdi//'.NCMP'
-    tmvinf = cartdi//'.VALV'
-    call jeveuo(tmcinf, 'E', jdcinf)
-    call jeveuo(tmvinf, 'E', jdvinf)
-!   Par défaut pour m, a, k :
-!        repère global, matrice symétrique, pas affectée
-    call infdis('DIMC', dimcar, r8bid, k8bid)
-    do i = 1, 3
-        zk8(jdcinf+i-1) = 'REP'//kma(i)//'    '
-        call infdis('INIT', ibid, zr(jdvinf+i-1), zk8(jdcinf+i-1))
-        zk8(jdcinf+i+2) = 'SYM'//kma(i)//'    '
-        call infdis('INIT', ibid, zr(jdvinf+i+2), zk8(jdcinf+i+2))
-        zk8(jdcinf+i+5) = 'DIS'//kma(i)//'    '
-        call infdis('INIT', ibid, zr(jdvinf+i+5), zk8(jdcinf+i+5))
-    enddo
-    zk8(jdcinf+9) = 'ETAK    '
-    call infdis('INIT', ibid, zr(jdvinf+9), zk8(jdcinf+9))
-    zk8(jdcinf+10) = 'TYDI    '
-    call infdis('INIT', ibid, zr(jdvinf+10), zk8(jdcinf+10))
+!   Les cartes sont déjà construites : ace_crea_carte
+    cartdi = infcarte(ACE_CAR_DINFO)%nom_carte
+    jdcinf = infcarte(ACE_CAR_DINFO)%adr_cmp
+    jdvinf = infcarte(ACE_CAR_DINFO)%adr_val
+    dimcar = infcarte(ACE_CAR_DINFO)%nbr_cmp
 !
-    call nocart(cartdi, 1, dimcar)
-    do i = 1, 3
-!       CARTE POUR LES DISCRETS
-        cart(i) = nomu//'.CARDISC'//kma(i)
-        tmpnd(i) = cart(i)//'.NCMP'
-        tmpvd(i) = cart(i)//'.VALV'
-        call alcart('G', cart(i), noma, 'CADIS'//kma(i))
-        call jeveuo(tmpnd(i), 'E', jdc(i))
-        call jeveuo(tmpvd(i), 'E', jdv(i))
-    enddo
+    cart(1) = infcarte(ACE_CAR_DISCK)%nom_carte
+    jdc(1)  = infcarte(ACE_CAR_DISCK)%adr_cmp
+    jdv(1)  = infcarte(ACE_CAR_DISCK)%adr_val
 !
-!   Affectation systématique de valeurs nulles dans les cartes pour toutes les mailles afin
-!   de pouvoir calculer les matrices K, M, A dans tous les cas dans le repère global par défaut.
-    call infdis('DMXM', dimmat, r8bid, k8bid)
-    do i = 1, 3
-        do j = 1, dimmat
-            call codent(j, 'G', ki)
-            zr(jdv(i)+j-1) = 0.d0
-            zk8(jdc(i)+j-1) = kma(i)//ki
-        enddo
-        call nocart(cart(i), 1, dimmat)
-    enddo
+    cart(2) = infcarte(ACE_CAR_DISCM)%nom_carte
+    jdc(2)  = infcarte(ACE_CAR_DISCM)%adr_cmp
+    jdv(2)  = infcarte(ACE_CAR_DISCM)%adr_val
 !
+    cart(3) = infcarte(ACE_CAR_DISCA)%nom_carte
+    jdc(3)  = infcarte(ACE_CAR_DISCA)%adr_cmp
+    jdv(3)  = infcarte(ACE_CAR_DISCA)%adr_val
+!
+    ifm = ivr(4)
 !   Boucle sur les occurences de discret
     nj = 0
     nn = 0
@@ -173,7 +143,7 @@ subroutine aceadi(noma, nomo, mcf, lmax, nbocc, ivr, ifm)
             if (sym .eq. symdis(i)) isym = i
         enddo
 !
-        if (ivr(3) .eq. 1) then
+        if (ivr(3) .eq. 2) then
             if (isym .eq. 1) then
                 write(ifm,100) rep,'SYMETRIQUE',ioc
             else
@@ -184,10 +154,8 @@ subroutine aceadi(noma, nomo, mcf, lmax, nbocc, ivr, ifm)
         if (ng .gt. 0) then
             iv = 1
             do i = 1, ncar
-                call affdis(ndim, irep, eta, car(i), val,&
-                            jdc, jdv, ivr, iv, kma,&
-                            ncmp, l, jdcinf, jdvinf, isym,&
-                            ifm)
+                call affdis(ndim, irep, eta, car(i), val, jdc, jdv, ivr, iv, kma,&
+                            ncmp, l, jdcinf, jdvinf, isym)
                 do ii = 1, ng
                     call nocart(cartdi, 2, dimcar, groupma=zk24(jdls+ii-1))
                     call nocart(cart(l), 2, ncmp, groupma=zk24(jdls+ii-1))
@@ -199,7 +167,7 @@ subroutine aceadi(noma, nomo, mcf, lmax, nbocc, ivr, ifm)
             iv = 1
             do i = 1, ncar
                 call affdis(ndim, irep, eta, car(i), val, jdc, jdv, ivr, iv, kma,&
-                            ncmp, l, jdcinf, jdvinf, isym, ifm)
+                            ncmp, l, jdcinf, jdvinf, isym)
                 call nocart(cartdi, 3, dimcar, mode='NOM', nma=nm, limano=zk8(jdls2))
                 call nocart(cart(l), 3, ncmp, mode='NOM', nma=nm, limano=zk8(jdls2))
             enddo
@@ -208,17 +176,6 @@ subroutine aceadi(noma, nomo, mcf, lmax, nbocc, ivr, ifm)
 !
     call jedetr('&&TMPDISCRET')
     call jedetr('&&TMPDISCRET2')
-    call getfac('RIGI_PARASOL', nborp)
-    call getfac('RIGI_MISS_3D', nborm)
-    call getfac('MASS_AJOU', nbomp)
-    if (nborp .eq. 0 .and. nborm .eq. 0 .and. nbomp .eq. 0) then
-        do i = 1, 3
-            call jedetr(tmpnd(i))
-            call jedetr(tmpvd(i))
-        enddo
-        call jedetr(tmcinf)
-        call jedetr(tmvinf)
-    endif
 !
     call jedema()
 !

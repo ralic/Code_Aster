@@ -1,6 +1,5 @@
 subroutine aceapo(noma, nomo, lmax, npoutr, nbocc,&
-                  mclf, nbepo, ntyele, ivr, ifm,&
-                  zjdlm)
+                  mclf, nbepo, ntyele, ivr, zjdlm)
     implicit none
 #include "jeveux.h"
 #include "asterc/getres.h"
@@ -381,8 +380,9 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc,&
     enddo
 !
 ! --- IMPRESSION DES VALEURS AFFECTEES DANS LE TAMPON SI DEMANDE
-    if (ivr(3) .eq. 1) then
+    if (ivr(3) .eq. 2) then
 !
+        ifm = ivr(4)
 ! ---    IMPRESSION DES DONNEES GENERALES
         write(ifm,200)
         do i = 1, npoaff
@@ -425,9 +425,9 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc,&
 201 format(/,1p,3x,a8,1x,5(1pd12.5,1x),5(/,12x,5(1pd12.5,1x)),&
              /,12x,i6,6x,i6)
 202  format(/,3x,'<SECTION> ',&
-       'VALEURS DE TYPE GEOMETRIQUE AFFECTEES AUX POUTRES',//,3x,&
-       'MAILLE   HY1         HZ1         EPY1        EPZ1'&
-       ,/,12x,         'HY2         HZ2         EPY2        EPZ2'&
+       'VALEURS DE TYPE GEOMETRIQUE AFFECTEES AUX POUTRES',//,3x, &
+       'MAILLE   HY1         HZ1         EPY1        EPZ1' &
+       ,/,12x,         'HY2         HZ2         EPY2        EPZ2' &
        ,/,12x,         'R1          EP1         R2          EP2',9x,'TSEC')
 203 format(/,1p,3x,a8,1x,4(1pd12.5,1x),2(/,12x,4(1pd12.5,1x)),i6)
 !

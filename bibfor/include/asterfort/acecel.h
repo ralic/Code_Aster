@@ -15,11 +15,10 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 interface
-    subroutine acecel(noma, nomo, nbocc, nbtel, ele_sup_num, ele_sup_typ, nb_ty_el, zjdlm, ier)
+    subroutine acecel(noma, nomo, nbocc, ele_sup_num, ele_sup_typ, nb_ty_el, zjdlm, ier)
         character(len=8) :: noma
         character(len=8) :: nomo
         integer :: nbocc(*)
-        integer :: nbtel
         integer :: ele_sup_num(*)
         integer :: ele_sup_typ(*)
         integer :: nb_ty_el(*)

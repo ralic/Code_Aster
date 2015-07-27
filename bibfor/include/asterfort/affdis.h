@@ -18,8 +18,7 @@
 interface
     subroutine affdis(ndim, irep, eta, car, val,&
                       jdc, jdv, ivr, iv, kma,&
-                      ncmp, ntp, jdcinf, jdvinf, isym,&
-                      ifm)
+                      ncmp, ntp, jdcinf, jdvinf, isym )
         integer :: ndim
         integer :: irep
         real(kind=8) :: eta
@@ -35,6 +34,5 @@ interface
         integer :: jdcinf
         integer :: jdvinf
         integer :: isym
-        integer :: ifm
     end subroutine affdis
 end interface
