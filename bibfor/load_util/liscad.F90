@@ -4,6 +4,7 @@ subroutine liscad(phenom       , list_load      , i_load    , load_namez  , load
 implicit none
 !
 #include "asterfort/assert.h"
+#include "asterfort/gcnco2.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"

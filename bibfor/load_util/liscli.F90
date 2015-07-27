@@ -75,12 +75,24 @@ implicit none
     ASSERT(i_load.gt.0)
     ASSERT(i_load.le.nb_load)
 !
-    load_namez   = v_load_name(i_load)
+    load_namez   = v_load_name(i_load)(1:8)
     load_funcz   = v_load_func(i_load)
     list_info_type(1:nb_info_maxi) = ' '
     i_neum_lapl  = 0
     nb_info_type = 0
     i_info_type  = 0
+!
+! - Get load name for undead Dirichlet loads
+!
+    if (v_load_info(i_load+1) .eq. 4) then
+        load_namez = v_load_name(i_load)(9:16)
+    endif
+!
+    if (v_load_info(i_load+1) .eq. 4) then
+        i_info_type = i_info_type+1
+        ASSERT(i_info_type.le.nb_info_maxi)
+        list_info_type(i_info_type) = 'DIRI_SUIV'
+    endif
 !
     if (v_load_info(i_load+1) .eq. -1) then
         i_info_type = i_info_type+1

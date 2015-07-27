@@ -6,6 +6,7 @@ implicit none
 #include "jeveux.h"
 #include "asterfort/nmdoch_nbload.h"
 #include "asterfort/load_list_getp.h"
+#include "asterfort/load_unde_diri.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
@@ -85,7 +86,7 @@ implicit none
     character(len=24) :: info_type
     character(len=19) :: lisdbl
     character(len=24) :: ligrch, lchin
-    integer :: i_neum_lapl
+    integer :: i_neum_lapl, i_diri_suiv
     aster_logical :: lfcplx, lacce, l_zero_allowed, l_apply_user
     integer :: nb_info_type
     integer, pointer :: v_ll_infc(:) => null()
@@ -117,6 +118,7 @@ implicit none
     i_excit        = 0
     nb_excit       = 0
     i_load_new     = 0
+    i_diri_suiv    = 0
 !
 ! - Is applying load option by user ?
 !
@@ -245,7 +247,12 @@ implicit none
             call jeexin(lchin, iret)
             if (iret .ne. 0) then
                 if (load_apply(1:4) .eq. 'SUIV') then
-                    info_type = 'DIRI_SUIV'
+                    info_type    = 'DIRI_SUIV'
+                    if (i_diri_suiv.ne.0) then
+                        call utmess('F', 'CHARGES_29')
+                    else
+                        i_diri_suiv  = i_load
+                    endif
                 else if (load_apply.eq.'FIXE_PIL') then
                     call dismoi('PARA_INST', lchin(1:19), 'CARTE', repk=parcha)
                     if (parcha(1:3) .eq. 'OUI') then
@@ -399,6 +406,14 @@ implicit none
                 list_info_type(nb_info_type) = info_type
             endif
 !
+! --------- Only undead load for Dirichlet in one load of list_load datastructure
+!
+            if (i_diri_suiv.ne.0) then
+                if (nb_info_type.ne.1) then
+                    call utmess('F', 'CHARGES_25', sk=load_name)
+                endif
+            endif
+!
 ! --------- Add new load(s) in list
 !
             if (nb_info_type .gt. 0) then
@@ -428,8 +443,14 @@ implicit none
         if (npilo .ge. 1) then
             call lisexp(list_load)
         endif
-!
     endif
+!
+! - Modify list for undead Dirichlet load
+!
+    if (i_diri_suiv.ne.0) then
+        call load_unde_diri(list_load, i_diri_suiv)
+    endif  
+    
     AS_DEALLOCATE(vk8 = v_list_dble)
     call jedema()
 end subroutine
