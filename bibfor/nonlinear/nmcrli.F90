@@ -6,6 +6,7 @@ implicit none
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
 #include "asterc/r8vide.h"
+#include "asterfort/deprecated_command.h"
 #include "asterfort/diinst.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/infniv.h"
@@ -117,6 +118,7 @@ implicit none
 !
     if (list_inst_type .eq. 'LISTR8_SDASTER') then
         call nmcrlm(list_inst, sddisc, list_inst_work)
+        call deprecated_command('LIST_INST')
     else if (list_inst_type.eq.'LIST_INST') then
         sddisc_linf    = sddisc(1:19)//'.LINF'
         list_inst_info = list_inst(1:8)//'.LIST.INFOR'

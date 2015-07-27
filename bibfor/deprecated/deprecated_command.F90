@@ -37,7 +37,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: vali
-    character(len=32) :: valk
+    character(len=80) :: valk
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,6 +48,10 @@ implicit none
     else if (command .eq. 'INTE_MAIL_3D') then
         vali = 13
         valk    = "La commande 'INTE_MAIL_3D'"
+!
+    else if (command .eq. 'LIST_INST') then
+        vali = 13
+        valk    = "Utiliser un LIST_R8 dans INCREMENT des opérateurs non-linéaires"
 !
     else
         goto 999
