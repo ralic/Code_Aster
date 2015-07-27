@@ -95,10 +95,10 @@ subroutine op0019()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer             :: element_support_num(ACE_NB_TYPE_ELEM)
-    character(len=16)   :: element_support_nom(ACE_NB_TYPE_ELEM)
-    integer             :: element_support_typ(ACE_NB_TYPE_ELEM)
-    integer             :: nombre_type_element(ACE_NB_ELEMENT)
+    integer             :: elem_supp_num(ACE_NB_TYPE_ELEM)
+    character(len=16)   :: elem_supp_nom(ACE_NB_TYPE_ELEM)
+    integer             :: elem_supp_typ(ACE_NB_TYPE_ELEM)
+    integer             :: nb_type_elem(ACE_NB_ELEMENT)
 ! --------------------------------------------------------------------------------------------------
 !   Pour les cartes :
     type (cara_elem_carte)   :: info_carte(ACE_NB_CARTE)
@@ -206,66 +206,66 @@ subroutine op0019()
 !
 ! --------------------------------------------------------------------------------------------------
 !   Initialisation des éléments pouvant être affetés :
-!       element_support_nom  element_support_typ
+!       elem_supp_nom  elem_supp_typ
     nbtel = 0
     do ii = nbtel+1, nbtel+ACE_NB_POUTRE
-        element_support_nom(ii) = ACE_EL_POUTRE(ii-nbtel)
-        element_support_typ(ii) = ACE_NU_POUTRE
+        elem_supp_nom(ii) = ACE_EL_POUTRE(ii-nbtel)
+        elem_supp_typ(ii) = ACE_NU_POUTRE
     enddo
     nbtel = nbtel + ACE_NB_POUTRE
 !
     do ii = nbtel+1, nbtel+ACE_NB_DISCRET
-        element_support_nom(ii) = ACE_EL_DISCRET(ii-nbtel)
-        element_support_typ(ii) = ACE_NU_DISCRET
+        elem_supp_nom(ii) = ACE_EL_DISCRET(ii-nbtel)
+        elem_supp_typ(ii) = ACE_NU_DISCRET
     enddo
     nbtel = nbtel + ACE_NB_DISCRET
 !
     do ii = nbtel+1, nbtel+ACE_NB_COQUE
-        element_support_nom(ii) = ACE_EL_COQUE(ii-nbtel)
-        element_support_typ(ii) = ACE_NU_COQUE
+        elem_supp_nom(ii) = ACE_EL_COQUE(ii-nbtel)
+        elem_supp_typ(ii) = ACE_NU_COQUE
     enddo
     nbtel = nbtel + ACE_NB_COQUE
 !
     do ii = nbtel+1, nbtel+ACE_NB_CABLE
-        element_support_nom(ii) = ACE_EL_CABLE(ii-nbtel)
-        element_support_typ(ii) = ACE_NU_CABLE
+        elem_supp_nom(ii) = ACE_EL_CABLE(ii-nbtel)
+        elem_supp_typ(ii) = ACE_NU_CABLE
     enddo
     nbtel = nbtel + ACE_NB_CABLE
 !
     do ii = nbtel+1, nbtel+ACE_NB_BARRE
-        element_support_nom(ii) = ACE_EL_BARRE(ii-nbtel)
-        element_support_typ(ii) = ACE_NU_BARRE
+        elem_supp_nom(ii) = ACE_EL_BARRE(ii-nbtel)
+        elem_supp_typ(ii) = ACE_NU_BARRE
     enddo
     nbtel = nbtel + ACE_NB_BARRE
 !
     do ii = nbtel+1, nbtel+ACE_NB_MASSIF
-        element_support_nom(ii) = ACE_EL_MASSIF(ii-nbtel)
-        element_support_typ(ii) = ACE_NU_MASSIF
+        elem_supp_nom(ii) = ACE_EL_MASSIF(ii-nbtel)
+        elem_supp_typ(ii) = ACE_NU_MASSIF
     enddo
     nbtel = nbtel + ACE_NB_MASSIF
 !
     do ii = nbtel+1, nbtel+ACE_NB_GRILLE
-        element_support_nom(ii) = ACE_EL_GRILLE(ii-nbtel)
-        element_support_typ(ii) = ACE_NU_GRILLE
+        elem_supp_nom(ii) = ACE_EL_GRILLE(ii-nbtel)
+        elem_supp_typ(ii) = ACE_NU_GRILLE
     enddo
     nbtel = nbtel + ACE_NB_GRILLE
 !
     do ii = nbtel+1, nbtel+ACE_NB_MEMBRANE
-        element_support_nom(ii) = ACE_EL_MEMBRANE(ii-nbtel)
-        element_support_typ(ii) = ACE_NU_MEMBRANE
+        elem_supp_nom(ii) = ACE_EL_MEMBRANE(ii-nbtel)
+        elem_supp_typ(ii) = ACE_NU_MEMBRANE
     enddo
     nbtel = nbtel + ACE_NB_MEMBRANE
 !
     do ii = nbtel+1, nbtel+ACE_NB_THHMM
-        element_support_nom(ii) = ACE_EL_THHMM(ii-nbtel)
-        element_support_typ(ii) = ACE_NU_THHMM
+        elem_supp_nom(ii) = ACE_EL_THHMM(ii-nbtel)
+        elem_supp_typ(ii) = ACE_NU_THHMM
     enddo
     nbtel = nbtel + ACE_NB_THHMM
     ASSERT( nbtel .eq. ACE_NB_TYPE_ELEM )
 ! --------------------------------------------------------------------------------------------------
 !   Récupération des numéros des types éléments
     do ii = 1, ACE_NB_TYPE_ELEM
-        call jenonu(jexnom('&CATA.TE.NOMTE', element_support_nom(ii)), element_support_num(ii))
+        call jenonu(jexnom('&CATA.TE.NOMTE', elem_supp_nom(ii)), elem_supp_num(ii))
     enddo
 !
 ! --------------------------------------------------------------------------------------------------
@@ -308,7 +308,7 @@ subroutine op0019()
 !
 ! --------------------------------------------------------------------------------------------------
 !   Pour mémoriser les mailles affectées.
-!           Si traité affe_mail(i)=element_support_num sinon 0
+!           Si traité affe_mail(i)=elem_supp_num sinon 0
     AS_ALLOCATE(vi=affe_mail, size=nbmail)
 ! --------------------------------------------------------------------------------------------------
 !   Création des cartes utilisées
@@ -424,12 +424,12 @@ subroutine op0019()
 !
 ! --------------------------------------------------------------------------------------------------
 !   COMPTEUR D'ELEMENTS ET VERIFICATION COHERENCE DES AFFECTATIONS
-    call acecel(noma, nomo, nbocc, element_support_num, element_support_typ, &
-                nombre_type_element, affe_mail, iret)
+    call acecel(noma, nomo, nbocc, elem_supp_num, elem_supp_typ, &
+                nb_type_elem, affe_mail, iret)
 !
-    npoutr = nombre_type_element(ACE_NU_POUTRE)
-    ncable = nombre_type_element(ACE_NU_CABLE)
-    nbarre = nombre_type_element(ACE_NU_BARRE)
+    npoutr = nb_type_elem(ACE_NU_POUTRE)
+    ncable = nb_type_elem(ACE_NU_CABLE)
+    nbarre = nb_type_elem(ACE_NU_BARRE)
 !
     if (iret .ne. 0) then
         call utmess('F', 'MODELISA5_57')
@@ -441,7 +441,7 @@ subroutine op0019()
 !     INCREMENTATION DES COMPTEURS D APPELS A NOCART (DISCRET,COQUE,
 !     DEFI_ARC,CABLE,POUTRE,BARRE)
     iret=0
-    call aceinc(noma, nomo, element_support_num, nbocc, ivr, &
+    call aceinc(noma, nomo, elem_supp_num, nbocc, ivr, &
                 locaco, locagb, locamb, affe_mail, lmax, iret)
     if (iret .ne. 0) then
         call utmess('F', 'MODELISA5_59')
@@ -476,7 +476,7 @@ subroutine op0019()
     if (nbocc(ACE_POUTRE).ne.0 .or. nbocc(ACE_DISCRET).ne.0 .or. nbocc(ACE_DISCRET_2D).ne.0 .or. &
         nbocc(ACE_BARRE).ne.0 .or.  nbocc(ACE_RIGI_PARASOL).ne.0) then
         call aceaor(noma, nomo, lmax, ACE_NB_POUTRE, &
-                    element_support_num, element_support_nom, ivr, nbocc)
+                    elem_supp_num, elem_supp_nom, ivr, nbocc)
     endif
 ! --------------------------------------------------------------------------------------------------
 !   AFFECTATION DES CARACTERISTIQUES AUX ELEMENTS POUTRES
@@ -485,7 +485,7 @@ subroutine op0019()
         depart = 1
         call aceapo(noma, nomo, lmax, npoutr, nbocc(ACE_POUTRE),&
                     ACE_MCLEF(ACE_POUTRE), ACE_NB_POUTRE, &
-                    element_support_num(depart), ivr, affe_mail)
+                    elem_supp_num(depart), ivr, affe_mail)
     endif
 ! --------------------------------------------------------------------------------------------------
 !   AFFECTATION DES EPAISSEURS/COURBURES/ANGLES AUX ELEMENTS COQUES
@@ -517,7 +517,7 @@ subroutine op0019()
         depart = ACE_NB_POUTRE + ACE_NB_DISCRET + ACE_NB_COQUE + ACE_NB_CABLE + 1
         call aceaba(noma, nomo, lmax, nbarre, nbocc(ACE_BARRE),&
                     ACE_MCLEF(ACE_BARRE), ACE_NB_BARRE, &
-                    element_support_num(depart), ivr, affe_mail)
+                    elem_supp_num(depart), ivr, affe_mail)
     endif
 
 ! --------------------------------------------------------------------------------------------------

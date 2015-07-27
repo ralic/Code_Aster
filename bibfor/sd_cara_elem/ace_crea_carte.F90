@@ -39,7 +39,7 @@ subroutine ace_crea_carte(infdonn,infcarte)
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/infdis.h"
-#include "asterfort/is_in_liste_entier.h"
+#include "asterfort/in_liste_entier.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
@@ -94,7 +94,7 @@ subroutine ace_crea_carte(infdonn,infcarte)
             zk8(adr_cmp+10) = 'TYDI    '
             call infdis('INIT', ibid, zr(adr_val+10), zk8(adr_cmp+10))
             call nocart(nom_carte, 1, nbr_cmp)
-        else if ( is_in_liste_entier(ii, [ACE_CAR_DISCK,ACE_CAR_DISCM,ACE_CAR_DISCA],indx) ) then
+        else if ( in_liste_entier(ii, [ACE_CAR_DISCK,ACE_CAR_DISCM,ACE_CAR_DISCA],indx) ) then
 !           Affectation systématique de valeurs nulles dans les cartes pour pouvoir calculer
 !           les matrices K, M, A dans tous les cas dans le repère global par défaut.
 !

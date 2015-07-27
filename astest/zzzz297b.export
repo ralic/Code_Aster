@@ -1,0 +1,10 @@
+P time_limit 100
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist verification sequential
+
+F comm zzzz297b.comm D 1
+F mail zzzz297b.mail D 20
+

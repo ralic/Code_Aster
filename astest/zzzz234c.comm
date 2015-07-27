@@ -43,7 +43,7 @@ MO_CAB = AFFE_MODELE(MAILLAGE=MA,
 RAYON = 0.02
 
 CA_CAB = AFFE_CARA_ELEM(  CABLE=_F( GROUP_MA='TOUT',
-                                  SECTION=RAYON*RAYON*3.14159),
+                                  SECTION=RAYON*RAYON*3.14159, N_INIT=5000.0),
                                   MODELE=MO_CAB)
 
 CL_CAB = AFFE_CHAR_MECA(MODELE=MO_CAB,

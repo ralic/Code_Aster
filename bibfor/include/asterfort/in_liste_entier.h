@@ -19,12 +19,12 @@
 ! person_in_charge: jean-luc.flejou at edf.fr
 !
 interface
-    function is_in_liste_entier(val,liste,indx)
+    function in_liste_entier(val,liste,indx)
         integer :: val,liste(:)
-        logical :: is_in_liste_entier
+        logical :: in_liste_entier
 !
         integer,intent(out),optional :: indx
-    end function is_in_liste_entier
+    end function in_liste_entier
 end interface
 
 

@@ -45,7 +45,7 @@ subroutine ace_masse_repartie(nbocc, infdonn, grplmax, lmax, infcarte)
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/is_in_liste_entier.h"
+#include "asterfort/in_liste_entier.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -173,7 +173,7 @@ subroutine ace_masse_repartie(nbocc, infdonn, grplmax, lmax, infcarte)
                 call jelira(jexnum(connex, imail), 'LONMAX', nm)
                 call jeveuo(jexnum(connex, imail), 'L', vi=noeuds)
 !               Si pas le bon nombre de noeuds
-                if ( .not. is_in_liste_entier(nm,[2, 3, 4, 6, 7, 8, 9]) ) then
+                if ( .not. in_liste_entier(nm,[2, 3, 4, 6, 7, 8, 9]) ) then
                     vmessk(2) = grplmax(ii)
                     call jenuno(jexnum(noma//'.NOMMAI', imail), vmessk(3) )
                     vmessk(4) = typm
@@ -229,7 +229,7 @@ subroutine ace_masse_repartie(nbocc, infdonn, grplmax, lmax, infcarte)
             do jj = ldgm, ldgm+nb-1
                 imail = zi(jj)
 !               Vérification que la maille n'est pas en double dans les groupes
-                if ( is_in_liste_entier(imail, nummaisur(1:compte_maille)) ) then
+                if ( in_liste_entier(imail, nummaisur(1:compte_maille)) ) then
                     vmessk(2) = grplmax(ii)
                     call jenuno(jexnum(noma//'.NOMMAI', imail), vmessk(3) )
                     call utmess('F', 'AFFECARAELEM_12',nk=3,valk=vmessk,ni=1,vali=vmessi)
@@ -246,7 +246,7 @@ subroutine ace_masse_repartie(nbocc, infdonn, grplmax, lmax, infcarte)
                     call fointe('F ', fongro, 3, ['X','Y','Z'], maillecdg, valfongro, iret)
                 endif
                 do kk = 1 , nm
-                    ok = is_in_liste_entier(noeuds(kk), lstnumnoe(1:nb_noeud_uniq),indx=ll)
+                    ok = in_liste_entier(noeuds(kk), lstnumnoe(1:nb_noeud_uniq),indx=ll)
                     if ( .not. ok ) then
                         nb_noeud_uniq = nb_noeud_uniq + 1
                         lstnumnoe(nb_noeud_uniq) = noeuds(kk)
@@ -278,7 +278,7 @@ subroutine ace_masse_repartie(nbocc, infdonn, grplmax, lmax, infcarte)
                     call utmess('F', 'AFFECARAELEM_16',nk=3,valk=vmessk,ni=1,vali=vmessi)
                 endif
                 call jeveuo(jexnum(connex, zi(jj)), 'L', vi=noeuds)
-                ok = is_in_liste_entier(noeuds(1), lstnumnoe(1:nb_noeud_uniq),indx=kk)
+                ok = in_liste_entier(noeuds(1), lstnumnoe(1:nb_noeud_uniq),indx=kk)
 !               Si le noeud POI1 n'est pas dans la liste des noeuds de la surface ==> Pas bien
                 if ( .not. ok ) then
                     vmessk(2) = grplmax(ii)

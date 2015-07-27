@@ -22,6 +22,7 @@ subroutine charme(load, vale_type)
 #include "asterfort/caliel.h"
 #include "asterfort/calimc.h"
 #include "asterfort/caliob.h"
+#include "asterfort/calipj.h"
 #include "asterfort/calirc.h"
 #include "asterfort/caliso.h"
 #include "asterfort/calyrc.h"
@@ -297,6 +298,10 @@ subroutine charme(load, vale_type)
 ! ----- LIAISON_MAIL
 !
         call calirc(load)
+!
+! --- LIAISON_PROJ ---
+!
+        call calipj(load)
 !
 ! ----- LIAISON_CYCL
 !

@@ -280,6 +280,34 @@ Les abscisses curvilignes de la table fournie ne correspondent pas à celles du 
       le coefficient RELAX_1000 est nul. Les pertes associées sont donc nulles.
  """),
 
+
+71: _(u"""
+ LIAISON_PROJ : Le noeud %(k1)s ne porte pas le DDL %(k2)s.
+"""),
+
+72 : _(u"""
+ LIAISON_PROJ : La relation linéaire pour le noeud %(k1)s est une tautologie.
+ On ne l'écrit pas.
+"""),
+
+73 : _(u"""
+ LIAISON_PROJ : avec l'option TYPE='EXCENTREMENT' les seules mailles disponibles sont :
+ %(k1)s
+"""),
+
+74 : _(u"""
+ LIAISON_PROJ : Tous les maillages doivent être identiques.
+   Maillage sur lequel s'appui la charge %(k1)8s        : %(k2)s
+   Maillage des mailles maîtres, utilisé dans PROJ_CHAMP : %(k3)s
+   Maillage des noeuds esclaves, utilisé dans PROJ_CHAMP : %(k4)s
+"""),
+
+75: _(u"""
+ LIAISON_PROJ : ne fonctionne qu'avec des modélisations 3D.
+"""),
+
+
+
     83: _(u"""
  on doit utiliser le mot clé CHAM_NO pour donner le CHAM_NO dont les composantes seront les seconds membres de la relation linéaire.
 

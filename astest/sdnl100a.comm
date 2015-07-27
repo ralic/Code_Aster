@@ -50,7 +50,7 @@ CHA2=AFFE_CHAR_MECA(   MODELE=MO,
 CARA=AFFE_CARA_ELEM(   MODELE=MO,
                             CABLE=_F(
        GROUP_MA = 'TOUT',
-  SECTION = 1.) )
+  SECTION = 1., N_INIT=5000.0) )
 
 L_ARCHI=DEFI_LIST_ENTI(   DEBUT=1,INTERVALLE=(
                              _F( JUSQU_A = 11, PAS = 1),

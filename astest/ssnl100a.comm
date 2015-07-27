@@ -73,7 +73,7 @@ CHA4=AFFE_CHAR_MECA(  MODELE=MO1,
 
 CARA1=AFFE_CARA_ELEM(  MODELE=MO1,
                        CABLE=_F( GROUP_MA = 'TOUT',
-                                 SECTION = 1.)
+                                 SECTION = 1.0, N_INIT=5000.0)
                         )
 
 L_INST=DEFI_LIST_REEL(  DEBUT=0.0,

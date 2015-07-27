@@ -1,4 +1,4 @@
-function is_in_liste_entier(val,liste,indx)
+function in_liste_entier(val,liste,indx)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,11 +29,11 @@ function is_in_liste_entier(val,liste,indx)
     implicit none
     integer :: val, liste(:)
     integer,intent(out),optional :: indx
-    logical :: is_in_liste_entier
+    logical :: in_liste_entier
 ! --------------------------------------------------------------------------------------------------
     integer :: ii,indx0
 ! --------------------------------------------------------------------------------------------------
-    is_in_liste_entier = .false.
+    in_liste_entier = .false.
     indx0 = 0
 !
     if ( present(indx) ) then
@@ -42,7 +42,7 @@ function is_in_liste_entier(val,liste,indx)
     do ii = lbound(liste,1), ubound(liste,1)
         indx0 = indx0 + 1
         if ( val.eq.liste(ii) ) then
-            is_in_liste_entier = .true.
+            in_liste_entier = .true.
             if ( present(indx) ) then
                 indx=indx0
             endif

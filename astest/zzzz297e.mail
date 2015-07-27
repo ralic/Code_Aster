@@ -1,0 +1,51 @@
+TITRE
+  3D-2D : 1 PLAQUE SUR 4 PLAQUES AVEC EXCENTREMENT
+FINSF
+COOR_3D
+N1        0.000D+00 -1.000D+00  0.000D+00
+N2        0.000D+00  1.000D+00  0.000D+00
+N3        0.000D+00  0.000D+00  0.000D+00
+N5        2.000D+00 -1.000D+00  0.000D+00
+N6        2.000D+00  0.000D+00  0.000D+00
+N7        2.000D+00  1.000D+00  0.000D+00
+N8        1.000D+00 -1.000D+00  0.000D+00
+N9        1.000D+00  1.000D+00  0.000D+00
+N10       1.000D+00  0.000D+00  0.000D+00
+N11       5.000D-01 -5.000D-01  0.050D+00
+N12       5.000D-01  5.000D-01  0.050D+00
+N14       1.500D+00 -5.000D-01  0.050D+00
+N15       1.500D+00  5.000D-01  0.050D+00
+FINSF
+QUAD4
+ M1       N1       N3       N10      N8
+ M2       N3       N2       N9       N10
+ M3       N8       N10      N6       N5
+ M4       N10      N9       N7       N6
+FINSF
+QUAD4
+ M5       N11      N12      N15      N14
+FINSF
+SEG2
+ M6       N1       N3
+ M7       N3       N2
+ M8       N5       N6
+ M9       N6       N7
+FINSF
+GROUP_MA
+  PLAQMA
+  M1     M2       M3       M4
+FINSF
+GROUP_MA
+  PLAQES
+M5
+FINSF
+GROUP_MA
+  BORDMA
+M6       M7
+FINSF
+GROUP_MA
+  BORDM2
+M8       M9
+FINSF
+%
+FIN

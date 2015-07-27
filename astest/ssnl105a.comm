@@ -36,7 +36,7 @@ MO=AFFE_MODELE(  MAILLAGE=MA,AFFE=(
 CARELEM=AFFE_CARA_ELEM(   MODELE=MO,
 #     GROUPE DE MAILLE : MODELE CABLE
                       CABLE=_F(  GROUP_MA = 'GXXXXXX_CABLE',
-                              SECTION = 1.00E-04),
+                              SECTION = 1.00E-04,N_INIT=5000.0),
 #     GROUPE DE MAILLE : MODELE BARRE
                       BARRE=_F(  GROUP_MA = 'GXXXXXX_CADRE',
                               SECTION = 'GENERALE',
