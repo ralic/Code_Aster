@@ -311,9 +311,9 @@ subroutine xcpmo2(modx1, modx2)
                     advel1 = jcelv1-1+advel1
 !                   les types autorises sont reel ou entier
                     if     (k4typ2 .eq. 'R') then
-                        zr(advel2 : advel2+lgel2) = zr(advel1 : advel1+lgel1)
+                        zr(advel2 : advel2+lgel2-1) = zr(advel1 : advel1+lgel1-1)
                     elseif (k4typ2 .eq. 'I') then
-                        zi(advel2 : advel2+lgel2) = zi(advel1 : advel1+lgel1)
+                        zi(advel2 : advel2+lgel2-1) = zi(advel1 : advel1+lgel1-1)
                     else
                         ASSERT(.false.)
                     endif
