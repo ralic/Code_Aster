@@ -8,7 +8,7 @@ def options(self):
     group = self.add_option_group("HDF5/Med libraries options")
     group.add_option('--med-libs', type='string',
                     dest='med_libs', default=None,
-                    help='MED librairies to link with like med')
+                    help='MED librairies to link against med')
     group.add_option('--embed-med', dest='embed_med',
                     default=False, action='store_true',
                     help='Embed MED libraries as static library')
