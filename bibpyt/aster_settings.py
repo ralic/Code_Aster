@@ -88,7 +88,7 @@ The ASTERDATADIR environment variable changes the data directory.
 
         parser.add_option('--dbgjeveux', dest='dbgjeveux',
                           action='store_true',
-                          help="maximum size of the memory taken by the execution in Mw")
+                          help="turn on some additional checkings in the memory management")
 
         parser.add_option('--num_job', dest='jobid', action='store',
                           help="job ID of the current execution")
