@@ -197,11 +197,11 @@ La présence de la caractéristique %(k1)s est obligatoire.
 """),
 
     66 : _(u"""
- SPEC_EXCI_POINT : si INTE_SPEC alors autant d arguments pour nature, ANGLE et noeud
+ SPEC_EXCI_POINT : si INTE_SPEC alors autant d arguments pour NATURE, ANGLE et NOEUD (ou GROUP_NO)
 """),
 
     67 : _(u"""
- SPEC_EXCI_POINT : si grappe_2 alors un seul noeud
+ %(k1)s : On doit fournir un unique noeud , il y en a : %(i1)d
 """),
 
     68 : _(u"""
@@ -209,7 +209,7 @@ La présence de la caractéristique %(k1)s est obligatoire.
 """),
 
     69 : _(u"""
- SPEC_EXCI_POINT : le nombre d arguments pour nature, ANGLE et noeud doit être égal a la dimension de la matrice interspectrale
+ SPEC_EXCI_POINT : le nombre d arguments pour NATURE, ANGLE et NOEUD (ou GROUP_NO) doit être égal a la dimension de la matrice interspectrale
 """),
 
     70 : _(u"""
