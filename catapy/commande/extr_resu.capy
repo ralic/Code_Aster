@@ -76,4 +76,5 @@ EXTR_RESU=OPER(nom="EXTR_RESU",op=176,sd_prod=extr_resu_prod,reentrant='f',
             ),
 
          TITRE           =SIMP(statut='f',typ='TXM',max='**' ),
+         INFO            =SIMP(statut='f',typ='I',into=(1,2),defaut=1),
 )  ;

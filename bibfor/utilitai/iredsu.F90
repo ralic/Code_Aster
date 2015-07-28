@@ -215,7 +215,7 @@ subroutine iredsu(macr, form, ifc, versio)
                         cecr, k8b, f, 0, [0],&
                         0, [0], iero, k8b, f,&
                         zero, f, zero, f, f,&
-                        formar, nive, versio)
+                        formar, nive, versio, 2)
         endif
     end do
     if (nstat .ne. 0) then

@@ -23,7 +23,7 @@ interface
                       cecr, tycha, lcor, nbnot, numnoe,&
                       nbmat, nummai, nbcmp, nomcmp, lsup,&
                       borsup, linf, borinf, lmax, lmin,&
-                      formr, nive, versio)
+                      formr, nive, versio, niv)
         character(len=*) :: nomcon
         character(len=*) :: form
         integer :: ifi
@@ -57,5 +57,6 @@ interface
         character(len=*) :: formr
         integer :: nive
         integer :: versio
+        integer :: niv
     end subroutine irecri
 end interface

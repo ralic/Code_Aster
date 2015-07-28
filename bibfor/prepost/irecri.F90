@@ -4,7 +4,7 @@ subroutine irecri(nomcon, form, ifi, titre, lgmsh,&
                   cecr, tycha, lcor, nbnot, numnoe,&
                   nbmat, nummai, nbcmp, nomcmp, lsup,&
                   borsup, linf, borinf, lmax, lmin,&
-                  formr, nive, versio)
+                  formr, nive, versio,niv)
 ! aslint: disable=W1504
     implicit none
 !
@@ -36,7 +36,7 @@ subroutine irecri(nomcon, form, ifi, titre, lgmsh,&
     character(len=*) :: nomcmp(*), formr, partie
     character(len=8) :: tycha
     real(kind=8) :: borsup, borinf
-    integer :: nive, versio, nbcham, nbpara
+    integer :: nive, versio, nbcham, nbpara, niv
     integer :: nbordr, ordr(*), nbcmp, iocc
     integer :: nbnot, numnoe(*), nbmat, nummai(*)
     aster_logical :: lresu, lcor
@@ -98,6 +98,7 @@ subroutine irecri(nomcon, form, ifi, titre, lgmsh,&
 ! IN  FORMR  : K   : FORMAT D'ECRITURE DES REELS SUR "RESULTAT"
 ! IN  NIVE   : I   : NIVEAU IMPRESSION CASTEM 3 OU 10
 ! IN  VERSIO : I   : NIVEAU VERSION GMSH 1 OU 2
+! IN  NIV    : I   : NIVEAU IMPRESSION MOT CLE INFO
 !     ------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
@@ -123,8 +124,9 @@ subroutine irecri(nomcon, form, ifi, titre, lgmsh,&
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     call jemarq()
-    call irpara(nomcon, form, ifi, nbordr, ordr,&
-                nbpara, para, cecr)
+    if (niv .gt. 1) then
+      call irpara(nomcon, form, ifi, nbordr, ordr,nbpara, para, cecr)
+    endif  
 !
     nomst = '&&IRECRI.SOUS_TITRE.TITR'
     nomco = nomcon

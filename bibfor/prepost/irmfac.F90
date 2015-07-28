@@ -323,7 +323,7 @@ subroutine irmfac(ioccur, formaf, ifichi, niveau, versio,&
                         cecr, tycha, lcor, nbnot, zi(jnunot),&
                         nbmat, zi(jnumat), nbcmp, zk8(jcmp), lsup,&
                         borsup, linf, borinf, lmax, lmin,&
-                        formr, niveau, versio)
+                        formr, niveau, versio, 2)
         endif
     endif
 !     **********************

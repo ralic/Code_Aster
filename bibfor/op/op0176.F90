@@ -45,6 +45,7 @@ subroutine op0176()
 #include "asterfort/extrs2.h"
 #include "asterfort/getvid.h"
 #include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
 #include "asterfort/irecri.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/jedema.h"
@@ -65,7 +66,7 @@ subroutine op0176()
 !
     integer :: ibid, nbordr, jordr, nbexcl, jexcl, nbarch, jarch
     integer :: nbac, nbpa, jpa, iret, nbnosy, nbpara, nbrest
-    integer :: izero, nive, versio, iul, tord(1)
+    integer :: izero, nive, versio, iul, tord(1), ifm, niv
 !
     real(kind=8) :: r8b
 !
@@ -85,6 +86,7 @@ subroutine op0176()
 !
     call jemarq()
     call infmaj()
+    call infniv(ifm, niv)
     true = .true.
     fals = .false.
     noma=' '
@@ -193,7 +195,7 @@ subroutine op0176()
                 cecr, k8b, fals, 0, [0],&
                 0, [0], izero, k8b, fals,&
                 r8b, fals, r8b, fals, fals,&
-                formar, nive, versio)
+                formar, nive, versio, niv)
 !
 9997 continue
 !
