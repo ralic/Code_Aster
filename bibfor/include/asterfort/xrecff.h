@@ -16,10 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xrecff(fiss, chfond, basfon, lnoff)
+    subroutine xrecff(fiss, typfis, chfond, basfon, fonoeu, lnoff, conf)
         character(len=8) :: fiss
+        character(len=8) :: typfis
         character(len=24) :: chfond
         character(len=24) :: basfon
+        character(len=24) :: fonoeu
         integer :: lnoff
+        character(len=8) :: conf
     end subroutine xrecff
 end interface

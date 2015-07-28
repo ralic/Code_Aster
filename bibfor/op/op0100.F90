@@ -80,7 +80,7 @@ subroutine op0100()
 #include "asterfort/xcourb.h"
     integer :: nbord, iord, ibid, i, iad, jnord, ivec, iret, nbpara
     integer :: lnoff, jinst, ndeg, nbropt, iadrco, iadrno, j, ipuls, iord0
-    integer :: iord1, iord2, nborn, nbco, ibor, ig, nbval, iadfis, iadnoe
+    integer :: iord1, iord2, nborn, nbco, ibor, ig, nbval, iadfis, iadnoe, iadfon
     integer :: ndimte, ier, ndim, jopt
     integer :: nxpara
     parameter (nxpara = 15)
@@ -148,8 +148,10 @@ subroutine op0100()
 !     RECUPERATION DES COORDONNEES POINTS FOND DE FISSURE ET ABSC CURV
     if (typfis.ne.'THETA') then
         call jeveuo(chfond, 'L', iadfis)
+        call jeveuo(basfon, 'L', iadfon)
     else
         iadfis=0
+        iadfon=0
     endif
 !     RECUPERATION DU NOM DES NOEUDS DU FOND DE FISSURE
     if (typfis .eq. 'FONDFISS') then
@@ -334,7 +336,7 @@ subroutine op0100()
         call gveri3(chfond, taillr, config, lnoff, liss,&
                     ndeg, trav1, trav2, trav3, option)
         call gcour2(thetai, noma, modele, nomno, coorn,&
-                    lnoff, trav1, trav2, trav3, fonoeu,&
+                    lnoff, trav1, trav2, trav3, fonoeu, chfond, basfon,&
                     nomfis, connex, stok4, liss,&
                     ndeg, milieu, ndimte, pair)
 !

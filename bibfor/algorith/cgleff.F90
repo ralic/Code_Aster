@@ -86,40 +86,36 @@ subroutine cgleff(typfis, nomfis, fonoeu, chfond, basfon,&
 !
     else if (typfis.eq.'FONDFISS') then
 !
-!       1) FONOEU = NOM DES NOEUDS DU FOND DE FISSURE
+!       1) VERIF : FONOEU = NOM DES NOEUDS DU FOND DE FISSURE
         noeuin=nomfis//'.FOND.NOEU'
 !
 !       VERIF D'EXISTENCE (CET OBJET DOIT NORMALEMENT EXISTER CAR
-!       LE CAS DES FONDS DOUBLES EST INTERDITS)
+!       LE CAS DES FONDS DOUBLES EST INTERDIT)
         call jeexin(noeuin, ier)
         ASSERT(ier.ne.0)
 !
-        call jedupo(noeuin, 'V', fonoeu, .false._1)
-!
-!       RECUP DE LNOFF
-        call jelira(noeuin, 'LONMAX', lnoff)
-!
-!       2) CHFOND = COORDONNEES DES POINTS/NOEUDS DU FOND DE FISSURE
+!       2) VERIF : CHFOND = COORDONNEES DES POINTS/NOEUDS DU FOND DE FISSURE
         fondin=nomfis//'.FONDFISS'
 !
 !       VERIF D'EXISTENCE (CET OBJET DOIT NORMALEMENT EXISTER)
         call jeexin(fondin, ier)
         ASSERT(ier.ne.0)
 !
-        call jedupo(fondin, 'V', chfond, .false._1)
-!
-!       3) BASFON = BASE LOCALE AU FOND DE FISSURE
+!       3) VERIF : BASEFON = BASE LOCALE AU FOND DE FISSURE
         basein=nomfis//'.BASEFOND'
-! ======================================================================
-!       CET OBJET N'EXISTE QUE SI CONFIG_INIT='COLLEE'
+!
+!       VERIF D'EXISTENCE (CET OBJET N'EXISTE QUE SI CONFIG_INIT='COLLEE')
         call dismoi('CONFIG_INIT', nomfis, 'FOND_FISS', repk=conf)
         if (conf .eq. 'COLLEE') then
             call jeexin(basein, ier)
             ASSERT(ier.ne.0)
-            call jedupo(basein, 'V', basfon, .false._1)
         endif
+        
+!       4) CREATION DE LA LISTE DES POINTS DU FOND A CALCULER
+!       EN PRENANT EN COMPTE LES MOTS-CLES NUME_FOND ET NB_POINT_FOND
+        call xrecff(nomfis, typfis, chfond, basfon, fonoeu, lnoff, conf)
 !
-!       4) TAILLR = TAILLES DES MAILLES CONNECTEES AUX NOEUDS
+!       5) TAILLR = TAILLES DES MAILLES CONNECTEES AUX NOEUDS
         taillr = nomfis//'.FOND.TAILLE_R'
 ! ======================================================================
 !       CET OBJET N'EXISTE QUE SI CONFIG_INIT='COLLEE'
@@ -132,11 +128,25 @@ subroutine cgleff(typfis, nomfis, fonoeu, chfond, basfon,&
 !
 !       1) FONOEU N'EXISTE PAS EN X-FEM
 !
-!       2) ET 3) CREATION DE LA LISTE DES POINTS DU FOND A CALCULER
-!       EN PRENANT EN COMPTE LES MOTS-CLES NUME_FOND ET NB_POINT_FOND
-        call xrecff(nomfis, chfond, basfon, lnoff)
+!       2) VERIF : CHFOND = COORDONNEES DES POINTS/NOEUDS DU FOND DE FISSURE
+        fondin=nomfis//'.FONDFISS'
 !
-!       4) TAILLR = TAILLES DES MAILLES CONNECTEES AUX NOEUDS
+!       VERIF D'EXISTENCE (CET OBJET DOIT NORMALEMENT EXISTER)
+        call jeexin(fondin, ier)
+        ASSERT(ier.ne.0)
+!
+!       3) VERIF : BASEFON = BASE LOCALE AU FOND DE FISSURE
+        basein=nomfis//'.BASEFOND'
+!
+!       VERIF D'EXISTENCE (CET OBJET DOIT NORMALEMENT EXISTER)
+        call jeexin(basein, ier)
+        ASSERT(ier.ne.0)
+!
+!       4) CREATION DE LA LISTE DES POINTS DU FOND A CALCULER
+!       EN PRENANT EN COMPTE LES MOTS-CLES NUME_FOND ET NB_POINT_FOND
+        call xrecff(nomfis, typfis, chfond, basfon, fonoeu, lnoff, conf)
+!
+!       5) TAILLR = TAILLES DES MAILLES CONNECTEES AUX NOEUDS
         taillr = nomfis//'.FOND.TAILLE_R'
 !
     endif

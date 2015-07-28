@@ -459,4 +459,12 @@ Veuillez revoir l'affectation des variables de commandes dans le champ de matér
 (commande AFFE_MATERIAU, mot clé facteur AFFE_VARC)
 """),
 
+    73: _(u"""
+CALC_G :
+Il est interdit d'utiliser NB_POINT_FOND avec les lissages LEGENDRE, LAGRANGE_REGU,
+LAGRANGE_NO_NO et MIXTE
+-> Conseil :
+Veuillez revoir le type de lissage utilisé
+"""),
+
 }

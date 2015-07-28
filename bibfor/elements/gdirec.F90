@@ -100,6 +100,7 @@ subroutine gdirec(noma, fond, chaine, nomobj, nomnoe,&
     integer :: ir, j, k, noeud3
 !-----------------------------------------------------------------------
     call jemarq()
+
     conex = noma//'.CONNEX'
     call jeveuo(noma//'.TYPMAIL', 'L', iatyma)
 !
@@ -116,7 +117,7 @@ subroutine gdirec(noma, fond, chaine, nomobj, nomnoe,&
     dire2 = '&&DIRECT.MAIL2'//'          '
     numno = '&&NUME        '//'          '
     call wkvect(dire1, 'V V K8', 3*nbnoeu, iadma1)
-    call wkvect(dire2, 'V V K8', nbnoeu-1, iadma3)
+    call wkvect(dire2, 'V V K8', nbnoeu-1, iadma3)    
     call wkvect(dire3, 'V V R', 3*nbnoeu, in2)
     call wkvect(numno, 'V V I', 2*lobj3, inumno)
 !
@@ -144,9 +145,9 @@ subroutine gdirec(noma, fond, chaine, nomobj, nomnoe,&
                     compta = compta + 1
                     zi(inumno+compta-1) = i
                 endif
-100         continue
-150     continue
-200 end do
+100             continue
+150         continue
+200     end do
 !
     comptc = 0
     do 351 i = 1, compta-1
