@@ -92,6 +92,9 @@ cata_directives = {
                    les autres variables sont oubliées
     MC_FACT : très spécifique à GLRC_DAMAGE, définit le mot-clé EPX indiquant
               le nombre total des occurences des mot-clés répetables.
+    MODE_EPX : il se peut qu'une modélisation de Code_Aster corresponde
+               à plusieurs modélisation d'EPX. Quand le choix d'une modélisation
+               se fait par la relation donnée, il faut renseigner ce mot-clé.
 """
 cata_compor = {
     'ELAS': {
@@ -131,6 +134,7 @@ cata_compor = {
         'NB_VAR_ASTER': 1,
         'NB_VAR_EPX': 6,
         'TRANSFO': False,
+        'MODE_EPX': 'RNFR',
     },
     'GLRC_DAMAGE': {
         'LOI': ['RELATION', 'BETON', 'NAPPE', 'CABLE_PREC',
@@ -425,14 +429,14 @@ cata_modelisa = {
     'DIS_T': {
         'MODE_EPX': {
             'POI1': ['APPU', 'PMAT'],
-            'SEG2': ['RNFR']
+            'SEG2': ['RNFR', 'RL3D']
         },
         'ETAT_INIT': False,
         'RESU_ELEM': False,
     },
     'DIS_TR': {
         'MODE_EPX': {
-            'POI1': ['APPU', 'PMAT']
+            'POI1': ['APPU',]
         },
         'ETAT_INIT': False,
         'RESU_ELEM': False,
@@ -491,10 +495,18 @@ cata_cara_elem = {
             'TITRE': 'SUPPORT ELASTIQUE',
             'DIRECTIVE': 'MATE',
             'MOT_CLE_EPX': 'SUPPORT',
+            'MOT_CLE_ASTER': 'K_T_D_N',
+            'CARA_EPX': ['KX', 'KY', 'KZ', 'NFKT',],
+            'IS_VALE_ASTER': [True, True, True, False,],
+            'MODE_EPX': 'APPU',
+        },
+        {
+            'TITRE': 'SUPPORT ELASTIQUE',
+            'DIRECTIVE': 'MATE',
+            'MOT_CLE_EPX': 'SUPPORT',
             'MOT_CLE_ASTER': 'K_TR_D_N',
             'CARA_EPX': ['KX', 'KY', 'KZ', 'NFKT', 'KRX', 'KRY', 'KRZ', 'NFKR'],
             'IS_VALE_ASTER': [True, True, True, False, True, True, True, False],
-            'MODE_EPX': 'APPU',
         },
         {
             'TITRE': 'SUPPORT ELASTIQUE',
@@ -512,7 +524,17 @@ cata_cara_elem = {
             'MOT_CLE_ASTER': 'A_TR_D_N',
             'CARA_EPX': ['AX', 'AY', 'AZ', 'NFAT', 'ARX', 'ARY', 'ARZ', 'NFAR'],
             'IS_VALE_ASTER': [True, True, True, False, True, True, True, False],
-            'MODE_EPX': 'APPU',
+        },
+        {
+            'TITRE': 'SUPPORT ELASTIQUE',
+            'DIRECTIVE': 'MATE',
+            'MOT_CLE_EPX': 'KLIN',
+            'MOT_CLE_ASTER': 'K_T_D_L',
+            'CARA_EPX': ['KL', 'KT', 'KT'],
+            'IS_VALE_ASTER': [True, True, True],
+            'MODE_EPX': 'RL3D',
+            'VERIF': {'REPERE': ['LOCAL'],
+                      },
         },
     ],
     'COQUE': [
@@ -521,11 +543,10 @@ cata_cara_elem = {
             'DIRECTIVE': 'COMPLEMENT',
             'MOT_CLE_EPX': 'EPAIS',
             'MOT_CLE_ASTER': 'EPAIS',
-            'VERIF': {'EXCENTREMENT': [0.],
+            'VERIF': {
                       'VECTEUR': None,  # pris en compte ailleurs
                       'ANGL_REP': None,  # pris en compte ailleurs
                       'COQUE_NCOU': [1],
-                      'INER_ROTA': ['OUI', ],
                       'A_CIS': None,            # Pas de prise en compte par Exp
                       'COEF_RIGI_DRZ': None ,   # Pas de prise en compte par Exp
                       'MODI_METRIQUE':['NON',],
@@ -542,7 +563,6 @@ cata_cara_elem = {
             'CARA_EPX': ['VX', 'VY', 'VZ', 'AY', 'AZ'],
             'VERIF': {'SECTION': ['RECTANGLE'],
                       'VARI_SECT': ['CONSTANT',],
-                      'MODI_METRIQUE':['NON',],
                       },
         }
     ],
@@ -553,11 +573,12 @@ cata_cara_elem = {
             'DIRECTIVE': 'MATE',
             'MOT_CLE_EPX': 'SUPPORT',
             # traitement très spéciale pour RIGI_PARASOL
-            'MOT_CLE_ASTER': ['K_TR_D_N', 'A_T_D_N', 'A_TR_D_N', ],
+            'MOT_CLE_ASTER': ['K_T_D_N', 'K_TR_D_N', 'A_T_D_N', 'A_TR_D_N', ],
+            'K_T_D_N': ['KX', 'KY', 'KZ', 'NFKT',],
             'K_TR_D_N': ['KX', 'KY', 'KZ', 'NFKT', 'KRX', 'KRY', 'KRZ', 'NFKR'],
             'A_T_D_N': ['AX', 'AY', 'AZ', 'NFAT', ],
             'A_TR_D_N': ['AX', 'AY', 'AZ', 'NFAT', 'ARX', 'ARY', 'ARZ', 'NFAR'],
-            'MODE_EPX': 'APPU',
+            'MODE_EPX': ['APPU', None, 'APPU', None],
         }
     ],
     'BARRE': [

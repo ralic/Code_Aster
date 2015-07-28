@@ -87,9 +87,9 @@ COQUE = []
 COQUE =[_F(EPAIS=0.5,
             GROUP_MA = 'DALLE',
             COQUE_NCOU  = 1,
-            INER_ROTA = 'OUI',
+            MODI_METRIQUE = 'NON',
             ANGL_REP=(15,0.0,),
-            EXCENTREMENT = 0)
+            )
          ]
 
 
@@ -97,6 +97,7 @@ POUTRE = []
 poutre1 = {'GROUP_MA':'POTEAUX', 'SECTION':'RECTANGLE',
            'CARA':('HY','HZ'),
            'VALE':(0.4,0.6),
+           'VARI_SECT' : 'CONSTANT',
                 }
 
 POUTRE.append(poutre1)
@@ -104,6 +105,7 @@ POUTRE.append(poutre1)
 poutre1 = {'GROUP_MA':'POUTRE_X', 'SECTION':'RECTANGLE',
            'CARA':('HY','HZ'),
            'VALE':(0.4,0.6),
+           'VARI_SECT' : 'CONSTANT',
                 }
 
 POUTRE.append(poutre1)
@@ -111,6 +113,7 @@ POUTRE.append(poutre1)
 poutre1 = {'GROUP_MA':'POUTRE_Y', 'SECTION':'RECTANGLE',
            'CARA':('HY','HZ'),
            'VALE':(0.4,0.6),
+           'VARI_SECT' : 'CONSTANT',
                 }
 
 POUTRE.append(poutre1)

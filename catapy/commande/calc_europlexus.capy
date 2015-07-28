@@ -51,7 +51,7 @@ CALC_EUROPLEXUS = MACRO(nom="CALC_EUROPLEXUS",
         CARA_ELEM  = SIMP(statut='f',typ=cara_elem),
 
         FONC_PARASOL = FACT(statut='f',max='**',
-           regles=(PRESENT_PRESENT('NFKT','NFKR'),AU_MOINS_UN('NFKT','NFAT'),),
+           regles=(AU_MOINS_UN('NFKT','NFAT'),),
            NFKT       = SIMP(statut='f',typ=(fonction_sdaster,)),
            NFKR       = SIMP(statut='f',typ=(fonction_sdaster,)),
            NFAT       = SIMP(statut='f',typ=(fonction_sdaster,)),

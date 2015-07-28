@@ -53,6 +53,8 @@ CARAELEM=AFFE_CARA_ELEM(
                        COQUE=_F(  GROUP_MA = ('TALLE',),
                                EPAIS = EP,
                                VECTEUR=(1,0,0),
+                               COQUE_NCOU = 1,
+                               MODI_METRIQUE = 'NON',
                                ),
                        BARRE=_F(  GROUP_MA = 'A5A6',
                                SECTION = 'GENERALE',
@@ -267,7 +269,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = U,
                    REFERENCE  = 'AUTRE_ASTER',
                    VALE_CALC=-0.000431991484151,
                    VALE_REFE  = -4.3214499919696E-04,
-                   PRECISION=5.E-3, TOLE_MACHINE=(5.E-3, 1.E-6),),
+                   PRECISION=5.E-3, ),
                 ),
           )
 

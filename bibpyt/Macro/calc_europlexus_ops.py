@@ -329,6 +329,9 @@ class EUROPLEXUS:
             nom_fichiers[fic] = os.path.join(self.REPE_epx, nom_fic)
         self.nom_fichiers = nom_fichiers
 
+        # creation du dictionnaire de données complementaires sur les modélisations
+        self.info_mode_compl = {}
+
 
   #-----------------------------------------------------------------------
     def get_unite_libre(self,):
@@ -452,10 +455,10 @@ class EUROPLEXUS:
         """
         from Calc_epx.calc_epx_geom import export_modele
 
-        [self.epx, self.dic_epx_geom, self.gmaInterfaces, self.modi_repere,
+        [self.epx, self.dic_epx_geom, self.modi_repere,
          self.etat_init_cont] = export_modele(self.epx, self.MAILLAGE,
-                                              self.MODELE, self.INTERFACES,
-                                              self.mode_from_cara)
+                                              self.MODELE, self.gmaInterfaces,
+                                              self.info_mode_compl)
 
    #-----------------------------------------------------------------------
     def export_CARA_ELEM(self):
@@ -519,7 +522,7 @@ class EUROPLEXUS:
 
                     self.dicOrthotropie = dicOrthotropie
 
-        self.mode_from_cara = mode_from_cara
+        self.info_mode_compl.update(mode_from_cara)
 
 
     #-----------------------------------------------------------------------
@@ -531,9 +534,10 @@ class EUROPLEXUS:
         """
         from Calc_epx.calc_epx_mate import export_mate
 
-        self.epx, self.compor_gr = export_mate(self.epx, self.CHAM_MATER,
-                  self.COMPORTEMENT,self.gmaInterfaces, self.dicOrthotropie)
+        self.epx, self.compor_gr, mode_from_compor, self.gmaInterfaces = export_mate(self.epx, self.CHAM_MATER,
+                  self.COMPORTEMENT,self.INTERFACES, self.dicOrthotropie)
 
+        self.info_mode_compl.update(mode_from_compor)
 
   #-----------------------------------------------------------------------
     def export_EXCIT(self):
@@ -579,7 +583,11 @@ class EUROPLEXUS:
             # noeuds
             if listing_fact.has_key('TOUT_GROUP_NO'):
                 # tous les noeuds du modèle
-                epx[directive].add_bloc(bloc_poin)
+                if bloc_poin is not None:
+                    epx[directive].add_bloc(bloc_poin)
+                else:
+                    bloc = BLOC_DONNEES('NOPO')
+                    epx[directive].add_bloc(bloc)
             elif listing_fact.has_key('GROUP_NO'):
                 gr_no = tolist(listing_fact['GROUP_NO'])
                 bloc = BLOC_DONNEES('POIN', l_group=gr_no,)
@@ -591,7 +599,11 @@ class EUROPLEXUS:
             # mailles
             if listing_fact.has_key('TOUT_GROUP_MA'):
                 # toutes les mailles du modèle
-                epx[directive].add_bloc(bloc_elem)
+                if bloc_elem is not None:
+                    epx[directive].add_bloc(bloc_elem)
+                else:
+                    bloc = BLOC_DONNEES('NOEL')
+                    epx[directive].add_bloc(bloc)
             elif listing_fact.has_key('GROUP_MA'):
                 gr_ma = tolist(listing_fact['GROUP_MA'])
                 bloc = BLOC_DONNEES('ELEM', l_group=gr_ma,)
@@ -667,8 +679,10 @@ class EUROPLEXUS:
                 objet.add_bloc(bloc)
 
             # tous les groupes de mailles du modèle
-            objet.add_bloc(bloc_poin)
-            objet.add_bloc(bloc_elem)
+            if bloc_poin is not None:
+                objet.add_bloc(bloc_poin)
+            if bloc_elem is not None:
+                objet.add_bloc(bloc_elem)
 
         # FICHIER SAUV
         mot_cle = 'FICHIER SAUV'
@@ -900,12 +914,12 @@ class EUROPLEXUS:
         # Les modules MODELE et RIGI_PARASOL doivent être exécutés avant
         # MAILLAGE car le maillage peut être modifié dans ces modules (ajout de
         # groupes uniquement).
-        # Le module CARA_ELEM doit être exécuté avec MODELE pour connaître la
-        # modelisation à affecter à certains éléments.
+        # Les modules CARA_ELEM et CHAM_MATER doivent être exécutés avant MODELE
+        # pour connaître la modelisation à affecter à certains éléments.
         # Le module CHAM_MATER doit être exécuté avant MAILLAGE pour avoir
         # les infos permettant de traduire les variables internes.
 
-        modules_exe = ['DEBUT', 'CARA_ELEM', 'MODELE', 'CHAM_MATER',
+        modules_exe = ['DEBUT', 'CARA_ELEM', 'CHAM_MATER', 'MODELE',
                        'MAILLAGE', 'EXCIT', 'ECRITURE', 'CALCUL',
                        'POST_COURBE']
         directives = ['DEBUT', 'GEOM', 'COMPLEMENT', 'FONC', 'MATE',
@@ -1078,7 +1092,10 @@ class EUROPLEXUS:
                                                        ['GROUP_MA'])
         li_blocs = []
         for cle in ['POIN', 'ELEM']:
-            bloc = BLOC_DONNEES(cle, l_group=entite_geo[cle],)
+            if entite_geo[cle] != []:
+                bloc = BLOC_DONNEES(cle, l_group=entite_geo[cle],)
+            else:
+                bloc = None
             li_blocs.append(bloc)
 
         return li_blocs

@@ -1,0 +1,253 @@
+# TITRE VALIDATION DES ELEMENTS DISCRETS A 3 DDLS DANS CALC_EUROPLEXUS
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),IMPR_MACRO='OUI',ERREUR=_F(ERREUR_F='EXCEPTION',),DEBUG=_F(SDVERI='OUI'),)
+
+
+MA0=LIRE_MAILLAGE(FORMAT='MED',)
+
+DEFI_GROUP(reuse=MA0, MAILLAGE = MA0, DETR_GROUP_MA =_F( NOM='MASS2'))
+
+MA=CREA_MAILLAGE(MAILLAGE= MA0, CREA_POI1=_F(GROUP_NO = 'T_1_0_0', NOM_GROUP_MA='MASS2'))
+
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=(
+                     _F(GROUP_MA = ('POUT1','POUT2',),PHENOMENE = 'MECANIQUE',MODELISATION = 'POU_D_E'),
+                     _F(GROUP_MA = 'SUPP1',PHENOMENE = 'MECANIQUE',MODELISATION = 'DIS_T'), # RL3D dans EPX
+                     _F(GROUP_MA = 'SUPP2',PHENOMENE = 'MECANIQUE',MODELISATION = 'DIS_T'), # APPU dans EPX
+                     _F(GROUP_MA = ('MASS1','MASS2'),PHENOMENE = 'MECANIQUE',MODELISATION = 'DIS_T'), # PMAT dans EPX
+                    )
+               );
+
+ACI_POU = DEFI_MATERIAU(ELAS=_F(
+                    E = 200000.E06,
+                    NU = 0.,
+                    RHO = 7800.,
+                   )
+                  );
+
+
+MATER=AFFE_MATERIAU(MAILLAGE=MA,
+                       AFFE=(
+                              _F(GROUP_MA = ('POUT1','POUT2',) ,MATER = ACI_POU),
+
+                            ),
+                           )
+
+
+
+ELEM = AFFE_CARA_ELEM(MODELE = MO,
+                      POUTRE=_F(GROUP_MA=('POUT1','POUT2',),
+                                SECTION = 'RECTANGLE',
+                                CARA=('HY', 'HZ'),
+                                VALE =(0.035449077018110321,0.035449077018110321),
+                                VARI_SECT = 'CONSTANT',
+                               ),
+                      ORIENTATION = _F(GROUP_MA=('POUT1','POUT2',),CARA = 'ANGL_VRIL',VALE= 0.),
+                      DISCRET = (
+                                 _F(
+                                    GROUP_MA = ('MASS1', 'MASS2'),
+                                    CARA     = 'M_T_D_N',
+                                    VALE     = 1000.,
+                                    ),
+                                 _F(
+                                    GROUP_MA = ('SUPP2',),
+                                    CARA     = 'K_T_D_N',
+                                    VALE     = (0.,75398.,0.,),
+                                    ),
+                                _F(
+                                    GROUP_MA = ('SUPP1',),
+                                    CARA     = 'K_T_D_L',
+                                    VALE     = (75398.0,0.,0.,),
+                                    REPERE = 'LOCAL',
+                                    ),
+                                 ),
+                     INFO=1,);
+
+
+BLOQ=AFFE_CHAR_MECA(MODELE=MO,
+                     DDL_IMPO=(_F(DX = 0., DY= 0., DZ=0., DRX=0., DRY = 0., DRZ = 0., GROUP_NO = ('P_0_0_0', 'T_0_0_0'),),
+                               _F(DX = 0., DY= 0., DZ=0., GROUP_NO = ('P_1_L_0',),),
+                     ),
+                    );
+
+FORC=AFFE_CHAR_MECA(MODELE=MO,
+                     FORCE_NODALE=(_F(FY= 1000.,GROUP_NO = ('P_1_0_0', 'T_1_0_0'),),
+                     ),
+                    );
+
+F_FORC=DEFI_FONCTION(NOM_PARA='INST',
+                     VALE=(0.0,    1.,
+                           100.,   1.),
+                     );
+
+NFKT=DEFI_FONCTION(NOM_PARA='INST',
+                   VALE=(-100.0,     100.0,
+                          0.0,     0.0,
+                          100.0,     -100.0,
+                        ),
+                   );
+
+U = CALC_EUROPLEXUS(
+   LANCEMENT = 'OUI',
+   MODELE=MO,
+   CHAM_MATER=MATER,
+   COMPORTEMENT =(_F(
+                  RELATION = 'ELAS',
+                  GROUP_MA = ('POUT1','POUT2',),
+                 ),
+              ),
+   CARA_ELEM=ELEM,
+   FONC_PARASOL = _F(
+                     GROUP_MA =('SUPP2'),
+                     NFKT = NFKT,
+                    ),
+   EXCIT=(_F(CHARGE=BLOQ,),
+          _F(CHARGE=FORC,FONC_MULT=F_FORC,),
+         ),
+   CALCUL = _F(TYPE_DISCRETISATION  ='AUTO',
+               CSTAB     = 0.8,
+               INST_INIT = 0,
+               INST_FIN  = 1.0234,
+               NMAX      = 2000000,
+               ),
+   ARCHIVAGE   = _F(INST=2.562047E-01,),
+   );
+
+
+
+TEST_RESU(
+   RESU=(
+        _F(
+          RESULTAT   = U,
+          #INST       = 2.562047E-01,
+          NUME_ORDRE = 23469,
+          NOM_CHAM   = 'DEPL',
+          NOM_CMP    = 'DY',
+          GROUP_NO   = 'P_1_0_0',
+          REFERENCE  = 'SOURCE_EXTERNE',
+          VALE_CALC  = 0.0129519151791,
+          VALE_REFE  = 1.29492E-02,),
+        _F(
+          RESULTAT   = U,
+          #INST       = 2.562047E-01,
+          NUME_ORDRE = 23469,
+          NOM_CHAM   = 'DEPL',
+          NOM_CMP    = 'DY',
+          GROUP_NO   = 'T_1_0_0',
+          REFERENCE  = 'SOURCE_EXTERNE',
+          VALE_CALC  = 0.0129519702163,
+          VALE_REFE  = 1.29492E-02,),
+    )
+  );
+
+
+
+
+ELEM2 = AFFE_CARA_ELEM(MODELE = MO,
+                      POUTRE=_F(GROUP_MA=('POUT1','POUT2',),
+                                SECTION = 'RECTANGLE',
+                                CARA=('HY', 'HZ'),
+                                VALE =(0.035449077018110321,0.035449077018110321),
+                                VARI_SECT = 'CONSTANT',
+                               ),
+                      ORIENTATION = _F(GROUP_MA=('POUT1','POUT2',),CARA = 'ANGL_VRIL',VALE= 0.),
+                      DISCRET = (
+                                 _F(
+                                    GROUP_MA = ('MASS1', 'MASS2'),
+                                    CARA     = 'M_T_D_N',
+                                    VALE     = 1000.,
+                                    ),
+                                 _F(
+                                    GROUP_MA = ('SUPP2',),
+                                    CARA     = 'K_T_D_N',
+                                    VALE     = (0.,75398.,0.,),
+                                    ),
+                                 _F(
+                                    GROUP_MA = ('SUPP2',),
+                                    CARA     = 'A_T_D_N',
+                                    VALE     = (0.,100.,0.,),
+                                    ),
+                                 _F(
+                                    GROUP_MA = ('SUPP1',),
+                                    CARA     = 'K_T_D_L',
+                                    VALE     = (75398.0,0.,0.,),
+                                    REPERE = 'LOCAL',
+                                    ),
+                                 ),
+                     INFO=1,);
+
+
+
+
+U2 = CALC_EUROPLEXUS(
+   LANCEMENT = 'OUI',
+   MODELE=MO,
+   CHAM_MATER=MATER,
+   COMPORTEMENT =(_F(
+                  RELATION = 'ELAS',
+                  GROUP_MA = ('POUT1','POUT2',),
+                 ),
+              ),
+   CARA_ELEM=ELEM2,
+   FONC_PARASOL = _F(
+                     GROUP_MA =('SUPP2'),
+                     NFKT = NFKT,
+                     NFAT = NFKT,
+                    ),
+   EXCIT=(_F(CHARGE=BLOQ,),
+          _F(CHARGE=FORC,FONC_MULT=F_FORC,),
+         ),
+   CALCUL = _F(TYPE_DISCRETISATION  ='AUTO',
+               CSTAB     = 0.8,
+               INST_INIT = 0,
+               INST_FIN  = 1.0234,
+               NMAX      = 2000000,
+               ),
+   ARCHIVAGE   = _F(INST=2.562047E-01,),
+   );
+
+
+
+TEST_RESU(
+   RESU=(
+        _F(
+          RESULTAT   = U2,
+          #INST       = 2.562047E-01,
+          NUME_ORDRE = 23469,
+          NOM_CHAM   = 'DEPL',
+          NOM_CMP    = 'DY',
+          GROUP_NO   = 'P_1_0_0',
+          REFERENCE  = 'SOURCE_EXTERNE',
+          VALE_CALC  = 0.0129519151791,
+          VALE_REFE  = 1.29492E-02,),
+        _F(
+          RESULTAT   = U2,
+          #INST       = 2.562047E-01,
+          NUME_ORDRE = 23469,
+          NOM_CHAM   = 'DEPL',
+          NOM_CMP    = 'DY',
+          GROUP_NO   = 'T_1_0_0',
+          REFERENCE  = 'SOURCE_EXTERNE',
+          VALE_CALC  = 0.0128707475239,
+          VALE_REFE  = 1.28680E-02,),
+    )
+  );
+
+
+FIN()

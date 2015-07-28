@@ -31,10 +31,9 @@ from Accas import _F
 from Cata.cata import DEFI_GROUP
 
 
-def export_modele(epx, MAILLAGE, MODELE, INTERFACES, mode_from_cara):
+def export_modele(epx, MAILLAGE, MODELE, gmaInterfaces, info_mode_compl):
     """
         Traitement du concept MODELE et traduction pour EPX
-        Traitement de l'objet INTERFACES
     """
     directive = 'GEOM'
 
@@ -51,7 +50,7 @@ def export_modele(epx, MAILLAGE, MODELE, INTERFACES, mode_from_cara):
 
     len_str_gr_med_max = 24
     gr_cr_noms_coupes = []
-    veri_gr_from_cara = []
+    veri_gr_from_compl = []
     ltyma = aster.getvectjev("&CATA.TM.NOMTM")
     modi_repere = {'COQUE': False}
     etat_init_cont = []
@@ -136,11 +135,11 @@ def export_modele(epx, MAILLAGE, MODELE, INTERFACES, mode_from_cara):
                     # cas ou la modelisation dépend du CARA_ELEM
                     mode_epx_dispo = cata_modelisa[
                         modelisation]['MODE_EPX'][typma]
-                    if not gr in mode_from_cara.keys():
+                    if not gr in info_mode_compl.keys():
                         UTMESS('F', 'PLEXUS_26', valk=gr)
                     else:
-                        veri_gr_from_cara.append(gr)
-                    mode_epx = mode_from_cara[gr]
+                        veri_gr_from_compl.append(gr)
+                    mode_epx = info_mode_compl[gr]
                     if mode_epx not in mode_epx_dispo:
                         raise Exception(
                             "Modélisation epx %s non permise pour la modélidation %s"
@@ -158,9 +157,9 @@ def export_modele(epx, MAILLAGE, MODELE, INTERFACES, mode_from_cara):
                     }
                 epx_geom[mode_epx]['GROUP_MA'].append(nom_gr)
 
-    # verif mode_from_cara
-    for gr in mode_from_cara:
-        if gr not in veri_gr_from_cara:
+    # verif info_mode_compl
+    for gr in info_mode_compl:
+        if gr not in veri_gr_from_compl:
             UTMESS('F', 'PLEXUS_34', valk=gr)
 
     # liste comportant les modelisations definis dans le module GEOMETRIE
@@ -184,15 +183,8 @@ def export_modele(epx, MAILLAGE, MODELE, INTERFACES, mode_from_cara):
             epx[directive].add_bloc(bloc_simple)
 
     # INTERFACES
-    listInterfaces = INTERFACES
-    gmaInterfaces = []
-    if listInterfaces:
-        for interface in listInterfaces:
-            Lgma1 = tolist(interface['GROUP_MA_1'])
-            Lgma2 = tolist(interface['GROUP_MA_2'])
-            gmaInterfaces.extend(Lgma1)
-            gmaInterfaces.extend(Lgma2)
+    if gmaInterfaces:
         bloc_simple = BLOC_DONNEES('CL3L', cara=gmaInterfaces)
         epx[directive].add_bloc(bloc_simple)
 
-    return epx, epx_geom, gmaInterfaces, modi_repere, etat_init_cont
+    return epx, epx_geom, modi_repere, etat_init_cont

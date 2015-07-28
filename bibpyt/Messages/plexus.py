@@ -93,6 +93,13 @@ liste de caractéristiques (mot-clé CARA).
 CALC_EUROPLEXUS ne sait pas traiter de tels cas.
 """),
 
+    16 : _(u""" Dans l'une des occurrences du mot-clé facteur %(k1)s du concept issue de AFFE_CARA_ELEM,
+les informations données ne peuvent être transmises à Europlexus car il n'est pas aussi riche que Code_Aster
+pour la présente fonctionnalité.
+Pour le mot-clé %(k2)s, les valeurs en positions %(i1)d et %(i2)d de VALE doivent être égales pour que la
+traduction vers Europlexus soit possible.
+"""),
+
     17 : _(u"""
 Vous avez demander de fournir à EPX un état initial de contraintes, cependant cette fonctionnalité
 n'est pas développée pour certains éléments du modèle. Le champ de contraintes du résultat donné
@@ -180,7 +187,7 @@ On ne trouve pas le mot-clé %(k1)s dans le matériau %(k2)s. Il est indispensab
 """),
 
     34 : _(u"""
-Le groupe %(k1)s est donné dans AFFE_CARA_ELEM, mais n'est pas présent dans le MODELE.
+Le groupe %(k1)s est donné dans AFFE_CARA_ELEM ou dans COMPORTEMENT, mais n'est pas présent dans le MODELE.
 """),
 
     35 : _(u"""
@@ -329,5 +336,12 @@ LIRE_EUROPLEXUS ne sait pas traduire les données de ce champ. Les éléments du
 Code_Aster associés aux mêmes éléments du maillage, s'ils existent,
 gardent des valeurs nulles sur le champ correspondant.
 """),
+
+    56 : _(u"""
+Dans une occurrence du mot-clé facteur %(k1)s de AFFE_CARA_ELEM, on de trouve pas
+le mot-clé %(k2)s qui est obligatoire.
+"""),
+
+
 
 }

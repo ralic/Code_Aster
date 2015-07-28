@@ -283,9 +283,9 @@ COQUE = []
 COQUE =[_F(EPAIS=1.3,
             GROUP_MA = ('DALQ1','DALQ2','DALT3'),
             COQUE_NCOU  = 1,
-            INER_ROTA = 'OUI',
             VECTEUR = (1.,0.,0.),
-            EXCENTREMENT = 0)
+            MODI_METRIQUE = 'NON',
+            )
          ]
 
 

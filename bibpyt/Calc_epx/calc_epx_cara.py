@@ -63,7 +63,7 @@ def bloc_cara(typ_carel, l_elem, epx, l_group, directive, mot_cle_aster,
                     mot_cle_ok.extend(['CARA', 'VALE'])
                     valeur = tolist(elem['VALE'])
                     if is_vale_aster[i_dic]:
-                        cara = cara_epx[i_dic]
+                        cara = list(cara_epx[i_dic])
                         vale = [None] * len(cara)
                         k_valeur = 0
                         for i_log, logi in enumerate(is_vale_aster[i_dic]):
@@ -82,14 +82,30 @@ def bloc_cara(typ_carel, l_elem, epx, l_group, directive, mot_cle_aster,
                 val_cle = ''
                 cara_in = tolist(elem['CARA'])
                 vale_in = tolist(elem['VALE'])
-                vale = [None] * len(cara_epx[i_dic])
                 cara = cara_epx[i_dic]
+                vale = [None] * len(cara)
                 for i, car in enumerate(cara_in):
                     if not car in cara_aster[i_dic]:
                         UTMESS('F', 'PLEXUS_8', valk=(car, typ_carel))
                     val = vale_in[i]
                     index = cara_aster[i_dic].index(car)
                     vale[index] = val
+            # traitement des doublons (cas ou aster est plus riche qu'EPX
+            # on verifie que les doublons ont la meme valeur
+            i = 0
+            while i< len(cara):
+                car1 = cara[i]
+                while cara.count(car1)>1:
+                    index = cara[i+1:].index(car1)
+                    index+= i+1
+                    if vale[i] == vale[index]:
+                        cara.pop(index)
+                        vale.pop(index)
+                    else:
+                        UTMESS('F','PLEXUS_16', valk = [typ_carel, mot_cle_aster[i_dic]],
+                               vali = [i+1, index+1])
+                i+=1
+
 #           verif des mots-clés autorisés
             mc_verif = []
             if verif[i_dic]:
@@ -133,6 +149,9 @@ def bloc_cara(typ_carel, l_elem, epx, l_group, directive, mot_cle_aster,
                             liste_ok = ', '.join(verif[i_dic][mc_aster])
                             UTMESS('F', 'PLEXUS_4', valk=(typ_carel, mc_aster,
                                                           elem[mc_aster], liste_ok))
+                    else:
+                        UTMESS('F', 'PLEXUS_56', valk=(typ_carel, mc_aster))
+
             if mot_cle_epx_select == None:
                 mot_cle_epx_select = mot_cle_epx[i_dic]
                 directive_select = directive[i_dic]
@@ -214,12 +233,6 @@ def export_cara(cle, epx, donnees_cle, MAILLAGE, CARA_ELEM,
             else:
                 cara_parasol = cara_in
 
-            for group in group_ma_poi1:
-                if not mode_from_cara.has_key(group):
-                    mode_from_cara[group] = mode_epx[0]
-                else:
-                    raise Exception(
-                        'Une modélisation existe déjà pour le groupe %s dans mode_from_cara' % group)
         # verif des caractéristiques
         group_ma_poi1 = group_ma_poi1[0]
         l_cara = []
@@ -228,6 +241,17 @@ def export_cara(cle, epx, donnees_cle, MAILLAGE, CARA_ELEM,
                 UTMESS('F', 'PLEXUS_8',
                        valk=(car, cle))
             l_cara.extend(cata_cara_elem[cle][0][car])
+            # info complementaire de modelisation
+            index = mot_cle_aster[0].index(car)
+            if mode_epx[0][index] is not None:
+                if not mode_from_cara.has_key(group_ma_poi1):
+                    mode_from_cara[group_ma_poi1] = mode_epx[0][index]
+                else:
+                    if mode_from_cara[group_ma_poi1] != mode_epx[0][index]:
+                        raise Exception(
+                            'Une modélisation existe déjà pour le groupe %s dans mode_from_cara' % group_ma_poi1)
+
+
         if not dic_gr_cara_supp.has_key(group_ma_poi1):
             UTMESS('F', 'PLEXUS_12', valk=('NKFT ou NFAT', cle, group_ma_poi1))
         for car in l_cara:

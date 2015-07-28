@@ -74,6 +74,8 @@ CARAEPX=AFFE_CARA_ELEM(
                        COQUE=(_F(  GROUP_MA = 'COQUE',
                                EPAIS = 1.,
                                VECTEUR = (0.,0.,1.),
+                               COQUE_NCOU = 1,
+                               MODI_METRIQUE = 'NON',
                                ),
                                ),
                        BARRE=_F(  GROUP_MA = 'CABLE2',

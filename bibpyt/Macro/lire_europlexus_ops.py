@@ -672,50 +672,56 @@ présentes%s""" % compo)
                     DETRUIRE(CONCEPT=dicDetr_transfo, INFO=1)
                     j += 1
 
-            ccc = cc.copy()
-            ccc.update(TYPE_CHAM='ELGA_SIEF_R',
-                       ASSE=dicAsse,)
-            __EFFG[i] = CREA_CHAMP(**ccc)
+            if dicAsse != []:
+                ccc = cc.copy()
+                ccc.update(TYPE_CHAM='ELGA_SIEF_R',
+                           ASSE=dicAsse,)
+                __EFFG[i] = CREA_CHAMP(**ccc)
 
-            dic = {
-                'MODELE': self.MODELE,
-                'INST': resu.LIST_PARA()['INST'][i],
-            }
-            if self.CHAM_MATER is not None:
-                dic['CHAM_MATER'] = self.CHAM_MATER
-            if self.CARA_ELEM_CONCEPT is not None:
-                dic['CARA_ELEM'] = self.CARA_ELEM_CONCEPT
+                dic = {
+                    'MODELE': self.MODELE,
+                    'INST': resu.LIST_PARA()['INST'][i],
+                }
+                if self.CHAM_MATER is not None:
+                    dic['CHAM_MATER'] = self.CHAM_MATER
+                if self.CARA_ELEM_CONCEPT is not None:
+                    dic['CARA_ELEM'] = self.CARA_ELEM_CONCEPT
 
-            dic['CHAM_GD'] = __EFFG[i]
-            dicAffe.append(dic)
+                dic['CHAM_GD'] = __EFFG[i]
+                dicAffe.append(dic)
 
-            ccc = cc.copy()
-            ccc.update(TYPE_CHAM='ELGA_VARI_R',
-                       ASSE=dicAsse3)
-            __ECRG[i] = CREA_CHAMP(**ccc)
+            if dicAsse3 !=[]:
+                ccc = cc.copy()
+                ccc.update(TYPE_CHAM='ELGA_VARI_R',
+                           ASSE=dicAsse3)
+                __ECRG[i] = CREA_CHAMP(**ccc)
 
-            dic2 = dic.copy()
-            dic2['CHAM_GD'] = __ECRG[i]
-            dicAffe3.append(dic2)
+                dic2 = dic.copy()
+                dic2['CHAM_GD'] = __ECRG[i]
+                dicAffe3.append(dic2)
 
-            DETRUIRE(CONCEPT=dicDetr, INFO=1)
+            if dicDetr !=[]:
+                DETRUIRE(CONCEPT=dicDetr, INFO=1)
         RetablirAlarme('MED_4')
 
         MasquerAlarme('COMPOR2_26')
         MasquerAlarme('COMPOR2_23')
-        resu = CREA_RESU(reuse=resu,
-                         OPERATION='AFFE',
-                         TYPE_RESU='EVOL_NOLI',
-                         NOM_CHAM='SIEF_ELGA',
-                         AFFE=dicAffe,
-                         )
 
-        resu = CREA_RESU(reuse=resu,
-                         OPERATION='AFFE',
-                         TYPE_RESU='EVOL_NOLI',
-                         NOM_CHAM='VARI_ELGA',
-                         AFFE=dicAffe3,
-                         )
+        if dicAffe != []:
+            resu = CREA_RESU(reuse=resu,
+                             OPERATION='AFFE',
+                             TYPE_RESU='EVOL_NOLI',
+                             NOM_CHAM='SIEF_ELGA',
+                             AFFE=dicAffe,
+                             )
+
+        if dicAffe3 != []:
+            resu = CREA_RESU(reuse=resu,
+                             OPERATION='AFFE',
+                             TYPE_RESU='EVOL_NOLI',
+                             NOM_CHAM='VARI_ELGA',
+                             AFFE=dicAffe3,
+                             )
         RetablirAlarme('COMPOR2_26')
         RetablirAlarme('COMPOR2_23')
 

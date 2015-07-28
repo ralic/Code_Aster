@@ -45,6 +45,8 @@ CARAELEM=AFFE_CARA_ELEM(
                       MODELE=MODELE,
                        COQUE=(_F(  GROUP_MA = 'GROUPE_____VOILE',
                                EPAIS = EP,
+                               COQUE_NCOU = 1,
+                               MODI_METRIQUE = 'NON',
                                ),
                                ),
                        BARRE=_F(  GROUP_MA = 'GROUPE__CABLE001',
@@ -212,7 +214,7 @@ TEST_RESU(RESU=_F(INST=4.0000000000000002E-4,
                   NOEUD='NC001003',
                   NOM_CMP='DZ',
                   VALE_CALC=2.81117613773E-05,
-                  TOLE_MACHINE=1.E-3,),
+                  ),
           )
 
 TEST_RESU(RESU=_F(INST=4.0000000000000002E-4,
@@ -221,7 +223,7 @@ TEST_RESU(RESU=_F(INST=4.0000000000000002E-4,
                   NOEUD='NC001003',
                   NOM_CMP='DZ',
                   VALE_CALC=2.8117346211E-05,
-                  TOLE_MACHINE=1.E-3,),
+                  ),
           )
 
 FIN()

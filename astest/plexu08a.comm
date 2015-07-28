@@ -45,6 +45,8 @@ CARAELEM=AFFE_CARA_ELEM(
                       MODELE=MODELE,
                        COQUE=(_F(  GROUP_MA = 'GROUPE_____VOILE',
                                EPAIS = EP,
+                               COQUE_NCOU = 1,
+                               MODI_METRIQUE = 'NON',
                                ),
                                ),
                        BARRE=_F(  GROUP_MA = 'GROUPE__CABLE001',

@@ -330,8 +330,10 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
 CARA_ELE=AFFE_CARA_ELEM(MODELE=MOD,
                         COQUE=_F(GROUP_MA='DALLE',
                                  EPAIS=EP,
-                                 INER_ROTA='OUI',
-                                 ANGL_REP=(0.0,0.0),),);
+                                 ANGL_REP=(0.0,0.0),
+                                 COQUE_NCOU = 1,
+                                 MODI_METRIQUE = 'NON',
+                                 ),);
 
 IMPR_CO(CONCEPT=_F(NOM=MAT),);
 

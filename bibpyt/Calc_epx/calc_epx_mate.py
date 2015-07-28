@@ -27,9 +27,10 @@ from Utilitai.Utmess import UTMESS
 from Calc_epx.calc_epx_struc import BLOC_DONNEES, BLOC_MATE, FONCTION
 
 
-def export_mate(epx, CHAM_MATER, COMPORTEMENT, gmaInterfaces, dicOrthotropie):
+def export_mate(epx, CHAM_MATER, COMPORTEMENT, INTERFACES, dicOrthotropie):
     """
         Traitement des données matériaux et comportements
+        Traitement des interfaces
     """
 
     directive = 'MATE'
@@ -48,6 +49,7 @@ def export_mate(epx, CHAM_MATER, COMPORTEMENT, gmaInterfaces, dicOrthotropie):
 
     dic_comportement = {}
     gmaGLRC = []
+    mode_from_compor = {}
     # dic_compor_gr : pour les transformations des variables internes
     # aster -> epx
     dic_compor_gr = {}
@@ -69,6 +71,10 @@ def export_mate(epx, CHAM_MATER, COMPORTEMENT, gmaInterfaces, dicOrthotropie):
                                     'MATER': None,
                                     'NOM_MATER': None,
                                     }
+            # info complementaire sur la modelisation epx
+            if cata_compor[comp['RELATION']].has_key('MODE_EPX'):
+                mode_from_compor[gr] = cata_compor[comp['RELATION']]['MODE_EPX']
+
             if comp['RELATION'] == 'GLRC_DAMAGE':
                 # GLRC impose de définir l'orientation :
                 # on stocke dans gmaGLRC les GMA dont il faudra retrouver
@@ -193,7 +199,17 @@ def export_mate(epx, CHAM_MATER, COMPORTEMENT, gmaInterfaces, dicOrthotropie):
         bloc_fonc = FONCTION(cle_fonc, val[0], val[1], nom_aster=nom_aster)
         epx['FONC'].add_bloc(bloc_fonc)
 
-    if gmaInterfaces:
+
+    # INTERFACES
+    listInterfaces = INTERFACES
+    gmaInterfaces = []
+    if listInterfaces:
+        for interface in listInterfaces:
+            Lgma1 = tolist(interface['GROUP_MA_1'])
+            Lgma2 = tolist(interface['GROUP_MA_2'])
+            gmaInterfaces.extend(Lgma1)
+            gmaInterfaces.extend(Lgma2)
+
         mot_cle_epx = 'FANTOME'
         val_cle = 0.
         titre = 'INTERFACES'
@@ -214,7 +230,7 @@ def export_mate(epx, CHAM_MATER, COMPORTEMENT, gmaInterfaces, dicOrthotropie):
         bloc = BLOC_DONNEES(mot_cle_epx, l_group=gma, val_cle=val_cle,)
         epx[directive2].add_bloc(bloc)
 
-    return epx, dic_compor_gr
+    return epx, dic_compor_gr, mode_from_compor, gmaInterfaces
 
 
 #-----------------------------------------------------------------------
