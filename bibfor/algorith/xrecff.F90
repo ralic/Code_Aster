@@ -110,8 +110,8 @@ subroutine xrecff(fiss, typfis, chfond, basfon, fonoeu, lnoff, conf)
     endif
 !
 !     CREATION DE NOEUDS TEMPORAIRES
+    noeutmp = '&&XREFF.FONNOEU_TEMP'
     if (typfis.eq.'FONDFISS') then
-        noeutmp = '&&XREFF.FONNOEU_TEMP'
         call wkvect(noeutmp, 'V V K8', lnoff, inoeu)
         do 14 i = 1, lnoff
             zk8(inoeu-1+i)=fonoeud(i)
@@ -128,8 +128,8 @@ subroutine xrecff(fiss, typfis, chfond, basfon, fonoeu, lnoff, conf)
 15  continue
 !
 !     CREATION D'UNE BASE TEMPORAIRE RESTREINTE AU NUMFON
+    bastmp = '&&XREFF.BASFON_TEMP'
     if ((typfis.eq.'FISSURE').or.(conf .eq. 'COLLEE')) then
-        bastmp = '&&XREFF.BASFON_TEMP'
         call wkvect(bastmp, 'V V R', lnoff*6, ibas)
         do 17 i = 1, lnoff
             do 18 j = 1, 6
@@ -183,7 +183,7 @@ subroutine xrecff(fiss, typfis, chfond, basfon, fonoeu, lnoff, conf)
         if (typfis.eq.'FONDFISS') then
             zk8(jnoeu)='XXXX'
             zk8(jnoeu+(nfonu-1))='XXXX'
-        endif       
+        endif
 !
 !       NOUVEAUX POINTS
         smax = zr(ifon-1+4*(lnoff-1)+4)
@@ -208,7 +208,7 @@ subroutine xrecff(fiss, typfis, chfond, basfon, fonoeu, lnoff, conf)
                     zr(jbasu-1+6*(i-1)+j) = xyz1 + (xyz2-xyz1)*(s-s1)/(s2- s1)
 112             continue
             endif
-!           
+!
             zr(jfonu-1+4*(i-1)+4) = s
 102         continue
 !
@@ -242,7 +242,7 @@ subroutine xrecff(fiss, typfis, chfond, basfon, fonoeu, lnoff, conf)
 !     MENAGE
     call jedetr(fontmp)
     call jedetr(bastmp)
-    call jedetr(noeutmp)    
+    call jedetr(noeutmp)
 !
     call jedema()
 end subroutine
