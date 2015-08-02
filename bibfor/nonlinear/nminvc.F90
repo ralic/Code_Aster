@@ -1,7 +1,7 @@
-subroutine nminvc(modelz, mate  , carele, compor, carcri,&
-                  sdtime, sddisc, sddyna, valinc, solalg,&
-                  lischa, comref, resoco, resocu, numedd,&
-                  fonact, veelem, veasse, measse)
+subroutine nminvc(modelz, mate  , carele, compor, sdtime,&
+                  sddisc, sddyna, valinc, solalg, lischa,&
+                  comref, resoco, resocu, numedd, fonact,&
+                  veelem, veasse, measse)
 !
 implicit none
 !
@@ -32,7 +32,7 @@ implicit none
     integer :: fonact(*)
     character(len=*) :: modelz
     character(len=24) :: mate, carele
-    character(len=24) :: compor, carcri
+    character(len=24) :: compor
     character(len=19) :: sddisc, sddyna, lischa
     character(len=24) :: resoco, resocu
     character(len=24) :: comref, numedd, sdtime
@@ -59,7 +59,6 @@ implicit none
 ! IN  LISCHA : LISTE DES CHARGEMENTS
 ! IN  MATE   : NOM DU CHAMP DE MATERIAU
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
-! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
 ! IN  SDDISC : SD DISCRETISATION
 ! IN  SDTIME : SD TIMER
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
@@ -111,11 +110,11 @@ implicit none
 ! --- CALCUL DES VECT_ELEM DE LA LISTE
 !
     if (nbvect .gt. 0) then
-        call nmxvec(modelz, mate  , carele, compor, carcri,&
-                    sdtime, sddisc, sddyna, numins, valinc,&
-                    solalg, lischa, comref, resoco, resocu,&
-                    numedd, veelem, veasse, measse, nbvect,&
-                    ltypve, lcalve, loptve, lassve)
+        call nmxvec(modelz, mate  , carele, compor, sdtime,&
+                    sddisc, sddyna, numins, valinc, solalg,&
+                    lischa, comref, resoco, resocu, numedd,&
+                    veelem, veasse, measse, nbvect, ltypve,&
+                    lcalve, loptve, lassve)
     endif
 !
 end subroutine

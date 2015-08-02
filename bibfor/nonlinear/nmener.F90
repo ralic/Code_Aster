@@ -1,8 +1,8 @@
 subroutine nmener(valinc, veasse, measse, sddyna, eta   ,&
                   sdener, fonact, solveu, numedd, numfix,&
                   meelem, numins, modele, mate  , carele,&
-                  compor, carcri, sdtime, sddisc, solalg,&
-                  lischa, comref, resoco, resocu, veelem)
+                  compor, sdtime, sddisc, solalg, lischa,&
+                  comref, resoco, resocu, veelem)
 !
 implicit none
 !
@@ -45,7 +45,7 @@ implicit none
 !
     character(len=19) :: sddyna, sdener, valinc(*), veasse(*), measse(*)
     character(len=19) :: solveu, meelem(*), sddisc, solalg(*), lischa, veelem(*)
-    character(len=24) :: numedd, numfix, modele, mate, carele, compor, carcri
+    character(len=24) :: numedd, numfix, modele, mate, carele, compor
     character(len=24) :: sdtime, comref, resoco, resocu
     real(kind=8) :: eta
     integer :: fonact(*), numins
@@ -74,7 +74,6 @@ implicit none
 ! IN  MATE   : CHAMP MATERIAU
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  COMPOR : COMPORTEMENT
-! IN  CARCRI : PARAMETRES METHODES D'INTEGRATION LOCALES (VOIR NMLECT)
 ! IN  SDTIME : SD TIMER
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
@@ -332,10 +331,10 @@ implicit none
 ! --- ON LE FAIT ICI AFIN DE DISPOSER D UNE MATRICE D AMORTISSEMENT.
 !
     if (numins .eq. 1) then
-        call nmfini(sddyna, valinc, measse, modele, mate,&
-                    carele, compor, carcri, sdtime, sddisc,&
-                    numins, solalg, lischa, comref, resoco,&
-                    resocu, numedd, veelem, veasse)
+        call nmfini(sddyna, valinc, measse, modele, mate  ,&
+                    carele, compor, sdtime, sddisc, numins,&
+                    solalg, lischa, comref, resoco, resocu,&
+                    numedd, veelem, veasse)
     endif
 !
 ! --- PREPARATION DES CHAMPS DE FORCE

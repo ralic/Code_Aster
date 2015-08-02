@@ -175,10 +175,10 @@ implicit none
 ! --- CALCUL DES CHARGEMENTS VARIABLES AU COURS DU PAS DE TEMPS
 !
     call nmchar('VARI', 'PREDICTION', modele, numedd, mate,&
-                carele, compor, lischa, carcri, numins,&
-                sdtime, sddisc, fonact, resoco, resocu,&
-                comref, valinc, solalg, veelem, measse,&
-                veasse, sddyna)
+                carele, compor, lischa, numins, sdtime,&
+                sddisc, fonact, resoco, resocu, comref,&
+                valinc, solalg, veelem, measse, veasse,&
+                sddyna)
 !
 ! --- CALCUL DU SECOND MEMBRE POUR CONTACT/XFEM
 !

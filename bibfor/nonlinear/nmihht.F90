@@ -1,5 +1,5 @@
-subroutine nmihht(model      , nume_dof , mate     , compor        , cara_elem  ,&
-                  list_load  , comp_para, varc_refe, list_func_acti, sdstat     ,&
+subroutine nmihht(model      , nume_dof , mate     , compor        , comp_para  ,&
+                  cara_elem  , list_load, varc_refe, list_func_acti, sdstat     ,&
                   sddyna     , sdtime   , sdnume   , sdcont_defi   , sdcont_solv,&
                   sdunil_solv, hval_incr, sddisc   , hval_algo     , hval_veasse,&
                   result)
@@ -100,10 +100,10 @@ implicit none
 ! - Compute previous second member for multi-step schemes
 !
     if (l_reuse.or.l_init_state) then
-        call nmchht(model      , mate       , cara_elem     , compor        , comp_para  ,&
-                    list_load  , nume_dof   , varc_refe     , list_func_acti, sdstat     ,&
-                    sddyna     , sdtime     , sddisc        , sdnume        , sdcont_defi,&
-                    sdcont_solv, sdunil_solv, hval_incr     , hval_algo     , hval_veasse,&
+        call nmchht(model      , mate       , cara_elem, compor        , comp_para  ,&
+                    list_load  , nume_dof   , varc_refe, list_func_acti, sdstat     ,&
+                    sddyna     , sdtime     , sddisc   , sdnume        , sdcont_defi,&
+                    sdcont_solv, sdunil_solv, hval_incr, hval_algo     , hval_veasse,&
                     result)
     endif
 

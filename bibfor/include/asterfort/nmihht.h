@@ -18,8 +18,8 @@
 ! aslint: disable=W1504
 !
 interface
-    subroutine nmihht(model      , nume_dof , mate     , compor        , cara_elem  ,&
-                      list_load  , comp_para, varc_refe, list_func_acti, sdstat     ,&
+    subroutine nmihht(model      , nume_dof , mate     , compor        , comp_para  ,&
+                      cara_elem  , list_load, varc_refe, list_func_acti, sdstat     ,&
                       sddyna     , sdtime   , sdnume   , sdcont_defi   , sdcont_solv,&
                       sdunil_solv, hval_incr, sddisc   , hval_algo     , hval_veasse,&
                       result)

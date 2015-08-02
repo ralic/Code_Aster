@@ -17,8 +17,7 @@
 !
 interface
     subroutine mecgme(modelz   , cara_elemz    , matez    , list_load, inst_curr,&
-                      disp_prev, disp_cumu_inst, inst_prev, compor   , carcri,&
-                      matr_elem)
+                      disp_prev, disp_cumu_inst, inst_prev, compor   , matr_elem)
         character(len=*), intent(in) :: modelz
         character(len=*), intent(in) :: cara_elemz
         character(len=*), intent(in) :: matez
@@ -28,7 +27,6 @@ interface
         character(len=19), intent(in) :: disp_prev
         character(len=19), intent(in) :: disp_cumu_inst
         character(len=24), intent(in) :: compor
-        character(len=24), intent(in) :: carcri
         character(len=19), intent(in) :: matr_elem
     end subroutine mecgme
 end interface

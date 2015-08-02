@@ -19,10 +19,10 @@
 !
 interface
     subroutine nmchar(mode  , phasez, modele, numedd, mate  ,&
-                      carele, compor, lischa, carcri, numins,&
-                      sdtime, sddisc, fonact, resoco, resocu,&
-                      comref, valinc, solalg, veelem, measse,&
-                      veasse, sddyna)
+                      carele, compor, lischa, numins, sdtime,&
+                      sddisc, fonact, resoco, resocu, comref,&
+                      valinc, solalg, veelem, measse, veasse,&
+                      sddyna)
         character(len=4) :: mode
         character(len=*) :: phasez
         character(len=24) :: modele
@@ -31,7 +31,6 @@ interface
         character(len=24) :: carele
         character(len=24) :: compor
         character(len=19) :: lischa
-        character(len=24) :: carcri
         integer :: numins
         character(len=24) :: sdtime
         character(len=19) :: sddisc

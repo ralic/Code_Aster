@@ -16,10 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmfini(sddyna, valinc, measse, modele, mate,&
-                      carele, compor, carcri, sdtime, sddisc,&
-                      numins, solalg, lischa, comref, resoco,&
-                      resocu, numedd, veelem, veasse)
+    subroutine nmfini(sddyna, valinc, measse, modele, mate  ,&
+                      carele, compor, sdtime, sddisc, numins,&
+                      solalg, lischa, comref, resoco, resocu,&
+                      numedd, veelem, veasse)
         character(len=19) :: sddyna
         character(len=19) :: valinc(*)
         character(len=19) :: measse(*)
@@ -27,7 +27,6 @@ interface
         character(len=24) :: mate
         character(len=24) :: carele
         character(len=24) :: compor
-        character(len=24) :: carcri
         character(len=24) :: sdtime
         character(len=19) :: sddisc
         integer :: numins

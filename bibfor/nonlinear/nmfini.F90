@@ -1,7 +1,7 @@
-subroutine nmfini(sddyna, valinc, measse, modele, mate,&
-                  carele, compor, carcri, sdtime, sddisc,&
-                  numins, solalg, lischa, comref, resoco,&
-                  resocu, numedd, veelem, veasse)
+subroutine nmfini(sddyna, valinc, measse, modele, mate  ,&
+                  carele, compor, sdtime, sddisc, numins,&
+                  solalg, lischa, comref, resoco, resocu,&
+                  numedd, veelem, veasse)
 !
 implicit none
 !
@@ -38,7 +38,7 @@ implicit none
 ! person_in_charge: ludovic.idoux at edf.fr
 !
     character(len=19) :: sddyna, valinc(*), measse(*)
-    character(len=24) :: modele, mate, carele, compor, carcri, sdtime, comref
+    character(len=24) :: modele, mate, carele, compor, sdtime, comref
     character(len=24) :: resoco, resocu, numedd
     character(len=19) :: sddisc, solalg(*), lischa, veelem(*), veasse(*)
     integer :: numins
@@ -59,7 +59,6 @@ implicit none
 ! IN  MATE   : CHAMP MATERIAU
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  COMPOR : COMPORTEMENT
-! IN  CARCRI : PARAMETRES METHODES D'INTEGRATION LOCALES (VOIR NMLECT)
 ! IN  SDTIME : SD TIMER
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IN  NUMINS : NUMERO D'INSTANT
@@ -152,11 +151,11 @@ implicit none
     nbvect=0
     call nmcvec('AJOU', 'CNFNOD', 'SIGMOI', .true._1, .true._1,&
                 nbvect, ltypve, loptve, lcalve, lassve)
-    call nmxvec(modele, mate, carele, compor, carcri,&
-                sdtime, sddisc, sddyna, numins, valinc,&
-                solalg, lischa, comref, resoco, resocu,&
-                numedd, veelem, veasse, measse, nbvect,&
-                ltypve, lcalve, loptve, lassve)
+    call nmxvec(modele, mate  , carele, compor, sdtime,&
+                sddisc, sddyna, numins, valinc, solalg,&
+                lischa, comref, resoco, resocu, numedd,&
+                veelem, veasse, measse, nbvect, ltypve,&
+                lcalve, loptve, lassve)
     call nmchex(veasse, 'VEASSE', 'CNFNOD', cnfnod)
     call jeveuo(cnfnod//'.VALE', 'L', vr=cnfno)
     do iaux = 1, neq

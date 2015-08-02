@@ -18,10 +18,10 @@
 ! aslint: disable=W1504
 !
 interface
-    subroutine nmchht(model      , mate       , cara_elem     , compor        , comp_para  ,&
-                      list_load  , nume_dof   , varc_refe     , list_func_acti, sdstat     ,&
-                      sddyna     , sdtime     , sddisc        , sdnume        , sdcont_defi,&
-                      sdcont_solv, sdunil_solv, hval_incr     , hval_algo     , hval_veasse,&
+    subroutine nmchht(model      , mate       , cara_elem, compor        , comp_para  ,&
+                      list_load  , nume_dof   , varc_refe, list_func_acti, sdstat     ,&
+                      sddyna     , sdtime     , sddisc   , sdnume        , sdcont_defi,&
+                      sdcont_solv, sdunil_solv, hval_incr, hval_algo     , hval_veasse,&
                       result)
         character(len=24), intent(in) :: model
         character(len=24), intent(in) :: mate

@@ -19,7 +19,7 @@ interface
     subroutine load_neum_prep(model    , cara_elem , mate      , load_type     , inst_prev,&
                               inst_curr, inst_theta, nb_in_maxi, nb_in_prep    , lchin    ,&
                               lpain    , varc_curr , disp_prev , disp_cumu_inst, compor   ,&
-                              carcri   , nharm)
+                              nharm)
         character(len=24), intent(in) :: model
         character(len=24), intent(in) :: cara_elem
         character(len=24), intent(in) :: mate
@@ -35,7 +35,6 @@ interface
         character(len=19), optional, intent(in) :: disp_prev
         character(len=19), optional, intent(in) :: disp_cumu_inst
         character(len=24), optional, intent(in) :: compor
-        character(len=24), optional, intent(in) :: carcri
         integer, optional, intent(in) :: nharm
     end subroutine load_neum_prep
 end interface

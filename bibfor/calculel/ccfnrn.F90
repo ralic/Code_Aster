@@ -353,7 +353,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
                         nb_equa_outz = neq)
             call vecgme(modele, carac, mater, charge, infoch,&
                         partps(1), chdepl, bidon, vecgmp, partps(1),&
-                        compor, k24bid, ligrel, chvive, k24bid)
+                        compor, ligrel, chvive, k24bid)
             call asasve(vecgmp, nume, 'R', vacgmp)
             call ascova('D', vacgmp, fomult, 'INST', time,&
                         'R', cncgmp)

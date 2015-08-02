@@ -1,8 +1,7 @@
 subroutine nmctcd(modele, mate  , carele, fonact, compor,&
-                  carcri, sdtime, sddisc, sddyna, numins,&
-                  valinc, solalg, lischa, comref, defico,&
-                  resoco, resocu, numedd, veelem, veasse,&
-                  measse)
+                  sdtime, sddisc, sddyna, numins, valinc,&
+                  solalg, lischa, comref, defico, resoco,&
+                  resocu, numedd, veelem, veasse, measse)
 !
 implicit none
 !
@@ -35,7 +34,7 @@ implicit none
     integer :: fonact(*)
     character(len=24) :: modele
     character(len=24) :: mate, carele
-    character(len=24) :: compor, carcri
+    character(len=24) :: compor
     integer :: numins
     character(len=19) :: sddisc, sddyna, lischa
     character(len=24) :: defico, resoco, resocu, comref, numedd
@@ -137,11 +136,11 @@ implicit none
 !
 ! --- CALCUL EFFECTIF
 !
-    call nmxvec(modele, mate  , carele, compor, carcri,&
-                sdtime, sddisc, sddyna, numins, valinc,&
-                solalg, lischa, comref, resoco, resocu,&
-                numedd, veelem, veasse, measse, nbvect,&
-                ltypve, lcalve, loptve, lassve)
+    call nmxvec(modele, mate  , carele, compor, sdtime,&
+                sddisc, sddyna, numins, valinc, solalg,&
+                lischa, comref, resoco, resocu, numedd,&
+                veelem, veasse, measse, nbvect, ltypve,&
+                lcalve, loptve, lassve)
 !
  99 continue
 !

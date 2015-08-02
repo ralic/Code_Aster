@@ -21,8 +21,8 @@ interface
     subroutine nmener(valinc, veasse, measse, sddyna, eta   ,&
                       sdener, fonact, solveu, numedd, numfix,&
                       meelem, numins, modele, mate  , carele,&
-                      compor, carcri, sdtime, sddisc, solalg,&
-                      lischa, comref, resoco, resocu, veelem)
+                      compor, sdtime, sddisc, solalg, lischa,&
+                      comref, resoco, resocu, veelem)
         character(len=19) :: valinc(*)
         character(len=19) :: veasse(*)
         character(len=19) :: measse(*)
@@ -39,7 +39,6 @@ interface
         character(len=24) :: mate
         character(len=24) :: carele
         character(len=24) :: compor
-        character(len=24) :: carcri
         character(len=24) :: sdtime
         character(len=19) :: sddisc
         character(len=19) :: solalg(*)

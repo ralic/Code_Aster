@@ -274,10 +274,10 @@ implicit none
 !
 ! --- CALCUL ET ASSEMBLAGE DES VECT_ELEM CONSTANTS AU COURS DU CALCUL
 !
-    call nminvc(model, mate, carele, compor, carcri,&
-                sdtime, sddisc, sddyna, valinc, solalg,&
-                lischa, varc_refe, resoco, resocu, numedd,&
-                fonact, veelem, veasse, measse)
+    call nminvc(model    , mate  , carele, compor, sdtime,&
+                sddisc   , sddyna, valinc, solalg, lischa,&
+                varc_refe, resoco, resocu, numedd, fonact,&
+                veelem   , veasse, measse)
 !
 ! - Compute reference vector for RESI_REFE_RELA
 !
@@ -303,11 +303,11 @@ implicit none
 ! --- CALCUL DE L'ACCELERATION INITIALE
 !
     if (lacc0) then
-        call nmchar('ACCI', ' ', model, numedd, mate,&
-                    carele, compor, lischa, carcri, numins,&
-                    sdtime, sddisc, fonact, resoco, resocu,&
-                    varc_refe, valinc, solalg, veelem, measse, &
-                    veasse, sddyna)
+        call nmchar('ACCI', ' '   , model , numedd, mate     ,&
+                    carele, compor, lischa, numins, sdtime   ,&
+                    sddisc, fonact, resoco, resocu, varc_refe,&
+                    valinc, solalg, veelem, measse, veasse   ,&
+                    sddyna)
         call accel0(model, numedd, numfix, fonact, lischa,&
                     sdcont_defi, resoco, maprec, solveu, valinc,&
                     sddyna, sdstat, sdtime, meelem, measse,&
@@ -372,8 +372,8 @@ implicit none
 ! --- CALCUL DU SECOND MEMBRE INITIAL POUR MULTI-PAS
 !
     if (lmpas) then
-        call nmihht(model , numedd, mate     , compor     , carele,&
-                    lischa, carcri, varc_refe, fonact     , sdstat,&
+        call nmihht(model , numedd, mate     , compor     , carcri,&
+                    carele, lischa, varc_refe, fonact     , sdstat,&
                     sddyna, sdtime, sdnume   , sdcont_defi, resoco,&
                     resocu, valinc, sddisc   , solalg     , veasse,&
                     result)

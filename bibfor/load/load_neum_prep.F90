@@ -1,7 +1,7 @@
 subroutine load_neum_prep(model    , cara_elem , mate      , load_type     , inst_prev,&
                           inst_curr, inst_theta, nb_in_maxi, nb_in_prep    , lchin    ,&
                           lpain    , varc_curr , disp_prev , disp_cumu_inst, compor   ,&
-                          carcri   , nharm)
+                          nharm)
 !
 implicit none
 !
@@ -47,7 +47,6 @@ implicit none
     character(len=19), optional, intent(in) :: disp_prev
     character(len=19), optional, intent(in) :: disp_cumu_inst
     character(len=24), optional, intent(in) :: compor
-    character(len=24), optional, intent(in) :: carcri
     integer, optional, intent(in) :: nharm
 !
 ! --------------------------------------------------------------------------------------------------
@@ -76,7 +75,6 @@ implicit none
 ! In  disp_prev      : displacement at beginning of current time
 ! In  disp_cumu_inst : displacement increment from beginning of current time
 ! In  compor         : name of comportment definition (field)
-! In  carcri         : name of comportment parameters (field)
 ! In  nharm          : Fourier mode
 !
 ! --------------------------------------------------------------------------------------------------
@@ -195,9 +193,6 @@ implicit none
         lpain(nb_in_prep) = 'PDEPLPR'
         lchin(nb_in_prep) = disp_cumu_inst(1:19)
         nb_in_prep = nb_in_prep + 1
-        lpain(nb_in_prep) = 'PCARCRI'
-        lchin(nb_in_prep) = carcri(1:19)
-        nb_in_prep = nb_in_prep + 1
         lpain(nb_in_prep) = 'PINSTMR'
         lchin(nb_in_prep) = chinst_prev(1:19)
         nb_in_prep = nb_in_prep + 1
@@ -216,5 +211,5 @@ implicit none
         call xajcin(model, 'CHAR_MECA_NEUM', nb_in_maxi, lchin, lpain,&
                     nb_in_prep)
     endif
-
+!
 end subroutine

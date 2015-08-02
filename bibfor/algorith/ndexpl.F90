@@ -103,10 +103,10 @@ implicit none
 ! --- CALCUL DES CHARGEMENTS CONSTANTS AU COURS DU PAS DE TEMPS
 !
     call nmchar('FIXE', ' '   , modele, numedd, mate  ,&
-                carele, compor, lischa, carcri, numins,&
-                sdtime, sddisc, fonact, k24bla, k24bla,&
-                comref, valinc, solalg, veelem, measse,&
-                veasse, sddyna)
+                carele, compor, lischa, numins, sdtime,&
+                sddisc, fonact, k24bla, k24bla, comref,&
+                valinc, solalg, veelem, measse, veasse,&
+                sddyna)
 !
 ! --- PREDICTION D'UNE DIRECTION DE DESCENTE
 !

@@ -1,7 +1,7 @@
 subroutine nmcalv(typvec, modelz, lischa, mate  , carele,&
-                  compor, carcri, numedd, comref, sdtime,&
-                  instam, instap, valinc, solalg, sddyna,&
-                  option, vecele)
+                  compor, numedd, comref, sdtime, instam,&
+                  instap, valinc, solalg, sddyna, option,&
+                  vecele)
 !
 implicit none
 !
@@ -45,7 +45,7 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=*) :: modelz
-    character(len=24) :: mate, carele, compor, carcri, numedd
+    character(len=24) :: mate, carele, compor, numedd
     character(len=24) :: comref, sdtime
     real(kind=8) :: instam, instap
     character(len=19) :: lischa, sddyna
@@ -69,7 +69,6 @@ implicit none
 ! IN  MATE   : CHAMP MATERIAU
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  COMPOR : CARTE DECRIVANT LE TYPE DE COMPORTEMENT
-! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
 ! IN  NUMEDD : NUME_DDL
 ! IN  SDTIME : SD TIMER
 ! IN  COMREF : VARI_COM DE REFERENCE
@@ -228,7 +227,7 @@ implicit none
     else if (typvec.eq.'CNFSDO') then
         call vecgme(modele, carele, mate, charge, infoch,&
                     instap, depmoi, depdel, vecele, instam,&
-                    compor, carcri, ' ', vitplu, strmoi)
+                    compor, ' '   , vitplu, strmoi)
 !
 ! --- FORCE DE REFERENCE POUR VARIABLES DE COMMANDE INITIALES
 !

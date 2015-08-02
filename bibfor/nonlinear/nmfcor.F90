@@ -142,10 +142,10 @@ implicit none
 ! --- CALCUL DES CHARGEMENTS VARIABLES AU COURS DU PAS DE TEMPS
 !
     call nmchar('VARI', 'CORRECTION', modele, numedd, mate,&
-                carele, compor, lischa, carcri, numins,&
-                sdtime, sddisc, fonact, resoco, resocu,&
-                comref, valinc, solalg, veelem, measse,&
-                veasse, sddyna)
+                carele, compor, lischa, numins, sdtime,&
+                sddisc, fonact, resoco, resocu, comref,&
+                valinc, solalg, veelem, measse, veasse,&
+                sddyna)
 !
 ! --- CALCUL DU SECOND MEMBRE POUR CONTACT/XFEM
 !
@@ -184,11 +184,10 @@ implicit none
 ! --- CALCUL DES FORCES DE CONTACT ET LIAISON_UNILATER
 !
     if (lctcd .or. lunil) then
-        call nmctcd(modele, mate, carele, fonact, compor,&
-                    carcri, sdtime, sddisc, sddyna, numins,&
-                    valinc, solalg, lischa, comref, defico,&
-                    resoco, resocu, numedd, veelem, veasse,&
-                    measse)
+        call nmctcd(modele, mate  , carele, fonact, compor,&
+                    sdtime, sddisc, sddyna, numins, valinc,&
+                    solalg, lischa, comref, defico, resoco,&
+                    resocu, numedd, veelem, veasse, measse)
     endif
 !
 ! --- ASSEMBLAGE DES FORCES INTERIEURES

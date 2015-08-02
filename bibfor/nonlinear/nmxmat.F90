@@ -110,10 +110,6 @@ subroutine nmxmat(modelz, mate, carele, compor, carcri,&
 !
 ! ----------------------------------------------------------------------
 !
-!
-!
-! --- INITIALISATIONS
-!
     base = 'V'
     instam = diinst(sddisc,numins-1)
     instap = diinst(sddisc,numins)
@@ -127,7 +123,7 @@ subroutine nmxmat(modelz, mate, carele, compor, carcri,&
 !
 ! --- CALCUL ET ASSEMBLAGE DES MATR_ELEM
 !
-    do 10 imatr = 1, nbmatr
+    do imatr = 1, nbmatr
 !
 ! --- MATR_ELEM COURANTE
 !
@@ -151,10 +147,10 @@ subroutine nmxmat(modelz, mate, carele, compor, carcri,&
                     call nmtime(sdtime, 'INI', 'CTCC_MATR')
                     call nmtime(sdtime, 'RUN', 'CTCC_MATR')
                 endif
-                call nmcalm(typmat, modelz, lischa, mate, carele,&
-                            compor, instam, instap, carcri, valinc,&
-                            solalg, optcal, base, meelem, defico,&
-                            resoco, matele)
+                call nmcalm(typmat, modelz, lischa, mate  , carele,&
+                            compor, instam, instap, valinc, solalg,&
+                            optcal, base  , meelem, defico, resoco,&
+                            matele)
                 if ((typmat.eq.'MEELTC') .or. (typmat.eq.'MEELTF')) then
                     call nmtime(sdtime, 'END', 'CTCC_MATR')
                     call nmrinc(sdstat, 'CTCC_MATR')
@@ -172,6 +168,6 @@ subroutine nmxmat(modelz, mate, carele, compor, carcri,&
                         typmat, optass, meelem, matass)
             call nmtime(sdtime, 'END', 'ASSE_MATR')
         endif
- 10 end do
+    end do
 !
 end subroutine

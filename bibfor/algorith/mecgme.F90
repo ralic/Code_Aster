@@ -1,6 +1,5 @@
 subroutine mecgme(modelz   , cara_elemz    , matez    , list_load, inst_curr,&
-                  disp_prev, disp_cumu_inst, inst_prev, compor   , carcri,&
-                  matr_elem)
+                  disp_prev, disp_cumu_inst, inst_prev, compor   , matr_elem)
 !
 implicit none
 !
@@ -46,7 +45,6 @@ implicit none
     character(len=19), intent(in) :: disp_prev
     character(len=19), intent(in) :: disp_cumu_inst
     character(len=24), intent(in) :: compor
-    character(len=24), intent(in) :: carcri
     character(len=19), intent(in) :: matr_elem
 !
 ! --------------------------------------------------------------------------------------------------
@@ -66,7 +64,6 @@ implicit none
 ! In  disp_prev      : displacement at beginning of current time
 ! In  disp_cumu_inst : displacement increment from beginning of current time
 ! In  compor         : name of comportment definition (field)
-! In  carcri         : name of comportment parameters (field)
 ! In  matr_elem      : name of matr_elem result
 !
 ! --------------------------------------------------------------------------------------------------
@@ -134,7 +131,7 @@ implicit none
     call load_neum_prep(model    , cara_elem , mate      , 'Suiv'    , inst_prev,&
                         inst_curr, inst_theta, nb_in_maxi, nb_in_prep, lchin    ,&
                         lpain    , disp_prev = disp_prev , disp_cumu_inst = disp_cumu_inst,&
-                        compor = compor, carcri = carcri)
+                        compor = compor)
 !
 ! - Computation
 !

@@ -16,10 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmcalm(typmat, modelz, lischa, mate, carele,&
-                      compor, instam, instap, carcri, valinc,&
-                      solalg, optmaz, base, meelem, defico,&
-                      resoco, matele)
+    subroutine nmcalm(typmat, modelz, lischa, mate  , carele,&
+                      compor, instam, instap, valinc, solalg,&
+                      optmaz, base  , meelem, defico, resoco,&
+                      matele)
         character(len=6) :: typmat
         character(len=*) :: modelz
         character(len=19) :: lischa
@@ -28,7 +28,6 @@ interface
         character(len=24) :: compor
         real(kind=8) :: instam
         real(kind=8) :: instap
-        character(len=24) :: carcri
         character(len=19) :: valinc(*)
         character(len=19) :: solalg(*)
         character(len=*) :: optmaz

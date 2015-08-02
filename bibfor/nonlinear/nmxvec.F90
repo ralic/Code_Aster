@@ -1,8 +1,8 @@
-subroutine nmxvec(modelz, mate  , carele, compor, carcri,&
-                  sdtime, sddisc, sddyna, numins, valinc,&
-                  solalg, lischa, comref, resoco, resocu,&
-                  numedd, veelem, veasse, measse, nbvect,&
-                  ltypve, lcalve, loptve, lassve)
+subroutine nmxvec(modelz, mate  , carele, compor, sdtime,&
+                  sddisc, sddyna, numins, valinc, solalg,&
+                  lischa, comref, resoco, resocu, numedd,&
+                  veelem, veasse, measse, nbvect, ltypve,&
+                  lcalve, loptve, lassve)
 !
 implicit none
 !
@@ -38,7 +38,7 @@ implicit none
     character(len=16) :: loptve(20)
     character(len=*) :: modelz
     character(len=24) :: mate, carele, sdtime
-    character(len=24) :: compor, carcri, numedd
+    character(len=24) :: compor, numedd
     integer :: numins
     character(len=19) :: sddisc, sddyna, lischa
     character(len=24) :: resoco, resocu, comref
@@ -68,7 +68,6 @@ implicit none
 ! IN  METHOD : INFORMATIONS SUR LES METHODES DE RESOLUTION (VOIR NMLECT)
 ! IN  PARMET : PARAMETRES DES METHODES DE RESOLUTION (VOIR NMLECT)
 ! IN  SOLVEU : SOLVEUR
-! IN  CARCRI : PARAMETRES METHODES D'INTEGRATION LOCALES (VOIR NMLECT)
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IN  NUMINS : NUMERO D'INSTANT
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
@@ -134,9 +133,9 @@ implicit none
         if (lcalc) then
             call nmchex(veelem, 'VEELEM', typvec, vecele)
             call nmcalv(typvec, modele, lischa, mate  , carele,&
-                        compor, carcri, numedd, comref, sdtime,&
-                        instam, instap, valinc, solalg, sddyna,&
-                        option, vecele)
+                        compor, numedd, comref, sdtime, instam,&
+                        instap, valinc, solalg, sddyna, option,&
+                        vecele)
         endif
 !
 ! --- ASSEMBLER VECT_ELEM

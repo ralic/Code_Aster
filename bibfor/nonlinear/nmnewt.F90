@@ -184,10 +184,10 @@ subroutine nmnewt(noma, modele, numins, numedd, numfix,&
 ! --- CALCUL DES CHARGEMENTS CONSTANTS AU COURS DU PAS DE TEMPS
 !
     call nmchar('FIXE', ' ', modele, numedd, mate,&
-                carele, compor, lischa, carcri, numins,&
-                sdtime, sddisc, fonact, resoco, resocu,&
-                comref, valinc, solalg, veelem, measse,&
-                veasse, sddyna)
+                carele, compor, lischa, numins, sdtime,&
+                sddisc, fonact, resoco, resocu, comref,&
+                valinc, solalg, veelem, measse, veasse,&
+                sddyna)
 !
 ! ======================================================================
 !     BOUCLE POINTS FIXES

@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine vecgme(model    , cara_elem , matez          , lload_namez, lload_infoz,&
-                      inst_curr, disp_prevz, disp_cumu_instz, vect_elemz , inst_prev  ,&
-                      compor   , carcri    , ligrel_calcz   , vite_currz , strx_prevz )
+    subroutine vecgme(model    , cara_elem   , matez          , lload_namez, lload_infoz,&
+                      inst_curr, disp_prevz  , disp_cumu_instz, vect_elemz , inst_prev  ,&
+                      compor   , ligrel_calcz, vite_currz     , strx_prevz )
         character(len=24), intent(in) :: model
         character(len=24), intent(in) :: cara_elem
         character(len=*), intent(in) :: matez
@@ -30,7 +30,6 @@ interface
         character(len=*), intent(inout) :: vect_elemz
         real(kind=8), intent(in) :: inst_prev
         character(len=24), intent(in) :: compor
-        character(len=24), intent(in) :: carcri
         character(len=*), intent(in) :: ligrel_calcz
         character(len=*), intent(in) :: vite_currz
         character(len=*), intent(in) :: strx_prevz

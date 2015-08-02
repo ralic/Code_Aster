@@ -20,16 +20,15 @@
 ! aslint: disable=W1504
 !
 interface
-    subroutine nmxvec(modelz, mate  , carele, compor, carcri,&
-                      sdtime, sddisc, sddyna, numins, valinc,&
-                      solalg, lischa, comref, resoco, resocu,&
-                      numedd, veelem, veasse, measse, nbvect,&
-                      ltypve, lcalve, loptve, lassve)
+    subroutine nmxvec(modelz, mate  , carele, compor, sdtime,&
+                      sddisc, sddyna, numins, valinc, solalg,&
+                      lischa, comref, resoco, resocu, numedd,&
+                      veelem, veasse, measse, nbvect, ltypve,&
+                      lcalve, loptve, lassve)
         character(len=*) :: modelz
         character(len=24) :: mate
         character(len=24) :: carele
         character(len=24) :: compor
-        character(len=24) :: carcri
         character(len=24) :: sdtime
         character(len=19) :: sddisc
         character(len=19) :: sddyna

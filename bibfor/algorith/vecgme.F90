@@ -1,6 +1,6 @@
-subroutine vecgme(model    , cara_elem , matez          , lload_namez, lload_infoz,&
-                  inst_curr, disp_prevz, disp_cumu_instz, vect_elemz , inst_prev  ,&
-                  compor   , carcri    , ligrel_calcz   , vite_currz , strx_prevz)
+subroutine vecgme(model    , cara_elem   , matez          , lload_namez, lload_infoz,&
+                  inst_curr, disp_prevz  , disp_cumu_instz, vect_elemz , inst_prev  ,&
+                  compor   , ligrel_calcz, vite_currz     , strx_prevz)
 !
 implicit none
 !
@@ -50,7 +50,6 @@ implicit none
     character(len=*), intent(inout) :: vect_elemz
     real(kind=8), intent(in) :: inst_prev
     character(len=24), intent(in) :: compor
-    character(len=24), intent(in) :: carcri
     character(len=*), intent(in) :: ligrel_calcz
     character(len=*), intent(in) :: vite_currz
     character(len=*), intent(in) :: strx_prevz
@@ -76,7 +75,6 @@ implicit none
 ! In  strx_prev      : fibers information at beginning of current time
 ! In  disp_cumu_inst : displacement increment from beginning of current time
 ! In  compor         : name of comportment definition (field)
-! In  carcri         : name of comportment parameters (field)
 ! IO  vect_elem      : name of vect_elem result
 !
 ! --------------------------------------------------------------------------------------------------
@@ -157,7 +155,7 @@ implicit none
     call load_neum_prep(model    , cara_elem , mate      , 'Suiv'      , inst_prev,&
                         inst_curr, inst_theta, nb_in_maxi, nb_in_prep  , lchin    ,&
                         lpain    , disp_prev = disp_prev, disp_cumu_inst = disp_cumu_inst,&
-                        compor = compor, carcri = carcri)
+                        compor = compor)
 !
 ! - Computation
 !

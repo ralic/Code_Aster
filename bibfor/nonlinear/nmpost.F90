@@ -142,11 +142,11 @@ implicit none
 ! --- CALCUL DES ENERGIES
 !
     if (lener) then
-        call nmener(valinc, veasse, measse, sddyna, eta,&
+        call nmener(valinc, veasse, measse, sddyna, eta   ,&
                     sdener, fonact, solveu, numedd, numfix,&
-                    meelem, numins, modele, mate, carele,&
-                    compor, carcri, sdtime, sddisc, solalg,&
-                    lischa, comref, resoco, resocu, veelem)
+                    meelem, numins, modele, mate  , carele,&
+                    compor, sdtime, sddisc, solalg, lischa,&
+                    comref, resoco, resocu, veelem)
     endif
 
 !
