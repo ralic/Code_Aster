@@ -47,8 +47,8 @@ Comportement - Occurrence  %(i1)d"""),
     11: _(u"""
   Pour le comportement MONOCRISTAL en grandes déformations (SIMO_MIEHE), il y a 18 variables internes supplémentaires.
   Le tableau des variables internes comporte, avant les trois dernières variables internes habituelles :
-    FP : (1,1),(1,2),(1,3),(2,1),(2,2),(2,3),(3,1),(3,2),(3,3),
-    FE : (1,1),(1,2),(1,3),(2,1),(2,2),(2,3),(3,1),(3,2),(3,3),
+    partie élastique : (1,1),(1,2),(1,3),(2,1),(2,2),(2,3),(3,1),(3,2),(3,3),
+    partie plastique : (1,1),(1,2),(1,3),(2,1),(2,2),(2,3),(3,1),(3,2),(3,3),
 """),
 
     12: _(u"""

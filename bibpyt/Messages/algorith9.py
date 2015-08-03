@@ -148,7 +148,7 @@ cata_msg = {
 """),
 
     56 : _(u"""
- le "NB_PTS" doit être une puissance de 2.
+ le "NB_POIN" doit être une puissance de 2.
 """),
 
     57 : _(u"""
@@ -184,17 +184,17 @@ cata_msg = {
  option symétrie : la dimension de POINT et AXE_2 doit être identique.
 """),
     65 : _(u"""
- La dimension de la matrice de norme n'est pas compatible 
+ La dimension de la matrice de norme n'est pas compatible
  avec la dimension de l'espace d'observation. Vérifiez la
  cohérence dimensionnelle de vos informations.
 """),
     66 : _(u"""
  La matrice de projection renseignée ne semble pas correspondre aux maillages
- associés aux modèles numérique et expérimental. 
+ associés aux modèles numérique et expérimental.
 """),
     67 : _(u"""
  Les données expérimentales ne contiennent pas d'information quant au maillage
- expérimental associé, où elles sont incohérentes. On ne peut pas construire la 
+ expérimental associé, où elles sont incohérentes. On ne peut pas construire la
  matrice d'observation.
 """),
     68 : _(u"""
