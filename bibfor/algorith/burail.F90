@@ -50,9 +50,9 @@ subroutine burail(vin, nvi, materd, materf, nmat,&
 ! --- RECUPERATION DES VALEURS DES PARAMETRES MATERIAU
 ! === =================================================================
     if (part(1:3) .eq. 'SPH') then
-        eta = materd(3,2)
+        eta = materf(3,2)
     else if (part(1:3).eq.'DEV') then
-        eta = materd(6,2)
+        eta = materf(6,2)
     else
         ASSERT(.false.)
     endif

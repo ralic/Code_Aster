@@ -54,7 +54,9 @@ subroutine burmat(fami, kpg, ksp, mod, imat,&
 !     ETARD                       MATERD(5,2)          MATERF(5,2)
 !     ETAID                       MATERD(6,2)          MATERF(6,2)
 !     KAPPA                       MATERD(7,2)          MATERF(7,2)
-!     ETAFD                       MATERD(8,2)          MATERF(8,2)
+!     QSR_K                       MATERD(8,2)          MATERF(8,2)
+!     TEMP_0_C                    MATERD(9,2)          MATERF(9,2)
+!     ETAFD                       MATERD(10,2)         MATERF(10,2)
 !     ----------------------------------------------------------------
     implicit none
 #include "asterc/r8prem.h"
@@ -62,14 +64,15 @@ subroutine burmat(fami, kpg, ksp, mod, imat,&
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
 #include "asterfort/assert.h"
+#include "asterfort/rcvarc.h"
     integer :: kpg, ksp, imat, nmat, ndt, ndi, nr, nvi
-    integer :: cerr(14), ii
+   integer :: cerr(16), ii,IRET
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2)
-    real(kind=8) :: epsi
+    real(kind=8) :: epsi,td,tf,tempm
     character(len=3) :: matcst
     character(len=*) :: fami
     character(len=8) :: mod
-    character(len=16) :: nomc(14)
+    character(len=16) :: nomc(16)
 !
 ! === ============================================
 !
@@ -90,8 +93,6 @@ subroutine burmat(fami, kpg, ksp, mod, imat,&
     call rcvalb(fami, kpg, ksp, '-', imat,&
                 ' ', 'ELAS', 0, ' ', [0.d0],&
                 5, nomc(1), materd(1, 1), cerr(1), 0)
-    ASSERT(cerr(1).eq.0)
-    ASSERT(cerr(2).eq.0)
     if (cerr(3) .ne. 0) materd(3,1) = 0.d0
     if (cerr(4) .ne. 0) materd(4,1) = 0.d0
     if (cerr(5) .ne. 0) materd(5,1) = 0.d0
@@ -103,8 +104,6 @@ subroutine burmat(fami, kpg, ksp, mod, imat,&
     call rcvalb(fami, kpg, ksp, '+', imat,&
                 ' ', 'ELAS', 0, ' ', [0.d0],&
                 5, nomc(1), materf(1, 1), cerr(1), 0)
-    ASSERT(cerr(1).eq.0)
-    ASSERT(cerr(2).eq.0)
     if (cerr(3) .ne. 0) materf(3,1) = 0.d0
     if (cerr(4) .ne. 0) materf(4,1) = 0.d0
     if (cerr(5) .ne. 0) materf(5,1) = 0.d0
@@ -124,7 +123,9 @@ subroutine burmat(fami, kpg, ksp, mod, imat,&
     call rcvalb(fami, kpg, ksp, '-', imat,&
                 ' ', 'ELAS', 0, ' ', [0.d0],&
                 1, nomc(6), materd(6, 1), cerr(6), 0)
-    if (cerr(6) .ne. 0)  call utmess('F', 'ALGORITH4_94')
+    if (cerr(6) .ne. 0) then
+        call utmess('F', 'ALGORITH4_94')
+    endif
 !
 ! === ===========
 !     INSTANT T+
@@ -133,7 +134,9 @@ subroutine burmat(fami, kpg, ksp, mod, imat,&
     call rcvalb(fami, kpg, ksp, '+', imat,&
                 ' ', 'ELAS', 0, ' ', [0.d0],&
                 1, nomc(6), materf(6, 1), cerr(6), 0)
-    if (cerr(6) .ne. 0)  call utmess('F', 'ALGORITH4_94')
+    if (cerr(6) .ne. 0) then
+        call utmess('F', 'ALGORITH4_94')
+    endif
 !
 ! === ===============================================
 !
@@ -148,18 +151,42 @@ subroutine burmat(fami, kpg, ksp, mod, imat,&
     nomc(11)='ETA_RD'
     nomc(12)='ETA_ID'
     nomc(13)='KAPPA'
+    nomc(14)='QSR_K'
+    nomc(15)='TEMP_0_C'
+
+
+
 !
 ! === =================
 !     INSTANT T- ET T+
 ! === =================
 !
+
     call rcvalb(fami, kpg, ksp, '+', imat,&
                 ' ', 'BETON_BURGER_FP', 0, ' ', [0.d0],&
-                7, nomc(7), materd(1, 2), cerr(7), 1)
+                9, nomc(7), materd(1, 2), cerr(7), 0)
 !
-    do 10 ii = 1, 7
-        materf(ii,2) = materd(ii,2)
-10  end do
+!   teste sur la valeur de QSR_K
+    if (int(materd(8,2)) .ne. int(0.)) then
+        call rcvarc(' ','TEMP','-',FAMI,KPG,KSP,TD,IRET)
+        call rcvarc(' ','TEMP','+',FAMI,KPG,KSP,TF,IRET)
+        tempm=(td+tf)/2.
+        do 10 ii = 1, 6
+            materf(ii,2) = materd(ii,2)*exp(materd(8,2)*&
+            (1./(tempm+273.)-1./(materd(9,2)+273.)))
+10      end do
+!       expression pour kappa differente des autres parametres 
+        materf(7,2) = materd(7,2)/(exp(materd(8,2)*&
+            (1./(tempm+273.)-1./(materd(9,2)+273.))))
+    else
+        do 20 ii = 1, 7
+            materf(ii,2) = materd(ii,2)
+20      end do
+    endif
+!
+        materf(8,2)=materd(8,2)
+        materf(9,2)=materd(9,2)
+
 !
 ! === ===================================================
 !
@@ -167,7 +194,7 @@ subroutine burmat(fami, kpg, ksp, mod, imat,&
 !
 ! === ===================================================
 !
-    nomc(14)='ETA_FD'
+    nomc(16)='ETA_FD'
 !
 ! === =================
 !     INSTANT T- ET T+
@@ -175,12 +202,12 @@ subroutine burmat(fami, kpg, ksp, mod, imat,&
 !
     call rcvalb(fami, kpg, ksp, '-', imat,&
                 ' ', 'BETON_BURGER_FP', 0, ' ', [0.d0],&
-                1, nomc(14), materd(8, 2), cerr(14), 0)
-    if (cerr(14) .ne. 0) then
-        materd(8,2) = -1.d0
-        materf(8,2) = -1.d0
+                1, nomc(16), materd(10, 2), cerr(16), 0)
+    if (cerr(16) .ne. 0) then
+        materd(10,2) = -1.d0
+        materf(10,2) = -1.d0
     else
-        materf(8,2) = materd(8,2)
+        materf(10,2) = materd(10,2)
     endif
 !
 !

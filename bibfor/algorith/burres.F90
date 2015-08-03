@@ -162,9 +162,9 @@ subroutine burres(typmod, nmat, materd, materf, timed,&
 ! === =================================================================
 ! --- RECUPERATION PROPRIETE VISQUEUSE IRREVERSIBLE
 ! === =================================================================
-    etas = materd(3,2)
-    etad = materd(6,2)
-    kappa = materd(7,2)
+    etas = materf(3,2)
+    etad = materf(6,2)
+    kappa = materf(7,2)
 ! === =================================================================
 ! --- CALCUL DE (SIGF*HINI + SIGD*HFIN)*(DT/2)
 ! === =================================================================
@@ -207,20 +207,20 @@ subroutine burres(typmod, nmat, materd, materf, timed,&
     etai0(2,3) = etai0(1,2)
     etai0(3,2) = etai0(1,2)
     call lcprsm(kappa*difexp, etai0, ketai0)
+
 ! === =================================================================
 ! --- CALCUL DE LA NORME DES INCREMENTS DE DEFORMATIONS IRREVERSIBLES
-! === =================================================================
-    call lcprsc(depsfi, depsfi, ndfi)
-! --- ON S'ASSURE QUE TOUTE DIVISION PAR ZERO EST IMPOSSIBLE
-    if (ndfi .ne. 0.d0) then
-        ndfi = 1.d0/sqrt(ndfi)
-    else
-        ndfi = 0.d0
-    endif
-! === =================================================================
 ! --- CALCUL DE LA DIRECTION DES INCREMENTS DEFORMATION IRREVERSIBLE
 ! === =================================================================
-    call lcprsv(ndfi, depsfi, normal)
+    call lcprsc(depsfi, depsfi, ndfi)
+!   ndfi =depsfi*depsfi toujours >= 0
+    if (ndfi .lt. r8prem()) then
+        normal(:)=0.d0
+        ndfi = 0.d0
+    else
+        ndfi = 1.d0/sqrt(ndfi)
+        call lcprsv(ndfi, depsfi, normal)
+    endif
 ! === =================================================================
 ! --- CALCUL DE KETAI0(ORDRE4)*NORMAL(ORDRE2)=VISCO
 ! === =================================================================

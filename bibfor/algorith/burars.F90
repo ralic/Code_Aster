@@ -35,7 +35,7 @@ subroutine burars(vin, nvi, materd, materf, nmat,&
 !=======================================================================
     implicit none
     integer :: nvi, nmat
-    real(kind=8) :: vin(*)
+    real(kind=8) :: vin(nvi)
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2)
     real(kind=8) :: timed, timef, tdt
     real(kind=8) :: an, bn, cn
@@ -46,8 +46,8 @@ subroutine burars(vin, nvi, materd, materf, nmat,&
 ! === =================================================================
 ! --- RECUPERATION DES VALEURS DES PARAMETRES MATERIAU
 ! === =================================================================
-    krs = materd(1,2)
-    etars = materd(2,2)
+    krs = materf(1,2)
+    etars = materf(2,2)
 !
     hini = materd(6,1)
     hfin = materf(6,1)

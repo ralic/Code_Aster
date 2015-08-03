@@ -19,8 +19,8 @@ interface
     subroutine burars(vin, nvi, materd, materf, nmat,&
                       timed, timef, an, bn, cn)
         integer :: nmat
-        real(kind=8) :: vin(*)
         integer :: nvi
+        real(kind=8) :: vin(nvi)
         real(kind=8) :: materd(nmat, 2)
         real(kind=8) :: materf(nmat, 2)
         real(kind=8) :: timed

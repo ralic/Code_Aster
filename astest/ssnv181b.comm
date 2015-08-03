@@ -53,7 +53,10 @@ BETON=DEFI_MATERIAU(ELAS_FO=_F(E=E,
                                      ETA_IS=4.16e10,
                                      K_RD=3.86e4,
                                      ETA_RD=6.19e10,
-                                     ETA_ID=1.64e12,),);
+                                     ETA_ID=1.64e12,
+                                     QSR_K  = 0.,
+                                     TEMP_0_C  = 20.,  
+                                     ),);
 SECH0=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                  OPERATION='AFFE',
                  MAILLAGE=M,

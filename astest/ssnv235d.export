@@ -1,0 +1,10 @@
+P time_limit 300
+P memory_limit 256
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist verification sequential
+
+
+F mmed ssnv235a.mmed D 20
+F comm ssnv235d.comm D 1

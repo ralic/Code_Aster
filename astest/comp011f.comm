@@ -77,6 +77,8 @@ MATER=DEFI_MATERIAU(ELAS_FO=_F(E=YOUN,
                                         K_RD   = 3270,
                                         ETA_RD = 2.55e9,
                                         ETA_ID = 4.32e12,
+                                        QSR_K  = 0.,
+                                        TEMP_0_C  = 20.,   
                                       ),
                  );
 
@@ -232,6 +234,8 @@ for i in range(NCAL):
                                         K_RD   = 3270,
                                         ETA_RD = 2.55e9,
                                         ETA_ID = 4.32e12,
+                                        QSR_K  = 0.,
+                                        TEMP_0_C  = 20.,  
                                       ),
                  );
 

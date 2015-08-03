@@ -52,6 +52,9 @@ K_RD      = 5.0E4;
 ETA_RD    = 1.0E10;
 ETA_ID    = 1.E11;
 KAPPA     = 3.E-3;
+QSR_K     = 0.;
+TEMP_0_C  = 20.;
+
 
 # def des materiaux
 BETON = [None]*3
@@ -79,7 +82,9 @@ BETON[0]=DEFI_MATERIAU(ELAS_FO     =_F(NU=POISSON,
                                    K_RD      = K_RD_Pa,
                                    ETA_RD    = ETA_RD_Pa,
                                    ETA_ID    = ETA_ID_Pa,
-                                   KAPPA     = KAPPA,),
+                                   KAPPA     = KAPPA,
+                                   QSR_K     = QSR_K,
+                                   TEMP_0_C  = TEMP_0_C,),
                                     );
 
 #unite en MPa
@@ -94,7 +99,9 @@ BETON[1]=DEFI_MATERIAU(ELAS_FO     =_F(NU=POISSON,
                                    K_RD      = K_RD,
                                    ETA_RD    = ETA_RD,
                                    ETA_ID    = ETA_ID,
-                                   KAPPA     = KAPPA,),
+                                   KAPPA     = KAPPA,
+                                   QSR_K     = QSR_K,
+                                   TEMP_0_C  = TEMP_0_C,),
                                     );
 
 compor='BETON_BURGER_FP'

@@ -90,6 +90,8 @@ BETON=DEFI_MATERIAU( ELAS_FO =_F( E = E,
                                         K_RD   = 3.86E+04,
                                         ETA_RD = 6.19E+10,
                                         ETA_ID = 1.64e+12,
+                                        QSR_K  = 0.,
+                                        TEMP_0_C  = 20.,  
                                       ),
                   );
 

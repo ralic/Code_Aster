@@ -46,8 +46,8 @@ subroutine burard(vin, nvi, materd, materf, nmat,&
 ! === =================================================================
 ! --- RECUPERATION DES VALEURS DES PARAMETRES MATERIAU
 ! === =================================================================
-    krd = materd(4,2)
-    etard = materd(5,2)
+    krd = materf(4,2)
+    etard = materf(5,2)
 !
     hini = materd(6,1)
     hfin = materf(6,1)

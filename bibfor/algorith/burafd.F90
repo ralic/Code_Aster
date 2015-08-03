@@ -54,7 +54,7 @@ subroutine burafd(materd, materf, nmat, afd, bfd,&
 ! RECUPERATION DES VALEURS DES PARAMETRES MATERIAU
 ! LE MODELE DE BAZANT NE COMPREND QU'UN PARAMETRE
 ! === =================================================================
-    etafd = materd(8,2)
+    etafd = materd(10,2)
 ! === =================================================================
 ! --- INITIALISATION DES VECTEURS ET MATRICES
 ! === =================================================================

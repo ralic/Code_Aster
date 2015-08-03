@@ -53,6 +53,7 @@ subroutine burjac(mod, nmat, materd, materf, nvi,&
 #include "asterfort/lcprte.h"
 #include "asterfort/lcsoma.h"
 #include "asterfort/mgauss.h"
+#include "asterc/r8prem.h"
     common /tdim/   ndt  , ndi
 !     ----------------------------------------------------------------
     integer :: i, ndt, ndi, nmat, nr, nvi, iret
@@ -131,9 +132,9 @@ subroutine burjac(mod, nmat, materd, materf, nvi,&
 ! === =================================================================
 ! --- CALCUL DE DR(NDT+1:NDT)/DY(NDT+1:2*NDT)= DR2DY2
 ! === =================================================================
-    etas = materd(3,2)
-    etad = materd(6,2)
-    kappa = materd(7,2)
+    etas = materf(3,2)
+    etad = materf(6,2)
+    kappa = materf(7,2)
 ! === =================================================================
 ! --- RECUPERATION DES DEFORMATIONS IRREVERSIBLES A T+DT
 ! === =================================================================
@@ -146,18 +147,20 @@ subroutine burjac(mod, nmat, materd, materf, nvi,&
 ! --- CALCUL DE LA NORME DES DEFORMATIONS IRREVERSIBLES A T+DT -> NFIF
 ! === =================================================================
     call lcprsc(epsfif, epsfif, nfif)
+!   nfif = epsfif*epsfif toujours >= 0
     nfif = sqrt(nfif)
     if(nfif.lt.vind(21))nfif = vind(21)
 ! === =================================================================
 ! --- CALCUL DE LA NORME DES DEFORMATIONS IRREVERSIBLES A T -> NFID
 ! === =================================================================
     call lcprsc(epsfid, epsfid, nfid)
+!   nfid = epsfid*epsfid toujours >= 0
     nfid = sqrt(nfid)
     if(nfid.lt.vind(21))nfid = vind(21)
 ! === =================================================================
 ! --- CALCUL DE EXP(NFIF/KAPPA)/(2*NFIF)
 ! === =================================================================
-    if ((abs(nfif).ne.0.d0) .and. ((nfif/kappa).lt.1.d2)) then
+    if ((nfif.gt.r8prem()) .and. ((nfif/kappa).lt.1.d2)) then
         coef = exp(nfif/kappa)/(nfif)
     else
         coef = 0.d0
@@ -182,17 +185,17 @@ subroutine burjac(mod, nmat, materd, materf, nvi,&
     etai0(3,2) = etai0(1,2)
 ! === =================================================================
 ! --- CALCUL DE LA NORME DES INCREMENTS DE DEFORMATIONS IRREVERSIBLES
-! === =================================================================
-    call lcprsc(depsfi, depsfi, ndfi)
-    if (abs(ndfi) .ne. 0.d0) then
-        ndfi = 1.d0/sqrt(ndfi)
-    else
-        ndfi = 0.d0
-    endif
-! === =================================================================
 ! --- CALCUL DE LA DIRECTION DES INCREMENTS DEFORMATION IRREVERSIBLE
 ! === =================================================================
-    call lcprsv(ndfi, depsfi, normal)
+    call lcprsc(depsfi, depsfi, ndfi)
+!   ndfi =depsfi*depsfi toujours >= 0
+    if (ndfi .lt. r8prem()) then
+        normal(:)=0.d0
+        ndfi = 0.d0
+    else
+        ndfi = 1.d0/sqrt(ndfi)
+        call lcprsv(ndfi, depsfi, normal)
+    endif
 ! === =================================================================
 ! --- CALCUL DE ETAI0(ORDRE4)*NORMAL(ORDRE2)=VISCO
 ! === =================================================================
