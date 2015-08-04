@@ -2,9 +2,28 @@ subroutine nmfcor(modele, numedd, mate, carele, comref,&
                   compor, lischa, fonact, parmet, carcri,&
                   method, numins, iterat, sdstat, sdtime,&
                   sddisc, sddyna, sdnume, sderro, defico,&
-                  resoco, resocu, parcon, valinc, solalg,&
-                  veelem, veasse, meelem, measse, matass,&
-                  lerrit)
+                  resoco, resocu, valinc, solalg, veelem,&
+                  veasse, meelem, measse, matass, lerrit)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/nmadir.h"
+#include "asterfort/nmaint.h"
+#include "asterfort/nmbudi.h"
+#include "asterfort/nmchar.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmchfi.h"
+#include "asterfort/nmcret.h"
+#include "asterfort/nmctcd.h"
+#include "asterfort/nmdiri.h"
+#include "asterfort/nmfint.h"
+#include "asterfort/nmfocc.h"
+#include "asterfort/nmltev.h"
+#include "asterfort/nmrigi.h"
+#include "asterfort/nmtime.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,33 +42,11 @@ subroutine nmfcor(modele, numedd, mate, carele, comref,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
-!
 ! aslint: disable=W1504
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/nmadir.h"
-#include "asterfort/nmaint.h"
-#include "asterfort/nmbudi.h"
-#include "asterfort/nmchar.h"
-#include "asterfort/nmchex.h"
-#include "asterfort/nmchfi.h"
-#include "asterfort/nmcret.h"
-#include "asterfort/nmctcd.h"
-#include "asterfort/nmdiri.h"
-#include "asterfort/nmfint.h"
-#include "asterfort/nmfocc.h"
-#include "asterfort/nmltev.h"
-#include "asterfort/nmrigi.h"
-#include "asterfort/nmtime.h"
+!
     integer :: fonact(*)
     integer :: iterat, numins
     real(kind=8) :: parmet(*)
-    real(kind=8) :: parcon(*)
     character(len=16) :: method(*)
     character(len=24) :: sdstat, sdtime
     character(len=19) :: sddisc, sddyna, sdnume
@@ -92,7 +89,6 @@ subroutine nmfcor(modele, numedd, mate, carele, comref,&
 ! IN  DEFICO : SD DEFINITION CONTACT
 ! IN  RESOCO : SD RESOLUTION CONTACT
 ! IN  RESOCU : SD RESOLUTION LIAISON_UNILATERALE
-! IN  PARCON : PARAMETRES DU CRITERE DE CONVERGENCE REFERENCE
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
 ! IN  VEELEM : VARIABLE CHAPEAU POUR NOM DES VECT_ELEM
@@ -115,11 +111,7 @@ subroutine nmfcor(modele, numedd, mate, carele, comref,&
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('MECA_NON_LINE', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> CORRECTION DES FORCES'
     endif
@@ -151,9 +143,9 @@ subroutine nmfcor(modele, numedd, mate, carele, comref,&
 !
     call nmchar('VARI', 'CORRECTION', modele, numedd, mate,&
                 carele, compor, lischa, carcri, numins,&
-                sdtime, sddisc, parcon, fonact, resoco,&
-                resocu, comref, valinc, solalg, veelem,&
-                measse, veasse, sddyna)
+                sdtime, sddisc, fonact, resoco, resocu,&
+                comref, valinc, solalg, veelem, measse,&
+                veasse, sddyna)
 !
 ! --- CALCUL DU SECOND MEMBRE POUR CONTACT/XFEM
 !
@@ -187,7 +179,7 @@ subroutine nmfcor(modele, numedd, mate, carele, comref,&
 !
 ! --- ERREUR SANS POSSIBILITE DE CONTINUER
 !
-    if (ldccvg .eq. 1) goto 9999
+    if (ldccvg .eq. 1) goto 999
 !
 ! --- CALCUL DES FORCES DE CONTACT ET LIAISON_UNILATER
 !
@@ -195,8 +187,8 @@ subroutine nmfcor(modele, numedd, mate, carele, comref,&
         call nmctcd(modele, mate, carele, fonact, compor,&
                     carcri, sdtime, sddisc, sddyna, numins,&
                     valinc, solalg, lischa, comref, defico,&
-                    resoco, resocu, numedd, parcon, veelem,&
-                    veasse, measse)
+                    resoco, resocu, numedd, veelem, veasse,&
+                    measse)
     endif
 !
 ! --- ASSEMBLAGE DES FORCES INTERIEURES
@@ -224,7 +216,7 @@ subroutine nmfcor(modele, numedd, mate, carele, comref,&
 !
     call nmtime(sdtime, 'END', 'SECO_MEMB')
 !
-9999 continue
+999 continue
 !
 ! --- TRANSFORMATION DES CODES RETOURS EN EVENEMENTS
 !
@@ -234,5 +226,4 @@ subroutine nmfcor(modele, numedd, mate, carele, comref,&
 !
     call nmltev(sderro, 'ERRI', 'NEWT', lerrit)
 !
-    call jedema()
 end subroutine

@@ -225,12 +225,6 @@ subroutine nmassv(typvez, modelz, lischa, mate, carele,&
         call ascova('D', vafsdo, fomult, 'INST', instap,&
                     'R', vecass)
 !
-! --- FORCE DE REFERENCE
-!
-    else if (typvec.eq.'CNREFE') then
-        call assmiv('V', vecass, 1, vecele, [1.d0],&
-                    numedd, ' ', 'ZERO', 1)
-!
 ! --- FORCE DE REFERENCE POUR VARIABLES DE COMMANDE INITIALES
 !
     else if (typvec.eq.'CNVCF1') then

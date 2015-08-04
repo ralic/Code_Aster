@@ -54,6 +54,7 @@ implicit none
 #include "asterfort/nmnume.h"
 #include "asterfort/nmobsv.h"
 #include "asterfort/nmpro2.h"
+#include "asterfort/nmrefe.h"
 #include "asterfort/nmrini.h"
 #include "asterfort/nmvcle.h"
 #include "asterfort/nmvcre.h"
@@ -131,7 +132,7 @@ implicit none
     real(kind=8) :: r8bid3(3)
     real(kind=8) :: instin
     character(len=19) :: varc_prev, disp_prev, strx_prev
-    aster_logical :: lacc0, lpilo, lmpas, lsstf, lerrt, lreli, lviss
+    aster_logical :: lacc0, lpilo, lmpas, lsstf, lerrt, lreli, lviss, lrefe
     aster_logical :: lcont, lunil
     character(len=19) :: ligrcf, ligrxf
     integer, pointer :: slvi(:) => null()
@@ -183,6 +184,7 @@ implicit none
     lerrt = isfonc(fonact,'ERRE_TEMPS_THM')
     lreli = isfonc(fonact,'RECH_LINE' )
     lviss = ndynlo(sddyna,'VECT_ISS' )
+    lrefe = isfonc(fonact,'RESI_REFE')
 !
 ! --- SI ON A BESOIN DE FACTORISER SIMULTANNEMENT DEUX MATRICES AVEC LE SOLVEUR MUMPS ON LUI
 !     SIGNALE AFIN QU'IL OPTIMISE AU MIEUX LA MEMOIRE POUR CHACUNES D'ELLES.
@@ -275,7 +277,14 @@ implicit none
     call nminvc(model, mate, carele, compor, carcri,&
                 sdtime, sddisc, sddyna, valinc, solalg,&
                 lischa, varc_refe, resoco, resocu, numedd,&
-                fonact, parcon, veelem, veasse, measse)
+                fonact, veelem, veasse, measse)
+!
+! - Compute reference vector for RESI_REFE_RELA
+!
+    if (lrefe) then
+        call nmrefe(model , compor, mate  , carele, numedd,&
+                    parcon, valinc, veelem, veasse)
+    endif              
 !
 ! --- CREATION DE LA SD POUR ARCHIVAGE DES INFORMATIONS DE CONVERGENCE
 !
@@ -296,9 +305,9 @@ implicit none
     if (lacc0) then
         call nmchar('ACCI', ' ', model, numedd, mate,&
                     carele, compor, lischa, carcri, numins,&
-                    sdtime, sddisc, parcon, fonact, resoco,&
-                    resocu, varc_refe, valinc, solalg, veelem,&
-                    measse, veasse, sddyna)
+                    sdtime, sddisc, fonact, resoco, resocu,&
+                    varc_refe, valinc, solalg, veelem, measse, &
+                    veasse, sddyna)
         call accel0(model, numedd, numfix, fonact, lischa,&
                     sdcont_defi, resoco, maprec, solveu, valinc,&
                     sddyna, sdstat, sdtime, meelem, measse,&
@@ -363,11 +372,11 @@ implicit none
 ! --- CALCUL DU SECOND MEMBRE INITIAL POUR MULTI-PAS
 !
     if (lmpas) then
-        call nmihht(model, numedd, mate, compor, carele,&
-                    lischa, carcri, varc_refe, fonact, sdstat,&
-                    sddyna, sdtime, sdnume, sdcont_defi, resoco,&
-                    resocu, valinc, sddisc, parcon, solalg,&
-                    veasse, result)
+        call nmihht(model , numedd, mate     , compor     , carele,&
+                    lischa, carcri, varc_refe, fonact     , sdstat,&
+                    sddyna, sdtime, sdnume   , sdcont_defi, resoco,&
+                    resocu, valinc, sddisc   , solalg     , veasse,&
+                    result)
     endif
 !
 ! --- INITIALISATIONS TIMERS ET STATISTIQUES

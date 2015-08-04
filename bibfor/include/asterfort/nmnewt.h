@@ -15,10 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+! aslint: disable=W1504
+!
 interface
     subroutine nmnewt(noma, modele, numins, numedd, numfix,&
                       mate, carele, comref, compor, lischa,&
-                      method, fonact, carcri, parcon, conv,&
+                      method, fonact, carcri, conv,&
                       parmet, parcri, sdstat, sdtime,&
                       sderro, sdimpr, sdnume, sddyna, sddisc,&
                       sdcrit, sdsuiv, sdpilo, sdconv, solveu,&
@@ -38,7 +40,6 @@ interface
         character(len=16) :: method(*)
         integer :: fonact(*)
         character(len=24) :: carcri
-        real(kind=8) :: parcon(*)
         real(kind=8) :: conv(*)
         real(kind=8) :: parmet(*)
         real(kind=8) :: parcri(*)

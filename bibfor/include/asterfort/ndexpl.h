@@ -15,13 +15,15 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+! aslint: disable=W1504
+!
 interface
-    subroutine ndexpl(modele, numedd, numfix, mate, carele,&
+    subroutine ndexpl(modele, numedd, numfix, mate  , carele,&
                       comref, compor, lischa, method, fonact,&
-                      carcri, parcon, sdimpr, sdstat, sdnume,&
-                      sddyna, sddisc, sdtime, sderro, valinc,&
-                      numins, solalg, solveu, matass, maprec,&
-                      meelem, measse, veelem, veasse, nbiter)
+                      carcri, sdimpr, sdstat, sdnume, sddyna,&
+                      sddisc, sdtime, sderro, valinc, numins,&
+                      solalg, solveu, matass, maprec, meelem,&
+                      measse, veelem, veasse, nbiter)
         character(len=24) :: modele
         character(len=24) :: numedd
         character(len=24) :: numfix
@@ -33,7 +35,6 @@ interface
         character(len=16) :: method(*)
         integer :: fonact(*)
         character(len=24) :: carcri
-        real(kind=8) :: parcon(*)
         character(len=24) :: sdimpr
         character(len=24) :: sdstat
         character(len=19) :: sdnume

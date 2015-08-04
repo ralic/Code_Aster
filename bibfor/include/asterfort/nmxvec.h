@@ -17,12 +17,14 @@
 !
 #include "asterf_types.h"
 !
+! aslint: disable=W1504
+!
 interface
-    subroutine nmxvec(modelz, mate, carele, compor, carcri,&
+    subroutine nmxvec(modelz, mate  , carele, compor, carcri,&
                       sdtime, sddisc, sddyna, numins, valinc,&
                       solalg, lischa, comref, resoco, resocu,&
-                      numedd, parcon, veelem, veasse, measse,&
-                      nbvect, ltypve, lcalve, loptve, lassve)
+                      numedd, veelem, veasse, measse, nbvect,&
+                      ltypve, lcalve, loptve, lassve)
         character(len=*) :: modelz
         character(len=24) :: mate
         character(len=24) :: carele
@@ -39,7 +41,6 @@ interface
         character(len=24) :: resoco
         character(len=24) :: resocu
         character(len=24) :: numedd
-        real(kind=8) :: parcon(*)
         character(len=19) :: veelem(*)
         character(len=19) :: veasse(*)
         character(len=19) :: measse(*)

@@ -1,7 +1,15 @@
-subroutine nminvc(modelz, mate, carele, compor, carcri,&
+subroutine nminvc(modelz, mate  , carele, compor, carcri,&
                   sdtime, sddisc, sddyna, valinc, solalg,&
                   lischa, comref, resoco, resocu, numedd,&
-                  fonact, parcon, veelem, veasse, measse)
+                  fonact, veelem, veasse, measse)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/nmcvec.h"
+#include "asterfort/nmxvec.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,19 +29,10 @@ subroutine nminvc(modelz, mate, carele, compor, carcri,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/nmcvec.h"
-#include "asterfort/nmxvec.h"
     integer :: fonact(*)
     character(len=*) :: modelz
     character(len=24) :: mate, carele
     character(len=24) :: compor, carcri
-    real(kind=8) :: parcon(8)
     character(len=19) :: sddisc, sddyna, lischa
     character(len=24) :: resoco, resocu
     character(len=24) :: comref, numedd, sdtime
@@ -70,7 +69,7 @@ subroutine nminvc(modelz, mate, carele, compor, carcri,&
 !
 ! ----------------------------------------------------------------------
 !
-    aster_logical :: lrefe, ldidi
+    aster_logical :: ldidi
     integer :: ifm, niv
     integer :: numins
     integer :: nbvect
@@ -80,11 +79,7 @@ subroutine nminvc(modelz, mate, carele, compor, carcri,&
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('MECA_NON_LINE', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> PRECALCUL DES VECT_ELEM CONSTANTES'
     endif
@@ -92,7 +87,6 @@ subroutine nminvc(modelz, mate, carele, compor, carcri,&
 ! --- FONCTIONNALITES ACTIVEES
 !
     ldidi = isfonc(fonact,'DIDI')
-    lrefe = isfonc(fonact,'RESI_REFE')
 !
 ! --- INITIALISATIONS
 !
@@ -108,13 +102,6 @@ subroutine nminvc(modelz, mate, carele, compor, carcri,&
                     nbvect, ltypve, loptve, lcalve, lassve)
     endif
 !
-! --- CREATION DU VECT_ELEM POUR CRITERE EN CONTRAINTE GENERALISEE
-!
-    if (lrefe) then
-        call nmcvec('AJOU', 'CNREFE', ' ', .true._1, .true._1,&
-                    nbvect, ltypve, loptve, lcalve, lassve)
-    endif
-!
 ! --- CREATION DU VECT_ELEM POUR FORCE DE REFERENCE LIEE
 ! --- AUX VAR. COMMANDES EN T-
 !
@@ -124,12 +111,11 @@ subroutine nminvc(modelz, mate, carele, compor, carcri,&
 ! --- CALCUL DES VECT_ELEM DE LA LISTE
 !
     if (nbvect .gt. 0) then
-        call nmxvec(modelz, mate, carele, compor, carcri,&
+        call nmxvec(modelz, mate  , carele, compor, carcri,&
                     sdtime, sddisc, sddyna, numins, valinc,&
                     solalg, lischa, comref, resoco, resocu,&
-                    numedd, parcon, veelem, veasse, measse,&
-                    nbvect, ltypve, lcalve, loptve, lassve)
+                    numedd, veelem, veasse, measse, nbvect,&
+                    ltypve, lcalve, loptve, lassve)
     endif
 !
-    call jedema()
 end subroutine

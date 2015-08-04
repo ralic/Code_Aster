@@ -1,8 +1,17 @@
-subroutine nmctcd(modele, mate, carele, fonact, compor,&
+subroutine nmctcd(modele, mate  , carele, fonact, compor,&
                   carcri, sdtime, sddisc, sddyna, numins,&
                   valinc, solalg, lischa, comref, defico,&
-                  resoco, resocu, numedd, parcon, veelem,&
-                  veasse, measse)
+                  resoco, resocu, numedd, veelem, veasse,&
+                  measse)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/nmcvec.h"
+#include "asterfort/nmxvec.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,24 +30,13 @@ subroutine nmctcd(modele, mate, carele, fonact, compor,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
-!
 ! aslint: disable=W1504
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/nmcvec.h"
-#include "asterfort/nmxvec.h"
+!
     integer :: fonact(*)
     character(len=24) :: modele
     character(len=24) :: mate, carele
     character(len=24) :: compor, carcri
     integer :: numins
-    real(kind=8) :: parcon(*)
     character(len=19) :: sddisc, sddyna, lischa
     character(len=24) :: defico, resoco, resocu, comref, numedd
     character(len=24) :: sdtime
@@ -54,11 +52,9 @@ subroutine nmctcd(modele, mate, carele, fonact, compor,&
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  MODELE : MODELE
 ! IN  NUMEDD : NUME_DDL
 ! IN  MATE   : CHAMP MATERIAU
-! IN  PARCON : PARAMETRES DU CRITERE DE CONVERGENCE REFERENCE
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  COMREF : VARI_COM DE REFERENCE
 ! IN  COMPOR : COMPORTEMENT
@@ -82,8 +78,7 @@ subroutine nmctcd(modele, mate, carele, fonact, compor,&
 ! IN  LASSVE : SI VECT_ELEM A ASSEMBLER
 ! IN  LCALVE : SI VECT_ELEM A CALCULER
 !
-!
-!
+! ----------------------------------------------------------------------
 !
     integer :: ifm, niv
     integer :: nbvect
@@ -95,8 +90,6 @@ subroutine nmctcd(modele, mate, carele, fonact, compor,&
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
-    call infdbg('MECA_NON_LINE', ifm, niv)
 !
 ! --- ALL VERIF ?
 !
@@ -105,8 +98,9 @@ subroutine nmctcd(modele, mate, carele, fonact, compor,&
         goto 99
     endif
 !
-! --- AFFICHAGE
+! - Print
 !
+    call infdbg('MECA_NON_LINE', ifm, niv)
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> ...... CALCUL FORCES CONTACT'
     endif
@@ -143,13 +137,12 @@ subroutine nmctcd(modele, mate, carele, fonact, compor,&
 !
 ! --- CALCUL EFFECTIF
 !
-    call nmxvec(modele, mate, carele, compor, carcri,&
+    call nmxvec(modele, mate  , carele, compor, carcri,&
                 sdtime, sddisc, sddyna, numins, valinc,&
                 solalg, lischa, comref, resoco, resocu,&
-                numedd, parcon, veelem, veasse, measse,&
-                nbvect, ltypve, lcalve, loptve, lassve)
+                numedd, veelem, veasse, measse, nbvect,&
+                ltypve, lcalve, loptve, lassve)
 !
  99 continue
 !
-    call jedema()
 end subroutine

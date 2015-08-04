@@ -1,8 +1,17 @@
-subroutine nmxvec(modelz, mate, carele, compor, carcri,&
+subroutine nmxvec(modelz, mate  , carele, compor, carcri,&
                   sdtime, sddisc, sddyna, numins, valinc,&
                   solalg, lischa, comref, resoco, resocu,&
-                  numedd, parcon, veelem, veasse, measse,&
-                  nbvect, ltypve, lcalve, loptve, lassve)
+                  numedd, veelem, veasse, measse, nbvect,&
+                  ltypve, lcalve, loptve, lassve)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/diinst.h"
+#include "asterfort/nmassv.h"
+#include "asterfort/nmcalv.h"
+#include "asterfort/nmchex.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,15 +30,8 @@ subroutine nmxvec(modelz, mate, carele, compor, carcri,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
-!
 ! aslint: disable=W1504
-    implicit none
-#include "asterf_types.h"
-#include "asterfort/assert.h"
-#include "asterfort/diinst.h"
-#include "asterfort/nmassv.h"
-#include "asterfort/nmcalv.h"
-#include "asterfort/nmchex.h"
+!
     integer :: nbvect
     character(len=6) :: ltypve(20)
     aster_logical :: lcalve(20), lassve(20)
@@ -38,7 +40,6 @@ subroutine nmxvec(modelz, mate, carele, compor, carcri,&
     character(len=24) :: mate, carele, sdtime
     character(len=24) :: compor, carcri, numedd
     integer :: numins
-    real(kind=8) :: parcon(*)
     character(len=19) :: sddisc, sddyna, lischa
     character(len=24) :: resoco, resocu, comref
     character(len=19) :: veelem(*), veasse(*), measse(*)
@@ -56,15 +57,6 @@ subroutine nmxvec(modelz, mate, carele, compor, carcri,&
 ! IN  MODELE : MODELE
 ! IN  NUMEDD : NUME_DDL
 ! IN  MATE   : CHAMP MATERIAU
-! IN  PARCON : PARAMETRES DU CRITERE DE CONVERGENCE REFERENCE
-!                     1 : SIGM_REFE
-!                     2 : EPSI_REFE
-!                     3 : FLUX_THER_REFE
-!                     4 : FLUX_HYD1_REFE
-!                     5 : FLUX_HYD2_REFE
-!                     6 : VARI_REFE
-!                     7 : EFFORT (FORC_REFE)
-!                     8 : MOMENT (FORC_REFE)
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  COMREF : VARI_COM DE REFERENCE
 ! IN  COMPOR : COMPORTEMENT
@@ -99,10 +91,6 @@ subroutine nmxvec(modelz, mate, carele, compor, carcri,&
 !
 ! ----------------------------------------------------------------------
 !
-!
-!
-! --- INITIALISATIONS
-!
     if (numins .eq. 0) then
         instam = 0.d0
         instap = diinst(sddisc,numins)
@@ -114,7 +102,7 @@ subroutine nmxvec(modelz, mate, carele, compor, carcri,&
 !
 ! --- CALCUL ET ASSEMBLAGE DES VECT_ELEM
 !
-    do 10 ivect = 1, nbvect
+    do ivect = 1, nbvect
 !
 ! --- VECT_ELEM COURANT
 !
@@ -145,10 +133,10 @@ subroutine nmxvec(modelz, mate, carele, compor, carcri,&
 !
         if (lcalc) then
             call nmchex(veelem, 'VEELEM', typvec, vecele)
-            call nmcalv(typvec, modele, lischa, mate, carele,&
+            call nmcalv(typvec, modele, lischa, mate  , carele,&
                         compor, carcri, numedd, comref, sdtime,&
-                        parcon, instam, instap, valinc, solalg,&
-                        sddyna, option, vecele)
+                        instam, instap, valinc, solalg, sddyna,&
+                        option, vecele)
         endif
 !
 ! --- ASSEMBLER VECT_ELEM
@@ -160,6 +148,6 @@ subroutine nmxvec(modelz, mate, carele, compor, carcri,&
                         resocu, sddyna, sdtime, valinc, comref,&
                         measse, vecele, vecass)
         endif
- 10 end do
+    end do
 !
 end subroutine

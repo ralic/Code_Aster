@@ -6,6 +6,22 @@ subroutine nmprta(modele, numedd, numfix, mate, carele,&
                   sddyna, meelem, measse, veelem, veasse,&
                   sdnume, ldccvg, faccvg, rescvg, codere)
 !
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/diinst.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nmassp.h"
+#include "asterfort/nmchar.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmdep0.h"
+#include "asterfort/nmfocc.h"
+#include "asterfort/nmprma.h"
+#include "asterfort/nmresd.h"
+#include "asterfort/vtzero.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,25 +39,8 @@ subroutine nmprta(modele, numedd, numfix, mate, carele,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
-!
 ! aslint: disable=W1504
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/diinst.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/ndynlo.h"
-#include "asterfort/nmassp.h"
-#include "asterfort/nmchar.h"
-#include "asterfort/nmchex.h"
-#include "asterfort/nmdep0.h"
-#include "asterfort/nmfocc.h"
-#include "asterfort/nmprma.h"
-#include "asterfort/nmresd.h"
-#include "asterfort/vtzero.h"
+!
     integer :: fonact(*)
     integer :: numins, faccvg, rescvg, ldccvg
     real(kind=8) :: parmet(*)
@@ -121,17 +120,12 @@ subroutine nmprta(modele, numedd, numfix, mate, carele,&
 !
     real(kind=8) :: instap
     character(len=19) :: cncine, cndonn, cnpilo
-    real(kind=8) :: r8bid(8)
     aster_logical :: lstat, limpl, leltc
     integer :: ifm, niv
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('MECA_NON_LINE', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> PREDICTION TYPE EULER'
     endif
@@ -175,16 +169,16 @@ subroutine nmprta(modele, numedd, numfix, mate, carele,&
 !
 ! --- ERREUR SANS POSSIBILITE DE CONTINUER
 !
-    if ((faccvg.eq.1) .or. (faccvg.eq.2)) goto 9999
-    if (ldccvg .eq. 1) goto 9999
+    if ((faccvg.eq.1) .or. (faccvg.eq.2)) goto 999
+    if (ldccvg .eq. 1) goto 999
 !
 ! --- CALCUL DES CHARGEMENTS VARIABLES AU COURS DU PAS DE TEMPS
 !
     call nmchar('VARI', 'PREDICTION', modele, numedd, mate,&
                 carele, compor, lischa, carcri, numins,&
-                sdtime, sddisc, r8bid, fonact, resoco,&
-                resocu, comref, valinc, solalg, veelem,&
-                measse, veasse, sddyna)
+                sdtime, sddisc, fonact, resoco, resocu,&
+                comref, valinc, solalg, veelem, measse,&
+                veasse, sddyna)
 !
 ! --- CALCUL DU SECOND MEMBRE POUR CONTACT/XFEM
 !
@@ -214,7 +208,6 @@ subroutine nmprta(modele, numedd, numfix, mate, carele,&
                 numedd, instap, maprec, matass, cndonn,&
                 cnpilo, cncine, solalg, rescvg)
 !
-9999 continue
+999 continue
 !
-    call jedema()
 end subroutine

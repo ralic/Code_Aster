@@ -1,7 +1,30 @@
-subroutine nmcalv(typvec, modelz, lischa, mate, carele,&
+subroutine nmcalv(typvec, modelz, lischa, mate  , carele,&
                   compor, carcri, numedd, comref, sdtime,&
-                  parcon, instam, instap, valinc, solalg,&
-                  sddyna, option, vecele)
+                  instam, instap, valinc, solalg, sddyna,&
+                  option, vecele)
+!
+implicit none
+!
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmdebg.h"
+#include "asterfort/nmdep0.h"
+#include "asterfort/nmdidi.h"
+#include "asterfort/nmsssv.h"
+#include "asterfort/nmtime.h"
+#include "asterfort/nmvcex.h"
+#include "asterfort/nmvcfo.h"
+#include "asterfort/vecgme.h"
+#include "asterfort/vechme.h"
+#include "asterfort/vedime.h"
+#include "asterfort/vedpme.h"
+#include "asterfort/vefnme.h"
+#include "asterfort/vefpme.h"
+#include "asterfort/veimpd.h"
+#include "asterfort/velame.h"
+#include "asterfort/veondp.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,35 +44,10 @@ subroutine nmcalv(typvec, modelz, lischa, mate, carele,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/nmchex.h"
-#include "asterfort/nmdebg.h"
-#include "asterfort/nmdep0.h"
-#include "asterfort/nmdidi.h"
-#include "asterfort/nmrefe.h"
-#include "asterfort/nmsssv.h"
-#include "asterfort/nmtime.h"
-#include "asterfort/nmvcex.h"
-#include "asterfort/nmvcfo.h"
-#include "asterfort/vecgme.h"
-#include "asterfort/vechme.h"
-#include "asterfort/vedime.h"
-#include "asterfort/vedpme.h"
-#include "asterfort/vefnme.h"
-#include "asterfort/vefpme.h"
-#include "asterfort/veimpd.h"
-#include "asterfort/velame.h"
-#include "asterfort/veondp.h"
     character(len=*) :: modelz
     character(len=24) :: mate, carele, compor, carcri, numedd
     character(len=24) :: comref, sdtime
-    real(kind=8) :: instam, instap, parcon(*)
+    real(kind=8) :: instam, instap
     character(len=19) :: lischa, sddyna
     character(len=19) :: solalg(*), valinc(*)
     character(len=6) :: typvec
@@ -75,7 +73,6 @@ subroutine nmcalv(typvec, modelz, lischa, mate, carele,&
 ! IN  NUMEDD : NUME_DDL
 ! IN  SDTIME : SD TIMER
 ! IN  COMREF : VARI_COM DE REFERENCE
-! IN  PARCON : PARAMETRES DU CRITERE DE CONVERGENCE REFERENCE
 ! IN  INSTAM : INSTANT MOINS
 ! IN  INSTAP : INSTANT PLUS
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
@@ -95,20 +92,22 @@ subroutine nmcalv(typvec, modelz, lischa, mate, carele,&
     integer :: neq
     real(kind=8) :: partps(2), inst(3)
     character(len=24) :: charge, infoch
-    character(len=8) :: noma, k8bid
+    character(len=8) :: noma
     character(len=16) :: optio2
     integer :: ifm, niv
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('MECA_NON_LINE', ifm, niv)
+    if (niv .ge. 2) then
+        write (ifm,*) '<MECANONLINE><VECT> CALCUL DES VECT_ELEM DE TYPE <',typvec,'>'
+    endif
 !
 ! --- INITIALISATIONS
 !
     modele = modelz
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
-    call dismoi('NB_EQUA   ', numedd, 'NUME_DDL', repi=neq, repk=k8bid)
+    call dismoi('NB_EQUA   ', numedd, 'NUME_DDL', repi=neq)
 !
 ! --- DECOMPACTION DES VARIABLES CHAPEAUX
 !
@@ -140,14 +139,6 @@ subroutine nmcalv(typvec, modelz, lischa, mate, carele,&
 !
     charge = lischa(1:19)//'.LCHA'
     infoch = lischa(1:19)//'.INFC'
-    call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
-!
-! --- AFFICHAGE
-!
-    if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE><VECT> CALCUL DES VECT_ELEM'//&
-        ' DE TYPE <',typvec,'>'
-    endif
 !
 ! --- MESURES
 !
@@ -239,12 +230,6 @@ subroutine nmcalv(typvec, modelz, lischa, mate, carele,&
                     instap, depmoi, depdel, vecele, instam,&
                     compor, carcri, ' ', vitplu, strmoi)
 !
-! --- FORCE DE REFERENCE
-!
-    else if (typvec.eq.'CNREFE') then
-        call nmrefe(modele, compor, mate, carele, depmoi,&
-                    parcon, vecele)
-!
 ! --- FORCE DE REFERENCE POUR VARIABLES DE COMMANDE INITIALES
 !
     else if (typvec.eq.'CNVCF1') then
@@ -267,7 +252,5 @@ subroutine nmcalv(typvec, modelz, lischa, mate, carele,&
     endif
 !
     call nmtime(sdtime, 'END', 'SECO_MEMB')
-!
-    call jedema()
 !
 end subroutine

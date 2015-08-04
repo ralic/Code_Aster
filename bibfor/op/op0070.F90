@@ -220,16 +220,16 @@ implicit none
 ! --- REALISATION DU PAS DE TEMPS
 !
     if (lexpl) then
-        call ndexpl(modele, numedd, numfix, mate, carele,&
+        call ndexpl(modele, numedd, numfix, mate  , carele,&
                     comref, compor, lischa, method, fonact,&
-                    carcri, parcon, sdimpr, sdstat, sdnume,&
-                    sddyna, sddisc, sdtime, sderro, valinc,&
-                    numins, solalg, solveu, matass, maprec,&
-                    meelem, measse, veelem, veasse, nbiter)
+                    carcri, sdimpr, sdstat, sdnume, sddyna,&
+                    sddisc, sdtime, sderro, valinc, numins,&
+                    solalg, solveu, matass, maprec, meelem,&
+                    measse, veelem, veasse, nbiter)
     else if (lstat.or.limpl) then
         call nmnewt(mesh, modele, numins, numedd, numfix,&
                     mate, carele, comref, compor, lischa,&
-                    method, fonact, carcri, parcon, conv,&
+                    method, fonact, carcri, conv,&
                     parmet, parcri, sdstat, sdtime,&
                     sderro, sdimpr, sdnume, sddyna, sddisc,&
                     sdcrit, sd_suiv, sdpilo, sdconv, solveu,&
@@ -260,10 +260,10 @@ implicit none
     call nmpost(modele, mesh  , numedd , numfix, carele,&
                 compor, solveu, numins , mate  , comref,&
                 lischa, defico, resoco , resocu, parmet,&
-                parcon, fonact, carcri , sdimpr, sdstat,&
-                sddisc, sdtime, sd_obsv, sderro, sddyna,&
-                sdpost, valinc, solalg , meelem, measse,&
-                veelem, veasse, sdener , sdcriq, eta)
+                fonact, carcri , sdimpr, sdstat, sddisc,&
+                sdtime, sd_obsv, sderro, sddyna, sdpost,&
+                valinc, solalg , meelem, measse, veelem,&
+                veasse, sdener , sdcriq, eta)
 !
 ! --- ETAT DE LA CONVERGENCE DU PAS DE TEMPS
 !

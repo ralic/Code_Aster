@@ -1,9 +1,19 @@
-subroutine ndexpl(modele, numedd, numfix, mate, carele,&
+subroutine ndexpl(modele, numedd, numfix, mate  , carele,&
                   comref, compor, lischa, method, fonact,&
-                  carcri, parcon, sdimpr, sdstat, sdnume,&
-                  sddyna, sddisc, sdtime, sderro, valinc,&
-                  numins, solalg, solveu, matass, maprec,&
-                  meelem, measse, veelem, veasse, nbiter)
+                  carcri, sdimpr, sdstat, sdnume, sddyna,&
+                  sddisc, sdtime, sderro, valinc, numins,&
+                  solalg, solveu, matass, maprec, meelem,&
+                  measse, veelem, veasse, nbiter)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/ndxcvg.h"
+#include "asterfort/ndxdec.h"
+#include "asterfort/ndxdep.h"
+#include "asterfort/ndxnpa.h"
+#include "asterfort/ndxpre.h"
+#include "asterfort/nmchar.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,20 +32,11 @@ subroutine ndexpl(modele, numedd, numfix, mate, carele,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
-!
 ! aslint: disable=W1504
-    implicit none
-#include "asterf_types.h"
-#include "asterfort/ndxcvg.h"
-#include "asterfort/ndxdec.h"
-#include "asterfort/ndxdep.h"
-#include "asterfort/ndxnpa.h"
-#include "asterfort/ndxpre.h"
-#include "asterfort/nmchar.h"
+!
     integer :: numins
     integer :: fonact(*)
     character(len=16) :: method(*)
-    real(kind=8) :: parcon(*)
     character(len=24) :: carcri
     character(len=24) :: sdstat, sdtime, sderro, sdimpr
     character(len=19) :: sdnume, sddyna, sddisc
@@ -101,11 +102,11 @@ subroutine ndexpl(modele, numedd, numfix, mate, carele,&
 !
 ! --- CALCUL DES CHARGEMENTS CONSTANTS AU COURS DU PAS DE TEMPS
 !
-    call nmchar('FIXE', ' ', modele, numedd, mate,&
+    call nmchar('FIXE', ' '   , modele, numedd, mate  ,&
                 carele, compor, lischa, carcri, numins,&
-                sdtime, sddisc, parcon, fonact, k24bla,&
-                k24bla, comref, valinc, solalg, veelem,&
-                measse, veasse, sddyna)
+                sdtime, sddisc, fonact, k24bla, k24bla,&
+                comref, valinc, solalg, veelem, measse,&
+                veasse, sddyna)
 !
 ! --- PREDICTION D'UNE DIRECTION DE DESCENTE
 !

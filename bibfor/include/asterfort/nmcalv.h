@@ -16,10 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmcalv(typvec, modelz, lischa, mate, carele,&
+    subroutine nmcalv(typvec, modelz, lischa, mate  , carele,&
                       compor, carcri, numedd, comref, sdtime,&
-                      parcon, instam, instap, valinc, solalg,&
-                      sddyna, option, vecele)
+                      instam, instap, valinc, solalg, sddyna,&
+                      option, vecele)
         character(len=6) :: typvec
         character(len=*) :: modelz
         character(len=19) :: lischa
@@ -30,7 +30,6 @@ interface
         character(len=24) :: numedd
         character(len=24) :: comref
         character(len=24) :: sdtime
-        real(kind=8) :: parcon(*)
         real(kind=8) :: instam
         real(kind=8) :: instap
         character(len=19) :: valinc(*)

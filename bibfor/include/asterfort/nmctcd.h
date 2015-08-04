@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+! aslint: disable=W1504
+!
 interface
     subroutine nmctcd(modele, mate, carele, fonact, compor,&
                       carcri, sdtime, sddisc, sddyna, numins,&
                       valinc, solalg, lischa, comref, defico,&
-                      resoco, resocu, numedd, parcon, veelem,&
-                      veasse, measse)
+                      resoco, resocu, numedd, veelem, veasse,&
+                      measse)
         character(len=24) :: modele
         character(len=24) :: mate
         character(len=24) :: carele
@@ -39,7 +41,6 @@ interface
         character(len=24) :: resoco
         character(len=24) :: resocu
         character(len=24) :: numedd
-        real(kind=8) :: parcon(*)
         character(len=19) :: veelem(*)
         character(len=19) :: veasse(*)
         character(len=19) :: measse(*)

@@ -1,7 +1,23 @@
 subroutine nmfini(sddyna, valinc, measse, modele, mate,&
                   carele, compor, carcri, sdtime, sddisc,&
                   numins, solalg, lischa, comref, resoco,&
-                  resocu, numedd, parcon, veelem, veasse)
+                  resocu, numedd, veelem, veasse)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mrmult.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmcvec.h"
+#include "asterfort/nmxvec.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,29 +37,11 @@ subroutine nmfini(sddyna, valinc, measse, modele, mate,&
 ! ======================================================================
 ! person_in_charge: ludovic.idoux at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/mrmult.h"
-#include "asterfort/mtdscr.h"
-#include "asterfort/ndynlo.h"
-#include "asterfort/nmchex.h"
-#include "asterfort/nmcvec.h"
-#include "asterfort/nmxvec.h"
-#include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
     character(len=19) :: sddyna, valinc(*), measse(*)
     character(len=24) :: modele, mate, carele, compor, carcri, sdtime, comref
     character(len=24) :: resoco, resocu, numedd
     character(len=19) :: sddisc, solalg(*), lischa, veelem(*), veasse(*)
     integer :: numins
-    real(kind=8) :: parcon(8)
 !
 ! ----------------------------------------------------------------------
 !
@@ -72,20 +70,10 @@ subroutine nmfini(sddyna, valinc, measse, modele, mate,&
 ! IN  RESOCO : SD RESOLUTION CONTACT
 ! IN  RESOCU : SD RESOLUTION LIAISON_UNILATER
 ! IN  NUMEDD : NUME_DDL
-! IN  PARCON : PARAMETRES DU CRITERE DE CONVERGENCE REFERENCE
-!                     1 : SIGM_REFE
-!                     2 : EPSI_REFE
-!                     3 : FLUX_THER_REFE
-!                     4 : FLUX_HYD1_REFE
-!                     5 : FLUX_HYD2_REFE
-!                     6 : VARI_REFE
-!                     7 : EFFORT (FORC_REFE)
-!                     8 : MOMENT (FORC_REFE)
 ! IN  VEELEM : VECTEURS ELEMENTAIRES
 ! IN  VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE
 !
-!
-!
+! ----------------------------------------------------------------------
 !
     character(len=19) :: masse, amort, vitmoi, accmoi
     character(len=19) :: fexmoi, fammoi, flimoi
@@ -107,7 +95,7 @@ subroutine nmfini(sddyna, valinc, measse, modele, mate,&
     real(kind=8), pointer :: fnomo(:) => null()
     real(kind=8), pointer :: vitmo(:) => null()
 !
-    call jemarq()
+! ----------------------------------------------------------------------
 !
     lamor = ndynlo(sddyna,'MAT_AMORT')
     ldyna = ndynlo(sddyna,'DYNAMIQUE')
@@ -115,8 +103,7 @@ subroutine nmfini(sddyna, valinc, measse, modele, mate,&
     call jeveuo(fexmoi//'.VALE', 'E', vr=fexmo)
     call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
 !
-! --- AJOUT DE LA FORCE DE LIAISON ET DE LA FORCE D AMORTISSEMENT
-! --- MODAL
+! --- AJOUT DE LA FORCE DE LIAISON ET DE LA FORCE D AMORTISSEMENT MODAL
 !
     call nmchex(valinc, 'VALINC', 'FAMMOI', fammoi)
     call jeveuo(fammoi//'.VALE', 'L', vr=fammo)
@@ -168,8 +155,8 @@ subroutine nmfini(sddyna, valinc, measse, modele, mate,&
     call nmxvec(modele, mate, carele, compor, carcri,&
                 sdtime, sddisc, sddyna, numins, valinc,&
                 solalg, lischa, comref, resoco, resocu,&
-                numedd, parcon, veelem, veasse, measse,&
-                nbvect, ltypve, lcalve, loptve, lassve)
+                numedd, veelem, veasse, measse, nbvect,&
+                ltypve, lcalve, loptve, lassve)
     call nmchex(veasse, 'VEASSE', 'CNFNOD', cnfnod)
     call jeveuo(cnfnod//'.VALE', 'L', vr=cnfno)
     do iaux = 1, neq
@@ -183,7 +170,5 @@ subroutine nmfini(sddyna, valinc, measse, modele, mate,&
     do iaux = 1, neq
         fnomo(iaux) = cnfno(iaux)
     end do
-!
-    call jedema()
 !
 end subroutine

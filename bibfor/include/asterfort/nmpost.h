@@ -15,14 +15,16 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+! aslint: disable=W1504
+!
 interface
-    subroutine nmpost(modele, mesh  , numedd, numfix, carele,&
-                      compor, solveu, numins, mate  , comref,&
-                      lischa, defico, resoco, resocu, parmet,&
-                      parcon, fonact, carcri, sdimpr, sdstat,&
-                      sddisc, sdtime, sd_obsv, sderro, sddyna,&
-                      sdpost, valinc, solalg, meelem, measse,&
-                      veelem, veasse, sdener, sdcriq, eta)
+    subroutine nmpost(modele, mesh   , numedd, numfix, carele,&
+                      compor, solveu , numins, mate  , comref,&
+                      lischa, defico , resoco, resocu, parmet,&
+                      fonact, carcri , sdimpr, sdstat, sddisc,&
+                      sdtime, sd_obsv, sderro, sddyna, sdpost,&
+                      valinc, solalg , meelem, measse, veelem,&
+                      veasse, sdener , sdcriq, eta)
         character(len=24) :: modele
         character(len=8), intent(in) :: mesh
         character(len=24) :: numedd
@@ -38,7 +40,6 @@ interface
         character(len=24) :: resoco
         character(len=24) :: resocu
         real(kind=8) :: parmet(*)
-        real(kind=8) :: parcon(*)
         integer :: fonact(*)
         character(len=24) :: carcri
         character(len=24) :: sdimpr

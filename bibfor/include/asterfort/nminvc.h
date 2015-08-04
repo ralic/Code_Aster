@@ -19,7 +19,7 @@ interface
     subroutine nminvc(modelz, mate, carele, compor, carcri,&
                       sdtime, sddisc, sddyna, valinc, solalg,&
                       lischa, comref, resoco, resocu, numedd,&
-                      fonact, parcon, veelem, veasse, measse)
+                      fonact, veelem, veasse, measse)
         character(len=*) :: modelz
         character(len=24) :: mate
         character(len=24) :: carele
@@ -36,7 +36,6 @@ interface
         character(len=24) :: resocu
         character(len=24) :: numedd
         integer :: fonact(*)
-        real(kind=8) :: parcon(8)
         character(len=19) :: veelem(*)
         character(len=19) :: veasse(*)
         character(len=19) :: measse(*)

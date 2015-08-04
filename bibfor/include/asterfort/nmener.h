@@ -15,13 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+! aslint: disable=W1504
+!
 interface
-    subroutine nmener(valinc, veasse, measse, sddyna, eta,&
+    subroutine nmener(valinc, veasse, measse, sddyna, eta   ,&
                       sdener, fonact, solveu, numedd, numfix,&
-                      meelem, numins, modele, mate, carele,&
+                      meelem, numins, modele, mate  , carele,&
                       compor, carcri, sdtime, sddisc, solalg,&
-                      lischa, comref, resoco, resocu, parcon,&
-                      veelem)
+                      lischa, comref, resoco, resocu, veelem)
         character(len=19) :: valinc(*)
         character(len=19) :: veasse(*)
         character(len=19) :: measse(*)
@@ -46,7 +47,6 @@ interface
         character(len=24) :: comref
         character(len=24) :: resoco
         character(len=24) :: resocu
-        real(kind=8) :: parcon(*)
         character(len=19) :: veelem(*)
     end subroutine nmener
 end interface

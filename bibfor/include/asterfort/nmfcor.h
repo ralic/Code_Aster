@@ -17,14 +17,15 @@
 !
 #include "asterf_types.h"
 !
+! aslint: disable=W1504
+!
 interface
-    subroutine nmfcor(modele, numedd, mate, carele, comref,&
+    subroutine nmfcor(modele, numedd, mate  , carele, comref,&
                       compor, lischa, fonact, parmet, carcri,&
                       method, numins, iterat, sdstat, sdtime,&
                       sddisc, sddyna, sdnume, sderro, defico,&
-                      resoco, resocu, parcon, valinc, solalg,&
-                      veelem, veasse, meelem, measse, matass,&
-                      lerrit)
+                      resoco, resocu, valinc, solalg, veelem,&
+                      veasse, meelem, measse, matass, lerrit)
         character(len=24) :: modele
         character(len=24) :: numedd
         character(len=24) :: mate
@@ -47,7 +48,6 @@ interface
         character(len=24) :: defico
         character(len=24) :: resoco
         character(len=24) :: resocu
-        real(kind=8) :: parcon(*)
         character(len=19) :: valinc(*)
         character(len=19) :: solalg(*)
         character(len=19) :: veelem(*)

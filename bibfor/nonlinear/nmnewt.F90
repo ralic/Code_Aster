@@ -1,6 +1,6 @@
 subroutine nmnewt(noma, modele, numins, numedd, numfix,&
                   mate, carele, comref, compor, lischa,&
-                  method, fonact, carcri, parcon, conv,&
+                  method, fonact, carcri, conv,&
                   parmet, parcri, sdstat, sdtime,&
                   sderro, sdimpr, sdnume, sddyna, sddisc,&
                   sdcrit, sdsuiv, sdpilo, sdconv, solveu,&
@@ -64,7 +64,7 @@ subroutine nmnewt(noma, modele, numins, numedd, numfix,&
     integer :: numins
     integer :: fonact(*)
     character(len=16) :: method(*)
-    real(kind=8) :: parmet(*), parcri(*), parcon(*), conv(*)
+    real(kind=8) :: parmet(*), parcri(*), conv(*)
     character(len=24) :: carcri
     character(len=24) :: sdtime, sderro, sdimpr, sdstat, sdconv, sdsuiv
     character(len=19) :: sdnume, sddyna, sddisc, sdcrit
@@ -185,9 +185,9 @@ subroutine nmnewt(noma, modele, numins, numedd, numfix,&
 !
     call nmchar('FIXE', ' ', modele, numedd, mate,&
                 carele, compor, lischa, carcri, numins,&
-                sdtime, sddisc, parcon, fonact, resoco,&
-                resocu, comref, valinc, solalg, veelem,&
-                measse, veasse, sddyna)
+                sdtime, sddisc, fonact, resoco, resocu,&
+                comref, valinc, solalg, veelem, measse,&
+                veasse, sddyna)
 !
 ! ======================================================================
 !     BOUCLE POINTS FIXES
@@ -254,9 +254,8 @@ subroutine nmnewt(noma, modele, numins, numedd, numfix,&
                 compor, lischa, fonact, parmet, carcri,&
                 method, numins, iterat, sdstat, sdtime,&
                 sddisc, sddyna, sdnume, sderro, defico,&
-                resoco, resocu, parcon, valinc, solalg,&
-                veelem, veasse, meelem, measse, matass,&
-                lerrit)
+                resoco, resocu, valinc, solalg, veelem,&
+                veasse, meelem, measse, matass, lerrit)
 !
     if (lerrit) goto 315
 !

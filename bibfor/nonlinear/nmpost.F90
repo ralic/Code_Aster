@@ -1,15 +1,14 @@
-subroutine nmpost(modele, mesh  , numedd, numfix, carele,&
-                  compor, solveu, numins, mate  , comref,&
-                  lischa, defico, resoco, resocu, parmet,&
-                  parcon, fonact, carcri, sdimpr, sdstat,&
-                  sddisc, sdtime, sd_obsv, sderro, sddyna,&
-                  sdpost, valinc, solalg, meelem, measse,&
-                  veelem, veasse, sdener, sdcriq, eta)
+subroutine nmpost(modele, mesh   , numedd, numfix, carele,&
+                  compor, solveu , numins, mate  , comref,&
+                  lischa, defico , resoco, resocu, parmet,&
+                  fonact, carcri , sdimpr, sdstat, sddisc,&
+                  sdtime, sd_obsv, sderro, sddyna, sdpost,&
+                  valinc, solalg , meelem, measse, veelem,&
+                  veasse, sdener , sdcriq, eta)
 !
 implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/cfmxpo.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/nmener.h"
@@ -41,7 +40,7 @@ implicit none
 !
     integer :: numins
     character(len=8), intent(in) :: mesh
-    real(kind=8) :: parmet(*), parcon(*), eta
+    real(kind=8) :: parmet(*), eta
     character(len=19) :: meelem(*)
     character(len=24) :: resoco, defico, resocu
     character(len=19) :: solveu
@@ -95,9 +94,6 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
-!
-! --- FONCTIONNALITES ACTIVEES
-!
     lcont = isfonc(fonact,'CONTACT')
     lerrt = isfonc(fonact,'ERRE_TEMPS_THM')
     lmvib = isfonc(fonact,'MODE_VIBR')
@@ -150,8 +146,7 @@ implicit none
                     sdener, fonact, solveu, numedd, numfix,&
                     meelem, numins, modele, mate, carele,&
                     compor, carcri, sdtime, sddisc, solalg,&
-                    lischa, comref, resoco, resocu, parcon,&
-                    veelem)
+                    lischa, comref, resoco, resocu, veelem)
     endif
 
 !
@@ -167,6 +162,5 @@ implicit none
                 carele, mate  , compor, comref , valinc)
 !
 99  continue
-!
 !
 end subroutine

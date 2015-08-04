@@ -1,8 +1,8 @@
 subroutine nmihht(model      , nume_dof , mate     , compor        , cara_elem  ,&
                   list_load  , comp_para, varc_refe, list_func_acti, sdstat     ,&
                   sddyna     , sdtime   , sdnume   , sdcont_defi   , sdcont_solv,&
-                  sdunil_solv, hval_incr, sddisc   , crit_refe_para, hval_algo  ,&
-                  hval_veasse, result)
+                  sdunil_solv, hval_incr, sddisc   , hval_algo     , hval_veasse,&
+                  result)
 !
 implicit none
 !
@@ -46,7 +46,6 @@ implicit none
     character(len=24), intent(in) :: sdcont_defi
     character(len=24), intent(in) :: sdcont_solv
     character(len=24), intent(in) :: sdunil_solv
-    real(kind=8), intent(in) :: crit_refe_para(*)
     character(len=19), intent(in) :: hval_incr(*)
     character(len=19), intent(in) :: hval_algo(*)
     character(len=19), intent(in) :: hval_veasse(*)
@@ -77,7 +76,6 @@ implicit none
 ! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
 ! In  sdcont_solv      : name of contact definition datastructure for solving
 ! In  sdunil_defi      : name of unilateral condition datastructure (from DEFI_CONTACT)
-! In  crit_refe_para   : parameters for reference criterion
 ! In  hval_incr        : hat-variable for incremental values fields
 ! In  hval_algo        : hat-variable for algorithms fields
 ! In  hval_veasse      : hat-variable for vectors (node fields)
@@ -105,8 +103,8 @@ implicit none
         call nmchht(model      , mate       , cara_elem     , compor        , comp_para  ,&
                     list_load  , nume_dof   , varc_refe     , list_func_acti, sdstat     ,&
                     sddyna     , sdtime     , sddisc        , sdnume        , sdcont_defi,&
-                    sdcont_solv, sdunil_solv, crit_refe_para, hval_incr     , hval_algo  ,&
-                    hval_veasse, result)
+                    sdcont_solv, sdunil_solv, hval_incr     , hval_algo     , hval_veasse,&
+                    result)
     endif
 
 end subroutine
