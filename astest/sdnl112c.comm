@@ -29,7 +29,10 @@ TUBE=LIRE_MAILLAGE(FORMAT='MED')
 MODI_MAILLAGE(reuse=TUBE, MAILLAGE=TUBE,ABSC_CURV=_F(NOEUD_ORIG='N_01_001',TOUT='OUI'))
 
 TUBE=DEFI_GROUP( reuse=TUBE,   MAILLAGE=TUBE,
-                       CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+                       CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'),
+                       CREA_GROUP_NO =_F(NOEUD = 'N_04_001',
+                                         NOM = 'G_NO_04'),);
+
 
 #
 MODELE=AFFE_MODELE(  MAILLAGE=TUBE,
@@ -455,7 +458,7 @@ TRANGENE=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                              FONC_MULT = EFPROJ3),
                         _F(  NUME_ORDRE = 4,
                              FONC_MULT = EFPROJ4)),
-          CHOC=_F(  NOEUD_1 = 'N_04_001',
+          CHOC=_F(  GROUP_NO_1 = 'G_NO_04',
                  OBSTACLE = OBST1,
                  ORIG_OBST = ( 0.000000E+00,
                                 3.626403E-07,
@@ -587,7 +590,7 @@ DATA=DEFI_LIST_REEL(  VALE=(
 )
 
 USURE=POST_USURE(  RESU_GENE=TRANGENE,
-                   NOEUD='N_04_001',
+                   GROUP_NO ='G_NO_04',
                    INST_INIT=0.0,
                    INST_FIN=INST_F,
                    LOI_USURE='ARCHARD',
