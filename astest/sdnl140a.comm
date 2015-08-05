@@ -16,9 +16,6 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #
-# DATE   : 05/12/2014
-# AUTEUR : Francis LEBOUVIER (DeltaCAD)
-# 
 # MODELISATION : 3D
 # MAILLE       : TETRA4
 # ======================================================================
@@ -312,47 +309,82 @@ TEST_RESU(RESU=_F(INST      =  lfin1,
                  CRITERE   =  'RELATIF',
                  PRECISION =  10.E-1,),)
 
-TEST_RESU(CHAM_NO=(
-                    _F(
-                      REFERENCE =  'AUTRE_ASTER',
+TEST_RESU(RESU=(
+                    _F(INST  = 0.001,
+                      #REFERENCE =  'AUTRE_ASTER',
+                      NOM_CHAM ='DEPL',
                       NOM_CMP='DY',
                       NOEUD='N90',
-                      CHAM_GD=dep12,
-                      VALE_REFE=-5.47509711006E-07,
-                      VALE_CALC=-5.47509711006E-07,
+                      RESULTAT=evol1,
+                      #VALE_REFE=-0.0107993961632,
+                      VALE_CALC=-0.0107993961632,
                       CRITERE   =  'RELATIF',
-                      PRECISION =  1.E-3
                       ),
-                    _F(
-                      REFERENCE =  'AUTRE_ASTER',
+                    _F(INST  = 0.001,
+                      NOM_CHAM ='DEPL',
                       NOM_CMP='DY',
                       NOEUD='N90',
-                      CHAM_GD=dep13,
-                      VALE_REFE=0.00731089601304,
-                      VALE_CALC=0.00731089601304,
+                      RESULTAT=evol2,
+                      VALE_CALC=-0.0107988486535,
                       CRITERE   =  'RELATIF',
-                      PRECISION =  1.E-3,
+#                      PRECISION =  1.E-3
                       ),
-                    _F(
-                      REFERENCE =  'AUTRE_ASTER',
+                    _F(INST  = 0.001,
+                      NOM_CHAM ='DEPL',
                       NOM_CMP='DY',
                       NOEUD='N90',
-                      CHAM_GD=dep14,
-                      VALE_REFE=0.00731089537405,
-                      VALE_CALC=0.00731089537405,
+                      RESULTAT=evol3,
+                      VALE_CALC=-0.0181102921763,
                       CRITERE   =  'RELATIF',
-                      PRECISION =  1.E-3,
                       ),
-                    _F(
-                      REFERENCE =  'AUTRE_ASTER',
+                    _F(INST  = 0.001,
+                      NOM_CHAM ='DEPL',
                       NOM_CMP='DY',
                       NOEUD='N90',
-                      CHAM_GD=dep15,
-                      VALE_REFE=0.00021337353275 ,
-                      VALE_CALC=0.00021337353275,
+                      RESULTAT=evol4,
+                      VALE_CALC=-0.0181102915373,
                       CRITERE   =  'RELATIF',
-                      PRECISION =  1.E-3,
+#                      PRECISION =  1.E-3
                       ),
+                    _F(INST  = 0.001,
+                      NOM_CHAM ='DEPL',
+                      NOM_CMP='DY',
+                      NOEUD='N90',
+                      RESULTAT=evol5,
+                      VALE_CALC=-0.011012769696,
+                      CRITERE   =  'RELATIF',
+#                      PRECISION =  1.E-3
+                      ),
+                    #~ _F(
+                      #~ REFERENCE =  'AUTRE_ASTER',
+                      #~ NOM_CMP='DY',
+                      #~ NOEUD='N90',
+                      #~ CHAM_GD=dep13,
+                      #~ VALE_REFE=0.00731089601304,
+                      #~ VALE_CALC=0.00731089601304,
+                      #~ CRITERE   =  'RELATIF',
+                      #~ PRECISION =  1.E-3,
+                      #~ ),
+                    #~ _F(
+                      #~ REFERENCE =  'AUTRE_ASTER',
+                      #~ NOM_CMP='DY',
+                      #~ NOEUD='N90',
+                      #~ CHAM_GD=dep14,
+                      #~ VALE_REFE=0.00731089537405,
+                      #~ VALE_CALC=0.00731089537405,
+                      #~ CRITERE   =  'RELATIF',
+                      #~ PRECISION =  1.E-3,
+                      #~ ),
+                    #~ _F(
+                      #~ REFERENCE =  'AUTRE_ASTER',
+                      #~ NOM_CMP='DY',
+                      #~ NOEUD='N90',
+                      #~ CHAM_GD=dep15,
+                      #~ VALE_REFE=0.00021337353275 ,
+                      #~ VALE_CALC=0.00021337353275,
+                      #~ CRITERE   =  'RELATIF',
+                      #~ PRECISION =  1.E-3,
+                      #~ ),
                    ),
           )
 
