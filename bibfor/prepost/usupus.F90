@@ -24,6 +24,7 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
 ! OUT : PUUSUR : PUISSANCE USURE
 !-----------------------------------------------------------------------
 #include "jeveux.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
@@ -36,6 +37,7 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/lxlgut.h"
+#include "asterfort/reliem.h"
 #include "asterfort/statpu.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
@@ -45,10 +47,13 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
 !
 !-----------------------------------------------------------------------
     integer :: i, ichoc, idebut,  idwk4, ifin, ifires
-    integer :: impr, j,   jfn
+    integer :: impr, j, jfn, jnomno, nbno
     integer ::  jvg,  jwk1, jwk2, jwk3, lg
-    integer :: n1, n2, n3, n4, nbchoc, nbloc
+    integer :: n1, n2, n3, nbchoc, nbloc
     integer :: nbpas, nbpt, nbval, nt
+    character(len=8) :: maillage , modele, base
+    character(len=24) :: nomno
+    character(len=16) :: motcle(2), typmcl(2)
     real(kind=8) :: puusur, tdebut, tfin, tmax, tmin
     character(len=8), pointer :: ncho(:) => null()
     integer, pointer :: icho(:) => null()
@@ -57,7 +62,12 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
     real(kind=8), pointer :: vcho(:) => null()
     real(kind=8), pointer :: disc(:) => null()
 !-----------------------------------------------------------------------
+    data motcle  /'NOEUD','GROUP_NO'/
+    data typmcl  /'NOEUD','GROUP_NO'/
+!   ------------------------------------------------------------------
+!
     call jemarq()
+    nomno = '&&USUPUS.MES_NOEUDS'
     ifires = iunifi('RESULTAT')
     nbpt = 0
     impr = 2
@@ -65,7 +75,7 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
     call getvr8(' ', 'PUIS_USURE', scal=puusur, nbret=n1)
     if (n1 .ne. 0) then
         call impus(ifires, 0, puusur)
-        goto 9999
+        goto 999
     endif
 !
     call getvid(' ', 'RESU_GENE', scal=trange, nbret=nt)
@@ -77,7 +87,15 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
             if (n1 .eq. 0) nbloc = 1
             call getvr8(' ', 'INST_INIT', scal=tdebut, nbret=n2)
             call getvr8(' ', 'INST_FIN', scal=tfin, nbret=n3)
-            call getvtx(' ', 'NOEUD', scal=noeu, nbret=n4)
+!
+            call dismoi('BASE_MODALE', trange, 'RESU_DYNA', repk=base, arret='F')
+            call dismoi('NOM_MODELE', base, 'RESULTAT', repk=modele)
+            call dismoi('NOM_MAILLA', base, 'RESULTAT', repk=maillage)
+!
+            call reliem(modele, maillage, 'NO_NOEUD', ' ', 1,&
+                        2, motcle, typmcl, nomno, nbno)
+            call jeveuo(nomno, 'L', jnomno)
+            noeu = zk8(jnomno)
 !
             call jeveuo(trange//'.NCHO', 'L', vk8=ncho)
 !           --- RECHERCHE DU NOEUD DE CHOC ---
@@ -86,7 +104,6 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
 10          continue
             lg = max(1,lxlgut(noeu))
             call utmess('F', 'UTILITAI_87', sk=noeu(1:lg))
-            goto 9999
 12          continue
 !
             call jeveuo(trange//'.DISC', 'L', vr=disc)
@@ -154,6 +171,7 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
         endif
     endif
 !
-9999  continue
+999  continue
+    call jedetr(nomno)
     call jedema()
 end subroutine
