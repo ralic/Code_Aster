@@ -211,6 +211,12 @@ subroutine regegl(nomres, resgen, mailsk, profno)
             neqet=neqet+zi(lsilia+i-1)
         end do
         call wkvect('&&MODE_ETENDU_REST_ELIM', 'V V R', neqet, lmoet)
+        !-- Recherche de la position dans MODGEN des SST de NUMGEN
+        call wkvect('&&REGEGL.REVERSE_INDEX','V V I',nbsst,llors)
+        do k = 1, nbsst
+          call jenonu(jexnom(nomsst, zk8(lsst+k-1)), numsst)
+          zi(llors+numsst-1)=k
+        end do
     endif
 !
 !C
@@ -273,7 +279,7 @@ subroutine regegl(nomres, resgen, mailsk, profno)
             if (iret .ne. 0) then
                 kbid='  '
                 if (elim .ne. 0) then
-                    call jenonu(jexnom(nomsst, zk8(lsst+k-1)), numsst)
+                    numsst=zi(llors+k-1)
                     ieq=0
                     do i1 = 1, numsst-1
                         ieq=ieq+zi(lsilia+i1-1)
@@ -388,12 +394,14 @@ subroutine regegl(nomres, resgen, mailsk, profno)
 !
 !  ROTATION DU CHAMPS AUX NOEUDS
 !
-        call rotchm(profno, vale, rotz, nbsst, skeleton,&
-                    nbnot, nbcmp, 3)
-        call rotchm(profno, vale, roty, nbsst, skeleton,&
-                    nbnot, nbcmp, 2)
         call rotchm(profno, vale, rotx, nbsst, skeleton,&
                     nbnot, nbcmp, 1)
+        call rotchm(profno, vale, roty, nbsst, skeleton,&
+                    nbnot, nbcmp, 2)
+        call rotchm(profno, vale, rotz, nbsst, skeleton,&
+                    nbnot, nbcmp, 3)
+            
+
     end do
 !
 ! --- MENAGE
@@ -402,6 +410,7 @@ subroutine regegl(nomres, resgen, mailsk, profno)
     AS_DEALLOCATE(vr=rotz)
 !
     call jedetr('&&MODE_ETENDU_REST_ELIM')
+    call jedetr('&&REGEGL.REVERSE_INDEX')
     call jedetr(indirf)
     call jelibe(prof_gene//'.NUEQ')
     call jedetr('&&REGEGL.NUME')
