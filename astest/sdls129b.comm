@@ -15,9 +15,9 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# CAS_TEST__: SDLS129A
-#             VERIFICATION DE LA BONNE PRISE EN COMPTE DES ANGLES
-#             NAUTIQUES DANS REST_SOUS_STRUCT
+# CAS_TEST__: SDLS129B
+#             VERIFICATION DE REST_SOUS_STRUCT AVEC
+#             MODE_GENE COMPLEXE
 # FICHIER DE COMMANDE ASTER
 #
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
@@ -180,196 +180,152 @@ SQUEL=DEFI_SQUELETTE(MODELE_GENE=MODGEN,
                                  _F(NOM='BR_MY',
                                     GROUP_MA='bras',),),);
 
+
+pi=3.1415927
+ksi1=0.15
+om1=2*pi*10.
+ksi2=0.15
+om2=2*pi*50.
+alpha=2*(ksi1*om1-ksi2*om2)/(om1**2-om2**2)
+beta=2*ksi1*om1-alpha*om1**2
+
+CGEN=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=MGEN,COEF_R=beta),_F(MATR_ASSE=KGEN,COEF_R=alpha),))
+
 MOGS=CALC_MODES(MATR_RIGI=KGEN,
                 MATR_MASS=MGEN,
+                MATR_AMOR=CGEN,
                 OPTION='CENTRE',
-                CALC_FREQ=_F(NMAX_FREQ=10,FREQ=25.),
-                VERI_MODE=_F(STOP_ERREUR='NON',
-                                   STURM='NON',),
-                INFO=1,);        
+                CALC_FREQ=_F(NMAX_FREQ=10,FREQ=15.),
+                SOLVEUR=_F(METHODE='MUMPS',
+                           NPREC=-1,),
+                VERI_MODE=_F(STOP_ERREUR='OUI',
+                                   STURM='NON',
+                                   SEUIL=1.E-04,),
+                INFO=1,);
+                      
 
 MOGECOMP=REST_SOUS_STRUC(RESU_GENE=MOGS,
                          SQUELETTE=SQUEL);
-                         
 
-TAB_N1=CREA_TABLE(RESU=_F(RESULTAT=MOGECOMP,
-                           NOM_CHAM='DEPL',
-                           TOUT_ORDRE='OUI',
-                           TOUT_CMP='OUI',
-                           NOEUD='NO1',
-                           ),)
-TAB_N2=CREA_TABLE(RESU=_F(RESULTAT=MOGECOMP,
-                           NOM_CHAM='DEPL',
-                           TOUT_ORDRE='OUI',
-                           TOUT_CMP='OUI',
-                           NOEUD='NO3',
-                           ),)
-TAB_N3=CREA_TABLE(RESU=_F(RESULTAT=MOGECOMP,
-                            NOM_CHAM='DEPL',
-                            TOUT_ORDRE='OUI',
-                            TOUT_CMP='OUI',
-                            NOEUD='NO5',
-                            ),)
-TAB_N4=CREA_TABLE(RESU=_F(RESULTAT=MOGECOMP,
-                            NOM_CHAM='DEPL',
-                            TOUT_ORDRE='OUI',
-                            TOUT_CMP='OUI',
-                            NOEUD='NO46',
-                            ),)
-TAB_N5=CREA_TABLE(RESU=_F(RESULTAT=MOGECOMP,
-                        NOM_CHAM='DEPL',
-                        TOUT_ORDRE='OUI',
-                        TOUT_CMP='OUI',
-                        NOEUD='NO216',
-                        ),)
-TAB_N6=CREA_TABLE(RESU=_F(RESULTAT=MOGECOMP,
-                        NOM_CHAM='DEPL',
-                        TOUT_ORDRE='OUI',
-                        TOUT_CMP='OUI',
-                        NOEUD='NO131',
-                        ),)                           
-                           
-extrX=FORMULE(NOM_PARA=('DX'),VALE='DX',)
-extrY=FORMULE(NOM_PARA=('DY'),VALE='DY',)
+
+TAB_RE1=POST_RELEVE_T(ACTION=_F(
+                  INTITULE='PARTIE_RE',
+                  OPERATION='EXTRACTION',
+                  NOEUD=('NO56'),
+                  FORMAT_C='REEL',
+                  RESULTAT=MOGECOMP,
+                  NOM_CHAM='DEPL',
+                  TOUT_ORDRE='OUI',
+                  TOUT_CMP='OUI',),)
+TAB_RE2=POST_RELEVE_T(ACTION=_F(
+                  INTITULE='PARTIE_RE',
+                  OPERATION='EXTRACTION',
+                  NOEUD=('NO141'),
+                  FORMAT_C='REEL',
+                  RESULTAT=MOGECOMP,
+                  NOM_CHAM='DEPL',
+                  TOUT_ORDRE='OUI',
+                  TOUT_CMP='OUI',),)
+TAB_RE3=POST_RELEVE_T(ACTION=_F(
+                  INTITULE='PARTIE_RE',
+                  OPERATION='EXTRACTION',
+                  NOEUD=('NO244'),
+                  FORMAT_C='REEL',
+                  RESULTAT=MOGECOMP,
+                  NOM_CHAM='DEPL',
+                  TOUT_ORDRE='OUI',
+                  TOUT_CMP='OUI',),)                                    
+                  
+TAB_IM1=POST_RELEVE_T(ACTION=_F(
+                  INTITULE='PARTIE_RE',
+                  OPERATION='EXTRACTION',
+                  NOEUD=('NO56'),
+                  FORMAT_C='IMAG',
+                  RESULTAT=MOGECOMP,
+                  NOM_CHAM='DEPL',
+                  TOUT_ORDRE='OUI',
+                  TOUT_CMP='OUI',),)
+TAB_IM2=POST_RELEVE_T(ACTION=_F(
+                  INTITULE='PARTIE_RE',
+                  OPERATION='EXTRACTION',
+                  NOEUD=('NO141'),
+                  FORMAT_C='IMAG',
+                  RESULTAT=MOGECOMP,
+                  NOM_CHAM='DEPL',
+                  TOUT_ORDRE='OUI',
+                  TOUT_CMP='OUI',),)
+TAB_IM3=POST_RELEVE_T(ACTION=_F(
+                  INTITULE='PARTIE_RE',
+                  OPERATION='EXTRACTION',
+                  NOEUD=('NO244'),
+                  FORMAT_C='IMAG',
+                  RESULTAT=MOGECOMP,
+                  NOM_CHAM='DEPL',
+                  TOUT_ORDRE='OUI',
+                  TOUT_CMP='OUI',),)          
+
 extrZ=FORMULE(NOM_PARA=('DZ'),VALE='DZ',)
 
-TAB_N1=CALC_TABLE(reuse=TAB_N1,
-                  TABLE=TAB_N1,
+TAB_RE1=CALC_TABLE(reuse=TAB_RE1,
+                  TABLE=TAB_RE1,
                   ACTION=(_F(OPERATION='OPER',
-                             NOM_PARA='N1X',
-                             FORMULE=extrX,),),
+                             NOM_PARA='N1ZR',
+                             FORMULE=extrZ,),),
                              )
-TAB_N1=CALC_TABLE(reuse=TAB_N1,
-                  TABLE=TAB_N1,
+TAB_RE2=CALC_TABLE(reuse=TAB_RE2,
+                  TABLE=TAB_RE2,
                   ACTION=(_F(OPERATION='OPER',
-                             NOM_PARA='N1Y',
-                             FORMULE=extrY,),),
+                             NOM_PARA='N2ZR',
+                             FORMULE=extrZ,),),
                              )
-TAB_N1=CALC_TABLE(reuse=TAB_N1,
-                  TABLE=TAB_N1,
+TAB_RE3=CALC_TABLE(reuse=TAB_RE3,
+                  TABLE=TAB_RE3,
                   ACTION=(_F(OPERATION='OPER',
-                             NOM_PARA='N1Z',
+                             NOM_PARA='N3ZR',
                              FORMULE=extrZ,),),
                              )
 
-TAB_N2=CALC_TABLE(reuse=TAB_N2,
-                  TABLE=TAB_N2,
+TAB_IM1=CALC_TABLE(reuse=TAB_IM1,
+                  TABLE=TAB_IM1,
                   ACTION=(_F(OPERATION='OPER',
-                             NOM_PARA='N2X',
-                             FORMULE=extrX,),),
-                             )
-TAB_N2=CALC_TABLE(reuse=TAB_N2,
-                  TABLE=TAB_N2,
-                  ACTION=(_F(OPERATION='OPER',
-                             NOM_PARA='N2Y',
-                             FORMULE=extrY,),),
-                             )
-TAB_N2=CALC_TABLE(reuse=TAB_N2,
-                  TABLE=TAB_N2,
-                  ACTION=(_F(OPERATION='OPER',
-                             NOM_PARA='N2Z',
+                             NOM_PARA='N1ZI',
                              FORMULE=extrZ,),),
                              )
-
-TAB_N3=CALC_TABLE(reuse=TAB_N3,
-                  TABLE=TAB_N3,
+TAB_IM2=CALC_TABLE(reuse=TAB_IM2,
+                  TABLE=TAB_IM2,
                   ACTION=(_F(OPERATION='OPER',
-                             NOM_PARA='N3X',
-                             FORMULE=extrX,),),
-                             )
-TAB_N3=CALC_TABLE(reuse=TAB_N3,
-                  TABLE=TAB_N3,
-                  ACTION=(_F(OPERATION='OPER',
-                             NOM_PARA='N3Y',
-                             FORMULE=extrY,),),
-                             )
-TAB_N3=CALC_TABLE(reuse=TAB_N3,
-                  TABLE=TAB_N3,
-                  ACTION=(_F(OPERATION='OPER',
-                             NOM_PARA='N3Z',
+                             NOM_PARA='N2ZI',
                              FORMULE=extrZ,),),
                              )
-
-TAB_N4=CALC_TABLE(reuse=TAB_N4,
-                  TABLE=TAB_N4,
+TAB_IM3=CALC_TABLE(reuse=TAB_IM3,
+                  TABLE=TAB_IM3,
                   ACTION=(_F(OPERATION='OPER',
-                             NOM_PARA='N4X',
-                             FORMULE=extrX,),),
-                             )
-TAB_N4=CALC_TABLE(reuse=TAB_N4,
-                  TABLE=TAB_N4,
-                  ACTION=(_F(OPERATION='OPER',
-                             NOM_PARA='N4Y',
-                             FORMULE=extrY,),),
-                             )
-TAB_N4=CALC_TABLE(reuse=TAB_N4,
-                  TABLE=TAB_N4,
-                  ACTION=(_F(OPERATION='OPER',
-                             NOM_PARA='N4Z',
+                             NOM_PARA='N3ZI',
                              FORMULE=extrZ,),),
                              )
-
-TAB_N5=CALC_TABLE(reuse=TAB_N5,
-                  TABLE=TAB_N5,
-                  ACTION=(_F(OPERATION='OPER',
-                             NOM_PARA='N5X',
-                             FORMULE=extrX,),),
-                             )
-TAB_N5=CALC_TABLE(reuse=TAB_N5,
-                  TABLE=TAB_N5,
-                  ACTION=(_F(OPERATION='OPER',
-                             NOM_PARA='N5Y',
-                             FORMULE=extrY,),),
-                             )
-TAB_N5=CALC_TABLE(reuse=TAB_N5,
-                  TABLE=TAB_N5,
-                  ACTION=(_F(OPERATION='OPER',
-                             NOM_PARA='N5Z',
-                             FORMULE=extrZ,),),
-                             )
-
-TAB_N6=CALC_TABLE(reuse=TAB_N6,
-                  TABLE=TAB_N6,
-                  ACTION=(_F(OPERATION='OPER',
-                             NOM_PARA='N6X',
-                             FORMULE=extrX,),),
-                             )
-TAB_N6=CALC_TABLE(reuse=TAB_N6,
-                  TABLE=TAB_N6,
-                  ACTION=(_F(OPERATION='OPER',
-                             NOM_PARA='N6Y',
-                             FORMULE=extrY,),),
-                             )
-TAB_N6=CALC_TABLE(reuse=TAB_N6,
-                  TABLE=TAB_N6,
-                  ACTION=(_F(OPERATION='OPER',
-                             NOM_PARA='N6Z',
-                             FORMULE=extrZ,),),
-                             )
-
-TAB_TOT=CALC_TABLE(TABLE=TAB_N1,
+TAB_TOT=CALC_TABLE(TABLE=TAB_RE1,
                    ACTION=(_F(OPERATION='COMB',
                               NOM_PARA='NUME_ORDRE',
-                             TABLE=TAB_N2,),
+                             TABLE=TAB_RE2,),
                            _F(OPERATION='COMB',
                              NOM_PARA='NUME_ORDRE',
-                             TABLE=TAB_N3,),
+                             TABLE=TAB_RE3,),
                            _F(OPERATION='COMB',
                              NOM_PARA='NUME_ORDRE',
-                             TABLE=TAB_N4,),
+                             TABLE=TAB_IM1,),
                            _F(OPERATION='COMB',
                              NOM_PARA='NUME_ORDRE',
-                             TABLE=TAB_N5,),      
+                             TABLE=TAB_IM2,),      
                            _F(OPERATION='COMB',
                              NOM_PARA='NUME_ORDRE',
-                             TABLE=TAB_N6,),),)
-                                                          
-reln1=FORMULE(NOM_PARA=('N1X','N1Y','N1Z','N4X','N4Y','N4Z'),
-                VALE='( ( (N1X-N4X)**2 + (N1Y-N4Y)**2 + (N1Z-N4Z)**2 )**(0.5) /(N1X**2+N1Y**2+N1Z**2)**0.5    )',)
-reln2=FORMULE(NOM_PARA=('N2X','N2Y','N2Z','N5X','N5Y','N5Z'),
-                VALE='( ( (N2X-N5X)**2 + (N2Y-N5Y)**2 + (N2Z-N5Z)**2 )**(0.5) /(N2X**2+N2Y**2+N2Z**2)**0.5    )',)
-reln3=FORMULE(NOM_PARA=('N3X','N3Y','N3Z','N6X','N6Y','N6Z'),
-                VALE='( ( (N3X-N6X)**2 + (N3Y-N6Y)**2 + (N3Z-N6Z)**2 )**(0.5) /(N3X**2+N3Y**2+N3Z**2)**0.5    )',)
+                             TABLE=TAB_IM3,),),)
+                  
+reln1=FORMULE(NOM_PARA=('N1ZR','N1ZI'),
+                VALE='N1ZI/N1ZR',)
+reln2=FORMULE(NOM_PARA=('N2ZR','N2ZI'),
+                VALE='N2ZI/N2ZR',)
+reln3=FORMULE(NOM_PARA=('N3ZR','N3ZI'),
+                VALE='N3ZI/N3ZR',)
 
 TAB_REL=CALC_TABLE(TABLE=TAB_TOT,
                   ACTION=(_F(OPERATION='OPER',
@@ -383,96 +339,37 @@ TAB_REL=CALC_TABLE(TABLE=TAB_TOT,
                              FORMULE=reln3,), 
                           ),)
 
-#-- test sur les modes 2 a 6 : traction/compression - flexion 1 - flexion 2
-
-#-- Test sur le mode de traction compression
-
-TEST_TABLE(TABLE=TAB_REL,
-           NOM_PARA='RELN1',
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=1,
-                     ),
-           VALE_CALC=1.33227E-15,
-           REFERENCE='ANALYTIQUE',
-           VALE_REFE=0.,
-           CRITERE='ABSOLU',)
-TEST_TABLE(TABLE=TAB_REL,
-           NOM_PARA='RELN2',
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=1,
-                     ),
-           VALE_CALC=7.77260E-15,
-           REFERENCE='ANALYTIQUE',
-           VALE_REFE=0.,
-           CRITERE='ABSOLU',)
-TEST_TABLE(TABLE=TAB_REL,
-           NOM_PARA='RELN3',
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=1,
-                     ),
-           VALE_CALC=6.43965E-15,
-           REFERENCE='ANALYTIQUE',
-           VALE_REFE=0.,
-           CRITERE='ABSOLU',)
-
-
-
 TEST_TABLE(TABLE=TAB_REL,
            NOM_PARA='RELN1',
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=2,
                      ),
-           VALE_CALC=6.68420E-15,
-           REFERENCE='ANALYTIQUE',
-           VALE_REFE=0.,
+           VALE_CALC=5.20615470017E-08,
            CRITERE='ABSOLU',)
+           
 TEST_TABLE(TABLE=TAB_REL,
            NOM_PARA='RELN2',
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=2,
                      ),
-           VALE_CALC=1.37228E-15,
-           REFERENCE='ANALYTIQUE',
-           VALE_REFE=0.,
+           VALE_CALC=-1.76935137026E-08,
            CRITERE='ABSOLU',)
-TEST_TABLE(TABLE=TAB_REL,
-           NOM_PARA='RELN3',
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=2,
-                     ),
-           VALE_CALC=5.37061E-15,
-           REFERENCE='ANALYTIQUE',
-           VALE_REFE=0.,
-           CRITERE='ABSOLU',)
-
 
 TEST_TABLE(TABLE=TAB_REL,
            NOM_PARA='RELN1',
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=3,
                      ),
-           VALE_CALC=4.32925E-16,
-           REFERENCE='ANALYTIQUE',
-           VALE_REFE=0.,
+           VALE_CALC=-6.32045219166E-08,
            CRITERE='ABSOLU',)
-TEST_TABLE(TABLE=TAB_REL,
-           NOM_PARA='RELN2',
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=3,
-                     ),
-           VALE_CALC=2.34299E-15,
-           REFERENCE='ANALYTIQUE',
-           VALE_REFE=0.,
-           CRITERE='ABSOLU',)
+
 TEST_TABLE(TABLE=TAB_REL,
            NOM_PARA='RELN3',
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=3,
                      ),
-           VALE_CALC=2.55291E-14,
-           REFERENCE='ANALYTIQUE',
-           VALE_REFE=0.,
-           CRITERE='ABSOLU',)           
+           VALE_CALC=-7.86254989276E-09,
+           CRITERE='ABSOLU',)                                                      
           
 FIN();
 

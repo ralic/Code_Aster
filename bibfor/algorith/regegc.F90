@@ -1,4 +1,4 @@
-subroutine regegl(nomres, resgen, mailsk, profno)
+subroutine regegc(nomres, resgen, mailsk, profno)    
     implicit none
 #include "jeveux.h"
 #include "asterfort/dcapno.h"
@@ -18,7 +18,7 @@ subroutine regegl(nomres, resgen, mailsk, profno)
 #include "asterfort/matrot.h"
 #include "asterfort/mgutdm.h"
 #include "asterfort/nueq_chck.h"
-#include "asterfort/rotchm.h"
+#include "asterfort/rotchc.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rscrsd.h"
 #include "asterfort/rsexch.h"
@@ -51,11 +51,20 @@ subroutine regegl(nomres, resgen, mailsk, profno)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-!  BUT : < RESTITUTION GENERALISEE GLOBALE >
+!  BUT : < RESTITUTION GENERALISEE GLOBALE COMPLEXE>
 !
 !  RESTITUER EN BASE PHYSIQUE SUR UN MAILLAGE SQUELETTE LES RESULTATS
 !  ISSUS DE LA SOUS-STRUCTURATION GENERALE.
 !  LE CONCEPT RESULTAT EST UN RESULTAT COMPOSE "MODE_MECA"
+!
+!
+!  /!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
+!
+!--   LES ROUTINES REGEGL ET REGEGC FONT LA MEME CHOSE, UNE EN REEL,
+!--   L'AUTRE EN COMPLEXE. EN CAS DE MODIFICATION D'UNE DES ROUTINES,
+!--   NE PAS OUBLIER DE REPORTER LE CHANGEMENT DANS L'AUTRE.
+!
+!  /!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
 !
 !-----------------------------------------------------------------------
 !
@@ -76,11 +85,10 @@ subroutine regegl(nomres, resgen, mailsk, profno)
     integer :: neqet, lmapro, neqred, lsilia, numsst, lsst, lrevind
     integer :: iadpar(12)
     integer :: vali(2), i_ligr_ss
-    real(kind=8) :: compx, compy, compz, efmasx, efmasy, efmasz, freq, genek, fpartx, fparty
-    real(kind=8) :: fpartz
-    real(kind=8) :: genem, mat(3, 3), omeg2, rbid
+    real(kind=8) :: compx, compy, compz, efmasx, efmasy, efmasz, freq, genek
+    real(kind=8) :: genem, genec, mat(3, 3), omeg2, rbid, amor
     character(len=8) :: basmod, macrel, model_gene, kbid
-    character(len=16) :: depl, nompar(12)
+    character(len=16) :: depl, nompar(8)
     character(len=14) :: nume_gene
     character(len=19) :: raid, numddl, chamne, prof_gene
     character(len=24) :: crefe(2), chamol, chamba, indirf, seliai, sizlia, sst
@@ -89,10 +97,10 @@ subroutine regegl(nomres, resgen, mailsk, profno)
     real(kind=8), pointer :: rotx(:) => null()
     real(kind=8), pointer :: roty(:) => null()
     real(kind=8), pointer :: rotz(:) => null()
-    real(kind=8), pointer :: trav(:) => null()
+    complex(kind=8), pointer :: trav(:) => null()
     integer, pointer :: skeleton(:) => null()
     character(len=24), pointer :: refa(:) => null()
-    real(kind=8), pointer :: vale(:) => null()
+    complex(kind=8), pointer :: vale(:) => null()
     character(len=8), pointer :: idc_type(:) => null()
     integer, pointer :: nueq(:) => null()
     real(kind=8), pointer :: mael_iner_vale(:) => null()
@@ -100,9 +108,10 @@ subroutine regegl(nomres, resgen, mailsk, profno)
 !
 !-----------------------------------------------------------------------
     data depl   /'DEPL            '/
-    data nompar /'FREQ','RIGI_GENE','MASS_GENE','OMEGA2','NUME_MODE',&
-     &            'MASS_EFFE_DX','MASS_EFFE_DY','MASS_EFFE_DZ',&
-     &            'FACT_PARTICI_DX','FACT_PARTICI_DY','FACT_PARTICI_DZ',&
+    data nompar /'FREQ','RIGI_GENE','MASS_GENE','AMOR_GENE','OMEGA2',&
+     &            'NUME_MODE','AMOR_REDUIT',&
+     !&            'MASS_EFFE_DX','MASS_EFFE_DY','MASS_EFFE_DZ',&
+     !&            'FACT_PARTICI_DX','FACT_PARTICI_DY','FACT_PARTICI_DZ',&
      &            'TYPE_MODE'/
 !-----------------------------------------------------------------------
 !
@@ -193,6 +202,7 @@ subroutine regegl(nomres, resgen, mailsk, profno)
 !
     call rscrsd('G', nomres, 'MODE_MECA', nbmod(1))
 !
+!
 !-- ON TESTE SI ON A EU RECOURS A L'ELIMINATION
 !
     seliai=nume_gene(1:14)//'.ELIM.BASE'
@@ -200,7 +210,6 @@ subroutine regegl(nomres, resgen, mailsk, profno)
     sst=   nume_gene(1:14)//'.ELIM.NOMS'
 !
     call jeexin(seliai, elim)
-!
     if (elim .ne. 0) then
         neqet=0
         nomsst=model_gene//'      .MODG.SSNO'
@@ -210,7 +219,7 @@ subroutine regegl(nomres, resgen, mailsk, profno)
         do i = 1, nbsst
             neqet=neqet+zi(lsilia+i-1)
         end do
-        call wkvect('&&MODE_ETENDU_REST_ELIM', 'V V R', neqet, lmoet)
+        call wkvect('&&MODE_ETENDU_REST_ELIM', 'V V C', neqet, lmoet)
         !-- Recherche de la position dans MODGEN des SST de NUMGEN
         call wkvect('&&REGEGL.REVERSE_INDEX','V V I',nbsst,lrevind)
         do k = 1, nbsst
@@ -219,9 +228,9 @@ subroutine regegl(nomres, resgen, mailsk, profno)
         end do
     endif
 !
-!C
-!CC---RESTITUTION PROPREMENT DITE---------------------------------------
-!C
+!
+!---RESTITUTION PROPREMENT DITE---------------------------------------
+!
 !
     call jeveuo(prof_gene//'.NUEQ', 'L', vi=nueq)
     call jenonu(jexnom(prof_gene//'.LILI', '&SOUSSTR'), i_ligr_ss)
@@ -241,10 +250,10 @@ subroutine regegl(nomres, resgen, mailsk, profno)
 !-- SI ELIMINATION, ON RESTITUE D'ABORD LES MODES GENERALISES
         if (elim .ne. 0) then
             do i1 = 1, neqet
-                zr(lmoet+i1-1)=0.d0
+                zc(lmoet+i1-1)=dcmplx(0.d0,0.d0)
                 do k1 = 1, neqred
-                    zr(lmoet+i1-1)=zr(lmoet+i1-1)+ zr(lmapro+(k1-1)*&
-                    neqet+i1-1)* zr(llchol+k1-1)
+                    zc(lmoet+i1-1)=zc(lmoet+i1-1)+ zr(lmapro+(&
+                    k1-1)*neqet+i1-1)* zc(llchol+k1-1)
                 end do
             end do
             llchol=lmoet
@@ -254,16 +263,19 @@ subroutine regegl(nomres, resgen, mailsk, profno)
 !
         call rsexch(' ', nomres, depl, i, chamne,&
                     ier)
-        call vtcrea(chamne, crefe, 'G', 'R', neq)
-        call jeveuo(chamne//'.VALE', 'E', vr=vale)
+        call vtcrea(chamne, crefe, 'G', 'C', neq)
+        call jeveuo(chamne//'.VALE', 'E', vc=vale)
 !
-        call rsadpa(resgen, 'L', 8, nompar, iord,&
+        
+        call rsadpa(resgen, 'L', 7, nompar, iord,&
                     0, tjv=iadpar, styp=kbid)
         freq = zr(iadpar(1))
         genek = zr(iadpar(2))
         genem = zr(iadpar(3))
-        omeg2 = zr(iadpar(4))
-        numo = zi(iadpar(5))
+        genec = zr(iadpar(4))
+        amor = zr(iadpar(7))
+        omeg2 = zr(iadpar(5))
+        numo = zi(iadpar(6))
         efmasx = 0.d0
         efmasy = 0.d0
         efmasz = 0.d0
@@ -319,7 +331,7 @@ subroutine regegl(nomres, resgen, mailsk, profno)
                 call mgutdm(model_gene, kbid, k, 'NOM_NUME_DDL', ibid,&
                             numddl)
                 call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neqs)
-                AS_ALLOCATE(vr=trav, size=neqs)
+                AS_ALLOCATE(vc=trav, size=neqs)
 !
 !  BOUCLE SUR LES MODES PROPRES DE LA BASE
 !
@@ -350,7 +362,7 @@ subroutine regegl(nomres, resgen, mailsk, profno)
 !
                     do l = 1, neqs
                         trav(l)=trav(l)+zr(llchab+l-1)*&
-                        zr(iad)
+                        zc(iad)
                     end do
 !
                     call jelibe(chamba)
@@ -364,43 +376,47 @@ subroutine regegl(nomres, resgen, mailsk, profno)
                     vale(iar)=trav(idep)
                 end do
                 call jelibe(jexnum(indirf, k))
-                AS_DEALLOCATE(vr=trav)
+                AS_DEALLOCATE(vc=trav)
             endif
         end do
 !
-        fpartx = efmasx/genem
-        fparty = efmasy/genem
-        fpartz = efmasz/genem
-        efmasx = efmasx*efmasx/genem
-        efmasy = efmasy*efmasy/genem
-        efmasz = efmasz*efmasz/genem
+        !fpartx = efmasx/genem
+        !fparty = efmasy/genem
+        !fpartz = efmasz/genem
+        !efmasx = efmasx*efmasx/genem
+        !efmasy = efmasy*efmasy/genem
+        !efmasz = efmasz*efmasz/genem
         call rsnoch(nomres, depl, i)
-        call rsadpa(nomres, 'E', 12, nompar, i,&
-                    0, tjv=iadpar, styp=kbid)
+        call rsadpa(nomres, 'E', 8, nompar, i,&
+                    0, tjv=iadpar, styp=kbid)                  
         zr(iadpar(1)) = freq
         zr(iadpar(2)) = genek
         zr(iadpar(3)) = genem
-        zr(iadpar(4)) = omeg2
-        zi(iadpar(5)) = numo
-        zr(iadpar(6)) = efmasx
-        zr(iadpar(7)) = efmasy
-        zr(iadpar(8)) = efmasz
-        zr(iadpar(9)) = fpartx
-        zr(iadpar(10)) = fparty
-        zr(iadpar(11)) = fpartz
-        zk16(iadpar(12)) = 'MODE_DYN'
+        zr(iadpar(4)) = genec
+        zr(iadpar(5)) = omeg2
+        zi(iadpar(6)) = numo
+        zr(iadpar(7)) = amor
+        zk16(iadpar(8)) = 'MODE_DYN'
+        
+        !zr(iadpar(8)) = efmasx
+        !zr(iadpar(9)) = efmasy
+        !zr(iadpar(10)) = efmasz
+        !zr(iadpar(11)) = fpartx
+        !zr(iadpar(12)) = fparty
+        !zr(iadpar(13)) = fpartz
+        !zk16(iadpar(14)) = 'MODE_DYN'
 !
         call jelibe(chamol)
 !
 !  ROTATION DU CHAMPS AUX NOEUDS
 !
-        call rotchm(profno, vale, rotx, nbsst, skeleton,&
+        call rotchc(profno, vale, rotx, nbsst, skeleton,&
                     nbnot, nbcmp, 1)
-        call rotchm(profno, vale, roty, nbsst, skeleton,&
+        call rotchc(profno, vale, roty, nbsst, skeleton,&
                     nbnot, nbcmp, 2)
-        call rotchm(profno, vale, rotz, nbsst, skeleton,&
-                    nbnot, nbcmp, 3)
-            
+        call rotchc(profno, vale, rotz, nbsst, skeleton,&
+                    nbnot, nbcmp, 3)                  
+
 
     end do
 !
