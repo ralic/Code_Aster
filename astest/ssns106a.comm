@@ -25,9 +25,7 @@
 #            REMARQUE 1   : LES PARAMETRES GLRC_DM ONT ETE IDENTIFIES
 #                           PAR CE TEST
 
-DEBUT(CODE=_F(
-              NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI',),);
 
 #PRE_GIBI();
 EP = 0.1;

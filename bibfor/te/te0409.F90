@@ -530,9 +530,10 @@ subroutine te0409(option, nomte)
                     end do
                 endif
 !
-                call glrc_recup_mate(zi(imate), compor, lambda, deuxmu, lamf,&
-                                     deumuf, gt, gc, gf, seuil,&
-                                     alphaf, alfmc, ep, lrgm)
+                call glrc_recup_mate(zi(imate), compor, lrgm, ep, lambda=lambda, &
+                                     deuxmu=deuxmu, lamf=lamf, deumuf=deumuf, &
+                                     gt=gt, gc=gc, gf=gf, seuil=seuil,&
+                                     alpha=alphaf, alfmc=alfmc)
 !
 !               --  prise en compte de la dilatation thermique
                 call coqgth(zi(imate), compor, 'RIGI', ipg, ep, epsm, deps)

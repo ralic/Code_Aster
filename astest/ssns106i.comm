@@ -27,7 +27,7 @@
 #            REMARQUE 1   : LES PARAMETRES GLRC_DM ONT ETE IDENTIFIES
 #                           PAR LE TEST SSNS106A
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'),)
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
 # PARAMETRES
@@ -983,12 +983,16 @@ TD_D1=CALC_TABLE(reuse=TD_D1,
                          _F(OPERATION='RENOMME',
                             NOM_PARA=('V6','EY2',),),),);
 
+TDI_D1=POST_ELEM(RESULTAT=RESU_D1,
+                 ENER_DISS=_F(TOUT='OUI',),);
+
 IMPR_TABLE(TABLE=TDX_D1);
 IMPR_TABLE(TABLE=TFX_D1,);
 IMPR_TABLE(TABLE=TDY_D1,);
 IMPR_TABLE(TABLE=TMY_D1,);
 IMPR_TABLE(TABLE=TRX_D1,);
 IMPR_TABLE(TABLE=TD_D1,);
+IMPR_TABLE(TABLE=TDI_D1,);
 ##################################################################
 # DIFFERENCE ENTRE GLRC_DM ET EIB
 

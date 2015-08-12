@@ -177,6 +177,7 @@ subroutine glrc_lc(epsm, deps, vim, option, sig,&
         vip(5)=1.d0-0.5d0*((1.d0+gmt*da1)/(1.d0+da1) +(1.d0+gmt*da2)/(1.d0+da2))
         vip(6)=1.d0-0.5d0*((1.d0+gmc*da1)/(1.d0+da1) +(1.d0+gmc*da2)/(1.d0+da2))
         vip(7)=1.d0-max((1.d0+gf*da1)/(1.d0+da1), (1.d0+gf*da2)/(1.d0+da2))
+        vip(8)=vim(8)+(da1+da2)*seuil
     else
         if (lelas) then
             da1 = 0.0d0

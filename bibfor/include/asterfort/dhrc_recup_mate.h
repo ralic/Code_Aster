@@ -15,22 +15,22 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface 
+interface
     subroutine dhrc_recup_mate(imate, compor, a0, c0,&
                      aa_t, ga_t, ab, gb, ac,&
                      gc, aa_c, ga_c, cstseu)
-        integer :: imate
-        character(len=16) :: compor
-        real(kind=8) :: a0(6, 6)
-        real(kind=8) :: c0(2, 2, 2)
-        real(kind=8) :: aa_t(6, 6, 2)
-        real(kind=8) :: ga_t(6, 6, 2)
-        real(kind=8) :: ab(6, 2, 2)
-        real(kind=8) :: gb(6, 2, 2)
-        real(kind=8) :: ac(2, 2, 2)
-        real(kind=8) :: gc(2, 2, 2)
-        real(kind=8) :: aa_c(6, 6, 2)
-        real(kind=8) :: ga_c(6, 6, 2)
-        real(kind=8) :: cstseu(6)
+        integer, intent(in) :: imate
+        character(len=16), intent(in) :: compor
+        real(kind=8), intent(out) :: a0(6, 6)
+        real(kind=8), intent(out) :: c0(2, 2, 2)
+        real(kind=8), intent(out) :: aa_t(6, 6, 2)
+        real(kind=8), intent(out) :: ga_t(6, 6, 2)
+        real(kind=8), intent(out) :: ab(6, 2, 2)
+        real(kind=8), intent(out) :: gb(6, 2, 2)
+        real(kind=8), intent(out) :: ac(2, 2, 2)
+        real(kind=8), intent(out) :: gc(2, 2, 2)
+        real(kind=8), intent(out) :: aa_c(6, 6, 2)
+        real(kind=8), intent(out) :: ga_c(6, 6, 2)
+        real(kind=8), intent(out) :: cstseu(6)
     end subroutine dhrc_recup_mate
-end interface 
+end interface

@@ -15,22 +15,22 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-          interface 
-            subroutine glrc_recup_mate(imate,compor,lambda,deuxmu,lamf,deumuf,gt, &
-      gc,gf,seuil,alpha,alfmc,ep,lrgm)
-              integer :: imate
-              character(len=16) :: compor
-              real(kind=8) :: lambda
-              real(kind=8) :: deuxmu
-              real(kind=8) :: lamf
-              real(kind=8) :: deumuf
-              real(kind=8) :: gt
-              real(kind=8) :: gc
-              real(kind=8) :: gf
-              real(kind=8) :: seuil
-              real(kind=8) :: alpha
-              real(kind=8) :: alfmc
-              real(kind=8) :: ep
-              aster_logical :: lrgm
+          interface
+            subroutine glrc_recup_mate(imate, compor, lrgm, ep, lambda, deuxmu, lamf, deumuf, &
+                                       gt, gc, gf, seuil, alpha, alfmc)
+              integer, intent(in) :: imate
+              character(len=16), intent(in) :: compor
+              real(kind=8), optional, intent(out) :: lambda
+              real(kind=8), optional, intent(out) :: deuxmu
+              real(kind=8), optional, intent(out) :: lamf
+              real(kind=8), optional, intent(out) :: deumuf
+              real(kind=8), optional, intent(out) :: gt
+              real(kind=8), optional, intent(out) :: gc
+              real(kind=8), optional, intent(out) :: gf
+              real(kind=8), optional, intent(out) :: seuil
+              real(kind=8), optional, intent(out) :: alpha
+              real(kind=8), optional, intent(out) :: alfmc
+              real(kind=8), intent(in) :: ep
+              aster_logical, intent(in) :: lrgm
             end subroutine glrc_recup_mate
-          end interface 
+          end interface

@@ -53,11 +53,11 @@ subroutine te0413(option, nomte)
     real(kind=8) :: pgl(3, 3)
     real(kind=8) :: qsi, eta, xyzl(3, 4), jacob(5), poids, cara(25)
     real(kind=8) :: disse(npgmx), dse
-    real(kind=8) :: r8b(15), ep, seuil
+    real(kind=8) :: ep, seuil
 !
     integer :: ndim, nno, nnoel, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
     integer :: jgeom, ipg, idener, imate
-    integer :: icompo, icacoq, jvari, nbvar, jtab(7)
+    integer :: icompo, icacoq, jvari, nbvar
     integer :: iret
 !
     character(len=16) :: valk(2)
@@ -97,21 +97,17 @@ subroutine te0413(option, nomte)
             call gtria3(xyzl, cara)
         endif
 !
+        read (zk16(icompo-1+2),'(I16)') nbvar
+        ep = zr(icacoq)
+!
         if (option .eq. 'DISS_ELGA') then
-            call tecach('OON', 'PVARIGR', 'L', iret, nval=7,&
-                        itab=jtab)
-            jvari = jtab(1)
+            call jevech('PVARIGR', 'L', jvari)
         else if (option.eq.'DISS_ELEM') then
-            call tecach('OON', 'PVARIPR', 'L', iret, nval=7,&
-                        itab=jtab)
-            jvari = jtab(1)
+            call jevech('PVARIPR', 'L', jvari)
         endif
 !
         call r8inir(npgmx, 0.d0, disse, 1)
         dse = 0.0d0
-!
-        read (zk16(icompo-1+2),'(I16)') nbvar
-        ep = zr(icacoq)
 !
 ! ---- BOUCLE SUR LES POINTS D'INTEGRATION :
 !      ===================================
@@ -128,15 +124,77 @@ subroutine te0413(option, nomte)
 !
             call jevech('PMATERC', 'L', imate)
 !
-            call glrc_recup_mate(zi(imate), 'GLRC_DM         ', r8b(1), r8b(2), r8b(3),&
-                                 r8b(4), r8b(5), r8b(6), r8b(7), seuil,&
-                                 r8b(8), r8b(9), ep, .false._1)
+            call glrc_recup_mate(zi(imate), zk16(icompo), .false._1, ep, seuil=seuil)
 !
 !  --    CALCUL DE LA DENSITE D'ENERGIE POTENTIELLE ELASTIQUE :
 !        ==========================================================
             if ((option.eq.'DISS_ELGA') .or. (option.eq.'DISS_ELEM')) then
 !
                 disse(ipg)=(zr(jvari-1+(ipg-1)*nbvar+1)+zr(jvari-1+(ipg-1)*nbvar+2))*seuil
+                dse = dse + disse(ipg)*poids
+!
+            endif
+        end do
+!
+! ---- RECUPERATION DU CHAMP DES DENSITES D'ENERGIE DE DEFORMATION
+! ---- ELASTIQUE EN SORTIE
+!      -------------------
+        if (option .eq. 'DISS_ELGA') then
+            call jevech('PDISSPG', 'E', idener)
+        else if (option.eq.'DISS_ELEM') then
+            call jevech('PDISSD1', 'E', idener)
+        endif
+!
+! --- OPTIONS DISS_ELGA
+!     ==============================
+        if (option .eq. 'DISS_ELGA') then
+            do ipg = 1, npg
+                zr(idener-1+(ipg-1)*1 +1) = disse(ipg)
+            end do
+!
+! --- OPTION DISS_ELEM
+!     ================
+        else if (option.eq.'DISS_ELEM') then
+            zr(idener-1+1) = dse
+        endif
+    elseif ( zk16(icompo)(1:4) .eq. 'DHRC' ) then
+        call jevech('PCACOQU', 'L', icacoq)
+        call utpvgl(nno, 3, pgl, zr(jgeom), xyzl)
+        if (dkq) then
+            call gquad4(xyzl, cara)
+        else
+            call gtria3(xyzl, cara)
+        endif
+!
+        read (zk16(icompo-1+2),'(I16)') nbvar
+!
+        if (option .eq. 'DISS_ELGA') then
+            call jevech('PVARIGR', 'L', jvari)
+        else if (option.eq.'DISS_ELEM') then
+            call jevech('PVARIPR', 'L', jvari)
+        endif
+!
+        call r8inir(npgmx, 0.d0, disse, 1)
+        dse = 0.0d0
+!
+! ---- BOUCLE SUR LES POINTS D'INTEGRATION :
+!      ===================================
+        do ipg = 1, npg
+!
+            qsi = zr(icoopg-1+ndim*(ipg-1)+1)
+            eta = zr(icoopg-1+ndim*(ipg-1)+2)
+            if (dkq) then
+                call jquad4(xyzl, qsi, eta, jacob)
+                poids = zr(ipoids+ipg-1)*jacob(1)
+            else
+                poids = zr(ipoids+ipg-1)*cara(7)
+            endif
+!
+!  --    CALCUL DE LA DENSITE D'ENERGIE POTENTIELLE ELASTIQUE :
+!        ==========================================================
+            if ((option.eq.'DISS_ELGA') .or. (option.eq.'DISS_ELEM')) then
+!
+                disse(ipg)=zr(jvari-1+(ipg-1)*nbvar+9)
                 dse = dse + disse(ipg)*poids
 !
             endif

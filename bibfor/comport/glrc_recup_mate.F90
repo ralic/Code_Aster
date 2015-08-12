@@ -1,5 +1,5 @@
-subroutine glrc_recup_mate(imate, compor, lambda, deuxmu, lamf, deumuf, gt, gc, gf, seuil,&
-                 alpha, alfmc, ep, lrgm)
+subroutine glrc_recup_mate(imate, compor, lrgm, ep, lambda, deuxmu, lamf, deumuf, gt, gc, gf, &
+                           seuil, alpha, alfmc)
 ! person_in_charge: sebastien.fayolle at edf.fr
 ! aslint: disable=W1504
     implicit none
@@ -25,11 +25,12 @@ subroutine glrc_recup_mate(imate, compor, lambda, deuxmu, lamf, deumuf, gt, gc, 
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    aster_logical :: lrgm
-    integer :: imate
-    real(kind=8) :: lambda, deuxmu, deumuf, lamf
-    real(kind=8) :: gt, gc, gf, seuil, alpha, alfmc
-    character(len=16) :: compor, phenom
+    aster_logical, intent(in) :: lrgm
+    character(len=16), intent(in) :: compor
+    integer, intent(in) :: imate
+    real(kind=8), intent(in) :: ep
+    real(kind=8), optional, intent(out) :: lambda, deuxmu, deumuf, lamf
+    real(kind=8), optional, intent(out) :: gt, gc, gf, seuil, alpha, alfmc
 ! ----------------------------------------------------------------------
 !
 ! BUT : LECTURE DES PARAMETRES MATERIAU POUR LE MODELE GLRC_DM
@@ -53,8 +54,10 @@ subroutine glrc_recup_mate(imate, compor, lambda, deuxmu, lamf, deumuf, gt, gc, 
 ! ----------------------------------------------------------------------
 !
     integer :: icodre(7)
-    real(kind=8) :: valres(7), e, nu, ep, ef, nycmax, rmesg(2)
+    real(kind=8) :: valres(7), e, nu, ef, nycmax, rmesg(2)
     real(kind=8) :: nyt, nyc, myf, nuf, delas(6, 6)
+    real(kind=8) :: lambda_int, deuxmu_int, deumuf_int, lamf_int
+    real(kind=8) :: gt_int, gc_int, gf_int, seuil_int, alpha_int, alfmc_int
     character(len=16) :: nomres(7)
 !
     if ((.not.( compor(1:7) .eq. 'GLRC_DM'))) then
@@ -63,12 +66,6 @@ subroutine glrc_recup_mate(imate, compor, lambda, deuxmu, lamf, deumuf, gt, gc, 
 !
     call r8inir(6*6, 0.0d0, delas, 1)
     call r8inir(7, 0.0d0, valres, 1)
-    phenom = 'GLRC_DM         '
-    if (phenom .ne. 'GLRC_DM         ') then
-        call utmess('F', 'ELEMENTS2_32', sk=phenom)
-    endif
-!
-!
 !
 !    LECTURE DES CARACTERISTIQUES DU MATERIAU
     nomres(1) = 'E_M'
@@ -79,8 +76,8 @@ subroutine glrc_recup_mate(imate, compor, lambda, deuxmu, lamf, deumuf, gt, gc, 
 !
     e = valres(1)
     nu = valres(2)
-    lambda = e * nu / (1.d0+nu) / (1.d0 - 2.d0*nu)*ep
-    deuxmu = e/(1.d0+nu)*ep
+    lambda_int = e * nu / (1.d0+nu) / (1.d0 - 2.d0*nu)*ep
+    deuxmu_int = e/(1.d0+nu)*ep
 !
     nomres(1) = 'E_F'
     nomres(2) = 'NU_F'
@@ -101,8 +98,8 @@ subroutine glrc_recup_mate(imate, compor, lambda, deuxmu, lamf, deumuf, gt, gc, 
         nuf = nu
     endif
 !
-    lamf = ef*nuf/(1.d0-nuf*nuf) *ep**3/12.0d0
-    deumuf = ef/(1.d0+nuf) *ep**3/12.0d0
+    lamf_int = ef*nuf/(1.d0-nuf*nuf) *ep**3/12.0d0
+    deumuf_int = ef/(1.d0+nuf) *ep**3/12.0d0
 !
 !    LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
     nomres(1) = 'GAMMA_T'
@@ -116,26 +113,26 @@ subroutine glrc_recup_mate(imate, compor, lambda, deuxmu, lamf, deumuf, gt, gc, 
                 [0.d0], 7, nomres, valres, icodre,&
                 0)
 !
-    gt = valres(1)
-    gf = valres(3)
+    gt_int = valres(1)
+    gf_int = valres(3)
     nyt = valres(4)
     myf = valres(6)
-    alfmc = valres(7)
+    alfmc_int = valres(7)
 !
     if (icodre(2) .eq. 0 .and. icodre(5) .eq. 0) then
 ! - ON EST DANS LE CAS DE DEFI_GLRC
-        gc = valres(2)
+        gc_int = valres(2)
         nyc = valres(5)
     else if (icodre(2).eq.0) then
 ! - ON EST DANS LE CAS DE DEFI_MATERIAU
-        gc = valres(2)
+        gc_int = valres(2)
 !
-        if (gc .eq. 1.d0 .and. gt .eq. 1.d0) then
+        if (gc_int .eq. 1.d0 .and. gt_int .eq. 1.d0) then
             call utmess('F', 'ALGORITH6_1')
         endif
 !
-        nyc = (1.d0-nu)*(1.d0+2.d0*nu)*(1.d0-gt)+nu**2*(1.d0-gc)
-        nyc = nyc/((1.d0-nu)*(1.d0+2.d0*nu)*(1.d0-gc)+nu**2*(1.d0-gt))
+        nyc = (1.d0-nu)*(1.d0+2.d0*nu)*(1.d0-gt_int)+nu**2*(1.d0-gc_int)
+        nyc = nyc/((1.d0-nu)*(1.d0+2.d0*nu)*(1.d0-gc_int)+nu**2*(1.d0-gt_int))
         nyc = -sqrt(nyc*nyt**2)
     else if (icodre(5).eq.0) then
 ! - ON EST DANS LE CAS DE DEFI_MATERIAU
@@ -148,47 +145,78 @@ subroutine glrc_recup_mate(imate, compor, lambda, deuxmu, lamf, deumuf, gt, gc, 
             call utmess('F', 'ALGORITH6_2', nr=2, valr=rmesg)
         endif
 !
-        gc = (1.d0-gt)*(nyt**2*(1.d0-nu)*(1.d0+2.d0*nu)-nyc**2*nu**2)
-        gc = gc/(nyc**2*(1.d0-nu)*(1.d0+2.d0*nu)-nyt**2*nu**2)
-        gc = 1.d0 - gc
+        gc_int = (1.d0-gt_int)*(nyt**2*(1.d0-nu)*(1.d0+2.d0*nu)-nyc**2*nu**2)
+        gc_int = gc_int/(nyc**2*(1.d0-nu)*(1.d0+2.d0*nu)-nyt**2*nu**2)
+        gc_int = 1.d0 - gc_int
     else
-        gc = 1.d0
+        gc_int = 1.d0
     endif
 !
-    if (gc .eq. 1.d0 .and. gt .eq. 1.d0) then
+    if (gc_int .eq. 1.d0 .and. gt_int .eq. 1.d0) then
         call utmess('F', 'ALGORITH6_1')
     endif
 !
-    if (icodre(7) .eq. 0 .and. gc .ne. 1.d0) then
-        alfmc = valres(7)
+    if (icodre(7) .eq. 0 .and. gc_int .ne. 1.d0) then
+        alfmc_int = valres(7)
     else
-        if (gc .eq. 1.d0) then
-            alfmc = 1.d0
+        if (gc_int .eq. 1.d0) then
+            alfmc_int = 1.d0
         else
-            alfmc=(1.d0-gc)*(nyc**2*(1.d0-nu)*(1.d0+2.d0*nu)/nyt**2-nu**2)&
-                /((1.d0-gt)*((1.d0-nu)*(1.d0+2.d0*nu)-(nu*nyc/nyt)**2))
+            alfmc_int=(1.d0-gc_int)*(nyc**2*(1.d0-nu)*(1.d0+2.d0*nu)/nyt**2-nu**2)&
+                    /((1.d0-gt_int)*((1.d0-nu)*(1.d0+2.d0*nu)-(nu*nyc/nyt)**2))
         endif
     endif
 !
 !    CALCUL DU SEUIL (k0 DANS R7.01.32) ET DE ALPHA
     if (lrgm) then
-        alpha = 1.d0
-        alfmc = 1.d0
-        seuil = 0.d0
+        alpha_int = 1.d0
+        alfmc_int = 1.d0
+        seuil_int = 0.d0
     else
-        seuil = lambda*(1.0d0 - gt)*(1.0d0-2.0d0*nu)**2 + deuxmu*( 1.0d0 - gt + (1.0d0 - gc)*nu**&
-                &2/alfmc)
+        seuil_int = lambda_int*(1.0d0 - gt_int)*(1.0d0-2.0d0*nu)**2 &
+                  + deuxmu_int*( 1.0d0 - gt_int + (1.0d0 - gc_int)*nu**2/alfmc_int)
 !
-        seuil = seuil/(2.0d0*(lambda*(1.0d0-2.0d0*nu) + deuxmu))**2
-        seuil = seuil*nyt**2
+        seuil_int = seuil_int/(2.0d0*(lambda_int*(1.0d0-2.0d0*nu) + deuxmu_int))**2
+        seuil_int = seuil_int*nyt**2
 !
-        if (seuil .ne. 0.d0) then
-            alpha = lamf*(1.0d0-nuf)**2 + deumuf
-            alpha = alpha/(2.0d0*(lamf*(1.0d0-nuf) + deumuf)**2)
-            alpha = alpha*(1.0d0 - gf)*myf**2/seuil
+        if (seuil_int .ne. 0.d0) then
+            alpha_int = lamf_int*(1.0d0-nuf)**2 + deumuf_int
+            alpha_int = alpha_int/(2.0d0*(lamf_int*(1.0d0-nuf) + deumuf_int)**2)
+            alpha_int = alpha_int*(1.0d0 - gf_int)*myf**2/seuil_int
         else
             call utmess('F', 'ALGORITH6_3')
         endif
+    endif
+!
+    if (present(lambda)) then
+        lambda = lambda_int
+    endif
+    if (present(deuxmu)) then
+        deuxmu = deuxmu_int
+    endif
+    if (present(deumuf)) then
+        deumuf = deumuf_int
+    endif
+    if (present(lamf)) then
+        lamf = lamf_int
+    endif
+    if (present(gt)) then
+        gt = gt_int
+    endif
+    if (present(gc)) then
+        gc = gc_int
+    endif
+    if (present(gf)) then
+        gf = gf_int
+    endif
+    if (present(seuil)) then
+        seuil = seuil_int
+    endif
+    if (present(alpha)) then
+        alpha = alpha_int
+    endif
+    if (present(alfmc)) then
+        alfmc = alfmc_int
     endif
 !
 end subroutine

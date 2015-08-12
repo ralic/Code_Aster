@@ -27,14 +27,14 @@ subroutine dhrc_recup_mate(imate, compor, a0, c0, aa_t, ga_t, ab, gb,&
 #include "asterfort/rcadlv.h"
 #include "asterfort/assert.h"
 !
-    character(len=16) :: compor
-    integer :: imate
-    real(kind=8) :: a0(6, 6), c0(2, 2, 2)
-    real(kind=8) :: aa_t(6, 6, 2), ab(6, 2, 2), ac(2, 2, 2)
-    real(kind=8) :: ga_t(6, 6, 2), gb(6, 2, 2), gc(2, 2, 2)
-    real(kind=8) :: aa_c(6, 6, 2)
-    real(kind=8) :: ga_c(6, 6, 2)
-    real(kind=8) :: cstseu(6)
+    character(len=16), intent(in) :: compor
+    integer, intent(in) :: imate
+    real(kind=8), intent(out) :: a0(6, 6), c0(2, 2, 2)
+    real(kind=8), intent(out) :: aa_t(6, 6, 2), ab(6, 2, 2), ac(2, 2, 2)
+    real(kind=8), intent(out) :: ga_t(6, 6, 2), gb(6, 2, 2), gc(2, 2, 2)
+    real(kind=8), intent(out) :: aa_c(6, 6, 2)
+    real(kind=8), intent(out) :: ga_c(6, 6, 2)
+    real(kind=8), intent(out) :: cstseu(6)
 ! ----------------------------------------------------------------------
 !
 ! BUT : LECTURE DES PARAMETRES MATERIAU POUR LE MODELE DHRC
