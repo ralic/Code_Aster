@@ -126,14 +126,7 @@ subroutine te0566(nomopt, nomte)
     end do
 !
 !   calcul du nombre de ddl par point de Gauss, pour le champ OUT
-    if (nfiss.eq.1) then
-!      cas mono-fissure : le nombre de ddls d'un noeud sommet
-       ddlg=ddls
-    else
-!      cas mono-fissure : le nombre de ddls pour un element voyant
-!      le nombre maximal de fissures
-       ddlg=ndim*(1+nfissmx+nfe)+ddlc
-    endif
+    ddlg=jtab2(2)/jtab2(3)
 !
 !     RÉCUPÉRATION DE LA SUBDIVISION DE L'ÉLÉMENT EN NSE SOUS ELEMENT
     nse=zi(jlonch-1+1)
