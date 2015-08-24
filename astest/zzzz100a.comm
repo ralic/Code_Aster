@@ -2400,6 +2400,13 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.0,
                          PRECISION=0.0,
                          FONCTION=COMP1,),
                       ),
+              ATTRIBUT=(_F(FONCTION=COMP1,
+                           ATTR='NOM_PARA',
+                           ATTR_REFE='INST',),
+                        _F(FONCTION=COMP1,
+                           ATTR='NOM_RESU',
+                           ATTR_REFE='F',),
+                       ),
               )
 
 #=======================================================================

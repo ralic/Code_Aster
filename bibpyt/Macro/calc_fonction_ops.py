@@ -244,6 +244,7 @@ class CalcFonction_COMPOSE(CalcFonctionOper):
         """COMPOSE"""
         fo1, fo2 = self._dat
         self.resu = fo1[fo2]
+        self.resu.para['NOM_PARA'] = fo2.para['NOM_PARA']
 
 class CalcFonction_CORR_ACCE(CalcFonctionOper):
     """CORR_ACCE"""
@@ -270,7 +271,7 @@ class CalcFonction_CORR_ACCE(CalcFonctionOper):
                 fres = fres.derive()
             # regeneration de l accelero : derivation
             self.resu = fres.derive()
-            self.resu.para = para           
+            self.resu.para = para
         elif kw['METHODE'] == 'FILTRAGE':
             dt=f_in.vale_x[1]-f_in.vale_x[0]
             acce_filtre = acce_filtre_CP(f_in.vale_y, dt, kw['FREQ_FILTRE'],)
