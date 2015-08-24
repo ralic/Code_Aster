@@ -83,7 +83,7 @@ mat=DEFI_MATERIAU(ELAS_FO =_F(     E     = E,
                                    VREF  = 1.0,
                                    VMAX  = 1.0,
                                    KWB   = 6.11,
-                                   COVS  = 0.0, 
+                                   COVS  = 0.0,
                                    STMP=1.,
                                    KTMP=5.3),);
 
@@ -186,7 +186,7 @@ Fonc1=DEFI_FONCTION(
                           ),
                     PROL_DROITE='EXCLU',
                     PROL_GAUCHE='EXCLU',);
-                   
+
 
 char=AFFE_CHAR_MECA(MODELE=mod,
                       DDL_IMPO=_F(GROUP_NO='s23no',
@@ -298,7 +298,7 @@ Fonc23z=DEFI_FONCTION(
                           ),
                     PROL_DROITE='EXCLU',
                     PROL_GAUCHE='EXCLU',);
-                   
+
 char85x=AFFE_CHAR_MECA(MODELE=mod,
                       DDL_IMPO=_F(GROUP_NO='d85no',
                                   DX=1.,),);
@@ -356,9 +356,9 @@ RESU1=CALC_CHAMP(reuse =RESU1,
 TEST_RESU(RESU=(_F(NUME_ORDRE=7,
                    RESULTAT=RESU1,
                    NOM_CHAM='EPSI_NOEU',
-                   GROUP_NO='v1no',
+                   NOEUD='N1',
                    NOM_CMP='EPXX',
-                   VALE_CALC=8.3999999999999995E-05,
+                   VALE_CALC=1.08197333389696E-04,
                    MAILLE='M1',),
                 _F(NUME_ORDRE=23,
                    RESULTAT=RESU1,
