@@ -93,9 +93,8 @@ class MESSAGE_LOGGER(Singleton):
 
         # compteur des alarmes émises { 'id_alarm' : count }
         self.nmax_alarm = 5
-        self.count_alarm = {}
-            # dans la commande courante (pour arret à 5)
-        self.count_alarm_tot = {}     # au total
+        self.count_alarm = {}       # dans la commande courante (pour arret à 5)
+        self.count_alarm_tot = {}   # au total
 
         # alarmes à ignorer, à masquer (on ne les compte pas temporairement)
         self._ignored_alarm = {}
@@ -316,6 +315,10 @@ Exception : %s
         self._buffer = []
         self.set_parent(None)
 
+    def is_buffer_empty(self):
+        """Tell if the buffer is currently empty"""
+        return len(self._buffer) < 1
+
     def set_parent(self, idmess):
         """Store the parent id of the current message"""
         self._parent = idmess
@@ -484,11 +487,15 @@ Exception : %s
                                exception=True)
 
     def update_counter(self, code, idmess):
-        """Mise à jour des compteurs.
-        Return True if everything is ok, False if the message will skipped."""
+        """Update the counters of alarms.
+        The counter is updated only for the first message in the buffer. So
+        it is important to call this method before adding the message into the
+        buffer.
+        Return True if everything is ok, False if the message will be skipped."""
         if code[0] == 'A':
             parent = self._parent
-            if parent == idmess and self._hidden_alarm.get(idmess, 0) == 0:
+            if parent == idmess and self._hidden_alarm.get(idmess, 0) == 0 \
+                and self.is_buffer_empty():
                 self.count_alarm[idmess] = self.count_alarm.get(idmess, 0) + 1
                 self.count_alarm_tot[
                     idmess] = self.count_alarm_tot.get(idmess, 0) + 1
