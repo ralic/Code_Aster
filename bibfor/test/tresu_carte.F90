@@ -1,6 +1,6 @@
 subroutine tresu_carte(cham19, nomail, nocmp, tbtxt, refi,&
                        refr, refc, typres, epsi, crit,&
-                       ific, llab, ignore, compare)
+                       llab, ignore, compare)
     implicit none
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -18,7 +18,6 @@ subroutine tresu_carte(cham19, nomail, nocmp, tbtxt, refi,&
     character(len=*), intent(in) :: typres
     real(kind=8), intent(in) :: epsi
     character(len=*), intent(in) :: crit
-    integer, intent(in) :: ific
     aster_logical, intent(in) :: llab
     aster_logical, intent(in), optional :: ignore
     real(kind=8), intent(in), optional :: compare
@@ -50,7 +49,6 @@ subroutine tresu_carte(cham19, nomail, nocmp, tbtxt, refi,&
 ! IN  : REFC   : VALEUR COMPLEXE ATTENDUE
 ! IN  : CRIT   : 'RELATIF' OU 'ABSOLU'(PRECISION RELATIVE OU ABSOLUE).
 ! IN  : EPSI   : PRECISION ESPEREE
-! IN  : IFIC   : NUMERO LOGIQUE DU FICHIER DE SORTIE
 ! IN  : LLAB   : FLAG D IMPRESSION DES LABELS
 ! OUT : IMPRESSION SUR LISTING
 ! ----------------------------------------------------------------------

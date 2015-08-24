@@ -20,7 +20,7 @@
 interface
     subroutine tresu_carte(cham19, nomail, nocmp, tbtxt, refi,&
                            refr, refc, typres, epsi, crit,&
-                           ific, llab, ignore, compare)
+                           llab, ignore, compare)
         character(len=*), intent(in) :: cham19
         character(len=*), intent(in) :: nomail
         character(len=*), intent(in) :: nocmp
@@ -31,7 +31,6 @@ interface
         character(len=*), intent(in) :: typres
         real(kind=8), intent(in) :: epsi
         character(len=*), intent(in) :: crit
-        integer, intent(in) :: ific
         aster_logical, intent(in) :: llab
         aster_logical, intent(in), optional :: ignore
         real(kind=8), intent(in), optional :: compare

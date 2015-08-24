@@ -271,11 +271,11 @@ subroutine op0177()
 !
         call tresu_tabl(newtab, para, typtes, typr, tbtxt,&
                         zi(irefi), zr(irefr), zc(irefc), epsi, crit,&
-                        ific, .true._1, ssigne, ignore=skip, compare=ordgrd)
+                        .true._1, ssigne, ignore=skip, compare=ordgrd)
         if (lref) then
             call tresu_tabl(newtab, para, typtes, typr, tbref,&
                             zi( irefir), zr(irefrr), zc(irefcr), epsir, crit,&
-                            ific, .false._1, ssigne)
+                            .false._1, ssigne)
         endif
     else
 !

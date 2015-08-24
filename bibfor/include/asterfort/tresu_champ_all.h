@@ -20,7 +20,7 @@
 interface
     subroutine tresu_champ_all(chamgd, typtes, typres, nbref, tbtxt,&
                                refi, refr, refc, epsi, crit,&
-                               ific, llab, ssigne, ignore, compare)
+                               llab, ssigne, ignore, compare)
         character(len=*), intent(in) :: chamgd
         character(len=8), intent(in) :: typtes
         character(len=*), intent(in) :: typres
@@ -31,7 +31,6 @@ interface
         complex(kind=8), intent(in) :: refc(nbref)
         real(kind=8), intent(in) :: epsi
         character(len=*), intent(in) :: crit
-        integer, intent(in) :: ific
         aster_logical, intent(in) :: llab
         character(len=*), intent(in) :: ssigne
         aster_logical, intent(in), optional :: ignore

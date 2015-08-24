@@ -20,8 +20,7 @@
 interface
     subroutine tresu_champ_no(cham19, nonoeu, nocmp, nbref, tbtxt,&
                       refi, refr, refc, typres, epsi,&
-                      crit, ific, llab, ssigne, ignore, &
-                      compare)
+                      crit,  llab, ssigne, ignore, compare)
         character(len=19), intent(in) :: cham19
         character(len=33), intent(in) :: nonoeu
         character(len=8), intent(in) :: nocmp
@@ -33,7 +32,6 @@ interface
         character(len=1), intent(in) :: typres
         real(kind=8), intent(in) :: epsi
         character(len=*), intent(in) :: crit
-        integer, intent(in) :: ific
         aster_logical, intent(in) :: llab
         character(len=*), intent(in) :: ssigne
         aster_logical, intent(in), optional :: ignore

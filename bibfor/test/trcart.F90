@@ -150,11 +150,11 @@ subroutine trcart(ific, nocc)
         endif
         call tresu_carte(cham19, nomail, noddl, tbtxt, vali,&
                          valr, valc, typres, epsi, crit,&
-                         ific, .true._1, ignore=skip, compare=ordgrd)
+                         .true._1, ignore=skip, compare=ordgrd)
         if (lref) then
             call tresu_carte(cham19, nomail, noddl, tbref, valir,&
                              valrr, valcr, typres, epsir, crit,&
-                             ific, .false._1)
+                             .false._1)
         endif
         write (ific,*)' '
 !

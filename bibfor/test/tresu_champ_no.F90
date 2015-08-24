@@ -1,7 +1,6 @@
 subroutine tresu_champ_no(cham19, nonoeu, nocmp, nbref, tbtxt,&
                           refi, refr, refc, typres, epsi,&
-                          crit, ific, llab, ssigne, ignore,&
-                          compare)
+                          crit, llab, ssigne, ignore, compare)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -32,7 +31,6 @@ subroutine tresu_champ_no(cham19, nonoeu, nocmp, nbref, tbtxt,&
     character(len=1), intent(in) :: typres
     real(kind=8), intent(in) :: epsi
     character(len=*), intent(in) :: crit
-    integer, intent(in) :: ific
     aster_logical, intent(in) :: llab
     character(len=*), intent(in) :: ssigne
     aster_logical, intent(in), optional :: ignore
@@ -64,7 +62,6 @@ subroutine tresu_champ_no(cham19, nonoeu, nocmp, nbref, tbtxt,&
 !        REFC   : VALEUR COMPLEXE ATTENDUE SUR LE DDL DU NOEUD
 !        CRIT   : 'RELATIF' OU 'ABSOLU'(PRECISION RELATIVE OU ABSOLUE).
 !        EPSI   : PRECISION ESPEREE
-!        IFIC   : NUMERO LOGIQUE DU FICHIER DE SORTIE
 !        LLAB   : AFFICHAGE DES LABELS
 !     SORTIES:
 !      LISTING ...
@@ -202,6 +199,5 @@ subroutine tresu_champ_no(cham19, nonoeu, nocmp, nbref, tbtxt,&
             call utmess('F', 'CALCULEL6_93')
         endif
     endif
-999 continue
     call jedema()
 end subroutine

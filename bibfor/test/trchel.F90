@@ -227,11 +227,11 @@ subroutine trchel(ific, nocc)
                 endif
                 call tresu_champ_all(cham19, typtes, typres, nref, tbtxt,&
                                      zi(irefi), zr(irefr), zc(irefc), epsi, crit,&
-                                     ific, .true._1, ssigne, ignore=skip, compare=ordgrd)
+                                     .true._1, ssigne, ignore=skip, compare=ordgrd)
                 if (lref) then
                     call tresu_champ_all(cham19, typtes, typres, nref, tbref,&
                                          zi(irefir), zr(irefrr), zc(irefcr), epsir, crit,&
-                                         ific, .false._1, ssigne)
+                                         .false._1, ssigne)
                 endif
             else
                 nbcmp = -n4
@@ -344,17 +344,16 @@ subroutine trchel(ific, nocc)
             call tresu_champ_val(cham19, nomail, nonoeu, nupo, nusp,&
                                  ivari, noddl, nref, tbtxt, zi(irefi),&
                                  zr(irefr), zc(irefc), typres, epsi, crit,&
-                                 ific, .true._1, ssigne, ignore=skip, compare=ordgrd)
+                                 .true._1, ssigne, ignore=skip, compare=ordgrd)
             if (lref) then
                 call tresu_champ_val(cham19, nomail, nonoeu, nupo, nusp,&
                                      ivari, noddl, nref, tbref, zi(irefir),&
                                      zr(irefrr), zc(irefcr), typres, epsir, crit,&
-                                     ific, .false._1, ssigne)
+                                     .false._1, ssigne)
             endif
             write (ific,*)' '
         endif
 ! ----------------------------------------------------------------------
-100     continue
     end do
 !
     1160 format(1x,a80,a)

@@ -1,7 +1,7 @@
 subroutine tresu_champ_val(cham19, nomail, nonoeu, nupo, nusp,&
                            ivari, nocmp, nbref, tbtxt, refi,&
                            refr, refc, typres, epsi, crit,&
-                           ific, llab, ssigne, ignore, compare)
+                           llab, ssigne, ignore, compare)
     implicit none
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -23,7 +23,6 @@ subroutine tresu_champ_val(cham19, nomail, nonoeu, nupo, nusp,&
     character(len=*), intent(in) :: typres
     real(kind=8), intent(in) :: epsi
     character(len=*), intent(in) :: crit
-    integer, intent(in) :: ific
     aster_logical, intent(in) :: llab
     character(len=*), intent(in) :: ssigne
     aster_logical, intent(in), optional :: ignore
@@ -61,7 +60,6 @@ subroutine tresu_champ_val(cham19, nomail, nonoeu, nupo, nusp,&
 ! IN  : REFC   : VALEUR COMPLEXE ATTENDUE SUR LE DDL DU POINT.
 ! IN  : CRIT   : 'RELATIF' OU 'ABSOLU'(PRECISION RELATIVE OU ABSOLUE).
 ! IN  : EPSI   : PRECISION ESPEREE
-! IN  : IFIC   : NUMERO LOGIQUE DU FICHIER DE SORTIE
 ! IN  : LLAB   : FLAG D IMPRESSION DE LABELS
 ! OUT : IMPRESSION SUR LISTING
 ! ----------------------------------------------------------------------

@@ -20,7 +20,7 @@
 interface
     subroutine tresu_tabl(nomta, para, typtes, typres, tbtxt,&
                           refi, refr, refc, epsi, crit,&
-                          ific, llab, ssigne, ignore, compare)
+                          llab, ssigne, ignore, compare)
         character(len=*), intent(in) :: nomta
         character(len=*), intent(in) :: para
         character(len=8), intent(in) :: typtes
@@ -31,7 +31,6 @@ interface
         complex(kind=8), intent(in) :: refc
         real(kind=8), intent(in) :: epsi
         character(len=*), intent(in) :: crit
-        integer, intent(in) :: ific
         aster_logical, intent(in) :: llab
         character(len=*), intent(in) :: ssigne
         aster_logical, intent(in), optional :: ignore

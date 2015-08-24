@@ -1,6 +1,6 @@
 subroutine tresu_tabl(nomta, para, typtes, typres, tbtxt,&
                       refi, refr, refc, epsi, crit,&
-                      ific, llab, ssigne, ignore, compare)
+                      llab, ssigne, ignore, compare)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -22,7 +22,6 @@ subroutine tresu_tabl(nomta, para, typtes, typres, tbtxt,&
     complex(kind=8), intent(in) :: refc
     real(kind=8), intent(in) :: epsi
     character(len=*), intent(in) :: crit
-    integer, intent(in) :: ific
     aster_logical, intent(in) :: llab
     character(len=*), intent(in) :: ssigne
     aster_logical, intent(in), optional :: ignore
@@ -54,7 +53,6 @@ subroutine tresu_tabl(nomta, para, typtes, typres, tbtxt,&
 ! IN  : REFC   : VALEUR COMPLEXE ATTENDUE
 ! IN  : CRIT   : 'RELATIF' OU 'ABSOLU'(PRECISION RELATIVE OU ABSOLUE).
 ! IN  : EPSI   : PRECISION ESPEREE
-! IN  : IFIC   : NUMERO LOGIQUE DU FICHIER DE SORTIE
 ! IN  : LLAB   : FLAG D IMPRESSION DES LABELS
 ! OUT : IMPRESSION SUR LISTING
 ! ----------------------------------------------------------------------
