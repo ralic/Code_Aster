@@ -6,6 +6,7 @@ subroutine tresu_champ_no(cham19, nonoeu, nocmp, nbref, tbtxt,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
+#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
 #include "asterfort/jedema.h"
@@ -75,7 +76,6 @@ subroutine tresu_champ_no(cham19, nonoeu, nocmp, nbref, tbtxt,&
     integer :: gd, iadg, vali
     real(kind=8) :: valr
     complex(kind=8) :: valc
-    character(len=4) :: testok
     character(len=8) :: nomma
     character(len=19) :: prchno, valk(3)
     character(len=24) :: nolili
@@ -83,12 +83,11 @@ subroutine tresu_champ_no(cham19, nonoeu, nocmp, nbref, tbtxt,&
     real(kind=8) :: ordgrd
 !
 !-----------------------------------------------------------------------
-    integer :: iadesc, iancmp, ianueq, iaprno, iarefe, iavale, ibid
+    integer :: iadesc, iancmp, ianueq, iaprno, iarefe, iavale
     integer :: icmp, idecal, iicmp, ino, ival, ncmp
     integer :: ncmpmx, nec, num
 !-----------------------------------------------------------------------
     call jemarq()
-    testok = 'NOOK'
 !
     skip = .false.
     if (present(ignore)) then
@@ -170,11 +169,6 @@ subroutine tresu_champ_no(cham19, nonoeu, nocmp, nbref, tbtxt,&
 !        --SI LE CHAMP EST DECRIT PAR 1 "PRNO":
 !
         call jenuno(jexnum(prchno//'.LILI', 1), nolili)
-        call jelira(jexnum(prchno//'.PRNO', 1), 'LONMAX', ibid)
-        if (ibid .eq. 0) then
-            write (ific,*) testok,' : 2'
-            goto 999
-        endif
         call jeveuo(jexnum(prchno//'.PRNO', 1), 'L', iaprno)
         call jeveuo(prchno//'.NUEQ', 'L', ianueq)
 !
@@ -184,10 +178,7 @@ subroutine tresu_champ_no(cham19, nonoeu, nocmp, nbref, tbtxt,&
         ival = zi(iaprno-1+ (ino-1)* (nec+2)+1)
         ncmp = zi(iaprno-1+ (ino-1)* (nec+2)+2)
         iadg = iaprno - 1 + (ino-1)* (nec+2) + 3
-        if (ncmp .eq. 0) then
-            write (ific,*) testok,' : 3'
-            goto 999
-        endif
+        ASSERT( ncmp .ne. 0 )
 !
 !        -- ON COMPTE LES CMP PRESENTES SUR LE NOEUD AVANT ICMP:
         idecal = 0

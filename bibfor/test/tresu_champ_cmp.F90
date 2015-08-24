@@ -135,11 +135,10 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
         call jelira(cnsinr//'.CNSV', 'LONMAX', neq)
         neq = neq / ncmp
         if (type(1:1) .ne. typrez) then
-            write(ific,*) 'NOOK '
             valk(1) = cham19
             valk(2) = type
             valk(3) = typrez
-            call utmess('A', 'CALCULEL5_13', nk=3, valk=valk)
+            call utmess('F', 'TEST0_9', nk=3, valk=valk)
             goto 999
         endif
 
@@ -175,16 +174,14 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
         call jelira(cnsinr//'.CESV', 'LONMAX', neq)
         neq = neq / ncmp
         if (type(1:1) .ne. typrez) then
-            write(ific,*) 'NOOK '
             valk(1) = cham19
             valk(2) = type
             valk(3) = typrez
-            call utmess('A', 'CALCULEL5_13', nk=3, valk=valk)
+            call utmess('F', 'TEST0_9', nk=3, valk=valk)
             goto 999
         endif
     else
-        write(ific,*) 'NOOK '
-        call utmess('A', 'CALCULEL5_14', sk=cham19)
+        call utmess('F', 'TEST0_10', sk=cham19)
     endif
 
 
@@ -291,8 +288,7 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
             1+icmp))
             lign2(nl2+17:nl2+17)='.'
         else
-            write(ific,*) 'NOOK '
-            call utmess('A', 'CALCULEL5_12')
+            call utmess('F', 'TEST0_8', sk=typtes)
             goto 999
         endif
 !
@@ -377,8 +373,7 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
             1+icmp))
             lign2(nl2+17:nl2+17)='.'
         else
-            write(ific,*) 'NOOK '
-            call utmess('A', 'CALCULEL5_12')
+            call utmess('F', 'TEST0_8', sk=typtes)
             goto 999
         endif
 !
@@ -414,8 +409,7 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
             lign2(1:nl2+16)=lign2(1:nl2-1)//' '// zk8(jcsc-1+zi(jcmp))
             lign2(nl2+17:nl2+17)='.'
         else
-            write(ific,*) 'NOOK '
-            call utmess('A', 'CALCULEL5_12')
+            call utmess('F', 'TEST0_8', sk=typtes)
             goto 999
         endif
     endif

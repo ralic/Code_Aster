@@ -94,7 +94,7 @@ subroutine utnono(mess, nomma, type, nomgrp, nomobj,&
     ASSERT(nbno.gt.0)
     if (nbno .ne. 1) then
         iret = 1
-        if (typm .eq. 'F' .or. typm .eq. 'E') then
+        if (typm .ne. ' ') then
             call codent(nbno, 'D', knbno)
             if (type(1:5) .eq. 'NOEUD') then
                 valk(1) = nomgrp

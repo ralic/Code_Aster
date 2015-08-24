@@ -54,6 +54,22 @@ TOLE_MACHINE est pris égal à %(r1)e quelle que soit la valeur renseignée pour
            'flags': 'DECORATED',
            },
 
+    7 : _(u"""
+Le paramètre est de type '%(k1)s' alors que la valeur de référence est de type '%(k2)s'.
+"""),
+
+    8 : _(u"""
+Valeur de TYPE_TEST non supportée : '%(k1)s'
+"""),
+
+    9 : _(u"""
+Le champ '%(k1)s' est de type '%(k2)s' alors que la valeur de référence est de type '%(k3)s'.
+"""),
+
+    10 : _(u"""
+Le champ '%(k1)s' est de type inconnu.
+"""),
+
     11 : _(u"""
 Le test n'a pas de sens quand la valeur de non régression (VALE_CALC) est nulle.
 
@@ -67,5 +83,6 @@ Il faut :
 Pour les tests de non régression de valeurs nulles, il faut définir un ordre de grandeur.
 Dans le cas contraire, le test de non régression est ignoré.
 """),
+
 
 }

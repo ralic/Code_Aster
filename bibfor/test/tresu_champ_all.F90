@@ -4,6 +4,7 @@ subroutine tresu_champ_all(chamgd, typtes, typres, nbref, tbtxt,&
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
@@ -85,6 +86,7 @@ subroutine tresu_champ_all(chamgd, typtes, typres, nbref, tbtxt,&
 !
 !     -- LE CHAMP EXISTE-T-IL ?
 !     =========================
+    sufv = ' '
     call jeexin(cham19//'.VALE', iret1)
     if (iret1 .gt. 0) then
         sufv='.VALE'
@@ -92,20 +94,17 @@ subroutine tresu_champ_all(chamgd, typtes, typres, nbref, tbtxt,&
         call jeexin(cham19//'.CELV', iret2)
         if (iret2 .gt. 0) then
             sufv='.CELV'
-        else
-            write(ific,*) 'NOOK '
-            goto 9999
         endif
     endif
+    ASSERT( sufv .ne. ' ' )
 !
 !
     call jelira(cham19//sufv, 'TYPE', cval=type)
     if (type(1:1) .ne. typrez) then
-        write(ific,*) 'NOOK '
         valk(1) = cham19
         valk(2) = type
         valk(3) = typrez
-        call utmess('A', 'CALCULEL5_13', nk=3, valk=valk)
+        call utmess('F', 'TEST0_9', nk=3, valk=valk)
         goto 9999
     endif
 !
@@ -135,8 +134,7 @@ subroutine tresu_champ_all(chamgd, typtes, typres, nbref, tbtxt,&
                 vali = min( vali , zi(jvale+i-1) )
 106         continue
         else
-            write(ific,*) 'NOOK '
-            call utmess('A', 'CALCULEL5_12')
+            call utmess('F', 'TEST0_8', sk=typtes)
             goto 9999
         endif
 !
@@ -163,8 +161,7 @@ subroutine tresu_champ_all(chamgd, typtes, typres, nbref, tbtxt,&
                 valr = min( valr , zr(jvale+i-1) )
 206         continue
         else
-            write(ific,*) 'NOOK '
-            call utmess('A', 'CALCULEL5_12')
+            call utmess('F', 'TEST0_8', sk=typtes)
             goto 9999
         endif
 !
@@ -181,8 +178,7 @@ subroutine tresu_champ_all(chamgd, typtes, typres, nbref, tbtxt,&
                 valc = valc + zc(jvale+i-1)
 302         continue
         else
-            write(ific,*) 'NOOK '
-            call utmess('A', 'CALCULEL5_12')
+            call utmess('F', 'TEST0_8', sk=typtes)
             goto 9999
         endif
     endif

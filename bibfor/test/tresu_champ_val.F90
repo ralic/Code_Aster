@@ -4,6 +4,7 @@ subroutine tresu_champ_val(cham19, nomail, nonoeu, nupo, nusp,&
                            ific, llab, ssigne, ignore, compare)
     implicit none
 #include "asterf_types.h"
+#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/utch19.h"
 #include "asterfort/tresu_print_all.h"
@@ -87,13 +88,11 @@ subroutine tresu_champ_val(cham19, nomail, nonoeu, nupo, nusp,&
     call utch19(cham19, nomma, nomail, nonoeu, nupo,&
                 nusp, ivari, nocmp, typres, valr,&
                 valc, vali, ier)
-    if (ier .ne. 0) then
-        write (ific,*) 'NOOK '
-    else
-        call tresu_print_all(tbtxt(1), tbtxt(2), llab, typres, nbref,&
-                             crit, epsi, ssigne, refr, valr,&
-                             refi, vali, refc, valc, ignore=skip,&
-                             compare=ordgrd)
-    endif
+    ASSERT( ier .eq. 0 )
+
+    call tresu_print_all(tbtxt(1), tbtxt(2), llab, typres, nbref,&
+                         crit, epsi, ssigne, refr, valr,&
+                         refi, vali, refc, valc, ignore=skip,&
+                         compare=ordgrd)
 !
 end subroutine

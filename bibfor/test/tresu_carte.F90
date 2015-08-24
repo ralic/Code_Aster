@@ -3,6 +3,7 @@ subroutine tresu_carte(cham19, nomail, nocmp, tbtxt, refi,&
                        ific, llab, ignore, compare)
     implicit none
 #include "asterf_types.h"
+#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/utchca.h"
 #include "asterfort/tresu_print_all.h"
@@ -80,13 +81,11 @@ subroutine tresu_carte(cham19, nomail, nocmp, tbtxt, refi,&
 !
     call utchca(cham19, nomma, nomail, nocmp, typres,&
                 valr, vali, valc, ier)
-    if (ier .ne. 0) then
-        write (ific,*) 'NOOK '
-    else
-        call tresu_print_all(tbtxt(1), tbtxt(2), llab, typres, 1,&
-                             crit, epsi, 'NON', [refr], valr,&
-                             [refi], vali, [refc], valc, ignore=skip,&
-                             compare=ordgrd)
-    endif
+    ASSERT(ier .eq. 0)
+
+    call tresu_print_all(tbtxt(1), tbtxt(2), llab, typres, 1,&
+                         crit, epsi, 'NON', [refr], valr,&
+                         [refi], vali, [refc], valc, ignore=skip,&
+                         compare=ordgrd)
 !
 end subroutine

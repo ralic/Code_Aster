@@ -70,22 +70,6 @@ Erreur d'utilisation dans la commande CREA_MAILLAGE :
   Le mot clé MAILLAGE est ici obligatoire.
 """),
 
-    11 : _(u"""
- le paramètre est a valeurs de type  " %(k1)s "  et la valeur de référence de type  " %(k2)s ".
-"""),
-
-    12 : _(u"""
- TYPE_TEST inconnu
-"""),
-
-    13 : _(u"""
- le champ  %(k1)s  est a valeurs de type  " %(k2)s "  et la valeur de référence de type  " %(k3)s ".
-"""),
-
-    14 : _(u"""
- le champ  %(k1)s  est de type inconnu.
-"""),
-
     20 : _(u"""
  le GROUP_NO  %(k1)s  contient  %(k2)s  noeuds
 """),
@@ -222,9 +206,9 @@ Alarme utilisateur :
   de noeuds.
   Le nuage formé par ces noeuds est volumique mais il est très aplati.
   Le rapport entre les dimensions 3 et 1 est faible : %(r1)f
-  Les relations cinématiques engendrées peuvent être proches de la 
+  Les relations cinématiques engendrées peuvent être proches de la
   redondance et provoquer des problèmes de type "pivot nul".
- 
+
 Risques et Conseils :
   En utilisant le mot clé DIST_MIN, vous pouvez faire en sorte que le
   programme considère le nuage de points comme surfacique.
@@ -237,7 +221,7 @@ Alarme utilisateur :
   de noeuds.
   Le nuage formé par ces noeuds est surfacique mais il est très allongé.
   Le rapport entre les dimensions 2 et 1 est faible : %(r1)f
-  Les relations cinématiques engendrées peuvent être proches de la 
+  Les relations cinématiques engendrées peuvent être proches de la
   redondance et provoquer des problèmes de type "pivot nul".
 
 Risques et Conseils :

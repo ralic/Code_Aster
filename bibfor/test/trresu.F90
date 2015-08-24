@@ -67,7 +67,7 @@ subroutine trresu(ific, nocc)
     complex(kind=8) :: valc
     character(len=1) :: typres
     character(len=3) :: ssigne
-    character(len=4) :: typch, testok, chpt
+    character(len=4) :: typch, chpt
     character(len=8) :: crit, crit2, nomail, noddl, nomma
     character(len=8) :: noresu, typtes, nomgd
     character(len=8) :: leresu
@@ -101,7 +101,6 @@ subroutine trresu(ific, nocc)
     irefrr=1
     do iocc = 1, nocc
         noddl = ' '
-        testok = 'NOOK'
 !
         call getvtx('RESU', 'NOM_CMP', iocc=iocc, scal=noddl, nbret=n1)
         call getvid('RESU', 'RESULTAT', iocc=iocc, scal=noresu, nbret=n1)
@@ -394,12 +393,8 @@ subroutine trresu(ific, nocc)
                 if (n1 .ne. 0) then
 !              RIEN A FAIRE.
                 else if (n2.ne.0) then
-                    call utnono('A', nomma, 'NOEUD', nogrno, nonoeu(1:8),&
+                    call utnono('F', nomma, 'NOEUD', nogrno, nonoeu(1:8),&
                                 iret)
-                    if (iret .ne. 0) then
-                        write (ific,*) testok
-                        goto 50
-                    endif
                     nonoeu(10:33) = nogrno
                 endif
                 call dismoi('TYPE_CHAMP', cham19, 'CHAMP', repk=typch)

@@ -58,7 +58,6 @@ subroutine trchno(ific, nocc)
     real(kind=8) :: epsi, epsir
     character(len=1) :: typres
     character(len=3) :: ssigne
-    character(len=4) :: testok
     character(len=8) :: crit, noddl, nomma, typtes
     character(len=11) :: motcle
     character(len=19) :: cham19
@@ -91,7 +90,6 @@ subroutine trchno(ific, nocc)
     do iocc = 1, nocc
         lign1 = ' '
         lign2 = ' '
-        testok = 'NOOK'
         nonoeu = ' '
         noddl = ' '
         call getvid('CHAM_NO', 'CHAM_GD', iocc=iocc, scal=cham19, nbret=n1)
@@ -293,12 +291,8 @@ subroutine trchno(ific, nocc)
             if (n1 .eq. 1) then
 !            RIEN A FAIRE.
             else
-                call utnono('A', nomma, 'NOEUD', nogrno, nonoeu(1:8),&
+                call utnono('F', nomma, 'NOEUD', nogrno, nonoeu(1:8),&
                             iret)
-                if (iret .ne. 0) then
-                    write (ific,*) testok
-                    cycle
-                endif
                 nonoeu(10:33) = nogrno
             endif
 !
