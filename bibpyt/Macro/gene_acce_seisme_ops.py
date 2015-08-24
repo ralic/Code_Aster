@@ -36,8 +36,8 @@ from Utilitai.random_signal_utils import (
     calc_dsp_KT, f_ARIAS, f_ARIAS_TSM, fonctm_gam, dsp_filtre_CP,
     fonctm_JetH, acce_filtre_CP, f_opta, f_opt1, f_opt2
 )
-from Utilitai.signal_correlation_utils import (
-              itersimcor_SRO, itersimcortir_SRO,
+from Utilitai.signal_correlation_utils import (CALC_CORRE,
+              itersimcor_SRO, itersimcortir_SRO, get_group_nom_coord,
               DSP2ACCE_ND, gene_traj_gauss_evol_ND)
 
 def gene_acce_seisme_ops(self, **kwargs):
@@ -91,16 +91,20 @@ class GeneAcceParameters(object):
         others = kwargs.keys()
         others.remove('MODULATION')
         others.remove('COEF_CORR')
-
+        others.remove('MATR_COHE')
  #     # SimulationKeys
-        simu_keys={}
-        if kwargs.get('COEF_CORR'):
-            simu_keys['TYPE'] = 'VECTOR'
-            simu_keys['COEF_CORR'] = kwargs.get('COEF_CORR')
+        if kwargs['COEF_CORR'] != None:
+            corr_keys = {}
+            corr_keys['TYPE'] = 'COEF_CORR'
+            corr_keys['COEF_CORR'] = kwargs.get('COEF_CORR')
+        elif kwargs['MATR_COHE'] != None:
+ #            corr_keys['TYPE'] = 'VECTOR'
+             ckeys = kwargs.get('MATR_COHE')[0]
+             corr_keys = ckeys.cree_dict_valeurs(ckeys.mc_liste)
         else:
-           simu_keys['TYPE'] = 'SCALAR'
-        self.simulation_keys = simu_keys
-
+           corr_keys = {}
+           corr_keys['TYPE'] = 'SCALAR'
+        self.simulation_keys = {'CORR_KEYS': corr_keys}
         # MethodKeys
         if kwargs.get('DSP'):
             self.cas = 'DSP'
@@ -138,9 +142,7 @@ class GeneAcceParameters(object):
             other_keys[key] = kwargs.get(key)
         self.simulation_keys.update(other_keys)
         self.simulation_keys.update({'CAS': self.cas})
-        print 'self.simulation_keys', self.simulation_keys
-        print 'self.method_keys', self.method_keys
-        print 'other_keys', other_keys
+
 
 class Generator(object):
 
@@ -171,8 +173,6 @@ class Generator(object):
         self.FREQ_PENTE = params.simulation_keys['FREQ_PENTE']
         self.DSP_args = {}
         self.SRO_args = {'NORME': self.norme}
-        self.ntir = 0
-        self.dim = 1
         self.tab = Table(titr='GENE_ACCE_SEISME concept : %s' % macro.sd.nom)
         self.sampler = Sampler(params.modulation_keys, params.simulation_keys)
         # modulation indépendant de DSP/SPECTRE mais dépend de sampler:
@@ -612,16 +612,16 @@ class Simulator(object):
     def factory(simu_params):
         """create an instance of the simulator"""
         if simu_params['CAS'] == 'DSP':
-            if simu_params['TYPE'] == 'VECTOR':
+            if simu_params['CORR_KEYS']['TYPE'] != 'SCALAR':
                  return SimulatorDSPVector(simu_params)
-            elif simu_params['TYPE'] == 'SCALAR':
+            elif simu_params['CORR_KEYS']['TYPE'] == 'SCALAR':
                 return SimulatorDSPScalar(simu_params)
             else:
                 raise ValueError('unknown configuration')
         elif simu_params['CAS'] == 'SPECTRE':
-            if simu_params['TYPE'] == 'VECTOR':
+            if simu_params['CORR_KEYS']['TYPE'] != 'SCALAR':
                  return SimulatorSPECVector(simu_params)
-            elif simu_params['TYPE'] == 'SCALAR':
+            elif simu_params['CORR_KEYS']['TYPE'] == 'SCALAR':
                 return SimulatorSPECScalar(simu_params)
             else:
                 raise ValueError('unknown configuration')
@@ -631,9 +631,9 @@ class Simulator(object):
 
     def __init__(self, simu_params):
         self.simu_params = simu_params
-        self.type = simu_params['TYPE']
-        self.rho = None
         self.ntir = 0
+        self.TYPE = self.simu_params['CORR_KEYS']['TYPE']
+        self.DEFI_COHE = self.simu_params['CORR_KEYS']
         self.INFO = simu_params['INFO']
         self.nbtirage = simu_params['NB_TIRAGE']
         self.FREQ_FILTRE = simu_params['FREQ_FILTRE']
@@ -687,26 +687,35 @@ class SimulatorDSPVector(Simulator):
     """Construct vector valued signal with correlation matrix for DSP class""" 
 
     def build_TimeHistory(self, generator):
-        rho = self.simu_params['COEF_CORR']
         """build vector valued Time History for DSP class"""
-        Mat_cor = NP.array([[1.0 , rho ],[rho ,1.0]])
-        aster_core.matfpe(-1)
-        Mat_cohe = NP.linalg.cholesky(Mat_cor)
-        aster_core.matfpe(1)
-        dim = len(Mat_cor)
+        if self.TYPE == 'COEF_CORR':
+            rho = self.DEFI_COHE['COEF_CORR']
+            dim = 2
+            aster_core.matfpe(-1)
+            Mat_cohe = NP.linalg.cholesky(CALC_CORRE(rho, dim))
+            aster_core.matfpe(1)
+            Data_cohe = self.DEFI_COHE
+            Data_cohe.update({'MAT_COHE' : Mat_cohe })
+        else:
+            Data_cohe = self.DEFI_COHE
+
         if self.INFO == 2:
             UTMESS('I', 'PROBA0_13', vali=self.ntir + 1)
         if 'FREQ_PENTE' in generator.DSP_args:
-            Xt = gene_traj_gauss_evol_ND(generator, Mat_cohe,
+            Xt = gene_traj_gauss_evol_ND(generator, Data_cohe,
                                        **generator.DSP_args)
         else:
-            Xt = DSP2ACCE_ND(generator.DSP_args['FONC_DSP'], Mat_cohe)
+            Xt = DSP2ACCE_ND(generator.DSP_args['FONC_DSP'], Data_cohe)
         return Xt
 
     def run(self, generator):
         """build result for vector DSP class"""
         macr = generator.macro
         DEFI_FONCTION = macr.get_cmd('DEFI_FONCTION')
+        if self.TYPE != 'COEF_CORR':
+            liste_nom, l2 = get_group_nom_coord(
+                             self.DEFI_COHE['GROUP_NO_INTERF'], 
+                             self.DEFI_COHE['MAILLAGE']) 
         for iii in range(self.nbtirage):
             Xt = self.build_TimeHistory(generator)
             nba = 1
@@ -715,8 +724,14 @@ class SimulatorDSPVector(Simulator):
                 _f_out = DEFI_FONCTION(
                           ABSCISSE = tuple(generator.sampler.liste_temps),
                           ORDONNEE = tuple(accef), **self.para_fonc_traj)
-                generator.tab.append({'NUME_ORDRE': self.ntir + 1,
-                         'FONCTION': _f_out.nom , 'NOM_PARA':'ACCE'+str(nba)})
+                if self.TYPE == 'COEF_CORR':
+                    nom_acce = 'ACCE' + str(nba)
+                    generator.tab.append({'NUME_ORDRE': self.ntir + 1,
+                         'FONCTION': _f_out.nom , 'NOM_PARA':nom_acce})
+                else:
+                    nom_no = liste_nom[nba-1]
+                    generator.tab.append({'NUME_ORDRE': self.ntir + 1,
+                         'FONCTION': _f_out.nom ,'NOEUD': nom_no})
                 nba = nba + 1
             self.ntir = self.ntir + 1
 
@@ -729,6 +744,11 @@ class SimulatorSPECVector(Simulator):
         """build result for vector SPEC class"""
         macr = generator.macro
         DEFI_FONCTION = macr.get_cmd('DEFI_FONCTION')
+        if self.TYPE != 'COEF_CORR':
+            self.liste_nom, l2 = get_group_nom_coord(
+                           self.DEFI_COHE['GROUP_NO_INTERF'], 
+                           self.DEFI_COHE['MAILLAGE']) 
+            self.DEFI_COHE.update({ 'DIM' : len(self.liste_nom)})
         if self.simu_params['SPEC_METHODE'] == 'SPEC_MEDIANE' and 'NB_ITER' in self.simu_params:
             self.build_TimeHistories(generator)
         else:
@@ -740,8 +760,14 @@ class SimulatorSPECVector(Simulator):
                     _f_out = DEFI_FONCTION(
                           ABSCISSE = tuple(generator.sampler.liste_temps),
                           ORDONNEE = tuple(accef), **self.para_fonc_traj)
-                    generator.tab.append({'NUME_ORDRE': self.ntir + 1,
-                         'FONCTION': _f_out.nom , 'NOM_PARA': 'ACCE'+str(nba)})
+                    if self.TYPE == 'COEF_CORR':
+                        nom_acce = 'ACCE' + str(nba)
+                        generator.tab.append({'NUME_ORDRE': self.ntir + 1,
+                                 'FONCTION': _f_out.nom , 'NOM_PARA': nom_acce})
+                    else:
+                        nom_no = self.liste_nom[nba-1]
+                        generator.tab.append({'NUME_ORDRE': self.ntir + 1,
+                                  'FONCTION': _f_out.nom ,'NOEUD': nom_no})
                     nba = nba + 1
                 self.ntir = self.ntir + 1
 
@@ -749,57 +775,64 @@ class SimulatorSPECVector(Simulator):
         """build vector valued Time History for Spectrum class"""
         specmethode = self.simu_params['SPEC_METHODE'] 
         DSP_args = generator.DSP_args
-        rho = self.simu_params['COEF_CORR']
-        Mat_cor = NP.array([[1.0 , rho ],[rho ,1.0]])
-        aster_core.matfpe(-1)
-        Mat_cohe = NP.linalg.cholesky(Mat_cor)
-        aster_core.matfpe(1)
-        dim = len(Mat_cor)
+
+        if self.TYPE == 'COEF_CORR':
+            rho = self.DEFI_COHE['COEF_CORR']
+            dim = 2
+#        Mat_cor = NP.array([[1.0 , rho ],[rho ,1.0]])
+#             Mat_cor = CALC_CORRE(rho, dim)
+            aster_core.matfpe(-1)
+            Mat_cohe = NP.linalg.cholesky(CALC_CORRE(rho, dim))
+            aster_core.matfpe(1)
+            Data_cohe = self.DEFI_COHE
+            Data_cohe.update({'MAT_COHE' : Mat_cohe, 'DIM' : dim})
+        else:
+            Data_cohe = self.DEFI_COHE
 
         if self.INFO == 2:
             UTMESS('I', 'PROBA0_13', vali=self.ntir + 1)
         if specmethode == 'SPEC_UNIQUE':
             if 'NB_ITER' not in self.simu_params:
                 if 'FREQ_PENTE' in DSP_args:
-                    Xt = gene_traj_gauss_evol_ND(generator, Mat_cohe, **DSP_args)
+                    Xt = gene_traj_gauss_evol_ND(generator, Data_cohe, **DSP_args)
                 else:
-                    Xt = DSP2ACCE_ND(DSP_args['FONC_DSP'], Mat_cohe)
+                    Xt = DSP2ACCE_ND(DSP_args['FONC_DSP'], Data_cohe)
             else: #'NB_ITER' in self.method_params
                 Xt=[]
                 if 'FREQ_PENTE' in DSP_args:
                     fonc_dsp_opt, liste_rv = itersimcor_SRO(
-                        generator, DSP_args['FONC_DSP'], Mat_cohe, 
+                        generator, DSP_args['FONC_DSP'], Data_cohe, 
                         **generator.SRO_args)
                     vop, amo, R0, R2, f_FIT = DSP2FR(fonc_dsp_opt,
                                                      DSP_args['FC'])
                     DSP_args.update({'FREQ_FOND': vop, 'AMORT': amo,
                                      'para_R0': R0, 'para_R2': R2,
                                      'fonc_FIT': f_FIT})
-                    Xt = gene_traj_gauss_evol_ND(generator, Mat_cohe,
+                    Xt = gene_traj_gauss_evol_ND(generator, Data_cohe,
                                          rv=liste_rv, **DSP_args)
                 else:
                     fonc_dsp_opt, liste_rv = itersimcor_SRO(
-                         generator, DSP_args['FONC_DSP'], Mat_cohe, 
+                         generator, DSP_args['FONC_DSP'], Data_cohe, 
                          **generator.SRO_args)
-                    Xt = DSP2ACCE_ND(fonc_dsp_opt, Mat_cohe,rv=liste_rv)                    
+                    Xt = DSP2ACCE_ND(fonc_dsp_opt, Data_cohe,rv=liste_rv)                    
 
         if specmethode == 'SPEC_MEDIANE':
             if 'NB_ITER' not in self.simu_params:
                 if 'FREQ_PENTE' in DSP_args:
-                    Xt = gene_traj_gauss_evol_ND(generator, Mat_cohe, **DSP_args)
+                    Xt = gene_traj_gauss_evol_ND(generator, Data_cohe, **DSP_args)
                 else:
-                    Xt = DSP2ACCE_ND(DSP_args['FONC_DSP'], Mat_cohe) 
+                    Xt = DSP2ACCE_ND(DSP_args['FONC_DSP'], Data_cohe) 
         if specmethode == 'SPEC_FRACTILE':
             if 'FREQ_PENTE' in DSP_args:
                 alpha2 = RAND_VEC(DSP_args['MAT_COVC'],
                                   len(generator.sampler.liste_w2), para=2.0)
                 DSP_args.update({'ALEA_DSP': alpha2})
-                Xt = gene_traj_gauss_evol_ND(generator, Mat_cohe, **DSP_args)
+                Xt = gene_traj_gauss_evol_ND(generator, Data_cohe, **DSP_args)
             else:
                 fonc_dsp_rv = RAND_DSP(DSP_args['MAT_COVC'],
                                        len(generator.sampler.liste_w2),
                                        DSP_args['FONC_DSP'])
-                Xt = DSP2ACCE_ND(fonc_dsp_rv, Mat_cohe)      
+                Xt = DSP2ACCE_ND(fonc_dsp_rv, Data_cohe)      
         return Xt
 
 
@@ -807,22 +840,29 @@ class SimulatorSPECVector(Simulator):
         """build Time Histories for iterated median spec case"""
         DEFI_FONCTION = generator.macro.get_cmd('DEFI_FONCTION')
         DSP_args = generator.DSP_args
-        rho = self.simu_params['COEF_CORR']
-        Mat_cor = NP.array([[1.0 , rho ],[rho ,1.0]])
-        aster_core.matfpe(-1)
-        Mat_cohe = NP.linalg.cholesky(Mat_cor)
-        aster_core.matfpe(1)
-        dim = len(Mat_cor)
+        if self.TYPE == 'COEF_CORR':
+            rho = self.DEFI_COHE['COEF_CORR']
+            dim = 2
+#        Mat_cor = NP.array([[1.0 , rho ],[rho ,1.0]])
+#             Mat_cor = CALC_CORRE(rho, dim)
+            aster_core.matfpe(-1)
+            Mat_cohe = NP.linalg.cholesky(CALC_CORRE(rho, dim))
+            aster_core.matfpe(1)
+            Data_cohe = self.DEFI_COHE
+            Data_cohe.update({'MAT_COHE' : Mat_cohe, 'DIM' : dim })
+        else:
+            Data_cohe = self.DEFI_COHE
+
         if 'FREQ_PENTE' in DSP_args:
             fonc_dsp_opt, liste_rv = itersimcortir_SRO(generator,
-                        DSP_args['FONC_DSP'], Mat_cohe,
+                        DSP_args['FONC_DSP'], Data_cohe,
                         self.nbtirage, **generator.SRO_args)
             vop, amo, R0, R2, f_FIT = DSP2FR(fonc_dsp_opt, DSP_args['FC'])
             DSP_args.update({'FREQ_FOND': vop, 'AMORT': amo,
                              'para_R0': R0, 'para_R2': R2,
                              'fonc_FIT': f_FIT})
             for (ntir, rvtir) in enumerate(liste_rv):
-                Xt = gene_traj_gauss_evol_ND(generator, Mat_cohe, 
+                Xt = gene_traj_gauss_evol_ND(generator, Data_cohe, 
                                              rv=rvtir, **DSP_args)
                 nba = 1
                 for acce in Xt:
@@ -830,25 +870,37 @@ class SimulatorSPECVector(Simulator):
                     _f_out = DEFI_FONCTION(
                          ABSCISSE=tuple(generator.sampler.liste_temps),
                          ORDONNEE=tuple(accef), **self.para_fonc_traj)
-                    generator.tab.append({'NUME_ORDRE': self.ntir + 1,
-                         'FONCTION': _f_out.nom , 'NOM_PARA': 'ACCE'+str(nba)})
+                    if self.TYPE == 'COEF_CORR':
+                        nom_acce = 'ACCE' + str(nba)
+                        generator.tab.append({'NUME_ORDRE': self.ntir + 1,
+                                 'FONCTION': _f_out.nom , 'NOM_PARA':nom_acce})
+                    else:
+                        nom_no = self.liste_nom[nba-1]
+                        generator.tab.append({'NUME_ORDRE': self.ntir + 1,
+                                 'FONCTION': _f_out.nom ,'NOEUD':nom_no})
                     nba = nba + 1
                 self.ntir = self.ntir + 1
         else:
             fonc_dsp_opt, liste_rv = itersimcortir_SRO(generator,
-                                     DSP_args['FONC_DSP'], Mat_cohe,
+                                     DSP_args['FONC_DSP'], Data_cohe,
                                      self.nbtirage,
                                         **generator.SRO_args)
             for (ntir, rvtir) in enumerate(liste_rv):
-                Xt = DSP2ACCE_ND(fonc_dsp_opt, Mat_cohe, rv=rvtir)
+                Xt = DSP2ACCE_ND(fonc_dsp_opt, Data_cohe, rv=rvtir)
                 nba=1
                 for acce in Xt:
                     accef = self.process_TimeHistory(generator, acce)
                     _f_out = DEFI_FONCTION(
                          ABSCISSE=tuple(generator.sampler.liste_temps),
                          ORDONNEE=tuple(accef), **self.para_fonc_traj)
-                    generator.tab.append({'NUME_ORDRE': self.ntir + 1,
-                         'FONCTION': _f_out.nom , 'NOM_PARA': 'ACCE'+str(nba)})
+                    if self.TYPE == 'COEF_CORR':
+                        nom_acce = 'ACCE' + str(nba)
+                        generator.tab.append({'NUME_ORDRE': self.ntir + 1,
+                                 'FONCTION': _f_out.nom , 'NOM_PARA': nom_acce})
+                    else:
+                        nom_no = self.liste_nom[nba-1]
+                        generator.tab.append({'NUME_ORDRE': self.ntir + 1,
+                                 'FONCTION': _f_out.nom ,'NOEUD': nom_no})
                     nba = nba + 1
                 self.ntir = self.ntir + 1
 

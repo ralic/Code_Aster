@@ -36,81 +36,84 @@ from math import pi, exp, sqrt, log, tanh
 from cmath import sqrt as csqrt
 from cmath import exp as cexp
 import numpy as NP
+import aster_core
 from Utilitai.random_signal_utils import (calc_dsp_FR, calc_dsp_KT, 
                acce_filtre_CP, ACCE2SROM, dsp_filtre_CP)
+import aster
 
 # -------------------------------------------------------------------
 # COHERENCY MATRIX
 # --------------------------------------------------------------------
-def CALC_COHE(self, freqk): 
-    XX=self.noe_interf[:,0]
-    YY=self.noe_interf[:,1]
-    nbno=len(XX)
+def CALC_COHE(freq, **kwargs):
+#    kwargs: VITE_ONDE, PARA_ALPHA, TYPE  
+    model = kwargs['TYPE']
+    nom_mail = kwargs['MAILLAGE']
+    nom_group_inter = kwargs['GROUP_NO_INTERF']
+    liste_nom, noe_interf = get_group_nom_coord(nom_group_inter, nom_mail) 
+    XX = noe_interf[:,0]
+    YY = noe_interf[:,1]
+    nbno = len(XX)
     # # ----MITA & LUCO
-    if self.model=='MITA_LUCO' :
+    if model == 'MITA_LUCO' :
        # PARAMETRES fonction de coherence
-        VITE_ONDE = self.VITE_ONDE
-        alpha = self.PARA_ALPHA
-        XN=NP.repeat(XX,nbno)
-        YN=NP.repeat(YY,nbno)
-        XR=NP.reshape(XN,(nbno,nbno))
-        YR=NP.reshape(YN,(nbno,nbno))
-        XRT=NP.transpose(XR)
-        YRT=NP.transpose(YR)
-        DX=XR-XRT
-        DY=YR-YRT
-        DIST=DX**2+DY**2
-        COHE=NP.exp(-(DIST*(alpha*freqk/VITE_ONDE)**2.))
+        VITE_ONDE = kwargs['VITE_ONDE']
+        alpha = kwargs['PARA_ALPHA']
+        XN=NP.repeat(XX, nbno)
+        YN=NP.repeat(YY, nbno)
+        XR=NP.reshape(XN, (nbno, nbno))
+        YR=NP.reshape(YN, (nbno, nbno))
+        XRT = NP.transpose(XR)
+        YRT = NP.transpose(YR)
+        DX = XR - XRT
+        DY = YR - YRT
+        DIST = DX**2 + DY**2
+        COHE = NP.exp(- (DIST * (alpha * 2 *  pi * freq / VITE_ONDE)**2.))
      #----ABRAHAMSON ROCK (EPRI)      
-    elif self.model=='ABRAHAMSON' :
-        p_a1=1.647
-        p_a2=1.01
-        p_a3=0.4
-        p_n1=7.02
-        COHE=NP.zeros((nbno,nbno))
+    elif model == 'ABRAHAMSON' :
+        p_a1 = 1.647
+        p_a2 = 1.01
+        p_a3 = 0.4
+        p_n1 = 7.02
+        freqk = freq / (2.*pi)
+        COHE = NP.zeros((nbno, nbno))
         for no1 in range(nbno):
             for no2 in range(nbno):
-                dist_xi=sqrt((XX[no1]-XX[no2])**2+(YY[no1]-YY[no2])**2)
-                p_n2=5.1-0.51*log(dist_xi+10.)
-                pfc=-1.886+2.221*log(4000./(dist_xi+1.)+1.5)
-                term1=1.+(freqk*tanh(p_a3*dist_xi)/(p_a1*pfc))**p_n1
-                term2=1.+(freqk*tanh(p_a3*dist_xi)/(p_a2*pfc))**p_n2
-                COHE[no1,no2]=1./sqrt(term1* term2)
-
+                dist_xi = sqrt((XX[no1] - XX[no2])**2 + (YY[no1] - YY[no2])**2)
+                p_n2 = 5.1 - 0.51 * log(dist_xi + 10.)
+                pfc = -1.886 + 2.221 * log(4000. / (dist_xi + 1.) + 1.5)
+                term1 = 1. + (freqk * tanh(p_a3 * dist_xi) / (p_a1 * pfc))**p_n1
+                term2 = 1. + (freqk * tanh(p_a3 * dist_xi) / (p_a2 * pfc))**p_n2
+                COHE[no1,no2] = 1. / sqrt(term1 * term2)
+#    rho =0.0
+#    COHE = NP.matrix([[1.0 ,rho ,rho],[rho ,1.0, rho],[rho ,rho, 1.0]])
     return COHE
 
+def get_group_nom_coord(group_inter, nom_mail):
+    from Utilitai.partition import MAIL_PY
+    mm = MAIL_PY()
+    mm.FromAster(nom_mail)
+    noeuds_maillage= NP.array(mm.correspondance_noeuds)
+    # no des noeuds
+    liste_no_interf = list(mm.gno[group_inter])
+    nom_no_interf = noeuds_maillage[liste_no_interf]
+    # nom des noeuds
+    liste_nom_no_int = tuple([ nom.strip() for nom in  nom_no_interf    ])
+    COORD_3D = mm.cn
+    coord_no_interf = COORD_3D[liste_no_interf]
+    return liste_nom_no_int, coord_no_interf
 
-def COHE_DATA_POINTS(self):
-
-    from SD.sd_maillage   import sd_maillage
-
-    maillage = sd_maillage(self.nom_mail)
-    # coordonnees des noeuds
-    l_coordo = maillage.COORDO.VALE.get()
-    t_coordo = NP.array(l_coordo)
-    t_coordo.shape = nbnot, 3
-    # groupno
-    coll_grno = maillage.GROUPENO.get()
-    group = self.GROUP_NO_COHE 
-    l_ind = NP.array(coll_grno.get('%-24s' % group, [])) - 1
-    noe_interf = NP.take(t_coordo, l_ind, axis=0)
-    nbno, nbval = noe_interf.shape
-    if INFO==2:
-       aster.affiche('MESSAGE','NBNO INTERFACE : '+str(nbno))
-
-    return noe_interf
 
 # -------------------------------------------------------------------
 # CORRELATION MATRIX
 # --------------------------------------------------------------------
-def CALC_CORRE(rho): 
+def CALC_CORRE(rho, dim): 
     Mat_cor = NP.matrix([[1.0 ,rho ],[rho ,1.0]])
     return Mat_cor
 
 # -------------------------------------------------------------------
 # ALGORITHME DE GENERATION DE SIGNAUX GAUSSIENS POUR LE CAS VECTORIEL
 # --------------------------------------------------------------------
-def DSP2ACCE_ND(f_dsp, cohec, rv=None):
+def DSP2ACCE_ND(f_dsp, data_cohe, rv=None):
    # ----------------------------------
    # IN: f_dsp: dsp function for of list frequencies lw2 on (0, OM)
    #     rv: realisation des N (2) vecteurs 
@@ -123,7 +126,13 @@ def DSP2ACCE_ND(f_dsp, cohec, rv=None):
     DW = lw2[1] - lw2[0]
     nbfreq2 = len(lw2)
     nbfreq = nbfreq2 * 2
-    dim = cohec.shape[0]
+    if data_cohe['TYPE'] == 'COEF_CORR': 
+        cohec = data_cohe['MAT_COHE']
+        dim = cohec.shape[0]
+    else :
+        liste_nom, l2 = get_group_nom_coord(data_cohe['GROUP_NO_INTERF'], 
+                                       data_cohe['MAILLAGE']) 
+        dim = len(liste_nom)
     CS = NP.array([0.0+0j] * dim * nbfreq)    
     CS.resize(nbfreq, dim)  
     Xt = NP.array([0.0] * dim * nbfreq)    
@@ -139,9 +148,24 @@ def DSP2ACCE_ND(f_dsp, cohec, rv=None):
         vecc1 = rva[:,:nbfreq2]
         vecc2 = rva[:,nbfreq2:]
     for (iifr) in range(nbfreq2):
-        dsps = sqrt(vale_dsp[iifr]) * (cohec)
-        vale_xp = NP.dot(dsps, vecc1[:,iifr])
-        vale_xn = NP.dot(dsps, vecc2[:,iifr])
+        if data_cohe['TYPE'] != 'COEF_CORR': 
+            cohec = CALC_COHE(lw2[iifr], **data_cohe)
+            aster_core.matfpe(-1)
+            eigv, vec = NP.linalg.eig(cohec)
+            aster_core.matfpe(1)
+            vec = NP.transpose(vec).real
+            eigv = NP.sqrt(NP.where(eigv.real < 1.E-10, 0.0, eigv.real))
+            vale_xp = 0.0 + 0.0j
+            vale_xn = 0.0 + 0.0j
+            for ii in range(dim):
+                if eigv[ii] > 1.E-10:
+                    dsps = sqrt(vale_dsp[iifr]) * eigv[ii] * vec[ii]
+                    vale_xp = NP.dot(dsps, vecc1[ii,iifr]) + vale_xp
+                    vale_xn = NP.dot(dsps, vecc2[ii,iifr]) + vale_xn
+        else:
+            dsps = sqrt(vale_dsp[iifr]) * (cohec)
+            vale_xp = NP.dot(dsps, vecc1[:,iifr])
+            vale_xn = NP.dot(dsps, vecc2[:,iifr])
         CS[nbfreq2 + iifr] = (vale_xp)
         CS[nbfreq2 - iifr-1] = (vale_xn)
 
@@ -155,7 +179,7 @@ def DSP2ACCE_ND(f_dsp, cohec, rv=None):
 # --------------------------------------------------------------------------
 #  ALGORITHME DE GENERATION DE SIGNAUX GAUSSIENS DSP evolutive non separable
 #---------------------------------------------------------------------------
-def gene_traj_gauss_evol_ND(self, cohec, rv=None, **kwargs):
+def gene_traj_gauss_evol_ND(self, data_cohe, rv=None, **kwargs):
    #---------------------------------------------
    # IN: calc_dsp_KT: function for the definition of the PSD matrix (KT ou rational type)
    #      lw2: the list of frequencies corresponding to spec (0, OM)
@@ -170,6 +194,15 @@ def gene_traj_gauss_evol_ND(self, cohec, rv=None, **kwargs):
     amo = kwargs['AMORT']
     fp = kwargs['FREQ_PENTE']
     TYPE = kwargs['TYPE_DSP']
+
+    if data_cohe['TYPE'] == 'COEF_CORR':  
+        cohec = data_cohe['MAT_COHE']
+    else :
+        cohec = CALC_COHE(DW*10., **data_cohe)
+        aster_core.matfpe(-1)
+        Mat_cohe = NP.linalg.cholesky(cohec)
+        aster_core.matfpe(1)
+
     dim = cohec.shape[0]
     Xt = NP.array([0.0]*dim*nbfreq)    
     Xt.resize(dim, nbfreq) 
@@ -225,9 +258,8 @@ def gene_traj_gauss_evol_ND(self, cohec, rv=None, **kwargs):
                               fgt, amo, R0, R2, self.FREQ_CORNER)
             # constante de normalisation pour que ecart_type=1 a pour tout t
             S_cst = mof / (NP.trapz(dsp * l_FIT, self.sampler.liste_w2) * 2.)
-            vale_dsp = calc_dsp_FR(
-                self.sampler.liste_w2, fgt, amo, R0, R2, self.FREQ_CORNER, So=S_cst) * l_FIT
-
+            vale_dsp = calc_dsp_FR(self.sampler.liste_w2,
+                       fgt, amo, R0, R2, self.FREQ_CORNER, So=S_cst) * l_FIT   
 
         vsin = 1.j * NP.sin(self.sampler.liste_w2 * tii)
         vcos = NP.cos(self.sampler.liste_w2 * tii)
@@ -235,12 +267,19 @@ def gene_traj_gauss_evol_ND(self, cohec, rv=None, **kwargs):
         for vdim in range(dim):
              vale_x.append( sum(NP.sqrt(vale_dsp) * vecc1[vdim] * (vcos+vsin) + \
                      NP.sqrt(vale_dsp) * vecc2[vdim] * (vcos-vsin)))
+
+##        if data_cohe['TYPE'] != 'COEF_CORR': 
+#            cohec = CALC_COHE(lw2[iifr], **data_cohe)
+#            aster_core.matfpe(-1)
+#            Mat_cohe = NP.linalg.cholesky(cohec)
+#            aster_core.matfpe(1)
+
         vale_Xt = NP.dot(cohec,vale_x)
         Xt[:, nii] = NP.real(vale_Xt) * sqrt(DW)
     return Xt.tolist()
 
 
-def itersimcor_SRO(self, FONC_DSP, cohe, **SRO_args):
+def itersimcor_SRO(self, FONC_DSP, data_cohe, **SRO_args):
     # ---------------------------------------------
     # IN  : FONC_DSP: DSP [rad/s], FONC_SPEC: spectre cible [Hz],
     #    amort: amortissement sro,  meme disretisation
@@ -254,8 +293,7 @@ def itersimcor_SRO(self, FONC_DSP, cohe, **SRO_args):
     METHODE_SRO = SRO_args['METHODE_SRO']
     dico_err = SRO_args['DICO_ERR']
     NB_ITER = SRO_args['NB_ITER']
-    dim=cohe.shape[0]
-    NB_TIRAGE = dim
+    NB_TIRAGE = data_cohe['DIM']
 # dsp initiale
     para_dsp = FONC_DSP.para
     freq_dsp = FONC_DSP.vale_x
@@ -293,7 +331,7 @@ def itersimcor_SRO(self, FONC_DSP, cohe, **SRO_args):
     errmult = []
     l_dsp = [FONC_DSP]
     liste_valesro = []
-    Xt = DSP2ACCE_ND(FONC_DSP, cohe, list_rv)
+    Xt = DSP2ACCE_ND(FONC_DSP, data_cohe, list_rv)
     for acce in Xt:
         acce = acce * hmod  # modulation
         if self.FREQ_FILTRE > 0.0:
@@ -333,7 +371,7 @@ def itersimcor_SRO(self, FONC_DSP, cohe, **SRO_args):
         #  ITERATION DSP ACCE
 
         liste_valesro = []
-        Xt = DSP2ACCE_ND(f_dsp, cohe, list_rv)
+        Xt = DSP2ACCE_ND(f_dsp, data_cohe, list_rv)
         for acce in Xt:
             acce = acce * hmod  # modulation
             if self.FREQ_FILTRE > 0.0:
@@ -376,7 +414,7 @@ def itersimcor_SRO(self, FONC_DSP, cohe, **SRO_args):
         tole = listev[1] * 100.
         erre = abs(listev[-1])
         if abs(erre) > tole:
-            nbi = len(listev) - 2
+            nbi = ind_opt
             UTMESS('A', 'SEISME_36', vali=nbi,  valk=keys, valr=(erre, tole))
     return f_dsp_opt, list_rv
 
@@ -410,7 +448,7 @@ def median_values(listes):
     return NP.array(median_val)
 
 
-def itersimcortir_SRO(self, FONC_DSP, cohe, NB_TIR, **SRO_args):
+def itersimcortir_SRO(self, FONC_DSP, data_cohe, NB_TIR, **SRO_args):
 #(f_dsp, f_sro,nb_iter,f_modul, SRO_args ,dico_err,NB_TIRAGE=1 )
 # FONC_SPEC, AMORT, FMIN,  PAS=None, LIST_FREQ=None
     # ---------------------------------------------
@@ -426,7 +464,7 @@ def itersimcortir_SRO(self, FONC_DSP, cohe, NB_TIR, **SRO_args):
     METHODE_SRO = SRO_args['METHODE_SRO']
     dico_err = SRO_args['DICO_ERR']
     NB_ITER = SRO_args['NB_ITER']
-    dim = cohe.shape[0]
+    dim = data_cohe['DIM']
 # dsp initiale
     para_dsp = FONC_DSP.para
     freq_dsp = FONC_DSP.vale_x
@@ -468,7 +506,7 @@ def itersimcortir_SRO(self, FONC_DSP, cohe, NB_TIR, **SRO_args):
     liste_valesro = []
     liste_Xt = []
     for nbtir in range(NB_TIR):    
-        Xt = DSP2ACCE_ND(FONC_DSP, cohe, list_rv[nbtir])
+        Xt = DSP2ACCE_ND(FONC_DSP, data_cohe, list_rv[nbtir])
         liste_Xt.extend(Xt)
     for acce in liste_Xt:
         acce = acce * hmod  # modulation
@@ -510,7 +548,7 @@ def itersimcortir_SRO(self, FONC_DSP, cohe, NB_TIR, **SRO_args):
         liste_valesro = []
         liste_Xt = []
         for nbtir in range(NB_TIR):    
-            Xt = DSP2ACCE_ND(FONC_DSP, cohe, list_rv[nbtir])
+            Xt = DSP2ACCE_ND(f_dsp, data_cohe, list_rv[nbtir])
             liste_Xt.extend(Xt)
         for acce in liste_Xt:
             acce = acce * hmod  # modulation
@@ -522,12 +560,10 @@ def itersimcortir_SRO(self, FONC_DSP, cohe, NB_TIR, **SRO_args):
                 self, f_acce, amort, freq_sro, 2, METHODE_SRO)
             liste_valesro.append(f_sroi.vale_y)
         valesro = NP.median(NP.array(liste_valesro), axis=0)
-
         #  CALCUL DES ERREURS
         l_sro.append(valesro)
         err_zpa, err_max, err_min, err_rms, freq_err = erre_spectre(
             FRED, valesro[N1:], vale_sro_ref[N1:])
-#         print 'err_zpa, err_max,  err_RMS:', err_zpa, err_max, err_rms
         #  erreur multionjectif
         err_ZPA = coef_ZPA * err_zpa
         err_MAX = coef_MAX * err_max
@@ -554,7 +590,7 @@ def itersimcortir_SRO(self, FONC_DSP, cohe, NB_TIR, **SRO_args):
         tole = listev[1] * 100.
         erre = abs(listev[-1])
         if abs(erre) > tole:
-            nbi = len(listev) - 2
+            nbi = ind_opt
             UTMESS('A', 'SEISME_36', vali=nbi,  valk=keys, valr=(erre, tole))
     return f_dsp_opt, list_rv
 

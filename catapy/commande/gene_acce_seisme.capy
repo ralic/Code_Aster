@@ -15,14 +15,16 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # person_in_charge: irmela.zentner at edf.fr
-GENE_ACCE_SEISME=MACRO(nom="GENE_ACCE_SEISME",
-                     op=OPS('Macro.gene_acce_seisme_ops.gene_acce_seisme_ops'),
-                     sd_prod=table_fonction,
-                     fr=tr("Generation d'accelerogrammes sismiques "),
-                     reentrant='n',
-                     UIinfo={"groupes":("Fonctions","Dynamique",)},
 
-         regles=(UN_PARMI('DSP','SPEC_MEDIANE','SPEC_UNIQUE','SPEC_FRACTILE'),),
+GENE_ACCE_SEISME=MACRO(nom = "GENE_ACCE_SEISME",
+                     op = OPS('Macro.gene_acce_seisme_ops.gene_acce_seisme_ops'),
+                     sd_prod = table_fonction,
+                     fr = tr("Generation d'accelerogrammes sismiques "),
+                     reentrant = 'n',
+                     UIinfo = {"groupes":("Fonctions","Dynamique",)},
+
+         regles=(UN_PARMI('DSP','SPEC_MEDIANE','SPEC_UNIQUE','SPEC_FRACTILE'),
+                 EXCLUS('MATR_COHE','COEF_CORR')),
 
          INIT_ALEA       =SIMP(statut='f',typ='I'),
          TITRE           =SIMP(statut='f',typ='TXM',max='**'),
@@ -36,7 +38,14 @@ GENE_ACCE_SEISME=MACRO(nom="GENE_ACCE_SEISME",
          FREQ_FILTRE       =SIMP(statut='f',typ='R', defaut= 0.0, val_min=0.0, fr=tr("frequence du filtre temporel")),
          FREQ_PENTE        =SIMP(statut='f',typ='R',  fr=tr("pente pour l'evolution de la frequence centrale")),
          COEF_CORR         =SIMP(statut='f',typ='R',val_min=-1.0, val_max=1.0, fr=tr("Correlation coefficient for horizontal motion")),
-#
+         MATR_COHE       = FACT(statut='f',
+             MAILLAGE    = SIMP(statut='o',typ=maillage_sdaster),
+             GROUP_NO_INTERF = SIMP(statut='o',typ=grno,),
+             TYPE = SIMP(statut='o',typ='TXM' , into=("MITA_LUCO","ABRAHAMSON")   ),            
+             b_type_coh = BLOC(condition="TYPE=='MITA_LUCO' ",
+                       VITE_ONDE       =SIMP(statut='o',typ='R',val_min=0.0 ),
+                        PARA_ALPHA     =SIMP(statut='f',typ='R',defaut=0.1  ),  ),
+        ),
          DSP        = FACT(statut='f',max=1,
             AMOR_REDUIT   =SIMP(statut='o',typ='R'),
             FREQ_FOND     =SIMP(statut='o',typ='R', fr=tr("frequence centrale")),
@@ -90,7 +99,6 @@ GENE_ACCE_SEISME=MACRO(nom="GENE_ACCE_SEISME",
                            INST_INI     = SIMP(statut='o',typ='R',fr=tr("instant debut phase forte") ),
                             ),
             ),),
-
 
         b_type_spec   = BLOC(condition='DSP == None',
         MODULATION      = FACT(statut='o',max=1,
