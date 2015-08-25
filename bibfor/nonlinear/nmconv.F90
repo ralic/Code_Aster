@@ -1,11 +1,13 @@
 subroutine nmconv(noma, modele, mate, numedd, sdnume,&
-                  fonact, sddyna, sdconv, sdimpr, sdstat,&
+                  fonact, sddyna, sdconv, ds_print, sdstat,&
                   sddisc, sdtime, sdcrit, sderro, parmet,&
                   comref, matass, solveu, numins, iterat,&
                   conv, eta, parcri, defico, resoco,&
                   valinc, solalg, measse, veasse)
 !
-    implicit none
+use NonLin_Datastructure_type
+!
+implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -67,8 +69,8 @@ subroutine nmconv(noma, modele, mate, numedd, sdnume,&
     character(len=8) :: noma
     character(len=24) :: numedd, modele
     character(len=24) :: defico, resoco
-    character(len=24) :: sdimpr, sderro, sdstat, sdconv, sdtime
-!
+    character(len=24) :: sderro, sdstat, sdconv, sdtime
+    type(NL_DS_Print), intent(inout) :: ds_print
 !
 ! ----------------------------------------------------------------------
 !
@@ -83,9 +85,9 @@ subroutine nmconv(noma, modele, mate, numedd, sdnume,&
 ! IN  MODELE : NOM DU MODELE
 ! IN  DEFICO : SD POUR LA DEFINITION DU CONTACT
 ! IN  RESOCO : SD POUR LA RESOLUTION DU CONTACT
-! IN  SDIMPR : SD AFFICHAGE
 ! IN  SDCONV : SD GESTION DE LA CONVERGENCE
 ! IN  SDTIME : SD TIMER
+! IO  ds_print         : datastructure for printing parameters
 ! IN  NUMEDD : NUMEROTATION NUME_DDL
 ! IN  SDNUME : NOM DE LA SD NUMEROTATION
 ! IN  COMREF : VARI_COM REFE
@@ -104,7 +106,6 @@ subroutine nmconv(noma, modele, mate, numedd, sdnume,&
 ! IN  SDERRO : GESTION DES ERREURS
 ! IN  PARMET : PARAMETRES DE LA METHODE DE RESOLUTION
 ! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
-! IN  SDIMPR : SD AFFICHAGE
 ! IN  SDSTAT : SD STATISTIQUES
 ! IN  SDCRIT : SYNTHESE DES RESULTATS DE CONVERGENCE POUR ARCHIVAGE
 ! IN  COMREF : VARI_COM REFE
@@ -168,9 +169,9 @@ subroutine nmconv(noma, modele, mate, numedd, sdnume,&
     instam = diinst(sddisc,numins-1)
     instap = diinst(sddisc,numins )
 !
-! --- INITIALISATION AFFECTATION DES COLONNES
+! - Set values are not affected on rows for residuals loop
 !
-    call nmimr0(sdimpr, 'RESI')
+    call nmimr0(ds_print, 'RESI')
 !
 ! --- EVENEMENT ERREUR ACTIVE ?
 !
@@ -201,12 +202,12 @@ subroutine nmconv(noma, modele, mate, numedd, sdnume,&
 !
 ! --- CALCUL DES RESIDUS
 !
-    call nmresi(noma, mate, numedd, sdnume, fonact,&
-                sddyna, sdconv, sdimpr, defico, resoco,&
-                matass, numins, conv, resi_glob_rela, resi_glob_maxi,&
-                eta, comref, valinc, solalg, veasse,&
-                measse, vrela, vmaxi, vchar, vresi,&
-                vrefe, vinit, vcomp, vfrot, vgeom)
+    call nmresi(noma  , mate  , numedd  , sdnume        , fonact        ,&
+                sddyna, sdconv, ds_print, defico        , resoco        ,&
+                matass, numins, conv    , resi_glob_rela, resi_glob_maxi,&
+                eta   , comref, valinc  , solalg        , veasse        ,&
+                measse, vrela , vmaxi   , vchar         , vresi         ,&
+                vrefe , vinit , vcomp   , vfrot         , vgeom)
 !
 ! --- VERIFICATION DES CRITERES D'ARRET SUR RESIDUS
 !
@@ -222,15 +223,15 @@ subroutine nmconv(noma, modele, mate, numedd, sdnume,&
 ! --- CONVERGENCE ADAPTEE AU CONTACT
 !
     if (lcont) then
-        call cfmmcv(noma, modele, numedd, fonact, sddyna,&
-                    sdimpr, sdstat, sddisc, sdtime, sderro,&
-                    numins, iterat, defico, resoco, valinc,&
-                    solalg, instan)
+        call cfmmcv(noma    , modele, numedd, fonact, sddyna,&
+                    ds_print, sdstat, sddisc, sdtime, sderro,&
+                    numins  , iterat, defico, resoco, valinc,&
+                    solalg  , instan)
     endif
 !
-! --- ENREGISTRE LES DONNEES POUR AFFICHAGE DANS LA SDIMPR
+! - Set value of informations in convergence table (residuals are in nmimre)
 !
-    call nmimrv(sdimpr, fonact, iterat, relcoe, relite,&
+    call nmimrv(ds_print, fonact, iterat, relcoe, relite,&
                 eta)
 !
 ! --- CAPTURE ERREUR EVENTUELLE

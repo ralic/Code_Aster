@@ -16,13 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 ! aslint: disable=W1504
+!
 interface
     subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
-                      sddyna, sdconv, sdimpr, defico, resoco,&
+                      sddyna, sdconv, ds_print, defico, resoco,&
                       matass, numins, conv, resi_glob_rela, resi_glob_maxi, eta,&
                       comref, valinc, solalg, veasse, measse,&
                       vrela, vmaxi, vchar, vresi, vrefe,&
                       vinit, vcomp, vfrot, vgeom)
+        use NonLin_Datastructure_type
         character(len=8) :: noma
         character(len=24) :: mate
         character(len=24) :: numedd
@@ -30,7 +32,7 @@ interface
         integer :: fonact(*)
         character(len=19) :: sddyna
         character(len=24) :: sdconv
-        character(len=24) :: sdimpr
+            type(NL_DS_Print), intent(inout) :: ds_print
         character(len=24) :: defico
         character(len=24) :: resoco
         character(len=19) :: matass

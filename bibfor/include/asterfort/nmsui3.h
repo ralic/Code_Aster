@@ -16,10 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmsui3(sd_prnt      , field_disc, nb_elem  , nb_node      , nb_poin       ,&
+    subroutine nmsui3(ds_print     , field_disc, nb_elem  , nb_node      , nb_poin       ,&
                       nb_spoi      , nb_cmp    , type_extr, type_extr_cmp, type_extr_elem,&
                       list_elem    , work_node , work_elem, field        , field_s       ,&
                       i_dof_monitor)
+        use NonLin_Datastructure_type
         integer, intent(in) :: nb_node
         integer, intent(in) :: nb_elem
         integer, intent(in) :: nb_poin
@@ -29,7 +30,7 @@ interface
         character(len=19), intent(in) :: field
         character(len=4), intent(in) :: field_disc
         character(len=24), intent(in) :: field_s
-        character(len=24), intent(in) :: sd_prnt
+        type(NL_DS_Print), intent(inout) :: ds_print
         character(len=8), intent(in) :: type_extr
         character(len=8), intent(in) :: type_extr_elem
         character(len=8), intent(in) :: type_extr_cmp

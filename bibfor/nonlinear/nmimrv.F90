@@ -1,5 +1,15 @@
-subroutine nmimrv(sdimpr, fonact, iterat, relcoe, relite,&
+subroutine nmimrv(ds_print, list_func_acti, iter_newt, line_search_coef, line_search_iter,&
                   eta)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/nmimci.h"
+#include "asterfort/nmimck.h"
+#include "asterfort/nmimcr.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,66 +29,55 @@ subroutine nmimrv(sdimpr, fonact, iterat, relcoe, relite,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "asterfort/isfonc.h"
-#include "asterfort/nmimci.h"
-#include "asterfort/nmimck.h"
-#include "asterfort/nmimcr.h"
-    integer :: fonact(*), iterat
-    character(len=24) :: sdimpr
-    real(kind=8) :: relcoe, eta
-    integer :: relite
+    type(NL_DS_Print), intent(inout) :: ds_print
+    integer, intent(in) :: list_func_acti(*)
+    integer, intent(in) :: iter_newt
+    real(kind=8), intent(in) :: line_search_coef
+    integer, intent(in) :: line_search_iter
+    real(kind=8), intent(in) :: eta
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (ALGORITHME - CONVERGENCE)
+! MECA_NON_LINE - Print management
 !
-! ENREGISTRE LES DONNEES DANS LA SDIMPR
-! LES DONNES POUR LES RESIDUS SONT ECRITS DANS NMIMRE
+! Set value of informations in convergence table (residuals are in nmimre)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! IO  ds_print         : datastructure for printing parameters
+! In  list_func_acti   : list of active functionnalities
+! In  iter_newt        : index of current Newton iteration
+! In  line_search_coef : coefficient for line search
+! In  line_search_iter : number of iterations for line search
+! In  eta              : coefficient for pilotage (continuation)
 !
-! IN  SDIMPR : SD AFFICHAGE
-! IN  FONACT : FONCTIONNALITES ACTIVEES
-! IN  ITERAT : NUMERO D'ITERATION DE NEWTON
-! IN  RELCOE : VALEUR COEF. RECHERCHE LINEAIRE
-! IN  RELITE : NB ITER. RECHERCHE LINEAIRE
-! IN  ETA    : VALEUR COEF. PILOTAGE
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+    aster_logical :: l_line_search, l_pilo, l_deborst
 !
-    aster_logical :: lreli, lpilo, lborst
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+    l_deborst     = isfonc(list_func_acti,'DEBORST')
+    l_pilo        = isfonc(list_func_acti,'PILOTAGE')
+    l_line_search = isfonc(list_func_acti,'RECH_LINE')
 !
+! - Set values for line search
 !
-!
-! --- INITIALISATIONS
-!
-    lborst = isfonc(fonact,'DEBORST')
-    lpilo = isfonc(fonact,'PILOTAGE')
-    lreli = isfonc(fonact,'RECH_LINE')
-!
-! --- ECRITURE CRITERES RECHERCHE LINEAIRE
-!
-    if (lreli .and. (iterat.ne.0)) then
-        call nmimci(sdimpr, 'RELI_NBIT', relite, .true._1)
-        call nmimcr(sdimpr, 'RELI_COEF', relcoe, .true._1)
+    if (l_line_search .and. (iter_newt.ne.0)) then
+        call nmimci(ds_print, 'RELI_NBIT', line_search_iter, .true._1)
+        call nmimcr(ds_print, 'RELI_COEF', line_search_coef, .true._1)
     endif
 !
-! --- ECRITURE CRITERES PILOTAGE
+! - Set value for pilotage
 !
-    if (lpilo) then
-        call nmimcr(sdimpr, 'PILO_COEF', eta, .true._1)
+    if (l_pilo) then
+        call nmimcr(ds_print, 'PILO_COEF', eta, .true._1)
     endif
 !
+! - Set value for De Borst method (plane stress)
 !
-! --- ECRITURE DE BORST
-!
-    if (lborst) then
-        call nmimck(sdimpr, 'DEBORST  ', 'DE BORST...', .true._1)
+    if (l_deborst) then
+        call nmimck(ds_print, 'DEBORST  ', 'DE BORST...', .true._1)
     endif
 !
 end subroutine

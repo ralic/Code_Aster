@@ -63,7 +63,7 @@ subroutine nmcrcg(fonact, sdconv)
     cnvlie = sdconv(1:19)//'.LIEU'
     cnvval = sdconv(1:19)//'.VALE'
     cnvact = sdconv(1:19)//'.ACTI'
-    cnvnco = sdconv(1:19)//'.NCOL'
+    cnvnco = sdconv(1:19)//'.NAME'
     call wkvect(cnvtyp, 'V V K16', nresi, jcnvty)
     call wkvect(cnvlie, 'V V K16', nresi, jcnvli)
     call wkvect(cnvval, 'V V R', nresi, jcnvva)

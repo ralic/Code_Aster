@@ -1,8 +1,18 @@
-subroutine nmini0(zpmet, zpcri, zconv, zpcon, znmeth,&
-                  fonact, parmet, parcri, conv, parcon,&
-                  method, eta, numins, matass, zmeelm,&
-                  zmeass, zveelm, zveass, zsolal, zvalin,&
-                  sdimpr)
+subroutine nmini0(zpmet   , zpcri, zconv, zpcon, znmeth,&
+                  fonact  , parmet, parcri, conv, parcon,&
+                  method  , eta, numins, matass, zmeelm,&
+                  zmeass  , zveelm, zveass, zsolal, zvalin,&
+                  ds_print)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterc/r8vide.h"
+#include "asterfort/assert.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/nmchai.h"
+#include "asterfort/CreatePrintDS.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,14 +31,8 @@ subroutine nmini0(zpmet, zpcri, zconv, zpcon, znmeth,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
-!
 ! aslint: disable=W1504
-    implicit none
-#include "jeveux.h"
-#include "asterc/r8vide.h"
-#include "asterfort/assert.h"
-#include "asterfort/nmchai.h"
-#include "asterfort/obcrea.h"
+!
     integer :: zpmet, zpcri, zconv
     integer :: zpcon, znmeth
     integer :: fonact(*)
@@ -36,72 +40,67 @@ subroutine nmini0(zpmet, zpcri, zconv, zpcon, znmeth,&
     real(kind=8) :: parcon(zpcon)
     character(len=16) :: method(znmeth)
     character(len=19) :: matass
-    character(len=24) :: sdimpr
     integer :: numins
     real(kind=8) :: eta
     integer :: zmeelm, zmeass, zveelm, zveass, zsolal, zvalin
+    type(NL_DS_Print), intent(out) :: ds_print
+!
+! --------------------------------------------------------------------------------------------------
+!
+! MECA_NON_LINE - Initializations
+!
+! Creation of datastructures
+!
+! --------------------------------------------------------------------------------------------------
+!
+! Out ds_print         : datastructure for printing parameters
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: ifm, niv
+    real(kind=8), parameter :: zero = 0.d0
+    integer :: long
 !
 ! ----------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (INITIALISATIONS)
+    call infdbg('MECANONLINE', ifm, niv)
+    if (niv .ge. 2) then
+        write (ifm,*) '<MECANONLINE> Create datastructures'
+    endif
 !
-! PREMIERES INITIALISATIONS DE MECA_NON_LINE: MISES A ZERO
+! - Create printing management datastructure
 !
-! ----------------------------------------------------------------------
-!
-! IN  SDIMPR : SD AFFICHAGE
-!
-!
-!
-!
-    real(kind=8) :: zero
-    parameter    (zero=0.d0)
-    integer :: i, long
-!
-! ----------------------------------------------------------------------
-!
+    call CreatePrintDS(ds_print)
 !
 ! --- FONCTIONNALITES ACTIVEES               (NMFONC/ISFONC)
 !
-    do 2 i = 1, 100
-        fonact(i) = 0
- 2  end do
+    fonact(1:100) = 0
 !
 ! --- PARAMETRES DES METHODES DE RESOLUTION  (NMDOMT)
 !
-    do 3 i = 1, zpmet
-        parmet(i) = zero
- 3  end do
+    parmet(1:zpmet) = zero
 !
 ! --- PARAMETRES DES CRITERES DE CONVERGENCE (NMLECT)
 !
-    do 4 i = 1, zpcri
-        parcri(i) = zero
- 4  end do
+    parcri(1:zpcri) = zero
 !
 ! --- INFORMATIONS SUR LA CONVERGENCE DU CALCUL
 !
-    do 5 i = 1, zconv
-        conv (i) = r8vide()
- 5  end do
     conv(1) = -1
+    conv(2:zconv) = r8vide()
 !
 ! --- PARAMETRES DU CRITERE DE CONVERGENCE EN CONTRAINTE (NMLECT)
 !
-    do 7 i = 1, zpcon
-        parcon(i) = zero
- 7  end do
+    parcon(1:zpcon) = zero
 !
 ! --- METHODES DE RESOLUTION
 !
-    do 8 i = 1, znmeth
-        method(i) = ' '
- 8  end do
+    method(1:znmeth) = ' '
 !
 ! --- INITIALISATION BOUCLE EN TEMPS
 !
     numins = 0
-    eta = 0.d0
+    eta    = zero
     matass = '&&OP0070.MATASS'
 !
 ! --- VERIF. LONGUEURS VARIABLES CHAPEAUX (SYNCHRO OP0070/NMCHAI)
@@ -118,9 +117,5 @@ subroutine nmini0(zpmet, zpcri, zconv, zpcon, znmeth,&
     ASSERT(long.eq.zsolal)
     call nmchai('VALINC', 'LONMAX', long)
     ASSERT(long.eq.zvalin)
-!
-! --- CREATION SD AFFICHAGE
-!
-    call obcrea('AFFICHAGE', sdimpr)
 !
 end subroutine

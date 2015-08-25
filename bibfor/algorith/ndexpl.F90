@@ -1,9 +1,11 @@
-subroutine ndexpl(modele, numedd, numfix, mate  , carele,&
-                  comref, compor, lischa, method, fonact,&
-                  carcri, sdimpr, sdstat, sdnume, sddyna,&
-                  sddisc, sdtime, sderro, valinc, numins,&
-                  solalg, solveu, matass, maprec, meelem,&
-                  measse, veelem, veasse, nbiter)
+subroutine ndexpl(modele, numedd  , numfix, mate  , carele,&
+                  comref, compor  , lischa, method, fonact,&
+                  carcri, ds_print, sdstat, sdnume, sddyna,&
+                  sddisc, sdtime  , sderro, valinc, numins,&
+                  solalg, solveu  , matass, maprec, meelem,&
+                  measse, veelem  , veasse, nbiter)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -38,8 +40,9 @@ implicit none
     integer :: fonact(*)
     character(len=16) :: method(*)
     character(len=24) :: carcri
-    character(len=24) :: sdstat, sdtime, sderro, sdimpr
+    character(len=24) :: sdstat, sdtime, sderro
     character(len=19) :: sdnume, sddyna, sddisc
+    type(NL_DS_Print), intent(inout) :: ds_print
     character(len=19) :: valinc(*), solalg(*)
     character(len=19) :: meelem(*), veelem(*)
     character(len=19) :: measse(*), veasse(*)
@@ -96,8 +99,8 @@ implicit none
 !
 ! --- INITIALISATION DES CHAMPS D'INCONNUES POUR LE NOUVEAU PAS DE TEMPS
 !
-    call ndxnpa(modele, mate  , carele, fonact, sdimpr,&
-                sddisc, sddyna, sdnume, numedd, numins,&
+    call ndxnpa(modele, mate  , carele, fonact, ds_print,&
+                sddisc, sddyna, sdnume, numedd, numins  ,&
                 valinc, solalg)
 !
 ! --- CALCUL DES CHARGEMENTS CONSTANTS AU COURS DU PAS DE TEMPS
@@ -132,7 +135,7 @@ implicit none
 ! --- EN L'ABSENCE DE CONVERGENCE ON CHERCHE A SUBDIVISER LE PAS
 ! --- DE TEMPS SI L'UTILISATEUR A FAIT LA DEMANDE
 !
-    call ndxdec(sdimpr, sddisc, sderro, numins)
+    call ndxdec(ds_print, sddisc, sderro, numins)
 !
     nbiter = 1
 !

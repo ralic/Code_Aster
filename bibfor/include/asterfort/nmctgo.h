@@ -18,10 +18,11 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmctgo(noma, sdimpr, sderro, defico, resoco,&
+    subroutine nmctgo(noma  , ds_print, sderro, defico, resoco,&
                       valinc, mmcvgo)
+        use NonLin_Datastructure_type
         character(len=8) :: noma
-        character(len=24) :: sdimpr
+        type(NL_DS_Print), intent(inout) :: ds_print
         character(len=24) :: sderro
         character(len=24) :: defico
         character(len=24) :: resoco

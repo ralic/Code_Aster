@@ -1,4 +1,18 @@
-subroutine nmitsp(sdimpr, sddisc, iterat, retsup)
+subroutine nmitsp(ds_print, sddisc, iterat, retsup)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/affich.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmacex.h"
+#include "asterfort/nmimpx.h"
+#include "asterfort/nmlerr.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,20 +32,10 @@ subroutine nmitsp(sdimpr, sddisc, iterat, retsup)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/affich.h"
-#include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/nmacex.h"
-#include "asterfort/nmimpx.h"
-#include "asterfort/nmlerr.h"
-#include "asterfort/utmess.h"
-    character(len=24) :: sdimpr
-    character(len=19) :: sddisc
-    integer :: iterat, retsup
+    type(NL_DS_Print), intent(in) :: ds_print
+    character(len=19), intent(in) :: sddisc
+    integer, intent(in) :: iterat
+    integer, intent(out) :: retsup
 !
 ! ----------------------------------------------------------------------
 !
@@ -41,8 +45,7 @@ subroutine nmitsp(sdimpr, sddisc, iterat, retsup)
 !
 ! ----------------------------------------------------------------------
 !
-!
-! IN  SDIMPR : SD AFFICHAGE
+! In  ds_print         : datastructure for printing parameters
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IN  ITERAT : NUMERO D'ITERATION DE NEWTON
 ! OUT RETSUP : CODE RETOUR
@@ -57,10 +60,6 @@ subroutine nmitsp(sdimpr, sddisc, iterat, retsup)
     real(kind=8) :: r8bid
 !
 ! ----------------------------------------------------------------------
-!
-    call jemarq()
-!
-! --- INITIALISATIONS
 !
     retsup = 1
     nbitaj = 0
@@ -126,7 +125,7 @@ subroutine nmitsp(sdimpr, sddisc, iterat, retsup)
     if (retsup .eq. 1) then
         call utmess('I', 'ITERSUPP_7')
         call affich('MESSAGE', ' ')
-        call nmimpx(sdimpr)
+        call nmimpx(ds_print)
         itesup = 1
     else if (retsup.eq.0) then
         call utmess('I', 'ITERSUPP_6')
@@ -136,5 +135,4 @@ subroutine nmitsp(sdimpr, sddisc, iterat, retsup)
     endif
     call nmlerr(sddisc, 'E', 'ITERSUP', r8bid, itesup)
 !
-    call jedema()
 end subroutine

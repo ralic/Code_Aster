@@ -1,7 +1,29 @@
-subroutine nmnpas(modele, noma  , mate  , carele, fonact,&
-                  sdimpr, sddisc, sdsuiv, sddyna, sdnume,&
-                  sdstat, sdtime, numedd, numins, conv,&
-                  defico, resoco, valinc, solalg, solveu)
+subroutine nmnpas(modele  , noma  , mate  , carele, fonact,&
+                  ds_print, sddisc, sdsuiv, sddyna, sdnume,&
+                  sdstat  , sdtime, numedd, numins, conv  ,&
+                  defico  , resoco, valinc, solalg, solveu)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterc/isnnem.h"
+#include "asterc/r8vide.h"
+#include "asterfort/copisd.h"
+#include "asterfort/diinst.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/initia.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/cont_init.h"
+#include "asterfort/ndnpas.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmimin.h"
+#include "asterfort/nmnkft.h"
+#include "asterfort/nmvcle.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,31 +43,14 @@ subroutine nmnpas(modele, noma  , mate  , carele, fonact,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/isnnem.h"
-#include "asterc/r8vide.h"
-#include "asterfort/copisd.h"
-#include "asterfort/diinst.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/initia.h"
-#include "asterfort/isfonc.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/cont_init.h"
-#include "asterfort/ndnpas.h"
-#include "asterfort/ndynlo.h"
-#include "asterfort/nmchex.h"
-#include "asterfort/nmimin.h"
-#include "asterfort/nmnkft.h"
-#include "asterfort/nmvcle.h"
     integer :: fonact(*)
     character(len=8) :: noma
     character(len=19) :: sddyna, sdnume, sddisc, solveu
     character(len=24) :: modele, mate, carele
     integer :: numins
     real(kind=8) :: conv(*)
-    character(len=24) :: sdimpr, sdstat, sdtime, sdsuiv
+    type(NL_DS_Print), intent(inout) :: ds_print
+    character(len=24) :: sdstat, sdtime, sdsuiv
     character(len=24) :: defico, resoco, numedd
     character(len=19) :: solalg(*), valinc(*)
 !
@@ -65,7 +70,7 @@ subroutine nmnpas(modele, noma  , mate  , carele, fonact,&
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! IN  NUMEDD : NUME_DDL
 ! IN  NUMINS : NUMERO INSTANT COURANT
-! IN  SDIMPR : SD AFFICHAGE
+! IO  ds_print         : datastructure for printing parameters
 ! IN  SDTIME : SD TIMER
 ! IN  SDSTAT : SD STATISTIQUES
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
@@ -117,9 +122,9 @@ subroutine nmnpas(modele, noma  , mate  , carele, fonact,&
 !
     instan = diinst(sddisc,numins)
 !
-! --- INITIALISATION DES IMPRESSIONS
+! - Print management - Initializations for new step time
 !
-    call nmimin(sdimpr, fonact, sddisc, sdsuiv, numins)
+    call nmimin(fonact, sddisc, sdsuiv, numins, ds_print)
 !
 ! --- POUTRES EN GRANDES ROTATIONS
 !

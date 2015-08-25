@@ -1,6 +1,8 @@
-subroutine nmsuiv(meshz    , sd_suiv, sd_prnt, cara_elemz, modelz,&
-                  matez    , compor , valinc , varc_refe , sddisc,&
+subroutine nmsuiv(meshz    , sd_suiv, ds_print, cara_elemz, modelz,&
+                  matez    , compor , valinc  , varc_refe , sddisc,&
                   nume_inst)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -36,7 +38,7 @@ implicit none
 !
     character(len=*), intent(in) :: meshz
     character(len=24), intent(in) :: sd_suiv
-    character(len=24), intent(in) :: sd_prnt
+    type(NL_DS_Print), intent(inout) :: ds_print
     character(len=19), intent(in) :: sddisc
     character(len=*), intent(in) :: cara_elemz
     character(len=*), intent(in) :: matez
@@ -55,7 +57,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  mesh             : name of mesh
-! In  sd_prnt          : datastructure for print informations
+! IO  ds_print         : datastructure for printing parameters
 ! In  sd_suiv          : datastructure for dof monitor parameters
 ! In  sddisc           : datastructure for discretization
 ! In  model            : name of model
@@ -201,7 +203,7 @@ implicit none
 !
 ! --------- Print monitored values in table
 !
-            call nmsui3(sd_prnt      , field_disc, nb_elem  , nb_node      , nb_poin       ,&
+            call nmsui3(ds_print     , field_disc, nb_elem  , nb_node      , nb_poin       ,&
                         nb_spoi      , nb_cmp    , type_extr, type_extr_cmp, type_extr_elem,&
                         list_elem    , work_node , work_elem, field        , field_s       ,&
                         i_dof_monitor)

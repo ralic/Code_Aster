@@ -1,7 +1,9 @@
-subroutine nmsui3(sd_prnt      , field_disc, nb_elem  , nb_node      , nb_poin       ,&
+subroutine nmsui3(ds_print     , field_disc, nb_elem  , nb_node      , nb_poin       ,&
                   nb_spoi      , nb_cmp    , type_extr, type_extr_cmp, type_extr_elem,&
                   list_elem    , work_node , work_elem, field        , field_s       ,&
                   i_dof_monitor)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -40,7 +42,7 @@ implicit none
     character(len=19), intent(in) :: field
     character(len=4), intent(in) :: field_disc
     character(len=24), intent(in) :: field_s
-    character(len=24), intent(in) :: sd_prnt
+    type(NL_DS_Print), intent(inout) :: ds_print
     character(len=8), intent(in) :: type_extr
     character(len=8), intent(in) :: type_extr_elem
     character(len=8), intent(in) :: type_extr_cmp
@@ -56,7 +58,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sd_prnt          : datastructure for print informations
+! IO  ds_print         : datastructure for printing parameters
 ! In  nb_node          : number of nodes
 ! In  nb_elem          : number of elements
 ! In  nb_poin          : number of points (Gauss)
@@ -146,7 +148,7 @@ implicit none
         do i_node = 1, nb_node_r
             do i_cmp = 1, nb_cmp_r
                 vale_r   = v_work_node(i_cmp+nb_cmp*(i_node-1))
-                call nmsuiy(sd_prnt, vale_r, i_dof_monitor)
+                call nmsuiy(ds_print, vale_r, i_dof_monitor)
             end do
         end do
     endif
@@ -192,7 +194,7 @@ implicit none
                                                nb_poin*nb_spoi*(i_cmp-1)+&
                                                nb_spoi*(i_poin-1)+&
                                                (i_spoi-1)+1)
-                        call nmsuiy(sd_prnt, vale_r, i_dof_monitor)
+                        call nmsuiy(ds_print, vale_r, i_dof_monitor)
                     end do
                 end do
             end do

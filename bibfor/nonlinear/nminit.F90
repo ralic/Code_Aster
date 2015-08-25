@@ -3,11 +3,13 @@ subroutine nminit(result, model      , numedd     , numfix   , mate,&
                   solveu, carcri     , numins     , sdstat   , sddisc,&
                   sdnume, sdcont_defi, sdcrit     , varc_refe, fonact,&
                   parcon, parcri     , method     , lisch2   , mesh,&
-                  sdpilo, sddyna     , sdimpr     , sd_suiv  , sd_obsv,&
+                  sdpilo, sddyna     , ds_print   , sd_suiv  , sd_obsv,&
                   sdtime, sderro     , sdpost     , sd_inout , sdener,&
                   sdconv, sdcriq     , sdunil_defi, resocu   , resoco,&
                   valinc, solalg     , measse     , veelem   , meelem,&
                   veasse, codere)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -45,7 +47,7 @@ implicit none
 #include "asterfort/nmexso.h"
 #include "asterfort/nmfonc.h"
 #include "asterfort/nmihht.h"
-#include "asterfort/nminim.h"
+#include "asterfort/InitPrint.h"
 #include "asterfort/nminma.h"
 #include "asterfort/nminmc.h"
 #include "asterfort/nminvc.h"
@@ -94,7 +96,7 @@ implicit none
     character(len=19) :: veelem(*), meelem(*)
     character(len=19) :: veasse(*), measse(*)
     character(len=19) :: solalg(*), valinc(*)
-    character(len=24) :: sdimpr, sdtime, sderro, sdstat, sdconv
+    character(len=24) :: sdtime, sderro, sdstat, sdconv
     character(len=24) :: resocu, sdcriq
     character(len=24) :: varc_refe
     character(len=24), intent(out) :: sdcont_defi
@@ -102,6 +104,7 @@ implicit none
     character(len=24), intent(out) :: sd_inout
     character(len=19), intent(out) :: sd_obsv
     character(len=24), intent(out) :: sd_suiv
+    type(NL_DS_Print), intent(inout) :: ds_print
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -125,6 +128,7 @@ implicit none
 ! Out sd_suiv          : datastructure for dof monitoring parameters
 ! Out sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
 ! Out sdunil_defi      : name of unilateral condition datastructure (from DEFI_CONTACT)
+! IO  ds_print         : datastructure for printing parameters
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -335,9 +339,9 @@ implicit none
                 compor, disp_prev, strx_prev, varc_prev, varc_refe,&
                 instin, sd_suiv)
 !
-! --- INITIALISATION DE LA SD AFFICHAGE
+! - Initializations for printing
 !
-    call nminim(sd_suiv, sdimpr)
+    call InitPrint(sd_suiv, ds_print)
 !
 ! --- PRE-CALCUL DES MATR_ASSE CONSTANTES AU COURS DU CALCUL
 !
@@ -346,9 +350,9 @@ implicit none
 !
 ! --- CREATION DE LA SD EVOL_NOLI
 !
-    call nmnoli(result, sddisc, sderro, carcri, sdimpr,&
-                sdcrit, fonact, sddyna, sdpost, model,&
-                mate, carele, lisch2, sdpilo, sdtime,&
+    call nmnoli(result, sddisc  , sderro, carcri, ds_print,&
+                sdcrit, fonact  , sddyna, sdpost, model   ,&
+                mate  , carele  , lisch2, sdpilo, sdtime  ,&
                 sdener, sd_inout, sdcriq)
 !
 ! - Make initial observation

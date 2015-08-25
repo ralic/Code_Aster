@@ -16,14 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfconv(noma, sdstat, sdimpr, sderro, defico,&
+    subroutine cfconv(noma  , sdstat, ds_print, sderro, defico,&
                       resoco, solalg)
-        character(len=8) :: noma
-        character(len=24) :: sdstat
-        character(len=24) :: sdimpr
-        character(len=24) :: sderro
-        character(len=24) :: defico
-        character(len=24) :: resoco
-        character(len=19) :: solalg(*)
+        use NonLin_Datastructure_type
+        character(len=8), intent(in) :: noma
+        character(len=24), intent(in) :: defico
+        character(len=24), intent(in) :: resoco
+        character(len=24), intent(in) :: sderro
+        character(len=24), intent(in) :: sdstat
+        character(len=19), intent(in) :: solalg(*)
+        type(NL_DS_Print), intent(inout) :: ds_print
     end subroutine cfconv
 end interface

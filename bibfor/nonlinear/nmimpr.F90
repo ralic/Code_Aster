@@ -1,4 +1,12 @@
-subroutine nmimpr(sdimpr)
+subroutine nmimpr(ds_print)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/PrintTableLine.h"
+#include "asterfort/iunifi.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,62 +26,50 @@ subroutine nmimpr(sdimpr)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "asterfort/impsdl.h"
-#include "asterfort/iunifi.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/obgetb.h"
-#include "asterfort/obgeti.h"
-#include "asterfort/obgeto.h"
-    character(len=24) :: sdimpr
+    type(NL_DS_Print), intent(in) :: ds_print
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (AFFICHAGE)
+! MECA_NON_LINE - Print management
 !
-! IMPRESSION D'UNE LIGNE DU TABLEAU DE CONVERGENCE
+! Print line in convergence table
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  ds_print         : datastructure for printing parameters
 !
-! IN  SDIMPR : SD AFFICHAGE
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+    aster_logical :: l_csv
+    integer :: unit_mess, unit_csv
+    character(len=1) :: row_sep
+    type(NL_DS_Table) :: table_cvg
 !
-    character(len=24) :: sdtabc
-    aster_logical :: lcsv, lprint
-    integer :: larlig, unimes, unicsv
-    character(len=1) :: sepcol
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+    unit_mess = iunifi('MESSAGE')
 !
-    call jemarq()
+! - Get convergence table
 !
-! --- TABLEAU DE CONVERGENCE ET OPTIONS
+    table_cvg = ds_print%table_cvg
 !
-    call obgeto(sdimpr, 'TABLEAU_CONV', sdtabc)
-    call obgetb(sdtabc, 'SORTIE_CSV', lcsv)
-    call obgeti(sdtabc, 'UNITE_CSV', unicsv)
-    call obgeti(sdtabc, 'LARGEUR_LIGNE', larlig)
-    unimes = iunifi('MESSAGE')
+! - Get parameters
 !
-! --- AFFICHAGE POUR CE PAS ?
+    l_csv     = ds_print%l_tcvg_csv
+    unit_csv  = ds_print%tcvg_unit
 !
-    call obgetb(sdimpr, 'PRINT', lprint)
+! - Print in message unit
 !
-! --- IMPRESSION LIGNE DANS LE FICHIER MESSAGE
-!
-    sepcol = '|'
-    if (lprint) call impsdl(sdtabc, sepcol, unimes)
-!
-! --- IMPRESSION LIGNE DANS LE FICHIER CSV
-!
-    if (lcsv) then
-        sepcol = ','
-        call impsdl(sdtabc, sepcol, unicsv)
+    row_sep = '|'
+    if (ds_print%l_print) then
+        call PrintTableLine(table_cvg, row_sep, unit_mess)
     endif
 !
-    call jedema()
+! - Print in file
+!
+    if (l_csv) then
+        row_sep = ','
+        call PrintTableLine(table_cvg, row_sep, unit_csv)
+    endif
+!
 end subroutine

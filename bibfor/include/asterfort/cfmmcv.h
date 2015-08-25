@@ -16,16 +16,17 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfmmcv(noma, modele, numedd, fonact, sddyna,&
-                      sdimpr, sdstat, sddisc, sdtime, sderro,&
-                      numins, iterat, defico, resoco, valinc,&
-                      solalg, instan)
+    subroutine cfmmcv(noma    , modele, numedd, fonact, sddyna,&
+                      ds_print, sdstat, sddisc, sdtime, sderro,&
+                      numins  , iterat, defico, resoco, valinc,&
+                      solalg  , instan)
+        use NonLin_Datastructure_type
         character(len=8) :: noma
         character(len=24) :: modele
         character(len=24) :: numedd
         integer :: fonact(*)
         character(len=19) :: sddyna
-        character(len=24) :: sdimpr
+        type(NL_DS_Print), intent(inout) :: ds_print
         character(len=24) :: sdstat
         character(len=19) :: sddisc
         character(len=24) :: sdtime

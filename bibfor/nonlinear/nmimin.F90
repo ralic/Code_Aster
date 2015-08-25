@@ -1,4 +1,14 @@
-subroutine nmimin(sdimpr, fonact, sddisc, sdsuiv, numins)
+subroutine nmimin(list_func_acti, sddisc, sdsuiv, nume_inst, ds_print)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/InitTableCvg.h"
+#include "asterfort/InitPrint.h"
+#include "asterfort/nmimpt.h"
+#include "asterfort/nmimpx.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,49 +27,53 @@ subroutine nmimin(sdimpr, fonact, sddisc, sdsuiv, numins)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
+!    
+    integer, intent(in) :: list_func_acti(*)
+    character(len=19), intent(in) :: sddisc
+    character(len=24), intent(in) :: sdsuiv
+    integer, intent(in) :: nume_inst
+    type(NL_DS_Print), intent(inout) :: ds_print
 !
-    implicit     none
-#include "asterfort/nmimac.h"
-#include "asterfort/nmimpa.h"
-#include "asterfort/nmimpt.h"
-#include "asterfort/nmimpx.h"
-    character(len=24) :: sdimpr, sdsuiv
-    integer :: fonact(*)
-    character(len=19) :: sddisc
-    integer :: numins
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! MECA_NON_LINE - Print management
 !
-! ROUTINE MECA_NON_LINE (UTILITAIRE)
+! Initializations for new step time
 !
-! INITIALISATION DES IMPRESSIONS
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! In  list_func_acti   : list of active functionnalities
+! In  sddisc           : name of datastructure for time discretization
+! In  sdsuiv           : datastructure for DOF monitoring
+! In  nume_inst        : index of current time step
+! IO  ds_print         : datastructure for printing parameters
 !
+! --------------------------------------------------------------------------------------------------
 !
-! IN  SDIMPR : SD AFFICHAGE
-! IN  SDSUIV : SD SUIVI_DDL
-! IN  FONACT : FONCTIONNALITES ACTIVEES
-! IN  SDDISC : SD DISCRETISATION TEMPORELLE
-! IN  NUMINS : NUMERO INSTANT COURANT
+    aster_logical :: l_print
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 !
-! --- ACTIVATION DES COLONNES
+! - Initializations for convergence table
 !
-    call nmimac(sdimpr, sdsuiv, fonact)
+    call InitTableCvg(list_func_acti, sdsuiv, ds_print)
 !
-! --- DOIT-ON ACTIVER L'AFFICHAGE POUR CE PAS DE TEMPS ?
+! - Print or not ?
 !
-    call nmimpa(numins, sdimpr)
+    l_print = mod(nume_inst+1,ds_print%reac_print) .eq. 0
+    ds_print%l_print = l_print
 !
-! --- IMPRESSION LIGNE DE SEPARATION
+! - Print separator line
 !
-    call nmimpx(sdimpr)
+    if (l_print) then
+        call nmimpx(ds_print)
+    endif
 !
-! --- IMPRESSION ENTETE
+! - Print head of convergence table
 !
-    call nmimpt(numins, sddisc, sdimpr)
+    if (l_print) then
+        call nmimpt(nume_inst, sddisc, ds_print)
+    endif
 !
 end subroutine

@@ -1,10 +1,22 @@
-subroutine nmpred(modele, numedd, numfix, mate, carele,&
-                  comref, compor, lischa, method, solveu,&
-                  fonact, parmet, carcri, sdimpr, sdstat,&
-                  sdtime, sddisc, sdnume, sderro, numins,&
-                  valinc, solalg, matass, maprec, defico,&
-                  resoco, resocu, sddyna, meelem, measse,&
+subroutine nmpred(modele, numedd, numfix, mate    , carele,&
+                  comref, compor, lischa, method  , solveu,&
+                  fonact, parmet, carcri, ds_print, sdstat,&
+                  sdtime, sddisc, sdnume, sderro  , numins,&
+                  valinc, solalg, matass, maprec  , defico,&
+                  resoco, resocu, sddyna, meelem  , measse,&
                   veelem, veasse, lerrit)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/nmcret.h"
+#include "asterfort/nmltev.h"
+#include "asterfort/nmprde.h"
+#include "asterfort/nmprta.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,22 +35,15 @@ subroutine nmpred(modele, numedd, numfix, mate, carele,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
-!
 ! aslint: disable=W1504
-    implicit none
-#include "asterf_types.h"
-#include "asterfort/assert.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/nmcret.h"
-#include "asterfort/nmltev.h"
-#include "asterfort/nmprde.h"
-#include "asterfort/nmprta.h"
+!
     integer :: fonact(*)
     integer :: numins
     real(kind=8) :: parmet(*)
     character(len=16) :: method(*)
     character(len=19) :: matass, maprec
-    character(len=24) :: sdimpr, sdtime, sdstat
+    character(len=24) :: sdtime, sdstat
+    type(NL_DS_Print), intent(inout) :: ds_print
     character(len=19) :: lischa, solveu, sddisc, sddyna, sdnume
     character(len=24) :: modele, mate, carele, comref, compor
     character(len=24) :: numedd, numfix
@@ -71,7 +76,7 @@ subroutine nmpred(modele, numedd, numfix, mate, carele,&
 ! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
 ! IN  PARMET : PARAMETRES DES METHODES DE RESOLUTION
 ! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
-! IN  SDIMPR : SD AFFICHAGE
+! IO  ds_print         : datastructure for printing parameters
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
 ! IN  SDTIME : SD TIMER
 ! IN  SDSTAT : SD STATISTIQUES
@@ -102,9 +107,6 @@ subroutine nmpred(modele, numedd, numfix, mate, carele,&
 ! ----------------------------------------------------------------------
 !
     call infdbg('MECA_NON_LINE', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> CALCUL DE PREDICTION'
     endif
@@ -119,25 +121,24 @@ subroutine nmpred(modele, numedd, numfix, mate, carele,&
 ! --- PREDICTION PAR LINEARISATION DU SYSTEME
 !
     if (method(5) .eq. 'ELASTIQUE' .or. method(5) .eq. 'TANGENTE') then
-        call nmprta(modele, numedd, numfix, mate, carele,&
-                    comref, compor, lischa, method, solveu,&
-                    fonact, parmet, carcri, sdimpr, sdstat,&
-                    sdtime, sddisc, numins, valinc, solalg,&
-                    matass, maprec, defico, resoco, resocu,&
-                    sddyna, meelem, measse, veelem, veasse,&
-                    sdnume, ldccvg, faccvg, rescvg, codere)
+        call nmprta(modele, numedd, numfix, mate    , carele,&
+                    comref, compor, lischa, method  , solveu,&
+                    fonact, parmet, carcri, ds_print, sdstat,&
+                    sdtime, sddisc, numins, valinc  , solalg,&
+                    matass, maprec, defico, resoco  , resocu,&
+                    sddyna, meelem, measse, veelem  , veasse,&
+                    sdnume, ldccvg, faccvg, rescvg  , codere)
 !
 ! --- PREDICTION PAR EXTRAPOLATION DU PAS PRECEDENT OU PAR DEPLACEMENT
 ! --- CALCULE
 !
-        elseif ((method(5) .eq. 'EXTRAPOLE').or. (method(5) .eq.&
-    'DEPL_CALCULE')) then
-        call nmprde(modele, numedd, numfix, mate, carele,&
-                    comref, compor, lischa, method, solveu,&
-                    fonact, parmet, carcri, sdimpr, sdstat,&
-                    sdtime, sddisc, numins, valinc, solalg,&
-                    matass, maprec, defico, resoco, sddyna,&
-                    meelem, measse, veelem, veasse, ldccvg,&
+        elseif ((method(5) .eq. 'EXTRAPOLE').or. (method(5) .eq.'DEPL_CALCULE')) then
+        call nmprde(modele, numedd, numfix, mate    , carele,&
+                    comref, compor, lischa, method  , solveu,&
+                    fonact, parmet, carcri, ds_print, sdstat,&
+                    sdtime, sddisc, numins, valinc  , solalg,&
+                    matass, maprec, defico, resoco  , sddyna,&
+                    meelem, measse, veelem, veasse  , ldccvg,&
                     faccvg, rescvg, codere)
     else
         ASSERT(.false.)

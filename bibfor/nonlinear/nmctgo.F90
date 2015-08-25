@@ -1,25 +1,10 @@
-subroutine nmctgo(noma, sdimpr, sderro, defico, resoco,&
+subroutine nmctgo(noma  , ds_print, sderro, defico, resoco,&
                   valinc, mmcvgo)
 !
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
+use NonLin_Datastructure_type
 !
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+implicit none
 !
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
-!
-    implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8vide.h"
@@ -40,9 +25,29 @@ subroutine nmctgo(noma, sdimpr, sderro, defico, resoco,&
 #include "asterfort/nmimck.h"
 #include "asterfort/nmimcr.h"
 #include "asterfort/utmess.h"
+!
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: mickael.abbas at edf.fr
+!
     character(len=8) :: noma
     character(len=24) :: defico, resoco
-    character(len=24) :: sdimpr, sderro
+    character(len=24) :: sderro
+    type(NL_DS_Print), intent(inout) :: ds_print
     character(len=19) :: valinc(*)
     aster_logical :: mmcvgo
 !
@@ -54,9 +59,8 @@ subroutine nmctgo(noma, sdimpr, sderro, defico, resoco,&
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  NOMA   : NOM DU MAILLAGE
-! IN  SDIMPR : SD AFFICHAGE
+! IO  ds_print         : datastructure for printing parameters
 ! IN  SDERRO : GESTION DES ERREURS
 ! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
 ! IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
@@ -83,9 +87,6 @@ subroutine nmctgo(noma, sdimpr, sderro, defico, resoco,&
 !
     call jemarq()
     call infdbg('MECANONLINE', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> MISE A JOUR DU SEUIL DE GEOMETRIE'
     endif
@@ -193,11 +194,11 @@ subroutine nmctgo(noma, sdimpr, sderro, defico, resoco,&
         call nmcrel(sderro, 'DIVE_FIXG', .true._1)
     endif
 !
-! --- VALEUR ET ENDROIT OU SE REALISE L'EVALUATION DE LA BOUCLE
+! - Set values in convergence table for contact geoemtry informations
 !
     if (lctcc .or. lxfcm) then
-        call nmimck(sdimpr, 'BOUC_NOEU', cvgnoe, .true._1)
-        call nmimcr(sdimpr, 'BOUC_VALE', cvgval, .true._1)
+        call nmimck(ds_print, 'BOUC_NOEU', cvgnoe, .true._1)
+        call nmimcr(ds_print, 'BOUC_VALE', cvgval, .true._1)
     endif
 !
     call jedema()

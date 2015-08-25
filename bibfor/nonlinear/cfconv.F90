@@ -1,5 +1,24 @@
-subroutine cfconv(noma, sdstat, sdimpr, sderro, defico,&
+subroutine cfconv(noma  , sdstat, ds_print, sderro, defico,&
                   resoco, solalg)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterc/r8vide.h"
+#include "asterfort/cfcgeo.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmcrel.h"
+#include "asterfort/nmimci.h"
+#include "asterfort/nmimck.h"
+#include "asterfort/nmimcr.h"
+#include "asterfort/nmlecv.h"
+#include "asterfort/nmrvai.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,24 +38,13 @@ subroutine cfconv(noma, sdstat, sdimpr, sderro, defico,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/r8vide.h"
-#include "asterfort/cfcgeo.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/nmcrel.h"
-#include "asterfort/nmimci.h"
-#include "asterfort/nmimck.h"
-#include "asterfort/nmimcr.h"
-#include "asterfort/nmlecv.h"
-#include "asterfort/nmrvai.h"
-    character(len=8) :: noma
-    character(len=24) :: defico, resoco, sdimpr, sderro, sdstat
-    character(len=19) :: solalg(*)
+    character(len=8), intent(in) :: noma
+    character(len=24), intent(in) :: defico
+    character(len=24), intent(in) :: resoco
+    character(len=24), intent(in) :: sderro
+    character(len=24), intent(in) :: sdstat
+    character(len=19), intent(in) :: solalg(*)
+    type(NL_DS_Print), intent(inout) :: ds_print
 !
 ! ----------------------------------------------------------------------
 !
@@ -46,9 +54,8 @@ subroutine cfconv(noma, sdstat, sdimpr, sderro, defico,&
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  NOMA   : NOM DU MAILLAGE
-! IN  SDIMPR : SD AFFICHAGE
+! IO  ds_print         : datastructure for printing parameters
 ! IN  SDSTAT : SD STATISTIQUES
 ! IN  SDERRO : GESTION DES ERREURS
 ! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
@@ -80,10 +87,10 @@ subroutine cfconv(noma, sdstat, sdimpr, sderro, defico,&
     geoval = r8vide()
     call nmrvai(sdstat, 'CTCD_ALGO_ITER', 'N', ctcite)
 !
-! --- VALEURS NON AFFECTEES DANS LE TABLEAU
+! - Values in convergence table: not affected
 !
-    call nmimck(sdimpr, 'BOUC_NOEU', k16bla, .false._1)
-    call nmimcr(sdimpr, 'BOUC_VALE', 0.d0, .false._1)
+    call nmimck(ds_print, 'BOUC_NOEU', ' ' , .false._1)
+    call nmimcr(ds_print, 'BOUC_VALE', 0.d0, .false._1)
 !
 ! --- CONVERGENCE DES RESIDUS D'EQUILIBRE ?
 !
@@ -112,7 +119,7 @@ subroutine cfconv(noma, sdstat, sdimpr, sderro, defico,&
 !
         if (cvresi) then
             if (.not.dvpfix) then
-                call cfcgeo(noma, defico, resoco, solalg, dvfixg,&
+                call cfcgeo(noma  , defico, resoco, solalg, dvfixg,&
                             ctderg, geonoe, geoval)
                 zl(jclrea+1-1) = dvfixg
                 zl(jclrea+4-1) = ctderg
@@ -121,13 +128,13 @@ subroutine cfconv(noma, sdstat, sdimpr, sderro, defico,&
         endif
     endif
 !
-! --- ENREGISTREMENT DES VALEURS POUR AFFICHAGE
+! - Set values in convergence table for contact geoemtry informations
 !
     if (lreag) then
-        call nmimck(sdimpr, 'BOUC_NOEU', geonoe, .true._1)
-        call nmimcr(sdimpr, 'BOUC_VALE', geoval, .true._1)
+        call nmimck(ds_print, 'BOUC_NOEU', geonoe, .true._1)
+        call nmimcr(ds_print, 'BOUC_VALE', geoval, .true._1)
     endif
-    call nmimci(sdimpr, 'CTCD_NBIT', ctcite, .true._1)
+    call nmimci(ds_print, 'CTCD_NBIT', ctcite, .true._1)
 !
 ! --- ENREGISTREMENT DES EVENEMENTS - DIVERGENCES
 !

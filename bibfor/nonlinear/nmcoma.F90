@@ -1,31 +1,15 @@
-subroutine nmcoma(modelz, mate, carele, compor, carcri,&
-                  parmet, method, lischa, numedd, numfix,&
-                  solveu, comref, sddisc, sddyna, sdimpr,&
-                  sdstat, sdtime, numins, iterat, fonact,&
-                  defico, resoco, valinc, solalg, veelem,&
-                  meelem, measse, veasse, maprec, matass,&
+subroutine nmcoma(modelz, mate  , carele, compor, carcri  ,&
+                  parmet, method, lischa, numedd, numfix  ,&
+                  solveu, comref, sddisc, sddyna, ds_print,&
+                  sdstat, sdtime, numins, iterat, fonact  ,&
+                  defico, resoco, valinc, solalg, veelem  ,&
+                  meelem, measse, veasse, maprec, matass  ,&
                   codere, faccvg, ldccvg, sdnume)
 !
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
+use NonLin_Datastructure_type
 !
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+implicit none
 !
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
-!
-! aslint: disable=W1504
-    implicit none
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/infdbg.h"
@@ -46,15 +30,36 @@ subroutine nmcoma(modelz, mate, carele, compor, carcri,&
 #include "asterfort/nmtime.h"
 #include "asterfort/nmxmat.h"
 #include "asterfort/preres.h"
+!
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: mickael.abbas at edf.fr
+! aslint: disable=W1504
+!
     real(kind=8) :: parmet(*)
     character(len=16) :: method(*)
     integer :: fonact(*)
     character(len=*) :: modelz
     character(len=24) :: mate, carele
-    character(len=24) :: sdimpr, sdtime, sdstat
+    character(len=24) :: sdtime, sdstat
     character(len=24) :: compor, carcri, numedd, numfix
     character(len=19) :: sddisc, sddyna, lischa, solveu, sdnume
     character(len=24) :: comref, codere
+    type(NL_DS_Print), intent(inout) :: ds_print
     character(len=19) :: meelem(*), veelem(*)
     character(len=19) :: solalg(*), valinc(*)
     character(len=19) :: measse(*), veasse(*)
@@ -70,7 +75,6 @@ subroutine nmcoma(modelz, mate, carele, compor, carcri,&
 ! CALCUL DE LA MATRICE GLOBALE EN CORRECTION
 !
 ! ----------------------------------------------------------------------
-!
 !
 ! IN  MODELE : MODELE
 ! IN  NUMEDD : NUME_DDL (VARIABLE AU COURS DU CALCUL)
@@ -88,7 +92,7 @@ subroutine nmcoma(modelz, mate, carele, compor, carcri,&
 ! IN  SOLVEU : SOLVEUR
 ! IN  CARCRI : PARAMETRES METHODES D'INTEGRATION LOCALES (VOIR NMLECT)
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
-! IN  SDIMPR : SD AFFICHAGE
+! IO  ds_print         : datastructure for printing parameters
 ! IN  SDTIME : SD TIMER
 ! IN  SDSTAT : SD STATISTIQUES
 ! IN  NUMINS : NUMERO D'INSTANT
@@ -271,12 +275,12 @@ subroutine nmcoma(modelz, mate, carele, compor, carcri,&
                     measse, matass)
     endif
 !
-! --- AFFICHAGE
+! - Set matrix type in convergence table
 !
     if (reasma) then
-        call nmimck(sdimpr, 'MATR_ASSE', metcor, .true._1)
+        call nmimck(ds_print, 'MATR_ASSE', metcor, .true._1)
     else
-        call nmimck(sdimpr, 'MATR_ASSE', metcor, .false._1)
+        call nmimck(ds_print, 'MATR_ASSE', metcor, .false._1)
     endif
 !
 ! --- FACTORISATION DE LA MATRICE ASSEMBLEE GLOBALE

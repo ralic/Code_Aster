@@ -17,7 +17,8 @@
 !
 interface
     subroutine nmible(cont_loop     , model   , mesh  , sdcont_defi, sdcont_solv,&
-                      list_func_acti, nume_dof, sdstat, sdtime     , sdimpr)
+                      list_func_acti, nume_dof, sdstat, sdtime     , ds_print)
+        use NonLin_Datastructure_type        
         integer, intent(inout) :: cont_loop
         character(len=24), intent(in) :: model
         character(len=8), intent(in) :: mesh
@@ -27,6 +28,6 @@ interface
         character(len=24), intent(in) :: nume_dof
         character(len=24), intent(in) :: sdstat
         character(len=24), intent(in) :: sdtime
-        character(len=24), intent(in) :: sdimpr
+        type(NL_DS_Print), intent(inout) :: ds_print
     end subroutine nmible
 end interface

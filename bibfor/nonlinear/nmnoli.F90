@@ -1,7 +1,26 @@
-subroutine nmnoli(result, sddisc, sderro, carcri, sdimpr,&
-                  sdcrit, fonact, sddyna, sdpost, modele,&
-                  mate, carele, lisch2, sdpilo, sdtime,&
+subroutine nmnoli(result, sddisc, sderro, carcri, ds_print,&
+                  sdcrit, fonact, sddyna, sdpost, modele  ,&
+                  mate  , carele, lisch2, sdpilo, sdtime  ,&
                   sdener, sdieto, sdcriq)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/gnomsd.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmarch.h"
+#include "asterfort/nmetpl.h"
+#include "asterfort/rscrsd.h"
+#include "asterfort/rsrusd.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,27 +40,13 @@ subroutine nmnoli(result, sddisc, sderro, carcri, sdimpr,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/gnomsd.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/nmarch.h"
-#include "asterfort/nmetpl.h"
-#include "asterfort/rscrsd.h"
-#include "asterfort/rsrusd.h"
-#include "asterfort/utmess.h"
     character(len=19) :: sddisc, sdcrit, lisch2, sddyna, sdpost, sdpilo, sdener
     character(len=24) :: sderro, carcri
     character(len=24) :: modele, mate, carele
-    character(len=24) :: sdieto, sdtime, sdcriq, sdimpr
+    character(len=24) :: sdieto, sdtime, sdcriq
     character(len=8) :: result
     integer :: fonact(*)
+    type(NL_DS_Print), intent(in) :: ds_print
 !
 ! ----------------------------------------------------------------------
 !
@@ -55,7 +60,7 @@ subroutine nmnoli(result, sddisc, sderro, carcri, sdimpr,&
 ! IN  RESULT : NOM DE LA SD RESULTAT
 ! IN  NOMA   : NOM DU MAILLAGE
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
-! IN  SDIMPR : SD AFFICHAGE
+! In  ds_print         : datastructure for printing parameters
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IN  SDPOST : SD POUR POST-TRAITEMENTS (CRIT_STAB ET MODE_VIBR)
 ! IN  SDDYNA : SD DYNAMIQUE
@@ -87,9 +92,6 @@ subroutine nmnoli(result, sddisc, sderro, carcri, sdimpr,&
 !
     call jemarq()
     call infdbg('MECA_NON_LINE', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> PREPARATION DE LA SD EVOL_NOLI'
     endif
@@ -133,10 +135,10 @@ subroutine nmnoli(result, sddisc, sderro, carcri, sdimpr,&
 !
     if (.not.lreuse) then
         call utmess('I', 'ARCHIVAGE_4')
-        call nmarch(result, numins, modele, mate, carele,&
-                    fonact, carcri, sdimpr, sddisc, sdpost,&
-                    sdcrit, sdtime, sderro, sddyna, sdpilo,&
-                    sdener, sdieto, sdcriq, lisch2)
+        call nmarch(result, numins, modele  , mate, carele,&
+                    fonact, carcri, ds_print, sddisc, sdpost,&
+                    sdcrit, sdtime, sderro  , sddyna, sdpilo,&
+                    sdener, sdieto, sdcriq  , lisch2)
     endif
 !
 ! --- AU PROCHAIN ARCHIVAGE, SAUVEGARDE DES CHAMPS AU TEMPS T+

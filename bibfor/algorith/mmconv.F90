@@ -1,7 +1,7 @@
 subroutine mmconv(noma, defico, resoco, valinc, solalg,&
                   vfrot, nfrot, vgeom, ngeom)
 !
-    implicit none
+implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -15,7 +15,6 @@ subroutine mmconv(noma, defico, resoco, valinc, solalg,&
 #include "asterfort/mmreas.h"
 #include "asterfort/mreacg.h"
 #include "asterfort/nmchex.h"
-#include "asterfort/nmimck.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG

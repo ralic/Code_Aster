@@ -1,7 +1,16 @@
-subroutine nmimre(numedd, sdimpr, sdconv, vrela, vmaxi,&
-                  vrefe, vcomp, vfrot, vgeom, irela,&
-                  imaxi, irefe, noddlm, icomp, nfrot,&
-                  ngeom)
+subroutine nmimre(ds_print, sdconv)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterc/r8vide.h"
+#include "asterfort/assert.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmimck.h"
+#include "asterfort/nmimcr.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,126 +30,68 @@ subroutine nmimre(numedd, sdimpr, sdconv, vrela, vmaxi,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/r8vide.h"
-#include "asterfort/assert.h"
-#include "asterfort/impcmp.h"
-#include "asterfort/impcom.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/nmimck.h"
-#include "asterfort/nmimcr.h"
-    character(len=24) :: numedd, sdimpr, sdconv
-    integer :: irela, imaxi, irefe, icomp
-    real(kind=8) :: vrela, vmaxi, vrefe, vcomp, vfrot, vgeom
-    character(len=8) :: noddlm
-    character(len=16) :: nfrot, ngeom
+    type(NL_DS_Print), intent(inout) :: ds_print
+    character(len=24), intent(in) :: sdconv
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (UTILITAIRE)
+! MECA_NON_LINE - Print management
 !
-! IMPRESSION DES INFORMATIONS SUR LES RESIDUS DANS LE TABLEAU DE
-! CONVERGENCE
+! Set value of residuals informations in convergence table
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! IO  ds_print         : datastructure for printing parameters
+! In  sdconv           : name of datastructure convergence
 !
-! IN  NUMEDD : NUMEROTATION NUME_DDL
-! IN  SDIMPR : SD AFFICHAGE
-! IN  SDCONV : SD GESTION DE LA CONVERGENCE
-! IN  IRELA  : NUMERO DU DDL SUR LAQUELLE NORME_MAX (RESI_GLOB_RELA)
-! IN  VRELA  : VALEUR NORME_MAX (RESI_GLOB_RELA)
-! IN  IMAXI  : NUMERO DU DDL SUR LAQUELLE NORME_MAX (RESI_GLOB_MAXI)
-! IN  VMAXI  : VALEUR NORME_MAX (RESI_GLOB_MAXI)
-! IN  IREFE  : NUMERO DU DDL SUR LAQUELLE NORME_MAX (RESI_GLOB_REFE)
-! IN  VREFE  : VALEUR NORME_MAX (RESI_GLOB_REFE)
-! IN  ICOMP  : NUMERO DU NOEUD SUR LAQUELLE NORME_MAX (RESI_COMP_RELA)
-! IN  VCOMP  : VALEUR NORME_MAX (RESI_COMP_RELA)
-! IN  VFROT  : VALEUR NORME_MAX POUR RESI_FROT
-! IN  NFROT  : LIEU OU VALEUR NORME_MAX POUR RESI_FROT
-! IN  VGEOM  : VALEUR NORME_MAX POUR RESI_GEOM
-! IN  NGEOM  : LIEU OU VALEUR NORME_MAX POUR RESI_GEOM
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
-!
-    character(len=24) :: cnvlie, cnvval, cnvnco
-    integer :: jcnvli, jcnvva, jcnvnc
-    character(len=16) :: nrela, nmaxi, nrefe, ncomp
-    integer :: iresi, nresi
+    character(len=24) :: sdconv_lieu, sdconv_vale, sdconv_name
+    integer :: i_resi, nb_resi
     real(kind=8) :: vale
-    character(len=16) :: lieu
-    character(len=9) :: colonn
-    aster_logical :: laffe
+    character(len=16) :: dof
+    character(len=9) :: resi_name
+    character(len=16), pointer :: v_sdconv_lieu(:) => null()
+    character(len=16), pointer :: v_sdconv_name(:) => null()
+    real(kind=8), pointer :: v_sdconv_vale(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
+    sdconv_lieu = sdconv(1:19)//'.LIEU'
+    sdconv_vale = sdconv(1:19)//'.VALE'
+    sdconv_name = sdconv(1:19)//'.NAME'
+    call jeveuo(sdconv_lieu, 'L', vk16 = v_sdconv_lieu)
+    call jeveuo(sdconv_vale, 'L', vr   = v_sdconv_vale)
+    call jeveuo(sdconv_name, 'L', vk16 = v_sdconv_name)
+    call jelira(sdconv_name, 'LONMAX', ival=nb_resi)
 !
-! --- ACCES SD CONVERGENCE
+! - Loop on residuals
 !
-    cnvlie = sdconv(1:19)//'.LIEU'
-    cnvval = sdconv(1:19)//'.VALE'
-    cnvnco = sdconv(1:19)//'.NCOL'
-    call jeveuo(cnvlie, 'E', jcnvli)
-    call jeveuo(cnvval, 'E', jcnvva)
-    call jeveuo(cnvnco, 'L', jcnvnc)
-    call jelira(cnvnco, 'LONMAX', ival=nresi)
-!
-! --- NOM DES DDLS
-!
-    call impcmp(irela, numedd, nrela)
-    call impcmp(imaxi, numedd, nmaxi)
-    call impcmp(irefe, numedd, nrefe)
-    call impcom(icomp, noddlm, ncomp)
-!
-! --- BOUCLE SUR LES RESIDUS
-!
-    laffe = .true.
-    do 10 iresi = 1, nresi
-        colonn = zk16(jcnvnc-1+iresi)(1:9)
-        lieu = ' '
-        vale = r8vide()
-        if (colonn .eq. 'RESI_RELA') then
-            vale = vrela
-            lieu = nrela
-            call nmimcr(sdimpr, 'RESI_RELA', vrela, laffe)
-            call nmimck(sdimpr, 'RELA_NOEU', nrela, laffe)
-        else if (colonn.eq.'RESI_MAXI') then
-            vale = vmaxi
-            lieu = nmaxi
-            call nmimcr(sdimpr, 'RESI_MAXI', vmaxi, laffe)
-            call nmimck(sdimpr, 'MAXI_NOEU', nmaxi, laffe)
-        else if (colonn.eq.'RESI_REFE') then
-            vale = vrefe
-            lieu = nrefe
-            call nmimcr(sdimpr, 'RESI_REFE', vrefe, laffe)
-            call nmimck(sdimpr, 'REFE_NOEU', nrefe, laffe)
-        else if (colonn.eq.'RESI_COMP') then
-            vale = vcomp
-            lieu = ncomp
-            call nmimcr(sdimpr, 'RESI_COMP', vcomp, laffe)
-            call nmimck(sdimpr, 'COMP_NOEU', ncomp, laffe)
-        else if (colonn.eq.'FROT_NEWT') then
-            vale = vfrot
-            lieu = nfrot
-            call nmimcr(sdimpr, 'FROT_NEWT', vfrot, laffe)
-            call nmimck(sdimpr, 'FROT_NOEU', nfrot, laffe)
-        else if (colonn.eq.'GEOM_NEWT') then
-            vale = vgeom
-            lieu = ngeom
-            call nmimcr(sdimpr, 'GEOM_NEWT', vgeom, laffe)
-            call nmimck(sdimpr, 'GEOM_NOEU', ngeom, laffe)
+    do i_resi = 1, nb_resi
+        resi_name = v_sdconv_name(i_resi)(1:9)
+        vale      = v_sdconv_vale(i_resi)
+        dof       = v_sdconv_lieu(i_resi)
+        if (resi_name .eq. 'RESI_RELA') then
+            call nmimcr(ds_print, 'RESI_RELA', vale, l_affe = .true._1)
+            call nmimck(ds_print, 'RELA_NOEU', dof , l_affe = .true._1)
+        else if (resi_name.eq.'RESI_MAXI') then
+            call nmimcr(ds_print, 'RESI_MAXI', vale, l_affe = .true._1)
+            call nmimck(ds_print, 'MAXI_NOEU', dof , l_affe = .true._1)
+        else if (resi_name.eq.'RESI_REFE') then
+            call nmimcr(ds_print, 'RESI_REFE', vale, l_affe = .true._1)
+            call nmimck(ds_print, 'REFE_NOEU', dof , l_affe = .true._1)
+        else if (resi_name.eq.'RESI_COMP') then
+            call nmimcr(ds_print, 'RESI_COMP', vale, l_affe = .true._1)
+            call nmimck(ds_print, 'COMP_NOEU', dof , l_affe = .true._1)
+        else if (resi_name.eq.'FROT_NEWT') then
+            call nmimcr(ds_print, 'FROT_NEWT', vale, l_affe = .true._1)
+            call nmimck(ds_print, 'FROT_NOEU', dof , l_affe = .true._1)
+        else if (resi_name.eq.'GEOM_NEWT') then
+            call nmimcr(ds_print, 'GEOM_NEWT', vale, l_affe = .true._1)
+            call nmimck(ds_print, 'GEOM_NOEU', dof , l_affe = .true._1)
         else
-            ASSERT(.false.)
+! --------- Only printing: no error !
         endif
-        zr(jcnvva-1+iresi) = vale
-        zk16(jcnvli-1+iresi) = lieu
- 10 end do
+    end do
 !
-    call jedema()
 end subroutine

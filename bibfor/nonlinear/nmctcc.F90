@@ -2,7 +2,9 @@ subroutine nmctcc(noma, modele, mate, sddyna, sderro,&
                   sdstat, defico, resoco, valinc, solalg,&
                   mmcvca, instan)
 !
-    implicit none
+use NonLin_Datastructure_type
+!
+implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"

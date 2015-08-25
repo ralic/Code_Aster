@@ -15,13 +15,15 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+! aslint: disable=W1504
+!
 interface
     subroutine nmflam(option, modele, numedd, numfix, carele,&
-                      compor, solveu, numins, mate, comref,&
+                      compor, solveu, numins, mate  , comref,&
                       lischa, defico, resoco, parmet, fonact,&
-                      carcri, sdimpr, sdstat, sddisc, sdtime,&
-                      sddyna, sdpost, valinc, solalg, meelem,&
-                      measse, veelem, sderro)
+                      carcri, sdstat, sddisc, sdtime, sddyna,&
+                      sdpost, valinc, solalg, meelem, measse,&
+                      veelem, sderro)
         character(len=16) :: option
         character(len=24) :: modele
         character(len=24) :: numedd
@@ -38,7 +40,6 @@ interface
         real(kind=8) :: parmet(*)
         integer :: fonact(*)
         character(len=24) :: carcri
-        character(len=24) :: sdimpr
         character(len=24) :: sdstat
         character(len=19) :: sddisc
         character(len=24) :: sdtime

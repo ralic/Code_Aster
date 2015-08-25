@@ -1,4 +1,6 @@
-subroutine nmsuiy(sd_prnt, vale_r, i_dof_monitor)
+subroutine nmsuiy(ds_print, vale_r, i_dof_monitor)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -23,7 +25,7 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=24), intent(in) :: sd_prnt
+    type(NL_DS_Print), intent(inout) :: ds_print
     real(kind=8), intent(in) :: vale_r
     integer, intent(inout) :: i_dof_monitor
 !
@@ -35,7 +37,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sd_prnt          : datastructure for print informations
+! IO  ds_print         : datastructure for printing parameters
 ! In  vale_r           : value to print
 ! IO  i_dof_monitor    : index of current monitoring
 !
@@ -48,7 +50,7 @@ implicit none
 !
     call impfoi(0, 1, i_dof_monitor, indsui)
     typcol = 'SUIVDDL'//indsui
-    call nmimcr(sd_prnt, typcol, vale_r, .true._1)
+    call nmimcr(ds_print, typcol, vale_r, .true._1)
     i_dof_monitor = i_dof_monitor + 1
 !
 end subroutine

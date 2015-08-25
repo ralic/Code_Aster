@@ -1,20 +1,19 @@
-subroutine nmstat(phase, fonact, sdstat, sdtime, sdimpr,&
-                  defico)
+subroutine nmstat(phase      , list_func_acti, sdstat, sdtime, ds_print,&
+                  sdcont_defi)
 !
-    implicit none
+use NonLin_Datastructure_type
+!
+implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
+#include "asterc/r8prem.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/impfot.h"
 #include "asterfort/impmem.h"
 #include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/nmrini.h"
 #include "asterfort/nmrvai.h"
 #include "asterfort/nmtimr.h"
-#include "asterfort/obgetb.h"
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
@@ -35,31 +34,32 @@ subroutine nmstat(phase, fonact, sdstat, sdtime, sdimpr,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=1) :: phase
-    character(len=24) :: sdtime, sdstat, sdimpr
-    character(len=24) :: defico
-    integer :: fonact(*)
+    character(len=1), intent(in) :: phase
+    character(len=24), intent(in) :: sdstat
+    character(len=24), intent(in) :: sdtime
+    character(len=24), intent(in) :: sdcont_defi
+    integer, intent(in) :: list_func_acti(*)
+    type(NL_DS_Print), intent(in) :: ds_print
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (ALGORITHME)
+! MECA_NON_LINE - Print management
 !
-! AFFICHAGE DE STATISTIQUES DIVERSES
+! Print statistics
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  ds_print         : datastructure for printing parameters
+! In  phasis           : phasis
+!                          'N' current Newton iteration
+!                          'P' current step time
+!                          'T' on all transient
+! In  sdtime           : datastructure for timers management
+! In  sdstat           : datastructure for statistics
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  list_func_acti   : list of active functionnalities
 !
-! IN  PHASE  : TYPE DE STATISTIQUES
-!               'N' SUR L'ITERATION DE NEWTON COURANTE
-!               'P' SUR LE PAS COURANT
-!               'T' SUR TOUT LE TRANSITOIRE
-! IN  SDSTAT : SD STATISTIQUES
-! IN  SDTIME : SD TIME
-! IN  SDIMPR : SD AFFICHAGE
-! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
-! IN  FONACT : FONCTIONNALITES ACTIVES
-!
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: lctcd, lallv, lcont, lctcc
     aster_logical :: lctcg, lboucc, lboucf, lfrot
@@ -80,39 +80,9 @@ subroutine nmstat(phase, fonact, sdstat, sdtime, sdimpr,&
     integer :: cycl_nb(4)
     character(len=24) :: tpscvt
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
-!
-! --- FONCTIONNALITES ACTIVES
-!
-    lmvib = isfonc(fonact,'MODE_VIBR')
-    lflam = isfonc(fonact,'CRIT_STAB')
-    lcont = isfonc(fonact,'CONTACT' )
-    lpost = lmvib.or.lflam.or.lcont
-    if (lcont) then
-        lctcg = cfdisl(defico,'GEOM_BOUCLE')
-        lallv = cfdisl(defico,'ALL_VERIF')
-        lctcd = isfonc(fonact,'CONT_DISCRET')
-        lctcc = isfonc(fonact,'CONT_CONTINU')
-        lboucc = isfonc(fonact,'BOUCLE_EXT_CONT')
-        lfrot = cfdisl(defico,'FROTTEMENT')
-        lboucf = isfonc(fonact,'BOUCLE_EXT_FROT')
-        lnewtg = cfdisl(defico,'GEOM_NEWTON')
-    else
-        lctcg = .false.
-        lallv = .false.
-        lctcd = .false.
-        lctcc = .false.
-        lboucc = .false.
-        lboucf = .false.
-        lfrot = .false.
-        lnewtg = .false.
-    endif
-!
-! --- INITIALISATIONS
-!
-    tps = 0.d0
+    tps    = 0.d0
     tpsint = 0.d0
     tpsasm = 0.d0
     tpsfac = 0.d0
@@ -128,7 +98,6 @@ subroutine nmstat(phase, fonact, sdstat, sdtime, sdimpr,&
     tpspst = 0.d0
     tpslst = 0.d0
     tpsrst = 0.d0
-!
     nbiter = 0
     nbinst = 0
     nbrint = 0
@@ -143,22 +112,39 @@ subroutine nmstat(phase, fonact, sdstat, sdtime, sdimpr,&
     ctiter = 0
     ctcfro = 0
     nbrrel = 0
+    lmvib = isfonc(list_func_acti,'MODE_VIBR')
+    lflam = isfonc(list_func_acti,'CRIT_STAB')
+    lcont = isfonc(list_func_acti,'CONTACT' )
+    lctcg = isfonc(list_func_acti,'BOUCLE_EXT_GEOM')
+    lctcd = isfonc(list_func_acti,'CONT_DISCRET')
+    lctcc = isfonc(list_func_acti,'CONT_CONTINU')
+    lboucc = isfonc(list_func_acti,'BOUCLE_EXT_CONT')
+    lboucf = isfonc(list_func_acti,'BOUCLE_EXT_FROT')
+    lnewtg = isfonc(list_func_acti,'GEOM_NEWTON')
+    lpost = lmvib.or.lflam.or.lcont
+    if (lcont) then
+        lallv = cfdisl(sdcont_defi,'ALL_VERIF')    
+        lfrot = cfdisl(sdcont_defi,'FROTTEMENT')
+    else
+        lallv = .false.
+        lfrot = .false.
+    endif
 !
-! --- AFFICHAGE POUR CE PAS ?
+! - Print for this step time ?
 !
-    call obgetb(sdimpr, 'PRINT', lprint)
+    lprint = ds_print%l_print
 !
-! --- TEMPS TOTAL DANS LA PHASE
+! - Total time during phasis
 !
     call nmtimr(sdtime, 'TEMPS_PHASE', phase, tps)
 !
-! --- TEMPS PERDU
+! - Total "lost" time (step cutting)
 !
     if (phase .eq. 'T') then
         call nmtimr(sdtime, 'PAS_LOST', phase, tpslst)
     endif
 !
-! --- TEMPS DES OPERATIONS DANS LA PHASE
+! - Time of operations during phasis
 !
     call nmtimr(sdtime, 'INTEGRATION', phase, tpsint)
     call nmtimr(sdtime, 'ASSE_MATR', phase, tpsasm)
@@ -166,7 +152,7 @@ subroutine nmstat(phase, fonact, sdstat, sdtime, sdimpr,&
     call nmtimr(sdtime, 'SECO_MEMB', phase, tps2mb)
     call nmtimr(sdtime, 'SOLVE', phase, tpssol)
 !
-! --- COMPTEURS D'OPERATIONS
+! - Number of operations during phasis
 !
     call nmrvai(sdstat, 'INTEGRATION', phase, nbrint)
     call nmrvai(sdstat, 'FACTOR', phase, nbrfac)
@@ -181,14 +167,14 @@ subroutine nmstat(phase, fonact, sdstat, sdtime, sdimpr,&
         call nmrvai(sdstat, 'PAS', phase, nbinst)
     endif
 !
-! --- BOUCLE GEOMETRIQUE DE CONTACT
+! - Contact - Geometric loop
 !
     if (lctcg .or. lnewtg) then
         call nmtimr(sdtime, 'CONT_GEOM', phase, tpscog)
         call nmrvai(sdstat, 'CONT_GEOM', phase, ctgeom)
     endif
 !
-! --- AUTRES INFOS SUR LE CONTACT
+! - Contact
 !
     if (lcont .and. (.not.lallv)) then
         call nmrvai(sdstat, 'CONT_NBLIAC', phase, nbliac)
@@ -216,20 +202,21 @@ subroutine nmstat(phase, fonact, sdstat, sdtime, sdimpr,&
         endif
     endif
 !
-! --- POST-TRAITEMENT (FLAMBEMENT OU STABILITE)
+! - Post-treatment (buckling)
 !
     if (lpost) then
         call nmtimr(sdtime, 'POST_TRAITEMENT', phase, tpspst)
     endif
 !
-! --- TEMPS RESTANT (NON MESURE)
+! - Remain time
 !
-    tpsrst = tps - tpsint - tpsasm - tpsfac - tps2mb - tpssol - tpscog - tpscda - tpsccp - tpsccm&
-             & - tpsccv - tpsccc - tpsccf
+    tpsrst = tps - tpsint - tpsasm - tpsfac - tps2mb - tpssol - tpscog -&
+                   tpscda - tpsccp - tpsccm - tpsccv - tpsccc - tpsccf
+    if (tpsrst .le. 0.d0) then
+        tpsrst = 0.d0
+    endif
 !
-    if (tpsrst .le. 0.d0) tpsrst = 0.d0
-!
-! --- AFFICHAGE FIN DU PAS
+! - Print at end of current step time
 !
     if ((phase.eq.'P') .and. lprint) then
         tpsmoy = tps/nbiter
@@ -248,21 +235,21 @@ subroutine nmstat(phase, fonact, sdstat, sdtime, sdimpr,&
         call impfot(tpssol, tpscvt)
         call utmess('I', 'MECANONLINE7_5', sk=tpscvt, si=nbrsol)
 !
-! ----- CONTACT - BOUCLE GEOMETRIQUE
+! ----- Contact - Geometric loop
 !
         if ((lctcg.and.(.not.lallv)) .or. lnewtg) then
             call impfot(tpscog, tpscvt)
             call utmess('I', 'MECANONLINE7_11', sk=tpscvt, si=ctgeom)
         endif
 !
-! ----- CONTACT DISCRET
+! ----- Contact - Discrete
 !
         if (lctcd .and. (.not.lallv)) then
             call impfot(tpscda, tpscvt)
             call utmess('I', 'MECANONLINE7_10', sk=tpscvt, si=ctiter)
         endif
 !
-! ----- CONTACT CONTINU
+! ----- Contact - Continue
 !
         if (lctcc .and. (.not.lallv)) then
             call impfot(tpsccp, tpscvt)
@@ -281,23 +268,22 @@ subroutine nmstat(phase, fonact, sdstat, sdtime, sdimpr,&
             endif
         endif
 !
-! ----- TEMPS POST-TRAITEMENT
+! ----- Time for post-treatment
 !
         if (lpost) then
             call impfot(tpspst, tpscvt)
             call utmess('I', 'MECANONLINE7_7', sk=tpscvt)
         endif
 !
-! ----- TEMPS RESTANT
+! ----- Remain time
 !
         call impfot(tpsrst, tpscvt)
         call utmess('I', 'MECANONLINE7_6', sk=tpscvt)
-!
         if (nbrrel .ne. 0) then
             call utmess('I', 'MECANONLINE7_8', si=nbrrel)
         endif
 !
-! ----- STATISTIQUES SUR LE CONTACT
+! ----- Statistics for contact
 !
         if (lcont .and. (.not.lallv)) then
             call utmess('I', 'MECANONLINE7_30')
@@ -313,12 +299,12 @@ subroutine nmstat(phase, fonact, sdstat, sdtime, sdimpr,&
             endif
         endif
 !
-! --- AFFICHAGE DE LA CONSOMMATION MEMOIRE
+! ----- Memory 
 !
         call impmem()
     endif
 !
-! --- AFFICHAGE FIN DU TRANSITOIRE
+! - Print at end of computation
 !
     if (phase .eq. 'T') then
         vali(1) = nbinst
@@ -327,12 +313,11 @@ subroutine nmstat(phase, fonact, sdstat, sdtime, sdimpr,&
         vali(4) = nbrfac
         vali(5) = nbrsol
         call utmess('I', 'MECANONLINE8_1', ni=5, vali=vali)
-!
         if (nbrrel .ne. 0) then
             call utmess('I', 'MECANONLINE8_2', si=nbrrel)
         endif
 !
-! ----- STATISTIQUES SUR LE CONTACT
+! ----- Statistics for contact
 !
         if (lcont .and. (.not.lallv)) then
             if (lctcd .or. lboucc .or. lboucf .or. lctcg .or. lnewtg) then
@@ -340,19 +325,19 @@ subroutine nmstat(phase, fonact, sdstat, sdtime, sdimpr,&
             endif
         endif
 !
-! ----- CONTACT - BOUCLE GEOMETRIQUE
+! ----- Contact - Geometric loop
 !
         if ((lctcg.and.(.not.lallv)) .or. lnewtg) then
             call utmess('I', 'MECANONLINE8_11', si=ctgeom)
         endif
 !
-! ----- CONTACT DISCRET
+! ----- Contact - Discrete
 !
         if (lctcd .and. (.not.lallv)) then
             call utmess('I', 'MECANONLINE8_10', si=ctiter)
         endif
 !
-! ----- CONTACT CONTINU
+! ----- Contact - Continue
 !
         if (lctcc .and. (.not.lallv)) then
             if (lboucf) then
@@ -363,11 +348,11 @@ subroutine nmstat(phase, fonact, sdstat, sdtime, sdimpr,&
             endif
         endif
 !
-! ----- TEMPS PASSE
+! ----- Remain time
 !
         call impfot(tps, tpscvt)
         call utmess('I', 'MECANONLINE8_50', sk=tpscvt)
-        if (tpslst .ne. 0.d0) then
+        if (tpslst .ge. r8prem()) then
             call impfot(tpslst, tpscvt)
             effica = 100.d0*(tps-tpslst)/tps
             call utmess('I', 'MECANONLINE8_70', sk=tpscvt, sr=effica)
@@ -383,21 +368,21 @@ subroutine nmstat(phase, fonact, sdstat, sdtime, sdimpr,&
         call impfot(tpssol, tpscvt)
         call utmess('I', 'MECANONLINE8_55', sk=tpscvt)
 !
-! ----- CONTACT - BOUCLE GEOMETRIQUE
+! ----- Contact - Geometric loop
 !
         if ((lctcg.and.(.not.lallv)) .or. lnewtg) then
             call impfot(tpscog, tpscvt)
             call utmess('I', 'MECANONLINE8_61', sk=tpscvt)
         endif
 !
-! ----- CONTACT DISCRET
+! ----- Contact - Discrete
 !
         if (lctcd .and. (.not.lallv)) then
             call impfot(tpscda, tpscvt)
             call utmess('I', 'MECANONLINE8_56', sk=tpscvt)
         endif
 !
-! ----- CONTACT CONTINU
+! ----- Contact - Continu
 !
         if (lctcc .and. (.not.lallv)) then
             call impfot(tpsccp, tpscvt)
@@ -416,23 +401,22 @@ subroutine nmstat(phase, fonact, sdstat, sdtime, sdimpr,&
             endif
         endif
 !
-! ----- TEMPS POST-TRAITEMENT
+! ----- Post-treatment
 !
         if (lpost) then
             call impfot(tpspst, tpscvt)
             call utmess('I', 'MECANONLINE8_62', sk=tpscvt)
         endif
 !
-! ----- TEMPS RESTANT
+! ----- Remain time
 !
         call impfot(tpsrst, tpscvt)
         call utmess('I', 'MECANONLINE8_63', sk=tpscvt)
 !
     endif
 !
-! --- RE-INIT STAT
+! - New statistics (erase old ones)
 !
     call nmrini(sdtime, sdstat, phase)
 !
-    call jedema()
 end subroutine

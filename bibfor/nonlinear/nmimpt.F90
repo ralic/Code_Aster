@@ -1,4 +1,18 @@
-subroutine nmimpt(numins, sddisc, sdimpr)
+subroutine nmimpt(nume_inst, sddisc, ds_print)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/diinst.h"
+#include "asterfort/dinins.h"
+#include "asterfort/nmimcr.h"
+#include "asterfort/nmimen.h"
+#include "asterfort/nmimr0.h"
+#include "asterfort/utdidt.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,79 +32,58 @@ subroutine nmimpt(numins, sddisc, sdimpr)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/diinst.h"
-#include "asterfort/dinins.h"
-#include "asterfort/nmimcr.h"
-#include "asterfort/nmimen.h"
-#include "asterfort/nmimr0.h"
-#include "asterfort/obgetb.h"
-#include "asterfort/utdidt.h"
-#include "asterfort/utmess.h"
-    integer :: numins
-    character(len=24) :: sdimpr
-    character(len=19) :: sddisc
+    integer, intent(in) :: nume_inst
+    character(len=19), intent(in) :: sddisc
+    type(NL_DS_Print), intent(inout) :: ds_print
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (AFFICHAGE)
+! MECA_NON_LINE - Print management
 !
-! AFFICHAGE ENTETE
+! Print head and convergence table
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  nume_inst        : index of current time step
+! In  sddisc           : name of datastructure for time discretization
+! IO  ds_print         : datastructure for printing parameters
 !
-! IN  SDIMPR : SD AFFICHAGE
-! IN  SDDISC : SD DISCRETISATION TEMPORELLE
-! IN  NUMINS : NUMERO INSTANT COURANT
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
-!
-    real(kind=8) :: instan
+    real(kind=8) :: curr_inst
     integer :: lenivo
     character(len=16) :: metlis
-    aster_logical :: lprint
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-!
-! --- METHODE DE GESTION DE LA LISTE D'INSTANTS
-!
-    call utdidt('L', sddisc, 'LIST', 'METHODE',&
-                valk_ = metlis)
+    call utdidt('L', sddisc, 'LIST', 'METHODE', valk_ = metlis)
     if (metlis .eq. 'MANUEL') then
-        lenivo = dinins(sddisc,numins)
+        lenivo = dinins(sddisc, nume_inst)
     else if (metlis.eq.'AUTO') then
         lenivo = 0
     else
         ASSERT(.false.)
     endif
 !
-! --- INSTANT COURANT
+! - Get current time and set in row
 !
-    instan = diinst(sddisc,numins)
-    call nmimcr(sdimpr, 'INCR_INST', instan, .true._1)
-    call nmimr0(sdimpr, 'INST')
+    curr_inst = diinst(sddisc,nume_inst)
+    call nmimcr(ds_print, 'INCR_INST', curr_inst, .true._1)
+! 
+! - Set values are not affected on rows for time loop
 !
-! --- AFFICHAGE ACTIF ?
+    call nmimr0(ds_print, 'INST')
 !
-    call obgetb(sdimpr, 'PRINT', lprint)
+! - Print current time
 !
-! --- AFFICHAGE ENTETE
-!
-    if (lprint) then
-        if (lenivo .eq. 0) then
-            call utmess('I', 'MECANONLINE6_6', sr=instan)
-        else
-            call utmess('I', 'MECANONLINE6_1', si=lenivo, sr=instan)
-        endif
+    if (lenivo .eq. 0) then
+        call utmess('I', 'MECANONLINE6_6', sr=curr_inst)
+    else
+        call utmess('I', 'MECANONLINE6_1', si=lenivo, sr=curr_inst)
     endif
 !
-! --- AFFICHAGE TITRE DES COLONNES
+! - Print head of convergence table
 !
-    call nmimen(sdimpr)
+    call nmimen(ds_print)
 !
 end subroutine

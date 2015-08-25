@@ -2,6 +2,26 @@ subroutine ntarch(numins, modele, mate, carele, lnonl,&
                   para, sddisc, sdcrit, sdieto, lisch2,&
                   force)
 !
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterfort/didern.h"
+#include "asterfort/diinst.h"
+#include "asterfort/dinuar.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmarce.h"
+#include "asterfort/ntarc0.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rsagsd.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/utmess.h"
+#include "asterfort/uttcpg.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,22 +39,6 @@ subroutine ntarch(numins, modele, mate, carele, lnonl,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/getres.h"
-#include "asterfort/didern.h"
-#include "asterfort/diinst.h"
-#include "asterfort/dinuar.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/nmarce.h"
-#include "asterfort/ntarc0.h"
-#include "asterfort/rsadpa.h"
-#include "asterfort/rsagsd.h"
-#include "asterfort/rsexch.h"
-#include "asterfort/utmess.h"
-#include "asterfort/uttcpg.h"
     character(len=24) :: sdieto
     integer :: numins
     real(kind=8) :: para(*)
@@ -60,7 +64,7 @@ subroutine ntarch(numins, modele, mate, carele, lnonl,&
     integer :: jinst
     character(len=19) :: k19bid
     character(len=16) :: k16b1, k16b2
-    character(len=8) :: k8bid, result
+    character(len=8) :: result
     integer :: ibid
     character(len=24) :: k24bla
 !
@@ -99,7 +103,7 @@ subroutine ntarch(numins, modele, mate, carele, lnonl,&
 !
         if (numarc .ge. 2) then
             call rsadpa(result, 'L', 1, 'INST', numarc-1,&
-                        0, sjv=jinst, styp=k8bid)
+                        0, sjv=jinst)
             instam = zr(jinst)
             if (instan .le. instam) goto 999
         endif
@@ -123,8 +127,8 @@ subroutine ntarch(numins, modele, mate, carele, lnonl,&
 !
 ! ----- ARCHIVAGE DES CHAMPS
 !
-        call nmarce(sdieto, result, k24bla, sddisc, instan,&
-                    numarc, force)
+        call nmarce(sdieto, result, sddisc, instan, numarc,&
+                    force)
     endif
 !
 999 continue

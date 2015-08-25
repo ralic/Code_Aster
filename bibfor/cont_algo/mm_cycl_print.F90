@@ -1,4 +1,6 @@
-subroutine mm_cycl_print(sdimpr, sdstat)
+subroutine mm_cycl_print(ds_print, sdstat)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -24,7 +26,7 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=24), intent(in) :: sdstat
-    character(len=24), intent(in) :: sdimpr
+    type(NL_DS_Print), intent(inout) :: ds_print
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -35,7 +37,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  sdstat           : datastructure for statistics
-! In  sdimpr           : datastructure for print informations
+! IO  ds_print         : datastructure for printing parameters
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,6 +50,6 @@ implicit none
     call nmrvai(sdstat, 'CTCC_CYCL_3', 'N', cycl_nb(3))
     call nmrvai(sdstat, 'CTCC_CYCL_4', 'N', cycl_nb(4))
     cycl_nb_tot = cycl_nb(1) + cycl_nb(2) + cycl_nb(3) + cycl_nb(4)
-    call nmimci(sdimpr, 'CTCC_CYCL', cycl_nb_tot, .true._1)
+    call nmimci(ds_print, 'CTCC_CYCL', cycl_nb_tot, .true._1)
 
 end subroutine

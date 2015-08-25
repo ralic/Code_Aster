@@ -18,10 +18,11 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine mmbclc(noma, nomo, numedd, iterat, numins,&
-                      sddisc, sddyna, sdimpr, defico, resoco,&
-                      valinc, solalg, sdtime, sdstat, mmcvca,&
+    subroutine mmbclc(noma  , nomo  , numedd  , iterat, numins,&
+                      sddisc, sddyna, ds_print, defico, resoco,&
+                      valinc, solalg, sdtime  , sdstat, mmcvca,&
                       instan)
+        use NonLin_Datastructure_type
         character(len=8), intent(in) :: noma
         character(len=8), intent(in) :: nomo
         character(len=24), intent(in) :: numedd
@@ -29,7 +30,7 @@ interface
         integer, intent(in) :: numins
         character(len=19), intent(in) :: sddisc
         character(len=19), intent(in) :: sddyna
-        character(len=24), intent(in) :: sdimpr
+        type(NL_DS_Print), intent(inout) :: ds_print
         character(len=24), intent(in) :: defico
         character(len=24), intent(in) :: resoco
         character(len=19), intent(in) :: valinc(*)

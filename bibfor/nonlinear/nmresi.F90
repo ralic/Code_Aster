@@ -1,11 +1,13 @@
 subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
-                  sddyna, sdconv, sdimpr, defico, resoco,&
+                  sddyna, sdconv, ds_print, defico, resoco,&
                   matass, numins, conv, resi_glob_rela, resi_glob_maxi,&
                   eta, comref, valinc, solalg, veasse,&
                   measse, vrela, vmaxi, vchar, vresi,&
                   vrefe, vinit, vcomp, vfrot, vgeom)
 !
-    implicit none
+use NonLin_Datastructure_type
+!
+implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -24,6 +26,7 @@ subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
 #include "asterfort/nmequi.h"
 #include "asterfort/nmigno.h"
 #include "asterfort/nmimre.h"
+#include "asterfort/nmimre_dof.h"
 #include "asterfort/nmpcin.h"
 #include "asterfort/nmrede.h"
 #include "asterfort/nmvcmx.h"
@@ -51,7 +54,7 @@ subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
     character(len=8) :: noma
     character(len=24) :: numedd
     character(len=24) :: defico, resoco
-    character(len=24) :: sdimpr, sdconv, mate
+    character(len=24) :: sdconv, mate
     integer :: numins
     character(len=19) :: sddyna, sdnume
     character(len=19) :: measse(*), veasse(*)
@@ -62,19 +65,19 @@ subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
     real(kind=8) :: eta, conv(*), resi_glob_rela, resi_glob_maxi
     real(kind=8) :: vrela, vmaxi, vchar, vresi, vrefe, vinit, vcomp, vfrot
     real(kind=8) :: vgeom
+    type(NL_DS_Print), intent(inout) :: ds_print
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (UTILITAIRE)
+! MECA_NON_LINE - Convergence management
 !
 ! CALCULS DES RESIDUS D'EQUILIBRE ET DES CHARGEMENTS POUR
 ! ESTIMATION DE LA CONVERGENCE
 !
-! ----------------------------------------------------------------------
-!
+! --------------------------------------------------------------------------------------------------
 !
 ! IN  NOMA   : NOM DU MAILLAGE
-! IN  SDIMPR : SD AFFICHAGE
+! IO  ds_print         : datastructure for printing parameters
 ! IN  NUMEDD : NUMEROTATION NUME_DDL
 ! IN  SDNUME : NOM DE LA SD NUMEROTATION
 ! IN  SDCONV : SD GESTION DE LA CONVERGENCE
@@ -101,7 +104,7 @@ subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
 ! OUT VCOMP  : RESI_COMP_RELA MAXI
 ! OUT VFROT  : RESI_FROT MAXI
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     integer :: jccid=0, jdiri=0, jvcfo=0, jiner=0
     integer :: ifm=0, niv=0, nocc=0
@@ -132,13 +135,10 @@ subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
     real(kind=8), pointer :: vcf1(:) => null()
     integer, pointer :: deeq(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     call infdbg('MECA_NON_LINE', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> ... CALCUL DES RESIDUS'
     endif
@@ -222,7 +222,6 @@ subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
 !
     call dismoi('PROF_CHNO', depmoi, 'CHAM_NO', repk=profch)
     call jeveuo(profch(1:19)//'.DEEQ', 'L', vi=deeq)
-!
 !
 ! --- CALCULE LE MAX DES RESIDUS PAR CMP POUR LE RESIDU RESI_COMP_RELA
 !
@@ -352,12 +351,15 @@ subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
                     vfrot, nfrot, vgeom, ngeom)
     endif
 !
-! --- ECRITURE DES INFOS SUR LES RESIDUS POUR AFFICHAGE
+! - Save informations about residuals into convergence datastructure
 !
-    call nmimre(numedd, sdimpr, sdconv, vrela, vmaxi,&
-                vrefe, vcomp, vfrot, vgeom, irela,&
-                imaxi, irefe, noddlm, icomp, nfrot,&
-                ngeom)
+    call nmimre_dof(numedd, sdconv, vrela, vmaxi, vrefe, &
+                    vcomp , vfrot , vgeom, irela, imaxi, &
+                    irefe , noddlm, icomp, nfrot, ngeom)
+!
+! - Set value of residuals informations in convergence table
+!
+    call nmimre(ds_print, sdconv)
 !
 ! --- SAUVEGARDES RESIDUS
 !

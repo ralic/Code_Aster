@@ -16,10 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmtble(cont_loop  , model         , mesh  , mate  , sdcont_defi,&
-                      sdcont_solv, list_func_acti, sdimpr, sdstat, sdtime     ,&
-                      sddyna     , sderro        , sdconv, sddisc, nume_inst  ,&
+    subroutine nmtble(cont_loop  , model         , mesh    , mate  , sdcont_defi,&
+                      sdcont_solv, list_func_acti, ds_print, sdstat, sdtime     ,&
+                      sddyna     , sderro        , sdconv  , sddisc, nume_inst  ,&
                       hval_incr  , hval_algo)
+        use NonLin_Datastructure_type        
         integer, intent(inout) :: cont_loop
         character(len=24), intent(in) :: model
         character(len=8), intent(in) :: mesh
@@ -27,7 +28,7 @@ interface
         character(len=24), intent(in) :: sdcont_defi
         character(len=24), intent(in) :: sdcont_solv
         integer, intent(in) :: list_func_acti(*)
-        character(len=24), intent(in) :: sdimpr
+        type(NL_DS_Print), intent(inout) :: ds_print
         character(len=24), intent(in) :: sdstat
         character(len=24), intent(in) :: sdtime
         character(len=19), intent(in) :: sddyna

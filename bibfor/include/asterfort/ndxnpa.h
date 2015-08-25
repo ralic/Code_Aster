@@ -16,14 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine ndxnpa(modele, mate  , carele, fonact, sdimpr,&
-                      sddisc, sddyna, sdnume, numedd,numins,&
+    subroutine ndxnpa(modele, mate  , carele, fonact, ds_print,&
+                      sddisc, sddyna, sdnume, numedd, numins  ,&
                       valinc, solalg)
+        use NonLin_Datastructure_type
         character(len=24) :: modele
         character(len=24) :: mate
         character(len=24) :: carele
         integer :: fonact(*)
-        character(len=24) :: sdimpr
+        type(NL_DS_Print), intent(inout) :: ds_print
         character(len=19) :: sddisc
         character(len=19) :: sddyna
         character(len=19) :: sdnume

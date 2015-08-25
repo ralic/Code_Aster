@@ -1,4 +1,14 @@
-subroutine nmimps(sdimpr, sdconv, sderro)
+subroutine nmimps(ds_print, sdconv, sderro)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmerge.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,91 +28,78 @@ subroutine nmimps(sdimpr, sdconv, sderro)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/nmerge.h"
-#include "asterfort/obgetb.h"
-#include "asterfort/utmess.h"
-    character(len=24) :: sdconv, sdimpr, sderro
+    type(NL_DS_Print), intent(in) :: ds_print
+    character(len=24), intent(in) :: sdconv
+    character(len=24), intent(in) :: sderro
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (AFFICHAGE - ACCES SD)
+! MECA_NON_LINE - Print management
 !
-! IMPRESSION DES RESIDUS (RECAP FIN DE PAS)
+! Print residuals summary at end of step
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  ds_print         : datastructure for printing parameters
+! In  sdconv           : name of datastructure convergence
+! In  sderro           : name of datastructure for error management (events)
 !
-! IN  SDCONV : SD GESTION DE LA CONVERGENCE
-! IN  SDIMPR : SD AFFICHAGE
-! IN  SDERRO : GESTION DES ERREURS
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
-!
-    character(len=24) :: cnvtyp, cnvlie, cnvval, cnvact
-    integer :: jcnvty, jcnvli, jcnvva, jcnvac
-    integer :: iresi, iarg, nresi
-    real(kind=8) :: valr(1)
+    character(len=24) :: sdconv_type
+    character(len=24) :: sdconv_lieu
+    character(len=24) :: sdconv_vale
+    character(len=24) :: sdconv_acti
+    character(len=16), pointer :: v_sdconv_type(:) => null()
+    character(len=16), pointer :: v_sdconv_lieu(:) => null()
+    real(kind=8), pointer :: v_sdconv_vale(:) => null()
+    aster_logical, pointer :: v_sdconv_acti(:) => null()
+    integer :: i_resi, iarg, nb_resi
+    real(kind=8) :: valr
     character(len=16) :: valk(2)
     aster_logical :: lprint, maxrel, maxnod
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
+    sdconv_type = sdconv(1:19)//'.TYPE'
+    sdconv_lieu = sdconv(1:19)//'.LIEU'
+    sdconv_vale = sdconv(1:19)//'.VALE'
+    sdconv_acti = sdconv(1:19)//'.ACTI'
+    call jeveuo(sdconv_type, 'L', vk16 = v_sdconv_type)
+    call jeveuo(sdconv_lieu, 'L', vk16 = v_sdconv_lieu)
+    call jeveuo(sdconv_vale, 'L', vr = v_sdconv_vale)
+    call jeveuo(sdconv_acti, 'L', vl = v_sdconv_acti)
+    call jelira(sdconv_acti, 'LONMAX', ival=nb_resi)
 !
-! --- ACCES SD CONVERGENCE
-!
-    cnvtyp = sdconv(1:19)//'.TYPE'
-    cnvlie = sdconv(1:19)//'.LIEU'
-    cnvval = sdconv(1:19)//'.VALE'
-    cnvact = sdconv(1:19)//'.ACTI'
-    call jeveuo(cnvtyp, 'L', jcnvty)
-    call jeveuo(cnvlie, 'L', jcnvli)
-    call jeveuo(cnvval, 'L', jcnvva)
-    call jeveuo(cnvact, 'L', jcnvac)
-    call jelira(cnvtyp, 'LONMAX', ival=nresi)
-!
-! --- MESSAGE DE BASCULEMENT DES CONVERGENCES
+! - Messages for convergence swapping
 !
     call nmerge(sderro, 'RESI_MAXR', maxrel)
     call nmerge(sderro, 'RESI_MAXN', maxnod)
 !
-! --- AFFICHAGE POUR CE PAS ?
+! - Print for this step ?
 !
-    call obgetb(sdimpr, 'PRINT', lprint)
-    if (.not.lprint) goto 99
+    lprint = ds_print%l_print
 !
-! --- AFFICHAGE ENTETE ARCHIVAGE
+! - Print residuals summary
 !
-    call utmess('I', 'MECANONLINE6_60')
-    if (maxnod) then
-        call utmess('I', 'MECANONLINE6_61')
-    endif
-    if (maxrel) then
-        call utmess('I', 'MECANONLINE6_62')
-    endif
-!
-! --- AFFICHAGE
-!
-    iarg = 0
-    do 20 iresi = 1, nresi
-        if (zl(jcnvac-1+iresi)) then
-            iarg = iarg + 1
-            valk(1) = zk16(jcnvty-1+iresi)
-            valk(2) = zk16(jcnvli-1+iresi)
-            valr(1) = zr(jcnvva-1+iresi)
-            call utmess('I', 'MECANONLINE6_70', nk=2, valk=valk, sr=valr(1))
+    if (lprint) then
+        call utmess('I', 'MECANONLINE6_60')
+        if (maxnod) then
+            call utmess('I', 'MECANONLINE6_61')
         endif
- 20 end do
-!
- 99 continue
-!
-    call jedema()
+        if (maxrel) then
+            call utmess('I', 'MECANONLINE6_62')
+        endif
+        iarg = 0
+        do i_resi = 1, nb_resi
+            if (v_sdconv_acti(i_resi)) then
+                iarg = iarg + 1
+                valk(1) = v_sdconv_type(i_resi)
+                valk(2) = v_sdconv_lieu(i_resi)
+                valr    = v_sdconv_vale(i_resi)
+                call utmess('I', 'MECANONLINE6_70', nk=2, valk=valk, sr=valr)
+            endif
+        end do
+    endif
 !
 end subroutine

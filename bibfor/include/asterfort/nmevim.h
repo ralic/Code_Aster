@@ -16,10 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmevim(sdimpr, sddisc, sderro, nombcl)
-        character(len=24) :: sdimpr
-        character(len=19) :: sddisc
-        character(len=24) :: sderro
-        character(len=4) :: nombcl
+    subroutine nmevim(ds_print, sddisc, sderro, loop_name)
+        use NonLin_Datastructure_type
+        type(NL_DS_Print), intent(in) :: ds_print
+        character(len=24), intent(in) :: sderro
+        character(len=19), intent(in) :: sddisc
+        character(len=4), intent(in) :: loop_name
     end subroutine nmevim
 end interface

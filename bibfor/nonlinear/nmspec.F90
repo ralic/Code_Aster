@@ -1,9 +1,24 @@
-subroutine nmspec(modele, numedd, numfix, carele, compor,&
-                  solveu, numins, mate, comref, lischa,&
-                  defico, resoco, parmet, fonact, carcri,&
-                  sdimpr, sdstat, sdtime, sddisc, valinc,&
-                  solalg, meelem, measse, veelem, sddyna,&
-                  sdpost, sderro)
+subroutine nmspec(modele  , numedd, numfix, carele, compor,&
+                  solveu  , numins, mate  , comref, lischa,&
+                  defico  , resoco, parmet, fonact, carcri,&
+                  ds_print, sdstat, sdtime, sddisc, valinc,&
+                  solalg  , meelem, measse, veelem, sddyna,&
+                  sdpost  , sderro)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/affich.h"
+#include "asterfort/assert.h"
+#include "asterfort/diinst.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/nmcrpo.h"
+#include "asterfort/nmflam.h"
+#include "asterfort/nmimpx.h"
+#include "asterfort/nmlesd.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,27 +37,13 @@ subroutine nmspec(modele, numedd, numfix, carele, compor,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
-!
 ! aslint: disable=W1504
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/affich.h"
-#include "asterfort/assert.h"
-#include "asterfort/diinst.h"
-#include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/nmcrpo.h"
-#include "asterfort/nmflam.h"
-#include "asterfort/nmimpx.h"
-#include "asterfort/nmlesd.h"
-#include "asterfort/utmess.h"
+!
     integer :: numins
     real(kind=8) :: parmet(*)
     character(len=19) :: meelem(*)
     character(len=24) :: resoco, defico
-    character(len=24) :: sdimpr, sdstat, sdtime, sderro
+    character(len=24) :: sdstat, sdtime, sderro
     character(len=19) :: lischa, solveu, sddisc, sddyna, sdpost
     character(len=24) :: modele, numedd, numfix, carele, compor
     character(len=19) :: veelem(*), measse(*)
@@ -50,6 +51,7 @@ subroutine nmspec(modele, numedd, numfix, carele, compor,&
     character(len=24) :: mate
     character(len=24) :: carcri, comref
     integer :: fonact(*)
+    type(NL_DS_Print), intent(in) :: ds_print
 !
 ! ----------------------------------------------------------------------
 !
@@ -69,7 +71,7 @@ subroutine nmspec(modele, numedd, numfix, carele, compor,&
 ! IN  LISCHA : LISTE DES CHARGES
 ! IN  RESOCO : SD RESOLUTION CONTACT
 ! IN  DEFICO : SD DEFINITION CONTACT
-! IN  SDIMPR : SD AFFICHAGE
+! In  ds_print         : datastructure for printing parameters
 ! IN  SDTIME : SD TIMER
 ! IN  SDSTAT : SD STATISTIQUES
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
@@ -94,10 +96,6 @@ subroutine nmspec(modele, numedd, numfix, carele, compor,&
     character(len=19) :: nomlis
 !
 ! ----------------------------------------------------------------------
-!
-    call jemarq()
-!
-! --- INITIALISATIONS
 !
     inst = diinst(sddisc,numins)
     calcul = .false.
@@ -125,12 +123,11 @@ subroutine nmspec(modele, numedd, numfix, carele, compor,&
 !
     if (lflam) then
         if (calcul) then
-            call nmlesd('POST_TRAITEMENT', sdpost, 'OPTION_CALCUL_FLAMB', ibid, r8bid,&
-                        option)
+            call nmlesd('POST_TRAITEMENT', sdpost, 'OPTION_CALCUL_FLAMB', ibid, r8bid, option)
 !
 ! ------- IMPRESSION EN-TETE
 !
-            call nmimpx(sdimpr)
+            call nmimpx(ds_print)
             if (option .eq. 'FLAMBSTA') then
                 call utmess('I', 'MECANONLINE6_2')
             else if (option.eq.'FLAMBDYN') then
@@ -143,11 +140,11 @@ subroutine nmspec(modele, numedd, numfix, carele, compor,&
 ! ------- CALCUL EFFECTIF
 !
             call nmflam(option, modele, numedd, numfix, carele,&
-                        compor, solveu, numins, mate, comref,&
+                        compor, solveu, numins, mate  , comref,&
                         lischa, defico, resoco, parmet, fonact,&
-                        carcri, sdimpr, sdstat, sddisc, sdtime,&
-                        sddyna, sdpost, valinc, solalg, meelem,&
-                        measse, veelem, sderro)
+                        carcri, sdstat, sddisc, sdtime, sddyna,&
+                        sdpost, valinc, solalg, meelem, measse,&
+                        veelem, sderro)
         endif
     endif
 !
@@ -155,28 +152,25 @@ subroutine nmspec(modele, numedd, numfix, carele, compor,&
 !
     if (lmvib) then
         if (calcul) then
-            call nmlesd('POST_TRAITEMENT', sdpost, 'OPTION_CALCUL_VIBR', ibid, r8bid,&
-                        option)
+            call nmlesd('POST_TRAITEMENT', sdpost, 'OPTION_CALCUL_VIBR', ibid, r8bid, option)
 !
 ! ------- IMPRESSION EN-TETE
 !
-            call nmimpx(sdimpr)
+            call nmimpx(ds_print)
             call utmess('I', 'MECANONLINE6_3')
             call affich('MESSAGE', ' ')
 !
 ! ------- CALCUL EFFECTIF
 !
             call nmflam(option, modele, numedd, numfix, carele,&
-                        compor, solveu, numins, mate, comref,&
+                        compor, solveu, numins, mate  , comref,&
                         lischa, defico, resoco, parmet, fonact,&
-                        carcri, sdimpr, sdstat, sddisc, sdtime,&
-                        sddyna, sdpost, valinc, solalg, meelem,&
-                        measse, veelem, sderro)
+                        carcri, sdstat, sddisc, sdtime, sddyna,&
+                        sdpost, valinc, solalg, meelem, measse,&
+                        veelem, sderro)
         endif
     endif
 !
 999 continue
-!
-    call jedema()
 !
 end subroutine

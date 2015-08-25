@@ -16,10 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmitsp(sdimpr, sddisc, iterat, retsup)
-        character(len=24) :: sdimpr
-        character(len=19) :: sddisc
-        integer :: iterat
-        integer :: retsup
+    subroutine nmitsp(ds_print, sddisc, iterat, retsup)
+        use NonLin_Datastructure_type
+        type(NL_DS_Print), intent(in) :: ds_print
+        character(len=19), intent(in) :: sddisc
+        integer, intent(in) :: iterat
+        integer, intent(out) :: retsup
     end subroutine nmitsp
 end interface

@@ -1,10 +1,12 @@
-subroutine nmprta(modele, numedd, numfix, mate, carele,&
-                  comref, compor, lischa, method, solveu,&
-                  fonact, parmet, carcri, sdimpr, sdstat,&
-                  sdtime, sddisc, numins, valinc, solalg,&
-                  matass, maprec, defico, resoco, resocu,&
-                  sddyna, meelem, measse, veelem, veasse,&
-                  sdnume, ldccvg, faccvg, rescvg, codere)
+subroutine nmprta(modele, numedd, numfix, mate    , carele,&
+                  comref, compor, lischa, method  , solveu,&
+                  fonact, parmet, carcri, ds_print, sdstat,&
+                  sdtime, sddisc, numins, valinc  , solalg,&
+                  matass, maprec, defico, resoco  , resocu,&
+                  sddyna, meelem, measse, veelem  , veasse,&
+                  sdnume, ldccvg, faccvg, rescvg  , codere)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -45,7 +47,8 @@ implicit none
     integer :: numins, faccvg, rescvg, ldccvg
     real(kind=8) :: parmet(*)
     character(len=16) :: method(*)
-    character(len=24) :: sdimpr, sdtime, sdstat
+    character(len=24) :: sdtime, sdstat
+    type(NL_DS_Print), intent(inout) :: ds_print
     character(len=19) :: matass, maprec
     character(len=19) :: lischa, solveu, sddisc, sddyna, sdnume
     character(len=24) :: modele, mate, carele, comref, compor
@@ -64,7 +67,6 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  MODELE : MODELE
 ! IN  NUMEDD : NUME_DDL (VARIABLE AU COURS DU CALCUL)
 ! IN  NUMFIX : NUME_DDL (FIXE AU COURS DU CALCUL)
@@ -78,7 +80,7 @@ implicit none
 ! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
 ! IN  PARMET : PARAMETRES DES METHODES DE RESOLUTION
 ! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
-! IN  SDIMPR : SD AFFICHAGE
+! IO  ds_print         : datastructure for printing parameters
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
 ! IN  SDTIME : SD TIMER
 ! IN  SDSTAT : SD STATISTIQUES
@@ -159,12 +161,12 @@ implicit none
 !
 ! --- CALCUL DE LA MATRICE GLOBALE
 !
-    call nmprma(modele, mate, carele, compor, carcri,&
-                parmet, method, lischa, numedd, numfix,&
-                solveu, comref, sdimpr, sdstat, sdtime,&
-                sddisc, sddyna, numins, fonact, defico,&
-                resoco, valinc, solalg, veelem, meelem,&
-                measse, maprec, matass, codere, faccvg,&
+    call nmprma(modele, mate  , carele  , compor, carcri,&
+                parmet, method, lischa  , numedd, numfix,&
+                solveu, comref, ds_print, sdstat, sdtime,&
+                sddisc, sddyna, numins  , fonact, defico,&
+                resoco, valinc, solalg  , veelem, meelem,&
+                measse, maprec, matass  , codere, faccvg,&
                 ldccvg)
 !
 ! --- ERREUR SANS POSSIBILITE DE CONTINUER

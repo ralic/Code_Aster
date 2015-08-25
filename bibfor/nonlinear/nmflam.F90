@@ -1,30 +1,12 @@
 subroutine nmflam(option, modele, numedd, numfix, carele,&
-                  compor, solveu, numins, mate, comref,&
+                  compor, solveu, numins, mate  , comref,&
                   lischa, defico, resoco, parmet, fonact,&
-                  carcri, sdimpr, sdstat, sddisc, sdtime,&
-                  sddyna, sdpost, valinc, solalg, meelem,&
-                  measse, veelem, sderro)
+                  carcri, sdstat, sddisc, sdtime, sddyna,&
+                  sdpost, valinc, solalg, meelem, measse,&
+                  veelem, sderro)
 !
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
+implicit none
 !
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-!
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
-!
-! aslint: disable=W1504
-    implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8maem.h"
@@ -46,12 +28,31 @@ subroutine nmflam(option, modele, numedd, numfix, carele,&
 #include "asterfort/rsexch.h"
 #include "asterfort/utmess.h"
 !
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: mickael.abbas at edf.fr
+! aslint: disable=W1504
+!
     integer :: numins
     real(kind=8) :: parmet(*)
     character(len=16) :: option
     character(len=19) :: meelem(*)
     character(len=24) :: resoco, defico
-    character(len=24) :: sdimpr, sdstat, sdtime, sderro
+    character(len=24) :: sdstat, sdtime, sderro
     character(len=19) :: lischa, solveu, sddisc, sddyna, sdpost
     character(len=24) :: modele, numedd, numfix, carele, compor
     character(len=19) :: veelem(*), measse(*)
@@ -83,7 +84,6 @@ subroutine nmflam(option, modele, numedd, numfix, carele,&
 ! IN  LISCHA : LISTE DES CHARGES
 ! IN  RESOCO : SD RESOLUTION CONTACT
 ! IN  DEFICO : SD DEFINITION CONTACT
-! IN  SDIMPR : SD AFFICHAGE
 ! IN  SDTIME : SD TIMER
 ! IN  SDSTAT : SD STATISTIQUES
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
@@ -113,7 +113,7 @@ subroutine nmflam(option, modele, numedd, numfix, carele,&
     character(len=4) :: mod45
     character(len=8) :: sdmode, sdstab
     character(len=8) :: syme
-    character(len=16) :: k16bid, optmod, varacc, typmat, modrig
+    character(len=16) :: optmod, varacc, typmat, modrig
     character(len=19) :: matgeo, matas2, vecmod, champ
     character(len=19) :: champ2, vecmo2
     character(len=24) :: k24bid, ddlexc, ddlsta
@@ -187,9 +187,9 @@ subroutine nmflam(option, modele, numedd, numfix, carele,&
     endif
     freqm = r8maem()
     numord = 0
-    do 60 i = 1, nfreqc
+    do i = 1, nfreqc
         call rsadpa(sdmode, 'L', 1, varacc, i,&
-                    0, sjv=ljeveu, styp=k16bid)
+                    0, sjv=ljeveu)
         freqv = zr(ljeveu)
         freqa = abs(freqv)
         if (freqa .lt. freqm) then
@@ -204,10 +204,10 @@ subroutine nmflam(option, modele, numedd, numfix, carele,&
         else
             ASSERT(.false.)
         endif
- 60 end do
+    end do
     if (nsta .ne. 0) then
         call rsadpa(sdstab, 'L', 1, 'CHAR_STAB', 1,&
-                    0, sjv=ljeve2, styp=k16bid)
+                    0, sjv=ljeve2)
         csta = zr(ljeve2)
         call utmess('I', 'MECANONLINE6_12', si=1, sr=csta)
     endif

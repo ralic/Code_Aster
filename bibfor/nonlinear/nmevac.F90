@@ -1,5 +1,21 @@
-subroutine nmevac(sdimpr      , sddisc   , sderro, sdcont_defi, sdcont_solv,&
-                  i_echec_acti, nume_inst, iterat, retact)
+subroutine nmevac(sddisc, sderro   , i_echec_acti, nume_inst   , iterat,&
+                  retact, ds_print_, sdcont_defi_, sdcont_solv_)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/nmadcp.h"
+#include "asterfort/nmdeco.h"
+#include "asterfort/nmecev.h"
+#include "asterfort/nmeraz.h"
+#include "asterfort/nmerge.h"
+#include "asterfort/nmevdp.h"
+#include "asterfort/nmitsp.h"
+#include "asterfort/utdidt.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,24 +35,15 @@ subroutine nmevac(sdimpr      , sddisc   , sderro, sdcont_defi, sdcont_solv,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "asterfort/assert.h"
-#include "asterfort/nmadcp.h"
-#include "asterfort/nmdeco.h"
-#include "asterfort/nmecev.h"
-#include "asterfort/nmeraz.h"
-#include "asterfort/nmerge.h"
-#include "asterfort/nmevdp.h"
-#include "asterfort/nmitsp.h"
-#include "asterfort/utdidt.h"
-#include "asterfort/utmess.h"
-    character(len=24) :: sdimpr, sderro
-    character(len=24) :: sdcont_defi, sdcont_solv
-    character(len=19) :: sddisc
-    integer :: i_echec_acti
-    integer :: iterat, nume_inst
-    integer :: retact
+    character(len=19), intent(in) :: sddisc
+    character(len=24), intent(in) :: sderro
+    integer, intent(in) :: i_echec_acti
+    integer, intent(in) :: nume_inst
+    integer, intent(in) :: iterat
+    integer, intent(out) :: retact
+    type(NL_DS_Print), optional, intent(in) :: ds_print_
+    character(len=24), optional, intent(in) :: sdcont_defi_
+    character(len=24), optional, intent(in) :: sdcont_solv_
 !
 ! ----------------------------------------------------------------------
 !
@@ -46,8 +53,7 @@ subroutine nmevac(sdimpr      , sddisc   , sderro, sdcont_defi, sdcont_solv,&
 !
 ! ----------------------------------------------------------------------
 !
-!
-! IN  SDIMPR : SD AFFICHAGE
+! In  ds_print         : datastructure for printing parameters
 ! In  sddisc           : datastructure for time discretization
 ! IN  SDERRO : SD ERREUR
 ! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
@@ -98,7 +104,7 @@ subroutine nmevac(sdimpr      , sddisc   , sderro, sdcont_defi, sdcont_solv,&
         ASSERT(iterat.ge.0)
         if (litmax) then
             call utmess('I', 'MECANONLINE10_32')
-            call nmitsp(sdimpr, sddisc, iterat, retsup)
+            call nmitsp(ds_print_, sddisc, iterat, retsup)
         else
             retsup = 0
         endif
@@ -127,7 +133,7 @@ subroutine nmevac(sdimpr      , sddisc   , sderro, sdcont_defi, sdcont_solv,&
         endif
     else if (action.eq.'ADAPT_COEF_PENA') then
         call utmess('I', 'MECANONLINE10_35')
-        call nmadcp(sddisc, sdcont_defi, sdcont_solv, i_echec_acti, retpen)
+        call nmadcp(sddisc, sdcont_defi_, sdcont_solv_, i_echec_acti, retpen)
         trydec = .false.
         if (retpen .eq. 0) then
             retact = 3

@@ -1,7 +1,29 @@
-subroutine nmarch(result, numins, modele, mate, carele,&
-                  fonact, carcri, sdimpr, sddisc, sdpost,&
-                  sdcrit, sdtime, sderro, sddyna, sdpilo,&
-                  sdener, sdieto, sdcriq, lisch2)
+subroutine nmarch(result, numins, modele  , mate  , carele,&
+                  fonact, carcri, ds_print, sddisc, sdpost,&
+                  sdcrit, sdtime, sderro  , sddyna, sdpilo,&
+                  sdener, sdieto, sdcriq  , lisch2)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/diinst.h"
+#include "asterfort/dinuar.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmarc0.h"
+#include "asterfort/nmarce.h"
+#include "asterfort/nmarpc.h"
+#include "asterfort/nmfinp.h"
+#include "asterfort/nmleeb.h"
+#include "asterfort/nmtime.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rsagsd.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/utmess.h"
+#include "asterfort/uttcpg.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,29 +43,11 @@ subroutine nmarch(result, numins, modele, mate, carele,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/diinst.h"
-#include "asterfort/dinuar.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/nmarc0.h"
-#include "asterfort/nmarce.h"
-#include "asterfort/nmarpc.h"
-#include "asterfort/nmfinp.h"
-#include "asterfort/nmleeb.h"
-#include "asterfort/nmtime.h"
-#include "asterfort/obgetb.h"
-#include "asterfort/rsadpa.h"
-#include "asterfort/rsagsd.h"
-#include "asterfort/rsexch.h"
-#include "asterfort/utmess.h"
-#include "asterfort/uttcpg.h"
     character(len=8) :: result
     integer :: fonact(*)
     integer :: numins
-    character(len=24) :: sdieto, sdtime, sdimpr
+    type(NL_DS_Print), intent(in) :: ds_print
+    character(len=24) :: sdieto, sdtime
     character(len=19) :: sddisc, sdcrit, sddyna, sdpost, sdpilo, sdener
     character(len=24) :: carcri
     character(len=24) :: sderro, sdcriq
@@ -60,9 +64,8 @@ subroutine nmarch(result, numins, modele, mate, carele,&
 !
 !
 ! IN  RESULT : NOM DE LA SD RESULTAT
-! IN  SDIMPR : SD AFFICHAGE
 ! IN  SDIETO : SD GESTION IN ET OUT
-! IN  SDIMPR : SD AFFICHAGE
+! In  ds_print         : datastructure for printing parameters
 ! IN  NUMINS : NUMERO DE L'INSTANT
 ! IN  MODELE : NOM DU MODELEE
 ! IN  MATE   : CHAMP DE MATERIAU
@@ -131,9 +134,9 @@ subroutine nmarch(result, numins, modele, mate, carele,&
 !
     call nmarpc(result, sdener, numrep, instan)
 !
-! --- AFFICHAGE POUR CE PAS ?
+! - Print or not ?
 !
-    call obgetb(sdimpr, 'PRINT', lprint)
+    lprint = ds_print%l_print
 !
 ! ----------------------------------------------------------------------
 !
@@ -168,8 +171,8 @@ subroutine nmarch(result, numins, modele, mate, carele,&
 !
 ! ----- ARCHIVAGE DES CHAMPS
 !
-        call nmarce(sdieto, result, sdimpr, sddisc, instan,&
-                    numarc, force)
+        call nmarce(sdieto, result  , sddisc, instan, numarc,&
+                    force , ds_print)
     endif
 !
 999 continue

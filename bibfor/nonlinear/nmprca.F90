@@ -1,10 +1,26 @@
-subroutine nmprca(modele, numedd, numfix, mate, carele,&
-                  comref, compor, lischa, method, solveu,&
-                  fonact, parmet, carcri, sdimpr, sdstat,&
-                  sddisc, sdtime, numins, valinc, solalg,&
-                  matass, maprec, defico, resoco, sddyna,&
-                  meelem, measse, veelem, veasse, depest,&
-                  ldccvg, faccvg, rescvg, codere)
+subroutine nmprca(modele, numedd, numfix, mate    , carele,&
+                  comref, compor, lischa, method  , solveu,&
+                  fonact, parmet, carcri, ds_print, sdstat,&
+                  sddisc, sdtime, numins, valinc  , solalg,&
+                  matass, maprec, defico, resoco  , sddyna,&
+                  meelem, measse, veelem, veasse  , depest,&
+                  ldccvg, faccvg, rescvg, codere  )
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterfort/copisd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmacin.h"
+#include "asterfort/nmassd.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmprma.h"
+#include "asterfort/nmreso.h"
+#include "asterfort/vtzero.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,31 +39,19 @@ subroutine nmprca(modele, numedd, numfix, mate, carele,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
-!
 ! aslint: disable=W1504
-    implicit none
-#include "jeveux.h"
-#include "asterfort/copisd.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/nmacin.h"
-#include "asterfort/nmassd.h"
-#include "asterfort/nmchex.h"
-#include "asterfort/nmprma.h"
-#include "asterfort/nmreso.h"
-#include "asterfort/vtzero.h"
+!
     integer :: fonact(*)
     integer :: numins, ldccvg, faccvg, rescvg
     real(kind=8) :: parmet(*)
     character(len=16) :: method(*)
     character(len=19) :: maprec, matass
-    character(len=24) :: sdimpr, sdtime, sdstat
+    character(len=24) :: sdtime, sdstat
     character(len=19) :: lischa, solveu, sddisc, sddyna
     character(len=24) :: modele, mate, carele, comref, compor
     character(len=24) :: numedd, numfix
     character(len=24) :: carcri
+    type(NL_DS_Print), intent(inout) :: ds_print
     character(len=24) :: defico, resoco
     character(len=24) :: codere
     character(len=19) :: veelem(*), veasse(*)
@@ -78,7 +82,7 @@ subroutine nmprca(modele, numedd, numfix, mate, carele,&
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! IN  PARMET : PARAMETRES DES METHODES DE RESOLUTION
 ! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
-! IN  SDIMPR : SD AFFICHAGE
+! IO  ds_print         : datastructure for printing parameters
 ! IN  SDSTAT : SD STATISTIQUES
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IN  SDTIME : SD TIMER
@@ -127,10 +131,6 @@ subroutine nmprca(modele, numedd, numfix, mate, carele,&
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
-!
-! --- INITIALISATIONS
-!
     solu1 = '&&CNPART.CHP2'
     solu2 = '&&CNPART.CHP3'
     cndonn = '&&CNCHAR.DONN'
@@ -153,12 +153,12 @@ subroutine nmprca(modele, numedd, numfix, mate, carele,&
 !
 ! --- CALCUL DE LA MATRICE GLOBALE
 !
-    call nmprma(modele, mate, carele, compor, carcri,&
-                parmet, method, lischa, numedd, numfix,&
-                solveu, comref, sdimpr, sdstat, sdtime,&
-                sddisc, sddyna, numins, fonact, defico,&
-                resoco, valinc, solalg, veelem, meelem,&
-                measse, maprec, matass, codere, faccvg,&
+    call nmprma(modele, mate  , carele  , compor, carcri,&
+                parmet, method, lischa  , numedd, numfix,&
+                solveu, comref, ds_print, sdstat, sdtime,&
+                sddisc, sddyna, numins  , fonact, defico,&
+                resoco, valinc, solalg  , veelem, meelem,&
+                measse, maprec, matass  , codere, faccvg,&
                 ldccvg)
 !
 ! --- ERREUR SANS POSSIBILITE DE CONTINUER
@@ -206,5 +206,4 @@ subroutine nmprca(modele, numedd, numfix, mate, carele,&
 !
 999 continue
 !
-    call jedema()
 end subroutine

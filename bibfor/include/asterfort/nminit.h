@@ -15,17 +15,20 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+! aslint: disable=W1504
+!
 interface
     subroutine nminit(result, model      , numedd     , numfix   , mate,&
                       compor, carele     , parmet     , lischa   , maprec,&
                       solveu, carcri     , numins     , sdstat   , sddisc,&
                       sdnume, sdcont_defi, sdcrit     , varc_refe, fonact,&
                       parcon, parcri     , method     , lisch2   , mesh,&
-                      sdpilo, sddyna     , sdimpr     , sd_suiv  , sd_obsv,&
+                      sdpilo, sddyna     , ds_print   , sd_suiv  , sd_obsv,&
                       sdtime, sderro     , sdpost     , sd_inout , sdener,&
                       sdconv, sdcriq     , sdunil_defi, resocu   , resoco,&
                       valinc, solalg     , measse     , veelem   , meelem,&
                       veasse, codere)
+        use NonLin_Datastructure_type
         character(len=8) :: result
         character(len=24) :: model
         character(len=24) :: numedd
@@ -54,7 +57,7 @@ interface
         character(len=8) :: mesh
         character(len=19) :: sdpilo
         character(len=19) :: sddyna
-        character(len=24) :: sdimpr
+        type(NL_DS_Print), intent(inout) :: ds_print
         character(len=24), intent(out) :: sd_suiv
         character(len=24) :: sdtime
         character(len=24) :: sderro

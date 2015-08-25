@@ -15,13 +15,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmimrv(sdimpr, fonact, iterat, relcoe, relite,&
+    subroutine nmimrv(ds_print, list_func_acti, iter_newt, line_search_coef, line_search_iter,&
                       eta)
-        character(len=24) :: sdimpr
-        integer :: fonact(*)
-        integer :: iterat
-        real(kind=8) :: relcoe
-        integer :: relite
-        real(kind=8) :: eta
+        use NonLin_Datastructure_type
+        type(NL_DS_Print), intent(inout) :: ds_print
+        integer, intent(in) :: list_func_acti(*)
+        integer, intent(in) :: iter_newt
+        real(kind=8), intent(in) :: line_search_coef
+        integer, intent(in) :: line_search_iter
+        real(kind=8), intent(in) :: eta
     end subroutine nmimrv
 end interface

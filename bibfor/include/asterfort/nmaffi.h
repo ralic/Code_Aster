@@ -16,13 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmaffi(fonact, sdconv, sdimpr, sderro, sddisc,&
-                      nombcl)
-        integer :: fonact(*)
-        character(len=24) :: sdconv
-        character(len=24) :: sdimpr
-        character(len=24) :: sderro
-        character(len=19) :: sddisc
-        character(len=4) :: nombcl
+    subroutine nmaffi(list_func_acti, sdconv, ds_print, sderro, sddisc,&
+                      loop_name     )
+        use NonLin_Datastructure_type
+        integer, intent(in) :: list_func_acti(*)
+        character(len=24), intent(in) :: sdconv
+        type(NL_DS_Print), intent(inout) :: ds_print
+        character(len=24), intent(in) :: sderro
+        character(len=19), intent(in) :: sddisc
+        character(len=4), intent(in) :: loop_name
     end subroutine nmaffi
 end interface

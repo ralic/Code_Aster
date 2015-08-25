@@ -1,10 +1,32 @@
-subroutine nmprma(modelz, mate, carele, compor, carcri,&
-                  parmet, method, lischa, numedd, numfix,&
-                  solveu, comref, sdimpr, sdstat, sdtime,&
-                  sddisc, sddyna, numins, fonact, defico,&
-                  resoco, valinc, solalg, veelem, meelem,&
-                  measse, maprec, matass, codere, faccvg,&
+subroutine nmprma(modelz, mate  , carele  , compor, carcri,&
+                  parmet, method, lischa  , numedd, numfix,&
+                  solveu, comref, ds_print, sdstat, sdtime,&
+                  sddisc, sddyna, numins  , fonact, defico,&
+                  resoco, valinc, solalg  , veelem, meelem,&
+                  measse, maprec, matass  , codere, faccvg,&
                   ldccvg)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nmchcc.h"
+#include "asterfort/nmchoi.h"
+#include "asterfort/nmchra.h"
+#include "asterfort/nmchrm.h"
+#include "asterfort/nmcmat.h"
+#include "asterfort/nmimck.h"
+#include "asterfort/nmmatr.h"
+#include "asterfort/nmrenu.h"
+#include "asterfort/nmrinc.h"
+#include "asterfort/nmtime.h"
+#include "asterfort/nmxmat.h"
+#include "asterfort/preres.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,32 +45,15 @@ subroutine nmprma(modelz, mate, carele, compor, carcri,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
-!
 ! aslint: disable=W1504
-    implicit none
-#include "asterf_types.h"
-#include "asterfort/assert.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/isfonc.h"
-#include "asterfort/ndynlo.h"
-#include "asterfort/nmchcc.h"
-#include "asterfort/nmchoi.h"
-#include "asterfort/nmchra.h"
-#include "asterfort/nmchrm.h"
-#include "asterfort/nmcmat.h"
-#include "asterfort/nmimck.h"
-#include "asterfort/nmmatr.h"
-#include "asterfort/nmrenu.h"
-#include "asterfort/nmrinc.h"
-#include "asterfort/nmtime.h"
-#include "asterfort/nmxmat.h"
-#include "asterfort/preres.h"
+!
     real(kind=8) :: parmet(*)
     character(len=16) :: method(*)
     integer :: fonact(*)
     character(len=*) :: modelz
     character(len=24) :: mate, carele
-    character(len=24) :: sdimpr, sdtime, sdstat
+    character(len=24) :: sdtime, sdstat
+    type(NL_DS_Print), intent(inout) :: ds_print
     character(len=24) :: compor, carcri, numedd, numfix
     character(len=19) :: sddisc, sddyna, lischa, solveu
     character(len=24) :: comref, codere
@@ -67,7 +72,6 @@ subroutine nmprma(modelz, mate, carele, compor, carcri,&
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  MODELE : MODELE
 ! IN  NUMEDD : NUME_DDL (VARIABLE AU COURS DU CALCUL)
 ! IN  NUMFIX : NUME_DDL (FIXE AU COURS DU CALCUL)
@@ -78,7 +82,7 @@ subroutine nmprma(modelz, mate, carele, compor, carcri,&
 ! IN  LISCHA : LISTE DES CHARGES
 ! IN  RESOCO : SD RESOLUTION CONTACT
 ! IN  DEFICO : SD DEFINITION CONTACT
-! IN  SDIMPR : SD AFFICHAGE
+! IO  ds_print         : datastructure for printing parameters
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
 ! IN  SDTIME : SD TIMER
 ! IN  SDSTAT : SD STATISTIQUES
@@ -116,7 +120,7 @@ subroutine nmprma(modelz, mate, carele, compor, carcri,&
     aster_logical :: reasma, renume
     aster_logical :: lcrigi, lcfint, lcamor, larigi
     aster_logical :: ldyna, lamor, lsuiv
-    character(len=16) :: metcor, metpre, k16bla
+    character(len=16) :: metcor, metpre
     character(len=16) :: optrig, optamo
     integer :: ifm, niv, ibid
     integer :: iterat
@@ -128,9 +132,6 @@ subroutine nmprma(modelz, mate, carele, compor, carcri,&
 ! ----------------------------------------------------------------------
 !
     call infdbg('MECA_NON_LINE', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> ... CALCUL MATRICE'
     endif
@@ -149,7 +150,6 @@ subroutine nmprma(modelz, mate, carele, compor, carcri,&
     faccvg = -1
     ldccvg = -1
     iterat = 0
-    k16bla = ' '
     lcamor = .false.
 !
 ! --- CHOIX DE REASSEMBLAGE DE LA MATRICE GLOBALE
@@ -243,9 +243,9 @@ subroutine nmprma(modelz, mate, carele, compor, carcri,&
         call nmmatr('PREDICTION', fonact, lischa, solveu, numedd,&
                     sddyna, numins, defico, resoco, meelem,&
                     measse, matass)
-        call nmimck(sdimpr, 'MATR_ASSE', metpre, .true._1)
+        call nmimck(ds_print, 'MATR_ASSE', metpre, .true._1)
     else
-        call nmimck(sdimpr, 'MATR_ASSE', k16bla, .false._1)
+        call nmimck(ds_print, 'MATR_ASSE', ' '   , .false._1)
     endif
 !
 ! --- FACTORISATION DE LA MATRICE ASSEMBLEE GLOBALE

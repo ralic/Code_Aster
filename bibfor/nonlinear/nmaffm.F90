@@ -1,4 +1,15 @@
-subroutine nmaffm(sderro, sdimpr, nombcl)
+subroutine nmaffm(sderro, ds_print, loop_name)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/nmerge.h"
+#include "asterfort/SetRow.h"
+#include "asterfort/nmlecv.h"
+#include "asterfort/nmltev.h"
+#include "asterfort/nmimck.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,39 +29,29 @@ subroutine nmaffm(sderro, sdimpr, nombcl)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/nmerge.h"
-#include "asterfort/nmimck.h"
-#include "asterfort/nmlecv.h"
-#include "asterfort/nmltev.h"
-#include "asterfort/obgeto.h"
-#include "asterfort/obtsdm.h"
-    character(len=4) :: nombcl
-    character(len=24) :: sdimpr, sderro
+    character(len=24), intent(in) :: sderro
+    type(NL_DS_Print), intent(inout) :: ds_print
+    character(len=4), intent(in) :: loop_name
+
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (ALGORITHME)
+! MECA_NON_LINE - Print management
 !
-! AFFICHAGE DES MARQUES DANS LES COLONNES
+! Set marks in rows
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sderro           : name of datastructure for error management (events)
+! IO  ds_print         : datastructure for printing parameters
+! In  loop_name        : name of current loop
+!               'RESI' - Loop on residuals
+!               'NEWT' - Newton loop
+!               'FIXE' - Fixed points loop
+!               'INST' - Step time loop
+!               'CALC' - Computation
 !
-! IN  SDERRO : SD GESTION DES ERREURS
-! IN  SDIMPR : SD AFFICHAGE
-! IN  NOMBCL : NOM DE LA BOUCLE
-!               'RESI' - BOUCLE SUR LES RESIDUS D'EQUILIBRE
-!               'NEWT' - BOUCLE DE NEWTON
-!               'FIXE' - BOUCLE DE POINT FIXE
-!               'INST' - BOUCLE SUR LES PAS DE TEMPS
-!               'CALC' - CALCUL
-!
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: dvrela, dvmaxi, dvrefe, dvcomp
     aster_logical :: dvpfix, dvfixc, dvfixf, dvfixg, dvfrot, dvcont, dvgeom
@@ -58,13 +59,16 @@ subroutine nmaffm(sderro, sdimpr, nombcl)
     aster_logical :: cvnewt, lerrne
     aster_logical :: erctcg, erctcf, erctcc
     character(len=16) :: debors
-    character(len=24) :: sdtabc, slcolo, lisnom
+    type(NL_DS_Table) :: table_cvg
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
 !
-! --- EVENEMENTS
+! - Get convergence table
+!
+    table_cvg = ds_print%table_cvg
+!
+! - Get events
 !
     debors = ' DE BORST...    '
     call nmerge(sderro, 'DIVE_CTCC', dvcont)
@@ -86,67 +90,92 @@ subroutine nmaffm(sderro, sdimpr, nombcl)
     call nmerge(sderro, 'ERRE_CTCF', erctcf)
     call nmerge(sderro, 'ERRE_CTCC', erctcc)
 !
-! --- RECUPERATION DU TABLEAU DE CONVERGENCE
+! - Set marks in rows
 !
-    call obgeto(sdimpr, 'TABLEAU_CONV', sdtabc)
-!
-! --- ACCES REPERTOIRE DE NOMS
-!
-    call obgeto(sdtabc, 'COLONNES_DISPOS', slcolo)
-    call obgeto(slcolo, 'NOM_STRUCTS', lisnom)
-!
-! --- MISE A JOUR DES MARQUES DANS LES COLONNES
-!
-    if (nombcl .eq. 'NEWT') then
-        call obtsdm(lisnom, 'RESI_RELA', ' ')
-        call obtsdm(lisnom, 'RESI_MAXI', ' ')
-        call obtsdm(lisnom, 'RESI_REFE', ' ')
-        call obtsdm(lisnom, 'RESI_COMP', ' ')
-        if (dvrela) call obtsdm(lisnom, 'RESI_RELA', 'X')
-        if (dvmaxi) call obtsdm(lisnom, 'RESI_MAXI', 'X')
-        if (dvrefe) call obtsdm(lisnom, 'RESI_REFE', 'X')
-        if (dvcomp) call obtsdm(lisnom, 'RESI_COMP', 'X')
-        call obtsdm(lisnom, 'GEOM_NEWT', ' ')
-        call obtsdm(lisnom, 'FROT_NEWT', ' ')
-        call obtsdm(lisnom, 'CONT_NEWT', ' ')
-        call obtsdm(lisnom, 'PILO_COEF', ' ')
-        call obtsdm(lisnom, 'CTCD_NBIT', ' ')
-        if (dvgeom) call obtsdm(lisnom, 'GEOM_NEWT', 'X')
-        if (dvfrot) call obtsdm(lisnom, 'FROT_NEWT', 'X')
-        if (dvcont) call obtsdm(lisnom, 'CONT_NEWT', 'X')
-        if (cvpilo) call obtsdm(lisnom, 'PILO_COEF', 'B')
-        if (dvpfix) call obtsdm(lisnom, 'CTCD_NBIT', 'X')
-        call obtsdm(lisnom, 'ITER_NUME', 'X')
-        if (cvnewt) call obtsdm(lisnom, 'ITER_NUME', ' ')
-        if (lerrne) call obtsdm(lisnom, 'ITER_NUME', 'E')
-        call obtsdm(lisnom, 'BOUC_GEOM', 'X')
-        call obtsdm(lisnom, 'BOUC_FROT', 'X')
-        call obtsdm(lisnom, 'BOUC_CONT', 'X')
-        if (dvdebo) call nmimck(sdimpr, 'DEBORST  ', debors, .true._1)
-    else if (nombcl.eq.'FIXE') then
-        call obtsdm(lisnom, 'BOUC_GEOM', 'X')
-        call obtsdm(lisnom, 'BOUC_FROT', 'X')
-        call obtsdm(lisnom, 'BOUC_CONT', 'X')
+    if (loop_name .eq. 'NEWT') then
+        call SetRow(table_cvg, name_ = 'RESI_RELA', mark_ = ' ')
+        call SetRow(table_cvg, name_ = 'RESI_RELA', mark_ = ' ')
+        call SetRow(table_cvg, name_ = 'RESI_MAXI', mark_ = ' ')
+        call SetRow(table_cvg, name_ = 'RESI_REFE', mark_ = ' ')
+        call SetRow(table_cvg, name_ = 'RESI_COMP', mark_ = ' ')
+        if (dvrela) then
+            call SetRow(table_cvg, name_ = 'RESI_RELA', mark_ = 'X')
+        endif
+        if (dvmaxi) then
+            call SetRow(table_cvg, name_ = 'RESI_MAXI', mark_ = 'X')
+        endif
+        if (dvrefe) then
+            call SetRow(table_cvg, name_ = 'RESI_REFE', mark_ = 'X')
+        endif
+        if (dvcomp) then
+            call SetRow(table_cvg, name_ = 'RESI_COMP', mark_ = 'X')
+        endif
+        call SetRow(table_cvg, name_ = 'GEOM_NEWT', mark_ = ' ')
+        call SetRow(table_cvg, name_ = 'FROT_NEWT', mark_ = ' ')
+        call SetRow(table_cvg, name_ = 'CONT_NEWT', mark_ = ' ')
+        call SetRow(table_cvg, name_ = 'PILO_COEF', mark_ = ' ')
+        call SetRow(table_cvg, name_ = 'CTCD_NBIT', mark_ = ' ')
+        if (dvgeom) then
+            call SetRow(table_cvg, name_ = 'GEOM_NEWT', mark_ = 'X')
+        endif
+        if (dvfrot) then
+            call SetRow(table_cvg, name_ = 'FROT_NEWT', mark_ = 'X')
+        endif
+        if (dvcont) then
+            call SetRow(table_cvg, name_ = 'CONT_NEWT', mark_ = 'X')
+        endif
+        if (cvpilo) then
+            call SetRow(table_cvg, name_ = 'PILO_COEF', mark_ = 'B')
+        endif
+        if (dvpfix) then
+            call SetRow(table_cvg, name_ = 'CTCD_NBIT', mark_ = 'X')
+        endif
+        call SetRow(table_cvg, name_ = 'ITER_NUME', mark_ = 'X')
+        if (cvnewt) then
+            call SetRow(table_cvg, name_ = 'ITER_NUME', mark_ = ' ')
+        endif
+        if (lerrne) then
+            call SetRow(table_cvg, name_ = 'ITER_NUME', mark_ = 'E')
+        endif
+        call SetRow(table_cvg, name_ = 'BOUC_GEOM', mark_ = 'X')
+        call SetRow(table_cvg, name_ = 'BOUC_FROT', mark_ = 'X')
+        call SetRow(table_cvg, name_ = 'BOUC_CONT', mark_ = 'X')
+        if (dvdebo) then
+            call nmimck(ds_print, 'DEBORST  ', debors, .true._1)
+        endif
+    else if (loop_name.eq.'FIXE') then
+        call SetRow(table_cvg, name_ = 'BOUC_GEOM', mark_ = 'X')
+        call SetRow(table_cvg, name_ = 'BOUC_FROT', mark_ = 'X')
+        call SetRow(table_cvg, name_ = 'BOUC_CONT', mark_ = 'X')
         if (.not.dvfixg) then
-            call obtsdm(lisnom, 'BOUC_GEOM', ' ')
+            call SetRow(table_cvg, name_ = 'BOUC_GEOM', mark_ = ' ')
         endif
         if (.not.dvfixf) then
-            call obtsdm(lisnom, 'BOUC_FROT', ' ')
+            call SetRow(table_cvg, name_ = 'BOUC_FROT', mark_ = ' ')
         endif
         if (.not.dvfixc) then
-            call obtsdm(lisnom, 'BOUC_CONT', ' ')
+            call SetRow(table_cvg, name_ = 'BOUC_CONT', mark_ = ' ')
         endif
         if (dvfixc) then
-            call obtsdm(lisnom, 'BOUC_GEOM', 'X')
-            call obtsdm(lisnom, 'BOUC_FROT', 'X')
+            call SetRow(table_cvg, name_ = 'BOUC_GEOM', mark_ = 'X')
+            call SetRow(table_cvg, name_ = 'BOUC_FROT', mark_ = 'X')
         endif
         if (dvfixf) then
-            call obtsdm(lisnom, 'BOUC_GEOM', 'X')
+            call SetRow(table_cvg, name_ = 'BOUC_GEOM', mark_ = 'X')
         endif
-        if (erctcg) call obtsdm(lisnom, 'BOUC_GEOM', 'E')
-        if (erctcf) call obtsdm(lisnom, 'BOUC_FROT', 'E')
-        if (erctcc) call obtsdm(lisnom, 'BOUC_CONT', 'E')
+        if (erctcg) then
+            call SetRow(table_cvg, name_ = 'BOUC_GEOM', mark_ = 'E')
+        endif
+        if (erctcf) then
+            call SetRow(table_cvg, name_ = 'BOUC_FROT', mark_ = 'E')
+        endif
+        if (erctcc) then
+            call SetRow(table_cvg, name_ = 'BOUC_CONT', mark_ = 'E')
+        endif
     endif
 !
-    call jedema()
+! - Set convergence table
+!
+    ds_print%table_cvg = table_cvg
+!
 end subroutine

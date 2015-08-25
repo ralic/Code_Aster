@@ -15,13 +15,16 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+! aslint: disable=W1504
+!
 interface
-    subroutine nmconv(noma, modele, mate, numedd, sdnume,&
-                      fonact, sddyna, sdconv, sdimpr, sdstat,&
-                      sddisc, sdtime, sdcrit, sderro, parmet,&
-                      comref, matass, solveu, numins, iterat,&
-                      conv, eta, parcri, defico, resoco,&
+    subroutine nmconv(noma  , modele, mate  , numedd  , sdnume,&
+                      fonact, sddyna, sdconv, ds_print, sdstat,&
+                      sddisc, sdtime, sdcrit, sderro  , parmet,&
+                      comref, matass, solveu, numins  , iterat,&
+                      conv  , eta   , parcri, defico  , resoco,&
                       valinc, solalg, measse, veasse)
+        use NonLin_Datastructure_type
         character(len=8) :: noma
         character(len=24) :: modele
         character(len=24) :: mate
@@ -30,7 +33,7 @@ interface
         integer :: fonact(*)
         character(len=19) :: sddyna
         character(len=24) :: sdconv
-        character(len=24) :: sdimpr
+        type(NL_DS_Print), intent(inout) :: ds_print
         character(len=24) :: sdstat
         character(len=19) :: sddisc
         character(len=24) :: sdtime

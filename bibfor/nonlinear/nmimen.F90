@@ -1,4 +1,13 @@
-subroutine nmimen(sdimpr)
+subroutine nmimen(ds_print)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/impfok.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/ComputeTableHead.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,82 +27,59 @@ subroutine nmimen(sdimpr)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/impfok.h"
-#include "asterfort/implis.h"
-#include "asterfort/iunifi.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/obgetb.h"
-#include "asterfort/obgeti.h"
-#include "asterfort/obgeto.h"
-#include "asterfort/obttit.h"
-    character(len=24) :: sdimpr
+    type(NL_DS_Print), intent(in) :: ds_print
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (ALGORITHME - IMPRESSION)
+! MECA_NON_LINE - Print management
 !
-! IMPRESSION ENTETE DU TABLEAU DE CONVERGENCE
+! Print head of convergence table
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  ds_print         : datastructure for printing parameters
 !
-! IN  SDIMPR : SD AFFICHAGE
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+    character(len=255) :: sep_line, table_head(3)
+    type(NL_DS_Table) :: table_cvg
+    aster_logical :: l_tcvg_csv
+    integer :: line_width, mesg_unit, tcvg_unit
 !
-    character(len=255) :: ligsep, entet1, entet2, entet3
-    character(len=24) :: sdtabc
-    aster_logical :: lcsv, lprint
-    integer :: larlig, unimes, unicsv
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+    mesg_unit       = iunifi('MESSAGE')
 !
-    call jemarq()
+! - Get convergence table
 !
-! --- TABLEAU DE CONVERGENCE ET OPTIONS
+    table_cvg       = ds_print%table_cvg
 !
-    call obgeto(sdimpr, 'TABLEAU_CONV', sdtabc)
-    call obgetb(sdtabc, 'SORTIE_CSV', lcsv)
-    call obgeti(sdtabc, 'UNITE_CSV', unicsv)
-    call obgeti(sdtabc, 'LARGEUR_LIGNE', larlig)
-    unimes = iunifi('MESSAGE')
+! - Get parameters
 !
-! --- AFFICHAGE POUR CE PAS ?
+    sep_line        = ds_print%table_cvg%sep_line
+    tcvg_unit       = ds_print%tcvg_unit
+    line_width      = ds_print%table_cvg%width
+    l_tcvg_csv      = ds_print%l_tcvg_csv
 !
-    call obgetb(sdimpr, 'PRINT', lprint)
-    if (.not.lprint) goto 99
+! - Compute table head
 !
-! --- CREATION ENTETE DU TABLEAU DE CONVERGENCE
+    call ComputeTableHead(table_cvg, '|', table_head)
 !
-    call obttit(sdtabc, '|', entet1, entet2, entet3)
+! - Print in message unit
 !
-! --- CREATION LIGNE DE SEPARATION
+    call impfok(sep_line, line_width, mesg_unit)
+    call impfok(table_head(1), line_width, mesg_unit)
+    call impfok(table_head(2), line_width, mesg_unit)
+    call impfok(table_head(3), line_width, mesg_unit)
+    call impfok(sep_line, line_width, mesg_unit)
 !
-    call implis(sdtabc, ligsep)
+! - Print in file
 !
-! --- IMPRESSION DANS FICHIER MESSAGE
-!
-    call impfok(ligsep, larlig, unimes)
-    call impfok(entet1, larlig, unimes)
-    call impfok(entet2, larlig, unimes)
-    call impfok(entet3, larlig, unimes)
-    call impfok(ligsep, larlig, unimes)
-!
-! --- IMPRESSION DANS FICHIER CSV
-!
-    if (lcsv) then
-        call obttit(sdtabc, ',', entet1, entet2, entet3)
-        call impfok(entet1, larlig, unicsv)
-        call impfok(entet2, larlig, unicsv)
-        call impfok(entet3, larlig, unicsv)
+    if (l_tcvg_csv) then
+        call ComputeTableHead(table_cvg, ',', table_head)
+        call impfok(table_head(1), line_width, tcvg_unit)
+        call impfok(table_head(2), line_width, tcvg_unit)
+        call impfok(table_head(3), line_width, tcvg_unit)
     endif
-!
- 99 continue
-!
-    call jedema()
 !
 end subroutine

@@ -18,10 +18,11 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmimck(sdimpr, typcoz, valk, laffe)
-        character(len=24) :: sdimpr
-        character(len=*) :: typcoz
-        character(len=*) :: valk
-        aster_logical :: laffe
+    subroutine nmimck(ds_print, row_name_, valk, l_affe)
+        use NonLin_Datastructure_type
+        type(NL_DS_Print), intent(inout) :: ds_print
+        character(len=*), intent(in) :: row_name_
+        character(len=*), intent(in) :: valk
+        aster_logical, intent(in) :: l_affe
     end subroutine nmimck
 end interface

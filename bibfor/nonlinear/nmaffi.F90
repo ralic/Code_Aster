@@ -1,5 +1,20 @@
-subroutine nmaffi(fonact, sdconv, sdimpr, sderro, sddisc,&
-                  nombcl)
+subroutine nmaffi(list_func_acti, sdconv, ds_print, sderro, sddisc,&
+                  loop_name     )
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/nmaffm.h"
+#include "asterfort/nmerim.h"
+#include "asterfort/nmevim.h"
+#include "asterfort/nmimpr.h"
+#include "asterfort/nmimps.h"
+#include "asterfort/nmimpx.h"
+#include "asterfort/nmlecv.h"
+#include "asterfort/nmltev.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,122 +34,114 @@ subroutine nmaffi(fonact, sdconv, sdimpr, sderro, sddisc,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/nmaffm.h"
-#include "asterfort/nmerim.h"
-#include "asterfort/nmevim.h"
-#include "asterfort/nmimpr.h"
-#include "asterfort/nmimps.h"
-#include "asterfort/nmimpx.h"
-#include "asterfort/nmlecv.h"
-#include "asterfort/nmltev.h"
-    character(len=4) :: nombcl
-    character(len=24) :: sdimpr, sderro, sdconv
-    character(len=19) :: sddisc
-    integer :: fonact(*)
+    integer, intent(in) :: list_func_acti(*)
+    character(len=24), intent(in) :: sdconv
+    type(NL_DS_Print), intent(inout) :: ds_print
+    character(len=24), intent(in) :: sderro
+    character(len=19), intent(in) :: sddisc
+    character(len=4), intent(in) :: loop_name
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (ALGORITHME)
+! MECA_NON_LINE - Print management
 !
-! AFFICHAGES PENDANT UNE BOUCLE
+! Print during loop
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  list_func_acti   : list of active functionnalities
+! In  ds_print         : datastructure for printing parameters
+! In  sdconv           : name of datastructure convergence
+! In  sderro           : name of datastructure for error management (events)
+! In  sddisc           : name of datastructure for time discretization
+! In  loop_name        : name of loop
+!                         'NEWT' - Newton loop
+!                         'FIXE' - Fixed points loop
+!                         'INST' - Step time loop
 !
-! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
-! IN  SDIMPR : SD AFFICHAGE
-! IN  SDERRO : GESTION DES ERREURS
-! IN  NOMBCL : NOM DE LA BOUCLE
-!               'NEWT' - BOUCLE DE NEWTON
-!               'FIXE' - BOUCLE DE POINT FIXE
-!               'INST' - BOUCLE SUR LES PAS DE TEMPS
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
-!
-    aster_logical :: lerrei
+    aster_logical :: l_error
     aster_logical :: cvnewt, cvinst
-    aster_logical :: ltabl
-    aster_logical :: lboucl, lexpl
+    aster_logical :: l_line_print
+    aster_logical :: l_loop_cont, l_dyna_expl
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
+    l_line_print = .false.
 !
-! --- INITIALISATIONS
+! - Active functionnalites
 !
-    ltabl = .false.
+    l_loop_cont = isfonc(list_func_acti,'BOUCLE_EXTERNE')
+    l_dyna_expl = isfonc(list_func_acti,'EXPLICITE')
 !
-! --- FONCTIONNALITES ACTIVEES
-!
-    lboucl = isfonc(fonact,'BOUCLE_EXTERNE')
-    lexpl = isfonc(fonact,'EXPLICITE')
-!
-! --- CONVERGENCES
+! - Convergence state of loops
 !
     call nmlecv(sderro, 'NEWT', cvnewt)
     call nmlecv(sderro, 'INST', cvinst)
 !
-! --- MARQUAGE DES COLONNES
+! - Set marks in rows
 !
-    call nmaffm(sderro, sdimpr, nombcl)
+    call nmaffm(sderro, ds_print, loop_name)
 !
-! --- EVENEMENTS DE TYPE ERREURS
+! - Is error event occurred ?
 !
-    call nmltev(sderro, 'ERRI', nombcl, lerrei)
+    call nmltev(sderro, 'ERRI', loop_name, l_error)
 !
-! --- DOIT-ON IMPRIMER LA LIGNE DU TABLEAU ?
+! - Print line of convergence table ?
 !
-    if (nombcl .eq. 'NEWT') then
+    if (loop_name .eq. 'NEWT') then
         if (cvnewt) then
-            if (lboucl) then
-                ltabl = .false.
+            if (l_loop_cont) then
+                l_line_print = .false.
             else
-                ltabl = .true.
+                l_line_print = .true.
             endif
         else
-            ltabl = .true.
+            l_line_print = .true.
         endif
-    else if (nombcl.eq.'FIXE') then
-        if (lboucl) ltabl = .true.
-        if (.not.cvnewt) ltabl = .false.
-    else if (nombcl.eq.'INST') then
-        ltabl = .false.
+    else if (loop_name.eq.'FIXE') then
+        if (l_loop_cont) then
+            l_line_print = .true.
+        endif
+        if (.not.cvnewt) then
+            l_line_print = .false.
+        endif
+    else if (loop_name.eq.'INST') then
+        l_line_print = .false.
     endif
 !
-! --- AFFICHAGE LIGNE DU TABLEAU DE CONVERGENCE
+! - Print line in convergence table
 !
-    if (ltabl) call nmimpr(sdimpr)
+    if (l_line_print) then
+        call nmimpr(ds_print)
+    endif
 !
-! --- AFFICHAGE LIGNE DE CONVERGENCE
+! - Print separator line in convergence table
 !
-    if (ltabl) then
-        if (cvnewt .and. .not.(lerrei)) then
-            call nmimpx(sdimpr)
+    if (l_line_print) then
+        if (cvnewt .and. .not.(l_error)) then
+            if (ds_print%l_print) then 
+                call nmimpx(ds_print)
+            endif
         endif
     endif
 !
-! --- AFFICHAGE DE L'ERREUR
+! - Print error
 !
-    if (lerrei) then
-        call nmimpx(sdimpr)
+    if (l_error) then
+        call nmimpx(ds_print)
         call nmerim(sderro)
     endif
 !
-! --- AFFICHAGE DE L'EVENEMENT
+! - Print event messages
 !
-    call nmevim(sdimpr, sddisc, sderro, nombcl)
+    call nmevim(ds_print, sddisc, sderro, loop_name)
 !
-! --- AFFICHAGE RECAP CONVERGENCE
+! - Print residuals summary at end of step
 !
-    if (cvinst .and. .not.lexpl) then
-        call nmimps(sdimpr, sdconv, sderro)
+    if (cvinst .and. .not.l_dyna_expl) then
+        call nmimps(ds_print, sdconv, sderro)
     endif
 !
-    call jedema()
 end subroutine

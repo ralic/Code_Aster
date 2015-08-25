@@ -1,17 +1,16 @@
-subroutine nmeteo(result    , sdimpr, sddisc , sd_inout, force,&
-                  nume_store, time  , i_field)
+subroutine nmeteo(result, sddisc , sd_inout, force, nume_store,&
+                  time  , i_field, ds_print_)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/diincl.h"
 #include "asterfort/exisd.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nmarcc.h"
 #include "asterfort/nmetnc.h"
-#include "asterfort/obgetb.h"
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
@@ -33,13 +32,13 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=24), intent(in) :: sd_inout
-    character(len=24), intent(in) :: sdimpr
     character(len=19), intent(in) :: sddisc
     character(len=8), intent(in) :: result
     integer, intent(in) :: i_field
     integer, intent(in) :: nume_store
     real(kind=8), intent(in) :: time
     aster_logical, intent(in) :: force
+    type(NL_DS_Print), optional, intent(in) :: ds_print_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,7 +52,7 @@ implicit none
 ! In  sd_inout         : datastructure for input/output parameters
 ! In  nume_store       : index to store in results
 ! In  i_field          : field index
-! In  sdimpr           : datastructure for print informations
+! In  ds_print         : datastructure for printing parameters
 ! In  sddisc           : datastructure for discretization
 ! In  time             : current time
 ! In  force            : .true. to store field whatever storing options
@@ -86,8 +85,8 @@ implicit none
 ! ----- Print for this step ?
 !
         l_print = .true.
-        if (sdimpr .ne. ' ') then
-            call obgetb(sdimpr, 'PRINT', l_print)
+        if (present(ds_print_)) then
+            l_print = ds_print_%l_print
         endif
 !
 ! ----- Name of field (type) in results datastructure

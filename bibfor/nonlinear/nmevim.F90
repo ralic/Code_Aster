@@ -1,4 +1,19 @@
-subroutine nmevim(sdimpr, sddisc, sderro, nombcl)
+subroutine nmevim(ds_print, sddisc, sderro, loop_name)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmacto.h"
+#include "asterfort/nmerge.h"
+#include "asterfort/nmimpx.h"
+#include "asterfort/nmlecv.h"
+#include "asterfort/nmltev.h"
+#include "asterfort/utdidt.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,84 +33,78 @@ subroutine nmevim(sdimpr, sddisc, sderro, nombcl)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/nmacto.h"
-#include "asterfort/nmerge.h"
-#include "asterfort/nmimpx.h"
-#include "asterfort/nmlecv.h"
-#include "asterfort/nmltev.h"
-#include "asterfort/utdidt.h"
-#include "asterfort/utmess.h"
-    character(len=24) :: sdimpr, sderro
-    character(len=19) :: sddisc
-    character(len=4) :: nombcl
+    type(NL_DS_Print), intent(in) :: ds_print
+    character(len=24), intent(in) :: sderro
+    character(len=19), intent(in) :: sddisc
+    character(len=4), intent(in) :: loop_name
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (SD ERREUR)
+! MECA_NON_LINE - Event management
 !
-! EMISSION MESSAGE EVENEMENT
+! Print event messages
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! IN  SDIMPR : SD AFFICHAGE
+! In  ds_print         : datastructure for printing parameters
 ! In  sddisc           : datastructure for time discretization TEMPORELLE
-! IN  SDERRO : SD ERREUR
-! IN  NOMBCL : NOM DE LA BOUCLE
-!               'NEWT' - BOUCLE DE NEWTON
-!               'FIXE' - BOUCLE DE POINT FIXE
-!               'INST' - BOUCLE SUR LES PAS DE TEMPS
+! In  sderro           : name of datastructure for error management (events)
+! In  loop_name        : name of loop
+!                         'NEWT' - Newton loop
+!                         'FIXE' - Fixed points loop
+!                         'INST' - Step time loop
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: lacti, cvbouc, lerrei, llign, lldcbo
+    aster_logical :: lacti, cvbouc, lerrei, l_sep_line, lldcbo
     integer :: i_echec_acti
     character(len=16) :: event_name, action
     integer :: ieven, zeven
-    character(len=24) :: errinf
-    integer :: jeinfo
-    character(len=24) :: erraac, erreni, errmsg
-    integer :: jeeact, jeeniv, jeemsg
+    character(len=24) :: sderro_info
+    character(len=24) :: sderro_eact
+    character(len=24) :: sderro_eniv
+    character(len=24) :: sderro_emsg
+    integer, pointer :: v_sderro_info(:) => null()
+    integer, pointer :: v_sderro_eact(:) => null()
+    character(len=16), pointer :: v_sderro_eniv(:) => null()
+    character(len=24), pointer :: v_sderro_emsg(:) => null()
     integer :: icode
     character(len=9) :: teven
     character(len=24) :: meven
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call nmlecv(sderro, nombcl, cvbouc)
-    call nmltev(sderro, 'ERRI', nombcl, lerrei)
+    call nmlecv(sderro, loop_name, cvbouc)
+    call nmltev(sderro, 'ERRI', loop_name, lerrei)
     call nmerge(sderro, 'INTE_BORN', lldcbo)
 !
-! --- DEVRA-T-ON AFFICHER UNE LIGNE DE SEPARATION ?
+! - Separator line to print ?
 !
-    llign = (.not.cvbouc.and..not.lerrei.and..not.lldcbo)
+    l_sep_line = (.not.cvbouc.and..not.lerrei.and..not.lldcbo)
 !
-! --- ACCES SDERRO
+! - Access to error management datastructure
 !
-    errinf = sderro(1:19)//'.INFO'
-    call jeveuo(errinf, 'L', jeinfo)
-    zeven = zi(jeinfo-1+1)
+    sderro_info = sderro(1:19)//'.INFO'
+    sderro_eact = sderro(1:19)//'.EACT'
+    sderro_eniv = sderro(1:19)//'.ENIV'
+    sderro_emsg = sderro(1:19)//'.EMSG'
+    call jeveuo(sderro_info, 'L', vi = v_sderro_info)
+    call jeveuo(sderro_eact, 'L', vi = v_sderro_eact)
+    call jeveuo(sderro_eniv, 'L', vk16 = v_sderro_eniv)
+    call jeveuo(sderro_emsg, 'L', vk24 = v_sderro_emsg)
+    zeven = v_sderro_info(1)
 !
-    erraac = sderro(1:19)//'.EACT'
-    erreni = sderro(1:19)//'.ENIV'
-    errmsg = sderro(1:19)//'.EMSG'
-    call jeveuo(erraac, 'L', jeeact)
-    call jeveuo(erreni, 'L', jeeniv)
-    call jeveuo(errmsg, 'L', jeemsg)
-!
-! --- EMISSION DES MESSAGES RELATIFS AUX EVENEMENTS INTRINSEQUES
+! - Print event messages - Algorithm
 !
     do ieven = 1, zeven
-        icode = zi(jeeact-1+ieven)
-        teven = zk16(jeeniv-1+ieven)(1:9)
-        meven = zk24(jeemsg-1+ieven)
+        icode = v_sderro_eact(ieven)
+        teven = v_sderro_eniv(ieven)(1:9)
+        meven = v_sderro_emsg(ieven)
         if ((teven(1:4).eq.'EVEN') .and. (icode.eq.1)) then
             if (meven .ne. ' ') then
-                if (llign) call nmimpx(sdimpr)
+                if (l_sep_line) then
+                    call nmimpx(ds_print)
+                endif
                 if (meven .eq. 'MECANONLINE10_1') then
                     call utmess('I', 'MECANONLINE10_1')
                 else if (meven.eq.'MECANONLINE10_2') then
@@ -125,7 +134,7 @@ subroutine nmevim(sdimpr, sddisc, sderro, nombcl)
                 else if (meven.eq.'MECANONLINE10_24') then
                     call utmess('I', 'MECANONLINE10_24')
                 else if (meven.eq.'MECANONLINE10_25') then
-                    if (cvbouc .and. nombcl .eq. 'NEWT') then
+                    if (cvbouc .and. loop_name .eq. 'NEWT') then
                         call utmess('A', 'MECANONLINE10_25')
                     endif
                 else
@@ -135,7 +144,7 @@ subroutine nmevim(sdimpr, sddisc, sderro, nombcl)
         endif
     end do
 !
-! --- EMISSION DES MESSAGES RELATIFS AUX EVENEMENTS UTILISATEURS
+! - Print event messages - User
 !
     call nmacto(sddisc, i_echec_acti)
     lacti = i_echec_acti.gt.0
@@ -145,16 +154,24 @@ subroutine nmevim(sdimpr, sddisc, sderro, nombcl)
         call utdidt('L', sddisc, 'ECHE', 'ACTION', index_ = i_echec_acti,&
                     valk_ = action)
         if (event_name .eq. 'COLLISION') then
-            if (llign) call nmimpx(sdimpr)
+            if (l_sep_line) then
+                call nmimpx(ds_print)
+            endif
             call utmess('I', 'MECANONLINE10_21')
         else if (event_name.eq.'INTERPENETRATION') then
-            if (llign) call nmimpx(sdimpr)
+            if (l_sep_line) then
+                call nmimpx(ds_print)
+            endif
             call utmess('I', 'MECANONLINE10_22')
         else if (event_name.eq.'DIVE_RESI') then
-            if (llign) call nmimpx(sdimpr)
+            if (l_sep_line) then
+                call nmimpx(ds_print)
+            endif
             call utmess('I', 'MECANONLINE10_23')
         else if (event_name.eq.'DELTA_GRANDEUR') then
-            if (llign) call nmimpx(sdimpr)
+            if (l_sep_line) then
+                call nmimpx(ds_print)
+            endif
             call utmess('I', 'MECANONLINE10_24')
         endif
     endif

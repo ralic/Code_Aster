@@ -1,7 +1,9 @@
-subroutine nmtble(cont_loop  , model         , mesh  , mate  , sdcont_defi,&
-                  sdcont_solv, list_func_acti, sdimpr, sdstat, sdtime     ,&
-                  sddyna     , sderro        , sdconv, sddisc, nume_inst  ,&
+subroutine nmtble(cont_loop  , model         , mesh    , mate  , sdcont_defi,&
+                  sdcont_solv, list_func_acti, ds_print, sdstat, sdtime     ,&
+                  sddyna     , sderro        , sdconv  , sddisc, nume_inst  ,&
                   hval_incr  , hval_algo)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -46,7 +48,7 @@ implicit none
     character(len=24), intent(in) :: sdcont_defi
     character(len=24), intent(in) :: sdcont_solv
     integer, intent(in) :: list_func_acti(*)
-    character(len=24), intent(in) :: sdimpr
+    type(NL_DS_Print), intent(inout) :: ds_print
     character(len=24), intent(in) :: sdstat
     character(len=24), intent(in) :: sdtime
     character(len=19), intent(in) :: sddyna
@@ -76,7 +78,7 @@ implicit none
 ! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
 ! In  sdcont_solv      : name of contact solving datastructure
 ! In  list_func_acti   : list of active functionnalities
-! In  sdimpr           : datastructure for print informations
+! IO  ds_print         : datastructure for printing parameters
 ! In  sdstat           : datastructure for statistics
 ! In  sdtime           : datastructure for timers
 ! In  sddyna           : dynamic parameters datastructure
@@ -122,7 +124,7 @@ implicit none
     loop_cont_conv = .false.
     loop_frot_conv = .false.
     loop_geom_conv = .false.
-    time_curr = diinst(sddisc,nume_inst)
+    time_curr      = diinst(sddisc,nume_inst)
 !
 ! - <1> - Contact loop
 !
@@ -131,8 +133,8 @@ implicit none
             cont_loop = 1
             call nmtime(sdtime, 'INI', 'CTCC_CONT')
             call nmtime(sdtime, 'RUN', 'CTCC_CONT')
-            call nmctcc(mesh, model, mate, sddyna, sderro,&
-                        sdstat, sdcont_defi, sdcont_solv, hval_incr, hval_algo,&
+            call nmctcc(mesh          , model      , mate       , sddyna   , sderro   ,&
+                        sdstat        , sdcont_defi, sdcont_solv, hval_incr, hval_algo,&
                         loop_cont_conv, time_curr)
             call nmtime(sdtime, 'END', 'CTCC_CONT')
             call nmrinc(sdstat, 'CTCC_CONT')
@@ -150,7 +152,7 @@ implicit none
             cont_loop = 2
             call nmtime(sdtime, 'INI', 'CTCC_FROT')
             call nmtime(sdtime, 'RUN', 'CTCC_FROT')
-            call nmctcf(mesh, model, sdimpr, sderro, sdcont_defi,&
+            call nmctcf(mesh       , model    , ds_print      , sderro, sdcont_defi,&
                         sdcont_solv, hval_incr, loop_frot_conv)
             call nmtime(sdtime, 'END', 'CTCC_FROT')
             call nmrinc(sdstat, 'CTCC_FROT')
@@ -166,7 +168,7 @@ implicit none
     if (cont_loop .le. 3) then
         if (l_loop_geom) then
             cont_loop = 3
-            call nmctgo(mesh, sdimpr, sderro, sdcont_defi, sdcont_solv,&
+            call nmctgo(mesh     , ds_print      , sderro, sdcont_defi, sdcont_solv,&
                         hval_incr, loop_geom_conv)
             if (.not.loop_geom_conv) then
                 cont_loop = 3
@@ -185,7 +187,7 @@ implicit none
 !
 ! - Print line
 !
-    call nmaffi(list_func_acti, sdconv, sdimpr, sderro, sddisc,&
+    call nmaffi(list_func_acti, sdconv, ds_print, sderro, sddisc,&
                 'FIXE')
 !
 ! - New iteration in loops
@@ -200,14 +202,17 @@ implicit none
         call mmbouc(sdcont_solv, 'GEOM', 'INCR')
     endif
 !
-! - Set iteration in loops for print
+! - Update loops index
 !
     call mmbouc(sdcont_solv, 'CONT', 'READ', i_loop_cont)
     call mmbouc(sdcont_solv, 'FROT', 'READ', i_loop_frot)
     call mmbouc(sdcont_solv, 'GEOM', 'READ', i_loop_geom)
-    call nmimci(sdimpr, 'BOUC_CONT', i_loop_cont, .true._1)
-    call nmimci(sdimpr, 'BOUC_FROT', i_loop_frot, .true._1)
-    call nmimci(sdimpr, 'BOUC_GEOM', i_loop_geom, .true._1)
+!
+! - Set values of loops index in convergence table
+!
+    call nmimci(ds_print, 'BOUC_CONT', i_loop_cont, .true._1)
+    call nmimci(ds_print, 'BOUC_FROT', i_loop_frot, .true._1)
+    call nmimci(ds_print, 'BOUC_GEOM', i_loop_geom, .true._1)
 !
 999 continue
 !

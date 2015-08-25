@@ -1,4 +1,11 @@
-subroutine nmimci(sdimpr, typcoz, vali, laffe)
+subroutine nmimci(ds_print, row_name_, vali, l_affe)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/SetRow.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,59 +25,42 @@ subroutine nmimci(sdimpr, typcoz, vali, laffe)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "asterfort/impsdr.h"
-#include "asterfort/obgeto.h"
-#include "asterfort/oblgop.h"
-#include "asterfort/obsetb.h"
-    character(len=24) :: sdimpr
-    character(len=*) :: typcoz
-    integer :: vali
-    aster_logical :: laffe
+    type(NL_DS_Print), intent(inout) :: ds_print
+    character(len=*), intent(in) :: row_name_
+    integer, intent(in) :: vali
+    aster_logical, intent(in) :: l_affe
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (ALGORITHME - IMPRESSION)
+! MECA_NON_LINE - Print management
 !
-! ENREGISTRE LES DONNEES REELLES DANS LE TABLEAU DE CONVERGENCE
+! Set value in row of convergence table - Integer
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! IO  ds_print         : datastructure for printing parameters
+! In  row_name         : name of row 
+! In  flag             : .true. for activation of row
+! In  vali             : value (integer) for row
 !
-! IN  SDIMPR : SD AFFICHAGE
-! IN  TYPCOL : CODE TYPE DE LA COLONNE
-! IN  VALI   : VALEUR
-! IN  LAFFE  : .TRUE. SI LA VALEUR EST AFFECTEE
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+    type(NL_DS_Table) :: table_cvg
 !
-    character(len=24) :: sdtabc, slcolo, sdcolo
-    character(len=16) :: k16bid
-    real(kind=8) :: r8bid
-!
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 !
+! - Get convergence table
 !
-! --- RECUPERATION DU TABLEAU DE CONVERGENCE
+    table_cvg = ds_print%table_cvg
 !
-    call obgeto(sdimpr, 'TABLEAU_CONV', sdtabc)
+! - Set and activate value
 !
-! --- LISTE DES COLONNES
+    call SetRow(table_cvg, name_ = row_name_,&
+                flag_affe_ = l_affe, valei_ = vali)
 !
-    call obgeto(sdtabc, 'COLONNES_DISPOS', slcolo)
+! - Set convergence table
 !
-! --- COLONNE CORRESPONDANTE
-!
-    call oblgop(slcolo, typcoz, sdcolo)
-!
-! --- AFFECTATION DANS LE TABLEAU
-!
-    call impsdr(sdcolo, k16bid, r8bid, vali)
-!
-! --- VALIDATION DE LA VALEUR
-!
-    call obsetb(sdcolo, 'VALE_AFFE', laffe)
+    ds_print%table_cvg = table_cvg
 !
 end subroutine

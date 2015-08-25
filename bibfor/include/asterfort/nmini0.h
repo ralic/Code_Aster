@@ -15,12 +15,15 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+! aslint: disable=W1504
+!
 interface
-    subroutine nmini0(zpmet, zpcri, zconv, zpcon, znmeth,&
-                      fonact, parmet, parcri, conv, parcon,&
-                      method, eta, numins, matass, zmeelm,&
-                      zmeass, zveelm, zveass, zsolal, zvalin,&
-                      sdimpr)
+    subroutine nmini0(zpmet   , zpcri, zconv, zpcon, znmeth,&
+                      fonact  , parmet, parcri, conv, parcon,&
+                      method  , eta, numins, matass, zmeelm,&
+                      zmeass  , zveelm, zveass, zsolal, zvalin,&
+                      ds_print)
+        use NonLin_Datastructure_type
         integer :: znmeth
         integer :: zpcon
         integer :: zconv
@@ -41,6 +44,6 @@ interface
         integer :: zveass
         integer :: zsolal
         integer :: zvalin
-        character(len=24) :: sdimpr
+        type(NL_DS_Print), intent(out) :: ds_print
     end subroutine nmini0
 end interface

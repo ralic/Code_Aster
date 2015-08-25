@@ -1,5 +1,7 @@
 subroutine nmible(cont_loop     , model   , mesh  , sdcont_defi, sdcont_solv,&
-                  list_func_acti, nume_dof, sdstat, sdtime     , sdimpr)
+                  list_func_acti, nume_dof, sdstat, sdtime     , ds_print)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -36,7 +38,7 @@ implicit none
     character(len=24), intent(in) :: nume_dof
     character(len=24), intent(in) :: sdstat
     character(len=24), intent(in) :: sdtime
-    character(len=24), intent(in) :: sdimpr
+    type(NL_DS_Print), intent(inout) :: ds_print
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,7 +61,7 @@ implicit none
 ! In  nume_dof         : name of numbering object (NUME_DDL)
 ! In  sdstat           : datastructure for statistics
 ! In  sdtime           : datastructure for timers
-! In  sdimpr           : datastructure for print informations
+! IO  ds_print         : datastructure for printing parameters
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -76,7 +78,7 @@ implicit none
 ! - Print geometric loop iteration
 !
     call mmbouc(sdcont_solv, 'GEOM', 'READ', i_loop_geom)
-    call nmimci(sdimpr, 'BOUC_GEOM', i_loop_geom, .true._1)
+    call nmimci(ds_print   , 'BOUC_GEOM', i_loop_geom, .true._1)
 !
 ! - No pairing at first iteration (see mminit/xminit)
 !
@@ -101,7 +103,7 @@ implicit none
         call mmbouc(sdcont_solv, 'FROT', 'INIT')
         call mmbouc(sdcont_solv, 'FROT', 'INCR')
         call mmbouc(sdcont_solv, 'FROT', 'READ', i_loop_frot)
-        call nmimci(sdimpr, 'BOUC_FROT', i_loop_frot, .true._1)
+        call nmimci(ds_print   , 'BOUC_FROT', i_loop_frot, .true._1)
     endif
 !
 ! - <2> - Friction loop
@@ -113,7 +115,7 @@ implicit none
         call mmbouc(sdcont_solv, 'CONT', 'INIT')
         call mmbouc(sdcont_solv, 'CONT', 'INCR')
         call mmbouc(sdcont_solv, 'CONT', 'READ', i_loop_cont)
-        call nmimci(sdimpr, 'BOUC_CONT', i_loop_cont, .true._1)
+        call nmimci(ds_print   , 'BOUC_CONT', i_loop_cont, .true._1)
     endif
 !
 ! - <1> - Contact loop

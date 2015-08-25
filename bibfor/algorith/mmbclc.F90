@@ -1,16 +1,16 @@
-subroutine mmbclc(noma, nomo, numedd, iterat, numins,&
-                  sddisc, sddyna, sdimpr, defico, resoco,&
-                  valinc, solalg, sdtime, sdstat, mmcvca,&
+subroutine mmbclc(noma  , nomo  , numedd  , iterat, numins,&
+                  sddisc, sddyna, ds_print, defico, resoco,&
+                  valinc, solalg, sdtime  , sdstat, mmcvca,&
                   instan)
 !
-    implicit none
+use NonLin_Datastructure_type
+!
+implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/copisd.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
+#include "asterfort/mmappa.h"
 #include "asterfort/mmchml.h"
 #include "asterfort/mmligr.h"
 #include "asterfort/mmmbca.h"
@@ -41,7 +41,8 @@ subroutine mmbclc(noma, nomo, numedd, iterat, numins,&
     character(len=8), intent(in) :: noma, nomo
     integer, intent(in) :: numins, iterat
     character(len=19), intent(in) :: sddisc, sddyna
-    character(len=24), intent(in) :: defico, resoco, sdtime, sdstat, sdimpr, numedd
+    character(len=24), intent(in) :: defico, resoco, sdtime, sdstat, numedd
+    type(NL_DS_Print), intent(inout) :: ds_print
     character(len=19), intent(in) :: valinc(*), solalg(*)
     aster_logical, intent(out) :: mmcvca
     real(kind=8) :: instan
@@ -61,7 +62,7 @@ subroutine mmbclc(noma, nomo, numedd, iterat, numins,&
 ! IN  NUMINS : NUMERO D'INSTANT
 ! IN  SDDISC : SD DISCRETISATION
 ! IN  SDDYNA : SD DYNAMIQUE
-! IN  SDIMPR : SD AFFICHAGE
+! IO  ds_print         : datastructure for printing parameters
 ! IN  DEFICO : SD DEFINITION CONTACT
 ! IN  RESOCO : SD RESOLUTION CONTACT
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
@@ -79,10 +80,6 @@ subroutine mmbclc(noma, nomo, numedd, iterat, numins,&
     character(len=19) :: depgeo, depplu
 !
 ! ----------------------------------------------------------------------
-!
-    call jemarq()
-!
-! --- FONCTIONNALITES ACTIVEES
 !
     lallv = cfdisl(defico,'ALL_VERIF')
     lnewtc = cfdisl(defico,'CONT_NEWTON')
@@ -120,7 +117,7 @@ subroutine mmbclc(noma, nomo, numedd, iterat, numins,&
     if (lnewtc .or. lnewtg) then
         call nmtime(sdtime, 'INI', 'CTCC_CONT')
         call nmtime(sdtime, 'RUN', 'CTCC_CONT')
-        call mmmbca(noma, sddyna, iterat, defico, resoco,&
+        call mmmbca(noma  , sddyna, iterat, defico, resoco,&
                     sdstat, valinc, solalg, instan, ctcsta,&
                     mmcvca)
         call nmtime(sdtime, 'END', 'CTCC_CONT')
@@ -140,10 +137,10 @@ subroutine mmbclc(noma, nomo, numedd, iterat, numins,&
 !
 ! - Contact status for generalized Newton
 !
-    if (lnewtc) call nmimci(sdimpr, 'CONT_NEWT', ctcsta, .true._1)
+    if (lnewtc) then
+        call nmimci(ds_print, 'CONT_NEWT', ctcsta, .true._1)
+    endif
 !
 999 continue
-!
-    call jedema()
 !
 end subroutine

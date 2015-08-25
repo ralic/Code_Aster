@@ -1,5 +1,13 @@
-subroutine nmarce(sdieto, result, sdimpr, sddisc, instan,&
-                  numarc, force)
+subroutine nmarce(sdieto, result   , sddisc, instan, numarc,&
+                  force , ds_print_)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmeteo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,19 +27,13 @@ subroutine nmarce(sdieto, result, sdimpr, sddisc, instan,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/nmeteo.h"
-    character(len=24) :: sdieto, sdimpr
+    character(len=24) :: sdieto
     character(len=8) :: result
     character(len=19) :: sddisc
     integer :: numarc
     real(kind=8) :: instan
     aster_logical :: force
+    type(NL_DS_Print), optional, intent(in) :: ds_print_
 !
 ! ----------------------------------------------------------------------
 !
@@ -43,7 +45,7 @@ subroutine nmarce(sdieto, result, sdimpr, sddisc, instan,&
 !
 !
 ! IN  SDIETO : SD GESTION IN ET OUT
-! IN  SDIMPR : SD AFFICHAGE
+! In  ds_print         : datastructure for printing parameters
 ! IN  RESULT : NOM UTILISATEUR DU CONCEPT RESULTAT
 ! IN  FORCE  : VRAI SI ON SOUHAITE FORCER L'ARCHIVAGE DE TOUS LES CHAMPS
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
@@ -52,27 +54,27 @@ subroutine nmarce(sdieto, result, sdimpr, sddisc, instan,&
 !
 ! ----------------------------------------------------------------------
 !
-    character(len=24) :: ioinfo
-    integer :: jioinf
+    character(len=24) :: sdieto_info
+    integer, pointer :: v_sdieto_info(:) => null()
     integer :: nbcham
     integer :: icham
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
+    sdieto_info = sdieto(1:19)//'.INFO'
+    call jeveuo(sdieto_info, 'L', vi = v_sdieto_info)
+    nbcham = v_sdieto_info(1)
 !
-! --- ACCES SD IN ET OUT
+! - Loop on fields
 !
-    ioinfo = sdieto(1:19)//'.INFO'
-    call jeveuo(ioinfo, 'L', jioinf)
-    nbcham = zi(jioinf+1-1)
+    do icham = 1, nbcham
+        if (present(ds_print_)) then
+            call nmeteo(result, sddisc, sdieto   , force, numarc, &
+                        instan, icham , ds_print_)
+        else
+            call nmeteo(result, sddisc, sdieto   , force, numarc, &
+                        instan, icham)
+        endif
+    end do
 !
-! --- BOUCLE SUR LES CHAMPS
-!
-    do 10 icham = 1, nbcham
-        call nmeteo(result, sdimpr, sddisc, sdieto, force,&
-                    numarc, instan, icham)
- 10 end do
-!
-    call jedema()
 end subroutine

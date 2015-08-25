@@ -1,4 +1,14 @@
-subroutine ndxdec(sdimpr, sddisc, sderro, numins)
+subroutine ndxdec(ds_print, sddisc, sderro, numins)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterfort/assert.h"
+#include "asterfort/nmacto.h"
+#include "asterfort/nmeceb.h"
+#include "asterfort/nmevac.h"
+#include "asterfort/nmleeb.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,18 +28,10 @@ subroutine ndxdec(sdimpr, sddisc, sderro, numins)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/nmacto.h"
-#include "asterfort/nmeceb.h"
-#include "asterfort/nmevac.h"
-#include "asterfort/nmleeb.h"
-    integer :: numins
-    character(len=24) :: sdimpr, sderro
-    character(len=19) :: sddisc
+    type(NL_DS_Print), intent(in) :: ds_print
+    character(len=19), intent(in) :: sddisc
+    character(len=24), intent(in) :: sderro
+    integer, intent(in) :: numins
 !
 ! ----------------------------------------------------------------------
 !
@@ -39,28 +41,21 @@ subroutine ndxdec(sdimpr, sddisc, sderro, numins)
 !
 ! ----------------------------------------------------------------------
 !
-! IN  SDIMPR : SD AFFICHAGE
+! In  ds_print         : datastructure for printing parameters
 ! IN  SDERRO : SD GESTION DES ERREURS
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IN  NUMINS : NUMERO D'INSTANT
 !
-!
-!
+! ----------------------------------------------------------------------
 !
     integer :: iterat, retact, ievdac, actnew
-    character(len=24) :: k24bla
     character(len=4) :: etnewt
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
-!
-! --- INITIALISATIONS
-!
     retact = 4
     actnew = 3
     iterat = 0
-    k24bla = ' '
 !
 ! --- ETAT DE NEWTON ?
 !
@@ -72,8 +67,8 @@ subroutine ndxdec(sdimpr, sddisc, sderro, numins)
         retact = 0
     else if (etnewt.eq.'EVEN') then
         call nmacto(sddisc, ievdac)
-        call nmevac(sdimpr, sddisc, sderro, k24bla, k24bla,&
-                    ievdac, numins, iterat, retact)
+        call nmevac(sddisc, sderro  , ievdac, numins, iterat,&
+                    retact, ds_print)
     else if (etnewt.eq.'CONT') then
 ! ----- CONTINUER LA BOUCLE DE NEWTON EST IMPOSSIBLE EN EXPLICITE
         ASSERT(.false.)
@@ -134,5 +129,4 @@ subroutine ndxdec(sdimpr, sddisc, sderro, numins)
     call nmleeb(sderro, 'NEWT', etnewt)
     call nmeceb(sderro, 'FIXE', etnewt)
 !
-    call jedema()
 end subroutine

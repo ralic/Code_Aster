@@ -18,10 +18,11 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmimci(sdimpr, typcoz, vali, laffe)
-        character(len=24) :: sdimpr
-        character(len=*) :: typcoz
-        integer :: vali
-        aster_logical :: laffe
+    subroutine nmimci(ds_print, row_name_, vali, l_affe)
+        use NonLin_Datastructure_type
+        type(NL_DS_Print), intent(inout) :: ds_print
+        character(len=*), intent(in) :: row_name_
+        integer, intent(in) :: vali
+        aster_logical, intent(in) :: l_affe
     end subroutine nmimci
 end interface

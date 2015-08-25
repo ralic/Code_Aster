@@ -1,7 +1,9 @@
-subroutine nmdata(result, model , mesh  , mate  , carele, &
-                  compor, lischa, solveu, method, parmet, &
-                  parcri, parcon, carcri, sddyna, sdpost, &
-                  sderro, sdener, sdcriq, sdimpr)
+subroutine nmdata(result, model , mesh  , mate    , carele, &
+                  compor, lischa, solveu, method  , parmet, &
+                  parcri, parcon, carcri, sddyna  , sdpost, &
+                  sderro, sdener, sdcriq, ds_print)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -16,7 +18,7 @@ implicit none
 #include "asterfort/nmcrer.h"
 #include "asterfort/nmcrga.h"
 #include "asterfort/nmdocn.h"
-#include "asterfort/nmdoim.h"
+#include "asterfort/ReadPrint.h"
 #include "asterfort/nmdomt.h"
 #include "asterfort/nmdopo.h"
 #include "asterfort/nmdorc.h"
@@ -44,11 +46,12 @@ implicit none
     character(len=8) :: result
     character(len=19) :: lischa, solveu, sddyna, sdpost, sdener
     character(len=24) :: mate, carele, compor
-    character(len=24) :: carcri, sderro, sdcriq, sdimpr
+    character(len=24) :: carcri, sderro, sdcriq
     character(len=16) :: method(*)
     real(kind=8) :: parmet(*), parcri(*), parcon(*)
     character(len=*), intent(out) :: model
     character(len=*), intent(out) :: mesh
+    type(NL_DS_Print), intent(inout) :: ds_print
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -76,7 +79,7 @@ implicit none
 ! OUT SDERRO : SD ERREUR
 ! OUT SDCRIQ : SD CRITERE QUALITE
 ! OUT SDENER : SD ENERGIES
-! OUT SDIMPR : SD AFFICHAGE
+! IO  ds_print         : datastructure for printing parameters
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -151,8 +154,8 @@ implicit none
         call nmetdo(sdcriq)
     endif
 !
-! --- LECTURE DES PARAMETRES UTILISATEURS AFFICHAGE
+! - Read parameters for printing
 !
-    call nmdoim(sdimpr)
+    call ReadPrint(ds_print)
 !
 end subroutine

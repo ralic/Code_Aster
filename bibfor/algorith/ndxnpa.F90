@@ -1,6 +1,25 @@
-subroutine ndxnpa(modele, mate, carele, fonact, sdimpr,&
-                  sddisc, sddyna, sdnume, numedd, numins,&
+subroutine ndxnpa(modele, mate  , carele, fonact, ds_print,&
+                  sddisc, sddyna, sdnume, numedd, numins  ,&
                   valinc, solalg)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterc/isnnem.h"
+#include "asterfort/copisd.h"
+#include "asterfort/diinst.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/initia.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/ndnpas.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmvcle.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,26 +39,10 @@ subroutine ndxnpa(modele, mate, carele, fonact, sdimpr,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/isnnem.h"
-#include "asterfort/copisd.h"
-#include "asterfort/diinst.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/initia.h"
-#include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/ndnpas.h"
-#include "asterfort/nmchex.h"
-#include "asterfort/nmimpa.h"
-#include "asterfort/nmvcle.h"
     integer :: fonact(*)
     character(len=19) :: sddyna, sdnume, sddisc
     character(len=24) :: modele, mate, carele
-    character(len=24) :: sdimpr
+    type(NL_DS_Print), intent(inout) :: ds_print
     integer :: numins
     character(len=24) :: numedd
     character(len=19) :: solalg(*), valinc(*)
@@ -59,7 +62,7 @@ subroutine ndxnpa(modele, mate, carele, fonact, sdimpr,&
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! IN  NUMEDD : NUME_DDL
 ! IN  NUMINS : NUMERO INSTANT COURANT
-! IN  SDIMPR : SD AFFICHAGE
+! IO  ds_print         : datastructure for printing parameters
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IN  SDNUME : NOM DE LA SD NUMEROTATION
 ! IN  SDDYNA : SD DYNAMIQUE
@@ -135,9 +138,9 @@ subroutine ndxnpa(modele, mate, carele, fonact, sdimpr,&
     call ndnpas(fonact, numedd, numins, sddisc, sddyna,&
                 scotch, valinc, solalg)
 !
-! --- DOIT-ON ACTIVER L'AFFICHAGE POUR CE PAS DE TEMPS ?
+! - Print or not ?
 !
-    call nmimpa(numins, sdimpr)
+    ds_print%l_print = mod(numins+1,ds_print%reac_print) .eq. 0
 !
     call jedema()
 !

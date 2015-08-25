@@ -1,4 +1,12 @@
-subroutine nmimpx(sdimpr)
+subroutine nmimpx(ds_print)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/impfok.h"
+#include "asterfort/iunifi.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,60 +26,35 @@ subroutine nmimpx(sdimpr)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/impfok.h"
-#include "asterfort/implis.h"
-#include "asterfort/iunifi.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/obgetb.h"
-#include "asterfort/obgeti.h"
-#include "asterfort/obgeto.h"
-    character(len=24) :: sdimpr
+    type(NL_DS_Print), intent(in) :: ds_print
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (AFFICHAGE)
+! MECA_NON_LINE - Print management
 !
-! IMPRESSION DE LA LIGNE DE SEPARATION
+! Print separation line
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  ds_print         : datastructure for printing parameters
 !
-! IN  SDIMPR : SD AFFICHAGE
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+    integer :: line_width
+    character(len=255) :: sep_line
+    integer :: mesg_unit
 !
-    character(len=24) :: sdtabc
-    integer :: larlig
-    character(len=255) :: ligsep
-    integer :: unimes
-    aster_logical :: lprint
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+    mesg_unit       = iunifi('MESSAGE')
 !
-    call jemarq()
+! - Get parameters
 !
-! --- INITIALISATIONS
+    sep_line        = ds_print%table_cvg%sep_line
+    line_width      = ds_print%table_cvg%width
 !
-    call obgeto(sdimpr, 'TABLEAU_CONV', sdtabc)
-    call obgeti(sdtabc, 'LARGEUR_LIGNE', larlig)
-    unimes = iunifi('MESSAGE')
+! - Print line
 !
-! --- AFFICHAGE ACTIF ?
-!
-    call obgetb(sdimpr, 'PRINT', lprint)
-!
-! --- CREATION LIGNE
-!
-    call implis(sdtabc, ligsep)
-!
-! --- IMPRESSION LIGNE
-!
-    if (lprint) call impfok(ligsep, larlig, unimes)
-!
-    call jedema()
+    call impfok(sep_line, line_width, mesg_unit)
 !
 end subroutine

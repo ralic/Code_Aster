@@ -16,9 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmimps(sdimpr, sdconv, sderro)
-        character(len=24) :: sdimpr
-        character(len=24) :: sdconv
-        character(len=24) :: sderro
+    subroutine nmimps(ds_print, sdconv, sderro)
+        use NonLin_Datastructure_type
+        type(NL_DS_Print), intent(in) :: ds_print
+        character(len=24), intent(in) :: sdconv
+        character(len=24), intent(in) :: sderro
     end subroutine nmimps
 end interface

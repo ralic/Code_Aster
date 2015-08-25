@@ -1,10 +1,24 @@
-subroutine nmprde(modele, numedd, numfix, mate, carele,&
-                  comref, compor, lischa, method, solveu,&
-                  fonact, parmet, carcri, sdimpr, sdstat,&
-                  sdtime, sddisc, numins, valinc, solalg,&
-                  matass, maprec, defico, resoco, sddyna,&
-                  meelem, measse, veelem, veasse, ldccvg,&
+subroutine nmprde(modele, numedd, numfix, mate    , carele,&
+                  comref, compor, lischa, method  , solveu,&
+                  fonact, parmet, carcri, ds_print, sdstat,&
+                  sdtime, sddisc, numins, valinc  , solalg,&
+                  matass, maprec, defico, resoco  , sddyna,&
+                  meelem, measse, veelem, veasse  , ldccvg,&
                   faccvg, rescvg, codere)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/copisd.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmprca.h"
+#include "asterfort/nmprdc.h"
+#include "asterfort/nmprex.h"
+#include "asterfort/vtcopy.h"
+#include "asterfort/vtzero.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,27 +37,15 @@ subroutine nmprde(modele, numedd, numfix, mate, carele,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
-!
 ! aslint: disable=W1504
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/copisd.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/nmchex.h"
-#include "asterfort/nmprca.h"
-#include "asterfort/nmprdc.h"
-#include "asterfort/nmprex.h"
-#include "asterfort/vtcopy.h"
-#include "asterfort/vtzero.h"
+!
     integer :: fonact(*)
     integer :: numins, ldccvg, faccvg, rescvg
     real(kind=8) :: parmet(*)
     character(len=16) :: method(*)
     character(len=19) :: maprec, matass
-    character(len=24) :: sdimpr, sdtime, sdstat
+    character(len=24) :: sdtime, sdstat
+    type(NL_DS_Print), intent(inout) :: ds_print
     character(len=19) :: lischa, solveu, sddisc, sddyna
     character(len=24) :: numedd, numfix
     character(len=24) :: modele, mate, carele, comref, compor
@@ -77,7 +79,7 @@ subroutine nmprde(modele, numedd, numfix, mate, carele,&
 ! IN  SOLVEU : SOLVEUR
 ! IN  PARMET : PARAMETRES DES METHODES DE RESOLUTION
 ! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
-! IN  SDIMPR : SD AFFICHAGE
+! IO  ds_print         : datastructure for printing parameters
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
 ! IN  SDTIME : SD TIMER
 ! IN  SDSTAT : SD STATISTIQUES
@@ -119,10 +121,6 @@ subroutine nmprde(modele, numedd, numfix, mate, carele,&
     integer :: iret
 !
 ! ----------------------------------------------------------------------
-!
-    call jemarq()
-!
-! --- INITIALISATIONS
 !
     depest = '&&CNPART.CHP1'
     incest = '&&CNPART.CHP2'
@@ -166,14 +164,13 @@ subroutine nmprde(modele, numedd, numfix, mate, carele,&
 ! --- CINEMATIQUEMENT ADMISSIBLE
 !
     if (lproj) then
-        call nmprca(modele, numedd, numfix, mate, carele,&
-                    comref, compor, lischa, method, solveu,&
-                    fonact, parmet, carcri, sdimpr, sdstat,&
-                    sddisc, sdtime, numins, valinc, solalg,&
-                    matass, maprec, defico, resoco, sddyna,&
-                    meelem, measse, veelem, veasse, depest,&
+        call nmprca(modele, numedd, numfix, mate    , carele,&
+                    comref, compor, lischa, method  , solveu,&
+                    fonact, parmet, carcri, ds_print, sdstat,&
+                    sddisc, sdtime, numins, valinc  , solalg,&
+                    matass, maprec, defico, resoco  , sddyna,&
+                    meelem, measse, veelem, veasse  , depest,&
                     ldccvg, faccvg, rescvg, codere)
     endif
 !
-    call jedema()
 end subroutine

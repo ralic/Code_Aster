@@ -1,10 +1,12 @@
-subroutine nmpost(modele, mesh   , numedd, numfix, carele,&
-                  compor, solveu , numins, mate  , comref,&
-                  lischa, defico , resoco, resocu, parmet,&
-                  fonact, carcri , sdimpr, sdstat, sddisc,&
+subroutine nmpost(modele, mesh  , numedd  , numfix, carele,&
+                  compor, solveu, numins  , mate  , comref,&
+                  lischa, defico, resoco  , resocu, parmet,&
+                  fonact, carcri, ds_print, sdstat, sddisc,&
                   sdtime, sd_obsv, sderro, sddyna, sdpost,&
                   valinc, solalg , meelem, measse, veelem,&
                   veasse, sdener , sdcriq, eta)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -47,10 +49,11 @@ implicit none
     character(len=19) :: lischa, sdener
     character(len=19) :: sddisc, sddyna, sdpost
     character(len=19), intent(in) :: sd_obsv
+    type(NL_DS_Print), intent(in) :: ds_print
     character(len=24) :: modele, numedd, numfix, compor
     character(len=19) :: veelem(*), measse(*), veasse(*)
     character(len=19) :: solalg(*), valinc(*)
-    character(len=24) :: sdimpr, sdstat, sdtime, sderro, sdcriq
+    character(len=24) :: sdstat, sdtime, sderro, sdcriq
     character(len=24) :: mate, carele
     character(len=24) :: carcri, comref
     integer :: fonact(*)
@@ -73,7 +76,7 @@ implicit none
 ! IN  LISCHA : LISTE DES CHARGES
 ! IN  RESOCO : SD RESOLUTION CONTACT
 ! IN  DEFICO : SD DEFINITION CONTACT
-! IN  SDIMPR : SD AFFICHAGE
+! In  ds_print         : datastructure for printing parameters
 ! IN  SDTIME : SD TIMER
 ! IN  SDSTAT : SD STATISTIQUES
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
@@ -94,11 +97,11 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
-    lcont = isfonc(fonact,'CONTACT')
-    lerrt = isfonc(fonact,'ERRE_TEMPS_THM')
-    lmvib = isfonc(fonact,'MODE_VIBR')
-    lflam = isfonc(fonact,'CRIT_STAB')
-    lener = isfonc(fonact,'ENERGIE')
+    lcont       = isfonc(fonact,'CONTACT')
+    lerrt       = isfonc(fonact,'ERRE_TEMPS_THM')
+    lmvib       = isfonc(fonact,'MODE_VIBR')
+    lflam       = isfonc(fonact,'CRIT_STAB')
+    lener       = isfonc(fonact,'ENERGIE')
     l_post_incr = isfonc(fonact,'POST_INCR')
 !
 ! --- LE PAS FIXE A NECESSAIREMENT CONVERGE
@@ -120,7 +123,7 @@ implicit none
     if (lcont) then
         call nmtime(sdtime, 'INI', 'POST_TRAITEMENT')
         call nmtime(sdtime, 'RUN', 'POST_TRAITEMENT')
-        call cfmxpo(mesh, modele, defico, resoco, numins,&
+        call cfmxpo(mesh  , modele, defico, resoco, numins,&
                     sddisc, sdstat, solalg, valinc, veasse)
         call nmtime(sdtime, 'END', 'POST_TRAITEMENT')
     endif
@@ -130,12 +133,12 @@ implicit none
     if (lmvib .or. lflam) then
         call nmtime(sdtime, 'INI', 'POST_TRAITEMENT')
         call nmtime(sdtime, 'RUN', 'POST_TRAITEMENT')
-        call nmspec(modele, numedd, numfix, carele, compor,&
-                    solveu, numins, mate, comref, lischa,&
-                    defico, resoco, parmet, fonact, carcri,&
-                    sdimpr, sdstat, sdtime, sddisc, valinc,&
-                    solalg, meelem, measse, veelem, sddyna,&
-                    sdpost, sderro)
+        call nmspec(modele  , numedd, numfix, carele, compor,&
+                    solveu  , numins, mate  , comref, lischa,&
+                    defico  , resoco, parmet, fonact, carcri,&
+                    ds_print, sdstat, sdtime, sddisc, valinc,&
+                    solalg  , meelem, measse, veelem, sddyna,&
+                    sdpost  , sderro)
         call nmtime(sdtime, 'END', 'POST_TRAITEMENT')
     endif
 !

@@ -16,15 +16,16 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmactf(sdimpr, sddisc, sderro, defico, resoco,&
-                      parcri, iterat, numins)
-        character(len=24) :: sdimpr
-        character(len=19) :: sddisc
-        character(len=24) :: sderro
-        character(len=24) :: defico
-        character(len=24) :: resoco
-        real(kind=8) :: parcri(*)
-        integer :: iterat
-        integer :: numins
+    subroutine nmactf(ds_print, sddisc, sderro, defico, resoco,&
+                      parcri  , iterat, numins)
+        use NonLin_Datastructure_type
+        type(NL_DS_Print), intent(in) :: ds_print
+        character(len=24), intent(in) :: sderro
+        character(len=24), intent(in) :: defico
+        character(len=24), intent(in) :: resoco
+        character(len=19), intent(in) :: sddisc
+        real(kind=8), intent(in) :: parcri(*)
+        integer, intent(in) :: iterat
+        integer, intent(in) :: numins
     end subroutine nmactf
 end interface

@@ -18,11 +18,12 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmctcf(noma, modele, sdimpr, sderro, defico,&
-                      resoco, valinc, mmcvfr)
+    subroutine nmctcf(noma  , modele, ds_print, sderro, defico,&
+                      resoco, valinc, mmcvfr  )
+        use NonLin_Datastructure_type
         character(len=8) :: noma
         character(len=24) :: modele
-        character(len=24) :: sdimpr
+        type(NL_DS_Print), intent(inout) :: ds_print
         character(len=24) :: sderro
         character(len=24) :: defico
         character(len=24) :: resoco

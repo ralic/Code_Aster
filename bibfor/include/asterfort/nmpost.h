@@ -18,13 +18,14 @@
 ! aslint: disable=W1504
 !
 interface
-    subroutine nmpost(modele, mesh   , numedd, numfix, carele,&
-                      compor, solveu , numins, mate  , comref,&
-                      lischa, defico , resoco, resocu, parmet,&
-                      fonact, carcri , sdimpr, sdstat, sddisc,&
-                      sdtime, sd_obsv, sderro, sddyna, sdpost,&
-                      valinc, solalg , meelem, measse, veelem,&
-                      veasse, sdener , sdcriq, eta)
+    subroutine nmpost(modele, mesh   , numedd  , numfix, carele,&
+                      compor, solveu , numins  , mate  , comref,&
+                      lischa, defico , resoco  , resocu, parmet,&
+                      fonact, carcri , ds_print, sdstat, sddisc,&
+                      sdtime, sd_obsv, sderro  , sddyna, sdpost,&
+                      valinc, solalg , meelem  , measse, veelem,&
+                      veasse, sdener , sdcriq  , eta)
+        use NonLin_Datastructure_type
         character(len=24) :: modele
         character(len=8), intent(in) :: mesh
         character(len=24) :: numedd
@@ -42,7 +43,7 @@ interface
         real(kind=8) :: parmet(*)
         integer :: fonact(*)
         character(len=24) :: carcri
-        character(len=24) :: sdimpr
+        type(NL_DS_Print), intent(in) :: ds_print
         character(len=24) :: sdstat
         character(len=19) :: sddisc
         character(len=24) :: sdtime

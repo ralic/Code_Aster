@@ -16,15 +16,16 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmnoli(result, sddisc, sderro, carcri, sdimpr,&
-                      sdcrit, fonact, sddyna, sdpost, modele,&
-                      mate, carele, lisch2, sdpilo, sdtime,&
+    subroutine nmnoli(result, sddisc, sderro, carcri, ds_print,&
+                      sdcrit, fonact, sddyna, sdpost, modele  ,&
+                      mate  , carele, lisch2, sdpilo, sdtime  ,&
                       sdener, sdieto, sdcriq)
+        use NonLin_Datastructure_type
         character(len=8) :: result
         character(len=19) :: sddisc
         character(len=24) :: sderro
         character(len=24) :: carcri
-        character(len=24) :: sdimpr
+        type(NL_DS_Print), intent(in) :: ds_print
         character(len=19) :: sdcrit
         integer :: fonact(*)
         character(len=19) :: sddyna

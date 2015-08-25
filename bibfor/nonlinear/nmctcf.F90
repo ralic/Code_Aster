@@ -1,5 +1,25 @@
-subroutine nmctcf(noma, modele, sdimpr, sderro, defico,&
-                  resoco, valinc, mmcvfr)
+subroutine nmctcf(noma  , modele, ds_print, sderro, defico,&
+                  resoco, valinc, mmcvfr  )
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfdisr.h"
+#include "asterfort/copisd.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/mmbouc.h"
+#include "asterfort/mmmcri.h"
+#include "asterfort/mmreas.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmcrel.h"
+#include "asterfort/nmimck.h"
+#include "asterfort/nmimcr.h"
+#include "asterfort/xreacl.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,29 +39,11 @@ subroutine nmctcf(noma, modele, sdimpr, sderro, defico,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/cfdisr.h"
-#include "asterfort/copisd.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/mmbouc.h"
-#include "asterfort/mmmcri.h"
-#include "asterfort/mmreas.h"
-#include "asterfort/nmchex.h"
-#include "asterfort/nmcrel.h"
-#include "asterfort/nmimck.h"
-#include "asterfort/nmimcr.h"
-#include "asterfort/xreacl.h"
     character(len=8) :: noma
     character(len=24) :: modele
     character(len=24) :: defico, resoco
-    character(len=24) :: sdimpr, sderro
+    character(len=24) :: sderro
+    type(NL_DS_Print), intent(inout) :: ds_print
     character(len=19) :: valinc(*)
     aster_logical :: mmcvfr
 !
@@ -53,10 +55,9 @@ subroutine nmctcf(noma, modele, sdimpr, sderro, defico,&
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  NOMA   : NOM DU MAILLAGE
 ! IN  MODELE : NOM DU MODELE
-! IN  SDIMPR : SD AFFICHAGE
+! IO  ds_print         : datastructure for printing parameters
 ! IN  SDERRO : GESTION DES ERREURS
 ! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
 ! IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
@@ -80,18 +81,14 @@ subroutine nmctcf(noma, modele, sdimpr, sderro, defico,&
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('MECANONLINE', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> MISE A JOUR DU SEUIL DE TRESCA'
     endif
 !
 ! --- INITIALISATIONS
 !
-    nomo = modele(1:8)
+    nomo   = modele(1:8)
     mmcvfr = .false.
     deplam = resoco(1:14)//'.DEPF'
     lerrof = .false.
@@ -143,10 +140,10 @@ subroutine nmctcf(noma, modele, sdimpr, sderro, defico,&
         call nmcrel(sderro, 'DIVE_FIXF', .true._1)
     endif
 !
-! --- VALEUR ET ENDROIT OU SE REALISE L'EVALUATION DE LA BOUCLE
+! - Set values in convergence table for contact geoemtry informations
 !
-    call nmimck(sdimpr, 'BOUC_NOEU', cvgnoe, .true._1)
-    call nmimcr(sdimpr, 'BOUC_VALE', cvgval, .true._1)
+    call nmimck(ds_print, 'BOUC_NOEU', cvgnoe, .true._1)
+    call nmimcr(ds_print, 'BOUC_VALE', cvgval, .true._1)
 !
 ! --- MISE A JOUR DU SEUIL DE REFERENCE
 !
@@ -154,5 +151,4 @@ subroutine nmctcf(noma, modele, sdimpr, sderro, defico,&
         call copisd('CHAMP_GD', 'V', depplu, deplam)
     endif
 !
-    call jedema()
 end subroutine
