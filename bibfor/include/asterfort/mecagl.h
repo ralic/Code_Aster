@@ -15,6 +15,7 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+! aslint: disable=W1504
 #include "asterf_types.h"
 !
 interface
@@ -23,35 +24,38 @@ interface
                       nnoff, iord, ndeg, liss, &
                       milieu, ndimte, pair, extim, &
                       time, nbprup, noprup, chvite, chacce, &
-                      lmelas, nomcas, kcalc, fonoeu, lincr, coor)
+                      lmelas, nomcas, kcalc, fonoeu, lincr, coor, &
+                      norfon, connex)
         character(len=16) :: option
-        character(len=8) :: result
-        character(len=8) :: modele
+        character(len=8)  :: result
+        character(len=8)  :: modele
         character(len=24) :: depla
-        character(len=8) :: thetai
+        character(len=8)  :: thetai
         character(len=24) :: mate
         character(len=24) :: compor
         character(len=19) :: lischa
-        character(len=8) :: symech
+        character(len=8)  :: symech
         character(len=24) :: chfond
-        integer :: nnoff
-        integer :: iord
-        integer :: ndeg
-        aster_logical :: lincr
+        integer           :: nnoff
+        integer           :: iord
+        integer           :: ndeg
+        aster_logical     :: lincr
         character(len=24) :: liss
-        aster_logical :: milieu
-        integer :: ndimte
-        aster_logical :: pair
-        aster_logical :: extim
-        real(kind=8) :: time
-        integer :: nbprup
+        aster_logical     :: milieu
+        integer           :: ndimte
+        aster_logical     :: pair
+        aster_logical     :: extim
+        real(kind=8)      :: time
+        integer           :: nbprup
         character(len=16) :: noprup(*)
         character(len=24) :: chvite
         character(len=24) :: chacce
-        aster_logical :: lmelas
+        aster_logical     :: lmelas
         character(len=16) :: nomcas
-        character(len=8) :: kcalc
+        character(len=8)  :: kcalc
         character(len=24) :: fonoeu
-        integer :: coor
+        integer           :: coor
+        character(len=24) :: norfon
+        aster_logical     :: connex
     end subroutine mecagl
 end interface

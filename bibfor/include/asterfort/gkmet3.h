@@ -19,18 +19,16 @@
 !
 interface
     subroutine gkmet3(nnoff, chfond, iadrgk, milieu, connex,&
-                      iadgks, iadgki, abscur, num, modele,&
-                      typdis)
-        integer :: nnoff
+                      iadgks, iadgki, abscur, num, typdis)
+        integer           :: nnoff
         character(len=24) :: chfond
-        integer :: iadrgk
-        aster_logical :: milieu
-        aster_logical :: connex
-        integer :: iadgks
-        integer :: iadgki
+        integer           :: iadrgk
+        aster_logical     :: milieu
+        aster_logical     :: connex
+        integer           :: iadgks
+        integer           :: iadgki
         character(len=24) :: abscur
-        integer :: num
-        character(len=8) :: modele
+        integer           :: num
         character(len=16) :: typdis
     end subroutine gkmet3
 end interface

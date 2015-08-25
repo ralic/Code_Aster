@@ -15,6 +15,7 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+! aslint: disable=W1504
 #include "asterf_types.h"
 !
 interface
@@ -23,32 +24,33 @@ interface
                       nnoff , ndeg, liss,&
                       milieu, ndimte, pair, extim,timeu,&
                       timev , indi, indj, nbprup,noprup,&
-                      lmelas, nomcas, fonoeu)
+                      lmelas, nomcas, fonoeu, connex)
         character(len=16) :: option
-        character(len=8) :: result
-        character(len=8) :: modele
+        character(len=8)  :: result
+        character(len=8)  :: modele
         character(len=24) :: depla1
         character(len=24) :: depla2
-        character(len=8) :: thetai
+        character(len=8)  :: thetai
         character(len=24) :: mate
         character(len=19) :: lischa
-        character(len=8) :: symech
+        character(len=8)  :: symech
         character(len=24) :: chfond
-        integer :: nnoff
-        integer :: ndeg
+        integer           :: nnoff
+        integer           :: ndeg
         character(len=24) :: liss
-        aster_logical :: milieu
-        integer :: ndimte
-        aster_logical :: pair
-        aster_logical :: extim
-        real(kind=8) :: timeu
-        real(kind=8) :: timev
-        integer :: indi
-        integer :: indj
-        integer :: nbprup
+        aster_logical     :: milieu
+        integer           :: ndimte
+        aster_logical     :: pair
+        aster_logical     :: extim
+        real(kind=8)      :: timeu
+        real(kind=8)      :: timev
+        integer           :: indi
+        integer           :: indj
+        integer           :: nbprup
         character(len=16) :: noprup(*)
-        aster_logical :: lmelas
+        aster_logical     :: lmelas
         character(len=16) :: nomcas
         character(len=24) :: fonoeu
+        aster_logical     :: connex
     end subroutine mbilgl
 end interface

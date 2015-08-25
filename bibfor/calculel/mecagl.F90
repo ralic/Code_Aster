@@ -3,7 +3,8 @@ subroutine mecagl(option, result, modele, depla, thetai,&
                   nnoff, iord, ndeg, liss,&
                   milieu, ndimte, pair, extim,&
                   time, nbprup, noprup, chvite, chacce,&
-                  lmelas, nomcas, kcalc, fonoeu, lincr, coor)
+                  lmelas, nomcas, kcalc, fonoeu, lincr, coor,&
+                  norfon, connex)
 ! aslint: disable=W1504
     implicit none
 !
@@ -54,9 +55,9 @@ subroutine mecagl(option, result, modele, depla, thetai,&
     character(len=8) :: result, symech, kcalc
     character(len=16) :: option, noprup(*), nomcas
     character(len=24) :: depla, chfond, mate, compor
-    character(len=24) :: chvite, chacce, fonoeu, liss
+    character(len=24) :: chvite, chacce, fonoeu, liss, norfon
 !
-    aster_logical :: extim, milieu, pair, lmelas, lincr
+    aster_logical :: extim, milieu, pair, lmelas, lincr, connex
 ! ......................................................................
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -422,8 +423,8 @@ subroutine mecagl(option, result, modele, depla, thetai,&
 !
     if (liss .eq. 'LAGRANGE_REGU') then
         num = 5
-        call gmeth4(nnoff, ndimte, fonoeu, zr(iadrg), milieu,&
-                    pair, valg_s, objcur, zr(iadgi), lxfem)
+        call gmeth4(nnoff, ndimte, zr(iadrg), milieu, pair, &
+                    valg_s, objcur, zr(iadgi), connex)
     else if ((liss.ne.'LAGRANGE').and.(liss.ne.'LAGRANGE_NO_NO').and.(liss.ne.'MIXTE')) then
         num = 1
         call gmeth1(nnoff, ndeg, zr(iadrg), valg_s, objcur,&
@@ -433,12 +434,12 @@ subroutine mecagl(option, result, modele, depla, thetai,&
         normff(20:24) = '.VALE'
         if ((liss.ne.'LAGRANGE').and.(liss.ne.'LAGRANGE_NO_NO')) then
             num = 2
-            call gmeth2(modele, nnoff, ndeg, normff, fonoeu,&
-                        zr(iadrg), valg_s, objcur, xl, zr(iadgi))
+            call gmeth2(nnoff, ndeg, zr(iadrg), valg_s, &
+                        objcur, xl, zr(iadgi), norfon)
 !
         else
-            call gmeth3(nnoff, fonoeu, zr(iadrg), milieu, valg_s,&
-                        objcur, zr(iadgi), num, lxfem)
+            call gmeth3(nnoff, zr(iadrg), milieu, valg_s,&
+                        objcur, zr(iadgi), num, connex)
         endif
     endif
 !

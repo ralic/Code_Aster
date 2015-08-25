@@ -2,7 +2,7 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
                   thetai, mate, lischa, symech, chfond,&
                   nnoff, ndeg, liss, milieu, ndimte, pair,&
                   extim, timeu, timev, indi, indj, nbprup, noprup,&
-                  lmelas, nomcas, fonoeu)
+                  lmelas, nomcas, fonoeu, connex)
 ! aslint: disable=W1504
     implicit none
 !
@@ -48,7 +48,7 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
     character(len=24) :: depla1, depla2, chfond, mate, fonoeu, liss
 !
     aster_logical :: extim, milieu, pair
-    aster_logical :: ufonc, vfonc, lmelas
+    aster_logical :: ufonc, vfonc, lmelas, connex
 ! ......................................................................
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -314,15 +314,15 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
 !
     if (liss.eq.'LAGRANGE_REGU') then
         num = 5
-        call gmeth4(nnoff, ndimte, fonoeu, zr(iadrg), milieu,&
-                    pair, valg_s, objcur, zr(iadgi), .false._1)
+        call gmeth4(nnoff, ndimte, zr(iadrg), milieu, pair, &
+                    valg_s, objcur, zr(iadgi), connex)
     else if ((liss.ne.'LAGRANGE').and.(liss.ne.'LAGRANGE_NO_NO').and.(liss.ne.'MIXTE')) then
         num = 1
         call gmeth1(nnoff, ndeg, zr(iadrg), valg_s, objcur,&
-                    xl, zr( iadgi))
+                    xl, zr( iadgi) )
     else if ((liss.eq.'LAGRANGE').or.(liss.eq.'LAGRANGE_NO_NO')) then
-        call gmeth3(nnoff, fonoeu, zr(iadrg), milieu, valg_s,&
-                    objcur, zr(iadgi), num, .false._1)
+        call gmeth3(nnoff, zr(iadrg), milieu, valg_s,&
+                    objcur, zr(iadgi), num, connex)
     endif
 !
 !- SYMETRIE DU CHARGEMENT ET IMPRESSION DES RESULTATS

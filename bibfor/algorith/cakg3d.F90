@@ -5,7 +5,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
                   extim, time, nbprup, noprup, fiss,&
                   lmelas, nomcas, lmoda, puls, milieu,&
                   connex, coor, iadnoe, typdis)
-
+! aslint: disable=W1504
     implicit none
 !
 #include "asterf_types.h"
@@ -514,8 +514,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
         else
             num = 3
             call gkmet3(nnoff, chfond, iadrgk, milieu, connex,&
-                        iadgks, iadgki, abscur, num, modele,&
-                        typdis)
+                        iadgks, iadgki, abscur, num, typdis)
         endif
     endif
 !
@@ -563,7 +562,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
         call tbajvr(result, nbprup, 'G_IRWIN', zr(iadgks-1+6*(i-1)+5), livr)
         call tbajli(result, nbprup, noprup, livi, livr,&
                     livc, livk, 0)
-        if ((codret .eq. 'OK') .and. (zr(iadgks-1+6*(i-1)+1) .ne. 0.d0 )) then
+        if ((codret .eq. 'OK') .and. ( abs( zr(iadgks-1+6*(i-1)+1) ) .ge. 1.e-12 ) ) then
             difrel= abs((zr(iadgks-1+6*(i-1)+1)- zr(iadgks-1+6*(i-1)+5))/zr(iadgks-1+6*(i-1)+1))
             diff2g = diff2g + difrel
         endif

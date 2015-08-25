@@ -169,7 +169,7 @@ for i in range(2) :
                      NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N403',      ),
-                     VALE_CALC=11.86013280321,
+                     VALE_CALC=11.8601328045,
                      VALE_REFE=1.158648E+01,
                      PRECISION=0.04,
                      REFERENCE='ANALYTIQUE'       )
@@ -178,7 +178,7 @@ for i in range(2) :
                      NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N2862',      ),
-                     VALE_CALC=11.6052796107,
+                     VALE_CALC=11.60523834,
                      VALE_REFE=1.158648E+01,
                      PRECISION=0.01,
                      REFERENCE='ANALYTIQUE'       )
@@ -196,7 +196,7 @@ for i in range(2) :
                      NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N292',      ),
-                     VALE_CALC=11.868720184024,
+                     VALE_CALC=11.8687201842,
                      VALE_REFE=1.158648E+01,
                      PRECISION=0.04,
                      REFERENCE='ANALYTIQUE'       )
@@ -204,7 +204,7 @@ for i in range(2) :
    TEST_TABLE(TABLE=GLOC1[i],
            NOM_PARA='G',
            TYPE_TEST = 'MAX',
-           VALE_CALC=11.868720184024,
+           VALE_CALC=11.8687201842,
            VALE_REFE=1.158648E+01,
            PRECISION=0.05,
            REFERENCE='ANALYTIQUE'       )
@@ -212,7 +212,7 @@ for i in range(2) :
    TEST_TABLE(TABLE=GLOC1[i],
            NOM_PARA='G',
            TYPE_TEST = 'MIN',
-           VALE_CALC=11.601010543284,
+           VALE_CALC=11.5971937956,
            VALE_REFE=1.158648E+01,
            PRECISION=0.01,
            REFERENCE='ANALYTIQUE'       )

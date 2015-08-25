@@ -1,7 +1,22 @@
-subroutine gmeth1(nnoff, ndeg, gthi, gs, objcur,&
-                  xl, gi)
-    implicit none
-!
+subroutine gmeth1(nnoff, ndeg, gthi, gs, objcur, xl, gi)
+
+implicit none
+
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/glegen.h"
+#include "asterfort/gmatr1.h"
+#include "asterfort/gsyste.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/wkvect.h"
+
+    integer           :: nnoff, ndeg
+    real(kind=8)      :: gthi(1), gs(1), gi(1),xl
+    character(len=24) :: objcur
+
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,8 +33,6 @@ subroutine gmeth1(nnoff, ndeg, gthi, gs, objcur,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!
-! ......................................................................
 !      METHODE THETA-LEGENDRE ET G-LEGENDRE POUR LE CALCUL DE G(S)
 !
 ! ENTREE
@@ -28,50 +41,43 @@ subroutine gmeth1(nnoff, ndeg, gthi, gs, objcur,&
 !   NDEG     --> NOMBRE+1 PREMIERS CHAMPS THETA CHOISIS
 !   GTHI     --> VALEURS DE G POUR LES CHAMPS THETAI
 !   OBJCUR   --> ABSCISSES CURVILIGNES S
-!   XL     : LONGUEUR DE LA FISSURE
-!
+!   XL       --> LONGUEUR DE LA FISSURE
+
 ! SORTIE
-!
 !   GS      --> VALEUR DE G(S)
 !   GI      --> VALEUR DE GI
 ! ......................................................................
-!
-#include "jeveux.h"
-#include "asterfort/detrsd.h"
-#include "asterfort/glegen.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/wkvect.h"
-    integer :: nnoff, ndeg, iadrt3, i, j
-    real(kind=8) :: xl, som, gthi(1), gs(1), gi(1)
-    character(len=24) :: objcur
-!
-!
+
+    integer           :: iadrt3
+    integer           :: i, j
+    character(len=24) :: matr
+    real(kind=8)      :: som
+
+!.......................................................................
+   
     call jemarq()
+
+!   CALCUL DE LA MATRICE DU SYSTEME LINÉAIRE [A] {GI} = {GTHI}
+    matr = '&&METHO1.MATRIC'
+    call gmatr1(nnoff, ndeg, objcur, xl, matr)
 !
-! VALEURS DU MODULE DU CHAMP THETA POUR LES NOEUDS DU FOND DE FISSURE
+!   RESOLUTION DU SYSTEME LINEAIRE:  MATR*GI = GTHI
+    call gsyste(matr, ndeg+1, ndeg+1, gthi, gi)
 !
+!   VALEURS DES POLYNOMES DE LEGENDRE POUR LES NOEUDS DU FOND DE FISSURE
     call wkvect('&&METHO1.THETA', 'V V R8', (ndeg+1)*nnoff, iadrt3)
-!
     call glegen(ndeg, nnoff, xl, objcur, zr(iadrt3))
 !
-! VALEURS DE GI
-!
-    do 10 i = 1, ndeg+1
-        gi(i) = gthi(i)
-10  end do
-!
-! VALEURS DE G(S)
-!
-    do 30 i = 1, nnoff
+!   VALEURS DE G(S)
+    do i = 1, nnoff
         som = 0.d0
-        do 20 j = 1, ndeg+1
+        do j = 1, ndeg+1
             som = som + gi(j)*zr(iadrt3+(j-1)*nnoff+i-1)
-20      continue
+        end do
         gs(i) = som
-30  end do
+    end do
 !
+    call jedetr('&&METHO1.MATRIC')
     call jedetr('&&METHO1.THETA')
     call detrsd('CHAMP_GD', '&&GMETH1.G2        ')
 !

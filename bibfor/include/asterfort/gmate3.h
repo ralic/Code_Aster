@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -15,18 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-#include "asterf_types.h"
-!
 interface
-    subroutine gmeth3(nnoff, gthi, milieu, gs,&
-                      objcur, gi, num, connex)
-        integer           :: nnoff
-        real(kind=8)      :: gthi(1)
-        aster_logical     :: milieu
-        real(kind=8)      :: gs(1)
-        character(len=24) :: objcur
-        real(kind=8)      :: gi(1)
-        integer           :: num
-        aster_logical     :: connex
-    end subroutine gmeth3
+    subroutine gmate3(abscur, elrefe, conn, nno, mele)
+        character(len=24) :: abscur
+        integer           :: conn(3)
+        character(len=8)  :: elrefe
+        integer           :: nno
+        real(kind=8)      :: mele(3, 3)
+    end subroutine gmate3
 end interface

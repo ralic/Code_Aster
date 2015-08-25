@@ -1,6 +1,24 @@
-subroutine gmeth3(nnoff, fond, gthi, milieu, gs,&
-                  objcur, gi, num, gxfem)
-!
+subroutine gmeth3(nnoff, gthi, milieu, gs,&
+                  objcur, gi, num, connex)
+
+implicit none
+
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/getvtx.h"
+#include "asterfort/gmatc3.h"
+#include "asterfort/gmatl3.h"
+#include "asterfort/gsyste.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+
+    integer           :: nnoff, num
+    real(kind=8)      :: gthi(1), gs(1), gi(1)
+    character(len=24) :: objcur
+    aster_logical     :: milieu, connex
+
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,172 +35,70 @@ subroutine gmeth3(nnoff, fond, gthi, milieu, gs,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit none
-!
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/getvtx.h"
-#include "asterfort/gsyste.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/wkvect.h"
-    integer :: nnoff, num
-    real(kind=8) :: gthi(1), gs(1), gi(1)
-    character(len=24) :: fond, objcur
-    aster_logical :: milieu, gxfem
-!
-! ......................................................................
 !      METHODE THETA-LAGRANGE ET G-LAGRANGE POUR LE CALCUL DE G(S)
 !
 ! ENTREE
 !
 !     NNOFF    --> NOMBRE DE NOEUDS DU FOND DE FISSURE
-!     FOND     --> NOMS DES NOEUDS DU FOND DE FISSURE
 !     GTHI     --> VALEURS DE G POUR LES CHAMPS THETAI
 !     MILIEU   --> .TRUE.  : ELEMENT QUADRATIQUE
 !                  .FALSE. : ELEMENT LINEAIRE
-!     OBJCUR  --> ABSCISSES CURVILIGNES S
-!
+!     OBJCUR   --> ABSCISSES CURVILIGNES S
+!     CONNEX   --> .TRUE.  : FOND DE FISSURE FERME
+!                  .FALSE. : FOND DE FISSURE OUVERT
 !  SORTIE
 !
 !      GS      --> VALEUR DE G(S)
 !      GI      --> VALEUR DE GI
 !      NUM     --> 3 (LAGRANGE-LAGRANGE)
 !              --> 4 (NOEUD-NOEUD)
-!
-!
-!
-!
-    integer :: i, kk, iadrno, iabsc
-    integer :: imatr, ivect, ibid
-!
-    real(kind=8) :: delta, s1, s2, s3
-!
+
+!......................................................................
+    integer           :: i, iabsc
+    integer           :: ivect, ibid
     character(len=24) :: vect, matr, lissg
+!......................................................................
+    call jemarq()
 !
-    aster_logical :: connex
-!
-! OBJET DECRIVANT LE MAILLAGE
-!
-! SI LE FOND DE FISSURE EST FERME (DERNIER NOEUD = PREMIER NOEUD)
-! CONNEX = TRUE
-!
-    connex = .false.
-!
-    if (.not. gxfem) then
-        call jeveuo(fond, 'L', iadrno)
-        if (zk8(iadrno+1-1) .eq. zk8(iadrno+nnoff-1)) connex = .true.
-    endif
-!
-!     ABSCISSES CURVILIGNES DES NOEUDS DU FOND DE FISSURE
+!   ABSCISSES CURVILIGNES DES NOEUDS DU FOND DE FISSURE
     call jeveuo(objcur, 'L', iabsc)
-!
+
+!   CHOIX DU LISSAGE
     call getvtx('LISSAGE', 'LISSAGE_G', iocc=1, scal=lissg, nbret=ibid)
 !
     if (lissg .eq. 'LAGRANGE_NO_NO') then
-        vect = '&&METHO3.VECT'
-        call wkvect(vect, 'V V R8', nnoff, ivect)
         num = 4
+
+!       CALCUL DE LA MATRICE DU SYSTEME LINÉAIRE : MATRICE LUMPEE
+        vect = '&&METHO3.VECT'
+        call gmatl3(nnoff, milieu, connex, &
+                    objcur, vect)
 !
-        if (milieu) then
-            do 10 i = 1, nnoff-2, 2
-                s1 = zr(iabsc-1+i)
-                s3 = zr(iabsc-1+i+2)
-                delta = (s3-s1)/6.d0
-                zr(ivect+i -1)= zr(ivect+i-1) + delta
-                zr(ivect+i+1-1)= 4.d0*delta
-                zr(ivect+i+2-1)= delta
- 10         continue
-            if (connex) then
-                zr(ivect+nnoff-1)= zr(ivect+nnoff-1) + zr(ivect+1-1)
-                zr(ivect+1 -1)= zr(ivect+nnoff-1)
-            endif
-        else
-            do 20 i = 1, nnoff-1
-                s1 = zr(iabsc-1+i)
-                s2 = zr(iabsc-1+i+1)
-                delta = (s2-s1)/3.d0
-                zr(ivect+i -1)= zr(ivect+i-1) + delta
-                zr(ivect+i+1-1)= 2.d0*delta
- 20         continue
-            if (connex) then
-                zr(ivect+nnoff-1)= zr(ivect+nnoff-1) + zr(ivect+1-1)
-                zr(ivect+1 -1)= zr(ivect+nnoff-1)
-            endif
-        endif
-        do 30 i = 1, nnoff
+!       RESOLUTION DU SYSTEME : MATRICE DIAGONALE
+        call jeveuo(vect, 'L', ivect)
+        do i = 1, nnoff
             gi(i) = gthi(i)/zr(ivect+i-1 )
- 30     continue
-!
-    else if (lissg.eq.'LAGRANGE') then
-        matr = '&&METHO3.MATRI'
-        call wkvect(matr, 'V V R8', nnoff*nnoff, imatr)
+        end do
+
+    else if ( lissg.eq.'LAGRANGE' ) then
         num = 3
-!
-        if (milieu) then
-            do 100 i = 1, nnoff-2, 2
-                s1 = zr(iabsc-1+i)
-                s3 = zr(iabsc-1+i+2)
-                delta = (s3-s1)/30.d0
-!
-                kk = imatr+(i-1 )*nnoff+i-1
-                zr(kk )= zr(kk) + 4.d0*delta
-                zr(imatr+(i-1+1)*nnoff+i-1 )= 2.d0*delta
-                zr(imatr+(i-1+2)*nnoff+i-1 )= -1.d0*delta
-!
-                zr(imatr+(i-1 )*nnoff+i-1+1)= 2.d0*delta
-                zr(imatr+(i-1+1)*nnoff+i-1+1)= 16.d0*delta
-                zr(imatr+(i-1+2)*nnoff+i-1+1)= 2.d0*delta
-!
-                zr(imatr+(i-1 )*nnoff+i-1+2)= -1.d0*delta
-                zr(imatr+(i-1+1)*nnoff+i-1+2)= 2.d0*delta
-                zr(imatr+(i-1+2)*nnoff+i-1+2)= 4.d0*delta
-100         continue
-            if (connex) then
-                kk = imatr+(1-1 )*nnoff+1-1
-                zr(kk )= zr(kk) + 5.d0*delta
-                s1 = zr(iabsc-1+1)
-                s3 = zr(iabsc-1+3)
-                delta = (s3-s1)/30.d0
-                kk = imatr+(nnoff-1)*nnoff+nnoff-1
-                zr(kk )= zr(kk) + 5.d0*delta
-            endif
-        else
-            do 120 i = 1, nnoff-1
-                s1 = zr(iabsc-1+i)
-                s2 = zr(iabsc-1+i+1)
-                delta = (s2-s1)/6.d0
-!
-                kk = imatr+(i-1 )*nnoff+i-1
-                zr(kk )= zr(kk) + 2.d0*delta
-                zr(imatr+(i-1+1)*nnoff+i-1 )= 1.d0*delta
-!
-                zr(imatr+(i-1 )*nnoff+i-1+1)= 1.d0*delta
-                zr(imatr+(i-1+1)*nnoff+i-1+1)= 2.d0*delta
-120         continue
-            if (connex) then
-                kk = imatr+(1-1 )*nnoff+1-1
-                zr(kk )= zr(kk) + 3.d0*delta
-                s1 = zr(iabsc-1+1)
-                s3 = zr(iabsc-1+3)
-                delta = (s3-s1)/6.d0
-                kk = imatr+(nnoff-1)*nnoff+nnoff-1
-                zr(kk )= zr(kk) + 3.d0*delta
-            endif
-        endif
-!
-!
-!  SYSTEME LINEAIRE:  MATR*GI = GTHI
-!
+
+!       CALCUL DE LA MATRICE DU SYSTEME LINÉAIRE
+        matr = '&&METHO3.MATRI'
+        call  gmatc3(nnoff, milieu, connex, &
+                     objcur, matr)
+
+!       SYSTEME LINEAIRE:  MATR*GI = GTHI
         call gsyste(matr, nnoff, nnoff, gthi, gi)
-!
+
     endif
 !
-    do 200 i = 1, nnoff
+    do i = 1, nnoff
         gs(i) = gi(i)
-200 end do
-!
+    end do
+
     call jedetr('&&METHO3.MATRI')
     call jedetr('&&METHO3.VECT')
 !
+    call jedema()
 end subroutine

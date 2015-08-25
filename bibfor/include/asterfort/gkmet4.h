@@ -21,16 +21,16 @@ interface
     subroutine gkmet4(nnoff, ndimte, chfond, pair, iadrgk,&
                       milieu, connex, iadgks, iadgki, abscur,&
                       num)
-        integer :: ndimte
-        integer :: nnoff
+        integer           :: ndimte
+        integer           :: nnoff
         character(len=24) :: chfond
-        aster_logical :: pair
-        integer :: iadrgk
-        aster_logical :: milieu
-        aster_logical :: connex
-        integer :: iadgks
-        integer :: iadgki
+        aster_logical     :: pair
+        integer           :: iadrgk
+        aster_logical     :: milieu
+        aster_logical     :: connex
+        integer           :: iadgks
+        integer           :: iadgki
         character(len=24) :: abscur
-        integer :: num
+        integer           :: num
     end subroutine gkmet4
 end interface

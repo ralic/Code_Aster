@@ -15,6 +15,7 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+! aslint: disable=W1504
 #include "asterf_types.h"
 !
 interface
@@ -26,34 +27,34 @@ interface
                       fiss, lmelas, nomcas, lmoda, puls,&
                       milieu, connex, coor, iadnoe, typdis)
         character(len=16) :: option
-        character(len=8) :: result
-        character(len=8) :: modele
+        character(len=8)  :: result
+        character(len=8)  :: modele
         character(len=24) :: depla
-        character(len=8) :: thetai
+        character(len=8)  :: thetai
         character(len=24) :: mate
         character(len=24) :: compor
         character(len=19) :: lischa
-        character(len=8) :: symech
+        character(len=8)  :: symech
         character(len=24) :: chfond
-        integer :: nnoff
+        integer           :: nnoff
         character(len=24) :: basloc
         character(len=24) :: courb
-        integer :: iord
-        integer :: ndeg
+        integer           :: iord
+        integer           :: ndeg
         character(len=24) :: liss
-        aster_logical :: pair
-        integer :: ndimte
-        aster_logical :: extim
-        real(kind=8) :: time
-        integer :: nbprup
+        aster_logical     :: pair
+        integer           :: ndimte
+        aster_logical     :: extim
+        real(kind=8)      :: time
+        integer           :: nbprup
         character(len=16) :: noprup(*)
-        character(len=8) :: fiss
-        aster_logical :: lmelas
+        character(len=8)  :: fiss
+        aster_logical     :: lmelas
         character(len=16) :: nomcas
-        aster_logical :: lmoda
-        real(kind=8) :: puls
-        aster_logical :: milieu
-        aster_logical :: connex
+        aster_logical     :: lmoda
+        real(kind=8)      :: puls
+        aster_logical     :: milieu
+        aster_logical     :: connex
         integer :: coor
         integer :: iadnoe        
         character(len=16), intent(in), optional :: typdis

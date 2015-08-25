@@ -1,7 +1,7 @@
 subroutine gcour2(resu, noma, nomo, nomno, coorn,&
                   nbnoeu, trav1, trav2, trav3, fonoeu, chfond, basfon,&
                   nomfiss, connex, stok4, liss,&
-                  nbre, milieu, ndimte, pair)
+                  nbre, milieu, ndimte, pair, norfon)
     implicit none
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -48,14 +48,14 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
 !        LISS   : TYPE DE LISSAGE
 !        NBRE   : DEGRE DES POLYNOMES DE LEGENDRE
 !                     SINON 0
-!        CONNEX : .TRUE.  : FOND DE FISSURE FERME
-!                 .FALSE. : FOND DE FISSURE DEBOUCHANT
+!        CONNEX: .TRUE.  : FOND DE FISSURE FERME
+!                .FALSE. : FOND DE FISSURE DEBOUCHANT
 ! SORTIE:
 !        STOK4  : DIRECTION DU CHAMP THETA
 !                 LISTE DE CHAMPS_NO THETA
-!        TRAV3  : MODULE(THETA)
-!        MILIEU : .TRUE.  : ELEMENT QUADRATIQUE
-!                 .FALSE. : ELEMENT LINEAIRE
+!        TRAV3 : MODULE(THETA)
+!        MILIEU: .TRUE.  : ELEMENT QUADRATIQUE
+!                .FALSE. : ELEMENT LINEAIRE
 !     ------------------------------------------------------------------
 !
 !
@@ -91,7 +91,7 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
     character(len=24) :: trav1, trav2, trav3, objor, objex, fonoeu, repk
     character(len=24) :: obj3, norm, numgam, chamno, chfond, basfon
     character(len=24) :: stok4, dire4, coorn, nomno, dire5, indicg
-    character(len=24) :: absgam, liss
+    character(len=24) :: absgam, liss, norfon
     character(len=16) :: k16b, nomcmd
     character(len=8) :: nomfiss, resu, noma, nomo, k8b
     character(len=6) :: kiord
@@ -99,7 +99,7 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
     integer :: nbnoeu, iadrt1, iadrt2, iadrt3, itheta, ifon
     integer :: in2, iadrco, jmin, ielinf, iadnum, jvect
     integer :: iadrno, num, indic, iadrtt, nbre, nbr8, nbptfd
-    integer :: iret, numa, ndimte, iaorig, nbnoff, iebas
+    integer :: iret, numa, ndimte, iaorig, iebas
     integer :: itanex, itanor, nbnos, iadabs, kno, iaextr, jnorm
 !
     real(kind=8) :: dirx, diry, dirz, xi1, yi1, zi1, xj1, yj1, zj1
@@ -111,7 +111,7 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
     aster_logical :: milieu, connex, pair
 !
 !-----------------------------------------------------------------------
-    integer :: i, i1, idesc, idiri, idirs, ielsup
+    integer :: i, i1, idesc, idiri, idirs, ielsup, inorfon
     integer :: ienorm, irefe, j, jresu, k, nbel
     real(kind=8) :: s0, s1
 !-----------------------------------------------------------------------
@@ -165,10 +165,6 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
     call jeexin(objor, itanor)
     objex = nomfiss//'.DTAN_EXTREMITE'
     call jeexin(objex, itanex)
-!
-! RECUPERATION DU NOMBRE DE NOEUD
-!
-    call jelira(nomfiss//'.FOND.NOEU', 'LONUTI', nbnoff)
 !
 ! RECUPERATION  DES NUMEROS DE NOEUDS DE GAMM0
 !
@@ -245,11 +241,11 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
                 zr(in2+(i-1)*3+2-1) = zr(jvect-1+6*(i-1)+5)
                 zr(in2+(i-1)*3+3-1) = zr(jvect-1+6*(i-1)+6)
             end do
-!            
+            
 !      LA DIRECTION DE THETA EST CALCULEE DANS GDIREC PUIS ON LA NORME
 !
 !  LEVRE SUPERIEURE        
-        elseif (ielsup .ne. 0) then
+        else if (ielsup .ne. 0) then
             call gdirec(noma, nomfiss, 'LEVRESUP', nomno, zk8(iadrno),&
                         coorn, nbnoeu, dire4, milieu)
             call jeveuo(dire4, 'L', idirs)
@@ -289,8 +285,8 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
         else if (ienorm.ne.0) then
             call gdinor(norm, nbnoeu, iadnum, coorn, in2)
         else
-            call jeveuo(nomfiss//'.BASEFOND', 'L', jvect)
-            do i = 1, nbnoff
+            call jeveuo(basfon, 'L', jvect)
+            do i = 1, nbnoeu
                 zr(in2+(i-1)*3+1-1) = zr(jvect-1+6*(i-1)+4)
                 zr(in2+(i-1)*3+2-1) = zr(jvect-1+6*(i-1)+5)
                 zr(in2+(i-1)*3+3-1) = zr(jvect-1+6*(i-1)+6)
@@ -334,11 +330,40 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
         zr(in2+(nbnoeu-1)*3+3-1) = zr(jvect-1+6*(nbnoeu-1)+6)
     endif
 !
+    norfon= '&&NORM.STOCK'
+    call wkvect(norfon, 'V V R', 3*nbnoeu, inorfon)
+!
+!   stockage des directions des normales au fond de fissure
+    call jeexin(nomfiss//'.BASEFOND', iebas)
+!
+    if (iebas .ne. 0) then
+!       * cas general : la base du fond de fissure est definie et on 
+!                       copie la normale
+        call jeveuo(basfon, 'L', jvect)
+        do i = 1, nbnoeu
+            zr(inorfon+(i-1)*3+1-1) = zr(jvect-1+(i-1)*6+4)
+            zr(inorfon+(i-1)*3+2-1) = zr(jvect-1+(i-1)*6+5)
+            zr(inorfon+(i-1)*3+3-1) = zr(jvect-1+(i-1)*6+6)
+        end do
+    else
+!   * cas particulier : la base locale n'est pas définie,
+!       e.g. si l'utilisateur donne le champ de normale dans
+!       DEFI_FOND_FISS
+!       on copie la direction du champ theta et on aura donc
+!       theta . n = 1, pour un champ theta norme
+        do i = 1, nbnoeu
+            zr(inorfon+(i-1)*3+1-1) = zr(in2+(i-1)*3+1-1)
+            zr(inorfon+(i-1)*3+2-1) = zr(in2+(i-1)*3+2-1)
+            zr(inorfon+(i-1)*3+3-1) = zr(in2+(i-1)*3+3-1)
+        end do
+    endif
+!
 ! ALLOCATION D UN OBJET INDICATEUR DU CHAMP THETA SUR GAMMO
 !
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbel)
 
     indicg = '&&COURON.INDIC        '
+    
     call wkvect(indicg, 'V V I', nbel, indic)
 !
 !
