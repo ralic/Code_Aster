@@ -113,6 +113,22 @@ Champ inexistant DEPL numéro d'ordre %(k1)s pour le calcul de l'option %(k2)s
 
 """),
 
+    48 : _(u"""
+Erreur utilisateur dans la commande EXTR_RESU / RESTREINT :
+  La structure de donnée contient des champs par éléments.
+  Le mot clé MODELE est obligatoire.
+"""),
+
+    49 : _(u"""
+Erreur utilisateur dans la commande EXTR_RESU / RESTREINT :
+  Le maillage associé à certains champs de %(k1)s est %(k2)s.
+  Il devrait être %(k3)s.
+"""),
+
+
+
+
+
 
 
 

@@ -58,7 +58,7 @@ subroutine extrs2(resu0, resu1, typcon, lrest, mailla,&
 !
     integer :: i, j, ire1, ire2, iadin, iadou, iret
     integer :: cret
-    character(len=3) :: type, kchml
+    character(len=3) :: type
     character(len=4) :: tych
     character(len=8) :: noma1, noma2, noma3, nomavr
     character(len=16) :: nomsym
@@ -86,14 +86,11 @@ subroutine extrs2(resu0, resu1, typcon, lrest, mailla,&
     endif
 !
     if (lrest) then
-        call dismoi('EXI_CHAM_ELEM', resuin, 'RESULTAT', repk=kchml, arret='C',&
-                    ier=iret)
-        if (kchml .eq. 'OUI' .and. modele .ne. ' ') then
+        if (modele .ne. ' ') then
             call jeveuo(modele//'.MODELE    .LGRF', 'L', vk8=lgrf)
             noma2=lgrf(1)
             ligrel=modele//'.MODELE'
         else
-            ASSERT(mailla.ne.' ')
             noma2=mailla
             ligrel=' '
         endif
@@ -150,9 +147,15 @@ subroutine extrs2(resu0, resu1, typcon, lrest, mailla,&
             if (lrest) then
                 call dismoi('NOM_MAILLA', chamin, 'CHAMP', repk=nomavr)
                 ASSERT(noma1.eq.nomavr)
+                if (noma1.ne.nomavr)  then
+                    valk(1)=resuin
+                    valk(2)=nomavr
+                    valk(3)=noma1
+                    call utmess('F','PREPOST5_49',nk = 3, valk=valk)
+                endif
                 call dismoi('TYPE_CHAMP', chamin, 'CHAMP', repk=tych)
                 if (tych(1:2) .eq. 'EL') then
-                    ASSERT(ligrel.ne.' ')
+                    if (ligrel.eq.' ') call utmess('F','PREPOST5_48')
                 endif
                 call rdtchp(corrn, corrm, chamin(1:19), chamou(1:19), 'G',&
                             noma1, noma2, ligrel, cret)
