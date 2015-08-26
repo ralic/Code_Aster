@@ -70,6 +70,7 @@ subroutine xtelga(ndim, elrefp, nnop, igeom, tempno,&
     real(kind=8) :: baslog(3*ndim), tem, dtem(ndim), lsng, lstg, coorse(81), xg(ndim)
     real(kind=8) :: xe(ndim)
     real(kind=8) :: femec(4), dgdmec(4, ndim), feth, ff(nnop)
+    real(kind=8) :: dgdth(ndim), dffenr(nnop, 1+nfh+nfe, ndim)
     real(kind=8) :: he
     real(kind=8) :: ffenr(nnop, 1+nfh+nfe), dfdi(nnop,ndim)
     integer :: ivf, kpg, nno, npg, j, iret, nse, ise, inp, in, ino, kddl
@@ -167,6 +168,9 @@ subroutine xtelga(ndim, elrefp, nnop, igeom, tempno,&
                 ASSERT(iret.ne.0)
 !           ON NE GARDE QUE LES ENRICHISSEMENTS UTILES EN THERMIQUE
                 feth = femec(1)
+                do j = 1, ndim
+                    dgdth(j) = dgdmec(1,j)
+                end do
             endif
 ! ------- FIN SI ENRICHISSEMENT SINGULIER
 !
@@ -174,13 +178,23 @@ subroutine xtelga(ndim, elrefp, nnop, igeom, tempno,&
             do 1250 inp = 1, nnop
 !           DDL CLASSIQUE (TEMP)
                 ffenr(inp,1) = ff(inp)
+                do j = 1, ndim
+                    dffenr(inp,1,j) = dfdi(inp,j)
+                end do
 !           DDL HEAVISIDE (H1)
                 if (nfh .eq. 1) then
                     ffenr(inp,1+nfh) = xcalc_heav(heavn(inp,1),hea_se,heavn(inp,5))*ff(inp)
+                    do j = 1, ndim
+                        dffenr(inp,1+nfh,j) = xcalc_heav(heavn(inp,1),hea_se,heavn(inp,5))*&
+                                              dfdi(inp,j)
+                    end do
                 endif
 !           DDL CRACK-TIP (E1)
                 if (nfe .eq. 1) then
                     ffenr(inp,1+nfh+nfe) = feth*ff(inp)
+                    do j = 1, ndim
+                        dffenr(inp,1+nfh+nfe,j) = feth*dfdi(inp,j) + ff(inp)*dgdth(j)
+                    end do
                 endif
 1250          continue
 !
@@ -190,9 +204,9 @@ subroutine xtelga(ndim, elrefp, nnop, igeom, tempno,&
             do 1270 inp = 1, nnop
                 do 1271 kddl = 1, nbddl
                     tem = tem + tempno(nbddl*(inp-1)+kddl)*ffenr(inp, kddl)
-                    do 1272 j = 1,ndim
-                       dtem(j) = dtem(j)+tempno(nbddl*(inp-1)+kddl)*dfdi(inp, j)
-1272                continue
+                    do j = 1, ndim
+                        dtem(j) = dtem(j) + tempno(nbddl*(inp-1)+kddl)*dffenr(inp,kddl,j)
+                    end do
 1271            continue
 1270        continue
 !
