@@ -18,27 +18,20 @@
 ! aslint: disable=W1504
 !
 interface
-    subroutine nmini0(zpmet , zconv   , znmeth, fonact, parmet,&
-                      conv  , method  , eta   , numins, matass,&
-                      zmeelm, zmeass  , zveelm, zveass, zsolal,&
-                      zvalin, ds_print, ds_conv)
+    subroutine nmini0(zpmet  , znmeth, fonact, parmet, method  ,&
+                      eta    , numins, matass, zmeelm, zmeass  ,&
+                      zveelm , zveass, zsolal, zvalin, ds_print,&
+                      ds_conv)
         use NonLin_Datastructure_type
-        integer :: znmeth
-        integer :: zconv
         integer :: zpmet
+        integer :: znmeth
         integer :: fonact(*)
         real(kind=8) :: parmet(zpmet)
-        real(kind=8) :: conv(zconv)
         character(len=16) :: method(znmeth)
-        real(kind=8) :: eta
-        integer :: numins
         character(len=19) :: matass
-        integer :: zmeelm
-        integer :: zmeass
-        integer :: zveelm
-        integer :: zveass
-        integer :: zsolal
-        integer :: zvalin
+        integer :: numins
+        real(kind=8) :: eta
+        integer :: zmeelm, zmeass, zveelm, zveass, zsolal, zvalin
         type(NL_DS_Print), intent(out) :: ds_print
         type(NL_DS_Conv), intent(out) :: ds_conv
     end subroutine nmini0

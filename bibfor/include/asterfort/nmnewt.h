@@ -18,15 +18,14 @@
 ! aslint: disable=W1504
 !
 interface
-    subroutine nmnewt(noma   , modele, numins, numedd  , numfix,&
-                      mate   , carele, comref, compor  , lischa,&
-                      method , fonact, carcri, conv    , parmet,&
-                      sdstat , sdtime, sderro, ds_print, sdnume,&
-                      sddyna , sddisc, sdcrit, sdsuiv  , sdpilo,&
-                      ds_conv, solveu, maprec, matass  , valinc,&
-                      solalg , meelem, measse, veelem  , veasse,&
-                      defico , resoco, deficu, resocu  , eta   ,&
-                      nbiter)
+    subroutine nmnewt(noma  , modele, numins  , numedd, numfix ,&
+                      mate  , carele, comref  , compor, lischa ,&
+                      method, fonact, carcri  , parmet, sdstat ,&
+                      sdtime, sderro, ds_print, sdnume, sddyna ,&
+                      sddisc, sdcrit, sdsuiv  , sdpilo, ds_conv,&
+                      solveu, maprec, matass  , valinc, solalg ,&
+                      meelem, measse, veelem  , veasse, defico ,&
+                      resoco, deficu, resocu  , eta   , nbiter)
         use NonLin_Datastructure_type
         character(len=8) :: noma
         character(len=24) :: modele
@@ -41,7 +40,6 @@ interface
         character(len=16) :: method(*)
         integer :: fonact(*)
         character(len=24) :: carcri
-        real(kind=8) :: conv(*)
         real(kind=8) :: parmet(*)
         character(len=24) :: sdstat
         character(len=24) :: sdtime

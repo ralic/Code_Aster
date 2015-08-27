@@ -1,5 +1,5 @@
-subroutine nmcore(sdcrit          , sderro, list_func_acti, nume_inst, iter_newt,&
-                  line_search_iter, eta   , resi_norm     , load_norm, ds_conv )
+subroutine nmcore(sdcrit        , sderro, list_func_acti, nume_inst, iter_newt,&
+                  line_sear_iter, eta   , resi_norm     , load_norm, ds_conv )
 !
 use NonLin_Datastructure_type
 !
@@ -39,7 +39,7 @@ implicit none
     integer, intent(in) :: list_func_acti(*)
     integer, intent(in) :: nume_inst
     integer, intent(in) :: iter_newt
-    integer, intent(in) :: line_search_iter
+    integer, intent(in) :: line_sear_iter
     real(kind=8), intent(in) :: eta
     real(kind=8), intent(in) :: resi_norm
     real(kind=8), intent(in) :: load_norm
@@ -58,7 +58,7 @@ implicit none
 ! In  list_func_acti   : list of active functionnalities
 ! In  nume_inst        : index of current time step
 ! In  iter_newt        : index of current Newton iteration
-! In  line_search_iter : number of iterations for line search
+! In  line_sear_iter   : number of iterations for line search
 ! In  eta              : coefficient for pilotage (continuation)
 ! In  resi_norm        : norm of equilibrium residual
 ! In  load_norm        : norm of exterior loads
@@ -158,7 +158,7 @@ implicit none
     call GetResi(ds_conv, type = 'RESI_REFE_RELA' , vale_calc_ = v_sdcrit_crtr(8))
     call GetResi(ds_conv, type = 'RESI_COMP_RELA' , vale_calc_ = v_sdcrit_crtr(9))
     v_sdcrit_crtr(1) = iter_newt+1
-    v_sdcrit_crtr(2) = line_search_iter
+    v_sdcrit_crtr(2) = line_sear_iter
     v_sdcrit_crtr(5) = eta
     v_sdcrit_crtr(6) = load_mini
     if (cvresi) then

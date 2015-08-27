@@ -1,8 +1,16 @@
-subroutine nmreli(modele, numedd, mate, carele, comref,&
-                  compor, lischa, carcri, fonact, iterat,&
-                  sdstat, sdnume, sddyna, parmet, method,&
-                  defico, valinc, solalg, veelem, veasse,&
-                  sdtime, conv, ldccvg)
+subroutine nmreli(modele, numedd , mate  , carele, comref,&
+                  compor, lischa , carcri, fonact, iterat,&
+                  sdstat, sdnume , sddyna, parmet, method,&
+                  defico, valinc , solalg, veelem, veasse,&
+                  sdtime, ds_conv, ldccvg)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterfort/copisd.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmrelp.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,33 +29,26 @@ subroutine nmreli(modele, numedd, mate, carele, comref,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
-!
 ! aslint: disable=W1504
-    implicit none
-#include "jeveux.h"
-#include "asterfort/copisd.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/nmchex.h"
-#include "asterfort/nmrelp.h"
+!
     integer :: fonact(*)
     integer :: iterat, ldccvg
-    real(kind=8) :: parmet(*), conv(*)
+    real(kind=8) :: parmet(*)
     character(len=16) :: method(*)
     character(len=24) :: carcri, sdtime, defico, sdstat
     character(len=19) :: lischa, sddyna, sdnume
     character(len=24) :: modele, numedd, mate, carele, comref, compor
     character(len=19) :: veelem(*), veasse(*)
     character(len=19) :: solalg(*), valinc(*)
+    type(NL_DS_Conv), intent(inout) :: ds_conv
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (ALGORITHME)
 !
 ! RECHERCHE LINEAIRE DANS LA DIRECTION DE DESCENTE
 !
-! ----------------------------------------------------------------------
-!
+! --------------------------------------------------------------------------------------------------
 !
 ! IN  MODELE : MODELE
 ! IN  NUMEDD : NUME_DDL
@@ -75,20 +76,13 @@ subroutine nmreli(modele, numedd, mate, carele, comref,&
 !                 0 : CAS DU FONCTIONNEMENT NORMAL
 !                 1 : ECHEC DE L'INTEGRATION DE LA LDC
 !                 3 : SIZZ PAS NUL POUR C_PLAN DEBORST
-! OUT CONV   : INFORMATIONS SUR LA CONVERGENCE DU CALCUL
-!                10 : ITERATIONS RECHERCHE LINEAIRE
-!                11 : VALEUR DE RHO
+! IO  ds_conv          : datastructure for convergence management
 !
-!
-!
+! --------------------------------------------------------------------------------------------------
 !
     character(len=19) :: ddepla, deppr1
 !
-! ----------------------------------------------------------------------
-!
-    call jemarq()
-!
-! --- DECOMPACTION VARIABLES CHAPEAUX
+! --------------------------------------------------------------------------------------------------
 !
     call nmchex(solalg, 'SOLALG', 'DDEPLA', ddepla)
     call nmchex(solalg, 'SOLALG', 'DEPPR1', deppr1)
@@ -99,12 +93,10 @@ subroutine nmreli(modele, numedd, mate, carele, comref,&
 !
 ! --- RECHERCHE LINEAIRE DANS LA DIRECTION DE DESCENTE
 !
-    call nmrelp(modele, numedd, mate, carele, comref,&
-                compor, lischa, carcri, fonact, iterat,&
-                sdstat, sdnume, sddyna, parmet, method,&
-                defico, valinc, solalg, veelem, veasse,&
-                sdtime, conv, ldccvg)
-!
-    call jedema()
+    call nmrelp(modele, numedd , mate  , carele, comref,&
+                compor, lischa , carcri, fonact, iterat,&
+                sdstat, sdnume , sddyna, parmet, method,&
+                defico, valinc , solalg, veelem, veasse,&
+                sdtime, ds_conv, ldccvg)
 !
 end subroutine

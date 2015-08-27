@@ -5,6 +5,7 @@ use NonLin_Datastructure_type
 implicit none
 !
 #include "asterf_types.h"
+#include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisr.h"
 #include "asterfort/infdbg.h"
@@ -122,5 +123,10 @@ implicit none
                          l_resi_test_ = .true._1)
         endif
     endif
+!
+! - For line search
+!
+    ds_conv%line_sear_coef = 1.d0
+    ds_conv%line_sear_iter = 0
 !
 end subroutine

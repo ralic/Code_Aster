@@ -63,10 +63,8 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer, parameter :: zpmet  = 9
-    integer, parameter :: zconv  = 4
     integer, parameter :: znmeth = 7
     real(kind=8) :: parmet(zpmet)
-    real(kind=8) :: conv(zconv)
     character(len=16) :: method(znmeth)
     integer :: fonact(100)
     integer :: zmeelm, zmeass, zveelm, zveass
@@ -161,10 +159,10 @@ implicit none
 !
 ! - Creation of datastructures
 !
-    call nmini0(zpmet , zconv   , znmeth, fonact, parmet,&
-                conv  , method  , eta   , numins, matass,&
-                zmeelm, zmeass  , zveelm, zveass, zsolal,&
-                zvalin, ds_print, ds_conv)
+    call nmini0(zpmet  , znmeth, fonact, parmet, method  ,&
+                eta    , numins, matass, zmeelm, zmeass  ,&
+                zveelm , zveass, zsolal, zvalin, ds_print,&
+                ds_conv)
 !
 ! --- LECTURE DES OPERANDES DE LA COMMANDE
 !
@@ -221,15 +219,14 @@ implicit none
                     solalg, solveu  , matass, maprec, meelem,&
                     measse, veelem  , veasse, nbiter)
     else if (lstat.or.limpl) then
-        call nmnewt(mesh    , modele, numins, numedd  , numfix,&
-                    mate   , carele, comref, compor  , lischa,&
-                    method , fonact, carcri, conv    , parmet,&
-                    sdstat , sdtime, sderro, ds_print, sdnume,&
-                    sddyna , sddisc, sdcrit, sd_suiv , sdpilo,&
-                    ds_conv, solveu, maprec, matass  , valinc,&
-                    solalg , meelem, measse, veelem  , veasse,&
-                    defico , resoco, deficu, resocu  , eta   ,&
-                    nbiter)
+        call nmnewt(mesh  , modele, numins  , numedd, numfix ,&
+                    mate  , carele, comref  , compor, lischa ,&
+                    method, fonact, carcri  , parmet, sdstat ,&
+                    sdtime, sderro, ds_print, sdnume, sddyna ,&
+                    sddisc, sdcrit, sd_suiv , sdpilo, ds_conv,&
+                    solveu, maprec, matass  , valinc, solalg ,&
+                    meelem, measse, veelem  , veasse, defico ,&
+                    resoco, deficu, resocu  , eta   , nbiter)
     else
         ASSERT(.false.)
     endif

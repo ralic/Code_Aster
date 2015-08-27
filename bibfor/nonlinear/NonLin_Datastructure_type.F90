@@ -114,6 +114,8 @@ implicit none
         aster_logical :: l_stop
         aster_logical :: l_iter_elas
         real(kind=8)  :: swap_trig
+        real(kind=8)  :: line_sear_coef
+        integer       :: line_sear_iter        
     end type NL_DS_Conv
 !
 end module

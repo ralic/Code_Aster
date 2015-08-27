@@ -22,8 +22,8 @@ interface
                       fonact, sddyna, ds_conv, ds_print, sdstat,&
                       sddisc, sdtime, sdcrit , sderro  , parmet,&
                       comref, matass, solveu , numins  , iterat,&
-                      conv  , eta   , defico , resoco  , valinc,&
-                      solalg, measse, veasse)
+                      eta   , defico, resoco , valinc  , solalg,&
+                      measse, veasse)
         use NonLin_Datastructure_type
         character(len=8) :: noma
         character(len=24) :: modele
@@ -45,7 +45,6 @@ interface
         character(len=19) :: solveu
         integer :: numins
         integer :: iterat
-        real(kind=8) :: conv(*)
         real(kind=8) :: eta
         character(len=24) :: defico
         character(len=24) :: resoco

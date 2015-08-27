@@ -1,4 +1,4 @@
-subroutine nmimrv(ds_print, list_func_acti, iter_newt, line_search_coef, line_search_iter,&
+subroutine nmimrv(ds_print, list_func_acti, iter_newt, line_sear_coef, line_sear_iter,&
                   eta)
 !
 use NonLin_Datastructure_type
@@ -32,8 +32,8 @@ implicit none
     type(NL_DS_Print), intent(inout) :: ds_print
     integer, intent(in) :: list_func_acti(*)
     integer, intent(in) :: iter_newt
-    real(kind=8), intent(in) :: line_search_coef
-    integer, intent(in) :: line_search_iter
+    real(kind=8), intent(in) :: line_sear_coef
+    integer, intent(in) :: line_sear_iter
     real(kind=8), intent(in) :: eta
 !
 ! --------------------------------------------------------------------------------------------------
@@ -47,8 +47,8 @@ implicit none
 ! IO  ds_print         : datastructure for printing parameters
 ! In  list_func_acti   : list of active functionnalities
 ! In  iter_newt        : index of current Newton iteration
-! In  line_search_coef : coefficient for line search
-! In  line_search_iter : number of iterations for line search
+! In  line_sear_coef   : coefficient for line search
+! In  line_sear_iter   : number of iterations for line search
 ! In  eta              : coefficient for pilotage (continuation)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -64,8 +64,8 @@ implicit none
 ! - Set values for line search
 !
     if (l_line_search .and. (iter_newt.ne.0)) then
-        call nmimci(ds_print, 'RELI_NBIT', line_search_iter, .true._1)
-        call nmimcr(ds_print, 'RELI_COEF', line_search_coef, .true._1)
+        call nmimci(ds_print, 'RELI_NBIT', line_sear_iter, .true._1)
+        call nmimcr(ds_print, 'RELI_COEF', line_sear_coef, .true._1)
     endif
 !
 ! - Set value for pilotage

@@ -1,7 +1,7 @@
-subroutine nmini0(zpmet , zconv   , znmeth , fonact, parmet,&
-                  conv  , method  , eta    , numins, matass,&
-                  zmeelm, zmeass  , zveelm , zveass, zsolal,&
-                  zvalin, ds_print, ds_conv)
+subroutine nmini0(zpmet  , znmeth, fonact, parmet, method  ,&
+                  eta    , numins, matass, zmeelm, zmeass  ,&
+                  zveelm , zveass, zsolal, zvalin, ds_print,&
+                  ds_conv)
 !
 use NonLin_Datastructure_type
 !
@@ -32,10 +32,10 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    integer :: zpmet, zconv
+    integer :: zpmet
     integer :: znmeth
     integer :: fonact(*)
-    real(kind=8) :: parmet(zpmet), conv(zconv)
+    real(kind=8) :: parmet(zpmet)
     character(len=16) :: method(znmeth)
     character(len=19) :: matass
     integer :: numins
@@ -83,11 +83,6 @@ implicit none
 ! --- PARAMETRES DES METHODES DE RESOLUTION  (NMDOMT)
 !
     parmet(1:zpmet) = zero
-!
-! --- INFORMATIONS SUR LA CONVERGENCE DU CALCUL
-!
-    conv(1) = -1
-    conv(2:zconv) = r8vide()
 !
 ! --- METHODES DE RESOLUTION
 !

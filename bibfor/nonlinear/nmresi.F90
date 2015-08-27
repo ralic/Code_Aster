@@ -1,8 +1,7 @@
 subroutine nmresi(noma  , mate   , numedd  , sdnume, fonact,&
                   sddyna, ds_conv, ds_print, defico, resoco,&
-                  matass, numins , conv    , eta   , comref,&
-                  valinc, solalg , veasse  , measse, vresi ,&
-                  vchar)
+                  matass, numins , eta     , comref, valinc,&
+                  solalg, veasse , measse  , vresi , vchar)
 !
 use NonLin_Datastructure_type
 !
@@ -63,7 +62,7 @@ implicit none
     character(len=19) :: matass
     character(len=24) :: comref
     integer :: fonact(*)
-    real(kind=8) :: eta, conv(*)
+    real(kind=8) :: eta
     real(kind=8), intent(out) :: vchar
     real(kind=8), intent(out) :: vresi
     type(NL_DS_Print), intent(inout) :: ds_print
@@ -349,11 +348,6 @@ implicit none
 ! - Set value of residuals informations in convergence table
 !
     call nmimre(ds_conv, ds_print)
-!
-! --- SAUVEGARDES RESIDUS
-!
-    conv(3) = vrela
-    conv(4) = vmaxi
 !
 ! - Get convergence parmeters
 !

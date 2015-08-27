@@ -1,7 +1,7 @@
-subroutine nmnpas(modele  , noma  , mate  , carele, fonact,&
-                  ds_print, sddisc, sdsuiv, sddyna, sdnume,&
-                  sdstat  , sdtime, numedd, numins, conv  ,&
-                  defico  , resoco, valinc, solalg, solveu)
+subroutine nmnpas(modele  , noma  , mate  , carele, fonact ,&
+                  ds_print, sddisc, sdsuiv, sddyna, sdnume ,&
+                  sdstat  , sdtime, numedd, numins, defico ,&
+                  resoco  , valinc, solalg, solveu, ds_conv)
 !
 use NonLin_Datastructure_type
 !
@@ -24,6 +24,7 @@ implicit none
 #include "asterfort/nmimin.h"
 #include "asterfort/nmnkft.h"
 #include "asterfort/nmvcle.h"
+#include "asterfort/SetResi.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -48,11 +49,11 @@ implicit none
     character(len=19) :: sddyna, sdnume, sddisc, solveu
     character(len=24) :: modele, mate, carele
     integer :: numins
-    real(kind=8) :: conv(*)
     type(NL_DS_Print), intent(inout) :: ds_print
     character(len=24) :: sdstat, sdtime, sdsuiv
     character(len=24) :: defico, resoco, numedd
     character(len=19) :: solalg(*), valinc(*)
+    type(NL_DS_Conv), intent(inout) :: ds_conv
 !
 ! ----------------------------------------------------------------------
 !
@@ -61,7 +62,6 @@ implicit none
 ! INITIALISATIONS POUR LE NOUVEAU PAS DE TEMPS
 !
 ! ----------------------------------------------------------------------
-!
 !
 ! IN  MODELE : NOM DU MODELE
 ! IN  NOMA   : NOM DU MAILLAGE
@@ -81,6 +81,7 @@ implicit none
 ! IN  SDDYNA : SD DYNAMIQUE
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
+! IO  ds_conv          : datastructure for convergence management
 !
 ! ----------------------------------------------------------------------
 !
@@ -112,11 +113,6 @@ implicit none
     lnkry = isfonc(fonact,'NEWTON_KRYLOV')
     leltc = isfonc(fonact,'ELT_CONTACT')
     lctcc = isfonc(fonact,'CONT_CONTINU')
-!
-! --- REINITIALISATION DU TABLEAU DE CONVERGENCE
-!
-    conv(3) = r8vide()
-    conv(4) = r8vide()
 !
 ! --- INSTANT COURANT
 !
@@ -156,6 +152,10 @@ implicit none
 ! --- INITIALISATION DES DEPLACEMENTS
 !
     call copisd('CHAMP_GD', 'V', depmoi, depplu)
+!
+! - Initializations of residuals
+!
+    call SetResi(ds_conv, vale_calc_ = r8vide())
 !
 ! --- INITIALISATION DE L'INCREMENT DE DEPLACEMENT DEPDEL
 !

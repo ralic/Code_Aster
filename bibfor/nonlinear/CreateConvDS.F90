@@ -147,5 +147,11 @@ implicit none
 ! - Parameters for automatic swap of convergence criterias
 !
     ds_conv%swap_trig        = 0.d0
+    
+!
+! - Parameters for line search
+!
+    ds_conv%line_sear_coef   = r8vide()
+    ds_conv%line_sear_iter   = 1
 !
 end subroutine

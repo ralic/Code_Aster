@@ -1,12 +1,11 @@
-subroutine nmnewt(noma   , modele, numins, numedd  , numfix,&
-                  mate   , carele, comref, compor  , lischa,&
-                  method , fonact, carcri, conv    , parmet,&
-                  sdstat , sdtime, sderro, ds_print, sdnume,&
-                  sddyna , sddisc, sdcrit, sdsuiv  , sdpilo,&
-                  ds_conv, solveu, maprec, matass  , valinc,&
-                  solalg , meelem, measse, veelem  , veasse,&
-                  defico , resoco, deficu, resocu  , eta   ,&
-                  nbiter)
+subroutine nmnewt(noma  , modele, numins  , numedd, numfix ,&
+                  mate  , carele, comref  , compor, lischa ,&
+                  method, fonact, carcri  , parmet, sdstat ,&
+                  sdtime, sderro, ds_print, sdnume, sddyna ,&
+                  sddisc, sdcrit, sdsuiv  , sdpilo, ds_conv,&
+                  solveu, maprec, matass  , valinc, solalg ,&
+                  meelem, measse, veelem  , veasse, defico ,&
+                  resoco, deficu, resocu  , eta   , nbiter)
 !
 use NonLin_Datastructure_type
 !
@@ -68,7 +67,7 @@ implicit none
     integer :: numins
     integer :: fonact(*)
     character(len=16) :: method(*)
-    real(kind=8) :: parmet(*), conv(*)
+    real(kind=8) :: parmet(*)
     character(len=24) :: carcri
     character(len=24) :: sdtime, sderro, sdstat, sdsuiv
     character(len=19) :: sdnume, sddyna, sddisc, sdcrit
@@ -110,7 +109,6 @@ implicit none
 ! IN  SDSTAT : SD STATISTIQUES
 ! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
 ! IN  PARMET : PARAMETRES DES METHODES DE RESOLUTION
-! I/O CONV   : INFORMATIONS SUR LA CONVERGENCE DU CALCUL
 ! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
 ! IN  SDDISC : SD DISC_INST
 ! IN  SDTIME : SD TIMER
@@ -182,10 +180,10 @@ implicit none
 !
 ! --- INITIALISATIONS POUR LE NOUVEAU PAS DE TEMPS
 !
-    call nmnpas(modele  , noma  , mate  , carele, fonact,&
-                ds_print, sddisc, sdsuiv, sddyna, sdnume,&
-                sdstat  , sdtime, numedd, numins, conv  ,&
-                defico  , resoco, valinc, solalg, solveu)
+    call nmnpas(modele  , noma  , mate  , carele, fonact ,&
+                ds_print, sddisc, sdsuiv, sddyna, sdnume ,&
+                sdstat  , sdtime, numedd, numins, defico ,&
+                resoco  , valinc, solalg, solveu, ds_conv)
 !
 ! --- CALCUL DES CHARGEMENTS CONSTANTS AU COURS DU PAS DE TEMPS
 !
@@ -244,13 +242,13 @@ implicit none
 ! --- EN CORRIGEANT LA (LES) DIRECTIONS DE DESCENTE
 ! --- SI CONTACT OU PILOTAGE OU RECHERCHE LINEAIRE
 !
-    call nmdepl(modele, numedd, mate  , carele, comref,&
-                compor, lischa, fonact, sdstat, parmet,&
-                carcri, noma  , method, numins, iterat,&
-                solveu, matass, sddisc, sddyna, sdnume,&
-                sdpilo, sdtime, sderro, defico, resoco,&
-                deficu, resocu, valinc, solalg, veelem,&
-                veasse, eta   , conv  , lerrit)
+    call nmdepl(modele, numedd, mate   , carele, comref,&
+                compor, lischa, fonact , sdstat, parmet,&
+                carcri, noma  , method , numins, iterat,&
+                solveu, matass, sddisc , sddyna, sdnume,&
+                sdpilo, sdtime, sderro , defico, resoco,&
+                deficu, resocu, valinc , solalg, veelem,&
+                veasse, eta   , ds_conv, lerrit)
 !
     if (lerrit) goto 315
 !
@@ -278,8 +276,8 @@ implicit none
                 fonact, sddyna, ds_conv, ds_print, sdstat,&
                 sddisc, sdtime, sdcrit , sderro  , parmet,&
                 comref, matass, solveu , numins  , iterat,&
-                conv  , eta   , defico , resoco  , valinc,&
-                solalg, measse, veasse)
+                eta   , defico, resoco , valinc  , solalg,&
+                measse, veasse)
 !
 ! --- MISE A JOUR DES EFFORTS DE CONTACT
 !

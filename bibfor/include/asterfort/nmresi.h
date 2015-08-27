@@ -20,9 +20,8 @@
 interface
     subroutine nmresi(noma  , mate   , numedd  , sdnume, fonact,&
                       sddyna, ds_conv, ds_print, defico, resoco,&
-                      matass, numins , conv    , eta   , comref,&
-                      valinc, solalg , veasse  , measse, vresi ,&
-                      vchar)
+                      matass, numins , eta     , comref, valinc,&
+                      solalg, veasse , measse  , vresi , vchar)
         use NonLin_Datastructure_type
         character(len=8) :: noma
         character(len=24) :: numedd
@@ -36,7 +35,6 @@ interface
         type(NL_DS_Print), intent(inout) :: ds_print
         character(len=19) :: matass
         integer :: numins
-        real(kind=8) :: conv(*)
         real(kind=8) :: eta
         character(len=24) :: comref
         character(len=19) :: valinc(*)

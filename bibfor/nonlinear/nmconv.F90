@@ -2,8 +2,8 @@ subroutine nmconv(noma  , modele, mate   , numedd  , sdnume,&
                   fonact, sddyna, ds_conv, ds_print, sdstat,&
                   sddisc, sdtime, sdcrit , sderro  , parmet,&
                   comref, matass, solveu , numins  , iterat,&
-                  conv  , eta   , defico , resoco  , valinc,&
-                  solalg, measse, veasse )
+                  eta   , defico, resoco , valinc  , solalg,&
+                  measse, veasse )
 !
 use NonLin_Datastructure_type
 !
@@ -57,7 +57,7 @@ implicit none
 !
     integer :: fonact(*)
     integer :: iterat, numins
-    real(kind=8) :: eta, conv(*), parmet(*), instan
+    real(kind=8) :: eta, parmet(*), instan
     character(len=19) :: sdcrit, sddisc, sddyna, sdnume
     character(len=19) :: matass, solveu
     character(len=19) :: measse(*), veasse(*)
@@ -97,7 +97,6 @@ implicit none
 ! IN  VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE
 ! IN  MEASSE : VARIABLE CHAPEAU POUR NOM DES MATR_ASSE
 ! IN  ETA    : COEFFICIENT DE PILOTAGE
-! I/O CONV   : INFORMATIONS SUR LA CONVERGENCE DU CALCUL
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IN  SDERRO : GESTION DES ERREURS
 ! IN  PARMET : PARAMETRES DE LA METHODE DE RESOLUTION
@@ -117,8 +116,8 @@ implicit none
     aster_logical :: cvnewt, cvresi
     integer :: nbiter, itesup
     integer :: ifm, niv
-    real(kind=8) :: relcoe
-    integer :: relite
+    real(kind=8) :: line_sear_coef
+    integer :: line_sear_iter
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -133,8 +132,8 @@ implicit none
     lerror = .false.
     cvnewt = .false.
     pasmin = parmet(3)
-    relcoe = r8vide()
-    relite = -1
+    line_sear_coef = r8vide()
+    line_sear_iter = -1
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
@@ -175,23 +174,22 @@ implicit none
 ! --- STATISTIQUES POUR RECHERCHE LINEAIRE
 !
     if (lreli) then
-        relite = nint(conv(1))
-        relcoe = conv(2)
+        line_sear_coef = ds_conv%line_sear_coef
+        line_sear_iter = ds_conv%line_sear_iter
     endif
-    call nmrvai(sdstat, 'RECH_LINE_ITER', 'E', relite)
+    call nmrvai(sdstat, 'RECH_LINE_ITER', 'E', line_sear_iter)
 !
 ! - Compute residuals
 !
     call nmresi(noma  , mate   , numedd  , sdnume, fonact,&
                 sddyna, ds_conv, ds_print, defico, resoco,&
-                matass, numins , conv    , eta   , comref,&
-                valinc, solalg , veasse  , measse, vresi ,&
-                vchar)
+                matass, numins , eta     , comref, valinc,&
+                solalg, veasse , measse  , vresi , vchar)
 !
 ! - Evaluate convergence of residuals
 !
-    call nmcore(sdcrit, sderro, fonact, numins, iterat ,&
-                relite, eta   , vresi , vchar , ds_conv)
+    call nmcore(sdcrit        , sderro, fonact, numins, iterat ,&
+                line_sear_iter, eta   , vresi , vchar , ds_conv)
 !
 ! --- METHODE IMPLEX: CONVERGENCE FORCEE
 !
@@ -208,7 +206,7 @@ implicit none
 !
 ! - Set value of informations in convergence table (residuals are in nmimre)
 !
-    call nmimrv(ds_print, fonact, iterat, relcoe, relite,&
+    call nmimrv(ds_print, fonact, iterat, line_sear_coef, line_sear_iter,&
                 eta)
 !
 ! --- CAPTURE ERREUR EVENTUELLE
