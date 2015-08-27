@@ -1,5 +1,27 @@
-subroutine nmcrsu(sddisc, lisins, parcri, limpex, lctcd,&
-                  solveu, defico)
+subroutine nmcrsu(sddisc, lisins      , ds_conv, l_implex, l_cont_disc,&
+                  solveu, sdcont_defi_)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterc/gettco.h"
+#include "asterc/r8vide.h"
+#include "asterfort/crsvsi.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvtx.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedup1.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmcerr.h"
+#include "asterfort/nmcrld.h"
+#include "asterfort/utdidt.h"
+#include "asterfort/utmess.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/GetResi.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,28 +41,10 @@ subroutine nmcrsu(sddisc, lisins, parcri, limpex, lctcd,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/gettco.h"
-#include "asterc/r8vide.h"
-#include "asterfort/crsvsi.h"
-#include "asterfort/getvis.h"
-#include "asterfort/getvr8.h"
-#include "asterfort/getvtx.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedup1.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/nmcerr.h"
-#include "asterfort/nmcrld.h"
-#include "asterfort/utdidt.h"
-#include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
     character(len=19) :: sddisc, lisins, solveu
-    character(len=24) :: defico
-    real(kind=8) :: parcri(*)
-    aster_logical :: limpex, lctcd
+    type(NL_DS_Conv), intent(in) :: ds_conv
+    aster_logical :: l_implex, l_cont_disc
+    character(len=24), optional, intent(in) :: sdcont_defi_
 !
 ! ----------------------------------------------------------------------
 !
@@ -50,26 +54,26 @@ subroutine nmcrsu(sddisc, lisins, parcri, limpex, lctcd,&
 !
 ! ----------------------------------------------------------------------
 !
-!
-! IN  PARCRI : PARAMETRES DES CRITERES DE CONVERGENCE (CF NMDOCN)
+! In  ds_conv          : datastructure for convergence management
 ! IN  LISINS : SD_LIST_INST OU SD_LISTR8
 ! In  sddisc           : datastructure for time discretization
 ! IN  LCTCD  : .TRUE. SI CONTACT DISCRET
 ! IN  LIMPEX : .TRUE. SI IMPLEX
 ! IN  SOLVEU : SD SOLVEUR
-! IN  DEFICO : SD DE DEFINITION DU CONTACT
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
 !
 ! ----------------------------------------------------------------------
 !
     character(len=16) :: pred
     character(len=16) :: metlis, modetp
     integer :: iret
-    real(kind=8) :: elasdt, valr
+    real(kind=8) :: pas_mini_elas, valr
     integer :: nb_adapt, i_adapt
-    integer :: iter1, iter2
+    integer :: iter_glob_maxi, iter_glob_elas
     integer :: ifm, niv, itmx, vali
     aster_logical :: ldeco
-    real(kind=8) :: rgmaxi, rgrela, inikry
+    character(len=24) :: sdcont_defi
+    real(kind=8) :: resi_glob_maxi, resi_glob_rela, inikry
     character(len=19) :: event_name
     character(len=16) :: typeco, nopara, decoup
     character(len=24) :: lisevr, lisevk, lisesu
@@ -83,18 +87,26 @@ subroutine nmcrsu(sddisc, lisins, parcri, limpex, lctcd,&
 !
     call jemarq()
     call infdbg('MECA_NON_LINE', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> ... CREATION SD SUBDIVISION'
     endif
 !
-! --- INITIALISATIONS
+! - Get parameters for convergence
 !
-    rgmaxi = parcri(3)
-    rgrela = parcri(2)
+    call GetResi(ds_conv, type = 'RESI_GLOB_RELA' , user_para_ = resi_glob_rela)
+    call GetResi(ds_conv, type = 'RESI_GLOB_MAXI' , user_para_ = resi_glob_maxi)
+    iter_glob_maxi = ds_conv%iter_glob_maxi
+    iter_glob_elas = ds_conv%iter_glob_elas
+!
+! - Initializations
+!
+    if (present(sdcont_defi_)) then
+        sdcont_defi = sdcont_defi_
+    else
+        sdcont_defi = ' '
+    endif
     inikry = 0.9d0
+    pas_mini_elas = 0.d0
     call utdidt('L', sddisc, 'LIST', 'NADAPT',&
                 vali_ = nb_adapt)
     call utdidt('L', sddisc, 'LIST', 'METHODE',&
@@ -142,23 +154,6 @@ subroutine nmcrsu(sddisc, lisins, parcri, limpex, lctcd,&
             call jedup1(listpr, 'V', tpstpr)
             call jedup1(listpk, 'V', tpstpk)
         endif
-    endif
-!
-! --- RECUPERATION DES CRITERES DE CONVERGENCE GLOBAUX
-!
-    iter1 = nint(parcri(1))
-    itmx = iter1
-    elasdt = 0.d0
-!
-! --- SI ON NE DONNE PAS NEWTON/PAS_MINI_ELAS ALORS ON NE DOIT PAS
-! --- TENIR COMPTE DE ITER_GLOB_ELAS
-!
-    call getvr8('NEWTON', 'PAS_MINI_ELAS', iocc=1, scal=valr, nbret=iret)
-    if (iret .le. 0) then
-        iter2 = iter1
-    else
-        elasdt = valr
-        iter2 = nint(parcri(5))
     endif
 !
 ! --- DECOUPAGE ACTIVE
@@ -223,7 +218,7 @@ subroutine nmcrsu(sddisc, lisins, parcri, limpex, lctcd,&
             call utdidt('L', sddisc, 'ADAP', 'METHODE', index_ = i_adapt,&
                         valk_ = modetp)
             if (modetp .eq. 'IMPLEX') then
-                if (.not.limpex) then
+                if (.not.l_implex) then
                     call utmess('F', 'MECANONLINE6_4')
                 endif
             endif
@@ -232,8 +227,8 @@ subroutine nmcrsu(sddisc, lisins, parcri, limpex, lctcd,&
 !
 ! --- CREATION SD STOCKAGE DES INFOS EN COURS DE CALCUL
 !
-    call nmcerr(sddisc, iter1, iter2, elasdt, rgmaxi,&
-                rgrela, inikry, lctcd, defico)
+    call nmcerr(sddisc, iter_glob_maxi, iter_glob_elas, pas_mini_elas, resi_glob_maxi,&
+                resi_glob_rela, inikry, l_cont_disc   , sdcont_defi)
 !
 ! --- OBJET POUR PROLONGEMENT DECOUPE
 !

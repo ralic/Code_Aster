@@ -18,42 +18,32 @@
 ! aslint: disable=W1504
 !
 interface
-    subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
-                      sddyna, sdconv, ds_print, defico, resoco,&
-                      matass, numins, conv, resi_glob_rela, resi_glob_maxi, eta,&
-                      comref, valinc, solalg, veasse, measse,&
-                      vrela, vmaxi, vchar, vresi, vrefe,&
-                      vinit, vcomp, vfrot, vgeom)
+    subroutine nmresi(noma  , mate   , numedd  , sdnume, fonact,&
+                      sddyna, ds_conv, ds_print, defico, resoco,&
+                      matass, numins , conv    , eta   , comref,&
+                      valinc, solalg , veasse  , measse, vresi ,&
+                      vchar)
         use NonLin_Datastructure_type
         character(len=8) :: noma
-        character(len=24) :: mate
         character(len=24) :: numedd
+        character(len=24) :: defico
+        character(len=24) :: resoco
+        type(NL_DS_Conv), intent(inout) :: ds_conv
+        character(len=24) :: mate
         character(len=19) :: sdnume
         integer :: fonact(*)
         character(len=19) :: sddyna
-        character(len=24) :: sdconv
-            type(NL_DS_Print), intent(inout) :: ds_print
-        character(len=24) :: defico
-        character(len=24) :: resoco
+        type(NL_DS_Print), intent(inout) :: ds_print
         character(len=19) :: matass
         integer :: numins
         real(kind=8) :: conv(*)
-        real(kind=8) :: resi_glob_rela
-        real(kind=8) :: resi_glob_maxi
         real(kind=8) :: eta
         character(len=24) :: comref
         character(len=19) :: valinc(*)
         character(len=19) :: solalg(*)
         character(len=19) :: veasse(*)
         character(len=19) :: measse(*)
-        real(kind=8) :: vrela
-        real(kind=8) :: vmaxi
-        real(kind=8) :: vchar
-        real(kind=8) :: vresi
-        real(kind=8) :: vrefe
-        real(kind=8) :: vinit
-        real(kind=8) :: vcomp
-        real(kind=8) :: vfrot
-        real(kind=8) :: vgeom
+        real(kind=8), intent(out) :: vchar
+        real(kind=8), intent(out) :: vresi
     end subroutine nmresi
 end interface

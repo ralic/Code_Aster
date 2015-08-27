@@ -1,6 +1,6 @@
 subroutine nmtble(cont_loop  , model         , mesh    , mate  , sdcont_defi,&
                   sdcont_solv, list_func_acti, ds_print, sdstat, sdtime     ,&
-                  sddyna     , sderro        , sdconv  , sddisc, nume_inst  ,&
+                  sddyna     , sderro        , ds_conv , sddisc, nume_inst  ,&
                   hval_incr  , hval_algo)
 !
 use NonLin_Datastructure_type
@@ -53,7 +53,7 @@ implicit none
     character(len=24), intent(in) :: sdtime
     character(len=19), intent(in) :: sddyna
     character(len=24), intent(in) :: sderro
-    character(len=24), intent(in) :: sdconv
+    type(NL_DS_Conv), intent(in) :: ds_conv
     character(len=19), intent(in) :: sddisc
     integer, intent(in) :: nume_inst
     character(len=19), intent(in) :: hval_incr(*)
@@ -83,7 +83,7 @@ implicit none
 ! In  sdtime           : datastructure for timers
 ! In  sddyna           : dynamic parameters datastructure
 ! In  sderro           : datastructure for errors during algorithm
-! In  sdconv           : datastructure for convergence status
+! In  ds_conv          : datastructure for convergence management
 ! In  sddisc           : datastructure for time discretization
 ! In  nume_inst        : index of current step time
 ! In  hval_incr        : hat-variable for incremental values fields
@@ -187,7 +187,7 @@ implicit none
 !
 ! - Print line
 !
-    call nmaffi(list_func_acti, sdconv, ds_print, sderro, sddisc,&
+    call nmaffi(list_func_acti, ds_conv, ds_print, sderro, sddisc,&
                 'FIXE')
 !
 ! - New iteration in loops

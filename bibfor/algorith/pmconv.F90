@@ -1,6 +1,20 @@
 subroutine pmconv(r, rini, r1, inst, sigp,&
-                  coef, iter, indimp, parcri, conver,&
+                  coef, iter, indimp, ds_conv, conver,&
                   itemax)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterc/r8prem.h"
+#include "asterc/r8vide.h"
+#include "asterfort/pmimpr.h"
+#include "asterfort/utmess.h"
+#include "asterfort/GetResi.h"
+#include "blas/dcopy.h"
+#include "blas/dscal.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,6 +32,19 @@ subroutine pmconv(r, rini, r1, inst, sigp,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jean-michel.proix at edf.fr
+!
+    real(kind=8) :: r(12)
+    real(kind=8) :: rini(12)
+    real(kind=8) :: r1(12)
+    real(kind=8) :: inst
+    real(kind=8) :: sigp(6)
+    real(kind=8) :: coef
+    integer :: iter
+    integer :: indimp(6)
+    type(NL_DS_Conv), intent(in) :: ds_conv
+    aster_logical :: conver
+    aster_logical :: itemax
+!
 !-----------------------------------------------------------------------
 !           OPERATEUR    CALC_POINT_MAT CALCUL D'ERREUR ET CONVERGENCE
 !-----------------------------------------------------------------------
@@ -28,27 +55,27 @@ subroutine pmconv(r, rini, r1, inst, sigp,&
 ! IN   SIGP   : CONTRAINTES ACTUELLES (POUR CONSTRUIRE LE DENOMINATEUR)
 ! IN   COEF   : COEF POUR ADIMENSIONNALISER LE PB
 ! IN   ITER   : NUMERO D'ITERATION
-! IN   PARCRI : PARAMETRES DE CONVERGENCE GLOBAUX
+! In  ds_conv          : datastructure for convergence management
 ! OUT  ITEMAX : .TRUE. SI ITERATION MAXIMUM ATTEINTE
 ! OUT  CONVER : .TRUE. SI CONVERGENCE REALISEE
 !
 !-----------------------------------------------------------------------
-    implicit none
-#include "asterf_types.h"
-#include "asterc/r8prem.h"
-#include "asterc/r8vide.h"
-#include "asterfort/pmimpr.h"
-#include "asterfort/utmess.h"
-#include "blas/dcopy.h"
-#include "blas/dscal.h"
-    integer :: ind, indimp(6), i, itmax, iter, irela
-    real(kind=8) :: inst, parcri(*)
-    real(kind=8) :: r(12), rini(12), r1(12), sigp(6), coef, r8b(12)
+!
+    integer :: ind, i, itmax, irela
+    real(kind=8) :: resi_glob_rela, resi_glob_maxi
+    real(kind=8) :: r8b(12)
     real(kind=8) :: ee, e1, e2, toler, e1ini, e2ini, er1, eini
-    aster_logical :: itemax, conver
+    aster_logical :: l_rela
     character(len=8) :: fonimp(6)
 !-----------------------------------------------------------------------
 !
+!
+! - Get parameters
+!
+    call GetResi(ds_conv, type = 'RESI_GLOB_RELA' , user_para_ = resi_glob_rela,&
+                 l_resi_test_ = l_rela)
+    call GetResi(ds_conv, type = 'RESI_GLOB_MAXI' , user_para_ = resi_glob_maxi)
+                 
 !-----------------------------------------------------------------------
 !     VERIFICATION DE LA CONVERGENCE EN DY  ET RE-INTEGRATION ?
 !-----------------------------------------------------------------------
@@ -64,37 +91,37 @@ subroutine pmconv(r, rini, r1, inst, sigp,&
         call dcopy(6, sigp, 1, r1(1), 1)
         call dscal(6, 1.d0/coef, r1(1), 1)
         call dcopy(6, r(7), 1, r1(7), 1)
-        do 11 i = 1, 12
+        do i = 1, 12
             er1 = max(er1, abs(r1(i)))
- 11     continue
+        end do
         if (er1 .le. r8prem()) then
             ee=er1
             ind=4
             conver=.true.
-            goto 9999
+            goto 999
         endif
     endif
 !
-    do 101 i = 1, 6
+    do i = 1, 6
         e1 = max(e1, abs(r(i)))
         e1ini = max(e1ini, abs(rini(i)))
         e1ini = max(e1ini, abs(r1(i)))
-101 end do
-    do 102 i = 7, 12
+    end do
+    do i = 7, 12
         e2 = max(e2, abs(r(i)))
         e2ini = max(e2ini, abs(rini(i)))
         e2ini = max(e2ini, abs(r1(i)))
-102 end do
+    end do
     eini=max(e1ini,e2ini)
 !
 !     TEST RELATIF OU ABSOLU
-    if (parcri(2) .ne. r8vide()) then
+    if (l_rela) then
         irela=1
     else
         irela=0
     endif
     if (irela .eq. 1) then
-        toler=parcri(2)
+        toler=resi_glob_rela
         if (eini .gt. r8prem()) then
             e1=e1/eini
             e2=e2/eini
@@ -102,12 +129,12 @@ subroutine pmconv(r, rini, r1, inst, sigp,&
             ind=3
         endif
     else
-        toler=parcri(3)
+        toler=resi_glob_maxi
         ee=max(e1,e2)
         ind=4
     endif
     itemax=.false.
-    itmax=nint(parcri(1))
+    itmax = ds_conv%iter_glob_maxi
 !
     if (iter .lt. itmax) then
 ! -      NON CONVERGENCE ITERATION SUIVANTE
@@ -122,7 +149,7 @@ subroutine pmconv(r, rini, r1, inst, sigp,&
         itemax=.true.
         call utmess('I', 'COMPOR2_5')
     endif
-9999 continue
+999 continue
 !
     call pmimpr(ind, inst, indimp, fonimp, r8b,&
                 iter, r8b, r8b, r8b, 1,&

@@ -17,14 +17,14 @@
 !
 interface
     subroutine nmactf(ds_print, sddisc, sderro, defico, resoco,&
-                      parcri  , iterat, numins)
+                      ds_conv , iterat, numins)
         use NonLin_Datastructure_type
         type(NL_DS_Print), intent(in) :: ds_print
         character(len=24), intent(in) :: sderro
         character(len=24), intent(in) :: defico
         character(len=24), intent(in) :: resoco
         character(len=19), intent(in) :: sddisc
-        real(kind=8), intent(in) :: parcri(*)
+        type(NL_DS_Conv), intent(in) :: ds_conv
         integer, intent(in) :: iterat
         integer, intent(in) :: numins
     end subroutine nmactf

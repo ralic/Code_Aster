@@ -18,16 +18,16 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmcerr(sddisc, iter1, iter2, elasdt, rgmaxi,&
-                      rgrela, inikry, lctcd, defico)
-        character(len=19) :: sddisc
-        integer :: iter1
-        integer :: iter2
-        real(kind=8) :: elasdt
-        real(kind=8) :: rgmaxi
-        real(kind=8) :: rgrela
-        real(kind=8) :: inikry
-        aster_logical :: lctcd
-        character(len=24) :: defico
+    subroutine nmcerr(sddisc      , iter_glob_maxi, iter_glob_elas, pas_mini_elas, resi_glob_maxi,&
+                      resi_glob_rela, inikry        , l_cont_disc   , sdcont_defi)
+        character(len=19), intent(in) :: sddisc
+        aster_logical, intent(in) :: l_cont_disc
+        integer, intent(in) :: iter_glob_maxi
+        integer, intent(in) :: iter_glob_elas
+        real(kind=8), intent(in) :: pas_mini_elas 
+        real(kind=8), intent(in) :: inikry
+        real(kind=8), intent(in) :: resi_glob_maxi
+        real(kind=8), intent(in) :: resi_glob_rela
+        character(len=24), optional, intent(in) :: sdcont_defi
     end subroutine nmcerr
 end interface

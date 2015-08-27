@@ -19,8 +19,9 @@
 !
 interface
     subroutine pmconv(r, rini, r1, inst, sigp,&
-                      coef, iter, indimp, parcri, conver,&
+                      coef, iter, indimp, ds_conv, conver,&
                       itemax)
+        use NonLin_Datastructure_type
         real(kind=8) :: r(12)
         real(kind=8) :: rini(12)
         real(kind=8) :: r1(12)
@@ -29,7 +30,7 @@ interface
         real(kind=8) :: coef
         integer :: iter
         integer :: indimp(6)
-        real(kind=8) :: parcri(*)
+        type(NL_DS_Conv), intent(in) :: ds_conv
         aster_logical :: conver
         aster_logical :: itemax
     end subroutine pmconv

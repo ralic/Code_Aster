@@ -35,7 +35,7 @@ implicit none
 
 !
 ! - Type: row for printing tables (convergence table for instance)
-!
+! 
     type NL_DS_Row
         aster_logical :: l_vale_affe
         aster_logical :: l_vale_inte
@@ -51,7 +51,7 @@ implicit none
     end type NL_DS_Row
 !
 ! - Type: table (convergence table for instance)
-!
+! 
     type NL_DS_Table
         integer :: nb_rows
         integer :: nb_rows_maxi = 37
@@ -65,7 +65,7 @@ implicit none
     end type NL_DS_Table
 !
 ! - Type: print
-!
+! 
     type NL_DS_Print
         aster_logical :: l_print
         type(NL_DS_Table) :: table_cvg
@@ -77,4 +77,43 @@ implicit none
         character(len=255) :: sep_line
     end type NL_DS_Print
 !
-end module NonLin_Datastructure_type
+! - Type: residuals
+! 
+    type NL_DS_Resi
+        character(len=16) :: type
+        character(len=16) :: row_name
+        character(len=16) :: row_name_locus
+        character(len=16) :: event_type
+        real(kind=8)      :: vale_calc
+        character(len=16) :: locus_calc
+        real(kind=8)      :: user_para
+        aster_logical     :: l_conv
+    end type NL_DS_Resi
+!
+! - Type: reference residuals
+! 
+    type NL_DS_RefeResi
+        character(len=16) :: type
+        real(kind=8)      :: user_para
+        character(len=8)  :: cmp_name
+    end type NL_DS_RefeResi
+!
+! - Type: convergence management
+! 
+    type NL_DS_Conv
+        integer :: nb_resi
+        integer :: nb_resi_maxi = 6
+        type(NL_DS_Resi)     :: list_resi(6)
+        aster_logical        :: l_resi_test(6)
+        integer :: nb_refe
+        integer :: nb_refe_maxi = 11
+        type(NL_DS_RefeResi) :: list_refe(11)
+        aster_logical        :: l_refe_test(11)
+        integer :: iter_glob_maxi
+        integer :: iter_glob_elas
+        aster_logical :: l_stop
+        aster_logical :: l_iter_elas
+        real(kind=8)  :: swap_trig
+    end type NL_DS_Conv
+!
+end module

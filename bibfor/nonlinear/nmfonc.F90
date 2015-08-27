@@ -1,7 +1,9 @@
-subroutine nmfonc(crit_para  , algo_para     , algo_meth, solver , model ,&
+subroutine nmfonc(ds_conv    , algo_para     , algo_meth, solver , model ,&
                   sdcont_defi, list_load     , l_cont   , l_unil , sdnume,&
                   sddyna     , sdcriq        , mate     , compor_, result,&
                   comp_para  , list_func_acti)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -17,6 +19,7 @@ implicit none
 #include "asterfort/exfonc.h"
 #include "asterfort/exixfe.h"
 #include "asterfort/getvtx.h"
+#include "asterfort/GetResi.h"
 #include "asterfort/infniv.h"
 #include "asterfort/ischar.h"
 #include "asterfort/isdiri.h"
@@ -26,7 +29,6 @@ implicit none
 #include "asterfort/ndynlo.h"
 #include "asterfort/nmcpqu.h"
 #include "asterfort/nmlssv.h"
-#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,7 +48,7 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    real(kind=8), intent(in) :: crit_para(*)
+    type(NL_DS_Conv), intent(in) :: ds_conv
     real(kind=8), intent(in) :: algo_para(*)
     character(len=16), intent(in) :: algo_meth(*)
     character(len=19), intent(in) :: solver
@@ -74,7 +76,7 @@ implicit none
 !
 ! NB: to ask list_func_acti, use ISFONC.F90 subroutine !
 !
-! In  crit_para        : parameters for convergence criteria
+! In  ds_conv          : datastructure for convergence management
 ! In  algo_para        : parameters for algorithm criteria
 ! In  algo_meth        : parameters for algorithm methods
 ! In  solver           : datastructure for solver parameters 
@@ -96,7 +98,7 @@ implicit none
 !
     integer :: nocc, iret, nb_subs_stat, nb_load_subs
     integer :: i_cont_form
-    aster_logical :: l_deborst, l_frot, l_elem_choc, l_all_verif
+    aster_logical :: l_deborst, l_frot, l_elem_choc, l_all_verif, l_refe, l_comp
     aster_logical :: l_loop_geom, l_loop_frot, l_loop_cont
     integer :: ixfem, ichar, i_buckl, i_vibr_mode, i_stab
     aster_logical :: l_load_undead, l_load_laplace, l_load_elim, l_load_didi
@@ -104,7 +106,7 @@ implicit none
     character(len=16) :: command, k16bid, matdis
     character(len=19) :: compor
     character(len=24) :: solv_type, solv_precond, sdcriq_errt
-    aster_logical :: l_stat, l_dyna, l_stop_no
+    aster_logical :: l_stat, l_dyna
     aster_logical :: l_newt_cont, l_newt_frot, l_newt_geom
     aster_logical :: l_dyna_expl
     integer :: ifm, niv
@@ -179,13 +181,19 @@ implicit none
     call nmcpqu(compor, 'C_PLAN', 'DEBORST', l_deborst)
     if (l_deborst) list_func_acti(7) = 1
 !
-! - Reference criterion
+! - Reference criterion RESI_REFE_RELA
 !
-    if (crit_para(6) .ne. r8vide()) list_func_acti(8) = 1
+    call GetResi(ds_conv, type = 'RESI_REFE_RELA' , l_resi_test_ = l_refe)
+    if (l_refe) then
+        list_func_acti(8) = 1
+    endif
 !
-! - By components criterion
+! - By components criterion RESI_COMP_RELA
 !
-    if (crit_para(7) .ne. r8vide()) list_func_acti(35) = 1
+    call GetResi(ds_conv, type = 'RESI_COMP_RELA' , l_resi_test_ = l_comp)
+    if (l_comp) then
+        list_func_acti(35) = 1
+    endif
 !
 ! - X-FEM
 !
@@ -380,13 +388,6 @@ implicit none
     if (solv_type .eq. 'PETSC' .or. solv_type .eq. 'GCPC') then
         solv_precond=slvk(2)
         if (solv_precond .eq. 'LDLT_SP') list_func_acti(46) = 1
-    endif
-!
-! - ARRET=NON
-!
-    l_stop_no = (nint(crit_para(4)).eq.1)
-    if (l_stop_no) then
-        call utmess('A', 'MECANONLINE5_37')
     endif
 !
 ! - Explicit dynamics

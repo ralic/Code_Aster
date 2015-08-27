@@ -1,4 +1,4 @@
-subroutine nmaffi(list_func_acti, sdconv, ds_print, sderro, sddisc,&
+subroutine nmaffi(list_func_acti, ds_conv, ds_print, sderro, sddisc,&
                   loop_name     )
 !
 use NonLin_Datastructure_type
@@ -35,7 +35,7 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     integer, intent(in) :: list_func_acti(*)
-    character(len=24), intent(in) :: sdconv
+    type(NL_DS_Conv), intent(in) :: ds_conv
     type(NL_DS_Print), intent(inout) :: ds_print
     character(len=24), intent(in) :: sderro
     character(len=19), intent(in) :: sddisc
@@ -50,8 +50,8 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  list_func_acti   : list of active functionnalities
-! In  ds_print         : datastructure for printing parameters
-! In  sdconv           : name of datastructure convergence
+! IO  ds_print         : datastructure for printing parameters
+! In  ds_conv          : datastructure for convergence management
 ! In  sderro           : name of datastructure for error management (events)
 ! In  sddisc           : name of datastructure for time discretization
 ! In  loop_name        : name of loop
@@ -141,7 +141,7 @@ implicit none
 ! - Print residuals summary at end of step
 !
     if (cvinst .and. .not.l_dyna_expl) then
-        call nmimps(ds_print, sdconv, sderro)
+        call nmimps(ds_print, ds_conv, sderro)
     endif
 !
 end subroutine

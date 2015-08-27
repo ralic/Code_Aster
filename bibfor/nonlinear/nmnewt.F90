@@ -1,12 +1,12 @@
-subroutine nmnewt(noma    , modele, numins, numedd, numfix,&
-                  mate    , carele, comref, compor, lischa,&
-                  method  , fonact, carcri, conv  ,&
-                  parmet  , parcri, sdstat, sdtime, sderro,&
-                  ds_print, sdnume, sddyna, sddisc, sdcrit,&
-                  sdsuiv  , sdpilo, sdconv, solveu, maprec,&
-                  matass  , valinc, solalg, meelem, measse,&
-                  veelem  , veasse, defico, resoco, deficu,&
-                  resocu  , eta   , nbiter)
+subroutine nmnewt(noma   , modele, numins, numedd  , numfix,&
+                  mate   , carele, comref, compor  , lischa,&
+                  method , fonact, carcri, conv    , parmet,&
+                  sdstat , sdtime, sderro, ds_print, sdnume,&
+                  sddyna , sddisc, sdcrit, sdsuiv  , sdpilo,&
+                  ds_conv, solveu, maprec, matass  , valinc,&
+                  solalg , meelem, measse, veelem  , veasse,&
+                  defico , resoco, deficu, resocu  , eta   ,&
+                  nbiter)
 !
 use NonLin_Datastructure_type
 !
@@ -68,15 +68,16 @@ implicit none
     integer :: numins
     integer :: fonact(*)
     character(len=16) :: method(*)
-    real(kind=8) :: parmet(*), parcri(*), conv(*)
+    real(kind=8) :: parmet(*), conv(*)
     character(len=24) :: carcri
-    character(len=24) :: sdtime, sderro, sdstat, sdconv, sdsuiv
+    character(len=24) :: sdtime, sderro, sdstat, sdsuiv
     character(len=19) :: sdnume, sddyna, sddisc, sdcrit
     character(len=19) :: sdpilo
     character(len=19) :: valinc(*), solalg(*)
     character(len=19) :: meelem(*), veelem(*)
     character(len=19) :: measse(*), veasse(*)
     type(NL_DS_Print), intent(inout) :: ds_print
+    type(NL_DS_Conv), intent(inout) :: ds_conv
     character(len=19) :: lischa
     character(len=19) :: solveu, maprec, matass
     character(len=24) :: modele, numedd, numfix
@@ -110,13 +111,12 @@ implicit none
 ! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
 ! IN  PARMET : PARAMETRES DES METHODES DE RESOLUTION
 ! I/O CONV   : INFORMATIONS SUR LA CONVERGENCE DU CALCUL
-! IN  PARCRI : CRITERES DE CONVERGENCE
 ! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
 ! IN  SDDISC : SD DISC_INST
 ! IN  SDTIME : SD TIMER
 ! IN  SDERRO : GESTION DES ERREURS
 ! IO  ds_print         : datastructure for printing parameters
-! IN  SDCONV : SD GESTION DE LA CONVERGENCE
+! IO  ds_conv          : datastructure for convergence management
 ! IN  NUMINS : NUMERO D'INSTANT
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
@@ -206,7 +206,7 @@ implicit none
 !
 ! --- GESTION DEBUT DE BOUCLE POINTS FIXES
 !
-    call nmible(niveau, modele, noma  , defico, resoco,&
+    call nmible(niveau, modele, noma  , defico, resoco  ,&
                 fonact, numedd, sdstat, sdtime, ds_print)
 !
 ! --- CREATION OBJETS POUR CONTACT CONTINU
@@ -274,12 +274,12 @@ implicit none
 ! --- ESTIMATION DE LA CONVERGENCE
 !
 315 continue
-    call nmconv(noma  , modele, mate  , numedd  , sdnume,&
-                fonact, sddyna, sdconv, ds_print, sdstat,&
-                sddisc, sdtime, sdcrit, sderro  , parmet,&
-                comref, matass, solveu, numins  , iterat,&
-                conv  , eta   , parcri, defico  , resoco,&
-                valinc, solalg, measse, veasse)
+    call nmconv(noma  , modele, mate   , numedd  , sdnume,&
+                fonact, sddyna, ds_conv, ds_print, sdstat,&
+                sddisc, sdtime, sdcrit , sderro  , parmet,&
+                comref, matass, solveu , numins  , iterat,&
+                conv  , eta   , defico , resoco  , valinc,&
+                solalg, measse, veasse)
 !
 ! --- MISE A JOUR DES EFFORTS DE CONTACT
 !
@@ -298,7 +298,7 @@ implicit none
 !
 ! - Print during Newton loop
 !
-    call nmaffi(fonact, sdconv, ds_print, sderro, sddisc,&
+    call nmaffi(fonact, ds_conv, ds_print, sderro, sddisc,&
                 'NEWT')
 !
     if (etnewt .ne. 'CONT') goto 330
@@ -369,7 +369,7 @@ implicit none
 ! --- GESTION DES ACTIONS A LA FIN DE LA BOUCLE DE NEWTON
 !
     call nmactn(ds_print, sddisc, sderro, defico, resoco,&
-                parcri  , iterat, numins)
+                ds_conv , iterat, numins)
 !
 ! --- ON FAIT DES ITERATIONS SUPPLEMENTAIRES ?
 !
@@ -384,7 +384,7 @@ implicit none
 !
     call nmtble(niveau, modele, noma    , mate  , defico, &
                 resoco, fonact, ds_print, sdstat, sdtime,&
-                sddyna, sderro, sdconv  , sddisc, numins,&
+                sddyna, sderro, ds_conv , sddisc, numins,&
                 valinc, solalg)
 !
 ! --- ETAT DE LA CONVERGENCE POINT FIXE
@@ -394,7 +394,7 @@ implicit none
 ! --- GESTION DES ACTIONS A LA FIN D'UNE BOUCLE DE POINT FIXE
 !
     call nmactf(ds_print, sddisc, sderro, defico, resoco,&
-                parcri  , iterat, numins)
+                ds_conv , iterat, numins)
 !
 ! --- POUR LA CONTINUATION DU POINT FIXE: GLUTE DUE AU CONTACT DISCRET
 !

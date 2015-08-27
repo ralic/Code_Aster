@@ -1,10 +1,14 @@
-subroutine nmrefe(model , compor, mate  , cara_elem, nume_dof,&
-                  parcon, valinc, veelem, veasse)
+subroutine nmrefe(model  , compor, mate  , cara_elem, nume_dof,&
+                  ds_conv, valinc, veelem, veasse)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assmiv.h"
 #include "asterfort/calcul.h"
 #include "asterfort/dbgcal.h"
@@ -43,45 +47,27 @@ implicit none
     character(len=24), intent(in) :: mate
     character(len=24), intent(in) :: cara_elem
     character(len=24), intent(in) :: nume_dof
-    real(kind=8), intent(in) :: parcon(*)
+    type(NL_DS_Conv), intent(in) :: ds_conv
     character(len=19), intent(in) :: valinc(*)
     character(len=19), intent(in) :: veelem(*)
     character(len=19), intent(in) :: veasse(*)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! MECA_NON_LINE - Computation
 !
 ! Compute reference vector for RESI_REFE_RELA
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  ds_conv          : datastructure for convergence management
 !
-! IN  MODELE : MODELE MECANIQUE
-! IN  COMPOR : CARTE COMPORTEMENT
-! IN  MATE   : NOM DU CHAMP DE MATERIAU
-! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
-! IN  DEPMOI : DEPLACEMENT EN T-
-! IN  PARCON : PARAMETRES DU CRITERE DE CONVERGENCE REFERENCE
-!                     1 : SIGM_REFE
-!                     2 : EPSI_REFE
-!                     3 : FLUX_THER_REFE
-!                     4 : FLUX_HYD1_REFE
-!                     5 : FLUX_HYD2_REFE
-!                     6 : VARI_REFE
-!                     7 : EFFORT (FORC_REFE)
-!                     8 : MOMENT (FORC_REFE)
-!                     9 : DEPL_REFE
-!                    10 : LAGR_REFE
+! --------------------------------------------------------------------------------------------------
 !
     integer :: nbout, nbin
     parameter    (nbout=1, nbin=26)
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
-!
-    integer :: nbsig
-    parameter    (nbsig=11)
-    character(len=8) :: sigere(nbsig)
 !
     character(len=19) :: vect_elem, vect_asse, disp_prev
     character(len=19) :: ligrmo, verefe, carte
@@ -90,12 +76,12 @@ implicit none
     character(len=19) :: pintto, cnseto, heavto, loncha, pmilto, hea_no
     character(len=19) :: pinter, ainter, baseco, ccface, lonfac
     aster_logical :: debug
-    integer :: ifmdbg, nivdbg
+    integer :: ifmdbg, nivdbg, i_refe, nb_refe
+    character(len=8), pointer :: list_cmp(:) => null()
+    real(kind=8), pointer :: list_vale(:) => null()
     character(len=16) :: option
 !
-    data  sigere / 'SIGM','EPSI','FTHERM','FHYDR1','FHYDR2','VARI',&
-                   'EFFORT','MOMENT','DEPL','LAG_GV','PI' /
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     call infdbg('PRE_CALCUL', ifmdbg, nivdbg)
@@ -118,10 +104,20 @@ implicit none
     endif
     option = 'REFE_FORC_NODA'
 !
+! - Get parameters from convergence datastructure
+!
+    nb_refe       = ds_conv%nb_refe
+    AS_ALLOCATE(vk8 = list_cmp, size = nb_refe)
+    AS_ALLOCATE(vr  = list_vale, size = nb_refe)
+    do i_refe = 1, nb_refe
+        list_cmp(i_refe)  = ds_conv%list_refe(i_refe)%cmp_name
+        list_vale(i_refe) = ds_conv%list_refe(i_refe)%user_para
+    end do
+!
 ! --- CREATION CARTE DES VALEURS DE REFRENCES
 !
     call mecact('V', carte, 'MODELE', ligrmo, 'PREC',&
-                ncmp=nbsig, lnomcmp=sigere, vr=parcon)
+                ncmp=nb_refe, lnomcmp=list_cmp, vr=list_vale)
 !
 ! --- CARTE DE LA GEOMETRIE
 !
@@ -239,6 +235,9 @@ implicit none
 !
     call assmiv('V', vect_asse, 1, vect_elem, [1.d0],&
                 nume_dof, ' ', 'ZERO', 1)
+!
+    AS_DEALLOCATE(vk8 = list_cmp)
+    AS_DEALLOCATE(vr  = list_vale)
 !
     call jedema()
 !

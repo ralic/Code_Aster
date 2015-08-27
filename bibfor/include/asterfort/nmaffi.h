@@ -16,11 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmaffi(list_func_acti, sdconv, ds_print, sderro, sddisc,&
+    subroutine nmaffi(list_func_acti, ds_conv, ds_print, sderro, sddisc,&
                       loop_name     )
         use NonLin_Datastructure_type
         integer, intent(in) :: list_func_acti(*)
-        character(len=24), intent(in) :: sdconv
+        type(NL_DS_Conv), intent(in) :: ds_conv
         type(NL_DS_Print), intent(inout) :: ds_print
         character(len=24), intent(in) :: sderro
         character(len=19), intent(in) :: sddisc

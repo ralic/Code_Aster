@@ -2,7 +2,6 @@ subroutine op0070()
 !
 use NonLin_Datastructure_type
 !
-!
 implicit none
 !
 #include "asterf_types.h"
@@ -63,12 +62,11 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: zpmet, zpcri, zconv
-    integer :: zpcon, znmeth
-    parameter   (zpmet  = 9 ,zpcri  = 7 ,zconv = 4)
-    parameter   (zpcon  = 11,znmeth = 7 )
-    real(kind=8) :: parmet(zpmet), parcri(zpcri), conv(zconv)
-    real(kind=8) :: parcon(zpcon)
+    integer, parameter :: zpmet  = 9
+    integer, parameter :: zconv  = 4
+    integer, parameter :: znmeth = 7
+    real(kind=8) :: parmet(zpmet)
+    real(kind=8) :: conv(zconv)
     character(len=16) :: method(znmeth)
     integer :: fonact(100)
     integer :: zmeelm, zmeass, zveelm, zveass
@@ -106,11 +104,12 @@ implicit none
 ! --- STRUCTURES DE DONNEES
 !
     character(len=24) :: sdtime, sderro, sd_inout
-    character(len=24) :: sdstat, sdconv, sd_suiv, sdcriq
+    character(len=24) :: sdstat, sd_suiv, sdcriq
     character(len=19) :: sdpilo, sdnume, sddyna, sddisc, sdcrit
     character(len=19) :: sd_obsv, sdpost, sdener
     character(len=24) :: defico, resoco, deficu, resocu
     type(NL_DS_Print) :: ds_print
+    type(NL_DS_Conv) :: ds_conv
 !
 ! --- VARIABLES CHAPEAUX
 !
@@ -128,7 +127,7 @@ implicit none
     data sdtime, sderro    /'&&OP0070.TIME.','&&OP0070.ERRE.'/
     data sdstat            /'&&OP0070.STAT.'/
     data sdnume            /'&&OP0070.NUME.ROTAT'/
-    data sddisc, sdconv    /'&&OP0070.DISC.','&&OP0070.CONV.'/
+    data sddisc            /'&&OP0070.DISC.'/
     data sdcrit            /'&&OP0070.CRIT.'/
     data lischa            /'&&OP0070.LISCHA'/
     data carcri            /'&&OP0070.PARA_LDC'/
@@ -160,33 +159,31 @@ implicit none
 !
     call getres(result, k16bid, k16bid)
 !
-! --- PREMIERES INITALISATIONS
+! - Creation of datastructures
 !
-    call nmini0(zpmet   , zpcri , zconv , zpcon , znmeth,&
-                fonact  , parmet, parcri, conv  , parcon,&
-                method  , eta   , numins, matass, zmeelm,&
-                zmeass  , zveelm, zveass, zsolal, zvalin,&
-                ds_print)
+    call nmini0(zpmet , zconv   , znmeth, fonact, parmet,&
+                conv  , method  , eta   , numins, matass,&
+                zmeelm, zmeass  , zveelm, zveass, zsolal,&
+                zvalin, ds_print, ds_conv)
 !
 ! --- LECTURE DES OPERANDES DE LA COMMANDE
 !
-    call nmdata(result, modele, mesh  , mate  , carele,&
-                compor, lischa, solveu, method, parmet,&
-                parcri, parcon, carcri, sddyna, sdpost,&
-                sderro, sdener, sdcriq, ds_print)
+    call nmdata(result , modele, mesh    , mate  , carele,&
+                compor , lischa, solveu  , method, parmet,&
+                ds_conv, carcri, sddyna  , sdpost, sderro,&
+                sdener , sdcriq, ds_print)
 !
 ! --- ETAT INITIAL ET CREATION DES STRUCTURES DE DONNEES
 !
-    call nminit(result, modele, numedd  , numfix  , mate,&
-                compor, carele, parmet  , lischa  , maprec,&
-                solveu, carcri, numins  , sdstat  , sddisc,&
-                sdnume, defico, sdcrit  , comref  , fonact,&
-                parcon, parcri, method  , lisch2  , mesh  ,&
-                sdpilo, sddyna, ds_print, sd_suiv  , sd_obsv,&
-                sdtime, sderro, sdpost  , sd_inout, sdener,&
-                sdconv, sdcriq, deficu  , resocu  , resoco,&
-                valinc, solalg, measse  , veelem  , meelem,&
-                veasse, codere)
+    call nminit(result  , modele  , numedd , numfix , mate  ,&
+                compor  , carele  , parmet , lischa , maprec,&
+                solveu  , carcri  , numins , sdstat , sddisc,&
+                sdnume  , defico  , sdcrit , comref , fonact,&
+                method  , lisch2  , mesh   , sdpilo , sddyna,&
+                ds_print, sd_suiv , sd_obsv, sdtime , sderro,&
+                sdpost  , sd_inout, sdener , ds_conv, sdcriq,&
+                deficu  , resocu  , resoco , valinc , solalg,&
+                measse  , veelem  , meelem , veasse , codere)
 !
 ! --- PREMIER INSTANT
 !
@@ -224,15 +221,15 @@ implicit none
                     solalg, solveu  , matass, maprec, meelem,&
                     measse, veelem  , veasse, nbiter)
     else if (lstat.or.limpl) then
-        call nmnewt(mesh    , modele, numins, numedd, numfix,&
-                    mate    , carele, comref, compor, lischa,&
-                    method  , fonact, carcri, conv  ,&
-                    parmet  , parcri, sdstat, sdtime, sderro,&
-                    ds_print, sdnume, sddyna, sddisc, sdcrit,&
-                    sd_suiv , sdpilo, sdconv, solveu, maprec,&
-                    matass  , valinc, solalg, meelem, measse,&
-                    veelem  , veasse, defico, resoco, deficu,&
-                    resocu  , eta   , nbiter)
+        call nmnewt(mesh    , modele, numins, numedd  , numfix,&
+                    mate   , carele, comref, compor  , lischa,&
+                    method , fonact, carcri, conv    , parmet,&
+                    sdstat , sdtime, sderro, ds_print, sdnume,&
+                    sddyna , sddisc, sdcrit, sd_suiv , sdpilo,&
+                    ds_conv, solveu, maprec, matass  , valinc,&
+                    solalg , meelem, measse, veelem  , veasse,&
+                    defico , resoco, deficu, resocu  , eta   ,&
+                    nbiter)
     else
         ASSERT(.false.)
     endif
@@ -269,7 +266,7 @@ implicit none
 !
 ! --- AFFICHAGES PENDANT LA BOUCLE DES PAS DE TEMPS
 !
-    call nmaffi(fonact, sdconv, ds_print, sderro, sddisc,&
+    call nmaffi(fonact, ds_conv, ds_print, sderro, sddisc,&
                 'INST')
 !
 ! --- STATISTIQUES SUR PAS DE TEMPS
@@ -282,7 +279,7 @@ implicit none
 ! --- GESTION DES ACTIONS A LA FIN D'UN PAS DE TEMPS
 !
     call nmactp(ds_print, sddisc, sderro, defico, resoco,&
-                parcri  , nbiter, numins)
+                ds_conv , nbiter, numins)
 !
 ! --- INSTANT SUIVANT
 !

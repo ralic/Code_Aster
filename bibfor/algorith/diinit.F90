@@ -1,6 +1,8 @@
-subroutine diinit(mesh_      , model_, result, mate     , cara_elem,&
-                  func_acti  , sddyna, parcri, inst_init, solver   ,&
-                  sdcont_defi, sddisc)
+subroutine diinit(mesh_         , model_, result , mate     , cara_elem,&
+                  list_func_acti, sddyna, ds_conv, inst_init, solver   ,&
+                  sdcont_defi   , sddisc)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -41,11 +43,11 @@ implicit none
     character(len=24), intent(in) :: cara_elem
     character(len=24), intent(in) :: mate
     real(kind=8), intent(in) :: inst_init
-    real(kind=8), intent(in) :: parcri(*)
+    type(NL_DS_Conv), intent(in) :: ds_conv
     character(len=8), intent(in) :: result
     character(len=19), intent(in) :: solver
     character(len=24), intent(in) :: sdcont_defi
-    integer, intent(in) :: func_acti(*)
+    integer, intent(in) :: list_func_acti(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,8 +63,8 @@ implicit none
 ! In  cara_elem        : name of elementary characteristics (field)
 ! In  result           : name of the results datastructure
 ! In  sddyna           : name of dynamic parameters
-! In  parcri           : convergence criteria
-! In  func_acti        : active functionnalities vector (see nmfonc)
+! In  ds_conv          : datastructure for convergence management
+! In  list_func_acti   : active functionnalities vector (see nmfonc)
 ! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
 ! In  solver           : name of solver parameters
 ! In  sddisc           : datastructure for time discretization
@@ -83,8 +85,8 @@ implicit none
 ! - Active functionnalities
 !
     l_expl       = ndynlo(sddyna,'EXPLICITE')
-    l_implex     = isfonc(func_acti,'IMPLEX')
-    l_cont_disc  = isfonc(func_acti,'CONT_DISCRET')
+    l_implex     = isfonc(list_func_acti,'IMPLEX')
+    l_cont_disc  = isfonc(list_func_acti,'CONT_DISCRET')
 !
 ! - Create time discretization datastructure
 !
@@ -98,11 +100,11 @@ implicit none
 !
 ! - Create storing datastructure
 !
-    call nmcrar(result, sddisc, func_acti)
+    call nmcrar(result, sddisc, list_func_acti)
 !
 ! - Automatic management of time stepping
 !
-    call nmcrsu(sddisc, list_inst, parcri, l_implex, l_cont_disc,&
+    call nmcrsu(sddisc, list_inst  , ds_conv, l_implex, l_cont_disc,&
                 solver, sdcont_defi)
 !
 ! - Table for parameters

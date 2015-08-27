@@ -1,7 +1,7 @@
-subroutine nmdata(result, model , mesh  , mate    , carele, &
-                  compor, lischa, solveu, method  , parmet, &
-                  parcri, parcon, carcri, sddyna  , sdpost, &
-                  sderro, sdener, sdcriq, ds_print)
+subroutine nmdata(result , model , mesh    , mate  , carele,&
+                  compor , lischa, solveu  , method, parmet,&
+                  ds_conv, carcri, sddyna  , sdpost, sderro,&
+                  sdener , sdcriq, ds_print)
 !
 use NonLin_Datastructure_type
 !
@@ -48,10 +48,11 @@ implicit none
     character(len=24) :: mate, carele, compor
     character(len=24) :: carcri, sderro, sdcriq
     character(len=16) :: method(*)
-    real(kind=8) :: parmet(*), parcri(*), parcon(*)
+    real(kind=8) :: parmet(*)
     character(len=*), intent(out) :: model
     character(len=*), intent(out) :: mesh
     type(NL_DS_Print), intent(inout) :: ds_print
+    type(NL_DS_Conv), intent(inout) :: ds_conv
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -71,15 +72,14 @@ implicit none
 ! OUT METHOD : DESCRIPTION DE LA METHODE DE RESOLUTION
 ! OUT SOLVEU : NOM DU SOLVEUR
 ! OUT PARMET : PARAMETRES DE LA METHODE DE RESOLUTION
-! OUT PARCRI : PARAMETRES DES CRITERES DE CONVERGENCE
 ! OUT CARCRI : CARTE DES CRITERES DE CONVERGENCE LOCAUX
-! OUT PARCON : PARAMETRES DU CRITERE DE CONVERGENCE EN CONTRAINTE
 ! IN  SDDYNA : SD DYNAMIQUE
 ! OUT SDPOST : SD POUR POST-TRAITEMENTS (CRIT_STAB ET MODE_VIBR)
 ! OUT SDERRO : SD ERREUR
 ! OUT SDCRIQ : SD CRITERE QUALITE
 ! OUT SDENER : SD ENERGIES
 ! IO  ds_print         : datastructure for printing parameters
+! IO  ds_conv          : datastructure for convergence management
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -119,9 +119,9 @@ implicit none
     endif
     call nmdorc(model(1:8), mate, l_etat_init, compor, carcri)
 !
-! --- CRITERES DE CONVERGENCE GLOBAL
+! - Read parameters for convergence
 !
-    call nmdocn(parcri, parcon)
+    call nmdocn(ds_conv)
 !
 ! --- NOM ET PARAMETRES DE LA METHODE DE RESOLUTION
 !

@@ -18,7 +18,7 @@
 interface
     subroutine nmtble(cont_loop  , model         , mesh    , mate  , sdcont_defi,&
                       sdcont_solv, list_func_acti, ds_print, sdstat, sdtime     ,&
-                      sddyna     , sderro        , sdconv  , sddisc, nume_inst  ,&
+                      sddyna     , sderro        , ds_conv , sddisc, nume_inst  ,&
                       hval_incr  , hval_algo)
         use NonLin_Datastructure_type        
         integer, intent(inout) :: cont_loop
@@ -33,7 +33,7 @@ interface
         character(len=24), intent(in) :: sdtime
         character(len=19), intent(in) :: sddyna
         character(len=24), intent(in) :: sderro
-        character(len=24), intent(in) :: sdconv
+        type(NL_DS_Conv), intent(in) :: ds_conv
         character(len=19), intent(in) :: sddisc
         integer, intent(in) :: nume_inst
         character(len=19), intent(in) :: hval_incr(*)

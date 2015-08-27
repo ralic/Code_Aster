@@ -16,11 +16,12 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmimre_dof(nume_dof , sdconv   , vale_rela, vale_maxi     , vale_refe     ,&
+    subroutine nmimre_dof(nume_dof , ds_conv  , vale_rela, vale_maxi     , vale_refe     ,&
                           vale_comp, vale_frot, vale_geom, ieq_rela      , ieq_maxi      ,&
                           ieq_refe , noddlm   , ieq_comp , name_node_frot, name_node_geom)
+        use NonLin_Datastructure_type
         character(len=24), intent(in) :: nume_dof
-        character(len=24), intent(in) :: sdconv
+        type(NL_DS_Conv), intent(inout) :: ds_conv
         integer, intent(in) :: ieq_rela
         integer, intent(in) :: ieq_maxi
         integer, intent(in) :: ieq_refe

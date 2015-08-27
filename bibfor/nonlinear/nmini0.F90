@@ -1,8 +1,7 @@
-subroutine nmini0(zpmet   , zpcri, zconv, zpcon, znmeth,&
-                  fonact  , parmet, parcri, conv, parcon,&
-                  method  , eta, numins, matass, zmeelm,&
-                  zmeass  , zveelm, zveass, zsolal, zvalin,&
-                  ds_print)
+subroutine nmini0(zpmet , zconv   , znmeth , fonact, parmet,&
+                  conv  , method  , eta    , numins, matass,&
+                  zmeelm, zmeass  , zveelm , zveass, zsolal,&
+                  zvalin, ds_print, ds_conv)
 !
 use NonLin_Datastructure_type
 !
@@ -10,8 +9,9 @@ implicit none
 !
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
-#include "asterfort/infdbg.h"
 #include "asterfort/nmchai.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/CreateConvDS.h"
 #include "asterfort/CreatePrintDS.h"
 !
 ! ======================================================================
@@ -31,19 +31,18 @@ implicit none
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
-! aslint: disable=W1504
 !
-    integer :: zpmet, zpcri, zconv
-    integer :: zpcon, znmeth
+    integer :: zpmet, zconv
+    integer :: znmeth
     integer :: fonact(*)
-    real(kind=8) :: parmet(zpmet), parcri(zpcri), conv(zconv)
-    real(kind=8) :: parcon(zpcon)
+    real(kind=8) :: parmet(zpmet), conv(zconv)
     character(len=16) :: method(znmeth)
     character(len=19) :: matass
     integer :: numins
     real(kind=8) :: eta
     integer :: zmeelm, zmeass, zveelm, zveass, zsolal, zvalin
     type(NL_DS_Print), intent(out) :: ds_print
+    type(NL_DS_Conv), intent(out) :: ds_conv
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,6 +53,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! Out ds_print         : datastructure for printing parameters
+! Out ds_conv          : datastructure for convergence management
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,7 +61,7 @@ implicit none
     real(kind=8), parameter :: zero = 0.d0
     integer :: long
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
@@ -72,6 +72,10 @@ implicit none
 !
     call CreatePrintDS(ds_print)
 !
+! - Create convergence management datastructure
+!
+    call CreateConvDS(ds_conv)
+!
 ! --- FONCTIONNALITES ACTIVEES               (NMFONC/ISFONC)
 !
     fonact(1:100) = 0
@@ -80,18 +84,10 @@ implicit none
 !
     parmet(1:zpmet) = zero
 !
-! --- PARAMETRES DES CRITERES DE CONVERGENCE (NMLECT)
-!
-    parcri(1:zpcri) = zero
-!
 ! --- INFORMATIONS SUR LA CONVERGENCE DU CALCUL
 !
     conv(1) = -1
     conv(2:zconv) = r8vide()
-!
-! --- PARAMETRES DU CRITERE DE CONVERGENCE EN CONTRAINTE (NMLECT)
-!
-    parcon(1:zpcon) = zero
 !
 ! --- METHODES DE RESOLUTION
 !

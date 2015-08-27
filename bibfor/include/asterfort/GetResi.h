@@ -16,18 +16,19 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmcore(sdcrit          , sderro, list_func_acti, nume_inst, iter_newt,&
-                      line_search_iter, eta   , resi_norm     , load_norm, ds_conv )
+    subroutine GetResi(ds_conv   , type  ,&
+                       row_name_ , row_name_locus_, vale_calc_  , locus_calc_, user_para_,&
+                       l_conv_   , event_type_    , l_resi_test_)
         use NonLin_Datastructure_type
-        character(len=19), intent(in) :: sdcrit
-        character(len=24), intent(in) :: sderro
-        integer, intent(in) :: list_func_acti(*)
-        integer, intent(in) :: nume_inst
-        integer, intent(in) :: iter_newt
-        integer, intent(in) :: line_search_iter
-        real(kind=8), intent(in) :: eta
-        real(kind=8), intent(in) :: resi_norm
-        real(kind=8), intent(in) :: load_norm
-        type(NL_DS_Conv), intent(inout) :: ds_conv
-    end subroutine nmcore
+        type(NL_DS_Conv), intent(in) :: ds_conv
+        character(len=*), intent(in) :: type
+        character(len=16), optional, intent(out) :: row_name_
+        character(len=16), optional, intent(out) :: row_name_locus_
+        real(kind=8), optional, intent(out) :: vale_calc_
+        character(len=16), optional, intent(out) :: locus_calc_
+        real(kind=8), optional, intent(out) :: user_para_
+        aster_logical, optional, intent(out) :: l_conv_
+        character(len=16), optional, intent(out)  :: event_type_
+        aster_logical, optional, intent(out) :: l_resi_test_
+    end subroutine GetResi
 end interface

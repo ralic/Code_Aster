@@ -1,5 +1,5 @@
 subroutine nmactp(ds_print, sddisc, sderro, defico, resoco,&
-                  parcri  , nbiter, numins)
+                  ds_conv , nbiter, numins)
 !
 use NonLin_Datastructure_type
 !
@@ -38,7 +38,7 @@ implicit none
     character(len=24), intent(in) :: defico
     character(len=24), intent(in) :: resoco
     character(len=19), intent(in) :: sddisc
-    real(kind=8), intent(in) :: parcri(*)
+    type(NL_DS_Conv), intent(in) :: ds_conv
     integer, intent(in) :: nbiter
     integer, intent(in) :: numins
 !
@@ -55,7 +55,7 @@ implicit none
 ! IN  SDERRO : SD GESTION DES ERREURS
 ! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
 ! IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
-! IN  PARCRI : CRITERES DE CONVERGENCE
+! In  ds_conv          : datastructure for convergence management
 ! IN  NBITER : NOMBRE D'ITERATIONS DE NEWTON
 ! IN  NUMINS : NUMERO D'INSTANT
 !
@@ -63,13 +63,11 @@ implicit none
 !
     integer :: retact, i_echec_acti, actpas, iterat, i_action
     character(len=4) :: etinst
-    aster_logical :: arret
     integer :: piless
     character(len=16) :: pilcho
 !
 ! ----------------------------------------------------------------------
 !
-    arret = (nint(parcri(4)).eq.0)
     retact = 4
     actpas = 3
     iterat = nbiter - 1
@@ -118,7 +116,7 @@ implicit none
 !
 ! ----- ECHEC DE L'ACTION
 !
-        if (.not.arret) then
+        if (.not.ds_conv%l_stop) then
 !
 ! ------- CONVERGENCE FORCEE -> ON PASSE A LA SUITE
 !

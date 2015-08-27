@@ -1,5 +1,5 @@
-subroutine pmactn(sddisc, parcri, iterat, numins, itemax,&
-                  sderro, liccvg, actite, action)
+subroutine pmactn(sddisc, ds_conv, iterat, numins, itemax,&
+                  sderro, liccvg , actite, action)
 !
 use NonLin_Datastructure_type
 !
@@ -30,7 +30,7 @@ implicit none
 !
     character(len=19) :: sddisc
     character(len=24) :: sderro
-    real(kind=8) :: parcri(*)
+    type(NL_DS_Conv), intent(in) :: ds_conv
     integer :: liccvg(5)
     aster_logical :: itemax
     integer :: action, actite
@@ -46,9 +46,8 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  SDDISC : SD DISCRETISATION
-! IN  PARCRI : CRITERES DE CONVERGENCE
+! In  ds_conv          : datastructure for convergence management
 ! IN  ITERAT : NUMERO D'ITERATION DE NEWTON
 ! IN  NUMINS : NUMERO D'INSTANT
 ! I/O ITEMAX : .TRUE. SI ITERATION MAXIMUM ATTEINTE
@@ -66,7 +65,6 @@ implicit none
 ! ----------------------------------------------------------------------
 !
     integer :: retact, ievdac
-    aster_logical :: arret
     integer :: ldccvg, faccvg
     character(len=19) :: solveu
 !
@@ -74,7 +72,6 @@ implicit none
 !
     ldccvg = liccvg(2)
     faccvg = liccvg(5)
-    arret = (nint(parcri(4)).eq.0)
     action = 0
     solveu = '&&OP0033'
 !
@@ -144,14 +141,14 @@ implicit none
         action = 0
         call utmess('Z', 'MECANONLINE9_7', num_except=22)
 !
-    else if ((retact.eq.4).and.(.not.arret).and.itemax) then
+    else if ((retact.eq.4).and.(.not.ds_conv%l_stop).and.itemax) then
 !
 ! ----- CONVERGENCE FORCEE: ON VA AU PAS DE TEMPS SUIVANT
 !
         call utmess('A', 'MECANONLINE2_37')
         action = 3
 !
-    else if ((retact.eq.4).and.(.not.arret)) then
+    else if ((retact.eq.4).and.(.not.ds_conv%l_stop)) then
 !
 ! ----- CONVERGENCE FORCEE: ON VA AU PAS DE TEMPS SUIVANT
 !

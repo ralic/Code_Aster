@@ -1,7 +1,20 @@
-subroutine nmcore(sdcrit, sderro, sdconv, defico, numins,&
-                  iterat, fonact, relite, eta, parcri,&
-                  vresi, vrela, vmaxi, vchar, vrefe,&
-                  vcomp, vfrot, vgeom)
+subroutine nmcore(sdcrit          , sderro, list_func_acti, nume_inst, iter_newt,&
+                  line_search_iter, eta   , resi_norm     , load_norm, ds_conv )
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmcoru.h"
+#include "asterfort/nmcrel.h"
+#include "asterfort/nmevcv.h"
+#include "asterfort/nmlecv.h"
+#include "asterfort/nmerge.h"
+#include "asterfort/GetResi.h"
+#include "asterfort/SetResi.h"
+#include "asterfort/nmcore_swap.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,223 +34,135 @@ subroutine nmcore(sdcrit, sderro, sdconv, defico, numins,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/r8vide.h"
-#include "asterfort/cfdisr.h"
-#include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/nmcoru.h"
-#include "asterfort/nmcrel.h"
-#include "asterfort/nmevcv.h"
-#include "asterfort/nmlecv.h"
-#include "asterfort/utmess.h"
-    integer :: fonact(*)
-    real(kind=8) :: parcri(*)
-    integer :: numins, iterat, relite
-    character(len=24) :: sderro, sdconv, defico
-    character(len=19) :: sdcrit
-    real(kind=8) :: eta
-    real(kind=8) :: vresi, vrela, vmaxi, vchar, vrefe, vcomp, vfrot, vgeom
+    character(len=19), intent(in) :: sdcrit
+    character(len=24), intent(in) :: sderro
+    integer, intent(in) :: list_func_acti(*)
+    integer, intent(in) :: nume_inst
+    integer, intent(in) :: iter_newt
+    integer, intent(in) :: line_search_iter
+    real(kind=8), intent(in) :: eta
+    real(kind=8), intent(in) :: resi_norm
+    real(kind=8), intent(in) :: load_norm
+    type(NL_DS_Conv), intent(inout) :: ds_conv
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (ALGORITHME - CONVERGENCE)
+! MECA_NON_LINE - Convergence management
 !
-! VERIFICATION DES CRITERES D'ARRET SUR RESIDUS
+! Evaluate convergence of residuals
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sdcrit           : name of datastructure to save convergence parameters
+! In  sderro           : name of datastructure for error management (events)
+! In  list_func_acti   : list of active functionnalities
+! In  nume_inst        : index of current time step
+! In  iter_newt        : index of current Newton iteration
+! In  line_search_iter : number of iterations for line search
+! In  eta              : coefficient for pilotage (continuation)
+! In  resi_norm        : norm of equilibrium residual
+! In  load_norm        : norm of exterior loads
+! IO  ds_conv          : datastructure for convergence management
 !
-! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
-! IN  SDCONV : SD GESTION DE LA CONVERGENCE
-! IN  SDERRO : GESTION DES ERREURS
-! IN  SDCRIT : SYNTHESE DES RESULTATS DE CONVERGENCE POUR ARCHIVAGE
-! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
-! IN  NUMINS : NUMERO DU PAS DE TEMPS
-! IN  ITERAT : NUMERO D'ITERATION
-! IN  ETA    : COEFFICIENT DE PILOTAGE
-! IN  RELITE : NOMBRE D'ITERATIONS DE RECHERCHE LINEAIRE
-! IN  PARCRI : CRITERES DE CONVERGENCE (VOIR NMDOCN)
-! IN  VRESI  : RESIDU D'EQUILIBRE
-! IN  VRELA  : RESI_GLOB_RELA MAXI
-! IN  VMAXI  : RESI_GLOB_MAXI MAXI
-! IN  VCOMP  : RESI_COMP_RELA MAXI
-! IN  VCHAR  : CHARGEMENT EXTERIEUR MAXI
-! IN  VREFE  : RESI_GLOB_REFE MAXI
-! IN  VFROT  : RESI_FROT MAXI
-! IN  VGEOM  : RESI_GEOM MAXI
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+    character(len=24) :: sdcrit_crtr
+    real(kind=8), pointer :: v_sdcrit_crtr(:) => null()
+    character(len=16) :: event_type
+    real(kind=8) :: load_mini, last_resi_conv, user_para, vale_calc
+    integer :: i_resi, nb_resi
+    aster_logical :: l_resi_test, l_conv, l_swap_rela_maxi, l_swap_comp_rela
+    aster_logical :: cvresi
 !
-    integer :: nresi
-    parameter    (nresi=6)
+! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: cnvact
-    integer :: jcnvac
-    character(len=24) :: critcr
-    integer :: jcrr
-    real(kind=8) :: valr(2), detect
-    real(kind=8) :: chmini
-    integer :: iresi
-    aster_logical :: convok(nresi), convno(nresi)
-    real(kind=8) :: resi(nresi), resid(nresi)
-    aster_logical :: lrela, lmaxi, lrefe, lcomp, lfrot, lgeom
-    aster_logical :: cvresi, maxrel, maxnod
-    aster_logical :: lcont
+    nb_resi = ds_conv%nb_resi
+    cvresi  = .true._1
 !
-! ----------------------------------------------------------------------
+! - Get previous convergence informations
 !
-    call jemarq()
+    sdcrit_crtr = sdcrit(1:19)//'.CRTR'
+    call jeveuo(sdcrit_crtr, 'E', vr = v_sdcrit_crtr)
+    last_resi_conv = v_sdcrit_crtr(7)
+    load_mini      = v_sdcrit_crtr(6)
 !
-! --- ACCES SD CONVERGENCE
+! - Event: no convergence
 !
-    cnvact = sdconv(1:19)//'.ACTI'
-    call jeveuo(cnvact, 'E', jcnvac)
-    critcr = sdcrit(1:19)//'.CRTR'
-    call jeveuo(critcr, 'E', jcrr)
+    call SetResi(ds_conv, l_conv_ = .false._1)
+    do i_resi = 1, nb_resi
+        event_type = ds_conv%list_resi(i_resi)%event_type
+        call nmcrel(sderro, event_type, .false._1)
+    end do
 !
-! --- INITIALISATIONS
+! - Swap convergence criterias if necessary
 !
-    lcont = isfonc(fonact,'CONTACT')
-    cvresi = .true.
-    maxrel = .false.
-    maxnod = .false.
-    chmini = zr(jcrr+6-1)
+    call nmcore_swap(sderro , nume_inst, load_norm, load_mini, last_resi_conv,&
+                     ds_conv)
 !
-! --- RESIDUS A TESTER POUR LE CRITERE D'ARRET
+! - Check residuals stop criterias
 !
-    lrela = (parcri(2) .ne. r8vide())
-    lmaxi = (parcri(3) .ne. r8vide())
-    lrefe = (parcri(6) .ne. r8vide())
-    lcomp = (parcri(7) .ne. r8vide())
-    lfrot = zl(jcnvac-1+5)
-    lgeom = zl(jcnvac-1+6)
-!
-! --- VALEURS CALCULEES ET REFERENCES
-!
-    resi(1) = vrela
-    resi(2) = vmaxi
-    resi(3) = vrefe
-    resi(4) = vcomp
-    resi(5) = vfrot
-    resi(6) = vgeom
-    resid(1) = parcri(2)
-    resid(2) = parcri(3)
-    resid(3) = parcri(6)
-    resid(4) = parcri(7)
-    if (lcont) resid(5) = cfdisr(defico,'RESI_FROT')
-    if (lcont) resid(6) = cfdisr(defico,'RESI_GEOM')
-    call nmcrel(sderro, 'DIVE_RELA', .false._1)
-    call nmcrel(sderro, 'DIVE_MAXI', .false._1)
-    call nmcrel(sderro, 'DIVE_REFE', .false._1)
-    call nmcrel(sderro, 'DIVE_COMP', .false._1)
-    call nmcrel(sderro, 'DIVE_FROT', .false._1)
-    call nmcrel(sderro, 'DIVE_GEOM', .false._1)
-!
-! --- SI CRITERE RESI_COMP_RELA ET PREMIER INSTANT
-! --- -> ON UTILISE RESI_GLOB_RELA
-!
-    if (lcomp) then
-        if (numins .eq. 1) then
-            lrela = .true.
-            lcomp = .false.
-            maxnod = .true.
-            resid(1) = resid(4)
-            resid(2) = resid(4)
-            call utmess('I', 'MECANONLINE2_96')
-        endif
-    endif
-!
-! --- SI CRITERE RESI_GLOB_RELA ET CHARGEMENT NUL
-! --- -> ON UTILISE RESI_GLOB_MAXI
-!
-    if (lrela) then
-        detect = 1.d-6 * chmini
-        if (vchar .le. detect) then
-            if (numins .gt. 1) then
-                lrela = .false.
-                lmaxi = .true.
-                maxrel = .true.
-                resid(2) = zr(jcrr+7-1)
-                valr(1) = detect
-                valr(2) = resid(2)
-                call utmess('I', 'MECANONLINE2_98', nr=2, valr=valr)
-            endif
-            if ((parcri(7) .ne. r8vide()) .and. numins .eq. 1) then
-                lrela = .false.
-                lmaxi = .true.
-                maxrel = .true.
-                valr(1) = detect
-                valr(2) = resid(2)
-                call utmess('I', 'MECANONLINE2_98', nr=2, valr=valr)
-            endif
-        endif
-    endif
-!
-! --- NOUVEAUX CRITERES APRES BASCULEMENT(S) EVENTUEL(S)
-!
-    zl(jcnvac-1+1) = lrela
-    zl(jcnvac-1+2) = lmaxi
-    zl(jcnvac-1+3) = lrefe
-    zl(jcnvac-1+4) = lcomp
-    zl(jcnvac-1+5) = lfrot
-    zl(jcnvac-1+6) = lgeom
-!
-! --- CRITERES D'ARRET
-!
-    do 10 iresi = 1, nresi
-        if (zl(jcnvac+iresi-1)) then
-            call nmcoru(resi(iresi), resid(iresi), convok(iresi))
+    do i_resi = 1, nb_resi
+        vale_calc = ds_conv%list_resi(i_resi)%vale_calc
+        user_para = ds_conv%list_resi(i_resi)%user_para
+        if (ds_conv%l_resi_test(i_resi)) then
+            call nmcoru(vale_calc, user_para, l_conv)
         else
-            convok(iresi) = .true.
+            l_conv = .true._1
         endif
- 10 end do
+        ds_conv%list_resi(i_resi)%l_conv = l_conv
+    end do
 !
-! --- ENREGISTREMENT DES EVENEMENTS
+! - Save events
 !
-    convno(1) = .not.convok(1)
-    convno(2) = .not.convok(2)
-    convno(3) = .not.convok(3)
-    convno(4) = .not.convok(4)
-    convno(5) = .not.convok(5)
-    convno(6) = .not.convok(6)
-    if (lrela) call nmcrel(sderro, 'DIVE_RELA', convno(1))
-    if (lmaxi) call nmcrel(sderro, 'DIVE_MAXI', convno(2))
-    if (lrefe) call nmcrel(sderro, 'DIVE_REFE', convno(3))
-    if (lcomp) call nmcrel(sderro, 'DIVE_COMP', convno(4))
-    if (lfrot) call nmcrel(sderro, 'DIVE_FROT', convno(5))
-    if (lgeom) call nmcrel(sderro, 'DIVE_GEOM', convno(6))
-    call nmcrel(sderro, 'RESI_MAXR', maxrel)
-    call nmcrel(sderro, 'RESI_MAXN', maxnod)
+    do i_resi = 1, nb_resi
+        event_type  = ds_conv%list_resi(i_resi)%event_type
+        l_conv      = ds_conv%list_resi(i_resi)%l_conv
+        l_resi_test = ds_conv%l_resi_test(i_resi)
+        if (l_resi_test) then
+            call nmcrel(sderro, event_type, .not.l_conv)
+        endif
+    end do
 !
-! --- EVALUATION DE LA CONVERGENCE DU RESIDU
+! - Event: evaluate convergence of residual
 !
-    call nmevcv(sderro, fonact, 'RESI')
+    call nmevcv(sderro, list_func_acti, 'RESI')
     call nmlecv(sderro, 'RESI', cvresi)
 !
-! --- SAUVEGARDES INFOS CONVERGENCE
+! - If swapped: retrieve old convergence system for next step
 !
-    zr(jcrr+1-1) = iterat+1
-    zr(jcrr+2-1) = relite
-    zr(jcrr+3-1) = vrela
-    zr(jcrr+4-1) = vmaxi
-    zr(jcrr+5-1) = eta
-    if ((numins.eq.1) .and. (iterat.eq.0)) then
-        zr(jcrr+6-1) = vchar
+    call nmerge(sderro, 'RESI_MAXR', l_swap_rela_maxi)
+    if (l_swap_rela_maxi) then
+        call SetResi(ds_conv, type_ = 'RESI_GLOB_RELA' , l_resi_test_ = .true._1)
+        call SetResi(ds_conv, type_ = 'RESI_GLOB_MAXI' , l_resi_test_ = .false._1)
+    endif
+    call nmerge(sderro, 'RESI_MAXN', l_swap_comp_rela)
+    if (l_swap_comp_rela) then
+        call SetResi(ds_conv, type_ = 'RESI_GLOB_RELA' , l_resi_test_ = .false._1)
+        call SetResi(ds_conv, type_ = 'RESI_COMP_RELA' , l_resi_test_ = .true._1)
+    endif
+!
+! - New minimum exterior load
+!
+    if ((nume_inst.eq.1) .and. (iter_newt.eq.0)) then
+        load_mini = load_norm
     else
-        if (cvresi .and. (.not.maxrel)) then
-            zr(jcrr+6-1) = min(vchar, zr(jcrr+6-1))
+        if (cvresi .and. (.not.l_swap_rela_maxi)) then
+            load_mini = min(load_norm, load_mini)
         endif
     endif
-    if (cvresi) then
-        zr(jcrr+7-1) = vresi
-    endif
-    zr(jcrr+8-1) = vrefe
-    zr(jcrr+9-1) = vcomp
 !
-    call jedema()
+! - Save informations
+!
+    call GetResi(ds_conv, type = 'RESI_GLOB_RELA' , vale_calc_ = v_sdcrit_crtr(3))
+    call GetResi(ds_conv, type = 'RESI_GLOB_MAXI' , vale_calc_ = v_sdcrit_crtr(4))
+    call GetResi(ds_conv, type = 'RESI_REFE_RELA' , vale_calc_ = v_sdcrit_crtr(8))
+    call GetResi(ds_conv, type = 'RESI_COMP_RELA' , vale_calc_ = v_sdcrit_crtr(9))
+    v_sdcrit_crtr(1) = iter_newt+1
+    v_sdcrit_crtr(2) = line_search_iter
+    v_sdcrit_crtr(5) = eta
+    v_sdcrit_crtr(6) = load_mini
+    if (cvresi) then
+        v_sdcrit_crtr(7) = resi_norm
+    endif
+!
 end subroutine

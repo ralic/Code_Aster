@@ -18,12 +18,12 @@
 ! aslint: disable=W1504
 !
 interface
-    subroutine nmconv(noma  , modele, mate  , numedd  , sdnume,&
-                      fonact, sddyna, sdconv, ds_print, sdstat,&
-                      sddisc, sdtime, sdcrit, sderro  , parmet,&
-                      comref, matass, solveu, numins  , iterat,&
-                      conv  , eta   , parcri, defico  , resoco,&
-                      valinc, solalg, measse, veasse)
+    subroutine nmconv(noma  , modele, mate   , numedd  , sdnume,&
+                      fonact, sddyna, ds_conv, ds_print, sdstat,&
+                      sddisc, sdtime, sdcrit , sderro  , parmet,&
+                      comref, matass, solveu , numins  , iterat,&
+                      conv  , eta   , defico , resoco  , valinc,&
+                      solalg, measse, veasse)
         use NonLin_Datastructure_type
         character(len=8) :: noma
         character(len=24) :: modele
@@ -32,7 +32,7 @@ interface
         character(len=19) :: sdnume
         integer :: fonact(*)
         character(len=19) :: sddyna
-        character(len=24) :: sdconv
+        type(NL_DS_Conv), intent(inout) :: ds_conv
         type(NL_DS_Print), intent(inout) :: ds_print
         character(len=24) :: sdstat
         character(len=19) :: sddisc
@@ -47,7 +47,6 @@ interface
         integer :: iterat
         real(kind=8) :: conv(*)
         real(kind=8) :: eta
-        real(kind=8) :: parcri(*)
         character(len=24) :: defico
         character(len=24) :: resoco
         character(len=19) :: valinc(*)

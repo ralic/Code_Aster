@@ -1,6 +1,8 @@
-subroutine nmimre_dof(nume_dof , sdconv   , vale_rela, vale_maxi     , vale_refe     ,&
+subroutine nmimre_dof(nume_dof , ds_conv  , vale_rela, vale_maxi     , vale_refe     ,&
                       vale_comp, vale_frot, vale_geom, ieq_rela      , ieq_maxi      ,&
                       ieq_refe , noddlm   , ieq_comp , name_node_frot, name_node_geom)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -9,8 +11,6 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/impcmp.h"
 #include "asterfort/impcom.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jeveuo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,7 +31,7 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=24), intent(in) :: nume_dof
-    character(len=24), intent(in) :: sdconv
+    type(NL_DS_Conv), intent(inout) :: ds_conv
     integer, intent(in) :: ieq_rela
     integer, intent(in) :: ieq_maxi
     integer, intent(in) :: ieq_refe
@@ -55,7 +55,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  nume_dof         : name of numbering (NUME_DDL)
-! In  sdconv           : name of datastructure convergence
+! IO  ds_conv          : datastructure for convergence management
 ! In  ieq_rela         : number of equation where RESI_GLOB_RELA is maximum
 ! In  vale_rela        : value of RESI_GLOB_RELA
 ! In  ieq_maxi         : number of equation where RESI_GLOB_MAXI is maximum
@@ -72,25 +72,15 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: sdconv_lieu, sdconv_vale, sdconv_name
     character(len=16) :: name_dof_rela, name_dof_maxi, name_dof_refe, name_dof_comp
     integer :: i_resi, nb_resi
-    real(kind=8) :: vale
-    character(len=16) :: dof
-    character(len=9) :: resi_name
-    character(len=16), pointer :: v_sdconv_lieu(:) => null()
-    character(len=16), pointer :: v_sdconv_name(:) => null()
-    real(kind=8), pointer :: v_sdconv_vale(:) => null()
+    real(kind=8) :: vale_calc
+    character(len=16) :: locus_calc
+    character(len=16) :: resi_type
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    sdconv_lieu = sdconv(1:19)//'.LIEU'
-    sdconv_vale = sdconv(1:19)//'.VALE'
-    sdconv_name = sdconv(1:19)//'.NAME'
-    call jeveuo(sdconv_lieu, 'E', vk16 = v_sdconv_lieu)
-    call jeveuo(sdconv_vale, 'E', vr   = v_sdconv_vale)
-    call jeveuo(sdconv_name, 'L', vk16 = v_sdconv_name)
-    call jelira(sdconv_name, 'LONMAX', ival=nb_resi)
+    nb_resi = ds_conv%nb_resi
 !
 ! - Get names of dof where residuals is maximum
 !
@@ -102,32 +92,32 @@ implicit none
 ! - Save into convergence datastructure
 !
     do i_resi = 1, nb_resi
-        resi_name = v_sdconv_name(i_resi)(1:9)
-        dof       = ' '
-        vale      = r8vide()
-        if (resi_name .eq. 'RESI_RELA') then
-            vale = vale_rela
-            dof  = name_dof_rela
-        else if (resi_name.eq.'RESI_MAXI') then
-            vale = vale_maxi
-            dof  = name_dof_maxi
-        else if (resi_name.eq.'RESI_REFE') then
-            vale = vale_refe
-            dof  = name_dof_refe
-        else if (resi_name.eq.'RESI_COMP') then
-            vale = vale_comp
-            dof  = name_dof_comp
-        else if (resi_name.eq.'FROT_NEWT') then
-            vale = vale_frot
-            dof  = name_node_frot
-        else if (resi_name.eq.'GEOM_NEWT') then
-            vale = vale_geom
-            dof  = name_node_geom
+        resi_type  = ds_conv%list_resi(i_resi)%type
+        locus_calc = ' '
+        vale_calc  = r8vide()
+        if (resi_type .eq. 'RESI_GLOB_RELA') then
+            vale_calc  = vale_rela
+            locus_calc = name_dof_rela
+        else if (resi_type.eq.'RESI_GLOB_MAXI') then
+            vale_calc  = vale_maxi
+            locus_calc = name_dof_maxi
+        else if (resi_type.eq.'RESI_REFE_RELA') then
+            vale_calc  = vale_refe
+            locus_calc = name_dof_refe
+        else if (resi_type.eq.'RESI_COMP_RELA') then
+            vale_calc  = vale_comp
+            locus_calc = name_dof_comp
+        else if (resi_type.eq.'RESI_FROT') then
+            vale_calc  = vale_frot
+            locus_calc = name_node_frot
+        else if (resi_type.eq.'RESI_GEOM') then
+            vale_calc  = vale_geom
+            locus_calc = name_node_geom
         else
             ASSERT(.false.)
         endif
-        v_sdconv_vale(i_resi) = vale
-        v_sdconv_lieu(i_resi) = dof
+        ds_conv%list_resi(i_resi)%vale_calc  = vale_calc
+        ds_conv%list_resi(i_resi)%locus_calc = locus_calc
     end do
 !
 end subroutine

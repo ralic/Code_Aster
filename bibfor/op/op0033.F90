@@ -1,30 +1,8 @@
 subroutine op0033()
 !
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
+use NonLin_Datastructure_type
 !
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-!
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-! person_in_charge: jean-michel.proix at edf.fr
-!
-    implicit none
-!
-! ----------------------------------------------------------------------
-!  OPERATEUR    CALC_POINT_MAT
-! ----------------------------------------------------------------------
-!
-!
+implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -67,6 +45,31 @@ subroutine op0033()
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
+!
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: jean-michel.proix at edf.fr
+!
+
+!
+! ----------------------------------------------------------------------
+!  OPERATEUR    CALC_POINT_MAT
+! ----------------------------------------------------------------------
+!
     integer :: ndim, iret, nbmat, nbvari, nbpar, i, incela, ier
     integer :: imate, kpg, ksp, iter, pred, ncmp, imptgt, nbvrcm
     integer :: ntamax, matrel, irota, defimp, liccvg(5)
@@ -93,11 +96,12 @@ subroutine op0033()
     real(kind=8) :: dsidep(6, 9), drdy(12, 12), kel(6, 6), cimpo(6, 12), ym(12)
     real(kind=8) :: work(10), sdeps(6), ssigp(6), smatr(36), r1(12)
     real(kind=8) :: matper(36), varia(2*36), epsilo, pgl(3, 3), vimp33(3, 3)
-    real(kind=8) :: vimp2(3, 3), coef, parcri(7), jm, jp, jd, rbid(1), coefextra
+    real(kind=8) :: vimp2(3, 3), coef, jm, jp, jd, rbid(1), coefextra
     aster_logical :: finpas, itemax, conver
     character(len=19) :: nomvi
     character(len=19) :: vim, vip, vim2, svip
     integer :: lvim, lvip, lvim2, lsvip, lnomvi
+    type(NL_DS_Conv) :: ds_conv
 !
     data sddisc  /'&&OP0033.SDDISC'/
     data sdcrit  /'&&OP0033.SDCRIT'/
@@ -161,7 +165,7 @@ subroutine op0033()
                 nbpar, iforta, nompar, typpar, ang,&
                 pgl, irota, epsm, sigm, zr(lvim),&
                 zr(lvip), vr, defimp, coef, indimp,&
-                fonimp, cimpo, kel, sddisc, parcri,&
+                fonimp, cimpo, kel, sddisc, ds_conv,&
                 pred, matrel, imptgt, option, zk8(lnomvi),&
                 nbvita, nbvrcm, sderro)
     call r8inir(54, 0.d0, dsidep, 1)
@@ -280,6 +284,7 @@ subroutine op0033()
     call dcopy(6, sigm, 1, ym, 1)
     call dscal(6, 1.d0/coef, ym, 1)
     call dcopy(6, epsm, 1, ym(7), 1)
+    WRITE(6,*) 'OP33: ',iter
 !
     if (pred .eq. 1) then
         call r8inir(12, 0.d0, dy, 1)
@@ -407,7 +412,7 @@ subroutine op0033()
 !
 !           VERIFICATION DE LA CONVERGENCE EN DY  ET RE-INTEGRATION ?
     call pmconv(r, rini, r1, instap, sigp,&
-                coef, iter, indimp, parcri, conver,&
+                coef, iter, indimp, ds_conv, conver,&
                 itemax)
 !
 !           ENREGISTRE LES RESIDUS A CETTE ITERATION
@@ -430,8 +435,8 @@ subroutine op0033()
 !        GESTION DE LA DECOUPE DU PAS DE TEMPS
 !        EN L'ABSENCE DE CONVERGENCE ON CHERCHE A SUBDIVISER LE PAS
 !        DE TEMPS SI L'UTILISATEUR A FAIT LA DEMANDE
-    call pmactn(sddisc, parcri, iter, numins, itemax,&
-                sderro, liccvg, actite, action)
+    call pmactn(sddisc, ds_conv, iter, numins, itemax,&
+                sderro, liccvg , actite, action)
 !
 ! ---    ACTION
 !          0 ARRET DU CALCUL

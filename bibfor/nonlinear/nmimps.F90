@@ -1,4 +1,4 @@
-subroutine nmimps(ds_print, sdconv, sderro)
+subroutine nmimps(ds_print, ds_conv, sderro)
 !
 use NonLin_Datastructure_type
 !
@@ -8,6 +8,7 @@ implicit none
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nmerge.h"
+#include "asterfort/GetResi.h"
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
@@ -29,7 +30,7 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Print), intent(in) :: ds_print
-    character(len=24), intent(in) :: sdconv
+    type(NL_DS_Conv), intent(in) :: ds_conv
     character(len=24), intent(in) :: sderro
 !
 ! --------------------------------------------------------------------------------------------------
@@ -41,40 +42,24 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  ds_print         : datastructure for printing parameters
-! In  sdconv           : name of datastructure convergence
+! In  ds_conv          : datastructure for convergence management
 ! In  sderro           : name of datastructure for error management (events)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: sdconv_type
-    character(len=24) :: sdconv_lieu
-    character(len=24) :: sdconv_vale
-    character(len=24) :: sdconv_acti
-    character(len=16), pointer :: v_sdconv_type(:) => null()
-    character(len=16), pointer :: v_sdconv_lieu(:) => null()
-    real(kind=8), pointer :: v_sdconv_vale(:) => null()
-    aster_logical, pointer :: v_sdconv_acti(:) => null()
-    integer :: i_resi, iarg, nb_resi
-    real(kind=8) :: valr
+    integer :: i_resi, nb_resi
+    real(kind=8) :: valr(2)
     character(len=16) :: valk(2)
-    aster_logical :: lprint, maxrel, maxnod
+    aster_logical :: lprint, l_swap_rela_maxi, l_swap_comp_rela
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    sdconv_type = sdconv(1:19)//'.TYPE'
-    sdconv_lieu = sdconv(1:19)//'.LIEU'
-    sdconv_vale = sdconv(1:19)//'.VALE'
-    sdconv_acti = sdconv(1:19)//'.ACTI'
-    call jeveuo(sdconv_type, 'L', vk16 = v_sdconv_type)
-    call jeveuo(sdconv_lieu, 'L', vk16 = v_sdconv_lieu)
-    call jeveuo(sdconv_vale, 'L', vr = v_sdconv_vale)
-    call jeveuo(sdconv_acti, 'L', vl = v_sdconv_acti)
-    call jelira(sdconv_acti, 'LONMAX', ival=nb_resi)
+    nb_resi = ds_conv%nb_resi
 !
-! - Messages for convergence swapping
+! - Messages from convergence swapping
 !
-    call nmerge(sderro, 'RESI_MAXR', maxrel)
-    call nmerge(sderro, 'RESI_MAXN', maxnod)
+    call nmerge(sderro, 'RESI_MAXR', l_swap_rela_maxi)
+    call nmerge(sderro, 'RESI_MAXN', l_swap_comp_rela)
 !
 ! - Print for this step ?
 !
@@ -84,20 +69,22 @@ implicit none
 !
     if (lprint) then
         call utmess('I', 'MECANONLINE6_60')
-        if (maxnod) then
+        if (l_swap_comp_rela) then
             call utmess('I', 'MECANONLINE6_61')
+            call utmess('I', 'MECANONLINE2_96')
         endif
-        if (maxrel) then
+        if (l_swap_rela_maxi) then
             call utmess('I', 'MECANONLINE6_62')
+            call GetResi(ds_conv, type = 'RESI_GLOB_MAXI' , user_para_ = valr(2))
+            valr(1) = ds_conv%swap_trig
+            call utmess('I', 'MECANONLINE2_98', nr=2, valr=valr)
         endif
-        iarg = 0
         do i_resi = 1, nb_resi
-            if (v_sdconv_acti(i_resi)) then
-                iarg = iarg + 1
-                valk(1) = v_sdconv_type(i_resi)
-                valk(2) = v_sdconv_lieu(i_resi)
-                valr    = v_sdconv_vale(i_resi)
-                call utmess('I', 'MECANONLINE6_70', nk=2, valk=valk, sr=valr)
+            if (ds_conv%l_resi_test(i_resi)) then
+                valk(1) = ds_conv%list_resi(i_resi)%type
+                valk(2) = ds_conv%list_resi(i_resi)%locus_calc
+                valr(1) = ds_conv%list_resi(i_resi)%vale_calc
+                call utmess('I', 'MECANONLINE6_70', nk=2, valk=valk, sr=valr(1))
             endif
         end do
     endif

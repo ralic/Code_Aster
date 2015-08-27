@@ -1,4 +1,5 @@
-subroutine nmimre(ds_conv, ds_print)
+subroutine GetResiRefe(ds_conv   , type_ ,&
+                       user_para_, cmp_name_, l_refe_test_)
 !
 use NonLin_Datastructure_type
 !
@@ -6,8 +7,6 @@ implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/nmimck.h"
-#include "asterfort/nmimcr.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,38 +27,56 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Conv), intent(in) :: ds_conv
-    type(NL_DS_Print), intent(inout) :: ds_print
+    character(len=*), optional, intent(in) :: type_
+    character(len=*), optional, intent(out) :: cmp_name_
+    real(kind=8), optional, intent(out) :: user_para_
+    aster_logical, optional, intent(out) :: l_refe_test_
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! MECA_NON_LINE - Print management
+! MECA_NON_LINE - Convergence management
 !
-! Set value of residuals informations in convergence table
-!
-! --------------------------------------------------------------------------------------------------
-!
-! In  ds_conv          : datastructure for convergence management
-! IO  ds_print         : datastructure for printing parameters
+! Get values for reference residual (by name)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_resi, nb_resi
-    real(kind=8) :: vale_calc
-    character(len=16) :: locus_calc, row_name, row_name_locus
+! IO  ds_conv          : datastructure for convergence management
+! In  type             : type of residual
+!                        If .not. present => all residuals
+! Out user_para        : user parameter for residual
+! Out cmp_name         : name of component
+! Out l_refe_test      : .true. to test this residual to evaluate convergence
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nb_resi = ds_conv%nb_resi
+    integer :: i_refe, nb_refe, i_type
 !
-! - Loop on residuals
+! --------------------------------------------------------------------------------------------------
 !
-    do i_resi = 1, nb_resi
-        vale_calc       = ds_conv%list_resi(i_resi)%vale_calc
-        locus_calc      = ds_conv%list_resi(i_resi)%locus_calc
-        row_name        = ds_conv%list_resi(i_resi)%row_name
-        row_name_locus  = ds_conv%list_resi(i_resi)%row_name_locus
-        call nmimcr(ds_print, row_name      , vale_calc , l_affe = .true._1)
-        call nmimck(ds_print, row_name_locus, locus_calc, l_affe = .true._1)
+    i_type  = 0
+    nb_refe = ds_conv%nb_refe
+!
+! - Find residual
+!
+    do i_refe = 1, nb_refe
+        if (ds_conv%list_refe(i_refe)%type .eq. type_) then
+            ASSERT(i_type.eq.0)
+            i_type = i_refe
+        endif
     end do
+    ASSERT(i_type.ne.0)
+!
+! - Get parameters
+!
+    if (present(user_para_)) then
+        user_para_   = ds_conv%list_refe(i_type)%user_para
+    endif
+    if (present(cmp_name_)) then
+        cmp_name_    = ds_conv%list_refe(i_type)%cmp_name
+    endif
+    if (present(l_refe_test_)) then
+        l_refe_test_ = ds_conv%l_refe_test(i_type)
+    endif
 !
 end subroutine
+

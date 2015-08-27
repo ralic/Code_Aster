@@ -16,9 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine diinit(mesh_      , model_, result, mate     , cara_elem,&
-                      func_acti  , sddyna, parcri, inst_init, solver   ,&
-                      sdcont_defi, sddisc)
+    subroutine diinit(mesh_         , model_, result, mate     , cara_elem,&
+                      list_func_acti, sddyna, ds_conv, inst_init, solver   ,&
+                      sdcont_defi   , sddisc)
+        use NonLin_Datastructure_type
         character(len=*), intent(in) :: mesh_
         character(len=*), intent(in) :: model_
         character(len=19), intent(in) :: sddisc
@@ -26,10 +27,10 @@ interface
         character(len=24), intent(in) :: cara_elem
         character(len=24), intent(in) :: mate
         real(kind=8), intent(in) :: inst_init
-        real(kind=8), intent(in) :: parcri(*)
+        type(NL_DS_Conv), intent(in) :: ds_conv
         character(len=8), intent(in) :: result
         character(len=19), intent(in) :: solver
         character(len=24), intent(in) :: sdcont_defi
-        integer, intent(in) :: func_acti(*)
+        integer, intent(in) :: list_func_acti(*)
     end subroutine diinit
 end interface

@@ -16,18 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmcore(sdcrit          , sderro, list_func_acti, nume_inst, iter_newt,&
-                      line_search_iter, eta   , resi_norm     , load_norm, ds_conv )
+    subroutine SetResiRefe(ds_conv   , type_ ,&
+                           user_para_, cmp_name_, l_refe_test_)
         use NonLin_Datastructure_type
-        character(len=19), intent(in) :: sdcrit
-        character(len=24), intent(in) :: sderro
-        integer, intent(in) :: list_func_acti(*)
-        integer, intent(in) :: nume_inst
-        integer, intent(in) :: iter_newt
-        integer, intent(in) :: line_search_iter
-        real(kind=8), intent(in) :: eta
-        real(kind=8), intent(in) :: resi_norm
-        real(kind=8), intent(in) :: load_norm
         type(NL_DS_Conv), intent(inout) :: ds_conv
-    end subroutine nmcore
+        character(len=*), optional, intent(in) :: type_
+        character(len=*), optional, intent(in) :: cmp_name_
+        real(kind=8), optional, intent(in) :: user_para_
+        aster_logical, optional, intent(in) :: l_refe_test_
+    end subroutine SetResiRefe
 end interface
+

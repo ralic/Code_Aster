@@ -16,8 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmdocn(parcri, parcon)
-        real(kind=8) :: parcri(*)
-        real(kind=8) :: parcon(*)
+    subroutine nmdocn(ds_conv)
+        use NonLin_Datastructure_type
+        type(NL_DS_Conv), intent(inout) :: ds_conv
     end subroutine nmdocn
 end interface

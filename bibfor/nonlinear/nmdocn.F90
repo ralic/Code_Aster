@@ -1,4 +1,19 @@
-subroutine nmdocn(parcri, parcon)
+subroutine nmdocn(ds_conv)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterc/r8nnem.h"
+#include "asterc/r8vide.h"
+#include "asterfort/assert.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/SetResi.h"
+#include "asterfort/SetResiRefe.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,136 +33,132 @@ subroutine nmdocn(parcri, parcon)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/r8nnem.h"
-#include "asterc/r8vide.h"
-#include "asterfort/getvis.h"
-#include "asterfort/getvr8.h"
-#include "asterfort/getvtx.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/utmess.h"
-    real(kind=8) :: parcri(*), parcon(*)
+    type(NL_DS_Conv), intent(inout) :: ds_conv
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (LECTURE)
+! MECA_NON_LINE - Convergence management
 !
-! LECTURE DES CRITERES DE CONVERGENCE
+! Read parameters for convergence management
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! IO  ds_conv          : datastructure for convergence management
 !
-! OUT PARCRI : PARAMETRES DES CRITERES DE CONVERGENCE
-!                1 : ITER_GLOB_MAXI
-!                2 : RESI_GLOB_RELA
-!                3 : RESI_GLOB_MAXI
-!                4 : ARRET (0=OUI, 1=NON)
-!                5 : ITER_GLOB_ELAS
-!                6 : RESI_REFE_RELA
-!                7 : RESI_COMP_RELA
-! OUT PARCON : PARAMETRES DU CRITERE DE CONVERGENCE EN CONTRAINTE
-!                   SI PARCRI(6)=RESI_REFE_RELA != R8VIDE()
-!                1 : SIGM_REFE
-!                2 : EPSI_REFE
-!                3 : FLUX_THER_REFE
-!                4 : FLUX_HYD1_REFE
-!                5 : FLUX_HYD2_REFE
-!                6 : VARI_REFE
-!                7 : EFFORT
-!                8 : MOMENT
-!                9 : DEPL_REFE
-!               10 : LAGR_REFE
-!               11 : PI_REFE
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
-!
-    integer :: iterat, iret, ire1, ire2, ire3, ire4
-    character(len=8) :: rep
     integer :: ifm, niv
-    aster_logical :: lretcv
+    character(len=16) :: keywf
+    integer :: iret, iret_rela, iret_maxi, iret_refe, iret_comp, para_inte, isdefault
+    real(kind=8) :: para_real, list_para_real(2)
+    character(len=8) :: rep
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('MECA_NON_LINE', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> ... LECTURE CRITERES CONVERGENCE'
+        write (ifm,*) '<MECANONLINE> ... Read parameters for convergence parameters'
     endif
 !
-! --- INITIALISATIONS
+! - Initializations
 !
-    parcri(2) = r8vide()
-    parcri(3) = r8vide()
-    parcri(6) = r8vide()
-    parcri(7) = r8vide()
+    keywf = 'CONVERGENCE'
 !
-! --- RECUPERATION DES CRITERES DE CONVERGENCE GLOBAUX
+! - Get convergence parameters (maximum iterations)
 !
-    call getvis('CONVERGENCE', 'ITER_GLOB_MAXI', iocc=1, scal=iterat, nbret=iret)
-    parcri(1) = iterat
-    call getvis('CONVERGENCE', 'ITER_GLOB_ELAS', iocc=1, scal=iterat, nbret=iret)
-    parcri(5) = iterat
-    call getvr8('CONVERGENCE', 'RESI_GLOB_RELA', iocc=1, scal=parcri(2), nbret=ire1)
-    if (ire1 .le. 0) parcri(2) = r8vide()
-    call getvr8('CONVERGENCE', 'RESI_GLOB_MAXI', iocc=1, scal=parcri(3), nbret=ire2)
-    if (ire2 .le. 0) parcri(3) = r8vide()
-    call getvr8('CONVERGENCE', 'RESI_REFE_RELA', iocc=1, scal=parcri(6), nbret=ire3)
-    if (ire3 .le. 0) then
-        parcri(6) = r8vide()
-    else
-        call getvr8('CONVERGENCE', 'SIGM_REFE', iocc=1, scal=parcon(1), nbret=iret)
-        if (iret .le. 0) parcon(1)=r8nnem()
-        call getvr8('CONVERGENCE', 'EPSI_REFE', iocc=1, scal=parcon(2), nbret=iret)
-        if (iret .le. 0) parcon(2)=r8nnem()
-        call getvr8('CONVERGENCE', 'FLUX_THER_REFE', iocc=1, scal=parcon(3), nbret=iret)
-        if (iret .le. 0) parcon(3)=r8nnem()
-        call getvr8('CONVERGENCE', 'FLUX_HYD1_REFE', iocc=1, scal=parcon(4), nbret=iret)
-        if (iret .le. 0) parcon(4)=r8nnem()
-        call getvr8('CONVERGENCE', 'FLUX_HYD2_REFE', iocc=1, scal=parcon(5), nbret=iret)
-        if (iret .le. 0) parcon(5)=r8nnem()
-        call getvr8('CONVERGENCE', 'VARI_REFE', iocc=1, scal=parcon(6), nbret=iret)
-        if (iret .le. 0) parcon(6)=r8nnem()
-        call getvr8('CONVERGENCE', 'FORC_REFE', iocc=1, nbval=2, vect=parcon(7),&
-                    nbret=iret)
-        if (iret .le. 0) then
-            parcon(7) = r8nnem()
-            parcon(8) = r8nnem()
+    call getvis(keywf, 'ITER_GLOB_MAXI', iocc=1, scal=para_inte)
+    ds_conv%iter_glob_maxi = para_inte
+    call getvis(keywf, 'ITER_GLOB_ELAS', iocc=1, scal=para_inte, isdefault=isdefault)
+    ds_conv%iter_glob_elas = para_inte
+    ds_conv%l_iter_elas    = isdefault.eq.0
+!
+! - Get convergence parameters (residuals)
+!
+    call getvr8(keywf, 'RESI_GLOB_RELA', iocc=1, scal=para_real, nbret=iret_rela)
+    if (iret_rela .eq. 1) then
+        call SetResi(ds_conv   , type_ = 'RESI_GLOB_RELA', &
+                    user_para_ = para_real, l_resi_test_ = .true._1)
+    endif
+    call getvr8(keywf, 'RESI_GLOB_MAXI', iocc=1, scal=para_real, nbret=iret_maxi)
+    if (iret_maxi .eq. 1) then
+        call SetResi(ds_conv   , type_ = 'RESI_GLOB_MAXI', &
+                    user_para_ = para_real, l_resi_test_ = .true._1)
+    endif
+    call getvr8(keywf, 'RESI_COMP_RELA', iocc=1, scal=para_real, nbret=iret_comp)
+    if (iret_comp .eq. 1) then
+        call SetResi(ds_conv   , type_ = 'RESI_COMP_RELA', &
+                    user_para_ = para_real, l_resi_test_ = .true._1)
+    endif
+    call getvr8(keywf, 'RESI_REFE_RELA', iocc=1, scal=para_real, nbret=iret_refe)
+    if (iret_refe .eq. 1) then
+        call SetResi(ds_conv   , type_ = 'RESI_REFE_RELA', &
+                    user_para_ = para_real, l_resi_test_ = .true._1)
+    endif
+!
+! - Reference residuals
+!
+    if (iret_refe .eq.1 ) then
+        call getvr8(keywf, 'SIGM_REFE', iocc=1, scal=para_real, nbret=iret)
+        if (iret .eq. 1) then
+            call SetResiRefe(ds_conv   , type_ = 'SIGM_REFE', &
+                             user_para_ = para_real, l_refe_test_ = .true._1)
         endif
-        call getvr8('CONVERGENCE', 'DEPL_REFE', iocc=1, scal=parcon(9), nbret=iret)
-        if (iret .le. 0) parcon(9)=r8nnem()
-        call getvr8('CONVERGENCE', 'LAGR_REFE', iocc=1, scal=parcon(10), nbret=iret)
-        if (iret .le. 0) parcon(10)=r8nnem()
-        call getvr8('CONVERGENCE', 'PI_REFE', iocc=1, scal=parcon(11), nbret=iret)
-        if (iret .le. 0) parcon(11)=r8nnem()
+        call getvr8(keywf, 'EPSI_REFE', iocc=1, scal=para_real, nbret=iret)
+        if (iret .eq. 1) then
+            call SetResiRefe(ds_conv   , type_ = 'EPSI_REFE', &
+                             user_para_ = para_real, l_refe_test_ = .true._1)
+        endif
+        call getvr8(keywf, 'FLUX_THER_REFE', iocc=1, scal=para_real, nbret=iret)
+        if (iret .eq. 1) then
+            call SetResiRefe(ds_conv   , type_ = 'FLUX_THER_REFE', &
+                             user_para_ = para_real, l_refe_test_ = .true._1)
+        endif
+        call getvr8(keywf, 'FLUX_HYD1_REFE', iocc=1, scal=para_real, nbret=iret)
+        if (iret .eq. 1) then
+            call SetResiRefe(ds_conv   , type_ = 'FLUX_HYD1_REFE', &
+                             user_para_ = para_real, l_refe_test_ = .true._1)
+        endif
+        call getvr8(keywf, 'FLUX_HYD2_REFE', iocc=1, scal=para_real, nbret=iret)
+        if (iret .eq. 1) then
+            call SetResiRefe(ds_conv   , type_ = 'FLUX_HYD2_REFE', &
+                             user_para_ = para_real, l_refe_test_ = .true._1)
+        endif
+        call getvr8(keywf, 'VARI_REFE', iocc=1, scal=para_real, nbret=iret)
+        if (iret .eq. 1) then
+            call SetResiRefe(ds_conv   , type_ = 'VARI_REFE', &
+                             user_para_ = para_real, l_refe_test_ = .true._1)
+        endif
+        call getvr8(keywf, 'FORC_REFE', iocc=1, nbval=2, vect=list_para_real, nbret=iret)
+        if (iret .ne. 0) then
+            call SetResiRefe(ds_conv   , type_ = 'EFFORT_REFE', &
+                             user_para_ = list_para_real(1), l_refe_test_ = .true._1)
+            call SetResiRefe(ds_conv   , type_ = 'MOMENT_REFE', &
+                             user_para_ = list_para_real(2), l_refe_test_ = .true._1)
+        endif
+        call getvr8(keywf, 'DEPL_REFE', iocc=1, scal=para_real, nbret=iret)
+        if (iret .eq. 1) then
+            call SetResiRefe(ds_conv   , type_ = 'DEPL_REFE', &
+                             user_para_ = para_real, l_refe_test_ = .true._1)
+        endif
+        call getvr8(keywf, 'LAGR_REFE', iocc=1, scal=para_real, nbret=iret)
+        if (iret .eq. 1) then
+            call SetResiRefe(ds_conv   , type_ = 'LAGR_REFE', &
+                             user_para_ = para_real, l_refe_test_ = .true._1)
+        endif        
+        call getvr8(keywf, 'PI_REFE', iocc=1, scal=para_real, nbret=iret)
+        if (iret .eq. 1) then
+            call SetResiRefe(ds_conv   , type_ = 'PI_REFE', &
+                             user_para_ = para_real, l_refe_test_ = .true._1)
+        endif
     endif
-    call getvr8('CONVERGENCE', 'RESI_COMP_RELA', iocc=1, scal=parcri(7), nbret=ire4)
-    if (ire4 .le. 0) parcri(7) = r8vide()
 !
-! --- VALEURS PAR DEFAUT DES RESI_*
+! - Forced convergence
 !
-    lretcv=(ire1.le.0 .and. ire2.le.0 .and. ire3.le.0 .and. ire4.le.0)
-    if (lretcv) then
-        parcri(2) = 1.d-6
-    endif
-!
-    call getvtx('CONVERGENCE', 'ARRET', iocc=1, scal=rep, nbret=iret)
-    parcri(4) = 0
+    call getvtx(keywf, 'ARRET', iocc=1, scal=rep, nbret=iret)
     if (iret .gt. 0) then
-        if (rep .eq. 'NON') parcri(4) = 1
+        if (rep .eq. 'NON') then
+            ds_conv%l_stop = .false._1
+        endif
     endif
 !
-! --- ALARMES RELATIVES A LA QUALITE DE LA CONVERGENCE
-!
-    if (parcri(2) .ne. r8vide() .and. parcri(2) .gt. 1.0001d-4) then
-        call utmess('A', 'MECANONLINE5_21')
-    endif
-!
-    call jedema()
 end subroutine

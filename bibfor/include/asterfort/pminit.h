@@ -15,14 +15,17 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+! aslint: disable=W1504
+!
 interface
     subroutine pminit(imate, nbvari, ndim, typmod, table,&
                       nbpar, iforta, nompar, typpar, ang,&
                       pgl, irota, epsm, sigm, vim,&
                       vip, vr, defimp, coef, indimp,&
-                      fonimp, cimpo, kel, sddisc, parcri,&
+                      fonimp, cimpo, kel, sddisc, ds_conv,&
                       pred, matrel, imptgt, option, nomvi,&
                       nbvita, nbvrcm, sderro)
+        use NonLin_Datastructure_type
         integer :: nbvari
         integer :: imate
         integer :: ndim
@@ -47,7 +50,7 @@ interface
         real(kind=8) :: cimpo(6, 12)
         real(kind=8) :: kel(6, 6)
         character(len=19) :: sddisc
-        real(kind=8) :: parcri(*)
+        type(NL_DS_Conv), intent(inout) :: ds_conv
         integer :: pred
         integer :: matrel
         integer :: imptgt

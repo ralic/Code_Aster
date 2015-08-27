@@ -1,26 +1,23 @@
-subroutine nmconv(noma, modele, mate, numedd, sdnume,&
-                  fonact, sddyna, sdconv, ds_print, sdstat,&
-                  sddisc, sdtime, sdcrit, sderro, parmet,&
-                  comref, matass, solveu, numins, iterat,&
-                  conv, eta, parcri, defico, resoco,&
-                  valinc, solalg, measse, veasse)
+subroutine nmconv(noma  , modele, mate   , numedd  , sdnume,&
+                  fonact, sddyna, ds_conv, ds_print, sdstat,&
+                  sddisc, sdtime, sdcrit , sderro  , parmet,&
+                  comref, matass, solveu , numins  , iterat,&
+                  conv  , eta   , defico , resoco  , valinc,&
+                  solalg, measse, veasse )
 !
 use NonLin_Datastructure_type
 !
 implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/cfmmcv.h"
 #include "asterfort/dierre.h"
 #include "asterfort/diinst.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nmadev.h"
 #include "asterfort/nmcore.h"
@@ -60,7 +57,7 @@ implicit none
 !
     integer :: fonact(*)
     integer :: iterat, numins
-    real(kind=8) :: eta, conv(*), parcri(*), parmet(*), instan
+    real(kind=8) :: eta, conv(*), parmet(*), instan
     character(len=19) :: sdcrit, sddisc, sddyna, sdnume
     character(len=19) :: matass, solveu
     character(len=19) :: measse(*), veasse(*)
@@ -69,23 +66,23 @@ implicit none
     character(len=8) :: noma
     character(len=24) :: numedd, modele
     character(len=24) :: defico, resoco
-    character(len=24) :: sderro, sdstat, sdconv, sdtime
+    character(len=24) :: sderro, sdstat, sdtime
     type(NL_DS_Print), intent(inout) :: ds_print
+    type(NL_DS_Conv), intent(inout) :: ds_conv
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (ALGORITHME)
+! MECA_NON_LINE - Convergence management
 !
-! VERIFICATION DES CRITERES D'ARRET
+! Global convergence of current Newton iteration
 !
-! ----------------------------------------------------------------------
-!
+! --------------------------------------------------------------------------------------------------
 !
 ! IN  NOMA   : NOM DU MAILLAGE
 ! IN  MODELE : NOM DU MODELE
 ! IN  DEFICO : SD POUR LA DEFINITION DU CONTACT
 ! IN  RESOCO : SD POUR LA RESOLUTION DU CONTACT
-! IN  SDCONV : SD GESTION DE LA CONVERGENCE
+! IO  ds_conv          : datastructure for convergence management
 ! IN  SDTIME : SD TIMER
 ! IO  ds_print         : datastructure for printing parameters
 ! IN  NUMEDD : NUMEROTATION NUME_DDL
@@ -101,7 +98,6 @@ implicit none
 ! IN  MEASSE : VARIABLE CHAPEAU POUR NOM DES MATR_ASSE
 ! IN  ETA    : COEFFICIENT DE PILOTAGE
 ! I/O CONV   : INFORMATIONS SUR LA CONVERGENCE DU CALCUL
-! IN  PARCRI : CRITERES DE CONVERGENCE
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IN  SDERRO : GESTION DES ERREURS
 ! IN  PARMET : PARAMETRES DE LA METHODE DE RESOLUTION
@@ -110,14 +106,13 @@ implicit none
 ! IN  SDCRIT : SYNTHESE DES RESULTATS DE CONVERGENCE POUR ARCHIVAGE
 ! IN  COMREF : VARI_COM REFE
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: lreli, lnkry, limpex, lcont
     real(kind=8) :: r8bid
-    real(kind=8) :: resi_glob_rela, resi_glob_maxi, pasmin
+    real(kind=8) :: pasmin
     real(kind=8) :: instam, instap
-    real(kind=8) :: vrela, vmaxi, vrefe, vresi, vchar, vinit, vcomp, vfrot
-    real(kind=8) :: vgeom
+    real(kind=8) :: vresi, vchar
     aster_logical :: lerror, itemax, dvdebo
     aster_logical :: cvnewt, cvresi
     integer :: nbiter, itesup
@@ -125,13 +120,9 @@ implicit none
     real(kind=8) :: relcoe
     integer :: relite
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('MECA_NON_LINE', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> EVALUATION DE LA CONVERGENCE'
     endif
@@ -141,18 +132,7 @@ implicit none
     itemax = .false.
     lerror = .false.
     cvnewt = .false.
-    resi_glob_maxi = parcri(1)
-    resi_glob_rela = parcri(2)
     pasmin = parmet(3)
-    vrela = r8vide()
-    vmaxi = r8vide()
-    vrefe = r8vide()
-    vresi = r8vide()
-    vchar = r8vide()
-    vinit = r8vide()
-    vcomp = r8vide()
-    vfrot = r8vide()
-    vgeom = r8vide()
     relcoe = r8vide()
     relite = -1
 !
@@ -183,9 +163,9 @@ implicit none
     call nmlerr(sddisc, 'L', 'ITERSUP', r8bid, itesup)
     if (itesup .eq. 0) then
         if (abs(instap-instam) .lt. pasmin) then
-            nbiter = nint(parcri(5))
+            nbiter = ds_conv%iter_glob_elas
         else
-            nbiter = nint(parcri(1))
+            nbiter = ds_conv%iter_glob_maxi
         endif
     else
         call nmlerr(sddisc, 'L', 'NBITER', r8bid, nbiter)
@@ -200,21 +180,18 @@ implicit none
     endif
     call nmrvai(sdstat, 'RECH_LINE_ITER', 'E', relite)
 !
-! --- CALCUL DES RESIDUS
+! - Compute residuals
 !
-    call nmresi(noma  , mate  , numedd  , sdnume        , fonact        ,&
-                sddyna, sdconv, ds_print, defico        , resoco        ,&
-                matass, numins, conv    , resi_glob_rela, resi_glob_maxi,&
-                eta   , comref, valinc  , solalg        , veasse        ,&
-                measse, vrela , vmaxi   , vchar         , vresi         ,&
-                vrefe , vinit , vcomp   , vfrot         , vgeom)
+    call nmresi(noma  , mate   , numedd  , sdnume, fonact,&
+                sddyna, ds_conv, ds_print, defico, resoco,&
+                matass, numins , conv    , eta   , comref,&
+                valinc, solalg , veasse  , measse, vresi ,&
+                vchar)
 !
-! --- VERIFICATION DES CRITERES D'ARRET SUR RESIDUS
+! - Evaluate convergence of residuals
 !
-    call nmcore(sdcrit, sderro, sdconv, defico, numins,&
-                iterat, fonact, relite, eta, parcri,&
-                vresi, vrela, vmaxi, vchar, vrefe,&
-                vcomp, vfrot, vgeom)
+    call nmcore(sdcrit, sderro, fonact, numins, iterat ,&
+                relite, eta   , vresi , vchar , ds_conv)
 !
 ! --- METHODE IMPLEX: CONVERGENCE FORCEE
 !
@@ -280,5 +257,4 @@ implicit none
 !
     call nmadev(sddisc, sderro, iterat)
 !
-    call jedema()
 end subroutine

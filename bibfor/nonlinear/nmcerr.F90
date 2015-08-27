@@ -1,5 +1,18 @@
-subroutine nmcerr(sddisc, iter1, iter2, elasdt, rgmaxi,&
-                  rgrela, inikry, lctcd, defico)
+subroutine nmcerr(sddisc        , iter_glob_maxi, iter_glob_elas, pas_mini_elas, resi_glob_maxi,&
+                  resi_glob_rela, inikry        , l_cont_disc   , sdcont_defi)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterc/r8vide.h"
+#include "asterfort/ceil.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmlerr.h"
+#include "asterfort/utdidt.h"
+#include "asterfort/wkvect.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,23 +32,15 @@ subroutine nmcerr(sddisc, iter1, iter2, elasdt, rgmaxi,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/r8vide.h"
-#include "asterfort/ceil.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/nmlerr.h"
-#include "asterfort/utdidt.h"
-#include "asterfort/wkvect.h"
-    character(len=19) :: sddisc
-    character(len=24) :: defico
-    aster_logical :: lctcd
-    integer :: iter1, iter2
-    real(kind=8) :: elasdt, inikry
-    real(kind=8) :: rgmaxi, rgrela
+    character(len=19), intent(in) :: sddisc
+    aster_logical, intent(in) :: l_cont_disc
+    integer, intent(in) :: iter_glob_maxi
+    integer, intent(in) :: iter_glob_elas
+    real(kind=8), intent(in) :: pas_mini_elas 
+    real(kind=8), intent(in) :: inikry
+    real(kind=8), intent(in) :: resi_glob_maxi
+    real(kind=8), intent(in) :: resi_glob_rela
+    character(len=24), optional, intent(in) :: sdcont_defi
 !
 ! ----------------------------------------------------------------------
 !
@@ -46,20 +51,20 @@ subroutine nmcerr(sddisc, iter1, iter2, elasdt, rgmaxi,&
 ! ----------------------------------------------------------------------
 !
 ! In  sddisc           : datastructure for time discretization
-! IN  ITER1  : ITER_GLOB_MAXI
-! IN  ITER2  : ITER_GLOB_ELAS
-! IN  ELASDT : PAS_MINI_ELAS
-! IN  INIKRY : PRECISION INITIALE POUR NEWTON-KRYLOV
-! IN  RGMAXI : RESI_GLOB_MAXI
-! IN  RGRELA : RESI_GLOB_RELA
-! IN  LCTCD  : .TRUE. SI CONTACT DISCRET
-! IN  DEFICO : SD DE DEFINITION DU CONTACT
+! IN  iter_glob_maxi   : ITER_GLOB_MAXI
+! IN  iter_glob_rela   : ITER_GLOB_ELAS
+! IN  pas_mini_elas    : PAS_MINI_ELAS
+! IN  INIKRY           : PRECISION INITIALE POUR NEWTON-KRYLOV
+! IN  resi_glob_maxi   : RESI_GLOB_MAXI
+! IN  resi_glob_rela   : RESI_GLOB_RELA
+! IN  l_cont_disc      : .TRUE. SI CONTACT DISCRET
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
 !
 ! ----------------------------------------------------------------------
 !
     real(kind=8) :: r8bid
     real(kind=8) :: pcplus
-    integer :: typres, ibid, nbiter, mxiter, mniter
+    integer :: typres, ibid, nbiter, iter_maxi, iter_mini
     integer :: maxgeo, nbreag
     integer :: nmax, nplus
     integer :: i_echec, nb_echec, itesup, nbitct
@@ -72,8 +77,8 @@ subroutine nmcerr(sddisc, iter1, iter2, elasdt, rgmaxi,&
 !
 ! --- INITIALISATIONS
 !
-    mxiter = max(iter1,iter2)
-    mniter = min(iter1,iter2)
+    iter_maxi = max(iter_glob_maxi,iter_glob_elas)
+    iter_mini = min(iter_glob_maxi,iter_glob_elas)
     itesup = 0
     nmax = 0
     nbitct = 0
@@ -91,7 +96,7 @@ subroutine nmcerr(sddisc, iter1, iter2, elasdt, rgmaxi,&
 !
 ! --- NOMBRE MAXIMUM D'ITERATIONS
 !
-    nbiter = ceil(mxiter*(1.d0 + nplus/100.0d0))
+    nbiter = ceil(iter_maxi*(1.d0 + nplus/100.0d0))
 !
 ! --- CREATION DU VECTEUR D'INFORMATIONS SUR LA CONVERGENCE
 !
@@ -105,13 +110,13 @@ subroutine nmcerr(sddisc, iter1, iter2, elasdt, rgmaxi,&
 ! ---                <>1 ON N'AUTORISE PAS D'ITERATIONS EN PLUS
 ! --- RESIDUS     : RELA ET MAXI
 !
-    call nmlerr(sddisc, 'E', 'MXITER', r8bid, mxiter)
-    call nmlerr(sddisc, 'E', 'MNITER', r8bid, mniter)
+    call nmlerr(sddisc, 'E', 'MXITER', r8bid, iter_maxi)
+    call nmlerr(sddisc, 'E', 'MNITER', r8bid, iter_mini)
     call nmlerr(sddisc, 'E', 'NBITER', r8bid, nbiter)
-    call nmlerr(sddisc, 'E', 'PAS_MINI_ELAS', elasdt, ibid)
+    call nmlerr(sddisc, 'E', 'PAS_MINI_ELAS', pas_mini_elas, ibid)
     call nmlerr(sddisc, 'E', 'ITERSUP', r8bid, itesup)
-    call nmlerr(sddisc, 'E', 'RESI_GLOB_RELA', rgrela, ibid)
-    call nmlerr(sddisc, 'E', 'RESI_GLOB_MAXI', rgmaxi, ibid)
+    call nmlerr(sddisc, 'E', 'RESI_GLOB_RELA', resi_glob_rela, ibid)
+    call nmlerr(sddisc, 'E', 'RESI_GLOB_MAXI', resi_glob_maxi, ibid)
 !
 ! --- TYPE_RESI   :  =1 ON A DONNE RESI_GLOB_RELA
 ! ---                =2 ON A DONNE RESI_GLOB_MAXI
@@ -119,15 +124,13 @@ subroutine nmcerr(sddisc, iter1, iter2, elasdt, rgmaxi,&
 ! ---                =0 ON A RIEN DONNE ==> =1
 !
     typres = 0
-    if (rgrela .ne. r8vide()) then
+    if (resi_glob_rela .ne. r8vide()) then
         typres = typres + 1
     endif
-    if (rgmaxi .ne. r8vide()) then
+    if (resi_glob_maxi .ne. r8vide()) then
         typres = typres + 2
     endif
     if (typres .eq. 0) then
-        rgrela = 1.0d-06
-        rgmaxi = 1.0d-06
         typres = 1
     endif
     call nmlerr(sddisc, 'E', 'TYPE_RESI', r8bid, typres)
@@ -142,9 +145,9 @@ subroutine nmcerr(sddisc, iter1, iter2, elasdt, rgmaxi,&
 !
 ! --- RECUPERATION NOMBRE DE REAC_GEOM EN COTNACT DISCRET
 !
-    if (lctcd) then
-        maxgeo = cfdisi(defico,'ITER_GEOM_MAXI')
-        nbreag = cfdisi(defico,'NB_ITER_GEOM' )
+    if (l_cont_disc) then
+        maxgeo = cfdisi(sdcont_defi,'ITER_GEOM_MAXI')
+        nbreag = cfdisi(sdcont_defi,'NB_ITER_GEOM' )
         nbitct = max(maxgeo,nbreag)
     endif
     nbiter = nbiter+nbitct

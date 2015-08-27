@@ -18,10 +18,11 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine pmactn(sddisc, parcri, iterat, numins, itemax,&
-                      sderro, liccvg, actite, action)
+    subroutine pmactn(sddisc, ds_conv, iterat, numins, itemax,&
+                      sderro, liccvg , actite, action)
+        use NonLin_Datastructure_type
         character(len=19) :: sddisc
-        real(kind=8) :: parcri(*)
+        type(NL_DS_Conv), intent(in) :: ds_conv
         integer :: iterat
         integer :: numins
         aster_logical :: itemax

@@ -1,20 +1,18 @@
-subroutine nminit(result, model      , numedd     , numfix   , mate,&
-                  compor, carele     , parmet     , lischa   , maprec,&
-                  solveu, carcri     , numins     , sdstat   , sddisc,&
-                  sdnume, sdcont_defi, sdcrit     , varc_refe, fonact,&
-                  parcon, parcri     , method     , lisch2   , mesh,&
-                  sdpilo, sddyna     , ds_print   , sd_suiv  , sd_obsv,&
-                  sdtime, sderro     , sdpost     , sd_inout , sdener,&
-                  sdconv, sdcriq     , sdunil_defi, resocu   , resoco,&
-                  valinc, solalg     , measse     , veelem   , meelem,&
-                  veasse, codere)
+subroutine nminit(result     , model      , numedd , numfix   , mate,&
+                  compor     , carele     , parmet , lischa   , maprec,&
+                  solveu     , carcri     , numins , sdstat   , sddisc,&
+                  sdnume     , sdcont_defi, sdcrit , varc_refe, fonact,&
+                  method     , lisch2     , mesh   , sdpilo   , sddyna,&
+                  ds_print   , sd_suiv    , sd_obsv, sdtime   , sderro,&
+                  sdpost     , sd_inout   , sdener , ds_conv  , sdcriq,&
+                  sdunil_defi, resocu     , resoco , valinc   , solalg,&
+                  measse     , veelem     , meelem , veasse   , codere)
 !
 use NonLin_Datastructure_type
 !
 implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/accel0.h"
 #include "asterfort/assert.h"
 #include "asterfort/cetule.h"
@@ -24,15 +22,12 @@ implicit none
 #include "asterfort/diinst.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/liscpy.h"
 #include "asterfort/ndynlo.h"
 #include "asterfort/nmchap.h"
 #include "asterfort/nmchar.h"
 #include "asterfort/nmchex.h"
-#include "asterfort/nmcrcg.h"
 #include "asterfort/nmcrch.h"
 #include "asterfort/nmcrcv.h"
 #include "asterfort/nmcrob.h"
@@ -47,7 +42,9 @@ implicit none
 #include "asterfort/nmexso.h"
 #include "asterfort/nmfonc.h"
 #include "asterfort/nmihht.h"
+#include "asterfort/InitConv.h"
 #include "asterfort/InitPrint.h"
+#include "asterfort/nmrefe.h"
 #include "asterfort/nminma.h"
 #include "asterfort/nminmc.h"
 #include "asterfort/nminvc.h"
@@ -56,7 +53,6 @@ implicit none
 #include "asterfort/nmnume.h"
 #include "asterfort/nmobsv.h"
 #include "asterfort/nmpro2.h"
-#include "asterfort/nmrefe.h"
 #include "asterfort/nmrini.h"
 #include "asterfort/nmvcle.h"
 #include "asterfort/nmvcre.h"
@@ -81,7 +77,7 @@ implicit none
 ! aslint: disable=W1504
 !
     integer :: fonact(*)
-    real(kind=8) :: parcon(*), parcri(*), parmet(*)
+    real(kind=8) :: parmet(*)
     character(len=16) :: method(*)
     integer :: numins
     character(len=8) :: result, mesh
@@ -96,7 +92,7 @@ implicit none
     character(len=19) :: veelem(*), meelem(*)
     character(len=19) :: veasse(*), measse(*)
     character(len=19) :: solalg(*), valinc(*)
-    character(len=24) :: sdtime, sderro, sdstat, sdconv
+    character(len=24) :: sdtime, sderro, sdstat
     character(len=24) :: resocu, sdcriq
     character(len=24) :: varc_refe
     character(len=24), intent(out) :: sdcont_defi
@@ -105,6 +101,7 @@ implicit none
     character(len=19), intent(out) :: sd_obsv
     character(len=24), intent(out) :: sd_suiv
     type(NL_DS_Print), intent(inout) :: ds_print
+    type(NL_DS_Conv), intent(inout) :: ds_conv
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -129,6 +126,7 @@ implicit none
 ! Out sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
 ! Out sdunil_defi      : name of unilateral condition datastructure (from DEFI_CONTACT)
 ! IO  ds_print         : datastructure for printing parameters
+! IO  ds_conv          : datastructure for convergence management
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -143,10 +141,6 @@ implicit none
     character(len=24) :: sd_iden_rela
 !
 ! --------------------------------------------------------------------------------------------------
-!
-    call jemarq()
-!
-! --- INITIALISATIONS
 !
     lacc0 = .false.
     lunil = .false.
@@ -178,10 +172,10 @@ implicit none
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
-    call nmfonc(parcri, parmet, method, solveu, model,&
-                sdcont_defi, lischa, lcont, lunil, sdnume,&
-                sddyna, sdcriq, mate, compor, result,&
-                carcri, fonact)
+    call nmfonc(ds_conv    , parmet, method, solveu, model ,&
+                sdcont_defi, lischa, lcont , lunil , sdnume,&
+                sddyna     , sdcriq, mate  , compor, result,&
+                carcri     , fonact)
     lpilo = isfonc(fonact,'PILOTAGE' )
     lmpas = ndynlo(sddyna,'MULTI_PAS' )
     lsstf = isfonc(fonact,'SOUS_STRUC')
@@ -218,6 +212,10 @@ implicit none
         call cucrsd(mesh, numedd, sdunil_defi, resocu)
     endif
 !
+! - Initializations for convergence management
+!
+    call InitConv(ds_conv, fonact, sdcont_defi)
+!
 ! --- CREATION DES VECTEURS D'INCONNUS
 !
     call nmcrch(numedd, fonact, sddyna, sdcont_defi, valinc,&
@@ -248,10 +246,10 @@ implicit none
                 sddyna, sdcriq, sd_inout, solalg, lacc0,&
                 instin)
 !
-! --- CREATION SD DISCRETISATION ET ARCHIVAGE
+! - Create time discretization and storing datastructures
 !
-    call diinit(mesh       , model , result, mate  , carele,&
-                fonact     , sddyna, parcri, instin, solveu,&
+    call diinit(mesh       , model , result , mate  , carele,&
+                fonact     , sddyna, ds_conv, instin, solveu,&
                 sdcont_defi, sddisc)
 !
 ! --- CREATION DU CHAMP DES VARIABLES DE COMMANDE DE REFERENCE
@@ -286,8 +284,8 @@ implicit none
 ! - Compute reference vector for RESI_REFE_RELA
 !
     if (lrefe) then
-        call nmrefe(model , compor, mate  , carele, numedd,&
-                    parcon, valinc, veelem, veasse)
+        call nmrefe(model  , compor, mate  , carele, numedd,&
+                    ds_conv, valinc, veelem, veasse)
     endif              
 !
 ! --- CREATION DE LA SD POUR ARCHIVAGE DES INFORMATIONS DE CONVERGENCE
@@ -317,10 +315,6 @@ implicit none
                     sddyna, sdstat, sdtime, meelem, measse,&
                     veelem, veasse, solalg)
     endif
-!
-! --- CREATION DE LA SD CONVERGENCE
-!
-    call nmcrcg(fonact, sdconv)
 !
 ! - Extract variables
 !
@@ -386,6 +380,5 @@ implicit none
 ! --- INITIALISATIONS TIMERS ET STATISTIQUES
 !
     call nmrini(sdtime, sdstat, 'T')
-    call jedema()
 !
 end subroutine

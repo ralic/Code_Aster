@@ -2,60 +2,13 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
                   nbpar, iforta, nompar, typpar, ang,&
                   pgl, irota, epsm, sigm, vim,&
                   vip, vr, defimp, coef, indimp,&
-                  fonimp, cimpo, kel, sddisc, parcri,&
+                  fonimp, cimpo, kel, sddisc, ds_conv,&
                   pred, matrel, imptgt, option, nomvi,&
                   nbvita, nbvrcm, sderro)
 !
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
+use NonLin_Datastructure_type
 !
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-!
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-!
-! aslint: disable=W1504
-    implicit none
-!
-!-----------------------------------------------------------------------
-!     OPERATEUR    CALC_POINT_MAT : INITIALISATIONS
-!-----------------------------------------------------------------------
-!
-! IN   IMATE  : ADRESSE MATERIAU CODE
-! IN   NBVARI : NOMBRE DE VARIABLES INTERNES
-! IN   NDIM   : 3
-! OUT  TYPMOD : 3D
-! OUT  TABLE  : TABLE RESULTAT
-! OUT  NBPAR  : NOMBRE DE PARAMETRES DE LA TABLE RESULTAT
-! OUT  NOMPAR : NOMS DES PARAMETRES DE LA TABLE RESULTAT
-! OUT  ANG    : ANGLES DU MOT-CLE MASSIF
-! OUT  PGL    : MATRICE DE ROTATION AUTOUR DE Z
-! OUT  IROTA  : =1 SI ROTATION AUTOUR DE Z
-! OUT  EPSM   : DEFORMATIONS INITIALES
-! OUT  SIGM   : CONTRAINTES INITIALES
-! OUT  VIM    : VARIABLES INTERNES INITIALES
-! OUT  VIP    : VARIABLES INTERNES NULLES
-! OUT  DEFIMP : =1 SI LES 6 CMP DE EPSI DONT DONNEES
-! OUT  COEF   : COEF POUR ADIMENSIONNALISER LE PB
-! OUT  INDIMP : TABLEAU D'INDICES =1 SI EPS(I) DONNE
-! OUT  FONIMP : FONCTIONS IMPOSEES POUR EPSI OU SIGM
-! OUT  CIMPO  : = 1 POUR LA CMP DE EPSI OU SIGM IMPOSEE
-! OUT  KEL    : OPERATEUR D'ELASTICITE
-! OUT  SDDISC : SD DISCRETISATION
-! OUT  PARCRI : PARAMETRES DE CONVERGENCE GLOBAUX
-! OUT  PRED   : TYPE DE PREDICTION = 1 SI TANGENTE
-! OUT  MATREL : MATRICE TANGENTE = 1 SI ELASTIQUE
-! OUT  OPTION : FULL_MECA OU RAPH_MECA
-!
+implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -79,16 +32,68 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
 #include "asterfort/nmdocn.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/tbajli.h"
+#include "asterfort/CreateConvDS.h"
+#include "asterfort/InitConv.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vrcinp.h"
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
+!
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! aslint: disable=W1504
+!
+    type(NL_DS_Conv), intent(inout) :: ds_conv
+!
+!-----------------------------------------------------------------------
+!     OPERATEUR    CALC_POINT_MAT : INITIALISATIONS
+!-----------------------------------------------------------------------
+!
+! IN   IMATE  : ADRESSE MATERIAU CODE
+! IN   NBVARI : NOMBRE DE VARIABLES INTERNES
+! IN   NDIM   : 3
+! IO  ds_conv          : datastructure for convergence management
+! OUT  TYPMOD : 3D
+! OUT  TABLE  : TABLE RESULTAT
+! OUT  NBPAR  : NOMBRE DE PARAMETRES DE LA TABLE RESULTAT
+! OUT  NOMPAR : NOMS DES PARAMETRES DE LA TABLE RESULTAT
+! OUT  ANG    : ANGLES DU MOT-CLE MASSIF
+! OUT  PGL    : MATRICE DE ROTATION AUTOUR DE Z
+! OUT  IROTA  : =1 SI ROTATION AUTOUR DE Z
+! OUT  EPSM   : DEFORMATIONS INITIALES
+! OUT  SIGM   : CONTRAINTES INITIALES
+! OUT  VIM    : VARIABLES INTERNES INITIALES
+! OUT  VIP    : VARIABLES INTERNES NULLES
+! OUT  DEFIMP : =1 SI LES 6 CMP DE EPSI DONT DONNEES
+! OUT  COEF   : COEF POUR ADIMENSIONNALISER LE PB
+! OUT  INDIMP : TABLEAU D'INDICES =1 SI EPS(I) DONNE
+! OUT  FONIMP : FONCTIONS IMPOSEES POUR EPSI OU SIGM
+! OUT  CIMPO  : = 1 POUR LA CMP DE EPSI OU SIGM IMPOSEE
+! OUT  KEL    : OPERATEUR D'ELASTICITE
+! OUT  SDDISC : SD DISCRETISATION
+! OUT  PRED   : TYPE DE PREDICTION = 1 SI TANGENTE
+! OUT  MATREL : MATRICE TANGENTE = 1 SI ELASTIQUE
+! OUT  OPTION : FULL_MECA OU RAPH_MECA
+!
+!
     complex(kind=8) :: cbid
     character(len=24) :: k24bid
-!
-!
     integer :: ndim, n1, nbvari, nbpar, i, j, k, imate, kpg, ksp, nbocc, n2
     integer :: iepsi, icont, igrad, irota, defimp, indimp(9), ncmp
     integer :: pred, matrel, ic1c2, iforta, imptgt, nbvita, imes(2)
@@ -103,7 +108,7 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
     real(kind=8) :: vim(nbvari), vip(nbvari), vr(*)
     real(kind=8) :: sigi, rep(7), kel(6, 6), cimpo(6, 12)
     real(kind=8) :: angd(3), ang1(1), pgl(3, 3), xyzgau(3), coef, instin
-    real(kind=8) :: parcri(*), parcon(9), angeul(3), id(9), dsidep(36)
+    real(kind=8) :: angeul(3), id(9), dsidep(36)
     real(kind=8) :: sigini(6), epsini(6)
     aster_logical :: lctcd, limpex
 !
@@ -163,34 +168,33 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
         nbpar=1+ncmp+6+2+nbvita+1
         if (imptgt .eq. 1) nbpar=nbpar+36
         if (igrad .eq. 1) then
-            do 132 i = 1, ncmp
+            do i = 1, ncmp
                 nompar(1+i)=nomgrd(i)
-132         continue
+            end do
         else
-            do 131 i = 1, ncmp
+            do i = 1, ncmp
                 nompar(1+i)=nomeps(i)
-131         continue
+            end do
         endif
-        do 13 i = 1, 6
+        do i = 1, 6
             nompar(1+ncmp+i)=nomsig(i)
- 13     continue
+        end do
         nompar(1+ncmp+6+1)='TRACE'
         nompar(1+ncmp+6+2)='VMIS'
-        do 11 i = 1, nbvita
+        do i = 1, nbvita
             nompar(1+ncmp+6+2+i)(1:1)='V'
             call codent(i, 'G', nompar(1+ncmp+6+2+i)(2:16))
- 11     continue
+        end do
         if (imptgt .eq. 1) then
-            do 133 i = 1, 6
-                do 133 j = 1, 6
+            do i = 1, 6
+                do j = 1, 6
                     k=1+ncmp+6+2+nbvari+6*(i-1)+j
                     write(nompar(k),'(A,I1,I1)') 'K',i,j
-133             continue
+                end do
+            end do
         endif
         nompar(nbpar)='NB_ITER'
-        do 10 i = 1, nbpar
-            typpar(i)='R'
- 10     continue
+        typpar(1:nbpar)='R'
     else
         nbpar=4
         nompar(2)='GRANDEUR'
@@ -265,23 +269,23 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
 !     ----------------------------------------
     call getfac('SIGM_INIT', nbocc)
     if (nbocc .gt. 0) then
-        do 15 i = 1, 6
+        do i = 1, 6
             call getvr8('SIGM_INIT', nomsig(i), iocc=1, scal=sigi, nbret=n1)
             if (n1 .ne. 0) then
                 sigm(i)=sigi
             endif
- 15     continue
+        end do
         call dscal(3, rac2, sigm(4), 1)
     endif
 !
     call getfac('EPSI_INIT', nbocc)
     if (nbocc .gt. 0) then
-        do 16 i = 1, 6
+        do i = 1, 6
             call getvr8('EPSI_INIT', nomeps(i), iocc=1, scal=sigi, nbret=n1)
             if (n1 .ne. 0) then
                 epsm(i)=sigi
             endif
- 16     continue
+        end do
         call dscal(3, rac2, epsm(4), 1)
     endif
     call getfac('VARI_INIT', nbocc)
@@ -309,11 +313,9 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
     igrad=0
     f0='&&CPM_F0'
     call fozero(f0)
-    do 23 i = 1, 9
-        indimp(i)=0
-        fonimp(i)=f0
- 23 end do
-    do 14 i = 1, 6
+    indimp(1:9)=0
+    fonimp(1:9)=f0
+    do i = 1, 6
         call getvid(' ', nomeps(i), scal=foneps(i), nbret=n1)
         call getvid(' ', nomsig(i), scal=fonsig(i), nbret=n2)
         if (n1 .ne. 0) then
@@ -327,15 +329,15 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
             icont=icont+1
             indimp(i)=0
         endif
- 14 end do
-    do 141 i = 1, 9
+    end do
+    do i = 1, 9
         call getvid(' ', nomgrd(i), scal=fongrd(i), nbret=n1)
         if (n1 .ne. 0) then
             fonimp(i)=fongrd(i)
             igrad=igrad+1
             indimp(i)=2
         endif
-141 end do
+    end do
     defimp=0
     if (iepsi .eq. 6) defimp=1
     if (igrad .eq. 9) defimp=2
@@ -344,44 +346,44 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
     call getfac('MATR_C1', nbocc)
     if (nbocc .ne. 0) then
         ic1c2=1
-        do 55 i = 1, nbocc
+        do i = 1, nbocc
             call getvis('MATR_C1', 'NUME_LIGNE', iocc=i, scal=iligne, nbret=n1)
             call getvis('MATR_C1', 'NUME_COLONNE', iocc=i, scal=icolon, nbret=n1)
             call getvr8('MATR_C1', 'VALE', iocc=i, scal=vale, nbret=n1)
             cimpo(iligne,icolon)=vale
- 55     continue
+        end do
     endif
     call getfac('MATR_C2', nbocc)
     if (nbocc .ne. 0) then
         ic1c2=1
-        do 56 i = 1, nbocc
+        do i = 1, nbocc
             call getvis('MATR_C2', 'NUME_LIGNE', iocc=i, scal=iligne, nbret=n1)
             call getvis('MATR_C2', 'NUME_COLONNE', iocc=i, scal=icolon, nbret=n1)
             call getvr8('MATR_C2', 'VALE', iocc=i, scal=vale, nbret=n1)
             cimpo(iligne,icolon+6)=vale
- 56     continue
+        end do
     endif
     call getfac('VECT_IMPO', nbocc)
     if (nbocc .ne. 0) then
-        do 57 i = 1, nbocc
+        do i = 1, nbocc
             call getvis('VECT_IMPO', 'NUME_LIGNE', iocc=i, scal=iligne, nbret=n1)
             call getvid('VECT_IMPO', 'VALE', iocc=i, scal=valef, nbret=n1)
             fonimp(iligne)=valef
- 57     continue
+        end do
     endif
     if (ic1c2 .eq. 1) then
-        do 58 i = 1, 6
+        do i = 1, 6
 ! AFFECTATION DE SIGMA_I=0. SI RIEN N'EST IMPOSE SUR LA LIGNE I
             k=0
-            do 59 j = 1, 12
+            do j = 1, 12
                 if (cimpo(i,j) .ne. 0.d0) then
                     k=1
                 endif
- 59         continue
+            end do
             if (k .eq. 0) then
                 cimpo(i,i)=1.d0
             endif
- 58     continue
+        end do
         defimp=-1
     endif
 !
@@ -413,28 +415,25 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
     else
         vr(1)=instam
         vk8(1)='EPSI'
-        do 551 i = 1, ncmp
+        do i = 1, ncmp
             vr(2)=epsm(i)
             vk8(2)=nomeps(i)
-            call tbajli(table, nbpar, nompar, [0], vr,&
-                        [cbid], vk8, 0)
-551     continue
+            call tbajli(table, nbpar, nompar, [0], vr, [cbid], vk8, 0)
+        end do
         vk8(1)='SIGM'
-        do 552 i = 1, ncmp
+        do i = 1, ncmp
             vr(2)=sigm(i)
             vk8(2)=nomsig(i)
-            call tbajli(table, nbpar, nompar, [0], vr,&
-                        [cbid], vk8, 0)
-552     continue
+            call tbajli(table, nbpar, nompar, [0], vr, [cbid], vk8, 0)
+        end do
         vk8(1)='VARI'
-        do 553 i = 1, nbvita
+        do i = 1, nbvita
             vr(2)=vim(i)
             vk8(2)(1:1)='V'
             call codent(i, 'G', vk8(2)(2:8))
             nomvi(i)=vk8(2)
-            call tbajli(table, nbpar, nompar, [0], vr,&
-                        [cbid], vk8, 0)
-553     continue
+            call tbajli(table, nbpar, nompar, [0], vr, [cbid], vk8, 0)
+        end do
     endif
 !     ----------------------------------------
 !     CREATION SD DISCRETISATION
@@ -472,15 +471,24 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
             pred=-1
         endif
     endif
-!     ----------------------------------------
-!     LECTURE DES PARAMETRES DE CONVERGENCE
-!     ----------------------------------------
-    call nmdocn(parcri, parcon)
+!
+! - Create convergence management datastructure
+!
+    call CreateConvDS(ds_conv)
+!
+! - Read parameters for convergence
+!
+    call nmdocn(ds_conv)
+!
+! - Initializations for convergence management
+!
+    call InitConv(ds_conv)
+
 !     SUBDIVISION AUTOMATIQUE DU PAS DE TEMPS
     limpex = .false.
     lctcd = .false.
-    call nmcrsu(sddisc, lisins, parcri, limpex, lctcd,&
-                solveu, k24bid)
+    call nmcrsu(sddisc, lisins, ds_conv, limpex, lctcd,&
+                solveu)
 !     INSTANT INITIAL
     numins=0
     instam = diinst(sddisc, numins)
@@ -493,10 +501,10 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
                 ksp, rep, xyzgau, kel)
 !     DMAT ECRIT MU POUR LES TERMES DE CISAILLEMENT
     coef=max(kel(1,1),kel(2,2),kel(3,3))
-    do 67 j = 4, 6
+    do j = 4, 6
         kel(j,j) = kel(j,j)*2.d0
         coef=max(coef,kel(j,j))
- 67 end do
+    end do
     if (ic1c2 .eq. 1) then
         coef=1.d0
     endif
