@@ -351,13 +351,13 @@ subroutine ecla3d(nomte, elrefa, fapg, npg, npoini,&
                         1, 1, 1, 0, 0,&
                         0, 0)
 !
-            nterm1(14)=4
+            nterm1(14)=8
             call eclan1(14, mxnbpi, nsomm1, nterm1, 1,&
-                        3, 7, 5, 0, 0,&
-                        0, 0)
+                        2, 3, 4, 5, 6,&
+                        7, 8)
             call eclac1(14, mxnbpi, csomm1, nterm1, 1,&
-                        1, 1, 1, 0, 0,&
-                        0, 0)
+                        1, 1, 1, 1, 1,&
+                        1, 1)
 !
 !        -- CONNECTIVITE DES SOUS-ELEMENTS :
             call eclaco(1, mxnbn2, connx, nbno2, 12,&
