@@ -98,7 +98,7 @@ subroutine cfmxpo(noma, modelz, defico, resoco, numins,&
         call cfverl(defico, resoco)
     endif
 !
-! --- REMPLISSAGE DU CHAM_NO VALE_CONT ET PERCUSSION
+! --- REMPLISSAGE DU CHAM_NO CONT_NOEU ET PERCUSSION
 !
     call cfmxre(noma, nomo, sdstat, defico, resoco,&
                 numins, sddisc, solalg, valinc, veasse)

@@ -220,7 +220,7 @@ TEST_RESU(RESU=(_F(GROUP_NO='A2',
 TABJEU=POST_RELEVE_T(ACTION=_F(INTITULE='MESSAGE',
                                GROUP_NO='B1',
                                RESULTAT=RESU,
-                               NOM_CHAM='VALE_CONT',
+                               NOM_CHAM='CONT_NOEU',
                                TOUT_CMP='OUI',
                                OPERATION='EXTRACTION',),);
 # JEU

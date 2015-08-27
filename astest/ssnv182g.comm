@@ -158,7 +158,7 @@ IMPR_TABLE(TABLE=LAG);
 VC_0=POST_RELEVE_T(ACTION=_F(INTITULE='VC_O',
                              GROUP_NO='VOLQUAD',
                              RESULTAT=UTOT1,
-                             NOM_CHAM='VALE_CONT',
+                             NOM_CHAM='CONT_NOEU',
                              NUME_ORDRE=1,
 #                             NOM_CMP=('CONT'),
                              TOUT_CMP='OUI',

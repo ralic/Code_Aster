@@ -45,7 +45,7 @@ implicit none
 !
 ! Contact - Solve
 !
-! Create VALE_CONT for storing contact results
+! Create CONT_NOEU for storing contact results
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -123,14 +123,14 @@ implicit none
     ASSERT(zresu .eq. nb_cmp)
     ASSERT(zperc .eq. nb_per)
 !
-! - Create VALE_CONT
+! - Create CONT_NOEU
 !
     call cnscre(mesh, 'INFC_R', zresu, list_cmp, 'V',&
                 cnsinr)
     call jeveuo(cnsinr(1:19)//'.CNSV', 'E', vr=cnsvr)
     call jeveuo(cnsinr(1:19)//'.CNSL', 'E', jcnslr)
 !
-! - Init VALE_CONT
+! - Init CONT_NOEU
 !
     if (l_cont_cont.or.l_cont_disc) then
         do i_zone = 1, nb_cont_zone
@@ -155,7 +155,7 @@ implicit none
         end do
     endif
 !
-! - Create VALE_CONT_PERC
+! - Create CONT_NOEU_PERC
 !
     if (l_cont_cont.or.l_cont_disc) then
         call cnscre(mesh, 'VARI_R', zperc, list_cmp_per, 'V',&
@@ -164,7 +164,7 @@ implicit none
         call jeveuo(cnsper(1:19)//'.CNSL', 'E', jcnslp)
     endif
 !
-! - Init VALE_CONT_PERC
+! - Init CONT_NOEU_PERC
 !
     if (l_cont_cont.or.l_cont_disc) then
         do i_zone = 1, nb_cont_zone
@@ -181,7 +181,7 @@ implicit none
         end do
     endif
 !
-! - Transform VALE_CONT in CHAM_NO
+! - Transform CONT_NOEU in CHAM_NO
 !
     call cnscno(cnsinr, ' ', 'NON', 'V', cnoinr,&
                 'F', ibid)

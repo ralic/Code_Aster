@@ -48,7 +48,7 @@ subroutine cfmxre(noma, nomo, sdstat, defico, resoco,&
 !
 ! ROUTINE MECA_NON_LINE (POST_TRAITEMENT)
 !
-! REMPLIR LE VALE_CONT POUR L'ARCHIVAGE DU CONTACT
+! REMPLIR LE CONT_NOEU POUR L'ARCHIVAGE DU CONTACT
 !
 ! ----------------------------------------------------------------------
 !

@@ -40,7 +40,7 @@ subroutine cfmmvs(defico, resoco, npt, jeux, loca,&
 !
 ! ROUTINE CONTACT (METHODE VERIF)
 !
-! REMPLISSAGE SD VALE_CONT
+! REMPLISSAGE SD CONT_NOEU
 !
 ! ----------------------------------------------------------------------
 !
@@ -76,7 +76,7 @@ subroutine cfmmvs(defico, resoco, npt, jeux, loca,&
 !
     zresu = cfmmvd('ZRESU')
 !
-! --- NOM DU CHAM_NO VALE_CONT
+! --- NOM DU CHAM_NO CONT_NOEU
 !
     nochco = resoco(1:14)//'.NOCHCO'
     call jeveuo(nochco, 'L', jnochc)

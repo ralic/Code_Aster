@@ -17,7 +17,7 @@
 # ======================================================================
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),IGNORE_ALARM='CONTACT3_16',DEBUG=_F(SDVERI='OUI'))
-# On ignore l'alarme concernant VALE_CONT qui n'est pas cree
+# On ignore l'alarme concernant CONT_NOEU qui n'est pas cree
 
 # -- Parametres du calcul
 

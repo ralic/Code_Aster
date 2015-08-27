@@ -191,7 +191,7 @@ RESU2=STAT_NON_LINE(MODELE=MO,
 TAB_VC=POST_RELEVE_T(ACTION=_F(OPERATION='MOYENNE',
                                INTITULE='JEU METHODE VERIF DISCRET',
                                RESULTAT=RESU2,
-                               NOM_CHAM='VALE_CONT',
+                               NOM_CHAM='CONT_NOEU',
                                GROUP_NO='ContTrou',
                                NOM_CMP=('CONT','JEU',),),);
 
@@ -244,7 +244,7 @@ RESU3=STAT_NON_LINE(MODELE=MO,
 TAB_VC3=POST_RELEVE_T(ACTION=_F(OPERATION='MOYENNE',
                                INTITULE='JEU METHODE VERIF CONTINU',
                                RESULTAT=RESU3,
-                               NOM_CHAM='VALE_CONT',
+                               NOM_CHAM='CONT_NOEU',
                                GROUP_NO='ContTrou',
                                NOM_CMP=('CONT','JEU',),),);
 

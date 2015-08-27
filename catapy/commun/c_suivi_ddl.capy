@@ -38,7 +38,7 @@ def C_SUIVI_DDL() : return FACT(statut='f',max=4,
                                             (NOM_CHAM=='VITE') or \
                                             (NOM_CHAM=='ACCE') or \
                                             (NOM_CHAM=='FORC_NODA') or \
-                                            (NOM_CHAM=='VALE_CONT')",
+                                            (NOM_CHAM=='CONT_NOEU')",
                                  regles   =(UN_PARMI('NOEUD','GROUP_NO','GROUP_MA','MAILLE','TOUT')),
                                  TOUT            =SIMP(statut='d',typ='TXM',into=("OUI",) ),
                                  NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),

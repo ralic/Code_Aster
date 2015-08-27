@@ -102,7 +102,7 @@ implicit none
     l_cont_disc = cfdisl(sdcont_defi,'FORMUL_DISCRETE')
     l_cont_allv = cfdisl(sdcont_defi,'ALL_VERIF')
 !
-! - Create VALE_CONT datastructure
+! - Create CONT_NOEU datastructure
 !
     call cfmxr0(sdcont_defi, sdcont_solv, mesh)
 !

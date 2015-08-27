@@ -158,7 +158,7 @@ TAB_PRES=POST_RELEVE_T(ACTION=_F(INTITULE='MESSAGE',
 TAB_CONT=POST_RELEVE_T(ACTION=_F(INTITULE='MESSAGE',
                                  GROUP_NO='LRESU',
                                  RESULTAT=RESU,
-                                 NOM_CHAM='VALE_CONT',
+                                 NOM_CHAM='CONT_NOEU',
                                  INST=4.0,
                                  NOM_CMP=('CONT'),
                                  OPERATION='EXTRACTION',),);

@@ -211,7 +211,7 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
     call jeveuo(ffrocn//'.CNSV', 'L', vr=frot)
     call jeveuo(ffrocn//'.CNSL', 'L', jfrol)
 !
-! --- ACCES AU CHAM_NO_S VALE_CONT
+! --- ACCES AU CHAM_NO_S CONT_NOEU
 !
     call jeveuo(cnsinr//'.CNSV', 'E', vr=cnsvr)
     call jeveuo(cnsinr//'.CNSL', 'E', jcnslr)
@@ -291,7 +291,7 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
 !         RECUPERATION DU NUMERO DU NOEUD OU EST STOCKE LE LAGS_C
             if (xfem_cont(1) .eq. 1 .or. xfem_cont(1).eq.2 .or. xfem_cont(1) .eq. 3) then
 !           CAS LAGRANGES AUX NOEUDS
-!           VALE_CONT SUR LE PREMIER NOEUD DE L'ARETE
+!           CONT_NOEU SUR LE PREMIER NOEUD DE L'ARETE
                 if (ia .ne. 0) then
                     nuno=connex(zi(jconx2+ima-1)+ar(ia,1)-1)
                 else if (in.ne.0) then
@@ -424,7 +424,7 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
                 rtgz = 0.d0
             endif
 !
-!         LAGRANGES AUX NOEUDS, VALE_CONT SUR LE PREMIER NOEUD DE L'AR
+!         LAGRANGES AUX NOEUDS, CONT_NOEU SUR LE PREMIER NOEUD DE L'AR
             cnsvr(zresu*(nuno-1)+1)=cont
             cnsvr(zresu*(nuno-1)+2)=jeu
             cnsvr(zresu*(nuno-1)+3)=rn

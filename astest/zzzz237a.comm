@@ -198,7 +198,7 @@ IMPR_TABLE(TABLE=T_FN_HAU,);
 T_CONT=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='Forces de contact',
                                RESULTAT=RESU,
-                               NOM_CHAM='VALE_CONT',
+                               NOM_CHAM='CONT_NOEU',
                                INST=20.0,
                                GROUP_NO='AB',
                                TOUT_CMP='OUI',),);
@@ -207,7 +207,7 @@ IMPR_TABLE(TABLE=T_CONT,);
 
 # IMPR_RESU(FORMAT='RESULTAT',
 #           RESU=_F(RESULTAT=RESU,
-#                   NOM_CHAM='VALE_CONT',),);
+#                   NOM_CHAM='CONT_NOEU',),);
 
 # TEST DE CALCUL OPTION FORC_NODA_ELEM
 

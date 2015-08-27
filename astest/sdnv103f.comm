@@ -158,7 +158,7 @@ CONTB1_2=POST_RELEVE_T(ACTION = _F(GROUP_NO='B1',
                                  INTITULE = 'MESSAGE',
                                  RESULTAT = RESU2,
                                  TOUT_CMP='OUI',
-                                 NOM_CHAM   = 'VALE_CONT',
+                                 NOM_CHAM   = 'CONT_NOEU',
                                  OPERATION = 'EXTRACTION'))
 
 VITEA2_2=POST_RELEVE_T(ACTION=_F(INTITULE='VITE EN A2',

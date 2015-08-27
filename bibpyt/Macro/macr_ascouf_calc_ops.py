@@ -718,7 +718,7 @@ def macr_ascouf_calc_ops(
                                           GROUP_NO='FACE2',
                                           RESULTAT=nomres,
                                           TOUT_ORDRE='OUI',
-                                          NOM_CHAM='VALE_CONT',
+                                          NOM_CHAM='CONT_NOEU',
                                           NOM_CMP=('CONT', 'JEU'),
                                           OPERATION='EXTRACTION'))
         IMPR_TABLE(TABLE=__tcont,)

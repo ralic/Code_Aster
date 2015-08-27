@@ -36,7 +36,7 @@ function dinogd(nocham)
     if (nocham .eq. 'DEPL') dinogd = 'DEPL_R'
     if (nocham .eq. 'VITE') dinogd = 'DEPL_R'
     if (nocham .eq. 'ACCE') dinogd = 'DEPL_R'
-    if (nocham .eq. 'VALE_CONT') dinogd = 'INFC_R'
+    if (nocham .eq. 'CONT_NOEU') dinogd = 'INFC_R'
     if (nocham .eq. 'SIEF_ELGA') dinogd = 'SIEF_R'
     if (nocham .eq. 'VARI_ELGA') dinogd = 'VARI_R'
     if (nocham .eq. 'TEMP') dinogd = 'TEMP_R'

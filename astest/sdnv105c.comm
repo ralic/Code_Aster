@@ -628,7 +628,7 @@ VY_O1_la=RECU_FONCTION(RESULTAT=u_lacher, GROUP_NO='O1',
 VC_O=POST_RELEVE_T(ACTION=_F(INTITULE='VC_O',
                              GROUP_NO='O',
                              RESULTAT=u_lacher,
-                             NOM_CHAM='VALE_CONT',
+                             NOM_CHAM='CONT_NOEU',
                              TOUT_ORDRE='OUI',
                              NOM_CMP='CONT',
                              OPERATION='EXTRACTION'));
@@ -636,7 +636,7 @@ VC_O=POST_RELEVE_T(ACTION=_F(INTITULE='VC_O',
 VC_A=POST_RELEVE_T(ACTION=_F(INTITULE='VC_A',
                              GROUP_NO='A',
                              RESULTAT=u_lacher,
-                             NOM_CHAM='VALE_CONT',
+                             NOM_CHAM='CONT_NOEU',
                              TOUT_ORDRE='OUI',
                              NOM_CMP='CONT',
                              OPERATION='EXTRACTION'));
@@ -644,25 +644,25 @@ VC_A=POST_RELEVE_T(ACTION=_F(INTITULE='VC_A',
 # Corners reactions
 
 RN_O_la=RECU_FONCTION(RESULTAT=u_lacher, GROUP_NO='O',
-                      NOM_CHAM='VALE_CONT', NOM_CMP='RN',
+                      NOM_CHAM='CONT_NOEU', NOM_CMP='RN',
                       TOUT_ORDRE='OUI', NOM_PARA='INST',
                       PROL_DROITE='CONSTANT',
                       PROL_GAUCHE='CONSTANT');
 
 RX_O_la=RECU_FONCTION(RESULTAT=u_lacher, GROUP_NO='O',
-                      NOM_CHAM='VALE_CONT', NOM_CMP='RX',
+                      NOM_CHAM='CONT_NOEU', NOM_CMP='RX',
                       TOUT_ORDRE='OUI', NOM_PARA='INST',
                       PROL_DROITE='CONSTANT',
                       PROL_GAUCHE='CONSTANT');
 
 RN_A_la=RECU_FONCTION(RESULTAT=u_lacher, GROUP_NO='A',
-                      NOM_CHAM='VALE_CONT', NOM_CMP='RN',
+                      NOM_CHAM='CONT_NOEU', NOM_CMP='RN',
                       TOUT_ORDRE='OUI', NOM_PARA='INST',
                       PROL_DROITE='CONSTANT',
                       PROL_GAUCHE='CONSTANT');
 
 RX_A_la=RECU_FONCTION(RESULTAT=u_lacher, GROUP_NO='A',
-                      NOM_CHAM='VALE_CONT', NOM_CMP='RX',
+                      NOM_CHAM='CONT_NOEU', NOM_CMP='RX',
                       TOUT_ORDRE='OUI', NOM_PARA='INST',
                      PROL_DROITE='CONSTANT',
                       PROL_GAUCHE='CONSTANT');
@@ -845,13 +845,13 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 # Corners Percussions
 
 PN_A_la=RECU_FONCTION(RESULTAT=u_lacher, GROUP_NO='A',
-                      NOM_CHAM='VALE_CONT', NOM_CMP='IY',
+                      NOM_CHAM='CONT_NOEU', NOM_CMP='IY',
                       TOUT_ORDRE='OUI', NOM_PARA='INST',
                       PROL_DROITE='CONSTANT',
                       PROL_GAUCHE='CONSTANT');
 
 PX_A_la=RECU_FONCTION(RESULTAT=u_lacher, GROUP_NO='A',
-                      NOM_CHAM='VALE_CONT', NOM_CMP='IX',
+                      NOM_CHAM='CONT_NOEU', NOM_CMP='IX',
                       TOUT_ORDRE='OUI', NOM_PARA='INST',
                       PROL_DROITE='CONSTANT',
                       PROL_GAUCHE='CONSTANT');

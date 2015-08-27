@@ -89,7 +89,7 @@ implicit none
     data field_name_resu  /'DEPL'        ,'SIEF_ELGA'   ,'VARI_ELGA'   ,&
                            'COMPORTEMENT','VITE'        ,'ACCE'        ,&
                            'INDC_ELEM'   ,'SECO_ELEM'   ,'COHE_ELEM'   ,&
-                           'VALE_CONT'   ,'MODE_FLAMB'  ,'DEPL_VIBR'   ,&
+                           'CONT_NOEU'   ,'MODE_FLAMB'  ,'DEPL_VIBR'   ,&
                            'DEPL_ABSOLU' ,'VITE_ABSOLU' ,'ACCE_ABSOLU' ,&
                            'FORC_NODA'   ,'STRX_ELGA'   ,'MODE_STAB'   ,&
                            'FORC_AMOR'   ,'FORC_LIAI'   ,'EPSI_ELGA'/
@@ -137,7 +137,7 @@ implicit none
     data keyw_obsv        /'DEPL'        ,'SIEF_ELGA'   ,'VARI_ELGA'   ,&
                            ' '           ,'VITE'        ,'ACCE'        ,&
                            ' '           ,' '           ,' '           ,&
-                           'VALE_CONT'   ,' '           ,' '           ,&
+                           'CONT_NOEU'   ,' '           ,' '           ,&
                            'DEPL_ABSOLU' ,'VITE_ABSOLU' ,'ACCE_ABSOLU' ,&
                            'FORC_NODA'   ,'STRX_ELGA'   ,' '           ,&
                            ' '           ,' '           ,'EPSI_ELGA'   /

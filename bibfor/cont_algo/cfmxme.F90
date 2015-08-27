@@ -117,7 +117,7 @@ implicit none
     sdcont_apjeu = sdcont_solv(1:14)//'.APJEU'
     call wkvect(sdcont_apjeu, 'V V R', nt_cont_poin, vr = v_sdcont_apjeu)
 !
-! - Warning if not node integration (=> no VALE_CONT)
+! - Warning if not node integration (=> no CONT_NOEU)
 !
     l_inte_node = cfdisl(sdcont_defi,'ALL_INTEG_NOEUD')
     if (.not.l_inte_node) then

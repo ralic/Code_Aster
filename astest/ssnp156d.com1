@@ -315,7 +315,7 @@ IMPR_FONCTION(FORMAT='XMGRACE',
 
 IMPR_RESU(FORMAT='MED',
           UNITE=80,
-          RESU=_F(RESULTAT=RESU,NOM_CHAM=('DEPL','FORC_NODA','SIEQ_ELGA','VALE_CONT',),),);
+          RESU=_F(RESULTAT=RESU,NOM_CHAM=('DEPL','FORC_NODA','SIEQ_ELGA','CONT_NOEU',),),);
 # ===========================================
 # Tests de non regression. Pour comparaison graphique avec les resultats de reference : voir la doc
 

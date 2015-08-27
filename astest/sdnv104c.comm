@@ -234,7 +234,7 @@ IMPR_TABLE(TABLE=DEPB);
 CNT_B = POST_RELEVE_T(ACTION=_F(INTITULE='CONTACT_B',
                                   GROUP_NO='B',
                                   RESULTAT=UCM,
-                                  NOM_CHAM='VALE_CONT',
+                                  NOM_CHAM='CONT_NOEU',
                                   NOM_CMP= ('RTAX','RTGX','RN',),
                                   TOUT_ORDRE='OUI',
                                   OPERATION='EXTRACTION',),);

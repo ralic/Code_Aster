@@ -167,7 +167,7 @@ CONTB1_1=POST_RELEVE_T (ACTION = _F(GROUP_NO='B1',
                                  INTITULE = 'MESSAGE',
                                  RESULTAT = RESU1,
                                  TOUT_CMP='OUI',
-                                 NOM_CHAM   = 'VALE_CONT',
+                                 NOM_CHAM   = 'CONT_NOEU',
                                  OPERATION = 'EXTRACTION'))
 
 DEPLA2_1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL EN A2',
@@ -355,7 +355,7 @@ CONTB1_2=POST_RELEVE_T (ACTION = _F(GROUP_NO='B1',
                                  INTITULE = 'MESSAGE',
                                  RESULTAT = RESU2,
                                  TOUT_CMP='OUI',
-                                 NOM_CHAM   = 'VALE_CONT',
+                                 NOM_CHAM   = 'CONT_NOEU',
                                  OPERATION = 'EXTRACTION'))
 
 DEPLA2_2=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL EN A2',

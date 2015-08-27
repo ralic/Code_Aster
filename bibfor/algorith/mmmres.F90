@@ -397,7 +397,7 @@ subroutine mmmres(noma, inst, defico, resoco, depplu,&
                 call mcopco(noma, newgeo, ndimg, nummam, ksipr1,&
                             ksipr2, proj)
 !
-! --------- ARCHIVAGE DES RESULTATS DANS LE CHAM_NO_S VALE_CONT
+! --------- ARCHIVAGE DES RESULTATS DANS LE CHAM_NO_S CONT_NOEU
 !
                 cnsvr(1+zresu*(numnoe-1)+1 -1) = cont
                 cnsvr(1+zresu*(numnoe-1)+2 -1) = -zr(japjeu+iptc-1)

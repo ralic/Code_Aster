@@ -54,7 +54,7 @@ def C_OBSERVATION(PHYSIQUE) :
         _Keywords['CRITERE']        = SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") )
         if _meca :
             _Keywords['NOM_CHAM'] = SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=1,
-                                   into=("VALE_CONT","FORC_NODA",
+                                   into=("CONT_NOEU","FORC_NODA",
                                          "DEPL","VITE","ACCE",
                                          "SIEF_ELGA","VARI_ELGA","EPSI_ELGA",
                                          "DEPL_ABSOLU","VITE_ABSOLU","ACCE_ABSOLU",))
@@ -72,7 +72,7 @@ def C_OBSERVATION(PHYSIQUE) :
                                         (NOM_CHAM=='ACCE') or \
                                         (NOM_CHAM=='TEMP') or \
                                         (NOM_CHAM=='FORC_NODA') or \
-                                        (NOM_CHAM=='VALE_CONT') or \
+                                        (NOM_CHAM=='CONT_NOEU') or \
                                         (NOM_CHAM=='DEPL_ABSOLU') or \
                                         (NOM_CHAM=='VITE_ABSOLU') or \
                                         (NOM_CHAM=='ACCE_ABSOLU')",

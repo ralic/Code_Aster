@@ -259,7 +259,7 @@ TABJEU = POST_RELEVE_T (ACTION = _F(GROUP_NO='B1',
                                  INTITULE = 'MESSAGE',
                                  RESULTAT = RESU,
                                  TOUT_CMP='OUI',
-                                 NOM_CHAM   = 'VALE_CONT',
+                                 NOM_CHAM   = 'CONT_NOEU',
                                  OPERATION = 'EXTRACTION'))
 
 IMPR_TABLE(TABLE=TABJEU)

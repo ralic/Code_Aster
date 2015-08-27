@@ -132,7 +132,7 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
      & 'EPMQ_ELGA',       'EPMQ_ELNO',       'EPMQ_NOEU',&
      & 'EPFP_ELNO',       'EPFP_ELGA',&
      & 'EPFD_ELNO',       'EPFD_ELGA',&
-     & 'EPVC_ELNO',       'EPVC_ELGA',       'VALE_CONT',&
+     & 'EPVC_ELNO',       'EPVC_ELGA',       'CONT_NOEU',&
      & 'ETOT_ELGA',       'ETOT_ELNO',       'ETOT_ELEM',&
      & 'MODE_FLAMB',      'ETOT_NOEU',&
      & 'ENDO_ELGA',       'ENDO_ELNO',       'ENDO_NOEU',&

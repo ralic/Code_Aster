@@ -299,7 +299,7 @@ RESU2=STAT_NON_LINE(
 TAB_VC3=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='JEU METHODE VERIF ',
                                RESULTAT=RESU2,
-                               NOM_CHAM='VALE_CONT',
+                               NOM_CHAM='CONT_NOEU',
                                GROUP_NO='CEP2',
                                NOM_CMP=('JEU',),),);
 

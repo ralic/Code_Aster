@@ -117,7 +117,7 @@ implicit none
     else if (field_type.eq.'COMPORTEMENT') then
         field_name_algo = compor
         field_name_init = ' '
-    else if (field_type.eq.'VALE_CONT') then
+    else if (field_type.eq.'CONT_NOEU') then
         nochco = sdcont_algo(1:14)//'.NOCHCO'
         call jeveuo(nochco, 'L', vk24 = cont_sdname)
         field_name_algo = cont_sdname(2)(1:19)

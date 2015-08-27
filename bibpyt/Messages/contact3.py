@@ -54,7 +54,7 @@ La direction d'appariement fixe données par le vecteur DIRE_APPA est nulle !
 
     16 : _(u"""
 Contact méthode continue.
-La méthode d'intégration n'est pas 'AUTO', le champ VALE_CONT n'est pas créé.
+La méthode d'intégration n'est pas aux noeuds, le champ CONT_NOEU n'est pas créé.
 """),
 
     18 : _(u"""

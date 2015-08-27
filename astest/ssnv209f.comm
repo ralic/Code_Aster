@@ -191,7 +191,7 @@ DEPLAC=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLAC',
 TCONT=POST_RELEVE_T(ACTION=_F(INTITULE='CONT',
                               GROUP_NO='RELEVE',
                               RESULTAT=U2M,
-                              NOM_CHAM='VALE_CONT',
+                              NOM_CHAM='CONT_NOEU',
                               INST=1.0,
                               TOUT_CMP='OUI',
                               OPERATION='EXTRACTION',),);

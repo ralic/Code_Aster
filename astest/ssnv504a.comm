@@ -280,7 +280,7 @@ U2=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
 TAB_VC=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='JEU METHODE VERIF',
                                RESULTAT=U2,
-                               NOM_CHAM='VALE_CONT',
+                               NOM_CHAM='CONT_NOEU',
                                GROUP_NO='SESC1',
                              
                                NOM_CMP=('CONT','JEU',),),);

@@ -207,7 +207,7 @@ TCONT=POST_RELEVE_T(ACTION=_F(INTITULE='CONT',
                               GROUP_NO='RELEVE',
                               RESULTAT=U,
                               INST=1.,
-                              NOM_CHAM='VALE_CONT',
+                              NOM_CHAM='CONT_NOEU',
                               TOUT_CMP='OUI',
                               OPERATION='EXTRACTION',),);
 

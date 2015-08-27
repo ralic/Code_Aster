@@ -318,10 +318,10 @@ DEP_NFI = CALC_TABLE(reuse = DEP_NFI,
 
 IMPR_TABLE(TABLE=DEP_NFI);
 
-VC_PPR=POST_RELEVE_T(ACTION=_F(INTITULE='VALE_CONT',
+VC_PPR=POST_RELEVE_T(ACTION=_F(INTITULE='CONT_NOEU',
                                GROUP_NO=('PPR'),
                                RESULTAT=UTOT1,
-                               NOM_CHAM='VALE_CONT',
+                               NOM_CHAM='CONT_NOEU',
                                INST=1.0,
                                TOUT_CMP='OUI',
                                OPERATION='EXTRACTION'));

@@ -182,7 +182,7 @@ TEST_RESU(RESU=(_F(GROUP_NO='PPA',
 PRFUS=POST_RELEVE_T(ACTION=_F(INTITULE='USURE',
                              GROUP_NO='NCONTA',
                              RESULTAT=U2M,
-                             NOM_CHAM='VALE_CONT',
+                             NOM_CHAM='CONT_NOEU',
                              TOUT_CMP='OUI',
                              OPERATION='EXTRACTION'));
 

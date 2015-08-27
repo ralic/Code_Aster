@@ -754,7 +754,7 @@ def macr_aspic_calc_ops(
                                               GROUP_NO='LEVRTUBU',
                                               RESULTAT=nomres,
                                               TOUT_ORDRE='OUI',
-                                              NOM_CHAM='VALE_CONT',
+                                              NOM_CHAM='CONT_NOEU',
                                               NOM_CMP='CONT',
                                               OPERATION='EXTRACTION'))
             tcont = __tcont.EXTR_TABLE()
