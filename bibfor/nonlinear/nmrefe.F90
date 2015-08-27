@@ -6,23 +6,21 @@ use NonLin_Datastructure_type
 implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/assmiv.h"
 #include "asterfort/calcul.h"
 #include "asterfort/dbgcal.h"
 #include "asterfort/detrsd.h"
-#include "asterfort/infdbg.h"
+#include "asterfort/exixfe.h"
 #include "asterfort/inical.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/mecact.h"
 #include "asterfort/mecara.h"
 #include "asterfort/megeom.h"
 #include "asterfort/memare.h"
 #include "asterfort/nmchex.h"
 #include "asterfort/reajre.h"
+#include "asterfort/xajcin.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -60,49 +58,46 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
+! In  model            : name of model
+! In  compor           : name of comportment definition (field)
+! In  mate             : name of material characteristics (field)
+! In  cara_elem        : name of elementary characteristics (field)
+! In  nume_dof         : name of numbering (NUME_DDL)
 ! In  ds_conv          : datastructure for convergence management
+! In  valinc           : hat variable for algorithm fields
+! In  veelem           : hat variable for elementary vectors
+! In  veasse           : hat variable for vectors
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbout, nbin
-    parameter    (nbout=1, nbin=26)
-    character(len=8) :: lpaout(nbout), lpain(nbin)
-    character(len=19) :: lchout(nbout), lchin(nbin)
+    integer, parameter :: nbout = 1
+    integer, parameter :: nb_in_maxi = 26
+    character(len=8) :: lpaout(nbout), lpain(nb_in_maxi)
+    character(len=19) :: lchout(nbout), lchin(nb_in_maxi)
 !
     character(len=19) :: vect_elem, vect_asse, disp_prev
-    character(len=19) :: ligrmo, verefe, carte
-    character(len=24) :: chgeom
-    character(len=24) :: chcara(18)
-    character(len=19) :: pintto, cnseto, heavto, loncha, pmilto, hea_no
-    character(len=19) :: pinter, ainter, baseco, ccface, lonfac
-    aster_logical :: debug
-    integer :: ifmdbg, nivdbg, i_refe, nb_refe
+    character(len=19) :: ligrmo, resu_elem, chrefe
+    character(len=24) :: chgeom, chcara(18)
+    integer :: i_refe, nb_refe, nb_in_prep, ier
     character(len=8), pointer :: list_cmp(:) => null()
     real(kind=8), pointer :: list_vale(:) => null()
     character(len=16) :: option
+    aster_logical :: l_xfem
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
-    call infdbg('PRE_CALCUL', ifmdbg, nivdbg)
+    chrefe  = '&&NMREFE.SIGERE'
+    resu_elem = '&&NMREFE.VEREFE'
+    ligrmo = model(1:8) // '.MODELE'
+    option = 'REFE_FORC_NODA'
+    call exixfe(model, ier)
+    l_xfem = ier.ne.0
 !
 ! - Get names of fields
 !
     call nmchex(valinc, 'VALINC', 'DEPMOI', disp_prev)
     call nmchex(veelem, 'VEELEM', 'CNREFE', vect_elem)
     call nmchex(veasse, 'VEASSE', 'CNREFE', vect_asse)
-!
-! --- INITIALISATIONS
-! 
-    carte = '&&NMREFE.SIGERE'
-    verefe = '&&NMREFE.VEREFE'
-    ligrmo = model(1:8) // '.MODELE'
-    if (nivdbg .ge. 2) then
-        debug = .true.
-    else
-        debug = .false.
-    endif
-    option = 'REFE_FORC_NODA'
 !
 ! - Get parameters from convergence datastructure
 !
@@ -114,120 +109,76 @@ implicit none
         list_vale(i_refe) = ds_conv%list_refe(i_refe)%user_para
     end do
 !
-! --- CREATION CARTE DES VALEURS DE REFRENCES
+! - Init fields
 !
-    call mecact('V', carte, 'MODELE', ligrmo, 'PREC',&
+    call inical(nb_in_maxi, lpain, lchin, nbout, lpaout,&
+                lchout)
+!
+! - Field for reference values
+!
+    call mecact('V', chrefe, 'MODELE', ligrmo, 'PREC',&
                 ncmp=nb_refe, lnomcmp=list_cmp, vr=list_vale)
 !
-! --- CARTE DE LA GEOMETRIE
+! - Geometry field
 !
     call megeom(model, chgeom)
 !
-! --- CARTE POUR LES CARA. ELEM.
+! - Elementary characteristics fields
 !
     call mecara(cara_elem, chcara)
 !
-! --- INITIALISATION DES CHAMPS POUR CALCUL
-!
-    call inical(nbin, lpain, lchin, nbout, lpaout,&
-                lchout)
-!
-! --- RECUPERATION DES DONNEES XFEM (TOPOSE)
-!
-    pintto = model(1:8)//'.TOPOSE.PIN'
-    cnseto = model(1:8)//'.TOPOSE.CNS'
-    heavto = model(1:8)//'.TOPOSE.HEA'
-    loncha = model(1:8)//'.TOPOSE.LON'
-    pmilto = model(1:8)//'.TOPOSE.PMI'
-!
-! --- RECUPERATION DES DONNEES XFEM (TOPONO)
-!
-    hea_no = model(1:8)//'.TOPONO.HNO'
-!
-! --- RECUPERATION DES DONNEES XFEM (TOPOFAC)
-!
-    pinter = model(1:8)//'.TOPOFAC.OE'
-    ainter = model(1:8)//'.TOPOFAC.AI'
-    ccface = model(1:8)//'.TOPOFAC.CF'
-    baseco = model(1:8)//'.TOPOFAC.BA'
-    lonfac = model(1:8)//'.TOPOFAC.LO'
-!
-! --- CREATION DES LISTES DES CHAMPS IN
-!
-    lpain(1) = 'PGEOMER'
-    lchin(1) = chgeom(1:19)
-    lpain(2) = 'PREFCO'
-    lchin(2) = carte
-    lpain(3) = 'PCAORIE'
-    lchin(3) = chcara(1)(1:19)
-    lpain(4) = 'PCOMPOR'
-    lchin(4) = compor(1:19)
-    lpain(5) = 'PMATERC'
-    lchin(5) = mate(1:19)
-    lpain(6) = 'PDEPLMR'
-    lchin(6) = disp_prev
-    lpain(7) = 'PCACOQU'
-    lchin(7) = chcara(7)(1:19)
-    lpain(8) = 'PCAGEPO'
-    lchin(8) = chcara(5)(1:19)
-    lpain(9) = 'PNBSP_I'
-    lchin(9) = chcara(1) (1:8)//'.CANBSP'
-    lpain(10) = 'PPINTTO'
-    lchin(10) = pintto
-    lpain(11) = 'PHEAVTO'
-    lchin(11) = heavto
-    lpain(12) = 'PLONCHA'
-    lchin(12) = loncha
-    lpain(13) = 'PCNSETO'
-    lchin(13) = cnseto
-    lpain(14) = 'PBASLOR'
-    lchin(14) = model(1:8)//'.BASLOC'
-    lpain(15) = 'PLSN'
-    lchin(15) = model(1:8)//'.LNNO'
-    lpain(16) = 'PLST'
-    lchin(16) = model(1:8)//'.LTNO'
-    lpain(17) = 'PCAMASS'
-    lchin(17) = chcara(12) (1:19)
-    lpain(18) = 'PPMILTO'
-    lchin(18) = pmilto
-    lpain(19) = 'PCINFDI'
-    lchin(19) = chcara(15)(1:19)
-    lpain(20) = 'PPINTER'
-    lchin(20) = pinter
-    lpain(21) = 'PAINTER'
-    lchin(21) = ainter
-    lpain(22) = 'PCFACE'
-    lchin(22) = ccface
-    lpain(23) = 'PBASECO'
-    lchin(23) = baseco
-    lpain(24) = 'PLONFA'
-    lchin(24) = lonfac
-    lpain(25) = 'PCAGNBA'
-    lchin(25) = chcara(11)(1:19)
-    lpain(26) = 'PHEA_NO'
-    lchin(26) = hea_no
-!
-! --- CREATION DES LISTES DES CHAMPS OUT
-!
-    lpaout(1) = 'PVECTUR'
-    lchout(1) = verefe
-!
-! --- PREPARATION DES VECT_ELEM
+! - Preparation of VECT_ELEM
 !
     call detrsd('VECT_ELEM', vect_elem)
-    call memare('V', vect_elem, model(1:8), ' ', ' ',&
-                'CHAR_MECA')
+    call memare('V', vect_elem, model, ' ', ' ', 'CHAR_MECA')
 !
-! --- APPEL A CALCUL
+! - Input fields
 !
-    call calcul('S', option, ligrmo, nbin, lchin,&
+    lpain(1)  = 'PGEOMER'
+    lchin(1)  = chgeom(1:19)
+    lpain(2)  = 'PREFCO'
+    lchin(2)  = chrefe
+    lpain(3)  = 'PCAORIE'
+    lchin(3)  = chcara(1)(1:19)
+    lpain(4)  = 'PCOMPOR'
+    lchin(4)  = compor(1:19)
+    lpain(5)  = 'PMATERC'
+    lchin(5)  = mate(1:19)
+    lpain(6)  = 'PDEPLMR'
+    lchin(6)  = disp_prev
+    lpain(7)  = 'PCACOQU'
+    lchin(7)  = chcara(7)(1:19)
+    lpain(8)  = 'PCAGEPO'
+    lchin(8)  = chcara(5)(1:19)
+    lpain(9)  = 'PNBSP_I'
+    lchin(9)  = chcara(1) (1:8)//'.CANBSP'
+    lpain(10) = 'PCAMASS'
+    lchin(10) = chcara(12) (1:19)
+    lpain(11) = 'PCAGNBA'
+    lchin(11) = chcara(11)(1:19)
+    lpain(12) = 'PCINFDI'
+    lchin(12) = chcara(15)(1:19)
+    nb_in_prep = 12
+!
+! - XFEM fields
+!
+    if (l_xfem) then
+        call xajcin(model, 'REFE_FORC_NODA', nb_in_maxi, lchin, lpain,&
+                    nb_in_prep)
+    endif
+!
+! - Output fields
+!
+    lpaout(1) = 'PVECTUR'
+    lchout(1) = resu_elem
+!
+! - Computation
+!
+    call calcul('S', option, ligrmo , nb_in_prep, lchin,&
                 lpain, nbout, lchout, lpaout, 'V',&
                 'OUI')
 !
-    if (debug) then
-        call dbgcal(option, ifmdbg, nbin, lpain, lchin,&
-                    nbout, lpaout, lchout)
-    endif
+! - Copying output field
 !
     call reajre(vect_elem, lchout(1), 'V')
 !
@@ -238,7 +189,5 @@ implicit none
 !
     AS_DEALLOCATE(vk8 = list_cmp)
     AS_DEALLOCATE(vr  = list_vale)
-!
-    call jedema()
 !
 end subroutine

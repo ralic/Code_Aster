@@ -61,7 +61,11 @@ RE_DISTL=STAT_NON_LINE(MODELE=MO_DISTL,
                               _F(CHARGE = CH_DISTL),),
                        COMPORTEMENT=_F(RELATION='ELAS',),
                        INCREMENT=_F(LIST_INST = LIS_INST,),
-                       CONVERGENCE=_F(RESI_REFE_RELA=1.0,FORC_REFE =(CoefRef,CoefRef),),);
+                     CONVERGENCE = _F(RESI_REFE_RELA=1.0,
+                                      EFFORT_REFE = CoefRef,
+                                      MOMENT_REFE = CoefRef,
+                                     ),
+)
 
 IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=RE_DISTL,),);
 

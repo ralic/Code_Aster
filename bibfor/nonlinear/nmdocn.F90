@@ -50,8 +50,8 @@ implicit none
     integer :: ifm, niv
     character(len=16) :: keywf
     integer :: iret, iret_rela, iret_maxi, iret_refe, iret_comp, para_inte, isdefault
-    real(kind=8) :: para_real, list_para_real(2)
-    character(len=8) :: rep
+    real(kind=8) :: para_real
+    character(len=8) :: answer
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -128,12 +128,15 @@ implicit none
             call SetResiRefe(ds_conv   , type_ = 'VARI_REFE', &
                              user_para_ = para_real, l_refe_test_ = .true._1)
         endif
-        call getvr8(keywf, 'FORC_REFE', iocc=1, nbval=2, vect=list_para_real, nbret=iret)
-        if (iret .ne. 0) then
+        call getvr8(keywf, 'EFFORT_REFE', iocc=1, scal=para_real, nbret=iret)
+        if (iret .eq. 1) then
             call SetResiRefe(ds_conv   , type_ = 'EFFORT_REFE', &
-                             user_para_ = list_para_real(1), l_refe_test_ = .true._1)
+                             user_para_ = para_real, l_refe_test_ = .true._1)
+        endif
+        call getvr8(keywf, 'MOMENT_REFE', iocc=1, scal=para_real, nbret=iret)
+        if (iret .eq. 1) then
             call SetResiRefe(ds_conv   , type_ = 'MOMENT_REFE', &
-                             user_para_ = list_para_real(2), l_refe_test_ = .true._1)
+                             user_para_ = para_real, l_refe_test_ = .true._1)
         endif
         call getvr8(keywf, 'DEPL_REFE', iocc=1, scal=para_real, nbret=iret)
         if (iret .eq. 1) then
@@ -154,11 +157,9 @@ implicit none
 !
 ! - Forced convergence
 !
-    call getvtx(keywf, 'ARRET', iocc=1, scal=rep, nbret=iret)
+    call getvtx(keywf, 'ARRET', iocc=1, scal=answer, nbret=iret)
     if (iret .gt. 0) then
-        if (rep .eq. 'NON') then
-            ds_conv%l_stop = .false._1
-        endif
+        ds_conv%l_stop = answer .eq. 'OUI'
     endif
 !
 end subroutine

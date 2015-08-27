@@ -61,7 +61,9 @@ RE_CAB=STAT_NON_LINE(MODELE     = MO_CAB,
                      COMPORTEMENT=_F(DEFORMATION='GROT_GDEP',
                   RELATION='CABLE',),
                      INCREMENT = _F(LIST_INST = LIS_INST,),
-                     CONVERGENCE = _F(RESI_REFE_RELA=1.E-7,FORC_REFE =(CoefRef,CoefRef),),
+                     CONVERGENCE = _F(RESI_REFE_RELA=1.E-7,
+                                      EFFORT_REFE = CoefRef,
+                                      MOMENT_REFE = CoefRef,),
    );
 
 TB_CAB = RECU_TABLE(CO=RE_CAB,NOM_PARA=('ITER_GLOB'),)

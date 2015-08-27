@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine terefe(nomref, typele, valref)
-        character(len=*) :: nomref
-        character(len=*) :: typele
-        real(kind=8) :: valref
+    subroutine terefe(refe_name, type_elem, refe_vale)
+        character(len=*), intent(in) :: refe_name
+        character(len=*), intent(in) :: type_elem
+        real(kind=8), intent(out) :: refe_vale
     end subroutine terefe
 end interface

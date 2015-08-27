@@ -98,7 +98,9 @@ RE_D_T=STAT_NON_LINE(MODELE     = MO_D_T,
                                      DEFORMATION = 'PETIT',
                                      GROUP_MA    = 'POUD',),
                      INCREMENT = _F(LIST_INST = LIS_INST,),
-                     CONVERGENCE = _F(RESI_REFE_RELA=1.0,FORC_REFE =(CoefRef,CoefRef),),
+                     CONVERGENCE = _F(RESI_REFE_RELA=1.0,
+                                      EFFORT_REFE = CoefRef,
+                                      MOMENT_REFE = CoefRef,),
    );
 
 TB_D_T = RECU_TABLE(CO=RE_D_T,NOM_PARA=('ITER_GLOB'),)
@@ -287,7 +289,9 @@ RE_D_E=STAT_NON_LINE(MODELE     = MO_D_E,
                                      DEFORMATION = 'PETIT',
                                      GROUP_MA    = 'POUD',),
                      INCREMENT = _F(LIST_INST = LIS_INST,),
-                     CONVERGENCE = _F(RESI_REFE_RELA=1.0,FORC_REFE =(CoefRef,CoefRef),),
+                     CONVERGENCE = _F(RESI_REFE_RELA=1.0,
+                                      EFFORT_REFE = CoefRef,
+                                      MOMENT_REFE = CoefRef,),
    );
 TB_D_E = RECU_TABLE(CO=RE_D_E,NOM_PARA=('ITER_GLOB'),)
 
@@ -470,7 +474,9 @@ RE_D_TG=STAT_NON_LINE(MODELE     = MO_D_TG,
                                      DEFORMATION = 'PETIT',
                                      GROUP_MA    = 'POUD',),
                      INCREMENT = _F(LIST_INST = LIS_INST,),
-                     CONVERGENCE = _F(RESI_REFE_RELA=1.0,FORC_REFE =(CoefRef,CoefRef),),
+                     CONVERGENCE = _F(RESI_REFE_RELA=1.0,
+                                      EFFORT_REFE = CoefRef,
+                                      MOMENT_REFE = CoefRef,),
    );
 
 TB_D_TG = RECU_TABLE(CO=RE_D_TG,NOM_PARA=('ITER_GLOB'),)
@@ -659,7 +665,9 @@ RE_D_EM=STAT_NON_LINE(MODELE     = MO_D_EM,
                                      DEFORMATION = 'PETIT',
                                      GROUP_MA    = 'POUD',),
                      INCREMENT = _F(LIST_INST = LIS_INST,),
-                     CONVERGENCE = _F(RESI_REFE_RELA=1.0,FORC_REFE =(CoefRef,CoefRef),),
+                     CONVERGENCE = _F(RESI_REFE_RELA=1.0,
+                                      EFFORT_REFE = CoefRef,
+                                      MOMENT_REFE = CoefRef,),
    );
 
 CALC_CHAMP(reuse      = RE_D_EM,
@@ -788,7 +796,9 @@ RE_D_TGM=STAT_NON_LINE(MODELE     = MO_D_TGM,
                                      DEFORMATION = 'PETIT',
                                      GROUP_MA    = 'POUD',),
                      INCREMENT = _F(LIST_INST = LIS_INST,),
-                     CONVERGENCE = _F(RESI_REFE_RELA=1.0,FORC_REFE =(CoefRef,CoefRef),),
+                     CONVERGENCE = _F(RESI_REFE_RELA=1.0,
+                                      EFFORT_REFE = CoefRef,
+                                      MOMENT_REFE = CoefRef,),
 )
 
 CALC_CHAMP(reuse      = RE_D_TGM,
@@ -907,7 +917,9 @@ RE_D_TGD=STAT_NON_LINE(
    COMPORTEMENT  = _F(RELATION   = 'ELAS_POUTRE_GR',GROUP_MA= 'POUD',
                   DEFORMATION = 'GROT_GDEP'),
    INCREMENT = _F(LIST_INST = LIS_INST,),
-   CONVERGENCE = _F(RESI_REFE_RELA=1.0,FORC_REFE =(CoefRef,CoefRef),),
+                     CONVERGENCE = _F(RESI_REFE_RELA=1.0,
+                                      EFFORT_REFE = CoefRef,
+                                      MOMENT_REFE = CoefRef,),
    );
 
 TB_D_TGD = RECU_TABLE(CO=RE_D_TGD,NOM_PARA=('ITER_GLOB'),)
@@ -962,7 +974,9 @@ RE_C_T=STAT_NON_LINE(MODELE     = MO_C_T,
                       GROUP_MA    = 'POUC',),
       NEWTON=_F(PREDICTION='ELASTIQUE',MATRICE='ELASTIQUE'),
       INCREMENT = _F(LIST_INST = LIS_INST,),
-      CONVERGENCE = _F(RESI_REFE_RELA=1.0,FORC_REFE =(CoefRef,CoefRef),),
+                     CONVERGENCE = _F(RESI_REFE_RELA=1.0,
+                                      EFFORT_REFE = CoefRef,
+                                      MOMENT_REFE = CoefRef,),
    );
 
 TB_C_T = RECU_TABLE(CO=RE_C_T,NOM_PARA=('ITER_GLOB'),)
@@ -1138,7 +1152,9 @@ XXX1  =STAT_NON_LINE(MODELE     = MO_D_EM,
                                      DEFORMATION = 'PETIT',
                                      GROUP_MA    = 'POUD',),
                      INCREMENT = _F(LIST_INST = LIS_INST,),
-                     CONVERGENCE = _F(RESI_REFE_RELA=1.0,FORC_REFE =(CoefRef,CoefRef),),
+                     CONVERGENCE = _F(RESI_REFE_RELA=1.0,
+                                      EFFORT_REFE = CoefRef,
+                                      MOMENT_REFE = CoefRef,),
    );
 TEST_RESU(RESU=_F(GROUP_NO='B', INST=1.0,  RESULTAT=XXX1, NOM_CHAM='DEPL', NOM_CMP='DY',
                   REFERENCE='AUTRE_ASTER', VALE_REFE=0.043854790675854002,

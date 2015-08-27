@@ -59,10 +59,12 @@ RE_BAR=STAT_NON_LINE(MODELE     = MO_BAR,
                      CARA_ELEM  = CA_BAR,
                      EXCIT      = (_F(CHARGE = CL_BAR),
                                    _F(CHARGE = CH_BAR),),
-     COMPORTEMENT  =  _F(RELATION   = 'ELAS',
+                     COMPORTEMENT  =  _F(RELATION   = 'ELAS',
                                      GROUP_MA    = 'TOUT',),
                      INCREMENT = _F(LIST_INST = LIS_INST,),
-                     CONVERGENCE = _F(RESI_REFE_RELA=1.0,FORC_REFE =(CoefRef,CoefRef),),
+                     CONVERGENCE = _F(RESI_REFE_RELA=1.0,
+                                      EFFORT_REFE = CoefRef,
+                                      MOMENT_REFE = CoefRef,),
 );
 
 TB_BAR = RECU_TABLE(CO=RE_BAR,NOM_PARA=('ITER_GLOB'),)
@@ -95,7 +97,9 @@ RE_BAR2=STAT_NON_LINE(MODELE     = MO_BAR,
                                      GROUP_MA    = 'TOUT',),
                      INCREMENT = _F(LIST_INST = LIS_INST,),
                      NEWTON=_F(PAS_MINI_ELAS = 100, REAC_ITER_ELAS = 1),
-                     CONVERGENCE = _F(RESI_REFE_RELA=1.0,FORC_REFE =(CoefRef,CoefRef),),
+                     CONVERGENCE = _F(RESI_REFE_RELA=1.0,
+                                      EFFORT_REFE = CoefRef,
+                                      MOMENT_REFE = CoefRef,),
 );
 
 TB_BAR2 = RECU_TABLE(CO=RE_BAR2,NOM_PARA=('ITER_GLOB'),)

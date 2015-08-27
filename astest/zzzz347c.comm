@@ -75,19 +75,6 @@ CHMATER=AFFE_MATERIAU(
                        _F(  GROUP_MA = 'CABLE',
                               MATER = ACIER)) )
 
-#
-
-#CABLEPR=DEFI_CABLE_BP(            MODELE=MODELE,
-                                  #CHAM_MATER=CHMATER,
-                                   #CARA_ELEM=CARAELEM,
-                              #GROUP_MA_BETON='BETON',
-                              #ADHERENT='NON',
-                                  #DEFI_CABLE=_F(
-                               #GROUP_MA = 'CABLE',
-                               #GROUP_NO_ANCRAGE = ( 'ANCR1',  'ANCR2', ),),
-                               #TYPE_ANCRAGE = ( 'PASSIF',  'ACTIF',  ),
-                                #TENSION_INIT=1.0E+6,
-                               #RECUL_ANCRAGE=0. )
 
 #
 
@@ -104,11 +91,7 @@ CHARMECA=AFFE_CHAR_MECA(
                               _F(  GROUP_NO = 'ANCR2',
                                GLIS = 0.1,
                                ),
-                             ),
-                #RELA_CINE_BP=_F(  CABLE_BP = CABLEPR,
-                               #SIGM_BPEL = 'NON',
-                               #RELA_CINE = 'NON'),
-                        INFO=1 )
+                             ),)
 
 #
 
@@ -136,28 +119,23 @@ EVOLNOLI=STAT_NON_LINE(
                                       ),
                        CONVERGENCE=_F(
                           ITER_GLOB_MAXI = 5,
-                          #ARRET='NON',
-                          #RESI_GLOB_RELA = 1.E-10,
                           RESI_REFE_RELA = 1.E-4,
-                          FORC_REFE = (1.E5,0),
+                          EFFORT_REFE = 1.E5,
+                          MOMENT_REFE = 0,
                           SIGM_REFE = 1.E6,
                           DEPL_REFE = 1.E-1),
                               INFO=1
               )
 
 
-#IMPR_RESU(
-          #RESU=_F(RESULTAT=EVOLNOLI,
-                  #NOM_CHAM=('DEPL','SIEF_ELGA'),GROUP_MA = ('BETON'),NUME_ORDRE=1))
+
 EVOLNOLI=CALC_CHAMP(reuse =EVOLNOLI,
                     FORCE=('FORC_NODA','REAC_NODA'),
                     GROUP_MA=('CABLE'),
-                    #MAILLE=('M95'),
                     RESULTAT=EVOLNOLI,);
 
 EVOLNOL2=CALC_CHAMP(
                     FORCE=('FORC_NODA','REAC_NODA'),
-                    #GROUP_MA=('CABLE'),
                     MAILLE=('M95'),
                     RESULTAT=EVOLNOLI,);
 

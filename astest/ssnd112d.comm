@@ -269,7 +269,8 @@ SOLNL=STAT_NON_LINE(
                       SIGM_REFE      = tau_f,
                       RESI_REFE_RELA = 1.E-3,
                       ITER_GLOB_MAXI = 15,
-                      FORC_REFE =(CoefRef,CoefRef),
+                      EFFORT_REFE = CoefRef,
+                      MOMENT_REFE = CoefRef,
                       ),
                     );
 

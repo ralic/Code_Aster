@@ -187,9 +187,9 @@ RESU=STAT_NON_LINE(MODELE=MO,
                              MATRICE='TANGENTE',),
                    CONVERGENCE=_F(
                           ITER_GLOB_MAXI = 20,
-                          #RESI_GLOB_RELA = 1.E-10,
                           RESI_REFE_RELA = 1.E-6,
-                          FORC_REFE = (1.E5,1.E3),
+                          EFFORT_REFE = 1.E5,
+                          MOMENT_REFE = 1.E3,
                           EPSI_REFE = 1.E-3),
                     );
 
