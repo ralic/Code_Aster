@@ -2,7 +2,7 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
                   nbpar, iforta, nompar, typpar, ang,&
                   pgl, irota, epsm, sigm, vim,&
                   vip, vr, defimp, coef, indimp,&
-                  fonimp, cimpo, kel, sddisc, ds_conv,&
+                  fonimp, cimpo, kel, sddisc, ds_conv, ds_algopara,&
                   pred, matrel, imptgt, option, nomvi,&
                   nbvita, nbvrcm, sderro)
 !
@@ -30,6 +30,7 @@ implicit none
 #include "asterfort/nmcrli.h"
 #include "asterfort/nmcrsu.h"
 #include "asterfort/nmdocn.h"
+#include "asterfort/nmdomt.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/tbajli.h"
 #include "asterfort/CreateConvDS.h"
@@ -60,6 +61,7 @@ implicit none
 ! aslint: disable=W1504
 !
     type(NL_DS_Conv), intent(inout) :: ds_conv
+    type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
 !
 !-----------------------------------------------------------------------
 !     OPERATEUR    CALC_POINT_MAT : INITIALISATIONS
@@ -69,6 +71,7 @@ implicit none
 ! IN   NBVARI : NOMBRE DE VARIABLES INTERNES
 ! IN   NDIM   : 3
 ! IO  ds_conv          : datastructure for convergence management
+! IO  ds_algopara      : datastructure for algorithm parameters
 ! OUT  TYPMOD : 3D
 ! OUT  TABLE  : TABLE RESULTAT
 ! OUT  NBPAR  : NOMBRE DE PARAMETRES DE LA TABLE RESULTAT
@@ -124,6 +127,18 @@ implicit none
     typmod(2)=' '
     solveu = '&&OP0033'
     rac2=sqrt(2.d0)
+!
+! - Read parameters for convergence
+!
+    call nmdocn(ds_conv)
+!
+! - Read parameters for algorithm management
+!
+    call nmdomt(ds_algopara)
+!
+! - Initializations for convergence management
+!
+    call InitConv(ds_conv)
 !
 !     ----------------------------------------
 !     RECUPERATION DU NOM DE LA TABLE PRODUITE
@@ -453,42 +468,25 @@ implicit none
 !     ----------------------------------------
     matrel=0
     option='FULL_MECA'
-    call getvtx('NEWTON', 'MATRICE', iocc=1, scal=matric, nbret=n1)
-    if (n1 .ne. 0) then
-        if (matric .eq. 'ELASTIQUE') then
-            matrel=1
-            pred=0
-            option='RAPH_MECA'
-        endif
+    matric = ds_algopara%matrix_corr
+    if (matric .eq. 'ELASTIQUE') then
+        matrel=1
+        pred=0
+        option='RAPH_MECA'
     endif
 !
     pred=1
-    call getvtx('NEWTON', 'PREDICTION', iocc=1, scal=predic, nbret=n1)
-    if (n1 .ne. 0) then
-        if (predic .eq. 'ELASTIQUE') then
-            pred=0
-        else if (predic .eq. 'EXTRAPOLE') then
-            pred=-1
-        endif
+    predic = ds_algopara%matrix_pred
+    if (predic .eq. 'ELASTIQUE') then
+        pred=0
+    else if (predic .eq. 'EXTRAPOLE') then
+        pred=-1
     endif
-!
-! - Create convergence management datastructure
-!
-    call CreateConvDS(ds_conv)
-!
-! - Read parameters for convergence
-!
-    call nmdocn(ds_conv)
-!
-! - Initializations for convergence management
-!
-    call InitConv(ds_conv)
-
 !     SUBDIVISION AUTOMATIQUE DU PAS DE TEMPS
     limpex = .false.
     lctcd = .false.
-    call nmcrsu(sddisc, lisins, ds_conv, limpex, lctcd,&
-                solveu)
+    call nmcrsu(sddisc, lisins, ds_conv, ds_algopara, limpex,&
+                lctcd , solveu)
 !     INSTANT INITIAL
     numins=0
     instam = diinst(sddisc, numins)

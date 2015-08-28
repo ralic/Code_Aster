@@ -42,6 +42,8 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/vrcinp.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/CreateConvDS.h"
+#include "asterfort/CreateAlgoParaDS.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
@@ -102,6 +104,7 @@ implicit none
     character(len=19) :: vim, vip, vim2, svip
     integer :: lvim, lvip, lvim2, lsvip, lnomvi
     type(NL_DS_Conv) :: ds_conv
+    type(NL_DS_AlgoPara) :: ds_algopara
 !
     data sddisc  /'&&OP0033.SDDISC'/
     data sdcrit  /'&&OP0033.SDCRIT'/
@@ -128,9 +131,15 @@ implicit none
     action=1
     finpas=.false.
     itemax=.false.
-    do i = 1, 5
-        liccvg(i)=0
-    end do
+    liccvg(1:5)=0
+!
+! - Create convergence management datastructure
+!
+    call CreateConvDS(ds_conv)
+!
+! - Create algorithm parameters datastructure
+!
+    call CreateAlgoParaDS(ds_algopara)
 !
 !     RECUPERATION DES OPTIONS DEMANDEES
 !     ----------------------------------
@@ -165,7 +174,7 @@ implicit none
                 nbpar, iforta, nompar, typpar, ang,&
                 pgl, irota, epsm, sigm, zr(lvim),&
                 zr(lvip), vr, defimp, coef, indimp,&
-                fonimp, cimpo, kel, sddisc, ds_conv,&
+                fonimp, cimpo, kel, sddisc, ds_conv, ds_algopara, &
                 pred, matrel, imptgt, option, zk8(lnomvi),&
                 nbvita, nbvrcm, sderro)
     call r8inir(54, 0.d0, dsidep, 1)

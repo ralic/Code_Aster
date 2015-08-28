@@ -1,4 +1,26 @@
-subroutine nmdopo(sddyna, method, sdpost)
+subroutine nmdopo(sddyna, ds_algopara, sdpost)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/r8vide.h"
+#include "asterfort/assert.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nmcrpx.h"
+#include "asterfort/nmcrsd.h"
+#include "asterfort/nmecsd.h"
+#include "asterfort/omega2.h"
+#include "asterfort/wkvect.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,48 +40,23 @@ subroutine nmdopo(sddyna, method, sdpost)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/getfac.h"
-#include "asterc/r8vide.h"
-#include "asterfort/assert.h"
-#include "asterfort/getvis.h"
-#include "asterfort/getvr8.h"
-#include "asterfort/getvtx.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/ndynlo.h"
-#include "asterfort/nmcrpx.h"
-#include "asterfort/nmcrsd.h"
-#include "asterfort/nmecsd.h"
-#include "asterfort/omega2.h"
-#include "asterfort/wkvect.h"
-    character(len=16) :: method(*)
-    character(len=19) :: sddyna, sdpost
+    character(len=19), intent(in) :: sddyna
+    character(len=19), intent(in) :: sdpost  
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (LECTURE)
+! MECA_NON_LINE - Post-treatment management
 !
-! LECTURE DES DONNEES DE POST-TRAITEMENT (CRIT_STAB ET MODE_VIBR)
+! Read parameters for post-treatment management (CRIT_STAB and MODE_VIBR)
 !
-! ----------------------------------------------------------------------
-!
+! --------------------------------------------------------------------------------------------------
 !
 ! IN  SDDYNA : SD DYNAMIQUE
-! IN  METHOD : DESCRIPTION DE LA METHODE DE RESOLUTION
-!                1 : NOM DE LA METHODE NON LINEAIRE (NEWTON OU IMPLEX)
-!                2 : TYPE DE MATRICE (TANGENTE OU ELASTIQUE)
-!                3 : PAS UTILISE
-!                4 : PAS UTILISE
-!                5 : METHODE D'INITIALISATION
-!                6 : NOM CONCEPT EVOL_NOLI SI PREDI. 'DEPL_CALCULE'
+! In  ds_algopara      : datastructure for algorithm parameters
 ! OUT SDPOST : SD POUR POST-TRAITEMENTS (CRIT_STAB ET MODE_VIBR)
 !
-!
-!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: maxddl
     parameter   (maxddl=40)
@@ -79,15 +76,12 @@ subroutine nmdopo(sddyna, method, sdpost)
     character(len=1) :: base
     integer :: iarg
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     call infdbg('MECA_NON_LINE', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> ... LECTURE DONNEES POST-TRAITEMENT'
+        write (ifm,*) '<MECANONLINE> ... Read parameters for post-treatment parameters'
     endif
 !
 ! --- INITIALISATIONS
@@ -220,7 +214,7 @@ subroutine nmdopo(sddyna, method, sdpost)
 !
 ! ----- TYPE DE MATRICE DE RIGIDITE
 !
-        typmat = method(5)
+        typmat = ds_algopara%matrix_pred
         call nmecsd('POST_TRAITEMENT', sdpost, 'TYPE_MATR_FLAMB', ibid, r8bid,&
                     typmat)
 !

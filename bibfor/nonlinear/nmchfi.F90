@@ -1,6 +1,15 @@
-subroutine nmchfi(parmet, method, fonact, sddisc, sddyna,&
-                  numins, iterat, defico, lcfint, lcdiri,&
-                  lcbudi, lcrigi, option)
+subroutine nmchfi(ds_algopara, fonact, sddisc, sddyna, numins,&
+                  iterat     , defico, lcfint, lcdiri, lcbudi,&
+                  lcrigi     , option)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nmchrm.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,16 +29,7 @@ subroutine nmchfi(parmet, method, fonact, sddisc, sddyna,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/ndynlo.h"
-#include "asterfort/nmchrm.h"
-    real(kind=8) :: parmet(*)
-    character(len=16) :: method(*)
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     integer :: fonact(*)
     character(len=16) :: option
     character(len=19) :: sddisc, sddyna
@@ -45,11 +45,7 @@ subroutine nmchfi(parmet, method, fonact, sddisc, sddyna,&
 !
 ! ----------------------------------------------------------------------
 !
-!
-! IN  METHOD : INFORMATIONS SUR LES METHODES DE RESOLUTION
-!                 VOIR DETAIL DES COMPOSANTES DANS NMLECT
-! IN  PARMET : PARAMETRES DES METHODES DE RESOLUTION
-!                 VOIR DETAIL DES COMPOSANTES DANS NMLECT
+! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
 ! IN  SDDISC : SD DISC_INST
 ! IN  SDDYNA : SD DYNAMIQUE
@@ -70,7 +66,6 @@ subroutine nmchfi(parmet, method, fonact, sddisc, sddyna,&
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
@@ -81,9 +76,9 @@ subroutine nmchfi(parmet, method, fonact, sddisc, sddyna,&
 !
 ! --- CHOIX DE REASSEMBLAGE DE LA MATRICE GLOBALE
 !
-    call nmchrm('FORCES_INT', parmet, method, fonact, sddisc,&
-                sddyna, numins, iterat, defico, metpre,&
-                metcor, reasma)
+    call nmchrm('FORCES_INT', ds_algopara, fonact, sddisc, sddyna,&
+                numins, iterat, defico, metpre, metcor,&
+                reasma)
 !
 ! --- OPTION DE CALCUL
 !
@@ -130,7 +125,5 @@ subroutine nmchfi(parmet, method, fonact, sddisc, sddyna,&
 !    -> NON SI DEJA CALCULE DANS RECHERCHE LINEAIRE
     lcdiri = lcfint
     lcbudi = lcfint
-!
-    call jedema()
 !
 end subroutine

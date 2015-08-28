@@ -1,5 +1,5 @@
-subroutine nmcrsu(sddisc, lisins      , ds_conv, l_implex, l_cont_disc,&
-                  solveu, sdcont_defi_)
+subroutine nmcrsu(sddisc     , lisins, ds_conv     , ds_algopara, l_implex,&
+                  l_cont_disc, solveu, sdcont_defi_)
 !
 use NonLin_Datastructure_type
 !
@@ -11,7 +11,6 @@ implicit none
 #include "asterc/r8vide.h"
 #include "asterfort/crsvsi.h"
 #include "asterfort/getvis.h"
-#include "asterfort/getvtx.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedup1.h"
@@ -43,6 +42,7 @@ implicit none
 !
     character(len=19) :: sddisc, lisins, solveu
     type(NL_DS_Conv), intent(in) :: ds_conv
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     aster_logical :: l_implex, l_cont_disc
     character(len=24), optional, intent(in) :: sdcont_defi_
 !
@@ -55,6 +55,7 @@ implicit none
 ! ----------------------------------------------------------------------
 !
 ! In  ds_conv          : datastructure for convergence management
+! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  LISINS : SD_LIST_INST OU SD_LISTR8
 ! In  sddisc           : datastructure for time discretization
 ! IN  LCTCD  : .TRUE. SI CONTACT DISCRET
@@ -64,7 +65,6 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
-    character(len=16) :: pred
     character(len=16) :: metlis, modetp
     integer :: iret
     real(kind=8) :: pas_mini_elas, valr
@@ -162,20 +162,15 @@ implicit none
                 valk_ = decoup)
     ldeco = decoup.eq.'OUI'
 !
-! --- SI NEWTON/PREDICTION ='DEPL_CALCULE', ALORS ON INTERDIT
-! --- LA SUBDIVISION
+! - SI NEWTON/PREDICTION ='DEPL_CALCULE', ALORS ON INTERDIT LA SUBDIVISION
 !
-    call getvtx('NEWTON', 'PREDICTION', iocc=1, scal=pred, nbret=iret)
-    if (iret .ne. 0) then
-        if (pred .eq. 'DEPL_CALCULE') then
-            if (ldeco) then
-                call utmess('F', 'SUBDIVISE_99')
-            endif
+    if (ds_algopara%matrix_pred .eq. 'DEPL_CALCULE') then
+        if (ldeco) then
+            call utmess('F', 'SUBDIVISE_99')
         endif
     endif
 !
-! --- SI ON DOIT DECOUPER - CAPTURE MATRICE SINGULIERE DANS SOLVEUR
-!     ET ECHEC DU SOLVEUR ITERATIF
+! - SI ON DOIT DECOUPER - CAPTURE MATRICE SINGULIERE DANS SOLVEUR ET ECHEC DU SOLVEUR ITERATIF
 !
     if (ldeco) then
         if (solveu(1:8) .ne. '&&OP0033') then

@@ -1,6 +1,6 @@
-subroutine diinit(mesh_         , model_, result , mate     , cara_elem,&
-                  list_func_acti, sddyna, ds_conv, inst_init, solver   ,&
-                  sdcont_defi   , sddisc)
+subroutine diinit(mesh_         , model_     , result , mate       , cara_elem,&
+                  list_func_acti, sddyna     , ds_conv, ds_algopara, inst_init,&
+                  solver        , sdcont_defi, sddisc)
 !
 use NonLin_Datastructure_type
 !
@@ -44,6 +44,7 @@ implicit none
     character(len=24), intent(in) :: mate
     real(kind=8), intent(in) :: inst_init
     type(NL_DS_Conv), intent(in) :: ds_conv
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=8), intent(in) :: result
     character(len=19), intent(in) :: solver
     character(len=24), intent(in) :: sdcont_defi
@@ -64,6 +65,7 @@ implicit none
 ! In  result           : name of the results datastructure
 ! In  sddyna           : name of dynamic parameters
 ! In  ds_conv          : datastructure for convergence management
+! In  ds_algopara      : datastructure for algorithm parameters
 ! In  list_func_acti   : active functionnalities vector (see nmfonc)
 ! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
 ! In  solver           : name of solver parameters
@@ -104,8 +106,8 @@ implicit none
 !
 ! - Automatic management of time stepping
 !
-    call nmcrsu(sddisc, list_inst  , ds_conv, l_implex, l_cont_disc,&
-                solver, sdcont_defi)
+    call nmcrsu(sddisc     , list_inst, ds_conv    , ds_algopara, l_implex,&
+                l_cont_disc, solver   , sdcont_defi)
 !
 ! - Table for parameters
 !

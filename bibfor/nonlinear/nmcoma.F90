@@ -1,10 +1,10 @@
-subroutine nmcoma(modelz, mate  , carele, compor, carcri  ,&
-                  parmet, method, lischa, numedd, numfix  ,&
-                  solveu, comref, sddisc, sddyna, ds_print,&
-                  sdstat, sdtime, numins, iterat, fonact  ,&
-                  defico, resoco, valinc, solalg, veelem  ,&
-                  meelem, measse, veasse, maprec, matass  ,&
-                  codere, faccvg, ldccvg, sdnume)
+subroutine nmcoma(modelz     , mate  , carele, compor  , carcri,&
+                  ds_algopara, lischa, numedd, numfix  , solveu,&
+                  comref     , sddisc, sddyna, ds_print, sdstat,&
+                  sdtime     , numins, iterat, fonact  , defico,&
+                  resoco     , valinc, solalg, veelem  , meelem,&
+                  measse     , veasse, maprec, matass  , codere,&
+                  faccvg     , ldccvg, sdnume)
 !
 use NonLin_Datastructure_type
 !
@@ -50,8 +50,7 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-    real(kind=8) :: parmet(*)
-    character(len=16) :: method(*)
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     integer :: fonact(*)
     character(len=*) :: modelz
     character(len=24) :: mate, carele
@@ -87,8 +86,7 @@ implicit none
 ! IN  RESOCO : SD RESOLUTION CONTACT
 ! IN  DEFICO : SD DEF. CONTACT
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
-! IN  METHOD : INFORMATIONS SUR LES METHODES DE RESOLUTION (VOIR NMLECT)
-! IN  PARMET : PARAMETRES DES METHODES DE RESOLUTION (VOIR NMLECT)
+! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  SOLVEU : SOLVEUR
 ! IN  CARCRI : PARAMETRES METHODES D'INTEGRATION LOCALES (VOIR NMLECT)
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
@@ -138,9 +136,6 @@ implicit none
 ! ----------------------------------------------------------------------
 !
     call infdbg('MECA_NON_LINE', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> ...... CALCUL MATRICE'
     endif
@@ -166,9 +161,9 @@ implicit none
 !
 ! --- CHOIX DE REASSEMBLAGE DE LA MATRICE GLOBALE
 !
-    call nmchrm('CORRECTION', parmet, method, fonact, sddisc,&
-                sddyna, numins, iterat, defico, metpre,&
-                metcor, reasma)
+    call nmchrm('CORRECTION', ds_algopara, fonact, sddisc, sddyna,&
+                numins, iterat, defico, metpre, metcor,&
+                reasma)
 !
 ! --- CHOIX DE REASSEMBLAGE DE L'AMORTISSEMENT
 !

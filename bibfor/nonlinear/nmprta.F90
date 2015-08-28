@@ -1,10 +1,10 @@
-subroutine nmprta(modele, numedd, numfix, mate    , carele,&
-                  comref, compor, lischa, method  , solveu,&
-                  fonact, parmet, carcri, ds_print, sdstat,&
-                  sdtime, sddisc, numins, valinc  , solalg,&
-                  matass, maprec, defico, resoco  , resocu,&
-                  sddyna, meelem, measse, veelem  , veasse,&
-                  sdnume, ldccvg, faccvg, rescvg  , codere)
+subroutine nmprta(modele, numedd, numfix  , mate       , carele,&
+                  comref, compor, lischa  , ds_algopara, solveu,&
+                  fonact, carcri, ds_print, sdstat     , sdtime,&
+                  sddisc, numins, valinc  , solalg     , matass,&
+                  maprec, defico, resoco  , resocu     , sddyna,&
+                  meelem, measse, veelem  , veasse     , sdnume,&
+                  ldccvg, faccvg, rescvg  , codere)
 !
 use NonLin_Datastructure_type
 !
@@ -45,8 +45,7 @@ implicit none
 !
     integer :: fonact(*)
     integer :: numins, faccvg, rescvg, ldccvg
-    real(kind=8) :: parmet(*)
-    character(len=16) :: method(*)
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=24) :: sdtime, sdstat
     type(NL_DS_Print), intent(inout) :: ds_print
     character(len=19) :: matass, maprec
@@ -75,10 +74,9 @@ implicit none
 ! IN  COMREF : VARIABLES DE COMMANDE DE REFERENCE
 ! IN  COMPOR : COMPORTEMENT
 ! IN  LISCHA : LISTE DES CHARGES
-! IN  METHOD : INFORMATIONS SUR LES METHODES DE RESOLUTION
+! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  SOLVEU : SOLVEUR
 ! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
-! IN  PARMET : PARAMETRES DES METHODES DE RESOLUTION
 ! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
 ! IO  ds_print         : datastructure for printing parameters
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
@@ -161,13 +159,12 @@ implicit none
 !
 ! --- CALCUL DE LA MATRICE GLOBALE
 !
-    call nmprma(modele, mate  , carele  , compor, carcri,&
-                parmet, method, lischa  , numedd, numfix,&
-                solveu, comref, ds_print, sdstat, sdtime,&
-                sddisc, sddyna, numins  , fonact, defico,&
-                resoco, valinc, solalg  , veelem, meelem,&
-                measse, maprec, matass  , codere, faccvg,&
-                ldccvg)
+    call nmprma(modele     , mate    , carele, compor, carcri,&
+                ds_algopara, lischa  , numedd, numfix, solveu,&
+                comref     , ds_print, sdstat, sdtime, sddisc,&
+                sddyna     , numins  , fonact, defico, resoco,&
+                valinc     , solalg  , veelem, meelem, measse,&
+                maprec     , matass  , codere, faccvg, ldccvg)
 !
 ! --- ERREUR SANS POSSIBILITE DE CONTINUER
 !
@@ -192,7 +189,7 @@ implicit none
 !
 ! --- CALCUL DU SECOND MEMBRE
 !
-    call nmassp(modele, numedd, mate, carele, comref,&
+    call nmassp(modele, numedd, mate  , carele, comref,&
                 compor, lischa, carcri, fonact, sdstat,&
                 defico, sddyna, valinc, solalg, veelem,&
                 veasse, sdtime, ldccvg, codere, cnpilo,&

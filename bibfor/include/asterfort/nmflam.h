@@ -18,12 +18,13 @@
 ! aslint: disable=W1504
 !
 interface
-    subroutine nmflam(option, modele, numedd, numfix, carele,&
-                      compor, solveu, numins, mate  , comref,&
-                      lischa, defico, resoco, parmet, fonact,&
-                      carcri, sdstat, sddisc, sdtime, sddyna,&
-                      sdpost, valinc, solalg, meelem, measse,&
+    subroutine nmflam(option, modele, numedd, numfix     , carele,&
+                      compor, solveu, numins, mate       , comref,&
+                      lischa, defico, resoco, ds_algopara, fonact,&
+                      carcri, sdstat, sddisc, sdtime     , sddyna,&
+                      sdpost, valinc, solalg, meelem     , measse,&
                       veelem, sderro)
+        use NonLin_Datastructure_type
         character(len=16) :: option
         character(len=24) :: modele
         character(len=24) :: numedd
@@ -37,7 +38,7 @@ interface
         character(len=19) :: lischa
         character(len=24) :: defico
         character(len=24) :: resoco
-        real(kind=8) :: parmet(*)
+        type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         integer :: fonact(*)
         character(len=24) :: carcri
         character(len=24) :: sdstat

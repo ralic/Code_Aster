@@ -1,10 +1,10 @@
-subroutine nmpost(modele, mesh  , numedd  , numfix, carele,&
-                  compor, solveu, numins  , mate  , comref,&
-                  lischa, defico, resoco  , resocu, parmet,&
-                  fonact, carcri, ds_print, sdstat, sddisc,&
-                  sdtime, sd_obsv, sderro, sddyna, sdpost,&
-                  valinc, solalg , meelem, measse, veelem,&
-                  veasse, sdener , sdcriq, eta)
+subroutine nmpost(modele, mesh   , numedd  , numfix, carele     ,&
+                  compor, solveu , numins  , mate  , comref     ,&
+                  lischa, defico , resoco  , resocu, ds_algopara,&
+                  fonact, carcri , ds_print, sdstat, sddisc     ,&
+                  sdtime, sd_obsv, sderro  , sddyna, sdpost     ,&
+                  valinc, solalg , meelem  , measse, veelem     ,&
+                  veasse, sdener , sdcriq  , eta)
 !
 use NonLin_Datastructure_type
 !
@@ -42,7 +42,8 @@ implicit none
 !
     integer :: numins
     character(len=8), intent(in) :: mesh
-    real(kind=8) :: parmet(*), eta
+    real(kind=8) :: eta
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=19) :: meelem(*)
     character(len=24) :: resoco, defico, resocu
     character(len=19) :: solveu
@@ -81,7 +82,7 @@ implicit none
 ! IN  SDSTAT : SD STATISTIQUES
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
-! IN  PARMET : PARAMETRES DES METHODES DE RESOLUTION (VOIR NMLECT)
+! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  SOLVEU : SOLVEUR
 ! IN  CARCRI : PARAMETRES METHODES D'INTEGRATION LOCALES (VOIR NMLECT)
 ! IN  NUMINS : NUMERO D'INSTANT
@@ -133,11 +134,11 @@ implicit none
     if (lmvib .or. lflam) then
         call nmtime(sdtime, 'INI', 'POST_TRAITEMENT')
         call nmtime(sdtime, 'RUN', 'POST_TRAITEMENT')
-        call nmspec(modele  , numedd, numfix, carele, compor,&
-                    solveu  , numins, mate  , comref, lischa,&
-                    defico  , resoco, parmet, fonact, carcri,&
-                    ds_print, sdstat, sdtime, sddisc, valinc,&
-                    solalg  , meelem, measse, veelem, sddyna,&
+        call nmspec(modele  , numedd, numfix     , carele, compor,&
+                    solveu  , numins, mate       , comref, lischa,&
+                    defico  , resoco, ds_algopara, fonact, carcri,&
+                    ds_print, sdstat, sdtime     , sddisc, valinc,&
+                    solalg  , meelem, measse     , veelem, sddyna,&
                     sdpost  , sderro)
         call nmtime(sdtime, 'END', 'POST_TRAITEMENT')
     endif

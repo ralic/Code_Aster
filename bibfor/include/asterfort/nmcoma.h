@@ -18,21 +18,20 @@
 ! aslint: disable=W1504
 !
 interface
-    subroutine nmcoma(modelz, mate  , carele, compor, carcri  ,&
-                      parmet, method, lischa, numedd, numfix  ,&
-                      solveu, comref, sddisc, sddyna, ds_print,&
-                      sdstat, sdtime, numins, iterat, fonact  ,&
-                      defico, resoco, valinc, solalg, veelem  ,&
-                      meelem, measse, veasse, maprec, matass  ,&
-                      codere, faccvg, ldccvg, sdnume)
+    subroutine nmcoma(modelz     , mate  , carele, compor  , carcri,&
+                      ds_algopara, lischa, numedd, numfix  , solveu,&
+                      comref     , sddisc, sddyna, ds_print, sdstat,&
+                      sdtime     , numins, iterat, fonact  , defico,&
+                      resoco     , valinc, solalg, veelem  , meelem,&
+                      measse     , veasse, maprec, matass  , codere,&
+                      faccvg     , ldccvg, sdnume)
         use NonLin_Datastructure_type
         character(len=*) :: modelz
         character(len=24) :: mate
         character(len=24) :: carele
         character(len=24) :: compor
         character(len=24) :: carcri
-        real(kind=8) :: parmet(*)
-        character(len=16) :: method(*)
+        type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         character(len=19) :: lischa
         character(len=24) :: numedd
         character(len=24) :: numfix

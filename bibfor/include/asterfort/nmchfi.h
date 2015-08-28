@@ -18,11 +18,11 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmchfi(parmet, method, fonact, sddisc, sddyna,&
-                      numins, iterat, defico, lcfint, lcdiri,&
-                      lcbudi, lcrigi, option)
-        real(kind=8) :: parmet(*)
-        character(len=16) :: method(*)
+    subroutine nmchfi(ds_algopara, fonact, sddisc, sddyna, numins,&
+                      iterat     , defico, lcfint, lcdiri, lcbudi,&
+                      lcrigi     , option)
+        use NonLin_Datastructure_type
+        type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         integer :: fonact(*)
         character(len=19) :: sddisc
         character(len=19) :: sddyna

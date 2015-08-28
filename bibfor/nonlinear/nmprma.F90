@@ -1,10 +1,9 @@
-subroutine nmprma(modelz, mate  , carele  , compor, carcri,&
-                  parmet, method, lischa  , numedd, numfix,&
-                  solveu, comref, ds_print, sdstat, sdtime,&
-                  sddisc, sddyna, numins  , fonact, defico,&
-                  resoco, valinc, solalg  , veelem, meelem,&
-                  measse, maprec, matass  , codere, faccvg,&
-                  ldccvg)
+subroutine nmprma(modelz     , mate    , carele, compor, carcri,&
+                  ds_algopara, lischa  , numedd, numfix, solveu,&
+                  comref     , ds_print, sdstat, sdtime, sddisc,&
+                  sddyna     , numins  , fonact, defico, resoco,&
+                  valinc     , solalg  , veelem, meelem, measse,&
+                  maprec     , matass  , codere, faccvg, ldccvg)
 !
 use NonLin_Datastructure_type
 !
@@ -47,8 +46,7 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-    real(kind=8) :: parmet(*)
-    character(len=16) :: method(*)
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     integer :: fonact(*)
     character(len=*) :: modelz
     character(len=24) :: mate, carele
@@ -86,8 +84,7 @@ implicit none
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
 ! IN  SDTIME : SD TIMER
 ! IN  SDSTAT : SD STATISTIQUES
-! IN  METHOD : INFORMATIONS SUR LES METHODES DE RESOLUTION (VOIR NMLECT)
-! IN  PARMET : PARAMETRES DES METHODES DE RESOLUTION (VOIR NMLECT)
+! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  SOLVEU : SOLVEUR
 ! IN  CARCRI : PARAMETRES METHODES D'INTEGRATION LOCALES (VOIR NMLECT)
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
@@ -154,9 +151,9 @@ implicit none
 !
 ! --- CHOIX DE REASSEMBLAGE DE LA MATRICE GLOBALE
 !
-    call nmchrm('PREDICTION', parmet, method, fonact, sddisc,&
-                sddyna, numins, iterat, defico, metpre,&
-                metcor, reasma)
+    call nmchrm('PREDICTION', ds_algopara, fonact, sddisc, sddyna,&
+                numins, iterat, defico, metpre, metcor,&
+                reasma)
 !
 ! --- CHOIX DE REASSEMBLAGE DE L'AMORTISSEMENT
 !

@@ -22,7 +22,7 @@ interface
                       nbpar, iforta, nompar, typpar, ang,&
                       pgl, irota, epsm, sigm, vim,&
                       vip, vr, defimp, coef, indimp,&
-                      fonimp, cimpo, kel, sddisc, ds_conv,&
+                      fonimp, cimpo, kel, sddisc, ds_conv, ds_algopara,&
                       pred, matrel, imptgt, option, nomvi,&
                       nbvita, nbvrcm, sderro)
         use NonLin_Datastructure_type
@@ -51,6 +51,7 @@ interface
         real(kind=8) :: kel(6, 6)
         character(len=19) :: sddisc
         type(NL_DS_Conv), intent(inout) :: ds_conv
+        type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
         integer :: pred
         integer :: matrel
         integer :: imptgt

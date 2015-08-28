@@ -1,7 +1,7 @@
-subroutine nmdata(result , model , mesh    , mate  , carele,&
-                  compor , lischa, solveu  , method, parmet,&
-                  ds_conv, carcri, sddyna  , sdpost, sderro,&
-                  sdener , sdcriq, ds_print)
+subroutine nmdata(result  , model      , mesh  , mate   , carele,&
+                  compor  , lischa     , solveu, ds_conv, carcri,&
+                  sddyna  , sdpost     , sderro, sdener , sdcriq,&
+                  ds_print, ds_algopara)
 !
 use NonLin_Datastructure_type
 !
@@ -20,6 +20,7 @@ implicit none
 #include "asterfort/nmdocn.h"
 #include "asterfort/ReadPrint.h"
 #include "asterfort/nmdomt.h"
+#include "asterfort/nmdomt_ls.h"
 #include "asterfort/nmdopo.h"
 #include "asterfort/nmdorc.h"
 #include "asterfort/nmetdo.h"
@@ -47,16 +48,15 @@ implicit none
     character(len=19) :: lischa, solveu, sddyna, sdpost, sdener
     character(len=24) :: mate, carele, compor
     character(len=24) :: carcri, sderro, sdcriq
-    character(len=16) :: method(*)
-    real(kind=8) :: parmet(*)
     character(len=*), intent(out) :: model
     character(len=*), intent(out) :: mesh
     type(NL_DS_Print), intent(inout) :: ds_print
     type(NL_DS_Conv), intent(inout) :: ds_conv
+    type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! MECA_NON_LINE
+! MECA_NON_LINE - Initializations
 !
 ! Read parameters
 !
@@ -80,6 +80,7 @@ implicit none
 ! OUT SDENER : SD ENERGIES
 ! IO  ds_print         : datastructure for printing parameters
 ! IO  ds_conv          : datastructure for convergence management
+! IO  ds_algopara      : datastructure for algorithm parameters
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -123,9 +124,13 @@ implicit none
 !
     call nmdocn(ds_conv)
 !
-! --- NOM ET PARAMETRES DE LA METHODE DE RESOLUTION
+! - Read parameters for algorithm management
 !
-    call nmdomt(method, parmet)
+    call nmdomt(ds_algopara)
+!
+! - Read parameters for algorithm management (line search)
+!
+    call nmdomt_ls(ds_algopara)
 !
 ! --- CREATION SD DYNAMIQUE
 !
@@ -135,9 +140,9 @@ implicit none
 !
     call ndlect(model, mate, carele, lischa, sddyna)
 !
-! --- LECTURE INFOS POST-TRAITEMENT (CRIT_STAB ET MODE_VIBR)
+! - Read parameters for post-treatment management (CRIT_STAB and MODE_VIBR)
 !
-    call nmdopo(sddyna, method, sdpost)
+    call nmdopo(sddyna, ds_algopara, sdpost)
 !
 ! --- LECTURE INFOS ENERGIE
 !

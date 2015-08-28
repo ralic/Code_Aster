@@ -1,9 +1,9 @@
-subroutine ndexpl(modele, numedd  , numfix, mate  , carele,&
-                  comref, compor  , lischa, method, fonact,&
-                  carcri, ds_print, sdstat, sdnume, sddyna,&
-                  sddisc, sdtime  , sderro, valinc, numins,&
-                  solalg, solveu  , matass, maprec, meelem,&
-                  measse, veelem  , veasse, nbiter)
+subroutine ndexpl(modele, numedd  , numfix, mate       , carele,&
+                  comref, compor  , lischa, ds_algopara, fonact,&
+                  carcri, ds_print, sdstat, sdnume     , sddyna,&
+                  sddisc, sdtime  , sderro, valinc     , numins,&
+                  solalg, solveu  , matass, maprec     , meelem,&
+                  measse, veelem  , veasse, nbiter )
 !
 use NonLin_Datastructure_type
 !
@@ -38,7 +38,7 @@ implicit none
 !
     integer :: numins
     integer :: fonact(*)
-    character(len=16) :: method(*)
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=24) :: carcri
     character(len=24) :: sdstat, sdtime, sderro
     character(len=19) :: sdnume, sddyna, sddisc
@@ -69,7 +69,7 @@ implicit none
 ! IN  COMREF : VARIABLES DE COMMANDE DE REFERENCE
 ! IN  COMPOR : COMPORTEMENT
 ! IN  LISCHA : L_CHARGES
-! IN  METHOD : INFORMATIONS SUR LES METHODES DE RESOLUTION
+! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  SOLVEU : SOLVEUR
 ! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
 ! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
@@ -113,11 +113,11 @@ implicit none
 !
 ! --- PREDICTION D'UNE DIRECTION DE DESCENTE
 !
-    call ndxpre(modele, numedd, numfix, mate, carele,&
-                comref, compor, lischa, method, solveu,&
-                fonact, carcri, sddisc, sdstat, sdtime,&
-                numins, valinc, solalg, matass, maprec,&
-                sddyna, sderro, meelem, measse, veelem,&
+    call ndxpre(modele, numedd, numfix, mate       , carele,&
+                comref, compor, lischa, ds_algopara, solveu,&
+                fonact, carcri, sddisc, sdstat     , sdtime,&
+                numins, valinc, solalg, matass     , maprec,&
+                sddyna, sderro, meelem, measse     , veelem,&
                 veasse, lerrit)
 !
     if (lerrit) goto 315

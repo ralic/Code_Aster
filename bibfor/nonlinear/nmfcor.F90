@@ -1,9 +1,11 @@
-subroutine nmfcor(modele, numedd, mate, carele, comref,&
-                  compor, lischa, fonact, parmet, carcri,&
-                  method, numins, iterat, sdstat, sdtime,&
-                  sddisc, sddyna, sdnume, sderro, defico,&
-                  resoco, resocu, valinc, solalg, veelem,&
-                  veasse, meelem, measse, matass, lerrit)
+subroutine nmfcor(modele, numedd, mate  , carele     , comref,&
+                  compor, lischa, fonact, ds_algopara, carcri,&
+                  numins, iterat, sdstat, sdtime     , sddisc,&
+                  sddyna, sdnume, sderro, defico     , resoco,&
+                  resocu, valinc, solalg, veelem     , veasse,&
+                  meelem, measse, matass, lerrit )
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -46,8 +48,7 @@ implicit none
 !
     integer :: fonact(*)
     integer :: iterat, numins
-    real(kind=8) :: parmet(*)
-    character(len=16) :: method(*)
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=24) :: sdstat, sdtime
     character(len=19) :: sddisc, sddyna, sdnume
     character(len=19) :: lischa, matass
@@ -79,9 +80,8 @@ implicit none
 ! IN  SDSTAT : SD STATISTIQUES
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! IN  SDTIME : SD TIMER
-! IN  PARMET : PARAMETRES DES METHODES DE RESOLUTION
+! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
-! IN  METHOD : INFORMATIONS SUR LES METHODES DE RESOLUTION
 ! IN  ITERAT : NUMERO D'ITERATION DE NEWTON
 ! IN  NUMINS : NUMERO D'INSTANT
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
@@ -157,9 +157,9 @@ implicit none
 !
 ! --- OPTION POUR MERIMO
 !
-    call nmchfi(parmet, method, fonact, sddisc, sddyna,&
-                numins, iterat, defico, lcfint, lcdiri,&
-                lcbudi, lcrigi, option)
+    call nmchfi(ds_algopara, fonact, sddisc, sddyna, numins,&
+                iterat     , defico, lcfint, lcdiri, lcbudi,&
+                lcrigi     , option)
 !
 ! --- CALCUL DES FORCES INTERNES ET DE LA RIGIDITE SI NECESSAIRE
 !

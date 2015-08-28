@@ -1,10 +1,10 @@
-subroutine nmdepl(modele, numedd, mate   , carele, comref,&
-                  compor, lischa, fonact , sdstat, parmet,&
-                  carcri, noma  , method , numins, iterat,&
-                  solveu, matass, sddisc , sddyna, sdnume,&
-                  sdpilo, sdtime, sderro , defico, resoco,&
-                  deficu, resocu, valinc , solalg, veelem,&
-                  veasse, eta   , ds_conv, lerrit)
+subroutine nmdepl(modele, numedd , mate  , carele, comref     ,&
+                  compor, lischa , fonact, sdstat, ds_algopara,&
+                  carcri, noma   , numins, iterat, solveu     ,&
+                  matass, sddisc , sddyna, sdnume, sdpilo     ,&
+                  sdtime, sderro , defico, resoco, deficu     ,&
+                  resocu, valinc , solalg, veelem, veasse     ,&
+                  eta   , ds_conv, lerrit)
 !
 use NonLin_Datastructure_type
 !
@@ -50,10 +50,10 @@ implicit none
 !
     integer :: fonact(*)
     integer :: iterat, numins
-    real(kind=8) :: parmet(*), eta
+    real(kind=8) :: eta
     character(len=8) :: noma
     type(NL_DS_Conv), intent(inout) :: ds_conv
-    character(len=16) :: method(*)
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=19) :: sddisc, sdnume, sddyna, sdpilo
     character(len=19) :: lischa, matass, solveu
     character(len=24) :: modele, numedd, mate, carele, comref, compor
@@ -83,10 +83,9 @@ implicit none
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! IN  SDTIME : SD TIMER
 ! IN  SDSTAT : SD STATISTIQUES
-! IN  PARMET : PARAMETRES DES METHODES DE RESOLUTION
+! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
 ! IN  NOMA   : NOM DU MAILLAGE
-! IN  METHOD : INFORMATIONS SUR LES METHODES DE RESOLUTION
 ! IN  ITERAT : NUMERO D'ITERATION DE NEWTON
 ! IN  NUMINS : NUMERO D'INSTANT
 ! IN  MATASS : NOM DE LA MATRICE DU PREMIER MEMBRE ASSEMBLEE
@@ -176,19 +175,19 @@ implicit none
 ! --- RECHERCHE LINEAIRE
 !
         if (lpilo) then
-            call nmrepl(modele, numedd , mate  , carele, comref,&
-                        compor, lischa , parmet, carcri, fonact,&
-                        iterat, sdstat , sdpilo, sdnume, sddyna,&
-                        method, defico , resoco, deltat, valinc,&
-                        solalg, veelem , veasse, sdtime, sddisc,&
-                        etan  , ds_conv, eta   , offset, ldccvg,&
-                        pilcvg, matass)
+            call nmrepl(modele , numedd, mate       , carele, comref,&
+                        compor , lischa, ds_algopara, carcri, fonact,&
+                        iterat , sdstat, sdpilo     , sdnume, sddyna,&
+                        defico , resoco, deltat     , valinc, solalg,&
+                        veelem , veasse, sdtime     , sddisc, etan  ,&
+                        ds_conv, eta   , offset     , ldccvg, pilcvg,&
+                        matass )
         else
-            call nmreli(modele, numedd , mate  , carele, comref,&
-                        compor, lischa , carcri, fonact, iterat,&
-                        sdstat, sdnume , sddyna, parmet, method,&
-                        defico, valinc , solalg, veelem, veasse,&
-                        sdtime, ds_conv, ldccvg)
+            call nmreli(modele , numedd, mate  , carele     , comref,&
+                        compor , lischa, carcri, fonact     , iterat,&
+                        sdstat , sdnume, sddyna, ds_algopara, defico,&
+                        valinc , solalg, veelem, veasse     , sdtime,&
+                        ds_conv, ldccvg)
         endif
     endif
 !

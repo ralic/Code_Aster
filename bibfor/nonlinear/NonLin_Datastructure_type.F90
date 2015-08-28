@@ -115,7 +115,35 @@ implicit none
         aster_logical :: l_iter_elas
         real(kind=8)  :: swap_trig
         real(kind=8)  :: line_sear_coef
-        integer       :: line_sear_iter        
+        integer       :: line_sear_iter
     end type NL_DS_Conv
+!
+! - Type: Line search parameters
+! 
+    type NL_DS_LineSearch
+        character(len=16) :: method
+        real(kind=8)      :: resi_rela
+        integer           :: iter_maxi
+        real(kind=8)      :: rho_mini
+        real(kind=8)      :: rho_maxi
+        real(kind=8)      :: rho_excl
+    end type NL_DS_LineSearch
+!
+! - Type: algorithm parameters
+! 
+    type NL_DS_AlgoPara
+        character(len=16)      :: method
+        character(len=16)      :: matrix_pred
+        character(len=16)      :: matrix_corr
+        integer                :: reac_incr
+        integer                :: reac_iter
+        real(kind=8)           :: pas_mini_elas
+        integer                :: reac_iter_elas
+        aster_logical          :: l_line_search
+        type(NL_DS_LineSearch) :: line_search
+        aster_logical          :: l_pilotage
+        aster_logical          :: l_dyna
+        character(len=8)       :: result_prev_disp
+    end type NL_DS_AlgoPara
 !
 end module

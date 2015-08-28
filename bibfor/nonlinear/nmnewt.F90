@@ -1,11 +1,11 @@
-subroutine nmnewt(noma  , modele, numins  , numedd, numfix ,&
-                  mate  , carele, comref  , compor, lischa ,&
-                  method, fonact, carcri  , parmet, sdstat ,&
-                  sdtime, sderro, ds_print, sdnume, sddyna ,&
-                  sddisc, sdcrit, sdsuiv  , sdpilo, ds_conv,&
-                  solveu, maprec, matass  , valinc, solalg ,&
-                  meelem, measse, veelem  , veasse, defico ,&
-                  resoco, deficu, resocu  , eta   , nbiter)
+subroutine nmnewt(noma       , modele  , numins, numedd , numfix,&
+                  mate       , carele  , comref, compor , lischa,&
+                  ds_algopara, fonact  , carcri, sdstat , sdtime,&
+                  sderro     , ds_print, sdnume, sddyna , sddisc,&
+                  sdcrit     , sdsuiv  , sdpilo, ds_conv, solveu,&
+                  maprec     , matass  , valinc, solalg , meelem,&
+                  measse     , veelem  , veasse, defico , resoco,&
+                  deficu     , resocu  , eta   , nbiter)
 !
 use NonLin_Datastructure_type
 !
@@ -66,8 +66,7 @@ implicit none
 !
     integer :: numins
     integer :: fonact(*)
-    character(len=16) :: method(*)
-    real(kind=8) :: parmet(*)
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=24) :: carcri
     character(len=24) :: sdtime, sderro, sdstat, sdsuiv
     character(len=19) :: sdnume, sddyna, sddisc, sdcrit
@@ -104,11 +103,10 @@ implicit none
 ! IN  COMREF : VARIABLES DE COMMANDE DE REFERENCE
 ! IN  COMPOR : COMPORTEMENT
 ! IN  LISCHA : LISTE DES CHARGES
-! IN  METHOD : INFORMATIONS SUR LES METHODES DE RESOLUTION
 ! IN  SOLVEU : SOLVEUR
 ! IN  SDSTAT : SD STATISTIQUES
 ! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
-! IN  PARMET : PARAMETRES DES METHODES DE RESOLUTION
+! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
 ! IN  SDDISC : SD DISC_INST
 ! IN  SDTIME : SD TIMER
@@ -221,13 +219,13 @@ implicit none
 !
 ! --- PREDICTION D'UNE DIRECTION DE DESCENTE
 !
-    call nmpred(modele, numedd, numfix, mate    , carele,&
-                comref, compor, lischa, method  , solveu,&
-                fonact, parmet, carcri, ds_print, sdstat,&
-                sdtime, sddisc, sdnume, sderro  , numins,&
-                valinc, solalg, matass, maprec  , defico,&
-                resoco, resocu, sddyna, meelem  , measse,&
-                veelem, veasse, lerrit)
+    call nmpred(modele, numedd, numfix  , mate       , carele,&
+                comref, compor, lischa  , ds_algopara, solveu,&
+                fonact, carcri, ds_print, sdstat     , sdtime,&
+                sddisc, sdnume, sderro  , numins     , valinc,&
+                solalg, matass, maprec  , defico     , resoco,&
+                resocu, sddyna, meelem  , measse     , veelem,&
+                veasse, lerrit)
 !
     if (lerrit) goto 315
 !
@@ -242,24 +240,24 @@ implicit none
 ! --- EN CORRIGEANT LA (LES) DIRECTIONS DE DESCENTE
 ! --- SI CONTACT OU PILOTAGE OU RECHERCHE LINEAIRE
 !
-    call nmdepl(modele, numedd, mate   , carele, comref,&
-                compor, lischa, fonact , sdstat, parmet,&
-                carcri, noma  , method , numins, iterat,&
-                solveu, matass, sddisc , sddyna, sdnume,&
-                sdpilo, sdtime, sderro , defico, resoco,&
-                deficu, resocu, valinc , solalg, veelem,&
-                veasse, eta   , ds_conv, lerrit)
+    call nmdepl(modele, numedd , mate  , carele, comref     ,&
+                compor, lischa , fonact, sdstat, ds_algopara,&
+                carcri, noma   , numins, iterat, solveu     ,&
+                matass, sddisc , sddyna, sdnume, sdpilo     ,&
+                sdtime, sderro , defico, resoco, deficu     ,&
+                resocu, valinc , solalg, veelem, veasse     ,&
+                eta   , ds_conv, lerrit)
 !
     if (lerrit) goto 315
 !
 ! --- CALCUL DES FORCES APRES CORRECTION
 !
-    call nmfcor(modele, numedd, mate  , carele, comref,&
-                compor, lischa, fonact, parmet, carcri,&
-                method, numins, iterat, sdstat, sdtime,&
-                sddisc, sddyna, sdnume, sderro, defico,&
-                resoco, resocu, valinc, solalg, veelem,&
-                veasse, meelem, measse, matass, lerrit)
+    call nmfcor(modele, numedd, mate  , carele     , comref,&
+                compor, lischa, fonact, ds_algopara, carcri,&
+                numins, iterat, sdstat, sdtime     , sddisc,&
+                sddyna, sdnume, sderro, defico     , resoco,&
+                resocu, valinc, solalg, veelem     , veasse,&
+                meelem, measse, matass, lerrit )
 !
     if (lerrit) goto 315
 !
@@ -272,16 +270,16 @@ implicit none
 ! --- ESTIMATION DE LA CONVERGENCE
 !
 315 continue
-    call nmconv(noma  , modele, mate   , numedd  , sdnume,&
-                fonact, sddyna, ds_conv, ds_print, sdstat,&
-                sddisc, sdtime, sdcrit , sderro  , parmet,&
-                comref, matass, solveu , numins  , iterat,&
-                eta   , defico, resoco , valinc  , solalg,&
+    call nmconv(noma  , modele, mate   , numedd  , sdnume     ,&
+                fonact, sddyna, ds_conv, ds_print, sdstat     ,&
+                sddisc, sdtime, sdcrit , sderro  , ds_algopara,&
+                comref, matass, solveu , numins  , iterat     ,&
+                eta   , defico, resoco , valinc  , solalg     ,&
                 measse, veasse)
 !
 ! --- MISE A JOUR DES EFFORTS DE CONTACT
 !
-    call nmfcon(modele, numedd, mate, fonact, defico,&
+    call nmfcon(modele, numedd, mate  , fonact, defico,&
                 resoco, sdstat, sdtime, valinc, solalg,&
                 veelem, veasse)
 !
@@ -305,13 +303,13 @@ implicit none
 !
 320 continue
 !
-    call nmdesc(modele, numedd, numfix  , mate  , carele,&
-                comref, compor, lischa  , resoco, method,&
-                solveu, parmet, carcri  , fonact, numins,&
-                iterat, sddisc, ds_print, sdstat, sdtime,&
-                sddyna, sdnume, sderro  , matass, maprec,&
-                defico, valinc, solalg  , meelem, measse,&
-                veasse, veelem, lerrit)
+    call nmdesc(modele, numedd  , numfix, mate  , carele     ,&
+                comref, compor  , lischa, resoco, ds_algopara,&
+                solveu, carcri  , fonact, numins, iterat     ,&
+                sddisc, ds_print, sdstat, sdtime, sddyna     ,&
+                sdnume, sderro  , matass, maprec, defico     ,&
+                valinc, solalg  , meelem, measse, veasse     ,&
+                veelem, lerrit  )
 !
     if (lerrit) goto 315
 !

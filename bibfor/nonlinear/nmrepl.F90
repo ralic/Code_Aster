@@ -1,10 +1,10 @@
-subroutine nmrepl(modele, numedd , mate  , carele, comref,&
-                  compor, lischa , parmet, carcri, fonact,&
-                  iterat, sdstat , sdpilo, sdnume, sddyna,&
-                  method, defico , resoco, deltat, valinc,&
-                  solalg, veelem , veasse, sdtime, sddisc,&
-                  etan  , ds_conv, eta   , offset, ldccvg,&
-                  pilcvg, matass)
+subroutine nmrepl(modele , numedd, mate       , carele, comref,&
+                  compor , lischa, ds_algopara, carcri, fonact,&
+                  iterat , sdstat, sdpilo     , sdnume, sddyna,&
+                  defico , resoco, deltat     , valinc, solalg,&
+                  veelem , veasse, sdtime     , sddisc, etan  ,&
+                  ds_conv, eta   , offset     , ldccvg, pilcvg,&
+                  matass )
 !
 use NonLin_Datastructure_type
 !
@@ -49,9 +49,8 @@ implicit none
 !
     integer :: fonact(*)
     integer :: iterat
-    real(kind=8) :: parmet(*)
     real(kind=8) :: deltat, eta, etan, offset
-    character(len=16) :: method(*)
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=19) :: lischa, sddyna, sdnume, sdpilo, sddisc, matass
     character(len=24) :: carcri, defico, resoco
     character(len=24) :: sdstat, sdtime
@@ -76,7 +75,6 @@ implicit none
 ! IN  COMREF : VARI_COM DE REFERENCE
 ! IN  COMPOR : COMPORTEMENT
 ! IN  LISCHA : LISTE DES CHARGES
-! IN  PARMET : PARAMETRES DES METHODES DE RESOLUTION
 ! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! IN  ITERAT : NUMERO D'ITERATION DE NEWTON
@@ -84,7 +82,7 @@ implicit none
 ! IN  SDNUME : SD NUMEROTATION
 ! IN  SDDYNA : SD DYNAMIQUE
 ! IN  SDSTAT : SD STATISTIQUES
-! IN  METHOD : INFORMATIONS SUR LES METHODES DE RESOLUTION
+! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  DEFICO : SD DEFINITION DU CONTACT
 ! IN  RESOCO : SD RESOLUTION DU CONTACT VOLATILE OP0070
 ! IN  DELTAT : INCREMENT DE TEMPS
@@ -161,12 +159,12 @@ implicit none
 !
 ! --- PARAMETRES RECHERCHE LINEAIRE
 !
-    itrlmx = nint(parmet(5))
-    rhomin = parmet(7)
-    rhomax = parmet(8)
-    rhoexm = -parmet(9)
-    rhoexp = parmet(9)
-    relirl = parmet(6)
+    itrlmx = ds_algopara%line_search%iter_maxi
+    rhomin = ds_algopara%line_search%rho_mini
+    rhomax = ds_algopara%line_search%rho_maxi
+    rhoexm = -ds_algopara%line_search%rho_excl
+    rhoexp = ds_algopara%line_search%rho_excl
+    relirl = ds_algopara%line_search%resi_rela
     ASSERT(itrlmx.le.1000)
 !
 ! --- DECOMPACTION VARIABLES CHAPEAUX
@@ -186,11 +184,11 @@ implicit none
 ! --- FONCTIONS DE PILOTAGE LINEAIRES : RECHERCHE LINEAIRE STANDARD
 !
     if (typilo .eq. 'DDL_IMPO') then
-        call nmrelp(modele, numedd , mate, carele, comref,&
-                    compor, lischa , carcri, fonact, iterat,&
-                    sdstat, sdnume , sddyna, parmet, method,&
-                    defico, valinc , solalg, veelem, veasse,&
-                    sdtime, ds_conv, ldccvg)
+        call nmrelp(modele , numedd, mate  , carele     , comref,&
+                    compor , lischa, carcri, fonact     , iterat,&
+                    sdstat , sdnume, sddyna, ds_algopara, defico,&
+                    valinc , solalg, veelem, veasse     , sdtime,&
+                    ds_conv, ldccvg)
         goto 999
     endif
 !

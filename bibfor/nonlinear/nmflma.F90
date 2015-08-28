@@ -1,31 +1,15 @@
-subroutine nmflma(typmat, mod45, defo, parmet, modelz,&
-                  mate, carele, sddisc, sddyna, fonact,&
-                  numins, valinc, solalg, lischa, comref,&
-                  defico, resoco, solveu, numedd, numfix,&
-                  compor, carcri, sdstat, sdtime, meelem,&
-                  measse, veelem, nddle, ddlexc, modrig,&
+subroutine nmflma(typmat, mod45 , defo  , ds_algopara, modelz,&
+                  mate  , carele, sddisc, sddyna     , fonact,&
+                  numins, valinc, solalg, lischa     , comref,&
+                  defico, resoco, solveu, numedd     , numfix,&
+                  compor, carcri, sdstat, sdtime     , meelem,&
+                  measse, veelem, nddle , ddlexc     , modrig,&
                   ldccvg, matass, matgeo)
 !
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
+use NonLin_Datastructure_type
 !
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+implicit none
 !
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
-!
-! aslint: disable=W1504
-    implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/ascoma.h"
@@ -48,10 +32,30 @@ subroutine nmflma(typmat, mod45, defo, parmet, modelz,&
 #include "asterfort/nmcmat.h"
 #include "asterfort/nmxmat.h"
 #include "asterfort/utmess.h"
+!
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: mickael.abbas at edf.fr
+! aslint: disable=W1504
+!
     character(len=16) :: typmat, modrig
     character(len=4) :: mod45
     integer :: defo
-    real(kind=8) :: parmet(*)
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     integer :: fonact(*)
     character(len=*) :: modelz
     character(len=24) :: mate, carele
@@ -95,8 +99,7 @@ subroutine nmflma(typmat, mod45, defo, parmet, modelz,&
 ! IN  RESOCO : SD RESOLUTION CONTACT
 ! IN  DEFICO : SD DEFINITION CONTACT
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
-! IN  METHOD : INFORMATIONS SUR LES METHODES DE RESOLUTION (VOIR NMLECT)
-! IN  PARMET : PARAMETRES DES METHODES DE RESOLUTION (VOIR NMLECT)
+! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  SOLVEU : SOLVEUR
 ! IN  CARCRI : PARAMETRES METHODES D'INTEGRATION LOCALES (VOIR NMLECT)
 ! IN  SDDISC : SD DISC_INST
@@ -200,9 +203,9 @@ subroutine nmflma(typmat, mod45, defo, parmet, modelz,&
 !
     rigi2 = '&&NMFLMA.RIGISYME'
 !
-! --- PARAMETRES
+! - Get parameter
 !
-    reincr = nint(parmet(1))
+    reincr = ds_algopara%reac_incr
 !
 ! --- REASSEMBLAGE DE LA MATRICE GLOBALE
 !

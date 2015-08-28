@@ -1,9 +1,11 @@
-subroutine nmflam(option, modele, numedd, numfix, carele,&
-                  compor, solveu, numins, mate  , comref,&
-                  lischa, defico, resoco, parmet, fonact,&
-                  carcri, sdstat, sddisc, sdtime, sddyna,&
-                  sdpost, valinc, solalg, meelem, measse,&
+subroutine nmflam(option, modele, numedd, numfix     , carele,&
+                  compor, solveu, numins, mate       , comref,&
+                  lischa, defico, resoco, ds_algopara, fonact,&
+                  carcri, sdstat, sddisc, sdtime     , sddyna,&
+                  sdpost, valinc, solalg, meelem     , measse,&
                   veelem, sderro)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -48,7 +50,7 @@ implicit none
 ! aslint: disable=W1504
 !
     integer :: numins
-    real(kind=8) :: parmet(*)
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=16) :: option
     character(len=19) :: meelem(*)
     character(len=24) :: resoco, defico
@@ -87,7 +89,7 @@ implicit none
 ! IN  SDTIME : SD TIMER
 ! IN  SDSTAT : SD STATISTIQUES
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
-! IN  PARMET : PARAMETRES DES METHODES DE RESOLUTION (VOIR NMLECT)
+! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  SOLVEU : SOLVEUR
 ! IN  SDPOST : SD POUR POST-TRAITEMENTS (CRIT_STAB ET MODE_VIBR)
 ! IN  CARCRI : PARAMETRES METHODES D'INTEGRATION LOCALES (VOIR NMLECT)
@@ -148,12 +150,12 @@ implicit none
 !
 ! --- CALCUL DE LA MATRICE TANGENTE ASSEMBLEE ET DE LA MATRICE GEOM.
 !
-    call nmflma(typmat, mod45, defo, parmet, modele,&
-                mate, carele, sddisc, sddyna, fonact,&
-                numins, valinc, solalg, lischa, comref,&
-                defico, resoco, solveu, numedd, numfix,&
-                compor, carcri, sdstat, sdtime, meelem,&
-                measse, veelem, nddle, ddlexc, modrig,&
+    call nmflma(typmat, mod45 , defo  , ds_algopara, modele,&
+                mate  , carele, sddisc, sddyna     , fonact,&
+                numins, valinc, solalg, lischa     , comref,&
+                defico, resoco, solveu, numedd     , numfix,&
+                compor, carcri, sdstat, sdtime     , meelem,&
+                measse, veelem, nddle , ddlexc     , modrig,&
                 ldccvg, matas2, matgeo)
     ASSERT(ldccvg.eq.0)
 !

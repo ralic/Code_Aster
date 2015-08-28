@@ -16,9 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmdopo(sddyna, method, sdpost)
-        character(len=19) :: sddyna
-        character(len=16) :: method(*)
-        character(len=19) :: sdpost
+    subroutine nmdopo(sddyna, ds_algopara, sdpost)
+        use NonLin_Datastructure_type
+        character(len=19), intent(in) :: sddyna
+        character(len=19), intent(in) :: sdpost  
+        type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     end subroutine nmdopo
 end interface

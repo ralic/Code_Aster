@@ -1,16 +1,14 @@
-subroutine exfonc(fonact, parmet, method, solveu, defico,&
-                  sddyna, mate)
+subroutine exfonc(list_func_acti, ds_algopara, solver, sdcont_defi, sddyna,&
+                  mate)
 !
-    implicit none
+use NonLin_Datastructure_type
+!
+implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/infdbg.h"
 #include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/ndynlo.h"
 #include "asterfort/utmess.h"
@@ -34,33 +32,31 @@ subroutine exfonc(fonact, parmet, method, solveu, defico,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    integer, intent(in) :: fonact(*)
-    character(len=19), intent(in) :: solveu
+    integer, intent(in) :: list_func_acti(*)
+    character(len=19), intent(in) :: solver
     character(len=19), intent(in) :: sddyna
-    character(len=24), intent(in) :: defico
-    real(kind=8), intent(in) :: parmet(*)
-    character(len=16), intent(in) :: method(*)
+    character(len=24), intent(in) :: sdcont_defi
     character(len=24), intent(in) :: mate
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! MECA_NON_LINE - Init
+! MECA_NON_LINE - Initializations
 !
 ! No compatible functionnalities
 !
 ! --------------------------------------------------------------------------------------------------
 !
+! In  list_func_acti   : list of active functionnalities
+! In  ds_algopara      : datastructure for algorithm parameters
+! In  solver           : datastructure for solver parameters 
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  sddyna           : dynamic parameters datastructure
+! In  mate             : name of material characteristics (field)
 !
-! IN  DEFICO : SD DE DEFINITION DU CONTACT
-! IN  SOLVEU : NOM DU SOLVEUR DE NEWTON
-! IN  METHOD : DESCRIPTION DE LA METHODE DE RESOLUTION
-! IN  SDDYNA : SD DYNAMIQUE
-! IN  PARMET : PARAMETRES DES METHODES DE RESOLUTION
-! IN  FONACT : FONCTIONNALITES SPECIFIQUES ACTIVEES
+! --------------------------------------------------------------------------------------------------
 !
-! ---------------------------------------------------------------------
-!
-    integer :: reincr
+    integer :: reac_incr
     integer :: n1
     aster_logical :: lcont, lallv, lctcc, lctcd, lpena, leltc
     aster_logical :: lpilo, lreli, lmacr, lunil
@@ -68,50 +64,47 @@ subroutine exfonc(fonact, parmet, method, solveu, defico,&
     aster_logical :: lrcmk, lgcpc, lpetsc, lamg, lsyme, limpex
     aster_logical :: londe, ldyna, lgrot, ltheta, lnkry
     aster_logical :: lener, lproj, lmatdi, lldsp, lctgcp, lcomp
-    integer :: ifm, niv
-    character(len=24) :: typilo, typrel, metres
+    character(len=24) :: typilo, metres
+    character(len=16) :: reli_meth, matrix_pred
     character(len=3) :: mfdet
     character(len=24), pointer :: slvk(:) => null()
 !
-! ---------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
-    call infdbg('MECA_NON_LINE', ifm, niv)
-!
-! --- FONCTIONNALITES ACTIVEES
-!
-    lxfem = isfonc(fonact,'XFEM')
-    lctcc = isfonc(fonact,'CONT_CONTINU')
-    lctcd = isfonc(fonact,'CONT_DISCRET')
-    lcont = isfonc(fonact,'CONTACT')
-    lunil = isfonc(fonact,'LIAISON_UNILATER')
-    lpilo = isfonc(fonact,'PILOTAGE')
-    lreli = isfonc(fonact,'RECH_LINE')
-    lmacr = isfonc(fonact,'MACR_ELEM_STAT')
-    lmvib = isfonc(fonact,'MODE_VIBR')
-    lflam = isfonc(fonact,'CRIT_STAB')
+    lxfem = isfonc(list_func_acti,'XFEM')
+    lctcc = isfonc(list_func_acti,'CONT_CONTINU')
+    lctcd = isfonc(list_func_acti,'CONT_DISCRET')
+    lcont = isfonc(list_func_acti,'CONTACT')
+    lunil = isfonc(list_func_acti,'LIAISON_UNILATER')
+    lpilo = isfonc(list_func_acti,'PILOTAGE')
+    lreli = isfonc(list_func_acti,'RECH_LINE')
+    lmacr = isfonc(list_func_acti,'MACR_ELEM_STAT')
+    lmvib = isfonc(list_func_acti,'MODE_VIBR')
+    lflam = isfonc(list_func_acti,'CRIT_STAB')
     londe = ndynlo(sddyna,'ONDE_PLANE')
     ldyna = ndynlo(sddyna,'DYNAMIQUE')
-    lexpl = isfonc(fonact,'EXPLICITE')
-    lgrot = isfonc(fonact,'GD_ROTA')
+    lexpl = isfonc(list_func_acti,'EXPLICITE')
+    lgrot = isfonc(list_func_acti,'GD_ROTA')
     ltheta = ndynlo(sddyna,'THETA_METHODE')
-    limpex = isfonc(fonact,'IMPLEX')
-    lnkry = isfonc(fonact,'NEWTON_KRYLOV')
-    lener = isfonc(fonact,'ENERGIE')
-    lproj = isfonc(fonact,'PROJ_MODAL')
-    lmatdi = isfonc(fonact,'MATR_DISTRIBUEE')
-    leltc = isfonc(fonact,'ELT_CONTACT')
-    lcomp = isfonc(fonact,'RESI_COMP')
-    lgcpc = isfonc(fonact,'GCPC')
-    lpetsc = isfonc(fonact,'PETSC')
-    lldsp = isfonc(fonact,'LDLT_SP')
+    limpex = isfonc(list_func_acti,'IMPLEX')
+    lnkry = isfonc(list_func_acti,'NEWTON_KRYLOV')
+    lener = isfonc(list_func_acti,'ENERGIE')
+    lproj = isfonc(list_func_acti,'PROJ_MODAL')
+    lmatdi = isfonc(list_func_acti,'MATR_DISTRIBUEE')
+    leltc = isfonc(list_func_acti,'ELT_CONTACT')
+    lcomp = isfonc(list_func_acti,'RESI_COMP')
+    lgcpc = isfonc(list_func_acti,'GCPC')
+    lpetsc = isfonc(list_func_acti,'PETSC')
+    lldsp = isfonc(list_func_acti,'LDLT_SP')
 !
-    call jeveuo(solveu//'.SLVK', 'E', vk24=slvk)
+    call jeveuo(solver//'.SLVK', 'E', vk24=slvk)
     metres = slvk(1)
 !
-! --- INITIALISATIONS
+! - Get algorithm parameters
 !
-    reincr = nint(parmet(1))
+    reac_incr   = ds_algopara%reac_incr
+    matrix_pred = ds_algopara%matrix_pred
+    reli_meth   = ds_algopara%line_search%method
 !
 ! --- TYPE DE SOLVEUR
 !
@@ -122,10 +115,10 @@ subroutine exfonc(fonact, parmet, method, solveu, defico,&
 ! --- CONTACT DISCRET
 !
     if (lctcd) then
-        lmodim = cfdisl(defico,'MODI_MATR_GLOB')
-        lallv = cfdisl(defico,'ALL_VERIF')
-        lpena = cfdisl(defico,'CONT_PENA')
-        lctgcp = cfdisl(defico,'CONT_GCP')
+        lmodim = cfdisl(sdcont_defi,'MODI_MATR_GLOB')
+        lallv = cfdisl(sdcont_defi,'ALL_VERIF')
+        lpena = cfdisl(sdcont_defi,'CONT_PENA')
+        lctgcp = cfdisl(sdcont_defi,'CONT_GCP')
         if (lpilo) then
             call utmess('F', 'MECANONLINE_43')
         endif
@@ -140,7 +133,7 @@ subroutine exfonc(fonact, parmet, method, solveu, defico,&
                 call utmess('F', 'MECANONLINE3_88')
             endif
         endif
-        if (reincr .eq. 0) then
+        if (reac_incr .eq. 0) then
             if (lmodim) then
                 call utmess('F', 'CONTACT_88')
             endif
@@ -251,7 +244,7 @@ subroutine exfonc(fonact, parmet, method, solveu, defico,&
                 call utmess('F', 'MECANONLINE5_34')
             endif
         endif
-        if ((method(5).eq.'DEPL_CALCULE') .or. (method(5) .eq.'EXTRAPOLE')) then
+        if ((matrix_pred.eq.'DEPL_CALCULE') .or. (matrix_pred .eq.'EXTRAPOLE')) then
             call utmess('F', 'MECANONLINE5_36')
         endif
 !
@@ -263,8 +256,7 @@ subroutine exfonc(fonact, parmet, method, solveu, defico,&
 !
     endif
     if (lreli) then
-        call getvtx('RECH_LINEAIRE', 'METHODE', iocc=1, scal=typrel, nbret=n1)
-        if ((typrel.eq.'PILOTAGE') .and. (.not.lpilo)) then
+        if ((reli_meth.eq.'PILOTAGE') .and. (.not.lpilo)) then
             call utmess('F', 'MECANONLINE5_35')
         endif
     endif
@@ -294,5 +286,4 @@ subroutine exfonc(fonact, parmet, method, solveu, defico,&
         endif
     endif
 !
-    call jedema()
 end subroutine

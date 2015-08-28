@@ -16,8 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmdomt(algo_meth, algo_para)
-        character(len=16), intent(inout) :: algo_meth(*)
-        real(kind=8), intent(inout) :: algo_para(*)
+    subroutine nmdomt(ds_algopara)
+        use NonLin_Datastructure_type
+        type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
     end subroutine nmdomt
 end interface

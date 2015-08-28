@@ -1,24 +1,9 @@
-subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
+subroutine nmdopi(modelz, numedd, ds_algopara, sdpilo)
 !
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
+use NonLin_Datastructure_type
 !
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+implicit none
 !
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
-!
-    implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8gaem.h"
@@ -47,11 +32,29 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
 #include "asterfort/utmess.h"
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
-    character(len=*) :: modelz
-    character(len=24) :: numedd
-    character(len=16) :: method(*)
-    character(len=19) :: sdpilo
-    aster_logical :: lreli
+!
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: mickael.abbas at edf.fr
+!
+    character(len=*), intent(in) :: modelz
+    character(len=24), intent(in) :: numedd
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
+    character(len=19), intent(in) :: sdpilo
 !
 ! ----------------------------------------------------------------------
 !
@@ -61,11 +64,9 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  MODELE : MODELE
 ! IN  NUMEDD : NUME_DDL
-! IN  METHOD : DESCRIPTION DE LA METHODE DE RESOLUTION
-! IN  LRELI  : .TRUE. SI RECHERCHE LINEAIRE
+! In  ds_algopara      : datastructure for algorithm parameters
 ! OUT SDPILO : SD PILOTAGE
 !               .PLTK
 !                (1) = TYPE DE PILOTAGE
@@ -123,6 +124,9 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
 !
     call jemarq()
     call infdbg('MECA_NON_LINE', ifm, niv)
+    if (niv .ge. 2) then
+        write (ifm,*) '<MECANONLINE> ... CREATION SD PILOTAGE'
+    endif
 !
 ! --- INITIALISATIONS
 !
@@ -139,12 +143,6 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
     limocl(2) = 'NOEUD'
     tymocl(1) = 'GROUP_NO'
     tymocl(2) = 'NOEUD'
-!
-! --- AFFICHAGE
-!
-    if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> ... CREATION SD PILOTAGE'
-    endif
 !
 ! --- LECTURE DU TYPE ET DE LA ZONE
 !
@@ -426,8 +424,8 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
 !
 ! --- GESTION RECHERCHE LINEAIRE
 !
-    if (lreli) then
-        relmet = method(7)
+    if (ds_algopara%l_line_search) then
+        relmet = ds_algopara%line_search%method
         if (typpil .ne. 'DDL_IMPO') then
             if (relmet .ne. 'PILOTAGE') then
                 call utmess('F', 'PILOTAGE_4')

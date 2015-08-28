@@ -16,14 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine exfonc(fonact, parmet, method, solveu, defico,&
-                      sddyna, mate)
-        integer, intent(in) :: fonact(*)
-        character(len=19), intent(in) :: solveu
+    subroutine exfonc(list_func_acti, ds_algopara, solver, sdcont_defi, sddyna,&
+                      mate)
+        use NonLin_Datastructure_type
+        integer, intent(in) :: list_func_acti(*)
+        character(len=19), intent(in) :: solver
         character(len=19), intent(in) :: sddyna
-        character(len=24), intent(in) :: defico
-        real(kind=8), intent(in) :: parmet(*)
-        character(len=16), intent(in) :: method(*)
+        character(len=24), intent(in) :: sdcont_defi
         character(len=24), intent(in) :: mate
+        type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     end subroutine exfonc
 end interface

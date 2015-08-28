@@ -18,11 +18,11 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
-        character(len=*) :: modelz
-        character(len=24) :: numedd
-        character(len=16) :: method(*)
-        aster_logical :: lreli
-        character(len=19) :: sdpilo
+    subroutine nmdopi(modelz, numedd, ds_algopara, sdpilo)
+        use NonLin_Datastructure_type
+        character(len=*), intent(in) :: modelz
+        character(len=24), intent(in) :: numedd
+        type(NL_DS_AlgoPara), intent(in) :: ds_algopara
+        character(len=19), intent(in) :: sdpilo
     end subroutine nmdopi
 end interface

@@ -1,5 +1,7 @@
-subroutine nmprdc(algo_meth, nume_dof , disp_prev, sddisc, nume_inst,&
-                  incr_esti, disp_esti)
+subroutine nmprdc(ds_algopara, nume_dof , disp_prev, sddisc, nume_inst,&
+                  incr_esti  , disp_esti)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -33,7 +35,7 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=16), intent(in) :: algo_meth(*)
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=24), intent(in) :: nume_dof
     character(len=19), intent(in) :: disp_prev
     character(len=19), intent(in) :: sddisc
@@ -49,7 +51,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  algo_meth        : parameters for algorithm methods
+! In  ds_algopara      : datastructure for algorithm parameters
 ! In  nume_dof         : name of numbering (NUME_DDL)
 ! In  disp_prev        : previous displacement (T-)
 ! In  sddisc           : datastructure for time discretization
@@ -82,7 +84,7 @@ implicit none
 !
 ! - Get results datastructure for PREDICTION='DEPL_CALCULE
 !
-    result_extr = algo_meth(6)(1:8)
+    result_extr = ds_algopara%result_prev_disp
 !
 ! - Get displacement in results datastructure
 !

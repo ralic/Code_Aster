@@ -1,8 +1,8 @@
-subroutine nmreli(modele, numedd , mate  , carele, comref,&
-                  compor, lischa , carcri, fonact, iterat,&
-                  sdstat, sdnume , sddyna, parmet, method,&
-                  defico, valinc , solalg, veelem, veasse,&
-                  sdtime, ds_conv, ldccvg)
+subroutine nmreli(modele , numedd, mate  , carele     , comref,&
+                  compor , lischa, carcri, fonact     , iterat,&
+                  sdstat , sdnume, sddyna, ds_algopara, defico,&
+                  valinc , solalg, veelem, veasse     , sdtime,&
+                  ds_conv, ldccvg)
 !
 use NonLin_Datastructure_type
 !
@@ -33,8 +33,7 @@ implicit none
 !
     integer :: fonact(*)
     integer :: iterat, ldccvg
-    real(kind=8) :: parmet(*)
-    character(len=16) :: method(*)
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=24) :: carcri, sdtime, defico, sdstat
     character(len=19) :: lischa, sddyna, sdnume
     character(len=24) :: modele, numedd, mate, carele, comref, compor
@@ -64,8 +63,7 @@ implicit none
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! IN  ITERAT : NUMERO D'ITERATION DE NEWTON
 ! IN  SDNUME : SD NUMEROTATION
-! IN  PARMET : PARAMETRES DES METHODES DE RESOLUTION
-! IN  METHOD : INFORMATIONS SUR LES METHODES DE RESOLUTION
+! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
 ! IN  VEELEM : VARIABLE CHAPEAU POUR NOM DES VECT_ELEM
@@ -93,10 +91,10 @@ implicit none
 !
 ! --- RECHERCHE LINEAIRE DANS LA DIRECTION DE DESCENTE
 !
-    call nmrelp(modele, numedd , mate  , carele, comref,&
-                compor, lischa , carcri, fonact, iterat,&
-                sdstat, sdnume , sddyna, parmet, method,&
-                defico, valinc , solalg, veelem, veasse,&
-                sdtime, ds_conv, ldccvg)
+    call nmrelp(modele , numedd, mate  , carele     , comref,&
+                compor , lischa, carcri, fonact     , iterat,&
+                sdstat , sdnume, sddyna, ds_algopara, defico,&
+                valinc , solalg, veelem, veasse     , sdtime,&
+                ds_conv, ldccvg)
 !
 end subroutine

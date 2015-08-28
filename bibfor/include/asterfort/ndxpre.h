@@ -17,13 +17,16 @@
 !
 #include "asterf_types.h"
 !
+! aslint: disable=W1504
+!
 interface
-    subroutine ndxpre(modele, numedd, numfix, mate, carele,&
-                      comref, compor, lischa, method, solveu,&
-                      fonact, carcri, sddisc, sdstat, sdtime,&
-                      numins, valinc, solalg, matass, maprec,&
-                      sddyna, sderro, meelem, measse, veelem,&
+    subroutine ndxpre(modele, numedd, numfix, mate       , carele,&
+                      comref, compor, lischa, ds_algopara, solveu,&
+                      fonact, carcri, sddisc, sdstat     , sdtime,&
+                      numins, valinc, solalg, matass     , maprec,&
+                      sddyna, sderro, meelem, measse     , veelem,&
                       veasse, lerrit)
+        use NonLin_Datastructure_type
         character(len=24) :: modele
         character(len=24) :: numedd
         character(len=24) :: numfix
@@ -32,7 +35,7 @@ interface
         character(len=24) :: comref
         character(len=24) :: compor
         character(len=19) :: lischa
-        character(len=16) :: method(*)
+        type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         character(len=19) :: solveu
         integer :: fonact(*)
         character(len=24) :: carcri

@@ -1,12 +1,12 @@
-subroutine nminit(result     , model      , numedd , numfix   , mate,&
-                  compor     , carele     , parmet , lischa   , maprec,&
-                  solveu     , carcri     , numins , sdstat   , sddisc,&
-                  sdnume     , sdcont_defi, sdcrit , varc_refe, fonact,&
-                  method     , lisch2     , mesh   , sdpilo   , sddyna,&
-                  ds_print   , sd_suiv    , sd_obsv, sdtime   , sderro,&
-                  sdpost     , sd_inout   , sdener , ds_conv  , sdcriq,&
-                  sdunil_defi, resocu     , resoco , valinc   , solalg,&
-                  measse     , veelem     , meelem , veasse   , codere)
+subroutine nminit(result  , model      , numedd , numfix     , mate       ,&
+                  compor  , carele     , lischa , ds_algopara, maprec     ,&
+                  solveu  , carcri     , numins , sdstat     , sddisc     ,&
+                  sdnume  , sdcont_defi, sdcrit , varc_refe  , fonact     ,&
+                  lisch2  , mesh       , sdpilo , sddyna     , ds_print   ,&
+                  sd_suiv , sd_obsv    , sdtime , sderro     , sdpost     ,&
+                  sd_inout, sdener     , ds_conv, sdcriq     , sdunil_defi,&
+                  resocu  , resoco     , valinc , solalg     , measse     ,&
+                  veelem  , meelem     , veasse , codere)
 !
 use NonLin_Datastructure_type
 !
@@ -21,6 +21,7 @@ implicit none
 #include "asterfort/diinit.h"
 #include "asterfort/diinst.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/exfonc.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/liscpy.h"
@@ -42,6 +43,7 @@ implicit none
 #include "asterfort/nmexso.h"
 #include "asterfort/nmfonc.h"
 #include "asterfort/nmihht.h"
+#include "asterfort/InitAlgoPara.h"
 #include "asterfort/InitConv.h"
 #include "asterfort/InitPrint.h"
 #include "asterfort/nmrefe.h"
@@ -77,8 +79,6 @@ implicit none
 ! aslint: disable=W1504
 !
     integer :: fonact(*)
-    real(kind=8) :: parmet(*)
-    character(len=16) :: method(*)
     integer :: numins
     character(len=8) :: result, mesh
     character(len=19) :: solveu, sdnume, sddisc, sdcrit, sdpilo, sdener
@@ -102,12 +102,13 @@ implicit none
     character(len=24), intent(out) :: sd_suiv
     type(NL_DS_Print), intent(inout) :: ds_print
     type(NL_DS_Conv), intent(inout) :: ds_conv
+    type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! MECA_NON_LINE
+! MECA_NON_LINE - Initializations
 !
-! Init
+! Initializations of datastructures
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -127,6 +128,7 @@ implicit none
 ! Out sdunil_defi      : name of unilateral condition datastructure (from DEFI_CONTACT)
 ! IO  ds_print         : datastructure for printing parameters
 ! IO  ds_conv          : datastructure for convergence management
+! IO  ds_algopara      : datastructure for algorithm parameters
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -134,7 +136,7 @@ implicit none
     real(kind=8) :: r8bid3(3)
     real(kind=8) :: instin
     character(len=19) :: varc_prev, disp_prev, strx_prev
-    aster_logical :: lacc0, lpilo, lmpas, lsstf, lerrt, lreli, lviss, lrefe
+    aster_logical :: lacc0, lpilo, lmpas, lsstf, lerrt, lviss, lrefe
     aster_logical :: lcont, lunil
     character(len=19) :: ligrcf, ligrxf
     integer, pointer :: slvi(:) => null()
@@ -145,6 +147,10 @@ implicit none
     lacc0 = .false.
     lunil = .false.
     lcont = .false.
+!
+! - Initializations for algorithm parameters
+!
+    call InitAlgoPara(ds_algopara)
 !
 ! --- CREATION DE LA STRUCTURE DE DONNEE GESTION DU TEMPS
 !
@@ -170,17 +176,21 @@ implicit none
     call nmchap(valinc, solalg, meelem, veelem, veasse,&
                 measse)
 !
-! --- FONCTIONNALITES ACTIVEES
+! - Prepare active functionnalities information
 !
-    call nmfonc(ds_conv    , parmet, method, solveu, model ,&
-                sdcont_defi, lischa, lcont , lunil , sdnume,&
-                sddyna     , sdcriq, mate  , compor, result,&
-                carcri     , fonact)
+    call nmfonc(ds_conv, ds_algopara, solveu, model , sdcont_defi,&
+                lischa , lcont      , lunil , sdnume, sddyna     ,&
+                sdcriq , mate       , compor, result, carcri     ,&
+                fonact)
+!
+! - Check compatibility of some functionnalities
+!
+    call exfonc(fonact, ds_algopara, solveu, sdcont_defi, sddyna,&
+                mate)
     lpilo = isfonc(fonact,'PILOTAGE' )
     lmpas = ndynlo(sddyna,'MULTI_PAS' )
     lsstf = isfonc(fonact,'SOUS_STRUC')
     lerrt = isfonc(fonact,'ERRE_TEMPS_THM')
-    lreli = isfonc(fonact,'RECH_LINE' )
     lviss = ndynlo(sddyna,'VECT_ISS' )
     lrefe = isfonc(fonact,'RESI_REFE')
 !
@@ -224,7 +234,7 @@ implicit none
 ! --- CONSTRUCTION DU CHAM_NO ASSOCIE AU PILOTAGE
 !
     if (lpilo) then
-        call nmdopi(model, numedd, method, lreli, sdpilo)
+        call nmdopi(model, numedd, ds_algopara, sdpilo)
     endif
 !
 ! --- DUPLICATION NUME_DDL POUR CREER UN DUME_DDL FIXE
@@ -248,9 +258,9 @@ implicit none
 !
 ! - Create time discretization and storing datastructures
 !
-    call diinit(mesh       , model , result , mate  , carele,&
-                fonact     , sddyna, ds_conv, instin, solveu,&
-                sdcont_defi, sddisc)
+    call diinit(mesh  , model      , result , mate       , carele,&
+                fonact, sddyna     , ds_conv, ds_algopara, instin,&
+                solveu, sdcont_defi, sddisc)
 !
 ! --- CREATION DU CHAMP DES VARIABLES DE COMMANDE DE REFERENCE
 !

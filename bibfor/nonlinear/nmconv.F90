@@ -1,8 +1,8 @@
-subroutine nmconv(noma  , modele, mate   , numedd  , sdnume,&
-                  fonact, sddyna, ds_conv, ds_print, sdstat,&
-                  sddisc, sdtime, sdcrit , sderro  , parmet,&
-                  comref, matass, solveu , numins  , iterat,&
-                  eta   , defico, resoco , valinc  , solalg,&
+subroutine nmconv(noma  , modele, mate   , numedd  , sdnume     ,&
+                  fonact, sddyna, ds_conv, ds_print, sdstat     ,&
+                  sddisc, sdtime, sdcrit , sderro  , ds_algopara,&
+                  comref, matass, solveu , numins  , iterat     ,&
+                  eta   , defico, resoco , valinc  , solalg     ,&
                   measse, veasse )
 !
 use NonLin_Datastructure_type
@@ -57,7 +57,8 @@ implicit none
 !
     integer :: fonact(*)
     integer :: iterat, numins
-    real(kind=8) :: eta, parmet(*), instan
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
+    real(kind=8) :: eta, instan
     character(len=19) :: sdcrit, sddisc, sddyna, sdnume
     character(len=19) :: matass, solveu
     character(len=19) :: measse(*), veasse(*)
@@ -99,7 +100,7 @@ implicit none
 ! IN  ETA    : COEFFICIENT DE PILOTAGE
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IN  SDERRO : GESTION DES ERREURS
-! IN  PARMET : PARAMETRES DE LA METHODE DE RESOLUTION
+! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
 ! IN  SDSTAT : SD STATISTIQUES
 ! IN  SDCRIT : SYNTHESE DES RESULTATS DE CONVERGENCE POUR ARCHIVAGE
@@ -131,7 +132,7 @@ implicit none
     itemax = .false.
     lerror = .false.
     cvnewt = .false.
-    pasmin = parmet(3)
+    pasmin = ds_algopara%pas_mini_elas
     line_sear_coef = r8vide()
     line_sear_iter = -1
 !

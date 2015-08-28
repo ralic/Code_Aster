@@ -1,9 +1,11 @@
-subroutine ndxpre(modele, numedd, numfix, mate, carele,&
-                  comref, compor, lischa, method, solveu,&
-                  fonact, carcri, sddisc, sdstat, sdtime,&
-                  numins, valinc, solalg, matass, maprec,&
-                  sddyna, sderro, meelem, measse, veelem,&
+subroutine ndxpre(modele, numedd, numfix, mate       , carele,&
+                  comref, compor, lischa, ds_algopara, solveu,&
+                  fonact, carcri, sddisc, sdstat     , sdtime,&
+                  numins, valinc, solalg, matass     , maprec,&
+                  sddyna, sderro, meelem, measse     , veelem,&
                   veasse, lerrit)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -40,7 +42,7 @@ implicit none
 !
     integer :: fonact(*)
     integer :: numins
-    character(len=16) :: method(*)
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=19) :: matass, maprec
     character(len=24) :: sdtime, sdstat
     character(len=19) :: lischa, solveu, sddisc, sddyna
@@ -69,7 +71,7 @@ implicit none
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  COMREF : VARIABLES DE COMMANDE DE REFERENCE
 ! IN  COMPOR : COMPORTEMENT
-! IN  METHOD : INFORMATIONS SUR LES METHODES DE RESOLUTION
+! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  SOLVEU : SOLVEUR
 ! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
 ! IN  LISCHA : SD LISTE DES CHARGES
@@ -128,12 +130,12 @@ implicit none
 !
 ! --- CALCUL DE LA MATRICE GLOBALE
 !
-    call ndxprm(modele, mate, carele, compor, carcri,&
-                method, lischa, numedd, numfix, solveu,&
-                comref, sddisc, sddyna, sdstat, sdtime,&
-                numins, fonact, valinc, solalg, veelem,&
-                meelem, measse, maprec, matass, codere,&
-                faccvg, ldccvg)
+    call ndxprm(modele     , mate  , carele, compor, carcri,&
+                ds_algopara, lischa, numedd, numfix, solveu,&
+                comref     , sddisc, sddyna, sdstat, sdtime,&
+                numins     , fonact, valinc, solalg, veelem,&
+                meelem     , measse, maprec, matass, codere,&
+                faccvg     , ldccvg)
 !
 ! --- ERREUR SANS POSSIBILITE DE CONTINUER
 !

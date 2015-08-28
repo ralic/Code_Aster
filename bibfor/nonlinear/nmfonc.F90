@@ -1,7 +1,7 @@
-subroutine nmfonc(ds_conv    , algo_para     , algo_meth, solver , model ,&
-                  sdcont_defi, list_load     , l_cont   , l_unil , sdnume,&
-                  sddyna     , sdcriq        , mate     , compor_, result,&
-                  comp_para  , list_func_acti)
+subroutine nmfonc(ds_conv       , ds_algopara, solver , model , sdcont_defi,&
+                  list_load     , l_cont     , l_unil , sdnume, sddyna     ,&
+                  sdcriq        , mate       , compor_, result, comp_para  ,&
+                  list_func_acti)
 !
 use NonLin_Datastructure_type
 !
@@ -16,7 +16,6 @@ implicit none
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/exfonc.h"
 #include "asterfort/exixfe.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/GetResi.h"
@@ -49,8 +48,7 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Conv), intent(in) :: ds_conv
-    real(kind=8), intent(in) :: algo_para(*)
-    character(len=16), intent(in) :: algo_meth(*)
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=19), intent(in) :: solver
     character(len=24), intent(in) :: model
     character(len=24), intent(in) :: sdcont_defi
@@ -68,7 +66,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! MECA_NON_LINE - Init
+! MECA_NON_LINE - Initializations
 !
 ! Prepare active functionnalities information
 !
@@ -77,8 +75,7 @@ implicit none
 ! NB: to ask list_func_acti, use ISFONC.F90 subroutine !
 !
 ! In  ds_conv          : datastructure for convergence management
-! In  algo_para        : parameters for algorithm criteria
-! In  algo_meth        : parameters for algorithm methods
+! In  ds_algopara      : datastructure for algorithm parameters
 ! In  solver           : datastructure for solver parameters 
 ! In  model            : name of the model
 ! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
@@ -144,8 +141,9 @@ implicit none
 !
 ! - Line search
 !
-    call getfac('RECH_LINEAIRE', nocc)
-    if (nocc.gt.0) list_func_acti(1) = 1
+    if (ds_algopara%l_line_search) then
+        list_func_acti(1) = 1
+    endif
 !
 ! - Continuation methods (PILOTAGE)
 !
@@ -339,12 +337,16 @@ implicit none
 ! - IMPLEX algorithm
 !
     if (l_stat) then
-        if (algo_meth(1) .eq. 'IMPLEX') list_func_acti(28) = 1
+        if (ds_algopara%method .eq. 'IMPLEX') then
+            list_func_acti(28) = 1
+        endif
     endif
 !
 ! - NEWTON_KRYLOV algorithm
 !
-    if (algo_meth(1) .eq. 'NEWTON_KRYLOV') list_func_acti(48) = 1
+    if (ds_algopara%method .eq. 'NEWTON_KRYLOV') then
+        list_func_acti(48) = 1
+    endif
 !
 ! - DIS_CHOC elements ?
 !
@@ -604,10 +606,5 @@ implicit none
             write (ifm,*) '<MECANONLINE> ...... MATRICE GLOBALE DISTRIBUEE'
         endif
     endif
-!
-! - Check compatibility of some functionnalities
-!
-    call exfonc(list_func_acti, algo_para, algo_meth, solver, sdcont_defi,&
-                sddyna        , mate)
 !
 end subroutine

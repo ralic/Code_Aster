@@ -1,8 +1,8 @@
-subroutine nmspec(modele  , numedd, numfix, carele, compor,&
-                  solveu  , numins, mate  , comref, lischa,&
-                  defico  , resoco, parmet, fonact, carcri,&
-                  ds_print, sdstat, sdtime, sddisc, valinc,&
-                  solalg  , meelem, measse, veelem, sddyna,&
+subroutine nmspec(modele  , numedd, numfix     , carele, compor,&
+                  solveu  , numins, mate       , comref, lischa,&
+                  defico  , resoco, ds_algopara, fonact, carcri,&
+                  ds_print, sdstat, sdtime     , sddisc, valinc,&
+                  solalg  , meelem, measse     , veelem, sddyna,&
                   sdpost  , sderro)
 !
 use NonLin_Datastructure_type
@@ -40,7 +40,7 @@ implicit none
 ! aslint: disable=W1504
 !
     integer :: numins
-    real(kind=8) :: parmet(*)
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=19) :: meelem(*)
     character(len=24) :: resoco, defico
     character(len=24) :: sdstat, sdtime, sderro
@@ -75,7 +75,7 @@ implicit none
 ! IN  SDTIME : SD TIMER
 ! IN  SDSTAT : SD STATISTIQUES
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
-! IN  PARMET : PARAMETRES DES METHODES DE RESOLUTION (VOIR NMLECT)
+! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  SOLVEU : SOLVEUR
 ! IN  CARCRI : PARAMETRES METHODES D'INTEGRATION LOCALES (VOIR NMLECT)
 ! IN  SDDISC : SD DISC_INST
@@ -139,11 +139,11 @@ implicit none
 !
 ! ------- CALCUL EFFECTIF
 !
-            call nmflam(option, modele, numedd, numfix, carele,&
-                        compor, solveu, numins, mate  , comref,&
-                        lischa, defico, resoco, parmet, fonact,&
-                        carcri, sdstat, sddisc, sdtime, sddyna,&
-                        sdpost, valinc, solalg, meelem, measse,&
+            call nmflam(option, modele, numedd, numfix     , carele,&
+                        compor, solveu, numins, mate       , comref,&
+                        lischa, defico, resoco, ds_algopara, fonact,&
+                        carcri, sdstat, sddisc, sdtime     , sddyna,&
+                        sdpost, valinc, solalg, meelem     , measse,&
                         veelem, sderro)
         endif
     endif
@@ -162,11 +162,11 @@ implicit none
 !
 ! ------- CALCUL EFFECTIF
 !
-            call nmflam(option, modele, numedd, numfix, carele,&
-                        compor, solveu, numins, mate  , comref,&
-                        lischa, defico, resoco, parmet, fonact,&
-                        carcri, sdstat, sddisc, sdtime, sddyna,&
-                        sdpost, valinc, solalg, meelem, measse,&
+            call nmflam(option, modele, numedd, numfix     , carele,&
+                        compor, solveu, numins, mate       , comref,&
+                        lischa, defico, resoco, ds_algopara, fonact,&
+                        carcri, sdstat, sddisc, sdtime     , sddyna,&
+                        sdpost, valinc, solalg, meelem     , measse,&
                         veelem, sderro)
         endif
     endif

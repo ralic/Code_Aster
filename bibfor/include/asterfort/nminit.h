@@ -18,15 +18,15 @@
 ! aslint: disable=W1504
 !
 interface
-    subroutine nminit(result     , model      , numedd , numfix   , mate  ,&
-                      compor     , carele     , parmet , lischa   , maprec,&
-                      solveu     , carcri     , numins , sdstat   , sddisc,&
-                      sdnume     , sdcont_defi, sdcrit , varc_refe, fonact,&
-                      method     , lisch2     , mesh   , sdpilo   , sddyna,&
-                      ds_print   , sd_suiv    , sd_obsv, sdtime   , sderro,&
-                      sdpost     , sd_inout   , sdener , ds_conv  , sdcriq,&
-                      sdunil_defi, resocu     , resoco , valinc   , solalg,&
-                      measse     , veelem     , meelem , veasse   , codere)
+    subroutine nminit(result  , model      , numedd , numfix     , mate       ,&
+                      compor  , carele     , lischa , ds_algopara, maprec     ,&
+                      solveu  , carcri     , numins , sdstat     , sddisc     ,&
+                      sdnume  , sdcont_defi, sdcrit , varc_refe  , fonact     ,&
+                      lisch2  , mesh       , sdpilo , sddyna     , ds_print   ,&
+                      sd_suiv , sd_obsv    , sdtime , sderro     , sdpost     ,&
+                      sd_inout, sdener     , ds_conv, sdcriq     , sdunil_defi,&
+                      resocu  , resoco     , valinc , solalg     , measse     ,&
+                      veelem  , meelem     , veasse , codere)
         use NonLin_Datastructure_type
         character(len=8) :: result
         character(len=24) :: model
@@ -35,7 +35,6 @@ interface
         character(len=24) :: mate
         character(len=24) :: compor
         character(len=24) :: carele
-        real(kind=8) :: parmet(*)
         character(len=19) :: lischa
         character(len=19) :: maprec
         character(len=19) :: solveu
@@ -49,7 +48,6 @@ interface
         character(len=19) :: sdcrit
         character(len=24) :: varc_refe
         integer :: fonact(*)
-        character(len=16) :: method(*)
         character(len=19) :: lisch2
         character(len=8) :: mesh
         character(len=19) :: sdpilo
@@ -63,6 +61,7 @@ interface
         character(len=19), intent(out) :: sd_obsv
         character(len=19) :: sdener
         type(NL_DS_Conv), intent(inout) :: ds_conv
+        type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
         character(len=24) :: sdcriq
         character(len=24) :: resocu
         character(len=24) :: resoco

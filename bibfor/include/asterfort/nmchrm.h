@@ -18,12 +18,12 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmchrm(phasis   , parmet     , method   , list_func_acti, sddisc   ,&
-                      sddyna   , nume_inst  , iter_newt, sdcont_defi   , type_pred,&
-                      type_corr, l_matr_asse)
+    subroutine nmchrm(phasis     , ds_algopara, list_func_acti, sddisc   , sddyna   ,&
+                      nume_inst  , iter_newt  , sdcont_defi   , type_pred, type_corr,&
+                      l_matr_asse)
+        use NonLin_Datastructure_type
         character(len=10), intent(in) :: phasis
-        real(kind=8), intent(in) :: parmet(*)
-        character(len=16), intent(in) :: method(*)
+        type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         character(len=19), intent(in) :: sddisc
         character(len=19), intent(in) :: sddyna
         integer, intent(in) :: nume_inst

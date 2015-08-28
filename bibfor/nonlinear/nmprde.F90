@@ -1,10 +1,10 @@
-subroutine nmprde(modele, numedd, numfix, mate    , carele,&
-                  comref, compor, lischa, method  , solveu,&
-                  fonact, parmet, carcri, ds_print, sdstat,&
-                  sdtime, sddisc, numins, valinc  , solalg,&
-                  matass, maprec, defico, resoco  , sddyna,&
-                  meelem, measse, veelem, veasse  , ldccvg,&
-                  faccvg, rescvg, codere)
+subroutine nmprde(modele, numedd, numfix  , mate       , carele,&
+                  comref, compor, lischa  , ds_algopara, solveu,&
+                  fonact, carcri, ds_print, sdstat     , sdtime,&
+                  sddisc, numins, valinc  , solalg     , matass,&
+                  maprec, defico, resoco  , sddyna     , meelem,&
+                  measse, veelem, veasse  , ldccvg     , faccvg,&
+                  rescvg, codere)
 !
 use NonLin_Datastructure_type
 !
@@ -41,8 +41,7 @@ implicit none
 !
     integer :: fonact(*)
     integer :: numins, ldccvg, faccvg, rescvg
-    real(kind=8) :: parmet(*)
-    character(len=16) :: method(*)
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=19) :: maprec, matass
     character(len=24) :: sdtime, sdstat
     type(NL_DS_Print), intent(inout) :: ds_print
@@ -64,7 +63,6 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  MODELE : MODELE
 ! IN  NUMEDD : NUME_DDL (VARIABLE AU COURS DU CALCUL)
 ! IN  NUMFIX : NUME_DDL (FIXE AU COURS DU CALCUL)
@@ -75,9 +73,8 @@ implicit none
 ! IN  LISCHA : LISTE DES CHARGES
 ! IN  MAPREC : MATRICE DE PRECONDITIONNEMENT (GCPC)
 ! IN  MATASS : MATRICE ASSEMBLEE
-! IN  METHOD : INFORMATIONS SUR LES METHODES DE RESOLUTION
 ! IN  SOLVEU : SOLVEUR
-! IN  PARMET : PARAMETRES DES METHODES DE RESOLUTION
+! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
 ! IO  ds_print         : datastructure for printing parameters
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
@@ -142,12 +139,12 @@ implicit none
 ! --- VALEUR DU DEPLACEMENT -> DEPEST
 ! --- VALEUR DE L'INCREMENT DE DEPLACEMENT -> INCEST
 !
-    if (method(5) .eq. 'EXTRAPOLE') then
+    if (ds_algopara%matrix_pred .eq. 'EXTRAPOLE') then
         call nmprex(numedd, depmoi, solalg, sddisc, numins,&
                     incest, depest)
-    else if (method(5) .eq. 'DEPL_CALCULE') then
-        call nmprdc(method, numedd, depmoi, sddisc, numins,&
-                    incest, depest)
+    else if (ds_algopara%matrix_pred .eq. 'DEPL_CALCULE') then
+        call nmprdc(ds_algopara, numedd, depmoi, sddisc, numins,&
+                    incest     , depest)
     else
         ASSERT(.false.)
     endif
@@ -164,13 +161,13 @@ implicit none
 ! --- CINEMATIQUEMENT ADMISSIBLE
 !
     if (lproj) then
-        call nmprca(modele, numedd, numfix, mate    , carele,&
-                    comref, compor, lischa, method  , solveu,&
-                    fonact, parmet, carcri, ds_print, sdstat,&
-                    sddisc, sdtime, numins, valinc  , solalg,&
-                    matass, maprec, defico, resoco  , sddyna,&
-                    meelem, measse, veelem, veasse  , depest,&
-                    ldccvg, faccvg, rescvg, codere)
+        call nmprca(modele, numedd, numfix  , mate       , carele,&
+                    comref, compor, lischa  , ds_algopara, solveu,&
+                    fonact, carcri, ds_print, sdstat     , sddisc,&
+                    sdtime, numins, valinc  , solalg     , matass,&
+                    maprec, defico, resoco  , sddyna     , meelem,&
+                    measse, veelem, veasse  , depest     , ldccvg,&
+                    faccvg, rescvg, codere)
     endif
 !
 end subroutine

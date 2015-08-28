@@ -15,19 +15,22 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+! aslint: disable=W1504
+!
 interface
-    subroutine ndxprm(modelz, mate, carele, compor, carcri,&
-                      method, lischa, numedd, numfix, solveu,&
-                      comref, sddisc, sddyna, sdstat, sdtime,&
-                      numins, fonact, valinc, solalg, veelem,&
-                      meelem, measse, maprec, matass, codere,&
-                      faccvg, ldccvg)
+    subroutine ndxprm(modelz     , mate  , carele, compor, carcri,&
+                      ds_algopara, lischa, numedd, numfix, solveu,&
+                      comref     , sddisc, sddyna, sdstat, sdtime,&
+                      numins     , fonact, valinc, solalg, veelem,&
+                      meelem     , measse, maprec, matass, codere,&
+                      faccvg     , ldccvg)
+        use NonLin_Datastructure_type
         character(len=*) :: modelz
         character(len=24) :: mate
         character(len=24) :: carele
         character(len=24) :: compor
         character(len=24) :: carcri
-        character(len=16) :: method(*)
+        type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         character(len=19) :: lischa
         character(len=24) :: numedd
         character(len=24) :: numfix

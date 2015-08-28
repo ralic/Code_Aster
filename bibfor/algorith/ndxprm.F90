@@ -1,9 +1,26 @@
-subroutine ndxprm(modelz, mate, carele, compor, carcri,&
-                  method, lischa, numedd, numfix, solveu,&
-                  comref, sddisc, sddyna, sdstat, sdtime,&
-                  numins, fonact, valinc, solalg, veelem,&
-                  meelem, measse, maprec, matass, codere,&
-                  faccvg, ldccvg)
+subroutine ndxprm(modelz     , mate  , carele, compor, carcri,&
+                  ds_algopara, lischa, numedd, numfix, solveu,&
+                  comref     , sddisc, sddyna, sdstat, sdtime,&
+                  numins     , fonact, valinc, solalg, veelem,&
+                  meelem     , measse, maprec, matass, codere,&
+                  faccvg     , ldccvg)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/ndxmat.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nmchra.h"
+#include "asterfort/nmcmat.h"
+#include "asterfort/nmrinc.h"
+#include "asterfort/nmtime.h"
+#include "asterfort/nmxmat.h"
+#include "asterfort/preres.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,25 +39,9 @@ subroutine ndxprm(modelz, mate, carele, compor, carcri,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
-!
 ! aslint: disable=W1504
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/ndxmat.h"
-#include "asterfort/ndynlo.h"
-#include "asterfort/nmchra.h"
-#include "asterfort/nmcmat.h"
-#include "asterfort/nmrinc.h"
-#include "asterfort/nmtime.h"
-#include "asterfort/nmxmat.h"
-#include "asterfort/preres.h"
-#include "asterfort/utmess.h"
-    character(len=16) :: method(*)
+!
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     integer :: fonact(*)
     character(len=*) :: modelz
     character(len=24) :: mate, carele
@@ -74,7 +75,7 @@ subroutine ndxprm(modelz, mate, carele, compor, carcri,&
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
 ! IN  SDTIME : SD TIMER
 ! IN  SDSTAT : SD STATISTIQUES
-! IN  METHOD : INFORMATIONS SUR LES METHODES DE RESOLUTION (VOIR NMLECT)
+! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  SOLVEU : SOLVEUR
 ! IN  CARCRI : PARAMETRES METHODES D'INTEGRATION LOCALES (VOIR NMLECT)
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
@@ -118,11 +119,7 @@ subroutine ndxprm(modelz, mate, carele, compor, carcri,&
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('MECA_NON_LINE', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> ... CALCUL MATRICE'
     endif
@@ -140,7 +137,7 @@ subroutine ndxprm(modelz, mate, carele, compor, carcri,&
 !
 ! --- PARAMETRES
 !
-    metpre = method(5)
+    metpre = ds_algopara%matrix_pred
     if (metpre .ne. 'TANGENTE') then
         call utmess('F', 'MECANONLINE5_1')
     endif
@@ -232,7 +229,7 @@ subroutine ndxprm(modelz, mate, carele, compor, carcri,&
 !
 ! --- ERREUR SANS POSSIBILITE DE CONTINUER
 !
-    if (ldccvg .eq. 1) goto 9999
+    if (ldccvg .eq. 1) goto 999
 !
 ! --- CALCUL DE LA MATRICE ASSEMBLEE GLOBALE
 !
@@ -252,8 +249,6 @@ subroutine ndxprm(modelz, mate, carele, compor, carcri,&
         call nmrinc(sdstat, 'FACTOR')
     endif
 !
-9999 continue
-!
-    call jedema()
+999 continue
 !
 end subroutine

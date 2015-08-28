@@ -1,10 +1,10 @@
-subroutine nmpred(modele, numedd, numfix, mate    , carele,&
-                  comref, compor, lischa, method  , solveu,&
-                  fonact, parmet, carcri, ds_print, sdstat,&
-                  sdtime, sddisc, sdnume, sderro  , numins,&
-                  valinc, solalg, matass, maprec  , defico,&
-                  resoco, resocu, sddyna, meelem  , measse,&
-                  veelem, veasse, lerrit)
+subroutine nmpred(modele, numedd, numfix  , mate       , carele,&
+                  comref, compor, lischa  , ds_algopara, solveu,&
+                  fonact, carcri, ds_print, sdstat     , sdtime,&
+                  sddisc, sdnume, sderro  , numins     , valinc,&
+                  solalg, matass, maprec  , defico     , resoco,&
+                  resocu, sddyna, meelem  , measse     , veelem,&
+                  veasse, lerrit)
 !
 use NonLin_Datastructure_type
 !
@@ -39,8 +39,7 @@ implicit none
 !
     integer :: fonact(*)
     integer :: numins
-    real(kind=8) :: parmet(*)
-    character(len=16) :: method(*)
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=19) :: matass, maprec
     character(len=24) :: sdtime, sdstat
     type(NL_DS_Print), intent(inout) :: ds_print
@@ -71,10 +70,9 @@ implicit none
 ! IN  COMREF : VARIABLES DE COMMANDE DE REFERENCE
 ! IN  COMPOR : COMPORTEMENT
 ! IN  LISCHA : LISTE DES CHARGES
-! IN  METHOD : INFORMATIONS SUR LES METHODES DE RESOLUTION
 ! IN  SOLVEU : SOLVEUR
 ! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
-! IN  PARMET : PARAMETRES DES METHODES DE RESOLUTION
+! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
 ! IO  ds_print         : datastructure for printing parameters
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
@@ -120,26 +118,28 @@ implicit none
 !
 ! --- PREDICTION PAR LINEARISATION DU SYSTEME
 !
-    if (method(5) .eq. 'ELASTIQUE' .or. method(5) .eq. 'TANGENTE') then
-        call nmprta(modele, numedd, numfix, mate    , carele,&
-                    comref, compor, lischa, method  , solveu,&
-                    fonact, parmet, carcri, ds_print, sdstat,&
-                    sdtime, sddisc, numins, valinc  , solalg,&
-                    matass, maprec, defico, resoco  , resocu,&
-                    sddyna, meelem, measse, veelem  , veasse,&
-                    sdnume, ldccvg, faccvg, rescvg  , codere)
+    if ((ds_algopara%matrix_pred .eq. 'ELASTIQUE').or.&
+        (ds_algopara%matrix_pred .eq. 'TANGENTE')) then
+        call nmprta(modele, numedd, numfix  , mate       , carele,&
+                    comref, compor, lischa  , ds_algopara, solveu,&
+                    fonact, carcri, ds_print, sdstat     , sdtime,&
+                    sddisc, numins, valinc  , solalg     , matass,&
+                    maprec, defico, resoco  , resocu     , sddyna,&
+                    meelem, measse, veelem  , veasse     , sdnume,&
+                    ldccvg, faccvg, rescvg  , codere) 
 !
 ! --- PREDICTION PAR EXTRAPOLATION DU PAS PRECEDENT OU PAR DEPLACEMENT
 ! --- CALCULE
 !
-        elseif ((method(5) .eq. 'EXTRAPOLE').or. (method(5) .eq.'DEPL_CALCULE')) then
-        call nmprde(modele, numedd, numfix, mate    , carele,&
-                    comref, compor, lischa, method  , solveu,&
-                    fonact, parmet, carcri, ds_print, sdstat,&
-                    sdtime, sddisc, numins, valinc  , solalg,&
-                    matass, maprec, defico, resoco  , sddyna,&
-                    meelem, measse, veelem, veasse  , ldccvg,&
-                    faccvg, rescvg, codere)
+    elseif ((ds_algopara%matrix_pred .eq. 'EXTRAPOLE').or.&
+            (ds_algopara%matrix_pred .eq.'DEPL_CALCULE')) then
+        call nmprde(modele, numedd, numfix  , mate       , carele,&
+                    comref, compor, lischa  , ds_algopara, solveu,&
+                    fonact, carcri, ds_print, sdstat     , sdtime,&
+                    sddisc, numins, valinc  , solalg     , matass,&
+                    maprec, defico, resoco  , sddyna     , meelem,&
+                    measse, veelem, veasse  , ldccvg     , faccvg,&
+                    rescvg, codere)
     else
         ASSERT(.false.)
     endif

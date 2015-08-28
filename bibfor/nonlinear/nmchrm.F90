@@ -1,6 +1,8 @@
-subroutine nmchrm(phasis   , parmet     , method   , list_func_acti, sddisc   ,&
-                  sddyna   , nume_inst  , iter_newt, sdcont_defi   , type_pred,&
-                  type_corr, l_matr_asse)
+subroutine nmchrm(phasis     , ds_algopara, list_func_acti, sddisc   , sddyna   ,&
+                  nume_inst  , iter_newt  , sdcont_defi   , type_pred, type_corr,&
+                  l_matr_asse)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -32,8 +34,7 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=10), intent(in) :: phasis
-    real(kind=8), intent(in) :: parmet(*)
-    character(len=16), intent(in) :: method(*)
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=19), intent(in) :: sddisc
     character(len=19), intent(in) :: sddyna
     integer, intent(in) :: nume_inst
@@ -61,8 +62,7 @@ implicit none
 ! In  iter_newt        : index of current Newton iteration
 ! In  list_func_acti   : list of active functionnalities
 ! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
-! In  method           : method options for non-linear solver
-! In  parmet           : method parameters for non-linear solver
+! In  ds_algopara      : datastructure for algorithm parameters
 ! In  sddyna           : name of dynamic parameters datastructure
 ! Out type_corr        : type of matrix for correction (Newton)
 ! Out type_pred        : type of matrix for prediction (Euler)
@@ -87,18 +87,18 @@ implicit none
 ! - Initializations
 !
     l_matr_asse = .false.
-    l_matr_cont      = .false.
+    l_matr_cont = .false.
 !
 ! - Parameters
 !
-    reac_incr     = nint(parmet(1))
-    reac_iter     = nint(parmet(2))
-    type_corr     = method(2)
-    type_pred     = method(5)
+    reac_incr     = ds_algopara%reac_incr
+    reac_iter     = ds_algopara%reac_iter
+    type_corr     = ds_algopara%matrix_corr
+    type_pred     = ds_algopara%matrix_pred
     time_prev     = diinst(sddisc, nume_inst-1)
     time_curr     = diinst(sddisc, nume_inst )
     time_incr     = time_curr-time_prev
-    pas_mini_elas = parmet(3)
+    pas_mini_elas = ds_algopara%pas_mini_elas
 !
 ! - First step ?
 !
@@ -124,7 +124,7 @@ implicit none
 !
     if (abs(time_incr) .lt. pas_mini_elas) then
         reac_incr = 1
-        reac_iter = nint(parmet(4))
+        reac_iter = ds_algopara%reac_iter_elas
         type_pred = 'SECANTE'
         type_corr = 'SECANTE'
     endif

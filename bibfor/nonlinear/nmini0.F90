@@ -1,7 +1,6 @@
-subroutine nmini0(zpmet  , znmeth, fonact, parmet, method  ,&
-                  eta    , numins, matass, zmeelm, zmeass  ,&
-                  zveelm , zveass, zsolal, zvalin, ds_print,&
-                  ds_conv)
+subroutine nmini0(list_func_acti, eta    , nume_inst  , matass, zmeelm,&
+                  zmeass        , zveelm , zveass     , zsolal, zvalin,&
+                  ds_print      , ds_conv, ds_algopara)
 !
 use NonLin_Datastructure_type
 !
@@ -13,6 +12,7 @@ implicit none
 #include "asterfort/infdbg.h"
 #include "asterfort/CreateConvDS.h"
 #include "asterfort/CreatePrintDS.h"
+#include "asterfort/CreateAlgoParaDS.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,17 +32,19 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    integer :: zpmet
-    integer :: znmeth
-    integer :: fonact(*)
-    real(kind=8) :: parmet(zpmet)
-    character(len=16) :: method(znmeth)
-    character(len=19) :: matass
-    integer :: numins
-    real(kind=8) :: eta
-    integer :: zmeelm, zmeass, zveelm, zveass, zsolal, zvalin
+    integer, intent(out) :: list_func_acti(*)
+    character(len=19), intent(out) :: matass
+    integer, intent(out) :: nume_inst
+    real(kind=8), intent(out) :: eta
+    integer, intent(in) :: zmeelm
+    integer, intent(in) :: zmeass
+    integer, intent(in) :: zveelm
+    integer, intent(in) :: zveass
+    integer, intent(in) :: zsolal
+    integer, intent(in) :: zvalin
     type(NL_DS_Print), intent(out) :: ds_print
     type(NL_DS_Conv), intent(out) :: ds_conv
+    type(NL_DS_AlgoPara), intent(out) :: ds_algopara
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,8 +54,11 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
+! Out list_func_acti   : list of active functionnalities
+! Out nume_inst        : index of current time step
 ! Out ds_print         : datastructure for printing parameters
 ! Out ds_conv          : datastructure for convergence management
+! Out ds_algopara      : datastructure for algorithm parameters
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -76,21 +81,17 @@ implicit none
 !
     call CreateConvDS(ds_conv)
 !
+! - Create algorithm parameters datastructure
+!
+    call CreateAlgoParaDS(ds_algopara)
+!
 ! --- FONCTIONNALITES ACTIVEES               (NMFONC/ISFONC)
 !
-    fonact(1:100) = 0
-!
-! --- PARAMETRES DES METHODES DE RESOLUTION  (NMDOMT)
-!
-    parmet(1:zpmet) = zero
-!
-! --- METHODES DE RESOLUTION
-!
-    method(1:znmeth) = ' '
+    list_func_acti(1:100) = 0
 !
 ! --- INITIALISATION BOUCLE EN TEMPS
 !
-    numins = 0
+    nume_inst = 0
     eta    = zero
     matass = '&&OP0070.MATASS'
 !

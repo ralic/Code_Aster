@@ -20,13 +20,13 @@
 ! aslint: disable=W1504
 !
 interface
-    subroutine nmdepl(modele, numedd, mate   , carele, comref,&
-                      compor, lischa, fonact , sdstat, parmet,&
-                      carcri, noma  , method , numins, iterat,&
-                      solveu, matass, sddisc , sddyna, sdnume,&
-                      sdpilo, sdtime, sderro , defico, resoco,&
-                      deficu, resocu, valinc , solalg, veelem,&
-                      veasse, eta   , ds_conv, lerrit)
+    subroutine nmdepl(modele, numedd , mate  , carele, comref     ,&
+                      compor, lischa , fonact, sdstat, ds_algopara,&
+                      carcri, noma   , numins, iterat, solveu     ,&
+                      matass, sddisc , sddyna, sdnume, sdpilo     ,&
+                      sdtime, sderro , defico, resoco, deficu     ,&
+                      resocu, valinc , solalg, veelem, veasse     ,&
+                      eta   , ds_conv, lerrit)
         use NonLin_Datastructure_type
         character(len=24) :: modele
         character(len=24) :: numedd
@@ -37,10 +37,9 @@ interface
         character(len=19) :: lischa
         integer :: fonact(*)
         character(len=24) :: sdstat
-        real(kind=8) :: parmet(*)
+        type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         character(len=24) :: carcri
         character(len=8) :: noma
-        character(len=16) :: method(*)
         integer :: numins
         integer :: iterat
         character(len=19) :: solveu

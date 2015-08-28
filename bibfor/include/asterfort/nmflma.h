@@ -15,18 +15,21 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+! aslint: disable=W1504
+!
 interface
-    subroutine nmflma(typmat, mod45, defo, parmet, modelz,&
-                      mate, carele, sddisc, sddyna, fonact,&
-                      numins, valinc, solalg, lischa, comref,&
-                      defico, resoco, solveu, numedd, numfix,&
-                      compor, carcri, sdstat, sdtime, meelem,&
-                      measse, veelem, nddle, ddlexc, modrig,&
+    subroutine nmflma(typmat, mod45 , defo  , ds_algopara, modelz,&
+                      mate  , carele, sddisc, sddyna     , fonact,&
+                      numins, valinc, solalg, lischa     , comref,&
+                      defico, resoco, solveu, numedd     , numfix,&
+                      compor, carcri, sdstat, sdtime     , meelem,&
+                      measse, veelem, nddle , ddlexc     , modrig,&
                       ldccvg, matass, matgeo)
+        use NonLin_Datastructure_type
         character(len=16) :: typmat
         character(len=4) :: mod45
         integer :: defo
-        real(kind=8) :: parmet(*)
+        type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         character(len=*) :: modelz
         character(len=24) :: mate
         character(len=24) :: carele

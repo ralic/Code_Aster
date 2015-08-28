@@ -1,10 +1,10 @@
-subroutine nmdesc(modele, numedd, numfix  , mate  , carele,&
-                  comref, compor, lischa  , resoco, method,&
-                  solveu, parmet, carcri  , fonact, numins,&
-                  iterat, sddisc, ds_print, sdstat, sdtime,&
-                  sddyna, sdnume, sderro  , matass, maprec,&
-                  defico, valinc, solalg  , meelem, measse,&
-                  veasse, veelem, lerrit  )
+subroutine nmdesc(modele, numedd  , numfix, mate  , carele     ,&
+                  comref, compor  , lischa, resoco, ds_algopara,&
+                  solveu, carcri  , fonact, numins, iterat     ,&
+                  sddisc, ds_print, sdstat, sdtime, sddyna     ,&
+                  sdnume, sderro  , matass, maprec, defico     ,&
+                  valinc, solalg  , meelem, measse, veasse     ,&
+                  veelem, lerrit  )
 !
 use NonLin_Datastructure_type
 !
@@ -42,8 +42,7 @@ implicit none
 ! aslint: disable=W1504
 !
     integer :: numins, iterat
-    real(kind=8) :: parmet(*)
-    character(len=16) :: method(*)
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=19) :: matass, maprec
     character(len=24) :: sdtime, sdstat
     character(len=19) :: lischa, solveu, sddisc, sddyna, sdnume
@@ -83,7 +82,7 @@ implicit none
 ! IN  ITERAT : NUMERO D'ITERATION DE NEWTON
 ! IN  NUMINS : NUMERO D'INSTANT
 ! IN  RESOCO : SD RESOLUTION CONTACT
-! IN  METHOD : INFORMATIONS SUR LES METHODES DE RESOLUTION
+! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLE
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
 ! IN  VEELEM : VARIABLE CHAPEAU POUR NOM DES VECT_ELEM
@@ -130,13 +129,13 @@ implicit none
 !
 ! --- CALCUL DE LA MATRICE GLOBALE
 !
-    call nmcoma(modele, mate  , carele, compor, carcri  ,&
-                parmet, method, lischa, numedd, numfix  ,&
-                solveu, comref, sddisc, sddyna, ds_print,&
-                sdstat, sdtime, numins, iterat, fonact  ,&
-                defico, resoco, valinc, solalg, veelem  ,&
-                meelem, measse, veasse, maprec, matass  ,&
-                codere, faccvg, ldccvg, sdnume)
+    call nmcoma(modele     , mate  , carele, compor  , carcri,&
+                ds_algopara, lischa, numedd, numfix  , solveu,&
+                comref     , sddisc, sddyna, ds_print, sdstat,&
+                sdtime     , numins, iterat, fonact  , defico,&
+                resoco     , valinc, solalg, veelem  , meelem,&
+                measse     , veasse, maprec, matass  , codere,&
+                faccvg     , ldccvg, sdnume)
 !
 ! --- ERREUR SANS POSSIBILITE DE CONTINUER
 !
