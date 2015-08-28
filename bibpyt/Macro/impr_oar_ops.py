@@ -711,30 +711,27 @@ class tuyauterie(OAR_element):
 
     def __init__(self, **args):
         self.nodeComp = XMLNode("TUYAUTERIE")
-        try:
-            self.para_resu_meca = args['RESU_MECA']
-            self.num_char = self.para_resu_meca['NUM_CHAR']
 
-            # Gestion du maillage
-            self.maillage = self.para_resu_meca['MAILLAGE']
-            mapy = MAIL_PY()
-            mapy.FromAster(self.maillage)
+        self.para_resu_meca = args['RESU_MECA']
+        self.num_char = self.para_resu_meca['NUM_CHAR']
 
-            self.ma = [val.rstrip() for val in mapy.correspondance_mailles]
-            self.no = [val.rstrip() for val in mapy.correspondance_noeuds]
+        # Gestion du maillage
+        self.maillage = self.para_resu_meca['MAILLAGE']
+        mapy = MAIL_PY()
+        mapy.FromAster(self.maillage)
 
-            self.dictMailleNoeuds = dict()
-            for i in range(0, len(mapy.co)):
-                if ( len(mapy.co[i]) >= 2 ): # Seulement les mailles à plus de 2 noeuds. (Pas les POI1)
-                    self.dictMailleNoeuds[self.ma[i]] = list()
-                    self.dictMailleNoeuds[self.ma[i]].append( self.no[mapy.co[i][0]] )
-                    self.dictMailleNoeuds[self.ma[i]].append( self.no[mapy.co[i][1]] )
+        self.ma = [val.rstrip() for val in mapy.correspondance_mailles]
+        self.no = [val.rstrip() for val in mapy.correspondance_noeuds]
 
-            self.dictNoeudValTorseur = dict()
-            self.buildTableTorseur()
+        self.dictMailleNoeuds = dict()
 
-        except:
-            UTMESS('F', 'OAR0_4')
+        for i in range(0, len(mapy.co)):
+            # on ne traite que les SEG2 ou les SEG3 :
+            if len(mapy.co[i]) not in (2,3) : continue
+            self.dictMailleNoeuds[self.ma[i]]=[self.no[mapy.co[i][0]],self.no[mapy.co[i][1]]]
+
+        self.dictNoeudValTorseur = dict()
+        self.buildTableTorseur()
 
         # Construction de l arborescence
         self.buildTree()

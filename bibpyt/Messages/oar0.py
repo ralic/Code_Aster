@@ -30,9 +30,7 @@ Erreur d'interpolation: %(k1)s
 Les coupes du revêtement et de la structure doivent partager une abscisse commune.
 """),
 
-    4: _(u"""
-Erreur d'accès aux données.
-"""),
+ 
 
     5: _(u"""
 Fonction non implantée.
