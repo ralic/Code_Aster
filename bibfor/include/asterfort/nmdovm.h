@@ -18,8 +18,9 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmdovm(model       , l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s,&
-                      rela_comp_py, type_cpla , l_auto_elas , l_auto_deborst, l_comp_erre)
+    subroutine nmdovm(model       , l_affe_all  , list_elem_affe, nb_elem_affe, full_elem_s,&
+                      rela_comp_py, type_cpla   , l_auto_elas , l_auto_deborst, l_comp_erre,&
+                      l_one_elem  , l_elem_bound)
         character(len=8), intent(in) :: model
         character(len=24), intent(in) :: list_elem_affe
         aster_logical, intent(in) :: l_affe_all
@@ -30,5 +31,7 @@ interface
         aster_logical, intent(out) :: l_auto_elas
         aster_logical, intent(out) :: l_auto_deborst
         aster_logical, intent(out) :: l_comp_erre
+        aster_logical, intent(out) :: l_one_elem
+        aster_logical, intent(out) :: l_elem_bound
     end subroutine nmdovm
 end interface

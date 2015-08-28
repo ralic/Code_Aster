@@ -1,7 +1,7 @@
 subroutine comp_meca_chck(model         , mesh       , full_elem_s, info_comp_valk, l_auto_elas,&
                           l_auto_deborst, l_comp_erre)
 !
-    implicit none
+implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -78,7 +78,7 @@ subroutine comp_meca_chck(model         , mesh       , full_elem_s, info_comp_va
     character(len=8) :: typmcl(2), repons
     character(len=16) :: motcle(2)
     integer :: nt
-    aster_logical :: l_kit_thm
+    aster_logical :: l_kit_thm, l_one_elem, l_elem_bound
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -127,8 +127,17 @@ subroutine comp_meca_chck(model         , mesh       , full_elem_s, info_comp_va
 ! ----- Check comportment/model with Comportement.py
 !
         type_cpla = 'VIDE'
-        call nmdovm(model       , l_affe_all, list_elem_affe, nb_elem_affe  , full_elem_s,&
-                    rela_comp_py, type_cpla , l_auto_elas   , l_auto_deborst, l_comp_erre)
+        call nmdovm(model       , l_affe_all  , list_elem_affe, nb_elem_affe  , full_elem_s,&
+                    rela_comp_py, type_cpla   , l_auto_elas   , l_auto_deborst, l_comp_erre,&
+                    l_one_elem  , l_elem_bound)
+        if (.not. l_one_elem) then
+            if (l_elem_bound) then
+                call utmess('F', 'COMPOR1_60', si=iocc)
+            else
+                call utmess('F', 'COMPOR1_59', si=iocc)
+            endif
+        endif
+!
         info_comp_valk(16*(iocc-1) + 4) = type_cpla
 !
 ! ----- Check comportment/deformation with Comportement.py

@@ -1,7 +1,8 @@
-subroutine nmdovm(model       , l_affe_all, list_elem_affe, nb_elem_affe  , full_elem_s,&
-                  rela_comp_py, type_cpla , l_auto_elas   , l_auto_deborst, l_comp_erre)
+subroutine nmdovm(model       , l_affe_all  , list_elem_affe, nb_elem_affe  , full_elem_s,&
+                  rela_comp_py, type_cpla   , l_auto_elas   , l_auto_deborst, l_comp_erre,&
+                  l_one_elem  , l_elem_bound)
 !
-    implicit none
+implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -9,13 +10,11 @@ subroutine nmdovm(model       , l_affe_all, list_elem_affe, nb_elem_affe  , full
 #include "asterfort/cesexi.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/teattr.h"
-#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,6 +43,8 @@ subroutine nmdovm(model       , l_affe_all, list_elem_affe, nb_elem_affe  , full
     aster_logical, intent(out) :: l_auto_elas
     aster_logical, intent(out) :: l_auto_deborst
     aster_logical, intent(out) :: l_comp_erre
+    aster_logical, intent(out) :: l_one_elem
+    aster_logical, intent(out) :: l_elem_bound
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,22 +54,25 @@ subroutine nmdovm(model       , l_affe_all, list_elem_affe, nb_elem_affe  , full
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  model          : name of model
-! In  full_elem_s    :  <CHELEM_S> of FULL_MECA option
-! In  l_affe_all     : .true. if affect on all elements of model
-! In  nb_elem_affe   : number of elements where comportment affected
-! In  list_elem_affe : list of elements where comportment affected
-! In  rela_comp_py   : comportement RELATION - Python coding
-! Out type_cpla      : stress plane hypothesis (for Deborst)
-! Out l_auto_elas    : .true. if at least one element use ELAS by default
-! Out l_auto_deborst : .true. if at least one element swap to Deborst algorithm
-! Out l_comp_erre    : .true. if at least one element use comportment on element doesn't support it
+! In  model            : name of model
+! In  full_elem_s      :  <CHELEM_S> of FULL_MECA option
+! In  l_affe_all       : .true. if affect on all elements of model
+! In  nb_elem_affe     : number of elements where comportment affected
+! In  list_elem_affe   : list of elements where comportment affected
+! In  rela_comp_py     : comportement RELATION - Python coding
+! Out type_cpla        : stress plane hypothesis (for Deborst)
+! Out l_auto_elas      : .true. if at least one element use ELAS by default
+! Out l_auto_deborst   : .true. if at least one element swap to Deborst algorithm
+! Out l_comp_erre      : .true. if at least one element use comportment on element 
+!                         doesn't support it
+! Out l_one_elem       : .true. if at least one element is in the model
+! Out l_elem_bound     : .true. if all elements are boundary elements
 !
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16) :: notype, type_elem, comp_rela_elem
     character(len=8) :: mesh
-    integer :: nutyel
+    integer :: nutyel, nb_cmp_maxi
     integer :: j_cesd, j_cesl
     integer :: iret, irett, ielem
     integer :: iad
@@ -84,10 +88,12 @@ subroutine nmdovm(model       , l_affe_all, list_elem_affe, nb_elem_affe  , full
 !
 ! - Initializations
 !
-    type_cpla = 'ANALYTIQUE'
+    type_cpla      = 'ANALYTIQUE'
     l_auto_elas    = .false.
     l_auto_deborst = .false.
     l_comp_erre    = .false.
+    l_one_elem     = .false.
+    l_elem_bound   = .false.
 !
 ! - Access to model and mesh
 !
@@ -112,6 +118,7 @@ subroutine nmdovm(model       , l_affe_all, list_elem_affe, nb_elem_affe  , full
 !
 ! - Loop on elements
 !
+    nb_cmp_maxi = 0
     do ielem = 1, nb_elem
 !
 ! ----- Current element
@@ -121,12 +128,14 @@ subroutine nmdovm(model       , l_affe_all, list_elem_affe, nb_elem_affe  , full
         else
             nume_elem = zi(j_elem_affe-1+ielem)
         endif
+        nb_cmp_maxi = max(nb_cmp_maxi,zi(j_cesd-1+5+4* (nume_elem-1)+3))
 !
 ! ----- <CARTE> access
 !
-        call cesexi('C', j_cesd, j_cesl, nume_elem, 1,&
-                    1, 1, iad)
+        call cesexi('C', j_cesd, j_cesl, nume_elem, 1, 1, 1, iad)
         if (iad .gt. 0) then
+!
+            l_one_elem = .true.
 !
 ! --------- Comportment on element
 !
@@ -170,6 +179,10 @@ subroutine nmdovm(model       , l_affe_all, list_elem_affe, nb_elem_affe  , full
             endif
         endif
     enddo
+!
+! - All elements are boundary elements
+!
+    l_elem_bound = nb_cmp_maxi.eq.0
 !
     call jedema()
 !

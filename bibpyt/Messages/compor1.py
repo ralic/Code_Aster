@@ -296,6 +296,17 @@ La subdivision du pas de temps est déclenchée.
 Il faut pour cela l'autoriser avec le mot clef SUBD_METHODE de la commande STAT_NON_LINE.
 """),
 
+    59: _(u"""
+Aucune des mailles déclarées dans l'occurrence numéro %(i1)d du mot-clé COMPORTEMENT
+n'est présente dans le modèle.
+Il faut supprimer cette occurrence pour que le calcul fonctionne.
+"""),
+
+    60: _(u"""
+Toutes les mailles déclarées dans l'occurrence numéro %(i1)d du mot-clé COMPORTEMENT
+sont des éléments de bord qui ne portent pas de rigidité.
+Il faut supprimer cette occurrence pour que le calcul fonctionne.
+"""),
 
     63 : _(u"""
    ATTENTION SR > 1    SR = %(r1)f
