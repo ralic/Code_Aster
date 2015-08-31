@@ -41,7 +41,6 @@ implicit none
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/mecoel.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !

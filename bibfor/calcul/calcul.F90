@@ -6,7 +6,7 @@ use module_calcul, only : ca_iainel_, ca_ialiel_, ca_iaobtr_, ca_iaopds_,&
      ca_iaoppa_, ca_igr_, ca_illiel_, ca_ininel_,&
      ca_jcteat_, ca_lcteat_, ca_nbelgr_, ca_nbgr_, &
      ca_nbobj_, ca_nbobtr_, ca_nomte_, ca_nomtm_, ca_nute_,&
-     ca_option_
+     ca_option_, ca_iactif_
 implicit none
 !
 ! ======================================================================
@@ -59,7 +59,6 @@ implicit none
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/kndoub.h"
-#include "asterfort/mecoel.h"
 #include "asterfort/montee.h"
 #include "asterfort/nbelem.h"
 #include "asterfort/nbgrel.h"
@@ -353,7 +352,7 @@ implicit none
 !
 !     6- BOUCLE SUR LES GREL :
 !     -------------------------------------------------
-    call mecoel(1)
+    ca_iactif_=1
     do ca_igr_ = 1, ca_nbgr_
 !
 !       -- SI PARALLELISME='GROUP_ELEM' : ON PEUT PARFOIS TOUT "SAUTER"
@@ -476,7 +475,7 @@ implicit none
         call jedetr(zk24(ca_iaobtr_-1+i))
     end do
     call jedetr('&&CALCUL.OBJETS_TRAV')
-    call mecoel(0)
+    ca_iactif_=0
 !
 !
 !     9- MESURE DU TEMPS CONSOMME :

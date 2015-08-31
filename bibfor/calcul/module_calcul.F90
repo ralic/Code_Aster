@@ -229,11 +229,14 @@ implicit none
 !     ca_jnbelr_ : adresse dans zi  de '&cata.te.nbelrefe'
 !     ca_jnoelr_ : adresse dans zk8 de '&cata.te.noelrefe'
 !     ca_iactif_ :  1 : la routine calcul est active
-!               0 : la routine calcul est inactive.
-!               2 : la routine op0033 est active.
-!         ce "booleen" permet d'arreter les utilisations des
-!         routines qui doivent etre appellees "sous" les te00ij:
-!         jevech,tecach,tecael,elref1,...
+!                   0 : la routine calcul est inactive.
+!                   2 : la routine op0033 est active.
+!         Ce "booleen" (ternaire !) permet d'arreter les utilisations des
+!         routines qui ne doivent etre appellees que "sous" la routine te0000 :
+!           jevech, tecach, tecael, elref1, ...
+!         Il permet egalement une programmation differente de certains utilitaires :
+!           utmess, lc0000, teattr, rcvarc, ... 
+!
 !     ca_jpnlfp_ : adresse dans zk32 de '&cata.te.pnlocfpg'
 !     ca_jnolfp_ : adresse dans zi de '&cata.te.nolocfpg'
 !     ca_nblfpg_ : dimension des objets pnlocfpg et nolocfpg

@@ -207,7 +207,8 @@ try :
 except  aster.error,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
-   if err.id_message == "CALCULEL6_62":
+  #if err.id_message == "CALCULEL6_62":
+   if err.id_message == "CALCUL1_6":
       is_ok = 1
 
 TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',), _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
@@ -269,7 +270,8 @@ try :
 except  aster.error,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
-   if err.id_message == "CALCULEL6_62":
+  #if err.id_message == "CALCULEL6_62":
+   if err.id_message == "CALCUL1_6":
       is_ok = 1
 
 TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',), _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)

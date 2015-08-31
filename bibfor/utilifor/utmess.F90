@@ -1,6 +1,7 @@
 subroutine utmess(typ, idmess, nk, valk, sk,&
                   ni, vali, si, nr, valr,&
                   sr, num_except, fname)
+use module_calcul, only : ca_iactif_
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,6 +36,7 @@ subroutine utmess(typ, idmess, nk, valk, sk,&
     implicit none
 #include "asterf_types.h"
 #include "asterfort/assert.h"
+#include "asterfort/temess.h"
 #include "asterfort/utmess_core.h"
 !
     character(len=*), intent(in) :: typ
@@ -62,12 +64,15 @@ subroutine utmess(typ, idmess, nk, valk, sk,&
 !   because it is not supported by older versions of gfortran, we use two different
 !   calls to utmess_core
 !    character(len=:), pointer :: ptrk(:)
-    aster_logical :: use_valk
+    aster_logical :: use_valk, under_te0000
     integer, target :: uvi(1)
     integer, pointer :: ptri(:) => null()
     real(kind=8), target :: uvr(1)
     real(kind=8), pointer :: ptrr(:) => null()
+    character(len=2) :: typ2
     character(len=256) :: ufname
+!-----------------------------------------------------------------------------------
+
 !
     ASSERT(ENSEMBLE2(nk,valk))
     ASSERT(ENSEMBLE2(ni,vali))
@@ -125,13 +130,35 @@ subroutine utmess(typ, idmess, nk, valk, sk,&
     if (present(fname)) then
         ufname = fname
     endif
-!
+
+
+!  1. Faut-il completer le message (si on est dans un calcul elementaire) ?
+!  ------------------------------------------------------------------------
+    typ2=typ
+    if (ca_iactif_.eq.1 .and. (typ2(1:1).eq.'F' .or. typ2(1:1).eq.'E')) then
+        under_te0000=.true.
+        if (typ2(2:2).eq.'+') under_te0000=.false.
+    else
+        under_te0000=.false.
+    endif
+    if (under_te0000) then
+        typ2(2:2)='+'
+    endif
+
+!   2. Emission du message demande :
+!   --------------------------------
     if (use_valk) then
-        call utmess_core(typ, idmess, unk, valk, uni,&
+        call utmess_core(typ2, idmess, unk, valk, uni,&
                          ptri, unr, ptrr, ufname)
     else
-        call utmess_core(typ, idmess, unk, uvk, uni,&
+        call utmess_core(typ2, idmess, unk, uvk, uni,&
                          ptri, unr, ptrr, ufname)
+    endif
+
+!   3. Complement de message pour un calcul elementaire :
+!   -----------------------------------------------------
+    if (under_te0000) then
+        call temess(typ2(1:1))
     endif
 !
 end subroutine utmess

@@ -43,4 +43,18 @@ A cause des erreurs précédentes, le code s'arrête.
   Le champ des variables internes fourni à CALCUL n'est pas cohérent avec le comportement donné par le mot-clef COMPORTEMENT.
 """),
 
+    6 : _(u"""
+--------------------------------------------
+Contexte du message :
+   Option         : %(k1)s
+   Type d'élément : %(k2)s
+   Maillage       : %(k3)s
+   Maille         : %(k4)s
+   Type de maille : %(k5)s
+   Cette maille appartient aux groupes de mailles suivants :
+      %(k6)s %(k7)s %(k8)s %(k9)s
+   Position du centre de gravité de la maille :
+      x=%(r1)f y=%(r2)f z=%(r3)f
+"""),
+
 }
