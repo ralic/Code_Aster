@@ -47,10 +47,10 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    integer :: i_row, i_dof_monitor, nb_dof_monitor, nb_rows, i_row_name
+    integer :: i_col, i_dof_monitor, nb_dof_monitor, nb_cols, i_col_name
     type(NL_DS_Table) :: table_cvg
-    type(NL_DS_Row) :: row
-    character(len=9) :: row_name
+    type(NL_DS_col) :: col
+    character(len=9) :: col_name
     character(len=1) :: indsui
     character(len=24) :: sdsuiv_info
     integer, pointer :: v_sdsuiv_info(:) => null()
@@ -73,9 +73,9 @@ implicit none
     table_cvg%title_height = 3
     table_cvg%l_csv        = ds_print%l_tcvg_csv
     table_cvg%unit_csv     = ds_print%tcvg_unit
-    nb_rows                = table_cvg%nb_rows
+    nb_cols                = table_cvg%nb_cols
 !
-! - Get number of rows for DOF monitoring
+! - Get number of columns for DOF monitoring
 !
     sdsuiv_info = sdsuiv(1:14)//'     .INFO'
     call jeveuo(sdsuiv_info, 'L', vi = v_sdsuiv_info)
@@ -84,41 +84,41 @@ implicit none
         call utmess('F', 'IMPRESSION_3', si=nb_dof_monitor)
     endif
 !
-! - Title of rows for DOF monitoring
+! - Title of columns for DOF monitoring
 !
     if (nb_dof_monitor .ne. 0) then
         sdsuiv_titr = sdsuiv(1:14)//'     .TITR'
         call jeveuo(sdsuiv_titr, 'L', vk16 = v_sdsuiv_titr)
     endif
 !
-! - Set list of rows for DOF monitor in convergence table
+! - Set list of columns for DOF monitor in convergence table
 !
     do i_dof_monitor = 1, nb_dof_monitor    
 !
-! ----- Name of the row
+! ----- Name of the column
 !
         call impfoi(0, 1, i_dof_monitor, indsui)
-        row_name        = 'SUIVDDL'//indsui
+        col_name        = 'SUIVDDL'//indsui
 !
-! ----- Look for row index
+! ----- Look for column index
 !
-        i_row_name = 0
-        do i_row = 1, nb_rows
-            if (table_cvg%rows(i_row)%name .eq. row_name) then
-                ASSERT(i_row_name.eq.0)
-                i_row_name = i_row
+        i_col_name = 0
+        do i_col = 1, nb_cols
+            if (table_cvg%cols(i_col)%name .eq. col_name) then
+                ASSERT(i_col_name.eq.0)
+                i_col_name = i_col
             endif
         end do
-        ASSERT(i_row_name.ne.0)
+        ASSERT(i_col_name.ne.0)
 !
-! ----- Set row
+! ----- Set column
 !
-        row = table_cvg%rows(i_row_name)
-        row%l_vale_real = .true._1
-        row%title(1)    = v_sdsuiv_titr(3*(i_dof_monitor-1)+1)
-        row%title(2)    = v_sdsuiv_titr(3*(i_dof_monitor-1)+2)
-        row%title(3)    = v_sdsuiv_titr(3*(i_dof_monitor-1)+3)
-        table_cvg%rows(i_row_name)  = row
+        col = table_cvg%cols(i_col_name)
+        col%l_vale_real = .true._1
+        col%title(1)    = v_sdsuiv_titr(3*(i_dof_monitor-1)+1)
+        col%title(2)    = v_sdsuiv_titr(3*(i_dof_monitor-1)+2)
+        col%title(3)    = v_sdsuiv_titr(3*(i_dof_monitor-1)+3)
+        table_cvg%cols(i_col_name)  = col
     end do
 !
 ! - Prepare file output

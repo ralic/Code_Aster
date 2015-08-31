@@ -1,4 +1,4 @@
-subroutine PrintTableLine(table, row_sep, unit_print)
+subroutine PrintTableLine(table, col_sep, unit_print)
 !
 use NonLin_Datastructure_type
 !
@@ -31,7 +31,7 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Table), intent(in) :: table
-    character(len=1), intent(in) :: row_sep
+    character(len=1), intent(in) :: col_sep
     integer, intent(in) :: unit_print
 !
 ! --------------------------------------------------------------------------------------------------
@@ -43,13 +43,13 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  table            : datastructure for table
-! In  row_sep          : separator between rows
+! In  col_sep          : separator between columns
 ! In  unit_print       : logical unit to print
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_row, nb_rows
-    type(NL_DS_Row) :: row
+    integer :: i_col, nb_cols
+    type(NL_DS_col) :: col
     integer :: vali
     integer :: pos, posfin, posmar, unibid
     character(len=16) :: chvide, name
@@ -58,7 +58,7 @@ implicit none
     character(len=255) :: table_line
     integer :: longr, precr, longi
     aster_logical :: l_vale_affe, l_vale_real, l_vale_inte, l_vale_strg
-    integer :: row_width, line_width
+    integer :: col_width, line_width
     character(len=1) :: mark
 !
 ! --------------------------------------------------------------------------------------------------
@@ -72,42 +72,42 @@ implicit none
 !
 ! - Get parameters
 !
-    nb_rows         = table%nb_rows
+    nb_cols         = table%nb_cols
     line_width      = table%width
     ASSERT(line_width.le.255)
 !
-! - Prepare line of table - Void rows
+! - Prepare line of table - Void columns
 !
-    call PrepareTableLine(table, row_sep, table_line)
+    call PrepareTableLine(table, col_sep, table_line)
 !
 ! - Set line with values and marks
 !
-    do i_row = 1, nb_rows
-        if (table%l_rows_acti(i_row)) then
-            row         = table%rows(i_row)
-            row_width   = row%width
-            mark        = row%mark
-            name        = row%name
-            l_vale_affe = row%l_vale_affe
-            l_vale_real = row%l_vale_real
-            l_vale_inte = row%l_vale_inte
-            l_vale_strg = row%l_vale_strg
-            posfin      = row_width+pos-1
+    do i_col = 1, nb_cols
+        if (table%l_cols_acti(i_col)) then
+            col         = table%cols(i_col)
+            col_width   = col%width
+            mark        = col%mark
+            name        = col%name
+            l_vale_affe = col%l_vale_affe
+            l_vale_real = col%l_vale_real
+            l_vale_inte = col%l_vale_inte
+            l_vale_strg = col%l_vale_strg
+            posfin      = col_width+pos-1
 !
 ! --------- Set values
 !
             if (.not.l_vale_affe) then
-                table_line(pos:posfin) = chvide(1:row_width)
+                table_line(pos:posfin) = chvide(1:col_width)
             else
                 if (l_vale_inte) then
-                    vali = row%vale_inte
+                    vali = col%vale_inte
                     call impfoi(unibid, longi, vali, table_line(pos:posfin))
                 else if (l_vale_real) then
-                    valr = row%vale_real
+                    valr = col%vale_real
                     call impfor(unibid, longr, precr, valr, table_line(pos: posfin))
                 else if (l_vale_strg) then
-                    valk = row%vale_strg
-                    table_line(pos:posfin) = valk(1:row_width)
+                    valk = col%vale_strg
+                    table_line(pos:posfin) = valk(1:col_width)
                 else
                     ASSERT(.false.)
                 endif
@@ -116,10 +116,10 @@ implicit none
 ! --------- Set mark
 !
             if (mark(1:1) .ne. ' ') then
-                posmar = pos + row_width - 2
+                posmar = pos + col_width - 2
                 table_line(posmar:posmar) = mark(1:1)
             endif
-            pos = pos + row_width + 1
+            pos = pos + col_width + 1
         endif
     end do
 !

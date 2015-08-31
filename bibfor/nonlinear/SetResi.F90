@@ -1,5 +1,5 @@
 subroutine SetResi(ds_conv   , type_ ,&
-                   row_name_ , row_name_locus_, vale_calc_  , locus_calc_, user_para_,&
+                   col_name_ , col_name_locus_, vale_calc_  , locus_calc_, user_para_,&
                    l_conv_   , event_type_    , l_resi_test_)
 !
 use NonLin_Datastructure_type
@@ -29,8 +29,8 @@ implicit none
 !
     type(NL_DS_Conv), intent(inout) :: ds_conv
     character(len=*), optional, intent(in) :: type_
-    character(len=16), optional, intent(in) :: row_name_
-    character(len=16), optional, intent(in) :: row_name_locus_
+    character(len=16), optional, intent(in) :: col_name_
+    character(len=16), optional, intent(in) :: col_name_locus_
     real(kind=8), optional, intent(in) :: vale_calc_
     character(len=*), optional, intent(in) :: locus_calc_
     real(kind=8), optional, intent(in) :: user_para_
@@ -49,8 +49,8 @@ implicit none
 ! IO  ds_conv          : datastructure for convergence management
 ! In  type             : type of residual
 !                        If .not. present => all residuals
-! In  row_name         : name of row in convergence table
-! In  row_name_locus   : name of row in convergence table for locus
+! In  col_name         : name of column in convergence table
+! In  col_name_locus   : name of column in convergence table for locus
 ! In  vale_calc        : result of maximum norm of residual
 ! In  locus_calc       : locus where is maximum norm of residual
 ! In  user_para        : user parameter for residual
@@ -83,11 +83,11 @@ implicit none
             if (present(l_conv_)) then
                 ds_conv%list_resi(i_resi)%l_conv         = l_conv_
             endif
-            if (present(row_name_)) then
-                ds_conv%list_resi(i_resi)%row_name       = row_name_
+            if (present(col_name_)) then
+                ds_conv%list_resi(i_resi)%col_name       = col_name_
             endif
-            if (present(row_name_locus_)) then
-                ds_conv%list_resi(i_resi)%row_name_locus = row_name_locus_
+            if (present(col_name_locus_)) then
+                ds_conv%list_resi(i_resi)%col_name_locus = col_name_locus_
             endif
             if (present(event_type_)) then
                 ds_conv%list_resi(i_resi)%event_type     = event_type_
@@ -120,8 +120,8 @@ implicit none
         if (present(l_conv_)) then
             ds_conv%list_resi(i_type)%l_conv     = l_conv_
         endif
-        if (present(row_name_)) then
-            ds_conv%list_resi(i_type)%row_name   = row_name_
+        if (present(col_name_)) then
+            ds_conv%list_resi(i_type)%col_name   = col_name_
         endif
         if (present(event_type_)) then
             ds_conv%list_resi(i_type)%event_type = event_type_

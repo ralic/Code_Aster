@@ -1,5 +1,5 @@
 subroutine GetResi(ds_conv   , type  ,&
-                   row_name_ , row_name_locus_, vale_calc_  , locus_calc_, user_para_,&
+                   col_name_ , col_name_locus_, vale_calc_  , locus_calc_, user_para_,&
                    l_conv_   , event_type_    , l_resi_test_)
 !
 use NonLin_Datastructure_type
@@ -29,8 +29,8 @@ implicit none
 !
     type(NL_DS_Conv), intent(in) :: ds_conv
     character(len=*), intent(in) :: type
-    character(len=16), optional, intent(out) :: row_name_
-    character(len=16), optional, intent(out) :: row_name_locus_
+    character(len=16), optional, intent(out) :: col_name_
+    character(len=16), optional, intent(out) :: col_name_locus_
     real(kind=8), optional, intent(out) :: vale_calc_
     character(len=16), optional, intent(out) :: locus_calc_
     real(kind=8), optional, intent(out) :: user_para_
@@ -48,8 +48,8 @@ implicit none
 !
 ! In  ds_conv          : datastructure for convergence management
 ! In  type             : type of residual
-! Out row_name         : name of row in convergence table for value
-! Out row_name_locus   : name of row in convergence table for locus
+! Out col_name         : name of columns in convergence table for value
+! Out col_name_locus   : name of columns in convergence table for locus
 ! Out vale_calc        : result of maximum norm of residual
 ! Out locus_calc       : locus where is maximum norm of residual
 ! Out user_para        : user parameter for residual
@@ -90,11 +90,11 @@ implicit none
     if (present(l_conv_)) then
         l_conv_         = ds_conv%list_resi(i_type)%l_conv
     endif
-    if (present(row_name_)) then
-        row_name_       = ds_conv%list_resi(i_type)%row_name
+    if (present(col_name_)) then
+        col_name_       = ds_conv%list_resi(i_type)%col_name
     endif
-    if (present(row_name_locus_)) then
-        row_name_locus_ = ds_conv%list_resi(i_type)%row_name_locus
+    if (present(col_name_locus_)) then
+        col_name_locus_ = ds_conv%list_resi(i_type)%col_name_locus
     endif
     if (present(event_type_)) then
         event_type_     = ds_conv%list_resi(i_type)%event_type

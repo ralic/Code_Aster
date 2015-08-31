@@ -1,11 +1,11 @@
-subroutine nmimck(ds_print, row_name_, valk, l_affe)
+subroutine nmimck(ds_print, col_name_, valk, l_affe)
 !
 use NonLin_Datastructure_type
 !
 implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/SetRow.h"
+#include "asterfort/SetCol.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,7 +26,7 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Print), intent(inout) :: ds_print
-    character(len=*), intent(in) :: row_name_
+    character(len=*), intent(in) :: col_name_
     character(len=*), intent(in) :: valk
     aster_logical, intent(in) :: l_affe
 !
@@ -34,14 +34,14 @@ implicit none
 !
 ! MECA_NON_LINE - Print management
 !
-! Set value in row of convergence table - String
+! Set value in column of convergence table - String
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! IO  ds_print         : datastructure for printing parameters
-! In  row_name         : name of row 
-! In  flag             : .true. for activation of row
-! In  valk             : value (string) for row
+! In  col_name         : name of column
+! In  flag             : .true. for activation of column
+! In  valk             : value (string) for column
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,7 +56,7 @@ implicit none
 !
 ! - Activate value
 !
-    call SetRow(table_cvg, name_ = row_name_,&
+    call SetCol(table_cvg, name_ = col_name_,&
                 flag_affe_ = l_affe, valek_ = valk )
 !
 ! - Set convergence table

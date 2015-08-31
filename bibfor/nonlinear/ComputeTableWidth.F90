@@ -42,31 +42,31 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_row, nb_rows, nb_rows_active
+    integer :: i_col, nb_cols, nb_cols_active
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nb_rows    = table%nb_rows
+    nb_cols    = table%nb_cols
     width      = 0
 !
-! - Number of active rows
+! - Number of active columns
 !
-    nb_rows_active = 0
-    do i_row = 1, nb_rows
-        if (table%l_rows_acti(i_row)) then
-            nb_rows_active = nb_rows_active + 1
+    nb_cols_active = 0
+    do i_col = 1, nb_cols
+        if (table%l_cols_acti(i_col)) then
+            nb_cols_active = nb_cols_active + 1
         endif
     end do
-    if (nb_rows_active .ge. 15) then
-        call utmess('F', 'IMPRESSION_1', si=nb_rows_active)
+    if (nb_cols_active .ge. 15) then
+        call utmess('F', 'IMPRESSION_1', si=nb_cols_active)
     endif
 !
 ! - Compute width
 !
     width = 1
-    do i_row = 1, nb_rows
-        if (table%l_rows_acti(i_row)) then
-            width = width + (table%rows(i_row)%width+1)
+    do i_col = 1, nb_cols
+        if (table%l_cols_acti(i_col)) then
+            width = width + (table%cols(i_col)%width+1)
         endif
     end do
 !

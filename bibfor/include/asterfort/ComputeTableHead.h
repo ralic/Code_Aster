@@ -16,10 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine ComputeTableHead(table, row_sep, table_head)
+    subroutine ComputeTableHead(table, col_sep, table_head)
         use NonLin_Datastructure_type
         type(NL_DS_Table), intent(in) :: table
-        character(len=1), intent(in) :: row_sep
+        character(len=1), intent(in) :: col_sep
         character(len=255), intent(out) :: table_head(3)
     end subroutine ComputeTableHead
 end interface

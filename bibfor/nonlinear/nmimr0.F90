@@ -5,7 +5,7 @@ use NonLin_Datastructure_type
 implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/SetRow.h"
+#include "asterfort/SetCol.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,7 +32,7 @@ implicit none
 !
 ! MECA_NON_LINE - Print management
 !
-! Set values are not affected on rows for a loop level
+! Set values are not affected on cols for a loop level
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,22 +46,22 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_row, nb_rows
-    character(len=9) :: row_name
+    integer :: i_col, nb_cols
+    character(len=9) :: col_name
     type(NL_DS_Table) :: table_cvg
 !
 ! --------------------------------------------------------------------------------------------------
 !
     table_cvg = ds_print%table_cvg
-    nb_rows   = table_cvg%nb_rows
+    nb_cols   = table_cvg%nb_cols
 !
 ! - No value affected in row for loop level
 !
-    do i_row = 1, nb_rows
-        if (table_cvg%l_rows_acti(i_row)) then
-            row_name = table_cvg%rows(i_row)%name
-            if (loop_name .eq. row_name(1:4)) then
-                call SetRow(table_cvg, name_ = row_name, flag_affe_ = .false._1)
+    do i_col = 1, nb_cols
+        if (table_cvg%l_cols_acti(i_col)) then
+            col_name = table_cvg%cols(i_col)%name
+            if (loop_name .eq. col_name(1:4)) then
+                call SetCol(table_cvg, name_ = col_name, flag_affe_ = .false._1)
             endif
         endif
     end do

@@ -34,9 +34,9 @@ implicit none
 !
 
 !
-! - Type: row for printing tables (convergence table for instance)
+! - Type: column for printing tables (convergence table for instance)
 ! 
-    type NL_DS_Row
+    type NL_DS_Col
         aster_logical :: l_vale_affe
         aster_logical :: l_vale_inte
         aster_logical :: l_vale_real
@@ -48,17 +48,17 @@ implicit none
         character(len=9) :: name
         character(len=16) :: title(3)
         character(len=1) :: mark
-    end type NL_DS_Row
+    end type NL_DS_Col
 !
 ! - Type: table (convergence table for instance)
 ! 
     type NL_DS_Table
-        integer :: nb_rows
-        integer :: nb_rows_maxi = 37
+        integer :: nb_cols
+        integer :: nb_cols_maxi = 37
         aster_logical :: l_csv
         integer :: unit_csv
-        type(NL_DS_Row) :: rows(37)
-        aster_logical :: l_rows_acti(37)
+        type(NL_DS_Col) :: cols(37)
+        aster_logical :: l_cols_acti(37)
         integer :: width
         integer :: title_height
         character(len=255) :: sep_line
@@ -81,8 +81,8 @@ implicit none
 ! 
     type NL_DS_Resi
         character(len=16) :: type
-        character(len=16) :: row_name
-        character(len=16) :: row_name_locus
+        character(len=16) :: col_name
+        character(len=16) :: col_name_locus
         character(len=16) :: event_type
         real(kind=8)      :: vale_calc
         character(len=16) :: locus_calc

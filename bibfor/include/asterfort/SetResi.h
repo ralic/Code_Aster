@@ -17,13 +17,13 @@
 !
 interface
     subroutine SetResi(ds_conv   , type_ ,&
-                       row_name_ , row_name_locus_, vale_calc_  , locus_calc_, user_para_,&
+                       col_name_ , col_name_locus_, vale_calc_  , locus_calc_, user_para_,&
                        l_conv_   , event_type_    , l_resi_test_)
         use NonLin_Datastructure_type
         type(NL_DS_Conv), intent(inout) :: ds_conv
         character(len=*), optional, intent(in) :: type_
-        character(len=16), optional, intent(in) :: row_name_
-        character(len=16), optional, intent(in) :: row_name_locus_
+        character(len=16), optional, intent(in) :: col_name_
+        character(len=16), optional, intent(in) :: col_name_locus_
         real(kind=8), optional, intent(in) :: vale_calc_
         character(len=*), optional, intent(in) :: locus_calc_
         real(kind=8), optional, intent(in) :: user_para_

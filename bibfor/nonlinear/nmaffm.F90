@@ -6,7 +6,7 @@ implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/nmerge.h"
-#include "asterfort/SetRow.h"
+#include "asterfort/SetCol.h"
 #include "asterfort/nmlecv.h"
 #include "asterfort/nmltev.h"
 #include "asterfort/nmimck.h"
@@ -38,7 +38,7 @@ implicit none
 !
 ! MECA_NON_LINE - Print management
 !
-! Set marks in rows
+! Set marks in cols
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -90,87 +90,87 @@ implicit none
     call nmerge(sderro, 'ERRE_CTCF', erctcf)
     call nmerge(sderro, 'ERRE_CTCC', erctcc)
 !
-! - Set marks in rows
+! - Set marks in cols
 !
     if (loop_name .eq. 'NEWT') then
-        call SetRow(table_cvg, name_ = 'RESI_RELA', mark_ = ' ')
-        call SetRow(table_cvg, name_ = 'RESI_RELA', mark_ = ' ')
-        call SetRow(table_cvg, name_ = 'RESI_MAXI', mark_ = ' ')
-        call SetRow(table_cvg, name_ = 'RESI_REFE', mark_ = ' ')
-        call SetRow(table_cvg, name_ = 'RESI_COMP', mark_ = ' ')
+        call SetCol(table_cvg, name_ = 'RESI_RELA', mark_ = ' ')
+        call SetCol(table_cvg, name_ = 'RESI_RELA', mark_ = ' ')
+        call SetCol(table_cvg, name_ = 'RESI_MAXI', mark_ = ' ')
+        call SetCol(table_cvg, name_ = 'RESI_REFE', mark_ = ' ')
+        call SetCol(table_cvg, name_ = 'RESI_COMP', mark_ = ' ')
         if (dvrela) then
-            call SetRow(table_cvg, name_ = 'RESI_RELA', mark_ = 'X')
+            call SetCol(table_cvg, name_ = 'RESI_RELA', mark_ = 'X')
         endif
         if (dvmaxi) then
-            call SetRow(table_cvg, name_ = 'RESI_MAXI', mark_ = 'X')
+            call SetCol(table_cvg, name_ = 'RESI_MAXI', mark_ = 'X')
         endif
         if (dvrefe) then
-            call SetRow(table_cvg, name_ = 'RESI_REFE', mark_ = 'X')
+            call SetCol(table_cvg, name_ = 'RESI_REFE', mark_ = 'X')
         endif
         if (dvcomp) then
-            call SetRow(table_cvg, name_ = 'RESI_COMP', mark_ = 'X')
+            call SetCol(table_cvg, name_ = 'RESI_COMP', mark_ = 'X')
         endif
-        call SetRow(table_cvg, name_ = 'GEOM_NEWT', mark_ = ' ')
-        call SetRow(table_cvg, name_ = 'FROT_NEWT', mark_ = ' ')
-        call SetRow(table_cvg, name_ = 'CONT_NEWT', mark_ = ' ')
-        call SetRow(table_cvg, name_ = 'PILO_COEF', mark_ = ' ')
-        call SetRow(table_cvg, name_ = 'CTCD_NBIT', mark_ = ' ')
+        call SetCol(table_cvg, name_ = 'GEOM_NEWT', mark_ = ' ')
+        call SetCol(table_cvg, name_ = 'FROT_NEWT', mark_ = ' ')
+        call SetCol(table_cvg, name_ = 'CONT_NEWT', mark_ = ' ')
+        call SetCol(table_cvg, name_ = 'PILO_COEF', mark_ = ' ')
+        call SetCol(table_cvg, name_ = 'CTCD_NBIT', mark_ = ' ')
         if (dvgeom) then
-            call SetRow(table_cvg, name_ = 'GEOM_NEWT', mark_ = 'X')
+            call SetCol(table_cvg, name_ = 'GEOM_NEWT', mark_ = 'X')
         endif
         if (dvfrot) then
-            call SetRow(table_cvg, name_ = 'FROT_NEWT', mark_ = 'X')
+            call SetCol(table_cvg, name_ = 'FROT_NEWT', mark_ = 'X')
         endif
         if (dvcont) then
-            call SetRow(table_cvg, name_ = 'CONT_NEWT', mark_ = 'X')
+            call SetCol(table_cvg, name_ = 'CONT_NEWT', mark_ = 'X')
         endif
         if (cvpilo) then
-            call SetRow(table_cvg, name_ = 'PILO_COEF', mark_ = 'B')
+            call SetCol(table_cvg, name_ = 'PILO_COEF', mark_ = 'B')
         endif
         if (dvpfix) then
-            call SetRow(table_cvg, name_ = 'CTCD_NBIT', mark_ = 'X')
+            call SetCol(table_cvg, name_ = 'CTCD_NBIT', mark_ = 'X')
         endif
-        call SetRow(table_cvg, name_ = 'ITER_NUME', mark_ = 'X')
+        call SetCol(table_cvg, name_ = 'ITER_NUME', mark_ = 'X')
         if (cvnewt) then
-            call SetRow(table_cvg, name_ = 'ITER_NUME', mark_ = ' ')
+            call SetCol(table_cvg, name_ = 'ITER_NUME', mark_ = ' ')
         endif
         if (lerrne) then
-            call SetRow(table_cvg, name_ = 'ITER_NUME', mark_ = 'E')
+            call SetCol(table_cvg, name_ = 'ITER_NUME', mark_ = 'E')
         endif
-        call SetRow(table_cvg, name_ = 'BOUC_GEOM', mark_ = 'X')
-        call SetRow(table_cvg, name_ = 'BOUC_FROT', mark_ = 'X')
-        call SetRow(table_cvg, name_ = 'BOUC_CONT', mark_ = 'X')
+        call SetCol(table_cvg, name_ = 'BOUC_GEOM', mark_ = 'X')
+        call SetCol(table_cvg, name_ = 'BOUC_FROT', mark_ = 'X')
+        call SetCol(table_cvg, name_ = 'BOUC_CONT', mark_ = 'X')
         if (dvdebo) then
             call nmimck(ds_print, 'DEBORST  ', debors, .true._1)
         endif
     else if (loop_name.eq.'FIXE') then
-        call SetRow(table_cvg, name_ = 'BOUC_GEOM', mark_ = 'X')
-        call SetRow(table_cvg, name_ = 'BOUC_FROT', mark_ = 'X')
-        call SetRow(table_cvg, name_ = 'BOUC_CONT', mark_ = 'X')
+        call SetCol(table_cvg, name_ = 'BOUC_GEOM', mark_ = 'X')
+        call SetCol(table_cvg, name_ = 'BOUC_FROT', mark_ = 'X')
+        call SetCol(table_cvg, name_ = 'BOUC_CONT', mark_ = 'X')
         if (.not.dvfixg) then
-            call SetRow(table_cvg, name_ = 'BOUC_GEOM', mark_ = ' ')
+            call SetCol(table_cvg, name_ = 'BOUC_GEOM', mark_ = ' ')
         endif
         if (.not.dvfixf) then
-            call SetRow(table_cvg, name_ = 'BOUC_FROT', mark_ = ' ')
+            call SetCol(table_cvg, name_ = 'BOUC_FROT', mark_ = ' ')
         endif
         if (.not.dvfixc) then
-            call SetRow(table_cvg, name_ = 'BOUC_CONT', mark_ = ' ')
+            call SetCol(table_cvg, name_ = 'BOUC_CONT', mark_ = ' ')
         endif
         if (dvfixc) then
-            call SetRow(table_cvg, name_ = 'BOUC_GEOM', mark_ = 'X')
-            call SetRow(table_cvg, name_ = 'BOUC_FROT', mark_ = 'X')
+            call SetCol(table_cvg, name_ = 'BOUC_GEOM', mark_ = 'X')
+            call SetCol(table_cvg, name_ = 'BOUC_FROT', mark_ = 'X')
         endif
         if (dvfixf) then
-            call SetRow(table_cvg, name_ = 'BOUC_GEOM', mark_ = 'X')
+            call SetCol(table_cvg, name_ = 'BOUC_GEOM', mark_ = 'X')
         endif
         if (erctcg) then
-            call SetRow(table_cvg, name_ = 'BOUC_GEOM', mark_ = 'E')
+            call SetCol(table_cvg, name_ = 'BOUC_GEOM', mark_ = 'E')
         endif
         if (erctcf) then
-            call SetRow(table_cvg, name_ = 'BOUC_FROT', mark_ = 'E')
+            call SetCol(table_cvg, name_ = 'BOUC_FROT', mark_ = 'E')
         endif
         if (erctcc) then
-            call SetRow(table_cvg, name_ = 'BOUC_CONT', mark_ = 'E')
+            call SetCol(table_cvg, name_ = 'BOUC_CONT', mark_ = 'E')
         endif
     endif
 !

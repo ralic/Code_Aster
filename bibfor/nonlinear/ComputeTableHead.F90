@@ -1,4 +1,4 @@
-subroutine ComputeTableHead(table, row_sep, table_head)
+subroutine ComputeTableHead(table, col_sep, table_head)
 !
 use NonLin_Datastructure_type
 !
@@ -27,7 +27,7 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Table), intent(in) :: table
-    character(len=1), intent(in) :: row_sep
+    character(len=1), intent(in) :: col_sep
     character(len=255), intent(out) :: table_head(3)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -39,14 +39,14 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  table            : datastructure for table
-! In  row_sep          : separator between rows
+! In  col_sep          : separator between colums
 ! Out table_head       : head of table
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_row, nb_rows, pos
-    integer :: row_width, title_height, table_width
-    character(len=16) :: row_title(3)
+    integer :: i_col, nb_cols, pos
+    integer :: col_width, title_height, table_width
+    character(len=16) :: col_title(3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,44 +54,44 @@ implicit none
 !
 ! - Get parameters
 !
-    nb_rows      = table%nb_rows
+    nb_cols      = table%nb_cols
     title_height = table%title_height
     table_width  = table%width
     ASSERT((title_height.gt.0).and.(title_height.le.3))
     ASSERT(table_width.le.255)
-    ASSERT(nb_rows.le.table%nb_rows_maxi)
+    ASSERT(nb_cols.le.table%nb_cols_maxi)
 !
-! - Prepare heads of table with empty rows
+! - Prepare heads of table with empty cols
 !
-    call PrepareTableLine(table, row_sep, table_head(1))
+    call PrepareTableLine(table, col_sep, table_head(1))
     if (title_height .ge. 2) then
-        call PrepareTableLine(table, row_sep, table_head(2))
+        call PrepareTableLine(table, col_sep, table_head(2))
     endif
     if (title_height .eq. 3) then
-        call PrepareTableLine(table, row_sep, table_head(3))
+        call PrepareTableLine(table, col_sep, table_head(3))
     endif
 !
-! - Set title of rows in heads of table
+! - Set title of columns in heads of table
 !
     pos = 2
-    do i_row = 1, nb_rows
-        if (table%l_rows_acti(i_row)) then
-            row_width    = table%rows(i_row)%width
-            row_title(1) = table%rows(i_row)%title(1)
+    do i_col = 1, nb_cols
+        if (table%l_cols_acti(i_col)) then
+            col_width    = table%cols(i_col)%width
+            col_title(1) = table%cols(i_col)%title(1)
             if (title_height .ge. 2) then
-                row_title(2) = table%rows(i_row)%title(2)
+                col_title(2) = table%cols(i_col)%title(2)
             endif
             if (title_height .eq. 3) then
-                row_title(3) = table%rows(i_row)%title(3)
+                col_title(3) = table%cols(i_col)%title(3)
             endif
-            table_head(1)(pos:pos+row_width-1) = row_title(1)
+            table_head(1)(pos:pos+col_width-1) = col_title(1)
             if (title_height .ge. 2) then
-                table_head(2)(pos:pos+row_width-1) = row_title(2)
+                table_head(2)(pos:pos+col_width-1) = col_title(2)
             endif
             if (title_height .eq. 3) then
-                table_head(3)(pos:pos+row_width-1) = row_title(3)
+                table_head(3)(pos:pos+col_width-1) = col_title(3)
             endif
-            pos = pos+row_width+1
+            pos = pos+col_width+1
         endif
     end do
 !

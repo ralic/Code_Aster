@@ -1,11 +1,11 @@
-subroutine nmimci(ds_print, row_name_, vali, l_affe)
+subroutine nmimci(ds_print, col_name_, vali, l_affe)
 !
 use NonLin_Datastructure_type
 !
 implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/SetRow.h"
+#include "asterfort/SetCol.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,7 +26,7 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Print), intent(inout) :: ds_print
-    character(len=*), intent(in) :: row_name_
+    character(len=*), intent(in) :: col_name_
     integer, intent(in) :: vali
     aster_logical, intent(in) :: l_affe
 !
@@ -34,14 +34,14 @@ implicit none
 !
 ! MECA_NON_LINE - Print management
 !
-! Set value in row of convergence table - Integer
+! Set value in column of convergence table - Integer
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! IO  ds_print         : datastructure for printing parameters
-! In  row_name         : name of row 
-! In  flag             : .true. for activation of row
-! In  vali             : value (integer) for row
+! In  col_name         : name of column 
+! In  flag             : .true. for activation of column
+! In  vali             : value (integer) for column
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,7 +56,7 @@ implicit none
 !
 ! - Set and activate value
 !
-    call SetRow(table_cvg, name_ = row_name_,&
+    call SetCol(table_cvg, name_ = col_name_,&
                 flag_affe_ = l_affe, valei_ = vali)
 !
 ! - Set convergence table

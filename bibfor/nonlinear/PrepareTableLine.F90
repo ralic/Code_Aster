@@ -1,4 +1,4 @@
-subroutine PrepareTableLine(table, row_sep, table_line)
+subroutine PrepareTableLine(table, col_sep, table_line)
 !
 use NonLin_Datastructure_type
 !
@@ -28,24 +28,24 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Table), intent(in) :: table
-    character(len=1), intent(in) :: row_sep
+    character(len=1), intent(in) :: col_sep
     character(len=255), intent(out) :: table_line
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! MECA_NON_LINE - Print management
 !
-! Prepare line of table with empty rows
+! Prepare line of table with empty cols
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  table            : datastructure for table
-! In  row_sep          : separator between rows
+! In  col_sep          : separator between columns
 ! Out table_line       : line of the table
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_row, nb_rows, width, total_width, line_width
+    integer :: i_col, nb_cols, width, total_width, line_width
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,22 +53,22 @@ implicit none
 !
 ! - Get parameters
 !
-    nb_rows         = table%nb_rows
+    nb_cols         = table%nb_cols
     line_width      = table%width
     ASSERT(line_width.le.255)
-    ASSERT(nb_rows.le.table%nb_rows_maxi)
+    ASSERT(nb_cols.le.table%nb_cols_maxi)
 !
 ! - Prepare line
 !
-    table_line(1:1) = row_sep
+    table_line(1:1) = col_sep
     total_width     = 1
-    do i_row = 1, nb_rows
-        if (table%l_rows_acti(i_row)) then
-            width       = table%rows(i_row)%width
+    do i_col = 1, nb_cols
+        if (table%l_cols_acti(i_col)) then
+            width       = table%cols(i_col)%width
             ASSERT(width.le.255)
             total_width = total_width + width + 1
             ASSERT(total_width + width + 1.le.255)
-            table_line(total_width:total_width) = row_sep
+            table_line(total_width:total_width) = col_sep
         endif
     end do
 !

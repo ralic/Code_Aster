@@ -72,23 +72,23 @@ implicit none
     ds_conv%list_resi(5)%type = 'RESI_FROT'
     ds_conv%list_resi(6)%type = 'RESI_GEOM'
 !
-! - Set name of rows in convergence table (for values)
+! - Set name of columns in convergence table (for values)
 !
-    ds_conv%list_resi(1)%row_name = 'RESI_RELA'
-    ds_conv%list_resi(2)%row_name = 'RESI_MAXI'
-    ds_conv%list_resi(3)%row_name = 'RESI_REFE'
-    ds_conv%list_resi(4)%row_name = 'RESI_COMP'
-    ds_conv%list_resi(5)%row_name = 'FROT_NEWT'
-    ds_conv%list_resi(6)%row_name = 'GEOM_NEWT'
+    ds_conv%list_resi(1)%col_name = 'RESI_RELA'
+    ds_conv%list_resi(2)%col_name = 'RESI_MAXI'
+    ds_conv%list_resi(3)%col_name = 'RESI_REFE'
+    ds_conv%list_resi(4)%col_name = 'RESI_COMP'
+    ds_conv%list_resi(5)%col_name = 'FROT_NEWT'
+    ds_conv%list_resi(6)%col_name = 'GEOM_NEWT'
 !
-! - Set name of rows in convergence table (for locus)
+! - Set name of columns in convergence table (for locus)
 !
-    ds_conv%list_resi(1)%row_name_locus = 'RELA_NOEU'
-    ds_conv%list_resi(2)%row_name_locus = 'MAXI_NOEU'
-    ds_conv%list_resi(3)%row_name_locus = 'REFE_NOEU'
-    ds_conv%list_resi(4)%row_name_locus = 'COMP_NOEU'
-    ds_conv%list_resi(5)%row_name_locus = 'FROT_NOEU'
-    ds_conv%list_resi(6)%row_name_locus = 'GEOM_NOEU'
+    ds_conv%list_resi(1)%col_name_locus = 'RELA_NOEU'
+    ds_conv%list_resi(2)%col_name_locus = 'MAXI_NOEU'
+    ds_conv%list_resi(3)%col_name_locus = 'REFE_NOEU'
+    ds_conv%list_resi(4)%col_name_locus = 'COMP_NOEU'
+    ds_conv%list_resi(5)%col_name_locus = 'FROT_NOEU'
+    ds_conv%list_resi(6)%col_name_locus = 'GEOM_NOEU'
 !
 ! - Set event for divergence
 !

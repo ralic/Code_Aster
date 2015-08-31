@@ -41,15 +41,15 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_rows_defi = 28
-    integer, parameter :: nb_rows_dof_defi = 9
+    integer, parameter :: nb_cols_defi = 28
+    integer, parameter :: nb_cols_dof_defi = 9
     integer :: ifm, niv
-    integer :: i_row, i_rows_dof
+    integer :: i_col, i_cols_dof
     character(len=1) :: indsui
     type(NL_DS_Table) :: table_cvg
-    type(NL_DS_Row) :: row
+    type(NL_DS_col) :: col
 !
-    character(len=9), parameter :: rows_name(nb_rows_defi) = (/&
+    character(len=9), parameter :: cols_name(nb_cols_defi) = (/&
                   'INCR_INST','BOUC_GEOM','BOUC_FROT',&
                   'BOUC_CONT','ITER_NUME','RESI_RELA',&
                   'RELA_NOEU','RESI_MAXI','MAXI_NOEU',&
@@ -61,7 +61,7 @@ implicit none
                   'BOUC_NOEU','FROT_NOEU','GEOM_NOEU',&
                   'ITER_TIME'/)
 !
-    character(len=16), parameter :: rows_title_1(nb_rows_defi) = (/&
+    character(len=16), parameter :: cols_title_1(nb_cols_defi) = (/&
               '   INCREMENT    ','     CONTACT    ','     CONTACT    ',&
               '     CONTACT    ','     NEWTON     ','     RESIDU     ',&
               '     RESIDU     ','     RESIDU     ','     RESIDU     ',&
@@ -72,7 +72,7 @@ implicit none
               '     CONTACT    ','     CONTACT    ','     CONTACT    ',&
               '     CONTACT    ','     CONTACT    ','     CONTACT    ',&
               '     NEWTON     '/)
-    character(len=16), parameter :: rows_title_2(nb_rows_defi) = (/&
+    character(len=16), parameter :: cols_title_2(nb_cols_defi) = (/&
               '    INSTANT     ','    BCL. GEOM.  ','    BCL. FROT.  ',&
               '    BCL. CONT.  ','    ITERATION   ','     RELATIF    ',&
               '     MAXIMUM    ','     ABSOLU     ','     MAXIMUM    ',&
@@ -83,7 +83,7 @@ implicit none
               '   NEWTON GENE  ','      INFOS     ','     CRITERE    ',&
               '     CRITERE    ','   NEWTON GENE  ','   NEWTON GENE  ',&
               '  TEMPS CALCUL  '/)
-    character(len=16), parameter :: rows_title_3(nb_rows_defi) = (/&
+    character(len=16), parameter :: cols_title_3(nb_cols_defi) = (/&
               '                ','    ITERATION   ','    ITERATION   ',&
               '    ITERATION   ','                ',' RESI_GLOB_RELA ',&
               '    AU POINT    ',' RESI_GLOB_MAXI ','    AU POINT    ',&
@@ -95,7 +95,7 @@ implicit none
               '    MAX. LIEU   ',' LIEU MAX FROT. ',' LIEU MAX GEOM. ',&
               '    VALEUR      '/)
 !
-    character(len=1), parameter :: rows_type(nb_rows_defi) = (/&
+    character(len=1), parameter :: cols_type(nb_cols_defi) = (/&
                   'R','I','I',&
                   'I','I','R',&
                   'K','R','K',&
@@ -114,56 +114,56 @@ implicit none
         write (ifm,*) '<MECANONLINE> . Create printing management datastructure'
     endif
 !
-! - Set list of rows in convergence table
+! - Set list of columns in convergence table
 !
-    do i_row = 1, nb_rows_defi
-        row%width       = 16
-        row%mark        = ' '
-        row%name        = rows_name(i_row)
-        row%l_vale_affe = .false._1
-        row%l_vale_real = .false._1
-        row%l_vale_inte = .false._1
-        row%l_vale_strg = .false._1
-        if (rows_type(i_row).eq.'R') then
-            row%l_vale_real = .true._1
-        elseif (rows_type(i_row).eq.'I') then
-            row%l_vale_inte = .true._1
-        elseif (rows_type(i_row).eq.'K') then
-            row%l_vale_strg = .true._1
+    do i_col = 1, nb_cols_defi
+        col%width       = 16
+        col%mark        = ' '
+        col%name        = cols_name(i_col)
+        col%l_vale_affe = .false._1
+        col%l_vale_real = .false._1
+        col%l_vale_inte = .false._1
+        col%l_vale_strg = .false._1
+        if (cols_type(i_col).eq.'R') then
+            col%l_vale_real = .true._1
+        elseif (cols_type(i_col).eq.'I') then
+            col%l_vale_inte = .true._1
+        elseif (cols_type(i_col).eq.'K') then
+            col%l_vale_strg = .true._1
         else
             ASSERT(.false.)
         endif
-        row%title(1) = rows_title_1(i_row)
-        row%title(2) = rows_title_2(i_row)
-        row%title(3) = rows_title_3(i_row)
-        table_cvg%rows(i_row)        = row
-        table_cvg%l_rows_acti(i_row) = .false._1
+        col%title(1) = cols_title_1(i_col)
+        col%title(2) = cols_title_2(i_col)
+        col%title(3) = cols_title_3(i_col)
+        table_cvg%cols(i_col)        = col
+        table_cvg%l_cols_acti(i_col) = .false._1
     end do
 !
-! - Set list of rows for DOF monitor in convergence table
+! - Set list of columns for DOF monitor in convergence table
 !
-    i_row = nb_rows_defi
-    do i_rows_dof = 1, nb_rows_dof_defi
-        i_row = i_row+1
-        call impfoi(0, 1, i_rows_dof, indsui)
-        row%width       = 16
-        row%mark        = ' '
-        row%name        = 'SUIVDDL'//indsui
-        row%l_vale_affe = .false._1
-        row%l_vale_real = .false._1
-        row%l_vale_inte = .false._1
-        row%l_vale_strg = .false._1
-        row%title(1)    = '   SUIVI DDL'//indsui
-        row%title(2)    = ' '
-        row%title(3)    = ' '
-        table_cvg%rows(i_row)        = row
-        table_cvg%l_rows_acti(i_row) = .false._1
+    i_col = nb_cols_defi
+    do i_cols_dof = 1, nb_cols_dof_defi
+        i_col = i_col+1
+        call impfoi(0, 1, i_cols_dof, indsui)
+        col%width       = 16
+        col%mark        = ' '
+        col%name        = 'SUIVDDL'//indsui
+        col%l_vale_affe = .false._1
+        col%l_vale_real = .false._1
+        col%l_vale_inte = .false._1
+        col%l_vale_strg = .false._1
+        col%title(1)    = '   SUIVI DDL'//indsui
+        col%title(2)    = ' '
+        col%title(3)    = ' '
+        table_cvg%cols(i_col)        = col
+        table_cvg%l_cols_acti(i_col) = .false._1
     end do
 !
 ! - Checks
 ! 
-    table_cvg%nb_rows = nb_rows_dof_defi+nb_rows_defi
-    ASSERT(table_cvg%nb_rows.le.table_cvg%nb_rows_maxi)
+    table_cvg%nb_cols = nb_cols_dof_defi+nb_cols_defi
+    ASSERT(table_cvg%nb_cols.le.table_cvg%nb_cols_maxi)
 !
 ! - Set convergence table
 !

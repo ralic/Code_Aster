@@ -1,4 +1,4 @@
-subroutine SetRow(table     , name_ , flag_acti_,&
+subroutine SetCol(table     , name_ , flag_acti_,&
                   flag_affe_, valer_, valei_    , valek_, mark_)
 !
 use NonLin_Datastructure_type
@@ -39,38 +39,38 @@ implicit none
 !
 ! MECA_NON_LINE - Print management
 !
-! Set row in table
+! Set column in table
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  table            : datastructure for table
-! In  name             : name of row 
-!                        If .not. present => all rows
-! In  flag_acti        : flag for activation of row
-! In  valer            : value (real) for row
-! In  valei            : value (integer) for row
-! In  valek            : value (string) for row
-! In  flag_affe        : flag for value set in row
-! In  mark             : mark for row
+! In  name             : name of column 
+!                        If .not. present => all columns
+! In  flag_acti        : flag for activation of column
+! In  valer            : value (real) for column
+! In  valei            : value (integer) for column
+! In  valek            : value (string) for column
+! In  flag_affe        : flag for value set in column
+! In  mark             : mark for column
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_row, nb_rows, i_row_name
+    integer :: i_col, nb_cols, i_col_name
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    i_row_name    = 0
-    nb_rows       = table%nb_rows
+    i_col_name    = 0
+    nb_cols       = table%nb_cols
 !
-! - On all rows
+! - On all cols
 !
     if (.not.present(name_)) then
-        do i_row = 1, nb_rows
+        do i_col = 1, nb_cols
             if (present(flag_acti_)) then
-                table%l_rows_acti(i_row) = flag_acti_
+                table%l_cols_acti(i_col) = flag_acti_
             endif
             if (present(mark_)) then
-                table%rows(i_row)%mark = mark_
+                table%cols(i_col)%mark = mark_
             endif
             ASSERT(.not.present(valer_))
             ASSERT(.not.present(valei_))
@@ -79,36 +79,36 @@ implicit none
         end do
     endif
 !
-! - On one row
+! - On one column
 !
     if (present(name_)) then
-        do i_row = 1, nb_rows
-            if (table%rows(i_row)%name .eq. name_) then
-                ASSERT(i_row_name.eq.0)
-                i_row_name = i_row   
+        do i_col = 1, nb_cols
+            if (table%cols(i_col)%name .eq. name_) then
+                ASSERT(i_col_name.eq.0)
+                i_col_name = i_col   
             endif
         end do
-        ASSERT(i_row_name.ne.0)
+        ASSERT(i_col_name.ne.0)
         if (present(mark_)) then
-            table%rows(i_row_name)%mark = mark_
+            table%cols(i_col_name)%mark = mark_
         endif
         if (present(flag_acti_)) then
-            table%l_rows_acti(i_row_name) = flag_acti_
+            table%l_cols_acti(i_col_name) = flag_acti_
         endif
         if (present(flag_affe_)) then
-            table%rows(i_row_name)%l_vale_affe = flag_affe_
+            table%cols(i_col_name)%l_vale_affe = flag_affe_
         endif
         if (present(valer_)) then
-            table%rows(i_row_name)%vale_real = valer_
-            ASSERT(table%rows(i_row_name)%l_vale_real)
+            table%cols(i_col_name)%vale_real = valer_
+            ASSERT(table%cols(i_col_name)%l_vale_real)
         endif
         if (present(valei_)) then
-            table%rows(i_row_name)%vale_inte = valei_
-            ASSERT(table%rows(i_row_name)%l_vale_inte)
+            table%cols(i_col_name)%vale_inte = valei_
+            ASSERT(table%cols(i_col_name)%l_vale_inte)
         endif
         if (present(valek_)) then
-            table%rows(i_row_name)%vale_strg = valek_
-            ASSERT(table%rows(i_row_name)%l_vale_strg)
+            table%cols(i_col_name)%vale_strg = valek_
+            ASSERT(table%cols(i_col_name)%l_vale_strg)
         endif
     endif
 !

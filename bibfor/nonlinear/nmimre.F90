@@ -45,7 +45,7 @@ implicit none
 !
     integer :: i_resi, nb_resi
     real(kind=8) :: vale_calc
-    character(len=16) :: locus_calc, row_name, row_name_locus
+    character(len=16) :: locus_calc, col_name, col_name_locus
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,10 +56,10 @@ implicit none
     do i_resi = 1, nb_resi
         vale_calc       = ds_conv%list_resi(i_resi)%vale_calc
         locus_calc      = ds_conv%list_resi(i_resi)%locus_calc
-        row_name        = ds_conv%list_resi(i_resi)%row_name
-        row_name_locus  = ds_conv%list_resi(i_resi)%row_name_locus
-        call nmimcr(ds_print, row_name      , vale_calc , l_affe = .true._1)
-        call nmimck(ds_print, row_name_locus, locus_calc, l_affe = .true._1)
+        col_name        = ds_conv%list_resi(i_resi)%col_name
+        col_name_locus  = ds_conv%list_resi(i_resi)%col_name_locus
+        call nmimcr(ds_print, col_name      , vale_calc , l_affe = .true._1)
+        call nmimck(ds_print, col_name_locus, locus_calc, l_affe = .true._1)
     end do
 !
 end subroutine
