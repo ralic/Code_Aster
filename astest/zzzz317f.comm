@@ -80,6 +80,34 @@ ACCE1a=GENE_ACCE_SEISME( INFO =2,
                                         AMOR_REDUIT=amor,FREQ_PAS=0.01, ),
                MODULATION      = _F(TYPE="GAMMA",INST_INI=tini, ),)
 
+ACCE1t=GENE_ACCE_SEISME( INFO =2,
+              INIT_ALEA=200000,
+              PAS_INST       =0.01, PESANTEUR =9.81,DUREE_PHASE_FORTE =TSM, NB_TIRAGE = 2,NB_POIN=2**11,
+               FREQ_FILTRE=fc,  FREQ_CORNER=fc, COEF_CORR = 0.2, RATIO_HV = 3./2.,
+               SPEC_FRACTILE        = _F(SPEC_OSCI  =SRO_NGA, SPEC_1_SIGMA  =SIG_NGA,  
+                                        AMOR_REDUIT=amor,FREQ_PAS=0.01, ),
+               MODULATION      = _F(TYPE="GAMMA",INST_INI=tini, ),)
+
+FONCt1=RECU_FONCTION( TABLE=ACCE1t,
+                      FILTRE= (_F(  NOM_PARA = 'NUME_ORDRE',     VALE_I = 1),
+                               _F(NOM_PARA = 'NOM_PARA',    VALE_K = 'ACCE1'),),
+                      NOM_PARA_TABL='FONCTION',)
+
+SROt1=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=FONCt1, LIST_FREQ = L_FREQ, 
+                      NORME=9.81, AMOR_REDUIT=(amor,),),);  
+
+FONCt3=RECU_FONCTION( TABLE=ACCE1t,
+                      FILTRE= (_F(  NOM_PARA = 'NUME_ORDRE',     VALE_I = 1),
+                               _F(NOM_PARA = 'NOM_PARA',    VALE_K = 'ACCE3'),),
+                      NOM_PARA_TABL='FONCTION',)
+
+SROt3=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=FONCt3, LIST_FREQ = L_FREQ, 
+                      NORME=9.81, AMOR_REDUIT=(amor,),),);  
+
+PGA1=INFO_FONCTION(  NOCI_SEISME=_F(OPTION='MAXI',  FONCTION = FONCt1,  ) )
+PGA3=INFO_FONCTION(  NOCI_SEISME=_F(OPTION='MAXI', FONCTION = FONCt3,  ) )
+
+
 
 # Calcul spectre median et unsigma
 FONC1=[None]*(nbtir)
@@ -130,4 +158,33 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.16124108 ,
                          PRECISION=0.1,
                          FONCTION=SRO_SIG,),
                          ),)
+
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.10839228029669 ,                        
+                         NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 50.0),
+                         FONCTION=SROt1,),
+                        _F(VALE_CALC=0.12672551715348 ,                       
+                         NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 25.0),
+                         FONCTION=SROt1,),
+                        _F(VALE_CALC= 0.07179759743382 ,
+                         NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 50.0),
+                         FONCTION=SROt3,),
+                        _F(VALE_CALC= 0.08811303814906 ,
+                         NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 25.0),
+                         FONCTION=SROt3,),
+                         ),)
+
+TEST_TABLE(
+           VALE_CALC=1.06379039669 ,
+           NOM_PARA='ACCE_MAX',
+           TABLE=PGA1,
+           )
+
+TEST_TABLE(
+           VALE_CALC= 0.703893072922,
+           NOM_PARA='ACCE_MAX',
+           TABLE=PGA3,
+           )
+
+
+
 FIN( )

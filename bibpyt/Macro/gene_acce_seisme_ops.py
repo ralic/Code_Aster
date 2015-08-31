@@ -40,6 +40,8 @@ from Utilitai.signal_correlation_utils import (CALC_CORRE,
               itersimcor_SRO, itersimcortir_SRO, get_group_nom_coord,
               DSP2ACCE_ND, gene_traj_gauss_evol_ND)
 
+
+
 def gene_acce_seisme_ops(self, **kwargs):
     """Corps de la macro GENE_ACCE_SEIMSE"""
     self.set_icmd(1)
@@ -97,6 +99,9 @@ class GeneAcceParameters(object):
             corr_keys = {}
             corr_keys['TYPE'] = 'COEF_CORR'
             corr_keys['COEF_CORR'] = kwargs.get('COEF_CORR')
+            corr_keys['RATIO_HV'] = None
+            if kwargs.get('SPEC_FRACTILE')!= None:
+                corr_keys['RATIO_HV'] = kwargs.get('RATIO_HV')
         elif kwargs['MATR_COHE'] != None:
  #            corr_keys['TYPE'] = 'VECTOR'
              ckeys = kwargs.get('MATR_COHE')[0]
@@ -778,11 +783,14 @@ class SimulatorSPECVector(Simulator):
 
         if self.TYPE == 'COEF_CORR':
             rho = self.DEFI_COHE['COEF_CORR']
-            dim = 2
-#        Mat_cor = NP.array([[1.0 , rho ],[rho ,1.0]])
-#             Mat_cor = CALC_CORRE(rho, dim)
             aster_core.matfpe(-1)
-            Mat_cohe = NP.linalg.cholesky(CALC_CORRE(rho, dim))
+            if self.DEFI_COHE['RATIO_HV'] != None:
+                dim = 3
+                RS = (1./self.DEFI_COHE['RATIO_HV'])**2
+                Mat_cohe = NP.linalg.cholesky(CALC_CORRE(rho, dim, RS))
+            else:
+                dim = 2
+                Mat_cohe = NP.linalg.cholesky(CALC_CORRE(rho, dim))
             aster_core.matfpe(1)
             Data_cohe = self.DEFI_COHE
             Data_cohe.update({'MAT_COHE' : Mat_cohe, 'DIM' : dim})

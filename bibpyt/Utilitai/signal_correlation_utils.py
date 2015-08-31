@@ -106,8 +106,11 @@ def get_group_nom_coord(group_inter, nom_mail):
 # -------------------------------------------------------------------
 # CORRELATION MATRIX
 # --------------------------------------------------------------------
-def CALC_CORRE(rho, dim): 
-    Mat_cor = NP.matrix([[1.0 ,rho ],[rho ,1.0]])
+def CALC_CORRE(rho, dim, RATIO_HV = 1.0): 
+    if dim == 2:
+        Mat_cor = NP.matrix([[1.0 ,rho ],[rho ,1.0]])
+    elif dim == 3:
+        Mat_cor = NP.matrix([[1.0 ,rho,0.0], [rho ,1.0, 0.0], [0.0 ,0.0, RATIO_HV]  ])
     return Mat_cor
 
 # -------------------------------------------------------------------
