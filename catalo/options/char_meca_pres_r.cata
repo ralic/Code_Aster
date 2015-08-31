@@ -46,9 +46,22 @@ OPTION__
    OUT__
 PVECTUR VDEP_R RESL__
 
-COND_CALCUL__   PLUS__  PHENO='ME' BORD='-1'
+COND_CALCUL__
+
+% Ce chargement concerne le bord des elements "massifs" :
+                PLUS__  PHENO='ME' BORD='-1'
+
+% Ce chargement concerne les elements de coque et tuyau :
                 PLUS__  PHENO='ME' BORD='0'  COQUE='OUI'
                 PLUS__  PHENO='ME' BORD='0'  TUYAU='OUI'
-                PLUS__  PHENO='ME' BORD='0'  LXFEM='OUI'
-                MOINS__ PHENO='ME' BORD='0'  GRILLE='OUI'
+
                 MOINS__ PHENO='ME' BORD='-1' COQUE='OUI'
+
+%               Les 3 modelisations suivantes (grilles et membranes) sont affectees sur des mailles
+%               duppliquees. Il ne faut pas que le chargement soit pris en compte plusieurs fois :
+                MOINS__ PHENO='ME'  MODELI='GRM'
+                MOINS__ PHENO='ME'  MODELI='GRC'
+                MOINS__ PHENO='ME'  MODELI='MMB'
+
+% Ce chargement concerne les elements XFEM "massifs" :
+                PLUS__  PHENO='ME' BORD='0'  LXFEM='OUI'

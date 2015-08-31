@@ -83,6 +83,26 @@ subroutine te0580(nomopt, nomte)
         enddo
 
 
+    elseif (nomopt.eq.'CHAR_MECA_EPSI_R'  ) then
+!   ===================================================================================
+        do kpara=1,1
+            param='PEPSINR'
+            call tecach('NNN', param, 'L', iret, nval=8, itab=itab)
+            if (iret.eq.0) then
+                jad=itab(1)
+                nbv=itab(2)
+                ASSERT(itab(5).eq.1 .or. itab(5).eq.4)
+                if (itab(5).eq.1) then
+                    do k=1,nbv
+                        if (zr(jad-1+k).ne.0.d0) goto 998
+                    enddo
+                else
+                    ASSERT(.false.)
+                endif
+            endif
+        enddo
+
+
     elseif ( nomopt.eq.'CHAR_MECA_SFCO3D' .or. nomopt.eq.'CHAR_MECA_SRCO3D'  &
         .or. nomopt.eq.'RIGI_MECA_SFCO3D' .or. nomopt.eq.'RIGI_MECA_SRCO3D' ) then
 !   ===================================================================================
