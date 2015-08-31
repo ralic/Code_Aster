@@ -20,7 +20,7 @@ interface
                       igthet, ipref, ipres, ithet, jac,&
                       jlst, ka, mu, nd,&
                       ndim, nfh, nnop, nnops, itemps,&
-                      nompar, option, presn, singu, xg)
+                      nompar, option, presn, singu, xg, igeom)
         integer :: nnop
         integer :: ndim
         real(kind=8) :: angl(2)
@@ -51,5 +51,6 @@ interface
         real(kind=8) :: presn(27)
         integer :: singu
         real(kind=8) :: xg(4)
+        integer :: igeom
     end subroutine xsifl1
 end interface 

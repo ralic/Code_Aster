@@ -3,7 +3,7 @@ subroutine xsifl1(angl, basloc, coeff, coeff3, ddlm,&
                   igthet, ipref, ipres, ithet, jac,&
                   jlst, ka, mu, nd,&
                   ndim, nfh, nnop, nnops, itemps,&
-                  nompar, option, presn, singu, xg)
+                  nompar, option, presn, singu, xg, igeom)
     implicit none
 !
 ! ======================================================================
@@ -22,10 +22,12 @@ subroutine xsifl1(angl, basloc, coeff, coeff3, ddlm,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/chauxi.h"
 #include "asterfort/fointe.h"
 #include "asterfort/indent.h"
+#include "asterfort/lteatt.h"
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
 #include "asterfort/utmess.h"
@@ -37,6 +39,7 @@ subroutine xsifl1(angl, basloc, coeff, coeff3, ddlm,&
 ! Calcul de G avec forces de pression XFEM sur les levres
 !   de la fissure
 !
+    integer :: igeom
     integer :: nnop, ndim, heavn(nnop,5)
     real(kind=8) :: angl(2), basloc(9*nnop), cisa, coeff, coeff3
     integer :: cpt, ddlm, ddls
@@ -57,7 +60,8 @@ subroutine xsifl1(angl, basloc, coeff, coeff3, ddlm,&
     real(kind=8) :: p(3, 3), pres, presn(27), rb9(3, 3), rr(2)
     integer :: singu
     real(kind=8) :: theta(3), u1(3), u1l(3), u2(3), u2l(3), u3(3)
-    real(kind=8) :: u3l(3), xg(4), rb33(3,3,3)
+    real(kind=8) :: u3l(3), xg(4), rb33(3,3,3), r
+    aster_logical :: axi
     call vecini(3, 0.d0, e1)
     call vecini(3, 0.d0, e2)
     lsn=0.d0
@@ -168,6 +172,18 @@ subroutine xsifl1(angl, basloc, coeff, coeff3, ddlm,&
         divt = divt + dtdm(i,i)
 !
 390  continue
+!
+    axi = lteatt('AXIS','OUI')
+    if (axi) then
+        r = 0.d0
+        do ino = 1, nnop
+            r = r + ff(ino)*zr(igeom-1+2*(ino-1)+1)
+        end do
+        ASSERT(r.gt.0d0)
+        divt = divt + theta(1)/r
+        jac = jac * r
+    endif
+
 !
 !     BOUCLE SUR LES DEUX LEVRES
     do 300 ilev = 1, 2

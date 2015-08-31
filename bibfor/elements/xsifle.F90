@@ -189,7 +189,7 @@ subroutine xsifle(ndim, ifa, jptint, cface,&
                         igthet, ipref, ipres, ithet, jac,&
                         jlst, ka, mu, nd,&
                         ndim, nfh, nnop, nnos, itemps,&
-                        nompar, option, presn, singu, xg)
+                        nompar, option, presn, singu, xg, igeom)
         endif
         if (option .eq. 'CALC_K_G_COHE') then
             call xsifl2(basloc, coeff, coeff3, ddld, ddlm,&
