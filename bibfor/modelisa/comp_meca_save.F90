@@ -69,18 +69,17 @@ implicit none
 !
     character(len=24) :: list_elem_affe
     aster_logical :: l_affe_all
-    integer :: nb_elem_affe, nb_elem_mesh, nb_grel, nb_elem_liel, nb_model_affe
-    integer, pointer :: p_elem_affe(:) => null()
-    integer, pointer :: p_elem_mesh(:) => null()
-    integer :: i_grel, i_elem_mesh, i_elem_liel, i_elem_affe
-    integer, pointer :: p_liel(:) => null()
+    integer :: nb_elem_affe, nb_model_affe
+    integer, pointer :: v_elem_affe(:) => null()
+    integer, pointer :: v_model_elem(:) => null()
+    integer :: i_elem_affe
     character(len=19) :: ligrmo
     character(len=16) :: keywordfact
     integer :: iocc, nbocc
     character(len=8) :: typmcl(2)
     character(len=16) :: motcle(2)
     integer :: nt
-    character(len=16), pointer :: p_compor_valv(:) => null()
+    character(len=16), pointer :: v_compor_valv(:) => null()
     character(len=16) :: defo_comp, rela_comp, type_comp, type_cpla, mult_comp
     character(len=16) :: kit_comp(9), type_matg, post_iter
     aster_logical :: l_cristal, l_umat, l_mfront, l_exte_comp
@@ -102,29 +101,13 @@ implicit none
     l_is_pmf  = .false.
     ligrmo    =  model//'.MODELE'
 !
-! - Create list of elements belongs to MODELE
+! - Access to MODEL
 !
-    call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nb_elem_mesh)
-    AS_ALLOCATE(vi = p_elem_mesh, size = nb_elem_mesh)
-    call jelira(ligrmo(1:19)//'.LIEL', 'NUTIOC', nb_grel)
-    do i_grel = 1, nb_grel
-        call jeveuo(jexnum(ligrmo(1:19)//'.LIEL', i_grel), 'L', vi = p_liel)
-        call jelira(jexnum(ligrmo(1:19)//'.LIEL', i_grel), 'LONMAX', nb_elem_liel)
-        do i_elem_mesh = 1, nb_elem_mesh
-            elem_nume = i_elem_mesh
-            do i_elem_liel = 1, nb_elem_liel-1
-                if (elem_nume .eq. p_liel(i_elem_liel)) then
-                    p_elem_mesh(i_elem_mesh) = 1             
-                    goto 20
-                endif
-            end do
-20          continue
-        end do
-    end do
+    call jeveuo(model//'.MAILLE', 'L', vi=v_model_elem)
 !
 ! - Access to COMPOR <CARTE>
 !
-    call jeveuo(compor//'.VALV', 'E', vk16 = p_compor_valv)
+    call jeveuo(compor//'.VALV', 'E', vk16 = v_compor_valv)
 !
 ! - Loop on occurrences of COMPORTEMENT
 !
@@ -132,46 +115,48 @@ implicit none
 !
 ! ----- Get infos
 !
-        nb_vari_exte = info_comp_vali(2*(iocc-1) + 1)
-        unit_comp = info_comp_vali(2*(iocc-1) + 2)
-        nume_comp = info_comp_nvar(10*(iocc-1) + 1)
-        nb_vari = info_comp_nvar(10*(iocc-1) + 2)
+        nb_vari_exte    = info_comp_vali(2*(iocc-1) + 1)
+        unit_comp       = info_comp_vali(2*(iocc-1) + 2)
+        nume_comp       = info_comp_nvar(10*(iocc-1) + 1)
+        nb_vari         = info_comp_nvar(10*(iocc-1) + 2)
         nb_vari_comp(1) = info_comp_nvar(10*(iocc-1) + 3)
         nb_vari_comp(2) = info_comp_nvar(10*(iocc-1) + 4)
         nb_vari_comp(3) = info_comp_nvar(10*(iocc-1) + 5)
         nb_vari_comp(4) = info_comp_nvar(10*(iocc-1) + 6)
-        rela_comp = info_comp_valk(16*(iocc-1) + 1)
-        defo_comp = info_comp_valk(16*(iocc-1) + 2)
-        type_comp = info_comp_valk(16*(iocc-1) + 3)
-        type_cpla = info_comp_valk(16*(iocc-1) + 4)
-        kit_comp(1) = info_comp_valk(16*(iocc-1) + 5)
-        kit_comp(2) = info_comp_valk(16*(iocc-1) + 6)
-        kit_comp(3) = info_comp_valk(16*(iocc-1) + 7)
-        kit_comp(4) = info_comp_valk(16*(iocc-1) + 8)
-        kit_comp(5) = info_comp_valk(16*(iocc-1) + 9)
-        kit_comp(6) = info_comp_valk(16*(iocc-1) + 10)
-        kit_comp(7) = info_comp_valk(16*(iocc-1) + 11)
-        kit_comp(8) = info_comp_valk(16*(iocc-1) + 12)
-        kit_comp(9) = info_comp_valk(16*(iocc-1) + 13)
-        mult_comp = info_comp_valk(16*(iocc-1) + 14)
-        type_matg = info_comp_valk(16*(iocc-1) + 15)
-        post_iter = info_comp_valk(16*(iocc-1) + 16)
+        rela_comp       = info_comp_valk(16*(iocc-1) + 1)
+        defo_comp       = info_comp_valk(16*(iocc-1) + 2)
+        type_comp       = info_comp_valk(16*(iocc-1) + 3)
+        type_cpla       = info_comp_valk(16*(iocc-1) + 4)
+        kit_comp(1)     = info_comp_valk(16*(iocc-1) + 5)
+        kit_comp(2)     = info_comp_valk(16*(iocc-1) + 6)
+        kit_comp(3)     = info_comp_valk(16*(iocc-1) + 7)
+        kit_comp(4)     = info_comp_valk(16*(iocc-1) + 8)
+        kit_comp(5)     = info_comp_valk(16*(iocc-1) + 9)
+        kit_comp(6)     = info_comp_valk(16*(iocc-1) + 10)
+        kit_comp(7)     = info_comp_valk(16*(iocc-1) + 11)
+        kit_comp(8)     = info_comp_valk(16*(iocc-1) + 12)
+        kit_comp(9)     = info_comp_valk(16*(iocc-1) + 13)
+        mult_comp       = info_comp_valk(16*(iocc-1) + 14)
+        type_matg       = info_comp_valk(16*(iocc-1) + 15)
+        post_iter       = info_comp_valk(16*(iocc-1) + 16)
 !
 ! ----- Detection of specific cases
 !
         call comp_meca_l(rela_comp, 'MATR_TGSC', l_matr_tgsc, type_matg = type_matg)
         call comp_meca_l(rela_comp, 'CRIT_RUPT', l_crit_rupt, post_iter = post_iter)
-        call comp_meca_l(rela_comp, 'CRISTAL', l_cristal)
+        call comp_meca_l(rela_comp, 'CRISTAL'  , l_cristal)
         call comp_meca_l(rela_comp, 'EXTE_COMP', l_exte_comp)
-        call comp_meca_l(rela_comp, 'UMAT', l_umat)
-        call comp_meca_l(rela_comp, 'MFRONT', l_mfront)
+        call comp_meca_l(rela_comp, 'UMAT'     , l_umat)
+        call comp_meca_l(rela_comp, 'MFRONT'   , l_mfront)
 !
 ! ----- Multifiber beams
 !
         call comp_meca_l(rela_comp, 'PMF', l_pmf)
-        if (l_pmf) l_is_pmf = .true.
+        if (l_pmf) then
+            l_is_pmf = .true.
+        endif
 !
-! ----- Get mesh
+! ----- Get elements
 !
         call getvtx(keywordfact, 'TOUT', iocc = iocc, nbret = nt)
         if (nt .ne. 0) then
@@ -181,17 +166,17 @@ implicit none
             l_affe_all = .false.
             call reliem(' ', mesh, 'NU_MAILLE', keywordfact, iocc,&
                         2, motcle, typmcl, list_elem_affe, nb_elem_affe)
-            if (nb_elem_affe .eq. 0) l_affe_all = .true.
+            l_affe_all = nb_elem_affe .eq. 0
         endif
 !
 ! ----- Check if elements belong to model
 !
         nb_model_affe = 0
-        if (nb_elem_affe.ne.0) then
-            call jeveuo(list_elem_affe, 'L', vi = p_elem_affe)
+        if (nb_elem_affe .ne. 0) then
+            call jeveuo(list_elem_affe, 'L', vi = v_elem_affe)
             do i_elem_affe = 1, nb_elem_affe
-                elem_nume = p_elem_affe(i_elem_affe)
-                if (p_elem_mesh(elem_nume).ne.0) then
+                elem_nume = v_elem_affe(i_elem_affe)
+                if (v_model_elem(elem_nume) .ne. 0) then
                     nb_model_affe = nb_model_affe + 1
                 endif
             end do
@@ -204,50 +189,51 @@ implicit none
 !
 ! ----- Set in <CARTE>
 !
-        p_compor_valv(1) = rela_comp
-        write (p_compor_valv(2),'(I16)') nb_vari
-        p_compor_valv(3) = defo_comp
-        p_compor_valv(4) = type_comp
-        p_compor_valv(5) = type_cpla
+        v_compor_valv(1) = rela_comp
+        write (v_compor_valv(2),'(I16)') nb_vari
+        v_compor_valv(3) = defo_comp
+        v_compor_valv(4) = type_comp
+        v_compor_valv(5) = type_cpla
         if (.not.l_pmf) then
-            write (p_compor_valv(6),'(I16)') nume_comp
+            write (v_compor_valv(6),'(I16)') nume_comp
         endif
         if (l_cristal) then
-            p_compor_valv(7) = mult_comp
+            v_compor_valv(7) = mult_comp
         else
-            write (p_compor_valv(7),'(I16)') unit_comp
+            write (v_compor_valv(7),'(I16)') unit_comp
         endif
-        p_compor_valv(8) = kit_comp(1)
-        p_compor_valv(9) = kit_comp(2)
-        p_compor_valv(10) = kit_comp(3)
-        p_compor_valv(11) = kit_comp(4)
-        write (p_compor_valv(12),'(I16)') iocc
-            p_compor_valv(13) = type_matg
-            p_compor_valv(14) = post_iter
-        p_compor_valv(15) = kit_comp(8)
-        p_compor_valv(16) = kit_comp(9)
-        write (p_compor_valv(17),'(I16)') nb_vari_comp(1)
-        write (p_compor_valv(18),'(I16)') nb_vari_comp(2)
-        write (p_compor_valv(19),'(I16)') nb_vari_comp(3)
-        write (p_compor_valv(20),'(I16)') nb_vari_comp(4)
+        v_compor_valv(8) = kit_comp(1)
+        v_compor_valv(9) = kit_comp(2)
+        v_compor_valv(10) = kit_comp(3)
+        v_compor_valv(11) = kit_comp(4)
+        write (v_compor_valv(12),'(I16)') iocc
+            v_compor_valv(13) = type_matg
+            v_compor_valv(14) = post_iter
+        v_compor_valv(15) = kit_comp(8)
+        v_compor_valv(16) = kit_comp(9)
+        write (v_compor_valv(17),'(I16)') nb_vari_comp(1)
+        write (v_compor_valv(18),'(I16)') nb_vari_comp(2)
+        write (v_compor_valv(19),'(I16)') nb_vari_comp(3)
+        write (v_compor_valv(20),'(I16)') nb_vari_comp(4)
 !
 ! ----- Affect in <CARTE>
 !
         if (l_affe_all) then
             call nocart(compor, 1, nb_cmp)
         else
-            call jeveuo(list_elem_affe, 'L', vi = p_elem_affe)
+            call jeveuo(list_elem_affe, 'L', vi = v_elem_affe)
             call nocart(compor, 3, nb_cmp, mode = 'NUM', nma = nb_elem_affe,&
-                        limanu = p_elem_affe)
+                        limanu = v_elem_affe)
             call jedetr(list_elem_affe)
         endif
     enddo
 !
-! - Compor <CARTE> fusing
+! - Compor <CARTE> fusing for multifiber beams
 !
-    if (l_is_pmf) call nmdpmf(compor, chmate)
+    if (l_is_pmf) then
+        call nmdpmf(compor, chmate)
+    endif
 !
-    AS_DEALLOCATE(vi = p_elem_mesh)
     call jedetr(compor//'.NCMP')
     call jedetr(compor//'.VALV')
 !
