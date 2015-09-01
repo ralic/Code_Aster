@@ -19,8 +19,6 @@ subroutine te0023(option, nomte)
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
@@ -35,7 +33,6 @@ subroutine te0023(option, nomte)
 !
     integer :: iorien, istrx, i, kpg, npg, ncomp
 !     ------------------------------------------------------------------
-    call jemarq()
 !
     ASSERT(option .eq. 'INI_STRX')
 !
@@ -62,5 +59,4 @@ subroutine te0023(option, nomte)
             zr(istrx-1+i) = zr(iorien-1+i)
 30      continue
     endif
-    call jedema()
 end subroutine

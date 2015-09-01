@@ -5,7 +5,6 @@ subroutine te0414(optioz, nomtz)
 #include "asterfort/cosiro.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jevete.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/matpgl.h"
 #include "asterfort/tranlg.h"
 #include "asterfort/utmess.h"
@@ -41,14 +40,13 @@ subroutine te0414(optioz, nomtz)
 !
 !-----------------------------------------------------------------------
     integer :: i, i1, i2, ibid, icompo, ideplm, ideplp
-    integer :: jgeom, jmatr, lzr, nb2, nddlet
-    integer, pointer :: desi(:) => null()
+    integer :: jgeom, jmatr, lzr, nb2, nddlet, lzi
 !-----------------------------------------------------------------------
     option = optioz
     nomte = nomtz
 !
-    call jeveuo('&INEL.'//nomte(1:8)//'.DESI', 'L', vi=desi)
-    nb2 = desi(2)
+    call jevete('&INEL.'//nomte(1:8)//'.DESI', ' ', lzi)
+    nb2 = zi(lzi-1+2)
 !
     if (option .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA' .or. option(1:9) .eq.&
         'RIGI_MECA') then

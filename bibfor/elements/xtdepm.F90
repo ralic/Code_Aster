@@ -24,8 +24,6 @@ subroutine xtdepm(ndim, jnnm, jnne, ndeple, nsinge,&
     implicit none
 #include "jeveux.h"
 #include "asterfort/indent.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xcalc_code.h"
 #include "asterfort/xcalc_heav.h"
@@ -70,7 +68,6 @@ subroutine xtdepm(ndim, jnnm, jnne, ndeple, nsinge,&
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
 !
 ! --- INITIALISATIONS
 !
@@ -151,6 +148,5 @@ subroutine xtdepm(ndim, jnnm, jnne, ndeple, nsinge,&
 220      continue
 201  end do
 !
-    call jedema()
 !
 end subroutine

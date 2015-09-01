@@ -49,8 +49,6 @@ subroutine te0150(option, nomte)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lonele.h"
 #include "asterfort/matro2.h"
@@ -102,7 +100,6 @@ subroutine te0150(option, nomte)
     character(len=8) :: noms_cara(nb_cara)
     data noms_cara /'A1','A2','TVAR'/
 ! --------------------------------------------------------------------------------------------------
-    call jemarq()
 !
     fami = 'RIGI'
     nno = 2
@@ -296,5 +293,4 @@ subroutine te0150(option, nomte)
         endif
     endif
 !
-    call jedema()
 end subroutine

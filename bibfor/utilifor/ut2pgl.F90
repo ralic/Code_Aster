@@ -17,8 +17,6 @@ subroutine ut2pgl(nn, nc, p, sg, sl)
 ! ======================================================================
 !
     implicit none
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/lcdi2m.h"
 #include "asterfort/lcps2m.h"
 #include "asterfort/lcso2m.h"
@@ -50,7 +48,6 @@ subroutine ut2pgl(nn, nc, p, sg, sl)
 !IN   R   SL   NN*NC COMPOSANTES DE LA TRIANGULAIRE SL DANS LOCAL
 !OUT  R   SG   NN*NC COMPOSANTES DE LA TRIANGULAIRE SG DANS GLOBAL
 !     ------------------------------------------------------------------
-    call jemarq()
 !
     nddl = nn * nc
     n = nddl*nddl
@@ -71,6 +68,5 @@ subroutine ut2pgl(nn, nc, p, sg, sl)
     call lcso2m(nddl, parsmg, parayg, matrig)
     call mapvec(matrig, nddl, sl, n)
 !
-    call jedema()
 !
 end subroutine

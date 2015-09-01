@@ -20,8 +20,6 @@ subroutine xmpint(ndim, npte, nfaes, jpcpi, jpccf,&
 !
     implicit none
 #include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
     integer :: jpcpi, jpccf
     integer :: ndim, nfaes, npte
     real(kind=8) :: geopi(18)
@@ -55,7 +53,6 @@ subroutine xmpint(ndim, npte, nfaes, jpcpi, jpccf,&
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
 !
     do 30 i = 1, npte
 ! --- BOUCLE SUR LES POINTS D'INTERSECTION DE LA FACETTE
@@ -64,5 +61,4 @@ subroutine xmpint(ndim, npte, nfaes, jpcpi, jpccf,&
 40      continue
 30  continue
 !
-    call jedema()
 end subroutine

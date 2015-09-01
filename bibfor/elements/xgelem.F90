@@ -30,8 +30,6 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/iselli.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/nmelnl.h"
@@ -119,7 +117,6 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
     data    fami   /'BID','XINT','XINT','BID','XINT','XINT'/
 !
 !
-    call jemarq()
 !
 !     VERIF QUE LES TABLEAUX LOCAUX DYNAMIQUES NE SONT PAS TROP GRANDS
 !     (VOIR CRS 1404)
@@ -714,5 +711,4 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
 
 
 !
-    call jedema()
 end subroutine

@@ -14,8 +14,6 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr,&
 #include "asterfort/conare.h"
 #include "asterfort/confac.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/loncar.h"
 #include "asterfort/padist.h"
 #include "asterfort/provec.h"
@@ -92,7 +90,6 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr,&
     aster_logical :: lcont, lajpa, lajpb, lajpc, ajout, cut, arete
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
 !
     eps=-1.0d-10
     zxain = xxmmvd('ZXAIN')
@@ -526,5 +523,4 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr,&
     endif
     if (nfiss .gt. 1 .and. minlsn .eq. 0) nface = 0
     if (nface .eq. 0) ninter = 0
-    call jedema()
 end subroutine

@@ -21,8 +21,6 @@ subroutine te0398(option, nomte)
 #include "jeveux.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 !
     character(len=16) :: nomte, option
@@ -46,7 +44,6 @@ subroutine te0398(option, nomte)
 !
 ! DEB ------------------------------------------------------------------
 !
-    call jemarq()
 !
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
   npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
@@ -80,7 +77,6 @@ subroutine te0398(option, nomte)
 !
 100  end do
 !
-    call jedema()
 !
 ! FIN ------------------------------------------------------------------
 end subroutine

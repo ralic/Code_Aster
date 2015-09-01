@@ -18,8 +18,6 @@ subroutine te0290(option, nomte)
     implicit none
 #include "jeveux.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/utmess.h"
 !
@@ -39,7 +37,6 @@ subroutine te0290(option, nomte)
     integer :: i, idfde, igeom, ipoids, ivectu, ivf, jgano
     integer :: ndim, nno, npg, nsom
 !-----------------------------------------------------------------------
-    call jemarq()
 !
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nsom,&
   npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
@@ -94,5 +91,4 @@ subroutine te0290(option, nomte)
         zr(ivectu+2*i-2) = nx(i)
         zr(ivectu+2*i-1) = ny(i)
  5  end do
-    call jedema()
 end subroutine

@@ -2,8 +2,6 @@ subroutine xlsjon(ino, jlsn, nfiss, jfisco, jonc_no)
     implicit none
 !
 #include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
     integer :: ino, jlsn, nfiss, jfisco
     real(kind=8) :: jonc_no(nfiss)
@@ -42,7 +40,6 @@ subroutine xlsjon(ino, jlsn, nfiss, jfisco, jonc_no)
 !
 !.....................................................................
 !
-    call jemarq()
 !
     if (nfiss.eq.1) then
 !
@@ -93,6 +90,5 @@ subroutine xlsjon(ino, jlsn, nfiss, jfisco, jonc_no)
 !
     endif
 !
-    call jedema()
 !
 end subroutine

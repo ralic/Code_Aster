@@ -16,8 +16,6 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/elrfvf.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/loncar.h"
 #include "asterfort/padist.h"
 #include "asterfort/provec.h"
@@ -89,7 +87,6 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
     parameter       (ptmax=4, elc='SE3',nbnomx=27)
 ! --------------------------------------------------------------------
 !
-    call jemarq()
 !
     eps=-1.0d-10
 !
@@ -359,5 +356,4 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
     endif
 !
 999 continue
-    call jedema()
 end subroutine

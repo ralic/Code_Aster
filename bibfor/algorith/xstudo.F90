@@ -4,8 +4,6 @@ subroutine xstudo(ndime, ninter, npts, nptm, ainter,&
 !
 #    include "jeveux.h"
 #    include "asterfort/assert.h"
-#    include "asterfort/jedema.h"
-#    include "asterfort/jemarq.h"
 #    include "asterfort/xxmmvd.h"
     integer :: ndime, ninter, npts, nptm
     real(kind=8) :: ainter(*)
@@ -54,7 +52,6 @@ subroutine xstudo(ndime, ninter, npts, nptm, ainter,&
 !              
     integer :: zxain 
 
-    call jemarq()
 
     zxain=xxmmvd('ZXAIN')
 
@@ -244,5 +241,4 @@ subroutine xstudo(ndime, ninter, npts, nptm, ainter,&
         ASSERT(.false.)
 !
     endif
-    call jedema()
 end subroutine

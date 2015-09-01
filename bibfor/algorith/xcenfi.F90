@@ -10,8 +10,6 @@ subroutine xcenfi(elrefp, ndim, ndime, geom, lsn,&
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/elrfdf.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/provec.h"
 #include "asterfort/reerel.h"
 #include "asterfort/vecini.h"
@@ -67,7 +65,6 @@ subroutine xcenfi(elrefp, ndim, ndime, geom, lsn,&
 !
 ! --------------------------------------------------------------------
 !
-    call jemarq()
 !
     call elrefe_info(elrefe=elrefp,fami='RIGI',nno=nno)
 !
@@ -204,5 +201,4 @@ subroutine xcenfi(elrefp, ndim, ndime, geom, lsn,&
     call reerel(elrefp, nno, ndim, geom, cenref,&
                 cenfi)
 !
-    call jedema()
 end subroutine

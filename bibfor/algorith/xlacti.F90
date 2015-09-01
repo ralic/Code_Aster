@@ -19,8 +19,6 @@ subroutine xlacti(typma, ninter, jaint, lact, nlact)
     implicit none
 #include "jeveux.h"
 #include "asterfort/conare.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/xxmmvd.h"
     character(len=8) :: typma
     integer :: ninter, jaint, lact(8), nlact
@@ -53,7 +51,6 @@ subroutine xlacti(typma, ninter, jaint, lact, nlact)
     integer :: ino, ino1, ino2, iar, ar(12, 3), nbar
     integer :: vit(8), nvit, nli
 !.......................................................................
-    call jemarq()
 !
 ! --- INITIALISATIONS
 !
@@ -91,5 +88,4 @@ subroutine xlacti(typma, ninter, jaint, lact, nlact)
         if (lact(ino) .ne. 0) nlact=nlact+1
 20  end do
 !
-    call jedema()
 end subroutine

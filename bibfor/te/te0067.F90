@@ -3,8 +3,6 @@ subroutine te0067(option, nomte)
 #include "jeveux.h"
 !
 #include "asterfort/elrefe_info.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcadma.h"
 #include "asterfort/zacier.h"
@@ -50,7 +48,6 @@ subroutine te0067(option, nomte)
     integer :: ipftrc, jftrc, jtrc, iphasi, iphasn, icompo
     integer :: matos, nbcb1, nbcb2, nblexp, iadexp, idfde
 !
-    call jemarq()
 !
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
   npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
@@ -120,5 +117,4 @@ subroutine te0067(option, nomte)
 !
     endif
 !
-    call jedema()
 end subroutine

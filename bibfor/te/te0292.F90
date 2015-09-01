@@ -6,8 +6,6 @@ subroutine te0292(option, nomte)
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/rcvalb.h"
@@ -60,7 +58,6 @@ subroutine te0292(option, nomte)
     aster_logical :: laxi
 !
 ! ----------------------------------------------------------------------
-    call jemarq()
 !
     fami = 'RIGI'
     call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
@@ -212,6 +209,5 @@ subroutine te0292(option, nomte)
     zr(ierr+2) = sqrt(norsig)
     zr(ierr-1+10)=he
 !
-    call jedema()
 !
 end subroutine

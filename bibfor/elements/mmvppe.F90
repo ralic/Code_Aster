@@ -27,8 +27,6 @@ subroutine mmvppe(typmae, typmam, iresog, ndim, nne,&
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/mmdepm.h"
 #include "asterfort/mmform.h"
@@ -113,7 +111,6 @@ subroutine mmvppe(typmae, typmam, iresog, ndim, nne,&
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
 !
 ! --- RECUPERATION DES DONNEES DE PROJECTION
 !
@@ -239,6 +236,5 @@ subroutine mmvppe(typmae, typmam, iresog, ndim, nne,&
         call mmmjev(ndim, norm, vitpe, vitpm, jeuvit)
     endif
 !
-    call jedema()
 !
 end subroutine

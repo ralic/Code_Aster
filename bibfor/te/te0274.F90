@@ -36,8 +36,6 @@ subroutine te0274(option, nomte)
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/foderi.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/teattr.h"
@@ -55,7 +53,6 @@ subroutine te0274(option, nomte)
 !====
 ! 1.1 PREALABLES: RECUPERATION ADRESSES FONCTIONS DE FORMES...
 !====
-    call jemarq()
 !
     call elref1(elrefe)
 !
@@ -150,5 +147,4 @@ subroutine te0274(option, nomte)
 !
 130 continue
 ! FIN ------------------------------------------------------------------
-    call jedema()
 end subroutine

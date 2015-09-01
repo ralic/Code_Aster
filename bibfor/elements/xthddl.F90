@@ -24,8 +24,6 @@ subroutine xthddl(nfh, nddlno, nno, stano, option,&
 #include "asterc/r8maem.h"
 #include "asterfort/assert.h"
 #include "asterfort/indent.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/teattr.h"
     integer, intent(in) :: nfh, nddlno, nno, stano(*)
     character(len=16), intent(in) :: option, nomte
@@ -60,7 +58,6 @@ subroutine xthddl(nfh, nddlno, nno, stano, option,&
 !
 !-------------------------------------------------------------
 !
-    call jemarq()
 !
 !-------------------------------------------------------------
 !   NOMS DES OPTIONS AUTORISEES
@@ -208,5 +205,4 @@ subroutine xthddl(nfh, nddlno, nno, stano, option,&
 !
     endif
 !
-    call jedema()
 end subroutine

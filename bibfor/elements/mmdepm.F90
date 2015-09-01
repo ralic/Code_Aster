@@ -22,8 +22,6 @@ subroutine mmdepm(nbdm  ,ndim  ,nne   ,nnm   ,jdepm , &
 !
     implicit none
 #include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
     integer :: nbdm, ndim, nne, nnm
     integer :: jdepde, jdepm
     real(kind=8) :: ffe(9), ffm(9)
@@ -64,7 +62,6 @@ subroutine mmdepm(nbdm  ,ndim  ,nne   ,nnm   ,jdepm , &
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
 !
     do  idim = 1, 3
         ddeplm(idim) = 0.d0
@@ -105,6 +102,5 @@ subroutine mmdepm(nbdm  ,ndim  ,nne   ,nnm   ,jdepm , &
 142      continue
   end do
 !
-    call jedema()
 !
 end subroutine

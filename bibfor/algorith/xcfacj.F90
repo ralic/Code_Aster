@@ -28,8 +28,6 @@ subroutine xcfacj(ptint, ptmax, ipt, ainter, lsn,&
 #include "asterfort/confac.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elrfvf.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/padist.h"
 #include "asterfort/reereg.h"
 #include "asterfort/xajpin.h"
@@ -74,7 +72,6 @@ subroutine xcfacj(ptint, ptmax, ipt, ainter, lsn,&
     aster_logical :: chgsgn, lajpf, ajout
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
     call elref1(elref)
     prec=100.d0*r8prem()
     call confac(typma, ibid3, ibid, fa, nbf)
@@ -189,5 +186,4 @@ subroutine xcfacj(ptint, ptmax, ipt, ainter, lsn,&
 200 continue
 !
 !
-    call jedema()
 end subroutine

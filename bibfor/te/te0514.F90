@@ -8,8 +8,6 @@ subroutine te0514(option, nomte)
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/iselli.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/loncar.h"
 #include "asterfort/matini.h"
@@ -93,7 +91,6 @@ subroutine te0514(option, nomte)
     ASSERT(option.eq.'TOPOSE')
     call vecini(51, 0.d0, pmilie)
     call vecini(20, 0.d0, ainter)
-    call jemarq()
 !
     call elref1(elp)
     call elrefe_info(fami='RIGI', ndim=ndime, nno=nno)
@@ -521,5 +518,4 @@ subroutine te0514(option, nomte)
                         zi(jlonch-1+4)=npm
                     endif
 !
-                    call jedema()
                 end subroutine

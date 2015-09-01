@@ -4,8 +4,6 @@ subroutine te0335(option, nomte)
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fgequi.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/tecach.h"
     character(len=16) :: nomte, option
 ! ----------------------------------------------------------------------
@@ -71,7 +69,6 @@ subroutine te0335(option, nomte)
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
 !
     if ((nomte.eq.'MEC3QU9H') .or. (nomte.eq.'MEC3TR7H')) then
         call elrefe_info(fami='MASS',ndim=ndim1,nno=nno,nnos=nnos,&
@@ -188,6 +185,5 @@ subroutine te0335(option, nomte)
 !
     endif
 !
-    call jedema()
 !
 end subroutine

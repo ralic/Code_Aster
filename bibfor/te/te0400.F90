@@ -6,8 +6,6 @@ subroutine te0400(option, nomte)
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/iselli.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/xcninv.h"
 #include "asterfort/xvoise.h"
@@ -66,7 +64,6 @@ subroutine te0400(option, nomte)
 ! ----------------------------------------------------------------------
 !
 !
-    call jemarq()
 !
 !     ELEMENT DE REFERENCE PARENT
     call elref1(elrefp)
@@ -106,6 +103,5 @@ subroutine te0400(option, nomte)
     call xvoise(nnotot, nse, nnop, nno, jcnset,&
                 vcninx, zi(ivoisx))
 !
-    call jedema()
 !
 end subroutine

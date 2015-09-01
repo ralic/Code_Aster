@@ -37,8 +37,6 @@ subroutine xselno(nno, nnop, nbsig, nse, ndim,&
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
     integer :: mxval
     parameter (mxval=32*10*6)
 !     EN 2D :
@@ -61,7 +59,6 @@ subroutine xselno(nno, nnop, nbsig, nse, ndim,&
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
 !
 !     TABLEAUX DE LA SOMME DES CONTRAINTES
     do 444 i = 1, nnop
@@ -100,6 +97,5 @@ subroutine xselno(nno, nnop, nbsig, nse, ndim,&
 310      continue
 300  continue
 !
-    call jedema()
 !
 end subroutine

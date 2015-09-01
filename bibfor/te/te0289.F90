@@ -5,8 +5,6 @@ subroutine te0289(option, nomte)
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/iselli.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nbsigm.h"
 #include "asterfort/xselno.h"
@@ -70,7 +68,6 @@ subroutine te0289(option, nomte)
     data    fami   /'BID','XINT','XINT','BID','XINT','XINT'/
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
 !
 !-----------------------------------------------------------------------
 !   INITIALISATIONS
@@ -152,6 +149,5 @@ subroutine te0289(option, nomte)
 !
     endif
 !
-    call jedema()
 !
 end subroutine

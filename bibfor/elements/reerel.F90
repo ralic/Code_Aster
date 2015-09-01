@@ -5,8 +5,6 @@ subroutine reerel(elrefp, nnop, ndim, tabar, xe,&
 !
 #include "jeveux.h"
 #include "asterfort/elrfvf.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/vecini.h"
     integer :: ndim, nnop
     real(kind=8) :: xe(ndim), xg(ndim), tabar(*)
@@ -48,7 +46,6 @@ subroutine reerel(elrefp, nnop, ndim, tabar, xe,&
 !
 !......................................................................
 !
-    call jemarq()
 !
     call vecini(ndim, 0.d0, xg)
 !
@@ -69,5 +66,4 @@ subroutine reerel(elrefp, nnop, ndim, tabar, xe,&
 200      continue
 100  end do
 !
-    call jedema()
 end subroutine

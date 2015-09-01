@@ -18,8 +18,6 @@ subroutine rcdiff(imate, comp, temp, c, diff)
     implicit none
 #include "jeveux.h"
 #include "asterc/r8t0.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
@@ -50,7 +48,6 @@ subroutine rcdiff(imate, comp, temp, c, diff)
     character(len=16) :: nomres(nbres)
     character(len=32) :: phenom
 !
-    call jemarq()
 !
     call rccoma(imate, comp(1:6), 1, phenom, icodre(1))
 !
@@ -115,5 +112,4 @@ subroutine rcdiff(imate, comp, temp, c, diff)
     endif
 !
 !
-    call jedema()
 end subroutine

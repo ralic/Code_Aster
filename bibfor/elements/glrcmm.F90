@@ -56,8 +56,6 @@ subroutine glrcmm(zimat, matr, ep, surfgp, p,&
 ! person_in_charge: sebastien.fayolle at edf.fr
 !
 #include "asterfort/glrcdd.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/matmul.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
@@ -77,7 +75,6 @@ subroutine glrcmm(zimat, matr, ep, surfgp, p,&
     character(len=32) :: phenom
 !
     r8bid = 0.d0
-    call jemarq()
 !
     phenom = 'GLRC_DAMAGE'
 !
@@ -172,6 +169,5 @@ subroutine glrcmm(zimat, matr, ep, surfgp, p,&
                 ecr, delas, dsidep, normm, normn,&
                 crit, codret)
 !
-    call jedema()
 !
 end subroutine

@@ -6,8 +6,6 @@ subroutine te0291(option, nomte)
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/rcvalb.h"
@@ -63,7 +61,6 @@ subroutine te0291(option, nomte)
     fami = 'RIGI'
     call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
-    call jemarq()
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
@@ -192,6 +189,5 @@ subroutine te0291(option, nomte)
     zr(ierr+2) = sqrt(norsig)
     zr(ierr-1+10)=he
 !
-    call jedema()
 !
 end subroutine

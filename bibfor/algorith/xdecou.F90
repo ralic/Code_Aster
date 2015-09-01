@@ -10,8 +10,6 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
 #include "asterfort/assert.h"
 #include "asterfort/conare.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/reeref.h"
 #include "asterfort/vecini.h"
@@ -80,7 +78,6 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
 !
 !     VERIF QUE LES TABLEAUX LOCAUX DYNAMIQUES NE SONT PAS TROP GRANDS
 !     (VOIR CRS 1404)
@@ -319,5 +316,4 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
             endif
 220     continue
     endif
-    call jedema()
 end subroutine

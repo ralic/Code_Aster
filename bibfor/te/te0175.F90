@@ -31,8 +31,6 @@ subroutine te0175(option, nomte)
 #include "asterc/r8pi.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
 !
@@ -47,7 +45,6 @@ subroutine te0175(option, nomte)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    call jemarq()
 !
     call elrefe_info(fami='NOEU',ndim=ndim,nno=nno,nnos=nnos,&
   npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
@@ -92,5 +89,4 @@ subroutine te0175(option, nomte)
         zr(idino+4)=0.5d0*dimag(zc(ipres+ino-1)*dconjg(vity))
 30  end do
 !
-    call jedema()
 end subroutine

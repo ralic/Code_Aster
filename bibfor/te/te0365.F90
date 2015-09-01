@@ -22,8 +22,6 @@ subroutine te0365(option, nomte)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/mmelem.h"
 #include "asterfort/mmlagc.h"
@@ -86,7 +84,6 @@ subroutine te0365(option, nomte)
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
 !
 ! --- INITIALISATIONS
 !
@@ -199,5 +196,4 @@ subroutine te0365(option, nomte)
         endif
     end do
 !
-    call jedema()
 end subroutine

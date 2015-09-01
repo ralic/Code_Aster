@@ -23,8 +23,6 @@ subroutine te0039(option, nomte)
 #include "asterfort/disief.h"
 #include "asterfort/infdis.h"
 #include "asterfort/infted.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/matrot.h"
 #include "asterfort/r8inir.h"
@@ -68,7 +66,6 @@ subroutine te0039(option, nomte)
 !
     parameter (zero=0.0d0)
 !     ------------------------------------------------------------------
-    call jemarq()
     infodi = 1
 
 
@@ -242,5 +239,4 @@ subroutine te0039(option, nomte)
         ASSERT(.false.)
     endif
 ! --- ------------------------------------------------------------------
-    call jedema()
 end subroutine

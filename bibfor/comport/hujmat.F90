@@ -43,8 +43,6 @@ subroutine hujmat(fami, kpg, ksp, mod, imat,&
 !        NVI      :  NB DE VARIABLES INTERNES
 !    ------------------------------------------------------------
 #include "asterfort/hujnvi.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/rcvalb.h"
@@ -56,7 +54,6 @@ subroutine hujmat(fami, kpg, ksp, mod, imat,&
     integer :: icodre(1)
     integer :: cerr(24)
 !
-    call jemarq()
 !
 ! ---- RECUPERATION DU TYPE DU MATERIAU DANS PHENOM
 !      --------------------------------------------
@@ -161,5 +158,4 @@ subroutine hujmat(fami, kpg, ksp, mod, imat,&
 !
     endif
 !
-    call jedema()
 end subroutine

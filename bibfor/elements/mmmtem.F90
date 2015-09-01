@@ -24,8 +24,6 @@ subroutine mmmtem(phasep,ndim  ,nne   ,nnm   ,mprojn, &
 
     implicit     none
 #include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/matini.h"
 #include "asterfort/mmmmpb.h"
 #include "asterfort/pmat.h"
@@ -85,7 +83,6 @@ subroutine mmmtem(phasep,ndim  ,nne   ,nnm   ,mprojn, &
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
 !
 ! --- INITIALISATIONS
 !
@@ -231,5 +228,4 @@ subroutine mmmtem(phasep,ndim  ,nne   ,nnm   ,mprojn, &
         ASSERT(.false.)
     endif
 !
-    call jedema()
 end subroutine

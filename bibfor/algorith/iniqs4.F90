@@ -3,8 +3,6 @@ subroutine iniqs4(nno, sdfde, sdfdk, poipg, coopg)
 #include "jeveux.h"
 #include "asterfort/elraga.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
     integer :: nno
     real(kind=8) :: sdfde(4, 4), sdfdk(4, 4), coopg(8), poipg(4)
 !
@@ -41,7 +39,6 @@ subroutine iniqs4(nno, sdfde, sdfdk, poipg, coopg)
     character(len=8) :: elrefe, famil
 !     ------------------------------------------------------------------
 !
-    call jemarq()
 !
     elrefe = 'QU4     '
     famil = 'FPG4    '
@@ -60,5 +57,4 @@ subroutine iniqs4(nno, sdfde, sdfdk, poipg, coopg)
 30      continue
 40  end do
 !
-    call jedema()
 end subroutine

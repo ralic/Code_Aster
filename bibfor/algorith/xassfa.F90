@@ -4,8 +4,6 @@ subroutine xassfa(elp, npts, nintar, lst, noeud, cface, nface, pinter, jgrlsn)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/iselli.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/provec.h"
 #include "blas/ddot.h"
 !
@@ -50,7 +48,6 @@ subroutine xassfa(elp, npts, nintar, lst, noeud, cface, nface, pinter, jgrlsn)
     integer :: tempo, jj
     real(kind=8) ::  ab(3), bc(3), normfa(3), gradlsn(3), det
 !
-    call jemarq()
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !      3 CAS SONT POSSIBLES:
@@ -210,6 +207,5 @@ subroutine xassfa(elp, npts, nintar, lst, noeud, cface, nface, pinter, jgrlsn)
        endif
     endif
 !
-    call jedema()
 !
 end subroutine

@@ -5,8 +5,6 @@ subroutine te0302(option, nomte)
 #include "asterfort/elref2.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 !
     character(len=16) :: nomte, option
@@ -49,7 +47,6 @@ subroutine te0302(option, nomte)
     integer :: i, ier, ij, ino, itemps, j, jno
     integer :: k1, k2, k3, k4
 !-----------------------------------------------------------------------
-    call jemarq()
 !
     call elref2(nomte, 2, lirefe, nbelr)
     ASSERT(nbelr.eq.2)
@@ -164,5 +161,4 @@ subroutine te0302(option, nomte)
         end do
         k2 = k3
     end do
-    call jedema()
 end subroutine

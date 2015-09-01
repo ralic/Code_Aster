@@ -24,8 +24,6 @@ subroutine te0440(option, nomte)
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/iselli.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/teattr.h"
 #include "asterfort/tefrep.h"
@@ -64,7 +62,6 @@ subroutine te0440(option, nomte)
 !
 !-----------------------------------------------------------------------
 !
-    call jemarq()
 !
 !     ELEMENT DE REFERENCE PARENT
     call elref1(elrefp)
@@ -182,5 +179,4 @@ subroutine te0440(option, nomte)
                 option, nomte, ddlm, nfiss, jfisno,&
                 vect=zr(ivectu))
 !
-    call jedema()
 end subroutine

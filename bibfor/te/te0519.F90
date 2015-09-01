@@ -25,8 +25,6 @@ subroutine te0519(option, nomte)
 #include "asterfort/elrfvf.h"
 #include "asterfort/indent.h"
 #include "asterfort/iselli.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/tecach.h"
 #include "asterfort/vecini.h"
@@ -60,7 +58,6 @@ subroutine te0519(option, nomte)
 !
     ASSERT(option.eq.'GEOM_FAC')
 !
-    call jemarq()
 !
 ! --- RECUPERATION DU TYPE DE MAILLE, DE SA DIMENSION
 ! --- ET DE SON NOMBRE DE NOEUDS
@@ -189,5 +186,4 @@ subroutine te0519(option, nomte)
 !
 10  end do
 !
-    call jedema()
 end subroutine

@@ -9,8 +9,6 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset,&
 !
 #include "asterfort/assert.h"
 #include "asterfort/conare.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/reerel.h"
 #include "asterfort/xelrex.h"
 #include "asterfort/xnormv.h"
@@ -63,7 +61,6 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset,&
     aster_logical :: courbe
 !
 ! --------------------------------------------------------------------
-    call jemarq()
     zxain=xxmmvd('ZXAIN')
 !   IDENTIFICATION DES NOEUDS DE LA FACE QUADRANGLE DANS LE SOUS TETRA
     call conare(typma, ar, nbar)
@@ -132,5 +129,4 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset,&
     enddo
     call reerel(elrefp, nno, ndim, geom, ksi,&
                 milfa)
-    call jedema()
 end subroutine

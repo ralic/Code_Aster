@@ -6,8 +6,6 @@ subroutine xnewto(elrefp, name, n, ndime, ptxx,&
 #include "jeveux.h"
 #include "asterc/r8gaem.h"
 #include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xdelt0.h"
@@ -67,7 +65,6 @@ subroutine xnewto(elrefp, name, n, ndime, ptxx,&
 !
 ! ------------------------------------------------------------------
 !
-    call jemarq()
 !
 ! --- POINT DE DEPART
 !
@@ -201,5 +198,4 @@ subroutine xnewto(elrefp, name, n, ndime, ptxx,&
         ksi(i)=ksi2(i)
     enddo
 !    write(6,*)'CONVERGENCE DE ',name,' EN ',iter,' ITERATIONS'
-    call jedema()
 end subroutine

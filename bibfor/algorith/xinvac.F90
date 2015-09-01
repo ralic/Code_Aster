@@ -2,8 +2,6 @@ subroutine xinvac(elp, ndim, tabar, s, ksi)
     implicit none
 !
 #include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterc/r8prem.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
@@ -46,7 +44,6 @@ subroutine xinvac(elp, ndim, tabar, s, ksi)
 !
 !.....................................................................
 !
-    call jemarq()
 !
     itemax=500
     epsmax=1.d-9
@@ -89,5 +86,4 @@ subroutine xinvac(elp, ndim, tabar, s, ksi)
         call utmess('F', 'XFEM_65')
     endif
 !
-    call jedema()
 end subroutine

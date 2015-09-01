@@ -5,8 +5,6 @@ subroutine xinter(ndim, ndime, elrefp, geom, lsn, ia, ib,&
 #include "jeveux.h"
 #include "asterc/r8gaem.h"
 #include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/reerel.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xelrex.h"
@@ -50,7 +48,6 @@ subroutine xinter(ndim, ndime, elrefp, geom, lsn, ia, ib,&
 !---------------------------------------------------------------------
 !     DEBUT
 !---------------------------------------------------------------------
-    call jemarq()
 !
     itemax=100
     epsmax=1.d-9
@@ -106,5 +103,4 @@ subroutine xinter(ndim, ndime, elrefp, geom, lsn, ia, ib,&
 !---------------------------------------------------------------------
 !     FIN
 !---------------------------------------------------------------------
-    call jedema()
 end subroutine

@@ -3,8 +3,6 @@ subroutine loncar(ndim, typma, coord, l)
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
     integer :: ndim
     real(kind=8) :: coord(*), l
     character(len=8) :: typma
@@ -42,7 +40,6 @@ subroutine loncar(ndim, typma, coord, l)
     real(kind=8) :: ar(3), m(3)
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
 !
 !     ATTENTION,
 !     NDIM EST LA DIMENSION DU MAILLAGE
@@ -124,5 +121,4 @@ subroutine loncar(ndim, typma, coord, l)
 !
     endif
 !
-    call jedema()
 end subroutine

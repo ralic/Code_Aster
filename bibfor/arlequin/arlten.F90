@@ -22,12 +22,10 @@ subroutine arlten(coorc1,coorc2,npgs  , ndim , poijcs, &
     implicit none
 
 #include "jeveux.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/arlpff.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/matrot.h"
-#include "asterfort/jedema.h"
 
     integer :: npgs,ndim
     integer :: ndml1,ndml2
@@ -75,7 +73,6 @@ subroutine arlten(coorc1,coorc2,npgs  , ndim , poijcs, &
 
 ! ----------------------------------------------------------------------
 
-    call jemarq()
 
 ! --- CALCUL DES TERMES DE COUPLAGE - MATRICE STOCKAGE LINEAIRE
 
@@ -150,6 +147,5 @@ subroutine arlten(coorc1,coorc2,npgs  , ndim , poijcs, &
         mcpln1 = mcpln1 + matmul(transpose(B1d),B3d)*poids
     30 end do
 
-    call jedema()
 
 end subroutine

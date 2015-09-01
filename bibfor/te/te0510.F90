@@ -7,8 +7,6 @@ subroutine te0510(option, nomte)
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/iselli.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
@@ -105,7 +103,6 @@ subroutine te0510(option, nomte)
 !
     ASSERT(option.eq.'TOPOFA')
 !
-    call jemarq()
 !
     zxain = xxmmvd('ZXAIN')
     ASSERT(zxain.eq.zxainx)
@@ -465,5 +462,4 @@ end do
 !
 999 continue
 !
-    call jedema()
 end subroutine

@@ -11,8 +11,6 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
 #include "asterfort/dfdm2b.h"
 #include "asterfort/elelin.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
@@ -74,7 +72,6 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
 !
     call elrefe_info(elrefe=elc,fami=fpg,ndim=ndimf,nno=nno,&
                      jpoids=ipoidf,jvf=ivff,jdfde=idfdef)
@@ -162,5 +159,4 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
 !
 999 continue
 !
-    call jedema()
 end subroutine

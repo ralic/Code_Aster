@@ -5,8 +5,6 @@ subroutine te0024(option, nomte)
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 !
     character(len=16) :: nomte, option
@@ -47,7 +45,6 @@ subroutine te0024(option, nomte)
 !
 ! DEB ------------------------------------------------------------------
 !
-    call jemarq()
 !
     call elref1(elp)
 !
@@ -86,7 +83,6 @@ subroutine te0024(option, nomte)
 !
 100  end do
 !
-    call jedema()
 !
 ! FIN ------------------------------------------------------------------
 end subroutine

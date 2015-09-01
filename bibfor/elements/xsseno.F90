@@ -28,8 +28,6 @@ subroutine xsseno(nno, nbsig, nse, npg, jgano,&
 !
 !
 #include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/ppgan2.h"
     integer :: mxval
     parameter (mxval=32*10*6)
@@ -51,7 +49,6 @@ subroutine xsseno(nno, nbsig, nse, npg, jgano,&
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
 !
 !-----------------------------------------------------------------------
 !     CALCUL DES CONTRAINTES PAR SOUS-ELEMENTS AUX NOEUDS (SENO)
@@ -80,6 +77,5 @@ subroutine xsseno(nno, nbsig, nse, npg, jgano,&
 !
 110  end do
 !
-    call jedema()
 !
 end subroutine

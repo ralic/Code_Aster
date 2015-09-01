@@ -4,8 +4,6 @@ subroutine te0041(option, nomte)
 #include "asterfort/assert.h"
 #include "asterfort/infdis.h"
 #include "asterfort/infted.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/matrot.h"
 #include "asterfort/pmavec.h"
@@ -75,7 +73,6 @@ subroutine te0041(option, nomte)
     parameter     (zero=0.0d0,un=1.0d0,ntermx=144)
     real(kind=8) :: tempo(ntermx)
 ! --- ------------------------------------------------------------------
-    call jemarq()
 !
 !
     ! Ce sont bien des elements discrets :
@@ -436,5 +433,4 @@ subroutine te0041(option, nomte)
 !
 999  continue
 !
-    call jedema()
 end subroutine

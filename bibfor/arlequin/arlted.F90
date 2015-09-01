@@ -27,10 +27,8 @@ subroutine arlted(ndim  , &
     implicit none
 
 #include "jeveux.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/arltds.h"
 #include "asterfort/arltep.h"
-#include "asterfort/jedema.h"
 
     integer :: ndim
     integer :: nns,npgs
@@ -78,7 +76,6 @@ subroutine arlted(ndim  , &
     real(kind=8) ::  dfdzs(npgs*nns),dfdxs(npgs*nns),dfdys(npgs*nns)
 
 ! ----------------------------------------------------------------------
-    call jemarq()
 
 ! --- CALCUL DES DERIVEES DE FCT FORMES DES MAILLES COURANTES
 
@@ -97,6 +94,5 @@ subroutine arlted(ndim  , &
 
     12 end do
 
-    call jedema()
 
 end subroutine

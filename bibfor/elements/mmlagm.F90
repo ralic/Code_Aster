@@ -21,8 +21,6 @@ subroutine mmlagm(nbdm, ndim, nnl, jdepde, ffl,&
 !
     implicit none
 #include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
     integer :: nbdm, ndim, nnl
     integer :: jdepde
     real(kind=8) :: ffl(9)
@@ -58,7 +56,6 @@ subroutine mmlagm(nbdm, ndim, nnl, jdepde, ffl,&
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
 !
 ! --- INITIALISATIONS
 !
@@ -81,6 +78,5 @@ subroutine mmlagm(nbdm, ndim, nnl, jdepde, ffl,&
         endif
 133  end do
 !
-    call jedema()
 !
 end subroutine

@@ -22,8 +22,6 @@ subroutine te0364(option, nomte)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/matini.h"
 #include "asterfort/mmelem.h"
@@ -120,7 +118,6 @@ subroutine te0364(option, nomte)
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
 !
 ! --- INITIALISATIONS DES MATRICES
 !
@@ -317,5 +314,4 @@ subroutine te0364(option, nomte)
 !
     endif
 !
-    call jedema()
 end subroutine

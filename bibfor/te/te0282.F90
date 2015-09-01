@@ -41,8 +41,6 @@ subroutine te0282(option, nomte)
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/utmess.h"
 #include "asterfort/lteatt.h"
@@ -71,7 +69,6 @@ subroutine te0282(option, nomte)
 ! INITIALISATIONS
 ! =====================================================================
     call elref1(elrefe)
-    call jemarq()
     epsi = r8prem()
     axis=lteatt('AXIS','OUI')
 !
@@ -293,5 +290,4 @@ subroutine te0282(option, nomte)
     tsom = tcla + tsurf + tsurp
     zr(igthet) = tsom
 !
-    call jedema()
 end subroutine

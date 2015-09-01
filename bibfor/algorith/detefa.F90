@@ -6,8 +6,6 @@ subroutine detefa(nnose, pi1, pi2, it, typma,&
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/conare.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #    include "asterfort/xxmmvd.h"
     integer :: nnose, it, pi1, pi2, cnset(*), n(3)
     real(kind=8) :: ainter(*)
@@ -49,7 +47,6 @@ subroutine detefa(nnose, pi1, pi2, it, typma,&
     integer :: i, j, zxain
     aster_logical :: found
 !-----------------------------------------------------------------------
-    call jemarq()
     zxain=xxmmvd('ZXAIN')
     call conare(typma, ar, nbar)
     a1=nint(ainter(zxain*(pi1-1)+1))
@@ -99,5 +96,4 @@ subroutine detefa(nnose, pi1, pi2, it, typma,&
         n(3)=cnset(nnose*(it-1)+n3)
     endif
 !
-    call jedema()
 end subroutine

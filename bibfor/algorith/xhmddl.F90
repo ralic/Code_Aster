@@ -24,8 +24,6 @@ subroutine xhmddl(ndim, ddls, nddl, nno, nnos,&
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/hmdeca.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterc/r8maem.h"
 #include "asterfort/teattr.h"
 #include "jeveux.h"
@@ -62,7 +60,6 @@ subroutine xhmddl(ndim, ddls, nddl, nno, nnos,&
 !
 !-------------------------------------------------------------
 !
-    call jemarq()
 !
 !     TYPE D'ENRICHISSEMENT DE L'ELEMENT ET TYPE D'ELIMINATION
 !
@@ -160,5 +157,4 @@ subroutine xhmddl(ndim, ddls, nddl, nno, nnos,&
 200     continue
     endif
 !
-    call jedema()
 end subroutine

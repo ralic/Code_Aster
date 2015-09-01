@@ -6,8 +6,6 @@ subroutine xajpin(ndim, list, long, ipt, cpt,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/padist.h"
 #include "asterfort/xxmmvd.h"
     aster_logical :: ajout
@@ -55,7 +53,6 @@ subroutine xajpin(ndim, list, long, ipt, cpt,&
     integer :: zxain
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
 !
     zxain = xxmmvd('ZXAIN')
 !
@@ -85,5 +82,4 @@ subroutine xajpin(ndim, list, long, ipt, cpt,&
     endif
 !
     ajout=.not. deja
-    call jedema()
 end subroutine

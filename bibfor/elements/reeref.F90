@@ -22,8 +22,6 @@ subroutine reeref(elrefp, nnop, geom, xg, ndim, xe, ff, dfdi)
 #include "asterfort/elrfdf.h"
 #include "asterfort/elrfvf.h"
 #include "asterfort/invjax.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/matini.h"
 #include "asterfort/reereg.h"
     integer, intent(in) :: ndim
@@ -65,7 +63,6 @@ subroutine reeref(elrefp, nnop, geom, xg, ndim, xe, ff, dfdi)
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
 !
 ! --- RECHERCHE DE XE PAR NEWTON-RAPHSON
 !
@@ -100,7 +97,6 @@ subroutine reeref(elrefp, nnop, geom, xg, ndim, xe, ff, dfdi)
 !
     end if 
 !
-    call jedema()
 !
 ! ----------------------------------------------------------------------
 !

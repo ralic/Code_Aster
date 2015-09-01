@@ -19,8 +19,6 @@ subroutine te0129(option, nomte)
 #include "jeveux.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/foderi.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 !
     character(len=16) :: option, nomte
@@ -42,7 +40,6 @@ subroutine te0129(option, nomte)
     integer :: i, idec, j, jdec, kdec, kp, ldec
 !
 !-----------------------------------------------------------------------
-    call jemarq()
 !
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
                      jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
@@ -108,5 +105,4 @@ subroutine te0129(option, nomte)
     end do
 999 continue
 ! FIN ------------------------------------------------------------------
-    call jedema()
 end subroutine

@@ -2,8 +2,6 @@ subroutine confac(typma, ft, nbft, f, nbf, quad)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/utmess.h"
     integer :: ft(12, 3), nbft, f(6, 8), nbf
     character(len=8) :: typma
@@ -49,7 +47,6 @@ subroutine confac(typma, ft, nbft, f, nbf, quad)
     aster_logical :: milieu
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
     do i = 1, 12
         do j = 1, 3
             ft(i,j)=0
@@ -399,5 +396,4 @@ subroutine confac(typma, ft, nbft, f, nbf, quad)
         call utmess('F', 'ALGORITH2_24', sk=typma)
     endif
 !
-    call jedema()
 end subroutine

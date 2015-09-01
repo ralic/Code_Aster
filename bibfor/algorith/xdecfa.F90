@@ -10,8 +10,6 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
 #include "asterfort/elraca.h"
 #include "asterfort/elrfvf.h"
 #include "asterfort/iselli.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/padist.h"
 #include "asterfort/provec.h"
 #include "asterfort/reeref.h"
@@ -92,7 +90,6 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
 !
 ! --------------------------------------------------------------------
 !
-    call jemarq()
 !
 !   INITIALISATION DU NOMBRE D'ARETES DU TRIA INTERSECTEES
 !   STRICTEMENT PAR LST
@@ -541,6 +538,5 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
        endif
     endif
 !
-    call jedema()
 !
 end subroutine

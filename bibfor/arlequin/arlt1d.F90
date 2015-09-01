@@ -20,8 +20,6 @@ subroutine arlt1d(mlv,ndim,ndml2,mcpln2)
 
     implicit none
 #include "jeveux.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jedema.h"
 
     integer :: ndml2,ndim
     real(kind=8) ::  mlv(78)
@@ -34,7 +32,6 @@ subroutine arlt1d(mlv,ndim,ndml2,mcpln2)
 ! CALCUL DES MATRICES DE COUPLAGE ARLEQUIN
 ! OPTION ARLQ_MATR : CALCUL DES INTEGRALES DE COUPLAGE 1D - 1D
 ! ----------------------------------------------------------------------
-    call jemarq()
 
 ! --- CALCUL DES TERMES DE COUPLAGE - MATRICE STOCKAGE LINEAIRE
 
@@ -52,6 +49,5 @@ subroutine arlt1d(mlv,ndim,ndml2,mcpln2)
         50 end do
     40 end do
 
-    call jedema()
 
 end subroutine

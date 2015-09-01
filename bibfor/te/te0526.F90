@@ -22,8 +22,6 @@ subroutine te0526(option, nomte)
 !
 #include "asterfort/elrefe_info.h"
 #include "asterfort/foderi.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
     character(len=16) :: option, nomte
 ! ......................................................................
@@ -42,7 +40,6 @@ subroutine te0526(option, nomte)
     integer :: i, j, kp, kdec, ldec, idec, jdec, nnos, jgano
     character(len=8) :: coef
 !
-    call jemarq()
 !
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
   npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
@@ -80,14 +77,15 @@ subroutine te0526(option, nomte)
 !
 !   CALCUL DE LA NORMALE AU POINT DE GAUSS KP
 !
-        do 102 i = 1, nno
+        do i = 1, nno
             idec = (i-1)*ndim
-            do 102 j = 1, nno
+            do j = 1, nno
                 jdec = (j-1)*ndim
                 nx = nx+ zr(idfdx+kdec+idec)* zr(idfdy+kdec+jdec)* sx( i,j)
                 ny = ny+ zr(idfdx+kdec+idec)* zr(idfdy+kdec+jdec)* sy( i,j)
                 nz = nz+ zr(idfdx+kdec+idec)* zr(idfdy+kdec+jdec)* sz( i,j)
-102          continue
+            enddo
+        enddo
 !
 !   CALCUL DU JACOBIEN AU POINT DE GAUSS KP
 !
@@ -106,5 +104,4 @@ subroutine te0526(option, nomte)
 101  end do
 999  continue
 ! FIN ------------------------------------------------------------------
-    call jedema()
 end subroutine

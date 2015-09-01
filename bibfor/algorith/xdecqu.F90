@@ -10,8 +10,6 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
 #include "asterfort/conare.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/loncar.h"
 #include "asterfort/padist.h"
 #include "asterfort/utmess.h"
@@ -84,7 +82,6 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
     data            pmmaxi  / 2,  6,   17 /
 ! --------------------------------------------------------------------
 !
-    call jemarq()
 !
 !
     zxain = xxmmvd('ZXAIN')
@@ -446,5 +443,4 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
                                  pinref)
 !
 999 continue
-    call jedema()
 end subroutine

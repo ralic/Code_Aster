@@ -22,8 +22,6 @@ subroutine mmvitm(nbdm, ndim, nne, nnm, ffe,&
 !
     implicit none
 #include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
     integer :: nbdm, ndim, nne, nnm
     real(kind=8) :: ffe(9), ffm(9)
     integer :: jvitm, jvitp, jaccm
@@ -73,7 +71,6 @@ subroutine mmvitm(nbdm, ndim, nne, nnm, ffe,&
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
 !
 ! --- INITIALISATIONS
 !
@@ -109,6 +106,5 @@ subroutine mmvitm(nbdm, ndim, nne, nnm, ffe,&
 42      continue
 41  end do
 !
-    call jedema()
 !
 end subroutine

@@ -31,8 +31,6 @@ subroutine xsifle(ndim, ifa, jptint, cface,&
 #include "asterfort/elelin.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterc/r8pi.h"
 #include "asterfort/tecael.h"
 #include "asterfort/tecach.h"
@@ -101,7 +99,6 @@ subroutine xsifle(ndim, ifa, jptint, cface,&
     real(kind=8) :: tau1(3), tau2(3)
     data     he / -1.d0 , 1.d0/
 !
-    call jemarq()
 !
     zxain = xxmmvd('ZXAIN')
 !     PAR CONVENTION :
@@ -200,6 +197,5 @@ subroutine xsifle(ndim, ifa, jptint, cface,&
 900  continue
 !     FIN DE BOUCLE SUR LES POINTS DE GAUSS DES FACETTES
 !     ----------------------------------------------------------------
-    call jedema()
 !
 end subroutine

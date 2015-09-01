@@ -2,8 +2,6 @@ subroutine te0551(option, nomte)
     implicit none
 #include "jeveux.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
     character(len=16) :: option, nomte
@@ -44,7 +42,6 @@ subroutine te0551(option, nomte)
 !
 !-----------------------------------------------------------------------
 !
-    call jemarq()
 !
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
   npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
@@ -89,6 +86,5 @@ subroutine te0551(option, nomte)
 !
 10  end do
 !
-    call jedema()
 !
 end subroutine

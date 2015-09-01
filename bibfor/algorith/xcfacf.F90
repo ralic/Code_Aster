@@ -10,8 +10,6 @@ subroutine xcfacf(ptint, ptmax, ipt, ainter, lsn,&
 #include "asterfort/confac.h"
 #include "asterfort/elref1.h"
 #include "asterfort/intfac.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/padist.h"
 #include "asterfort/xajpin.h"
     integer :: ptmax, ipt, igeom, nno, ndim, nmaabs
@@ -69,7 +67,6 @@ subroutine xcfacf(ptint, ptmax, ipt, ainter, lsn,&
     aster_logical :: ajout
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
     call elref1(elref)
 !
 !     INITIALISATION DES MIN ET MAX
@@ -129,5 +126,4 @@ subroutine xcfacf(ptint, ptmax, ipt, ainter, lsn,&
 200 continue
 !
 999 continue
-    call jedema()
 end subroutine

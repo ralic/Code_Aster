@@ -5,8 +5,6 @@ subroutine te0280(option, nomte)
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 !
     character(len=16) :: option, nomte
@@ -58,7 +56,6 @@ subroutine te0280(option, nomte)
     aster_logical :: fonc
 !.......................................................................
 !
-    call jemarq()
 !
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
@@ -238,5 +235,4 @@ subroutine te0280(option, nomte)
     tsom = tcla + tsurf + tsurp
     zr(igthet) = tsom
 !
-    call jedema()
 end subroutine

@@ -5,8 +5,6 @@ subroutine xalgo3(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
 !
 #    include "jeveux.h"
 #    include "asterfort/assert.h"
-#    include "asterfort/jedema.h"
-#    include "asterfort/jemarq.h"
 #    include "asterfort/xalg30.h"
 #    include "asterfort/xalg31.h"
 #    include "asterfort/xalg40.h"
@@ -55,7 +53,6 @@ subroutine xalgo3(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
 !       PMILIE   : COORDONNES DES POINS MILIEUX
 !     ----------------------------------------------------------------
 !
-    call jemarq()
 !
     if (ndime .eq. 2) then
         call xalg20(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
@@ -93,5 +90,4 @@ subroutine xalgo3(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
         ASSERT(.false.)
     endif
 !
-    call jedema()
 end subroutine

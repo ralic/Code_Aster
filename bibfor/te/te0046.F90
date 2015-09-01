@@ -5,8 +5,6 @@ subroutine te0046(option, nomte)
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/iselli.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/reeref.h"
@@ -70,7 +68,6 @@ subroutine te0046(option, nomte)
     data    elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
     data    fami   /'BID','XINT','XINT','BID','XINT','XINT'/
 !
-    call jemarq()
 !
 !-----------------------------------------------------------------------
 !     INITIALISATIONS
@@ -175,5 +172,4 @@ subroutine te0046(option, nomte)
 110 continue
 !
 !
-    call jedema()
 end subroutine

@@ -3,8 +3,6 @@ subroutine xdivte(elp, cnset, nse, nnose)
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
     integer :: cnset(*), nse, nnose
     character(len=8) :: elp
 ! ======================================================================
@@ -41,7 +39,6 @@ subroutine xdivte(elp, cnset, nse, nnose)
     integer :: ino, ise, connec(6, 10)
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
     if (elp .eq. 'HE8') then
         connec(1,1)=6
         connec(1,2)=3
@@ -302,5 +299,4 @@ subroutine xdivte(elp, cnset, nse, nnose)
 20      continue
     end do
 !
-    call jedema()
 end subroutine

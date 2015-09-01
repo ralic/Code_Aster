@@ -23,8 +23,6 @@ subroutine xtlagc(ndim, nnc, jnn, nddls,&
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/xplma2.h"
     integer :: ndim, nnc, jnn(3), nfhe
     integer :: jdepde, heavno(8)
@@ -64,7 +62,6 @@ subroutine xtlagc(ndim, nnc, jnn, nddls,&
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
 !
 ! --- INITIALISATIONS
 !
@@ -82,6 +79,5 @@ subroutine xtlagc(ndim, nnc, jnn, nddls,&
         dlagrc = dlagrc+ffc(ino)*zr(jdepde-1+pl+1-1)
 230 continue
 !
-    call jedema()
 !
 end subroutine

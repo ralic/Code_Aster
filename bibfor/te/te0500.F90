@@ -25,7 +25,6 @@ subroutine te0500(option, nomte)
 !   -------------------------------------------------------------------
 !     SUBROUTINES APPELLEES :
 !       MESSAGE              : UTMESS,UTMESK.
-!       JEVEUX               : JEMARQ,JEDEMA.
 !       CHAMPS LOCAUX        : JEVECH,TECACH,TECAEL.
 !       ENVIMA               : R8MIEM.
 !       MATERIAUX/CHARGES    : RCVALB,RCCOMA.
@@ -45,8 +44,6 @@ subroutine te0500(option, nomte)
 #include "asterc/r8miem.h"
 #include "asterfort/caethm.h"
 #include "asterfort/dfdm2d.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/rcvalb.h"
@@ -106,7 +103,6 @@ subroutine te0500(option, nomte)
 !
 ! ------------------------------------------------------------------
 !
-    call jemarq()
 !
     ovfl = r8miem()
 !
@@ -323,6 +319,5 @@ subroutine te0500(option, nomte)
 !
     zr(ierre) = tertps
 !
-    call jedema()
 !
 end subroutine

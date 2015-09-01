@@ -6,8 +6,6 @@ subroutine te0533(option, nomte)
 #include "asterfort/elelin.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/matini.h"
 #include "asterfort/tecach.h"
@@ -76,7 +74,6 @@ subroutine te0533(option, nomte)
     character(len=8) :: elc, fpg
 !......................................................................
 !
-    call jemarq()
     rela = 0.d0
 !
 ! --- INITIALISATIONS
@@ -320,5 +317,4 @@ subroutine te0533(option, nomte)
                     mat=zr(imatt))
     endif
 !
-    call jedema()
 end subroutine

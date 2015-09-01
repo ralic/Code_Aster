@@ -50,8 +50,6 @@ subroutine te0564(option, nomte)
 #include "asterc/r8prem.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/utmess.h"
 !
@@ -68,7 +66,6 @@ subroutine te0564(option, nomte)
 !
 !
 !
-    call jemarq()
 !
     call elref1(elrefe)
 !
@@ -241,6 +238,5 @@ subroutine te0564(option, nomte)
 !
     endif
 !
-    call jedema()
 !
 end subroutine

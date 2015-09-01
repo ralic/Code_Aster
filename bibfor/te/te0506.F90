@@ -23,8 +23,6 @@ subroutine te0506(option, nomte)
 !
 #include "asterfort/elrefe_info.h"
 #include "asterfort/foderi.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/vff2dn.h"
@@ -46,7 +44,6 @@ subroutine te0506(option, nomte)
     aster_logical :: laxi
 !
 !
-    call jemarq()
 !
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
@@ -83,5 +80,4 @@ subroutine te0506(option, nomte)
  30 end do
  40 continue
 ! FIN ------------------------------------------------------------------
-    call jedema()
 end subroutine

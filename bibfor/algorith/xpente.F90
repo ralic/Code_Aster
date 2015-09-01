@@ -2,8 +2,6 @@ subroutine xpente(pl, cnse, n)
     implicit none
 !
 #include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
     integer :: pl, n(18), cnse(6, 10)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -35,7 +33,6 @@ subroutine xpente(pl, cnse, n)
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
 !
 !     ON REMPLIT 3 SOUS TETRAS DE CNSE À PARTIR DE LA PLACE PL
 !
@@ -72,5 +69,4 @@ subroutine xpente(pl, cnse, n)
     cnse(pl+2,9)=n(17)
     cnse(pl+2,10)=n(12)
 !
-    call jedema()
 end subroutine

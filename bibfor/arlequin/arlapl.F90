@@ -24,10 +24,8 @@ subroutine arlapl(ndim  ,nns ,ndml1   ,ndml2 ,nomte, &
     implicit none
 
 #include "jeveux.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/arltem.h"
-#include "asterfort/jedema.h"
 
 !     ARGUMENTS:
 !     ----------
@@ -61,7 +59,6 @@ subroutine arlapl(ndim  ,nns ,ndml1   ,ndml2 ,nomte, &
     integer :: iaux,jaux,ijkl1,ijkl2,imatu1,imatu2
 
 ! ----------------------------------------------------------------------
-    call jemarq()
 
 ! --- ACCES INFOS MAILLES COUPLEES
 
@@ -267,6 +264,5 @@ subroutine arlapl(ndim  ,nns ,ndml1   ,ndml2 ,nomte, &
        zr(imatu2-1+nddl+9)  = zr(jcoor2+ndim*ndml2-1+1)
        zr(imatu2-1+nddl+10) = zr(jcoor2+ndim*ndml2-1+2)
     endif
-    call jedema()
 
 end subroutine

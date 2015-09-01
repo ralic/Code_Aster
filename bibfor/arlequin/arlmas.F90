@@ -32,13 +32,11 @@ subroutine arlmas(nomte,e,xnu,rho,kanl,mlv)
     implicit none
 
 #include "jeveux.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/assert.h"
 #include "asterfort/jevech.h"
 #include "asterfort/utmess.h"
 #include "asterfort/tecael.h"
 #include "asterfort/ptma01.h"
-#include "asterfort/jedema.h"
 
     character(len=12) nomte
     integer :: kanl
@@ -52,7 +50,6 @@ subroutine arlmas(nomte,e,xnu,rho,kanl,mlv)
     real(kind=8) ::  a2,xiy2,xiz2,alfay2,alfaz2,xjx
     integer :: itype,istruc,jcoor2,lx,jinfor
 !     ------------------------------------------------------------------
-    call jemarq()
 
     ASSERT (nomte .eq. 'MECA_POU_D_T')
     zero = 0.d0
@@ -101,6 +98,5 @@ subroutine arlmas(nomte,e,xnu,rho,kanl,mlv)
     call ptma01(kanl,itype,mlv,istruc,rho,e,a,a2,xl,xiy,xiy2,xiz, &
                 xiz2,g,alfay,alfay2,alfaz,alfaz2,ey,ez)
 
-    call jedema()
 
 end subroutine

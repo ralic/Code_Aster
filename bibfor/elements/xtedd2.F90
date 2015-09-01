@@ -32,8 +32,6 @@ subroutine xtedd2(ndim, jnne, ndeple, jnnm, nddl,&
 !
 #include "asterfort/assert.h"
 #include "asterfort/indent.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
     integer, intent(in) :: ndim, jnnm(3), nddl, stano(*), lact(8)
     character(len=16), intent(in) :: option
     aster_logical, intent(in) :: lesclx, lmaitx, lcontx, lmulti
@@ -67,7 +65,6 @@ subroutine xtedd2(ndim, jnne, ndeple, jnnm, nddl,&
 !
 !----------------------------------------------------------------------
 !
-    call jemarq()
 !
 !-------------------------------------------------------------
 !   NOMS DES OPTIONS AUTORISEES
@@ -220,5 +217,4 @@ subroutine xtedd2(ndim, jnne, ndeple, jnnm, nddl,&
 100     continue
     endif
 !
-    call jedema()
 end subroutine

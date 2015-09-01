@@ -28,13 +28,11 @@ subroutine arltem(ndim  ,nomte, &
 
     implicit none
 #include "jeveux.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/arlmas.h"
 #include "asterfort/arlt1d.h"
 #include "asterfort/arlten.h"
 #include "asterfort/arlted.h"
-#include "asterfort/jedema.h"
 
 
     integer :: ndim
@@ -84,7 +82,6 @@ subroutine arltem(ndim  ,nomte, &
 
 ! --- CALCUL DES FF ET DES DERIVEES DES FF DES MAILLES COUPLEES
 
-    call jemarq()
 
     call jevech('PINFORR','L',jinfor)
 
@@ -106,6 +103,5 @@ subroutine arltem(ndim  ,nomte, &
                     ndml1 , ndml2 , fcpig1 , dfdx1 , dfdy1 , dfdz1 , &
                     mcpln1)
     endif
-    call jedema()
 
 end subroutine

@@ -27,8 +27,6 @@ subroutine xcinem(axi, igeom, nnop, nnos, idepl, grand,&
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/indent.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/matini.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xcalc_heav.h"
@@ -94,7 +92,6 @@ subroutine xcinem(axi, igeom, nnop, nnos, idepl, grand,&
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
 !
 ! --- INITIALISATIONS
 !
@@ -222,5 +219,4 @@ subroutine xcinem(axi, igeom, nnop, nnos, idepl, grand,&
         if(grand) eps(3) = eps(3)+0.5d0*ur*ur/(r*r)
     endif
 !
-    call jedema()
 end subroutine

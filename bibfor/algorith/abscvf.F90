@@ -6,8 +6,6 @@ subroutine abscvf(ndim, tabar, xe, s)
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/fcthyp.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/vecini.h"
     real(kind=8) :: xe, s, tabar(*)
     integer :: ndim
@@ -51,7 +49,6 @@ subroutine abscvf(ndim, tabar, xe, s)
 !
 !......................................................................
 !
-    call jemarq()
 !
 !     TABAR : XE2=-1  /  XE1= 1  /  XE3= 0
 !     XE2 XENT LE POINT D'ORIGINE
@@ -114,5 +111,4 @@ subroutine abscvf(ndim, tabar, xe, s)
         ASSERT(2.eq.3)
     endif
 !
-    call jedema()
 end subroutine

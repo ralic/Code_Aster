@@ -43,8 +43,6 @@ subroutine te0096(option, nomte)
 #include "asterc/r8prem.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/nmelnl.h"
@@ -93,7 +91,6 @@ subroutine te0096(option, nomte)
 ! =====================================================================
 ! INITIALISATIONS
 ! =====================================================================
-    call jemarq()
     fami = 'RIGI'
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
@@ -733,5 +730,4 @@ subroutine te0096(option, nomte)
     
     
     
-    call jedema()
 end subroutine

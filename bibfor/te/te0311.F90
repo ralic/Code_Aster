@@ -8,8 +8,6 @@ subroutine te0311(option, nomte)
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
@@ -80,7 +78,6 @@ subroutine te0311(option, nomte)
     aster_logical :: fonc
 !.......................................................................
 !
-    call jemarq()
 !
     depi = r8depi()
 !
@@ -438,5 +435,4 @@ subroutine te0311(option, nomte)
     zr(igthet+5) = k2
     zr(igthet+6) = k3
 !
-    call jedema()
 end subroutine

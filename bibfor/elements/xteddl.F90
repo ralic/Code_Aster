@@ -28,8 +28,6 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
 #include "asterc/r8maem.h"
 #include "asterfort/assert.h"
 #include "asterfort/indent.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/teattr.h"
     integer, intent(in) :: ndim, nfh, nfe, ddls, nddl, nno, nnos, stano(*)
     aster_logical, intent(in) :: matsym, lcontx
@@ -73,7 +71,6 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
 !
 !-------------------------------------------------------------
 !
-    call jemarq()
 !
 !-------------------------------------------------------------
 !   NOMS DES OPTIONS AUTORISEES
@@ -302,5 +299,4 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
 !
     endif
 !
-    call jedema()
 end subroutine

@@ -4,8 +4,6 @@ subroutine xmilfi(elp, n, ndime, nno, ptint, ndim,&
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/reerel.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xnewto.h"
@@ -51,7 +49,6 @@ subroutine xmilfi(elp, n, ndime, nno, ptint, ndim,&
 !
 ! --------------------------------------------------------------------
 !
-    call jemarq()
 !
     itemax=500
     epsmax=1.d-9
@@ -73,5 +70,4 @@ subroutine xmilfi(elp, n, ndime, nno, ptint, ndim,&
     call reerel(elp, nno, ndim, zr(jtabco), ksi,&
                 milfi)
 !
-    call jedema()
 end subroutine

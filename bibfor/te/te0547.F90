@@ -7,8 +7,6 @@ subroutine te0547(option, nomte)
 #include "asterfort/elelin.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/pipeba.h"
 #include "asterfort/pipel2.h"
@@ -90,7 +88,6 @@ subroutine te0547(option, nomte)
     character(len=8) :: job, champ
     aster_logical :: lbid
 !......................................................................
-    call jemarq()
 !
 !-----------------------------------------------------------------------
 !     INITIALISATIONS
@@ -363,5 +360,4 @@ subroutine te0547(option, nomte)
         end do
     endif
 !
-    call jedema()
 end subroutine

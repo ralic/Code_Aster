@@ -6,8 +6,6 @@ subroutine te0532(option, nomte)
 #include "asterfort/elelin.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterc/r8prem.h"
 #include "asterfort/tecach.h"
@@ -85,7 +83,6 @@ subroutine te0532(option, nomte)
     integer :: zxain
 !......................................................................
 !
-    call jemarq()
 !
     imprim=.false.
     incoca=0
@@ -397,5 +394,4 @@ subroutine te0532(option, nomte)
 !     ENREGISTREMENT DES CHAMPS DE SORTIE
     zi(jout1)=incoca
 !
-    call jedema()
 end subroutine

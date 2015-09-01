@@ -2,8 +2,6 @@ subroutine elelin(nconta, elref1, elref2, nnop, nnops)
     implicit none
 !
 #include "asterfort/elraca.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
     character(len=8) :: elref1, elref2
     integer :: nnop, nnops, nconta
 !
@@ -40,7 +38,6 @@ subroutine elelin(nconta, elref1, elref2, nnop, nnops)
     real(kind=8) :: x(3*27), vol
     character(len=8) :: fapg(20)
 !
-    call jemarq()
 !
     if (nconta .eq. 3) then
         if (elref1 .eq. 'QU8') then
@@ -82,5 +79,4 @@ subroutine elelin(nconta, elref1, elref2, nnop, nnops)
                     fapg, nbpg, x, vol)
     endif
 !
-    call jedema()
 end subroutine

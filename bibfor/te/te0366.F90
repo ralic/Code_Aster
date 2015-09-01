@@ -23,8 +23,6 @@ subroutine te0366(option, nomte)
 #include "asterfort/assert.h"
 #include "asterfort/elelin.h"
 #include "asterfort/elrfvf.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/matini.h"
 #include "asterfort/ttprsm.h"
@@ -91,7 +89,6 @@ subroutine te0366(option, nomte)
     aster_logical :: lmulti
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
 !
 ! --- INFOS SUR LA MAILLE DE CONTACT
 !
@@ -399,5 +396,4 @@ subroutine te0366(option, nomte)
         end do
     endif
 !
-    call jedema()
 end subroutine

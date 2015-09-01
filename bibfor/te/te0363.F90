@@ -25,8 +25,6 @@ subroutine te0363(option, nomte)
 #include "asterfort/assert.h"
 #include "asterfort/elelin.h"
 #include "asterfort/elrfvf.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/mmnorm.h"
 #include "asterfort/normev.h"
@@ -72,7 +70,6 @@ subroutine te0363(option, nomte)
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
 !
 ! --- INFOS SUR LA MAILLE DE CONTACT
 !
@@ -255,5 +252,4 @@ subroutine te0363(option, nomte)
 !
     zi(jout-1+1)=incoca
 !
-    call jedema()
 end subroutine

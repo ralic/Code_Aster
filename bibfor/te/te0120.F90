@@ -3,8 +3,6 @@ subroutine te0120(nomopt, nomte)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/elref1.h"
 #include "asterfort/teattr.h"
@@ -59,7 +57,6 @@ subroutine te0120(nomopt, nomte)
 !
 !......................................................................
 !
-    call jemarq()
 !
     nomte=nomte
     ASSERT(nomopt.eq.'TOPONO')
@@ -195,6 +192,5 @@ subroutine te0120(nomopt, nomte)
         enddo        
     endif
 !
-    call jedema()
 !
     end subroutine

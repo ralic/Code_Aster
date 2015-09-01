@@ -9,8 +9,6 @@ subroutine te0566(nomopt, nomte)
 #include "asterfort/elrfvf.h"
 #include "asterfort/indent.h"
 #include "asterfort/iselli.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
@@ -68,7 +66,6 @@ subroutine te0566(nomopt, nomte)
     data    fami   /'BID','XINT','XINT','BID','XINT','XINT'/
 !     ------------------------------------------------------------------
 !
-    call jemarq()
 !
     call tecael(iadzi, iazk24)
 !
@@ -227,6 +224,5 @@ subroutine te0566(nomopt, nomte)
 !
     enddo
 !
-    call jedema()
 !
 end subroutine

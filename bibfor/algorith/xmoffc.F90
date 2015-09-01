@@ -18,8 +18,6 @@ subroutine xmoffc(lact, nlact, nno, ffe, ffc)
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
 #include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
     integer :: lact(*), nlact, nno
     real(kind=8) :: ffe(*), ffc(*)
 !
@@ -45,7 +43,6 @@ subroutine xmoffc(lact, nlact, nno, ffe, ffc)
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
 !
     do 10 i = 1, nno
         ffc(i)=ffe(i)
@@ -67,5 +64,4 @@ subroutine xmoffc(lact, nlact, nno, ffe, ffc)
         ASSERT(.false.)
     endif
 !
-    call jedema()
 end subroutine

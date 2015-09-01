@@ -23,8 +23,6 @@ subroutine mmmsta(ndim, leltf, lpenaf, loptf, djeut,&
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/mmtrpr.h"
 !
@@ -69,7 +67,6 @@ subroutine mmmsta(ndim, leltf, lpenaf, loptf, djeut,&
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
 !
 ! --- INITIALISATIONS
 !
@@ -109,6 +106,5 @@ subroutine mmmsta(ndim, leltf, lpenaf, loptf, djeut,&
                     tau1, tau2, ladhe, rese, nrese)
     endif
 !
-    call jedema()
 !
 end subroutine

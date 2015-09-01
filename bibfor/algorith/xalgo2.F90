@@ -9,8 +9,6 @@ subroutine xalgo2(ndim, elrefp, nnop, it, nnose,&
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/detefa.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xajpmi.h"
 #include "asterfort/xmilar.h"
@@ -73,7 +71,6 @@ subroutine xalgo2(ndim, elrefp, nnop, it, nnose,&
 !
 ! --------------------------------------------------------------------
 !
-    call jemarq()
 !
     zxain = xxmmvd('ZXAIN')
 !     COMPTEUR DES POINTS INTERSECTION NON CONFONDUS AVEC ND SOMMET
@@ -236,5 +233,4 @@ subroutine xalgo2(ndim, elrefp, nnop, it, nnose,&
 !
     nmilie = ipm
 !
-    call jedema()
 end subroutine

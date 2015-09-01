@@ -1,8 +1,6 @@
 subroutine xerfis(ndime, ninter, npts, nptm)
     implicit none
 !
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/utmess.h"
     integer :: ndime, ninter, npts, nptm
 !
@@ -34,7 +32,6 @@ subroutine xerfis(ndime, ninter, npts, nptm)
 !       NPTM    : NB DE POINT INTERSEPTES EN UN DES 3 NOEUDS MILIEUX
 !......................................................................
 !
-    call jemarq()
 !
 ! --- POUR LES TETRA10
 !
@@ -101,5 +98,4 @@ subroutine xerfis(ndime, ninter, npts, nptm)
 !
     endif
 !
-    call jedema()
 end subroutine

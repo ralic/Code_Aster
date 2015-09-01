@@ -5,8 +5,6 @@ subroutine xajpmi(ndim, list, long, ipt, cpt, newpt,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/padist.h"
 !
     integer :: ndim, long, ipt, cpt
@@ -50,7 +48,6 @@ subroutine xajpmi(ndim, list, long, ipt, cpt, newpt,&
 !
 ! --------------------------------------------------------------------
 !
-    call jemarq()
 !
 !     VERIFICATION SI CE POINT EST DEJA DANS LA LISTE
     deja = .false.
@@ -74,5 +71,4 @@ subroutine xajpmi(ndim, list, long, ipt, cpt, newpt,&
     endif
 !
     ajout=(.not.deja)
-    call jedema()
 end subroutine

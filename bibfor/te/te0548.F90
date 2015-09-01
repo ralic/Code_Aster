@@ -5,8 +5,6 @@ subroutine te0548(option, nomte)
 #include "asterfort/elelin.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/tecael.h"
 #include "asterfort/xjacf2.h"
@@ -63,7 +61,6 @@ subroutine te0548(option, nomte)
     real(kind=8) :: ffpc(27), dfbid(27, 3), r3bid(3)
 !......................................................................
 !
-    call jemarq()
 !
     call elref1(elref)
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
@@ -188,5 +185,4 @@ subroutine te0548(option, nomte)
 110      continue
 100  continue
 !
-    call jedema()
 end subroutine

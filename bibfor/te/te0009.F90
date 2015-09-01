@@ -3,8 +3,6 @@ subroutine te0009(option, nomte)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/infdis.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/matrot.h"
 #include "asterfort/upletr.h"
@@ -45,7 +43,6 @@ subroutine te0009(option, nomte)
     character(len=8) :: k8bid
 !
 !     ------------------------------------------------------------------
-    call jemarq()
 !
     if (nomte .eq. 'MECA_DIS_TR_N') then
 !        ON VERIFIE QUE LES CARACTERISTIQUES ONT ETE AFFECTEES
@@ -97,5 +94,4 @@ subroutine te0009(option, nomte)
     call utpalg(nno, nc, pgl, klv, klw)
     call upletr(nddlm, zr(jdm), klw)
 !
-    call jedema()
 end subroutine

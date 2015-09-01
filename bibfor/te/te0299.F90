@@ -40,8 +40,6 @@ subroutine te0299(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/gbilin.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/nmgeom.h"
@@ -81,7 +79,6 @@ subroutine te0299(option, nomte)
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
 
 !
 
@@ -548,6 +545,5 @@ subroutine te0299(option, nomte)
 !
 999 continue
 !
-    call jedema()
 !
 end subroutine

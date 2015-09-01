@@ -30,8 +30,6 @@ subroutine mmtppe(typmae, typmam, ndim, nne, nnm,&
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/mmdepm.h"
 #include "asterfort/mmform.h"
@@ -161,7 +159,6 @@ subroutine mmtppe(typmae, typmam, ndim, nne, nnm,&
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
 !
 ! --- RECUPERATION DES DONNEES DE PROJECTION
 !
@@ -258,6 +255,5 @@ subroutine mmtppe(typmae, typmam, ndim, nne, nnm,&
     endif
 !
 !
-    call jedema()
 !
 end subroutine

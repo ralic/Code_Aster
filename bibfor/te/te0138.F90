@@ -37,8 +37,6 @@ subroutine te0138(option, nomte)
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/foderi.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/teattr.h"
@@ -59,7 +57,6 @@ subroutine te0138(option, nomte)
 !====
 ! 1.1 PREALABLES: RECUPERATION ADRESSES FONCTIONS DE FORMES...
 !====
-    call jemarq()
     call elref1(elrefe)
 !
     if (lteatt('LUMPE','OUI')) then
@@ -128,5 +125,4 @@ subroutine te0138(option, nomte)
  90 end do
 100 continue
 ! FIN ------------------------------------------------------------------
-    call jedema()
 end subroutine

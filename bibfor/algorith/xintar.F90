@@ -3,8 +3,6 @@ subroutine xintar(lsna, lsnb, lsnm, a, b,&
     implicit none
 !
 #include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/reerel.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xnewto.h"
@@ -52,7 +50,6 @@ subroutine xintar(lsna, lsnb, lsnm, a, b,&
 !---------------------------------------------------------------------
 !     DEBUT
 !---------------------------------------------------------------------
-    call jemarq()
 !
     itemax=500
     epsmax=1.d-9
@@ -81,5 +78,4 @@ subroutine xintar(lsna, lsnb, lsnm, a, b,&
 !---------------------------------------------------------------------
 !     FIN
 !---------------------------------------------------------------------
-    call jedema()
 end subroutine

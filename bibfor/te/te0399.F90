@@ -20,14 +20,12 @@ subroutine te0399(option, nomte)
 
     implicit none
 #include "jeveux.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/assert.h"
 #include "asterfort/elref1.h"
 #include "asterfort/arlref.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/arlapl.h"
-#include "asterfort/jedema.h"
 
     character(len=16) :: nomte,option
 
@@ -61,7 +59,6 @@ subroutine te0399(option, nomte)
     integer :: nn1,nn2
 
 ! ----------------------------------------------------------------------
-    call jemarq()
 
 ! --- FAMILLE D'INTEGRATION
 
@@ -120,6 +117,5 @@ subroutine te0399(option, nomte)
 
     call arlapl(ndim,nns,nn1,nn2,nomte,npgs,ipoids,ivfs,idfdes)
 
-    call jedema()
 
 end subroutine

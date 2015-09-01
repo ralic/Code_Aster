@@ -11,8 +11,6 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
 #include "asterfort/assert.h"
 #include "asterfort/conare.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/provec.h"
 #include "asterfort/reeref.h"
@@ -77,7 +75,6 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
     data            elrese /'SEG2','TRIA3','TETRA4'/
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
 !
 !     VERIF QUE LES TABLEAUX LOCAUX DYNAMIQUES NE SONT PAS TROP GRANDS
 !     (VOIR CRS 1404)
@@ -505,5 +502,4 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
 !
 300 end do
 !
-    call jedema()
 end subroutine

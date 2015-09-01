@@ -6,8 +6,6 @@ subroutine te0411(option, nomte)
 #include "asterfort/dffno.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/normev.h"
 #include "asterfort/pmat.h"
@@ -53,7 +51,6 @@ subroutine te0411(option, nomte)
     character(len=8) :: elrefe
     parameter(prec=1.0d-10)
 ! ----------------------------------------------------------------------
-    call jemarq()
 !
     call tecael(iadzi, iazk24, noms=0)
     call elref1(elrefe)
@@ -243,6 +240,5 @@ subroutine te0411(option, nomte)
     zr(isigm-1+6)= vtmp2(2)
     zr(isigm-1+7)= vtmp2(3)
 !
-    call jedema()
 !
 end subroutine

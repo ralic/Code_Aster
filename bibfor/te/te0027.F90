@@ -43,8 +43,6 @@ subroutine te0027(option, nomte)
 #include "asterc/r8prem.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nmelnl.h"
 #include "asterfort/nmgeom.h"
@@ -89,7 +87,6 @@ subroutine te0027(option, nomte)
 !
 ! DEB ------------------------------------------------------------------
 !
-    call jemarq()
 !
     epsi = r8prem()
     rac2 = sqrt(2.d0)
@@ -630,5 +627,4 @@ subroutine te0027(option, nomte)
 ! ASSEMBLAGE FINAL DES TERMES DE G OU DG
     zr(igthet) = tthe + tcla + tfor + tplas + tini
 !
-    call jedema()
 end subroutine

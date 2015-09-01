@@ -9,8 +9,6 @@ subroutine te0295(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/gbil3d.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nmgeom.h"
 #include "asterfort/normev.h"
@@ -87,7 +85,6 @@ subroutine te0295(option, nomte)
 ! ----------------------------------------------------------------------
 !
     
-    call jemarq()
 !
     rac2 = sqrt(2.d0)
     fami = 'RIGI'
@@ -570,6 +567,5 @@ subroutine te0295(option, nomte)
 !
 9999 continue
 !
-    call jedema()
 !
 end subroutine

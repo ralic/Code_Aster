@@ -35,8 +35,6 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 #include "asterfort/gbil3d.h"
 #include "asterfort/gbilin.h"
 #include "asterfort/iselli.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/normev.h"
@@ -120,7 +118,6 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
     data     elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
     data     fami   /'BID','XINT','XINT','BID','XINT','XINT'/
 !
-    call jemarq()
 !     VERIF QUE LES TABLEAUX LOCAUX DYNAMIQUES NE SONT PAS TROP GRANDS
 !     (VOIR CRS 1404)
 !
@@ -746,5 +743,4 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 !     FIN DE LA BOUCLE SUR LES POINTS DE GAUSS DU SOUS-TETRA
 !     ------------------------------------------------------------------
 !
-    call jedema()
 end subroutine

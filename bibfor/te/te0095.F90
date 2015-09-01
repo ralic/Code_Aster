@@ -38,8 +38,6 @@ subroutine te0095(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/gbil3d.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nmgeom.h"
 #include "asterfort/rccoma.h"
@@ -79,7 +77,6 @@ subroutine te0095(option, nomte)
     aster_logical :: fonc
 !
 !
-    call jemarq()
     epsi = r8prem()
 !
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
@@ -367,5 +364,4 @@ subroutine te0095(option, nomte)
 !
     zr(ific) = g
 999 continue
-    call jedema()
 end subroutine

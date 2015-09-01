@@ -4,8 +4,6 @@ subroutine abscvl(ndim, tabar, xg, s)
 #include "jeveux.h"
 #include "asterfort/abscvf.h"
 #include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/reereg.h"
 #include "asterfort/utmess.h"
     integer :: ndim
@@ -48,7 +46,6 @@ subroutine abscvl(ndim, tabar, xg, s)
 !
 !......................................................................
 !
-    call jemarq()
 !     TABAR : XE2=-1  /  XE1= 1  /  XE3= 0
 !     XE2 ETANT LE POINT D'ORIGINE
 !
@@ -114,5 +111,4 @@ subroutine abscvl(ndim, tabar, xg, s)
 !     ---L'ORIGINE EST LE 1ER PT DE COORSG---
     call abscvf(ndim, tabar, xe(1), s)
 !
-    call jedema()
 end subroutine

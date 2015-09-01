@@ -7,8 +7,6 @@ subroutine te0300(option, nomte)
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/rcvad2.h"
@@ -71,7 +69,6 @@ subroutine te0300(option, nomte)
 !.......................................................................
 !
     call elref1(elrefe)
-    call jemarq()
     eps = r8prem()
     depi = r8depi()
     axi = .false.
@@ -322,5 +319,4 @@ subroutine te0300(option, nomte)
     zr(ific+4) = k2
 !
 110 continue
-    call jedema()
 end subroutine

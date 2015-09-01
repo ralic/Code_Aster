@@ -11,8 +11,6 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset, pinter,&
 #include "asterfort/confac.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/iselli.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/loncar.h"
 #include "asterfort/padist.h"
 #include "asterfort/provec.h"
@@ -77,7 +75,6 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset, pinter,&
 !
 ! --------------------------------------------------------------------
 !
-    call jemarq()
 !
     ASSERT(ndim.eq.2 .or. ndim .eq. 3)
 !      
@@ -618,6 +615,5 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset, pinter,&
 !
 999  continue
 !
-    call jedema()
 !
 end subroutine

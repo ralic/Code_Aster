@@ -22,8 +22,6 @@ subroutine dfda2d(kpg, nno, poids, sdfrde, sdfrdk,&
     implicit none
 #include "jeveux.h"
 #include "asterc/r8gaem.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
     integer :: nno
@@ -40,7 +38,6 @@ subroutine dfda2d(kpg, nno, poids, sdfrde, sdfrdk,&
 !
 !
 !
-    call jemarq()
 !
     sdxde = 0.d0
     sdxdk = 0.d0
@@ -73,5 +70,4 @@ subroutine dfda2d(kpg, nno, poids, sdfrde, sdfrdk,&
     sdkdx(kpg) = -sdyde/jac
     jac = abs(jac)*poids
 !
-    call jedema()
 end subroutine
