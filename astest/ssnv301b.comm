@@ -447,9 +447,10 @@ SY_FO = FORMULE(NOM_PARA='TEMP',VALE='''
         181.E6 + ( TEMP * ( 145.E6 - 181.E6 ) / 100. )
                     ''')
 
+RHOF=DEFI_CONSTANTE(VALE = 7860.,)
 MAT2=DEFI_MATERIAU(      ELAS_FO=_F(  E = E_FO,
                                          NU = NU_FO,
-                                         RHO = 7860.,
+                                         RHO = RHOF,
                                          ALPHA = ALPHA_FO,TEMP_DEF_ALPHA=0.),
                           ECRO_LINE_FO=_F(  D_SIGM_EPSI = ET_FO,
                                          SY = SY_FO)

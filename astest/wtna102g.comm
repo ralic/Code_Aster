@@ -141,10 +141,11 @@ NU=DEFI_CONSTANTE(VALE=0.2,);
 BIDON = 0.,
 
 
+RHOF=DEFI_CONSTANTE(VALE = 2670.,)
 MATERBO=DEFI_MATERIAU(
                     ELAS_FO=_F(E=EL,
                               NU=NU,
-                              RHO=2670.,
+                              RHO=RHOF,
                               ALPHA=ZERO,
                               TEMP_DEF_ALPHA  =BIDON,
                               ),

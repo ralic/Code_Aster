@@ -150,9 +150,10 @@ RHOBET= 2500.
 E     = DEFI_CONSTANTE(VALE = 32308.e6)
 NU    = DEFI_CONSTANTE(VALE = 0.2)
 
+RHOF=DEFI_CONSTANTE(VALE = RHOBET,)
 BETON = DEFI_MATERIAU(ELAS_FO = _F(E   = E,
                                    NU       = NU,
-                                   RHO      = RHOBET,
+                                   RHO      = RHOF,
                                    B_ENDOGE = 1.5E-5,
                                  ),
                         BETON_ECRO_LINE = _F(SYT         = 3.415e6,

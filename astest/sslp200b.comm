@@ -171,9 +171,10 @@ MAT1=DEFI_MATERIAU(ELAS=_F(E=1.2,
                    THER=_F(LAMBDA=0.8,
                            RHO_CP=1.4,),);
 
+RHOF2=DEFI_CONSTANTE(VALE = 7820.0,)
 MAT2=DEFI_MATERIAU(ELAS_FO=_F(E=FO1,
                               NU=FO2,
-                              RHO=7820.,
+                              RHO=RHOF2,
                               TEMP_DEF_ALPHA=6.9,
                               ALPHA=FO3,),
                    THER=_F(LAMBDA=0.9,
@@ -190,12 +191,13 @@ MAT3=DEFI_MATERIAU(ELAS_ISTR=_F(E_L=1.5,
                    THER=_F(LAMBDA=1.9,
                            RHO_CP=2.2,),);
 
+RHOF4=DEFI_CONSTANTE(VALE = 6700.0,)
 MAT4=DEFI_MATERIAU(ELAS_ISTR_FO=_F(E_L=FO1,
                                    E_N=FO13,
                                    NU_LT=FO2,
                                    NU_LN=FO14,
                                    G_LN=FO16,
-                                   RHO=6700.,
+                                   RHO=RHOF4,
                                    TEMP_DEF_ALPHA=11.7,
                                    ALPHA_L=FO3,
                                    ALPHA_N=FO15,),
@@ -223,6 +225,7 @@ MAT5=DEFI_MATERIAU(ELAS_ORTH=_F(E_L=1.6,
                    THER=_F(LAMBDA=1.9,
                            RHO_CP=3.2,),);
 
+RHOF6=DEFI_CONSTANTE(VALE = 5240.0,)
 MAT6=DEFI_MATERIAU(ELAS_ORTH_FO=_F(E_L=FO1,
                                    E_T=FO13,
                                    E_N=FO1,
@@ -232,7 +235,7 @@ MAT6=DEFI_MATERIAU(ELAS_ORTH_FO=_F(E_L=FO1,
                                    G_LT=FO16,
                                    G_LN=FO17,
                                    G_TN=FO16,
-                                   RHO=5240.,
+                                   RHO=RHOF6,
                                    TEMP_DEF_ALPHA=0.,
                                    ALPHA_L=FO3,
                                    ALPHA_T=FO15,

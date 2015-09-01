@@ -82,9 +82,10 @@ F1=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(-1000.,-1200.,
 
 F2=DEFI_CONSTANTE(VALE=0.3,);
 
+RHOF=DEFI_CONSTANTE(VALE = 8.1,)
 MAT=DEFI_MATERIAU(ELAS_FO=_F(E=F1,
                              NU=F2,
-                             RHO=8.1,
+                             RHO=RHOF,
                              TEMP_DEF_ALPHA=1.5,
                              ALPHA=F1,),);
 

@@ -33,12 +33,13 @@ F4=DEFI_CONSTANTE( VALE=0.3)
 
 F5=DEFI_CONSTANTE( VALE=76923.1E+6)
 
+RHOF=DEFI_CONSTANTE(VALE = 7800.0,)
 MAT=DEFI_MATERIAU( ELAS_ISTR_FO=_F(  E_L = F1,
                                  E_N = F2,
                                NU_LT = F3,
                                 NU_LN = F4,
 
-  G_LN = F5,RHO = 7800.)  )
+  G_LN = F5,RHO = RHOF)  )
 
 CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
                        AFFE=_F(  TOUT = 'OUI',  MATER = MAT) )

@@ -3,17 +3,17 @@
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # AMORTISSEMENT VISQUEUX PROPORTIONNEL
 # ELEMENTS  : HEXA20
@@ -23,10 +23,10 @@ import numpy
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'))
 
-ACIER=DEFI_MATERIAU(          
-                         ELAS=_F(  RHO = 7.8E03,  
-                           NU = 0.3, 
-                           E = 2.1E11, 
+ACIER=DEFI_MATERIAU(
+                         ELAS=_F(  RHO = 7.8E03,
+                           NU = 0.3,
+                           E = 2.1E11,
                            AMOR_ALPHA = 0.2852750549E-04,
                            AMOR_BETA = 57.62031174))
 
@@ -35,23 +35,24 @@ ACIER=DEFI_MATERIAU(
 #AMOR_BETA  : 230.4812469 ));
 
 MAYA=LIRE_MAILLAGE(FORMAT='MED', )
+IMPR_RESU(RESU=_F(MAILLAGE=MAYA))
 
-MATER=AFFE_MATERIAU(    MAILLAGE=MAYA, 
-                                 AFFE=_F(  TOUT = 'OUI', 
+MATER=AFFE_MATERIAU(    MAILLAGE=MAYA,
+                                 AFFE=_F(  TOUT = 'OUI',
                                         MATER = ACIER))
 
 STRUCTUR=AFFE_MODELE(    MAILLAGE=MAYA,
-                               AFFE=_F(  TOUT = 'OUI', 
-                                      MODELISATION = '3D', 
+                               AFFE=_F(  TOUT = 'OUI',
+                                      MODELISATION = '3D',
                                       PHENOMENE = 'MECANIQUE'))
 
 FIXA=AFFE_CHAR_MECA(     MODELE=STRUCTUR,DDL_IMPO=(
-                    _F(  GROUP_NO = 'COND1',  DX = 0.,  DY = 0.), 
-                    _F(  GROUP_NO = 'COND2',  DY = 0.), 
+                    _F(  GROUP_NO = 'COND1',  DX = 0.,  DY = 0.),
+                    _F(  GROUP_NO = 'COND2',  DY = 0.),
                     _F(  GROUP_NO = 'COND3',  DZ = 0.)))
 
 PLAN_X0=AFFE_CHAR_MECA(         MODELE=STRUCTUR,LIAISON_DDL=(
-                             
+
 
      _F( NOEUD = ('N1','N21','N9',), DDL = ('DX','DX','DX',),
      COEF_MULT = ( 1.00,   .00000, -1.00000,), COEF_IMPO = 0.),
@@ -118,7 +119,7 @@ PLAN_X0=AFFE_CHAR_MECA(         MODELE=STRUCTUR,LIAISON_DDL=(
        )
 
 PLAN_XL=AFFE_CHAR_MECA(         MODELE=STRUCTUR,LIAISON_DDL=(
-                             
+
 
      _F( NOEUD = ('N1481','N1501','N1489',), DDL = ('DX','DX','DX',),
      COEF_MULT = ( 1.00,   .00000, -1.00000,), COEF_IMPO = 0.),
@@ -187,23 +188,23 @@ PLAN_XL=AFFE_CHAR_MECA(         MODELE=STRUCTUR,LIAISON_DDL=(
 # CALCUL DES MATRICES ELEMENTAIRES DE RIGIDITE ET DE MASSE
 
 K_ELEM=CALC_MATR_ELEM(        MODELE=STRUCTUR,
-                                CHAM_MATER=MATER, 
-                                   OPTION='RIGI_MECA', 
-                                    CHARGE=( FIXA,     
-                                             PLAN_X0, 
+                                CHAM_MATER=MATER,
+                                   OPTION='RIGI_MECA',
+                                    CHARGE=( FIXA,
+                                             PLAN_X0,
                                              PLAN_XL, ))
 
 M_ELEM=CALC_MATR_ELEM(        MODELE=STRUCTUR,
-                                CHAM_MATER=MATER, 
-                                   OPTION='MASS_MECA', 
-                                    CHARGE=( FIXA,     
-                                             PLAN_X0, 
+                                CHAM_MATER=MATER,
+                                   OPTION='MASS_MECA',
+                                    CHARGE=( FIXA,
+                                             PLAN_X0,
                                              PLAN_XL,  ))
 
 C_ELEM=CALC_MATR_ELEM(        MODELE=STRUCTUR,
                                  RIGI_MECA=K_ELEM,
                                  MASS_MECA=M_ELEM,
-                                CHAM_MATER=MATER, 
+                                CHAM_MATER=MATER,
                                    OPTION='AMOR_MECA' )
 
 # NUMEROTATION
@@ -213,13 +214,13 @@ NUMERO=NUME_DDL(    MATR_RIGI=K_ELEM )
 # ASSEMBLAGE DES MATRICES DE RIGIDITE ET DE MASSE
 
 
-K_ASSE=ASSE_MATRICE(    MATR_ELEM=K_ELEM, 
+K_ASSE=ASSE_MATRICE(    MATR_ELEM=K_ELEM,
                              NUME_DDL=NUMERO )
 
-M_ASSE=ASSE_MATRICE(    MATR_ELEM=M_ELEM, 
+M_ASSE=ASSE_MATRICE(    MATR_ELEM=M_ELEM,
                              NUME_DDL=NUMERO )
 
-C_ASSE=ASSE_MATRICE(    MATR_ELEM=C_ELEM, 
+C_ASSE=ASSE_MATRICE(    MATR_ELEM=C_ELEM,
                              NUME_DDL=NUMERO )
 
 # CALCUL DES MODES
@@ -276,6 +277,102 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PRECISION=5.0000000000000001E-3,),
                 ),
           )
+
+#===============================================================
+# 2) Validation de RHO=f(X,Y,Z) :
+#-----------------------------
+# On calcule les modes propres du barreau avec :
+#   RHO = 1.e3 pour  0. <= X  <=1.
+#   RHO = 3.e3 pour  1. <= X  <=2.
+#
+# On fait 2 nouveaux calculs :
+#  2.1) avec 2 materiaux differents
+#  2.2) avec 1 seul materiau fonction de X
+# On verifie que les deux calculs donnent les memes resultats
+#-------------------------------------------------------------------
+
+# 2.0 : on cree les 3 groupes de mailles correspondant a  X < 1 (GM1) et X > 1 (GM2) :
+MAYA=DEFI_GROUP(reuse=MAYA,   MAILLAGE=MAYA, INFO=2,
+                CREA_GROUP_MA=(
+                     _F(  NOM = 'GM1', OPTION = 'BANDE',
+                          NOEUD_CENTRE = 'N1', DIST = 1.01,
+                          VECT_NORMALE = (1.,0.,0.,), CRIT_NOEUD ='TOUS',),
+                     _F(  NOM = 'GM2', OPTION = 'BANDE',
+                          NOEUD_CENTRE = 'N1517', DIST = 1.01,
+                          VECT_NORMALE = (1.,0.,0.,), CRIT_NOEUD ='TOUS',),
+                ))
+
+# Calcul 2.1 :
+#------------
+DETRUIRE(CONCEPT=_F(NOM=(MATER, K_ELEM, M_ELEM, NUMERO, K_ASSE, M_ASSE)),INFO=1,)
+
+ACIE1=DEFI_MATERIAU( ELAS=_F(  RHO = 1.E03, NU = 0.3,  E = 2.1E11,))
+ACIE2=DEFI_MATERIAU( ELAS=_F(  RHO = 3.E03, NU = 0.3,  E = 2.1E11,))
+
+MATER=AFFE_MATERIAU(MAILLAGE=MAYA,
+                    AFFE=(
+                        _F(  GROUP_MA = 'GM1', MATER = ACIE1),
+                        _F(  GROUP_MA = 'GM2', MATER = ACIE2),
+                        ))
+
+K_ELEM=CALC_MATR_ELEM( MODELE=STRUCTUR, CHAM_MATER=MATER, OPTION='RIGI_MECA',
+                       CHARGE=( FIXA, PLAN_X0,PLAN_XL, ))
+
+M_ELEM=CALC_MATR_ELEM( MODELE=STRUCTUR, CHAM_MATER=MATER, OPTION='MASS_MECA',
+                       CHARGE=( FIXA, PLAN_X0,PLAN_XL, ))
+
+NUMERO=NUME_DDL(    MATR_RIGI=K_ELEM )
+K_ASSE=ASSE_MATRICE(    MATR_ELEM=K_ELEM, NUME_DDL=NUMERO )
+M_ASSE=ASSE_MATRICE(    MATR_ELEM=M_ELEM, NUME_DDL=NUMERO )
+
+MODE2=CALC_MODES(MATR_RIGI=K_ASSE, MATR_MASS=M_ASSE, OPTION='PLUS_PETITE',
+                 CALC_FREQ=_F(NMAX_FREQ=10,) ,
+                 SOLVEUR_MODAL=_F(METHODE='TRI_DIAG', ))
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,  PARA='FREQ',  RESULTAT=MODE2, VALE_CALC=   226.938996101))
+TEST_RESU(RESU=_F(NUME_ORDRE=3,  PARA='FREQ',  RESULTAT=MODE2, VALE_CALC=  1111.41079771 ))
+TEST_RESU(RESU=_F(NUME_ORDRE=7,  PARA='FREQ',  RESULTAT=MODE2, VALE_CALC=  4508.49918197 ))
+
+
+# Calcul 2.2 :
+#------------
+DETRUIRE(CONCEPT=_F(NOM=(MATER, K_ELEM, M_ELEM, NUMERO, K_ASSE, M_ASSE)),INFO=1,)
+
+nuf=DEFI_CONSTANTE(VALE = 0.3,)
+ef=DEFI_CONSTANTE(VALE = 2.1e11,)
+def rho(X) :
+    if X <= 1. :
+        return 1.e3
+    else :
+        return 3.e3
+rhof = FORMULE(NOM_PARA=('X',), VALE="rho(X)" )
+ACIE3=DEFI_MATERIAU( ELAS_FO=_F(  RHO = rhof, NU = nuf,  E = ef,))
+
+CHGEOM=CREA_CHAMP(TYPE_CHAM='NOEU_GEOM_R', OPERATION='EXTR', MAILLAGE=MAYA, NOM_CHAM='GEOMETRIE',);
+MATER=AFFE_MATERIAU(MAILLAGE=MAYA,
+                    AFFE= _F(  TOUT = 'OUI', MATER = ACIE3),
+                    AFFE_VARC=_F(NOM_VARC='GEOM', CHAM_GD=CHGEOM),);
+
+K_ELEM=CALC_MATR_ELEM( MODELE=STRUCTUR, CHAM_MATER=MATER, OPTION='RIGI_MECA',
+                       CHARGE=( FIXA, PLAN_X0,PLAN_XL, ))
+
+M_ELEM=CALC_MATR_ELEM( MODELE=STRUCTUR, CHAM_MATER=MATER, OPTION='MASS_MECA',
+                       CHARGE=( FIXA, PLAN_X0,PLAN_XL, ))
+
+NUMERO=NUME_DDL(    MATR_RIGI=K_ELEM )
+K_ASSE=ASSE_MATRICE(    MATR_ELEM=K_ELEM, NUME_DDL=NUMERO )
+M_ASSE=ASSE_MATRICE(    MATR_ELEM=M_ELEM, NUME_DDL=NUMERO )
+
+MODE3=CALC_MODES(MATR_RIGI=K_ASSE, MATR_MASS=M_ASSE, OPTION='PLUS_PETITE',
+                 CALC_FREQ=_F(NMAX_FREQ=10,) ,
+                 SOLVEUR_MODAL=_F(METHODE='TRI_DIAG', ))
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,  PARA='FREQ',  RESULTAT=MODE3,
+                  REFERENCE='AUTRE_ASTER', VALE_REFE=226.938996101 , PRECISION=1.e-11, VALE_CALC= 226.938996101))
+TEST_RESU(RESU=_F(NUME_ORDRE=3,  PARA='FREQ',  RESULTAT=MODE3,
+                  REFERENCE='AUTRE_ASTER', VALE_REFE=1111.41079771 , PRECISION=1.e-11, VALE_CALC= 1111.41079771))
+TEST_RESU(RESU=_F(NUME_ORDRE=7,  PARA='FREQ',  RESULTAT=MODE3,
+                  REFERENCE='AUTRE_ASTER', VALE_REFE=4508.49918197 , PRECISION=1.e-11, VALE_CALC= 4508.49918197))
 
 FIN()
 #

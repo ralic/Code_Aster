@@ -63,9 +63,10 @@ MAT=DEFI_MATERIAU(ELAS_GLRC=_F(E_M=0.2E6,
                              NYT=3.9E6,
                              MYF=0.2E6,),);
 
+RHOF=DEFI_CONSTANTE(VALE = 8.e-6)
 MATTH=DEFI_MATERIAU(ELAS_GLRC_FO=_F(E_M=E_TEMP,
                                     NU_M=NU_FO,
-                                    RHO=8.E-6,
+                                    RHO=RHOF,
                                     TEMP_DEF_ALPHA=0.,
                                     ALPHA=ALPHA_FO,),);
 

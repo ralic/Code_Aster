@@ -207,9 +207,10 @@ tau1=55;
 tau2=440;
 ekfl=1.25e-4;
 
+RHOF=DEFI_CONSTANTE(VALE = 0.,)
 BETON=DEFI_MATERIAU(ELAS_FO=_F(E=E0,
                                NU=NU0,
-                               RHO=0.,
+                               RHO=RHOF,
                                TEMP_DEF_ALPHA=20.,
                                ALPHA=ALPH0,),
                    PORO_BETON =_F(ALUC    = 540,
@@ -431,10 +432,11 @@ for ii in range(len(list_bouc)):
     
   DETRUIRE(CONCEPT=_F(NOM=(VAR2,VAR3)));
 
+RHOF2=DEFI_CONSTANTE(VALE = 0.002363,)
 MAT_MEC=DEFI_MATERIAU(ELAS_FO=_F(E=E0,
                                NU=NU0,
                                TEMP_DEF_ALPHA=20.0,
-                               RHO=0.002363,
+                               RHO=RHOF2,
                                ALPHA=ALPH0,
                                K_DESSIC=0.,
                                B_ENDOGE=0.,),

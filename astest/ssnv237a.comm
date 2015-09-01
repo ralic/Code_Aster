@@ -38,13 +38,14 @@ NU=DEFI_CONSTANTE(VALE=0.17,);
 
 ALPHA=DEFI_CONSTANTE(VALE=1.E-5,);
 
+RHOF=DEFI_CONSTANTE(VALE = 2400.,)
 BETON=DEFI_MATERIAU(ELAS_FO=_F(E=E,
                                NU=NU,
                                TEMP_DEF_ALPHA=20.0,
                                ALPHA=ALPHA,
                                K_DESSIC=0.,
                                B_ENDOGE=0.,
-                               RHO = 2400.,),
+                               RHO = RHOF,),
                     PORO_BETON =_F(HYDS    = 0.2,
                                F_C      = 42.,
                                F_T      = 4.,

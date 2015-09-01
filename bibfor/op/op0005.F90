@@ -84,7 +84,7 @@ subroutine op0005()
     call getvid(' ', 'MATER', scal=matin, nbret=n1)
     if (n1 .ne. 0) then
 !
-! ------ ON VERIFIE QUE L'ON A QUE DES NOUVEAUX MATERIAUX
+! ------ ON VERIFIE QUE L'ON N'A QUE DES NOUVEAUX MATERIAUX
 !
         call jeveuo(matin//'.MATERIAU.NOMRC', 'L', jnorci)
         call jelira(matin//'.MATERIAU.NOMRC', 'LONMAX', nbmati)

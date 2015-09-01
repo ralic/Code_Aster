@@ -99,10 +99,11 @@ EL = DEFI_FONCTION  ( NOM_PARA   = 'TEMP' ,
 
 NU=DEFI_CONSTANTE(VALE=0.,);
 
+RHOF=DEFI_CONSTANTE(VALE = 1.,)
 MATERIAU=DEFI_MATERIAU(
                     ELAS_FO=_F(E=EL,
                               NU=NU,
-                              RHO=1.,
+                              RHO=RHOF,
                               ALPHA=ZERO,
                               TEMP_DEF_ALPHA  =0.,
                               ),

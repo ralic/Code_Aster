@@ -241,9 +241,10 @@ EPSP_S=DEFI_FONCTION(NOM_PARA='TEMP',
 #          "CALCULS D'ENDOMMAGEMENT DU COLLECTEUR SHT DE CHAMPAGNE/OISE 2
 #          DANS LE CAS D'UN DEMARRAGE, ILOTAGE ET DES PERTURBATIONS"
 # =======================================================================
+RHOF=DEFI_CONSTANTE(VALE = RHO,)
 P10CD910=DEFI_MATERIAU(ELAS_FO=_F(E=YOUNG,
                                   NU=NU,
-                                  RHO=RHO,
+                                  RHO=RHOF,
                                   TEMP_DEF_ALPHA=25.0,
                                   ALPHA=ALPHA,),
                        CIN2_CHAB_FO=_F(R_0=R0,
@@ -267,7 +268,7 @@ P10CD910=DEFI_MATERIAU(ELAS_FO=_F(E=YOUNG,
 
 P10CD911=DEFI_MATERIAU(ELAS_FO=_F(E=YOUNG,
                                   NU=NU,
-                                  RHO=RHO,
+                                  RHO=RHOF,
                                   TEMP_DEF_ALPHA=25.0,
                                   ALPHA=ALPHA,),
                        CIN2_CHAB_FO=_F(R_0=R0,

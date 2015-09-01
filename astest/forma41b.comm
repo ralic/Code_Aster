@@ -229,10 +229,11 @@ YOUNG=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(0,30E10,
 POISSON=DEFI_CONSTANTE(VALE=0.2,);
 
 DILAT=DEFI_CONSTANTE(VALE=1.2E-6,);
+RHOF=DEFI_CONSTANTE(VALE = 2400.,)
 
 BETON=DEFI_MATERIAU(ELAS_FO=_F(E=YOUNG,
                                NU=POISSON,
-                               RHO=2400,
+                               RHO=RHOF,
                                TEMP_DEF_ALPHA=20,
                                ALPHA=DILAT,
                                B_ENDOGE=9E-5,

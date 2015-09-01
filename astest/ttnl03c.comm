@@ -396,9 +396,10 @@ CTRACB=DEFI_NAPPE(NOM_PARA='HYDR',
 
 #
 
+RHOF=DEFI_CONSTANTE(VALE = 2400.,)
 MAT=DEFI_MATERIAU(ELAS_FO=_F(E=E,
                              NU=NU,
-                             RHO=2400.,
+                             RHO=RHOF,
                              TEMP_DEF_ALPHA=0.0E-3,
                              ALPHA=ALPHA,
                              B_ENDOGE=0.0015,),

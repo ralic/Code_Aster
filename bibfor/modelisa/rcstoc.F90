@@ -8,6 +8,7 @@ subroutine rcstoc(nommat, nomrc, noobrc, nbobj, valr, valc,&
 #include "asterfort/assert.h"
 #include "asterfort/focain.h"
 #include "asterfort/foverf.h"
+#include "asterfort/fonbpa.h"
 #include "asterfort/gcncon.h"
 #include "asterfort/getvc8.h"
 #include "asterfort/getvid.h"
@@ -76,7 +77,7 @@ subroutine rcstoc(nommat, nomrc, noobrc, nbobj, valr, valc,&
     real(kind=8) :: valr8, e1, ei, precma, valrr(4)
     character(len=8) :: valtx
     character(len=8) :: valch, nomcle(5)
-    character(len=8) :: table
+    character(len=8) :: table, typfon, nompf(10)
     character(len=19) :: rdep, nomfct, nomint
     character(len=8) :: num_lisv
     character(len=16) :: nom_lisv
@@ -85,7 +86,7 @@ subroutine rcstoc(nommat, nomrc, noobrc, nbobj, valr, valc,&
     complex(kind=8) :: valc8
     integer ::   ibk, nbmax, vali, itrou, n1, posi, kr, kc, kf
     integer :: i, k, ii,  jrpv, jvale, nbcoup, n, jlisvr, jlisvf,nmcs
-    integer :: iret, nbfct, nbpts, jprol, nbptm, lpro1, lpro2
+    integer :: iret, nbfct, nbpts, jprol, nbptm, lpro1, lpro2, nbpf
     character(len=32), pointer :: nomobj(:) => null()
     character(len=8), pointer :: typobj(:) => null()
     character(len=24), pointer :: prol(:) => null()
@@ -219,8 +220,8 @@ subroutine rcstoc(nommat, nomrc, noobrc, nbobj, valr, valc,&
         do i = 1, nmcs
             posi = indk16(ordr,nomobj(i),1,n1)
             if (posi.eq.0) then
-                valkk(1)=nomrc
-                valkk(2)=nomobj(i)
+                valkk(1)=nomrc(1:24)
+                valkk(2)=nomobj(i)(1:24)
                 call utmess('F','MODELISA6_81',nk=2,valk=valkk)
             else
                 kord(2+i)=posi
@@ -623,6 +624,24 @@ subroutine rcstoc(nommat, nomrc, noobrc, nbobj, valr, valc,&
                 call tbexp2(table, 'A')
             endif
 720      continue
+    endif
+
+
+!   -- 10. Verification que RHO ne peut etre une fonction que de la geometrie :
+!   ---------------------------------------------------------------------------
+    if (nomrc .eq. 'ELAS_FO') then
+        call getvid(nomrc, 'RHO', iocc=1, scal=nomfct, nbret=n)
+        if (n.eq.1) then
+            call jeveuo(nomfct//'.PROL', 'L', vk24=prol)
+            call fonbpa(nomfct, prol, typfon, 10, nbpf, nompf)
+            do i = 1, nbpf
+                if (nompf(i).ne.'X' .and. nompf(i).ne.'Y' .and. nompf(i).ne.'Z') then
+                    valkk(1)=nomfct
+                    valkk(2)=nompf(i)
+                    call utmess('F', 'MODELISA6_92', nk=2, valk=valkk)
+                endif
+            enddo
+        endif
     endif
 
     AS_DEALLOCATE(vk8=typobj)

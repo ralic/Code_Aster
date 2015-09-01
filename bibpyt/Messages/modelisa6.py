@@ -331,7 +331,13 @@ Erreur programmeur dans DEFI_MATERIAU :
  concept de type :  %(k1)s  interdit pour la courbe de traction %(k2)s
 """),
 
-
+    92 : _(u"""
+Erreur utilisateur dans DEFI_MATERIAU :
+  Lorsque le coefficient de dilatation RHO est une fonction, il
+  ne peut être qu'une fonction de la géométrie (X,Y,Z).
+  La fonction %(k1)s dépend du paramètre %(k2)s.
+  C'est interdit.
+"""),
 
     93 : _(u"""
   les fonctions complexes ne sont pas implémentées

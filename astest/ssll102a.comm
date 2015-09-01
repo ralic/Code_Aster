@@ -1886,7 +1886,8 @@ NU3=0.35
 NU_F=DEFI_FONCTION(  NOM_PARA='TEMP',
                          VALE=( T1, NU1,  T2, NU2,  T3, NU3, )  )
 
-MATER_F=DEFI_MATERIAU(  ELAS_FO=_F(  E = E_F,      NU = NU_F,  RHO=7.,
+RHOF=DEFI_CONSTANTE(VALE = 7.0,)
+MATER_F=DEFI_MATERIAU(  ELAS_FO=_F(  E = E_F,      NU = NU_F,  RHO=RHOF,
                                        ALPHA = A_F ,TEMP_DEF_ALPHA=0.0) )
 
 CHMAT_F=AFFE_MATERIAU(  MAILLAGE=MA,

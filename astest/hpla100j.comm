@@ -146,6 +146,7 @@ MAT=DEFI_MATERIAU( ELAS_COQUE=_F(  MEMB_L = C1111,
                                       CISA_T = G22,
                              RHO = 8.E-6, ALPHA = 1.E-05))
 
+RHOF=DEFI_CONSTANTE(VALE = 8.e-6)
 MATHH=DEFI_MATERIAU( ELAS_COQUE_FO=_F(  MEMB_L = C1111_FO,
                                       MEMB_LT = C1112_FO,
                                       MEMB_T = C2222_FO,
@@ -156,7 +157,7 @@ MATHH=DEFI_MATERIAU( ELAS_COQUE_FO=_F(  MEMB_L = C1111_FO,
                                       FLEX_G_LT = D1212_FO,
                                       CISA_L = G11_FO,
                                       CISA_T = G22_FO,
-                           RHO = 8.E-6, ALPHA = ALPHA_FO))
+                           RHO = RHOF, ALPHA = ALPHA_FO))
 
 MATHER=DEFI_MATERIAU(THER=_F( LAMBDA = 1.0, RHO_CP = 0.0) )
 

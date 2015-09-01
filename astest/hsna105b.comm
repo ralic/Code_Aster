@@ -72,9 +72,10 @@ DSIGEPSI=DEFI_FONCTION(NOM_PARA='TEMP',
                        VALE=(0.0   ,2.1E8,
                              10000.,2.1E8,),);
 
+RHOF=DEFI_CONSTANTE(VALE = 2700.0,)
 MATER=DEFI_MATERIAU(ELAS_FO=_F(E=E,
                                NU=NU,
-                               RHO=2700.0,
+                               RHO=RHOF,
                                TEMP_DEF_ALPHA=TREF,
                                ALPHA=ALPHA,),
                     ECRO_COOK_FO=_F(A=SY,

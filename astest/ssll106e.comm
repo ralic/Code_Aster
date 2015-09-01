@@ -897,9 +897,10 @@ NU_DE_T=DEFI_CONSTANTE(VALE=0.29999999999999999,);
 
 AL_DE_T=DEFI_CONSTANTE(VALE=1.0000000000000001E-05,);
 
+RHOF=DEFI_CONSTANTE(VALE = 7800.0,)
 MAT2=DEFI_MATERIAU(ELAS_FO=_F(E=E_DE_T,
                               NU=NU_DE_T,
-                              RHO=7800.0,
+                              RHO=RHOF,
                               TEMP_DEF_ALPHA=0.0,
                               ALPHA=AL_DE_T,),);
 

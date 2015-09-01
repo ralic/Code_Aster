@@ -92,9 +92,10 @@ ALDET=DEFI_FONCTION(   NOM_PARA='TEMP',
 
 #
 
+RHOF=DEFI_CONSTANTE(VALE = 7850.0,)
 ACIER=DEFI_MATERIAU(   ELAS_FO=_F( E = EDET,
                                  NU = NUDET,
-                                RHO = 7850.0,
+                                RHO = RHOF,
                               ALPHA = ALDET,TEMP_DEF_ALPHA=20.0,)
                        )
 

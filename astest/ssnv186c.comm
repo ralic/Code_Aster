@@ -76,7 +76,8 @@ E_F=DEFI_FONCTION(NOM_PARA='NEUT1',
 NU_F=DEFI_FONCTION(NOM_PARA='NEUT1',
                   VALE=(-20.0,nu,-1.E-5,nu,1.E-5,nu,20.0,nu));
 
-ACIER=DEFI_MATERIAU(ELAS_FO=_F(E=E_F,NU=NU_F,RHO=7800.0),
+RHOF=DEFI_CONSTANTE(VALE = 7800.0,)
+ACIER=DEFI_MATERIAU(ELAS_FO=_F(E=E_F,NU=NU_F,RHO=RHOF),
                     RUPT_FRAG = _F(GC = Gc,
                                     SIGM_C = Sc,
                                     PENA_LAGR = 1.5,),

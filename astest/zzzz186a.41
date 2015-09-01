@@ -1024,7 +1024,7 @@ WOHLER=DEFI_FONCTION(NOM_PARA='SIGM',
                      INTERPOL='LOG',
                      PROL_GAUCHE='LINEAIRE',
                      PROL_DROITE='EXCLU',);
-RHO1 = 7850.0;
+RHO1 = DEFI_CONSTANTE(VALE=7850.0);
 
 
 N_KE=DEFI_CONSTANTE(VALE=0.29999999999999999,);
@@ -1050,7 +1050,7 @@ MAT1=DEFI_MATERIAU(ELAS_FO=_F(E=YOUNG,
                    RCCM_FO=_F(SM=SMVRAI,
                               N_KE=N_KE,
                               M_KE=M_KE,),);
-RHO4 = 12544.0;
+RHO4 = DEFI_CONSTANTE(VALE=12544.0);
 
 
 MAT4=DEFI_MATERIAU(ELAS_FO=_F(E=YOUNG,
@@ -1063,7 +1063,7 @@ MAT4=DEFI_MATERIAU(ELAS_FO=_F(E=YOUNG,
                    RCCM_FO=_F(SM=SMVRAI,
                               N_KE=N_KE,
                               M_KE=M_KE,),);
-RHO5 = 11547.0;
+RHO5 = DEFI_CONSTANTE(VALE=11547.0);
 
 
 MAT5=DEFI_MATERIAU(ELAS_FO=_F(E=YOUNG,
@@ -1076,7 +1076,7 @@ MAT5=DEFI_MATERIAU(ELAS_FO=_F(E=YOUNG,
                    RCCM_FO=_F(SM=SMVRAI,
                               N_KE=N_KE,
                               M_KE=M_KE,),);
-RHO7 = 11543.0;
+RHO7 = DEFI_CONSTANTE(VALE=11543.0);
 
 
 MAT7=DEFI_MATERIAU(ELAS_FO=_F(E=YOUNG,
@@ -1089,7 +1089,7 @@ MAT7=DEFI_MATERIAU(ELAS_FO=_F(E=YOUNG,
                    RCCM_FO=_F(SM=SMVRAI,
                               N_KE=N_KE,
                               M_KE=M_KE,),);
-RHO9 = 13682.0;
+RHO9 = DEFI_CONSTANTE(VALE=13682.0);
 
 
 MAT9=DEFI_MATERIAU(ELAS_FO=_F(E=YOUNG,
@@ -1102,7 +1102,7 @@ MAT9=DEFI_MATERIAU(ELAS_FO=_F(E=YOUNG,
                    RCCM_FO=_F(SM=SMVRAI,
                               N_KE=N_KE,
                               M_KE=M_KE,),);
-RHO18 = 8292.8;
+RHO18 = DEFI_CONSTANTE(VALE=8292.8);
 
 
 MAT18=DEFI_MATERIAU(ELAS_FO=_F(E=YOUNG,
@@ -1115,7 +1115,7 @@ MAT18=DEFI_MATERIAU(ELAS_FO=_F(E=YOUNG,
                    RCCM_FO=_F(SM=SMVRAI,
                               N_KE=N_KE,
                               M_KE=M_KE,),);
-RHO0 = 0.0;
+RHO0 = DEFI_CONSTANTE(VALE=0.0);
 
 
 MAT0=DEFI_MATERIAU(ELAS_FO=_F(E=YOUNG,
