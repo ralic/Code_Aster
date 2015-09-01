@@ -259,9 +259,8 @@ subroutine peeint(resu, modele, nbocc)
 !
 !         --- CHAMP DU POST-TRAITEMENT
                 call getvtx('INTEGRALE', 'NOM_CHAM', iocc=iocc, scal=nomcha, nbret=iret)
-                if (iret .eq. 0) then
-                    call utmess('F', 'POSTELEM_4')
-                endif
+                if (iret .eq. 0)  call utmess('F', 'POSTELEM_4')
+                if (nomcha.eq.'FORC_NODA' .or. nomcha.eq.'REAC_NODA') call utmess('F', 'POSTELEM_5')
 !
                 call rsexch('F', resuco, nomcha, numo, cham2,&
                             iret)

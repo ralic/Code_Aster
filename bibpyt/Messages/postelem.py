@@ -38,6 +38,12 @@ cata_msg = {
  Avec le mot-clé RESULTAT, il faut renseigner NOM_CHAM pour identifier le champ sur lequel réaliser le post-traitement.
 """),
 
+    5: _(u"""
+Erreur utilisateur :
+   Le calcul de POST_ELEM / INTEGRALE pour les champs FORC_NODA et REAC_NODA n'a pas de sens 
+   car ces quantités ne sont pas "continues".
+"""),
+
     10: _(u"""Pour le calcul de l'option MASS_INER sur la géométrie déformée, il faut que le résultat contienne plus d'un numéro d'ordre"""),
 
     11: _(u"""

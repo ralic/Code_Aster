@@ -173,17 +173,10 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
                 call jenuno(jexnum('&CATA.TE.NOMTE', itypel), nomte)
 !
                 if (questi .eq. 'EXI_RDM') then
-                    call dismte('MODELISATION', nomte, repi, nomodl, ierd)
-                    if ((nomodl(1:3).eq.'DKT') .or. (nomodl(1:3) .eq.'DST') .or.&
-                        (nomodl(1:3).eq.'Q4G') .or. (nomodl(1:5).eq.'CABLE') .or.&
-                        (nomodl(1:4) .eq.'POU_') .or. (nomodl(1:5).eq.'BARRE') .or.&
-                        (nomodl(1:4).eq.'DIS_') .or. (nomodl(1:5) .eq.'TUYAU') .or.&
-                        (nomodl(3:7).eq.'_DIS_') .or. (nomodl(1:6).eq.'GRILLE') .or.&
-                        (nomodl(1:5) .eq.'COQUE')) then
-                        repk='OUI'
-                        goto 110
-!
-                    endif
+                    if (lteatt('COQUE','OUI', typel=nomte)) repk='OUI'
+                    if (lteatt('POUTRE','OUI', typel=nomte)) repk='OUI'
+                    if (lteatt('DISCRET','OUI', typel=nomte)) repk='OUI'
+                    if (repk.eq.'OUI') goto 110
 !
                 else if (questi.eq.'CALC_RIGI') then
                     repk='NON'

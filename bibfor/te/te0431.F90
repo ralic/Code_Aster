@@ -54,7 +54,7 @@ subroutine te0431(option, nomte)
     character(len=16) :: nomres(2)
     integer :: nddl, nno, nnos, npg, ndim, i, j, j1, n, m, kpg, kk, kkd, lgpg
     integer :: cod(9)
-    integer :: imatuu, ipoids, ivf, idfde, igeom, imate, icamas, icontm, ivarim
+    integer :: imatuu, ipoids, ivf, idfde, igeom, imate, icontm, ivarim
     integer :: jgano, jtab(7), jcret, ideplm, ideplp, icompo, icarcr, iret
     integer :: ivectu, icontp, ivarip, ivarix, icontx
     real(kind=8) :: dff(2, 8), b(6, 8), p(3, 6), jac

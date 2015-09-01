@@ -147,6 +147,8 @@ PHENOMENE_MODELISATION__
 %           ELEMDISC l'element utilise des comportements d'elements a discontinuite interne
 %           PMF      l'element fait appel a des comportements 1D PMF (GROT_GDEP PERMIS)
 %
+%  COQUE  =  'OUI' :  l'element est un element de coque, de plaque, de grille, ... (element de structure surfacique).
+%  POUTRE =  'OUI' :  l'element est un element de poutre, de barre, de cable, de tuyau, ... (element de structure lineique).
 %  TUYAU  =  'OUI' :  l'element est un element de "tuyau".
 %  GRILLE =  'OUI' :  l'element est un element de "grille".
 %
@@ -1073,12 +1075,12 @@ PHENOMENE_MODELISATION__
               MAILLE__ TRIA6     ELEMENT__ MEAXTR6_XHC
               MAILLE__ QUAD4     ELEMENT__ MEAXQU4_XHC
               MAILLE__ QUAD8     ELEMENT__ MEAXQU8_XHC
-
+              
        MODELISATION__ 'AXIS_XTC'         DIM__ 2 2   CODE__ 'AX5'
               ATTRIBUT__  NBSIGM='4' AXIS='OUI'   TYPMOD='AXIS' LXFEM='OUI' XFEM='XTC' XLAG='NOEUD' CONTACT='OUI' FROTTEMENT='OUI'
               MAILLE__ TRIA3     ELEMENT__ MEAXTR3_XTC
               MAILLE__ QUAD4     ELEMENT__ MEAXQU4_XTC
-
+              
        MODELISATION__ 'AXIS_XHTC'        DIM__ 2 2   CODE__ 'AX6'
               ATTRIBUT__  NBSIGM='4' AXIS='OUI'   TYPMOD='AXIS' LXFEM='OUI' XFEM='XHTC' XLAG='NOEUD' CONTACT='OUI' FROTTEMENT='OUI'
               MAILLE__ TRIA3     ELEMENT__ MEAXTR3_XHTC
@@ -1489,60 +1491,60 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG2      ELEMENT__ MEPLSE2
 
        MODELISATION__ 'CABLE'            DIM__ 1 3   CODE__ 'CAB'
-              ATTRIBUT__  EFGE='OUI' SIGM='NON'
+              ATTRIBUT__  POUTRE='OUI' EFGE='OUI' SIGM='NON'
               MAILLE__ SEG2      ELEMENT__ MECABL2
 
        MODELISATION__ 'CABLE_POULIE'     DIM__ 1 3   CODE__ 'CAP'
-              ATTRIBUT__  EFGE='OUI' SIGM='NON'
+              ATTRIBUT__  POUTRE='OUI'  EFGE='OUI' SIGM='NON'
               MAILLE__ SEG3      ELEMENT__ MEPOULI
 
        MODELISATION__ 'POU_D_E'          DIM__ 1 3   CODE__ 'PDE'
-              ATTRIBUT__  EULER='OUI' EFGE='OUI' SIGM='NON'
+              ATTRIBUT__  POUTRE='OUI'  EULER='OUI' EFGE='OUI' SIGM='NON'
               MAILLE__ SEG2      ELEMENT__ MECA_POU_D_E
 
        MODELISATION__ 'POU_D_EM'         DIM__ 1 3   CODE__ 'PFM'
-              ATTRIBUT__  TYPMOD='COMP1D' TYPMOD2='PMF' EULER='OUI' EFGE='OUI' SOUS_POINT='OUI'
+              ATTRIBUT__  POUTRE='OUI'  TYPMOD='COMP1D' TYPMOD2='PMF' EULER='OUI' EFGE='OUI' SOUS_POINT='OUI'
               MAILLE__ SEG2      ELEMENT__ MECA_POU_D_EM
 
        MODELISATION__ 'POU_D_T'          DIM__ 1 3   CODE__ 'PDT'
-              ATTRIBUT__  EFGE='OUI' SIGM='NON'
+              ATTRIBUT__  POUTRE='OUI'  EFGE='OUI' SIGM='NON'
               MAILLE__ SEG2      ELEMENT__ MECA_POU_D_T
 
        MODELISATION__ 'POU_C_T'          DIM__ 1 3   CODE__ 'PCT'
-              ATTRIBUT__  EFGE='OUI' SIGM='NON'
+              ATTRIBUT__  POUTRE='OUI'  EFGE='OUI' SIGM='NON'
               MAILLE__ SEG2      ELEMENT__ MECA_POU_C_T
 
        MODELISATION__ 'POU_D_TG'         DIM__ 1 3   CODE__ 'PDG'
-              ATTRIBUT__  EFGE='OUI' SIGM='NON'
+              ATTRIBUT__  POUTRE='OUI'  EFGE='OUI' SIGM='NON'
               MAILLE__ SEG2      ELEMENT__ MECA_POU_D_TG
 
        MODELISATION__ 'POU_D_TGM'        DIM__ 1 3   CODE__ 'PGM'
-              ATTRIBUT__  TYPMOD='COMP1D' TYPMOD2='PMF' EFGE='OUI' SOUS_POINT='OUI'
+              ATTRIBUT__  POUTRE='OUI' TYPMOD='COMP1D' TYPMOD2='PMF' EFGE='OUI' SOUS_POINT='OUI'
               MAILLE__ SEG2      ELEMENT__ MECA_POU_D_TGM
 
        MODELISATION__ 'POU_D_T_GD'       DIM__ 1 3   CODE__ 'PGD'
-              ATTRIBUT__  EFGE='OUI' SIGM='NON'
+              ATTRIBUT__  POUTRE='OUI'  EFGE='OUI' SIGM='NON'
               MAILLE__ SEG2      ELEMENT__ MECA_POU_D_T_GD
 
        MODELISATION__ 'BARRE'            DIM__ 1 3   CODE__ 'BAR'
-              ATTRIBUT__  TYPMOD='COMP1D' EFGE='OUI' SIGM='NON'
+              ATTRIBUT__  POUTRE='OUI'  TYPMOD='COMP1D' EFGE='OUI' SIGM='NON'
               MAILLE__ SEG2      ELEMENT__ MECA_BARRE
 
        MODELISATION__ 'CABLE_GAINE'      DIM__ 1 3   CODE__ '1GC'
-              ATTRIBUT__  TYPMOD='COMP1D' EFGE='OUI' SIGM='NON'
+              ATTRIBUT__  POUTRE='OUI'  TYPMOD='COMP1D' EFGE='OUI' SIGM='NON'
               MAILLE__ SEG3      ELEMENT__ MECGSEG3
 
        MODELISATION__ '2D_BARRE'         DIM__ 1 2   CODE__ '2DB'
-              ATTRIBUT__  TYPMOD='COMP1D' EFGE='OUI' SIGM='NON'
+              ATTRIBUT__  POUTRE='OUI'  TYPMOD='COMP1D' EFGE='OUI' SIGM='NON'
               MAILLE__ SEG2      ELEMENT__ MECA_2D_BARRE
 
        MODELISATION__ 'TUYAU_3M'         DIM__ 1 3   CODE__ 'TU3'
-              ATTRIBUT__  TUYAU='OUI' NBSIGM='6' TYPMOD='C_PLAN' EFGE='OUI' SOUS_POINT='OUI'
+              ATTRIBUT__  POUTRE='OUI'  TUYAU='OUI' NBSIGM='6' TYPMOD='C_PLAN' EFGE='OUI' SOUS_POINT='OUI'
               MAILLE__ SEG3      ELEMENT__ MET3SEG3
               MAILLE__ SEG4      ELEMENT__ MET3SEG4
 
        MODELISATION__ 'TUYAU_6M'         DIM__ 1 3   CODE__ 'TU6'
-              ATTRIBUT__  TUYAU='OUI' NBSIGM='6' TYPMOD='C_PLAN' EFGE='OUI' SOUS_POINT='OUI'
+              ATTRIBUT__  POUTRE='OUI'  TUYAU='OUI' NBSIGM='6' TYPMOD='C_PLAN' EFGE='OUI' SOUS_POINT='OUI'
               MAILLE__ SEG3      ELEMENT__ MET6SEG3
 
        MODELISATION__ 'DIS_T'            DIM__ -1 3   CODE__ 'DIT'
@@ -1693,7 +1695,7 @@ PHENOMENE_MODELISATION__
               MAILLE__ QUAD8     ELEMENT__ HHM_DPQ8D
               MAILLE__ TRIA6     ELEMENT__ HHM_DPTR6D
               MAILLE__ SEG3      ELEMENT__ HHM_D_PLAN_SE3
-
+              
        MODELISATION__ 'D_PLAN_HH2M_SI'       DIM__ 2 2   CODE__ 'DM2'
               ATTRIBUT__  THM='OUI' MODTHM='HH2M' D_PLAN='OUI'
               MAILLE__ QUAD8     ELEMENT__ HH2M_DPQ8M
@@ -2082,7 +2084,7 @@ PHENOMENE_MODELISATION__
               MAILLE__ HEXA20    ELEMENT__ THH2M_HEXA20D
               MAILLE__ QUAD8     ELEMENT__ THH2M_FACE8
               MAILLE__ TRIA6     ELEMENT__ THH2M_FACE6
-
+              
        MODELISATION__ '3D_HH2M_SI'           DIM__ 3 3   CODE__ '3M1'
               ATTRIBUT__  THM='OUI' MODTHM='HH2M'
               MAILLE__ TETRA10   ELEMENT__ HH2M_TETRA10M

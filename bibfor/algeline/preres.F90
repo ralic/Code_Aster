@@ -68,7 +68,7 @@ subroutine preres(solveu, base, iret, matpre, matass,&
 ! Cette routine est une surcouche de la routine prere1.
 ! elle est necessaire pour traiter le cas ELIM_LAGR='OUI'
 !----------------------------------------------------------------------
-    character(len=3) :: kxfem,syme
+    character(len=3) :: kxfem
     character(len=19) :: matas1
     character(len=24), pointer :: slvk(:) => null()
 !----------------------------------------------------------------------
