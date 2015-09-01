@@ -18,7 +18,7 @@ subroutine pj2dgb(ino2, geom2, geom1, tria3, btdi,&
 ! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
 ! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
 ! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-!
+
 ! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
@@ -26,7 +26,7 @@ subroutine pj2dgb(ino2, geom2, geom1, tria3, btdi,&
 !     BUT :
 !       TROUVER LA "GROSSE BOITE" (P1,Q1,P2,Q2) DANS LA QUELLE
 !       ON EST SUR DE TROUVER LE TRIA3 LE PLUS PROCHE DE INO2
-!
+
 !  IN   INO2       I  : NUMERO DU NOEUD DE M2 CHERCHE
 !  IN   GEOM2(*)   R  : COORDONNEES DES NOEUDS DU MAILLAGE M2
 !  IN   GEOM1(*)   R  : COORDONNEES DES NOEUDS DU MAILLAGE M1
@@ -43,22 +43,22 @@ subroutine pj2dgb(ino2, geom2, geom1, tria3, btdi,&
 ! ----------------------------------------------------------------------
     real(kind=8) :: d, x1, y1, x2, y2, xmin, ymin, dx, dy
     integer :: p0, q0, nx, ny, k, p, q, itr, ntrbt, iposi, ino1
-!
+
 ! DEB ------------------------------------------------------------------
-!
+
     nx = btdi(1)
     ny = btdi(2)
     dx = btvr(5)
     dy = btvr(6)
     xmin = btvr(1)
     ymin = btvr(3)
-!
-!
+
+
 !      1. ON CHERCHE UNE BOITE NON VIDE AUTOUR DE INO2
 !     -------------------------------------------------------
     p0 = int((geom2(3* (ino2-1)+1)-xmin)/dx) + 1
     q0 = int((geom2(3* (ino2-1)+2)-ymin)/dy) + 1
-!
+
     do 30,k = 0,max(nx,ny) - 1
     do 20,p = max(p0-k,1),min(p0+k,nx)
     do 10,q = max(q0-k,1),min(q0+k,ny)
@@ -75,8 +75,8 @@ subroutine pj2dgb(ino2, geom2, geom1, tria3, btdi,&
 20  continue
     30 end do
     ASSERT(.false.)
-!
-!
+
+
 40  continue
 !     2. ON CALCULE LA DISTANCE ENTRE INO2 ET INO1
 !     -------------------------------------------------------
@@ -85,8 +85,8 @@ subroutine pj2dgb(ino2, geom2, geom1, tria3, btdi,&
     x2 = geom2(3* (ino2-1)+1)
     y2 = geom2(3* (ino2-1)+2)
     d = sqrt((x2-x1)**2+ (y2-y1)**2)
-!
-!
+
+
 !     3. ON DETERMINE LA GROSSE BOITE CONTENANT :
 !        INO2 - D*VECTEUR_I - D*VECTEUR_J
 !     ET INO2 + D*VECTEUR_I + D*VECTEUR_J
@@ -95,10 +95,10 @@ subroutine pj2dgb(ino2, geom2, geom1, tria3, btdi,&
     q1 = int((y2-d-ymin)/dy) + 1
     p1 = max(1,p1)
     q1 = max(1,q1)
-!
+
     p2 = int((x2+d-xmin)/dx) + 1
     q2 = int((y2+d-ymin)/dy) + 1
     p2 = min(nx,p2)
     q2 = min(ny,q2)
-!
+
 end subroutine

@@ -15,11 +15,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine pjefco(moa1, moa2, corres, base)
-        character(len=8) :: moa1
-        character(len=8) :: moa2
-        character(len=16) :: corres
-        character(len=1) :: base
-    end subroutine pjefco
-end interface
+          interface 
+            subroutine pjefco(moa1,moa2,corres,base)
+              character(len=8) :: moa1
+              character(len=8) :: moa2
+              character(len=16) :: corres
+              character(len=1) :: base
+            end subroutine pjefco
+          end interface 

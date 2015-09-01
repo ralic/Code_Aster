@@ -130,9 +130,12 @@ MACR_LIGN_COUPE=MACRO(nom="MACR_LIGN_COUPE",
              ORIGINE         =SIMP(statut='f',typ='R',min=2,max=3),
              AXE_Z           =SIMP(statut='f',typ='R',min=3,max=3),),
 
-           DISTANCE_MAX    =SIMP(statut='f',typ='R',defaut=0.,
+           DISTANCE_MAX    =SIMP(statut='f',typ='R', defaut=0.,
                 fr=tr("Si la distance entre un noeud de la ligne de coupe et le maillage coupé "
                 "est > DISTANCE_MAX, ce noeud sera ignoré.")),
+           DISTANCE_ALARME =SIMP(statut='f',typ='R',
+                fr=tr("Si la distance entre un noeud de la ligne de coupe et le maillage coupé "
+                "est > DISTANCE_ALARME, une alarme sera émise.")),
 
          ),
 )

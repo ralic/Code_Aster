@@ -436,10 +436,8 @@ CHMEC=AFFE_CHAR_MECA(           MODELE=MO,
                                              DZ = 5.95)),
                            LIAISON_MAIL=_F(  GROUP_MA_MAIT = 'GMX1',
                                              GROUP_NO_ESCL = 'GNX1',
-                                             DISTANCE_MAX = 2.9 ,),
-                                             FORCE_NODALE=(
-
-                           _F(  GROUP_NO = 'GNO13',
+                                             DISTANCE_MAX = 2.9 , DISTANCE_ALARME = 2.88 ,),
+                           FORCE_NODALE=( _F(  GROUP_NO = 'GNO13',
                                           FY = 0.87E4,
                                           FZ = -0.92E4),
                            _F(  NOEUD = 'N162',

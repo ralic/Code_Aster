@@ -15,14 +15,15 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
-                      geom2)
-        character(len=16) :: cortr3
-        character(len=16) :: corres
-        integer :: nutm3d(10)
-        character(len=8) :: elrf3d(10)
-        real(kind=8) :: geom1(*)
-        real(kind=8) :: geom2(*)
-    end subroutine pj3dtr
-end interface
+          interface 
+            subroutine pj3dtr(cortr3,corres,nutm3d,elrf3d,geom1,geom2,  &
+     &dala)
+              character(len=16), intent(in) :: cortr3
+              character(len=16), intent(in) :: corres
+              integer, intent(in) :: nutm3d(10)
+              character(len=8), intent(in) :: elrf3d(10)
+              real(kind=8), intent(in) :: geom1(*)
+              real(kind=8), intent(in) :: geom2(*)
+              real(kind=8), intent(in) :: dala
+            end subroutine pj3dtr
+          end interface 

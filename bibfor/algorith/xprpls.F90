@@ -157,11 +157,11 @@ subroutine xprpls(ligrel, dnoma, dcnsln, dcnslt, noma,&
     if (ndim .eq. 2) then
         call pj2dco('PARTIE', dnoma, noma, nbelpr, zi(jefrom),&
                     nunopr, zi(jnto), ' ', ' ', corres,&
-                    ldmax, distma)
+                    ldmax, distma, 0.d0)
     else
         call pj3dco('PARTIE', dnoma, noma, nbelpr, zi(jefrom),&
                     nunopr, zi(jnto), ' ', ' ', corres,&
-                    ldmax, distma)
+                    ldmax, distma, 0.d0)
     endif
 !
 !        CREATE TWO TEMPORARY FIELDS WHERE THE PROJECTED VALUES WILL BE

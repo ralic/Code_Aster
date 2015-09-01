@@ -16,7 +16,7 @@ subroutine pj3da3(m, a, b, c, ok,&
 ! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
 ! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
 ! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-!
+
 ! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
@@ -24,19 +24,19 @@ subroutine pj3da3(m, a, b, c, ok,&
 ! BUT :
 !   TROUVER LES COORDONNEES BARYCENTRIQUES (LA,LB,LC) DE LA PROJECTION P
 !   D'UN POINT M SUR UN TRIANGLE (A,B,C) .
-!
+
 !  IN   M(3)    R : COORDONNEES DE M
 !  IN   A(3)    R : COORDONNEES DE A
 !  IN   B(3)    R : COORDONNEES DE B
 !  IN   C(3)    R : COORDONNEES DE C
-!
+
 !  OUT  OK         L  :/.TRUE.   : P EST INTERIEUR AU TRIANGLE ABC
 !                      /.FALSE.  : P EST EXTERIEUR AU TRIANGLE
 !                       (SI .FALSE.   D2 N'EST PAS CALCULE)
 !  OUT  D2         R  : CARRE DE LA DISTANCE ENTRE M ET P
 !  OUT  LA,LB,LC   R  : COORDONNEES BARYCENTRIQUES DE P DANS ABC
-!
-!
+
+
 ! ----------------------------------------------------------------------
     integer :: k
     real(kind=8) :: delta, p(3)
@@ -47,14 +47,14 @@ subroutine pj3da3(m, a, b, c, ok,&
         ac(k)=c(k)-a(k)
         am(k)=m(k)-a(k)
   1 end do
-!
+
     a11=ab(1)*ab(1)+ab(2)*ab(2)+ab(3)*ab(3)
     a22=ac(1)*ac(1)+ac(2)*ac(2)+ac(3)*ac(3)
     a12=ab(1)*ac(1)+ab(2)*ac(2)+ab(3)*ac(3)
-!
+
     b1=ab(1)*am(1)+ab(2)*am(2)+ab(3)*am(3)
     b2=ac(1)*am(1)+ac(2)*am(2)+ac(3)*am(3)
-!
+
     delta=a11*a22-a12*a12
     if (delta .eq. 0.d0) then
         ok=.false.
@@ -63,7 +63,7 @@ subroutine pj3da3(m, a, b, c, ok,&
     lb=(a22*b1-a12*b2)/delta
     lc=(a11*b2-a12*b1)/delta
     la=1.d0-lb-lc
-!
+
     if ((la.ge.0.d0) .and. (la.le.1.d0) .and. (lb.ge.0.d0) .and. (lb.le.1.d0) .and.&
         (lc.ge.0.d0) .and. (lc.le.1.d0)) then
         ok=.true.
@@ -75,6 +75,6 @@ subroutine pj3da3(m, a, b, c, ok,&
     else
         ok=.false.
     endif
-!
+
 9999 continue
 end subroutine

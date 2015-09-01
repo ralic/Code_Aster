@@ -34,7 +34,7 @@ subroutine pjefmi(elrefp, nnop, coor, xg, ndim,&
 !   permet de verifier que la routine reereg a ameliore la precision
 !   des coordonnees barycentriques grossieres de la 1ere etape de
 !   proj_champ.
-!  Retourner la distance entre le point et son projete.
+!   Retourner la distance entre le point et son projete.
 ! ----------------------------------------------------------------------
 !
 !

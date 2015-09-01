@@ -90,7 +90,7 @@ subroutine calirc(chargz)
     aster_logical :: l_tran
     real(kind=8) :: tran(3)
     aster_logical :: l_cent
-    real(kind=8) :: cent(3), dmax
+    real(kind=8) :: cent(3), dmax, dala
     aster_logical :: l_angl_naut, l_dmax
     real(kind=8) :: angl_naut(3)
     character(len=24) :: list_node
@@ -348,11 +348,13 @@ subroutine calirc(chargz)
         endif
 !
 
-!       1.5 Calcul de dmax et l_dmax :
-!       ------------------------------
+!       1.5 Calcul de dmax, l_dmax et dala :
+!       ------------------------------------
         dmax=0.d0
         call getvr8(motfac, 'DISTANCE_MAX', iocc=iocc, scal=dmax, nbret=n1)
         l_dmax=n1.eq.1
+        call getvr8(motfac, 'DISTANCE_ALARME', iocc=iocc, scal=dala, nbret=n1)
+        if (n1.eq.0) dala=-1.d0
 !
 !
 !       2. CALCUL DE CORRES (+ EVENTUELLEMENT CORRE1, CORRE2) :
@@ -361,21 +363,21 @@ subroutine calirc(chargz)
             ASSERT((typrac.eq.' ') .or. (typrac.eq.'MASSIF'))
             call pj2dco('PARTIE', mo, mo, nbma1, limanu1,&
                         nbno2, zi( iagno2), ' ', geom2, corres,&
-                        l_dmax, dmax)
+                        l_dmax, dmax, dala)
         else if (ndim.eq.3) then
             if ((typrac.eq.' ') .or. (typrac.eq.'MASSIF')) then
                 call pj3dco('PARTIE', mo, mo, nbma1, limanu1,&
                             nbno2, zi(iagno2), ' ', geom2, corres,&
-                            l_dmax, dmax)
+                            l_dmax, dmax, dala)
                 elseif (typrac.eq.'COQUE' .or. typrac.eq.'MASSIF_COQUE')&
             then
                 call pj4dco('PARTIE', mo, mo, nbma1, limanu1,&
                             nbno2, zi(iagno2), ' ', geom2, corres,&
-                            l_dmax, dmax, 'NON')
+                            l_dmax, dmax, dala)
             else if (typrac.eq.'COQUE_MASSIF') then
                 call pj3dco('PARTIE', mo, mo, nbma1, limanu1,&
                             nbno2, zi(iagno2), ' ', geom2, corres,&
-                            l_dmax, dmax)
+                            l_dmax, dmax, dala)
                 call wkvect('&&CALIRC.LISV1', 'V V R', 3*nnomx, jlisv1)
                 call calir3(mo, nbma1, limanu1, nbno2, zi(iagno2),&
                             geom2, corre1, corre2, jlisv1, iocc)

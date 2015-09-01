@@ -157,14 +157,24 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
     48 : _(u"""
  Vous utilisez la commande PROJ_CHAMP ou un mot clé nécessitant de "projeter"
  des noeuds sur des mailles (par exemple LIAISON_MAIL).
- Il y a %(i1)d noeuds qui ont été projetés sur des mailles distantes.
- Pour ces noeuds, la distance à la maille la plus proche est supérieure à 1/10ème
- de la taille de cette maille.
+ Il y a %(i1)d noeuds qui ont été projetés sur des mailles jugées distantes.
+
+ Les noeuds sont jugés distants si :
+  * la distance à la maille la plus proche est supérieure à DISTANCE_ALARME 
+    (si ce mot clé est utilisé).
+  * ou si la distance à la maille la plus proche est supérieure à 1/10ème
+    de la taille de cette maille (si le mot clé DISTANCE_ALARME n'est pas utilisé).
+
  Les %(i2)d noeuds les plus éloignés ont été imprimés ci-dessus.
 
 Risques et conseils :
-  Le mot clé DISTANCE_MAX permet d'éviter que les noeuds trop distants ne soient
-  projetés (ou "liés" quand on utilise le mot clé LIAISON_MAIL).
+  * Un maillage constitué des noeuds distants a été imprimé au format MED.
+    La visualisation de ce maillage pourra vous rassurer (ou non).
+    Le nom du fichier MED est : %(k1)s
+  * Le mot clé DISTANCE_MAX permet d'éviter que les noeuds trop distants ne soient
+    projetés (ou "liés" quand on utilise le mot clé LIAISON_MAIL).
+  * Le mot clé DISTANCE_ALARME permet d'éviter cette alarme.
+
 """),
 
     49 : _(u"""

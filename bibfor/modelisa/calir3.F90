@@ -88,7 +88,7 @@ subroutine calir3(mo, nbma1, lima1, nbno2, lino2,&
     40 end do
     call pj3dco('PARTIE', mo, mo, nbma1, lima1,&
                 nbno2, lino2, ' ', geom2, corre1,&
-                .false._1, rbid)
+                .false._1, rbid, 0.d0)
 !
 !
 !     -- ON MODIFIE GEOM2 (-H/2) POUR OBTENIR CORRE2 :
@@ -102,7 +102,7 @@ subroutine calir3(mo, nbma1, lima1, nbno2, lino2,&
     60 end do
     call pj3dco('PARTIE', mo, mo, nbma1, lima1,&
                 nbno2, lino2, ' ', geom2, corre2,&
-                .false._1, rbid)
+                .false._1, rbid, 0.d0)
 !
 !     -- ON RETABLIT GEOM2 :
 !     -------------------------------------------------

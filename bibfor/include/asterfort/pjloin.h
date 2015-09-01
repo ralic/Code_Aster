@@ -16,24 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
           interface 
-            subroutine pj2dap(ino2,geom2,geom1,tria3,cobary,itr3,nbtrou,&
-     &btdi,btvr,btnb,btlc,btco,l_dmax,dmax,dala,loin,dmin)
-              integer :: ino2
-              real(kind=8) :: geom2(*)
-              real(kind=8) :: geom1(*)
-              integer :: tria3(*)
-              real(kind=8) :: cobary(3)
-              integer :: itr3
-              integer :: nbtrou
-              integer :: btdi(*)
-              real(kind=8) :: btvr(*)
-              integer :: btnb(*)
-              integer :: btlc(*)
-              integer :: btco(*)
-              aster_logical :: l_dmax
-              real(kind=8) :: dmax
-              real(kind=8) :: dala
-              aster_logical :: loin
-              real(kind=8) :: dmin
-            end subroutine pj2dap
+            subroutine pjloin(nbnod,nbnodm,m2,geom2,nbmax,tino2m,tdmin2,&
+     &lino_loin)
+              integer, intent(in) :: nbmax
+              integer, intent(in) :: nbnod
+              integer, intent(in) :: nbnodm
+              character(len=8), intent(in) :: m2
+              real(kind=8), intent(in) :: geom2(*)
+              integer, intent(in) :: tino2m(nbmax)
+              real(kind=8), intent(in) :: tdmin2(nbmax)
+              integer, intent(in) :: lino_loin(*)
+            end subroutine pjloin
           end interface 

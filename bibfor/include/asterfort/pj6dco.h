@@ -15,23 +15,21 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-#include "asterf_types.h"
-!
-interface
-    subroutine pj6dco(mocle, moa1, moa2, nbma1, lima1,&
-                      nbno2, lino2, geom1, geom2, corres,&
-                      ldmax, distma)
-        character(len=*) :: mocle
-        character(len=8) :: moa1
-        character(len=8) :: moa2
-        integer :: nbma1
-        integer :: lima1(*)
-        integer :: nbno2
-        integer :: lino2(*)
-        character(len=*) :: geom1
-        character(len=*) :: geom2
-        character(len=16) :: corres
-        aster_logical :: ldmax
-        real(kind=8) :: distma
-    end subroutine pj6dco
-end interface
+          interface 
+            subroutine pj6dco(mocle,moa1,moa2,nbma1,lima1,nbno2,lino2,  &
+     &geom1,geom2,corres,l_dmax,dmax,dala)
+              character(len=*) :: mocle
+              character(len=8) :: moa1
+              character(len=8) :: moa2
+              integer :: nbma1
+              integer :: lima1(*)
+              integer :: nbno2
+              integer :: lino2(*)
+              character(len=*) :: geom1
+              character(len=*) :: geom2
+              character(len=16) :: corres
+              aster_logical :: l_dmax
+              real(kind=8) :: dmax
+              real(kind=8) :: dala
+            end subroutine pj6dco
+          end interface 

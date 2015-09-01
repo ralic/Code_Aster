@@ -62,8 +62,8 @@ subroutine cgnoin(mofaz, iocc, nomaz, lisnoz, nbno)
     character(len=24) :: mesma1, mesno2, lisnoi
     character(len=16) :: corres
     character(len=19) :: tablg
-    aster_logical :: ldmax
-    real(kind=8) :: distma, armin, r8b
+    aster_logical :: l_dmax
+    real(kind=8) :: dmax, armin, r8b
     integer, pointer :: litrav(:) => null()
     integer, pointer :: pjef_nb(:) => null()
 !     -----------------------------------------------------------------
@@ -109,8 +109,8 @@ subroutine cgnoin(mofaz, iocc, nomaz, lisnoz, nbno)
     corres='&&CGNOIN.CORRES'
     call getvtx(motfac, 'CAS_FIGURE', iocc=iocc, scal=ncas, nbret=n1)
 !
-    ldmax=.true.
-    call getvr8(motfac, 'DISTANCE_MAX', iocc=iocc, scal=distma, nbret=n1)
+    l_dmax=.true.
+    call getvr8(motfac, 'DISTANCE_MAX', iocc=iocc, scal=dmax, nbret=n1)
     if (n1 .eq. 0) then
 !
 !       POUR QUE LES NOEUDS SITUES SUR LES FRONTIERES INTER-ELEMENTS
@@ -123,21 +123,21 @@ subroutine cgnoin(mofaz, iocc, nomaz, lisnoz, nbno)
                     iret)
         ASSERT(iret.eq.0)
         ASSERT(armin.gt.0.d0)
-        distma=0.01d0*armin
+        dmax=0.01d0*armin
     endif
 !
     if (ncas .eq. '2D') then
         call pj2dco('PARTIE', noma1, noma2, nbno1, zi(jma1),&
                     nbno2, zi(jno2), ' ', ' ', corres,&
-                    ldmax, distma)
+                    l_dmax, dmax, 0.d0)
     else if (ncas.eq.'3D') then
         call pj3dco('PARTIE', noma1, noma2, nbno1, zi(jma1),&
                     nbno2, zi(jno2), ' ', ' ', corres,&
-                    ldmax, distma)
+                    l_dmax, dmax, 0.d0)
     else if (ncas.eq.'2.5D') then
         call pj4dco('PARTIE', noma1, noma2, nbno1, zi(jma1),&
                     nbno2, zi(jno2), ' ', ' ', corres,&
-                    ldmax, distma, ' ')
+                    l_dmax, dmax, 0.d0)
     else
         ASSERT(.false.)
     endif

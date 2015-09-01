@@ -28,13 +28,11 @@ subroutine pjeflo(elrefa, ndim, ipb, xr2, disprj)
 ! ----------------------------------------------------------------------
 ! BUT :
 !   * calculer disprj : distance de projection d'un point
-!                       (normee par le "diametre" de la maille)
+!                       (normee par la "taille" de la maille)
 !  disprj =   0. => le point est interieur a la maille
 !  disprj = 999. => la routine reereg n'a pas converge
 !  disprj = a>0  => le point est exterieur a la maille.
-!   La distance du point a la maille est de l'ordre de a*diametre_reel(maille)
 ! ----------------------------------------------------------------------
-!
 ! in  elrefa   : elrefa de l'element
 ! in  ndim     : dimension de l'espace
 ! in  xr2      : coordonnees du point dans l'element de reference
@@ -46,7 +44,7 @@ subroutine pjeflo(elrefa, ndim, ipb, xr2, disprj)
     real(kind=8) :: x, y, z, diam
 ! --------------------------------------------------------------------------------------------------
     disprj = 0.0d0
-!   SI REEREG N'A PAS CONVERGE, ON N'A PAS CONFIANCE DANS XR2 :
+!   si reereg n'a pas converge, on n'a pas confiance dans xr2 :
     if (ipb .ne. 0) then
         disprj=dble(999)
         goto 80

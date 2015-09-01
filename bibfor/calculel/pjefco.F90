@@ -67,8 +67,8 @@ subroutine pjefco(moa1, moa2, corres, base)
     integer :: n1, nbocc, iocc, nbno2, nbma1
     integer :: iexi
 !
-    aster_logical :: ldmax, dbg
-    real(kind=8) :: distma
+    aster_logical :: l_dmax, dbg
+    real(kind=8) :: dmax, dala
     integer, pointer :: limanu1(:) => null()
     integer, pointer :: linonu2(:) => null()
 !----------------------------------------------------------------------
@@ -98,12 +98,13 @@ subroutine pjefco(moa1, moa2, corres, base)
     endif
 !
 !
-!     DETERMINATION DE DISTMA ET LDMAX:
-!     --------------------------------------------------------
-    ldmax = .false.
-    distma = r8maem()
-    call getvr8(' ', 'DISTANCE_MAX', scal=distma, nbret=n1)
-    if (n1 .eq. 1) ldmax = .true.
+!   Determination de dmax et l_dmax:
+!   --------------------------------------------------------
+    dmax=0.d0
+    call getvr8(' ', 'DISTANCE_MAX', iocc=iocc, scal=dmax, nbret=n1)
+    l_dmax=n1.eq.1
+    call getvr8(' ', 'DISTANCE_ALARME', iocc=iocc, scal=dala, nbret=n1)
+    if (n1.eq.0) dala=-1.d0
 !
 !
     call getfac('VIS_A_VIS', nbocc)
@@ -141,19 +142,19 @@ subroutine pjefco(moa1, moa2, corres, base)
         if (ncas .eq. '2D') then
             call pj2dco('TOUT', moa1, moa2, 0, [0],&
                         0, [0], geom1, geom2, corres,&
-                        ldmax, distma)
+                        l_dmax, dmax, dala)
         else if (ncas.eq.'3D') then
             call pj3dco('TOUT', moa1, moa2, 0, [0],&
                         0, [0], geom1, geom2, corres,&
-                        ldmax, distma)
+                        l_dmax, dmax, dala)
         else if (ncas.eq.'2.5D') then
             call pj4dco('TOUT', moa1, moa2, 0, [0],&
                         0, [0], geom1, geom2, corres,&
-                        ldmax, distma, ' ')
+                        l_dmax, dmax, dala)
         else if (ncas.eq.'1.5D') then
             call pj6dco('TOUT', moa1, moa2, 0, [0],&
                         0, [0], geom1, geom2, corres,&
-                        ldmax, distma)
+                        l_dmax, dmax, dala)
         else
             ASSERT(.false.)
         endif
@@ -214,19 +215,19 @@ subroutine pjefco(moa1, moa2, corres, base)
             if (ncas .eq. '2D') then
                 call pj2dco('PARTIE', moa1, moa2, nbma1, limanu1,&
                             nbno2, linonu2, geom1, geom2, corre1,&
-                            ldmax, distma)
+                            l_dmax, dmax, dala)
             else if (ncas.eq.'3D') then
                 call pj3dco('PARTIE', moa1, moa2, nbma1, limanu1,&
                             nbno2, linonu2, geom1, geom2, corre1,&
-                            ldmax, distma)
+                            l_dmax, dmax, dala)
             else if (ncas.eq.'2.5D') then
                 call pj4dco('PARTIE', moa1, moa2, nbma1, limanu1,&
                             nbno2, linonu2, geom1, geom2, corre1,&
-                            ldmax, distma, ' ')
+                            l_dmax, dmax, dala)
             else if (ncas.eq.'1.5D') then
                 call pj6dco('PARTIE', moa1, moa2, nbma1, limanu1,&
                             nbno2, linonu2, geom1, geom2, corre1,&
-                            ldmax, distma)
+                            l_dmax, dmax, dala)
             else
                 ASSERT(.false.)
             endif

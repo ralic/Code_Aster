@@ -155,8 +155,8 @@ for bord in ('BDRO', 'BCOU',):
 
           # U1B : projete (aller-retour) de U1 :  MA1 -> MA2 -> MA1
           #--------------------------------------------------------
-          U2 =PROJ_CHAMP(CHAM_GD=U1,METHODE='COLLOCATION', MAILLAGE_1=MA1, MAILLAGE_2=MA2 ,)
-          U1B=PROJ_CHAMP(CHAM_GD=U2,METHODE='COLLOCATION', MAILLAGE_1=MA2, MAILLAGE_2=MA1 ,)
+          U2 =PROJ_CHAMP(CHAM_GD=U1,METHODE='COLLOCATION', MAILLAGE_1=MA1, MAILLAGE_2=MA2 ,DISTANCE_ALARME=6.5e-2)
+          U1B=PROJ_CHAMP(CHAM_GD=U2,METHODE='COLLOCATION', MAILLAGE_1=MA2, MAILLAGE_2=MA1 ,DISTANCE_ALARME=6.5e-2)
 
           # EABSO : Erreur absolue (U1 - U1B):
           #----------------------------------

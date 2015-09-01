@@ -16,27 +16,27 @@ subroutine pj2da2(ino2, geom2, i, geom1, tria3,&
 ! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
 ! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
 ! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-!
+
 ! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!
-!     BUT :
-!       DETERMINER LA DISTANCE D2 ENTRE LE NOEUD INO2 ET LE TRIA3 I.
-!       DETERMINER LES COORDONNEES BARYCENTRIQUES
-!       DU POINT DE I LE PLUS PROCHE DE INO2.
-!
-!  IN   INO2       I  : NUMERO DU NOEUD DE M2 CHERCHE
-!  IN   GEOM2(*)   R  : COORDONNEES DES NOEUDS DU MAILLAGE M2
-!  IN   GEOM1(*)   R  : COORDONNEES DES NOEUDS DU MAILLAGE M1
-!  IN   I          I  : NUMERO DU TRIA3 CANDIDAT
-!  IN   TRIA3(*)   I  : OBJET '&&PJXXCO.TRIA3'
-!  OUT  COBARY(3)  R  : COORDONNEES BARYCENTRIQUES DE INO2 PROJETE SUR I
-!  OUT  D2         R  : CARRE DE LA DISTANCE ENTRE I ET INO2
-!  OUT  SURF       R  : SURFACE DU TRIA3 I
-!
-!
+
+!  but :
+!    determiner la distance d2 entre le noeud ino2 et le tria3 i.
+!    determiner les coordonnees barycentriques
+!    du point de i le plus proche de ino2.
+
+!  in   ino2       i  : numero du noeud de m2 cherche
+!  in   geom2(*)   r  : coordonnees des noeuds du maillage m2
+!  in   geom1(*)   r  : coordonnees des noeuds du maillage m1
+!  in   i          i  : numero du tria3 candidat
+!  in   tria3(*)   i  : objet '&&pjxxco.tria3'
+!  out  cobary(3)  r  : coordonnees barycentriques de ino2 projete sur i
+!  out  d2         r  : carre de la distance entre i et ino2
+!  out  surf       r  : surface du tria3 i
+
+
 ! ----------------------------------------------------------------------
     real(kind=8) :: x1, y1, x2, y2, x3, y3, xp, yp, xm, ym
     real(kind=8) :: ksi, dist
@@ -44,26 +44,26 @@ subroutine pj2da2(ino2, geom2, i, geom1, tria3,&
 ! DEB ------------------------------------------------------------------
     xm=geom2(3*(ino2-1)+1)
     ym=geom2(3*(ino2-1)+2)
-!
+
     x1=geom1(3*(tria3(1+4*(i-1)+1)-1)+1)
     y1=geom1(3*(tria3(1+4*(i-1)+1)-1)+2)
     x2=geom1(3*(tria3(1+4*(i-1)+2)-1)+1)
     y2=geom1(3*(tria3(1+4*(i-1)+2)-1)+2)
     x3=geom1(3*(tria3(1+4*(i-1)+3)-1)+1)
     y3=geom1(3*(tria3(1+4*(i-1)+3)-1)+2)
-!
-!
+
+
     v1(1)=x3-x2
     v1(2)=y3-y2
     v2(1)=x1-x3
     v2(2)=y1-y3
     v3(1)=x2-x1
     v3(2)=y2-y1
-!
+
     surf=abs(v2(1)*v3(2)-v2(2)*v3(1))
     surf=surf/2.d0
     d2=r8maem()
-!
+
 !     COTE 1 (2->3):
 !     --------------
     m(1)= xm-x2
@@ -88,8 +88,8 @@ subroutine pj2da2(ino2, geom2, i, geom1, tria3,&
         cobary(3)=ksi
         d2=dist
     endif
-!
-!
+
+
 !     COTE 2 (3->1):
 !     --------------
     m(1)= xm-x3
@@ -114,8 +114,8 @@ subroutine pj2da2(ino2, geom2, i, geom1, tria3,&
         cobary(1)=ksi
         d2=dist
     endif
-!
-!
+
+
 !     COTE 3 (1->2):
 !     --------------
     m(1)= xm-x1
@@ -140,5 +140,5 @@ subroutine pj2da2(ino2, geom2, i, geom1, tria3,&
         cobary(2)=ksi
         d2=dist
     endif
-!
+
 end subroutine

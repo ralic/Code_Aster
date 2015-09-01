@@ -15,17 +15,16 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-#include "asterf_types.h"
-!
-interface
-    subroutine pj2dtr(cortr3, corres, nutm2d, elrf2d, geom1,&
-                      geom2, lraff)
-        character(len=16) :: cortr3
-        character(len=16) :: corres
-        integer :: nutm2d(6)
-        character(len=8) :: elrf2d(6)
-        real(kind=8) :: geom1(*)
-        real(kind=8) :: geom2(*)
-        aster_logical :: lraff
-    end subroutine pj2dtr
-end interface
+          interface 
+            subroutine pj2dtr(cortr3,corres,nutm2d,elrf2d,geom1,geom2,  &
+     &lraff,dala)
+              character(len=16), intent(in) :: cortr3
+              character(len=16), intent(in) :: corres
+              integer, intent(in) :: nutm2d(6)
+              character(len=8), intent(in) :: elrf2d(6)
+              real(kind=8), intent(in) :: geom1(*)
+              real(kind=8), intent(in) :: geom2(*)
+              aster_logical, intent(in) :: lraff
+              real(kind=8), intent(in) :: dala
+            end subroutine pj2dtr
+          end interface 

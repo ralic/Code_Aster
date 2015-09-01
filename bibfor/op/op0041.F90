@@ -93,7 +93,7 @@ subroutine op0041()
     integer :: ifm, niv, ibid, mxval, iret
     integer :: me1, me2, me3, me4
     integer :: ndim, jinfo, jmod, jma
-    real(kind=8) :: noeud(3), vect1(3), vect2(3), a, b, r, distma
+    real(kind=8) :: noeud(3), vect1(3), vect2(3), a, b, r, dmax
     character(len=8) :: fiss, nfonf, nfong, mafis, fonfis, noma, meth
     character(len=8) :: maiaux
     character(len=8) :: cote, ncham, chadis, kbid
@@ -103,7 +103,7 @@ subroutine op0041()
     character(len=19) :: ltno, lnno, grltno, grlnno, stnor, stno, info, ltnofa
     character(len=19) :: lnnofa, grltfa, grlnfa
     character(len=24) :: lismae, lisnoe
-    aster_logical :: grille, ldmax, goinop
+    aster_logical :: grille, l_dmax, goinop
     character(len=8) :: fisgri
 !
 ! ----------------------------------------------------------------------
@@ -383,8 +383,8 @@ subroutine op0041()
      &                   //' SUR LA GRILLE AUXILIAIRE.'
             endif
 !
-            ldmax = .false.
-            distma = r8maem()
+            l_dmax = .false.
+            dmax = r8maem()
             corres = '&&OP0041.CORRES'
 !
 !           CREATE THE "CONNECTION" TABLE BETWEEN THE PHYSICAL MESH AND
@@ -392,11 +392,11 @@ subroutine op0041()
             if (ndim .eq. 2) then
                 call pj2dco('TOUT', noma, maiaux, 0, [0],&
                             0, [0], ' ', ' ', corres,&
-                            ldmax, distma)
+                            l_dmax, dmax, 0.d0)
             else
                 call pj3dco('TOUT', noma, maiaux, 0, [0],&
                             0, [0], ' ', ' ', corres,&
-                            ldmax, distma)
+                            l_dmax, dmax, 0.d0)
             endif
 !
 !           PROJECT THE NORMAL LEVEL SET

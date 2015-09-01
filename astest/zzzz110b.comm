@@ -82,8 +82,7 @@ CM2=AFFE_MATERIAU(   MAILLAGE=MA2,
           AFFE=_F( TOUT = 'OUI',MATER = MAT) )
 
 MEST2=PROJ_CHAMP(RESULTAT=MEST1,     METHODE='COLLOCATION',
-                    NOM_CHAM=('DEPL'),
-                     MODELE_1=MO1,        MODELE_2=MO2  )
+                 NOM_CHAM=('DEPL'), MODELE_1=MO1,        MODELE_2=MO2, DISTANCE_ALARME=1.1e-1  )
 
 MEST22=CALC_CHAMP(MODELE=MO2,   CHAM_MATER=CM2,
                       CONTRAINTE=('SIEF_ELGA'),

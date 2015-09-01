@@ -1,6 +1,6 @@
 subroutine pj4dco(mocle, moa1, moa2, nbma1, lima1,&
                   nbno2, lino2, geom1, geom2, corres,&
-                  ldmax, distma, alarm2)
+                  l_dmax, dmax, dala)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -13,46 +13,43 @@ subroutine pj4dco(mocle, moa1, moa2, nbma1, lima1,&
 ! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
 ! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
 ! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-!
+
 ! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!
+
 ! --------------------------------------------------------------------------------------------------
-!
-! BUT :
-!   CREER UNE SD CORRESP_2_MAILLA
-!   DONNANT LA CORRESPONDANCE ENTRE LES NOEUDS DE MOA2 ET LES MAILLES DE
-!   MOA1 DANS LE CAS OU MOA1 EST 2.5D (SURFACE EN 3D)
+
+! but :
+!   creer une sd corresp_2_mailla
+!   donnant la correspondance entre les noeuds de moa2 et les mailles de
+!   moa1 dans le cas ou moa1 est 2.5d (surface en 3d)
 ! ======================================================================
-!
-!  POUR LES ARGUMENTS : MOCLE, MOA1, MOA2, NBMA1, LIMA1, NBNO2, LINO2
-!  VOIR LE CARTOUCHE DE PJXXUT.F
-!
-!  IN/JXIN   GEOM1    I   : OBJET JEVEUX CONTENANT LA GEOMETRIE DES
-!                           NOEUDS DU MAILLAGE 1 (OU ' ')
-!  IN/JXIN   GEOM2    I   : OBJET JEVEUX CONTENANT LA GEOMETRIE DES
-!                           NOEUDS DU MAILLAGE 2 (OU ' ')
-!                REMARQUE:  LES OBJETS GEOM1 ET GEOM2 NE SONT UTILES
-!                           QUE LORSQUE L'ON VEUT TRUANDER LA GEOMETRIE
-!                           DES MAILLAGES
-!  IN   ALARM2  K3   : /' '/'OUI'/'NON' :
-!                       POUR "FORCER" L'EMMISSION (OU NON) DES ALARMES
-!
-!  IN/JXOUT  CORRES  K16 : NOM DE LA SD CORRESP_2_MAILLA
-!
+
+!  pour les arguments : mocle, moa1, moa2, nbma1, lima1, nbno2, lino2
+!  voir le cartouche de pjxxut.f
+
+!  in/jxin   geom1    i   : objet jeveux contenant la geometrie des
+!                           noeuds du maillage 1 (ou ' ')
+!  in/jxin   geom2    i   : objet jeveux contenant la geometrie des
+!                           noeuds du maillage 2 (ou ' ')
+!                remarque:  les objets geom1 et geom2 ne sont utiles
+!                           que lorsque l'on veut truander la geometrie
+!                           des maillages
+!  in/jxout  corres  k16 : nom de la sd corresp_2_mailla
+
 ! --------------------------------------------------------------------------------------------------
-!
+
 implicit none
-!
-    integer :: nbma1, lima1(*), nbno2, lino2(*), ino2m
-    real(kind=8) :: distma
-    character(len=16) :: corres, k16bid, nomcmd
+
+    integer :: nbma1, lima1(*), nbno2, lino2(*)
+    real(kind=8) :: dmax, dala
+    character(len=16) :: corres
     character(len=*) :: geom1, geom2
     character(len=8) :: moa1, moa2
-    character(len=*) :: mocle, alarm2
-!
+    character(len=*) :: mocle
+
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
@@ -73,60 +70,67 @@ implicit none
 #include "asterfort/pj3dfb.h"
 #include "asterfort/pj4dap.h"
 #include "asterfort/pjxxut.h"
+#include "asterfort/pjloin.h"
 #include "asterfort/utimsd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-!
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
+
 ! --------------------------------------------------------------------------------------------------
-!
-    character(len=8) :: m1, m2, nono2, alarme
+
+    character(len=8) :: m1, m2, nono2
     character(len=14) :: boite
     character(len=16) :: cortr3
     integer :: nbtm, nbtmx
     parameter   (nbtmx=15)
     integer :: nutm(nbtmx)
     character(len=8) :: elrf(nbtmx)
-!
-    integer :: ifm, niv, ibid, nno1, nno2, nma1, nma2, k
+
+    integer :: ifm, niv, nno1, nno2, nma1, nma2, k
     integer :: ima, ino2, ico
     integer :: iatr3, iacoo1, iacoo2
     integer :: iabtco, jxxk1, iaconu, iacocf, iacotr
     integer :: ialim1, ialin1, ilcnx1, ialin2
     integer :: iaconb, itypm, idecal, itr3, nbtrou
-!
-    aster_logical :: dbg, ldmax, loin, loin2, lraff
+
+    aster_logical :: dbg, l_dmax, loin, loin2, lraff
     real(kind=8) :: dmin, cobary(3)
-!
-    integer :: nbmax,umessi(2)
+
+    integer :: nbmax
     parameter (nbmax=5)
-    integer :: tino2m(nbmax), nbnod, nbnodm, ii
-    real(kind=8) :: tdmin2(nbmax), umessr(4)
+    integer :: tino2m(nbmax), nbnod, nbnodm
+    real(kind=8) :: tdmin2(nbmax)
     real(kind=8), pointer :: bt3dvr(:) => null()
     integer, pointer :: bt3dlc(:) => null()
     integer, pointer :: connex(:) => null()
     integer, pointer :: bt3dnb(:) => null()
     integer, pointer :: bt3ddi(:) => null()
     integer, pointer :: typmail(:) => null()
-!
+    integer, pointer :: lino_loin(:) => null()
+
 ! --------------------------------------------------------------------------------------------------
-!
+
     call jemarq()
     call infniv(ifm, niv)
-!
+
     call pjxxut('2D', mocle, moa1, moa2, nbma1,&
                 lima1, nbno2, lino2, m1, m2,&
                 nbtmx, nbtm, nutm, elrf)
-!
+
     call dismoi('NB_NO_MAILLA', m1, 'MAILLAGE', repi=nno1)
     call dismoi('NB_NO_MAILLA', m2, 'MAILLAGE', repi=nno2)
     call dismoi('NB_MA_MAILLA', m1, 'MAILLAGE', repi=nma1)
     call dismoi('NB_MA_MAILLA', m2, 'MAILLAGE', repi=nma2)
-!
+
     call jeveuo('&&PJXXCO.LIMA1', 'L', ialim1)
     call jeveuo('&&PJXXCO.LINO1', 'L', ialin1)
     call jeveuo('&&PJXXCO.LINO2', 'L', ialin2)
-!
-!
+
+!   -- l'objet lino_loin contiendra la liste des noeuds projetes un peu loin
+    AS_ALLOCATE(vi=lino_loin, size=nno2)
+
+
 !     2. ON DECOUPE TOUTES LES MAILLES 2D EN TRIA3
 !     ------------------------------------------------
 !        (EN CONSERVANT LE LIEN DE PARENTE):
@@ -190,7 +194,7 @@ implicit none
             zi(iatr3+(ico-1)*4+3)=connex(1+ zi(ilcnx1-1+ima)-2+4)
         endif
     enddo
-!
+
 !     3. ON MET LES TRIA3 EN BOITES :
 !     ---------------------------------------------------
     if (geom1 .eq. ' ') then
@@ -203,7 +207,7 @@ implicit none
     else
         call jeveuo(geom2, 'L', iacoo2)
     endif
-!
+
     boite='&&PJ4DCO.BOITE'
     call pj3dfb(boite, '&&PJXXCO.TRIA3', zr(iacoo1), zr(iacoo2))
     call jeveuo(boite//'.BT3DDI', 'L', vi=bt3ddi)
@@ -211,7 +215,7 @@ implicit none
     call jeveuo(boite//'.BT3DNB', 'L', vi=bt3dnb)
     call jeveuo(boite//'.BT3DLC', 'L', vi=bt3dlc)
     call jeveuo(boite//'.BT3DCO', 'L', iabtco)
-!
+
 !     DESCRIPTION DE LA SD BOITE_3D :
 !     BOITE_3D (K14) ::= RECORD
 !      .BT3DDI   : OJB S V I  LONG=3
@@ -219,31 +223,31 @@ implicit none
 !      .BT3DNB   : OJB S V I  LONG=NX*NY*NZ
 !      .BT3DLC   : OJB S V I  LONG=1+NX*NY*NZ
 !      .BT3DCO   : OJB S V I  LONG=*
-!
+
 !      .BT3DDI(1) : NX=NOMBRE DE BOITES DANS LA DIRECTION X
 !      .BT3DDI(2) : NY=NOMBRE DE BOITES DANS LA DIRECTION Y
 !      .BT3DDI(3) : NZ=NOMBRE DE BOITES DANS LA DIRECTION Z
-!
+
 !      .BT3DVR(1) : XMIN     .BT3DVR(2) : XMAX
 !      .BT3DVR(3) : YMIN     .BT3DVR(4) : YMAX
 !      .BT3DVR(5) : ZMIN     .BT3DVR(6) : ZMAX
 !      .BT3DVR(7) : DX = (XMAX-XMIN)/NBX
 !      .BT3DVR(8) : DY = (YMAX-YMIN)/NBY
 !      .BT3DVR(9) : DZ = (ZMAX-ZMIN)/NBZ
-!
+
 !      .BT3DNB    : LONGUEURS DES BOITES
 !      .BT3DNB(1) : NOMBRE DE TRIA3 CONTENUS DANS LA BOITE(1,1,1)
 !      .BT3DNB(2) : NOMBRE DE TRIA3 CONTENUS DANS LA BOITE(2,1,1)
 !      .BT3DNB(3) : ...
 !      .BT3DNB(NX*NY*NZ) : NOMBRE DE TRIA3 CONTENUS DANS LA
 !                          DERNIERE BOITE(NX,NY,NZ)
-!
+
 !      .BT3DLC    : LONGUEURS CUMULEES DE .BT3DCO
 !      .BT3DLC(1) : 0
 !      .BT3DLC(2) : BT3DLC(1)+NBTR3(BOITE(1,1))
 !      .BT3DLC(3) : BT3DLC(2)+NBTR3(BOITE(2,1))
 !      .BT3DLC(4) : ...
-!
+
 !      .BT3DCO    : CONTENU DES BOITES
 !       SOIT :
 !        NBTR3 =NBTR3(BOITE(P,Q,R)=BT3DNB((R-1)*NY*NX+(Q-1)*NX+P)
@@ -252,8 +256,8 @@ implicit none
 !          TR3=.BT3DCO(DEBTR3+K)
 !        DONE
 !        TR3 EST LE NUMERO DU KIEME TRIA3 DE LA BOITE (P,Q,R)
-!
-!
+
+
 !     4. CONSTRUCTION D'UN CORRESP_2_MAILLA TEMPORAIRE :CORTR3
 !        (EN UTILISANT LES TRIA3 DEDUITS DU MAILLAGE M1)
 !     ---------------------------------------------------
@@ -266,8 +270,8 @@ implicit none
     call wkvect(cortr3//'.PJEF_NU', 'V V I', 4*nno2, iaconu)
     call wkvect(cortr3//'.PJEF_CF', 'V V R', 3*nno2, iacocf)
     call wkvect(cortr3//'.PJEF_TR', 'V V I', nno2, iacotr)
-!
-!
+
+
 !     ON CHERCHE POUR CHAQUE NOEUD INO2 DE M2 LE TRIA3
 !     AUQUEL IL APPARTIENT AINSI QUE SES COORDONNEES
 !     BARYCENTRIQUES DANS CE TRIA3 :
@@ -278,17 +282,18 @@ implicit none
     nbnodm = 0
     do ino2 = 1, nno2
         if (zi(ialin2-1+ino2) .eq. 0) cycle
-        call pj4dap(ino2, zr(iacoo2), m2, zr(iacoo1), zi(iatr3),&
+        call pj4dap(ino2, zr(iacoo2), zr(iacoo1), zi(iatr3),&
                     cobary, itr3, nbtrou, bt3ddi, bt3dvr,&
-                    bt3dnb, bt3dlc, zi( iabtco), ifm, niv,&
-                    ldmax, distma, loin, dmin)
+                    bt3dnb, bt3dlc, zi( iabtco),&
+                    l_dmax, dmax, dala, loin, dmin)
         if (loin) then
             loin2=.true.
             nbnodm = nbnodm + 1
+            lino_loin(nbnodm)=ino2
         endif
         call inslri(nbmax, nbnod, tdmin2, tino2m, dmin,&
                     ino2)
-        if (ldmax .and. (nbtrou.eq.0)) then
+        if (l_dmax .and. (nbtrou.eq.0)) then
             zi(iaconb-1+ino2)=3
             zi(iacotr-1+ino2)=0
             cycle
@@ -297,7 +302,7 @@ implicit none
             call jenuno(jexnum(m2//'.NOMNOE', ino2), nono2)
             call utmess('F', 'CALCULEL4_56', sk=nono2)
         endif
-!
+
         zi(iaconb-1+ino2)=3
         zi(iacotr-1+ino2)=itr3
         do k = 1, 3
@@ -306,54 +311,37 @@ implicit none
         enddo
         idecal=idecal+zi(iaconb-1+ino2)
     enddo
-!
+
 !   EMISSION D'UN EVENTUEL MESSAGE D'ALARME:
     if (loin2) then
-        alarme='OUI'
-        call getres(k16bid, k16bid, nomcmd)
-        if (nomcmd .eq. 'PROJ_CHAMP') then
-            call getvtx(' ', 'ALARME', scal=alarme, nbret=ibid)
-        endif
-        if (alarm2 .ne. ' ') alarme=alarm2
-!
-        if (alarme .eq. 'OUI') then
-            do ii = 1, nbnod
-                ino2m = tino2m(ii)
-                call jenuno(jexnum(m2//'.NOMNOE', ino2m), nono2)
-                umessr(1) = zr(iacoo2+3*(ino2m-1) )
-                umessr(2) = zr(iacoo2+3*(ino2m-1)+1)
-                umessr(3) = zr(iacoo2+3*(ino2m-1)+2)
-                umessr(4) = tdmin2(ii)
-                call utmess('I', 'CALCULEL5_43', sk=nono2, nr=4, valr=umessr)
-            enddo
-            umessi(1) = nbnodm
-            umessi(2) = nbnod
-            call utmess('A', 'CALCULEL5_48',ni=2,vali=umessi)
-        endif
+        call pjloin(nbnod,nbnodm,m2,zr(iacoo2),nbmax,tino2m,tdmin2,lino_loin)
     endif
-!
-!
-!  5. ON TRANSFORME CORTR3 EN CORRES (RETOUR AUX VRAIES MAILLES)
-!     ----------------------------------------------------------
+
+
+!   5. on transforme cortr3 en corres (retour aux vraies mailles)
+!   -------------------------------------------------------------
     lraff=.false.
-    call pj2dtr(cortr3, corres, nutm, elrf, zr(iacoo1), zr(iacoo2), lraff)
+    call pj2dtr(cortr3, corres, nutm, elrf, zr(iacoo1), zr(iacoo2), lraff, dala)
     dbg=.false.
     if (dbg) then
         call utimsd(ifm, 2, ASTER_FALSE, ASTER_TRUE, '&&PJ4DCO', 1, ' ')
         call utimsd(ifm, 2, ASTER_FALSE, ASTER_TRUE, corres, 1, ' ')
     endif
     call detrsd('CORRESP_2_MAILLA', cortr3)
-!
+
     call jedetr(boite//'.BT3DDI')
     call jedetr(boite//'.BT3DVR')
     call jedetr(boite//'.BT3DNB')
     call jedetr(boite//'.BT3DLC')
     call jedetr(boite//'.BT3DCO')
-!
+
     call jedetr('&&PJXXCO.TRIA3')
     call jedetr('&&PJXXCO.LIMA1')
     call jedetr('&&PJXXCO.LIMA2')
     call jedetr('&&PJXXCO.LINO1')
     call jedetr('&&PJXXCO.LINO2')
+
+    AS_DEALLOCATE(vi=lino_loin)
+
     call jedema()
 end subroutine

@@ -15,31 +15,25 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-#include "asterf_types.h"
-!
-interface
-    subroutine pj3dap(ino2, geom2, ma2, geom1, tetr4,&
-                      cobary, itr3, nbtrou, btdi, btvr,&
-                      btnb, btlc, btco, ifm, niv,&
-                      ldmax, distma, loin, dmin)
-        integer :: ino2
-        real(kind=8) :: geom2(*)
-        character(len=8) :: ma2
-        real(kind=8) :: geom1(*)
-        integer :: tetr4(*)
-        real(kind=8) :: cobary(4)
-        integer :: itr3
-        integer :: nbtrou
-        integer :: btdi(*)
-        real(kind=8) :: btvr(*)
-        integer :: btnb(*)
-        integer :: btlc(*)
-        integer :: btco(*)
-        integer :: ifm
-        integer :: niv
-        aster_logical :: ldmax
-        real(kind=8) :: distma
-        aster_logical :: loin
-        real(kind=8) :: dmin
-    end subroutine pj3dap
-end interface
+          interface 
+            subroutine pj3dap(ino2,geom2,geom1,tetr4,cobary,itr3,nbtrou,&
+     &btdi,btvr,btnb,btlc,btco,l_dmax,dmax,dala,loin,dmin)
+              integer :: ino2
+              real(kind=8) :: geom2(*)
+              real(kind=8) :: geom1(*)
+              integer :: tetr4(*)
+              real(kind=8) :: cobary(4)
+              integer :: itr3
+              integer :: nbtrou
+              integer :: btdi(*)
+              real(kind=8) :: btvr(*)
+              integer :: btnb(*)
+              integer :: btlc(*)
+              integer :: btco(*)
+              aster_logical :: l_dmax
+              real(kind=8) :: dmax
+              real(kind=8) :: dala
+              aster_logical :: loin
+              real(kind=8) :: dmin
+            end subroutine pj3dap
+          end interface 

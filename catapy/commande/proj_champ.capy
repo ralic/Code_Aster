@@ -74,6 +74,7 @@ PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,reentrant='f',
                   fr=tr("Pour indiquer au programme le type de projection souhaité")),
              DISTANCE_MAX    =SIMP(statut='f',typ='R',
                   fr=tr("Distance maximale entre le noeud et l'élément le plus proche, lorsque le noeud n'est dans aucun élément.")),
+             DISTANCE_ALARME =SIMP(statut='f',typ='R'),
 
              TRANSF_GEOM_1   =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),min=2,max=3,
                   fr=tr("2 (ou 3) fonctions fx,fy,fz définissant la transformation géométrique à appliquer"
@@ -190,6 +191,7 @@ PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,reentrant='f',
                   fr=tr("Pour indiquer au programme le type de projection souhaité")),
              DISTANCE_MAX    =SIMP(statut='f',typ='R',
                   fr=tr("Distance maximale entre le noeud et l'élément le plus proche, lorsque le noeud n'est dans aucun élément.")),
+             DISTANCE_ALARME =SIMP(statut='f',typ='R'),
 
              TRANSF_GEOM_1   =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),min=2,max=3,
                   fr=tr("2 (ou 3) fonctions fx,fy,fz définissant la transformation géométrique à appliquer"

@@ -59,6 +59,7 @@ OBSERVATION=MACRO(nom="OBSERVATION",
          CAS_FIGURE      =SIMP(statut='f',typ='TXM',into=("2D","3D","2.5D","1.5D",) ),
          DISTANCE_MAX    =SIMP(statut='f',typ='R',
                 fr=tr("Distance maximale entre le noeud et l'élément le plus proche, lorsque le noeud n'est dans aucun élément.")),
+         DISTANCE_ALARME =SIMP(statut='f',typ='R'),
          ALARME          =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
 
          TYPE_CHAM       =SIMP(statut='f',typ='TXM',into=("NOEU",),
