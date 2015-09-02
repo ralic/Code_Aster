@@ -16,11 +16,15 @@
 %    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 % ======================================================================
 % person_in_charge: jacques.pellet at edf.fr
-MINMAX_SP % RQUE : CETTE OPTION N'EST PAS REALISEE PAR DES ROUTINES TE00IJ MAIS
-          % PAR LA COMMANDE POST_CHAMP / MIN_MAX_SP
+
+minmax_sp % rque : cette option n'est pas realisee par des routines te00ij mais
+          % par la commande post_champ / min_max_sp
 OPTION__
    IN__
-        % PARCE QU'IL FAUT UN CHAMP "IN" POUR LA SYNTAXE
    OUT__
-PGAMIMA  SPMX_R ELGA__
-PNOMIMA  SPMX_R ELNO__
+       PGAMIMA  SPMX_R ELGA__
+       PNOMIMA  SPMX_R ELNO__
+
+   COND_CALCUL__   PLUS__  PHENO='ME' BORD='0'  COQUE='OUI'
+                   PLUS__  PHENO='ME' BORD='0'  TUYAU='OUI'
+                   PLUS__  PHENO='ME' BORD='0'  TYPMOD2='PMF'

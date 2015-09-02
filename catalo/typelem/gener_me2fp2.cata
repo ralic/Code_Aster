@@ -44,6 +44,7 @@ MODE_LOCAL__
     CMATERC  = ADRSJEVE ELEM__         (I1       )
     DDL_MECA = DEPL_R   ELNO__ IDEN__  (PHI      DH       )
     ECOURAN  = NEUT_R   ELEM__         (X1       )
+    CGEOMER  = GEOM_R   ELEM__         (X        Y        Z)
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W       )
 
@@ -88,3 +89,6 @@ OPTION__
     RIGI_MECA_TANG   370  IN__  CCOMPOR  PCOMPOR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
                                 CMATERC  PMATERC
                           OUT__ MMATUUR  PMATUUR
+    TOU_INI_ELEM      99  IN__ OUT__ CGEOMER  PGEOM_R
+    TOU_INI_ELNO      99  IN__ OUT__ NGEOMER  PGEOM_R
+    TOU_INI_ELGA      99  IN__ OUT__ EGGEOP_R  PGEOM_R

@@ -74,3 +74,5 @@ OPTION__
                           OUT__ EFLHN    PFLHN    
     SIRO_ELEM        411  IN__  NGEOMER  PGEOMER  ECONTNO  PSIG3D   
                           OUT__ EPJSIGM  PPJSIGM
+    TOU_INI_ELNO      99  IN__ OUT__ NGEOMER  PGEOM_R
+    TOU_INI_ELGA      99  IN__ OUT__ EGGEOP_R  PGEOM_R

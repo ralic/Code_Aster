@@ -19,11 +19,17 @@
 TOU_INI_ELEM
 OPTION__
    IN__
-        OUT__
-PNEU1_R NEUT_R ELEM__
-PNBSP_I NBSP_I ELEM__
-PCAFI_R CAFI_R ELEM__
-PERREUR ERRE_R ELEM__
-PPRES_R PRES_R ELEM__
-PSOUR_R SOUR_R ELEM__
-PGEOM_R GEOM_R ELEM__
+   OUT__
+        PNEU1_R NEUT_R ELEM__
+        PNBSP_I NBSP_I ELEM__
+        PCAFI_R CAFI_R ELEM__
+        PERREUR ERRE_R ELEM__
+        PPRES_R PRES_R ELEM__
+        PSOUR_R SOUR_R ELEM__
+        PGEOM_R GEOM_R ELEM__
+
+   COND_CALCUL__   PLUS__  PHENO='ME'
+                   PLUS__  PHENO='TH'
+                   PLUS__  PHENO='AC'
+                   PLUS__  PHENO='PR'
+                   PLUS__  LXFEM='OUI'

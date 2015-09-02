@@ -30,6 +30,7 @@ MODE_LOCAL__
                                  EN1   (DX       DY    PRE1)
                                  EN2   (PRE1     )
     EFLUXE   = FTHM_R   ELGA__ RIGI   (PFLU1    )
+    EGEOMER  = GEOM_R   ELGA__ RIGI    (X        Y   )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
     CTEMPSR  = INST_R   ELEM__         (INST     DELTAT   THETA    )
     CPRESSF  = PRES_F   ELEM__         (PRES     CISA    )
@@ -50,3 +51,5 @@ OPTION__
 
     CHAR_MECA_FLUX_R 314  IN__  EFLUXE   PFLUXR   NGEOMER  PGEOMER  CTEMPSR  PTEMPSR
                           OUT__ MVECTUR  PVECTUR
+    TOU_INI_ELNO      99  IN__ OUT__ NGEOMER  PGEOM_R
+    TOU_INI_ELGA      99  IN__ OUT__ EGEOMER  PGEOM_R

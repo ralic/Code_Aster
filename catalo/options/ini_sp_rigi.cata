@@ -22,4 +22,8 @@ INI_SP_RIGI
 OPTION__
    IN__
    OUT__
-PCONTPR SIEF_R ELGA__
+      PCONTPR SIEF_R ELGA__
+
+   COND_CALCUL__   PLUS__  PHENO='ME' BORD='0'  COQUE='OUI'
+                   PLUS__  PHENO='ME' BORD='0'  TUYAU='OUI'
+                   PLUS__  PHENO='ME' BORD='0'  TYPMOD2='PMF'

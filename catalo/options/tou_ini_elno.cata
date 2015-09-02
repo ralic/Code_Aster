@@ -19,16 +19,22 @@
 TOU_INI_ELNO
 OPTION__
    IN__
-        OUT__
-PDOMMAG  DOMA_R  ELNO__
-PEPSI_R  EPSI_R  ELNO__
-PGEOM_R  GEOM_R  ELNO__
-PINST_R  INST_R  ELNO__
-PNEUT_F  NEUT_F  ELNO__
-PNEUT_R  NEUT_R  ELNO__
-PPRES_R  PRES_R  ELNO__
-PSIEF_R  SIEF_R  ELNO__
-PVARI_R  VARI_R  ELNO__
-PSOUR_R  SOUR_R  ELNO__
-PHYDRPM  HYDR_R  ELNO__
-PFLUX_R  FLUX_R  ELNO__
+   OUT__
+      PDOMMAG  DOMA_R  ELNO__
+      PEPSI_R  EPSI_R  ELNO__
+      PGEOM_R  GEOM_R  ELNO__
+      PINST_R  INST_R  ELNO__
+      PNEUT_F  NEUT_F  ELNO__
+      PNEUT_R  NEUT_R  ELNO__
+      PPRES_R  PRES_R  ELNO__
+      PSIEF_R  SIEF_R  ELNO__
+      PVARI_R  VARI_R  ELNO__
+      PSOUR_R  SOUR_R  ELNO__
+      PHYDRPM  HYDR_R  ELNO__
+      PFLUX_R  FLUX_R  ELNO__
+
+   COND_CALCUL__   PLUS__  PHENO='ME'
+                   PLUS__  PHENO='TH'
+                   PLUS__  PHENO='AC'
+                   PLUS__  PHENO='PR'
+                   PLUS__  LXFEM='OUI'

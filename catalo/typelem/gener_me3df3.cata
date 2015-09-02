@@ -46,9 +46,9 @@ MODE_LOCAL__
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     CGEOMER  = GEOM_R   ELEM__         (X        Y        Z        )
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W       )
-   
-   
-   
+
+
+
 
 VECTEUR__
 
@@ -56,17 +56,20 @@ MATRICE__
     MMATUUR = MDEP_R DDL_MECA DDL_MECA
 
 OPTION__
-    COOR_ELGA        488  IN__  NGEOMER  PGEOMER  
-                          OUT__ EGGEOP_R PCOORPG  
-    MASS_INER         65  IN__  CCAGNPO  PCAGNPO  CCAPOUF  PCAPOUF  NGEOMER  PGEOMER  CMATERC  PMATERC  
-                          OUT__ EMASSINE PMASSINE 
-    MASS_MECA        470  IN__  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  CCAPOUF  PCAPOUF  NGEOMER  PGEOMER  
-                                CMATERC  PMATERC  
-                          OUT__ MMATUUR  PMATUUR  
-    REPERE_LOCAL     135  IN__  CCAORIE  PCAORIE  
-                          OUT__ CGEOMER  PREPLO1  CGEOMER  PREPLO2  CGEOMER  PREPLO3  
-    RIGI_MECA        471  IN__  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  CCAPOUF  PCAPOUF  NGEOMER  PGEOMER  
-                                CMATERC  PMATERC  
-                          OUT__ MMATUUR  PMATUUR  
-    VERI_JACOBIEN    328  IN__  NGEOMER  PGEOMER  
-                          OUT__ ECODRET  PCODRET  
+    COOR_ELGA        488  IN__  NGEOMER  PGEOMER
+                          OUT__ EGGEOP_R PCOORPG
+    MASS_INER         65  IN__  CCAGNPO  PCAGNPO  CCAPOUF  PCAPOUF  NGEOMER  PGEOMER  CMATERC  PMATERC
+                          OUT__ EMASSINE PMASSINE
+    MASS_MECA        470  IN__  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  CCAPOUF  PCAPOUF  NGEOMER  PGEOMER
+                                CMATERC  PMATERC
+                          OUT__ MMATUUR  PMATUUR
+    REPERE_LOCAL     135  IN__  CCAORIE  PCAORIE
+                          OUT__ CGEOMER  PREPLO1  CGEOMER  PREPLO2  CGEOMER  PREPLO3
+    RIGI_MECA        471  IN__  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  CCAPOUF  PCAPOUF  NGEOMER  PGEOMER
+                                CMATERC  PMATERC
+                          OUT__ MMATUUR  PMATUUR
+    VERI_JACOBIEN    328  IN__  NGEOMER  PGEOMER
+                          OUT__ ECODRET  PCODRET
+    TOU_INI_ELEM      99  IN__ OUT__ CGEOMER  PGEOM_R
+    TOU_INI_ELNO      99  IN__ OUT__ NGEOMER  PGEOM_R
+    TOU_INI_ELGA      99  IN__ OUT__ EGGEOP_R  PGEOM_R

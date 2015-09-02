@@ -208,10 +208,9 @@ PHENOMENE_MODELISATION__
 %
 %  ABSO = 'OUI' : l'element est un element de frontiere absorbante (R4.02.05)
 %
-%  METH_CONTINUE = 'OUI' : l'element est utilise (en sous-terrain) pour la mise en oeuvre du contact
-%                          via (DEFI_CONTACT / FORMULATION='CONTINUE')
+%  CONTACT = 'OUI' : l'element est utilise (en sous-terrain) pour la mise en oeuvre du contact
 %
-%  Si METH_CONTINUE = 'OUI' :  FROTTEMENT = 'OUI' => l'element traite le frottement (en plus du contact)
+%  FROTTEMENT = 'OUI' => l'element est utilise pour traiter le frottement.
 %
 %
 %
@@ -1898,7 +1897,7 @@ PHENOMENE_MODELISATION__
 %------------------------------------------------------------------------------------
 
        MODELISATION__ 'CF_CONT1'         DIM__ 2 3   CODE__ 'CC1'
-              ATTRIBUT__  METH_CONTINUE='OUI'
+              ATTRIBUT__  CONTACT='OUI'
               MAILLE__ QU4QU8    ELEMENT__ COQ4Q8
               MAILLE__ QU4QU9    ELEMENT__ COQ4Q9
               MAILLE__ QU4TR3    ELEMENT__ COQ4T3
@@ -1936,25 +1935,25 @@ PHENOMENE_MODELISATION__
               MAILLE__ TRIA66    ELEMENT__ COT6T6
 
        MODELISATION__ 'CF_CONT2'         DIM__ 1 2   CODE__ 'CC2'
-              ATTRIBUT__  METH_CONTINUE='OUI'
+              ATTRIBUT__  CONTACT='OUI'
               MAILLE__ SEG22     ELEMENT__ COS2S2
               MAILLE__ SEG23     ELEMENT__ COS2S3
               MAILLE__ SEG32     ELEMENT__ COS3S2
               MAILLE__ SEG33     ELEMENT__ COS3S3
 
        MODELISATION__ 'CF_CONT3'         DIM__ 1 2   CODE__ 'CC3'
-              ATTRIBUT__  METH_CONTINUE='OUI' AXIS='OUI'
+              ATTRIBUT__  CONTACT='OUI' AXIS='OUI'
               MAILLE__ SEG22     ELEMENT__ COS2S2A
               MAILLE__ SEG23     ELEMENT__ COS2S3A
               MAILLE__ SEG32     ELEMENT__ COS3S2A
               MAILLE__ SEG33     ELEMENT__ COS3S3A
 
        MODELISATION__ 'CF_CONT4'         DIM__ 1 2   CODE__ 'CC4'
-              ATTRIBUT__  METH_CONTINUE='OUI'
+              ATTRIBUT__  CONTACT='OUI'
               MAILLE__ SEG22     ELEMENT__ COP2P2
 
        MODELISATION__ 'CF_CONT5'         DIM__ 2 3   CODE__ 'CC5'
-              ATTRIBUT__  METH_CONTINUE='OUI' FROTTEMENT='OUI'
+              ATTRIBUT__  CONTACT='OUI' FROTTEMENT='OUI'
               MAILLE__ QU4QU8    ELEMENT__ CFQ4Q8
               MAILLE__ QU4QU9    ELEMENT__ CFQ4Q9
               MAILLE__ QU4TR3    ELEMENT__ CFQ4T3
@@ -1992,21 +1991,21 @@ PHENOMENE_MODELISATION__
               MAILLE__ TRIA66    ELEMENT__ CFT6T6
 
        MODELISATION__ 'CF_CONT6'         DIM__ 1 2   CODE__ 'CC6'
-              ATTRIBUT__  METH_CONTINUE='OUI' FROTTEMENT='OUI'
+              ATTRIBUT__  CONTACT='OUI' FROTTEMENT='OUI'
               MAILLE__ SEG22     ELEMENT__ CFS2S2
               MAILLE__ SEG23     ELEMENT__ CFS2S3
               MAILLE__ SEG32     ELEMENT__ CFS3S2
               MAILLE__ SEG33     ELEMENT__ CFS3S3
 
        MODELISATION__ 'CF_CONT7'         DIM__ 1 2   CODE__ 'CC7'
-              ATTRIBUT__  METH_CONTINUE='OUI' FROTTEMENT='OUI' AXIS='OUI'
+              ATTRIBUT__  CONTACT='OUI' FROTTEMENT='OUI' AXIS='OUI'
               MAILLE__ SEG22     ELEMENT__ CFS2S2A
               MAILLE__ SEG23     ELEMENT__ CFS2S3A
               MAILLE__ SEG32     ELEMENT__ CFS3S2A
               MAILLE__ SEG33     ELEMENT__ CFS3S3A
 
        MODELISATION__ 'CF_CONT8'         DIM__ 1 2   CODE__ 'CC8'
-              ATTRIBUT__  METH_CONTINUE='OUI' FROTTEMENT='OUI'
+              ATTRIBUT__  CONTACT='OUI' FROTTEMENT='OUI'
               MAILLE__ SEG22     ELEMENT__ CFP2P2
 
 %------------------------------------------------------------------------------------

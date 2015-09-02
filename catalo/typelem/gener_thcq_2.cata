@@ -45,8 +45,8 @@ MODE_LOCAL__
     EFLUXNO  = FLUX_R   ELNO__ IDEN__  (FLUX     FLUY     FLUZ     FLUX_INF FLUY_INF FLUZ_INF
                                         FLUX_SUP FLUY_SUP FLUZ_SUP )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
-    EGGEOM_R = GEOM_R   ELGA__ RIGI    (X        Y        )
-    EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        W        )
+    EGGEOM_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        )
+    EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W        )
     ENGEOM_R = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     CTEMPSR  = INST_R   ELEM__         (INST     DELTAT   THETA    )
     EGINST_R = INST_R   ELGA__ RIGI    (INST     )

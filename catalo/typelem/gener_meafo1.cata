@@ -54,3 +54,4 @@ OPTION__
                           OUT__ EGGEOP_R PCOORPG
     TOU_INI_ELNO      99  IN__
                           OUT__ NGEOMER PGEOM_R  ENNEUT_F PNEUT_F  ENNEUT_R PNEUT_R  EPRESNO  PPRES_R
+    TOU_INI_ELGA      99  IN__ OUT__ EGGEOP_R  PGEOM_R

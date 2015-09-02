@@ -26,11 +26,13 @@ ENTETE__ ELEMENT__ HM_FACE8_XH         MAILLE__ QUAD8
    ELREFE__  QU4       GAUSS__  RIGI=FPG9
    ELREFE__  TR6       GAUSS__  RIGI=FPG6
    ELREFE__  TR3       GAUSS__  RIGI=FPG6
+   ATTRIBUT__  LXFEM='OUI'
    ENS_NOEUD__  EN2     =     5  6  7  8
    ENS_NOEUD__  EN1     =     1  2  3  4
 ENTETE__ ELEMENT__ HM_FACE6_XH        MAILLE__ TRIA6
    ELREFE__  TR6       GAUSS__  RIGI=FPG6
    ELREFE__  TR3       GAUSS__  RIGI=FPG6
+   ATTRIBUT__  LXFEM='OUI'
    ENS_NOEUD__  EN2     =     4  5  6
    ENS_NOEUD__  EN1     =     1  2  3
 
@@ -110,3 +112,4 @@ OPTION__
                               OUT__  EPJSIGM  PPJSIGM
     TOPONO           120  IN__  E36NEUI  PCNSETO  E6NEUTI  PHEAVTO  E10NEUTI  PLONCHA  N1NEUT_R PLEVSET
                           OUT__ N5NEUTI  PHEA_NO  E6NEUTI  PHEA_SE
+    TOU_INI_ELGA      99  IN__ OUT__ EGGEOP_R  PGEOM_R

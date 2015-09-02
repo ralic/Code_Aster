@@ -44,7 +44,7 @@ CHXN=CREA_CHAMP(TYPE_CHAM='NOEU_GEOM_R',
                 NOM_CHAM='GEOMETRIE',);
 
 CHXG=CREA_CHAMP(TYPE_CHAM='ELGA_GEOM_R',
-                OPERATION='DISC',
+                OPERATION='DISC', PROL_ZERO='OUI',
                 MODELE=MODELE,
                 CHAM_GD=CHXN,);
 

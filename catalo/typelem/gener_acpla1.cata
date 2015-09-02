@@ -44,3 +44,5 @@ OPTION__
                           OUT__ MVECTTC  PVECTTC  
     COOR_ELGA        478  IN__  NGEOMER  PGEOMER  
                           OUT__ EGGEOP_R PCOORPG
+    TOU_INI_ELNO      99  IN__ OUT__ NGEOMER  PGEOM_R
+    TOU_INI_ELGA      99  IN__ OUT__ EGGEOP_R  PGEOM_R

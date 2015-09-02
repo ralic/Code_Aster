@@ -31,7 +31,7 @@ MODE_LOCAL__
     CFLUXF   = FTHM_F   ELEM__         (PFLU1    PTHER    )
     EFLUXE   = FTHM_R   ELGA__ RIGI   (PFLU1    PTHER    )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
-    NSIEF_R  = SIEF_R   ELNO__ DIFF__  
+    NSIEF_R  = SIEF_R   ELNO__ DIFF__
      EN1   (FH11X FH11Y FH12X FH12Y    )
      EN2   (      )
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        W        )
@@ -44,11 +44,13 @@ VECTEUR__
 MATRICE__
 
 OPTION__
-    CHAR_MECA_FLUX_F 472  IN__  CFLUXF   PFLUXF   NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  
-                          OUT__ MVECTUR  PVECTUR  
-    CHAR_MECA_FLUX_R 472  IN__  EFLUXE   PFLUXR   NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  
-                          OUT__ MVECTUR  PVECTUR  
-    COOR_ELGA        467  IN__  NGEOMER  PGEOMER  
-                          OUT__ EGGEOP_R PCOORPG  
-    FLHN_ELGA        468  IN__  NSIEF_R  PCONTR   NGEOMER  PGEOMER  
-                          OUT__ EFLHN    PFLHN    
+    CHAR_MECA_FLUX_F 472  IN__  CFLUXF   PFLUXF   NGEOMER  PGEOMER  CTEMPSR  PTEMPSR
+                          OUT__ MVECTUR  PVECTUR
+    CHAR_MECA_FLUX_R 472  IN__  EFLUXE   PFLUXR   NGEOMER  PGEOMER  CTEMPSR  PTEMPSR
+                          OUT__ MVECTUR  PVECTUR
+    COOR_ELGA        467  IN__  NGEOMER  PGEOMER
+                          OUT__ EGGEOP_R PCOORPG
+    FLHN_ELGA        468  IN__  NSIEF_R  PCONTR   NGEOMER  PGEOMER
+                          OUT__ EFLHN    PFLHN
+    TOU_INI_ELNO      99  IN__ OUT__ NGEOMER  PGEOM_R
+    TOU_INI_ELGA      99  IN__ OUT__ EGGEOP_R  PGEOM_R

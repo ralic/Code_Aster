@@ -151,3 +151,4 @@ OPTION__
                           OUT__ EGNEUT_F PNEUT_F  EGNEUT_R PNEUT_R  EEFGEGA  PSIEF_R  ZVARIPG  PVARI_R
     VARI_ELNO          4  IN__  ZVARIPG  PVARIGR
                           OUT__ ZVARINO  PVARINR
+    TOU_INI_ELNO      99  IN__ OUT__ NGEOMER  PGEOM_R

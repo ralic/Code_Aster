@@ -45,6 +45,7 @@ VECTEUR__
 MATRICE__
 
 OPTION__
-    GRAD_NEUT_R       24  IN__  NGEOMER  PGEOMER  N1NEUT_R PNEUTER  
+    GRAD_NEUT_R       24  IN__  NGEOMER  PGEOMER  N1NEUT_R PNEUTER
                           OUT__ E3NEUT_R PGNEUTR
-                          
+
+    TOU_INI_ELNO      99  IN__ OUT__ NGEOMER  PGEOM_R

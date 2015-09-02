@@ -32,5 +32,8 @@ OPTION__
         PGEOMER  GEOM_R
         PLST     NEUT_R        
         PBASECO  N480_R
-        OUT__
+    OUT__
         PSEUIL  NEUT_R ELEM__
+
+   COND_CALCUL__  PLUS__  LXFEM='OUI' CONTACT='OUI'
+

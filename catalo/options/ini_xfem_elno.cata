@@ -19,10 +19,12 @@
 INI_XFEM_ELNO
 OPTION__
    IN__
-        OUT__
-% pour que les elements XFEM puissent creer certains CHAM_ELEM :
-PSTANO   N120_I  ELNO__
-PLSN     NEUT_R  ELNO__
-PLST     NEUT_R  ELNO__
-PBASLOR  NEUT_R  ELNO__
-PFISNO   NEUT_I  ELNO__
+   OUT__
+      % pour que les elements XFEM puissent creer certains CHAM_ELEM :
+      PSTANO   N120_I  ELNO__
+      PLSN     NEUT_R  ELNO__
+      PLST     NEUT_R  ELNO__
+      PBASLOR  NEUT_R  ELNO__
+      PFISNO   NEUT_I  ELNO__
+
+   COND_CALCUL__ PLUS__ LXFEM='OUI'

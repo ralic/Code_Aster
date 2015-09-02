@@ -39,3 +39,5 @@ OPTION__
         PHEA_NO  N120_I    << XFEM >>
    OUT__
         PVECTUR VDEP_R RESL__
+
+   COND_CALCUL__  PLUS__  CONTACT='OUI'
