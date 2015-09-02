@@ -170,7 +170,7 @@ L_ARCH=DEFI_LIST_REEL(DEBUT=0.0,
 #  CALCUL DE REFERENCE
 # ------------------------------------------------------------------------
 
-ULAG=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
+ULAG=STAT_NON_LINE(SOLVEUR=_F(),
                    MODELE=MODE,
                 CHAM_MATER=CM,
                 CARA_ELEM=CHAMPCAR,
@@ -204,7 +204,7 @@ IMPR_TABLE(TABLE=T_REA_LA,);
 #  CALCUL VALIDANT DIST_POUTRE EN FORMULATION DISCRETE
 # ------------------------------------------------------------------------
 
-ULAG2=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
+ULAG2=STAT_NON_LINE(SOLVEUR=_F(),
                     MODELE=MODE,
                 CHAM_MATER=CM,
                 CARA_ELEM=CHAMPCAR,
@@ -238,7 +238,7 @@ IMPR_TABLE(TABLE=T_REA_L2,);
 #  CALCUL VALIDANT DIST_POUTRE EN FORMULATION CONTINUE
 # ------------------------------------------------------------------------
 
-UCONT=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
+UCONT=STAT_NON_LINE(SOLVEUR=_F(),
                     MODELE=MODE,
                 CHAM_MATER=CM,
                 CARA_ELEM=CHAMPCAR,

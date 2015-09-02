@@ -184,7 +184,7 @@ LINST=DEFI_LIST_REEL(
 #
 
 RESU=STAT_NON_LINE(
-SOLVEUR=_F(SYME='OUI',),
+SOLVEUR=_F(),
                           MODELE=MOD,
                           CHAM_MATER=CHMAT,EXCIT=(
                           _F(  CHARGE = BLOQ),
@@ -279,7 +279,7 @@ TEST_TABLE(CRITERE='RELATIF',
 #
 
 RESU2=STAT_NON_LINE(
-                          SOLVEUR=_F(SYME='OUI',),
+                          SOLVEUR=_F(),
                           MODELE=MOD,
                           CHAM_MATER=CHMAT,EXCIT=(
                           _F(  CHARGE = BLOQ),

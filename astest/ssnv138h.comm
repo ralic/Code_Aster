@@ -78,41 +78,23 @@ D_FONC=DEFI_FONCTION(NOM_PARA='INST',
                      VALE=(0.0,0.0,10.0,10.0),);
 
 
-# pour tester  SYME=/OUI /NON, on fait le STAT_NON_LINE en 2 coups.
-
 NONLI=STAT_NON_LINE(CHAM_MATER=CHMAT1,
                     MODELE=MO1,
                     COMPORTEMENT=_F(DEFORMATION='GROT_GDEP',
                                  RELATION='ELAS',),
                     CONVERGENCE=_F(ITER_GLOB_MAXI=100,
                                    RESI_GLOB_RELA=1.E-06,),
-                    INCREMENT=_F(LIST_INST=L_INST, INST_FIN=0.6,),
+                    INCREMENT=_F(LIST_INST=L_INST, INST_FIN=1.4,),
                     CARA_ELEM=CARA1,
                     NEWTON=_F(REAC_ITER=1,
                               MATRICE='TANGENTE'),
-                    SOLVEUR=_F(NPREC=12, SYME='OUI', ),
+                    SOLVEUR=_F(NPREC=12,  ),
                     INFO=1,
                     EXCIT=(_F(CHARGE=CHA1,),
                            _F(CHARGE=CHA2,
                               FONC_MULT=D_FONC,),),);
 
 
-NONLI=STAT_NON_LINE(reuse=NONLI,CHAM_MATER=CHMAT1,
-                    MODELE=MO1,
-                    ETAT_INIT=_F(EVOL_NOLI=NONLI),
-                    COMPORTEMENT=_F(DEFORMATION='GROT_GDEP',
-                                 RELATION='ELAS',),
-                    CONVERGENCE=_F(ITER_GLOB_MAXI=100,
-                                   RESI_GLOB_RELA=1.E-06,),
-                    INCREMENT=_F(LIST_INST=L_INST,INST_FIN=1.4),
-                    CARA_ELEM=CARA1,
-                    NEWTON=_F(REAC_ITER=1,
-                              MATRICE='TANGENTE',),
-                    SOLVEUR=_F(NPREC=12, SYME='OUI', ),
-                    INFO=1,
-                    EXCIT=(_F(CHARGE=CHA1,),
-                           _F(CHARGE=CHA2,
-                              FONC_MULT=D_FONC,),),);
 DRY_P2=RECU_FONCTION(  RESULTAT=NONLI,    NOM_CHAM='DEPL',
                    GROUP_NO='P2',    NOM_CMP='DRY'  )
 

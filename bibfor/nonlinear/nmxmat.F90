@@ -1,7 +1,7 @@
 subroutine nmxmat(modelz, mate, carele, compor, carcri,&
                   sddisc, sddyna, fonact, numins, iterat,&
                   valinc, solalg, lischa, comref, defico,&
-                  resoco, solveu, numedd, numfix, sdstat,&
+                  resoco, numedd, numfix, sdstat,&
                   sdtime, nbmatr, ltypma, loptme, loptma,&
                   lcalme, lassme, lcfint, meelem, measse,&
                   veelem, ldccvg, codere)
@@ -44,7 +44,7 @@ subroutine nmxmat(modelz, mate, carele, compor, carcri,&
     character(len=24) :: sdtime, sdstat
     character(len=24) :: compor, carcri, carele
     integer :: numins, iterat, ldccvg
-    character(len=19) :: sddisc, sddyna, lischa, solveu
+    character(len=19) :: sddisc, sddyna, lischa
     character(len=24) :: defico, resoco
     character(len=24) :: numedd, numfix
     character(len=24) :: comref, codere
@@ -76,7 +76,6 @@ subroutine nmxmat(modelz, mate, carele, compor, carcri,&
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
 ! IN  METHOD : INFORMATIONS SUR LES METHODES DE RESOLUTION (VOIR NMLECT)
 ! IN  PARMET : PARAMETRES DES METHODES DE RESOLUTION (VOIR NMLECT)
-! IN  SOLVEU : SOLVEUR
 ! IN  CARCRI : PARAMETRES METHODES D'INTEGRATION LOCALES (VOIR NMLECT)
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IN  NUMINS : NUMERO D'INSTANT
@@ -164,7 +163,7 @@ subroutine nmxmat(modelz, mate, carele, compor, carcri,&
             call nmtime(sdtime, 'INI', 'ASSE_MATR')
             call nmtime(sdtime, 'RUN', 'ASSE_MATR')
             call nmchex(measse, 'MEASSE', typmat, matass)
-            call nmassm(fonact, lischa, solveu, numedd, numfix,&
+            call nmassm(fonact, lischa, numedd, numfix,&
                         typmat, optass, meelem, matass)
             call nmtime(sdtime, 'END', 'ASSE_MATR')
         endif

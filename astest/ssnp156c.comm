@@ -94,7 +94,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
                    INCREMENT=_F(LIST_INST=LINST,),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=50,
                                   ),
-                   SOLVEUR=_F(SYME='OUI',
+                   SOLVEUR=_F(
                               METHODE='MUMPS',
                               ),
                    NEWTON=_F(MATRICE='TANGENTE',

@@ -111,7 +111,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
                                   DEFORMATION='GROT_GDEP',),
                      INCREMENT=_F(LIST_INST=L_INST,),
                      CONVERGENCE=_F(ITER_GLOB_MAXI=200,),
-                     SOLVEUR=_F(SYME='OUI',),
+                     SOLVEUR=_F(),
                      NEWTON=_F(REAC_ITER=1,),);
 
 RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CONTRAINTE=('SIEF_ELNO'))

@@ -19,7 +19,7 @@
 !
 interface
     subroutine nmspec(modele  , numedd, numfix     , carele, compor,&
-                      solveu  , numins, mate       , comref, lischa,&
+                      numins, mate       , comref, lischa,&
                       defico  , resoco, ds_algopara, fonact, carcri,&
                       ds_print, sdstat, sdtime     , sddisc, valinc,&
                       solalg  , meelem, measse     , veelem, sddyna,&
@@ -30,7 +30,6 @@ interface
         character(len=24) :: numfix
         character(len=24) :: carele
         character(len=24) :: compor
-        character(len=19) :: solveu
         integer :: numins
         character(len=24) :: mate
         character(len=24) :: comref

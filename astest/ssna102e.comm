@@ -137,7 +137,7 @@ LINST=DEFI_LIST_REEL(DEBUT=0.0,
 #                            CALCUL NON LINEAIRE
 # --------------------------------------------------------------------
 
-RESU=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
+RESU=STAT_NON_LINE(SOLVEUR=_F(),
                    MODELE=MOD,
                    CHAM_MATER=CHMAT,
                    EXCIT=(_F(CHARGE=BLOQ,),

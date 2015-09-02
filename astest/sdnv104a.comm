@@ -141,7 +141,7 @@ DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =L_INST ),
                                   SUBD_PAS_MINI=0.0000001,
                                  ),)
 
-ULM =  DYNA_NON_LINE(SOLVEUR=_F(SYME='OUI',),
+ULM =  DYNA_NON_LINE(SOLVEUR=_F(),
                      MODELE=MODE,
                     CHAM_MATER=CM,
                     CARA_ELEM=CARA,
@@ -160,7 +160,7 @@ ULM =  DYNA_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                     NEWTON=_F(MATRICE='TANGENTE',
                               REAC_ITER=1,),
                     CONVERGENCE=_F(ITER_GLOB_MAXI=150,),
-
+ 
                     )
 
 
@@ -202,10 +202,10 @@ ULL =  DYNA_NON_LINE(MODELE=MODE,
                     SCHEMA_TEMPS=_F(SCHEMA='HHT',FORMULATION='DEPLACEMENT'),
                     NEWTON=_F(MATRICE='TANGENTE',
                               REAC_ITER=1,),
-                    SOLVEUR =_F(SYME='OUI',
+                    SOLVEUR =_F(
                                 METHODE='LDLT',),
                     CONVERGENCE=_F(ITER_GLOB_MAXI=150,),
-
+ 
                      )
 
 TEST_RESU(RESU=(_F(GROUP_NO='A',

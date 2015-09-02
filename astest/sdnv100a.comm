@@ -132,7 +132,7 @@ ALF=0.28
 #
 DEL=0.55
 #
-U=DYNA_NON_LINE(  SOLVEUR=_F(SYME='OUI',),
+U=DYNA_NON_LINE(  SOLVEUR=_F(),
                   MODELE=MODE,  CHAM_MATER=CM,
                   ENERGIE=_F(),
            EXCIT=(_F( CHARGE = CH,

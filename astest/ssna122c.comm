@@ -123,7 +123,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
                                  RELATION='ELAS',),),
                    INCREMENT=_F(LIST_INST=L_INST,),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=50,),
-                   SOLVEUR=_F(SYME='OUI',),
+                   SOLVEUR=_F(),
                    NEWTON=_F(MATRICE='TANGENTE',
                              REAC_ITER=1,),);
 
@@ -150,7 +150,7 @@ RESUFr=STAT_NON_LINE(MODELE=MO,
                                  RELATION='ELAS',),),
                    INCREMENT=_F(LIST_INST=L_INST,),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=50,),
-                   SOLVEUR=_F(SYME='OUI',),
+                   SOLVEUR=_F(),
                    NEWTON=_F(MATRICE='TANGENTE',
                              REAC_ITER=1,),);
 

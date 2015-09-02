@@ -1,5 +1,5 @@
 subroutine nmener(valinc, veasse, measse, sddyna, eta   ,&
-                  sdener, fonact, solveu, numedd, numfix,&
+                  sdener, fonact, numedd, numfix,&
                   meelem, numins, modele, mate  , carele,&
                   compor, sdtime, sddisc, solalg, lischa,&
                   comref, resoco, resocu, veelem)
@@ -44,7 +44,7 @@ implicit none
 ! aslint: disable=W1504
 !
     character(len=19) :: sddyna, sdener, valinc(*), veasse(*), measse(*)
-    character(len=19) :: solveu, meelem(*), sddisc, solalg(*), lischa, veelem(*)
+    character(len=19) :: meelem(*), sddisc, solalg(*), lischa, veelem(*)
     character(len=24) :: numedd, numfix, modele, mate, carele, compor
     character(len=24) :: sdtime, comref, resoco, resocu
     real(kind=8) :: eta
@@ -65,7 +65,6 @@ implicit none
 ! IN  ETA    : COEFFICIENT DU PILOTAGE
 ! IN  SDENER : SD ENERGIE
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
-! IN  SOLVEU : SOLVEUR
 ! IN  NUMEDD : NUME_DDL
 ! IN  NUMFIX : NUME_DDL (FIXE AU COURS DU CALCUL)
 ! IN  MEELEM : MATRICES ELEMENTAIRES
@@ -322,7 +321,7 @@ implicit none
     if (reassm) then
 ! --- REASSEMBLAGE DE LA MATRICE DE MASSE.
         lisbid=' '
-        call nmmass(fonact, lisbid, sddyna, solveu, numedd,&
+        call nmmass(fonact, lisbid, sddyna, numedd,&
                     numfix, meelem, masse)
     endif
 !

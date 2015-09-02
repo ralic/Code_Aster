@@ -154,7 +154,7 @@ ULAG=STAT_NON_LINE(MODELE=MODE,
                              INST_FIN=1.,),
                 NEWTON=_F(REAC_ITER=1,),
                 CONVERGENCE=_F(ITER_GLOB_MAXI=40,),
-                SOLVEUR=_F(SYME='OUI',),
+                SOLVEUR=_F(),
                 ARCHIVAGE=_F(LIST_INST=L_ARCH),
                 INFO=1,);
 

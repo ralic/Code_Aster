@@ -167,7 +167,7 @@ RESU=DYNA_NON_LINE(MODELE=MODE,
                              REAC_INCR=1,
                              MATRICE='TANGENTE',
                              REAC_ITER=1,),
-                   SOLVEUR=_F(SYME='OUI',),
+                   SOLVEUR=_F(),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1.E-06,
 #  On force le sous-decoupage du pas de temps :
 #                                  ITER_GLOB_MAXI=20,

@@ -150,7 +150,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                                   _F(JUSQU_A=155.0,
                                      PAS=15.0,),),);
 
-U=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
+U=STAT_NON_LINE(SOLVEUR=_F(),
                 MODELE=MO,
                 INFO=1,
                 CHAM_MATER=CM,

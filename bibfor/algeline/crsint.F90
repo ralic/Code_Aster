@@ -55,7 +55,7 @@ subroutine crsint(solveu)
     zk24(islvk-1+2) = 'AUTO'
     zk24(islvk-1+3) = 'AUTO'
     zk24(islvk-1+4) = 'AUTO'
-    zk24(islvk-1+5) = 'NON'
+    zk24(islvk-1+5) = 'XXXX'
     zk24(islvk-1+6) = 'LAGR2'
     zk24(islvk-1+7) = 'NON'
     zk24(islvk-1+8) = 'NON'

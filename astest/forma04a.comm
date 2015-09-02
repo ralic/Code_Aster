@@ -76,7 +76,7 @@ STNL=STAT_NON_LINE(MODELE=MO,
                    CONTACT=CONT,
                    COMPORTEMENT=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=TPS,),
-                   SOLVEUR=_F(SYME='OUI',),);
+                   SOLVEUR=_F(),);
 
 # -- Post-traitement
 

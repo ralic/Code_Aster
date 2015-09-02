@@ -149,7 +149,7 @@ DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST),
                                  SUBD_PAS=4,
                                  SUBD_PAS_MINI=9.9999999999999995E-07,),)
 
-SSNV506=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
+SSNV506=STAT_NON_LINE(SOLVEUR=_F(),
                       MODELE=MO,
                        CHAM_MATER=CHMAT,
                        CONTACT = CONT,

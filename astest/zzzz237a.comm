@@ -121,7 +121,7 @@ RESU0=STAT_NON_LINE(MODELE=MO,
                    CONTACT  = CONT,
                    COMPORTEMENT=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=L_TPS,),
-                   SOLVEUR=_F(SYME='OUI',),
+                   SOLVEUR=_F(),
                    );
 
 
@@ -137,7 +137,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
                  NEWTON=_F(REAC_ITER=1,PREDICTION='DEPL_CALCULE',EVOL_NOLI=RESU0),
                  COMPORTEMENT=_F(RELATION='ELAS',),
                  INCREMENT=_F(LIST_INST=L_TPS,),
-                 SOLVEUR=_F(SYME='OUI',),
+                 SOLVEUR=_F(),
                  );
 
 RESU=CALC_CHAMP(reuse =RESU,
@@ -441,7 +441,7 @@ RESU_TA=STAT_NON_LINE(MODELE=MO,
                    COMPORTEMENT=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=L_TPS,),
                 #   CONVERGENCE=_F(RESI_GLOB_MAXI=1.0E-6,),
-                   SOLVEUR=_F(SYME='OUI',),
+                   SOLVEUR=_F(),
                    );
 
 RESUC_TA=STAT_NON_LINE(MODELE=MO,
@@ -457,7 +457,7 @@ RESUC_TA=STAT_NON_LINE(MODELE=MO,
                    INCREMENT=_F(LIST_INST=L_TPS,),
                  #  CONVERGENCE=_F(RESI_GLOB_MAXI=1.0E-6,),
                    NEWTON=_F(REAC_ITER=1),
-                   SOLVEUR=_F(SYME='OUI',),
+                   SOLVEUR=_F(),
                    );
 
 

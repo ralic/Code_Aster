@@ -111,7 +111,7 @@ RESU2=STAT_NON_LINE(MODELE=MO,
                     NEWTON=_F(MATRICE='ELASTIQUE',),
                     CONVERGENCE=_F(ITER_GLOB_MAXI=10,
                                    ARRET='OUI',),
-                    SOLVEUR=_F(SYME='OUI',),);
+                    SOLVEUR=_F(),);
 
 RESU2=CALC_CHAMP(reuse=RESU2,RESULTAT=RESU2,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'))
 
@@ -198,7 +198,7 @@ RESU3=STAT_NON_LINE(MODELE=MO,
                     NEWTON=_F(MATRICE='ELASTIQUE',),
                     CONVERGENCE=_F(ITER_GLOB_MAXI=10,
                                    ARRET='OUI',),
-                    SOLVEUR=_F(SYME='OUI',),);
+                    SOLVEUR=_F(),);
 
 RESU3=CALC_CHAMP(reuse=RESU3,RESULTAT=RESU3,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'))
 
@@ -284,7 +284,7 @@ RESU4=STAT_NON_LINE(MODELE=MO,INFO=2,
                     NEWTON=_F(MATRICE='ELASTIQUE',),
                     CONVERGENCE=_F(ITER_GLOB_MAXI=10,
                                    ARRET='OUI',),
-                    SOLVEUR=_F(SYME='OUI',),);
+                    SOLVEUR=_F(),);
 
 RESU4=CALC_CHAMP(reuse=RESU4,RESULTAT=RESU4,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'))
 
@@ -372,7 +372,7 @@ RESU5=STAT_NON_LINE(MODELE=MO,
                     NEWTON=_F(MATRICE='ELASTIQUE',),
                     CONVERGENCE=_F(ITER_GLOB_MAXI=10,
                                    ARRET='OUI',),
-                    SOLVEUR=_F(SYME='OUI',),);
+                    SOLVEUR=_F(),);
 
 RESU5=CALC_CHAMP(reuse=RESU5,RESULTAT=RESU5,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'))
 

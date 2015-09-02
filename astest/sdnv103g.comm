@@ -175,8 +175,8 @@ RESU=DYNA_NON_LINE(MODELE=MODE,
                              REAC_INCR=1,
                              MATRICE='TANGENTE',
                              REAC_ITER=1,),
-                   SOLVEUR=_F(SYME='OUI',),
-
+                   SOLVEUR=_F(),
+ 
                   SUIVI_DDL=(_F(NOM_CMP    ='V1',
                                  NOM_CHAM   ='VARI_ELGA',
                                  TOUT       = 'OUI',
@@ -188,7 +188,7 @@ RESU=DYNA_NON_LINE(MODELE=MODE,
                                  EVAL_ELGA  ='MAX',
                                  EVAL_CHAM ='MAX',),
                                  ),
-
+ 
                   ARCHIVAGE=_F(LIST_INST=L_ARCH),
                    );
 RESU=DYNA_NON_LINE(reuse = RESU,
@@ -214,8 +214,8 @@ RESU=DYNA_NON_LINE(reuse = RESU,
                              REAC_INCR=1,
                              MATRICE='TANGENTE',
                              REAC_ITER=1,),
-                   SOLVEUR=_F(SYME='OUI',),
-
+                   SOLVEUR=_F(),
+ 
                   SUIVI_DDL=(_F(NOM_CMP    ='V1',
                                  NOM_CHAM   ='VARI_ELGA',
                                  TOUT       = 'OUI',
@@ -227,8 +227,8 @@ RESU=DYNA_NON_LINE(reuse = RESU,
                                  EVAL_ELGA  ='MAX',
                                  EVAL_CHAM ='MAX',),
                                  ),
-
-
+ 
+ 
                    );
 
 VITE_A2=POST_RELEVE_T(ACTION=_F(INTITULE='VITE EN A2',

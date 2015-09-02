@@ -1,5 +1,5 @@
 subroutine nminmc(fonact, lischa, sddyna, modele, compor,&
-                  solveu, numedd, numfix, defico, resoco,&
+                  numedd, numfix, defico, resoco,&
                   carcri, solalg, valinc, mate, carele,&
                   sddisc, sdstat, sdtime, comref, meelem,&
                   measse, veelem, codere)
@@ -34,7 +34,7 @@ subroutine nminmc(fonact, lischa, sddyna, modele, compor,&
 #include "asterfort/nmxmat.h"
 #include "asterfort/utmess.h"
     integer :: fonact(*)
-    character(len=19) :: lischa, sddyna, solveu
+    character(len=19) :: lischa, sddyna
     character(len=24) :: numedd, numfix, resoco, defico
     character(len=24) :: modele, compor
     character(len=24) :: carcri
@@ -59,7 +59,6 @@ subroutine nminmc(fonact, lischa, sddyna, modele, compor,&
 ! IN  SDDYNA : SD DYNAMIQUE
 ! IN  COMPOR : CARTE COMPORTEMENT
 ! IN  MODELE : NOM DU MODELE
-! IN  SOLVEU : SOLVEUR
 ! IN  NUMEDD : NUME_DDL (VARIABLE AU COURS DU CALCUL)
 ! IN  NUMFIX : NUME_DDL (FIXE AU COURS DU CALCUL)
 ! IN  COMREF : VARIABLES DE COMMANDE DE REFERENCE
@@ -203,7 +202,7 @@ subroutine nminmc(fonact, lischa, sddyna, modele, compor,&
         call nmxmat(modele, mate, carele, compor, carcri,&
                     sddisc, sddyna, fonact, numins, iterat,&
                     valinc, solalg, lischa, comref, defico,&
-                    resoco, solveu, numedd, numfix, sdstat,&
+                    resoco,  numedd, numfix, sdstat,&
                     sdtime, nbmatr, ltypma, loptme, loptma,&
                     lcalme, lassme, lcfint, meelem, measse,&
                     veelem, ldccvg, codere)

@@ -28,6 +28,7 @@ subroutine ndxmat(fonact, lischa, solveu, numedd, sddyna,&
 #include "asterfort/isfonc.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
 #include "asterfort/mtcmbl.h"
 #include "asterfort/mtdefs.h"
 #include "asterfort/ndynlo.h"
@@ -142,7 +143,7 @@ subroutine ndxmat(fonact, lischa, solveu, numedd, sddyna,&
 ! --- PRISE EN COMPTE DE LA MATRICE TANGENTE DES FORCES SUIVEUSES
 !
     if (lsuiv) then
-        call ascoma(meelem, numedd, solveu, lischa, matass)
+        call ascoma(meelem, numedd, lischa, matass)
     endif
 !
     call jedema()

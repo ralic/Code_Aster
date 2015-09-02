@@ -252,7 +252,7 @@ implicit none
         call nmxmat(modelz, mate, carele, compor, carcri,&
                     sddisc, sddyna, fonact, numins, iterat,&
                     valinc, solalg, lischa, comref, defico,&
-                    resoco, solveu, numedd, numfix, sdstat,&
+                    resoco, numedd, numfix, sdstat,&
                     sdtime, nbmatr, ltypma, loptme, loptma,&
                     lcalme, lassme, lcfint, meelem, measse,&
                     veelem, ldccvg, codere)
@@ -265,7 +265,7 @@ implicit none
 ! --- CALCUL DE LA MATRICE ASSEMBLEE GLOBALE
 !
     if (reasma) then
-        call nmmatr('CORRECTION', fonact, lischa, solveu, numedd,&
+        call nmmatr('CORRECTION', fonact, lischa, numedd,&
                     sddyna, numins, defico, resoco, meelem,&
                     measse, matass)
     endif

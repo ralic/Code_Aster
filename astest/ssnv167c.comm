@@ -67,7 +67,7 @@ LIST=DEFI_LIST_REEL(    DEBUT=0.,
                            INTERVALLE=_F(  JUSQU_A = 1.,  NOMBRE = 1)
                          )
 
-SOL = STAT_NON_LINE( SOLVEUR=_F(SYME='OUI',),
+SOL = STAT_NON_LINE( SOLVEUR=_F(),
                      MODELE=MO,
                      CHAM_MATER=CHMAT,
                      INFO=2,

@@ -121,7 +121,7 @@ RESU=STAT_NON_LINE(
                                 ITER_GLOB_MAXI = 30,
                                 RESI_GLOB_RELA = 1.E-5,
                                 RESI_GLOB_MAXI = 1.E-2),
-                SOLVEUR=_F(SYME='OUI',
+                SOLVEUR=_F(
                            METHODE = 'LDLT'),
                 INFO=2
               )
@@ -323,8 +323,8 @@ RESUF=STAT_NON_LINE(
                 ITER_GLOB_MAXI = 30,
                 RESI_GLOB_RELA = 1.E-5,
                 RESI_GLOB_MAXI = 1.E-2),
-                           SOLVEUR=_F(SYME='OUI',
-
+                           SOLVEUR=_F(
+ 
                 METHODE = 'LDLT'),
                               INFO=2
               )

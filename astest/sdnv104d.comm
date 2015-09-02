@@ -132,7 +132,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                                     NOMBRE=350,),)
 
 
-ULM =  DYNA_NON_LINE(SOLVEUR=_F(SYME='OUI',),
+ULM =  DYNA_NON_LINE(SOLVEUR=_F(),
                      MODELE=MODE,
                     CHAM_MATER=CM,
                     CARA_ELEM=CARA,
@@ -193,7 +193,7 @@ ULL =  DYNA_NON_LINE(MODELE=MODE,
                     SCHEMA_TEMPS=_F(SCHEMA='HHT',FORMULATION='DEPLACEMENT'),
                     NEWTON=_F(MATRICE='TANGENTE',
                               REAC_ITER=1,),
-                    SOLVEUR =_F(SYME='OUI',
+                    SOLVEUR =_F(
                                 METHODE='LDLT',),
                     CONVERGENCE=_F(ITER_GLOB_MAXI=150,),
                      )

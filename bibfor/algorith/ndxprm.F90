@@ -221,7 +221,7 @@ implicit none
         call nmxmat(modelz, mate, carele, compor, carcri,&
                     sddisc, sddyna, fonact, numins, iterat,&
                     valinc, solalg, lischa, comref, k24bla,&
-                    k24bla, solveu, numedd, numfix, sdstat,&
+                    k24bla, numedd, numfix, sdstat,&
                     sdtime, nbmatr, ltypma, loptme, loptma,&
                     lcalme, lassme, lcfint, meelem, measse,&
                     veelem, ldccvg, codere)

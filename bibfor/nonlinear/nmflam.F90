@@ -1,5 +1,5 @@
 subroutine nmflam(option, modele, numedd, numfix     , carele,&
-                  compor, solveu, numins, mate       , comref,&
+                  compor, numins, mate       , comref,&
                   lischa, defico, resoco, ds_algopara, fonact,&
                   carcri, sdstat, sddisc, sdtime     , sddyna,&
                   sdpost, valinc, solalg, meelem     , measse,&
@@ -55,7 +55,7 @@ implicit none
     character(len=19) :: meelem(*)
     character(len=24) :: resoco, defico
     character(len=24) :: sdstat, sdtime, sderro
-    character(len=19) :: lischa, solveu, sddisc, sddyna, sdpost
+    character(len=19) :: lischa, sddisc, sddyna, sdpost
     character(len=24) :: modele, numedd, numfix, carele, compor
     character(len=19) :: veelem(*), measse(*)
     character(len=19) :: solalg(*), valinc(*)
@@ -90,7 +90,6 @@ implicit none
 ! IN  SDSTAT : SD STATISTIQUES
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
 ! In  ds_algopara      : datastructure for algorithm parameters
-! IN  SOLVEU : SOLVEUR
 ! IN  SDPOST : SD POUR POST-TRAITEMENTS (CRIT_STAB ET MODE_VIBR)
 ! IN  CARCRI : PARAMETRES METHODES D'INTEGRATION LOCALES (VOIR NMLECT)
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
@@ -114,12 +113,10 @@ implicit none
     real(kind=8) :: csta
     character(len=4) :: mod45
     character(len=8) :: sdmode, sdstab
-    character(len=8) :: syme
     character(len=16) :: optmod, varacc, typmat, modrig
     character(len=19) :: matgeo, matas2, vecmod, champ
     character(len=19) :: champ2, vecmo2
     character(len=24) :: k24bid, ddlexc, ddlsta
-    character(len=24), pointer :: slvk(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -127,7 +124,6 @@ implicit none
 !
 ! --- INITIALISATIONS
 !
-    call jeveuo(solveu(1:19)//'.SLVK', 'E', vk24=slvk)
     matgeo = '&&NMFLAM.MAGEOM'
     matas2 = '&&NMFLAM.MATASS'
     linsta = .false.
@@ -143,25 +139,16 @@ implicit none
                 nfreq, cdsp, typmat, optmod, bande,&
                 nddle, ddlexc, nsta, ddlsta, modrig)
 !
-! --- ON FORCE LA MATRICE TANGENTE EN SYMETRIQUE A CAUSE DE SORENSEN
-!
-    syme = slvk(5)(1:8)
-    slvk(5) = 'OUI'
-!
 ! --- CALCUL DE LA MATRICE TANGENTE ASSEMBLEE ET DE LA MATRICE GEOM.
 !
     call nmflma(typmat, mod45 , defo  , ds_algopara, modele,&
                 mate  , carele, sddisc, sddyna     , fonact,&
                 numins, valinc, solalg, lischa     , comref,&
-                defico, resoco, solveu, numedd     , numfix,&
+                defico, resoco, numedd     , numfix,&
                 compor, carcri, sdstat, sdtime     , meelem,&
                 measse, veelem, nddle , ddlexc     , modrig,&
                 ldccvg, matas2, matgeo)
     ASSERT(ldccvg.eq.0)
-!
-! --- RETABLISSEMENTS VALEURS
-!
-    slvk(5) = syme(1:3)
 !
 ! --- CALCUL DES MODES PROPRES
 !

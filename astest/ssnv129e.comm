@@ -114,7 +114,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
                                     NOMBRE=1));
 
-RESU=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS', SYME='OUI',
+RESU=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS', 
                               # Commente en attente de correction de MATR_DISTRIBUEE avec les charges cinematiques
                               #MATR_DISTRIBUEE='OUI',
                              ),

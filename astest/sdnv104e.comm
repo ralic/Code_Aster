@@ -159,7 +159,7 @@ UPM =  DYNA_NON_LINE(MODELE=MODE,
                     SCHEMA_TEMPS=_F(SCHEMA='HHT',FORMULATION='DEPLACEMENT'),
                     NEWTON=_F(MATRICE='TANGENTE',
                               REAC_ITER=1,),
-                    SOLVEUR =_F(SYME='OUI',
+                    SOLVEUR =_F(
                                 METHODE='MULT_FRONT',),
                     CONVERGENCE=_F(ITER_GLOB_MAXI=150,),
                     )
@@ -202,7 +202,7 @@ UPL =  DYNA_NON_LINE(MODELE=MODE,
                     SCHEMA_TEMPS=_F(SCHEMA='HHT',FORMULATION='DEPLACEMENT'),
                     NEWTON=_F(MATRICE='TANGENTE',
                               REAC_ITER=1,),
-                    SOLVEUR =_F(SYME='OUI',
+                    SOLVEUR =_F(
                                 METHODE='LDLT',),
                     CONVERGENCE=_F(ITER_GLOB_MAXI=150,),
                      )

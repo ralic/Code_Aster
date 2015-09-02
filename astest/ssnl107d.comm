@@ -134,7 +134,6 @@ RESU1=STAT_NON_LINE(MODELE=MO,
                                 NUME_INST_FIN=2),
                    NEWTON=_F(MATRICE='ELASTIQUE'),
                    CONVERGENCE=_F(RESI_GLOB_MAXI=1e-06),
-                   SOLVEUR=_F(SYME='OUI'),
                    INFO=1);
 
 RESU1=CALC_CHAMP(reuse=RESU1,CONTRAINTE=('EFGE_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=RESU1)
@@ -194,7 +193,7 @@ RESU2=STAT_NON_LINE(MODELE=MO,
                                 NUME_INST_FIN=2),
                    NEWTON=_F(MATRICE='ELASTIQUE'),
                    CONVERGENCE=_F(RESI_GLOB_MAXI=1e-06),
-                   SOLVEUR=_F(SYME='OUI',
+                   SOLVEUR=_F(
                               METHODE='MUMPS'),
                    INFO=1);
 

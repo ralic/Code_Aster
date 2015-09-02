@@ -174,7 +174,7 @@ subroutine meacmv(modele, mate, carele, fomult, lischa,&
     if (ass1er) then
 !
         call uttcpu('CPU.OP0046.2', 'DEBUT', ' ')
-        call asmatr(1, matele, ' ', numedd, solveu,&
+        call asmatr(1, matele, ' ', numedd, &
                     lischa, 'ZERO', 'V', 1, matass)
         call detrsd('MATR_ELEM', matele)
 !

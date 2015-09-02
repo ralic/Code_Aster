@@ -128,7 +128,6 @@ Evol=STAT_NON_LINE(MODELE=Modele,
                           _F(CHARGE=ForceInt,FONC_MULT=RAMPE),
                           _F(CHARGE=BlocBase,),
                           ),
-                   SOLVEUR=_F(SYME='OUI'),
                    INFO=1,
                    );
 

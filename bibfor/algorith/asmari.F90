@@ -1,4 +1,4 @@
-subroutine asmari(fonact, meelem, numedd, solveu, lischa,&
+subroutine asmari(fonact, meelem, numedd, lischa,&
                   matrig)
 !
 ! ======================================================================
@@ -28,9 +28,12 @@ subroutine asmari(fonact, meelem, numedd, solveu, lischa,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/nmchex.h"
+#include "asterfort/matr_asse_syme.h"
+#include "asterfort/getvtx.h"
+
     character(len=19) :: meelem(*)
     character(len=24) :: numedd
-    character(len=19) :: matrig, solveu, lischa
+    character(len=19) :: matrig, lischa
     integer :: fonact(*)
 !
 ! ----------------------------------------------------------------------
@@ -46,13 +49,13 @@ subroutine asmari(fonact, meelem, numedd, solveu, lischa,&
 ! IN  MEELEM : VARIABLE CHAPEAU POUR NOM DES MATR_ELEM
 ! IN  NUMEDD : NOM DE LA NUMEROTATION MECANIQUE
 ! IN  LISCHA : SD L_CHARGE
-! IN  SOLVEU : NOM DU SOLVEUR DE NEWTON
 ! OUT MATRIG : MATRICE DE RIGIDITE ASSEMBLEE
 !
 !
 !
-    integer :: nbmat
+    integer :: nbmat,ibid
     character(len=19) :: merigi, mediri, meeltc, meeltf
+    character(len=3) :: syme
     character(len=19) :: tlimat(8)
     aster_logical :: leltc, leltf, lallv
 !
@@ -103,8 +106,13 @@ subroutine asmari(fonact, meelem, numedd, solveu, lischa,&
 !
 ! --- ASSEMBLAGE LISTE DES MATR_ELEM
 !
-    call asmatr(nbmat, tlimat, ' ', numedd, solveu,&
+    call asmatr(nbmat, tlimat, ' ', numedd, &
                 lischa, 'ZERO', 'V', 1, matrig)
-!
+
+
+!   -- si l'utilisateur a demande la symetrisation de la matrice de rigidite:
+    call getvtx('SOLVEUR', 'SYME', iocc=1, scal=syme, nbret=ibid)
+    if (syme.eq.'OUI') call matr_asse_syme(matrig)
+
     call jedema()
 end subroutine

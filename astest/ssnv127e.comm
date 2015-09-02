@@ -171,7 +171,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
 
 
 
-U=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
+U=STAT_NON_LINE(SOLVEUR=_F(),
                 MODELE=MO,
                 CHAM_MATER=CHMAT,
                 EXCIT=(_F(CHARGE=CHA1,

@@ -22,11 +22,8 @@ cata_msg = {
     1 : _(u"""
 Contact méthodes discrètes.
  -> Les méthodes de contact discrètes supposent la symétrie de la matrice obtenue après assemblage.
-    Si votre modélisation produit une matrice non-symétrique, on force donc sa symétrie pour résoudre
-    le contact.
- -> Risque & Conseil :
-    Ce changement peut conduire à des difficultés de convergence dans le processus de Newton mais en
-    aucun cas il ne produit des résultats faux.
+    Si votre modélisation produit une matrice non-symétrique, cela peut conduire à des difficultés 
+    de convergence dans le processus de Newton mais en aucun cas il ne produit des résultats faux.
 
     Si la matrice de rigidité de votre structure est symétrique, vous pouvez ignorer ce qui précède.
     Enfin, il est possible de supprimer l'affichage de cette alarme en renseignant SYME='OUI'

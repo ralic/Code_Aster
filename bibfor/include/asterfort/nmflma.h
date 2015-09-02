@@ -21,7 +21,7 @@ interface
     subroutine nmflma(typmat, mod45 , defo  , ds_algopara, modelz,&
                       mate  , carele, sddisc, sddyna     , fonact,&
                       numins, valinc, solalg, lischa     , comref,&
-                      defico, resoco, solveu, numedd     , numfix,&
+                      defico, resoco, numedd     , numfix,&
                       compor, carcri, sdstat, sdtime     , meelem,&
                       measse, veelem, nddle , ddlexc     , modrig,&
                       ldccvg, matass, matgeo)
@@ -43,7 +43,6 @@ interface
         character(len=24) :: comref
         character(len=24) :: defico
         character(len=24) :: resoco
-        character(len=19) :: solveu
         character(len=24) :: numedd
         character(len=24) :: numfix
         character(len=24) :: compor

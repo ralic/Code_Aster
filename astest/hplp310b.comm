@@ -178,7 +178,6 @@ CHAMDEP0=STAT_NON_LINE(MODELE=MO,
                        COMPORTEMENT=_F(RELATION = 'ELAS'),
                        NEWTON=_F(MATRICE = 'ELASTIQUE'),
                        INCREMENT=_F(LIST_INST = L_INST,),
-                       SOLVEUR=_F(SYME='OUI'),
                        CONVERGENCE=_F(
                 ITER_GLOB_MAXI = 20),
               )

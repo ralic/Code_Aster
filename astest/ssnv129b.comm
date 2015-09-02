@@ -119,7 +119,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                                     NOMBRE=1,),);
 
 
-RESU=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
+RESU=STAT_NON_LINE(SOLVEUR=_F(),
                    MODELE=MO,
                    CHAM_MATER=CHMAT,
                    CARA_ELEM=CAREL,

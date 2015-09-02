@@ -16,12 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine asmari(fonact, meelem, numedd, solveu, lischa,&
+    subroutine asmari(fonact, meelem, numedd, lischa,&
                       matrig)
         integer :: fonact(*)
         character(len=19) :: meelem(*)
         character(len=24) :: numedd
-        character(len=19) :: solveu
         character(len=19) :: lischa
         character(len=19) :: matrig
     end subroutine asmari

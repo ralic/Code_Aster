@@ -49,7 +49,7 @@ subroutine cresol(solveu)
     integer :: zslvk, zslvr, zslvi
     integer :: istop, nsolve, ibid, nprec, islvk, islvr, islvi, n1
     real(kind=8) :: epsmat
-    character(len=3) :: syme, mixpre, kmd, kellag
+    character(len=3) :: mixpre, kmd, kellag
     character(len=8) :: kstop, modele, kxfem
     character(len=8) :: partit
     character(len=16) :: method, nomsol
@@ -62,7 +62,6 @@ subroutine cresol(solveu)
 !
 ! --- INITS. GLOBALES (CAR MOT-CLES OPTIONNELS)
     nomsol='SOLVEUR'
-    syme='NON'
     nprec=8
     istop=0
     kstop=' '
@@ -96,12 +95,6 @@ subroutine cresol(solveu)
         else if (kstop.eq.'NON') then
             istop = 1
         endif
-    endif
-!
-! ----- SYME
-    eximc=getexm(nomsol,'SYME')
-    if (eximc .eq. 1) then
-        call getvtx(nomsol, 'SYME', iocc=1, scal=syme, nbret=ibid)
     endif
 !
 ! ----- FILTRAGE_MATRICE
@@ -163,27 +156,27 @@ subroutine cresol(solveu)
 !
     if (method .eq. 'MUMPS') then
 !     -----------------------------
-        call crsvmu(nomsol, solveu, istop, nprec, syme,&
+        call crsvmu(nomsol, solveu, istop, nprec,&
                     epsmat, mixpre, kmd, kellag, kxfem)
 !
     else if (method.eq.'PETSC') then
 !     -----------------------------
-        call crsvpe(nomsol, solveu, istop, nprec, syme,&
+        call crsvpe(nomsol, solveu, istop, nprec,&
                     epsmat, mixpre, kmd, kellag, kxfem)
 !
     else if (method.eq.'LDLT') then
 !     -----------------------------
-        call crsvld(nomsol, solveu, istop, nprec, syme,&
+        call crsvld(nomsol, solveu, istop, nprec,&
                     epsmat, mixpre, kmd, kellag, kxfem)
 !
     else if (method.eq.'GCPC') then
 !     -----------------------------
-        call crsvgc(nomsol, solveu, istop, nprec, syme,&
+        call crsvgc(nomsol, solveu, istop, nprec,&
                     epsmat, mixpre, kmd, kellag, kxfem)
 !
     else if (method.eq.'MULT_FRONT') then
 !     -----------------------------
-        call crsvmf(nomsol, solveu, istop, nprec, syme,&
+        call crsvmf(nomsol, solveu, istop, nprec,&
                     epsmat, mixpre, kmd, kellag, kxfem)
 !
     else

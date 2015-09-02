@@ -38,39 +38,36 @@ subroutine op0012()
 #include "asterfort/sdmpic.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/matr_asse_syme.h"
 !
     character(len=8) :: mpicomp
-    character(len=8) :: nu, matas, syme, sym2, kmpic
+    character(len=8) :: nu, matas, syme, kmpic
     character(len=16) :: typm, oper
-    character(len=19) :: solveu
     character(len=24) :: lchci, lmatel
     integer :: itysca, nbchc, nbmat, jlimat, jlchci, ibid, k
     integer :: ico
-    character(len=24), pointer :: slvk(:) => null()
-    character(len=24), pointer :: lime(:) => null()
 !----------------------------------------------------------------------
     call jemarq()
-!
-!
-!
-!---- ARGUMENT IMPR
+
+
     call infmaj()
-!
-!---- RECUPERATION DES ARGUMENTS ET DU CONCEPT
+
     call getres(matas, typm, oper)
     if (typm(16:16) .eq. 'R') itysca = 1
     if (typm(16:16) .eq. 'C') itysca = 2
-!
-!
-!---- RECUPERATION DES MATRICES ELEMENTAIRES ---
+
+
+!   -- recuperation des matrices elementaires:
+!   -------------------------------------------------
     call getvid(' ', 'MATR_ELEM', nbval=0, nbret=nbmat)
     nbmat = -nbmat
     lmatel='&&OP0012.LMATEL'
     call wkvect(lmatel, 'V V K24', nbmat, jlimat)
     call getvid(' ', 'MATR_ELEM', nbval=nbmat, vect=zk24(jlimat), nbret=ibid)
-!
-!
-!---- RECUPERATION DES CHARGES CINEMATIQUES ---
+
+
+!   -- recuperation des charges cinematiques:
+!   ----------------------------------------------
     lchci='&&OP0012.LCHARCINE'
     call getvid(' ', 'CHAR_CINE', nbval=0, nbret=nbchc)
     nbchc = -nbchc
@@ -79,51 +76,43 @@ subroutine op0012()
         call wkvect(lchci, 'V V K24', nbchc, jlchci)
         call getvid(' ', 'CHAR_CINE', nbval=nbchc, vect=zk24(jlchci), nbret=ico)
     endif
-!
-!
-!---- MOT CLE : NUME_DDL
-    call getvid(' ', 'NUME_DDL', scal=nu, nbret=ibid)
-!---- POUR ASSE_MATRICE, ASSMAM INTERDIT LA DISTRIBUTION DES RESU_ELEM
+
+
+!   -- pour ASSE_MATRICE, assmam.F90 interdit la distribution des resu_elem:
+!   ------------------------------------------------------------------------
     do k = 0, nbmat-1
         call dismoi('MPI_COMPLET', zk24(jlimat+k), 'MATR_ELEM', repk = mpicomp)
         if( mpicomp .eq. 'NON' ) then
             call utmess('F', 'ASSEMBLA_2', nk = 1, valk = zk24(jlimat+k))
         endif
     enddo
-!
-!---- ASSEMBLAGE PROPREMENT DIT
-    syme = ' '
-    call getvtx(' ', 'SYME', scal=syme, nbret=ibid)
-    if (syme .eq. 'OUI') then
-        call dismoi('SOLVEUR', nu, 'NUME_DDL', repk=solveu)
-        call jeveuo(solveu(1:19)//'.SLVK', 'E', vk24=slvk)
-        sym2 = slvk(5)(1:8)
-        slvk(5)='OUI'
-        call asmatr(nbmat, zk24(jlimat), ' ', nu, solveu,&
+
+
+!   -- assemblage proprement dit
+!   ------------------------------
+    call getvid(' ', 'NUME_DDL', scal=nu, nbret=ibid)
+    call asmatr(nbmat, zk24(jlimat), ' ', nu, &
                     lchci, 'ZERO', 'G', itysca, matas)
-        slvk(5)=sym2(1:3)
-        call jeveuo(matas//'           .LIME', 'E', vk24=lime)
-        do k = 1, nbmat
-            lime(k)=zk24(jlimat-1+k)
-        end do
-    else
-        call asmatr(nbmat, zk24(jlimat), ' ', nu, ' ',&
-                    lchci, 'ZERO', 'G', itysca, matas)
-!
-    endif
-!
-!
-!     -- SI MATAS N'EST PAS MPI_COMPLET, ON LA COMPLETE :
+
+
+!   -- si matas n'est pas MPI_COMPLET, on la complete :
+!   ------------------------------------------------------
     call dismoi('MPI_COMPLET', matas, 'MATR_ASSE', repk=kmpic)
     ASSERT((kmpic.eq.'OUI').or.(kmpic.eq.'NON'))
     if (kmpic .eq. 'NON') call sdmpic('MATR_ASSE', matas)
-!
-!
-!
-!
-!     -- MENAGE :
+
+
+!   -- si l'utilisateur veut symetriser la matrice :
+!   ------------------------------------------------------
+    syme = ' '
+    call getvtx(' ', 'SYME', scal=syme, nbret=ibid)
+    if (syme .eq. 'OUI') call matr_asse_syme(matas)
+
+
+!   -- menage :
+!   ------------
     call jedetr(lchci)
     call jedetr(lmatel)
-!
+
     call jedema()
 end subroutine

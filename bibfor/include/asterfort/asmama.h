@@ -16,12 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine asmama(memasz, medirz, numedd, solveu, lischa,&
+    subroutine asmama(memasz, medirz, numedd, lischa,&
                       matmas)
         character(len=*) :: memasz
         character(len=*) :: medirz
         character(len=24) :: numedd
-        character(len=19) :: solveu
         character(len=19) :: lischa
         character(len=*) :: matmas
     end subroutine asmama

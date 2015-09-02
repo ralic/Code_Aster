@@ -31,6 +31,7 @@ implicit none
 #include "asterfort/renuno.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/jelstc.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -81,9 +82,20 @@ implicit none
 ! In  sd_iden_rela   : name of object for identity relations between dof
 !
 !-----------------------------------------------------------------------
-! ATTENTION : NE PAS FAIRE JEMARQ/JEDEMA CAR NULILI
-!             RECOPIE DES ADRESSES JEVEUX DANS .ADNE ET .ADLI
-!
+! Attention : ne fait pas jemarq/jedema car nulili
+!             recopie des adresses jeveux dans .ADNE et .ADLI
+!             Ces objets seront utilises pendant la creation de la sd "stockage" (promor.F90)
+! --------------------------------------------------------------------------------------------------
+! Cette routine cree les objets suivants :
+!  nume(1:14)//     .ADLI
+!                   .ADNE
+!              .NUME.DEEQ
+!              .NUME.DELG
+!              .NUME.LILI
+!              .NUME.NEQU
+!              .NUME.NUEQ
+!              .NUME.PRNO
+!              .NUME.REFN
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: moloc
@@ -121,6 +133,7 @@ implicit none
     integer, pointer :: p_nequ(:) => null()
     character(len=24), pointer :: slvk(:) => null()
     integer, pointer :: v_sdiden_info(:) => null()
+    
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -218,6 +231,8 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 !    call jemarq() FORBIDDEN !
+
+
 !
     call infniv(ifm, niv)
     nume_ddl = nume_ddlz
@@ -853,7 +868,7 @@ implicit none
 !     ================================
 
 
-! --- DETERMINATION DES .PRNM ET DES .PRNS POUR CHAQUE LIGREL :
+! --- DETERMINATION DES .QRNM ET DES .QRNS POUR CHAQUE LIGREL :
 !     -------------------------------------------------------
     do ili = 2, nlili
         call jenuno(jexnum(lili, ili), nomli)
@@ -1053,7 +1068,7 @@ implicit none
                 igds, iddlag)
 
 
-! --- DESTRUCTION DES .PRNM ET DES .PRNS DE CHAQUE LIGREL :
+! --- DESTRUCTION DES .QRNM ET DES .QRNS DE CHAQUE LIGREL :
 !     ---------------------------------------------------
     do ili = 1, nlili
         call jenuno(jexnum(lili, ili), nomli)
@@ -1071,7 +1086,12 @@ implicit none
     call jedetr(derli)
     call jedetr(vsuiv)
     call jedetr(dsclag)
-!
-!    call jedema() FORBIDDEN !
+    
+    call jedetr(newn)
+    call jedetr(oldn)
+    
+!   call jedema() FORBIDDEN !
+
 !
 end subroutine
+

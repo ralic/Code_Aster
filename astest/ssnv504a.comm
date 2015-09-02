@@ -190,7 +190,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                                   _F(JUSQU_A=155.0,
                                      PAS=5.0,),),);
 
-U=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
+U=STAT_NON_LINE(SOLVEUR=_F(),
                 MODELE=MO,
                 CHAM_MATER=CM,
                 EXCIT=(_F(CHARGE=CH0,
@@ -262,7 +262,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-U2=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
+U2=STAT_NON_LINE(SOLVEUR=_F(),
                  MODELE=MO,
                 CHAM_MATER=CM,
                 EXCIT=(_F(CHARGE=CH0,

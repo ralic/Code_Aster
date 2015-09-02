@@ -147,7 +147,7 @@ UPM=DYNA_NON_LINE(MODELE=MODE,
                   NEWTON=_F(MATRICE='TANGENTE',
                             REAC_ITER=1,),
                   SOLVEUR=_F(METHODE='MULT_FRONT',
-                             SYME='OUI',),
+                             ),
                   CONVERGENCE=_F(ITER_GLOB_MAXI=150,),
                   );
 
@@ -191,7 +191,7 @@ UPL=DYNA_NON_LINE(MODELE=MODE,
                   NEWTON=_F(MATRICE='TANGENTE',
                             REAC_ITER=1,),
                   SOLVEUR=_F(METHODE='LDLT',
-                             SYME='OUI',),
+                             ),
                   CONVERGENCE=_F(ITER_GLOB_MAXI=150,),
                   );
 

@@ -1,4 +1,4 @@
-subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
+subroutine crsvmu(motfac, solveu, istop, nprec,&
                   epsmat, mixpre, kmd, kellag, kxfem)
     implicit none
 #include "asterf_types.h"
@@ -22,7 +22,7 @@ subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
 #include "asterfort/wkvect.h"
     integer :: istop, nprec
     real(kind=8) :: epsmat
-    character(len=3) :: syme, mixpre, kmd, kellag
+    character(len=3) :: mixpre, kmd, kellag
     character(len=8) :: kxfem
     character(len=16) :: motfac
     character(len=19) :: solveu
@@ -50,7 +50,6 @@ subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
 ! OUT    SOLVEU  : LE SOLVEUR EST CREE ET INSTANCIE
 ! IN  IN ISTOP   : PARAMETRE LIE AUX MOT-CLE STOP_SINGULIER
 ! IN  IN NPREC   :                           NPREC
-! IN  K3 SYME    :                           SYME
 ! IN  R8 EPSMAT  :                           FILTRAGE_MATRICE
 ! IN  K3 MIXPRE  :                           MIXER_PRECISION
 ! IN  K3 KMD     :                           MATR_DISTRIBUEE
@@ -249,7 +248,7 @@ subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
     slvk(2) = ktyps
     slvk(3) = ktypr
     slvk(4) = ktyprn
-    slvk(5) = syme
+    slvk(5) = 'XXXX'
     slvk(6) = klag2
     slvk(7) = mixpre
     slvk(8) = 'NON'

@@ -203,7 +203,7 @@ implicit none
 !
 ! --- ASSEMBLAGE DE LA MATRICE
 !
-        call asmatr(nbmat, tlimat, ' ', nume_dof, solver,&
+        call asmatr(nbmat, tlimat, ' ', nume_dof, &
                     list_load, 'ZERO', 'V', 1, matass)
 !
 ! --- DECOMPOSITION OU CALCUL DE LA MATRICE DE PRECONDITIONNEMENT

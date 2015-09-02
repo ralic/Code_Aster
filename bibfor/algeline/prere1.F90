@@ -67,6 +67,7 @@ subroutine prere1(solvez, base, iret, matpre, matass,&
 #include "asterfort/pcmump.h"
 #include "asterfort/sdmpic.h"
 #include "asterfort/tldlg3.h"
+#include "asterfort/jelira.h"
 #include "asterfort/utmess.h"
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
@@ -77,7 +78,7 @@ subroutine prere1(solvez, base, iret, matpre, matass,&
 !
     integer :: idbgav, ifm, niv, islvk, ibid
     integer :: islvi, lmat, nprec, ndeci, isingu, niremp
-    integer :: istopz, iretgc
+    integer :: istopz, iretgc, n1
     character(len=24) :: metres, precon
     character(len=19) :: matas, maprec, matas1, solveu
     character(len=8) :: renum, kmpic, kmatd
@@ -163,6 +164,9 @@ subroutine prere1(solvez, base, iret, matpre, matass,&
         call jeveuo(solveu//'.SLVK', 'L', islvk)
         call jeveuo(solveu//'.SLVI', 'E', islvi)
         precon=zk24(islvk-1+2)
+        call jelira(matas//'.VALM', 'NUTIOC', n1)
+        ASSERT(n1.eq.1 .or. n1.eq.2)
+        if (n1.eq.2) call utmess('F', 'ASSEMBLA_1')
 !
         if (precon .eq. 'LDLT_INC') then
             niremp = zi(islvi-1+4)

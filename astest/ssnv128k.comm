@@ -130,7 +130,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.,
 
 #-----------------------------------------------------------
 
-U2M=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
+U2M=STAT_NON_LINE(SOLVEUR=_F(),
                   MODELE    = MO,
                 CHAM_MATER = CHMAT,
                 EXCIT      =(_F(CHARGE = CHA1,
@@ -178,7 +178,7 @@ U2L=STAT_NON_LINE(MODELE    = MO,
                              ),
                 CONTACT    = CHA2,
                 COMPORTEMENT  = _F(RELATION = 'ELAS',),
-                SOLVEUR    = _F(SYME='OUI',
+                SOLVEUR    = _F(
                                 METHODE = 'LDLT',),
                 NEWTON     = _F(REAC_ITER = 1,),
                 INCREMENT  = _F(LIST_INST = L_INST,),
@@ -212,7 +212,7 @@ TEST_RESU(RESU=(_F(GROUP_NO='PPA',
 
 #-----------------------------------------------------------
 
-U3M=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
+U3M=STAT_NON_LINE(SOLVEUR=_F(),
                   MODELE      = MO,
                  CHAM_MATER  = CHMAT,
                  EXCIT       =(_F(CHARGE = CHA1,
@@ -259,7 +259,7 @@ U3L=STAT_NON_LINE(MODELE      = MO,
                                ),
                         CONTACT    = CHA3,
                  COMPORTEMENT   = _F(RELATION = 'ELAS',),
-                 SOLVEUR     = _F(SYME='OUI',
+                 SOLVEUR     = _F(
                                   METHODE = 'LDLT',),
                  NEWTON      = _F(REAC_ITER = 1,),
                  INCREMENT   = _F(LIST_INST = L_INST,),

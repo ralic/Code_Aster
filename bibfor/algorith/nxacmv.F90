@@ -407,7 +407,7 @@ implicit none
             endif
         endif
 !
-        call asmatr(nbmat, tlimat, ' ', nume_dof, solver,&
+        call asmatr(nbmat, tlimat, ' ', nume_dof, &
                     lload_info, 'ZERO', 'V', 1, matass)
 !
 ! 3.3. ==> DECOMPOSITION OU CALCUL DE LA MATRICE DE PRECONDITIONNEMENT

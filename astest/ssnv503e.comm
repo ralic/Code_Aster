@@ -173,7 +173,7 @@ U_NOR=STAT_NON_LINE(MODELE=MO,
                     COMPORTEMENT=_F(RELATION='ELAS',
                                  TOUT='OUI',),
                     INCREMENT=_F(LIST_INST=L_INST,),
-                    SOLVEUR=_F(SYME='OUI',
+                    SOLVEUR=_F(
                                METHODE='LDLT'),
                     NEWTON=_F(MATRICE='TANGENTE',
                               REAC_ITER=1,),
@@ -199,7 +199,7 @@ U_99=STAT_NON_LINE(MODELE=MO,
                    INCREMENT=_F(LIST_INST=L_INST,),
                    NEWTON=_F(MATRICE='TANGENTE',
                              REAC_ITER=1,),
-                   SOLVEUR=_F(SYME='OUI',
+                   SOLVEUR=_F(
                               METHODE='LDLT',),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=1500,),);
 
@@ -222,7 +222,7 @@ U_101=STAT_NON_LINE(MODELE=MO,
                     INCREMENT=_F(LIST_INST=L_INST,),
                     NEWTON=_F(MATRICE='TANGENTE',
                               REAC_ITER=1,),
-                    SOLVEUR=_F(SYME='OUI',
+                    SOLVEUR=_F(
                                METHODE='LDLT',),
                     CONVERGENCE=_F(ITER_GLOB_MAXI=1500,),
                    INFO=1,

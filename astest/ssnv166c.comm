@@ -176,7 +176,7 @@ UTOTC=STAT_NON_LINE(MODELE=MODELE,
                     NEWTON=_F(MATRICE='ELASTIQUE',),
                     CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
                                    ITER_GLOB_MAXI=100,),
-                    SOLVEUR=_F(SYME='OUI',
+                    SOLVEUR=_F(
                                METHODE='MULT_FRONT',
                                RENUM='METIS',),
                     ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),

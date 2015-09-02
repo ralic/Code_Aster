@@ -68,7 +68,7 @@ LIST=DEFI_LIST_REEL(    DEBUT=0.,
 
 SOL = STAT_NON_LINE( MODELE=MO,
                      CHAM_MATER=CHMAT,
-                     SOLVEUR=_F(SYME='OUI',),
+                     SOLVEUR=_F(),
                      INFO=2,
                      EXCIT=(_F(CHARGE = CHBLO),),
                          CONTACT = CHCO,

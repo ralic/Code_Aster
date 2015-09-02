@@ -22,10 +22,8 @@ cata_msg = {
     1 : _(u"""
 Définition d'une liaison unilatérale.
  -> Cette fonctionnalité suppose la symétrie de la matrice obtenue après assemblage.
-    Si votre modélisation produit une matrice non-symétrique, on force donc sa symétrie pour résoudre
-    le contact.
- -> Risque & Conseil :
-    Ce changement peut conduire à des difficultés de convergence dans le processus de Newton mais en
+    Si votre modélisation produit une matrice non-symétrique, cela peut conduire à des 
+    difficultés de convergence dans le processus de Newton mais en
     aucun cas il ne produit des résultats faux.
 
     Si la matrice de rigidité de votre structure est symétrique, vous pouvez ignorer ce qui précède.

@@ -120,7 +120,7 @@ LARCH=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=1.,
                                    NOMBRE=25,),);
 
-U=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
+U=STAT_NON_LINE(SOLVEUR=_F(),
                 MODELE=MODE,
                 CHAM_MATER=CM,
                 CARA_ELEM=CARA,

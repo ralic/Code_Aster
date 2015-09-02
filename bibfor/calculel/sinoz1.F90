@@ -117,11 +117,11 @@ subroutine sinoz1(modele, sigma, signo)
 !     -- CREATION DU SOLVEUR :
     solveu = '&&OP0042.SOLVEUR'
 
-    call numero(nupgm                , solveu, 'VV',&
+    call numero(nupgm, solveu, 'VV',&
                 modelocz = 'DDL_NOZ1',&
                 nb_matr_elem = 1     , list_matr_elem = massel)
 !
-    call asmatr(1, massel, ' ', nupgm, solveu,&
+    call asmatr(1, massel, ' ', nupgm, &
                 infcha, 'ZERO', 'V', 1, '&&MASSAS')
 !
 !     CALCUL DES SECONDS MEMBRES

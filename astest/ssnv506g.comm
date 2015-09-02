@@ -149,7 +149,7 @@ SSNV506=STAT_NON_LINE(MODELE=MO,
                                 REAC_ITER=1,),
                       SOLVEUR=_F(METHODE='GCPC',
                                  PRE_COND='LDLT_SP',
-                                 SYME='OUI',),
+                                 ),
                       INFO=1,);
 
 #----------------------------------------------------------------------

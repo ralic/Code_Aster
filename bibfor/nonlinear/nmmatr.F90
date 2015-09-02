@@ -1,4 +1,4 @@
-subroutine nmmatr(phasez, fonact, lischa, solveu, numedd,&
+subroutine nmmatr(phasez, fonact, lischa, numedd,&
                   sddyna, numins, defico, resoco, meelem,&
                   measse, matass)
 ! ----------------------------------------------------------------------
@@ -43,7 +43,7 @@ subroutine nmmatr(phasez, fonact, lischa, solveu, numedd,&
     integer :: numins
     character(len=19) :: meelem(*), measse(*)
     character(len=24) :: numedd
-    character(len=19) :: lischa, solveu
+    character(len=19) :: lischa
 !
 ! ----------------------------------------------------------------------
 !
@@ -64,7 +64,6 @@ subroutine nmmatr(phasez, fonact, lischa, solveu, numedd,&
 ! IN  NUMINS : NUMERO D'INSTANT
 ! IN  NUMEDD : NOM DE LA NUMEROTATION MECANIQUE
 ! IN  LISCHA : SD LISTE DES CHARGES
-! IN  SOLVEU : NOM DU SOLVEUR DE NEWTON
 ! IN  MEASSE : VARIABLE CHAPEAU POUR NOM DES MATR_ASSE
 ! IN  MEELEM : VARIABLE CHAPEAU POUR NOM DES MATR_ELEM
 ! OUT MATASS : MATRICE ASSEMBLEE RESULTANTE
@@ -215,7 +214,7 @@ subroutine nmmatr(phasez, fonact, lischa, solveu, numedd,&
 ! --- PRISE EN COMPTE DE LA MATRICE TANGENTE DES FORCES SUIVEUSES
 !
     if (lsuiv) then
-        call ascoma(meelem, numedd, solveu, lischa, matass)
+        call ascoma(meelem, numedd, lischa, matass)
     endif
 !
 ! --- PRISE EN COMPTE DE LA MATRICE TANGENTE DU FROTTEMENT

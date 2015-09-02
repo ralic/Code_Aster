@@ -125,7 +125,7 @@ LINST=DEFI_LIST_REEL(DEBUT=0.0,
                                  _F(JUSQU_A=1.0,
                                     NOMBRE=17,),),);
 
-U=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',#METHODE='MUMPS',
+U=STAT_NON_LINE(SOLVEUR=_F(#METHODE='MUMPS',
                            ),
                 MODELE=MO,
                 CHAM_MATER=CHMAT,

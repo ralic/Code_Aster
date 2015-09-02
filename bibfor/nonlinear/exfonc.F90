@@ -66,7 +66,7 @@ implicit none
     aster_logical :: lener, lproj, lmatdi, lldsp, lctgcp, lcomp
     character(len=24) :: typilo, metres
     character(len=16) :: reli_meth, matrix_pred
-    character(len=3) :: mfdet
+    character(len=3) :: mfdet, syme
     character(len=24), pointer :: slvk(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
@@ -110,7 +110,8 @@ implicit none
 !
     lrcmk = slvk(4) .eq. 'RCMK'
     lamg = ((slvk(2).eq.'ML') .or. (slvk(2).eq.'BOOMER'))
-    lsyme = slvk(5).eq.'OUI'
+    call getvtx('SOLVEUR', 'SYME', iocc=1, scal=syme)
+    lsyme = syme.eq.'OUI'
 !
 ! --- CONTACT DISCRET
 !
@@ -138,9 +139,8 @@ implicit none
                 call utmess('F', 'CONTACT_88')
             endif
         endif
-!       ON FORCE SYME='OUI' AVEC LE CONTACT DISCRET
+!       ON SUGGERE SYME='OUI' AVEC LE CONTACT DISCRET
         if (.not.(lsyme.or.lallv)) then
-            slvk(5) = 'OUI'
             call utmess('A', 'CONTACT_1')
         endif
         if ((lmvib.or.lflam) .and. lmodim) then
@@ -181,9 +181,8 @@ implicit none
         if (lgcpc .or. lpetsc) then
             call utmess('F', 'MECANONLINE3_96', sk=slvk(1))
         endif
-!       ON FORCE SYME='OUI' AVEC LIAISON_UNILATER
+!       ON SUGGERE SYME='OUI' AVEC LIAISON_UNILATER
         if (.not.lsyme) then
-            slvk(5)='OUI'
             call utmess('A', 'UNILATER_1')
         endif
     endif

@@ -50,52 +50,50 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!     COMBINAISON LINEAIRE DE MATRICES  :
+!     combinaison lineaire de matrices  :
 !     -------------------------------------
-!     MAT_RES= SOMME(ALPHA_I*MAT_I)
+!     mat_res= somme(alpha_i*mat_i)
 !
-!       *  LES MATRICES (MAT_I) DOIVENT AVOIR LA MEME NUMEROTATION DES
-!           DDLS MAIS ELLES PEUVENT AVOIR DES CONNECTIVITES DIFFERENTES
-!          (I.E. DES STOCKAGES DIFFERENTS)
-!       *  LES MATRICES (MAT_I) SONT REELLES OU COMPLEXES
-!       *  LES MATRICES (MAT_I) SONT SYMETRIQUES OU NON
-!       *  LES COEFFICIENTS (ALPHA_I) SONT REELS OU COMPLEXES
-!       *  ON PEUT MELANGER MATRICES REELLES ET COMPLEXES ET LES TYPES
-!          (R/C) DES COEFFICIENTS. ON PEUT FAIRE PAR EXEMPLE :
-!          MAT_RES= ALPHA_R1*MAT_C1 + ALPHA_C2*MAT_R2
-!       *  MAT_RES DOIT ETRE ALLOUEE AVANT L'APPEL A MTCMBL
-!          CELA VEUT DIRE QUE SON TYPE (R/C) EST DEJA DETERMINE.
-!       *  SI TYPE(MAT_RES)=R ET QUE CERTAINS (MAT_I/ALPHA_I) SONT C,
-!          CELA VEUT SIMPLEMENT DIRE QUE MAT_RES CONTIENDRA LA PARTIE
-!          REELLE DE LA COMBINAISON LINEAIRE (QUI EST COMPLEXE)
+!       *  les matrices (mat_i) doivent avoir la meme numerotation des
+!           ddls mais elles peuvent avoir des connectivites differentes
+!          (i.e. des stockages differents)
+!       *  les matrices (mat_i) sont reelles ou complexes
+!       *  les matrices (mat_i) sont symetriques ou non
+!       *  les coefficients (alpha_i) sont reels ou complexes
+!       *  on peut melanger matrices reelles et complexes et les types
+!          (r/c) des coefficients. on peut faire par exemple :
+!          mat_res= alpha_r1*mat_c1 + alpha_c2*mat_r2
+!       *  mat_res doit etre allouee avant l'appel a mtcmbl
+!          cela veut dire que son type (r/c) est deja determine.
+!       *  si type(mat_res)=r et que certains (mat_i/alpha_i) sont c,
+!          cela veut simplement dire que mat_res contiendra la partie
+!          reelle de la combinaison lineaire (qui est complexe)
 !
 !---------------------------------------------------------------------
-! IN  I  NBCOMB = NOMBRE DE MATRICES A COMBINER
-! IN  V(K1) TYPCST = TYPE DES CONSTANTES (R/C)
-! IN  V(R)  CONST  = TABLEAU DE R*8    DES COEFICIENTS
-!     ATTENTION : CONST PEUT ETRE DE DIMENSION > NBCOMB CAR
-!                 LES COEFS COMPLEXES SONT STOCKES SUR 2 REELS
-! IN  V(K19) LIMAT = LISTE DES NOMS DES MATR_ASSE A COMBINER
-! IN/JXOUT K19 MATREZ = NOM DE LA MATR_ASSE RESULTAT
-!        CETTE MATRICE DOIT AVOIR ETE CREEE AU PREALABLE (MTDEFS)
-! IN  K* DDLEXC = NOM DU DDL A EXCLURE ("LAGR"/" " )
+! in  i  nbcomb = nombre de matrices a combiner
+! in  v(k1) typcst = type des constantes (r/c)
+! in  v(r)  const  = tableau de r*8    des coeficients
+!     attention : const peut etre de dimension > nbcomb car
+!                 les coefs complexes sont stockes sur 2 reels
+! in  v(k19) limat = liste des noms des matr_asse a combiner
+! in/jxout k19 matrez = nom de la matr_asse resultat
+!        cette matrice doit avoir ete creee au prealable (mtdefs)
+! in  k* ddlexc = nom du ddl a exclure ("lagr"/" " )
 !
-! SI LES MATRICES COMBINEES N'ONT PAS LE MEME STOCKAGE, IL FAUT
-! CREER UN NOUVEAU NUME_DDL POUR CE STOCKAGE :
-! IN/JXOUT  K14 NUMEDD = NOM DU NUME_DDL SUR LEQUEL S'APPUIERA MATREZ
-!        SI NUMEDD ==' ', LE NOM DU NUME_DDL SERA OBTENU PAR GCNCON
-!        SI NUMEDD /=' ', ON PRENDRA NUMEDD COMME NOM DE NUME_DDL
-! IN    K5  : / 'ELIM=' : SI LES MATRICES A COMBINER N'ONT PAS LES MEMES
-!                         DDLS ELIMINES (CHAR_CINE) => ERREUR <F>
-!             / 'ELIM1' : LA MATRICE RESULTAT AURA LES MEMES DDLS
-!                         ELIMINES QUE LA 1ERE MATRICE DE LA LISTE LIMAT
+! si les matrices combinees n'ont pas le meme stockage, il faut
+! creer un nouveau nume_ddl pour ce stockage :
+! in/jxout  k14 numedd = nom du nume_ddl sur lequel s'appuiera matrez
+!        si numedd ==' ', le nom du nume_ddl sera obtenu par gcncon
+!        si numedd /=' ', on prendra numedd comme nom de nume_ddl
+! in    k5  : / 'elim=' : si les matrices a combiner n'ont pas les memes
+!                         ddls elimines (char_cine) => erreur <f>
+!             / 'elim1' : la matrice resultat aura les memes ddls
+!                         elimines que la 1ere matrice de la liste limat
 !---------------------------------------------------------------------
-!     -----------------------------------------------------------------
     character(len=1) :: base, bas2, typres
     character(len=8) :: typmat, kmpic, kmpic1, kmatd
     character(len=19) :: matemp, mat1, matres, mati
     character(len=24) :: valk(2)
-!     -----------------------------------------------------------------
     integer :: jrefar, jrefai, ier, ier1
     integer :: i, lres, nbloc, lgbloc
     aster_logical :: reutil, symr, symi, matd, nosymr
@@ -103,8 +101,7 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
     character(len=24), pointer :: refa1(:) => null()
     character(len=24), pointer :: refa(:) => null()
     integer, pointer :: lispoint(:) => null()
-!     -----------------------------------------------------------------
-!
+!   -----------------------------------------------------------------
     call jemarq()
 !
     ASSERT(elim.eq.'ELIM=' .or. elim.eq.'ELIM1')
@@ -149,14 +146,13 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
         endif
         call dismoi('XFEM', mati, 'MATR_ASSE', repk=kxfem)
         if (kxfem .eq. 'XFEM_PRECOND') call utmess('F', 'XFEMPRECOND_3', nk=1, valk=mati)
-!        IF ((.NOT.SYMI).AND.SYMR) CHGSYM=.TRUE.
         if (mati .eq. matres) reutil=.true.
     end do
 !
 !
-!     -- SI LA MATRICE RESULTAT EST L'UNE DE CELLES A COMBINER,
-!        IL NE FAUT PAS LA DETRUIRE !
-!     ------------------------------------------------------------
+!   -- si la matrice resultat est l'une de celles a combiner,
+!      il ne faut pas la detruire !
+!   ------------------------------------------------------------
     if (reutil) then
         matemp='&&MTCMBL.MATEMP'
         call mtdefs(matemp, matres, 'V', typres)
@@ -166,8 +162,8 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
     call jelira(matemp//'.REFA', 'CLAS', cval=bas2)
 !
 !
-! --- VERIF. DE LA COHERENCE MPI DES MATRICES A COMBINER
-!     ----------------------------------------------------
+!   -- verif. de la coherence mpi des matrices a combiner
+!   ----------------------------------------------------
     call dismoi('MPI_COMPLET', mat1, 'MATR_ASSE', repk=kmpic1)
     if (kmpic1 .eq. 'OUI') then
         zk24(jrefar-1+11)='MPI_COMPLET'
@@ -189,23 +185,20 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
             call utmess('F', 'CALCULEL6_55', nk=2, valk=valk)
         endif
         call dismoi('MATR_DISTR', mati, 'MATR_ASSE', repk=kmatd)
-!       IL EST NECESSAIRE QUE TOUTES LES MATRICES QU'ON CHERCHE A
-!       COMBINER SOIT DU MEME TYPE (SOIT TOUTES DISTRIBUEES,
-!       SOIT TOUTES COMPLETES MAIS SURTOUT PAS DE MELANGE !)
+
+!       il est necessaire que toutes les matrices qu'on cherche a
+!       combiner soit du meme type (soit toutes distribuees,
+!       soit toutes completes mais surtout pas de melange !)
         if (kmatd .eq. 'OUI') then
-            if (.not.matd) then
-                ASSERT(.false.)
-            endif
+            ASSERT(matd)
         else
-            if (matd) then
-                ASSERT(.false.)
-            endif
+            ASSERT(.not.matd)
         endif
     end do
 !
 !
-! --- VERIF. DE LA COHERENCE DES NUMEROTATIONS DES MATRICES A COMBINER
-!     ------------------------------------------------------------------
+!   --- verif. de la coherence des numerotations des matrices a combiner
+!   ------------------------------------------------------------------
     call jeveuo(mat1//'.REFA', 'L', vk24=refa1)
     ier1 = 0
     do i = 2, nbcomb
@@ -231,22 +224,22 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
 !
 !
 !
-! --- 2) COMBINAISON LINEAIRE DES .VALM DES MATRICES :
-!     ================================================
+!   -- 2) combinaison lineaire des .VALM des matrices :
+!   ====================================================
 !
-! ---   CAS OU LES MATRICES A COMBINER ONT LE MEME PROFIL :
-!       -------------------------------------------------
+!    --   cas ou les matrices a combiner ont le meme profil :
+!   ----------------------------------------------------------
     if (ier1 .eq. 0) then
         call mtdscr(matemp)
         call jeveuo(matemp//'.&INT', 'E', lres)
         call cbvale(nbcomb, typcst, const, lispoint, typres,&
                     lres, ddlexc, matd)
 !
-! ---   CAS OU LES MATRICES A COMBINER N'ONT PAS LE MEME PROFIL :
-!       -------------------------------------------------------
+!   --   cas ou les matrices a combiner n'ont pas le meme profil :
+!   ---------------------------------------------------------------
     else
-!       SI LES MATRICES SONT DISTRIBUEE MAIS N'ONT PAS LE MEME
-!       PROFIL, ON PLANTE !
+!       si les matrices sont distribuee mais n'ont pas le meme
+!       profil, on plante !
         if (matd) then
             call utmess('F', 'ALGELINE5_1')
         endif
@@ -259,8 +252,8 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
     endif
 !
 !
-! --- DDL ELIMINES :
-!     ===================
+!   -- ddl elimines :
+!   ===================
     call jeveuo(matemp//'.REFA', 'L', vk24=refa)
     call jedetr(matemp//'.CCID')
     call jedetr(matemp//'.CCVA')
@@ -271,14 +264,14 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
     if (ier .gt. 0) refa(3)='ELIML'
 !
 !
-! --- CONSTRUCTION DU DESCRIPTEUR DE LA MATRICE RESULTAT :
-!     ==================================================
+!   -- construction du descripteur de la matrice resultat :
+!   =========================================================
     call mtdscr(matemp)
     call jeveuo(matemp(1:19)//'.&INT', 'E', lres)
 !
 !
-! --- COMBINAISON LINEAIRE DES .CONL DES MATRICES SI NECESSAIRE :
-!     =========================================================
+!   -- combinaison lineaire des .CONL des matrices si necessaire :
+!   ===============================================================
     if (ddlexc .ne. 'LAGR') then
         call mtconl(nbcomb, typcst, const, lispoint, typres,&
                     lres)
@@ -287,7 +280,8 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
     endif
 !
 !
-!     -- ON REMET LA MATRICE DANS L'ETAT 'ASSE' :
+!   -- on remet la matrice dans l'etat 'asse' :
+!   -------------------------------------------
     call jeveuo(matres//'.REFA', 'E', jrefar)
     zk24(jrefar-1+8)='ASSE'
 !

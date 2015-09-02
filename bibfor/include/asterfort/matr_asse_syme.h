@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -15,10 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine resyme(resu1z, basez, resu2z)
-        character(len=*) :: resu1z
-        character(len=*) :: basez
-        character(len=*) :: resu2z
-    end subroutine resyme
-end interface
+          interface 
+            subroutine matr_asse_syme(matas)
+              character(len=*) :: matas
+            end subroutine matr_asse_syme
+          end interface 

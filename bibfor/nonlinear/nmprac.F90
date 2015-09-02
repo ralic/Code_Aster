@@ -117,12 +117,12 @@ subroutine nmprac(fonact, lischa, numedd, numfix, solveu,&
 ! --- ASSEMBLAGE DE LA MATRICE MASSE
 !
     optass = 'AVEC_DIRICHLET'
-    call nmassm(fonact, lischa, solveu, numedd, numfix,&
+    call nmassm(fonact, lischa, numedd, numfix,&
                 'MEMASS', optass, meelem, masse)
 !
 ! --- CALCUL DE LA MATRICE ASSEMBLEE GLOBALE
 !
-    call nmmatr('ACCEL_INIT', fonact, lischa, solveu, numedd,&
+    call nmmatr('ACCEL_INIT', fonact, lischa, numedd,&
                 sddyna, numins, defico, resoco, meelem,&
                 measse, matass)
 !

@@ -82,8 +82,8 @@ subroutine crsmsp(solvbz, matasz, pcpiv)
     endif
 !     RENUM
     zk24(jslvk-1+4) = 'AUTO'
-!     SYME
-    zk24(jslvk-1+5) = syme
+
+    zk24(jslvk-1+5) = 'XXXX'
 !     ELIM_LAGR
     zk24(jslvk-1+6) = 'NON'
 !     MIXER_PRECISION

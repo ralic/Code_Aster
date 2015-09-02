@@ -16,13 +16,12 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine asmatr(nbmat, tlimat, licoef, nu, solveu,&
+    subroutine asmatr(nbmat, tlimat, licoef, nu, &
                       infcha, cumul, base, itysca, mataz)
         integer :: nbmat
         character(len=*) :: tlimat(*)
         character(len=*) :: licoef
         character(len=*) :: nu
-        character(len=*) :: solveu
         character(len=*) :: infcha
         character(len=4) :: cumul
         character(len=*) :: base

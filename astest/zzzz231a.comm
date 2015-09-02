@@ -125,7 +125,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
                    NEWTON=_F(REAC_INCR=1,
                              MATRICE='TANGENTE',
                              REAC_ITER=1,),
-                   SOLVEUR=_F(SYME='OUI',
+                   SOLVEUR=_F(
                               METHODE='MUMPS',),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1.0E-6,
                                   ITER_GLOB_MAXI=10,),);
@@ -182,7 +182,7 @@ RESU2=STAT_NON_LINE(MODELE=MO,
                     NEWTON=_F(REAC_INCR=1,
                               MATRICE='TANGENTE',
                               REAC_ITER=1,),
-                    SOLVEUR=_F(SYME='OUI',
+                    SOLVEUR=_F(
                                METHODE='MUMPS',),
                     CONVERGENCE=_F(RESI_GLOB_RELA=1.0E-6,
                                    ITER_GLOB_MAXI=10,),);
@@ -235,7 +235,7 @@ RESU3=STAT_NON_LINE(MODELE=MO,
                     NEWTON=_F(REAC_INCR=1,
                               MATRICE='TANGENTE',
                               REAC_ITER=1,),
-                    SOLVEUR=_F(SYME='OUI',
+                    SOLVEUR=_F(
                                METHODE='MUMPS',),
                     CONVERGENCE=_F(RESI_GLOB_RELA=1.0E-6,
                                    ITER_GLOB_MAXI=10,),);

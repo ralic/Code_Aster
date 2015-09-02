@@ -142,7 +142,7 @@ U=DYNA_NON_LINE(MODELE=MODE,
                                 BETA=ALF,GAMMA=DEL,),
                 NEWTON=_F(MATRICE='TANGENTE',
                           REAC_ITER=1,),
-                SOLVEUR=_F(SYME='OUI',
+                SOLVEUR=_F(
                            METHODE='MULT_FRONT',),
                 CONVERGENCE=_F(ITER_GLOB_MAXI=20,),);
 

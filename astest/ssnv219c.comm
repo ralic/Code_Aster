@@ -374,7 +374,7 @@ for Raff in range(0,Nb_Raffinement):
                           INCREMENT=_F(LIST_INST=LINST,),
                           NEWTON=_F(REAC_ITER=1,),
                           CONTACT=Contact,
-                          SOLVEUR=_F(SYME='OUI',),
+                          SOLVEUR=_F(),
                           EXCIT=(
                                  _F(CHARGE=Neumann,FONC_MULT=RAMPE),
                                  _F(CHARGE=Dirich,FONC_MULT=RAMPE),

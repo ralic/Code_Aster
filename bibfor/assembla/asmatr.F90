@@ -1,4 +1,4 @@
-subroutine asmatr(nbmat, tlimat, licoef, nu, solveu,&
+subroutine asmatr(nbmat, tlimat, licoef, nu, &
                   infcha, cumul, base, itysca, mataz)
 ! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
@@ -32,76 +32,64 @@ subroutine asmatr(nbmat, tlimat, licoef, nu, solveu,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/masyns.h"
-#include "asterfort/resyme.h"
 #include "asterfort/typmat.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
-!
+
     character(len=*) :: base, mataz, tlimat(*), licoef, nu
     integer :: nbmat, itysca
-    character(len=*) :: solveu, infcha
+    character(len=*) :: infcha
     character(len=4) :: cumul
 !-----------------------------------------------------------------------
-! IN  I   NBMAT  : NOMBRE DE MATR_ELEM DE LA LISTE TLIMAT
-! IN  K19 TLIMAT : LISTE DES MATR_ELEM
-! IN  K24 LICOEF : NOM DU VECTEUR CONTENANT LES COEF. MULT.
-!                  DES MATR_ELEM
-!                  SI LICOEF=' ' ON PREND 1.D0 COMME COEF.
-! IN  K14 NU     : NOM DU NUME_DDL
-! IN  K19 SOLVEU : NOM DU SOLVEUR (OU ' ')
-! IN  K19 INFCHA : POUR LES CHARGES CINEMATIQUES :
-!                  / SD_INFCHA (K19)
-!                  / NOM D'UN OBJET JEVEUX (K24) CONTENANT
-!                    LES NOMS DES CHARGES CINEMATIQUES (K24)
-! IN  K4 CUMUL : 'ZERO' OU 'CUMU'
-!                 'ZERO':SI UN OBJET DE NOM MATAS ET DE TYPE
-!                        MATR_ASSE EXISTE ON ECRASE SON CONTENU.
-!                 'CUMU':SI UN OBJET DE NOM MATAS ET DE TYPE
-!                        MATR_ASSE EXISTE ON CUMULE DANS .VALM
-! IN  K1  BASE   : BASE SUR LAQUELLE ON CREE L'OBJET MATAZ
-! IN  I   ITYSCA  : TYPE DES MATRICES ELEMENTAIRES A ASSEMBLER
-!                          1 --> REELLES
-!                          2 --> COMPLEXES
-! IN/OUT K19 MATAZ : L'OBJET MATAZ DE TYPE MATR_ASSE EST CREE ET REMPLI
+! in  i   nbmat  : nombre de matr_elem de la liste tlimat
+! in  k19 tlimat : liste des matr_elem
+! in  k24 licoef : nom du vecteur contenant les coef. mult.
+!                  des matr_elem
+!                  si licoef=' ' on prend 1.d0 comme coef.
+! in  k14 nu     : nom du nume_ddl
+! in  k19 infcha : pour les charges cinematiques :
+!                  / sd_infcha (k19)
+!                  / nom d'un objet jeveux (k24) contenant
+!                    les noms des charges cinematiques (k24)
+! in  k4 cumul : 'ZERO' ou 'CUMU'
+!                 'ZERO':si un objet de nom matas et de type
+!                        matr_asse existe on ecrase son contenu.
+!                 'CUMU':si un objet de nom matas et de type
+!                        matr_asse existe on cumule dans .valm
+! in  k1  base   : base sur laquelle on cree l'objet mataz
+! in  i   itysca  : type des matrices elementaires a assembler
+!                          1 --> reelles
+!                          2 --> complexes
+! in/out k19 mataz : l'objet mataz de type matr_asse est cree et rempli
 !-----------------------------------------------------------------------
-!
+
     character(len=1) :: matsym
-    character(len=3) :: syme
-    character(len=7) :: symel
-    character(len=24) :: metres, licoe2
+    character(len=24) :: licoe2
     integer :: k
-    character(len=8) :: matk8
-    character(len=19) :: tlima2(150), solve2, matas, matel, infc19
+    character(len=19) :: tlima2(150), matas, infc19
     integer :: ilicoe, i, iret, ibid, idbgav
     integer :: jrefa
-    character(len=24), pointer :: slvk(:) => null()
-    character(len=24), pointer :: lmatel(:) => null()
-!DEB-------------------------------------------------------------------
+!-------------------------------------------------------------------
     call jemarq()
     call jedbg2(idbgav, 0)
-!
+
     matas = mataz
     licoe2 = licoef
     infc19 = infcha
-    solve2 = solveu
-    if (solve2 .eq. ' ') then
-        call dismoi('SOLVEUR', nu, 'NUME_DDL', repk=solve2)
-    endif
-!
+
     ASSERT(cumul.eq.'ZERO'.or.cumul.eq.'CUMU')
     if (cumul .eq. 'ZERO') call detrsd('MATR_ASSE', matas)
-    if (nbmat .gt. 150) then
-        ASSERT(.false.)
-    endif
+
+    ASSERT(nbmat.le.150)
     do k = 1, nbmat
         tlima2(k) = tlimat(k)
     end do
-!
-!
-!     -- TRAITEMENT DE LA LISTE DES COEF. MULTIPLICATEURS :
-!     ---------------------------------------------------------------
+
+
+!   -- traitement de la liste des coef. multiplicateurs :
+!   ---------------------------------------------------------------
     if (licoe2 .eq. ' ') then
         call wkvect('&&ASMATR.LICOEF', 'V V R', nbmat, ilicoe)
         do i = 1, nbmat
@@ -110,86 +98,42 @@ subroutine asmatr(nbmat, tlimat, licoef, nu, solveu,&
     else
         call jeveuo(licoe2, 'L', ilicoe)
     endif
-!
-!
-!
-!     -- PREPARATION DE LA LISTE DE MATR_ELEM POUR QU'ILS SOIENT
-!        DU MEME TYPE (SYMETRIQUE OU NON) QUE LA MATR_ASSE :
-!     ---------------------------------------------------------------
-    AS_ALLOCATE(vk24=lmatel, size=nbmat)
+
+
+!   -- preparation de la liste de matr_elem pour qu'ils soient
+!      du meme type (symetrique ou non) que la matr_asse :
+!   ---------------------------------------------------------------
     matsym = typmat(nbmat,tlima2)
-!
-    call jeveuo(solve2//'.SLVK', 'L', vk24=slvk)
-    syme = slvk(5)(1:3)
-    if (syme .eq. 'OUI') then
-        do i = 1, nbmat
-            call dismoi('TYPE_MATRICE', tlima2(i), 'MATR_ELEM', repk=symel)
-            if (symel .eq. 'NON_SYM') then
-                call gcncon('.', matk8)
-                matel=matk8
-                lmatel(i) = matel
-                call resyme(tlima2(i), 'V', matel)
-            else
-                lmatel(i) = tlima2(i)
-            endif
-        end do
-        matsym = 'S'
-    else
-        do i = 1, nbmat
-            lmatel(i) = tlima2(i)
-        end do
-    endif
-!
-!
-!
-!     -- VERIFICATIONS :
-!     ------------------
-    metres = slvk(1)
-    if ((metres.eq.'GCPC') .and. (matsym.eq.'N')) then
-        call utmess('F', 'ASSEMBLA_1', sk=matsym)
-    endif
-!
-!
-!
-!     -- SI MATRICE EXISTE DEJA ET QU'ELLE DOIT ETRE NON-SYMETRIQUE,
-!        ON LA DE-SYMETRISE :
-!     ---------------------------------------------------------------
+
+
+!   -- si matrice existe deja et qu'elle doit etre non-symetrique,
+!      on la de-symetrise :
+!   ---------------------------------------------------------------
     if (cumul .eq. 'CUMU') then
         call jeexin(matas//'.REFA', iret)
         ASSERT(iret.gt.0)
         call jeveuo(matas//'.REFA', 'L', jrefa)
         if (matsym .eq. 'N' .and. zk24(jrefa-1+9) .eq. 'MS') call masyns(matas)
     endif
-!
-!
-!     -- ASSEMBLAGE PROPREMENT DIT :
-!     -------------------------------
-    call assmam(base, matas, nbmat, lmatel, zr(ilicoe),&
+
+
+!   -- assemblage proprement dit :
+!   -------------------------------
+    call assmam(base, matas, nbmat, tlima2, zr(ilicoe),&
                 nu, cumul, itysca)
-!
-!
-!     -- TRAITEMENT DES CHARGES CINEMATIQUES :
-!     ----------------------------------------
+
+
+!   -- traitement des charges cinematiques :
+!   ----------------------------------------
     call jeveuo(matas//'.REFA', 'L', jrefa)
     ASSERT(zk24(jrefa-1+3).ne.'ELIMF')
     call ascima(infc19, nu, matas, cumul)
-!
-!
-!     -- MENAGE :
-!     -----------
+
+
+!   -- menage :
+!   -----------
     call jedetr('&&ASMATR.LICOEF')
-    if (syme .eq. 'OUI') then
-        do i = 1, nbmat
-            call dismoi('TYPE_MATRICE', tlima2(i), 'MATR_ELEM', repk=symel)
-            if (symel .eq. 'SYMETRI') goto 60
-            call detrsd('MATR_ELEM', lmatel(i)(1:19))
- 60         continue
-        end do
-    endif
-!
-!
-!
-    AS_DEALLOCATE(vk24=lmatel)
+
     call jedbg2(ibid, idbgav)
     call jedema()
 end subroutine

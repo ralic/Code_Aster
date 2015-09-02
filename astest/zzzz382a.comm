@@ -24569,14 +24569,13 @@ for j,NTRIM in enumerate(tours):
 ########### construction de la base modale  ######################
 
 
-#on force la symetrisation
-KSYM=ASSE_MATRICE(MATR_ELEM=Ke[0],NUME_DDL=NDDL[0],SYME='OUI');
-MSYM=ASSE_MATRICE(MATR_ELEM=Me[0],NUME_DDL=NDDL[0],SYME='OUI');
+K2=ASSE_MATRICE(MATR_ELEM=Ke[0],NUME_DDL=NDDL[0]);
+M2=ASSE_MATRICE(MATR_ELEM=Me[0],NUME_DDL=NDDL[0]);
 
 #version 12
 BASEAP=CALC_MODES(
-                                        MATR_RIGI=KSYM,
-                                        MATR_MASS=MSYM,
+                                        MATR_RIGI=K2,
+                                        MATR_MASS=M2,
                                         VERI_MODE=_F(STOP_ERREUR='NON',),
                         OPTION='PLUS_PETITE',
                         CALC_FREQ=_F(NMAX_FREQ=(48,),),
@@ -24586,7 +24585,7 @@ BASEAP=CALC_MODES(
 #ajout des modes statiques
 
 
-MDST1=MODE_STATIQUE(MATR_RIGI=KSYM,MATR_MASS=M[0],
+MDST1=MODE_STATIQUE(MATR_RIGI=K2,MATR_MASS=M[0],
                    MODE_STAT=_F(NOEUD='N4Z1',AVEC_CMP=('DX','DY'),),
                    SOLVEUR=_F(RENUM='METIS',
                                    STOP_SINGULIER='NON',
@@ -24594,7 +24593,7 @@ MDST1=MODE_STATIQUE(MATR_RIGI=KSYM,MATR_MASS=M[0],
                                    METHODE='MULT_FRONT',),
                                 );
 
-MDST2=MODE_STATIQUE(MATR_RIGI=KSYM,MATR_MASS=M[0],
+MDST2=MODE_STATIQUE(MATR_RIGI=K2,MATR_MASS=M[0],
                    MODE_STAT=_F(NOEUD='N89Z1',AVEC_CMP=('DX','DY'),),
                    SOLVEUR=_F(RENUM='METIS',
                                    STOP_SINGULIER='NON',
@@ -24602,7 +24601,7 @@ MDST2=MODE_STATIQUE(MATR_RIGI=KSYM,MATR_MASS=M[0],
                                    METHODE='MULT_FRONT',),
                                 );
 
-MDST3=MODE_STATIQUE(MATR_RIGI=KSYM,MATR_MASS=M[0],
+MDST3=MODE_STATIQUE(MATR_RIGI=K2,MATR_MASS=M[0],
                    MODE_STAT=_F(NOEUD='N106Z2',AVEC_CMP=('DX','DY'),),
                    SOLVEUR=_F(RENUM='METIS',
                                    STOP_SINGULIER='NON',
@@ -24610,7 +24609,7 @@ MDST3=MODE_STATIQUE(MATR_RIGI=KSYM,MATR_MASS=M[0],
                                    METHODE='MULT_FRONT',),
                                 );
 
-MDST4=MODE_STATIQUE(MATR_RIGI=KSYM,MATR_MASS=M[0],
+MDST4=MODE_STATIQUE(MATR_RIGI=K2,MATR_MASS=M[0],
                    MODE_STAT=_F(NOEUD='N176Z2',AVEC_CMP=('DX','DY'),),
                    SOLVEUR=_F(RENUM='METIS',
                                    STOP_SINGULIER='NON',
@@ -24618,7 +24617,7 @@ MDST4=MODE_STATIQUE(MATR_RIGI=KSYM,MATR_MASS=M[0],
                                    METHODE='MULT_FRONT',),
                                 );
 
-MDST5=MODE_STATIQUE(MATR_RIGI=KSYM,MATR_MASS=M[0],
+MDST5=MODE_STATIQUE(MATR_RIGI=K2,MATR_MASS=M[0],
                    MODE_STAT=_F(NOEUD='N106Z3',AVEC_CMP=('DX','DY'),),
                    SOLVEUR=_F(RENUM='METIS',
                                    STOP_SINGULIER='NON',
@@ -24626,7 +24625,7 @@ MDST5=MODE_STATIQUE(MATR_RIGI=KSYM,MATR_MASS=M[0],
                                    METHODE='MULT_FRONT',),
                                 );
 
-MDST6=MODE_STATIQUE(MATR_RIGI=KSYM,MATR_MASS=M[0],
+MDST6=MODE_STATIQUE(MATR_RIGI=K2,MATR_MASS=M[0],
                    MODE_STAT=_F(NOEUD='N176Z3',AVEC_CMP=('DX','DY'),),
                    SOLVEUR=_F(RENUM='METIS',
                                    STOP_SINGULIER='NON',
@@ -24634,7 +24633,7 @@ MDST6=MODE_STATIQUE(MATR_RIGI=KSYM,MATR_MASS=M[0],
                                    METHODE='MULT_FRONT',),
                                 );
 
-MDST7=MODE_STATIQUE(MATR_RIGI=KSYM,MATR_MASS=M[0],
+MDST7=MODE_STATIQUE(MATR_RIGI=K2,MATR_MASS=M[0],
                    MODE_STAT=_F(NOEUD='N106Z4',AVEC_CMP=('DX','DY'),),
                    SOLVEUR=_F(RENUM='METIS',
                                    STOP_SINGULIER='NON',
@@ -24642,7 +24641,7 @@ MDST7=MODE_STATIQUE(MATR_RIGI=KSYM,MATR_MASS=M[0],
                                    METHODE='MULT_FRONT',),
                                 );
 
-MDST8=MODE_STATIQUE(MATR_RIGI=KSYM,MATR_MASS=M[0],
+MDST8=MODE_STATIQUE(MATR_RIGI=K2,MATR_MASS=M[0],
                    MODE_STAT=_F(NOEUD='N176Z4',AVEC_CMP=('DX','DY'),),
                    SOLVEUR=_F(RENUM='METIS',
                                    STOP_SINGULIER='NON',
@@ -24650,7 +24649,7 @@ MDST8=MODE_STATIQUE(MATR_RIGI=KSYM,MATR_MASS=M[0],
                                    METHODE='MULT_FRONT',),
                                 );
 
-MDST9=MODE_STATIQUE(MATR_RIGI=KSYM,MATR_MASS=M[0],
+MDST9=MODE_STATIQUE(MATR_RIGI=K2,MATR_MASS=M[0],
                    MODE_STAT=_F(NOEUD='N366Z5',AVEC_CMP=('DX','DY'),),
                    SOLVEUR=_F(RENUM='METIS',
                                    STOP_SINGULIER='NON',
@@ -24658,7 +24657,7 @@ MDST9=MODE_STATIQUE(MATR_RIGI=KSYM,MATR_MASS=M[0],
                                    METHODE='MULT_FRONT',),
                                 );
 
-MDST10=MODE_STATIQUE(MATR_RIGI=KSYM,MATR_MASS=M[0],
+MDST10=MODE_STATIQUE(MATR_RIGI=K2,MATR_MASS=M[0],
                    MODE_STAT=_F(NOEUD='N453Z5',AVEC_CMP=('DX','DY'),),
                    SOLVEUR=_F(RENUM='METIS',
                                    STOP_SINGULIER='NON',

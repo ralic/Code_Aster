@@ -181,7 +181,7 @@ U=STAT_NON_LINE(MODELE=MO,
                 INCREMENT=_F(LIST_INST=L_INST,),
                 NEWTON=_F(MATRICE='TANGENTE',
                           REAC_ITER=1),
-                SOLVEUR=_F(SYME='OUI',
+                SOLVEUR=_F(
                            METHODE='LDLT'),
                 CONVERGENCE=_F(ITER_GLOB_MAXI=50),
                 );

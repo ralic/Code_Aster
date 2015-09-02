@@ -112,7 +112,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
                    #CONVERGENCE=_F(
                    #RESI_GLOB_MAXI=1.0E-06,
                    #),
-                   SOLVEUR=_F(SYME='OUI',),
+                   SOLVEUR=_F(),
                    INFO=1,
                    );
 

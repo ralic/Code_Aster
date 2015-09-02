@@ -30,12 +30,12 @@ class sd_solveur(AsBase):
         slvk = self.SLVK.get_stripped()
         method = slvk[0]
         assert slvk[12] in ('OUI', 'NON', '')
+        assert slvk[4] in ('XXXX')
         if method == 'MUMPS':
             assert slvk[1] in ('AUTO', 'SANS')
             assert slvk[2] in ('NONSYM', 'SYMGEN', 'SYMDEF', 'AUTO')
             assert slvk[3] in (
                 'AMD', 'AMF', 'PORD', 'METIS', 'QAMD', 'AUTO', 'SCOTCH')
-            assert slvk[4] in ('OUI', 'NON')
             assert slvk[5] in ('LAGR2', 'NON',), slvk
             assert slvk[6] in ('OUI', 'NON', 'XXXX')
             assert slvk[7] in ('OUI', 'NON', 'XXXX')
@@ -48,7 +48,6 @@ class sd_solveur(AsBase):
             assert slvk[1] in ('XXXX')
             assert slvk[2] in ('XXXX')
             assert slvk[3] in ('MD', 'MDA', 'METIS')
-            assert slvk[4] in ('OUI', 'NON')
             assert slvk[5] in ('XXXX')
             assert slvk[6] in ('XXXX')
             assert slvk[7] in ('XXXX')
@@ -60,7 +59,6 @@ class sd_solveur(AsBase):
             assert slvk[1] in ('XXXX')
             assert slvk[2] in ('XXXX')
             assert slvk[3] in ('RCMK', 'SANS')
-            assert slvk[4] in ('OUI', 'NON')
             assert slvk[5] in ('XXXX')
             assert slvk[6] in ('XXXX')
             assert slvk[7] in ('XXXX')
@@ -71,7 +69,6 @@ class sd_solveur(AsBase):
         elif method == 'GCPC':
             assert slvk[1] in ('LDLT_INC', 'LDLT_SP', 'SANS')
             assert slvk[3] in ('RCMK', 'SANS')
-            assert slvk[4] in ('OUI', 'NON')
             assert slvk[5] in ('XXXX')
             assert slvk[6] in ('XXXX')
             assert slvk[7] in ('XXXX')
@@ -83,7 +80,6 @@ class sd_solveur(AsBase):
             assert slvk[1] in (
                 'LDLT_INC', 'LDLT_SP', 'JACOBI', 'SOR', 'ML', 'BOOMER', 'SANS')
             assert slvk[3] in ('RCMK', 'SANS')
-            assert slvk[4] in ('OUI', 'NON')
             assert slvk[5] in ('CG', 'CR', 'GMRES', 'GCR')
             assert slvk[6] in ('XXXX')
             assert slvk[7] in ('XXXX')

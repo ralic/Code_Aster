@@ -1,4 +1,4 @@
-subroutine ascoma(meelem, numedd, solveu, lischa, matass)
+subroutine ascoma(meelem, numedd, lischa, matass)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,7 +31,6 @@ subroutine ascoma(meelem, numedd, solveu, lischa, matass)
 #include "asterfort/nmchex.h"
 #include "asterfort/reajre.h"
 #include "asterfort/wkvect.h"
-    character(len=19) :: solveu
     character(len=19) :: meelem(*)
     character(len=19) :: matass, lischa
     character(len=24) :: numedd
@@ -49,7 +48,6 @@ subroutine ascoma(meelem, numedd, solveu, lischa, matass)
 ! IN  MEELEM : LISTE DES MATR_ELEM
 ! IN  NUMEDD : NOM DE LA NUMEROTATION MECANIQUE
 ! IN  LISCHA : SD L_CHARGE
-! IN  SOLVEU : NOM DU SOLVEUR DE NEWTON
 ! OUT MATASS : MATRICE GLOBALE ASSEMBLEE
 !
 !
@@ -89,7 +87,7 @@ subroutine ascoma(meelem, numedd, solveu, lischa, matass)
         call jedetr('&&ASCOMA           .RELR')
         call reajre('&&ASCOMA', relr(k), 'V')
         zr(jcoef) = zr(jlicoe+k-1)
-        call asmatr(1, '&&ASCOMA           ', '&&ASCOMA.LISTE_COEF', numedd, solveu,&
+        call asmatr(1, '&&ASCOMA           ', '&&ASCOMA.LISTE_COEF', numedd, &
                     lischa, 'CUMU', 'V', 1, matass)
 777  end do
 !

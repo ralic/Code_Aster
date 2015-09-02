@@ -157,7 +157,7 @@ RESULT=STAT_NON_LINE(MODELE=MO,
                      CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
                                     ITER_GLOB_MAXI=100,),
                      SOLVEUR=_F(
-                                SYME='OUI',),);
+                                ),);
 #
 
 RESULT=STAT_NON_LINE(reuse =RESULT,
@@ -189,7 +189,7 @@ RESULT=STAT_NON_LINE(reuse =RESULT,
                      CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
                                     ITER_GLOB_MAXI=100,),
                      SOLVEUR=_F(
-                                SYME='OUI',),);
+                                ),);
 #
 ETA_PILO=RECU_FONCTION(RESULTAT=RESULT,NOM_PARA_RESU='ETA_PILOTAGE')
 

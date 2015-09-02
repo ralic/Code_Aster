@@ -1,4 +1,4 @@
-subroutine nminma(fonact, lischa, sddyna, solveu, numedd,&
+subroutine nminma(fonact, lischa, sddyna, numedd,&
                   numfix, meelem, measse)
 !
 ! ======================================================================
@@ -29,7 +29,7 @@ subroutine nminma(fonact, lischa, sddyna, solveu, numedd,&
 #include "asterfort/nmassm.h"
 #include "asterfort/nmchex.h"
     integer :: fonact(*)
-    character(len=19) :: lischa, sddyna, solveu
+    character(len=19) :: lischa, sddyna
     character(len=24) :: numedd, numfix
     character(len=19) :: meelem(*), measse(*)
 !
@@ -45,7 +45,6 @@ subroutine nminma(fonact, lischa, sddyna, solveu, numedd,&
 ! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
 ! IN  LISCHA : LISTE DES CHARGEMENTS
 ! IN  SDDYNA : SD DYNAMIQUE
-! IN  SOLVEU : SOLVEUR
 ! IN  NUMEDD : NUME_DDL (VARIABLE AU COURS DU CALCUL)
 ! IN  NUMFIX : NUME_DDL (FIXE AU COURS DU CALCUL)
 ! IN  MEELEM : MATRICES ELEMENTAIRES
@@ -95,7 +94,7 @@ subroutine nminma(fonact, lischa, sddyna, solveu, numedd,&
         if (niv .ge. 2) then
             write (ifm,*) '<MECANONLINE> ... MATR_ASSE DE MASSE'
         endif
-        call nmassm(fonact, lischa, solveu, numedd, numfix,&
+        call nmassm(fonact, lischa, numedd, numfix,&
                     'MEMASS', optass, meelem, masse)
     endif
 !
@@ -106,7 +105,7 @@ subroutine nminma(fonact, lischa, sddyna, solveu, numedd,&
             write (ifm,*) '<MECANONLINE> ... MATR_ASSE AMORTISSEMENT'
         endif
         optass = ' '
-        call nmassm(fonact, lischa, solveu, numedd, numfix,&
+        call nmassm(fonact, lischa,  numedd, numfix,&
                     'MEAMOR', optass, meelem, amort)
     endif
 !

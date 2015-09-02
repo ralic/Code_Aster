@@ -1,7 +1,7 @@
 subroutine nmflma(typmat, mod45 , defo  , ds_algopara, modelz,&
                   mate  , carele, sddisc, sddyna     , fonact,&
                   numins, valinc, solalg, lischa     , comref,&
-                  defico, resoco, solveu, numedd     , numfix,&
+                  defico, resoco, numedd     , numfix,&
                   compor, carcri, sdstat, sdtime     , meelem,&
                   measse, veelem, nddle , ddlexc     , modrig,&
                   ldccvg, matass, matgeo)
@@ -62,7 +62,7 @@ implicit none
     character(len=24) :: compor, carcri
     character(len=24) :: sdtime, sdstat
     integer :: numins, ldccvg, nddle
-    character(len=19) :: sddisc, sddyna, lischa, solveu
+    character(len=19) :: sddisc, sddyna, lischa
     character(len=24) :: defico, resoco
     character(len=24) :: comref, numedd, numfix, ddlexc
     character(len=19) :: meelem(*), measse(*), veelem(*)
@@ -100,7 +100,6 @@ implicit none
 ! IN  DEFICO : SD DEFINITION CONTACT
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
 ! In  ds_algopara      : datastructure for algorithm parameters
-! IN  SOLVEU : SOLVEUR
 ! IN  CARCRI : PARAMETRES METHODES D'INTEGRATION LOCALES (VOIR NMLECT)
 ! IN  SDDISC : SD DISC_INST
 ! IN  PREMIE : SI PREMIER INSTANT DE CALCUL
@@ -277,7 +276,7 @@ implicit none
         call nmxmat(modelz, mate, carele, compor, carcri,&
                     sddisc, sddyna, fonact, numins, iterat,&
                     valin2, solalg, lischa, comref, defico,&
-                    resoco, solveu, numedd, numfix, sdstat,&
+                    resoco, numedd, numfix, sdstat,&
                     sdtime, nbmatr, ltypma, loptme, loptma,&
                     lcalme, lassme, lcfint, meelem, measse,&
                     veelem, ldccvg, codere)
@@ -285,7 +284,7 @@ implicit none
 !
 ! --- ON RECONSTRUIT RIGI2 TOUJOURS SYMETRIQUE
 !
-    call asmari(fonact, meelem, numedd, solveu, lischa,&
+    call asmari(fonact, meelem, numedd, lischa,&
                 rigi2)
     matass = rigi2
 !
@@ -293,7 +292,7 @@ implicit none
 !
     if (reasma) then
         if (lsuiv) then
-            call ascoma(meelem, numedd, solveu, lischa, matass)
+            call ascoma(meelem, numedd, lischa, matass)
         endif
     endif
 !
@@ -311,7 +310,7 @@ implicit none
 !
     if (mod45 .eq. 'FLAM') then
         if (defo .eq. 0) then
-            call asmatr(1, megeom, ' ', numedd, solveu,&
+            call asmatr(1, megeom, ' ', numedd, &
                         lischa, 'ZERO', 'V', 1, matgeo)
             if ((nddle.ne.0) .and. (modrig(1:13).eq.'MODI_RIGI_OUI')) then
                 call matide(matgeo, nddle, zk8(jexx), modlag, tdiag,&
@@ -321,7 +320,7 @@ implicit none
             matgeo = matass
         endif
     else if (mod45 .eq. 'VIBR') then
-        call asmama(memass, ' ', numedd, solveu, lischa,&
+        call asmama(memass, ' ', numedd, lischa,&
                     matgeo)
     endif
 !

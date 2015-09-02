@@ -19,7 +19,7 @@
 !
 interface
     subroutine nmflam(option, modele, numedd, numfix     , carele,&
-                      compor, solveu, numins, mate       , comref,&
+                      compor, numins, mate       , comref,&
                       lischa, defico, resoco, ds_algopara, fonact,&
                       carcri, sdstat, sddisc, sdtime     , sddyna,&
                       sdpost, valinc, solalg, meelem     , measse,&
@@ -31,7 +31,6 @@ interface
         character(len=24) :: numfix
         character(len=24) :: carele
         character(len=24) :: compor
-        character(len=19) :: solveu
         integer :: numins
         character(len=24) :: mate
         character(len=24) :: comref

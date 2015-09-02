@@ -269,7 +269,7 @@ implicit none
 ! --- PRE-CALCUL DES MATR_ELEM CONSTANTES AU COURS DU CALCUL
 !
     call nminmc(fonact, lischa, sddyna, model, compor,&
-                solveu, numedd, numfix, sdcont_defi, resoco,&
+                numedd, numfix, sdcont_defi, resoco,&
                 carcri, solalg, valinc, mate, carele,&
                 sddisc, sdstat, sdtime, varc_refe, meelem,&
                 measse, veelem, codere)
@@ -349,7 +349,7 @@ implicit none
 !
 ! --- PRE-CALCUL DES MATR_ASSE CONSTANTES AU COURS DU CALCUL
 !
-    call nminma(fonact, lischa, sddyna, solveu, numedd,&
+    call nminma(fonact, lischa, sddyna, numedd,&
                 numfix, meelem, measse)
 !
 ! --- CREATION DE LA SD EVOL_NOLI

@@ -1,5 +1,5 @@
 subroutine nmpost(modele, mesh   , numedd  , numfix, carele     ,&
-                  compor, solveu , numins  , mate  , comref     ,&
+                  compor, numins  , mate  , comref     ,&
                   lischa, defico , resoco  , resocu, ds_algopara,&
                   fonact, carcri , ds_print, sdstat, sddisc     ,&
                   sdtime, sd_obsv, sderro  , sddyna, sdpost     ,&
@@ -46,7 +46,6 @@ implicit none
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=19) :: meelem(*)
     character(len=24) :: resoco, defico, resocu
-    character(len=19) :: solveu
     character(len=19) :: lischa, sdener
     character(len=19) :: sddisc, sddyna, sdpost
     character(len=19), intent(in) :: sd_obsv
@@ -83,7 +82,6 @@ implicit none
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
 ! In  ds_algopara      : datastructure for algorithm parameters
-! IN  SOLVEU : SOLVEUR
 ! IN  CARCRI : PARAMETRES METHODES D'INTEGRATION LOCALES (VOIR NMLECT)
 ! IN  NUMINS : NUMERO D'INSTANT
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
@@ -135,7 +133,7 @@ implicit none
         call nmtime(sdtime, 'INI', 'POST_TRAITEMENT')
         call nmtime(sdtime, 'RUN', 'POST_TRAITEMENT')
         call nmspec(modele  , numedd, numfix     , carele, compor,&
-                    solveu  , numins, mate       , comref, lischa,&
+                    numins, mate       , comref, lischa,&
                     defico  , resoco, ds_algopara, fonact, carcri,&
                     ds_print, sdstat, sdtime     , sddisc, valinc,&
                     solalg  , meelem, measse     , veelem, sddyna,&
@@ -147,7 +145,7 @@ implicit none
 !
     if (lener) then
         call nmener(valinc, veasse, measse, sddyna, eta   ,&
-                    sdener, fonact, solveu, numedd, numfix,&
+                    sdener, fonact, numedd, numfix,&
                     meelem, numins, modele, mate  , carele,&
                     compor, sdtime, sddisc, solalg, lischa,&
                     comref, resoco, resocu, veelem)

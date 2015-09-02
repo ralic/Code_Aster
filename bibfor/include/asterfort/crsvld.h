@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -15,18 +15,17 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine crsvld(motfac, solveu, istop, nprec, syme,&
-                      epsmat, mixpre, kmd, kellag, kxfem)
-        character(len=16) :: motfac
-        character(len=19) :: solveu
-        integer :: istop
-        integer :: nprec
-        character(len=3) :: syme
-        real(kind=8) :: epsmat
-        character(len=3) :: mixpre
-        character(len=3) :: kmd
-        character(len=3) :: kellag
-        character(len=8) :: kxfem
-    end subroutine crsvld
-end interface
+          interface 
+            subroutine crsvld(motfac,solveu,istop,nprec,epsmat,mixpre,  &
+     &kmd,kellag,kxfem)
+              character(len=16) :: motfac
+              character(len=19) :: solveu
+              integer :: istop
+              integer :: nprec
+              real(kind=8) :: epsmat
+              character(len=3) :: mixpre
+              character(len=3) :: kmd
+              character(len=3) :: kellag
+              character(len=8) :: kxfem
+            end subroutine crsvld
+          end interface 

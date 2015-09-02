@@ -245,7 +245,7 @@ implicit none
 ! --- POST-TRAITEMENTS
 !
     call nmpost(modele, mesh   , numedd  , numfix, carele     ,&
-                compor, solveu , numins  , mate  , comref     ,&
+                compor, numins  , mate  , comref     ,&
                 lischa, defico , resoco  , resocu, ds_algopara,&
                 fonact, carcri , ds_print, sdstat, sddisc     ,&
                 sdtime, sd_obsv, sderro  , sddyna, sdpost     ,&

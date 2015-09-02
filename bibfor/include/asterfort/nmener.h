@@ -19,7 +19,7 @@
 !
 interface
     subroutine nmener(valinc, veasse, measse, sddyna, eta   ,&
-                      sdener, fonact, solveu, numedd, numfix,&
+                      sdener, fonact, numedd, numfix,&
                       meelem, numins, modele, mate  , carele,&
                       compor, sdtime, sddisc, solalg, lischa,&
                       comref, resoco, resocu, veelem)
@@ -30,7 +30,6 @@ interface
         real(kind=8) :: eta
         character(len=19) :: sdener
         integer :: fonact(*)
-        character(len=19) :: solveu
         character(len=24) :: numedd
         character(len=24) :: numfix
         character(len=19) :: meelem(*)

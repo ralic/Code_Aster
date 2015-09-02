@@ -17,7 +17,7 @@
 !
 interface
     subroutine nminmc(fonact, lischa, sddyna, modele, compor,&
-                      solveu, numedd, numfix, defico, resoco,&
+                      numedd, numfix, defico, resoco,&
                       carcri, solalg, valinc, mate, carele,&
                       sddisc, sdstat, sdtime, comref, meelem,&
                       measse, veelem, codere)
@@ -26,7 +26,6 @@ interface
         character(len=19) :: sddyna
         character(len=24) :: modele
         character(len=24) :: compor
-        character(len=19) :: solveu
         character(len=24) :: numedd
         character(len=24) :: numfix
         character(len=24) :: defico

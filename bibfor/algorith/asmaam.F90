@@ -1,4 +1,4 @@
-subroutine asmaam(meamor, numedd, solveu, lischa, matamo)
+subroutine asmaam(meamor, numedd, lischa, matamo)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,7 +23,7 @@ subroutine asmaam(meamor, numedd, solveu, lischa, matamo)
     character(len=19) :: meamor
     character(len=24) :: numedd
     character(len=19) :: matamo
-    character(len=19) :: solveu, lischa
+    character(len=19) :: lischa
 !
 ! ----------------------------------------------------------------------
 !
@@ -37,11 +37,10 @@ subroutine asmaam(meamor, numedd, solveu, lischa, matamo)
 ! IN  MEAMOR : MATRICES ELEMENTAIRES D'AMORTISSEMENT
 ! IN  NUMEDD : NOM DE LA NUMEROTATION MECANIQUE
 ! IN  LISCHA : SD L_CHARGE
-! IN  SOLVEU : NOM DU SOLVEUR DE NEWTON
 ! OUT MATAMO : MATRICE D'AMORTISSEMENT ASSEMBLEE
 !
 ! ----------------------------------------------------------------------
 !
-    call asmatr(1, meamor, ' ', numedd, solveu,&
+    call asmatr(1, meamor, ' ', numedd, &
                 lischa, 'ZERO', 'V', 1, matamo)
 end subroutine

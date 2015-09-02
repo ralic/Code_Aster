@@ -1,4 +1,4 @@
-subroutine nmmass(fonact, lischa, sddyna, solveu, numedd,&
+subroutine nmmass(fonact, lischa, sddyna, numedd,&
                   numfix, meelem, masse)
 !
 ! ======================================================================
@@ -27,7 +27,7 @@ subroutine nmmass(fonact, lischa, sddyna, solveu, numedd,&
 #include "asterfort/ndynlo.h"
 #include "asterfort/nmassm.h"
     integer :: fonact(*)
-    character(len=19) :: lischa, sddyna, solveu
+    character(len=19) :: lischa, sddyna
     character(len=24) :: numedd, numfix
     character(len=19) :: meelem(*)
 !
@@ -43,7 +43,6 @@ subroutine nmmass(fonact, lischa, sddyna, solveu, numedd,&
 ! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
 ! IN  LISCHA : LISTE DES CHARGEMENTS
 ! IN  SDDYNA : SD DYNAMIQUE
-! IN  SOLVEU : SOLVEUR
 ! IN  NUMEDD : NUME_DDL (VARIABLE AU COURS DU CALCUL)
 ! IN  NUMFIX : NUME_DDL (FIXE AU COURS DU CALCUL)
 ! IN  MEELEM : MATRICES ELEMENTAIRES
@@ -76,7 +75,7 @@ subroutine nmmass(fonact, lischa, sddyna, solveu, numedd,&
             ASSERT(.false.)
         endif
         masse = '&&NMMASS.MASSENER'
-        call nmassm(fonact, lischa, solveu, numedd, numfix,&
+        call nmassm(fonact, lischa, numedd, numfix,&
                     'MEMASS', optass, meelem, masse)
         call mtdscr(masse)
     endif

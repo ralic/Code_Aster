@@ -114,7 +114,7 @@ UCTCC=STAT_NON_LINE(MODELE=MO,
                 INCREMENT=_F(LIST_INST=LISTIN1,),
                 NEWTON=_F(MATRICE='ELASTIQUE',
                           REAC_ITER=1,),
-                SOLVEUR=_F(SYME='OUI',),
+                SOLVEUR=_F(),
                 INFO=1,);
 
 TEST_RESU(RESU=_F(NUME_ORDRE=2,
@@ -214,7 +214,7 @@ ENCAST2=AFFE_CHAR_CINE(MODELE=MOMACR,
 
 UMCTCC=STAT_NON_LINE(MODELE=MOMACR,
                 CHAM_MATER=CHMAT2,
-                SOLVEUR=_F(SYME='OUI',),
+                SOLVEUR=_F(),
                 EXCIT=(
                         _F(CHARGE=ENCAST2,),
                       ),
@@ -258,7 +258,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
 
 UMCTCD=STAT_NON_LINE(MODELE=MOMACR,
                    CHAM_MATER=CHMAT2,
-                   SOLVEUR=_F(SYME='OUI',),
+                   SOLVEUR=_F(),
                 EXCIT=(
                         _F(CHARGE=ENCAST2,),
                       ),

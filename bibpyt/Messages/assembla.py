@@ -145,10 +145,9 @@ Risques et conseils :
  noeud incorrect
 """),
 
-    39 : _(u"""
- le phénomène  %(k1)s  n'est pas admis pour la symétrisation des matrices.
- seuls sont admis les phénomènes "MECANIQUE" et "THERMIQUE"
-"""),
+
+
+
 
     41 : _(u"""
  le noeud  : %(i1)d  du RESUEL : %(k1)s  du VECT_ELEM  : %(k2)s

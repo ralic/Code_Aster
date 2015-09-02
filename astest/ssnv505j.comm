@@ -160,7 +160,7 @@ RESUD=STAT_NON_LINE(MODELE=MO,
                                   GROUP_MA='POUHAU',),),
                     INCREMENT=_F(LIST_INST=L_TEMPS,),
                     NEWTON=_F(REAC_ITER=1,),
-                    SOLVEUR=_F(SYME='OUI',),
+                    SOLVEUR=_F(),
                     CONVERGENCE=_F(ITER_GLOB_MAXI=41,),
                     ARCHIVAGE=_F(LIST_INST=L_ARCH,),);
 

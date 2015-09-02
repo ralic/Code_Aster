@@ -224,7 +224,7 @@ TEST_RESU(RESU=(_F(GROUP_NO='B1',
                    RESULTAT=RESU1,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC=0.757152254903,
+                   VALE_CALC=0.757151755763,
                    TOLE_MACHINE=5.E-5,                  # TODO TOLE_MACHINE
                    ),
                 _F(GROUP_NO='A2',
@@ -241,7 +241,7 @@ TEST_RESU(RESU=(_F(GROUP_NO='B1',
                    RESULTAT=RESU1,
                    NOM_CHAM='VITE',
                    NOM_CMP='DX',
-                   VALE_CALC=78447.6579193,
+                   VALE_CALC=78447.7043926,
                    TOLE_MACHINE=5.E-5,                  # TODO TOLE_MACHINE
                    ),
                 _F(GROUP_NO='A2',
@@ -270,7 +270,7 @@ TEST_TABLE(CRITERE='ABSOLU',
            )
 
 TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=289.965138687,
+           VALE_CALC=289.964718992,
            TOLE_MACHINE=5.E-5,                  # TODO TOLE_MACHINE
            NOM_PARA='R',
            TABLE=CONTB1_1,
@@ -412,7 +412,7 @@ TEST_RESU(RESU=(_F(GROUP_NO='B1',
                    RESULTAT=RESU2,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC=0.759618818253,
+                   VALE_CALC=0.759617910969,
                    TOLE_MACHINE=5.E-5,                  # TODO TOLE_MACHINE
                    ),
                 _F(GROUP_NO='A2',
@@ -429,7 +429,7 @@ TEST_RESU(RESU=(_F(GROUP_NO='B1',
                    RESULTAT=RESU2,
                    NOM_CHAM='VITE',
                    NOM_CMP='DX',
-                   VALE_CALC=86687.0297893,
+                   VALE_CALC=86687.0273109,
                    TOLE_MACHINE=5.E-5,                  # TODO TOLE_MACHINE
                    ),
                 _F(GROUP_NO='A2',
@@ -458,7 +458,7 @@ TEST_TABLE(CRITERE='ABSOLU',
            )
 
 TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=277.996686665,
+           VALE_CALC=277.996903856,
            TOLE_MACHINE=2.E-04,                  # TODO TOLE_MACHINE
            NOM_PARA='R',
            TABLE=CONTB1_2,

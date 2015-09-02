@@ -122,7 +122,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
                    COMPORTEMENT=_F(RELATION='ELAS',
                                 DEFORMATION='GROT_GDEP',),
                    INCREMENT=_F(LIST_INST=LINST,),
-                   SOLVEUR=_F(SYME='OUI',
+                   SOLVEUR=_F(
                               METHODE='LDLT'),
                    NEWTON=_F(MATRICE='TANGENTE',
                              REAC_ITER=1,),

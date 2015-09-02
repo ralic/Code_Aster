@@ -425,7 +425,7 @@ for Raff in range(0,Nb_Raffinement):
                                  _F(CHARGE=ForceInt,FONC_MULT=RAMPE),
                                  _F(CHARGE=BlocEscl,),
                                  ),
-                          SOLVEUR=_F(SYME='OUI',
+                          SOLVEUR=_F(
                                      METHODE='GCPC',PRE_COND='LDLT_INC',RENUM='SANS',
 #                                     METHODE='GCPC',PRE_COND='LDLT_SP',
                                      ),

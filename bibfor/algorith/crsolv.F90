@@ -35,7 +35,6 @@ subroutine crsolv(method, renum, solve, bas)
     integer :: zslvk, zslvr, zslvi
     real(kind=8) :: epsmat
     character(len=1) :: base
-    character(len=3) :: syme
     character(len=8) :: preco
     character(len=19) :: solveu
 !
@@ -49,7 +48,6 @@ subroutine crsolv(method, renum, solve, bas)
     base = bas
 !
     preco = 'SANS'
-    syme = 'NON'
 !
     resire = 1.d-6
     nprec = 8
@@ -80,7 +78,7 @@ subroutine crsolv(method, renum, solve, bas)
         zk24(islvk-1+6) = 'XXXX'
     endif
     zk24(islvk-1+4) = renum
-    zk24(islvk-1+5) = syme
+    zk24(islvk-1+5) = 'XXXX'
     zk24(islvk-1+7) = 'XXXX'
     zk24(islvk-1+8) = 'XXXX'
     zk24(islvk-1+9) = 'XXXX'

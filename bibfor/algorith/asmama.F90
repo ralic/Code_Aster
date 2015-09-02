@@ -1,4 +1,4 @@
-subroutine asmama(memasz, medirz, numedd, solveu, lischa,&
+subroutine asmama(memasz, medirz, numedd, lischa,&
                   matmas)
 !
 ! ======================================================================
@@ -25,8 +25,8 @@ subroutine asmama(memasz, medirz, numedd, solveu, lischa,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
     character(len=24) :: numedd
+    character(len=19) :: lischa
     character(len=*) :: memasz, matmas, medirz
-    character(len=19) :: solveu, lischa
 !
 ! ----------------------------------------------------------------------
 !
@@ -41,7 +41,6 @@ subroutine asmama(memasz, medirz, numedd, solveu, lischa,&
 ! IN  MEDIRZ : MATRICES ELEMENTAIRES DE DIRICHLET
 ! IN  NUMEDD : NOM DE LA NUMEROTATION MECANIQUE
 ! IN  LISCHA : SD L_CHARGE
-! IN  SOLVEU : NOM DU SOLVEUR DE NEWTON
 ! OUT MATMAS : MATRICE DE MASSE ASSEMBLEE
 !
 !
@@ -57,12 +56,12 @@ subroutine asmama(memasz, medirz, numedd, solveu, lischa,&
     memass = memasz
 !
     if (mediri .eq. ' ') then
-        call asmatr(1, memass, ' ', numedd, solveu,&
+        call asmatr(1, memass, ' ', numedd, &
                     lischa, 'ZERO', 'V', 1, matmas)
     else
         tlimat(1) = memass
         tlimat(2) = mediri
-        call asmatr(2, tlimat, ' ', numedd, solveu,&
+        call asmatr(2, tlimat, ' ', numedd, &
                     lischa, 'ZERO', 'V', 1, matmas)
     endif
 !

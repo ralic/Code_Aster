@@ -101,7 +101,7 @@ RESU=DYNA_NON_LINE(MODELE=MODELE,
                                    FORMULATION='DEPLACEMENT',
                                    ALPHA=-0.1,),
                    NEWTON=_F(MATRICE='TANGENTE',),
-                   SOLVEUR=_F(SYME='OUI',
+                   SOLVEUR=_F(
                               METHODE='MULT_FRONT',),);
 #
 # TEST DE LA CONFORMITE AVEC LA SOLUTION DE REFERENCE ANALYTIQUE

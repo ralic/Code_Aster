@@ -19,7 +19,7 @@
 !
 interface
     subroutine nmpost(modele, mesh   , numedd  , numfix, carele     ,&
-                      compor, solveu , numins  , mate  , comref     ,&
+                      compor, numins  , mate  , comref     ,&
                       lischa, defico , resoco  , resocu, ds_algopara,&
                       fonact, carcri , ds_print, sdstat, sddisc     ,&
                       sdtime, sd_obsv, sderro  , sddyna, sdpost     ,&
@@ -32,7 +32,6 @@ interface
         character(len=24) :: numfix
         character(len=24) :: carele
         character(len=24) :: compor
-        character(len=19) :: solveu
         integer :: numins
         character(len=24) :: mate
         character(len=24) :: comref
