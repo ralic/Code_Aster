@@ -51,6 +51,7 @@ subroutine utmess_core(typ, idmess, nk, valk, ni,&
     common /utexc /  nexcep
 !
     integer :: recurs
+    character(len=24) :: msgId, firstMsgId = "?"
     character(len=16) :: compex
     character(len=8) :: nomres, k8b
     character(len=2) :: typm
@@ -58,7 +59,7 @@ subroutine utmess_core(typ, idmess, nk, valk, ni,&
     integer :: lout, idf, i, lc, imaap
     integer :: numex
 !
-    save             recurs
+    save             recurs, firstMsgId
 !
 !     TYPES DE MESSAGES :
 !     ERREURS :
@@ -74,6 +75,7 @@ subroutine utmess_core(typ, idmess, nk, valk, ni,&
 !
 !     LE TRACEBACK INTEL, SI DISPO, EST AFFICHE EN CAS D'ERREUR OU
 !     EXCEPTION DVP_NNN, OU ERREUR 'D' CAR SUIVIE DE MPI_ABORT
+    msgId = idmess
     typm = typ
     idf = index('EFIMASZD', typm(1:1))
     ASSERT(idf .ne. 0)
@@ -101,11 +103,14 @@ subroutine utmess_core(typ, idmess, nk, valk, ni,&
 !     DOIT-ON S'ARRETER BRUTALEMENT (POUR DEBUG) ?
     labort = idf.eq.2 .and. compex(1:lout).eq.'ABORT'
 !     AFFICHIER LE TRACEBACK SI DISPONIBLE
-    ltrb = labort .or. (lerror .and. idmess(1:4).eq.'DVP_') .or. idf.eq.8
+    ltrb = labort .or. (lerror .and. msgId(1:4).eq.'DVP_') .or. idf.eq.8
 !
     suite = .false.
     if (len(typm) .gt. 1) then
         if (typm(2:2) .eq. '+') suite=.true.
+    endif
+    if ( firstMsgId .eq. "?" ) then
+        firstMsgId = msgId
     endif
 !
 ! --- SE PROTEGER DES APPELS RECURSIFS POUR LES MESSAGES D'ERREUR
@@ -138,7 +143,7 @@ subroutine utmess_core(typ, idmess, nk, valk, ni,&
         numex = 21
     endif
 !
-    call utprin(typm, numex, idmess, nk, valk,&
+    call utprin(typm, numex, msgId, nk, valk,&
                 ni, vali, nr, valr, fname)
 !
 !     --- REMONTEE D'ERREUR SI DISPO
@@ -210,10 +215,16 @@ subroutine utmess_core(typ, idmess, nk, valk, ni,&
             if (lerror) recurs = 0
             lstop = .true.
             if (.not. lerrm) then
+!               raise the exception with the first msg id & reinit id
+                msgId = firstMsgId
+                firstMsgId = "?"
                 call ib1mai()
-                call uexcep(numex, idmess, nk, valk, ni,&
+                call uexcep(numex, msgId, nk, valk, ni,&
                             vali, nr, valr)
             endif
+        else
+!           info/warning, reinit id
+            firstMsgId = "?"
         endif
 !
     endif

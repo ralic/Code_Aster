@@ -43,7 +43,7 @@ class error(Exception):
             err = arg0[-1]
             arg0, valk, vali, valr = err.id_message, err.valk, err.vali, err.valr
         assert type(arg0) in (str, unicode), arg0
-        self.id_message = arg0
+        self.id_message = arg0.strip()
         self.valk = valk or ()
         self.vali = vali or ()
         self.valr = valr or ()

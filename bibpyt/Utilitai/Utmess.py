@@ -168,6 +168,7 @@ class MESSAGE_LOGGER(Singleton):
 
         # si on n'attend pas une suite, ...
         if is_last_message(code):
+            id0 = self.get_current_id().strip()
             # vérification des compteurs
             self.check_limit()
 
@@ -185,8 +186,8 @@ class MESSAGE_LOGGER(Singleton):
                         self.affiche(unite, txt)
                 exc_typ = dictmess.get('exc_typ')
                 if exc_typ:
-                    raise exc_typ(idmess, valk, vali, valr)
-                raise error(idmess, valk, vali, valr)
+                    raise exc_typ(id0, valk, vali, valr)
+                raise error(id0, valk, vali, valr)
         return None
 
     def build_dict_args(self, valk, vali, valr):
