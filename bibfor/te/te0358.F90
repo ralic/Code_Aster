@@ -9,7 +9,7 @@ implicit none
 #include "asterfort/jevech.h"
 #include "asterfort/meta_vpta_coef.h"
 #include "asterfort/get_meta_phasis.h"
-#include "asterfort/get_meta_type.h"
+#include "asterfort/get_meta_id.h"
 #include "asterfort/get_elas_para.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/tecach.h"
@@ -52,10 +52,10 @@ implicit none
     integer :: j_compor
     character(len=16) :: type_phas, rela_comp, valk(2)
     integer :: j_mate, j_mater
-    integer :: meta_type, nb_phasis
+    integer :: meta_id, nb_phasis
     real(kind=8) :: young, nu, deuxmu
     integer :: j_sigm
-    integer :: nb_sigm, elas_type
+    integer :: nb_sigm, elas_id
     integer :: j_poids, j_vf, j_dfde, j_geom
     integer :: nno, ipg, npg, jtab(7)
     integer :: j_vectu
@@ -94,14 +94,14 @@ implicit none
 ! - Cannot evaluate command variables effect for Mfront behaviors
 !
     if ((rela_comp.eq.'MFRONT').or.(rela_comp.eq.'AnisoLemaitre')) then
-        goto 99 
+        goto 99
     endif
 !
 ! - Get type of phasis
 !
-    call get_meta_type(meta_type, nb_phasis)
+    call get_meta_id(meta_id, nb_phasis)
     ASSERT(nb_phasis.le.5)
-    if ((meta_type.eq.0).or.(rela_comp.eq.'META_LEMA_ANI')) then
+    if ((meta_id.eq.0).or.(rela_comp.eq.'META_LEMA_ANI')) then
         goto 99
     endif
 !
@@ -110,12 +110,12 @@ implicit none
     type_phas = zk16(j_compor+7)
     valk(1) = type_phas
     if (type_phas.eq.'ACIER') then
-        if (meta_type.ne.1) then
+        if (meta_id.ne.1) then
             valk(2) = 'ZIRC'
             call utmess('F', 'COMPOR3_8', nk = 2, valk = valk)
         endif
     elseif (type_phas.eq.'ZIRC') then
-        if (meta_type.ne.2) then
+        if (meta_id.ne.2) then
             valk(2) = 'ACIER'
             call utmess('F', 'COMPOR3_8', nk = 2, valk = valk)
         endif
@@ -131,7 +131,7 @@ implicit none
 ! - Internal variables
 !
     call jevech('PVARIPR', 'L', j_vari)
-!    
+!
 ! - Material parameters
 !
     call jevech('PMATERC', 'L', j_mate)
@@ -147,7 +147,7 @@ implicit none
     end do
 !
     do ipg = 1, npg
-        k=(ipg-1)*nno 
+        k=(ipg-1)*nno
 !
 ! ----- Derived of shape functions
 !
@@ -164,23 +164,23 @@ implicit none
 !
         phas_prev(:) = 0.d0
         phas_curr(:) = 0.d0
-        call get_meta_phasis(fami     , '-'      , ipg        , ispg, meta_type,&
+        call get_meta_phasis(fami     , '-'      , ipg        , ispg, meta_id,&
                              nb_phasis, phas_prev)
-        call get_meta_phasis(fami     , '+'      , ipg        , ispg, meta_type,&
+        call get_meta_phasis(fami     , '+'      , ipg        , ispg, meta_id,&
                              nb_phasis, phas_curr, zcold_ = zcold_curr)
 !
 ! ----- Get elastic parameters
 !
         call get_elas_para(fami, j_mater , '+', ipg,&
-                           ispg, elas_type,&
+                           ispg, elas_id,&
                            e  = young , nu = nu)
-        ASSERT(elas_type.eq.1)
+        ASSERT(elas_id.eq.1)
         deuxmu = young/(1.d0+nu)
 !
 ! ----- Compute coefficients for second member
 !
         call meta_vpta_coef(rela_comp, lgpg      , fami     , ipg      , j_mater  ,&
-                            l_temp   , temp      , meta_type, nb_phasis, phas_prev,&
+                            l_temp   , temp      , meta_id,   nb_phasis, phas_prev,&
                             phas_curr, zcold_curr, young    , deuxmu   , coef     ,&
                             trans)
 !

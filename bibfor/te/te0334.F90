@@ -7,7 +7,7 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/calcgr.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/get_elas_type.h"
+#include "asterfort/get_elas_id.h"
 #include "asterfort/get_elas_para.h"
 #include "asterfort/epsvmc.h"
 #include "asterfort/jevech.h"
@@ -57,7 +57,7 @@ implicit none
     integer :: imate, nbvari, ivari, jtab(7), iret
     real(kind=8) :: c1, c2, trsig
     real(kind=8) :: repere(7), nharm, e, nu, zero, un, time
-    integer :: elas_type
+    integer :: elas_id
     character(len=16) :: optio2, kit_comp_2, rela_comp, elas_keyword
     aster_logical :: l_creep
 !
@@ -117,8 +117,8 @@ implicit none
 !
 ! - Elasticity: only isotropic and not metallurgy except META_LEMA_ANI !
 !
-    call get_elas_type(zi(imate), elas_type, elas_keyword)
-    if (elas_type.eq.1) then
+    call get_elas_id(zi(imate), elas_id, elas_keyword)
+    if (elas_id.eq.1) then
         if (elas_keyword.eq.'ELAS_META') then
             if (rela_comp.ne.'META_LEMA_ANI') then
                 call utmess('F', 'ELEMENTS6_1')
@@ -170,8 +170,8 @@ implicit none
 ! ----- Get elastic parameters (only isotropic elasticity)
 !
         call get_elas_para('RIGI', zi(imate), '+', igau, 1,&
-                           elas_type, time = time, e = e, nu = nu)
-        ASSERT(elas_type.eq.1)
+                           elas_id, time = time, e = e, nu = nu)
+        ASSERT(elas_id.eq.1)
 !
 ! ----- Compute creep strains (current Gauss point)
 !

@@ -6,7 +6,7 @@ implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfdm3d.h"
-#include "asterfort/get_meta_type.h"
+#include "asterfort/get_meta_id.h"
 #include "asterfort/get_meta_phasis.h"
 #include "asterfort/get_elas_para.h"
 #include "asterfort/elrefe_info.h"
@@ -58,8 +58,8 @@ implicit none
     real(kind=8) :: epsth, epsthe(3)
     real(kind=8) :: dfdx(27), dfdy(27), dfdz(27)
     real(kind=8) :: poids
-    integer :: nb_node, ispg, kp, npg, i_node, elas_type
-    integer :: meta_type, nb_phasis
+    integer :: nb_node, ispg, kp, npg, i_node, elas_id
+    integer :: meta_id, nb_phasis
     integer :: ipoids, idfde
     integer :: j_geom, j_mate, j_mater, j_vect
 !
@@ -72,8 +72,8 @@ implicit none
 !
 ! - Get metallurgy type
 !
-    call get_meta_type(meta_type, nb_phasis)
-    if (meta_type .eq. 0) then
+    call get_meta_id(meta_id, nb_phasis)
+    if (meta_id .eq. 0) then
         l_meta = .false.
         goto 999
     endif
@@ -107,7 +107,7 @@ implicit none
 !
 ! ----- Get phasis
 !
-        call get_meta_phasis('RIGI', '+', kp, ispg, meta_type,&
+        call get_meta_phasis('RIGI', '+', kp, ispg, meta_id,&
                              nb_phasis,&
                              zcold_ = zcold, zhot_ = zhot)
 !
@@ -119,8 +119,8 @@ implicit none
 ! ----- Get elastic parameters
 !
         call get_elas_para('RIGI', j_mater, '+', kp, ispg,&
-                           elas_type, e = young, nu = nu)
-        ASSERT(elas_type.eq.1)
+                           elas_id, e = young, nu = nu)
+        ASSERT(elas_id.eq.1)
 !
 ! ----- Get thermal parameters
 !

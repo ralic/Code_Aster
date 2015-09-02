@@ -1,4 +1,4 @@
-subroutine get_elas_type(j_mater, elas_type, elas_keyword)
+subroutine get_elas_id(j_mater, elas_id, elas_keyword)
 !
 implicit none
 !
@@ -23,7 +23,7 @@ implicit none
 ! ======================================================================
 !
     integer, intent(in) :: j_mater
-    integer, intent(out) :: elas_type
+    integer, intent(out) :: elas_id
     character(len=*), optional, intent(out) :: elas_keyword
 !
 ! --------------------------------------------------------------------------------------------------
@@ -35,7 +35,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  j_mater      : coded material address
-! Out elas_type    : Type of elasticity
+! Out elas_id      : Type of elasticity
 !                 1 - Isotropic
 !                 2 - Orthotropic
 !                 3 - Transverse isotropic
@@ -61,11 +61,11 @@ implicit none
         elas_keyword_in.eq.'ELAS_GLRC'.or.&
         elas_keyword_in.eq.'ELAS_DHRC'.or.&
         elas_keyword_in.eq.'ELAS_COQUE') then
-        elas_type = 1
+        elas_id = 1
     elseif (elas_keyword_in.eq.'ELAS_ORTH') then
-        elas_type = 2
+        elas_id = 2
     elseif (elas_keyword_in.eq.'ELAS_ISTR') then
-        elas_type = 3
+        elas_id = 3
     else
         call utmess('F','COMPOR5_15', sk = elas_keyword_in)
     endif

@@ -16,7 +16,7 @@ implicit none
 #include "asterfort/mgauss.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/verift.h"
-#include "asterfort/get_meta_type.h"
+#include "asterfort/get_meta_id.h"
 #include "asterfort/get_meta_phasis.h"
 !
 ! ======================================================================
@@ -91,7 +91,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, j, k, nb_phasis, ndimsi, meta_type
+    integer :: i, j, k, nb_phasis, ndimsi, meta_id
     integer :: ire2
     integer :: iter, itemax
     real(kind=8) :: tm, tp, tref, temp, dt
@@ -154,19 +154,19 @@ implicit none
 !
 ! - Get metallurgy type
 !
-    call get_meta_type(meta_type, nb_phasis)
-    ASSERT(meta_type.eq.2)
+    call get_meta_id(meta_id, nb_phasis)
+    ASSERT(meta_id.eq.2)
     ASSERT(nb_phasis.eq.3)
 !
 ! - Get phasis
 !
     if (resi) then
-        call get_meta_phasis(fami     , '+'  , kpg   , ksp , meta_type,&
+        call get_meta_phasis(fami     , '+'  , kpg   , ksp , meta_id,&
                              nb_phasis, phase, zcold_ = zalpha, tole_bound_ = tole_bound)
-        call get_meta_phasis(fami     , '-'  , kpg   , ksp , meta_type,&
+        call get_meta_phasis(fami     , '-'  , kpg   , ksp , meta_id,&
                              nb_phasis, phasm)
     else
-        call get_meta_phasis(fami     , '-'  , kpg   , ksp , meta_type,&
+        call get_meta_phasis(fami     , '-'  , kpg   , ksp , meta_id,&
                              nb_phasis, phase, zcold_ = zalpha, tole_bound_ = tole_bound)
     endif
 !

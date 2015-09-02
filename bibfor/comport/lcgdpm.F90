@@ -16,7 +16,7 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/verift.h"
 #include "asterfort/zerop3.h"
-#include "asterfort/get_meta_type.h"
+#include "asterfort/get_meta_id.h"
 #include "asterfort/get_meta_phasis.h"
 !
 ! ======================================================================
@@ -84,7 +84,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jprol, jvale, nbval(5), maxval, nb_phasis, meta_type
+    integer :: jprol, jvale, nbval(5), maxval, nb_phasis, meta_id
     integer :: i, j, k, l, mode, iret2
     integer :: ind(3, 3), nbr
     real(kind=8) :: phase(5), phasm(5), zalpha
@@ -145,21 +145,21 @@ implicit none
 !
 ! - Get metallurgy type
 !
-    call get_meta_type(meta_type, nb_phasis)
-    ASSERT(meta_type.eq.1)
+    call get_meta_id(meta_id, nb_phasis)
+    ASSERT(meta_id.eq.1)
     ASSERT(nb_phasis.eq.5)
 !
 ! - Get phasis
 !
     if (resi) then
         poum = '+'
-        call get_meta_phasis(fami     , '+'  , kpg   , ksp , meta_type,&
+        call get_meta_phasis(fami     , '+'  , kpg   , ksp , meta_id,&
                              nb_phasis, phase, zcold_ = zalpha)
-        call get_meta_phasis(fami     , '-'  , kpg   , ksp , meta_type,&
+        call get_meta_phasis(fami     , '-'  , kpg   , ksp , meta_id,&
                              nb_phasis, phasm)
     else
         poum = '-'
-        call get_meta_phasis(fami     , '-'  , kpg   , ksp , meta_type,&
+        call get_meta_phasis(fami     , '-'  , kpg   , ksp , meta_id,&
                              nb_phasis, phase, zcold_ = zalpha)
     endif
 !

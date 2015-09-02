@@ -15,8 +15,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine get_meta_type(meta_type, nb_phasis)
-        integer, intent(out) :: meta_type
-        integer, intent(out) :: nb_phasis
-    end subroutine get_meta_type
+    subroutine get_elas_id(j_mater, elas_id, elas_keyword)
+        integer, intent(in) :: j_mater
+        integer, intent(out) :: elas_id
+        character(len=*), optional, intent(out) :: elas_keyword
+    end subroutine get_elas_id
 end interface

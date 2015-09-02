@@ -10,7 +10,7 @@ implicit none
 #include "asterfort/jevech.h"
 #include "asterfort/nbsigm.h"
 #include "asterfort/ortrep.h"
-#include "asterfort/get_elas_type.h"
+#include "asterfort/get_elas_id.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -49,7 +49,7 @@ implicit none
     real(kind=8) :: repere(7), xyzgau(3), instan, nharm, bary(3)
     integer :: ndim, nno, nnos, npg1, ipoids, ivf, idfde,dimmod
     integer :: idim
-    integer :: elas_type
+    integer :: elas_id
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -82,12 +82,12 @@ implicit none
     call jevech('PGEOMER', 'L', igeom)
 !
 ! - Material parameters
-! 
+!
     call jevech('PMATERC', 'L', imate)
 !
 ! - Get type of elasticity (Isotropic/Orthotropic/Transverse isotropic)
 !
-    call get_elas_type(zi(imate), elas_type)
+    call get_elas_id(zi(imate), elas_id)
 !
 ! - Orthotropic parameters
 !
@@ -122,7 +122,7 @@ implicit none
 ! ----- Compute rigidity matrix [K] = [B]Tx[D]x[B]
 !
         call btdbmc(b, d, jacgau, dimmod, nno,&
-                    nbsig, elas_type, btdb)
+                    nbsig, elas_id, btdb)
 !
     end do
 !

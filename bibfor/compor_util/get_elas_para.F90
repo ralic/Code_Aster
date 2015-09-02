@@ -1,5 +1,5 @@
 subroutine get_elas_para(fami     , j_mater, poum, ipg, ispg, &
-                         elas_type,&
+                         elas_id,&
                          time     , temp,&
                          e   , nu  , g,&
                          e1  , e2  , e3,&
@@ -10,7 +10,7 @@ implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/hypmat.h"
-#include "asterfort/get_elas_type.h"
+#include "asterfort/get_elas_id.h"
 #include "asterfort/rcvalb.h"
 !
 ! ======================================================================
@@ -35,7 +35,7 @@ implicit none
     character(len=*), intent(in) :: poum
     integer, intent(in) :: ipg
     integer, intent(in) :: ispg
-    integer, intent(out) :: elas_type
+    integer, intent(out) :: elas_id
     real(kind=8), optional, intent(in) :: time
     real(kind=8), optional, intent(in) :: temp
     real(kind=8), optional, intent(out) :: e
@@ -66,7 +66,7 @@ implicit none
 ! In  poum         : '-' or '+' for parameters evaluation (previous or current temperature)
 ! In  ipg          : current point gauss
 ! In  ispg         : current "sous-point" gauss
-! Out elas_type    : Type of elasticity
+! Out elas_id    : Type of elasticity
 !                 1 - Isotropic
 !                 2 - Orthotropic
 !                 3 - Transverse isotropic
@@ -117,9 +117,9 @@ implicit none
 !
 ! - Get type of elasticity (Isotropic/Orthotropic/Transverse isotropic)
 !
-    call get_elas_type(j_mater, elas_type, elas_keyword)
+    call get_elas_id(j_mater, elas_id, elas_keyword)
 !
-    if (elas_type.eq.1) then
+    if (elas_id.eq.1) then
         if (elas_keyword.eq.'ELAS_HYPER') then
             call hypmat(fami, ipg, ispg, poum, j_mater,&
                         c10, c01, c20, k)
@@ -143,7 +143,7 @@ implicit none
             ASSERT(present(nu))
             g = 1.d0/((1.d0+nu)*(1.d0-2.d0*nu))
         endif
-    elseif (elas_type.eq.2) then
+    elseif (elas_id.eq.2) then
         nomres(1) = 'E_L'
         nomres(2) = 'E_T'
         nomres(3) = 'E_N'
@@ -166,7 +166,7 @@ implicit none
         g1 = valres(7)
         g2 = valres(8)
         g3 = valres(9)
-    elseif (elas_type.eq.3) then
+    elseif (elas_id.eq.3) then
         nomres(1) = 'E_L'
         nomres(2) = 'E_N'
         nomres(3) = 'NU_LT'

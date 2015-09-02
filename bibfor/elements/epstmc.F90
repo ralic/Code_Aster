@@ -7,7 +7,7 @@ implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/matrot.h"
-#include "asterfort/get_elas_type.h"
+#include "asterfort/get_elas_id.h"
 #include "asterfort/get_elas_para.h"
 #include "asterfort/calc_epth_elga.h"
 #include "asterfort/rcvalb.h"
@@ -57,7 +57,7 @@ implicit none
 !
 ! In  fami         : Gauss family for integration point rule
 ! In  ndim         : dimension of space
-! In  poum         : parameters evaluation 
+! In  poum         : parameters evaluation
 !                     '-' for previous temperature
 !                     '+' for current temperature
 !                     'T' for current and previous temperature
@@ -77,7 +77,7 @@ implicit none
     character(len=16) :: nomres(nbres)
     real(kind=8) :: valres(nbres)
 !
-    integer :: nbv, elas_type
+    integer :: nbv, elas_id
     real(kind=8) :: biot, e
     character(len=8) :: nompar
     character(len=32) :: phenom
@@ -149,7 +149,7 @@ implicit none
                 call utmess('I', 'COMPOR5_13')
             endif
             call get_elas_para(fami     , j_mater, poum, kpg, ksp, &
-                               elas_type,&
+                               elas_id,&
                                time     = instan,&
                                e   = e, nu = nu )
             troisk = e/(1.d0-2.d0*nu)

@@ -7,7 +7,7 @@ implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/get_elasth_para.h"
-#include "asterfort/get_elas_type.h"
+#include "asterfort/get_elas_id.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
@@ -50,7 +50,7 @@ implicit none
 !
 ! In  fami         : Gauss family for integration point rule
 ! In  j_mater      : coded material address
-! In  poum         : parameters evaluation 
+! In  poum         : parameters evaluation
 !                     '-' for previous temperature
 !                     '+' for current temperature
 !                     'T' for current and previous temperature
@@ -76,7 +76,7 @@ implicit none
     real(kind=8) :: alpha_c(2)
     real(kind=8) :: alpha_l_c, alpha_t_c, alpha_n_c
     integer :: iadzi, iazk24
-    integer :: elas_type
+    integer :: elas_id
     character(len=16) :: elas_keyword
 !
 ! --------------------------------------------------------------------------------------------------
@@ -112,7 +112,7 @@ implicit none
 !
 ! - Get type of elasticity (Isotropic/Orthotropic/Transverse isotropic)
 !
-    call get_elas_type(j_mater, elas_type, elas_keyword)
+    call get_elas_id(j_mater, elas_id, elas_keyword)
 !
 ! - Get temperatures
 !
@@ -130,21 +130,21 @@ implicit none
     if (poum.eq.'T'.or.poum.eq.'-') then
         if (iret_temp_prev.eq.0) then
             call get_elasth_para(fami     , j_mater     , '-', kpg    , ksp,&
-                                 elas_type, elas_keyword, materi,&
+                                 elas_id,   elas_keyword, materi,&
                                  alpha_p  , alpha_l_p   , alpha_t_p, alpha_n_p)
         endif
     endif
     if (poum.eq.'T'.or.poum.eq.'+') then
         if (iret_temp_curr.eq.0) then
             call get_elasth_para(fami     , j_mater     , '+', kpg    , ksp,&
-                                 elas_type, elas_keyword, materi,&
+                                 elas_id,   elas_keyword, materi,&
                                  alpha_c  , alpha_l_c   , alpha_t_c, alpha_n_c)
         endif
     endif
 !
 ! - Check non-isotropic material
 !
-    if (elas_type.ne.1) then
+    if (elas_id.ne.1) then
         if (.not.present(vepsth)) then
             call tecael(iadzi, iazk24)
             elem_name = zk24(iazk24-1+3) (1:8)
@@ -166,18 +166,18 @@ implicit none
 !
     if (poum .eq. 'T') then
         if (iret_temp_prev+iret_temp_curr.eq.0) then
-            if (elas_type.eq.1) then
+            if (elas_id.eq.1) then
                 if (elas_keyword.eq.'ELAS_META') then
                     epsth3(1) = alpha_c(1)*(temp_curr-temp_refe)-alpha_p(1)*(temp_prev-temp_refe)
                     epsth3(2) = alpha_c(2)*(temp_curr-temp_refe)-alpha_p(2)*(temp_prev-temp_refe)
                 else
                     epsth3(1) = alpha_c(1)*(temp_curr-temp_refe)-alpha_p(1)*(temp_prev-temp_refe)
                 endif
-            elseif (elas_type.eq.2) then
+            elseif (elas_id.eq.2) then
                 epsth3(1) = alpha_l_c*(temp_curr-temp_refe)-alpha_l_p*(temp_prev-temp_refe)
                 epsth3(2) = alpha_t_c*(temp_curr-temp_refe)-alpha_t_p*(temp_prev-temp_refe)
                 epsth3(3) = alpha_n_c*(temp_curr-temp_refe)-alpha_n_p*(temp_prev-temp_refe)
-            elseif (elas_type.eq.3) then
+            elseif (elas_id.eq.3) then
                 epsth3(1) = alpha_l_c*(temp_curr-temp_refe)-alpha_l_p*(temp_prev-temp_refe)
                 epsth3(2) = alpha_n_c*(temp_curr-temp_refe)-alpha_n_p*(temp_prev-temp_refe)
             else
@@ -186,18 +186,18 @@ implicit none
         endif
     else if (poum .eq. '-') then
         if (iret_temp_prev.eq.0) then
-            if (elas_type.eq.1) then
+            if (elas_id.eq.1) then
                 if (elas_keyword.eq.'ELAS_META') then
                     epsth3(1) = alpha_p(1)*(temp_prev-temp_refe)
                     epsth3(2) = alpha_p(2)*(temp_prev-temp_refe)
                 else
                     epsth3(1) = alpha_p(1)*(temp_prev-temp_refe)
                 endif
-            elseif (elas_type.eq.2) then
+            elseif (elas_id.eq.2) then
                 epsth3(1) = alpha_l_p*(temp_prev-temp_refe)
                 epsth3(2) = alpha_t_p*(temp_prev-temp_refe)
-                epsth3(3) = alpha_n_p*(temp_prev-temp_refe)            
-            elseif (elas_type.eq.3) then
+                epsth3(3) = alpha_n_p*(temp_prev-temp_refe)
+            elseif (elas_id.eq.3) then
                 epsth3(1) = alpha_l_p*(temp_prev-temp_refe)
                 epsth3(2) = alpha_n_p*(temp_prev-temp_refe)
             else
@@ -206,18 +206,18 @@ implicit none
         endif
     else if (poum .eq. '+') then
         if (iret_temp_curr.eq.0) then
-            if (elas_type.eq.1) then
+            if (elas_id.eq.1) then
                 if (elas_keyword.eq.'ELAS_META') then
                     epsth3(1) = alpha_c(1)*(temp_curr-temp_refe)
                     epsth3(2) = alpha_c(2)*(temp_curr-temp_refe)
                 else
                     epsth3(1) = alpha_c(1)*(temp_curr-temp_refe)
                 endif
-            elseif (elas_type.eq.2) then
+            elseif (elas_id.eq.2) then
                 epsth3(1) = alpha_l_c*(temp_curr-temp_refe)
                 epsth3(2) = alpha_t_c*(temp_curr-temp_refe)
-                epsth3(3) = alpha_n_c*(temp_curr-temp_refe)            
-            elseif (elas_type.eq.3) then
+                epsth3(3) = alpha_n_c*(temp_curr-temp_refe)
+            elseif (elas_id.eq.3) then
                 epsth3(1) = alpha_l_c*(temp_curr-temp_refe)
                 epsth3(2) = alpha_n_c*(temp_curr-temp_refe)
             else
@@ -255,7 +255,7 @@ implicit none
 !
     if (present(iret)) then
         iret = 0
-        if ((iret_temp_prev+iret_temp_curr) .ne. 0) then 
+        if ((iret_temp_prev+iret_temp_curr) .ne. 0) then
             iret = 1
         endif
         if (iret_temp .ne. 0) then

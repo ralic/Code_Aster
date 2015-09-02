@@ -1,4 +1,4 @@
-subroutine get_meta_type(meta_type, nb_phasis)
+subroutine get_meta_id(meta_id, nb_phasis)
 !
 use calcul_module, only : ca_iactif_
 !
@@ -23,7 +23,7 @@ implicit none
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    integer, intent(out) :: meta_type
+    integer, intent(out) :: meta_id
     integer, intent(out) :: nb_phasis
 !
 ! --------------------------------------------------------------------------------------------------
@@ -34,7 +34,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Out meta_type    : type of metallurgy
+! Out meta_id      : type of metallurgy
 !                       0 - No metallurgy
 !                       1 - Steel
 !                       2 - Zirconium
@@ -54,7 +54,7 @@ implicit none
 !
     kpg       = 1
     ksp       = 1
-    meta_type = 0
+    meta_id = 0
     nb_phasis = 0
 !
 ! - Choice of integration scheme: for CALC_POINT_MAT is PMAT !
@@ -68,13 +68,13 @@ implicit none
     call rcvarc(' ', steel, '+', fami, kpg,&
                 ksp, r8dummy, iret_steel)
     if (iret_steel .eq. 0) then
-        meta_type = 1
+        meta_id = 1
         nb_phasis = 5
     else
         call rcvarc(' ', zirc, '+', fami, kpg,&
                     ksp, r8dummy, iret_zirc)
         if (iret_zirc .eq. 0) then
-            meta_type = 2
+            meta_id = 2
             nb_phasis = 3
         endif
     endif

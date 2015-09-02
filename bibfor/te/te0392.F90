@@ -18,7 +18,7 @@ subroutine te0392(option, nomte)
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
 #include "asterfort/nbsigm.h"
-#include "asterfort/get_elas_type.h"
+#include "asterfort/get_elas_id.h"
 #include "asterfort/get_elas_para.h"
 !
 ! ======================================================================
@@ -67,7 +67,7 @@ subroutine te0392(option, nomte)
     real(kind=8) :: bn(6, 3, 8)
     real(kind=8) :: dfdx(8), dfdy(8), dfdz(8)
     real(kind=8) :: nu, nub, nu12
-    integer :: elas_type
+    integer :: elas_id
     data h/ 1.d0, 1.d0, -1.d0,-1.d0,-1.d0,-1.d0, 1.d0, 1.d0,&
      &        1.d0,-1.d0, -1.d0, 1.d0,-1.d0, 1.d0, 1.d0,-1.d0,&
      &        1.d0,-1.d0,  1.d0,-1.d0, 1.d0,-1.d0, 1.d0,-1.d0,&
@@ -101,7 +101,7 @@ subroutine te0392(option, nomte)
 !
 ! - Get type of elasticity (Isotropic/Orthotropic/Transverse isotropic)
 !
-    call get_elas_type(zi(imate), elas_type)
+    call get_elas_id(zi(imate), elas_id)
 !
 ! - Orthotropic parameters
 !
@@ -208,8 +208,8 @@ subroutine te0392(option, nomte)
     ipg = 1
     ispg = 1
     call get_elas_para('RIGI', zi(imate), '+', ipg, ispg,&
-                       elas_type, nu = nu, nu12 = nu12)
-    if (elas_type .eq. 1) then
+                       elas_id, nu = nu, nu12 = nu12)
+    if (elas_id .eq. 1) then
         nub = nu/(1.d0-nu)
     else
         nub = nu12/(1.d0-nu12)

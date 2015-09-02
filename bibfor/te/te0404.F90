@@ -11,7 +11,7 @@ subroutine te0404(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/teattr.h"
-#include "asterfort/get_elas_type.h"
+#include "asterfort/get_elas_id.h"
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
@@ -59,7 +59,7 @@ subroutine te0404(option, nomte)
     real(kind=8) :: dmc(3, 2), dfc(3, 2)
     real(kind=8) :: pgl(3, 3), t2iu(4), t2ui(4), t1ve(9), valres(2)
     aster_logical :: coupmf
-    integer :: elas_type
+    integer :: elas_id
     character(len=16) :: elas_keyword
 ! DEB ------------------------------------------------------------------
 !
@@ -109,9 +109,9 @@ subroutine te0404(option, nomte)
 !     RECUPERATION DU MODULE D'YOUNG ET DE LA MASSE VOLUMIQUE
     call jevech('PMATERC', 'L', imate)
 !
-    call get_elas_type(zi(imate), elas_type, elas_keyword)
+    call get_elas_id(zi(imate), elas_id, elas_keyword)
 !
-    if (elas_type .eq. 1) then
+    if (elas_id .eq. 1) then
         if (elas_keyword .eq. 'ELAS') then
             nomres(1) = 'E'
             nomres(2) = 'NU'
