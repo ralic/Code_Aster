@@ -1,5 +1,5 @@
 subroutine op9999()
-! aslint: disable=
+    use parameters_module
     implicit none
 !     ------------------------------------------------------------------
 ! person_in_charge: j-pierre.lefebvre at edf.fr
@@ -24,7 +24,6 @@ subroutine op9999()
 !     FIN OP9999
 !-----------------------------------------------------------------------
 #include "jeveux.h"
-#include "asterf_constant.h"
 #include "asterc/gettyp.h"
 #include "asterc/jdcset.h"
 #include "asterfort/assert.h"

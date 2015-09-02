@@ -31,6 +31,7 @@ subroutine asmpi_stop(imode)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 
+    use parameters_module, only : ST_ER_OTH, ST_EXCEPT
     implicit none
 #include "asterf.h"
 #include "asterf_debug.h"
@@ -41,7 +42,6 @@ subroutine asmpi_stop(imode)
 #include "asterfort/gtstat.h"
 #include "asterfort/onerrf.h"
 #include "asterfort/ststat.h"
-#include "asterf_constant.h"
     integer :: imode
 
     integer :: lout, imod2

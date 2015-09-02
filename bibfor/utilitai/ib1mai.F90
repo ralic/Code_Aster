@@ -17,8 +17,8 @@ subroutine ib1mai()
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+    use parameters_module, only : ST_OK
     implicit none
-#include "asterf_constant.h"
 #include "asterfort/ststat.h"
 !     INITIALISATION, COMME IB0MAI, POUR LA PARTIE FORTRAN 90
 !

@@ -17,6 +17,7 @@ subroutine asmpi_warn(iexc)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+    use parameters_module
     implicit none
 #include "asterf_debug.h"
 #include "asterf_types.h"
@@ -46,7 +47,6 @@ subroutine asmpi_warn(iexc)
 # else
 !
 #include "mpif.h"
-#include "asterf_constant.h"
 !
     mpi_int :: iermpi, rank, nbpro4, mpicou, mpicow
     integer :: iret, ibid

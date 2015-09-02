@@ -17,6 +17,7 @@ subroutine asmpi_checkalarm()
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+    use parameters_module
     implicit none
 !-----------------------------------------------------------------------
 !     FONCTION REALISEE : MPI CHECK ALARM
@@ -34,7 +35,6 @@ subroutine asmpi_checkalarm()
 #ifdef _USE_MPI
 !
 #include "mpif.h"
-#include "asterf_constant.h"
 #include "asterc/asmpi_recv_i4.h"
 #include "asterc/asmpi_send_i4.h"
 !
