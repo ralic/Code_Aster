@@ -18,8 +18,8 @@ implicit none
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!     ARGUMENTS:
-!     ----------
+! aslint: disable=W0104
+! pour 'code'
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"

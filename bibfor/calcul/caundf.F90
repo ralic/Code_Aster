@@ -73,7 +73,7 @@ implicit none
             iachlo=zi(ca_iawloc_-1+3*(iparg-1)+1)
             if ((iachlo.eq.-1) .or. (iachlo.eq.-2)) goto 10
 !
-            typsca = zk8(ca_iawtyp_-1+iparg)
+            typsca = zk8(ca_iawtyp_-1+iparg)(1:3)
             lggrel=zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+4)
             debugr=zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+5)
 !
@@ -113,7 +113,7 @@ implicit none
             iachlo=zi(ca_iawloc_-1+3*(iparg-1)+1)
             if ((iachlo.eq.-1) .or. (iachlo.eq.-2)) goto 30
 !
-            typsca = zk8(ca_iawtyp_-1+iparg)
+            typsca = zk8(ca_iawtyp_-1+iparg)(1:3)
             lggrel=zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+4)
             debugr=zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+5)
 !
