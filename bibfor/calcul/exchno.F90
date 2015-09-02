@@ -1,5 +1,5 @@
 subroutine exchno(imodat, iparg)
-use module_calcul, only : ca_iachii_, ca_iachlo_, ca_ialiel_, ca_iamaco_,&
+use calcul_module, only : ca_iachii_, ca_iachlo_, ca_ialiel_, ca_iamaco_,&
      ca_iamloc_, ca_iamsco_, ca_iawlo2_, ca_igr_,&
      ca_iichin_, ca_illiel_, ca_ilmaco_, ca_ilmloc_, ca_ilmsco_, &
      ca_nbelgr_, ca_nbgr_, ca_nec_, ca_typegd_

@@ -1,5 +1,5 @@
 function digde2(modelo)
-use module_calcul, only : ca_iamloc_, ca_ilmloc_
+use calcul_module, only : ca_iamloc_, ca_ilmloc_
 implicit none
     integer :: digde2
 !
@@ -25,7 +25,7 @@ implicit none
 #include "jeveux.h"
     integer :: modelo
 ! ----------------------------------------------------------------------
-! routine identique a digdel mais qui utilise des variables de module_calcul
+! routine identique a digdel mais qui utilise des variables de calcul_module
 ! pour etre plus rapide.
 !
 !     entrees:

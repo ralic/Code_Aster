@@ -1,5 +1,5 @@
 subroutine exchml(imodat, iparg)
-use module_calcul, only : ca_iachii_, ca_iachik_, ca_iachin_, ca_iachlo_,&
+use calcul_module, only : ca_iachii_, ca_iachik_, ca_iachin_, ca_iachlo_,&
      ca_iamloc_, ca_iawlo2_, ca_igr_, ca_iichin_,&
      ca_ilchlo_, ca_ilmloc_, ca_nbelgr_, ca_nbgr_, ca_ncmpmx_, ca_nec_, ca_typegd_
 implicit none

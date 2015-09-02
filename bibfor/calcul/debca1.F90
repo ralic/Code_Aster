@@ -16,7 +16,7 @@ subroutine debca1(nomop, ligrel, nin)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
-use module_calcul, only : ca_caindz_, ca_calvoi_, ca_evfini_, ca_iadsgd_,&
+use calcul_module, only : ca_caindz_, ca_calvoi_, ca_evfini_, ca_iadsgd_,&
      ca_iainel_, ca_ialiel_, ca_iamaco_, ca_iamloc_,&
      ca_iamsco_, ca_ianoop_, ca_ianote_, ca_iaobtr_, ca_iaopds_, ca_iaopmo_,&
      ca_iaopno_, ca_iaoppa_, ca_iaoptt_,&
@@ -48,7 +48,7 @@ implicit none
     character(len=19) :: ligrel
     integer :: nin
 ! ----------------------------------------------------------------------
-!     but : initialiser certaines variables de module_calcul
+!     but : initialiser certaines variables de calcul_module
 !
 !     ENTREES:
 !        NOMOP  :  NOM D'1 OPTION

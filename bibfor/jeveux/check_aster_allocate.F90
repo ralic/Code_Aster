@@ -1,5 +1,5 @@
 subroutine check_aster_allocate(init)
-use module_allocate
+use allocate_module
 ! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG

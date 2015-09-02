@@ -1,7 +1,7 @@
 subroutine as_deallocate(vl, vi, vi4, vr, vc,&
                          vk8, vk16, vk24, vk32, vk80,&
                          strdbg)
-    use module_allocate
+    use allocate_module
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

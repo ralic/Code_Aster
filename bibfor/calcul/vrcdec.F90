@@ -1,5 +1,5 @@
 subroutine vrcdec()
-use module_calcul, only : ca_decala_, ca_iredec_, ca_jfpgl_, ca_jnolfp_,&
+use calcul_module, only : ca_decala_, ca_iredec_, ca_jfpgl_, ca_jnolfp_,&
      ca_jpnlfp_, ca_km_, ca_kp_, ca_kr_,&
      ca_nblfpg_, ca_nfpg_, ca_nomte_, ca_nfpgmx_
 implicit none

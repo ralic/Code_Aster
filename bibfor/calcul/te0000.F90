@@ -1,6 +1,6 @@
 subroutine te0000(numc, opt, te)
 ! aslint: disable=W1501
-use module_calcul, only : ca_capoiz_, ca_ianoop_, ca_ianote_, ca_iel_, ca_nbelgr_
+use calcul_module, only : ca_capoiz_, ca_ianoop_, ca_ianote_, ca_iel_, ca_nbelgr_
 implicit none
 !
 ! ======================================================================

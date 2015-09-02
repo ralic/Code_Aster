@@ -1,5 +1,5 @@
 subroutine rcvarp(arret, novrc, poum, valvrc, iret)
-use module_calcul, only : ca_iredec_, ca_jvcnom_, ca_jvcval_, ca_nbcvrc_,&
+use calcul_module, only : ca_iredec_, ca_jvcnom_, ca_jvcval_, ca_nbcvrc_,&
                           ca_td1_, ca_tf1_, ca_timed1_, ca_timef1_
 implicit none
 ! ======================================================================

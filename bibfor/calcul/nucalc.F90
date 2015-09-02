@@ -1,5 +1,5 @@
 function nucalc(opt, te, memoir)
-use module_calcul, only : ca_iaopmo_, ca_iaoptt_, ca_ilopmo_, ca_lgco_
+use calcul_module, only : ca_iaopmo_, ca_iaoptt_, ca_ilopmo_, ca_lgco_
 implicit none
     integer :: nucalc
 !

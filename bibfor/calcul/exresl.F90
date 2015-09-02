@@ -1,5 +1,5 @@
 subroutine exresl(modatt, iparg, chin)
-use module_calcul, only : ca_iachii_, ca_iachlo_, ca_iawlo2_, ca_igr_,&
+use calcul_module, only : ca_iachii_, ca_iachlo_, ca_iawlo2_, ca_igr_,&
      ca_iichin_, ca_ilchlo_, ca_nbelgr_, ca_nbgr_, ca_typegd_
 implicit none
 !

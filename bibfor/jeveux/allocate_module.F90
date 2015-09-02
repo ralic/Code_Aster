@@ -1,4 +1,4 @@
-module module_allocate
+module allocate_module
     use iso_c_binding, only: c_ptr, c_loc, C_NULL_PTR, c_associated
     implicit none
 !

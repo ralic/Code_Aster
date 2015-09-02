@@ -1,5 +1,5 @@
 subroutine te0520(option, nomte)
-use module_calcul, only : ca_jelvoi_, ca_jptvoi_, ca_jrepe_
+use calcul_module, only : ca_jelvoi_, ca_jptvoi_, ca_jrepe_
 implicit none
 #include "asterf_types.h"
 #include "jeveux.h"

@@ -1,7 +1,7 @@
 subroutine as_allocate(size, vl, vi, vi4, vr,&
                        vc, vk8, vk16, vk24, vk32,&
                        vk80, strdbg)
-    use module_allocate
+    use allocate_module
 ! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG

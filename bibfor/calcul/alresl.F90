@@ -1,5 +1,5 @@
 subroutine alresl(opt, ligrel, nochou, nompar, base)
-use module_calcul, only : ca_evfini_
+use calcul_module, only : ca_evfini_
 implicit none
 !
 ! ======================================================================

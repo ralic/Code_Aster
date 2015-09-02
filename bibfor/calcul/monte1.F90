@@ -1,6 +1,6 @@
 subroutine monte1(opt, te2, nout, lchout, lpaout,&
                   igr2)
-use module_calcul, only : ca_evfini_, ca_iachoi_, ca_iadsgd_, ca_iaoppa_, &
+use calcul_module, only : ca_evfini_, ca_iachoi_, ca_iadsgd_, ca_iaoppa_, &
      ca_iawlo2_, ca_iawloc_, ca_iawtyp_, ca_nbelgr_, ca_nbgr_, ca_npario_
 implicit none
 ! ======================================================================

@@ -1,5 +1,5 @@
 subroutine mecoe1(opt, te)
-use module_calcul, only : ca_iamloc_, ca_iaoppa_, ca_iawlo2_, ca_igr_,&
+use calcul_module, only : ca_iamloc_, ca_iaoppa_, ca_iawlo2_, ca_igr_,&
      ca_ilmloc_, ca_nbgr_, ca_npario_
 implicit none
 !

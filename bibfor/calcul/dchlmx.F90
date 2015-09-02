@@ -1,6 +1,6 @@
 subroutine dchlmx(opt, ligrel, iparg, nin, lpain,&
                   nout, lpaout, taille)
-use module_calcul, only : ca_calvoi_, ca_evfini_, ca_iachii_, ca_iachik_, &
+use calcul_module, only : ca_calvoi_, ca_evfini_, ca_iachii_, ca_iachik_, &
      ca_iachoi_, ca_iachok_, ca_iaoppa_, ca_iawlo2_,&
      ca_igr_, ca_nbelgr_, ca_nbgr_
 implicit none

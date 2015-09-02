@@ -1,5 +1,5 @@
 subroutine temess(typ)
-use module_calcul, only : ca_option_, ca_nomte_, ca_icaelk_, ca_ialiel_,&
+use calcul_module, only : ca_option_, ca_nomte_, ca_icaelk_, ca_ialiel_,&
     ca_illiel_, ca_igr_, ca_iel_, ca_nomtm_, ca_iamaco_, ca_ilmaco_
 
 ! ======================================================================

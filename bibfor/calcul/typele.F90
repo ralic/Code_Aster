@@ -1,5 +1,5 @@
 function typele(ligrez, igrel, icalc)
-use module_calcul, only : ca_ialiel_, ca_illiel_
+use calcul_module, only : ca_ialiel_, ca_illiel_
 implicit none
     integer :: typele
 !

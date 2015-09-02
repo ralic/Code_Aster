@@ -1,5 +1,5 @@
 subroutine caundf(code, opt, te)
-use module_calcul, only : ca_iaoppa_, ca_iawlo2_, ca_iawloc_, &
+use calcul_module, only : ca_iaoppa_, ca_iawlo2_, ca_iawloc_, &
     ca_iawtyp_, ca_igr_, ca_nbgr_, ca_npario_
 implicit none
 ! ======================================================================

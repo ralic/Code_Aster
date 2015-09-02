@@ -1,6 +1,6 @@
 subroutine get_meta_type(meta_type, nb_phasis)
 !
-use module_calcul, only : ca_iactif_
+use calcul_module, only : ca_iactif_
 !
 implicit none
 !

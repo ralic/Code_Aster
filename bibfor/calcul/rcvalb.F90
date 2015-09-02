@@ -1,7 +1,7 @@
 subroutine rcvalb(fami, kpg, ksp, poum, jmat, nomat,&
                   phenom, nbpar, nompar, valpar,&
                   nbres, nomres, valres, codret, iarret,nan)
-use module_calcul, only : ca_jvcnom_, ca_nbcvrc_
+use calcul_module, only : ca_jvcnom_, ca_nbcvrc_
 implicit none
 #include "jeveux.h"
 #include "asterfort/rcvala.h"

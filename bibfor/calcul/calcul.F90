@@ -2,7 +2,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
                   lpain, nou, lchou, lpaou, base,&
                   mpic)
 ! aslint: disable=W1306
-use module_calcul, only : ca_iainel_, ca_ialiel_, ca_iaobtr_, ca_iaopds_,&
+use calcul_module, only : ca_iainel_, ca_ialiel_, ca_iaobtr_, ca_iaopds_,&
      ca_iaoppa_, ca_igr_, ca_illiel_, ca_ininel_,&
      ca_jcteat_, ca_lcteat_, ca_nbelgr_, ca_nbgr_, &
      ca_nbobj_, ca_nbobtr_, ca_nomte_, ca_nomtm_, ca_nute_,&

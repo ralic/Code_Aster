@@ -1,6 +1,6 @@
 subroutine lcidbg(fami, kpg, ksp, typmod,compor, crit, instam, instap,&
                   neps, epsm, deps, nsig, sigm, vim, option)
-use module_calcul, only : ca_jvcnom_, ca_nbcvrc_
+use calcul_module, only : ca_jvcnom_, ca_nbcvrc_
 implicit none
 
 #include "jeveux.h"

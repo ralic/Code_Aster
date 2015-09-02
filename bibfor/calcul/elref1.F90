@@ -18,7 +18,7 @@ subroutine elref1(elrefe)
 !
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
-use module_calcul, only : ca_iactif_, ca_jnbelr_, ca_jnoelr_, ca_nute_
+use calcul_module, only : ca_iactif_, ca_jnbelr_, ca_jnoelr_, ca_nute_
 implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"

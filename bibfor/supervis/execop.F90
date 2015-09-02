@@ -1,5 +1,5 @@
 subroutine execop()
-use module_calcul, only : ca_iactif_
+use calcul_module, only : ca_iactif_
     implicit none
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -79,7 +79,7 @@ use module_calcul, only : ca_iactif_
     nivpgm = 1
     unite = iunifi('MESSAGE')
 !
-!   -- on initialise la variable ca_iactif du module module_calcul
+!   -- on initialise la variable ca_iactif de calcul_module
 !      (pour le cas ou on serait sorti brutalement de la routine calcul (exception))
     ca_iactif_ = 0
 !
@@ -105,9 +105,9 @@ use module_calcul, only : ca_iactif_
                 k8tab(1) = 'RLQ_MEM'
                 k8tab(2) = 'LIMIT_JV'
                 call utgtme(2, k8tab, rval, iret2)
-                if (abs(rval(2)-v0) .gt. v0*0.1d0) then 
+                if (abs(rval(2)-v0) .gt. v0*0.1d0) then
                    call utmess('I', 'JEVEUX1_73', nr=2, valr=rval)
-                endif   
+                endif
             endif
         endif
     endif

@@ -1,6 +1,6 @@
 subroutine montee(opt, ligrel, nout, lchout, lpaout,&
                   fin)
-use module_calcul, only : ca_calvoi_, ca_igr_, ca_nbgr_
+use calcul_module, only : ca_calvoi_, ca_igr_, ca_nbgr_
 implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG

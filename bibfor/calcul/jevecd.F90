@@ -24,7 +24,7 @@ subroutine jevecd(nompar, jad, valdef)
 !       - SI LE CHAMP LOCAL EST PARTIELLEMENT VIDE, LA ROUTINE
 !         EMET UNE ERREUR FATALE
 !----------------------------------------------------------------
-use module_calcul, only : ca_option_
+use calcul_module, only : ca_option_
 implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"

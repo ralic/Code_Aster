@@ -1,7 +1,7 @@
 subroutine elrefe_info(elrefe, fami, ndim, nno,&
                   nnos, npg, jpoids, jcoopg, jvf,&
                   jdfde, jdfd2, jgano)
-use module_calcul, only : ca_iactif_, ca_jnolfp_, ca_jpnlfp_, ca_nblfpg_, ca_nbsav_, ca_nomte_
+use calcul_module, only : ca_iactif_, ca_jnolfp_, ca_jpnlfp_, ca_nblfpg_, ca_nbsav_, ca_nomte_
 implicit none
 #include "jeveux.h"
 #include "asterc/indik8.h"

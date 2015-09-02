@@ -1,6 +1,6 @@
 subroutine extrai(nin, lchin, lpain, opt, nute,&
                   ligrel, init)
-use module_calcul, only : ca_calvoi_, ca_igr_, ca_nbelgr_, ca_nbgr_
+use calcul_module, only : ca_calvoi_, ca_igr_, ca_nbelgr_, ca_nbgr_
 implicit none
 !
 ! ======================================================================

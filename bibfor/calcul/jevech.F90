@@ -1,5 +1,5 @@
 subroutine jevech(nmparz, louez, itab)
-use module_calcul, only : ca_caindz_, ca_capoiz_, ca_evfini_, ca_iachoi_,&
+use calcul_module, only : ca_caindz_, ca_capoiz_, ca_evfini_, ca_iachoi_,&
      ca_iachok_, ca_iaoppa_, ca_iawlo2_, ca_iawloc_,&
      ca_iel_, ca_igr_, ca_nbgr_, ca_nomte_, ca_nparin_, ca_npario_, ca_option_
 implicit none

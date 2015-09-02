@@ -1,5 +1,5 @@
 subroutine tecael(iadzi, iazk24, noms)
-use module_calcul, only : ca_ialiel_, ca_iamaco_, ca_iamsco_, ca_icaeli_,&
+use calcul_module, only : ca_ialiel_, ca_iamaco_, ca_iamsco_, ca_icaeli_,&
      ca_icaelk_, ca_iel_, ca_igr_, ca_illiel_,&
      ca_ilmaco_, ca_ilmsco_, ca_nomte_, ca_nomtm_, ca_option_
 implicit none

@@ -1,6 +1,6 @@
 subroutine alrslt(iopt, ligrel, nout, lchout, lpaout,&
                   base, ldist)
-use module_calcul, only : ca_evfini_, ca_iachoi_, ca_iachok_, ca_iaobtr_, ca_nbobtr_
+use calcul_module, only : ca_evfini_, ca_iachoi_, ca_iachok_, ca_iaobtr_, ca_nbobtr_
 implicit none
 !
 ! ======================================================================

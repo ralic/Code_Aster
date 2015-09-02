@@ -17,7 +17,7 @@ subroutine fmater(nbfmax, nftab, tab)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
-use module_calcul, only : ca_jfpgl_, ca_nfpg_
+use calcul_module, only : ca_jfpgl_, ca_nfpg_
 implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"

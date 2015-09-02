@@ -1,6 +1,6 @@
 subroutine trigd(dg1, deb1, dg2, deb2, cumul,&
                  ino, nno)
-use module_calcul, only : ca_iachin_, ca_iachlo_, ca_ianueq_, ca_ilchlo_,&
+use calcul_module, only : ca_iachin_, ca_iachlo_, ca_ianueq_, ca_ilchlo_,&
      ca_itypgd_, ca_lprno_, ca_ncmpmx_, ca_nec_
 implicit none
 !

@@ -24,7 +24,7 @@ subroutine te0123(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ----------------------------------------------------------------------
 !
-use module_calcul, only : ca_jelvoi_, ca_jptvoi_, ca_jrepe_
+use calcul_module, only : ca_jelvoi_, ca_jptvoi_, ca_jrepe_
 implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"

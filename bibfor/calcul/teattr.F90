@@ -1,5 +1,5 @@
 subroutine teattr(kstop, noattr, vattr, iret, typel)
-use module_calcul, only : ca_iactif_, ca_jcteat_, ca_lcteat_, ca_nomte_
+use calcul_module, only : ca_iactif_, ca_jcteat_, ca_lcteat_, ca_nomte_
 implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG

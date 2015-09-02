@@ -1,5 +1,5 @@
 subroutine rcmfmc(chmatz, chmacz)
-use module_calcul, only : ca_jvcnom_, ca_nbcvrc_
+use calcul_module, only : ca_jvcnom_, ca_nbcvrc_
 implicit none
 #include "jeveux.h"
 #include "asterc/ismaem.h"

@@ -1,5 +1,5 @@
 subroutine excar2(ngrmx, desc, dg, ncmp, debugr)
-use module_calcul, only : ca_iachii_, ca_ialiel_, ca_igr_, ca_iichin_, &
+use calcul_module, only : ca_iachii_, ca_ialiel_, ca_igr_, ca_iichin_, &
     ca_illiel_, ca_nbelgr_, ca_ncmpmx_, ca_nec_
 implicit none
 #include "asterf_types.h"

@@ -1,6 +1,6 @@
 subroutine rcvarc(arret, novrc, poum, fami, kpg,&
                   ksp, valvrc, iret)
-use module_calcul, only : ca_decala_, ca_iactif_, ca_iel_, ca_iredec_, &
+use calcul_module, only : ca_decala_, ca_iactif_, ca_iel_, ca_iredec_, &
      ca_jfpgl_, ca_jvcnom_, ca_km_, ca_kp_,&
      ca_kr_, ca_nbcvrc_, ca_nfpg_, ca_nomte_, ca_option_, &
      ca_td1_, ca_tf1_, ca_timed1_, ca_timef1_

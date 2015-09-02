@@ -1,4 +1,4 @@
-module module_calcul
+module calcul_module
 implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG

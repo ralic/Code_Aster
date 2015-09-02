@@ -1,5 +1,5 @@
 function digde3(modelo, louc)
-use module_calcul, only : ca_iamloc_, ca_ilmloc_
+use calcul_module, only : ca_iamloc_, ca_ilmloc_
 implicit none
     integer :: digde3
 !

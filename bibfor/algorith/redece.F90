@@ -6,7 +6,7 @@ subroutine redece(fami, kpg, ksp, ndim, typmod,&
                   sigf, vinf, ndsde, dsde, nwkout,&
                   wkout, codret)
 ! aslint: disable=W1306,W1504
-use module_calcul, only : ca_iredec_, ca_td1_, ca_tf1_, ca_timed1_, ca_timef1_
+use calcul_module, only : ca_iredec_, ca_td1_, ca_tf1_, ca_timed1_, ca_timef1_
 implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG

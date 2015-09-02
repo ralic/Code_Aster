@@ -15,7 +15,7 @@ subroutine te0427(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-use module_calcul, only : ca_jelvoi_, ca_jptvoi_, ca_jrepe_
+use calcul_module, only : ca_jelvoi_, ca_jptvoi_, ca_jrepe_
 implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"

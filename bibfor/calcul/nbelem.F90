@@ -1,5 +1,5 @@
 function nbelem(ligrlz, igrel, icalc)
-use module_calcul, only : ca_illiel_
+use calcul_module, only : ca_illiel_
 implicit none
         character(len=*), intent(in) :: ligrlz
         integer, intent(in) :: igrel

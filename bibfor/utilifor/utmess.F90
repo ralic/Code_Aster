@@ -1,7 +1,7 @@
 subroutine utmess(typ, idmess, nk, valk, sk,&
                   ni, vali, si, nr, valr,&
                   sr, num_except, fname)
-use module_calcul, only : ca_iactif_
+use calcul_module, only : ca_iactif_
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -1,6 +1,6 @@
 function digde4(igr, iel, opt, ipar, dim1,&
                 codvoi)
-use module_calcul, only : ca_evfini_, ca_ialiel_, ca_illiel_, ca_jelvoi_, ca_jptvoi_, ca_jrepe_
+use calcul_module, only : ca_evfini_, ca_ialiel_, ca_illiel_, ca_jelvoi_, ca_jptvoi_, ca_jrepe_
 implicit none
     integer :: digde4
 !

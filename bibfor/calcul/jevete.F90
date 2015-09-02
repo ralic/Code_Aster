@@ -1,5 +1,5 @@
 subroutine jevete(nomobj, code, iad)
-use module_calcul, only : ca_iainel_, ca_ininel_, ca_nbobj_
+use calcul_module, only : ca_iainel_, ca_ininel_, ca_nbobj_
 implicit none
 !
 ! ======================================================================

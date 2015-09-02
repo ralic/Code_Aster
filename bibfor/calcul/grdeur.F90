@@ -1,5 +1,5 @@
 function grdeur(nompar)
-use module_calcul, only : ca_iaopds_, ca_iaoppa_
+use calcul_module, only : ca_iaopds_, ca_iaoppa_
 implicit none
     integer :: grdeur
 !

@@ -19,7 +19,7 @@ subroutine debcal(nomop, ligrel, nin, lchin, lpain,&
 ! ======================================================================
 !
 ! person_in_charge: jacques.pellet at edf.fr
-use module_calcul, only : ca_evfini_, ca_iachii_, ca_iachik_, ca_iachix_, &
+use calcul_module, only : ca_evfini_, ca_iachii_, ca_iachik_, ca_iachix_, &
     ca_iactif_, ca_iaobtr_, ca_iaopds_, ca_iaoppa_, ca_nbobtr_
 implicit none
 !     ARGUMENTS:

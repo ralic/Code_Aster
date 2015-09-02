@@ -6,7 +6,7 @@ subroutine lc0000(fami, kpg, ksp, ndim, typmod,&
                   sigp, vip, ndsde, dsidep, icomp,&
                   nvi, nwkout, wkout, codret)
 ! aslint: disable=W1501,W1504
-use module_calcul, only : ca_iactif_
+use calcul_module, only : ca_iactif_
 implicit none
 !       ================================================================
 ! ======================================================================

@@ -1,6 +1,6 @@
 subroutine rcadlv(fami, kpg, ksp, poum, jmat, nomat, mfact, msimp, &
                   nbpar, nompar, valpar, jadr, nbres, icodre, iarret)
-use module_calcul, only : ca_jvcnom_, ca_nbcvrc_
+use calcul_module, only : ca_jvcnom_, ca_nbcvrc_
 implicit none
 ! person_in_charge: jacques.pellet at edf.fr
 #include "jeveux.h"

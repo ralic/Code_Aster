@@ -1,5 +1,5 @@
 subroutine chloet(iparg, etendu, jceld)
-use module_calcul, only : ca_iachii_, ca_iachik_, ca_iachoi_, ca_iachok_, &
+use calcul_module, only : ca_iachii_, ca_iachik_, ca_iachoi_, ca_iachok_, &
     ca_iawloc_, ca_nparin_
 implicit none
 ! ======================================================================
