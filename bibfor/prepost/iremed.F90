@@ -238,8 +238,10 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
             call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
 
             if ((typech(1:4).eq. 'CART'.and. tsca.ne.'R')) then
-                valk(1)=tsca
-                call utmess('A+', 'PREPOST_91', nk=1, valk=valk)
+                if ( .not. lresu ) then
+                    valk(1)=tsca
+                    call utmess('A+', 'PREPOST_91', nk=1, valk=valk)
+                endif
                 goto 999
              endif
 !
