@@ -108,7 +108,10 @@ CARA_EL0=AFFE_CARA_ELEM( MODELE=STICKMOD,
                       GROUP_MA=('PRADIER'),
                       VALE=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),),
                    ),
-          RIGI_PARASOL=_F(VALE=(6.36E10,6.36E10,8.02E10,
+          # on de-symetrise les modes propres de MODSTA1 en modifiant un petit peu la rigidite de
+          # RIGI_PARASOL dans la direction Oy : 6.36 -> 6.37
+          # Cela permet d'eviter les modes doubles et cela evite les TOLE_MACHINE
+          RIGI_PARASOL=_F(VALE=(6.36E10,6.37E10,8.02E10,
                                 2.07E13,2.06E13,2.70E13,),
                                        UNITE=8,
                                        COEF_GROUP=1.0,
@@ -384,7 +387,6 @@ RESU2Z = DYNA_ISS_VARI(
                                   VITE_ONDE = 600. ,
                                   PARA_ALPHA = p_alpha,),
                        UNITE_RESU_IMPE = 32,
-#                        UNITE_RESU_FORC = 33,
                        MATR_GENE = _F(
                                  MATR_MASS = MASSGEN,
                                  MATR_RIGI = RIGIGEN,
@@ -430,15 +432,15 @@ REP2=RECU_FONCTION(    INTE_SPEC=RN11ZB,
 
 TEST_FONCTION(VALEUR=( _F(  FONCTION = REP1,
                             VALE_PARA = 30., 
-                            VALE_REFE =0.732, VALE_CALC =0.76703746,
+                            VALE_REFE =0.732, VALE_CALC=0.76703093760947,
                             CRITERE = 'RELATIF', 
-                            PRECISION=1.E-01, TOLE_MACHINE=1.e-3, 
+                            PRECISION=1.E-01,
                             REFERENCE = 'SOURCE_EXTERNE',),),)
 TEST_FONCTION(VALEUR=( _F(  FONCTION = REP2,
                             VALE_PARA = 30., 
-                            VALE_REFE =0.730, VALE_CALC =0.76995630,
+                            VALE_REFE =0.730, VALE_CALC=0.76995637019876,
                             CRITERE = 'RELATIF', 
-                            PRECISION=1.E-01, TOLE_MACHINE=1.e-3,  
+                            PRECISION=1.E-01,
                             REFERENCE = 'SOURCE_EXTERNE',),),)
 
 # w=60. a0=2.0
@@ -446,15 +448,15 @@ TEST_FONCTION(VALEUR=( _F(  FONCTION = REP2,
 
 TEST_FONCTION(VALEUR=( _F(  FONCTION = REP1,
                             VALE_PARA = 60., 
-                            VALE_REFE =0.402, VALE_CALC =0.43663,
+                            VALE_REFE =0.402, VALE_CALC=0.43663645976027,
                             CRITERE = 'RELATIF', 
-                            PRECISION=1.E-01, TOLE_MACHINE=1.e-3, 
+                            PRECISION=1.E-01,
                             REFERENCE = 'SOURCE_EXTERNE',),),)
 TEST_FONCTION(VALEUR=( _F(  FONCTION = REP2,
                             VALE_PARA = 60., 
-                            VALE_REFE =0.416, VALE_CALC =0.43823,
+                            VALE_REFE =0.416, VALE_CALC=0.43823180024973,
                             CRITERE = 'RELATIF', 
-                            PRECISION=1.E-01, TOLE_MACHINE=1.e-3, 
+                            PRECISION=1.E-01,
                             REFERENCE = 'SOURCE_EXTERNE',),),)
 
 # w=90. a0=3.0
@@ -462,15 +464,15 @@ TEST_FONCTION(VALEUR=( _F(  FONCTION = REP2,
 
 TEST_FONCTION(VALEUR=( _F(  FONCTION = REP1,
                             VALE_PARA = 90., 
-                            VALE_REFE =0.251, VALE_CALC =0.25146,
+                            VALE_REFE =0.251, VALE_CALC=0.25146316690138,
                             CRITERE = 'RELATIF', 
-                            PRECISION=1.E-01, TOLE_MACHINE=1.e-3, 
+                            PRECISION=1.E-01,
                             REFERENCE = 'SOURCE_EXTERNE',),),)
 TEST_FONCTION(VALEUR=( _F(  FONCTION = REP2,
                             VALE_PARA = 90., 
-                            VALE_REFE =0.270, VALE_CALC =0.25250,
+                            VALE_REFE =0.270, VALE_CALC=0.25250231708610,
                             CRITERE = 'RELATIF', 
-                            PRECISION=1.E-01, TOLE_MACHINE=1.e-3, 
+                            PRECISION=1.E-01,
                             REFERENCE = 'SOURCE_EXTERNE',),),)
 
 # test sur base physique (resultat analytique)
@@ -500,20 +502,18 @@ REP4=RECU_FONCTION(    INTE_SPEC=RN11Z,
                     NOM_CMP_I = 'DZ',
                       )
 
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=1.0,
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.99999999999982,
                          VALE_REFE=1.0,
                          CRITERE='RELATIF',
                          VALE_PARA=30.0,
                          REFERENCE='ANALYTIQUE',
-                         TOLE_MACHINE=1.e-2,
                          PRECISION=1.e-2,
                          FONCTION=REP3,),
-                      _F(VALE_CALC=1.0,
+                      _F(VALE_CALC=1.003825314445,
                          VALE_REFE=1.0,
                          CRITERE='RELATIF',
                          VALE_PARA=30.0,
                          REFERENCE='ANALYTIQUE',
-                         TOLE_MACHINE=1.e-2,
                          PRECISION=1.e-2,
                          FONCTION=REP4,),
                       ),
