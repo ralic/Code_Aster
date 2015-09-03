@@ -1871,6 +1871,11 @@ def essai_OEDO_C(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERGENCE,
                                               2., PRES_CONF[
                                               i] + SIGM_IMPOSE[j],
                                               inst_ini + long_cyc, SIGM_DECH[i],))
+                __CHAR2 = DEFI_FONCTION(INFO=INFO, NOM_PARA='INST',
+                                        VALE=(inst_ini, 0.,
+                                              inst_ini + long_cyc /
+                                              2., 0.,
+                                              inst_ini + long_cyc, 0.,))
 
             else:
                 __CHAR1 = DEFI_FONCTION(INFO=INFO, NOM_PARA='INST',
@@ -1879,6 +1884,11 @@ def essai_OEDO_C(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERGENCE,
                                               2., SIGM_DECH[
                                               i] + SIGM_IMPOSE[j],
                                               inst_ini + long_cyc, SIGM_DECH[i],))
+                __CHAR2 = DEFI_FONCTION(INFO=INFO, NOM_PARA='INST',
+                                        VALE=(inst_ini, 0.,
+                                              inst_ini + long_cyc /
+                                              2., 0.,
+                                              inst_ini + long_cyc, 0.,))
 
             # s'il s'agit du premier cycle, Cond_Init suivantes:
             if j == 0:
@@ -1909,17 +1919,9 @@ def essai_OEDO_C(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERGENCE,
                              INST_FIN=inst_ini + long_cyc,),
                 NEWTON=_F(MATRICE='TANGENTE', REAC_ITER=1,),
                 ARCHIVAGE=_F(LIST_INST=__RLIST,),
-                VECT_IMPO=(
-                    _F(NUME_LIGNE=3, VALE=__CHAR1),),
-                MATR_C1=(_F(NUME_LIGNE=1, NUME_COLONNE=1, VALE=0.),
-                         _F(NUME_LIGNE=2, NUME_COLONNE=2, VALE=0.),
-                         _F(NUME_LIGNE=3, NUME_COLONNE=3, VALE=1.),),
-                MATR_C2=(_F(NUME_LIGNE=1, NUME_COLONNE=1, VALE=1.),
-                         _F(NUME_LIGNE=2, NUME_COLONNE=2, VALE=1.),
-                         _F(NUME_LIGNE=3, NUME_COLONNE=3, VALE=1.),
-                         _F(NUME_LIGNE=4, NUME_COLONNE=4, VALE=1.),
-                         _F(NUME_LIGNE=5, NUME_COLONNE=5, VALE=1.),
-                         _F(NUME_LIGNE=6, NUME_COLONNE=6, VALE=1.),),
+                SIGM_IMPOSE=_F(SIZZ=__CHAR1,),
+                EPSI_IMPOSE=_F(EPXX=__CHAR2,
+                               EPYY=__CHAR2,),
                 SIGM_INIT= _F(SIXX=Cond_Init['SIXX'],
                               SIYY=Cond_Init['SIYY'],
                               SIZZ=Cond_Init['SIZZ'],),
@@ -2168,15 +2170,9 @@ def essai_ISOT_C(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERGENCE,
                              INST_FIN=inst_ini + long_cyc,),
                 NEWTON=_F(MATRICE='TANGENTE', REAC_ITER=1,),
                 ARCHIVAGE=_F(LIST_INST=__RLIST,),
-                VECT_IMPO=(_F(NUME_LIGNE=1, VALE=__CHAR2),
-                           _F(NUME_LIGNE=2, VALE=__CHAR2),
-                           _F(NUME_LIGNE=3, VALE=__CHAR1),),
-                MATR_C1=(_F(NUME_LIGNE=1, NUME_COLONNE=1, VALE=1.),
-                         _F(NUME_LIGNE=2, NUME_COLONNE=2, VALE=1.),
-                         _F(NUME_LIGNE=3, NUME_COLONNE=3, VALE=1.),),
-                MATR_C2=(_F(NUME_LIGNE=1, NUME_COLONNE=1, VALE=0.),
-                         _F(NUME_LIGNE=2, NUME_COLONNE=2, VALE=0.),
-                         _F(NUME_LIGNE=3, NUME_COLONNE=3, VALE=0.),),
+                SIGM_IMPOSE=_F(SIXX=__CHAR2,
+                               SIYY=__CHAR2,
+                               SIZZ=__CHAR1,),
                 SIGM_INIT= _F(SIXX=Cond_Init['SIXX'],
                               SIYY=Cond_Init['SIYY'],
                               SIZZ=Cond_Init['SIZZ'],),
