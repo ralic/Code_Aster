@@ -218,6 +218,8 @@ POST=POST_RELEVE_T(ACTION=_F(INTITULE='RESULTANTE',
                              MOYE_NOEUD='OUI',
                              NOM_CHAM='REAC_NODA',),);
 
+IMPR_TABLE(TABLE=POST)
+
 #########################
 
 TEST_TABLE(TABLE=POST,

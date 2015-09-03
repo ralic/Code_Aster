@@ -1,0 +1,96 @@
+[Project]
+project_name = ssnl119d
+projectdir = /local00/home/D47456/Bureau/ssnl119d
+project_description = Poutre MECA
+geometry_view = /local00/home/D47456/Bureau/ssnl119d/ssnl119d.png
+number_elements = 1920
+number_nodes = 2741
+type_identification = Elastic+Damage+Slidding
+
+[Geometry]
+x_size = 100.0
+y_size = 100.0
+z_size = 500.0
+d1x = 8.0
+d1y = 8.0
+d2x = 32.0
+d2y = 8.0
+h1x = 28.0
+h1y = 19.0
+h2x = 28.0
+h2y = 19.0
+
+[Material]
+s_young = 200.0
+s_poisson = 0.33
+s_y_strength = 400.0
+s_density = 7850.0
+c_type = User Defined
+c_young = 37.272
+c_poisson = 0.2
+c_density = 2200.0
+c_c_strength = 38.3
+c_c_strain = 2.0
+c_t_strength = 3.9
+p_type = Automatic - 4R - RIGI_PLAS
+l_type = Orthotropic TCD
+l_num = 6.0
+c_fpd = 30.64
+alpha_t_c1x = 50.4092849538
+gamma_t_c1x = 0.174471574344
+alpha_t_t1x = 1.0
+gamma_t_t1x = -0.0108106355052
+alpha_t_c1y = 50.4092849538
+gamma_t_c1y = 0.174471574344
+alpha_t_t1y = 1.0
+gamma_t_t1y = -0.0108106355052
+alpha_t_c1z = 50.9542413595
+gamma_t_c1z = 0.174471574344
+alpha_t_t1z = 1.0
+gamma_t_t1z = -0.0
+alpha_t_c2x = 55.9824045845
+gamma_t_c2x = 0.174471574344
+alpha_t_t2x = 1.15933412604
+gamma_t_t2x = -0.0552063869543
+alpha_t_c2y = 50.4092849538
+gamma_t_c2y = 0.174471574344
+alpha_t_t2y = 1.0
+gamma_t_t2y = -0.0108106355052
+alpha_t_c2z = 50.9542413595
+gamma_t_c2z = 0.174471574344
+alpha_t_t2z = 1.0
+gamma_t_t2z = -0.0
+alpha_xy_c1x = 55.4954609824
+gamma_xy_c1x = 0.0911777348599
+alpha_xy_t1x = 1.0
+gamma_xy_t1x = -0.0108106355052
+alpha_xy_c1y = 55.4954609824
+gamma_xy_c1y = 0.0911777348599
+alpha_xy_t1y = 1.0
+gamma_xy_t1y = -0.0108106355052
+alpha_xy_c1z = 55.8241007299
+gamma_xy_c1z = 0.0955731895992
+alpha_xy_t1z = 1.0
+gamma_xy_t1z = -0.0
+alpha_xy_c2x = 128.160736794
+gamma_xy_c2x = 0.0291178500253
+alpha_xy_t2x = 2.38114993859
+gamma_xy_t2x = -0.113388092314
+alpha_xy_c2y = 55.4954609824
+gamma_xy_c2y = 0.0911777348599
+alpha_xy_t2y = 1.0
+gamma_xy_t2y = -0.0108106355052
+alpha_xy_c2z = 55.8241007299
+gamma_xy_c2z = 0.0955731895992
+alpha_xy_t2z = 1.0
+gamma_xy_t2z = -0.0
+tau_crit = 5.0
+
+[Aster]
+file_comm = 
+file_mesh = ssnl119d.mmed
+file_distr = 
+server_name = Aster5
+nb_max_proc = 0
+runOk = 1
+
