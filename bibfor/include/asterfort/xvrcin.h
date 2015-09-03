@@ -18,10 +18,10 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine xvrcin(ligmex, celthx, nomevo, nomsym, celmex, l_xfem)
+    subroutine xvrcin(ligmex, celthx, evol, nomsym, celmex, l_xfem)
         character(len=19), intent(in) :: ligmex
         character(len=19), intent(in) :: celthx
-        character(len=8), intent(in) :: nomevo
+        character(len=8), intent(in)  :: evol
         character(len=16), intent(in) :: nomsym
         character(len=19), intent(in) :: celmex
         aster_logical, intent(out) :: l_xfem
