@@ -15,13 +15,19 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# MODELISATION POU_C_T
+# MODELISATION POU_D_T
 #======================================================================
 #
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
+# nombre d'éléments par quart de cercle
+nb_elem = 200
+
+
 #
-MA=LIRE_MAILLAGE(  )
+MA=LIRE_MAILLAGE(FORMAT = 'MED'  )
+
+
 
 MA=DEFI_GROUP(   reuse=MA,   MAILLAGE=MA,
          CREA_GROUP_MA=_F(  NOM = 'TOUT',   TOUT = 'OUI'))
@@ -30,7 +36,7 @@ MA=DEFI_GROUP(   reuse=MA,   MAILLAGE=MA,
 MO=AFFE_MODELE(    MAILLAGE=MA,
                          AFFE=_F( TOUT = 'OUI',
                                PHENOMENE = 'MECANIQUE',
-                               MODELISATION = 'POU_C_T')
+                               MODELISATION = 'POU_D_T')
                  )
 
 #
@@ -51,19 +57,7 @@ CAREL=AFFE_CARA_ELEM(      MODELE=MO,
                                      CARA = ('R', 'EP',
                                                ),
                                      VALE = (0.01E0, 0.01E0,
-                                               )),DEFI_ARC=(
-                           _F(  MAILLE = 'S11',
-                                      CENTRE = (0.E0, 0.E0, 0.E0,),
-                                      RAYON = 2.E0),
-                                    _F(  MAILLE = 'S12',
-                                      CENTRE = (0.E0, 0.E0, 0.E0,),
-                                      RAYON = 2.E0),
-                                    _F(  MAILLE = 'S13',
-                                      CENTRE = (0.E0, 0.E0, 0.E0,),
-                                      RAYON = 2.E0),
-                                    _F(  MAILLE = 'S14',
-                                      CENTRE = (0.E0, 0.E0, 0.E0,),
-                                      RAYON = 2.E0))
+                                               )),
                        )
 
 #
@@ -94,7 +88,9 @@ MEST1=MECA_STATIQUE(        MODELE=MO,
                                      _F( CHARGE = CHARG2))
                       )
 
-MEST1=CALC_CHAMP(reuse=MEST1,RESULTAT=MEST1,CONTRAINTE=('EFGE_ELNO','SIPM_ELNO'))
+MEST1=CALC_CHAMP(reuse=MEST1,RESULTAT=MEST1,CONTRAINTE=('EFGE_ELNO','SIPM_ELNO', 'EFGE_NOEU',))
+
+maille2 = "M%s"%nb_elem
 
 
 #
@@ -103,95 +99,124 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CHAM='EFGE_ELNO',
                   NOEUD='N1',
                   NOM_CMP='N',
-                  VALE_CALC=-2.1167100593351E-15,
+                  VALE_CALC=0.00196348805912,
                   VALE_REFE=0.0,
                   REFERENCE = 'ANALYTIQUE',
-                  PRECISION=1.0E-05,
+                  PRECISION=2.0E-03,
                   CRITERE='ABSOLU',
-                  MAILLE='S11',),
+                  MAILLE='M1',),
           )
-
 #
+
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=MEST1,
                   NOM_CHAM='EFGE_ELNO',
                   NOEUD='N2',
                   NOM_CMP='N',
-                  VALE_CALC=0.50000000000000,
+                  VALE_CALC=0.49999614475,
                   VALE_REFE=0.5,
                   REFERENCE = 'ANALYTIQUE',
                   PRECISION=1.0E-05,
                   CRITERE='RELATIF',
-                  MAILLE='S11',),
+                  MAILLE=maille2,),
           )
-
 #
+
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=MEST1,
                   NOM_CHAM='EFGE_ELNO',
                   NOEUD='N1',
                   NOM_CMP='VY',
-                  VALE_CALC=-0.50000000000000,
+                  VALE_CALC=-0.49999614401,
                   VALE_REFE=-0.5,
                   REFERENCE = 'ANALYTIQUE',
                   PRECISION=1.0E-05,
                   CRITERE='RELATIF',
-                  MAILLE='S11',),
+                  MAILLE='M1',),
           )
-
 #
+
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=MEST1,
                   NOM_CHAM='EFGE_ELNO',
                   NOEUD='N2',
                   NOM_CMP='VY',
-                  VALE_CALC=-2.5607992691852E-15,
+                  VALE_CALC=-0.00196348995736,
                   VALE_REFE=0.0,
                   REFERENCE = 'ANALYTIQUE',
-                  PRECISION=1.0E-05,
+                  PRECISION=2.0E-03,
                   CRITERE='ABSOLU',
-                  MAILLE='S11',),
+                  MAILLE=maille2,),
           )
-
 #
+
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=MEST1,
                   NOM_CHAM='EFGE_ELNO',
                   NOEUD='N1',
                   NOM_CMP='MFZ',
-                  VALE_CALC=-0.63661977236758,
+                  VALE_CALC=-0.636616500191,
                   VALE_REFE=-0.63661999999999996,
                   REFERENCE = 'ANALYTIQUE',
                   PRECISION=1.0E-05,
                   CRITERE='RELATIF',
-                  MAILLE='S11',),
+                  MAILLE='M1',),
           )
-
 #
+
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=MEST1,
                   NOM_CHAM='EFGE_ELNO',
                   NOEUD='N2',
                   NOM_CMP='MFZ',
-                  VALE_CALC=0.36338022763242,
+                  VALE_CALC=0.363383498716,
                   VALE_REFE=0.36337999999999998,
                   REFERENCE = 'ANALYTIQUE',
                   PRECISION=1.0E-05,
                   CRITERE='RELATIF',
-                  MAILLE='S11',),
+                  MAILLE=maille2,),
           )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MEST1,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='SIXXMIN',
+                  VALE_CALC=-810559.052897,
+                  VALE_REFE=-8.1056E5,
+                  REFERENCE = 'ANALYTIQUE',
+                  PRECISION=1.0E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='M1',),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MEST1,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N2',
+                  NOM_CMP='SIXXMAX',
+                  VALE_CALC=464265.777629,
+                  VALE_REFE=4.6426159999999998E5,
+                  REFERENCE = 'ANALYTIQUE',
+                  PRECISION=1.0E-05,
+                  CRITERE='RELATIF',
+                  MAILLE=maille2,),
+          )
+#
+#
+#
 #
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=MEST1,
                   NOM_CHAM='SIPM_ELNO',
                   NOEUD='N1',
                   NOM_CMP='SIXXMIN',
-                  VALE_CALC=-8.105694691387E+05,
+                  VALE_CALC=-810559.052897,
                   VALE_REFE=-8.1056E5,
                   REFERENCE = 'ANALYTIQUE',
-                  PRECISION=1.5E-05,
+                  PRECISION=1.0E-05,
                   CRITERE='RELATIF',
-                  MAILLE='S11',),
+                  MAILLE='M1',),
           )
 #
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
@@ -199,13 +224,14 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CHAM='SIPM_ELNO',
                   NOEUD='N2',
                   NOM_CMP='SIXXMAX',
-                  VALE_CALC=4.6426162502738E+05,
+                  VALE_CALC=464265.777629,
                   VALE_REFE=4.6426159999999998E5,
                   REFERENCE = 'ANALYTIQUE',
                   PRECISION=1.0E-05,
                   CRITERE='RELATIF',
-                  MAILLE='S11',),
+                  MAILLE=maille2,),
           )
+
 
 #
 FIN( )

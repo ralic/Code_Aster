@@ -34,7 +34,6 @@ subroutine te0141(option, nomte)
 ! IN  NOMTE  : K16 : NOM DU TYPE ELEMENT
 !       'MECA_POU_D_E'  : POUTRE DROITE D'EULER       (SECTION VARIABLE)
 !       'MECA_POU_D_T'  : POUTRE DROITE DE TIMOSHENKO (SECTION VARIABLE)
-!       'MECA_POU_C_T'  : POUTRE COURBE DE TIMOSHENKO(SECTION CONSTANTE)
 !       'MECA_POU_D_EM' : POUTRE DROITE MULTIFIBRE D EULER (SECT. CONST)
 !       'MECA_POU_D_TG' : POUTRE DROITE DE TIMOSHENKO (GAUCHISSEMENT)
 !       'MECA_POU_D_TGM': POUTRE DROITE DE TIMOSHENKO (GAUCHISSEMENT)
@@ -44,10 +43,8 @@ subroutine te0141(option, nomte)
 !
     implicit none
 #include "jeveux.h"
-#include "asterfort/chgrep.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lonele.h"
-#include "asterfort/matro2.h"
 #include "asterfort/matrot.h"
 #include "asterfort/moytem.h"
 #include "asterfort/pmavec.h"
@@ -56,7 +53,6 @@ subroutine te0141(option, nomte)
 #include "asterfort/poutre_modloc.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rhoequ.h"
-#include "asterfort/trigom.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
 #include "asterfort/vecma.h"
@@ -66,14 +62,13 @@ subroutine te0141(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: lmater, iret, nbpar, labsc
-    integer :: lorien, iacce, ivect, lrcou, lmat
+    integer :: lorien, iacce, ivect, lmat
     integer :: nno, nc, ntc, nbv, kanl, kpg, spt
     integer :: inbf, nbgf
-    real(kind=8) :: valpar
-    real(kind=8) :: xl, rad, angs2
-    real(kind=8) :: absmoy, angarc
+    real(kind=8) :: valpar, xl
+    real(kind=8) :: absmoy
     real(kind=8) :: e, g, xnu, rho, rhos, rhofi, rhofe, cm, phie, phii
-    real(kind=8) :: pgl(3, 3), pgl1(3, 3), pgl2(3, 3), mlv(105)
+    real(kind=8) :: pgl(3, 3), mlv(105)
     real(kind=8) :: matv(105), matp(14, 14)
     character(len=8) :: nompar, fami, poum
     character(len=16) :: ch16
@@ -175,33 +170,14 @@ subroutine te0141(option, nomte)
     if (option .eq. 'M_GAMMA') then
         call jevech('PACCELR', 'L', iacce)
         call jevech('PVECTUR', 'E', ivect)
-        if (nomte.eq.'MECA_POU_C_T') then
-            call jevech('PCAARPO', 'L', lrcou)
-            rad = zr(lrcou)
-            angarc = zr(lrcou+1)
-            angs2 = trigom('ASIN',xl/ (2.0d0*rad))
-            call matro2(zr(lorien), angarc, angs2, pgl1, pgl2)
-            call chgrep('LG', pgl1, pgl2, mlv, matv)
-        else
-            call matrot(zr(lorien), pgl)
-            call utpslg(nno, nc, pgl, mlv, matv)
-        endif
+        call matrot(zr(lorien), pgl)
+        call utpslg(nno, nc, pgl, mlv, matv)
         call vecma(matv, nbv, matp, ntc)
         call pmavec('ZERO', ntc, matp, zr(iacce), zr(ivect))
     else
         call jevech('PMATUUR', 'E', lmat)
-!
-        if (nomte.eq.'MECA_POU_C_T') then
-            call jevech('PCAARPO', 'L', lrcou)
-            rad = zr(lrcou)
-            angarc = zr(lrcou+1)
-            angs2 = trigom('ASIN',xl/ (2.0d0*rad))
-            call matro2(zr(lorien), angarc, angs2, pgl1, pgl2)
-            call chgrep('LG', pgl1, pgl2, mlv, zr(lmat))
-        else
-            call matrot(zr(lorien), pgl)
-            call utpslg(nno, nc, pgl, mlv, zr(lmat))
-        endif
+        call matrot(zr(lorien), pgl)
+        call utpslg(nno, nc, pgl, mlv, zr(lmat))
     endif
 !
 end subroutine

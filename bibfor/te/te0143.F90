@@ -1,5 +1,4 @@
 subroutine te0143(option, nomte)
-! aslint: disable=
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,7 +30,6 @@ subroutine te0143(option, nomte)
 !       NOMTE   :   NOM DU TYPE ELEMENT
 !           'MECA_POU_D_E'  : POUTRE DROITE D'EULER       (SECTION VARIABLE)
 !           'MECA_POU_D_T'  : POUTRE DROITE DE TIMOSHENKO (SECTION VARIABLE)
-!           'MECA_POU_C_T'  : POUTRE COURBE DE TIMOSHENKO (SECTION CONSTANTE)
 !           'MECA_POU_D_EM' : POUTRE DROITE MULTIFIBRE D'EULER (SECT. CONST)
 !           'MECA_POU_D_TG' : POUTRE DROITE DE TIMOSHENKO (GAUCHISSEMENT)
 !           'MECA_POU_D_TGM': POUTRE DROITE DE TIMOSHENKO (GAUCHISSEMENT) MULTIFIBRES
@@ -42,47 +40,48 @@ subroutine te0143(option, nomte)
     character(len=*) :: option, nomte
 !
 #include "jeveux.h"
-#include "asterc/r8prem.h"
 #include "asterfort/assert.h"
-#include "asterfort/chgrep.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jspgno.h"
 #include "asterfort/lonele.h"
-#include "asterfort/matro2.h"
 #include "asterfort/matrot.h"
 #include "asterfort/pmfinfo.h"
 #include "asterfort/pmfitg.h"
 #include "asterfort/poutre_modloc.h"
 #include "asterfort/ptkg00.h"
 #include "asterfort/ptkg20.h"
-#include "asterfort/trigom.h"
+#include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: lorien, nno, nc, i, lmat, ncomp, itype
-    integer :: lrcou, ldep, kp, adr, npg, istrxr, jacf
+    integer :: lrcou, ldep, kp, adr, npg, istrxr, jacf, iret
     real(kind=8) :: a, xiy, xiz, ez, ey, a2, xiy2, xiz2, xl
-    real(kind=8) :: rad, ang, angarc, angs2, xfly, xflz
-    real(kind=8) :: pgl(3, 3), pgl1(3, 3), pgl2(3, 3), mat(105)
-    real(kind=8) :: iyr2, izr2, xfl, b(14), ksi1, d1b3(2, 3)
+    real(kind=8) :: xfly, xflz
+    real(kind=8) :: pgl(3, 3), mat(105)
+    real(kind=8) :: iyr2, izr2, b(14), ksi1, d1b3(2, 3)
     real(kind=8) :: sigma(14), carsec(6)
     character(len=16) :: ch16
 !
     integer :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
 !
 ! --------------------------------------------------------------------------------------------------
+!
     integer, parameter :: nb_cara1 = 11
     real(kind=8) :: vale_cara1(nb_cara1)
     character(len=8) :: noms_cara1(nb_cara1)
     data noms_cara1 /'A1','IY1','IZ1','EY1','EZ1','A2','IY2','IZ2','EY2','EZ2','TVAR'/
 !
+! --------------------------------------------------------------------------------------------------
+!
     integer, parameter :: nb_cara2 = 7
     real(kind=8) :: vale_cara2(nb_cara2)
     character(len=8) :: noms_cara2(nb_cara2)
     data noms_cara2 /'A1','IY1','IZ1','EY1','EZ1','IYR21','IZR21'/
+!
 ! --------------------------------------------------------------------------------------------------
 !
     nno = 2
@@ -127,30 +126,18 @@ subroutine te0143(option, nomte)
     call jevech('PCAORIE', 'L', lorien)
 !   Recuperation des coordonnees des noeuds
     xl =  lonele()
-    if (itype .ne. 10) then
-!       poutre droite
-        call matrot(zr(lorien), pgl)
-    else
-!       poutre courbe de timoshenko a 6 ddl
-        call utmess('F', 'ELEMENTS3_28')
-        call jevech('PCAARPO', 'L', lrcou)
-        rad = zr(lrcou)
-        angarc = zr(lrcou+1)
-        xfl = zr(lrcou+2)
-        xfly = xfl
-        xflz = xfl
-        if ( xfl .le. r8prem() ) then
-            xfly = zr(lrcou+4)
-            xflz = zr(lrcou+6)
+    call matrot(zr(lorien), pgl)
+!
+    if (nomte .eq. 'MECA_POU_D_T') then
+        call tecach('NNN', 'PCAARPO', 'L', iret, iad=lrcou)
+        if ( iret .eq. 0 ) then
+            xfly = zr(lrcou)
+            xflz = zr(lrcou+2)
+            xiy  = xiy/xfly
+            xiz  = xiz/xflz
+            xiy2 = xiy2/xfly
+            xiz2 = xiz2/xflz
         endif
-        angs2 = trigom('ASIN', xl / ( 2.d0 * rad ) )
-        ang = angs2 * 2.d0
-        xl = rad * ang
-        xiy = xiy / xfly
-        xiz = xiz / xflz
-        xiy2 = xiy2 / xfly
-        xiz2 = xiz2 / xflz
-        call matro2(zr(lorien), angarc, angs2, pgl1, pgl2)
     endif
 !
 ! --------------------------------------------------------------------------------------------------
@@ -175,17 +162,11 @@ subroutine te0143(option, nomte)
                     sigma(i+nc) = zr(ldep+nc+nc+i-1)
                 enddo
             endif
-            if (itype .ne. 10) then
-                call ptkg00(sigma, a, a2, xiz, xiz2, xiy, xiy2, xl, ey, ez, mat)
-            else
-                call utmess('A', 'ELEMENTS3_28')
-            endif
-!
+            call ptkg00(sigma, a, a2, xiz, xiz2, xiy, xiy2, xl, ey, ez, mat)
         else if (nomte.eq.'MECA_POU_D_TG') then
             call jspgno(xl, zr(ldep), b)
             b(1:7) = -b(1:7)
             call ptkg20(b, a, xiz, xiy, iyr2, izr2, xl, ey, ez, mat)
-!
         else if (nomte.eq.'MECA_POU_D_TGM') then
 !           on projette avec les fcts de forme sur les noeuds debut et fin de l'élément
 !           pour le point 1
@@ -216,12 +197,7 @@ subroutine te0143(option, nomte)
             call ptkg20(b, a, xiz, xiy, iyr2, izr2, xl, ey, ez, mat)
         endif
 !       Passage du repère local au repère global
-        if (itype .eq. 10) then
-            call chgrep('LG', pgl1, pgl2, mat, zr(lmat))
-        else
-            call utpslg(nno, nc, pgl, mat, zr(lmat))
-        endif
-!
+        call utpslg(nno, nc, pgl, mat, zr(lmat))
     else
         ch16 = option
         call utmess('F', 'ELEMENTS2_47', sk=ch16)

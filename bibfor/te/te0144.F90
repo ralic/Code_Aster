@@ -30,7 +30,6 @@ subroutine te0144(option, nomte)
 ! IN  NOMTE  : K16 : NOM DU TYPE ELEMENT
 !        'MECA_POU_D_E' : POUTRE DROITE D'EULER       (SECTION VARIABLE)
 !        'MECA_POU_D_T' : POUTRE DROITE DE TIMOSHENKO (SECTION VARIABLE)
-!        'MECA_POU_C_T' : POUTRE COURBE DE TIMOSHENKO(SECTION CONSTANTE)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -40,14 +39,12 @@ subroutine te0144(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lonele.h"
-#include "asterfort/matro2.h"
 #include "asterfort/matrot.h"
 #include "asterfort/moytem.h"
 #include "asterfort/pmavec.h"
 #include "asterfort/porigi.h"
 #include "asterfort/poutre_modloc.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/trigom.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/vecma.h"
 #include "asterfort/verifm.h"
@@ -56,12 +53,12 @@ subroutine te0144(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
     integer :: nbres, npg, nno, nc, nnoc, ncc, jeffo, lmater, iret
-    integer :: iret1, itype, lrcou, lorien, jdepl, i, j
+    integer :: iret1, itype, lorien, jdepl, i, j
 !
     real(kind=8) :: ul(12), ug(12), pgl(3, 3), klc(12, 12), klv(78)
-    real(kind=8) :: fl(12), pgl1(3, 3), pgl2(3, 3), epsith
-    real(kind=8) :: x, temp, tvar, rad
-    real(kind=8) :: e, xnu, xl, angarc, angs2, along
+    real(kind=8) :: fl(12), epsith
+    real(kind=8) :: temp, tvar
+    real(kind=8) :: e, xnu, xl
 !
 ! --------------------------------------------------------------------------------------------------
     parameter    (nbres=2)
@@ -90,13 +87,10 @@ subroutine te0144(option, nomte)
     call jevech('PMATERC', 'L', lmater)
 !
 !   recuperation de la temperature
-    call verifm('RIGI', npg, 1, '+', zi(lmater),&
-                epsith, iret)
-    call moytem('RIGI', npg, 1, '+', temp,&
-                iret1)
+    call verifm('RIGI', npg, 1, '+', zi(lmater), epsith, iret)
+    call moytem('RIGI', npg, 1, '+', temp, iret1)
 !
-    call rcvalb('RIGI', 1, 1, '+', zi(lmater),&
-                ' ', 'ELAS', 1, 'TEMP', [temp],&
+    call rcvalb('RIGI', 1, 1, '+', zi(lmater), ' ', 'ELAS', 1, 'TEMP', [temp],&
                 2, nomres, valres, codres, 1)
     e = valres(1)
     xnu = valres(2)
@@ -113,22 +107,10 @@ subroutine te0144(option, nomte)
 !
 !   recuperation des coordonnees des noeuds
     xl = lonele()
-    if (itype .eq. 10) then
-        call jevech('PCAARPO', 'L', lrcou)
-        rad = zr(lrcou)
-        angarc = zr(lrcou+1)
-        x = xl / ( 2.0d0 * rad )
-        angs2 = trigom('ASIN', x )
-        xl = rad * angs2 * 2.0d0
-    endif
 !
 !   matrice de rotation pgl
     call jevech('PCAORIE', 'L', lorien)
-    if (itype .eq. 10) then
-        call matro2(zr(lorien), angarc, angs2, pgl1, pgl2)
-    else
-        call matrot(zr(lorien), pgl)
-    endif
+    call matrot(zr(lorien), pgl)
 !
     call jevech('PDEPLAR', 'L', jdepl)
     do i = 1, 12
@@ -136,12 +118,7 @@ subroutine te0144(option, nomte)
     enddo
 !
 !   vecteur deplacement local  UL = PGL * UG
-    if (itype .eq. 10) then
-        call utpvgl(nnoc, ncc, pgl1, ug, ul)
-        call utpvgl(nnoc, ncc, pgl2, ug(7), ul(7))
-    else
-        call utpvgl(nno, nc, pgl, ug, ul)
-    endif
+    call utpvgl(nno, nc, pgl, ug, ul)
 !
 !   vecteur effort local  FL = KLC * UL
     call pmavec('ZERO', 12, klc, ul, fl)
@@ -151,16 +128,8 @@ subroutine te0144(option, nomte)
         do i = 1, 12
             ug(i) = 0.0d0
         enddo
-        if (itype .ne. 10) then
-            ug(1) = -epsith * xl
-            ug(7) = -ug(1)
-        else
-            along = 2.d0 * rad * epsith * sin(angs2)
-            ug(1) = -along * cos(angs2)
-            ug(2) = along * sin(angs2)
-            ug(7) = -ug(1)
-            ug(8) = ug(2)
-        endif
+        ug(1) = -epsith * xl
+        ug(7) = -ug(1)
 !       calcul des forces induites
         do i = 1, 6
             do j = 1, 6
@@ -171,10 +140,11 @@ subroutine te0144(option, nomte)
     endif
 !   archivage
     if (npg .eq. 2) then
-        do i = 1, 6
-            zr(jeffo+i-1) = -fl(i)
-            zr(jeffo+i+6-1) = fl(i+6)
-        enddo
+        ASSERT(.false.)
+!        do i = 1, 6
+!            zr(jeffo+i-1) = -fl(i)
+!            zr(jeffo+i+6-1) = fl(i+6)
+!        enddo
     else
 !       dans le cas 3 points de gauss il ne faut pas mettre 0 sur un des points de gauss
 !        cf doc aster pour la numerotation ou elrega

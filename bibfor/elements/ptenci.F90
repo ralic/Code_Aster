@@ -1,11 +1,5 @@
-subroutine ptenci(neq, x, mat, omeg, en,&
-                  itype, kanl, idis)
-    implicit none
-#include "asterf_types.h"
-#include "asterfort/vtmv.h"
-    integer :: neq, itype, kanl, idis
-    real(kind=8) :: x(*), mat(neq, neq), omeg, en(*)
-!     ------------------------------------------------------------------
+subroutine ptenci(neq, x, mat, omeg, en, itype, kanl, idis)
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,11 +16,16 @@ subroutine ptenci(neq, x, mat, omeg, en,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+!
+! --------------------------------------------------------------------------------------------------
+!
 !     CALCUL ENERGIE CINETIQUE POUR
-!         - ELEMENT DE POUTRE (POU_D_T, POU_D_E, POU_C_T)
+!         - ELEMENT DE POUTRE (POU_D_T, POU_D_E,)
 !         - ELEMENT DISCRET
 !         - ELEMENT BARRE
-!     ------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
+!
 ! IN  : NEQ    : DIMENSION DE LA MATRICE MAT
 ! IN  : X      : VECTEUR DE DEPLACEMENT
 ! IN  : MAT    : MATRICE DE MASSE
@@ -36,42 +35,49 @@ subroutine ptenci(neq, x, mat, omeg, en,&
 ! IN  : KANL   : TYPE DE LA MATRICE DE MASSE
 ! IN  : IDIS   : = 0 , PAS DE CALCUL DE LA REPARTITON DE L'ENERGIE
 !                = 1 , CALCUL DE LA REPARTITON DE L'ENERGIE
-!     ------------------------------------------------------------------
-    integer :: jcft(8), icou(6, 2), ncft(3), icft(6, 3), na(4), ia(4, 4)
+!
+! --------------------------------------------------------------------------------------------------
+!
+    implicit none
+    integer :: neq, itype, kanl, idis
+    real(kind=8) :: x(*), mat(neq, neq), omeg, en(*)
+!
+#include "asterf_types.h"
+#include "asterfort/vtmv.h"
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: jcft(8), ncft(3), icft(6, 3), na(4), ia(4, 4)
     real(kind=8) :: x2(12), mat2(144)
     aster_logical :: ltest
-!
-!             COUPLAGE FLEXION-TORSION
-!-----------------------------------------------------------------------
     integer :: i, iform, j, kk, l, nddl, nn
-!
     real(kind=8) :: const, r, zero
-!-----------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
+!
     data jcft/  2 ,  3 ,  5 ,  6 ,  8 ,  9 , 11 , 12 /
     data ncft/  2 ,  6 ,  6 /
     data icft/  1 ,  7 ,  0 ,  0 ,  0 ,  0 ,&
-     &            2 ,  4 ,  6 ,  8 , 10 , 12 ,&
-     &            3 ,  4 ,  5 ,  9 , 10 , 11 /
+                2 ,  4 ,  6 ,  8 , 10 , 12 ,&
+                3 ,  4 ,  5 ,  9 , 10 , 11 /
 !
-!             ELEMENT COURBE
-    data icou/  1 ,  2 ,  6 ,  7 ,  8 , 12 ,&
-     &            3 ,  4 ,  5 ,  9 , 10 , 11 /
-!
-!            ELEMENT DROIT CLASSIQUE
+!   ELEMENT DROIT CLASSIQUE
     data na/  2 ,  2 ,  4 ,  4  /
     data ia/  1 ,  7 ,  0 ,  0 ,&
-     &          4 , 10 ,  0 ,  0 ,&
-     &          2 ,  6 ,  8 , 12 ,&
-     &          3 ,  5 ,  9 , 11  /
-! ----------------------------------------------------------------------
+              4 , 10 ,  0 ,  0 ,&
+              2 ,  6 ,  8 , 12 ,&
+              3 ,  5 ,  9 , 11  /
+!
+! --------------------------------------------------------------------------------------------------
+!
     const = omeg / 2.d0
     zero = 0.d0
     ltest = .false.
 !
-!     --- ENERGIE CINETIQUE GLOBALE ---
+!   ENERGIE CINETIQUE GLOBALE
     call vtmv(neq, x, mat, r)
     en(1) = r * const
-    if (idis .eq. 0) goto 910
+    if (idis.eq.0) goto 910
     if (abs(en(1)) .lt. 1.d-06) goto 910
     iform = 0
 !
@@ -79,21 +85,8 @@ subroutine ptenci(neq, x, mat, omeg, en,&
 !                    --- REPARTITION D'ENERGIE ---
 !                    -----------------------------
 !
-    if (itype .eq. 10) then
-!       --- ELEMENT COURBE DE SECTION CONSTANTE ---
-        iform = 110
-        nn = 3
-        do 325 l = 1, 2
-            do 324 i = 1, 6
-                x2(i) = x(icou(i,l))
-                do 323 j = 1, 6
-                    mat2(6*(j-1)+i) = mat ( icou(i,l) , icou(j,l) )
-323             continue
-324         continue
-            call vtmv(6, x2, mat2, r)
-            en(1+l) = r * const
-325     continue
-    else if (kanl.eq.0) then
+    nn=0
+    if (kanl.eq.0) then
 !
 !        NEQ  : NOMBRE D'EQUATION DE LA MATRICE ( 12, 6, 3 )
 !        NDDL : NOMBRE DE DDL ( 6, 3 )
@@ -105,73 +98,70 @@ subroutine ptenci(neq, x, mat, omeg, en,&
 !        ITYPE : 0, 1, 2, ELEMENT DE POUTRE
 !
         nddl = neq / 2
-        if (itype .eq. 20 .or. itype .eq. 21 .or. itype .eq. 22 .or. itype .eq. 23) nddl = &
-                                                                                    neq
+        if (itype.eq.20 .or. itype.eq.21 .or. itype.eq.22 .or. itype.eq.23) nddl = neq
 !
         nn = 1 + nddl
-!
-!        --- ON N'A QUE LA DIAGONALE ( PAS DE TERMES D'INERTIE ) ---
-        do 10 i = 1, neq-1
-            do 12 j = i+1, neq
+!       ON N'A QUE LA DIAGONALE ( PAS DE TERMES D'INERTIE )
+        do i = 1, neq-1
+            do j = i+1, neq
                 if (mat(i,j) .ne. zero) goto 500
- 12         continue
- 10     continue
+            enddo
+        enddo
 !
-        if (itype .eq. 20 .or. itype .eq. 21 .or. itype .eq. 22 .or. itype .eq. 23) then
-            do 14 i = 1, nddl
-                en(i+1) = ( x(i) * mat(i,i) * x(i) ) * const
- 14         continue
+        if (itype.eq.20 .or. itype.eq.21 .or. itype.eq.22 .or. itype.eq.23) then
+            do i = 1, nddl
+                en(i+1) = (x(i)*mat(i,i)*x(i))*const
+            enddo
         else
-            do 16 i = 1, nddl
+            do i = 1, nddl
                 en(i+1) = (x(i+nddl) * mat(i+nddl,i+nddl) * x(i+nddl) + x(i) * mat(i,i) * x(i)&
                           ) * const
- 16         continue
+            enddo
         endif
         iform = 10
-        if (itype .eq. 40 .or. itype .eq. 20) iform = 11
-        if (itype .eq. 42 .or. itype .eq. 22) iform = 11
+        if (itype.eq.40 .or. itype.eq.20) iform = 11
+        if (itype.eq.42 .or. itype.eq.22) iform = 11
 !
         goto 900
 !
-!        --- ON TIENT COMPTE DES TERMES D'INERTIE ---
+!       ON TIENT COMPTE DES TERMES D'INERTIE
 500     continue
 !
         if (nddl .ge. 6) then
-            do 20 i = 1, 3
-                do 22 j = i+1, 6
+            do i = 1, 3
+                do j = i+1, 6
                     if (mat(i,j) .ne. zero) goto 600
- 22             continue
- 20         continue
+                enddo
+            enddo
         else
             goto 600
         endif
-!            --- MASSE CONCENTREE + INERTIES --
-        if (itype .eq. 21 .or. itype .eq. 23) then
-            do 24 i = 1, nddl
-                en(i+1) = ( x(i) * mat(i,i) * x(i) ) * const
- 24         continue
+!       MASSE CONCENTREE + INERTIES
+        if (itype.eq.21 .or. itype.eq.23) then
+            do i = 1, nddl
+                en(i+1) = (x(i)*mat(i,i)*x(i))*const
+            enddo
         else
-            do 26 i = 1, nddl
-                en(i+1) = (x(i+nddl) * mat(i+nddl,i+nddl) * x(i+nddl) + x(i) * mat(i,i) * x(i)&
-                          ) * const
- 26         continue
+            do i = 1, nddl
+                en(i+1) = (x(i+nddl)*mat(i+nddl,i+nddl)*x(i+nddl) + x(i)*mat(i,i)*x(i))*const
+            enddo
         endif
-        if (nddl .eq. 6) then
-            do 203 i = 1, 3
+        if (nddl.eq.6) then
+            do i = 1, 3
                 x2(i) = x(i+3)
-                do 204 j = 1, 3
+                do j = 1, 3
                     mat2(3*(j-1)+i) = mat(i+3,j+3)
-204             continue
-203         continue
+                enddo
+            enddo
         else
-            do 205 i = 1, 3
+            do i = 1, 3
                 x2(i) = x(i+3)
                 x2(i+3) = x(i+9)
-                do 206 j = 1, 3
+                do j = 1, 3
                     mat2(6*(j-1)+i ) = mat(i+3,j+3)
                     mat2(6*(j+2)+i+3) = mat(i+9,j+9)
-206             continue
-205         continue
+                enddo
+            enddo
         endif
         call vtmv(nddl, x2, mat2, r)
         en(5) = r * const
@@ -181,52 +171,48 @@ subroutine ptenci(neq, x, mat, omeg, en,&
 !
 600     continue
 !
-!
     else if (itype.eq.0 .or. itype.eq.1 .or. itype.eq.2) then
-!       -------------------- MASSES EQUIVALENTES -----------------------
-!       --- ELEMENT DROIT DE SECTION CONSTANTE OU VARIABLE ---
-!
-        do 310 kk = 1, 8
+!       ELEMENT DROIT DE SECTION CONSTANTE OU VARIABLE
+        do kk = 1, 8
             if (mat( 4,jcft(kk)) .ne. zero .or. mat(10,jcft(kk)) .ne. zero) then
-!             --- COUPLAGE FLEXION-TORSION ---
-                do 305 l = 1, 3
-                    do 304 i = 1, ncft(l)
+!               COUPLAGE FLEXION-TORSION
+                do l = 1, 3
+                    do i = 1, ncft(l)
                         x2(i) = x(icft(i,l))
-                        do 303 j = 1, ncft(l)
+                        do j = 1, ncft(l)
                             mat2(ncft(l)*(j-1)+i) = mat(icft(i,l), icft(j,l) )
-303                     continue
-304                 continue
+                        enddo
+                    enddo
                     call vtmv(ncft(l), x2, mat2, r)
                     en(1+l) = r * const
-305             continue
+                enddo
                 iform = 101
                 nn = 4
                 goto 900
             endif
-310     continue
+        enddo
 !
 !       --- ELEMENT DROIT CLASSIQUE ---
         iform = 101
         nn = 5
-        do 315 l = 1, 4
-            do 314 i = 1, na(l)
+        do l = 1, 4
+            do i = 1, na(l)
                 x2(i) = x(ia(i,l))
-                do 313 j = 1, na(l)
+                do j = 1, na(l)
                     mat2(na(l)*(j-1)+i) = mat ( ia(i,l) , ia(j,l) )
-313             continue
-314         continue
+                enddo
+            enddo
             call vtmv(na(l), x2, mat2, r)
             en(1+l) = r * const
-315     continue
+        enddo
     endif
 900 continue
 !
-!     --- POURCENTAGE ----
-    do 410 i = 2, nn
+!   POURCENTAGE
+    do i = 2, nn
         en(i) = en(i)/en(1)
-410 end do
+    enddo
 !
-!     -- SORTIE --------------------------------------------------------
 910 continue
     if (ltest) then
         write(6,*)'--->> PTENCI     ITYPE = ',itype
@@ -234,7 +220,7 @@ subroutine ptenci(neq, x, mat, omeg, en,&
         write(6,*)'                  OMEG = ',omeg
         write(6,*)'---------ENERGIE CINETIQUE--------'
         write(6,*)'ENERGIE CINETIQUE GLOBALE ',en(1)
-        if (iform .eq. 10) then
+        if (iform.eq.10) then
             write(6,*)'MASSE CONCENTREE STRICTEMENT DIAGONALE'
             write(6,*)'TRANSLATION X  ',en(2)
             write(6,*)'TRANSLATION Y  ',en(3)

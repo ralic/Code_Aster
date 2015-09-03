@@ -101,20 +101,8 @@ cata_msg = {
  type de poutre inconnu
 """),
 
-    49 : _(u"""
- charge répartie variable non admise sur un élément courbe.
-"""),
-
     50 : _(u"""
  charge répartie variable non admise sur un élément variable.
-"""),
-
-    51 : _(u"""
- on ne peut pas imposer de charges réparties suiveuses de type vitesse de vent sur les poutres courbes.
-"""),
-
-    52 : _(u"""
- on ne peut pas imposer de charges réparties suiveuses sur les poutres courbes.
 """),
 
     53 : _(u"""

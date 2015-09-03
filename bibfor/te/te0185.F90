@@ -94,9 +94,6 @@ subroutine te0185(option, nomte)
         else if (cmod.eq.'DTR') then
 !         -- DIS_TR
             call ef0042(nomte)
-        else if (cmod.eq.'PCT') then
-!         -- POU_C_T
-            call ef0142(nomte)
         else if (cmod.eq.'PDE') then
 !         -- POU_D_E
             call ef0142(nomte)
@@ -158,9 +155,6 @@ subroutine te0185(option, nomte)
             call ef0031(nomte)
         else if (cmod.eq.'DTR') then
 !         -- DIS_TR
-            call ef0039(nomte)
-        else if (cmod.eq.'PCT') then
-!         -- POU_C_T
             call ef0039(nomte)
         else if (cmod.eq.'PDE') then
 !         -- POU_D_E

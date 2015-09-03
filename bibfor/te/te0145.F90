@@ -27,7 +27,6 @@ subroutine te0145(option, nomte)
 ! IN  NOMTE  : K16 : NOM DU TYPE ELEMENT
 !        'MECA_POU_D_E' : POUTRE DROITE D'EULER       (SECTION VARIABLE)
 !        'MECA_POU_D_T' : POUTRE DROITE DE TIMOSHENKO (SECTION VARIABLE)
-!        'MECA_POU_C_T' : POUTRE COURBE DE TIMOSHENKO(SECTION CONSTANTE)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -35,7 +34,6 @@ subroutine te0145(option, nomte)
 #include "jeveux.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lonele.h"
-#include "asterfort/utmess.h"
 !
     character(len=*) :: option, nomte
 !
@@ -51,9 +49,6 @@ subroutine te0145(option, nomte)
     force(1:12) = 0.0d0
 !   recuperation des coordonnees des noeuds
     xl =  lonele(igeom=igeom)
-    if (nomte .eq. 'MECA_POU_C_T') then
-        call utmess('F', 'ELEMENTS3_29')
-    endif
 !
 !   calcul des vecteurs elementaires
     call jevech('PFRELEC', 'L', iforc)

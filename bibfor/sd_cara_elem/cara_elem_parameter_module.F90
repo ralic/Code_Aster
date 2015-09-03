@@ -27,10 +27,10 @@ module cara_elem_parameter_module
     integer, parameter :: ACE_NOTHING        =  0
 !
 ! Nombre total de mots clefs facteur
-    integer, parameter :: ACE_NB_MCLEF       = 17
+    integer, parameter :: ACE_NB_MCLEF       = 16
     character(len=16), parameter :: ACE_MCLEF(ACE_NB_MCLEF) = [ &
         'POUTRE          ','COQUE           ','DISCRET         ','ORIENTATION     ',&
-        'DEFI_ARC        ','CABLE           ','BARRE           ','MASSIF          ',&
+        'CABLE           ','BARRE           ','MASSIF          ',&
         'POUTRE_FLUI     ','RIGI_PARASOL    ','GRILLE          ','RIGI_MISS_3D    ',&
         'DISCRET_2D      ','MEMBRANE        ','MASS_AJOU       ','MULTIFIBRE      ',&
         'MASS_REP        ' ]
@@ -39,19 +39,18 @@ module cara_elem_parameter_module
     integer, parameter :: ACE_COQUE          =  2
     integer, parameter :: ACE_DISCRET        =  3
     integer, parameter :: ACE_ORIENTATION    =  4
-    integer, parameter :: ACE_DEFI_ARC       =  5
-    integer, parameter :: ACE_CABLE          =  6
-    integer, parameter :: ACE_BARRE          =  7
-    integer, parameter :: ACE_MASSIF         =  8
-    integer, parameter :: ACE_POUTRE_FLUI    =  9
-    integer, parameter :: ACE_RIGI_PARASOL   = 10
-    integer, parameter :: ACE_GRILLE         = 11
-    integer, parameter :: ACE_RIGI_MISS_3D   = 12
-    integer, parameter :: ACE_DISCRET_2D     = 13
-    integer, parameter :: ACE_MEMBRANE       = 14
-    integer, parameter :: ACE_MASS_AJOU      = 15
-    integer, parameter :: ACE_MULTIFIBRE     = 16
-    integer, parameter :: ACE_MASS_REP       = 17
+    integer, parameter :: ACE_CABLE          =  5
+    integer, parameter :: ACE_BARRE          =  6
+    integer, parameter :: ACE_MASSIF         =  7
+    integer, parameter :: ACE_POUTRE_FLUI    =  8
+    integer, parameter :: ACE_RIGI_PARASOL   =  9
+    integer, parameter :: ACE_GRILLE         = 10
+    integer, parameter :: ACE_RIGI_MISS_3D   = 11
+    integer, parameter :: ACE_DISCRET_2D     = 12
+    integer, parameter :: ACE_MEMBRANE       = 13
+    integer, parameter :: ACE_MASS_AJOU      = 14
+    integer, parameter :: ACE_MULTIFIBRE     = 15
+    integer, parameter :: ACE_MASS_REP       = 16
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,7 +65,6 @@ module cara_elem_parameter_module
 !
     integer, parameter :: ACE_NB_GRMA_MA = 4
     integer, parameter :: MCLEF_GRP_MA(ACE_NB_GRMA_MA*ACE_NB_MCLEF) = [ &
-        ACE_GR_MAI, ACE_MAILLE, ACE_NOTHING, ACE_NOTHING , &
         ACE_GR_MAI, ACE_MAILLE, ACE_NOTHING, ACE_NOTHING , &
         ACE_GR_MAI, ACE_MAILLE, ACE_NOTHING, ACE_NOTHING , &
         ACE_GR_MAI, ACE_MAILLE, ACE_NOTHING, ACE_NOTHING , &
@@ -137,12 +135,11 @@ character(len=16),parameter :: ACE_NM_ELEMENT(ACE_NB_ELEMENT) =[ &
     integer, parameter :: ACE_NU_MASSIF    =  8
     integer, parameter :: ACE_NU_THHMM     =  9
 !
-    integer, parameter :: ACE_NB_POUTRE    = 13
+    integer, parameter :: ACE_NB_POUTRE    = 12
     character(len=16), parameter :: ACE_EL_POUTRE(ACE_NB_POUTRE) =[ &
-        'MECA_POU_D_T    ','MECA_POU_D_E    ','MECA_POU_D_T_GD ','MECA_POU_C_T    ',&
-        'MEFS_POU_D_T    ','MECA_POU_D_TG   ','MECA_POHO_HEXA8 ','MECA_POHO_HEXA20',&
-        'MET3SEG3        ','MET6SEG3        ','MET3SEG4        ','MECA_POU_D_EM   ',&
-        'MECA_POU_D_TGM  ' ]
+        'MECA_POU_D_T    ','MECA_POU_D_E    ','MECA_POU_D_T_GD ','MEFS_POU_D_T    ',&
+        'MECA_POU_D_TG   ','MECA_POHO_HEXA8 ','MECA_POHO_HEXA20','MET3SEG3        ',&
+        'MET6SEG3        ','MET3SEG4        ','MECA_POU_D_EM   ','MECA_POU_D_TGM  ' ]
 !
 !     integer, parameter :: ACE_MECA_POU_D_T         1
 !     integer, parameter :: ACE_MECA_POU_D_E         2

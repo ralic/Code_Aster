@@ -54,7 +54,6 @@ CHMAT = AFFE_MATERIAU(MAILLAGE=MA,
 #    POU_D_EM  : Poutres multi-fibres
 #    POU_D_TGM : Poutre droite multi-fibres de Timoshenko (avec gauchissement)
 #    POU_D_TGD : Poutre droite (grands deplassements)
-#    POU_C_T   : Poutre courbe de Timoshenko
 #-----------------------------------------------------------------------
 
 LIS_INST =DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=(_F(JUSQU_A=1.0,NOMBRE=200,),),)
@@ -321,67 +320,6 @@ TEST_RESU(RESU=_F(GROUP_NO='B',
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
                   VALE_CALC=7.5875579405392001E-4,
-                  ),
-          )
-
-#-------------------------------------------------------------------------------------
-# 7 --> POU_C_T
-# ---------------
-
-MO_C_T = AFFE_MODELE(MAILLAGE=MA,
-                     AFFE=_F(GROUP_MA='POUC',PHENOMENE='MECANIQUE',MODELISATION='POU_C_T'),)
-
-CA_C_T = AFFE_CARA_ELEM(
-   MODELE=MO_C_T,
-   POUTRE=_F( GROUP_MA='POUC', SECTION='CERCLE',CARA= 'R',VALE=0.02,),
-   DEFI_ARC=_F(MAILLE='M2',NOEUD_CENTRE='N1'),
-)
-
-CL_C_T = AFFE_CHAR_MECA(MODELE=MO_C_T,
-                   DDL_IMPO=_F(GROUP_NO='C',
-                   DX=0., DY=0., DZ=0.,
-                   DRX=0.,DRY=0.,DRZ=0.),)
-
-CH_C_T = AFFE_CHAR_MECA(MODELE=MO_C_T,
-                        FORCE_NODALE=_F(GROUP_NO='B',FY=-1000.0,FZ= 1000.0),)
-
-RE_C_T=DYNA_NON_LINE(MODELE     = MO_C_T,
-                     CHAM_MATER = CHMAT,
-                                           SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
-                                 FORMULATION='DEPLACEMENT', ),
-
-                     CARA_ELEM  = CA_C_T,
-                     EXCIT      = (_F(CHARGE = CL_C_T),
-                                   _F(CHARGE = CH_C_T),),
-      COMPORTEMENT  =  _F(RELATION   = 'ELAS',
-                      DEFORMATION = 'PETIT',
-                      GROUP_MA    = 'POUC',),
-      NEWTON=_F(PREDICTION='ELASTIQUE',MATRICE='ELASTIQUE'),
-      INCREMENT = _F(LIST_INST = LIS_INST,),
-                     CONVERGENCE = _F(RESI_REFE_RELA=1.0,
-                                      EFFORT_REFE = CoefRef,
-                                      MOMENT_REFE = CoefRef,
-                                     ),
-      ARCHIVAGE=_F(LIST_INST  = L_ARCH),
-   );
-
-TB_C_T = RECU_TABLE(CO=RE_C_T,NOM_PARA=('ITER_GLOB'),)
-
-IMPR_TABLE(TABLE=TB_C_T)
-TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC_I=1,
-           NOM_PARA='ITER_GLOB',
-           TABLE=TB_C_T,
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=1,),
-           )
-
-TEST_RESU(RESU=_F(GROUP_NO='B',
-                  INST=1.0,
-                  RESULTAT=RE_C_T,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DY',
-                  VALE_CALC=-0.025016105935557,
                   ),
           )
 

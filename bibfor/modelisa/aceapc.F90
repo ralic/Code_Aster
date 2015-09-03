@@ -1,35 +1,5 @@
 subroutine aceapc(nomu, noma, lmax, nbocc)
-! aslint: disable=
-    implicit none
-#include "jeveux.h"
-#include "asterc/r8dgrd.h"
-#include "asterc/r8pi.h"
-#include "asterc/r8rddg.h"
-#include "asterfort/acnoce.h"
-#include "asterfort/acnoex.h"
-#include "asterfort/alcart.h"
-#include "asterfort/getvem.h"
-#include "asterfort/getvr8.h"
-#include "asterfort/getvtx.h"
-#include "asterfort/iunifi.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/nocart.h"
-#include "asterfort/orien2.h"
-#include "asterfort/padist.h"
-#include "asterfort/provec.h"
-#include "asterfort/utcono.h"
-#include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
 !
-    character(len=8) :: nomu, noma
-! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,50 +16,85 @@ subroutine aceapc(nomu, noma, lmax, nbocc)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! ----------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
+!
 !     AFFE_CARA_ELEM
-!     AFFECTATION DES CARACTERISTIQUES POUR L'ELEMENT DEFI_ARC
-! ----------------------------------------------------------------------
-! IN  : NOMU   : NOM UTILISATEUR DE LA COMMANDE
-! IN  : NOMA   : NOM DU MAILLAGE
-! IN  : LMAX   : LONGUEUR
-! IN  : NBOCC  : NOMBRE D'OCCURENCES DU MOT CLE DEFI_ARC
-! ----------------------------------------------------------------------
-    integer :: vali
-    real(kind=8) :: xcen(3), xtan(3), x1(3), x2(3), xc1(3), xc2(3)
-    real(kind=8) :: angl(3), xm(3), v1(3), tm(3)
-    character(len=8) :: crit
-    character(len=16) :: mclept(3), mclepc(3)
+!     AFFECTATION DES CARACTERISTIQUES POUR LES ELEMENTS COUDES
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   nomu   : nom utilisateur de la commande
+!   noma   : nom du maillage
+!   lmax   : longueur
+!   nbocc  : nombre d'occurences du mot cle poutre
+!
+! --------------------------------------------------------------------------------------------------
+!
+    implicit none
+    character(len=8) :: nomu, noma
+    integer :: lmax, nbocc
+!
+#include "jeveux.h"
+#include "asterfort/alcart.h"
+#include "asterfort/getvem.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nocart.h"
+#include "asterfort/wkvect.h"
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer           :: iarg
     character(len=19) :: cartar
     character(len=24) :: tmpnar, tmpvar, mlggma, mlgnma, mlgcnx, mlgcoo
-    character(len=24) :: nomail, valk(2)
-    integer :: iarg
-!     ------------------------------------------------------------------
-!-----------------------------------------------------------------------
-    integer :: i, ier, ifm, igm, ijm, img, ioc
-    integer :: ispv, jdcc, jdco, jdgm, jdls, jdno
-    integer :: jdvc, lmax, n1, n2, na, nbocc, nc
-    integer :: ndim, nf, nfy, nfz, ng, nm, nmg
-    integer :: nn1, nn2, no1, no2, np, nr, ns
-    integer :: nsy, nsz, nummai
-    real(kind=8) :: dgrd, dm, epsi, phi, phis2, pi
-    real(kind=8) :: rddg, rr, tole, tx1
-    real(kind=8) :: tx2, xang, xfl, xfly, xflz, xrc, xrc1
-    real(kind=8) :: xrc2, xsi, xsiy, xsiz, zero
-!-----------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: igm, ioc, ng, nm, nsec, ifly, isiy, iflz, isiz
+    integer :: jdcc, jdco, jdls, jdvc
+!
+    integer :: nfl, nfly, nflz
+    integer :: nsi, nsiy, nsiz
+    real(kind=8) :: xfl, xfly, xflz
+    real(kind=8) :: xsi, xsiy, xsiz
+    character(len=19) :: sec
+    logical :: okflex
+!
+! --------------------------------------------------------------------------------------------------
+!
     call jemarq()
-    ifm = iunifi('MESSAGE')
-    dgrd = r8dgrd()
-    rddg = r8rddg()
-    pi = r8pi()
-    zero = 0.d0
-    ier = 0
-    ndim = 3
+!   Y-a-t'il des poutres coudées
+    okflex = .false.
+    do ioc = 1, nbocc
+        call getvtx('POUTRE', 'SECTION', iocc=ioc, scal=sec, nbret=nsec)
+        if ( sec .ne. 'COUDE' ) cycle
+!
+        call getvr8('POUTRE', 'COEF_FLEX',    iocc=ioc, scal=xfl,  nbret=nfl)
+        call getvr8('POUTRE', 'COEF_FLEX_XY', iocc=ioc, scal=xfly, nbret=nfly)
+        call getvr8('POUTRE', 'COEF_FLEX_XZ', iocc=ioc, scal=xflz, nbret=nflz)
+        call getvr8('POUTRE', 'INDI_SIGM',    iocc=ioc, scal=xsi,  nbret=nsi)
+        call getvr8('POUTRE', 'INDI_SIGM_XY', iocc=ioc, scal=xsiy, nbret=nsiy)
+        call getvr8('POUTRE', 'INDI_SIGM_XZ', iocc=ioc, scal=xsiz, nbret=nsiz)
+!
+        if ( nfly+nflz+nfl+nsiy+nsiz+nsi.gt.0 ) then
+            okflex = .true.
+            exit
+        endif
+    enddo
+    if ( .not. okflex ) then
+        goto 999
+    endif
+!
     mlggma = noma//'.GROUPEMA'
     mlgnma = noma//'.NOMMAI'
     mlgcnx = noma//'.CONNEX'
 !
-! --- CONSTRUCTION DES CARTES ET ALLOCATION
+!   construction des cartes et allocation
     cartar = nomu//'.CARARCPO'
     tmpnar = cartar//'.NCMP'
     tmpvar = cartar//'.VALV'
@@ -101,337 +106,76 @@ subroutine aceapc(nomu, noma, lmax, nbocc)
 !
     call wkvect('&&TMPPOUTRE_COURBE', 'V V K24', lmax, jdls)
 !
-    zk8(jdcc) = 'RCOURB'
-    zk8(jdcc+1) = 'ORIE_ARC'
-    zk8(jdcc+2) = 'C_FLEX'
-    zk8(jdcc+3) = 'I_SIGM'
-    zk8(jdcc+4) = 'C_FLEX_Y'
-    zk8(jdcc+5) = 'I_SIGM_Y'
-    zk8(jdcc+6) = 'C_FLEX_Z'
-    zk8(jdcc+7) = 'I_SIGM_Z'
+    ifly=0; isiy=1; iflz=2; isiz=3
+    zk8(jdcc+ifly) = 'C_FLEX_Y'
+    zk8(jdcc+isiy) = 'I_SIGM_Y'
+    zk8(jdcc+iflz) = 'C_FLEX_Z'
+    zk8(jdcc+isiz) = 'I_SIGM_Z'
 !
-    mclept(1) = 'POIN_TANG       '
-    mclept(2) = 'NOEUD_POIN_TANG '
-    mclept(3) = 'GROUP_NO_POIN_TG'
-    mclepc(1) = 'CENTRE          '
-    mclepc(2) = 'NOEUD_CENTRE    '
-    mclepc(3) = 'GROUP_NO_CENTRE '
+    do ioc = 1, nbocc
+        okflex = .false.
+        zr(jdvc+ifly) = 1.0
+        zr(jdvc+iflz) = 1.0
+        zr(jdvc+isiy) = 1.0
+        zr(jdvc+isiz) = 1.0
 !
-! --- LECTURE DES VALEURS ET AFFECTATION DANS LA CARTE CAARPO
-    do 10 ioc = 1, nbocc
-        xrc = zero
-        xang = zero
-        xfl = 1.d0
-        xsi = 1.d0
-        xfly = 1.d0
-        xsiy = 1.d0
-        xflz = 1.d0
-        xsiz = 1.d0
+        call getvem(noma, 'GROUP_MA', 'POUTRE', 'GROUP_MA', ioc, iarg, lmax, zk24(jdls), ng)
+        call getvem(noma, 'MAILLE',   'POUTRE', 'MAILLE',   ioc, iarg, lmax, zk24(jdls), nm)
 !
-        call getvem(noma, 'GROUP_MA', 'DEFI_ARC', 'GROUP_MA', ioc,&
-                    iarg, lmax, zk24(jdls), ng)
-        call getvem(noma, 'MAILLE', 'DEFI_ARC', 'MAILLE', ioc,&
-                    iarg, lmax, zk24(jdls), nm)
-        call getvr8('DEFI_ARC', 'RAYON', iocc=ioc, scal=xrc, nbret=nr)
-        call getvr8('DEFI_ARC', 'ORIE_ARC', iocc=ioc, scal=xang, nbret=na)
-        call getvr8('DEFI_ARC', 'COEF_FLEX', iocc=ioc, scal=xfl, nbret=nf)
-        call getvr8('DEFI_ARC', 'COEF_FLEX_XY', iocc=ioc, scal=xfly, nbret=nfy)
-        call getvr8('DEFI_ARC', 'COEF_FLEX_XZ', iocc=ioc, scal=xflz, nbret=nfz)
-        call getvr8('DEFI_ARC', 'INDI_SIGM', iocc=ioc, scal=xsi, nbret=ns)
-        call getvr8('DEFI_ARC', 'INDI_SIGM_XY', iocc=ioc, scal=xsiy, nbret=nsy)
-        call getvr8('DEFI_ARC', 'INDI_SIGM_XZ', iocc=ioc, scal=xsiz, nbret=nsz)
-        call getvtx('DEFI_ARC', 'CRITERE', iocc=ioc, scal=crit, nbret=n1)
-        call getvr8('DEFI_ARC', 'PRECISION', iocc=ioc, scal=epsi, nbret=n2)
+        call getvr8('POUTRE', 'COEF_FLEX',    iocc=ioc, scal=xfl,  nbret=nfl)
+        call getvr8('POUTRE', 'COEF_FLEX_XY', iocc=ioc, scal=xfly, nbret=nfly)
+        call getvr8('POUTRE', 'COEF_FLEX_XZ', iocc=ioc, scal=xflz, nbret=nflz)
 !
-        call utcono('DEFI_ARC', mclept, ioc, noma, ndim,&
-                    xtan, np)
+        call getvr8('POUTRE', 'INDI_SIGM',    iocc=ioc, scal=xsi,  nbret=nsi)
+        call getvr8('POUTRE', 'INDI_SIGM_XY', iocc=ioc, scal=xsiy, nbret=nsiy)
+        call getvr8('POUTRE', 'INDI_SIGM_XZ', iocc=ioc, scal=xsiz, nbret=nsiz)
 !
-        call utcono('DEFI_ARC', mclepc, ioc, noma, ndim,&
-                    xcen, nc)
-!
-        if (nf .eq. 0 .and. nfy .ne. 0) xfl = 0.0d0
-!         ZR(JDVC)   = XRC
-!         ZR(JDVC+1) = XANG * DGRD
-        zr(jdvc+2) = xfl
-        zr(jdvc+3) = xsi
-        zr(jdvc+4) = xfly
-        zr(jdvc+5) = xsiy
-        zr(jdvc+6) = xflz
-        zr(jdvc+7) = xsiz
-!
-! ---    "GROUP_MA" = TOUTES LES MAILLES DE LA LISTE DE GROUPES MAILLES
-        if (ng .gt. 0) then
-! ON STOCKE DIRECTEMENT LES DONNEES UTILISATEUR : RAYON ET ORIE_ARC
-            if (nc .eq. 0 .and. np .eq. 0) then
-                do 556 igm = 1, ng
-                    call jeveuo(jexnom(mlggma, zk24(jdls-1+igm)), 'L', jdgm)
-                    call jelira(jexnom(mlggma, zk24(jdls-1+igm)), 'LONUTI', nmg)
-                    do 576 ijm = 1, nmg
-                        img = zi(jdgm+ijm-1)
-                        zr(jdvc) = xrc
-                        zr(jdvc+1) = xang * dgrd
-                        call nocart(cartar, 3, 8, mode='NUM', nma=1,&
-                                    limanu=[img])
-576                  continue
-556              continue
-!
-            else if (nc.ne.0 .or. np.ne.0) then
-                call acnoex(noma, 'GRMA', zk24(jdls), ng, no1,&
-                            no2)
-                do 32 i = 1, 3
-                    x1(i) = zr(jdco+(no1-1)*3+i-1)
-                    x2(i) = zr(jdco+(no2-1)*3+i-1)
-32              continue
-                if (nc .ne. 0) then
-                    call orien2(x1, x2, xcen, angl)
-                    dm = padist( 3, x1, x2 ) / 2.d0
-                    xrc1 = padist( 3, x1, xcen )
-                    xrc2 = padist( 3, x2, xcen )
-                    if (crit(1:4) .eq. 'RELA') then
-                        tole = epsi*dm
-                    else
-                        tole = epsi
-                    endif
-                    if (abs(xrc1-xrc2) .gt. tole) then
-                        ier = ier + 1
-                        vali = ioc
-                        valk (1) = zk24(jdls)
-                        call utmess('E', 'MODELISA8_9', nk=2, valk=valk, si=vali)
-                        xrc1 = zero
-                    endif
-                    phi = 2.d0*asin(dm/xrc1)
-                    rr = xrc1
-!                 ZR(JDVC)   = RR
-!                 ZR(JDVC+1) = ANGL(3) + PI
-! CHAQUE MAILLE DE LA LISTE PEUT AVOIR UN GAMMA DIFFERENT
-                    do 347 i = 1, 3
-                        xc1(i)= x1(i) - xcen(i)
-                        xc2(i)= x2(i) - xcen(i)
-347                  continue
-                    call provec(xc1, xc2, v1)
-                    call acnoce(noma, 'GRMA', zk24(jdls), ng, zr(jdco),&
-                                rr, xcen, tole, v1, ispv)
-                    do 557 igm = 1, ng
-                        call jeveuo(jexnom(mlggma, zk24(jdls-1+igm)), 'L', jdgm)
-                        call jelira(jexnom(mlggma, zk24(jdls-1+igm)), 'LONUTI', nmg)
-                        do 57 ijm = 1, nmg
-                            img = zi(jdgm+ijm-1)
-                            call jeveuo(jexnum(mlgcnx, img), 'L', jdno)
-                            nn1 = zi(jdno)
-                            nn2 = zi(jdno+1)
-                            do 427 i = 1, 3
-                                x1(i) = zr(jdco+(nn1-1)*3+i-1)
-                                x2(i) = zr(jdco+(nn2-1)*3+i-1)
-427                          continue
-                            call orien2(x1, x2, xcen, angl)
-                            zr(jdvc) = rr
-                            zr(jdvc+1) = angl(3) + pi
-                            call nocart(cartar, 3, 8, mode='NUM', nma=1,&
-                                        limanu=[img])
-57                      continue
-557                  continue
-                else
-                    call orien2(x1, x2, xtan, angl)
-                    dm = padist( 3, x1, x2 ) / 2.d0
-                    tx1 = padist( 3, x1, xtan )
-                    tx2 = padist( 3, x2, xtan )
-                    if (crit(1:4) .eq. 'RELA') then
-                        tole = epsi*dm
-                    else
-                        tole = epsi
-                    endif
-                    if (abs(tx1-tx2) .gt. tole) then
-                        ier = ier + 1
-                        vali = ioc
-                        valk (1) = zk24(jdls)
-                        valk (2) = ' '
-                        call utmess('E', 'MODELISA8_10', nk=2, valk=valk, si=vali)
-                    endif
-                    phis2 = pi / 2.d0 - asin( dm / tx1 )
-                    rr = dm / sin( phis2 )
-                    zr(jdvc) = rr
-                    zr(jdvc) = dm / sin( phis2 )
-                    zr(jdvc+1) = angl(3)
-                    phi=2.d0*phis2
-!
-! COORDONNEES DU CENTRE
-!
-                    do 33 i = 1, 3
-                        xm(i)=(x1(i)+x2(i))/2.d0
-                        tm(i)=xm(i)-xtan(i)
-                        xcen(i)=xm(i)+tm(i)/(tan(phis2)*tan(phis2))
-33                  continue
-!
-! CHAQUE MAILLE DE LA LISTE PEUT AVOIR UN GAMMA DIFFERENT
-                    do 348 i = 1, 3
-                        xc1(i)= x1(i) - xcen(i)
-                        xc2(i)= x2(i) - xcen(i)
-348                  continue
-                    call provec(xc1, xc2, v1)
-                    call acnoce(noma, 'LIMA', zk24(jdls), nm, zr(jdco),&
-                                rr, xcen, tole, v1, ispv)
-                    do 558 igm = 1, ng
-                        call jeveuo(jexnom(mlggma, zk24(jdls-1+igm)), 'L', jdgm)
-                        call jelira(jexnom(mlggma, zk24(jdls-1+igm)), 'LONUTI', nmg)
-                        do 58 ijm = 1, nmg
-                            img = zi(jdgm+ijm-1)
-                            call jeveuo(jexnum(mlgcnx, img), 'L', jdno)
-                            nn1 = zi(jdno)
-                            nn2 = zi(jdno+1)
-                            do 428 i = 1, 3
-                                x1(i) = zr(jdco+(nn1-1)*3+i-1)
-                                x2(i) = zr(jdco+(nn2-1)*3+i-1)
-428                          continue
-                            call orien2(x1, x2, xcen, angl)
-                            zr(jdvc) = rr
-                            zr(jdvc+1) = angl(3) + pi
-                            call nocart(cartar, 3, 8, mode='NUM', nma=1,&
-                                        limanu=[img])
-58                      continue
-558                  continue
-                endif
-                write(ifm,*)'MOT CLE FACTEUR DEFI_ARC, MOT CLE GROUP_MA'
-                write(ifm,*)' RCOURB: ',zr(jdvc)
-                write(ifm,*)' ANGLE_ARC: ',phi*rddg
-                write(ifm,*)' CENTRE: ',(xcen(i),i=1,3)
-            endif
+        if ( nfly.ne.0 ) then
+            zr(jdvc+ifly) = xfly
+            okflex = .true.
+        endif
+        if ( nflz.ne.0 ) then
+            zr(jdvc+iflz) = xflz
+            okflex = .true.
+        endif
+        if ( nfl.ne.0 ) then
+            zr(jdvc+ifly) = xfl
+            zr(jdvc+iflz) = xfl
+            okflex = .true.
         endif
 !
-! ---    "MAILLE" = TOUTES LES MAILLES DE LA LISTE DE MAILLES
-        if (nm .gt. 0) then
-            if (nc .eq. 0 .and. np .eq. 0) then
-! ON STOCKE DIRECTEMENT LES DONNEES UTILISATEUR : RAYON ET ORIE_ARC
-                do 559 ijm = 1, nm
-                    zr(jdvc) = xrc
-                    zr(jdvc+1) = xang * dgrd
-                    nomail = zk24(jdls-1+ijm)
-                    call nocart(cartar, 3, 8, mode='NOM', nma=1,&
-                                limano=[nomail])
-559              continue
-!
-            else if (nc.ne.0 .or. np.ne.0) then
-                call acnoex(noma, 'LIMA', zk24(jdls), nm, no1,&
-                            no2)
-                do 42 i = 1, 3
-                    x1(i) = zr(jdco+(no1-1)*3+i-1)
-                    x2(i) = zr(jdco+(no2-1)*3+i-1)
-42              continue
-                if (nc .ne. 0) then
-                    call orien2(x1, x2, xcen, angl)
-                    dm = padist( 3, x1, x2 ) / 2.d0
-                    xrc1 = padist( 3, x1, xcen )
-                    xrc2 = padist( 3, x2, xcen )
-                    if (crit(1:4) .eq. 'RELA') then
-                        tole = epsi*dm
-                    else
-                        tole = epsi
-                    endif
-                    if (abs(xrc1-xrc2) .gt. tole) then
-                        ier = ier + 1
-                        vali = ioc
-                        valk (1) = zk24(jdls)
-                        valk (2) = ' '
-                        call utmess('E', 'MODELISA8_11', nk=2, valk=valk, si=vali)
-                        xrc1 = zero
-                    endif
-                    phi = 2.d0*asin(dm/xrc1)
-                    rr = xrc1
-!
-! CHAQUE MAILLE DE LA LISTE PEUT AVOIR UN GAMMA DIFFERENT
-                    do 645 i = 1, 3
-                        xc1(i)= x1(i) - xcen(i)
-                        xc2(i)= x2(i) - xcen(i)
-645                  continue
-                    call provec(xc1, xc2, v1)
-                    call acnoce(noma, 'LIMA', zk24(jdls), nm, zr(jdco),&
-                                rr, xcen, tole, v1, ispv)
-!
-                    do 55 ijm = 1, nm
-                        call jenonu(jexnom(mlgnma, zk24(jdls-1+ijm)), nummai)
-                        call jeveuo(jexnum(mlgcnx, nummai), 'L', jdno)
-                        nn1 = zi(jdno)
-                        nn2 = zi(jdno+1)
-                        do 425 i = 1, 3
-                            x1(i) = zr(jdco+(nn1-1)*3+i-1)
-                            x2(i) = zr(jdco+(nn2-1)*3+i-1)
-425                      continue
-                        call orien2(x1, x2, xcen, angl)
-                        zr(jdvc) = rr
-                        zr(jdvc+1) = angl(3) + pi
-                        nomail = zk24(jdls-1+ijm)
-                        call nocart(cartar, 3, 8, mode='NOM', nma=1,&
-                                    limano=[nomail])
-55                  continue
-                else
-                    call orien2(x1, x2, xtan, angl)
-                    dm = padist( 3, x1, x2 ) / 2.d0
-                    tx1 = padist( 3, x1, xtan )
-                    tx2 = padist( 3, x2, xtan )
-                    if (crit(1:4) .eq. 'RELA') then
-                        tole = epsi*dm
-                    else
-                        tole = epsi
-                    endif
-                    if (abs(tx1-tx2) .gt. tole) then
-                        ier = ier + 1
-                        vali = ioc
-                        valk (1) = zk24(jdls)
-                        valk (2) = ' '
-                        call utmess('E', 'MODELISA8_10', nk=2, valk=valk, si=vali)
-                    endif
-                    phis2 = pi / 2.d0 - asin( dm / tx1 )
-                    rr = dm / sin( phis2 )
-                    phi=2.d0*phis2
-!
-! COORDONNEES DU CENTRE
-!
-                    do 63 i = 1, 3
-                        xm(i)=(x1(i)+x2(i))/2.d0
-                        tm(i)=xm(i)-xtan(i)
-                        xcen(i)=xm(i)+tm(i)/(tan(phis2)*tan(phis2))
-63                  continue
-!
-! CHAQUE MAILLE DE LA LISTE PEUT AVOIR UN GAMMA DIFFERENT
-                    do 646 i = 1, 3
-                        xc1(i)= x1(i) - xcen(i)
-                        xc2(i)= x2(i) - xcen(i)
-646                  continue
-                    call provec(xc1, xc2, v1)
-                    call acnoce(noma, 'LIMA', zk24(jdls), nm, zr(jdco),&
-                                rr, xcen, tole, v1, ispv)
-!
-                    do 56 ijm = 1, nm
-                        call jenonu(jexnom(mlgnma, zk24(jdls-1+ijm)), nummai)
-                        call jeveuo(jexnum(mlgcnx, nummai), 'L', jdno)
-                        nn1 = zi(jdno)
-                        nn2 = zi(jdno+1)
-                        do 426 i = 1, 3
-                            x1(i) = zr(jdco+(nn1-1)*3+i-1)
-                            x2(i) = zr(jdco+(nn2-1)*3+i-1)
-426                      continue
-                        call orien2(x1, x2, xcen, angl)
-                        zr(jdvc) = rr
-                        zr(jdvc+1) = angl(3) + pi
-                        nomail = zk24(jdls-1+ijm)
-                        call nocart(cartar, 3, 8, mode='NOM', nma=1,&
-                                    limano=[nomail])
-56                  continue
-                endif
-                write(ifm,*)'MOT CLE FACTEUR DEFI_ARC, MOT CLE MAILLE'
-                write(ifm,*)' RCOURB: ',zr(jdvc)
-                write(ifm,*)' ANGLE_ARC: ',phi*rddg
-                write(ifm,*)' CENTRE: ',(xcen(i),i=1,3)
-            endif
+        if ( nsiy.ne.0 ) then
+            zr(jdvc+isiy) = xsiy
+            okflex = .true.
+        endif
+        if ( nsiz.ne.0 ) then
+            zr(jdvc+isiz) = xsiz
+            okflex = .true.
+        endif
+        if ( nsi.ne.0 ) then
+            zr(jdvc+isiy) = xsi
+            zr(jdvc+isiz) = xsi
+            okflex = .true.
         endif
 !
-10  end do
+        if ( okflex ) then
+!           Toutes les mailles de la liste de groupes mailles
+            if (ng .gt. 0) then
+                do igm = 1, ng
+                    call nocart(cartar, 2, 4, groupma=zk24(jdls-1+igm))
+                enddo
+            endif
+!           Toutes les mailles de la liste de mailles
+            if (nm .gt. 0) then
+                call nocart(cartar, 3, 4, mode='NOM', nma=nm, limano=zk24(jdls))
+            endif
+        endif
+    enddo
 !
     call jedetr('&&TMPPOUTRE_COURBE')
     call jedetr(tmpnar)
     call jedetr(tmpvar)
-    if (ier .ne. 0) then
-        call utmess('F', 'MODELISA_13')
-    endif
 !
+999 continue
     call jedema()
 end subroutine

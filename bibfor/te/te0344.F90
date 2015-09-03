@@ -58,10 +58,9 @@ subroutine te0344(option, nomte)
     integer :: lmater, jmat, nbmat, imat, icomp, nbpar, i, npg, nno, nc
     integer :: ncc, jeffo, iret, itype
     integer :: lorien, jdepl, lforcr, lforcf
-    real(kind=8) :: valpar, zero, angs2, rad, e, g, a, xl, epsith
+    real(kind=8) :: valpar, zero, e, g, a, xl, epsith
     real(kind=8) :: nu, fe(12), fi(12), flr(14), klv(105)
     real(kind=8) :: ulr(14), ugr(14), pgl(14, 14), klc(14, 14)
-    real(kind=8) :: pgl1(3, 3), pgl2(3, 3)
     character(len=32) :: messk(2)
     aster_logical :: okopt
 ! --------------------------------------------------------------------------------------------------
@@ -108,11 +107,7 @@ subroutine te0344(option, nomte)
     nompar = '  '
     valpar = 0.d0
     zero = 0.d0
-    angs2 = zero
-    rad = zero
     valres(:) = zero
-    pgl1(:,:) = zero
-    pgl2(:,:) = zero
 !
     npg = 3
     call moytem('RIGI', npg, 1, '+', valpar, iret)
@@ -160,9 +155,7 @@ subroutine te0344(option, nomte)
 !   prise en compte des efforts repartis
     call tecach('ONO', 'PFR1D1D', 'L', iret, iad=lforcr)
     if (lforcr .ne. 0) then
-        call ptforp(itype, 'CHAR_MECA_FR1D1D', nomte, a, a,&
-                    xl, rad, angs2, 1, nno,&
-                    ncc, pgl, pgl1, pgl2, fe, fi)
+        call ptforp(itype, 'CHAR_MECA_FR1D1D', nomte, a, a,  xl, 1, nno, ncc, pgl, fe, fi)
         do i = 1, 6
             flr(i) = flr(i) - fe(i)
             flr(i+7) = flr(i+7) - fe(i+6)
@@ -171,9 +164,7 @@ subroutine te0344(option, nomte)
 !   prise en compte des efforts repartis (sous forme de fonction)
     call tecach('ONO', 'PFF1D1D', 'L', iret, iad=lforcf)
     if (lforcf .ne. 0) then
-        call ptforp(itype, 'CHAR_MECA_FF1D1D', nomte, a, a,&
-                    xl, rad, angs2, 1, nno,&
-                    ncc, pgl, pgl1, pgl2, fe, fi)
+        call ptforp(itype, 'CHAR_MECA_FF1D1D', nomte, a, a, xl, 1, nno, ncc, pgl, fe, fi)
         do i = 1, 6
             flr(i) = flr(i) - fe(i)
             flr(i+7) = flr(i+7) - fe(i+6)

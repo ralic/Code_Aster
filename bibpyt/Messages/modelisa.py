@@ -79,10 +79,6 @@ Risques et conseils :
  l'orientation des armatures.
 """),
 
-    13 : _(u"""
- erreur(s) dans les données.
-"""),
-
     14 : _(u"""
  POUTRE : une erreur a été détectée lors de l'affectation des valeurs dans le tampon
 """),
@@ -108,9 +104,6 @@ Risques et conseils :
     21 : _(u"""
  le noeud  %(k1)s  extrémité d'un des discrets n'existe pas dans la surface donnée par GROUP_MA.
 """),
-
-
-
 
 
     23 : _(u"""
@@ -278,7 +271,6 @@ La caractéristique %(k1)s, coefficient de cisaillement, pour les poutres doit t
  qui ne contient pas un seul élément MEMBRANE
 """),
 
-
     56 : _(u"""
  impossibilité, la maille  %(k1)s  doit être une maille de type  %(k2)s , et elle est de type :  %(k3)s  pour la caractéristique  %(k4)s
 """),
@@ -308,38 +300,12 @@ La caractéristique %(k1)s, coefficient de cisaillement, pour les poutres doit t
  nombre de valeurs entrées incorrect
 """),
 
-    61 : _(u"""
- DEFI_ARC:
- le rayon de courbure doit être positif.
-"""),
-
-    62 : _(u"""
- DEFI_ARC:
- il faut 3 réels pour définir le centre de courbure.
-"""),
-
-    63 : _(u"""
- DEFI_ARC:
- il faut 3 réels pour définir le point de concours des tangentes.
-"""),
-
-    64 : _(u"""
- DEFI_ARC:
- le coefficient de flexibilité doit être positif.
-"""),
-
-    65 : _(u"""
- DEFI_ARC: l'indice de contrainte doit être positif.
-"""),
 
     66 : _(u"""
  poutre :
  occurrence  %(k1)s
  section "cercle", VARI_SECT "constant" la caractéristique "r" est obligatoire
 """),
-
-
-
 
 
     69 : _(u"""

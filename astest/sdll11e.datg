@@ -1,0 +1,104 @@
+# -*- coding: utf-8 -*-
+
+import math
+import salome
+salome.salome_init()
+from salome.geom import geomBuilder
+import GEOM
+geompy = geomBuilder.New(salome.myStudy)
+import SMESH
+from salome.smesh import smeshBuilder
+smesh = smeshBuilder.New(salome.myStudy)
+
+#############Chemin pour l'export du maillage resultat############
+ExportPATH="/home/etienne/dev/codeaster/src/astest/"
+
+##################################################################
+
+#===================================================
+#                  PARAMETRES
+#                  ----------
+#===================================================
+# R : rayon du cercle
+
+R = 0.1;
+
+
+#===================================================
+#                  GEOMETRIE
+#                  ---------
+#===================================================
+
+
+PXM = geompy.MakeVertex(-R,0,0);
+PXP = geompy.MakeVertex(R,0,0);
+PYM = geompy.MakeVertex(0,-R,0);
+PYP = geompy.MakeVertex(0,R,0);
+
+arc1 = geompy.MakeArc(PXP, PYP, PXM);
+arc2 = geompy.MakeArc(PXM, PYM, PXP);
+
+geompy.addToStudy( arc1, "ARC1" )
+geompy.addToStudy( arc2, "ARC2" )
+
+
+# Création de la géométrie générale
+#------------------------------------
+
+GeoCercle = geompy.MakeFuseList([arc1, arc2], True, True)
+
+
+# Publication dans l'étude
+#---------------------------
+geompy.addToStudy( GeoCercle, "GeoCercle" )
+
+# Création des groupes
+#---------------------------
+# On crée des groupes à partir des entitées de construction
+
+
+# on passe par la ligne qui suit pour contourner un bug 
+[PART1, PART2] = geompy.RestoreGivenSubShapes(GeoCercle, [arc1, arc2], GEOM.FSM_GetInPlace, False, True)
+geompy.addToStudyInFather(GeoCercle,PART1,"PART1")
+geompy.addToStudyInFather(GeoCercle,PART2,"PART2")
+
+
+
+
+#===================================================
+#                  MAILLAGE
+#                  --------
+#===================================================
+
+maillageCoude = smesh.Mesh(GeoCercle, "MeshCercle")
+
+# Algorithmes et hypotheses globales
+# ----------------------------------
+
+# 1D global
+nbSegments = 36
+algo = maillageCoude.Segment()
+algo.NumberOfSegments(nbSegments)
+
+# Calcul
+# ------
+maillageCoude.Compute()
+
+
+# Création des groupes du maillage
+#---------------------------------
+maillageCoude.Group(PART1, "PART1" )
+maillageCoude.Group(PART2, "PART2" )
+
+
+########Export du maillage au format MMED########
+maillageCoude.ExportMED( r''+ExportPATH+'sdll11e.mmed'+'', 0, SMESH.MED_V2_2 , 1 )
+
+
+
+# Mise à jour de l'arbre
+#---------------------------
+# Si on a une interface graphique...
+if salome.sg.hasDesktop():
+
+   salome.sg.updateObjBrowser(1)

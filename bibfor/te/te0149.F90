@@ -29,7 +29,6 @@ subroutine te0149(option, nomte)
 !       NOMTE   : NOM DU TYPE ELEMENT
 !        'MECA_POU_D_E' : POUTRE DROITE D'EULER       (SECTION VARIABLE)
 !        'MECA_POU_D_T' : POUTRE DROITE DE TIMOSHENKO (SECTION VARIABLE)
-!        'MECA_POU_C_T' : POUTRE COURBE DE TIMOSHENKO(SECTION CONSTANTE)
 !        'MECA_POU_D_EM': POUTRE D'EULER MULTIFIBRE (SIPM_ELNO UNIQUEMENT)
 !        'MECA_POU_D_TGM': POUTRE DE TIMOSHENKO MULTIFIBRE (SIPM_ELNO UNIQUEMENT)
 !
@@ -138,9 +137,10 @@ subroutine te0149(option, nomte)
         if (suropt .eq. 'MASS_FLUI_STRU') then
             call poutre_modloc('CAGEPO', noms_cara1, nb_cara1, lvaleur=vale_cara1)
             itsec = nint(vale_cara1(3))
+            r1=0.0; ep1=0.0
             if (itsec .eq. 2) then
 !               section circulaire sections initiale et finale
-                r1 = vale_cara1(1)
+                r1  = vale_cara1(1)
                 ep1 = vale_cara1(2)
             else
                 call utmess('F', 'ELEMENTS3_30')

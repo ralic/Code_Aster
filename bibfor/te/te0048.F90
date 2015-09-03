@@ -1,5 +1,8 @@
 subroutine te0048(nomopt, nomte)
-!
+! aslint: disable=W0104
+    implicit none
+#include "asterfort/utmess.h"
+!     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,69 +19,7 @@ subroutine te0048(nomopt, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!
-! --------------------------------------------------------------------------------------------------
-!
-! IN OPTION    : K16 :  OPTION DE CALCUL
-!     'FORC_NODA'  'REFE_FORC_NODA'
-! IN NOMTE     : K16 : NOM DU TYPE ELEMENT
-!     POUTRE COURBE DE TIMOSHENKO
-!        'MECA_POU_C_T'   : SECTION CONSTANTE
-!
-! --------------------------------------------------------------------------------------------------
-!
-    implicit none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/lonele.h"
-#include "asterfort/matro2.h"
-#include "asterfort/jevech.h"
-#include "asterfort/terefe.h"
-#include "asterfort/trigom.h"
-#include "asterfort/utpvlg.h"
-!
+!     ------------------------------------------------------------------
     character(len=16) :: nomte, nomopt
-!
-! --------------------------------------------------------------------------------------------------
-!
-    integer :: ivectu, in, nc, i, icontg, lorien, lrcou
-    real(kind=8) :: forref, momref, xl, pgl1(3, 3), pgl2(3, 3)
-    real(kind=8) :: fs(14), rad, angarc, angs2
-!
-! --------------------------------------------------------------------------------------------------
-!
-    ASSERT(nomte .eq. 'MECA_POU_C_T')
-    nc = 6
-    call jevech('PVECTUR', 'E', ivectu)
-    if (nomopt(1:14) .eq. 'REFE_FORC_NODA') then
-        call terefe('EFFORT_REFE', 'MECA_POUTRE', forref)
-        call terefe('MOMENT_REFE', 'MECA_POUTRE', momref)
-        do  in = 1, 2
-            do  i = 1, 3
-                zr(ivectu+(in-1)*nc+i-1)=forref
-            enddo
-            do  i = 4, nc
-                zr(ivectu+(in-1)*nc+i-1)=momref
-            enddo
-        enddo
-    else if (nomopt .eq. 'FORC_NODA') then
-        call jevech('PCONTMR', 'L', icontg)
-        do  in = 1, nc
-            fs(in) = -zr(icontg+in-1)
-            fs(in+nc) = zr(icontg+in+nc-1)
-        enddo
-        call jevech('PCAORIE', 'L', lorien)
-!        matrice de rotation mgl
-!        poutre courbe de timoskenko a 6 DDL : coordonnees des noeuds
-        xl = lonele()
-        call jevech('PCAARPO', 'L', lrcou)
-        rad = zr(lrcou)
-        angarc = zr(lrcou+1)
-        angs2 = trigom('ASIN',xl/ (2.0d0*rad))
-        call matro2(zr(lorien), angarc, angs2, pgl1, pgl2)
-        call utpvlg(1, nc, pgl1, fs, zr(ivectu))
-        call utpvlg(1, nc, pgl2, fs(7), zr(ivectu+6))
-    else
-        ASSERT(.false.)
-    endif
+    call utmess('F', 'FERMETUR_8')
 end subroutine

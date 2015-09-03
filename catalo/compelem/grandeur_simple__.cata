@@ -42,21 +42,16 @@ GRANDEUR_SIMPLE__
     ADRSJEVN = I    I1       I2       I3       I4       I5
 
 <<  CAARPO  Type:R  Caracteristiques des poutres courbes
-       RCOURB : rayon de courbure
-       ORIE_ARC : orientation de l'arc
-       C_FLEX : coefficient de flexibilite, les moments d'inerties Iy et Iz
-       sont divises par le coefficient de flexibilite Cf : Iy = Iy/Cf et
-       Iz = Iz/Cf
-       I_SIGM : coefficient d'intensification des contraintes
-       (Ci) SIGMAZ* Mf/(I/v) avec I/v = I/v*1/Ci
-       C_FLEX_Y : coefficient de flexibilite anisotrope dans le plan (X,Y)
-       I_SIGM_Y : indice d'intensification de contraintes anisotrope dans
-       le plan (X,Y)
-       C_FLEX_Z : coefficient de flexibilite anisotrope dans le plan (X,Z)
-       I_SIGM_Z : indice d'itensification de contraintes anisotrope dans
-       le plan (X,Z)
+        Coefficient de flexibilite anisotrope
+            C_FLEX_Y : dans le plan (X,Y)
+            C_FLEX_Z : dans le plan (X,Z)
+                Iy = Iy/C_FLEX_Y et Iz = Iz/C_FLEX_Z
+        Coefficient d'intensification des contraintes anisotrope
+            I_SIGM_Y : dans le plan (X,Y)
+            I_SIGM_Z : dans le plan (X,Z)
+                sigmaz = I_SIGM_Z*sigmaz  et sigmay = I_SIGM_Y*sigmay
 >>
-    CAARPO   = R    RCOURB   ORIE_ARC C_FLEX   I_SIGM   C_FLEX_Y I_SIGM_Y C_FLEX_Z I_SIGM_Z
+    CAARPO   = R    C_FLEX_Y  I_SIGM_Y  C_FLEX_Z  I_SIGM_Z
 
 <<  CACABL  Type:R  Caracteristiques des cables
        SECT : section du cable
@@ -453,6 +448,7 @@ GRANDEUR_SIMPLE__
                    E4X, E4Y, E4Z : DDLS enrichis (CRACKTIP4) X-FEM
        LAGS_C, LAG2_C, LAG3_C, LAG4_C :
        LAGS_F1, LAGS_F2, LAG2_F1, LAG2_F2, LAG3_F1, LAG3_F2, LAG4_F1, LAG4_F2 :
+       HPRE1 : DDL de pression Heaviside pour la pression du massif (HM_XFEM)
        UI2, VI2, WI2, ...,UO6, VO6, WO6, WO, WI1, WO1 : DDL des elements de tube
        GONF :
        EPXX, EPYY, EPZZ, EPXY, EPXZ, EPYZ :
@@ -537,6 +533,7 @@ GRANDEUR_SIMPLE__
                    E4X, E4Y, E4Z : DDLS enrichis (CRACKTIP4) X-FEM
        LAGS_C, LAG2_C, LAG3_C, LAG4_C :
        LAGS_F1, LAGS_F2, LAG2_F1, LAG2_F2, LAG3_F1, LAG3_F2, LAG4_F1, LAG4_F2 :
+       HPRE1 : DDL de pression Heaviside pour la pression du massif (HM_XFEM)
        UI2, VI2, WI2, ...,UO6, VO6, WO6, WO, WI1, WO1 : DDL des elements de tube
        GONF :
        EPXX, EPYY, EPZZ, EPXY, EPXZ, EPYZ :
@@ -621,6 +618,7 @@ GRANDEUR_SIMPLE__
                    E4X, E4Y, E4Z : DDLS enrichis (CRACKTIP4) X-FEM
        LAGS_C, LAG2_C, LAG3_C, LAG4_C :
        LAGS_F1, LAGS_F2, LAG2_F1, LAG2_F2, LAG3_F1, LAG3_F2, LAG4_F1, LAG4_F2 :
+       HPRE1 : DDL de pression Heaviside pour la pression du massif (HM_XFEM)
        UI2, VI2, WI2, ...,UO6, VO6, WO6, WO, WI1, WO1 : DDL des elements de tube
        GONF :
        EPXX, EPYY, EPZZ, EPXY, EPXZ, EPYZ :

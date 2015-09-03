@@ -780,11 +780,16 @@ class tuyauterie(OAR_element):
         nodeMTG = nodeTM.append("MAILLE_TORSEUR-GRP")
         nodeMT = nodeMTG.append("MAILLE_TORSEUR")
         for MA in self.dictMailleNoeuds.keys():  # Boucle sur les mailles
-            nodeMT.append("oar:MAILLE-REF", MA)
+            NbNoeuds = 0
             for NO in self.dictMailleNoeuds[MA]:  # 2 noeuds
-                nodeTorseur = nodeMT.append("oar:TORSEUR")
-                for val, cle in zip(self.dictNoeudValTorseur[NO], torseur_XML):  # 6 valeurs
-                    nodeTorseur.append(cle, val)
+                if ( NO in self.dictNoeudValTorseur.keys() ):
+                    NbNoeuds += 1
+            if ( NbNoeuds == 2 ):
+                nodeMT.append("oar:MAILLE-REF", MA)
+                for NO in self.dictMailleNoeuds[MA]:  # 2 noeuds
+                    nodeTorseur = nodeMT.append("oar:TORSEUR")
+                    for val, cle in zip(self.dictNoeudValTorseur[NO], torseur_XML):  # 6 valeurs
+                        nodeTorseur.append(cle, val)
 
 
 def impr_oar_ops(self, TYPE_CALC, **args):

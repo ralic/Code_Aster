@@ -96,7 +96,7 @@ subroutine poutre_modloc(modloc, lnomv, nbnomv, lvaleur, valeur,&
 !
     nbdata = 0
     if      (modloc .eq. 'CAGNPO') then
-!       copie conforme des modes locaux : POU_D_TGM   POU_D_EM   POU_D_TG   POU_D_T  POU_C_T 
+!       copie conforme des modes locaux : POU_D_TGM   POU_D_EM   POU_D_TG   POU_D_T
 !                                         et POU_D_T_GD
         nbdata = 25
         k8data(1:nbdata) = (/   'A1      ', 'IY1     ', 'IZ1     ', 'AY1     ', 'AZ1     ', &
@@ -119,13 +119,13 @@ subroutine poutre_modloc(modloc, lnomv, nbnomv, lvaleur, valeur,&
                                 'IZ2     ', 'AY2     ', 'AZ2     ', 'EY2     ', 'EZ2     ', &
                                 'JX2     ', 'RY2     ', 'RZ2     ', 'RT2     ', 'TVAR    ' /)
     else if (modloc .eq. 'CAGEPO') then
-!       copie conforme des modes locaux : POU_D_E  POU_C_T  POU_D_TG  POU_D_T
+!       copie conforme des modes locaux : POU_D_E  POU_D_TG  POU_D_T
         nbdata = 13
         k8data(1:nbdata) = (/   'HY1     ', 'HZ1     ', 'EPY1    ', 'EPZ1    ', 'HY2     ', &
                                 'HZ2     ', 'EPY2    ', 'EPZ2    ', 'R1      ', 'EP1     ', &
                                 'R2      ', 'EP2     ', 'TSEC    ' /)
     else if (modloc .eq. 'CAGEP1') then
-!       copie conforme des modes locaux : POU_D_E  POU_C_T  POU_D_TG  POU_D_T  POU_D_EM  POU_D_TGM
+!       copie conforme des modes locaux : POU_D_E  POU_D_TG  POU_D_T  POU_D_EM  POU_D_TGM
 !                                         et TUYAUX
         nbdata = 2
         k8data(1:nbdata) = (/   'R1      ', 'EP1     ' /)

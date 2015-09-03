@@ -137,11 +137,6 @@ Un seul noeud doit constituer le groupe de noeuds %(k1)s. On n'utilisera que le 
  Épaisseur dans AFFE_CARA_ELEM: %(r2)f
 """),
 
-    43 : _(u"""
-Avec l'opérateur STAT_NON_LINE et l'élément de poutre POU_C_T, vous ne pouvez utiliser
-que les mots clés RELATION='ELAS' et  DEFORMATION='PETIT'.
-"""),
-
     44 : _(u"""
 Erreur utilisateur :
   L'état métallurgique initial produit par CREA_CHAMP est incomplet.

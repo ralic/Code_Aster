@@ -1,0 +1,145 @@
+# -*- coding: iso-8859-1 -*-
+
+
+import sys
+import salome
+
+salome.salome_init()
+theStudy = salome.myStudy
+
+
+import iparameters
+ipar = iparameters.IParameters(salome.myStudy.GetCommonParameters("Interface Applicative", 1))
+
+# fill list AP_MODULES_LIST
+ipar.append("AP_MODULES_LIST", "Geometry")
+ipar.append("AP_MODULES_LIST", "Mesh")
+
+# PARAMETRES DE MAILLAGE :
+# nombre de mailles sur un 1/4 de cercle
+# garder toujours un multiple de 15 pour les test_resu
+nb_15 = 15
+nbSegments = 15 * nb_15
+
+#
+
+
+###
+### GEOM component
+###
+
+import GEOM
+import geompy
+import math
+import SALOMEDS
+
+
+geompy.init_geom(theStudy)
+
+N01= geompy.MakeVertex(1.e0, 0.e0      , 0.e0)
+N16= geompy.MakeVertex( 0.e0       , 1.e0      , 0.e0)
+N31= geompy.MakeVertex(-1.e0       , 0.e0      , 0.e0)
+
+
+
+O =geompy.MakeVertex(0. , 0. , 0.)
+
+ARC1 = geompy.MakeArcCenter( O, N01, N16, False)
+ARC2 = geompy.MakeArcCenter( O, N16, N31, False)
+
+Arc= geompy.MakeWire([ARC1, ARC2])
+
+
+#Arc= geompy.MakeWire([S01,S02,S03,S04,S05,S06,S07,S08,S09,S10,S11,S12,S13,
+                      #S14,S15,S16,S17,S18,S19,S20,S21,S22,S23,S24,S25,
+                      #S26,S27,S28,S29,S30,])
+
+
+geompy.addToStudy( Arc, 'Arc' )
+
+
+NN01 = geompy.GetSame(Arc, N01 )
+#NN02 = geompy.GetSame(Arc, N02 )
+#NN03 = geompy.GetSame(Arc, N03 )
+#NN04 = geompy.GetSame(Arc, N04 )
+#NN05 = geompy.GetSame(Arc, N05 )
+#NN06 = geompy.GetSame(Arc, N06 )
+#NN07 = geompy.GetSame(Arc, N07 )
+#NN08 = geompy.GetSame(Arc, N08 )
+#NN09 = geompy.GetSame(Arc, N09 )
+#NN10 = geompy.GetSame(Arc, N10 )
+#NN11 = geompy.GetSame(Arc, N11 )
+#NN12 = geompy.GetSame(Arc, N12 )
+#NN13 = geompy.GetSame(Arc, N13 )
+#NN14 = geompy.GetSame(Arc, N14 )
+#NN15 = geompy.GetSame(Arc, N15 )
+NN16 = geompy.GetSame(Arc, N16 )
+#NN17 = geompy.GetSame(Arc, N17 )
+#NN18 = geompy.GetSame(Arc, N18 )
+#NN19 = geompy.GetSame(Arc, N19 )
+#NN20 = geompy.GetSame(Arc, N20 )
+#NN21 = geompy.GetSame(Arc, N21 )
+#NN22 = geompy.GetSame(Arc, N22 )
+#NN23 = geompy.GetSame(Arc, N23 )
+#NN24 = geompy.GetSame(Arc, N24 )
+#NN25 = geompy.GetSame(Arc, N25 )
+#NN26 = geompy.GetSame(Arc, N26 )
+#NN27 = geompy.GetSame(Arc, N27 )
+#NN28 = geompy.GetSame(Arc, N28 )
+#NN29 = geompy.GetSame(Arc, N29 )
+#NN30 = geompy.GetSame(Arc, N30 )
+NN31 = geompy.GetSame(Arc, N31 )
+
+
+
+
+### Store presentation parameters of displayed objects
+import iparameters
+ipar = iparameters.IParameters(theStudy.GetModuleParameters("Interface Applicative", "GEOM", 1))
+
+
+###
+### SMESH component
+###
+
+import smesh, SMESH, SALOMEDS
+
+smesh.SetCurrentStudy(theStudy)
+import StdMeshers
+
+
+mesh_arc = smesh.Mesh(Arc)
+Regular_1D = mesh_arc.Segment()
+Nb_Segments_1 = Regular_1D.NumberOfSegments(nbSegments)
+Nb_Segments_1.SetDistrType( 0 )
+isDone = mesh_arc.Compute()
+
+
+
+
+
+mesh_arc.Group( NN01, 'N01' )
+mesh_arc.Group( NN31, 'N31' )
+
+# noeud à 6°
+N02= mesh_arc.CreateEmptyGroup( SMESH.NODE, 'N02' )
+nbAdd = N02.Add( [ 1 + nb_15 ] )
+# noeud à 42°
+N08= mesh_arc.CreateEmptyGroup( SMESH.NODE, 'N08' )
+nbAdd = N08.Add( [ 1 + 7* nb_15 ] )
+# noeud à 60°
+N11= mesh_arc.CreateEmptyGroup( SMESH.NODE, 'N11' )
+nbAdd = N11.Add( [ 1 + 10* nb_15 ] )
+isDone = mesh_arc.Compute()
+mesh_arc.ExportMED( r'/home/etienne/dev/codeaster/src/astest/ssll112a.mmed', 0, SMESH.MED_V2_2, 1 )
+
+
+### Store presentation parameters of displayed objects
+import iparameters
+ipar = iparameters.IParameters(theStudy.GetModuleParameters("Interface Applicative", "SMESH", 1))
+
+
+
+if salome.sg.hasDesktop():
+  salome.sg.updateObjBrowser(1)
+  iparameters.getSession().restoreVisualState(1)

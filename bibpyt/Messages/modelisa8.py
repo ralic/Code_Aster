@@ -69,34 +69,6 @@ cata_msg = {
  Le groupe de fibres %(k1)s n'a pas été défini dans DEFI_GEOM_FIBRE
 """),
 
-    9 : _(u"""
- mot clé facteur  "DEFI_ARC", occurrence  %(i1)d , GROUP_MA :  %(k1)s
- le centre n'est pas vraiment  le centre du cercle %(k2)s
-"""),
-
-    10 : _(u"""
- mot clé facteur  "DEFI_ARC", occurrence  %(i1)d , GROUP_MA :  %(k1)s
- le point de tangence n est pas équidistant des points extrémités %(k2)s
-"""),
-
-    11 : _(u"""
- mot clé facteur  "DEFI_ARC", occurrence  %(i1)d , maille :  %(k1)s
- le centre n'est pas vraiment  le centre du cercle %(k2)s
-"""),
-
-    13 : _(u"""
-  , maille :  %(i1)d la maille n'est pas située  sur le cercle %(k1)s
-"""),
-
-    14 : _(u"""
-  , maille :  %(i1)d
- la maille n'est pas orientée  dans le même sens que les autres sur le cercle %(k1)s
-"""),
-
-    16 : _(u"""
-  , maille :  %(i1)d problème produit scalaire %(k1)s
-"""),
-
     17 : _(u"""
  La première colonne de la table %(k1)s doit contenir des chaînes K8 ou K24.
 """),
@@ -110,16 +82,6 @@ cata_msg = {
  DEFI_GEOM_FIBRE il y a %(i3)d groupes qui ont été renseignés.
 """),
 
-
-
-
-    25 : _(u"""
-   l'ensemble des mailles comporte plus de 2 extrémités %(k1)s
-"""),
-
-    26 : _(u"""
- DEFI_ARC l'ensemble des mailles  forme un cercle : a subdiviser  %(k1)s
-"""),
 
     27 : _(u"""
  le ddl  %(k1)s est interdit pour le noeud %(k2)s

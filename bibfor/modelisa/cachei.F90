@@ -1,5 +1,4 @@
-subroutine cachei(char, ligrmo, noma, fonree, param,&
-                  motcl)
+subroutine cachei(char, ligrmo, noma, fonree, param, motcl)
     implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
@@ -19,7 +18,7 @@ subroutine cachei(char, ligrmo, noma, fonree, param,&
     character(len=5) :: param
     character(len=8) :: char, noma
     character(len=*) :: ligrmo, motcl
-!-----------------------------------------------------------------------
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,13 +68,9 @@ subroutine cachei(char, ligrmo, noma, fonree, param,&
     call getfac(motclf, nchei)
 !
     carte = char//'.CHME.'//param
-!
-! --- MODELE ASSOCIE AU LIGREL DE CHARGE
-!
+!   MODELE ASSOCIE AU LIGREL DE CHARGE
     call dismoi('NOM_MODELE', char(1:8), 'CHARGE', repk=mod)
-!
-! --- MODELISATION DU MODELE
-!
+!   MODELISATION DU MODELE
     call dismoi('MODELISATION', mod, 'MODELE', repk=modeli)
 !
     if (fonree .eq. 'REEL') then
@@ -100,9 +95,9 @@ subroutine cachei(char, ligrmo, noma, fonree, param,&
     vncmp(5) = 'EPXZ'
     vncmp(6) = 'EPYZ'
     if (fonree .eq. 'REEL') then
-        vncmp(7) = 'EPX'
-        vncmp(8) = 'KY'
-        vncmp(9) = 'KZ'
+        vncmp(7)  = 'EPX'
+        vncmp(8)  = 'KY'
+        vncmp(9)  = 'KZ'
         vncmp(10) = 'EXX'
         vncmp(11) = 'EYY'
         vncmp(12) = 'EXY'
@@ -113,11 +108,11 @@ subroutine cachei(char, ligrmo, noma, fonree, param,&
     if (fonree .eq. 'REEL') then
         do i = 1, ncmp
             zr(jvalv-1+i) = 0.d0
-        end do
+        enddo
     else
         do i = 1, ncmp
             zk8(jvalv-1+i) = '&FOZERO'
-        end do
+        enddo
     endif
     call nocart(carte, 1, ncmp)
 !
@@ -128,7 +123,6 @@ subroutine cachei(char, ligrmo, noma, fonree, param,&
     typmcl(2) = 'MAILLE'
 !
     do iocc = 1, nchei
-!
         if (fonree .eq. 'REEL') then
             call getvr8(motclf, 'EPXX', iocc=iocc, scal=epxx, nbret=nxx)
             call getvr8(motclf, 'EPYY', iocc=iocc, scal=epyy, nbret=nyy)
@@ -148,7 +142,7 @@ subroutine cachei(char, ligrmo, noma, fonree, param,&
 !
             do i = 1, ncmp
                 zr(jvalv-1+i) = 0.d0
-            end do
+            enddo
 !
             if (nxx .ne. 0) zr(jvalv-1+1) = epxx
             if (nyy .ne. 0) zr(jvalv-1+2) = epyy
@@ -166,9 +160,6 @@ subroutine cachei(char, ligrmo, noma, fonree, param,&
             if (nkxx .ne. 0) zr(jvalv-1+13) = xkxx
             if (nkyy .ne. 0) zr(jvalv-1+14) = xkyy
             if (nkxy .ne. 0) zr(jvalv-1+15) = xkxy
-            if ((nky.ne.0.or.nkz.ne.0) .and. (modeli.eq.'POU_C_T')) then
-                call utmess('F', 'MODELISA2_38')
-            endif
         else
             call getvid(motclf, 'EPXX', iocc=iocc, scal=kepxx, nbret=nxx)
             call getvid(motclf, 'EPYY', iocc=iocc, scal=kepyy, nbret=nyy)
@@ -178,7 +169,7 @@ subroutine cachei(char, ligrmo, noma, fonree, param,&
             call getvid(motclf, 'EPYZ', iocc=iocc, scal=kepyz, nbret=nyz)
             do i = 1, ncmp
                 zk8(jvalv-1+i) = '&FOZERO'
-            end do
+            enddo
             if (nxx .ne. 0) zk8(jvalv-1+1) = kepxx
             if (nyy .ne. 0) zk8(jvalv-1+2) = kepyy
             if (nzz .ne. 0) zk8(jvalv-1+3) = kepzz
@@ -188,21 +179,17 @@ subroutine cachei(char, ligrmo, noma, fonree, param,&
         endif
 !
         call getvtx(motclf, 'TOUT', iocc=iocc, scal=k8b, nbret=nbtou)
-!
         if (nbtou .ne. 0) then
-!
             call nocart(carte, 1, ncmp)
         else
-            call reliem(ligrmo, noma, 'NU_MAILLE', motclf, iocc,&
-                        2, motcle, typmcl, mesmai, nbma)
+            call reliem(ligrmo, noma, 'NU_MAILLE', motclf, iocc, 2, motcle, typmcl, mesmai, nbma)
             if (nbma .eq. 0) goto 20
             call jeveuo(mesmai, 'L', jma)
-            call nocart(carte, 3, ncmp, mode='NUM', nma=nbma,&
-                        limanu=zi(jma))
+            call nocart(carte, 3, ncmp, mode='NUM', nma=nbma, limanu=zi(jma))
             call jedetr(mesmai)
         endif
  20     continue
-    end do
+    enddo
 !
     call jedema()
 end subroutine

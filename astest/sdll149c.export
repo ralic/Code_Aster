@@ -6,7 +6,5 @@ P mpi_nbnoeud 1
 P testlist verification sequential
 
 F comm sdll149c.comm D 1
-F mail sdll149c.mail D 20
-F mail sdll149c.21 D 21
-F mail sdll149c.22 D 22
-F libr sdll149a.21 D 33
+F mmed sdll149a.mmed D 20
+F libr sdll149a.21   D 21

@@ -15,18 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-#include "asterf_types.h"
-!
 interface
-    subroutine ptfop1(itype, coef1, coef2, xl, rad,&
-                      angs2, global, qq, fe)
+    subroutine ptfop1(itype, coef1, coef2, xl, qq, fe)
         integer :: itype
         real(kind=8) :: coef1
         real(kind=8) :: coef2
         real(kind=8) :: xl
-        real(kind=8) :: rad
-        real(kind=8) :: angs2
-        aster_logical :: global
         real(kind=8) :: qq(12)
         real(kind=8) :: fe(12)
     end subroutine ptfop1

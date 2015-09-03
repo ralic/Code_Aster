@@ -29,7 +29,6 @@ subroutine te0038(option, nomte)
 ! IN  NOMTE  : K16 : NOM DU TYPE ELEMENT
 !       'MECA_POU_D_E'  : POUTRE DROITE D'EULER       (SECTION VARIABLE)
 !       'MECA_POU_D_T'  : POUTRE DROITE DE TIMOSHENKO (SECTION VARIABLE)
-!       'MECA_POU_C_T'  : POUTRE COURBE DE TIMOSHENKO(SECTION CONSTANTE)
 !       'MECA_POU_D_EM' : POUTRE DROITE MULTIFIBRE D EULER (SECT. CONST)
 !       'MECA_POU_D_TG' : POUTRE DROITE DE TIMOSHENKO (GAUCHISSEMENT)
 !       'MECA_POU_D_TGM': POUTRE DROITE DE TIMOSHENKO (GAUCHISSEMENT)
@@ -54,8 +53,8 @@ subroutine te0038(option, nomte)
 #include "asterfort/provec.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
+#include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
-#include "asterfort/trigom.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
 #include "asterfort/utpvlg.h"
@@ -68,9 +67,9 @@ subroutine te0038(option, nomte)
     integer :: codres(1)
     character(len=16) :: ch16, phenom
     real(kind=8) :: rho(1), a1, iy1, iz1, a2, cdg(3), ab2, ab3, ab4, amb, apb, ep
-    real(kind=8) :: rad, ang, angarc, angs2, xfl, xl, xl2, matinl(6)
+    real(kind=8) :: angs2, xl, xl2, matinl(6)
     real(kind=8) :: matine(6), pgl(3, 3), pgl1(3, 3), pgl2(3, 3), angl(3)
-    real(kind=8) :: p1(3, 3), p2(3, 3), p3(3, 3), cdgl(3), xfly, xflz, r8b
+    real(kind=8) :: cdgl(3), xfly, xflz, r8b
     real(kind=8) :: pgl3(3, 3), pi, po, poxi2, rayon, rext, rint, rmoy, rr
     real(kind=8) :: ry1, ry2, rz1, rz2, theta, unpr2, unpr4, unprr, xa, xb, xi
     real(kind=8) :: xig, xisl, xixx, xixz, xizz, xzig, yig, zig
@@ -80,7 +79,7 @@ subroutine te0038(option, nomte)
     real(kind=8) :: casect(6), yg, zg, p1gl(3),p1gg (3), rbid
 !
     integer :: lmater, igeom, lorien, nno, nc, lcastr, itype, icoude
-    integer :: i, n1, n2, lrcou, iadzi, iazk24, nn2
+    integer :: i, n1, n2, lrcou, iadzi, iazk24, nn2, iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -155,6 +154,8 @@ subroutine te0038(option, nomte)
             a1 = pi* (rext*rext-rint*rint)
             iy1 = pi* (rext**4-rint**4)/4.d0
             iz1 = iy1
+!           Pour ne plus avoir les warning de compilation
+            a2=a1; ry1=rext; ry2=rext; rz1=rext; rz2=rext
 !
             call tecael(iadzi, iazk24, noms=0)
             nn2 = zi(iadzi-1+2)
@@ -229,32 +230,15 @@ subroutine te0038(option, nomte)
             endif
         endif
 !
-!       orientation de la poutre
-        if (nomte .eq. 'MECA_POU_C_T') then
-            call jevech('PCAARPO', 'L', lrcou)
-            rad = zr(lrcou)
-            angarc = zr(lrcou+1)
-            xfl = zr(lrcou+2)
-            xfly = xfl
-            xflz = xfl
-            if (xfl .eq. 0.0d0) then
-                xfly = zr(lrcou+4)
-                xflz = zr(lrcou+6)
+!       caracteristique de coude pour les poutres
+        if (nomte .eq. 'MECA_POU_D_T') then
+            call tecach('ONN', 'PCAARPO', 'L', iret, iad=lrcou)
+            if ( iret .eq. 0 ) then
+                xfly = zr(lrcou)
+                xflz = zr(lrcou+2)
+                iy1  = iy1/xfly
+                iz1  = iz1/xflz
             endif
-            angs2 = trigom('ASIN', xl/ (2.d0*rad) )
-            ang = angs2*2.d0
-            xl = rad*ang
-            iy1 = iy1/xfly
-            iz1 = iz1/xflz
-            angl(1) = zr(lorien)
-            angl(2) = zr(lorien+1)
-            angl(3) = angarc
-            call matrot(angl, p1)
-            angl(1) = 0.d0
-            angl(2) = 0.d0
-            angl(3) = zr(lorien+2)
-            call matrot(angl, p2)
-            call pmat(3, p2, p1, p3)
         endif
 !
 !       calcul des caracteristiques elementaires 'MASS_INER'
@@ -325,20 +309,20 @@ subroutine te0038(option, nomte)
             zr(lcastr+2) = zr(igeom+2) + (zr(igeom+5)-zr(igeom+2))*xisl
             zr(lcastr+3) = zr(igeom+3) + (zr(igeom+6)-zr(igeom+3))*xisl
 !           inertie
-            xa = xl* (rz1+rz2)
+            xa  = xl*(rz1+rz2)
             amb = rz1 - rz2
             apb = rz1 + rz2
             ab2 = rz1**2 + rz2**2 + 4.d0*rz1*rz2
             ab3 = rz1**3 + 3.d0*rz1**2*rz2 - 3.d0*rz1*rz2**2 - rz2**3
             ab4 = rz1**4 + rz2**4 + 2.d0*rz1*rz2* (rz1**2+rz2**2)
 !
-            xixx = xl* (4.d0*ab4-2.d0*amb*ab3+amb**2*ab2)/ (18.d0*apb)
-            xizz = xl**3*ab2/ (18.d0*apb)
-            xixz = xl**2* (ab3-amb*ab2)/ (18.d0*apb)
-            xig = rho(1)* ((xa*2.d0*ry1**3/3.d0)+2.d0*ry1*xixx)
-            yig = rho(1)* (2.d0*ry1* (xixx+xizz))
-            zig = rho(1)* ((xa*2.d0*ry1**3/3.d0)+2.d0*ry1*xizz)
-            xzig = rho(1)* (2.d0*ry1*xixz)
+            xixx = xl*(4.d0*ab4-2.d0*amb*ab3+amb**2*ab2)/(18.d0*apb)
+            xizz = (xl**3)*ab2/(18.d0*apb)
+            xixz = (xl**2)*(ab3-amb*ab2)/ (18.d0*apb)
+            xig  = rho(1)*((xa*2.d0*ry1**3/3.d0)+2.d0*ry1*xixx)
+            yig  = rho(1)*(2.d0*ry1* (xixx+xizz))
+            zig  = rho(1)*((xa*2.d0*ry1**3/3.d0)+2.d0*ry1*xizz)
+            xzig = rho(1)*(2.d0*ry1*xixz)
             matinl(1) = xig
             matinl(2) = 0.d0
             matinl(3) = yig
@@ -353,51 +337,28 @@ subroutine te0038(option, nomte)
                 call utmess('F', 'ELEMENTS2_82')
             endif
 !           masse
-            zr(lcastr) = rho(1)* (a1+a2+sqrt(a1*a2))*xl/3.d0
+            zr(lcastr) = rho(1)*(a1+a2+sqrt(a1*a2))*xl/3.d0
 !           CDG
             rr = sqrt(a2/a1)
             unprr = 1.d0 + rr + rr**2
-            xi = (1.d0+2.d0*rr+3.d0*rr**2)/ (4.d0*unprr)
-            zr(lcastr+1) = zr(igeom+1)* (1.d0-xi) + zr(igeom+4)*xi
-            zr(lcastr+2) = zr(igeom+2)* (1.d0-xi) + zr(igeom+5)*xi
-            zr(lcastr+3) = zr(igeom+3)* (1.d0-xi) + zr(igeom+6)*xi
+            xi = (1.d0 + 2.d0*rr + 3.d0*(rr**2))/(4.d0*unprr)
+            zr(lcastr+1) = zr(igeom+1)*(1.d0-xi) + zr(igeom+4)*xi
+            zr(lcastr+2) = zr(igeom+2)*(1.d0-xi) + zr(igeom+5)*xi
+            zr(lcastr+3) = zr(igeom+3)*(1.d0-xi) + zr(igeom+6)*xi
 !           inertie
             unpr4 = unprr + rr**3 + rr**4
             unpr2 = 1.d0 + 3.d0*rr + 6.d0*rr**2
-            po = rho(1)*xl*a1*unprr/3.d0
-            xig = rho(1)*xl*(iy1+iz1)*unpr4/5.d0
-            poxi2 = rho(1)*xl**3*a1*unpr2/30.d0 - po*xi**2*xl**2
-            yig = rho(1)*xl*iy1*unpr4/5.d0 + poxi2
-            zig = rho(1)*xl*iz1*unpr4/5.d0 + poxi2
+            po    = rho(1)*xl*a1*unprr/3.d0
+            xig   = rho(1)*xl*(iy1+iz1)*unpr4/5.d0
+            poxi2 = rho(1)*(xl**3)*a1*unpr2/30.d0 - po*((xi*xl)**2)
+            yig   = rho(1)*xl*iy1*unpr4/5.d0 + poxi2
+            zig   = rho(1)*xl*iz1*unpr4/5.d0 + poxi2
             matinl(1) = xig
             matinl(2) = 0.d0
             matinl(3) = yig
             matinl(4) = 0.d0
             matinl(5) = 0.d0
             matinl(6) = zig
-            call utpslg(nno, nc, pgl, matinl, matine)
-!
-        else if (itype.eq.10) then
-!           poutre courbe
-!           masse
-            zr(lcastr) = rho(1)*a1*xl
-!           cdg
-            cdgl(1) = 0.d0
-            cdgl(2) = rad* (sin(angs2)/angs2-cos(angs2))
-            cdgl(3) = 0.d0
-            n1 = 1
-            n2 = 3
-            call utpvlg(n1, n2, p3, cdgl, cdg)
-            zr(lcastr+1) = cdg(1) + (zr(igeom+4)+zr(igeom+1))/2.d0
-            zr(lcastr+2) = cdg(2) + (zr(igeom+5)+zr(igeom+2))/2.d0
-            zr(lcastr+3) = cdg(3) + (zr(igeom+6)+zr(igeom+3))/2.d0
-!           inertie
-            matinl(1) = rho(1)* (iy1+iz1)*xl
-            matinl(2) = 0.d0
-            matinl(3) = rho(1)*xl* (iy1+a1*xl2/12.d0)
-            matinl(4) = 0.d0
-            matinl(5) = 0.d0
-            matinl(6) = rho(1)*xl* (iz1+a1*xl2/12.d0)
             call utpslg(nno, nc, pgl, matinl, matine)
         endif
 !

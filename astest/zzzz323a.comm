@@ -35,7 +35,7 @@ MODELE=AFFE_MODELE( MAILLAGE=MAILLAGE,
                             ),
                           _F( MAILLE = 'POU3',
                               PHENOMENE = 'MECANIQUE',
-                              MODELISATION = 'POU_C_T'
+                              MODELISATION = 'POU_D_T'
                             ),
                           _F( MAILLE = 'POU4',
                               PHENOMENE = 'MECANIQUE',

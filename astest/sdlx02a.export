@@ -7,3 +7,5 @@ P testlist verification sequential
 
 F comm sdlx02a.comm D 1
 F mmed sdlx02a.mmed D 20
+F datg sdlx02a.datg D 16
+

@@ -105,10 +105,6 @@ subroutine acecel(noma, nomo, nbocc, ele_sup_num, ele_sup_typ, nb_ty_el, zjdlm, 
         call utmess('E', 'MODELISA_32', sk=nomo)
         ier = ier + 1
     endif
-    if (nbocc(ACE_DEFI_ARC).ne.0 .and. nb_ty_el(ACE_NU_POUTRE).eq.0) then
-        call utmess('E', 'MODELISA_29', sk=nomo)
-        ier = ier + 1
-    endif
     if (nbocc(ACE_CABLE).ne.0 .and. nb_ty_el(ACE_NU_CABLE).eq.0) then
         call utmess('E', 'MODELISA_33', sk=nomo)
         ier = ier + 1

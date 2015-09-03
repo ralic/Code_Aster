@@ -161,10 +161,12 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc,&
 !
 ! --- LECTURE ET STOCKAGE DES DONNEES  DANS L OBJET TAMPON
     do ioc = 1, nbocc
+        call getvtx('POUTRE', 'SECTION', iocc=ioc, scal=sec, nbret=nsec)
+        if ( sec .eq. 'COUDE' ) cycle
+!
         call codent(ioc, 'G', kioc)
         call getvem(noma, 'GROUP_MA', 'POUTRE', 'GROUP_MA', ioc, iarg, lmax, poutre, ng)
         call getvem(noma, 'MAILLE', 'POUTRE', 'MAILLE', ioc, iarg, lmax, poutre, nm)
-        call getvtx('POUTRE', 'SECTION', iocc=ioc, scal=sec, nbret=nsec)
         call getvtx('POUTRE', 'VARI_SECT', iocc=ioc, scal=varsec, nbret=nvsec)
 !
 !
@@ -273,7 +275,7 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc,&
                 endif
             enddo
         else
-!         SI ON A DONNE TABLE_CARA LA SECTION EST CONSTANTE
+!           SI ON A DONNE TABLE_CARA LA SECTION EST CONSTANTE
             ivar = 0
             isec = 0
         endif
@@ -298,7 +300,6 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc,&
                     nutyel = zi(jdme+nummai-1)
                     do k = 1, nbepo
                         if (nutyel .eq. ntyele(k)) then
-                            if (k .eq. 4) iivar = 10
                             if (isec .eq. 2 .and. ivar .eq. 2) then
                                 call affpou(tmpgen, tmpgef, fcx, nommai, isec,&
                                             iivar, caram, ncarac,&
@@ -331,7 +332,6 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc,&
                 nutyel = zi(jdme+nummai-1)
                 do j = 1, nbepo
                     if (nutyel .eq. ntyele(j)) then
-                        if (j .eq. 4) iivar = 10
                         call affpou(tmpgen, tmpgef, fcx, nommai, isec,&
                                     iivar, cara, ncarac, vale, tabpou,&
                                     exppou, nbo, kioc, ier)

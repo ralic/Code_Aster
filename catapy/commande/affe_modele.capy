@@ -133,7 +133,6 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                   "GRILLE_EXCENTRE", # RESP. : ROSPARS C.ROSPARS
                                   "GRILLE_MEMBRANE", # RESP. : ROSPARS C.ROSPARS
                                   "MEMBRANE",        # RESP. : ROSPARS C.ROSPARS
-                                  "POU_C_T",         # RESP. : FLEJOU J.L.FLEJOU
                                   "POU_D_E",         # RESP. : FLEJOU J.L.FLEJOU
                                   "POU_D_EM",        # RESP. : FLEJOU J.L.FLEJOU
                                   "POU_D_T",         # RESP. : FLEJOU J.L.FLEJOU

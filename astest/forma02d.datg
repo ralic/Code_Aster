@@ -11,7 +11,8 @@ from salome.smesh import smeshBuilder
 smesh = smeshBuilder.New(salome.myStudy)
 
 #############Chemin pour l'export du maillage resultat############
-ExportPATH="/home/PHIMECA/maillages/"
+import os
+ExportPATH=os.getcwd()
 ##################################################################
 
 #===================================================
@@ -90,8 +91,22 @@ maillageCoude = smesh.Mesh(GeoCoude, "MeshCoude")
 
 # 1D global
 nbSegments = 5
+nbSegmentsCoude = 20
 algo = maillageCoude.Segment()
 algo.NumberOfSegments(nbSegments)
+
+# Calcul
+# ------
+maillageCoude.Compute()
+
+
+# maillage plus fin sur le coude
+Nb_Segments_coude = smesh.CreateHypothesis('NumberOfSegments')
+Nb_Segments_coude.SetNumberOfSegments( nbSegmentsCoude )
+Nb_Segments_coude.SetDistrType( 0 )
+
+maillageCoude.AddHypothesis(algo,COUDE)
+maillageCoude.AddHypothesis(Nb_Segments_coude,COUDE)
 
 # Calcul
 # ------

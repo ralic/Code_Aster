@@ -60,7 +60,6 @@ subroutine op0019()
 #include "asterfort/acevmb.h"
 #include "asterfort/acevmr.h"
 #include "asterfort/acevor.h"
-#include "asterfort/acevpc.h"
 #include "asterfort/acevpf.h"
 #include "asterfort/acevpo.h"
 #include "asterfort/acevrm.h"
@@ -110,7 +109,7 @@ subroutine op0019()
     character(len=8) :: mclef_type
 !
     integer :: ivr(4), nbcart, iret, jadr, ii, nbtel, ireponse, nbelemdi
-    integer :: nbver, nlm, nlg, lxc, lxo, nln, nlj, lxa
+    integer :: nbver, nlm, nlg, lxc, lxo, nln, nlj
     integer :: lxb, lxm, lxpf, lxgb, lxmb, lmax, ifm, niv, lxp, nbvm
     integer :: lxd, nboccd, lxrp, noemaf, lxrm, noemf2, nbmail, nbnoeu
     integer :: lxmr, noemf3
@@ -341,13 +340,6 @@ subroutine op0019()
         lxo = max(nlm,nln,nlj,nlg)
     endif
 ! --------------------------------------------------------------------------------------------------
-!   VERIFICATION DE LA SYNTAXE DES POUTRES COURBES
-    lxa = 0
-    if (nbocc(ACE_DEFI_ARC) .ne. 0) then
-        call acevpc(nbocc(ACE_DEFI_ARC), nlm, nlg, iret)
-        lxa = max(nlm,nlg)
-    endif
-! --------------------------------------------------------------------------------------------------
 !   VERIFICATION DE LA SYNTAXE DES ELEMENTS BARRE
     lxb = 0
     if (nbocc(ACE_BARRE) .ne. 0) then
@@ -387,7 +379,7 @@ subroutine op0019()
     endif
 ! --------------------------------------------------------------------------------------------------
 !   LONGUEUR MAXIMUM D UNE LISTE DE MAILLE/NOEUD/GROUP_MA/GROUP_NO
-    lmax = max(lmax,lxp,lxc,lxo,lxa,lxb,lxm,lxpf,lxgb,lxmb)
+    lmax = max(lmax,lxp,lxc,lxo,lxb,lxm,lxpf,lxgb,lxmb)
 !
 ! --------------------------------------------------------------------------------------------------
 !   VERIFICATION DE LA SYNTAXE DES ELEMENTS DISCRET
@@ -501,9 +493,9 @@ subroutine op0019()
         call aceadi(noma, nomo, k16bid, lmax, nboccd, info_carte, ivr)
     endif
 ! --------------------------------------------------------------------------------------------------
-!   AFFECTATION DES COURBURES AUX ELEMENTS POUTRES COURBES
-    if (nbocc(ACE_DEFI_ARC) .ne. 0) then
-        call aceapc(nomu, noma, lmax, nbocc(ACE_DEFI_ARC))
+!   Affectation des coefficients de correction pour les COUDES
+    if (nbocc(ACE_POUTRE) .ne. 0) then
+        call aceapc(nomu, noma, lmax, nbocc(ACE_POUTRE))
     endif
 ! --------------------------------------------------------------------------------------------------
 !   AFFECTATION DES SECTIONS AUX ELEMENTS CABLE :

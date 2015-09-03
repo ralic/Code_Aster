@@ -1,0 +1,244 @@
+# -*- coding: utf-8 -*-
+
+import math
+import salome
+salome.salome_init()
+from salome.geom import geomBuilder
+import GEOM
+geompy = geomBuilder.New(salome.myStudy)
+import SMESH
+from salome.smesh import smeshBuilder
+smesh = smeshBuilder.New(salome.myStudy)
+
+#############Chemin pour l'export du maillage resultat############
+ExportPATH="/home/etienne/dev/codeaster/src/astest/"
+
+##################################################################
+
+#===================================================
+#                  PARAMETRES
+#                  ----------
+#===================================================
+# RC rayon de courbure du coude (m)
+
+Rac2sur2 = math.sqrt(2)/2
+
+Rc = 0.922
+Lz = 3.69
+Ly = 2.75
+Lx = 1.96
+
+lly = (Ly -2*Rc)/4
+llx = (Lx - Rc)/4
+#===================================================
+#                  GEOMETRIE
+#                  ---------
+#===================================================
+
+n100 = geompy.MakeVertex(0,-Ly,-Lz)
+n200 = geompy.MakeVertex(0,-Ly,-(Lz-Rc)/2 - Rc)
+n300 = geompy.MakeVertex(0,-Ly,-Rc)
+n400 = geompy.MakeVertex(0,-(Ly-(1-Rac2sur2)*Rc),-(1-Rac2sur2)*Rc)
+A =  geompy.MakeVertex(0,-(Ly-Rc),-Rc)
+n500 = geompy.MakeVertex(0,-(Ly-Rc),0)
+n600 = geompy.MakeVertex(0,-(Ly-Rc -lly),0)
+n700 = geompy.MakeVertex(0,-(Ly-Rc -2*lly),0)
+n800 = geompy.MakeVertex(0,-(Ly-Rc -3*lly),0)
+n900 = geompy.MakeVertex(0,-Rc,0)
+n1000 = geompy.MakeVertex((1-Rac2sur2)*Rc,-(1-Rac2sur2)*Rc,0)
+B = geompy.MakeVertex(Rc,-Rc,0)
+n1100 = geompy.MakeVertex(Rc,0,0)
+n1200 = geompy.MakeVertex(Rc + llx,0,0)
+n1300 = geompy.MakeVertex(Rc + 2*llx,0,0)
+n1400 = geompy.MakeVertex(Rc + 3*llx,0,0)
+n1500 = geompy.MakeVertex(Lx,0,0)
+
+edge1 = geompy.MakeLineTwoPnt(n100,n200)
+edge2 = geompy.MakeLineTwoPnt(n200,n300)
+arc1  = geompy.MakeArcCenter(A, n300, n400, False)
+arc2  = geompy.MakeArcCenter(A, n400, n500, False)
+edge3 = geompy.MakeLineTwoPnt(n500,n600)
+edge4 = geompy.MakeLineTwoPnt(n600,n700)
+edge5 = geompy.MakeLineTwoPnt(n700,n800)
+edge6 = geompy.MakeLineTwoPnt(n800,n900)
+arc3  = geompy.MakeArcCenter(B, n900, n1000, False)
+arc4  = geompy.MakeArcCenter(B, n1000, n1100, False)
+edge7 = geompy.MakeLineTwoPnt(n1100,n1200)
+edge8 = geompy.MakeLineTwoPnt(n1200,n1300)
+edge9 = geompy.MakeLineTwoPnt(n1300,n1400)
+edge10 = geompy.MakeLineTwoPnt(n1400,n1500)
+
+
+
+
+
+line = [edge1,edge2,arc1, arc2,edge3,edge4, edge5,edge6,arc3, arc4, edge7,edge8,edge9,edge10]
+
+# Création de la géométrie générale
+#------------------------------------
+GeoCoude = geompy.MakeWire(line)
+
+geompy.addToStudy( GeoCoude, "GeoCoude" )
+
+
+# Création des groupes
+#---------------------------
+# On crée des groupes à partir des entitées de construction
+
+
+N100 = geompy.GetSame(GeoCoude,n100)
+N200 = geompy.GetSame(GeoCoude,n200)
+N300 = geompy.GetSame(GeoCoude,n300)
+N400 = geompy.GetSame(GeoCoude,n400)
+N500 = geompy.GetSame(GeoCoude,n500)
+N600 = geompy.GetSame(GeoCoude,n600)
+N700 = geompy.GetSame(GeoCoude,n700)
+N800 = geompy.GetSame(GeoCoude,n800)
+N900 = geompy.GetSame(GeoCoude,n900)
+N1000 = geompy.GetSame(GeoCoude,n1000)
+N1100 = geompy.GetSame(GeoCoude,n1100)
+N1200 = geompy.GetSame(GeoCoude,n1200)
+N1300 = geompy.GetSame(GeoCoude,n1300)
+N1400 = geompy.GetSame(GeoCoude,n1400)
+N1500 = geompy.GetSame(GeoCoude,n1500)
+
+ENCASTRE = geompy.CreateGroup(GeoCoude, geompy.ShapeType["VERTEX"])
+geompy.AddObject(ENCASTRE, geompy.GetSubShapeID(GeoCoude,N100))
+geompy.AddObject(ENCASTRE, geompy.GetSubShapeID(GeoCoude,N1500))
+geompy.addToStudyInFather( GeoCoude, ENCASTRE, "ENCASTRE" )
+
+
+TUY1 = geompy.GetSame(GeoCoude,edge1 )
+TUY2 = geompy.GetSame(GeoCoude,edge2 )
+TUY3 = geompy.GetSame(GeoCoude,edge3 )
+TUY4 = geompy.GetSame(GeoCoude,edge4 )
+TUY5 = geompy.GetSame(GeoCoude,edge5 )
+TUY6 = geompy.GetSame(GeoCoude,edge6 )
+TUY7 = geompy.GetSame(GeoCoude,edge7 )
+TUY8 = geompy.GetSame(GeoCoude,edge8 )
+TUY9 = geompy.GetSame(GeoCoude,edge9 )
+TUY10= geompy.GetSame(GeoCoude,edge10)
+
+
+SEC_1 = geompy.CreateGroup(GeoCoude, geompy.ShapeType["EDGE"])
+geompy.AddObject(SEC_1, geompy.GetSubShapeID(GeoCoude,TUY1 ))
+geompy.AddObject(SEC_1, geompy.GetSubShapeID(GeoCoude,TUY2 ))
+geompy.AddObject(SEC_1, geompy.GetSubShapeID(GeoCoude,TUY3 ))
+geompy.AddObject(SEC_1, geompy.GetSubShapeID(GeoCoude,TUY4 ))
+geompy.AddObject(SEC_1, geompy.GetSubShapeID(GeoCoude,TUY5 ))
+geompy.AddObject(SEC_1, geompy.GetSubShapeID(GeoCoude,TUY6 ))
+geompy.AddObject(SEC_1, geompy.GetSubShapeID(GeoCoude,TUY7 ))
+geompy.AddObject(SEC_1, geompy.GetSubShapeID(GeoCoude,TUY8 ))
+geompy.AddObject(SEC_1, geompy.GetSubShapeID(GeoCoude,TUY9 ))
+geompy.AddObject(SEC_1, geompy.GetSubShapeID(GeoCoude,TUY10))
+geompy.addToStudyInFather( GeoCoude, SEC_1, "SEC_1" )
+
+COUDE1 = geompy.GetSame(GeoCoude,arc1)
+COUDE2 = geompy.GetSame(GeoCoude,arc2)
+COUDE3 = geompy.GetSame(GeoCoude,arc3)
+COUDE4 = geompy.GetSame(GeoCoude,arc4)
+
+COUDEA = geompy.CreateGroup(GeoCoude, geompy.ShapeType["EDGE"])
+geompy.AddObject(COUDEA, geompy.GetSubShapeID(GeoCoude,COUDE1))
+geompy.AddObject(COUDEA, geompy.GetSubShapeID(GeoCoude,COUDE2))
+geompy.addToStudyInFather( GeoCoude, COUDEA, "COUDEA" )
+
+COUDEB = geompy.CreateGroup(GeoCoude, geompy.ShapeType["EDGE"])
+geompy.AddObject(COUDEB, geompy.GetSubShapeID(GeoCoude,COUDE3))
+geompy.AddObject(COUDEB, geompy.GetSubShapeID(GeoCoude,COUDE4))
+geompy.addToStudyInFather( GeoCoude,COUDEB, "COUDEB" )
+
+SEC_2 = geompy.CreateGroup(GeoCoude, geompy.ShapeType["EDGE"])
+geompy.AddObject(SEC_2, geompy.GetSubShapeID(GeoCoude,COUDE1))
+geompy.AddObject(SEC_2, geompy.GetSubShapeID(GeoCoude,COUDE2))
+geompy.AddObject(SEC_2, geompy.GetSubShapeID(GeoCoude,COUDE3))
+geompy.AddObject(SEC_2, geompy.GetSubShapeID(GeoCoude,COUDE4))
+geompy.addToStudyInFather( GeoCoude, SEC_2, "SEC_2" )
+
+MAT_1 = geompy.CreateGroup(GeoCoude, geompy.ShapeType["EDGE"])
+geompy.AddObject(MAT_1, geompy.GetSubShapeID(GeoCoude,TUY1 ))
+geompy.AddObject(MAT_1, geompy.GetSubShapeID(GeoCoude,TUY2 ))
+geompy.AddObject(MAT_1, geompy.GetSubShapeID(GeoCoude,TUY3 ))
+geompy.AddObject(MAT_1, geompy.GetSubShapeID(GeoCoude,TUY4 ))
+geompy.AddObject(MAT_1, geompy.GetSubShapeID(GeoCoude,TUY5 ))
+geompy.AddObject(MAT_1, geompy.GetSubShapeID(GeoCoude,TUY6 ))
+geompy.AddObject(MAT_1, geompy.GetSubShapeID(GeoCoude,TUY7 ))
+geompy.AddObject(MAT_1, geompy.GetSubShapeID(GeoCoude,TUY8 ))
+geompy.AddObject(MAT_1, geompy.GetSubShapeID(GeoCoude,TUY9 ))
+geompy.AddObject(MAT_1, geompy.GetSubShapeID(GeoCoude,TUY10))
+geompy.AddObject(MAT_1, geompy.GetSubShapeID(GeoCoude,COUDE1))
+geompy.AddObject(MAT_1, geompy.GetSubShapeID(GeoCoude,COUDE2))
+geompy.AddObject(MAT_1, geompy.GetSubShapeID(GeoCoude,COUDE3))
+geompy.AddObject(MAT_1, geompy.GetSubShapeID(GeoCoude,COUDE4))
+geompy.addToStudyInFather( GeoCoude, MAT_1, "MAT_1" )
+
+
+#===================================================
+#                  MAILLAGE
+#                  --------
+#===================================================
+
+maillageCoude = smesh.Mesh(GeoCoude, "MeshCoude")
+
+# Algorithmes et hypotheses globales
+# ----------------------------------
+
+# 1D global
+nbSegments = 1
+# les coudes sont divisés en 2 parties, on aura donc 2*nbSegmentsCoude segments par coude
+nbSegmentsCoude = 10
+algo = maillageCoude.Segment()
+algo.NumberOfSegments(nbSegments)
+
+# Calcul
+# ------
+maillageCoude.Compute()
+
+# variation du maillage sur les coudes
+Nb_Segments_Coude = smesh.CreateHypothesis('NumberOfSegments')
+Nb_Segments_Coude.SetNumberOfSegments( nbSegmentsCoude )
+Nb_Segments_Coude.SetDistrType( 0 )
+
+maillageCoude.AddHypothesis(algo,SEC_2)
+maillageCoude.AddHypothesis(Nb_Segments_Coude,SEC_2)
+
+
+# Calcul
+# ------
+maillageCoude.Compute()
+
+
+# Création des groupes du maillage
+#---------------------------------
+maillageCoude.Group(ENCASTRE, "ENCASTRE" )
+maillageCoude.Group(N100, "N100" )
+maillageCoude.Group(N200, "N200" )
+maillageCoude.Group(N300, "N300" )
+maillageCoude.Group(N400, "N400" )
+maillageCoude.Group(N500, "N500" )
+maillageCoude.Group(N600, "N600" )
+maillageCoude.Group(N700, "N700" )
+maillageCoude.Group(N800, "N800" )
+maillageCoude.Group(N900, "N900" )
+maillageCoude.Group(N1000, "N1000" )
+maillageCoude.Group(N1100, "N1100" )
+maillageCoude.Group(N1200, "N1200" )
+maillageCoude.Group(N1300, "N1300" )
+maillageCoude.Group(N1400, "N1400" )
+maillageCoude.Group(N1500, "N1500" )
+maillageCoude.Group(MAT_1, "MAT_1" )
+maillageCoude.Group(SEC_1, "SEC_1" )
+maillageCoude.Group(SEC_2, "SEC_2" )
+maillageCoude.Group(COUDEA, "COUDEA" )
+maillageCoude.Group(COUDEB, "COUDEB" )
+
+########Export du maillage au format MMED########
+maillageCoude.ExportMED( r''+ExportPATH+'sdlx02a.mmed'+'', 0, SMESH.MED_V2_2 , 1 )
+
+
+# Mise à jour de l'arbre
+#---------------------------
+# Si on a une interface graphique...
+if salome.sg.hasDesktop():
+   salome.sg.updateObjBrowser(1)
+

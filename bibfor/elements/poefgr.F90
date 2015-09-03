@@ -1,23 +1,4 @@
-subroutine poefgr(nomte, klc, mater, e, xnu,&
-                  rho, effo)
-    implicit none
-#include "jeveux.h"
-#include "asterfort/jevech.h"
-#include "asterfort/lonele.h"
-#include "asterfort/matro2.h"
-#include "asterfort/matrot.h"
-#include "asterfort/pmavec.h"
-#include "asterfort/pmfmas.h"
-#include "asterfort/pomass.h"
-#include "asterfort/poutre_modloc.h"
-#include "asterfort/ptforp.h"
-#include "asterfort/trigom.h"
-#include "asterfort/utmess.h"
-#include "asterfort/utpvgl.h"
-#include "asterfort/vecma.h"
-#include "asterfort/verifm.h"
-    character(len=*) :: nomte
-    real(kind=8) :: klc(12, 12), e, xnu, rho, effo(*)
+subroutine poefgr(nomte, klc, mater, e, xnu, rho, effo)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,130 +17,110 @@ subroutine poefgr(nomte, klc, mater, e, xnu,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
+!
+! --------------------------------------------------------------------------------------------------
+!
 !     CALCUL DU VECTEUR ELEMENTAIRE EFFORT GENERALISE REEL,
 !     POUR LES ELEMENTS DE POUTRE D'EULER ET DE TIMOSHENKO.
-!     ------------------------------------------------------------------
 !
+! --------------------------------------------------------------------------------------------------
+!
+    implicit none
+!
+    integer :: mater
+    character(len=*) :: nomte
+    real(kind=8) :: klc(12,12), e, xnu, rho, effo(*)
+!
+#include "jeveux.h"
+#include "asterfort/jevech.h"
+#include "asterfort/lonele.h"
+#include "asterfort/matrot.h"
+#include "asterfort/pmavec.h"
+#include "asterfort/pmfmas.h"
+#include "asterfort/pomass.h"
+#include "asterfort/poutre_modloc.h"
+#include "asterfort/ptforp.h"
+#include "asterfort/utmess.h"
+#include "asterfort/utpvgl.h"
+#include "asterfort/vecma.h"
+#include "asterfort/verifm.h"
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: i, iret, itype, j, jdepl, kanl, ldyna
+    integer :: lmater, lopt, lorien
+    integer :: nc, ncc, nno, nnoc
+    real(kind=8) :: a, a2, xl, ethm
     real(kind=8) :: ul(12), fe(12), mlv(78), mlc(12, 12), fei(12)
-    real(kind=8) :: pgl(3, 3), pgl1(3, 3), pgl2(3, 3)
+    real(kind=8) :: pgl(3, 3)
     character(len=24) :: suropt
-!     ------------------------------------------------------------------
 !
-!-----------------------------------------------------------------------
-    integer :: i, itype, j, jdepl, kanl, ldyna
-    integer :: lmater, lopt, lorien, lrcou
-    integer :: mater, nc, ncc, nno, nnoc
-    real(kind=8) :: a, a2, along, angarc, angs2, deux, f
-    real(kind=8) :: rad, xl, zero
-!-----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
     integer, parameter :: nb_cara = 3
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8), parameter :: noms_cara(nb_cara) = (/'A1  ','A2  ','TVAR'/)
-!-----------------------------------------------------------------------
-    zero = 0.d0
-    deux = 2.d0
+!
+! --------------------------------------------------------------------------------------------------
+!
     nno = 2
-    nc = 6
+    nc  = 6
     nnoc = 1
-    ncc = 6
-!     ------------------------------------------------------------------
-!
-!     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
-!
+    ncc  = 6
+!   recuperation des caracteristiques generales des sections
     call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)
     a   = vale_cara(1)
     a2  = vale_cara(2)
     itype = nint(vale_cara(3))
 !
-!     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
+!   recuperation des coordonnees des noeuds ---
     xl = lonele()
-    if (itype .eq. 10) then
-        call jevech('PCAARPO', 'L', lrcou)
-        rad = zr(lrcou)
-        angarc = zr(lrcou+1)
-        angs2 = trigom('ASIN',xl/ (deux*rad))
-        xl = rad*angs2*deux
-    endif
 !
-!     --- MATRICE DE ROTATION PGL
-!
+!   matrice de rotation pgl
     call jevech('PCAORIE', 'L', lorien)
-    if (itype .eq. 10) then
-        call matro2(zr(lorien), angarc, angs2, pgl1, pgl2)
-    else
-        call matrot(zr(lorien), pgl)
-    endif
+    call matrot(zr(lorien), pgl)
 !
-!      --- VECTEUR DEPLACEMENT LOCAL ---
-!
+!   vecteur deplacement local
     call jevech('PDEPLAR', 'L', jdepl)
-    if (itype .eq. 10) then
-        call utpvgl(nnoc, ncc, pgl1, zr(jdepl), ul)
-        call utpvgl(nnoc, ncc, pgl2, zr(jdepl+6), ul(7))
-    else
-        call utpvgl(nno, nc, pgl, zr(jdepl), ul)
-    endif
+    call utpvgl(nno, nc, pgl, zr(jdepl), ul)
 !
-!     --- VECTEUR EFFORT LOCAL  EFFO = KLC * UL
-!
+!   vecteur effort local  effo = klc * ul
     call pmavec('ZERO', 12, klc, ul, effo)
 !
-!     --- TENIR COMPTE DES EFFORTS DUS A LA DILATATION ---
+!   tenir compte des efforts dus a la dilatation
+    call verifm('NOEU', nno, 1, '+', mater, ethm, iret)
 !
-    call verifm('NOEU', nno, 1, '+', mater,&
-                f)
+    if (ethm .ne. 0.d0) then
+        ul(1:12) = 0.d0
 !
-    if (f .ne. zero) then
-        ul(1:12) = zero
-!
-        if (itype .ne. 10) then
-            ul(1) = -f*xl
-            ul(7) = -ul(1)
-        else
-            along = deux*rad*f*sin(angs2)
-            ul(1) = -along*cos(angs2)
-            ul(2) = along*sin(angs2)
-            ul(7) = -ul(1)
-            ul(8) = ul(2)
-        endif
-!              --- CALCUL DES FORCES INDUITES ---
+        ul(1) = -ethm*xl
+        ul(7) = -ul(1)
+!       calcul des forces induites
         do i = 1, 6
             do j = 1, 6
-                effo(i) = effo(i) - klc(i,j)*ul(j)
+                effo(i)   = effo(i)   - klc(i,j)*ul(j)
                 effo(i+6) = effo(i+6) - klc(i+6,j+6)*ul(j+6)
             enddo
         enddo
     endif
 !
-!     --- TENIR COMPTE DES EFFORTS REPARTIS/PESANTEUR ---
-!
-    call ptforp(itype, 'CHAR_MECA_PESA_R', nomte, a, a2,&
-                xl, rad, angs2, 0, nno,&
-                nc, pgl, pgl1, pgl2, fe,&
-                fei)
+!   tenir compte des efforts repartis/pesanteur
+    call ptforp(itype, 'CHAR_MECA_PESA_R', nomte, a, a2, xl, 0, nno, nc, pgl, fe, fei)
     do i = 1, 12
         effo(i) = effo(i) - fe(i)
-    end do
+    enddo
 !
-    call ptforp(itype, 'CHAR_MECA_FR1D1D', nomte, a, a2,&
-                xl, rad, angs2, 0, nno,&
-                nc, pgl, pgl1, pgl2, fe,&
-                fei)
+    call ptforp(itype, 'CHAR_MECA_FR1D1D', nomte, a, a2, xl, 0, nno, nc, pgl, fe, fei)
     do i = 1, 12
         effo(i) = effo(i) - fe(i)
-    end do
+    enddo
 !
-    call ptforp(itype, 'CHAR_MECA_FF1D1D', nomte, a, a2,&
-                xl, rad, angs2, 0, nno,&
-                nc, pgl, pgl1, pgl2, fe,&
-                fei)
+    call ptforp(itype, 'CHAR_MECA_FF1D1D', nomte, a, a2, xl, 0, nno, nc, pgl, fe, fei)
     do i = 1, 12
         effo(i) = effo(i) - fe(i)
-    end do
+    enddo
 !
-!      --- FORCE DYNAMIQUE ---
-!
-!      IF ( RHO .NE. ZERO ) THEN
+!   force dynamique
     kanl = 2
     call jevech('PSUROPT', 'L', lopt)
     suropt = zk24(lopt)
@@ -172,20 +133,13 @@ subroutine poefgr(nomte, klc, mater, e, xnu,&
         endif
         if (nomte.eq.'MECA_POU_D_EM') then
             call jevech('PMATERC', 'L', lmater)
-            call pmfmas(nomte, ' ', 0.d0, zi(lmater), kanl,&
-                        mlv)
+            call pmfmas(nomte, ' ', 0.d0, zi(lmater), kanl, mlv)
         else
-            call pomass(nomte, e, xnu, rho, kanl,&
-                        mlv)
+            call pomass(nomte, e, xnu, rho, kanl, mlv)
         endif
         call vecma(mlv, 78, mlc, 12)
         call jevech('PCHDYNR', 'L', ldyna)
-        if (itype .eq. 10) then
-            call utpvgl(nnoc, ncc, pgl1, zr(ldyna), ul)
-            call utpvgl(nnoc, ncc, pgl2, zr(ldyna+6), ul(7))
-        else
-            call utpvgl(nno, nc, pgl, zr(ldyna), ul)
-        endif
+        call utpvgl(nno, nc, pgl, zr(ldyna), ul)
         call pmavec('ZERO', 12, mlc, ul, fe)
         do i = 1, 12
             effo(i) = effo(i) + fe(i)

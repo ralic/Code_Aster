@@ -1,14 +1,5 @@
-subroutine infted(nomte, symetr, nbterm, nbnoeu, nbcomp,&
-                  ndimen, itype)
-    implicit none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/poutre_modloc.h"
-#include "asterfort/tecael.h"
-#include "asterfort/utmess.h"
+subroutine infted(nomte, symetr, nbterm, nbnoeu, nbcomp, ndimen, itype)
 !
-    character(len=*) :: nomte
-    integer :: symetr, nbterm, nbnoeu, nbcomp, ndimen, itype
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,49 +17,70 @@ subroutine infted(nomte, symetr, nbterm, nbnoeu, nbcomp,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jean-luc.flejou at edf.fr
-! --- ------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
+!
 !                 INFORMATIONS SUR LES DISCRETS ET POUTRES
+!
+! --------------------------------------------------------------------------------------------------
+!
 ! IN
-!     NOMTE : ELEMENTS CONCERNES :
-!        MECA_DIS_TR_L     : MAILLE A 2 NOEUDS EN 3D
-!        MECA_DIS_T_L      : MAILLE A 2 NOEUDS EN 3D
-!        MECA_DIS_TR_N     : MAILLE A 1 NOEUD  EN 3D
-!        MECA_DIS_T_N      : MAILLE A 1 NOEUD  EN 3D
-!        MECA_2D_DIS_TR_L  : MAILLE A 2 NOEUDS EN 2D
-!        MECA_2D_DIS_T_L   : MAILLE A 2 NOEUDS EN 2D
-!        MECA_2D_DIS_TR_N  : MAILLE A 1 NOEUD  EN 2D
-!        MECA_2D_DIS_T_N   : MAILLE A 1 NOEUD  EN 2D
-!        MECA_POU_D_T      : MAILLE A 2 NOEUDS EN 3D
-!        MECA_POU_D_E      : MAILLE A 2 NOEUDS EN 3D
-!        MECA_POU_D_EM     : MAILLE A 2 NOEUDS EN 3D
-!        MECA_POU_C_T      : MAILLE A 2 NOEUDS EN 3D
-!        MECA_POU_D_TG     : MAILLE A 2 NOEUDS EN 3D
-!        MECA_POU_D_TGM    : MAILLE A 2 NOEUDS EN 3D
-!     SYMETR : =1 NON-SYMETRIQUE, =2 NON-SYMETRIQUE (DISCRETS SEULEMENT)
+!     nomte : elements concernes :
+!        meca_dis_tr_l     : maille a 2 noeuds en 3d
+!        meca_dis_t_l      : maille a 2 noeuds en 3d
+!        meca_dis_tr_n     : maille a 1 noeud  en 3d
+!        meca_dis_t_n      : maille a 1 noeud  en 3d
+!        meca_2d_dis_tr_l  : maille a 2 noeuds en 2d
+!        meca_2d_dis_t_l   : maille a 2 noeuds en 2d
+!        meca_2d_dis_tr_n  : maille a 1 noeud  en 2d
+!        meca_2d_dis_t_n   : maille a 1 noeud  en 2d
+!        meca_pou_d_t      : maille a 2 noeuds en 3d
+!        meca_pou_d_e      : maille a 2 noeuds en 3d
+!        meca_pou_d_em     : maille a 2 noeuds en 3d
+!        meca_pou_d_tg     : maille a 2 noeuds en 3d
+!        meca_pou_d_tgm    : maille a 2 noeuds en 3d
 !
-! OUT
-!     NBTERM : NOMBRE DE TERME DANS LA MATRICE
-!     NBNOEU : NOMBRE DE NOEUDS DE L'ELEMENT
-!     NBCOMP : NOMBRE DE COMPOSANTE PAR NOEUD
-!     NDIMEN : DIMENSION DE L'ELEMENT
-!     ITYPE  : TYPE DE L'ELEMENT
+!     symetr : =1 non-symetrique, =2 non-symetrique (discrets seulement)
 !
-!     CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
+! out
+!     nbterm : nombre de terme dans la matrice
+!     nbnoeu : nombre de noeuds de l'element
+!     nbcomp : nombre de composante par noeud
+!     ndimen : dimension de l'element
+!     itype  : type de l'element
 !
-    character(len=20) :: kmess(5)
-    integer :: iadzi, iazk24, iret
-    real(kind=8) :: tvar
-! --- ------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-!     ITYPE : DANS PTENPO
-!        POUTRE DROITE DE SECTION CONSTANTE OU VARIABLE  : 0 1 2
-!        POUTRE COURBE DE SECTION CONSTANTE              : 10
+!     itype : dans ptenpo
+!        poutre droite de section constante ou variable  : 0 1 2
 !
 !                                                  T  TR
-!        DISCRET TYPE NODALE  ..._N              : 20 21
-!        DISCRET TYPE NODALE  ..._N_NS           : 22 23
-!        DISCRET TYPE LIAISON ..._L              : 40 41
-!        DISCRET TYPE LIAISON ..._L_NS           : 42 43
+!        discret type nodale  ..._N              : 20 21
+!        discret type nodale  ..._N_NS           : 22 23
+!        discret type liaison ..._L              : 40 41
+!        discret type liaison ..._L_NS           : 42 43
+!
+! --------------------------------------------------------------------------------------------------
+!
+implicit none
+!
+!
+    character(len=*) :: nomte
+    integer :: symetr, nbterm, nbnoeu, nbcomp, ndimen, itype
+!
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/poutre_modloc.h"
+#include "asterfort/tecael.h"
+#include "asterfort/utmess.h"
+!
+! --------------------------------------------------------------------------------------------------
+!
+    character(len=24) :: kmess(5)
+    integer :: iadzi, iazk24, iret
+    real(kind=8) :: tvar
+!
+! --------------------------------------------------------------------------------------------------
 !
     itype = -10
     if (nomte .eq. 'MECA_DIS_TR_L') then
@@ -192,7 +204,7 @@ subroutine infted(nomte, symetr, nbterm, nbnoeu, nbcomp,&
             itype = 22
         endif
 !
-!     LES POUTRES
+!   Les poutres
     else if (nomte.eq.'MECA_POU_D_T') then
         nbterm = 78
         nbnoeu = 2
@@ -214,15 +226,7 @@ subroutine infted(nomte, symetr, nbterm, nbnoeu, nbcomp,&
         ndimen = 3
         call poutre_modloc('CAGNPO', ['TVAR'], 1, valeur=tvar, arret='NNN', retour= iret)
         if (iret .eq. 0) itype = nint(tvar)
-    else if (nomte.eq.'MECA_POU_C_T') then
-        nbterm = 78
-        nbnoeu = 2
-        nbcomp = 6
-        ndimen = 3
-        call poutre_modloc('CAGNPO', ['TVAR'], 1, valeur=tvar, arret='NNN', retour= iret)
-        if (iret .eq. 0) itype = nint(tvar)
-    else if ( (nomte.eq.'MECA_POU_D_TG') .or. (&
-               nomte.eq.'MECA_POU_D_TGM') ) then
+    else if ( (nomte.eq.'MECA_POU_D_TG') .or. (nomte.eq.'MECA_POU_D_TGM') ) then
         nbterm = 105
         nbnoeu = 2
         nbcomp = 7
@@ -230,7 +234,7 @@ subroutine infted(nomte, symetr, nbterm, nbnoeu, nbcomp,&
         call poutre_modloc('CAGNPO', ['TVAR'], 1, valeur=tvar, arret='NNN', retour= iret)
         if (iret .eq. 0) itype = nint(tvar)
 !
-!     L'ELEMENT N'EST PAS TRAITE
+!   Elément pas traité
     else
         kmess(1) = nomte
         kmess(2) = 'INFTED'

@@ -49,11 +49,10 @@ subroutine ef0344(nomte)
     integer :: lorien, jdepl, lforcr, lforcf
     character(len=8) :: nompar
     character(len=32) :: messk(2)
-    real(kind=8) :: valpar, angs2, rad, e, g, a
+    real(kind=8) :: valpar, e, g, a
     real(kind=8) :: xl, epsith
     real(kind=8) :: nu, fe(12), fi(12), flr(14), klv(105)
     real(kind=8) :: ulr(14), ugr(14), pgl(14, 14), klc(14, 14)
-    real(kind=8) :: pgl1(3, 3), pgl2(3, 3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -85,7 +84,7 @@ subroutine ef0344(nomte)
     endif
 !   le 1er materiau
     imat=jmat+zi(jmat+nbmat+1)
-!   seul elas est autorise
+!   seul ELAS est autorisé
     do icomp = 1, zi(imat+1)
         if (zk32(zi(imat)+icomp-1) .ne. 'ELAS') then
             messk(2)=zk32(zi(imat)+icomp-1)
@@ -96,12 +95,7 @@ subroutine ef0344(nomte)
     nbpar=0
     nompar='  '
     valpar=0.d0
-    angs2=0.0d0
-    rad=0.0d0
     valres(:)=0.0d0
-!
-    pgl1(:,:)=0.0d0
-    pgl2(:,:)=0.0d0
 !
     npg=3
     call moytem('RIGI', npg, 1, '+', valpar, iret)
@@ -147,39 +141,33 @@ subroutine ef0344(nomte)
     ugr(8)=-ugr(1)
 !   calcul des forces induites
     do i = 1, 7
-        flr(i)=flr(i)-klc(i,1)*ugr(1)
-        flr(i+7)=flr(i+7)-klc(i+7,1+7)*ugr(1+7)
+        flr(i)   = flr(i)   - klc(i,1)*ugr(1)
+        flr(i+7) = flr(i+7) - klc(i+7,1+7)*ugr(1+7)
     enddo
 !   prise en compte des efforts repartis
     call tecach('ONO', 'PFR1D1D', 'L', iret, iad=lforcr)
     if (lforcr .ne. 0) then
-        call ptforp(itype, 'CHAR_MECA_FR1D1D', nomte, a, a,&
-                    xl, rad, angs2, 1, nno,&
-                    ncc, pgl, pgl1, pgl2, fe,&
-                    fi)
+        call ptforp(itype, 'CHAR_MECA_FR1D1D', nomte, a, a, xl, 1, nno, ncc, pgl, fe, fi)
         do i = 1, 6
-            flr(i)=flr(i)-fe(i)
-            flr(i+7)=flr(i+7)-fe(i+6)
+            flr(i)   = flr(i)   - fe(i)
+            flr(i+7) = flr(i+7) - fe(i+6)
         enddo
     endif
 !   prise en compte des efforts repartis (sous forme de fonction)
     call tecach('ONO', 'PFF1D1D', 'L', iret, iad=lforcf)
     if (lforcf .ne. 0) then
-        call ptforp(itype, 'CHAR_MECA_FF1D1D', nomte, a, a,&
-                    xl, rad, angs2, 1, nno,&
-                    ncc, pgl, pgl1, pgl2, fe,&
-                    fi)
+        call ptforp(itype, 'CHAR_MECA_FF1D1D', nomte, a, a, xl, 1, nno, ncc, pgl, fe, fi)
         do i = 1, 6
-            flr(i)=flr(i)-fe(i)
-            flr(i+7)=flr(i+7)-fe(i+6)
+            flr(i)   = flr(i)-fe(i)
+            flr(i+7) = flr(i+7)-fe(i+6)
         enddo
     endif
 !
-!   archivage. Inversion du signe des efforts sur le premier noeud
+!   Inversion du signe des efforts sur le premier noeud
     call jevech('PEFFORR', 'E', jeffo)
     do i = 1, 7
-        zr(jeffo-1+i)=-flr(i)
-        zr(jeffo-1+i+7)=flr(i+7)
+        zr(jeffo-1+i)   = -flr(i)
+        zr(jeffo-1+i+7) =  flr(i+7)
     enddo
 !
 end subroutine

@@ -183,7 +183,7 @@ DETRUIRE(CONCEPT=_F(NOM=unite),INFO=1)
 
 TEST_FICHIER(FICHIER="./REPE_OUT/POUCA.concept",
              NB_VALE_I=1424,
-             VALE_CALC_I=2110618,
+             VALE_CALC_I=2110508,
              NB_VALE=2960,
              VALE_CALC=4234.6971548,
              VALE_CALC_K="6f28832b0727ab61cdba687ec9681068",

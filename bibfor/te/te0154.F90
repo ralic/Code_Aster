@@ -79,8 +79,7 @@ subroutine te0154(option, nomte)
     call verift(fami, 1, 1, '+', zi(lmater), epsth_=epsth)
 !
     r8bid = 0.0d0
-    call rcvalb(fami, 1, 1, '+', zi(lmater), ' ', 'ELAS', 0, ' ', [r8bid],&
-                1, 'E', e, codres, 1)
+    call rcvalb(fami, 1, 1, '+', zi(lmater), ' ', 'ELAS', 0, ' ', [r8bid], 1, 'E', e, codres, 1)
     if (epsth .ne. 0.d0) lteimp =.true.
 !
 !   Longueur de l'élément
@@ -180,13 +179,12 @@ subroutine te0154(option, nomte)
         call ptenpo(6, ulr, klc, zr(jende), iif, iif)
 !
         if (lteimp) then
-            call ptenth(ulr, xl, epsth, 6, klc, iif, enerth)
+            call ptenth(ulr, xl, epsth, 6, klc, enerth)
             zr(jende) = zr(jende) - enerth
         endif
 !
     else if (option .eq. 'ECIN_ELEM') then
-        call rcvalb(fami, 1, 1, '+', zi(lmater), ' ', 'ELAS', 0, ' ', [r8bid],&
-                    1, 'RHO', rho, codres, 1)
+        call rcvalb(fami,1,1, '+',zi(lmater),' ','ELAS',0,' ',[r8bid],1,'RHO',rho,codres,1)
         call jevech('PENERCR', 'E', jende)
         call jevech('POMEGA2', 'L', jfreq)
         xmas = rho(1) * aire * xl / 6.d0

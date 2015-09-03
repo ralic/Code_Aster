@@ -1,13 +1,5 @@
 subroutine posigr(nomte, efge, sigm)
-    implicit none
-#include "jeveux.h"
-#include "asterfort/jevech.h"
-#include "asterfort/poutre_modloc.h"
-#include "asterfort/utmess.h"
-    character(len=*) :: nomte
-    real(kind=8) :: sigm(*)
-    real(kind=8) :: efge(12)
-!     ------------------------------------------------------------------
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,89 +16,95 @@ subroutine posigr(nomte, efge, sigm)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!     CALCUL DU VECTEUR ELEMENTAIRE CONTRAINTE REEL
-!     POUR LES ELEMENTS DE POUTRE D'EULER ET DE TIMOSHENKO.
-!     ------------------------------------------------------------------
 !
-!     ------------------------------------------------------------------
-!-----------------------------------------------------------------------
-    integer :: itsec, lrcou
+! --------------------------------------------------------------------------------------------------
+!
+! Calcul du vecteur élémentaire contrainte réel pour les éléments de poutre EULER et TIMOSHENKO
+!
+! --------------------------------------------------------------------------------------------------
+!
+    implicit none
+!
+    character(len=*) :: nomte
+    real(kind=8) :: sigm(*), efge(12)
+!
+#include "jeveux.h"
+#include "asterfort/tecach.h"
+#include "asterfort/poutre_modloc.h"
+#include "asterfort/utmess.h"
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: itsec, lrcou, iret
     real(kind=8) :: a, a2, hy1, hy2, hz1, hz2,r1, r2
     real(kind=8) :: zero, deux
     real(kind=8) :: smf1, smf2, smfy1, smfy2, smfz1, smfz2, sn1, sn2
     real(kind=8) :: xiy, xiy2, xiz, xiz2
-    real(kind=8) :: xfl, xfly, xflz, xsi, xsiy, xsiz, xxy, xxz
+    real(kind=8) :: xfly, xflz, xsiy, xsiz, xxy, xxz
 !
-!-----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
     integer, parameter :: nb_cara = 6
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8) :: noms_cara(nb_cara)
     data noms_cara /'A1','IY1','IZ1','A2','IY2','IZ2'/
+!
+! --------------------------------------------------------------------------------------------------
+!
     integer, parameter :: nb_cara1 = 7
     real(kind=8) :: vale_cara1(nb_cara1)
     character(len=8) :: noms_cara1(nb_cara1)
     data noms_cara1 /'HY1','HZ1','HY2','HZ2','R1','R2','TSEC'/
-!-----------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
+!
     zero = 0.d0
     deux = 2.d0
-!     ------------------------------------------------------------------
 !
-!     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
+!   Récuperation des caractéristiques générales des sections
     call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)
-!     --- SECTION INITIALE ---
+!   Section initiale
     a      = vale_cara(1)
     xiy    = vale_cara(2)
     xiz    = vale_cara(3)
-
-!     --- SECTION FINALE ---
+!   Section finale
     a2     = vale_cara(4)
     xiy2   = vale_cara(5)
     xiz2   = vale_cara(6)
 !
     if (nomte .eq. 'MECA_POU_D_TG') then
         a2=a
-!
-    else if (nomte.eq.'MECA_POU_C_T') then
-        call jevech('PCAARPO', 'L', lrcou)
-        xfl = zr(lrcou+2)
-        xsi = zr(lrcou+3)
-        xfly = xfl
-        xflz = xfl
-        xsiy = xsi
-        xsiz = xsi
-        if (xfl .eq. zero) then
-            xfly = zr(lrcou+4)
-            xsiy = zr(lrcou+5)
-            xflz = zr(lrcou+6)
-            xsiz = zr(lrcou+7)
+    else if (nomte .eq. 'MECA_POU_D_T') then
+        call tecach('ONN', 'PCAARPO', 'L', iret, iad=lrcou)
+        if ( iret .eq. 0 ) then
+            xfly = zr(lrcou)
+            xsiy = zr(lrcou+1)
+            xflz = zr(lrcou+2)
+            xsiz = zr(lrcou+3)
+!           prise en compte de l'indice de flexibilité
+            xiy  = xiy/xfly
+            xiz  = xiz/xflz
+            xiy2 = xiy2/xfly
+            xiz2 = xiz2/xflz
+!           prise en compte de l'indice de contraintes
+            xxy  = xsiy/xfly
+            xxz  = xsiz/xflz
+            xiy  = xiy/xxy
+            xiz  = xiz/xxz
+            xiy2 = xiy2/xxy
+            xiz2 = xiz2/xxz
         endif
-        xiy = xiy/xfly
-        xiz = xiz/xflz
-        xiy2 = xiy2/xfly
-        xiz2 = xiz2/xflz
-!
-!        PRISE EN COMPTE DE L'INDICE DE CONTRAINTES
-!
-        xxy = xsiy/xfly
-        xxz = xsiz/xflz
-        xiy = xiy/xxy
-        xiz = xiz/xxz
-        xiy2 = xiy2/xxy
-        xiz2 = xiz2/xxz
     endif
 !
-!   --- caracteristiques des sections cercle et rectangle
-!
+!   caractéristiques des sections cercle et rectangle
     call poutre_modloc('CAGEPO', noms_cara1, nb_cara1, lvaleur=vale_cara1)
     itsec = nint(vale_cara1(7))
 !
-!   sxx calcule a partir des 2 flexions et de l'effort normal
-!
+!   sxx calculé à partir des 2 flexions et de l'effort normal
     sn1 = -efge(1)/a
-    sn2 = efge(7)/a2
+    sn2 =  efge(7)/a2
 !
-!   --- section rectangulaire: le max  et le min sont obtenus sur les coins
-!
+!   section rectangulaire: le max  et le min sont obtenus sur les coins
     if (itsec .eq. 1) then
         hy1 = vale_cara1(1)
         hz1 = vale_cara1(2)
@@ -121,8 +119,7 @@ subroutine posigr(nomte, efge, sigm)
         sigm(3) = sn2-smfy2-smfz2
         sigm(4) = sn2+smfy2+smfz2
 !
-!   --- section circulaire: xiy = xiz.
-!
+!   section circulaire: xiy = xiz.
     else if (itsec.eq.2) then
 !       formule utilisee :  a cos(t) + b sin(t) = R cos(t-s)
 !                         avec R= sqrt(a^2+b^2) et tan(s)= b/a
@@ -137,8 +134,7 @@ subroutine posigr(nomte, efge, sigm)
         sigm(3) = sn2-smf2
         sigm(4) = sn2+smf2
 !
-!   --- section generale: interdit
-!
+!   section generale: interdit
     else if (itsec.eq.0) then
         call utmess('A', 'ELEMENTS4_4')
     endif

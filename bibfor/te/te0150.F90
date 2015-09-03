@@ -37,7 +37,6 @@ subroutine te0150(option, nomte)
 ! IN  NOMTE  : K16 : NOM DU TYPE ELEMENT
 !       'MECA_POU_D_E'  : POUTRE DROITE D'EULER       (SECTION VARIABLE)
 !       'MECA_POU_D_T'  : POUTRE DROITE DE TIMOSHENKO (SECTION VARIABLE)
-!       'MECA_POU_C_T'  : POUTRE COURBE DE TIMOSHENKO(SECTION CONSTANTE)
 !       'MECA_POU_D_EM' : POUTRE DROITE MULTIFIBRE D EULER (SECT. CONST)
 !       'MECA_POU_D_TG' : POUTRE DROITE DE TIMOSHENKO (GAUCHISSEMENT)
 !       'MECA_POU_D_TGM': POUTRE DROITE DE TIMOSHENKO (GAUCHISSEMENT)
@@ -51,7 +50,6 @@ subroutine te0150(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lonele.h"
-#include "asterfort/matro2.h"
 #include "asterfort/matrot.h"
 #include "asterfort/moytem.h"
 #include "asterfort/pmfrig.h"
@@ -60,7 +58,6 @@ subroutine te0150(option, nomte)
 #include "asterfort/ptfocp.h"
 #include "asterfort/ptforp.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/trigom.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpvlg.h"
 #include "asterfort/verifm.h"
@@ -70,17 +67,16 @@ subroutine te0150(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nbpar, lmater, iret
-    integer :: istruc, lorien, lrcou, lvect
+    integer :: istruc, lorien, lvect
     integer :: itype, nc, ind, i, j
     integer :: ndim, nno, nnos, npg, ipoids
     integer :: ivf, idfdx, jgano
     real(kind=8) :: valpar(3)
     real(kind=8) :: e, nu, g
     real(kind=8) :: a, a2, xl
-    real(kind=8) :: ang, rad, angarc, angs2, along
-    real(kind=8) :: pgl(3, 3), pgl1(3, 3), pgl2(3, 3), de(14), ffe(14)
+    real(kind=8) :: pgl(3, 3), de(14), ffe(14)
     real(kind=8) :: bsm(14, 14), matk(105)
-    real(kind=8) :: f
+    real(kind=8) :: epsith
     real(kind=8) :: fr(14), fi(14), fgr(14), fgi(14)
     real(kind=8) :: fer(12), fei(12)
 !
@@ -137,8 +133,7 @@ subroutine te0150(option, nomte)
     if ((nomte.ne.'MECA_POU_D_EM') .and. (nomte.ne.'MECA_POU_D_TGM')) then
 !       poutres classiques
         if (option(13:16) .ne. '1D1D' .and. .not.lrho) then
-            call rcvalb(fami, 1, 1, '+', zi(lmater),&
-                        materi, 'ELAS', nbpar, nompar, valpar,&
+            call rcvalb(fami, 1, 1, '+', zi(lmater), materi, 'ELAS', nbpar, nompar, valpar,&
                         nbres, nomres, valres, codres, 1)
 !
             e = valres(1)
@@ -147,18 +142,7 @@ subroutine te0150(option, nomte)
         endif
     endif
 !
-    if (nomte .eq. 'MECA_POU_C_T') then
-!        poutre courbe de timoskenko a 6 ddl
-        nno = 1
-        call jevech('PCAARPO', 'L', lrcou)
-        rad = zr(lrcou)
-        angarc = zr(lrcou+1)
-        angs2 = trigom('ASIN',xl/ (2.d0*rad))
-        ang = angs2 * 2.d0
-        xl = rad * ang
-        call matro2(zr(lorien), angarc, angs2, pgl1, pgl2)
-!
-    else if (nomte .eq. 'MECA_POU_D_EM') then
+    if (nomte .eq. 'MECA_POU_D_EM') then
 !       poutre multifibre droite d'euler a 6 DDL
         if (lrho) then
             itype=0
@@ -179,8 +163,7 @@ subroutine te0150(option, nomte)
     if (option .eq. 'CHAR_MECA_FC1D1D') then
         call jevech('PVECTUC', 'E', lvect)
         if (nomte .eq. 'MECA_POU_D_TG' .or. nomte .eq. 'MECA_POU_D_TGM') then
-            call ptfocp(itype, option, nomte, xl, rad,&
-                        angs2, nno, 6, pgl, pgl1, pgl2, fr, fi)
+            call ptfocp(itype, option, xl, nno, 6, pgl, fr, fi)
             call utpvlg(nno, 6, pgl, fr, fgr)
             call utpvlg(nno, 6, pgl, fi, fgi)
             do i = 1, 6
@@ -190,17 +173,9 @@ subroutine te0150(option, nomte)
             zc(lvect+7-1) = dcmplx(0.d0,0.d0)
             zc(lvect+14-1) = dcmplx(0.d0,0.d0)
         else
-            call ptfocp(itype, option, nomte, xl, rad,&
-                        angs2, nno, nc, pgl, pgl1, pgl2, fr, fi)
-            if (nomte .eq. 'MECA_POU_C_T') then
-                call utpvlg(nno, nc, pgl1, fr, fgr)
-                call utpvlg(nno, nc, pgl2, fr(7), fgr(7))
-                call utpvlg(nno, nc, pgl1, fi, fgi)
-                call utpvlg(nno, nc, pgl2, fi(7), fgi(7))
-            else
-                call utpvlg(nno, nc, pgl, fr, fgr)
-                call utpvlg(nno, nc, pgl, fi, fgi)
-            endif
+            call ptfocp(itype, option, xl, nno, nc, pgl, fr, fi)
+            call utpvlg(nno, nc, pgl, fr, fgr)
+            call utpvlg(nno, nc, pgl, fi, fgi)
             do i = 1, 12
                 zc(lvect+i-1) = dcmplx(fgr(i),fgi(i))
             enddo
@@ -212,13 +187,9 @@ subroutine te0150(option, nomte)
                  option.eq.'CHAR_MECA_ROTA_R' .or.&
                  option.eq.'CHAR_MECA_PESA_R' ) then
         if (nomte .eq. 'MECA_POU_D_TG' .or. nomte .eq. 'MECA_POU_D_TGM') then
-            call ptforp(0, option, nomte, a, a2,&
-                        xl, rad, angs2, 1, nno,&
-                        6, pgl, pgl1, pgl2, fer, fei)
+            call ptforp(0, option, nomte, a, a2, xl, 1, nno, 6, pgl, fer, fei)
         else
-            call ptforp(itype, option, nomte, a, a2,&
-                        xl, rad, angs2, 1, nno,&
-                        nc, pgl, pgl1, pgl2, fer, fei)
+            call ptforp(itype, option, nomte, a, a2, xl, 1, nno, nc, pgl, fer, fei)
         endif
         do i = 1, 6
             ffe(i) = fer(i)
@@ -250,24 +221,18 @@ subroutine te0150(option, nomte)
 !
         if (option .eq. 'CHAR_MECA_TEMP_R') then
 !           calcul du deplacement local induit par l'elevation de temp.
-            call verifm(fami, npg, 1, '+', zi(lmater), f, iret)
+            call verifm(fami, npg, 1, '+', zi(lmater), epsith, iret)
 !
         else
             ch16 = option
             call utmess('F', 'ELEMENTS2_47', sk=ch16)
         endif
 !
-        if (itype .eq. 10) then
-            along = 2.d0 * rad * f * sin(angs2)
-            de(1) = -along * cos(angs2)
-            de(2) = along * sin(angs2)
-            de(7) = -de(1)
-            de(8) = de(2)
-        else if (itype .eq.30) then
-            de(1) = -f * xl
+        if (itype .eq.30) then
+            de(1) = -epsith * xl
             de(8) = -de(1)
         else
-            de(1) = -f * xl
+            de(1) = -epsith * xl
             de(7) = -de(1)
         endif
 !       calcul des forces induites
@@ -284,12 +249,7 @@ subroutine te0150(option, nomte)
     if (option .ne. 'CHAR_MECA_FC1D1D') then
         call jevech('PVECTUR', 'E', lvect)
 !       matrice de passage du repere global au repere local : PGL
-        if (itype .eq. 10) then
-            call utpvlg(nno, nc, pgl1, ffe, zr(lvect))
-            call utpvlg(nno, nc, pgl2, ffe(7), zr(lvect+6))
-        else
-            call utpvlg(nno, nc, pgl, ffe, zr(lvect))
-        endif
+        call utpvlg(nno, nc, pgl, ffe, zr(lvect))
     endif
 !
 end subroutine

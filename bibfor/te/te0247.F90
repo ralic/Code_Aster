@@ -29,7 +29,6 @@ subroutine te0247(option, nomte)
 ! IN  NOMTE  : K16 : NOM DU TYPE ELEMENT
 !        'MECA_POU_D_E' : POUTRE DROITE D'EULER       (SECTION VARIABLE)
 !        'MECA_POU_D_T' : POUTRE DROITE DE TIMOSHENKO (SECTION VARIABLE)
-!        'MECA_POU_C_T' : POUTRE COURBE DE TIMOSHENKO
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -37,14 +36,12 @@ subroutine te0247(option, nomte)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/chgrep.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lcsovn.h"
 #include "asterfort/lonele.h"
 #include "asterfort/matela.h"
 #include "asterfort/matrot.h"
-#include "asterfort/matro2.h"
 #include "asterfort/moytem.h"
 #include "asterfort/nmpoel.h"
 #include "asterfort/porea1.h"
@@ -52,10 +49,6 @@ subroutine te0247(option, nomte)
 #include "asterfort/poutre_modloc.h"
 #include "asterfort/ptkg00.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/rcvalb.h"
-#include "asterfort/rcvarc.h"
-#include "asterfort/tecach.h"
-#include "asterfort/trigom.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
 #include "asterfort/utpvlg.h"
@@ -69,7 +62,7 @@ subroutine te0247(option, nomte)
     integer :: ivectu, icontp, itype, nno, nc, ivarim, ivarip, itemp, i
     integer :: jcret, iret, iretm, iretp
     integer :: npg, ndimel, nnoel, nnosel
-    integer :: lrcou, istrxm, istrxp, ldep
+    integer :: istrxm, istrxp, ldep
     parameter    (nno=2,nc=6,nd=nc*nno,nk=nd*(nd+1)/2)
     real(kind=8) :: e, nu, em, num
     real(kind=8) :: a, xiy, xiz, alfay, alfaz, xjx, ez, ey
@@ -78,7 +71,6 @@ subroutine te0247(option, nomte)
     character(len=24) :: valk(2)
 !
     real(kind=8) :: pgl(3, 3), fl(nd), klv(nk)
-    real(kind=8) :: pgl1(3, 3), pgl2(3, 3), rad, angarc, angs2, ang
     real(kind=8) :: tempm, tempp
     real(kind=8) :: epsthe
     real(kind=8) :: sigma(nd), rgeom(nk), gamma, angp(3)
@@ -101,12 +93,6 @@ subroutine te0247(option, nomte)
     call jevech('PVARIMR', 'L', ivarim)
     call jevech('PCONTMR', 'L', icontm)
     call jevech('PDEPLMR', 'L', ideplm)
-!
-    if (nomte .eq. 'MECA_POU_C_T') then
-        if (zk16(icompo) .ne. 'ELAS' .or. zk16(icompo+2) .ne. 'PETIT') then
-            call utmess('F', 'ELEMENTS5_43')
-        endif
-    endif
 !
 !   la presence du champ de deplacement a l instant t+ devrait etre conditionne par l'option
 !   (avec rigi_meca_tang ca n a pas de sens).
@@ -151,16 +137,6 @@ subroutine te0247(option, nomte)
     ez = (vale_cara(7) +vale_cara(15))/2.d0
     itype = nint(vale_cara(17))
 !
-    if (nomte .eq. 'MECA_POU_C_T') then
-        call jevech('PCAARPO', 'L', lrcou)
-        rad = zr(lrcou)
-        angarc = zr(lrcou+1)
-        angs2 = trigom('ASIN',xl/ (2.0d0*rad))
-        ang = angs2 * 2.0d0
-        xl = rad * ang
-        call matro2(zr(iorien), angarc, angs2, pgl1, pgl2)
-    endif
-!
     if (zk16(icompo+2) .ne. 'PETIT' .and. zk16(icompo+2) .ne. 'GROT_GDEP') then
         valk(1) = zk16(icompo+2)
         valk(2) = nomte
@@ -172,8 +148,7 @@ subroutine te0247(option, nomte)
         call jevech('PSTRXMR', 'L', istrxm)
         gamma = zr(istrxm+3-1)
 !       calcul de pgl,xl et angp
-        call porea1(nno, nc, zr(ideplm), zr(ideplp), zr(igeom),&
-                    gamma, vecteu, pgl, xl, angp)
+        call porea1(nno, nc, zr(ideplm), zr(ideplp), zr(igeom), gamma, vecteu, pgl, xl, angp)
 !       sauvegarde des angles nautiques
         if (vecteu) then
             call jevech('PSTRXPR', 'E', istrxp)
@@ -201,10 +176,8 @@ subroutine te0247(option, nomte)
             if ((itemp.ne.0) .and. (nu.ne.num)) then
                 call utmess('A', 'ELEMENTS3_59')
             endif
-            call nmpoel(nomte, npg, klv, xl, nno,&
-                        nc, pgl, pgl1, pgl2, zr(ideplp),&
-                        epsthe, e, em, zr(icontm), fl,&
-                        zr( icontp), angs2, rad)
+            call nmpoel(npg, klv, xl, nno, nc, pgl, zr(ideplp),&
+                        epsthe, e, em, zr(icontm), fl, zr( icontp))
         endif
 !
     else
@@ -229,32 +202,18 @@ subroutine te0247(option, nomte)
                     sigma(i+nc) = zr(ldep+nc+nc+i-1)
                 enddo
             endif
-            if (itype .ne. 10) then
-                call r8inir(nk, 0.0d0, rgeom, 1)
-                call ptkg00(sigma, a, a2, xiz, xiz2,&
-                            xiy, xiy2, xl, ey, ez, rgeom)
-                call lcsovn(nk, klv, rgeom, klv)
-            else
-                call utmess('A', 'ELEMENTS3_28')
-            endif
+            call r8inir(nk, 0.0d0, rgeom, 1)
+            call ptkg00(sigma, a, a2, xiz, xiz2, xiy, xiy2, xl, ey, ez, rgeom)
+            call lcsovn(nk, klv, rgeom, klv)
         endif
     endif
 !
 !   passage du repere local au repere global
     if (matric) then
-        if (nomte .eq. 'MECA_POU_C_T') then
-            call chgrep('LG', pgl1, pgl2, klv, zr(imatuu))
-        else
-            call utpslg(nno, nc, pgl, klv, zr(imatuu))
-        endif
+        call utpslg(nno, nc, pgl, klv, zr(imatuu))
     endif
     if (vecteu) then
-        if (nomte .eq. 'MECA_POU_C_T') then
-            call utpvlg(1, 6, pgl1, fl, zr(ivectu))
-            call utpvlg(1, 6, pgl2, fl(7), zr(ivectu+6))
-        else
-            call utpvlg(nno, nc, pgl, fl, zr(ivectu))
-        endif
+        call utpvlg(nno, nc, pgl, fl, zr(ivectu))
         call jevech('PCODRET', 'E', jcret)
         zi(jcret) = 0
     endif

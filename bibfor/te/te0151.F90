@@ -32,7 +32,6 @@ subroutine te0151(option, nomte)
 ! IN  NOMTE  : K16 : NOM DU TYPE ELEMENT
 !     'MECA_POU_D_E'   : POUTRE DROITE D'EULER       (SECTION VARIABLE)
 !     'MECA_POU_D_T'   : POUTRE DROITE DE TIMOSHENKO (SECTION VARIABLE)
-!     'MECA_POU_C_T'   : POUTRE COURBE DE TIMOSHENKO(SECTION CONSTANTE)
 !     'MECA_POU_D_TG'  : POUTRE DROITE DE TIMOSHENKO(SECTION CONSTANTE)
 !                        AVEC GAUCHISSEMENT
 !     'MECA_POU_D_EM'  : POUTRE DROITE D'EULER MULTI-FIBRE
@@ -47,7 +46,6 @@ subroutine te0151(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/lonele.h"
 #include "asterfort/matrot.h"
-#include "asterfort/matro2.h"
 #include "asterfort/moytem.h"
 #include "asterfort/pmfrig.h"
 #include "asterfort/pomass.h"
@@ -58,7 +56,6 @@ subroutine te0151(option, nomte)
 #include "asterfort/ptenth.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
-#include "asterfort/trigom.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/vecma.h"
@@ -67,20 +64,16 @@ subroutine te0151(option, nomte)
     character(len=*) :: option, nomte
 ! --------------------------------------------------------------------------------------------------
     integer :: i, idis, iret, istruc, itype, jdepl, jende
-    integer :: jfreq, jmasd, jvite, kanl, lmater, lorien, lrcou
-    integer :: nbpar, nbres, nc, nno
-    integer :: npg
-    real(kind=8) :: ang, tvar
-    real(kind=8) :: angarc, angs2, e, enerth
-    real(kind=8) :: g, rad, rho, valpar
-    real(kind=8) :: xl, xnu
+    integer :: jfreq, jmasd, jvite, kanl, lmater, lorien
+    integer :: nbpar, nbres, nc, nno, npg
+    real(kind=8) :: tvar, e, enerth, g, rho, valpar, xl, xnu
 ! --------------------------------------------------------------------------------------------------
     character(len=3) :: stopz
     character(len=4) :: fami
     character(len=8) :: nompar, famil, poum
     character(len=16) :: ch16
     real(kind=8) :: ul(14), ug(14), pgl(3, 3), klc(14, 14), klv(105)
-    real(kind=8) :: pgl1(3, 3), pgl2(3, 3), epsthe
+    real(kind=8) :: epsthe
     integer :: kpg, spt, nklv
 ! --------------------------------------------------------------------------------------------------
     parameter    (nbres = 3 )
@@ -97,7 +90,7 @@ subroutine te0151(option, nomte)
     npg = 3
     istruc = 1
     nno = 2
-    if ((nomte.eq.'MECA_POU_C_T') .or. (nomte.eq.'MECA_POU_D_EM')) npg = 2
+    if (nomte.eq.'MECA_POU_D_EM') npg = 2
 !
     call moytem(fami, npg, 1, '+', valpar, iret)
     call verifm(fami, npg, 1, '+', zi(lmater), epsthe, iret)
@@ -127,17 +120,6 @@ subroutine te0151(option, nomte)
 !
     nc = 6
     if ( nomte(1:13) .eq. 'MECA_POU_D_TG') nc = 7
-    if (nomte .eq. 'MECA_POU_C_T') then
-!       poutre courbe de timoskenko a 6 DDL
-        nno = 1
-        call jevech('PCAARPO', 'L', lrcou)
-        rad = zr(lrcou)
-        angarc = zr(lrcou+1)
-        angs2 = trigom('ASIN',xl/ (2.0d0*rad))
-        ang = angs2 * 2.0d0
-        xl = rad * ang
-        call matro2(zr(lorien), angarc, angs2, pgl1, pgl2)
-    endif
 !
     nklv = 2*nc*(2*nc+1)/2
     if (option .ne. 'ECIN_ELEM') then
@@ -166,12 +148,8 @@ subroutine te0151(option, nomte)
     endif
 !
 !   matrice de rotation PGL. vecteur deplacement ou vitesse local  ul = pgl * ug
-    if (itype .eq. 10) then
-        call utpvgl(nno, nc, pgl1, ug, ul)
-        call utpvgl(nno, nc, pgl2, ug(7), ul(7))
-    else
-        call utpvgl(nno, nc, pgl, ug, ul)
-    endif
+    call utpvgl(nno, nc, pgl, ug, ul)
+
 !
 !   energie de deformation
     if (option .eq. 'EPOT_ELEM') then
@@ -188,7 +166,7 @@ subroutine te0151(option, nomte)
         idis = 1
         call ptenpo(nc*2, ul, klc, zr(jende), itype, idis)
         if (epsthe .ne. 0.0d0) then
-            call ptenth(ul, xl, epsthe, 2*nc, klc, itype, enerth)
+            call ptenth(ul, xl, epsthe, 2*nc, klc, enerth)
             zr(jende) = zr(jende) - enerth
         endif
 !

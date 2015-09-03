@@ -167,6 +167,12 @@ def affe_cara_elem_prod(self,POUTRE,BARRE,COQUE,CABLE,DISCRET,DISCRET_2D,GRILLE,
                     check( iy2 > 0.0, defErr, 'POUTRE', i1, 'IY2')
                     check( iz2 > 0.0, defErr, 'POUTRE', i1, 'IZ2')
                     check( jx2 > 0.0, defErr, 'POUTRE', i1, 'JX2')
+            # Caractéristiques des coudes
+            elif mclf['SECTION'] == 'COUDE':
+                for caraCoude in ['INDI_SIGM','INDI_SIGM_XY','INDI_SIGM_XZ','COEF_FLEX','COEF_FLEX_XY','COEF_FLEX_XZ',]:
+                    if ( caraCoude in mclf ):
+                        vale =  mclf[caraCoude]
+                        check( vale > 0.0, defErr, 'POUTRE', i1, caraCoude)
     # - - - - - - - - - - - - - - -
     if BARRE != None:
         for i in range(len(BARRE)):
@@ -278,7 +284,7 @@ AFFE_CARA_ELEM=MACRO(nom="AFFE_CARA_ELEM",
 #
 # ==============================================================================
     POUTRE  = FACT(statut= 'f',max= '**',
-        SECTION = SIMP(statut= 'o',typ= 'TXM' ,into= ("GENERALE","RECTANGLE","CERCLE") ),
+        SECTION = SIMP(statut= 'o',typ= 'TXM' ,into= ("GENERALE","RECTANGLE","CERCLE","COUDE") ),
         b_generale = BLOC(condition = " SECTION == 'GENERALE'",
             regles = (UN_PARMI('MAILLE','GROUP_MA'),),
             MAILLE    = SIMP(statut= 'f',typ= ma  ,validators= NoRepeat(),max= '**'),
@@ -311,7 +317,7 @@ AFFE_CARA_ELEM=MACRO(nom="AFFE_CARA_ELEM",
             GROUP_MA  = SIMP(statut= 'f',typ= grma,validators= NoRepeat(),max= '**'),
             VARI_SECT = SIMP(statut= 'f',typ= 'TXM',into= ("CONSTANT","HOMOTHETIQUE","AFFINE"),defaut= "CONSTANT"),
             b_constant = BLOC(condition = "VARI_SECT == 'CONSTANT'",
-                CARA  = SIMP(statut= 'o',typ= 'TXM',min= 1 ,max= 4,
+                CARA   = SIMP(statut= 'o',typ= 'TXM',min= 1 ,max= 4,
                     validators = [NoRepeat(),
                                   OrVal( [AndVal( [Compulsory(['H']),Absent(['HY','HZ','EPY','EPZ'])] ),
                                           AndVal( [Compulsory(['HY','HZ']),Together(['EPY','EPZ']),Absent(['H','EP'])] )] )],
@@ -370,6 +376,23 @@ AFFE_CARA_ELEM=MACRO(nom="AFFE_CARA_ELEM",
             FCX           = SIMP(statut= 'f',typ= (fonction_sdaster,nappe_sdaster,formule) ),
             TUYAU_NSEC    = SIMP(statut= 'f',typ= 'I',val_max= 32,defaut= 16),
             TUYAU_NCOU    = SIMP(statut= 'f',typ= 'I',val_max= 10,defaut= 3),
+        ),
+        b_coude = BLOC(condition = " SECTION == 'COUDE'",
+            regles=(UN_PARMI('MAILLE','GROUP_MA'),
+                    EXCLUS('COEF_FLEX','COEF_FLEX_XY'),
+                    EXCLUS('COEF_FLEX','COEF_FLEX_XZ'),
+                    EXCLUS('INDI_SIGM','INDI_SIGM_XY'),
+                    EXCLUS('INDI_SIGM','INDI_SIGM_XZ'),
+                    PRESENT_PRESENT('COEF_FLEX_XY','COEF_FLEX_XZ'),
+                    PRESENT_PRESENT('INDI_SIGM_XY','INDI_SIGM_XZ'),),
+            MAILLE          = SIMP(statut='f',typ= ma  ,validators= NoRepeat(),max= '**'),
+            GROUP_MA        = SIMP(statut='f',typ= grma,validators= NoRepeat(),max= '**'),
+            COEF_FLEX       = SIMP(statut='f',typ='R',val_min=0.0),
+            INDI_SIGM       = SIMP(statut='f',typ='R',val_min=0.0),
+            COEF_FLEX_XY    = SIMP(statut='f',typ='R',val_min=0.0),
+            INDI_SIGM_XY    = SIMP(statut='f',typ='R',val_min=0.0),
+            COEF_FLEX_XZ    = SIMP(statut='f',typ='R',val_min=0.0),
+            INDI_SIGM_XZ    = SIMP(statut='f',typ='R',val_min=0.0),
         ),
     ),
 #
@@ -723,37 +746,6 @@ AFFE_CARA_ELEM=MACRO(nom="AFFE_CARA_ELEM",
             PRECISION = SIMP(statut='f',typ='R', defaut= 1.0E-4 ),
             CRITERE   = SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
         ),
-    ),
-#
-# ==============================================================================
-    DEFI_ARC = FACT(statut='f',max='**',
-        regles = (UN_PARMI('MAILLE','GROUP_MA'),
-                  UN_PARMI('ORIE_ARC','CENTRE','NOEUD_CENTRE','GROUP_NO_CENTRE', 'POIN_TANG','NOEUD_POIN_TANG','GROUP_NO_POIN_TG'),
-                  PRESENT_PRESENT('ORIE_ARC','RAYON'),
-                  EXCLUS('COEF_FLEX','COEF_FLEX_XY'),
-                  EXCLUS('COEF_FLEX','COEF_FLEX_XZ'),
-                  EXCLUS('INDI_SIGM','INDI_SIGM_XY'),
-                  EXCLUS('INDI_SIGM','INDI_SIGM_XZ'),
-                  PRESENT_PRESENT('COEF_FLEX_XY','COEF_FLEX_XZ'),
-                  PRESENT_PRESENT('INDI_SIGM_XY','INDI_SIGM_XZ'),),
-        MAILLE           = SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
-        GROUP_MA         = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-        ORIE_ARC         = SIMP(statut='f',typ='R'),
-        CENTRE           = SIMP(statut='f',typ='R',max='**'),
-        NOEUD_CENTRE     = SIMP(statut='f',typ=no),
-        GROUP_NO_CENTRE  = SIMP(statut='f',typ=grno),
-        POIN_TANG        = SIMP(statut='f',typ='R',max='**'),
-        NOEUD_POIN_TANG  = SIMP(statut='f',typ=no),
-        GROUP_NO_POIN_TG = SIMP(statut='f',typ=grno),
-        RAYON            = SIMP(statut='f',typ='R'),
-        COEF_FLEX        = SIMP(statut='f',typ='R'),
-        INDI_SIGM        = SIMP(statut='f',typ='R'),
-        COEF_FLEX_XY     = SIMP(statut='f',typ='R'),
-        INDI_SIGM_XY     = SIMP(statut='f',typ='R'),
-        COEF_FLEX_XZ     = SIMP(statut='f',typ='R'),
-        INDI_SIGM_XZ     = SIMP(statut='f',typ='R'),
-        PRECISION        = SIMP(statut='f',typ='R',defaut= 1.0E-3),
-        CRITERE          = SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
     ),
 #
 # ==============================================================================

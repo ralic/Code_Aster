@@ -29,17 +29,16 @@ NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'))
 # 1 - MISE EN DONNEES : LECTURE DU MAILLAGE
 
 MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+#IMPR_RESU(RESU=_F(MAILLAGE = MAIL))
 
 #
 # DEFINITION DES ELEMENTS FINIS UTILISES
 
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
-                   AFFE=(_F(GROUP_MA=('TUY1','TUY2',),
+                   AFFE=(_F(GROUP_MA=('TUY1','TUY2','COUDE'),
                             PHENOMENE='MECANIQUE',
                             MODELISATION='POU_D_T',),
-                         _F(GROUP_MA='COUDE',
-                            PHENOMENE='MECANIQUE',
-                            MODELISATION='POU_C_T',),),);
+                         ),);
 
 #
 # DEFINITION DU MATERIAU UTILISE
@@ -60,9 +59,7 @@ CARA_POU=AFFE_CARA_ELEM(MODELE=MODELE,
                                   SECTION='CERCLE',
                                   CARA=('R','EP',),
                                   VALE=(0.2,0.02,),),
-                        DEFI_ARC=_F(GROUP_MA='COUDE',
-                                    CENTRE=(0.6,3.0,0.0,),
-                                    RAYON=0.6,),);
+                        );
 
 #
 # DEFINITION DES CONDITIONS AUX LIMITES
@@ -272,21 +269,21 @@ TEST_RESU(RESU=(_F(GROUP_NO='BASE',
                    RESULTAT=DYNATRA,
                    NOM_CHAM='SIPO_NOEU',
                    NOM_CMP='SN',
-                   VALE_CALC=-4.8521781697469E+08,
+                   VALE_CALC=-485268450.783,
                    ),
                 _F(GROUP_NO='BASE',
                    INST=2.0,
                    RESULTAT=DYNATRA,
                    NOM_CHAM='SIPO_NOEU',
                    NOM_CMP='SVY',
-                   VALE_CALC=2.2545072282854E+09,
+                   VALE_CALC=2254071472.91,
                    ),
                 _F(GROUP_NO='BASE',
                    INST=2.0,
                    RESULTAT=DYNATRA,
                    NOM_CHAM='SIPO_NOEU',
                    NOM_CMP='SMFZ',
-                   VALE_CALC=-2.5786125246679E10,
+                   VALE_CALC=-25778733306.6,
                    ),
                 ),
           )

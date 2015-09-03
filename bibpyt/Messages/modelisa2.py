@@ -172,10 +172,6 @@ Erreur utilisateur :
  valeur inattendue:  %(k1)s
 """),
 
-    38: _(u"""
- les courbures KY et KZ ne sont pas prises en compte pour les poutres courbes
-"""),
-
     42: _(u"""
 Erreur Utilisateur :
  Le paramètre ALPHA (dilatation) du matériau est une fonction de la température.

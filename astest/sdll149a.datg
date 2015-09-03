@@ -1,0 +1,403 @@
+###
+### This file is generated automatically by SALOME v6.4.0 with dump python functionality
+###
+
+import sys
+import salome
+
+salome.salome_init()
+theStudy = salome.myStudy
+
+
+import iparameters
+ipar = iparameters.IParameters(salome.myStudy.GetCommonParameters("Interface Applicative", 1))
+
+# fill list AP_MODULES_LIST
+ipar.append("AP_MODULES_LIST", "Geometry")
+ipar.append("AP_MODULES_LIST", "Mesh")
+
+# PARAMETRES DE MAILLAGE :
+
+nbSegmentsCoude = 20
+
+#
+
+
+###
+### GEOM component
+###
+
+import GEOM
+import geompy
+import math
+import SALOMEDS
+
+
+geompy.init_geom(theStudy)
+
+N1  = geompy.MakeVertex(0, 0, 0)
+N2  = geompy.MakeVertex(15, 0, 0)
+N3  = geompy.MakeVertex(19.5, -4.5, 0)
+N4  = geompy.MakeVertex(19.5, -180, 0)
+N5  = geompy.MakeVertex(19.5, -199.5, 0)
+N6  = geompy.MakeVertex(19.5, -204, 4.5)
+N7  = geompy.MakeVertex(19.5, -204, 139.5)
+N8  = geompy.MakeVertex(24, -204, 144)
+N9  = geompy.MakeVertex(96, -204, 144)
+N10 = geompy.MakeVertex(254, -204, 144)
+N11 = geompy.MakeVertex(333, -204, 144)
+N12 = geompy.MakeVertex(411, -204, 144)
+N13 = geompy.MakeVertex(483, -204, 144)
+N14 = geompy.MakeVertex(487.5, -204, 148.5)
+N15 = geompy.MakeVertex(487.5, -204, 192)
+N16 = geompy.MakeVertex(487.5, -204, 235.5)
+N17 = geompy.MakeVertex(492, -204, 240)
+N18 = geompy.MakeVertex(575, -204, 240)
+N19 = geompy.MakeVertex(723, -204, 240)
+N20 = geompy.MakeVertex(727.5, -208.5, 240)
+N21 = geompy.MakeVertex(727.5, -264, 240)
+N22 = geompy.MakeVertex(727.5, -264, 205)
+N23 = geompy.MakeVertex(727.5, -264, 190)
+N24 = geompy.MakeVertex(733.5, -264, 184)
+N25 = geompy.MakeVertex(753.5, -264, 184)
+N26 = geompy.MakeVertex(845.5, -264, 184)
+N27 = geompy.MakeVertex(851.5, -264, 178)
+N28 = geompy.MakeVertex(851.5, -264, 160)
+N29 = geompy.MakeVertex(851.5, -264, 142)
+N30 = geompy.MakeVertex(851.5, -270, 136)
+N31 = geompy.MakeVertex(851.5, -360, 136)
+N32 = geompy.MakeVertex(727.5, -264, 255)
+N33 = geompy.MakeVertex(727.5, -264, 270)
+N34 = geompy.MakeVertex(727.5, -264, 306)
+N35 = geompy.MakeVertex(727.5, -264, 414)
+N36 = geompy.MakeVertex(739.5, -264, 426)
+N37 = geompy.MakeVertex(847.5, -264, 426)
+N38 = geompy.MakeVertex(955.5, -264, 426)
+
+
+O2 = geompy.MakeVertex(15, -4.5, 0)
+O5 = geompy.MakeVertex(19.5, -199.5, 4.5)
+O7 = geompy.MakeVertex(24, -204, 139.5)
+O13 = geompy.MakeVertex(483, -204, 148.5)
+O16 = geompy.MakeVertex(492, -204, 235.5)
+O19 = geompy.MakeVertex(723, -208.5, 240)
+O23 = geompy.MakeVertex(733.5, -264, 190)
+O26 = geompy.MakeVertex(845.5, -264, 178)
+O29 = geompy.MakeVertex(851.5, -270, 142)
+O35 = geompy.MakeVertex(739.5, -264, 414)
+
+E1 = geompy.MakeLineTwoPnt(N1, N2)
+E2 = geompy.MakeArcCenter(O2, N2, N3,False)
+E3 = geompy.MakeLineTwoPnt(N3, N4)
+E4 = geompy.MakeLineTwoPnt(N4, N5)
+E5 = geompy.MakeArcCenter(O5, N5, N6,False)
+E6 = geompy.MakeLineTwoPnt(N6, N7)
+E7 = geompy.MakeArcCenter(O7, N7, N8,False)
+E8 = geompy.MakeLineTwoPnt(N8, N9)
+E9 = geompy.MakeLineTwoPnt(N9, N10)
+E10 = geompy.MakeLineTwoPnt(N10, N11)
+E11 = geompy.MakeLineTwoPnt(N11, N12)
+E12 = geompy.MakeLineTwoPnt(N12, N13)
+E13 = geompy.MakeArcCenter(O13, N13, N14,False)
+E14 = geompy.MakeLineTwoPnt(N14, N15)
+E15 = geompy.MakeLineTwoPnt(N15, N16)
+E16 = geompy.MakeArcCenter(O16, N16, N17,False)
+E17 = geompy.MakeLineTwoPnt(N17, N18)
+E18 = geompy.MakeLineTwoPnt(N18, N19)
+E19 = geompy.MakeArcCenter(O19, N19, N20,False)
+E20 = geompy.MakeLineTwoPnt(N20, N21)
+E21 = geompy.MakeLineTwoPnt(N21, N22)
+E22 = geompy.MakeLineTwoPnt(N22, N23)
+E23 = geompy.MakeArcCenter(O23, N23, N24,False)
+E24 = geompy.MakeLineTwoPnt(N24, N25)
+E25 = geompy.MakeLineTwoPnt(N25, N26)
+E26 = geompy.MakeArcCenter(O26, N26, N27,False)
+E27 = geompy.MakeLineTwoPnt(N27, N28)
+E28 = geompy.MakeLineTwoPnt(N28, N29)
+E29 = geompy.MakeArcCenter(O29, N29, N30,False)
+E30 = geompy.MakeLineTwoPnt(N30, N31)
+E31 = geompy.MakeLineTwoPnt(N21, N32)
+E32 = geompy.MakeLineTwoPnt(N32, N33)
+E33 = geompy.MakeLineTwoPnt(N33, N34)
+E34 = geompy.MakeLineTwoPnt(N34, N35)
+E35 = geompy.MakeArcCenter(O35, N35, N36,False)
+E36 = geompy.MakeLineTwoPnt(N36, N37)
+E37 = geompy.MakeLineTwoPnt(N37, N38)
+
+Wire_1 = geompy.MakeWire([E1, E2, E3, E4, E5, E6, E7, E8, E9, E10, E11, E12, E13, E14, E15, E16, E17, E18, E19, E20, E21, E22, E23, E24, E25, E26, E27, E28, E29, E30])
+Wire_2 = geompy.MakeWire([E31, E32, E33, E34, E35, E36, E37], 1e-07)
+
+N1B = geompy.MakeVertex(0.001, 0, 0)
+N4B = geompy.MakeVertex(19.501, -180, 0)
+N7B = geompy.MakeVertex(19.501, -204, 139.5)
+N11B = geompy.MakeVertex(333.001, -204, 144)
+N15B = geompy.MakeVertex(487.501, -204, 192)
+N17B = geompy.MakeVertex(492.001, -204, 240)
+N23B = geompy.MakeVertex(727.501, -264, 190)
+N31B = geompy.MakeVertex(851.501, -360, 136)
+N36B = geompy.MakeVertex(739.501, -264, 426)
+N38B = geompy.MakeVertex(955.501, -264, 426)
+R1 = geompy.MakeLineTwoPnt(N1, N1B)
+R4 = geompy.MakeLineTwoPnt(N4, N4B)
+R7 = geompy.MakeLineTwoPnt(N7, N7B)
+R11 = geompy.MakeLineTwoPnt(N11, N11B)
+R15 = geompy.MakeLineTwoPnt(N15, N15B)
+R17 = geompy.MakeLineTwoPnt(N17, N17B)
+R23 = geompy.MakeLineTwoPnt(N23, N23B)
+R31 = geompy.MakeLineTwoPnt(N31, N31B)
+R36 = geompy.MakeLineTwoPnt(N36, N36B)
+R38 = geompy.MakeLineTwoPnt(N38, N38B)
+Compound = geompy.MakeCompound([Wire_1, Wire_2, R1, R4, R7, R11, R15, R17, R23, R31, R36, R38])
+
+geompy.addToStudy( E1 , 'E1' )
+geompy.addToStudy( E2 , 'E2' )
+geompy.addToStudy( E3 , 'E3' )
+geompy.addToStudy( E4 , 'E4' )
+geompy.addToStudy( E5 , 'E5' )
+geompy.addToStudy( E6 , 'E6' )
+geompy.addToStudy( E7 , 'E7' )
+geompy.addToStudy( E8 , 'E8' )
+geompy.addToStudy( E9 , 'E9' )
+geompy.addToStudy( E10, 'E10' )
+geompy.addToStudy( E11, 'E11' )
+geompy.addToStudy( E12, 'E12' )
+geompy.addToStudy( E13, 'E13' )
+geompy.addToStudy( E14, 'E14' )
+geompy.addToStudy( E15, 'E15' )
+geompy.addToStudy( E16, 'E16' )
+geompy.addToStudy( E17, 'E17' )
+geompy.addToStudy( E18, 'E18' )
+geompy.addToStudy( E19, 'E19' )
+geompy.addToStudy( E20, 'E20' )
+geompy.addToStudy( E21, 'E21' )
+geompy.addToStudy( E22, 'E22' )
+geompy.addToStudy( E23, 'E23' )
+geompy.addToStudy( E24, 'E24' )
+geompy.addToStudy( E25, 'E25' )
+geompy.addToStudy( E26, 'E26' )
+geompy.addToStudy( E27, 'E27' )
+geompy.addToStudy( E28, 'E28' )
+geompy.addToStudy( E29, 'E29' )
+geompy.addToStudy( E30, 'E30' )
+geompy.addToStudy( E31, 'E31' )
+geompy.addToStudy( E32, 'E32' )
+geompy.addToStudy( E33, 'E33' )
+geompy.addToStudy( E34, 'E34' )
+geompy.addToStudy( E35, 'E35' )
+geompy.addToStudy( E36, 'E36' )
+geompy.addToStudy( E37, 'E37' )
+
+
+EE1  = geompy.GetSame(Compound, E1  )
+EE2  = geompy.GetSame(Compound, E2  )
+EE3  = geompy.GetSame(Compound, E3  )
+EE4  = geompy.GetSame(Compound, E4  )
+EE5  = geompy.GetSame(Compound, E5  )
+EE6  = geompy.GetSame(Compound, E6  )
+EE7  = geompy.GetSame(Compound, E7  )
+EE8  = geompy.GetSame(Compound, E8  )
+EE9  = geompy.GetSame(Compound, E9  )
+EE10 = geompy.GetSame(Compound, E10 )
+EE11 = geompy.GetSame(Compound, E11 )
+EE12 = geompy.GetSame(Compound, E12 )
+EE13 = geompy.GetSame(Compound, E13 )
+EE14 = geompy.GetSame(Compound, E14 )
+EE15 = geompy.GetSame(Compound, E15 )
+EE16 = geompy.GetSame(Compound, E16 )
+EE17 = geompy.GetSame(Compound, E17 )
+EE18 = geompy.GetSame(Compound, E18 )
+EE19 = geompy.GetSame(Compound, E19 )
+EE20 = geompy.GetSame(Compound, E20 )
+EE21 = geompy.GetSame(Compound, E21 )
+EE22 = geompy.GetSame(Compound, E22 )
+EE23 = geompy.GetSame(Compound, E23 )
+EE24 = geompy.GetSame(Compound, E24 )
+EE25 = geompy.GetSame(Compound, E25 )
+EE26 = geompy.GetSame(Compound, E26 )
+EE27 = geompy.GetSame(Compound, E27 )
+EE28 = geompy.GetSame(Compound, E28 )
+EE29 = geompy.GetSame(Compound, E29 )
+EE30 = geompy.GetSame(Compound, E30 )
+EE31 = geompy.GetSame(Compound, E31 )
+EE32 = geompy.GetSame(Compound, E32 )
+EE33 = geompy.GetSame(Compound, E33 )
+EE34 = geompy.GetSame(Compound, E34 )
+EE35 = geompy.GetSame(Compound, E35 )
+EE36 = geompy.GetSame(Compound, E36 )
+EE37 = geompy.GetSame(Compound, E37 )
+
+NN20 = geompy.GetSame(Compound, N20 )
+NN30 = geompy.GetSame(Compound, N30 )
+
+geompy.addToStudy( Wire_1, 'Wire_1' )
+geompy.addToStudy( Wire_2, 'Wire_2' )
+
+geompy.addToStudy( N1B, 'N1B' )
+geompy.addToStudy( N4B, 'N4B' )
+geompy.addToStudy( N7B, 'N7B' )
+geompy.addToStudy( N11B, 'N11B' )
+geompy.addToStudy( N15B, 'N15B' )
+geompy.addToStudy( N17B, 'N17B' )
+geompy.addToStudy( N23B, 'N23B' )
+geompy.addToStudy( N31B, 'N31B' )
+geompy.addToStudy( N36B, 'N36B' )
+geompy.addToStudy( N38B, 'N38B' )
+
+# pour modelisation C
+geompy.addToStudy( N10, 'N10' )
+geompy.addToStudy( N20, 'N20' )
+geompy.addToStudy( N21, 'N21' )
+geompy.addToStudy( N23, 'N23' )
+geompy.addToStudy( N30, 'N30' )
+
+geompy.addToStudy( R1, 'R1' )
+geompy.addToStudy( R4, 'R4' )
+geompy.addToStudy( R7, 'R7' )
+geompy.addToStudy( R11, 'R11' )
+geompy.addToStudy( R15, 'R15' )
+geompy.addToStudy( R17, 'R17' )
+geompy.addToStudy( R23, 'R23' )
+geompy.addToStudy( R31, 'R31' )
+geompy.addToStudy( R36, 'R36' )
+geompy.addToStudy( R38, 'R38' )
+
+
+geompy.addToStudy( Compound, 'Compound' )
+
+
+COUDES = geompy.CreateGroup(Compound, geompy.ShapeType["EDGE"])
+geompy.AddObject(COUDES, geompy.GetSubShapeID(Compound,EE2))
+geompy.AddObject(COUDES, geompy.GetSubShapeID(Compound,EE5))
+geompy.AddObject(COUDES, geompy.GetSubShapeID(Compound,EE7))
+geompy.AddObject(COUDES, geompy.GetSubShapeID(Compound,EE13))
+geompy.AddObject(COUDES, geompy.GetSubShapeID(Compound,EE16))
+geompy.AddObject(COUDES, geompy.GetSubShapeID(Compound,EE19))
+geompy.AddObject(COUDES, geompy.GetSubShapeID(Compound,EE23))
+geompy.AddObject(COUDES, geompy.GetSubShapeID(Compound,EE26))
+geompy.AddObject(COUDES, geompy.GetSubShapeID(Compound,EE29))
+geompy.AddObject(COUDES, geompy.GetSubShapeID(Compound,EE35))
+
+geompy.addToStudyInFather( Compound, COUDES, "COUDES" )
+
+
+
+
+
+
+
+### Store presentation parameters of displayed objects
+import iparameters
+ipar = iparameters.IParameters(theStudy.GetModuleParameters("Interface Applicative", "GEOM", 1))
+
+
+###
+### SMESH component
+###
+
+import smesh, SMESH, SALOMEDS
+
+smesh.SetCurrentStudy(theStudy)
+import StdMeshers
+
+
+BM3 = smesh.Mesh(Compound)
+Regular_1D = BM3.Segment()
+Nb_Segments_1 = Regular_1D.NumberOfSegments(1)
+Nb_Segments_1.SetDistrType( 0 )
+#isDone = BM3.Compute()
+
+# maillage plus fin sur les coudes
+
+Nb_Segments_Coude = smesh.CreateHypothesis('NumberOfSegments')
+Nb_Segments_Coude.SetNumberOfSegments( nbSegmentsCoude )
+Nb_Segments_Coude.SetDistrType( 0 )
+
+BM3.AddHypothesis(Regular_1D,COUDES)
+BM3.AddHypothesis(Nb_Segments_Coude,COUDES)
+isDone = BM3.Compute()
+
+# les noeuds merger sont des noeuds présents dans la géométrie donc pas de 
+# problème quelque soit le raffinement
+coincident_nodes_on_part = BM3.FindCoincidentNodesOnPart( BM3, 1e-05, [  ] )
+BM3.MergeNodes([[ 17, 44 ], [ 36, 48 ]])
+
+BM3.Group( EE1, 'E1' )
+BM3.Group( EE2, 'E2' )
+BM3.Group( EE3, 'E3' )
+BM3.Group( EE4, 'E4' )
+BM3.Group( EE5, 'E5' )
+BM3.Group( EE6, 'E6' )
+BM3.Group( EE7, 'E7' )
+BM3.Group( EE8, 'E8' )
+BM3.Group( EE9, 'E9' )
+BM3.Group( EE10, 'E10' )
+BM3.Group( EE11, 'E11' )
+BM3.Group( EE12, 'E12' )
+BM3.Group( EE13, 'E13' )
+BM3.Group( EE14, 'E14' )
+BM3.Group( EE15, 'E15' )
+BM3.Group( EE16, 'E16' )
+BM3.Group( EE17, 'E17' )
+BM3.Group( EE18, 'E18' )
+BM3.Group( EE19, 'E19' )
+BM3.Group( EE20, 'E20' )
+BM3.Group( EE21, 'E21' )
+BM3.Group( EE22, 'E22' )
+BM3.Group( EE23, 'E23' )
+BM3.Group( EE24, 'E24' )
+BM3.Group( EE25, 'E25' )
+BM3.Group( EE26, 'E26' )
+BM3.Group( EE27, 'E27' )
+BM3.Group( EE28, 'E28' )
+BM3.Group( EE29, 'E29' )
+BM3.Group( EE30, 'E30' )
+BM3.Group( EE31, 'E31' )
+BM3.Group( EE32, 'E32' )
+BM3.Group( EE33, 'E33' )
+BM3.Group( EE34, 'E34' )
+BM3.Group( EE35, 'E35' )
+BM3.Group( EE36, 'E36' )
+BM3.Group( EE37, 'E37' )
+
+BM3.Group( R1, 'R1' )
+BM3.Group( R4, 'R4' )
+BM3.Group( R7, 'R7' )
+BM3.Group( R11, 'R11' )
+BM3.Group( R15, 'R15' )
+BM3.Group( R17, 'R17' )
+BM3.Group( R23, 'R23' )
+BM3.Group( R31, 'R31' )
+BM3.Group( R36, 'R36' )
+BM3.Group( R38, 'R38' )
+BM3.Group( N1B, 'N1B' )
+BM3.Group( N4B, 'N4B' )
+BM3.Group( N7B, 'N7B' )
+BM3.Group( N11B, 'N11B' )
+BM3.Group( N15B, 'N15B' )
+BM3.Group( N17B, 'N17B' )
+BM3.Group( N23B, 'N23B' )
+BM3.Group( N31B, 'N31B' )
+BM3.Group( N36B, 'N36B' )
+BM3.Group( N38B, 'N38B' )
+
+BM3.Group( N10, 'N10' )
+BM3.Group( NN20, 'N20' )
+BM3.Group( N21, 'N21' )
+BM3.Group( N23, 'N23' )
+BM3.Group( NN30, 'N30' )
+
+BM3.ExportMED( r'/home/etienne/dev/codeaster/src/astest/sdll149a.mmed', 0, SMESH.MED_V2_2, 1 )
+
+
+
+
+
+### Store presentation parameters of displayed objects
+import iparameters
+ipar = iparameters.IParameters(theStudy.GetModuleParameters("Interface Applicative", "SMESH", 1))
+
+
+
+if salome.sg.hasDesktop():
+  salome.sg.updateObjBrowser(1)
+  iparameters.getSession().restoreVisualState(1)

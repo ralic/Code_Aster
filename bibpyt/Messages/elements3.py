@@ -80,14 +80,6 @@ cata_msg = {
  Mauvaise définition des caractéristiques de la section
 """),
 
-    28 : _(u"""
- Rigidité géométrique non définie pour les éléments courbes
-"""),
-
-    29 : _(u"""
- Force élémentaire électrique non définie pour les éléments courbes
-"""),
-
     30 : _(u"""
  Section non tubulaire pour MASS_FLUI_STRU
 """),

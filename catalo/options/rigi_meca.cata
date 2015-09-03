@@ -35,7 +35,7 @@ OPTION__
 % pour les poutres multifibres
         PCOMPOR  COMPOR
 % que lineaire : concerne les poutres courbes
-        PCAARPO  CAARPO 'CARA!.CARARCPO' <<  PCAARPO : CARACTERISTIQUE DE POUTRE COURBE POU_C_T  >>
+        PCAARPO  CAARPO 'CARA!.CARARCPO' <<  PCAARPO : CARACTERISTIQUE DE COUDE (POUTRE)  >>
 % que lineaire : numero d'harmonique
         PHARMON  HARMON
 % que lineaire : modelisation 3D_FAISCEAU

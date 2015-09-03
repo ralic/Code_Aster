@@ -233,7 +233,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
                 else if (questi.eq.'EXI_POUX') then
                     if ((nomte.eq.'MECA_POU_D_E') .or. ( nomte.eq.'MECA_POU_D_EM') .or.&
                         ( nomte.eq.'MECA_POU_D_T') .or. ( nomte.eq.'MECA_POU_D_TG') .or.&
-                        ( nomte.eq.'MECA_POU_D_TGM') .or. ( nomte.eq.'MECA_POU_C_T')) then
+                        ( nomte.eq.'MECA_POU_D_TGM')) then
                         repk='OUI'
                         goto 110
 !

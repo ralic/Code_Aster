@@ -20,7 +20,7 @@
 
 def affe_cara_elem_ops(self, MODELE, INFO, VERIF,
     POUTRE, BARRE, COQUE, CABLE,
-    DISCRET, DISCRET_2D, ORIENTATION, DEFI_ARC, MASSIF, POUTRE_FLUI, GRILLE, MEMBRANE,
+    DISCRET, DISCRET_2D, ORIENTATION, MASSIF, POUTRE_FLUI, GRILLE, MEMBRANE,
     RIGI_PARASOL, RIGI_MISS_3D, MASS_AJOU, MASS_REP,
     GEOM_FIBRE, MULTIFIBRE, **args):
     """
@@ -62,9 +62,6 @@ def affe_cara_elem_ops(self, MODELE, INFO, VERIF,
     #
     if ORIENTATION != None:
         motclef_cara_elem['ORIENTATION']    = ORIENTATION.List_F()
-    #
-    if DEFI_ARC != None:
-        motclef_cara_elem['DEFI_ARC']       = DEFI_ARC.List_F()
     #
     if MASSIF != None:
         motclef_cara_elem['MASSIF']         = MASSIF.List_F()

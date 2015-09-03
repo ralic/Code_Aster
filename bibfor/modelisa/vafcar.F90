@@ -1,5 +1,4 @@
-subroutine vafcar(tpgz, imclf, nmobjz, nutyel, ntyele, car, ncar,&
-                  ivr, kioc, ier)
+subroutine vafcar(tpgz, imclf, nmobjz, nutyel, ntyele, car, ncar, ivr, kioc, ier)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -66,7 +65,8 @@ subroutine vafcar(tpgz, imclf, nmobjz, nutyel, ntyele, car, ncar,&
     endif
 !
 !   Vérification du bon type de l'élément
-    if      ( imclf .eq. ACE_POUTRE ) then
+    npd=0;npf=0
+    if      ( imclf.eq.ACE_POUTRE )then
         npd = 1
         npf = ACE_NB_POUTRE
     else if ( (imclf.eq.ACE_DISCRET) .or. (imclf.eq.ACE_DISCRET_2D) .or. &
@@ -87,9 +87,6 @@ subroutine vafcar(tpgz, imclf, nmobjz, nutyel, ntyele, car, ncar,&
     else if ( imclf.eq.ACE_BARRE ) then
         npd = ACE_NB_POUTRE + ACE_NB_DISCRET + ACE_NB_COQUE + ACE_NB_CABLE + 1
         npf = ACE_NB_POUTRE + ACE_NB_DISCRET + ACE_NB_COQUE + ACE_NB_CABLE + ACE_NB_BARRE
-    else if ( imclf.eq.ACE_DEFI_ARC) then
-        npd = 4
-        npf = 4
     else if ( imclf.eq.ACE_MASSIF ) then
         npd = ACE_NB_POUTRE + ACE_NB_DISCRET + ACE_NB_COQUE + ACE_NB_CABLE + ACE_NB_BARRE + 1
         npf = ACE_NB_POUTRE + ACE_NB_DISCRET + ACE_NB_COQUE + ACE_NB_CABLE + ACE_NB_BARRE + &
@@ -124,6 +121,7 @@ subroutine vafcar(tpgz, imclf, nmobjz, nutyel, ntyele, car, ncar,&
 !
 ! --- CAS PARTICULIER DES ELEMENTS DISCRETS
     if ( (imclf.eq.ACE_DISCRET) .or. (imclf.eq.ACE_DISCRET_2D) ) then
+        ll0=0;ll1=0
         do ii = 1, ncar
             carz = car(ii)
             if (carz(3:4) .eq. 'T_') then

@@ -1,0 +1,120 @@
+# -*- coding: utf-8 -*-
+
+import math
+import salome
+salome.salome_init()
+from salome.geom import geomBuilder
+import GEOM
+geompy = geomBuilder.New(salome.myStudy)
+import SMESH
+from salome.smesh import smeshBuilder
+smesh = smeshBuilder.New(salome.myStudy)
+
+#############Chemin pour l'export du maillage resultat############
+ExportPATH="/home/etienne/dev/codeaster/src/astest/"
+
+##################################################################
+
+#===================================================
+#                  PARAMETRES
+#                  ----------
+#===================================================
+# R : rayon du cercle
+
+R = 2.;
+
+
+#===================================================
+#                  GEOMETRIE
+#                  ---------
+#===================================================
+
+
+N1 = geompy.MakeVertex(0,R,0);
+N2 = geompy.MakeVertex(R,0,0);
+N3 = geompy.MakeVertex(0,-R,0);
+N4 = geompy.MakeVertex(-R,0,0);
+O  = geompy.MakeVertex(0,0,0);
+
+arc1 = geompy.MakeArcCenter(O, N1, N2, False);
+arc2 = geompy.MakeArcCenter(O, N2, N3, False);
+arc3 = geompy.MakeArcCenter(O, N3, N4, False);
+arc4 = geompy.MakeArcCenter(O, N4, N1, False);
+
+geompy.addToStudy( arc1, "ARC1" )
+geompy.addToStudy( arc2, "ARC2" )
+geompy.addToStudy( arc3, "ARC3" )
+geompy.addToStudy( arc4, "ARC4" )
+
+# Création de la géométrie générale
+#------------------------------------
+
+GeoCercle = geompy.MakeFuseList([arc2, arc3, arc4,arc1, ], True, True)
+
+
+# Publication dans l'étude
+#---------------------------
+geompy.addToStudy( GeoCercle, "GeoCercle" )
+
+# Création des groupes
+#---------------------------
+# On crée des groupes à partir des entitées de construction
+
+
+# on passe par la ligne qui suit pour contourner un bug 
+[PART2, PART3, PART4, PART1,] = geompy.RestoreGivenSubShapes(GeoCercle, [arc2, arc3, arc4, arc1, ], GEOM.FSM_GetInPlace, False, True)
+geompy.addToStudyInFather(GeoCercle,PART1,"PART1")
+geompy.addToStudyInFather(GeoCercle,PART2,"PART2")
+geompy.addToStudyInFather(GeoCercle,PART3,"PART3")
+geompy.addToStudyInFather(GeoCercle,PART4,"PART4")
+
+geompy.addToStudyInFather(GeoCercle,N1,"N1")
+geompy.addToStudyInFather(GeoCercle,N2,"N2")
+geompy.addToStudyInFather(GeoCercle,N3,"N3")
+geompy.addToStudyInFather(GeoCercle,N4,"N4")
+
+
+#===================================================
+#                  MAILLAGE
+#                  --------
+#===================================================
+
+maillageCoude = smesh.Mesh(GeoCercle, "MeshCercle")
+
+# Algorithmes et hypotheses globales
+# ----------------------------------
+
+# 1D global
+nbSegments = 200
+algo = maillageCoude.Segment()
+algo.NumberOfSegments(nbSegments)
+
+# Calcul
+# ------
+maillageCoude.Compute()
+
+
+# Création des groupes du maillage
+#---------------------------------
+maillageCoude.Group(N1, "GN1" )
+maillageCoude.Group(N2, "GN2" )
+maillageCoude.Group(N3, "GN3" )
+maillageCoude.Group(N4, "GN4" )
+
+maillageCoude.Group(PART1, "S11" )
+maillageCoude.Group(PART2, "S12" )
+maillageCoude.Group(PART3, "S13" )
+maillageCoude.Group(PART4, "S14" )
+
+
+########Export du maillage au format MMED########
+maillageCoude.ExportMED( r''+ExportPATH+'ssll402a.mmed'+'', 0, SMESH.MED_V2_2 , 1 )
+
+
+
+# Mise à jour de l'arbre
+#---------------------------
+# Si on a une interface graphique...
+if salome.sg.hasDesktop():
+
+   salome.sg.updateObjBrowser(1)
