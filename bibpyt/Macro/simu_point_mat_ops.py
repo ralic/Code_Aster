@@ -744,7 +744,7 @@ def simu_point_mat_ops(
                 lnomvar.append('V' + str(i + 1))
 
             __NEUT = CREA_CHAMP(
-                OPERATION='AFFE', TYPE_CHAM='CART_NEUT_R', MAILLAGE=__MA,
+                OPERATION='AFFE', TYPE_CHAM='CART_N480_R', MAILLAGE=__MA,
                 AFFE=_F(MAILLE='VOLUME', NOM_CMP=lnomneu, VALE=VARINI['VALE']))
 
             __VAR_INIT = CREA_CHAMP(

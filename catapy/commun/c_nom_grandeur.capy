@@ -104,6 +104,7 @@ def C_NOM_GRANDEUR() : return  ( #COMMUN#
 "NEUT_K24",
 "NEUT_K8",
 "NEUT_R",
+"N480_R",
 "NUMC_I",
 "NUMMOD",
 "ONDE_F",
