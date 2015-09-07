@@ -32,6 +32,7 @@ ENTETE__ ELEMENT__ MEFL_FACE9       MAILLE__ QUAD9
 MODE_LOCAL__
     CMATERC  = ADRSJEVE ELEM__         (I1       )
     DDL_MECA = DEPL_R   ELNO__ IDEN__  (PRES     PHI      )
+    CGEOMER  = GEOM_R   ELEM__         (X        Y        Z        )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W       )
     EIMPEDR  = IMPE_R   ELGA__ RIGI    (IMPE     )
@@ -58,5 +59,6 @@ OPTION__
                           OUT__ MMATUUR  PMATUUR
     ONDE_FLUI        374  IN__  NGEOMER  PGEOMER  CMATERC  PMATERC  EONDEPR  PONDECR
                           OUT__ MMATUUR  PMATUUR
-    TOU_INI_ELNO      99  IN__ OUT__ NGEOMER  PGEOM_R
+    TOU_INI_ELEM      99  IN__ OUT__ CGEOMER   PGEOM_R
+    TOU_INI_ELNO      99  IN__ OUT__ NGEOMER   PGEOM_R
     TOU_INI_ELGA      99  IN__ OUT__ EGGEOP_R  PGEOM_R
