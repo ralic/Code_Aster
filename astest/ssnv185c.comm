@@ -170,7 +170,6 @@ nbc=len(RI)
 SIF1   = [None]*nbc
 SIF1_R = [None]*nbc
 SIF2   = [None]*nbc
-SIF3   = [None]*nbc
 
 for i in range(0,nbc) :
 
@@ -205,16 +204,6 @@ for i in range(0,nbc) :
                   FISSURE=FISS,),);
 
    IMPR_TABLE(TABLE=SIF2[i],);
-
-   SIF3[i]=CALC_G(RESULTAT=UTOT3x,
-                  OPTION='CALC_K_G',
-                  LISSAGE = _F(LISSAGE_THETA='LAGRANGE',
-                               LISSAGE_G='LAGRANGE',),
-                  THETA=_F(R_INF=RI[i],
-                           R_SUP=RS[i],
-                  FISSURE=FISS,),);
-
-   IMPR_TABLE(TABLE=SIF3[i],);
 
 # test sans R_INF et R_SUP
 SIF1_S=CALC_G(RESULTAT=UTOT1x,
@@ -361,22 +350,6 @@ for i in range(0,nbc) :
               CRITERE='RELATIF',
               PRECISION=0.04,
               REFERENCE='ANALYTIQUE',);
-
-   TEST_TABLE(TABLE=SIF3[i],
-              NOM_PARA='K1',
-              FILTRE=_F(NOM_PARA='NUM_PT',VALE_I=6),
-              VALE_CALC=VAL_CALC[i*8+6], VALE_REFE=K1REF4I,
-              CRITERE='RELATIF',
-              PRECISION=0.04,
-              REFERENCE='AUTRE_ASTER',);
-
-   TEST_TABLE(TABLE=SIF3[i],
-              NOM_PARA='K1',
-              FILTRE=_F(NOM_PARA='NUM_PT',VALE_I=1,),
-              VALE_CALC=VAL_CALC[i*8+7], VALE_REFE=K1REF4F,
-              CRITERE='RELATIF',
-              PRECISION=0.05,
-              REFERENCE='AUTRE_ASTER',);
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',

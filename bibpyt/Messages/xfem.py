@@ -649,4 +649,10 @@ L'opération ASSE_DEPL de l'opérateur CREA_CHAMP ne prend pas en charge les él
   -> Les chargements de type FORCE_FACE ne sont pas gérés pour le calcul de l'option CALC_G sur les éléments de bord X-FEM.
      Seuls les chargements de type PRES_REP peuvent être pris en compte.
 """),
+
+    99: _(u"""
+  -> L'opérateur CALC_G ne sait pas traiter le cas d'une pression fonction d'un ou de plusieurs paramètres appliquée
+     sur les lèvres d'une fissure X-FEM. Seul le cas d'une pression constante en espace et en temps est prévu.
+     Veuillez utiliser l'opérateur POST_K1_K2_K3.
+"""),
 }
