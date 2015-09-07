@@ -358,4 +358,15 @@ TEST_TABLE(
                      VALE_K='DX',),
            )
 
+
+# Correction issue24199 : validation de POST_RELEVE_T / ACTION / TOUT='OUI' :
+# (non regression)
+# ----------------------------------------------------------------------------
+T4BIS = POST_RELEVE_T ( ACTION=_F( INTITULE = 'CH1', OPERATION = 'MOYENNE_ARITH',
+                                   TOUT = 'OUI', CHAM_GD = CH1,), )  ;
+
+TEST_TABLE( VALE_CALC=-1522.335, NOM_PARA='MOYENNE',  TABLE=T4BIS,
+           FILTRE=_F(NOM_PARA='CMP', VALE_K='DY',),
+           )
+
 FIN( )
