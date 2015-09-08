@@ -135,6 +135,16 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 !
 ! -----------------------------------------------------------------
 !
+!  MOT-CLE ENER_DISS : CALCUL DE L'ENERGIE DISSIPEE
+!  =================   DETERMINEE PAR L'EXPRESSION SUIVANTE :
+!
+!   EDISS =  SOMME_VOLUME(VINT*K0)
+!
+!        OU  .VINT      EST LA VARIABLE INTERNE ASSOCIEE A LA DISSIPATION
+!            .K0        EST LE SEUIL DU DOMAINE ELASTIQUE
+!
+! -----------------------------------------------------------------
+!
 !   ARGUMENT        E/S  TYPE         ROLE
 !    RESU           VAR    K*      TABLE EN SORTIE DE LA COMMANDE
 !    MODELE         IN     K*      NOM DU MODELE SUR-LEQUEL ON FAIT
@@ -253,8 +263,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 ! --- RECUPERATION DES NUMEROS D'ORDRE A TRAITER :
 !     ------------------------------------------
     knum = '&&PEINGL.NUME_ORDRE'
-    call rsutnu(resul, ' ', 0, knum, nbordr,&
-                prec, crit, iret)
+    call rsutnu(resul, ' ', 0, knum, nbordr, prec, crit, iret)
     if (iret .ne. 0) goto 70
     call jeveuo(knum, 'L', jord)
 !
@@ -308,8 +317,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 ! ---  ET DE LA VARIABLE DE COMMANDE DE REFERENCE :
 !      --------------------------------------------
 !
-        call vrcins(modele, mate, cara, inst, chvarc,&
-                    codret)
+        call vrcins(modele, mate, cara, inst, chvarc, codret)
         call vrcref(modele(1:8), mate(1:8), cara(1:8), chvref(1:19))
 !
         if (typres(1:9) .eq. 'EVOL_NOLI') then
@@ -317,8 +325,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 ! ---    RECUPERATION DE LA RELATION DE COMPORTEMENT ASSOCIEE AU
 ! ---    NUMERO D'ORDRE COURANT :
 !        ----------------------
-            call rsexch('F', resul, 'COMPORTEMENT', numord, compor,&
-                        iret)
+            call rsexch('F', resul, 'COMPORTEMENT', numord, compor, iret)
 !
 !CC---   RECUPERATION DU COMPOR PAR ETENCA
 !
@@ -392,27 +399,27 @@ subroutine peingl(resu, modele, mate, cara, nh,&
         endif
 !
 ! ---  RECUPERATION DU CHAMP DE CONTRAINTES ASSOCIE AU
-! ---  NUMERO D'ORDRE COURANT :
-!      ----------------------
-        call rsexch('F', resul, 'SIEF_ELGA', numord, chsig,&
-                    iret)
+! ---  NUMERO D'ORDRE COURANT POUR ENER_ELAS ET ENER_TOTALE:
+!      -----------------------------------------------------
+        if (motfac.eq.'ENER_TOTALE' .or. motfac.eq.'ENER_ELAS'&
+       .or. motfac(1:6).eq.'INDIC_') then
+            call rsexch('F', resul, 'SIEF_ELGA', numord, chsig, iret)
 !
 ! --- SI LE NUMERO COURANT EST INFERIEUR A NBORDR ON RECUPERE LES
 ! --- CONTRAINTES DE L INSTANT PRECEDENT
 !
-        if (iord .gt. 1) then
-            numorm = zi(jord+iord-1-1)
-            call codent(numorm, 'G', kiordm)
-            call rsexch('F', resul, 'SIEF_ELGA', numorm, chsigm,&
-                        iret)
+            if (iord .gt. 1) then
+                numorm = zi(jord+iord-1-1)
+                call codent(numorm, 'G', kiordm)
+                call rsexch('F', resul, 'SIEF_ELGA', numorm, chsigm, iret)
+            endif
         endif
 !
 ! ---  RECUPERATION DU CHAMP DES VARIABLES INTERNES ASSOCIE AU
 ! ---  NUMERO D'ORDRE COURANT DANS LE CAS DES EVOL_NOLI
 !      ----------------------
         if (typres(1:9) .eq. 'EVOL_NOLI') then
-            call rsexch(' ', resul, 'VARI_ELGA', numord, chvari,&
-                        iret)
+            call rsexch(' ', resul, 'VARI_ELGA', numord, chvari, iret)
             ivari=1
             if (iret .gt. 0) then
                 if (motfac .ne. 'ENER_ELAS') then
@@ -429,17 +436,18 @@ subroutine peingl(resu, modele, mate, cara, nh,&
         endif
 !
 ! ---  RECUPERATION DU CHAMP DES DEPLACEMENTS ASSOCIE AU
-! ---  NUMERO D'ORDRE COURANT :
-!      ----------------------
-        call rsexch('F', resul, 'DEPL', numord, chdepl,&
-                    iret)
+! ---  NUMERO D'ORDRE COURANT POUR ENER_ELAS ET ENER_TOTALE:
+!      -----------------------------------------------------
+        if (motfac.eq.'ENER_TOTALE' .or. motfac.eq.'ENER_ELAS'&
+       .or. motfac(1:6).eq.'INDIC_') then
+            call rsexch('F', resul, 'DEPL', numord, chdepl, iret)
 !
 ! ---  RECUPERATION DU CHAMP DES DEPLACEMENTS ASSOCIE AU
 ! ---  NUMERO D'ORDRE PRECEDENT :
 !      ----------------------
-        if (iord .gt. 1) then
-            call rsexch('F', resul, 'DEPL', numorm, chdepm,&
-                        iret)
+            if (iord .gt. 1) then
+                call rsexch('F', resul, 'DEPL', numorm, chdepm, iret)
+            endif
         endif
 !
 !      le modele comporte-t-il des elements X-FEM ?
@@ -453,35 +461,38 @@ subroutine peingl(resu, modele, mate, cara, nh,&
         lchin(1) = chgeom
         lpain(2) = 'PMATERC'
         lchin(2) = mate
-        lpain(3) = 'PDEPLR'
-        lchin(3) = chdepl
-        lpain(4) = 'PCONTPR'
-        lchin(4) = chsig
-        lpain(5) = 'PVARIPR'
+        lpain(3) = 'PVARIPR'
         if (ivari .eq. 1) then
-            lchin(5) = chvari
+            lchin(3) = chvari
         else
-            lchin(5) = chbid
+            lchin(3) = chbid
         endif
-        lpain(6) = 'PCOMPOR'
-        lchin(6) = compor
-        lpain(7) = 'PVARCPR'
-        lchin(7) = chvarc
-        lpain(8) = 'PVARCRR'
-        lchin(8) = chvref
-        lpain(9) = 'PCACOQU'
-        lchin(9) = chcara(7)
-        lpain(10) = 'PNBSP_I'
-        lchin(10) = cara//'.CANBSP'
-        nbin = 10
+        lpain(4) = 'PCOMPOR'
+        lchin(4) = compor
+        lpain(5) = 'PVARCPR'
+        lchin(5) = chvarc
+        lpain(6) = 'PVARCRR'
+        lchin(6) = chvref
+        lpain(7) = 'PCACOQU'
+        lchin(7) = chcara(7)
+        lpain(8) = 'PNBSP_I'
+        lchin(8) = cara//'.CANBSP'
+        nbin = 8
         if (option .eq. 'ENER_TOTALE') then
             if (iord .gt. 1) then
-                lpain(9) = 'PCONTMR'
-                lchin(9) = chsigm
-                lpain(10) = 'PDEPLM'
-                lchin(10) = chdepm
-                nbin = 10
+                lpain(7) = 'PCONTMR'
+                lchin(7) = chsigm
+                lpain(8) = 'PDEPLM'
+                lchin(8) = chdepm
             endif
+        endif
+        if (option .eq. 'ENER_TOTALE' .or. option .eq. 'ENEL_ELEM'&
+       .or. motfac(1:6).eq.'INDIC_') then
+            lpain(9) = 'PDEPLR'
+            lchin(9) = chdepl
+            lpain(10) = 'PCONTPR'
+            lchin(10) = chsig
+            nbin =10
         endif
         if (lxfem) then
             ASSERT(option.eq.'ENEL_ELEM')
@@ -693,7 +704,6 @@ subroutine peingl(resu, modele, mate, cara, nh,&
                                 valr(6) = work(5)
                             endif
                         endif
-!
                     endif
 !
 !
