@@ -230,8 +230,8 @@ subroutine te0514(option, nomte)
 !
                 call xdecqv(nnose, it, zi(jcnset), zi(jheavt), zr(jlsn), igeom,&
                             ninter, npts, ndim, ainter, nse, cnse,&
-                            heav, nsemax, pinter, zr(jpintt), cut,&
-                            ncomph, nfisc, nfiss, ifiss, elp, fisc, lonref)
+                            heav, nsemax, pinter, pmilie, zr(jpintt), zr(jpmilt), cut,&
+                            ncomph, nfisc, nfiss, ifiss, elp, fisc, lonref, txlsn, nmil)
             else
                 call xdecou(ndim, elp, nno, nnose, it,&
                             zr(jpintt), zi(jcnset), zr(jlsn), fisc, igeom,&
@@ -510,7 +510,7 @@ subroutine te0514(option, nomte)
                 if (npm .gt. ncompm) then
                    call utmess('F', 'XFEM_55')
                 endif
-!         stockage du noeud central cournant
+!         stockage du noeud central courant
                 zi(jcnset-1+i)=3000+npm
             endif
 400     continue

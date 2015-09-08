@@ -16,33 +16,17 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface 
-    subroutine xalg51(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
-                      igeom, lsnelp, pmilie, ninter, ainter, ar, npts, nptm, &
-                      pmmax, nmilie, mfis, lonref, pinref, pintt, pmitt, jonc)
-        integer :: ndim
-        integer :: nnop
-        integer :: it
-        integer :: nnose
-        integer :: cnset(*)
-        integer :: ndime
-        integer :: igeom
+    subroutine xdblsn(ninter, npts, ndim, ar,&
+                      pinref, pinter, ainter, cnset, nnose, it)
         integer :: ninter
         integer ::  ar(12, 3)
         integer :: npts
-        integer :: nptm
-        integer :: nbar
-        integer :: pmmax
-        integer :: nmilie
-        integer :: mfis
-        character(len=8) :: typma
-        character(len=8) :: elrefp
-        real(kind=8) :: lonref
+        integer :: ndim
         real(kind=8) :: ainter(*)
-        real(kind=8) :: pmilie(*)
-        real(kind=8) :: pinref(*)
-        real(kind=8) :: lsnelp(*)
-        real(kind=8) :: pintt(*)
-        real(kind=8) :: pmitt(*)
-        aster_logical :: jonc
-    end subroutine xalg51
+        real(kind=8) :: pinter(*)
+        real(kind=8) :: pinref(*) 
+        integer :: cnset(*)
+        integer :: nnose
+        integer :: it
+    end subroutine xdblsn
 end interface 

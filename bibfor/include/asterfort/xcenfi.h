@@ -16,7 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface 
-    subroutine xcenfi(elrefp, ndim, ndime, geom, lsn,&
+    subroutine xcenfi(elrefp, ndim, ndime, nno, geom, lsn,&
                       pinref, pmiref, cenref, cenfi,&
                       num)
         character(len=8) :: elrefp

@@ -1,4 +1,4 @@
-subroutine xcenfi(elrefp, ndim, ndime, geom, lsn,&
+subroutine xcenfi(elrefp, ndim, ndime, nno, geom, lsn,&
                   pinref, pmiref, cenref, cenfi,&
                   num)
 !
@@ -8,7 +8,6 @@ subroutine xcenfi(elrefp, ndim, ndime, geom, lsn,&
 #include "jeveux.h"
 #include "blas/ddot.h"
 #include "asterfort/assert.h"
-#include "asterfort/elrefe_info.h"
 #include "asterfort/elrfdf.h"
 #include "asterfort/provec.h"
 #include "asterfort/reerel.h"
@@ -17,7 +16,7 @@ subroutine xcenfi(elrefp, ndim, ndime, geom, lsn,&
 #include "asterfort/xelrex.h"
 #include "asterfort/xnewto.h"
 #include "asterfort/xnormv.h"
-    integer :: ndim, ndime
+    integer :: ndim, ndime, nno
     integer, intent(in), optional :: num(8)
     character(len=8) :: elrefp
     real(kind=8) :: lsn(*), geom(*), pinref(*), pmiref(*)
@@ -55,7 +54,7 @@ subroutine xcenfi(elrefp, ndim, ndime, geom, lsn,&
     real(kind=8) :: epsmax, rbid, crit, maxi, x(81)
     real(kind=8) :: pi1pi2(ndime), pi1pi3(ndime), dff(3,27)
     real(kind=8) :: v(3), ptxx(2*ndime), ksi(ndime), tole, xmi(ndime)
-    integer :: ibid, itemax, i, n(3), nno, j
+    integer :: ibid, itemax, i, n(3), j
     integer :: pi1, pi2, pi3, pi4, m12, m13, m24, m34, nbnomx
     character(len=6) :: name
     character(len=3) :: edge
@@ -65,8 +64,6 @@ subroutine xcenfi(elrefp, ndim, ndime, geom, lsn,&
 !
 ! --------------------------------------------------------------------
 !
-!
-    call elrefe_info(elrefe=elrefp,fami='RIGI',nno=nno)
 !
     itemax=100
     epsmax=1.d-9

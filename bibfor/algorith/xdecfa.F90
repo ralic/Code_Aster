@@ -425,7 +425,7 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
              num(7) = noeud(8)
              num(8) = noeud(6)
           endif
-          call xcenfi(elp, ndim, ndim, geom, zr(jlsn),&
+          call xcenfi(elp, ndim, ndim, nno, geom, zr(jlsn),&
                       pinref, pinref, cenref, cenfi, num)
   !   ON ARCHIVE CE POINT
           npi = npi+1

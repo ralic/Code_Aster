@@ -1,5 +1,5 @@
 subroutine xalg40(ndim, elrefp, nnop, it, nnose,&
-                  cnset, typma, ndime, igeom, lsnelp,&
+                  cnset, typma, ndime, geom, lsnelp,&
                   pmilie, ninter, ainter, ar, npts,&
                   nptm, pmmax, nmilie, mfis, lonref,&
                   pinref, pintt, pmitt, jonc)
@@ -20,10 +20,10 @@ subroutine xalg40(ndim, elrefp, nnop, it, nnose,&
 #include "asterfort/xstudo.h"
 #include "asterfort/xxmmvd.h"
     character(len=8) :: typma, elrefp
-    integer :: ndim, ndime, nnop, it, nnose, cnset(*), igeom
+    integer :: ndim, ndime, nnop, it, nnose, cnset(*)
     integer :: ninter, pmmax, npts, nptm, nmilie, mfis, ar(12, 3)
     real(kind=8) :: lonref, ainter(*), pmilie(*), lsnelp(*)
-    real(kind=8) :: pinref(*), pintt(*), pmitt(*)
+    real(kind=8) :: pinref(*), pintt(*), pmitt(*), geom(81)
     aster_logical :: jonc
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -65,10 +65,9 @@ subroutine xalg40(ndim, elrefp, nnop, it, nnose,&
 !
     real(kind=8) :: milfi(3), milara(3), milarb(3)
     real(kind=8) :: cenfi(3), milfa(3)
-    real(kind=8) :: geom(81)
     real(kind=8) :: pmiref(17*ndime), ksia(ndime), ksib(ndime)
     integer :: n(3)
-    integer :: i, ipm, k, ino
+    integer :: i, ipm, k
     integer :: noeub, noeuc
     integer :: j, r, ip, a2, a1, ip1(4), ip2(4), nbpi
     integer :: pm1a(4), pm1b(4), pm2(4)
@@ -89,12 +88,6 @@ subroutine xalg40(ndim, elrefp, nnop, it, nnose,&
     mfisloc=0
 !
     call vecini(51, 0.d0, pmilie)
-!
-    do ino = 1, nnop
-        do i = 1, ndim
-            geom(ndim*(ino-1)+i)=zr(igeom-1+ndim*(ino-1)+i)
-        enddo
-    enddo
 !
     do 204 i = 1, 4
         ip1(i)=0
@@ -197,7 +190,7 @@ subroutine xalg40(ndim, elrefp, nnop, it, nnose,&
         endif
 400 continue
 !    LE NOEUD MILIEU AU CENTRE DE LA FACE QUADRANGLE
-    call xcenfi(elrefp, ndim, ndime, geom, lsnelp,&
+    call xcenfi(elrefp, ndim, ndime, nnop, geom, lsnelp,&
                 pinref, pmiref, ksia, cenfi)
     mfisloc=mfisloc+1
     call xajpmi(ndim, pmilie, pmmax, ipm, inm, cenfi,&

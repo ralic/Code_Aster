@@ -1,5 +1,5 @@
-subroutine xalg20(ndim, elrefp, nnop, it, nnose,&
-                  cnset, typma, ndime, igeom, lsnelp,&
+subroutine xalg20(ndim, elrefp, it, nnose,&
+                  cnset, typma, ndime, geom, lsnelp,&
                   pmilie, ninter, ainter, ar, npts,&
                   nptm, pmmax, nmilie, mfis, lonref,&
                   pinref, pintt, pmitt, jonc)
@@ -20,10 +20,10 @@ subroutine xalg20(ndim, elrefp, nnop, it, nnose,&
 #include "asterfort/xxmmvd.h"
 !
     character(len=8) :: typma, elrefp
-    integer :: ndim, ndime, nnop, it, nnose, cnset(*), igeom
+    integer :: ndim, ndime, it, nnose, cnset(*)
     integer :: ninter, pmmax, npts, nptm, nmilie, mfis, ar(12, 3)
     real(kind=8) :: ainter(*), pmilie(*), lonref, lsnelp(*)
-    real(kind=8) :: pinref(*), pintt(*), pmitt(*)
+    real(kind=8) :: pinref(*), pintt(*), pmitt(*), geom(81)
     aster_logical :: jonc
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -65,10 +65,10 @@ subroutine xalg20(ndim, elrefp, nnop, it, nnose,&
 !     ----------------------------------------------------------------
 !
     real(kind=8) :: milfi(3), milara(3), milarb(3)
-    real(kind=8) :: milfa(3), geom(81)
+    real(kind=8) :: milfa(3)
     real(kind=8) :: pmiref(6*ndime), ksia(ndime), ksib(ndime)
     integer :: n(3)
-    integer :: i, ipm, k, ino
+    integer :: i, ipm, k
     integer :: noeua
     integer :: j, r, ip, a1, a2, a3, ip1(4), ip2(4), nbpi
     integer :: pm1a(4), pm1b(4), pm2(4)
@@ -89,12 +89,6 @@ subroutine xalg20(ndim, elrefp, nnop, it, nnose,&
     mfis=0
 !
     call vecini(51, 0.d0, pmilie)
-!
-    do ino = 1, nnop
-        do i = 1, ndim
-            geom(ndim*(ino-1)+i)=zr(igeom-1+ndim*(ino-1)+i)
-        enddo
-    enddo
 !
     do 204 i = 1, 4
         ip1(i)=0

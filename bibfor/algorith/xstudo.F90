@@ -168,75 +168,17 @@ subroutine xstudo(ndime, ninter, npts, nptm, ainter,&
 !         MILIEU DE I1-I2
           ip1(1)=2
           ip2(1)=3
-          pm1a(1)=1
-          pm1b(1)=3
           pm2(1)=7
 !         MILIEU DE I2-I3
           ip1(2)=3
           ip2(2)=4
-          pm1a(2)=3
-          pm1b(2)=5
           pm2(2)=8
 !         MILIEU DE I3-I1
-          ip1(3)=2
-          ip2(3)=4
-          pm1a(3)=1
-          pm1b(3)=5
-          pm2(3)=9
+          ip1(3)=4
+          ip2(3)=1
         else
           ASSERT(.false.)
         end if
-    else if (ninter.eq.5 .and. ndime.eq.3) then
-          ASSERT (npts.eq.1)
-!         DECOUPAGE DU TETRA EN DEUX PENTAEDRES
-!         ON SE RAMENE AU CAS NINTER=4 ET NPTS=0
-          nbpi=4
-  !       MILIEU DE I1-I2
-          ip1(1)=3
-          ip2(1)=2
-          pm1a(1)=3
-          pm1b(1)=1
-          pm2(1)=9
-  !       MILIEU DE I2-I4
-          ip1(2)=5
-          ip2(2)=3
-          pm1a(2)=8
-          pm1b(2)=4
-          pm2(2)=10
-  !       MILIEU DE I4-I3
-          ip1(3)=5
-          ip2(3)=4
-          pm1a(3)=7
-          pm1b(3)=5
-          pm2(3)=11
-  !       MILIEU DE I3-I1
-          ip1(4)=4
-          ip2(4)=2
-          pm1a(4)=6
-          pm1b(4)=2
-          pm2(4)=12
-    else if (ninter.eq.6 .and. ndime.eq.3) then
-!         ON SE RAMENE AU CAS NINTER=3 ET NPTS=0
-          ASSERT(npts.ge.2)
-          nbpi=3
-!         MILIEU DE I1-I2
-          ip1(1)=3
-          ip2(1)=4
-          pm1a(1)=1
-          pm1b(1)=3
-          pm2(1)=7
-!         MILIEU DE I2-I3
-          ip1(2)=4
-          ip2(2)=5
-          pm1a(2)=3
-          pm1b(2)=5
-          pm2(2)=8
-!         MILIEU DE I3-I1
-          ip1(3)=3
-          ip2(3)=5
-          pm1a(3)=1
-          pm1b(3)=5
-          pm2(3)=9
     else
         ASSERT(.false.)
 !

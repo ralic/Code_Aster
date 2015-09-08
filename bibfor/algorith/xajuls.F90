@@ -66,6 +66,7 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
     character(len=8) :: typma
     real(kind=8), pointer :: lnsv(:) => null()
     real(kind=8), pointer :: ltsv(:) => null()
+    aster_logical :: ajust
 !
     parameter     (fit_to_vertex=(/1.d-6,1d-6/), crilst=1.d-3, penal=0.01)
 !
@@ -88,6 +89,10 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
     call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndime)
 !
 !     BOUCLE SUR TOUTES LES MAILLES DU MAILLAGE
+!
+!     BOOLEEN POUR SAVOIR SI UN AJSTEMENT A ETE EFFECTUE DANS LE CAS QUADRATIQUE
+100 continue
+    ajust = .false.
 !
     do ima = 1, nbma
         nmaabs=ima
@@ -216,10 +221,12 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
 !             EXTREMITES DE L'ARETE ON LSN=0
                         lnsv((nunom-1)+1)=0.d0
                         clsm=clsm+1
+                        ajust = .true.
                     else
                         call utmess('A', 'XFEM_63')
                         lnsv((nunom-1)+1)=0.d0
                         clsm=clsm+1
+                        ajust = .true.
                     endif
                 else if ((lsna*lsnm).lt.0.d0.and.(lsnb*lsnm).lt.0.d0) then
                     d1=lsna/lsnmax
@@ -237,6 +244,7 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
                            lnsv((nunoa-1)+1)=0.d0
                         endif
                         clsm=clsm+2
+                        ajust = .true.
                     else
                         call utmess('A', 'XFEM_63')
                         lnsv((nunom-1)+1)=0.d0
@@ -246,6 +254,7 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
                            lnsv((nunoa-1)+1)=0.d0
                         endif
                         clsm=clsm+2
+                        ajust = .true.
                     endif
                 else if (lsna.eq.0.d0.and.(lsnb*lsnm).lt.0.d0) then
                     d3=lsnm/lsnmax
@@ -255,9 +264,11 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
 !             A 1% LSNMAX
                         lnsv((nunom-1)+1)=0.d0
                         clsm=clsm+1
+                        ajust = .true.
                     else
                         lnsv((nunom-1)+1)=0.d0
                         clsm=clsm+1
+                        ajust = .true.
                         call utmess('A', 'XFEM_63')
                     endif
                 else if ((lsna*lsnm).lt.0.d0.and.lsnb.eq.0.d0) then
@@ -268,10 +279,12 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
 !             A 1% LSNMAX
                         lnsv((nunom-1)+1)=0.d0
                         clsm=clsm+1
+                        ajust = .true.
                     else
                         call utmess('A', 'XFEM_63')
                         lnsv((nunom-1)+1)=0.d0
                         clsm=clsm+1
+                        ajust = .true.
                     endif
                else if ((lsna*lsnb).gt.0.d0.and.lsnm.eq.0.d0) then
                     d1=lsna/lsnmax
@@ -286,6 +299,7 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
                            lnsv((nunoa-1)+1)=0.d0
                         endif
                         clsm=clsm+1
+                        ajust = .true.
                     else
                         call utmess('A', 'XFEM_63')
                         if (d1 .gt. d2) then
@@ -294,6 +308,7 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
                            lnsv((nunoa-1)+1)=0.d0
                         endif
                         clsm=clsm+1
+                        ajust = .true.
                     endif 
                 endif
 !
@@ -308,10 +323,12 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
 !             EXTREMITES DE L'ARETE ON LSN=0
                         ltsv((nunom-1)+1)=0.d0
                         clsm=clsm+1
+                        ajust = .true.
                     else
                         call utmess('A', 'XFEM_63')
                         ltsv((nunom-1)+1)=0.d0
                         clsm=clsm+1
+                        ajust = .true.
                     endif
                 else if ((lsta*lstm).lt.0.d0.and.(lstb*lstm).lt.0.d0) then
                     d1=lsta/lstmax
@@ -326,12 +343,14 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
                         ltsv((nunob-1)+1)=0.d0
                         ltsv((nunoa-1)+1)=0.d0
                         clsm=clsm+3
+                        ajust = .true.
                     else
                         call utmess('A', 'XFEM_63')
                         ltsv((nunom-1)+1)=0.d0
                         ltsv((nunob-1)+1)=0.d0
                         ltsv((nunoa-1)+1)=0.d0
                         clsm=clsm+3
+                        ajust = .true.
                     endif
                 else if (lsta.eq.0.d0.and.(lstb*lstm).lt.0.d0) then
                     d2=lstb/lstmax
@@ -343,11 +362,13 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
                         ltsv((nunom-1)+1)=0.d0
                         ltsv((nunob-1)+1)=0.d0
                         clsm=clsm+2
+                        ajust = .true.
                     else
                         call utmess('A', 'XFEM_63')
                         ltsv((nunom-1)+1)=0.d0
                         ltsv((nunob-1)+1)=0.d0
                         clsm=clsm+2
+                        ajust = .true.
                     endif
                 else if ((lsta*lstm).lt.0.d0.and.lstb.eq.0.d0) then
                     d1=lstm/lstmax
@@ -359,11 +380,13 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
                         ltsv((nunom-1)+1)=0.d0
                         ltsv((nunoa-1)+1)=0.d0
                         clsm=clsm+2
+                        ajust = .true.
                     else
                         call utmess('A', 'XFEM_63')
                         ltsv((nunom-1)+1)=0.d0
                         ltsv((nunoa-1)+1)=0.d0
                         clsm=clsm+2
+                        ajust = .true.
                     endif
                else if ((lsta*lstb).gt.0.d0.and.lstm.eq.0.d0) then
                     d1=lsta/lstmax
@@ -375,11 +398,13 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
                         ltsv((nunob-1)+1)=0.d0
                         ltsv((nunoa-1)+1)=0.d0
                         clsm=clsm+2
+                        ajust = .true.
                     else
                         call utmess('A', 'XFEM_63')
                         ltsv((nunob-1)+1)=0.d0
                         ltsv((nunoa-1)+1)=0.d0
                         clsm=clsm+2
+                        ajust = .true.
                     endif
                 endif
 !
@@ -389,6 +414,11 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
 !
 200     continue
     end do
+! 
+!     TANT QUE DES AJUSTEMENTS SONT EFFECTUES POUR LES LEVEL SET QUADRATIQUES,
+!     ON REITERE LA PROCEDURE AFIN DE N'AVOIR AUCUN PROBLEME DE COHERENCE SUITE
+!     AUX AJUSTEMENTS
+    if (ajust) go to 100
 !
 !-----------------------------------------------------------------------
 !     FIN

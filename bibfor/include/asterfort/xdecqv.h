@@ -18,9 +18,9 @@
 interface
     subroutine xdecqv(nnose, it, cnset, heavt, lsn, igeom,&
                       ninter, npts, ndim, ainter, nse, cnse,&
-                      heav, nsemax, pinter, pintt, cut,&
+                      heav, nsemax, pinter, pmilie, pintt, pmitt, cut,&
                       ncomp, nfisc, nfiss, ifiss, elp, fisco,&
-                      lonref)
+                      lonref, txlsn, tx)
         integer :: nnose
         integer :: it
         integer :: cnset(*)
@@ -31,7 +31,9 @@ interface
         integer :: ndim
         real(kind=8) :: ainter(*)
         real(kind=8) :: pinter(*)
+        real(kind=8) :: pmilie(*)
         real(kind=8) :: pintt(*)
+        real(kind=8) :: pmitt(*)
         integer :: nse
         integer :: cnse(6, 10)
         real(kind=8) :: heav(*)
@@ -45,5 +47,7 @@ interface
         integer :: fisco(*)
         character(len=8) :: elp
         real(kind=8) :: lonref
+        real(kind=8) :: txlsn(28)
+        real(kind=8) :: tx(3, 7)
     end subroutine xdecqv
 end interface

@@ -17,7 +17,7 @@
 !
 interface 
     subroutine xalg41(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
-                      igeom, lsnelp, pmilie, ninter, ainter, ar, npts, nptm, &
+                      geom, lsnelp, pmilie, ninter, ainter, ar, npts, nptm, &
                       pmmax, nmilie, mfis, lonref, pinref, pintt, pmitt, jonc)
         integer :: ndim
         integer :: nnop
@@ -25,7 +25,7 @@ interface
         integer :: nnose
         integer :: cnset(*)
         integer :: ndime
-        integer :: igeom
+        real(kind=8) :: geom(81)
         integer :: ninter
         integer ::  ar(12, 3)
         integer :: npts
