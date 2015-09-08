@@ -103,7 +103,8 @@ subroutine xpocmp(elrefp, cns1, ima, n, jconx1,&
             if (press) goto 1
         endif
 !
-        if (nomcmp(1:5).eq.'HPRE1') then
+        if (nomcmp(1:6).eq.'H1PRE1' .or. nomcmp(1:6).eq.'H2PRE1' .or.&
+            nomcmp(1:6).eq.'H3PRE1' .or. nomcmp(1:6).eq.'H4PRE1') then
            do 24 k = 1, nnos
               if (.not.exist(k,i)) press1 = .false.
  24        continue
@@ -127,13 +128,14 @@ subroutine xpocmp(elrefp, cns1, ima, n, jconx1,&
                 cmp(ipos)=i
             endif
         endif
-        if (nomcmp(1:1) .eq. 'H'.and.nomcmp(2:2).ne.'P') then
+        if (nomcmp(1:1) .eq. 'H'.and.nomcmp(3:3).ne.'P') then
             ipos = ipos +1
             nfh = nfh +1
             cmp(ipos)=i
         endif
         if (pre1) then
-           if (nomcmp(1:5).eq.'HPRE1') then
+           if (nomcmp(1:6).eq.'H1PRE1' .or. nomcmp(1:6).eq.'H2PRE1' .or.&
+               nomcmp(1:6).eq.'H3PRE1' .or. nomcmp(1:6).eq.'H4PRE1') then
              ipos = ipos + 1
              cmp(ipos) = i
            endif

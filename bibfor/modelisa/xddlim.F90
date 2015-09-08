@@ -75,27 +75,27 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
 !
 !
 !
-    integer :: nbxcmp
-    parameter  (nbxcmp=60)
-    integer :: ier, stano(4), jstnol,  jstnod, nrel
-    integer ::  jlsnl, jlsnd,  jlstl, jlstd
-    integer ::  jfisnl, jfisnd, nfh, ifh
-    integer ::  i, j, nterm, irel, dimens(nbxcmp), ifiss, nfiss
+    integer :: nbxcmp, nfimax
+    parameter  (nbxcmp=60,nfimax=10)
+    integer :: ier, stano(4), jstnol,  jstnod, nrel, fisco(2*nfimax)
+    integer ::  jlsnl, jlsnd,  jlstl, jlstd, jfiscl, jfiscd, fisc(2*nfimax)
+    integer ::  jfisnl, jfisnd, nfh, ifh, nfisc
+    integer ::  i, j, nterm, irel, dimens(nbxcmp), ifiss, nfiss, ifisc
     integer ::  nbno, nbmano, adrma, ima, numa, nbnoma, nuno, nuno2
     integer ::  jconx2,  iad, fisno(4)
     integer ::  jheavnl, jheavnd, ncompn, heavn(5), hea_se
     real(kind=8) :: r, theta(2), he(2, 4), t, coef(nbxcmp), sign
-    real(kind=8) :: lsn(4), lst(4), minlsn, maxlsn, lsn2
+    real(kind=8) :: lsn(4), lst(4), minlsn, maxlsn, lsn2, ljonc(nfimax)
     character(len=8) :: ddl(nbxcmp), noeud(nbxcmp), noma
     character(len=1) :: axes(3)
-    character(len=19) :: ch4
+    character(len=19) :: ch4, ch5
     complex(kind=8) :: cbid, valimc
-    character(len=1) :: ch
     aster_logical :: class
     integer, pointer :: nunotmp(:) => null()
     character(len=8), pointer :: lgrf(:) => null()
     integer, pointer :: connex(:) => null(), ihea_no(:) => null()
     integer, pointer :: fisnv(:) => null()
+    integer, pointer :: fiscv(:) => null()
     real(kind=8), pointer :: lsnv(:) => null()
     real(kind=8), pointer :: lstv(:) => null()
     integer, pointer :: stnov(:) => null()
@@ -129,6 +129,10 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
 ! --- NOMBRE DE FISSURES VUES PAR LA MAILLE
     nfiss = zi(jstnod-1+5+4*(numa-1)+2)
 !
+    do i = 1, 2*nfimax
+        fisco(i) = 0
+        fisc(i) = 0
+    end do
     if (nfiss .gt. 1) then
         ch4 = '&&XDDLIM.CHS4'
         call celces(modele//'.FISSNO', 'V', ch4)
@@ -141,6 +145,19 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
             call cesexi('S', jfisnd, jfisnl, numa, nuno,&
                         i, 1, iad)
             fisno(i) = fisnv(iad)
+        end do
+        ch5 = '&&XDDLIM.CHS5'
+        call celces(modele//'.FISSCO', 'V', ch5)
+        call jeveuo(ch5//'.CESV', 'L', vi=fiscv)
+        call jeveuo(ch5//'.CESL', 'L', jfiscl)
+        call jeveuo(ch5//'.CESD', 'L', jfiscd)
+        do  i = 1, nfiss
+            call cesexi('S', jfiscd, jfiscl, numa, 1,&
+                        i, 1, iad)
+            fisco(2*i-1) = fiscv(iad)
+            call cesexi('S', jfiscd, jfiscl, numa, 1,&
+                        i, 2, iad)
+            fisco(2*i) = fiscv(iad)
         end do
     endif
     do ifiss = 1, nfiss
@@ -163,7 +180,7 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
       call jeveuo(hea_no//'.CESL', 'L', jheavnl)
       call jeveuo(hea_no//'.CESD', 'L', jheavnd)
       ncompn = zi(jheavnd-1+5+4*(numa-1)+3)
-!      ASSERT(ncompn.eq.5)
+      ASSERT(ncompn.eq.5)
       do i = 1, ncompn
         call cesexi('S', jheavnd, jheavnl, numa, nuno,&
                    1, i, iad)
@@ -258,12 +275,36 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
             theta(1) = he(1,1)*abs(atan2(lsn(1),lst(1)))
         endif
     else if (nfiss .gt. 1) then
+        do ifiss = 1, nfiss
+           do i = 1, ifiss
+              fisc(i)=0
+           end do
+           ifisc = ifiss
+           nfisc = 0
+80         continue
+           if (fisco(2*ifisc-1) .gt. 0) then
+               nfisc = nfisc+1
+               fisc(2*(nfisc-1)+2) = fisco(2*ifisc)
+               ifisc = fisco(2*ifisc-1)
+               fisc(2*(nfisc-1)+1) = ifisc
+               goto 80
+           endif
+           do i = 1, nfisc
+              ljonc(i) = lsn(fisc(2*i-1))
+           end do
+!   MISE A ZERO POUR LA FONCTION JONCTION AU NIVEAU DU BRANCHEMENT
+           do i = 1, nfisc
+              if (fisc(2*i)*ljonc(i) .gt. 0.d0) then
+                 lsn(ifiss)=0.d0
+              endif
+           end do
+        end do
+!
         nrel = 1
         do ifh = 1, nfh
 ! --- ON NE PREND PAS ENCORE EN COMPTE LE CAS OU ON PASSE PAR UN NOEUD POUR
 ! --- LES ELEMENTS MULTI-HEAVISIDE
-            if (lsn(fisno(ifh)) .eq. 0) goto 888
-            he(1,ifh) = 0.d0
+            if (lsn(fisno(ifh)).eq.0 .and. nfisc.eq.0) goto 888
         end do
     endif
 !
@@ -331,15 +372,6 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
                         ddl(i) = 'E4'//axes(j)
                         coef(i)=sqrt(r)*cos(t/2.d0)*sin(t)*direct(j)
                     endif
-                else
-                    do ifh = 1, nfh
-                        if (stano(fisno(ifh)) .eq. 1) then
-                            i = i+1
-                            call codent(ifh, 'G', ch)
-                            ddl(i) = 'H'//ch//axes(j)
-                            coef(i)=he(irel,ifh)*direct(j)
-                        endif
-                    end do
                 endif
             end do
 !       CAS DDL_IMPO DX DY DZ (ET/OU PRE1 => POUR HM-XFEM ONLY)
@@ -368,15 +400,6 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
                     ddl(i) = 'E4'//motcle(2:2)
                     coef(i)=sqrt(r)*cos(t/2.d0)*sin(t)
                 endif
-              else
-                do ifh = 1, nfh
-                    if (stano(fisno(ifh)) .eq. 1) then
-                        i = i+1
-                        call codent(ifh, 'G', ch)
-                        ddl(i) = 'H'//ch//motcle(2:2)
-                        coef(i)=he(irel,ifh)
-                    endif
-                end do
               endif
         elseif (motcle.eq.'PRE1') then
 !           COEFFICIENTS ET DDLS DE LA RELATION
@@ -386,7 +409,7 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
               if (nfiss.eq.1) then
                 if (stano(1).eq.1.or.stano(1).eq.3) then
                   i = i + 1
-                  ddl(i) = 'H'//motcle(1:4)
+                  ddl(i) = 'H1'//motcle(1:4)
                   coef(i) =xcalc_heav(heavn(1),hea_se,heavn(5))
                 endif
               endif

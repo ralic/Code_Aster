@@ -19,14 +19,14 @@
 !
 interface 
     subroutine xhmsat(yachai, option, meca, thmc, ther,&
-                      hydr, imate, ndim, yaenrm, dimenr,&
+                      hydr, imate, ndim, dimenr,&
                       dimcon, nbvari, yamec, addeme,&
                       adcome, advihy, advico, vihrho, vicphi,&
                       addep1, adcp11, congem, congep, vintm,&
                       vintp, dsde, epsv, depsv, p1,&
                       dp1, t, phi, rho11, phi0,&
                       sat, retcom, tbiot, rinstp,&
-                      angmas, aniso, phenom, yaenrh, adenhy)
+                      angmas, aniso, phenom, yaenrh, adenhy, nfh)
         integer :: nbvari
         integer :: dimcon
         integer :: dimenr
@@ -38,7 +38,6 @@ interface
         character(len=16) :: hydr
         integer :: imate
         integer :: ndim
-        integer :: yaenrm
         integer :: yamec
         integer :: addeme
         integer :: adcome
@@ -70,5 +69,6 @@ interface
         character(len=16) :: phenom
         integer :: yaenrh
         integer :: adenhy
+        integer :: nfh
     end subroutine xhmsat
 end interface 

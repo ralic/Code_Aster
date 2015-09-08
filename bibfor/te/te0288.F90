@@ -59,7 +59,7 @@ subroutine te0288(option, nomte)
     integer :: jpintt, jcnset, jheavt, jlonch, jbaslo, igeom, idepl
     integer :: ipres, ipref, itemps, jptint, jcface, jlongc, imate, icomp, jheavn
     integer :: ithet, i, j, compt, igthet, ibid, jlsn, jlst, icode
-    integer :: ninter, nface, cface(18, 6), ifa, singu, jpmilt, irese, ddlm
+    integer :: ninter, nface, cface(30, 6), ifa, singu, jpmilt, irese, ddlm
     real(kind=8) :: thet, valres(3), devres(3), presn(27), valpar(4)
     real(kind=8) :: pres, fno(81), coorse(81)
     integer :: icodre(3), contac, iadzi, iazk24
@@ -257,7 +257,7 @@ subroutine te0288(option, nomte)
                     igeom, nfh, jheavn, singu, nfe, ddlc,&
                     ddlm, jlst, ipres, ipref, itemps,&
                     idepl, nnop, valres, zr( jbaslo), ithet,&
-                    nompar, presn, option, igthet, jbasec,&
+                    nompar, option, igthet, jbasec,&
                     contac)
 200  continue
 !

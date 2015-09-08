@@ -1,7 +1,8 @@
 subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
                   jinter, ifa, cface, nptf, ipg,&
                   nnop, igeom, jbasec,xg, jac,&
-                  ffp, ffpc, dfdi, nd, tau1)
+                  ffp, ffpc, dfdi, nd, tau1,&
+                  ifiss, ncompp, ncompb)
     implicit none
 !
 #include "asterf_types.h"
@@ -15,10 +16,11 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
 #include "asterfort/reeref.h"
 #include "asterfort/vecini.h"
 #include "blas/ddot.h"
-    integer :: jinter, ifa, cface(18, 6), ipg, nnop, igeom, jbasec, nptf, ndim
+    integer :: jinter, ifa, cface(30, 6), ipg, nnop, igeom, jbasec, nptf, ndim
     real(kind=8) :: jac, ffp(27), ffpc(27), dfdi(27, 3)
     real(kind=8) :: nd(3), tau1(3), xg(3)
     character(len=8) :: elrefp, fpg, elc, elrefc
+    integer, intent(in), optional :: ifiss, ncompp, ncompb
 !
 !
 ! ======================================================================
@@ -51,6 +53,7 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
 !       IPG     : NUMÉRO DU POINTS DE GAUSS
 !       NNO     : NOMBRE DE NOEUDS DE L'ELEMENT DE REF PARENT
 !       IGEOM   : COORDONNEES DES NOEUDS DE L'ELEMENT DE REF PARENT
+!       IFISS   : FISSURE COURANTE
 !
 !     SORTIE
 !       G       : COORDONNÉES RÉELLES 2D DU POINT DE GAUSS
@@ -97,7 +100,11 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
     end do
     do i = 1, nptf
         do j = 1, ndim
-            coor2d((i-1)*ndim+j)=zr(jinter-1+ndim*(cface(ifa,i)-1)+j)
+            if (present(ifiss)) then
+               coor2d((i-1)*ndim+j)=zr(jinter-1+ncompp*(ifiss-1)+ndim*(cface(ifa,i)-1)+j)
+            else
+               coor2d((i-1)*ndim+j)=zr(jinter-1+ndim*(cface(ifa,i)-1)+j)
+            endif
         end do
     end do
 !
@@ -120,9 +127,17 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
     nd(2) = -sina
     do j = 1, ndim
         do k = 1, nno
-            grln(j) = grln(j) + zr(ivff-1+nno*(ipg-1)+k)*zr(jbasec-1+ndim*ndim*(k-1)+j)
-            grlt(j)= grlt(j) + zr(ivff-1+nno*(ipg-1)+k)*zr(jbasec-1+ndim*ndim*(k-1)+j+&
-            ndim)
+            if (present(ifiss)) then
+               grln(j) = grln(j) + zr(ivff-1+nno*(ipg-1)+k)*zr(jbasec-1+&
+                         (ifiss-1)*ncompb+ndim*ndim*(k-1)+j)
+               grlt(j) = grlt(j) + zr(ivff-1+nno*(ipg-1)+k)*zr(jbasec-1+&
+                         (ifiss-1)*ncompb+ndim*ndim*(k-1)+j+ndim)
+            else
+               grln(j) = grln(j) + zr(ivff-1+nno*(ipg-1)+k)*zr(jbasec-1+&
+                         ndim*ndim*(k-1)+j)
+               grlt(j) = grlt(j) + zr(ivff-1+nno*(ipg-1)+k)*zr(jbasec-1+&
+                         ndim*ndim*(k-1)+j+ndim)
+            endif
         end do
     end do
 !

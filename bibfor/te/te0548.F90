@@ -52,7 +52,7 @@ subroutine te0548(option, nomte)
     integer :: ideppl, jaint, jcface, jlonch, jseuil, ipoidf, ivff, idfdef
     integer :: iadzi, iazk24, ipoids, ivf, idfde, jgano, jdonco
     integer :: ndim, nno, nnos, npg, nfh, ddlc, nnom, integ, ninter, nfe
-    integer :: nface, cface(18, 6), ibid, nnof, npgf, jptint
+    integer :: nface, cface(30, 6), ibid, nnof, npgf, jptint
     integer :: singu, jbasec, nptf
     integer :: ddls, nddl, nnol, lact(8), nlact, igeom, ddlm
     integer :: contac
@@ -94,6 +94,12 @@ subroutine te0548(option, nomte)
     ninter=zi(jlonch-1+1)
     nface=zi(jlonch-1+2)
     nptf=zi(jlonch-1+3)
+!
+    do i = 1, 30
+        do j = 1, 6
+            cface(i,j)=0
+        end do
+    end do
 !
     do 15 i = 1, nface
         do 16 j = 1, nptf

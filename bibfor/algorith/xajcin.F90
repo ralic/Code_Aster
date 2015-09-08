@@ -61,7 +61,7 @@ implicit none
         (option(1:9) .eq. 'RAPH_MECA') .or. &
         (option(1:9) .eq. 'RIGI_MECA')) then
 !
-        nbadd = 11
+        nbadd = 12
         ASSERT(nchin+nbadd .le. mxchin)
         lpain(nchin + 1 ) = 'PPINTTO'
         lchin(nchin + 1 ) = model(1:8)//'.TOPOSE.PIN'
@@ -85,11 +85,13 @@ implicit none
         lchin(nchin + 10) = model(1:8)//'.FISSNO'
         lpain(nchin + 11) = 'PHEA_NO'
         lchin(nchin + 11) = model(1:8)//'.TOPONO.HNO'
+        lpain(nchin + 12) = 'PHEA_FA'
+        lchin(nchin + 12) = model(1:8)//'.TOPONO.HFA'
         nchin = nchin+nbadd
 !
     elseif (option.eq.'CHAR_MECA_NEUM') then
 !
-        nbadd = 16
+        nbadd = 17
         ASSERT(nchin+nbadd .le. mxchin)
         lpain(nchin + 1 ) = 'PPINTTO'
         lchin(nchin + 1 ) = model(1:8)//'.TOPOSE.PIN'
@@ -123,6 +125,8 @@ implicit none
         lchin(nchin + 15) = model(1:8)// '.TOPONO.HNO'
         lpain(nchin + 16) = 'PHEA_SE'
         lchin(nchin + 16) = model(1:8)// '.TOPONO.HSE'
+        lpain(nchin + 17) = 'PHEA_FA'
+        lchin(nchin + 17) = model(1:8)// '.TOPONO.HFA'
         nchin = nchin+nbadd
 !
     elseif (option.eq.'REFE_FORC_NODA') then

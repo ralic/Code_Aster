@@ -22,7 +22,7 @@ interface
                       nddlm, npg, igeom, jpintt, jpmilt, jheavn,&
                       ivf, ipoids, idfde, ivectu, ipesa,&
                       heavt, lonch, cnset, rho, axi,&
-                      yaenrm)
+                      yaenrm, nfiss, nfh, jfisno)
         integer :: ndim
         integer :: nnop
         integer :: nno
@@ -39,11 +39,14 @@ interface
         integer :: idfde
         integer :: ivectu
         integer :: ipesa
-        integer :: heavt(36)
+        integer :: heavt(*)
         integer :: lonch(10)
-        integer :: cnset(128)
+        integer :: cnset(*)
         real(kind=8) :: rho
         aster_logical :: axi
         integer :: yaenrm
+        integer :: nfiss
+        integer :: nfh
+        integer :: jfisno
     end subroutine xpeshm
 end interface 

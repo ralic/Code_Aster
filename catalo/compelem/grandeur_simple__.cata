@@ -442,6 +442,9 @@ GRANDEUR_SIMPLE__
                    H2X, H2Y, H2Z
                    H3X, H3Y, H3Z
                    H4X, H4Y, H4Z : DDLS HEAVYSIDE X-FEM
+       Pour HM-XFEM: H1PRE1
+                     H2PRE1
+                     H3PRE1 : DDLS HEAVYSIDE HM-XFEM
        LAGR : parametre de lagrange du a la dualisation des conditions aux
        limites
        Pour X-FEM: E1X, E1Y, E1Z : DDLS enrichis (CRACKTIP1) X-FEM
@@ -450,7 +453,6 @@ GRANDEUR_SIMPLE__
                    E4X, E4Y, E4Z : DDLS enrichis (CRACKTIP4) X-FEM
        LAGS_C, LAG2_C, LAG3_C, LAG4_C :
        LAGS_F1, LAGS_F2, LAG2_F1, LAG2_F2, LAG3_F1, LAG3_F2, LAG4_F1, LAG4_F2 :
-       HPRE1 : DDL de pression Heaviside pour la pression du massif (HM_XFEM)
        UI2, VI2, WI2, ...,UO6, VO6, WO6, WO, WI1, WO1 : DDL des elements de tube
        GONF :
        EPXX, EPYY, EPZZ, EPXY, EPXZ, EPYZ :
@@ -493,12 +495,12 @@ GRANDEUR_SIMPLE__
        PIZ     : projete du gradient de pression suivantz (methode OSGS)
 >>
     DEPL_C   = C    DX       DY       DZ       DRX      DRY      DRZ      GRX      GLIS     PRES
-                    PRE1     PRE2     TEMP     PHI      DH       H1X      H1Y      H1Z
-                    H2X      H2Y      H2Z      H3X      H3Y      H3Z      H4X      H4Y
-                    H4Z      LAGR     E1X      E1Y      E1Z      E2X
+                    PRE1     PRE2     TEMP     PHI      DH       H1X      H1Y      H1Z      H1PRE1
+                    H2X      H2Y      H2Z      H2PRE1   H3X      H3Y      H3Z      H3PRE1   H4X
+                    H4Y      H4Z      LAGR     E1X      E1Y      E1Z      E2X
                     E2Y      E2Z      E3X      E3Y      E3Z      E4X      E4Y      E4Z
                     LAGS_C   LAGS_F1  LAGS_F2  LAG2_C   LAG2_F1  LAG2_F2  LAG3_C   LAG3_F1  LAG3_F2
-                    LAG4_C  LAG4_F1   LAG4_F2  HPRE1
+                    LAG4_C  LAG4_F1   LAG4_F2
                     UI2      VI2      WI2      UI3      VI3
                     WI3      UI4      VI4      WI4      UI5      VI5      WI5      UI6
                     VI6      WI6      UO2      VO2      WO2      UO3      VO3      WO3
@@ -524,6 +526,9 @@ GRANDEUR_SIMPLE__
                    H2X, H2Y, H2Z
                    H3X, H3Y, H3Z
                    H4X, H4Y, H4Z : DDLS HEAVYSIDE  X-FEM
+       Pour HM-XFEM: H1PRE1
+                     H2PRE1
+                     H3PRE1 : DDLS HEAVYSIDE HM-XFEM
        LAGR : parametre de lagrange du a la dualisation des conditions aux
        limites
        Pour X-FEM: E1X, E1Y, E1Z : DDLS enrichis (CRACKTIP1) X-FEM
@@ -532,7 +537,6 @@ GRANDEUR_SIMPLE__
                    E4X, E4Y, E4Z : DDLS enrichis (CRACKTIP4) X-FEM
        LAGS_C, LAG2_C, LAG3_C, LAG4_C :
        LAGS_F1, LAGS_F2, LAG2_F1, LAG2_F2, LAG3_F1, LAG3_F2, LAG4_F1, LAG4_F2 :
-       HPRE1 : DDL de pression Heaviside pour la pression du massif (HM_XFEM)
        UI2, VI2, WI2, ...,UO6, VO6, WO6, WO, WI1, WO1 : DDL des elements de tube
        GONF :
        EPXX, EPYY, EPZZ, EPXY, EPXZ, EPYZ :
@@ -575,12 +579,12 @@ GRANDEUR_SIMPLE__
 >>
 
     DEPL_F   = K8   DX       DY       DZ       DRX      DRY      DRZ      GRX      GLIS      PRES
-                    PRE1     PRE2     TEMP     PHI      DH       H1X      H1Y      H1Z
-                    H2X      H2Y      H2Z      H3X      H3Y      H3Z      H4X      H4Y
-                    H4Z      LAGR     E1X      E1Y      E1Z      E2X
+                    PRE1     PRE2     TEMP     PHI      DH       H1X      H1Y      H1Z       H1PRE1
+                    H2X      H2Y      H2Z      H2PRE1   H3X      H3Y      H3Z      H3PRE1    H4X
+                    H4Y      H4Z      LAGR     E1X      E1Y      E1Z      E2X
                     E2Y      E2Z      E3X      E3Y      E3Z      E4X      E4Y      E4Z
                     LAGS_C   LAGS_F1  LAGS_F2  LAG2_C   LAG2_F1  LAG2_F2  LAG3_C   LAG3_F1  LAG3_F2
-                    LAG4_C  LAG4_F1   LAG4_F2  HPRE1
+                    LAG4_C  LAG4_F1   LAG4_F2
                     UI2      VI2      WI2      UI3      VI3
                     WI3      UI4      VI4      WI4      UI5      VI5      WI5      UI6
                     VI6      WI6      UO2      VO2      WO2      UO3      VO3      WO3
@@ -606,6 +610,9 @@ GRANDEUR_SIMPLE__
                    H2X, H2Y, H2Z
                    H3X, H3Y, H3Z
                    H4X, H4Y, H4Z : DDLS HEAVYSIDE X-FEM
+       Pour HM-XFEM: H1PRE1
+                     H2PRE1
+                     H3PRE1 : DDLS HEAVYSIDE HM-XFEM
        LAGR : parametre de lagrange du a la dualisation des conditions aux
        limites
        Pour X-FEM: E1X, E1Y, E1Z : DDLS enrichis (CRACKTIP1) X-FEM
@@ -614,7 +621,6 @@ GRANDEUR_SIMPLE__
                    E4X, E4Y, E4Z : DDLS enrichis (CRACKTIP4) X-FEM
        LAGS_C, LAG2_C, LAG3_C, LAG4_C :
        LAGS_F1, LAGS_F2, LAG2_F1, LAG2_F2, LAG3_F1, LAG3_F2, LAG4_F1, LAG4_F2 :
-       HPRE1 : DDL de pression Heaviside pour la pression du massif (HM_XFEM)
        UI2, VI2, WI2, ...,UO6, VO6, WO6, WO, WI1, WO1 : DDL des elements de tube
        GONF :
        EPXX, EPYY, EPZZ, EPXY, EPXZ, EPYZ :
@@ -656,12 +662,12 @@ GRANDEUR_SIMPLE__
        PIZ     : projete du gradient de pression suivantz (methode OSGS)
 >>
     DEPL_R   = R    DX       DY       DZ       DRX      DRY      DRZ      GRX      GLIS      PRES
-                    PRE1     PRE2     TEMP     PHI      DH       H1X      H1Y      H1Z
-                    H2X      H2Y      H2Z      H3X      H3Y      H3Z      H4X      H4Y
-                    H4Z      LAGR     E1X      E1Y      E1Z      E2X
+                    PRE1     PRE2     TEMP     PHI      DH       H1X      H1Y      H1Z       H1PRE1
+                    H2X      H2Y      H2Z      H2PRE1   H3X      H3Y      H3Z      H3PRE1    H4X
+                    H4Y      H4Z      LAGR     E1X      E1Y      E1Z      E2X
                     E2Y      E2Z      E3X      E3Y      E3Z      E4X      E4Y      E4Z
                     LAGS_C   LAGS_F1  LAGS_F2  LAG2_C   LAG2_F1  LAG2_F2  LAG3_C   LAG3_F1  LAG3_F2
-                    LAG4_C  LAG4_F1   LAG4_F2  HPRE1
+                    LAG4_C  LAG4_F1   LAG4_F2
                     UI2      VI2      WI2      UI3      VI3
                     WI3      UI4      VI4      WI4      UI5      VI5      WI5      UI6
                     VI6      WI6      UO2      VO2      WO2      UO3      VO3      WO3
@@ -1363,15 +1369,15 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
 >>
     N120_I   = I    X[120]
 
-<<  N128_I Type:I Grandeur ''neutre'' de type I
+<<  N512_I Type:I Grandeur ''neutre'' de type I
        La signification des composantes varie d'une option a l'autre. Cette
        grandeur ''passe-partout'' ne sert qu'a eviter l'introduction de
        nombreuses grandeurs sans grand interet.
        X(1)   : composante 1
        ...
-       X(128) : composante 128
+       X(512) : composante 512
 >>
-    N128_I   = I    X[128]
+    N512_I   = I    X[512]
 
 <<  N480_I Type:I Grandeur ''neutre'' de type I
        La signification des composantes varie d'une option a l'autre. Cette
@@ -1383,15 +1389,27 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
 >>
     N480_I   = I    X[480]
 
-<<  N512_I Type:I Grandeur ''neutre'' de type I
+<<  N1080I Type:I Grandeur ''neutre'' de type I
        La signification des composantes varie d'une option a l'autre. Cette
        grandeur ''passe-partout'' ne sert qu'a eviter l'introduction de
        nombreuses grandeurs sans grand interet.
        X(1)   : composante 1
        ...
-       X(512) : composante 512
+       X(1080) : composante 1080
 >>
-    N512_I   = I    X[512]
+    N960_I   = I    X[960]
+    N240_I   = I    X[240]
+    N720_I   = I    X[720]
+
+<<  N1280I Type:I Grandeur ''neutre'' de type I
+       La signification des composantes varie d'une option a l'autre. Cette
+       grandeur ''passe-partout'' ne sert qu'a eviter l'introduction de
+       nombreuses grandeurs sans grand interet.
+       X(1)   : composante 1
+       ...
+       X(1280) : composante 1280
+>>
+    N1280I   = I    X[1280]
 
 <<  NEUT_K8 Type:K8 Grandeur ''neutre'' de type K8
        La signification des composantes varie d'une option a l'autre. Cette
@@ -1462,7 +1480,11 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        X(480) : composante 480
 >>
     N480_R   = R    X[480]
+    N792_R   = R    X[792]
+    N816_R   = R    X[816]
     N1920R   = R    X[1920]
+    N2448R   = R    X[2304]
+    N1360R   = R    X[1280]
 
 %
 %

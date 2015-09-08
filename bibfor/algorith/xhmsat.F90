@@ -1,12 +1,12 @@
 subroutine xhmsat(yachai, option, meca, thmc, ther,&
-                  hydr, imate, ndim, yaenrm, dimenr,&
+                  hydr, imate, ndim, dimenr,&
                   dimcon, nbvari, yamec, addeme,&
                   adcome, advihy, advico, vihrho, vicphi,&
                   addep1, adcp11, congem, congep, vintm,&
                   vintp, dsde, epsv, depsv, p1,&
                   dp1, t, phi, rho11, phi0,&
                   sat, retcom, tbiot, rinstp, angmas,&
-                  aniso, phenom, yaenrh, adenhy)
+                  aniso, phenom, yaenrh, adenhy, nfh)
 ! ======================================================================
 ! person_in_charge: daniele.colombo at ifpen.fr
 ! ======================================================================
@@ -55,7 +55,7 @@ subroutine xhmsat(yachai, option, meca, thmc, ther,&
 #include "asterfort/viporo.h"
 #include "asterfort/virhol.h"
     integer :: ndim, dimcon, nbvari, imate, yamec
-    integer :: adcome, adcp11, vihrho, vicphi
+    integer :: adcome, adcp11, vihrho, vicphi, nfh
     integer :: addeme, addep1, advihy, advico, retcom
     real(kind=8) :: congem(dimcon), congep(dimcon)
     real(kind=8) :: vintm(nbvari), vintp(nbvari)
@@ -66,12 +66,12 @@ subroutine xhmsat(yachai, option, meca, thmc, ther,&
     aster_logical :: yachai
 !
 ! DECLARATION POUR XFEM
-    integer :: yaenrm, dimenr
+    integer :: dimenr
     real(kind=8) :: dsde(dimcon, dimenr)
 ! ======================================================================
 ! --- VARIABLES LOCALES ------------------------------------------------
 ! ======================================================================
-    integer :: i, aniso, yaenrh, adenhy
+    integer :: i, aniso, yaenrh, adenhy, ifh
     real(kind=8) :: epsvm, phim, rho11m, rho110, rho0, csigm
     real(kind=8) :: tbiot(6), cs, alpha0, alpliq, cliq, cp11, sat
     real(kind=8) :: bid, dpad
@@ -239,19 +239,21 @@ subroutine xhmsat(yachai, option, meca, thmc, ther,&
                 dsde(adcp11,addeme+ndim-1+i) = dsde(adcp11,addeme+ ndim-1+i) + dmdeps(i)
  12         continue
         endif
-        if (yaenrm .eq. 1) then
+        if (yaenrh .eq. 1) then
 ! ======================================================================
 ! --- CALCUL DES DERIVEES DE SIGMAP AVEC XFEM --------------------------
 ! ======================================================================
+          do ifh = 1, nfh
             do i = 1, 3
-            dsde(adcome+6-1+i,adenhy)=dsde(adcome+6-1+i,adenhy)+&
-                                      dsdp1(i)
+            dsde(adcome+6-1+i,adenhy+(ifh-1)*(ndim+1))=dsde(adcome+6-1+i,adenhy+&
+                                                       (ifh-1)*(ndim+1))+dsdp1(i)
             end do
 !
             do i = 4, 6
-            dsde(adcome+6-1+i,adenhy)=dsde(adcome+6-1+i,adenhy)+&
-                                      dsdp1(i)*rac2
+            dsde(adcome+6-1+i,adenhy+(ifh-1)*(ndim+1))=dsde(adcome+6-1+i,adenhy+&
+                                                       (ifh-1)*(ndim+1))+dsdp1(i)*rac2
             end do
+          end do
         endif
 ! ======================================================================
 ! --- CALCUL DES DERIVEES DES APPORTS MASSIQUES ------------------------
@@ -262,8 +264,10 @@ subroutine xhmsat(yachai, option, meca, thmc, ther,&
 ! ======================================================================
 ! --- CALCUL DES DERIVEES DES APPORTS MASSIQUES AVEC XFEM --------------
 ! ======================================================================
-            dsde(adcp11,adenhy) = dsde(adcp11,adenhy) + dmwdp1(rho11, signe,sat,dsatp1,phi,cs,cli&
-                                  &q,1.0d0, emmag,bid)
+          do ifh = 1, nfh
+            dsde(adcp11,adenhy+(ifh-1)*(ndim+1)) = dsde(adcp11,adenhy+(ifh-1)*(ndim+1))+dmwdp1(&
+                                             rho11, signe,sat,dsatp1,phi,cs,cliq,1.0d0, emmag,bid)
+          end do
         endif
     endif
 ! ======================================================================

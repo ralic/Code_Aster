@@ -20,13 +20,13 @@ interface
                       igeom, nfh, jheavn, singu, nfe, ddlc,&
                       ddlm, jlst, ipres, ipref, itemps,&
                       idepl, nnop, valres, basloc, ithet,&
-                      nompar, presn, option, igthet, jbasec,&
+                      nompar, option, igthet, jbasec,&
                       contac)
         integer :: nnop
         integer :: ndim
         integer :: ifa
         integer :: jptint
-        integer :: cface(18, 6)
+        integer :: cface(30, 6)
         integer :: igeom
         integer :: nfh
         integer :: singu
@@ -43,7 +43,6 @@ interface
         real(kind=8) :: basloc(9*nnop)
         integer :: ithet
         character(len=8) :: nompar(4)
-        real(kind=8) :: presn(27)
         character(len=16) :: option
         integer :: igthet
         integer :: jbasec

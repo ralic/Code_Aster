@@ -68,20 +68,19 @@ MODE_LOCAL__
     DDL_NOZ1 = SIZZ_R   ELNO__ IDEN__  (SIZZ     )
     E1NEUTI  = NEUT_I   ELEM__         (X1       )
     E3NEUTI  = N120_I   ELEM__         (X[3]     )
-    E10NEUTI = N120_I    ELEM__         (X[10]     )
-    N5NEUTI  = N120_I   ELNO__ IDEN__  (X[5]     )
-    E6NEUTI  = N128_I   ELEM__         (X[6]     )
-    E9NEUTI  = N120_I   ELEM__         (X[9]     )
+    E9NEUTI  = N720_I   ELEM__         (X[9]     )
+    E10NEUTI = N120_I   ELEM__         (X[10]    )
+    E6NEUTI  = N512_I   ELEM__         (X[6]     )
     E18NEUI  = N120_I   ELEM__         (X[18]    )
-    E36NEUI  = N512_I   ELEM__         (X[36]    )
+    E36NEUI  = N1280I   ELEM__         (X[36]    )
     E1NEUTR  = NEUT_R   ELEM__         (X1       )
-
-    E14NEUTR = N120_R   ELEM__         (X[14]    )
+    N5NEUTI  = N120_I   ELNO__ IDEN__  (X[5]     )
+    E14NEUTR = N816_R   ELEM__         (X[14]    )
     E6NEUTR  = N132_R   ELEM__         (X[6]     )
-    E28NEUTR = N480_R   ELEM__         (X[28]    )
-    E35NEUTR = N480_R   ELEM__         (X[35]    )
+    E28NEUTR = N2448R   ELEM__         (X[28]    )
+    E35NEUTR = N1360R   ELEM__         (X[35]    )
     E15NEUTR = N480_R   ELEM__         (X[15]    )
-    E22NEUTR = N480_R   ELEM__         (X[22]    )
+    E22NEUTR = N792_R   ELEM__         (X[22]    )
     EVOISIN  = VOISIN   ELEM__         (V0       V1       V2       V3       V4       V5
                                         V6       T0       T1       T2       T3       T4
                                         T5       T6       )
@@ -306,7 +305,7 @@ OPTION__
                           OUT__ EDOMGGA  PDOMMAG  EGGEOM_R PGEOM_R  EGINST_R PINST_R  EGNEUT_F PNEUT_F
                                 EGNEUT_R PNEUT_R  ECONTPG  PSIEF_R  ZVARIPG  PVARI_R  ETEMXPG  PTEMP_R
                                 EDEPLPG  PDEPL_R
-    XFEM_XPG          46  IN__  E36NEUI  PCNSETO  NGEOMER  PGEOMER  E6NEUTI  PHEAVTO  E10NEUTI  PLONCHA
+    XFEM_XPG          46  IN__  E36NEUI  PCNSETO  NGEOMER  PGEOMER  E6NEUTI  PHEAVTO  E10NEUTI PLONCHA
                                 E6NEUTR  PPINTTO  E22NEUTR PPMILTO
                           OUT__ XFGEOM_R PXFGEOM
     TOPONO           120  IN__  E36NEUI  PCNSETO  E6NEUTI  PHEAVTO  E10NEUTI  PLONCHA  N1NEUT_R PLEVSET

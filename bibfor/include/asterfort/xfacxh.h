@@ -19,10 +19,10 @@ interface
     subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset,&
                   pinter, ninter, jphe, ndim, ainter,nface,nptf,&
                   cface, igeom, jlsn, jaint, jgrlsn, nfiss,&
-                  ifiss, fisco, nfisc, ncompe, nnop)
+                  ifiss, fisc, nfisc, nfisc2, ncompe, jstano)
         integer :: ninter
         integer :: nface
-        integer :: cface(18,6)
+        integer :: cface(30,6)
         integer :: jcnset
         integer :: jnit
         integer :: jmilt
@@ -39,9 +39,10 @@ interface
         character(len=8) :: elp
         integer :: nfiss
         integer :: ifiss
-        integer :: fisco(*)
+        integer :: fisc(*)
         integer :: nfisc
+        integer :: nfisc2
         integer :: ncompe
-        integer :: nnop
+        integer :: jstano
     end subroutine xfacxh
 end interface

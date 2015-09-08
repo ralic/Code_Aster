@@ -1,4 +1,4 @@
-subroutine xhmini(nomte, nfh, ddld, ddlm, ddlp)
+subroutine xhmini(nomte, nfh, ddld, ddlm, ddlp, nfiss)
 !
     implicit none
 !
@@ -41,6 +41,7 @@ subroutine xhmini(nomte, nfh, ddld, ddlm, ddlp)
 ! OUT  DDLM   : NOMBRE DE DDL (DEPL) A CHAQUE NOEUD MILIEU
 ! OUT  DDLP   : NOMBRE DE DDL (PRES) A CHAQUE NOEUD SOMMET
 ! OUT  NFISS  : NOMBRE DE FISSURES
+! OUT  NFFH   : NOMBRE DE DDL HEAVISIDE PAR NOEUD
 !     ------------------------------------------------------------------
 !
     integer :: ndim, nnop, ier, nnops
@@ -66,12 +67,13 @@ subroutine xhmini(nomte, nfh, ddld, ddlm, ddlp)
 !
     if (enr(1:2) .eq. 'XH') then
         nfh = 1
+        if (enr(1:3) .eq. 'XH2') nfh = 2
+        if (enr(1:3) .eq. 'XH3') nfh = 3
+        if (enr(1:3) .eq. 'XH4') nfh = 4
 !       NOMBRE DE FISSURES
         call tecach('NOO', 'PLST', 'L', iret, nval=7,&
                     itab=jtab)
         nfiss = jtab(7)
-!       ON N'AUTORISE PAS LA MULTI-FISSURATION POUR HM-XFEM
-        ASSERT(nfiss.eq.1)
     endif
 !
 ! --- NOMBRE DE DDL AUX NOEUDS SOMMETS (MECANIQUES)

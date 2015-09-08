@@ -1,7 +1,8 @@
 subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
                   jinter, ifa, cface, ipg, nnop,&
                   igeom, jbasec, xg, jac, ffp,&
-                  ffpc, dfdi, nd, tau1, tau2)
+                  ffpc, dfdi, nd, tau1, tau2,&
+                  ifiss, ncompp, ncompb)
 ! aslint: disable=W1306
     implicit none
 !
@@ -17,10 +18,11 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
 #include "asterfort/reeref.h"
 #include "asterfort/vecini.h"
 #include "blas/ddot.h"
-    integer :: jinter, ifa, cface(18, 6), ipg, nnop, igeom, jbasec, ndim
-    real(kind=8) :: jac, ffp(27), ffpc(27), dfdi(nnop, ndim)
-    real(kind=8) :: nd(ndim), tau1(ndim), tau2(ndim), xg(3)
+    integer :: jinter, ifa, cface(30, 6), ipg, nnop, igeom, jbasec, ndim
+    real(kind=8) :: jac, ffp(27), ffpc(27), dfdi(nnop, 3)
+    real(kind=8) :: nd(3), tau1(ndim), tau2(ndim), xg(3)
     character(len=8) :: elrefp, fpg, elrefc, elc
+    integer, intent(in), optional :: ifiss, ncompp, ncompb
 !
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -53,6 +55,7 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
 !       IPG     : NUMÉRO DU POINTS DE GAUSS
 !       NNO     : NOMBRE DE NOEUDS DE L'ELEMENT DE REF PARENT
 !       IGEOM   : COORDONNEES DES NOEUDS DE L'ELEMENT DE REF PARENT
+!       IFISS   : FISSURE COURANTE
 !
 !     SORTIE
 !       G       : COORDONNÉES RÉELLES 3D DU POINT DE GAUSS
@@ -64,11 +67,10 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
 !
     real(kind=8) :: norme
     real(kind=8) :: grlt(3), grln(3), norm2, ps
-    integer :: ibid, nn, nnoc
+    integer :: ibid, nnoc
     integer :: j, k, i, nno, ipoidf, ivff, idfdef, ndimf
-    real(kind=8) :: xe(3), coor3d(3*27)
+    real(kind=8) :: xe(3), coor3d(3*6)
     character(len=8) :: k8bid
-!
 !
 ! ----------------------------------------------------------------------
 !
@@ -83,17 +85,28 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
     call vecini(3, 0.d0, nd)
     call vecini(3, 0.d0, grln)
     call vecini(3, 0.d0, grlt)
-    call vecini(3, 0.d0, tau1)
-    call vecini(3, 0.d0, tau2)
+    call vecini(ndim, 0.d0, tau1)
+    call vecini(ndim, 0.d0, tau2)
+    call vecini(3, 0.d0, xe)
+    call vecini(27, 0.d0, ffp)
+    call vecini(27, 0.d0, ffpc)
+    do i = 1, nnop
+        do j = 1, ndim
+            dfdi(i,j) = 0.d0
+        end do
+    end do
 !
 ! --- COORDONNÉES DES NOEUDS DE LA FACETTE DANS LE REPERE GLOBAL NDIM
-    nn=3*nno
-    do i = 1, nn
+    do i = 1, 18
         coor3d(i)=0.d0
     end do
     do i = 1, nno
         do j = 1, ndim
-            coor3d((i-1)*ndim+j)=zr(jinter-1+ndim*(cface(ifa,i)-1)+j)
+            if (present(ifiss)) then
+               coor3d((i-1)*ndim+j)=zr(jinter-1+ncompp*(ifiss-1)+ndim*(cface(ifa,i)-1)+j)
+            else
+               coor3d((i-1)*ndim+j)=zr(jinter-1+ndim*(cface(ifa,i)-1)+j)
+            endif
         end do
     end do
 !     CALCUL DE JAC EN 3D
@@ -102,7 +115,7 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
                 jac, nd)
 !
 ! --- COORDONNEES REELLES 3D DU POINT DE GAUSS IPG
-    call vecini(3, 0.d0, xg)
+    call vecini(ndim, 0.d0, xg)
     do j = 1, nno
         do i = 1, ndim
           xg(i)=xg(i)+zr(ivff-1+nno*(ipg-1)+j)*coor3d(ndim*(j-1)+i)
@@ -113,9 +126,17 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
 !
     do j = 1, ndim
         do k = 1, nno
-            grln(j) = grln(j) + zr(ivff-1+nno*(ipg-1)+k)*zr(jbasec-1+ndim*ndim*(k-1)+j)
-            grlt(j)= grlt(j) + zr(ivff-1+nno*(ipg-1)+k)*zr(jbasec-1+ndim*ndim*(k-1)+j+&
-            ndim)
+            if (present(ifiss)) then
+               grln(j) = grln(j) + zr(ivff-1+nno*(ipg-1)+k)*zr(jbasec-1+&
+                         (ifiss-1)*ncompb+ndim*ndim*(k-1)+j)
+               grlt(j) = grlt(j) + zr(ivff-1+nno*(ipg-1)+k)*zr(jbasec-1+&
+                         (ifiss-1)*ncompb+ndim*ndim*(k-1)+j+ndim)
+            else
+               grln(j) = grln(j) + zr(ivff-1+nno*(ipg-1)+k)*zr(jbasec-1+&
+                         ndim*ndim*(k-1)+j)
+               grlt(j) = grlt(j) + zr(ivff-1+nno*(ipg-1)+k)*zr(jbasec-1+&
+                         ndim*ndim*(k-1)+j+ndim)
+            endif
         end do
     end do
 !
@@ -143,10 +164,8 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
         endif
         ASSERT(norm2.gt.1.d-12)
     endif
-    if (ndim .eq. 3) then
-        call provec(nd, tau1, tau2)
-    endif
-    call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ffp, dfdi=dfdi)
+    call provec(nd, tau1, tau2)
+    call reeref(elrefp, nnop, zr(igeom), xg, 3, xe, ffp, dfdi=dfdi)
 !
 !
     if (elrefc .eq. elrefp) goto 999
@@ -155,7 +174,7 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
 !     CALCUL DES FF DE L'ÉLÉMENT DE CONTACT EN CE POINT DE GAUSS
     call elelin(3, elrefc, k8bid, nnoc, ibid)
 !
-    call reeref(elrefc, nnoc, zr(igeom), xg, ndim, xe, ffpc)
+    call reeref(elrefc, nnoc, zr(igeom), xg, 3, xe, ffpc)
 !
 999 continue
 !

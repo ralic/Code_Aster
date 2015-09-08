@@ -60,7 +60,7 @@ subroutine xdocon(algocr, algofr, cface, contac, coefcp,&
 #include "asterfort/elrefe_info.h"
 #include "asterfort/teattr.h"
 #include "asterfort/xminte.h"
-    integer :: algocr, algofr, cface(18, 6), contac
+    integer :: algocr, algofr, cface(30, 6), contac
     integer :: i, ibid, idfdef, ifiss
     integer :: ipoidf, ivff, j, jcface
     integer :: jdonco, jlonch

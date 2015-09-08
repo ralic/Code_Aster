@@ -144,7 +144,7 @@ HYDR=AFFE_CHAR_MECA(MODELE=MODELEK,
                    );
 
 HYDR2=AFFE_CHAR_MECA(MODELE=MODELEK,
-                     DDL_IMPO=(_F(NOEUD=('N10','N11','N14','N15','N18','N19','N22','N23',),HPRE1=0.0,),),
+                     DDL_IMPO=(_F(NOEUD=('N10','N11','N14','N15','N18','N19','N22','N23',),H1PRE1=0.0,),),
                      INFO=2,
                     );
 

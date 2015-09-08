@@ -8,6 +8,7 @@ subroutine te0510(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/iselli.h"
 #include "asterfort/jevech.h"
+#include "asterfort/loncar.h"
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
 #include "asterfort/reeref.h"
@@ -55,29 +56,31 @@ subroutine te0510(option, nomte)
 !......................................................................
 !
 !
-    character(len=8) :: elp, noma, face
+    character(len=8) :: elp, noma, face, typma
     character(len=16) :: typdis
     integer :: igeom, jlsn, jlst, jgrlsn, jgrlst
     integer :: jcnset, jpint, jmilt, jnit, jaint, jdecou
     integer :: jout1, jout2, jout3, jout4, jout5, jout6, jout7, jphe
     integer :: iadzi, iazk24
-    integer :: ninter, nface, cface(18, 6), nmaabs
+    integer :: ninter, nface, cface(30, 6), nmaabs
     integer :: i, j, k, jj, nnop
     real(kind=8) :: nd(3), grlt(3), tau1(3), tau2(3), norme, ps
     real(kind=8) :: norm2, ptree(3), ptref(3)
-    real(kind=8) :: lsn, minlst
+    real(kind=8) :: lsn, minlst, lonref
     integer :: ndim, ibid, nptf, nbtot, nfiss, jtab(7), iret
     aster_logical :: elim, elim2
-    integer :: zxain, ifiss, ncompp, ncompa, ncompb, ncompc
-    integer :: ncompe
+    integer :: zxain, ifiss, ncompp, ncompa, ncompb, ncompc, ncompg
+    integer :: ncompe, jstano
     integer :: jfisco, jfiss, kfiss, kcoef, ncomph, he, hescl, hmait
     integer :: nfisc, ifisc, nfisc2, nn, vali(2), jtyp
     character(len=16) :: enr, motfac
+    real(kind=8) :: crijonc
+    parameter(crijonc=1.d-2)
 !
 !     ALLOCATION DES OBJETS TEMPORAIRES A UNE TAILLE SUFFISANTE
 !     (N'EST PAS EXACTEMENT LA TAILLE DES OBJETS EN SORTIE)
     integer :: ptmaxi
-    parameter    (ptmaxi=34)
+    parameter    (ptmaxi=68)
     real(kind=8) :: pinter(ptmaxi*3)
 !
     integer :: zxainx
@@ -88,9 +91,7 @@ subroutine te0510(option, nomte)
     parameter    (nfimax=10)
     integer :: fisc(2*nfimax), fisco(2*nfimax)
 !
-    integer :: nbmax
-    parameter    (nbmax=28)
-    integer :: pthea(nfimax*nbmax)
+    integer :: pthea(nfimax*ptmaxi)
 !
     integer :: nnopma
     parameter    (nnopma=20)
@@ -153,15 +154,20 @@ subroutine te0510(option, nomte)
 !
     call tecael(iadzi, iazk24, noms=0)
     noma=zk24(iazk24)
+    typma=zk24(iazk24-1+3+zi(iadzi-1+2)+3)(1:8)
     call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
     nmaabs=zi(iadzi)
 !
-    if (enr .eq. 'XH1' .or. enr .eq. 'XH2' .or. enr .eq. 'XH3' .or. enr .eq. 'XH4') then
-! --- PAS D'ELEMENTS COUPEES PLUSIEURS FOIS SANS CONTACT POUR L'INSTANT
+!     CALCUL D'UNE LONGUEUR CARACTERISTIQUE DE L'ELEMENT
+    call loncar(ndim, typma, zr(igeom), lonref)
+!
+    if ((enr.eq.'XH1'.or.enr.eq.'XH2'.or.enr.eq.'XH3'.or.enr.eq.'XH4') .and. iselli(elp)) then
+! --- PAS D'ELEMENTS COUPÉES PLUSIEURS FOIS SANS CONTACT POUR L'INSTANT A
+! --- L'EXCEPTION DES ELEMENTS MULTI-HM QUADRATIQUES
         goto 999
     endif
 !
-    if ((ibid.eq.0) .and. (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'&
+    if ((ibid.eq.0) .and. (enr(1:2).eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'&
         .or.enr.eq.'XHC') .and. .not.iselli(elp)) then
          call jevech('PPMILTO', 'L', jmilt)
     endif
@@ -179,19 +185,26 @@ subroutine te0510(option, nomte)
         fisco(i)=0
         fisc(i)=0
     end do
-    nn=nfimax*nbmax
+    nn=nfimax*ptmaxi
     do i = 1, nn
         pthea(i)=0
     end do
+    ncompe = 0
+    ncomph = 0
+    jstano = 0
     if (nfiss .gt. 1) then
         call jevech('PFISCO', 'L', jfisco)
         do i = 1, 2*nfiss
             fisco(i)=zi(jfisco-1+i)
         end do
+        call tecach('OOO', 'PHEAVTO', 'L', iret, nval=7,&
+                    itab=jtab)
+        ncompe = jtab(2)
         call jevech('PHEAVFA', 'E', jout7)
         call tecach('OOO', 'PHEAVFA', 'E', iret, nval=2,&
                     itab=jtab)
         ncomph = jtab(2)
+        if (.not.iselli(elp)) call jevech('PSTANO', 'L', jstano)
     endif
 !
 !     DIMENSIONS DES GRANDEURS DANS LA CARTE
@@ -204,17 +217,23 @@ subroutine te0510(option, nomte)
     call tecach('OOO', 'PAINTER', 'E', iret, nval=2,&
                 itab=jtab)
     ncompa = jtab(2)
+    ASSERT(ncompa/zxain .eq. ncompp/ndim)
     call tecach('OOO', 'PBASECO', 'E', iret, nval=2,&
                 itab=jtab)
     ncompb = jtab(2)
+    ASSERT(ncompb/(ndim**2) .eq. ncompp/ndim)
     call tecach('OOO', 'PCFACE', 'E', iret, nval=2,&
                 itab=jtab)
     ncompc = jtab(2)
+    call tecach('OOO', 'PLONGCO', 'E', iret, nval=2,&
+                itab=jtab)
+    ncompg = jtab(2)
 !
 ! --- BOUCLE SUR LES FISSURES
 !
     do ifiss = 1, nfiss
         nface = 0
+        ninter = 0
         nptf = 0
 ! ----------------------------------------------------------------------
 !       RECHERCHE DES INTERSECTIONS ARETES-FISSURE
@@ -242,11 +261,13 @@ subroutine te0510(option, nomte)
                 if (fisc(2*(i-1)+1) .eq. kfiss) then
                     nfisc2 = nfisc2 + 1
                     fisc(2*(nfisc+nfisc2-1)+1) = jfiss
+                    fisc(2*(nfisc+nfisc2)) = fisco(2*jfiss)
                 endif
             end do
             if (kfiss .eq. ifiss) then
                 nfisc2 = nfisc2 + 1
                 fisc(2*(nfisc+nfisc2-1)+1) = jfiss
+                fisc(2*(nfisc+nfisc2)) = fisco(2*jfiss)
             endif
         end do
 !
@@ -254,13 +275,13 @@ subroutine te0510(option, nomte)
             call xfacxh(elp, jpint, jmilt, jnit, jcnset, pinter, ninter,&
                         jphe, ndim, ainter, nface, nptf, cface, &
                         igeom ,jlsn, jaint, jgrlsn, nfiss, ifiss,&
-                        fisc, nfisc, ncompe, nnop)
-                        nbtot = ninter
+                        fisc, nfisc, nfisc2, ncompe, jstano)
+            nbtot = ninter
         elseif (enr(2:2) .eq. 'T' .and. face(1:8).eq.'SOUS_ELE') then
             call xfacxt(elp, jpint, jmilt, jnit, jcnset, pinter, ninter,&
                         jphe, ndim, ainter, nface, nptf, cface, &
                         igeom, jlsn, jlst, jaint, jgrlsn)
-                        nbtot = ninter
+            nbtot = ninter
         elseif (iselli(elp) .or. ndim .eq. 3) then
             call xcface(zr(jlsn), zr(jlst), jgrlsn, igeom,&
                         enr, nfiss, ifiss, fisc, nfisc,&
@@ -278,6 +299,15 @@ subroutine te0510(option, nomte)
                         nmaabs, pinter, ainter, nface,&
                         nptf, cface, ninter, nfiss, ifiss)
             nbtot = ndim
+        endif
+        if (nface*nptf .gt. ncompc) then
+           call utmess('F', 'XFEM_55')
+        endif
+        if (ninter*ndim .gt. ncompp) then
+           call utmess('F', 'XFEM_55')
+        endif
+        if ((nfiss .gt. 1) .and. (nface*2 .gt. ncomph)) then
+           call utmess('F', 'XFEM_55')
         endif
 !
         if (nfiss .gt. 1 .and. ninter .gt. 0) then
@@ -363,7 +393,10 @@ subroutine te0510(option, nomte)
                     do k = 1, nnop
                         lsn = lsn + ff(k) * zr(jlsn-1+nfiss*(k-1)+ jfiss)
                     end do
-                    if (abs(lsn) .gt. 1.d-10) then
+                    if (ainter(zxain*(i-1)+4) .eq. -1.d0) then
+!    LES POINTS DE JONCTION ENTRE FISSURES ONT LEUR LSN AJUSTEE A ZERO
+                        if (abs(lsn) .le. (crijonc*lonref)) pthea(nfiss*(i-1)+jfiss) = 0
+                    elseif (abs(lsn) .gt. 1.d-10) then
                         pthea(nfiss*(i-1)+jfiss) = nint(sign(1.d0,lsn) )
                     endif
                 end do
@@ -428,7 +461,7 @@ subroutine te0510(option, nomte)
                     zi(jout7-1+ncomph*(nfiss*(ifiss-1)+jfiss-1)+2*i-1) = hescl
                     zi(jout7-1+ncomph*(nfiss*(ifiss-1)+jfiss-1)+2*i) = hmait
                 end do
-                if (elim2) then
+                if (elim2.and.face(1:8).ne.'SOUS_ELE') then
                     call utmess('A', 'XFEM_45', sk=nomte)
                     goto 998
                 endif
@@ -438,18 +471,11 @@ subroutine te0510(option, nomte)
 !     ARCHIVAGE DE LONGCO
 !
 97      continue
-        if (nface.gt.0) then
-           ASSERT(nface.le.(ncompc*nfiss/nptf))
-        endif
-        zi(jout4+3*(ifiss-1)-1+2)=nface
+        zi(jout4+ncompg*(ifiss-1)-1+2)=nface
 998     continue
+        zi(jout4+ncompg*(ifiss-1)-1+1)=nbtot
 !
-        ASSERT(ninter.le.(ncompp*nfiss/ndim))
-        ASSERT(ninter.le.(ncompa*nfiss/zxain))
-        ASSERT(ninter.le.(ncompb*nfiss/(ndim**2)))
-        zi(jout4+3*(ifiss-1)-1+1)=nbtot
-!
-        zi(jout4+3*(ifiss-1)-1+3)=nptf
+        zi(jout4+ncompg*(ifiss-1)-1+3)=nptf
 !
         if (nfiss .eq. 1) then
             do i = 1, 2*nfimax
@@ -458,7 +484,7 @@ subroutine te0510(option, nomte)
         endif
 !
 !
-end do
+    end do
 !
 999 continue
 !

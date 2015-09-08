@@ -1,6 +1,6 @@
 subroutine xfnoda(imate, mecani, press1, enrmec, dimenr,&
                   dimcon, ndim, dt, fnoevo, congem,&
-                  r, enrhyd)
+                  r, enrhyd, nfh)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,11 +25,11 @@ subroutine xfnoda(imate, mecani, press1, enrmec, dimenr,&
     aster_logical :: fnoevo
     integer :: mecani(5), press1(7), enrmec(3), dimenr, dimcon
     integer :: ndim, imate, yaenrm, adenme
-    integer :: enrhyd(3), yaenrh, adenhy
+    integer :: enrhyd(3), yaenrh, adenhy, nfh
     real(kind=8) :: dt, congem(dimcon), r(dimenr)
 ! ======================================================================
     integer :: nhom, yamec, yap1, addeme, adcome
-    integer :: addep1, adcp11, i
+    integer :: addep1, adcp11, i, ifh
     parameter    (nhom=3)
     real(kind=8) :: hom(nhom), pesa(3), rac2
     integer :: icodre(nhom)
@@ -92,9 +92,12 @@ subroutine xfnoda(imate, mecani, press1, enrmec, dimenr,&
     if (yaenrm .eq. 1) then
         if (yamec .eq. 1) then
             if (yap1 .eq. 1) then
+              do ifh = 1, nfh
                 do 11 i = 1, ndim
-                    r(adenme+i-1)=r(adenme+i-1)-pesa(i)*congem(adcp11)
+                    r(adenme+i-1+(ifh-1)*(ndim+1))=r(adenme+i-1+(ifh-1)*&
+                                          (ndim+1))-pesa(i)*congem(adcp11)
  11             continue
+              end do
             endif
         endif
     endif

@@ -146,6 +146,7 @@ class sd_modele_xfem(AsBase):
     BASLOC = sd_cham_elem(SDNom(nomj='.BASLOC'))
     STNO = sd_cham_elem(SDNom(nomj='.STNO'))
     FISSNO = sd_cham_elem(SDNom(nomj='.FISSNO'))
+    FISSCO = sd_cham_elem(SDNom(nomj='.FISSCO'))
     HEAVNO = sd_cham_elem(SDNom(nomj='.HEAVNO'))
     NOXFEM = sd_cham_no()
 

@@ -45,12 +45,12 @@ subroutine te0120(nomopt, nomte)
 !
     integer :: nnomax, nfismax, base_codage
     parameter (nnomax=27, nfismax=4, base_codage=4)
-    character(len=8) :: elrefp, enr, elrese(6)
+    character(len=8) :: elrefp, enr, elrese(6), enr2
     integer :: ibid, jcnset, jheavt, jlonch, jheano, jhease, jheafa, jheavf, jlonco
     integer :: ncomph, ncompn, ifiss, nfiss, ncmpfa, he(nfismax), nbnose(6), nface, ifac, ncmpfa2
     integer ::  id_no(nnomax), id_se, isd, nbsd, list_sd(nfismax), cpt, jfiss, jlsn, nnos, jfisco
     real(kind=8) :: heav_no(nfismax)
-    aster_logical :: is_counted(base_codage**nfismax), multi_contact
+    aster_logical :: is_counted(base_codage**nfismax), multi_contact, pre1
     integer :: ndim, irese, nno, nnop, nse, ise, ino, iret, jtab(7)
     data          elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
     data          nbnose /2,3,4,3,6,10/
@@ -68,7 +68,14 @@ subroutine te0120(nomopt, nomte)
         multi_contact=.true.
     else
         multi_contact=.false.
-    endif    
+    endif
+!
+    call teattr('C', 'MODTHM', enr2, iret)
+    pre1=(iret.eq.0)
+
+    if (pre1.and.(enr.eq.'XH1'.or.enr.eq.'XH2'.or.enr.eq.'XH3'.or.enr.eq.'XH4')) then
+        multi_contact=.true.
+    endif
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! LECTURE DES DONNEES TOPOLOGIQUES

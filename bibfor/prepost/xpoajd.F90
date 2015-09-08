@@ -106,7 +106,7 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
     integer :: nnol, ngl(8), ibid, ifiss, fiss, npr(8), nlag
     integer :: lact(8), nlact, hea_se
     aster_logical :: lpint, lcont, pre1
-    parameter    (crilsn = 1.d-4)
+    parameter    (crilsn = 1.d-6)
 !
 !     ------------------------------------------------------------------
     call jemarq()
@@ -230,16 +230,18 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
                                   zi(jheavn-1+(j-1)*ncompn+ncompn))&
                        *ff(j)*zr(iad+cmp(ipos))
  90             continue
+!         ON ZAPPE LA POSITION DES DDLS HEAVISIDE DE PRESSION QUELQUE SOIT LA
+!         NATURE DU NOEUD
+                ipos=ipos+1
  85         continue
 !
  70     continue
-!
-            press=0.d0
 !         ON TRAITE ICI LES DDLS DE PRESSION (NOEUDS SOMMETS UNIQUEMENT)
-            do 93 i = 1, nnops
-                npr(i)=zi(jconx1-1+zi(jconx2+ima-1)+i-1)
- 93         continue
+        do 93 i = 1, nnops
+            npr(i)=zi(jconx1-1+zi(jconx2+ima-1)+i-1)
+ 93     continue
 !
+         press=0.d0
 !         DDLS CLASSIQUES POUR LA PRESSION DANS LE MASSIF
         do 95 i = 1, nnops
            press = press + ff2(i)*zr(jcnsv1-1+nbcmp*(npr(i)-1)+cmp(ndim+1))
@@ -247,7 +249,7 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
           do 96 ig = 1, nfh
             press = press +xcalc_heav(zi(jheavn-1+(i-1)*ncompn+ig),hea_se,&
                                   zi(jheavn-1+(i-1)*ncompn+ncompn))*zr(&
-                    &jcnsv1-1+nbcmp*(npr(i)-1)+cmp(ndim+1+nfh*ndim+1))*ff2(i)
+                    &jcnsv1-1+nbcmp*(npr(i)-1)+cmp(ndim+1+ig*(ndim+1)))*ff2(i)
  96       continue
  95     continue
     else

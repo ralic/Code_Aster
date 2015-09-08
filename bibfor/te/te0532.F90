@@ -62,7 +62,7 @@ subroutine te0532(option, nomte)
     integer :: ivff, iadzi, iazk24, ibid, jout1, jout2
     integer :: jout3, jmemco, ndim, nfh, ddlc, ddls, ddlm
     integer :: npg, npgf, incoca, nfe, ninter, nnof, vstnc(1)
-    integer :: indco, gliss, memco, nface, cface(18, 6)
+    integer :: indco, gliss, memco, nface, cface(30, 6)
     integer :: nno, nnos, nnom, nnol, pla(27), lact(8), nlact, nvec
     integer :: contac, jbasec, nddl, nfiss, jfisno
     integer :: jmate, singu, jcohes, jcoheo, jheano, ifiss, jheafa, jheavn, ncomph

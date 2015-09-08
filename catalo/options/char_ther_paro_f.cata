@@ -24,16 +24,15 @@ OPTION__
         PTEMPSR  INST_R
         PTEMPER  TEMP_R
 % PARAMETRES SPECIFIQUES A X-FEM
-        PPINTER  N120_R
-        PAINTER  N480_R
-        PCFACE   N120_I
+        PPINTER  N816_R
+        PAINTER  N1360R
+        PCFACE   N720_I
         PLONGCO  N120_I
         PLST     NEUT_R
         PLSN     NEUT_R
         PSTANO   N120_I
-        PBASECO  N480_R
+        PBASECO  N2448R
         PHEA_NO  N120_I
-
    OUT__
 PVECTTR VTEM_R RESL__
 

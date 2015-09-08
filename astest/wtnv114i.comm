@@ -142,7 +142,7 @@ CHARHO=AFFE_CHAR_MECA(   MODELE=MODELEK,
                                     DY = 0.,
                                     H1X = 0.,
                                     H1Y = 0.,
-                                    HPRE1=0.,
+                                    H1PRE1=0.,
                                     H1Z = 0.,),),
                                    )
 

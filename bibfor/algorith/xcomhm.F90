@@ -5,8 +5,8 @@ subroutine xcomhm(option, imate, compor,instap,&
                   addep2, addete, defgem,&
                   defgep, congem, congep, vintm,&
                   vintp, dsde, pesa, retcom, kpi,&
-                  npg, p10, p20, yaenrm, dimenr,&
-                  idecpg, angmas, yaenrh, adenhy)
+                  npg, p10, p20, dimenr,&
+                  idecpg, angmas, yaenrh, adenhy, nfh)
 ! ======================================================================
 ! person_in_charge: daniele.colombo at ifpen.fr
 ! ======================================================================
@@ -75,8 +75,9 @@ subroutine xcomhm(option, imate, compor,instap,&
 #include "asterfort/xcalfh.h"
 #include "asterfort/xcalme.h"
 #include "asterfort/xhmsat.h"
+#include "asterfort/assert.h"
     aster_logical :: yachai
-    integer :: retcom, kpi, npg, vicpr1, vicpr2
+    integer :: retcom, kpi, npg, vicpr1, vicpr2, nfh
     integer :: ndim, dimdef, dimcon, nbvari, imate, yamec, yap1
     integer :: yap2, yate, addeme, addep1, addep2, addete
     integer :: adcome, adcp11
@@ -86,7 +87,7 @@ subroutine xcomhm(option, imate, compor,instap,&
     character(len=16) :: compor(*), option
 !
 ! DECLARATION POUR XFEM
-    integer :: yaenrm, dimenr, idecpg
+    integer :: dimenr, idecpg
     integer :: yaenrh, adenhy
     real(kind=8) :: dsde(1:dimcon, 1:dimenr)
 ! ======================================================================
@@ -137,14 +138,14 @@ subroutine xcomhm(option, imate, compor,instap,&
 ! --- CALCUL DES RESIDUS ET DES MATRICES TANGENTES ---------------------
 ! ======================================================================
     call xhmsat(yachai, option, meca, thmc, ther,&
-                hydr, imate, ndim, yaenrm, dimenr,&
+                hydr, imate, ndim, dimenr,&
                 dimcon, nbvari, yamec, addeme,&
                 adcome, advihy, advico, vihrho, vicphi,&
                 addep1, adcp11, congem, congep, vintm,&
                 vintp, dsde, epsv, depsv, p1,&
                 dp1, t, phi, rho11, phi0,&
                 sat, retcom, tbiot, instap,&
-                angmas, aniso, phenom, yaenrh, adenhy)
+                angmas, aniso, phenom, yaenrh, adenhy, nfh)
     if (retcom .ne. 0) then
         goto 900
     endif
@@ -183,7 +184,7 @@ subroutine xcomhm(option, imate, compor,instap,&
                     addep1, adcp11, addeme, congep, dsde,&
                     grap1, rho11, pesa, tperm, unsurk,&
                     viscl, dviscl, dimenr,&
-                    adenhy)
+                    adenhy, nfh)
         if (retcom .ne. 0) then
             goto 900
         endif

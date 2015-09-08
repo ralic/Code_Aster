@@ -31,12 +31,12 @@ subroutine xmoimp(nh8, nh20, np6, np15, np5,&
     integer :: nth8(7), ntp6(7), ntp5(7), ntt4(7), ntpq4(7), ntpt3(7)
     integer :: ntaq4(7), ntat3(7), ntf4(7), ntf3(7), ntpf2(7), ntax2(7)
 !
-    integer :: nhyq8(7), nhyt6(7), nhymq8(7), nhymt6(7), nhysq8(7)
-    integer :: nhyst6(7), nhydq8(7), nhydt6(7), nphm(7)
-    integer :: nhe20(7), nhem20(7), nhed20(7), nhes20(7), npe15(7)
-    integer :: npem15(7), npes15(7), nped15(7), npy13(7), npym13(7)
-    integer :: npys13(7), npyd13(7), nte10(7), ntes10(7)
-    integer :: nted10(7), ntem10(7), nbhm(7), nchm(7)
+    integer :: nhyq8(11), nhyt6(11), nhymq8(7), nhymt6(7), nhysq8(7)
+    integer :: nhyst6(7), nhydq8(7), nhydt6(7), nphm(11)
+    integer :: nhe20(11), nhem20(7), nhed20(7), nhes20(7), npe15(11)
+    integer :: npem15(7), npes15(7), nped15(7), npy13(11), npym13(7)
+    integer :: npys13(7), npyd13(7), nte10(11), ntes10(7)
+    integer :: nted10(7), ntem10(7), nbhm(11), nchm(11)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -139,7 +139,7 @@ subroutine xmoimp(nh8, nh20, np6, np15, np5,&
 !
 !     ELEMENTS HM-XFEM (MECANIQUE)
     if (nhyq8(7) .ne. 0) write(ifm, 810)'HMDP QUAD8', nhyq8(1), nhyq8(2), nhyq8(3), nhyq8(4),&
-                         nhyq8(5), nhyq8(6), 0, 0, 0, 0, 0, 0, 0
+                         nhyq8(5), nhyq8(6), nhyq8(8), nhyq8(9), nhyq8(10), nhyq8(11), 0, 0, 0, 0
     if (nhymq8(7) .ne. 0) write(ifm, 810)'HMDP QUAD8M', nhymq8(1), nhymq8(2), nhymq8(3),&
                           nhymq8(4), nhymq8(5), nhymq8(6), 0, 0, 0, 0, 0, 0, 0
     if (nhysq8(7) .ne. 0) write(ifm, 810)'HMDP QUAD8S', nhysq8(1), nhysq8(2), nhysq8(3),&
@@ -147,7 +147,7 @@ subroutine xmoimp(nh8, nh20, np6, np15, np5,&
     if (nhydq8(7) .ne. 0) write(ifm, 810)'HMDP QUAD8D', nhydq8(1), nhydq8(2), nhydq8(3),&
                           nhydq8(4), nhydq8(5), nhydq8(6), 0, 0, 0, 0, 0, 0, 0
     if (nhyt6(7) .ne. 0) write(ifm, 810)'HMDP TRIA6', nhyt6(1), nhyt6(2), nhyt6(3), nhyt6(4),&
-                         nhyt6(5), nhyt6(6), 0, 0, 0, 0, 0, 0, 0
+                         nhyt6(5), nhyt6(6), nhyt6(8), nhyt6(9), nhyt6(10), nhyt6(11), 0, 0, 0, 0
     if (nhymt6(7) .ne. 0) write(ifm, 810)'HMDP TRIA6M', nhymt6(1), nhymt6(2), nhymt6(3),&
                           nhymt6(4), nhymt6(5), nhymt6(6), 0, 0, 0, 0, 0, 0, 0
     if (nhyst6(7) .ne. 0) write(ifm, 810)'HMDP TRIA6S', nhyst6(1), nhyst6(2), nhyst6(3),&
@@ -155,10 +155,9 @@ subroutine xmoimp(nh8, nh20, np6, np15, np5,&
     if (nhydt6(7) .ne. 0) write(ifm, 810)'HMDP TRIA6D', nhydt6(1), nhydt6(2), nhydt6(3),&
                           nhydt6(4), nhydt6(5), nhydt6(6), 0, 0, 0, 0, 0, 0, 0
     if (nphm(7) .ne. 0) write(ifm, 810)'HMDP SEG3', nphm(1), nphm(2), nphm(3), nphm(4), nphm(5),&
-                        nphm(6), 0, 0, 0, 0, 0, 0, 0
-                                                                                                
+                        nphm(6), nphm(8), nphm(9), nphm(10), nphm(11), 0, 0, 0, 0
     if (nhe20(7) .ne. 0) write(ifm, 810)'HM3D HEXA20', nhe20(1), nhe20(2), nhe20(3), nhe20(4),&
-                         nhe20(5), nhe20(6), 0, 0, 0, 0, 0, 0, 0
+                         nhe20(5), nhe20(6), nhe20(8), nhe20(9), nhe20(10), nhe20(11), 0, 0, 0, 0
     if (nhem20(7) .ne. 0) write(ifm, 810)'HM3D HEXA20M', nhem20(1), nhem20(2), nhem20(3),&
                           nhem20(4), nhem20(5), nhem20(6), 0, 0, 0, 0, 0, 0, 0
     if (nhes20(7) .ne. 0) write(ifm, 810)'HM3D HEXA20S', nhes20(1), nhes20(2), nhes20(3),&
@@ -166,25 +165,23 @@ subroutine xmoimp(nh8, nh20, np6, np15, np5,&
     if (nhed20(7) .ne. 0) write(ifm, 810)'HM3D HEXA20D', nhed20(1), nhed20(2), nhed20(3),&
                           nhed20(4), nhed20(5), nhed20(6), 0, 0, 0, 0, 0, 0, 0
     if (npe15(7) .ne. 0) write(ifm, 810)'HM3D PENTA15', npe15(1), npe15(2), npe15(3), npe15(4),&
-                         npe15(5), npe15(6), 0, 0, 0, 0, 0, 0, 0
+                         npe15(5), npe15(6), npe15(8), npe15(9), npe15(10), npe15(11), 0, 0, 0, 0
     if (npem15(7) .ne. 0) write(ifm, 810)'HM3D PENTA15M', npem15(1), npem15(2), npem15(3),&
                           npem15(4), npem15(5), npem15(6), 0, 0, 0, 0, 0, 0, 0
     if (npes15(7) .ne. 0) write(ifm, 810)'HM3D PENTA15S', npes15(1), npes15(2), npes15(3),&
                           npes15(4), npes15(5), npes15(6), 0, 0, 0, 0, 0, 0, 0
     if (nped15(7) .ne. 0) write(ifm, 810)'HM3D PENTA15D', nped15(1), nped15(2), nped15(3),&
                           nped15(4), nped15(5), nped15(6), 0, 0, 0, 0, 0, 0, 0
-
     if (npy13(7) .ne. 0) write(ifm, 810)'HM3D PYRAM13', npy13(1), npy13(2), npy13(3), npy13(4),&
-                         npy13(5), npy13(6), 0, 0, 0, 0, 0, 0, 0
+                         npy13(5), npy13(6), npy13(8), npy13(9), npy13(10), npy13(11), 0, 0, 0, 0
     if (npym13(7) .ne. 0) write(ifm, 810)'HM3D PYRAM13M', npym13(1), npym13(2), npym13(3),&
                           npym13(4), npym13(5), npym13(6), 0, 0, 0, 0, 0, 0, 0
     if (npys13(7) .ne. 0) write(ifm, 810)'HM3D PYRAM13S', npys13(1), npys13(2), npys13(3),&
                           npys13(4), npys13(5), npys13(6), 0, 0, 0, 0, 0, 0, 0
     if (npyd13(7) .ne. 0) write(ifm, 810)'HM3D PYRAM13D', npyd13(1), npyd13(2), npyd13(3),&
                           npyd13(4), npyd13(5), npyd13(6), 0, 0, 0, 0, 0, 0, 0
-
     if (nte10(7) .ne. 0) write(ifm, 810)'HM3D TETRA10', nte10(1), nte10(2), nte10(3), nte10(4),&
-                         nte10(5), nte10(6), 0, 0, 0, 0, 0, 0, 0
+                         nte10(5), nte10(6), nte10(8), nte10(9), nte10(10), nte10(11), 0, 0, 0, 0
     if (ntem10(7) .ne. 0) write(ifm, 810)'HM3D TETRA10M', ntem10(1), ntem10(2), ntem10(3),&
                           ntem10(4), ntem10(5), ntem10(6), 0, 0, 0, 0, 0, 0, 0 
     if (ntes10(7) .ne. 0) write(ifm, 810)'HM3D TETRA10S', ntes10(1), ntes10(2), ntes10(3),&
@@ -192,9 +189,9 @@ subroutine xmoimp(nh8, nh20, np6, np15, np5,&
     if (nted10(7) .ne. 0) write(ifm, 810)'HM3D TETRA10D', nted10(1), nted10(2), nted10(3),&
                           nted10(4), nted10(5), nted10(6), 0, 0, 0, 0, 0, 0, 0
     if (nbhm(7) .ne. 0) write(ifm, 810)'HM3D FACE8', nbhm(1), nbhm(2), nbhm(3), nbhm(4),&
-                         nbhm(5), nbhm(6), 0, 0, 0, 0, 0, 0, 0
+                         nbhm(5), nbhm(6), nbhm(8), nbhm(9), nbhm(10), nbhm(11), 0, 0, 0, 0
     if (nchm(7) .ne. 0) write(ifm, 810)'HM3D FACE6', nchm(1), nchm(2), nchm(3), nchm(4),&
-                         nchm(5), nchm(6), 0, 0, 0, 0, 0, 0, 0
+                         nchm(5), nchm(6), nchm(8), nchm(9), nchm(10), nchm(11), 0, 0, 0, 0
 !     ELEMENTS THERMIQUES
     if (nth8(7) .ne. 0) write(ifm, 810)'HEXA8', nth8(1), nth8(2), nth8(3), nth8(4), nth8(5),&
                         nth8(6), 0, 0, 0, 0, 0, 0, 0

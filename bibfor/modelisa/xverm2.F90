@@ -69,11 +69,10 @@ subroutine xverm2(nfiss, fiss, mod)
             call utmess('F', 'XFEM_78', sk='HM-XFEM')
         endif
 !
-!       on interdit le multi-heaviside en thermique et en HM-XFEM
+!       on interdit le multi-heaviside en thermique
 !
         call jeexin(fiss(ifiss)//'.JONFISS', iexi)
-        if ( (iexi .ne. 0 .and. pheno .eq. 'THERMIQUE') .or. &
-             (iexi .ne. 0 .and. exithm .eq. 'OUI'     ) ) then
+        if (iexi .ne. 0 .and. pheno .eq. 'THERMIQUE') then
                 call utmess('F', 'XFEM_71', sk=mod)
         endif
 !

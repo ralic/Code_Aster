@@ -66,9 +66,9 @@ subroutine te0588(option, nomte)
     integer :: nmec, np1, np2, i, ncmp, nnos, ichg, ichn
     integer :: jtab(7), igau, isig, nnom
     real(kind=8) :: defgep(13), defgem(13)
-    real(kind=8) :: dfdi(20, 3), dfdi2(20, 3), b(17, 20*8)
-    real(kind=8) :: drds(17, 11+5), drdsr(17, 11+5), dsde(11+5, 17)
-    real(kind=8) :: r(17), sigbar(17), c(17), ck(17), cs(17)
+    real(kind=8) :: dfdi(20, 3), dfdi2(20, 3), b(29, 20*8)
+    real(kind=8) :: drds(29, 11+5), drdsr(29, 11+5), dsde(11+5, 29)
+    real(kind=8) :: r(29), sigbar(29), c(29), ck(29), cs(29)
     real(kind=8) :: epsm(405)
     real(kind=8) :: angmas(7), coor(3), angnau(3), angleu(3)
     character(len=3) :: modint
@@ -81,7 +81,7 @@ subroutine te0588(option, nomte)
     aster_logical :: axi, perman
 ! =====================================================================
 !  CETTE ROUTINE FAIT UN CALCUL EN HM AVEC XFEM
-!  17 = (9 DEF MECA) + (3 DEF HEAV MECA) + 4 POUR P1 + 1 pour P1 HEAV
+!  29 = (9 DEF MECA) + (12 DEF HEAV MECA) + 4 POUR P1 + 4 pour P1 HEAV
 !  16 = 12 MECA + 4 POUR P1
 ! =====================================================================
 !  POUR LES TABLEAUX DEFGEP ET DEFGEM ON A DANS L'ORDRE :
@@ -90,8 +90,9 @@ subroutine te0588(option, nomte)
 !                                      EPXX EPYY EPZZ EPXY EPXZ EPYZ
 !                                      PRE1 P1DX P1DY P1DZ
 !                                      (PARTIE ENRICHIE)
-!                                      H1X  H1Y H1Z
-!                                      HPRE1 
+!                                      H1X  H1Y H1Z  H2X  H2Y  H2Z
+!                                      H3X  H3Y H3Z  H4X  H4Y  H4Z
+!                                      H1PRE1  H2PRE1  H3PRE1  H4PRE1
 !            EPSXY = RAC2/2*(DU/DY+DV/DX)
 ! =====================================================================
 !    POUR LES CHAMPS DE CONTRAINTE
@@ -133,7 +134,7 @@ subroutine te0588(option, nomte)
 ! =====================================================================
 ! DECLARATION POUR XFEM
 !
-    integer :: nfh
+    integer :: nfh, nfiss, jfisno
     integer :: ddld, ddlm, ddlp, nnop, nnops, nnopm
     integer :: enrmec(3), nenr, dimenr, enrhyd(3)
     integer :: jpintt, jcnset, jheavt, jpmilt, jheavn
@@ -148,14 +149,14 @@ subroutine te0588(option, nomte)
 ! =====================================================================
 ! INITIALISATION POUR XFEM
 !
-    call xhmini(nomte, nfh, ddld, ddlm, ddlp)
+    call xhmini(nomte, nfh, ddld, ddlm, ddlp, nfiss)
     call xcaehm(nomte, axi, perman, typmod, modint,&
                 mecani, press1, press2, tempe, dimdef,&
                 dimcon, nmec, np1, np2, ndim,&
                 nno, nnos, nnom, npi, npg,&
                 nddls, nddlm, dimuel, ipoids, ivf,&
                 idfde, ddld, ddlm, ddlp, enrmec, nenr,&
-                dimenr, nnop, nnops, nnopm, enrhyd)
+                dimenr, nnop, nnops, nnopm, enrhyd, nfh)
 ! =====================================================================
 ! --- PARAMETRES PROPRES A XFEM ---------------------------------------
 ! =====================================================================
@@ -173,8 +174,10 @@ subroutine te0588(option, nomte)
 !
 ! PARAMÈTRES PROPRES AUX ÉLÉMENTS 1D ET 2D QUADRATIQUES
 !
-    if ((ibid.eq.0) .and. (enr.eq.'XH') .and. .not. iselli(elref)) call jevech('PPMILTO', 'L',&
+    if ((ibid.eq.0) .and. (enr(1:2).eq.'XH') .and. .not. iselli(elref)) call jevech('PPMILTO', 'L',&
                                                                                jpmilt)
+! PARAMETRE PROPRE AU MULTI-HEAVISIDE
+    if (nfiss .gt. 1) call jevech('PFISNO', 'L', jfisno)
 ! =====================================================================
 ! --- DEBUT DES DIFFERENTES OPTIONS -----------------------------------
 ! =====================================================================
@@ -270,7 +273,7 @@ subroutine te0588(option, nomte)
                         np1, ndim, zk16(icompo), axi, modint,&
                         retloi, nnop, nnops, nnopm, enrmec,&
                         dimenr, zi(jheavt), zi( jlonch), zi(jcnset), jpintt,&
-                        jpmilt, jheavn, angnau,dimmat, enrhyd)
+                        jpmilt, jheavn, angnau,dimmat, enrhyd, nfiss, nfh, jfisno)
         else
             do 30 li = 1, dimuel
                 zr(ideplp+li-1) = zr(ideplm+li-1) + zr(ideplp+li-1)
@@ -287,15 +290,15 @@ subroutine te0588(option, nomte)
                         np1, ndim, zk16(icompo), axi, modint,&
                         retloi, nnop, nnops, nnopm, enrmec,&
                         dimenr, zi(jheavt), zi( jlonch), zi(jcnset), jpintt,&
-                        jpmilt, jheavn, angnau,dimmat, enrhyd)
+                        jpmilt, jheavn, angnau,dimmat, enrhyd, nfiss, nfh, jfisno)
             zi(jcret) = retloi
         endif
 ! =====================================================================
 ! --- SUPRESSION DES DDLS HEAVISIDE SUPERFLUS -------------------------
 ! =====================================================================
-        call xhmddl(ndim, nddls, dimuel, nnop, nnops,&
+        call xhmddl(ndim, nfh, nddls, dimuel, nnop, nnops,&
                     zi(jstno), .false._1, option, nomte, zr(imatuu),&
-                    zr(ivectu), nddlm)
+                    zr(ivectu), nddlm, nfiss, jfisno)
     endif
 ! =====================================================================
 ! --- 3. OPTION : CHAR_MECA_PESA_R ------------------------------------
@@ -317,14 +320,14 @@ subroutine te0588(option, nomte)
                     nddlm, npg, igeom, jpintt, jpmilt, jheavn,&
                     ivf, ipoids, idfde, ivectu, ipesa,&
                     zi(jheavt), zi( jlonch), zi(jcnset), rho(1), axi,&
-                    yaenrm)
+                    yaenrm, nfiss, nfh, jfisno)
 !
 ! =====================================================================
 ! --- SUPRESSION DES DDLS HEAVISIDE SUPERFLUS -------------------------
 ! =====================================================================
-        call xhmddl(ndim, nddls, dimuel, nnop, nnops,&
+        call xhmddl(ndim, nfh, nddls, dimuel, nnop, nnops,&
                     zi(jstno), .false._1, option, nomte, rbid,&
-                    zr(ivectu), nddlm)
+                    zr(ivectu), nddlm, nfiss, jfisno)
     endif
 ! ======================================================================
 ! --- 4. OPTION : FORC_NODA --------------------------------------------
@@ -362,14 +365,14 @@ subroutine te0588(option, nomte)
                     dimuel, nmec, np1, ndim, axi,&
                     dimenr, nnop, nnops, nnopm, igeom,&
                     jpintt, jpmilt, jheavn, zi(jlonch), zi( jcnset), zi(jheavt),&
-                    enrmec, enrhyd)
+                    enrmec, enrhyd, nfiss, nfh, jfisno)
 !
 ! =====================================================================
 ! --- SUPRESSION DES DDLS HEAVISIDE SUPERFLUS -------------------------
 ! =====================================================================
-        call xhmddl(ndim, nddls, dimuel, nnop, nnops,&
+        call xhmddl(ndim, nfh, nddls, dimuel, nnop, nnops,&
                     zi(jstno), .false._1, option, nomte, rbid,&
-                    zr(ivectu), nddlm)
+                    zr(ivectu), nddlm, nfiss, jfisno)
     endif
 ! ======================================================================
 ! --- 6. OPTION : REFE_FORC_NODA ---------------------------------------

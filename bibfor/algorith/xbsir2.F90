@@ -56,7 +56,7 @@ subroutine xbsir2(elref, contac, ddlc, ddlm, ddls,&
 ! CALCUL RESIDU DE REFERENCE ELEMENTS COHESIF MIXTE XFEM
 ! TERMES D INTERFACE
 ! -------------------
-    integer :: cface(18, 6), contac, ddlc, ddlm, ddls
+    integer :: cface(30, 6), contac, ddlc, ddlm, ddls
     integer :: i, iadzi, iazk24, vstnc(1), ibid, ifa, ifiss, igeom, ipgf
     integer :: iret, jaint, jbasec, jcface
     integer :: jheavn, jheafa, jheano, jlonch, jlst, jptint, jtab(7)

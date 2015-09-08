@@ -21,7 +21,7 @@ interface
                       igeom, jlsn, jlst, jaint, jgrlsn)
         integer :: ninter
         integer :: nface
-        integer :: cface(18,6)
+        integer :: cface(30,6)
         integer :: jcnset
         integer :: jnit
         integer :: jmilt

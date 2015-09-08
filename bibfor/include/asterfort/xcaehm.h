@@ -24,7 +24,7 @@ interface
                       nno, nnos, nnom, npi, npg,&
                       nddls, nddlm, dimuel, ipoids, ivf,&
                       idfde, ddld, ddlm, ddlp, enrmec, nenr,&
-                      dimenr, nnop, nnops, nnopm, enrhyd)
+                      dimenr, nnop, nnops, nnopm, enrhyd, nfh)
         character(len=16) :: nomte
         aster_logical :: axi
         aster_logical :: perman
@@ -61,5 +61,6 @@ interface
         integer :: nnops
         integer :: nnopm
         integer :: enrhyd(3)
+        integer :: nfh
     end subroutine xcaehm
 end interface 

@@ -1,8 +1,8 @@
 subroutine xalg42(ndim, elrefp, nnop, it, nnose,&
-                  cnset, typma, ndime, igeom, jlsn,&
+                  cnset, typma, ndime, igeom, lsnelp,&
                   pmilie, ninter, ainter, ar, npts,&
                   nptm, pmmax, nmilie, mfis, lonref,&
-                  pinref)
+                  pinref, pintt, pmitt, jonc)
     implicit none
 !
 #include "asterf_types.h"
@@ -18,10 +18,11 @@ subroutine xalg42(ndim, elrefp, nnop, it, nnose,&
 #include "asterfort/detefa.h"
 #include "asterfort/xstudo.h"
     character(len=8) :: typma, elrefp
-    integer :: ndim, ndime, nnop, it, nnose, cnset(*), igeom, jlsn
+    integer :: ndim, ndime, nnop, it, nnose, cnset(*), igeom
     integer :: ninter, pmmax, npts, nptm, nmilie, mfis, ar(12, 3)
-    real(kind=8) :: lonref, ainter(*), pmilie(*)
-    real(kind=8) :: pinref(*)
+    real(kind=8) :: lonref, ainter(*), pmilie(*), lsnelp(*)
+    real(kind=8) :: pinref(*), pintt(*), pmitt(*)
+    aster_logical :: jonc
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,6 +52,9 @@ subroutine xalg42(ndim, elrefp, nnop, it, nnose,&
 !       AR       : CONNECTIVITE DU TETRA
 !       PMMAX    : NOMBRE DE POINTS MILIEUX MAXIMAL DETECTABLE
 !       NPTS     : NB DE PTS D'INTERSECTION COINCIDANT AVEC UN NOEUD SOMMET
+!       LSNELP   : LSN AUX NOEUDS DE L'ELEMENT PARENT POUR LA FISSURE COURANTE
+!       PINTT    : COORDONNEES REELLES DES POINTS D'INTERSECTION
+!       PMITT    : COORDONNEES REELLES DES POINTS MILIEUX
 !
 !     SORTIE
 !       NMILIE   : NOMBRE DE POINTS MILIEUX
@@ -64,7 +68,7 @@ subroutine xalg42(ndim, elrefp, nnop, it, nnose,&
     integer :: i, ipm, k, j, ino
     integer :: r, a2, ip1(4), ip2(4), nbpi
     integer :: pm1a(4), pm1b(4), pm2(4)
-    integer :: inm, ia, ib, mfisloc
+    integer :: inm, ia, ib, im, mfisloc
     integer :: zxain
     aster_logical :: ispm2, ajout
 !
@@ -120,12 +124,13 @@ subroutine xalg42(ndim, elrefp, nnop, it, nnose,&
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         ia=cnset(nnose*(it-1)+ar(a2,1))
         ib=cnset(nnose*(it-1)+ar(a2,2))
+        im=cnset(nnose*(it-1)+ar(a2,3))
         call vecini(ndim, 0.d0, milara)
         call vecini(ndim, 0.d0, milarb)
 !    ORDONANCEMENT DES NOEUDS MILIEUX SUR L ARETE : RECHERCHE DU NOEUD A SUR L ARETE A2
         call xmilar(ndim, ndime, elrefp, geom, pinref,&
-                    ia, ib, r, ksia, ksib,&
-                    milara, milarb)
+                    ia, ib, im, r, ksia, ksib,&
+                    milara, milarb, pintt, pmitt)
 !         STOCKAGE PMILIE
         call xajpmi(ndim, pmilie, pmmax, ipm, inm, milara,&
                     lonref, ajout)
@@ -161,9 +166,9 @@ subroutine xalg42(ndim, elrefp, nnop, it, nnose,&
 !
 !        CALCUL DU POINT MILIEU DE 101-102
 !
-            call xmifis(ndim, ndime, elrefp, geom, zr(jlsn),&
+            call xmifis(ndim, ndime, elrefp, geom, lsnelp,&
                         n, ip1(k), ip2(k), pinref, ksia,&
-                        milfi)
+                        milfi, pintt, jonc)
 !
 !        on incremente le nombre de points milieux sur la fissure
             mfisloc=mfisloc+1

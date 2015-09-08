@@ -51,18 +51,18 @@ subroutine te0468(option, nomte)
     call jevech('PFLHN', 'E', ivectu)
 !
 !  CALCUL DU NBRE DE CMP CALCULEES DU FLUX
-    if (nomte .eq. 'HM_D_PLAN_SE3' .or. nomte .eq. 'THM_D_PLAN_SE3' .or. nomte .eq.&
-        'HM_AXIS_SE3' .or. nomte .eq. 'THM_AXIS_SE3' .or. nomte .eq. 'H_D_PLAN_SE3') then
+    if (nomte .eq. 'HM_DPSE3' .or. nomte .eq. 'THM_DPSE3' .or. nomte .eq.&
+        'HM_AXIS_SE3' .or. nomte .eq. 'THM_AXIS_SE3' .or. nomte .eq. 'H_DPSE3') then
         nbflux=1
-    else if (nomte.eq.'THV_D_PLAN_SE3'.or.nomte.eq.'THV_AXIS_SE3') then
+    else if (nomte.eq.'THV_DPSE3'.or.nomte.eq.'THV_AXIS_SE3') then
         nbflux=2
-        elseif(nomte.eq.'HHM_D_PLAN_SE3'.or.nomte.eq.'THH_D_PLAN_SE3'&
-    .or.nomte.eq.'THHM_D_PLAN_SE3'.or.nomte.eq.'HH_D_PLAN_SE3'&
+        elseif(nomte.eq.'HHM_DPSE3'.or.nomte.eq.'THH_DPSE3'&
+    .or.nomte.eq.'THHM_DPSE3'.or.nomte.eq.'HH_DPSE3'&
     .or.nomte.eq.'HHM_AXIS_SE3'.or.nomte.eq.'THH_AXIS_SE3' .or.nomte&
     .eq.'THHM_AXIS_SE3'.or.nomte.eq.'HH_AXIS_SE3') then
         nbflux=3
-        elseif(nomte.eq.'HH2M_D_PLAN_SE3'.or.nomte.eq.'THH2_D_PLAN_SE3'&
-    .or.nomte.eq.'THH2M_D_PLAN_SE3'.or.nomte.eq.'HH2_D_PLAN_SE3'&
+        elseif(nomte.eq.'HH2M_DPSE3'.or.nomte.eq.'THH2_DPSE3'&
+    .or.nomte.eq.'THH2M_DPSE3'.or.nomte.eq.'HH2_DPSE3'&
     .or.nomte.eq.'HH2M_AXIS_SE3'.or.nomte.eq.'THH2_AXIS_SE3' .or.nomte&
     .eq.'THH2M_AXIS_SE3'.or.nomte.eq.'HH2_AXIS_SE3') then
         nbflux=4
@@ -73,19 +73,19 @@ subroutine te0468(option, nomte)
         call utmess('F', 'CALCULEL7_2', nk=3, valk=valkm)
     endif
 !    BOUCLE SUR LES CMP
-    do 100 ifl = 1, nbflux
+    do ifl = 1, nbflux
 !
 !    BOUCLE SUR LES POINTS DE GAUSS
-        do 40 kp = 1, npg
+        do kp = 1, npg
             k = (kp-1)*nno
 ! CALCUL DES FLUX AU POINT DE GAUSS KP A PARTIR DES FLUX AUX NOEUDS
             s = 0.d0
             t = 0.d0
-            do 10 i = 1, nno
+            do i = 1, nno
                 iad = iflux+2*(ifl-1)+2*nbflux*(i-1)
                 s = s + zr(iad )*zr(ivf+k+i-1)
                 t = t + zr(iad+1)*zr(ivf+k+i-1)
-10          continue
+            end do
             flx(kp) = s
             fly(kp) = t
 ! CALCUL DE LA NORMALE
@@ -93,6 +93,6 @@ subroutine te0468(option, nomte)
                         zr(igeom), nx, ny, poids)
             flun = nx*flx(kp) + ny*fly(kp)
             zr(ivectu+nbflux*(kp-1)+ifl-1) = flun
-40      continue
-100  end do
+        end do
+     end do
 end subroutine

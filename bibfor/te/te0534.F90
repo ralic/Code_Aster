@@ -61,7 +61,7 @@ subroutine te0534(option, nomte)
     integer :: ivff, iadzi, iazk24, ibid, ivect, jbasec
     integer :: ndim, nfh, ddlc, ddls, nddl, nno, nnos, nnom, nnof, ddlm
     integer :: npg, npgf, jseuil
-    integer :: indco, ninter, nface, cface(18, 6)
+    integer :: indco, ninter, nface, cface(30, 6)
     integer :: nfe, singu, jstno, nvit, algocr, algofr, nvec
     integer :: nnol, pla(27), lact(8), nlact, jcohes, jheavn
     integer :: jmate, nfiss, jfisno, contac, nbspg, nspfis

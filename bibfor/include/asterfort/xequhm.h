@@ -22,7 +22,7 @@ interface
                       congem, vintm, defgep, congep, vintp,&
                       mecani, press1, press2, tempe,&
                       rinstp, dt, r, drds,&
-                      dsde, retcom, idecpg, angmas, enrhyd)
+                      dsde, retcom, idecpg, angmas, enrhyd, nfh)
         integer :: nbvari
         integer :: dimcon
         integer :: dimdef
@@ -36,24 +36,25 @@ interface
         integer :: kpi
         integer :: npg
         integer :: enrmec(3)
-        real(kind=8) :: defgem(1:dimdef)
-        real(kind=8) :: congem(1:dimcon)
-        real(kind=8) :: vintm(1:nbvari)
-        real(kind=8) :: defgep(1:dimdef)
-        real(kind=8) :: congep(1:dimcon)
-        real(kind=8) :: vintp(1:nbvari)
+        real(kind=8) :: defgem(dimdef)
+        real(kind=8) :: congem(dimcon)
+        real(kind=8) :: vintm(nbvari)
+        real(kind=8) :: defgep(dimdef)
+        real(kind=8) :: congep(dimcon)
+        real(kind=8) :: vintp(nbvari)
         integer :: mecani(5)
         integer :: press1(7)
         integer :: press2(7)
         integer :: tempe(5)
         real(kind=8) :: rinstp
         real(kind=8) :: dt
-        real(kind=8) :: r(1:dimenr)
-        real(kind=8) :: drds(1:dimenr, 1:dimcon)
-        real(kind=8) :: dsde(1:dimcon, 1:dimenr)
+        real(kind=8) :: r(dimenr)
+        real(kind=8) :: drds(dimenr, dimcon)
+        real(kind=8) :: dsde(dimcon, dimenr)
         integer :: retcom
         integer :: idecpg
         real(kind=8) :: angmas(3)
         integer :: enrhyd(3)
+        integer :: nfh
     end subroutine xequhm
 end interface 

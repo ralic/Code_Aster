@@ -23,8 +23,8 @@ interface
                       addep2, addete, defgem,&
                       defgep, congem, congep, vintm,&
                       vintp, dsde, pesa, retcom, kpi,&
-                      npg, p10, p20, yaenrm, dimenr,&
-                      idecpg, angmas, yaenrh, adenhy)
+                      npg, p10, p20, dimenr,&
+                      idecpg, angmas, yaenrh, adenhy, nfh)
         integer :: dimenr
         integer :: nbvari
         integer :: dimcon
@@ -57,10 +57,10 @@ interface
         integer :: npg
         real(kind=8) :: p10
         real(kind=8) :: p20
-        integer :: yaenrm
         integer :: idecpg
         real(kind=8) :: angmas(3)
         integer :: yaenrh
         integer :: adenhy
+        integer :: nfh
     end subroutine xcomhm
 end interface 

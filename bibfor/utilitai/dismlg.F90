@@ -258,7 +258,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
                     call teattr('C', 'MODTHM', mthm, iret, typel=nomte)
                     if (iret .eq. 0) then
                         repk='OUI'
-                        if ((nomte.eq.'HM_D_PLAN_SE3_P') .or. ( nomte.eq.'HM_DPQ8_P') .or.&
+                        if ((nomte.eq.'HM_DPSE3_P') .or. ( nomte.eq.'HM_DPQ8_P') .or.&
                             ( nomte.eq.'HM_DPTR6_P')) then
                             repk='OUI_P'
                         endif

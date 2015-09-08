@@ -38,7 +38,7 @@ interface
         real(kind=8) :: ainter(*)
         integer :: nface
         integer :: nptf
-        integer :: cface(18, 6)
+        integer :: cface(30, 6)
         real(kind=8) :: minlst
     end subroutine xcface
 end interface

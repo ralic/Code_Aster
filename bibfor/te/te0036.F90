@@ -74,7 +74,7 @@ subroutine te0036(option, nomte)
     integer :: in, ino, iadzi, iazk24, jstno
     integer :: iforc, iret, ig, pos, ndime, nddl, ddls
     real(kind=8) :: xg(4), fe(4), lsng, lstg, rg, tg, r
-    real(kind=8) :: pres, ff(27), coorse(81), cosa, sina
+    real(kind=8) :: pres, ff(27), coorse(18), cosa, sina
     real(kind=8) :: nd(3), norme, rb1(3), rb2(3), cisa
     real(kind=8) :: poids, forrep(3), vf, td(3), rbid(1)
     aster_logical :: lbid, axi, pre1
@@ -103,6 +103,11 @@ subroutine te0036(option, nomte)
     noma=zk24(iazk24)(1:8)
     call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
 !
+!     ATTENTION, NE PAS CONFONDRE NDIM ET NDIME  !!
+!     NDIM EST LA DIMENSION DU MAILLAGE
+!     NDIME EST DIMENSION DE L'ELEMENT FINI
+!     SUR UN ELET DE BORD, ON A :  NDIM = NDIME + 1
+!
 !     SOUS-ELEMENT DE REFERENCE
     if (.not.iselli(elrefp)) then
         irese=2
@@ -121,7 +126,7 @@ subroutine te0036(option, nomte)
     nfh = 0
     nfiss = 1
     call teattr('S', 'XFEM', enr, ier)
-    if (enr(1:2).eq.'XH') then
+    if (enr(1:2) .eq. 'XH') then
 ! --- NOMBRE DE FISSURES
         call tecach('NOO', 'PHEAVTO', 'L', iret, nval=7,&
                     itab=jtab)
@@ -193,7 +198,7 @@ subroutine te0036(option, nomte)
     if (nfiss .gt. 1) call jevech('PFISNO', 'L', jfisno)
 !
 !   LECTURE DES DONNES TOPOLOGIQUE DES FONCTIONS HEAVISIDE
-    if (enr(1:2).eq.'XH' .or. pre1 .or. enr(1:2).eq.'XT') then
+    if (enr(1:2).eq.'XH' .or. enr(1:2).eq.'XT') then
         call jevech('PHEA_NO', 'L', jheavn)
         call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
                 itab=jtab)
@@ -209,6 +214,7 @@ subroutine te0036(option, nomte)
 !       BOUCLE D'INTEGRATION SUR LES NSE SOUS-ELEMENTS
     do ise = 1, nse
 !
+        call vecini(18, 0.d0, coorse)
 !       BOUCLE SUR LES NOEUDS DU SOUS-TRIA (DU SOUS-SEG)
         do in = 1, nno
             ino=zi(jcnset-1+nno*(ise-1)+in)
@@ -415,21 +421,20 @@ subroutine te0036(option, nomte)
 !           ON ZAPPE LES TERMES DE PRESSION CLASSIQUE SI ON ES SUR UN NOEUD SOMMET
                    if (ino.le.nnops) pos = pos+1
 !           TERME HEAVISIDE
-                do ig = 1, nfh
-                    do j = 1, ndim
-                        pos=pos+1
-                        zr(ires-1+pos) = zr(ires-1+pos) + xcalc_heav(&
+                   do ig = 1, nfh
+                       do j = 1, ndim
+                         pos=pos+1
+                         zr(ires-1+pos) = zr(ires-1+pos) + xcalc_heav(&
                                                            zi(jheavn-1+ncompn*(ino-1)+ig)&
                                                           ,zi(jheavs-1+ise),&
                                                            zi(jheavn-1+ncompn*(ino-1)+ncompn))&
                                                         *forrep(j)*poids*ff(ino)
-                    end do
-                end do
-!
+                       end do
 !           ON ZAPPE LES TERMES DE PRESSION HEAVISIDE SI ON ES SUR UN NOEUD SOMMET
-                   if (ino.le.nnops) then
-                      pos = pos+1
-                   endif
+                       if (ino.le.nnops) then
+                          pos = pos+1
+                       endif
+                   end do
                end do
             else
                pos=0
@@ -476,8 +481,8 @@ subroutine te0036(option, nomte)
        ddlm = ndim*(1+nfh+nfe)
        nnopm= nnop-nnops
        nddl = nnops*ddls + nnopm*ddlm
-       call xhmddl(ndim, ddls, nddl, nnop, nnops, zi(jstno),.false._1,&
-                   option, nomte, rbid, zr(ires), ddlm)
+       call xhmddl(ndim, nfh, ddls, nddl, nnop, nnops, zi(jstno),.false._1,&
+                   option, nomte, rbid, zr(ires), ddlm, nfiss, jfisno)
     else
        ddls = ndim*(1+nfh+nfe)
        nddl = nnop*ddls

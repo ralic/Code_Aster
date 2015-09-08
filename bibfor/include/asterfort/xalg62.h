@@ -17,8 +17,8 @@
 !
 interface 
     subroutine xalg62(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
-                      igeom, jlsn, pmilie, ninter, ainter, ar, npts, nptm, &
-                      pmmax, nmilie, mfis, lonref, pinref)
+                      igeom, lsnelp, pmilie, ninter, ainter, ar, npts, nptm, &
+                      pmmax, nmilie, mfis, lonref, pinref, pintt, pmitt, jonc)
         integer :: ndim
         integer :: nnop
         integer :: it
@@ -26,7 +26,6 @@ interface
         integer :: cnset(*)
         integer :: ndime
         integer :: igeom
-        integer :: jlsn
         integer :: ninter
         integer ::  ar(12, 3)
         integer :: npts
@@ -40,6 +39,10 @@ interface
         real(kind=8) :: lonref
         real(kind=8) :: ainter(*)
         real(kind=8) :: pmilie(*)
-        real(kind=8) :: pinref(*)  
+        real(kind=8) :: pinref(*)
+        real(kind=8) :: lsnelp(*)
+        real(kind=8) :: pintt(*)
+        real(kind=8) :: pmitt(*)
+        aster_logical :: jonc
     end subroutine xalg62
 end interface 

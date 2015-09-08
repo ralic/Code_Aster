@@ -2,7 +2,7 @@ subroutine xsifle(ndim, ifa, jptint, cface,&
                   igeom, nfh, jheavn, singu, nfe, ddlc,&
                   ddlm, jlst, ipres, ipref, itemps,&
                   idepl, nnop, valres, basloc, ithet,&
-                  nompar, presn, option, igthet, jbasec,&
+                  nompar, option, igthet, jbasec,&
                   contac)
 !
 ! ======================================================================
@@ -44,11 +44,11 @@ subroutine xsifle(ndim, ifa, jptint, cface,&
 !
     character(len=8) :: nompar(4)
     character(len=16) :: option
-    integer :: ndim, ifa, cface(18, 6), igeom, nfh, singu, jlst, ipres
-    integer :: nfe, ddlc, ipref, itemps, nnop, ithet, jptint, igthet, idepl, jheavn
-    integer :: ddlm, jbasec, contac
+    integer :: ndim, ifa, cface(30, 6), igeom, nfh, singu, jlst, ipres
+    integer :: nfe, ddlc, ipref, itemps, nnop, ithet, jptint, igthet, idepl
+    integer :: ddlm, jbasec, contac, jheavn
     real(kind=8) :: valres(3)
-    real(kind=8) :: basloc(9*nnop), presn(27)
+    real(kind=8) :: basloc(9*nnop)
 !
 !
 !    - FONCTION REALISEE:  CALCUL DES OPTIONS DE POST-TRAITEMENT
@@ -88,7 +88,7 @@ subroutine xsifle(ndim, ifa, jptint, cface,&
     integer :: ar(12, 3), nbar, nnof, npgf, ipoidf, ivff, idfdef
     integer :: ipgf, zxain, heavn(nnop,5)
     integer :: ddld, ddls, ncompn, ino, ig, iret, jtab(7)
-    real(kind=8) :: xg(4), jac, ff(27), nd(3)
+    real(kind=8) :: xg(3), jac, ff(27), nd(3)
     real(kind=8) :: angl(2)
     real(kind=8) :: e, nu, mu, ka, coeff, coeff3, r27bid(27)
     real(kind=8) :: dfdi(nnop, ndim)
@@ -186,7 +186,7 @@ subroutine xsifle(ndim, ifa, jptint, cface,&
                         igthet, ipref, ipres, ithet, jac,&
                         jlst, ka, mu, nd,&
                         ndim, nfh, nnop, nnos, itemps,&
-                        nompar, option, presn, singu, xg, igeom)
+                        nompar, option, singu, xg, igeom)
         endif
         if (option .eq. 'CALC_K_G_COHE') then
             call xsifl2(basloc, coeff, coeff3, ddld, ddlm,&

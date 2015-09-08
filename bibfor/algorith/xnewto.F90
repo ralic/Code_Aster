@@ -19,7 +19,7 @@ subroutine xnewto(elrefp, name, n, ndime, ptxx,&
     real(kind=8) :: epsmax, ksi(ndime)
     character(len=6) :: name
     character(len=8) :: elrefp
-    integer, intent(in), optional :: dekker
+    real(kind=8), intent(in), optional :: dekker(3*ndime)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -80,9 +80,10 @@ subroutine xnewto(elrefp, name, n, ndime, ptxx,&
     epsrel = epsmax
     dmin = r8gaem()
     dist = 0.d0
+    arete = 1
 !
     if (present(dekker)) then
-        call xintva(elrefp, n, ptxx, ndime, intinf,&
+        call xintva(dekker, ptxx, ndime, intinf,&
                     intsup)
     endif
 !

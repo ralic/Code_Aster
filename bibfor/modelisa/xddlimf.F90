@@ -466,7 +466,7 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
           elseif (motcle .eq. 'PRE1') then
              do i = 1, nbnomac
                 ddl(2*i-1) = 'PRE1'
-                ddl(2*i) = 'HPRE1'
+                ddl(2*i) = 'H1PRE1'
                 coef(2*i-1) = ff(i)
                 coef(2*i) = xcalc_heav(heavm(1+ncompn*(i-1)),hea_pt,heavm(5+ncompn*(i-1)))*ff(i)
                 noeud(2*i-1) = name_ma(i)
@@ -534,7 +534,7 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
                       'REEL', fonree, '12', 0.d0, lisrel)
        endif
        nterm = 1
-       ddl(1) = 'H'//motcle(1:4)
+       ddl(1) = 'H1'//motcle(1:4)
        coef(1) = 1.d0
        call afrela(coef, [cbid], ddl, noeud, dimens,&
                    [0.d0], nterm, valimr, valimc, fenri,&

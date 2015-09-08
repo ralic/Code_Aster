@@ -55,11 +55,11 @@ subroutine xmprep(cface, contac, elref, elrefc, elc,&
 #include "asterfort/xmoffc.h"
 #include "asterfort/xxmmvd.h"
 #include "asterfort/assert.h"
-    integer :: cface(18, 6), contac
+    integer :: cface(30, 6), contac
     integer :: i, iaint, ibasec, ifa, igeom, ipgf, iptint, j, n
     integer :: jlst, k, lact(8), ndim, ninter, nlact, nno
     integer :: nnos, nptf, nvit, singu, zxain
-    real(kind=8) :: dfbid(27, 3), ffc(8), ffp(27), ffpc(27), g(3), jac
+    real(kind=8) :: dfbid(nno, 3), ffc(8), ffp(27), ffpc(27), g(3), jac
     real(kind=8) :: nd(3), lst, r, rr, tau1(3), tau2(3), x(4)
     character(len=8) :: elc, elref, elrefc, fpg
     aster_logical :: axi

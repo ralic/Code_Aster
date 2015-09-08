@@ -61,7 +61,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: mxchin, mxchout, nbin, nbout
-    parameter    (mxchout=2, mxchin=30)
+    parameter    (mxchout=2, mxchin=31)
     character(len=8) :: lpaout(mxchout), lpain(mxchin)
     character(len=19) :: lchout(mxchout), lchin(mxchin)
 !

@@ -19,7 +19,7 @@ interface
     subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
                       pinter, pinref, ainter, jcnset, cooree, cooref, rainter,&
                       noeud, npts, nintar, lst ,lonref, ndim, zxain,&
-                      jnit, i, face, nnose, jmilt, f, mipos)
+                      i, face, nnose, jmilt, f, mipos)
         integer :: ndim
         integer :: jlsn
         integer :: jlst
@@ -32,19 +32,18 @@ interface
         integer :: npts
         integer :: nintar
         integer :: zxain
-        integer :: jnit
         integer :: i
         integer :: nnose
         integer :: jmilt
         integer :: f(6,8)
         integer :: face
         real(kind=8) :: pinter(*)
-        real(kind=8) :: pinref(*)
+        real(kind=8) :: pinref(34*ndim)
         real(kind=8) :: ainter(*)
-        real(kind=8) :: cooree(3, ndim)
-        real(kind=8) :: cooref(3, ndim)
+        real(kind=8) :: cooree(6, ndim)
+        real(kind=8) :: cooref(6, ndim)
         real(kind=8) :: rainter(3, 4)
-        real(kind=8) :: lst(3)
+        real(kind=8) :: lst(6)
         real(kind=8) :: lonref
         character(len=8) :: elp
         aster_logical :: mipos

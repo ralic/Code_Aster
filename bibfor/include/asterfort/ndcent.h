@@ -16,12 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface 
-    subroutine ndcent(igeom, ndim, lsn, tx, txlsn, nnc)
+    subroutine ndcent(igeom, ndim, lsn, nfiss, tx, txlsn, nnc)
         integer :: igeom
         integer :: ndim
         real(kind=8) :: lsn(*)
         integer :: nnc
         real(kind=8) :: tx(3, 7)
-        real(kind=8) :: txlsn(7)
+        real(kind=8) :: txlsn(28)
+        integer :: nfiss
     end subroutine ndcent
 end interface 

@@ -18,8 +18,8 @@
 interface
     subroutine xcrvol(nse, ndim, jcnse, nnose, jpint,&
                       igeom, elrefp, inoloc, nbnoma, jcesd3,&
-                      jcesl3, jcesv3, numa2, ifiss, vmoin,&
-                      vplus, vtot)
+                      jcesl3, jcesv3, numa2, iheav, nfiss, vhea,&
+                      jcesd8, jcesl8, jcesv8, vtot)
         integer :: nbnoma
         integer :: ndim
         integer :: nse
@@ -33,9 +33,12 @@ interface
         integer :: jcesl3
         integer :: jcesv3
         integer :: numa2
-        integer :: ifiss
-        real(kind=8) :: vmoin
-        real(kind=8) :: vplus
+        integer :: iheav
+        integer :: nfiss
+        real(kind=8) :: vhea
+        integer :: jcesd8
+        integer :: jcesl8
+        integer :: jcesv8
         real(kind=8) :: vtot
     end subroutine xcrvol
 end interface

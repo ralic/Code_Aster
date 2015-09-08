@@ -37,18 +37,18 @@ OPTION__
         PDONCO   XCONTAC   << XFEM >>
         PLSN     NEUT_R    << XFEM >>
         PLST     NEUT_R    << XFEM >>
-        PPINTER  N120_R    << XFEM >>
-        PAINTER  N480_R    << XFEM >>
-        PCFACE   N120_I    << XFEM >>
+        PPINTER  N816_R    << XFEM >>
+        PAINTER  N1360R    << XFEM >>
+        PCFACE   N720_I    << XFEM >>
         PLONGCO  N120_I    << XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  >>
-        PBASECO  N480_R    << XFEM >>
+        PBASECO  N2448R    << XFEM >>
         PSEUIL   NEUT_R    << XFEM >>
         PSTANO   N120_I    << XFEM >>
         PCOHES   NEUT_R    << XFEM >>
         PFISNO   NEUT_I    << XFEM >>
         PHEAVNO  NEUT_I    << XFEM >>
         PHEA_NO  N120_I    << XFEM >>
-        PHEA_FA  N120_I    << XFEM >>
+        PHEA_FA  N240_I    << XFEM >>
    OUT__
         PMATUUR MDEP_R RESL__ << MATRICE RIGIDITE TANGENTE SYMETRIQUE >>
         PMATUNS MDNS_R RESL__ << MATRICE RIGIDITE TANGENTE NON-SYMETRIQUE >>

@@ -153,7 +153,7 @@ DEPL_N = FORMULE(VALE='depn(X,Y)',
 
 CHARR=AFFE_CHAR_MECA(MODELE=MODELEK,
                     DDL_IMPO=(_F(GROUP_NO='HAUT',
-                                 PRE1=0.0,HPRE1=0.0),
+                                 PRE1=0.0,H1PRE1=0.0),
                               ),
                     );
 

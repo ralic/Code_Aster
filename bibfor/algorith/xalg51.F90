@@ -1,6 +1,6 @@
 subroutine xalg51(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
-                      igeom, jlsn, pmilie, ninter, ainter, ar, npts, nptm, &
-                      pmmax, nmilie, mfis, lonref, pinref)
+                      igeom, lsnelp, pmilie, ninter, ainter, ar, npts, nptm, &
+                      pmmax, nmilie, mfis, lonref, pinref, pintt, pmitt, jonc)
     implicit none
 !
 #    include "asterf_types.h"
@@ -18,10 +18,11 @@ subroutine xalg51(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
 #    include "asterfort/xstudo.h"
 #    include "asterfort/xxmmvd.h"
     character(len=8) :: typma, elrefp
-    integer ::  ndim, ndime, nnop, it, nnose, cnset(*), igeom, jlsn
+    integer ::  ndim, ndime, nnop, it, nnose, cnset(*), igeom
     integer ::  ninter, pmmax, npts, nptm, nmilie, mfis, ar(12, 3)
-    real(kind=8) :: lonref, ainter(*), pmilie(*)
-    real(kind=8) :: pinref(*)
+    real(kind=8) :: lonref, ainter(*), pmilie(*), lsnelp(*)
+    real(kind=8) :: pinref(*), pintt(*), pmitt(*)
+    aster_logical :: jonc
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,6 +52,9 @@ subroutine xalg51(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
 !       AR       : CONNECTIVITE DU TETRA
 !       PMMAX    : NOMBRE DE POINTS MILIEUX MAXIMAL DETECTABLE
 !       NPTS     : NB DE PTS D'INTERSECTION COINCIDANT AVEC UN NOEUD SOMMET
+!       LSNELP   : LSN AUX NOEUDS DE L'ELEMENT PARENT POUR LA FISSURE COURANTE
+!       PINTT    : COORDONNEES REELLES DES POINTS D'INTERSECTION
+!       PMITT    : COORDONNEES REELLES DES POINTS MILIEUX
 !
 !     SORTIE
 !       NMILIE   : NOMBRE DE POINTS MILIEUX
@@ -66,7 +70,7 @@ subroutine xalg51(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
     integer :: noeub, noeuc
     integer :: j, r, ip, a2, a3, ip1(4), ip2(4), nbpi
     integer :: pm1a(4), pm1b(4), pm2(4)
-    integer :: nm, ia, ib, inm, mfisloc
+    integer :: nm, ia, ib, im, inm, mfisloc
     integer :: zxain
     aster_logical :: ispm3, ispm2, ajout
 !
@@ -129,13 +133,14 @@ subroutine xalg51(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
            if ((ar(a2,3-i) .eq. noeub).or.(ar(a2,3-i) .eq. noeuc)) then 
              ia=cnset(nnose*(it-1)+ar(a2,3-i))
              ib=cnset(nnose*(it-1)+ar(a2,i))
+             im=cnset(nnose*(it-1)+ar(a2,3))
            endif
 320     continue 
         call vecini(ndim, 0.d0, milara)
         call vecini(ndim, 0.d0, milarb)
 !           INTERPOLATION DES COORDONNEES DES POINTS MILIEUX MA ET MB
-        call xmilar(ndim, ndime, elrefp, geom, pinref, ia, ib, r,& 
-                    ksia, ksib, milara, milarb)
+        call xmilar(ndim, ndime, elrefp, geom, pinref, ia, ib, im, r,& 
+                    ksia, ksib, milara, milarb, pintt, pmitt)
 !         STOCKAGE PMILIE
         call xajpmi(ndim, pmilie, pmmax, ipm, inm, milara,&
                         lonref, ajout)
@@ -171,8 +176,8 @@ subroutine xalg51(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
 !
 !        CALCUL DU POINT MILIEU DE 101-102
 !
-            call xmifis(ndim, ndime, elrefp, geom, zr(jlsn), &
-                  n, ip1(k), ip2(k), pinref, ksia, milfi)
+            call xmifis(ndim, ndime, elrefp, geom, lsnelp, &
+                  n, ip1(k), ip2(k), pinref, ksia, milfi, pintt, jonc)
 !
 !        on incremente le nombre de points milieux sur la fissure
             mfisloc=mfisloc+1
@@ -195,7 +200,7 @@ subroutine xalg51(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
      num(6) = 12
      num(7) = 11
      num(8) = 10
-     call xcenfi(elrefp, ndim, ndime, geom, zr(jlsn),&
+     call xcenfi(elrefp, ndim, ndime, geom, lsnelp,&
                  pinref, pmiref, ksia, cenfi, num)
      mfisloc=mfisloc+1
      call xajpmi(ndim, pmilie, pmmax, ipm, inm, cenfi,&
@@ -220,12 +225,10 @@ subroutine xalg51(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
 !
         if (ispm3) then
 !        DETECTER LA COTE PORTANT LES DEUX POINTS D'INTERSECTIONS
-            call detefa(nnose, ip1(k), ip2(k), it, typma,&
-                        ainter, cnset, n)
 !
             call xmilfa(elrefp, ndim, ndime, geom, cnset, nnose, it,&
                       ainter, ip1(k), ip2(k), pm2(k), typma, pinref, &
-                      pmiref, ksia, milfa)
+                      pmiref, ksia, milfa, pintt, pmitt)
 !
             call xajpmi(ndim, pmilie, pmmax, ipm, inm, milfa,&
                         lonref, ajout)

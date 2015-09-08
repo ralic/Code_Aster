@@ -1,4 +1,4 @@
-subroutine ndcent(igeom, ndim, lsn, tx, txlsn, nnc)
+subroutine ndcent(igeom, ndim, lsn, nfiss, tx, txlsn, nnc)
     implicit none
 !
 #include "jeveux.h"
@@ -9,8 +9,8 @@ subroutine ndcent(igeom, ndim, lsn, tx, txlsn, nnc)
 #include "asterfort/reereg.h"
 #include "asterfort/reerel.h"
 #include "asterfort/vecini.h"
-    integer :: igeom, nnc, ndim
-    real(kind=8) :: tx(3, 7), lsn(*), txlsn(7)
+    integer :: igeom, nnc, ndim, nfiss
+    real(kind=8) :: tx(3, 7), lsn(*), txlsn(28)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -34,6 +34,7 @@ subroutine ndcent(igeom, ndim, lsn, tx, txlsn, nnc)
 !     ENTREE
 !       IGEOM    : ADRESSE DES COORDONNÉES DES NOEUDS DE L'ELT PARENT
 !       LSN      : LSN DES NOEUDS DE L'ELT PARENT
+!       NFISS    : NOMBRE DE FISSURES
 !     SORTIE
 !       X        : COORDONNEES DES NOEUDS MILIEUX CENTRAUX
 !       XLSN     : LSN AUX NOEUDS MILIEUX CENTRAUX
@@ -41,7 +42,7 @@ subroutine ndcent(igeom, ndim, lsn, tx, txlsn, nnc)
 !
     integer :: nbnomx
     parameter     (nbnomx = 20)
-    integer :: i, j, nnop, ibid
+    integer :: i, j, nnop, ibid, ifiss
     real(kind=8) :: ff(nbnomx), xlsn, xe(3)
     character(len=8) :: elp
 !
@@ -49,7 +50,7 @@ subroutine ndcent(igeom, ndim, lsn, tx, txlsn, nnc)
     call elref1(elp)
     call elrefe_info(elrefe=elp,fami='RIGI',nno=nnop)
     call matini(3, 7, 0.d0, tx)
-    call vecini(7, 0.d0, txlsn)
+    call vecini(28, 0.d0, txlsn)
 !
 !     INITIALIASATION PAR DEFAUT DU NOMBRE DE NOEUDS CENTRAUX A ZERO
 !     (E.G. TRIANGLES ET TETRAHEDRES)
@@ -121,11 +122,13 @@ subroutine ndcent(igeom, ndim, lsn, tx, txlsn, nnc)
 11      continue
 !
         call elrfvf(elp, xe, nbnomx, ff, ibid)
-        xlsn = 0
-        do 12 i = 1, nnop
-            xlsn = xlsn + ff(i)*lsn(i)
-12      continue
-        txlsn(j)=xlsn
+        do ifiss = 1, nfiss
+           xlsn = 0.d0
+           do 12 i = 1, nnop
+               xlsn = xlsn + ff(i)*lsn((i-1)*nfiss+ifiss)
+12         continue
+           txlsn((j-1)*nfiss+ifiss)=xlsn
+        end do
 10  end do
 !
 !.....................................................................

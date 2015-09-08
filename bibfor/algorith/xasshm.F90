@@ -10,7 +10,8 @@ subroutine xasshm(nno, npg, npi, ipoids, ivf,&
                   np1, ndim, compor, axi, modint,&
                   codret, nnop, nnops, nnopm, enrmec,&
                   dimenr, heavt, lonch, cnset, jpintt,&
-                  jpmilt, jheavn, angmas,dimmat, enrhyd)
+                  jpmilt, jheavn, angmas,dimmat, enrhyd,&
+                  nfiss, nfh, jfisno)
 ! ======================================================================
 ! person_in_charge: daniele.colombo at ifpen.fr
 ! ======================================================================
@@ -35,13 +36,13 @@ subroutine xasshm(nno, npg, npi, ipoids, ivf,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/tecach.h"
 #include "asterfort/lceqvn.h"
 #include "asterfort/matini.h"
 #include "asterfort/pmathm.h"
 #include "asterc/r8prem.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/reeref.h"
+#include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xcabhm.h"
@@ -54,7 +55,7 @@ subroutine xasshm(nno, npg, npi, ipoids, ivf,&
     integer :: npi, ipoids, ivf, idfde, imate, dimdef, dimcon, nnop
     integer :: nbvari, nddls, nddlm, nmec, np1, ndim, codret
     integer :: mecani(5), press1(7), press2(7), tempe(5)
-    integer :: yamec, yap1
+    integer :: yamec, yap1, nfiss, nfh, jfisno
     integer :: addeme, addep1, ii, jj, in, jheavn
     integer :: kpi, ipi
     integer :: i, j, n, k, kji, nvim, nbcomp
@@ -73,22 +74,22 @@ subroutine xasshm(nno, npg, npi, ipoids, ivf,&
 !
 ! DECLARATION POUR XFEM
     integer :: nnops, nnopm
-    integer :: nno
-    integer :: heavt(36), enrmec(3), dimenr, enrhyd(3)
+    integer :: nno, ncomp
+    integer :: heavt(*), enrmec(3), dimenr, enrhyd(3)
     integer :: ise, yaenrm, adenme, nse, idecpg
-    integer :: adenhy, yaenrh
-    integer :: lonch(10), ino, cnset(4*32)
-    integer :: jpintt, jpmilt, igeom
-    integer :: heavn(nnop,5), ig, ncompn, jtab(7), iret
-    real(kind=8) :: he, coorse(81), xg(ndim), xe(ndim), bid3(ndim)
+    integer :: adenhy, yaenrh, ifiss, fisno(nnop, nfiss)
+    integer :: lonch(10), ino, cnset(*)
+    integer :: jpintt, jpmilt, igeom, iret , jtab(7)
+    integer :: heavn(nnop,5), ig, ncompn
+    real(kind=8) ::  coorse(81), xg(ndim), xe(ndim), bid3(ndim)
     real(kind=8) :: dfdi(nnop, ndim), dfdi2(nnops, ndim)
-    real(kind=8) :: ff(nnop), ff2(nnops)
-    real(kind=8) :: degem1(dimenr), degep1(dimenr)
+    real(kind=8) :: ff(nnop), ff2(nnops), he(nfiss), congem(dimcon)
+    real(kind=8) :: degem1(dimenr), degep1(dimenr), congep(dimcon)
     real(kind=8) :: drds(dimenr, dimcon), drdsr(dimenr, dimcon)
     real(kind=8) :: dsde(dimcon, dimenr), b(dimenr, dimuel)
     real(kind=8) :: r(dimenr), sigbar(dimenr), c(dimenr)
     real(kind=8) :: ck(dimenr), cs(dimenr)
-    real(kind=8) :: contm(*), contp(*)
+    real(kind=8) :: contm(*), contp(*), vintm(nbvari) , vintp(nbvari)
     real(kind=8) :: varim(*), varip(*)
     character(len=8) :: elrefp, elref2
 !
@@ -113,6 +114,8 @@ subroutine xasshm(nno, npg, npi, ipoids, ivf,&
 ! IN DIMCON    DIMENSION DES CONTRAINTES GENERALISEES ELEMENTAIRES
 ! IN DIMDEF    DIMENSION DES DEFORMATIONS GENERALISEES ELEMENTAIRES
 ! IN IVF       FONCTIONS DE FORMES QUADRATIQUES
+! IN NFISS     NOMBRE DE FISSURES
+! IN NFH       NOMBRE DE DDL HEAVISIDE PAR NOEUD
 ! =====================================================================
 ! IN  GEOM    : COORDONNEES DES NOEUDS
 ! IN  OPTION  : OPTION DE CALCUL
@@ -123,6 +126,8 @@ subroutine xasshm(nno, npg, npi, ipoids, ivf,&
 ! IN  DEPLM   : DEPLACEMENT A L INSTANT MOINS
 ! IN  RINSTM  : INSTANT PRECEDENT
 ! IN  RINSTP  : INSTANT COURANT
+! IN  NFISS   : NOMBRE DE FISSURES
+! IN  NFH     : NOMBRE DE FISSURES
 ! OUT CODRET  : CODE RETOUR LOIS DE COMPORTEMENT
 ! OUT DFDI    : DERIVEE DES FCT FORME
 ! OUT CONTP   : CONTRAINTES
@@ -232,6 +237,22 @@ subroutine xasshm(nno, npg, npi, ipoids, ivf,&
         valk(2) = thmc
         call utmess('F', 'ALGORITH_34', nk=2, valk=valk)
     endif
+!
+!     RECUPERATION DE LA CONNECTIVITÃ~I FISSURE - DDL HEAVISIDES
+!     ATTENTION !!! FISNO PEUT ETRE SURDIMENTIONNÃ~I
+    if (nfiss .eq. 1) then
+        do ino = 1, nnop
+            fisno(ino,1) = 1
+        end do
+    else
+        do i = 1, nfh
+!    ON REMPLIT JUSQU'A NFH <= NFISS
+            do ino = 1, nnop
+                fisno(ino,i) = zi(jfisno-1+(ino-1)*nfh+i)
+            end do
+        end do
+    endif
+!
 ! =====================================================================
 ! --- MISE EN OEUVRE DE LA METHODE XFEM -------------------------------
 ! =====================================================================
@@ -274,8 +295,13 @@ subroutine xasshm(nno, npg, npi, ipoids, ivf,&
 !     DU SOUS ELEMENT COURANT
         idecpg=npi*(ise-1)
 !
-!     DEFINITION DE LA FONCTION HEAVISIDE POUR CHAQUE SS-ELT
-        he=1.d0*heavt(ise)
+!     FONCTION HEAVYSIDE CSTE POUR CHAQUE FISSURE SUR LE SS-ELT
+        call tecach('OOO', 'PHEAVTO', 'L', iret, nval=7,&
+                    itab=jtab)
+        ncomp = jtab(2)
+        do ifiss = 1, nfiss
+            he(ifiss) = heavt(ncomp*(ifiss-1)+ise)
+        end do
 ! =====================================================================
 ! --- BOUCLE SUR LES POINTS D'INTEGRATION -----------------------------
 ! =====================================================================
@@ -291,7 +317,7 @@ subroutine xasshm(nno, npg, npi, ipoids, ivf,&
 611             continue
 621         continue
 !
-!     XG -> XE (DANS LE REPERE DE l'ELREFP) ET VALEURS DES FF EN XE
+!     XG -> XE (DANS LE REPERE DE l'ELREFPe ET VALEURS DES FF EN XE
             call vecini(ndim, 0.d0, xe)
 !
 !     CALCUL DES FF ET DES DERIVEES DFDI POUR L'ELEMENT PARENTS
@@ -312,7 +338,7 @@ subroutine xasshm(nno, npg, npi, ipoids, ivf,&
                         addeme, yap1, addep1, np1, axi,&
                         ivf, ipoids, idfde, poids, coorse,&
                         nno, geom, yaenrm, adenme, dimenr,&
-                        he, heavn, yaenrh, adenhy)
+                        he, heavn, yaenrh, adenhy, nfiss, nfh)
 ! =====================================================================
 ! --- CALCUL INTERMEDIAIRE POUR LES DEF GENERALISEES AVEC XFEM --------
 ! =====================================================================
@@ -328,7 +354,7 @@ subroutine xasshm(nno, npg, npi, ipoids, ivf,&
 ! --- CALCUL DES DEFORMATIONS GENERALISEES ----------------------------
 ! =====================================================================
             call xdefhm(dimdef, dimenr, addeme, adenme, addep1,&
-                        ndim, degem1, degep1, defgem, defgep, adenhy)
+                        ndim, degem1, degep1, defgem, defgep, adenhy, nfh)
 ! ======================================================================
 ! --- APPEL A LA ROUTINE EQUTHM ----------------------------------------
 ! ======================================================================
@@ -336,13 +362,29 @@ subroutine xasshm(nno, npg, npi, ipoids, ivf,&
 ! --- ET DE LEURS DERIVEES EN CHAQUE POINT DE GAUSS DU SOUS ------------
 ! --- ELEMENT COURANT ISE ----------------------------------------------
 ! ======================================================================
+            do i = 1, nbvari
+                vintm(i) = varim(npi*(ise-1)*nbvari+(kpi-1)*nbvari+i)
+                vintp(i) = varip(npi*(ise-1)*nbvari+(kpi-1)*nbvari+i)
+            end do
+            do i = 1, dimcon
+                congem(i) = contm(npi*(ise-1)*dimcon+(kpi-1)*dimcon+i)
+                congep(i) = contp(npi*(ise-1)*dimcon+(kpi-1)*dimcon+i)
+            end do
             call xequhm(imate, option, ta, ta1, ndim,&
                         compor, kpi, npg, dimenr, enrmec,&
-                        dimdef, dimcon, nbvari, defgem, contm( npi*(ise-1)*dimcon+1),&
-                        varim(npi*(ise-1)*nbvari+1), defgep, contp(npi*(ise-1)*dimcon+1),&
-                        varip(npi*(ise-1)* nbvari+1), mecani, press1, press2, tempe,&
+                        dimdef, dimcon, nbvari, defgem, congem,&
+                        vintm, defgep, congep,&
+                        vintp, mecani, press1, press2, tempe,&
                         rinstp, dt, r, drds, dsde,&
-                        codret, idecpg, angmas, enrhyd)
+                        codret, idecpg, angmas, enrhyd, nfh)
+            do i = 1, nbvari
+                varim(npi*(ise-1)*nbvari+(kpi-1)*nbvari+i)=vintm(i)
+                varip(npi*(ise-1)*nbvari+(kpi-1)*nbvari+i)=vintp(i)
+            end do
+            do i = 1, dimcon
+                contm(npi*(ise-1)*dimcon+(kpi-1)*dimcon+i)=congem(i)
+                contp(npi*(ise-1)*dimcon+(kpi-1)*dimcon+i)=congep(i)
+            end do
 ! ======================================================================
 ! --- ATTENTION CI-DESSOUS IL N'Y A PAS D'IMPACT DE CALCUL -------------
 ! --- ON RECOPIE POUR LA METHODE D'INTEGRATION SELECTIVE LES CONTRAINTES

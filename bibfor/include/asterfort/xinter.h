@@ -17,12 +17,14 @@
 !
 interface
     subroutine xinter(ndim, ndime, elrefp, geom, lsn, ia, ib,&
-                      im, lsna, lsnb, lsnm, inref, inter) 
+                      im, pintt, pmitt, lsna, lsnb, lsnm, inref, inter) 
         integer :: ndim
         integer :: ndime
         character(len=8) :: elrefp
         real(kind=8) :: geom(*)
         real(kind=8) :: lsn(*)
+        real(kind=8) :: pintt(*)
+        real(kind=8) :: pmitt(*)
         integer :: ia
         integer :: ib
         integer :: im

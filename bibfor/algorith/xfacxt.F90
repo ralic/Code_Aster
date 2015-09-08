@@ -6,6 +6,7 @@ subroutine xfacxt(elp, jpint, jmilt, jnit, jcnset, pinter,&
 !
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterc/r8gaem.h"
 #include "asterfort/assert.h"
 #include "asterfort/conare.h"
 #include "asterfort/confac.h"
@@ -13,6 +14,7 @@ subroutine xfacxt(elp, jpint, jmilt, jnit, jcnset, pinter,&
 #include "asterfort/elrfvf.h"
 #include "asterfort/iselli.h"
 #include "asterfort/loncar.h"
+#include "asterfort/matini.h"
 #include "asterfort/padist.h"
 #include "asterfort/provec.h"
 #include "asterfort/reeref.h"
@@ -20,12 +22,11 @@ subroutine xfacxt(elp, jpint, jmilt, jnit, jcnset, pinter,&
 #include "asterfort/vecini.h"
 #include "asterfort/xassfa.h"
 #include "asterfort/xdecfa.h"
-#include "asterfort/xmifis.h"
 #include "asterfort/xnewto.h"
 #include "asterfort/xxmmvd.h"
 #include "blas/ddot.h"
 !
-    integer :: ninter, nface, cface(18, 6), jcnset, jnit, jmilt, jpint
+    integer :: ninter, nface, cface(30, 6), jcnset, jnit, jmilt, jpint
     integer :: nptf, ndim, jphe, igeom, jlsn, jaint, jlst, jgrlsn
     real(kind=8) :: pinter(*), ainter(*)
     character(len=8) :: elp
@@ -66,10 +67,10 @@ subroutine xfacxt(elp, jpint, jmilt, jnit, jcnset, pinter,&
 !     ----------------------------------------------------------------
 !
     real(kind=8) :: minlsn, maxlsn, newpt(ndim), p(ndim), lonref, rainter(3,4)
-    real(kind=8) :: ff(20), ptref(ndim), ptree(ndim), cooree(3,ndim), cooref(3,ndim)
-    real(kind=8) :: maxlst, minlst, lst(3), m(ndim), miref(ndim), pinref(34*ndim), mref(ndim)
-    real(kind=8) :: mifis(ndim), newptref(ndim), geom(20*ndim), base(2*ndim), lstm
-    real(kind=8) :: ptreem(ndim), ptrefm(ndim), epsmax, ls(2*20), det, cridist
+    real(kind=8) :: ff(20), ptref(ndim), ptree(ndim), cooree(6,ndim), cooref(6,ndim)
+    real(kind=8) :: maxlst, minlst, lst(6), m(ndim), miref(ndim), pinref(34*ndim), mref(ndim)
+    real(kind=8) :: newptref(ndim), geom(20*ndim), ptxx(3*ndim), ksi(1)
+    real(kind=8) :: ptreem(ndim), ptrefm(ndim), epsmax, ls(20), det, cridist, a, b, c
     real(kind=8) :: ab(ndim), bc(ndim), normfa(ndim), gradlsn(ndim), lsn(ndim)
     integer :: iadzi, iazk24, npi, ni, npis, ip1, ip2, n(3), nnose
     integer :: i, j, k, nelttot, ino, noeud(9), nintar, npts, h
@@ -121,7 +122,6 @@ subroutine xfacxt(elp, jpint, jmilt, jnit, jcnset, pinter,&
 !
 !      INITIALISATION DU SIGNE POUR LA RECHERCHE DANS LES SOUS ELEMENTS
     signe = -1
-!    if (maxlsn.gt.-minlsn) signe = 1
 
 !      NOMBRE TOTAL DE SOUS SOUS ELEMENTS
     nelttot = zi(jnit-1+1)
@@ -194,7 +194,10 @@ subroutine xfacxt(elp, jpint, jmilt, jnit, jcnset, pinter,&
 !      ON DOIT DETERMINER LST AUX EXTREMITES DE CE SEG
 !      RECUPERATION DES COORDONNEES REELLES ET DE REFERENCE DES NOEUDS SITUES SUR CE SEGMENT
 !      ET CALCUL DE LST AUX EXTREMITES DE CE SEGMENT
-                        call vecini(2, 0.d0, lst)
+                        call vecini(6, 0.d0, lst)
+                        call matini(3, 4, 0.d0, rainter)
+                        call matini(6, ndim, 0.d0, cooree)
+                        call matini(6, ndim, 0.d0, cooref)
                         minlst = 0.d0
                         maxlst = 0.d0
                         do k = 1, 2
@@ -313,36 +316,80 @@ subroutine xfacxt(elp, jpint, jmilt, jnit, jcnset, pinter,&
                         else
 !      C'EST LE CAS OU LE SEG EST TRAVERSE PAR LST STRICTEMENT
                            nface= nface+1
-!      TROUVONS UNE BASE ORTHONORMEE DE LA FACE
-!      ON TROUVE LE POINT CORRESPONDANT A LST=LSN=0 ET ON L'ARCHIVE
-!      ON PREND LE MILIEU DU SEG DANS L'ESPACE DE REFERENCE COMME POINT DE
-!      DEPART
-                           do jj = 1, ndim
-                              mref(jj) = 0.5*(cooref(1,jj)+cooref(2,jj))
-                           end do
+!      DETERMINATION DU POINT D'INTERSECTION AVEC LST
                            do ii = 1, nno
                               do jj =  1, ndim
                                  geom((ii-1)*ndim+jj) = zr(igeom-1+ndim*(ii-1)+jj)
                               end do
-                              ls(2*ii-1) = zr(jlsn-1+ii)
-                              ls(2*ii) = zr(jlst-1+ii)
+                              ls(ii) = zr(jlst-1+ii)
                            end do
                            do ii = 1, 3
                               n(ii) = ii
                            end do
-                           base(1) = 1.d0
-                           base(2) = 0.d0
-                           base(3) = 0.d0
-                           base(4) = 1.d0
+                           do jj = 1, ndim
+                              ptxx(jj) = cooref(1,jj)
+                              ptxx(jj+ndim) = cooref(2,jj)
+                           end do
+                           ASSERT(abs(lst(1)-lst(2)) .gt. 1.d0/r8gaem())
+                           if (.not.iselli(elp)) then
+!      RECUPERATION DU NOEUD MILIEU DE L'ARETE
+                              if (zi(jcnset-1+nnose*(i-1)+ar(j,3)) .gt. 3000) then
+                                 do ii = 1, ndim
+                                    newpt(ii)=zr(jmilt-1+ndim*(zi(jcnset-1+nnose*(i-1)+&
+                                              ar(j,3))-3001)+ii)
+                                 end do
+                              else if (zi(jcnset-1+nnose*(i-1)+ar(j,3)) .gt. 2000) then
+                                 do ii = 1, ndim
+                                    newpt(ii)=zr(jmilt-1+ndim*(zi(jcnset-1+nnose*(i-1)+&
+                                              ar(j,3))-2001)+ii)
+                                 end do
+                              else if (zi(jcnset-1+nnose*(i-1)+ar(j,3)) .lt. 2000) then
+                                 do ii = 1, ndim
+                                    newpt(ii)=zr(igeom-1+ndim*(zi(jcnset-1+nnose*(i-1)+&
+                                              ar(j,3))-1)+ii)
+                                 end do
+                              endif
+                              call reeref(elp, nno, zr(igeom), newpt, ndim, ptref,ff)
+                              do jj = 1, ndim
+                                 ptxx(2*ndim+jj) = ptref(jj)
+                              end do
+                              do ino = 1, nno
+                                 lst(3) = lst(3) + zr(jlst-1+ino)*ff(ino)
+                              end do
+!      INITIALISATION DU NEWTON
+                              a = (lst(1) + lst(2) - 2*lst(3))/2.d0
+                              b = (lst(2) - lst(1))/2.d0
+                              c = lst(3)
+                              ASSERT(b**2.ge.(4*a*c))
+                              if (abs(a).lt.1.d-8) then
+                                 ksi(1) = lst(1)/(lst(1)-lst(2))
+                              else
+                                 ksi(1) = (-b-sqrt(b**2-4*a*c))/(2.d0*a)
+                                 if (abs(ksi(1)).gt.1) ksi(1) = (-b+sqrt(b**2-4*a*c))/(2.d0*a)
+                                 ASSERT(abs(ksi(1)).le.1)
+                                 ksi(1) = (ksi(1)+1)/2.d0
+                              endif
+                           else
+                              ksi(1) = lst(1)/(lst(1)-lst(2))
+                              do jj = 1, ndim
+                                 ptxx(2*ndim+jj) = (ptxx(jj)+ptxx(ndim+jj))/2.d0
+                              end do
+                           endif
                            epsmax = 1.d-8
                            itemax = 100
-                           call xnewto(elp, 'XINTFA', n, ndim, base, ndim,&
-                                       zr(igeom), ls, ibid, ibid, itemax, epsmax, mref)
+                           call xnewto(elp, 'XINTER', n, ndim, ptxx, ndim,&
+                                       zr(igeom), ls, ibid, ibid, itemax, epsmax, ksi)
+                           call vecini(ndim, 0.d0, mref)
+                           do ii = 1, ndim
+                              mref(ii) = 2.d0*(1.d0-ksi(1))*(5.d-1-ksi(1))*ptxx(j)+4.d0*ksi(1)*&
+                                        (1.d0-ksi(1))*ptxx(j+2*ndim)+2.d0*ksi(1)*(ksi(1)-5.d-1)*&
+                                        ptxx(j+ndim)
+                           end do
                            call elrfvf(elp, mref, nbnomx, ff, nno)
                            call vecini(ndim, 0.d0, m)
                            do ii = 1, ndim
-                              do k = 1, nno
-                                 m(ii) = m(ii) + zr(igeom-1+ndim*(k-1)+ii) * ff(k)
+                              do ino = 1, nno
+                                 m(ii) = m(ii) + zr(igeom-1+ndim*(ino-1)+ii) * ff(k)
                               end do
                            end do
                            npi = npi+1
@@ -399,18 +446,26 @@ subroutine xfacxt(elp, jpint, jmilt, jnit, jcnset, pinter,&
                               endif
 !      DANS LE CAS QUADRATIQUE
                               if (.not.iselli(elp)) then
-!      RECHERCHE DU POINT MILIEU ENTRE 1 et M
-                                 do ii = 1, 3
-                                    n(ii) = ii
+!      RECHERCHE DU POINT MILIEU
+                                 ksi(1) = ksi(1)/2.d0
+                                 do ii = 1, ndim
+                                    mref(ii) = 2.d0*(1.d0-ksi(1))*(5.d-1-ksi(1))*ptxx(j)+&
+                                               4.d0*ksi(1)*(1.d0-ksi(1))*ptxx(j+2*ndim)+&
+                                               2.d0*ksi(1)*(ksi(1)-5.d-1)*ptxx(j+ndim)
                                  end do
-                                 call xmifis(ndim, ndim, elp, geom, zr(jlsn), n, &
-                                             ip1, ip2, pinref, miref, mifis)
+                                 call elrfvf(elp, mref, nbnomx, ff, nno)
+                                 call vecini(ndim, 0.d0, m)
+                                 do ii = 1, ndim
+                                    do ino = 1, nno
+                                       m(ii) = m(ii) + zr(igeom-1+ndim*(ino-1)+ii) * ff(k)
+                                    end do
+                                 end do
 !      ON ARCHIVE POUR LE POINT MILIEU
                                  npi = npi+1
                                  do jj = 1, ndim
-                                      pinter(ndim*(npi-1)+jj) = mifis(jj)
+                                      pinter(ndim*(npi-1)+jj) = m(jj)
                                       pinref(ndim*(npi-1)+jj) = miref(jj)
-                                  end do
+                                 end do
                                  cface(nface,3)=npi
                                  do jj = 1, zxain-1
                                     ainter(zxain*(npi-1)+jj) = 0.d0
@@ -457,16 +512,24 @@ subroutine xfacxt(elp, jpint, jmilt, jnit, jcnset, pinter,&
                               endif
 !      DANS LE CAS QUADRATIQUE
                               if (.not.iselli(elp)) then
-!      RECHERCHE DU POINT MILIEU ENTRE 2 et M
-                                 do ii = 1, 3
-                                    n(ii) = ii
+!      RECHERCHE DU POINT MILIEU
+                                 ksi(1) = (1.d0+ksi(1))/2.d0
+                                 do ii = 1, ndim
+                                    mref(ii) = 2.d0*(1.d0-ksi(1))*(5.d-1-ksi(1))*ptxx(j)+&
+                                               4.d0*ksi(1)*(1.d0-ksi(1))*ptxx(j+2*ndim)+2.d0*&
+                                               ksi(1)*(ksi(1)-5.d-1)*ptxx(j+ndim)
                                  end do
-                                 call xmifis(ndim, ndim, elp, geom, zr(jlsn), n,&
-                                             ip1, ip2, pinref, miref,mifis)
+                                 call elrfvf(elp, mref, nbnomx, ff, nno)
+                                 call vecini(ndim, 0.d0, m)
+                                 do ii = 1, ndim
+                                    do ino = 1, nno
+                                       m(ii) = m(ii) + zr(igeom-1+ndim*(ino-1)+ii) * ff(k)
+                                    end do
+                                 end do
 !      ON ARCHIVE POUR LE POINT MILIEU
                                  npi = npi+1
                                  do jj = 1, ndim
-                                      pinter(ndim*(npi-1)+jj) = mifis(jj)
+                                      pinter(ndim*(npi-1)+jj) = m(jj)
                                       pinref(ndim*(npi-1)+jj) = miref(jj)
                                  end do
                                  cface(nface,3)=npi
@@ -546,7 +609,10 @@ subroutine xfacxt(elp, jpint, jmilt, jnit, jcnset, pinter,&
                      if (h .eq. 3) then
 !      ON DOIT DETERMINER LST AUX EXTREMITES DE CE TRIA
 !      RECUPERATION DES COORDONNEES REELLES ET DE REFERENCE DES NOEUDS SITUES SUR CE TRIA
-                        call vecini(3, 0.d0, lst)
+                        call vecini(6, 0.d0, lst)
+                        call matini(3, 4, 0.d0, rainter)
+                        call matini(6, ndim, 0.d0, cooree)
+                        call matini(6, ndim, 0.d0, cooref)
                         minlst = 0.d0
                         maxlst = 0.d0
                         do k = 1, 3
@@ -604,11 +670,14 @@ subroutine xfacxt(elp, jpint, jmilt, jnit, jcnset, pinter,&
                                  end do
                               endif
                               call reeref(elp, nno, zr(igeom), ptreem, ndim, ptrefm, ff)
-                              lstm = 0.d0
-                              do ino = 1, nno
-                                 lstm = lstm+ zr(jlst-1+ino)*ff(ino)
+                              do ii = 1, ndim
+                                 cooree(k,ii) = ptreem(ii)
+                                 cooref(k,ii) = ptrefm(ii)
                               end do
-                              if (lstm.lt.1.d-4) mipos = .false.
+                              do ino = 1, nno
+                                 lst(k) = lst(k)+ zr(jlst-1+ino)*ff(ino)
+                              end do
+                              if (lst(k).lt.1.d-4) mipos = .false.
                            end do
                         endif
 !      SI MAXLST<=0
@@ -725,7 +794,7 @@ subroutine xfacxt(elp, jpint, jmilt, jnit, jcnset, pinter,&
                            call xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
                                        pinter, pinref, ainter, jcnset, cooree, cooref, rainter,&
                                        noeud, npts, nintar, lst ,lonref, ndim, zxain,&
-                                       jnit, i, j , nnose, jmilt, f, mipos)
+                                       i, j , nnose, jmilt, f, mipos)
                            call xassfa(elp, npts, nintar, lst, noeud, cface, nface, pinter, jgrlsn)
                         endif
                      endif

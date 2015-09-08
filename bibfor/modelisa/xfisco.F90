@@ -58,7 +58,7 @@ subroutine xfisco(noma, modelx)
 !
 ! --- CONSTRUCTION DU CHAMP SIMPLE TEMPORAIRE
 !
-    ces = '&&XFISCO.CES'
+    ces = '&&XFISCO.FISCO'
     licmp(1) = 'X1'
     licmp(2) = 'X2'
 !
@@ -166,7 +166,7 @@ subroutine xfisco(noma, modelx)
     chglo = modelx(1:8)//'.FISSCO'
     ligrel = modelx(1:8)//'.MODELE'
     call cescel(ces, ligrel, 'TOPOSE', 'PFISCO', 'OUI',&
-                nncp, 'V', chglo, 'F', ibid)
+                nncp, 'G', chglo, 'F', ibid)
     call detrsd('CHAM_ELEM_S', ces)
 !
     call jedema()

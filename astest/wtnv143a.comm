@@ -120,7 +120,7 @@ HYDR=AFFE_CHAR_MECA(MODELE=MODELEK,
                    );
 
 HYDR2=AFFE_CHAR_MECA(MODELE=MODELEK,
-                    DDL_IMPO=(_F(NOEUD=('N6','N7','N10','N11',),HPRE1=0.0,),),
+                    DDL_IMPO=(_F(NOEUD=('N6','N7','N10','N11',),H1PRE1=0.0,),),
                     INFO=2,
                    );
 

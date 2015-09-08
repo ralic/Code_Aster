@@ -54,14 +54,14 @@ subroutine xtopoc(modele, decou)
 !
 !
     integer :: nbout, nbin
-    parameter    (nbout=7, nbin=14)
+    parameter    (nbout=7, nbin=15)
     character(len=8) :: lpaout(nbout), lpain(nbin), noma, licmp(2)
     character(len=8) :: nomfis, cpar
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
     character(len=19) :: ligrel, chgeom
     character(len=19) :: lnno, grlnno, ltno, grltno, fissco, champ(7)
-    character(len=19) :: pint, cnset, nit, phe, aint, milt
+    character(len=19) :: pint, cnset, nit, phe, aint, milt, stano
     aster_logical :: debug
     character(len=16) :: option
     integer :: ifmdbg, nivdbg
@@ -112,6 +112,7 @@ subroutine xtopoc(modele, decou)
     phe = modele(1:8)//'.TOPOSE.HEA'
     aint = modele(1:8)//'.TOPOSE.PAI'
     milt = modele(1:8)//'.TOPOSE.PMI'
+    stano = modele(1:8)//'.STNO'
     champ(1) = modele(1:8)//'.TOPOFAC.PI'
     champ(2) = modele(1:8)//'.TOPOFAC.AI'
     champ(3) = modele(1:8)//'.TOPOFAC.CF'
@@ -199,8 +200,10 @@ subroutine xtopoc(modele, decou)
     lchin(12) = milt
     lpain(13) = 'PTYPDIS'
     lchin(13) = typenr
-    lpain(14) = 'PDECOU'
-    lchin(14) = chdec
+    lpain(14) = 'PSTANO'
+    lchin(14) = stano
+    lpain(15) = 'PDECOU'
+    lchin(15) = chdec
 !
 ! --- CREATION DES LISTES DES CHAMPS OUT
 !

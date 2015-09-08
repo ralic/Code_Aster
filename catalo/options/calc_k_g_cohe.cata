@@ -23,11 +23,11 @@ OPTION__
         PTHETAR  DEPL_R
         PMATERC  ADRSJEVE
         PBASLOR  NEUT_R
-        PPINTER  N120_R
-        PAINTER  N480_R
-        PCFACE   N120_I
+        PPINTER  N816_R
+        PAINTER  N1360R
+        PCFACE   N720_I
         PLONGCO  N120_I
-        PBASECO  N480_R
+        PBASECO  N2448R
         PLST     NEUT_R
         PHEA_NO  N120_I
     OUT__

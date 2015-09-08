@@ -20,9 +20,9 @@ interface
         integer :: npts
         integer :: nintar
         integer :: noeud(9)
-        integer :: cface(18,6)
+        integer :: cface(30,6)
         integer :: nface
-        real(kind=8) :: lst(3)
+        real(kind=8) :: lst(6)
         character(len=8) :: elp
         real(kind=8) :: pinter(*)
         integer :: jgrlsn

@@ -75,20 +75,19 @@ MODE_LOCAL__
     E1NEUTI  = NEUT_I   ELEM__         (X1       )
 
     E3NEUTI  = N120_I   ELEM__         (X[3]     )
-    E10NEUTI = N120_I    ELEM__         (X[10]     )
+    E6NEUTI  = N512_I   ELEM__         (X[6]     )
+    E9NEUTI  = N720_I   ELEM__         (X[9]     )
+    E10NEUTI = N120_I   ELEM__         (X[10]    )
     N5NEUTI  = N120_I   ELNO__ IDEN__  (X[5]     )
-    E6NEUTI  = N128_I   ELEM__         (X[6]     )
-    E9NEUTI  = N120_I   ELEM__         (X[9]     )
+    E28NEUTR = N2448R   ELEM__         (X[28]    )
+    E35NEUTR = N1360R   ELEM__         (X[35]    )
     E1NEUTK  = NEUT_K8  ELEM__         (Z1       )
-
-    E28NEUTR = N480_R   ELEM__         (X[28]    )
-    E35NEUTR = N480_R   ELEM__         (X[35]    )
     E15NEUTR = N480_R   ELEM__         (X[15]    )
-    E14NEUTR = N120_R   ELEM__         (X[14]    )
+    E14NEUTR = N816_R   ELEM__         (X[14]    )
     E6NEUTR  = N132_R   ELEM__         (X[6]     )
-    E22NEUTR = N480_R   ELEM__         (X[22]    )
+    E22NEUTR = N792_R   ELEM__         (X[22]    )
     E18NEUI  = N120_I   ELEM__         (X[18]    )
-    E36NEUI  = N512_I   ELEM__         (X[36]    )
+    E36NEUI  = N1280I   ELEM__         (X[36]    )
     EVOISIN  = VOISIN   ELEM__         (V0       V1       V2       V3       V4       V5
                                         V6       T0       T1       T2       T3       T4
                                         T5       T6       )
@@ -313,7 +312,7 @@ OPTION__
     SISE_ELNO        289  IN__  ECONTPG  PCONTRR  E10NEUTI  PLONCHA
                           OUT__ ECONTSE  PCONTSER
     TOPOFA           510  IN__  NGEOMER  PGEOMER  N2NEUT_R PGRADLN  N2NEUT_R PGRADLT  N1NEUT_R PLSN
-                                N1NEUT_R PLST     E10NEUTI  PLONCHA E36NEUI  PCNSETO  E1NEUTI  PTYPDIS
+                                N1NEUT_R PLST     E10NEUTI PLONCHA  E36NEUI  PCNSETO  E1NEUTI  PTYPDIS
                                 E6NEUTI  PHEAVTO  E6NEUTR  PPINTTO  E22NEUTR PPMILTO  E15NEUTR PAINTTO
                                 E1NEUTK  PDECOU
                           OUT__ E35NEUTR PAINTER  E28NEUTR PBASECO  E9NEUTI  PCFACE   E14NEUTR PGESCLA

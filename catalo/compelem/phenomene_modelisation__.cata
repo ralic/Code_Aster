@@ -1075,12 +1075,12 @@ PHENOMENE_MODELISATION__
               MAILLE__ TRIA6     ELEMENT__ MEAXTR6_XHC
               MAILLE__ QUAD4     ELEMENT__ MEAXQU4_XHC
               MAILLE__ QUAD8     ELEMENT__ MEAXQU8_XHC
-              
+
        MODELISATION__ 'AXIS_XTC'         DIM__ 2 2   CODE__ 'AX5'
               ATTRIBUT__  NBSIGM='4' AXIS='OUI'   TYPMOD='AXIS' LXFEM='OUI' XFEM='XTC' XLAG='NOEUD' CONTACT='OUI' FROTTEMENT='OUI'
               MAILLE__ TRIA3     ELEMENT__ MEAXTR3_XTC
               MAILLE__ QUAD4     ELEMENT__ MEAXQU4_XTC
-              
+
        MODELISATION__ 'AXIS_XHTC'        DIM__ 2 2   CODE__ 'AX6'
               ATTRIBUT__  NBSIGM='4' AXIS='OUI'   TYPMOD='AXIS' LXFEM='OUI' XFEM='XHTC' XLAG='NOEUD' CONTACT='OUI' FROTTEMENT='OUI'
               MAILLE__ TRIA3     ELEMENT__ MEAXTR3_XHTC
@@ -1283,29 +1283,48 @@ PHENOMENE_MODELISATION__
               MAILLE__ QUAD4     ELEMENT__ MEDPQU4_XHC3
 %-------------------------------------------------------------------
 %ajout des elements 2d HM_XFEM non affectables par AFFE_MODELE
-       MODELISATION__ 'D_PLAN_HM_XH'       DIM__ 2 2   CODE__ 'DXL'
+       MODELISATION__ 'D_PLAN_HM_XH'       DIM__ 2 2   CODE__ 'DXI'
               ATTRIBUT__  THM='OUI' MODTHM='HM' D_PLAN='OUI' LXFEM='OUI' XFEM='XH'
               MAILLE__ QUAD8     ELEMENT__ HM_DPQ8_XH
               MAILLE__ TRIA6     ELEMENT__ HM_DPTR6_XH
-              MAILLE__ SEG3      ELEMENT__ HM_D_PLAN_SE3_XH
+              MAILLE__ SEG3      ELEMENT__ HM_DPSE3_XH
 
-       MODELISATION__ 'D_PLAN_HM_XH_SI'    DIM__ 2 2   CODE__ 'DXI'
+       MODELISATION__ 'D_PLAN_HM_XH_SI'    DIM__ 2 2   CODE__ 'DXJ'
               ATTRIBUT__  THM='OUI' MODTHM='HM' D_PLAN='OUI' LXFEM='OUI' XFEM='XH'
               MAILLE__ QUAD8     ELEMENT__ HM_DPQ8M_XH
               MAILLE__ TRIA6     ELEMENT__ HM_DPTR6M_XH
-              MAILLE__ SEG3      ELEMENT__ HM_D_PLAN_SE3_XH
+              MAILLE__ SEG3      ELEMENT__ HM_DPSE3_XH
 
-       MODELISATION__ 'D_PLAN_HM_XH_D'     DIM__ 2 2   CODE__ 'DXJ'
+       MODELISATION__ 'D_PLAN_HM_XH_D'     DIM__ 2 2   CODE__ 'DXK'
               ATTRIBUT__  THM='OUI' MODTHM='HM' D_PLAN='OUI' LXFEM='OUI' XFEM='XH'
               MAILLE__ QUAD8     ELEMENT__ HM_DPQ8D_XH
               MAILLE__ TRIA6     ELEMENT__ HM_DPTR6D_XH
-              MAILLE__ SEG3      ELEMENT__ HM_D_PLAN_SE3_XH
+              MAILLE__ SEG3      ELEMENT__ HM_DPSE3_XH
 
-       MODELISATION__ 'D_PLAN_HM_XH_S'     DIM__ 2 2   CODE__ 'DXK'
+       MODELISATION__ 'D_PLAN_HM_XH_S'     DIM__ 2 2   CODE__ 'DXL'
               ATTRIBUT__  THM='OUI' MODTHM='HM' D_PLAN='OUI' LXFEM='OUI' XFEM='XH'
               MAILLE__ QUAD8     ELEMENT__ HM_DPQ8S_XH
               MAILLE__ TRIA6     ELEMENT__ HM_DPTR6S_XH
-              MAILLE__ SEG3      ELEMENT__ HM_D_PLAN_SE3_XH
+              MAILLE__ SEG3      ELEMENT__ HM_DPSE3_XH
+
+       MODELISATION__ 'D_PLAN_HM_XH1'       DIM__ 2 2   CODE__ 'DXM'
+              ATTRIBUT__  THM='OUI' MODTHM='HM' D_PLAN='OUI' LXFEM='OUI' XFEM='XH1'
+              MAILLE__ QUAD8     ELEMENT__ HM_DPQ8_XH1
+              MAILLE__ TRIA6     ELEMENT__ HM_DPTR6_XH1
+              MAILLE__ SEG3      ELEMENT__ HM_DPSE3_XH1
+
+       MODELISATION__ 'D_PLAN_HM_XH2'       DIM__ 2 2   CODE__ 'DXN'
+              ATTRIBUT__  THM='OUI' MODTHM='HM' D_PLAN='OUI' LXFEM='OUI' XFEM='XH2'
+              MAILLE__ QUAD8     ELEMENT__ HM_DPQ8_XH2
+              MAILLE__ TRIA6     ELEMENT__ HM_DPTR6_XH2
+              MAILLE__ SEG3      ELEMENT__ HM_DPSE3_XH2
+
+       MODELISATION__ 'D_PLAN_HM_XH3'       DIM__ 2 2   CODE__ 'DXO'
+              ATTRIBUT__  THM='OUI' MODTHM='HM' D_PLAN='OUI' LXFEM='OUI' XFEM='XH3'
+              MAILLE__ QUAD8     ELEMENT__ HM_DPQ8_XH3
+              MAILLE__ TRIA6     ELEMENT__ HM_DPTR6_XH3
+              MAILLE__ SEG3      ELEMENT__ HM_DPSE3_XH3
+
 %-------------------------------------------------------------------
 %ajout des elements 3d HM_XFEM non affectables par AFFE_MODELE
        MODELISATION__ '3D_HM_XH'       DIM__ 3 3   CODE__ '3XL'
@@ -1340,6 +1359,34 @@ PHENOMENE_MODELISATION__
               MAILLE__ HEXA20    ELEMENT__ HM_HEXA20S_XH
               MAILLE__ QUAD8     ELEMENT__ HM_FACE8_XH
               MAILLE__ TRIA6     ELEMENT__ HM_FACE6_XH
+
+       MODELISATION__ '3D_HM_XH1'       DIM__ 3 3   CODE__ '3XM'
+              ATTRIBUT__  THM='OUI' MODTHM='HM' LXFEM='OUI' XFEM='XH1'
+              MAILLE__ TETRA10   ELEMENT__ HM_TETRA10_XH1
+              MAILLE__ PYRAM13   ELEMENT__ HM_PYRAM13_XH1
+              MAILLE__ PENTA15   ELEMENT__ HM_PENTA15_XH1
+              MAILLE__ HEXA20    ELEMENT__ HM_HEXA20_XH1
+              MAILLE__ QUAD8     ELEMENT__ HM_FACE8_XH1
+              MAILLE__ TRIA6     ELEMENT__ HM_FACE6_XH1
+
+       MODELISATION__ '3D_HM_XH2'       DIM__ 3 3   CODE__ '3XN'
+              ATTRIBUT__  THM='OUI' MODTHM='HM' LXFEM='OUI' XFEM='XH2'
+              MAILLE__ TETRA10   ELEMENT__ HM_TETRA10_XH2
+              MAILLE__ PYRAM13   ELEMENT__ HM_PYRAM13_XH2
+              MAILLE__ PENTA15   ELEMENT__ HM_PENTA15_XH2
+              MAILLE__ HEXA20    ELEMENT__ HM_HEXA20_XH2
+              MAILLE__ QUAD8     ELEMENT__ HM_FACE8_XH2
+              MAILLE__ TRIA6     ELEMENT__ HM_FACE6_XH2
+
+       MODELISATION__ '3D_HM_XH3'       DIM__ 3 3   CODE__ '3XO'
+              ATTRIBUT__  THM='OUI' MODTHM='HM' LXFEM='OUI' XFEM='XH3'
+              MAILLE__ TETRA10   ELEMENT__ HM_TETRA10_XH3
+              MAILLE__ PYRAM13   ELEMENT__ HM_PYRAM13_XH3
+              MAILLE__ PENTA15   ELEMENT__ HM_PENTA15_XH3
+              MAILLE__ HEXA20    ELEMENT__ HM_HEXA20_XH3
+              MAILLE__ QUAD8     ELEMENT__ HM_FACE8_XH3
+              MAILLE__ TRIA6     ELEMENT__ HM_FACE6_XH3
+
 %-------------------------------------------------------------------
 
        MODELISATION__ 'C_PLAN_GRAD_EPSI'   DIM__ 2 2   CODE__ 'CPG'
@@ -1658,175 +1705,175 @@ PHENOMENE_MODELISATION__
               ATTRIBUT__  THM='OUI' MODTHM='THM' D_PLAN='OUI'
               MAILLE__ QUAD8     ELEMENT__ THM_DPQ8
               MAILLE__ TRIA6     ELEMENT__ THM_DPTR6
-              MAILLE__ SEG3      ELEMENT__ THM_D_PLAN_SE3
+              MAILLE__ SEG3      ELEMENT__ THM_DPSE3
 
        MODELISATION__ 'D_PLAN_HM'        DIM__ 2 2   CODE__ 'DH2'
               ATTRIBUT__  THM='OUI' MODTHM='HM' D_PLAN='OUI'
               MAILLE__ QUAD8     ELEMENT__ HM_DPQ8
               MAILLE__ TRIA6     ELEMENT__ HM_DPTR6
-              MAILLE__ SEG3      ELEMENT__ HM_D_PLAN_SE3
+              MAILLE__ SEG3      ELEMENT__ HM_DPSE3
 
        MODELISATION__ 'D_PLAN_HM_SI'        DIM__ 2 2   CODE__ 'DM1'
               ATTRIBUT__  THM='OUI' MODTHM='HM' D_PLAN='OUI'
               MAILLE__ QUAD8     ELEMENT__ HM_DPQ8M
               MAILLE__ TRIA6     ELEMENT__ HM_DPTR6M
-              MAILLE__ SEG3      ELEMENT__ HM_D_PLAN_SE3
+              MAILLE__ SEG3      ELEMENT__ HM_DPSE3
 
       MODELISATION__ 'D_PLAN_HS'        DIM__ 2 2   CODE__ 'DHA'
               ATTRIBUT__  THM='OUI' MODTHM='H' D_PLAN='OUI' INTTHM='RED'
               MAILLE__ QUAD8     ELEMENT__ H_DPQ8S
               MAILLE__ TRIA6     ELEMENT__ H_DPTR6S
-              MAILLE__ SEG3      ELEMENT__ H_D_PLAN_SE3
+              MAILLE__ SEG3      ELEMENT__ H_DPSE3
 
        MODELISATION__ 'D_PLAN_HM_P'      DIM__ 2 2   CODE__ 'DHB'
               ATTRIBUT__  THM='OUI' MODTHM='HM' D_PLAN='OUI'
               MAILLE__ QUAD8     ELEMENT__ HM_DPQ8_P
               MAILLE__ TRIA6     ELEMENT__ HM_DPTR6_P
-              MAILLE__ SEG3      ELEMENT__ HM_D_PLAN_SE3_P
+              MAILLE__ SEG3      ELEMENT__ HM_DPSE3_P
 
        MODELISATION__ 'D_PLAN_HHM'       DIM__ 2 2   CODE__ 'DH1'
               ATTRIBUT__  THM='OUI' MODTHM='HHM' D_PLAN='OUI'
               MAILLE__ QUAD8     ELEMENT__ HHM_DPQ8
               MAILLE__ TRIA6     ELEMENT__ HHM_DPTR6
-              MAILLE__ SEG3      ELEMENT__ HHM_D_PLAN_SE3
+              MAILLE__ SEG3      ELEMENT__ HHM_DPSE3
 
        MODELISATION__ 'D_PLAN_HHMD'      DIM__ 2 2   CODE__ 'DH6'
               ATTRIBUT__  THM='OUI' MODTHM='HHM' D_PLAN='OUI' INTTHM='LUM'
               MAILLE__ QUAD8     ELEMENT__ HHM_DPQ8D
               MAILLE__ TRIA6     ELEMENT__ HHM_DPTR6D
-              MAILLE__ SEG3      ELEMENT__ HHM_D_PLAN_SE3
-              
+              MAILLE__ SEG3      ELEMENT__ HHM_DPSE3
+
        MODELISATION__ 'D_PLAN_HH2M_SI'       DIM__ 2 2   CODE__ 'DM2'
               ATTRIBUT__  THM='OUI' MODTHM='HH2M' D_PLAN='OUI'
               MAILLE__ QUAD8     ELEMENT__ HH2M_DPQ8M
               MAILLE__ TRIA6     ELEMENT__ HH2M_DPTR6M
-              MAILLE__ SEG3      ELEMENT__ HH2M_D_PLAN_SE3
+              MAILLE__ SEG3      ELEMENT__ HH2M_DPSE3
 
        MODELISATION__ 'D_PLAN_HH2MD'      DIM__ 2 2   CODE__ 'DA3'
               ATTRIBUT__  THM='OUI' MODTHM='HH2M' D_PLAN='OUI' INTTHM='LUM'
               MAILLE__ QUAD8     ELEMENT__ HH2M_DPQ8D
               MAILLE__ TRIA6     ELEMENT__ HH2M_DPTR6D
-              MAILLE__ SEG3      ELEMENT__ HH2M_D_PLAN_SE3
+              MAILLE__ SEG3      ELEMENT__ HH2M_DPSE3
 
        MODELISATION__ 'D_PLAN_HMD'       DIM__ 2 2   CODE__ 'DH7'
               ATTRIBUT__  THM='OUI' MODTHM='HM' D_PLAN='OUI' INTTHM='LUM'
               MAILLE__ QUAD8     ELEMENT__ HM_DPQ8D
               MAILLE__ TRIA6     ELEMENT__ HM_DPTR6D
-              MAILLE__ SEG3      ELEMENT__ HM_D_PLAN_SE3
+              MAILLE__ SEG3      ELEMENT__ HM_DPSE3
 
        MODELISATION__ 'D_PLAN_THHD'      DIM__ 2 2   CODE__ 'DH8'
               ATTRIBUT__  THM='OUI' MODTHM='THH' D_PLAN='OUI' INTTHM='LUM'
               MAILLE__ QUAD8     ELEMENT__ THH_DPQ8D
               MAILLE__ TRIA6     ELEMENT__ THH_DPTR6D
-              MAILLE__ SEG3      ELEMENT__ THH_D_PLAN_SE3
+              MAILLE__ SEG3      ELEMENT__ THH_DPSE3
 
        MODELISATION__ 'D_PLAN_THH2D'      DIM__ 2 2   CODE__ 'DA1'
               ATTRIBUT__  THM='OUI' MODTHM='THH2' D_PLAN='OUI' INTTHM='LUM'
               MAILLE__ QUAD8     ELEMENT__ THH2_DPQ8D
               MAILLE__ TRIA6     ELEMENT__ THH2_DPTR6D
-              MAILLE__ SEG3      ELEMENT__ THH2_D_PLAN_SE3
+              MAILLE__ SEG3      ELEMENT__ THH2_DPSE3
 
        MODELISATION__ 'D_PLAN_THHMD'     DIM__ 2 2   CODE__ 'DH9'
               ATTRIBUT__  D_PLAN='OUI' THM='OUI' MODTHM='THHM' INTTHM='LUM'
               MAILLE__ QUAD8     ELEMENT__ THHM_DPQ8D
               MAILLE__ TRIA6     ELEMENT__ THHM_DPTR6D
-              MAILLE__ SEG3      ELEMENT__ THHM_D_PLAN_SE3
+              MAILLE__ SEG3      ELEMENT__ THHM_DPSE3
 
        MODELISATION__ 'D_PLAN_THH2MD'     DIM__ 2 2   CODE__ 'DA2'
               ATTRIBUT__  THM='OUI' MODTHM='THH2M' D_PLAN='OUI' INTTHM='LUM'
               MAILLE__ QUAD8     ELEMENT__ THH2M_DPQ8D
               MAILLE__ TRIA6     ELEMENT__ THH2M_DPTR6D
-              MAILLE__ SEG3      ELEMENT__ THH2M_D_PLAN_SE3
+              MAILLE__ SEG3      ELEMENT__ THH2M_DPSE3
 
        MODELISATION__ 'D_PLAN_THMD'      DIM__ 2 2   CODE__ 'DH0'
               ATTRIBUT__  THM='OUI' MODTHM='THM' D_PLAN='OUI' INTTHM='LUM'
               MAILLE__ QUAD8     ELEMENT__ THM_DPQ8D
               MAILLE__ TRIA6     ELEMENT__ THM_DPTR6D
-              MAILLE__ SEG3      ELEMENT__ THM_D_PLAN_SE3
+              MAILLE__ SEG3      ELEMENT__ THM_DPSE3
 
        MODELISATION__ 'D_PLAN_THVD'      DIM__ 2 2   CODE__ 'DG3'
               ATTRIBUT__  THM='OUI' MODTHM='THV' D_PLAN='OUI' INTTHM='LUM'
               MAILLE__ QUAD8     ELEMENT__ THV_DPQ8D
               MAILLE__ TRIA6     ELEMENT__ THV_DPTR6D
-              MAILLE__ SEG3      ELEMENT__ THV_D_PLAN_SE3
+              MAILLE__ SEG3      ELEMENT__ THV_DPSE3
 
        MODELISATION__ 'D_PLAN_HMS'        DIM__ 2 2   CODE__ 'DR1'
               ATTRIBUT__  THM='OUI' MODTHM='HM' D_PLAN='OUI' INTTHM='RED'
               MAILLE__ QUAD8     ELEMENT__ HM_DPQ8S
               MAILLE__ TRIA6     ELEMENT__ HM_DPTR6S
-              MAILLE__ SEG3      ELEMENT__ HM_D_PLAN_SE3
+              MAILLE__ SEG3      ELEMENT__ HM_DPSE3
 
        MODELISATION__ 'D_PLAN_HHMS'      DIM__ 2 2   CODE__ 'DR2'
               ATTRIBUT__  THM='OUI' MODTHM='HHM' D_PLAN='OUI' INTTHM='RED'
               MAILLE__ QUAD8     ELEMENT__ HHM_DPQ8S
               MAILLE__ TRIA6     ELEMENT__ HHM_DPTR6S
-              MAILLE__ SEG3      ELEMENT__ HHM_D_PLAN_SE3
+              MAILLE__ SEG3      ELEMENT__ HHM_DPSE3
 
        MODELISATION__ 'D_PLAN_HH2MS'      DIM__ 2 2   CODE__ 'DR3'
               ATTRIBUT__  THM='OUI' MODTHM='HH2M' D_PLAN='OUI' INTTHM='RED'
               MAILLE__ QUAD8     ELEMENT__ HH2M_DPQ8S
               MAILLE__ TRIA6     ELEMENT__ HH2M_DPTR6S
-              MAILLE__ SEG3      ELEMENT__ HH2M_D_PLAN_SE3
+              MAILLE__ SEG3      ELEMENT__ HH2M_DPSE3
 
        MODELISATION__ 'D_PLAN_THHS'      DIM__ 2 2   CODE__ 'DR4'
               ATTRIBUT__  THM='OUI' MODTHM='THH' D_PLAN='OUI' INTTHM='RED'
               MAILLE__ QUAD8     ELEMENT__ THH_DPQ8S
               MAILLE__ TRIA6     ELEMENT__ THH_DPTR6S
-              MAILLE__ SEG3      ELEMENT__ THH_D_PLAN_SE3
+              MAILLE__ SEG3      ELEMENT__ THH_DPSE3
 
        MODELISATION__ 'D_PLAN_THH2S'      DIM__ 2 2   CODE__ 'DR5'
               ATTRIBUT__  THM='OUI' MODTHM='THH2' D_PLAN='OUI' INTTHM='RED'
               MAILLE__ QUAD8     ELEMENT__ THH2_DPQ8S
               MAILLE__ TRIA6     ELEMENT__ THH2_DPTR6S
-              MAILLE__ SEG3      ELEMENT__ THH2_D_PLAN_SE3
+              MAILLE__ SEG3      ELEMENT__ THH2_DPSE3
 
        MODELISATION__ 'D_PLAN_THHMS'     DIM__ 2 2   CODE__ 'DR6'
               ATTRIBUT__  D_PLAN='OUI' THM='OUI' MODTHM='THHM' INTTHM='RED'
               MAILLE__ QUAD8     ELEMENT__ THHM_DPQ8S
               MAILLE__ TRIA6     ELEMENT__ THHM_DPTR6S
-              MAILLE__ SEG3      ELEMENT__ THHM_D_PLAN_SE3
+              MAILLE__ SEG3      ELEMENT__ THHM_DPSE3
 
        MODELISATION__ 'D_PLAN_THH2MS'     DIM__ 2 2   CODE__ 'DR7'
               ATTRIBUT__  THM='OUI' MODTHM='THH2M' D_PLAN='OUI' INTTHM='RED'
               MAILLE__ QUAD8     ELEMENT__ THH2M_DPQ8S
               MAILLE__ TRIA6     ELEMENT__ THH2M_DPTR6S
-              MAILLE__ SEG3      ELEMENT__ THH2M_D_PLAN_SE3
+              MAILLE__ SEG3      ELEMENT__ THH2M_DPSE3
 
        MODELISATION__ 'D_PLAN_THMS'      DIM__ 2 2   CODE__ 'DR8'
               ATTRIBUT__  THM='OUI' MODTHM='THM' D_PLAN='OUI' INTTHM='RED'
               MAILLE__ QUAD8     ELEMENT__ THM_DPQ8S
               MAILLE__ TRIA6     ELEMENT__ THM_DPTR6S
-              MAILLE__ SEG3      ELEMENT__ THM_D_PLAN_SE3
+              MAILLE__ SEG3      ELEMENT__ THM_DPSE3
 
        MODELISATION__ 'D_PLAN_THVS'      DIM__ 2 2   CODE__ 'DR9'
               ATTRIBUT__  THM='OUI' MODTHM='THV' D_PLAN='OUI' INTTHM='RED'
               MAILLE__ QUAD8     ELEMENT__ THV_DPQ8S
               MAILLE__ TRIA6     ELEMENT__ THV_DPTR6S
-              MAILLE__ SEG3      ELEMENT__ THV_D_PLAN_SE3
+              MAILLE__ SEG3      ELEMENT__ THV_DPSE3
 
        MODELISATION__ 'D_PLAN_HHS'       DIM__ 2 2   CODE__ 'DZ1'
               ATTRIBUT__  THM='OUI' MODTHM='HH' D_PLAN='OUI' INTTHM='RED'
              MAILLE__ QUAD8     ELEMENT__ HH_DPQ8S
              MAILLE__ TRIA6     ELEMENT__ HH_DPTR6S
-             MAILLE__ SEG3      ELEMENT__ HH_D_PLAN_SE3
+             MAILLE__ SEG3      ELEMENT__ HH_DPSE3
 
        MODELISATION__ 'D_PLAN_HHD'       DIM__ 2 2   CODE__ 'DZ2'
               ATTRIBUT__  THM='OUI' MODTHM='HH' D_PLAN='OUI' INTTHM='LUM'
              MAILLE__ QUAD8     ELEMENT__ HH_DPQ8D
              MAILLE__ TRIA6     ELEMENT__ HH_DPTR6D
-             MAILLE__ SEG3      ELEMENT__ HH_D_PLAN_SE3
+             MAILLE__ SEG3      ELEMENT__ HH_DPSE3
 
        MODELISATION__ 'D_PLAN_HH2S'      DIM__ 2 2   CODE__ 'DZ3'
               ATTRIBUT__  THM='OUI' MODTHM='HH2' D_PLAN='OUI' INTTHM='RED'
              MAILLE__ QUAD8     ELEMENT__ HH2_DPQ8S
              MAILLE__ TRIA6     ELEMENT__ HH2_DPTR6S
-             MAILLE__ SEG3      ELEMENT__ HH2_D_PLAN_SE3
+             MAILLE__ SEG3      ELEMENT__ HH2_DPSE3
 
        MODELISATION__ 'D_PLAN_HH2D'      DIM__ 2 2   CODE__ 'DZ4'
               ATTRIBUT__  THM='OUI' MODTHM='HH2' D_PLAN='OUI' INTTHM='LUM'
              MAILLE__ QUAD8     ELEMENT__ HH2_DPQ8D
              MAILLE__ TRIA6     ELEMENT__ HH2_DPTR6D
-             MAILLE__ SEG3      ELEMENT__ HH2_D_PLAN_SE3
+             MAILLE__ SEG3      ELEMENT__ HH2_DPSE3
 
        MODELISATION__ 'AXIS_HM'          DIM__ 2 2   CODE__ 'AH2'
               ATTRIBUT__  THM='OUI' MODTHM='HM' AXIS='OUI'
@@ -2084,7 +2131,7 @@ PHENOMENE_MODELISATION__
               MAILLE__ HEXA20    ELEMENT__ THH2M_HEXA20D
               MAILLE__ QUAD8     ELEMENT__ THH2M_FACE8
               MAILLE__ TRIA6     ELEMENT__ THH2M_FACE6
-              
+
        MODELISATION__ '3D_HH2M_SI'           DIM__ 3 3   CODE__ '3M1'
               ATTRIBUT__  THM='OUI' MODTHM='HH2M'
               MAILLE__ TETRA10   ELEMENT__ HH2M_TETRA10M

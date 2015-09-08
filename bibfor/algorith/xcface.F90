@@ -26,7 +26,7 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr,&
 #include "asterfort/xxmmvd.h"
 #include "blas/ddot.h"
     real(kind=8) :: lsn(*), lst(*), pinter(*), ainter(*)
-    integer :: jgrlsn, igeom, ninter, nface, cface(18, 6), nptf
+    integer :: jgrlsn, igeom, ninter, nface, cface(30, 6), nptf
     integer :: nfiss, ifiss, fisco(*), nfisc, nmaabs
     character(len=8) :: noma
     character(len=16) :: enr, typdis
@@ -322,7 +322,7 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr,&
     if (ndim .eq. 3) then
         if (ninter .lt. 3) goto 500
 !
-        do 200 i = 1, 18
+        do 200 i = 1, 30
             do 201 j = 1, 6
                 cface(i,j)=0
 201         continue
@@ -472,7 +472,7 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr,&
 !
 !     CAS 2D
     else if (ndim .eq. 2) then
-        do 800 i = 1, 18
+        do 800 i = 1, 30
             do 801 j = 1, 6
                 cface(i,j)=0
 801         continue

@@ -22,7 +22,7 @@ interface
                       jlst, lact, nd, ndim, ninter,&
                       nlact, nno, nnos, nptf, nvit,&
                       rr, singu, tau1, tau2)
-        integer :: cface(18, 6)
+        integer :: cface(30, 6)
         integer :: contac
         character(len=8) :: elref
         character(len=8) :: elrefc

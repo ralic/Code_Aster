@@ -1,10 +1,11 @@
 subroutine xinter(ndim, ndime, elrefp, geom, lsn, ia, ib,&
-                  im, lsna, lsnb, lsnm, inref, inter) 
+                  im, pintt, pmitt, lsna, lsnb, lsnm, inref, inter) 
     implicit none
 !
 #include "jeveux.h"
 #include "asterc/r8gaem.h"
 #include "asterfort/assert.h"
+#include "asterfort/reeref.h"
 #include "asterfort/reerel.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xelrex.h"
@@ -12,8 +13,8 @@ subroutine xinter(ndim, ndime, elrefp, geom, lsn, ia, ib,&
 #include "asterfort/xnewto.h"
     character(len=8) :: elrefp
     integer :: ndim, ndime, ia, ib, im
-    real(kind=8) :: lsn(*), geom(*), inter(3), inref(3)
-    real(kind=8) :: lsna, lsnb, lsnm
+    real(kind=8) :: lsn(*), geom(*), inter(3), inref(3), pintt(*), pmitt(*)
+    real(kind=8) :: lsna , lsnb, lsnm
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,8 +42,9 @@ subroutine xinter(ndim, ndime, elrefp, geom, lsn, ia, ib,&
 !     ----------------------------------------------------------------
 !
     character(len=6) :: name
-    real(kind=8) :: ksi(ndime), ptxx(3*ndime), x(81)
-    real(kind=8) :: epsmax, a , b , c, pta(ndime), ptb(ndime), ptm(ndime)
+    real(kind=8) :: ksi(ndime), ptxx(3*ndime), x(81), ff(27)
+    real(kind=8) :: epsmax, a , b , c, pta(ndime), ptb(ndime), newpt(ndime)
+    real(kind=8) :: ptm(ndime)
     integer :: itemax, ibid, n(3), j, nno, iret
 !
 !---------------------------------------------------------------------
@@ -57,12 +59,42 @@ subroutine xinter(ndim, ndime, elrefp, geom, lsn, ia, ib,&
     n(3)=0
 !   COORDONNEES DANS L ELEMENT DE REFERENCE PARENT
     call xelrex(elrefp, nno, x)
+    if (ia.lt.1000) then
        do j = 1, ndime
           pta(j) = x(ndime*(ia-1)+j)
+       end do
+    else
+       do j = 1, ndime
+          newpt(j) = pintt(ndime*(ia-1001)+j)
+       end do
+       call reeref(elrefp, nno, geom, newpt, ndime,&
+                   pta, ff)
+    endif
+!
+    if (ib.lt.1000) then
+       do j = 1, ndime
           ptb(j) = x(ndime*(ib-1)+j)
+       end do
+    else
+       do j = 1, ndime
+          newpt(j) = pintt(ndime*(ib-1001)+j)
+       end do
+       call reeref(elrefp, nno, geom, newpt, ndime,&
+                   ptb, ff)
+    endif
+!
+    if (im.lt.2000) then
+       do j = 1, ndime
           ptm(j) = x(ndime*(im-1)+j)
        end do
-!  ON STOCKE LES COORDONEES DE REFERENCE DE A, B ET M DANS <ptxx>
+    else
+       do j = 1, ndime
+          newpt(j) = pmitt(ndime*(im-2001)+j)
+       end do
+       call reeref(elrefp, nno, geom, newpt, ndime,&
+                   ptm, ff)
+    endif
+!  ON STOCKE LES COORDONEES DE REFERENCE DE A ET B DANS <ptxx>
     do j = 1, ndime
        ptxx(j) = pta(j)
        ptxx(j+ndime) = ptb(j)

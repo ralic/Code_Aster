@@ -1,6 +1,8 @@
-subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
-                  ninter, npts, ainter, nse, cnse,&
-                  heav, nsemax, pinter, pintt)
+subroutine xdecqv(nnose, it, cnset, heavt, lsn, igeom,&
+                  ninter, npts, ndim, ainter, nse, cnse,&
+                  heav, nsemax, pinter, pintt, cut,&
+                  ncomp, nfisc, nfiss, ifiss, elp, fisco,&
+                  lonref)
     implicit none
 !
 #include "asterf_types.h"
@@ -11,15 +13,18 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/ndcent.h"
 #include "asterfort/provec.h"
+#include "asterfort/reeref.h"
 #include "asterfort/tecael.h"
+#include "asterfort/vecini.h"
 #include "asterfort/xpente.h"
 #include "asterfort/xxmmvd.h"
 #include "blas/ddot.h"
     integer :: nnose, it, cnset(*), igeom, ninter, npts, nse, cnse(6, 10)
-    integer :: nsemax
-    real(kind=8) :: lsn(*), ainter(*), heav(*), pinter(*), pintt(*)
+    integer :: nsemax, heavt(*), nfisc, nfiss, ncomp, fisco(*), ifiss, ndim
+    real(kind=8) :: lsn(*), ainter(*), heav(*), pinter(*), pintt(*), lonref
+    character(len=8) :: elp
+    aster_logical :: cut
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -37,33 +42,38 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!           BUT:       DÉCOUPER LE TETRA EN NSE SOUS-TETRAS
+!           BUT:       DECOUPER LE TETRA EN NSE SOUS-TETRAS
 !     ENTREE
 !       NNOSE    : NOMBRE DE NOEUDS DU SOUS TETRA
 !       IT       : INDICE DU TETRA EN COURS
-!       CNSET    : CONNECTIVITÉ DES NOEUDS DU TETRA
+!       CNSET    : CONNECTIVITE DES NOEUDS DU TETRA
 !       LSN      : VALEURS DE LA LEVEL SET NORMALE
-!       IGEOM    : ADRESSE DES COORDONNÉES DES NOEUDS DE L'ELT PARENT
+!       IGEOM    : ADRESSE DES COORDONNEES DES NOEUDS DE L'ELT PARENT
 !       NINTER   : NB DE POINTS D'INTERSECTION
 !       NPTS     : NB DE PTS D'INTERSECTION COINCIDANT AVEC UN NOEUD
 !                  SOMMET
+!       HEAVT    : SIGNE DES LSN POUR LES SOUS ELEMENTS DEJA TROUVES
 !       AINTER   : INFOS ARETE CORRESPONDATE AU PT INTERSECTION
+!       CUT      : L'ELEMENT EST-IL COUPE?
+!       NFISS    : NOMBRE DE FISSURES
+!       IFISS    : FISSURE COURANTE
+!       NFISC    : NOMBRE DE JONCTIONS SUR LA FISSURE COURANTE
+!       FISCO    : CONNECTIVITE DES FISSURES POUR LES JONCTIONS
+!       ELP      : ELEMENT PARENT
 !     SORTIE
-!       NSE      : NOMBRE DE SOUS-ÉLÉMENTS (TÉTRAS)
-!       CNSE     : CONNECTIVITÉ DES SOUS-ÉLÉMENTS (TÉTRAS)
-!       HEAV     : FONCTION HEAVYSIDE CONSTANTE SUR CHAQUE SOUS-ÉLÉMENT
+!       NSE      : NOMBRE DE SOUS-ELEMENTS (TETRAS)
+!       CNSE     : CONNECTIVITE DES SOUS-ELEMENTS (TETRAS)
+!       HEAV     : FONCTION HEAVYSIDE CONSTANTE SUR CHAQUE SOUS-ELEMENT
 !     ----------------------------------------------------------------
 !
-    real(kind=8) :: xyz(4, 3), ab(3), ac(3), ad(3), vn(3), ps
-    real(kind=8) :: lsnbc, lsna
-    integer :: in, inh, i, j, ar(12, 3), nbar, ise, ndim
+    real(kind=8) :: xyz(4, 3), ab(3), ac(3), ad(3), vn(3), ps, somlsn(nfisc+1)
+    real(kind=8) :: geom(3), rbid2(3) ,ff(27), bary(3), lsno(ndim+1), abslsn
+    integer :: in, inh, i, j, ar(12, 3), nbar, ise
     integer :: a1, a2, a3, a4, a5, a6, a, b, c, iadzi, iazk24, ndime, n(18)
-    integer :: d, e, f, g, h, l, ia, ip1
+    integer :: d, e, f, g, h, l, ip1
     integer :: nnop
     integer :: zxain
     character(len=8) :: typma, noma, elrese(3)
-    aster_logical :: cut
-    integer, pointer :: dime(:) => null()
 !
     data            elrese /'SEG3','TRIA6','TETRA10'/
 ! --------------------------------------------------------------------
@@ -73,8 +83,6 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
     zxain = xxmmvd('ZXAIN')
     call tecael(iadzi, iazk24, noms=0)
     noma=zk24(iazk24)
-    call jeveuo(noma//'.DIME', 'L', vi=dime)
-    ndim=dime(6)
     nse=0
     do 10 in = 1, 6
         do 20 j = 1, 10
@@ -86,13 +94,6 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
 !
     call conare(typma, ar, nbar)
 !
-!     L'ELEMENT EST IL TRAVERSE PAR LA FISSURE?
-    cut=.false.
-    do 30 ia = 1, nbar
-        if (lsn(cnset(nnose*(it-1)+ar(ia,1)))*lsn(cnset(nnose*(it-1)+ar(ia,2))) .lt. 0.d0) &
-        cut=.true.
- 30 continue
-!
 !     STOCKAGE DE LA CONNECTIVITE D'UN SOUS-ELEMENT NON COUPE
     if (.not.cut) then
         nse=1
@@ -102,7 +103,7 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
     endif
 !
 ! --------------------------------------------------------------------
-!     REMPLISSAGE DE LA CONNECTIVITÉ DES SOUS-ELEMENTS TÉTRAS
+!     REMPLISSAGE DE LA CONNECTIVITE DES SOUS-ELEMENTS TETRAS
 !                  ALGO BOOK III (26/04/04)
 ! --------------------------------------------------------------------
     if (ndime .eq. 2 .and. cut) then
@@ -298,7 +299,7 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
 !
         if (ninter .lt. 3) then
 !
-!       1Â°) AVEC MOINS DE TROIS POINTS D'INTERSECTION
+!       1) AVEC MOINS DE TROIS POINTS D'INTERSECTION
 !       ---------------------------------------------
 !
 !         INTER DOUTEUSE
@@ -311,7 +312,7 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
 !
         else if (ninter.eq.3) then
 !
-!         2Â°) AVEC TROIS POINTS D'INTERSECTION
+!         2) AVEC TROIS POINTS D'INTERSECTION
 !         ------------------------------------
             a1=nint(ainter(zxain*(1-1)+1))
             a2=nint(ainter(zxain*(2-1)+1))
@@ -365,7 +366,7 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
  46                 continue
  36             continue
                 ASSERT((a*b*c*e*f*g*h).gt.0)
-!           ON REMPLACE 101 PAR LE NUMERO DU NOEUD COUPÉ
+!           ON REMPLACE 101 PAR LE NUMERO DU NOEUD COUPE
                 cnse(1,1)=ip1
                 cnse(1,2)=102
                 cnse(1,3)=103
@@ -801,7 +802,7 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
     endif
 !
 !-----------------------------------------------------------------------
-!     VÃRIFICATION DU SENS DES SOUS-ÃLÃMENTS TETRA
+!     VERIFICATION DU SENS DES SOUS-ELEMENTS TETRA
 !                  ALGO BOOK III (28/04/04)
 !-----------------------------------------------------------------------
 !
@@ -847,52 +848,94 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
     endif
 !
 !-----------------------------------------------------------------------
-!             MATRICE DES COORDONNÃES ET FONCTION HEAVYSIDE
+!             MATRICE DES COORDONNEES ET FONCTION HEAVYSIDE
 !             ALGO BOOK III (28/04/04)
 ! --------------------------------------------------------------------
 !
     ASSERT(nse.le.nsemax)
-    if (ninter .eq. 3 .and. npts .eq. 1 .and. ndime .eq. 2) then
-        lsnbc=lsn(cnset(nnose*(it-1)+b))+lsn(cnset(nnose*(it-1)+c))
-        heav(1)=-sign(1.d0,lsnbc)
-        heav(2)=sign(1.d0,lsnbc)
-        heav(3)=sign(1.d0,lsnbc)
-    else if (ninter.eq.4.and.npts.eq.1.and.ndime.eq.3) then
-      lsna=lsn(cnset(nnose*(it-1)+a))
-      heav(1)=sign(1.d0,lsna)
-      heav(2)=-sign(1.d0,lsna)
-      heav(3)=-sign(1.d0,lsna) 
-      heav(4)=-sign(1.d0,lsna)
-    else if (ninter.eq.5.and.npts.eq.1.and.ndime.eq.3) then
-      lsna=lsn(cnset(nnose*(it-1)+e))
-      heav(1)=sign(1.d0,lsna)
-      heav(2)=sign(1.d0,lsna)
-      heav(3)=sign(1.d0,lsna)
-      heav(4)=-sign(1.d0,lsna) 
-      heav(5)=-sign(1.d0,lsna) 
-      heav(6)=-sign(1.d0,lsna) 
-    else if (ninter.eq.6.and.npts.eq.2.and.ndime.eq.3) then
-      lsna=lsn(cnset(nnose*(it-1)+a))
-      heav(1)=sign(1.d0,lsna)
-      heav(2)=-sign(1.d0,lsna)
-      heav(3)=-sign(1.d0,lsna)
-      heav(4)=-sign(1.d0,lsna)
-    else
-        do 300 ise = 1, nse
-            heav(ise)=1.d0
-            do 310 in = 1, ndime+1
-                inh=cnse(ise,in)
-                if (inh .lt. 100) then
-                    if (lsn(inh) .lt. 0.d0) heav(ise)=-1.d0
+    do 300 ise = 1, nse
+        do i = 1, ifiss-1
+! ----- ON RECOPIE LES VALEURS PRECEDENTES
+            heav(ifiss*(ise-1)+i)=heavt(ncomp*(i-1)+it)
+        end do
+! ----- ON TRAITE LA FISSURE COURANTE
+        call vecini(nfisc+1, 0.d0, somlsn)
+        call vecini(ndim+1, 0.d0, lsno)
+        abslsn=0.d0
+        do in = 1, ndime+1
+            inh=cnse(ise,in)
+            call vecini(3, 0.d0, bary)
+            if (inh .lt. 100) then
+                do i = 1, nfisc
+                    somlsn(i) = somlsn(i)+lsn((inh-1)*nfiss+fisco(2*i- 1))
+                end do
+                somlsn(nfisc+1) = somlsn(nfisc+1)+lsn((inh-1)*nfiss+ ifiss)
+                lsno(in) = lsn((inh-1)*nfiss+ ifiss)
+                abslsn = abslsn+abs(lsno(in))
+                do j = 1, ndim
+                   bary(j) = bary(j)+zr(igeom-1+(inh-1)*ndim+j)/(ndim+1)
+                end do
+            else
+!           RECUP DE LA GEOMETRIE
+                call vecini(3, 0.d0, geom)
+                if ((inh .gt. 1000) ) then
+                    do j = 1, ndim
+                        geom(j) = pintt(ndim*(inh-1001)+j)
+                        bary(j) = bary(j)+geom(j)/(ndim+1)
+                    end do
+                else if (inh.lt.1000) then
+                    do j = 1, ndim
+                        geom(j) = pinter(ndim*(inh-101)+j)
+                        bary(j) = bary(j)+geom(j)/(ndim+1)
+                    end do
                 endif
-310         continue
-300     continue
-    endif
+!           CALCUL DES FF
+!
+!
+                call reeref(elp, nnop, zr(igeom), geom, ndim,&
+                            rbid2, ff)
+!
+                do j = 1, nnop
+                    do i = 1, nfisc
+                        somlsn(i)=somlsn(i)+ff(j)*lsn((j-1)*nfiss+&
+                        fisco(2*i-1))
+                    end do
+                    somlsn(nfisc+1) = somlsn(nfisc+1)+ff(j) *lsn((j-1)*nfiss+ifiss)
+                    lsno(in) = lsno(in)+ff(j) *lsn((j-1)*nfiss+ifiss)
+                end do
+                abslsn = abslsn+abs(lsno(in))
+            endif
+        end do
+!
+!       MISE A ZERO POUR LA FONCTION JONCTION AU NIVEAU DU BRANCHEMENT
+!
+        do i = 1, nfisc
+            if (fisco(2*i)*somlsn(i) .gt. 0.d0) goto 300
+        end do
+!
+!       SI TOUS LES NOEUDS SOMMETS DU SOUS ELEMENT SONT SUR LA LSN ON PREND LE
+!       BARYCENTRE
+        if ((abslsn*lonref).lt.1.d-8) then
+           call reeref(elp, nnop, zr(igeom), bary, ndim,&
+                       rbid2, ff)
+           somlsn(nfisc+1)=0.d0
+           do j = 1, nnop
+              somlsn(nfisc+1)=somlsn(nfisc+1)+ff(j) *lsn((j-1)*nfiss+ifiss)
+           end do
+        endif
+!
+        if (somlsn(nfisc+1) .lt. 0.d0) then
+            heav(ifiss*ise) = -1.d0
+        else if (somlsn(nfisc+1).gt.0.d0) then
+            heav(ifiss*ise) = +1.d0
+        endif
+!
+300 continue
 !
 !     REMARQUE IMPORTANTE :
-!     SI ON EST SUR UN ELEMENT DE BORD COINCIDANT AVEC L'INTERCE
+!     SI ON EST SUR UN ELEMENT DE BORD COINCIDANT AVEC L'INTERFACE
 !     (NDIME = NDIM - 1 ET NPTS = NDIM) ALORS ON NE PEUT PAS
-!     DÉTERMINER DE QUEL COTE DE L'INTERFACE ON SE TROUVE, CAR ON
+!     DETERMINER DE QUEL COTE DE L'INTERFACE ON SE TROUVE, CAR ON
 !     EST TOUJOURS SUR L'INTERFACE. LA VALEUR DE HEAV(ISE)
 !     EST DONC FAUSSE DANS CE CAS : ON MET 99.
 !     UNE CORRECTION EST FAITE DANS XORIPE LORS DE L'ORIENTATION

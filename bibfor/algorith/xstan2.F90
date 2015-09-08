@@ -70,18 +70,18 @@ subroutine xstan2(noma, modele, crit2)
 !
 !
     character(len=24) :: geom
-    character(len=19) :: ces(7), cel(7), cnxinv, noxfem, cns2, ligrel
+    character(len=19) :: ces(8), cel(8), cnxinv, noxfem, cns2, ligrel
     character(len=16) :: notype
     character(len=8) :: typma, lirefe(10), elrefp
     character(len=2) :: ch2
-    real(kind=8) :: crit, vmoin, vplus, vtot, crimaxi
-    integer :: jcesd(7), jcesl(7), jcesv(7), iad
+    real(kind=8) :: crit, vhea, vtot, crimaxi
+    integer :: jcesd(8), jcesl(8), jcesv(8), iad
     integer :: jnoxfl, itypma, nncp, ibid, ier
     integer :: ifm, niv, jpint, jcnse
     integer :: jconx2, adrma, ndime, ndim, nbno
     integer :: nbmano, nbnoma, nuno, ino, ino2, numa, numa2, ima
     integer :: itypel, nbelr, igeom, nuno2, inoloc, cpt
-    integer :: i, j, nheav, iheav, nfiss, ifiss, nse, nnose
+    integer :: i, j, nheav, iheav, nfiss, nfiss2, ifiss, nse, nnose
     aster_logical :: lelim
     integer, pointer :: connex(:) => null()
     integer, pointer :: cnsv(:) => null()
@@ -132,7 +132,8 @@ subroutine xstan2(noma, modele, crit2)
     cel(5) = modele//'.TOPOSE.PIN'
     cel(6) = modele//'.TOPOSE.PMI'
     cel(7) = modele//'.FISSNO'
-    do i = 1, 7
+    cel(8) = modele//'.TOPONO.HNO'
+    do i = 1, 8
         call codent(i, 'G', ch2)
         ces(i) = '&&XSTAN2.CES'//ch2
         call jeexin(cel(i)//'.CELD', ier)
@@ -173,8 +174,7 @@ subroutine xstan2(noma, modele, crit2)
             if (zi(jcesv(2)-1+iad) .ne. 1) goto 40
 !
 !         INITIALISATION DES VOLUMES
-            vmoin = 0
-            vplus = 0
+            vhea = 0
             vtot = 0
 !         BOUCLE SUR LES MAILLES SUPPORT DU NOEUD
             do ima = 1, nbmano
@@ -210,7 +210,8 @@ subroutine xstan2(noma, modele, crit2)
                 end do
                 ASSERT(.false.)
 200             continue
-                if (nbsp(numa2) .eq. 1) then
+                nfiss2 = nbsp(numa2)
+                if (nfiss2 .eq. 1) then
                     ifiss = 1
                 else
                     call cesexi('S', jcesd(7), jcesl(7), numa2, inoloc,&
@@ -242,8 +243,8 @@ subroutine xstan2(noma, modele, crit2)
                 jpint=jcesv(5)-1+iad
                 call xcrvol(nse, ndim, jcnse, nnose, jpint,&
                             igeom, elrefp, inoloc, nbnoma, jcesd(3),&
-                            jcesl(3), jcesv(3), numa2, ifiss, vmoin,&
-                            vplus, vtot)
+                            jcesl(3), jcesv(3), numa2, iheav, nfiss2, vhea,&
+                            jcesd(8), jcesl(8), jcesv(8), vtot)
                 call jedetr(geom)
  50             continue
             end do
@@ -253,7 +254,7 @@ subroutine xstan2(noma, modele, crit2)
             else
               crimaxi=crit2(2)**ndim
             endif
-            crit=min(vmoin,vplus)/vtot            
+            crit=vhea/vtot 
             if (crit .lt. crimaxi) then
                 cpt = cpt + 1
 !           BOUCLE SUR LES MAILLES SUPPORT DU NOEUD
@@ -288,6 +289,7 @@ subroutine xstan2(noma, modele, crit2)
 !       ELIMINATION DE LA LISTE DES NOEUDS XFEM SI NECESSAIRE
         lelim = .true.
         do iheav = 1, nheav
+            nfiss = nbsp(numa)
             if (nfiss .eq. 1) then
                 ifiss=1
             else
@@ -322,7 +324,7 @@ subroutine xstan2(noma, modele, crit2)
 !
     call jedetr(cnxinv)
     call detrsd('CHAM_NO_S', cns2)
-    do i = 1, 7
+    do i = 1, 8
         call jeexin(ces(i)//'.CESD', ier)
         if (ier .eq. 0) goto 130
         call detrsd('CHAM_ELEM_S', ces(i))

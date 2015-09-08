@@ -3,7 +3,7 @@ subroutine xsifl1(angl, basloc, coeff, coeff3, ddlm,&
                   igthet, ipref, ipres, ithet, jac,&
                   jlst, ka, mu, nd,&
                   ndim, nfh, nnop, nnops, itemps,&
-                  nompar, option, presn, singu, xg, igeom)
+                  nompar, option, singu, xg, igeom)
     implicit none
 !
 ! ======================================================================
@@ -51,17 +51,17 @@ subroutine xsifl1(angl, basloc, coeff, coeff3, ddlm,&
     integer :: ipref, ipres, ithet, j
     real(kind=8) :: jac
     integer :: jlst
-    real(kind=8) :: jm
+    real(kind=8) :: jm, var(ndim+1)
     real(kind=8) :: k1, k2, k3, ka, lsn, lst, mu, nd(3)
     integer :: nfh, nnops, itemps
     character(len=8) :: nompar(4)
     real(kind=8) :: norme
     character(len=16) :: option
-    real(kind=8) :: p(3, 3), pres, presn(27), rb9(3, 3), rr(2)
+    real(kind=8) :: p(3, 3), pres, rb9(3, 3), rr(2)
     real(kind=8) :: pres_test, cisa_test, r8pre
     integer :: singu
     real(kind=8) :: theta(3), u1(3), u1l(3), u2(3), u2l(3), u3(3)
-    real(kind=8) :: u3l(3), xg(4), rb33(3,3,3), r
+    real(kind=8) :: u3l(3), xg(3), rb33(3,3,3), r
     aster_logical :: axi, l_pres_var, l_cisa_var
     call vecini(3, 0.d0, e1)
     call vecini(3, 0.d0, e2)
@@ -133,10 +133,14 @@ subroutine xsifl1(angl, basloc, coeff, coeff3, ddlm,&
             .or. (option .eq. 'CALC_GTP_F')) then
 !
 !         VALEUR DE LA PRESSION
-        xg(ndim+1) = zr(itemps)
-        call fointe('FM', zk8(ipref), ndim+1, nompar, xg,&
+        call vecini(ndim+1, 0.d0, var)
+        do j = 1, ndim
+           var(j) = xg(j)
+        end do
+        var(ndim+1) = zr(itemps)
+        call fointe('FM', zk8(ipref), ndim+1, nompar, var,&
                     pres, ier)
-        if (ndim .eq. 2) call fointe('FM', zk8(ipref+1), ndim+1, nompar, xg,&
+        if (ndim .eq. 2) call fointe('FM', zk8(ipref+1), ndim+1, nompar, var,&
                                      cisa, ier)
         do 260 j = 1, ndim
             forrep(j,1) = -pres * nd(j)

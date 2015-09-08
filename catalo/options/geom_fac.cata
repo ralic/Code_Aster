@@ -21,19 +21,19 @@ GEOM_FAC
 OPTION__
    IN__
         PDEPLA   DEPL_R
-        PPINTER  N120_R
+        PPINTER  N816_R
         PLONGCO  N120_I 'MODL!.TOPOSE.LON' <<  XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  >>
-        PGESCLO  N120_R
+        PGESCLO  N816_R
         PLST     NEUT_R
         NOMFIS   NEUT_K8
         PFISNO   NEUT_I
         PHEA_NO  N120_I
-        PHEA_FA  N120_I
+        PHEA_FA  N240_I
 
    OUT__
-        PNEWGES  N120_R ELEM__
-        PNEWGEM  N120_R ELEM__
-        PBASESC  N480_R ELEM__
-        PBASMAI  N480_R ELEM__
+        PNEWGES  N816_R ELEM__
+        PNEWGEM  N816_R ELEM__
+        PBASESC  N2448R ELEM__
+        PBASMAI  N2448R ELEM__
         
    COND_CALCUL__   PLUS__  PHENO='ME' LXFEM='OUI' CONTACT='OUI'

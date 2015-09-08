@@ -48,7 +48,7 @@ subroutine vectme(modelz, carelz, mate, compor, complz,&
 ! OUT/JXOUT  VECELZ  : VECT_ELEM RESULTAT.
 !
     integer :: mxnbin, mxnbou, nbin, nbout
-    parameter    (mxnbin=28,mxnbou=2)
+    parameter    (mxnbin=29,mxnbou=2)
     integer :: ibid, iret, ich
     character(len=8) :: lpain(mxnbin), lpaout(mxnbou), newnom
     character(len=14) :: complu

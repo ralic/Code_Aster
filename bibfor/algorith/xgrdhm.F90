@@ -1,12 +1,12 @@
 subroutine xgrdhm(nomte, ndim, mecani, press1, press2,&
                   tempe, enrmec, dimdef, dimcon, nmec,&
-                  np1, np2, nenr, dimenr, enrhyd)
+                  np1, np2, nenr, dimenr, enrhyd, nfh)
     implicit none
 !
 #   include "asterfort/teattr.h"
 #   include "asterfort/assert.h"
     integer :: mecani(5), press1(7), press2(7), tempe(5)
-    integer :: dimdef, dimcon, ier
+    integer :: dimdef, dimcon, ier, nfh
     integer :: ndim, nmec, np1, np2, i
     character(len=8) :: enr
     character(len=16) :: nomte
@@ -143,12 +143,12 @@ subroutine xgrdhm(nomte, ndim, mecani, press1, press2,&
     endif
 !
     if (enrmec(1) .eq. 1) then
-        enrmec(3) = ndim
-        nenr=ndim
+        enrmec(3) = nfh*ndim
+        nenr=ndim*nfh
     endif
 !
     if (enrhyd(1).eq.1) then
-        enrhyd(3) = 1
+        enrhyd(3) = nfh
     endif
 !
 ! =====================================================================
@@ -179,7 +179,7 @@ subroutine xgrdhm(nomte, ndim, mecani, press1, press2,&
 ! 2.2.4. ==> DEFORMATIONS POUR L'ENRICHISSEMENT HEAVISIDE (HYDRO)
 !
       if (enrhyd(1).eq.1) then
-         enrhyd(2) = mecani(4) + press1(6) + enrmec(3) + 1
+         enrhyd(2) = mecani(4) + press1(6) + nmec + 1
       endif
 !
 ! =====================================================================

@@ -79,6 +79,7 @@ subroutine xtyele(model, trav, nfiss, fiss, contac,&
     integer :: fa(6, 8), ibid3(12, 3), nbf, ifq, codret, ilsn, ilst, igeom
     character(len=2) :: ch2
     character(len=8) :: typma, k8bid, noma, nomail
+    character(len=16) :: exithm
     character(len=19) :: clsn, clst, cnxinv, cstn(nfiss), maicon(nfiss)
     character(len=24) :: grp(4*nfiss)
     character(len=24) :: elfis_heav(nfiss), elfis_ctip(nfiss), elfis_hect(nfiss)
@@ -189,7 +190,8 @@ subroutine xtyele(model, trav, nfiss, fiss, contac,&
 ! --- BLINDAGE DANS LE CAS DU MULTI-HEAVISIDE
                         call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
                         call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
-                        if (.not.ismali(typma)) then
+                        call dismoi('EXI_THM', model, 'MODELE', repk=exithm)
+                        if (.not.ismali(typma) .and. exithm .eq. 'NON') then
                             call utmess('F', 'XFEM_41', sk=nomail)
                         endif
                     endif

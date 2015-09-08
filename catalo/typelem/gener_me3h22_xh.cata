@@ -37,7 +37,7 @@ ENTETE__ ELEMENT__ HM_FACE6_XH        MAILLE__ TRIA6
 MODE_LOCAL__
     DDL_MECA = DEPL_R   ELNO__ DIFF__
                                  EN1   (DX       DY       DZ       PRE1     H1X     H1Y    H1Z
-                                        HPRE1    )
+                                        H1PRE1    )
                                  EN2   (DX       DY       DZ       H1X      H1Y     H1Z)
     EFORCNO  = FORC_R   ELNO__ IDEN__  (FX       FY       FZ       )
     EFLUXE   = FTHM_R   ELNO__ IDEN__  (PFLU1    )
@@ -58,14 +58,13 @@ MODE_LOCAL__
     CPRES_R  = PRES_R   ELEM__         (PRES     )
     EFLHN    = FLHN_R   ELGA__ RIGI    (FH11     )
     N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
-
-    E10NEUTI = N120_I    ELEM__         (X[10]     )
-    N5NEUTI  = N120_I   ELNO__ IDEN__  (X[5]     )
-    E6NEUTI = N128_I    ELEM__         (X[6])
-    E36NEUI = N512_I    ELEM__         (X[36])
-
-    E12NEUTR = N132_R   ELEM__         (X[12])
-    E33NEUTR = N480_R   ELEM__         (X[33])
+   
+    E6NEUTI = N512_I    ELEM__         (X[6])
+    E10NEUTI = N120_I   ELEM__         (X[10])
+    E36NEUI = N1280I    ELEM__         (X[36])
+    N5NEUTI  = N120_I   ELNO__ IDEN__  (X[5]     ) 
+    E12NEUTR = N132_R   ELEM__         (X[12])  
+    E33NEUTR = N792_R   ELEM__         (X[33])                      
     ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[30]    )
     ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[30]    )
     STANO_I  = N120_I   ELNO__ IDEN__  (X1       )

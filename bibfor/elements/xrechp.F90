@@ -77,7 +77,7 @@ subroutine xrechp(ndim, elrefp, nnop, igeom, itps,&
     character(len=8) :: typma, fpg, elc, elrefc, nompar(4)
     aster_logical :: axi
     integer :: nbddl, zxain, iadzi, iazk24, ibid, ibid2(12, 3), nbf
-    integer :: fac(6, 8), nbar, ar(12, 3), cface(18, 6), ninter, nface, nptf
+    integer :: fac(6, 8), nbar, ar(12, 3), cface(30, 6), ninter, nface, nptf
     integer :: i, j, ifa, nnof, npgf, ipoidf, ivff, idfdef
     integer :: ipgf, ilev, inp, jnp, kddl, lddl, ind1, ind2, iddlma, ier
     integer :: mxstac, hea_fa(2), ifh, ife

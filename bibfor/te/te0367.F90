@@ -106,7 +106,7 @@ subroutine te0367(option, nomte)
 ! --- INITIALISATIONS
 !
     call vecini(n, 0.d0, vtmp)
-    call vecini(9, 0.d0, geopi)
+    call vecini(18, 0.d0, geopi)
     call vecini(2, 0.d0, dlagrf)
     dlagrc = 0.d0
 !

@@ -28,24 +28,25 @@ OPTION__
         PGRADLN  NEUT_R
         PGRADLT  NEUT_R
         PFISCO   NEUT_I
-        PPMILTO  N480_R
+        PPMILTO  N792_R
         PPINTTO  N132_R
-        PCNSETO  N512_I
+        PCNSETO  N1280I
         PLONCHA  N120_I
-        PHEAVTO  N128_I
+        PHEAVTO  N512_I
         PAINTTO  N480_R
         PTYPDIS  NEUT_I
+        PSTANO   N120_I
         PDECOU   NEUT_K8
    OUT__
-        PPINTER  N120_R ELEM__
-        PAINTER  N480_R ELEM__
-        PCFACE   N120_I ELEM__
+        PPINTER  N816_R ELEM__
+        PAINTER  N1360R ELEM__
+        PCFACE   N720_I ELEM__
         PLONGCO  N120_I ELEM__
-        PBASECO  N480_R ELEM__
-        PGESCLA  N120_R ELEM__
-        PGESCLO  N120_R ELEM__
-        PGMAITR  N120_R ELEM__
-        PHEAVFA  N120_I ELEM__
+        PBASECO  N2448R ELEM__
+        PGESCLA  N816_R ELEM__
+        PGESCLO  N816_R ELEM__
+        PGMAITR  N816_R ELEM__
+        PHEAVFA  N960_I ELEM__
 
 COND_CALCUL__  PLUS__ PHENO='ME' BORD='0' LXFEM='OUI'
                PLUS__ PHENO='TH' BORD='0' LXFEM='OUI'

@@ -58,7 +58,7 @@ subroutine assma3(lmasym, lmesym, tt, igr, iel,&
     integer :: livois(1:nvoima), tyvois(1:nvoima), nbnovo(1:nvoima)
     integer :: nbsoco(1:nvoima), lisoco(1:nvoima, 1:nscoma, 1:2)
     integer :: nbi1mx, nbi1
-    parameter (nbi1mx=27*27*10*10)
+    parameter (nbi1mx=27*27*20*20)
     integer :: ti1(nbi1mx)
     integer :: ti2(nbi1mx)
 !-----------------------------------------------------------------------

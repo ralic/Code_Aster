@@ -18,7 +18,7 @@
 interface 
     subroutine xmilfa(elrefp, ndim, ndime, geom, cnset, nnose, it,&
                       ainter, ip1, ip2, pm2, typma, pinref, pmiref,&
-                      ksi, milfa)
+                      ksi, milfa, pintt, pmitt)
         character(len=8) :: elrefp
         character(len=8) :: typma
         integer :: ndim
@@ -35,5 +35,7 @@ interface
         real(kind=8) :: ainter(*)
         real(kind=8) :: ksi(ndime)
         real(kind=8) :: milfa(ndim)
+        real(kind=8) :: pintt(*)
+        real(kind=8) :: pmitt(*)
     end subroutine xmilfa
 end interface 

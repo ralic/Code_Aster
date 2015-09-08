@@ -68,7 +68,7 @@ subroutine te0547(option, nomte)
     integer :: ipoids, ivf, idfde, jgano, ddlm
     integer :: ipoidf, ivff, idfdef, iadzi, iazk24
     integer :: npg, npgf, nptf, integ, singu
-    integer :: ninter, nface, cface(18, 6)
+    integer :: ninter, nface, cface(30, 6)
     integer :: lact(8), nlact, ncompv
     integer :: jdonco, jlsn, jlst, igeom, jptint, vstnc(1)
     integer :: jaint, jcface, jlonch, jbasec, icopil, ictau

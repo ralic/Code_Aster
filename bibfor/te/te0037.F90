@@ -9,6 +9,7 @@ subroutine te0037(option, nomte)
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
+#include "asterfort/getvid.h"
 #include "asterfort/iselli.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -69,17 +70,17 @@ subroutine te0037(option, nomte)
 !
 !
     character(len=8) :: elref, typma, fpg, elc, nompar(4), lag, elrefc, enr, enr2
-    integer :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano
+    integer :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano, fisno(27,10)
     integer :: nfh, nfe, singu, ddlc, nnom, ddls, nddl, ier, ddlm
-    integer :: igeom, ipres, itemps, ires, iadzi, iazk24, jheavn, ncompn, hea_fa(2), jtab(7)
+    integer :: igeom, ipres, itemps, ires, iadzi, iazk24, jheavn, ncompn, hea_fa(2)
     integer :: jlst, jptint, jaint, jcface, jlonch, jstno, jbasec, contac
-    integer :: i, j, ninter, nface, cface(18, 6), ifa, nfiss, jfisno
-    integer :: ibid, ino, ilev
+    integer :: i, j, ninter, nface, cface(30, 6), ifa, nfiss, jfisno
+    integer :: ibid, ilev, ifiss, ncompc, jtab(7), ncompp, ino
     integer :: nnof, npgf, ipoidf, ivff, idfdef, ipgf, pos, zxain, nptf, ifh
     real(kind=8) :: pres, cisa, forrep(3, 2), ff(27), jac, nd(3), he(2), mat(1)
     real(kind=8) :: rr(2), lst, xg(4), dfbid(27, 3), r27bid(27), r3bid(3), r
     aster_logical :: lbid, pre1, axi
-    integer :: compt, nddlm, nddls, nddlp, iret
+    integer :: compt, nddlm, nddls, nddlp, iret, jheafa, ncomph, ncompb
     real(kind=8) :: thet, pinter(3), pinref(3)
     data    he / -1.d0 , 1.d0/
 !
@@ -129,14 +130,12 @@ subroutine te0037(option, nomte)
 !
     call jevech('PVECTUR', 'E', ires)
 !
-!
 !   INITIALISATION DES DIMENSIONS DES DDLS X-FEM
 !     SI PRE1=.FALSE. -> MODELISATION MECA XFEM CLASSIQUE
 !     SI PRE1=.TRUE.  -> MODELISATION HM XFEM
     if (pre1) then
-        call xhmini(nomte, nfh, ddls, ddlm, nddlp)
+        call xhmini(nomte, nfh, ddls, ddlm, nddlp, nfiss)
 !
-        nfiss = 1
         contac = 0
         singu = 0
         nddls = ddls + nddlp
@@ -171,259 +170,292 @@ subroutine te0037(option, nomte)
 !     PARAMETRES PROPRES A X-FEM
     call jevech('PLST', 'L', jlst)
     call jevech('PPINTER', 'L', jptint)
+    call tecach('OOO', 'PPINTER', 'L', iret, nval=2,&
+                itab=jtab)
+    ncompp = jtab(2)
     call jevech('PAINTER', 'L', jaint)
     call jevech('PCFACE', 'L', jcface)
+    call tecach('OOO', 'PCFACE', 'L', iret, nval=2,&
+                itab=jtab)
+    ncompc = jtab(2)
+    call tecach('OOO', 'PBASECO', 'L', iret, nval=2,&
+                itab=jtab)
+    ncompb = jtab(2)
     call jevech('PLONGCO', 'L', jlonch)
     call jevech('PSTANO', 'L', jstno)
     call jevech('PBASECO', 'L', jbasec)
-    if (nfiss .gt. 1) call jevech('PFISNO', 'L', jfisno)
+    if (nfiss .gt. 1) then
+       call jevech('PFISNO', 'L', jfisno)
+       call jevech('PHEA_FA', 'L', jheafa)
+       call tecach('OOO', 'PHEA_FA', 'L', iret, nval=2,&
+                   itab=jtab)
+       ncomph = jtab(2)
+    endif
+!
+! --- CONECTIVITÃ~I DES FISSURE ET DES DDL HEAVISIDES
+    if (nfiss .eq. 1) then
+        do ino = 1, nno
+            fisno(ino,1) = 1
+        enddo
+    else
+        do ifh = 1, nfh
+            do ino = 1, nno
+                fisno(ino,ifh) = zi(jfisno-1+(ino-1)*nfh+ifh)
+            enddo
+        enddo
+    endif
+!
+    call jevech('PGEOMER', 'L', igeom)
 !
 !     RECUPERATION DE LA DEFNITION DES FONCTIONS HEAVISIDE
     hea_fa(1:2)=0
     call teattr('S', 'XFEM', enr, ier)
-    if (enr(1:2).eq.'XH') then
-!   AVEC DE JONCTIONS IL FAUT PROGRAMMER PROPREMENT L INTEGRATION SUR LES FACETTES DE DECOUPE:
-!    IL FAUDRAIT DEFINIR LA TOPOLOGIE DE SOUS-DOMAINE ESCL/MAITR PAR FACETTE
-        ASSERT(nfiss .eq. 1)
-        call jevech('PHEA_NO', 'L', jheavn)
-        call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
+    call jevech('PHEA_NO', 'L', jheavn)
+    call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
                 itab=jtab)
-        ncompn = jtab(2)/jtab(3)
+    ncompn = jtab(2)/jtab(3)
+    if (enr(1:2).eq.'XH'.and. nfiss .eq.1) then
         hea_fa(1)=xcalc_code(1, he_real=[he(1)])
         hea_fa(2)=xcalc_code(1, he_real=[he(2)])
     endif
 !
 !     RÉCUPÉRATIONS DES DONNÉES SUR LA TOPOLOGIE DES FACETTES
-    ninter=zi(jlonch-1+1)
-    nface=zi(jlonch-1+2)
-    nptf=zi(jlonch-1+3)
-    if (nptf .eq. 6 .and. ndim .eq. 3) elc = 'TR6'
-    if (ninter .lt. ndim) goto 999
+    do ifiss = 1, nfiss
+       ninter=zi(jlonch+3*(ifiss-1)-1+1)
+       nface=zi(jlonch+3*(ifiss-1)-1+2)
+       nptf=zi(jlonch+3*(ifiss-1)-1+3)
+       if (nptf .eq. 6 .and. ndim .eq. 3) elc = 'TR6'
+       if (ninter .lt. ndim) goto 998
 !
-    do i = 1, nface
-        do j = 1, nptf
-            cface(i,j)=zi(jcface-1+nptf*(i-1)+j)
-        end do
-    end do
-!
-    call jevech('PGEOMER', 'L', igeom)
+       do i = 1, nface
+           do j = 1, nptf
+               cface(i,j)=zi(jcface-1+ncompc*(ifiss-1)+nptf*(i-1)+j)
+           end do
+       end do
 !
 !-----------------------------------------------------------------------
 !     BOUCLE SUR LES FACETTES
 !-----------------------------------------------------------------------
 !
-    do ifa = 1, nface
+       do ifa = 1, nface
 !
-        call elrefe_info(elrefe=elc,fami=fpg,nno=nnof,&
-                         npg=npgf,jpoids=ipoidf,jvf=ivff,jdfde=idfdef)
+           call elrefe_info(elrefe=elc,fami=fpg,nno=nnof,&
+                            npg=npgf,jpoids=ipoidf,jvf=ivff,jdfde=idfdef)
 !
 !       ON VERIFIE QUE LES NOEUDS DE LA FACETTE DE CONTACT ONT LST<0
 !
-        if (singu.eq.1) then
-           call vecini(3, 0.d0, pinter)
-           do i = 1, nptf
-              do j = 1, ndim
-                 pinter(j) = zr(jptint-1+ndim*(cface(ifa,i)-1)+j)
+           if (singu.eq.1) then
+              call vecini(3, 0.d0, pinter)
+              do i = 1, nptf
+                 do j = 1, ndim
+                    pinter(j) = zr(jptint-1+ndim*(cface(ifa,i)-1)+j)
+                 end do
+                 call reeref(elref, nno, zr(igeom), pinter, ndim, pinref, ff, dfbid)
+                 lst = 0.d0
+                 do j = 1, nno
+                     lst=lst+zr(jlst-1+j)*ff(j)
+                 end do
+                 ASSERT(lst.le.1.d-4)
               end do
-              call reeref(elref, nno, zr(igeom), pinter, ndim, pinref, ff, dfbid)
-              lst = 0.d0
-              do j = 1, nno
-                  lst=lst+zr(jlst-1+j)*ff(j)
-              end do
-              ASSERT(lst.le.1.d-4)
-           end do
-        endif
+           endif
 !       BOUCLE SUR LES POINTS DE GAUSS DES FACETTES
-        do ipgf = 1, npgf
+           do ipgf = 1, npgf
 !
 !         CALCUL DE JAC (PRODUIT DU JACOBIEN ET DU POIDS)
 !         ET DES FF DE L'ÉLÉMENT PARENT AU POINT DE GAUSS
 !         ET LA NORMALE ND ORIENTÉE DE ESCL -> MAIT
 !         ET DE XG : COORDONNEES REELLES DU POINT DE GAUSS
-            elrefc='NON'
-            if (ndim .eq. 3) then
-                call xjacff(elref, elrefc, elc, ndim, fpg,&
-                            jptint, ifa, cface, ipgf, nno,&
-                            igeom, jbasec, xg, jac, ff,&
-                            r27bid, dfbid, nd, r3bid, r3bid)
-            else if (ndim.eq.2) then
-                call xjacf2(elref, elrefc, elc, ndim, fpg,&
-                            jptint, ifa, cface, nptf, ipgf,&
-                            nno, igeom, jbasec, xg, jac,&
-                            ff, r27bid, dfbid, nd, r3bid)
-            endif
+               elrefc='NON'
+               if (ndim .eq. 3) then
+                   call xjacff(elref, elrefc, elc, ndim, fpg,&
+                               jptint, ifa, cface, ipgf, nno,&
+                               igeom, jbasec, xg, jac, ff,&
+                               r27bid, dfbid, nd, r3bid, r3bid,&
+                               ifiss, ncompp, ncompb)
+               else if (ndim.eq.2) then
+                   call xjacf2(elref, elrefc, elc, ndim, fpg,&
+                               jptint, ifa, cface, nptf, ipgf,&
+                               nno, igeom, jbasec, xg, jac,&
+                               ff, r27bid, dfbid, nd, r3bid,&
+                               ifiss, ncompp, ncompb)
+               endif
 !
 !         CALCUL DE RR = SQRT(DISTANCE AU FOND DE FISSURE)
-            if (singu .eq. 1) then
-                lst=0.d0
-                do i = 1, nno
-                    lst=lst+zr(jlst-1+i)*ff(i)
-                end do
-                if (lst.gt.0.d0) lst = 0.d0
-                rr(1)=-sqrt(-lst)
-                rr(2)= sqrt(-lst)
-            endif
+               if (singu .eq. 1) then
+                   lst=0.d0
+                   do i = 1, nno
+                       lst=lst+zr(jlst-1+i)*ff(i)
+                   end do
+                   if (lst.gt.0.d0) lst = 0.d0
+                   rr(1)=-sqrt(-lst)
+                   rr(2)= sqrt(-lst)
+               endif
 !
 !         CALCUL DE LA DISTANCE A L'AXE (AXISYMETRIQUE)
-            if (axi) then
-                r = 0.d0
-                do ino = 1, nno
-                    r = r + ff(ino)*zr(igeom-1+2*(ino-1)+1)
-                end do
-                ASSERT(r.ge.0d0)
+               if (axi) then
+                   r = 0.d0
+                   do ino = 1, nno
+                       r = r + ff(ino)*zr(igeom-1+2*(ino-1)+1)
+                   end do
+                   ASSERT(r.ge.0d0)
 !              ATTENTION : LE POIDS N'EST PAS X R
 !              CE SERA FAIT PLUS TARD AVEC JAC = JAC X R
-            endif
+               endif
 !
 !         CALCUL DES FORCES REPARTIES SUIVANT LES OPTIONS
 !         -----------------------------------------------
 !
-            call vecini(3*2, 0.d0, forrep)
-            nompar(1)='X'
-            nompar(2)='Y'
-            if (ndim .eq. 3) nompar(3)='Z'
-            if (ndim .eq. 3) nompar(4)='INST'
-            if (ndim .eq. 2) nompar(3)='INST'
+               call vecini(3*2, 0.d0, forrep)
+               nompar(1)='X'
+               nompar(2)='Y'
+               if (ndim .eq. 3) nompar(3)='Z'
+               if (ndim .eq. 3) nompar(4)='INST'
+               if (ndim .eq. 2) nompar(3)='INST'
 !
 ! MODIFIER LE JAC
-            if (axi) then
-                jac = jac * r
-            endif
+               if (axi) then
+                   jac = jac * r
+               endif
 !
-            if (option .eq. 'CHAR_MECA_PRES_R') then
+               if (option .eq. 'CHAR_MECA_PRES_R') then
 !
 !           CALCUL DE LA PRESSION AUX POINTS DE GAUSS
-                pres = 0.d0
-                cisa = 0.d0
-                do ino = 1, nno
-                    if (ndim .eq. 3) pres = pres + zr(ipres-1+ino) * ff( ino)
-                    if (ndim .eq. 2) then
-                        pres = pres + zr(ipres-1+2*(ino-1)+1) * ff( ino)
-                        cisa = cisa + zr(ipres-1+2*(ino-1)+2) * ff( ino)
-                    endif
-                end do
+                   pres = 0.d0
+                   cisa = 0.d0
+                   do ino = 1, nno
+                       if (ndim .eq. 3) pres = pres + zr(ipres-1+ino) * ff( ino)
+                       if (ndim .eq. 2) then
+                           pres = pres + zr(ipres-1+2*(ino-1)+1) * ff( ino)
+                           cisa = cisa + zr(ipres-1+2*(ino-1)+2) * ff( ino)
+                       endif
+                   end do
 !           ATTENTION AU SIGNE : POUR LES PRESSIONS, IL FAUT UN - DVT
 !           CAR LE SECOND MEMBRE SERA ECRIT AVEC UN + (VOIR PLUS BAS)
 !           ON CALCULE FORREP POUR LES DEUX LEVRES  : 1 = INF ET 2 = SUP
-                do j = 1, ndim
-                    forrep(j,1) = -pres * nd(j)
-                    forrep(j,2) = -pres * (-nd(j))
-                end do
-                if (ndim .eq. 2) then
-                    forrep(1,1) = forrep(1,1)- cisa * nd(2)
-                    forrep(2,1) = forrep(2,1)+ cisa * nd(1)
-                    forrep(1,2) = forrep(1,2)- cisa * (-nd(2))
-                    forrep(2,2) = forrep(2,2)+ cisa * (-nd(1))
-                endif
+                   do j = 1, ndim
+                       forrep(j,1) = -pres * nd(j)
+                       forrep(j,2) = -pres * (-nd(j))
+                   end do
+                   if (ndim .eq. 2) then
+                       forrep(1,1) = forrep(1,1)- cisa * nd(2)
+                       forrep(2,1) = forrep(2,1)+ cisa * nd(1)
+                       forrep(1,2) = forrep(1,2)- cisa * (-nd(2))
+                       forrep(2,2) = forrep(2,2)+ cisa * (-nd(1))
+                   endif
 !
-            else if (option.eq.'CHAR_MECA_PRES_F') then
+               else if (option.eq.'CHAR_MECA_PRES_F') then
 !
 !           VALEUR DE LA PRESSION
-                xg(ndim+1) = zr(itemps)
-                call fointe('FM', zk8(ipres), ndim+1, nompar, xg,&
-                            pres, ier)
-                if (ndim .eq. 2) call fointe('FM', zk8(ipres+1), ndim+1, nompar, xg,&
+                   xg(ndim+1) = zr(itemps)
+                   call fointe('FM', zk8(ipres), ndim+1, nompar, xg,&
+                               pres, ier)
+                   if (ndim .eq. 2) call fointe('FM', zk8(ipres+1), ndim+1, nompar, xg,&
                                              cisa, ier)
-                do j = 1, ndim
-                    forrep(j,1) = -pres * nd(j)
-                    forrep(j,2) = -pres * (-nd(j))
-                end do
-                if (ndim .eq. 2) then
-                    forrep(1,1) = forrep(1,1)- cisa * nd(2)
-                    forrep(2,1) = forrep(2,1)+ cisa * nd(1)
-                    forrep(1,2) = forrep(1,2)- cisa * (-nd(2))
-                    forrep(2,2) = forrep(2,2)+ cisa * (-nd(1))
-                endif
-            else
-                call utmess('F', 'XFEM_15')
-            endif
+                   do j = 1, ndim
+                       forrep(j,1) = -pres * nd(j)
+                       forrep(j,2) = -pres * (-nd(j))
+                   end do
+                   if (ndim .eq. 2) then
+                       forrep(1,1) = forrep(1,1)- cisa * nd(2)
+                       forrep(2,1) = forrep(2,1)+ cisa * nd(1)
+                       forrep(1,2) = forrep(1,2)- cisa * (-nd(2))
+                       forrep(2,2) = forrep(2,2)+ cisa * (-nd(1))
+                   endif
+               else
+                   call utmess('F', 'XFEM_15')
+               endif
 !
 !         CALCUL EFFECTIF DU SECOND MEMBRE SUR LES DEUX LEVRES
-            if (pre1) then
-                do ilev = 1, 2
-                    pos=0
-                    do ino = 1, nno
+               if (pre1) then
+                   do ilev = 1, 2
+                       pos=0
+                       do ino = 1, nno
 !
 !               TERME CLASSIQUE
-                        do j = 1, ndim
-                            pos=pos+1
-                            zr(ires-1+pos) = zr(ires-1+pos) + forrep( j,ilev)*jac*ff(ino)
-                        end do
+                           do j = 1, ndim
+                               pos=pos+1
+                               zr(ires-1+pos) = zr(ires-1+pos) + forrep( j,ilev)*jac*ff(ino)
+                           end do
 !
 !               ON ZAPPE LES TERMES DE PRESSION CLASSIQUE SI ON EST SUR UN
 !               NOEUD SOMMET
-                        if (ino .le. nnos) pos=pos+1
+                           if (ino .le. nnos) pos=pos+1
 !
 !               TERME HEAVISIDE
-                        do ifh = 1, nfh
-                          do j = 1, ndim
-                            pos=pos+1
-                            zr(ires-1+pos) = zr(ires-1+pos) + xcalc_heav(&
-                                                             zi(jheavn-1+ncompn*(ino-1)+ifh),&
-                                                             hea_fa(ilev),&
-                                                             zi(jheavn-1+ncompn*(ino-1)+ncompn))&
-                                                             *forrep(j,ilev)*jac*ff(ino)
-                          enddo
+                           do ifh = 1, nfh
+!               EN MULTI-FISSURATION, IL FAUT RECUPERER LES BONNES VALEURS DE HE
+                               if (nfiss.gt.1) then
+                                  hea_fa(ilev) = zi(jheafa-1+ncomph*(ifiss-1)&
+                                             +2*(ifa-1)+ilev)
+                               endif
+                               do j = 1, ndim
+                                  pos=pos+1
+                                  zr(ires-1+pos) = zr(ires-1+pos) + xcalc_heav(&
+                                                   zi(jheavn-1+ncompn*(ino-1)+ifh),hea_fa(ilev),&
+                                                   zi(jheavn-1+ncompn*(ino-1)+ncompn))&
+                                                   *forrep(j,ilev)*jac*ff(ino)
+                               end do
 !               ON ZAPPE LES TERMES DE PRESSION HEAVISIDE SI ON 
 !               EST SUR UN NOEUD SOMMET
-                          if (ino.le.nnos) pos=pos+1 
-                        end do
-                    enddo
-                end do
-            else
-                do ilev = 1, 2
+                               if (ino.le.nnos) pos=pos+1 
+                           end do
+                       end do
+                   end do
+               else
+                   do ilev = 1, 2
 !
-                    pos=0
-                    do ino = 1, nno
+                      pos=0
+                      do ino = 1, nno
 !
 !               TERME CLASSIQUE
-                        do j = 1, ndim
+                         do j = 1, ndim
                             pos=pos+1
                             zr(ires-1+pos) = zr(ires-1+pos) + forrep( j,ilev) * jac * ff(ino)
-                        end do
+                         end do
 !
 !               TERME HEAVISIDE
-                        do j = 1, ndim
-                          do ifh = 1, nfh
-                            pos=pos+1
-                            zr(ires-1+pos) = zr(ires-1+pos) + xcalc_heav(&
-                                                           zi(jheavn-1+ncompn*(ino-1)+ifh),&
-                                                           hea_fa(ilev),&
-                                                           zi(jheavn-1+ncompn*(ino-1)+ncompn))&
-                                             * forrep(j,ilev) * jac * f&
-                                             &f(ino)
-                          enddo
-                        end do
+                         do j = 1, ndim
+                            do ifh = 1, nfh
+                               pos=pos+1
+                               zr(ires-1+pos) = zr(ires-1+pos) + xcalc_heav(&
+                                                zi(jheavn-1+ncompn*(ino-1)+ifh),&
+                                                hea_fa(ilev),&
+                                                zi(jheavn-1+ncompn*(ino-1)+ncompn))&
+                                                * forrep(j,ilev) * jac * ff(ino)
+                            enddo
+                         end do
 !
 !               TERME SINGULIER
-                        do j = 1, singu*ndim
+                         do j = 1, singu*ndim
                             pos=pos+1
                             zr(ires-1+pos) = zr(ires-1+pos) + rr(ilev) * forrep(j,ilev) * jac * f&
                                              &f(ino) 
-                        end do
+                         end do
 !
 !               ON SAUTE LES POSITIONS DES DDLS ASYMPTOTIQUES E2, E3, E4
-                        pos = pos + (nfe-1) * ndim * singu
+                         pos = pos + (nfe-1) * ndim * singu
 !
 !               ON SAUTE LES POSITIONS DES LAG DE CONTACT FROTTEMENT
 !
-                        if (contac .eq. 3) then
+                         if (contac .eq. 3) then
                             if (ino .le. nnos) pos = pos + ddlc
-                        else
+                         else
                             pos = pos + ddlc
-                        endif
+                         endif
 !
-                    end do
-                end do
-            endif
-        end do
+                      end do
+                   end do
+               endif
+           end do
+       end do
+998    continue
     end do
 !
 !     SUPPRESSION DES DDLS SUPERFLUS
     if (pre1) then
-        call xhmddl(ndim, nddls, nddl, nno, nnos,&
+        call xhmddl(ndim, nfh, nddls, nddl, nno, nnos,&
                     zi(jstno), .false._1, option, nomte, mat,&
-                    zr(ires), nddlm)
+                    zr(ires), nddlm, nfiss, jfisno)
     else
         call teattr('C', 'XLAG', lag, ibid)
         if (ibid .eq. 0 .and. lag .eq. 'ARETE') then

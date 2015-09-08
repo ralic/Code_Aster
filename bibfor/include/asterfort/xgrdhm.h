@@ -18,7 +18,7 @@
 interface 
     subroutine xgrdhm(nomte, ndim, mecani, press1, press2,&
                       tempe, enrmec, dimdef, dimcon, nmec,&
-                      np1, np2, nenr, dimenr, enrhyd)
+                      np1, np2, nenr, dimenr, enrhyd, nfh)
         character(len=16) :: nomte
         integer :: ndim
         integer :: mecani(5)
@@ -34,5 +34,6 @@ interface
         integer :: nenr
         integer :: dimenr
         integer :: enrhyd(3)
+        integer :: nfh
     end subroutine xgrdhm
 end interface 

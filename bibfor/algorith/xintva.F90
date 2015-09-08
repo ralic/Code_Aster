@@ -1,4 +1,4 @@
-subroutine xintva(elrefp, n, ptxx, ndime, intinf, intsup)
+subroutine xintva(dekker, ptxx, ndime, intinf, intsup)
     implicit none
 !
 #include "jeveux.h"
@@ -6,12 +6,10 @@ subroutine xintva(elrefp, n, ptxx, ndime, intinf, intsup)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/provec.h"
-#include "asterfort/xelrex.h"
 #include "asterfort/xnormv.h"
 #include "blas/ddot.h"
-    integer :: n(3), ndime
-    real(kind=8) :: ptxx(*), intinf, intsup
-    character(len=8) :: elrefp
+    integer :: ndime
+    real(kind=8) :: ptxx(*), intinf, intsup, dekker(3*ndime)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,11 +39,11 @@ subroutine xintva(elrefp, n, ptxx, ndime, intinf, intsup)
 !       INTSUP  : BORNE SUPERIEURE DE L'INTERVALLE DE RECHERCHE
 !     --------------------------------------------------------------
 !
-    real(kind=8) :: x(81), a(ndime), b(ndime), c(ndime), ab(ndime), bc(ndime)
+    real(kind=8) :: a(ndime), b(ndime), c(ndime), ab(ndime), bc(ndime)
     real(kind=8) :: ca(ndime), ptini(ndime), k(ndime), det, alpha, kappa
     real(kind=8) :: ka(ndime), kb(ndime), kc(ndime), b1, c1, c2
     real(kind=8) :: norm_ab, norm_bc , norm_ca, eps, tole
-    integer :: nno, ia , ib , ic, j, cpt
+    integer :: j, cpt
     parameter (eps = 1.d-12)
     parameter (tole = 5.d-7)
 !
@@ -57,21 +55,17 @@ subroutine xintva(elrefp, n, ptxx, ndime, intinf, intsup)
     intsup =0.d0
     cpt = 0
 !   RECUPERATION DES COORDONNEES DE REFERENCE DES NOEUDS SOMMETS DE LA FACE
-    call xelrex(elrefp, nno, x)
-    ib=n(1)
-    ic=n(2)
-    ia=n(3)
     do j = 1, ndime
-       a(j)=x(ndime*(ia-1)+j)
-       b(j)=x(ndime*(ib-1)+j)
-       c(j)=x(ndime*(ic-1)+j)
+       a(j)=dekker(j)
+       b(j)=dekker(ndime+j)
+       c(j)=dekker(2*ndime+j)
     end do
 !
 !   RECUPERATION DES ARETES DE LA FACE TRIA
     do j = 1, ndime
-       ab(j)=x(ndime*(ib-1)+j)-x(ndime*(ia-1)+j)
-       bc(j)=x(ndime*(ic-1)+j)-x(ndime*(ib-1)+j)
-       ca(j)=x(ndime*(ia-1)+j)-x(ndime*(ic-1)+j)
+       ab(j)=b(j)-a(j)
+       bc(j)=c(j)-b(j)
+       ca(j)=a(j)-c(j)
     end do
 !
     call xnormv(ndime, ab, norm_ab)
@@ -92,12 +86,10 @@ subroutine xintva(elrefp, n, ptxx, ndime, intinf, intsup)
     c1 = ddot(ndime,k,1,ka,1)
     c2 = ddot(ndime,ka,1,ab,1)
     det =  -1.d0+b1**2
-!    write(6,*)'KOR: det1=',det
     if (abs(det).gt.eps) then
        kappa = (-c1+c2*b1)/det
        alpha = (c2-b1*c1)/det
        alpha = alpha/norm_ab
-!    write(6,*)'KOR: alpha1=',alpha
        if (alpha.le.(1.d0+tole).and.alpha.ge.-tole) then
           if (kappa.le.0.d0) intinf = kappa
           if (kappa.ge.0.d0) intsup = kappa
@@ -113,12 +105,10 @@ subroutine xintva(elrefp, n, ptxx, ndime, intinf, intsup)
     c1 = ddot(ndime,k,1,kb,1)
     c2 = ddot(ndime,kb,1,bc,1)
     det = -1.d0+b1**2
-!    write(6,*)'KOR: det2=',det
     if (abs(det).gt.eps) then
        kappa = (-c1+c2*b1)/det
        alpha = (c2-b1*c1)/det
        alpha = alpha/norm_bc
-!    write(6,*)'KOR: alpha2=',alpha
        if (alpha.le.(1.d0+tole).and.alpha.ge.-tole) then
           if (kappa.le.0.d0) intinf = kappa
           if (kappa.ge.0.d0) intsup = kappa
@@ -134,12 +124,10 @@ subroutine xintva(elrefp, n, ptxx, ndime, intinf, intsup)
     c1 = ddot(ndime,k,1,kc,1)
     c2 = ddot(ndime,kc,1,ca,1)
     det =  -1.d0+b1**2
-!    write(6,*)'KOR: det3=',det
     if (abs(det).gt.eps) then
        kappa = (-c1+c2*b1)/det
        alpha = (c2-b1*c1)/det
        alpha = alpha/norm_ca
-!    write(6,*)'KOR: alpha3=',alpha
        if (alpha.le.(1.d0+tole).and.alpha.ge.-tole) then
           if (kappa.le.0.d0) intinf = kappa
           if (kappa.ge.0.d0) intsup = kappa

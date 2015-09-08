@@ -23,14 +23,14 @@ OPTION__
         PHECHPF  COEH_F
         PTEMPSR  INST_R
 % PARAMETRES SPECIFIQUES A X-FEM
-        PPINTER  N120_R
-        PAINTER  N480_R
-        PCFACE   N120_I
+        PPINTER  N816_R
+        PAINTER  N1360R
+        PCFACE   N720_I
         PLONGCO  N120_I
         PLSN     NEUT_R
         PLST     NEUT_R
         PSTANO   N120_I
-        PBASECO  N480_R
+        PBASECO  N2448R
         PHEA_NO  N120_I
    OUT__
 PMATTTR MTEM_R RESL__

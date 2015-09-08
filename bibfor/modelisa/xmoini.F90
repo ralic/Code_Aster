@@ -29,12 +29,12 @@ subroutine xmoini(nh8, nh20, np6, np15, np5,&
     integer :: nth8(7), ntp6(7), ntp5(7), ntt4(7), ntpq4(7), ntpt3(7)
     integer :: ntaq4(7), ntat3(7), ntf4(7), ntf3(7), ntpf2(7), ntax2(7)
 !
-    integer :: nhyq8(7), nhyt6(7), nhymq8(7), nhymt6(7), nhysq8(7)
-    integer :: nhyst6(7), nhydq8(7), nhydt6(7), nphm(7)
-    integer :: nhe20(7), nhem20(7), nhed20(7), nhes20(7), npe15(7)
-    integer :: npem15(7), npes15(7), nped15(7), npy13(7), npym13(7)
-    integer :: npys13(7), npyd13(7), nte10(7), ntes10(7)
-    integer :: nted10(7), ntem10(7), nbhm(7), nchm(7)
+    integer :: nhyq8(11), nhyt6(11), nhymq8(7), nhymt6(7), nhysq8(7)
+    integer :: nhyst6(7), nhydq8(7), nhydt6(7), nphm(11)
+    integer :: nhe20(11), nhem20(7), nhed20(7), nhes20(7), npe15(11)
+    integer :: npem15(7), npes15(7), nped15(7), npy13(11), npym13(7)
+    integer :: npys13(7), npyd13(7), nte10(11), ntes10(7)
+    integer :: nted10(7), ntem10(7), nbhm(11), nchm(11)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -153,6 +153,15 @@ subroutine xmoini(nh8, nh20, np6, np15, np5,&
         nf4(i)=0
         nf3(i)=0
         npf2(i)=0
+        nhyq8(i)=0
+        nhyt6(i)=0
+        nphm(i)=0
+        nhe20(i)=0
+        npe15(i)=0
+        npy13(i)=0
+        nte10(i)=0
+        nbhm(i)=0
+        nchm(i)=0
     end do
     do i = 12, 15
         nh8(i)=0

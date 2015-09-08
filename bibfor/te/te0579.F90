@@ -62,14 +62,14 @@ subroutine te0579(option, nomte)
     integer :: jpintt, jcnset, jheavt, jlonch, kk
     integer :: jpmilt, nfiss, ifiss, jtab(7), ncomp
     integer :: ier, ndim, nno, nnop, nnops, npg, nnos, kpg
-    integer :: ipoids, ivf, idfde, igeom, ires, i, j
-    integer :: nfh, nse, ise, iret, pos, ndime, nddl
+    integer :: ipoids, ivf, idfde, igeom, ires, i, j, jfisno
+    integer :: nfh, nse, ise, iret, pos, ndime, nddl, ifh
     integer :: in, ino, iadzi, iazk24, jstno, itemps, jlsn, jheavn, ncompn, jheavs
     integer :: iflux, idec, nddls, nddlm, nnopm, ifluxf
     real(kind=8) :: ff(27), dfdi(27,3)
     real(kind=8) :: rb1(3), rb2, nbid(3), rb3, rb4
     real(kind=8) :: poids, valpar(4), xg(3)
-    real(kind=8) :: deltat, coorse(81), flux, tplus
+    real(kind=8) :: deltat, coorse(18), flux, tplus
     character(len=8) :: nompar(4), elrefl
     aster_logical :: pre1
 !
@@ -141,6 +141,13 @@ subroutine te0579(option, nomte)
                 itab=jtab)
         ncompn = jtab(2)/jtab(3)
         call jevech('PHEA_SE', 'L', jheavs)
+        if (enr(1:3) .eq. 'XH2') then
+           nfh = 2
+        elseif (enr(1:3) .eq. 'XH3') then
+           nfh = 3
+        elseif (enr(1:3) .eq. 'XH4') then
+           nfh = 4
+        endif
     endif
 !
     ASSERT(nfh.gt.0)
@@ -183,11 +190,12 @@ subroutine te0579(option, nomte)
     call jevech('PLONCHA', 'L', jlonch)
     call jevech('PSTANO', 'L', jstno)
     call jevech('PLSN', 'L', jlsn)
+    if (nfiss .gt. 1) call jevech('PFISNO', 'L', jfisno)
 !
 !     PROPRE AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     call teattr('S', 'XFEM', enr, ier)
 !
-    if (ier.eq.0.and.(enr.eq.'XH').and.(.not.iselli(elref))) call jevech('PPMILTO','L', jpmilt)
+    if (ier.eq.0.and.(enr(1:2).eq.'XH').and.(.not.iselli(elref))) call jevech('PPMILTO','L', jpmilt)
 !
     call jevech('PVECTUR', 'E', ires)
 !
@@ -197,6 +205,7 @@ subroutine te0579(option, nomte)
 !     BOUCLE D'INTEGRATION SUR LES NSE SOUS-ELEMENTS
     do 110 ise = 1, nse
 !
+        call vecini(18, 0.d0, coorse)
 !       BOUCLE SUR LES NOEUDS DU SOUS-SEGMENT
         do 111 in = 1, nno
             ino=zi(jcnset-1+nno*(ise-1)+in)
@@ -272,16 +281,18 @@ subroutine te0579(option, nomte)
 !             TERME CLASSIQUE (=> PRE1)
                     zr(ires-1+pos) = zr(ires-1+pos)-flux*poids*deltat* ff(ino)
 !
+                    do ifh = 1, nfh
 !             ON ZAPPE LES TERMES MECANIQUES HEAVISIDE POUR TOMBER
-!             DIRECTEMENT SUR LES LIGNES CORRESPONDANT A HPRE1
-                    pos=pos+(ndim+1)
+!             DIRECTEMENT SUR LES LIGNES CORRESPONDANT A H1PRE1
+                       pos=pos+ndim+1
 !
 !             TERME HEAVISIDE
-                    zr(ires-1+pos) = zr(ires-1+pos) - xcalc_heav(&
-                                                           zi(jheavn-1+ncompn*(ino-1)+1),&
+                       zr(ires-1+pos) = zr(ires-1+pos) - xcalc_heav(&
+                                                           zi(jheavn-1+ncompn*(ino-1)+ifh),&
                                                            zi(jheavs-1+ise),&
                                                            zi(jheavn-1+ncompn*(ino-1)+ncompn))*&
                                                       deltat*flux*poids*ff(ino)
+                    end do
 !
 290             continue
             else if (pre1 .and. (option.eq.'CHAR_MECA_FLUX_F')) then
@@ -308,17 +319,19 @@ subroutine te0579(option, nomte)
 !             TERME CLASSIQUE (=> PRE1)
                     zr(ires-1+pos) = zr(ires-1+pos)-flux*poids*deltat* ff(ino)
 !
+                    do ifh = 1, nfh
 !             ON ZAPPE LES TERMES MECANIQUES HEAVISIDE POUR TOMBER
-!             DIRECTEMENT SUR LES LIGNES CORRESPONDANT A HPRE1
-                    pos=pos+(ndim+1)
+!             DIRECTEMENT SUR LES LIGNES CORRESPONDANT A H1PRE1
+                       pos=pos+ndim+1
 !
 !             TERME HEAVISIDE
-                    zr(ires-1+pos) = zr(ires-1+pos) - xcalc_heav(&
-                                                           zi(jheavn-1+ncompn*(ino-1)+1),&
+                       zr(ires-1+pos) = zr(ires-1+pos) - xcalc_heav(&
+                                                           zi(jheavn-1+ncompn*(ino-1)+ifh),&
                                                            zi(jheavs-1+ise),&
                                                            zi(jheavn-1+ncompn*(ino-1)+ncompn))*&
                                                       deltat*flux*&
                                                       poids*ff(ino)
+                    end do
 80              continue
             else
                 call utmess('F', 'XFEM_15')
@@ -337,9 +350,9 @@ subroutine te0579(option, nomte)
     nnopm = nnop - nnops
     nddl = nnops*nddls + nnopm*nddlm
 !
-    call xhmddl(ndim, nddls, nddl, nnop, nnops,&
+    call xhmddl(ndim, nfh, nddls, nddl, nnop, nnops,&
                 zi(jstno), .false._1, option, nomte, rb1,&
-                zr(ires), nddlm)
+                zr(ires), nddlm, nfiss, jfisno)
 !
 !-----------------------------------------------------------------------
 !     FIN

@@ -18,10 +18,11 @@
 #include "asterf_types.h"
 !
 interface 
-    subroutine xhmddl(ndim, ddls, nddl, nno, nnos,&
+    subroutine xhmddl(ndim, nfh, ddls, nddl, nno, nnos,&
                       stano, matsym, option, nomte, mat,&
-                      vect, ddlm)
+                      vect, ddlm, nfiss, jfisno)
         integer :: ndim
+        integer :: nfh
         integer :: ddls
         integer :: nddl
         integer :: nno
@@ -33,5 +34,7 @@ interface
         real(kind=8) :: mat(*)
         real(kind=8) :: vect(*)
         integer :: ddlm
+        integer, intent(in) :: nfiss
+        integer, intent(in) :: jfisno
     end subroutine xhmddl
 end interface 

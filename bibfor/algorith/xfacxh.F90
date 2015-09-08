@@ -1,7 +1,7 @@
 subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset, pinter,&
                   ninter, jphe, ndim, ainter, nface, nptf,&
                   cface, igeom, jlsn, jaint, jgrlsn, nfiss,&
-                  ifiss, fisco, nfisc, ncompe, nnop)
+                  ifiss, fisc, nfisc, nfisc2, ncompe, jstano)
     implicit none
 !
 #include "asterf_types.h"
@@ -16,14 +16,15 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset, pinter,&
 #include "asterfort/provec.h"
 #include "asterfort/reeref.h"
 #include "asterfort/tecael.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xnormv.h"
 #include "asterfort/xxmmvd.h"
 #include "blas/ddot.h"
 !
-    integer :: ninter, nface, cface(18, 6), jcnset, jnit, jmilt, jpint
+    integer :: ninter, nface, cface(30, 6), jcnset, jnit, jmilt, jpint
     integer :: nptf, ndim, jphe, igeom, jlsn, jaint, jgrlsn
-    integer :: nfiss, ifiss, fisco(*), nfisc, ncompe, nnop
+    integer :: nfiss, ifiss, fisc(*), nfisc, nfisc2, ncompe, jstano
     real(kind=8) :: pinter(*), ainter(*)
     character(len=8) :: elp
 !
@@ -62,15 +63,16 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset, pinter,&
 !
 !     ----------------------------------------------------------------
 !
-    real(kind=8) :: lsnabs, minlsn, newpt(ndim), p(ndim), lonref, rainter(4)
+    real(kind=8) :: lsnabs, minlsn, newpt(ndim), p(ndim), lonref, rainter(4), lsninter(20)
     real(kind=8) :: maxlsn, det, ab(ndim), bc(ndim), normfa(ndim), gradlsn(ndim)
-    real(kind=8) :: ptref(ndim), ff(20), lsn(ndim), lsj(nfiss), cridist
+    real(kind=8) :: ptref(ndim), ff(20), lsn(ndim+1), cridist, crijonc
     integer :: iadzi, iazk24, npi, ni, npis, ino
-    integer :: i, j, k, nelttot, h, nnose, signe
-    integer :: zxain, ar(12,3), nbar, ii, jj, nnos, nno
+    integer :: i, j, k, nelttot, h, nnose, signe, ifisc, intersec
+    integer :: zxain, ar(12,3), nbar, ii, jj, nnos, nno, nbinter
     integer :: nbf, f(6,8), ibid2(12,3), ibid, tempo, inc
-    aster_logical :: cut, arete, deja
+    aster_logical :: cut, arete, deja, jonc
     parameter(cridist=1.d-7)
+    parameter(crijonc=1.d-2)
     character(len=8) :: typma, typsma
 !
 ! --------------------------------------------------------------------
@@ -101,7 +103,7 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset, pinter,&
     i=1
  1  continue
 !     (1) RECHERCHE D'UN NOEUD PIVOT (LSN NON NULLE)
-    if (zr(jlsn-1+(i-1)*nfiss+ifiss) .ne. 0 .and. i .lt. nno) then
+    if (zr(jlsn-1+(i-1)*nfiss+ifiss) .ne. 0.d0 .and. i .lt. nno) then
         do 30 k = i+1, nno
 !     (2) PRODUIT DE CE PIVOT PAR LES AUTRES LSN
             if (zr(jlsn-1+(i-1)*nfiss+ifiss)*zr(jlsn-1+(k-1)*nfiss+ifiss) .lt. 0.d0) cut=.true.
@@ -145,7 +147,51 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset, pinter,&
 !
 !      INITIALISATION DU SIGNE POUR LA RECHERCHE DANS LES SOUS ELEMENTS
     signe = -1
-!    if (maxlsn.gt.-minlsn) signe = 1
+!
+    if (nfisc2.ge.1) then
+!      Y-A-T-IL UNE FISSURE BRANCHEE SUR IFISS DANS L'ELEMENT?
+!      SI OUI, ON DOIT ADAPTER LE COTE DE LA FISSURE SUR LEQUEL ON CHERCHE LES
+!      FACETTES DE CONTACT DE MANIERE A CE QUE LES FACETTES SOIENT CONFORMES A
+!      LA JONCTION
+       nbinter = 0
+       intersec = 0
+       do ifisc = 1, nfisc2
+!      ON RECUPERE LA VALEUR DE LA LEVEL SET AUX NOEUDS DE L'ELEMENT
+          call vecini(20, 0.d0, lsninter)
+          do i = 1, nno
+             lsninter(i) = zr(jlsn-1+(i-1)*nfiss+fisc(2*(ifisc+nfisc)-1))
+          end do
+          i = 1
+          jonc = .false.
+10        continue
+!     (1) RECHERCHE D'UN NOEUD PIVOT (LSN NON NULLE)
+          if (lsninter(i) .ne. 0.d0 .and. i .lt. nno) then
+            do k = i+1, nno
+!     (2) PRODUIT DE CE PIVOT PAR LES AUTRES LSN
+               if (lsninter(i)*lsninter(k).lt. 0.d0) then
+                  jonc = .true.
+!     LA FISSURE EN QUESTION DOIT ETRE VUE PAR TOUS LES NEOUDS DE L'ELEMENT
+                  do j = 1, nno
+                     if (zi(jstano-1+(j-1)*nfiss+fisc(2*(ifisc+nfisc)-1)).eq.0) jonc= .false.
+                  end do
+                  if (jonc) then
+                     nbinter = nbinter+1
+                     intersec = ifisc
+                  endif
+                  exit
+               endif
+            end do
+          else if (i.lt.nno) then
+             i=i+1
+             goto 10
+          endif
+       end do
+       if (nbinter.ge.2) call utmess('A', 'XFEM_54')
+       if (nbinter.ge.1) then
+          if (fisc(2*(intersec+nfisc)).lt.0) signe = 1
+          if (fisc(2*(intersec+nfisc)).gt.0) signe = -1
+       endif
+    endif
 !      NOMBRE TOTAL DE SOUS SOUS ELEMENTS
     nelttot = zi(jnit-1+1)
 !      COMPTEUR DU NOMBRE D'ELEMENTS QUI CONSTITUENT LA LEVRE
@@ -188,7 +234,7 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset, pinter,&
                      end do
 !      TEST SPECIFIQUE POUR LES ELEMENTS MULTI-HEAVISIDE
                      if (nfiss.gt.1) then
-                           call vecini(ndim, 0.d0, lsn)
+                           call vecini(ndim+1, 0.d0, lsn)
                         do k = 1, 2
                            call vecini(ndim, 0.d0, newpt)
                            if (zi(jcnset-1+nnose*(i-1)+ar(j,k)) .gt. 1000) then
@@ -202,58 +248,62 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset, pinter,&
                                               (i-1)+ar(j,k))-1)+ii)
                               end do
                            endif
-                           call reeref(elp, nnop, zr(igeom), newpt, ndim,&
+                           call reeref(elp, nno, zr(igeom), newpt, ndim,&
                                        ptref, ff)
-                           do ino = 1, nnop
+                           do ino = 1, nno
                               lsn(k)= lsn(k) + zr(jlsn-1+(ino-1)*nfiss+ifiss)*ff(ino)
                            end do
-                           if ((abs(lsn(1))+abs(lsn(2))).ge.(lonref*cridist)) goto 22
+!      ON AJUSTE LES POINTS DE JONCTION DE FISSURE A ZERO
+                           if (zi(jcnset-1+nnose*(i-1)+ar(j,k)) .gt. 1000) then
+                              if (zr(jaint-1+zxain*(zi(jcnset-1+nnose*(i-1)+&
+                                  ar(j,k))-1001)+4) .eq. -1.d0) then
+                                 if (abs(lsn(k)).le.(lonref*crijonc)) lsn(k) = 0.d0
+                              endif
+                           endif
                         end do
-!
-                        if (nfisc .gt. 0) then
-!      POUR LES FISSURES SUR LESQUELLES IFISS SE BRANCHE
-                           call vecini(nfiss, 0.d0, lsj)
-                           do k = 1, nfisc
-                               do ino = 1, nnop
-                                  lsj(k)= lsj(k) + zr(jlsn-1+(ino-1)*nfiss+fisco(2*k-1))*&
-                                          fisco(2*k)*ff(ino)
-                               end do
+                        if ((abs(lsn(1))+abs(lsn(2))).ge.(lonref*cridist)) goto 22
+!      TEST SUPPLEMENTAIRE POUR LES ELEMENTS TRES ALONGES A PROXIMITE DE LA FISSURE
+                        if (zi(jcnset-1+nnose*(i-1)+6-ar(j,1)-ar(j,2)) .gt. 1000) then
+                           call vecini(ndim, 0.d0, newpt)
+                           do ii = 1, ndim
+                               newpt(ii) = zr(jpint-1+ndim*(zi(jcnset-1+nnose*&
+                                           (i-1)+6-ar(j,1)-ar(j,2))-1001)+ii)
                            end do
-                           do k = 1, nfisc
-                              if (lsj(k) .gt. lonref*cridist) goto 22
+                           call reeref(elp, nno, zr(igeom), newpt, ndim,&
+                                       ptref, ff)
+                           do ino = 1, nno
+                              lsn(3)= lsn(3) + zr(jlsn-1+(ino-1)*nfiss+ifiss)*ff(ino)
                            end do
+                           if (abs(lsn(3)).lt.max(abs(lsn(1)),abs(lsn(2)))) goto 22
                         endif
-                     endif
 !      EN QUADRATIQUE ON VERIFIE QUE LE NOEUD MILIEU DE L'ARETE VERIFIE LSN=0,
 !      SINON ON EXCLUE CETTE ARETE
-                     if (.not.iselli(elp)) then
-                        call vecini(ndim, 0.d0, lsn)
+                     elseif (.not.iselli(elp)) then
+                        call vecini(ndim+1, 0.d0, lsn)
+                        call vecini(ndim, 0.d0, newpt)
                         if (zi(jcnset-1+nnose*(i-1)+ar(j,3)) .gt. 3000) then
                            do ii = 1, ndim
-                               newpt(ii)=zr(jmilt-1+ndim*(zi(jcnset-1+nnose*(i-1)+&
-                                         ar(j,3))-3001)+ii)
+                              newpt(ii)=zr(jmilt-1+ndim*(zi(jcnset-1+nnose*(i-1)+ar(j,3))-3001)+ii)
                            end do
                         else if (zi(jcnset-1+nnose*(i-1)+ar(j,3)) .gt. 2000) then
                            do ii = 1, ndim
-                               newpt(ii)=zr(jmilt-1+ndim*(zi(jcnset-1+nnose*(i-1)+&
-                                         ar(j,3))-2001)+ii)
+                              newpt(ii)=zr(jmilt-1+ndim*(zi(jcnset-1+nnose*(i-1)+ar(j,3))-2001)+ii)
                            end do
                         else if (zi(jcnset-1+nnose*(i-1)+ar(j,3)) .lt. 2000) then
-                           if (zr(jlsn-1+(zi(jcnset-1+nnose*(i-1)+ar(j,3))-1)*&
-                               nfiss+ifiss).ne.0.d0) then
+                           if (zr(jlsn-1+zi(jcnset-1+nnose*(i-1)+ar(j,3))).ne.0.d0) then
                               goto 22
                            else
                               goto 48
                            endif
                         endif
-                        call reeref(elp, nnop, zr(igeom), newpt, ndim,&
+                        call reeref(elp, nno, zr(igeom), newpt, ndim,&
                                     ptref, ff)
-                        do ino = 1, nnop
-                           lsn(1)= lsn(1) +zr(jlsn-1+(ino-1)*nfiss+ifiss)*ff(ino)
+                        do ino = 1, nno
+                           lsn(1)= lsn(1)+zr(jlsn-1+ino)*ff(ino)
                         end do
                         if (abs(lsn(1)).ge.lonref*cridist) goto 22
                      endif
-48                   continue 
+48                   continue
 !      SI LE NOMBRE DE NOEUDS SOMMETS DE L'ARETE QUI SONT SUR LA LSN EST 2
                      if (h .eq. 2) then
 !      ON AJOUTE CETTE ARETE
@@ -399,7 +449,7 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset, pinter,&
                      end do
 !      TEST SPECIFIQUE POUR LES ELEMENTS MULTI-HEAVISIDE
                      if (nfiss.gt.1) then
-                        call vecini(ndim, 0.d0, lsn)
+                        call vecini(ndim+1, 0.d0, lsn)
                         do k = 1, 3
                            call vecini(ndim, 0.d0, newpt)
                            if (zi(jcnset-1+nnose*(i-1)+f(j,k)) .gt. 1000) then
@@ -413,55 +463,61 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset, pinter,&
                                               1)+ii)
                               end do
                            endif
-                           call reeref(elp, nnop, zr(igeom), newpt, ndim,&
+                           call reeref(elp, nno, zr(igeom), newpt, ndim,&
                                        ptref, ff)
-                           do ino = 1, nnop
+                           do ino = 1, nno
                               lsn(k)= lsn(k) + zr(jlsn-1+(ino-1)*nfiss+ifiss)*ff(ino)
                            end do
-                           if ((abs(lsn(1))+abs(lsn(2))+abs(lsn(3))).ge.(lonref*cridist)) goto 23
+!      ON AJUSTE LES POINTS DE JONCTION DE FISSURE A ZERO
+                           if (zi(jcnset-1+nnose*(i-1)+f(j,k)) .gt. 1000) then
+                              if (zr(jaint-1+zxain*(zi(jcnset-1+nnose*(i-1)+&
+                                  f(j,k))-1001)+4) .eq. -1.d0) then
+                                 if (abs(lsn(k)).le.(lonref*crijonc)) lsn(k) = 0.d0
+                              endif
+                           endif
                         end do
-!
-                        if (nfisc .gt. 0) then
-!      POUR LES FISSURES SUR LESQUELLES IFISS SE BRANCHE
-                           call vecini(nfiss, 0.d0, lsj)
-                           do k = 1, nfisc
-                               do ino = 1, nnop
-                                  lsj(k)= lsj(k) + zr(jlsn-1+(ino-1)*nfiss+fisco(2*k-1))*&
-                                          fisco(2*k)*ff(ino)
-                               end do
+                        if ((abs(lsn(1))+abs(lsn(2))+abs(lsn(3))).ge.(lonref*cridist)) goto 23
+!      TEST SUPPLEMENTAIRE POUR LES ELEMENTS TRES ALONGES A PROXIMITE DE LA FISSURE
+                        if (zi(jcnset-1+nnose*(i-1)+10-f(j,1)-f(j,2)-f(j,3)) .gt. 1000) then
+                           call vecini(ndim, 0.d0, newpt)
+                           do ii = 1, ndim
+                               newpt(ii) = zr(jpint-1+ndim*(zi(jcnset-1+nnose*&
+                                           (i-1)+10-f(j,1)-f(j,2)-f(j,3))-1001)+ii)
                            end do
-                           do k = 1, nfisc
-                              if (lsj(k) .gt. lonref*cridist) goto 23
+                           call reeref(elp, nno, zr(igeom), newpt, ndim,&
+                                       ptref, ff)
+                           do ino = 1, nno
+                              lsn(4)= lsn(4) + zr(jlsn-1+(ino-1)*nfiss+ifiss)*ff(ino)
                            end do
+                           if (abs(lsn(4)).lt.max(abs(lsn(1)),abs(lsn(2)),abs(lsn(3)))) goto 23
                         endif
-                     endif
 !      EN QUADRATIQUE ON VERIFIE QUE LES NOEUDS MILIEU DU TRIA VERIFIENT LSN=0,
 !      SINON ON EXCLUE CE TRIA
-                     if (.not.iselli(elp)) then
-                        call vecini(ndim, 0.d0, lsn)
+                     elseif (.not.iselli(elp)) then
+                        call vecini(ndim+1, 0.d0, lsn)
                         do k = 1, 3
+                           call vecini(ndim, 0.d0, newpt)
                            if (zi(jcnset-1+nnose*(i-1)+f(j,3+k)) .gt. 3000) then
                               do ii = 1, ndim
-                                  newpt(ii)=zr(jmilt-1+ndim*(zi(jcnset-1+nnose*(i-1)+f(j,3+k))-&
-                                            3001)+ii)
+                                  newpt(ii) = zr(jmilt-1+ndim*(zi(jcnset-1+nnose*(i-1)+&
+                                              f(j,3+k))-3001)+ii)
                               end do
                            else if (zi(jcnset-1+nnose*(i-1)+f(j,3+k)) .gt. 2000) then
                               do ii = 1, ndim
-                                  newpt(ii)=zr(jmilt-1+ndim*(zi(jcnset-1+nnose*(i-1)+f(j,3+k))-&
-                                            2001)+ii)
+                                  newpt(ii) = zr(jmilt-1+ndim*(zi(jcnset-1+nnose*(i-1)+&
+                                              f(j,3+k))-2001)+ii)
                               end do
                            else if (zi(jcnset-1+nnose*(i-1)+f(j,3+k)) .lt. 2000) then
-                              if(zr(jlsn-1+(zi(jcnset-1+nnose*(i-1)+f(j,3+k))-1)*nfiss+ifiss)&
-                                 .ne.0.d0) then
+                              if(zr(jlsn-1+zi(jcnset-1+nnose*(i-1)+f(j,3+k))).ne.0.d0) then
                                  goto 23
                               else
                                  goto 49
                               endif
                            endif
-                           call reeref(elp, nnop, zr(igeom), newpt, ndim,&
+                           call reeref(elp, nno, zr(igeom), newpt, ndim,&
                                        ptref, ff)
-                           do ino = 1, nnop
-                              lsn(3)= lsn(3)+zr(jlsn-1+(ino-1)*nfiss+ifiss)*ff(ino)
+                           do ino = 1, nno
+                              lsn(3)=lsn(3)+zr(jlsn-1+ino)*ff(ino)
                            end do
                            if (abs(lsn(k)).ge.lonref*cridist) goto 23
                         end do

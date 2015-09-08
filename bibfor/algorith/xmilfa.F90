@@ -1,7 +1,7 @@
 subroutine xmilfa(elrefp, ndim, ndime, geom, cnset,&
                   nnose, it, ainter, ip1, ip2,&
                   pm2, typma, pinref, pmiref, ksi,&
-                  milfa)
+                  milfa, pintt, pmitt)
     implicit none
 !
 #include "asterf_types.h"
@@ -9,6 +9,7 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset,&
 !
 #include "asterfort/assert.h"
 #include "asterfort/conare.h"
+#include "asterfort/reeref.h"
 #include "asterfort/reerel.h"
 #include "asterfort/xelrex.h"
 #include "asterfort/xnormv.h"
@@ -16,7 +17,7 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset,&
 #include "blas/ddot.h"
     integer :: ip1, ip2, pm2, cnset(*), nnose, it, ndim, ndime
     real(kind=8) :: pinref(*), geom(*), milfa(ndim), ainter(*)
-    real(kind=8) :: pmiref(*), ksi(ndime)
+    real(kind=8) :: pmiref(*), ksi(ndime), pintt(*), pmitt(*)
     character(len=8) :: elrefp, typma
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -50,14 +51,17 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset,&
 !       TABCO   : TABLEAU DES COORDONNÉES DES POINTS
 !       PMILIE  : TABLEAU DES COORDONNÉES DES POINTS MILIEUX EXISTANT
 !       AINTER  : INFOS ARETE ASSOCIEE AU POINT D'INTERSECTION
+!       PINTT   : COORDONNEES REELES DES POINTS D'INTERSECTION
+!       PMITT   : COORDONNEES REELES DES POINTS MILIEUX
 !     SORTIE
 !       MILFA   : COORDONNES DU TROISIME TYPE DE PM
 !     ----------------------------------------------------------------
 !
     integer :: a1, a2, a, b, d, ib, ar(12, 3), nbar, ia, id
     integer :: i, j, zxain, nno
-    real(kind=8) :: xref(81), t1(ndime), t2(ndime), sinu, rbid
-    real(kind=8) :: t3(ndime), cosv, cosu
+    real(kind=8) :: xref(81), ptb(ndime), ptd(ndime), newpt(ndime)
+    real(kind=8) :: pta(ndime), cosu, cosv, cosw
+    real(kind=8) :: ff(27), t1(ndime), t2(ndime), sinu, rbid, t3(ndime)
     aster_logical :: courbe
 !
 ! --------------------------------------------------------------------
@@ -92,8 +96,44 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset,&
 !
     call xelrex(elrefp, nno, xref)
 !
+    if (ib.lt.1000) then
+       do j = 1, ndime
+          ptb(j) = xref(ndime*(ib-1)+j)
+       end do
+    else
+       do j = 1, ndime
+          newpt(j) = pintt(ndime*(ib-1001)+j)
+       end do
+       call reeref(elrefp, nno, geom, newpt, ndime,&
+                   ptb, ff)
+    endif
+!
+    if (id.lt.2000) then
+       do j = 1, ndime
+          ptd(j) = xref(ndime*(id-1)+j)
+       end do
+    else
+       do j = 1, ndime
+          newpt(j) = pmitt(ndime*(id-2001)+j)
+       end do
+       call reeref(elrefp, nno, geom, newpt, ndime,&
+                   ptd, ff)
+    endif
+!
+    if (ia.lt.1000) then
+       do j = 1, ndime
+          pta(j) = xref(ndime*(ia-1)+j)
+       end do
+    else
+       do j = 1, ndime
+          newpt(j) = pintt(ndime*(ia-1001)+j)
+       end do
+       call reeref(elrefp, nno, geom, newpt, ndime,&
+                   pta, ff)
+    endif
+!
     do i = 1, ndime
-        ksi(i)=(pinref(ndime*(ip1-1)+i)+xref(ndime*(ib-1)+i))/2.d0
+        ksi(i)=(pinref(ndime*(ip1-1)+i)+ptb(i))/2.d0
     end do
 ! --- TEST SI LSN COURBE :
     courbe=.false.
@@ -101,16 +141,17 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset,&
         t1(i) = ksi(i)-pinref(ndime*(ip1-1)+i)
         t2(i) = -1.5d0*pinref(ndime*(ip1-1)+i)-5.d-1*pinref(ndime*(ip2-1)+i)+&
                 2.d0*pmiref(ndime*(pm2-1)+i)
-        t3(i) = xref(ndime*(ia-1)+i)-pinref(ndime*(ip1-1)+i)
+        t3(i) = pta(i)-pinref(ndime*(ip1-1)+i)
     end do
     call xnormv(ndime, t1, rbid)
     call xnormv(ndime, t2, rbid)
     call xnormv(ndime, t3, rbid)
     cosu = ddot(ndime, t1, 1, t2, 1)
-    sinu = sqrt(1-cosu**2) 
+    sinu = sqrt(1-cosu**2)
 !   ON CHOISIT UNE CONVENTION DE SIGNE
     cosv = ddot(ndime, t3, 1, t2, 1)
-    if (cosv.gt.cosu) sinu = -sinu
+    cosw = ddot(ndime, t3, 1, t1, 1)
+    if (cosv.gt.cosw) sinu = -sinu
 ! 
 !   ON RAJOUTE UNE TOLE POUR EVITER DES DECOUPES TROP POURRIES
     if (sinu.lt.1.d-3) courbe = .true.
@@ -118,14 +159,16 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset,&
     if (courbe) then
 !   EN DEUXIEME APPROXIMATION: ON CHOISIT LE MILIEU DES "MILIEUX" PM2 ET D
         do i = 1, ndime
-            ksi(i)=(pmiref(ndime*(pm2-1)+i)+xref(ndime*(id-1)+i))/2.d0
+            ksi(i)=(pmiref(ndime*(pm2-1)+i)+ptd(i))/2.d0
         enddo
     endif
 !
 ! --- COORDONNES DU POINT DANS L'ELEMENT REEL
 !
     do i = 1, ndime
-        ASSERT(abs(ksi(i)) .le. 1.d0)
+        ASSERT(abs(ksi(i)) .le. 1.d0+1.d-12)
+        if (ksi(i).gt.1.d0) ksi(i) =1.d0
+        if (ksi(i).lt.-1.d0) ksi(i) =-1.d0
     enddo
     call reerel(elrefp, nno, ndim, geom, ksi,&
                 milfa)

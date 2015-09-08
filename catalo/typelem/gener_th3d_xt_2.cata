@@ -28,12 +28,12 @@ ENTETE__ ELEMENT__ THER_XT_FACE4     MAILLE__ QUAD4
 
 MODE_LOCAL__
     DDL_THER = TEMP_R   ELNO__ IDEN__  (TEMP     E1       )
-    E6NEUTI  = N128_I   ELEM__         (X[6])
-    E10NEUTI = N120_I    ELEM__         (X[10]     )
+    E6NEUTI  = N512_I   ELEM__         (X[6])
+    E10NEUTI = N120_I   ELEM__         (X[10])
     N5NEUTI  = N120_I   ELNO__ IDEN__  (X[5]     )   
     E12NEUTR = N132_R   ELEM__         (X[12])
-    E33NEUTR = N480_R   ELEM__         (X[33])
-    E36NEUI  = N512_I   ELEM__         (X[36])
+    E33NEUTR = N792_R   ELEM__         (X[33])
+    E36NEUI  = N1280I   ELEM__         (X[36])
     N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     STANO_I  = N120_I   ELNO__ IDEN__  (X1       )
@@ -48,7 +48,7 @@ OPTION__
     INI_XFEM_ELNO     99  IN__
                           OUT__  STANO_I  PSTANO   N1NEUT_R PLSN   N1NEUT_R  PLST
     TOPOSE           514  IN__  NGEOMER  PGEOMER  N1NEUT_R PLEVSET
-                          OUT__ E36NEUI  PCNSETO  E6NEUTI  PHEAVTO  E10NEUTI  PLONCHA  E12NEUTR PPINTTO
+                          OUT__ E36NEUI  PCNSETO  E6NEUTI  PHEAVTO  E10NEUTI PLONCHA  E12NEUTR PPINTTO
                                 E33NEUTR PPMILTO
     TOPONO           120  IN__  E36NEUI  PCNSETO  E6NEUTI  PHEAVTO  E10NEUTI  PLONCHA  N1NEUT_R PLEVSET
                           OUT__ N5NEUTI  PHEA_NO  E6NEUTI  PHEA_SE

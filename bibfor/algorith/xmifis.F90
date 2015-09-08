@@ -1,11 +1,12 @@
 subroutine xmifis(ndim, ndime, elrefp, geom, lsn, &
                   n, ip1, ip2, pinref, miref, mifis,&
-                  u, v)
+                  pintt, jonc, u, v)
     implicit none
 !
 #include "jeveux.h"
 #include "blas/ddot.h"
 #include "asterfort/assert.h"
+#include "asterfort/reeref.h"
 #include "asterfort/reerel.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xelrex.h"
@@ -14,6 +15,8 @@ subroutine xmifis(ndim, ndime, elrefp, geom, lsn, &
     integer :: ndim, ndime, n(3), ip1, ip2
     character(len=8) :: elrefp
     real(kind=8) :: mifis(ndim), pinref(*), miref(ndime), geom(*), lsn(*)
+    real(kind=8) :: pintt(*)
+    aster_logical :: jonc
     real(kind=8), intent(in), optional :: u(ndime), v(ndime)
 !
 ! ======================================================================
@@ -43,17 +46,19 @@ subroutine xmifis(ndim, ndime, elrefp, geom, lsn, &
 !       IPP     : NUMERO NOEUD PREMIER POINT INTER
 !       IP      : NUMERO NOEUD DEUXIEME POINT INTER
 !       N       : LES INDICES DES NOEUX D'UNE FACE DANS L'ELEMENT PARENT
-!       U,V     : BASE ORTHONORMEE DE LA FACE SUR LAQUELLE EON EFFECTUE LA
+!       PINTT   : COORDONNES REELES DES POINTS D'INTERSECTION
+!       U,V     : BASE ORTHONORMEE DE LA FACE SUR LAQUELLE ON EFFECTUE LA
 !                 RECHERCHE (EN OPTION)
 !     SORTIE
 !       mifis   : COORDONNES DU PT MILIEU ENTRE IPP ET IP
 !     ----------------------------------------------------------------
 !
     integer :: nno, j, ia, ib, ic
-    real(kind=8) :: x(81), ksi(ndime), bc(ndime), ba(ndime)
+    real(kind=8) :: x(81), ksi(ndime), bc(ndime), ba(ndime), ff(27)
     real(kind=8) :: epsmax, rbid, ip1ip2(ndime), ptxx(2*ndime)
-    real(kind=8) :: vect(ndime), k, k1, k2, alpha
-    integer :: itemax, dekker
+    real(kind=8) :: vect(ndime), k, k1, k2, alpha, dekker(3*ndime)
+    real(kind=8) :: pta(ndime) , ptb(ndime), ptc(ndime), newpt(ndime)
+    integer :: itemax
     character(len=6) :: name
 !
 ! --------------------------------------------------------------------
@@ -66,19 +71,56 @@ subroutine xmifis(ndim, ndime, elrefp, geom, lsn, &
     ib=n(1)
     ic=n(2)
     ia=n(3)
-    dekker = 0
     if (present(u).and.present(v)) then
        do j = 1, ndime
           bc(j) = u(j)
           ba(j) = v(j)
        end do
     else
-       do j=1,ndime
-          bc(j)=x(ndime*(ic-1)+j)-x(ndime*(ib-1)+j)
-          ba(j)=x(ndime*(ia-1)+j)-x(ndime*(ib-1)+j)
+       if (ia.lt.1000) then
+          do j = 1, ndime
+             pta(j) = x(ndime*(ia-1)+j)
+          end do
+       else
+          do j = 1, ndime
+             newpt(j) = pintt(ndime*(ia-1001)+j)
+          end do
+          call reeref(elrefp, nno, geom, newpt, ndime,&
+                      pta, ff)
+       endif
+!
+       if (ib.lt.1000) then
+          do j = 1, ndime
+             ptb(j) = x(ndime*(ib-1)+j)
+          end do
+       else
+          do j = 1, ndime
+             newpt(j) = pintt(ndime*(ib-1001)+j)
+          end do
+          call reeref(elrefp, nno, geom, newpt, ndime,&
+                      ptb, ff)
+       endif
+!
+       if (ic.lt.1000) then
+          do j = 1, ndime
+             ptc(j) = x(ndime*(ic-1)+j)
+          end do
+       else
+          do j = 1, ndime
+             newpt(j) = pintt(ndime*(ic-1001)+j)
+          end do
+          call reeref(elrefp, nno, geom, newpt, ndime,&
+                      ptc, ff)
+       endif
+       do j = 1, ndime
+          bc(j) = ptc(j)-ptb(j)
+          ba(j) = pta(j)-ptb(j)
+          dekker(j) = pta(j)
+          dekker(j+ndime) = ptb(j)
+          dekker(j+2*ndime) = ptc(j)
        end do
-       dekker = 1
     endif
+!
     do j = 1, ndime
       ip1ip2(j)=pinref(ndime*(ip2-1)+j)-pinref(ndime*(ip1-1)+j)
     enddo
@@ -101,15 +143,24 @@ subroutine xmifis(ndim, ndime, elrefp, geom, lsn, &
       ptxx(j)=vect(j)
       ptxx(j+ndime)=(pinref(ndime*(ip1-1)+j)+&
                      pinref(ndime*(ip2-1)+j))/2.d0
-    enddo  
+    enddo
 !     CALCUL DES COORDONNEES DE REFERENCE
 !     DU POINT PAR UN ALGO DE NEWTON
+!     ON CHOSIST LA METHODE DE NEWTON-DEKKER LORSQUE L'ON EFFECTUE LA
+!     RECHERCHE SUR LA FACE D'UN ELEMENT, AFIN DE NE PAS SORTIR DE CETTE FACE
 !!!!!ATTENTION INITIALISATION DU NEWTON:
     call vecini(ndime, 0.d0, ksi)
-    call xnewto(elrefp, name, n,&
-                ndime, ptxx, ndim, geom, lsn,&
-                ip1, ip2, itemax,&
-                epsmax, ksi, dekker)
+    if ((present(u).and.present(v)) .or. jonc) then
+       call xnewto(elrefp, name, n,&
+                   ndime, ptxx, ndim, geom, lsn,&
+                   ip1, ip2, itemax,&
+                   epsmax, ksi)
+    else
+       call xnewto(elrefp, name, n,&
+                   ndime, ptxx, ndim, geom, lsn,&
+                   ip1, ip2, itemax,&
+                   epsmax, ksi, dekker)
+    endif
     do j=1,ndime
        miref(j)=ksi(1)*ptxx(j)+ptxx(j+ndime)
     enddo

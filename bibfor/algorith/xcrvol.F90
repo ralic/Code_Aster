@@ -1,7 +1,7 @@
 subroutine xcrvol(nse, ndim, jcnse, nnose, jpint,&
                   igeom, elrefp, inoloc, nbnoma, jcesd3,&
-                  jcesl3, jcesv3, numa2, ifiss, vmoin,&
-                  vplus, vtot)
+                  jcesl3, jcesv3, numa2, iheav, nfiss, vhea,&
+                  jcesd8, jcesl8, jcesv8, vtot)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,17 +29,18 @@ subroutine xcrvol(nse, ndim, jcnse, nnose, jpint,&
 #include "asterfort/iselli.h"
 #include "asterfort/reeref.h"
 #include "asterfort/vecini.h"
-    integer :: nse, ndim, jcnse, nnose, jpint, igeom, inoloc
+#include "asterfort/xcalc_code.h"
+    integer :: nse, ndim, jcnse, nnose, jpint, igeom, inoloc, nfiss, iheav
     character(len=8) :: elrefp
-    integer :: nbnoma, jcesd3, jcesl3, jcesv3, numa2, ifiss
-    real(kind=8) :: vmoin, vplus, vtot
+    integer :: nbnoma, jcesd3, jcesl3, jcesv3, numa2, jcesd8, jcesl8, jcesv8
+    real(kind=8) :: vhea, vtot
 !
 !  BUT: ESTIMATION CRITERE DE RIGIDITE
 !
     real(kind=8) :: co(ndim+1, ndim), mat(ndim, ndim), vse, bary(ndim)
-    real(kind=8) :: point(ndim)
+    real(kind=8) :: point(ndim), he(nfiss)
     real(kind=8) :: ff(nbnoma), dfdi(nbnoma, ndim), xe(ndim), deriv
-    integer :: ise, ino2, i, j, iad, k
+    integer :: ise, ino2, i, j, iad, k, hea_se, hea_no
 !
 ! ----------------------------------------------------------------------
 !
@@ -110,12 +111,22 @@ subroutine xcrvol(nse, ndim, jcnse, nnose, jpint,&
 200          continue
         endif
         vse = vse*deriv**2
-        call cesexi('S', jcesd3, jcesl3, numa2, 1,&
-                    ifiss, ise, iad)
-!       ON AJOUTE LE VOLUME SELON LA VALEUR DE LA FONCTION HEAVISIDE
-        if (zi(jcesv3-1+iad) .eq. -1) vmoin = vmoin+vse
-        if (zi(jcesv3-1+iad) .eq. 1) vplus = vplus+vse
+!       DETERMINATION DU SIGNE DU SOUS ELEMENT
+        do i = 1, nfiss
+           call cesexi('S', jcesd3, jcesl3, numa2, 1,&
+                       i, ise, iad)
+           he(i) = zi(jcesv3-1+iad)
+        end do
+!       CALCUL DU CODE DU SOUS ELEMENT
+        hea_se=xcalc_code(nfiss, he_real=[he])
+!       CALCUL DU CODE DU DDL HEAVISIDE
+        call cesexi('C', jcesd8, jcesl8, numa2, inoloc,&
+                    1, iheav, iad)
+        hea_no = zi(jcesv8-1+iad)
+        if (hea_se.eq.hea_no) then
+           vhea = vhea + vse
+        endif
         vtot = vtot + vse
-70  end do
+70  continue
 !
 end subroutine

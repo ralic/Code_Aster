@@ -4,7 +4,7 @@ subroutine xcaehm(nomte, axi, perman, typmod, modint,&
                   nno, nnos, nnom, npi, npg,&
                   nddls, nddlm, dimuel, ipoids, ivf,&
                   idfde, ddld, ddlm, ddlp, enrmec, nenr,&
-                  dimenr, nnop, nnops, nnopm, enrhyd)
+                  dimenr, nnop, nnops, nnopm, enrhyd, nfh)
 ! ======================================================================
 ! ======================================================================
 ! person_in_charge: daniele.colombo at ifpen.fr
@@ -30,6 +30,7 @@ subroutine xcaehm(nomte, axi, perman, typmod, modint,&
 !
 ! IN NOMTE   : NOM DU TYPE D'ELEMENT
 ! IN AXI     : AXI ?
+! IN NFH     : NOMBRE DE DDL HEAVISIDE PAR NOEUD
 ! OUT PERMAN : MODELISATION HM PERMAMENTE ?
 ! OUT TYPMOD : TYPE DE MODELISATION (AXI DPLAN 3D)
 ! OUT MODINT : METHODE D'INTEGRATION (CLASSIQUE,LUMPEE(D),REDUITE(R) ?)
@@ -66,7 +67,7 @@ subroutine xcaehm(nomte, axi, perman, typmod, modint,&
 #include "asterfort/xgrdhm.h"
 #include "asterfort/xitghm.h"
     aster_logical :: axi, perman, vf
-    integer :: typvf
+    integer :: typvf, nfh
     integer :: mecani(5), press1(7), press2(7), tempe(5), dimuel
     integer :: ndim, nno, nnos, nnom
     integer :: dimdef, dimcon, nmec, np1, np2
@@ -101,7 +102,7 @@ subroutine xcaehm(nomte, axi, perman, typmod, modint,&
 ! ======================================================================
     call xgrdhm(nomte, ndim, mecani, press1, press2,&
                 tempe, enrmec, dimdef, dimcon, nmec,&
-                np1, np2, nenr, dimenr, enrhyd)
+                np1, np2, nenr, dimenr, enrhyd, nfh)
 ! ======================================================================
 ! --- ADAPTATION AU MODE D'INTEGRATION ---------------------------------
 ! --- DEFINITION DE L'ELEMENT (NOEUDS, SOMMETS, POINTS DE GAUSS) -------

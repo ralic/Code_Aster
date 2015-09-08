@@ -16,9 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
-                      ninter, npts, ainter, nse, cnse,&
-                      heav, nsemax, pinter, pintt)
+    subroutine xdecqv(nnose, it, cnset, heavt, lsn, igeom,&
+                      ninter, npts, ndim, ainter, nse, cnse,&
+                      heav, nsemax, pinter, pintt, cut,&
+                      ncomp, nfisc, nfiss, ifiss, elp, fisco,&
+                      lonref)
         integer :: nnose
         integer :: it
         integer :: cnset(*)
@@ -26,6 +28,7 @@ interface
         integer :: igeom
         integer :: ninter
         integer :: npts
+        integer :: ndim
         real(kind=8) :: ainter(*)
         real(kind=8) :: pinter(*)
         real(kind=8) :: pintt(*)
@@ -33,5 +36,14 @@ interface
         integer :: cnse(6, 10)
         real(kind=8) :: heav(*)
         integer :: nsemax
+        aster_logical :: cut
+        integer :: heavt(*)
+        integer :: ncomp
+        integer :: nfisc
+        integer :: nfiss
+        integer :: ifiss
+        integer :: fisco(*)
+        character(len=8) :: elp
+        real(kind=8) :: lonref
     end subroutine xdecqv
 end interface

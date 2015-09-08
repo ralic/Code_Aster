@@ -5,7 +5,7 @@ subroutine xfnohm(fnoevo, deltat, nno, npg, ipoids,&
                   dimuel, nmec, np1, ndim, axi,&
                   dimenr, nnop, nnops, nnopm, igeom,&
                   jpintt, jpmilt, jheavn, lonch, cnset, heavt,&
-                  enrmec, enrhyd)
+                  enrmec, enrhyd, nfiss, nfh, jfisno)
 ! ======================================================================
 ! person_in_charge: daniele.colombo at ifpen.fr
 ! ======================================================================
@@ -39,18 +39,18 @@ subroutine xfnohm(fnoevo, deltat, nno, npg, ipoids,&
     integer :: nno, npg, imate, dimenr, dimcon, nddls, nddlm
     integer :: dimuel, nmec, np1, ndim, ipoids, ivf, kpi, i, n
     integer :: idfde, mecani(5), press1(7)
-    integer :: yamec, yap1, addeme, addep1
+    integer :: yamec, yap1, addeme, addep1, nfiss, nfh, jfisno
     real(kind=8) :: poids, dt, deltat
     real(kind=8) :: vectu(dimuel), b(dimenr, dimuel), r(1:dimenr)
 !
 ! DECLARATIONS POUR XFEM
     integer :: nnop, nnopm, nnops, in, j
     integer :: yaenrm, adenme, nse, ise, ino, enrmec(3)
-    integer :: yaenrh, enrhyd(3), adenhy
-    integer :: igeom, jpintt, jpmilt, jheavn
-    integer :: lonch(10), cnset(4*32), heavt(36)
-    integer :: heavn(nnop,5), ig, ncompn, jtab(7), iret
-    real(kind=8) :: coorse(81), he, xg(ndim), xe(ndim), bid3(ndim)
+    integer :: yaenrh, enrhyd(3), adenhy, ncomp, ifiss
+    integer :: igeom, jpintt, jpmilt, jheavn, iret, jtab(7)
+    integer :: lonch(10), cnset(*), heavt(*), fisno(nnop, nfiss)
+    integer :: heavn(nnop,5), ig, ncompn
+    real(kind=8) :: coorse(81), he(nfiss), xg(ndim), xe(ndim), bid3(ndim)
     real(kind=8) :: ff(nnop), ff2(nnops), geom(ndim, nnop)
     real(kind=8) :: dfdi(nnop, ndim), dfdi2(nnops, ndim)
     real(kind=8) :: congem(*)
@@ -76,6 +76,8 @@ subroutine xfnohm(fnoevo, deltat, nno, npg, ipoids,&
 ! DIMCON    DIMENSION DES CONTRAINTES GENERALISEES ELEMENTAIRES
 ! DIMDEF    DIMENSION DES DEFORMATIONS GENERALISEES ELEMENTAIRES
 ! IVF       FONCTIONS DE FORMES QUADRATIQUES
+! NFISS     NOMBRE DE FISSURES
+! NFH       NOMBRE DE DDL HEAVISIDE PAR NEOUD
 !
 ! OUT DFDI    : DERIVEE DES FCT FORME
 ! OUT R       : TABLEAU DES RESIDUS
@@ -86,6 +88,26 @@ subroutine xfnohm(fnoevo, deltat, nno, npg, ipoids,&
 !     ASSOCIE POUR L'HYDRAULIQUE (POUR XFEM)
 !
     call xlinhm(elrefp, elref2)
+!
+!     NOMBRE DE COMPOSANTES DE PHEAVTO (DANS LE CATALOGUE)
+    call tecach('OOO', 'PHEAVTO', 'L', iret, nval=2,&
+                itab=jtab)
+    ncomp = jtab(2)
+!
+!     RECUPERATION DE LA CONNECTIVITÃ~I FISSURE - DDL HEAVISIDES
+!     ATTENTION !!! FISNO PEUT ETRE SURDIMENTIONNÃ~I
+    if (nfiss .eq. 1) then
+        do ino = 1, nnop
+            fisno(ino,1) = 1
+        end do
+    else
+        do i = 1, nfh
+!    ON REMPLIT JUSQU'A NFH <= NFISS
+            do ino = 1, nnop
+                fisno(ino,i) = zi(jfisno-1+(ino-1)*nfh+i)
+            end do
+        end do
+    endif
 !
 ! ======================================================================
 ! --- DETERMINATION DES VARIABLES CARACTERISANT LE MILIEU --------------
@@ -143,8 +165,10 @@ subroutine xfnohm(fnoevo, deltat, nno, npg, ipoids,&
 620         continue
 610     continue
 !
-!     DEFINITION DE LA FONCTION HEAVISIDE POUR CHAQUE SS-ELT
-        he=1.d0*heavt(ise)
+!     FONCTION HEAVISIDE CSTE POUR CHAQUE FISSURE SUR LE SS-ELT
+        do ifiss = 1, nfiss
+            he(ifiss) = heavt(ncomp*(ifiss-1)+ise)
+        end do
 ! ======================================================================
 ! --- CALCUL POUR CHAQUE POINT DE GAUSS : BOUCLE SUR KPI ---------------
 ! ======================================================================
@@ -186,11 +210,11 @@ subroutine xfnohm(fnoevo, deltat, nno, npg, ipoids,&
                         addeme, yap1, addep1, np1, axi,&
                         ivf, ipoids, idfde, poids, coorse,&
                         nno, geom, yaenrm, adenme, dimenr,&
-                        he, heavn, yaenrh, adenhy)
+                        he, heavn, yaenrh, adenhy, nfiss, nfh)
 ! ======================================================================
             call xfnoda(imate, mecani, press1, enrmec, dimenr,&
-                        dimcon, ndim, dt, fnoevo, congem(npg*(ise-1)*dimcon+1),&
-                        r, enrhyd)
+                        dimcon, ndim, dt, fnoevo, congem(npg*(ise-1)*dimcon+(kpi-1)*dimcon+1),&
+                        r, enrhyd, nfh)
 ! ======================================================================
 ! --- CONTRIBUTION DU POINT D'INTEGRATION KPI AU RESIDU ----------------
 ! ======================================================================

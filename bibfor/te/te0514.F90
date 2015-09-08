@@ -65,20 +65,20 @@ subroutine te0514(option, nomte)
     integer :: ninter, nit, nse, nnose, ise2, ncomph, ncompp, ncompc
     integer :: npts, cnse(6, 10), i, j, k, it, npi, ipt, ise, in, ni, cpt
     integer :: ndim, ibid, ndime, iad, jtab(7), jtab2(2), vali(2)
-    integer :: nnc, npm, nmilie, pmmax, nmfis, nbar, ar(12,3)
+    integer :: nnc, npm, nmilie, nmfis, nbar, ar(12,3)
     integer :: iret, nfiss, ifiss, ncomb, ninmax, nmmax, nbars, ars(12,3)
-    integer :: a1, a2, b1, b2
+    integer :: a1, a2, b1, b2, ncompm
     parameter(ptmaxi=6,zintmx=5,pmmaxi=17,nsemax=6,nfimax=10)
-    parameter(ninmax=44,nmmax=66)
-    real(kind=8) :: nmil(3, 7), txlsn(7), ainter(ptmaxi*zintmx), rainter(4)
+    parameter(ninmax=44,nmmax=264)
+    real(kind=8) :: nmil(3, 7), txlsn(28), ainter(ptmaxi*zintmx), rainter(4)
     real(kind=8) :: newpt(3), p(3), lonref, pinter(3*ptmaxi)
     real(kind=8) :: pmilie(3*pmmaxi), heav(nsemax*nfimax)
     real(kind=8) :: xg(3), cridist
     parameter(cridist=1.d-9)
     integer :: fisco(2*nfimax), fisc(2*nfimax), zxain, ai
     integer :: ndoubl(ninmax*(2**nfimax)), ndoub2(ninmax*(2**nfimax))
-    integer :: ndoub3(nmmax*(2**nfimax))
-    aster_logical :: deja, ajn
+    integer :: ndoub3(nmmax*(2**nfimax)), coupe(nfimax)
+    aster_logical :: deja, ajn, cut
 !
     data            elrese /'SEG3','TRIA6','TETRA10'/
 !......................................................................
@@ -91,6 +91,7 @@ subroutine te0514(option, nomte)
     ASSERT(option.eq.'TOPOSE')
     call vecini(51, 0.d0, pmilie)
     call vecini(20, 0.d0, ainter)
+    call vecini(4, 0.d0, rainter)
 !
     call elref1(elp)
     call elrefe_info(fami='RIGI', ndim=ndime, nno=nno)
@@ -106,16 +107,6 @@ subroutine te0514(option, nomte)
 !     PAR EXEMPLE, POUR LES ELEMENT DE BORDS D'UN MAILLAGE 3D :
 !     NDIME = 2 ALORS QUE NDIM = 3
 !
-!
-! calcul du nombre maximum de points milieux crees par le sous-decoupage
-    if (ndime .eq. 3) then
-        pmmax=66
-    else if (ndime .eq. 2) then
-        pmmax=10
-    else if (ndime.eq. 1) then
-        pmmax=2
-    endif
-!
 !     RECUPERATION DES ENTREES / SORTIE
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PLEVSET', 'L', jlsn)
@@ -126,9 +117,12 @@ subroutine te0514(option, nomte)
 !
     call teattr('S', 'XFEM', enr, ibid)
 !
-    if ((ibid.eq.0) .and. (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT' .or.enr.eq.'XHC')&
-        .and. .not.iselli(elp)) then
-        call jevech('PPMILTO', 'E', jpmilt)
+    if ((ibid.eq.0) .and. (enr(1:2).eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'&
+        .or.enr.eq.'XHC') .and. .not.iselli(elp)) then
+         call jevech('PPMILTO', 'E', jpmilt)
+         call tecach('OOO', 'PPMILTO', 'E', iret, nval=2,&
+                     itab=jtab2)
+         ncompm = jtab2(2)/ndim
     endif
 !
     call tecach('OOO', 'PHEAVTO', 'E', iret, nval=7,&
@@ -142,9 +136,12 @@ subroutine te0514(option, nomte)
        call jevech('PAINTTO', 'E', jout6)
     endif
 !
-    do 9 i = 1, 2*nfimax
-        fisco(i) = 0
-        fisc(i) = 0
+    do 9 i = 1, nfimax
+        coupe(i) = 0
+        fisco(2*i-1) = 0
+        fisco(2*i) = 0
+        fisc(2*i-1) = 0
+        fisc(2*i) = 0
   9 continue
     if (nfiss .gt. 1) then
         call jevech('PFISCO', 'L', jfisco)
@@ -165,85 +162,87 @@ subroutine te0514(option, nomte)
 ! initilisation : cas sans noeuds centraux
     nnc=0
     call matini(3, 7, 0.d0, nmil)
-    call vecini(7, 0.d0, txlsn)
+    call vecini(28, 0.d0, txlsn)
 !
 ! si l'element est incomplet, on calcule les informations concernant les les noeuds centraux
     if ((elp.eq.'QU8') .or. (elp.eq.'H20') .or. (elp.eq.'P13') .or. (elp.eq.'P15')) then
-        call ndcent(igeom, ndim, zr(jlsn), nmil, txlsn,&
+        call ndcent(igeom, ndim, zr(jlsn), nfiss, nmil, txlsn,&
                     nnc)
-        end if
+    end if
 !
-        npi=0
-        zxain = xxmmvd('ZXAIN')
-        npm=0
-        ajn=.false.
-        nmfis=0
+    npi=0
+    zxain = xxmmvd('ZXAIN')
+    npm=0
+    ajn=.false.
+    nmfis=0
 !
 !     CALCUL D'UNE LONGUEUR CARACTERISTIQUE DE L'ELEMENT
-        call loncar(ndim, typma, zr(igeom), lonref)
+    call loncar(ndim, typma, zr(igeom), lonref)
 !
 !     ON SUBDIVISE L'ELEMENT PARENT EN NIT SOUS-ELEMENTS
-        call xdivte(elp, zi(jcnset), nit, nnose)
-        cpt = nit
+    call xdivte(elp, zi(jcnset), nit, nnose)
+    cpt = nit
 !     PROBLEME DE DIMENSSIONNEMENT DANS LES CATALOGUES
         ASSERT(ncompc.ge.nnose*ncomph)
 !
-        vali(1)=nfimax
-        vali(2)=nfiss
-        if (nfiss .gt. nfimax) then
-            call utmess('F', 'XFEM2_6', ni=2, vali=vali)
-        endif
+    vali(1)=nfimax
+    vali(2)=nfiss
+    if (nfiss .gt. nfimax) then
+        call utmess('F', 'XFEM2_6', ni=2, vali=vali)
+    endif
 !
 !     BOUCLE SUR LES FISSURES
 !
-        do 90 ifiss = 1, nfiss
+    do ifiss = 1, nfiss
 !
-            do 91 i = 1, ifiss
-                fisc(i)=0
- 91         continue
-            ifisc = ifiss
-            nfisc = 0
- 80         continue
-            if (fisco(2*ifisc-1) .gt. 0) then
-                nfisc = nfisc+1
-                fisc(2*(nfisc-1)+2) = fisco(2*ifisc)
-                ifisc = fisco(2*ifisc-1)
-                fisc(2*(nfisc-1)+1) = ifisc
-                goto 80
-            endif
-!
+        do i = 1, ifiss
+            fisc(i)=0
+        end do
+        ifisc = ifiss
+        nfisc = 0
+ 80     continue
+        if (fisco(2*ifisc-1) .gt. 0) then
+            nfisc = nfisc+1
+            fisc(2*(nfisc-1)+2) = fisco(2*ifisc)
+            ifisc = fisco(2*ifisc-1)
+            fisc(2*(nfisc-1)+1) = ifisc
+            goto 80
+        endif
 !
 !       BOUCLE SUR LES NIT TETRAS
-            do 100 it = 1, nit
+        do it = 1, nit
 !
 !         DECOUPAGE EN NSE SOUS-ELEMENTS
-                call vecini(18, 0.d0, pinter)
-                nmilie = 0
-                ninter = 0
-                npts = 0
-                do 89 i = 1, nsemax*nfimax
-                    heav(i)=0.d0
- 89             continue
+            call vecini(18, 0.d0, pinter)
+            nmilie = 0
+            ninter = 0
+            npts = 0
+            do i = 1, nsemax*nfimax
+                heav(i)=0.d0
+            end do
 !
-                if (.not.iselli(elp)) then
-                    call xdecqu(nnose, it, ndim, zi(jcnset), jlsn,&
-                                igeom, pinter, ninter, npts, ainter,&
-                                pmilie, nmilie, nmfis, nmil, txlsn)
+            if (.not.iselli(elp)) then
+                call xdecqu(nnose, it, ndim, zi(jcnset), jlsn,&
+                            igeom, pinter, ninter, npts, ainter,&
+                            pmilie, nmilie, nmfis, nmil, txlsn,&
+                            zr(jpintt), zr(jpmilt), ifiss, nfiss,&
+                            fisc, nfisc, cut, coupe)
 !
-                    call xdecqv(nnose, it, zi(jcnset), zr(jlsn), igeom,&
-                                ninter, npts, ainter, nse, cnse,&
-                                heav, nsemax, pinter, zr(jpintt))
-                else
-                    call xdecou(ndim, elp, nno, nnose, it,&
-                                zr(jpintt), zi(jcnset), zr(jlsn), fisc, igeom,&
-                                nfiss, ifiss, pinter, ninter, npts,&
-                                ainter, lonref, nfisc)
-                    call xdecov(ndim, elp, nno, nnose, it,&
-                                zr(jpintt), zi(jcnset), zi(jheavt), ncomph, zr(jlsn),&
-                                fisc, igeom, nfiss, ifiss, pinter,&
-                                ninter, npts, ainter, nse, cnse,&
-                                heav, nfisc, nsemax)
-                endif
+                call xdecqv(nnose, it, zi(jcnset), zi(jheavt), zr(jlsn), igeom,&
+                            ninter, npts, ndim, ainter, nse, cnse,&
+                            heav, nsemax, pinter, zr(jpintt), cut,&
+                            ncomph, nfisc, nfiss, ifiss, elp, fisc, lonref)
+            else
+                call xdecou(ndim, elp, nno, nnose, it,&
+                            zr(jpintt), zi(jcnset), zr(jlsn), fisc, igeom,&
+                            nfiss, ifiss, pinter, ninter, npts,&
+                            ainter, lonref, nfisc)
+                call xdecov(ndim, elp, nno, nnose, it,&
+                            zr(jpintt), zi(jcnset), zi(jheavt), ncomph, zr(jlsn),&
+                            fisc, igeom, nfiss, ifiss, pinter,&
+                            ninter, npts, ainter, nse, cnse,&
+                            heav, nfisc, nsemax)
+            endif
 !
 ! ----- - BOUCLE SUR LES NINTER POINTS D'INTER : ARCHIVAGE DE PINTTO
             do 200 ipt = 1, ninter
@@ -272,17 +271,21 @@ subroutine te0514(option, nomte)
                     npi=npi+1
                     ni =npi
 !             NOMBRE TOTAL DE PT D'INTER LIMITE A LA TAILLE DE LA CARTE
-                        ASSERT(npi.le.ncompp)
+                    if (npi .gt. ncompp) then
+                       call utmess('F', 'XFEM_55')
+                    endif
 !             ARCHIVAGE DE PINTTO
-                        do 230 j = 1, ndim
-                            zr(jpintt-1+ndim*(npi-1)+j)=newpt(j)
-230                     continue
+                    do 230 j = 1, ndim
+                        zr(jpintt-1+ndim*(npi-1)+j)=newpt(j)
+230                 continue
 !
 !             ARCHIVAGE DE PAINTTO POUR LES ELEMENTS PRINCIPAUX
                     if (ndim.eq.ndime) then
                        do k = 1, zxain
                           zr(jout6-1+zxain*(npi-1)+k)=0.d0
                        end do
+!             MARQUAGE POINT DE JONCTION DE FISSURES
+                       if (rainter(4).eq.-1.d0) zr(jout6-1+zxain*(npi-1)+4)=-1.d0
 !
                        call conare(typma, ar, nbar)
                        typsma = elrese(ndim)
@@ -322,167 +325,166 @@ subroutine te0514(option, nomte)
 
 !
 ! ------- BOUCLE SUR LES NMILIE POINTS MILIEUX : ARCHIVAGE DE PMILTO
-                if (.not.iselli(elp)) then
-                    do 300 ipt = 1, nmilie
-                        do 310 j = 1, ndim
-                            newpt(j)=pmilie(ndim*(ipt-1)+j)
-310                     continue
+            if (.not.iselli(elp)) then
+                do 300 ipt = 1, nmilie
+                    do 310 j = 1, ndim
+                        newpt(j)=pmilie(ndim*(ipt-1)+j)
+310                 continue
 !             VERIF SI EXISTE DEJA DANS PMILTO
-                        deja=.false.
-                        do 320 i = 1, npm
-                            do 321 j = 1, ndim
-                                p(j) = zr(jpmilt-1+ndim*(i-1)+j)
-321                         continue
-                            if (padist(ndim,p,newpt) .lt. (lonref*cridist)) then
-                                deja = .true.
-                                ni=i
-                            endif
-320                     continue
-                        if (.not.deja) then
-                            npm=npm+1
+                    deja=.false.
+                    do 320 i = 1, npm
+                        do 321 j = 1, ndim
+                            p(j) = zr(jpmilt-1+ndim*(i-1)+j)
+321                     continue
+                        if (padist(ndim,p,newpt) .lt. (lonref*cridist)) then
+                            deja = .true.
+                            ni=i
+                        endif
+320                 continue
+                    if (.not.deja) then
+                        npm=npm+1
 !               NOMBRE TOTAL DE POINTS MILIEUX LIMITE A PMMAX
-                            ASSERT(npm.le.pmmax)
+                        if (npm .gt. ncompm) then
+                           call utmess('F', 'XFEM_55')
+                        endif
 !               ARCHIVAGE DE PMILTO
-                            do 330 j = 1, ndim
-                                zr(jpmilt-1+ndim*(npm-1)+j)=pmilie(ndim*(ipt-1)+j)
-330                         continue
+                        do 330 j = 1, ndim
+                            zr(jpmilt-1+ndim*(npm-1)+j)=pmilie(ndim*(ipt-1)+j)
+330                     continue
 !
 !               MISE A JOUR DU CNSE (TRANSFORMATION DES 200 EN 2000...)
-                            do 340 ise = 1, nse
-                                do 341 in = 1, nnose
-                                    if (cnse(ise,in) .eq. 200+ipt) cnse(ise, in)=2000+npm
-341                             continue
-340                         continue
-                        else
-                            do 350 ise = 1, nse
-                                do 351 in = 1, nnose
-                                    if (cnse(ise,in) .eq. 200+ipt) cnse(ise, in)=2000+ni
-351                             continue
-350                         continue
-                        endif
+                        do 340 ise = 1, nse
+                            do 341 in = 1, nnose
+                                if (cnse(ise,in) .eq. 200+ipt) cnse(ise, in)=2000+npm
+341                         continue
+340                     continue
+                    else
+                        do 350 ise = 1, nse
+                            do 351 in = 1, nnose
+                                if (cnse(ise,in) .eq. 200+ipt) cnse(ise, in)=2000+ni
+351                         continue
+350                     continue
+                    endif
 !
-300                 continue
-                endif
-!
-!         ARCHIVAGE DE LONCHAM
-            if (ndim.eq.3.and.nfiss.eq.1) then
-               zi(jlonch-1+4+it) = nse
+300             continue
             endif
 ! ------- BOUCLE SUR LES NSE SOUS-ELE : ARCHIVAGE DE PCNSETO, PHEAVTO
-                do 120 ise = 1, nse
-                    if (ise .eq. 1) then
-                        ise2=it
-                    else
-                        cpt=cpt+1
-                        ise2=cpt
-                    endif
+            do ise = 1, nse
+                if (ise .eq. 1) then
+                    ise2=it
+                else
+                    cpt=cpt+1
+                    ise2=cpt
+                endif
 !         NOMBRE TOTAL DE SOUS-ELEMENTS LIMITE A LA TAILLE DE LA CARTE
-                    ASSERT(cpt.le.ncomph)
 !           ARCHIVAGE DE PHEAVTO
-                    do 125 i = 1, ifiss
-                        zi(jheavt-1+ncomph*(i-1)+ise2)= nint(heav(ifiss*(&
-                    ise-1)+i))
-125                 continue
+                do i = 1, ifiss
+                    zi(jheavt-1+ncomph*(i-1)+ise2)= nint(heav(ifiss*(&
+                ise-1)+i))
+                end do
 !           ARCHIVAGE DE PCNSETO
-                    do 121 in = 1, nnose
-                        zi(jcnset-1+nnose*(ise2-1)+in)=cnse(ise,in)
-121                 continue
+                do in = 1, nnose
+                    zi(jcnset-1+nnose*(ise2-1)+in)=cnse(ise,in)
+                end do
 !
-120             continue
+            end do
 !
-100     continue
+        end do
         nit = cpt
 !
- 90     continue
+    end do
 !
 !     ARCHIVAGE DE LONCHAM SOUS ELEMENTS
-        zi(jlonch-1+1)=nit
+    if (nit*nnose .gt. ncompc) then
+       call utmess('F', 'XFEM_55')
+    endif
+    zi(jlonch-1+1)=nit
 !
 !     ARCHIVAGE DE LONCHAM POINTS D'INTERSECTION
-        zi(jlonch-1+2)=npi
+    zi(jlonch-1+2)=npi
 !
 !     SERT UNIQUEMENT POUR LA VISU
 !
 !     POUR COMPTER LES NOEUDS EN DOUBLE (EN POST-TRAITEMENT)
 !     NCOMB COMBINAISONS POSSIBLES
-        ncomb = 2**nfiss
+    ncomb = 2**nfiss
 !     ON VA JUSQU'A NCOMPP, NOMBRE MAX DE POINTS D'INTERSECTION
-        ASSERT(ncompp.le.ninmax)
-        do 776 i = 1, ninmax*(2**nfimax)
-            ndoub2(i)=0
-776     continue
+    ASSERT(ncompp.le.ninmax)
+    do i = 1, ninmax*(2**nfimax)
+        ndoub2(i)=0
+    end do
 !     POUR COMPTER LES PT D'INTER EN DOUBLE (EN POST-TRAITEMENT)
 !     ON VA JUSQU'A NNO+1 POUR PRENDRE EN COMPTE LE 9EME NOEUD DU QUAD8
-        ASSERT((nno+1).le.ninmax)
-        do 777 i = 1, ninmax*(2**nfimax)
-            ndoubl(i)=0
-777     continue
+    ASSERT((nno+nnc).le.ninmax)
+    do i = 1, ninmax*(2**nfimax)
+        ndoubl(i)=0
+    end do
 !     POUR COMPTER LES PT MILIEU EN DOUBLE (EN POST-TRAITEMENT)
 !     ON VA JUSQU'A NNO+NNC POUR PRENDRE EN COMPTE LES NOEUDS CENTRAUX
-        do 778 i = 1, nmmax*(2**nfimax)
-            ndoub3(i)=0
-778     continue
+    do i = 1, nmmax*(2**nfimax)
+        ndoub3(i)=0
+    end do
 !
-        do 130 ise = 1, nit
-            do 127 in = 1, nnose
-                i = zi(jcnset-1+nnose*(ise-1)+in)
-                if (i .lt. 1000) then
+    do 130 ise = 1, nit
+        do 127 in = 1, nnose
+            i = zi(jcnset-1+nnose*(ise-1)+in)
+            if (i .lt. 1000) then
 ! ----- ON SE PLACE EN BASE 2, LA DIMENSSION DU PB EST NFISS
 ! ----- POUR CHAQUE FISSURE H=-1 OU 0=>0
 !                           H=+1     =>1
-                    iad = ncomb*(i-1)
-                    do 128 ifiss = 1, nfiss
-                        if (zi(jheavt-1+ncomph*(ifiss-1)+ise) .eq. 1) then
-                            iad = iad + 2**(nfiss-ifiss)
-                        endif
-128                 continue
-                    ndoubl(iad+1) = 1
-                else if (i.gt.1000.and.i.lt.2000) then
-                    iad = ncomb*(i-1001)
-                    do 129 ifiss = 1, nfiss
-                        if (zi(jheavt-1+ncomph*(ifiss-1)+ise) .eq. 1) then
-                            iad = iad + 2**(nfiss-ifiss)
-                        endif
-129                 continue
-                    ndoub2(iad+1) = 1
-                else if (i.gt.2000.and.i.lt.3000) then
-                    iad = ncomb*(i-2001)
-                    do 779 ifiss = 1, nfiss
-                        if (zi(jheavt-1+ncomph*(ifiss-1)+ise) .eq. 1) then
-                            iad = iad + 2**(nfiss-ifiss)
-                        endif
-779                 continue
-                    ndoub3(iad+1) = 1
-                endif
-127         continue
-130     continue
+                iad = ncomb*(i-1)
+                do 128 ifiss = 1, nfiss
+                    if (zi(jheavt-1+ncomph*(ifiss-1)+ise) .eq. 1) then
+                        iad = iad + 2**(nfiss-ifiss)
+                    endif
+128             continue
+                ndoubl(iad+1) = 1
+            else if (i.gt.1000.and.i.lt.2000) then
+                iad = ncomb*(i-1001)
+                do 129 ifiss = 1, nfiss
+                    if (zi(jheavt-1+ncomph*(ifiss-1)+ise) .eq. 1) then
+                        iad = iad + 2**(nfiss-ifiss)
+                    endif
+129             continue
+                ndoub2(iad+1) = 1
+            else if (i.gt.2000.and.i.lt.3000) then
+                iad = ncomb*(i-2001)
+                do 779 ifiss = 1, nfiss
+                    if (zi(jheavt-1+ncomph*(ifiss-1)+ise) .eq. 1) then
+                        iad = iad + 2**(nfiss-ifiss)
+                    endif
+779             continue
+                ndoub3(iad+1) = 1
+            endif
+127     continue
+130 continue
 !
 !     NOMBRE DE NOUVEAUX POINTS : NNN
-        nnn = 0
+    nnn = 0
 !  -  ON AJOUTE LES PT D'INTER QUI NE SONT PAS DES NOEUDS
 !  -  AUTANT DE FOIS QU'IL Y A DE COMBINAISON D'HEAVISIDE DIFFERENTES
-        do 600 i = 1, ncomb*ncompp
-            nnn = nnn + ndoub2(i)
-600     continue
+    do 600 i = 1, ncomb*ncompp
+        nnn = nnn + ndoub2(i)
+600 continue
 !
 !  -  ON AJOUTE LES NOEUDS, AUTANT DE FOIS QU'IL Y A DE COMBINAISON
 !  -  D'HEAVISIDE DIFFERENTES.
 !     ON VA JUSQU'A NNO+NNC POUR PRENDRE EN COMPTE LES NOEUDS CENTRAUX
-        do 500 i = 1, ncomb*(nno+nnc)
-            nnn = nnn + ndoubl(i)
-500     continue
+    do 500 i = 1, ncomb*(nno+nnc)
+        nnn = nnn + ndoubl(i)
+500 continue
 !
-        if (.not.iselli(elp)) then
+    if (.not.iselli(elp)) then
 !  - CAS QUADRATIQUE, ON AJOUTE LES NOUVEAUX NOEUDS MILIEUX DES SE
 !  -  AUTANT DE FOIS QU'IL Y A DE COMBINAISON D'HEAVISIDE DIFFERENTES
 !        nnn=nnn+nmfis+npm
-            do 700 i = 1, ncomb*nmmax
-                nnn = nnn + ndoub3(i)
-700         continue
-        endif
+        do 700 i = 1, ncomb*nmmax
+            nnn = nnn + ndoub3(i)
+700     continue
+    endif
 !
-        zi(jlonch-1+3)=nnn
-        zi(jlonch-1+4)=0
+    zi(jlonch-1+3)=nnn
+    zi(jlonch-1+4)=0
 !   stockage des noeuds centraux servant a definir la connectivite sur sous-tetra courant
         call vecini(3, 0.d0, xg)
 !   pour chaque noeud central
@@ -495,27 +497,29 @@ subroutine te0514(option, nomte)
 !     pour chaque noeud de chaque sous-tetra
             do 400 i = 1, nit*nnose
 !       si le noeud courant du sous-tetra courant est le noeud central courant
-                if (zi(jcnset-1+i) .eq. (nno+j)) then
+            if (zi(jcnset-1+i) .eq. (nno+j)) then
 !         s'il n'a pas deja ete ajoute, on ajoute le noeud central courant
-                    if (.not. deja) then
-                        deja=.true.
-                        npm=npm+1
-                        do 402 k = 1, ndim
-                            zr(jpmilt+(npm-1)*ndim+k-1)=xg(k)
-402                     continue
-                        end if
+                if (.not. deja) then
+                    deja=.true.
+                    npm=npm+1
+                    do 402 k = 1, ndim
+                        zr(jpmilt+(npm-1)*ndim+k-1)=xg(k)
+402                 continue
+                end if
 !         NOMBRE TOTAL DE POINTS MILIEUX LIMITE A PMMAX
-                        ASSERT(npm.le.pmmax)
+                if (npm .gt. ncompm) then
+                   call utmess('F', 'XFEM_55')
+                endif
 !         stockage du noeud central cournant
-                        zi(jcnset-1+i)=3000+npm
-                    endif
-400                 continue
-401                 continue
+                zi(jcnset-1+i)=3000+npm
+            endif
+400     continue
+401 continue
 !
 !     ARCHIVAGE DE LONCHAM POINTS MILIEUX
 !
-                    if (.not.iselli(elp)) then
-                        zi(jlonch-1+4)=npm
-                    endif
+    if (.not.iselli(elp)) then
+       zi(jlonch-1+4)=npm
+    endif
 !
-                end subroutine
+end subroutine

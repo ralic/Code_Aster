@@ -1,6 +1,6 @@
-subroutine xhmddl(ndim, ddls, nddl, nno, nnos,&
+subroutine xhmddl(ndim, nfh, ddls, nddl, nno, nnos,&
                   stano, matsym, option, nomte, mat,&
-                  vect, ddlm)
+                  vect, ddlm, nfiss, jfisno)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,7 +28,8 @@ subroutine xhmddl(ndim, ddls, nddl, nno, nnos,&
 #include "asterfort/teattr.h"
 #include "jeveux.h"
     aster_logical :: matsym
-    integer :: ndim, ddls, nddl, nno, nnos, stano(*), ddlm
+    integer :: ndim, ddls, nddl, nno, nnos, stano(*), ddlm, nfh
+    integer, intent(in) :: nfiss, jfisno
     character(len=16) :: option, nomte
     real(kind=8) :: mat(*), vect(*)
 !
@@ -37,14 +38,16 @@ subroutine xhmddl(ndim, ddls, nddl, nno, nnos,&
 ! IN   NDIM   : DIMENSION DE L'ESPACE
 ! IN   DDLS   : NOMBRE DE DDL A CHAQUE NOEUD SOMMET
 ! IN   DDLM   : NOMBRE DE DDL A CHAQUE NOEUD MILIEU
-! IN   NDDL   : NOMBRE DE DDL TOTAL DE L'ÉLÉMENT
+! IN   NDDL   : NOMBRE DE DDL TOTAL DE L'ELEMENT
 ! IN   NNO    : NOMBRE DE NOEUDS DE L'ELEMENT PORTANT DES DDLS DE DEPL
 ! IN   NNOS   : NOMBRE DE NOEUDS SOMMENT DE L'ELEMENT
 ! IN   STANO  : STATUT DES NOEUDS
 ! IN   OPTION : OPTION DE CALCUL DU TE
 ! IN   NOMTE  : NOM DU TYPE ELEMENT
+! IN   NFISS  : NOMBRE DE FISSURES "VUES" PAR L'ELEMENT
+! IN   JFISNO : POINTEUR DE CONNECTIVITE FISSURE/HEAVISIDE
 !
-! IN/OUT :   MAT   : MATRICE DE RIGIDITÉ
+! IN/OUT :   MAT   : MATRICE DE RIGIDITE
 ! IN/OUT :   VECT  : VECTEUR SECOND MEMBRE
 !
 !
@@ -53,13 +56,27 @@ subroutine xhmddl(ndim, ddls, nddl, nno, nnos,&
 !
     aster_logical :: lelim
     integer :: ier, istatu, ino, k, i, j, ielim, in, ddlmax
-    parameter    (ddlmax=20*8)
-    integer :: posddl(ddlmax)
+    parameter    (ddlmax=20*20)
+    integer :: posddl(ddlmax), ifh, fisno(nno, nfiss)
     real(kind=8) :: dmax, dmin, codia
     character(len=8) :: tyenel
 !
 !-------------------------------------------------------------
 !
+!
+! --- CONNECTIVITE DES FISSURE ET DES DDL HEAVISIDES
+!
+    if (nfiss .eq. 1) then
+        do ino = 1, nno
+            fisno(ino,1) = 1
+        enddo
+    else
+        do ifh = 1, nfh
+            do ino = 1, nno
+                fisno(ino,ifh) = zi(jfisno-1+(ino-1)*nfh+ifh)
+            enddo
+        enddo
+    endif
 !
 !     TYPE D'ENRICHISSEMENT DE L'ELEMENT ET TYPE D'ELIMINATION
 !
@@ -80,19 +97,24 @@ subroutine xhmddl(ndim, ddls, nddl, nno, nnos,&
         call hmdeca(ino, ddls, ddlm, nnos, in)
 !
         if (ielim .eq. 1) then
-            istatu = stano(ino)
-            ASSERT(istatu.le.1)
-            if (istatu .eq. 0) then
-!              ON SUPPRIME LES DDL H (MECA)
-                do 10 k = 1, ndim
-                    posddl(in+ndim+k)=1
- 10             continue
-!              ON SUPPRIME LES DDL H (HYDRO) AUX NOEUDS SOMMETS
-                if (ino.le.nnos) then 
-                   posddl(in+ndim+ndim+1)=1
-                endif 
-                lelim=.true.
-            endif
+            do ifh = 1, nfh
+               istatu = stano((ino-1)*nfiss+fisno(ino,ifh))
+               ASSERT(istatu.le.1)
+               if (istatu .eq. 0) then
+!              ON SUPPRIME LES DDL H MECA SUR LES NOEUDS MILIEUX
+                   if (ino.gt.nnos) then 
+                      do k = 1, ndim
+                           posddl(in+ndim+ndim*(ifh-1)+k)=1
+                      end do
+!              SUR LES NOEUDS SOMMETS ON SUPPRIME LES H MECA ET LES DDL H HYDRO
+                   elseif (ino.le.nnos) then 
+                      do k = 1, ndim+1
+                           posddl(in+ndim+(ndim+1)*(ifh-1)+k)=1
+                      end do
+                   endif 
+                   lelim=.true.
+               endif
+            end do
         endif
     end do
 !

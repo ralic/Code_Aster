@@ -20,7 +20,7 @@
 interface 
     subroutine xfnoda(imate, mecani, press1, enrmec, dimenr,&
                       dimcon, ndim, dt, fnoevo, congem,&
-                      r, enrhyd)
+                      r, enrhyd, nfh)
         integer :: dimcon
         integer :: dimenr
         integer :: imate
@@ -33,5 +33,6 @@ interface
         real(kind=8) :: congem(dimcon)
         real(kind=8) :: r(dimenr)
         integer :: enrhyd(3)
+        integer :: nfh
     end subroutine xfnoda
 end interface 

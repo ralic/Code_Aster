@@ -17,7 +17,8 @@
 !
 interface
     subroutine xmilar(ndim, ndime, elrefp, geom,  pinref,&
-                    ia, ib, ip, ksia, ksib, milara, milarb)
+                    ia, ib, im, ip, ksia, ksib, milara, milarb,&
+                    pintt, pmitt)
         character(len=8) :: elrefp
         integer :: ndim
         integer :: ndime
@@ -25,10 +26,13 @@ interface
         real(kind=8) :: pinref(*)
         integer :: ia
         integer :: ib
+        integer :: im
         integer :: ip
         real(kind=8) :: ksia(ndime)
         real(kind=8) :: ksib(ndime)
         real(kind=8) :: milara(3)
         real(kind=8) :: milarb(3)
+        real(kind=8) :: pintt(*)
+        real(kind=8) :: pmitt(*)
     end subroutine xmilar
 end interface

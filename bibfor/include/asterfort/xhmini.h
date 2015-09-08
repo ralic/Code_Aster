@@ -16,11 +16,12 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface 
-    subroutine xhmini(nomte, nfh, ddld, ddlm, ddlp)
+    subroutine xhmini(nomte, nfh, ddld, ddlm, ddlp, nfiss)
         character(len=16) :: nomte
         integer :: nfh
         integer :: ddld
         integer :: ddlm
         integer :: ddlp
+        integer :: nfiss
     end subroutine xhmini
 end interface 

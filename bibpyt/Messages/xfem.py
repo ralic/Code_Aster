@@ -281,7 +281,7 @@ Le calcul de la norme L2 de la pression de contact sur une fissure XFEM n'est pa
 
     41: _(u"""
       La maille %(k1)s est quadratique et elle est connectée à 2 fissures,
-      le multi-Heaviside n'a été généralisé en quadratique.
+      le multi-Heaviside n'a été généralisé en quadratique que pour les modélisations HM.
       Pour ne pas activer le multi-Heaviside, les fissures doivent être séparées de 2 mailles
       minimum. Veuillez raffiner le maillage entre les fissures (ou écarter les fissures).
 """),
@@ -366,6 +366,20 @@ Le calcul de la norme L2 de la pression de contact sur une fissure XFEM n'est pa
     53: _(u"""
 Il y a trop de termes dans la relation d'égalité.
 Utilisez ELIM_ARETE='DUAL'.
+"""),
+
+    54: _(u"""
+     Attention, deux jonctions de fissure sont présentes dans le même élément. Les facettes
+     de contact récupérées dans cet élément risquent de ne pas être conformes à chaque jonction.
+  -> Conseil :
+     Raffinez le maillage afin de n'avoir qu'une seule jonction de fissure par élément.
+"""),
+
+    55: _(u"""
+     Attention, un élément fini comporte deux jonctions de fissure ou plus et la découpe en sous 
+     éléments d'intégration est impossible car elle génère un nombre trop important de sous éléments.
+  -> Conseil :
+     Raffinez le maillage afin de n'avoir qu'une seule jonction de fissure par élément.
 """),
 
     57: _(u"""
@@ -494,8 +508,8 @@ Utilisez ELIM_ARETE='DUAL'.
 
     71: _(u"""
      La jonction de fissures est une fonctionnalité disponible uniquement pour les
-     modélisations mécaniques. Or le modèle %(k1)s est soit un modèle thermique,
-     soit un modèle mécanique supportant une modélisation hydro-mécanique.
+     modélisations mécaniques et hydro-mécaniques. Or le modèle %(k1)s est un modèle
+     thermique.
   -> Conseil:
      Revoyez la définition de votre modèle, ou celle de la fissure (ou des fissures).
 """),

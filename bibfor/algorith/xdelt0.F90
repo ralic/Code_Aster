@@ -45,7 +45,7 @@ subroutine xdelt0(elrefp, ndime, tabls, ptxx, ksi, delta, arete)
 !
     integer :: nbfct
     parameter    ( nbfct=27)   
-    real(kind=8) :: ff(nbfct), dff(3, nbfct), v(ndime), ptm(ndime), pt(ndime)
+    real(kind=8) :: ff(nbfct), dff(3, nbfct), v(ndime), pt(ndime), ptm(ndime)
     integer :: i, nderiv, nno, k, nna
     real(kind=8) :: fctg, dfctg, x(1), dfft(3,3), norme, rbid
 !
@@ -101,7 +101,7 @@ subroutine xdelt0(elrefp, ndime, tabls, ptxx, ksi, delta, arete)
 ! ---           FCTG : LEVEL SET NORMALE
     do i = 1, nno
         fctg = fctg + ff(i)*tabls(i)
-    enddo
+    end do
     dfctg=0.d0
     do k = 1, ndime
        do i = 1, nno

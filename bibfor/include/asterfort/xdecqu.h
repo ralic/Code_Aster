@@ -18,7 +18,9 @@
 interface
     subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
                       igeom, pinter, ninter, npts, ainter,&
-                      pmilie, nmilie, mfis, tx, txlsn)
+                      pmilie, nmilie, mfis, tx, txlsn,&
+                      pintt, pmitt, ifiss, nfiss, fisco,&
+                      nfisc, cut, coupe)
         integer :: ndim
         integer :: nnose
         integer :: it
@@ -33,6 +35,14 @@ interface
         integer :: nmilie
         integer :: mfis
         real(kind=8) :: tx(3, 7)
-        real(kind=8) :: txlsn(7)
+        real(kind=8) :: txlsn(28)
+        real(kind=8) :: pintt(*)
+        real(kind=8) :: pmitt(*)
+        integer :: ifiss
+        integer :: nfiss
+        integer :: fisco(*)
+        integer :: nfisc
+        aster_logical :: cut
+        integer :: coupe(nfiss)
     end subroutine xdecqu
 end interface

@@ -1,8 +1,8 @@
 subroutine xalg31(ndim, elrefp, nnop, it, nnose,&
-                  cnset, typma, ndime, igeom, jlsn,&
+                  cnset, typma, ndime, igeom, lsnelp,&
                   pmilie, ninter, ainter, ar, npts,&
                   nptm, pmmax, nmilie, mfis, lonref,&
-                  pinref)
+                  pinref, pintt, pmitt, jonc)
     implicit none
 !
 #include "asterf_types.h"
@@ -19,10 +19,11 @@ subroutine xalg31(ndim, elrefp, nnop, it, nnose,&
 #include "asterfort/xstudo.h"
 #include "asterfort/xxmmvd.h"
     character(len=8) :: typma, elrefp
-    integer :: ndim, ndime, nnop, it, nnose, cnset(*), igeom, jlsn
+    integer :: ndim, ndime, nnop, it, nnose, cnset(*), igeom
     integer :: ninter, pmmax, npts, nptm, nmilie, mfis, ar(12, 3)
-    real(kind=8) :: lonref, ainter(*), pmilie(*)
-    real(kind=8) :: pinref(*)
+    real(kind=8) :: lonref, ainter(*), pmilie(*), lsnelp(*)
+    real(kind=8) :: pinref(*), pintt(*), pmitt(*)
+    aster_logical :: jonc
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,6 +53,9 @@ subroutine xalg31(ndim, elrefp, nnop, it, nnose,&
 !       AR       : CONNECTIVITE DU TETRA
 !       PMMAX    : NOMBRE DE POINTS MILIEUX MAXIMAL DETECTABLE
 !       NPTS     : NB DE PTS D'INTERSECTION COINCIDANT AVEC UN NOEUD SOMMET
+!       LSNELP   : LSN AUX NOEUDS DE L'ELEMENT PARENT POUR LA FISSURE COURANTE
+!       PINTT    : COORDONNEES REELLES DES POINTS D'INTERSECTION
+!       PMITT    : COORDONNEES REELLES DES POINTS MILIEUX
 !
 !     SORTIE
 !       NMILIE   : NOMBRE DE POINTS MILIEUX
@@ -67,7 +71,7 @@ subroutine xalg31(ndim, elrefp, nnop, it, nnose,&
     integer :: noeua
     integer :: j, r, a2, a3, ip1(4), ip2(4), nbpi
     integer :: pm1a(4), pm1b(4), pm2(4)
-    integer :: inm, ia, ib, mfisloc
+    integer :: inm, ia, ib, im, mfisloc
     integer :: zxain
     aster_logical :: ispm3, ispm2, ajout
 !
@@ -122,14 +126,15 @@ subroutine xalg31(ndim, elrefp, nnop, it, nnose,&
             if (ar(a2,i) .eq. noeua) then
                 ia=cnset(nnose*(it-1)+ar(a2,3-i))
                 ib=cnset(nnose*(it-1)+ar(a2,i))
+                im=cnset(nnose*(it-1)+ar(a2,3))
             endif
 320     continue 
         ASSERT((ia*ib) .gt. 0)
         call vecini(ndim, 0.d0, milara)
         call vecini(ndim, 0.d0, milarb)
         call xmilar(ndim, ndime, elrefp, geom, pinref,&
-                    ia, ib, r, ksia, ksib,&
-                    milara, milarb)
+                    ia, ib, im, r, ksia, ksib,&
+                    milara, milarb, pintt, pmitt)
 !         STOCKAGE PMILIE
         call xajpmi(ndim, pmilie, pmmax, ipm, inm, milara,&
                     lonref, ajout)
@@ -164,9 +169,9 @@ subroutine xalg31(ndim, elrefp, nnop, it, nnose,&
 !
 !        CALCUL DU POINT MILIEU DE 101-102
 !
-            call xmifis(ndim, ndime, elrefp, geom, zr(jlsn),&
+            call xmifis(ndim, ndime, elrefp, geom, lsnelp,&
                         n, ip1(k), ip2(k), pinref, ksia,&
-                        milfi)
+                        milfi, pintt, jonc)
 !
 !        on incremente le nombre de points milieux sur la fissure
             mfisloc=mfisloc+1
@@ -201,7 +206,7 @@ subroutine xalg31(ndim, elrefp, nnop, it, nnose,&
             call xmilfa(elrefp, ndim, ndime, geom, cnset,&
                         nnose, it, ainter, ip1(k), ip2(k),&
                         pm2(k), typma, pinref, pmiref, ksia,&
-                        milfa)
+                        milfa, pintt, pmitt)
 !
             call xajpmi(ndim, pmilie, pmmax, ipm, inm, milfa,&
                         lonref, ajout)

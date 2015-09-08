@@ -129,7 +129,7 @@ subroutine xmcart(noma, defico, modele, resoco)
         ncmp(3) = 14
         ncmp(4) = 35
         ncmp(5) = 9
-        ncmp(6) = 2
+        ncmp(6) = 8
         ncmp(7) = 4
         ncmp(8) = 40
     else if (ndim.eq.3) then
@@ -137,7 +137,7 @@ subroutine xmcart(noma, defico, modele, resoco)
         ncmp(3) = 102
         ncmp(4) = 170
         ncmp(5) = 90
-        ncmp(6) = 2
+        ncmp(6) = 24
         ncmp(7) = 8
         ncmp(8) = 80
     endif
@@ -217,12 +217,14 @@ subroutine xmcart(noma, defico, modele, resoco)
         call detrsd('CARTE', carte(i))
         if (i .eq. 1 .or. i .eq. 3) then
             nomgd = 'N120_R'
-        else if (i .eq. 2 .or. i .eq. 6 .or. i .eq. 8) then
+        else if (i .eq. 2 .or. i .eq. 8) then
             nomgd = 'N120_I'
         else if (i .eq. 4) then
             nomgd = 'N480_R'
         elseif (i .eq. 5) then
             nomgd = 'N120_I'
+        elseif (i .eq. 6) then
+            nomgd = 'N240_I'
         else
             nomgd = 'NEUT_I'
         endif
@@ -237,7 +239,7 @@ subroutine xmcart(noma, defico, modele, resoco)
 !
 ! --- REMPLISSAGE DES CARTES
 !
-    do 200 ipc = 1, ntpc
+    do ipc = 1, ntpc
         izone = nint(zr(jtabf+ztabf*(ipc-1)+15))
 ! ----- NUMEROS MAILLE ET NOMBRE DE NOEUDS ESCLAVE ET MAITRE
         nummae = nint(zr(jtabf+ztabf*(ipc-1)+1))
@@ -462,19 +464,19 @@ subroutine xmcart(noma, defico, modele, resoco)
             call xmimp3(ifm, noma, ipc, jvalv(1), jtabf)
         endif
 !
-200 end do
+    end do
 !
 ! --- MENAGE
 !
-    do 140 i = 1, nbch
+    do i = 1, nbch
         call jeexin(chs(i)//'.CESD', ier)
         if (ier .ne. 0) call detrsd('CHAM_ELEM_S', chs(i))
-140 end do
+   end do
 !
-    do 150 i = 1, nbch
+    do i = 1, nbch
         call jedetr(carte(i)//'.NCMP')
         call jedetr(carte(i)//'.VALV')
-150 end do
+    end do
 !
     call jedema()
 end subroutine

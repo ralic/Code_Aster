@@ -77,7 +77,7 @@ subroutine xvechp(ndim, elrefp, nnop, igeom, itemp,&
     character(len=8) :: typma, fpg, elc, elrefc, nompar(4)
     aster_logical :: axi
     integer :: nbddl, zxain, iadzi, iazk24, ibid, ibid2(12, 3), nbf
-    integer :: fac(6, 8), nbar, ar(12, 3), cface(18, 6), ninter, nface, nptf
+    integer :: fac(6, 8), nbar, ar(12, 3), cface(30, 6), ninter, nface, nptf
     integer :: i, j, ifa, nnof, npgf, ipoidf, ivff, idfdef
     integer :: ipgf, ilev, inp, jnp, kddl, lddl, ier
     integer :: mxstac, ipos, hea_fa(2)

@@ -53,7 +53,7 @@ ENTETE__ ELEMENT__ MECA_XH_PENTA15     MAILLE__ PENTA15
    ELREFE__  TR3       GAUSS__  FPG4=FPG4    NOEU=NOEU   FPG6=FPG6    FPG7=FPG7  XCON=FPG12
    ENS_NOEUD__  EN1     =     1   2   3   4   5   6   7   8   9  10  11  12  13  14  15
 ENTETE__ ELEMENT__ MECA_XH_PYRAM13     MAILLE__ PYRAM13
-   ELREFE__  P13       GAUSS__  RIGI=FPG27   MASS=FPG27  NOEU=NOEU   XFEM=XFEM180 FPG1=FPG1 FPG_LISTE__ MATER = (XFEM NOEU)
+   ELREFE__  P13       GAUSS__  RIGI=FPG27   MASS=FPG27  NOEU=NOEU   XFEM=XFEM180 FPG1=FPG1 FPG_LISTE__ MATER=(XFEM NOEU)
    ELREFE__  T10       GAUSS__  XINT=FPG15   NOEU=NOEU
    ELREFE__  TR6       GAUSS__  XINT=FPG12   NOEU=NOEU   FPG6=FPG6    FPG7=FPG7  XCON=FPG12
    ELREFE__  TR3       GAUSS__  FPG4=FPG4    NOEU=NOEU   FPG6=FPG6    FPG7=FPG7  XCON=FPG12
@@ -97,17 +97,17 @@ MODE_LOCAL__
     E1NEUTR  = NEUT_R   ELEM__         (X1       )
     E1NEUTI  = NEUT_I   ELEM__         (X1       )
     E3NEUTI  = N120_I   ELEM__         (X[3]     )
-    E10NEUTI = N120_I    ELEM__         (X[10]     )
+    E10NEUTI = N120_I   ELEM__         (X[10]    )
     N5NEUTI  = N120_I   ELNO__ IDEN__  (X[5]     )
-    E90NEUTI = N120_I   ELEM__         (X[90]    )
-    E102NEUT = N120_R   ELEM__         (X[102]   )
+    E90NEUTI = N720_I   ELEM__         (X[90]    )
+    E102NEUT = N816_R   ELEM__         (X[102]   )
     E33NEUTR = N132_R   ELEM__         (X[33]    )
-    E32NEUTI = N128_I   ELEM__         (X[32]    )
-    E170NEUT = N480_R   ELEM__         (X[170]   )
+    E32NEUTI = N512_I   ELEM__         (X[32]    )
+    E170NEUT = N1360R   ELEM__         (X[170]   )
     E55NEUTR = N480_R   ELEM__         (X[55]    )
-    E306NEUT = N480_R   ELEM__         (X[306]   )
-    E198NEUT = N480_R   ELEM__         (X[198]   )
-    E320NEUI = N512_I   ELEM__         (X[320]   )
+    E306NEUT = N2448R   ELEM__         (X[306]   )
+    E198NEUT = N792_R   ELEM__         (X[198]   )
+    E320NEUI = N1280I   ELEM__         (X[320]   )
     ECODRET  = CODE_I   ELEM__         (IRET     )
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ECONTNC  = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
@@ -265,7 +265,7 @@ OPTION__
     FULL_MECA        539  IN__  N9NEUT_R PBASLOR  CCAMASS  PCAMASS  CCARCRI  PCARCRI  E320NEUI PCNSETO
                                 CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR
                                 NGEOMER  PGEOMER  E32NEUTI PHEAVTO  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
-                                E10NEUTI  PLONCHA  N1NEUT_R PLSN     N1NEUT_R PLST     CMATERC  PMATERC
+                                E10NEUTI PLONCHA  N1NEUT_R PLSN     N1NEUT_R PLST     CMATERC  PMATERC
                                 E33NEUTR PPINTTO  STANO_I  PSTANO   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
                                 ZVARCPG  PVARCRR  ZVARIPG  PVARIMP  ZVARIPG  PVARIMR  N5NEUTI  PHEA_NO
                                 E198NEUT PPMILTO

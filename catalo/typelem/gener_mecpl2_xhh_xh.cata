@@ -200,6 +200,8 @@ MODE_LOCAL__
 
     E2NEUTI  = N120_I   ELEM__         (X[2])
 
+    CCONHE   = N240_I   ELEM__         (X[8])
+
     PLALA_I  = NEUT_I   ELEM__         (X[4])
 
     N40NEUI  = N120_I   ELEM__         (X[40])
@@ -212,22 +214,22 @@ MATRICE__
 
 OPTION__
     CHAR_MECA_CONT   367  IN__  CCONAI   PCAR_AI  CCONCF   PCAR_CF  CCONPI   PCAR_PI  CCONPT   PCAR_PT  
-                                DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  NGEOMER  PGEOMER  E2NEUTI  PHEA_FA  
+                                DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  NGEOMER  PGEOMER  CCONHE   PHEA_FA  
                                 PLALA_I  PHEAVNO  STANO_I  PSTANO   N40NEUI PHEA_NO
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_FROT   367  IN__  CCONAI   PCAR_AI  CCONCF   PCAR_CF  CCONPI   PCAR_PI  CCONPT   PCAR_PT  
-                                DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  NGEOMER  PGEOMER  E2NEUTI  PHEA_FA  
+                                DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  NGEOMER  PGEOMER  CCONHE   PHEA_FA  
                                 PLALA_I  PHEAVNO  STANO_I  PSTANO   N40NEUI PHEA_NO
                           OUT__ MVECTUR  PVECTUR  
     RIGI_CONT        366  IN__  CCONAI   PCAR_AI  CCONCF   PCAR_CF  CCONPI   PCAR_PI  CCONPT   PCAR_PT  
-                                DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  NGEOMER  PGEOMER  E2NEUTI  PHEA_FA  
+                                DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  NGEOMER  PGEOMER  CCONHE   PHEA_FA  
                                 PLALA_I  PHEAVNO  STANO_I  PSTANO   N40NEUI PHEA_NO
                           OUT__ MMATUNS  PMATUNS  MMATUUR  PMATUUR  
     RIGI_FROT        366  IN__  CCONAI   PCAR_AI  CCONCF   PCAR_CF  CCONPI   PCAR_PI  CCONPT   PCAR_PT  
-                                DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  NGEOMER  PGEOMER  E2NEUTI  PHEA_FA  
+                                DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  NGEOMER  PGEOMER  CCONHE   PHEA_FA  
                                 PLALA_I  PHEAVNO  STANO_I  PSTANO   N40NEUI PHEA_NO
                           OUT__ MMATUNS  PMATUNS  MMATUUR  PMATUUR  
     XCVBCA           363  IN__  CCONAI   PCAR_AI  CCONPT   PCAR_PT  DDL_MECA PDEPL_P  NGEOMER  PGEOMER  
-                                E2NEUTI  PHEA_FA  PLALA_I  PHEAVNO  N40NEUI PHEA_NO
+                                CCONHE   PHEA_FA  PLALA_I  PHEAVNO  N40NEUI PHEA_NO
                           OUT__  I3NEUT_I PINDCOO
     TOU_INI_ELNO      99  IN__ OUT__ NGEOMER  PGEOM_R

@@ -104,7 +104,7 @@ subroutine te0366(option, nomte)
 ! --- INITIALISATIONS
 !
     call matini(n, n, 0.d0, mmat)
-    call vecini(9, 0.d0, geopi)
+    call vecini(18, 0.d0, geopi)
     call vecini(2, 0.d0, dlagrf)
     call vecini(3, 0.d0, ddeple)
     call vecini(3, 0.d0, ddeplm)

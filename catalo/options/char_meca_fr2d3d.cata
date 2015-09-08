@@ -25,15 +25,15 @@ OPTION__
         PGEOMER  GEOM_R
         PFR2D3D  FORC_R
         PPINTTO  N132_R
-        PCNSETO  N512_I 'MODL!.TOPOSE.CNS' <<  XFEM - CONNECTIVITE DES SOUS-ELEMENTS  >>
-        PHEAVTO  N128_I
+        PCNSETO  N1280I 'MODL!.TOPOSE.CNS' <<  XFEM - CONNECTIVITE DES SOUS-ELEMENTS  >>
+        PHEAVTO  N512_I
         PHEA_NO  N120_I
-        PHEA_SE  N128_I
+        PHEA_SE  N512_I
         PLONCHA  N120_I 'MODL!.TOPOSE.LON' <<  XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  >>
         PLSN     NEUT_R
         PLST     NEUT_R
         PSTANO   N120_I
-        PPMILTO  N480_R
+        PPMILTO  N792_R
         OUT__
 PVECTUR VDEP_R RESL__
                                                                                                                             

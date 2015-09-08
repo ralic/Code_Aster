@@ -4,7 +4,7 @@ subroutine xequhm(imate, option, ta, ta1, ndim,&
                   congem, vintm, defgep, congep, vintp,&
                   mecani, press1, press2, tempe,&
                   rinstp, dt, r, drds,&
-                  dsde, retcom, idecpg, angmas, enrhyd)
+                  dsde, retcom, idecpg, angmas, enrhyd, nfh)
 ! ======================================================================
 ! person_in_charge: daniele.colombo at ifpen.fr
 ! ======================================================================
@@ -45,6 +45,7 @@ subroutine xequhm(imate, option, ta, ta1, ndim,&
 !               AU POINT DE GAUSS AU TEMPS MOINS
 ! IN  VINTM   : TABLEAU DES VARIABLES INTERNES (MECANIQUES ET
 !               HYDRAULIQUES)AU POINT DE GAUSS AU TEMPS MOINS
+! IN  NFH     : NOMBRE DE DDL HEAVISIDE PAR NOEUD
 ! OUT CONGEP  : TABLEAU DES CONTRAINTES GENERALISEES
 !               AU POINT DE GAUSS AU TEMPS PLUS
 !             : SIGXY = LE VRAI
@@ -59,10 +60,10 @@ subroutine xequhm(imate, option, ta, ta1, ndim,&
     integer :: imate, ndim, nbvari, kpi, npg, dimdef, dimcon, retcom
     integer :: mecani(5), press1(7), press2(7), tempe(5)
     integer :: yamec, addeme, adcome, yate, addete, i, j
-    integer :: yap1, nbpha1, addep1, adcp11
+    integer :: yap1, nbpha1, addep1, adcp11, nfh
     integer :: yap2, nbpha2, addep2
-    real(kind=8) :: defgem(1:dimdef), defgep(1:dimdef), congem(1:dimcon)
-    real(kind=8) :: congep(1:dimcon), vintm(1:nbvari), vintp(1:nbvari)
+    real(kind=8) :: defgem(dimdef), defgep(dimdef), congem(dimcon)
+    real(kind=8) :: congep(dimcon), vintm(nbvari), vintp(nbvari)
     real(kind=8) :: pesa(3), dt, rinstp
     real(kind=8) :: deux, rac2, ta, ta1, p10, p20
     real(kind=8) :: angmas(3)
@@ -72,9 +73,9 @@ subroutine xequhm(imate, option, ta, ta1, ndim,&
 ! DECLARATIONS POUR XFEM
     integer :: dimenr, enrmec(3), enrhyd(3)
     integer :: yaenrm, adenme, idecpg
-    integer :: yaenrh, adenhy
-    real(kind=8) :: r(1:dimenr), drds(1:dimenr, 1:dimcon)
-    real(kind=8) :: dsde(1:dimcon, 1:dimenr)
+    integer :: yaenrh, adenhy, ifh
+    real(kind=8) :: r(dimenr), drds(dimenr, dimcon)
+    real(kind=8) :: dsde(dimcon, dimenr)
 ! ======================================================================
 ! --- INITIALISATIONS DES VARIABLES DEFINISSANT LE PROBLEME ------------
 ! ======================================================================
@@ -139,8 +140,8 @@ subroutine xequhm(imate, option, ta, ta1, ndim,&
                 addep2, addete,&
                 defgem, defgep, congem, congep, vintm,&
                 vintp, dsde, pesa, retcom, kpi,&
-                npg, p10, p20, yaenrm, dimenr,&
-                idecpg, angmas, yaenrh, adenhy)
+                npg, p10, p20, dimenr,&
+                idecpg, angmas, yaenrh, adenhy, nfh)
 !
     if (retcom .ne. 0) then
         goto 900
@@ -188,10 +189,12 @@ subroutine xequhm(imate, option, ta, ta1, ndim,&
         if (yaenrm .eq. 1) then
             if (yamec .eq. 1) then
                 if (yap1 .eq. 1) then
+                  do ifh = 1, nfh
                     do 15 i = 1, ndim
-                        r(adenme+i-1)=r(adenme+i-1) - pesa(i)*congep(&
-                        adcp11)
+                        r(adenme+i-1+(ifh-1)*(ndim+1))=r(adenme+i-1+(ifh-1)*&
+                                             (ndim+1))-pesa(i)*congep(adcp11)
  15                 continue
+                  end do
                 endif
             endif
         endif
@@ -200,9 +203,10 @@ subroutine xequhm(imate, option, ta, ta1, ndim,&
 ! ======================================================================
          if(yaenrh.eq.1) then
             if(yap1.eq.1) then
-
-               r(adenhy)=r(adenhy)-congep(adcp11)+congem(adcp11)
-
+               do ifh = 1, nfh
+                  r(adenhy+(ifh-1)*(ndim+1))=r(adenhy+(ifh-1)*(ndim+1))-&
+                                            congep(adcp11)+congem(adcp11)
+               end do
             endif
          endif
     endif
@@ -245,13 +249,16 @@ subroutine xequhm(imate, option, ta, ta1, ndim,&
 ! --- SI PRESENCE DE PRESS1 AVEC XFEM ----------------------------------
 ! ======================================================================
         if ((yap1.eq.1).and.(yaenrh.eq.1)) then
+          do ifh = 1, nfh
             if ((yamec.eq.1).and.(yaenrm.eq.1)) then
                     do 31 i = 1, ndim
-                        drds(adenme+i-1,adcp11)= drds(adenme+i-1,&
-                        adcp11)-pesa(i)
+                        drds(adenme+i-1+(ifh-1)*(ndim+1),adcp11)= drds(adenme&
+                                         +i-1+(ifh-1)*(ndim+1),adcp11)-pesa(i)
  31                 continue
             endif
-            drds(adenhy,adcp11)=drds(adenhy,adcp11)-1.d0
+            drds(adenhy+(ifh-1)*(ndim+1),adcp11)=drds(adenhy+(ifh-1)*(ndim+1)&
+                                                 ,adcp11)-1.d0
+          end do
         endif
     endif
 ! ======================================================================

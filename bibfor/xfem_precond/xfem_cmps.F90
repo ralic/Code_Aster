@@ -61,7 +61,7 @@ function xfem_cmps(nocmp, phys)
             nocmp .eq. 'LAG4_C' .or. nocmp .eq. 'LAG4_F1' .or. nocmp .eq. 'LAG4_F2') then
         goto 99
 ! ON RAJOUTE LES CPMS DE HM-XFEM
-    elseif (nocmp .eq. 'HPRE1') then
+    elseif (nocmp .eq. 'H1PRE1' .or. nocmp .eq. 'H2PRE1' .or. nocmp .eq. 'H3PRE1') then
         goto 99
 ! ON TESTE LES DDLS DE PHYSIQUES 
     elseif( present(phys)) then 

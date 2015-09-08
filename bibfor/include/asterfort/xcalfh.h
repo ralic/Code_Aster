@@ -20,7 +20,7 @@ interface
                       addep1, adcp11, addeme, congep, dsde,&
                       grap1, rho11, pesa, tperm, cliq,&
                       viscl, dviscl, dimenr,&
-                      adenhy)
+                      adenhy, nfh)
         integer :: dimenr
         integer :: dimcon
         character(len=16) :: option
@@ -40,5 +40,6 @@ interface
         real(kind=8) :: viscl
         real(kind=8) :: dviscl
         integer :: adenhy
+        integer :: nfh
     end subroutine xcalfh
 end interface 

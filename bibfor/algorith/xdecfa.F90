@@ -1,13 +1,13 @@
 subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
                   pinter, pinref, ainter, jcnset, cooree, cooref, rainter,&
                   noeud, npts, nintar, lst ,lonref, ndim, zxain,&
-                  jnit, i, face, nnose, jmilt, f, mipos)
+                  i, face, nnose, jmilt, f, mipos)
     implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterc/r8gaem.h"
 #include "asterfort/assert.h"
-#include "asterfort/elraca.h"
 #include "asterfort/elrfvf.h"
 #include "asterfort/iselli.h"
 #include "asterfort/padist.h"
@@ -15,16 +15,14 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
 #include "asterfort/reeref.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xcenfi.h"
-#include "asterfort/xdivte.h"
-#include "asterfort/xmifis.h"
 #include "asterfort/xnewto.h"
 #include "asterfort/xnormv.h"
 !
-    integer :: npi, noeud(9), i, nit, face, jmilt, f(6,8), npis
-    integer :: igeom, jlsn, jlst, jcnset, zxain, jnit, nnose
+    integer :: npi, noeud(9), i, face, jmilt, f(6,8), npis
+    integer :: igeom, jlsn, jlst, jcnset, zxain, nnose
     integer :: nintar, npts, ndim, nno
-    real(kind=8) :: pinter(*), ainter(*), cooree(3,ndim), cooref(3,ndim)
-    real(kind=8) :: rainter(3,4), lst(3), lonref, pinref(*)
+    real(kind=8) :: pinter(*), ainter(*), cooree(6,ndim), cooref(6,ndim)
+    real(kind=8) :: rainter(3,4), lst(6), lonref, pinref(34*ndim)
     character(len=8) :: elp
     aster_logical :: mipos
 !
@@ -60,7 +58,6 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
 !       LST      : LST AUX NOEUDS SOMMETS DU TRIA
 !       LONREF   : LONGUEUR CARACTERISTIQUE DE L'ELEMENT
 !       NDIM     : DIMENSION DU MACRO ELEMENT
-!       NIT      : NOMBRE DE SOUS ELEMENTS
 !       I        : SOUS ELEMENT COURANT
 !       FACE     : FACE EN COURS DANS LE SOUS SOUS ELEMENT
 !       F        : CONNECTIVITE DU SOUS SOUS ELEMENT
@@ -75,16 +72,15 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
 !       NINTAR   : NOMBRE d'ARETES DU TRIA STRICTEMENT COUPEES PAR LST
 !     ----------------------------------------------------------------
 !
-    real(kind=8) :: p(ndim), newpt(ndim), rbid, newptref(ndim), cenref(ndim)
-    real(kind=8) :: norme, scal, geom(ndim*nno), ff(20), cenfi(ndim), tabls(40)
-    real(kind=8) :: x(ndim), xref(ndim), miref(ndim), mifis(ndim), base(2*ndim)
-    real(kind=8) :: u(ndim), v(ndim), det, vectn(ndim), ab(ndim), coor(nno*ndim)
-    real(kind=8) :: n1(ndim), n2(ndim) , n3(ndim), ac(ndim), maxlsn, epsmax, cridist
-    character(len=8) :: cbid(20)
-    integer :: k, ii, jj, j, ni, kk, ibid, num(8), iibid(20), nbnomx
-    integer :: cnsref(nnose), nsse, ip1, ip2, n(3), cnset(60), ind, kkk
-    integer :: itemax, ntetra
-    aster_logical :: deja , find
+    real(kind=8) :: p(ndim), newpt(ndim), newptref(ndim), cenref(ndim)
+    real(kind=8) :: norme, geom(ndim*nno), ff(27), cenfi(ndim), tabls(20)
+    real(kind=8) :: x(ndim), xref(ndim), miref(ndim), mifis(ndim), ptxx(3*ndim)
+    real(kind=8) :: u(ndim), v(ndim), vectn(ndim), ksi(ndim)
+    real(kind=8) :: epsmax, cridist, a, b, c
+    integer :: k, ii, jj, j, ni, kk, ibid, num(8), nbnomx
+    integer :: n(3), kkk
+    integer :: itemax
+    aster_logical :: deja
     parameter   (nbnomx = 27)
     parameter   (cridist=1.d-7)
 !
@@ -100,6 +96,9 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
 !
 !   BOUCLE SUR LES SOMMETS DU TRIA
     call vecini(ndim, 0.d0, newpt)
+    call vecini(20, 0.d0, tabls)
+    call vecini(ndim*nno, 0.d0, geom)
+    call vecini(ndim, 0.d0, ksi)
     do j = 1, 9
        noeud(j) =0
     end do
@@ -139,58 +138,13 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
           endif
        endif
     end do
-!
-!   IL FAUT RETROUVER LE SOUS TETRA DONT ON EST ISSU
-!   ON RECUPERE EGALEMENT LE NOMBRE DE SOUS ELEMENTS ISSUS DE CE SOUS TETRA
-    call xdivte(elp, cnset, nit, nnose)
-    if (i.le.nit) then
-       do ii = 1, nnose
-          cnsref(ii) = cnset(nnose*(i-1)+ii)
+    do ii = 1, nno
+       tabls(ii) = zr(jlst-1+ii)
+       do jj =  1, ndim
+          geom((ii-1)*ndim+jj) = zr(igeom-1+ndim*(ii-1)+jj)
        end do
-       nsse = zi(jnit-1+4+i)
-    else if (i.lt.(nit+zi(jnit-1+4+1))) then
-       do ii = 1, nnose
-          cnsref(ii) = cnset(nnose*(1-1)+ii)
-       end do
-       nsse = zi(jnit-1+4+1)
-    else if (i.lt.(nit+zi(jnit-1+4+1)+zi(jnit-1+4+2)-1)) then
-       do ii = 1, nnose
-          cnsref(ii) = cnset(nnose*(2-1)+ii)
-       end do
-       nsse = zi(jnit-1+4+2)
-    else if (i.lt.(nit+zi(jnit-1+4+1)+zi(jnit-1+4+2)+zi(&
-             jnit-1+4+3)-2)) then
-       do ii = 1, nnose
-          cnsref(ii) = cnset(nnose*(3-1)+ii)
-       end do
-       nsse = zi(jnit-1+4+3)
-    else if (i.lt.(nit+zi(jnit-1+4+1)+zi(jnit-1+4+2)+zi(&
-             jnit-1+4+3)+zi(jnit-1+4+4)-3)) then
-       do ii = 1, nnose
-          cnsref(ii) = cnset(nnose*(4-1)+ii)
-       end do
-       nsse = zi(jnit-1+4+4)
-    else if (i.lt.(nit+zi(jnit-1+4+1)+zi(jnit-1+4+2)+zi(&
-             jnit-1+4+3)+zi(jnit-1+4+4)+zi(jnit-1+4+5)-4)) then
-       do ii = 1, nnose
-          cnsref(ii) = cnset(nnose*(5-1)+ii)
-       end do
-       nsse = zi(jnit-1+4+5)
-    else
-       do ii = 1, nnose
-          cnsref(ii) = cnset(nnose*(6-1)+ii)
-       end do
-       nsse = zi(jnit-1+4+6)
-    endif
-!
-!      ON CALCULE LE NOMBRE DE NOEUDS SOMMETS DU TETRA PARENT TELS QUE LSN=0
-    ntetra= 0
-    do ii = 1, 4
-       if (zr(jlsn-1+cnsref(ii)).eq.0.d0) ntetra = ntetra + 1
     end do
 !
-!      ON RECUPERE LES COORDONNES DE REFERENCE DES NOEUDS DE L'ELEMENT PARENT
-    call elraca(elp, ndim, nno, ibid, ibid, cbid, iibid, coor, rbid)
 !      ON BOUCLE SUR LES ARETES DU TRIA POUR RECUPERER LES POINTS DU FOND DE
 !      FISSURE SUR CES ARETES
     do k = 1, 3
@@ -207,103 +161,51 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
 !      SI L'ARETE EST COUPE PAR LE FOND DE FISSURE
        if (lst(k)*lst(kk).lt.0.d0) then
           nintar = nintar+1
-!      ON DETERMINE LES COORDONNES DE REFERENCE DES ARETES LSN=0
-          do ii = 1, ndim
-             ab(ii) = cooref(kk,ii)-cooref(k,ii)
-             u(ii) = cooref(kk,ii)-cooref(k,ii)
+!      RECHERCHE DU FOND DE FISSURE SUR L'ARETE
+          do jj = 1, ndim
+             ptxx(jj) = cooref(k,jj)
+             ptxx(jj+ndim) = cooref(kk,jj)
           end do
-          do ii = 1, ndim
-             ac(ii) = cooref(kkk,ii)-cooref(k,ii)
-          end do
-!      ON CHERCHE UN PLAN DANS LEQUEL CHERCHER LE FOND DE FISSURE
-          find = .false.
-          if ((nsse.eq.1).or.(nsse.eq.6.and.ntetra.eq.1)&
-              .or.(nsse.eq.4.and.ntetra.eq.2)) then
-             maxlsn = 0.d0
-             do ii = 1, 4
-                if (abs(zr(jlsn-1+cnsref(ii))).ge.maxlsn) then
-                  do j = 1, ndim
-                     v(j) = coor((cnsref(ii)-1)*ndim+j) - cooref(k,j)
-                  end do
-                  maxlsn = abs(zr(jlsn-1+cnsref(ii)))
-                endif
+          ASSERT(abs(lst(k)-lst(kk)) .gt. 1.d0/r8gaem())
+          if (.not.iselli(elp)) then
+!      RECUPERATION DU NOEUD MILIEU DE L'ARETE
+             do jj = 1, ndim
+                ptxx(2*ndim+jj) = cooref(k+ndim,jj)
              end do
-             find = .true.
-          else
-!         BOUCLE SUR LES FACES DU SOUS ELEMENT DONT ON EST ISSU
-             j = 1
-100          continue
-             ASSERT(j.le.4)
-!         ON DETERMINE LES COORDONNES DE REFERENCE DE DEUX ARETES DE
-!         LA FACE
-             if (j.eq.1) ind = 3
-             if (j.eq.2) ind = 1
-             if (j.eq.3) ind = 4
-             if (j.eq.4) ind = 2
-             do ii = 1, ndim
-                u(ii) = coor((cnsref(j)-1)*ndim+ii)-coor((cnsref(ind)-1)*ndim+ii)
-                v(ii) = coor((cnsref(5-j)-1)*ndim+ii)-coor((cnsref(ind)-1)*ndim+ii)
-             end do
-             det = 0.d0
-             det = ab(1)*u(2)*v(3)+u(1)*v(2)*ab(3)+v(1)*ab(2)*u(3)-&
-                   ab(3)*u(2)*v(1)-ab(2)*u(1)*v(3)-ab(1)*u(3)*v(2)
-!             det = det**(1/3)
-             call provec(u,v,n1)
-             call provec(ab,ac,n2)
-             call provec(n1,n2,n3)
-             call xnormv(ndim, n3, norme)
-             if ((abs(det).le.lonref*cridist).and.(norme.ge.cridist)) then
-                find = .true.
-             else if (j.lt.4) then
-                j = j+1
-                goto 100
+!      INITIALISATION DU NEWTON
+             a = (lst(k) + lst(kk) - 2*lst(k+ndim))/2.d0
+             b = (lst(kk) - lst(k))/2.d0
+             c = lst(k+ndim)
+             ASSERT(b**2.ge.(4*a*c))
+             if (abs(a).lt.1.d-8) then
+                ksi(1) = lst(k)/(lst(k)-lst(kk))
+             else
+                ksi(1) = (-b-sqrt(b**2-4*a*c))/(2.d0*a)
+                if (abs(ksi(1)).gt.1) ksi(1) = (-b+sqrt(b**2-4*a*c))/(2.d0*a)
+                ASSERT(abs(ksi(1)).le.1)
+                ksi(1) = (ksi(1)+1)/2.d0
              endif
-          endif
-          if (.not.find) then
-             do ii = 1, ndim
-                u(ii) = cooref(kk,ii)-cooref(k,ii)
-             end do
-             maxlsn = 0.d0
-             do ii = 1, 4
-                if (abs(zr(jlsn-1+cnsref(ii))).ge.maxlsn) then
-                  do j = 1, ndim
-                     v(j) = coor((cnsref(ii)-1)*ndim+j) - cooref(k,j)
-                  end do
-                  maxlsn = abs(zr(jlsn-1+cnsref(ii)))
-                endif
+          else
+             ksi(1) = lst(k)/(lst(k)-lst(kk))
+             do jj = 1, ndim
+                ptxx(2*ndim+jj) = (ptxx(jj)+ptxx(ndim+jj))/2.d0
              end do
           endif
-!         ON ORTHONORMALISE LA BASE (U,V)
-          call xnormv(ndim, u, norme)
-          scal = 0.d0
-          do ii = 1, ndim
-              scal = scal + u(ii)*v(ii)
-          end do
-          do ii = 1, ndim
-             v(ii) = v(ii) -scal*u(ii)
-          end do
-          call xnormv(ndim, v, norme)
-!         POINT DE DEPART POUR LA RECHERCHE DU FOND DE FISSURE
-          do ii = 1, ndim
-            xref(ii) = (cooref(k,ii)+cooref(kk,ii))/2.d0 
-            base(ii) = u(ii)
-            base(ndim+ii) = v(ii)
-          end do
-          do ii = 1, nno
-             do jj =  1, ndim
-                geom((ii-1)*ndim+jj) = zr(igeom-1+ndim*(ii-1)+jj)
-             end do
-             tabls(2*ii-1) = zr(jlsn-1+ii)
-             tabls(2*ii) = zr(jlst-1+ii)
-          end do
           do ii = 1, 3
              n(ii) = ii
           end do
           epsmax = 1.d-8
           itemax = 100
 !      ALGORITHME DE NEWTON POUR TROUVER LE FOND DE FISSURE
-          call xnewto(elp, 'XINTFA', n, ndim, base, ndim,&
-                      geom, tabls ,ibid, ibid, itemax, epsmax, xref)
+          call xnewto(elp, 'XINTER', n, ndim, ptxx, ndim,&
+                      geom, tabls ,ibid, ibid, itemax, epsmax, ksi)
+          call vecini(ndim, 0.d0, xref)
+          do ii = 1, ndim
+             xref(ii) = 2.d0*(1.d0-ksi(1))*(5.d-1-ksi(1))*ptxx(j)+4.d0*ksi(1)*&
+                       (1.d0-ksi(1))*ptxx(j+2*ndim)+2.d0*ksi(1)*(ksi(1)-5.d-1)*&
+                       ptxx(j+ndim)
+          end do
+          call vecini(27, 0.d0, ff)
           call elrfvf(elp, xref, nbnomx, ff, nno)
 !      CALCUL DES COORDONNEES REELES DU FOND DE FISSURE
           call vecini(ndim, 0.d0, x)
@@ -340,18 +242,23 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
 !      DANS LE CAS QUADRATIQUE ON CHERCHE LE POINT MILEU CORRESP0NDANT (SUR
 !      l'ARETE INTERSECTEE)
           if (.not.iselli(elp)) then
-             ip2 = noeud(2+nintar)
-             if (npts.eq.1) then
-                ip1 = noeud(1)
-             else if (npts.eq.2) then
-                if (lst(3).gt.1.d-6) then
-                   ip1 = noeud(3-nintar)
-                else 
-                   ip1 = noeud(nintar)
-                endif
+             if (lst(k).lt.0.d0) then
+                ksi(1) = ksi(1)/2.d0
+             else
+                ksi(1) = (1.d0+ksi(1))/2.d0
              endif
-             call xmifis(ndim, ndim, elp, geom, zr(jlsn), n, &
-                         ip1, ip2, pinref, miref, mifis, u, v)
+             do ii = 1, ndim
+                miref(ii) = 2.d0*(1.d0-ksi(1))*(5.d-1-ksi(1))*ptxx(j)+4.d0*ksi(1)*&
+                            (1.d0-ksi(1))*ptxx(j+2*ndim)+2.d0*ksi(1)*(ksi(1)-5.d-1)*&
+                            ptxx(j+ndim)
+             end do
+             call elrfvf(elp, xref, nbnomx, ff, nno)
+             call vecini(ndim, 0.d0, mifis)
+             do ii = 1, ndim
+                do j = 1, nno
+                   mifis(ii) = mifis(ii) + zr(igeom-1+ndim*(j-1)+ii)*ff(j)
+                end do
+             end do
 !      VERIF SI DEJA
              deja = .false.
              do ii = 1, npi
@@ -422,7 +329,7 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
           endif
        endif
     end do
-!   ON DETERMINE MAINTENAT DANS LE CAS QUADRATIQUE LE NOEUD MILIEU 
+!   ON DETERMINE MAINTENANT DANS LE CAS QUADRATIQUE LE NOEUD MILIEU 
 !   ENTRE LES DEUX POINTS DU FOND DE FISSURE
 !
 !   ON DETERMINE D'ABORD UNE BASE ORTHONORMEE DU PLAN DANS LEQUEL ON VA FAIRE LA
@@ -430,8 +337,8 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
     if (.not. iselli(elp)) then
        if (mipos.and.npts.eq.2) then
           do j = 1, ndim
-             xref(j) = (pinref((noeud(2)-1)*ndim+j) +&
-                        pinref((noeud(1)-1)*ndim+j))/2.d0
+             xref(j) = (pinref((noeud(3)-1)*ndim+j) +&
+                        pinref((noeud(4)-1)*ndim+j))/2.d0
           end do
           call vecini(ndim, 0.d0, x)
           call elrfvf(elp, xref, nbnomx, ff, nno)
@@ -447,11 +354,17 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
                 xref(j) = (pinref((noeud(4)-1)*ndim+j) +&
                            pinref((noeud(3)-1)*ndim+j))/2.d0
              end do
-          else
+          elseif (lst(1).eq.0.d0) then
              do j = 1, ndim
                 vectn(j) = pinref((noeud(3)-1)*ndim+j) - pinref((noeud(1)-1)*ndim+j)
                 xref(j) = (pinref((noeud(3)-1)*ndim+j) +&
                            pinref((noeud(1)-1)*ndim+j))/2.d0
+             end do
+          else
+             do j = 1, ndim
+                vectn(j) = pinref((noeud(3)-1)*ndim+j) - pinref((noeud(2)-1)*ndim+j)
+                xref(j) = (pinref((noeud(3)-1)*ndim+j) +&
+                           pinref((noeud(2)-1)*ndim+j))/2.d0
              end do
           endif
           call vecini(ndim, 0.d0, u)
@@ -459,18 +372,18 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
              u(1) = 1
              u(2) = 1
           else
-             u(1) = -vectn(2)
+             u(1) = vectn(2)
              u(2) = -vectn(1)
           endif
           call provec(vectn, u, v)
           call xnormv(ndim, u, norme)
           call xnormv(ndim, v, norme)
-!   ON RECHERCHE DANS LE PLAN LE POINT DU FOND DE FISSURE
+!   ON RECHERCHE DANS LE PLAN MEDIATEUR LE POINT DU FOND DE FISSURE
           do j= 1, ndim
-             base(j) = u(j)
-             base(ndim+j) = v(j)
+             ptxx(j) = u(j)
+             ptxx(ndim+j) = v(j)
           end do
-          call xnewto(elp, 'XINTFA', n, ndim, base, ndim,&
+          call xnewto(elp, 'XINTFA', n, ndim, ptxx, ndim,&
                       geom, tabls ,ibid, ibid, itemax, epsmax, xref)
           call elrfvf(elp, xref, nbnomx, ff, nno)
           call vecini(ndim, 0.d0, x)
@@ -493,38 +406,27 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
 !   DANS LE CAS NPTS=2 ET NINTAR=2, IL NOUS RESTE ENCORE UN POINT MILIEU A
 !   DETERMINER (DANS LE QUAD TEL QUE LST<=0)
        if (npts.eq.2.and.nintar.eq.2.) then
-          if (mipos) then
-          do j = 1, ndim
-             cenfi(j) = (pinter(ndim*(noeud(1)-1)+j)+pinter(ndim*(noeud(2)&
-                         -1)+j)+pinter(ndim*(noeud(3)-1)+j)+pinter(ndim*&
-                         (noeud(4)-1)+j))/4.d0 
-             cenref(j) = (pinref(ndim*(noeud(1)-1)+j)+pinref(ndim*(noeud(2)&
-                         -1)+j)+pinref(ndim*(noeud(3)-1)+j)+pinref(ndim*&
-                         (noeud(4)-1)+j))/4.d0
-          end do
+          if (lst(3).gt.0.d0) then
+             num(1) = noeud(1)
+             num(2) = noeud(2)
+             num(3) = noeud(4)
+             num(4) = noeud(3)
+             num(5) = noeud(7)
+             num(6) = noeud(6)
+             num(7) = noeud(8)
+             num(8) = noeud(5)
           else
-             if (lst(3).gt.0.d0) then
-                num(1) = noeud(1)
-                num(2) = noeud(2)
-                num(3) = noeud(4)
-                num(4) = noeud(3)
-                num(5) = noeud(7)
-                num(6) = noeud(6)
-                num(7) = noeud(8)
-                num(8) = noeud(5)
-             else
-                num(1) = noeud(1) 
-                num(2) = noeud(2)
-                num(3) = noeud(3)
-                num(4) = noeud(4)
-                num(5) = noeud(7)
-                num(6) = noeud(5)
-                num(7) = noeud(8)
-                num(8) = noeud(6)
-             endif
-             call xcenfi(elp, ndim, ndim, geom, zr(jlsn),&
-                         pinref, pinref, cenref, cenfi, num)
+             num(1) = noeud(1) 
+             num(2) = noeud(2)
+             num(3) = noeud(3)
+             num(4) = noeud(4)
+             num(5) = noeud(7)
+             num(6) = noeud(5)
+             num(7) = noeud(8)
+             num(8) = noeud(6)
           endif
+          call xcenfi(elp, ndim, ndim, geom, zr(jlsn),&
+                      pinref, pinref, cenref, cenfi, num)
   !   ON ARCHIVE CE POINT
           npi = npi+1
           do j = 1, ndim

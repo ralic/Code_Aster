@@ -27,9 +27,9 @@ OPTION__
         PDEPL_P  DEPL_R
         PINDCOI  NEUT_I
         PLST     NEUT_R
-        PPINTER  N120_R
-        PAINTER  N480_R
-        PCFACE   N120_I
+        PPINTER  N816_R
+        PAINTER  N1360R
+        PCFACE   N720_I
         PLONGCO  N120_I 'MODL!.TOPOSE.LON' <<  XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  >>
         PDONCO   XCONTAC
         PGLISS   NEUT_I
@@ -38,11 +38,11 @@ OPTION__
         PCAR_PT  N120_R
         PCAR_AI  N480_R
         PCOHES   NEUT_R
-        PBASECO  N480_R
+        PBASECO  N2448R
         PFISNO   NEUT_I
         PHEAVNO  NEUT_I
         PHEA_NO  N120_I
-        PHEA_FA  N120_I
+        PHEA_FA  N240_I
    OUT__
         PINCOCA NEUT_I ELEM__
         PINDCOO NEUT_I ELEM__

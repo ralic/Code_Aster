@@ -205,7 +205,7 @@ subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
                         call cesexi('S', jcesd2, jcesl2, ima, 1,&
                                     ifima, 2, iad)
                         nface = cesv2(iad)
-                        ASSERT(nface.le.18)
+                        ASSERT(nface.le.30)
                         zi(jnbsp-1+ima) = zi(jnbsp-1+ima)+nface*nnint
                     endif
                 end do

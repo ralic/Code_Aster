@@ -33,6 +33,6 @@ interface
         integer :: itemax
         real(kind=8) :: epsmax
         real(kind=8) :: ksi(ndime)
-        integer, intent(in), optional :: dekker
+        real(kind=8), intent(in), optional :: dekker(3*ndime)
     end subroutine xnewto
 end interface

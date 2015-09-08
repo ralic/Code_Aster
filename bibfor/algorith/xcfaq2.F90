@@ -28,7 +28,7 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
 #include "asterfort/xmilfi.h"
 #include "asterfort/xxmmvd.h"
 #include "blas/ddot.h"
-    integer :: jgrlsn, igeom, nface, cface(18, 6), jlsn, jlst
+    integer :: jgrlsn, igeom, nface, cface(30, 6), jlsn, jlst
     integer :: nfiss, ifiss, nptf, nbtot, nmaabs
     real(kind=8) :: pinter(*), ainter(*)
     character(len=8) :: noma
@@ -305,8 +305,8 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
 !     CAS 2D
     if (ndim .eq. 2) then
 !
-        do 800 i = 1, 18
-            do 801 j = 1, 5
+        do 800 i = 1, 30
+            do 801 j = 1, 6
                 cface(i,j)=0
 801         continue
 800     continue

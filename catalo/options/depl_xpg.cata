@@ -23,7 +23,7 @@ OPTION__
         PDEPLNO  DEPL_R  << champ de deplacement nodal avec degres de libertes XFEM >>
         PXFGEOM  GEOM_R  
         PLONCHA  N120_I 'MODL!.TOPOSE.LON' <<  XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  >>
-        PHEAVTO  N128_I  
+        PHEAVTO  N512_I  
         PBASLOR  NEUT_R
         PLSN     NEUT_R
         PLST     NEUT_R
