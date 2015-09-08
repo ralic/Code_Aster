@@ -380,7 +380,7 @@ subroutine dktnli(nomte, opt, xyzl, ul, dul,&
                 call r8inir(3, r8vide(), angmas, 1)
                 call nmcomp('RIGI', ipg, ksp, 2, typmod,&
                             zi(imate), zk16(icompo), zr(icarcr), instm, instp,&
-                            6, eps2d, deps2d, 6, sigm,&
+                            4, eps2d, deps2d, 6, sigm,&
                             zr(ivarim+ivpg), opt, angmas, 1, [0.d0],&
                             zr(icontp+ icpg), zr(ivarip+ivpg), 36, dsidep, 1,&
                             wk, cod)
