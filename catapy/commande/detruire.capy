@@ -30,5 +30,5 @@ DETRUIRE=MACRO(nom="DETRUIRE",
        CHAINE   = SIMP(statut='o', typ='TXM', validators=NoRepeat(), max='**'),
        POSITION = SIMP(statut='f', typ='I', max='**'),
     ),
-    INFO   = SIMP(statut='f', typ='I', into=(1, 2), defaut=2, ),
+    INFO   = SIMP(statut='f', typ='I', into=(1, 2), defaut=1, ),
 )

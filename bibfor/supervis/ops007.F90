@@ -31,6 +31,7 @@ subroutine ops007()
 #include "asterfort/jemarq.h"
 #include "asterfort/jvinfo.h"
 #include "asterfort/lxlgut.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
@@ -72,6 +73,7 @@ subroutine ops007()
             call getvid('CONCEPT', 'NOM', iocc=iocc, nbval=ncon, vect=liste_co,&
                         nbret=ibid)
             do 15 icon = 1, ncon
+                call utmess('I', 'JEVEUX_7', sk=liste_co(icon))
                 call jedetc('G', liste_co(icon), 1)
 15          continue
             AS_DEALLOCATE(vk8=liste_co)

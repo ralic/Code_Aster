@@ -46,8 +46,7 @@ Conseil :
   Appel invalide, la marque devient négative
 """),
 
-    7 : _(u"""
- Destruction de  %(k1)s
+    7 : _(u"""Destruction de '%(k1)s'
 """),
 
     8 : _(u"""
