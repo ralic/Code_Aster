@@ -379,7 +379,7 @@ subroutine xvrcin(ligmex, celthx, evol, nomsym, celmex, l_xfem)
                 advelt = celdt(debgrt+4+4*(ielt-1)+4)
                 advelt = jcelvt-1+advelt
 !               -> sur la famille XFEM : recopie des valeurs lues
-                zr(advelm : advelm+lgelt) = zr(advelt : advelt+lgelt)
+                zr(advelm : advelm+lgelt-1) = zr(advelt : advelt+lgelt-1)
 !               -> sur la famille NOEU : on ecrit NaN
                 do ival = lgelt+1,lgelm
                     zr(advelm-1+ival) = r8nan
