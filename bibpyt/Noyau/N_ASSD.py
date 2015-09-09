@@ -69,6 +69,7 @@ class ASSD(object):
         self.ptr_sdj = None
         # construit en tant que CO('...')
         # 0 : assd normal, 1 : type CO, 2 : type CO typé
+        # une fois exécuté, doit se comporter comme un assd normal
         self._as_co = 0
 
     def _get_sdj(self):
@@ -109,10 +110,13 @@ class ASSD(object):
     def is_typco(self):
         """Permet de savoir si l'ASSD est issu d'un type CO.
         Retourne:
-           0 : ce n'est pas un type CO
+           0 : ce n'est pas un type CO ou bien déjà exécuté (et donc doit être
+               traité comme un ASSD normal)
            1 : c'est un type CO, non encore typé
            2 : c'est un type CO retypé
         """
+        if self.executed:
+            return 0
         return self._as_co
 
     def change_type(self, new_type):
