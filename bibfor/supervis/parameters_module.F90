@@ -49,8 +49,8 @@ module parameters_module
     integer, parameter :: ST_UN_OTH = 16
     integer, parameter :: ST_EXCEPT = 32
 !
-    integer, parameter :: ST_TAG_CHK = to_mpi_int(123111)
-    integer, parameter :: ST_TAG_CNT = to_mpi_int(123222)
-    integer, parameter :: ST_TAG_ALR = to_mpi_int(123333)
+    mpi_int, parameter :: ST_TAG_CHK = to_mpi_int(123111)
+    mpi_int, parameter :: ST_TAG_CNT = to_mpi_int(123222)
+    mpi_int, parameter :: ST_TAG_ALR = to_mpi_int(123333)
 !
 end module
