@@ -196,10 +196,6 @@ subroutine arlmai(mail,mailar,ndim,nom1,nom2, &
 
     zi(jdime - 1 + 3) =  imail
 
-! --- VRAI NOMBRE DE NOEUDS
-
-    zi(jdime - 1 + 1) =  cxcumu
-
     call jedema()
 
 end subroutine
