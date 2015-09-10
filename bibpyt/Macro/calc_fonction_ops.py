@@ -518,7 +518,7 @@ class CalcFonction_DSP(CalcFonctionOper):
                           NP.insert(vale_sro, 0, 0.0),
                           para=f_in.para)
         deuxpi = 2. * math.pi
-        freq_coup = deuxpi * kw['FREQ_COUP']
+        freq_coup = kw['FREQ_COUP']
         SRO_args = {
             'DUREE_PHASE_FORTE' : kw['DUREE'], 'FREQ_COUP' : freq_coup,
             'NORME' : kw['NORME'], 'AMORT' : kw['AMOR_REDUIT'],
