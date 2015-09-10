@@ -33,4 +33,15 @@ OPTION__
         PCOMPOR  COMPOR
    OUT__
 PVECTUR VDEP_R RESL__
+
 COND_CALCUL__   PLUS__  PHENO='ME' BORD='0'
+
+                % Les elements d'interface ne sont pas concernes (issue24099) :
+                MOINS__ PHENO='ME' INTERFACE='OUI'
+
+                MOINS__ PHENO='ME' MODELI='3FL'
+                MOINS__ PHENO='ME' MODELI='2FL'
+                MOINS__ PHENO='ME' MODELI='AXF'
+                MOINS__ PHENO='ME' MODELI='3FI'
+                MOINS__ PHENO='ME' MODELI='AFI'
+                MOINS__ PHENO='ME' MODELI='PFI'

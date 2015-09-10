@@ -53,7 +53,12 @@ PVECTUR VDEP_R RESL__
 PCONTRT SIEF_R ELGA__ <<  PCONTRT : CHAMP SPECIFIQUE XFEM  >>
 
 COND_CALCUL__   PLUS__  PHENO='ME' BORD='0'
+
                 MOINS__ PHENO='ME' THM='OUI'
+
+                % Les elements d'interface ne sont pas concernes (issue24099) :
+                MOINS__ PHENO='ME' INTERFACE='OUI'
+
                 MOINS__ PHENO='ME' MODELI='3FL'
                 MOINS__ PHENO='ME' MODELI='2FL'
                 MOINS__ PHENO='ME' MODELI='AXF'
