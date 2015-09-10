@@ -488,16 +488,17 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
 !       4) CALCUL DU CHAMP DE TEMPERATURE ET DE SA DERIVEE
 !       --------------------------------------------------
 !
-        do i = 1, ndim
-            tgudm(i)=0.d0
-!           cas de la varc TEMP, "continue" et donnee au noeud. Calcul
-!           de ses derivees partielles
-            if (l_temp_noeu) then
+        call vecini(3, 0.d0, tgudm)
+!
+!       cas de la varc TEMP, "continue" et donnee au noeud. Calcul
+!       de ses derivees partielles
+        if (l_temp_noeu) then
+            do i = 1, ndim
                 do ino = 1, nnop
                     tgudm(i) = tgudm(i) + dfdi(ino,i) * tpn(ino)
-                end do
-            endif
-        end do
+                enddo
+            enddo
+        endif
 !
 !       cas des varc DTX DTY DTZ, derivees partielles de la temperature
 !       "discontinue". Ces varc sont donnees aux pg xfem

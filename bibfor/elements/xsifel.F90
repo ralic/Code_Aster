@@ -121,7 +121,6 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 !     VERIF QUE LES TABLEAUX LOCAUX DYNAMIQUES NE SONT PAS TROP GRANDS
 !     (VOIR CRS 1404)
 !
-
     ASSERT(nnop.le.mxstac)
     ASSERT((3*ndim*nnop).le.mxstac)
 !
@@ -458,6 +457,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
                     fe, dgdgl, ff, dfdi, f, eps, grad, heavn)
 !
 !       ON RECOPIE GRAD DANS DUDM (CAR PB DE DIMENSIONNEMENT SI 2D)
+        call vecini(9, 0.d0, dudm)
         do 230 i = 1, ndim
             do 231 j = 1, ndim
                 dudm(i,j)=grad(i,j)
@@ -493,16 +493,17 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
         ttrgu = tempg - tref
         ttrgv = 0.d0
 !
-        do 400 i = 1, ndim
-            tgudm(i)=0.d0
-!           cas de la varc TEMP, "continue" et donnee au noeud. Calcul
-!           de ses derivees partielles
-            if (l_temp_noeu) then
-                do 401 ino = 1, nnop
+        call vecini(3, 0.d0, tgudm)
+!
+!       cas de la varc TEMP, "continue" et donnee au noeud. Calcul
+!       de ses derivees partielles
+        if (l_temp_noeu) then
+            do i = 1, ndim
+                do ino = 1, nnop
                     tgudm(i) = tgudm(i) + dfdi(ino,i) * tpn(ino)
-401             continue
-            endif
-400     continue
+                enddo
+            enddo
+        endif
 !
 !       cas des varc DTX DTY DTZ, derivees partielles de la temperature
 !       "discontinue". Ces varc sont donnees aux pg xfem
