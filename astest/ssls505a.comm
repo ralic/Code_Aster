@@ -1,0 +1,93 @@
+# TITRE  : CALCUL STATIQUE D'UNE PLAQUE COMPOSEE DE COUCHES
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+#---------------------------------------------------------------------
+#
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),PAR_LOT='NON');
+
+Mail=LIRE_MAILLAGE();
+
+chT=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+               OPERATION='AFFE',
+               MAILLAGE=Mail,
+               AFFE=_F(TOUT='OUI',
+                       NOM_CMP='TEMP',
+                       VALE=1,),);
+
+Mod=AFFE_MODELE(MAILLAGE=Mail,
+                AFFE=_F(TOUT='OUI',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='DKT',),);
+
+E = 100e9
+nu = 0.3
+G = E/2./(1+nu)
+l1 = 1e-5
+l2 = 1e-6
+l3 = 1e-6
+
+Alu=DEFI_MATERIAU(ELAS_ORTH=_F(E_L=E,
+                               E_T=E,
+                               E_N=E,
+                               NU_LT=nu,
+                               NU_LN=nu,
+                               NU_TN=nu,
+                               G_LT=G,
+                               G_LN=G,
+                               G_TN=G,
+                               ALPHA_L=l1,
+                               ALPHA_T=l2,
+                               ALPHA_N=l3,),);
+                               
+
+Char=AFFE_CHAR_MECA(MODELE=Mod,
+                    DDL_IMPO=(_F(NOEUD=('N1', 'N2', 'N3', 'N4',), DZ=0,),
+                              _F(NOEUD=('N1', 'N2'), DY=0,),
+                              _F(NOEUD=('N1'), DX=0,),
+                              ),);
+
+EpPli = 0.1
+nbPli = 1
+
+Strat = DEFI_COMPOSITE(COUCHE=_F(EPAIS=EpPli, MATER=Alu, ORIENTATION=0));
+
+Chmat = AFFE_MATERIAU(MAILLAGE=Mail, AFFE=_F(TOUT='OUI', MATER=Strat), AFFE_VARC=_F(TOUT='OUI', NOM_VARC='TEMP', CHAM_GD=chT, VALE_REF=0,));
+
+Cara = AFFE_CARA_ELEM(MODELE=Mod, COQUE=_F(MAILLE='M1', EPAIS=nbPli*EpPli, COQUE_NCOU=nbPli, ANGL_REP=(0,0)));
+
+Resu = MECA_STATIQUE(MODELE=Mod, CHAM_MATER=Chmat, CARA_ELEM=Cara, EXCIT=_F(CHARGE=Char,), OPTION='SANS',);
+
+CALC_CHAMP(reuse=Resu,RESULTAT=Resu,DEFORMATION=('EPSI_ELGA',),);
+
+
+
+#IMPR_RESU(UNITE=6,FORMAT='RESULTAT',RESU=_F(RESULTAT=Resu,NOM_CHAM='EPSI_ELGA',NOM_CMP=('EXX','EYY','EXY'),TOUT='OUI'));
+
+TEST_RESU(RESU=_F(RESULTAT=Resu,NOM_CHAM='EPSI_ELGA',NUME_ORDRE=1,
+                     MAILLE='M1',POINT=1,SOUS_POINT=1,
+                     VALE_REFE=l1,NOM_CMP='EPXX',
+                     VALE_CALC=l1 ,
+                     REFERENCE='ANALYTIQUE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=Resu,NOM_CHAM='EPSI_ELGA',NUME_ORDRE=1,
+                     MAILLE='M1',POINT=1,SOUS_POINT=1,
+                     VALE_REFE=l2,NOM_CMP='EPYY',
+                     VALE_CALC=l2 ,
+                     REFERENCE='ANALYTIQUE',),);
+
+FIN();
+#CHECKSUM:f9fb0d7787bfce328c55c329b0df2034  -:FIN CHECKSUM

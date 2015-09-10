@@ -264,24 +264,29 @@ subroutine op0056()
             q12 = c2*s2* (qll+qtt-4.d0*glt) + (s4+c4)*qlt
             q13 = c3*s*qll - c*s3*qtt + (c*s3-c3*s)* (qlt+2.d0*glt)
             q23 = c*s3*qll - c3*s*qtt - (c*s3-c3*s)* (qlt+2.d0*glt)
-            q33 = c2*s2* (qll+qtt-2.d0*qlt) + (s4+c4-2.d0*c2*s2)*glt
+            q33 = c2*s2* (qll+qtt-2.d0*qlt) + (c2-s2)*(c2-s2)*glt
+            
+            
+
+            
+            
 !         COEF DE DILATATION THERMIQUE REPERE UTILISATEUR
             d11 = c2*dl + s2*dt
             d22 = s2*dl + c2*dt
-            d12 = 2.d0*c*s* (dl-dt)
+            d12 = 1.d0*c*s* (dl-dt)
 !          MATRICE DE COMPORTEMENT HTAU DANS REPERE UTILISATEUR
             g11 = c2*gln + s2*gtn
             g22 = s2*gln + c2*gtn
             g12 = c*s* (gln-gtn)
 !          T1T*HL*ALPHA
-            m11 = c2*qll*dl + s2*qlt*dt
-            m12 = c2*qlt*dl + s2*qtt*dt
+            m11 = (c2*qll+s2*qlt)*dl + (c2*qlt+s2*qtt)*dt
+            m12 = (c*s*qll-s*c*qlt)*dl + (c*s*qlt-s*c*qtt)*dt
             m13 = 0.d0
-            m21 = s2*qll*dl + c2*qlt*dt
-            m22 = s2*qlt*dl + c2*qtt*dt
+            m21 = (c*s*qll-s*c*qlt)*dl + (c*s*qlt-s*c*qtt)*dt
+            m22 = (s2*qll+c2*qlt)*dl + (s2*qlt+c2*qtt)*dt
             m23 = 0.d0
-            m31 = c*s* (qll*dl-qlt*dt)
-            m32 = c*s* (qlt*dl-qtt*dt)
+            m31 = 0.0
+            m32 = 0.0
             m33 = 0.d0
 !
 !       LECTURE DES CRITERES
