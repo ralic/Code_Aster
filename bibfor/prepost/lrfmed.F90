@@ -298,6 +298,7 @@ subroutine lrfmed(resu, i, mfich, nomgd, typcha,&
             if (logaux) then
                 numpt = zi(inum+2*iaux2-2)
                 numord = zi(inum+2*iaux2-1)
+                iinst = 0
                 goto 2221
             endif
 222         continue
