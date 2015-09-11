@@ -99,6 +99,7 @@ class SIMP(N_ENTITE.ENTITE):
         self.check_into()
         self.check_position()
         self.check_validators()
+        self.check_defaut()
 
     def __call__(self, val, nom, parent=None):
         """

@@ -29,6 +29,7 @@ import re
 import N_CR
 import N_OPS
 import N_VALIDATOR
+from N_VALIDATOR import ValError, TypeProtocol, listProto
 from strfunc import ufmt
 
 try:
@@ -259,3 +260,16 @@ class ENTITE:
         if self.position not in ('local', 'global', 'global_jdc'):
             self.cr.fatal(_(u"L'attribut 'position' doit valoir 'local', 'global' "
                             u"ou 'global_jdc' : %r"), self.position)
+
+    def check_defaut(self):
+        """Vérifie l'attribut defaut."""
+        if self.defaut != None:
+            typeProto = TypeProtocol("type", typ=self.type)
+            lval = listProto.adapt(self.defaut)
+            for val in lval:
+                try:
+                    typeProto.adapt(val)
+                except ValError:
+                    self.cr.fatal(
+                        _(u"La valeur de l'attribut 'defaut' n'est pas cohérente " \
+                          u"avec le type %r : %r"), self.type, val)
