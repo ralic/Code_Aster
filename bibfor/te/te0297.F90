@@ -66,7 +66,7 @@ subroutine te0297(option, nomte)
     character(len=16) :: nomres(3)
 !
     data    elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
-    data    fami   /'BID','RIGI','XINT','BID','RIGI','XINT'/
+    data    fami   /'BID','XINT','XINT','BID','XINT','XINT'/
     data    nomres /'E','NU','ALPHA'/
 !
     
