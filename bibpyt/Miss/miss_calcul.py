@@ -384,7 +384,7 @@ class CalculMissFichierTemps(CalculMiss):
         eps = self.param['PRECISION']
         self.rho = eps ** (1. / (2. * N_inst))
         factor = self.param['COEF_SURECH']
-        self.L_points = factor * N_inst
+        self.L_points = int(factor * N_inst)
         self.nbr_freq = self.L_points / 2 + 1
 
         # Variables à rajouter dans 'param'

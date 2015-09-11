@@ -771,7 +771,7 @@ class PostMissFichierTemps(PostMissFichier):
         self.dt = self.param['PAS_INST']
         N_inst = int(self.param['INST_FIN']/self.param['PAS_INST'])
         factor = self.param['COEF_SURECH']
-        self.L_points = factor*N_inst
+        self.L_points = int(factor * N_inst)
         self.nbr_freq = self.L_points/2 + 1
         eps = self.param['PRECISION']
         self.rho = eps**(1./(2.*N_inst))

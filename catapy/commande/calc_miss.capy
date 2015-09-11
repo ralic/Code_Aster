@@ -23,7 +23,7 @@ def calc_miss_sdprod(self, TYPE_RESU, **kwargs):
     elif TYPE_RESU == 'HARM_GENE':
         return harm_gene
     elif TYPE_RESU == 'TRAN_GENE':
-        return tran_gene        
+        return tran_gene
     elif TYPE_RESU == 'CHARGE':
         return char_meca
     else:
@@ -142,7 +142,7 @@ CALC_MISS = MACRO(nom="CALC_MISS",
         PCENT_FREQ_CALCUL = SIMP(statut='f', typ='R', fr=tr("Valeur correspondante au ratio 100*Ns/Nt, où \
                  Ns est le nombre d'échantillons sans interpoler et Nt le nombre total d'échantillons"), defaut=0, val_min=0, val_max=100),
         PRECISION      = SIMP(statut='f',typ='R',defaut=0.000001),
-        COEF_SURECH    = SIMP(statut='f',typ='I',defaut=1.35 ),
+        COEF_SURECH    = SIMP(statut='f',typ='R',defaut=1.35 ),
         MATR_GENE       =FACT(statut='f', max = 1,
                      DECOMP_IMPE= SIMP(statut='f',typ='TXM',defaut='PRODUIT',into=('PRODUIT','SANS_PRODUIT')),
                      AMOR_HYST  = SIMP(statut='o',typ='TXM',into=('DANS_IMPEDANCE','DANS_MATR_AMOR'),
@@ -333,13 +333,13 @@ CALC_MISS = MACRO(nom="CALC_MISS",
               MODE_INTERF  =SIMP(statut='o',typ='TXM',into=("CORP_RIGI","TOUT","QUELCONQUE")),
                                  ),
         MATR_COHE       =FACT(statut='f',
-              TYPE = SIMP(statut='o',typ='TXM' , into=("MITA_LUCO","ABRAHAMSON")   ),            
+              TYPE = SIMP(statut='o',typ='TXM' , into=("MITA_LUCO","ABRAHAMSON")   ),
               b_type_coh = BLOC(condition="TYPE=='MITA_LUCO' ",
                  VITE_ONDE       =SIMP(statut='f',typ='R', defaut=600.),
                  PARA_ALPHA     =SIMP(statut='f',typ='R',defaut=0.5),),
                                ),
         UNITE_RESU_IMPE  = SIMP(statut='f',typ='I',defaut=25),
-        TYPE             = SIMP(statut='f',typ='TXM', into=("BINAIRE","ASCII"), defaut="ASCII"), 
+        TYPE             = SIMP(statut='f',typ='TXM', into=("BINAIRE","ASCII"), defaut="ASCII"),
     ),
 
     INFO        = SIMP(statut='f', typ='I', defaut=1, into=(1,2)),
