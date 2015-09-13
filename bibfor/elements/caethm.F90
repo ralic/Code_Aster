@@ -67,10 +67,10 @@ subroutine caethm(nomte, axi, perman, vf, typvf,&
 ! OUT IDFDE2 : ADRESSE DU TABLEAU DES DERIVESS DES FONCTIONS DE FORME P1
 ! OUT JGANO  : ADRESSE DANS ZR DE LA MATRICE DE PASSAGE
 !              GAUSS -> NOEUDS
-! OUT TYPVF   TYPE DE VF : 1  = TPFA (FLUX A DEUX POINTS)
-!                          2  = SUSHI AVEC VOISIN DECENTRE MAILLE (SUDM)
+! OUT TYPVF   TYPE DE VF : 1  = TPFA (FLUX A DEUX POINTS - SUPPRIME)
+!                          2  = SUSHI AVEC VOISIN DECENTRE MAILLE (SUDM - SUPPRIME)
 !                          3  = SUSHI AVEC VOISIN DECENTRE ARETE (SUDA)
-!                          4  = SUSHI AVEC VOISIN CENTRE  (SUC)
+!                          4  = SUSHI AVEC VOISIN CENTRE  (SUC - SUPPRIME)
 ! CORPS DU PROGRAMME
 ! aslint: disable=W1504
     implicit none

@@ -47,10 +47,10 @@ cata_msg = {
     9 : _(u"""
   -> Le type de modélisation volumes finis (TYPVF)  %(i1)i   est inconnu.
      Vous avez le choix entre :
-                          TYPVF=1  => Schéma VF a deux points
-                          TYPVF=2  => Schéma SUDM
+                          TYPVF=1  => Schéma VF a deux points (supprimée)
+                          TYPVF=2  => Schéma SUDM (supprimée)
                           TYPVF=3  => Schéma SUDA
-                          TYPVF=4  => Schéma SUC
+                          TYPVF=4  => Schéma SUC (supprimée)
 
 """),
     10 : _(u"""
@@ -67,10 +67,4 @@ cata_msg = {
   -> l'élément %(k1)s et la face  %(i1)i est non plane
 """),
 
-    15 : _(u"""
-  -> Le nombre de noeuds de l'élément est inconnu en VF.
-     Nous pouvons utiliser uniquement des mailles quadratiques. Il est donc
-     possible d'avoir 7 noeuds on a alors une maille TRIA7,
-     9 noeuds on a alors un QUAD9, etc...
-"""),
 }

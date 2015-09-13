@@ -24,9 +24,9 @@ subroutine typthm(axi, perman, vf, typvf, typmod,&
 !               DONC VF EST VRAI POUR SUSHI OU TPFA
 !               AVEC OU SANS PRISE EN COMPTE DES VOISINS
 ! OUT TYPVF TYPE DE VF :1 = TPFA (FLUX A DEUX POINTS - SCHEMA SUPPRIME)
-!                    2  = SUSHI AVEC VOISIN DECENTRE MAILLE (SUDM)
+!                    2  = SUSHI AVEC VOISIN DECENTRE MAILLE (SUDM - SUPPRIME)
 !                    3  = SUSHI AVEC VOISIN DECENTRE ARETE (SUDA)
-!                    4  = SUSHI AVEC VOISIN CENTRE  (SUC)
+!                    4  = SUSHI AVEC VOISIN CENTRE  (SUC - SUPPRIME)
 ! OUT PERMAN : .TRUE. OU .FALSE. SELON LE CARACTERE AXISYMETRIQUE DE
 !              LA PARTIE HYDRAULIQUE
 ! OUT TYPMOD : 1. TYPE DE MODELISATION : AXI/D_PLAN/3D
@@ -76,15 +76,9 @@ subroutine typthm(axi, perman, vf, typvf, typmod,&
     endif
 !
 ! MODELISATIONS SUSHI VOLUMES FINIS
-    if (lteatt('CODMOD','3DM') .or. lteatt('CODMOD','2DM')) then
-        vf = .true.
-        typvf=2
-    else if (lteatt('CODMOD','3AD').or.lteatt('CODMOD','2DA')) then
+    if (lteatt('CODMOD','3AD').or.lteatt('CODMOD','2DA')) then
         vf = .true.
         typvf=3
-    else if (lteatt('CODMOD','3SC').or.lteatt('CODMOD','2SC')) then
-        vf = .true.
-        typvf=4
     else
         typvf =0
         vf = .false.

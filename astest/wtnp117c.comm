@@ -27,11 +27,12 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 #=============================================================
 #=============================================================
-METHODE='VFDM'
+METHODE='VFDA'
 #=============================================================
 #=============================================================
 
-MODELISA = 'D_PLAN_HH2SUDM'
+MODELISA = 'D_PLAN_HH2SUDA'
+
 #=============================================================
 #                     donnees
 #=============================================================
@@ -46,9 +47,9 @@ PARM_ALPHA=1.
 MAILINI  = LIRE_MAILLAGE (FORMAT='MED', );
 
 MAIL=CREA_MAILLAGE( MAILLAGE=MAILINI,
-                    MODI_MAILLE=(
-                    _F(TOUT = 'OUI',OPTION ='QUAD8_9',PREF_NOEUD='NQ',),
-                        ), )
+                 MODI_MAILLE=(
+                _F( TOUT = 'OUI',OPTION = 'QUAD8_9',PREF_NOEUD='NQ',),
+             ), )
 
 MAIL  = DEFI_GROUP ( reuse    =  MAIL,
       MAILLAGE =  MAIL,
@@ -62,6 +63,7 @@ CREA_GROUP_NO = (
       _F(GROUP_MA='BAS',NOM='NSBAS',CRIT_NOEUD='MILIEU',),
      ),
      )
+
 #*********************************************************
 #  Modele de calcul
 #*********************************************************
@@ -204,7 +206,7 @@ MATERBG = DEFI_MATERIAU (
   D_VISC_TEMP=ZERO,
          ),
 
-        THM_AIR_DISS=_F(CP=0.0,
+             THM_AIR_DISS=_F(CP=0.0,
                                     COEF_HENRY=HENRY,
                                       ),
 
@@ -351,7 +353,6 @@ cal1 = STAT_NON_LINE (
 # POST TRAITEMENT
 #***********************
 LINST=DEFI_LIST_REEL(VALE=(100.,10000.,50000,100000., ),);
-#IMPR_RESU(RESU=(_F(RESULTAT=cal1,)));
 
 TRB2=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
        GROUP_NO='NSBAS',
@@ -393,8 +394,8 @@ TEST_RESU(RESU=_F(INST=100,
                NOM_CHAM='DEPL',
                NOEUD='N105',
                NOM_CMP='PRE1',
-               VALE_CALC= 8.57187162E+07,
-               VALE_REFE=8.5718700E7,
+               VALE_CALC= 8.89187689E+07,
+               VALE_REFE=8.8920000E7,
                CRITERE='RELATIF',
                PRECISION=1.E-2,
                ),
@@ -406,8 +407,8 @@ TEST_RESU(RESU=_F(INST=100,
                NOM_CHAM='DEPL',
                NOEUD='N105',
                NOM_CMP='PRE2',
-               VALE_CALC=734.403996086,
-               VALE_REFE=734.44000000000005,
+               VALE_CALC=19.164308270,
+               VALE_REFE=19.164380000000001,
                CRITERE='RELATIF',
                PRECISION=1.E-2,
                ),
@@ -419,8 +420,8 @@ TEST_RESU(RESU=_F(INST=100,
                NOM_CHAM='DEPL',
                NOEUD='NQ54',
                NOM_CMP='PRE1',
-               VALE_CALC= 5.57897840E+04,
-               VALE_REFE=5.5789800000000003E4,
+               VALE_CALC= 1.01597658E+04,
+               VALE_REFE=1.015977E4,
                CRITERE='RELATIF',
                PRECISION=1.E-2,
                ),
@@ -432,8 +433,8 @@ TEST_RESU(RESU=_F(INST=100,
                NOM_CHAM='DEPL',
                NOEUD='NQ54',
                NOM_CMP='PRE2',
-               VALE_CALC=-9.78894721E+03,
-               VALE_REFE=-9788.9500000000007,
+               VALE_CALC=-1.74489873E+03,
+               VALE_REFE=-1744.8989999999999,
                CRITERE='RELATIF',
                PRECISION=1.E-2,
                ),
@@ -445,8 +446,8 @@ TEST_RESU(RESU=_F(NUME_ORDRE=110,
                NOM_CHAM='DEPL',
                NOEUD='N105',
                NOM_CMP='PRE1',
-               VALE_CALC= 1.12130054E+07,
-               VALE_REFE=1.1213000E7,
+               VALE_CALC= 7.17481713E+07,
+               VALE_REFE=7.1748200E7,
                CRITERE='RELATIF',
                PRECISION=1.E-2,
                ),
@@ -458,8 +459,8 @@ TEST_RESU(RESU=_F(NUME_ORDRE=110,
                NOM_CHAM='DEPL',
                NOEUD='N105',
                NOM_CMP='PRE2',
-               VALE_CALC= 2.17137689E+04,
-               VALE_REFE=2.1713799999999999E4,
+               VALE_CALC= 2.95244137E+03,
+               VALE_REFE=2952.4430000000002,
                CRITERE='RELATIF',
                PRECISION=1.E-2,
                ),
@@ -471,8 +472,8 @@ TEST_RESU(RESU=_F(NUME_ORDRE=110,
                NOM_CHAM='DEPL',
                NOEUD='NQ54',
                NOM_CMP='PRE1',
-               VALE_CALC= 3.92130534E+06,
-               VALE_REFE=3.921310E6,
+               VALE_CALC= 8.53206550E+05,
+               VALE_REFE=8.5320680000000005E5,
                CRITERE='RELATIF',
                PRECISION=1.E-2,
                ),
@@ -484,8 +485,8 @@ TEST_RESU(RESU=_F(NUME_ORDRE=110,
                NOM_CHAM='DEPL',
                NOEUD='NQ54',
                NOM_CMP='PRE2',
-               VALE_CALC=-4.36678614E+04,
-               VALE_REFE=-4.3667800000000003E4,
+               VALE_CALC=-8.37018445E+04,
+               VALE_REFE=-8.3701839999999997E4,
                CRITERE='RELATIF',
                PRECISION=1.E-2,
                ),

@@ -1,4 +1,4 @@
-# TITRE    MODELISATION D UN BARREAU SATURE EN LIQUIDE COMPRESSIBLE
+# TITRE      MODELISATION D UN BARREAU SATURE EN LIQUIDE COMPRESSIBLE
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,8 +15,8 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-#    LINEAIRE SOUMIS A UN CHOC DE PRESSION EN 1D
-#    MODELISATION VF DECENTRE MAILLE (VFDM)
+#    LINEAIRE SOUMIS A UN CHOC DE PRESSION EN 3D
+#    MODELISATION VF DECENTRE ARETE (VFDA)
 
 
 
@@ -24,11 +24,11 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 #=============================================================
 #=============================================================
-METHODE='VFDM'
+METHODE='VFDA'
 #=============================================================
 #=============================================================
 
-MODELISA = 'D_PLAN_HH2SUDM'
+MODELISA = 'D_PLAN_HH2SUDA'
 
 #=============================================================
 #                     donnees
@@ -63,10 +63,9 @@ NBDECOUP=100
 # CRITERES DE CONVERGENCE
 #*********************************************************
 #
-
 RESI_GLOB_MAXI = 1.E-17
 ITER_GLOB_MAXI = 0
-
+#
 #
 #*************************************************************
 # Liste des instants de calculs
@@ -79,8 +78,8 @@ INST1=DEFI_LIST_REEL(DEBUT=0.0,
                      );
 
 LI =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INST1 ),
-                                ECHEC=_F(EVENEMENT = 'ERREUR',
-                                         ACTION    = 'ARRET'))
+                                ECHEC=_F(EVENEMENT     = 'ERREUR',
+                                         ACTION        = 'ARRET'))
 
 #*********************************************************
 # Definition des caracteristiques fluides
@@ -91,7 +90,6 @@ ZERO=DEFI_CONSTANTE(VALE=0.0);
 PERMINT=DEFI_CONSTANTE(VALE=1.E-13);
 HENRY=DEFI_CONSTANTE(VALE=1.0);
 
-
 #*********************
 # Lecture du maillage
 #*********************
@@ -101,9 +99,8 @@ MAILINI=LIRE_MAILLAGE(FORMAT='MED');
 MAIL=CREA_MAILLAGE( MAILLAGE=MAILINI,
           MODI_MAILLE=(
            _F( TOUT = 'OUI',OPTION = 'QUAD8_9',PREF_NOEUD='NQ'),
-           ),
+           ))
 
-         )
 MAIL=DEFI_GROUP(reuse =MAIL,
          MAILLAGE=MAIL,
          CREA_GROUP_NO=(
@@ -128,9 +125,8 @@ MODELT=AFFE_MODELE(MAILLAGE=MAIL,
                            MODELISATION=MODELISA),
                   );
 
-
 #*********************************************************
-# Defi materiau
+#   DEFI MATERIAU
 #*********************************************************
 #
 
@@ -185,7 +181,7 @@ MATERIAU=DEFI_MATERIAU(
             FICKV_T    = ZERO,
             FICKA_T    = ZERO,
             LAMB_TL    = ZERO,
-            LAMB_TT    = ZERO,
+            LAMB_TT    = ZERO
               ),
 
    THM_INIT=_F(
@@ -224,13 +220,11 @@ PINIT=CREA_CHAMP(MAILLAGE=MAIL,
 CHIMP=AFFE_CHAR_CINE(MODELE=MODELT,
        MECA_IMPO=(_F(TOUT='OUI',PRE2=0.),
                  _F(GROUP_MA = 'MGAUCHE',PRE1=PRE1GAUCHE),
-                 ),
+                 ));
 
-       );
 #*************************************************************
-# STAT NON LINE
+# STAT_NON_LINE
 #*************************************************************
-
 cal1=STAT_NON_LINE(MODELE=MODELT,
                  CHAM_MATER=CHMAT,
 
@@ -256,7 +250,7 @@ cal1=STAT_NON_LINE(MODELE=MODELT,
                  CONVERGENCE=_F( RESI_GLOB_MAXI = RESI_GLOB_MAXI,
                                  ITER_GLOB_MAXI = ITER_GLOB_MAXI),
 
-                 ARCHIVAGE=_F(LIST_INST     = INST1  ),
+                 ARCHIVAGE=_F(LIST_INST     = INST1 ),
                  );
 #
 #*************************************************************
@@ -264,6 +258,7 @@ cal1=STAT_NON_LINE(MODELE=MODELT,
 #*************************************************************
 #
 L_INST=DEFI_LIST_REEL(VALE=(0.,1.,10.,100.));
+
 
 
 
@@ -334,6 +329,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                 CRITERE='RELATIF',
                 PRECISION=0.089999999999999997,),
         )
+
 
 
 FIN();

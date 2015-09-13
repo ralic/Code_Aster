@@ -1,6 +1,6 @@
 # TITRE - TEST DE LIAKOPOULOS : DRAINAGE D UNE COLONNE D EAU
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -16,9 +16,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #                               PAR LA SEULE FORCE DE GRAVITE
-#                       MODELISATION VF DECENTRE MAILLE (VFDM)
-#
-#
+#                       MODELISATION VF DECENTRE ARETE (VFDA)
 #
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
@@ -28,11 +26,13 @@ import os
 
 #=============================================================
 #=============================================================
-METHODE='VFDM'
+METHODE='VFDA'
 #=============================================================
 #=============================================================
 
-MODELISA = 'D_PLAN_HH2SUDM'
+MODELISA = 'D_PLAN_HH2SUDA'
+LOI= 'LIQU_AD_GAZ'
+NOEUD_G='N603'
 
 #=============================================================
 #                     DONNEES
@@ -40,7 +40,7 @@ MODELISA = 'D_PLAN_HH2SUDM'
 
 PARM_ALPHA=1.
 
-
+#
 ####################################
 #   OPERATIONS SUR LE MAILLAGE
 #
@@ -56,9 +56,10 @@ MAIL=DEFI_GROUP( reuse=MAIL,
        CREA_GROUP_NO=(
          _F( GROUP_MA = 'DROIT',NOM='NSDROIT',CRIT_NOEUD='MILIEU'),
          _F( GROUP_MA = 'HAUT',NOM='NSHAUT',CRIT_NOEUD='MILIEU'),
-       _F( GROUP_MA = 'GAUCHE'),
-       _F( GROUP_MA = 'BAS')),
+         _F( GROUP_MA = 'GAUCHE'),
+         _F( GROUP_MA = 'BAS')),
         )
+
 
 #*********************************************************
 #  MODELE DE CALCUL
@@ -74,9 +75,9 @@ MODELE=AFFE_MODELE(   MAILLAGE=MAIL,
 #  LISTE DES INSTANTS DE CALCUL
 ####################################
 
+
 INST1=DEFI_LIST_REEL(   DEBUT=0.,INTERVALLE=(
-                       _F(  JUSQU_A = 1.,  NOMBRE = 10),
-                       _F(  JUSQU_A = 10.,  NOMBRE = 9),
+                       _F(  JUSQU_A = 10.,  NOMBRE = 10),
                        _F(  JUSQU_A = 200.,  NOMBRE = 20),
                        _F(  JUSQU_A = 300.,  NOMBRE = 10),
                        _F(  JUSQU_A = 1200.,  NOMBRE = 9),
@@ -91,10 +92,11 @@ INST1=DEFI_LIST_REEL(   DEBUT=0.,INTERVALLE=(
 
 LI =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INST1 ),
                                 ECHEC=_F(EVENEMENT     = 'ERREUR',
-                                 ACTION        = 'DECOUPE',
-                                 SUBD_METHODE  = 'MANUEL',
+                                         ACTION        = 'DECOUPE',
+                                         SUBD_METHODE  = 'MANUEL',
                                          SUBD_PAS=5,
-                                         SUBD_PAS_MINI=0.01))
+                                         SUBD_PAS_MINI=0.1))
+
 
 ############################################
 #
@@ -134,7 +136,7 @@ SMAX=0.9999
 KINT= DEFI_CONSTANTE (VALE= 1.E-12);
 
 #DISSOLUTION
-HENRY = DEFI_CONSTANTE ( VALE = 500000);
+HENRY = DEFI_CONSTANTE ( VALE = 1.E20);
 
 PREF=1.;
 
@@ -260,6 +262,7 @@ CALPC=AFFE_CHAR_MECA(MODELE=MODELE,
                                    PRE1=PCBAS),
                                    ));
 
+
 ##==================================
 ## STAT_NON_LINE
 ##==================================
@@ -283,10 +286,13 @@ RESU0=STAT_NON_LINE(
                 NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1),
 
+               RECH_LINEAIRE=_F(RESI_LINE_RELA=0.1,
+                                     ITER_LINE_MAXI=1),
 
               CONVERGENCE=_F(
                              ITER_GLOB_MAXI=10,
-                             RESI_COMP_RELA = 1.E-6),
+                             RESI_GLOB_MAXI = 1.E-4),
+
              );
 
 
@@ -311,9 +317,11 @@ RESU0=STAT_NON_LINE( reuse=RESU0,
                 NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1),
 
+                  RECH_LINEAIRE=_F(RESI_LINE_RELA=0.1,
+                                     ITER_LINE_MAXI=1),
 
-              CONVERGENCE=_F(
-                             ITER_GLOB_MAXI=10,
+                CONVERGENCE=_F(
+                             ITER_GLOB_MAXI=5,
                              RESI_GLOB_MAXI = 1.E-7),
              );
 ##==================================
@@ -379,19 +387,33 @@ IMPR_TABLE(TABLE=PR2MIL,
 #=============== A 200S =========================
 
 
+#NOEUD DU HAUT
 TEST_RESU(RESU=_F(INST=200,
                 REFERENCE='NON_DEFINI',
                 RESULTAT=RESU0,
                 NOM_CHAM='DEPL',
                 NOEUD='N103',
                 NOM_CMP='PRE1',
-                VALE_CALC= 3.377388E+03,
-                VALE_REFE=3380.0,
+                VALE_CALC= 3.42368191E+03,
+                VALE_REFE=3424.0,
                 CRITERE='RELATIF',
                 PRECISION=1.E-2,),
         )
 
+#NOEUD DU MILIEU
+TEST_RESU(RESU=_F(INST=200,
+                REFERENCE='NON_DEFINI',
+                RESULTAT=RESU0,
+                NOM_CHAM='DEPL',
+                NOEUD='N229',
+                NOM_CMP='PRE1',
+                VALE_CALC=60.155146964,
+                VALE_REFE=60.15504,
+                CRITERE='RELATIF',
+                PRECISION=1.E-2,),
+        )
 
+#NOEUD DU HAUT
 TEST_RESU(RESU=_F(INST=200,
                 REFERENCE='NON_DEFINI',
                 RESULTAT=RESU0,
@@ -404,47 +426,128 @@ TEST_RESU(RESU=_F(INST=200,
                 PRECISION=1.E-2,),
         )
 
+#NOEUD DU MILIEU
+TEST_RESU(RESU=_F(INST=200,
+                REFERENCE='NON_DEFINI',
+                RESULTAT=RESU0,
+                NOM_CHAM='DEPL',
+                NOEUD='N229',
+                NOM_CMP='PRE2',
+                VALE_CALC= 9.85293854E+04,
+                VALE_REFE=9.8585682197197006E4,
+                CRITERE='RELATIF',
+                PRECISION=1.E-2,),
+        )
 
+#=============== A 1800. =========================
+
+
+#NOEUD DU HAUT
+TEST_RESU(RESU=_F(INST=1800,
+                REFERENCE='NON_DEFINI',
+                RESULTAT=RESU0,
+                NOM_CHAM='DEPL',
+                NOEUD='N103',
+                NOM_CMP='PRE1',
+                VALE_CALC= 5.59933146E+03,
+                VALE_REFE=5553.0658673106,
+                CRITERE='RELATIF',
+                PRECISION=1.E-2,),
+        )
+
+#NOEUD DU MILIEU
+TEST_RESU(RESU=_F(INST=1800,
+                REFERENCE='NON_DEFINI',
+                RESULTAT=RESU0,
+                NOM_CHAM='DEPL',
+                NOEUD='N229',
+                NOM_CMP='PRE1',
+                VALE_CALC= 1.86431672E+03,
+                VALE_REFE=1860.5162619064999,
+                CRITERE='RELATIF',
+                PRECISION=1.E-2,),
+        )
+
+#NOEUD DU HAUT
+TEST_RESU(RESU=_F(INST=1800,
+                REFERENCE='NON_DEFINI',
+                RESULTAT=RESU0,
+                NOM_CHAM='DEPL',
+                NOEUD='N103',
+                NOM_CMP='PRE2',
+                VALE_CALC= 1.00000000E+05,
+                VALE_REFE=1.E5,
+                CRITERE='RELATIF',
+                PRECISION=1.E-2,),
+        )
+
+#NOEUD DU MILIEU
+TEST_RESU(RESU=_F(INST=1800,
+                REFERENCE='NON_DEFINI',
+                RESULTAT=RESU0,
+                NOM_CHAM='DEPL',
+                NOEUD='N229',
+                NOM_CMP='PRE2',
+                VALE_CALC= 9.92238719E+04,
+                VALE_REFE=9.9244632427548E4,
+                CRITERE='RELATIF',
+                PRECISION=1.E-2,),
+        )
 
 #=============== A 864000S =========================
 
 
+#NOEUD DU HAUT
 TEST_RESU(RESU=_F(INST=864000,
                 REFERENCE='NON_DEFINI',
                 RESULTAT=RESU0,
                 NOM_CHAM='DEPL',
                 NOEUD='N103',
                 NOM_CMP='PRE1',
-                VALE_CALC= 9.81142E+03,
-                VALE_REFE=9810.0,
+                VALE_CALC= 9.81095188E+03,
+                VALE_REFE=9811.3792024673003,
                 CRITERE='RELATIF',
                 PRECISION=1.E-2,),
         )
 
-TEST_RESU(RESU=_F(INST=864000,
-                REFERENCE='NON_DEFINI',
-                RESULTAT=RESU0,
-                NOM_CHAM='DEPL',
-                NOEUD='N103',
-                NOM_CMP='PRE2',
-                VALE_CALC= 1.00000000E+05,
-                VALE_REFE=1.E5,
-                CRITERE='RELATIF',
-                PRECISION=1.E-2,),
-        )
-
+#NOEUD DU MILIEU
 TEST_RESU(RESU=_F(INST=864000,
                 REFERENCE='NON_DEFINI',
                 RESULTAT=RESU0,
                 NOM_CHAM='DEPL',
                 NOEUD='N229',
                 NOM_CMP='PRE1',
-                VALE_CALC= 4.91184887E+03,
-                VALE_REFE=4910.0,
+                VALE_CALC= 4.91179627E+03,
+                VALE_REFE=4911.8456778087002,
                 CRITERE='RELATIF',
                 PRECISION=1.E-2,),
         )
 
+#NOEUD DU HAUT
+TEST_RESU(RESU=_F(INST=864000,
+                REFERENCE='NON_DEFINI',
+                RESULTAT=RESU0,
+                NOM_CHAM='DEPL',
+                NOEUD='N103',
+                NOM_CMP='PRE2',
+                VALE_CALC= 1.00000000E+05,
+                VALE_REFE=1.E5,
+                CRITERE='RELATIF',
+                PRECISION=1.E-2,),
+        )
+
+#NOEUD DU MILIEU
+TEST_RESU(RESU=_F(INST=864000,
+                REFERENCE='NON_DEFINI',
+                RESULTAT=RESU0,
+                NOM_CHAM='DEPL',
+                NOEUD='N229',
+                NOM_CMP='PRE2',
+                VALE_CALC= 1.00005820E+05,
+                VALE_REFE=1.0000581817976999E5,
+                CRITERE='RELATIF',
+                PRECISION=1.E-2,),
+        )
 
 FIN()
 #

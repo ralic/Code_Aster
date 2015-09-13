@@ -1,4 +1,4 @@
-# TITRE      MODELISATION D UN BARREAU SATURE EN LIQUIDE COMPRESSIBLE
+# TITRE  MODELISATION D UN BARREAU SATURE EN LIQUIDE COMPRESSIBLE
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,28 +16,27 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #    LINEAIRE SOUMIS A UN CHOC DE PRESSION EN 3D
-#    MODELISATION VF DECENTRE ARETE (VFDA)
-
+#    MODELISATION VF DECENTRE MAILLE (VFDM)
 
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 #=============================================================
 #=============================================================
-METHODE='VFDA'
+METHODE='EF'
 #=============================================================
 #=============================================================
 
-MODELISA = 'D_PLAN_HH2SUDA'
+MODELISA = 'D_PLAN_HH2S'
 
 #=============================================================
 #                     donnees
 #=============================================================
 
-PARM_ALPHA=1.
 MOLVP = 1.E-10
 EMMAG=1.E-10
 UN_SUR_K= 0
+
 
 #*********************************************************
 # CI/CL
@@ -63,23 +62,9 @@ NBDECOUP=100
 # CRITERES DE CONVERGENCE
 #*********************************************************
 #
+
 RESI_GLOB_MAXI = 1.E-17
 ITER_GLOB_MAXI = 0
-#
-#
-#*************************************************************
-# Liste des instants de calculs
-#*************************************************************
-#
-
-INST1=DEFI_LIST_REEL(DEBUT=0.0,
-                     INTERVALLE=(_F(JUSQU_A=TFINAL,
-                                    NOMBRE=NBDECOUP)),
-                     );
-
-LI =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INST1 ),
-                                ECHEC=_F(EVENEMENT     = 'ERREUR',
-                                         ACTION        = 'ARRET'))
 
 #*********************************************************
 # Definition des caracteristiques fluides
@@ -94,23 +79,16 @@ HENRY=DEFI_CONSTANTE(VALE=1.0);
 # Lecture du maillage
 #*********************
 
-MAILINI=LIRE_MAILLAGE(FORMAT='MED');
-
-MAIL=CREA_MAILLAGE( MAILLAGE=MAILINI,
-          MODI_MAILLE=(
-           _F( TOUT = 'OUI',OPTION = 'QUAD8_9',PREF_NOEUD='NQ'),
-           ))
+MAIL=LIRE_MAILLAGE(FORMAT='MED');
 
 MAIL=DEFI_GROUP(reuse =MAIL,
-         MAILLAGE=MAIL,
-         CREA_GROUP_NO=(
-         _F(GROUP_MA='MHAUT',NOM='NSHAUT',CRIT_NOEUD='MILIEU'),
-         _F(GROUP_MA='MBAS',NOM='NSBAS',CRIT_NOEUD='MILIEU'),
-         _F(GROUP_MA='MDROIT'),
-         _F(GROUP_MA='MGAUCHE'),
-         _F(GROUP_MA='TOUT',NOM='NS',CRIT_NOEUD='MILIEU'),
-         _F(GROUP_MA='TOUT',NOM='NK',CRIT_NOEUD='CENTRE')
-       ));
+                MAILLAGE=MAIL,
+                CREA_GROUP_NO=(
+                _F(GROUP_MA='MHAUT'),
+                _F(GROUP_MA='MBAS'),
+                _F(GROUP_MA='MDROIT'),
+                _F(GROUP_MA='MGAUCHE'),
+                   ));
 
 
 
@@ -126,10 +104,9 @@ MODELT=AFFE_MODELE(MAILLAGE=MAIL,
                   );
 
 #*********************************************************
-#   DEFI MATERIAU
+# DEFI_MATERIAU
 #*********************************************************
 #
-
 MATERIAU=DEFI_MATERIAU(
 
    THM_LIQU=_F(
@@ -181,7 +158,7 @@ MATERIAU=DEFI_MATERIAU(
             FICKV_T    = ZERO,
             FICKA_T    = ZERO,
             LAMB_TL    = ZERO,
-            LAMB_TT    = ZERO
+            LAMB_TT    = ZERO,
               ),
 
    THM_INIT=_F(
@@ -222,9 +199,27 @@ CHIMP=AFFE_CHAR_CINE(MODELE=MODELT,
                  _F(GROUP_MA = 'MGAUCHE',PRE1=PRE1GAUCHE),
                  ));
 
+#
+#
 #*************************************************************
-# STAT_NON_LINE
+# Liste des instants de calculs
 #*************************************************************
+#
+
+INST1=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=(_F(JUSQU_A=TFINAL,
+                                    NOMBRE=NBDECOUP)),
+                     );
+
+LI =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INST1 ),
+                                ECHEC=_F(EVENEMENT = 'ERREUR',
+                                         ACTION    = 'ARRET'))
+#
+#
+#*************************************************************
+#     STAT NON LINE
+#*************************************************************
+#
 cal1=STAT_NON_LINE(MODELE=MODELT,
                  CHAM_MATER=CHMAT,
 
@@ -260,10 +255,8 @@ cal1=STAT_NON_LINE(MODELE=MODELT,
 L_INST=DEFI_LIST_REEL(VALE=(0.,1.,10.,100.));
 
 
-
-
 PR1_BAS=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
-        GROUP_NO=('NSBAS'),
+        GROUP_NO=('MBAS'),
         RESULTAT=cal1,
         NOM_CHAM='DEPL',
         LIST_INST=L_INST,
@@ -276,60 +269,43 @@ IMPR_TABLE(TABLE=PR1_BAS,
       TRI   = (_F( NOM_PARA = ('COOR_X' ),
       ORDRE    = 'CROISSANT')));
 
+TEST_RESU(RESU=_F(NUME_ORDRE=100,
+                REFERENCE='ANALYTIQUE',
+                RESULTAT=cal1,
+                NOM_CHAM='DEPL',
+                NOEUD='N104',
+                NOM_CMP='PRE1',
+                VALE_CALC=-893.106954993,
+                VALE_REFE=-889.32000000000005,
+                CRITERE='RELATIF',
+                PRECISION=1.E-2,),
+        )
 
+#NOEUD DU HAUT
+TEST_RESU(RESU=_F(NUME_ORDRE=100,
+                REFERENCE='ANALYTIQUE',
+                RESULTAT=cal1,
+                NOM_CHAM='DEPL',
+                NOEUD='N103',
+                NOM_CMP='PRE1',
+                VALE_CALC=-893.106954993,
+                VALE_REFE=-889.32000000000005,
+                CRITERE='RELATIF',
+                PRECISION=1.E-2,),
+        )
 
-#============== t=100======================
 # NOEUD DU BAS
 TEST_RESU(RESU=_F(NUME_ORDRE=100,
                 REFERENCE='ANALYTIQUE',
                 RESULTAT=cal1,
                 NOM_CHAM='DEPL',
-                NOEUD='N304',
-                NOM_CMP='PRE1',
-                VALE_CALC=-1.33823454E+03,
-                VALE_REFE=-1330.51641,
-                CRITERE='RELATIF',
-                PRECISION=0.070000000000000007,),
-        )
-
-# NOEUD DU HAUT
-TEST_RESU(RESU=_F(NUME_ORDRE=100,
-                REFERENCE='ANALYTIQUE',
-                RESULTAT=cal1,
-                NOM_CHAM='DEPL',
-                NOEUD='N293',
-                NOM_CMP='PRE1',
-                VALE_CALC=-1.33823454E+03,
-                VALE_REFE=-1330.51641,
-                CRITERE='RELATIF',
-                PRECISION=0.070000000000000007,),
-        )
-
-# NOEUD MILIEU
-TEST_RESU(RESU=_F(NUME_ORDRE=100,
-                REFERENCE='ANALYTIQUE',
-                RESULTAT=cal1,
-                NOM_CHAM='DEPL',
-                NOEUD='N469',
+                NOEUD='N104',
                 NOM_CMP='PRE1',
                 VALE_CALC=-893.106954993,
-                VALE_REFE=-889.31760999999995,
+                VALE_REFE=-893.10699999999997,
                 CRITERE='RELATIF',
-                PRECISION=0.074999999999999997,),
+                PRECISION=1.E-2,
+                ),
         )
-
-TEST_RESU(RESU=_F(NUME_ORDRE=100,
-                REFERENCE='ANALYTIQUE',
-                RESULTAT=cal1,
-                NOM_CHAM='DEPL',
-                NOEUD='NQ95',
-                NOM_CMP='PRE1',
-                VALE_CALC=-1.33823454E+03,
-                VALE_REFE=-1330.51641,
-                CRITERE='RELATIF',
-                PRECISION=0.089999999999999997,),
-        )
-
-
 
 FIN();

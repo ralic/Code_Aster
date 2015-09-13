@@ -16,17 +16,20 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #    LINEAIRE SOUMIS A UN CHOC DE PRESSION EN 1D
+#    MODELISATION VF DECENTRE ARETE (VFDA)
+
+
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 
 #=============================================================
 #=============================================================
-METHODE='VFDM'
+METHODE='VFDA'
 #=============================================================
 #=============================================================
 
-MODELISA = 'D_PLAN_HH2SUDM'
+MODELISA = 'D_PLAN_HH2SUDA'
 
 
 #=============================================================
@@ -64,6 +67,7 @@ RESI_GLOB_MAXI = 1.E-12
 ITER_GLOB_MAXI = 5
 
 
+
 UN=DEFI_CONSTANTE(VALE=1.0,);
 ZERO=DEFI_CONSTANTE(VALE=0.0,);
 
@@ -92,14 +96,14 @@ INST1=DEFI_LIST_REEL(DEBUT=0.0,
                      );
 
 LI =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INST1 ,),
-                                ECHEC=_F(ACTION='ARRET',),)
+                                ECHEC=_F(EVENEMENT = 'ERREUR',
+                                         ACTION    = 'ARRET',),)
 
 
 
 #*********************
 # Lecture du maillage
 #*********************
-
 
 MAILINI=LIRE_MAILLAGE(FORMAT='MED',);
 MAIL=CREA_MAILLAGE( MAILLAGE=MAILINI,
@@ -117,7 +121,7 @@ MAIL=DEFI_GROUP(reuse =MAIL,
          _F(GROUP_MA='MGAUCHE',),
          _F(GROUP_MA='TOUT',NOM='NS',CRIT_NOEUD='MILIEU',),
          _F(GROUP_MA='TOUT',NOM='NK',CRIT_NOEUD='CENTRE',)
-       ,),);
+                   ,),);
 
 #*********************************************************
 # Modele de calcul
@@ -214,6 +218,7 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
 # Affectation de l etat initial
 #*************************************************************
 #
+
 PINIT=CREA_CHAMP(MAILLAGE=MAIL,
                     OPERATION='AFFE',
                     TYPE_CHAM='NOEU_DEPL_R',
@@ -273,6 +278,7 @@ cal1=STAT_NON_LINE(MODELE=MODELT,
                  CONVERGENCE=_F(
                                  RESI_GLOB_MAXI = RESI_GLOB_MAXI,
                                  ITER_GLOB_MAXI = ITER_GLOB_MAXI,),
+
                  );
 
 
@@ -282,6 +288,7 @@ cal1=STAT_NON_LINE(MODELE=MODELT,
 #*************************************************************
 
 L_INST=DEFI_LIST_REEL(VALE=(1.,10.,100.,),);
+
 
 
 PR1_BAS=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
@@ -319,10 +326,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                 NOM_CHAM='DEPL',
                 NOEUD='N304',
                 NOM_CMP='PRE2',
-                VALE_CALC= 1.41225090E+03,
+                VALE_CALC= 1.42639991E+03,
                 VALE_REFE=1330.51641,
                 CRITERE='RELATIF',
-                PRECISION=0.070000000000000007,),
+                PRECISION=0.089999999999999997,),
         )
 
 # NOEUD DU HAUT
@@ -332,10 +339,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                 NOM_CHAM='DEPL',
                 NOEUD='N293',
                 NOM_CMP='PRE2',
-                VALE_CALC= 1.41225090E+03,
+                VALE_CALC= 1.42639991E+03,
                 VALE_REFE=1330.51641,
                 CRITERE='RELATIF',
-                PRECISION=0.070000000000000007,),
+                PRECISION=0.089999999999999997,),
         )
 
 # NOEUD MILIEU
@@ -345,10 +352,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                 NOM_CHAM='DEPL',
                 NOEUD='N469',
                 NOM_CMP='PRE2',
-                VALE_CALC=955.702638047,
+                VALE_CALC=971.587295096,
                 VALE_REFE=889.31760999999995,
                 CRITERE='RELATIF',
-                PRECISION=0.074999999999999997,),
+                PRECISION=0.12,),
         )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=100,
@@ -357,7 +364,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                 NOM_CHAM='DEPL',
                 NOEUD='NQ95',
                 NOM_CMP='PRE2',
-                VALE_CALC= 1.41225090E+03,
+                VALE_CALC= 1.42639991E+03,
                 VALE_REFE=1330.51641,
                 CRITERE='RELATIF',
                 PRECISION=0.089999999999999997,),
@@ -371,10 +378,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                 NOM_CHAM='DEPL',
                 NOEUD='N304',
                 NOM_CMP='PRE2',
-                VALE_CALC= 1.41225090E+03,
-                VALE_REFE=1412.22509021787,
+                VALE_CALC= 1.42639991E+03,
+                VALE_REFE=1444.0876929333999,
                 CRITERE='RELATIF',
-                PRECISION=1.E-2,),
+                PRECISION=0.02,),
         )
 
 # NOEUD DU HAUT
@@ -384,10 +391,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                 NOM_CHAM='DEPL',
                 NOEUD='N293',
                 NOM_CMP='PRE2',
-                VALE_CALC= 1.41225090E+03,
-                VALE_REFE=1412.2509021789001,
+                VALE_CALC= 1.42639991E+03,
+                VALE_REFE=1444.0876929335,
                 CRITERE='RELATIF',
-                PRECISION=1.E-2,),
+                PRECISION=0.02,),
         )
 
 # NOEUD MILIEU
@@ -397,10 +404,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                 NOM_CHAM='DEPL',
                 NOEUD='N469',
                 NOM_CMP='PRE2',
-                VALE_CALC=955.702638047,
-                VALE_REFE=955.70263804746003,
+                VALE_CALC=971.587295096,
+                VALE_REFE=990.94043287847001,
                 CRITERE='RELATIF',
-                PRECISION=1.E-2,),
+                PRECISION=0.02,),
         )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=100,
@@ -409,10 +416,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                 NOM_CHAM='DEPL',
                 NOEUD='NQ95',
                 NOM_CMP='PRE2',
-                VALE_CALC= 1.41225090E+03,
-                VALE_REFE=1412.2509021788001,
+                VALE_CALC= 1.42639991E+03,
+                VALE_REFE=1444.0876929335,
                 CRITERE='RELATIF',
-                PRECISION=1.E-2,),
+                PRECISION=0.02,),
         )
 
 FIN();

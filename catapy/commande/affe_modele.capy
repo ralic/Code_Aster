@@ -28,7 +28,7 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
 #
          GRANDEUR_CARA =FACT(statut='f',max=1,
          fr=tr("Grandeurs caractéristiques pour l'adimensionnement des indicateurs d'erreur HM"),
-         
+
 #
             LONGUEUR      =SIMP(statut='f',typ='R',val_min=0,
                                 fr =tr("Longueur caractéristique"),
@@ -231,12 +231,7 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                   "3D_HHS",          # RESP. : GRANET S.GRANET
                                   "3D_HH2D",         # RESP. : GRANET S.GRANET
                                   "3D_HH2S",         # RESP. : GRANET S.GRANET
-                                  "VF1",             # RESP. : GRANET S.GRANET
-                                  "3D_HH2SUDM",      # RESP. : GRANET S.GRANET
                                   "3D_HH2SUDA",      # RESP. : GRANET S.GRANET
-                                  "3D_HH2SUC",       # RESP. : GRANET S.GRANET
-                                  "D_PLAN_HH2SUDM",  # RESP. : GRANET S.GRANET
-                                  "D_PLAN_HH2SUC",   # RESP. : GRANET S.GRANET
                                   "D_PLAN_HH2SUDA",  # RESP. : GRANET S.GRANET
                                   "PLAN_JHMS",
                                   "AXIS_JHMS",

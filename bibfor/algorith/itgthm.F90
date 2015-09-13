@@ -43,9 +43,9 @@ subroutine itgthm(vf, typvf, modint, mecani, press1,&
 ! ======================================================================
 ! VF        .TRUE. SI VF
 ! TYPVF  TYPE DE VF : 1  = TPFA (FLUX A DEUX POINTS - SUPPRIME)
-!                 2  = SUSHI AVEC VOISIN DECENTRE MAILLE (SUDM)
+!                 2  = SUSHI AVEC VOISIN DECENTRE MAILLE (SUDM - SUPPRIME)
 !                 3  = SUSHI AVEC VOISIN DECENTRE ARETE (SUDA)
-!                 4  = SUSHI AVEC VOISIN CENTRE  (SUC)
+!                 4  = SUSHI AVEC VOISIN CENTRE  (SUC - SUPPRIME)
 ! MODINT    METHODE D'INTEGRATION (CLASSIQUE,LUMPEE(D),REDUITE(R) ?)
 ! NNO       NB DE NOEUDS DE L'ELEMENT
 ! NNOS      NB DE NOEUDS SOMMETS DE L'ELEMENT
@@ -133,7 +133,7 @@ subroutine itgthm(vf, typvf, modint, mecani, press1,&
         nnom = nno - nnos
         dimuel = nnos*nddls + nnom*nddlm + nddlk
     else
-        if (( typvf.eq.2) .or. ( typvf.eq.3) .or. ( typvf.eq.4)) then
+        if (typvf.eq.3) then
             npg = npi
             nddls = 0
             nddlfa = press1(1) + press2(1) + tempe(1)

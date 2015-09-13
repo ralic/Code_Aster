@@ -1,6 +1,6 @@
-# TITRE - APPARITION DISPARITION DE PHASE DANS UN ECOULEMENT
+# TITRE - APPARITION DISPARITION DE PHASE
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -15,9 +15,10 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-#    DIPHASIQUE : INJECTION DE GAZ AUTOUR D UNE GALERIE
-#    DANS UN DOMAINE SATURE
-#    MODELISATION VF DECENTRE MAILLE (VFDM)
+#        DANS UN ECOULEMENTDIPHASIQUE :
+#        INJECTION DE GAZ AUTOUR D UNE GALERIE
+#        DANS UN DOMAINE SATURE
+#    MODELISATION VF DECENTRE ARETE (VFDA)
 
 
 def Pcdesat(PR,SR,n,S) :
@@ -36,11 +37,10 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 #======================================
 
 #=============================================================
-METHODE='VFDM'
+METHODE='VFDA'
 #=============================================================
 
-
-MODELISA = 'D_PLAN_HH2SUDM'
+MODELISA = 'D_PLAN_HH2SUDA'
 LOI= 'LIQU_AD_GAZ'
 NOEUD_G='N815'
 
@@ -50,7 +50,7 @@ NOEUD_G='N815'
 #======================================
 
 PARM_ALPHA=1.
-DIXJOUR=864000
+
 UNMOIS   = 2.628E6
 DEUXMOIS = 2*UNMOIS
 SIXMOIS  = 1.5768E7
@@ -64,9 +64,7 @@ CMANS    = 5*MANS
 DMANS    = 10*3.1536E10
 CENTMANS = 100*3.1536E10
 CCENTMANS= 5*CENTMANS
-SIXCENTMANS= 6*CENTMANS
 MILLION  = 10*CENTMANS
-
 
 #TINJ=CCENTMANS
 #TSIM=MILLION
@@ -154,8 +152,8 @@ LI =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INST1 ,),
                                 ECHEC=_F(EVENEMENT     = 'ERREUR',
                                          ACTION        = 'DECOUPE',
                                          SUBD_METHODE  = 'MANUEL',
-                                         SUBD_PAS      = 5,
-                                         SUBD_PAS_MINI = 0.1,),)
+                                         SUBD_PAS=5,
+                                         SUBD_PAS_MINI=0.1,),)
 #========================
 #   SAUVEGARDE
 #========================
@@ -219,7 +217,6 @@ MAIL  = DEFI_GROUP ( reuse    =  MAIL,
            CREA_GROUP_NO = (
              _F(GROUP_MA  ='BAS' ,NOM='NSBAS',CRIT_NOEUD='MILIEU',),
           ),)
-
 #======================================
 #            MODELISATION
 #======================================
@@ -228,11 +225,6 @@ MODELT=AFFE_MODELE(MAILLAGE=MAIL,
                            PHENOMENE='MECANIQUE',
                            MODELISATION=MODELISA,
                            ),);
-
-
-
-
-
 
 #================================
 # FICK DANS LE MELANGE LIQUIDE
@@ -253,16 +245,11 @@ FAS   = CALC_FONC_INTERP ( FONCTION     =  FFAS      ,
                            PROL_DROITE  = 'CONSTANT' ,
                            INFO         = 2          , );
 
-
 #========================
 # ETAT INITIAL
 #========================
 
 PREF=1.
-# MATERIAU 1
-
-
-# MATERIAU 2
 
 PEAUINIT2=1.E6
 PG02 = PREF
@@ -400,7 +387,7 @@ CAL1=STAT_NON_LINE(MODELE=MODELT,
                    COMPORTEMENT=_F(RELATION='KIT_HH',
                                 RELATION_KIT=(LOI,'HYDR_VGM',),
                                 PARM_THETA  = 1. ,
-                                PARM_ALPHA=PARM_ALPHA,),
+                                PARM_ALPHA=PARM_ALPHA, ),
                    ETAT_INIT=_F(DEPL=PINIT,),
                    INCREMENT=_F(
                    LIST_INST = LI,
@@ -410,8 +397,7 @@ CAL1=STAT_NON_LINE(MODELE=MODELT,
                              MATRICE='TANGENTE',
                              REAC_ITER=1,),
                    CONVERGENCE=_F(
-                      RESI_GLOB_MAXI=1.E-15,
-#                        RESI_GLOB_MAXI=1.E-18,
+                       RESI_GLOB_MAXI=1.E-15,
                        ITER_GLOB_MAXI=10,
                                   ),
                  OBSERVATION=(  _F(NOM_CHAM='DEPL',
@@ -502,225 +488,82 @@ ISO_SAT=IMPR_RESU(MODELE=MODELT,
 #====================PRESSION CAPILLAIRE ========================
 # *************** TROU *****************
 TEST_RESU(RESU=_F(INST=2.628000E6,
+                REFERENCE='NON_DEFINI',
                 RESULTAT=CAL1,
                 NOM_CHAM='DEPL',
                 NOEUD='NT335',
                 NOM_CMP='PRE1',
-                VALE_CALC=-9.55974E5,
+                VALE_CALC=-9.55973731E+05,
+                VALE_REFE=-9.55974E5,
                 CRITERE='RELATIF',
-                ),
+                PRECISION=1.E-2,),
         )
 
 # *************** MILIEU *****************
 TEST_RESU(RESU=_F(INST=2.628000E6,
+                REFERENCE='NON_DEFINI',
                 RESULTAT=CAL1,
                 NOM_CHAM='DEPL',
                 NOEUD='NT551',
                 NOM_CMP='PRE1',
-                VALE_CALC=-9.99999E5,
+                VALE_CALC=-9.99999254E+05,
+                VALE_REFE=-9.99999E5,
                 CRITERE='RELATIF',
-                ),
+                PRECISION=1.E-2,),
         )
 
 # *************** HAUT *****************
 TEST_RESU(RESU=_F(INST=2.628000E6,
+                REFERENCE='NON_DEFINI',
                 RESULTAT=CAL1,
                 NOM_CHAM='DEPL',
                 NOEUD='NT566',
                 NOM_CMP='PRE1',
-                VALE_CALC=-9.99999E5,
+                VALE_CALC=-9.99999006E+05,
+                VALE_REFE=-9.99999E5,
                 CRITERE='RELATIF',
-                ),
+                PRECISION=1.E-2,),
         )
 
 #====================PRESSION GAZ ========================
 # *************** TROU *****************
 TEST_RESU(RESU=_F(INST=2.628000E6,
+                REFERENCE='NON_DEFINI',
                 RESULTAT=CAL1,
                 NOM_CHAM='DEPL',
                 NOEUD='NT335',
                 NOM_CMP='PRE2',
-                VALE_CALC=4.402534327E4,
+                VALE_CALC= 4.40256993E+04,
+                VALE_REFE=4.4025699999999997E4,
                 CRITERE='RELATIF',
-                ),
+                PRECISION=1.E-2,),
         )
 
 # *************** MILIEU *****************
 TEST_RESU(RESU=_F(INST=2.628000E6,
+                REFERENCE='NON_DEFINI',
                 RESULTAT=CAL1,
                 NOM_CHAM='DEPL',
                 NOEUD='NT551',
                 NOM_CMP='PRE2',
-                VALE_CALC=1.8078900000000001E-13,
+                VALE_CALC= 1.633E-13,
+                VALE_REFE= 0.,
                 CRITERE='ABSOLU',
-                ),
+                PRECISION=1.E-2,),
         )
 
 # *************** HAUT *****************
 TEST_RESU(RESU=_F(INST=2.628000E6,
+                REFERENCE='NON_DEFINI',
                 RESULTAT=CAL1,
                 NOM_CHAM='DEPL',
                 NOEUD='NT566',
                 NOM_CMP='PRE2',
-                VALE_CALC=4.6678799999999998E-14,
+                VALE_CALC= 3.64E-15,
+                VALE_REFE= 0.,
                 CRITERE='ABSOLU',
+                PRECISION=1.E-2,
                 ),
-        )
-
-# ***** VALIDATION DES AFFICHAGES DE TEST_RESU ******
-
-# ***** MOT-CLE FACTEUR : RESU
-
-TEST_RESU(RESU=_F(INST=2.628000E6,
-                TYPE_TEST='MIN',
-                RESULTAT=CAL1,
-                NOM_CHAM='DEPL',
-                NOM_CMP='PRE1',
-                VALE_CALC=-9.9999911776699999E5,
-
-                CRITERE='RELATIF',
-                ),
-        )
-
-TEST_RESU(RESU=_F(INST=2.628000E6,
-                TYPE_TEST='MIN',
-                RESULTAT=CAL1,
-                NOM_CHAM='DEPL',
-                NOM_CMP='PRE2',
-                VALE_CALC=-0.016177542,
-                CRITERE='ABSOLU',
-                ),
-        )
-
-TEST_RESU(RESU=_F(INST=2.628000E6,
-                TYPE_TEST='MAX',
-                RESULTAT=CAL1,
-                NOM_CHAM='DEPL',
-                NOM_CMP='PRE1',
-                VALE_CALC=-9.3114067660799995E5,
-                CRITERE='RELATIF',
-                ),
-        )
-
-TEST_RESU(RESU=_F(INST=2.628000E6,
-                TYPE_TEST='MAX',
-                RESULTAT=CAL1,
-                NOM_CHAM='DEPL',
-                NOM_CMP='PRE2',
-                VALE_CALC=6.8858435813000004E4,
-
-                CRITERE='RELATIF',
-                ),
-        )
-
-TEST_RESU(RESU=_F(INST=2.628000E6,
-                TYPE_TEST='MIN',
-                RESULTAT=CAL1,
-                NOM_CHAM='DEPL',
-                VALE_CALC=-9.9999911776699999E5,
-
-                CRITERE='RELATIF',
-                ),
-        )
-
-TEST_RESU(RESU=_F(INST=2.628000E6,
-                TYPE_TEST='MAX',
-                RESULTAT=CAL1,
-                NOM_CHAM='DEPL',
-                VALE_CALC=6.8858435813200005E4,
-
-                CRITERE='RELATIF',
-                ),
-        )
-
-CH1=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
-           OPERATION='EXTR',
-           RESULTAT=CAL1,
-           NOM_CHAM='DEPL',
-          INST=UNMOIS )
-
-CH2=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
-           OPERATION='EXTR',
-           RESULTAT=CAL1,
-           NOM_CHAM='SIEF_ELGA',
-           INST=UNMOIS )
-
-
-# ***** MOT-CLE FACTEUR : CHAM_NO
-
-TEST_RESU(CHAM_NO=_F(CRITERE='RELATIF',
-                   NOM_CMP='PRE1',
-                   TYPE_TEST='MIN',
-                   CHAM_GD=CH1,
-                   VALE_CALC=-9.9999911776699999E5,
-                   ),
-        )
-
-TEST_RESU(CHAM_NO=_F(CRITERE='ABSOLU',
-                   NOM_CMP='PRE2',
-                   TYPE_TEST='MIN',
-                   CHAM_GD=CH1,
-                   VALE_CALC=-0.016177540000000001,),
-        )
-
-TEST_RESU(CHAM_NO=_F(CRITERE='RELATIF',
-                   TYPE_TEST='MIN',
-                   CHAM_GD=CH1,
-                   VALE_CALC=-9.9999911776699999E5,
-                   ),
-        )
-
-TEST_RESU(CHAM_NO=_F(CRITERE='RELATIF',
-                   NOM_CMP='PRE1',
-                   TYPE_TEST='MAX',
-                   CHAM_GD=CH1,
-                   VALE_CALC=-9.3114067660799995E5,
-                   ),
-        )
-
-TEST_RESU(CHAM_NO=_F(CRITERE='RELATIF',
-                   NOM_CMP='PRE2',
-                   TYPE_TEST='MAX',
-                   CHAM_GD=CH1,
-                   VALE_CALC=6.8858435813000004E4,
-                   ),
-        )
-
-TEST_RESU(CHAM_NO=_F(CRITERE='RELATIF',
-                   TYPE_TEST='MAX',
-                   CHAM_GD=CH1,
-                   VALE_CALC=6.8858435813000004E4,
-                   ),
-        )
-
-# ***** MOT-CLE FACTEUR : CHAM_ELEM
-
-TEST_RESU(CHAM_ELEM=_F(CRITERE='ABSOLU',
-                     NOM_CMP='M11',
-                     TYPE_TEST='MIN',
-                     CHAM_GD=CH2,
-                     VALE_CALC=-8.3694149999999996E-08,),
-        )
-
-TEST_RESU(CHAM_ELEM=_F(CRITERE='ABSOLU',
-                     NOM_CMP='M22',
-                     TYPE_TEST='MIN',
-                     CHAM_GD=CH2,
-                     VALE_CALC=-1.04496E-12,),
-        )
-
-TEST_RESU(CHAM_ELEM=_F(CRITERE='ABSOLU',
-                     NOM_CMP='M11',
-                     TYPE_TEST='MAX',
-                     CHAM_GD=CH2,
-                     VALE_CALC=1.9895199999999999E-13,),
-        )
-
-TEST_RESU(CHAM_ELEM=_F(CRITERE='ABSOLU',
-                     NOM_CMP='M22',
-                     TYPE_TEST='MAX',
-                     CHAM_GD=CH2,
-                     VALE_CALC=9.8792685199999996E-05,),
         )
 
 FIN();

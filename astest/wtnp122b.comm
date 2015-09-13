@@ -16,8 +16,6 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #    LINEAIRE SOUMIS A UN CHOC DE PRESSION EN 1D
-#    MODELISATION VF DECENTRE ARETE (VFDA)
-
 
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
@@ -25,11 +23,11 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 #=============================================================
 #=============================================================
-METHODE='VFDA'
+METHODE='EF'
 #=============================================================
 #=============================================================
 
-MODELISA = 'D_PLAN_HH2SUDA'
+MODELISA = 'D_PLAN_HH2S'
 
 
 #=============================================================
@@ -62,9 +60,11 @@ NBDECOUP=100
 # CRITERES DE CONVERGENCE
 #*********************************************************
 #
+
 RESI_GLOB_MAXI = 1.E-12
 
 ITER_GLOB_MAXI = 5
+
 
 
 
@@ -105,23 +105,16 @@ LI =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INST1 ,),
 # Lecture du maillage
 #*********************
 
-MAILINI=LIRE_MAILLAGE(FORMAT='MED',);
-MAIL=CREA_MAILLAGE( MAILLAGE=MAILINI,
-          MODI_MAILLE=(
-           _F( TOUT = 'OUI',OPTION = 'QUAD8_9',PREF_NOEUD='NQ',),
-           ),
-
-         )
+MAIL=LIRE_MAILLAGE(FORMAT='MED',);
 MAIL=DEFI_GROUP(reuse =MAIL,
-         MAILLAGE=MAIL,
-         CREA_GROUP_NO=(
-         _F(GROUP_MA='MHAUT',NOM='NSHAUT',CRIT_NOEUD='MILIEU',),
-         _F(GROUP_MA='MBAS',NOM='NSBAS',CRIT_NOEUD='MILIEU',),
-         _F(GROUP_MA='MDROIT',),
-         _F(GROUP_MA='MGAUCHE',),
-         _F(GROUP_MA='TOUT',NOM='NS',CRIT_NOEUD='MILIEU',),
-         _F(GROUP_MA='TOUT',NOM='NK',CRIT_NOEUD='CENTRE',)
-                   ,),);
+                MAILLAGE=MAIL,
+                CREA_GROUP_NO=(
+                _F(GROUP_MA='MHAUT',),
+                _F(GROUP_MA='MBAS',),
+                _F(GROUP_MA='MDROIT',),
+                _F(GROUP_MA='MGAUCHE',),
+                   ),);
+
 
 #*********************************************************
 # Modele de calcul
@@ -219,6 +212,9 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
 #*************************************************************
 #
 
+#***********************
+#ESSAI COMPARAISON HDI
+#***********************
 PINIT=CREA_CHAMP(MAILLAGE=MAIL,
                     OPERATION='AFFE',
                     TYPE_CHAM='NOEU_DEPL_R',
@@ -290,9 +286,8 @@ cal1=STAT_NON_LINE(MODELE=MODELT,
 L_INST=DEFI_LIST_REEL(VALE=(1.,10.,100.,),);
 
 
-
 PR1_BAS=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
-        GROUP_NO=('NSBAS'),
+        GROUP_NO=('MBAS'),
         RESULTAT=cal1,
         NOM_CHAM='DEPL',
         LIST_INST=L_INST,
@@ -306,82 +301,57 @@ IMPR_TABLE(TABLE=PR1_BAS,
       ORDRE    = 'CROISSANT',),),);
 
 PR2_BAS=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
-        GROUP_NO=('NSBAS'),
+        GROUP_NO=('MBAS'),
         RESULTAT=cal1,
         NOM_CHAM='DEPL',
         LIST_INST=L_INST,
         NOM_CMP=('PRE2'),
         OPERATION='EXTRACTION',),);
+
 IMPR_TABLE(TABLE=PR2_BAS,
       PAGINATION = 'INST' ,
       NOM_PARA=('INST','COOR_X','PRE2'),
       TRI   = (_F( NOM_PARA = ('COOR_X' ,),
       ORDRE    = 'CROISSANT',),),);
 
-#============== t=100======================
 # NOEUD DU BAS
 TEST_RESU(RESU=_F(NUME_ORDRE=100,
                 REFERENCE='ANALYTIQUE',
                 RESULTAT=cal1,
                 NOM_CHAM='DEPL',
-                NOEUD='N304',
+                NOEUD='N104',
                 NOM_CMP='PRE2',
-                VALE_CALC= 1.42639991E+03,
-                VALE_REFE=1330.51641,
-                CRITERE='RELATIF',
-                PRECISION=0.089999999999999997,),
-        )
-
-# NOEUD DU HAUT
-TEST_RESU(RESU=_F(NUME_ORDRE=100,
-                REFERENCE='ANALYTIQUE',
-                RESULTAT=cal1,
-                NOM_CHAM='DEPL',
-                NOEUD='N293',
-                NOM_CMP='PRE2',
-                VALE_CALC= 1.42639991E+03,
-                VALE_REFE=1330.51641,
-                CRITERE='RELATIF',
-                PRECISION=0.089999999999999997,),
-        )
-
-# NOEUD MILIEU
-TEST_RESU(RESU=_F(NUME_ORDRE=100,
-                REFERENCE='ANALYTIQUE',
-                RESULTAT=cal1,
-                NOM_CHAM='DEPL',
-                NOEUD='N469',
-                NOM_CMP='PRE2',
-                VALE_CALC=971.587295096,
+                VALE_CALC=992.859156677,
                 VALE_REFE=889.31760999999995,
                 CRITERE='RELATIF',
                 PRECISION=0.12,),
         )
 
+# NOEUD DU HAUT
 TEST_RESU(RESU=_F(NUME_ORDRE=100,
                 REFERENCE='ANALYTIQUE',
                 RESULTAT=cal1,
                 NOM_CHAM='DEPL',
-                NOEUD='NQ95',
+                NOEUD='N103',
                 NOM_CMP='PRE2',
-                VALE_CALC= 1.42639991E+03,
-                VALE_REFE=1330.51641,
+                VALE_CALC=992.859156678,
+                VALE_REFE=889.31760999999995,
                 CRITERE='RELATIF',
-                PRECISION=0.089999999999999997,),
+                PRECISION=0.12,),
         )
 
-#============== t=100======================
+# NON REGRESSION
 # NOEUD DU BAS
 TEST_RESU(RESU=_F(NUME_ORDRE=100,
                 REFERENCE='NON_DEFINI',
                 RESULTAT=cal1,
                 NOM_CHAM='DEPL',
-                NOEUD='N304',
+                NOEUD='N104',
                 NOM_CMP='PRE2',
-                VALE_CALC= 1.42639991E+03,
-                VALE_REFE=1444.0876929333999,
+                VALE_CALC=992.859156677,
+                VALE_REFE=992.85915667740005,
                 CRITERE='RELATIF',
-                PRECISION=0.02,),
+                PRECISION=1.E-2,),
         )
 
 # NOEUD DU HAUT
@@ -389,37 +359,13 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                 REFERENCE='NON_DEFINI',
                 RESULTAT=cal1,
                 NOM_CHAM='DEPL',
-                NOEUD='N293',
+                NOEUD='N103',
                 NOM_CMP='PRE2',
-                VALE_CALC= 1.42639991E+03,
-                VALE_REFE=1444.0876929335,
+                VALE_CALC=992.859156678,
+                VALE_REFE=992.85915667759002,
                 CRITERE='RELATIF',
-                PRECISION=0.02,),
+                PRECISION=1.E-2,),
         )
 
-# NOEUD MILIEU
-TEST_RESU(RESU=_F(NUME_ORDRE=100,
-                REFERENCE='NON_DEFINI',
-                RESULTAT=cal1,
-                NOM_CHAM='DEPL',
-                NOEUD='N469',
-                NOM_CMP='PRE2',
-                VALE_CALC=971.587295096,
-                VALE_REFE=990.94043287847001,
-                CRITERE='RELATIF',
-                PRECISION=0.02,),
-        )
-
-TEST_RESU(RESU=_F(NUME_ORDRE=100,
-                REFERENCE='NON_DEFINI',
-                RESULTAT=cal1,
-                NOM_CHAM='DEPL',
-                NOEUD='NQ95',
-                NOM_CMP='PRE2',
-                VALE_CALC= 1.42639991E+03,
-                VALE_REFE=1444.0876929335,
-                CRITERE='RELATIF',
-                PRECISION=0.02,),
-        )
 
 FIN();

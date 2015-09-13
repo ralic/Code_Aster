@@ -1,4 +1,4 @@
-# TITRE - APPARITION DISPARITION DE PHASE
+# TITRE   APPARITION DISPARITION DE PHASE DANS UN ECOULEMENT
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,12 +15,11 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-#        DANS UN ECOULEMENTDIPHASIQUE :
-#        INJECTION DE GAZ AUTOUR D UNE GALERIE
-#        DANS UN DOMAINE SATURE
-#    MODELISATION VF DECENTRE ARETE (VFDA)
-
-
+#         DIPHASIQUE : INJECTION DE GAZ AUTOUR D UNE GALERIE
+#         DANS UN DOMAINE SATURE
+#         MODELISATION EF
+#
+#
 def Pcdesat(PR,SR,n,S) :
       m=1.-1./n
       usn=1./n
@@ -29,20 +28,17 @@ def Pcdesat(PR,SR,n,S) :
       PC=PR*((S1**(-usm)-1.e0)**(usn))
       return(PC)
 
-
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 #======================================
 #     CHOIX DE LA METHODE
 #======================================
 
-#=============================================================
-METHODE='VFDA'
-#=============================================================
+METHODE = 'EF'
 
-MODELISA = 'D_PLAN_HH2SUDA'
+MODELISA = 'D_PLAN_HH2S'
 LOI= 'LIQU_AD_GAZ'
-NOEUD_G='N815'
+NOEUD_G='N6'
 
 
 #======================================
@@ -50,6 +46,7 @@ NOEUD_G='N815'
 #======================================
 
 PARM_ALPHA=1.
+
 
 UNMOIS   = 2.628E6
 DEUXMOIS = 2*UNMOIS
@@ -133,19 +130,19 @@ INST1=DEFI_LIST_REEL(DEBUT=0.0,
                          JUSQU_A=CQANS, NOMBRE=50,),
                      _F(
                          JUSQU_A=CENTANS, NOMBRE=50,),
-                   _F(
+                     _F(
                       JUSQU_A=CQCENTANS, NOMBRE=50,),
-                   _F(
+                     _F(
                       JUSQU_A=MANS, NOMBRE=50,),
-                   _F(
-                      JUSQU_A=CMANS, NOMBRE=50,),
-                   _F(
-                      JUSQU_A=DMANS, NOMBRE=50,),
-                   _F(
-                      JUSQU_A=CENTMANS, NOMBRE=50,),
-                   _F(
+                     _F(
+                       JUSQU_A=CMANS, NOMBRE=50,),
+                     _F(
+                       JUSQU_A=DMANS, NOMBRE=50,),
+                     _F(
+                       JUSQU_A=CENTMANS, NOMBRE=50,),
+                     _F(
                       JUSQU_A=CCENTMANS, NOMBRE=50,),
-                   _F(
+                     _F(
                       JUSQU_A=MILLION, NOMBRE=50,),
                                     ),);
 LI =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INST1 ,),
@@ -195,28 +192,18 @@ IARCHI=DEFI_LIST_REEL(DEBUT=0.0,
 #======================================
 #            MAILLAGE
 #======================================
-MAIL1=LIRE_MAILLAGE(FORMAT='MED',UNITE=20,);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',UNITE=20,);
 
-
-MAIL=CREA_MAILLAGE( MAILLAGE=MAIL1,
-          MODI_MAILLE=(
-           _F( TOUT = 'OUI',OPTION = 'TRIA6_7',PREF_NOEUD='NT',),
-           ),
-
-         )
 
 MAIL  = DEFI_GROUP ( reuse    =  MAIL,
            MAILLAGE    =  MAIL,
       CREA_GROUP_MA = (
              _F( NOM  ='BAS'   ,UNION= ('GM21', 'GM22'),),
              _F( NOM = 'GAUCHE',UNION= ('GM19', 'GM18'),),
-           _F( NOM = 'SORT',UNION= ('GM26', 'GM27'),),
-          ),)
-MAIL  = DEFI_GROUP ( reuse    =  MAIL,
-           MAILLAGE    =  MAIL,
-           CREA_GROUP_NO = (
-             _F(GROUP_MA  ='BAS' ,NOM='NSBAS',CRIT_NOEUD='MILIEU',),
-          ),)
+             _F( NOM = 'SORT'  ,UNION= ('GM26', 'GM27'),),
+          ),
+      CREA_GROUP_NO = (_F( GROUP_MA='BAS' ),),)
+
 #======================================
 #            MODELISATION
 #======================================
@@ -225,6 +212,7 @@ MODELT=AFFE_MODELE(MAILLAGE=MAIL,
                            PHENOMENE='MECANIQUE',
                            MODELISATION=MODELISA,
                            ),);
+
 
 #================================
 # FICK DANS LE MELANGE LIQUIDE
@@ -245,6 +233,7 @@ FAS   = CALC_FONC_INTERP ( FONCTION     =  FFAS      ,
                            PROL_DROITE  = 'CONSTANT' ,
                            INFO         = 2          , );
 
+
 #========================
 # ETAT INITIAL
 #========================
@@ -259,18 +248,15 @@ PCINIT2 = PG02 - PEAUINIT2
 #======================================
 #            MATERIAU
 #======================================
-MAT = DEFI_MATERIAU (
-
-                          ELAS      =_F(
+MAT = DEFI_MATERIAU ( ELAS      =_F(
    E               = 72.9E6  ,
    NU              = 0.3     ,
    RHO             = 2670.   ,
    ALPHA           = 1.E-5
                                       ),
+                      COMP_THM    =LOI,
 
-                         COMP_THM    =LOI,
-
-                         THM_LIQU    =_F(
+                      THM_LIQU    =_F(
    RHO             =1.E+3     ,
    UN_SUR_K        = 0   ,
    ALPHA           = 1.048E-4   ,
@@ -279,7 +265,6 @@ MAT = DEFI_MATERIAU (
    D_VISC_TEMP     = DVISCOL    ,
                                        ),
 
-
                           THM_GAZ    =_F(
    MASS_MOL         = 2.E-3    ,
    CP              = 0.      ,
@@ -287,17 +272,13 @@ MAT = DEFI_MATERIAU (
    D_VISC_TEMP      = ZERO      ,
                                          ),
 
-
                       THM_VAPE_GAZ    =_F(
    MASS_MOL         = 0.0001    ,
    CP              = 0.      ,
    VISC             = VISCOGAZ  ,
    D_VISC_TEMP      = ZERO      ,
                                          ),
-
-
-
-                          THM_DIFFU    =_F(
+                      THM_DIFFU    =_F(
    R_GAZ            = 8.315     ,
    RHO              = 1514.     ,
    CP              = 0.      ,
@@ -312,11 +293,9 @@ MAT = DEFI_MATERIAU (
     VG_SR           = SRCOX    ,
     VG_SMAX         = SMAXCOX    ,
     VG_SATUR        = SATUCOX   ,
-
    FICKV_T          = ZERO  ,
-          FICKA_T              = FICKWAR,
-          FICKA_S  = FAS   ,
-
+   FICKA_T          = FICKWAR,
+   FICKA_S          = FAS   ,
    LAMB_T           = ZERO   ,
    LAMB_S           = ZERO      ,
    D_LB_S           = ZERO     ,
@@ -387,24 +366,25 @@ CAL1=STAT_NON_LINE(MODELE=MODELT,
                    COMPORTEMENT=_F(RELATION='KIT_HH',
                                 RELATION_KIT=(LOI,'HYDR_VGM',),
                                 PARM_THETA  = 1. ,
-                                PARM_ALPHA=PARM_ALPHA, ),
+                                PARM_ALPHA=PARM_ALPHA,),
                    ETAT_INIT=_F(DEPL=PINIT,),
-                   INCREMENT=_F(
+
+                 INCREMENT=_F(
                    LIST_INST = LI,
-                     INST_FIN=TFIN,
-                ),
+                     INST_FIN=TFIN,),
+
                    NEWTON=_F(
                              MATRICE='TANGENTE',
                              REAC_ITER=1,),
                    CONVERGENCE=_F(
-                       RESI_GLOB_MAXI=1.E-15,
+                      RESI_GLOB_MAXI=1.E-6,
                        ITER_GLOB_MAXI=10,
                                   ),
                  OBSERVATION=(  _F(NOM_CHAM='DEPL',
                                              NOM_CMP=('PRE1','PRE2'),
                                              PAS_OBSE=1,NOEUD=NOEUD_G,),),
 
-                   ARCHIVAGE=_F(LIST_INST       = IARCHI  ,),);
+                   ARCHIVAGE=_F(LIST_INST = IARCHI  ,),);
 
 
 
@@ -415,9 +395,10 @@ CAL1=STAT_NON_LINE(MODELE=MODELT,
 L_POST=DEFI_LIST_REEL(VALE=(UNMOIS,),);
 
 
+
 TAB_OBS = RECU_TABLE ( CO = CAL1,
-          NOM_TABLE = 'OBSERVATION'
-         ) ;
+            NOM_TABLE = 'OBSERVATION'
+             ) ;
 IMPR_TABLE(TABLE=TAB_OBS,)
 
 
@@ -435,30 +416,30 @@ IMPR_TABLE ( TABLE    =  TAB_OBS   ,
      FILTRE     = (_F( NOM_PARA = 'NOM_CMP',CRIT_COMP        = 'EQ' ,VALE_K='PRE2'),),
      );
 
-P1DDLMIL=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
-           GROUP_NO=('NSBAS'),
+P1DDL=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
+           GROUP_NO=('BAS'),
            RESULTAT=CAL1,
            NOM_CHAM='DEPL',
             LIST_INST=L_POST,
            NOM_CMP=('PRE1'),
            OPERATION='EXTRACTION',),);
 
-IMPR_TABLE(TABLE=P1DDLMIL,
+IMPR_TABLE(TABLE=P1DDL,
       FORMAT   = 'TABLEAU_CROISE'    ,
       NOM_PARA=('INST','COOR_X','PRE1'),
       UNITE=50,
       TRI   = (_F( NOM_PARA = ('COOR_X' ,),
          ORDRE    = 'CROISSANT',),),);
 
-P2DDLMIL=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
-           GROUP_NO=('NSBAS'),
+P2DDL=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
+           GROUP_NO=('BAS'),
            RESULTAT=CAL1,
            NOM_CHAM='DEPL',
            LIST_INST=L_POST,
            NOM_CMP=('PRE2'),
            OPERATION='EXTRACTION',),);
 
-IMPR_TABLE(TABLE=P2DDLMIL,
+IMPR_TABLE(TABLE=P2DDL,
       FORMAT   = 'TABLEAU_CROISE'    ,
       NOM_PARA=('INST','COOR_X','PRE2'),
       UNITE=51,
@@ -484,86 +465,70 @@ ISO_SAT=IMPR_RESU(MODELE=MODELT,
           NOM_CHAM    = ('VARI_ELGA',),
           NOM_CMP =('V4',),
           MAILLAGE=MAIL,),);
+TEST_RESU(RESU=_F(RESULTAT=CAL1,
+      INST=UNMOIS,
+      NOM_CHAM='DEPL',
+      NOM_CMP='PRE1',
+      NOEUD='N6',
+      VALE_REFE =-9.5979E+05,
+      VALE_CALC=-9.59792525E+05,
+      CRITERE='RELATIF',
+      PRECISION=1.E-2,
+      REFERENCE='NON_DEFINI'),);
 
-#====================PRESSION CAPILLAIRE ========================
-# *************** TROU *****************
-TEST_RESU(RESU=_F(INST=2.628000E6,
-                REFERENCE='NON_DEFINI',
-                RESULTAT=CAL1,
-                NOM_CHAM='DEPL',
-                NOEUD='NT335',
-                NOM_CMP='PRE1',
-                VALE_CALC=-9.55973731E+05,
-                VALE_REFE=-9.55974E5,
-                CRITERE='RELATIF',
-                PRECISION=1.E-2,),
-        )
+TEST_RESU(RESU=_F(RESULTAT=CAL1,
+      INST=UNMOIS,
+      NOM_CHAM='DEPL',
+      NOM_CMP='PRE2',
+      NOEUD='N6',
+      VALE_CALC=4.02069E+04,
+      VALE_REFE=4.0207E+04,
+      CRITERE='RELATIF',
+      PRECISION=1.E-2,
+      REFERENCE='NON_DEFINI'),);
 
-# *************** MILIEU *****************
-TEST_RESU(RESU=_F(INST=2.628000E6,
-                REFERENCE='NON_DEFINI',
-                RESULTAT=CAL1,
-                NOM_CHAM='DEPL',
-                NOEUD='NT551',
-                NOM_CMP='PRE1',
-                VALE_CALC=-9.99999254E+05,
-                VALE_REFE=-9.99999E5,
-                CRITERE='RELATIF',
-                PRECISION=1.E-2,),
-        )
+TEST_RESU(RESU=_F(RESULTAT=CAL1,
+      INST=UNMOIS,
+      NOM_CHAM='DEPL',
+      NOM_CMP='PRE1',
+      NOEUD='N292',
+      VALE_REFE=-1.E+06,
+      VALE_CALC=-9.99999E+05,
+      CRITERE='RELATIF',
+      PRECISION=1.E-2,
+      REFERENCE='NON_DEFINI'),);
 
-# *************** HAUT *****************
-TEST_RESU(RESU=_F(INST=2.628000E6,
-                REFERENCE='NON_DEFINI',
-                RESULTAT=CAL1,
-                NOM_CHAM='DEPL',
-                NOEUD='NT566',
-                NOM_CMP='PRE1',
-                VALE_CALC=-9.99999006E+05,
-                VALE_REFE=-9.99999E5,
-                CRITERE='RELATIF',
-                PRECISION=1.E-2,),
-        )
+TEST_RESU(RESU=_F(RESULTAT=CAL1,
+      INST=UNMOIS,
+      NOM_CHAM='DEPL',
+      NOM_CMP='PRE2',
+      NOEUD='N292',
+      VALE_REFE=0.,
+      VALE_CALC=1.42195E-13,
+      CRITERE='ABSOLU',
+      PRECISION=1.E-2,
+      REFERENCE='NON_DEFINI'),);
 
-#====================PRESSION GAZ ========================
-# *************** TROU *****************
-TEST_RESU(RESU=_F(INST=2.628000E6,
-                REFERENCE='NON_DEFINI',
-                RESULTAT=CAL1,
-                NOM_CHAM='DEPL',
-                NOEUD='NT335',
-                NOM_CMP='PRE2',
-                VALE_CALC= 4.40256993E+04,
-                VALE_REFE=4.4025699999999997E4,
-                CRITERE='RELATIF',
-                PRECISION=1.E-2,),
-        )
+TEST_RESU(RESU=_F(RESULTAT=CAL1,
+      INST=UNMOIS,
+      NOM_CHAM='DEPL',
+      NOM_CMP='PRE1',
+      NOEUD='N577',
+      VALE_CALC=-9.99999E+05,
+      VALE_REFE=-1.E+06,
+      CRITERE='RELATIF',
+      PRECISION=1.E-2,
+      REFERENCE='NON_DEFINI'),);
 
-# *************** MILIEU *****************
-TEST_RESU(RESU=_F(INST=2.628000E6,
-                REFERENCE='NON_DEFINI',
-                RESULTAT=CAL1,
-                NOM_CHAM='DEPL',
-                NOEUD='NT551',
-                NOM_CMP='PRE2',
-                VALE_CALC= 1.633E-13,
-                VALE_REFE= 0.,
-                CRITERE='ABSOLU',
-                PRECISION=1.E-2,),
-        )
+TEST_RESU(RESU=_F(RESULTAT=CAL1,
+      INST=UNMOIS,
+      NOM_CHAM='DEPL',
+      NOM_CMP='PRE2',
+      NOEUD='N577',
+      VALE_REFE=0.,
+      VALE_CALC=6.93178E-15,
+      CRITERE='ABSOLU',
+      PRECISION=1.E-2,
+      REFERENCE='NON_DEFINI'),);
 
-# *************** HAUT *****************
-TEST_RESU(RESU=_F(INST=2.628000E6,
-                REFERENCE='NON_DEFINI',
-                RESULTAT=CAL1,
-                NOM_CHAM='DEPL',
-                NOEUD='NT566',
-                NOM_CMP='PRE2',
-                VALE_CALC= 3.64E-15,
-                VALE_REFE= 0.,
-                CRITERE='ABSOLU',
-                PRECISION=1.E-2,
-                ),
-        )
-
-FIN();
+FIN()

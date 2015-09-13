@@ -71,7 +71,7 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
 ! IN NDDLM NB DE DDL SUR LES MILIEUX DE FACE OU D ARETE UNIQUEMT EN EF
 ! IN NDDLFA NB DE DDL SUR LES FACE DE DIMENSION DIM-1 NE SERT QU EN VF
 ! IN NDDLK NB DE DDL AU CENTRE
-! TYPVF     TYPE DE VF : 3 = SUDA ET 4 SUC
+! TYPVF     TYPE DE VF : 3 = SUDA (SUC ET SUDM ONT ETE SUPPRIMES)
 ! IN NDIM DIMENSION DE L'ESPACE
 ! IN DIMUEL NB DE DDL TOTAL DE L'ELEMENT
 ! IN DIMCON DIMENSION DES CONTRAINTES GENERALISEES ELEMENTAIRES
@@ -250,7 +250,6 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
     real(kind=8) :: dias2(maxfa), difuvp(maxfa), difuas(maxfa), difuad(maxfa), diad1f(maxfa)
     real(kind=8) :: diad2f(maxfa), dias1f(maxfa), dias2f(maxfa), divp1f(maxfa), divp2f(maxfa)
 !=====================================================================
-    aster_logical :: ldcen
     real(kind=8) :: xg(maxdim)
     real(kind=8) :: rhol, rhog, drhol1, drhol2, drhog1, drhog2
     real(kind=8) :: alpha, zero
@@ -284,20 +283,14 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
 ! LE CENTRE EST LE CENTRE DE GRAVITE (CENTRE DU CERCLE CIRCONSCRIT DESACTIVE
 !===============================
     zero=0.d0
-    do 100 idim = 1, ndim
+    do idim = 1, ndim
         xg(idim)=geom(idim,nno)
-100 end do
+    end do
 ! ==============================
-!   SI TYPVF=3 ALORS DECENTRE
-!   SI TYPVF=4 ALORS CENTRE
+!   SI TYPVF=3 ALORS DECENTRE (SEUL SCHEMA RESTANT)
 ! ==============================
-    if (typvf .eq. 3) then
-        ldcen=.true.
-    else if (typvf .eq.4) then
-        ldcen=.false.
-    else
-        call utmess('F', 'VOLUFINI_9', si=typvf)
-    endif
+    if (typvf .ne. 3) call utmess('F', 'VOLUFINI_9', si=typvf)
+
     bool = (option(1:9).eq.'RIGI_MECA' ) .or. (option(1:9).eq.'RAPH_MECA' ) .or.&
            (option(1:9).eq.'FULL_MECA' )
     ASSERT(bool)
@@ -380,19 +373,19 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
 ! --- INITIALISATION A ZERO MATUU ET VECTU
 ! ====================================================================
     if (tange) then
-        do 1 i = 1, dimuel*dimuel
+        do i = 1, dimuel*dimuel
             matuu(i)=0.d0
-  1     continue
+        end do
     endif
     if (cont) then
-        do 2 i = 1, dimuel
+        do  i = 1, dimuel
             vectu(i)=0.d0
-  2     continue
+        end do
     endif
 ! ================================================================
 ! --- INITIALISATION
 ! ================================================================
-    do 3 i = 1, maxfa
+    do i = 1, maxfa
         pcpf(i) =0.d0
         pgpf(i) =0.d0
         dpgp1f(i)=0.d0
@@ -430,7 +423,7 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
         dvp2f(i) = 0.d0
         dvp1ff(i)= 0.d0
         dvp2ff(i)= 0.d0
-  3 end do
+    end do
 ! ================================================================
 ! --- CALCUL DES QUANTITES GEOMETRIQUES
 ! ================================================================
@@ -446,30 +439,31 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
     if (yap1 .eq. 1) then
         defgem(addep1)= deplm(iadp1k)
         defgep(addep1)= deplp(iadp1k)
-        do 4 i = 1, ndim
+        do i = 1, ndim
             defgem(addep1+i)=0.d0
             defgep(addep1+i)=0.d0
-  4     continue
+        end do
         if (yap2 .eq. 1) then
             defgem(addep2)= deplm(iadp2k)
             defgep(addep2)= deplp(iadp2k)
-            do 5 i = 1, ndim
+            do i = 1, ndim
                 defgem(addep2+i)=0.d0
                 defgep(addep2+i)=0.d0
-  5         continue
+            end do
         endif
     endif
 ! ===============================================
 ! ==== INITIALISATION DE DSDE ================
 ! ===============================================
 ! INITIALISATION DE ANGMAS(3) À ZERO
-    do 511 i = 1, 3
+    do i = 1, 3
         angbid(i)=0.d0
-511 end do
-    do 6 i = 1, dimcon
-        do 6 j = 1, dimdef
+    end do
+    do i = 1, dimcon
+        do j = 1, dimdef
             dsde(i,j)=0.d0
-  6     continue
+        end do
+    end do
     call comthm(option, perman, vf, 0, valfac,&
                 valcen, imate, typmod, compor, crit,&
                 rinstm, rinstp, ndim, dimdef, dimcon,&
@@ -482,21 +476,21 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
     if (retcom .ne. 0) then
         call utmess('F', 'COMPOR1_9')
     endif
-    do 7 fa = 1, nface
+    do fa = 1, nface
         if (yap1 .eq. 1) then
             defgem(addep1)= deplm(iadp1(fa))
             defgep(addep1)= deplp(iadp1(fa))
-            do 701 i = 1, ndim
+            do i = 1, ndim
                 defgem(addep1+i)=0.d0
                 defgep(addep1+i)=0.d0
-701         continue
+            end do
             if (yap2 .eq. 1) then
                 defgem(addep2)= deplm(iadp2(fa))
                 defgep(addep2)= deplp(iadp2(fa))
-                do 702 i = 1, ndim
+                do i = 1, ndim
                     defgem(addep2+i)=0.d0
                     defgep(addep2+i)=0.d0
-702             continue
+                end do
             endif
         else
             call utmess('F', 'VOLUFINI_9', si=typvf)
@@ -504,11 +498,11 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
 ! ===============================================
 ! ==== INITIALISATION DE DSDE ================
 ! ===============================================
-        do 703 i = 1, dimcon
-            do 704 j = 1, dimdef
+        do i = 1, dimcon
+            do j = 1, dimdef
                 dsde(i,j)=0.d0
-704         continue
-703     continue
+            end do
+        end do
         call comthm(option, perman, vf, fa, valfac,&
                     valcen, imate, typmod, compor, crit,&
                     rinstm, rinstp, ndim, dimdef, dimcon,&
@@ -521,7 +515,7 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
         if (retcom .ne. 0) then
             call utmess('F', 'COMPOR1_9')
         endif
-  7 end do
+    end do
     if (cont) then
         vectu(adcm1)=valcen(masse ,eau)*vol
         vectu(adcm2)=valcen(masse ,air)*vol
@@ -569,47 +563,47 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
                     nvim, nvit, nvih, nvic, advime,&
                     advith, advihy, advico, vihrho, vicphi,&
                     vicpvp, vicsat, vicpr1, vicpr2)
-        do 8 ipg = 1, nface+1
+        do ipg = 1, nface+1
             vintp(advico+vicpr1,ipg) = pcp
             vintp(advico+vicpr2,ipg) = pgp
-  8     continue
+        end do
     endif
     dpgp1 = 0.d0
     dpgp2 = 1.d0
-    do 9 ifa = 1, nface
+    do ifa = 1, nface
         pcpf(ifa) = deplp(iadp1(ifa))
         pgpf(ifa) = deplp(iadp2(ifa))
         dpgp1f(ifa) = 0.d0
         dpgp2f(ifa) = 1.d0
-  9 end do
+    end do
     pwp = pgp-pcp
     dpwp1 = -1.d0
     dpwp2 = +1.d0
-    do 10 ifa = 1, nface
+    do ifa = 1, nface
         pwpf(ifa) = pgpf(ifa)-pcpf(ifa)
         dpwp1f(ifa) = -1.d0
         dpwp2f(ifa) = 1.d0
- 10 end do
+    end do
     cvp = valcen(con,wvap)
     dcvp1 = valcen(dconp1,wvap)
     dcvp2 = valcen(dconp2,wvap)
-    do 11 ifa = 1, nface
+    do ifa = 1, nface
         cvpf (ifa) = valfac(ifa,con,wvap)
         dcvp1f(ifa) = valfac(ifa,dconp1,wvap)
         dcvp2f(ifa) = valfac(ifa,dconp2,wvap)
- 11 end do
+    end do
     cad = valcen(con,airdis)
     dcad1 = valcen(dconp1,airdis)
     dcad2 = valcen(dconp2,airdis)
-    do 12 ifa = 1, nface
+    do ifa = 1, nface
         cadf(ifa) = valfac(ifa,con,airdis)
         dcad1f(ifa) = valfac(ifa,dconp1,airdis)
         dcad2f(ifa) = valfac(ifa,dconp2,airdis)
- 12 end do
+    end do
 ! ===========================================================
 ! INITIALISATION
 ! ===========================================================
-    do 13 ifa = 1, maxfa+1
+    do ifa = 1, maxfa+1
         fw1s(ifa) =0.d0
         fw2s(ifa) =0.d0
         fvp1s(ifa)=0.d0
@@ -618,12 +612,12 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
         fas2s(ifa)=0.d0
         fad1s(ifa)=0.d0
         fad2s(ifa)=0.d0
- 13 end do
+    end do
     fluws =0.d0
     fluvps=0.d0
     fluass=0.d0
     fluads=0.d0
-    do 14 ifa = 1, maxfa
+    do ifa = 1, maxfa
         fmvps(ifa)=0.d0
         fmws(ifa) =0.d0
         fmass(ifa)=0.d0
@@ -632,9 +626,9 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
         fgks(ifa) =0.d0
         fclks(ifa) =0.d0
         ftgks(ifa) =0.d0
- 14 end do
-    do 15 jfa = 1, maxfa
-        do 15 ifa = 1, maxfa+1
+    end do
+    do  jfa = 1, maxfa
+        do ifa = 1, maxfa+1
             dflks1(ifa,jfa)=0.d0
             dflks2(ifa,jfa)=0.d0
             dfgks1(ifa,jfa)=0.d0
@@ -651,7 +645,8 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
             fm2ass(ifa,jfa)=0.d0
             fm1ads(ifa,jfa)=0.d0
             fm2ads(ifa,jfa)=0.d0
- 15     continue
+        end do
+    end do
 ! ========================================
 ! FLUX VOLUMIQUES
 !=========================================
@@ -675,7 +670,7 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
                 c, pesa, rhog, drhog1, drhog2,&
                 xg, xface, maxdim, ndim, fgks,&
                 dfgks1, dfgks2)
-    do 16 ifa = 1, nface
+    do ifa = 1, nface
 ! ========================================
 ! CALCUL DIFFUSIONS
 ! ========================================
@@ -694,66 +689,16 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
         diad2(ifa) = valcen(ddifp2,airdis)
         diad1f(ifa) = 0.d0
         diad2f(ifa) = 0.d0
- 16 end do
-    do 161 ifa = 1, nface
+    end do
+    do ifa = 1, nface
 ! ==========================================
 ! CALCUL MOBILITES
 ! ==========================================
-        if (ldcen) then
+
 ! ===========================
 ! CALCUL MOBILITES
 ! ===========================
-            if (flks(ifa) .ge. 0.d0) then
-                mobwf(ifa) = valcen(mob,wliq)
-                dw1f(ifa) = valcen(dmobp1,wliq)
-                dw2f(ifa) = valcen(dmobp2,wliq)
-                dw1ffa(ifa) = 0.d0
-                dw2ffa(ifa) = 0.d0
-!
-                moadf(ifa) = valcen(mob,airdis)
-                dad1f(ifa) = valcen(dmobp1,airdis)
-                dad2f(ifa) = valcen(dmobp2,airdis)
-                dad1ff(ifa)= 0.d0
-                dad2ff(ifa)= 0.d0
-            else
-                mobwf(ifa) = valfac(ifa,mob,wliq)
-                dw1f(ifa) = 0.d0
-                dw2f(ifa) = 0.d0
-                dw1ffa(ifa)=valfac(ifa,dmobp1,wliq)
-                dw2ffa(ifa)= valfac(ifa,dmobp2,wliq)
-!
-                moadf(ifa) = valfac(ifa,mob,airdis)
-                dad1f(ifa) = 0.d0
-                dad2f(ifa) = 0.d0
-                dad1ff(ifa)= valfac(ifa,dmobp1,airdis)
-                dad2ff(ifa)= valfac(ifa,dmobp2,airdis)
-            endif
-            if (fgks(ifa) .ge. 0.d0) then
-                moasf(ifa) = valcen(mob,airsec)
-                das1f(ifa) = valcen(dmobp1,airsec)
-                das2f(ifa) = valcen(dmobp2,airsec)
-                das1ff(ifa)= 0.d0
-                das2ff(ifa)= 0.d0
-!
-                movpf(ifa) = valcen(mob,wvap)
-                dvp1f(ifa) = valcen(dmobp1,wvap)
-                dvp2f(ifa) = valcen(dmobp2,wvap)
-                dvp1ff(ifa)= 0.d0
-                dvp2ff(ifa)= 0.d0
-            else
-                moasf(ifa) = valfac(ifa,mob,airsec)
-                das1f(ifa) = 0.d0
-                das2f(ifa) = 0.d0
-                das1ff(ifa)= valfac(ifa,dmobp1,airsec)
-                das2ff(ifa)= valfac(ifa,dmobp2,airsec)
-!
-                movpf(ifa) = valfac(ifa,mob,wvap)
-                dvp1f(ifa) = 0.d0
-                dvp2f(ifa) = 0.d0
-                dvp1ff(ifa)= valfac(ifa,dmobp1,wvap)
-                dvp2ff(ifa)= valfac(ifa,dmobp2,wvap)
-            endif
-        else
+        if (flks(ifa) .ge. 0.d0) then
             mobwf(ifa) = valcen(mob,wliq)
             dw1f(ifa) = valcen(dmobp1,wliq)
             dw2f(ifa) = valcen(dmobp2,wliq)
@@ -765,7 +710,20 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
             dad2f(ifa) = valcen(dmobp2,airdis)
             dad1ff(ifa)= 0.d0
             dad2ff(ifa)= 0.d0
+        else
+            mobwf(ifa) = valfac(ifa,mob,wliq)
+            dw1f(ifa) = 0.d0
+            dw2f(ifa) = 0.d0
+            dw1ffa(ifa)=valfac(ifa,dmobp1,wliq)
+            dw2ffa(ifa)= valfac(ifa,dmobp2,wliq)
 !
+            moadf(ifa) = valfac(ifa,mob,airdis)
+            dad1f(ifa) = 0.d0
+            dad2f(ifa) = 0.d0
+            dad1ff(ifa)= valfac(ifa,dmobp1,airdis)
+            dad2ff(ifa)= valfac(ifa,dmobp2,airdis)
+        endif
+        if (fgks(ifa) .ge. 0.d0) then
             moasf(ifa) = valcen(mob,airsec)
             das1f(ifa) = valcen(dmobp1,airsec)
             das2f(ifa) = valcen(dmobp2,airsec)
@@ -777,9 +735,21 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
             dvp2f(ifa) = valcen(dmobp2,wvap)
             dvp1ff(ifa)= 0.d0
             dvp2ff(ifa)= 0.d0
+        else
+            moasf(ifa) = valfac(ifa,mob,airsec)
+            das1f(ifa) = 0.d0
+            das2f(ifa) = 0.d0
+            das1ff(ifa)= valfac(ifa,dmobp1,airsec)
+            das2ff(ifa)= valfac(ifa,dmobp2,airsec)
+!
+            movpf(ifa) = valfac(ifa,mob,wvap)
+            dvp1f(ifa) = 0.d0
+            dvp2f(ifa) = 0.d0
+            dvp1ff(ifa)= valfac(ifa,dmobp1,wvap)
+            dvp2ff(ifa)= valfac(ifa,dmobp2,wvap)
         endif
-161 end do
-    do 162 ifa = 1, nface
+    end do
+    do ifa = 1, nface
         call cafmes(ifa, .true._1, tange, maxfa, nface,&
                     flks(ifa), dflks1, dflks2, mobwf(ifa), dw1f,&
                     dw2f, dw1ffa, dw2ffa, fmws, fm1ws,&
@@ -808,7 +778,7 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
                     fclks(ifa), fclks1, fclks2, difuad(ifa), diad1,&
                     diad2, diad1f, diad2f, fmads, fm1ads,&
                     fm2ads)
-162 end do
+    end do
     call cafves(.true._1, tange, maxfa, nface, flks,&
                 dflks1, dflks2, mobwf, dw1f, dw2f,&
                 dw1ffa, dw2ffa, fluws, fw1s, fw2s)
@@ -836,12 +806,12 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
 !           | FMWS + FMVPS |
 !           | FMASS + FMADS |
 ! ********************************************************************
-        do 17 ifa = 1, nface
+        do ifa = 1, nface
             congep(adcp11+1,ifa+1)=fmws(ifa)+fmvps(ifa)
             congep(adcp12+1,ifa+1)=fmass(ifa)+fmads(ifa)
             vectu(adcf1(ifa))=congep(adcp11+1,ifa+1)
             vectu(adcf2(ifa))=congep(adcp12+1,ifa+1)
- 17     continue
+        end do
 ! ********************************************************************
 ! EQUATION DE LA CONSERVATION DE LA MASSE
 !
@@ -878,7 +848,7 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
 !
         matuu(zzadma(0,adcm2,iadp2k))= matuu(zzadma(0,adcm2,iadp2k))+&
         fas2s(1)+fad2s(1)
-        do 18 ifa = 1, nface
+        do ifa = 1, nface
 !
 ! *******************************************************************
 ! EQUATION DE LA CONSERVATION DE LA MASSE POUR K
@@ -927,7 +897,7 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
 !           | FM1ASS + FM1ADS |
 !           | FM2ASS + FM2ADS |
 ! *******************************************************************
-            do 181 jfa = 1, nface
+            do jfa = 1, nface
                 matuu(zzadma(0,adcf1(ifa),iadp1(jfa)))= matuu(zzadma(0,adcf1(ifa),iadp1(jfa))) +&
                     fm1ws(jfa+1,ifa)+fm1vps(jfa+1,ifa)
 !
@@ -941,7 +911,7 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
                 matuu(zzadma(0,adcf2(ifa),iadp2(jfa)))= matuu(zzadma(0,adcf2(ifa),iadp2(jfa))) +&
                     fm2ass(jfa+1,ifa)+fm2ads(&
                 jfa+1,ifa)
-181         continue
- 18     continue
+            end do
+        end do
     endif
 end subroutine

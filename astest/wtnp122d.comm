@@ -16,6 +16,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #    LINEAIRE SOUMIS A UN CHOC DE PRESSION EN 1D
+#    MODELISATION EF (EF)
 
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
@@ -35,6 +36,7 @@ MODELISA = 'D_PLAN_HH2S'
 #=============================================================
 
 PARM_ALPHA=1.
+
 MOLVP =0.0001
 
 #*********************************************************
@@ -63,10 +65,52 @@ NBDECOUP=100
 
 RESI_GLOB_MAXI = 1.E-12
 
-ITER_GLOB_MAXI = 5
+ITER_GLOB_MAXI = 20
+
+#
+#
+#*************************************************************
+# Liste des instants de calculs
+#*************************************************************
+#
+
+INST1=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=(_F(JUSQU_A=TFINAL,
+                                    NOMBRE=NBDECOUP,),),
+                     );
+
+LI =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INST1 ,),
+                                ECHEC=_F(EVENEMENT = 'ERREUR',
+                                         ACTION    = 'ARRET',),)
+#*********************
+# Lecture du maillage
+#*********************
+
+MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=DEFI_GROUP(reuse =MAIL,
+         MAILLAGE=MAIL,
+         CREA_GROUP_NO=(
+         _F(GROUP_MA='MHAUT',),
+         _F(GROUP_MA='MBAS',),
+         _F(GROUP_MA='MDROIT',),
+         _F(GROUP_MA='MGAUCHE',),
+       ),);
 
 
+#*********************************************************
+# Modele de calcul
+#*********************************************************
+#
+MODELT=AFFE_MODELE(MAILLAGE=MAIL,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION=MODELISA,),
+                  );
 
+
+#*********************************************************
+# Definition des caracteristiques fluides
+#**********************************************************
 
 UN=DEFI_CONSTANTE(VALE=1.0,);
 ZERO=DEFI_CONSTANTE(VALE=0.0,);
@@ -83,55 +127,9 @@ DVISCOG=DEFI_CONSTANTE(VALE=0.0,);
 
 VALKINT=1.E-3 /PGREF
 KINT=DEFI_CONSTANTE(VALE=VALKINT,);
-#
-#
-#*************************************************************
-# Liste des instants de calculs
-#*************************************************************
-#
-
-INST1=DEFI_LIST_REEL(DEBUT=0.0,
-                     INTERVALLE=(_F(JUSQU_A=TFINAL,
-                                    NOMBRE=NBDECOUP,),),
-                     );
-
-LI =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INST1 ,),
-                                ECHEC=_F(EVENEMENT = 'ERREUR',
-                                         ACTION    = 'ARRET',),)
-
-
-
-#*********************
-# Lecture du maillage
-#*********************
-
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
-MAIL=DEFI_GROUP(reuse =MAIL,
-                MAILLAGE=MAIL,
-                CREA_GROUP_NO=(
-                _F(GROUP_MA='MHAUT',),
-                _F(GROUP_MA='MBAS',),
-                _F(GROUP_MA='MDROIT',),
-                _F(GROUP_MA='MGAUCHE',),
-                   ),);
-
-
 #*********************************************************
-# Modele de calcul
-#*********************************************************
-#
-MODELT=AFFE_MODELE(MAILLAGE=MAIL,
-                   AFFE=_F(TOUT='OUI',
-                           PHENOMENE='MECANIQUE',
-                           MODELISATION=MODELISA,),
-                  );
-
-
-
-#*********************************************************
-# Definition des caracteristiques fluides
+# Definition des materiaux
 #**********************************************************
-
 
 MATERIAU=DEFI_MATERIAU(
 
@@ -177,7 +175,7 @@ MATERIAU=DEFI_MATERIAU(
             PESA_Z     = 0.,
 #*****TENSEUR******
             PERMIN_L   = KINT,
-            PERMIN_T   = ZERO,
+            PERMIN_T   = KINT,
             PERM_LIQU  = UN,
             D_PERM_LIQU_SATU=ZERO,
             PERM_GAZ   = UN,
@@ -211,10 +209,6 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
 # Affectation de l etat initial
 #*************************************************************
 #
-
-#***********************
-#ESSAI COMPARAISON HDI
-#***********************
 PINIT=CREA_CHAMP(MAILLAGE=MAIL,
                     OPERATION='AFFE',
                     TYPE_CHAM='NOEU_DEPL_R',
@@ -232,8 +226,6 @@ PINIT=CREA_CHAMP(MAILLAGE=MAIL,
 # Affectation des CL
 #*************************************************************
 #
-
-
 CHIMP=AFFE_CHAR_CINE(MODELE=MODELT,
        MECA_IMPO=(
                  _F(TOUT='OUI',PRE1=0.,),
@@ -243,8 +235,6 @@ CHIMP=AFFE_CHAR_CINE(MODELE=MODELT,
        );
 
 
-
-#
 #
 #*************************************************************
 #     STAT NON LINE
@@ -259,22 +249,23 @@ cal1=STAT_NON_LINE(MODELE=MODELT,
                               RELATION_KIT=('LIQU_AD_GAZ_VAPE','HYDR_UTIL'),
                  ),
 
-                 ETAT_INIT  = _F ( DEPL = PINIT  ,
-                                  ),
                 INCREMENT=_F(
                    LIST_INST = LI,
                      INST_FIN=TFINAL,
                 ),
+                 ETAT_INIT  = _F ( DEPL = PINIT  ,
+                                  ),
+
                SOLVEUR=_F(METHODE='MULT_FRONT',
                             STOP_SINGULIER='NON',),
 
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1,),
 
-                 CONVERGENCE=_F(
-                                 RESI_GLOB_MAXI = RESI_GLOB_MAXI,
+                 CONVERGENCE=_F( RESI_GLOB_MAXI = RESI_GLOB_MAXI,
                                  ITER_GLOB_MAXI = ITER_GLOB_MAXI,),
 
+                 ARCHIVAGE=_F(LIST_INST     = INST1  ,),
                  );
 
 
@@ -319,9 +310,9 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                 REFERENCE='ANALYTIQUE',
                 RESULTAT=cal1,
                 NOM_CHAM='DEPL',
-                NOEUD='N104',
+                NOEUD='N103',
                 NOM_CMP='PRE2',
-                VALE_CALC=992.859156677,
+                VALE_CALC=992.699031493,
                 VALE_REFE=889.31760999999995,
                 CRITERE='RELATIF',
                 PRECISION=0.12,),
@@ -332,9 +323,9 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                 REFERENCE='ANALYTIQUE',
                 RESULTAT=cal1,
                 NOM_CHAM='DEPL',
-                NOEUD='N103',
+                NOEUD='N203',
                 NOM_CMP='PRE2',
-                VALE_CALC=992.859156678,
+                VALE_CALC=993.059580859,
                 VALE_REFE=889.31760999999995,
                 CRITERE='RELATIF',
                 PRECISION=0.12,),
@@ -346,10 +337,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                 REFERENCE='NON_DEFINI',
                 RESULTAT=cal1,
                 NOM_CHAM='DEPL',
-                NOEUD='N104',
+                NOEUD='N103',
                 NOM_CMP='PRE2',
-                VALE_CALC=992.859156677,
-                VALE_REFE=992.85915667740005,
+                VALE_CALC=992.699031493,
+                VALE_REFE=992.69899999999996,
                 CRITERE='RELATIF',
                 PRECISION=1.E-2,),
         )
@@ -359,10 +350,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                 REFERENCE='NON_DEFINI',
                 RESULTAT=cal1,
                 NOM_CHAM='DEPL',
-                NOEUD='N103',
+                NOEUD='N203',
                 NOM_CMP='PRE2',
-                VALE_CALC=992.859156678,
-                VALE_REFE=992.85915667759002,
+                VALE_CALC=993.059580859,
+                VALE_REFE=993.05999999999995,
                 CRITERE='RELATIF',
                 PRECISION=1.E-2,),
         )

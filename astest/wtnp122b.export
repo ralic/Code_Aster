@@ -6,4 +6,4 @@ P mpi_nbnoeud 1
 P testlist verification sequential
 
 F comm wtnp122b.comm D 1
-F mmed wtnp122b.mmed D 20
+F mmed wtnp121b.mmed D 20
