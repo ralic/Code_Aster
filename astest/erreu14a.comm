@@ -62,8 +62,7 @@ try :
 except aster.error,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
-  #if err.id_message == "CALCULEL6_62":
-   if err.id_message == "CALCUL1_6":
+   if err.id_message == "CALCULEL6_62":
       is_ok = 1
 
 # TEST_RESU
@@ -98,8 +97,7 @@ try :
 except aster.error,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
-  #if err.id_message == "CALCULEL6_62":
-   if err.id_message == "CALCUL1_6":
+   if err.id_message == "CALCULEL6_62":
       is_ok = 1
 
 # TEST_RESU
@@ -124,8 +122,7 @@ try :
 except aster.error,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
-  #if err.id_message == "CALCULEL6_62":
-   if err.id_message == "CALCUL1_6":
+   if err.id_message == "CALCULEL6_62":
       is_ok = 1
 
 # TEST_RESU
