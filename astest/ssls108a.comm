@@ -35,7 +35,7 @@ MAILLA_1=DEFI_GROUP( reuse=MAILLA_1,   MAILLAGE=MAILLA_1,
 CH_MAT_1=AFFE_MATERIAU(  MAILLAGE=MAILLA_1,
                             AFFE=_F(  TOUT = 'OUI',   MATER = MATERI_1) )
 
-MODELE_1=AFFE_MODELE(  MAILLAGE=MAILLA_1, 
+MODELE_1=AFFE_MODELE(  MAILLAGE=MAILLA_1,
                      AFFE=_F( TOUT = 'OUI', MODELISATION = 'COQUE_3D',
                                 PHENOMENE = 'MECANIQUE') )
 
@@ -127,11 +127,12 @@ IMPR_RESU ( MODELE=MODELE_1,
 
 DEFI_FICHIER(ACTION='LIBERER',UNITE=35)
 
-TEST_FICHIER(FICHIER='./REPE_OUT/MA10.pos',
-             NB_VALE=1654,
-             VALE_CALC=2.92826E+06,
-             VALE_CALC_K='4d37dac458a3fb580fa52823e645370a',
-             INFO=1)
+TEST_FICHIER(FICHIER="./REPE_OUT/MA10.pos",
+             NB_VALE_I=1279,
+             VALE_CALC_I=2927510,
+             NB_VALE=375,
+             VALE_CALC=7.4999999941e+02,
+)
 
 #---------------------------------------------------------------------
 # TEST IMPR_RESU/GMSH RESU
@@ -145,10 +146,12 @@ IMPR_RESU ( MODELE=MODELE_1,
 
 DEFI_FICHIER(ACTION='LIBERER',UNITE=36)
 
-TEST_FICHIER(FICHIER= './REPE_OUT/DEP10.pos',
-             NB_VALE=13061,
-             VALE_CALC=19169.172250717,
-             INFO=1)
+TEST_FICHIER(FICHIER="./REPE_OUT/DEP10.pos",
+             NB_VALE_I=93,
+             VALE_CALC_I=1023,
+             NB_VALE=12968,
+             VALE_CALC=1.8146172191e+04,
+)
 
 #---------------------------------------------------------------------
 # TEST IMPR_RESU/GMSH MAILLAGE
@@ -162,10 +165,12 @@ IMPR_RESU ( MODELE=MODELE_1,
 
 DEFI_FICHIER(ACTION='LIBERER',UNITE=37)
 
-TEST_FICHIER(FICHIER='./REPE_OUT/MA12.pos',
-             NB_VALE=1654,
-             VALE_CALC=2.92826E+06,
-             INFO=1)
+TEST_FICHIER(FICHIER="./REPE_OUT/MA12.pos",
+             NB_VALE_I=1279,
+             VALE_CALC_I=2927510,
+             NB_VALE=375,
+             VALE_CALC=7.4999999941e+02,
+)
 
 #---------------------------------------------------------------------
 # TEST IMPR_RESU/GMSH RESU
@@ -179,10 +184,12 @@ IMPR_RESU ( MODELE=MODELE_1,
 
 DEFI_FICHIER(ACTION='LIBERER',UNITE=38)
 
-TEST_FICHIER(FICHIER='./REPE_OUT/DEP12.pos',
-             NB_VALE=10551,
-             VALE_CALC=16431.68383723,
-             INFO=1)
+TEST_FICHIER(FICHIER="./REPE_OUT/DEP12.pos",
+             NB_VALE_I=176,
+             VALE_CALC_I=878,
+             NB_VALE=10375,
+             VALE_CALC=1.5553683808e+04,
+)
 
 #---------------------------------------------------------------------
 FIN()

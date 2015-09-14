@@ -94,10 +94,14 @@ IMPR_RESU(UNITE=38,RESU=_F(MAILLAGE=MA2),)
 
 DEFI_FICHIER (ACTION='LIBERER',UNITE=38)
 
-TEST_FICHIER(FICHIER='fort.38',
-             NB_VALE=851,EXPR_IGNORE=('ASTER'),
-             VALE_CALC=1.0936050000000e+04,
-             VALE_CALC_K='ffcebec669c2b11afd3b027b076de349',)
+TEST_FICHIER(FICHIER="fort.38",
+             NB_VALE_I=637,
+             VALE_CALC_I=9776,
+             NB_VALE=214,
+             VALE_CALC=1.1600500000e+03,
+             VALE_CALC_K="ffcebec669c2b11afd3b027b076de349",
+             EXPR_IGNORE=('ASTER'),
+)
 
 # fin de la validation 2
 # ----------------------------------------------------------------------

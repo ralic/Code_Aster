@@ -68,13 +68,13 @@ CH=AFFE_CHAR_MECA(MODELE=MODELEK,
 UTOT=MECA_STATIQUE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
                    EXCIT=(_F(CHARGE=CH),
-                          
+
                           ),
                    INFO=2,
-                   ); 
-# -------------------------------------------------------------   
-#            POST-TRAITEMENT POUR LA VISUALISATION X-FEM   
-# -------------------------------------------------------------   
+                   );
+# -------------------------------------------------------------
+#            POST-TRAITEMENT POUR LA VISUALISATION X-FEM
+# -------------------------------------------------------------
 
 MA_XFEM=POST_MAIL_XFEM(
                        MODELE        = MODELEK,
@@ -83,19 +83,19 @@ MA_XFEM=POST_MAIL_XFEM(
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),) 
+                              MODELISATION='3D',),)
 
 RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT,
-                        
+
                         INFO          = 2)
- 
+
 #IMPR_RESU(FORMAT='GMSH',UNITE=81,RESU=_F(RESULTAT=RES_XFEM));
 
 
-# -------------------------------------------------------------   
+# -------------------------------------------------------------
 #            TEST_TABLE
-# -------------------------------------------------------------   
+# -------------------------------------------------------------
 
 
 DEP=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
@@ -233,13 +233,13 @@ TEST_TABLE(CRITERE='RELATIF',
            TYPE_TEST='MAX',
            TABLE=DEPM,)
 
-# -------------------------------------------------------------   
-#            VALIDATION DE DEFI_FISS_XFEM/DEFI_FISS/CHAM_NO_LSN   
-# -------------------------------------------------------------   
+# -------------------------------------------------------------
+#            VALIDATION DE DEFI_FISS_XFEM/DEFI_FISS/CHAM_NO_LSN
+# -------------------------------------------------------------
 
 TBLSN=LIRE_TABLE(UNITE=38,INFO=2,
-               FORMAT='ASTER',  
-               NUME_TABLE=1, 
+               FORMAT='ASTER',
+               NUME_TABLE=1,
                SEPARATEUR=' ',
                TITRE='level set normale',)
 
@@ -274,9 +274,12 @@ IMPR_RESU(UNITE=81,INFO=2,MODELE=MODELEIN,
 
 DEFI_FICHIER(UNITE=81, ACTION='LIBERER')
 
-TEST_FICHIER(FICHIER='./fort.81',INFO=2,
+TEST_FICHIER(FICHIER="./fort.81",
+             NB_VALE_I=27,
+             VALE_CALC_I=111,
+             NB_VALE=24,
+             VALE_CALC=0.0000000000,
              EXPR_IGNORE = ('ASTER'),
-             NB_VALE=51,
-             VALE_CALC=111.0,)
+)
 
 FIN();

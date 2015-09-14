@@ -110,11 +110,13 @@ THET=CALC_THETA(MODELE=MO,
 
 DEFI_FICHIER(ACTION='LIBERER',
              UNITE=62,);
-TEST_FICHIER(
-   FICHIER='fort.62',
-   VALE_CALC_K='2e40f4e4ca3ade6f42606fe6d933eeb4',
-   VALE_CALC=1.0942440730322E+05  ,
-   NB_VALE=520,
+
+TEST_FICHIER(FICHIER="fort.62",
+             NB_VALE_I=65,
+             VALE_CALC_I=108900,
+             NB_VALE=455,
+             VALE_CALC=5.2440730322e+02,
+             VALE_CALC_K="2e40f4e4ca3ade6f42606fe6d933eeb4",
 )
 
 G0=CALC_G(        RESULTAT=RESU,
@@ -316,7 +318,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC= 11.728527414718 ,
-           
+
            NOM_PARA='G',
            TABLE=GLOC3,
            FILTRE=_F(NOM_PARA='NOEUD',
@@ -324,7 +326,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(VALE_CALC= 11.737737538411 ,
-           
+
            NOM_PARA='G',
            TYPE_TEST='MAX',
            TABLE=GLOC3,
@@ -332,7 +334,7 @@ TEST_TABLE(VALE_CALC= 11.737737538411 ,
 
 TEST_TABLE(
            VALE_CALC= 11.724660024651,
-           
+
            NOM_PARA='G',
            TYPE_TEST='MIN',
            TABLE=GLOC3,

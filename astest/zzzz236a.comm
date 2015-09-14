@@ -52,25 +52,111 @@ MNA1=CREA_MAILLAGE(MAILLAGE=MA0, RESTREINT=_F(GROUP_MA='VOLAA',TOUT_GROUP_MA='OU
 MNA2=CREA_MAILLAGE(MAILLAGE=MA0, RESTREINT=_F(GROUP_MA='VOLAA',TOUT_GROUP_MA='OUI',TOUT_GROUP_NO='OUI'),)
 
 
-ListeMail={
- 'MA1'  : ('5960beddf53839be4c233c0e9f405ae4',2126,),
- 'MA2'  : ('04ba40f8754e0582d3e96956b385a81c',4239,),
- 'MA3'  : ('7cefb82a23812ad514790c9b0a04703e',8304,),
- 'MA4'  : ('4088ec9a4331d89292c3c61355e365d0',8599,),
- 'MNA1' : ('f45f245a988d398bdfd1be966aeed043',4866,),
- 'MNA2' : ('8f008a40e969f6b38204a8f62599e34a',5051,),
- 'NA1'  : ('c12215e803453dd392e7d8ec436bf904',2163,),
- 'NA2'  : ('6ea5a0e23568bda04906395e56c00535',5176,),
- 'NA3'  : ('6b96b6c1e54bd3245bc11d32c8499fc3',9134,),
-}
+ListeMail = [
+ 'MA1' ,
+ 'MA2' ,
+ 'MA3' ,
+ 'MA4' ,
+ 'MNA1',
+ 'MNA2',
+ 'NA1' ,
+ 'NA2' ,
+ 'NA3' ,
+]
 
-for unmail,lesval in ListeMail.iteritems():
+for unmail in ListeMail:
    nomfic = './REPE_OUT/%s.mail' % unmail
-   unite = DEFI_FICHIER(ACTION='ASSOCIER',FICHIER=nomfic)
-   IMPR_RESU(UNITE=unite,FORMAT='ASTER',RESU=_F(MAILLAGE=eval('%s' % unmail ) ),)
-   DEFI_FICHIER(ACTION='LIBERER',UNITE=unite)
-   DETRUIRE(CONCEPT=(_F(NOM=unite),), INFO=1)
-   md5sum,nbvale = lesval
-   TEST_FICHIER(FICHIER=nomfic,VALE_CALC_K=md5sum,NB_VALE=nbvale)
+   unite = DEFI_FICHIER(ACTION='ASSOCIER',
+                        FICHIER=nomfic)
+   IMPR_RESU(UNITE=unite,
+             FORMAT='ASTER',
+             RESU=_F(MAILLAGE=eval('%s' % unmail ) ),)
+   DEFI_FICHIER(ACTION='LIBERER',
+                UNITE=unite)
+   DETRUIRE(CONCEPT=(_F(NOM=unite),),
+            INFO=1)
+
+TEST_FICHIER(FICHIER="./REPE_OUT/MA1.mail",
+             NB_VALE_I=1469,
+             VALE_CALC_I=164444,
+             NB_VALE=648,
+             VALE_CALC=3.2400000000e+02,
+             VALE_CALC_K="17dd6e6f906f148b196a29a6abccce9f",
+             EXPR_IGNORE=('ASTER',),
+)
+
+TEST_FICHIER(FICHIER="./REPE_OUT/NA2.mail",
+             NB_VALE_I=3331,
+             VALE_CALC_I=1068403,
+             NB_VALE=1836,
+             VALE_CALC=1.9080000000e+03,
+             VALE_CALC_K="e7ed913566239d0ef533780631e2ec73",
+             EXPR_IGNORE=('ASTER',),
+)
+
+TEST_FICHIER(FICHIER="./REPE_OUT/MA3.mail",
+             NB_VALE_I=5919,
+             VALE_CALC_I=2385780,
+             NB_VALE=2376,
+             VALE_CALC=2.6280000000e+03,
+             VALE_CALC_K="db564b356974fc13ba22ccaa67aa37db",
+             EXPR_IGNORE=('ASTER',),
+)
+
+TEST_FICHIER(FICHIER="./REPE_OUT/MA2.mail",
+             NB_VALE_I=2934,
+             VALE_CALC_I=811593,
+             NB_VALE=1296,
+             VALE_CALC=1.0800000000e+03,
+             VALE_CALC_K="1cb4700c1c5f4f8ea88cd3cb201aec64",
+             EXPR_IGNORE=('ASTER',),
+)
+
+TEST_FICHIER(FICHIER="./REPE_OUT/MA4.mail",
+             NB_VALE_I=6214,
+             VALE_CALC_I=2498479,
+             NB_VALE=2376,
+             VALE_CALC=2.6280000000e+03,
+             VALE_CALC_K="42bbddf861b757d083e6075dc90f1fee",
+             EXPR_IGNORE=('ASTER',),
+)
+
+TEST_FICHIER(FICHIER="./REPE_OUT/NA1.mail",
+             NB_VALE_I=1506,
+             VALE_CALC_I=166480,
+             NB_VALE=648,
+             VALE_CALC=3.2400000000e+02,
+             VALE_CALC_K="679298ec8335eae41c4abfa0127c29be",
+             EXPR_IGNORE=('ASTER',),
+)
+
+TEST_FICHIER(FICHIER="./REPE_OUT/MNA2.mail",
+             NB_VALE_I=3746,
+             VALE_CALC_I=986148,
+             NB_VALE=1296,
+             VALE_CALC=1.0800000000e+03,
+             VALE_CALC_K="28e4060886fe3a68c979845ad13d516e",
+             EXPR_IGNORE=('ASTER',),
+)
+
+TEST_FICHIER(FICHIER="./REPE_OUT/MNA1.mail",
+             NB_VALE_I=3561,
+             VALE_CALC_I=944722,
+             NB_VALE=1296,
+             VALE_CALC=1.0800000000e+03,
+             VALE_CALC_K="1bbe4fb95f9f24442aaf1522844d3dc6",
+             EXPR_IGNORE=('ASTER',),
+)
+
+TEST_FICHIER(FICHIER="./REPE_OUT/NA3.mail",
+             NB_VALE_I=6317,
+             VALE_CALC_I=2636078,
+             NB_VALE=2808,
+             VALE_CALC=3.2760000000e+03,
+             VALE_CALC_K="b06f496cfb5aa04c3d4c5a6dcdb6b23a",
+             EXPR_IGNORE=('ASTER',),
+)
+
+
 
 FIN()

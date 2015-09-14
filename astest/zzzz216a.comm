@@ -198,10 +198,13 @@ DEFI_FICHIER(ACTION='LIBERER',
 #
 # TEST NON REGRESSION
 #
-TEST_FICHIER(FICHIER='./REPE_OUT/stanl01a.55',
-             NB_VALE= 204833,
-             VALE_CALC_K='a828fcdcdc224d816aa231090c8f89e4',
-             INFO=1,);
+TEST_FICHIER(FICHIER="./REPE_OUT/stanl01a.55",
+             NB_VALE_I=31,
+             VALE_CALC_I=6409,
+             NB_VALE=204802,
+             VALE_CALC=1.4309406267e+09,
+             VALE_CALC_K="a828fcdcdc224d816aa231090c8f89e4"
+)
 
 #
 #**************************************************************

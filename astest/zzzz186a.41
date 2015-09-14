@@ -1218,8 +1218,8 @@ IMPR_OAR(TYPE_CALC = 'TUYAUTERIE',
 
 # md5 = 2979eea4671ff79c37fdabac2a3c9ef7
 TEST_FICHIER(FICHIER='fort.38',
-             NB_VALE=950,
-             VALE_CALC=11173.7861686,
+             NB_VALE=876,
+             VALE_CALC=8.4717861742e+03,
              VALE_CALC_K='218e41469273321fc1b7a75fd790ba1a',
              TOLE_MACHINE=1.E-3)
 
@@ -1252,7 +1252,7 @@ IMPR_OAR(TYPE_CALC='TUYAUTERIE',
 
 # md5 = a5b0d49bec94dddbee12071bd2b4da5f
 TEST_FICHIER(FICHIER='fort.38',
-             NB_VALE=1900,
-             VALE_CALC=47887.3657556,
+             NB_VALE=1752,
+             VALE_CALC=4.2482365770e+04,
              VALE_CALC_K='acda10a804104216eaab3937140bcfb2',
              TOLE_MACHINE=1.E-3)

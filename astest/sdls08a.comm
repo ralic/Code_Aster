@@ -159,7 +159,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='FREQ',
                   RESULTAT=MODE_T,
                   VALE_CALC=29.060400000000001,
-                  
+
                   CRITERE='RELATIF',
                   ),
           )
@@ -168,7 +168,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   PARA='FREQ',
                   RESULTAT=MODE_T,
                   VALE_CALC=76.228099999999998,
-                  
+
                   CRITERE='RELATIF',
                   ),
           )
@@ -177,7 +177,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=3,
                   PARA='FREQ',
                   RESULTAT=MODE_T,
                   VALE_CALC=76.228099999999998,
-                  
+
                   CRITERE='RELATIF',
                   ),
           )
@@ -186,7 +186,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   PARA='FREQ',
                   RESULTAT=MODE_T,
                   VALE_CALC=76.228099999999998,
-                  
+
                   CRITERE='RELATIF',
                   ),
           )
@@ -195,7 +195,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=5,
                   PARA='FREQ',
                   RESULTAT=MODE_T,
                   VALE_CALC=5058.5100000000002,
-                  
+
                   CRITERE='RELATIF',
                   ),
           )
@@ -204,7 +204,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=6,
                   PARA='FREQ',
                   RESULTAT=MODE_T,
                   VALE_CALC=5058.5100000000002,
-                  
+
                   CRITERE='RELATIF',
                   ),
           )
@@ -377,11 +377,13 @@ IMPR_GENE(UNITE=39,
 
 DEFI_FICHIER (ACTION='LIBERER',UNITE=39)
 
-TEST_FICHIER(FICHIER='fort.39',
-             NB_VALE=4590,
-             VALE_CALC=7.46868879e+04,
-             VALE_CALC_K='cfe7353c21c2df62cc82abeea68669f8',
+TEST_FICHIER(FICHIER="fort.39",
+             NB_VALE_I=2340,
+             VALE_CALC_I=74685,
+             NB_VALE=2250,
+             VALE_CALC=1.8878719113,
+             VALE_CALC_K="cfe7353c21c2df62cc82abeea68669f8",
              EXPR_IGNORE = ('ASTER','INSTANT','ORDRE','FREQ'),
-             INFO=1);
+)
 
 FIN();

@@ -266,10 +266,12 @@ IMPR_GENE(UNITE=38,
 DEFI_FICHIER(ACTION='LIBERER',
              UNITE=38,);
 
-TEST_FICHIER(FICHIER='./REPE_OUT/FGEN.gene',
-             NB_VALE=24,
-             VALE_CALC=27.175237,
-             INFO=1,);
+TEST_FICHIER(FICHIER="./REPE_OUT/FGEN.gene",
+             NB_VALE_I=13,
+             VALE_CALC_I=23,
+             NB_VALE=11,
+             VALE_CALC=4.1752370000,
+)
 
 #---------------------------------------------------------------------
 #
@@ -312,10 +314,12 @@ IMPR_GENE(
 DEFI_FICHIER(ACTION='LIBERER',
              UNITE=37,);
 
-TEST_FICHIER(FICHIER='./REPE_OUT/RESU.gene',
-             NB_VALE=105,
-             VALE_CALC=417.980381,
-             INFO=1,);
+TEST_FICHIER(FICHIER="./REPE_OUT/RESU.gene",
+             NB_VALE_I=53,
+             VALE_CALC_I=386,
+             NB_VALE=52,
+             VALE_CALC=31.980381000,
+)
 
 #---------------------------------------------------------------------
 

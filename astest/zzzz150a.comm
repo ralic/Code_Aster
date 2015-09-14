@@ -90,12 +90,14 @@ IMPR_FONCTION(
             _F( FONCTION=FCT2,   ), )
    )
 
-TEST_FICHIER(
-   FICHIER='fort.51',
-   VALE_CALC_K='38a090c2ef30c6c759c863ea64ad5df4',
-   VALE_CALC=3.065006E+03,
-   NB_VALE=22,
+TEST_FICHIER(FICHIER="fort.51",
+             NB_VALE_I=12,
+             VALE_CALC_I=65,
+             NB_VALE=10,
+             VALE_CALC=3.0000060000e+03,
+             VALE_CALC_K="38a090c2ef30c6c759c863ea64ad5df4",
 )
+
 # ------------------------------------------------------------------------------
 IMPR_FONCTION(
    FORMAT='TABLEAU',
@@ -104,11 +106,12 @@ IMPR_FONCTION(
                FONC_Y=FCT2, ),
    )
 
-TEST_FICHIER(
-   FICHIER='fort.52',
-   VALE_CALC_K='dc6b6f265a8ad492634f50da4fe167d3',
-   VALE_CALC=1.502E+03,
-   NB_VALE=8,
+TEST_FICHIER(FICHIER="fort.52",
+             NB_VALE_I=4,
+             VALE_CALC_I=2,
+             NB_VALE=4,
+             VALE_CALC=1.5000000000e+03,
+             VALE_CALC_K="dc6b6f265a8ad492634f50da4fe167d3",
 )
 
 # ------------------------------------------------------------------------------
@@ -127,11 +130,12 @@ IMPR_FONCTION(
    LEGENDE_X='Deformation',
    LEGENDE_Y='Contrainte',
 )
-TEST_FICHIER(
-   FICHIER='fort.53',
-   VALE_CALC_K='49c8e63ede6638d28a72aa42c3b6fdd4',
-   VALE_CALC=6.47129982e+04,
-   NB_VALE=381,
+TEST_FICHIER(FICHIER="fort.53",
+             NB_VALE_I=312,
+             VALE_CALC_I=64076,
+             NB_VALE=69,
+             VALE_CALC=6.3699820000e+02,
+             VALE_CALC_K="49c8e63ede6638d28a72aa42c3b6fdd4",
 )
 
 # ------------------------------------------------------------------------------
@@ -146,11 +150,12 @@ IMPR_FONCTION(
    ),
 )
 DEFI_FICHIER(UNITE=54, ACTION='LIBERER')
-TEST_FICHIER(
-   FICHIER='./REPE_OUT/unite.54',
-   VALE_CALC_K='e7f764d48ba4bec78e56e2c41ff86617',
-   VALE_CALC=6.258603563e+04,
-   NB_VALE=463,
+TEST_FICHIER(FICHIER="./REPE_OUT/unite.54",
+             NB_VALE_I=386,
+             VALE_CALC_I=61842,
+             NB_VALE=77,
+             VALE_CALC=7.4403563000e+02,
+             VALE_CALC_K="e7f764d48ba4bec78e56e2c41ff86617",
 )
 
 FIN()

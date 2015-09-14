@@ -440,9 +440,12 @@ IMPR_RESU(
 
 DEFI_FICHIER(ACTION='LIBERER',UNITE=36)
 
-TEST_FICHIER(FICHIER='./REPE_OUT/ssll11b.36',
-             NB_VALE=271,
-             VALE_CALC=4.7320008E+02,)
+TEST_FICHIER(FICHIER="./REPE_OUT/ssll11b.36",
+             NB_VALE_I=122,
+             VALE_CALC_I=28,
+             NB_VALE=149,
+             VALE_CALC=445.200084858,
+)
 
 DEFI_FICHIER( UNITE=37,
               FICHIER= './REPE_OUT/ssll11b.37')
@@ -453,9 +456,12 @@ IMPR_RESU(UNITE=37,FORMAT='GMSH',
 
 DEFI_FICHIER(ACTION='LIBERER',UNITE=37)
 
-TEST_FICHIER(FICHIER='./REPE_OUT/ssll11b.37',
-             NB_VALE=271,
-             VALE_CALC=4.7320009E+02,)
+TEST_FICHIER(FICHIER="./REPE_OUT/ssll11b.37",
+             NB_VALE_I=122,
+             VALE_CALC_I=28,
+             NB_VALE=149,
+             VALE_CALC=445.200093662,
+)
 #
 #======================================================================
 #

@@ -295,10 +295,14 @@ IMPR_OAR(TYPE_CALC  = 'COMPOSANT',
 
 # TEST DU FICHIER PRODUIT
 TEST_FICHIER(FICHIER='fort.38',
-             NB_VALE=82,
+             NB_VALE=81,
              VALE_CALC=2019204496.04,
              VALE_CALC_K='600d2cac9724fb08057384cf9f744c1b',
              TOLE_MACHINE=1.E-3)
+  # Réels :
+  # Nombre de valeurs : 81                                      82
+  # Somme des valeurs :  2.0192044917e+09                   2.0192044960e+09
+  # Somme de contrôle : 600d2cac9724fb08057384cf9f744c1b  600d2cac9724fb08057384cf9f744c1b
 
 
 # Resultats thermo-mecaniques
@@ -365,7 +369,7 @@ IMPR_OAR(TYPE_CALC='COMPOSANT',
          AJOUT='OUI')
 
 TEST_FICHIER(FICHIER='fort.38',
-             NB_VALE=84,
+             NB_VALE=83,
              VALE_CALC=2019204492.92,
              VALE_CALC_K='7373264dd8a1beff5da3220e8976fb1c',
              TOLE_MACHINE=1.E-3)
