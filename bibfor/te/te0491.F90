@@ -220,12 +220,12 @@ subroutine te0491(option, nomte)
 !
 ! ---- RECUPERATION DE L'INSTANT DE CALCUL
 !      -----------------------------------
-    call tecach('NNN', 'PTEMPSR', 'L', iret, iad=itemps)
+    call tecach('NNO', 'PTEMPSR', 'L', iret, iad=itemps)
     if (itemps .ne. 0) instan = zr(itemps)
 !
 ! ----RECUPERATION DU TYPE DE COMPORTEMENT  :
 !     N'EXISTE PAS EN LINEAIRE
-    call tecach('NNN', 'PCOMPOR', 'L', iret, nval=7,&
+    call tecach('NNO', 'PCOMPOR', 'L', iret, nval=7,&
                 itab=jtab)
     compor(1)='ELAS'
     compor(2)=' '
@@ -250,7 +250,7 @@ subroutine te0491(option, nomte)
         if (grand) then
             call utmess('F', 'COMPOR1_78', sk=compor(3))
         endif
-        call tecach('NNN', 'PDEPLM', 'L', iret, iad=ideplm)
+        call tecach('NNO', 'PDEPLM', 'L', iret, iad=ideplm)
         if (ideplm .ne. 0) then
             call jevech('PDEPLM', 'L', idepmm)
         endif
@@ -260,7 +260,7 @@ subroutine te0491(option, nomte)
 !
     if (option .eq. 'ENER_TOTALE') then
         if ((compor(1) (1:9).ne.'VMIS_ISOT') .and. (compor(1) (1:4) .ne.'ELAS')) then
-            call tecach('NNN', 'PCONTMR', 'L', iret, iad=idconm)
+            call tecach('NNO', 'PCONTMR', 'L', iret, iad=idconm)
             if (idconm .ne. 0) then
                 call jevech('PCONTMR', 'L', idsigm)
             endif
@@ -269,7 +269,7 @@ subroutine te0491(option, nomte)
 !
 ! ----   RECUPERATION DU CHAMP DE VARIABLES INTERNES  :
 !        N'EXISTE PAS EN LINEAIRE
-    call tecach('ONN', 'PVARIPR', 'L', iret, nval=7,&
+    call tecach('ONO', 'PVARIPR', 'L', iret, nval=7,&
                 itab=jtab)
     if (iret .eq. 0) then
         idvari=jtab(1)

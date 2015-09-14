@@ -44,7 +44,7 @@ subroutine poutre_modloc(modloc, lnomv, nbnomv, lvaleur, valeur,&
 !       lnomv   : liste des noms des caractéristiques que l'on souhaite récupérer
 !                   ils doivent être dans l'ordre des data
 !       nbnomv  : nombre de caractéristiques a récupérer
-!       arret   : code pour tecach : 'NNN','ONN', ...
+!       arret   : code pour tecach : 'NNO','ONO', ...
 !  OUT
 !       lvaleur : liste des valeurs des caractéristiques
 !       valeur  : valeur de la caractéristique (nbnomv=1)

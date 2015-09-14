@@ -98,7 +98,7 @@ subroutine te0083(option, nomte)
 !
 ! - Get time
 !
-    call tecach('ONN', 'PTEMPSR', 'L', iret, iad=itemps)
+    call tecach('ONO', 'PTEMPSR', 'L', iret, iad=itemps)
     if (itemps .ne. 0) then
         time = zr(itemps)
     endif

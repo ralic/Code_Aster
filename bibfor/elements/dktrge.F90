@@ -121,7 +121,7 @@ subroutine dktrge(nomte, xyzl, pgl, rig)
         call cosiro(nomte, 'PCONTRR', 'L', 'UI', 'G',&
                     jsigm, 'S')
     else if (nomte.eq.'MEDKTG3') then
-       call tecach('OON', 'PCONTRR', 'L', iret, nval=7,&
+       call tecach('OOO', 'PCONTRR', 'L', iret, nval=7,&
                     itab=jtab)
         jsigm=jtab(1)
         do 25 i = 1, nbcon*npg

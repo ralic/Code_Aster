@@ -94,7 +94,7 @@ subroutine te0040(option, nomte)
                     iinpg, 'S')
 !
         call jevech('PSIEFNOR', 'E', ioutno)
-        call tecach('ONN', 'PCOMPOR', 'L', iret, iad=icompo)
+        call tecach('ONO', 'PCOMPOR', 'L', iret, iad=icompo)
         if (icompo .ne. 0) then
             if (zk16(icompo+2) .eq. 'GROT_GDEP') then
                 lgreen = .true.

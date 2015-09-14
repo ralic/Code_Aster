@@ -100,7 +100,7 @@ subroutine ptforp(itype, option, nomte, a, a2,&
         call jevech('PDEPLMR', 'L', idepla)
         call jevech('PDEPLPR', 'L', ideplp)
 !
-        call tecach('NNN', 'PSTRXMR', 'L', iret, iad=istrxm)
+        call tecach('NNO', 'PSTRXMR', 'L', iret, iad=istrxm)
         if (iret .ne. 0) then
             messk(1) = option
             messk(2) = nomte
@@ -213,7 +213,7 @@ subroutine ptforp(itype, option, nomte, a, a2,&
     if (option .eq. 'CHAR_MECA_FR1D1D' .or. option .eq. 'CHAR_MECA_SR1D1D') then
 !     --- FORCES REPARTIES PAR VALEURS REELLES---
 !        POUR LE CAS DU VENT
-        call tecach('NNN', 'PVITER', 'L', iret, iad=lforc)
+        call tecach('NNO', 'PVITER', 'L', iret, iad=lforc)
         if (iret .eq. 0) then
             if (nomte .eq. 'MECA_POU_C_T') goto 997
             okvent = .true.
@@ -237,7 +237,7 @@ subroutine ptforp(itype, option, nomte, a, a2,&
         elseif ( option .eq. 'CHAR_MECA_FF1D1D' .or. option .eq.&
     'CHAR_MECA_SF1D1D' ) then
 !     --- FORCES REPARTIES PAR FONCTIONS ---
-        call tecach('NNN', 'PTEMPSR', 'L', iret, iad=itemps)
+        call tecach('NNO', 'PTEMPSR', 'L', iret, iad=itemps)
         if (iret .eq. 0) then
             w(4) = zr(itemps)
             w(8) = zr(itemps)
@@ -293,7 +293,7 @@ subroutine ptforp(itype, option, nomte, a, a2,&
             valpav(1) = sqrt( vite2 )
             if (valpav(1) .gt. r8min) then
 !            RECUPERATION DE L'EFFORT EN FONCTION DE LA VITESSE
-                call tecach('ONN', 'PVENTCX', 'L', iret, iad=ifcx)
+                call tecach('ONO', 'PVENTCX', 'L', iret, iad=ifcx)
                 if (iret .ne. 0) goto 999
                 if (zk8(ifcx)(1:1) .eq. '.') goto 999
                 call fointe('FM', zk8(ifcx), 1, nompav, valpav,&
@@ -318,7 +318,7 @@ subroutine ptforp(itype, option, nomte, a, a2,&
             valpav(1) = sqrt( vite2 )
             if (valpav(1) .gt. r8min) then
 !            RECUPERATION DE L'EFFORT EN FONCTION DE LA VITESSE
-                call tecach('ONN', 'PVENTCX', 'L', iret, iad=ifcx)
+                call tecach('ONO', 'PVENTCX', 'L', iret, iad=ifcx)
                 if (iret .ne. 0) goto 999
                 if (zk8(ifcx)(1:1) .eq. '.') goto 999
                 call fointe('FM', zk8(ifcx), 1, nompav, valpav,&
@@ -380,8 +380,8 @@ subroutine ptforp(itype, option, nomte, a, a2,&
 !
 !     --- RECUPERATION DU COEF_MULT ---
 !
-    call tecach('NNN', 'PCOEFFR', 'L', iretr, iad=icoer)
-    call tecach('NNN', 'PCOEFFC', 'L', iretc, iad=icoec)
+    call tecach('NNO', 'PCOEFFR', 'L', iretr, iad=icoer)
+    call tecach('NNO', 'PCOEFFC', 'L', iretc, iad=icoec)
 !
     if (iretr .eq. 0) then
         do 400 i = 1, 12

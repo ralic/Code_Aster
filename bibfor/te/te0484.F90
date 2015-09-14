@@ -100,7 +100,7 @@ subroutine te0484(option, nomte)
 ! ----     PARAMETRES EN SORTIE
 ! ----     VECTEUR DES FORCES INTERNES (BT*SIGMA)
         call jevech('PVECTUR', 'E', ivectu)
-        call tecach('ONN', 'PCOMPOR', 'L', iret, iad=icompo)
+        call tecach('ONO', 'PCOMPOR', 'L', iret, iad=icompo)
         if (icompo .ne. 0) then
             call jevech('PCOMPOR', 'L', icompo)
         endif

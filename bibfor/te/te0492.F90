@@ -92,7 +92,7 @@ subroutine te0492(option, nomte)
 !
 ! ---- RECUPERATION DE L'INSTANT
 !      -------------------------
-    call tecach('ONN', 'PTEMPSR', 'L', iret, iad=itemps)
+    call tecach('ONO', 'PTEMPSR', 'L', iret, iad=itemps)
     if (itemps .ne. 0) instan = zr(itemps)
 !
 ! ---- CALCUL DES CONTRAINTES AUX POINTS D'INTEGRATION DE L'ELEMENT

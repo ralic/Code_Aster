@@ -66,7 +66,7 @@ subroutine te0134(option, nomte)
     vecteur = .False.
     matrice = .False.
 !   Si on demande les vecteurs, c'est les 3
-    call tecach('NNN', 'PREPLO1', 'E', iret, iad=jrepl1)
+    call tecach('NNO', 'PREPLO1', 'E', iret, iad=jrepl1)
     if ( iret.eq. 0 ) then
         vecteur = .true.
         call jevech('PREPLO2', 'E', jrepl2)
@@ -76,7 +76,7 @@ subroutine te0134(option, nomte)
         jrepl3 = 1
     endif
 !   Si on demande la matrice de passage
-    call tecach('NNN', 'PMATPASS', 'E', iret, iad=jmatpas)
+    call tecach('NNO', 'PMATPASS', 'E', iret, iad=jmatpas)
     if ( iret.eq. 0 ) then
         matrice = .true.
     else

@@ -123,7 +123,7 @@ subroutine te0560(option, nomte)
         call jevech('PCOMPOR', 'L', icompo)
         call jevech('PCARCRI', 'L', icarcr)
 !
-        call tecach('OON', 'PVARIMR', 'L', iret, nval=7,&
+        call tecach('OOO', 'PVARIMR', 'L', iret, nval=7,&
                     itab=jtab)
         lgpg1 = max(jtab(6),1)*jtab(7)
         lgpg = lgpg1

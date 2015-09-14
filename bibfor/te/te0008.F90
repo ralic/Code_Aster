@@ -81,8 +81,8 @@ subroutine te0008(option, nomte)
 30  end do
 !
     if (option .eq. 'FORC_NODA') then
-        call tecach('ONN', 'PDEPLMR', 'L', iretd, iad=idepl)
-        call tecach('ONN', 'PCOMPOR', 'L', iretc, iad=icomp)
+        call tecach('ONO', 'PDEPLMR', 'L', iretd, iad=idepl)
+        call tecach('ONO', 'PCOMPOR', 'L', iretc, iad=icomp)
         if ((iretd.eq.0) .and. (iretc.eq.0)) then
             if (zk16(icomp+2)(1:6) .ne. 'PETIT ') then
                 do 20 i = 1, ndim*nno

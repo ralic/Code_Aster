@@ -40,7 +40,7 @@ subroutine te0416(option, nomte)
     endif
 !
 !
-    call tecach('ONN', 'PCOMPOR', 'L', iret, iad=icompo)
+    call tecach('ONO', 'PCOMPOR', 'L', iret, iad=icompo)
     if (icompo .eq. 0) then
         call fornpd(option, nomte)
         goto 9999

@@ -175,14 +175,14 @@ subroutine te0375(option, nomte)
 !
 ! 1.4. --- CARTES DE PESANTEUR ET ROTATION
 !
-    call tecach('ONN', 'PPESANR', 'L', iret, iad=itab(1))
+    call tecach('ONO', 'PPESANR', 'L', iret, iad=itab(1))
     if (itab(1) .ne. 0) then
         call jevech('PPESANR', 'L', ipes)
         yapr = .true.
     else
         yapr = .false.
     endif
-    call tecach('ONN', 'PROTATR', 'L', iret, iad=itab(1))
+    call tecach('ONO', 'PROTATR', 'L', iret, iad=itab(1))
     if (itab(1) .ne. 0) then
         call jevech('PROTATR', 'L', irot)
         yaro = .true.
@@ -192,10 +192,10 @@ subroutine te0375(option, nomte)
 !
 ! 1.5. --- FORCES VOLUMIQUES EVENTUELLES
 !          VALEURS REELLES ?
-    call tecach('ONN', 'PFRVOLU', 'L', iret, iad=ifovr)
+    call tecach('ONO', 'PFRVOLU', 'L', iret, iad=ifovr)
 !          OU FONCTIONS ?
     if (ifovr .eq. 0) then
-        call tecach('ONN', 'PFFVOLU', 'L', iret, iad=ifovf)
+        call tecach('ONO', 'PFFVOLU', 'L', iret, iad=ifovf)
     else
         ifovf = 0
     endif

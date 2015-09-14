@@ -73,7 +73,7 @@ subroutine digouj(option, compor, nno, nbt, neq,&
     real(kind=8) :: sigy
 !-----------------------------------------------------------------------
     valpap=0.d0
-    call tecach('OON', 'PVARIMR', 'L', iret, nval=7,&
+    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7,&
                 itab=jtab)
     lgpg = max(jtab(6),1)*jtab(7)
 !

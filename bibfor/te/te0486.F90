@@ -80,7 +80,7 @@ subroutine te0486(option, nomte)
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
                      jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
 !
-    call tecach('NNN', 'PPRESSR', 'L', iret, iad=ipres)
+    call tecach('NNO', 'PPRESSR', 'L', iret, iad=ipres)
 !
 !
     if (option .eq. 'CHAR_MECA_PRSU_R' .or. option .eq. 'RIGI_MECA_PRSU_R') then

@@ -90,7 +90,7 @@ subroutine te0431(option, nomte)
         call jevech('PDEPLPR', 'L', ideplp)
         call jevech('PDEPLMR', 'L', ideplm)
         call jevech('PMATERC', 'L', imate)
-        call tecach('OON', 'PVARIMR', 'L', iret, nval=7,&
+        call tecach('OOO', 'PVARIMR', 'L', iret, nval=7,&
                     itab=jtab)
         lgpg = max(jtab(6),1)*jtab(7)
         call jevech('PVARIMR', 'L', ivarim)

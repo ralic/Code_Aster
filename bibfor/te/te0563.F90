@@ -61,16 +61,16 @@ subroutine te0563(option, nomte)
 !
 ! - Informations of input fields
 !
-    call tecach('OON', 'PCHAMPG', 'L', iret, nval=3,&
+    call tecach('OOO', 'PCHAMPG', 'L', iret, nval=3,&
                 itab=jtab1)
     npg=jtab1(3)
     ncmp_vale = jtab1(2)/npg
 !
-    call tecach('OON', 'PCOORPG', 'L', iret, nval=2,&
+    call tecach('OOO', 'PCOORPG', 'L', iret, nval=2,&
                 itab=jtab2)
     ncmp_coor = jtab2(2)/npg
 !
-    call tecach('OON', 'PCOEFR', 'L', iret, nval=2,&
+    call tecach('OOO', 'PCOEFR', 'L', iret, nval=2,&
                 itab=jtab3)
     ncmp_coef = jtab3(2)
 !

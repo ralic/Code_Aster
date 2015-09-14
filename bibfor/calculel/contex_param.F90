@@ -1,4 +1,4 @@
-subroutine contex(nomop, nompar)
+subroutine contex_param(nomop, nompar)
     implicit none
 !
 ! ======================================================================

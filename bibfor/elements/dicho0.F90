@@ -103,7 +103,7 @@ subroutine dicho0(option, nomte, ndim, nbt, nno,&
     call jevech('PINSTPR', 'L', jinst)
 !
     statique = .false.
-    call tecach('ONN', 'PVITPLU', 'L', iretlc, iad=ivitp)
+    call tecach('ONO', 'PVITPLU', 'L', iretlc, iad=ivitp)
     if (iretlc .eq. 0) then
         if (ndim .eq. 3) then
             call utpvgl(nno, nc, pgl, zr(ivitp), dvl)
@@ -128,7 +128,7 @@ subroutine dicho0(option, nomte, ndim, nbt, nno,&
         endif
     endif
 !
-    call tecach('ONN', 'PDEPENT', 'L', iretlc, iad=idepen)
+    call tecach('ONO', 'PDEPENT', 'L', iretlc, iad=idepen)
     if (iretlc .eq. 0) then
         if (ndim .eq. 3) then
             call utpvgl(nno, nc, pgl, zr(idepen), dpe)
@@ -139,7 +139,7 @@ subroutine dicho0(option, nomte, ndim, nbt, nno,&
         dpe(:) = 0.0d0
     endif
 !
-    call tecach('ONN', 'PVITENT', 'L', iretlc, iad=iviten)
+    call tecach('ONO', 'PVITENT', 'L', iretlc, iad=iviten)
     if (iretlc .eq. 0) then
         if (ndim .eq. 3) then
             call utpvgl(nno, nc, pgl, zr(iviten), dve)

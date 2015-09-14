@@ -153,7 +153,7 @@ subroutine te0299(option, nomte)
     endif
 !
     lpesa = .false.
-    call tecach('ONN', 'PPESANR', 'L', iret, nval=7,&
+    call tecach('ONO', 'PPESANR', 'L', iret, nval=7,&
                 itab=jtab)
     ipesa=jtab(1)
     if (iret .eq. 0) then
@@ -161,7 +161,7 @@ subroutine te0299(option, nomte)
     endif
 !
     lrota = .false.
-    call tecach('ONN', 'PROTATR', 'L', iret, nval=7,&
+    call tecach('ONO', 'PROTATR', 'L', iret, nval=7,&
                 itab=jtab)
     irota=jtab(1)
     if (iret .eq. 0) then
@@ -185,7 +185,7 @@ subroutine te0299(option, nomte)
 !
 ! --- RECUPERATION DE LA PULSATION
 !
-    call tecach('ONN', 'PPULPRO', 'L', iret, nval=7,&
+    call tecach('ONO', 'PPULPRO', 'L', iret, nval=7,&
                 itab=jtab)
     ipuls=jtab(1)
     if (iret .eq. 0) then
@@ -257,7 +257,7 @@ subroutine te0299(option, nomte)
     end do
 !
 ! --- RECUPERATION DE LA CONTRAINTE INITIALE
-    call tecach('ONN', 'PSIGINR', 'L', iret, iad=isigi)
+    call tecach('ONO', 'PSIGINR', 'L', iret, iad=isigi)
     
     
 ! ----------------------------------------------------------------------

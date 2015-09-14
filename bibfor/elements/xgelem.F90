@@ -196,7 +196,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
     endif
     
 !   Recuperation de la contrainte initiale aux noeuds des sous-elts
-    call tecach('ONN', 'PSIGISE', 'L', iret, iad=jsigse)
+    call tecach('ONO', 'PSIGISE', 'L', iret, iad=jsigse)
     
 !   Indicateur de contrainte initiale
     isigi=0

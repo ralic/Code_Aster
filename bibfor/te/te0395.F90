@@ -61,12 +61,12 @@ subroutine te0395(option, nomte)
     call jevech('PVECTUR', 'E', ivectu)
 !
 ! ---- CALCUL DE FORC_NODA
-    call tecach('ONN', 'PCOMPOR', 'L', iretc, iad=icomp)
+    call tecach('ONO', 'PCOMPOR', 'L', iretc, iad=icomp)
 !
     if (option .eq. 'FORC_NODA') then
 !      --------------------
 !         CHAMPS POUR LA REACTUALISATION DE LA GEOMETRIE
-        call tecach('ONN', 'PDEPLMR', 'L', iretd, iad=idepl)
+        call tecach('ONO', 'PDEPLMR', 'L', iretd, iad=idepl)
         if ((iretd.eq.0) .and. (iretc.eq.0)) then
             if (zk16(icomp+2) (1:6) .ne. 'PETIT ') then
                 do 20 i = 1, ndim*nno
@@ -87,7 +87,7 @@ subroutine te0395(option, nomte)
     else if (option.eq.'REFE_FORC_NODA') then
         call terefe('SIGM_REFE', 'MECA_ISO', sigref)
 !
-        call tecach('ONN', 'PDEPLMR', 'L', iretd, iad=idepl)
+        call tecach('ONO', 'PDEPLMR', 'L', iretd, iad=idepl)
 !
         call r8inir(6*npg1, 0.d0, sigtmp, 1)
         call r8inir(3*nno, 0.d0, ftemp, 1)

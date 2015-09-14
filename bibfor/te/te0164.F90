@@ -61,7 +61,7 @@ subroutine te0164(option, nomte)
         call jevech('PGEOMER', 'L', igeom)
 !
         call jevech('PDEPLMR', 'L', idepla)
-        call tecach('ONN', 'PDEPLPR', 'L', iret, iad=ideplp)
+        call tecach('ONO', 'PDEPLPR', 'L', iret, iad=ideplp)
         call jevech('PCONTMR', 'L', lsigma)
 !        PARAMETRES EN SORTIE
         call jevech('PVECTUR', 'E', jefint)

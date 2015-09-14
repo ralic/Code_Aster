@@ -69,7 +69,7 @@ subroutine te0529(option, nomte)
 !
 ! ---- RECUPERATION DU MATERIAU :
 !      ----------------------------------------------
-    call tecach('NNN', 'PMATERC', 'L', iret, iad=imate)
+    call tecach('NNO', 'PMATERC', 'L', iret, iad=imate)
 !
 ! --- RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE :
 !     ------------------------------------------------------------
@@ -86,7 +86,7 @@ subroutine te0529(option, nomte)
 !
 ! ---- RECUPERATION DE L'INSTANT DE CALCUL :
 !      -----------------------------------
-    call tecach('NNN', 'PTEMPSR', 'L', iret, iad=itemps)
+    call tecach('NNO', 'PTEMPSR', 'L', iret, iad=itemps)
     if (itemps .ne. 0) then
         instan = zr(itemps)
     endif

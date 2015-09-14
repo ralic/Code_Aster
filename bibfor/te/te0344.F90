@@ -158,7 +158,7 @@ subroutine te0344(option, nomte)
         flr(i+7) = flr(i+7) - klc(i+7,1+7)*ugr(1+7)
      enddo
 !   prise en compte des efforts repartis
-    call tecach('ONN', 'PFR1D1D', 'L', iret, iad=lforcr)
+    call tecach('ONO', 'PFR1D1D', 'L', iret, iad=lforcr)
     if (lforcr .ne. 0) then
         call ptforp(itype, 'CHAR_MECA_FR1D1D', nomte, a, a,&
                     xl, rad, angs2, 1, nno,&
@@ -169,7 +169,7 @@ subroutine te0344(option, nomte)
         enddo
     endif
 !   prise en compte des efforts repartis (sous forme de fonction)
-    call tecach('ONN', 'PFF1D1D', 'L', iret, iad=lforcf)
+    call tecach('ONO', 'PFF1D1D', 'L', iret, iad=lforcf)
     if (lforcf .ne. 0) then
         call ptforp(itype, 'CHAR_MECA_FF1D1D', nomte, a, a,&
                     xl, rad, angs2, 1, nno,&

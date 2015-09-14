@@ -91,7 +91,7 @@ subroutine te0435(option, nomte)
         call jevech('PCONTMR', 'L', icontm)
         call jevech('PDEPLMR', 'L', ideplm)
         call jevech('PDEPLPR', 'L', ideplp)
-        call tecach('OON', 'PVARIMR', 'L', iret, nval=7,&
+        call tecach('OOO', 'PVARIMR', 'L', iret, nval=7,&
                     itab=jtab)
         nvari = max(jtab(6),1)*jtab(7)
         call jevech('PVARIMR', 'L', ivarim)

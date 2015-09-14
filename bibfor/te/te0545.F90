@@ -104,7 +104,7 @@ subroutine te0545(option, nomte)
 !
 !
 !    NOMBRE DE VARIABLES INTERNES
-    call tecach('OON', 'PVARIMR', 'L', iret, nval=7,&
+    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7,&
                 itab=jtab)
     lgpg = max(jtab(6),1)*jtab(7)
 !

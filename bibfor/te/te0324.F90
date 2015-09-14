@@ -70,16 +70,16 @@ subroutine te0324(option, nomte)
     if (option .eq. 'AMOR_MECA') then
         call tecach('NNO', 'PRIGIEL', 'L', ins, iad=idrigi(1))
         if (ins .eq. 0) then
-            call tecach('ONN', 'PMATUUR', 'E', iret, nval=5,&
+            call tecach('ONO', 'PMATUUR', 'E', iret, nval=5,&
                         itab=idresu)
         else
-            call tecach('NNN', 'PMATUNS', 'E', irns, nval=5,&
+            call tecach('NNO', 'PMATUNS', 'E', irns, nval=5,&
                         itab=idresu)
-            if (irns .ne. 0) call tecach('ONN', 'PMATUUR', 'E', iret, 5,&
+            if (irns .ne. 0) call tecach('ONO', 'PMATUUR', 'E', iret, 5,&
                                          itab=idresu)
         endif
     else if (option.eq.'RIGI_MECA_HYST') then
-        call tecach('ONN', 'PMATUUC', 'E', iret, nval=5,&
+        call tecach('ONO', 'PMATUUC', 'E', iret, nval=5,&
                     itab=idresu)
     else
         ASSERT(.false.)
@@ -87,7 +87,7 @@ subroutine te0324(option, nomte)
     nbval= idresu(2)
 !
     ljfr=.false.
-    call tecach('NNN', 'PMATERC', 'L', iret, iad=jma)
+    call tecach('NNO', 'PMATERC', 'L', iret, iad=jma)
     if ((jma.eq.0) .or. (iret.ne.0)) goto 1
     nomres(1) = 'K_N'
     nomres(2) = 'AMOR_NOR'
@@ -105,7 +105,7 @@ subroutine te0324(option, nomte)
     endif 
 !
 !
-    call tecach('ONN', 'PGEOMER', 'L', iret, nval=5,&
+    call tecach('ONO', 'PGEOMER', 'L', iret, nval=5,&
                 itab=idgeo)
     igeom=idgeo(1)
     do i = 1, nnos
@@ -154,20 +154,20 @@ subroutine te0324(option, nomte)
     if (option .eq. 'AMOR_MECA') then
         if (ljfr) then
             if (ins .eq. 0) then
-                call tecach('ONN', 'PRIGINS', 'L', irns, iad=idrigi(1))
-                call tecach('ONN', 'PRIGIEL', 'L', iret, nval=2,&
+                call tecach('ONO', 'PRIGINS', 'L', irns, iad=idrigi(1))
+                call tecach('ONO', 'PRIGIEL', 'L', iret, nval=2,&
                             itab=idrigi)
                 nbddl = int(-1.0d0+sqrt(1.0d0+8.d0*dble(idrigi(2))))/2
                 nbval=idrigi(2)
-                call tecach('ONN', 'PMATUUR', 'E', iret, nval=2,&
+                call tecach('ONO', 'PMATUUR', 'E', iret, nval=2,&
                             itab=idresu)
             else
-                call tecach('ONN', 'PRIGINS', 'L', iret, nval=2,&
+                call tecach('ONO', 'PRIGINS', 'L', iret, nval=2,&
                             itab=idrigi)
-                call tecach('NNN', 'PMATUNS', 'E', irns, nval=5,&
+                call tecach('NNO', 'PMATUNS', 'E', irns, nval=5,&
                             itab=idresu)
                 if (irns .ne. 0) then
-                    call tecach('ONN', 'PMATUUR', 'E', iret, 5,&
+                    call tecach('ONO', 'PMATUUR', 'E', iret, 5,&
                                 itab=idresu)
                     nbddl = int(-1.0d0+sqrt(1.0d0+8.d0*dble(idresu(2))))/2
                 else

@@ -111,7 +111,7 @@ subroutine te0286(option, nomte)
 !
 ! ---- RECUPERATION  DU NUMERO D'HARMONIQUE
 !      ------------------------------------
-    call tecach('NNN', 'PHARMON', 'L', iret, iad=iharmo)
+    call tecach('NNO', 'PHARMON', 'L', iret, iad=iharmo)
     if (iharmo .ne. 0) then
         nh = zi(iharmo)
         nharm = dble(nh)

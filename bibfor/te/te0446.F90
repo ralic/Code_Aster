@@ -80,7 +80,7 @@ subroutine te0446(option, nomte)
 !
         call utpvgl(nno, 3, pgl, zr(igeom), xyzl)
 !
-        call tecach('ONN', 'PCOMPOR', 'L', iretc, iad=icompo)
+        call tecach('ONO', 'PCOMPOR', 'L', iretc, iad=icompo)
 !
 ! --- CALCUL DES MATRICES DE CHANGEMENT DE REPERES
 !
@@ -95,7 +95,7 @@ subroutine te0446(option, nomte)
 !
 ! --- VECTEUR DES EFFORTS GENERALISES AUX POINTS
 ! --- D'INTEGRATION DU REPERE LOCAL
-        call tecach('OON', 'PCONTMR', 'L', iret, nval=7,&
+        call tecach('OOO', 'PCONTMR', 'L', iret, nval=7,&
                     itab=jtab)
 !
 ! --- PASSAGE DU VECTEUR DES EFFORTS GENERALISES AUX POINTS

@@ -234,7 +234,7 @@ subroutine te0409(option, nomte)
 !           -- on verifie que le nombre de varint tient dans ecr
             ASSERT(nbvari.le.24)
 !
-            call tecach('OON', 'PCONTMR', 'L', iret, nval=7, itab=jtab)
+            call tecach('OOO', 'PCONTMR', 'L', iret, nval=7, itab=jtab)
             icontm=jtab(1)
             ASSERT(npg.eq.jtab(3))
 !
@@ -265,7 +265,7 @@ subroutine te0409(option, nomte)
             call utpvgl(nno, 6, pgl, zr(ideplp), dul)
         else
             nbvari = 0
-            call tecach('NNN', 'PMATERC', 'L', iret, iad=imate)
+            call tecach('NNO', 'PMATERC', 'L', iret, iad=imate)
             call rccoma(zi(imate), 'ELAS', 1, compor(1:10), iret)
             icarcr=1
             ivarim=1

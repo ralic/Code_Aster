@@ -62,9 +62,9 @@ function cgverho(imate)
 !   rhoabs -> .true. si rho est absent
     rhoabs = codrho(1).ne.0
 !
-    call tecach('ONN', 'PPESANR', 'L', iret, iad=ipesa)
-    call tecach('ONN', 'PROTATR', 'L', iret, iad=irota)
-    call tecach('ONN', 'PPULPRO', 'L', iret, iad=ipuls)
+    call tecach('ONO', 'PPESANR', 'L', iret, iad=ipesa)
+    call tecach('ONO', 'PROTATR', 'L', iret, iad=irota)
+    call tecach('ONO', 'PPULPRO', 'L', iret, iad=ipuls)
 !
 !   si le champ est present, et rho absent -> NOOK
     cgverho = .true.

@@ -28,7 +28,7 @@ use calcul_module, only : ca_option_
 implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/contex.h"
+#include "asterfort/contex_param.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
     integer :: itab(8), jad, lonel, k, iret
@@ -47,7 +47,7 @@ implicit none
         do 1, k = 1,lonel
         if (zl(itab(8)-1+k)) then
             call utmess('E', 'CALCUL_44')
-            call contex(ca_option_, nompar)
+            call contex_param(ca_option_, nompar)
         endif
         zr(jad-1+k)=valdef
  1      continue

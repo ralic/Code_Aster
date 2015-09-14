@@ -93,7 +93,7 @@ subroutine dxmate(fami, df, dm, dmf, dc,&
     alpha = zr(jcoqu+1)*r8dgrd()
     beta = zr(jcoqu+2)*r8dgrd()
     excent= zr(jcoqu+4)
-    call tecach('NNN', 'PNBSP_I', 'L', iret, iad=jcou)
+    call tecach('NNO', 'PNBSP_I', 'L', iret, iad=jcou)
     if (iret .eq. 0) then
         ncou=zi(jcou)
         npgh=3
@@ -103,7 +103,7 @@ subroutine dxmate(fami, df, dm, dmf, dc,&
     endif
 
 
-    call tecach('NNN', 'PMATERC', 'L', iret, iad=jmate)
+    call tecach('NNO', 'PMATERC', 'L', iret, iad=jmate)
     if (iret .ne. 0) then
         multic = 0
         goto 999

@@ -46,11 +46,11 @@ subroutine te0581(option, nomte)
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 !
-    call tecach('ONN', 'PEPCON1', 'L', iret, nval=7,&
+    call tecach('ONO', 'PEPCON1', 'L', iret, nval=7,&
                 itab=jtab1)
-    call tecach('ONN', 'PEPCON2', 'L', iret, nval=7,&
+    call tecach('ONO', 'PEPCON2', 'L', iret, nval=7,&
                 itab=jtab2)
-    call tecach('ONN', 'PEPCON3', 'E', iret, nval=7,&
+    call tecach('ONO', 'PEPCON3', 'E', iret, nval=7,&
                 itab=jtab3)
 !
     if ((jtab1(1).eq.0) .or. (jtab2(1).eq.0) .or. (jtab3(1).eq.0)) then

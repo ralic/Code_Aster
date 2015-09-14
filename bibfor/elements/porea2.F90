@@ -50,7 +50,7 @@ subroutine porea2(nno, nc, geom, gamma, pgl,&
 !
     ASSERT(nno.eq.2)
 !
-    call tecach('ONN', 'PDEPLMR', 'L', iret, iad=ideplm)
+    call tecach('ONO', 'PDEPLMR', 'L', iret, iad=ideplm)
     if (iret .ne. 0) then
         do 100 i = 1, 2*nc
             utg(i) = 0.d0
@@ -61,7 +61,7 @@ subroutine porea2(nno, nc, geom, gamma, pgl,&
 102      continue
     endif
 !
-    call tecach('ONN', 'PDEPLPR', 'L', iret, iad=ideplp)
+    call tecach('ONO', 'PDEPLPR', 'L', iret, iad=ideplp)
     if (iret .eq. 0) then
         do 104 i = 1, 2*nc
             utg(i) = utg(i) + zr(ideplp-1+i)

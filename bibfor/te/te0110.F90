@@ -166,8 +166,8 @@ subroutine te0110(option, nomte)
 ! --- RECUPERATION EVENTUELLE DES COEFFICIENTS D'ECHANGE AVEC
 ! --- L'EXTERIEUR :
 !     -----------
-    call tecach('NNN', 'PCOEFHR', 'L', iret, iad=icoehr)
-    call tecach('NNN', 'PCOEFHF', 'L', iret, iad=icoehf)
+    call tecach('NNO', 'PCOEFHR', 'L', iret, iad=icoehr)
+    call tecach('NNO', 'PCOEFHF', 'L', iret, iad=icoehf)
 !
     if (nomte .ne. 'THCOSE3 ' .and. nomte .ne. 'THCOSE2 ') then
 ! ---   CAS OU LES COEFFICIENTS D'ECHANGE SONT DES REELS :

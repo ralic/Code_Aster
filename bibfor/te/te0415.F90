@@ -60,7 +60,7 @@ subroutine te0415(optioz, nomtz)
         call jevech('PVARIGR', 'L', ichg)
         call jevech('PCOMPOR', 'L', icompo)
         read (zk16(icompo-1+2),'(I16)') nbvari
-        call tecach('OON', 'PVARIGR', 'L', iret, nval=7,&
+        call tecach('OOO', 'PVARIGR', 'L', iret, nval=7,&
                     itab=jtab)
         lgpg = max(jtab(6),1)*jtab(7)
         call jevech('PNBSP_I', 'L', jnbspi)

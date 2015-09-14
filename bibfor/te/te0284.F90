@@ -77,7 +77,7 @@ subroutine te0284(option, nomte)
 !
 ! ---- RECUPERATION DE L'HARMONIQUE DE FOURIER
 !      ---------------------------------------
-    call tecach('NNN', 'PHARMON', 'L', iret, iad=iharmo)
+    call tecach('NNO', 'PHARMON', 'L', iret, iad=iharmo)
     if (iharmo .eq. 0) then
         nharm = zero
     else
@@ -124,7 +124,7 @@ subroutine te0284(option, nomte)
 !
 ! ---- RECUPERATION DE L'INSTANT
 !      -------------------------
-    call tecach('NNN', 'PTEMPSR', 'L', iret, iad=itemps)
+    call tecach('NNO', 'PTEMPSR', 'L', iret, iad=itemps)
     if (itemps .ne. 0) instan = zr(itemps)
 !
 ! ---- CONSTRUCTION DU VECTEUR DES DEFORMATIONS INITIALES DEFINIES AUX

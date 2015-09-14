@@ -31,7 +31,7 @@ implicit none
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/chloet.h"
-#include "asterfort/contex.h"
+#include "asterfort/contex_param.h"
 #include "asterfort/utmess.h"
     character(len=*), intent(in) :: stopz, nmparz, louez
     integer, intent(in), optional :: numa
@@ -173,7 +173,7 @@ implicit none
             valk(1) = nompar
             valk(2) = ca_option_
             call utmess('E', 'CALCUL_15', nk=2, valk=valk)
-            call contex(ca_option_, ' ')
+            call contex_param(ca_option_, ' ')
         endif
         iret = 1
         goto 20
@@ -226,7 +226,7 @@ implicit none
                 call utmess('F', 'CALCUL_24', nk=3, valk=valk)
             else
                 call utmess('E', 'CALCUL_29', nk=3, valk=valk)
-                call contex(ca_option_, nompar)
+                call contex_param(ca_option_, nompar)
             endif
 !
         endif
@@ -237,7 +237,7 @@ implicit none
                 valk(2) = ca_option_
                 valk(3) = ca_nomte_
                 call utmess('E', 'CALCUL_16', nk=3, valk=valk)
-                call contex(ca_option_, nompar)
+                call contex_param(ca_option_, nompar)
             endif
         endif
     else
@@ -247,7 +247,7 @@ implicit none
                 valk(2) = ca_option_
                 valk(3) = ca_nomte_
                 call utmess('E', 'CALCUL_16', nk=3, valk=valk)
-                call contex(ca_option_, nompar)
+                call contex_param(ca_option_, nompar)
             endif
         else
             exichl = .true.
@@ -303,10 +303,10 @@ implicit none
                     valk(2) = ca_option_
                     valk(3) = ca_nomte_
                     call utmess('E', 'CALCUL_30', nk=3, valk=valk)
-                    call contex(ca_option_, nompar)
+                    call contex_param(ca_option_, nompar)
                 else
                     iret = 3
-                    if (inval .lt. 8) jtab(1)=0
+                    jtab(1)=0
                 endif
             endif
  10     continue

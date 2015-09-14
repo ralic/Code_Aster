@@ -125,12 +125,12 @@ subroutine te0576(option, nomte)
 !
 ! ----    RECUPERATION DE L'INSTANT DE CALCUL
 !         -----------------------------------
-        call tecach('ONN', 'PTEMPSR', 'L', iret, iad=itemps)
+        call tecach('ONO', 'PTEMPSR', 'L', iret, iad=itemps)
         if (itemps .ne. 0) instan = zr(itemps)
 !
 ! ----   RECUPERATION DU CHAMP DE VARIABLES INTERNES  :
 !        N'EXISTE PAS EN LINEAIRE
-        call tecach('ONN', 'PVARIGR', 'L', iret, nval=7,&
+        call tecach('ONO', 'PVARIGR', 'L', iret, nval=7,&
                     itab=jtab)
         if (iret .eq. 0) then
             idvari=jtab(1)
@@ -144,7 +144,7 @@ subroutine te0576(option, nomte)
 !
 ! ----RECUPERATION DU TYPE DE COMPORTEMENT  :
 !     N'EXISTE PAS EN LINEAIRE
-    call tecach('NNN', 'PCOMPOR', 'L', iret, nval=7,&
+    call tecach('NNO', 'PCOMPOR', 'L', iret, nval=7,&
                 itab=jtab)
     compor(1)='ELAS'
     compor(2)=' '
@@ -179,7 +179,7 @@ subroutine te0576(option, nomte)
 ! ---    RECUPERATION EVENTUELLE DU CHAMP DE DEPLACEMENT A
 ! ---    L'INSTANT PRECEDENT :
 !        -------------------
-        call tecach('NNN', 'PDEPLM', 'L', iret, iad=ideplm)
+        call tecach('NNO', 'PDEPLM', 'L', iret, iad=ideplm)
         if (ideplm .ne. 0) then
             call jevech('PDEPLM', 'L', idepmm)
         endif
@@ -192,7 +192,7 @@ subroutine te0576(option, nomte)
 ! ---    RECUPERATION EVENTUELLE DU CHAMP DE CONTRAINTES A
 ! ---    L'INSTANT PRECEDENT :
 !        -------------------
-        call tecach('NNN', 'PCONTMR', 'L', iret, iad=idsigm)
+        call tecach('NNO', 'PCONTMR', 'L', iret, iad=idsigm)
         if (idsigm .ne. 0) then
             call jevech('PCONTMR', 'L', idsigm)
         endif

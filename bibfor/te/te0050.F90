@@ -71,13 +71,13 @@ subroutine te0050(option, nomte)
     if (option .eq. 'AMOR_MECA') then
         call tecach('NNO', 'PRIGIEL', 'L', ins, iad=idrigi(1))
         if (ins .eq. 0) then
-            call tecach('ONN', 'PMATUUR', 'E', iret, nval=5, itab=idresu)
+            call tecach('ONO', 'PMATUUR', 'E', iret, nval=5, itab=idresu)
         else
-            call tecach('NNN', 'PMATUNS', 'E', irns, nval=5, itab=idresu)
-            if (irns .ne. 0) call tecach('ONN', 'PMATUUR', 'E', iret, 5, itab=idresu)
+            call tecach('NNO', 'PMATUNS', 'E', irns, nval=5, itab=idresu)
+            if (irns .ne. 0) call tecach('ONO', 'PMATUUR', 'E', iret, 5, itab=idresu)
         endif
     else if (option.eq.'RIGI_MECA_HYST') then
-        call tecach('ONN', 'PMATUUC', 'E', iret, nval=5, itab=idresu)
+        call tecach('ONO', 'PMATUUC', 'E', iret, nval=5, itab=idresu)
     else
         ASSERT(.false.)
     endif
@@ -87,7 +87,7 @@ subroutine te0050(option, nomte)
     nompar(2)='Y'
     nompar(3)='Z'
 !
-    call tecach('ONN', 'PGEOMER', 'L', iret, nval=5, itab=idgeo)
+    call tecach('ONO', 'PGEOMER', 'L', iret, nval=5, itab=idgeo)
     igeom=idgeo(1)
     idimge=idgeo(2)/nno
 !
@@ -115,17 +115,17 @@ subroutine te0050(option, nomte)
     call pmfmats(mater, nomat)
 !
     if (ins .eq. 0) then
-        call tecach('ONN', 'PRIGIEL', 'L', iret, nval=2, itab=idrigi)
+        call tecach('ONO', 'PRIGIEL', 'L', iret, nval=2, itab=idrigi)
         ASSERT(idrigi(2).eq.nbval)
     else if (irns.eq.0) then
-        call tecach('ONN', 'PRIGINS', 'L', iret, nval=2, itab=idrigi)
+        call tecach('ONO', 'PRIGINS', 'L', iret, nval=2, itab=idrigi)
         ASSERT(idrigi(2).eq.nbval)
     endif
 !
 !   récupération des coefficients fonctions de la géométrie :
     nbddl = 0
     if (option .eq. 'AMOR_MECA') then
-        call tecach('ONN', 'PMASSEL', 'L', iret, nval=2, itab=idmass)
+        call tecach('ONO', 'PMASSEL', 'L', iret, nval=2, itab=idmass)
         if (ins .eq. 0) then
             ASSERT(idmass(2).eq.nbval)
         else if (irns.eq.0) then

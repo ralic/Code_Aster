@@ -114,7 +114,7 @@ subroutine te0033(option, nomte)
     jnbspi = 0
     if (option .eq. 'SIEF_ELGA' .or. option .eq. 'EPSI_ELGA') then
         call jevech('PMATERC', 'L', jmate)
-        call tecach('NNN', 'PNBSP_I', 'L', iret, iad=jnbspi)
+        call tecach('NNO', 'PNBSP_I', 'L', iret, iad=jnbspi)
         if (iret .eq. 0) then
             nbcou = zi(jnbspi)
             icou = 0

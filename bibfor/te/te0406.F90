@@ -117,7 +117,7 @@ subroutine te0406(option, nomte)
 !
 !---- TEST D'EXISTENCE "COMPOR"
 !
-    call tecach('NNN', 'PCOMPOR', 'L', iret, iad=icompo)
+    call tecach('NNO', 'PCOMPOR', 'L', iret, iad=icompo)
     if (icompo .ne. 0) then
         if (zk16(icompo+2) .eq. 'GROT_GDEP') then
             call utmess('F', 'ELEMENTS3_91')

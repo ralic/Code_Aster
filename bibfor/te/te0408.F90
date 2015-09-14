@@ -80,7 +80,7 @@ subroutine te0408(option, nomte)
     else
 !     2- SI LA TEMPERATURE EST UNE FONCTION DE 'INST' ET 'EPAIS'
 !        -------------------------------------------------------
-        call tecach('ONN', 'PTEMPEF', 'L', iret, iad=itempf)
+        call tecach('ONO', 'PTEMPEF', 'L', iret, iad=itempf)
         ASSERT(iret.eq.0)
         call jevech('PINST_R', 'L', itemps)
         inst=zr(itemps)

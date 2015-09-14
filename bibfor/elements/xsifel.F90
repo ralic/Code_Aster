@@ -181,7 +181,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
     ASSERT(ndim.eq.ndimb)
 
 !   Recuperation de la contrainte initiale aux noeuds des sous-elts
-    call tecach('ONN', 'PSIGISE', 'L', iret, iad=jsigse)
+    call tecach('ONO', 'PSIGISE', 'L', iret, iad=jsigse)
     
 !   Indicateur de contrainte initiale
     isigi=0

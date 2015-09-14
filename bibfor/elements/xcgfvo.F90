@@ -74,8 +74,8 @@ subroutine xcgfvo(option, ndim, nnop, fno)
         ASSERT(.false.)
     endif
 !
-    call tecach('ONN', 'PPESANR', 'L', iret, iad=ipesa)
-    call tecach('ONN', 'PROTATR', 'L', iret, iad=irota)
+    call tecach('ONO', 'PPESANR', 'L', iret, iad=ipesa)
+    call tecach('ONO', 'PROTATR', 'L', iret, iad=irota)
 !
 !     INITIALISATION DE FNO
     call vecini(ndim*nnop, 0.d0, fno)

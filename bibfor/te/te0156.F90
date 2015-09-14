@@ -67,7 +67,7 @@ subroutine te0156(option, nomte)
     else if (option .eq. 'FORC_NODA') then
         call jevech('PCONTMR', 'L', icontg)
         call jevech('PCAORIE', 'L', lorien)
-        call tecach('ONN', 'PCOMPOR', 'L', iretc, iad=icompo)
+        call tecach('ONO', 'PCOMPOR', 'L', iretc, iad=icompo)
         reactu = .false.
         if (iretc .eq. 0) reactu = (zk16(icompo+2).eq.'PETIT_REAC')
 !

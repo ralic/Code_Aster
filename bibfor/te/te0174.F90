@@ -88,7 +88,7 @@ subroutine te0174(option, nomte)
     nompar(3) = 'Z'
     nompar(4) = 'INST'
 !
-    call tecach('NNN', 'PTEMPSR', 'L', iret, iad=itemps)
+    call tecach('NNO', 'PTEMPSR', 'L', iret, iad=itemps)
     if (itemps .ne. 0) then
         valpar(4) = zr(itemps)
         nbpar = 4
@@ -125,16 +125,17 @@ subroutine te0174(option, nomte)
 !
 !   CALCUL DE LA NORMALE AU POINT DE GAUSS IPG
 !
-        do 102 i = 1, nno
+        do i = 1, nno
             idec = (i-1)*ndim
-            do 102 j = 1, nno
+            do j = 1, nno
                 jdec = (j-1)*ndim
 !
                 nx = nx + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sx(i,j)
                 ny = ny + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sy(i,j)
                 nz = nz + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sz(i,j)
 !
-102          continue
+            enddo
+        enddo
 !
 !   CALCUL DU JACOBIEN AU POINT DE GAUSS IPG
 !

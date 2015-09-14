@@ -70,7 +70,7 @@ subroutine te0462(option, nomte)
     call jevech('PGEOMER', 'L', igeom)
 !
 !     ZR(ICOPG) : COORDONNEES DE SOUS-POINTS DE GAUSS
-    call tecach('OON', 'PCOOPGM', 'E', iret, nval=7,&
+    call tecach('OOO', 'PCOOPGM', 'E', iret, nval=7,&
                 itab=jtab)
     icopg=jtab(1)
     nbsp=jtab(7)

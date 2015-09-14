@@ -67,7 +67,7 @@ subroutine te0488(option, nomte)
     endif
 !
     call jevech('PGEOMER', 'L', igeom)
-    call tecach('OON', 'PCOORPG', 'E', iret, nval=7,&
+    call tecach('OOO', 'PCOORPG', 'E', iret, nval=7,&
                 itab=jtab)
     icopg=jtab(1)
     nbsp=jtab(7)

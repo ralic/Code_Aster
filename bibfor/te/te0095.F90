@@ -102,10 +102,10 @@ subroutine te0095(option, nomte)
     call jevech('PDEPLAV', 'L', idepv)
     call jevech('PMATERC', 'L', imate)
 !
-    call tecach('ONN', 'UPESANR', 'L', iret, iad=ipesau)
-    call tecach('ONN', 'UROTATR', 'L', iret, iad=irotau)
-    call tecach('ONN', 'VPESANR', 'L', iret, iad=ipesav)
-    call tecach('ONN', 'VROTATR', 'L', iret, iad=irotav)
+    call tecach('ONO', 'UPESANR', 'L', iret, iad=ipesau)
+    call tecach('ONO', 'UROTATR', 'L', iret, iad=irotau)
+    call tecach('ONO', 'VPESANR', 'L', iret, iad=ipesav)
+    call tecach('ONO', 'VROTATR', 'L', iret, iad=irotav)
 !
 !
     if (option .eq. 'G_BILI_F') then
@@ -121,14 +121,14 @@ subroutine te0095(option, nomte)
         nompar(4) = 'INST'
         vaparu(4) = zr(itmpsu)
         vaparv(4) = zr(itmpsv)
-        call tecach('ONN', 'UEPSINF', 'L', iret, iad=iepsru)
-        call tecach('ONN', 'VEPSINF', 'L', iret, iad=iepsrv)
+        call tecach('ONO', 'UEPSINF', 'L', iret, iad=iepsru)
+        call tecach('ONO', 'VEPSINF', 'L', iret, iad=iepsrv)
     else
         fonc = .false.
         call jevech('UPFRVOL', 'L', iforcu)
         call jevech('VPFRVOL', 'L', iforcv)
-        call tecach('ONN', 'UEPSINR', 'L', iret, iad=iepsru)
-        call tecach('ONN', 'VEPSINR', 'L', iret, iad=iepsrv)
+        call tecach('ONO', 'UEPSINR', 'L', iret, iad=iepsru)
+        call tecach('ONO', 'VEPSINR', 'L', iret, iad=iepsrv)
     endif
 !
     call jevech('PGTHETA', 'E', ific)

@@ -50,8 +50,8 @@ subroutine ef0409(nomte)
     call jevech('PEFFORR', 'E', ichn)
 !
     call jevech('PGEOMER', 'L', igeom)
-    call tecach('NNN', 'PCOMPOR', 'L', iret, iad=icompo)
-    call tecach('OON', 'PCONTRR', 'L', iret, nval=7,&
+    call tecach('NNO', 'PCOMPOR', 'L', iret, iad=icompo)
+    call tecach('OOO', 'PCONTRR', 'L', iret, nval=7,&
                 itab=jtab)
     call r8inir(32, 0.d0, effint, 1)
 !

@@ -95,7 +95,7 @@ subroutine te0198(option, nomte)
 !
 ! ---- RECUPERATION DE L'INSTANT
 !      -------------------------
-    call tecach('NNN', 'PTEMPSR', 'L', iret, iad=itemps)
+    call tecach('NNO', 'PTEMPSR', 'L', iret, iad=itemps)
     if (itemps .ne. 0) instan = zr(itemps)
 !
 ! ---- RECUPERATION  DU NUMERO D'HARMONIQUE

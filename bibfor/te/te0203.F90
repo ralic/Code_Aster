@@ -63,7 +63,7 @@ subroutine te0203(option, nomte)
     typmod(2) = 'ELEMJOIN'
 !
 ! RECUPERATION DU NOMBRE DE VARIABLES INTERNES PAR POINTS DE GAUSS :
-    call tecach('OON', 'PVARIMR', 'L', iret, nval=7,&
+    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7,&
                 itab=jtab)
     lgpg = max(jtab(6),1)*jtab(7)
 !

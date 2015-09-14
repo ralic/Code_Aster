@@ -16,8 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine contex(nomop, nompar)
+    subroutine contex_param(nomop, nompar)
         character(len=*) :: nomop
         character(len=*) :: nompar
-    end subroutine contex
+    end subroutine contex_param
 end interface

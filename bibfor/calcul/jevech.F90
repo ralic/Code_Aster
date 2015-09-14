@@ -28,7 +28,7 @@ implicit none
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/chloet.h"
-#include "asterfort/contex.h"
+#include "asterfort/contex_param.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
@@ -86,7 +86,7 @@ implicit none
         valk(1) = nompar
         valk(2) = ca_option_
         call utmess('E', 'CALCUL_15', nk=2, valk=valk)
-        call contex(ca_option_, ' ')
+        call contex_param(ca_option_, ' ')
     endif
 !
 ! --- ON VERIFIE QUE LES PARAMETRE IN SONT EN LECTURE
@@ -121,7 +121,7 @@ implicit none
         valk(2) = ca_option_
         valk(3) = ca_nomte_
         call utmess('E', 'CALCUL_16', nk=3, valk=valk)
-        call contex(ca_option_, nompar)
+        call contex_param(ca_option_, nompar)
     endif
 !
 !
@@ -152,7 +152,7 @@ implicit none
         valk(2) = ca_option_
         valk(3) = ca_nomte_
         call utmess('E', 'CALCUL_17', nk=3, valk=valk)
-        call contex(ca_option_, nompar)
+        call contex_param(ca_option_, nompar)
 !
     endif
     ASSERT(iachlo.ne.-2)
@@ -206,12 +206,12 @@ implicit none
                     call utmess('F', 'CALCUL_23', nk=4, valk=valk)
 !
                 else
-                    call utmess('E', 'CALCUL_19', nk=4, valk=valk)
 !
                     write (6,*) 'ERREUR JEVECH ZL :',nompar, (zl(&
                     ilchlo+debugr-1+decael-1+kk),kk=1,lonchl)
                     write (6,*) 'MAILLE: ',zk24(iazk24-1+3)
-                    call contex(ca_option_, nompar)
+                    call utmess('E', 'CALCUL_19', nk=4, valk=valk)
+                    call contex_param(ca_option_, nompar)
                 endif
             endif
  10     continue

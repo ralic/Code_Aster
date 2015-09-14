@@ -57,7 +57,7 @@ subroutine te0222(option, nomte)
             call utmess('F', 'ELEMENTS3_46', sk=nomte)
         endif
     endif
-    call tecach('OON', 'PSYM', 'E', iret, nval=3,&
+    call tecach('OOO', 'PSYM', 'E', iret, nval=3,&
                 itab=itab2)
 !
 ! --- NOMBRE DE LIGNES DE LA MATRICE ELEMENTAIRE NON-SYMETRIQUE

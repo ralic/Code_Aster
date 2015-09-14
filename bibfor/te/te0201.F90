@@ -74,7 +74,7 @@ subroutine te0201(option, nomte)
     call jevech('PINSTPR', 'L', iinstp)
 !
 ! RECUPERATION DU NOMBRE DE VARIABLES INTERNES PAR POINTS DE GAUSS :
-    call tecach('OON', 'PVARIMR', 'L', iret, nval=7,&
+    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7,&
                 itab=jtab)
     lgpg1 = max(jtab(6),1)*jtab(7)
     lgpg = lgpg1

@@ -81,7 +81,7 @@ implicit none
 !
     call elrefe_info(fami=fami,nno=nno,&
                      npg=npg,jpoids=j_poids,jvf=j_vf,jdfde=j_dfde)
-    call tecach('OON', 'PVARIPR', 'L', iret, nval=7,&
+    call tecach('OOO', 'PVARIPR', 'L', iret, nval=7,&
                 itab=jtab)
     lgpg  = max(jtab(6),1)*jtab(7)
     l_axi = .false.

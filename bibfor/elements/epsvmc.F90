@@ -102,7 +102,7 @@ implicit none
 ! - Get comportment
 !
     if (option(1:4).eq.'EPME'.or.option(1:4).eq.'EPMG') then
-        call tecach('NNN', 'PCOMPOR', 'L', iret, iad=j_compo)
+        call tecach('NNO', 'PCOMPOR', 'L', iret, iad=j_compo)
         if (iret.eq.0) then
             rela_comp  = zk16(j_compo)
         else

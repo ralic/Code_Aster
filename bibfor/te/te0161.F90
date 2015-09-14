@@ -100,7 +100,7 @@ subroutine te0161(option, nomte)
     if (option .eq. 'CHAR_MECA_FR1D1D' .or. option .eq. 'CHAR_MECA_SR1D1D') then
         c1 = 1.0d0
 !        POUR LE CAS DU VENT
-        call tecach('NNN', 'PVITER', 'L', iret, iad=iforc)
+        call tecach('NNO', 'PVITER', 'L', iret, iad=iforc)
         if (iret .eq. 0) then
             normal = .true.
             okvent = .true.
@@ -115,7 +115,7 @@ subroutine te0161(option, nomte)
         c1 = 1.0d0
         call jevech('PFF1D1D', 'L', iforc)
         normal = zk8(iforc+6) .eq. 'VENT'
-        call tecach('NNN', 'PTEMPSR', 'L', iret, iad=itemps)
+        call tecach('NNO', 'PTEMPSR', 'L', iret, iad=itemps)
         if (iret .eq. 0) then
             x(4) = zr(itemps)
             nbpar = 4
@@ -228,7 +228,7 @@ subroutine te0161(option, nomte)
                 valpav(1) = sqrt(vite2)
                 if (valpav(1) .gt. r8min) then
 !                 RECUPERATION DE L'EFFORT EN FONCTION DE LA VITESSE
-                    call tecach('ONN', 'PVENTCX', 'L', iret, iad=ifcx)
+                    call tecach('ONO', 'PVENTCX', 'L', iret, iad=ifcx)
                     if (iret .ne. 0) then
                         call utmess('F', 'ELEMENTS3_39')
                     endif

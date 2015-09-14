@@ -421,7 +421,7 @@ subroutine te0583(option, nomte)
         nompar(1) = 'X'
         nompar(2) = 'Y'
         nompar(3) = 'Z'
-        call tecach('NNN', 'PTEMPSR', 'L', iret, iad=itemps)
+        call tecach('NNO', 'PTEMPSR', 'L', iret, iad=itemps)
         if (itemps .ne. 0) then
             time = zr(itemps)
             valpar(4) = time

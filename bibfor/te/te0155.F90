@@ -194,7 +194,7 @@ subroutine te0155(option, nomte)
     if (option .eq. 'CHAR_MECA_FR1D1D' .or. option .eq. 'CHAR_MECA_SR1D1D') then
 !          ------------------------------
 !        POUR LE CAS DU VENT
-        call tecach('NNN', 'PVITER', 'L', iret, iad=lforc)
+        call tecach('NNO', 'PVITER', 'L', iret, iad=lforc)
         if (lforc .ne. 0) then
             if (nomte .eq. 'MECA_2D_BARRE') then
 ! OPTION NON PROGRAMMEE
@@ -215,7 +215,7 @@ subroutine te0155(option, nomte)
         call jevech('PFF1D1D', 'L', lforc)
         normal = zk8(lforc+3) .eq. 'VENT'
         global = zk8(lforc+3) .eq. 'GLOBAL'
-        call tecach('NNN', 'PTEMPSR', 'L', iret, iad=itemps)
+        call tecach('NNO', 'PTEMPSR', 'L', iret, iad=itemps)
         if (itemps .ne. 0) then
             valpa1(4) = zr(itemps)
             valpa2(4) = zr(itemps)
@@ -386,7 +386,7 @@ subroutine te0155(option, nomte)
             valpav(1) = sqrt( vite2 )
             if (valpav(1) .gt. r8min) then
 !            RECUPERATION DE L'EFFORT EN FONCTION DE LA VITESSE
-                call tecach('ONN', 'PVENTCX', 'L', iret, iad=ifcx)
+                call tecach('ONO', 'PVENTCX', 'L', iret, iad=ifcx)
                 if (iret .ne. 0) goto 999
                 if (zk8(ifcx)(1:1) .eq. '.') goto 999
                 call fointe('FM', zk8(ifcx), 1, nompav, valpav,&
@@ -408,7 +408,7 @@ subroutine te0155(option, nomte)
             valpav(1) = sqrt( vite2 )
             if (valpav(1) .gt. r8min) then
 !            RECUPERATION DE L'EFFORT EN FONCTION DE LA VITESSE
-                call tecach('ONN', 'PVENTCX', 'L', iret, iad=ifcx)
+                call tecach('ONO', 'PVENTCX', 'L', iret, iad=ifcx)
                 if (iret .ne. 0) goto 999
                 if (zk8(ifcx)(1:1) .eq. '.') goto 999
                 call fointe('FM', zk8(ifcx), 1, nompav, valpav,&
@@ -488,7 +488,7 @@ subroutine te0155(option, nomte)
                     ' ', 'ELAS', 0, ' ', [0.d0],&
                     1, 'E', e, codres, 1)
 !
-        call tecach('ONN', 'PTEMPSR', 'L', iret, iad=itemps)
+        call tecach('ONO', 'PTEMPSR', 'L', iret, iad=itemps)
         if (itemps .ne. 0) then
             instan = zr(itemps)
         else
@@ -559,7 +559,7 @@ subroutine te0155(option, nomte)
 !
 ! ---- RECUPERATION DE L'INSTANT
 !      -------------------------
-        call tecach('ONN', 'PTEMPSR', 'L', iret, iad=itemps)
+        call tecach('ONO', 'PTEMPSR', 'L', iret, iad=itemps)
         if (itemps .ne. 0) then
             instan = zr(itemps)
         else

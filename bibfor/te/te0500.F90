@@ -123,7 +123,7 @@ subroutine te0500(option, nomte)
 ! =====================================================================
 ! 2. RECUPERATION DES PARAMETRES TEMPORELS
 ! =====================================================================
-    call tecach('ONN', 'PTEMPSR', 'L', iret, iad=itab(1))
+    call tecach('ONO', 'PTEMPSR', 'L', iret, iad=itab(1))
     if (iret .eq. 0) then
         time = zr(itab(1))
     else
@@ -144,7 +144,7 @@ subroutine te0500(option, nomte)
 ! 3.3 CONTRAINTES ( T- ET T+ )
 !
     call jevech('PCONTGM', 'L', isigam)
-    call tecach('ONN', 'PCONTGP', 'L', iret, nval=3,&
+    call tecach('ONO', 'PCONTGP', 'L', iret, nval=3,&
                 itab=itab)
 !
     isigap = itab(1)

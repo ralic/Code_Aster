@@ -101,7 +101,7 @@ subroutine te0570(option, nomte)
 !
 ! --- RECUPERATION L'EPAISSEUR DE L'ELEMENT :
 !     -------------------------------------
-    call tecach('OON', 'PCACOQU', 'L', iret, nval=8,&
+    call tecach('OOO', 'PCACOQU', 'L', iret, nval=8,&
                 itab=itabm)
 !
     if (.not.zl(itabm(8))) then

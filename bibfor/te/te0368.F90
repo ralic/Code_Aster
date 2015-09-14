@@ -205,28 +205,28 @@ subroutine te0368(option, nomte)
 !
 ! 1.4. --- CARTES DE PESANTEUR ET ROTATION
 !
-    call tecach('ONN', 'PPESANRP', 'L', iret, iad=itab(1))
+    call tecach('ONO', 'PPESANRP', 'L', iret, iad=itab(1))
     if (itab(1) .ne. 0) then
         call jevech('PPESANRP', 'L', ipesp)
         yaprp = .true.
     else
         yaprp = .false.
     endif
-    call tecach('ONN', 'PROTATRP', 'L', iret, iad=itab(1))
+    call tecach('ONO', 'PROTATRP', 'L', iret, iad=itab(1))
     if (itab(1) .ne. 0) then
         call jevech('PROTATRP', 'L', irotp)
         yarop = .true.
     else
         yarop = .false.
     endif
-    call tecach('ONN', 'PPESANRD', 'L', iret, iad=itab(1))
+    call tecach('ONO', 'PPESANRD', 'L', iret, iad=itab(1))
     if (itab(1) .ne. 0) then
         call jevech('PPESANRD', 'L', ipesd)
         yaprd = .true.
     else
         yaprd = .false.
     endif
-    call tecach('ONN', 'PROTATRD', 'L', iret, iad=itab(1))
+    call tecach('ONO', 'PROTATRD', 'L', iret, iad=itab(1))
     if (itab(1) .ne. 0) then
         call jevech('PROTATRD', 'L', irotd)
         yarod = .true.
@@ -236,18 +236,18 @@ subroutine te0368(option, nomte)
 !
 ! 1.5. --- FORCES VOLUMIQUES EVENTUELLES
 !          VALEURS REELLES ?
-    call tecach('ONN', 'PFRVOLUP', 'L', iret, iad=ifovrp)
+    call tecach('ONO', 'PFRVOLUP', 'L', iret, iad=ifovrp)
 !          OU FONCTIONS ?
     if (ifovrp .eq. 0) then
-        call tecach('ONN', 'PFFVOLUP', 'L', iret, iad=ifovfp)
+        call tecach('ONO', 'PFFVOLUP', 'L', iret, iad=ifovfp)
     else
         ifovfp = 0
     endif
 !          VALEURS REELLES ?
-    call tecach('ONN', 'PFRVOLUD', 'L', iret, iad=ifovrd)
+    call tecach('ONO', 'PFRVOLUD', 'L', iret, iad=ifovrd)
 !          OU FONCTIONS ?
     if (ifovrd .eq. 0) then
-        call tecach('ONN', 'PFFVOLUD', 'L', iret, iad=ifovfd)
+        call tecach('ONO', 'PFFVOLUD', 'L', iret, iad=ifovfd)
     else
         ifovfd = 0
     endif

@@ -94,11 +94,11 @@ subroutine te0537(option, nomte)
 !
     jcont = -1
     if (option .eq. 'EPSI_ELGA') then
-        call tecach('OON', 'PDEFOPG', 'E', iret, nval=7, itab=jtab)
+        call tecach('OOO', 'PDEFOPG', 'E', iret, nval=7, itab=jtab)
         jcont = jtab(1)
     else if (option.eq.'SIEF_ELGA') then
         call jevech('PMATERC', 'L', imate)
-        call tecach('OON', 'PCONTRR', 'E', iret, nval=7, itab=jtab)
+        call tecach('OOO', 'PCONTRR', 'E', iret, nval=7, itab=jtab)
         jcont = jtab(1)
     else if (option.eq.'STRX_ELGA') then
         call jevech('PMATERC', 'L', imate)

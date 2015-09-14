@@ -51,7 +51,7 @@ implicit none
     call jevech('PSIEFR',   'L', jsiefr)
     call jevech('PMATPASS', 'L', jmatpas)
 !   Champ en sortie
-    call tecach('ONN', 'PCONTPR', 'E', iret, nval=7,itab=itabp)
+    call tecach('ONO', 'PCONTPR', 'E', iret, nval=7,itab=itabp)
     jcontpr  = itabp(1)
     nbspoint = itabp(7)
 !   Vérification du nombre de composante dans le champ

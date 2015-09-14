@@ -166,12 +166,12 @@ subroutine te0096(option, nomte)
         nompar(2) = 'Y'
         nompar(3) = 'INST'
         valpar(3) = zr(itemps)
-        call tecach('ONN', 'PEPSINF', 'L', iret, iad=iepsf)
+        call tecach('ONO', 'PEPSINF', 'L', iret, iad=iepsf)
         if (iepsf .ne. 0) epsini = .true.
     else
         fonc = .false.
         call jevech('PFRVOLU', 'L', iforc)
-        call tecach('ONN', 'PEPSINR', 'L', iret, iad=iepsr)
+        call tecach('ONO', 'PEPSINR', 'L', iret, iad=iepsr)
         if (iepsr .ne. 0) epsini = .true.
     endif
 !
@@ -185,13 +185,13 @@ subroutine te0096(option, nomte)
         call jevech('PDEFOPL', 'L', iepsp)
         call jevech('PVARIPR', 'L', ivari)
     endif
-    call tecach('ONN', 'PPESANR', 'L', iret, iad=ipesa)
-    call tecach('ONN', 'PROTATR', 'L', iret, iad=irota)
-    call tecach('ONN', 'PSIGINR', 'L', iret, iad=isigi)
+    call tecach('ONO', 'PPESANR', 'L', iret, iad=ipesa)
+    call tecach('ONO', 'PROTATR', 'L', iret, iad=irota)
+    call tecach('ONO', 'PSIGINR', 'L', iret, iad=isigi)
     if (option .eq. 'CALC_G' .or. option .eq. 'CALC_G_F' .or. option .eq. 'CALC_GTP_F' .or.&
         option .eq. 'CALC_GTP') then
-        call tecach('ONN', 'PVITESS', 'L', iret, iad=ivites)
-        call tecach('ONN', 'PACCELE', 'L', iret, iad=iaccel)
+        call tecach('ONO', 'PVITESS', 'L', iret, iad=ivites)
+        call tecach('ONO', 'PACCELE', 'L', iret, iad=iaccel)
     endif
 !
     do 20 i = 1, ncmp*nno
@@ -486,7 +486,7 @@ subroutine te0096(option, nomte)
                         oprupt, eps, sigl, rbid, dsidep,&
                         energi)
 !
-            call tecach('NNN', 'PCONTGR', 'L', iret, iad=isigm)
+            call tecach('NNO', 'PCONTGR', 'L', iret, iad=isigm)
             if (iret .eq. 0) then
                 call jevech('PCONTGR', 'L', isigm)
                 do 401 i = 1, 3

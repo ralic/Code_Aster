@@ -118,9 +118,9 @@ Erreur dans un calcul élémentaire :
    - type_élément  : %(k3)s
    - maille        : %(k4)s
 
-Risques et conseils :
-  Certaines informations sur le contexte de cette erreur sont imprimées ci-dessous.
-  Elles peuvent aider à comprendre une éventuelle erreur d'utilisation.
+Remarque :
+  On a imprimé ci-dessus, une liste de booléens indiquant les composantes trouvées
+  sur la maille.
 """),
 
     20: _(u"""

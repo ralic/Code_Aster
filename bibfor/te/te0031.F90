@@ -130,7 +130,7 @@ subroutine te0031(option, nomte)
                     ibid, 'S')
 !
         jnbspi=0
-        call tecach('NNN', 'PNBSP_I', 'L', iret1, iad=jnbspi)
+        call tecach('NNO', 'PNBSP_I', 'L', iret1, iad=jnbspi)
     endif
 !
 !
@@ -375,7 +375,7 @@ subroutine te0031(option, nomte)
         call dxeffi(option, nomte, pgl, zr(icontp), ind,&
                     effgt)
 !
-        call tecach('NNN', 'PCOMPOR', 'L', iret, iad=icompo)
+        call tecach('NNO', 'PCOMPOR', 'L', iret, iad=icompo)
         if (icompo .ne. 0) then
             if ((zk16(icompo+2)(6:10).eq.'_REAC') .or. (zk16(icompo+2) .eq.'GROT_GDEP')) then
                 if (zk16(icompo+2)(6:10) .eq. '_REAC') then

@@ -136,7 +136,7 @@ subroutine te0297(option, nomte)
 !
 ! --- RECUPERATION DE LA PULSATION
 !
-    call tecach('ONN', 'PPULPRO', 'L', iret, nval=7,&
+    call tecach('ONO', 'PPULPRO', 'L', iret, nval=7,&
                 itab=jtab)
     ipuls=jtab(1)
     if (iret .eq. 0) then

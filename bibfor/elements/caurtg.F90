@@ -80,7 +80,7 @@ subroutine caurtg(nomte, ncmp, sigmau, sigrtg)
 ! --- RECUPERATION DU CHAMP DE DEPLACEMENT DANS LE CAS GROT_GDEP :
 !     ---------------------------------------------------------
     if (lgreen) then
-        call tecach('OON', 'PDEPLAR', 'L', iret, iad=idepl)
+        call tecach('OOO', 'PDEPLAR', 'L', iret, iad=idepl)
     else
         goto 9999
     endif

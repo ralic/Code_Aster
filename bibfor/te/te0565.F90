@@ -200,12 +200,12 @@ subroutine te0565(nomopt, nomte)
 !
 ! ---- RECUPERATION DE L'INSTANT DE CALCUL
 !      -----------------------------------
-    call tecach('NNN', 'PTEMPSR', 'L', iret, iad=itemps)
+    call tecach('NNO', 'PTEMPSR', 'L', iret, iad=itemps)
     if (itemps .ne. 0) instan = zr(itemps)
 !
 ! ----RECUPERATION DU TYPE DE COMPORTEMENT  :
 !     N'EXISTE PAS EN LINEAIRE
-    call tecach('NNN', 'PCOMPOR', 'L', iret, nval=7,&
+    call tecach('NNO', 'PCOMPOR', 'L', iret, nval=7,&
                 itab=jtab)
     compor(1)='ELAS'
     compor(2)=' '
@@ -226,7 +226,7 @@ subroutine te0565(nomopt, nomte)
 !
 ! ----   RECUPERATION DU CHAMP DE VARIABLES INTERNES  :
 !        N'EXISTE PAS EN LINEAIRE
-    call tecach('ONN', 'PVARIPR', 'L', iret, nval=7,&
+    call tecach('ONO', 'PVARIPR', 'L', iret, nval=7,&
                 itab=jtab)
     if (iret .eq. 0) then
         idvari=jtab(1)

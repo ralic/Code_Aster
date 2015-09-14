@@ -373,8 +373,8 @@ subroutine te0600(option, nomte)
 ! --- C EST QUE L ON APPELLE DEPUIS STAT NON LINE ET -------------------
 ! --- ALORS LES TERMES DEPENDANT DE DT SONT EVALUES --------------------
 ! ======================================================================
-        call tecach('ONN', 'PINSTMR', 'L', iretm, iad=iinstm)
-        call tecach('ONN', 'PINSTPR', 'L', iretp, iad=iinstp)
+        call tecach('ONO', 'PINSTMR', 'L', iretm, iad=iinstm)
+        call tecach('ONO', 'PINSTPR', 'L', iretp, iad=iinstp)
         if (iretm .eq. 0 .and. iretp .eq. 0) then
             dt = zr(iinstp) - zr(iinstm)
             fnoevo = .true.
@@ -451,7 +451,7 @@ subroutine te0600(option, nomte)
         call jevech('PCOMPOR', 'L', icompo)
         read (zk16(icompo+1),'(I16)') ncmp
         read (zk16(icompo-1+7+9+4),'(I16)') nvim
-        call tecach('OON', 'PVARIGR', 'L', iret, nval=7,&
+        call tecach('OOO', 'PVARIGR', 'L', iret, nval=7,&
                     itab=jtab)
 !
         call posthm(option, modint, jgano, ncmp, nvim,&

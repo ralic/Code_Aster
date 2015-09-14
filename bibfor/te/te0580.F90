@@ -58,7 +58,7 @@ subroutine te0580(nomopt, nomte)
 !   ===================================================================================
         do kpara=1,2
             param=lparam1(kpara)
-            call tecach('NNN', param, 'L', iret, nval=8, itab=itab)
+            call tecach('NNO', param, 'L', iret, nval=8, itab=itab)
             if (iret.eq.0) then
                 jad=itab(1)
                 nbv=itab(2)
@@ -87,7 +87,7 @@ subroutine te0580(nomopt, nomte)
 !   ===================================================================================
         do kpara=1,1
             param='PEPSINR'
-            call tecach('NNN', param, 'L', iret, nval=8, itab=itab)
+            call tecach('NNO', param, 'L', iret, nval=8, itab=itab)
             if (iret.eq.0) then
                 jad=itab(1)
                 nbv=itab(2)
@@ -108,7 +108,7 @@ subroutine te0580(nomopt, nomte)
 !   ===================================================================================
         do kpara=1,2
             param=lparam3(kpara)
-            call tecach('NNN', param, 'L', iret, nval=8, itab=itab)
+            call tecach('NNO', param, 'L', iret, nval=8, itab=itab)
             if (iret.eq.0) then
                 jad=itab(1)
                 nbv=itab(2)
@@ -162,7 +162,7 @@ subroutine te0580(nomopt, nomte)
 2       continue
         do kpara=1,6
             param=lparam2(kpara)
-            call tecach('NNN', param, 'L', iret, nval=8, itab=itab)
+            call tecach('NNO', param, 'L', iret, nval=8, itab=itab)
             if (iret.eq.0) then
                 jad=itab(1)
                 nbv=itab(2)
@@ -194,7 +194,7 @@ subroutine te0580(nomopt, nomte)
         nompar(3)='Z'
 
         call elrefe_info(fami='RIGI',ndim=ndim,nno=nno)
-        call tecach('ONN', 'PGEOMER', 'L', iret, nval=5, itab=itab)
+        call tecach('ONO', 'PGEOMER', 'L', iret, nval=5, itab=itab)
         igeom=itab(1)
         idimge=itab(2)/nno
 

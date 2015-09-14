@@ -68,7 +68,7 @@ subroutine te0066(option, nomte)
     kpg=1
     spt=1
     poum='+'
-    call tecach('ONN', 'PTEMPSR', 'L', iret, iad=itemp)
+    call tecach('ONO', 'PTEMPSR', 'L', iret, iad=itemp)
     if (itemp .eq. 0) then
         nbpar = 0
         nompar = ' '

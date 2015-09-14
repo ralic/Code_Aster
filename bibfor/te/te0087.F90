@@ -102,7 +102,7 @@ subroutine te0087(option, nomte)
 !
 ! ---- RECUPERATION DE L'INSTANT DE CALCUL :
 !      -----------------------------------
-    call tecach('ONN', 'PTEMPSR', 'L', iret, iad=itemps)
+    call tecach('ONO', 'PTEMPSR', 'L', iret, iad=itemps)
     if (itemps .ne. 0) then
         instan = zr(itemps)
     endif

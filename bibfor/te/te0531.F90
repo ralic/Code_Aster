@@ -77,7 +77,7 @@ subroutine te0531(option,nomte)
         coque  = lteatt('COQUE'  ,'OUI')
     endif
 !
-    call tecach('NNN', 'PMATERC', 'L', iret, iad=imate)
+    call tecach('NNO', 'PMATERC', 'L', iret, iad=imate)
     call jevech('PDEFOPG', 'E', idefo)
 
     if (option .eq. 'EPME_ELGA' .or. option .eq. 'EPSP_ELGA')then

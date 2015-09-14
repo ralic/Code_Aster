@@ -162,16 +162,16 @@ subroutine te0535(option, nomte)
 !   (avec RIGI_MECA_TANG ca n'a pas de sens). Cependant ce champ est initialisé a 0 par
 !   la routine nmmatr.
     call jevech('PDEPLPR', 'L', ideplp)
-    call tecach('OON', 'PCONTMR', 'L', iret, nval=7, itab=jtab)
+    call tecach('OOO', 'PCONTMR', 'L', iret, nval=7, itab=jtab)
     icontm = jtab(1)
 !
     call jevech('PSTRXMR', 'L', istrxm)
 !
-    call tecach('OON', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
+    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
     ivarim = jtab(1)
 !
     if (vecteu) then
-        call tecach('OON', 'PVARIMP', 'L', iret, nval=7, itab=jtab)
+        call tecach('OOO', 'PVARIMP', 'L', iret, nval=7, itab=jtab)
         ivarmp = jtab(1)
     else
         ivarmp=1

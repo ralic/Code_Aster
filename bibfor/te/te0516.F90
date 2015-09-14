@@ -139,12 +139,12 @@ subroutine te0516(option, nomte)
     xl = lonele(igeom=igeom)
     call jevech('PMATERC', 'L', imate)
 !
-    call tecach('OON', 'PCONTMR', 'L', iret, nval=7, itab=jtab)
+    call tecach('OOO', 'PCONTMR', 'L', iret, nval=7, itab=jtab)
     icontm = jtab(1)
 !
     call jevech('PSTRXMR', 'L', istrxm)
 !
-    call tecach('OON', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
+    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
     ivarim = jtab(1)
 !   Pour matric=(FULL_MECA|RIGI_MECA_TANG) : valeurs "+" égalent valeurs "-"
     icontp = icontm
@@ -177,7 +177,7 @@ subroutine te0516(option, nomte)
         call jevech('PCONTPR', 'E', icontp)
         call jevech('PVARIPR', 'E', ivarip)
         call jevech('PSTRXPR', 'E', istrxp)
-        call tecach('OON', 'PVARIMP', 'L', iret, nval=7, itab=jtab)
+        call tecach('OOO', 'PVARIMP', 'L', iret, nval=7, itab=jtab)
         ivarmp = jtab(1)
         call jevech('PSTRXMP', 'L', istrmp)
     endif

@@ -91,7 +91,7 @@ subroutine te0390(option, nomte)
 !* STOUDY VAUT: 1., SI L'ON EST EN DYNAMIQUE
 !*              0., SI L'ON EST EN STATIQUE
 !
-    call tecach('NNN', 'PSTADYN', 'L', iret, iad=istady)
+    call tecach('NNO', 'PSTADYN', 'L', iret, iad=istady)
     if (istady .eq. 0) then
         stoudy = 0.d0
     else

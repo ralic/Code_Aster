@@ -195,7 +195,7 @@ subroutine te0158(option, nomte)
 !       passage des deplacements dans le repere local
         call utpvgl(nno, nc, pgl, zr(jdepl), ul)
 !       alpha modes incompatibles
-        call tecach('ONN','PSTRXRR','L',iret, nval=7, itab= jtab)
+        call tecach('ONO','PSTRXRR','L',iret, nval=7, itab= jtab)
         istrxr=jtab(1)
         alpha=zr(istrxr-1+15)
 !

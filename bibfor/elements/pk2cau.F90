@@ -114,16 +114,17 @@ subroutine pk2cau(nomte, ncmp, pk2, sigma)
 ! --- RECUPERATION DU CHAMP DE DEPLACEMENT DANS LE CAS GROT_GDEP :
 !     ---------------------------------------------------------
     if (lgreen) then
-        call tecach('NNN', 'PDEPLAR', 'L', iret, iad=idepl)
+        call tecach('NNO', 'PDEPLAR', 'L', iret, iad=idepl)
         if (iret .ne. 0) then
-            call tecach('NNN', 'PDEPPLU', 'L', iret, iad=idepl)
+            call tecach('NNO', 'PDEPPLU', 'L', iret, iad=idepl)
             ASSERT(iret.eq.0)
         endif
     else
-        do 10 i = 1, 6
-            do 10 j = 1, maxpg
+        do i = 1, 6
+            do j = 1, maxpg
                 sigma(i,j) = pk2(i,j)
- 10         continue
+            enddo
+        enddo
 !
         goto 9999
     endif
@@ -315,10 +316,11 @@ subroutine pk2cau(nomte, ncmp, pk2, sigma)
 !
 ! ---         MATRICE DE PASSAGE DU REPERE GLOBAL AU REPERE LOCAL :
 !             --------------------------------------------------
-                do 100 i = 1, 3
-                    do 100 j = 1, 3
+                do i = 1, 3
+                    do j = 1, 3
                         vecttt(i,j) = vectt(j,i)
-100                 continue
+                    enddo
+                enddo
 !
 ! ---         PASSAGE DU TENSEUR DES CONTRAINTES DE CAUCHY DU
 ! ---         REPERE GLOBAL AU REPERE LOCAL :

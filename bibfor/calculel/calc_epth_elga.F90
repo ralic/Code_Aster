@@ -89,7 +89,7 @@ implicit none
 !
 ! - Comportment
 !
-    call tecach('NNN', 'PCOMPOR', 'L', iret, iad=icompo)
+    call tecach('NNO', 'PCOMPOR', 'L', iret, iad=icompo)
     if (iret.eq.0) then
         rela_comp  = zk16(icompo)
     else

@@ -114,7 +114,7 @@ subroutine bsthco(nomte, bsigth, indith)
 !
 ! --- RECUPERATION DE LA CARTE DE COMPORTEMENT :
 !     ----------------------------------------
-    call tecach('NNN', 'PCOMPOR', 'L', iret, nval=8,&
+    call tecach('NNO', 'PCOMPOR', 'L', iret, nval=8,&
                 itab=itab)
     icompo = itab(1)
     if (icompo .eq. 0) then

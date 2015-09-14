@@ -217,8 +217,8 @@ subroutine te0313(option, nomte)
 ! --- C EST QUE L ON APPELLE DEPUIS STAT NON LINE ET -------------------
 ! --- ALORS LES TERMES DEPENDANT DE DT SONT EVALUES --------------------
 ! ======================================================================
-        call tecach('ONN', 'PINSTMR', 'L', iretm, iad=iinstm)
-        call tecach('ONN', 'PINSTPR', 'L', iretp, iad=iinstp)
+        call tecach('ONO', 'PINSTMR', 'L', iretm, iad=iinstm)
+        call tecach('ONO', 'PINSTPR', 'L', iretp, iad=iinstp)
         if (iretm .eq. 0 .and. iretp .eq. 0) then
             dt = zr(iinstp) - zr(iinstm)
             fnoevo = .true.

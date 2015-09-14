@@ -94,7 +94,7 @@ subroutine te0331(option, nomte)
     call jevech('PWEIBUL', 'E', iweib)
     call jevech('PSIGISG', 'E', isigis)
 !
-    call tecach('OON', 'PVARIPG', 'L', iret, nval=7,&
+    call tecach('OOO', 'PVARIPG', 'L', iret, nval=7,&
                 itab=jtab)
     nbvari = max(jtab(6),1)*jtab(7)
     call jevech('PCOMPOR', 'L', icompo)
