@@ -539,8 +539,6 @@ OPTION__
                           OUT__ ESINGUL  PSING_R  
     SING_ELNO         99  IN__  
                           OUT__ ESINGNO  PSINGNO  
-    SYME_MDNS_R      222  IN__  MMATUNS  PNOSYM   
-                          OUT__ MMATUUR  PSYM     
     TOU_INI_ELEM      99  IN__  
                           OUT__ CGEOMER  PGEOM_R  
     TOU_INI_ELGA      99  IN__  

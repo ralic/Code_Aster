@@ -99,7 +99,7 @@ previous_errors = [
     'ligrel', 'lkcaln', 'longt', 'majpad', 'mem',
     'modelisation', 'nadm', 'nbmmai', 'nbmmax', 'nbtyp', 'ncmp', 'nmaxcmp',
     'nomres', 'nomta', 'nomtyp', 'nume',
-    'numeli', 'overflow', 'phenomene', 'pnosym', 'pos',
+    'numeli', 'overflow', 'phenomene', 'pos',
     'raymin', 'rcmaco', 'relcom',
     'resuelem', 'resultat', 'rhocp', 'rof', 'rsexch', 'sch',
     'skin', 'tbliva', 'tmax', 'tmin', 'typelem', 'typesd',

@@ -213,8 +213,6 @@ OPTION__
     SOUR_ELGA        319  IN__  NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER  CTEMPSR  PTEMPSR
                                 ZVARCPG  PVARCPR
                           OUT__ ESOURCR  PSOUR_R
-    SYME_MTNS_R      222  IN__  MMATTSR  PNOSYM
-                          OUT__ MMATTTR  PSYM
     TOU_INI_ELEM      99  IN__
                           OUT__ CSOURCR  PSOUR_R
     TOU_INI_ELGA      99  IN__

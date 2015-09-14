@@ -178,8 +178,6 @@ OPTION__
                           OUT__ EEFGEGC  PCONTRC  EEFGEGA  PCONTRR
     SIEF_ELNO          4  IN__  EEFGEGA  PCONTRR  ZVARCPG  PVARCPR
                           OUT__ EEFGENC  PSIEFNOC EEFGENO  PSIEFNOR
-    SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM
-                              OUT__  MMATUUR  PSYM
     TOU_INI_ELEM        99    IN__
                               OUT__  CGEOMER  PGEOM_R
     TOU_INI_ELGA        99    IN__

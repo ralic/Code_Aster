@@ -301,8 +301,6 @@ OPTION__
     SIGM_ELNO         40  IN__  CCACOQU  PCACOQU  CCOMPOR  PCOMPOR  ECONTPG  PCONTRR  DDL_MECA PDEPLAR
                                 NGEOMER  PGEOMER  ENBSP_I  PNBSP_I
                           OUT__ ECONTNC  PSIEFNOC ECONTNO  PSIEFNOR
-    SYME_MDNS_R      222  IN__  MMATUNS  PNOSYM
-                          OUT__ MMATUUR  PSYM
     TOU_INI_ELEM      99  IN__
                           OUT__ CGEOMER  PGEOM_R  ENBSP_I  PNBSP_I
     TOU_INI_ELGA      99  IN__

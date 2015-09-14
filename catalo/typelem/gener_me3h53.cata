@@ -233,8 +233,6 @@ OPTION__
                           OUT__ ESIGMPC  PSIGMC   ESIGMPG  PSIGMR   
     SIGM_ELNO          4  IN__  ESIGMPG  PCONTRR  
                           OUT__ ESIGMNC  PSIEFNOC ESIGMNO  PSIEFNOR 
-    SYME_MDNS_R      222  IN__  MMATUNS  PNOSYM   
-                          OUT__ MMATUUR  PSYM     
     TOU_INI_ELGA      99  IN__  
                           OUT__ EGGEOM_R PGEOM_R  EGINST_R PINST_R  EGNEUT_F PNEUT_F  EGNEUT_R PNEUT_R  
                                 ECONTPG  PSIEF_R  ZVARIPG  PVARI_R  
