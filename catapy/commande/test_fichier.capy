@@ -19,11 +19,17 @@
 TEST_FICHIER=MACRO(nom="TEST_FICHIER",
                    op=OPS('Macro.test_fichier_ops.test_fichier_ops'),
                    UIinfo={"groupes":("Utilitaires",)},
-                   fr=tr("Tester la non régression de fichiers produits par des commandes aster"),
-   FICHIER          =SIMP(statut='o',typ=('Fichier','','Sauvegarde'),validators=LongStr(1,255)),
+                   fr=tr("Tester la non régression de fichiers produits par "
+                         "des commandes aster"),
+   FICHIER          =SIMP(statut='o',typ=('Fichier','','Sauvegarde'),
+                          validators=LongStr(1,255)),
    EXPR_IGNORE      =SIMP(statut='f',typ='TXM',max='**',
-                          fr=tr("Liste d'expressions régulières permettant d'ignorer certaines lignes")),
-   NB_VALE         =SIMP(statut='o',typ='I',),
+                          fr=tr("Liste d'expressions régulières permettant "
+                                "d'ignorer certaines lignes")),
+   NB_VALE         =SIMP(statut='o',typ='I',
+                         fr=tr("Nombre de réels")),
+   NB_VALE_I       =SIMP(statut='f',typ='I',
+                         fr=tr("Nombre d'entiers si VALE_CALC_I est présent")),
 
    INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
    **C_TEST_REFERENCE('FICHIER', max=1)

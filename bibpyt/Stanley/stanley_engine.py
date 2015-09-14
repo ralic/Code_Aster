@@ -2468,8 +2468,11 @@ class DRIVER:
 
         try:
             # calcule le md5sum du fichier
-            nbv, somme, mdsum = test_file(
-                FICHIER, type_test='SOMM', regexp_ignore=regexp_ignore, verbose=False)
+            results = test_file(FICHIER, type_test='SOMM',
+                                regexp_ignore=regexp_ignore, verbose=False)
+            nbv, somme, nbvi, sommei, mdsum = results
+            nbv += nbvi
+            somme += sommei
             # Affichage de la ligne
             txt = mdsum + ' - ' + FICHIER + ' - ' + \
                 ' - '.join(

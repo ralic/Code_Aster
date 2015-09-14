@@ -20,7 +20,7 @@ def C_TEST_REFERENCE(keyword, max=1):       #COMMUN#
     On retourne un bloc pour ajouter la règle UN_PARMI."""
     assert keyword in ('CHAM_NO', 'CHAM_ELEM', 'CARTE', 'RESU', 'GENE', 'OBJET',
                        'TABLE', 'FONCTION', 'FICHIER', 'MAILLAGE')
-    with_int     = keyword not in ('FONCTION', 'FICHIER')
+    with_int     = keyword not in ('FONCTION', )
     with_complex = keyword not in ('OBJET', 'FICHIER', 'MAILLAGE')
     with_string  = keyword in ('FICHIER', 'TABLE')
     vale_abs     = keyword not in ('CARTE', 'FICHIER')
