@@ -79,10 +79,10 @@ subroutine lcpima(fami, kpg, ksp, poum, mate,&
     call rcvalb(fami, kpg, ksp, poum, mate,&
                 ' ', 'ELAS', 0, kbid, [r8bid],&
                 1, 'NU', val, icodre(1), 2)
-    nu=val(1)            
+    nu=val(1)
 !
     call verift(fami, kpg, ksp, poum, mate,&
-                iret = iret1, epsth=epsthe)
+                iret_ = iret1, epsth_=epsthe)
     call rcvarc(' ', 'TEMP', poum, fami, kpg,&
                 ksp, temp, iret2)
     if (compor(6:14) .eq. 'ISOT_TRAC') then
@@ -97,7 +97,7 @@ subroutine lcpima(fami, kpg, ksp, poum, mate,&
         call rcvalb(fami, kpg, ksp, poum, mate,&
                     ' ', 'ELAS', 0, kbid, [r8bid],&
                     1, 'E', val, icodre(1), 2)
-        young=val(1)            
+        young=val(1)
     endif
 !
 !     CRIT_RUPT

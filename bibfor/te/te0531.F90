@@ -66,7 +66,7 @@ subroutine te0531(option,nomte)
     fami = 'RIGI'
 !
     call elrefe_info(fami=fami, npg=npg)
-    
+
     grille = lteatt('GRILLE' ,'OUI')
     pmf    = lteatt('TYPMOD2','PMF')
     tuyau  = lteatt('TUYAU'  ,'OUI')
@@ -79,7 +79,7 @@ subroutine te0531(option,nomte)
 !
     call tecach('NNN', 'PMATERC', 'L', iret, iad=imate)
     call jevech('PDEFOPG', 'E', idefo)
-                
+
     if (option .eq. 'EPME_ELGA' .or. option .eq. 'EPSP_ELGA')then
         lmeca = .true.
         call jevech('PDEFORR', 'L', idefto)
@@ -123,7 +123,7 @@ subroutine te0531(option,nomte)
             do ksp = 1,nbsp
 !
                 call verift(fami, ipg, ksp, '+', zi( imate),&
-                            epsth=epsth)
+                            epsth_=epsth)
 !
                 icomp = idefo+nbcmp*nbsp*(ipg-1)+nbcmp*(ksp-1)-1
                 if (lmeca) then
@@ -187,7 +187,7 @@ subroutine te0531(option,nomte)
             do ksp = 1,nbsp
 !
                 call verift(fami, ipg, ksp, '+', zi( imate),&
-                            epsth=epsth)
+                            epsth_=epsth)
 !
                 icomp = idefo+nbcmp*nbsp*(ipg-1)+nbcmp*(ksp-1)-1
                 if (lmeca) then
@@ -219,7 +219,7 @@ subroutine te0531(option,nomte)
         call pmfinfo(nbsp, nbgf, tygrfi, nbcarm, nug)
 !
         call jevech('PCOMPOR', 'L', icompo)
-        call jeveuo(zk16(icompo-1+7), 'L', isdcom) 
+        call jeveuo(zk16(icompo-1+7), 'L', isdcom)
         do ipg = 1,npg
             ksp = 0
             do ig = 1, nbgf
@@ -232,9 +232,9 @@ subroutine te0531(option,nomte)
 !
                     ksp = ksp + 1
                     ASSERT(ksp.le.nbsp)
-                                
+
                     call verift(fami, ipg, ksp, '+', zi( imate),&
-                                materi_=materi, epsth=epsth)
+                                materi_=materi, epsth_=epsth)
 
                     icomp = idefo+nbcmp*nbsp*(ipg-1)+nbcmp*(ksp-1)-1
                     if (lmeca) then

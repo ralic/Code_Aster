@@ -71,7 +71,7 @@ subroutine te0165(option, nomte)
                 ' ', 'ELAS', 0, '  ', [r8bid],&
                 1, nomres, valres, icodre, 1)
     call verift('RIGI', 1, 1, '+', zi(imate),&
-                epsth=epsthe)
+                epsth_=epsthe)
     e = valres(1)
     call jevech('PCACABL', 'L', lsect)
     a = zr(lsect)

@@ -113,11 +113,11 @@ subroutine te0435(option, nomte)
         call jevech('PMATUUR', 'E', imatuu)
     endif
 !
-! - PARAMETRES EN SORTIE SUPPLEMENTAIE POUR LA METHODE IMPLEX    
+! - PARAMETRES EN SORTIE SUPPLEMENTAIE POUR LA METHODE IMPLEX
     if (option .eq. 'RIGI_MECA_IMPLEX') then
         call jevech('PCONTXR', 'E', icontx)
-! ------ INITIALISATION DE LA CONTRAINTE INTERPOLE CONTX=CONTM        
-        call dcopy(npg*ncomp, zr(icontm), 1, zr(icontx), 1)      
+! ------ INITIALISATION DE LA CONTRAINTE INTERPOLE CONTX=CONTM
+        call dcopy(npg*ncomp, zr(icontm), 1, zr(icontx), 1)
     endif
 !
 ! - INITIALISATION CODES RETOURS
@@ -173,7 +173,7 @@ subroutine te0435(option, nomte)
             end do
 !
             call verift(fami, kpg, 1, '+', zi(imate),&
-                        epsth=epsthe)
+                        epsth_=epsthe)
             call r8inir(3, 0.d0, epsth, 1)
             epsth(1) = epsthe
             epsth(2) = epsthe

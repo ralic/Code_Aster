@@ -123,16 +123,16 @@ subroutine nmelnl(fami, kpg, ksp, idecpg, poum,&
 !
 ! TEST SUR LA COHERENCE DES INFORMATIONS CONCERNANT LA TEMPERATURE
     call verift(fami, kpg, ksp, poum, imate,&
-                epsth=epsthe)
+                epsth_=epsthe)
 !
     if (fami(1:4) .eq. 'XFEM') then
 !
         call verift(fami, kpg + idecpg, ksp, poum, imate,&
-                    epsth=epsthe)
+                    epsth_=epsthe)
     else
 !
         call verift(fami, kpg, ksp, poum, imate,&
-                    epsth=epsthe)
+                    epsth_=epsthe)
 !
     endif
 !

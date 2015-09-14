@@ -141,7 +141,7 @@ subroutine ef0344(nomte)
     call pmavec('ZERO', 14, klc, ulr, flr)
 !
 !   tenir compte des efforts dus a la dilatation
-    call verift('RIGI', npg, 1, '+', zi(lmater), epsth=epsith)
+    call verift('RIGI', npg, 1, '+', zi(lmater), epsth_=epsith)
     ugr(:)=0.d0
     ugr(1)=-epsith*xl
     ugr(8)=-ugr(1)

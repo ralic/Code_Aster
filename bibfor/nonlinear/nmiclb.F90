@@ -114,26 +114,26 @@ subroutine nmiclb(fami, kpg, ksp, option, compor,&
     call rcvalb(fami, kpg, ksp, '-', imate,&
                 ' ', 'ELAS', 0, ' ', [0.d0],&
                 1, 'E', val, codres, 1)
-    em=val(1)            
+    em=val(1)
 !
 ! --- CARACTERISTIQUES ELASTIQUES A TPLUS
 !
     call rcvalb(fami, kpg, ksp, '+', imate,&
                 ' ', 'ELAS', 0, ' ', [0.d0],&
                 1, 'E', val, codres, 1)
-    ep=val(1) 
+    ep=val(1)
 !
 !
     if (isot .and. (.not.impl)) then
         call verift(fami, kpg, ksp, 'T', imate,&
-                    epsth=depsth)
+                    epsth_=depsth)
         depsm=deps-depsth
         call nm1dis(fami, kpg, ksp, imate, em,&
                     ep, sigm, depsm, vim, option,&
                     compor, ' ', sigp, vip, dsde)
     else if (cine) then
         call verift(fami, kpg, ksp, 'T', imate,&
-                    epsth=depsth)
+                    epsth_=depsth)
         depsm = deps-depsth
         call nm1dci(fami, kpg, ksp, imate, em,&
                     ep, sigm, depsm, vim, option,&
@@ -142,7 +142,7 @@ subroutine nmiclb(fami, kpg, ksp, option, compor,&
         dsde = ep
         vip(1) = 0.d0
         call verift(fami, kpg, ksp, 'T', imate,&
-                    epsth=depsth)
+                    epsth_=depsth)
         sigp = ep* (sigm/em+deps-depsth)
     else if (corr) then
         call nm1dco(fami, kpg, ksp, option, imate,&

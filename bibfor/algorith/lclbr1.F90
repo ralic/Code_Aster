@@ -87,9 +87,9 @@ subroutine lclbr1(fami, kpg, ksp, ndim, typmod,&
 ! -- MAJ DES DEFORMATIONS ET PASSAGE AUX DEFORMATIONS REELLES 3D
 !
     call verift(fami, kpg, ksp, '+', imate,&
-                epsth=epsthp)
+                epsth_=epsthp)
     call verift(fami, kpg, ksp, '-', imate,&
-                epsth=epsthm)
+                epsth_=epsthm)
     if (resi) then
         do k = 1, ndimsi
             eps(k) = epsm(k) + deps(k) - epsthp*kron(k)

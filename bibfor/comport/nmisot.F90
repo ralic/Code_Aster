@@ -2,8 +2,7 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
                   imate, compor, crit, deps, sigm,&
                   vim, option, sigp, vip, dsidep,&
                   demu, cinco, iret)
-! ----------------------------------------------------------------------
-! person_in_charge: jean-michel.proix at edf.fr
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -85,14 +84,13 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
     real(kind=8) :: depsth(6), valres(3), epsthe, pm, co
     real(kind=8) :: depsmo, sigmmo, e, nu, troisk, rprim, rp, airerp
     real(kind=8) :: sieleq, sigeps, seuil, dp, coef, dsde, sigy, hydrm, hydrp
-    real(kind=8) :: kron(6), depsdv(6), sigmdv(6), sigpdv(6), sigdv(6)
+    real(kind=8) :: depsdv(6), sigmdv(6), sigpdv(6), sigdv(6)
     real(kind=8) :: em, num, troikm, deumum, sigmp(6), sigel(6), a
     real(kind=8) :: sechm, sechp, sref, tp, defam(6), defap(6)
     integer :: ndimsi, jprolm, jvalem, nbvalm, jprol2, jvale2, nbval2
     integer :: imate2, jprolp, jvalep, nbvalp, k, l, niter, ibid
     integer :: iret2, iret3, iret4, iret5
     integer :: icodre(3)
-    character(len=6) :: epsa(6)
     character(len=16) :: nomres(3)
     character(len=8) :: nompar(3), para_type
     character(len=32) :: phenom
@@ -103,8 +101,9 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
     real(kind=8) :: alfafa, coco, dp0, precr, rprim0, tm
     real(kind=8) :: unsurn, xap
 !-----------------------------------------------------------------------
-    data        kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
-    data epsa   / 'EPSAXX','EPSAYY','EPSAZZ','EPSAXY','EPSAXZ','EPSAYZ'/
+    real(kind=8), parameter :: kron(6) = (/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/)
+    character(len=6), parameter :: epsa(6) = (/'EPSAXX','EPSAYY','EPSAZZ','EPSAXY','EPSAXZ',&
+                                            'EPSAYZ'/)
 ! DEB ------------------------------------------------------------------
 !
 !     -- 1 INITIALISATIONS :
@@ -212,7 +211,7 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
             lgpg = 8
             call rupmat(fami, kpg, ksp, imate, vim,&
                         lgpg, em, sigm)
-!       Si il y a rupture            
+!       Si il y a rupture
         endif
 !
         if (inco) then
@@ -242,7 +241,7 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
         endif
     endif
     call verift(fami, kpg, ksp, 'T', imate,&
-                epsth=epsthe)
+                epsth_=epsthe)
 !
 ! --- RETRAIT ENDOGENE ET RETRAIT DE DESSICCATION
 !
@@ -546,14 +545,14 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
 !      S'il YA RUPTURE ALORS INTERDIRE PLASTICITE CAR LES CONTRAINTES ONT ETE MIS A ZERO
         if ((crit(13).gt.0.d0) .and. (vim(8).gt.0.d0)) then
            plasti = .false.
-        endif      
+        endif
 
 
         a=1.d0
         if (.not.dech) then
             if (plasti .and. (sigeps .ge. 0.d0) ) then
                 if (rp .le. 1.d-15) then
-                  call utmess('F', 'ALGORITH4_46', sk=option(1:14))                
+                  call utmess('F', 'ALGORITH4_46', sk=option(1:14))
                 endif
                 a = 1.d0+1.5d0*deuxmu*dp/rp
                 coef = - (1.5d0 * deuxmu)**2/(1.5d0*deuxmu+rprim)/rp** 2 *(1.d0 - dp*rprim/rp )/a

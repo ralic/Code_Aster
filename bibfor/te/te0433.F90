@@ -180,7 +180,7 @@ subroutine te0433(option, nomte)
 !
 !         CALCUL DE LA CONTRAINTE
             call verift(fami, kpg, 1, '+', zi(imate),&
-                        epsth=epsthe)
+                        epsth_=epsthe)
             nomres(1) = 'E'
             call rcvalb(fami, kpg, 1, '+', zi(imate),&
                         ' ', 'ELAS', 0, ' ', [0.d0],&

@@ -74,7 +74,7 @@ subroutine nm1das(fami, kpg, ksp, e, syc,&
 !     ------------------------------------------------------------------
 !
     call verift(fami, kpg, ksp, 'T', icodma,&
-                epsth=epsthe)
+                epsth_=epsthe)
 !
     depmec = deps-epsthe
 !     ------------------------------------------------------------------

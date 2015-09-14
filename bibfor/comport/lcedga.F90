@@ -101,7 +101,7 @@ implicit none
     real(kind=8) :: ani(6, 6)
     real(kind=8) :: m(3), n(3), gamma(3), depsth
     real(kind=8) :: deps(2*ndim), sigm(2*ndim)
-    real(kind=8) :: trdeps, trsigm, trsigp, epsthe(3)
+    real(kind=8) :: trdeps, trsigm, trsigp, epsth_meta(2)
     real(kind=8) :: dvdeps(2*ndim), dvepel(2*ndim)
     real(kind=8) :: dvsigm(2*ndim), dvsitr(2*ndim), dvsigp(2*ndim)
     real(kind=8) :: eqsitr, eqeptr
@@ -219,8 +219,8 @@ implicit none
 ! 3.2 - TRACE
 !
         call verift(fami, kpg, ksp, 'T', imat,&
-                    vepsth=epsthe)
-        depsth = phase(nb_phasis)*epsthe(1) + zalpha*epsthe(2)
+                    epsth_meta_=epsth_meta)
+        depsth = phase(nb_phasis)*epsth_meta(1) + zalpha*epsth_meta(2)
         trdeps = (deps(1)+deps(2)+deps(3))/3.d0
         trsigm = (sigm(1)+sigm(2)+sigm(3))/3.d0
         trsigp = trsigm*troisk/troiskm + troisk*(trdeps-depsth)

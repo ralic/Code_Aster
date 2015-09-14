@@ -54,7 +54,7 @@ subroutine gdclel(fami, kpg, ksp, poum, imate,&
     troisk = young/(1-2*nu)
     unk = troisk/3
     call verift(fami, kpg, ksp, poum, imate,&
-                epsth=epsth)
+                epsth_=epsth)
     cother = troisk*epsth
 !
 end subroutine

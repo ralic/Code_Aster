@@ -339,9 +339,9 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
     else
 !
         call verift(fami, kpg, ksp, '+', imate,&
-                   epsth=epsthp)
+                    epsth_=epsthp)
         call verift(fami, kpg, ksp, '-', imate,&
-                    epsth=epsthm)
+                    epsth_=epsthm)
     endif
 !
 !

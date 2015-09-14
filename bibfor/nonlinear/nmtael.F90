@@ -50,7 +50,7 @@ subroutine nmtael(fami, kpg, ksp, imate, ndimsi,&
     data    kron /1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
 !
     call verift(fami, kpg, ksp, 'T', imate,&
-                epsth=depsth)
+                epsth_=depsth)
 !
     troikm = matm(1)
     deumum = matm(2)

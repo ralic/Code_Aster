@@ -17,8 +17,7 @@ subroutine nmcham(fami, kpg, ksp, imate, compor,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: jean-michel.proix at edf.fr
-!.======================================================================
+!
     implicit none
 !
 !      NMCHAM   -- COEFFICIENTS MATERIAU DES LOIS DE COMPORTEMENT
@@ -85,7 +84,7 @@ subroutine nmcham(fami, kpg, ksp, imate, compor,&
     un = 1.0d0
 !
     call verift(fami, kpg, ksp, 'T', imate,&
-                epsth=coef)
+                epsth_=coef)
 !
 ! --- RECUPERATION DES CARACTERISTIQUES ELASTIQUES :
 !     ============================================

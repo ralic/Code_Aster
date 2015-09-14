@@ -45,7 +45,7 @@ subroutine ef0436(nomte)
     integer :: igeom, icacoq, imate, idepl
     real(kind=8) :: dff(2, 8), vff(8), b(3, 3, 8), jac
     real(kind=8) :: alpha, beta
-    real(kind=8) :: epsm(3), epsg(3, 9), epsthe, sig(3), sigg(3, 9), rig(6, 6)
+    real(kind=8) :: epsm(3), epsthe, sig(3), sigg(3, 9), rig(6, 6)
 !----------------------------------------------------------------------------------
 !
 ! - NOMBRE DE COMPOSANTES DES TENSEURS
@@ -108,10 +108,10 @@ subroutine ef0436(nomte)
 !
 !        -- RETRAIT DE LA DEFORMATION THERMIQUE
          call verift(fami, kpg, 1, '+', zi(imate),&
-                     epsth=epsthe)
+                     epsth_=epsthe)
          epsm(1) = epsm(1) - epsthe
          epsm(2) = epsm(2) - epsthe
-        
+
 !
 !        --  CALCUL DE LA CONTRAINTE AU PG
          call mbrigi(fami, kpg, imate, rig)

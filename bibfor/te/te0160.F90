@@ -112,7 +112,7 @@ subroutine te0160(option, nomte)
         w(ii) = zr(idepla-1+ii) + zr(ideplp-1+ii)
     enddo
     do kp = 1, npg
-        call verift('RIGI', kp, 1, '+', zi(imate),epsth=epsth)
+        call verift('RIGI', kp, 1, '+', zi(imate),epsth_=epsth)
         kk = (kp-1)*nordre*nordre
         jacobi = sqrt(biline(nordre,zr(igeom),zr(iyty+kk),zr(igeom)))
         green = biline(nordre, w, zr(iyty+kk), zr(igeom))+ demi*biline( nordre, w, zr(iyty+kk), w)

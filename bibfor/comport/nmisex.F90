@@ -173,7 +173,7 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
     endif
 !
     call verift(fami, kpg, ksp, 'T', imate,&
-                epsth=epsthe)
+                epsth_=epsthe)
 !
 !
 !     -- 3 RECUPERATION DES CARACTERISTIQUES

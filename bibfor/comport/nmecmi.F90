@@ -82,7 +82,7 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
     real(kind=8) :: depsmo, sigmmo, e, nu, troisk, rprim, rp, hp, gp, g1, rpm
     real(kind=8) :: sieleq, sigeps, seuil, dp, coef, dsde, sigy, xm(6)
     real(kind=8) :: sigedv(6)
-    real(kind=8) :: kron(6), depsdv(6), sigmdv(6), sigpdv(6), sigdv(6), cc
+    real(kind=8) :: depsdv(6), sigmdv(6), sigpdv(6), sigdv(6), cc
     real(kind=8) :: em, num, troikm, deumum, sigmp(6), sigel(6)
     real(kind=8) :: hsg, pp, prag, pragm, precr, tm, tp, epsthe
     integer :: ndimsi, jprolm, jvalem, nbvalm, jprol2, jvale2, nbval2
@@ -93,7 +93,7 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
 !-----------------------------------------------------------------------
     real(kind=8) :: dp0, xap
 !-----------------------------------------------------------------------
-    data        kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
+    real(kind=8), parameter :: kron(6) = (/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/)
 ! DEB ------------------------------------------------------------------
 !
 !     -- 1 INITIALISATIONS :
@@ -155,7 +155,7 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
         troisk = e/(1.d0-2.d0*nu)
     endif
     call verift(fami, kpg, ksp, 'T', imate,&
-                epsth=epsthe)
+                epsth_=epsthe)
 !
 !     -- 3 RECUPERATION DES CARACTERISTIQUES
 !     ---------------------------------------
@@ -330,13 +330,13 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
             depsdv(2)=depsdv(2)-dx/3.d0
             depsdv(3)=depsdv(3)+dx*2.d0/3.d0
         endif
-        do 160 k = 1, ndimsi
+        do k = 1, ndimsi
             sigedv(k) = sigmdv(k) + deuxmu * depsdv(k)
             g1=1.5d0*prag*dp/rp/hp
             xp(k)=xm(k)*(1.d0-g1)+g1*sigedv(k)
             sigpdv(k) = sigedv(k)*gp/hp+xm(k)*1.5d0*deuxmu*dp/rp/hp
             sigp(k) = sigpdv(k) + (sigmmo + troisk*depsmo)*kron(k)
-160     continue
+        end do
     endif
 !
 !     -- 8 CALCUL DE DSIDEP(6,6) :
@@ -346,46 +346,46 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
         plasti=(plast.ge.0.5d0)
         if (option(1:14) .eq. 'RIGI_MECA_TANG') then
 !         - - OPTION='RIGI_MECA_TANG' => SIGMA(T)
-            do 118 k = 1, ndimsi
+            do k = 1, ndimsi
                 sigdv(k) = sigmdv(k)-xm(k)
-118         continue
+            end do
             rp = rpm
         else
 !         - - OPTION='FULL_MECA' => SIGMA(T+DT)
-            do 119 k = 1, ndimsi
+            do k = 1, ndimsi
                 sigdv(k) = sigpdv(k)-xp(k)
-119         continue
+            end do
         endif
 !
 !       -- 8.1 PARTIE PLASTIQUE:
-        do 100 k = 1, ndimsi
-            do 101 l = 1, ndimsi
+        do k = 1, ndimsi
+            do l = 1, ndimsi
                 dsidep(k,l) = 0.d0
-101         continue
-100     continue
+            end do
+        end do
 !
         sigeps = 0.d0
-        do 170 k = 1, ndimsi
+        do k = 1, ndimsi
             sigeps = sigeps + sigdv(k)*depsdv(k)
-170     continue
+        end do
         if (plasti .and. sigeps .ge. 0.d0) then
-            cc=-(1.5d0*deuxmu)**2/( 1.5d0*(deuxmu+prag)+rprim )/rp**2&
-            *(1.d0 - dp*rprim/rp )/hp
-            do 135 k = 1, ndimsi
-                do 135 l = 1, ndimsi
+            cc=-(1.5d0*deuxmu)**2/( 1.5d0*(deuxmu+prag)+rprim )/rp**2*(1.d0 - dp*rprim/rp )/hp
+            do k = 1, ndimsi
+                do l = 1, ndimsi
                     dsidep(k,l) = cc*sigdv(k)*sigdv(l)
-135             continue
+                end do
+            end do
         endif
 !
 !       -- 8.2 PARTIE ELASTIQUE:
-        do 130 k = 1, 3
-            do 131 l = 1, 3
+        do k = 1, 3
+            do l = 1, 3
                 dsidep(k,l)=dsidep(k,l)+troisk/3.d0-deuxmu/3.d0*gp/hp
-131         continue
-130     continue
-        do 120 k = 1, ndimsi
+            end do
+        end do
+        do k = 1, ndimsi
             dsidep(k,k) = dsidep(k,k) + deuxmu*gp/hp
-120     continue
+        end do
 !
 !       -- 8.3 CORRECTION POUR LES CONTRAINTES PLANES :
         if (cplan) then
@@ -415,12 +415,12 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
         vip(1)=pp
         vip(2)=plast
-        do 31 k = 1, 3
+        do k = 1, 3
             vip(k+2) = xp(k)
- 31     continue
-        do 30 k = 4, ndimsi
+        end do
+        do k = 4, ndimsi
             vip(k+2) = xp(k)/sqrt(2.d0)
- 30     continue
+        end do
     endif
 !
 999 continue

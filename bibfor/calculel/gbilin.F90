@@ -75,7 +75,7 @@ subroutine gbilin(fami, kp, imate, dudm, dvdm,&
     real(kind=8) :: vect(7), s11, s12, s13, s21, s22, s23, s1, s2, puls, rho
     real(kind=8) :: tcla, tfor, tthe, tdyn, divt, divv, s1th, s2th, prod, epsthe
     real(kind=8) :: e, nu, alpha, tini1, tini2, tini3
-        
+
     rac2 = sqrt(2.d0)
 ! INITIALISATION DES TENSEURS DE DEFORMATION TOTALE
     epsu(1)=dudm(1,1)
@@ -103,7 +103,7 @@ subroutine gbilin(fami, kp, imate, dudm, dvdm,&
     nomres(3) = 'ALPHA'
 !
     call verift(fami, kp, 1, '+', imate,&
-                iret = iret, epsth=epsthe)
+                iret_ = iret, epsth_=epsthe)
     call rcvalb(fami, kp, 1, '+', imate,&
                 ' ', 'ELAS', 0, ' ', [0.d0],&
                 2, nomres(1), valres(1), icodre(1), 1)
@@ -263,19 +263,19 @@ subroutine gbilin(fami, kp, imate, dudm, dvdm,&
 601 continue
 
     if (cs.gt.0.9) then
-       
+
        do 501 i=1,3
           tini1 =tini1-(epsu(i)-epsthe-epsref(i))*temp1(i)
 501    continue
 ! Le terme thermique n'apparait pas hors diagonale
           tini1 =tini1-(epsu(4)-epsref(4))*temp1(4)
-    
+
     else if (cs.lt.0.6) then
        do 503 i=1,4
              tini1 =tini1-0.5d0*(epsv(i))*temp1(i)
 503    continue
     end if
-    tini1=tini1*poids       
+    tini1=tini1*poids
 !
 !   TINI2 : TERME DU A LA MODIFICATION DE LA CONTRAINTE SIGIN: GRAD(U).GRAD(THETA)
     tini2 =0
@@ -295,7 +295,7 @@ subroutine gbilin(fami, kp, imate, dudm, dvdm,&
     endif
     do 504 i=1,4
         tini2=tini2+sigin(i)*temp2(i)
-504 continue 
+504 continue
     tini2=cs*tini2*poids
 !
 !   TINI3:TERME DU A LA MODIFICATION DE L'ENERGIE LIBRE:-1/2*(2*(EPS-EPSTH)-EPSREF):SIGIN divTheta
@@ -303,13 +303,13 @@ subroutine gbilin(fami, kp, imate, dudm, dvdm,&
     if (cs.gt.0.9) then
        do 505 i=1,3
              tini3=tini3-(epsu(i)-epsthe-0.5d0*epsref(i))*sigin(i)*divt
-505    continue   
+505    continue
        tini3=tini3-(epsu(4)-0.5d0*epsref(4))*sigin(4)*divt
-       
+
     else if (cs.lt.0.6) then
        do 506 i=1,4
              tini3=tini3-0.5d0*epsv(i)*sigin(i)*divt
-506    continue   
+506    continue
     endif
     tini3=tini3*poids
 

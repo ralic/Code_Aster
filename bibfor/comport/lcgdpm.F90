@@ -166,7 +166,7 @@ implicit none
 ! - Compute thermic strain
 !
     call verift(fami, kpg, ksp, poum, imat,&
-                vepsth=epsthe)
+                epsth_meta_=epsthe)
     call rcvarc(' ', 'TEMP', poum, fami, kpg,&
                 ksp, temp, iret2)
 !

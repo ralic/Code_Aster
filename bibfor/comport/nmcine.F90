@@ -62,7 +62,7 @@ subroutine nmcine(fami, kpg, ksp, ndim, imate,&
     real(kind=8) :: depsth(6), valres(3), lambda, deuxmu, epsthe
     real(kind=8) :: depsdv(6), sigdv(6), sigel(6), epsmo, sigmo, e, nu
     real(kind=8) :: sieleq, sigeps, seuil, dp, coef, dsde, sigy
-    real(kind=8) :: troisk, kron(6), valrm(2)
+    real(kind=8) :: troisk, valrm(2)
     real(kind=8) :: em, num, troikm, deumum, plasti
     integer :: ndimsi
     integer :: icodre(3)
@@ -73,7 +73,7 @@ subroutine nmcine(fami, kpg, ksp, ndim, imate,&
     integer :: iret, k, l
     real(kind=8) :: a1, a2, c, cm, dsdem
 !-----------------------------------------------------------------------
-    data        kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
+    real(kind=8), parameter :: kron(6) = (/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/)
     rac2 = sqrt(2.d0)
 ! DEB ------------------------------------------------------------------
 !
@@ -84,7 +84,7 @@ subroutine nmcine(fami, kpg, ksp, ndim, imate,&
     end do
 !
     call verift(fami, kpg, ksp, 'T', imate,&
-                epsth=epsthe)
+                epsth_=epsthe)
 !
 ! LECTURE DES CARACTERISTIQUES ELASTIQUES DU MATERIAU (TEMPS - ET +)
 !    RCCOMA POUR GERER KIT_DDI (GLRC+VMIS_ISOT)

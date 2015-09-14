@@ -114,7 +114,7 @@ subroutine nmco1d(fami, kpg, ksp, imate, compor,&
 !
     if (isot) then
         call verift(fami, kpg, ksp, 'T', imate,&
-                    epsth=depsth)
+                    epsth_=depsth)
         depsm = deps-depsth
         call nm1dis(fami, kpg, ksp, imate, em,&
                     ep, sigm, depsm, vim, option,&
@@ -122,7 +122,7 @@ subroutine nmco1d(fami, kpg, ksp, imate, compor,&
 !
     else if (cine) then
         call verift(fami, kpg, ksp, 'T', imate,&
-                    epsth=depsth)
+                    epsth_=depsth)
         depsm = deps-depsth
         call nm1dci(fami, kpg, ksp, imate, em,&
                     ep, sigm, depsm, vim, option,&
@@ -130,7 +130,7 @@ subroutine nmco1d(fami, kpg, ksp, imate, compor,&
 !
     else if (cinegc) then
         call verift(fami, kpg, ksp, 'T', imate,&
-                    epsth=depsth)
+                    epsth_=depsth)
         depsm = deps-depsth
         call vmci1d('RIGI', kpg, ksp, imate, em,&
                     ep, sigm, depsm, vim, option,&
@@ -142,7 +142,7 @@ subroutine nmco1d(fami, kpg, ksp, imate, compor,&
         if (option .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
             vip(1) = 0.d0
             call verift(fami, kpg, ksp, 'T', imate,&
-                        epsth=depsth)
+                        epsth_=depsth)
             sigp = ep* (sigm/em+deps-depsth)
         endif
 !
@@ -155,7 +155,7 @@ subroutine nmco1d(fami, kpg, ksp, imate, compor,&
         call nmmaba(imate, compor(1), e, et, sigy,&
                     ncstpm, cstpm)
         call verift(fami, kpg, ksp, 'T', imate,&
-                    epsth=depsth)
+                    epsth_=depsth)
         depsm = deps-depsth
         call nm1dpm(fami, kpg, ksp, imate, option,&
                     nvarpi, ncstpm, cstpm, sigm, vim,&

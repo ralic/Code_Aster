@@ -76,7 +76,7 @@ subroutine te0154(option, nomte)
 !     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
     call jevech('PMATERC', 'L', lmater)
 !
-    call verift(fami, 1, 1, '+', zi(lmater), epsth=epsth)
+    call verift(fami, 1, 1, '+', zi(lmater), epsth_=epsth)
 !
     r8bid = 0.0d0
     call rcvalb(fami, 1, 1, '+', zi(lmater), ' ', 'ELAS', 0, ' ', [r8bid],&

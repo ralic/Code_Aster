@@ -451,7 +451,7 @@ subroutine te0155(option, nomte)
 !
 !        TEMPERATURE DE REFERENCE
         call verift(fami, 1, 1, '+', zi(lmater),&
-                    epsth=epsth)
+                    epsth_=epsth)
 !
 !        TERME DE LA MATRICE ELEMENTAIRE
         xrig = e(1) * a / xl

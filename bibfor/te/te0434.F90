@@ -147,7 +147,7 @@ subroutine te0434(option, nomte)
             else if (option.eq.'CHAR_MECA_TEMP_R') then
 !
                 call verift(fami, kpg, 1, '+', zi(imate),&
-                            epsth=epsthe)
+                            epsth_=epsthe)
 !
                 call mbrigi(fami, kpg, imate, rig)
 !

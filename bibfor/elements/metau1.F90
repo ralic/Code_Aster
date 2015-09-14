@@ -56,7 +56,7 @@ implicit none
     real(kind=8) :: zcold, zhot
     real(kind=8) :: coef, coef1, coef2
     real(kind=8) :: young, nu
-    real(kind=8) :: epsth, epsthe(3)
+    real(kind=8) :: epsth, epsth_meta(2)
     real(kind=8) :: dfdx(9), dfdy(9)
     real(kind=8) :: poids, r
     integer :: nb_node, ispg, kp, npg, i_node, elas_id, k
@@ -133,7 +133,7 @@ implicit none
 ! ----- Compute thermic strain
 !
         call verift('RIGI', kp, 1, '+', j_mater,&
-                    vepsth=epsthe)
+                    epsth_meta_=epsth_meta)
 !
 ! ----- Get elastic parameters
 !
@@ -150,8 +150,8 @@ implicit none
 ! ----- Compute
 !
         coef  = young/(1.d0-2.d0*nu)
-        coef1 = zhot* (epsthe(1)-(1-valres(1))*valres(2))
-        coef2 = zcold* (epsthe(2)+valres(1)*valres(2))
+        coef1 = zhot* (epsth_meta(1)-(1-valres(1))*valres(2))
+        coef2 = zcold* (epsth_meta(2)+valres(1)*valres(2))
         epsth = coef1 + coef2
         poids = poids*coef*epsth
 !

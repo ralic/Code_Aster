@@ -102,7 +102,7 @@ subroutine nmvpgm(fami, kpg, ksp, ndim, imate,&
      &              'EPSAYZ'/
 !
     call verift(fami, kpg, ksp, 'T', imate,&
-                epsth=epsthe)
+                epsth_=epsthe)
     call rcvarc(' ', 'TEMP', '-', fami, kpg,&
                 ksp, tm, iret1)
     call rcvarc(' ', 'TEMP', '+', fami, kpg,&

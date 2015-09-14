@@ -72,8 +72,9 @@ implicit none
     character(len=16) :: elas_keyword, rela_comp
     character(len=32) :: valk(2)
     integer :: elas_id, meta_id, nb_phasis, iret
-    real(kind=8) :: angl(3), epsthe(3), phase(2)
-    real(kind=8) :: dire(3), orig(3), p_glob_loca(3, 3), epsi_ther_vect(6), epsi_ther_scal
+    real(kind=8) :: angl(3), phase(2)
+    real(kind=8) :: dire(3), orig(3), p_glob_loca(3, 3), epsi_ther_vect(6)
+    real(kind=8) :: epsth, epsth_meta(2), epsth_anis(3)
     real(kind=8) :: vepst1(6), vepst2(6), zcold, zhot
     integer :: iadzi, iazk24, icompo
 !
@@ -135,26 +136,30 @@ implicit none
             call get_meta_phasis(fami     , '+' , kpg   , ksp , meta_id,&
                                  nb_phasis, phase, zcold_ = zcold, zhot_ = zhot)
             call verift(fami, kpg, ksp, '+', j_mater,&
-                        vepsth=epsthe)
-            epsi_ther_scal = zhot*epsthe(1) + zcold*epsthe(2)
+                        epsth_meta_=epsth_meta)
+            epsth = zhot*epsth_meta(1) + zcold*epsth_meta(2)
         else
             call verift(fami, kpg, ksp, poum, j_mater,&
-                        epsth = epsi_ther_scal)
+                        epsth_ = epsth)
         endif
-        epsi_ther(1) = epsi_ther_scal
-        epsi_ther(2) = epsi_ther_scal
-        epsi_ther(3) = epsi_ther_scal
+        epsi_ther(1) = epsth
+        epsi_ther(2) = epsth
+        epsi_ther(3) = epsth
     else if (elas_id.eq.2)  then
         call verift(fami, kpg, ksp, poum, j_mater,&
-                    vepsth=epsi_ther_vect)
+                    epsth_anis_=epsth_anis)
+        epsi_ther_vect(1) = epsth_anis(1)
+        epsi_ther_vect(2) = epsth_anis(2)
+        epsi_ther_vect(3) = epsth_anis(3)
         epsi_ther_vect(4) = 0.d0
         epsi_ther_vect(5) = 0.d0
         epsi_ther_vect(6) = 0.d0
     else if (elas_id.eq.3) then
         call verift(fami, kpg, ksp, poum, j_mater,&
-                    vepsth=epsi_ther_vect)
-        epsi_ther_vect(3) = epsi_ther_vect(2)
-        epsi_ther_vect(2) = epsi_ther_vect(1)
+                    epsth_anis_=epsth_anis)
+        epsi_ther_vect(1) = epsth_anis(1)
+        epsi_ther_vect(2) = epsth_anis(1)
+        epsi_ther_vect(3) = epsth_anis(2)
         epsi_ther_vect(4) = 0.d0
         epsi_ther_vect(5) = 0.d0
         epsi_ther_vect(6) = 0.d0

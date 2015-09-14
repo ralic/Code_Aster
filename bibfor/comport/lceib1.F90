@@ -99,9 +99,9 @@ subroutine lceib1(fami, kpg, ksp, imate, compor,&
                     ' ', 'ELAS', 0, ' ', [0.d0],&
                     2, nomres, valres, icodre, 1)
         call verift(fami, kpg, ksp, '-', imate,&
-                    epsth=epsthe(1))
+                    epsth_=epsthe(1))
         call verift(fami, kpg, ksp, '+', imate,&
-                    epsth=epsthe(2))
+                    epsth_=epsthe(2))
 !
         e = valres(1)
         nu = valres(2)

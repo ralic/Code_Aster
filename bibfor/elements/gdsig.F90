@@ -51,7 +51,7 @@ subroutine gdsig(fami, kpg, ksp, x0pg, petik,&
 !-----------------------------------------------------------------------
     un = 1.d0
     call verift(fami, kpg, ksp, '+', imate,&
-                epsth=epsthe)
+                epsth_=epsthe)
 !
 !
     call promat(rotk, 3, 3, 3, rot0,&

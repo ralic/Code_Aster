@@ -104,7 +104,7 @@ implicit none
     real(kind=8) :: plasti, dp, seuil
     real(kind=8) :: coef1, coef2, coef3, dv, n0(5), b
     real(kind=8) :: rbid, precr
-    real(kind=8) :: valres(20), epsthe(3)
+    real(kind=8) :: valres(20), epsth_meta(2)
     character(len=1) :: poum
     integer :: icodre(20), test
     character(len=16) :: nomres(20)
@@ -151,7 +151,7 @@ implicit none
     call rcvarc(' ', 'TEMP', poum, fami, kpg,&
                 ksp, temp, iret2)
     call verift(fami, kpg, ksp, poum, imat,&
-                iret = iret1, vepsth=epsthe)
+                iret_ = iret1, epsth_meta_=epsth_meta)
 !
 ! ****************************************
 ! 2 - RECUPERATION DES CARACTERISTIQUES
@@ -172,8 +172,8 @@ implicit none
     call rcvalb(fami, kpg, ksp, poum, imat,&
                 ' ', 'ELAS_META', 0, ' ', [0.d0],&
                 6, nomres, valres, icodre, 2)
-    epsth = phase(nb_phasis)*(epsthe(1)-(1.d0-valres(5))*valres(6)) +&
-            zalpha*(epsthe(2) + valres(5)*valres(6))
+    epsth = phase(nb_phasis)*(epsth_meta(1)-(1.d0-valres(5))*valres(6)) +&
+            zalpha*(epsth_meta(2) + valres(5)*valres(6))
     e = valres(1)
     deuxmu = e/(1.d0+valres(2))
     troisk = e/(1.d0-2.d0*valres(2))

@@ -108,7 +108,7 @@ subroutine dxsith(nomte, mater, sigma)
 !         ----------------------------------------------------
                 ipgh=npgh*(icou-1)+igauh
                 call verift('RIGI', ipg, ipgh, '+', mater,&
-                            epsth=epsth(1))
+                            epsth_=epsth(1))
 !
                 epsth(2) = epsth(1)
                 epsth(3) = zero

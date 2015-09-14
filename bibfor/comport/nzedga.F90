@@ -93,7 +93,7 @@ implicit none
     real(kind=8) :: temp, dt
     real(kind=8) :: epsth, e, deuxmu, deumum, troisk
     real(kind=8) :: fmel(1), sy(3), h(3), hmoy, hplus(3), r(3), rmoy
-    real(kind=8) :: theta(4), epsthe(3)
+    real(kind=8) :: theta(4), epsth_meta(2)
     real(kind=8) :: eta(5), n(3), unsurn(5), c(3), m(3), cmoy, mmoy, cr
     real(kind=8) :: dz(2), dz1(2), dz2(2), vi(3), dvin, vimoy, ds
     real(kind=8) :: trans, kpt(2), zvarim, zvarip, deltaz
@@ -149,7 +149,7 @@ implicit none
     call rcvarc(' ', 'TEMP', poum, fami, kpg,&
                 ksp, temp, iret1)
     call verift(fami, kpg, ksp, poum, imat,&
-                vepsth=epsthe)
+                epsth_meta_=epsth_meta)
 !
 ! ****************************************
 ! 2 - RECUPERATION DES CARACTERISTIQUES
@@ -172,8 +172,8 @@ implicit none
     call rcvalb(fami, kpg, ksp, poum, imat,&
                 ' ', 'ELAS_META', 0, ' ', [0.d0],&
                 6, nomres, valres, icodre, 2)
-    epsth = phase(nb_phasis)*(epsthe(1)-(1.d0-valres(5))*valres(6)) +&
-            zalpha*(epsthe(2) + valres(5)*valres(6))
+    epsth = phase(nb_phasis)*(epsth_meta(1)-(1.d0-valres(5))*valres(6)) +&
+            zalpha*(epsth_meta(2) + valres(5)*valres(6))
     e = valres(1)
     deuxmu = e/(1.d0+valres(2))
     troisk = e/(1.d0-2.d0*valres(2))

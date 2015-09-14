@@ -54,7 +54,7 @@ subroutine paeldt(kpg, ksp, fami, poum, icdmat,&
         nup = valres(2)
 !
         call verift(fami, kpg, ksp, 'T', icdmat,&
-                    materi, epsth= depsth,&
+                    materi, epsth_= depsth,&
                     temp_prev_=tms, temp_curr_=tpl, temp_refe_=tref)
 !
     else
@@ -65,7 +65,7 @@ subroutine paeldt(kpg, ksp, fami, poum, icdmat,&
         nup = valres(2)
         em  = valres(1)
         call verift(fami, kpg, ksp, poum, icdmat,&
-                    materi, epsth=depsth,&
+                    materi, epsth_=depsth,&
                     temp_prev_=tms, temp_curr_=tpl, temp_refe_=tref)
     endif
 !
