@@ -17,11 +17,11 @@
 interface
     subroutine moytem(fami, npg, nspg, poum, temp,&
                       iret)
-        character(len=*) :: fami
-        integer :: npg
-        integer :: nspg
-        character(len=*) :: poum
-        real(kind=8) :: temp
-        integer :: iret
+        character(len=*), intent(in) :: fami
+        integer, intent(in) :: npg
+        integer, intent(in) :: nspg
+        character(len=*), intent(in) :: poum
+        real(kind=8), intent(out) :: temp
+        integer, intent(out) :: iret
     end subroutine moytem
 end interface

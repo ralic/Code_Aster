@@ -80,7 +80,7 @@ subroutine te0151(option, nomte)
     character(len=8) :: nompar, famil, poum
     character(len=16) :: ch16
     real(kind=8) :: ul(14), ug(14), pgl(3, 3), klc(14, 14), klv(105)
-    real(kind=8) :: pgl1(3, 3), pgl2(3, 3), epsthe(1)
+    real(kind=8) :: pgl1(3, 3), pgl2(3, 3), epsthe
     integer :: kpg, spt, nklv
 ! --------------------------------------------------------------------------------------------------
     parameter    (nbres = 3 )
@@ -100,7 +100,7 @@ subroutine te0151(option, nomte)
     if ((nomte.eq.'MECA_POU_C_T') .or. (nomte.eq.'MECA_POU_D_EM')) npg = 2
 !
     call moytem(fami, npg, 1, '+', valpar, iret)
-    call verifm(fami, npg, 1, '+', zi(lmater), 'ELAS', 1, epsthe, iret)
+    call verifm(fami, npg, 1, '+', zi(lmater), epsthe, iret)
     nbpar = 1
     nompar = 'TEMP'
     famil='FPG1'
@@ -187,8 +187,8 @@ subroutine te0151(option, nomte)
 !        energie de deformation
         idis = 1
         call ptenpo(nc*2, ul, klc, zr(jende), itype, idis)
-        if (epsthe(1) .ne. 0.0d0) then
-            call ptenth(ul, xl, epsthe(1), 2*nc, klc, itype, enerth)
+        if (epsthe .ne. 0.0d0) then
+            call ptenth(ul, xl, epsthe, 2*nc, klc, itype, enerth)
             zr(jende) = zr(jende) - enerth
         endif
 !

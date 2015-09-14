@@ -1,5 +1,17 @@
-subroutine verifm(fami, npg, nspg, poum, imate,&
-                  compor, ndim, epsth, iret)
+subroutine verifm(fami , npg  , nspg , poum, j_mater,&
+                  epsth, iret_)
+!
+implicit none
+!
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/get_elasth_para.h"
+#include "asterfort/get_elas_id.h"
+#include "asterfort/moytem.h"
+#include "asterfort/pmfmats.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/tecael.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,126 +30,163 @@ subroutine verifm(fami, npg, nspg, poum, imate,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/moytem.h"
-#include "asterfort/rcvalb.h"
-#include "asterfort/rcvarc.h"
-#include "asterfort/tecael.h"
-#include "asterfort/utmess.h"
-#include "asterfort/pmfmats.h"
-!
-    character(len=*) :: fami, poum, compor
-    real(kind=8) :: epsth(*)
-    integer :: npg, nspg, ndim, iret, imate
+    character(len=*), intent(in) :: fami
+    integer, intent(in) :: npg
+    integer, intent(in) :: nspg
+    character(len=*), intent(in) :: poum
+    integer, intent(in) :: j_mater
+    real(kind=8), intent(out) :: epsth
+    integer, optional, intent(out) :: iret_
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!  FAMI : FAMILLE DE POINTS DE GAUSS
-!  NPG  : NOMBRE DE POINTS DE GAUSS
-!  NSPG  : NOMBRE DE SOUS-POINTS DE GAUSS
-!  POUM : '+' SI TEMPERATURE EN TEMPS +
-!         '-' SI TEMPERATURE EN TEMPS -
-!         'T' SI TEMPERATURE EN TEMPS + ET -
-! IMATE : MATERIAU
-! COMPOR : COMPORTEMENT
-! NDIM  : 1 SI ISOTROPE
-!         2 SI ISOTROPE TRANSVERSE
-!         3 SI ORTHOTROPE
-! EPSTH : DILATATION
-! IRET  : CODE RETOUR CONCERNANT LA TEMPERATURE 0 SI OK
-!                                               1 SI NOOK
-!
+! Compute thermic dilatation for beams
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: codrem(3), codrep(3)
-    character(len=8) :: nomat
-    character(len=16) :: nomres(3)
-    integer :: iret1, iret2, iret3, ind, somire, iadzi, iazk24
-    real(kind=8) :: tm, tref, tp, valrep(3), valrem(3)
-!
-    character(len=24) :: valek(2)
+! In  fami         : Gauss family for integration point rule
+! In  j_mater      : coded material address
+! In  poum         : parameters evaluation
+!                     '-' for previous temperature
+!                     '+' for current temperature
+!                     'T' for current and previous temperature => epsth is increment
+! In  npg          : current point gauss
+! In  nspg         : number of "sous-point" gauss
+! Out epsth        : thermic dilatation
+! Out iret         : 0 if temperature defined
+!                    1 if not
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    iret1 = 0
-    iret2 = 0
-    iret3 = 0
-
-!   si l'élément est multifibre, il faut prendre le materiau "section"
-!   pour récupérer les coefficients de dilatation :
-    call pmfmats(imate, nomat)
+    character(len=8) :: elem_name
+    real(kind=8) :: alpha_prev(2), alpha_curr(2)
+    integer :: iret_temp_curr, iret_temp_prev, iret_temp_refe, iret_temp
+    real(kind=8) :: temp_prev, temp_refe, temp_curr
+    integer :: iadzi, iazk24
+    integer :: elas_id
+    character(len=16) :: elas_keyword
+    character(len=8) :: materi
 !
-    call rcvarc(' ', 'TEMP', 'REF', fami, npg, nspg, tref, iret1)
+! --------------------------------------------------------------------------------------------------
 !
-    if (ndim .eq. 1) then
-        nomres(1) = 'ALPHA'
-    else if (ndim.eq.2) then
-        nomres(1) = 'ALPHA_L'
-        nomres(2) = 'ALPHA_N'
-    else
-        nomres(1) = 'ALPHA_L'
-        nomres(2) = 'ALPHA_T'
-        nomres(3) = 'ALPHA_N'
+    iret_temp_curr  = 0
+    iret_temp_prev  = 0
+    iret_temp_refe  = 0
+    epsth           = 0.d0
+!
+! - Get name of material if multi-material Gauss point (PMF)
+!
+    call pmfmats(j_mater, materi)
+!
+! - No temperature -> thermic strain is zero
+!
+    call rcvarc(' ' , 'TEMP'   , '+'      , fami, npg,&
+                nspg, temp_curr, iret_temp)
+    if (iret_temp .ne. 0) then
+        goto 999
+    endif  
+!
+! - Get reference temperature
+!
+    call rcvarc(' ' , 'TEMP', 'REF', fami, npg,&
+                nspg, temp_refe, iret_temp_refe)
+    if (iret_temp_refe .eq. 1) then
+        call tecael(iadzi, iazk24)
+        elem_name = zk24(iazk24-1+3) (1:8)
+        call utmess('F', 'COMPOR5_8', sk=elem_name)
     endif
+!
+! - Get type of elasticity (Isotropic/Orthotropic/Transverse isotropic)
+!
+    call get_elas_id(j_mater, elas_id, elas_keyword)
+!
+! - Only isotropic elasticity
+!
+    if (elas_id.ne.1) then
+        call tecael(iadzi, iazk24)
+        elem_name = zk24(iazk24-1+3)(1:8)
+        call utmess('F', 'COMPOR5_9', sk=elem_name)
+    endif
+!
+! - No metallurgical material
+!
+    if (elas_keyword.eq.'ELAS_META') then
+        call tecael(iadzi, iazk24)
+        elem_name = zk24(iazk24-1+3) (1:8)
+        call utmess('F', 'COMPOR5_10', sk=elem_name)
+    endif
+!
+! - Get temperatures (mean value on all Gauss points)
+!
+    if (poum.eq.'T'.or.poum.eq.'-') then
+        call moytem(fami, npg, nspg, '-', temp_prev,&
+                    iret_temp_prev)
+    endif
+    if (poum.eq.'T'.or.poum.eq.'+') then
+        call moytem(fami, npg, nspg, '+', temp_curr,&
+                    iret_temp_curr)
+    endif
+!
+! - Get elastic parameters for thermic dilatation
+!
+    if (poum.eq.'T'.or.poum.eq.'-') then
+        if (iret_temp_prev.eq.0) then
+            call get_elasth_para(fami     , j_mater     , '-', npg, nspg,&
+                                 elas_id  , elas_keyword, materi_ = materi, temp_vale_ = temp_prev,&
+                                 alpha = alpha_prev)
+        endif
+    endif
+    if (poum.eq.'T'.or.poum.eq.'+') then
+        if (iret_temp_curr.eq.0) then
+            call get_elasth_para(fami     , j_mater     , '+', npg, nspg,&
+                                 elas_id  , elas_keyword, materi_ = materi, temp_vale_ = temp_curr,&
+                                 alpha = alpha_curr)
+        endif
+    endif
+!
+! - Compute thermic strain
 !
     if (poum .eq. 'T') then
-        call moytem(fami, npg, nspg, '-', tm, iret2)
-        call rcvalb(fami, npg, nspg, '-', imate,&
-                    nomat, compor, 1, 'TEMP', [tm], ndim, nomres, valrem, codrem, 0)
-        call moytem(fami, npg, nspg, '+', tp, iret3)
-        call rcvalb(fami, npg, nspg, '+', imate,&
-                    nomat, compor, 1, 'TEMP', [tp], ndim, nomres, valrep, codrep, 0)
-!
-        somire = iret2 + iret3
-        if (somire .eq. 0) then
-            if (iret1 .eq. 1) then
-                call tecael(iadzi, iazk24)
-                valek(1) = zk24(iazk24-1+3) (1:8)
-                call utmess('F', 'COMPOR5_8', sk=valek(1))
+        if (iret_temp_prev+iret_temp_curr.eq.0) then
+            if (elas_id.eq.1) then
+                epsth = alpha_curr(1)*(temp_curr-temp_refe)-&
+                        alpha_prev(1)*(temp_prev-temp_refe)
+            else
+                ASSERT(.false.)
             endif
-            do ind = 1, ndim
-                if ((codrem(ind).ne.0) .or. (codrep(ind).ne.0)) then
-                    call tecael(iadzi, iazk24)
-                    valek(1)= zk24(iazk24-1+3) (1:8)
-                    valek(2)=nomres(ind)
-                    call utmess('F', 'COMPOR5_32', nk=2, valk=valek)
-                endif
-            enddo
-            do ind = 1, ndim
-                epsth(ind) = valrep(ind)*(tp-tref)- valrem(ind)*(tm- tref)
-            enddo
-        else
-            epsth(1:ndim) = 0.d0
         endif
-!
-    else
-        call moytem(fami, npg, nspg, poum, tm, iret2)
-        call rcvalb(fami, npg, nspg, poum, imate,&
-                    nomat, compor, 1, 'TEMP', [tm], ndim, nomres, valrem, codrem, 0)
-        somire = iret2 + iret3
-        if (somire .eq. 0) then
-            if (iret1 .eq. 1) then
-                call tecael(iadzi, iazk24)
-                valek(1) = zk24(iazk24-1+3) (1:8)
-                call utmess('F', 'COMPOR5_8', sk=valek(1))
+    else if (poum .eq. '-') then
+        if (iret_temp_prev.eq.0) then
+            if (elas_id.eq.1) then
+                epsth = alpha_prev(1)*(temp_prev-temp_refe)
+            else
+                ASSERT(.false.)
             endif
-            do ind = 1, ndim
-                if (codrem(ind) .ne. 0) then
-                    call tecael(iadzi, iazk24)
-                    valek(1)= zk24(iazk24-1+3) (1:8)
-                    valek(2)=nomres(ind)
-                    call utmess('F', 'COMPOR5_32', nk=2, valk=valek)
-                endif
-            enddo
-            do ind = 1, ndim
-                epsth(ind) = valrem(ind)*(tm-tref)
-            enddo
-        else
-            epsth(1:ndim) = 0.d0
+        endif
+    else if (poum .eq. '+') then
+        if (iret_temp_curr.eq.0) then
+            if (elas_id.eq.1) then
+                epsth = alpha_curr(1)*(temp_curr-temp_refe)
+            else
+                ASSERT(.false.)
+            endif
+        endif
+    else
+        ASSERT(.false.)
+    endif
+!
+999 continue
+!
+! - Output error
+!
+    if (present(iret_)) then
+        iret_ = 0
+        if ((iret_temp_prev+iret_temp_curr) .ne. 0) then
+            iret_ = 1
+        endif
+        if (iret_temp .ne. 0) then
+            iret_ = 1
         endif
     endif
 !
-    if ((iret2+iret3) .ge. 1) iret = 1
 end subroutine

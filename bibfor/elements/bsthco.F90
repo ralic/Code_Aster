@@ -15,7 +15,6 @@ subroutine bsthco(nomte, bsigth, indith)
 #include "asterfort/matrc2.h"
 #include "asterfort/moytem.h"
 #include "asterfort/promat.h"
-#include "asterfort/rccoma.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vectan.h"
@@ -50,7 +49,7 @@ subroutine bsthco(nomte, bsigth, indith)
 !     OUT INDITH : LOGICAL = .TRUE.  YA DES DEFORMATIONS THERMIQUES
 !                          = .FALSE. SINON
 !     ------------------------------------------------------------------
-    integer :: i, icara, icompo, icou, imate, inte, intsn, intsr, jgeom, lzi
+    integer :: icara, icompo, icou, imate, inte, intsn, intsr, jgeom, lzi
     integer :: lzr, nb1, nb2, nbcou, npge, npgsn, npgsr, kwgt, itab(8), iret
     parameter (npge=3)
     real(kind=8) :: vecta(9, 2, 3), vectn(9, 3), vectpt(9, 2, 3)
@@ -62,9 +61,7 @@ subroutine bsthco(nomte, bsigth, indith)
     real(kind=8) :: epsth(5), sigmth(5), bsigt1(42)
     real(kind=8) :: ksi3s2, kappa, matc(5, 5)
     real(kind=8) :: coef, deux, epais, eptot, quatre, trois, un, valpar, zero
-    real(kind=8) :: zic, zmin, epsthe(1)
-    integer :: icodre(1)
-    character(len=10) :: phenom
+    real(kind=8) :: zic, zmin, epsthe
 !     ------------------------------------------------------------------
 !
 ! --- INITIALISATIONS :
@@ -89,13 +86,8 @@ subroutine bsthco(nomte, bsigth, indith)
     sigmth(4) = zero
     sigmth(5) = zero
 !
-    do 10 i = 1, 42
-        bsigt1(i) = zero
- 10 continue
-!
-    do 20 i = 1, 51
-        bsigth(i) = zero
- 20 continue
+    bsigt1(1:42) = zero
+    bsigth(1:51) = zero
 !
 ! --- RECUPERATION DE L'OBJET .DESI :
 !     -----------------------------
@@ -160,7 +152,6 @@ subroutine bsthco(nomte, bsigth, indith)
 ! --- RECUPERATION DU MATERIAU :
 !     ------------------------
     call jevech('PMATERC', 'L', imate)
-    call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
 !______________________________________________________________________
 !
 !---- RECUPERATION DE LA TEMPERATURE
@@ -186,11 +177,11 @@ subroutine bsthco(nomte, bsigth, indith)
 !
 ! --- BOUCLE SUR LES COUCHES :
 !     ----------------------
-    do 40 icou = 1, nbcou
+    do icou = 1, nbcou
 !
 ! ---   BOUCLE SUR LES POINTS D'INTEGRATION DANS L'EPAISSEUR :
 !       ----------------------------------------------------
-        do 50 inte = 1, npge
+        do inte = 1, npge
 !
 ! ---      POSITION DANS L'EPAISSEUR :
             if (inte .eq. 1) then
@@ -212,7 +203,7 @@ subroutine bsthco(nomte, bsigth, indith)
 !
 ! ---      BOUCLE SUR LES POINTS DE L'INTEGRATION REDUITE :
 !          ----------------------------------------------
-            do 60 intsr = 1, npgsr
+            do intsr = 1, npgsr
 !
 ! ---       .D'UNE PART :
 ! ---        DETERMINATION DES REPERES LOCAUX AUX POINTS D'INTEGRATION
@@ -248,7 +239,7 @@ subroutine bsthco(nomte, bsigth, indith)
                 call btdmsr(nb1, nb2, ksi3s2, intsr, zr(lzr),&
                             epais, vectpt, hsj1m, hsj1s, btdm,&
                             btds)
- 60         continue
+            end do
 !
 ! ---      CALCUL POUR L'INTEGRATION NORMALE DE LA PARTIE FLEXION
 ! ---      BTDFN DE LA MATRICE B :
@@ -257,7 +248,7 @@ subroutine bsthco(nomte, bsigth, indith)
 ! ---      BOUCLE SUR LES POINTS DE L'INTEGRATION NORMALE
 ! ---      DANS LE PLAN MOYEN :
 !          ------------------
-            do 70 intsn = 1, npgsn
+            do intsn = 1, npgsn
 !
 ! ---       .D'UNE PART :
 ! ---        DETERMINATION DES REPERES LOCAUX AUX POINTS D'INTEGRATION
@@ -307,12 +298,12 @@ subroutine bsthco(nomte, bsigth, indith)
 ! ---       EVALUATION DES DEFORMATIONS THERMIQUES :
 !           ======================================
                 call verifm('RIGI', inte, 3, '+', zi(imate),&
-                            phenom, 1, epsthe, iret)
+                            epsthe)
                 call moytem('RIGI', inte, 3, '+', valpar,&
                             iret)
 !
-                epsth(1) = epsthe(1)
-                epsth(2) = epsthe(1)
+                epsth(1) = epsthe
+                epsth(2) = epsthe
 !
 ! ---       CALCUL DE LA MATRICE DE COMPORTEMENT  MATC(5,5) :
 !           ----------------------------------------------
@@ -329,15 +320,14 @@ subroutine bsthco(nomte, bsigth, indith)
                 call btsig(5*nb1 + 2, 5, wgt, btild, sigmth,&
                            bsigt1)
 !
- 70         continue
- 50     continue
- 40 continue
+            end do
+        end do
+    end do
 !
 ! --- EXPANSION DE BSIGT1 DANS BSIGTH :
 !     -------------------------------
     call vexpan(nb1, bsigt1, bsigth)
     bsigth(6*nb1+1) = bsigt1(5*nb1+1)
     bsigth(6*nb1+2) = bsigt1(5*nb1+2)
-!
 !
 end subroutine

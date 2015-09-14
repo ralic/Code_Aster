@@ -1,6 +1,5 @@
 subroutine poefgr(nomte, klc, mater, e, xnu,&
                   rho, effo)
-! aslint: disable=
     implicit none
 #include "jeveux.h"
 #include "asterfort/jevech.h"
@@ -19,7 +18,7 @@ subroutine poefgr(nomte, klc, mater, e, xnu,&
 #include "asterfort/verifm.h"
     character(len=*) :: nomte
     real(kind=8) :: klc(12, 12), e, xnu, rho, effo(*)
-!     ------------------------------------------------------------------
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,16 +46,15 @@ subroutine poefgr(nomte, klc, mater, e, xnu,&
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iret, itype, j, jdepl, kanl, ldyna
+    integer :: i, itype, j, jdepl, kanl, ldyna
     integer :: lmater, lopt, lorien, lrcou
     integer :: mater, nc, ncc, nno, nnoc
-    real(kind=8) :: a, a2, along, angarc, angs2, deux, f(1)
+    real(kind=8) :: a, a2, along, angarc, angs2, deux, f
     real(kind=8) :: rad, xl, zero
 !-----------------------------------------------------------------------
     integer, parameter :: nb_cara = 3
     real(kind=8) :: vale_cara(nb_cara)
-    character(len=8) :: noms_cara(nb_cara)
-    data noms_cara /'A1','A2','TVAR'/
+    character(len=8), parameter :: noms_cara(nb_cara) = (/'A1  ','A2  ','TVAR'/)
 !-----------------------------------------------------------------------
     zero = 0.d0
     deux = 2.d0
@@ -109,18 +107,16 @@ subroutine poefgr(nomte, klc, mater, e, xnu,&
 !     --- TENIR COMPTE DES EFFORTS DUS A LA DILATATION ---
 !
     call verifm('NOEU', nno, 1, '+', mater,&
-                'ELAS', 1, f, iret)
+                f)
 !
-    if (f(1) .ne. zero) then
-        do i = 1, 12
-            ul(i) = zero
-        enddo
+    if (f .ne. zero) then
+        ul(1:12) = zero
 !
         if (itype .ne. 10) then
-            ul(1) = -f(1)*xl
+            ul(1) = -f*xl
             ul(7) = -ul(1)
         else
-            along = deux*rad*f(1)*sin(angs2)
+            along = deux*rad*f*sin(angs2)
             ul(1) = -along*cos(angs2)
             ul(2) = along*sin(angs2)
             ul(7) = -ul(1)

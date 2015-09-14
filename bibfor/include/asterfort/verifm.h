@@ -16,16 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine verifm(fami, npg, nspg, poum, imate,&
-                      compor, ndim, epsth, iret)
-        character(len=*) :: fami
-        integer :: npg
-        integer :: nspg
-        character(len=*) :: poum
-        integer :: imate
-        character(len=*) :: compor
-        integer :: ndim
-        real(kind=8) :: epsth(*)
-        integer :: iret
+    subroutine verifm(fami , npg  , nspg , poum, j_mater,&
+                      epsth, iret_)
+        character(len=*), intent(in) :: fami
+        integer, intent(in) :: npg
+        integer, intent(in) :: nspg
+        character(len=*), intent(in) :: poum
+        integer, intent(in) :: j_mater
+        real(kind=8), intent(out) :: epsth
+        integer, optional, intent(out) :: iret_
     end subroutine verifm
 end interface

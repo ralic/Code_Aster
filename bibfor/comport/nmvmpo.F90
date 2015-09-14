@@ -66,7 +66,7 @@ subroutine nmvmpo(fami, npg, nno, option, nc,&
     aster_logical :: vecteu, matric
     integer :: dimklv, kp, kk, i, j, k
     real(kind=8) :: eps(nc), deps(nc), fg(nno*nc), sigp(nc), sigm(nc)
-    real(kind=8) :: e, nu, g, phiy, phiz, xls2, epsthf(1), epsthd(1)
+    real(kind=8) :: e, nu, g, phiy, phiz, xls2, epsthf, epsthd
     real(kind=8) :: aa, xiy, xiz, alfay, alfaz, xjx, xjg
     real(kind=8) :: valres(2)
     real(kind=8) :: temp
@@ -95,9 +95,9 @@ subroutine nmvmpo(fami, npg, nno, option, nc,&
 !
 !   Température
     call verifm(fami, npg, 1, '-', icodma,&
-                'ELAS', 1, epsthf, iret)
+                epsthf, iret)
     call verifm(fami, npg, 1, 'T', icodma,&
-                'ELAS', 1, epsthd, iret)
+                epsthd, iret)
     itemp = 0
     if (iret .eq. 0) itemp = 1
     nomres(1) = 'E'
@@ -156,9 +156,9 @@ subroutine nmvmpo(fami, npg, nno, option, nc,&
             enddo
             sigm(i) = contm(nc*(kp-1)+i)*e/em
         enddo
-        if ((epsthd(1).ne.0.d0) .and. (itemp.ne.0)) then
-            f = epsthf(1)
-            df= epsthd(1)
+        if ((epsthd.ne.0.d0) .and. (itemp.ne.0)) then
+            f = epsthf
+            df= epsthd
             eps(1) = eps(1)- f
             deps(1)=deps(1)-df
         endif
@@ -185,7 +185,6 @@ subroutine nmvmpo(fami, npg, nno, option, nc,&
                 enddo
             enddo
         endif
-!
     enddo
 !
     if (matric) then

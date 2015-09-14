@@ -80,7 +80,7 @@ subroutine te0247(option, nomte)
     real(kind=8) :: pgl(3, 3), fl(nd), klv(nk)
     real(kind=8) :: pgl1(3, 3), pgl2(3, 3), rad, angarc, angs2, ang
     real(kind=8) :: tempm, tempp
-    real(kind=8) :: epsthe(1)
+    real(kind=8) :: epsthe
     real(kind=8) :: sigma(nd), rgeom(nk), gamma, angp(3)
     aster_logical :: reactu, matric, vecteu
 ! --------------------------------------------------------------------------------------------------
@@ -191,7 +191,7 @@ subroutine te0247(option, nomte)
     if ((iretp+iretm) .eq. 0) itemp=1
     call matela(zi(imate), ' ', itemp, tempp, e, nu)
     call matela(zi(imate), ' ', itemp, tempm, em, num)
-    call verifm('RIGI', npg, 1, 'T', zi(imate), 'ELAS', 1, epsthe, iret)
+    call verifm('RIGI', npg, 1, 'T', zi(imate), epsthe, iret)
 !
     if (zk16(icompo) .eq. 'ELAS') then
 !       calcul des matrices elementaires
@@ -203,7 +203,7 @@ subroutine te0247(option, nomte)
             endif
             call nmpoel(nomte, npg, klv, xl, nno,&
                         nc, pgl, pgl1, pgl2, zr(ideplp),&
-                        epsthe(1), e, em, zr(icontm), fl,&
+                        epsthe, e, em, zr(icontm), fl,&
                         zr( icontp), angs2, rad)
         endif
 !

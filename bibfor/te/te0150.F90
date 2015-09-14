@@ -80,7 +80,7 @@ subroutine te0150(option, nomte)
     real(kind=8) :: ang, rad, angarc, angs2, along
     real(kind=8) :: pgl(3, 3), pgl1(3, 3), pgl2(3, 3), de(14), ffe(14)
     real(kind=8) :: bsm(14, 14), matk(105)
-    real(kind=8) :: f(1)
+    real(kind=8) :: f
     real(kind=8) :: fr(14), fi(14), fgr(14), fgi(14)
     real(kind=8) :: fer(12), fei(12)
 !
@@ -97,8 +97,7 @@ subroutine te0150(option, nomte)
 ! --------------------------------------------------------------------------------------------------
     integer, parameter :: nb_cara = 3
     real(kind=8) :: vale_cara(nb_cara)
-    character(len=8) :: noms_cara(nb_cara)
-    data noms_cara /'A1','A2','TVAR'/
+    character(len=8), parameter :: noms_cara(nb_cara) = (/'A1  ','A2  ','TVAR'/)
 ! --------------------------------------------------------------------------------------------------
 !
     fami = 'RIGI'
@@ -251,7 +250,7 @@ subroutine te0150(option, nomte)
 !
         if (option .eq. 'CHAR_MECA_TEMP_R') then
 !           calcul du deplacement local induit par l'elevation de temp.
-            call verifm(fami, npg, 1, '+', zi(lmater), 'ELAS', 1, f, iret)
+            call verifm(fami, npg, 1, '+', zi(lmater), f, iret)
 !
         else
             ch16 = option
@@ -259,16 +258,16 @@ subroutine te0150(option, nomte)
         endif
 !
         if (itype .eq. 10) then
-            along = 2.d0 * rad * f(1) * sin(angs2)
+            along = 2.d0 * rad * f * sin(angs2)
             de(1) = -along * cos(angs2)
             de(2) = along * sin(angs2)
             de(7) = -de(1)
             de(8) = de(2)
         else if (itype .eq.30) then
-            de(1) = -f(1) * xl
+            de(1) = -f * xl
             de(8) = -de(1)
         else
-            de(1) = -f(1) * xl
+            de(1) = -f * xl
             de(7) = -de(1)
         endif
 !       calcul des forces induites
