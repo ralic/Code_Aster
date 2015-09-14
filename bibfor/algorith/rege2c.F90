@@ -74,7 +74,7 @@ subroutine rege2c(nomres, resgen, nomsst)
 !
     integer :: i, iad, ibid, ieq, ier, iord, j, jbid, k, llchab, i_ligr_ss
     integer :: llchol, llors, llprs, vali(2), nbbas, nbddg, nbmod(1), nbsst
-    integer :: neq, nno, numo, nusst, nutars, iadpar(6)
+    integer :: neq, nno, numo, nusst, nutars, iadpar(8)
     integer :: elim, neqet, neqred, lmapro, lsilia, lsst, lmoet, i1, k1
     real(kind=8) :: freq, genek, genem, omeg2, rbid, genec, amor
     character(len=8) :: kbid, basmod, mailla, lint, model_gene
