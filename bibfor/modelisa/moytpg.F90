@@ -1,5 +1,9 @@
-subroutine moytpg(fami, kp, nspg, poum, temp,&
+subroutine moytpg(fami, kpg, nspg, poum, temp,&
                   iret)
+!
+implicit none
+!
+#include "asterfort/rcvarc.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,24 +22,46 @@ subroutine moytpg(fami, kp, nspg, poum, temp,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit   none
-#include "asterfort/rcvarc.h"
-    integer :: kp, nspg, iret
-    character(len=*) :: fami, poum
-    real(kind=8) :: temp
+    character(len=*), intent(in) :: fami
+    integer, intent(in) :: kpg
+    integer, intent(in) :: nspg
+    character(len=*), intent(in) :: poum
+    real(kind=8), intent(out) :: temp
+    integer, intent(out) :: iret
 !
+! --------------------------------------------------------------------------------------------------
 !
+! Compute mean temperature (on all "sous-point" gauss)
 !
-    integer :: kpg
+! --------------------------------------------------------------------------------------------------
+!
+! In  fami         : Gauss family for integration point rule
+! In  kpg          : current point gauss
+! In  nspg         : number of "sous-point" gauss
+! In  poum         : parameters evaluation
+!                     '-' for previous temperature
+!                     '+' for current temperature
+!                     'T' for current and previous temperature => epsth is increment
+! Out temp         : mean temperature
+! Out iret         : 0 if temperature defined
+!                    1 if not  
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: ispg
     real(kind=8) :: tg, tgtot
 !
+! --------------------------------------------------------------------------------------------------
+!
     tgtot = 0.d0
-    do 20 kpg = 1, nspg
-        call rcvarc(' ', 'TEMP', poum, fami, kp,&
-                    kpg, tg, iret)
-        if (iret .eq. 1) goto 9999
+    do ispg = 1, nspg
+        call rcvarc(' ', 'TEMP', poum, fami, kpg,&
+                    ispg, tg, iret)
+        if (iret .eq. 1) then
+            goto 999
+        endif
         tgtot = tgtot + tg
-20  end do
+    end do
     temp = tgtot/nspg
-9999  continue
+999 continue
 end subroutine

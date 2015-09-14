@@ -46,13 +46,13 @@ Erreur utilisateur :
 """),
 
     9 : _(u"""
-  Sur la maille %(k1)s le calcul est thermo mécanique non isotrope.
-  Le comportement sélectionné ne sait pas gérer ce cas.
+  Sur la maille %(k1)s le calcul est thermo-mécanique mais non isotrope.
+  Le comportement ou l'élément concerné ne savent pas gérer ce cas.
 """),
 
     10 : _(u"""
-  Sur la maille %(k1)s le calcul est thermo mécanique de type métallurgique (avec deux coefficients de dilatation).
-  Le comportement sélectionné ne sait pas gérer ce cas.
+  Sur la maille %(k1)s le calcul est thermo-mécanique de type métallurgique (avec deux coefficients de dilatation).
+  Le comportement ou l'élément concerné ne savent pas gérer ce cas.
 """),
 
     11 : _(u"""

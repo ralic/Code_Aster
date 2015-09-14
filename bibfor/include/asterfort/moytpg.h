@@ -16,13 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine moytpg(fami, kp, nspg, poum, temp,&
+    subroutine moytpg(fami, kpg, nspg, poum, temp,&
                       iret)
-        character(len=*) :: fami
-        integer :: kp
-        integer :: nspg
-        character(len=*) :: poum
-        real(kind=8) :: temp
-        integer :: iret
+        character(len=*), intent(in) :: fami
+        integer, intent(in) :: kpg
+        integer, intent(in) :: nspg
+        character(len=*), intent(in) :: poum
+        real(kind=8), intent(out) :: temp
+        integer, intent(out) :: iret
     end subroutine moytpg
 end interface

@@ -56,7 +56,7 @@ subroutine tusief(option, nomte, nbrddl, b, vin,&
     real(kind=8) :: valres(nbres), valpar, degg(24)
     real(kind=8) :: h, a, l, e, nu, beta, cisail, g, omega, dhk, r1
     real(kind=8) :: sinfi, fi, deuxpi, r, at1, at2, vpg(4), vno(4)
-    real(kind=8) :: b(4, nbrddl), c(4, 4), epsthe(1), hk, sigth(2), xpg(4)
+    real(kind=8) :: b(4, nbrddl), c(4, 4), epsthe, hk, sigth(2), xpg(4)
     real(kind=8) :: pgl(3, 3), vin(nbrddl), vout(4), mat(4, nbrddl)
     real(kind=8) :: pgl1(3, 3), pgl2(3, 3), pgl3(3, 3), rayon, theta
     real(kind=8) :: vtemp(nbrddl), pass(nbrddl, nbrddl), pgl4(3, 3)
@@ -70,8 +70,7 @@ subroutine tusief(option, nomte, nbrddl, b, vin,&
 !
     integer, parameter :: nb_cara1 = 2
     real(kind=8) :: vale_cara1(nb_cara1)
-    character(len=8) :: noms_cara1(nb_cara1)
-    data noms_cara1 /'R1','EP1'/
+    character(len=8), parameter :: noms_cara1(nb_cara1) = (/'R1 ','EP1'/)
 !-----------------------------------------------------------------------
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
   npg=npg,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfdk,&
@@ -197,26 +196,21 @@ subroutine tusief(option, nomte, nbrddl, b, vin,&
 ! ---- BOUCLE SUR LES POINTS DE SIMPSON DANS L'EPAISSEUR
     do igau = 1, npg
         if (option .eq. 'SIEF_ELGA') then
-!         ATTENTION IRET NON INITIALISE PAR VERIFG
-            iret=0
             call verifg('RIGI', igau, nspg, '+', zi(imate),&
-                        'ELAS', 1, epsthe, iret)
-            if (iret .ne. 0) epsthe(1)=0.d0
-            at1 = (c(1,1)+c(1,2))*epsthe(1)
-            at2 = (c(2,1)+c(2,2))*epsthe(1)
+                        epsthe)
+            at1 = (c(1,1)+c(1,2))*epsthe
+            at2 = (c(2,1)+c(2,2))*epsthe
         endif
 !
         if ((option.eq.'SIEF_ELGA') .or. (option.eq.'EPSI_ELGA')) then
 ! --- BOUCLE SUR LES POINTS DE SIMPSON SUR LA CIRCONFERENCE
-            do 100 icou = 1, 2*nbcou + 1
-!
+            do icou = 1, 2*nbcou + 1
                 if (mmt .eq. 0) then
                     r = a
                 else
                     r = a + (icou-1)*h/ (2.d0*nbcou) - h/2.d0
                 endif
-!
-                do 90 isect = 1, 2*nbsec + 1
+                do isect = 1, 2*nbsec + 1
                     kpgs = kpgs + 1
 !
                     if (icoude .eq. 0) then
@@ -225,7 +219,6 @@ subroutine tusief(option, nomte, nbrddl, b, vin,&
                                     zr(ivf), zr(idfdk), zr(jdfd2), mmt, b)
                     else if (icoude.eq.1) then
                         fi = (isect-1)*deuxpi/ (2.d0*nbsec)
-!                  FI = FI - OMEGA
                         sinfi = sin(fi)
                         l = theta* (rayon+r*sinfi)
                         call bcoudc(igau, icou, isect, h, a,&
@@ -235,11 +228,11 @@ subroutine tusief(option, nomte, nbrddl, b, vin,&
                     endif
 !
                     if (option .eq. 'EPSI_ELGA') then
-                        do 80 i = 1, 4
-                            do 70 j = 1, nbrddl
+                        do i = 1, 4
+                            do j = 1, nbrddl
                                 mat(i,j) = b(i,j)
-70                          continue
-80                      continue
+                            end do
+                        end do
                     else if (option.eq.'SIEF_ELGA') then
                         sigth(1) = at1
                         sigth(2) = at2
@@ -259,14 +252,12 @@ subroutine tusief(option, nomte, nbrddl, b, vin,&
                     zr(indice+4) = vout(3)
                     zr(indice+5) = vout(4)
                     zr(indice+6) = 0.d0
-!
-90              continue
-100          continue
-!
+                end do
+            end do
         else if (option.eq.'DEGE_ELNO'.or.option.eq.'DEGE_ELGA') then
 !            DEFORMATIONS GENERALISEES DE POUTRE
 !
-            do 110 k = 1, nno
+            do k = 1, nno
                 if (icoude .eq. 1) then
                     l = theta*rayon
                 endif
@@ -277,42 +268,34 @@ subroutine tusief(option, nomte, nbrddl, b, vin,&
 !           EPXX=DU/DX
                 degg(6* (igau-1)+1) = degg( 6* (igau-1)+1) + dhk*vin( nddl* (k-1)+1)
 !              GAXY=DV/DX -DRZ
-                degg(6* (igau-1)+2) = degg(&
-                                      6* (igau-1)+2) + dhk*vin( nddl* (k-1)+2) - hk*vin(nddl* (k-&
-                                      &1)+6&
-                                      )
+                degg(6* (igau-1)+2) = degg( 6* (igau-1)+2) + dhk*vin( nddl* (k-1)+2) -&
+                                      hk*vin(nddl* (k-1)+6)
 !              GAXZ=DW/DX +DRY
-                degg(6* (igau-1)+3) = degg(&
-                                      6* (igau-1)+3) + dhk*vin( nddl* (k-1)+3) + hk*vin(nddl* (k-&
-                                      &1)+5&
-                                      )
+                degg(6* (igau-1)+3) = degg( 6* (igau-1)+3) + dhk*vin( nddl* (k-1)+3) +&
+                                      hk*vin(nddl* (k-1)+5)
 !              GAT=D(DRX)/DX
                 degg(6* (igau-1)+4) = degg( 6* (igau-1)+4) + dhk*vin( nddl* (k-1)+4)
 !              KY=D(DRY)/DX
                 degg(6* (igau-1)+5) = degg( 6* (igau-1)+5) + dhk*vin( nddl* (k-1)+5)
 !              KZ=D(DRZ)/DX
                 degg(6* (igau-1)+6) = degg( 6* (igau-1)+6) + dhk*vin( nddl* (k-1)+6)
-110          continue
-!
+            end do
         endif
-!
     end do
 !
-!
-!
     if (option .eq. 'DEGE_ELNO' .or. option .eq. 'DEGE_ELGA') then
-        do 150 i = 1, 6
-            do 130 igau = 1, npg
+        do i = 1, 6
+            do igau = 1, npg
                 vpg(igau) = degg(6* (igau-1)+i)
                 if (option .eq. 'DEGE_ELGA') zr(jout+6*(igau-1)+i-1)=vpg( igau)
-130          continue
+            end do
             if (option .eq. 'DEGE_ELNO') then
                 call ppgan2(jgano, 1, 1, vpg, vno)
-                do 140 j = 1, nno
+                do j = 1, nno
                     zr(jout+6* (j-1)+i-1) = vno(j)
-140              continue
+                end do
             endif
-150      continue
+        end do
     endif
 !
 end subroutine

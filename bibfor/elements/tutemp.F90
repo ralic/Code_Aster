@@ -47,7 +47,7 @@ subroutine tutemp(option, nomte, nbrddl, f, b,&
     real(kind=8) :: f(nbrddl), b(4, nbrddl), vout(nbrddl), sig(4)
     real(kind=8) :: pi, deuxpi, fi, e, nu, valres(3)
     real(kind=8) :: pgl(3, 3), pgl1(3, 3), pgl2(3, 3), pgl3(3, 3), omega
-    real(kind=8) :: c(2, 2), coe1(1), pgl4(3, 3)
+    real(kind=8) :: c(2, 2), coe1, pgl4(3, 3)
     real(kind=8) :: poids, rayon, theta, sinfi, xpg(4)
     real(kind=8) :: vtemp(nbrddl), pass(nbrddl, nbrddl)
     integer :: codres(3)
@@ -63,8 +63,7 @@ subroutine tutemp(option, nomte, nbrddl, f, b,&
 !
     integer, parameter :: nb_cara1 = 2
     real(kind=8) :: vale_cara1(nb_cara1)
-    character(len=8) :: noms_cara1(nb_cara1)
-    data noms_cara1 /'R1','EP1'/
+    character(len=8), parameter :: noms_cara1(nb_cara1) = (/'R1 ','EP1'/)
 !-----------------------------------------------------------------------
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
   npg=npg,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfdk,&
@@ -178,32 +177,25 @@ subroutine tutemp(option, nomte, nbrddl, f, b,&
 !
 !----- CAS DILATATION THERMIQUE
 !
-!===============================================================
-!
-!
-!
-        do 80,i = 1,nbrddl
-        f(i) = 0.d0
-80      continue
+        do i = 1,nbrddl
+            f(i) = 0.d0
+        end do
 !
 !     DEBUT CONSTRUCTION DE B
 !
 ! BOUCLE SUR LES POINTS DE GAUSS
         nspg=(2*nbsec + 1)*(2*nbcou + 1)
-        do 130 igau = 1, npg
-! ATTENTION IRET NON INITIALISE PAR VERIFG
-            iret=0
+        do igau = 1, npg
             call verifg('RIGI', igau, nspg, '+', zi(imate),&
-                        'ELAS', 1, coe1, iret)
-            if (iret .ne. 0) coe1(1)=0.d0
-            sig(1) = (c(1,1)+c(1,2))*coe1(1)
-            sig(2) = (c(2,1)+c(2,2))*coe1(1)
+                        coe1, iret)
+            sig(1) = (c(1,1)+c(1,2))*coe1
+            sig(2) = (c(2,1)+c(2,2))*coe1
             sig(3) = 0.d0
             sig(4) = 0.d0
 !
 ! BOUCLE SUR LES POINTS DE SIMPSON DANS L'EPAISSEUR
 !
-            do 120 icou = 1, 2*nbcou + 1
+            do icou = 1, 2*nbcou + 1
                 if (mmt .eq. 0) then
                     r = a
                 else
@@ -213,7 +205,7 @@ subroutine tutemp(option, nomte, nbrddl, f, b,&
 !
 ! BOUCLE SUR LES POINTS DE SIMPSON SUR LA CIRCONFERENCE
 !
-                do 110 isect = 1, 2*nbsec + 1
+                do isect = 1, 2*nbsec + 1
                     if (icoude .eq. 0) then
                         call bcoude(igau, icou, isect, l, h,&
                                     a, m, nno, nbcou, nbsec,&
@@ -228,26 +220,21 @@ subroutine tutemp(option, nomte, nbrddl, f, b,&
                                     nbsec, zr(ivf), zr(idfdk), zr(jdfd2), rayon,&
                                     theta, mmt, b)
                     endif
-!
-                    do 90 j = 1, nbrddl
+                    do j = 1, nbrddl
                         vout(j) = b(1,j)*sig(1) + b(2,j)*sig(2)
-90                  continue
-!
+                    end do
 !
 !  STOCKAGE DU VECTEUR VOUT DANS FI
 !
                     poids = zr(ipoids-1+igau)*poicou(icou)*poisec( isect)* (l/2.d0)*h*deuxpi/ (4.&
                             &d0*nbcou*nbsec)*r
 !
-                    do 100 i = 1, nbrddl
+                    do i = 1, nbrddl
                         f(i) = f(i) + vout(i)*poids
-100                  continue
-!
-!  FIN STOCKAGE
-!
-110              continue
-120          continue
-130      continue
+                    end do
+                end do
+            end do
+        end do
         if (icoude .eq. 0) then
             call vlggl(nno, nbrddl, pgl, f, 'LG',&
                        pass, vtemp)
@@ -256,8 +243,8 @@ subroutine tutemp(option, nomte, nbrddl, f, b,&
                         pgl4, f, 'LG', pass, vtemp)
         endif
         call jevech('PVECTUR', 'E', jout)
-        do 140,i = 1,nbrddl
-        zr(jout-1+i) = f(i)
-140      continue
+        do i = 1,nbrddl
+            zr(jout-1+i) = f(i)
+        end do
     endif
 end subroutine
