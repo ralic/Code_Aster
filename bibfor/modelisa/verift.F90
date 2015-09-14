@@ -134,15 +134,21 @@ implicit none
     if (poum.eq.'T'.or.poum.eq.'-') then
         if (iret_temp_prev.eq.0) then
             call get_elasth_para(fami     , j_mater     , '-', kpg    , ksp,&
-                                 elas_id,   elas_keyword, materi,&
-                                 alpha_p  , alpha_l_p   , alpha_t_p, alpha_n_p)
+                                 elas_id,   elas_keyword, materi_ = materi,&
+                                 alpha   = alpha_p  ,&
+                                 alpha_l = alpha_l_p,&
+                                 alpha_t = alpha_t_p,&
+                                 alpha_n = alpha_n_p)
         endif
     endif
     if (poum.eq.'T'.or.poum.eq.'+') then
         if (iret_temp_curr.eq.0) then
             call get_elasth_para(fami     , j_mater     , '+', kpg    , ksp,&
-                                 elas_id,   elas_keyword, materi,&
-                                 alpha_c  , alpha_l_c   , alpha_t_c, alpha_n_c)
+                                 elas_id,   elas_keyword, materi_ = materi,&
+                                 alpha   = alpha_c  ,&
+                                 alpha_l = alpha_l_c,&
+                                 alpha_t = alpha_t_c,&
+                                 alpha_n = alpha_n_c)
         endif
     endif
 !

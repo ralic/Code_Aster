@@ -1,5 +1,5 @@
-subroutine get_elasth_para(fami     , j_mater     , poum   , ipg    , ispg,&
-                           elas_type, elas_keyword, materiz,&
+subroutine get_elasth_para(fami     , j_mater     , poum   , ipg       , ispg,&
+                           elas_type, elas_keyword, materi_, temp_vale_, &
                            alpha    , alpha_l     , alpha_t, alpha_n)
 !
 implicit none
@@ -34,7 +34,8 @@ implicit none
     integer, intent(in) :: ispg
     integer, intent(in) :: elas_type
     character(len=16), intent(in) :: elas_keyword
-    character(len=8), optional, intent(in) :: materiz
+    character(len=8), optional, intent(in) :: materi_
+    real(kind=8), optional, intent(in) :: temp_vale_
     real(kind=8), optional, intent(out) :: alpha(2)
     real(kind=8), optional, intent(out) :: alpha_l
     real(kind=8), optional, intent(out) :: alpha_t
@@ -59,6 +60,7 @@ implicit none
 !                       3 - Transverse isotropic
 ! In  elas_keyword : keyword factor linked to type of elasticity parameters
 ! In  materi       : name of material if multi-material Gauss point (PMF)
+! In  temp_vale    : specifi temperature (example: mean temperature for structural elements)
 ! Out alpha        : thermic dilatation ratio (isotropic)
 !                     if   META -> alpha(1) for hot phasis and alpha(2) for cold phasis
 !                     else alpha(1) only
@@ -87,8 +89,13 @@ implicit none
     para_name = ' '
     para_vale = 0.d0
     materi    = ' '
-    if (present(materiz)) then
-        materi = materiz
+    if (present(materi_)) then
+        materi    = materi_
+    endif
+    if (present(temp_vale_)) then
+        nb_para   = 1
+        para_vale = temp_vale_
+        para_name = 'TEMP'
     endif
 !
 ! - Get parameters
