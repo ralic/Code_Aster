@@ -5,6 +5,6 @@ P mpi_nbcpu 1
 P mpi_nbnoeud 1
 P testlist verification sequential
 
-F comm demo006a.comm D 1
-F msh demo006a.msh D 19
-F libr demo006a.38 D 38
+F comm forma00.comm D 1
+F datg forma00.datg D 16
+F mmed forma00.mmed D 20
