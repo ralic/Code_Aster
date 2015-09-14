@@ -107,7 +107,6 @@ def force_iss_vari(self,imod,MATR_GENE,NOM_CMP,ISSF,INFO,UNITE_RESU_FORC,
     MCMP =__CHAM.EXTR_COMP(NOM_CMP,[GROUP_NO_INTER]).valeurs #  on recupere la composante COMP (dx,dy,dz) des modes
 
     NNO =__CHAM.EXTR_COMP(NOM_CMP,[GROUP_NO_INTER], topo=1).noeud     
-    print 'NNO= ',NNO
 
     MCMP2=__CHAM.EXTR_COMP(' ',[GROUP_NO_INTER],0).valeurs
 
@@ -217,8 +216,7 @@ def force_iss_vari(self,imod,MATR_GENE,NOM_CMP,ISSF,INFO,UNITE_RESU_FORC,
       XOe=NP.zeros(nbme)
       for k1 in range(0,nbme):
         XOe[k1]=abs(NP.sum(PVEC[k1]))/nbno
-      print 'XOE ',XOe
-
+ 
       # CALCUL DE FS variable-------------------------------
       XO=NP.zeros((nbme,nbmods))
       if NOM_CMP=='DX':
