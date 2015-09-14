@@ -1,4 +1,4 @@
-subroutine regeec(nomres, resgen, nomsst)
+subroutine rege2c(nomres, resgen, nomsst)
     implicit none
 #include "jeveux.h"
 #include "asterc/getres.h"
@@ -47,11 +47,12 @@ subroutine regeec(nomres, resgen, nomsst)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-!  BUT : < RESTITUTION GENERALISEE ECLATEE >
+!  BUT : < RESTITUTION GENERALISEE ECLATEE COMPLEXE>
 !
 !  RESTITUER EN BASE PHYSIQUE SUR UNE SOUS-STRUCTURE LES RESULTATS
 !  ISSUS DE LA SOUS-STRUCTURATION GENERALE
 !  LE CONCEPT RESULTAT EST UN RESULTAT COMPOSE "MODE_MECA"
+!
 !
 !  /!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
 !
@@ -60,6 +61,7 @@ subroutine regeec(nomres, resgen, nomsst)
 !--   NE PAS OUBLIER DE REPORTER LE CHANGEMENT DANS L'AUTRE.
 !
 !  /!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
+!
 !-----------------------------------------------------------------------
 !
 ! NOMRES /I/ : NOM K8 DU CONCEPT MODE MECA RESULTAT
@@ -74,9 +76,9 @@ subroutine regeec(nomres, resgen, nomsst)
     integer :: llchol, llors, llprs, vali(2), nbbas, nbddg, nbmod(1), nbsst
     integer :: neq, nno, numo, nusst, nutars, iadpar(6)
     integer :: elim, neqet, neqred, lmapro, lsilia, lsst, lmoet, i1, k1
-    real(kind=8) :: freq, genek, genem, omeg2, rbid
+    real(kind=8) :: freq, genek, genem, omeg2, rbid, genec, amor
     character(len=8) :: kbid, basmod, mailla, lint, model_gene
-    character(len=16) :: depl, nompar(6), typres, quamod
+    character(len=16) :: depl, nompar(8), typres, quamod
     character(len=19) :: raid, numddl, chamne, prof_gene
     character(len=14) :: nume_gene
     character(len=24) :: crefe(2), chamol, chamba
@@ -86,12 +88,14 @@ subroutine regeec(nomres, resgen, nomsst)
     character(len=24), pointer :: refa(:) => null()
     integer, pointer :: nueq(:) => null()
     character(len=24), pointer :: refn(:) => null()
-    real(kind=8), pointer :: vale(:) => null()
+    complex(kind=8), pointer :: vale(:) => null()
 !
 !-----------------------------------------------------------------------
     data depl   /'DEPL            '/
-    data nompar /'FREQ','RIGI_GENE','MASS_GENE','OMEGA2','NUME_MODE',&
-     &              'TYPE_MODE'/
+    data nompar /'FREQ','RIGI_GENE','MASS_GENE','AMOR_GENE','OMEGA2',&
+     &            'NUME_MODE','AMOR_REDUIT','TYPE_MODE'/
+    !data nompar /'FREQ','RIGI_GENE','MASS_GENE','OMEGA2','NUME_MODE',&
+    ! &              'TYPE_MODE'/
 !-----------------------------------------------------------------------
 !
     call jemarq()
@@ -171,7 +175,7 @@ subroutine regeec(nomres, resgen, nomsst)
         do i1 = 1, nusst-1
             ieq=ieq+zi(lsilia+i1-1)
         end do
-        call wkvect('&&MODE_ETENDU_REST_ELIM', 'V V R', neqet, lmoet)
+        call wkvect('&&MODE_ETENDU_REST_ELIM', 'V V C', neqet, lmoet)
 !
     endif
 !
@@ -244,18 +248,18 @@ subroutine regeec(nomres, resgen, nomsst)
 !
 ! ----- REQUETTE NOM ET ADRESSE CHAMNO GENERALISE
         call dcapno(resgen, depl, iord, chamol)
-        call dismoi('TYPE_SCA', chamol(1:19), 'CHAM_NO', repk=typesca)
-        if (typesca .ne. "R") then
-            call utmess('F', 'SOUSTRUC_84')
-        endif
+        !call dismoi('TYPE_SCA', chamol(1:19), 'CHAM_NO', repk=typesca)
+        !if (typesca .ne. "R") then
+        !    call utmess('F', 'SOUSTRUC_84')
+        !endif
         call jeveuo(chamol, 'L', llchol)
 !-- SI ELIMINATION, ON RESTITUE D'ABORD LES MODES GENERALISES
         if (elim .ne. 0) then
             do i1 = 1, neqet
-                zr(lmoet+i1-1)=0.d0
+                zc(lmoet+i1-1)=dcmplx(0.d0,0.d0)
                 do k1 = 1, neqred
-                    zr(lmoet+i1-1)=zr(lmoet+i1-1)+ zr(lmapro+(k1-1)*&
-                    neqet+i1-1)* zr(llchol+k1-1)
+                    zc(lmoet+i1-1)=zc(lmoet+i1-1)+ zr(lmapro+(k1-1)*&
+                    neqet+i1-1)* zc(llchol+k1-1)
                 end do
             end do
             llchol=lmoet
@@ -264,16 +268,18 @@ subroutine regeec(nomres, resgen, nomsst)
 ! ----- REQUETTE NOM ET ADRESSE NOUVEAU CHAMNO
         call rsexch(' ', nomres, depl, i, chamne,&
                     ier)
-        call vtcrea(chamne, crefe, 'G', 'R', neq)
-        call jeveuo(chamne//'.VALE', 'E', vr=vale)
+        call vtcrea(chamne, crefe, 'G', 'C', neq)
+        call jeveuo(chamne//'.VALE', 'E', vc=vale)
 !
-        call rsadpa(resgen, 'L', 5, nompar, iord,&
-                    0, tjv=iadpar, styp=kbid)
+        call rsadpa(resgen, 'L', 7, nompar, iord,&
+                    0, tjv=iadpar, styp=kbid)                
         freq = zr(iadpar(1))
         genek = zr(iadpar(2))
         genem = zr(iadpar(3))
-        omeg2 = zr(iadpar(4))
-        numo = zi(iadpar(5))
+        genec = zr(iadpar(4))
+        omeg2 = zr(iadpar(5))
+        numo = zi(iadpar(6))
+        amor = zr(iadpar(7))
 !
 ! ----- BOUCLE SUR LES MODES PROPRES DE LA BASE
         if (elim .ne. 0) then
@@ -292,19 +298,21 @@ subroutine regeec(nomres, resgen, nomsst)
                 else
                     iad=llchol+nueq(1+ieq+j-2)-1
                 endif
-                vale(k) = vale(k) + zr(llchab+k-1)*zr(iad)
+                vale(k) = vale(k) + zr(llchab+k-1)*zc(iad)
             end do
             call jelibe(chamba)
         end do
         call rsnoch(nomres, depl, i)
-        call rsadpa(nomres, 'E', 6, nompar, i,&
+        call rsadpa(nomres, 'E', 8, nompar, i,&
                     0, tjv=iadpar, styp=kbid)
         zr(iadpar(1)) = freq
         zr(iadpar(2)) = genek
         zr(iadpar(3)) = genem
-        zr(iadpar(4)) = omeg2
-        zi(iadpar(5)) = numo
-        zk16(iadpar(6)) = 'MODE_DYN'
+        zr(iadpar(4)) = geneC
+        zr(iadpar(5)) = omeg2
+        zi(iadpar(6)) = numo
+        zr(iadpar(7)) = amor
+        zk16(iadpar(8)) = 'MODE_DYN'
 !
         call jelibe(chamol)
     end do
