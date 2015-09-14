@@ -97,7 +97,7 @@ CARA_EL0=AFFE_CARA_ELEM( MODELE=STICKMOD,
                    ),
           # on de-symetrise les modes propres de MODSTA1 en modifiant un petit peu la rigidite de
           # RIGI_PARASOL dans la direction Oy : 6.36 -> 6.37
-          # Cela permet d'eviter les modes doubles et cela evite les TOLE_MACHINE
+          # Cela permet d'eviter les modes doubles et cela evite les TOLE MACHINE
           RIGI_PARASOL=_F(VALE=(6.36E10,6.37E10,8.02E10,
                                 2.07E13,2.06E13,2.70E13,),
                                        UNITE=8,

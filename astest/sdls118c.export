@@ -7,3 +7,5 @@ P testlist verification sequential
 
 F comm sdls118c.comm D 1
 F mmed sdls118a.mmed D 20
+F mmed sdls118c.32   D 32
+F mmed sdls118c.33   D 33
