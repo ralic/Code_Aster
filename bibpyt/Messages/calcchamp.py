@@ -51,4 +51,19 @@ il est préférable d'utiliser EPSG_%(k2)s
 Les contributions de l'amortissement liées à la vitesse pour les 
 réactions nodales sont négligées dans la version actuelle du code.
 """),
+
+5: _(u"""
+La récupération des chargements concernant le résultat %(k1)s n'est actuellement pas possible.
+Code_Aster ne peut donc pas vérifier la cohérence des chargements.
+
+Conseil : Si vous utilisez une commande avec une option qui nécessite la redéfinition des chargements,
+il faut vérifier la cohérence des chargements.
+"""),
+
+6: _(u"""
+Le mot clef EXCIT de la commande n'est pas renseigné et la récupération des chargements concernant
+le résultat %(k1)s n'est actuellement pas possible.
+
+Conseil : Il faut renseigner le mot clef EXCIT de la commande CALC_CHAMP,
+"""),
 }

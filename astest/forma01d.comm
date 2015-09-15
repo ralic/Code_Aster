@@ -21,7 +21,7 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',
               VISU_EFICAS='NON',),
       DEBUG=_F(SDVERI='OUI'),
-      IGNORE_ALARM='UTILITAI4_2',
+      IGNORE_ALARM='CALCCHAMP_6',
       )
 
 import math
@@ -29,7 +29,7 @@ import math
 # <MODELE1_63> : Dans un modele, il existe des elements de type "bord" qui n'ont pas de voisin avec rigidite
 #  le modele provoquant ces alarmes ne sert qu'a la visualisation
 
-# <UTILITAI4_2> : Le mot clef EXCIT de CALC_CHAMP n'est pas renseigne car il ne sert a rien pour calculer les contraintes
+# <CALCCHAMP_6> : Le mot clef EXCIT de CALC_CHAMP n'est pas renseigne car il ne sert a rien pour calculer les contraintes
 
 # ======================================================================
 #                 PARAMETRES UTILISATEURS
