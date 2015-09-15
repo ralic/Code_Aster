@@ -71,7 +71,7 @@ subroutine te0600(option, nomte)
     character(len=16) :: phenom
 ! =====================================================================
     integer :: li, kp, j, l, k, ibid, typvf, idim
-    real(kind=8) :: r8bid=0.d0, rho(1), coef, rx
+    real(kind=8) :: rho(1), coef, rx
     integer :: icodre(1)
     aster_logical :: axi, perman
 ! =====================================================================

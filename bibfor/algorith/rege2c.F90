@@ -83,7 +83,6 @@ subroutine rege2c(nomres, resgen, nomsst)
     character(len=14) :: nume_gene
     character(len=24) :: crefe(2), chamol, chamba
     character(len=24) :: valk(2), seliai, sizlia, sst
-    character(len=3) :: typesca
     complex(kind=8) :: cbid
     character(len=24), pointer :: refa(:) => null()
     integer, pointer :: nueq(:) => null()
@@ -94,8 +93,6 @@ subroutine rege2c(nomres, resgen, nomsst)
     data depl   /'DEPL            '/
     data nompar /'FREQ','RIGI_GENE','MASS_GENE','AMOR_GENE','OMEGA2',&
      &            'NUME_MODE','AMOR_REDUIT','TYPE_MODE'/
-    !data nompar /'FREQ','RIGI_GENE','MASS_GENE','OMEGA2','NUME_MODE',&
-    ! &              'TYPE_MODE'/
 !-----------------------------------------------------------------------
 !
     call jemarq()
@@ -248,10 +245,6 @@ subroutine rege2c(nomres, resgen, nomsst)
 !
 ! ----- REQUETTE NOM ET ADRESSE CHAMNO GENERALISE
         call dcapno(resgen, depl, iord, chamol)
-        !call dismoi('TYPE_SCA', chamol(1:19), 'CHAM_NO', repk=typesca)
-        !if (typesca .ne. "R") then
-        !    call utmess('F', 'SOUSTRUC_84')
-        !endif
         call jeveuo(chamol, 'L', llchol)
 !-- SI ELIMINATION, ON RESTITUE D'ABORD LES MODES GENERALISES
         if (elim .ne. 0) then
@@ -272,7 +265,7 @@ subroutine rege2c(nomres, resgen, nomsst)
         call jeveuo(chamne//'.VALE', 'E', vc=vale)
 !
         call rsadpa(resgen, 'L', 7, nompar, iord,&
-                    0, tjv=iadpar, styp=kbid)                
+                    0, tjv=iadpar, styp=kbid)
         freq = zr(iadpar(1))
         genek = zr(iadpar(2))
         genem = zr(iadpar(3))
