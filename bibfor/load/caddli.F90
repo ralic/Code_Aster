@@ -1,6 +1,6 @@
 subroutine caddli(keywordfact, load, mesh, ligrmo, vale_type)
 !
-    implicit none
+implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -9,6 +9,7 @@ subroutine caddli(keywordfact, load, mesh, ligrmo, vale_type)
 #include "asterc/indik8.h"
 #include "asterfort/afddli.h"
 #include "asterfort/aflrch.h"
+#include "asterfort/agdual.h"
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
 #include "asterfort/char_excl_keyw.h"
@@ -278,6 +279,7 @@ subroutine caddli(keywordfact, load, mesh, ligrmo, vale_type)
 !
 ! - Final linear relation affectation
 !
+    call agdual(load,1,'LIN')
     call aflrch(list_rela, load)
 !
     call jedetr('&&CADDLI.DIRECT')

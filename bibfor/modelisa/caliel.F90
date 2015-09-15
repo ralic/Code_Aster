@@ -19,6 +19,7 @@ subroutine caliel(fonrez, chargz)
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/aflrch.h"
+#include "asterfort/agdual.h"
 #include "asterfort/caarle.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvtx.h"
@@ -120,6 +121,7 @@ subroutine caliel(fonrez, chargz)
 !
 !     -- AFFECTATION DE LA LISTE_RELA A LA CHARGE :
 !     ---------------------------------------------
+    call agdual(charge,1,'?')
     call aflrch(lisrel, charge)
 !
 !

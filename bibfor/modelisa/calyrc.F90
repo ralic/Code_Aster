@@ -1,10 +1,11 @@
 subroutine calyrc(chargz)
-    implicit none
+implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
 #include "asterfort/aflrch.h"
+#include "asterfort/agdual.h"
 #include "asterfort/afrela.h"
 #include "asterfort/assert.h"
 #include "asterfort/calirg.h"
@@ -633,6 +634,7 @@ subroutine calyrc(chargz)
 !
 ! --- AFFECTATION DE LA LISTE DE RELATIONS A LA CHARGE :
 !     ------------------------------------------------
+    call agdual(charge,1,'LIN')
     call aflrch(lisrel, charge)
 !
 310 continue

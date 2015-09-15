@@ -21,6 +21,7 @@ subroutine caliag(fonrez, chargz)
 #include "asterc/getfac.h"
 #include "asterc/indik8.h"
 #include "asterfort/aflrch.h"
+#include "asterfort/agdual.h"
 #include "asterfort/afrela.h"
 #include "asterfort/assert.h"
 #include "asterfort/caexno.h"
@@ -488,6 +489,7 @@ subroutine caliag(fonrez, chargz)
 !
 ! --- AFFECTATION DE LA LISTE DE RELATIONS A LA CHARGE  ---
 !
+    call agdual(charge,1,'LIN')
     call aflrch(lisrel, charge)
 !
 999 continue

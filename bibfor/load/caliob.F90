@@ -1,11 +1,12 @@
 subroutine caliob(load, mesh, ligrmo, vale_type)
 !
-    implicit none
+implicit none
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/aflrch.h"
+#include "asterfort/agdual.h"
 #include "asterfort/afrela.h"
 #include "asterfort/assert.h"
 #include "asterfort/char_excl_keyw.h"
@@ -219,6 +220,7 @@ subroutine caliob(load, mesh, ligrmo, vale_type)
 !
 ! - Final linear relation affectation
 !
+    call agdual(load,1,'LIN')
     call aflrch(lisrel, load)
 !
     call jedetc('V', '&&CALIOB.RLLISTE', 1)

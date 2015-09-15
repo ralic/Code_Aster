@@ -1,12 +1,13 @@
 subroutine calicp(load, mesh, ligrmo, vale_type)
 !
-    implicit none
+implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/indik8.h"
 #include "asterfort/aflrch.h"
+#include "asterfort/agdual.h"
 #include "asterfort/assert.h"
 #include "asterfort/char_pair_node.h"
 #include "asterfort/char_read_tran.h"
@@ -222,6 +223,7 @@ subroutine calicp(load, mesh, ligrmo, vale_type)
 !
 ! - Final linear relation affectation
 !
+    call agdual(load,1,'?')
     call aflrch(list_rela, load)
 !
     call jedetr(list_pair)

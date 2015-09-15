@@ -1,9 +1,12 @@
 subroutine caliai(fonree, charge)
-    implicit none
+!
+implicit none
+!
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
 #include "asterfort/aflrch.h"
+#include "asterfort/agdual.h"
 #include "asterfort/afrela.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/fointe.h"
@@ -63,7 +66,7 @@ subroutine caliai(fonree, charge)
     character(len=8) :: motcle, mogrou, mod, noma, nomnoe, char
     character(len=16) :: motfac, concep, oper
     character(len=19) :: lisrel
-    character(len=24) :: trav, grouno, noeuma
+    character(len=24) :: grouno, noeuma
     character(len=24) :: valk(3)
     character(len=15) :: coordo
     character(len=1) :: nompar(3)
@@ -72,7 +75,7 @@ subroutine caliai(fonree, charge)
 !-----------------------------------------------------------------------
     integer :: i, ier, igr, in, indnoe, ino
     integer :: iocc, iret, j
-    integer :: jddl,   jgr0, jjj
+    integer :: jddl,   jgr0
     integer :: k, n, n1, n2, n3, nb, nbgt
     integer :: nbno, ndim1, ndim2, nent, ng, ngr, nliai
     integer :: nno
@@ -84,6 +87,7 @@ subroutine caliai(fonree, charge)
     real(kind=8), pointer :: direct(:) => null()
     character(len=24), pointer :: liste1(:) => null()
     character(len=8), pointer :: liste2(:) => null()
+    character(len=24), pointer :: v_trav(:) => null()
     real(kind=8), pointer :: vvale(:) => null()
 !-----------------------------------------------------------------------
     data nompar /'X','Y','Z'/
@@ -122,8 +126,7 @@ subroutine caliai(fonree, charge)
         ndim1 = max(ndim1,-nent)
     end do
 !
-    trav = '&&CALIAI.'//motfac
-    call wkvect(trav, 'V V K24', ndim1, jjj)
+    AS_ALLOCATE(vk24 = v_trav, size = ndim1)
 !
 !
 !     -- CALCUL DE NDIM2 ET VERIFICATION DES NOEUDS ET GROUP_NO
@@ -132,28 +135,28 @@ subroutine caliai(fonree, charge)
 !        -------------------------------------------------------
     ndim2 = ndim1
     do iocc = 1, nliai
-        call getvtx(motfac, mogrou, iocc=iocc, nbval=ndim1, vect=zk24(jjj),&
+        call getvtx(motfac, mogrou, iocc=iocc, nbval=ndim1, vect=v_trav,&
                     nbret=ngr)
         nbgt = 0
         do igr = 1, ngr
-            call jeexin(jexnom(grouno, zk24(jjj+igr-1)), iret)
+            call jeexin(jexnom(grouno, v_trav(igr)), iret)
             if (iret .eq. 0) then
-                valk(1) = zk24(jjj+igr-1)
+                valk(1) = v_trav(igr)
                 valk(2) = noma
                 call utmess('F', 'MODELISA2_95', nk=2, valk=valk)
             else
-                call jelira(jexnom(grouno, zk24(jjj+igr-1)), 'LONUTI', n1)
+                call jelira(jexnom(grouno, v_trav(igr)), 'LONUTI', n1)
                 nbgt = nbgt + n1
             endif
         end do
         ndim2 = max(ndim2,nbgt)
-        call getvtx(motfac, motcle, iocc=iocc, nbval=ndim1, vect=zk24(jjj),&
+        call getvtx(motfac, motcle, iocc=iocc, nbval=ndim1, vect=v_trav,&
                     nbret=nno)
         do ino = 1, nno
-            call jenonu(jexnom(noeuma, zk24(jjj+ino-1)), iret)
+            call jenonu(jexnom(noeuma, v_trav(ino)), iret)
             if (iret .eq. 0) then
                 valk(1) = motcle
-                valk(2) = zk24(jjj+ino-1)
+                valk(2) = v_trav(ino)
                 valk(3) = noma
                 call utmess('F', 'MODELISA2_96', nk=3, valk=valk)
             endif
@@ -306,11 +309,12 @@ subroutine caliai(fonree, charge)
 !
 !     -- AFFECTATION DE LA LISTE_RELA A LA CHARGE :
 !     ---------------------------------------------
+    call agdual(charge,1,'LIN')
     call aflrch(lisrel, charge)
 !
 !     -- MENAGE :
 !     -----------
-    call jedetr(trav)
+    AS_DEALLOCATE(vk24=v_trav)
     AS_DEALLOCATE(vk24=liste1)
     AS_DEALLOCATE(vk8=liste2)
     call jedetr('&&CALIAI.DDL  ')

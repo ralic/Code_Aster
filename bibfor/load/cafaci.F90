@@ -1,12 +1,13 @@
 subroutine cafaci(load, mesh, ligrmo, vale_type)
 !
-    implicit none
+implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/afddli.h"
 #include "asterfort/aflrch.h"
+#include "asterfort/agdual.h"
 #include "asterfort/afrela.h"
 #include "asterfort/assert.h"
 #include "asterfort/canort.h"
@@ -326,6 +327,7 @@ subroutine cafaci(load, mesh, ligrmo, vale_type)
 !
 ! - Final linear relation affectation
 !
+    call agdual(load,1,'LIN')
     call aflrch(list_rela, load)
 !
     call jedetr('&&CANORT.NORMALE')

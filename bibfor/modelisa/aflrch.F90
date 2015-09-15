@@ -156,9 +156,6 @@ subroutine aflrch(lisrez, chargz, elim)
         kelim=elim
     endif
     if (kelim.eq.'OUI') call ordlrl(charge, lisrel, nomgd)
-
-
-
 !
     if (ligrch(12:13) .eq. 'TH') then
         ca1=charge//'.CHTH.CMULT'

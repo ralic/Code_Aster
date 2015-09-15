@@ -1,6 +1,6 @@
 subroutine caprec(load, mesh, ligrmo, vale_type)
 !
-    implicit none
+implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -8,6 +8,7 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
 #include "asterc/indik8.h"
 #include "asterc/r8gaem.h"
 #include "asterfort/aflrch.h"
+#include "asterfort/agdual.h"
 #include "asterfort/armin.h"
 #include "asterfort/assert.h"
 #include "asterfort/cescar.h"
@@ -87,7 +88,7 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
     character(len=19) :: list_rela, list_rela_tmp, list_rela_old
     character(len=2) :: lagr_type
     character(len=8) :: cmp_name
-    character(len=1) :: type_transf
+    integer :: dim
     integer :: cmp_index_dx, cmp_index_dy, cmp_index_dz
     integer :: cmp_index_drx, cmp_index_dry, cmp_index_drz
     character(len=8) :: nomg_depl, nomg_sief, nom_noeuds_tmp(4)
@@ -230,6 +231,7 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
                 call jelibe(list_rela_old//'.RLNR')
                 if (nbrela .gt. 0) then
                     call copisd(' ', 'V', list_rela_old, list_rela_tmp)
+                    call agdual(load,1,'?')
                     call aflrch(list_rela_tmp, load)
                 endif
 !
@@ -293,8 +295,8 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
                                                     nom_noeuds_tmp)
                                     else
                                         call solide_tran('2D',mesh, vale_type, dist_mini, nb_node,&
-                                                    list_node, lagr_type, list_rela,&
-                                                    nom_noeuds_tmp, type_transf)
+                                                         list_node, lagr_type, list_rela,&
+                                                         nom_noeuds_tmp, dim)
                                     endif
 !
 ! ----------------------------- Set LIAISON_SOLIDE for ndim = 3
@@ -335,13 +337,14 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
                                                     lagr_type, list_rela, nom_noeuds_tmp)
                                     else
                                         call solide_tran('3D',mesh, vale_type, dist_mini, nb_node,&
-                                                    list_node, lagr_type, list_rela,&
-                                                    nom_noeuds_tmp, type_transf)
+                                                         list_node, lagr_type, list_rela,&
+                                                         nom_noeuds_tmp, dim)
                                     endif
                                 else
                                     ASSERT(.false.)
                                 endif
                                 call jedetr(list_node)
+                                call agdual(load,1,'?')
                                 call aflrch(list_rela, load, elim='NON')
                             endif
 140                         continue

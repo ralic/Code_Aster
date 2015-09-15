@@ -4,6 +4,7 @@ implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/aflrch.h"
+#include "asterfort/agdual.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exixfe.h"
@@ -95,11 +96,12 @@ implicit none
                     nb_edge)
     end do
 !
-! - Afffectation of linear relations
+! - Affectation of linear relations
 !
     if (nb_edge .ne. 0) then
         call utmess('I','XFEM2_4', si = nb_edge)
         if (.not.l_edge_elim) then
+            call agdual(sdcont,1,'LIN')
             call aflrch(list_rela_line, sdcont)
         endif
     endif

@@ -42,6 +42,7 @@ subroutine calich(chargz)
 #include "asterfort/assert.h"
 #include "asterc/getfac.h"
 #include "asterfort/aflrch.h"
+#include "asterfort/agdual.h"
 #include "asterfort/afrela.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
@@ -305,6 +306,7 @@ subroutine calich(chargz)
 !
 ! --- AFFECTATION DE LA LISTE_RELA A LA CHARGE :
 !     ----------------------------------------
+    call agdual(charge,1,'LIN')
     call aflrch(lisrel, charge)
 !
 ! --- MENAGE :

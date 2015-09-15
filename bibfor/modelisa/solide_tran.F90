@@ -1,7 +1,7 @@
-subroutine solide_tran(type_geo,noma, type_vale, dist_mini, nb_node, list_node,&
-                  type_lagr, lisrel, nom_noeuds, type_transf)
+subroutine solide_tran(type_geo , noma  , type_vale, dist_mini, nb_node, list_node,&
+                       type_lagr, lisrel, nom_noeuds, dim)
 !
-    implicit none
+implicit none
 !
 #include "jeveux.h"
 #include "asterc/getres.h"
@@ -41,16 +41,16 @@ subroutine solide_tran(type_geo,noma, type_vale, dist_mini, nb_node, list_node,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    character(len=2), intent(in) :: type_geo
-    character(len=8), intent(in) :: noma
-    character(len=4), intent(in) :: type_vale
-    real(kind=8), intent(in) :: dist_mini
-    integer, intent(in) :: nb_node
+    character(len=2), intent(in)  :: type_geo
+    character(len=8), intent(in)  :: noma
+    character(len=4), intent(in)  :: type_vale
+    real(kind=8), intent(in)      :: dist_mini
+    integer, intent(in)           :: nb_node
     character(len=24), intent(in) :: list_node
-    character(len=2), intent(in) :: type_lagr
+    character(len=2), intent(in)  :: type_lagr
     character(len=19), intent(in) :: lisrel
     character(len=8), intent(out) :: nom_noeuds(:)
-    character(len=1), intent(out) :: type_transf
+    integer, intent(out)          :: dim
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,8 +68,8 @@ subroutine solide_tran(type_geo,noma, type_vale, dist_mini, nb_node, list_node,&
 ! In  list_node     : list of nodes applying translation
 ! In  type_lagr     : choosing lagrange multipliers position
 ! In  lisrel        : list of relations
-! Out nom_noeuds    : nom des noeuds "maitres" pour la relation ??
-! Out type_transf   : type de la transformation
+! Out nom_noeuds    : nom des (dim+1) noeuds "maitres"
+! Out dim           : "dimension" du solide : 0/1/2/3
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -78,10 +78,9 @@ subroutine solide_tran(type_geo,noma, type_vale, dist_mini, nb_node, list_node,&
     character(len=8) :: nomnoe_m, nomnoe_a, nomnoe_b
     integer ::    jlino
 
-    integer :: nb_maxi, nb_term, dim, linocara(4),nbnot
+    integer :: nb_maxi, nb_term, linocara(4),nbnot
     real(kind=8) :: un, cobary(4)
     real(kind=8) :: xa,ya,xb,yb,za,zb
-    real(kind=8) :: cua,cub,cva,cvb,cwa,cwb
     real(kind=8) :: vale_real
     complex(kind=8) :: vale_cplx
     character(len=8) :: vale_fonc
@@ -101,7 +100,6 @@ subroutine solide_tran(type_geo,noma, type_vale, dist_mini, nb_node, list_node,&
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-
 !
 ! - Initializations
 !
@@ -167,6 +165,12 @@ subroutine solide_tran(type_geo,noma, type_vale, dist_mini, nb_node, list_node,&
             else
                 nb_term = 4
             endif
+
+!           -- Relation: AB^2 = cste
+
+!           -- Ordre : A,   B,     A,   B      A,   B
+!                     'DX','DX',  'DY','DY',  'DZ','DZ'
+
             lisno(1) = nomnoe_a
             lisno(2) = nomnoe_b
             lisno(3) = nomnoe_a
@@ -174,15 +178,6 @@ subroutine solide_tran(type_geo,noma, type_vale, dist_mini, nb_node, list_node,&
             if (l3d) then
                 lisno(5) = nomnoe_a
                 lisno(6) = nomnoe_b
-            endif
-
-            cua= -2*(xb-xa)
-            cub=  2*(xb-xa)
-            cva= -2*(yb-ya)
-            cvb=  2*(yb-ya)
-            if (l3d) then
-                cwa= -2*(zb-za)
-                cwb=  2*(zb-za)
             endif
 
             lisddl(1) = 'DX'
@@ -194,13 +189,13 @@ subroutine solide_tran(type_geo,noma, type_vale, dist_mini, nb_node, list_node,&
                 lisddl(6) = 'DZ'
             endif
 
-            coer(1) = cua
-            coer(2) = cub
-            coer(3) = cva
-            coer(4) = cvb
+            coer(1) =  -2*(xb-xa)
+            coer(2) =   2*(xb-xa)
+            coer(3) =  -2*(yb-ya)
+            coer(4) =   2*(yb-ya)
             if (l3d) then
-                coer(5) = cwa
-                coer(6) = cwb
+                coer(5) = -2*(zb-za)
+                coer(6) =  2*(zb-za)
             endif
 
             call afrela(coer, coec, lisddl, lisno, dime,&
@@ -272,9 +267,8 @@ subroutine solide_tran(type_geo,noma, type_vale, dist_mini, nb_node, list_node,&
 
 999 continue
 
-!   -- remplissage de type_transf et nom_noeuds :
+!   -- remplissage de nom_noeuds :
 !   ----------------------------------------------
-    call codent(dim, 'D0', type_transf)
     ASSERT(size(nom_noeuds).ge.dim+1)
     do k=1,dim+1
         call jenuno(jexnum(noma//'.NOMNOE', linocara(k)), nomnoe_a)

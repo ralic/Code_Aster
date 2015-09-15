@@ -1,10 +1,11 @@
 subroutine cagrou(load, mesh, vale_type)
 !
-    implicit none
+implicit none
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/aflrch.h"
+#include "asterfort/agdual.h"
 #include "asterfort/afrela.h"
 #include "asterfort/assert.h"
 #include "asterfort/getnode.h"
@@ -164,6 +165,7 @@ subroutine cagrou(load, mesh, vale_type)
 !
 ! - Final linear relation affectation
 !
+    call agdual(load,1,'LIN')
     call aflrch(list_rela, load)
 !
 999  continue
