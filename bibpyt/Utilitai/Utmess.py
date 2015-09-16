@@ -234,8 +234,12 @@ class MESSAGE_LOGGER(Singleton):
             # doit permettre d'éviter la récursivité (catamess réservé à
             # Utmess)
             if catamess != 'catamess':
-                self.print_message(
-                    'A', 'CATAMESS_57', valk=(catamess, str(msg)))
+                code = 'A'
+                if in_testcase():
+                    raise ImportError(
+                        _(u"Fichier de messages non trouvé: {0}").format(str(msg)))
+                self.print_message(code, 'CATAMESS_57',
+                                   valk=(catamess, str(msg)))
             cata_msg = {}
 
         # corps du message
@@ -268,6 +272,9 @@ class MESSAGE_LOGGER(Singleton):
         except Exception, msg:
             if code == 'I':
                 code = 'A'
+            if in_testcase():
+                raise SyntaxError(_(u"Impossible de construire le texte du "
+                                    u"message: {0}").format(str(msg)))
             dictmess = {
                 'code': code,
                 'flags': 0,
@@ -482,7 +489,7 @@ Exception : %s
             # current step should be the JDC object in FIN()
             jdc = CONTEXT.get_current_step()
             code = 'A'
-            if getattr(jdc, 'fico', None):
+            if in_testcase():
                 code = 'F'
             self.print_message(code, 'CATAMESS_87', valk=list(not_seen),
                                exception=True)
@@ -713,6 +720,17 @@ du calcul ont été sauvées dans la base jusqu'au moment de l'arret."""),
         else:
             return 'EXCEPTION'
 
+# could be share elsewhere
+def in_testcase():
+    """Tell if we are currently executing a testcase"""
+    step = CONTEXT.get_current_step()
+    jdc = getattr(step, 'jdc', step)
+    print "DEBUG: step:", step, "  jdc:", jdc
+    if jdc and getattr(jdc, 'fico', None):
+        print "DEBUG: in a testcase"
+        return True
+    print "DEBUG: NOT in a testcase"
+    return False
 
 def is_last_message(code):
     """Tell if a message 'code' is the last message or not."""
