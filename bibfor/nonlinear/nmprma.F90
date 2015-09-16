@@ -116,7 +116,7 @@ implicit none
 !
     aster_logical :: reasma, renume
     aster_logical :: lcrigi, lcfint, lcamor, larigi
-    aster_logical :: ldyna, lamor, l_neum_undead
+    aster_logical :: ldyna, lamor, l_neum_undead, l_diri_undead
     character(len=16) :: metcor, metpre
     character(len=16) :: optrig, optamo
     integer :: ifm, niv, ibid
@@ -133,11 +133,12 @@ implicit none
         write (ifm,*) '<MECANONLINE> ... CALCUL MATRICE'
     endif
 !
-! --- FONCTIONNALITES ACTIVEES
+! - Active functionnalites
 !
     ldyna         = ndynlo(sddyna,'DYNAMIQUE')
     lamor         = ndynlo(sddyna,'MAT_AMORT')
     l_neum_undead = isfonc(fonact,'NEUM_UNDEAD')
+    l_diri_undead = isfonc(fonact,'DIRI_UNDEAD')
 !
 ! - Initializations
 !
@@ -185,6 +186,14 @@ implicit none
     if (lcrigi) then
         call nmcmat('MERIGI', optrig, ' ', .true._1,&
                     larigi, nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
+                    list_l_calc, list_l_asse)
+    endif
+!
+! - Update dualized matrix for non-linear Dirichlet boundary conditions (undead)
+!
+    if (l_diri_undead .and. (metpre.ne.'EXTRAPOLE')) then
+        call nmcmat('MEDIRI', ' ', ' ', .true._1,&
+                    .false._1, nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
                     list_l_calc, list_l_asse)
     endif
 !

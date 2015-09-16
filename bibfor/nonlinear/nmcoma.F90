@@ -50,6 +50,26 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
+!
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: mickael.abbas at edf.fr
+! aslint: disable=W1504
+!
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     integer :: fonact(*)
     character(len=*) :: modelz
@@ -120,7 +140,7 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
-    aster_logical :: reasma, lcamor
+    aster_logical :: reasma, lcamor, l_diri_undead
     aster_logical :: ldyna, lamor, l_neum_undead, lcrigi, lcfint, larigi
     character(len=16) :: metcor, metpre
     character(len=16) :: optrig, optamo
@@ -152,11 +172,12 @@ implicit none
     call nmchex(veelem, 'VEELEM', 'CNFINT', vefint)
     call nmchex(veasse, 'VEASSE', 'CNFINT', cnfint)
 !
-! --- FONCTIONNALITES ACTIVEES
+! - Active functionnalites
 !
     ldyna         = ndynlo(sddyna,'DYNAMIQUE')
     lamor         = ndynlo(sddyna,'MAT_AMORT')
     l_neum_undead = isfonc(fonact,'NEUM_UNDEAD')
+    l_diri_undead = isfonc(fonact,'DIRI_UNDEAD')
 !
 ! --- CHOIX DE REASSEMBLAGE DE LA MATRICE GLOBALE
 !
@@ -207,6 +228,14 @@ implicit none
     call nmchcc(fonact, nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
                 list_l_asse, list_l_calc)
 !
+! - Update dualized matrix for non-linear Dirichlet boundary conditions (undead)
+!
+    if (l_neum_undead) then
+        call nmcmat('MESUIV', ' ', ' ', .true._1,&
+                    .false._1, nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
+                    list_l_calc, list_l_asse)
+    endif
+!
 ! --- ASSEMBLAGE DES MATR-ELEM DE RIGIDITE
 !
     if (larigi) then
@@ -224,10 +253,10 @@ implicit none
                     list_l_calc, list_l_asse)
     endif
 !
-! --- CALCUL DES MATR-ELEM DES CHARGEMENTS SUIVEURS
+! - Update dualized relations for non-linear Dirichlet boundary conditions (undead)
 !
-    if (l_neum_undead) then
-        call nmcmat('MESUIV', ' ', ' ', .true._1,&
+    if (l_diri_undead) then
+        call nmcmat('MEDIRI', ' ', ' ', .true._1,&
                     .false._1, nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
                     list_l_calc, list_l_asse)
     endif
