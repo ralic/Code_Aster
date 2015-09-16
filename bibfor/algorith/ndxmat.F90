@@ -1,5 +1,19 @@
-subroutine ndxmat(fonact, lischa, solveu, numedd, sddyna,&
-                  numins, meelem, measse, matass)
+subroutine ndxmat(fonact, lischa, numedd, sddyna, numins,&
+                  meelem, measse, matass)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/ascoma.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mtcmbl.h"
+#include "asterfort/mtdefs.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/ndynre.h"
+#include "asterfort/nmchex.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,28 +33,13 @@ subroutine ndxmat(fonact, lischa, solveu, numedd, sddyna,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/ascoma.h"
-#include "asterfort/detrsd.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/mtcmbl.h"
-#include "asterfort/mtdefs.h"
-#include "asterfort/ndynlo.h"
-#include "asterfort/ndynre.h"
-#include "asterfort/nmchex.h"
     character(len=19) :: matass
     character(len=19) :: sddyna
     integer :: fonact(*)
     integer :: numins
     character(len=19) :: meelem(*), measse(*)
     character(len=24) :: numedd
-    character(len=19) :: lischa, solveu
+    character(len=19) :: lischa
 !
 ! ----------------------------------------------------------------------
 !
@@ -55,7 +54,6 @@ subroutine ndxmat(fonact, lischa, solveu, numedd, sddyna,&
 ! IN  NUMINS : NUMERO D'INSTANT
 ! IN  NUMEDD : NOM DE LA NUMEROTATION MECANIQUE
 ! IN  LISCHA : SD LISTE DES CHARGES
-! IN  SOLVEU : NOM DU SOLVEUR DE NEWTON
 ! IN  MEASSE : VARIABLE CHAPEAU POUR NOM DES MATR_ASSE
 ! IN  MEELEM : VARIABLE CHAPEAU POUR NOM DES MATR_ELEM
 ! OUT MATASS : MATRICE ASSEMBLEE RESULTANTE
@@ -77,11 +75,7 @@ subroutine ndxmat(fonact, lischa, solveu, numedd, sddyna,&
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('MECA_NON_LINE', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE><CALC> CALCUL MATRICE GLOBALE'
     endif
@@ -146,5 +140,4 @@ subroutine ndxmat(fonact, lischa, solveu, numedd, sddyna,&
         call ascoma(meelem, numedd, lischa, matass)
     endif
 !
-    call jedema()
 end subroutine

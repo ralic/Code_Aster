@@ -16,11 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine ndxmat(fonact, lischa, solveu, numedd, sddyna,&
-                      numins, meelem, measse, matass)
+    subroutine ndxmat(fonact, lischa, numedd, sddyna, numins,&
+                      meelem, measse, matass)
         integer :: fonact(*)
         character(len=19) :: lischa
-        character(len=19) :: solveu
         character(len=24) :: numedd
         character(len=19) :: sddyna
         integer :: numins

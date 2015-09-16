@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmmatr(phasez, fonact, lischa, numedd,&
-                      sddyna, numins, defico, resoco, meelem,&
-                      measse, matass)
+    subroutine nmmatr(phasez, fonact, lischa, numedd, sddyna,&
+                      numins, defico, resoco, meelem, measse,&
+                      matass)
         character(len=*) :: phasez
         integer :: fonact(*)
         character(len=19) :: lischa

@@ -1,7 +1,21 @@
-subroutine nmmatr(phasez, fonact, lischa, numedd,&
-                  sddyna, numins, defico, resoco, meelem,&
-                  measse, matass)
-! ----------------------------------------------------------------------
+subroutine nmmatr(phasez, fonact, lischa, numedd, sddyna,&
+                  numins, defico, resoco, meelem, measse,&
+                  matass)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/ascoma.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/mtcmbl.h"
+#include "asterfort/mtdefs.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/ndynre.h"
+#include "asterfort/nmasfr.h"
+#include "asterfort/nmchex.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,21 +34,6 @@ subroutine nmmatr(phasez, fonact, lischa, numedd,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/ascoma.h"
-#include "asterfort/detrsd.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/mtcmbl.h"
-#include "asterfort/mtdefs.h"
-#include "asterfort/ndynlo.h"
-#include "asterfort/ndynre.h"
-#include "asterfort/nmasfr.h"
-#include "asterfort/nmchex.h"
     character(len=*) :: phasez
     character(len=19) :: matass
     character(len=19) :: sddyna
@@ -86,11 +85,7 @@ subroutine nmmatr(phasez, fonact, lischa, numedd,&
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('MECA_NON_LINE', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE><CALC> CALCUL MATRICE GLOBALE'
     endif
@@ -208,7 +203,7 @@ subroutine nmmatr(phasez, fonact, lischa, numedd,&
         matass = rigid
     endif
     if (phase .eq. 'ACCEL_INIT') then
-        goto 9999
+        goto 999
     endif
 !
 ! --- PRISE EN COMPTE DE LA MATRICE TANGENTE DES FORCES SUIVEUSES
@@ -223,7 +218,6 @@ subroutine nmmatr(phasez, fonact, lischa, numedd,&
         call nmasfr(defico, resoco, matass)
     endif
 !
-9999 continue
+999 continue
 !
-    call jedema()
 end subroutine

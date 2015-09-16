@@ -235,8 +235,8 @@ implicit none
 ! --- CALCUL DE LA MATRICE ASSEMBLEE GLOBALE
 !
     if (reasma) then
-        call ndxmat(fonact, lischa, solveu, numedd, sddyna,&
-                    numins, meelem, measse, matass)
+        call ndxmat(fonact, lischa, numedd, sddyna, numins,&
+                    meelem, measse, matass)
     endif
 !
 ! --- FACTORISATION DE LA MATRICE ASSEMBLEE GLOBALE
