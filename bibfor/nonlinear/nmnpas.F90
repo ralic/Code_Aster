@@ -1,7 +1,8 @@
 subroutine nmnpas(modele  , noma  , mate  , carele, fonact ,&
                   ds_print, sddisc, sdsuiv, sddyna, sdnume ,&
                   sdstat  , sdtime, numedd, numins, defico ,&
-                  resoco  , valinc, solalg, solveu, ds_conv)
+                  resoco  , valinc, solalg, solveu, ds_conv,&
+                  lischa)
 !
 use NonLin_Datastructure_type
 !
@@ -17,6 +18,7 @@ implicit none
 #include "asterfort/initia.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/cldual_maj.h"
 #include "asterfort/cont_init.h"
 #include "asterfort/ndnpas.h"
 #include "asterfort/ndynlo.h"
@@ -43,6 +45,7 @@ implicit none
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
+! aslint: disable=W1504
 !
     integer :: fonact(*)
     character(len=8) :: noma
@@ -54,6 +57,7 @@ implicit none
     character(len=24) :: defico, resoco, numedd
     character(len=19) :: solalg(*), valinc(*)
     type(NL_DS_Conv), intent(inout) :: ds_conv
+    character(len=19), intent(in) :: lischa
 !
 ! ----------------------------------------------------------------------
 !
@@ -86,10 +90,10 @@ implicit none
 ! ----------------------------------------------------------------------
 !
     aster_logical :: lgrot, ldyna, lnkry
-    aster_logical :: lcont, leltc, lctcc
+    aster_logical :: lcont, leltc, lctcc, l_diri_undead
     integer :: neq
     character(len=19) :: depmoi, varmoi
-    character(len=19) :: depplu, varplu, vitplu, accplu
+    character(len=19) :: depplu, varplu
     character(len=19) :: complu, depdel
     real(kind=8) :: instan
     integer :: jdepde
@@ -105,14 +109,15 @@ implicit none
     call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
     scotch = .false.
 !
-! --- FONCTIONNALITES ACTIVEES
+! - Active functionnalites
 !
-    ldyna = ndynlo(sddyna,'DYNAMIQUE')
-    lcont = isfonc(fonact,'CONTACT')
-    lgrot = isfonc(fonact,'GD_ROTA')
-    lnkry = isfonc(fonact,'NEWTON_KRYLOV')
-    leltc = isfonc(fonact,'ELT_CONTACT')
-    lctcc = isfonc(fonact,'CONT_CONTINU')
+    ldyna         = ndynlo(sddyna,'DYNAMIQUE')
+    lcont         = isfonc(fonact,'CONTACT')
+    lgrot         = isfonc(fonact,'GD_ROTA')
+    lnkry         = isfonc(fonact,'NEWTON_KRYLOV')
+    leltc         = isfonc(fonact,'ELT_CONTACT')
+    lctcc         = isfonc(fonact,'CONT_CONTINU')
+    l_diri_undead = isfonc(fonact,'DIRI_UNDEAD')
 !
 ! --- INSTANT COURANT
 !
@@ -135,8 +140,6 @@ implicit none
     call nmchex(valinc, 'VALINC', 'DEPMOI', depmoi)
     call nmchex(valinc, 'VALINC', 'VARMOI', varmoi)
     call nmchex(valinc, 'VALINC', 'DEPPLU', depplu)
-    call nmchex(valinc, 'VALINC', 'VITPLU', vitplu)
-    call nmchex(valinc, 'VALINC', 'ACCPLU', accplu)
     call nmchex(valinc, 'VALINC', 'VARPLU', varplu)
     call nmchex(valinc, 'VALINC', 'COMPLU', complu)
     call nmchex(solalg, 'SOLALG', 'DEPDEL', depdel)
@@ -162,6 +165,12 @@ implicit none
     call jeveuo(depdel//'.VALE', 'E', jdepde)
     call jeveuo(depplu//'.VALE', 'L', vr=depp)
     call initia(neq, lgrot, zi(indro), depp, zr(jdepde))
+!
+! - Update dualized relations for non-linear Dirichlet boundary conditions (undead)
+!
+    if (l_diri_undead) then
+        call cldual_maj(lischa, depmoi)
+    endif
 !
 ! --- INITIALISATIONS EN DYNAMIQUE
 !

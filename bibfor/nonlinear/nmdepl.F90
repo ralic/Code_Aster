@@ -11,6 +11,7 @@ use NonLin_Datastructure_type
 implicit none
 !
 #include "asterf_types.h"
+#include "asterfort/cldual_maj.h"
 #include "asterfort/dbgcha.h"
 #include "asterfort/diinst.h"
 #include "asterfort/GetResi.h"
@@ -111,8 +112,8 @@ implicit none
 !
     real(kind=8) :: etan, offset, rho
     real(kind=8) :: instam, instap, deltat, resi_glob_rela
-    aster_logical :: lpilo, lreli, lctcd, lunil
-    character(len=19) :: cnfext
+    aster_logical :: lpilo, lreli, lctcd, lunil, l_diri_undead
+    character(len=19) :: cnfext, depplu
     integer :: ctccvg, ldccvg, pilcvg
     integer :: ifm, niv
 !
@@ -129,12 +130,14 @@ implicit none
     ctccvg = -1
     pilcvg = -1
 !
-! --- FONCTIONNALITES ACTIVEES
+! - Active functionnalites
 !
-    lpilo = isfonc(fonact,'PILOTAGE')
-    lreli = isfonc(fonact,'RECH_LINE')
-    lunil = isfonc(fonact,'LIAISON_UNILATER')
-    lctcd = isfonc(fonact,'CONT_DISCRET')
+    lpilo         = isfonc(fonact,'PILOTAGE')
+    lreli         = isfonc(fonact,'RECH_LINE')
+    lunil         = isfonc(fonact,'LIAISON_UNILATER')
+    lctcd         = isfonc(fonact,'CONT_DISCRET')
+    l_diri_undead = isfonc(fonact,'DIRI_UNDEAD')
+    call nmchex(valinc, 'VALINC', 'DEPPLU', depplu)
 !
 ! --- INITIALISATIONS
 !
@@ -221,6 +224,12 @@ implicit none
 !
     call nmmajc(fonact, sddyna, sdnume, deltat, numedd,&
                 valinc, solalg)
+!
+! - Update dualized relations for non-linear Dirichlet boundary conditions (undead)
+!
+    if (l_diri_undead) then
+        call cldual_maj(lischa, depplu)
+    endif
 !
 999 continue
 !

@@ -181,7 +181,8 @@ implicit none
     call nmnpas(modele  , noma  , mate  , carele, fonact ,&
                 ds_print, sddisc, sdsuiv, sddyna, sdnume ,&
                 sdstat  , sdtime, numedd, numins, defico ,&
-                resoco  , valinc, solalg, solveu, ds_conv)
+                resoco  , valinc, solalg, solveu, ds_conv,&
+                lischa  )
 !
 ! --- CALCUL DES CHARGEMENTS CONSTANTS AU COURS DU PAS DE TEMPS
 !
