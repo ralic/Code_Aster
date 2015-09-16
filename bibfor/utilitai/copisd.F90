@@ -55,6 +55,7 @@ subroutine copisd(typesd, base, sd1, sd2)
 !               'MATR_ASSE_GENE'  'MATR_ASSE'
 !               'PROF_CHNO'       'MATR_ELEM'
 !               'VECT_ELEM'       'SOLVEUR'
+!               'CHAR_DUAL'
 !     BASE     : 'G' , 'V' , ... : BASE DE CREATION DE SD2
 !     SD1 (K*) : NOM DE LA SD A DUPPLIQUER
 !     SD2 (K*) : NOM DE LA SD A CREER
@@ -75,6 +76,7 @@ subroutine copisd(typesd, base, sd1, sd2)
     integer :: j1, iexi
     character(len=24), pointer :: ltn1(:) => null()
     character(len=24), pointer :: ltn2(:) => null()
+    character(len=24), pointer :: noli(:) => null()
 !
 !
 ! DEB-------------------------------------------------------------------
@@ -100,7 +102,7 @@ subroutine copisd(typesd, base, sd1, sd2)
     else if ((typesd.eq.'CHAMP') .or. (typesd.eq.'CHAMP_GD')) then
 !     ----------------------------------------------------------------
         ch1 = sd1
-        ch2 = sd2    
+        ch2 = sd2
         call copich(bas2, ch1, ch2)
 !
 ! ----------------------------------------------------------------------
@@ -448,7 +450,31 @@ subroutine copisd(typesd, base, sd1, sd2)
         call jedup1(k191//'.INFC', bas2, k192//'.INFC')
         call jedup1(k191//'.LCHA', bas2, k192//'.LCHA')
         call jedup1(k191//'.FCHA', bas2, k192//'.FCHA')
-!
+
+    else if (typesd.eq.'CHAR_DUAL') then
+!     -----------------------------------
+        k81 = sd1
+        k82 = sd2
+        call jedup1(k81//'.TYPE', bas2, k82//'.TYPE')
+        call jedup1(k81//'.CHME.MODEL.NOMO', bas2, k82//'.CHME.MODEL.NOMO')
+        call copis2('LIGREL', bas2, k81//'.CHME.LIGRE', k82//'.CHME.LIGRE')
+        call copich(bas2, k81//'.CHME.CMULT', k82//'.CHME.CMULT')
+        call copich(bas2, k81//'.CHME.CIMPO', k82//'.CHME.CIMPO')
+        call jeveuo(k82//'.CHME.CIMPO.NOLI', 'E',vk24=noli)
+        do i=1,size(noli)
+            if (noli(i)(1:8).eq.k81) then
+                noli(i)(1:8)=k82
+            endif
+        enddo
+        call jeveuo(k82//'.CHME.CMULT.NOLI', 'E',vk24=noli)
+        do i=1,size(noli)
+            if (noli(i)(1:8).eq.k81) then
+                noli(i)(1:8)=k82
+            endif
+        enddo
+        call jedup1(k81//'.DUAL.RCTYR', bas2, k82//'.DUAL.RCTYR')
+        call jedup1(k81//'.DUAL.NMATA', bas2, k82//'.DUAL.NMATA')
+        call jedup1(k81//'.DUAL.RCNOM', bas2, k82//'.DUAL.RCNOM')
 !
 ! ----------------------------------------------------------------------
     else
