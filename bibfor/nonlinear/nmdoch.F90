@@ -87,7 +87,7 @@ implicit none
     character(len=19) :: lisdbl
     character(len=24) :: ligrch, lchin
     integer :: i_neum_lapl, i_diri_suiv
-    aster_logical :: lfcplx, lacce, l_zero_allowed, l_apply_user
+    aster_logical :: lfcplx, lacce, l_zero_allowed, l_apply_user, l_diri_undead
     integer :: nb_info_type
     integer, pointer :: v_ll_infc(:) => null()
     integer, pointer :: v_llresu_info(:) => null()
@@ -119,6 +119,7 @@ implicit none
     nb_excit       = 0
     i_load_new     = 0
     i_diri_suiv    = 0
+    l_diri_undead = .false.
 !
 ! - Is applying load option by user ?
 !
@@ -247,12 +248,8 @@ implicit none
             call jeexin(lchin, iret)
             if (iret .ne. 0) then
                 if (load_apply(1:4) .eq. 'SUIV') then
-                    info_type    = 'DIRI_SUIV'
-                    if (i_diri_suiv.ne.0) then
-                        call utmess('F', 'CHARGES_29')
-                    else
-                        i_diri_suiv  = i_load
-                    endif
+                    info_type     = 'DIRI_SUIV'
+                    l_diri_undead = .true.
                 else if (load_apply.eq.'FIXE_PIL') then
                     call dismoi('PARA_INST', lchin(1:19), 'CARTE', repk=parcha)
                     if (parcha(1:3) .eq. 'OUI') then
@@ -406,14 +403,6 @@ implicit none
                 list_info_type(nb_info_type) = info_type
             endif
 !
-! --------- Only undead load for Dirichlet in one load of list_load datastructure
-!
-            if (i_diri_suiv.ne.0) then
-                if (nb_info_type.ne.1) then
-                    call utmess('F', 'CHARGES_25', sk=load_name)
-                endif
-            endif
-!
 ! --------- Add new load(s) in list
 !
             if (nb_info_type .gt. 0) then
@@ -445,10 +434,10 @@ implicit none
         endif
     endif
 !
-! - Modify list for undead Dirichlet load
+! - Modify list for undead Dirichlet loads
 !
-    if (i_diri_suiv.ne.0) then
-        call load_unde_diri(list_load, i_diri_suiv)
+    if (l_diri_undead) then
+        call load_unde_diri(list_load)
     endif  
     
     AS_DEALLOCATE(vk8 = v_list_dble)

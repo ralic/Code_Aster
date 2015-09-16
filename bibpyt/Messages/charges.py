@@ -55,11 +55,6 @@ La charge %(k1)s est de type cinématique (AFFE_CHAR_CINE):
  elle ne peut pas être différentielle.
 """),
 
-    25 : _(u"""
-La charge %(k1)s a été déclarée comme étant suiveuse mais elle contient autre chose qu'un chargement de type Dirichlet.
-Votre chargement contient plusieurs types dont certains ne peuvent être suiveurs, il faut les séparer.
-"""),
-
     26 : _(u"""
 La charge %(k1)s a été déclarée comme étant pilotable alors que ce n'est pas possible.
 Si votre chargement contient plusieurs types dont certains ne peuvent être pilotables, il faut les séparer.
@@ -76,7 +71,7 @@ On ne peut pas piloter la charge %(k1)s car c'est une charge fonction du temps.
 """),
 
     29 : _(u"""
-Il ne faut qu'un chargement de type Dirichlet suiveur.
+Il y a trop de chargements de type Dirichlet suiveur.
 """),
 
     34 : _(u"""

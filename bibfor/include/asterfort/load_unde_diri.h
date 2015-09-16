@@ -16,8 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine load_unde_diri(list_load, i_diri_suiv)
+    subroutine load_unde_diri(list_load)
         character(len=19), intent(in) :: list_load
-        integer, intent(in) :: i_diri_suiv
     end subroutine load_unde_diri
 end interface

@@ -1,4 +1,4 @@
-subroutine load_unde_diri(list_load, i_diri_suiv)
+subroutine load_unde_diri(list_load)
 !
 implicit none
 !
@@ -7,6 +7,8 @@ implicit none
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/copisd.h"
+#include "asterfort/codent.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,7 +28,6 @@ implicit none
 ! ======================================================================
 !
     character(len=19), intent(in) :: list_load
-    integer, intent(in) :: i_diri_suiv
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -37,11 +38,10 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  list_load         : name of datastructure for list of loads
-! In  i_diri_suiv       : index of undead Dirichlet load in list_load
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_load
+    integer :: nb_load, load_nume_diri, i_load, i_load_diri
     character(len=8) :: load_name, load_name_loca
     character(len=24) :: lload_info, lload_name
     integer, pointer :: v_load_info(:) => null()
@@ -58,20 +58,27 @@ implicit none
     call jeveuo(lload_name, 'E', vk24 = v_load_name)
     call jeveuo(lload_info, 'E', vi   = v_load_info)
 !
-    nb_load    = v_load_info(1)
-    ASSERT(nb_load.gt.0) 
-    ASSERT(v_load_info(i_diri_suiv+1).eq.4)
+    nb_load     = v_load_info(1)
+    ASSERT(nb_load.gt.0)
+    i_load_diri = 0
 !
-! - Copy load
+! - Copy loads
 !
-    load_name_loca = '&&DIRISU'
-    load_name      = v_load_name(i_diri_suiv)(1:8) 
-    call copisd('CHAR_DUAL', 'V', load_name, load_name_loca)
-!
-! - Change load name for local modification in STAT_NON_LINE
-!
-    v_load_name(i_diri_suiv)(1:8)  = load_name_loca
-    v_load_name(i_diri_suiv)(9:16) = load_name  
+    do i_load = 1, nb_load
+        load_nume_diri = v_load_info(i_load+1)
+        if (load_nume_diri.eq.4) then
+            i_load_diri = i_load_diri + 1
+            load_name_loca = '&&DIRISU'
+            if (i_load_diri.gt.99) then
+                call utmess('F','CHARGES_29')
+            endif
+            call codent(i_load_diri, 'D0', load_name_loca(7:8))
+            load_name      = v_load_name(i_load)(1:8) 
+            call copisd('CHAR_DUAL', 'V', load_name, load_name_loca)
+            v_load_name(i_load)(1:8)  = load_name_loca
+            v_load_name(i_load)(9:16) = load_name 
+        endif
+    end do
 !
     call jedema()
 !
