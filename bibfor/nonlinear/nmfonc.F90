@@ -76,7 +76,7 @@ implicit none
 !
 ! In  ds_conv          : datastructure for convergence management
 ! In  ds_algopara      : datastructure for algorithm parameters
-! In  solver           : datastructure for solver parameters 
+! In  solver           : datastructure for solver parameters
 ! In  model            : name of the model
 ! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
 ! In  list_load        : name of datastructure for list of loads
@@ -97,7 +97,7 @@ implicit none
     integer :: i_cont_form
     aster_logical :: l_deborst, l_frot, l_elem_choc, l_all_verif, l_refe, l_comp
     aster_logical :: l_loop_geom, l_loop_frot, l_loop_cont
-    integer :: ixfem, ichar, i_buckl, i_vibr_mode, i_stab
+    integer :: ixfem, i_load, i_buckl, i_vibr_mode, i_stab
     aster_logical :: l_load_undead, l_load_laplace, l_load_elim, l_load_didi
     character(len=8) :: k8bid, repk
     character(len=16) :: command, k16bid, matdis
@@ -115,7 +115,7 @@ implicit none
     compor = compor_
 !
 ! - Print
-!    
+!
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> ... CREATION VECTEUR FONCTIONNALITES ACTIVEES: '
@@ -277,25 +277,33 @@ implicit none
 !
 ! - At least, one undead load ?
 !
-    ichar = 0
-    l_load_undead = ischar(list_load, 'NEUM', 'SUIV', ichar)
-    if (l_load_undead) list_func_acti(13) = 1
+    i_load = 0
+    l_load_undead = ischar(list_load, 'NEUM', 'SUIV', i_load)
+    if (l_load_undead) then
+        list_func_acti(13) = 1
+    endif
 !
 ! - At least, one "DIDI" load ?
 !
-    ichar = 0
-    l_load_didi = ischar(list_load,'DIRI','DIDI', ichar)
-    if (l_load_didi) list_func_acti(22) = 1
+    i_load = 0
+    l_load_didi = ischar(list_load, 'DIRI', 'DIDI', i_load)
+    if (l_load_didi) then
+        list_func_acti(22) = 1
+    endif
 !
 ! - At least, one AFFE_CHAR_CINE load ?
 !
     l_load_elim = isdiri(list_load,'ELIM')
-    if (l_load_elim) list_func_acti(36) = 1
+    if (l_load_elim) then
+        list_func_acti(36) = 1
+    endif
 !
 ! - At least, one Laplace load ?
 !
-    l_load_laplace = ischar(list_load,'NEUM','LAPL',ichar )
-    if (l_load_laplace) list_func_acti(20) = 1
+    l_load_laplace = ischar(list_load, 'NEUM', 'LAPL', i_load)
+    if (l_load_laplace) then
+        list_func_acti(20) = 1
+    endif
 !
 ! - Static substructuring-
 !
@@ -413,7 +421,7 @@ implicit none
 ! ----- Solving methods
 !
         if (isfonc(list_func_acti,'IMPLEX')) then
-            write (ifm,*) '<MECANONLINE> ...... METHODE IMPLEX'  
+            write (ifm,*) '<MECANONLINE> ...... METHODE IMPLEX'
         endif
         if (isfonc(list_func_acti,'EXPLICITE')) then
             write (ifm,*) '<MECANONLINE> ...... METHODE EXPLICITE'
@@ -422,43 +430,43 @@ implicit none
             write (ifm,*) '<MECANONLINE> ...... METHODE NEWTON_KRYLOV'
         endif
         if (isfonc(list_func_acti,'RECH_LINE')) then
-            write (ifm,*) '<MECANONLINE> ...... RECHERCHE LINEAIRE'  
+            write (ifm,*) '<MECANONLINE> ...... RECHERCHE LINEAIRE'
         endif
         if (isfonc(list_func_acti,'PILOTAGE')) then
-            write (ifm,*) '<MECANONLINE> ...... PILOTAGE'  
+            write (ifm,*) '<MECANONLINE> ...... PILOTAGE'
         endif
         if (isfonc(list_func_acti,'DEBORST')) then
-            write (ifm,*) '<MECANONLINE> ...... METHODE DEBORST' 
+            write (ifm,*) '<MECANONLINE> ...... METHODE DEBORST'
         endif
         if (isfonc(list_func_acti,'SOUS_STRUC')) then
             write (ifm,*) '<MECANONLINE> ...... CALCUL PAR SOUS-STRUCTURATION'
         endif
         if (isfonc(list_func_acti,'PROJ_MODAL')) then
-            write (ifm,*) '<MECANONLINE> ...... CALCUL PAR PROJECTION MODALE'    
+            write (ifm,*) '<MECANONLINE> ...... CALCUL PAR PROJECTION MODALE'
         endif
 !
 ! ----- Contact
 !
         if (isfonc(list_func_acti,'CONTACT')) then
-            write (ifm,*) '<MECANONLINE> ...... CONTACT' 
+            write (ifm,*) '<MECANONLINE> ...... CONTACT'
         endif
         if (isfonc(list_func_acti,'CONT_DISCRET')) then
-            write (ifm,*) '<MECANONLINE> ...... CONTACT DISCRET'  
+            write (ifm,*) '<MECANONLINE> ...... CONTACT DISCRET'
         endif
         if (isfonc(list_func_acti,'CONT_CONTINU')) then
-            write (ifm,*) '<MECANONLINE> ...... CONTACT CONTINU' 
+            write (ifm,*) '<MECANONLINE> ...... CONTACT CONTINU'
         endif
         if (isfonc(list_func_acti,'CONT_XFEM')) then
             write (ifm,*) '<MECANONLINE> ...... CONTACT XFEM'
         endif
         if (isfonc(list_func_acti,'BOUCLE_EXT_GEOM')) then
-            write (ifm,*) '<MECANONLINE> ...... CONTACT BOUCLE GEOM'  
+            write (ifm,*) '<MECANONLINE> ...... CONTACT BOUCLE GEOM'
         endif
         if (isfonc(list_func_acti,'BOUCLE_EXT_CONT')) then
             write (ifm,*) '<MECANONLINE> ...... CONTACT BOUCLE CONTACT'
         endif
         if (isfonc(list_func_acti,'BOUCLE_EXT_FROT')) then
-            write (ifm,*) '<MECANONLINE> ...... CONTACT BOUCLE FROT' 
+            write (ifm,*) '<MECANONLINE> ...... CONTACT BOUCLE FROT'
         endif
         if (isfonc(list_func_acti,'BOUCLE_EXTERNE')) then
             write (ifm,*) '<MECANONLINE> ...... BOUCLE EXTERNE'
@@ -476,7 +484,7 @@ implicit none
             write (ifm,*) '<MECANONLINE> ...... CONTACT SANS CALCUL SUR TOUTES LES ZONES'
         endif
         if (isfonc(list_func_acti,'CONTACT_INIT')) then
-            write (ifm,*) '<MECANONLINE> ...... CONTACT INITIAL'   
+            write (ifm,*) '<MECANONLINE> ...... CONTACT INITIAL'
         endif
         if (isfonc(list_func_acti,'LIAISON_UNILATER')) then
             write (ifm,*) '<MECANONLINE> ...... LIAISON UNILATERALE'
@@ -488,25 +496,25 @@ implicit none
             write (ifm,*) '<MECANONLINE> ...... FROTTEMENT CONTINU'
         endif
         if (isfonc(list_func_acti,'FROT_XFEM')) then
-            write (ifm,*) '<MECANONLINE> ...... FROTTEMENT XFEM'  
+            write (ifm,*) '<MECANONLINE> ...... FROTTEMENT XFEM'
         endif
 !
 ! ----- Finite elements
 !
         if (isfonc(list_func_acti,'ELT_CONTACT')) then
-            write (ifm,*) '<MECANONLINE> ...... ELEMENTS DE CONTACT'    
+            write (ifm,*) '<MECANONLINE> ...... ELEMENTS DE CONTACT'
         endif
         if (isfonc(list_func_acti,'ELT_FROTTEMENT')) then
             write (ifm,*) '<MECANONLINE> ...... ELEMENTS DE FROTTEMENT'
         endif
         if (isfonc(list_func_acti,'DIS_CHOC')) then
-            write (ifm,*) '<MECANONLINE> ...... ELEMENTS DIS_CHOC '   
+            write (ifm,*) '<MECANONLINE> ...... ELEMENTS DIS_CHOC '
         endif
         if (isfonc(list_func_acti,'GD_ROTA')) then
             write (ifm,*) '<MECANONLINE> ...... ELEMENTS DE STRUCTURES EN GRANDES ROTATIONS'
         endif
         if (isfonc(list_func_acti,'XFEM')) then
-            write (ifm,*) '<MECANONLINE> ...... ELEMENTS XFEM' 
+            write (ifm,*) '<MECANONLINE> ...... ELEMENTS XFEM'
         endif
         if (isfonc(list_func_acti,'EXI_STRX')) then
             write (ifm,*) '<MECANONLINE> ...... ELEMENTS DE STRUCTURES DE TYPE PMF'
@@ -515,10 +523,10 @@ implicit none
 ! ----- CONVERGENCE
 !
         if (isfonc(list_func_acti,'RESI_REFE')) then
-            write (ifm,*) '<MECANONLINE> ...... CONVERGENCE PAR RESI_REFE' 
+            write (ifm,*) '<MECANONLINE> ...... CONVERGENCE PAR RESI_REFE'
         endif
         if (isfonc(list_func_acti,'RESI_COMP')) then
-            write (ifm,*) '<MECANONLINE> ...... CONVERGENCE PAR RESI_COMP'   
+            write (ifm,*) '<MECANONLINE> ...... CONVERGENCE PAR RESI_COMP'
         endif
 !
 ! ----- Loads
@@ -527,7 +535,7 @@ implicit none
             write (ifm,*) '<MECANONLINE> ...... CHARGEMENTS SUIVEURS DE TYPE NEUMANN'
         endif
         if (isfonc(list_func_acti,'DIDI')) then
-            write (ifm,*) '<MECANONLINE> ...... CHARGEMENTS DE DIRICHLET DIFFERENTIEL' 
+            write (ifm,*) '<MECANONLINE> ...... CHARGEMENTS DE DIRICHLET DIFFERENTIEL'
         endif
         if (isfonc(list_func_acti,'DIRI_CINE')) then
             write (ifm,*) '<MECANONLINE> ...... CHARGEMENTS CINEMATIQUES PAR ELIMINATION'
@@ -542,28 +550,28 @@ implicit none
             write (ifm,*) '<MECANONLINE> ...... MACRO-ELEMENTS STATIQUES'
         endif
         if (isfonc(list_func_acti,'THM')) then
-            write (ifm,*) '<MECANONLINE> ...... MODELISATION THM' 
+            write (ifm,*) '<MECANONLINE> ...... MODELISATION THM'
         endif
         if (isfonc(list_func_acti,'ENDO_NO')) then
-            write (ifm,*) '<MECANONLINE> ...... MODELISATION GVNO' 
+            write (ifm,*) '<MECANONLINE> ...... MODELISATION GVNO'
         endif
 !
 ! ----- Post-treatments
 !
         if (isfonc(list_func_acti,'CRIT_STAB')) then
-            write (ifm,*) '<MECANONLINE> ...... CALCUL CRITERE FLAMBEMENT'  
+            write (ifm,*) '<MECANONLINE> ...... CALCUL CRITERE FLAMBEMENT'
         endif
         if (isfonc(list_func_acti,'DDL_STAB')) then
-            write (ifm,*) '<MECANONLINE> ...... CALCUL CRITERE STABILITE' 
+            write (ifm,*) '<MECANONLINE> ...... CALCUL CRITERE STABILITE'
         endif
         if (isfonc(list_func_acti,'MODE_VIBR')) then
             write (ifm,*) '<MECANONLINE> ...... CALCUL MODES VIBRATOIRES'
         endif
         if (isfonc(list_func_acti,'ENERGIE')) then
-            write (ifm,*) '<MECANONLINE> ...... CALCUL DES ENERGIES'   
+            write (ifm,*) '<MECANONLINE> ...... CALCUL DES ENERGIES'
         endif
         if (isfonc(list_func_acti,'ERRE_TEMPS_THM')) then
-            write (ifm,*) '<MECANONLINE> ...... CALCUL ERREUR TEMPS EN THM'  
+            write (ifm,*) '<MECANONLINE> ...... CALCUL ERREUR TEMPS EN THM'
         endif
         if (isfonc(list_func_acti,'POST_INCR')) then
             write (ifm,*) '<MECANONLINE> ...... CALCUL POST_INCR'
@@ -576,10 +584,10 @@ implicit none
         endif
 !
         if (isfonc(list_func_acti,'REUSE')) then
-            write (ifm,*) '<MECANONLINE> ...... CONCEPT RE-ENTRANT'    
+            write (ifm,*) '<MECANONLINE> ...... CONCEPT RE-ENTRANT'
         endif
         if (isfonc(list_func_acti,'ETAT_INIT')) then
-            write (ifm,*) '<MECANONLINE> ...... Etat initial present'    
+            write (ifm,*) '<MECANONLINE> ...... Etat initial present'
         endif
 !
 ! ----- Solver options
@@ -588,10 +596,10 @@ implicit none
             write (ifm,*) '<MECANONLINE> ...... SOLVEUR LDLT'
         endif
         if (isfonc(list_func_acti,'MULT_FRONT')) then
-            write (ifm,*) '<MECANONLINE> ...... SOLVEUR MULT_FRONT'  
+            write (ifm,*) '<MECANONLINE> ...... SOLVEUR MULT_FRONT'
         endif
         if (isfonc(list_func_acti,'GCPC')) then
-            write (ifm,*) '<MECANONLINE> ...... SOLVEUR GCPC'    
+            write (ifm,*) '<MECANONLINE> ...... SOLVEUR GCPC'
         endif
         if (isfonc(list_func_acti,'MUMPS')) then
             write (ifm,*) '<MECANONLINE> ...... SOLVEUR MUMPS'
@@ -600,7 +608,7 @@ implicit none
             write (ifm,*) '<MECANONLINE> ...... SOLVEUR PETSC'
         endif
         if (isfonc(list_func_acti,'LDLT_SP')) then
-            write (ifm,*) '<MECANONLINE> ...... PRECONDITIONNEUR LDLT_SP' 
+            write (ifm,*) '<MECANONLINE> ...... PRECONDITIONNEUR LDLT_SP'
         endif
         if (isfonc(list_func_acti,'MATR_DISTRIBUEE')) then
             write (ifm,*) '<MECANONLINE> ...... MATRICE GLOBALE DISTRIBUEE'

@@ -139,7 +139,6 @@ implicit none
     aster_logical :: lacc0, lpilo, lmpas, lsstf, lerrt, lviss, lrefe
     aster_logical :: lcont, lunil
     character(len=19) :: ligrcf, ligrxf
-    integer, pointer :: slvi(:) => null()
     character(len=24) :: sd_iden_rela
 !
 ! --------------------------------------------------------------------------------------------------
@@ -193,21 +192,6 @@ implicit none
     lerrt = isfonc(fonact,'ERRE_TEMPS_THM')
     lviss = ndynlo(sddyna,'VECT_ISS' )
     lrefe = isfonc(fonact,'RESI_REFE')
-!
-! --- SI ON A BESOIN DE FACTORISER SIMULTANNEMENT DEUX MATRICES AVEC LE SOLVEUR MUMPS ON LUI
-!     SIGNALE AFIN QU'IL OPTIMISE AU MIEUX LA MEMOIRE POUR CHACUNES D'ELLES.
-!     CE N'EST VRAIMENT UTILE QUE SI SOLVEUR/GESTION_MEMOIRE='AUTO'.
-    if (isfonc(fonact,'MUMPS')) then
-        if (isfonc(fonact,'CRIT_STAB') .or. isfonc(fonact,'MODE_VIBR')) then
-            call jeveuo(solveu//'.SLVI', 'E', vi=slvi)
-            if (slvi(6) .lt. 0) then
-! --- PB INITIALISATION DE LA SD_SOLVEUR
-                ASSERT(.false.)
-            else
-                slvi(6)=2
-            endif
-        endif
-    endif
 !
 ! --- CREATION DE LA STRUCTURE DE DONNEE RESULTAT DU CONTACT
 !

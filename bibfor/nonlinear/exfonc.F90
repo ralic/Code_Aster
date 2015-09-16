@@ -6,9 +6,12 @@ use NonLin_Datastructure_type
 implicit none
 !
 #include "asterf_types.h"
+#include "asterfort/assert.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/ndynlo.h"
 #include "asterfort/utmess.h"
@@ -43,7 +46,7 @@ implicit none
 !
 ! MECA_NON_LINE - Initializations
 !
-! No compatible functionnalities
+! Check compatibility of some functionnalities
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -57,47 +60,55 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: reac_incr
-    integer :: n1
-    aster_logical :: lcont, lallv, lctcc, lctcd, lpena, leltc
-    aster_logical :: lpilo, lreli, lmacr, lunil
-    aster_logical :: lmvib, lflam, lexpl, lxfem, lmodim
+    aster_logical :: l_cont, lallv, l_cont_cont, l_cont_disc, lpena, leltc
+    aster_logical :: l_pilo, l_line_search, lmacr, l_unil
+    aster_logical :: l_vibr_mode, l_buckling, lexpl, lxfem, lmodim
     aster_logical :: lrcmk, lgcpc, lpetsc, lamg, lsyme, limpex
-    aster_logical :: londe, ldyna, lgrot, ltheta, lnkry
-    aster_logical :: lener, lproj, lmatdi, lldsp, lctgcp, lcomp
+    aster_logical :: londe, l_dyna, l_grot_gdep, ltheta, l_newt_krylov, l_mumps
+    aster_logical :: l_energy, lproj, lmatdi, lldsp, lctgcp, l_comp_rela
     character(len=24) :: typilo, metres
     character(len=16) :: reli_meth, matrix_pred
     character(len=3) :: mfdet, syme
     character(len=24), pointer :: slvk(:) => null()
+    integer, pointer :: slvi(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    lxfem = isfonc(list_func_acti,'XFEM')
-    lctcc = isfonc(list_func_acti,'CONT_CONTINU')
-    lctcd = isfonc(list_func_acti,'CONT_DISCRET')
-    lcont = isfonc(list_func_acti,'CONTACT')
-    lunil = isfonc(list_func_acti,'LIAISON_UNILATER')
-    lpilo = isfonc(list_func_acti,'PILOTAGE')
-    lreli = isfonc(list_func_acti,'RECH_LINE')
-    lmacr = isfonc(list_func_acti,'MACR_ELEM_STAT')
-    lmvib = isfonc(list_func_acti,'MODE_VIBR')
-    lflam = isfonc(list_func_acti,'CRIT_STAB')
-    londe = ndynlo(sddyna,'ONDE_PLANE')
-    ldyna = ndynlo(sddyna,'DYNAMIQUE')
-    lexpl = isfonc(list_func_acti,'EXPLICITE')
-    lgrot = isfonc(list_func_acti,'GD_ROTA')
-    ltheta = ndynlo(sddyna,'THETA_METHODE')
-    limpex = isfonc(list_func_acti,'IMPLEX')
-    lnkry = isfonc(list_func_acti,'NEWTON_KRYLOV')
-    lener = isfonc(list_func_acti,'ENERGIE')
-    lproj = isfonc(list_func_acti,'PROJ_MODAL')
-    lmatdi = isfonc(list_func_acti,'MATR_DISTRIBUEE')
-    leltc = isfonc(list_func_acti,'ELT_CONTACT')
-    lcomp = isfonc(list_func_acti,'RESI_COMP')
-    lgcpc = isfonc(list_func_acti,'GCPC')
-    lpetsc = isfonc(list_func_acti,'PETSC')
-    lldsp = isfonc(list_func_acti,'LDLT_SP')
+    call jemarq()
+!
+! - Active functionnalites
+!
+    lxfem           = isfonc(list_func_acti,'XFEM')
+    l_cont_cont     = isfonc(list_func_acti,'CONT_CONTINU')
+    l_cont_disc     = isfonc(list_func_acti,'CONT_DISCRET')
+    l_cont          = isfonc(list_func_acti,'CONTACT')
+    l_unil          = isfonc(list_func_acti,'LIAISON_UNILATER')
+    l_pilo          = isfonc(list_func_acti,'PILOTAGE')
+    l_line_search   = isfonc(list_func_acti,'RECH_LINE')
+    lmacr           = isfonc(list_func_acti,'MACR_ELEM_STAT')
+    l_vibr_mode     = isfonc(list_func_acti,'MODE_VIBR')
+    l_buckling      = isfonc(list_func_acti,'CRIT_STAB')
+    londe           = ndynlo(sddyna,'ONDE_PLANE')
+    l_dyna          = ndynlo(sddyna,'DYNAMIQUE')
+    lexpl           = isfonc(list_func_acti,'EXPLICITE')
+    l_grot_gdep     = isfonc(list_func_acti,'GD_ROTA')
+    ltheta          = ndynlo(sddyna,'THETA_METHODE')
+    limpex          = isfonc(list_func_acti,'IMPLEX')
+    l_newt_krylov   = isfonc(list_func_acti,'NEWTON_KRYLOV')
+    l_energy        = isfonc(list_func_acti,'ENERGIE')
+    lproj           = isfonc(list_func_acti,'PROJ_MODAL')
+    lmatdi          = isfonc(list_func_acti,'MATR_DISTRIBUEE')
+    leltc           = isfonc(list_func_acti,'ELT_CONTACT')
+    l_comp_rela     = isfonc(list_func_acti,'RESI_COMP')
+    lgcpc           = isfonc(list_func_acti,'GCPC')
+    lpetsc          = isfonc(list_func_acti,'PETSC')
+    lldsp           = isfonc(list_func_acti,'LDLT_SP')
+    l_mumps         = isfonc(list_func_acti,'MUMPS')
+!
+! - Get parameters
 !
     call jeveuo(solver//'.SLVK', 'E', vk24=slvk)
+!    call jeveuo(solver//'.SLVI', 'E', vi  =slvi)
     metres = slvk(1)
 !
 ! - Get algorithm parameters
@@ -105,25 +116,35 @@ implicit none
     reac_incr   = ds_algopara%reac_incr
     matrix_pred = ds_algopara%matrix_pred
     reli_meth   = ds_algopara%line_search%method
+!    reac_incr = nint(algo_para(1))
+!    lrcmk     = slvk(4) .eq. 'RCMK'
+!    lamg      = ((slvk(2).eq.'ML') .or. (slvk(2).eq.'BOOMER'))
+!    lsyme     = slvk(5).eq.'OUI'
 !
-! --- TYPE DE SOLVEUR
+! - Get algorithm parameters
+!
+    reac_incr   = ds_algopara%reac_incr
+    matrix_pred = ds_algopara%matrix_pred
+    reli_meth   = ds_algopara%line_search%method
+!
+! - Get solver parameters
 !
     lrcmk = slvk(4) .eq. 'RCMK'
-    lamg = ((slvk(2).eq.'ML') .or. (slvk(2).eq.'BOOMER'))
+    lamg  = ((slvk(2).eq.'ML') .or. (slvk(2).eq.'BOOMER'))
     call getvtx('SOLVEUR', 'SYME', iocc=1, scal=syme)
     lsyme = syme.eq.'OUI'
 !
 ! --- CONTACT DISCRET
 !
-    if (lctcd) then
+    if (l_cont_disc) then
         lmodim = cfdisl(sdcont_defi,'MODI_MATR_GLOB')
         lallv = cfdisl(sdcont_defi,'ALL_VERIF')
         lpena = cfdisl(sdcont_defi,'CONT_PENA')
         lctgcp = cfdisl(sdcont_defi,'CONT_GCP')
-        if (lpilo) then
+        if (l_pilo) then
             call utmess('F', 'MECANONLINE_43')
         endif
-        if (lreli .and. (.not.lallv)) then
+        if (l_line_search .and. (.not.lallv)) then
             call utmess('A', 'MECANONLINE3_89')
         endif
         if (lgcpc .or. lpetsc) then
@@ -143,19 +164,18 @@ implicit none
         if (.not.(lsyme.or.lallv)) then
             call utmess('A', 'CONTACT_1')
         endif
-        if ((lmvib.or.lflam) .and. lmodim) then
+        if ((l_vibr_mode.or.l_buckling) .and. lmodim) then
             call utmess('F', 'MECANONLINE5_14')
         endif
     endif
 !
-! --- CONTACT CONTINU
+! - Contact CONTINUE
 !
-    if (lctcc) then
-        if (lpilo .and. (.not.lxfem)) then
-!         LEVEE D INTERDICTION TEMPORAIRE POUR X-FEM
+    if (l_cont_cont) then
+        if (l_pilo .and. (.not.lxfem)) then
             call utmess('F', 'MECANONLINE3_92')
         endif
-        if (lreli) then
+        if (l_line_search) then
             call utmess('F', 'MECANONLINE3_91')
         endif
         if (lrcmk) then
@@ -169,13 +189,13 @@ implicit none
         endif
     endif
 !
-! --- LIAISON UNILATERALE
+! - Unilateral link
 !
-    if (lunil) then
-        if (lpilo) then
+    if (l_unil) then
+        if (l_pilo) then
             call utmess('F', 'MECANONLINE3_94')
         endif
-        if (lreli) then
+        if (l_line_search) then
             call utmess('A', 'MECANONLINE3_95')
         endif
         if (lgcpc .or. lpetsc) then
@@ -189,7 +209,7 @@ implicit none
 !
 ! --- CALCUL DE MODES/FLAMBEMENT: PAS GCPC/PETSC
 !
-    if (lmvib .or. lflam) then
+    if (l_vibr_mode .or. l_buckling) then
         if (lgcpc .or. lpetsc) then
             call utmess('F', 'FACTOR_52', sk=slvk(1))
         endif
@@ -198,31 +218,31 @@ implicit none
         endif
     endif
 !
-! --- EXPLICITE
+! - Explicit solver
 !
     if (lexpl) then
-        if (lcont) then
+        if (l_cont) then
             call utmess('F', 'MECANONLINE5_22')
         endif
-        if (lunil) then
+        if (l_unil) then
             call utmess('F', 'MECANONLINE5_23')
         endif
-        if (lgrot) then
+        if (l_grot_gdep) then
             call utmess('A', 'MECANONLINE5_24')
         endif
     endif
 !
-! --- DYNAMIQUE
+! - Dynamic
 !
-    if (ldyna) then
-        if (lcomp) then
+    if (l_dyna) then
+        if (l_comp_rela) then
             call utmess('F', 'MECANONLINE5_53')
         endif
-        if (lpilo) then
+        if (l_pilo) then
             call utmess('F', 'MECANONLINE5_25')
         endif
         if (ltheta) then
-            if (lgrot) then
+            if (l_grot_gdep) then
                 call utmess('F', 'MECANONLINE5_27')
             endif
         endif
@@ -234,11 +254,11 @@ implicit none
         endif
     endif
 !
-! --- PILOTAGE
+! - Continuation methods (PILOTAGE)
 !
-    if (lpilo) then
-        call getvtx('PILOTAGE', 'TYPE', iocc=1, scal=typilo, nbret=n1)
-        if (lreli) then
+    if (l_pilo) then
+        call getvtx('PILOTAGE', 'TYPE', iocc=1, scal=typilo)
+        if (l_line_search) then
             if (typilo .eq. 'DDL_IMPO') then
                 call utmess('F', 'MECANONLINE5_34')
             endif
@@ -246,24 +266,21 @@ implicit none
         if ((matrix_pred.eq.'DEPL_CALCULE') .or. (matrix_pred .eq.'EXTRAPOLE')) then
             call utmess('F', 'MECANONLINE5_36')
         endif
-!
-!       --- VERIFICATION QUE LES VARIABLES DE COMMANDE NE DEPENDENT PAS DU TEMPS
         call dismoi('VARC_F_INST', mate, 'CHAM_MATER', repk=mfdet)
         if (mfdet .eq. 'OUI') then
             call utmess('F', 'CALCULEL2_58', nk=1, valk=mate(1:8))
         endif
-!
     endif
-    if (lreli) then
-        if ((reli_meth.eq.'PILOTAGE') .and. (.not.lpilo)) then
+    if (l_line_search) then
+        if ((reli_meth.eq.'PILOTAGE') .and. (.not.l_pilo)) then
             call utmess('F', 'MECANONLINE5_35')
         endif
     endif
 !
-! --- NEWTON_KRYLOV
+! - NEWTON_KRYLOV
 !
-    if (lnkry) then
-        if (lpilo) then
+    if (l_newt_krylov) then
+        if (l_pilo) then
             call utmess('F', 'MECANONLINE5_48')
         endif
         if ((.not.lgcpc) .and. (.not.lpetsc)) then
@@ -271,9 +288,9 @@ implicit none
         endif
     endif
 !
-! --- ENERGIES
+! - Energy
 !
-    if (lener) then
+    if (l_energy) then
         if (lproj) then
             call utmess('F', 'MECANONLINE5_6')
         endif
@@ -282,6 +299,17 @@ implicit none
         endif
         if (leltc) then
             call utmess('F', 'MECANONLINE5_15')
+        endif
+    endif
+!
+! --- SI ON A BESOIN DE FACTORISER SIMULTANEMENT DEUX MATRICES AVEC LE SOLVEUR MUMPS ON LUI
+!     SIGNALE AFIN QU'IL OPTIMISE AU MIEUX LA MEMOIRE POUR CHACUNES D'ELLES.
+!     CE N'EST VRAIMENT UTILE QUE SI SOLVEUR/GESTION_MEMOIRE='AUTO'.
+!
+    if (l_mumps) then
+        if (l_vibr_mode .or. l_buckling) then
+            ASSERT(slvi(6) .ge. 0)
+            slvi(6)=2
         endif
     endif
 !
