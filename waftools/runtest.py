@@ -90,7 +90,7 @@ def runtest(self):
         proc.stdout.close()
         fobj.close()
         retcode = proc.wait()
-        if nook and retcode == 0:
+        if nook:
             retcode = 'nook'
         if retcode == 0:
             func = Logs.info
