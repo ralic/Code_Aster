@@ -197,10 +197,13 @@ implicit none
                 coer(5) = -2*(zb-za)
                 coer(6) =  2*(zb-za)
             endif
-
+!
+! --------- Add new linear relation
+! --------- Warning epsi=-1.d0 to keep ALL coefficients even there are zero ! (see issue23299)
+!
             call afrela(coer, coec, lisddl, lisno, dime,&
                         direct, nb_term, vale_real, vale_cplx, vale_fonc,&
-                        type_coef, type_vale, type_lagr, 0.d0, lisrel)
+                        type_coef, type_vale, type_lagr, -1.d0, lisrel)
         enddo
 
     enddo
