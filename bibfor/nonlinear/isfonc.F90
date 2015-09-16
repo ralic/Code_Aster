@@ -104,7 +104,7 @@ implicit none
 !       POST_INCR          :  post-treatment for comportment laws
 !       ETAT_INIT          :  initial state
 !
-! DERNIER NUMERO UTILISE: 59
+! DERNIER NUMERO UTILISE: 60
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -174,6 +174,8 @@ implicit none
         isfonc = list_func_acti(36).eq.1
     else if (func_name.eq.'NEUM_UNDEAD') then
         isfonc = list_func_acti(13).eq.1
+    else if (func_name.eq.'DIRI_UNDEAD') then
+        isfonc = list_func_acti(60).eq.1
     else if (func_name.eq.'LAPLACE') then
         isfonc = list_func_acti(20).eq.1
     else if (func_name.eq.'DIDI') then

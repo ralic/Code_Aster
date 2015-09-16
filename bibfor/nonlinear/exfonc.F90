@@ -59,9 +59,9 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: reac_incr
+    integer :: reac_incr, reac_iter
     aster_logical :: l_cont, lallv, l_cont_cont, l_cont_disc, lpena, leltc
-    aster_logical :: l_pilo, l_line_search, lmacr, l_unil
+    aster_logical :: l_pilo, l_line_search, lmacr, l_unil, l_diri_undead
     aster_logical :: l_vibr_mode, l_buckling, lexpl, lxfem, lmodim
     aster_logical :: lrcmk, lgcpc, lpetsc, lamg, lsyme, limpex
     aster_logical :: londe, l_dyna, l_grot_gdep, ltheta, l_newt_krylov, l_mumps
@@ -104,37 +104,26 @@ implicit none
     lpetsc          = isfonc(list_func_acti,'PETSC')
     lldsp           = isfonc(list_func_acti,'LDLT_SP')
     l_mumps         = isfonc(list_func_acti,'MUMPS')
-!
-! - Get parameters
-!
-    call jeveuo(solver//'.SLVK', 'E', vk24=slvk)
-!    call jeveuo(solver//'.SLVI', 'E', vi  =slvi)
-    metres = slvk(1)
+    l_diri_undead   = isfonc(list_func_acti,'DIRI_UNDEAD')
 !
 ! - Get algorithm parameters
 !
-    reac_incr   = ds_algopara%reac_incr
-    matrix_pred = ds_algopara%matrix_pred
-    reli_meth   = ds_algopara%line_search%method
-!    reac_incr = nint(algo_para(1))
-!    lrcmk     = slvk(4) .eq. 'RCMK'
-!    lamg      = ((slvk(2).eq.'ML') .or. (slvk(2).eq.'BOOMER'))
-!    lsyme     = slvk(5).eq.'OUI'
-!
-! - Get algorithm parameters
-!
+    reac_iter   = ds_algopara%reac_iter
     reac_incr   = ds_algopara%reac_incr
     matrix_pred = ds_algopara%matrix_pred
     reli_meth   = ds_algopara%line_search%method
 !
 ! - Get solver parameters
 !
+    call jeveuo(solver//'.SLVK', 'E', vk24=slvk)
+    call jeveuo(solver//'.SLVI', 'E', vi  =slvi)
+    metres = slvk(1)
     lrcmk = slvk(4) .eq. 'RCMK'
     lamg  = ((slvk(2).eq.'ML') .or. (slvk(2).eq.'BOOMER'))
     call getvtx('SOLVEUR', 'SYME', iocc=1, scal=syme)
     lsyme = syme.eq.'OUI'
 !
-! --- CONTACT DISCRET
+! - Contact (DISCRETE)
 !
     if (l_cont_disc) then
         lmodim = cfdisl(sdcont_defi,'MODI_MATR_GLOB')
@@ -160,7 +149,6 @@ implicit none
                 call utmess('F', 'CONTACT_88')
             endif
         endif
-!       ON SUGGERE SYME='OUI' AVEC LE CONTACT DISCRET
         if (.not.(lsyme.or.lallv)) then
             call utmess('A', 'CONTACT_1')
         endif
@@ -169,7 +157,7 @@ implicit none
         endif
     endif
 !
-! - Contact CONTINUE
+! - Contact (CONTINUE)
 !
     if (l_cont_cont) then
         if (l_pilo .and. (.not.lxfem)) then
@@ -201,13 +189,29 @@ implicit none
         if (lgcpc .or. lpetsc) then
             call utmess('F', 'MECANONLINE3_96', sk=slvk(1))
         endif
-!       ON SUGGERE SYME='OUI' AVEC LIAISON_UNILATER
         if (.not.lsyme) then
             call utmess('A', 'UNILATER_1')
         endif
     endif
 !
-! --- CALCUL DE MODES/FLAMBEMENT: PAS GCPC/PETSC
+! - Dirichlet undead loads
+!
+    if (l_diri_undead) then
+        if (l_pilo) then
+            call utmess('F', 'MECANONLINE5_42')
+        endif
+        if (l_line_search) then
+            call utmess('F', 'MECANONLINE5_39')
+        endif
+        if (l_dyna) then
+            call utmess('F', 'MECANONLINE5_40')
+        endif
+        if (reac_iter.ne.1) then
+            call utmess('F', 'MECANONLINE5_41')
+        endif
+    endif
+!
+! - Post-treatment (buckling, ...)
 !
     if (l_vibr_mode .or. l_buckling) then
         if (lgcpc .or. lpetsc) then
@@ -312,5 +316,7 @@ implicit none
             slvi(6)=2
         endif
     endif
+!
+    call jedema()
 !
 end subroutine

@@ -212,6 +212,21 @@ même lorsque l'équilibre n'est pas vérifié.
 L'usage de ITER_GLOB_ELAS n'est utile que si le mot-clef PAS_MINI_ELAS est activé.
 """),
 
+    39 : _(u"""
+La recherche linéaire est incompatible avec des chargements de Dirichlet de type suiveur.
+"""),
+
+    40 : _(u"""
+La dynamique avec des chargements de Dirichlet de type suiveur.
+"""),
+
+    41 : _(u"""
+Les chargements de Dirichlet de type suiveur impliquent la réactualisation de la matrice REAC_ITER=1.
+"""),
+
+    42 : _(u"""
+Le pilotage est incompatible avec des chargements de Dirichlet de type suiveur.
+"""),
     43 : _(u"""
   -> Les paramètres RHO_MIN et RHO_MAX sont identiques.
 """),

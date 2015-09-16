@@ -275,11 +275,18 @@ implicit none
         endif
     endif
 !
-! - At least, one undead load ?
+! - At least, one Neumann undead load ?
 !
     l_load_undead = ischar(list_load, 'NEUM', 'SUIV')
     if (l_load_undead) then
         list_func_acti(13) = 1
+    endif
+!
+! - At least, one Dirichlet undead load ?
+!
+    l_load_undead = ischar(list_load, 'DIRI', 'SUIV')
+    if (l_load_undead) then
+        list_func_acti(60) = 1
     endif
 !
 ! - At least, one "DIDI" load ?
@@ -531,6 +538,9 @@ implicit none
 !
         if (isfonc(list_func_acti,'NEUM_UNDEAD')) then
             write (ifm,*) '<MECANONLINE> ...... CHARGEMENTS SUIVEURS DE TYPE NEUMANN'
+        endif
+        if (isfonc(list_func_acti,'DIRI_UNDEAD')) then
+            write (ifm,*) '<MECANONLINE> ...... CHARGEMENTS SUIVEURS DE TYPE DIRICHLET'
         endif
         if (isfonc(list_func_acti,'DIDI')) then
             write (ifm,*) '<MECANONLINE> ...... CHARGEMENTS DE DIRICHLET DIFFERENTIEL'
