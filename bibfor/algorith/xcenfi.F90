@@ -1,6 +1,6 @@
 subroutine xcenfi(elrefp, ndim, ndime, nno, geom, lsn,&
                   pinref, pmiref, cenref, cenfi,&
-                  num)
+                  jonc, nn, num)
 !
     implicit none
 !
@@ -16,11 +16,12 @@ subroutine xcenfi(elrefp, ndim, ndime, nno, geom, lsn,&
 #include "asterfort/xelrex.h"
 #include "asterfort/xnewto.h"
 #include "asterfort/xnormv.h"
-    integer :: ndim, ndime, nno
+    integer :: ndim, ndime, nno, nn(4)
     integer, intent(in), optional :: num(8)
     character(len=8) :: elrefp
     real(kind=8) :: lsn(*), geom(*), pinref(*), pmiref(*)
     real(kind=8) :: cenfi(ndim), cenref(ndime)
+    aster_logical :: jonc
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,8 +52,8 @@ subroutine xcenfi(elrefp, ndim, ndime, nno, geom, lsn,&
 !       CENFI   : COORDONNES DU PT MILIEU AU CENTRE DE LA FISSURE
 !     ----------------------------------------------------------------
 !
-    real(kind=8) :: epsmax, rbid, crit, maxi, x(81)
-    real(kind=8) :: pi1pi2(ndime), pi1pi3(ndime), dff(3,27)
+    real(kind=8) :: epsmax, rbid, crit, maxi, x(81), dekker(4*ndime)
+    real(kind=8) :: pi1pi2(ndime), pi1pi3(ndime), dff(3,27), gradls(ndime)
     real(kind=8) :: v(3), ptxx(2*ndime), ksi(ndime), tole, xmi(ndime)
     integer :: ibid, itemax, i, n(3), j
     integer :: pi1, pi2, pi3, pi4, m12, m13, m24, m34, nbnomx
@@ -175,24 +176,43 @@ subroutine xcenfi(elrefp, ndim, ndime, nno, geom, lsn,&
     call elrfdf(elrefp, xmi, ndim*nbnomx, dff, nno,&
                 ndim)
 !
+    call vecini(ndime,0.d0, gradls)
     do i = 1, nno
        do j = 1, ndime
-          ptxx(j) = ptxx(j)+dff(j,i)*lsn(i)
+          gradls(j) = gradls(j)+dff(j,i)*lsn(i)
        end do
     end do
+    call xnormv(ndime, gradls, rbid)
+    do j = 1, ndime
+          ptxx(j) = gradls(j)
+    end do
 !
+!    ON RENSEIGNE LES NOEUDS DU SOUS TETRA POUR LA METHODE DE DEKKER
+    call vecini(4*ndime,0.d0, dekker)
+    call xelrex(elrefp, nno, x)
+    do j = 1, ndime
+       dekker(j) = x(ndime*(nn(1)-1)+j)
+       dekker(j+ndime) = x(ndime*(nn(2)-1)+j)
+       dekker(j+2*ndime) = x(ndime*(nn(3)-1)+j)
+       dekker(j+3*ndime) = x(ndime*(nn(4)-1)+j)
+    end do
 !!!!!ATTENTION INITIALISATION DU NEWTON:
     call vecini(ndime, 0.d0, ksi)
-    call xnewto(elrefp, name, n,&
-                ndime, ptxx, ndim, geom, lsn,&
-                ibid, ibid, itemax,&
-                epsmax, ksi)
+    if (jonc) then
+       call xnewto(elrefp, name, n,&
+                   ndime, ptxx, ndim, geom, lsn,&
+                   ibid, ibid, itemax,&
+                   epsmax, ksi)
+    else
+       call xnewto(elrefp, name, n,&
+                   ndime, ptxx, ndim, geom, lsn,&
+                   ibid, ibid, itemax,&
+                   epsmax, ksi, dekker)
+    endif
 !
     do i = 1, ndime
         cenref(i)=ksi(1)*ptxx(i)+ptxx(i+ndime)
     enddo
-!
-    call xelrex(elrefp, nno, x)
 !
 ! --- COORDONNES DU POINT DANS L'ELEMENT REEL
     call reerel(elrefp, nno, ndim, geom, cenref,&

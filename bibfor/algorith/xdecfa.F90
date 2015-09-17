@@ -79,9 +79,9 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
     real(kind=8) :: vectn(ndim), ksi(ndim), dff(3,27)
     real(kind=8) :: epsmax, cridist, a, b, c
     integer :: k, ii, jj, j, ni, kk, ibid, num(8), nbnomx
-    integer :: n(3), kkk
+    integer :: n(3), kkk, nn(4)
     integer :: itemax
-    aster_logical :: deja
+    aster_logical :: deja, jonc
     parameter   (nbnomx = 27)
     parameter   (cridist=1.d-7)
 !
@@ -405,6 +405,7 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
 !   DANS LE CAS NPTS=2 ET NINTAR=2, IL NOUS RESTE ENCORE UN POINT MILIEU A
 !   DETERMINER (DANS LE QUAD TEL QUE LST<=0)
        if (npts.eq.2.and.nintar.eq.2.) then
+!   ORDONANCEMENT DES POINTS D'INTERSECTION SUR LA FACE QUADRANGLE
           if (lst(3).gt.0.d0) then
              num(1) = noeud(1)
              num(2) = noeud(2)
@@ -424,8 +425,10 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
              num(7) = noeud(8)
              num(8) = noeud(6)
           endif
+          nn(1:4) = 0
+          jonc = .false.
           call xcenfi(elp, ndim, ndim, nno, geom, zr(jlsn),&
-                      pinref, pinref, cenref, cenfi, num)
+                      pinref, pinref, cenref, cenfi, jonc, nn, num)
   !   ON ARCHIVE CE POINT
           npi = npi+1
           do j = 1, ndim

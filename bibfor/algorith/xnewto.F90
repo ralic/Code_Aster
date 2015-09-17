@@ -18,7 +18,7 @@ subroutine xnewto(elrefp, name, n, ndime, ptxx,&
     real(kind=8) :: epsmax, ksi(ndime)
     character(len=6) :: name
     character(len=8) :: elrefp
-    real(kind=8), intent(in), optional :: dekker(3*ndime)
+    real(kind=8), intent(in), optional :: dekker(4*ndime)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -82,7 +82,7 @@ subroutine xnewto(elrefp, name, n, ndime, ptxx,&
     arete = 1
 !
     if (present(dekker)) then
-        call xintva(dekker, ptxx, ndime, intinf,&
+        call xintva(name, dekker, ptxx, ndime, intinf,&
                     intsup)
     endif
 !
@@ -128,8 +128,15 @@ subroutine xnewto(elrefp, name, n, ndime, ptxx,&
 !
 !   ON VERIFIE POUR XMIFIS QUE LE NEWTON RESTE DANS LA FACE TRIA
 !   DE RECHERCHE, SINON ON ACTIVE LA METHODE DE DEKKER
-    if (name .eq. 'XMIFIS') then
+    if (name .eq. 'XMIFIS' .or. name .eq. 'XCENFI') then
         if (present(dekker)) then
+            if (iter.eq.itemax) then
+!   DANS CERTAINS CAS, IL EST IMPOSSIBLE DE TROUVER UN POINT MILIEU SUR LA
+!   FISSURE DANS LA FACE DU SOUS ELEMENT, ON EFFECTUE ALORS UNE APPROXIAMTION
+!   LINEAIRE DE LA FISSURE SUR CETTE FACE
+               ksi2(1) = 0.d0
+               goto 30
+            endif
             if (ksi2(1) .gt. intsup) then
                 ksi2(1) = ksi2(1)+delta(1)
                 ksi2(1) = (ksi2(1)+intsup)/2.d0
@@ -191,6 +198,7 @@ subroutine xnewto(elrefp, name, n, ndime, ptxx,&
         ksi2(i)=ksi2(i)-delta(i)
     end do
 !
+30  continue
 !   GESTION DU CAS NDIME<NDIM
     do i = 1, ndime
         ksi(i)=ksi2(i)

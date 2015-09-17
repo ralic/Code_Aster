@@ -57,6 +57,7 @@ subroutine xalg41(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
 !       LSNELP   : LSN AUX NOEUDS DE L'ELEMENT PARENT POUR LA FISSURE COURANTE
 !       PINTT    : COORDONNEES REELLES DES POINTS D'INTERSECTION
 !       PMITT    : COORDONNEES REELLES DES POINTS MILIEUX
+!       JONC     : L'ELEMENT PARENT EST-IL TRAVERSE PAR PLUSIEURS FISSURES
 !
 !     SORTIE
 !       NMILIE   : NOMBRE DE POINTS MILIEUX
@@ -66,7 +67,7 @@ subroutine xalg41(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
     real(kind=8) :: milfi(3), milara(3), milarb(3)
     real(kind=8) :: milfa(3), cenfi(ndime), ff(27)
     real(kind=8) :: pmiref(13*ndime), ksia(ndime), ksib(ndime)
-    integer :: n(3)
+    integer :: n(3), nn(4)
     integer :: i, ipm, k
     integer :: noeua, noeub, noeuc
     integer :: j, r, ip, a2, a3, a4, ip1(4), ip2(4), nbpi
@@ -196,7 +197,7 @@ subroutine xalg41(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
        endif
     end do
 !
-!    LE NOEUD MILIEU AU CENTRE DE LA FACE QUADRANGLE
+!    ORDONANCEMENT DES POINTS D'INTERSECTION SUR LA FACE QUADRANGLE
     num(1)=4
     num(2)=3
     num(3)=1
@@ -205,8 +206,16 @@ subroutine xalg41(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
     num(6)=9
     num(7)=1
     num(8)=7
+!
+!    NUMEROS DES NOEUDS NOEUDS SOMMETS DU SOUS TETRA
+    nn(1) = cnset(nnose*(it-1)+1)
+    nn(2) = cnset(nnose*(it-1)+2)
+    nn(3) = cnset(nnose*(it-1)+3)
+    nn(4) = cnset(nnose*(it-1)+4)
+!
+!    LE NOEUD MILIEU AU CENTRE DE LA FACE QUADRANGLE
     call xcenfi(elrefp, ndim, ndime, nnop, geom, lsnelp,&
-                pinref, pmiref, ksia, cenfi, num)
+                pinref, pmiref, ksia, cenfi, jonc, nn, num)
     mfisloc=mfisloc+1
     call xajpmi(ndim, pmilie, pmmax, ipm, inm, cenfi,&
                 lonref, ajout)

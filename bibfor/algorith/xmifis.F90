@@ -56,7 +56,7 @@ subroutine xmifis(ndim, ndime, elrefp, geom, lsn, &
     integer :: nno, j, ia, ib, ic
     real(kind=8) :: x(81), ksi(ndime), bc(ndime), ba(ndime), ff(27)
     real(kind=8) :: epsmax, rbid, ip1ip2(ndime), ptxx(2*ndime)
-    real(kind=8) :: vect(ndime), k, k1, k2, alpha, dekker(3*ndime)
+    real(kind=8) :: vect(ndime), k, k1, k2, alpha, dekker(4*ndime)
     real(kind=8) :: pta(ndime) , ptb(ndime), ptc(ndime), newpt(ndime)
     integer :: itemax
     character(len=6) :: name
@@ -112,6 +112,7 @@ subroutine xmifis(ndim, ndime, elrefp, geom, lsn, &
           call reeref(elrefp, nno, geom, newpt, ndime,&
                       ptc, ff)
        endif
+       call vecini(4*ndime,0.d0, dekker)
        do j = 1, ndime
           bc(j) = ptc(j)-ptb(j)
           ba(j) = pta(j)-ptb(j)
