@@ -9,6 +9,7 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
 #include "asterc/r8gaem.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrfvf.h"
+#include "asterfort/elrfdf.h"
 #include "asterfort/iselli.h"
 #include "asterfort/padist.h"
 #include "asterfort/provec.h"
@@ -75,7 +76,7 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
     real(kind=8) :: p(ndim), newpt(ndim), newptref(ndim), cenref(ndim)
     real(kind=8) :: norme, geom(ndim*nno), ff(27), cenfi(ndim), tabls(20)
     real(kind=8) :: x(ndim), xref(ndim), miref(ndim), mifis(ndim), ptxx(3*ndim)
-    real(kind=8) :: u(ndim), v(ndim), vectn(ndim), ksi(ndim)
+    real(kind=8) :: vectn(ndim), ksi(ndim), dff(3,27)
     real(kind=8) :: epsmax, cridist, a, b, c
     integer :: k, ii, jj, j, ni, kk, ibid, num(8), nbnomx
     integer :: n(3), kkk
@@ -350,41 +351,39 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
        else
           if (nintar.eq.2) then
              do j = 1, ndim
-                vectn(j) = pinref((noeud(4)-1)*ndim+j) - pinref((noeud(3)-1)*ndim+j)
                 xref(j) = (pinref((noeud(4)-1)*ndim+j) +&
                            pinref((noeud(3)-1)*ndim+j))/2.d0
              end do
           elseif (lst(1).eq.0.d0) then
              do j = 1, ndim
-                vectn(j) = pinref((noeud(3)-1)*ndim+j) - pinref((noeud(1)-1)*ndim+j)
                 xref(j) = (pinref((noeud(3)-1)*ndim+j) +&
                            pinref((noeud(1)-1)*ndim+j))/2.d0
              end do
           else
              do j = 1, ndim
-                vectn(j) = pinref((noeud(3)-1)*ndim+j) - pinref((noeud(2)-1)*ndim+j)
                 xref(j) = (pinref((noeud(3)-1)*ndim+j) +&
                            pinref((noeud(2)-1)*ndim+j))/2.d0
              end do
           endif
-          call vecini(ndim, 0.d0, u)
-          if ((vectn(1).eq.0.d0).and.(vectn(2).eq.0.d0)) then
-             u(1) = 1
-             u(2) = 1
-          else
-             u(1) = vectn(2)
-             u(2) = -vectn(1)
-          endif
-          call provec(vectn, u, v)
-          call xnormv(ndim, u, norme)
-          call xnormv(ndim, v, norme)
-!   ON RECHERCHE DANS LE PLAN MEDIATEUR LE POINT DU FOND DE FISSURE
-          do j= 1, ndim
-             ptxx(j) = u(j)
-             ptxx(ndim+j) = v(j)
+!   ON RECHERCHE SUR LA MEDIATRICE DU SEGEMENT IP1IP2 PORTEE PAR GRADLST
+          call vecini(ndim, 0.d0, vectn)
+          call elrfdf(elp, xref, ndim*nbnomx, dff, nno, ndim)
+          do ii = 1, ndim
+             do j = 1, nno
+                vectn(ii) = vectn(ii)+dff(ii,j)*tabls(j)
+             end do
           end do
-          call xnewto(elp, 'XINTFA', n, ndim, ptxx, ndim,&
-                      geom, tabls ,ibid, ibid, itemax, epsmax, xref)
+          call xnormv(ndim, vectn, norme)
+          do j= 1, ndim
+             ptxx(j) = vectn(j)
+             ptxx(ndim+j) = xref(j)
+          end do
+          call xnewto(elp, 'XMIFIS', n, ndim, ptxx,&
+                      ndim, geom, tabls, ibid, ibid,&
+                      itemax, epsmax, ksi)
+          do j= 1, ndim
+             xref(j)=xref(j)+ksi(1)*ptxx(j)
+          end do
           call elrfvf(elp, xref, nbnomx, ff, nno)
           call vecini(ndim, 0.d0, x)
           do ii = 1, ndim

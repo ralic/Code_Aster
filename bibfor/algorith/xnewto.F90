@@ -11,7 +11,6 @@ subroutine xnewto(elrefp, name, n, ndime, ptxx,&
 #include "asterfort/xdelt0.h"
 #include "asterfort/xdelt2.h"
 #include "asterfort/xdelt3.h"
-#include "asterfort/xdelt4.h"
 #include "asterfort/xintva.h"
     integer :: ndime, ndim, ipp, ip, n(3)
     real(kind=8) :: ptxx(*), tabco(*), tabls(*)
@@ -103,8 +102,6 @@ subroutine xnewto(elrefp, name, n, ndime, ptxx,&
                     delta)
     elseif (name .eq. 'XINTAR') then
         call xdelt3(ndim, ksi2, tabls, delta(1))
-    elseif (name .eq. 'XINTFA') then
-        call xdelt4(elrefp, ksi2, ptxx, ndim, tabls, delta)
     else if (name .eq. 'XINTER') then
         call xdelt0(elrefp, ndime, tabls, ptxx, ksi2(1),&
                     delta(1), arete)
