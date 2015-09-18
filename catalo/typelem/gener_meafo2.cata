@@ -115,11 +115,6 @@ OPTION__
                           OUT__ MVECTUR  PVECTUR
     COOR_ELGA        479  IN__  NGEOMER  PGEOMER
                           OUT__ EGGEOP_R PCOORPG
-    ENEL_ELGA        575  IN__  CCAMASS  PCAMASS  ECONTPG  PCONTRR  NGEOMER  PGEOMER  CMATERC  PMATERC
-                                CTEMPSR  PTEMPSR  ZVARCPG  PVARCPR
-                          OUT__ EENERPG  PENERDR
-    ENEL_ELNO          4  IN__  EENERPG  PENERPG
-                          OUT__ EENERNO  PENERNO
     EPEQ_ELGA        335  IN__  EDEFOPG  PDEFORR
                           OUT__ EDFEQPG  PDEFOEQ
     EPEQ_ELNO        335  IN__  EDEFONO  PDEFORR
@@ -131,22 +126,10 @@ OPTION__
                           OUT__ EDEFOPC  PDEFOPC  EDEFOPG  PDEFOPG
     EPSI_ELNO          4  IN__  EDEFOPG  PDEFOPG
                           OUT__ EDEFONC  PDEFONC  EDEFONO  PDEFONO
-    ETOT_ELEM        575  IN__  ECONTPG  PCONTMR  ECONTPG  PCONTPR  DDL_MECA PDEPLM   DDL_MECA PDEPLR
-                                EENERR   PENERDM  NGEOMER  PGEOMER  CHARMON  PHARMON
-                          OUT__ EENERR   PENERDR
-    ETOT_ELGA        575  IN__  ECONTPG  PCONTMR  ECONTPG  PCONTPR  DDL_MECA PDEPLM   DDL_MECA PDEPLR
-                                EENERPG  PENERDM  NGEOMER  PGEOMER  CHARMON  PHARMON
-                          OUT__ EENERPG  PENERDR
-    ETOT_ELNO          4  IN__  EENERPG  PENERPG
-                          OUT__ EENERNO  PENERNO
     FORC_NODA        117  IN__  ECONTPG  PCONTMR  NGEOMER  PGEOMER  CHARMON  PHARMON  ZVARCPG  PVARCPR
                           OUT__ MVECTUR  PVECTUR
     INIT_VARC         99  IN__
                           OUT__ ZVARCPG  PVARCPR
-    MASS_MECA        191  IN__  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
-                          OUT__ MMATUUR  PMATUUR
-    M_GAMMA          191  IN__  DDL_MECA PACCELR  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
-                          OUT__ MVECTUR  PVECTUR
     NSPG_NBVA        496  IN__  CCOMPO2  PCOMPOR
                           OUT__ EDCEL_I  PDCEL_I
     REPERE_LOCAL     133  IN__  CCAMASS  PCAMASS  NGEOMER  PGEOMER

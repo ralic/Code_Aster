@@ -85,9 +85,6 @@ MAT_RI_G=CALC_MATR_ELEM(OPTION='RIGI_GEOM',
                         SIEF_ELGA=SIG,
                         MODE_FOURIER=0,);
 
-MAT_MAS=CALC_MATR_ELEM(OPTION='MASS_MECA',
-                       MODELE=MODMECA,
-                       CHAM_MATER=CHMAT,);
 
 NUM=NUME_DDL(MATR_RIGI=MAT_RI_M,);
 
@@ -97,8 +94,6 @@ MAS_RI_M=ASSE_MATRICE(MATR_ELEM=MAT_RI_M,
 MAS_RI_G=ASSE_MATRICE(MATR_ELEM=MAT_RI_G,
                       NUME_DDL=NUM,);
 
-MASSE=ASSE_MATRICE(MATR_ELEM=MAT_MAS,
-                   NUME_DDL=NUM,);
 
 RESULT=CALC_MODES(MATR_RIGI=MAS_RI_M,
                   VERI_MODE=_F(SEUIL=1e-04,
@@ -114,28 +109,6 @@ RESULT=CALC_MODES(MATR_RIGI=MAS_RI_M,
                                    ),
                   OPTION='PLUS_PETITE',
                   )
-
-
-
-MODE=CALC_MODES(MATR_RIGI=MAS_RI_M,
-                VERI_MODE=_F(SEUIL=1e-04,
-                             ),
-                OPTION='PLUS_PETITE',
-                CALC_FREQ=_F(NMAX_FREQ=10,
-                             PREC_SHIFT=0.03,
-                             SEUIL_FREQ=1.E-2,
-                             NMAX_ITER_SHIFT=6,
-                             ),
-                MATR_MASS=MASSE,
-                SOLVEUR_MODAL=_F(APPROCHE='REEL',
-                                 METHODE='SORENSEN',
-                                 NMAX_ITER_SOREN=20,
-                                 ),
-                )
-
-
-MODE=CALC_CHAMP(reuse=MODE,RESULTAT=MODE,CONTRAINTE=('SIEF_ELGA'),ENERGIE=('ETOT_ELGA','ETOT_ELNO','ETOT_ELEM'))
-
 
 RES_NORM=NORM_MODE(MODE=RESULT,
                    NORME='TRAN',);
@@ -169,31 +142,5 @@ TEST_RESU(CHAM_NO=_F(NOEUD='N4',
                      VALE_REFE=1.0,),
           )
 
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   POINT=1,
-                   RESULTAT=MODE,
-                   NOM_CHAM='ETOT_ELEM',
-                   NOM_CMP='TOTALE',
-                   VALE_CALC=0.114146386318,
-                   TOLE_MACHINE=1.E-4,            #TODO TOLE_MACHINE
-                   MAILLE='M10',),
-                _F(NUME_ORDRE=1,
-                   POINT=1,
-                   RESULTAT=MODE,
-                   NOM_CHAM='ETOT_ELGA',
-                   NOM_CMP='TOTALE',
-                   VALE_CALC=1161238028.34,
-                   TOLE_MACHINE=1.E-4,            #TODO TOLE_MACHINE
-                   MAILLE='M10',),
-                _F(NUME_ORDRE=1,
-                   RESULTAT=MODE,
-                   NOM_CHAM='ETOT_ELNO',
-                   NOEUD='N15',
-                   NOM_CMP='TOTALE',
-                   VALE_CALC=1816306436.74,
-                   TOLE_MACHINE=1.E-4,            #TODO TOLE_MACHINE
-                   MAILLE='M6',),
-                ),
-          )
 
 FIN();
