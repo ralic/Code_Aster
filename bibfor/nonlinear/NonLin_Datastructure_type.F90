@@ -144,6 +144,7 @@ implicit none
         aster_logical          :: l_pilotage
         aster_logical          :: l_dyna
         character(len=8)       :: result_prev_disp
+        aster_logical          :: l_matr_rigi_syme
     end type NL_DS_AlgoPara
 !
 end module

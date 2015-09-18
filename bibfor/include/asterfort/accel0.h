@@ -16,10 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine accel0(modele, numedd, numfix, fonact, lischa,&
-                      defico, resoco, maprec, solveu, valinc,&
-                      sddyna, sdstat, sdtime, meelem, measse,&
-                      veelem, veasse, solalg)
+    subroutine accel0(modele, numedd, numfix, fonact     , lischa,&
+                      defico, resoco, maprec, solveu     , valinc,&
+                      sddyna, sdstat, sdtime, ds_algopara, meelem,&
+                      measse, veelem, veasse, solalg)
+        use NonLin_Datastructure_type        
         character(len=24) :: modele
         character(len=24) :: numedd
         character(len=24) :: numfix
@@ -33,6 +34,7 @@ interface
         character(len=19) :: sddyna
         character(len=24) :: sdstat
         character(len=24) :: sdtime
+        type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         character(len=19) :: meelem(*)
         character(len=19) :: measse(*)
         character(len=19) :: veelem(*)

@@ -1,10 +1,24 @@
 subroutine nmxmat(modelz, mate, carele, compor, carcri,&
                   sddisc, sddyna, fonact, numins, iterat,&
                   valinc, solalg, lischa, comref, defico,&
-                  resoco, numedd, numfix, sdstat,&
+                  resoco, numedd, numfix, sdstat, ds_algopara,&
                   sdtime, nbmatr, ltypma, loptme, loptma,&
                   lcalme, lassme, lcfint, meelem, measse,&
                   veelem, ldccvg, codere)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/diinst.h"
+#include "asterfort/nmassm.h"
+#include "asterfort/nmcalm.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmrigi.h"
+#include "asterfort/nmrinc.h"
+#include "asterfort/nmtime.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,18 +37,9 @@ subroutine nmxmat(modelz, mate, carele, compor, carcri,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
-!
 ! aslint: disable=W1504
-    implicit none
-#include "asterf_types.h"
-#include "asterfort/assert.h"
-#include "asterfort/diinst.h"
-#include "asterfort/nmassm.h"
-#include "asterfort/nmcalm.h"
-#include "asterfort/nmchex.h"
-#include "asterfort/nmrigi.h"
-#include "asterfort/nmrinc.h"
-#include "asterfort/nmtime.h"
+!
+!
     integer :: nbmatr
     character(len=6) :: ltypma(20)
     character(len=16) :: loptme(20), loptma(20)
@@ -52,6 +57,7 @@ subroutine nmxmat(modelz, mate, carele, compor, carcri,&
     character(len=19) :: solalg(*), valinc(*)
     integer :: fonact(*)
     aster_logical :: lcfint
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
 !
 ! ----------------------------------------------------------------------
 !
@@ -82,6 +88,7 @@ subroutine nmxmat(modelz, mate, carele, compor, carcri,&
 ! IN  ITERAT : NUMERO D'ITERATION
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
+! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  NBMATR : NOMBRE DE MATR_ELEM DANS LA LISTE
 ! IN  LTYPMA : LISTE DES NOMS DES MATR_ELEM
 ! IN  LOPTME : LISTE DES OPTIONS DES MATR_ELEM
@@ -163,7 +170,7 @@ subroutine nmxmat(modelz, mate, carele, compor, carcri,&
             call nmtime(sdtime, 'INI', 'ASSE_MATR')
             call nmtime(sdtime, 'RUN', 'ASSE_MATR')
             call nmchex(measse, 'MEASSE', typmat, matass)
-            call nmassm(fonact, lischa, numedd, numfix,&
+            call nmassm(fonact, lischa, numedd, numfix, ds_algopara,&
                         typmat, optass, meelem, matass)
             call nmtime(sdtime, 'END', 'ASSE_MATR')
         endif

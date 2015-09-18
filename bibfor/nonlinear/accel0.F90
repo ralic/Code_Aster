@@ -1,9 +1,11 @@
-subroutine accel0(modele, numedd, numfix, fonact, lischa,&
-                  defico, resoco, maprec, solveu, valinc,&
-                  sddyna, sdstat, sdtime, meelem, measse,&
-                  veelem, veasse, solalg)
+subroutine accel0(modele, numedd, numfix, fonact     , lischa,&
+                  defico, resoco, maprec, solveu     , valinc,&
+                  sddyna, sdstat, sdtime, ds_algopara, meelem,&
+                  measse, veelem, veasse, solalg)
 !
-    implicit none
+use NonLin_Datastructure_type
+!
+implicit none
 !
 #include "jeveux.h"
 #include "asterfort/copisd.h"
@@ -48,6 +50,7 @@ subroutine accel0(modele, numedd, numfix, fonact, lischa,&
     character(len=19) :: meelem(*), measse(*), veasse(*), veelem(*)
     character(len=19) :: solalg(*), valinc(*)
     integer :: fonact(*)
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
 !
 ! ----------------------------------------------------------------------
 !
@@ -77,6 +80,7 @@ subroutine accel0(modele, numedd, numfix, fonact, lischa,&
 ! IN  VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
+! In  ds_algopara      : datastructure for algorithm parameters
 !
 ! ----------------------------------------------------------------------
 !
@@ -117,9 +121,10 @@ subroutine accel0(modele, numedd, numfix, fonact, lischa,&
 !
 ! --- ASSEMBLAGE ET FACTORISATION DE LA MATRICE
 !
-    call nmprac(fonact, lischa, numedd, numfix, solveu,&
-                sddyna, sdstat, sdtime, defico, resoco,&
-                meelem, measse, maprec, matass, faccvg)
+    call nmprac(fonact     , lischa, numedd, numfix, solveu,&
+                sddyna     , sdstat, sdtime, defico, resoco,&
+                ds_algopara, meelem, measse, maprec, matass,&
+                faccvg)
     if (faccvg .eq. 2) then
         call vtzero(accmoi)
         call utmess('A', 'MECANONLINE_69')

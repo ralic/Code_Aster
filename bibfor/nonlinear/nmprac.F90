@@ -1,6 +1,29 @@
-subroutine nmprac(fonact, lischa, numedd, numfix, solveu,&
-                  sddyna, sdstat, sdtime, defico, resoco,&
-                  meelem, measse, maprec, matass, faccvg)
+subroutine nmprac(fonact     , lischa, numedd, numfix, solveu,&
+                  sddyna     , sdstat, sdtime, defico, resoco,&
+                  ds_algopara, meelem, measse, maprec, matass,&
+                  faccvg)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mtdsc2.h"
+#include "asterfort/nmassm.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmmatr.h"
+#include "asterfort/nmrinc.h"
+#include "asterfort/nmtime.h"
+#include "asterfort/preres.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,25 +43,6 @@ subroutine nmprac(fonact, lischa, numedd, numfix, solveu,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/mtdsc2.h"
-#include "asterfort/nmassm.h"
-#include "asterfort/nmchex.h"
-#include "asterfort/nmmatr.h"
-#include "asterfort/nmrinc.h"
-#include "asterfort/nmtime.h"
-#include "asterfort/preres.h"
-#include "asterfort/utmess.h"
-!
     integer :: fonact(*)
     character(len=19) :: sddyna, lischa
     character(len=24) :: sdstat, sdtime
@@ -48,6 +52,7 @@ subroutine nmprac(fonact, lischa, numedd, numfix, solveu,&
     character(len=24) :: defico, resoco
     character(len=19) :: maprec, matass
     integer :: faccvg
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
 !
 ! ----------------------------------------------------------------------
 !
@@ -69,6 +74,7 @@ subroutine nmprac(fonact, lischa, numedd, numfix, solveu,&
 ! IN  SOLVEU : SOLVEUR
 ! IN  MEELEM : VARIABLE CHAPEAU POUR NOM DES MATR_ELEM
 ! IN  MEASSE : VARIABLE CHAPEAU POUR NOM DES MATR_ASSE
+! In  ds_algopara      : datastructure for algorithm parameters
 ! OUT MATASS : MATRICE DE RESOLUTION ASSEMBLEE
 ! OUT MAPREC : MATRICE DE RESOLUTION ASSEMBLEE - PRECONDITIONNEMENT
 ! OUT FACCVG : CODE RETOUR (INDIQUE SI LA MATRICE EST SINGULIERE)
@@ -117,7 +123,7 @@ subroutine nmprac(fonact, lischa, numedd, numfix, solveu,&
 ! --- ASSEMBLAGE DE LA MATRICE MASSE
 !
     optass = 'AVEC_DIRICHLET'
-    call nmassm(fonact, lischa, numedd, numfix,&
+    call nmassm(fonact, lischa, numedd, numfix, ds_algopara,&
                 'MEMASS', optass, meelem, masse)
 !
 ! --- CALCUL DE LA MATRICE ASSEMBLEE GLOBALE

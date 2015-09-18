@@ -63,6 +63,7 @@ implicit none
     ds_algopara%l_line_search    = .false._1
     ds_algopara%l_pilotage       = .false._1
     ds_algopara%result_prev_disp = ' '
+    ds_algopara%l_matr_rigi_syme = .false._1
 !
 ! - Parameters for line search
 !

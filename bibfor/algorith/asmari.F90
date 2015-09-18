@@ -1,5 +1,16 @@
-subroutine asmari(fonact, meelem, numedd, lischa,&
-                  matrig)
+subroutine asmari(list_func_acti, hval_meelem, nume_dof, list_load, ds_algopara,&
+                  matr_rigi)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/asmatr.h"
+#include "asterfort/assert.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/matr_asse_syme.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,100 +30,82 @@ subroutine asmari(fonact, meelem, numedd, lischa,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/asmatr.h"
-#include "asterfort/assert.h"
-#include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/nmchex.h"
-#include "asterfort/matr_asse_syme.h"
-#include "asterfort/getvtx.h"
-
-    character(len=19) :: meelem(*)
-    character(len=24) :: numedd
-    character(len=19) :: matrig, lischa
-    integer :: fonact(*)
+    integer, intent(in) :: list_func_acti(*)
+    character(len=19), intent(in) :: hval_meelem(*)
+    character(len=24), intent(in) :: nume_dof
+    character(len=19), intent(in) :: list_load
+    character(len=19), intent(in) :: matr_rigi
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (CALCUL)
+! MECA_NON_LINE - Computation
 !
-! ASSEMBLAGE DE LA MATRICE DE RIGIDITE GLOBALE
+! Assembling rigidity matrix
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  list_func_acti   : list of active functionnalities
+! In  hval_meelem      : hat variable for elementary matrixes
+! In  nume_dof         : name of numbering object (NUME_DDL)
+! In  list_load        : name of datastructure for list of loads
+! In  ds_algopara      : datastructure for algorithm parameters
+! In  matr_rigi        : name of rigidity matrix
 !
-! IN  FONACT : FONCTIONNALITES ACTIVEES
-! IN  MEELEM : VARIABLE CHAPEAU POUR NOM DES MATR_ELEM
-! IN  NUMEDD : NOM DE LA NUMEROTATION MECANIQUE
-! IN  LISCHA : SD L_CHARGE
-! OUT MATRIG : MATRICE DE RIGIDITE ASSEMBLEE
+! --------------------------------------------------------------------------------------------------
 !
-!
-!
-    integer :: nbmat,ibid
+    integer :: nb_matr_elem
     character(len=19) :: merigi, mediri, meeltc, meeltf
-    character(len=3) :: syme
-    character(len=19) :: tlimat(8)
-    aster_logical :: leltc, leltf, lallv
+    character(len=19) :: list_matr_elem(8)
+    aster_logical :: l_cont_elem, l_frot_elem, l_cont_all_verif
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
+    nb_matr_elem = 0
 !
-! --- INITIALISATIONS
+! - Active functionnalities
 !
-    nbmat = 0
+    l_cont_elem      = isfonc(list_func_acti,'ELT_CONTACT')
+    l_frot_elem      = isfonc(list_func_acti,'ELT_FROTTEMENT')
+    l_cont_all_verif = isfonc(list_func_acti,'CONT_ALL_VERIF')
 !
-! --- FONCTIONNALITES ACTIVEES
+! - Rigidity MATR_ELEM
 !
-    leltc = isfonc(fonact,'ELT_CONTACT')
-    leltf = isfonc(fonact,'ELT_FROTTEMENT')
-    lallv = isfonc(fonact,'CONT_ALL_VERIF')
+    call nmchex(hval_meelem, 'MEELEM', 'MERIGI', merigi)
+    nb_matr_elem = nb_matr_elem + 1
+    list_matr_elem(nb_matr_elem) = merigi
 !
-! --- MATR_ELEM RIGIDITE
+! - Boundary conditions MATR_ELEM
 !
-    call nmchex(meelem, 'MEELEM', 'MERIGI', merigi)
-    nbmat = nbmat + 1
-    tlimat(nbmat) = merigi
+    call nmchex(hval_meelem, 'MEELEM', 'MEDIRI', mediri)
+    nb_matr_elem = nb_matr_elem + 1
+    list_matr_elem(nb_matr_elem) = mediri
 !
-! --- MATR_ELEM DIRICHLET
+! - Contact/friction MATR_ELEM
 !
-    call nmchex(meelem, 'MEELEM', 'MEDIRI', mediri)
-    nbmat = nbmat + 1
-    tlimat(nbmat) = mediri
-!
-! --- MATR_ELEM DE CONTACT/FROTTEMENT
-!
-    if (leltc) then
-        if (.not.lallv) then
-            call nmchex(meelem, 'MEELEM', 'MEELTC', meeltc)
-            nbmat = nbmat + 1
-            tlimat(nbmat) = meeltc
-            if (leltf) then
-                call nmchex(meelem, 'MEELEM', 'MEELTF', meeltf)
-                nbmat = nbmat + 1
-                tlimat(nbmat) = meeltf
+    if (l_cont_elem) then
+        if (.not.l_cont_all_verif) then
+            call nmchex(hval_meelem, 'MEELEM', 'MEELTC', meeltc)
+            nb_matr_elem = nb_matr_elem + 1
+            list_matr_elem(nb_matr_elem) = meeltc
+            if (l_frot_elem) then
+                call nmchex(hval_meelem, 'MEELEM', 'MEELTF', meeltf)
+                nb_matr_elem = nb_matr_elem + 1
+                list_matr_elem(nb_matr_elem) = meeltf
             endif
         endif
     endif
 !
-    if (nbmat .gt. 8) then
-        ASSERT(.false.)
+! - Assembly MATR_ELEM
+!
+    ASSERT(nb_matr_elem.le.8)
+    call asmatr(nb_matr_elem, list_matr_elem, ' ', nume_dof, &
+                list_load, 'ZERO', 'V', 1, matr_rigi)
+!
+! - Symmetry of rigidity matrix
+!
+    if (ds_algopara%l_matr_rigi_syme) then
+        call matr_asse_syme(matr_rigi)
     endif
 !
-! --- ASSEMBLAGE LISTE DES MATR_ELEM
-!
-    call asmatr(nbmat, tlimat, ' ', numedd, &
-                lischa, 'ZERO', 'V', 1, matrig)
-
-
-!   -- si l'utilisateur a demande la symetrisation de la matrice de rigidite:
-    call getvtx('SOLVEUR', 'SYME', iocc=1, scal=syme, nbret=ibid)
-    if (syme.eq.'OUI') call matr_asse_syme(matrig)
-
-    call jedema()
 end subroutine

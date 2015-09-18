@@ -145,7 +145,7 @@ implicit none
 !
     if (lener) then
         call nmener(valinc, veasse, measse, sddyna, eta   ,&
-                    sdener, fonact, numedd, numfix,&
+                    sdener, fonact, numedd, numfix, ds_algopara,&
                     meelem, numins, modele, mate  , carele,&
                     compor, sdtime, sddisc, solalg, lischa,&
                     comref, resoco, resocu, veelem)

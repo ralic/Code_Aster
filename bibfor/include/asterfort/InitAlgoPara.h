@@ -16,8 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine InitAlgoPara(ds_algopara)
+    subroutine InitAlgoPara(list_func_acti, ds_algopara)
         use NonLin_Datastructure_type
+        integer, intent(in) :: list_func_acti(*)        
         type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
     end subroutine InitAlgoPara
 end interface

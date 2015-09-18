@@ -63,12 +63,12 @@ implicit none
     aster_logical :: l_cont, lallv, l_cont_cont, l_cont_disc, lpena, leltc
     aster_logical :: l_pilo, l_line_search, lmacr, l_unil, l_diri_undead
     aster_logical :: l_vibr_mode, l_buckling, lexpl, lxfem, lmodim
-    aster_logical :: lrcmk, lgcpc, lpetsc, lamg, lsyme, limpex
+    aster_logical :: lrcmk, lgcpc, lpetsc, lamg, limpex, l_matr_rigi_syme
     aster_logical :: londe, l_dyna, l_grot_gdep, ltheta, l_newt_krylov, l_mumps
     aster_logical :: l_energy, lproj, lmatdi, lldsp, lctgcp, l_comp_rela
     character(len=24) :: typilo, metres
     character(len=16) :: reli_meth, matrix_pred
-    character(len=3) :: mfdet, syme
+    character(len=3) :: mfdet
     character(len=24), pointer :: slvk(:) => null()
     integer, pointer :: slvi(:) => null()
 !
@@ -108,10 +108,11 @@ implicit none
 !
 ! - Get algorithm parameters
 !
-    reac_iter   = ds_algopara%reac_iter
-    reac_incr   = ds_algopara%reac_incr
-    matrix_pred = ds_algopara%matrix_pred
-    reli_meth   = ds_algopara%line_search%method
+    reac_iter        = ds_algopara%reac_iter
+    reac_incr        = ds_algopara%reac_incr
+    matrix_pred      = ds_algopara%matrix_pred
+    reli_meth        = ds_algopara%line_search%method
+    l_matr_rigi_syme = ds_algopara%l_matr_rigi_syme
 !
 ! - Get solver parameters
 !
@@ -120,8 +121,6 @@ implicit none
     metres = slvk(1)
     lrcmk = slvk(4) .eq. 'RCMK'
     lamg  = ((slvk(2).eq.'ML') .or. (slvk(2).eq.'BOOMER'))
-    call getvtx('SOLVEUR', 'SYME', iocc=1, scal=syme)
-    lsyme = syme.eq.'OUI'
 !
 ! - Contact (DISCRETE)
 !
@@ -149,7 +148,7 @@ implicit none
                 call utmess('F', 'CONTACT_88')
             endif
         endif
-        if (.not.(lsyme.or.lallv)) then
+        if (.not.(l_matr_rigi_syme.or.lallv)) then
             call utmess('A', 'CONTACT_1')
         endif
         if ((l_vibr_mode.or.l_buckling) .and. lmodim) then
@@ -189,7 +188,7 @@ implicit none
         if (lgcpc .or. lpetsc) then
             call utmess('F', 'MECANONLINE3_96', sk=slvk(1))
         endif
-        if (.not.lsyme) then
+        if (.not.l_matr_rigi_syme) then
             call utmess('A', 'UNILATER_1')
         endif
     endif

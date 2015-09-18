@@ -1,5 +1,17 @@
-subroutine nmmass(fonact, lischa, sddyna, numedd,&
+subroutine nmmass(fonact, lischa, sddyna, numedd, ds_algopara,&
                   numfix, meelem, masse)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nmassm.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,19 +29,13 @@ subroutine nmmass(fonact, lischa, sddyna, numedd,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: ludovic.idoux at edf.fr
-    implicit none
-#include "asterf_types.h"
-#include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/mtdscr.h"
-#include "asterfort/ndynlo.h"
-#include "asterfort/nmassm.h"
+! person_in_charge: mickael.abbas at edf.fr
+!
     integer :: fonact(*)
     character(len=19) :: lischa, sddyna
     character(len=24) :: numedd, numfix
     character(len=19) :: meelem(*)
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
 !
 ! ----------------------------------------------------------------------
 !
@@ -44,6 +50,7 @@ subroutine nmmass(fonact, lischa, sddyna, numedd,&
 ! IN  LISCHA : LISTE DES CHARGEMENTS
 ! IN  SDDYNA : SD DYNAMIQUE
 ! IN  NUMEDD : NUME_DDL (VARIABLE AU COURS DU CALCUL)
+! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  NUMFIX : NUME_DDL (FIXE AU COURS DU CALCUL)
 ! IN  MEELEM : MATRICES ELEMENTAIRES
 ! OUT MASSE  : MATRICE MASSE POUR LE CALCUL DES ENERGIES
@@ -75,7 +82,7 @@ subroutine nmmass(fonact, lischa, sddyna, numedd,&
             ASSERT(.false.)
         endif
         masse = '&&NMMASS.MASSENER'
-        call nmassm(fonact, lischa, numedd, numfix,&
+        call nmassm(fonact, lischa, numedd, numfix, ds_algopara,&
                     'MEMASS', optass, meelem, masse)
         call mtdscr(masse)
     endif

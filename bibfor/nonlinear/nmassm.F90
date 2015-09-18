@@ -1,5 +1,22 @@
-subroutine nmassm(fonact, lischa, numedd, numfix,&
+subroutine nmassm(fonact, lischa, numedd, numfix, ds_algopara,&
                   typmat, optasz, meelem, matass)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "jeveux.h"
+#include "asterfort/asmaam.h"
+#include "asterfort/asmama.h"
+#include "asterfort/asmari.h"
+#include "asterfort/asmatr.h"
+#include "asterfort/assert.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmdebg.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,21 +36,9 @@ subroutine nmassm(fonact, lischa, numedd, numfix,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/asmaam.h"
-#include "asterfort/asmama.h"
-#include "asterfort/asmari.h"
-#include "asterfort/asmatr.h"
-#include "asterfort/assert.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/mtdscr.h"
-#include "asterfort/nmchex.h"
-#include "asterfort/nmdebg.h"
     character(len=19) :: lischa
     character(len=24) :: numedd, numfix
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=6) :: typmat
     character(len=*) :: optasz
     character(len=19) :: meelem(8)
@@ -55,6 +60,7 @@ subroutine nmassm(fonact, lischa, numedd, numfix,&
 ! IN  NUMEDD : NUME_DDL (VARIABLE AU COURS DU CALCUL)
 ! IN  NUMFIX : NUME_DDL (FIXE AU COURS DU CALCUL)
 ! IN  MEELEM : ARIABLE CHAPEAU POUR NOM DES MATR_ELEM
+! In  ds_algopara      : datastructure for algorithm parameters
 ! OUT MATASS : MATR_ASSE CALCULEE
 !
 !
@@ -76,8 +82,7 @@ subroutine nmassm(fonact, lischa, numedd, numfix,&
 ! --- AFFICHAGE
 !
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE><MATR> ASSEMBLAGE DES MATR_ELEM'&
-        // ' DE TYPE <',typmat,'>'
+        write (ifm,*) '<MECANONLINE><MATR> ASSEMBLAGE DES MATR_ELEM DE TYPE <',typmat,'>'
     endif
 !
 ! --- DECOMPACTION DES VARIABLES CHAPEAUX
@@ -92,7 +97,7 @@ subroutine nmassm(fonact, lischa, numedd, numfix,&
 ! --- ASSEMBLAGE MATRICES ELEMENTAIRES
 !
     if (typmat .eq. 'MERIGI') then
-        call asmari(fonact, meelem, numedd, lischa,&
+        call asmari(fonact, meelem, numedd, lischa, ds_algopara,&
                     matass)
     else if (typmat.eq.'MEAMOR') then
         call asmaam(meamor, numedd, lischa, matass)

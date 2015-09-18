@@ -1,8 +1,22 @@
 subroutine nminmc(fonact, lischa, sddyna, modele, compor,&
-                  numedd, numfix, defico, resoco,&
+                  numedd, numfix, defico, resoco, ds_algopara,&
                   carcri, solalg, valinc, mate, carele,&
                   sddisc, sdstat, sdtime, comref, meelem,&
                   measse, veelem, codere)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nmcmat.h"
+#include "asterfort/nmxmat.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,18 +35,8 @@ subroutine nminmc(fonact, lischa, sddyna, modele, compor,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
-!
 ! aslint: disable=W1504
-    implicit none
-#include "asterf_types.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/ndynlo.h"
-#include "asterfort/nmcmat.h"
-#include "asterfort/nmxmat.h"
-#include "asterfort/utmess.h"
+!
     integer :: fonact(*)
     character(len=19) :: lischa, sddyna
     character(len=24) :: numedd, numfix, resoco, defico
@@ -45,6 +49,7 @@ subroutine nminmc(fonact, lischa, sddyna, modele, compor,&
     character(len=19) :: sddisc
     character(len=24) :: sdtime, sdstat
     character(len=24) :: codere, comref
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
 !
 ! ----------------------------------------------------------------------
 !
@@ -67,6 +72,7 @@ subroutine nminmc(fonact, lischa, sddyna, modele, compor,&
 ! IN  MATE   : NOM DU CHAMP DE MATERIAU
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR DEPLACEMENTS
+! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
@@ -196,7 +202,7 @@ subroutine nminmc(fonact, lischa, sddyna, modele, compor,&
         call nmxmat(modele, mate, carele, compor, carcri,&
                     sddisc, sddyna, fonact, numins, iterat,&
                     valinc, solalg, lischa, comref, defico,&
-                    resoco,  numedd, numfix, sdstat,&
+                    resoco,  numedd, numfix, sdstat, ds_algopara,&
                     sdtime, nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
                     list_l_calc, list_l_asse, lcfint, meelem, measse,&
                     veelem, ldccvg, codere)

@@ -19,10 +19,11 @@
 !
 interface
     subroutine nmener(valinc, veasse, measse, sddyna, eta   ,&
-                      sdener, fonact, numedd, numfix,&
+                      sdener, fonact, numedd, numfix, ds_algopara,&
                       meelem, numins, modele, mate  , carele,&
                       compor, sdtime, sddisc, solalg, lischa,&
                       comref, resoco, resocu, veelem)
+        use NonLin_Datastructure_type
         character(len=19) :: valinc(*)
         character(len=19) :: veasse(*)
         character(len=19) :: measse(*)
@@ -37,6 +38,7 @@ interface
         character(len=24) :: modele
         character(len=24) :: mate
         character(len=24) :: carele
+        type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         character(len=24) :: compor
         character(len=24) :: sdtime
         character(len=19) :: sddisc

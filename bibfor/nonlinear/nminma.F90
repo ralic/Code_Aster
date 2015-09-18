@@ -1,5 +1,18 @@
-subroutine nminma(fonact, lischa, sddyna, numedd,&
+subroutine nminma(fonact, lischa, sddyna, numedd, ds_algopara,&
                   numfix, meelem, measse)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nmassm.h"
+#include "asterfort/nmchex.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,19 +32,11 @@ subroutine nminma(fonact, lischa, sddyna, numedd,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "asterfort/assert.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/ndynlo.h"
-#include "asterfort/nmassm.h"
-#include "asterfort/nmchex.h"
     integer :: fonact(*)
     character(len=19) :: lischa, sddyna
     character(len=24) :: numedd, numfix
     character(len=19) :: meelem(*), measse(*)
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
 !
 ! ----------------------------------------------------------------------
 !
@@ -46,6 +51,7 @@ subroutine nminma(fonact, lischa, sddyna, numedd,&
 ! IN  LISCHA : LISTE DES CHARGEMENTS
 ! IN  SDDYNA : SD DYNAMIQUE
 ! IN  NUMEDD : NUME_DDL (VARIABLE AU COURS DU CALCUL)
+! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  NUMFIX : NUME_DDL (FIXE AU COURS DU CALCUL)
 ! IN  MEELEM : MATRICES ELEMENTAIRES
 ! OUT MEASSE : MATRICES ASSEMBLEES
@@ -94,7 +100,7 @@ subroutine nminma(fonact, lischa, sddyna, numedd,&
         if (niv .ge. 2) then
             write (ifm,*) '<MECANONLINE> ... MATR_ASSE DE MASSE'
         endif
-        call nmassm(fonact, lischa, numedd, numfix,&
+        call nmassm(fonact, lischa, numedd, numfix, ds_algopara,&
                     'MEMASS', optass, meelem, masse)
     endif
 !
@@ -105,7 +111,7 @@ subroutine nminma(fonact, lischa, sddyna, numedd,&
             write (ifm,*) '<MECANONLINE> ... MATR_ASSE AMORTISSEMENT'
         endif
         optass = ' '
-        call nmassm(fonact, lischa,  numedd, numfix,&
+        call nmassm(fonact, lischa,  numedd, numfix, ds_algopara,&
                     'MEAMOR', optass, meelem, amort)
     endif
 !

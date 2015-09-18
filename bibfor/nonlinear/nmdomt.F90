@@ -52,7 +52,7 @@ implicit none
     integer :: reac_incr, reac_iter, reac_iter_elas
     real(kind=8) :: pas_mini_elas
     integer :: iret
-    character(len=16) :: keywf, algo_meth, matrix_pred, matrix_corr
+    character(len=16) :: keywf, algo_meth, matrix_pred, matrix_corr, answer
     character(len=8) :: result_prev_disp
 !
 ! --------------------------------------------------------------------------------------------------
@@ -103,7 +103,9 @@ implicit none
         endif
         call getvis(keywf, 'REAC_ITER_ELAS', iocc=1, scal=reac_iter_elas)
         ASSERT(reac_iter_elas .ge. 0)
-        ds_algopara%reac_iter_elas = reac_iter_elas
+        ds_algopara%reac_iter_elas   = reac_iter_elas
+        call getvtx(keywf, 'MATR_RIGI_SYME', iocc=1, scal=answer)
+        ds_algopara%l_matr_rigi_syme = answer.eq.'OUI'
     else if (algo_meth .eq. 'IMPLEX') then
         ds_algopara%matrix_pred = 'TANGENTE'
         ds_algopara%reac_incr   = 1

@@ -1,8 +1,10 @@
 subroutine nmener(valinc, veasse, measse, sddyna, eta   ,&
-                  sdener, fonact, numedd, numfix,&
+                  sdener, fonact, numedd, numfix, ds_algopara,&
                   meelem, numins, modele, mate  , carele,&
                   compor, sdtime, sddisc, solalg, lischa,&
                   comref, resoco, resocu, veelem)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -49,6 +51,7 @@ implicit none
     character(len=24) :: sdtime, comref, resoco, resocu
     real(kind=8) :: eta
     integer :: fonact(*), numins
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
 !
 ! ----------------------------------------------------------------------
 !
@@ -71,6 +74,7 @@ implicit none
 ! IN  NUMINS : NUMERO D'INSTANT
 ! IN  MODELE : MODELE
 ! IN  MATE   : CHAMP MATERIAU
+! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  COMPOR : COMPORTEMENT
 ! IN  SDTIME : SD TIMER
@@ -321,7 +325,7 @@ implicit none
     if (reassm) then
 ! --- REASSEMBLAGE DE LA MATRICE DE MASSE.
         lisbid=' '
-        call nmmass(fonact, lisbid, sddyna, numedd,&
+        call nmmass(fonact, lisbid, sddyna, numedd, ds_algopara,&
                     numfix, meelem, masse)
     endif
 !

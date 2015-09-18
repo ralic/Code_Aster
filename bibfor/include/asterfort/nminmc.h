@@ -17,10 +17,11 @@
 !
 interface
     subroutine nminmc(fonact, lischa, sddyna, modele, compor,&
-                      numedd, numfix, defico, resoco,&
+                      numedd, numfix, defico, resoco, ds_algopara,&
                       carcri, solalg, valinc, mate, carele,&
                       sddisc, sdstat, sdtime, comref, meelem,&
                       measse, veelem, codere)
+        use NonLin_Datastructure_type        
         integer :: fonact(*)
         character(len=19) :: lischa
         character(len=19) :: sddyna
@@ -30,6 +31,7 @@ interface
         character(len=24) :: numfix
         character(len=24) :: defico
         character(len=24) :: resoco
+        type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         character(len=24) :: carcri
         character(len=19) :: solalg(*)
         character(len=19) :: valinc(*)

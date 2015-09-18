@@ -1,4 +1,4 @@
-subroutine InitAlgoPara(ds_algopara)
+subroutine InitAlgoPara(list_func_acti, ds_algopara)
 !
 use NonLin_Datastructure_type
 !
@@ -8,6 +8,7 @@ implicit none
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
@@ -28,6 +29,7 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
+    integer, intent(in) :: list_func_acti(*)
     type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
 !
 ! --------------------------------------------------------------------------------------------------
@@ -38,18 +40,31 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
+! In  list_func_acti   : list of active functionnalities
 ! IO  ds_algopara      : datastructure for algorithm parameters
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
     real(kind=8) :: reli_rho_mini, reli_rho_maxi, reli_rho_excl, swap
+    aster_logical :: l_cont_disc, l_unil
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> ... Initializations for algorithm parameters management'
+    endif
+!
+! - Active functionnalites
+!
+    l_cont_disc     = isfonc(list_func_acti,'CONT_DISCRET')
+    l_unil          = isfonc(list_func_acti,'LIAISON_UNILATER')
+!
+! - Symmetric matrix for DISCRETE contact
+! 
+    if (l_cont_disc.or.l_unil) then
+        ds_algopara%l_matr_rigi_syme = .true._1
     endif
 !
 ! - Update bounds for line search

@@ -147,10 +147,6 @@ implicit none
     lunil = .false.
     lcont = .false.
 !
-! - Initializations for algorithm parameters
-!
-    call InitAlgoPara(ds_algopara)
-!
 ! --- CREATION DE LA STRUCTURE DE DONNEE GESTION DU TEMPS
 !
     call nmcrti(sdtime)
@@ -206,6 +202,10 @@ implicit none
         call cucrsd(mesh, numedd, sdunil_defi, resocu)
     endif
 !
+! - Initializations for algorithm parameters
+!
+    call InitAlgoPara(fonact, ds_algopara)
+!
 ! - Initializations for convergence management
 !
     call InitConv(ds_conv, fonact, sdcont_defi)
@@ -253,7 +253,7 @@ implicit none
 ! --- PRE-CALCUL DES MATR_ELEM CONSTANTES AU COURS DU CALCUL
 !
     call nminmc(fonact, lischa, sddyna, model, compor,&
-                numedd, numfix, sdcont_defi, resoco,&
+                numedd, numfix, sdcont_defi, resoco, ds_algopara,&
                 carcri, solalg, valinc, mate, carele,&
                 sddisc, sdstat, sdtime, varc_refe, meelem,&
                 measse, veelem, codere)
@@ -304,10 +304,10 @@ implicit none
                     sddisc, fonact, resoco, resocu, varc_refe,&
                     valinc, solalg, veelem, measse, veasse   ,&
                     sddyna)
-        call accel0(model, numedd, numfix, fonact, lischa,&
-                    sdcont_defi, resoco, maprec, solveu, valinc,&
-                    sddyna, sdstat, sdtime, meelem, measse,&
-                    veelem, veasse, solalg)
+        call accel0(model      , numedd, numfix, fonact     , lischa,&
+                    sdcont_defi, resoco, maprec, solveu     , valinc,&
+                    sddyna     , sdstat, sdtime, ds_algopara, meelem,&
+                    measse     , veelem, veasse, solalg)
     endif
 !
 ! - Extract variables
@@ -333,7 +333,7 @@ implicit none
 !
 ! --- PRE-CALCUL DES MATR_ASSE CONSTANTES AU COURS DU CALCUL
 !
-    call nminma(fonact, lischa, sddyna, numedd,&
+    call nminma(fonact, lischa, sddyna, numedd, ds_algopara,&
                 numfix, meelem, measse)
 !
 ! --- CREATION DE LA SD EVOL_NOLI

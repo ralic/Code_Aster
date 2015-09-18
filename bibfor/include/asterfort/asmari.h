@@ -16,12 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine asmari(fonact, meelem, numedd, lischa,&
-                      matrig)
-        integer :: fonact(*)
-        character(len=19) :: meelem(*)
-        character(len=24) :: numedd
-        character(len=19) :: lischa
-        character(len=19) :: matrig
+    subroutine asmari(list_func_acti, hval_meelem, nume_dof, list_load, ds_algopara,&
+                      matr_rigi)
+        use NonLin_Datastructure_type        
+        integer, intent(in) :: list_func_acti(*)
+        character(len=19), intent(in) :: hval_meelem(*)
+        character(len=24), intent(in) :: nume_dof
+        character(len=19), intent(in) :: list_load
+        character(len=19), intent(in) :: matr_rigi
+        type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     end subroutine asmari
 end interface
