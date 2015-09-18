@@ -68,12 +68,12 @@ MODE_LOCAL__
                                  EN3   (DX       DY       DZ       PRE1     H1X     H1Y    H1Z
                                         H1PRE1   H2X      H2Y      H2Z      H2PRE1)
                                  EN4   (DX       DY       DZ       H1X      H1Y     H1Z    H2X
-                                        H2Y      H2Y)
+                                        H2Y      H2Z)
                                  EN5   (DX       DY       DZ       PRE1     H1X     H1Y    H1Z
                                         H1PRE1   H2X      H2Y      H2Z      H2PRE1  H3X    H3Y
                                         H3Z      H3PRE1)
                                  EN6   (DX       DY       DZ       H1X      H1Y     H1Z    H2X
-                                        H2Y      H2Y      H3X      H3Y      H3Z)
+                                        H2Y      H2Z      H3X      H3Y      H3Z)
     EFORCNO  = FORC_R   ELNO__ IDEN__  (FX       FY       FZ       )
     EFLUXE   = FTHM_R   ELNO__ IDEN__  (PFLU1    )
     CFLUXF   = FTHM_F   ELEM__         (PFLU1    )
