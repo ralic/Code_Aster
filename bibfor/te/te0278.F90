@@ -38,24 +38,21 @@ subroutine te0278(option, nomte)
 !
 !
 !
-    character(len=8) :: nompar(4), elrefe, lirefe(2)
+    character(len=8) :: nompar(4)
     real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9), xx, yy, zz
     real(kind=8) :: jac, tem, theta, hechp, valpar(4)
     integer :: ipoids, ivf, idfdx, idfdy, igeom
     integer :: ndim, nno, ipg, npg1, iveres, ihechp
     integer :: idec, jdec, kdec, ldec
-    integer :: nbelr, nnos, jgano
+    integer ::  nnos, jgano
 !---- DEBUT-----------------------------------------
 !
 !-----------------------------------------------------------------------
     integer :: i, ier, ino, itemp, itemps, j, jno
 !
 !-----------------------------------------------------------------------
-    call elref2(nomte, 2, lirefe, nbelr)
-    ASSERT(nbelr.eq.2)
-    elrefe = lirefe(2)
 !
-    call elrefe_info(elrefe=elrefe, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
                      npg=npg1, jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
     idfdy = idfdx + 1
 !

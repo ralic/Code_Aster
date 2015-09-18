@@ -23,6 +23,7 @@ function modat2(iopt, ite, nompar)
 !
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/jelira.h"
     integer :: iopt, ite
     character(len=8) :: nompar
 ! ----------------------------------------------------------------------
@@ -41,34 +42,33 @@ function modat2(iopt, ite, nompar)
 !
 !     VARIABLES LOCALES:
 !     ------------------
-    integer :: iopte,   lgco
+    integer :: iopte, lgco, n1
     integer :: nucalc, nbpar, k, joptmo, joptno
     integer, pointer :: nbligcol(:) => null()
     integer, pointer :: optte(:) => null()
 ! ----------------------------------------------------------------------
-!
+
     modat2 = 0
-!
+
     call jeveuo('&CATA.TE.OPTTE', 'L', vi=optte)
     call jeveuo('&CATA.TE.NBLIGCOL', 'L', vi=nbligcol)
     lgco = nbligcol(1)
     iopte = optte((ite-1)*lgco+iopt)
-!
-!
+
+
     if (iopte .eq. 0) goto 20
+
     call jeveuo(jexnum('&CATA.TE.OPTMOD', iopte), 'L', joptmo)
-    call jeveuo(jexnum('&CATA.TE.OPTNOM', iopte), 'L', joptno)
-!
-!
     nucalc = zi(joptmo-1+1)
     if (nucalc .le. 0) goto 20
-!
+
+    call jeveuo(jexnum('&CATA.TE.OPTNOM', iopte), 'L', joptno)
     nbpar = zi(joptmo-1+2) + zi(joptmo-1+3)
-    do 10,k = 1,nbpar
-    if (nompar .ne. zk8(joptno-1+k)) goto 10
-    modat2 = zi(joptmo-1+3+k)
-    10 end do
-!
+    do k = 1,nbpar
+        if (nompar .ne. zk8(joptno-1+k)) cycle
+        modat2 = zi(joptmo-1+3+k)
+    end do
+
 !
 20  continue
 end function

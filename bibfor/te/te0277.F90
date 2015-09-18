@@ -46,17 +46,15 @@ subroutine te0277(option, nomte)
     real(kind=8) :: valpar(nbres), poids, poids1, poids2, r, r1, r2
     real(kind=8) :: z, hechp, nx, ny, tpg, theta
     integer :: nno, kp, npg, ipoids, ivf, idfde, igeom
-    integer :: iveres, i, l, li, ihechp, nbelr
+    integer :: iveres, i, l, li, ihechp
     aster_logical :: laxi
 !
-    character(len=8) :: lirefe(2)
+!-----------------------------------------------------------------------
 !
     laxi = .false.
     if (lteatt('AXIS','OUI')) laxi = .true.
 !
-    call elref2(nomte, 2, lirefe, nbelr)
-    ASSERT(nbelr.eq.2)
-    call elrefe_info(elrefe=lirefe(2), fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
                      npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)

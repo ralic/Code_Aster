@@ -62,7 +62,7 @@ implicit none
 !
 ! --- RECUPERATION DE LA LISTE DES ELREFE CORRESPONDANTS AU NOMTE
     call elref2(nomte, 10, lirefe, nbelr)
-    ASSERT(nbelr.gt.0)
+    ASSERT(nbelr.ge.0)
 !
 !
 !     --BOUCLE SUR LES ELREFE :

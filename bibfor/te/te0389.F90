@@ -35,22 +35,19 @@ subroutine te0389(option, nomte)
 !     ENTREES  ---> OPTION : OPTION DE CALCUL
 !          ---> NOMTE  : NOM DU TYPE ELEMENT
 !.......................................................................
-    character(len=8) :: elrefe, nompar(4), lirefe(2)
+    character(len=8) ::  nompar(4)
     real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9), jac, theta
     real(kind=8) :: valpar(4), hechp, xx, yy, zz, mat(45)
     integer :: ipoids, ivf, idfdx, idfdy, igeom
     integer :: ndim, nno, ndi, ipg, npg1, imattt, ihechp
     integer :: idec, jdec, kdec, ldec
-    integer :: nbelr, nnos, jgano
+    integer ::  nnos, jgano
 !--- DEBUT--------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, ier, ij, ino, itemps, j, jno
     integer :: k1, k2, k3, k4
 !-----------------------------------------------------------------------
-    call elref2(nomte, 2, lirefe, nbelr)
-    ASSERT(nbelr.eq.2)
-    elrefe = lirefe(2)
-    call elrefe_info(elrefe=elrefe, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
                      npg=npg1, jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
     idfdy = idfdx + 1
     ndi = nno*(nno+1)/2

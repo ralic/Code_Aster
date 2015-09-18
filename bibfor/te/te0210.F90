@@ -21,7 +21,6 @@ subroutine te0210(option, nomte)
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 !----------------------------------------------------------------------
-! CORPS DU PROGRAMME
     implicit none
 !
 #include "asterf_types.h"
@@ -37,20 +36,20 @@ subroutine te0210(option, nomte)
     integer :: nbres
     parameter (nbres=3)
     character(len=16) :: option, nomte
-    character(len=8) :: nompar(nbres), lirefe(2)
+    character(len=8) :: nompar(nbres)
     real(kind=8) :: valpar(nbres), poids, poids1, poids2, r, r1, r2, z, hechp
     real(kind=8) :: nx, ny, tpg, theta, z1, z2
     integer :: nno, nnos, jgano, ndim, kp, npg, ipoids, ivf, idfde, igeom
-    integer :: ivectt, i, l, li, ihechp, itemp, icode, nbelr, itemps
+    integer :: ivectt, i, l, li, ihechp, itemp, icode, itemps
     aster_logical :: laxi
+!----------------------------------------------------------------------
+! CORPS DU PROGRAMME
 !
 !
 !====
 ! 1.1 PREALABLES: RECUPERATION ADRESSES FONCTIONS DE FORMES...
 !====
-    call elref2(nomte, 2, lirefe, nbelr)
-    ASSERT(nbelr.eq.2)
-    call elrefe_info(elrefe=lirefe(2), fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
                      npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     laxi = .false.

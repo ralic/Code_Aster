@@ -36,21 +36,17 @@ subroutine te0388(option, nomte)
 !.......................................................................
     integer :: ipoids, ivf, idfdx, idfdy, igeom, nnos, jgano
     integer :: ndim, nno, ndi, ipg, npg1, imattt, ihechp
-    integer :: idec, jdec, kdec, ldec, nbelr
+    integer :: idec, jdec, kdec, ldec
     real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9), jac, theta, h
     real(kind=8) :: mat(45)
-    character(len=8) :: elrefe, lirefe(2)
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
     integer :: i, ij, ino, itemps, j, jno, k1
     integer :: k2, k3, k4
 !-----------------------------------------------------------------------
-    call elref2(nomte, 2, lirefe, nbelr)
-    ASSERT(nbelr.eq.2)
-    elrefe = lirefe(2)
 !
-    call elrefe_info(elrefe=elrefe, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
                      npg=npg1, jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
     idfdy = idfdx + 1
     ndi = nno*(nno+1)/2

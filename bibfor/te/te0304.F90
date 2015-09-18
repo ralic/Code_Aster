@@ -35,23 +35,19 @@ subroutine te0304(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
-    character(len=8) :: elrefe, nompar(4), lirefe(2)
+    character(len=8) ::  nompar(4)
     character(len=16) :: nomte, option
     real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9), xx, yy, zz, jac
     real(kind=8) :: tem, theta, hechp, valpar(4)
     integer :: ipoids, ivf, idfdx, idfdy, igeom, i, itemp, itemps, ndim, nno
     integer :: ipg, npg1, ivectt, ihechp, ino, jno, idec, jdec, kdec, ldec, ier
-    integer :: j, nbelr, nnos, jgano
+    integer :: j, nnos, jgano
 !
 !====
 ! 1.1 PREALABLES: RECUPERATION ADRESSES FONCTIONS DE FORMES...
 !====
 !
-    call elref2(nomte, 2, lirefe, nbelr)
-    ASSERT(nbelr.eq.2)
-    elrefe = lirefe(2)
-!
-    call elrefe_info(elrefe=elrefe,fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
   npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
     idfdy = idfdx + 1
 !

@@ -2,7 +2,6 @@ subroutine te0303(option, nomte)
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/elref2.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 !
@@ -36,17 +35,13 @@ subroutine te0303(option, nomte)
 !.......................................................................
     integer :: ipoids, ivf, idfdx, idfdy, igeom, i, j
     integer :: ndim, nno, ipg, npg1, ivectt, ihechp, ino, jno, nnos, jgano
-    integer :: idec, jdec, kdec, ldec, itemps, itemp, nbelr
+    integer :: idec, jdec, kdec, ldec, itemps, itemp
     real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9)
     real(kind=8) :: jac, tem, theta, h
-    character(len=8) :: elrefe, lirefe(2)
 !     ------------------------------------------------------------------
 !
-    call elref2(nomte, 2, lirefe, nbelr)
-    ASSERT(nbelr.eq.2)
-    elrefe = lirefe(2)
 !
-    call elrefe_info(elrefe=elrefe, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
                      npg=npg1, jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
     idfdy = idfdx + 1
 !

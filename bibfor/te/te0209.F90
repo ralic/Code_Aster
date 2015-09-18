@@ -36,19 +36,16 @@ subroutine te0209(option, nomte)
 ! ......................................................................
 !
     integer :: nno, nnos, jgano, ndim, kp, npg, ipoids, ivf, idfde, igeom
-    integer :: ivectt, i, l, li, ihechp, itemps, itemp, nbelr
+    integer :: ivectt, i, l, li, ihechp, itemps, itemp
     real(kind=8) :: poids, poids1, poids2, coefh
     real(kind=8) :: r1, r2, nx, ny, tpg, theta
-    character(len=8) :: lirefe(2)
     aster_logical :: laxi
 !     ------------------------------------------------------------------
 !
     laxi = .false.
     if (lteatt('AXIS','OUI')) laxi = .true.
 !
-    call elref2(nomte, 2, lirefe, nbelr)
-    ASSERT(nbelr.eq.2)
-    call elrefe_info(elrefe=lirefe(2), fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
                      npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 !

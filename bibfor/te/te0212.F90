@@ -41,17 +41,16 @@ subroutine te0212(option, nomte)
 !
 !-----------------------------------------------------------------------
     parameter (nbres=3)
-    character(len=8) :: nompar(nbres), lirefe(2)
+    character(len=8) :: nompar(nbres)
     real(kind=8) :: valpar(nbres), poids, poids1, poids2, r, r1, r2
     real(kind=8) :: z, z1, z2, hechp, nx, ny, theta, mat(6)
     integer :: nno, kp, npg, ipoids, ivf, idfde, igeom
-    integer :: itemps, imatt, k, i, j, l, li, lj, nbelr
+    integer :: itemps, imatt, k, i, j, l, li, lj
     aster_logical :: laxi
+!-----------------------------------------------------------------------
 !
 !
-    call elref2(nomte, 2, lirefe, nbelr)
-    ASSERT(nbelr.eq.2)
-    call elrefe_info(elrefe=lirefe(2), fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
                      npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     laxi = .false.

@@ -179,7 +179,7 @@ def sdu_nb_ec(numgd):
     """retourne le nombre d'entiers codés pour décrire les composantes de la grandeur (numgd)"""
     assert numgd > 0 and numgd < 1000, numgd
     descrigd = aster.getcolljev('&CATA.GD.DESCRIGD')
-    return descrigd[numgd - 1][-1 + 3]
+    return descrigd[numgd][-1 + 3]
 
 
 #  3) Utilitaires pour la vérification de l'existence des objets :
