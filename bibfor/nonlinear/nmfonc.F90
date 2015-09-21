@@ -97,7 +97,7 @@ implicit none
     integer :: i_cont_form
     aster_logical :: l_deborst, l_frot, l_elem_choc, l_all_verif, l_refe, l_comp
     aster_logical :: l_loop_geom, l_loop_frot, l_loop_cont
-    integer :: ixfem, i_load, i_buckl, i_vibr_mode, i_stab
+    integer :: ixfem, i_buckl, i_vibr_mode, i_stab
     aster_logical :: l_load_undead, l_load_laplace, l_load_elim, l_load_didi
     character(len=8) :: k8bid, repk
     character(len=16) :: command, k16bid, matdis
@@ -277,16 +277,14 @@ implicit none
 !
 ! - At least, one undead load ?
 !
-    i_load = 0
-    l_load_undead = ischar(list_load, 'NEUM', 'SUIV', i_load)
+    l_load_undead = ischar(list_load, 'NEUM', 'SUIV')
     if (l_load_undead) then
         list_func_acti(13) = 1
     endif
 !
 ! - At least, one "DIDI" load ?
 !
-    i_load = 0
-    l_load_didi = ischar(list_load, 'DIRI', 'DIDI', i_load)
+    l_load_didi = ischar(list_load, 'DIRI', 'DIDI')
     if (l_load_didi) then
         list_func_acti(22) = 1
     endif
@@ -300,12 +298,12 @@ implicit none
 !
 ! - At least, one Laplace load ?
 !
-    l_load_laplace = ischar(list_load, 'NEUM', 'LAPL', i_load)
+    l_load_laplace = ischar(list_load, 'NEUM', 'LAPL')
     if (l_load_laplace) then
         list_func_acti(20) = 1
     endif
 !
-! - Static substructuring-
+! - Static substructuring
 !
     call dismoi('NB_SS_ACTI', model, 'MODELE', repi=nb_subs_stat)
     if (nb_subs_stat .gt. 0) list_func_acti(14) = 1

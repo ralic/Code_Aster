@@ -18,9 +18,12 @@
 #include "asterf_types.h"
 !
 interface
-    function isdiri(list_load, load_type_2)
-        character(len=19), intent(in) :: list_load
+    function ischar_iden(v_load_info, i_load, nb_load, load_type_1, load_type_2)
+        integer, intent(in), pointer :: v_load_info(:)
+        integer, intent(in) :: i_load
+        integer, intent(in) :: nb_load
+        aster_logical :: ischar_iden
+        character(len=4), intent(in) :: load_type_1
         character(len=4), intent(in) :: load_type_2
-        aster_logical :: isdiri
-    end function isdiri
+    end function ischar_iden
 end interface

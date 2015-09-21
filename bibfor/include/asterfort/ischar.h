@@ -18,11 +18,11 @@
 #include "asterf_types.h"
 !
 interface
-    function ischar(lischa, typcha, soutyp, ichar)
-        character(len=19) :: lischa
-        character(len=4) :: typcha
-        character(len=4) :: soutyp
-        integer :: ichar
+    function ischar(list_load, load_type_1, load_type_2, i_load_)
+        character(len=19), intent(in) :: list_load
+        character(len=4), intent(in) :: load_type_1
+        character(len=4), intent(in) :: load_type_2
+        integer, optional, intent(in) :: i_load_
         aster_logical :: ischar
     end function ischar
 end interface

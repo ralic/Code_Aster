@@ -1,4 +1,10 @@
-function isdiri(lischa, soutyp)
+function isdiri(list_load, load_type_2)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/ischar.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,54 +24,40 @@ function isdiri(lischa, soutyp)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/ischar.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
     aster_logical :: isdiri
-    character(len=19) :: lischa
-    character(len=4) :: soutyp
+    character(len=19), intent(in) :: list_load
+    character(len=4), intent(in) :: load_type_2
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (UTILITAIRE)
+! List of loads - Utility
 !
-! DIT SI ON A DES CHARGEMENTS DE TYPE DIRICHLET
+! Return .true. if Dirichlet loads exist
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  list_load      : name of datastructure for list of loads
+! In  load_type_1    : second level of type
+!                'DUAL' - AFFE_CHAR_MECA
+!                'ELIM' - AFFE_CHAR_CINE
+!                '    ' - All types
 !
-! IN  LISCHA : SD L_CHARGES
-! IN  SOUTYP : TYPE DE CHARGE
-!                'DUAL' - PAR DUALISATION (AFFE_CHAR_MECA)
-!                'ELIM' - PAR ELIMINATION (AFFE_CHAR_CINE)
-!                'TOUT' - PAR DUALISATION ET ELIMINATION
+! --------------------------------------------------------------------------------------------------
 !
-!
-!
-!
-    integer :: ichar
     aster_logical :: lelim, ldual
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
-!
-    ichar = 0
-    lelim = ischar(lischa,'DIRI','ELIM',ichar )
-    ldual = ischar(lischa,'DIRI','DUAL',ichar )
-    if (soutyp .eq. 'TOUT') then
+    lelim = ischar(list_load, 'DIRI', 'ELIM')
+    ldual = ischar(list_load, 'DIRI', 'DUAL')
+    if (load_type_2 .eq. '    ') then
         isdiri = lelim.or.ldual
-    else if (soutyp.eq.'ELIM') then
+    else if (load_type_2.eq.'ELIM') then
         isdiri = lelim
-    else if (soutyp.eq.'DUAL') then
+    else if (load_type_2.eq.'DUAL') then
         isdiri = ldual
     else
         ASSERT(.false.)
     endif
-!
-    call jedema()
+
 end function
