@@ -417,11 +417,11 @@ UP=STAT_NON_LINE(
 
            NEWTON=_F(  MATRICE = 'TANGENTE',
                    REAC_INCR = 1,
+                   MATR_RIGI_SYME='OUI',
                    REAC_ITER = 1),
            CONVERGENCE=_F(  RESI_GLOB_RELA = 5.E-5,
                         ITER_GLOB_MAXI = 150,
                         ARRET = 'OUI',),
-           SOLVEUR=_F(SYME='OUI'),
             )
 
 UP=CALC_CHAMP(reuse=UP,CONTRAINTE=('SIGM_ELNO'),DEFORMATION=('EPSI_ELNO'),RESULTAT=UP)
@@ -477,7 +477,7 @@ UP2=STAT_NON_LINE(
                  DEFORMATION = 'PETIT_REAC',
                  GROUP_MA = 'EPROUV',
                  ITER_INTE_PAS = -65),
-            
+
            _F(
                 RELATION = 'ELAS',
                 DEFORMATION = 'PETIT',
@@ -490,11 +490,11 @@ UP2=STAT_NON_LINE(
                          INST_FIN= 2.E-5,),
            NEWTON=_F(  MATRICE = 'TANGENTE',
                    REAC_INCR = 1,
+                   MATR_RIGI_SYME='OUI',
                    REAC_ITER = 1),
            CONVERGENCE=_F(  RESI_GLOB_RELA = 5.E-5,
                         ITER_GLOB_MAXI = 150,
                         ARRET = 'OUI'),
-           SOLVEUR=_F(SYME='OUI'),
                    )
 UP3=STAT_NON_LINE(
             MODELE=MO,
@@ -509,7 +509,7 @@ UP3=STAT_NON_LINE(
                  DEFORMATION = 'PETIT_REAC',
                  GROUP_MA = 'EPROUV',
                  ITER_INTE_PAS = -65),
-            
+
            _F(
                 RELATION = 'ELAS',
                 DEFORMATION = 'PETIT',
@@ -522,11 +522,11 @@ UP3=STAT_NON_LINE(
                          INST_FIN= 2.E-5,),
            NEWTON=_F(  MATRICE = 'TANGENTE',
                    REAC_INCR = 1,
+                   MATR_RIGI_SYME='OUI',
                    REAC_ITER = 1),
            CONVERGENCE=_F(  RESI_GLOB_RELA = 5.E-5,
                         ITER_GLOB_MAXI = 150,
                         ARRET = 'OUI'),
-           SOLVEUR=_F(SYME='OUI'),
                    )
 UP4=STAT_NON_LINE(
             MODELE=MO,
@@ -541,7 +541,7 @@ UP4=STAT_NON_LINE(
                  DEFORMATION = 'PETIT_REAC',
                  GROUP_MA = 'EPROUV',
                  ITER_INTE_PAS = -65),
-            
+
            _F(
                 RELATION = 'ELAS',
                 DEFORMATION = 'PETIT',
@@ -554,11 +554,11 @@ UP4=STAT_NON_LINE(
                          INST_FIN= 2.E-5,),
            NEWTON=_F(  MATRICE = 'TANGENTE',
                    REAC_INCR = 1,
+                   MATR_RIGI_SYME='OUI',
                    REAC_ITER = 1),
            CONVERGENCE=_F(  RESI_GLOB_RELA = 5.E-5,
                         ITER_GLOB_MAXI = 150,
                         ARRET = 'OUI'),
-           SOLVEUR=_F(SYME='OUI'),
                    )
 UP5=STAT_NON_LINE(
             MODELE=MO,
@@ -573,7 +573,7 @@ UP5=STAT_NON_LINE(
                  DEFORMATION = 'PETIT_REAC',
                  GROUP_MA = 'EPROUV',
                  ITER_INTE_PAS = -65),
-            
+
            _F(
                 RELATION = 'ELAS',
                 DEFORMATION = 'PETIT',
@@ -586,11 +586,11 @@ UP5=STAT_NON_LINE(
                          INST_FIN= 2.E-5,),
            NEWTON=_F(  MATRICE = 'TANGENTE',
                    REAC_INCR = 1,
+                   MATR_RIGI_SYME='OUI',
                    REAC_ITER = 1),
            CONVERGENCE=_F(  RESI_GLOB_RELA = 5.E-5,
                         ITER_GLOB_MAXI = 150,
                         ARRET = 'OUI'),
-           SOLVEUR=_F(SYME='OUI'),
                    )
 UP6=STAT_NON_LINE(
             MODELE=MO,
@@ -607,7 +607,7 @@ UP6=STAT_NON_LINE(
                  RESI_INTE_RELA = 1.E-9,
                  ITER_INTE_MAXI = 250,
                  ITER_INTE_PAS = -65),
-            
+
            _F(
                 RELATION = 'ELAS',
                 DEFORMATION = 'PETIT',
@@ -620,11 +620,11 @@ UP6=STAT_NON_LINE(
                          INST_FIN= 2.E-5,),
            NEWTON=_F(  MATRICE = 'TANGENTE',
                    REAC_INCR = 1,
+                   MATR_RIGI_SYME='OUI',
                    REAC_ITER = 1),
            CONVERGENCE=_F(  RESI_GLOB_RELA = 5.E-5,
                         ITER_GLOB_MAXI = 150,
                         ARRET = 'OUI'),
-           SOLVEUR=_F(SYME='OUI'),
                    )
 UP7=STAT_NON_LINE(
             MODELE=MO,
@@ -641,7 +641,7 @@ UP7=STAT_NON_LINE(
                  RESI_INTE_RELA = 1.E-9,
                  ITER_INTE_MAXI = 250,
                  ITER_INTE_PAS = -65),
-           
+
            _F(
                 RELATION = 'ELAS',
                 DEFORMATION = 'PETIT',
@@ -654,11 +654,11 @@ UP7=STAT_NON_LINE(
                          INST_FIN= 2.E-5,),
            NEWTON=_F(  MATRICE = 'TANGENTE',
                    REAC_INCR = 1,
+                   MATR_RIGI_SYME='OUI',
                    REAC_ITER = 1),
            CONVERGENCE=_F(  RESI_GLOB_RELA = 5.E-5,
                         ITER_GLOB_MAXI = 150,
                         ARRET = 'OUI'),
-           SOLVEUR=_F(SYME='OUI'),
                    )
 
 UP9=STAT_NON_LINE(
@@ -688,11 +688,11 @@ UP9=STAT_NON_LINE(
                          INST_FIN= 2.E-5,),
            NEWTON=_F(  MATRICE = 'TANGENTE',
                    REAC_INCR = 1,
+                   MATR_RIGI_SYME='OUI',
                    REAC_ITER = 1),
            CONVERGENCE=_F(  RESI_GLOB_RELA = 5.E-5,
                         ITER_GLOB_MAXI = 150,
                         ARRET = 'OUI'),
-           SOLVEUR=_F(SYME='OUI'),
                    )
 
 UP10=STAT_NON_LINE(
@@ -722,11 +722,11 @@ UP10=STAT_NON_LINE(
                          INST_FIN= 2.E-5,),
            NEWTON=_F(  MATRICE = 'TANGENTE',
                    REAC_INCR = 1,
+                   MATR_RIGI_SYME='OUI',
                    REAC_ITER = 1),
            CONVERGENCE=_F(  RESI_GLOB_RELA = 5.E-5,
                         ITER_GLOB_MAXI = 150,
                         ARRET = 'OUI'),
-           SOLVEUR=_F(SYME='OUI'),
                    )
 
 UP11=STAT_NON_LINE(
@@ -755,11 +755,11 @@ UP11=STAT_NON_LINE(
                          INST_FIN= 2.E-5,),
            NEWTON=_F(  MATRICE = 'TANGENTE',
                    REAC_INCR = 1,
+                   MATR_RIGI_SYME='OUI',
                    REAC_ITER = 1),
            CONVERGENCE=_F(  RESI_GLOB_RELA = 5.E-5,
                         ITER_GLOB_MAXI = 150,
                         ARRET = 'OUI'),
-           SOLVEUR=_F(SYME='OUI'),
                    )
 
 UP12=STAT_NON_LINE(
@@ -788,11 +788,11 @@ UP12=STAT_NON_LINE(
                          INST_FIN= 2.E-5,),
            NEWTON=_F(  MATRICE = 'TANGENTE',
                    REAC_INCR = 1,
+                   MATR_RIGI_SYME='OUI',
                    REAC_ITER = 1),
            CONVERGENCE=_F(  RESI_GLOB_RELA = 5.E-5,
                         ITER_GLOB_MAXI = 150,
                         ARRET = 'OUI'),
-           SOLVEUR=_F(SYME='OUI'),
                    )
 
 
