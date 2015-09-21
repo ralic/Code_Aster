@@ -3621,6 +3621,16 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
 
 ####  FIN MONOCRISTAL
 
+### MFRONT
+           MFRONT  =FACT(statut='f',
+             LISTE_COEF =SIMP(statut='f',typ='R',min=2,max='**'),
+           ),
+
+           MFRONT_FO   =FACT(statut='f',
+             LISTE_COEF =SIMP(statut='f',typ=(fonction_sdaster,formule), min=2,max='**'),
+           ),
+### MFRONT
+
 ### UMAT
            UMAT  =FACT(statut='f',
              LISTE_COEF =SIMP(statut='f',typ='R',min=2,max='**'),

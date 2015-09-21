@@ -16,13 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
           interface 
-            subroutine matumat(fami,kpg,ksp,poum,imate,nprops,props)
+            subroutine mat_proto(fami,kpg,ksp,poum,imate,itface,nprops,props)
               character(len=*), intent(in) :: fami
               integer, intent(in) :: kpg
               integer, intent(in) :: ksp
               character(len=1), intent(in) :: poum
               integer, intent(in) :: imate
+              character(len=*), intent(in) :: itface
               integer, intent(inout) :: nprops
               real(kind=8), intent(out) :: props(*)
-            end subroutine matumat
+            end subroutine mat_proto
           end interface 

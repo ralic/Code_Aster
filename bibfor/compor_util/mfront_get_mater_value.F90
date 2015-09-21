@@ -1,6 +1,5 @@
 subroutine mfront_get_mater_value(fami, kpg, ksp, imate, ifm, &
-                                  niv, idbg, pmatprop, pnbprop, rela_comp, &
-                                  nprops, props)
+                                  niv, idbg, rela_comp, nprops, props)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,8 +24,6 @@ subroutine mfront_get_mater_value(fami, kpg, ksp, imate, ifm, &
     integer, intent(in) :: ifm
     integer, intent(in) :: niv
     integer, intent(in) :: idbg
-    integer, intent(in) :: pmatprop
-    integer, intent(in) :: pnbprop
     character(len=16), intent(in) :: rela_comp
     integer, intent(out) :: nprops
     real(kind=8), intent(out) :: props(*)
@@ -35,16 +32,14 @@ subroutine mfront_get_mater_value(fami, kpg, ksp, imate, ifm, &
 !       in   fami    famille de point de gauss (rigi,mass,...)
 !            kpg,ksp numero du (sous)point de gauss
 !            imate   adresse du materiau code
-!            pmatprop, pnbprop adresse des datas MFront
 !       out  nprops  nb coef
 !            props   coef materiau
 !
-! aslint: disable=W1504,W0104
 #include "asterc/r8nnem.h"
 #include "asterc/mfront_get_mater_prop.h"
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
-#include "asterfort/matumat.h"
+#include "asterfort/mat_proto.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
 !
@@ -55,7 +50,7 @@ subroutine mfront_get_mater_value(fami, kpg, ksp, imate, ifm, &
 !
     if (rela_comp .eq. 'MFRONT') then
 !       Usermaterial: parameters are defined using UMAT in DEFI_MATERIAU
-        call matumat(fami, kpg, ksp, '+', imate, nprops, props)
+        call mat_proto(fami, kpg, ksp, '+', imate, rela_comp, nprops, props)
     else
 !       Get the number and the names of the material properties
         call mfront_get_mater_prop(rela_comp, nbcoef, nomres)

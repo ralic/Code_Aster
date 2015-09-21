@@ -1,4 +1,4 @@
-    subroutine matumat(fami, kpg, ksp, poum, imate, nprops, props)
+    subroutine mat_proto(fami, kpg, ksp, poum, imate, itface, nprops, props)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,6 +20,7 @@
 !       in   kpg,ksp : numero du (sous)point de gauss
 !       in   poum    : '+' /'-'
 !       in   nprops  : en entree : dimension du tableau props
+!       in   itface  : nom de l'interface de prototypage
 !       out  nprops  : en sortie : nombre de coefficients recuperes dans props
 !            props(*): coeficients du materiau
 ! ======================================================================
@@ -37,24 +38,25 @@
     integer, intent(in)          :: ksp
     character(len=1), intent(in) :: poum
     integer, intent(in)          :: imate
+    character(len=*), intent(in) :: itface
     integer, intent(inout)       :: nprops
     real(kind=8), intent(out)    :: props(*)
 !----------------------------------------------------------------------------
 
-    integer          :: i, jadr,icodre, ncoef
+    integer      :: i, jadr,icodre, ncoef
     real(kind=8) :: rundef
 !----------------------------------------------------------------------------
     rundef=r8nnem()
 
-
+!   -- Seulement UMAT et MFRONT
+    ASSERT(itface.eq.'UMAT' .or. itface.eq.'MFRONT')
 
 !   -- mise a "undef" du tableau resultat :
     ASSERT(nprops.gt.0 .and. nprops.le.197)
     call r8inir(nprops, rundef, props, 1)
 
-
 !   -- recuperation des valeurs et recopie dans props :
-    call rcadlv(fami, kpg, ksp, poum, imate, ' ', 'UMAT', 'LISTE_COEF', &
+    call rcadlv(fami, kpg, ksp, poum, imate, ' ', itface, 'LISTE_COEF', &
                 0, [' '], [0.d0], jadr, ncoef, icodre, 1)
     if (ncoef.le.nprops) then
         do i=1,ncoef

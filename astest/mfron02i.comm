@@ -77,7 +77,7 @@ SOL  = DEFI_MATERIAU( ELAS      = _F( E           = 5800.0E6,
                                       SY          =    2.11E6    ,
                                       H           =    0.000     ,),
                       # données de DruckPragEcroLin.mfront
-                      UMAT=_F( LISTE_COEF = (5800.0E6, 0.3 , 0.328 , 0, 2.11E6, 0,)),
+                      MFRONT=_F( LISTE_COEF = (5800.0E6, 0.3 , 0.328 , 0, 2.11E6, 0,)),
                       COMP_THM  =    'LIQU_SATU',
                       THM_INIT  = _F( PRE1        = 0.0,
                                       PORO        = 0.15,),

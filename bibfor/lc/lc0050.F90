@@ -70,7 +70,7 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
 #include "asterfort/pmat.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/tecael.h"
-#include "asterfort/matumat.h"
+#include "asterfort/mat_proto.h"
 #include "asterfort/varcumat.h"
 #include "asterfort/lcdetf.h"
 #include "blas/daxpy.h"
@@ -116,7 +116,7 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
     call infniv(ifm, niv)
 
 !   LECTURE DES PROPRIETES MATERIAU (MOT-CLE UMAT[_FO] DE DEFI_MATERIAU)
-    call matumat(fami, kpg, ksp, '+', imate, nprops, props)
+    call mat_proto(fami, kpg, ksp, '+', imate, compor(1), nprops, props)
 
 !   LECTURE DES VARIABLES DE COMMANDE  ET DEFORMATIONS ASSOCIEES
     call varcumat(fami, kpg, ksp, imate, ifm, niv, idbg,  temp, dtemp, &
