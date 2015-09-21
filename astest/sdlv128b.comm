@@ -1,0 +1,322 @@
+# TITRE  EXPANSION MODALE SUR UN TUBE 3D A PARTIR DE MESURES EXTENSIOMETRIQUES
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'));
+
+# La structure etudiee est un crayon B4C de grappe de commande multi-supporte par des
+# ressorts appeles soufflets aux niveaux de "cartes" de maintien. Elle est representative des
+# crayons que l'on trouve sur la maquette PHACETIE.
+# L'objectif de ce cas-test est de realiser l'expansion des modes identifies experimentalement
+# sur les essasi PHACETIE.
+# Sur cette maquette, les mesures sont faites avec des jauges extensiometriques collees a
+# l'interieur du tube. On doit donc realiser une expansion modale a partir de donnees extensiometriques
+# Dans Code_Aster, cette donnee est assimilee a un champ EPSI_NOEU.
+# Pour cette modelisation b, on realise une expansion modale sur une base d'expansion composee de
+# deformees propres
+
+
+#------------------------------------------------------
+# Creation d'un modele 3D representatif de la structure
+#------------------------------------------------------
+
+# Pour casser la symetrie du probleme, on rajoute une masse ponctuelle au noeud N303
+#noeu3D = ('N303', 'N353', 'N402','N461','N482','N204','N154','N105','N46',
+noeu3D = ('N353', 'N402','N461','N482','N204','N154','N105','N46',
+'N25','N1410','N1460','N1509','N1784','N1805','N5543','N5993','N6443','N6974','N7163');
+
+noedis = ('N303',)
+
+MAINtemp    = LIRE_MAILLAGE( FORMAT  = 'MED',
+                             UNITE   = 20,
+                             );
+
+
+MAINtemp    = DEFI_GROUP( reuse           = MAINtemp,
+                          MAILLAGE        = MAINtemp,
+                          CREA_GROUP_MA   = _F( NOM = 'TUBE_MA',
+                                                TOUT = 'OUI') );
+
+# Creation de mailles ponctuelles au niveau des soufflets.
+#noeu3D = ('N303', 'N353', 'N402','N461','N482','N204','N154','N105','N46',
+noeu3D = ( 'N353', 'N402','N461','N482','N204','N154','N105','N46',
+'N25','N1410','N1460','N1509','N1784','N1805','N5543','N5993','N6443','N6974','N7163');
+MAINUM = CREA_MAILLAGE(  MAILLAGE  = MAINtemp,
+                         CREA_POI1 = (_F( NOEUD        = noeu3D,
+                                         NOM_GROUP_MA = 'SOU_MA3D' ),
+                                      _F( NOEUD        = noedis,
+                                         NOM_GROUP_MA = 'SOU_DIS' ),
+                                     ),
+                        );
+
+DETRUIRE( CONCEPT = _F( NOM = MAINtemp ), INFO = 1 );
+
+
+MODELNUM = AFFE_MODELE( MAILLAGE = MAINUM,
+                        AFFE  = ( _F( GROUP_MA        = 'TUBE_MA',
+                                      PHENOMENE       = 'MECANIQUE',
+                                      MODELISATION    = '3D' ),
+                                  _F( GROUP_MA        = ('SOU_MA3D','SOU_DIS',),
+                                      PHENOMENE       = 'MECANIQUE',
+                                      MODELISATION    = 'DIS_T'),
+                                ),
+                        );
+
+MATCRAY = DEFI_MATERIAU( ELAS = _F( E   = 210.E9,
+                                    NU  = 0.3,
+                                    RHO = 7800.   ),
+                        );
+
+# Raideurs locales associees aux soufflets : a peu pres recalees par rapport
+# frequences experimentales
+K1 = 2.1E7/4
+K2 = 1.8E6/4
+
+CARANUM = AFFE_CARA_ELEM( MODELE  = MODELNUM,
+                          DISCRET = (_F( GROUP_MA = ('SOU_MA3D','SOU_DIS',),
+                                        CARA = 'K_T_D_N',
+                                        VALE = (K2, K1, K2),
+                                       ),
+                                       _F( GROUP_MA = 'SOU_MA3D',
+                                        CARA = 'M_T_D_N',
+                                        VALE = (0.,),
+                                       ),
+                                       _F( GROUP_MA = 'SOU_DIS',
+                                        CARA = 'M_T_D_N',
+                                        VALE = (1.e-4,),
+                                       ),
+                                   ),
+                          );
+
+
+MATNUM = AFFE_MATERIAU( MAILLAGE = MAINUM,
+                        MODELE   = MODELNUM,
+                        AFFE     = _F( GROUP_MA = 'TUBE_MA',
+                                       MATER    = MATCRAY ),
+                       );
+
+KELNUM      = CALC_MATR_ELEM( OPTION          = 'RIGI_MECA',
+                              MODELE          = MODELNUM,
+                              CHAM_MATER      = MATNUM,
+                              CARA_ELEM       = CARANUM );
+
+MELNUM      = CALC_MATR_ELEM( OPTION          = 'MASS_MECA',
+                              MODELE          = MODELNUM,
+                              CHAM_MATER      = MATNUM,
+                              CARA_ELEM       = CARANUM );
+
+NUMENUM     = NUME_DDL( MATR_RIGI = KELNUM );
+
+KASNUM      = ASSE_MATRICE( MATR_ELEM = KELNUM,
+                            NUME_DDL  = NUMENUM );
+
+MASNUM      = ASSE_MATRICE( MATR_ELEM = MELNUM,
+                            NUME_DDL  = NUMENUM );
+
+masse = 0
+#pour casser la symetrie, je rajoute une masse ponctuelle egale au quart de la masse des elements autour du noeud N303
+# soit 0.01% de la masse totale 
+# noeud N303 == group_ma SOU_DIS
+if masse:
+    MASSE=POST_ELEM(MASS_INER=(_F(TOUT='OUI',),
+                               _F(MAILLE='M10594'),
+                               _F(MAILLE='M10595'),
+                               _F(MAILLE='M15485'),
+                               _F(MAILLE='M15505'),
+                              ),
+                MODELE=MODELNUM,
+                CHAM_MATER=MATNUM,
+                CARA_ELEM=CARANUM,)
+
+    IMPR_TABLE(TABLE=MASSE);
+
+#-----------------------------------------------
+# Base d'expansion composee des modes dynamiques
+#-----------------------------------------------
+MODEAIRt=CALC_MODES(MATR_RIGI=KASNUM,
+                    OPTION='BANDE',
+                    CALC_FREQ=_F(FREQ=(10.,200.),
+                                 ),
+                    #VERI_MODE = _F( STOP_ERREUR     = 'NON',
+                    #SEUIL           = 1e-03  ),
+                    MATR_MASS=MASNUM,
+                    SOLVEUR_MODAL=_F(MODE_RIGIDE='NON',
+                                     APPROCHE='REEL',
+                                     METHODE='TRI_DIAG',
+                                     ),
+                    TYPE_RESU='DYNAMIQUE',
+                    )
+
+
+MODEAIRt    = NORM_MODE( reuse = MODEAIRt,
+                         MODE  = MODEAIRt,
+                         NORME = 'MASS_GENE',
+                        );
+
+MODEAIR = EXTR_MODE( FILTRE_MODE = _F( MODE = MODEAIRt,
+                                       NUME_ORDRE = range(1,7)) )
+
+
+
+MODEAIR = CALC_CHAMP( reuse    = MODEAIR,
+                     RESULTAT = MODEAIR,
+                     GROUP_MA = 'TUBE_MA',
+                      DEFORMATION=('EPSI_ELNO')
+                    );
+
+MODEAIR = CALC_CHAMP( reuse      = MODEAIR,
+                   RESULTAT   = MODEAIR,
+                   GROUP_MA   = 'TUBE_MA',
+                   DEFORMATION='EPSI_NOEU'
+                  );
+
+
+##-----------------------------------------------------------------
+# Creation du modele experimental associe aux positions des jauges
+#-----------------------------------------------------------------
+
+MAYAEXP = LIRE_MAILLAGE( UNITE = 21 )
+
+MAYAEXP = DEFI_GROUP( reuse = MAYAEXP,
+                      MAILLAGE = MAYAEXP,
+                      CREA_GROUP_MA = _F( NOM = 'MC',
+                                          TOUT = 'OUI'))
+
+# modelisation discrete avec caras mecaniques bidons
+MODELEXP = AFFE_MODELE( MAILLAGE = MAYAEXP,
+                        AFFE     = _F( TOUT = 'OUI',
+                                       PHENOMENE = 'MECANIQUE',
+                                       MODELISATION = 'DIS_T' )
+                       );
+
+CARAEXP = AFFE_CARA_ELEM( MODELE  = MODELEXP,
+                          DISCRET =( _F( GROUP_MA = 'MC',
+                                        CARA     = 'K_T_D_L',
+                                        VALE     = (100.,100.,100.) ),
+                                     _F( GROUP_MA = 'MC',
+                                        CARA     = 'M_T_L',
+                                        VALE     = (0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                                        0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,) ),)
+                        );
+
+MATEXP = AFFE_MATERIAU( MAILLAGE = MAYAEXP,
+                        MODELE   = MODELEXP,
+                        AFFE     = _F( GROUP_MA = 'MC',
+                                       MATER    = MATCRAY),
+                       );
+
+KELEXP = CALC_MATR_ELEM( OPTION    ='RIGI_MECA',
+                         MODELE    = MODELEXP,
+                         CARA_ELEM = CARAEXP,
+                        );
+
+MELEXP = CALC_MATR_ELEM( OPTION    = 'MASS_MECA',
+                         MODELE    = MODELEXP,
+                         CARA_ELEM = CARAEXP,
+                        );
+
+NUMEXP = NUME_DDL( MATR_RIGI = KELEXP );
+
+
+KASSEXP = ASSE_MATRICE(MATR_ELEM = KELEXP,
+                       NUME_DDL  = NUMEXP,);
+
+
+MASSEXP = ASSE_MATRICE(MATR_ELEM = MELEXP,
+                       NUME_DDL  = NUMEXP,);
+
+# Les modes experimentaux sont "simules" par projection de la base numerique
+# sur les jauges, sous la forme d'un champ de deformation aux noeuds.
+MODESEXP = PROJ_CHAMP( RESULTAT = MODEAIR,
+                      MODELE_1 = MODELNUM,
+                      MODELE_2 = MODELEXP,
+                      NOM_CHAM = 'EPSI_NOEU',
+                      )
+
+
+
+#-------------------------------------------------------
+# Expansion des modes experimentaux sur la base statique
+#-------------------------------------------------------
+
+# Une expansion modale avec la base d'expansion NUMSTAT
+REGEN = PROJ_MESU_MODAL( MODELE_CALCUL = _F( BASE   = MODEAIR,
+                                             MODELE = MODELNUM),
+                         MODELE_MESURE = _F( MESURE   = MODESEXP,
+                                             MODELE   = MODELEXP,
+                                             NOM_CHAM = 'EPSI_NOEU'),
+                         RESOLUTION    = _F( METHODE = 'SVD',
+                                             EPS    = 1.0E-5,),
+                         NOM_PARA      = ('AMOR_GENE','MASS_GENE','AMOR_REDUIT')
+                       );
+
+
+RESEtmp = REST_GENE_PHYS( RESU_GENE  = REGEN,
+                          TOUT_ORDRE = 'OUI',
+                          TOUT_CHAM  = 'OUI',
+                          MODE_MECA  = MODEAIR
+                        );
+
+# Les modes numeriques sont calcules sans amortissment. On ajoute
+# l'amortissment a la main avec les deux commandes suivantes.
+vale_amor = (0.01,0.02,0.03,0.04,0.05,0.06 )
+LISTAMOR = DEFI_LIST_REEL( VALE = vale_amor);
+
+RESET = DEFI_BASE_MODALE( NUME_REF = NUMENUM,
+                          RITZ = _F( MODE_MECA = RESEtmp ),
+                          LIST_AMOR = LISTAMOR );
+
+
+# On verifie que les amortissments ont bien ete ajoutes dans la sd
+TABLAMOR = RECU_TABLE( CO = RESET, NOM_PARA = 'AMOR_REDUIT')
+
+for ind in range(6):
+    TEST_TABLE(VALE_CALC=vale_amor[ind],
+               NOM_PARA='AMOR_REDUIT',
+               TABLE=TABLAMOR,
+               FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                         VALE_I=ind+1,),
+               )
+
+
+# On etend une base de modes dynamique experimentaux simules, et la base
+# d'expansion est la meme que celle utilisee pour simuler les mesures.
+# on obtient une tres bonne reconstitution, avec un MAC presque a 100%.
+MAC = MAC_MODES( BASE_1 = RESET, BASE_2 = MODEAIR, INFO = 2 );
+
+
+# Test du resultat : on verifie (non regression) que l'auto-mac est superieur
+# a 99%
+#vale_calc : valeur calculee sur aster5
+vale_calc = (0.999996052746, 0.999996052746, 0.999893920434,
+            0.999893920364, 0.997765623265, 0.997765622411)
+
+for ind in range(6):
+    TEST_TABLE(REFERENCE='ANALYTIQUE',
+               PRECISION=0.01,
+               VALE_CALC=vale_calc[ind],
+               VALE_REFE=1.,
+               NOM_PARA='MAC',
+               TABLE=MAC,
+               FILTRE=(_F(NOM_PARA='NUME_MODE_1',
+                          VALE_I=ind+1,),
+                       _F(NOM_PARA='NUME_MODE_2',
+                          VALE_I=ind+1,),
+                       ),
+               )
+
+
+FIN();

@@ -5,5 +5,6 @@ P mpi_nbcpu 1
 P mpi_nbnoeud 1
 P testlist verification sequential
 
-F comm sdls114a.comm D 1
-F mmed sdls114a.mmed D 20
+F comm sdls114d.comm D 1
+F datg sdls114d.datg D 16
+F mgib sdls114d.mgib D 19

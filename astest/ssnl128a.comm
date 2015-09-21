@@ -1,0 +1,450 @@
+# TITRE POUTRE FLUAGE AXIAL D'UNE PMF AVEC COMPORTEMENT
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+#   GRAN_IRRA_LOG DEPENDANT DE LA FLUENCE ET GRANDISSEMENT
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTRANET'),DEBUG=_F(SDVERI='OUI'),)
+
+# Lecture du maillage
+MA = LIRE_MAILLAGE()
+
+
+MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
+  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI',),)
+
+MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
+  CREA_GROUP_NO=_F(  NOM = 'TOUT', GROUP_MA='TOUT',),)
+
+# AFFECTATION DES MODELES DE COMPORTEMENT
+MO = AFFE_MODELE(
+   MAILLAGE= MA,
+   AFFE=(
+      _F(TOUT='OUI',
+         PHENOMENE= 'MECANIQUE',
+         MODELISATION= 'POU_D_TGM'),
+    ),
+)
+
+# unité en mm
+Ray      = 0.100
+Epa      = 0.001
+nbFibre4 = 40
+
+Fibres = ()
+SectionF = pi*(2.0*Ray-Epa)*Epa/(nbFibre4*4)
+for ii in range(nbFibre4*4):
+    angle = pi*ii/(nbFibre4*4)
+    xx = (Ray - Epa*0.5)*cos(angle)
+    yy = (Ray - Epa*0.5)*sin(angle)
+    Fibres += ( xx,yy,SectionF, )
+
+GF=DEFI_GEOM_FIBRE(
+    INFO=1,
+    FIBRE=_F(GROUP_FIBRE='SECF', CARA='SURFACE',VALE=Fibres, COOR_AXE_POUTRE = (0., 0.,), ),
+)
+section = pi*(2.0*Ray-Epa)*Epa
+Inertie = pi*(Ray**4 - (Ray-Epa)**4)/4
+
+
+# AFFECTATION DES CARACTERISTIQUES DES ELEMENTS
+CAREL = AFFE_CARA_ELEM(
+    MODELE= MO,
+    INFO=1,
+    POUTRE= _F( GROUP_MA = ('TOUT',),
+                SECTION='GENERALE',
+                CARA=('A','AY','AZ', 'IY','IZ', 'JX','EY','EZ'),
+                VALE=(  section, 1.0, 1.0,
+                        Inertie, Inertie,
+                        Inertie*2.0, 0.0 , 0.0), ),
+    GEOM_FIBRE=GF,
+    MULTIFIBRE = _F(PREC_AIRE=1.84e-3,PREC_INERTIE=1.1e-03, GROUP_MA='TOUT', GROUP_FIBRE='SECF',),
+)
+
+# CREATION DU CHAMP DE FLUENCE
+CHXN=CREA_CHAMP(
+    OPERATION='EXTR',
+    TYPE_CHAM='NOEU_GEOM_R', NOM_CHAM='GEOMETRIE', MAILLAGE=MA,
+)
+
+FLUXAX=DEFI_FONCTION(
+    NOM_PARA='X',
+    VALE=(     0.,  1.0E-5,
+            4000.0, 1.0E-5,),
+)
+
+
+FLUX_Y=DEFI_FONCTION(
+    NOM_PARA='Y',
+    VALE=(   0.0, 1.0,
+           100.0, 1.0,),
+)
+
+FLUXPL=DEFI_NAPPE(
+    NOM_PARA='Z',
+    PARA=(0., 100.,),
+    FONCTION=(FLUX_Y, FLUX_Y,),
+)
+
+#------------------------------------------------
+# CREATION DU CHAMP ASSOCIE A LA FONCTION FLUXAX
+#------------------------------------------------
+CH_FAX=CREA_CHAMP(
+    OPERATION='AFFE', TYPE_CHAM='NOEU_NEUT_F', MAILLAGE=MA,
+    AFFE=_F( TOUT = 'OUI', NOM_CMP = 'X1', VALE_F = FLUXAX),
+    INFO = 1,
+)
+
+CH_FAX_R=CREA_CHAMP(
+    OPERATION='EVAL', TYPE_CHAM='NOEU_NEUT_R',
+    CHAM_F=CH_FAX, CHAM_PARA=CHXN,
+)
+
+#-----------------------------------------------
+# CREATION DU CHAMP ASSOCIE A LA FONCTION FLUXPL
+#-----------------------------------------------
+CH_FPL=CREA_CHAMP(
+    OPERATION='AFFE', TYPE_CHAM='NOEU_NEUT_F', MAILLAGE=MA,
+    AFFE=_F( TOUT = 'OUI', NOM_CMP = 'X2', VALE_F = FLUXPL),
+)
+
+CH_FPL_R=CREA_CHAMP(
+    OPERATION='EVAL', TYPE_CHAM='NOEU_NEUT_R',
+    CHAM_F=CH_FPL, CHAM_PARA=CHXN,
+)
+
+#------------------
+# FONCTION PRODUIT
+#------------------
+MULT = FORMULE(NOM_PARA=('X1','X2','INST'),VALE='X1*X2*INST')
+
+CHRES=CREA_CHAMP(
+    OPERATION='AFFE', TYPE_CHAM='NOEU_NEUT_F', MAILLAGE=MA,
+    AFFE=_F( TOUT = 'OUI', NOM_CMP = 'X1', VALE_F = MULT),
+)
+
+#-----------------------------------------------------
+# CREATION DU CHAMP FLUENC1 ASSOCIE A LA LISTE LINST
+# LE CHAMP EST CALCULE POUR LES 5 PREMIERS INSTANTS
+#-----------------------------------------------------
+INST0_1=CREA_CHAMP(
+    OPERATION='AFFE', TYPE_CHAM='NOEU_INST_R', MAILLAGE=MA,
+    AFFE=_F( TOUT = 'OUI', NOM_CMP = 'INST', VALE = 0.0),
+)
+
+REST0_1=CREA_CHAMP(
+    OPERATION='EVAL',
+    TYPE_CHAM='NOEU_NEUT_R', CHAM_F=CHRES,
+    CHAM_PARA=(CH_FAX_R,CH_FPL_R,INST0_1,),
+)
+
+RES00_1=CREA_CHAMP(
+    OPERATION='ASSE', TYPE_CHAM='NOEU_IRRA_R', MAILLAGE=MA,
+    ASSE=   _F( TOUT = 'OUI', CHAM_GD = REST0_1,
+                NOM_CMP = ('X1',),  NOM_CMP_RESU = ('IRRA',),),
+    INFO=1,
+)
+
+INST1_1=CREA_CHAMP(
+    OPERATION='AFFE', TYPE_CHAM='NOEU_INST_R', MAILLAGE=MA,
+    AFFE=_F( TOUT = 'OUI', NOM_CMP = 'INST', VALE = 1.0),
+)
+
+REST1_1=CREA_CHAMP(
+    OPERATION='EVAL', TYPE_CHAM='NOEU_NEUT_R', CHAM_F=CHRES,
+    CHAM_PARA=(CH_FAX_R, CH_FPL_R, INST1_1,),
+)
+
+RES11_1=CREA_CHAMP(
+    OPERATION='ASSE', TYPE_CHAM='NOEU_IRRA_R', MAILLAGE=MA,
+    ASSE=   _F( TOUT = 'OUI', CHAM_GD = REST1_1,
+                NOM_CMP = ('X1',),  NOM_CMP_RESU = ('IRRA',),),
+    INFO=1,
+)
+
+INST2_1=CREA_CHAMP(
+    OPERATION='AFFE', TYPE_CHAM='NOEU_INST_R', MAILLAGE=MA,
+    AFFE=_F( TOUT = 'OUI', NOM_CMP = 'INST', VALE = 864.99),
+)
+
+REST2_1=CREA_CHAMP(
+    OPERATION='EVAL', TYPE_CHAM='NOEU_NEUT_R', CHAM_F=CHRES,
+    CHAM_PARA=(CH_FAX_R,CH_FPL_R,INST2_1,),
+)
+
+RES22_1=CREA_CHAMP(
+    OPERATION='ASSE', TYPE_CHAM='NOEU_IRRA_R', MAILLAGE=MA,
+    ASSE=   _F( TOUT = 'OUI', CHAM_GD = REST2_1,
+                NOM_CMP = ('X1',),  NOM_CMP_RESU = ('IRRA',),),
+    INFO=1,
+)
+
+INST3_1=CREA_CHAMP(
+    OPERATION='AFFE', TYPE_CHAM='NOEU_INST_R', MAILLAGE=MA,
+    AFFE=_F( TOUT = 'OUI', NOM_CMP = 'INST', VALE = 1728.98),
+)
+
+REST3_1=CREA_CHAMP(
+    OPERATION='EVAL', TYPE_CHAM='NOEU_NEUT_R', CHAM_F=CHRES,
+    CHAM_PARA=(CH_FAX_R, CH_FPL_R, INST3_1,),
+)
+
+RES33_1=CREA_CHAMP(
+    OPERATION='ASSE', TYPE_CHAM='NOEU_IRRA_R', MAILLAGE=MA,
+    ASSE=_F( TOUT = 'OUI', CHAM_GD = REST3_1,
+             NOM_CMP = ('X1',),  NOM_CMP_RESU = ('IRRA',),),
+    INFO=1,
+)
+
+INST4_1=CREA_CHAMP(
+    OPERATION='AFFE', TYPE_CHAM='NOEU_INST_R', MAILLAGE=MA,
+    AFFE=_F( TOUT = 'OUI', NOM_CMP = 'INST', VALE = 2592.97,),
+)
+
+REST4_1=CREA_CHAMP(
+    OPERATION='EVAL', TYPE_CHAM='NOEU_NEUT_R', CHAM_F=CHRES,
+    CHAM_PARA=(CH_FAX_R, CH_FPL_R, INST4_1,),
+)
+
+RES44_1=CREA_CHAMP(
+    OPERATION='ASSE', TYPE_CHAM='NOEU_IRRA_R', MAILLAGE=MA,
+    ASSE=   _F( TOUT = 'OUI', CHAM_GD = REST4_1,
+                NOM_CMP = ('X1',),  NOM_CMP_RESU = ('IRRA',),),
+    INFO=1,
+)
+
+INST5_1=CREA_CHAMP(
+    OPERATION='AFFE', TYPE_CHAM='NOEU_INST_R', MAILLAGE=MA,
+    AFFE=_F( TOUT = 'OUI', NOM_CMP = 'INST', VALE = 3456.96,),
+)
+
+REST5_1=CREA_CHAMP(
+    OPERATION='EVAL', TYPE_CHAM='NOEU_NEUT_R', CHAM_F=CHRES,
+    CHAM_PARA=(CH_FAX_R, CH_FPL_R, INST5_1,)
+)
+
+RES55_1=CREA_CHAMP(
+    OPERATION='ASSE', TYPE_CHAM='NOEU_IRRA_R', MAILLAGE=MA,
+    ASSE=   _F( TOUT = 'OUI', CHAM_GD = REST5_1,
+                NOM_CMP = ('X1',),  NOM_CMP_RESU = ('IRRA',)),
+    INFO=1,
+)
+
+FLUENC1=CREA_RESU(
+    OPERATION='AFFE', TYPE_RESU='EVOL_VARC', NOM_CHAM='IRRA',
+    AFFE=(
+        _F( CHAM_GD = RES00_1, INST =   0.0),
+        _F( CHAM_GD = RES11_1, INST =   1.0),
+        _F( CHAM_GD = RES22_1, INST = 864.99),
+        _F( CHAM_GD = RES33_1, INST = 1728.98),
+        _F( CHAM_GD = RES44_1, INST = 2592.97),
+        _F( CHAM_GD = RES55_1, INST = 3456.96),
+        _F( CHAM_GD = RES55_1, INST = 5000.00),
+    ),
+)
+#
+FON_T=DEFI_FONCTION(
+    NOM_PARA='X', NOM_RESU='TEMP',
+    VALE=( 0., 299.85, 1., 299.85,),
+)
+
+CHTEM=CREA_CHAMP(
+    OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_F', MAILLAGE=MA,
+    AFFE=_F(  TOUT = 'OUI', NOM_CMP = 'TEMP', VALE_F = FON_T,),
+)
+
+CHTH=CREA_RESU(
+    OPERATION='AFFE', TYPE_RESU='EVOL_THER', NOM_CHAM='TEMP',
+    AFFE=(
+        _F( CHAM_GD = CHTEM, INST = 0.0,),
+        _F( CHAM_GD = CHTEM, INST = 5000.0,),
+    ),
+)
+
+# DEFINITION DES MATERIAUX
+
+INCLUDE(DONNEE='ssnl128a.mater.datg')
+
+
+COMPF1=DEFI_COMPOR(
+    GEOM_FIBRE=GF,
+    MATER_SECT=ACIER,
+    MULTIFIBRE=(
+        _F(GROUP_FIBRE='SECF', MATER=ACIER, RELATION='GRAN_IRRA_LOG',),
+    ),
+)
+
+#IMPR_RESU(FORMAT='RESULTAT',RESU=_F(RESULTAT=FLUENC1,),)
+#IMPR_RESU(FORMAT='RESULTAT',RESU=_F(RESULTAT=CHTH,),)
+# -------------------------------------------------------
+# Affectation des materiaux
+CHMAT1=AFFE_MATERIAU(MAILLAGE=MA,
+    AFFE=  _F(  TOUT = 'OUI', MATER = ACIER) ,
+    AFFE_VARC=(
+        _F(NOM_VARC='IRRA', EVOL =FLUENC1,),
+        _F(NOM_VARC='TEMP', EVOL =CHTH,VALE_REF=0.),
+    ),
+    AFFE_COMPOR=_F(TOUT='OUI',COMPOR=COMPF1),
+)
+
+# ----------------------------------------------------------------------
+# --------------- DEFINITION DES CHARGEMENTS -----------------
+CHAR1=AFFE_CHAR_MECA(  MODELE=MO,
+    DDL_IMPO= _F( GROUP_NO = 'A', DX = 0., DY = 0., DZ = 0., ),
+)
+
+CHAR3=AFFE_CHAR_MECA(  MODELE=MO,
+    DDL_IMPO= _F( GROUP_NO = 'TOUT', DRX = 0., DRY = 0., DRZ = 0., ),
+)
+
+CHARF=AFFE_CHAR_MECA(  MODELE=MO,
+    FORCE_NODALE = _F( NOEUD=('N2',), FX = section*100.0, ),
+)
+
+LINST=DEFI_LIST_REEL(
+    DEBUT=0.0,
+    INTERVALLE=(
+        _F( JUSQU_A =    1.00, NOMBRE = 1),
+        _F( JUSQU_A = 1728.98, NOMBRE = 10),
+        _F( JUSQU_A = 3456.96, NOMBRE = 10),
+        _F( JUSQU_A = 5000.00, NOMBRE = 10),
+    )
+)
+
+# **********************************************************************
+#                  C A L C U L   N O N   L I N E A I R E
+# **********************************************************************
+F_MULT=DEFI_FONCTION(
+    NOM_PARA='INST',
+    VALE=( 0., 1.,3456.96,1.0,5000.0,0.0),
+)
+
+STNL1=STAT_NON_LINE(
+    INFO      = 1,
+    MODELE    = MO,
+    CHAM_MATER= CHMAT1,
+    CARA_ELEM = CAREL,
+    EXCIT     = (
+        _F(CHARGE = CHAR1, ),
+        _F(CHARGE = CHAR3, ),
+        _F(CHARGE = CHARF, FONC_MULT=F_MULT,),),
+    CONVERGENCE=_F(ITER_GLOB_MAXI = 20),
+    INCREMENT=_F(LIST_INST = LINST),
+    NEWTON=_F(MATRICE='TANGENTE',
+              REAC_ITER=1),
+   COMPORTEMENT=_F(RELATION='MULTIFIBRE',
+                   GROUP_MA=('TOUT',),),
+                   );
+
+STNL1=CALC_CHAMP(reuse =STNL1, RESULTAT=STNL1, CONTRAINTE=('SIGM_ELNO'),)
+
+
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=16,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   SOUS_POINT=1,
+                   RESULTAT=STNL1,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=100.0,
+                   VALE_REFE=100.0,
+                   MAILLE='M4',),
+                _F(NUME_ORDRE=16,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   SOUS_POINT=1,
+                   RESULTAT=STNL1,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V1',
+                   VALE_CALC= 2.3855265474398E-05,
+                   VALE_REFE= 2.386100E-05,
+                   MAILLE='M4',),
+                _F(NUME_ORDRE=16,
+                   GROUP_NO='B',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=STNL1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC= 1.0238552655E-03,
+                   VALE_REFE= 1.0239E-3,),
+                ),
+          )
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=21,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   SOUS_POINT=1,
+                   RESULTAT=STNL1,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=100.0,
+                   VALE_REFE=100.0,
+                   MAILLE='M4',),
+                _F(NUME_ORDRE=21,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   SOUS_POINT=1,
+                   RESULTAT=STNL1,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V1',
+                   VALE_CALC= 3.17656442508E-05,
+                   VALE_REFE= 3.177300E-05,
+                   MAILLE='M4',),
+                _F(NUME_ORDRE=21,
+                   GROUP_NO='B',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=STNL1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC= 1.0317656442795E-03,
+                   VALE_REFE= 1.0318E-3,),
+                ),
+          )
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=31,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   SOUS_POINT=1,
+                   RESULTAT=STNL1,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC= 0.0,
+                   VALE_REFE= 0.0,
+                   CRITERE='ABSOLU',
+                   MAILLE='M4',),
+                _F(NUME_ORDRE=31,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   SOUS_POINT=1,
+                   RESULTAT=STNL1,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V1',
+                   VALE_CALC= 3.17656442508E-05,
+                   VALE_REFE= 3.177300E-05,
+                   MAILLE='M4',),
+                _F(NUME_ORDRE=31,
+                   GROUP_NO='B',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=STNL1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC= 3.1765644279538E-05,
+                   VALE_REFE= 3.1773E-05,),
+                ),
+          )
+
+FIN()

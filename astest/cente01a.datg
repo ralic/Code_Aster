@@ -1,0 +1,226 @@
+* /home/verdiere/CHARPY/PEX1200/maillage/KV00.datg
+
+
+*==================================================================*
+  
+***           PROGRAMM DE MAILLAGE DE L'ESSAI CHARPY             ***
+
+*==================================================================*
+
+* Ce programme a ete fourni le 22/01/99 par YURITSINN du CEA/DMT
+* et modifie par N. VERDIERE pour etre utilisable sous LANCASTER
+* Teste le 08/07/1999 ==> OK avec le fichier de commande chpyvp.comm
+
+*++++++++++++++++++++++ OPTIONS DE CALCUL +++++++++++++++++++++++++*
+
+option sauv form 'centen01.mgib' ;
+option dime 2 elem qua8;
+
+
+********************************************************************
+
+***                    Maillage de l'eprouvette                  ***
+
+********************************************************************
+
+*+++++++++++++++  Creation des points du maillage  ++++++++++++++++*
+
+p1 = 0.0 0.0 ;
+p2 = 20.0 0.0 ;
+p3 = 20.0 10.0 ;
+p4 = 0.9955 10.0 ;
+p5 = 0.231 8.1543 ;
+p6 = 0.0 8.0 ;
+p7 = 0.0 5.0 ;
+p8 = 2.62 7.0 ;
+p9 = 2.62 10.0 ;
+p10 = 2.62 0.0 ;
+p11 = 20.0 7.0 ;
+p12 = 27.5 0.0 ;
+p13 = 27.5 7.0 ;
+p14 = 27.5 10.0 ;
+p15 = 0.0 8.25 ;
+p16 = 22.0 10.0 ;
+p17 = 22.0 0.0 ;
+p18 = 22.0 7.0 ;
+
+*+++++++++++++++ Creation des lignes du maillage +++++++++++++++++++*
+
+p1p10 = p1 d 12 p10 ;
+p8p10 = p8 d 10 p10 ;
+p8p7 = p8 d 12 p7 ;
+p7p1 = p7 d 10 p1 ;
+p10p2 = p10 d 20 p2 ;
+p2p11 = p2 d 10 p11 ;
+p11p8 = p11 d 20 p8 ;
+p11p3 = p11 d 8 p3 ;
+p3p9 = p3 d 20 p9 ;
+p9p8 = p9 d 8 p8 ;
+p7p6 = p7 d -16 p6 'DINI' 0.5 'DFIN' 0.1 ;
+p6p5 = c 12 p6 p15 p5 ;
+p5p8 = p5 d -16 p8 'DINI' 0.15 'DFIN' 0.5 ;
+p5p4 = p5 d 8 p4 ;
+p4p9 = p4 d -16 p9 'DINI' 0.15 'DFIN' 0.25 ;
+p17p12 = p17 d 6 p12 ;
+p12p13 = p12 d 10 p13 ;
+p13p18 = p13 d 6 p18 ;
+p16p14 = p16 d 6 p14 ;
+p14p13 = p14 d 8 p13 ;
+p3p16 = p3 d 10 p16 ;
+p2p17 = p2 d 10 p17 ;
+p11p18 = p11 d 10 p18 ;
+p18p17 = p18 d 10 p17 ;
+p16p18 = p16 d 8 p18 ;
+
+
+*+++++++++++++++++++++++ Creation des mailles  +++++++++++++++++++++*
+
+s1 = daller p1p10 (inve p8p10) p8p7 p7p1 ;
+s2 = daller p10p2 p2p11 p11p8 p8p10 ;
+s3 = daller (inve p11p8) p11p3 p3p9 p9p8 ;
+s4 = daller p17p12 p12p13 p13p18 p18p17 ;
+s5 = daller p16p14 p14p13 p13p18 (inve p16p18) ;
+s6 = daller p8p7 p7p6 p6p5 p5p8 ;
+s7 = daller p5p4 p4p9 p9p8 (inve p5p8) ;
+s8 = daller p18p17 (inve p2p17) p2p11 p11p18 ;
+s9 = daller p3p16 p16p18 (inve p11p18) p11p3 ; 
+
+
+eprouv = s1 et s2 et s3 et s4 et s5 et s6 et s7 et s8 et s9 ;
+elim 0.01 eprouv ;
+
+*++++++++++++++++++++++ Creation des lignes ++++++++++++++++++++++++*
+
+sym_ep = (inve p7p1) et p7p6 ;
+trac sym_ep elem;
+cont1_ep = p1p10 coul vert;
+cont2_ep = ((inve p3p16) et (inve p16p14) ) coul rouge ;
+
+
+********************************************************************
+  
+***                      MAILLAGE DU MARTEAU                     ***
+
+********************************************************************
+
+*+++++++++++++++  Creation des points du maillage  ++++++++++++++++*
+
+r1 = 2.0 ;
+mr1 = -1*r1 ;
+alpha = 15. ;
+cosalpha = cos alpha ;
+sinalpha = sin alpha ;
+m1 = 0.0 0.0 ;
+m2 = 0.0 -10.0 ;
+m3 = 4.2 -10.0 ;
+m4 = (r1*cosalpha) (-1*r1*(1-sinalpha)) ;
+m5 = (r1/2) mr1 ;
+m6 = 2.1 -10.0 ;
+cm = 0.0 mr1 ;
+
+*+++++++++++++++ Creation des lignes du maillage +++++++++++++++++++*
+
+m1cm = m1 d 8 cm ;
+cmm5 = cm d 12 m5 ;
+m5m4 = m5 d 8 m4 ;
+m4m1 = c 12 m4 cm m1 ;
+m5m6 = m5 d 8 m6 ;
+m6m2 = m6 d 12 m2 ;
+m2cm = m2 d 8 cm ;
+m4m3 = m4 d 8 m3 ;
+m3m6 = m3 d 8 m6 ;
+
+*+++++++++++++++++++++++ Creation des mailles  +++++++++++++++++++++*
+
+u1 = daller m1cm cmm5 m5m4 m4m1 ;
+u2 = daller cmm5 m5m6 m6m2 m2cm ;
+u3 = daller m5m4 m4m3 m3m6 (inve m5m6) ;
+couteau = u1 et u2 et u3 ;
+elim 0.01 couteau ;
+
+*++++++++++++++++++++++ Creation des lignes ++++++++++++++++++++++++*
+
+dep_cout = m3m6 et m6m2 ;
+cont1_co = m4m1 ;
+cont1_co = cont1_co coul rouge;
+sym_co = m1cm et (inve m2cm) ;
+
+
+********************************************************************
+  
+***                      MAILLAGE D'APPUI                        ***
+
+********************************************************************
+
+
+*+++++++++++++++  Creation des points du maillage  ++++++++++++++++*
+
+a1 = 27.5 10.0 ;
+a2 = 21. 10.0 ;
+a3 = 20.0184 11.1908 ;
+a4 = 20.7588 15.0 ;
+a5 = 22.5 15.0 ;
+a6 = 27.5 15.0 ;
+a7 = 21. 11.0 ;
+
+*+++++++++++++++ Creation des lignes du maillage +++++++++++++++++++*
+
+a1a2 = a1 d -14 a2 'DINIT' 1.1 'DFIN' 0.3 ;
+a2a3 = c -10 a2 a7 a3  'DINIT' 0.4 'DFIN' 0.6 ;
+a3a4 = a3 d -10 a4 'DINIT' 0.2 'DFIN' 1 ;
+a4a5 = a4 d 10 a5 ;
+a5a2 = a5 d -10 a2 'DINIT' 1 'DFIN' 0.2 ;
+a5a6 = a5 d -14 a6 'DINIT' 0.4 'DFIN' 1.1;
+a6a1 = a6 d -10 a1 'DINIT' 1 'DFIN' 0.2 ;
+
+*+++++++++++++++++++++++ Creation des mailles  +++++++++++++++++++++*
+
+v1 = daller a1a2 (inve a5a2) a5a6 a6a1 ;
+v2 = daller a2a3 a3a4 a4a5 a5a2 ;
+appui = v1 et v2 ;
+elim 0.01 appui ;
+
+*++++++++++++++++++++++ Creation des lignes ++++++++++++++++++++++++*
+
+cont2_ap = (inve a2a3) et (inve a1a2) ;
+cont2_ap = cont2_ap coul vert;
+enc_app = a4a5 et a5a6 ;
+coteap = a6a1 ;
+
+
+********************************************************************
+
+***                        TRACE DU MAILLAGE                     ***
+
+********************************************************************
+
+no_dep = m1;
+no_dco = p1;
+no_cod = p4;
+mailtot = eprouv et couteau et appui ;
+trac eprouv ;
+trac couteau ;
+trac appui ;
+maillage = mailtot et cont1_ep et cont2_ep et cont1_co et cont2_ap
+  et dep_cout et sym_co et sym_ep et enc_app et no_dep et no_dco
+  et no_cod ;
+
+trac maillage ;
+list(nbno eprouv);
+list(nbno couteau);
+list(nbno appui);
+list(nbno mailtot);
+list(nbel eprouv);
+list(nbel couteau);
+list(nbel appui);
+list(nbel mailtot);
+
+********************************************************************
+
+*******                        SAUVEGARDE                     ******
+
+********************************************************************
+
+sauve format maillage;
+
+fin;

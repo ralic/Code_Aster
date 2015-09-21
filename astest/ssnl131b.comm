@@ -1,0 +1,197 @@
+# TITRE UTILISATION DE LA LIAISON GRILLE CRAYON:
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+#       LOI DIS_GRICRA POUR DES ELEMENTS DISCRETS
+# ======================================================================
+# UTILISATION : ASSEMBLAGE COMBUSTIBLE, TEST DE LA LIAISON GRILLE-CRAYON
+#               COMPORTEMENT EN ROTATION
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTRANET'),DEBUG=_F(SDVERI='OUI'))
+
+MA=LIRE_MAILLAGE(  )
+
+MA=DEFI_GROUP(
+   reuse =MA,
+   MAILLAGE=MA,
+   CREA_GROUP_NO=(_F(TOUT_GROUP_MA='OUI',),),
+              );
+
+MO=AFFE_MODELE(  MAILLAGE=MA,
+                 AFFE=(_F(GROUP_MA = ('LI1'),
+                          PHENOMENE = 'MECANIQUE',
+                          MODELISATION = 'DIS_TR'),
+                                ),
+                  INFO=2,);
+
+
+
+CHART=AFFE_CHAR_MECA(MODELE=MO,
+                     DDL_IMPO=(_F(NOEUD='N2',DRX=1.,),),
+                       );
+
+BLOC=AFFE_CHAR_MECA( MODELE=MO,
+                     DDL_IMPO=(
+                          _F(NOEUD = ('N1','N3','N4','N5'),
+                             DX = 0., DY = 0., DZ = 0.,
+                             DRX = 0., DRY = 0., DRZ = 0.
+                             ),
+                          _F(NOEUD = ('N2',),
+                             DZ=0.,
+                             DRZ = 0.),
+                             ),
+                       );
+
+FONCT=DEFI_FONCTION(   NOM_PARA='INST',
+                           VALE=( 0.,    0.,
+                                  1.,  0.01,
+                                  2.,  0.00001,
+                                  ) ,);
+
+LINST=DEFI_LIST_REEL( DEBUT=0.,
+                      INTERVALLE=(
+                         _F( JUSQU_A = 2., NOMBRE = 20),
+                       ),
+                       );
+
+carel=[0.]*78;
+
+CAREG=AFFE_CARA_ELEM(MODELE=MO,
+                     DISCRET=_F(GROUP_MA=('LI1'),
+                                CARA = 'K_TR_L',
+                                VALE = carel,
+                                REPERE='LOCAL' , ),
+                                ORIENTATION=(_F(GROUP_MA=('LI1',),
+                                CARA='VECT_Y',
+                                VALE=(0.,0.,1.),),),
+                        );
+
+INCLUDE(DONNEE='ssnl131b.mater.datg')
+
+
+CHMATG=AFFE_MATERIAU(MAILLAGE=MA,
+                     AFFE=_F(  GROUP_MA = ('LI1'), MATER = MAT_G),
+                     );
+
+RESG=STAT_NON_LINE(MODELE=MO,
+                   CHAM_MATER=CHMATG,
+                   CARA_ELEM=CAREG,
+                       EXCIT=( _F(CHARGE = CHART,
+                                  FONC_MULT = FONCT),
+                               _F(CHARGE = BLOC,),
+                              ),
+                   COMPORTEMENT=(_F(RELATION = 'ELAS',
+                                 TOUT = 'OUI'  ),
+                              _F(RELATION = 'DIS_GRICRA',
+                                 GROUP_MA = ('LI1'),  ),
+                                 ),
+                   INCREMENT=_F(LIST_INST = LINST,
+                                ),
+                   NEWTON=_F(MATRICE = 'TANGENTE',
+                             REAC_ITER=1,
+                              ),
+                   CONVERGENCE=_F(ITER_GLOB_MAXI=100,)
+              );
+
+RESG=CALC_CHAMP(reuse =RESG,
+            RESULTAT=RESG,
+            FORCE='FORC_NODA',
+
+            GROUP_MA=('LI1'),);
+
+TABDEP=POST_RELEVE_T(
+   ACTION=_F(
+      INTITULE='DEPLACEMENTS DE N2',
+      NOEUD='N2',
+      RESULTAT=RESG,
+      NOM_CHAM='DEPL',
+      NOM_CMP=('DRX'),
+      OPERATION='EXTRACTION',),);
+
+DEPN2=RECU_FONCTION(TABLE=TABDEP,
+                    PARA_X='INST',
+                    PARA_Y='DRX',
+                    PROL_DROITE='CONSTANT',
+                    PROL_GAUCHE='CONSTANT',);
+
+TABFOR=POST_RELEVE_T(
+   ACTION=_F(
+      INTITULE='FORCE EN N2',
+      NOEUD='N2',
+      RESULTAT=RESG,
+      NOM_CHAM='FORC_NODA',
+      NOM_CMP=('DRX'),
+      OPERATION='EXTRACTION',),);
+
+FORN2=RECU_FONCTION(TABLE=TABFOR,
+                    PARA_X='INST',
+                    PARA_Y='DRX',
+                    PROL_DROITE='CONSTANT',
+                    PROL_GAUCHE='CONSTANT',);
+
+
+TEST_RESU(RESU=(_F(INST=0.10000000000000001,
+                   RESULTAT=RESG,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N2',
+                   NOM_CMP='DRX',
+                   VALE_CALC=0.001,
+                   TOLE_MACHINE=1.E-3,
+                   ),
+                _F(INST=0.10000000000000001,
+                   RESULTAT=RESG,
+                   NOM_CHAM='FORC_NODA',
+                   NOEUD='N2',
+                   NOM_CMP='DRX',
+                   VALE_CALC=1.0,
+                   TOLE_MACHINE=1.E-3,
+                   ),
+                _F(INST=0.29999999999999999,
+                   RESULTAT=RESG,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N2',
+                   NOM_CMP='DRX',
+                   VALE_CALC=0.003,
+                   TOLE_MACHINE=1.E-3,
+                   ),
+                _F(INST=0.29999999999999999,
+                   RESULTAT=RESG,
+                   NOM_CHAM='FORC_NODA',
+                   NOEUD='N2',
+                   NOM_CMP='DRX',
+                   VALE_CALC=1.50000015,
+                   TOLE_MACHINE=1.E-3,
+                   ),
+                _F(INST=1.0,
+                   RESULTAT=RESG,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N2',
+                   NOM_CMP='DRX',
+                   VALE_CALC=0.01,
+                   TOLE_MACHINE=1.E-3,
+                   ),
+                _F(INST=1.0,
+                   RESULTAT=RESG,
+                   NOM_CHAM='FORC_NODA',
+                   NOEUD='N2',
+                   NOM_CMP='DRX',
+                   VALE_CALC=2.000500675,
+                   TOLE_MACHINE=1.E-3,
+                   ),
+                ),
+          )
+
+FIN()

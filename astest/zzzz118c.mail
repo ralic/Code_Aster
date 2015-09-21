@@ -1,0 +1,67 @@
+TITRE    
+ZZZZ118C : 49 MAILLES IDENTIQUES POUR AFFECTER 49 MATERIAUX DU CATALOGUE
+FINSF
+%
+COOR_2D    N
+  N1        0.00000000E+00  0.10000000E+01
+  N2        0.10000000E+01  0.10000000E+01
+  N3        0.00000000E+00  0.00000000E+00
+  N4        0.10000000E+01  0.00000000E+00
+FINSF
+%
+QUAD4
+  M1     N3      N4      N2      N1
+  M2     N3      N4      N2      N1
+  M3     N3      N4      N2      N1
+  M4     N3      N4      N2      N1
+  M5     N3      N4      N2      N1
+  M6     N3      N4      N2      N1
+  M7     N3      N4      N2      N1
+  M8     N3      N4      N2      N1
+  M9     N3      N4      N2      N1
+  M10    N3      N4      N2      N1
+  M11    N3      N4      N2      N1
+  M12    N3      N4      N2      N1
+  M13    N3      N4      N2      N1
+  M14    N3      N4      N2      N1
+  M15    N3      N4      N2      N1
+  M16    N3      N4      N2      N1
+  M17    N3      N4      N2      N1
+  M18    N3      N4      N2      N1
+  M19    N3      N4      N2      N1
+  M20    N3      N4      N2      N1
+  M21    N3      N4      N2      N1
+  M22    N3      N4      N2      N1
+  M23    N3      N4      N2      N1
+  M24    N3      N4      N2      N1
+  M25    N3      N4      N2      N1
+  M26    N3      N4      N2      N1
+  M27    N3      N4      N2      N1
+  M28    N3      N4      N2      N1
+  M29    N3      N4      N2      N1
+  M30    N3      N4      N2      N1
+  M31    N3      N4      N2      N1
+  M32    N3      N4      N2      N1
+  M33    N3      N4      N2      N1
+  M34    N3      N4      N2      N1
+  M35    N3      N4      N2      N1
+  M36    N3      N4      N2      N1
+  M37    N3      N4      N2      N1
+  M38    N3      N4      N2      N1
+  M39    N3      N4      N2      N1
+  M40    N3      N4      N2      N1
+  M41    N3      N4      N2      N1
+  M42    N3      N4      N2      N1
+  M43    N3      N4      N2      N1
+  M44    N3      N4      N2      N1
+  M45    N3      N4      N2      N1
+  M46    N3      N4      N2      N1
+  M47    N3      N4      N2      N1
+  M48    N3      N4      N2      N1
+  M49    N3      N4      N2      N1
+  M50    N3      N4      N2      N1
+  M51    N3      N4      N2      N1
+FINSF
+%
+
+FIN

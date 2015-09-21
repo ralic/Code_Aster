@@ -1,0 +1,462 @@
+# person_in_charge: philippe.debonnieres at edf.fr
+# TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
+# COMPORTEMENT DE LEMAITRE DEPENDANT DE LA FLUENCE + GRANDISSEMENT
+# MODELISATION TUYAU.
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTRANET'), DEBUG=_F(SDVERI='OUI'))
+
+EP=0.001
+
+REXT=0.1
+
+#PRE_GIBI();
+M1=LIRE_MAILLAGE(  )
+
+MA=CREA_MAILLAGE(     MAILLAGE=M1,
+       MODI_MAILLE=_F(  OPTION = 'SEG3_4', MAILLE = ('M1', 'M2',))
+)
+
+MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
+  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+
+MO=AFFE_MODELE(        MAILLAGE=MA,
+     AFFE=_F( TOUT = 'OUI', PHENOMENE = 'MECANIQUE',
+                      MODELISATION = 'TUYAU_3M')
+                        )
+
+CHXN=CREA_CHAMP(  OPERATION='EXTR',
+                   TYPE_CHAM='NOEU_GEOM_R',
+                   NOM_CHAM='GEOMETRIE',
+                   MAILLAGE=MA
+                   )
+
+
+FLUXAX=DEFI_FONCTION(   NOM_PARA='X',
+                            VALE=( 0.,    7.2E+21,
+                                  4000., 7.2E+21,)
+                         )
+
+FLUX_Y=DEFI_FONCTION(   NOM_PARA='Y',
+                            VALE=( 0.,    1.,
+                                  100.,    1.,)
+                         )
+
+FLUXPL=DEFI_NAPPE(   NOM_PARA='Z',
+                         PARA=(0., 100.,),
+                         FONCTION=(FLUX_Y, FLUX_Y,)
+                      )
+
+#------------------------------------------------
+# CREATION DU CHAMP ASSOCIE A LA FONCTION FLUXAX
+#------------------------------------------------
+CH_FAX=CREA_CHAMP(  OPERATION='AFFE',
+                        TYPE_CHAM='NOEU_NEUT_F',
+                         MAILLAGE=MA,
+                        AFFE=_F( TOUT = 'OUI', NOM_CMP = 'X1', VALE_F = FLUXAX)
+#                        INFO : 2
+                      )
+
+CH_FAX_R=CREA_CHAMP(  OPERATION='EVAL',
+                        TYPE_CHAM='NOEU_NEUT_R',
+                         CHAM_F=CH_FAX,
+                        CHAM_PARA=CHXN
+                       )
+
+#-----------------------------------------------
+# CREATION DU CHAMP ASSOCIE A LA FONCTION FLUXPL
+#-----------------------------------------------
+CH_FPL=CREA_CHAMP(  OPERATION='AFFE',
+                        TYPE_CHAM='NOEU_NEUT_F',
+                         MAILLAGE=MA,
+                        AFFE=_F( TOUT = 'OUI', NOM_CMP = 'X2', VALE_F = FLUXPL)
+                        )
+
+CH_FPL_R=CREA_CHAMP(  OPERATION='EVAL',
+                        TYPE_CHAM='NOEU_NEUT_R',
+                         CHAM_F=CH_FPL,
+                        CHAM_PARA=CHXN
+                       )
+
+#------------------
+# FONCTION PRODUIT
+#------------------
+MULT = FORMULE(NOM_PARA=('X1','X2','INST'),VALE='X1*X2*INST')
+
+CHRES=CREA_CHAMP( OPERATION='AFFE',
+                   TYPE_CHAM='NOEU_NEUT_F',
+                   MAILLAGE=MA,
+                   AFFE=_F( TOUT = 'OUI', NOM_CMP = 'X1', VALE_F = MULT)
+                  )
+
+#-----------------------------------------------------
+# CREATION DU CHAMP FLUENC1 ASSOCIE A LA LISTE LINST
+# LE CHAMP EST CALCULE POUR LES 5 PREMIERS INSTANTS
+#-----------------------------------------------------
+#
+#
+INST0_1=CREA_CHAMP( OPERATION='AFFE',
+                      TYPE_CHAM='NOEU_INST_R',
+                      MAILLAGE=MA,
+                      AFFE=_F( TOUT = 'OUI', NOM_CMP = 'INST', VALE = 0.0)
+                  )
+
+REST0_1=CREA_CHAMP( OPERATION='EVAL',
+                     TYPE_CHAM='NOEU_NEUT_R',
+                      CHAM_F=CHRES,
+                     CHAM_PARA=(CH_FAX_R,CH_FPL_R,INST0_1,)
+                    )
+
+RES00_1=CREA_CHAMP( OPERATION='ASSE',
+                     TYPE_CHAM='NOEU_IRRA_R',
+                      MAILLAGE=MA,
+                     ASSE=_F( TOUT = 'OUI', CHAM_GD = REST0_1,
+                     NOM_CMP = ('X1',),  NOM_CMP_RESU = ('IRRA',)),
+                     INFO=2
+                    )
+
+#
+#
+#
+#
+INST1_1=CREA_CHAMP( OPERATION='AFFE',
+                      TYPE_CHAM='NOEU_INST_R',
+                      MAILLAGE=MA,
+                      AFFE=_F( TOUT = 'OUI', NOM_CMP = 'INST', VALE = 1.0)
+                  )
+
+REST1_1=CREA_CHAMP( OPERATION='EVAL',
+                     TYPE_CHAM='NOEU_NEUT_R',
+                      CHAM_F=CHRES,
+                     CHAM_PARA=(CH_FAX_R,CH_FPL_R,INST1_1,)
+                    )
+
+RES11_1=CREA_CHAMP( OPERATION='ASSE',
+                     TYPE_CHAM='NOEU_IRRA_R',
+                      MAILLAGE=MA,
+                     ASSE=_F( TOUT = 'OUI', CHAM_GD = REST1_1,
+                     NOM_CMP = ('X1',),  NOM_CMP_RESU = ('IRRA',)),
+                     INFO=2
+                    )
+
+#
+#
+#
+INST2_1=CREA_CHAMP( OPERATION='AFFE',
+                      TYPE_CHAM='NOEU_INST_R',
+                      MAILLAGE=MA,
+                      AFFE=_F( TOUT = 'OUI', NOM_CMP = 'INST', VALE = 864.99)
+                  )
+
+REST2_1=CREA_CHAMP( OPERATION='EVAL',
+                     TYPE_CHAM='NOEU_NEUT_R',
+                      CHAM_F=CHRES,
+                     CHAM_PARA=(CH_FAX_R,CH_FPL_R,INST2_1,)
+                    )
+
+RES22_1=CREA_CHAMP( OPERATION='ASSE',
+                     TYPE_CHAM='NOEU_IRRA_R',
+                      MAILLAGE=MA,
+                     ASSE=_F( TOUT = 'OUI', CHAM_GD = REST2_1,
+                     NOM_CMP = ('X1',),  NOM_CMP_RESU = ('IRRA',)),
+                     INFO=2
+                    )
+
+#
+#
+#
+INST3_1=CREA_CHAMP( OPERATION='AFFE',
+                      TYPE_CHAM='NOEU_INST_R',
+                      MAILLAGE=MA,
+                      AFFE=_F( TOUT = 'OUI', NOM_CMP = 'INST', VALE = 1728.98)
+                  )
+
+REST3_1=CREA_CHAMP( OPERATION='EVAL',
+                     TYPE_CHAM='NOEU_NEUT_R',
+                      CHAM_F=CHRES,
+                     CHAM_PARA=(CH_FAX_R,CH_FPL_R,INST3_1,)
+                    )
+
+RES33_1=CREA_CHAMP( OPERATION='ASSE',
+                     TYPE_CHAM='NOEU_IRRA_R',
+                      MAILLAGE=MA,
+                     ASSE=_F( TOUT = 'OUI', CHAM_GD = REST3_1,
+                     NOM_CMP = ('X1',),  NOM_CMP_RESU = ('IRRA',)),
+                     INFO=2
+                    )
+
+#
+#
+#
+INST4_1=CREA_CHAMP( OPERATION='AFFE',
+                      TYPE_CHAM='NOEU_INST_R',
+                      MAILLAGE=MA,
+                      AFFE=_F( TOUT = 'OUI', NOM_CMP = 'INST', VALE = 2592.97)
+                  )
+
+REST4_1=CREA_CHAMP( OPERATION='EVAL',
+                     TYPE_CHAM='NOEU_NEUT_R',
+                      CHAM_F=CHRES,
+                     CHAM_PARA=(CH_FAX_R,CH_FPL_R,INST4_1,)
+                    )
+
+RES44_1=CREA_CHAMP( OPERATION='ASSE',
+                     TYPE_CHAM='NOEU_IRRA_R',
+                      MAILLAGE=MA,
+                     ASSE=_F( TOUT = 'OUI', CHAM_GD = REST4_1,
+                     NOM_CMP = ('X1',),  NOM_CMP_RESU = ('IRRA',)),
+                     INFO=2
+                    )
+
+#
+#
+#
+INST5_1=CREA_CHAMP( OPERATION='AFFE',
+                      TYPE_CHAM='NOEU_INST_R',
+                      MAILLAGE=MA,
+                      AFFE=_F( TOUT = 'OUI', NOM_CMP = 'INST', VALE = 3456.96)
+                  )
+
+REST5_1=CREA_CHAMP( OPERATION='EVAL',
+                     TYPE_CHAM='NOEU_NEUT_R',
+                      CHAM_F=CHRES,
+                     CHAM_PARA=(CH_FAX_R,CH_FPL_R,INST5_1,)
+                    )
+
+RES55_1=CREA_CHAMP( OPERATION='ASSE',
+                     TYPE_CHAM='NOEU_IRRA_R',
+                      MAILLAGE=MA,
+                     ASSE=_F( TOUT = 'OUI', CHAM_GD = REST5_1,
+                     NOM_CMP = ('X1',),  NOM_CMP_RESU = ('IRRA',)),
+                     INFO=2
+                    )
+
+#
+#
+#
+FLUENC1=CREA_RESU(    OPERATION = 'AFFE',
+                      TYPE_RESU='EVOL_VARC',
+                      NOM_CHAM='IRRA',AFFE=(
+                      _F( CHAM_GD = RES00_1, INST = 0.0),
+                      _F( CHAM_GD = RES11_1, INST = 1.0),
+                      _F( CHAM_GD = RES22_1, INST = 864.99),
+                      _F( CHAM_GD = RES33_1, INST = 1728.98),
+                      _F( CHAM_GD = RES44_1, INST = 2592.97),
+                      _F( CHAM_GD = RES55_1, INST = 3456.96))
+                     )
+
+FON_T=DEFI_FONCTION(   NOM_PARA='X',
+                            NOM_RESU='TEMP',
+                            VALE=( 0., 299.85, 1., 299.85,))
+
+CHTEM=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_F', MAILLAGE=MA,
+                           AFFE=_F(  TOUT = 'OUI',
+                                  NOM_CMP = 'TEMP',
+                                  VALE_F = FON_T,),
+                       )
+
+CHTH=CREA_RESU(  OPERATION = 'AFFE',    TYPE_RESU='EVOL_THER',
+                       NOM_CHAM='TEMP',AFFE=(
+                       _F(  CHAM_GD = CHTEM,
+                                 INST = 0.),
+                       _F(  CHAM_GD = CHTEM,
+                                 INST = 32.E6))
+                   )
+
+
+CAREL=AFFE_CARA_ELEM(   MODELE=MO,
+     POUTRE=_F( GROUP_MA = 'TOUT', SECTION = 'CERCLE',TUYAU_NCOU=1,TUYAU_NSEC=8,
+          CARA = (   'R', 'EP',  ), VALE = (  REXT, EP, )),
+    ORIENTATION=_F( GROUP_NO = 'A', CARA = 'GENE_TUYAU', VALE = (0., 0.,  1.,)),
+    INFO = 2
+ )
+
+INCLUDE(DONNEE='ssnl121c.mater.datg')
+
+
+
+
+CHMAT1=AFFE_MATERIAU(   MAILLAGE=MA,
+            AFFE=_F( TOUT = 'OUI', MATER = MATC2),
+            AFFE_VARC=(_F(NOM_VARC='IRRA', EVOL =FLUENC1, ),
+                      _F(NOM_VARC='TEMP', EVOL =CHTH,VALE_REF=0. ),)
+                       )
+
+CHART=AFFE_CHAR_MECA(  MODELE=MO,DDL_IMPO=(
+ _F( GROUP_NO = 'A', DX = 0., DY = 0., DZ = 0., DRX = 0., DRY = 0., DRZ = 0.)),
+     FORCE_NODALE = _F(NOEUD=('N2',),FX = 0.06251769381)
+    )
+
+#
+
+LINST=DEFI_LIST_REEL(DEBUT=0.,INTERVALLE=(
+               _F( JUSQU_A = 1., NOMBRE = 1),
+               _F( JUSQU_A = 1728.98, NOMBRE = 10),
+               _F( JUSQU_A = 3456.96, NOMBRE = 10))
+)
+
+REST=STAT_NON_LINE(
+                            MODELE=MO,
+                        CHAM_MATER=CHMAT1,
+                         CARA_ELEM=CAREL,
+                             EXCIT=_F(CHARGE = CHART),
+                         COMPORTEMENT=_F( RELATION = 'LEMAITRE_IRRA',
+                PARM_THETA = 0.5,
+                ITER_INTE_MAXI = 50,
+                RESI_INTE_RELA = 1.E-6 ),
+                         INCREMENT=_F(
+                LIST_INST = LINST),
+                            NEWTON=_F(
+                REAC_ITER = 1),
+                       CONVERGENCE=_F(ITER_GLOB_MAXI = 20)
+              )
+
+
+
+REST=CALC_CHAMP(reuse=REST,
+                RESULTAT=REST,
+                FORCE='REAC_NODA',
+                CONTRAINTE=('EFGE_ELNO','SIGM_ELNO'),
+                DEFORMATION=('EPSI_ELGA','EPSI_ELNO',),
+                VARI_INTERNE='VARI_ELNO',);
+
+RESTPOS=POST_CHAMP(RESULTAT=REST,
+                   EXTR_TUYAU=_F(NOM_CHAM=('SIEF_ELGA','VARI_ELNO','SIGM_ELNO','EPSI_ELNO',),
+                                 NUME_COUCHE=1,
+                                 NIVE_COUCHE='SUP',
+                                 ANGLE=90,),);
+
+RESTPOS2=POST_CHAMP(RESULTAT=REST,
+                    EXTR_TUYAU=_F(NOM_CHAM=('SIEF_ELGA','EPSI_ELGA',),
+                                  NUME_COUCHE=1,
+                                  NIVE_COUCHE='SUP',
+                                  ANGLE=0,),);
+
+RESTPOS2=CALC_CHAMP(reuse=RESTPOS2,
+                    RESULTAT=RESTPOS2,
+                    CRITERES=('SIEQ_ELGA','EPEQ_ELGA'),);
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   RESULTAT=RESTPOS,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='N1',
+                   NOM_CMP='EPYY',
+                   VALE_CALC=-0.000306448540109,
+                   TOLE_MACHINE=1.E-4,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=1,
+                   POINT=1,
+                   SOUS_POINT=1,
+                   RESULTAT=RESTPOS2,
+                   NOM_CHAM='EPEQ_ELGA',
+                   NOM_CMP='INVA_2',
+                   VALE_CALC=0.000829355841153,
+                   TOLE_MACHINE=1.E-4,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=1,
+                   POINT=1,
+                   SOUS_POINT=1,
+                   RESULTAT=RESTPOS2,
+                   NOM_CHAM='SIEQ_ELGA',
+                   NOM_CMP='VMIS',
+                   VALE_CALC=99.9999997331,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   RESULTAT=RESTPOS,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=99.9999997806,
+                   VALE_REFE=100.0,
+                   PRECISION=1.E-3,
+                   MAILLE='M2',),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='B',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=REST,
+                   NOM_CHAM='EFGE_ELNO',
+                   NOM_CMP='N',
+                   VALE_CALC=0.0625176936693,
+                   VALE_REFE=0.062517693809999997,
+                   PRECISION=1.E-3,
+                   MAILLE='M2',),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='B',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESTPOS,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=99.9999997806,
+                   VALE_REFE=100.0,
+                   PRECISION=1.E-3,
+                   MAILLE='M2',),
+                _F(NUME_ORDRE=16,
+                   GROUP_NO='B',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESTPOS,
+                   NOM_CHAM='VARI_ELNO',
+                   NOM_CMP='V1',
+                   VALE_CALC=0.00796842209415,
+                   VALE_REFE=7.9909999999999998E-3,
+                   PRECISION=5.0000000000000001E-3,
+                   MAILLE='M2',),
+                _F(NUME_ORDRE=16,
+                   GROUP_NO='B',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESTPOS,
+                   NOM_CHAM='VARI_ELNO',
+                   NOM_CMP='V1',
+                   VALE_CALC=0.00796842209415,
+                   VALE_REFE=7.9909999999999998E-3,
+                   PRECISION=5.0000000000000001E-3,
+                   MAILLE='M2',),
+                _F(NUME_ORDRE=16,
+                   GROUP_NO='B',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=REST,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.0100762841172,
+                   VALE_REFE=0.010099,
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=21,
+                   GROUP_NO='B',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESTPOS,
+                   NOM_CHAM='VARI_ELNO',
+                   NOM_CMP='V1',
+                   VALE_CALC=0.00967949423325,
+                   VALE_REFE=9.7000000000000003E-3,
+                   PRECISION=5.0000000000000001E-3,
+                   MAILLE='M2',),
+                _F(NUME_ORDRE=21,
+                   GROUP_NO='B',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=REST,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.0119209888267,
+                   VALE_REFE=0.011941,
+                   PRECISION=1.E-2,),
+                ),
+          )
+
+FIN( )

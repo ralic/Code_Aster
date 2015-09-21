@@ -1,0 +1,766 @@
+# TITRE CALCUL D UN ASSEMBLAGE GOUJON-BRIDE SANS HAUT DE BRIDE
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+import aster_core
+import os
+
+########################################################################
+# Generation du nom du fichier pour l unite logique unite
+def name_file(unite):
+    cur_dir = os.getcwd()
+    nomFichier = cur_dir+'/fort.'+str(unite)
+    return nomFichier
+########################################################################
+
+########################################################################
+# creation des fichiers de commande GIBI dans les unites UNITD et UNITP
+def macr_gouj2e_mail(TYPE,VARIANTE,NB_FILET,H_CORP_BRID,R_EXT_BRID,
+                     H_HAUT_BRID,H_BAS_BRID,FILET_ABST,
+                     UNITD=70,UNITP=71) :
+    texte =         '***************************************************************\n'
+    texte = texte + '*                                                              \n'
+    texte = texte + '* CREATION DU MAILLAGE DE GOUJON, FILETS ET BRIDE 2D AXIS      \n'
+    texte = texte + '* -------------------------------------------------------------\n'
+    texte = texte + '*************************************************              \n'
+    texte = texte + '*                VERSION 1.0                    *              \n'
+    texte = texte + '*            VERSION DU 15/07/1999              *              \n'
+    texte = texte + '*************************************************              \n'
+    texte = texte + '*                                                              \n'
+    texte = texte + '***************************************************************\n'
+    texte = texte + '*****              PROGRAMME  PRINCIPAL                 *******\n'
+    texte = texte + '***************************************************************\n'
+    texte = texte + '*                                                              \n'
+    texte = texte + 'OPTION DIME 2 ELEM QUA4 NIVE 10 ECHO 0;                        \n'
+    texte = texte + '* DEBUT PARAMETRES UTILISATEUR                                 \n'
+    texte = texte + '*                                                              \n'
+    texte = texte + '* PARAMETRES GENERAUX                                          \n'
+    texte = texte + '*                                                              \n'
+    texte = texte + 'RI_BRI       = '+str(eval('RIB'+TYPE+VARIANTE)) +';'+'         \n'
+    texte = texte + 'RE_GOUJ      = '+str(eval('REG'+TYPE+VARIANTE)) +';'+'         \n'
+    texte = texte + 'PAS          = '+str(eval('HF' +TYPE+VARIANTE)) +';'+'         \n'
+    texte = texte + 'RE_BRI       = '+str(R_EXT_BRID )+';                           \n'
+    texte = texte + 'HTE_BRI      = '+str(H_CORP_BRID)+';                           \n'
+    texte = texte + 'NFIL         = '+str(NB_FILET   )+';                           \n'
+    texte = texte + 'H_MINFI      = '+str(H_BAS_BRID )+';                           \n'
+    texte = texte + 'H_HTBRI      = '+str(H_HAUT_BRID)+';                           \n'
+    texte = texte + '* FIN PARAMETRES UTILISATEUR                                   \n'
+    textp = ''
+    if FILET_ABST!=None :
+       for num in FILET_ABST :
+           textp = textp + 'FILETS = DIFF FILETS FIL00'+str(num)+';                 \n'
+    ref_datg = aster_core.get_option("repdex")
+    loc_datg = os.path.join(os.getcwdu(), 'datg')
+    os.symlink(ref_datg, loc_datg)
+
+    # Decoupe de la chaine GIBI
+    length = 50
+
+    seq = os.path.join(loc_datg, "gouj2.datg")
+    assert len(seq) <= 72, "Gibi does not support paths longer than 72 characters\npath:%s" % seq
+    tt = [seq[i:i+length] for i in range(0, len(seq), length)]
+    textp = textp + "PDATG = CHAINE '" + "'\n'".join(tt) + "'" + ";\n"
+    textp = textp + "OPTI DONN PDATG;\n"
+
+    seq = os.path.join(loc_datg, "gouj1.datg")
+    tt = [seq[i:i+length] for i in range(0, len(seq), length)]
+    texte = texte + "PDATG = CHAINE '" + "'\n'".join(tt) + "'" + ";\n"
+    texte = texte + "OPTI DONN PDATG;\n"
+
+    # Nom du fichier de commandes pour GIBI
+    nomFichierDATG = name_file(UNITD)
+    nomFichierDATP = name_file(UNITP)
+
+    # Ouverture du fichier d entree de commandes gibi
+    fdgib=open(nomFichierDATG,'w')
+    fdgip=open(nomFichierDATP,'w')
+    fdgib.write(texte)
+    fdgip.write(textp)
+    fdgib.close()
+    fdgip.close()
+
+    return
+########################################################################
+
+########################################################################
+# macro commande de post-traitement (ex POST_GOUJ2E)
+# calcul des reactions cumulees suivant les filets
+
+def POST_GOUJ_ops(self,TABLE):
+  ier=0
+  self.set_icmd(1)
+  ### On importe les definitions des commandes a utiliser dans la macro
+  CREA_TABLE  =self.get_cmd('CREA_TABLE')
+
+  aa1=TABLE.EXTR_TABLE()
+  aaa=aa1.values()
+
+  v_DY=aaa['DY']
+  v_NU=aaa['NUME_ORDRE']
+  NBVAL=len(v_DY)
+  nbv=0
+  for num in v_NU :
+    if num==v_NU[0] : nbv=nbv+1
+  if nbv>0 : ninch=NBVAL/nbv
+  else : print "error"
+
+  v_F1=[v_DY[i*nbv:(i+1)*nbv] for i in range(ninch)]
+  v_FO=[]
+  v_CU=[]
+  def add(x,y): return x+y
+  for liste in v_F1:
+    liste.reverse()
+    v_FO.append(liste)
+    ftot=reduce(add,liste)
+    v_CU.append([reduce(add,liste[:i+1])*100./ftot for i in range(len(liste))])
+
+  v_NF=[]
+  for i in range(ninch)    : v_NF=v_NF+range(1,nbv+1)
+  v_RE=[]
+  for liste in v_FO : v_RE=v_RE+liste
+  v_RC=[]
+  for liste in v_CU : v_RC=v_RC+liste
+
+  self.DeclareOut('tab3',self.sd)
+  tab3=CREA_TABLE(LISTE=(_F(PARA    = 'NUME_ORDRE' ,
+                              LISTE_I = v_NU ),
+                           _F(PARA    = 'NUME_FILET' ,
+                              LISTE_I = v_NF ),
+                           _F(PARA    = 'REACTION' ,
+                              LISTE_R = v_RE ),
+                           _F(PARA    = 'REACTION_CUMU' ,
+                              LISTE_R = v_RC ),
+                 ))
+  return 0
+
+POST_GOUJ=MACRO(nom="POST_GOUJ",op=POST_GOUJ_ops,sd_prod=table_sdaster,reentrant='n',fr="",
+                TABLE=SIMP(statut='o',typ=table_sdaster),)
+########################################################################
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTRANET',VISU_EFICAS='NON',),PAR_LOT='NON',
+      DEBUG=_F(SDVERI='OUI'))
+#
+# CAS TEST : CALCUL D UN ASSEMBLAGE GOUJON-BRIDE
+# LA BRIDE NE COMPORTE NI HAUT DE BRIDE NI BAS DE BRIDE
+
+INCLUDE(DONNEE='zzzz120.datg')
+VARIANTE     = 'B'
+H_HAUT_BRID  = 0.0
+
+macr_gouj2e_mail(TYPE,VARIANTE,NB_FILET,H_CORP_BRID,R_EXT_BRID,
+                 H_HAUT_BRID,H_BAS_BRID,FILET_ABST,)
+
+loc_outils = aster_core.get_option('repout')
+
+EXEC_LOGICIEL(LOGICIEL=os.path.join(loc_outils, 'gibi'),
+              ARGUMENT=('fort.70', 'fort.19'), );
+
+PRE_GIBI()
+
+MAIL=LIRE_MAILLAGE()
+
+MAIL=DEFI_GROUP(reuse = MAIL,
+                MAILLAGE=MAIL,
+                CREA_GROUP_NO=(_F(NOM='NDFILETS',
+                                  GROUP_MA='CORPSGOU',
+                                  CRIT_NOEUD='TOUS')), )
+
+IMPR_RESU(UNITE=53,FORMAT='CASTEM',RESU=_F(MAILLAGE=MAIL,),)
+
+MAIL=DEFI_GROUP(reuse =MAIL,
+                MAILLAGE=MAIL,
+                CREA_GROUP_NO=(_F(GROUP_MA='GOUJON',
+                                  NOM='GOUJ_NO',
+                                  CRIT_NOEUD='TOUS',),
+                               _F(GROUP_MA='FILETS',
+                                  NOM='FILET_NO',
+                                  CRIT_NOEUD='TOUS',),
+                               _F(GROUP_MA='BRIDE',
+                                  NOM='BRIDE_NO',
+                                  CRIT_NOEUD='TOUS',),),);
+
+modele=AFFE_MODELE(MAILLAGE=MAIL,
+                   AFFE=(_F(GROUP_MA='GOUJON',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='POU_D_E',),
+                         _F(GROUP_MA='FILETS',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='2D_DIS_T',),
+                         _F(GROUP_MA='BRIDE',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='AXIS',),),);
+
+carael=AFFE_CARA_ELEM(MODELE=modele,
+                      POUTRE=_F(GROUP_MA='GOUJON',
+                                SECTION='CERCLE',
+                                CARA='R',
+                                VALE=73.6478136849,),
+                      DISCRET_2D=_F(GROUP_MA='FILETS',
+                                    CARA='K_T_D_L',
+                                    VALE=(10000000.0,10000000.0,),),);
+
+MF_1=DEFI_MATERIAU(TRACTION=_F(SIGM=PFM155B,),);
+
+MF_2=DEFI_MATERIAU(TRACTION=_F(SIGM=DFM155B,),);
+
+MF_C=DEFI_MATERIAU(TRACTION=_F(SIGM=FCM155B,),);
+
+chmat=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    AFFE=(_F(GROUP_MA='GOUJON',
+                             MATER=MGM155B,),
+                          _F(GROUP_MA='FILETS',
+                             MATER=MF_C,),
+                          _F(GROUP_MA='BRIDE',
+                             MATER=MBM155B,),
+                          _F(GROUP_MA='FIL001',
+                             MATER=MF_1,),
+                          _F(GROUP_MA='FIL002',
+                             MATER=MF_2,),),);
+
+charme=AFFE_CHAR_MECA(MODELE=modele,
+                      DDL_IMPO=_F(GROUP_NO=('GOUJ_NO','FILET_NO','BRIDE_NO',),
+                                  DX=0.0,),
+                      FACE_IMPO=(_F(GROUP_MA=('DBRIDE','BBRIDE',),
+                                    DY=0.0,),
+                                 _F(GROUP_MA='GOUJON',
+                                    DZ=0.0,
+                                    DRY=0.0,),),
+                      FORCE_NODALE=_F(GROUP_NO='PHGOUJ',
+                                      FY=1.0,),);
+
+fonc=DEFI_FONCTION(NOM_PARA='INST',
+                   NOM_RESU='TOUTRESU',
+                   VALE=(0.0,0.0,5.0,5000000.0,),);
+
+list=DEFI_LIST_REEL(DEBUT=0.0,
+                    INTERVALLE=(_F(JUSQU_A=1.0,
+                                   NOMBRE=1,),
+                                _F(JUSQU_A=2.0,
+                                   NOMBRE=1,),
+                                _F(JUSQU_A=3.0,
+                                   NOMBRE=1,),
+                                _F(JUSQU_A=4.0,
+                                   NOMBRE=1,),
+                                _F(JUSQU_A=5.0,
+                                   NOMBRE=1,),),);
+
+CALC=STAT_NON_LINE(MODELE=modele,
+                   CHAM_MATER=chmat,
+                   CARA_ELEM=carael,
+                   EXCIT=_F(CHARGE=charme,
+                            FONC_MULT=fonc,
+                            TYPE_CHARGE='FIXE_CSTE',),
+                   COMPORTEMENT=(_F(RELATION='ELAS',
+                                 DEFORMATION='PETIT',
+                                 GROUP_MA='GOUJON',),
+                              _F(RELATION='ELAS',
+                                 DEFORMATION='PETIT',
+                                 GROUP_MA='BRIDE',),
+                              _F(RELATION='DIS_GOUJ2E_PLAS',
+                                 DEFORMATION='PETIT',
+                                 GROUP_MA='FILETS',),),
+                   INCREMENT=_F(LIST_INST=list,),
+                   NEWTON=_F(REAC_ITER=3,),
+                   CONVERGENCE=_F(ITER_GLOB_MAXI=20,),);
+
+CALC=CALC_CHAMP(reuse =CALC,
+             RESULTAT=CALC,
+             PRECISION=0.001,
+             CRITERE='RELATIF',
+             FORCE='FORC_NODA',
+             GROUP_MA='FILETS',);
+
+tab1=POST_RELEVE_T(ACTION=_F(INTITULE='RESU_T1',
+                             GROUP_NO='NDFILETS',
+                             FORMAT_C='MODULE',
+                             RESULTAT=CALC,
+                             NOM_CHAM='FORC_NODA',
+                            # TOUT_ORDRE='OUI',
+                             NUME_ORDRE    = (1,2,3,4,5),
+                             PRECISION=1e-06,
+                             CRITERE='RELATIF',
+                             NOM_CMP='DY',
+                             REPERE='GLOBAL',
+                             MOYE_NOEUD='OUI',
+                             OPERATION='EXTRACTION',),);
+
+tab2=POST_GOUJ(TABLE=tab1,);
+
+IMPR_TABLE(TABLE=tab2,
+           UNITE=8,
+           FORMAT='AGRAF',
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
+           NOM_PARA=('NUME_ORDRE','NUME_FILET','REACTION','REACTION_CUMU',),);
+
+IMPR_TABLE(TABLE=tab2,
+           UNITE=8,
+           FORMAT='AGRAF',
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=2,),
+           NOM_PARA=('NUME_ORDRE','NUME_FILET','REACTION','REACTION_CUMU',),);
+
+IMPR_TABLE(TABLE=tab2,
+           UNITE=8,
+           FORMAT='AGRAF',
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=3,),
+           NOM_PARA=('NUME_ORDRE','NUME_FILET','REACTION','REACTION_CUMU',),);
+
+IMPR_TABLE(TABLE=tab2,
+           UNITE=8,
+           FORMAT='AGRAF',
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=4,),
+           NOM_PARA=('NUME_ORDRE','NUME_FILET','REACTION','REACTION_CUMU',),);
+
+IMPR_TABLE(TABLE=tab2,
+           UNITE=8,
+           FORMAT='AGRAF',
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=5,),
+           NOM_PARA=('NUME_ORDRE','NUME_FILET','REACTION','REACTION_CUMU',),);
+
+# POST-TRAITMENT
+
+TFORC=POST_RELEVE_T(ACTION=_F(INTITULE='C_TEST1',
+                              GROUP_NO='NDFILETS',
+                              RESULTAT=CALC,
+                              NOM_CHAM='FORC_NODA',
+                              #TOUT_ORDRE='OUI',
+                              NUME_ORDRE    = (1,2,3,4,5),
+                              NOM_CMP='DY',
+                              OPERATION='EXTRACTION',),);
+
+NTFORC=POST_GOUJ(TABLE=TFORC,);
+#---------------------------------------------
+# TEST DES VALEURS
+#---------------------------------------------
+# TEST DES VALEURS PAR RAPPORT AUX RESULTATS ANTHEMIX
+# PAS DE CHARGE 1
+
+TEST_TABLE(PRECISION=0.035000000000000003,
+           VALE_CALC= 5.55045645E+04,
+           VALE_REFE=5.5327099999999999E4,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='REACTION',
+           TABLE=NTFORC,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=1,),
+                   _F(NOM_PARA='NUME_FILET',
+                      VALE_I=1,),
+                   ),
+           )
+
+TEST_TABLE(PRECISION=0.11650000000000001,
+           VALE_CALC= 6.48494242E+04,
+           VALE_REFE=7.3394399999999994E4,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='REACTION',
+           TABLE=NTFORC,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=1,),
+                   _F(NOM_PARA='NUME_FILET',
+                      VALE_I=2,),
+                   ),
+           )
+
+TEST_TABLE(PRECISION=0.1235,
+           VALE_CALC= 6.25511993E+04,
+           VALE_REFE=7.1361100000000006E4,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='REACTION',
+           TABLE=NTFORC,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=1,),
+                   _F(NOM_PARA='NUME_FILET',
+                      VALE_I=5,),
+                   ),
+           )
+
+TEST_TABLE(PRECISION=0.13869999999999999,
+           VALE_CALC= 5.56556829E+04,
+           VALE_REFE=6.46135E4,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='REACTION',
+           TABLE=NTFORC,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=1,),
+                   _F(NOM_PARA='NUME_FILET',
+                      VALE_I=6,),
+                   ),
+           )
+
+TEST_TABLE(PRECISION=0.14899999999999999,
+           VALE_CALC= 5.00993442E+04,
+           VALE_REFE=5.8517199999999997E4,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='REACTION',
+           TABLE=NTFORC,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=1,),
+                   _F(NOM_PARA='NUME_FILET',
+                      VALE_I=7,),
+                   ),
+           )
+
+TEST_TABLE(PRECISION=0.35199999999999998,
+           VALE_CALC= 1.12943796E+04,
+           VALE_REFE=8359.7199999999993,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='REACTION',
+           TABLE=NTFORC,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=1,),
+                   _F(NOM_PARA='NUME_FILET',
+                      VALE_I=28,),
+                   ),
+           )
+
+TEST_TABLE(PRECISION=0.0154,
+           VALE_CALC= 1.02132866E+04,
+           VALE_REFE=1.0058799999999999E4,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='REACTION',
+           TABLE=NTFORC,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=1,),
+                   _F(NOM_PARA='NUME_FILET',
+                      VALE_I=55,),
+                   ),
+           )
+
+TEST_TABLE(PRECISION=0.065000000000000002,
+           VALE_CALC= 1.17139688E+04,
+           VALE_REFE=1.10041E4,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='REACTION',
+           TABLE=NTFORC,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=1,),
+                   _F(NOM_PARA='NUME_FILET',
+                      VALE_I=56,),
+                   ),
+           )
+
+# PAS DE CHARGE 5
+
+TEST_TABLE(PRECISION=0.13400000000000001,
+           VALE_CALC= 2.57684631E+05,
+           VALE_REFE=2.97536E5,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='REACTION',
+           TABLE=NTFORC,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=5,),
+                   _F(NOM_PARA='NUME_FILET',
+                      VALE_I=1,),
+                   ),
+           )
+
+TEST_TABLE(PRECISION=0.067000000000000004,
+           VALE_CALC= 3.20997893E+05,
+           VALE_REFE=3.43887E5,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='REACTION',
+           TABLE=NTFORC,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=5,),
+                   _F(NOM_PARA='NUME_FILET',
+                      VALE_I=2,),
+                   ),
+           )
+
+TEST_TABLE(PRECISION=0.084199999999999997,
+           VALE_CALC= 3.07108327E+05,
+           VALE_REFE=3.35310E5,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='REACTION',
+           TABLE=NTFORC,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=5,),
+                   _F(NOM_PARA='NUME_FILET',
+                      VALE_I=5,),
+                   ),
+           )
+
+TEST_TABLE(PRECISION=0.1128,
+           VALE_CALC= 2.77724314E+05,
+           VALE_REFE=3.12992E5,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='REACTION',
+           TABLE=NTFORC,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=5,),
+                   _F(NOM_PARA='NUME_FILET',
+                      VALE_I=6,),
+                   ),
+           )
+
+TEST_TABLE(PRECISION=0.1381,
+           VALE_CALC= 2.50588395E+05,
+           VALE_REFE=2.90708E5,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='REACTION',
+           TABLE=NTFORC,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=5,),
+                   _F(NOM_PARA='NUME_FILET',
+                      VALE_I=7,),
+                   ),
+           )
+
+TEST_TABLE(PRECISION=0.3347,
+           VALE_CALC= 5.70916176E+04,
+           VALE_REFE=4.2778699999999997E4,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='REACTION',
+           TABLE=NTFORC,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=5,),
+                   _F(NOM_PARA='NUME_FILET',
+                      VALE_I=28,),
+                   ),
+           )
+
+TEST_TABLE(PRECISION=0.018200000000000001,
+           VALE_CALC= 5.13516980E+04,
+           VALE_REFE=5.04395E4,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='REACTION',
+           TABLE=NTFORC,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=5,),
+                   _F(NOM_PARA='NUME_FILET',
+                      VALE_I=55,),
+                   ),
+           )
+
+TEST_TABLE(PRECISION=0.067519999999999997,
+           VALE_CALC= 5.88938021E+04,
+           VALE_REFE=5.5169099999999999E4,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='REACTION',
+           TABLE=NTFORC,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=5,),
+                   _F(NOM_PARA='NUME_FILET',
+                      VALE_I=56,),
+                   ),
+           )
+
+# TEST DES VALEURS PAR RAPPORT AUX RESULTATS ASTER
+# (TEST DE NON REGRESSION)
+# PAS DE CHARGE 1
+
+TEST_TABLE(
+           VALE_CALC=5.5504573218899997E4,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='REACTION',
+           TABLE=NTFORC,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=1,),
+                   _F(NOM_PARA='NUME_FILET',
+                      VALE_I=1,),
+                   ),
+           )
+
+TEST_TABLE(
+           VALE_CALC=6.4849430359999998E4,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='REACTION',
+           TABLE=NTFORC,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=1,),
+                   _F(NOM_PARA='NUME_FILET',
+                      VALE_I=2,),
+                   ),
+           )
+
+TEST_TABLE(
+           VALE_CALC=6.2551200299600001E4,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='REACTION',
+           TABLE=NTFORC,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=1,),
+                   _F(NOM_PARA='NUME_FILET',
+                      VALE_I=5,),
+                   ),
+           )
+
+TEST_TABLE(
+           VALE_CALC=5.5655683342299999E4,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='REACTION',
+           TABLE=NTFORC,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=1,),
+                   _F(NOM_PARA='NUME_FILET',
+                      VALE_I=6,),
+                   ),
+           )
+
+TEST_TABLE(
+           VALE_CALC=5.0099344212800002E4,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='REACTION',
+           TABLE=NTFORC,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=1,),
+                   _F(NOM_PARA='NUME_FILET',
+                      VALE_I=7,),
+                   ),
+           )
+
+TEST_TABLE(
+           VALE_CALC=1.12943792507E4,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='REACTION',
+           TABLE=NTFORC,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=1,),
+                   _F(NOM_PARA='NUME_FILET',
+                      VALE_I=28,),
+                   ),
+           )
+
+TEST_TABLE(
+           VALE_CALC=1.0213286455699999E4,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='REACTION',
+           TABLE=NTFORC,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=1,),
+                   _F(NOM_PARA='NUME_FILET',
+                      VALE_I=55,),
+                   ),
+           )
+
+TEST_TABLE(
+           VALE_CALC=1.17139686477E4,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='REACTION',
+           TABLE=NTFORC,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=1,),
+                   _F(NOM_PARA='NUME_FILET',
+                      VALE_I=56,),
+                   ),
+           )
+
+# PAS DE CHARGE 5
+
+TEST_TABLE(
+           VALE_CALC=2.5768465908799999E5,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='REACTION',
+           TABLE=NTFORC,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=5,),
+                   _F(NOM_PARA='NUME_FILET',
+                      VALE_I=1,),
+                   ),
+           )
+
+TEST_TABLE(
+           VALE_CALC=3.2099790458099998E5,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='REACTION',
+           TABLE=NTFORC,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=5,),
+                   _F(NOM_PARA='NUME_FILET',
+                      VALE_I=2,),
+                   ),
+           )
+
+TEST_TABLE(
+           VALE_CALC=3.0710831698E5,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='REACTION',
+           TABLE=NTFORC,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=5,),
+                   _F(NOM_PARA='NUME_FILET',
+                      VALE_I=5,),
+                   ),
+           )
+
+TEST_TABLE(
+           VALE_CALC=2.7772429590500001E5,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='REACTION',
+           TABLE=NTFORC,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=5,),
+                   _F(NOM_PARA='NUME_FILET',
+                      VALE_I=6,),
+                   ),
+           )
+
+TEST_TABLE(
+           VALE_CALC=2.50588373272E5,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='REACTION',
+           TABLE=NTFORC,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=5,),
+                   _F(NOM_PARA='NUME_FILET',
+                      VALE_I=7,),
+                   ),
+           )
+
+TEST_TABLE(
+           VALE_CALC=5.7091611793199998E4,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='REACTION',
+           TABLE=NTFORC,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=5,),
+                   _F(NOM_PARA='NUME_FILET',
+                      VALE_I=28,),
+                   ),
+           )
+
+TEST_TABLE(
+           VALE_CALC=5.1351695599300001E4,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='REACTION',
+           TABLE=NTFORC,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=5,),
+                   _F(NOM_PARA='NUME_FILET',
+                      VALE_I=55,),
+                   ),
+           )
+
+TEST_TABLE(
+           VALE_CALC=5.8893799435699999E4,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='REACTION',
+           TABLE=NTFORC,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=5,),
+                   _F(NOM_PARA='NUME_FILET',
+                      VALE_I=56,),
+                   ),
+           )
+
+#
+
+FIN();

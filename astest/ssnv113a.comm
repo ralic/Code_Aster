@@ -1,0 +1,200 @@
+# person_in_charge: mickael.abbas at edf.fr
+#
+# TITRE TEST EN TRACTION CISAILLEMENT DE LA LOI DE FLUAGE SOUS IRRADIATION DES TUBES GUIDES
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTRANET'), DEBUG=_F(SDVERI='OUI'))
+
+#......................................................................
+# PLAQUE CARREE EN TRACTION CISAILLEMENT CALCUL 3D
+# LOI DE FLUAGE SOUS IRRADIATION DES TUBES GUIDES
+#......................................................................
+
+
+M=LIRE_MAILLAGE()
+
+MO=AFFE_MODELE(
+            MAILLAGE=M, 
+           AFFE=_F( TOUT = 'OUI',PHENOMENE = 'MECANIQUE',MODELISATION = '3D')
+           )
+
+TEMPE=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=M,
+                          AFFE=_F(  TOUT = 'OUI', NOM_CMP = 'TEMP',
+                                 VALE = 350.)
+                       )
+
+INCLUDE(DONNEE='ssnv113a.mater.datg')
+
+
+CM=AFFE_MATERIAU(
+            MAILLAGE=M,
+           AFFE=_F( TOUT = 'OUI',MATER = ACIER,),
+           AFFE_VARC=_F( TOUT='OUI',
+                         CHAM_GD=TEMPE,
+                         NOM_VARC='TEMP',
+                         VALE_REF=20.),)
+
+P23=DEFI_FONCTION(
+           NOM_PARA='INST',PROL_DROITE='CONSTANT',PROL_GAUCHE='LINEAIRE',
+           VALE=(0.0, 0.0, 0.00001, 23.275,)
+           )
+
+M23=DEFI_FONCTION(
+           NOM_PARA='INST',PROL_DROITE='CONSTANT',PROL_GAUCHE='LINEAIRE',
+           VALE=(0.0, 0.0, 0.00001,-23.275,)
+           )
+
+M37M23=DEFI_FONCTION(
+           NOM_PARA='INST',PROL_DROITE='CONSTANT',PROL_GAUCHE='LINEAIRE',
+           VALE=(0.0, 0.0, 0.00001,-61.075, )
+           )
+
+M37P23=DEFI_FONCTION(
+           NOM_PARA='INST',PROL_DROITE='CONSTANT',PROL_GAUCHE='LINEAIRE',
+           VALE=(0.0, 0.0, 0.00001,-14.525, )
+           )
+
+CH1=AFFE_CHAR_MECA(
+            MODELE=MO,
+             DDL_IMPO=(
+           _F( NOEUD = 'NO4', DX = 0.,DY = 0.),
+                    _F( NOEUD = 'NO8', DX = 0.,DY = 0.,DZ = 0.),
+                    _F( NOEUD = 'NO2', DX = 0.),
+                    _F( NOEUD = 'NO6', DX = 0.))
+           )
+
+CH2=AFFE_CHAR_MECA_F(
+            MODELE=MO,FORCE_NODALE=(
+           _F( NOEUD = ('NO1', 'NO5',), FX = M37P23,  FY = M23),
+                        _F( NOEUD = ('NO2', 'NO6',),  FY = P23),
+                        _F( NOEUD = ('NO3', 'NO7',),  FX = M37M23,  FY = M23)))
+
+L_INST=DEFI_LIST_REEL(  DEBUT=0.0,INTERVALLE=(
+             _F( JUSQU_A = 0.00001,    NOMBRE = 1),
+             _F( JUSQU_A = 100.0,      NOMBRE = 9),
+             _F( JUSQU_A = 500.0,      NOMBRE = 10))
+           )
+
+U=STAT_NON_LINE(
+                            MODELE=MO,
+                        CHAM_MATER=CM,EXCIT=(
+                             _F(
+                CHARGE = CH1), _F(
+                CHARGE = CH2)),
+                         COMPORTEMENT=_F( PARM_THETA = 0.5,
+                RELATION = 'VISC_IRRA_LOG'),
+                         INCREMENT=_F(
+                LIST_INST = L_INST),
+                            NEWTON=_F(
+                MATRICE = 'TANGENTE',
+                REAC_ITER = 1),
+                       CONVERGENCE=_F(
+                RESI_GLOB_MAXI = 1.E-4,
+                ITER_GLOB_MAXI = 25)
+              )
+
+
+U=CALC_CHAMP(reuse=U,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U)
+
+
+
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=20,
+                   PARA='INST',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U,
+                   VALE_CALC=500.0,
+                   VALE_REFE=500.0,),
+                _F(NUME_ORDRE=20,
+                   PARA='ITER_GLOB',
+                   VALE_CALC_I=2,
+                   VALE_REFE_I=2,
+                   TOLE_MACHINE=0.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U,
+                   CRITERE='ABSOLU',
+                   PRECISION=0.0,),
+                ),
+          )
+
+U=CALC_CHAMP(reuse=U,RESULTAT=U,DEFORMATION=('EPSI_ELNO'))
+
+RESCYL1=MODI_REPERE(RESULTAT=U,
+              TOUT_ORDRE='OUI',
+               MODI_CHAM=(_F(NOM_CHAM='EPSI_ELNO',
+                                NOM_CMP=('EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ',),
+                                TYPE_CHAM='TENS_3D'),),
+                REPERE='CYLINDRIQUE',
+                AFFE=_F(ORIGINE = (-1.0, -1.0, 0.0,),
+                        AXE_Z = (0.0, 1.0, 0.0,),),
+                INFO=2,);
+
+
+U=CALC_CHAMP(reuse=U,RESULTAT=U,DEFORMATION=('EPSP_ELNO'))
+
+RESCYL2=MODI_REPERE(RESULTAT=U,
+              TOUT_ORDRE='OUI',
+               MODI_CHAM=(_F(NOM_CHAM='EPSP_ELNO',
+                                NOM_CMP=('EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ',),
+                                TYPE_CHAM='TENS_3D'),),
+                REPERE='CYLINDRIQUE',
+                AFFE=_F(ORIGINE = (-1.0, -1.0, 0.0,),
+                        AXE_Z = (0.0, 1.0, 0.0,),),
+                INFO=2,);
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=10,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U,
+                   NOM_CHAM='EPSP_ELNO',
+                   NOEUD='NO2',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=2.81403735316E-05,
+                   VALE_REFE=2.8140000000000002E-05,
+                   MAILLE='MA2',),
+                _F(NUME_ORDRE=10,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U,
+                   NOM_CHAM='EPSP_ELNO',
+                   NOEUD='NO2',
+                   NOM_CMP='EPXY',
+                   VALE_CALC=2.59907616646E-05,
+                   VALE_REFE=2.599E-05,
+                   MAILLE='MA2',),
+                _F(NUME_ORDRE=20,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U,
+                   NOM_CHAM='EPSP_ELNO',
+                   NOEUD='NO2',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=0.000139873843971,
+                   VALE_REFE=1.3990000000000001E-4,
+                   MAILLE='MA2',),
+                _F(NUME_ORDRE=20,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U,
+                   NOM_CHAM='EPSP_ELNO',
+                   NOEUD='NO2',
+                   NOM_CMP='EPXY',
+                   VALE_CALC=0.000129189036445,
+                   VALE_REFE=1.293E-4,
+                   MAILLE='MA2',),
+                ),
+          )
+
+FIN()
+#

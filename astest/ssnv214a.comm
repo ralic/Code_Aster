@@ -1,0 +1,244 @@
+#  TITRE  CYCLE DE CONTRAINTES UNIAXIALES
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+#
+#  TEST A DU  BENCHMARK SUR L EVALUATION DES MODELES POUR LE BETON (2001)
+#  TEST LOI Beton_RAG
+# ________________________________________________________
+#  MAILLAGE : 1 CUB20
+#
+#  CHARGEMENT : 1 - direction (DEPSxx,DEPSyy,DEPSxy)=(1,0,0)jusqu a EPSxx=0.00014
+#               2 - direction (DEPSxx,DEPSyy,DEPSxy)=(1,0,0)jusqu a SIGxx=0.0
+#               3 - direction (DEPSxx,DEPSyy,DEPSxy)=(1,0,0)jusqu a EPSxx=0.0010
+#               4 - direction (DEPSxx,DEPSyy,DEPSxy)=(1,0,0)jusqu a EPSxx=-0.0040
+#               5 - direction (DEPSxx,DEPSyy,DEPSxy)=(1,0,0)jusqu a SIGxx=0.0
+#               6 - direction (DEPSxx,DEPSyy,DEPSxy)=(1,0,0)jusqu a EPSxx=-0.005
+#               7 - direction (DEPSxx,DEPSyy,DEPSxy)=(1,0,0)jusqu a EPSxx=0.0
+# ________________________________________________________
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTRANET'),DEBUG=_F(SDVERI='NON'))
+# SDVERI='NON' car la verification est trop couteuse en CPU
+MAIL=LIRE_MAILLAGE();
+MODELE=AFFE_MODELE(AFFE    =_F(TOUT = 'OUI',
+                               PHENOMENE='MECANIQUE',
+                               MODELISATION='3D'),
+                   MAILLAGE=MAIL);
+
+INCLUDE(DONNEE='ssnv214.mater.datg')
+
+SECHI=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                OPERATION='AFFE',
+                MAILLAGE=MAIL,
+                AFFE=_F(TOUT='OUI',
+                        NOM_CMP='TEMP',
+                        VALE=1.),);
+
+SECHF=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                OPERATION='AFFE',
+                MAILLAGE=MAIL,
+                AFFE=_F(TOUT='OUI',
+                        NOM_CMP='TEMP',
+                        VALE=1.),);
+
+SECH=CREA_RESU(OPERATION='AFFE',
+                TYPE_RESU='EVOL_THER',
+                NOM_CHAM='TEMP',
+                AFFE=(_F(CHAM_GD=SECHI,
+                         INST=0.0,),
+                      _F(CHAM_GD=SECHF,
+                         INST=100.0,),),);
+
+TEMPI=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                OPERATION='AFFE',
+                MAILLAGE=MAIL,
+                AFFE=_F(TOUT='OUI',
+                        NOM_CMP='TEMP',
+                        VALE=20.0,),);
+
+TEMPF=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                OPERATION='AFFE',
+                MAILLAGE=MAIL,
+                AFFE=_F(TOUT='OUI',
+                        NOM_CMP='TEMP',
+                        VALE=20.0,),);
+
+TEMP=CREA_RESU(OPERATION='AFFE',
+                TYPE_RESU='EVOL_THER',
+                NOM_CHAM='TEMP',
+                AFFE=(
+                _F(CHAM_GD=TEMPI,
+                      INST=0.0,),
+                _F(CHAM_GD=TEMPF,
+                      INST=100.0,),),);
+
+CAR_MAT=AFFE_MATERIAU(AFFE=_F(MATER=MATERIAU,
+                              TOUT='OUI'),
+                              MAILLAGE=MAIL,
+                      AFFE_VARC=(_F(TOUT='OUI',
+                                    EVOL=SECH,
+                                    NOM_VARC='SECH', VALE_REF=0.,
+                                    NOM_CHAM='TEMP',
+                                    PROL_DROITE='LINEAIRE',
+                                    PROL_GAUCHE='CONSTANT',),
+                                  _F(TOUT='OUI',
+                                    EVOL=TEMP,
+                                    NOM_VARC='TEMP',
+                                    NOM_CHAM='TEMP',
+                                    VALE_REF = 20.),),
+                                 );
+
+CLIM=AFFE_CHAR_MECA(DDL_IMPO=(_F(DX=0.0,
+                                 GROUP_NO='COTEG'),
+                              _F(DZ=0.0,
+                                 NOEUD='N1',
+                                 DY=0.0),
+                              _F(NOEUD='N5',
+                                 DY=0.0),),
+                    MODELE=MODELE);
+DEPL1=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=( 0.0,0.0,
+                           1.0,1.4e-4,
+                           2.0,0.0,
+                           3.0,1.0e-3,
+                           4.0,-4.0e-3,
+                           5.0,0.0,
+                           6.0,-5.0e-3,
+                           7.0,0.0),
+                    PROL_DROITE='EXCLU',
+                    PROL_GAUCHE='EXCLU',);
+
+CHAR1=AFFE_CHAR_MECA_F(MODELE=MODELE,
+                       DDL_IMPO=_F(GROUP_NO='COTED',
+                                   DX=DEPL1,),);
+
+L_INS1=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=(_F(JUSQU_A=1.0,
+                                     NOMBRE=50,),
+                                  _F(JUSQU_A=2.0,
+                                     NOMBRE=50,),
+                                  _F(JUSQU_A=3.0,
+                                     NOMBRE=50,),
+                                  _F(JUSQU_A=4.0,
+                                     NOMBRE=32,),
+                                  _F(JUSQU_A=5.0,
+                                     NOMBRE=50,),
+                                  _F(JUSQU_A=6.0,
+                                     NOMBRE=50,),
+                                  _F(JUSQU_A=7.0,
+                                     NOMBRE=50,),),);
+
+
+RES1=STAT_NON_LINE(CHAM_MATER=CAR_MAT,
+                   MODELE=MODELE,
+                   TITRE='BENCH-B LOI BETON_RAG',
+                   CONVERGENCE=_F(
+                               ITER_GLOB_MAXI = 100),
+                   COMPORTEMENT  =_F(RELATION='BETON_RAG',),
+                   INCREMENT=_F(LIST_INST=L_INS1,
+                                INST_FIN=7,),
+                   NEWTON     =_F(MATRICE='TANGENTE'),
+                   EXCIT      =(_F(CHARGE=CLIM),
+                                _F(CHARGE=CHAR1,),), );
+
+RES1=CALC_CHAMP(reuse=RES1,RESULTAT=RES1,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('EPSI_ELNO'))
+
+
+# VALEURS DE NON-REGRESSION
+TEST_RESU(RESU=(_F(NUME_ORDRE=50,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=RES1,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='N6',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=2.872545240,
+                   VALE_REFE=2.8725450000000001,
+                   PRECISION=5.0000000000000001E-3,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=150,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=RES1,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='N6',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=0.133052012,
+                   VALE_REFE=0.133052,
+                   PRECISION=5.0000000000000001E-3,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=282,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=RES1,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='N6',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-20.726419486,
+                   VALE_REFE=-20.726420000000001,
+                   PRECISION=5.0000000000000001E-3,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=332,
+                   RESULTAT=RES1,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='N6',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=0.0,
+                   TOLE_MACHINE=1.0000000000000001E-05,
+                   CRITERE='ABSOLU',
+                   MAILLE='M1',),
+                ),
+          )
+
+# VALEURS EXPERIMENTALES
+TEST_RESU(RESU=(_F(NUME_ORDRE=50,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RES1,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='N6',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=2.872545240,
+                   VALE_REFE=3.0,
+                   PRECISION=0.070000000000000007,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=150,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RES1,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='N6',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=0.133052012,
+                   VALE_REFE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=0.20000000000000001,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=332,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RES1,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='N6',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-1.05254663E-16,
+                   VALE_REFE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=1.0000000000000001E-05,
+                   MAILLE='M1',),
+                ),
+          )
+
+#IMPR_RESU(MODELE=MODELE,
+#          FORMAT='CASTEM',
+#          RESU=_F( MAILLAGE=MAIL,
+#                   RESULTAT=RES1,),);
+
+FIN() ;

@@ -1,0 +1,51 @@
+opti dime 3  elem cub8 ;
+dens 10 ;
+
+*----------------------------------------
+*DONNEES
+*----------------------------------------
+*cotés
+LX = 0.05;
+LY = 0.1;
+LZ = 0.005;
+
+* nombre d'éléments
+NX = 30;
+NY = 50;
+NZ = 10; 
+*---------------------------------------------
+*construction des surfaces dans le plan inférieur
+*---------------------------------------------
+p1 = LX   0.  0.;
+p2 = LX   0.  LZ;
+p3 = 0.   0.  LZ;
+p4 = 0.   0.  0.;
+
+lig1 = droit p1 p2 NZ;
+lig2 = droit p2 p3 NX;
+lig3 = droit p3 p4 NZ;
+lig4 = droit p4 p1 NX;
+
+cont  = lig1 et lig2 et lig3 et lig4;
+
+SR_INF= surface cont 'PLANE';
+
+p5 = 0. LY  0.;
+
+*---------------------------------------------
+*extrusion
+*---------------------------------------------
+
+vol = SR_INF volu  'TRAN' p5 NY;
+SR_SUP = FACE 2  vol ;
+elim vol 1E-6;
+trac vol;
+
+trac cach vol;
+
+MAILLE = vol et SR_INF et SR_SUP;
+
+
+opti sauv format '/local00/home/A88170/sdls114d_refine.mgib'  ;
+sauv format maille ;
+fin ;

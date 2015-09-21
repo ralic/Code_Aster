@@ -1,9 +1,9 @@
-P time_limit 60
+P time_limit 30
 P memory_limit 512
 P ncpus 1
 P mpi_nbcpu 1
 P mpi_nbnoeud 1
 P testlist verification sequential
 
-F comm sdls114a.comm D 1
-F mmed sdls114a.mmed D 20
+F comm ssna117b.comm D 1
+F mail ssna117a.mail D 20
