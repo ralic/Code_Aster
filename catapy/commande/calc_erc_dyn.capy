@@ -24,7 +24,7 @@ CALC_ERC_DYN=OPER(nom="CALC_ERC_DYN",op=66,sd_prod=mode_meca,
          MATR_MASS       =SIMP(statut='o',typ=(matr_asse_depl_r ) ),
          MATR_RIGI       =SIMP(statut='o',typ=(matr_asse_depl_r ) ),
          MATR_NORME      =SIMP(statut='o',typ= matr_asse_gene_r),
-         MATR_PROJ       =SIMP(statut='o',typ= corresp_2_mailla),
+         MATR_PROJECTION =SIMP(statut='o',typ= corresp_2_mailla),
          MESURE          =SIMP(statut='o',typ= (dyna_harmo, mode_meca)),
          CHAMP_MESURE    =SIMP(statut='f',typ='TXM',into=("DEPL","VITE","ACCE",),defaut="DEPL" ),
 #

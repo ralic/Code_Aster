@@ -92,7 +92,7 @@ subroutine materc(matmas, matrig, matamo, numnu, amor, nommes,&
     call getvid(' ', 'MESURE', scal=nommes)
 !
 ! --- RECUPERATION DES MATRICES
-    call getvid(' ','MATR_PROJ',scal=matprj)
+    call getvid(' ','MATR_PROJECTION',scal=matprj)
     call getvid(' ', 'MATR_MASS', scal=matmas)
     call getvid(' ', 'MATR_RIGI', scal=matrig)
 !    call getvid(' ', 'MATR_AMOR', scal=matamo, nbret=n1)
