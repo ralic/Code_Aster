@@ -159,11 +159,10 @@ RESU=DYNA_NON_LINE(MODELE=MODE,
                    SCHEMA_TEMPS=_F(SCHEMA='HHT',
                                 FORMULATION='DEPLACEMENT',
                                 MODI_EQUI='NON',ALPHA=-0.6,),
-                   NEWTON=_F(
+                   NEWTON=_F(MATR_RIGI_SYME='OUI',
                              REAC_INCR=1,
                              MATRICE='TANGENTE',
                              REAC_ITER=1,),
-                   SOLVEUR=_F(SYME='OUI',),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1.E-06,
 #  On force le sous-decoupage du pas de temps :
 #                                  ITER_GLOB_MAXI=20,

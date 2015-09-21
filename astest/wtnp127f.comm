@@ -209,9 +209,9 @@ cal1=STAT_NON_LINE(MODELE=MODELT,
                  ETAT_INIT  = _F ( DEPL = PINIT  ,
                                   ),
 
-                 SOLVEUR=_F(METHODE='MUMPS',SYME='OUI',),
+                 SOLVEUR=_F(METHODE='MUMPS',),
 
-                 NEWTON=_F(MATRICE='TANGENTE',
+                 NEWTON=_F(MATRICE='TANGENTE',MATR_RIGI_SYME='OUI',
                            REAC_ITER=1),
 
                  CONVERGENCE=_F( RESI_GLOB_MAXI = RESI_GLOB_MAXI,

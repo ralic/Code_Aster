@@ -99,10 +99,9 @@ RESU=STAT_NON_LINE(MODELE=MODE,
                    COMPORTEMENT=_F(RELATION='ELAS',
                                 DEFORMATION='GROT_GDEP',
                                 ),
-                   NEWTON=_F(REAC_ITER=1,),
+                   NEWTON=_F(REAC_ITER=1,MATR_RIGI_SYME='OUI',),
                    CONVERGENCE=_F(RESI_GLOB_MAXI=1.0E-4,
                                   ITER_GLOB_MAXI=20,),
-                   SOLVEUR=_F(SYME='OUI',),
                    INCREMENT=_F(LIST_INST=TPS,),);
 
 RESU=CALC_CHAMP(reuse =RESU,

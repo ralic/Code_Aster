@@ -114,7 +114,7 @@ EVOL = STAT_NON_LINE(
                    COMPORTEMENT=_F(RELATION='ENDO_FISS_EXP',
                                 TOUT='OUI'),
                    INCREMENT=_F(LIST_INST=TEMPS),
-                   NEWTON=_F(MATRICE='TANGENTE',
+                   NEWTON=_F(MATRICE='TANGENTE',MATR_RIGI_SYME='OUI',
                              REAC_ITER=1,
                              ),
                    PILOTAGE=_F(TYPE='PRED_ELAS',
@@ -133,8 +133,6 @@ EVOL = STAT_NON_LINE(
                                 ITER_GLOB_MAXI = 15,
                                 ),                                  
                    SOLVEUR=_F(METHODE='MUMPS',
-   
-                              SYME = 'OUI',
                               ),
                    ARCHIVAGE=_F(PAS_ARCH=1000), 
                    );

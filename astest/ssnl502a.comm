@@ -150,13 +150,12 @@ RESULT=STAT_NON_LINE(MODELE=MO,
                                   DEFORMATION='GROT_GDEP',),
                      INCREMENT=_F(LIST_INST=LIS_INST,
                                   NUME_INST_FIN=11,),
-                     NEWTON=_F(PREDICTION='ELASTIQUE',
+                     NEWTON=_F(PREDICTION='ELASTIQUE',MATR_RIGI_SYME='OUI',
                                MATRICE='TANGENTE',
                                REAC_ITER=1,),
                      CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
                                     ITER_GLOB_MAXI=30,),
-                     SOLVEUR=_F(
-                                SYME='OUI',),);
+                     );
 #
 
 RESULT=STAT_NON_LINE(reuse =RESULT,
@@ -176,7 +175,7 @@ RESULT=STAT_NON_LINE(reuse =RESULT,
                                   NUME_INST_INIT=11,
                                   NUME_INST_FIN=131,),
                      NEWTON=_F(PREDICTION='ELASTIQUE',
-                               MATRICE='TANGENTE',
+                               MATRICE='TANGENTE',MATR_RIGI_SYME='OUI',
                                REAC_ITER=1,),
                      PILOTAGE=_F(TYPE='LONG_ARC',
                                  COEF_MULT=-1.,
@@ -187,8 +186,7 @@ RESULT=STAT_NON_LINE(reuse =RESULT,
                                  NOM_CMP=('DX','DZ',),),
                      CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
                                     ITER_GLOB_MAXI=20,),
-                     SOLVEUR=_F(
-                                SYME='OUI',),);
+                     );
 #
 
 TABLE_DZ=POST_RELEVE_T(ACTION=_F(INTITULE='TAB_DZ',

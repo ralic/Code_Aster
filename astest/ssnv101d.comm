@@ -269,7 +269,6 @@ SOLNL3=STAT_NON_LINE(
                              CONVERGENCE=_F(  ITER_GLOB_MAXI = 30,
                                            RESI_GLOB_RELA = 1.E-8,
                                           ),
-                                 SOLVEUR=_F(  SYME = 'NON',  )
                          )
 
 #
@@ -366,7 +365,6 @@ SOLNL4=STAT_NON_LINE(
                              CONVERGENCE=_F(  ITER_GLOB_MAXI = 30,
                                            RESI_GLOB_RELA = 1.E-8,
                                           ),
-                                 SOLVEUR=_F(  SYME = 'NON',  )
                          )
 
 #
@@ -462,7 +460,6 @@ SOLNL5=STAT_NON_LINE(
                              CONVERGENCE=_F(  ITER_GLOB_MAXI = 30,
                                            RESI_GLOB_RELA = 1.E-8,
                                           ),
-                                 SOLVEUR=_F(  SYME = 'NON',  )
                          )
 
 #

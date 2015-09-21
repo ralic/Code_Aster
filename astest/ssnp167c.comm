@@ -523,8 +523,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
                     CONVERGENCE = _F(ITER_GLOB_MAXI = 30,
                                      ),
                     SOLVEUR     = _F(METHODE     = 'MUMPS',
-                                     PCENT_PIVOT = 250,
-                                     SYME = 'NON',),
+                                     PCENT_PIVOT = 250,),
                     ARCHIVAGE   = _F(CHAM_EXCLU = 'VARI_ELGA',),);
 
 IMPR_RESU(FORMAT='MED',

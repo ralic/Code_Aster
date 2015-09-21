@@ -1,6 +1,6 @@
 # TITRE VALIDATION DE LA MODELISATION D_PLAN_GRAD_VARI
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -150,8 +150,9 @@ for i in range(0,len(modelisation)):
                          ),
             NEWTON=_F(MATRICE='TANGENTE',
                       REAC_ITER=1,
+                      MATR_RIGI_SYME='OUI',
                       ),
-            SOLVEUR = _F(METHODE='MUMPS', SYME='OUI'),
+            SOLVEUR = _F(METHODE='MUMPS'),
             CONVERGENCE=_F(ITER_GLOB_MAXI=50,
                            RESI_GLOB_RELA=1.e-7,
                           ),

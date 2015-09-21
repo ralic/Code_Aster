@@ -408,10 +408,9 @@ U3=STAT_NON_LINE(
                          INCREMENT=_F( NUME_INST_FIN=10,
                 LIST_INST = TEMPS3),
                             NEWTON=_F(
-                MATRICE = 'TANGENTE',
+                MATRICE = 'TANGENTE',MATR_RIGI_SYME='OUI',
                 REAC_ITER = 1,
                 ),
-                SOLVEUR=_F(SYME='OUI'),
                        CONVERGENCE=_F(
                 RESI_GLOB_RELA = 1.E-6,
                 ITER_GLOB_MAXI = 100)
@@ -528,10 +527,9 @@ U4=STAT_NON_LINE(
                          INCREMENT=_F( NUME_INST_FIN=10,
                 LIST_INST = TEMPS3),
                             NEWTON=_F(
-                MATRICE = 'TANGENTE',
+                MATRICE = 'TANGENTE',MATR_RIGI_SYME='OUI',
                 REAC_ITER = 1,
                 ),
-                SOLVEUR=_F(SYME='OUI'),
                        CONVERGENCE=_F(
                 RESI_GLOB_RELA = 1.E-6,
                 ITER_GLOB_MAXI = 100)

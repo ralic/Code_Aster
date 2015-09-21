@@ -135,9 +135,7 @@ CINE = AFFE_CHAR_MECA_F(MODELE   = MO,
 #                CALCUL NON LINEAIRE
 # -----------------------------------------------------
 
-EVOL = STAT_NON_LINE(SOLVEUR     = _F(METHODE = 'MUMPS',
-
-                                      SYME = 'OUI'),
+EVOL = STAT_NON_LINE(SOLVEUR     = _F(METHODE = 'MUMPS'),
                      MODELE      = MO,
                      CHAM_MATER  = CHMAT,
                      EXCIT       = (_F(CHARGE = CINE,
@@ -145,7 +143,7 @@ EVOL = STAT_NON_LINE(SOLVEUR     = _F(METHODE = 'MUMPS',
                      COMPORTEMENT   = _F(RELATION = 'ENDO_SCALAIRE',
                                      DEFORMATION = 'PETIT'),
                      INCREMENT   = _F(LIST_INST = INSTANTS),
-                     NEWTON      = _F(MATRICE = 'TANGENTE',
+                     NEWTON      = _F(MATRICE = 'TANGENTE',MATR_RIGI_SYME='OUI',
                                      REAC_INCR = 1,
                                      REAC_ITER = 1),
                      CONVERGENCE = _F(ITER_GLOB_MAXI = 20,

@@ -211,9 +211,8 @@ RESU0=STAT_NON_LINE(
                 ),
                       SOLVEUR=_F(RENUM='METIS',
                                  STOP_SINGULIER='OUI',
-                                 METHODE='MULT_FRONT',
-                                 SYME='NON'),
-                NEWTON=_F(MATRICE='TANGENTE',
+                                 METHODE='MULT_FRONT',),
+                NEWTON=_F(MATRICE='TANGENTE',MATR_RIGI_SYME='NON',
                            REAC_ITER=1,),
                 CONVERGENCE=_F(
                              ITER_GLOB_MAXI=15,

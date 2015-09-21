@@ -123,14 +123,13 @@ RESU=DYNA_NON_LINE(MODELE=MODE,
                                 FORMULATION='DEPLACEMENT',
                                 BETA = 0.49,   # Beta,
                                 GAMMA = 0.9  ), # Gamma
-                  NEWTON=_F(   REAC_INCR=1,
+                  NEWTON=_F(   REAC_INCR=1,MATR_RIGI_SYME='OUI',
                                 MATRICE='TANGENTE',
                                 REAC_ITER=1,),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
                                   ITER_GLOB_MAXI=20,
                                   ARRET='OUI',),
-                   SOLVEUR=_F(SYME='OUI',
-                              METHODE='LDLT',),
+                   SOLVEUR=_F(METHODE='LDLT',),
                    ARCHIVAGE=_F(
                                 LIST_INST=L_SAUV),
                    );

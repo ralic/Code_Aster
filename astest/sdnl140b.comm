@@ -149,10 +149,10 @@ evol1=DYNA_NON_LINE(MODELE=modele,
                              FONC_MULT=rampe),),
                    CONTACT=contact,
                    COMPORTEMENT=_F(RELATION='ELAS',),
-                                                     NEWTON=_F(REAC_ITER=1,),
+                   NEWTON=_F(MATR_RIGI_SYME='OUI',REAC_ITER=1,),
                    INCREMENT=_F(LIST_INST=list,INST_FIN=lfin2),
                    CONVERGENCE =_F(ITER_GLOB_MAXI=30,RESI_GLOB_RELA=1.E-4,),
-                   SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=250,SYME='OUI'),
+                   SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=250),
                    SCHEMA_TEMPS=_F(SCHEMA='HHT',ALPHA=-0.3, MODI_EQUI='OUI',
                                    FORMULATION='DEPLACEMENT',),);
 

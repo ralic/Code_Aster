@@ -1300,9 +1300,8 @@ W3=STAT_NON_LINE(
                 VARI = VAR_IN3),
                          INCREMENT=_F(  NUME_INST_FIN=40,
                 LIST_INST = TEMPS2),
-                            NEWTON=_F(
+                            NEWTON=_F(MATR_RIGI_SYME='OUI',
                 MATRICE = 'TANGENTE'),
-                SOLVEUR=_F(SYME='OUI'),
                        CONVERGENCE=_F(
                 ITER_GLOB_MAXI = 20,
                 RESI_GLOB_RELA = 1.E-6)
@@ -1520,9 +1519,8 @@ W4=STAT_NON_LINE(
                 VARI = VAR_IN3),
                          INCREMENT=_F( NUME_INST_FIN=40,
                 LIST_INST = TEMPS2),
-                            NEWTON=_F(
+                            NEWTON=_F(MATR_RIGI_SYME='OUI',
                 MATRICE = 'TANGENTE'),
-                SOLVEUR=_F(SYME='NON'),
                        CONVERGENCE=_F(
                 ITER_GLOB_MAXI = 20,
                 RESI_GLOB_RELA = 1.E-6)

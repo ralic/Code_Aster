@@ -186,11 +186,10 @@ U2=STAT_NON_LINE(
                 LIST_INST = TEMPS2,
                                   ),
                             NEWTON=_F(
-                MATRICE = 'TANGENTE',
+                MATRICE = 'TANGENTE',MATR_RIGI_SYME='OUI',
                 REAC_ITER = 1,
                 ),
-                       SOLVEUR=_F(
-                SYME ='OUI'),
+                
                        CONVERGENCE=_F(
                 RESI_GLOB_RELA = 1.E-6,
                 ITER_GLOB_MAXI = 100)

@@ -115,7 +115,6 @@ NONLI=STAT_NON_LINE(  MODELE=MO1,
                                 REAC_ITER=1,),
                       CONVERGENCE=_F(RESI_GLOB_RELA=1e-05,
                                      ITER_GLOB_MAXI=20,),
-                      SOLVEUR=_F(SYME='NON',),
                       ARCHIVAGE=_F(LIST_INST=L_INST,  ),);
 
 NONLI=CALC_CHAMP(reuse =NONLI,

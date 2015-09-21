@@ -100,7 +100,7 @@ F=DEFI_FONCTION(NOM_PARA='INST',
                       1.0,  0.98),
                       );
 
-RESU=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
+RESU=STAT_NON_LINE(
                    MODELE=MO,
                    CHAM_MATER=CHMAT,
                    EXCIT=_F(CHARGE=CHA,
@@ -117,7 +117,7 @@ RESU=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                    CONVERGENCE=(_F(ITER_GLOB_MAXI=20,)),
                    INCREMENT=_F(LIST_INST=DEFLIST,
                                 INST_FIN=1.,),
-                   NEWTON=_F(MATRICE='TANGENTE',
+                   NEWTON=_F(MATRICE='TANGENTE',MATR_RIGI_SYME='OUI',
                              PREDICTION='ELASTIQUE',
                              REAC_ITER=1,),
                    ARCHIVAGE=_F(LIST_INST=L_INST,),);

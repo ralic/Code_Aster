@@ -405,7 +405,6 @@ def macr_ecrevisse_ops(self, reuse,
                                  NUME_INST_FIN=nume_ordre + 1,),
                     NEWTON=_F(**dNEWTON),
                     CONVERGENCE=_F(**dCONVERGENCE),
-                    SOLVEUR=_F(SYME='OUI'),
                     INFO=InfoAster,
                     **motclefs
                 )

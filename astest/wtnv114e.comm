@@ -168,8 +168,7 @@ CHARHO=AFFE_CHAR_MECA(   MODELE=MODELE,
 RESU0=STAT_NON_LINE(
                             MODELE=MODELE,
                            SOLVEUR=_F(
-                               METHODE = 'LDLT',
-                               SYME    =  'OUI',),
+                               METHODE = 'LDLT',),
                         CHAM_MATER=CHMAT0,EXCIT=(
                              _F(
                 CHARGE = CHARHO),
@@ -182,7 +181,7 @@ RESU0=STAT_NON_LINE(
                          INCREMENT=_F(
                 LIST_INST = LI),
                             NEWTON=_F(
-                MATRICE = 'TANGENTE',
+                MATRICE = 'TANGENTE',MATR_RIGI_SYME='OUI',
                 REAC_ITER = 121),
                        CONVERGENCE=_F(
                 RESI_GLOB_RELA = 1.E-8,
