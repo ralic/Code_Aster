@@ -1,0 +1,41 @@
+
+
+
+
+opti dime 3 elem cub8 ;
+
+* pour  mailler un barreau forme de 3 cubes n1xn1 en 3D :
+* ---------------------------------------------------------
+
+n1=3;
+
+a  = 0.   0.   0.;
+b  = 1.   0.   0.;
+
+AB = droi n1 a b ;
+bas1= AB tran n1 (0. 1. 0.);
+
+                                                                                                                            
+cub1= bas1 VOLU n1 TRAN (0. 0. 1.);
+bas2= FACE 2 cub1;
+* trac cub1 ;
+
+cub2= bas2 VOLU n1 TRAN (0. 0. 1.);
+bas3= FACE 2 cub2;
+
+cub3= bas3 VOLU n1 TRAN (0. 0. 1.);
+bas4= FACE 2 cub3;
+
+
+barreau= cub1 et cub2 et cub3 ;
+
+c1=barreau poin proc (1.  1.  3.);
+c2=barreau poin proc (1.  1.  2.);
+
+trac barreau;
+
+opti sauv form 'zzJP2.mgib' ;
+sauv form barreau ;
+list (nbno barreau) ;
+list (nbel barreau) ;
+fin;

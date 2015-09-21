@@ -1,0 +1,129 @@
+# TITRE : Validation de LIAISON_SOLIDE en 3D et avec de grandes rotations
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),)
+
+
+PRE_GIBI()
+MA = LIRE_MAILLAGE()
+
+MAT1= DEFI_MATERIAU(ELAS = _F(E=1.E0, NU=0.3,))
+MAT2= DEFI_MATERIAU(ELAS = _F(E=1.E5, NU=0.3,))
+
+MOD=AFFE_MODELE(MAILLAGE = MA,
+                AFFE =  _F(GROUP_MA     = ('CUB1','CUB2','CUB3',),
+                           PHENOMENE    = 'MECANIQUE', MODELISATION = '3D'))
+
+CL1 = AFFE_CHAR_MECA(MODELE = MOD, DDL_IMPO = _F(GROUP_MA='BAS1', DX=0., DY=0., DZ=0., ))
+
+CL2 = AFFE_CHAR_MECA( MODELE = MOD, DDL_IMPO = _F(GROUP_NO='C1', DX=1., DY=1., DZ=-1.3, ),)
+
+
+chdunl3 = AFFE_CHAR_MECA(MODELE = MOD,
+                     LIAISON_SOLIDE =  _F(GROUP_MA='CUB2',),
+                     )
+
+chdunl4 = AFFE_CHAR_MECA(MODELE = MOD,
+                     DDL_IMPO = _F(GROUP_MA='BAS1', DX=0., DY=0., DZ=0., ),
+                     LIAISON_SOLIDE =  _F(GROUP_MA='CUB2',),
+                     )
+
+RAMPE = DEFI_FONCTION(NOM_PARA = 'INST',
+                      PROL_DROITE = 'LINEAIRE',
+                      VALE = (0., 0.,   1., 1.,))
+
+tfin=1.
+nbpas=2
+
+INSTANT1 = DEFI_LIST_REEL(DEBUT = 0., INTERVALLE = _F(JUSQU_A=tfin,NOMBRE=20))
+INSTANT2 = DEFI_LIST_REEL(DEBUT = 0., INTERVALLE = _F(JUSQU_A=tfin,NOMBRE=nbpas))
+
+
+vcalc1=0.555231839762
+vcalc2=0.555232677163
+
+
+
+# -----------------------------------------------------------------------------
+# 1. Calcul de reference avec 1 cube beaucoup plus rigide que les 2 autres :
+# -----------------------------------------------------------------------------
+if 1 :
+    CHMAT1=AFFE_MATERIAU(MAILLAGE = MA,
+              AFFE = (_F(GROUP_MA=('CUB1', 'CUB3',), MATER=MAT1,),
+                      _F(GROUP_MA=('CUB2',),         MATER=MAT2,)))
+
+    EVOL1 = STAT_NON_LINE(
+        MODELE = MOD, CHAM_MATER = CHMAT1,
+        EXCIT =  (_F(CHARGE = CL1, TYPE_CHARGE='FIXE_CSTE' ),
+                  _F(CHARGE = CL2, FONC_MULT = RAMPE, TYPE_CHARGE='FIXE_CSTE'),),
+        COMPORTEMENT =  _F(RELATION = 'ELAS', TOUT = 'OUI',
+                           DEFORMATION='GROT_GDEP',),
+        INCREMENT = _F(  LIST_INST = INSTANT1, INST_FIN=tfin,),
+        NEWTON  = _F( MATRICE   = 'TANGENTE', REAC_ITER = 1, ),
+        CONVERGENCE = _F( RESI_GLOB_RELA = 1.E-6, ITER_GLOB_MAXI = 10, ),
+        )
+
+    TEST_RESU(RESU=_F(RESULTAT=EVOL1, INST=tfin, NOM_CHAM='DEPL', NOM_CMP='DX', GROUP_NO='C2', VALE_CALC= vcalc1 ))
+
+# -----------------------------------------------------------------------
+# 2. Calcul avec LIAISON_SOLIDE :
+# -----------------------------------------------------------------------
+if 1 :
+    CHMAT2=AFFE_MATERIAU(MAILLAGE = MA,
+              AFFE = (_F(GROUP_MA=('CUB1', 'CUB3',), MATER=MAT1,),
+                      _F(GROUP_MA=('CUB2',),         MATER=MAT1,)))
+
+    EVOL2 = STAT_NON_LINE(
+        MODELE = MOD, CHAM_MATER = CHMAT2,
+        EXCIT =  (_F(CHARGE = CL1, TYPE_CHARGE='FIXE_CSTE' ),
+                  _F(CHARGE = chdunl3, TYPE_CHARGE='SUIV' ),
+                  _F(CHARGE = CL2, FONC_MULT = RAMPE, TYPE_CHARGE='FIXE_CSTE',),),
+        COMPORTEMENT =  _F(RELATION = 'ELAS', TOUT = 'OUI',
+                           DEFORMATION='GROT_GDEP',),
+        INCREMENT = _F(  LIST_INST = INSTANT2, INST_FIN=tfin, ),
+        NEWTON  = _F( MATRICE   = 'TANGENTE', REAC_ITER = 1, ),
+        CONVERGENCE = _F( RESI_GLOB_RELA = 1.E-6, ITER_GLOB_MAXI = 30, ),
+        )
+
+    TEST_RESU(RESU=_F(RESULTAT=EVOL2, INST=tfin, NOM_CHAM='DEPL', NOM_CMP='DX', GROUP_NO='C2',
+                      REFERENCE='AUTRE_ASTER', VALE_REFE= vcalc1, VALE_CALC= vcalc2 , PRECISION=2.e-6))
+
+
+# --------------------------------------------------------------------------
+# 3. Calcul avec LIAISON_SOLIDE melange a une autre charge de Dirichlet :
+# ---------------------------------------------------------------------------
+if 1 :
+
+    EVOL3 = STAT_NON_LINE(
+        MODELE = MOD, CHAM_MATER = CHMAT2,
+        EXCIT =  (_F(CHARGE = chdunl4, TYPE_CHARGE='SUIV' ),
+                  _F(CHARGE = CL2, FONC_MULT = RAMPE, TYPE_CHARGE='FIXE_CSTE',),),
+        COMPORTEMENT =  _F(RELATION = 'ELAS', TOUT = 'OUI',
+                           DEFORMATION='GROT_GDEP',),
+        INCREMENT = _F(  LIST_INST = INSTANT2, INST_FIN=tfin, ),
+        NEWTON  = _F( MATRICE   = 'TANGENTE', REAC_ITER = 1, ),
+        CONVERGENCE = _F( RESI_GLOB_RELA = 1.E-6, ITER_GLOB_MAXI = 30, ),
+        )
+
+    TEST_RESU(RESU=_F(RESULTAT=EVOL3, INST=tfin, NOM_CHAM='DEPL', NOM_CMP='DX', GROUP_NO='C2',
+                      REFERENCE='AUTRE_ASTER', VALE_REFE= vcalc1, VALE_CALC= vcalc2 , PRECISION=2.e-6))
+
+
+FIN()
+
+

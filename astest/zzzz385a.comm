@@ -1,0 +1,150 @@
+# TITRE : Validation de LIAISON_SOLIDE en 2D et avec de grandes rotations
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),)
+
+
+PRE_GIBI()
+MA = LIRE_MAILLAGE()
+
+MAT1= DEFI_MATERIAU(ELAS = _F(E=1.E0, NU=0.3,))
+MAT2= DEFI_MATERIAU(ELAS = _F(E=1.E5, NU=0.3,))
+
+MOD=AFFE_MODELE(MAILLAGE = MA,
+                AFFE =  _F(GROUP_MA     = ('CARR1','CARR2','CARR3','CARR4','CARR5','CARR6','CARR7','BORD8',),
+                           PHENOMENE    = 'MECANIQUE', MODELISATION = 'D_PLAN'))
+
+
+CL1 = AFFE_CHAR_MECA(DDL_IMPO = (_F(DY=0., GROUP_MA='BORD1',),
+                                 _F(DX= 0., DY=0., GROUP_NO='A',)), MODELE = MOD,)
+CL2 = AFFE_CHAR_MECA(DDL_IMPO = _F(DY=4., GROUP_MA='BORD8',), MODELE = MOD,)
+
+chdunl3 = AFFE_CHAR_MECA(MODELE = MOD,
+                     LIAISON_SOLIDE = (
+                          _F(GROUP_MA='CARR2',),
+                     ))
+
+chdunl4 = AFFE_CHAR_MECA(MODELE = MOD,
+                     LIAISON_SOLIDE = (
+                          _F(GROUP_MA='CARR4',),
+                          _F(GROUP_MA='CARR6',),
+                         # _F(GROUP_MA='CARR2',),
+                     ))
+
+RAMPE = DEFI_FONCTION(NOM_PARA = 'INST',
+                      PROL_DROITE = 'LINEAIRE',
+                      VALE = (0., 0.,   1., 1.,))
+
+
+tfin=1.
+nbpas=2
+INSTANT1 = DEFI_LIST_REEL(DEBUT = 0., INTERVALLE = _F(JUSQU_A=tfin,NOMBRE=10))
+INSTANT2 = DEFI_LIST_REEL(DEBUT = 0., INTERVALLE = _F(JUSQU_A=tfin,NOMBRE=nbpas))
+
+vcalc1=-1.80850094114
+vcalc2=-1.80850149443
+vcalc3=-1.80850149443
+
+# -----------------------------------------------------------------------------
+# 1. Calcul de reference avec 3 carres beaucoup plus rigides que les 4 autres :
+# -----------------------------------------------------------------------------
+if 1 :
+    CHMAT1=AFFE_MATERIAU(MAILLAGE = MA,
+              AFFE = (_F(GROUP_MA=('CARR1', 'CARR3', 'CARR5', 'CARR7'), MATER=MAT1,),
+                      _F(GROUP_MA=('CARR2', 'CARR4', 'CARR6'),          MATER=MAT2,)))
+
+    EVOL1 = STAT_NON_LINE(
+        MODELE = MOD, CHAM_MATER = CHMAT1,
+        EXCIT =  (_F(CHARGE = CL1, TYPE_CHARGE='FIXE_CSTE', ),
+                  _F(CHARGE = CL2, FONC_MULT = RAMPE, TYPE_CHARGE='FIXE_CSTE'),),
+        COMPORTEMENT =  _F(RELATION = 'ELAS', TOUT = 'OUI',
+                           DEFORMATION='GROT_GDEP',),
+        INCREMENT = _F(  LIST_INST = INSTANT1, INST_FIN=tfin,),
+        NEWTON  = _F( MATRICE   = 'TANGENTE', REAC_ITER = 1, ),
+        CONVERGENCE = _F( RESI_GLOB_RELA = 1.E-6, ITER_GLOB_MAXI = 10, ),
+        )
+
+    TEST_RESU(RESU=_F(RESULTAT=EVOL1, INST=tfin, NOM_CHAM='DEPL', NOM_CMP='DX', GROUP_NO='C', VALE_CALC= vcalc1 ))
+
+
+# -----------------------------------------------------------------------
+# 2. Calcul avec LIAISON_SOLIDE en une fois :
+# -----------------------------------------------------------------------
+if 1 :
+    CHMAT2=AFFE_MATERIAU(MAILLAGE = MA,
+              AFFE = (_F(GROUP_MA=('CARR1', 'CARR3', 'CARR5', 'CARR7'), MATER=MAT1,),
+                      _F(GROUP_MA=('CARR2', 'CARR4', 'CARR6'),          MATER=MAT1,)))
+
+    EVOL2 = STAT_NON_LINE(
+        MODELE = MOD, CHAM_MATER = CHMAT2,
+        EXCIT =  (_F(CHARGE = CL1, TYPE_CHARGE='FIXE_CSTE', ),
+                  _F(CHARGE = chdunl3, TYPE_CHARGE='SUIV', ),
+                  _F(CHARGE = chdunl4, TYPE_CHARGE='SUIV', ),
+                  _F(CHARGE = CL2, FONC_MULT = RAMPE, TYPE_CHARGE='FIXE_CSTE'),),
+        COMPORTEMENT =  _F(RELATION = 'ELAS', TOUT = 'OUI',
+                           DEFORMATION='GROT_GDEP',),
+        INCREMENT = _F(  LIST_INST = INSTANT2, INST_FIN=tfin, ),
+        NEWTON  = _F( MATRICE   = 'TANGENTE', REAC_ITER = 1, ),
+        CONVERGENCE = _F( RESI_GLOB_RELA = 1.E-6, ITER_GLOB_MAXI = 30, ),
+        )
+
+    TEST_RESU(RESU=_F(RESULTAT=EVOL2, INST=tfin, NOM_CHAM='DEPL', NOM_CMP='DX', GROUP_NO='C',
+                      REFERENCE='AUTRE_ASTER', VALE_REFE= vcalc1, VALE_CALC= vcalc2, PRECISION=2.e-6))
+
+# -----------------------------------------------------------------------
+# 3. Calcul avec LIAISON_SOLIDE en deux fois (reuse) :
+# -----------------------------------------------------------------------
+if 1 :
+    CHMAT3=AFFE_MATERIAU(MAILLAGE = MA,
+              AFFE = (_F(GROUP_MA=('CARR1', 'CARR3', 'CARR5', 'CARR7'), MATER=MAT1,),
+                      _F(GROUP_MA=('CARR2', 'CARR4', 'CARR6'),          MATER=MAT1,)))
+
+    tmoitie=tfin/2.
+    EVOL3 = STAT_NON_LINE(
+        MODELE = MOD, CHAM_MATER = CHMAT3,
+        EXCIT =  (_F(CHARGE = CL1, TYPE_CHARGE='FIXE_CSTE', ),
+                  _F(CHARGE = chdunl3, TYPE_CHARGE='SUIV', ),
+                  _F(CHARGE = chdunl4, TYPE_CHARGE='SUIV', ),
+                  _F(CHARGE = CL2, FONC_MULT = RAMPE, TYPE_CHARGE='FIXE_CSTE'),),
+        COMPORTEMENT =  _F(RELATION = 'ELAS', TOUT = 'OUI',
+                           DEFORMATION='GROT_GDEP',),
+        INCREMENT = _F(  LIST_INST = INSTANT2, INST_FIN=tmoitie, ),
+        NEWTON  = _F( MATRICE   = 'TANGENTE', REAC_ITER = 1, ),
+        CONVERGENCE = _F( RESI_GLOB_RELA = 1.E-6, ITER_GLOB_MAXI = 30, ),
+        )
+
+    EVOL3 = STAT_NON_LINE( reuse=EVOL3,
+        ETAT_INIT=_F( EVOL_NOLI = EVOL3, INST=tmoitie),
+        MODELE = MOD, CHAM_MATER = CHMAT3,
+        EXCIT =  (_F(CHARGE = CL1, TYPE_CHARGE='FIXE_CSTE', ),
+                  _F(CHARGE = chdunl3, TYPE_CHARGE='SUIV', ),
+                  _F(CHARGE = chdunl4, TYPE_CHARGE='SUIV', ),
+                  _F(CHARGE = CL2, FONC_MULT = RAMPE, TYPE_CHARGE='FIXE_CSTE'),),
+        COMPORTEMENT =  _F(RELATION = 'ELAS', TOUT = 'OUI',
+                           DEFORMATION='GROT_GDEP',),
+        INCREMENT = _F(  LIST_INST = INSTANT2, INST_FIN=tfin, ),
+        NEWTON  = _F( MATRICE   = 'TANGENTE', REAC_ITER = 1, ),
+        CONVERGENCE = _F( RESI_GLOB_RELA = 1.E-6, ITER_GLOB_MAXI = 30, ),
+        )
+
+    TEST_RESU(RESU=_F(RESULTAT=EVOL3, INST=tfin, NOM_CHAM='DEPL', NOM_CMP='DX', GROUP_NO='C',
+                      REFERENCE='AUTRE_ASTER', VALE_REFE= vcalc1, VALE_CALC= vcalc3, PRECISION=2.e-6))
+
+FIN()
+
+

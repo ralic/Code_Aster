@@ -1,0 +1,48 @@
+
+
+
+
+opti dime 2 elem qua4 ;
+
+* pour  mailler un barreau forme de 7 carres 2x2 en 2D :
+* ---------------------------------------------------------
+
+
+a  = 0.   0.;
+b  = 0.   1.;
+n1=2;
+
+bord1 = droi n1 a b ;
+carr1= bord1 tran n1 (1. 0.);
+bord2= cote 3 carr1;
+
+carr2= bord2 tran n1 (1. 0.);
+bord3= cote 3 carr2;
+
+carr3= bord3 tran n1 (1. 0.);
+bord4= cote 3 carr3;
+
+carr4= bord4 tran n1 (1. 0.);
+bord5= cote 3 carr4;
+
+carr5= bord5 tran n1 (1. 0.);
+bord6= cote 3 carr5;
+
+carr6= bord6 tran n1 (1. 0.);
+bord7= cote 3 carr6;
+
+carr7= bord7 tran n1 (1. 0.);
+bord8= cote 3 carr7;
+
+barreau= carr1 et carr2 et carr3 et  carr4 et carr5 et carr6 et carr7 ;
+
+c=barreau poin proc (7.  1.);
+d=barreau poin proc (7.  0.);
+
+trac barreau;
+
+opti sauv form 'zzJP1.mgib' ;
+sauv form barreau ;
+list (nbno barreau) ;
+list (nbel barreau) ;
+fin;

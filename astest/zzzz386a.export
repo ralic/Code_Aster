@@ -1,0 +1,10 @@
+P time_limit 90
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist verification sequential
+
+F comm zzzz386a.comm D 1
+F datg zzzz386a.datg D 16
+F mgib zzzz386a.mgib D 19
