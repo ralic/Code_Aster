@@ -52,6 +52,11 @@ class sd_maillage(sd_titre):
     TYPMAIL = Facultatif(AsVI())
     NOMMAI = Facultatif(AsPn(ltyp=8))
 
+    # si le sd_maillage a des patchs:
+    PATCH  = Facultatif(AsColl(acces='NU', stockage='DISPERSE', modelong='VARIABLE', type='I', ))
+    COMAPA = Facultatif(AsVI())
+    CONOPA = Facultatif(AsVI())
+
     # si le sd_maillage a des super-mailles :
     NOMACR = Facultatif(AsVK8())
     SUPMAIL = Facultatif(

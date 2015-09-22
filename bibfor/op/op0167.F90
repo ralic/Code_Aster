@@ -18,6 +18,7 @@ subroutine op0167()
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
+! aslint: disable=W1501
 !     OPERATEUR CREA_MAILLAGE
 !     ------------------------------------------------------------------
 !
@@ -77,30 +78,34 @@ subroutine op0167()
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/getelem.h"
+#include "asterfort/cpifpa.h"
+#include "asterfort/gtgrma.h"
+#include "asterfort/cppagn.h"
 !
-    integer :: i, lgno, lgnu, nbecla, nbmc, iret, iad, nbma, nbmst, iqtr, nbvolu
-    integer :: n1, numma, nbjoin, nbrest, n1a, n1b
+    integer :: i, lgno, lgnu, nbecla, nbmc, iret, iad, nbma, iqtr, nbvolu
+    integer :: n1, numma, nbjoin, nbrest, n1a, n1b, izone, jlgrma
 !
     parameter(nbmc=5)
     real(kind=8) :: epais
     character(len=4) :: cdim, repk
-    character(len=8) :: nomain, nomaou, newmai, prefix, mo, geofi
+    character(len=8) :: nomain, nomaou, nomaax, newmai, prefix, mo, geofi
     character(len=8) :: nomori, knume, prfno, prfma, plan, trans
-    character(len=16) :: typcon, nomcmd, option
+    character(len=16) :: typcon, nomcmd, option, ligrma
     character(len=16) :: motfac, tymocl(nbmc), motcle(nbmc)
     character(len=19) :: table, ligrel, cham1
     character(len=24) :: nommai, grpmai, typmai, connex, nodime, grpnoe, nomnoe
     character(len=24) :: cooval, coodsc, cooref, nomjv
     character(len=24) :: nommav, grpmav, typmav, connev, nodimv, grpnov, nomnov
     character(len=24) :: coovav, coodsv, coorev
-    character(len=24) :: momanu, momano, crmanu, crmano, crgrnu, crgrno, lisi
+    character(len=24) :: momanu, momano, crgrnu, crgrno, lisi
     character(len=24) :: lisk
     character(len=24) :: nomg, valk(2), nogma, gpptnm, gpptnn
     character(len=24) :: prfn1, prfn2, nume2, iadr, nume1, momoto, momuto, prfn
     integer :: nn1, iaa, iagma, iatyma, ii, ima, in, ino, inumol, j, nfi
     integer :: jcrgno, jcrgnu, jgg, jlii, jlik, jmail, jmomto
     integer :: jmomtu, jnoeu, jnono, jnpt, jopt, jtom, jtrno, jvale, jvg, kvale
-    integer :: nbcrma, nbcrp1, nbdgma, nbgma, nbgrma, nbgrmn, nbgrmt, nbgrmv
+    integer :: nbcrp1, nbgma, nbgrma, nbgrmn, nbgrmt, nbgrmv
     integer :: nbgrno, nbmain, nbmaj2, nbmaj3, nbno, nbnot
     integer :: nbpt, nbptt, nori, nrep, ntab, ntpoi
     integer :: ibid, icham, ifm, iocc, jdime, jiad, jlima, jma, jmomno, jmomnu
@@ -113,6 +118,7 @@ subroutine op0167()
     integer, pointer :: nbnoma(:) => null()
     integer, pointer :: nbnomb(:) => null()
     integer, pointer :: nomnum(:) => null()
+    integer, pointer :: lima(:) => null() 
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -558,13 +564,13 @@ subroutine op0167()
             call jedetr(lisk)
 !
             if (niv .ge. 1) then
-                write (ifm,9000)iocc
+                write (ifm,900)iocc
                 if (option .eq. 'TRIA6_7') then
-                    write (ifm,9010)zi(jiad+iocc-1)-1,'TRIA6','TRIA7'
+                    write (ifm,901)zi(jiad+iocc-1)-1,'TRIA6','TRIA7'
                 else if (option.eq.'QUAD8_9') then
-                    write (ifm,9010)zi(jiad+iocc-1)-1,'QUAD8','QUAD9'
+                    write (ifm,901)zi(jiad+iocc-1)-1,'QUAD8','QUAD9'
                 else if (option.eq.'SEG3_4') then
-                    write (ifm,9010)zi(jiad+iocc-1)-1,'SEG3','SEG4'
+                    write (ifm,901)zi(jiad+iocc-1)-1,'SEG3','SEG4'
                 endif
             endif
  60         continue
@@ -1061,13 +1067,60 @@ subroutine op0167()
                         call jenonu(jexnom(nommai, zk8(jmail+ima)), zi( iagma+ima))
                     end do
                     if (niv .ge. 1) then
-                        write (ifm,9020)iocc
-                        write (ifm,9030)nogma,nbma
+                        write (ifm,902)iocc
+                        write (ifm,903)nogma,nbma
                     endif
                 endif
             end do
         endif
     endif
+
+! ----------------------------------------------------------------------
+!          TRAITEMENT DU MOT CLE "DECOUPE_LAC"
+! ----------------------------------------------------------------------
+!
+    call getfac('DECOUPE_LAC', nbmoma)
+!---------nbmoma > 1 --> PRESENCE DE CREA_MAILLE_LAC (OCCURENCE DOIT ETRE 1)
+    if (nbmoma .gt. 0) then
+        ASSERT(nbmoma.eq.1)
+        nomaax='MAILAUX'
+        ligrma='&&OP0167.LIMA'
+        nbgrma = 0
+! ------ GROUPE MAILLE A TRAITER ------------------------------------------------------------------
+        call getvtx('DECOUPE_LAC', 'GROUP_MA' , iocc=1, nbval=0, nbret=nbgrma)
+        nbgrma = -nbgrma
+        call wkvect(ligrma, 'V V K24', nbgrma, jlgrma)
+        call getvtx('DECOUPE_LAC', 'GROUP_MA' , iocc=1, nbval=nbgrma,vect=zk24(jlgrma),nbret=n1b)
+        ASSERT(n1b.eq.nbgrma)
+! ------ INITIALISATION ---------------------------------------------------------------------------
+        call copisd('MAILLAGE', 'V', nomain, nomaax)
+! ------ BOUCLE SUR LES GROUP_MA ------------------------------------------------------------------
+        do izone = 1,nbgrma
+! ------ LISTE DE MAILLE DU GROUP_MA
+            call gtgrma(nomaax, zk24(jlgrma+izone-1), lima, nbma)
+! ------ CREATION DES PATCHS ET RAFFINEMENT LOCAL
+            call cppagn(nomaax, nomaou,  nbma, lima, izone)
+! ------ COPIE DES DONNEES DANS LE MAILLAGE AUXILIAIRE
+            call jedetr(nomaax)
+            call copisd('MAILLAGE', 'V', nomaou, nomaax)
+            call cpifpa(nomaou, nomaax)
+! ------ IMPRESSIONS            
+            if (niv .ge. 1) then
+               write (ifm,904)izone
+               write (ifm,905)nbma
+            endif
+! ------ NETTOYAGE
+            AS_DEALLOCATE(vi=lima)
+        enddo
+        call jedetr(nomaax//'.PATCH')
+        call jedetr(nomaax//'.CONOPA')
+        call jedetr(nomaax//'.COMAPA')
+        call jedetr(nomaax)
+        call jedetr(ligrma)
+        go to 350        
+!
+    endif
+
 
 350 continue
 
@@ -1082,9 +1135,11 @@ subroutine op0167()
 !
     call jedema()
 !
-    9000 format ('MOT CLE FACTEUR "MODI_MAILLE", OCCURRENCE ',i4)
-    9010 format ('  MODIFICATION DE ',i6,' MAILLES ',a8,' EN ',a8)
-    9020 format ('MOT CLE FACTEUR "CREA_POI1", OCCURRENCE ',i4)
-    9030 format ('  CREATION DU GROUP_MA ',a8,' DE ',i6,' MAILLES POI1')
-    9050 format ('  CREATION DE ',i6,' MAILLES')
+900 format ('MOT CLE FACTEUR "MODI_MAILLE", OCCURRENCE ',i4)
+901 format ('  MODIFICATION DE ',i6,' MAILLES ',a8,' EN ',a8)
+902 format ('MOT CLE FACTEUR "CREA_POI1", OCCURRENCE ',i4)
+903 format ('  CREATION DU GROUP_MA ',a8,' DE ',i6,' MAILLES POI1')
+904 format ('MOT CLE FACTEUR "DECOUPE_LAC", GROUP_MA occurence ',i4)
+905 format ('  TRAITEMENT DE ',i6,' MAILLES ')
+!
 end subroutine
