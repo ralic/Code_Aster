@@ -32,6 +32,7 @@ subroutine lcegeo(nno, npg, ipoids, ivf, idfde,&
 #include "blas/dcopy.h"
 #include "asterfort/mgauss.h"
 #include "asterfort/r8inir.h"
+#include "asterfort/utmess.h"
 !
     integer :: nno, npg, ipoids, ivf, idfde, ndim, iret, jj
     character(len=8) :: typmod(2)
@@ -219,9 +220,6 @@ subroutine lcegeo(nno, npg, ipoids, ivf, idfde,&
 !
                 call mgauss('NCVP', l, inv, 3, 3,&
                             3, det, iret)
-                if (iret .gt. 0) then
-                    write(*,*)'erreur dans l inversion de la jacobienne'
-                endif
 !
                 do 330 i = 1, 3
                     do 340 j = 1, 3
@@ -231,8 +229,7 @@ subroutine lcegeo(nno, npg, ipoids, ivf, idfde,&
 300         continue
 !
         else
-            write(*,*)'seul le cas 3d est programmé actuellement'
-            write(*,*)'pour la loi ENDO_PORO_BETON'
+            call utmess('F', 'COMPOR1_92')
         endif
 !
     endif

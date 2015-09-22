@@ -425,7 +425,7 @@ Les résultats obtenus ne sont pas exactes avec un autre type d'élément.
 """),
 
     90 : _(u"""
-La loi d'endommagement de Sellier est mal utilisée ou bien il y a un problème
+La loi d'endommagement de KIT_RGI est mal utilisée ou bien il y a un problème
 d'intégration local d'un phénomène.
 
 Vérifiez les propriétés matériaux et que la modélisation est 3D.
@@ -435,6 +435,10 @@ Vérifiez les propriétés matériaux et que la modélisation est 3D.
  REST_ECRO : la fonction de restauration d'écrouissage vaut %(r1)E or elle doit être comprise entre 0 et 1.
 
 Vérifiez les valeurs de la fonction.
+"""),
+
+    92 : _(u"""
+Seule la modélisation 3D est disponible avec la loi d'endommagement de KIT_RGI. 
 """),
 
 }
