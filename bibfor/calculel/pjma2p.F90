@@ -37,6 +37,7 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
 #include "asterfort/celces.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/codent.h"
+#include "asterfort/codlet.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exlim1.h"
@@ -207,16 +208,21 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
     call jeecra(ma2p//'.NOMMAI', 'NOMMAX', nbno2p)
 !
 !
-    nom(1:1)='N'
-    do k = 1, nbno2p
-        call codent(k, 'G', nom(2:8))
-        call jecroc(jexnom(ma2p//'.NOMNOE', nom))
-    end do
-    nom(1:1)='M'
-    do k = 1, nbno2p
-        call codent(k, 'G', nom(2:8))
-        call jecroc(jexnom(ma2p//'.NOMMAI', nom))
-    end do
+    if (nbno2p .ge. 10000000) then
+!       -- PLUS DE 10 MILLIONS DE NOEUDS, ON PASSE EN BASE 36
+        do k = 1 , nbno2p
+            call codlet(k, 'G', nom(2:8))
+            call jecroc(jexnom(ma2p//'.NOMNOE', 'N'//nom(2:8)))
+            call jecroc(jexnom(ma2p//'.NOMMAI', 'M'//nom(2:8)))
+        enddo
+    else
+!       -- MOINS DE 10 MILLIONS DE NOEUDS, ON RESTE EN BASE 10
+        do k = 1 , nbno2p
+            call codent(k, 'G', nom(2:8))
+            call jecroc(jexnom(ma2p//'.NOMNOE', 'N'//nom(2:8)))
+            call jecroc(jexnom(ma2p//'.NOMMAI', 'M'//nom(2:8)))
+        enddo
+    endif
 !
 !
 !

@@ -49,6 +49,7 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
 #include "asterfort/assert.h"
 #include "asterfort/celfpg.h"
 #include "asterfort/codent.h"
+#include "asterfort/codlet.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
@@ -368,16 +369,36 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
     call jecreo(ma2//'.NOMMAI', 'G N K8')
     call jeecra(ma2//'.NOMMAI', 'NOMMAX', nbmail)
 !
-    nom(1:1)='N'
-    do k = 1, nbnoeu
-        call codent(k, 'G', nom(2:8))
-        call jecroc(jexnom(ma2//'.NOMNOE', nom))
-    end do
-    nom(1:1)='M'
-    do k = 1, nbmail
-        call codent(k, 'G', nom(2:8))
-        call jecroc(jexnom(ma2//'.NOMMAI', nom))
-    end do
+
+    nom='N'
+    if (nbnoeu .ge. 10000000) then
+!       -- PLUS DE 10 MILLIONS DE NOEUDS, ON PASSE EN BASE 36
+        do k = 1 , nbnoeu
+            call codlet(k, 'G', nom(2:8))
+            call jecroc(jexnom(ma2//'.NOMNOE', nom))
+        enddo
+    else
+!       -- MOINS DE 10 MILLIONS DE NOEUDS, ON RESTE EN BASE 10
+        do k = 1 , nbnoeu
+            call codent(k, 'G', nom(2:8))
+            call jecroc(jexnom(ma2//'.NOMNOE', nom))
+        enddo
+    endif
+
+    nom='M'
+    if (nbmail .ge. 10000000) then
+!       -- PLUS DE 10 MILLIONS DE MAILLES, ON PASSE EN BASE 36
+        do k = 1 , nbmail
+            call codlet(k, 'G', nom(2:8))
+            call jecroc(jexnom(ma2//'.NOMMAI', nom))
+        enddo
+    else
+!       -- MOINS DE 10 MILLIONS DE MAILLES, ON RESTE EN BASE 10
+        do k = 1 , nbmail
+            call codent(k, 'G', nom(2:8))
+            call jecroc(jexnom(ma2//'.NOMMAI', nom))
+        enddo
+    endif
 !
 !
 !     3.3 CREATION DES OBJETS  .CONNEX ET .TYPMAIL
