@@ -648,13 +648,12 @@ SACCEX0=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=acc_x, AMOR_REDUIT=0.05,
                                   LIST_FREQ = freqspec,
                                  ),);
                                  
-# AJOUT TOLE_MACHINE DE 2E-4 POUR SATISFAIRE CLAP0F0Q EN DYNAMIQUE TRANSITOIRE
 
 TEST_FONCTION(VALEUR=(
                       _F(VALE_CALC=3.471868248518,
                          VALE_REFE=3.75,
                          PRECISION=0.08,
-                         TOLE_MACHINE=2.E-04,
+                         TOLE_MACHINE=2.E-04,  # En attente issue24202 
                          REFERENCE = 'AUTRE_ASTER',
                          VALE_PARA=1.00,
                          FONCTION=ax253i,
@@ -662,7 +661,7 @@ TEST_FONCTION(VALEUR=(
                       _F(VALE_CALC=12.19188359612,
                          VALE_REFE=13.72,
                          PRECISION=0.12,
-                         TOLE_MACHINE=2.E-04,
+                         TOLE_MACHINE=2.E-04,  # En attente issue24202 
                          REFERENCE = 'AUTRE_ASTER',
                          VALE_PARA=(10.7, 0.05),
                          NOM_PARA=('FREQ', 'AMOR'),

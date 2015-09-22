@@ -339,11 +339,11 @@ mdzc1r7=CALC_FONCTION(EXTRACTION=_F(FONCTION=dzc1r7,
 
 TEST_FONCTION(VALEUR=(_F(FONCTION=mdzc1r7,
                          VALE_PARA=21.0,
-                         TOLE_MACHINE=0.001,
+                         TOLE_MACHINE=0.001,    # En attente issue24202 
                          VALE_CALC=0.016791,),
                       _F(FONCTION=mdxa1r7,
                          VALE_PARA=1.0,
-                         TOLE_MACHINE=0.001,
+                         TOLE_MACHINE=0.001,    # En attente issue24202 
                          VALE_REFE=0.00026476,
                          PRECISION=0.09,
                          REFERENCE='SOURCE_EXTERNE',

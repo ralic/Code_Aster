@@ -469,7 +469,7 @@ TEST_FONCTION(VALEUR=(_F(FONCTION=mdx253,
                          VALE_CALC=5.688324,),
                       _F(FONCTION=mdx253_0,
                          VALE_PARA=0.1,
-                         TOLE_MACHINE=0.0001,
+                         TOLE_MACHINE=0.0001,  # En attente issue24202
                          VALE_CALC=1.001351,),),);
 
 FIN();
