@@ -62,8 +62,7 @@ CALC_ESSAI_GEOMECA(INFO=1,
                    COMPORTEMENT=_F(RELATION='MOHR_COULOMB',
                                 ITER_INTE_PAS=20,),
                    CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-10,
-                                  ITER_GLOB_MAXI = 5,
-                                  ARRET = 'OUI',),
+                                  ITER_GLOB_MAXI = 5,),
                    #
                    # Essai triaxial draine
                    ESSAI_TD = _F(PRES_CONF   = PCO,

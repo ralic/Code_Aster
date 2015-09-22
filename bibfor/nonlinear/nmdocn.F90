@@ -7,6 +7,7 @@ implicit none
 #include "asterf_types.h"
 #include "asterc/r8nnem.h"
 #include "asterc/r8vide.h"
+#include "asterc/getexm.h"
 #include "asterfort/assert.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
@@ -62,15 +63,19 @@ implicit none
 !
 ! - Initializations
 !
-    keywf = 'CONVERGENCE'
+    iret_refe = 0
+    iret_comp = 0
+    keywf     = 'CONVERGENCE'
 !
 ! - Get convergence parameters (maximum iterations)
 !
     call getvis(keywf, 'ITER_GLOB_MAXI', iocc=1, scal=para_inte)
     ds_conv%iter_glob_maxi = para_inte
-    call getvis(keywf, 'ITER_GLOB_ELAS', iocc=1, scal=para_inte, isdefault=isdefault)
-    ds_conv%iter_glob_elas = para_inte
-    ds_conv%l_iter_elas    = isdefault.eq.0
+    if (getexm(keywf,'ITER_GLOB_ELAS') .eq. 1) then
+        call getvis(keywf, 'ITER_GLOB_ELAS', iocc=1, scal=para_inte, isdefault=isdefault)
+        ds_conv%iter_glob_elas = para_inte
+        ds_conv%l_iter_elas    = isdefault.eq.0
+    endif
 !
 ! - Get convergence parameters (residuals)
 !
@@ -84,15 +89,19 @@ implicit none
         call SetResi(ds_conv   , type_ = 'RESI_GLOB_MAXI', &
                     user_para_ = para_real, l_resi_test_ = .true._1)
     endif
-    call getvr8(keywf, 'RESI_COMP_RELA', iocc=1, scal=para_real, nbret=iret_comp)
-    if (iret_comp .eq. 1) then
-        call SetResi(ds_conv   , type_ = 'RESI_COMP_RELA', &
-                    user_para_ = para_real, l_resi_test_ = .true._1)
+    if (getexm(keywf,'RESI_COMP_RELA') .eq. 1) then
+        call getvr8(keywf, 'RESI_COMP_RELA', iocc=1, scal=para_real, nbret=iret_comp)
+        if (iret_comp .eq. 1) then
+            call SetResi(ds_conv   , type_ = 'RESI_COMP_RELA', &
+                        user_para_ = para_real, l_resi_test_ = .true._1)
+        endif
     endif
-    call getvr8(keywf, 'RESI_REFE_RELA', iocc=1, scal=para_real, nbret=iret_refe)
-    if (iret_refe .eq. 1) then
-        call SetResi(ds_conv   , type_ = 'RESI_REFE_RELA', &
-                    user_para_ = para_real, l_resi_test_ = .true._1)
+    if (getexm(keywf,'RESI_REFE_RELA') .eq. 1) then
+        call getvr8(keywf, 'RESI_REFE_RELA', iocc=1, scal=para_real, nbret=iret_refe)
+        if (iret_refe .eq. 1) then
+            call SetResi(ds_conv   , type_ = 'RESI_REFE_RELA', &
+                        user_para_ = para_real, l_resi_test_ = .true._1)
+        endif
     endif
 !
 ! - Reference residuals
@@ -157,9 +166,11 @@ implicit none
 !
 ! - Forced convergence
 !
-    call getvtx(keywf, 'ARRET', iocc=1, scal=answer, nbret=iret)
-    if (iret .gt. 0) then
-        ds_conv%l_stop = answer .eq. 'OUI'
+    if (getexm(keywf,'ARRET') .eq. 1) then
+        call getvtx(keywf, 'ARRET', iocc=1, scal=answer, nbret=iret)
+        if (iret .gt. 0) then
+            ds_conv%l_stop = answer .eq. 'OUI'
+        endif
     endif
 !
 end subroutine

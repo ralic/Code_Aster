@@ -51,7 +51,7 @@ CALC_ESSAI_GEOMECA = MACRO(nom="CALC_ESSAI_GEOMECA",
                      reentrant='n',
                      MATER       = SIMP(statut='o',typ=mater_sdaster),
                      COMPORTEMENT   = C_COMPORTEMENT(),
-                     CONVERGENCE = C_CONVERGENCE(),
+                     CONVERGENCE = C_CONVERGENCE('SIMU_POINT_MAT'),
                      regles=(AU_MOINS_UN('COMPORTEMENT'), # car COMPORTEMENT est facultatif dans C_COMPORTEMENT
                              AU_MOINS_UN(
                                          'ESSAI_TD'    ,

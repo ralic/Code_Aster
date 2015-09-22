@@ -51,15 +51,8 @@ CALC_ESSAI_GEOMECA(INFO        =2,
                                    ALGO_INTE     ='SPECIFIQUE',
                                    ITER_INTE_PAS =-50,),
                    CONVERGENCE =_F(RESI_GLOB_RELA =1.E-6,
-                                  ITER_GLOB_MAXI =10,
-                                  ARRET          ='OUI',),
-                                  
-#                    ESSAI_TND   =_F(PRES_CONF  = confinement,
-#                                   EPSI_IMPOSE= -0.02,
-#                                   NB_INST    = 100,
-#                                   TABLE_RESU = TABTND,
-#                                   GRAPHIQUE  = ('P-Q','EPS_AXI-Q','EPS_AXI-PRE_EAU',),),
-                   
+                                  ITER_GLOB_MAXI =10,),
+
                    ESSAI_TND_C =_F(PRES_CONF  = -2.e+5,
                                    SIGM_IMPOSE= 11.e+4,
                                    NB_CYCLE   = 3,

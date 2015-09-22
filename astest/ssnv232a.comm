@@ -84,7 +84,7 @@ COEF3=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=( 0.0, 0.0,
                            temps_max, epzz_max,),);
   
-TSIMU=SIMU_POINT_MAT(INFO=2,
+TSIMU=SIMU_POINT_MAT(
                   COMPORTEMENT=_F(RELATION='MOHR_COULOMB',),
                   MATER=SOL,
                   INCREMENT=_F(LIST_INST=TEMPS1,
@@ -94,8 +94,7 @@ TSIMU=SIMU_POINT_MAT(INFO=2,
                             REAC_ITER=1,
                             PREDICTION='ELASTIQUE'),
                   CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-10,
-                                 ITER_GLOB_MAXI = 10,
-                                 ARRET='NON',),
+                                 ITER_GLOB_MAXI = 10,),
                   ARCHIVAGE=_F(LIST_INST=TEMPS1,),
                   SIGM_IMPOSE=_F(SIXX=COEF2,
                                  SIYY=COEF4,),

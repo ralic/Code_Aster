@@ -39,7 +39,7 @@ SIMU_POINT_MAT=MACRO(nom="SIMU_POINT_MAT",
 
    NEWTON          =C_NEWTON(),
 
-   CONVERGENCE     =C_CONVERGENCE(),
+   CONVERGENCE     =C_CONVERGENCE('SIMU_POINT_MAT'),
 
    SUPPORT= SIMP(statut='f',typ='TXM',max=1,into=("POINT","ELEMENT",),defaut=("POINT"),),
 
