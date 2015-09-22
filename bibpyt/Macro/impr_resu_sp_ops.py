@@ -18,6 +18,7 @@
 #
 # person_in_charge: jean-luc.flejou at edf.fr
 #
+from Utilitai.Utmess import UTMESS
 
 def Table2vtu(nomfichtar,Reper,LignepvdData):
     #
@@ -65,15 +66,24 @@ def Table2vtu(nomfichtar,Reper,LignepvdData):
             CellsOffset = ['\n<DataArray type="Int64" Name="offsets" format="ascii">']
             CellsTypes  = ['\n<DataArray type="UInt8" Name="types" format="ascii" RangeMin="1" RangeMax="1">']
             #
-            nbpoint = 0
+            nbpoint = 0; uneErreur = False
             for uneligne in leslignes:
                 tmp = uneligne.strip()
                 try:
+                    uneErreur = False
+                    assert nbcmp <> 0
                     tmp = tmp.split()
                     if ( len(tmp) == 0): continue
-                    valeur = map( float, tmp )
+                    if (len(tmp) != 3 + len(LNomCmp) ):
+                        uneErreur = True
+                        UTMESS('F','IMPRRESUSP_7', valk=(Nom_Champ.upper(),))
                     #
-                    assert nbcmp <> 0
+                    try:
+                        valeur = map( float, tmp )
+                    except:
+                        uneErreur = True
+                        UTMESS('F','IMPRRESUSP_7', valk=(Nom_Champ.upper(),))
+                    #
                     CellsConnec.append('%8d' %(nbpoint) )
                     CellsOffset.append('%8d' %(nbpoint+1) )
                     CellsTypes.append(' 1' )
@@ -82,6 +92,7 @@ def Table2vtu(nomfichtar,Reper,LignepvdData):
                     PointData.append(' '.join( tmp[3:] ) )
                     nbpoint+=1
                 except:
+                    if ( uneErreur ): return False
                     tmp = uneligne.strip()
                     if ( tmp[:4] == 'COOR'):
                         tmp = tmp.split()
@@ -131,7 +142,7 @@ def Table2vtu(nomfichtar,Reper,LignepvdData):
     # Fermeture du ".tar"
     letar.close()
     #
-    return
+    return True
 
 
 def DedansListe(vale , laliste, precision=1.0E-03 ):
@@ -148,7 +159,6 @@ def impr_resu_sp_ops(self,
     """
     import os.path as OSP
     import numpy as NP
-    from Utilitai.Utmess import UTMESS
     from Utilitai.UniteAster import UniteAster
     import string as ST
     import tempfile
@@ -232,7 +242,6 @@ def impr_resu_sp_ops(self,
         LesChampsComposantes.append( ( ii+1, nom_cham , list(nom_cmp) ) )
     #
     Group_MA = list( GROUP_MA )
-    #
     # création du répertoire
     RepertoireSauve = tempfile.mkdtemp( prefix='Visu_Sous_Point', dir='.' )
     # On commence la macro
@@ -254,12 +263,18 @@ def impr_resu_sp_ops(self,
             __unit = DEFI_FICHIER(ACTION='ASSOCIER', FICHIER=OSP.join(RepertoireSauve,'%s.table' % Nom_Fic), ACCES='NEW', TYPE='ASCII')
             __tbresu=CREA_TABLE(
                 RESU=_F(RESULTAT=RESULTAT, NOM_CHAM=Nom_Champ.upper() , NUME_ORDRE=nume_ordre, GROUP_MA=Group_MA, NOM_CMP=LNom_Cmp,),)
+            #
+            # Vérification que toutes les composantes existent
+            NomColonnes = __tbresu.get_nom_para()
+            for icmp in ['SOUS_POINT','COOR_X','COOR_Y','COOR_Z'] + LNom_Cmp:
+                if ( not icmp in NomColonnes ):
+                    UTMESS('F','IMPRRESUSP_6', valk=(icmp,Nom_Champ.upper()))
+            #
             IMPR_TABLE(FORMAT='TABLEAU', UNITE=__unit, TABLE=__tbresu, NOM_PARA=['COOR_X','COOR_Y','COOR_Z'] + LNom_Cmp,)
             DEFI_FICHIER(ACTION='LIBERER', UNITE=__unit)
             DETRUIRE(CONCEPT=_F(NOM=__tbresu,), INFO=1,)
             DETRUIRE(CONCEPT=_F(NOM=__unit,), INFO=1,)
         #
-    #
     # Fichier de l'unité logique UNITE
     UL = UniteAster()
     nomfich = UL.Nom(UNITE)

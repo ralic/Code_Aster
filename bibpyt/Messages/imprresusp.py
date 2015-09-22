@@ -46,4 +46,15 @@ cata_msg = {
   Le numéro d'ordre %(i1)d correspondant à l'instant %(r1)e,
   n'existe pas pour le champ %(k2)s du résultat %(k1)s.
 """),
+
+6: _(u"""
+  Visualisation aux sous-points :
+  La composante %(k1)s du champ %(k2)s n'existe pas.
+"""),
+
+7: _(u"""
+  Visualisation aux sous-points :
+  Une maille du GROUP_MA ne porte pas une des composantes du champ %(k1)s.
+"""),
+
 }
