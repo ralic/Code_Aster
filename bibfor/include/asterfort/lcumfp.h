@@ -18,25 +18,19 @@
 interface
     subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
                       imate, compor, tinstm, tinstp, epsm,&
-                      deps, sigm, vim, option, sigp,&
-                      vip, dsidep, crit)
-        character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: ndim
-        character(len=8) :: typmod(*)
-        integer :: imate
-        character(len=16) :: compor(3)
-        real(kind=8) :: tinstm
-        real(kind=8) :: tinstp
-        real(kind=8) :: epsm(*)
-        real(kind=8) :: deps(*)
-        real(kind=8) :: sigm(*)
-        real(kind=8) :: vim(*)
-        character(len=16) :: option(2)
-        real(kind=8) :: sigp(*)
-        real(kind=8) :: vip(*)
-        real(kind=8) :: dsidep(6, 6)
-        real(kind=8) :: crit(*)
+                      deps, sigm, vim, option, rela_plas,&
+                      sigp, vip, dsidep, crit)
+        integer, intent(in) :: ndim
+        integer, intent(in) :: imate
+        integer, intent(in) :: kpg
+        integer, intent(in) :: ksp
+        character(len=8), intent(in) :: typmod(*)
+        character(len=16), intent(in) :: compor(*)
+        character(len=16), intent(in) :: rela_plas
+        character(len=16), intent(in) :: option
+        character(len=*), intent(in) :: fami
+        real(kind=8) :: tinstm, tinstp
+        real(kind=8) :: epsm(*), deps(*), sigm(*), sigp(*), vim(*), vip(*)
+        real(kind=8) :: dsidep(6, 6), crit(*), tbid(36)
     end subroutine lcumfp
 end interface

@@ -16,10 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine lcumef(option, dep, depm, an, bn,&
+    subroutine lcumef(rela_plas, dep, depm, an, bn,&
                       cn, epsm, epsrm, epsrp, depsi,&
                       epsfm, sigi, nstrs, sigt)
-        character(len=16) :: option(2)
+        character(len=16), intent(in) :: rela_plas
         real(kind=8) :: dep(6, 6)
         real(kind=8) :: depm(6, 6)
         real(kind=8) :: an(6)

@@ -1,6 +1,19 @@
 subroutine lcmzge(fami, kpg, ksp, ndim, typmod,&
                   imate, epstm, depst, vim, option,&
                   sig, vip, dsidpt, proj)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterc/r8nnem.h"
+#include "asterfort/bptobg.h"
+#include "asterfort/jacobi.h"
+#include "asterfort/lcumvi.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/utmess.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,19 +30,10 @@ subroutine lcmzge(fami, kpg, ksp, ndim, typmod,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit none
-#include "asterf_types.h"
-#include "asterc/r8nnem.h"
-#include "asterfort/bptobg.h"
-#include "asterfort/jacobi.h"
-#include "asterfort/lcumvi.h"
-#include "asterfort/r8inir.h"
-#include "asterfort/rcvalb.h"
-#include "asterfort/rcvarc.h"
-#include "asterfort/utmess.h"
+!
     character(len=8) :: typmod(*)
     character(len=*) :: fami
-    character(len=16) :: option
+    character(len=16), intent(in) :: option
     integer :: ndim, imate, kpg, ksp
     real(kind=8) :: epstm(12), depst(12), vim(4)
     real(kind=8) :: sig(6), vip(*), dsidpt(6, 6, 2)
@@ -81,12 +85,10 @@ subroutine lcmzge(fami, kpg, ksp, ndim, typmod,&
     real(kind=8) :: coplan, lambda, deuxmu
     real(kind=8) :: rac2, coef, tmp1, d, rap, gama, k, y
     real(kind=8) :: valres(7), valpar
-    real(kind=8) :: kron(6)
     real(kind=8) :: epsfp(6), epscou(6), chi, vala, r, a, b
     integer :: idc
     aster_logical :: coup
-!
-    data        kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
+    real(kind=8), parameter :: kron(6) = (/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/)
 ! ======================================================================
 !                            INITIALISATION
 ! ======================================================================
@@ -215,12 +217,12 @@ subroutine lcmzge(fami, kpg, ksp, ndim, typmod,&
         chi = valres(7)
     endif
 ! -- SEPARATION DE EPSM/EPSRM, DEPS/DEPSR DANS EPSTM, DEPST
-    do 10 i = 1, ndimsi
+    do i = 1, ndimsi
         epsm(i)=epstm(i)
         epsrm(i)=epstm(i+6)
         deps(i)=depst(i)
         depsr(i)=depst(i+6)
- 10 end do
+    end do
 ! -   M.B.: CALCUL DE LA DEFORMATION DE FLUAGE AU TEMP P
     if (coup .and. resi) then
         call lcumvi('FT', vip, epsfp)
@@ -233,25 +235,25 @@ subroutine lcmzge(fami, kpg, ksp, ndim, typmod,&
     call r8inir(6, 0.d0, epsr, 1)
 !  -   MISE A JOUR DES DEFORMATIONS MECANIQUES
     if (resi) then
-        do 20 j = 1, ndimsi
+        do j = 1, ndimsi
             eps(j) = epsm(j) + deps(j)
             epsr(j) = epsrm(j) + depsr(j)
- 20     continue
+        end do
     else
-        do 30 j = 1, ndimsi
+        do j = 1, ndimsi
             eps(j)=epsm(j)
             epsr(j)=epsrm(j)
- 30     continue
+        end do
         d=vim(1)
     endif
 ! -  MODIF M.B.: ON MET DANS EPS LES DEFORMATIONS REELES
-    do 40 j = 4, ndimsi
+    do j = 4, ndimsi
         eps(j) = eps(j)/rac2
         epsr(j)= epsr(j)/rac2
         if (coup .and. resi) then
             epsfp(j) = epsfp(j)/rac2
         endif
- 40 end do
+    end do
 !
 !
 !    CALCUL DE LA DEFORMATION ELASTIQUE (LA SEULE QUI CONTRIBUE
@@ -259,10 +261,10 @@ subroutine lcmzge(fami, kpg, ksp, ndim, typmod,&
 !
     call r8inir(6, 0.d0, epse, 1)
     call r8inir(6, 0.d0, epser, 1)
-    do 35 j = 1, ndimsi
+    do j = 1, ndimsi
         epse(j) = eps(j) - ( epsthe - kdess * (sref-sech) - bendo * hydr ) * kron(j)
         epser(j) = epsr(j) - ( epsthe - kdess * (sref-sech) - bendo * hydr ) * kron(j)
- 35 end do
+    end do
 !
 !
 !  M.B.: SI CONTRAINTES PLAN (COUP)
@@ -278,10 +280,10 @@ subroutine lcmzge(fami, kpg, ksp, ndim, typmod,&
 !
     if (coup .and. resi) then
         call r8inir(6, 0.d0, epscou, 1)
-        do 1010 j = 1, ndimsi
+        do j = 1, ndimsi
             epse(j) = epse(j) - epsfp(j)
             epscou(j) = epser(j) - (1.d0-chi)*epsfp(j)
-1010     continue
+        end do
     endif
 !  -   ON PASSE DANS LE REPERE PROPRE DE EPS
     nperm = 12
@@ -348,38 +350,38 @@ subroutine lcmzge(fami, kpg, ksp, ndim, typmod,&
 !     CALCUL DE EPSEQ (NON LOCAL) ET EPSTIL (LOCAL)
     epseq = 0.d0
     epstil = 0.d0
-    do 50 j = 1, 3
+    do j = 1, 3
         if (epspr(j) .gt. 0.d0) then
             epseq = epseq + (epspr(j)**2)
         endif
         if (epsp(j) .gt. 0.d0) then
             epstil = epstil + (epsp(j)**2)
         endif
- 50 end do
+    end do
     epseq = sqrt(epseq)
     epstil = sqrt(epstil)
 ! -     CALCUL DES CONTRAINTES ELASTIQUES (REPERE PRINCIPAL)
     treps = epsp(1)+epsp(2)+epsp(3)
-    do 60 j = 1, 3
+    do j = 1, 3
         sigelp(j) = lambda*treps
- 60 end do
-    do 70 j = 1, 3
+    end do
+    do j = 1, 3
         sigelp(j) = sigelp(j) + deuxmu*epsp(j)
- 70 end do
+    end do
     tmp1 = 0.d0
-    do 80 j = 1, 3
+    do j = 1, 3
         if (sigelp(j) .lt. 0.d0) then
             tmp1 = tmp1 + sigelp(j)
         endif
- 80 end do
+    end do
     if (resi) then
 !   5 -     CALCUL DE R
 !----------------------------------------------------------------
         vala=abs(sigelp(1))+abs(sigelp(2))+abs(sigelp(3))
         r=0.d0
-        do 81 i = 1, 3
+        do i = 1, 3
             r = r + max(0.00000000d0,sigelp(i))
- 81     end do
+        end do
         if (vala .gt. 1.d-10) then
             r=(r/ vala)
         else
@@ -389,10 +391,10 @@ subroutine lcmzge(fami, kpg, ksp, ndim, typmod,&
         if (r .gt. 0.99999d0) r=1.d0
         gama=0.d0
         rap=0.d0
-        do 69 i = 1, 3
+        do i = 1, 3
             rap = rap + min(0.d0,sigelp(i))
             gama = gama + (min(0.d0,sigelp(i)))**2
- 69     end do
+        end do
         if ((abs(rap).gt.1.d-10) .and. (r.eq.0.d0)) then
             gama = -(sqrt(gama)/ rap)
         else
@@ -404,8 +406,7 @@ subroutine lcmzge(fami, kpg, ksp, ndim, typmod,&
         if (epseq .le. epsd0) then
             d=vim(1)
         else
-            a=2.d0*r**2.d0*(at-2.d0*k*at+ac)-r*(at*(1.d0-4.d0*k)+3.d0*&
-            ac)+ac
+            a=2.d0*r**2.d0*(at-2.d0*k*at+ac)-r*(at*(1.d0-4.d0*k)+3.d0*ac)+ac
             b=r**2.d0*bt+(1.d0-r**2.d0)*bc
             d=1.d0-epsd0*(1.d0-a)/y -a*exp(-b*(y-epsd0))
             d = min(d , 0.99999d0)
@@ -425,9 +426,9 @@ subroutine lcmzge(fami, kpg, ksp, ndim, typmod,&
         tr(5) = 0.d0
         tr(6) = 0.d0
         call bptobg(tr, sig, vecpe)
-        do 100 j = 4, ndimsi
+        do j = 4, ndimsi
             sig(j)=rac2*sig(j)
-100     continue
+        end do
         vip(idc+1) = d
         if (d .eq. 0.d0) then
             vip(idc+2) = 0.d0
@@ -448,14 +449,14 @@ subroutine lcmzge(fami, kpg, ksp, ndim, typmod,&
         if (coup) d = vip(idc+1)
 ! -- CONTRIBUTION ELASTIQUE
         call r8inir(72, 0.d0, dsidpt, 1)
-        do 110 j = 1, 3
-            do 120 l = 1, 3
+        do j = 1, 3
+            do l = 1, 3
                 dsidpt(j,l,1) = (1.d0-d)*lambda
-120         continue
-110     continue
-        do 130 j = 1, ndimsi
+            end do
+        end do
+        do j = 1, ndimsi
             dsidpt(j,j,1) = dsidpt(j,j,1) + (1-d)*deuxmu
-130     continue
+        end do
         if ((.not.elas) .and. prog .and. (.not.rela) .and. (d.lt.0.99999d0)) then
             if (epseq .lt. 1.d-10) then
                 coef=0.d0
@@ -467,15 +468,15 @@ subroutine lcmzge(fami, kpg, ksp, ndim, typmod,&
             endif
 !      CALCUL DE EPS+
             call r8inir(6, 0.d0, tr, 1)
-            do 160 j = 1, 3
+            do j = 1, 3
                 if (epspr(j) .gt. 0.d0) then
                     tr(j) = epspr(j)
                 endif
-160         continue
+            end do
             call bptobg(tr, epsplu, vecper)
-            do 170 j = 4, ndimsi
+            do j = 4, ndimsi
                 epsplu(j) = epsplu(j)*rac2
-170         continue
+            end do
             call r8inir(6, 0.d0, sigel, 1)
             tr(1) = sigelp(1)
             tr(2) = sigelp(2)
@@ -484,14 +485,14 @@ subroutine lcmzge(fami, kpg, ksp, ndim, typmod,&
             tr(5) = 0.d0
             tr(6) = 0.d0
             call bptobg(tr, sigel, vecpe)
-            do 180 j = 4, ndimsi
+            do j = 4, ndimsi
                 sigel(j)=rac2*sigel(j)
-180         continue
-            do 190 i = 1, 6
-                do 200 j = 1, 6
+            end do
+            do i = 1, 6
+                do j = 1, 6
                     dsidpt(i,j,2) = - coef * sigel(i)* epsplu(j)
-200             continue
-190         continue
+                end do
+            end do
         endif
     endif
 end subroutine

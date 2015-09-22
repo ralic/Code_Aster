@@ -4,7 +4,19 @@ subroutine nmcomp(fami, kpg, ksp, ndim, typmod,&
                   vim, option, angmas, nwkin, wkin,&
                   sigp, vip, ndsde, dsidep, nwkout,&
                   wkout, codret)
-! ----------------------------------------------------------------------
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterc/r8vide.h"
+#include "asterfort/lcvali.h"
+#include "asterfort/nmcoup.h"
+#include "asterfort/nmcpl1.h"
+#include "asterfort/nmcpl2.h"
+#include "asterfort/nmcpl3.h"
+#include "asterfort/redece.h"
+#include "asterfort/lcidbg.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,19 +33,8 @@ subroutine nmcomp(fami, kpg, ksp, ndim, typmod,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: jean-michel.proix at edf.fr
-!
 ! aslint: disable=W1504
-    implicit none
-#include "asterf_types.h"
-#include "asterc/r8vide.h"
-#include "asterfort/lcvali.h"
-#include "asterfort/nmcoup.h"
-#include "asterfort/nmcpl1.h"
-#include "asterfort/nmcpl2.h"
-#include "asterfort/nmcpl3.h"
-#include "asterfort/redece.h"
-#include "asterfort/lcidbg.h"
+!
     integer :: kpg, ksp, ndim, imate, codret, icp, numlc
     integer :: neps, nsig, nwkin, nwkout, ndsde
     character(len=8) :: typmod(*)
@@ -143,7 +144,7 @@ subroutine nmcomp(fami, kpg, ksp, ndim, typmod,&
     read (compor(6),'(I16)') numlc
 !
 !     BOUCLE POUR ETABLIR LES CONTRAINTES PLANES
-    do 1000 icp = 1, ncpmax
+    do icp = 1, ncpmax
 !
         if (compor(1) .eq. 'KIT_DDI') then
 !        POUR EVITER LA RECURSIVITE. PETITES DEFORMATIONS
@@ -169,10 +170,11 @@ subroutine nmcomp(fami, kpg, ksp, ndim, typmod,&
                             ndim, sigp, vip, cpl, icp,&
                             convcp)
 !
-        if (convcp) goto 1001
+        if (convcp) then
+            exit
+        endif
 !
-1000 end do
-1001 continue
+    end do
 !
 !     CONTRAINTES PLANES METHODE DE BORST
     if (cp) then

@@ -3,6 +3,11 @@ subroutine lc0021(fami, kpg, ksp, ndim, imate,&
                   deps, sigm, vim, option, angmas,&
                   sigp, vip, tampon, typmod, icomp,&
                   nvi, dsidep, codret)
+!
+implicit none
+!
+#include "asterfort/lcumfp.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,9 +24,8 @@ subroutine lc0021(fami, kpg, ksp, ndim, imate,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! aslint: disable=W1504
-    implicit none
-#include "asterfort/lcumfp.h"
+! aslint: disable=W1504,W0104
+!
     integer :: imate, ndim, kpg, ksp, codret, icomp, nvi
     real(kind=8) :: crit(*), angmas(*)
     real(kind=8) :: instam, instap, tampon(*)
@@ -29,14 +33,13 @@ subroutine lc0021(fami, kpg, ksp, ndim, imate,&
     real(kind=8) :: sigm(6), sigp(6)
     real(kind=8) :: vim(*), vip(*)
     real(kind=8) :: dsidep(6, 6)
-    character(len=16) :: compor(*), option, optio2(2)
+    character(len=16) :: compor(*), option, rela_plas
     character(len=8) :: typmod(*)
     character(len=*) :: fami
 !
-    optio2(1)=option
-    optio2(2)=' '
+    rela_plas = ' '
     call lcumfp(fami, kpg, ksp, ndim, typmod,&
                 imate, compor, instam, instap, epsm,&
-                deps, sigm, vim, optio2, sigp,&
-                vip, dsidep, crit)
+                deps, sigm, vim, option, rela_plas,&
+                sigp, vip, dsidep, crit)
 end subroutine

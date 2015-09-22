@@ -1,8 +1,23 @@
 subroutine lcumfe(fami, kpg, ksp, ndim, typmod,&
                   imate, tinstm, tinstp, epstm, depst,&
-                  sigm, vim, option, sigp, vip,&
-                  dsidpt, proj)
-! ----------------------------------------------------------------------
+                  sigm, vim, option, rela_plas, sigp,&
+                  vip, dsidpt, proj)
+!
+implicit none
+!
+#include "asterfort/assert.h"
+#include "asterfort/lcmzge.h"
+#include "asterfort/lcumef.h"
+#include "asterfort/lcummd.h"
+#include "asterfort/lcumme.h"
+#include "asterfort/lcumsf.h"
+#include "asterfort/lcumvi.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/sigela.h"
+#include "asterfort/utmess.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,25 +34,18 @@ subroutine lcumfe(fami, kpg, ksp, ndim, typmod,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit none
-#include "asterfort/lcmzge.h"
-#include "asterfort/lcumef.h"
-#include "asterfort/lcummd.h"
-#include "asterfort/lcumme.h"
-#include "asterfort/lcumsf.h"
-#include "asterfort/lcumvi.h"
-#include "asterfort/r8inir.h"
-#include "asterfort/rcvalb.h"
-#include "asterfort/rcvarc.h"
-#include "asterfort/sigela.h"
-#include "asterfort/utmess.h"
-    integer :: ndim, imate, kpg, ksp
-    character(len=8) :: typmod(*)
-    character(len=16) :: option(2), option2
-    character(len=*) :: fami
+!
+    integer, intent(in) :: ndim
+    integer, intent(in) :: imate
+    integer, intent(in) :: kpg
+    integer, intent(in) :: ksp
+    character(len=8), intent(in) :: typmod(*)
+    character(len=16), intent(in) :: rela_plas
+    character(len=16), intent(in) :: option
+    character(len=*), intent(in) :: fami
     real(kind=8) :: tinstm, tinstp, epstm(12), depst(12)
     real(kind=8) :: sigm(6), sigp(6), vim(25), vip(25)
-    real(kind=8) :: dsidpt(6, 6, 2), proj(6, 6), tbid(6),bendo,kdess
+    real(kind=8) :: dsidpt(6, 6, 2), proj(6, 6), tbid(6)
 !
 ! COUPLAGE UMLV MAZARS EN NON LOCAL
 !---&s---1---------2---------3---------4---------5---------6---------7--
@@ -51,8 +59,8 @@ subroutine lcumfe(fami, kpg, ksp, ndim, typmod,&
 ! IN  DEPST   : INCREMENT DE DEFORMATION TOTALE
 ! IN  SIGM    : CONTRAINTES A L'INSTANT DU CALCUL PRECEDENT
 ! IN  VIM     : VARIABLES INTERNES A L'INSTANT DU CALCUL PRECEDENT
-! IN  OPTION  : (1) OPTION DEMANDEE:RIGI_MECA_TANG, FULL_MECA ,RAPH_MECA
-!               (2) MODELE MECA DE COUPLAGE EVENTUEL (MAZARS OU EIB)
+! IN  OPTION  : OPTION DEMANDEE:RIGI_MECA_TANG, FULL_MECA ,RAPH_MECA
+! In rela_plas : MODELE MECA DE COUPLAGE EVENTUEL (MAZARS OU EIB)
 ! OUT SIGP    : CONTRAINTES A L'INSTANT ACTUEL
 ! OUT VIP     : VARIABLES INTERNES A L'INSTANT ACTUEL
 ! OUT DSIDPT  : MATRICE TANGENTE
@@ -192,24 +200,23 @@ subroutine lcumfe(fami, kpg, ksp, ndim, typmod,&
 !_______________________________________________________________________
 !
     integer :: iret
-    character(len=16) :: nomres(16)
+    character(len=16) :: nomres(16), option2
     integer :: icodre(16)
     real(kind=8) :: cfps, cfpd
     integer :: i, j, k, nstrs, ifou, isph
     real(kind=8) :: tdt
     real(kind=8) :: youn, xnu
     real(kind=8) :: krs, etars, kis, etais, krd, etard, etaid
-    real(kind=8) :: etafd
+    real(kind=8) :: etafd,bendo,kdess
     real(kind=8) :: cmat(15), dep(6, 6), depm(6, 6)
     real(kind=8) :: an(6), bn(6, 6), cn(6, 6), valres(16)
     real(kind=8) :: hygrm, hygrp, rbid
     real(kind=8) :: epsrm, epsrp, epsfm(6)
-    real(kind=8) :: kron(6)
     real(kind=8) :: hydrm, hydrp, sechm, sechp, sref, tm, tp, tref
     real(kind=8) :: epsthp, epsthm
     real(kind=8) :: tmaxp, tmaxm, younm, xnum, epsm(6), deps(6)
     real(kind=8) :: sigelm(6), sigelp(6), epsel(6)
-    data     kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
+    real(kind=8), parameter :: kron(6) = (/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/)
 
     rbid = 0.d0
 !
@@ -222,27 +229,22 @@ subroutine lcumfe(fami, kpg, ksp, ndim, typmod,&
 !
     nstrs = 2*ndim
 !
-    do 13 i = 1, nstrs
+    do i = 1, nstrs
         epsm(i)=epstm(i)
         deps(i)=depst(i)
-13  end do
+    end do
 !
 !   TYPE DE CALCUL
 !
     if (typmod(1) .eq. 'C_PLAN') then
         ifou = -2
-        goto 1
     else if (typmod(1) .eq. 'D_PLAN') then
         ifou = -1
-        goto 1
     else if (typmod(1) .eq. 'AXIS') then
         ifou = 0
-        goto 1
     else
         ifou = 2
     endif
- 1  continue
-!
 !
 !   INITIALISATION DU FLUAGE SPHERIQUE PROPRE
 !
@@ -268,7 +270,6 @@ subroutine lcumfe(fami, kpg, ksp, ndim, typmod,&
     nomres(3) = 'ALPHA'
     nomres(4) = 'ALPHA'
 !
-!    IF (OPTION(2).EQ.'MAZARS') THEN
     tmaxm = vim(24)
     tmaxp = max(tmaxm, tp)
 !
@@ -288,19 +289,11 @@ subroutine lcumfe(fami, kpg, ksp, ndim, typmod,&
                 ' ', 'ELAS', 1, 'TEMP', [tmaxp],&
                 1, nomres(4), valres(4), icodre(4), 0)
 !
-!      ELSE
-!     IF (OPTION(2).EQ.'ENDO_ISOT_BETON') THEN
-!
-!       ENDIF
-!
     youn = valres(1)
     xnu = valres(2)
 !
-!
 !  -------CALCUL DES DEFORMATIONS THERMIQUES
 !
-!      IF ((OPTION(2).EQ.'MAZARS') .OR.
-!     &    (OPTION(2).EQ.'ENDO_ISOT_BETON')) THEN
     if ((isnan(tref)) .or. (icodre(3).ne.0) .or. (icodre(4).ne.0)) then
         call utmess('F', 'CALCULEL_15')
     else
@@ -315,14 +308,6 @@ subroutine lcumfe(fami, kpg, ksp, ndim, typmod,&
             epsthp = 0.d0
         endif
     endif
-!      ELSE
-!        CALL VERIFT(FAMI,KPG,KSP,'+',IMATE,'ELAS',1,EPSTHP,IRET1)
-!        CALL VERIFT(FAMI,KPG,KSP,'-',IMATE,'ELAS',1,EPSTHM,IRET2)
-!      ENDIF
-!
-!
-!
-! MODIFI DU 18 AOUT 2004 - AJOUT RETRAIT
 !
 !  ------- CARACTERISTIQUES DE RETRAIT ENDOGENE ET DE DESSICCATION
 !
@@ -333,8 +318,6 @@ subroutine lcumfe(fami, kpg, ksp, ndim, typmod,&
                 2, nomres, valres, icodre, 1)
     bendo=valres(1)
     kdess=valres(2)
-!
-!
 !
 !  ------- CARACTERISTIQUES FLUAGE PROPRE UMLV
 !
@@ -356,7 +339,6 @@ subroutine lcumfe(fami, kpg, ksp, ndim, typmod,&
     krd = valres(5)
     etard = valres(6)
     etaid = valres(7)
-!
 !
 ! ------- CARACTERISTIQUE FLUAGE DE DESSICATION DE BAZANT
 !
@@ -435,18 +417,14 @@ subroutine lcumfe(fami, kpg, ksp, ndim, typmod,&
 !
     cfps = 0.d0
     cfpd = 0.d0
-! MODIFI DU 6 JANVIER 2003 - YLP NSTRS -->  6
-!      DO 11 I=1,NSTRS
-    do 11 i = 1, 6
+    do i = 1, 6
         an(i) = 0.d0
-!        DO 12 J=1,NSTRS
-        do 12 j = 1, 6
+        do j = 1, 6
             dep(i,j) = 0.d0
             bn(i,j) = 0.d0
             cn(i,j) = 0.d0
-12      continue
-11  end do
-!
+        end do
+    end do
 !
 !_______________________________________________________________________
 !
@@ -454,7 +432,7 @@ subroutine lcumfe(fami, kpg, ksp, ndim, typmod,&
 !   DFLUT(N+1) = AN + BN * SIGMA(N) + CN * SIGMA(N+1)
 !_______________________________________________________________________
     if (tdt .ne. 0.d0) then
-        if (option(1)(1:9) .eq. 'RIGI_MECA') then
+        if (option(1:9) .eq. 'RIGI_MECA') then
             isph=nint(vim(21))
         endif
         call lcummd(vim, 20, cmat, 15, sigm,&
@@ -473,12 +451,7 @@ subroutine lcumfe(fami, kpg, ksp, ndim, typmod,&
 !
     call lcumvi('FT', vim, epsfm)
 !
-!
-    if ((option(1)(1:9).eq.'FULL_MECA') .or. (option(1)(1:9).eq.'RAPH_MECA')) then
-!
-! MODIFI DU 18 AOUT 2004 YLP - CORRECTION DE LA DEFORMATION DE FLUAGE
-! PAR LES DEFORMATIONS DE RETRAIT
-!
+    if ((option(1:9).eq.'FULL_MECA') .or. (option(1:9).eq.'RAPH_MECA')) then
         call rcvarc(' ', 'HYDR', '+', fami, kpg,&
                     ksp, hydrp, iret)
         if (iret .ne. 0) hydrp=0.d0
@@ -502,19 +475,15 @@ subroutine lcumfe(fami, kpg, ksp, ndim, typmod,&
 !    (LA SEULE QUI CONTRIBUE A FAIRE EVOLUER L'ENDOMMAGEMENT)
 !    POUR LE COUPLAGE AVEC MAZARS
 !
-!      IF (OPTION(2).EQ.'MAZARS') THEN
         call r8inir(6, 0.d0, epsel, 1)
-        do 35 k = 1, nstrs
+        do k = 1, nstrs
             epsel(k) = epsm(k) - epsrm * kron(k) - epsfm(k)
-35      continue
-!
+        end do
 !
 !  -  ON CALCUL LES CONTRAINTES ELASTIQUES AU TEMP M
 !
         call sigela(typmod, ndim, younm, xnum, epsel,&
                     sigelm)
-!        ENDIF
-!
 !
 ! ________________________________________________________________
 !
@@ -524,13 +493,9 @@ subroutine lcumfe(fami, kpg, ksp, ndim, typmod,&
 ! ________________________________________________________________
 !
 !
-!        IF (OPTION(2).EQ.'ENDO_ISOT_BETON') THEN
-!       ELSE
 !    MATRICE D ELASTICITE DE HOOKE POUR MAZARS ET UMLV SANS COUPLAGE
         call lcumme(youn, xnu, ifou, dep)
         call lcumme(younm, xnum, ifou, depm)
-!       ENDIF
-!
 !
 ! ________________________________________________________________
 !
@@ -542,20 +507,13 @@ subroutine lcumfe(fami, kpg, ksp, ndim, typmod,&
 ! ________________________________________________________________
 !
 !  PRISE EN COMPTE DU FLUAGE PROPRE ET DE DESSICCATION
-!   MODIFI DU 18 AOUT 2004 YLP - CORRECTION DE LA DEFORMATION DE FLUAGE
-!   PAR LES DEFORMATIONS DE RETRAIT
 !
-!        IF (OPTION(2).EQ.'MAZARS') THEN
-        call lcumef(option, dep, depm, an, bn,&
+        call lcumef(rela_plas, dep, depm, an, bn,&
                     cn, epsm, epsrm, epsrp, deps,&
                     epsfm, sigelm, nstrs, sigelp)
         call lcumsf(sigelm, sigelp, nstrs, vim, 20,&
                     cmat, 15, isph, tdt, hygrm,&
                     hygrp, vip)
-!
-!        ELSE
-!        ENDIF
-!
         vip(21)=1
 !
 !  TEST DE LA CROISSANCE SUR LA DEFORMATION DE FLUAGE PROPRE SPHERIQUE
@@ -565,21 +523,14 @@ subroutine lcumfe(fami, kpg, ksp, ndim, typmod,&
             goto 10
         endif
 !
-!
 !___________________________________________________________
 !
 !  MISE A JOUR DE L ENDOMMAGEMENT ET DES SIGMA POUR MAZARS
 !_________________________________________________________
 !
-!
-!        IF (OPTION(2).EQ.'MAZARS') THEN
-!
         call lcmzge(fami, kpg, ksp, ndim, typmod,&
                     imate, epstm, depst, vim (22), 'RAPH_COUP       ',&
                     sigp, vip, dsidpt, proj)
-!        ENDIF
-!
-! FIN DE (IF RAPH_MECA ET FULL_MECA)
     endif
 !
 !_______________________________________________________________________
@@ -587,17 +538,17 @@ subroutine lcumfe(fami, kpg, ksp, ndim, typmod,&
 ! CONSTRUCTION DE LA MATRICE TANGENTE
 !_______________________________________________________________________
 !
-!      IF (OPTION(2).EQ.'MAZARS') THEN
 !  MB: LA MATRICE TANGENTE CALCULEE EST CELLE DU COMPORTEMENT DE MAZARS
 !      I.E. LA CONTRIBUTION DU FLUAGE N EST PAS CONSIDEREE
 !
-    if ((option(1)(1:9).eq.'FULL_MECA') .or. (option(1)(1:9).eq.'RIGI_MECA')) then
-!
-        if (option(1)(1:9) .eq. 'FULL_MECA') option(1) = 'RIGI_COUP       '
-        option2=option(1)
+    if ((option(1:9).eq.'FULL_MECA') .or. (option(1:9).eq.'RIGI_MECA')) then
+        option2 = option
+        if (option(1:9) .eq. 'FULL_MECA') then
+            option2 = 'RIGI_COUP'
+        endif
         call lcmzge(fami, kpg, ksp, ndim, typmod,&
                     imate, epstm, depst, vim(22), option2,&
                     tbid, vip, dsidpt, proj)
     endif
-!      ENDIF
+!
 end subroutine

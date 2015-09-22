@@ -1,26 +1,10 @@
 subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
                   imate, compor, tinstm, tinstp, epsm,&
-                  deps, sigm, vim, option, sigp,&
-                  vip, dsidep, crit)
-! ----------------------------------------------------------------------
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
+                  deps, sigm, vim, option, rela_plas,&
+                  sigp, vip, dsidep, crit)
 !
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+implicit none
 !
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-!
-    implicit none
 #include "asterfort/lceibt.h"
 #include "asterfort/lcldsb.h"
 #include "asterfort/lcmaza.h"
@@ -38,10 +22,33 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
 #include "asterfort/verift.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
-    integer :: ndim, imate, kpg, ksp
-    character(len=8) :: typmod(*)
-    character(len=16) :: compor(3), option(2), option2
-    character(len=*) :: fami
+!
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+!
+    integer, intent(in) :: ndim
+    integer, intent(in) :: imate
+    integer, intent(in) :: kpg
+    integer, intent(in) :: ksp
+    character(len=8), intent(in) :: typmod(*)
+    character(len=16), intent(in) :: compor(*)
+    character(len=16), intent(in) :: rela_plas
+    character(len=16), intent(in) :: option
+    character(len=*), intent(in) :: fami
     real(kind=8) :: tinstm, tinstp
     real(kind=8) :: epsm(*), deps(*), sigm(*), sigp(*), vim(*), vip(*)
     real(kind=8) :: dsidep(6, 6), crit(*), tbid(36)
@@ -199,7 +206,7 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
 !     VIX(25)    = VALEUR DE EPSEQ (UTILE POUR POSTTRAITER)
 !_______________________________________________________________________
 !
-    character(len=16) :: compoz(1)
+    character(len=16) :: compoz(1), option2
     real(kind=8) :: det
     integer :: iret
     character(len=16) :: nomres(16)
@@ -216,13 +223,13 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
     real(kind=8) :: hygrm, hygrp, rbid
     real(kind=8) :: matn(6, 6), invn(6, 6), eps(6), epsf(6)
     real(kind=8) :: epsrm, epsrp, epsfm(6)
-    real(kind=8) :: kron(6), epsme(6), epse(6)
+    real(kind=8) :: epsme(6), epse(6)
     real(kind=8) :: hydrm, hydrp, sechm, sechp, sref, tm, tp, tref
     real(kind=8) :: epsthp, epsthm
 !
     real(kind=8) :: tmaxp, tmaxm, younm, xnum
     real(kind=8) :: sigelm(6), sigelp(6), epsel(6)
-    data     kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
+    real(kind=8), parameter :: kron(6) = (/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/)
 
 !
 !   CALCUL DE L'INTERVALLE DE TEMPS
@@ -237,24 +244,20 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
 !
     if (typmod(1) .eq. 'C_PLAN') then
         ifou = -2
-        goto 1
     else if (typmod(1) .eq. 'D_PLAN') then
         ifou = -1
-        goto 1
     else if (typmod(1) .eq. 'AXIS') then
         ifou = 0
-        goto 1
     else
         ifou = 2
     endif
-  1 continue
-!
 !
 !   INITIALISATION DU FLUAGE SPHERIQUE PROPRE
 !
     isph = 1
 !
 ! RECUPERATION DES VALEURS DE TEMPERATURE
+!
     call rcvarc('F', 'TEMP', '-', fami, kpg,&
                 ksp, tm, iret)
     call rcvarc('F', 'TEMP', '+', fami, kpg,&
@@ -272,7 +275,7 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
     nomres(3) = 'ALPHA'
     nomres(4) = 'ALPHA'
 !
-    if (option(2) .eq. 'ENDO_ISOT_BETON') then
+    if (rela_plas .eq. 'ENDO_ISOT_BETON') then
 !
         call rcvalb(fami, 1, 1, '+', imate,&
                     ' ', 'ELAS', 1, 'TEMP', [0.d0],&
@@ -284,7 +287,7 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
         valres(4) = valres(3)
         icodre(4) = icodre(3)
 !
-    else if (option(2).eq.'MAZARS') then
+    else if (rela_plas.eq.'MAZARS') then
         tmaxm = vim(24)
         tmaxp = max(tmaxm, tp)
 !
@@ -321,7 +324,7 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
 !
 !  -------CALCUL DES DEFORMATIONS THERMIQUES
 !
-    if ((option(2).eq.'MAZARS') .or. (option(2).eq.'ENDO_ISOT_BETON')) then
+    if ((rela_plas.eq.'MAZARS') .or. (rela_plas.eq.'ENDO_ISOT_BETON')) then
         if ((isnan(tref)) .or. (icodre(3).ne.0) .or. (icodre(4).ne.0)) then
             call utmess('F', 'CALCULEL_15')
         else
@@ -344,10 +347,6 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
                     epsth_=epsthm)
     endif
 !
-!
-!
-! MODIFI DU 18 AOUT 2004 - AJOUT RETRAIT
-!
 !  ------- CARACTERISTIQUES DE RETRAIT ENDOGENE ET DE DESSICCATION
 !
     nomres(1)='B_ENDOGE'
@@ -357,8 +356,6 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
                 2, nomres, valres, icodre, 1)
     bendo=valres(1)
     kdess=valres(2)
-!
-!
 !
 !  ------- CARACTERISTIQUES FLUAGE PROPRE UMLV
 !
@@ -382,7 +379,6 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
     etard = valres(6)
     etaid = valres(7)
 !
-!
 ! ------- CARACTERISTIQUE FLUAGE DE DESSICATION DE BAZANT
 !
     nomres(8)='ETA_FD'
@@ -398,8 +394,6 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
         cmat(14) = 1
         etafd = valres(8)
     endif
-!
-!
 !
 !  ------- CARACTERISTIQUES HYGROMETRIE H
 !
@@ -418,8 +412,6 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
         call utmess('F', 'ALGORITH4_94')
     endif
     hygrp=valres(1)
-!
-!
 !
 ! CONSTRUCTION DU VECTEUR CMAT CONTENANT LES CARACTERISTIQUES MECANIQUES
 !
@@ -469,15 +461,14 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
             cn(i,j) = 0.d0
         end do
     end do
-!
-!
 !_______________________________________________________________________
 !
 ! CALCUL DES MATRICES DES DEFORMATIONS DE FLUAGE TOTAL
 !   DFLUT(N+1) = AN + BN * SIGMA(N) + CN * SIGMA(N+1)
 !_______________________________________________________________________
+!
     if (tdt .ne. 0.d0) then
-        if (option(1)(1:9) .eq. 'RIGI_MECA') then
+        if (option(1:9) .eq. 'RIGI_MECA') then
             isph=nint(vim(21))
         endif
         call lcummd(vim, 20, cmat, 15, sigm,&
@@ -485,24 +476,17 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
                     an, bn, cn, cfps, cfpd)
     endif
 !
-!
 !_______________________________________________________________________
 !
 ! RECUPERATION DE L HYDRATATION E DU SECHAGE
 ! CALCUL DE LA SIGMA ELASTIQUE AU TEMP M POUR COUPLAGE AVEC MAZARS
-!  MODIFIE 20 SEPT 2008 M.BOTTONI
 !_______________________________________________________________________
 !
 !
     call lcumvi('FT', vim, epsfm)
 !
 !
-    if ((option(1)(1:9).eq.'FULL_MECA') .or. (option(1)(1:9).eq.'RAPH_MECA')) then
-!
-! MODIFI DU 18 AOUT 2004 YLP - CORRECTION DE LA DEFORMATION DE FLUAGE
-! PAR LES DEFORMATIONS DE RETRAIT
-!
-!
+    if ((option(1:9).eq.'FULL_MECA') .or. (option(1:9).eq.'RAPH_MECA')) then
         call rcvarc(' ', 'HYDR', '+', fami, kpg,&
                     ksp, hydrp, iret)
         if (iret .ne. 0) hydrp=0.d0
@@ -527,21 +511,18 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
 !    (LA SEULE QUI CONTRIBUE A FAIRE EVOLUER L'ENDOMMAGEMENT)
 !    POUR LE COUPLAGE AVEC MAZARS
 !
-        if (option(2) .eq. 'MAZARS') then
+        if (rela_plas .eq. 'MAZARS') then
             call r8inir(6, 0.d0, epsel, 1)
             do k = 1, nstrs
                 epsel(k) = epsm(k) - epsrm * kron(k) - epsfm(k)
             end do
-!
 !
 !  -  ON CALCUL LES CONTRAINTES ELASTIQUES AU TEMP M
 !          CALL SIGELA (NDIM,'LAMBD',LAMBDA,DEUXMU,EPSEL,SIGELM)
 !
             call sigela(typmod, ndim, younm, xnum, epsel,&
                         sigelm)
-!
         endif
-!
 !
 ! ________________________________________________________________
 !
@@ -550,8 +531,7 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
 !  2. MISE A JOUR DE L ENDOMMAGEMENT ET DES SIGMA POUR EIB
 ! ________________________________________________________________
 !
-!
-        if (option(2) .eq. 'ENDO_ISOT_BETON') then
+        if (rela_plas .eq. 'ENDO_ISOT_BETON') then
             compoz(1)='ENDO_ISOT_BETON'
 !    MATRICE ELASTO-ENDOMMAGEE ET MISE A JOUR DE L ENDOMMAGEMENT
             call lcldsb(fami, kpg, ksp, ndim, typmod,&
@@ -560,7 +540,7 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
                         vip(22), dep, crit)
         else
 !    MATRICE D ELASTICITE DE HOOKE POUR MAZARS ET UMLV SANS COUPLAGE
-            if (option(2) .eq. 'MAZARS') then
+            if (rela_plas .eq. 'MAZARS') then
                 call lcumme(youn, xnu, ifou, dep)
             else
                 call lcumme(youn, xnu, ifou, dep)
@@ -581,33 +561,29 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
 !   MODIFI DU 18 AOUT 2004 YLP - CORRECTION DE LA DEFORMATION DE FLUAGE
 !   PAR LES DEFORMATIONS DE RETRAIT
 !
-        if (option(2) .eq. 'MAZARS') then
-            call lcumef(option, dep, dep, an, bn,&
+        if (rela_plas .eq. 'MAZARS') then
+            call lcumef(rela_plas, dep, dep, an, bn,&
                         cn, epsm, epsrm, epsrp, deps,&
                         epsfm, sigelm, nstrs, sigelp)
             call lcumsf(sigelm, sigelp, nstrs, vim, 20,&
                         cmat, 15, isph, tdt, hygrm,&
                         hygrp, vip)
-        else if (option(2).eq.'ENDO_ISOT_BETON') then
-            call lcumef(option, dep, dep, an, bn,&
+        else if (rela_plas.eq.'ENDO_ISOT_BETON') then
+            call lcumef(rela_plas, dep, dep, an, bn,&
                         cn, epsm, epsrm, epsrp, deps,&
                         epsfm, sigm, nstrs, sigp)
             call lcumsf(sigm, sigp, nstrs, vim, 20,&
                         cmat, 15, isph, tdt, hygrm,&
                         hygrp, vip)
         else
-            call lcumef(option, dep, depm, an, bn,&
+            call lcumef(rela_plas, dep, depm, an, bn,&
                         cn, epsm, epsrm, epsrp, deps,&
                         epsfm, sigm, nstrs, sigp)
             call lcumsf(sigm, sigp, nstrs, vim, 20,&
                         cmat, 15, isph, tdt, hygrm,&
                         hygrp, vip)
-!
         endif
-!
-!
         vip(21)=1
-!
 !
 !  TEST DE LA CROISSANCE SUR LA DEFORMATION DE FLUAGE PROPRE SPHERIQUE
 !
@@ -616,60 +592,48 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
             goto 10
         endif
 !
-!
-!
 !___________________________________________________________
 !
 !  MB: MISE A JOUR DE L ENDOMMAGEMENT ET DES SIGMA POUR MAZARS
 !_________________________________________________________
 !
 !
-        if (option(2) .eq. 'MAZARS') then
-            option2='RAPH_COUP       '
+        if (rela_plas .eq. 'MAZARS') then
+            option2='RAPH_COUP'
             call lcmaza(fami, kpg, ksp, ndim, typmod,&
                         imate, compor, epsm, deps, vim(22),&
                         tm, tp, tref, option2, sigp,&
                         vip, tbid)
         endif
-!
-! FIN DE (IF RAPH_MECA ET FULL_MECA)
     endif
-!
-!
-!
-!
-!
 !
 !_______________________________________________________________________
 !
 ! CONSTRUCTION DE LA MATRICE TANGENTE
 !_______________________________________________________________________
 !
-    if ((option(1)(1:9).eq.'FULL_MECA') .or. (option(1)(1:9).eq.'RIGI_MECA')) then
-!      FULL_MECA | RIGI_MECA_
+    if ((option(1:9).eq.'FULL_MECA') .or. (option(1:9).eq.'RIGI_MECA')) then
 !
 ! - MB: SI COUPLAGE AVEC MAZARS, ON UTILISE POUR LE COUPLAGE
 !       LA MATRICE TANGENTE DE CETTE LOI
-        if (option(2) .eq. 'MAZARS') then
-!
-            if (option(1)(1:9) .eq. 'FULL_MECA') option(1) = 'RIGI_COUP       '
-            option2=option(1)
+        if (rela_plas .eq. 'MAZARS') then
+            option2 = option
+            if (option(1:9) .eq. 'FULL_MECA') then
+                option2 = 'RIGI_COUP'
+            endif
             call lcmaza(fami, kpg, ksp, ndim, typmod,&
                         imate, compor, epsm, deps, vim(22),&
                         tm, tp, tref, option2, tbid,&
                         vip, dsidep)
         else
-!
-            option2='RIGI_COUP       '
-            if (option(1)(1:9) .eq. 'RIGI_MECA') then
-                if (option(2) .eq. 'ENDO_ISOT_BETON') then
+            option2='RIGI_COUP'
+            if (option(1:9) .eq. 'RIGI_MECA') then
+                if (rela_plas .eq. 'ENDO_ISOT_BETON') then
                     compoz(1)='ENDO_ISOT_BETON'
                     call lcldsb(fami, kpg, ksp, ndim, typmod,&
                                 imate, compoz, epsm, tbid, vim(22),&
                                 tm, tp, tref, option2, tbid,&
                                 tbid, dep, crit)
-!          ELSE IF (OPTION(2).EQ.'MAZARS') THEN
-!            CALL LCMAZA()
                 else
                     call lcumme(youn, xnu, ifou, dep)
                 endif
@@ -706,8 +670,8 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
                 end do
             end do
 !
-            if (option(2) .eq. 'ENDO_ISOT_BETON') then
-                if (option(1) .eq. 'RIGI_MECA_TANG') then
+            if (rela_plas .eq. 'ENDO_ISOT_BETON') then
+                if (option .eq. 'RIGI_MECA_TANG') then
                     call rcvarc(' ', 'HYDR', '+', fami, kpg,&
                                 ksp, hydrp, iret)
                     if (iret .ne. 0) hydrp=0.d0
@@ -731,8 +695,7 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
                         call lceibt(nstrs, epsme, epsfm, dep, invn,&
                                     cn, dsidep)
                     endif
-                    else if ((option(1).eq.'RAPH_MECA').or. (option(1)&
-                .eq.'FULL_MECA')) then
+                else if ((option.eq.'RAPH_MECA').or. (option .eq.'FULL_MECA')) then
                     if (nint(vip(23)) .eq. 1) then
                         call dcopy(nstrs, epsm, 1, eps, 1)
                         call daxpy(nstrs, 1.d0, deps, 1, eps,&
@@ -745,25 +708,21 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
                                     cn, dsidep)
                     endif
                 endif
-!        ELSE IF (OPTION(2).EQ.'MAZARS') THEN
             endif
 !----------- CORRECTION POUR LES CONTRAINTES PLANES :
             if (ifou .eq. -2) then
-                do 136 k = 1, nstrs
-                    if (k .eq. 3) goto 136
-                    do 137 l = 1, nstrs
-                        if (l .eq. 3) goto 137
-                        dsidep(k,l)=dsidep(k,l) - 1.d0/dsidep(3,3)*&
-                        dsidep(k,3)*dsidep(3,l)
-137                 continue
-136             continue
+                do k = 1, nstrs
+                    if (k .ne. 3) then
+                        do l = 1, nstrs
+                            if (l .ne. 3) then
+                                dsidep(k,l)=dsidep(k,l) - 1.d0/dsidep(3,3)*&
+                                dsidep(k,3)*dsidep(3,l)
+                            endif
+                        end do
+                    endif
+                end do
             endif
-!
-!
-! FIN CHOIX MAZARS
         endif
-!
-! FIN RIGI_MECA/FULL_MECA
     endif
 !
 end subroutine

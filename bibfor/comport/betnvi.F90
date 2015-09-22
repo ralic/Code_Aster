@@ -1,4 +1,4 @@
-subroutine rslnvi(elem_model, ndt_, ndi_, nr_, nvi_)
+subroutine betnvi(elem_model, ndt_, ndi_, nr_, nvi_)
 !
 implicit none
 !
@@ -30,7 +30,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Comportment ROUSSELIER
+! Comportment BETON_DOUBLE_DP
 !
 ! Size of tensors and number of internal variables
 !
@@ -48,18 +48,18 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nvi = 5
+    nvi = 4
     if (elem_model(1:2) .eq. '3D') then
         ndt = 6
         ndi = 3
         nr = ndt+2
-    else if ( elem_model(1:6) .eq. 'D_PLAN' .or. elem_model(1:4) .eq. 'AXIS') then
+    else if (elem_model(1:6).eq.'D_PLAN'.or.elem_model(1:4).eq.'AXIS') then
         ndt = 4
         ndi = 3
         nr = ndt+2
-    else if (elem_model(1:6) .eq. 'C_PLAN') then
-        call utmess('F', 'COMPOR5_52')
-    else if (elem_model(1:2) .eq. '1D') then
+    else if (elem_model(1:6).eq.'C_PLAN') then
+        call utmess('F', 'COMPOR5_51')
+    else if (elem_model(1:2).eq.'1D') then
         ndt = 3
         ndi = 3
         nr = ndt+2

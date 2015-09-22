@@ -47,12 +47,6 @@ cata_msg = {
  COMP1D et SIMO_MIEHE incompatibles
 """),
 
-    12 : _(u"""
- couplage fluage/fissuration :
- nombre total de variables internes incohérent <--> erreur de programmation.
-"""),
-
-
 
     20 : _(u"""
  le champ de déplacement DIDI n'est pas trouvé dans le concept  %(k1)s

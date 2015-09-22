@@ -28,7 +28,7 @@ interface
         real(kind=8) :: epstm(12)
         real(kind=8) :: depst(12)
         real(kind=8) :: vim(4)
-        character(len=16) :: option
+        character(len=16), intent(in) :: option
         real(kind=8) :: sig(6)
         real(kind=8) :: vip(*)
         real(kind=8) :: dsidpt(6, 6, 2)

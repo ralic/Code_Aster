@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+! aslint: disable=W1504
+!
 interface
     subroutine nmcpla(fami, kpg, ksp, ndim, typmod,&
-                      imat, comp, crit, timed, timef,&
+                      imat, compor, crit, timed, timef,&
                       neps, epsdt, depst, nsig, sigd,&
-                      vind, opt, nwkin, wkin, sigf,&
+                      vind, option, nwkin, wkin, sigf,&
                       vinf, ndsde, dsde, nwkout, wkout,&
                       iret)
         integer :: ndsde
@@ -29,7 +31,7 @@ interface
         integer :: ndim
         character(len=8) :: typmod(*)
         integer :: imat
-        character(len=16) :: comp(*)
+        character(len=16) :: compor(*)
         real(kind=8) :: crit(*)
         real(kind=8) :: timed
         real(kind=8) :: timef
@@ -39,7 +41,7 @@ interface
         integer :: nsig
         real(kind=8) :: sigd(6)
         real(kind=8) :: vind(*)
-        character(len=16) :: opt
+        character(len=16) :: option
         integer :: nwkin
         real(kind=8) :: wkin(*)
         real(kind=8) :: sigf(6)

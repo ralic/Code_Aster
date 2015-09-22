@@ -1,9 +1,8 @@
-subroutine rslnvi(elem_model, ndt_, ndi_, nr_, nvi_)
+subroutine granvi(elem_model, ndt_, ndi_, nvi_)
 !
 implicit none
 !
 #include "asterfort/assert.h"
-#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,12 +24,11 @@ implicit none
     character(len=*), intent(in) :: elem_model
     integer, optional, intent(out) :: ndt_
     integer, optional, intent(out) :: ndi_
-    integer, optional, intent(out) :: nr_
     integer, optional, intent(out) :: nvi_
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Comportment ROUSSELIER
+! Comportment GRANGER
 !
 ! Size of tensors and number of internal variables
 !
@@ -39,30 +37,30 @@ implicit none
 ! In  elem_model : type of model on element
 ! Out ndt        : number of terms in tensors
 ! Out ndi        : number of "indirect" (?) terms in tensors
-! Out nr         : number of non-linear system
 ! Out nvi        : number of internal variables
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ndt, ndi, nr, nvi
+    integer :: ndt, ndi, nvi
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nvi = 5
     if (elem_model(1:2) .eq. '3D') then
         ndt = 6
         ndi = 3
-        nr = ndt+2
-    else if ( elem_model(1:6) .eq. 'D_PLAN' .or. elem_model(1:4) .eq. 'AXIS') then
+        nvi = ndt * 9 + 1
+    else if (elem_model(1:6).eq.'D_PLAN'.or.elem_model(1:4).eq.'AXIS') then
         ndt = 4
         ndi = 3
-        nr = ndt+2
-    else if (elem_model(1:6) .eq. 'C_PLAN') then
-        call utmess('F', 'COMPOR5_52')
-    else if (elem_model(1:2) .eq. '1D') then
+        nvi = ndt * 9 + 1
+    else if (elem_model(1:6).eq.'C_PLAN') then
+        ndt = 4
+        ndi = 3
+        nvi = ndt * 9 + 1
+    else if (elem_model(1:2).eq.'1D') then
         ndt = 3
         ndi = 3
-        nr = ndt+2
+        nvi = ndt * 9 + 1
     else
         ASSERT(.false.)
     endif
@@ -72,9 +70,6 @@ implicit none
     endif
     if (present(ndi_)) then
         ndi_ = ndi
-    endif
-    if (present(nr_)) then
-        nr_  = nr
     endif
     if (present(nvi_)) then
         nvi_ = nvi

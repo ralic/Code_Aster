@@ -16,11 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine rslnvi(mod, ndt, ndi, nr, nvi)
-        character(len=8) :: mod
-        integer :: ndt
-        integer :: ndi
-        integer :: nr
-        integer :: nvi
+    subroutine rslnvi(elem_model, ndt_, ndi_, nr_, nvi_)
+        character(len=*), intent(in) :: elem_model
+        integer, optional, intent(out) :: ndt_
+        integer, optional, intent(out) :: ndi_
+        integer, optional, intent(out) :: nr_
+        integer, optional, intent(out) :: nvi_
     end subroutine rslnvi
 end interface

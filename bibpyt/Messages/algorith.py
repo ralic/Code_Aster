@@ -117,11 +117,6 @@ cata_msg = {
   -> Risque & Conseil :
 """),
 
-    51 : _(u"""
- BETON_DOUBLE_DP:
- le cas des contraintes planes n'est pas traité pour ce modèle.
-"""),
-
     52 : _(u"""
   Le nombre de modes et de degré de liberté d'interface sont différents.
 """),

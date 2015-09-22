@@ -16,10 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine granvi(mod, ndt, ndi, nvi)
-        character(len=8) :: mod
-        integer :: ndt
-        integer :: ndi
-        integer :: nvi
+    subroutine granvi(elem_model, ndt_, ndi_, nvi_)
+        character(len=*), intent(in) :: elem_model
+        integer, optional, intent(out) :: ndt_
+        integer, optional, intent(out) :: ndi_
+        integer, optional, intent(out) :: nvi_
     end subroutine granvi
 end interface

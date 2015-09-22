@@ -130,10 +130,6 @@ cata_msg = {
  la porosité initiale F0 ne peut être supérieure ou égale à 1.
 """),
 
-    51 : _(u"""
- comportement de ROUSSELIER version PETIT_REAC non implanté en contraintes planes
-"""),
-
     52 : _(u"""
  la porosité initiale F0 ne peut être négative
 """),

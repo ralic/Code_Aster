@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+! aslint: disable=W0104,W1504
+!
 interface
     subroutine lc0021(fami, kpg, ksp, ndim, imate,&
                       compor, crit, instam, instap, epsm,&

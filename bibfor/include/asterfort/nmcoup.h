@@ -16,11 +16,13 @@
 !
 #include "asterf_types.h"
 !
+! aslint: disable=W1504
+!
 interface
     subroutine nmcoup(fami, kpg, ksp, ndim, typmod,&
-                      imat, comp, lcpdb, crit, timed,&
+                      imat, compor, lcpdb, crit, timed,&
                       timef, neps, epsdt, depst, nsig,&
-                      sigd, vind, opt, angmas, nwkin,&
+                      sigd, vind, option, angmas, nwkin,&
                       wkin, sigf, vinf, ndsde, dsde,&
                       nwkout, wkout, iret)
         character(len=*) :: fami
@@ -29,7 +31,7 @@ interface
         integer :: ndim
         character(len=8) :: typmod(*)
         integer :: imat
-        character(len=16) :: comp(*)
+        character(len=16) :: compor(*)
         aster_logical :: lcpdb
         real(kind=8) :: crit(*)
         real(kind=8) :: timed
@@ -40,7 +42,7 @@ interface
         integer :: nsig
         real(kind=8) :: sigd(6)
         real(kind=8) :: vind(*)
-        character(len=16) :: opt
+        character(len=16) :: option
         real(kind=8) :: angmas(*)
         integer :: nwkin
         real(kind=8) :: wkin(*)

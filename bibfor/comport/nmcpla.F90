@@ -1,12 +1,31 @@
-subroutine nmcpla(fami, kpg, ksp, ndim, typmod,&
-                  imat, comp, crit, timed, timef,&
-                  neps, epsdt, depst, nsig, sigd,&
-                  vind, opt, nwkin, wkin, sigf,&
-                  vinf, ndsde, dsde, nwkout, wkout,&
+subroutine nmcpla(fami, kpg   , ksp  , ndim  , typmod,&
+                  imat, compor, crit , timed , timef ,&
+                  neps, epsdt , depst, nsig  , sigd  ,&
+                  vind, option, nwkin, wkin  , sigf  ,&
+                  vinf, ndsde , dsde , nwkout, wkout ,&
                   iret)
-! aslint: disable=W1504
-    implicit none
-! ----------------------------------------------------------------------
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterc/lccree.h"
+#include "asterc/lcinfo.h"
+#include "asterc/lcdiscard.h"
+#include "asterc/r8vide.h"
+#include "asterfort/assert.h"
+#include "asterfort/betnvi.h"
+#include "asterfort/granvi.h"
+#include "asterfort/lcopil.h"
+#include "asterfort/lcprmv.h"
+#include "asterfort/nmgran.h"
+#include "asterfort/nmisot.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/redece.h"
+#include "asterfort/rslnvi.h"
+#include "asterfort/utmess.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +42,29 @@ subroutine nmcpla(fami, kpg, ksp, ndim, typmod,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!       ================================================================
+! aslint: disable=W1504
+!
+    integer :: imat, ndim, kpg, ksp, iret
+    integer :: neps, nsig, nwkin, nwkout, ndsde
+    real(kind=8) :: crit(*)
+    real(kind=8) :: timed, timef, tempd, tempf, tref
+    real(kind=8) :: wkin(*), wkout(*)
+    real(kind=8) :: epsdt(6), depst(6)
+    real(kind=8) :: sigd(6), sigf(6)
+    real(kind=8) :: vind(*), vinf(*)
+    real(kind=8) :: dsde(ndsde)
+    character(len=16) :: compor(*), option
+    character(len=*) :: fami
+    character(len=8) :: typmod(*)
+!
+! --------------------------------------------------------------------------------------------------
+!
+! Comportment management
+!
+! KIT_DDI with GRANGER
+!
+! --------------------------------------------------------------------------------------------------
+!
 !       INTEGRATION DU COUPLAGE FLUAGE/FISSURATION, C'EST A DIRE LE
 !       COUPLAGE D'UNE LOI DE COMPORTEMENT DE TYPE FLUAGE GRANGER
 !       ET D'UNE LOI DE  COMPORTEMENT ELASTO PLASTIQUE
@@ -80,109 +121,85 @@ subroutine nmcpla(fami, kpg, ksp, ndim, typmod,&
 !                       COUPLAGE FLUAGE/FISSURATION
 !                              IRET=0 => PAS DE PROBLEME
 !                              IRET=1 => ABSENCE DE CONVERGENCE
-!       ----------------------------------------------------------------
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/lccree.h"
-#include "asterc/lcinfo.h"
-#include "asterc/lcdiscard.h"
-#include "asterc/r8vide.h"
-#include "asterfort/assert.h"
-#include "asterfort/betnvi.h"
-#include "asterfort/granvi.h"
-#include "asterfort/lcopil.h"
-#include "asterfort/lcprmv.h"
-#include "asterfort/nmgran.h"
-#include "asterfort/nmisot.h"
-#include "asterfort/rcvalb.h"
-#include "asterfort/rcvarc.h"
-#include "asterfort/redece.h"
-#include "asterfort/rslnvi.h"
-#include "asterfort/utmess.h"
-    integer :: imat, ndim, kpg, ksp, iret
-    integer :: neps, nsig, nwkin, nwkout, ndsde
 !
-    real(kind=8) :: crit(*)
-    real(kind=8) :: timed, timef, tempd, tempf, tref
-    real(kind=8) :: wkin(*), wkout(*)
-    real(kind=8) :: epsdt(6), depst(6)
-    real(kind=8) :: sigd(6), sigf(6)
-    real(kind=8) :: vind(*), vinf(*)
+! --------------------------------------------------------------------------------------------------
 !
-    real(kind=8) :: dsde(ndsde)
-!
-    character(len=16) :: comp(*), opt
-    character(len=*) :: fami
-    character(len=8) :: typmod(*)
-!       ----------------------------------------------------------------
-!       VARIABLES LOCALES
-    integer :: ndt, ndi, nvi1, ibid, ibid2, ibid3, ire2
-    integer :: nvi2, nn, i, retcom
+    integer :: ndt, ndi, nvi_flua, ire2, nvi_tot
+    integer :: nvi_plas, idx_vi_plas, i, retcom
     integer :: cerr(5)
-    character(len=8) :: mod, mod3d, nomc(5), nompar
-    character(len=16) :: optflu, cmp1(3), cmp2(3), cmp3(3), cveri, comcod
+    character(len=8) :: elem_model, nomc(5)
+    character(len=16) :: comcod, rela_flua, rela_plas
+    character(len=16) :: compor_creep(3), compor_plas(3)
     real(kind=8) :: rbid, nu, angmas(3)
-    real(kind=8) :: epsfl(6), epsfld(6), epsflf(6), depsfl(6)
-    real(kind=8) :: deps(6), kooh(6, 6), valpad, valpaf
+    real(kind=8) :: espi_creep(6), epsfld(6), epsflf(6), depsfl(6)
+    real(kind=8) :: deps(6), kooh(6, 6)
     real(kind=8) :: materd(5), materf(5), depst2(6), depsel(6)
     real(kind=8) :: epsicv, toler, ndsig, nsigf
     real(kind=8) :: dsigf(6), hydrd, hydrf, sechd, sechf, sref
     real(kind=8) :: epseld(6), epself(6), epsthe
-!
     integer :: k, nbvar2
     integer :: iter, itemax, iret1, iret2, iret3, numlc2
     real(kind=8) :: sigf2(6), r8bid
     real(kind=8) :: tmpdmx, tmpfmx, epsth
     real(kind=8) :: alphad, alphaf, bendod, bendof, kdessd, kdessf
+    aster_logical :: cp, l_inte_forc
 !
-    aster_logical :: cp
-!       ----------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
     common /tdim/   ndt  , ndi
-!       ----------------------------------------------------------------
 !
-! --- DECODAGE DES COMPORTEMENTS ET VERIFICATIONS
+! --------------------------------------------------------------------------------------------------
 !
-    r8bid=r8vide()
+    l_inte_forc = option .eq. 'RAPH_MECA' .or. option .eq. 'FULL_MECA'
+    r8bid       = r8vide()
+    read (compor(2),'(I16)') nvi_tot
+    rela_flua   = compor(8)
+    rela_plas   = compor(9)
+    elem_model  = typmod(1)
 !
-    mod3d = '3D'
-    cmp1(1) = comp(8)
-    cmp2(1) = comp(9)
-    cmp3(1) = comp(10)
-    mod = typmod(1)
+! - Number of internal variables in Granger (take maximum from 3D)
 !
-    ASSERT(cmp1(1) .eq. 'GRANGER_FP')
+    call granvi('3D', nvi_ = nvi_flua)
 !
-!     TABLEAU DES VARIABLES INTERNES DIMENSIONNE AUX MAX I.E. 3D
-    call granvi(mod3d, ibid, ibid2, nvi1)
-    write (cmp1(2),'(I16)') nvi1
-    cmp1(3) = comp(3)
+! - Prepare COMPOR <CARTE> for Granger
 !
-!     DIMENSION DES TENSEURS
-    call granvi(mod, ndt, ndi, ibid)
+    compor_creep(1) = rela_flua
+    write (compor_creep(2),'(I16)') nvi_flua
+    compor_creep(3) = compor(3)
+    ASSERT(compor_creep(1) .eq. 'GRANGER_FP')
 !
-    nn = nvi1 + 1
-    if (cmp2(1)(1:5) .eq. 'ELAS ' .or. cmp2(1)(1:9) .eq. 'VMIS_ISOT' .or. cmp2(1)(1:14)&
-        .eq. 'VMIS_ISOT_LINE') then
-        if (cmp2(1)(1:5) .eq. 'ELAS ') nvi2 = 1
-        if (cmp2(1)(1:9) .eq. 'VMIS_ISOT') nvi2 = 2
-        if (cmp2(1)(1:14) .eq. 'VMIS_ISOT_LINE') nvi2 = 2
+! - Number of internal variables
 !
-    else if (cmp2(1)(1:8).eq. 'ROUSS_PR' .or. cmp2(1)(1:15).eq.'BETON_DOUBLE_DP') then
-!
-        if (cmp2(1)(1:8) .eq. 'ROUSS_PR') call rslnvi(mod3d, ibid, ibid2, ibid3, nvi2)
-        if (cmp2(1)(1:15) .eq. 'BETON_DOUBLE_DP') call betnvi(mod3d, ibid, ibid2, ibid3, nvi2)
-!
+    call granvi(elem_model, ndt, ndi)
+    idx_vi_plas = nvi_flua + 1
+    if (rela_plas(1:5) .eq. 'ELAS ' .or.&
+        rela_plas(1:9) .eq. 'VMIS_ISOT') then
+        if (rela_plas(1:5) .eq. 'ELAS ') then
+            nvi_plas = 1
+        endif
+        if (rela_plas(1:9) .eq. 'VMIS_ISOT') then
+            nvi_plas = 2
+        endif
+    else if (rela_plas(1:8).eq. 'ROUSS_PR' .or.&
+             rela_plas(1:15).eq.'BETON_DOUBLE_DP') then
+        if (rela_plas(1:8) .eq. 'ROUSS_PR') then
+            call rslnvi('3D', nvi_ = nvi_plas)
+        endif
+        if (rela_plas(1:15) .eq. 'BETON_DOUBLE_DP') then
+            call betnvi('3D', nvi_ = nvi_plas)
+        endif
     else
         ASSERT(.false.)
     endif
+    ASSERT(nvi_tot .eq. (nvi_flua + nvi_plas))
 !
-    write (cmp2(2),'(I16)') nvi2
-    cmp2(3) = comp(3)
-    write (cveri,'(I16)') (nvi1 + nvi2)
+! - Prepare COMPOR <CARTE> for plasticity
 !
-    if (cveri(1:16) .ne. comp(2)(1:16)) then
-        call utmess('F', 'ALGORITH7_12')
-    endif
+    compor_plas(1) = rela_plas
+    write (compor_plas(2),'(I16)') nvi_plas
+    compor_plas(3) = compor(3)
+!
+! - Get temperatures
 !
     call rcvarc(' ', 'TEMP', '-', fami, kpg,&
                 ksp, tempd, iret1)
@@ -191,101 +208,92 @@ subroutine nmcpla(fami, kpg, ksp, ndim, typmod,&
     call rcvarc(' ', 'TEMP', 'REF', fami, kpg,&
                 ksp, tref, iret3)
 !
-! --- TEMPERATURE MAXIMALE AU COURS DE L'HISTORIQUE DE CHARGEMENT
+! - Get maximum temperature during load (for BETON_DOUBLE_DP)
 !
     tmpdmx = tempd
     tmpfmx = tempf
-    if (((iret1+iret2).eq.0) .and. (.not.isnan(vind(nvi1+3))) .and.&
-        (cmp2(1)(1:15).eq. 'BETON_DOUBLE_DP' )) then
-        if (tmpdmx .lt. vind(nvi1+3)) tmpdmx = vind(nvi1+3)
-        if (tmpfmx .lt. vind(nvi1+3)) tmpfmx = vind(nvi1+3)
+    if (rela_plas.eq. 'BETON_DOUBLE_DP' ) then
+        if (((iret1+iret2).eq.0) .and. (.not.isnan(vind(nvi_flua+3)))) then
+            if (tmpdmx .lt. vind(nvi_flua+3)) then
+                tmpdmx = vind(nvi_flua+3)
+            endif
+            if (tmpfmx .lt. vind(nvi_flua+3)) then
+                tmpfmx = vind(nvi_flua+3)
+            endif
+        endif
     endif
 !
-! --- CRITERE DE CONVERGENCE
+! - Get convergence criteria
 !
     itemax = int(crit(1))
-    toler = crit(3)
+    toler  = crit(3)
 !
-! --- OPTION DE CALCUL POUR LA LOI DE FLUAGE
+! = COUPLING = BEGIN
 !
-    if (opt .eq. 'RAPH_MECA' .or. opt .eq. 'FULL_MECA') then
-        optflu = 'RAPH_MECA'
-    else
-        optflu = '                '
-    endif
-!
-!     --------------------------------
-! --- DEBUT DES ITERATIONS DU COUPLAGE
-!     --------------------------------
     iter = 1
-    do k = 1, 6
-        depst2(k) = depst(k)
-    end do
+    depst2(1:6) = depst(1:6)
 !
  20 continue
 !
-! --- RESOLUTION LOI DE FLUAGE
+! - Solve creep law
 !
-    if (optflu .eq. 'RAPH_MECA') then
-        call nmgran(fami, kpg, ksp, typmod, imat,&
-                    cmp1, timed, timef, tmpdmx, tmpfmx,&
-                    depst2, sigd, vind(1), opt, sigf2,&
-                    vinf(1), dsde)
+    if (l_inte_forc) then
 !
-! ---    CALCUL DE L'INCREMENT DE LA DEFORMATION DE FLUAGE
+! ----- Solve creep law
+!
+        call nmgran(fami        , kpg  , ksp    , typmod, imat  ,&
+                    compor_creep, timed, timef  , tmpdmx, tmpfmx,&
+                    depst2      , sigd , vind(1), option, sigf2 ,&
+                    vinf(1)     , dsde)
+!
+! ----- Get material parameters
 !
         nomc(1) = 'E       '
         nomc(2) = 'NU      '
         nomc(3) = 'ALPHA   '
         nomc(4) = 'B_ENDOGE'
         nomc(5) = 'K_DESSIC'
-        nompar = 'TEMP'
-        valpad = tmpdmx
-        valpaf = tmpfmx
-!
-! -      RECUPERATION MATERIAU A TEMPD (T)
-!
         call rcvalb(fami, 1, 1, '+', imat,&
-                    ' ', 'ELAS', 1, nompar, [valpad],&
+                    ' ', 'ELAS', 1, 'TEMP', [tmpdmx],&
                     1, nomc(2), materd(2), cerr(1), 2)
-!
-! -      RECUPERATION MATERIAU A TEMPF (T+DT)
-!
         call rcvalb(fami, 1, 1, '+', imat,&
-                    ' ', 'ELAS', 1, nompar, [valpaf],&
+                    ' ', 'ELAS', 1, 'TEMP', [tmpfmx],&
                     1, nomc(2), materf(2), cerr(1), 2)
-!
         materd(1) = 1.d0
         materf(1) = 1.d0
 !
-        do k = 1, ndt
-            epsfl(k) = vind(8*ndt+k)
-            do i = 1, 8
-                epsfl(k) = epsfl(k) - vind((i-1) * ndt+k)
-            enddo
-        enddo
-!
-        call lcopil('ISOTROPE', mod, materd, kooh)
-        call lcprmv(kooh, epsfl, epsfld)
+! ----- Creep strains - At beginning of step
 !
         do k = 1, ndt
-            epsfl(k) = vinf(8*ndt+k)
+            espi_creep(k) = vind(8*ndt+k)
             do i = 1, 8
-                epsfl(k) = epsfl(k) - vinf((i-1) * ndt+k)
+                espi_creep(k) = espi_creep(k) - vind((i-1) * ndt+k)
             enddo
         enddo
+        call lcopil('ISOTROPE', elem_model, materd, kooh)
+        call lcprmv(kooh, espi_creep, epsfld)
 !
-        call lcopil('ISOTROPE', mod, materf, kooh)
-        call lcprmv(kooh, epsfl, epsflf)
+! ----- Creep strains - At end of step
+!
+        do k = 1, ndt
+            espi_creep(k) = vinf(8*ndt+k)
+            do i = 1, 8
+                espi_creep(k) = espi_creep(k) - vinf((i-1) * ndt+k)
+            enddo
+        enddo
+        call lcopil('ISOTROPE', elem_model, materf, kooh)
+        call lcprmv(kooh, espi_creep, epsflf)
+!
+! ----- Creep strain increment
 !
         do k = 1, ndt
             depsfl(k) = epsflf(k) - epsfld(k)
         enddo
     endif
 !
-! --- RETRAIT DE LA DEFORMATION DE FLUAGE A LA DEFORMATION TOTALE
+! - Total strains
 !
-    if (optflu .eq. 'RAPH_MECA') then
+    if (l_inte_forc) then
         do k = 1, ndt
             deps(k) = depst(k) - depsfl(k)
         enddo
@@ -295,65 +303,59 @@ subroutine nmcpla(fami, kpg, ksp, ndim, typmod,&
         enddo
     endif
 !
+! - Solve plasticity law
 !
-! --- RESOLUTION LOI DE PLASTICITE FISSURATION
-!
-    if (cmp2(1)(1:9) .eq. 'VMIS_ISOT' .or. cmp2(1)(1:14) .eq. 'VMIS_ISOT_LINE') then
-!
-        call nmisot(fami, kpg, ksp, ndim, typmod,&
-                    imat, cmp2(1), crit, deps, sigd,&
-                    vind(nn), opt, sigf, vinf(nn), dsde,&
-                    rbid, rbid, iret)
-!
-    else if (cmp2(1)(1:8).eq. 'ROUSS_PR' .or. cmp2(1)(1:15).eq.'BETON_DOUBLE_DP') then
-!
-        call lccree(1, cmp2, comcod)
+    if (rela_plas(1:9) .eq. 'VMIS_ISOT' .or. rela_plas(1:14) .eq. 'VMIS_ISOT_LINE') then
+        call nmisot(fami             , kpg      , ksp , ndim             , typmod,&
+                    imat             , rela_plas, crit, deps             , sigd  ,&
+                    vind(idx_vi_plas), option   , sigf, vinf(idx_vi_plas), dsde  ,&
+                    rbid             , rbid     , iret)
+    else if (rela_plas(1:8).eq. 'ROUSS_PR' .or. rela_plas(1:15).eq.'BETON_DOUBLE_DP') then
+        call lccree(1, compor_plas, comcod)
         call lcinfo(comcod, numlc2, nbvar2)
         call lcdiscard(comcod)
-        call redece(fami, kpg, ksp, ndim, typmod,&
-                    imat, cmp2, crit, timed, timef,&
-                    neps, epsdt, deps, nsig, sigd,&
-                    vind(nn), opt, angmas, nwkin, wkin,&
-                    cp, numlc2, r8bid, r8bid, r8bid,&
-                    sigf, vinf(nn), ndsde, dsde, nwkout,&
-                    wkout, retcom)
+        call redece(fami             , kpg              , ksp   , ndim , typmod,&
+                    imat             , compor_plas      , crit  , timed, timef ,&
+                    neps             , epsdt            , deps  , nsig , sigd  ,&
+                    vind(idx_vi_plas), option           , angmas, nwkin, wkin  ,&
+                    cp               , numlc2           , r8bid , r8bid, r8bid ,&
+                    sigf             , vinf(idx_vi_plas), ndsde , dsde , nwkout,&
+                    wkout            , retcom)
     else
         ASSERT(.false.)
     endif
 !
-    if (optflu .eq. 'RAPH_MECA') then
+! - Coupling algorithm
 !
-! -      RECUPERATION MATERIAU A TEMPD (T)
+    if (l_inte_forc) then
+!
+! ----- Get material parameters
 !
         call rcvalb(fami, kpg, ksp, '-', imat,&
                     ' ', 'ELAS', 0, ' ', [0.d0],&
                     5, nomc(1), materd(1), cerr(1), 2)
-!
         if (cerr(3) .ne. 0) materd(3) = 0.d0
         if (cerr(4) .ne. 0) materd(4) = 0.d0
         if (cerr(5) .ne. 0) materd(5) = 0.d0
-!
-! -      RECUPERATION MATERIAU A TEMPF (T+DT)
-!
         call rcvalb(fami, kpg, ksp, '+', imat,&
                     ' ', 'ELAS', 0, ' ', [0.d0],&
                     5, nomc(1), materf(1), cerr(1), 2)
-!
         if (cerr(3) .ne. 0) materf(3) = 0.d0
         if (cerr(4) .ne. 0) materf(4) = 0.d0
         if (cerr(5) .ne. 0) materf(5) = 0.d0
 !
-! --- CALCUL DE L'INCREMENT DE DEFORMATION ELASTIQUE
-! --- + RETRAIT ENDOGENNE + RETRAIT DESSICCATION + RETRAIT THERMIQUE
+! ----- Elastic strain increment
 !
-        call lcopil('ISOTROPE', mod, materd, kooh)
+        call lcopil('ISOTROPE', elem_model, materd, kooh)
         call lcprmv(kooh, sigd, epseld)
-        call lcopil('ISOTROPE', mod, materf, kooh)
+        call lcopil('ISOTROPE', elem_model, materf, kooh)
         call lcprmv(kooh, sigf, epself)
-!
         do k = 1, ndt
             depsel(k) = epself(k) - epseld(k)
         enddo
+!
+! --- CALCUL DE L'INCREMENT DE DEFORMATION ELASTIQUE
+! --- + RETRAIT ENDOGENNE + RETRAIT DESSICCATION + RETRAIT THERMIQUE
 !
         alphad = materd(3)
         alphaf = materf(3)
@@ -361,8 +363,6 @@ subroutine nmcpla(fami, kpg, ksp, ndim, typmod,&
         bendof = materf(4)
         kdessd = materd(5)
         kdessf = materf(5)
-!
-!        RECUPERATION DE L HYDRATATION ET DU SECCHAGE
         call rcvarc(' ', 'HYDR', '-', fami, kpg,&
                     ksp, hydrd, ire2)
         if (ire2 .ne. 0) hydrd=0.d0
@@ -388,10 +388,12 @@ subroutine nmcpla(fami, kpg, ksp, ndim, typmod,&
         do k = 1, 3
             depsel(k) = depsel(k) + epsth
         enddo
-        if (mod(1:6) .eq. 'C_PLAN') then
+!
+! ----- For plane stress
+!
+        if (elem_model(1:6) .eq. 'C_PLAN') then
             nu = materf(2)
-            depsel(3)=-nu / (1.d0-nu) * (depsel(1)+depsel(2)) +(1.d0+&
-            nu) / (1.d0-nu) * epsth
+            depsel(3)=-nu / (1.d0-nu) * (depsel(1)+depsel(2)) +(1.d0+nu) / (1.d0-nu) * epsth
         endif
 !
 !
@@ -426,18 +428,13 @@ subroutine nmcpla(fami, kpg, ksp, ndim, typmod,&
                 iter = iter + 1
                 goto 20
             else
-!               CALL TECAEL ( IADZI, IAZK24 )
-!               NOMAIL = ZK24(IAZK24-1+3)(1:8)
-!               CALL CODREE(ABS(EPSICV),'E',DCV)
-!               CALL CODENT(ITER,'G',CITER)
                 iret = 1
                 goto 999
             endif
         endif
     endif
-!     ------------------
-! --- FIN DES ITERATIONS
-!     ------------------
+!
+! = COUPLING = END
 !
 999 continue
 end subroutine

@@ -1,12 +1,21 @@
 subroutine nmcoup(fami, kpg, ksp, ndim, typmod,&
-                  imat, comp, lcpdb, crit, timed,&
+                  imat, compor, lcpdb, crit, timed,&
                   timef, neps, epsdt, depst, nsig,&
-                  sigd, vind, opt, angmas, nwkin,&
+                  sigd, vind, option, angmas, nwkin,&
                   wkin, sigf, vinf, ndsde, dsde,&
                   nwkout, wkout, iret)
-! aslint: disable=W1504
-    implicit none
-! ----------------------------------------------------------------------
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/kit_glrc_dm_vmis.h"
+#include "asterfort/lcumfe.h"
+#include "asterfort/lcumfp.h"
+#include "asterfort/nmcpla.h"
+#include "asterfort/utmess.h"
+#include "asterfort/lc0065.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,39 +32,29 @@ subroutine nmcoup(fami, kpg, ksp, ndim, typmod,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: jean-michel.proix at edf.fr
-!       ----------------------------------------------------------------
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/kit_glrc_dm_vmis.h"
-#include "asterfort/lcumfe.h"
-#include "asterfort/lcumfp.h"
-#include "asterfort/nmcpla.h"
-#include "asterfort/utmess.h"
-#include "asterfort/lc0065.h"
+! aslint: disable=W1504
+!
     integer :: imat, ndim, kpg, ksp, iret
     integer :: neps, nsig, nwkin, nwkout, ndsde
-!
     real(kind=8) :: crit(*)
     real(kind=8) :: timed, timef
     real(kind=8) :: wkin(*), wkout(*)
     real(kind=8) :: epsdt(*), depst(*)
     real(kind=8) :: sigd(6), sigf(6)
     real(kind=8) :: vind(*), vinf(*), angmas(*)
-!
     real(kind=8) :: dsde(*)
     aster_logical :: lcpdb
-!
-    character(len=16) :: comp(*), opt
+    character(len=16) :: compor(*), option
     character(len=*) :: fami
     character(len=8) :: typmod(*)
 !
-!       ----------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-!       AIGUILLAGE DES LOIS DE COMPORTEMENT COUPLES
+! Comportment management
 !
-!       ================================================================
-!       ARGUMENTS
+! KIT_DDI
+!
+! --------------------------------------------------------------------------------------------------
 !
 !       IN      KPG,KSP  NUMERO DU (SOUS)POINT DE GAUSS
 !               NDIM    DIMENSION DE L ESPACE (3D=3,2D=2,1D=1)
@@ -100,37 +99,37 @@ subroutine nmcoup(fami, kpg, ksp, ndim, typmod,&
 !                              IRET=0 => PAS DE PROBLEME
 !                              IRET=1 => ABSENCE DE CONVERGENCE
 !
-    character(len=16) :: option(2), cmp1, cmp2, cmp4
+! --------------------------------------------------------------------------------------------------
+!
+    character(len=16) :: rela_flua, rela_plas
     character(len=16) :: texte(2)
 !
-    cmp1(1:16) = comp(8)
-    cmp2(1:16) = comp(9)
-    option(1)(1:16) = opt
+! --------------------------------------------------------------------------------------------------
 !
+    rela_flua = compor(8)
+    rela_plas = compor(9)
 !
-    if (cmp1(1:10) .eq. 'GRANGER_FP') then
-        if (cmp2(1:5) .eq. 'ELAS ' .or. cmp2(1:9) .eq. 'VMIS_ISOT' .or. cmp2(1:14) .eq.&
-            'VMIS_ISOT_LINE' .or. cmp2(1:8) .eq. 'ROUSS_PR' .or. cmp2(1:15) .eq.&
-            'BETON_DOUBLE_DP') then
-            call nmcpla(fami, kpg, ksp, ndim, typmod,&
-                        imat, comp, crit, timed, timef,&
-                        neps, epsdt, depst, nsig, sigd,&
-                        vind, opt, nwkin, wkin, sigf,&
-                        vinf, ndsde, dsde, nwkout, wkout,&
+    if (rela_flua(1:10) .eq. 'GRANGER_FP') then
+        if (rela_plas      .eq. 'ELAS'           .or.&
+            rela_plas(1:9) .eq. 'VMIS_ISOT'      .or.&
+            rela_plas      .eq. 'ROUSS_PR'       .or.&
+            rela_plas      .eq. 'BETON_DOUBLE_DP') then
+            call nmcpla(fami, kpg   , ksp  , ndim  , typmod,&
+                        imat, compor, crit , timed , timef ,&
+                        neps, epsdt , depst, nsig  , sigd  ,&
+                        vind, option, nwkin, wkin  , sigf  ,&
+                        vinf, ndsde , dsde , nwkout, wkout ,&
                         iret)
-            if (iret .eq. 1) goto 999
+            if (iret .eq. 1) then
+                goto 999
+            endif
         else 
-            call utmess('F', 'COMPOR3_2', nk=1, valk=cmp2)
+            call utmess('F', 'COMPOR3_2', sk=rela_plas)
         endif
-!
-    else if (cmp1(1:13).eq.'BETON_UMLV_FP') then
-!
-        if (cmp2(1:15) .eq. 'ENDO_ISOT_BETON' .or. cmp2(1:6) .eq. 'MAZARS') then
-!
-            cmp4(1:16) = typmod(2)
-            option(2)(1:16) = cmp2(1:16)
-!
-            if (cmp2(1:15) .eq. 'ENDO_ISOT_BETON') then
+    else if (rela_flua.eq.'BETON_UMLV_FP') then
+        if (rela_plas      .eq. 'ENDO_ISOT_BETON' .or.&
+            rela_plas(1:6) .eq. 'MAZARS') then
+            if (rela_plas(1:15) .eq. 'ENDO_ISOT_BETON') then
                 if ((typmod(1).eq.'C_PLAN') .and. (.not.lcpdb)) then
                     call utmess('F', 'ALGORITH7_5')
                 endif
@@ -139,56 +138,49 @@ subroutine nmcoup(fami, kpg, ksp, ndim, typmod,&
                     call utmess('F', 'ALGORITH7_4')
                 endif
             endif
-!
             if (typmod(2) .eq. 'GRADEPSI') then
-                call lcumfe(fami, kpg, ksp, ndim, typmod,&
-                            imat, timed, timef, epsdt, depst,&
-                            sigd, vind, option, sigf, vinf,&
-                            dsde, wkin)
+                call lcumfe(fami, kpg  , ksp   , ndim     , typmod,&
+                            imat, timed, timef , epsdt    , depst ,&
+                            sigd, vind , option, rela_plas, sigf  ,&
+                            vinf, dsde , wkin)
             else if (typmod(2) .eq. 'GRADVARI') then
-                texte(1)=cmp4
-                texte(2)=cmp2
+                texte(1)=typmod(2)
+                texte(2)=rela_plas
                 call utmess('F', 'COMPOR3_49', nk=2, valk=texte)
             else
-                call lcumfp(fami, kpg, ksp, ndim, typmod,&
-                            imat, comp, timed, timef, epsdt,&
-                            depst, sigd, vind, option, sigf,&
-                            vinf, dsde, crit)
+                call lcumfp(fami , kpg   , ksp  , ndim  , typmod   ,&
+                            imat , compor, timed, timef , epsdt    ,&
+                            depst, sigd  , vind , option, rela_plas,&
+                            sigf , vinf  , dsde , crit)
             endif
         else
-            call utmess('F', 'COMPOR3_3', nk=1, valk=cmp2)
+            call utmess('F', 'COMPOR3_3', sk=rela_plas)
         endif
-!
-    else if (cmp1(1:4).eq.'GLRC') then
-!
-!
-        if (cmp2 .eq. 'VMIS_ISOT_TRAC' .or. cmp2 .eq. 'VMIS_ISOT_LINE' .or. cmp2 .eq.&
-            'VMIS_CINE_LINE') then
-!
-            option(2)(1:16) = cmp2(1:16)
-!
-            call kit_glrc_dm_vmis(imat, cmp2, epsdt, depst, vind,&
-                                  opt, sigd, sigf, vinf, dsde,&
-                                  crit, iret)
-!
+    else if (rela_flua(1:4).eq.'GLRC') then
+        if (rela_plas .eq. 'VMIS_ISOT_TRAC' .or.&
+            rela_plas .eq. 'VMIS_ISOT_LINE' .or.&
+            rela_plas .eq. 'VMIS_CINE_LINE') then
+            call kit_glrc_dm_vmis(imat  , rela_plas, epsdt, depst, vind,&
+                                  option, sigd     , sigf , vinf , dsde,&
+                                  crit  , iret)
         else
-            call utmess('F', 'COMPOR3_4', nk=1, valk=cmp2)
+            call utmess('F', 'COMPOR3_4', sk=rela_plas)
         endif
-!
-    else if ((cmp1(1:15).eq.'FLUA_PORO_BETON').or.&
-             (cmp2(1:15).eq.'FLUA_PORO_BETON')) then
-        if ((cmp2(1:15) .eq. 'ENDO_PORO_BETON') .or. (cmp1(1:15) .eq. 'ENDO_PORO_BETON')) then
-!
-            call lc0065(fami, kpg, ksp, ndim, imat,&
-                        comp, crit, timed, timef, epsdt,&
-                        depst, sigd, vind, opt, angmas,&
-                        sigf, vinf, wkin, typmod, 1,&
-                        155, dsde, iret)
+    else if ((rela_flua(1:15).eq.'FLUA_PORO_BETON').or.&
+             (rela_plas(1:15).eq.'FLUA_PORO_BETON')) then
+! ----- For "KIT_RGI"
+        if ((rela_plas(1:15) .eq. 'ENDO_PORO_BETON') .or.&
+            (rela_flua(1:15) .eq. 'ENDO_PORO_BETON')) then
+            call lc0065(fami  , kpg , ksp  , ndim  , imat  ,&
+                        compor, crit, timed, timef , epsdt ,&
+                        depst , sigd, vind , option, angmas,&
+                        sigf  , vinf, wkin , typmod, 1     ,&
+                        155   , dsde, iret)
         else
             call utmess('F', 'COMPOR3_7')
         endif
     else
-        call utmess('F', 'COMPOR3_6', nk=1, valk=cmp1)
+        call utmess('F', 'COMPOR3_6', sk=rela_flua)
     endif
 !
 999 continue
