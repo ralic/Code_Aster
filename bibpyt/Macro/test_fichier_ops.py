@@ -233,6 +233,9 @@ def test_iter(obj, function, verbose=False):
        nombre de valeurs réelles, résultat de la fonction sur les réels,
        nombre de valeurs entières, résultat de la fonction sur les entiers,
        somme de contrôle du texte restant.
+    Le résultat entier est systématiquement retourné modulo 2147483647
+    pour être homogène avec les plate-formes 32 bits.
+    Le nombre de valeurs lui est supposé être inférieur à cette valeur.
     """
     max_buff_size = 1000
     nbvalr = 0
@@ -293,7 +296,7 @@ def test_iter(obj, function, verbose=False):
             print 'Texte :'
             print text
     chksum = hfile.hexdigest()
-    return nbvalr, valr, nbvali, int(vali), chksum
+    return nbvalr, valr, nbvali, int(vali) % 2147483647, chksum
 
 
 def test_file(filename, regexp_ignore=[], type_test='SOMM', verbose=False):
