@@ -404,7 +404,7 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
 #
         for numfis, Fiss in enumerate(Fissures):
             tab_BETA[numfis] = {}
-            tab_GAMMA[numfis] = {} 
+            tab_GAMMA[numfis] = {}
             fiss0 = Fiss['FISS_ACTUELLE']
             nb_pts_fo = Fiss['NB_POINT_FOND']
             __TABDIR = DETEC_FRONT(
@@ -457,6 +457,7 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
             LOI_PROPA = args['LOI_PROPA']
             coef_M = LOI_PROPA['M']
             coef_C = LOI_PROPA['C']
+            coef_DELTA_K_SEUIL = LOI_PROPA['DELTA_K_SEUIL']
             MATER = LOI_PROPA['MATER']
             COMP_LINE = args['COMP_LINE']
 
@@ -518,14 +519,14 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
 #     beta et gamma
             if not 'BETA' in __tabsif.para and CRITERE_ANGLE in ('ANGLE_IMPO','ANGLE_IMPO_GETA_GAMMA'):
                 UTMESS('F','XFEM2_19',valk = fiss0.get_name())
-              
+
             if not 'GAMMA' in __tabsif.para and CRITERE_ANGLE in ('ANGLE_IMPO_GAMMA','ANGLE_IMPO_GETA_GAMMA'):
-                UTMESS('F','XFEM_95',valk = fiss0.get_name())  
+                UTMESS('F','XFEM_95',valk = fiss0.get_name())
             if CRITERE_ANGLE == 'ANGLE_IMPO' : CRITERE='SITT_MAX'
             elif CRITERE_ANGLE == 'ANGLE_IMPO_GAMMA' : CRITERE='SITT_MAX_DEVER'
             elif CRITERE_ANGLE == 'ANGLE_IMPO_BETA_GAMMA' : CRITERE='SITT_MAX_DEVER'
             else : CRITERE=CRITERE_ANGLE
-        
+
 #           BOOLEEN POUR SIMPLIFIER LES TESTS PAR LA SUITE
             if CRITERE=='SITT_MAX_DEVER' : calc_gamma=True
             else : calc_gamma=False
@@ -534,14 +535,14 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
                   UTMESS('A','XFEM2_18',valk = fiss0.get_name())
 
             if (OPERATION != 'PROPA_COHESIF'):
-#         Si CRITERE_ANGLE = ANGLE_IMPO_GAMMA il faut calculer le BETA, donc donner le bon mot-clé à post_rupture          
+#         Si CRITERE_ANGLE = ANGLE_IMPO_GAMMA il faut calculer le BETA, donc donner le bon mot-clé à post_rupture
                __COPIE_SIF = POST_RUPTURE(TABLE=__COPIE_SIF,
                                           reuse=__COPIE_SIF,
                                           OPERATION='ANGLE_BIFURCATION',
                                           CRITERE=CRITERE,
                                           NOM_PARA='ANGLE_BETA',
                                           MATER=MATER)
-                                          
+
 #         Keq
                __COPIE_SIF = POST_RUPTURE(TABLE=__COPIE_SIF,
                                           reuse=__COPIE_SIF,
@@ -549,7 +550,7 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
                                           CUMUL='CUMUL_G',
                                           NOM_PARA='K_EQ',
                                           MATER=MATER)
-                                                                     
+
 
 #         DKeq
                CMIN = COMP_LINE['COEF_MULT_MINI']
@@ -560,7 +561,7 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
                                              NOM_PARA=('K_EQ'),
                                              COMPTAGE='UNITAIRE',
                                              COEF_MULT_MINI=CMIN,
-                                             COEF_MULT_MAXI=CMAX) 
+                                             COEF_MULT_MAXI=CMAX)
 
 #         Da/Dt
                __TAB_DKEQ_VIT = POST_RUPTURE(TABLE=__TAB_DKEQ_VIT,
@@ -568,7 +569,8 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
                                              OPERATION='LOI_PROPA',
                                              LOI='PARIS',
                                              C=coef_C,
-                                             M=coef_M)                             
+                                             M=coef_M,
+                                             DELTA_K_SEUIL=coef_DELTA_K_SEUIL)
 
 #         somme Da/Dt
                __TAB_CUMUL[numfis] = POST_RUPTURE(TABLE=__TAB_DKEQ_VIT,
@@ -583,7 +585,7 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
                                            OPERATION='ANGLE_BIFURCATION',
                                            CRITERE=CRITERE,
                                            NOM_PARA='ANGLE_BETA')
-                
+
                 tab_cumul = __COPIE_SIF.EXTR_TABLE()
 
             if CRITERE_ANGLE not in ['ANGLE_IMPO','ANGLE_IMPO_GAMMA','ANGLE_IMPO_BETA_GAMMA'] :
@@ -592,24 +594,24 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
                if calc_gamma :
                   table_temp = tab_cumul.ANGLE_GAMMA.values()
                   table_gamma = [table_temp[i]*pi/180. for i in range(len(table_temp))]
-      
+
             elif (CRITERE_ANGLE =='ANGLE_IMPO') :
                table_beta = __tabsif.BETA.values()
                if calc_gamma :
                   table_temp = tab_cumul.ANGLE_GAMMA.values()
                   table_gamma = [table_temp[i]*pi/180. for i in range(len(table_temp))]
                else :
-                  table_gamma = None  
-            
+                  table_gamma = None
+
             elif(CRITERE_ANGLE == 'ANGLE_IMPO_GAMMA') :
                table_gamma = __tabsif.GAMMA.values()
                table_temp = tab_cumul.ANGLE_BETA.values()
                table_beta = [table_temp[i]*pi/180. for i in range(len(table_temp))]
-               
+
             elif(CRITERE_ANGLE == 'ANGLE_IMPO_BETA_GAMMA') :
                table_beta = __tabsif.BETA.values()
                table_gamma = __tabsif.GAMMA.values()
-            
+
             n = len(table_beta)
             if OPERATION == 'PROPA_COHESIF':
                 table_vit = [Damax for i in range(n)]
@@ -666,10 +668,10 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
                            tab_BETA[numfis][1] = [[absc[j],table_beta[j]] for j in range(n)]
                            tab_GAMMA[numfis][1] = [[absc[j],table_gamma[j]] for j in range(n)]
                            tab_VIT[numfis][1] = [[absc[j],table_vit[j]] for j in range(n)]
-              
+
                         else :
                            tab_BETA[numfis][1] = [[absc[j],table_beta[j]] for j in range(n)]
-                           tab_VIT[numfis][1] = [[absc[j],table_vit[j]] for j in range(n)]   
+                           tab_VIT[numfis][1] = [[absc[j],table_vit[j]] for j in range(n)]
                 else:
                     if calc_gamma :
                        TABLE_BETA[numfis] = table_beta
@@ -739,10 +741,10 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
         if CRITERE_ANGLE == 'ANGLE_IMPO_GAMMA' : CRITERE='SITT_MAX_DEVER'
         elif CRITERE_ANGLE == 'ANGLE_IMPO_BETA_GAMMA' : CRITERE='SITT_MAX_DEVER'
         else : CRITERE=CRITERE_ANGLE
-    
+
 #      BOOLEEN POUR SIMPLIFIER LES TESTS PAR LA SUITE
         if CRITERE=='SITT_MAX_DEVER' : calc_gamma=True
-        else : calc_gamma=False  
+        else : calc_gamma=False
         for numfis, Fiss in enumerate(Fissures):
 
             Coorfo = Fiss['FISS_ACTUELLE'].sdj.FONDFISS.get()
@@ -777,7 +779,7 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
                           UTMESS('F','XFEM2_75',vali=i+1,valk=fiss0.get_name())
                     else :
                        if (len(tab_BETA[numfis][i+1]) != NbPointFond[i]) :
-                          UTMESS('F','XFEM2_75',vali=i+1,valk=fiss0.get_name())     
+                          UTMESS('F','XFEM2_75',vali=i+1,valk=fiss0.get_name())
 
                     if not presence_colonne_absc:
 # cas ou la colonne ABSC_CURV n'existe pas la table SIF: calcul des
@@ -792,7 +794,7 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
                            for j in range(NbPointFond[i]):
                               tab_BETA[numfis][i+1][j][0] = absmax/(NbPointFond[i]-1)*j
                               if (OPERATION!='DETECT_COHESIF') :
-                                 tab_VIT[numfis][i+1][j][0]  = absmax/(NbPointFond[i]-1)*j  
+                                 tab_VIT[numfis][i+1][j][0]  = absmax/(NbPointFond[i]-1)*j
 
 #           interpolation lineaire
                     if calc_gamma :
@@ -815,10 +817,10 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
                 if calc_gamma :
                    if ((len(TABLE_BETA[numfis]) != len(Coorfo)/4) or (len(TABLE_GAMMA[numfis]) != len(Coorfo)/4)):
                       UTMESS('F','XFEM2_80')
-        
+
                 else :
                    if (len(TABLE_BETA[numfis]) != len(Coorfo)/4):
-                      UTMESS('F','XFEM2_80') 
+                      UTMESS('F','XFEM2_80')
 
 #       Si 2D: verification de l'orientation du repere (VNOR,VDIR)
             if (OPERATION != 'DETECT_COHESIF'):

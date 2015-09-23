@@ -84,41 +84,41 @@ def sittmax(k1, k2):
         return 2. * NP.arctan(((k1 / k2) - NP.sign(k2) * NP.sqrt((k1 / k2) ** 2 + 8)) / 4.)
 
 def puissance(k1,k2,k3,p):
-   
+
    k3n = k3/(k1 + NP.abs(k2) + NP.abs(k3))
-   
+
    return (1-k3n)**p
-   
+
 def terme_general(k1,k2,k3,mode3):
-   
+
    k1n = k1/(k1 + NP.abs(k2) + NP.abs(k3))
    k2n = k2/(k1 + NP.abs(k2) + NP.abs(k3))
    return (1+k1n-mode3)/k2n
-   
+
 def racine(k2,x):
 
-   return x-NP.sign(k2)*NP.sqrt(x**2+8)   
-   
+   return x-NP.sign(k2)*NP.sqrt(x**2+8)
+
 def trigo(x):
-      
+
    return 2*NP.arctan(x/4)
 
 def membre_3(k3,theta):
-    theta = theta*NP.pi/180 
+    theta = theta*NP.pi/180
     return k3*NP.cos(theta/2)
 
 def membre_1(k1,theta,nu):
-    theta = theta*NP.pi/180 
+    theta = theta*NP.pi/180
     return k1*((3-8*nu)*NP.cos(theta/2)+NP.cos(3*theta/2))
-    
+
 def membre_2(k2,theta,nu):
-    theta = theta*NP.pi/180 
+    theta = theta*NP.pi/180
     return k2*((8*nu-1)*NP.sin(theta/2)+(3*nu-4)*NP.sin(3*theta/2))
-    
+
 def division(a,b,c):
 
-    return NP.arctan(c/(a+b))/2  
-               
+    return NP.arctan(c/(a+b))/2
+
 def amestoy(k1, k2, crit_ang):
     """ criteres de Amestoy, Bui, Dang Van : K1 max, K2 nul (uniquement en 2D)"""
     # attention, K2_nul ne marche pas pour un angle > 60
@@ -162,6 +162,22 @@ def amestoy(k1, k2, crit_ang):
         UTMESS('A', 'RUPTURE1_60')
 
     return phi
+
+def paris_seuil(dkeq, C, M, DELTA_K_SEUIL):
+
+  #Si dkeq contient des valeurs négatives, le passage à la puissance dans la loi
+  #de Paris va faire planter le calcul. On ajoute une erreur fatale pour orienter
+  #l'utilisateur sur l'origine de l'erreur et le laisser corriger les valeurs.
+  if (dkeq < 0.):
+    UTMESS('F', 'RUPTURE1_31')
+
+  dkeq_dks=dkeq-DELTA_K_SEUIL
+
+  # On filtre les valeurs négatives pour eviter des avancées négatives en présence de seuil.
+  dkeq_dks=NP.max([dkeq_dks,0.])
+
+  da=C*(dkeq_dks)**M
+  return(da)
 
 
 def caract_mater(self, mater):
@@ -392,87 +408,87 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
 
             (young, poisson)=caract_mater(self,args['MATER'])
             p = (NP.sqrt(NP.pi) - 5*poisson)/4
-          
-          
+
+
          #ajout de p(nu) dans TABIN
             __TAB=CALC_TABLE(TABLE=TABIN,
                              reuse=TABIN,
                              ACTION=_F(OPERATION='AJOUT_COLONNE',
-                                       VALE=p ,NOM_PARA='P'))                     
+                                       VALE=p ,NOM_PARA='P'))
             self.update_const_context({'puissance' : puissance})
             self.update_const_context({'terme_general' : terme_general})
             self.update_const_context({'racine' : racine})
             self.update_const_context({'trigo' : trigo})
-         
+
 #        On calcule des membres intermédiaires
-#          membre 'MODE3'         
+#          membre 'MODE3'
             __puissance=FORMULE(NOM_PARA=('K1','K2','K3','P'),VALE='puissance(K1,K2,K3,P)')
             __TAB=CALC_TABLE(TABLE=__TAB,
                              reuse=__TAB,
                              ACTION=_F(OPERATION='OPER',
                                        FORMULE=__puissance,
                                        NOM_PARA='MODE3'))
-#          membre 'TERME_GE'                                    
+#          membre 'TERME_GE'
             __terme_general=FORMULE(NOM_PARA=('K1','K2','K3','MODE3'),VALE='terme_general(K1,K2,K3,MODE3)')
             __TAB=CALC_TABLE(TABLE=__TAB,
                              reuse=__TAB,
                              ACTION=_F(OPERATION='OPER',
                                        FORMULE=__terme_general,
                                        NOM_PARA='TERME_GE'))
-#          membre 'RACINE'                                    
+#          membre 'RACINE'
             __racine=FORMULE(NOM_PARA=('K2','TERME_GE'),VALE='racine(K2,TERME_GE)')
             __TAB=CALC_TABLE(TABLE=__TAB,
                              reuse=__TAB,
                              ACTION=_F(OPERATION='OPER',
                                        FORMULE=__racine,
                                        NOM_PARA='RACINE'))
-#             ANGLE_BETA                                    
+#             ANGLE_BETA
             __trigo=FORMULE(NOM_PARA=('RACINE'),VALE='trigo(RACINE)*180./pi')
             __TAB=CALC_TABLE(TABLE=__TAB,
                              reuse=__TAB,
                              ACTION=_F(OPERATION='OPER',
                                        FORMULE=__trigo,
-                                       NOM_PARA='ANGLE_BETA')) 
-                                                      
-         #ajout du coeff de Poisson dans la table                            
+                                       NOM_PARA='ANGLE_BETA'))
+
+         #ajout du coeff de Poisson dans la table
             __TAB=CALC_TABLE(TABLE=__TAB,
                              reuse=__TAB,
                              ACTION=_F(OPERATION='AJOUT_COLONNE',
-                                       VALE=poisson ,NOM_PARA='POISSON'))                                                   
+                                       VALE=poisson ,NOM_PARA='POISSON'))
             self.update_const_context({'__membre_1': membre_1})
             self.update_const_context({'__membre_2': membre_2})
             self.update_const_context({'__membre_3': membre_3})
             self.update_const_context({'__division': division})
-#             membre 'MEMBRE_1'         
+#             membre 'MEMBRE_1'
             __fmembre_1=FORMULE(NOM_PARA=('K1','ANGLE_BETA','POISSON'),VALE='__membre_1(K1,ANGLE_BETA,POISSON)')
             __TAB=CALC_TABLE(TABLE=__TAB,
                               reuse=__TAB,
                               ACTION=_F(OPERATION='OPER',
                                         FORMULE= __fmembre_1,
                                         NOM_PARA='MEMBRE_1'))
-#          membre 'MEMBRE_2'                                     
-            __fmembre_2=FORMULE(NOM_PARA=('K2','ANGLE_BETA','POISSON'),VALE='__membre_2(K2,ANGLE_BETA,POISSON)')                              
+#          membre 'MEMBRE_2'
+            __fmembre_2=FORMULE(NOM_PARA=('K2','ANGLE_BETA','POISSON'),VALE='__membre_2(K2,ANGLE_BETA,POISSON)')
             __TAB=CALC_TABLE(TABLE=__TAB,
                              reuse=__TAB,
                              ACTION=_F(OPERATION='OPER',
                                      FORMULE= __fmembre_2,
-                                     NOM_PARA='MEMBRE_2'))                     
-#          membre 'MEMBRE_3'         
+                                     NOM_PARA='MEMBRE_2'))
+#          membre 'MEMBRE_3'
             __fmembre_3=FORMULE(NOM_PARA=('K3','ANGLE_BETA'),VALE='__membre_3(K3,ANGLE_BETA)')
             __TAB=CALC_TABLE(TABLE=__TAB,
                              reuse=__TAB,
                              ACTION=_F(OPERATION='OPER',
                                        FORMULE= __fmembre_3,
                                        NOM_PARA='MEMBRE_3'))
-#          ANGLE_GAMMA         
-            __fdivision=FORMULE(NOM_PARA=('MEMBRE_1','MEMBRE_2','MEMBRE_3'),VALE='__division(MEMBRE_1,MEMBRE_2,MEMBRE_3)*180./pi')                            
+#          ANGLE_GAMMA
+            __fdivision=FORMULE(NOM_PARA=('MEMBRE_1','MEMBRE_2','MEMBRE_3'),VALE='__division(MEMBRE_1,MEMBRE_2,MEMBRE_3)*180./pi')
             __TAB=CALC_TABLE(TABLE=__TAB,
                              reuse=__TAB,
                              ACTION=_F(OPERATION='OPER',
                                        FORMULE= __fdivision,
-                                       NOM_PARA='ANGLE_GAMMA'))                        
-         
-#          suppression des membres intermédiaires   
+                                       NOM_PARA='ANGLE_GAMMA'))
+
+#          suppression des membres intermédiaires
             tabout=CALC_TABLE(TABLE=__TAB,
                               reuse=TABIN,
                               ACTION=_F(OPERATION='SUPPRIME',
@@ -764,13 +780,17 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
         loi = args['LOI']
         C = args['C']
         M = args['M']
+        DELTA_K_SEUIL = args['DELTA_K_SEUIL']
 
         if loi == 'PARIS':
             # on l'ajoute dans l'environnement pour pouvoir s'en servir dans
             # les commandes
             self.update_const_context({'C': C})
             self.update_const_context({'M': M})
-            __da = FORMULE(NOM_PARA=(str(dkeq)), VALE='C * ' + dkeq + ' **M ')
+            self.update_const_context({'DELTA_K_SEUIL': DELTA_K_SEUIL})
+            self.update_const_context({'paris_seuil': paris_seuil})
+
+            __da = FORMULE(NOM_PARA=(str(dkeq)), VALE='paris_seuil('+dkeq+', C, M, DELTA_K_SEUIL)')
 
         tabout = CALC_TABLE(TABLE=TABIN,
                             reuse=TABIN,
@@ -821,7 +841,7 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
                 for para in l_para:
                 # on prend la 1ere valeur (pour bien faire, il faudrait verifier que toutes
                 # les valeurs sont bien identiques et ne pas copier les colonnes dont les
-                # valeurs ne sont pas identiques...)
+                # furs ne sont pas identiques...)
                     l_vale.append(dic[para][0])
 
                 # rajout de la derniere colonne : moyenne des valeurs

@@ -259,7 +259,7 @@ IMPR_TABLE(TABLE=TAB)
 
 TEST_TABLE(CRITERE='RELATIF',
            VALE_CALC=4.746311E+05,
-           
+
            NOM_PARA='K_EQ_CUMUL_G',
            TABLE=TAB,
            FILTRE=(_F(CRIT_COMP='EQ',
@@ -273,7 +273,7 @@ TEST_TABLE(CRITERE='RELATIF',
 
 TEST_TABLE(CRITERE='RELATIF',
            VALE_CALC=1.0,
-           
+
            NOM_PARA='K_EQ_QUADRATIQUE',
            TABLE=TAB,
            FILTRE=(_F(CRIT_COMP='EQ',
@@ -287,7 +287,7 @@ TEST_TABLE(CRITERE='RELATIF',
 
 TEST_TABLE(CRITERE='RELATIF',
            VALE_CALC=1.0,
-           
+
            NOM_PARA='K_EQ_LINEAIRE',
            TABLE=TAB,
            FILTRE=(_F(CRIT_COMP='EQ',
@@ -301,7 +301,7 @@ TEST_TABLE(CRITERE='RELATIF',
 
 TEST_TABLE(CRITERE='RELATIF',
            VALE_CALC=1.0,
-           
+
            NOM_PARA='K_EQ_MODE_I',
            TABLE=TAB,
            FILTRE=(_F(CRIT_COMP='EQ',
@@ -406,7 +406,7 @@ IMPR_TABLE(TABLE=TAB51)
 
 TEST_TABLE(CRITERE='RELATIF',
            VALE_CALC=4.746311E+05,
-           
+
            NOM_PARA='D_K_EQ_CUMUL_G',
            TABLE=TAB51,
            FILTRE=_F(CRIT_COMP='EQ',
@@ -416,7 +416,7 @@ TEST_TABLE(CRITERE='RELATIF',
 
 TEST_TABLE(CRITERE='RELATIF',
            VALE_CALC=56.5685,
-           
+
            NOM_PARA='D_K_EQ_QUADRATIQ',
            TABLE=TAB51,
            FILTRE=_F(CRIT_COMP='EQ',
@@ -426,7 +426,7 @@ TEST_TABLE(CRITERE='RELATIF',
 
 TEST_TABLE(CRITERE='RELATIF',
            VALE_CALC=40.0,
-           
+
            NOM_PARA='D_K_EQ_MODE_I',
            TABLE=TAB51,
            FILTRE=_F(CRIT_COMP='EQ',
@@ -438,20 +438,25 @@ TEST_TABLE(CRITERE='RELATIF',
 #  VALIDATION DE L'OPERATEUR POST_RUPTURE, OPERATION = 'LOI_PROPA'
 #---------------------------------------------------------------------------------------
 
+# Après rainflow, DKEQ=6.
+# Test avec DKEQ<seuil pour avoir avancée nulle
 TAB3=POST_RUPTURE(TABLE=TAB3,
                   reuse=TAB3,
                   OPERATION='LOI_PROPA',
                   LOI='PARIS',
-                  C=1,
-                  M=2.)
+                  NOM_PARA='DELTA_A_TEST1',
+                  C=1.5,
+                  M=2.5,
+                  DELTA_K_SEUIL=7.0)
 
 IMPR_TABLE(TABLE=TAB3)
 
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
-           VALE_CALC=36.000000000,
-           VALE_REFE=36.0,
-           NOM_PARA='DELTA_A',
+           VALE_CALC=0.0,
+           VALE_REFE=0.0,
+           ORDRE_GRANDEUR=1.0E-06,
+           NOM_PARA='DELTA_A_TEST1',
            TABLE=TAB3,
            FILTRE=(_F(CRIT_COMP='EQ',
                       NOM_PARA='NUM_PT',
@@ -462,6 +467,62 @@ TEST_TABLE(CRITERE='ABSOLU',
                    ),
            )
 
+# Test avec seuil=0 et coefficients C et M non entiers
+TAB3=POST_RUPTURE(TABLE=TAB3,
+                  reuse=TAB3,
+                  OPERATION='LOI_PROPA',
+                  LOI='PARIS',
+                  NOM_PARA='DELTA_A_TEST2',
+                  C=1.5,
+                  M=2.5)
+
+IMPR_TABLE(TABLE=TAB3)
+
+dadn_ref=1.5*(6.0-0.0)**2.5
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC=132.27244611029161,
+           VALE_REFE=dadn_ref,
+           NOM_PARA='DELTA_A_TEST2',
+           TABLE=TAB3,
+           FILTRE=(_F(CRIT_COMP='EQ',
+                      NOM_PARA='NUM_PT',
+                      VALE_I=1,),
+                   _F(CRIT_COMP='EQ',
+                      NOM_PARA='CYCLE',
+                      VALE_I=1,),
+                   ),
+           )
+
+TAB3=CALC_TABLE(reuse=TAB3,
+                TABLE=TAB3,
+                ACTION=(_F(OPERATION='SUPPRIME',NOM_PARA=('DELTA_A_TEST1','DELTA_A_TEST2')),))
+
+# Test initial pour ne pas perturber les tests suivants
+TAB3=POST_RUPTURE(TABLE=TAB3,
+                  reuse=TAB3,
+                  OPERATION='LOI_PROPA',
+                  LOI='PARIS',
+                  C=1.,
+                  M=2.)
+
+IMPR_TABLE(TABLE=TAB3)
+
+dadn_ref=1.*(6.0-0.0)**2.
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC=36.000000000,
+           VALE_REFE=dadn_ref,
+           NOM_PARA='DELTA_A',
+           TABLE=TAB3,
+           FILTRE=(_F(CRIT_COMP='EQ',
+                      NOM_PARA='NUM_PT',
+                      VALE_I=1,),
+                   _F(CRIT_COMP='EQ',
+                      NOM_PARA='CYCLE',
+                      VALE_I=1,),
+                   ),
+           )
 #---------------------------------------------------------------------------------------
 #  VALIDATION DE L'OPERATEUR POST_RUPTURE, OPERATION = 'CUMUL_CYCLES'
 #---------------------------------------------------------------------------------------
