@@ -25,6 +25,7 @@ subroutine crnslv(nuz, metres, renum, base)
 !        ET CREATION D'UNE SD SOLVEUR
 !---------------------------------------------------------
     integer :: jnslv
+    real(kind=8) :: blreps, blrfront
     character(len=1) :: bas1
     character(len=14) :: nu
     character(len=19) :: solveu
@@ -35,7 +36,9 @@ subroutine crnslv(nuz, metres, renum, base)
 !
 !     -- CREATION D'UNE SD SOLVEUR :
     solveu=nu//'.SOLV'
-    call crsolv(metres, renum, solveu, bas1)
+    blrfront=0.d0
+    blreps=0.d0
+    call crsolv(metres, renum, blrfront, blreps, solveu, bas1)
 !
 ! --- CREATION DE L'OBJET .NSLV :
     call wkvect(nu//'.NSLV', bas1//' V K24', 1, jnslv)

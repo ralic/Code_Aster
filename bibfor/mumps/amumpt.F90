@@ -92,7 +92,7 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc,&
         rinfog(7)=smpsk%rinfog(7)
         rinfog(9)=smpsk%rinfog(9)
         rinfog(10)=smpsk%rinfog(10)
-        nvers(1:15)='SMUMPS '//smpsk%version_number
+        nvers=trim(adjustl('SMUMPS '//smpsk%version_number))
     else if (type.eq.'C') then
         cmpsk=>cmps(kxmps)
         n=cmpsk%n
@@ -103,8 +103,8 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc,&
         rinfog(7)=cmpsk%rinfog(7)
         rinfog(9)=cmpsk%rinfog(9)
         rinfog(10)=cmpsk%rinfog(10)
-        nvers(1:15)='CMUMPS '//cmpsk%version_number
-    else if (type.eq.'D') then
+        nvers=trim(adjustl('CMUMPS '//cmpsk%version_number))
+   else if (type.eq.'D') then
         dmpsk=>dmps(kxmps)
         n=dmpsk%n
         info(9)=dmpsk%info(9)
@@ -114,7 +114,7 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc,&
         rinfog(7)=dmpsk%rinfog(7)
         rinfog(9)=dmpsk%rinfog(9)
         rinfog(10)=dmpsk%rinfog(10)
-        nvers(1:15)='DMUMPS '//dmpsk%version_number
+        nvers=trim(adjustl('DMUMPS '//dmpsk%version_number))
     else if (type.eq.'Z') then
         zmpsk=>zmps(kxmps)
         n=zmpsk%n
@@ -125,7 +125,7 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc,&
         rinfog(7)=zmpsk%rinfog(7)
         rinfog(9)=zmpsk%rinfog(9)
         rinfog(10)=zmpsk%rinfog(10)
-        nvers(1:15)='ZMUMPS '//zmpsk%version_number
+        nvers=trim(adjustl('ZMUMPS '//zmpsk%version_number))
     else
         ASSERT(.false.)
     endif
@@ -216,7 +216,11 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc,&
         call uttcpu('CPU.AMUMPT', 'FIN', ' ')
         call uttcpr('CPU.AMUMPT', 6, temps)
         if ((.not.lcmde) .and. (niv.ge.2)) then
-            zi(monit(2)+rang)=info(9)
+            if (info(9).gt.0.d0) then
+                zi(monit(2)+rang)=info(9)
+            else
+                zi(monit(2)+rang)=-info(9)*1000000
+            endif
             zi(monit(12)+rang)=info(16)
             call asmpi_comm_jev('REDUCE', kmonit(1))
             call asmpi_comm_jev('REDUCE', kmonit(2))
@@ -284,7 +288,7 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc,&
                 else
                     write(ifm,*)' CALCUL MUMPS CENTRALISE'
                 endif
-                write(ifm,*)'<MONITORING '//nvers(1:15)//' >'
+                write(ifm,*)'<MONITORING '//nvers(1:31)//' >'
                 write(ifm,'(A19,I9)')' TAILLE DU SYSTEME ',n
                 if (lquali) then
                     write(ifm,'(A28,1PD11.4,1PD11.4)')&

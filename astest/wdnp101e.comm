@@ -801,7 +801,7 @@ TABINF1 = INFO_FONCTION(RMS = _F(FONCTION = ACCA47X,
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=6.E-2,
            TOLE_MACHINE=3.e-4, # On ne sait pas pourquoi ...
-           VALE_CALC=1.9972291957409,
+           VALE_CALC=1.99687909867,
            VALE_REFE=1.8911159616941,
            NOM_PARA='RMS',
            TABLE=TABINF1,);

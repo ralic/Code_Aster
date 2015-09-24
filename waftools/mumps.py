@@ -11,9 +11,6 @@ def options(self):
                     dest='enable_mumps', help='Disable MUMPS support')
     group.add_option('--enable-mumps', action='store_true', default=None,
                     dest='enable_mumps', help='Force MUMPS support')
-    group.add_option('--mumps-version', type='string',
-                    dest='mumps_version', default=None,
-                    help='mumps headers version to use inside bibfor')
     group.add_option('--mumps-libs', type='string', dest='mumps_libs',
                     default=None,
                     help='mumps librairies to use when linking')
@@ -39,7 +36,8 @@ def check_mumps(self):
     opts = self.options
     if opts.enable_mumps == False:
         raise Errors.ConfigurationError('MUMPS disabled')
-    self.get_mumps_version()
+    self.check_mumps_headers()
+    self.check_mumps_version()
     if opts.mumps_libs is None:
         opts.mumps_libs = 'dmumps zmumps smumps cmumps mumps_common pord'
     if not opts.parallel:
@@ -63,38 +61,55 @@ def check_mumps_libs(self):
     map(check, Utils.to_list(opts.mumps_libs))
 
 @Configure.conf
-def detect_last_includes(self):
-    """Detect the more recent version of Mumps includes in src"""
-    pattern = 'bibfor/include_mumps-'
-    incs = self.srcnode.ant_glob(pattern + '*/*.h')
-    exist = set([osp.dirname(i.srcpath()) for i in incs])
-    mpi = [i for i in exist if i.endswith('_mpi')]
-    incdirs = list(exist.difference(mpi))
+def check_mumps_headers(self):
+    fragment = r'''
+      PROGRAM MAIN
+      INCLUDE '{0}'
+      PRINT *, 'ok'
+      END PROGRAM MAIN
+'''
+    headers = [i + 'mumps_struc.h' for i in 'sdcz'] + ['mpif.h']
     if self.get_define('HAVE_MPI'):
-        incdirs = mpi
-    regexp = re.escape(pattern) + '(?P<vers>[0-9]+\.[0-9]+\.[0-9]+)(?:|_mpi)'
-    allvers = re.compile(regexp).findall(' '.join(incdirs))
-    vers = [tuple(map(int, i.split('.'))) for i in allvers]
-    vers.sort()
-    return '.'.join(map(str, vers[-1]))
+        for path in self.env['INCLUDES'][:]:
+            if "include_seq" in path:
+                self.env['INCLUDES'].remove(path)
+                self.start_msg('Removing path from INCLUDES')
+                self.end_msg(path, 'YELLOW')
+    for inc in headers:
+        try:
+            self.start_msg('Checking for {0}'.format(inc))
+            self.check_fc(fragment=fragment.format(inc),
+                          compile_filename='test.F',
+                          uselib_store='MUMPS', uselib='MUMPS MPI',
+                          mandatory=True)
+        except:
+            self.end_msg('no', 'YELLOW')
+            raise
+        else:
+            self.end_msg('yes')
 
 @Configure.conf
-def get_mumps_version(self):
-    self.start_msg('Getting mumps version')
+def check_mumps_version(self):
+    # translate special tags, not yet used
+    dict_vers = { 'SNAPSHOT-2015-07-23consortium' : '5.0.1' }
+    fragment = r'''
+#include <stdio.h>
+#include "smumps_c.h"
+
+int main(void){
+    printf("%s", MUMPS_VERSION);
+    return 0;
+}'''
+    self.start_msg('Checking mumps version')
     try:
-        ret = self.options.mumps_version or self.detect_last_includes()
-        # if C include is available
-        #incdir = osp.abspath('bibfor/include_mumps-%s/' % ret)
-        #frag = '\n'.join(('#include <stdio.h>', '#include <zmumps_c.h>',
-                          #'int main(){printf(MUMPS_VERSION);return 0;}'))
-        #ret = self.check_cc(fragment=frag, execute=True, define_ret=True,
-                            #mandatory=True, cflags='-I%s' % incdir)
-        to_search = 'bibfor/include_mumps-%s*/' % ret
-        if not self.srcnode.ant_glob(to_search, src=True, dir=True):
-            raise Errors.ConfigurationError('"%s" not compatible (see bibfor/include_mumps*)' % ret)
-        self.define('ASTER_MUMPS_VERSION', ret)
+        ret = self.check_cc(fragment=fragment, use='MUMPS',
+                            mandatory=True, execute=True, define_ret=True)
+        self.env['MUMPS_VERSION'] = ret
+        if dict_vers.get(ret, ret) != '5.0.1':
+            raise Errors.ConfigurationError("expected versions: {0}".format('5.0.1'))
     except:
         self.end_msg('no', 'YELLOW')
         raise
     else:
-        self.end_msg(ret)
+        self.define('ASTER_MUMPS_VERSION', ret)
+        self.end_msg( self.env['MUMPS_VERSION'] )

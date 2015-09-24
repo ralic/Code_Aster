@@ -60,7 +60,7 @@ subroutine crsvmu(motfac, solveu, istop, nprec,&
     integer :: ibid, ifm, niv, i, pcpiv, nbproc, rang, iaux
     integer :: monit(12), n1, vali(2), compt
     integer :: nbma
-    real(kind=8) :: eps
+    real(kind=8) :: eps, blreps, blrfront
     character(len=5) :: klag2
     character(len=8) :: ktypr, ktyps, ktyprn, ktypp, modele, partit, matra
     character(len=12) :: kooc
@@ -216,6 +216,10 @@ subroutine crsvmu(motfac, solveu, istop, nprec,&
     ASSERT(ibid.eq.1)
     call getvtx(motfac, 'PRETRAITEMENTS', iocc=1, scal=ktyps, nbret=ibid)
     ASSERT(ibid.eq.1)
+    call getvr8(motfac, 'LOW_RANK_TAILLE', iocc=1, scal=blrfront, nbret=ibid)
+    ASSERT(ibid.eq.1)
+    call getvr8(motfac, 'LOW_RANK_SEUIL', iocc=1, scal=blreps, nbret=ibid)
+    ASSERT(ibid.eq.1)
 !
     ktypp='SANS'
     eximc=getexm(motfac,'POSTTRAITEMENTS')
@@ -261,8 +265,8 @@ subroutine crsvmu(motfac, solveu, istop, nprec,&
 !
     slvr(1) = epsmat
     slvr(2) = eps
-    slvr(3) = 0.d0
-    slvr(4) = 0.d0
+    slvr(3) = blrfront
+    slvr(4) = blreps
 !
     slvi(1) = nprec
     slvi(2) = pcpiv

@@ -214,10 +214,10 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
 ! --- offre la plupart du temps le meilleur compromis:
 ! ---     cpu x memoire x qualite --> on ne programme pas de
 ! --- bascule, on laisse 'LAGR2' par defaut (pour l'instant)
-        select case(klag2(1:5))
-        case('LAGR2')
+    select case(klag2(1:5))
+    case('LAGR2')
         eli2lg=.true.
-        case('OUI','NON','XXXX')
+    case('OUI','NON','XXXX')
         eli2lg=.false.
     case default
         ASSERT(.false.)

@@ -116,11 +116,18 @@ Conseils :
   absent ou surabondant).
 """),
 
+    48: _(u"""
+Solveur MUMPS :
+  Un opérateur a demandé à MUMPS d'activer la compression de rang faible. Or cette option n'est disponible
+  qu'a partir de la version 5.0.1 consortium. Votre exécutable est lui lié a MUMPS v: %(k1)s. 
+  Pour continuer malgré tout le calcul, on a débranché cette option particulière de MUMPS et on a
+  demandé un calcul standard sans compression. Votre calcul risque juste d'être ralenti.
+"""),
+
 
     50: _(u"""
 Solveur MUMPS :
-   Vous avez demandé comme numéroteur RENUM = '%(k1)s', or MUMPS en a
-   utilisé un autre.
+   Vous avez demandé comme numéroteur RENUM = '%(k1)s', or MUMPS en a utilisé un autre.
 
 Conseils :
    Il se peut que votre version de MUMPS n'ait pas été compilée avec le support de ce numéroteur.
@@ -342,8 +349,8 @@ Solveur MUMPS :
     72: _(u"""
 Solveur MUMPS :
   Votre exécutable Aster embarque la version de MUMPS: %(k1)s
-  Les seules versions de MUMPS supportée dans Code_Aster sont, pour l'instant:
-                              la 4.9.2 et la 4.10.0.
+  Les seules versions de MUMPS supportée dans Code_Aster sont:
+                  la 5.0.1 et la 5.0.1 consortium (usage EDF seulement)
 
 Conseils :
   Télécharger, installer et relier à Code_Aster une version de MUMPS adéquate.
@@ -513,29 +520,6 @@ Solveur MUMPS :
 
 Conseil :
   Contactez l'équipe de développement.
-
-"""),
-    86: _(u"""
-Solveur MUMPS :
-  Un opérateur a demandé à MUMPS de ne pas conserver les termes de la matrice factorisée.
-  Cela permet d'optimiser un peu les performances dans les cas ou seul le déterminant, la
-  détection de singularité ou le test de Sturm sont requis (par ex. CALC_MODES option 'BANDE').
-  Or la version de MUMPS embarquée dans votre exécutable: %(k1)s
-  ne permet pas cette optimisation.
-
-  > On ne tient donc pas compte de cette optimisation et on stocke, comme pour un calcul standard,
-    tous les termes de la factorisée.
-
-"""),
-    87: _(u"""
-Solveur MUMPS :
-  Un opérateur a demandé à MUMPS de calculer un déterminant. Or cette option n'est disponible
-  qu'a partir de la v 4.10.0. Or votre exécutable est lié a MUMPS v: %(k1)s.
-
-  Conseils:
-    - Reconstruisez un exécutable en prenant une bonne version de MUMPS,
-    - Changer de solveur linéaire (par exemple, mot-clé SOLVEUR/METHODE='MULT_FRONT') dans l'opérateur
-      incriminé.
 
 """),
     88: _(u"""

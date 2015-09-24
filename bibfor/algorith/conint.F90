@@ -77,7 +77,7 @@ subroutine conint(nume, raide, coint, connec,&
     integer :: neqddl, nozero, no1, no2, indeq, ismhc, indddl, neqd2
     integer :: nbvois, iret, nbvmax, lraint, lmaint
     real(kind=8) :: rayon, dist, mindis, maxdis, kr(12, 12), mr(12, 12)
-    real(kind=8) :: direc(3), ptref(3), temp, long, vtest(3)
+    real(kind=8) :: direc(3), ptref(3), temp, long, vtest(3), r8bid
     character(len=8) :: nomma
     character(len=19) :: prof_gene, prof_chno, raiint, ssami, solveu
     character(len=24) :: repsst, nommcl
@@ -253,13 +253,14 @@ subroutine conint(nume, raide, coint, connec,&
     solveu=nume_gene//'.SOLV'
 !
 !-- TEST SUR LA PRESENCE DE MUMPS POUR ACCELERER LE CALCUL
+    r8bid=0.0
     call haslib('MUMPS', iret)
     if (iret .eq. 0) then
-        call crsolv('LDLT', 'SANS', solveu, 'V')
+        call crsolv('LDLT', 'SANS', r8bid, r8bid, solveu, 'V')
     else
         if (neq .lt. 120) then
 !-- SOLVEUR = LDLT / OPTIONS PAR DEFAUT
-            call crsolv('LDLT', 'SANS', solveu, 'V')
+            call crsolv('LDLT', 'SANS', r8bid, r8bid,  solveu, 'V')
         else
 !-- SOLVEUR = MUMPS / OPTIONS PAR DEFAUT
             call crsint(solveu)

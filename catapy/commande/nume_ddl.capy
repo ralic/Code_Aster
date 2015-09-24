@@ -34,6 +34,8 @@ NUME_DDL=OPER(nom="NUME_DDL",op=11,sd_prod=nume_ddl_sdaster,reentrant='n',
          ),
          b_mumps        =BLOC(condition = "METHODE == 'MUMPS' ",fr=tr("Paramètres de la méthode MUMPS"),
            RENUM        =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("AMD","AMF","PORD","METIS","QAMD","SCOTCH","AUTO")),
+           LOW_RANK_TAILLE=SIMP(statut='f', typ='R', defaut=-1.0,),
+           LOW_RANK_SEUIL=SIMP(statut='f', typ='R', defaut=0.0, )
          ),
          b_gcpc          =BLOC(condition="METHODE=='GCPC' or METHODE=='PETSC'",fr=tr("paramètres associés à la GCPC ou PETSc"),
            RENUM           =SIMP(statut='f',typ='TXM',into=("RCMK","SANS"),defaut="RCMK"  ),

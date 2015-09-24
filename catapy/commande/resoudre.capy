@@ -29,7 +29,7 @@ RESOUDRE=OPER(nom="RESOUDRE",op=15,sd_prod=cham_no_sdaster,reentrant='f',
          RESI_RELA       =SIMP(statut='f',typ='R',defaut=1.E-6),
 
          # mot-clé pour les posttraitements de la phase de solve de MUMPS
-         POSTTRAITEMENTS =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("SANS","AUTO","FORCE")),
+         POSTTRAITEMENTS =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("SANS","AUTO","FORCE","MINI")),
 
          # mot-clé commun aux solveurs GCPC et PETSc:
          NMAX_ITER       =SIMP(statut='f',typ='I',defaut= 0 ),

@@ -158,10 +158,11 @@ FREQC=RECU_FONCTION(TABLE=MNL,
 fs=0.25790528513017497
 es=1.19768
 
-calc_aster4 = 1.197677968396
+calc_aster5_fs = 1.197698218423
+calc_aster5_es = 0.25790526592004
 
 TEST_FONCTION(VALEUR=_F(VALE_PARA=fs,
-                       VALE_CALC=calc_aster4,
+                       VALE_CALC=calc_aster5_fs,
                        TOLE_MACHINE=8.E-05,  # valeur tres sensible en fonction de la machine
                        REFERENCE='AUTRE_ASTER',
                        VALE_REFE=es,
@@ -169,7 +170,7 @@ TEST_FONCTION(VALEUR=_F(VALE_PARA=fs,
              )
 
 TEST_FONCTION(VALEUR=_F(VALE_PARA=es,
-                       VALE_CALC=fs,
+                       VALE_CALC=calc_aster5_es,
                        VALE_REFE=fs,
                        REFERENCE='AUTRE_ASTER',
                        FONCTION=FREQC,),

@@ -32,7 +32,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
 ! OPTION=31 IDEM MAIS ON CREE UNE OCCURENCE MUMPS TEMPORAIRE. OPERATION
 !    UN PEU COUTEUSE A NE FAIRE QU'UNE FOIS PAR OPERATEUR(SD_SOLVEUR).
 ! DANS CES DEUX MODES, ON CONTROLE LE CARACTERE LICITE DU NUMERO DE
-! VERSIONS: 4.9.2 OU 4.10.0 SINON UTMESS_F
+! VERSIONS: 4.10.0, 5.0.1 ou SNAPSHOT-2015-07-23conso SINON UTMESS_F.
 !
 ! OPTION=4 RECUPERE LE DETERMINANT ET ON LE STOCKE DS L'OBJET JEVEUX
 !          '&&AMUMP.DETERMINANT' (V V R DIM=3)
@@ -96,6 +96,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
     integer :: tmax, tmaxb, ltot, iret, isizemu, nsizemu, nsizema, execmu
     integer :: info34, icnt33
     integer :: pid
+!    integer ::  NTHREADS, TID, OMP_GET_NUM_THREADS, OMP_GET_THREAD_NUM
     mpi_int :: mpicou
     aster_logical :: lpara, lpbmem, lpb1
     character(len=2) :: fstring
@@ -561,7 +562,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
         kvers=''
         kvers=trim(adjustl(nvers))
         select case (kvers)
-            case('4.9.2','4.10.0')
+            case('4.10.0','5.0.1','SNAPSHOT-2015-07-23conso')
         case default
             call utmess('F', 'FACTOR_72', sk=kvers)
         end select
@@ -609,8 +610,27 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
             zr(ipiv+1)=rinf13
             zr(ipiv+2)=info34
         endif
+
+!       ------------------------------------------------
+! ---   TESTS DIVERS SUR OPENMP (CF. AMUMPD)
+!       ------------------------------------------------
+!    else if (option.eq.99) then
+!
+!        call system('echo $OMP_NUM_THREADS')
+!        call system('echo $MKL_NUM_THREADS')
+!        call system('env')
+!!$OMP PARALLEL PRIVATE(NTHREADS, TID)
+!        TID = OMP_GET_THREAD_NUM()
+!        write(ifm,*) 'Hello World from thread = ', TID
+!       if (TID .EQ. 0) then  
+!            NTHREADS = OMP_GET_NUM_THREADS()
+!            write(ifm,*) 'Number of threads = ', NTHREADS
+!        endif
+!!$OMP END PARALLEL
 !
 ! --- CASE SUR LA VARIABLE OPTION
+!
+!
     else
         ASSERT(.false.)
     endif

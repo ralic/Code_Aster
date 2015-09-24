@@ -30,9 +30,11 @@ subroutine op0011()
 !----------------------------------------------------------------------
 #include "jeveux.h"
 #include "asterc/getres.h"
+#include "asterfort/assert.h"
 #include "asterfort/crsolv.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedetr.h"
@@ -44,6 +46,7 @@ subroutine op0011()
     integer :: nlimat, imatel
     parameter   (nlimat=100)
     integer :: ifm, nbid, nbmat, niv, nbcha, iacha, jnslv, il
+    real(kind=8) :: blreps, blrfront
     character(len=2) :: base
     character(len=8) ::  tlimat(nlimat), nuuti, renum, mo
     character(len=14) :: nudev
@@ -54,8 +57,18 @@ subroutine op0011()
     call infmaj()
     call infniv(ifm, niv)
 !
-    call getvtx(' ', 'METHODE', scal=method, nbret=nbid)
-    call getvtx(' ', 'RENUM', scal=renum, nbret=nbid)
+    call getvtx(' ', 'METHODE', iocc=1, scal=method, nbret=nbid)
+    ASSERT(nbid.eq.1)
+    call getvtx(' ', 'RENUM', iocc=1, scal=renum, nbret=nbid)
+    ASSERT(nbid.eq.1)
+    blrfront=0.d0
+    blreps=0.d0
+    if (method(1:5).eq.'MUMPS') then
+        call getvr8(' ', 'LOW_RANK_TAILLE', iocc=1, scal=blrfront, nbret=nbid)
+        ASSERT(nbid.eq.1)
+        call getvr8(' ', 'LOW_RANK_SEUIL', iocc=1, scal=blreps, nbret=nbid)
+        ASSERT(nbid.eq.1)
+    endif
 !
     list_load = '&&OP0011.CHARGES   .LCHA'
     base ='GG'
@@ -69,7 +82,8 @@ subroutine op0011()
 !     -- CREATION D'UNE SD SOLVEUR :
 !     --------------------------------
     solveu=nuuti//'.SOLVEUR'
-    call crsolv(method, renum, solveu, 'G')
+    call crsolv(method, renum, blrfront, blreps, solveu, 'G')
+
 !
 !
 ! - TRAITEMENT DU MOT CLE MATR_RIGI OU MODELE :

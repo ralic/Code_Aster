@@ -86,7 +86,7 @@ subroutine amumps(action, kxmps, rsolu, vcine, nbsol,&
     character(len=12) :: usersm, k12bid
     character(len=14) :: nonu
     character(len=19) :: nomat
-    character(len=24) :: kmonit(12), k24aux, kvers, k24bid
+    character(len=24) :: kmonit(12), k24aux, kvers, k24bid, posttrait
     real(kind=8) :: epsmax, valr(2), rctdeb, temps(6), epsmat
     complex(kind=8) :: cbid(1)
     aster_logical :: lquali, ldist, lresol, lmd, lbid, lpreco, lbis, lpb13, ldet
@@ -129,6 +129,7 @@ subroutine amumps(action, kxmps, rsolu, vcine, nbsol,&
 ! --- => LQUALI
     epsmax=slvr(2)
     lquali=(epsmax.gt.0.d0)
+    posttrait=slvk(11)
 !
 ! --- POUR "ELIMINER" LE 2EME LAGRANGE :
 ! --- OPTION DEBRANCHEE SI CALCUL DE DETERMINANT
@@ -207,20 +208,13 @@ subroutine amumps(action, kxmps, rsolu, vcine, nbsol,&
 !       -----------------------------------------------------
         ldet=.false.
         if (slvi(5) .eq. 1) then
-            select case (kvers)
-                case('4.10.0')
-! --- ON DEBRANCHE ELIM_LAGR='LAGR2' CAR CELA FAUSSE LA VALEUR DU DETER
-! --- MINANT PAR RAPPORT AUX AUTRES SOLVEURS DIRECTS
-                if ((niv.ge.2) .and. (lbis) .and. (.not.lpreco)) then
-                    call utmess('I', 'FACTOR_88')
-                endif
-                slvk(6)='NON'
-                klag2='NON'
-                lbis=.false.
-                ldet=.true.
-                case('4.9.2')
-                call utmess('F', 'FACTOR_87', sk=kvers)
-            end select
+            if ((niv.ge.2) .and. (lbis) .and. (.not.lpreco)) then
+                call utmess('I', 'FACTOR_88')
+            endif
+            slvk(6)='NON'
+            klag2='NON'
+            lbis=.false.
+            ldet=.true.
         endif
 !
 !       ------------------------------------------------
@@ -237,14 +231,7 @@ subroutine amumps(action, kxmps, rsolu, vcine, nbsol,&
 !       CONSERVE-T-ON LES FACTEURS OU NON ?
 !       -----------------------------------------------------
         if (slvi(4) .eq. 1) then
-            select case (kvers)
-                case('4.10.0')
-                smpsk%icntl(31)=1
-                case('4.9.2')
-                if ((niv.ge.2) .and. (.not.lpreco)) then
-                    call utmess('I', 'FACTOR_86', sk=kvers)
-                endif
-            end select
+             smpsk%icntl(31)=1
         endif
 !
 !       ------------------------------------------------
@@ -274,8 +261,7 @@ subroutine amumps(action, kxmps, rsolu, vcine, nbsol,&
 !       ------------------------------------------------
         if (smpsk%infog(1) .eq. 0) then
 !              -- C'EST OK
-            else if ((smpsk%infog(1).eq.-5).or.(smpsk%infog(1).eq.-7))&
-        then
+        else if ((smpsk%infog(1).eq.-5).or.(smpsk%infog(1).eq.-7)) then
             call utmess('F', 'FACTOR_64')
         else if (smpsk%infog(1).eq.-6) then
             iret=2
@@ -442,7 +428,7 @@ subroutine amumps(action, kxmps, rsolu, vcine, nbsol,&
 !       ON SOULAGE LA MEMOIRE JEVEUX DES QUE POSSIBLE D'OBJETS MUMPS
 !       INUTILES
         if ((( rang.eq.0).and.(.not.ldist)) .or. (ldist)) then
-            if (.not.lquali .and. .not.lopfac) then
+            if (.not.(lquali).and.(posttrait(1:4).ne.'MINI') .and. .not.lopfac) then
                 if (ldist) then
                     deallocate(smpsk%a_loc,stat=ibid)
                     deallocate(smpsk%irn_loc,stat=ibid)
@@ -512,7 +498,7 @@ subroutine amumps(action, kxmps, rsolu, vcine, nbsol,&
             endif
         endif
 ! --- CONTROLE DE L'ERREUR SUR LA SOLUTION :
-        if (lquali) then
+        if ((lquali).and.(posttrait(1:4).ne.'MINI')) then
             if (smpsk%rinfog(9) .gt. epsmax) then
                 valr(1)=smpsk%rinfog(9)
                 valr(2)=epsmax
@@ -531,8 +517,8 @@ subroutine amumps(action, kxmps, rsolu, vcine, nbsol,&
 !        AFFICHAGE DU MONITORING :
 !       ------------------------------------------------
         call amumpt(12, kmonit, temps, rang, nbproc,&
-                    kxmps, lquali, type, ietdeb, ietrat,&
-                    rctdeb, ldist)
+                    kxmps, lquali, type, ietdeb,&
+                    ietrat, rctdeb, ldist)
 !
 !     ------------------------------------------------
 !     ------------------------------------------------

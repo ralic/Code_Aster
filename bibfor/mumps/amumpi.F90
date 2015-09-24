@@ -57,14 +57,15 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
     integer :: ifm, niv, i, isymm, isymv, isym
     integer :: nprec, ibid
     mumps_int :: i4, icntl(nicntl)
-    real(kind=8) :: cntl(ncntl), rr4max
-    aster_logical :: lbid
+    real(kind=8) :: cntl(ncntl), rr4max, blreps, blrfront, keep488, keep490, keep491
+    aster_logical :: lbid, blrok
     character(len=4) :: typm, etam
     character(len=12) :: k12bid
     character(len=14) :: nonu
     character(len=19) :: nomat, nosolv
     character(len=24) :: kvers
     character(len=24), pointer :: refa(:) => null()
+    real(kind=8), pointer :: slvr(:) => null()
     character(len=24), pointer :: slvk(:) => null()
     integer, pointer :: slvi(:) => null()
     call jemarq()
@@ -97,6 +98,10 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
     call jeveuo(nosolv//'.SLVK', 'L', vk24=slvk)
     call jeveuo(nosolv//'.SLVI', 'L', vi=slvi)
     nprec=slvi(1)
+    call jeveuo(nosolv//'.SLVR', 'L', vr=slvr)
+    blrfront=slvr(3)
+    blrok=(blrfront.gt.0.d0)
+    blreps=slvr(4)
 !
 !       -----------------------------------------------------
 !        INITIALISATION SYM, PAR ET JOB POUR MUMPS (CREATION)
@@ -193,8 +198,67 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
         enddo
 !
 ! ---     TEST DE COMPATIBILITE DE LA VERSION DE MUMPS
-        call amumpu(3, type, kxmps, k12bid, ibid,&
-                    lbid, kvers, ibid)
+        call amumpu(3, type, kxmps, k12bid, ibid, lbid, kvers, ibid)
+        kvers=trim(adjustl(kvers))
+
+! ---     BLR
+        if (blrok) then
+            if (kvers(1:24).eq.'SNAPSHOT-2015-07-23conso') then
+                ! ok
+            else
+                call utmess('A', 'FACTOR_48', sk=kvers)
+                blrok=.false.
+            endif
+        endif
+        if (blrok) then
+            if (type .eq. 'S') then
+                smpsk%keep(486)=1
+                smpsk%dkeep(8)=blreps
+                smpsk%keep(488)=int(smpsk%keep(488)*blrfront,4)
+                smpsk%keep(490)=int(smpsk%keep(490)*blrfront,4)
+                smpsk%keep(491)=int(smpsk%keep(491)*blrfront,4)
+                keep488=smpsk%keep(488)
+                keep490=smpsk%keep(490)
+                keep491=smpsk%keep(491)
+            else if (type.eq.'C') then
+                cmpsk%keep(486)=1
+                cmpsk%dkeep(8)=blreps
+                cmpsk%keep(488)=int(cmpsk%keep(488)*blrfront,4)
+                cmpsk%keep(490)=int(cmpsk%keep(490)*blrfront,4)
+                cmpsk%keep(491)=int(cmpsk%keep(491)*blrfront,4)
+                keep488=cmpsk%keep(488)
+                keep490=cmpsk%keep(490)
+                keep491=cmpsk%keep(491)
+            else if (type.eq.'D') then
+                dmpsk%keep(486)=1
+                dmpsk%dkeep(8)=blreps
+                dmpsk%keep(488)=int(dmpsk%keep(488)*blrfront,4)
+                dmpsk%keep(490)=int(dmpsk%keep(490)*blrfront,4)
+                dmpsk%keep(491)=int(dmpsk%keep(491)*blrfront,4)
+                keep488=dmpsk%keep(488)
+                keep490=dmpsk%keep(490)
+                keep491=dmpsk%keep(491)
+            else if (type.eq.'Z') then
+                zmpsk%keep(486)=1
+                zmpsk%dkeep(8)=blreps
+                zmpsk%keep(488)=int(zmpsk%keep(488)*blrfront,4)
+                zmpsk%keep(490)=int(zmpsk%keep(490)*blrfront,4)
+                zmpsk%keep(491)=int(zmpsk%keep(491)*blrfront,4)
+                keep488=zmpsk%keep(488)
+                keep490=zmpsk%keep(490)
+                keep491=zmpsk%keep(491)
+            else
+                ASSERT(.false.)
+            endif
+! ---  AFFICHAGE DE CONTROLE
+            if (niv .ge. 2) then
+                write(ifm,*)'**********************************************************'
+                write(ifm,*)'<AMUMPI> PARAMETRES LOW-RANK'
+                write(ifm,*)'DKEEP8=',blreps
+                write(ifm,*)'KEEP488/490/491=',keep488, keep490, keep491
+                write(ifm,*)'**********************************************************'
+            endif
+        endif
 !
 ! ---     MESSAGES/ALERTES MUMPS
         icntl(1) = to_mumps_int(ifm)
@@ -222,6 +286,9 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
         endif
 !
 ! ---     RENUMEROTATION
+! ---       Analyse sequentielle par defaut
+        icntl(28)=1
+        icntl(29)=0
         if (slvk(4) .eq. 'AMD') then
             icntl(7) = 0
         else if (slvk(4).eq.'AMF') then
@@ -313,10 +380,6 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
 ! ---     PARAMETRE POUR RESOLUTIONS SIMULTANEES
         icntl(27)=-8
 !
-! ---     ANALYSE SEQUENTIELLE
-        icntl(28)=0
-        icntl(29)=0
-!
 ! ---     PAS DE CALCUL DE TERMES DE A-1
         icntl(30)=0
 !
@@ -400,8 +463,8 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
         endif
 !
 ! ---     TEST DE COMPATIBILITE DE LA VERSION DE MUMPS
-        call amumpu(3, type, kxmps, k12bid, ibid,&
-                    lbid, kvers, ibid)
+        call amumpu(3, type, kxmps, k12bid, ibid, lbid, kvers, ibid)
+        kvers=trim(adjustl(kvers))
 !
 ! ---     MESSAGE/ALERTES MUMPS
         icntl(1) = to_mumps_int(ifm)
@@ -418,20 +481,27 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
         icntl(10)=0
         icntl(11)=0
         cntl(2)=0.d0
-        if (lquali) then
-            if (slvk(11) .eq. 'SANS') then
-            else if (slvk(11).eq.'AUTO') then
-                icntl(10)=4
-                cntl(2)=1.d-14
-            else if (slvk(11).eq.'FORCE') then
-                icntl(10)=10
-                cntl(2)=10.d-50
-                if (type .eq. 'S' .or. type .eq. 'C') then
-                    cntl(2)=1.d-38
+        slvk(11)=trim(adjustl(slvk(11)))
+        select case(slvk(11))
+        case('MINI')
+            icntl(10)=-2
+            if (lquali) icntl(11)=2
+        case default
+            if (lquali) then
+                icntl(11)=1
+                if (slvk(11) .eq. 'SANS') then
+                else if (slvk(11).eq.'AUTO') then
+                    icntl(10)=4
+                    cntl(2)=1.d-14
+                else if (slvk(11).eq.'FORCE') then
+                    icntl(10)=10
+                    cntl(2)=10.d-50
+                    if (type .eq. 'S' .or. type .eq. 'C') then
+                        cntl(2)=1.d-38
+                    endif
                 endif
             endif
-            icntl(11)=1
-        endif
+        end select
         if (type .eq. 'S') then
             smpsk%icntl(1)=icntl(1)
             smpsk%icntl(2)=icntl(2)

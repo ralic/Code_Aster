@@ -272,6 +272,12 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
 
    _BlocMU['TYPE_RESOL'     ] = SIMP(statut='f', typ='TXM', defaut="AUTO", into=("NONSYM", "SYMGEN", "SYMDEF", "AUTO", ), )
 
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+   _BlocMU['LOW_RANK_TAILLE'] =SIMP(statut='f', typ='R', defaut=-1.0,)
+   _BlocMU['LOW_RANK_SEUIL']=SIMP(statut='f', typ='R', defaut=0.0, )
+
 # ----------------------------------------------------------------------------------------------------------------------------------
 
    _BlocMU['PRETRAITEMENTS' ] = SIMP(statut='f', typ='TXM', defaut="AUTO", into=("SANS", "AUTO", ), )
@@ -279,7 +285,7 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
 # ----------------------------------------------------------------------------------------------------------------------------------
 
    if _resol:
-      _BlocMU['POSTTRAITEMENTS'] = SIMP(statut='f', typ='TXM', defaut="AUTO", into=("SANS", "AUTO", "FORCE", ), )
+      _BlocMU['POSTTRAITEMENTS'] = SIMP(statut='f', typ='TXM', defaut="AUTO", into=("SANS", "AUTO", "FORCE", "MINI"), )
 
 # ----------------------------------------------------------------------------------------------------------------------------------
 

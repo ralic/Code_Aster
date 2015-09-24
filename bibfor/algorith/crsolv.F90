@@ -1,11 +1,13 @@
-subroutine crsolv(method, renum, solve, bas)
+subroutine crsolv(method, renum, blrfront, blreps, solve, bas)
     implicit none
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jevtbl.h"
 #include "asterfort/sdsolv.h"
 #include "asterfort/wkvect.h"
+    real(kind=8) :: blrfront, blreps
     character(len=*) :: method, renum, solve, bas
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -89,8 +91,13 @@ subroutine crsolv(method, renum, solve, bas)
 !
     zr(islvr-1+1) = epsmat
     zr(islvr-1+2) = resire
-    zr(islvr-1+3) = jevtbl('TAILLE_BLOC')
-    zr(islvr-1+4) = 0.d0
+    if (method .eq. 'MUMPS') then
+        zr(islvr-1+3) = blrfront
+        zr(islvr-1+4) = blreps
+    else 
+        zr(islvr-1+3) = jevtbl('TAILLE_BLOC')
+        zr(islvr-1+4) = 0.d0
+    endif
 !
     zi(islvi-1+1) = nprec
     zi(islvi-1+2) =-9999

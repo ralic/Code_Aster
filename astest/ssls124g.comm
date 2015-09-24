@@ -261,11 +261,11 @@ CHARG33=AFFE_CHAR_MECA(MODELE=MODMEC33,
 RESU33=MECA_STATIQUE(MODELE=MODMEC33,
                     CHAM_MATER=CHMAT33,
                     EXCIT=_F(CHARGE=CHARG33,),
-                    SOLVEUR=_F(METHODE='MUMPS',
+                    SOLVEUR=_F(METHODE='MUMPS',POSTTRAITEMENTS='FORCE',
                                NPREC=-1,
-                               RESI_RELA=-1.0,
+                               RESI_RELA=1.E-2,
                                ),
-                    INFO=2,
+                    INFO=1,
                     );
 
 Iy=b*h*h*h/12
@@ -273,13 +273,15 @@ Uz=F*L*L*L/3/YG/Iy
 
 # LA SOLUTION OBTENUE PRESENTE UNE FAIBLE VARIABILITE ENTRE MACHINES QUI DECOULE
 # DU MAUVAIS CONDITIONNEMENT
+calc_aster5_p7=0.00185510408361
+calc_aster5_p8=0.00185589054598
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    GROUP_NO='P7',
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=RESU33,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC=0.00185485157147,
+                   VALE_CALC=calc_aster5_p7,
                    VALE_REFE=Uz,
                    TOLE_MACHINE=1.e-3, #TODO TOLE_MACHINE
                    PRECISION=0.075,),
@@ -289,7 +291,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RESU33,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC=0.00185564021681,
+                   VALE_CALC=calc_aster5_p8,
                    VALE_REFE=Uz,
                    TOLE_MACHINE=1.e-3, #TODO TOLE_MACHINE
                    PRECISION=0.075,),
