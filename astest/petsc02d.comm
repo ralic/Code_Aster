@@ -27,7 +27,7 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                        PHENOMENE='MECANIQUE',
                        MODELISATION='3D',),);
 
-#Acier 
+#Acier
 
 MAT1=DEFI_MATERIAU(ELAS=_F(E=2.1e+11,
                            NU=0.3,),);
@@ -129,7 +129,6 @@ EVOL=STAT_NON_LINE(MODELE=MO,
                                   ITER_GLOB_MAXI=20,
                                   ITER_GLOB_ELAS=50,),
                    SOLVEUR=_F(METHODE='PETSC',
-                              SYME='NON',
                               MATR_DISTRIBUEE='OUI',
                               ALGORITHME='GCR',
                               PRE_COND='LDLT_SP',
@@ -163,7 +162,7 @@ EV_DY=POST_ELEM(INTEGRALE=_F(GROUP_MA='Arete_superieure_x',
                 RESULTAT=EVOL,
                 NUME_ORDRE=1,);
 
-# Test de non-regression sur la valeur moyenne des déplacements 
+# Test de non-regression sur la valeur moyenne des déplacements
 
 TEST_TABLE(TABLE=EV_DZ,
            NOM_PARA='MOYE_DZ',

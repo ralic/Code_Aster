@@ -78,7 +78,7 @@ MO = AFFE_MODELE(MAILLAGE = MA,
 # -----------------------------------------------------
 
 
-# DEFINITION DU BETON 
+# DEFINITION DU BETON
 FRAG = DEFI_MATER_GC(
   ENDO_FISS_EXP = _F(
     E  = E,
@@ -90,7 +90,7 @@ FRAG = DEFI_MATER_GC(
     LARG_BANDE = 2*D,
     ),
   )
-    
+
 
 CHMAT = AFFE_MATERIAU(MAILLAGE = MA,
                       AFFE     = (_F(GROUP_MA = 'MATIERE', MATER = FRAG)))
@@ -136,9 +136,7 @@ CINE = AFFE_CHAR_MECA_F(MODELE   = MO,
 #                CALCUL NON LINEAIRE
 # -----------------------------------------------------
 
-EVOL = STAT_NON_LINE(SOLVEUR     = _F(METHODE = 'MUMPS',
-   
-                                      SYME = 'OUI'),
+EVOL = STAT_NON_LINE(SOLVEUR     = _F(METHODE = 'MUMPS',),
                      MODELE      = MO,
                      CHAM_MATER  = CHMAT,
                      EXCIT       = (_F(CHARGE = CINE,
