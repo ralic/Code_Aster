@@ -215,14 +215,14 @@ void DEFSSSPP(MFRONT_GET_NBVARI, mfront_get_nbvari,
 
     mfront_name(libname, symbol, model, "_InternalStateVariablesTypes", &symbname);
     if ( symbname == NULL ) {
-        error_symbol_not_found(libname, symbname);
+        error_symbol_not_found(libname, symbol);
     }
 
     int* int_var = (int*)libsymb_get_symbol(DLL_DICT, libname, symbname);
 
     mfront_name(libname, symbol, model, "_nInternalStateVariables", &symbname);
     if ( symbname == NULL ) {
-        error_symbol_not_found(libname, symbname);
+        error_symbol_not_found(libname, symbol);
     }
     unsigned short* nb_int_var = (unsigned short*)libsymb_get_symbol(DLL_DICT, libname, symbname);
 
@@ -367,6 +367,7 @@ int load_mfront_lib(const char* libname, const char* symbol)
     }
 
     if ((error = dlerror()) != NULL)  {
+        DEBUG_DLL_VV("not found %s%s\n", ":-(", "");
         return 1;
     }
     DEBUG_DLL_VV("found: %s %p", "address", (char *)f_mfront);
@@ -439,7 +440,7 @@ void mfront_name(
 void error_symbol_not_found(const char* libname, const char* symbname)
 {
     char *valk;
-    INTEGER ibid=0, n0=0, nk=0;
+    INTEGER ibid=0, n0=0, nk=3;
     DOUBLE rbid=0.;
     valk = MakeTabFStr(nk, VALK_SIZE);
     SetTabFStr(valk, 0, "MFRONT", VALK_SIZE);
