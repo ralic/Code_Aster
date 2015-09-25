@@ -11,7 +11,7 @@ waf install -p
 
 import os
 ASTER_ROOT = os.environ['ASTER_ROOT']
-YAMMROOT = ASTER_ROOT + '/public/V7_6_0_201506'
+YAMMROOT = ASTER_ROOT + '/public/V7_6_0_201509'
 
 def configure(self):
     opts = self.options
