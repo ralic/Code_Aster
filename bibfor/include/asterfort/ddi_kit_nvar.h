@@ -16,7 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine ddi_kit_nvar(rela_flua, rela_plas, rela_cpla, rela_coup, nb_vari_flua, &
+    subroutine ddi_kit_nvar(rela_flua   , rela_plas   , rela_cpla   , rela_coup, nb_vari_flua,&
                             nb_vari_plas, nb_vari_cpla, nb_vari_coup)
         character(len=16), intent(in) :: rela_flua
         character(len=16), intent(in) :: rela_plas

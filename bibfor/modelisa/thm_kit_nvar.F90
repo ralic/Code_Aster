@@ -1,7 +1,7 @@
-subroutine thm_kit_nvar(rela_thmc, rela_hydr, rela_meca, rela_ther, nb_vari_thmc, &
+subroutine thm_kit_nvar(rela_thmc   , rela_hydr   , rela_meca   , rela_ther, nb_vari_thmc,&
                         nb_vari_hydr, nb_vari_meca, nb_vari_ther)
 !
-    implicit none
+implicit none
 !
 #include "jeveux.h"
 #include "asterc/lccree.h"
@@ -24,7 +24,7 @@ subroutine thm_kit_nvar(rela_thmc, rela_hydr, rela_meca, rela_ther, nb_vari_thmc
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: sylvie.granet at edf.fr
+! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=16), intent(in) :: rela_thmc
     character(len=16), intent(in) :: rela_hydr
@@ -43,14 +43,14 @@ subroutine thm_kit_nvar(rela_thmc, rela_hydr, rela_meca, rela_ther, nb_vari_thmc
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  rela_thmc    : relation for coupling
-! In  rela_hydr    : relation for hydraulic
-! In  rela_meca    : relation for mechanic
-! In  rela_ther    : relation for thermic
-! Out nb_vari_thmc : number of internal variables for coupling
-! Out nb_vari_hydr : number of internal variables for hydraulic
-! Out nb_vari_meca : number of internal variables for mechanic
-! Out nb_vari_ther : number of internal variables for thermic
+! In  rela_thmc        : relation for coupling
+! In  rela_hydr        : relation for hydraulic
+! In  rela_meca        : relation for mechanic
+! In  rela_ther        : relation for thermic
+! Out nb_vari_thmc     : number of internal variables for coupling
+! Out nb_vari_hydr     : number of internal variables for hydraulic
+! Out nb_vari_meca     : number of internal variables for mechanic
+! Out nb_vari_ther     : number of internal variables for thermic
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -63,19 +63,15 @@ subroutine thm_kit_nvar(rela_thmc, rela_hydr, rela_meca, rela_ther, nb_vari_thmc
     nb_vari_ther = 0
     nb_vari_hydr = 0
     nb_vari_meca = 0
-!
     call lccree(1, rela_thmc, rela_thmc_py)
     call lcinfo(rela_thmc_py, ibid, nb_vari_thmc)
     call lcdiscard(rela_thmc_py)
-
     call lccree(1, rela_ther, rela_ther_py)
     call lcinfo(rela_ther_py, ibid, nb_vari_ther)
     call lcdiscard(rela_ther_py)
-
     call lccree(1, rela_hydr, rela_hydr_py)
     call lcinfo(rela_hydr_py, ibid, nb_vari_hydr)
     call lcdiscard(rela_hydr_py)
-
     call lccree(1, rela_meca, rela_meca_py)
     call lcinfo(rela_meca_py, ibid, nb_vari_meca)
     call lcdiscard(rela_meca_py)

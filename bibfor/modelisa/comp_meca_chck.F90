@@ -63,7 +63,8 @@ implicit none
 ! IO  info_comp_valk   : comportment informations (character)
 ! Out l_auto_elas      : .true. if at least one element use ELAS by default
 ! Out l_auto_deborst   : .true. if at least one element swap to Deborst algorithm
-! Out l_comp_erre      : .true. if at least one element use comportment on element doesn't support it
+! Out l_comp_erre      : .true. if at least one element use comportment on element 
+!                        doesn't support it
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -112,10 +113,10 @@ implicit none
 !
 ! ----- Get infos
 !
-        rela_comp = info_comp_valk(16*(iocc-1) + 1)
-        defo_comp = info_comp_valk(16*(iocc-1) + 2)
+        rela_comp   = info_comp_valk(16*(iocc-1) + 1)
+        defo_comp   = info_comp_valk(16*(iocc-1) + 2)
         kit_comp(1) = info_comp_valk(16*(iocc-1) + 5)
-        rela_thmc = kit_comp(1)
+        rela_thmc   = kit_comp(1)
 !
 ! ----- Detection of specific cases
 !
@@ -145,7 +146,6 @@ implicit none
                 call utmess('F', 'COMPOR1_59', si=iocc)
             endif
         endif
-!
         info_comp_valk(16*(iocc-1) + 4) = type_cpla
 !
 ! ----- Check comportment/deformation with Comportement.py
@@ -165,21 +165,21 @@ implicit none
 !
 ! ----- Check deformation with Comportement.py
 !
-        call nmdovd(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s,&
+        call nmdovd(model    , l_affe_all  , list_elem_affe, nb_elem_affe, full_elem_s,&
                     defo_comp, defo_comp_py)
 
 !
-! Check if COQUE_3D+GROT_GDEP is activated
+! ----- Check if COQUE_3D+GROT_GDEP is activated
 !
-       call dismoi('EXI_COQ3D', model, 'MODELE', repk=repons)
-       if ( (repons .eq. 'OUI') .and. (defo_comp .eq. 'GROT_GDEP') ) then
-          texte(1) = defo_comp
-          texte(2) = 'COQUE_3D'
-          call utmess('A', 'COMPOR1_47', nk = 2, valk = texte)
-       endif
-
-       call lcdiscard(rela_comp_py)
-       call lcdiscard(defo_comp_py)
+        call dismoi('EXI_COQ3D', model, 'MODELE', repk=repons)
+        if ( (repons .eq. 'OUI') .and. (defo_comp .eq. 'GROT_GDEP') ) then
+            texte(1) = defo_comp
+            texte(2) = 'COQUE_3D'
+            call utmess('A', 'COMPOR1_47', nk = 2, valk = texte)
+        endif
+!
+        call lcdiscard(rela_comp_py)
+        call lcdiscard(defo_comp_py)
     end do
 !
 end subroutine

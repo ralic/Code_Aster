@@ -1,6 +1,6 @@
-subroutine cg_kit_nvar(rela_cg, nb_vari_cg)
+subroutine cg_kit_nvar(rela_comp_cg, nb_vari_cg)
 !
-    implicit none
+implicit none
 !
 #include "jeveux.h"
 #include "asterc/lccree.h"
@@ -23,8 +23,9 @@ subroutine cg_kit_nvar(rela_cg, nb_vari_cg)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=16), intent(in) :: rela_cg(2)
+    character(len=16), intent(in) :: rela_comp_cg(2)
     integer, intent(out) :: nb_vari_cg(2)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -35,6 +36,8 @@ subroutine cg_kit_nvar(rela_cg, nb_vari_cg)
 !
 ! --------------------------------------------------------------------------------------------------
 !
+! In  rela_comp_cg     : relations for KIT_CG
+! Out nb_vari_cg       : number of internal variables for KIT_CG
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -45,11 +48,10 @@ subroutine cg_kit_nvar(rela_cg, nb_vari_cg)
 !
     nb_vari_cg(1) = 0
     nb_vari_cg(2) = 0
-!
-    call lccree(1, rela_cg(1), rela_py)
+    call lccree(1, rela_comp_cg(1), rela_py)
     call lcinfo(rela_py, ibid, nb_vari_cg(1))
     call lcdiscard(rela_py)
-    call lccree(1, rela_cg(2), rela_py)
+    call lccree(1, rela_comp_cg(2), rela_py)
     call lcinfo(rela_py, ibid, nb_vari_cg(2))
     call lcdiscard(rela_py)
 !

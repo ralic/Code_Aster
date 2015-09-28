@@ -1,7 +1,7 @@
-subroutine ddi_kit_nvar(rela_flua, rela_plas, rela_cpla, rela_coup, nb_vari_flua, &
+subroutine ddi_kit_nvar(rela_flua   , rela_plas   , rela_cpla   , rela_coup, nb_vari_flua,&
                         nb_vari_plas, nb_vari_cpla, nb_vari_coup)
 !
-    implicit none
+implicit none
 !
 #include "jeveux.h"
 #include "asterc/lccree.h"
@@ -24,6 +24,7 @@ subroutine ddi_kit_nvar(rela_flua, rela_plas, rela_cpla, rela_coup, nb_vari_flua
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=16), intent(in) :: rela_flua
     character(len=16), intent(in) :: rela_plas
@@ -42,14 +43,14 @@ subroutine ddi_kit_nvar(rela_flua, rela_plas, rela_cpla, rela_coup, nb_vari_flua
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  rela_flua    : relation for fluage
-! In  rela_plas    : relation for plasticity
-! In  rela_cpla    : relation for plane stress (GLRC)
-! In  rela_coup    : relation for coupling (GLRC)
-! Out nb_vari_flua : number of internal variables for fluage
-! Out nb_vari_plas : number of internal variables for plasticity
-! Out nb_vari_cpla : number of internal variables for plane stress
-! Out nb_vari_coup : number of internal variables for coupling
+! In  rela_flua        : relation for creeping
+! In  rela_plas        : relation for plasticity
+! In  rela_cpla        : relation for plane stress (GLRC)
+! In  rela_coup        : relation for coupling (GLRC)
+! Out nb_vari_flua     : number of internal variables for creeping
+! Out nb_vari_plas     : number of internal variables for plasticity
+! Out nb_vari_cpla     : number of internal variables for plane stress
+! Out nb_vari_coup     : number of internal variables for coupling
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -62,7 +63,6 @@ subroutine ddi_kit_nvar(rela_flua, rela_plas, rela_cpla, rela_coup, nb_vari_flua
     nb_vari_plas = 0
     nb_vari_cpla = 0
     nb_vari_coup = 0
-!
     if (rela_flua .ne. ' ') then
         call lccree(1, rela_flua, rela_py)
         call lcinfo(rela_py, ibid, nb_vari_flua)

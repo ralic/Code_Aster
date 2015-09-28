@@ -1,7 +1,7 @@
-subroutine comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp, comp_code_py,&
-                          rela_code_py, meta_code_py)
+subroutine comp_meca_code(rela_comp   , defo_comp   , type_cpla, kit_comp, defo_comp_py,&
+                          rela_comp_py, rela_meta_py)
 !
-    implicit none
+implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -31,9 +31,9 @@ subroutine comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp, comp_code_p
     character(len=16), intent(in) :: defo_comp
     character(len=16), intent(in) :: type_cpla
     character(len=16), intent(in) :: kit_comp(9)
-    character(len=16), intent(out) :: comp_code_py
-    character(len=16), intent(out) :: rela_code_py
-    character(len=16), intent(out) :: meta_code_py
+    character(len=16), intent(out) :: defo_comp_py
+    character(len=16), intent(out) :: rela_comp_py
+    character(len=16), intent(out) :: rela_meta_py
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -43,31 +43,26 @@ subroutine comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp, comp_code_p
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  rela_comp    : RELATION comportment
-! In  defo_comp    : DEFORMATION comportment
-! In  type_cpla    : plane stress method
-! In  kit_comp     : KIT comportment
-! In  l_matr_tgsc  : .true. if modified matrix
-! In  l_crit_rupt  : .true. if damage post-treatment
-! In  l_kit_meta   : .true. if metallurgy
-! Out comp_code_py : composite coded comportment (coding in Python)
-! Out rela_code_py : coded comportment for RELATION (coding in Python)
-! Out meta_code_py : coded comportment for metallurgy (coding in Python)
+! In  rela_comp        : RELATION comportment
+! In  defo_comp        : DEFORMATION comportment
+! In  type_cpla        : plane stress method
+! In  kit_comp         : KIT comportment
+! Out defo_comp_py     : composite coded comportment (coding in Python)
+! Out rela_comp_py     : coded comportment for RELATION (coding in Python)
+! Out rela_meta_py     : coded comportment for metallurgy (coding in Python)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_comp_elem, ikit, icomp, imeca
+    integer :: nb_comp_elem, ikit, imeca
     character(len=16) :: comp_elem(20), rela_meta, rela_meca
     aster_logical :: l_kit_meta, l_kit_thm
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nb_comp_elem = 0
-    do icomp = 1, 20
-        comp_elem(icomp) = 'VIDE'
-    enddo
+    nb_comp_elem    = 0
+    comp_elem(1:20) = 'VIDE'
     call comp_meca_l(rela_comp, 'KIT_META', l_kit_meta)
-    call comp_meca_l(rela_comp, 'KIT_THM', l_kit_thm)
+    call comp_meca_l(rela_comp, 'KIT_THM' , l_kit_thm)
 !
 ! - Create composite comportment
 !
@@ -84,8 +79,9 @@ subroutine comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp, comp_code_p
     enddo
 !
 ! - Reorder THM behaviours
+!
     if (l_kit_thm) then
-        imeca = nb_comp_elem - 9 + 1
+        imeca     = nb_comp_elem - 9 + 1
         rela_meca = comp_elem(imeca + 3)
         do ikit = 3, 1, -1
             comp_elem(imeca + ikit) = comp_elem(imeca - 1 + ikit)
@@ -95,18 +91,18 @@ subroutine comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp, comp_code_p
 !
 ! - Coding metallurgy comportment
 !
-    meta_code_py = ' '
+    rela_meta_py = ' '
     if (l_kit_meta) then
         rela_meta = kit_comp(1)
-        call lccree(1, rela_meta, meta_code_py)
+        call lccree(1, rela_meta, rela_meta_py)
     endif
 !
 ! - Coding RELATION comportment
 !
-    call lccree(1, rela_comp, rela_code_py)
+    call lccree(1, rela_comp, rela_comp_py)
 !
 ! - Coding composite comportment (Python)
 !
-    call lccree(nb_comp_elem, comp_elem, comp_code_py)
+    call lccree(nb_comp_elem, comp_elem, defo_comp_py)
 !
 end subroutine

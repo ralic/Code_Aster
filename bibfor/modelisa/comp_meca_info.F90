@@ -1,6 +1,6 @@
 subroutine comp_meca_info(p_info_comp_valk, p_info_comp_vali, p_info_comp_nvar, nbocc_compor)
 !
-    implicit none
+implicit none
 !
 #include "asterc/getfac.h"
 #include "asterfort/as_allocate.h"
@@ -63,7 +63,7 @@ subroutine comp_meca_info(p_info_comp_valk, p_info_comp_vali, p_info_comp_nvar, 
 ! - Create comportment informations objects
 !
     AS_ALLOCATE(vk16 = p_info_comp_valk, size = 16*nb_info_comp)
-    AS_ALLOCATE(vi   = p_info_comp_vali, size = 2*nb_info_comp )
+    AS_ALLOCATE(vi   = p_info_comp_vali, size = nb_info_comp )
     AS_ALLOCATE(vi   = p_info_comp_nvar, size = 10*nb_info_comp)
 !
 ! - If nothing in COMPORTEMENT: all is elastic

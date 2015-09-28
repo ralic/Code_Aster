@@ -82,11 +82,11 @@ implicit none
     character(len=16), pointer :: v_compor_valv(:) => null()
     character(len=16) :: defo_comp, rela_comp, type_comp, type_cpla, mult_comp
     character(len=16) :: kit_comp(9), type_matg, post_iter
-    aster_logical :: l_cristal, l_umat, l_mfront, l_exte_comp
+    aster_logical :: l_cristal, l_umat, l_mfront
     aster_logical :: l_matr_tgsc, l_crit_rupt
     aster_logical :: l_pmf, l_is_pmf
     integer :: nume_comp, nb_vari, nb_vari_comp(9), elem_nume
-    integer :: nb_vari_exte, unit_comp
+    integer :: nb_vari_exte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -115,8 +115,7 @@ implicit none
 !
 ! ----- Get infos
 !
-        nb_vari_exte    = info_comp_vali(2*(iocc-1) + 1)
-        unit_comp       = info_comp_vali(2*(iocc-1) + 2)
+        nb_vari_exte    = info_comp_vali(1*(iocc-1) + 1)
         nume_comp       = info_comp_nvar(10*(iocc-1) + 1)
         nb_vari         = info_comp_nvar(10*(iocc-1) + 2)
         nb_vari_comp(1) = info_comp_nvar(10*(iocc-1) + 3)
@@ -145,7 +144,6 @@ implicit none
         call comp_meca_l(rela_comp, 'MATR_TGSC', l_matr_tgsc, type_matg = type_matg)
         call comp_meca_l(rela_comp, 'CRIT_RUPT', l_crit_rupt, post_iter = post_iter)
         call comp_meca_l(rela_comp, 'CRISTAL'  , l_cristal)
-        call comp_meca_l(rela_comp, 'EXTE_COMP', l_exte_comp)
         call comp_meca_l(rela_comp, 'UMAT'     , l_umat)
         call comp_meca_l(rela_comp, 'MFRONT'   , l_mfront)
 !
@@ -197,18 +195,14 @@ implicit none
         if (.not.l_pmf) then
             write (v_compor_valv(6),'(I16)') nume_comp
         endif
-        if (l_cristal) then
-            v_compor_valv(7) = mult_comp
-        else
-            write (v_compor_valv(7),'(I16)') unit_comp
-        endif
+        v_compor_valv(7) = mult_comp
         v_compor_valv(8) = kit_comp(1)
         v_compor_valv(9) = kit_comp(2)
         v_compor_valv(10) = kit_comp(3)
         v_compor_valv(11) = kit_comp(4)
         write (v_compor_valv(12),'(I16)') iocc
-            v_compor_valv(13) = type_matg
-            v_compor_valv(14) = post_iter
+        v_compor_valv(13) = type_matg
+        v_compor_valv(14) = post_iter
         v_compor_valv(15) = kit_comp(8)
         v_compor_valv(16) = kit_comp(9)
         write (v_compor_valv(17),'(I16)') nb_vari_comp(1)

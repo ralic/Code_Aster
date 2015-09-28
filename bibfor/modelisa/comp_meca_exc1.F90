@@ -1,7 +1,7 @@
-subroutine comp_meca_exc1(defo_comp, mult_comp, nb_vari_exte, l_kit_meta, l_cristal,&
+subroutine comp_meca_exc1(defo_comp  , mult_comp, nb_vari_exte, l_kit_meta, l_cristal,&
                           l_exte_comp, nb_vari)
 !
-    implicit none
+implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -42,13 +42,13 @@ subroutine comp_meca_exc1(defo_comp, mult_comp, nb_vari_exte, l_kit_meta, l_cris
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  defo_comp    : DEFORMATION comportment
-! In  mult_comp    : *CRISTAL comportment
-! In  nb_vari_exte : number of internal variable if external computing for comportment
-! In  l_kit_meta   : .true. if metallurgy
-! In  l_cristal    : .true. if *CRISTAL comportment
-! In  l_exte_comp  : .true. if external computing for comportment
-! I&O nb_vari      : number of internal variables
+! In  defo_comp        : DEFORMATION comportment
+! In  mult_comp        : *CRISTAL comportment
+! In  nb_vari_exte     : number of internal variable if external computing for comportment
+! In  l_kit_meta       : .true. if metallurgy
+! In  l_cristal        : .true. if *CRISTAL comportment
+! In  l_exte_comp      : .true. if external computing for comportment
+! I&O nb_vari          : number of internal variables
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -62,8 +62,12 @@ subroutine comp_meca_exc1(defo_comp, mult_comp, nb_vari_exte, l_kit_meta, l_cris
 ! - KIT META
 !
     if (l_kit_meta) then
-        if (defo_comp .eq. 'SIMO_MIEHE') nb_vari = nb_vari + 1
-        if (defo_comp .eq. 'GDEF_LOG') nb_vari = nb_vari + 6
+        if (defo_comp .eq. 'SIMO_MIEHE') then
+            nb_vari = nb_vari + 1
+        endif
+        if (defo_comp .eq. 'GDEF_LOG') then
+            nb_vari = nb_vari + 6
+        endif
     endif
 !
 ! - Multi comportment (*CRISTAL)
@@ -73,7 +77,9 @@ subroutine comp_meca_exc1(defo_comp, mult_comp, nb_vari_exte, l_kit_meta, l_cris
         call jeveuo(sdcomp//'.CPRI', 'L', vi=cpri)
         nb_vari_cris = cpri(3)
         nb_vari = nb_vari + nb_vari_cris
-        if (defo_comp .eq. 'SIMO_MIEHE') nb_vari = nb_vari + 3 + 9
+        if (defo_comp .eq. 'SIMO_MIEHE') then
+            nb_vari = nb_vari + 3 + 9
+        endif
     endif
 !
 ! - External comportment (UMAT/MFRONT)

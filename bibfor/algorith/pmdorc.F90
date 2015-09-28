@@ -1,6 +1,6 @@
 subroutine pmdorc(compor, carcri, nb_vari, incela)
 !
-    implicit none
+implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/as_deallocate.h"
@@ -38,7 +38,7 @@ subroutine pmdorc(compor, carcri, nb_vari, incela)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: jean-michel.proix at edf.fr
+! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=16), intent(out) :: compor(20)
     real(kind=8), intent(out) :: carcri(21)
@@ -60,7 +60,7 @@ subroutine pmdorc(compor, carcri, nb_vari, incela)
 !
     integer, parameter :: carsiz=20
     character(len=19) :: list_vari_name
-    integer :: iocc, unit_comp, i, nume_comp, nbocc_compor, nbocc_carcri
+    integer :: iocc, i, nume_comp, nbocc_compor, nbocc_carcri
     integer :: nbocc1, nbocc2, nbocc3
     character(len=16) :: keywordfact
     character(len=16) :: rela_comp, algo_inte, type_matg, post_iter, defo_comp, type_comp
@@ -111,7 +111,6 @@ subroutine pmdorc(compor, carcri, nb_vari, incela)
     iocc = 1
     nb_vari = p_info_comp_nvar(10*(iocc-1) + 2)
     nume_comp = p_info_comp_nvar(10*(iocc-1) + 1)
-    unit_comp = p_info_comp_vali(2*(iocc-1) + 2)
     rela_comp = p_info_comp_valk(16*(iocc-1) + 1)
     defo_comp = p_info_comp_valk(16*(iocc-1) + 2)
     type_comp = p_info_comp_valk(16*(iocc-1) + 3)
@@ -126,7 +125,7 @@ subroutine pmdorc(compor, carcri, nb_vari, incela)
     if (l_kit_thm) then
         call utmess('F', 'COMPOR2_7')
     endif
-!
+
     if (type_comp .eq. 'COMP_ELAS') then
         incela = 2
     else if (type_comp.eq.'COMP_INCR') then
@@ -140,11 +139,7 @@ subroutine pmdorc(compor, carcri, nb_vari, incela)
     compor(3) = defo_comp
     compor(4) = type_comp
     write (compor(6),'(I16)') nume_comp
-    if (l_cristal) then
-        compor(7) = mult_comp
-    else
-        write (compor(7),'(I16)') unit_comp
-    endif
+    compor(7) = mult_comp
     compor(8) = p_info_comp_valk(16*(iocc-1) + 5)
     compor(9) = p_info_comp_valk(16*(iocc-1) + 6)
     compor(10) = p_info_comp_valk(16*(iocc-1) + 7)

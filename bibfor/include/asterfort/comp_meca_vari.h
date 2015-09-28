@@ -16,7 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine comp_meca_vari(rela_comp   , defo_comp   , type_cpla   , nb_vari     , kit_comp    ,&
+    subroutine comp_meca_vari(rela_comp   , defo_comp   , type_cpla   , nb_vari     , kit_comp,&
                               mult_comp   , nb_vari_exte, nb_vari_comp, nume_comp   )
         character(len=16), intent(in) :: rela_comp
         character(len=16), intent(in) :: defo_comp

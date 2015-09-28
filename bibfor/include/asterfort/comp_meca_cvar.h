@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine comp_meca_cvar(info_comp_valk, info_comp_vali, info_comp_nvar)
-        character(len=16), intent(in) :: info_comp_valk(:)
-        integer          , intent(in) :: info_comp_vali(:)
-        integer          , intent(out) :: info_comp_nvar(:)
+    subroutine comp_meca_cvar(p_info_comp_valk, p_info_comp_vali, p_info_comp_nvar)
+        character(len=16), intent(in) :: p_info_comp_valk(:)
+        integer          , intent(in) :: p_info_comp_vali(:)
+        integer          , intent(out) :: p_info_comp_nvar(:)
     end subroutine comp_meca_cvar
 end interface

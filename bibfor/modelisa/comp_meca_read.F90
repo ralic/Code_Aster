@@ -1,7 +1,7 @@
 subroutine comp_meca_read(l_etat_init, info_comp_valk, info_comp_vali, &
                           model)
 !
-    implicit none
+implicit none
 !
 #include "asterf_types.h"
 #include "asterc/getexm.h"
@@ -54,16 +54,15 @@ subroutine comp_meca_read(l_etat_init, info_comp_valk, info_comp_vali, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! IO  info_comp_valk : comportment informations (character)
-! IO  info_comp_vali : comportment informations (integer)
-! In  l_etat_init    : .true. if initial state is defined
-! In  mesh           : name of mesh
-! In  model          : name of model
+! In  l_etat_init      : .true. if initial state is defined
+! IO  info_comp_valk   : comportment informations (character)
+! IO  info_comp_vali   : comportment informations (integer)
+! In  model            : name of model
 !
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16) :: keywordfact
-    integer :: iocc, ikit, nbocc, ndim
+    integer :: iocc, nbocc, ndim
     integer :: nb_vari_all
     character(len=16) :: defo_comp, rela_comp, type_cpla, mult_comp, type_comp
     character(len=16) :: type_matg, post_iter, nom_mod_mfront
@@ -84,18 +83,16 @@ subroutine comp_meca_read(l_etat_init, info_comp_valk, info_comp_vali, &
 ! - Read informations
 !
     do iocc = 1, nbocc
-        nb_vari_exte = 0
-        unit_comp    = 0
-        rela_comp    = 'VIDE'
-        defo_comp    = 'VIDE'
-        mult_comp    = ' '
-        type_cpla    = 'VIDE'
-        libr_name    = ' '
-        type_matg    = ' '
-        post_iter    = ' '
-        do ikit = 1, 9
-            kit_comp(ikit) = 'VIDE'
-        enddo
+        nb_vari_exte  = 0
+        unit_comp     = 0
+        rela_comp     = 'VIDE'
+        defo_comp     = 'VIDE'
+        mult_comp     = ' '
+        type_cpla     = 'VIDE'
+        libr_name     = ' '
+        type_matg     = ' '
+        post_iter     = ' '
+        kit_comp(1:9) = 'VIDE'
 !
 ! ----- Get RELATION from command file
 !
@@ -142,19 +139,21 @@ subroutine comp_meca_read(l_etat_init, info_comp_valk, info_comp_vali, &
 !
         if (l_kit) then
             call comp_meca_rkit(keywordfact, iocc, rela_comp, kit_comp)
-
             if (kit_comp(4).eq.'MFRONT') then
-                l_mfront=.true.
+                l_mfront = .true.
             endif
         endif
 !
-! ----- Get external program
+! ----- Get external program - UMAT
 !
         if (l_umat) then
             call getvis(keywordfact, 'NB_VARI', iocc = iocc, scal = nb_vari_exte)
             call getvtx(keywordfact, 'LIBRAIRIE', iocc = iocc, scal = libr_name)
             call getvtx(keywordfact, 'NOM_ROUTINE', iocc = iocc, scal = subr_name)
         endif
+!
+! ----- Get external program - MFRONT
+!
         if (l_mfront) then
             if (l_mfront_offi) then
                 call mfront_get_libname(libr_name)
@@ -172,7 +171,9 @@ subroutine comp_meca_read(l_etat_init, info_comp_valk, info_comp_vali, &
                 call comp_meca_mod(keywordfact, iocc, model, ndim, nom_mod_mfront)
             endif
             call mfront_get_nbvari(libr_name, subr_name, nom_mod_mfront, ndim, nb_vari_exte)
-            if ( nb_vari_exte.eq.0 ) nb_vari_exte = 1
+            if ( nb_vari_exte.eq.0 ) then
+                nb_vari_exte = 1
+            endif
         endif
 !
 ! ----- Select type of comportment (incremental or total)
@@ -197,8 +198,7 @@ subroutine comp_meca_read(l_etat_init, info_comp_valk, info_comp_vali, &
         info_comp_valk(16*(iocc-1) + 14) = mult_comp
         info_comp_valk(16*(iocc-1) + 15) = type_matg
         info_comp_valk(16*(iocc-1) + 16) = post_iter
-        info_comp_vali(2*(iocc-1)  + 1)  = nb_vari_exte
-        info_comp_vali(2*(iocc-1)  + 2)  = unit_comp
+        info_comp_vali(1*(iocc-1)  + 1)  = nb_vari_exte
     end do
 !
 end subroutine

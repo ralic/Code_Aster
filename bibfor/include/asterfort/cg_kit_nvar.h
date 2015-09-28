@@ -16,8 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cg_kit_nvar(rela_cg, nb_vari_cg)
-        character(len=16), intent(in) :: rela_cg(2)
+    subroutine cg_kit_nvar(rela_comp_cg, nb_vari_cg)
+        character(len=16), intent(in) :: rela_comp_cg(2)
         integer, intent(out) :: nb_vari_cg(2)
     end subroutine cg_kit_nvar
 end interface

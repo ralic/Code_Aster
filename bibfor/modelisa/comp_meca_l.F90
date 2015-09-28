@@ -1,6 +1,6 @@
 recursive subroutine comp_meca_l(rela_comp, whatz, l_detec, type_matg, post_iter)
 !
-    implicit none
+implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"

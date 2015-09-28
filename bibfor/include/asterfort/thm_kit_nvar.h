@@ -16,7 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine thm_kit_nvar(rela_thmc, rela_hydr, rela_meca, rela_ther, nb_vari_thmc, &
+    subroutine thm_kit_nvar(rela_thmc   , rela_hydr   , rela_meca   , rela_ther, nb_vari_thmc,&
                             nb_vari_hydr, nb_vari_meca, nb_vari_ther)
         character(len=16), intent(in) :: rela_thmc
         character(len=16), intent(in) :: rela_hydr
