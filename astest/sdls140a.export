@@ -1,10 +1,10 @@
-P time_limit 120
+P time_limit 100
 P memory_limit 512
 P ncpus 1
 P mpi_nbcpu 1
 P mpi_nbnoeud 1
 P testlist verification sequential
 
-F comm sdlv121a.comm D 1
-F mmed sdlv121a.mmed D 20
-F libr sdlv121a.11 D 11
+F comm sdls140a.comm D 1
+F mmed sdls140a.mmed D 20
+F libr sdls140a.28 D 28

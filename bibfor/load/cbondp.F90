@@ -60,8 +60,8 @@ subroutine cbondp(load, mesh, ndim, vale_type)
     real(kind=8) :: r8dummy
     character(len=8) :: k8dummy
     character(len=16) :: k16dummy
-    real(kind=8) :: wave_dire(3), wave_type_r
-    character(len=8) :: signal
+    real(kind=8) :: wave_dire(3), wave_type_r, dist
+    character(len=8) :: signal, signde
     character(len=16) :: wave_type
     integer :: jvalv
     integer :: iocc, ndir, val_nb, nondp, codret
@@ -107,12 +107,19 @@ subroutine cbondp(load, mesh, ndim, vale_type)
             call char_read_val(keywordfact, iocc, 'FONC_SIGNAL', 'FONC', val_nb,&
                                r8dummy, signal, c16dummy, k16dummy)
             ASSERT(val_nb.eq.1)
+            call char_read_val(keywordfact, iocc, 'DEPL_IMPO', 'FONC', val_nb,&
+                               r8dummy, signde, c16dummy, k16dummy)
+           if (val_nb .ne. 1) then
+               signde = '&FOZERO'
+            endif
+            write(6,*) 'signde =',signde
 !
 ! --------- Affectation of values in <CARTE> - Wave function
 !
             call jeveuo(carte(1)//'.VALV', 'E', jvalv)
-            nb_cmp = 1
+            nb_cmp = 2
             zk8(jvalv-1+1) = signal
+            zk8(jvalv-1+2) = signde
             call nocart(carte(1), 3, nb_cmp, mode='NUM', nma=nb_elem,&
                         limanu=zi(j_elem))
 !
@@ -158,14 +165,20 @@ subroutine cbondp(load, mesh, ndim, vale_type)
                 ASSERT(.false.)
             endif
 !
+! --------- Get distance
+!
+            dist = 0.d0
+            call getvr8(keywordfact, 'DIST', iocc=iocc, scal=dist)
+!
 ! --------- Affectation of values in <CARTE> - Wave type and direction
 !
             call jeveuo(carte(2)//'.VALV', 'E', jvalv)
-            nb_cmp = 4
+            nb_cmp = 5
             zr(jvalv-1+1) = wave_dire(1)
             zr(jvalv-1+2) = wave_dire(2)
             zr(jvalv-1+3) = wave_dire(3)
             zr(jvalv-1+4) = wave_type_r
+            zr(jvalv-1+5) = dist
             call nocart(carte(2), 3, nb_cmp, mode='NUM', nma=nb_elem,&
                         limanu=zi(j_elem))
         endif

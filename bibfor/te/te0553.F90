@@ -36,11 +36,11 @@ subroutine te0553(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 !
-    character(len=16) :: nomres(3)
+    character(len=16) :: nomres(5)
     character(len=8) ::  fami, poum
-    integer :: icodre(3), kpg, spt
-    real(kind=8) :: poids, nx, ny, valres(3), e, nu, lambda, mu
-    real(kind=8) :: rhocp, rhocs
+    integer :: icodre(5), kpg, spt
+    real(kind=8) :: poids, nx, ny, valres(5), e, nu, lambda, mu
+    real(kind=8) :: rhocp, rhocs, l0, usl0
     real(kind=8) :: rho, taux, tauy, nux, nuy, scal, vnx, vny, vtx, vty
     real(kind=8) :: vituni(2, 2), vect(3, 2, 6), matr(6, 6), jac
     integer :: nno, kp, npg, ipoids, ivf, idfde, igeom
@@ -62,22 +62,35 @@ subroutine te0553(option, nomte)
     nomres(1) = 'E'
     nomres(2) = 'NU'
     nomres(3) = 'RHO'
+    nomres(4) = 'LONG_CARA'
+    nomres(5) = 'COEF_AMOR'
     fami='FPG1'
     kpg=1
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, mater,&
                 ' ', 'ELAS', 0, ' ', [0.d0],&
-                3, nomres, valres, icodre, 1)
+                5, nomres, valres, icodre, 1)
 !
     e = valres(1)
     nu = valres(2)
     rho = valres(3)
+    l0 = valres(4)
+    if (l0 .lt. 1.d-2) then
+      usl0= 0.d0
+    else
+      usl0=1.d0/l0
+    endif
     lambda = e*nu/ (1.d0+nu)/ (1.d0-2.d0*nu)
     mu = e/2.d0/ (1.d0+nu)
 !
-    rhocp = sqrt((lambda+2.d0*mu)*rho)
-    rhocs = sqrt(mu*rho)
+    if (option .eq. 'AMOR_MECA') then
+      rhocp = valres(5)*sqrt((lambda+2.d0*mu)*rho)
+      rhocs = valres(5)*sqrt(mu*rho)
+    else
+      rhocp = (lambda+2.d0*mu)*usl0
+      rhocs = mu*usl0
+    endif
 !
 !     VITESSE UNITAIRE DANS LES 3 DIRECTIONS
 !
@@ -86,10 +99,12 @@ subroutine te0553(option, nomte)
     vituni(2,1) = 0.d0
     vituni(2,2) = 1.d0
     do 10 i = 1, nno
-        do 10 j = 1, 2
-            do 10 k = 1, 2*nno
+        do 11 j = 1, 2
+            do 12 k = 1, 2*nno
                 vect(i,j,k) = 0.d0
-10          continue
+12          continue
+11      continue
+10  continue
 !
 !    BOUCLE SUR LES POINTS DE GAUSS
 !
@@ -107,8 +122,8 @@ subroutine te0553(option, nomte)
 !        --- CALCUL DE V.N ---
 !
         scal = 0.d0
-        do 40 i = 1, nno
-            do 40 j = 1, 2
+        do 41 i = 1, nno
+            do 42 j = 1, 2
                 scal = nux*zr(ivf+k+i-1)*vituni(j,1)
                 scal = scal + nuy*zr(ivf+k+i-1)*vituni(j,2)
 !
@@ -128,25 +143,31 @@ subroutine te0553(option, nomte)
 !
 !        --- CALCUL DU VECTEUR ELEMENTAIRE
 !
-                do 40 l = 1, nno
+                do 43 l = 1, nno
                     ll = 2*l - 1
                     vect(i,j,ll) = vect(i,j,ll) + taux*zr(ivf+k+l-1)* poids
                     vect(i,j,ll+1)=vect(i,j,ll+1)+tauy*zr(ivf+k+l-1)*&
                     poids
-40              continue
+43              continue
+42          continue
+41      continue
+40  continue
 !
     do 80 i = 1, nno
-        do 80 j = 1, 2
-            do 80 k = 1, 2*nno
+        do 81 j = 1, 2
+            do 82 k = 1, 2*nno
                 matr(2* (i-1)+j,k) = vect(i,j,k)
-80          continue
+82          continue
+81      continue
+80  continue
 !
 !       --- PASSAGE AU STOCKAGE TRIANGULAIRE
 !
     do 100 i = 1, 2*nno
-        do 100 j = 1, i
+        do 101 j = 1, i
             ij = (i-1)*i/2 + j
             zr(imatuu+ij-1) = matr(i,j)
-100      continue
+101     continue
+100 continue
 !
 end subroutine

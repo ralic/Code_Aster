@@ -82,6 +82,8 @@ MAIL = DEFI_GROUP(reuse=MAIL,
                                _F(NOM='LATHD',
                                   DIFFE=('LAT_RIGH','HA10'))));
 
+IMPR_RESU(RESU=_F(MAILLAGE=MAIL,));
+
 list_group_ma=['ELEM'+str(n) for n in range(nbcouche)];
 
 print '>> list_group_ma=',list_group_ma
@@ -190,6 +192,7 @@ ONDE=AFFE_CHAR_MECA_F(MODELE=MODELE,INFO=2,
                       ONDE_PLANE=_F(DIRECTION = (0., 1., 0. ),
                             TYPE_ONDE = Onde,
                             FONC_SIGNAL = vite,
+                            DIST=-5.0,
                             #GROUP_MA= 'BAS',
                             MAILLE='M128'));
 # ---Fin
@@ -207,9 +210,15 @@ UBID=STAT_NON_LINE(MODELE=MODELE,
                  CHAM_MATER=CHAMPMAT,
                  EXCIT=(_F(CHARGE = LIAISON),
                         _F(CHARGE = PES)),
-                 COMPORTEMENT=(_F(RELATION = 'KIT_HM',
+                 COMPORTEMENT=(
+                             _F(RELATION='ELAS',TOUT='OUI'),
+                             _F(RELATION = 'KIT_HM',
                                 RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL'),
                                 GROUP_MA=list_group_ma),
+                              #_F(RELATION='ELAS',
+                              # DEFORMATION='PETIT',
+                              # GROUP_MA=Paraxia,
+                              # PARM_THETA=0.57)
                               ),
                  INCREMENT=_F(LIST_INST=TANBID),
                  NEWTON=_F(MATRICE='TANGENTE',
@@ -261,10 +270,16 @@ DYNB=STAT_NON_LINE(MODELE=MODELE,
                         _F(CHARGE = VFORCE0),
                         _F(CHARGE = LIAISON0),
                         _F(CHARGE = PES)),
-                 COMPORTEMENT=(_F(RELATION = 'KIT_HM',
+                 COMPORTEMENT=(
+                             _F(RELATION='ELAS',TOUT='OUI'),
+                             _F(RELATION = 'KIT_HM',
                                 RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL'),
                                 GROUP_MA=list_group_ma),
-                               ),
+                              #_F(RELATION='ELAS',
+                              # DEFORMATION='PETIT',
+                              # GROUP_MA=Paraxia,
+                              # PARM_THETA=0.57)
+                              ),
                  INCREMENT=_F(LIST_INST=TANBID),
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1),
@@ -303,10 +318,16 @@ DYNB=DYNA_NON_LINE(reuse=DYNB,INFO=1,MODELE=MODELE,
                           _F(CHARGE = ONDE)),
                    ETAT_INIT=_F(EVOL_NOLI=DYNB, INST=0.,
                                 VITE=INIZERO, ACCE=INIZERO),
-                   COMPORTEMENT=(_F(RELATION = 'KIT_HM',
+                 COMPORTEMENT=(
+                             _F(RELATION='ELAS',TOUT='OUI'),
+                             _F(RELATION = 'KIT_HM',
                                 RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL'),
                                 GROUP_MA=list_group_ma),
-                                ),
+                              #_F(RELATION='ELAS',
+                              # DEFORMATION='PETIT',
+                              # GROUP_MA=Paraxia,
+                              # PARM_THETA=0.57)
+                              ),
                    CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-10,
                                   ITER_GLOB_MAXI = 10,
                                   ARRET='OUI'),
@@ -316,6 +337,7 @@ DYNB=DYNA_NON_LINE(reuse=DYNB,INFO=1,MODELE=MODELE,
                    INCREMENT=_F(LIST_INST = TEMLI,
                                 INST_INIT = 0.,
                                 INST_FIN  = 0.18),
+                   #ARCHIVAGE=_F(LIST_INST = L_ARCH),
                    SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
                                    FORMULATION='DEPLACEMENT'));
 

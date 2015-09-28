@@ -43,6 +43,8 @@ MAIL=DEFI_GROUP( reuse=MAIL,   MAILLAGE=MAIL,CREA_GROUP_NO=(
                        _F( GROUP_MA = 'LIBR'))
                      )
 
+IMPR_RESU(RESU=_F(MAILLAGE=MAIL));
+
 MAT1=DEFI_MATERIAU( ELAS=_F(  E = 4.44E+8, RHO = 1900.,  NU = 0.48)
                     )
 
@@ -93,6 +95,7 @@ LIAISON=AFFE_CHAR_MECA(
 ONDE=AFFE_CHAR_MECA_F(  MODELE=MODELE,
 
                 ONDE_PLANE=_F( DIRECTION = (0., 1., 0.), TYPE_ONDE = 'S',
+                DIST=-50.,
                  FONC_SIGNAL = FONCT,GROUP_MA='ABSO'
                  ),
                          )

@@ -1,0 +1,274 @@
+# TITRE PROPAGATION 2D D'ONDES PLANES S/P DANS UN CANYON SEMI-CIRCULAIRE
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),);
+
+Esol = 18885000000;
+
+Nusol = 0.33;
+
+Msol = 2650.0;
+
+alpha = 1.0;
+
+beta=1.0 ;
+
+rb = 100;
+
+Gsol = (Esol / (2 * (1 + Nusol)));
+
+Lsol = ((Esol * Nusol) / ((1 + Nusol) * (1 - (2 * Nusol))));
+
+Ksol = (Esol / (3 * (1-2 * Nusol)));
+
+Cp = sqrt((Lsol+2*Gsol) / Msol);
+
+Cs = sqrt((Gsol / Msol));
+
+lcara=((1 + alpha) * 2) * rb
+
+mail0=LIRE_MAILLAGE(FORMAT='MED',);
+
+mail0=DEFI_GROUP(reuse =mail0,
+                MAILLAGE=mail0,
+                CREA_GROUP_NO=_F(GROUP_MA=('SURF','FOND_SS','FOND_RD','FOND_RG',),),);
+
+mail=CREA_MAILLAGE(MAILLAGE=mail0,
+                    CREA_POI1=(_F(NOM_GROUP_MA='SD_RD',
+                                  GROUP_MA='FOND_RD',),
+                               _F(NOM_GROUP_MA='SD_RG',
+                                  GROUP_MA='FOND_RG',),
+                               _F(NOM_GROUP_MA='SD_SS',
+                                  GROUP_MA='FOND_SS',),
+                  ),);
+        
+mail=DEFI_GROUP(reuse =mail,
+                MAILLAGE=mail,
+                CREA_GROUP_NO=_F(NOM='LSURF',NOEUD=('N23','N22','N21','N20',
+        'N19','N18','N17','N16','N15','N14','N13','N12','N11',
+        'N10','N9','N8','N2','N39','N40','N41','N42','N43',
+        'N44','N45','N46','N47','N3'),),);
+        
+mail=DEFI_GROUP(reuse =mail,
+                MAILLAGE=mail,
+                CREA_GROUP_MA=_F(NOM='FOND',UNION=('FOND_SS','FOND_RD','FOND_RG',),),);
+               
+                
+mail=MODI_MAILLAGE(reuse =mail,
+                MAILLAGE=mail,
+                ORIE_PEAU_2D=_F(GROUP_MA='FOND',GROUP_MA_SURF='FONDAT',),
+                );
+    
+
+sol=DEFI_MATERIAU(ELAS=_F(E=Esol,
+                          NU=Nusol,
+                          RHO=Msol,),);
+              
+sol1=DEFI_MATERIAU(ELAS=_F(E=Esol,
+                          NU=Nusol,
+                          RHO=Msol,
+              #LONG_CARA=lcara,
+              #COEF_AMOR=beta,
+              ),);
+              
+sol2=DEFI_MATERIAU(ELAS=_F(E=Esol,
+                          NU=Nusol,
+                          RHO=Msol,
+              LONG_CARA=lcara,
+              COEF_AMOR=beta,
+              ),);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=mail,
+                    AFFE=(_F(TOUT='OUI',
+                            MATER=sol,),
+              _F(GROUP_MA=('FOND_SS',),
+                            MATER=sol1,),
+              _F(GROUP_MA=('FOND_RG','FOND_RD',),
+                            MATER=sol2,),
+              ),
+           );
+
+MODELE=AFFE_MODELE(MAILLAGE=mail,
+                   AFFE=(_F(GROUP_MA=('FONDAT',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='D_PLAN',),
+            _F(GROUP_MA=('FOND_SS','FOND_RG','FOND_RD',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='D_PLAN_ABSO',),
+             ),
+              );
+
+ASSEMBLAGE(MODELE=MODELE,
+           CHAM_MATER=CHMAT,
+           NUME_DDL=CO('NUMEDDL'),
+           MATR_ASSE=(_F(MATRICE=CO('RIGI'),
+                         OPTION='RIGI_MECA',),
+                      _F(MATRICE=CO('MASSE'),
+                         OPTION='MASS_MECA',),
+                      _F(MATRICE=CO('AMOR'),
+                         OPTION='AMOR_MECA',),),);
+
+INCLUDE(UNITE=28,);
+
+d_sinus=CALC_FONCTION(DERIVE=_F(FONCTION=sinus,),PROL_GAUCHE= 'CONSTANT',
+                      PROL_DROITE= 'CONSTANT',);
+
+LINST=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=_F(JUSQU_A=1.0,
+                                   PAS=0.005,),);
+
+ONDES=AFFE_CHAR_MECA_F(MODELE=MODELE,
+                       ONDE_PLANE=_F(DIRECTION=(0.0,-1.0,0),
+                                     TYPE_ONDE='S',
+                                     FONC_SIGNAL=d_sinus,
+                                     DIST=-200.,
+                                     DEPL_IMPO=sinus,
+                                     GROUP_MA='FOND',
+                                     ),
+                      );
+                         
+
+ONDEP=AFFE_CHAR_MECA_F(MODELE=MODELE,
+                       ONDE_PLANE=_F(DIRECTION=(0.0,-1.0,0),
+                                     TYPE_ONDE='P',
+                                     FONC_SIGNAL=d_sinus,
+                                     DIST=-200.,
+                                     DEPL_IMPO=sinus,
+                                     GROUP_MA='FOND',
+                                     ),);
+
+# 3 Calculs harmoniques pour les deux directions
+#------------------------------------------------------------------
+
+BlancP=DYNA_VIBRA(BASE_CALCUL='PHYS',
+                  TYPE_CALCUL='TRAN',
+                  MODELE=MODELE,
+                  CHAM_MATER=CHMAT,
+                  MATR_MASS=MASSE,
+                  MATR_RIGI=RIGI,
+                  MATR_AMOR=AMOR,
+                  SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
+                  INCREMENT=_F(LIST_INST=LINST,),
+                  EXCIT=_F(CHARGE=ONDEP,),);
+
+LINST2=DEFI_LIST_REEL(DEBUT=0.5,
+                      INTERVALLE=_F(JUSQU_A=1.0,
+                                    PAS=0.005,),);
+
+maxP=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                OPERATION='EXTR',
+                RESULTAT=BlancP,
+                NOM_CHAM='DEPL',
+                TYPE_MAXI='MAXI',
+                TYPE_RESU='VALE',
+                LIST_INST=LINST,);
+
+TEST_RESU(
+          CHAM_NO=(
+                   _F(CHAM_GD=maxP,
+                      NOM_CMP='DY',
+                      NOEUD='N23',
+                      VALE_CALC=3.05870012404374E+00,
+                      ),
+                   _F(CHAM_GD=maxP,
+                      NOM_CMP='DX',
+                      NOEUD='N2',
+                      VALE_CALC=2.46509821457566E-01,
+                      ),
+                   _F(CHAM_GD=maxP,
+                      NOM_CMP='DY',
+                      NOEUD='N2',
+                      VALE_CALC=3.07300010464406E+00,
+                      ),
+                   _F(CHAM_GD=maxP,
+                      NOM_CMP='DX',
+                      NOEUD='N3',
+                      VALE_CALC=9.23345406875996E-01,
+                      ),
+                   _F(CHAM_GD=maxP,
+                      NOM_CMP='DY',
+                      NOEUD='N3',
+                      VALE_CALC=1.29478631178932E+00,
+                      ),                      
+                  ),                  
+           );
+                  
+IMPR_RESU(#UNITE=27,
+          RESU=_F(CHAM_GD=maxP,
+                  NOM_CMP=('DX','DY',),
+                  GROUP_NO='LSURF',
+                  IMPR_COOR='OUI',),);
+
+BlancS=DYNA_VIBRA(BASE_CALCUL='PHYS',
+                  TYPE_CALCUL='TRAN',
+                  MODELE=MODELE,
+                  CHAM_MATER=CHMAT,
+                  MATR_MASS=MASSE,
+                  MATR_RIGI=RIGI,
+                  MATR_AMOR=AMOR,
+                  SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
+                  INCREMENT=_F(LIST_INST=LINST,),
+                  EXCIT=_F(CHARGE=ONDES,),);
+
+maxS=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                OPERATION='EXTR',
+                RESULTAT=BlancS,
+                NOM_CHAM='DEPL',
+                TYPE_MAXI='MAXI',
+                TYPE_RESU='VALE',
+                LIST_INST=LINST,);
+                
+TEST_RESU(
+          CHAM_NO=(
+                   _F(CHAM_GD=maxS,
+                      NOM_CMP='DX',
+                      NOEUD='N23',
+                      VALE_CALC=1.65920189907235E+00,
+                      ),
+                   _F(CHAM_GD=maxS,
+                      NOM_CMP='DX',
+                      NOEUD='N2',
+                      VALE_CALC=2.93640452908003E+00,
+                      ),
+                   _F(CHAM_GD=maxS,
+                      NOM_CMP='DY',
+                      NOEUD='N2',
+                      VALE_CALC=1.55017324733166E+00,
+                      ),
+                   _F(CHAM_GD=maxS,
+                      NOM_CMP='DX',
+                      NOEUD='N3',
+                      VALE_CALC=1.56254327439992E+00,
+                      ),
+                   _F(CHAM_GD=maxS,
+                      NOM_CMP='DY',
+                      NOEUD='N3',
+                      VALE_CALC=7.35586347558014E-01,
+                      ),                      
+                  ),                  
+           );
+
+IMPR_RESU(#UNITE=27,
+          RESU=_F(CHAM_GD=maxS,
+                  NOM_CMP=('DX','DY',),
+                  GROUP_NO='LSURF',
+                  IMPR_COOR='OUI',),);
+          
+
+FIN();
+#CHECKSUM:f950638f4b15c0cc2a3c5a312d5bb429  -:FIN CHECKSUM

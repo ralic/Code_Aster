@@ -42,20 +42,21 @@ subroutine te0499(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: fami, poum
-    character(len=16) :: nomres(3)
-    integer :: icodre(3), kpg, spt
+    character(len=16) :: nomres(5)
+    integer :: icodre(5), kpg, spt
     character(len=1) :: type
-    real(kind=8) :: poids, nx, ny, valres(3), e, nu, lambda, mu, cp, cs
+    real(kind=8) :: poids, nx, ny, valres(5), e, nu, lambda, mu, cp, cs
     real(kind=8) :: rho, taux, tauy, nux, nuy, scal
     real(kind=8) :: sigma(2, 2), epsi(2, 2), grad(2, 2)
-    real(kind=8) :: vondn(2), vondt(2)
+    real(kind=8) :: xgg(4), ygg(4), vondn(2), vondt(2), uondn(2), uondt(2)
     real(kind=8) :: taondx, taondy, norx, nory, dirx, diry, cele
     real(kind=8) :: trace, norm, jac
+    real(kind=8) :: param, h, instd, ris, rip, l0, usl0
     integer :: nno, kp, npg, ipoids, ivf, idfde, igeom
     integer :: ivectu, k, i, mater
     integer :: ier, ii, imate, indic1, indic2, iondc, ionde
     integer :: j, jgano, jinst, ndim, nnos
-    real(kind=8) :: coedir, typer, valfon
+    real(kind=8) :: coedir, typer, valfon, coedi2
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -71,6 +72,7 @@ subroutine te0499(option, nomte)
     call jevech('PTEMPSR', 'L', jinst)
     call jevech('PVECTUR', 'E', ivectu)
 !
+!
     if (zk8(ionde)(1:7) .eq. '&FOZERO') goto 99
 !
 !     --- INITIALISATION DE SIGMA
@@ -85,29 +87,40 @@ subroutine te0499(option, nomte)
     nomres(1) = 'E'
     nomres(2) = 'NU'
     nomres(3) = 'RHO'
+    nomres(4) = 'LONG_CARA'
+    nomres(5) = 'COEF_AMOR'
     fami='FPG1'
     kpg=1
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, mater,&
                 ' ', 'ELAS', 0, ' ', [0.d0],&
-                3, nomres, valres, icodre, 1)
+                5, nomres, valres, icodre, 1)
 !
     e = valres(1)
     if (e .lt. 1.d-1) goto 99
     nu = valres(2)
     rho = valres(3)
+    l0 = valres(4)
+    if (l0 .lt. 1.d-2) then
+      usl0= 0.d0
+    else
+      usl0=1.d0/l0
+    endif
     lambda = e*nu/ (1.d0+nu)/ (1.d0-2.d0*nu)
     mu = e/2.d0/ (1.d0+nu)
 !
     cp = sqrt((lambda+2.d0*mu)/rho)
     cs = sqrt(mu/rho)
+    rip = (lambda+2.d0*mu)*usl0
+    ris = mu*usl0
 !
 !     --- CARACTERISTIQUES DE L'ONDE PLANE
 !
     dirx =zr(iondc)
     diry =zr(iondc+1)
     typer=zr(iondc+3)
+    h = zr(iondc+4)
 !
     if (typer .eq. 0.d0) type = 'P'
     if (typer .eq. 1.d0) type = 'S'
@@ -122,21 +135,47 @@ subroutine te0499(option, nomte)
     norx = -diry
     nory = dirx
 !
+    do kp = 1, npg
+       xgg(kp)=0.d0
+       ygg(kp)=0.d0
+    enddo
+!
+!    write(6,*) 'npg=',npg,'nno=',nno
+    do kp = 1, npg
+       k = (kp-1)*nno
+       do i = 1, nno
+          ii = 2*i-1
+          xgg(kp)=xgg(kp)+zr(igeom+ii-1)*zr(ivf+k+i-1)
+          ygg(kp)=ygg(kp)+zr(igeom+ii)*zr(ivf+k+i-1)
+       enddo
+!      write(6,*) 'kp=',kp,'xgg=',xgg(kp),'ygg=',ygg(kp)
+    enddo
+!
     if (type .eq. 'P') then
         cele = cp
     else
         cele = cs
     endif
+!    write(6,*) 'cele=',cele
+!    write(6,*) 'inst=',zr(jinst)
+!    write(6,*) 'h=',h
 !
 !    BOUCLE SUR LES POINTS DE GAUSS
 !
     do kp = 1, npg
         k = (kp-1)*nno
 !
-!        --- CALCUL DU CHARGEMENT PAR ONDE PLANE
-!KH          ON SUPPOSE QU'ON RECUPERE UNE VITESSE
-        call fointe('F ', zk8(ionde), 1, 'INST', zr(jinst),&
-                    valfon, ier)
+!        CALCUL DU CHARGEMONT PAR ONDE PLANE
+        param=dirx*xgg(kp)+diry*ygg(kp)
+!        write(6,*) 'param av=',param
+        param = param -h
+!         write(6,*) 'param ap=',param
+        instd = zr(jinst) - param/cele
+        if (instd .lt. 0.d0) then
+          valfon = 0.d0
+        else
+          call fointe('F ', zk8(ionde), 1, 'INST', [instd], valfon, ier)
+        endif
 !
         valfon = -valfon/cele
 !        VALFON = VALFON/CELE
@@ -200,6 +239,7 @@ subroutine te0499(option, nomte)
         else
             coedir = -1.d0
         endif
+!        write(6,*) 'scal nux nuy coedir ',scal,nux,nuy,coedir
 !
 !        --- CALCUL DE V.N ---
 !
@@ -226,8 +266,34 @@ subroutine te0499(option, nomte)
 !
 !        --- CALCUL DU VECTEUR CONTRAINTE
 !
-        taux = -rho* (cp*vondn(1)+cs*vondt(1))
-        tauy = -rho* (cp*vondn(2)+cs*vondt(2))
+        taux = -rho* (cp*vondn(1)+cs*vondt(1))*valres(5)
+        tauy = -rho* (cp*vondn(2)+cs*vondt(2))*valres(5)
+!
+        if (zk8(ionde+1)(1:7) .eq. '&FOZERO') goto 98
+        uondt(1) = 0.d0
+        uondt(2) = 0.d0
+!
+        if (instd .lt. 0.d0) then
+          valfon = 0.d0
+        else
+          call fointe('F ', zk8(ionde+1), 1, 'INST', [instd], valfon, ier)
+        endif
+        if (type .eq. 'P') then
+            uondt(1) = valfon*dirx
+            uondt(2) = valfon*diry
+        else if (type.eq.'S') then
+            uondt(1) = valfon*norx
+            uondt(2) = valfon*nory
+        endif
+        scal = nux*uondt(1) + nuy*uondt(2)
+        uondn(1) = nux*scal
+        uondn(2) = nuy*scal
+        uondt(1) = uondt(1) - uondn(1)
+        uondt(2) = uondt(2) - uondn(2)
+!
+        taux = taux -(rip*uondn(1)+ris*uondt(1))
+        tauy = tauy -(rip*uondn(2)+ris*uondt(2))
+98      continue
 !
 !        --- CALCUL DU VECTEUR CONTRAINTE DU A UNE ONDE PLANE
 !
@@ -236,13 +302,18 @@ subroutine te0499(option, nomte)
 !
         taondy = sigma(2,1)*nux
         taondy = taondy + sigma(2,2)*nuy
+!        write(6,*) 'taux tauy taondx taondy ',taux, tauy, taondx, taondy
+!
+        coedi2 = coedir
+!        coedir = 1.d0
+!        coedir = 0.d0
 !
 !        --- CALCUL DU VECTEUR ELEMENTAIRE
 !
         do i = 1, nno
             ii = 2*i-1
             zr(ivectu+ii-1) = zr(ivectu+ii-1) + (taux+coedir*taondx)* zr(ivf+k+i-1)*poids
-            zr(ivectu+ii+1-1) = zr(ivectu+ii+1-1) + (tauy+coedir* taondy)*zr(ivf+k+i-1)*poids
+            zr(ivectu+ii+1-1) = zr(ivectu+ii+1-1) + (tauy+coedir*taondy)*zr(ivf+k+i-1)*poids
         enddo
 !
     enddo
