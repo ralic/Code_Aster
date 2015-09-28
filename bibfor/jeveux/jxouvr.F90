@@ -60,6 +60,6 @@ subroutine jxouvr(iclas, idn, mode)
     call get_jvbasename(nomfic(iclas)(1:4), idn, nom512)
     call opendr(nom512, mode_, ierr)
     if (ierr .ne. 0) then
-       call utmess('F', 'JEVEUX_43', sk=nombas(iclas), si=ierr)
+       call utmess('F', 'JEVEUX_43', sk=nom512(1:24), si=ierr)
     endif
 end subroutine

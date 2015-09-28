@@ -119,7 +119,7 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
     character(len=8) :: knom, knomf, kstin, kstou, cversb, cversu
     character(len=24) :: valk(3)
     integer :: ncar, itlec(1), itecr(1), iadadd(2), lgbl
-    integer :: vali(7), irt, ind
+    integer :: vali(7), irt, ind, iesup
     parameter      ( ncar = 12 )
 ! ----------------------------------------------------------------------
     aster_logical :: lenrg
@@ -506,7 +506,9 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
         nbenrg(ic) = min ( lfic(ic)/(longbl(ic)*lois) , nblma2 )
 !
 ! ----- NOUVEL OPEN DE LA BASE
-        nbext = (nbluti(ic)/nbenrg(ic))+1
+        iesup=1
+        if ( mod(nbluti(ic),nbenrg(ic)) .eq. 0 ) iesup=0
+        nbext = (nbluti(ic)/nbenrg(ic))+iesup
         do 100 k = 0, nbext-1
             call jxouvr(ic, k+1)
 100     continue
