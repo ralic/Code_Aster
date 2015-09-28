@@ -1,5 +1,5 @@
-subroutine comp_meca_save(model         , mesh          , chmate          , compor, nb_cmp,&
-                          info_comp_valk, info_comp_vali, info_comp_nvar)
+subroutine comp_meca_save(model         , mesh            , chmate          , compor, nb_cmp,&
+                          info_comp_valk, info_comp_nvar)
 !
 implicit none
 !
@@ -45,7 +45,6 @@ implicit none
     character(len=19), intent(in) :: compor
     integer, intent(in) :: nb_cmp
     character(len=16), intent(in) :: info_comp_valk(:)
-    integer, intent(in) :: info_comp_vali(:)
     integer, intent(in) :: info_comp_nvar(:)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -58,12 +57,11 @@ implicit none
 !
 ! In  model            : name of model
 ! In  mesh             : name of mesh
-! In  chmate           : name of material fi_elemd
+! In  chmate           : name of material field
 ! In  compor           : name of <CARTE> COMPOR
 ! In  nb_cmp           : number of components in <CARTE> COMPOR
-! In  info_comp_valk   : comportment informations (character)
-! In  info_comp_vali   : comportment informations (integer)
-! In  info_comp_nvar   : comportment informations (int. vari. count)
+! In  info_comp_valk : comportment informations (character)
+! In  info_comp_nvar : comportment informations (int. vari. count)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -81,12 +79,10 @@ implicit none
     integer :: nt
     character(len=16), pointer :: v_compor_valv(:) => null()
     character(len=16) :: defo_comp, rela_comp, type_comp, type_cpla, mult_comp
-    character(len=16) :: kit_comp(9), type_matg, post_iter
+    character(len=16) :: kit_comp(4), type_matg, post_iter
     aster_logical :: l_cristal, l_umat, l_mfront
-    aster_logical :: l_matr_tgsc, l_crit_rupt
     aster_logical :: l_pmf, l_is_pmf
-    integer :: nume_comp, nb_vari, nb_vari_comp(9), elem_nume
-    integer :: nb_vari_exte
+    integer :: nb_vari, nb_vari_comp(4), elem_nume, nume_comp(4)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -115,13 +111,15 @@ implicit none
 !
 ! ----- Get infos
 !
-        nb_vari_exte    = info_comp_vali(1*(iocc-1) + 1)
-        nume_comp       = info_comp_nvar(10*(iocc-1) + 1)
-        nb_vari         = info_comp_nvar(10*(iocc-1) + 2)
-        nb_vari_comp(1) = info_comp_nvar(10*(iocc-1) + 3)
-        nb_vari_comp(2) = info_comp_nvar(10*(iocc-1) + 4)
-        nb_vari_comp(3) = info_comp_nvar(10*(iocc-1) + 5)
-        nb_vari_comp(4) = info_comp_nvar(10*(iocc-1) + 6)
+        nb_vari         = info_comp_nvar(10*(iocc-1) + 1)
+        nb_vari_comp(1) = info_comp_nvar(10*(iocc-1) + 2)
+        nb_vari_comp(2) = info_comp_nvar(10*(iocc-1) + 3)
+        nb_vari_comp(3) = info_comp_nvar(10*(iocc-1) + 4)
+        nb_vari_comp(4) = info_comp_nvar(10*(iocc-1) + 5)
+        nume_comp(1)    = info_comp_nvar(10*(iocc-1) + 6)
+        nume_comp(2)    = info_comp_nvar(10*(iocc-1) + 7)
+        nume_comp(3)    = info_comp_nvar(10*(iocc-1) + 8)
+        nume_comp(4)    = info_comp_nvar(10*(iocc-1) + 9)
         rela_comp       = info_comp_valk(16*(iocc-1) + 1)
         defo_comp       = info_comp_valk(16*(iocc-1) + 2)
         type_comp       = info_comp_valk(16*(iocc-1) + 3)
@@ -130,22 +128,15 @@ implicit none
         kit_comp(2)     = info_comp_valk(16*(iocc-1) + 6)
         kit_comp(3)     = info_comp_valk(16*(iocc-1) + 7)
         kit_comp(4)     = info_comp_valk(16*(iocc-1) + 8)
-        kit_comp(5)     = info_comp_valk(16*(iocc-1) + 9)
-        kit_comp(6)     = info_comp_valk(16*(iocc-1) + 10)
-        kit_comp(7)     = info_comp_valk(16*(iocc-1) + 11)
-        kit_comp(8)     = info_comp_valk(16*(iocc-1) + 12)
-        kit_comp(9)     = info_comp_valk(16*(iocc-1) + 13)
         mult_comp       = info_comp_valk(16*(iocc-1) + 14)
         type_matg       = info_comp_valk(16*(iocc-1) + 15)
         post_iter       = info_comp_valk(16*(iocc-1) + 16)
 !
 ! ----- Detection of specific cases
 !
-        call comp_meca_l(rela_comp, 'MATR_TGSC', l_matr_tgsc, type_matg = type_matg)
-        call comp_meca_l(rela_comp, 'CRIT_RUPT', l_crit_rupt, post_iter = post_iter)
-        call comp_meca_l(rela_comp, 'CRISTAL'  , l_cristal)
-        call comp_meca_l(rela_comp, 'UMAT'     , l_umat)
-        call comp_meca_l(rela_comp, 'MFRONT'   , l_mfront)
+        call comp_meca_l(rela_comp, 'CRISTAL', l_cristal)
+        call comp_meca_l(rela_comp, 'UMAT'   , l_umat)
+        call comp_meca_l(rela_comp, 'MFRONT' , l_mfront)
 !
 ! ----- Multifiber beams
 !
@@ -193,7 +184,7 @@ implicit none
         v_compor_valv(4) = type_comp
         v_compor_valv(5) = type_cpla
         if (.not.l_pmf) then
-            write (v_compor_valv(6),'(I16)') nume_comp
+            write (v_compor_valv(6),'(I16)') nume_comp(1)
         endif
         v_compor_valv(7) = mult_comp
         v_compor_valv(8) = kit_comp(1)
@@ -203,8 +194,8 @@ implicit none
         write (v_compor_valv(12),'(I16)') iocc
         v_compor_valv(13) = type_matg
         v_compor_valv(14) = post_iter
-        v_compor_valv(15) = kit_comp(8)
-        v_compor_valv(16) = kit_comp(9)
+        write (v_compor_valv(15),'(I16)') nume_comp(2)
+        write (v_compor_valv(16),'(I16)') nume_comp(3)
         write (v_compor_valv(17),'(I16)') nb_vari_comp(1)
         write (v_compor_valv(18),'(I16)') nb_vari_comp(2)
         write (v_compor_valv(19),'(I16)') nb_vari_comp(3)

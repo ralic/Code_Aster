@@ -74,7 +74,7 @@ implicit none
     character(len=16) :: texte(2)
     character(len=16) :: defo_comp, rela_comp, rela_thmc, type_cpla
     character(len=16) :: rela_comp_py, defo_comp_py
-    character(len=16) :: kit_comp(9)
+    character(len=16) :: kit_comp(4)
     integer :: iret
     character(len=16) :: keywordfact
     integer :: iocc, nbocc

@@ -28,7 +28,7 @@ interface
         integer :: ksp
         integer :: ndim
         integer :: imate
-        character(len=16) :: compor(16)
+        character(len=16) :: compor(*)
         real(kind=8) :: crit(12)
         real(kind=8) :: instam
         real(kind=8) :: instap

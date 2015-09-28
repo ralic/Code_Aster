@@ -44,14 +44,11 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_vari_exte
     integer :: iocc, nbocc
     character(len=16) :: keywordfact
     character(len=16) :: type_matg, post_iter
-    character(len=16) :: rela_comp, defo_comp, mult_comp, kit_comp(9), type_cpla
-    aster_logical :: l_matr_tgsc, l_crit_rupt
-    integer :: nume_comp, nb_vari
-    integer :: nb_vari_comp(9)
+    character(len=16) :: rela_comp, defo_comp, mult_comp, kit_comp(4), type_cpla
+    integer :: nume_comp(4), nb_vari, nb_vari_comp(4), nb_vari_exte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -65,8 +62,8 @@ implicit none
 ! ----- Init
 !
         nb_vari           = 0
-        nume_comp         = 0
-        nb_vari_comp(1:9) = 0
+        nume_comp(1:4)    = 0
+        nb_vari_comp(1:4) = 0
 !
 ! ----- Options
 !
@@ -78,41 +75,27 @@ implicit none
         kit_comp(2)  = p_info_comp_valk(16*(iocc-1) + 6)
         kit_comp(3)  = p_info_comp_valk(16*(iocc-1) + 7)
         kit_comp(4)  = p_info_comp_valk(16*(iocc-1) + 8)
-        kit_comp(5)  = p_info_comp_valk(16*(iocc-1) + 9)
-        kit_comp(6)  = p_info_comp_valk(16*(iocc-1) + 10)
-        kit_comp(7)  = p_info_comp_valk(16*(iocc-1) + 11)
-        kit_comp(8)  = p_info_comp_valk(16*(iocc-1) + 12)
-        kit_comp(9)  = p_info_comp_valk(16*(iocc-1) + 13)
         mult_comp    = p_info_comp_valk(16*(iocc-1) + 14)
         type_matg    = p_info_comp_valk(16*(iocc-1) + 15)
         post_iter    = p_info_comp_valk(16*(iocc-1) + 16)
 !
-! ----- Detection of specific cases
-!
-        call comp_meca_l(rela_comp, 'MATR_TGSC', l_matr_tgsc, type_matg = type_matg)
-        call comp_meca_l(rela_comp, 'CRIT_RUPT', l_crit_rupt, post_iter = post_iter)
-        if (l_matr_tgsc) then
-            kit_comp(6) = type_matg
-        endif
-        if (l_crit_rupt) then
-            kit_comp(7) = post_iter
-        endif
-!
 ! ----- Count internal variables
 !
-        call comp_meca_vari(rela_comp, defo_comp   , type_cpla   , nb_vari  , kit_comp,&
-                            mult_comp, nb_vari_exte, nb_vari_comp, nume_comp)
+        call comp_meca_vari(rela_comp, defo_comp, type_cpla, nb_vari     , kit_comp    ,&
+                            type_matg, post_iter, mult_comp, nb_vari_exte, nb_vari_comp,&
+                            nume_comp)
 !
 ! ----- Save informations
 !
-        p_info_comp_nvar(10*(iocc-1) + 1) = nume_comp
-        p_info_comp_nvar(10*(iocc-1) + 2) = nb_vari
-        p_info_comp_nvar(10*(iocc-1) + 3) = nb_vari_comp(1)
-        p_info_comp_nvar(10*(iocc-1) + 4) = nb_vari_comp(2)
-        p_info_comp_nvar(10*(iocc-1) + 5) = nb_vari_comp(3)
-        p_info_comp_nvar(10*(iocc-1) + 6) = nb_vari_comp(4)
-        p_info_comp_nvar(10*(iocc-1) + 7) = nb_vari_comp(2)
-        p_info_comp_nvar(10*(iocc-1) + 8) = nb_vari_comp(1)
+        p_info_comp_nvar(10*(iocc-1) + 1) = nb_vari
+        p_info_comp_nvar(10*(iocc-1) + 2) = nb_vari_comp(1)
+        p_info_comp_nvar(10*(iocc-1) + 3) = nb_vari_comp(2)
+        p_info_comp_nvar(10*(iocc-1) + 4) = nb_vari_comp(3)
+        p_info_comp_nvar(10*(iocc-1) + 5) = nb_vari_comp(4)
+        p_info_comp_nvar(10*(iocc-1) + 6) = nume_comp(1)
+        p_info_comp_nvar(10*(iocc-1) + 7) = nume_comp(2)
+        p_info_comp_nvar(10*(iocc-1) + 8) = nume_comp(3)
+        p_info_comp_nvar(10*(iocc-1) + 9) = nume_comp(4)
     end do
 !
 end subroutine

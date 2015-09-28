@@ -127,7 +127,7 @@ implicit none
 ! - Save informations in COMPOR <CARTE>
 !
     call comp_meca_save(model           , mesh            , chmate          , compor, nb_cmp,&
-                        p_info_comp_valk, p_info_comp_vali, p_info_comp_nvar)
+                        p_info_comp_valk, p_info_comp_nvar)
 !
 ! - Prepare informations about internal variables
 !

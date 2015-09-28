@@ -20,6 +20,6 @@ interface
         character(len=16), intent(in) :: keywordfact
         integer, intent(in) :: iocc
         character(len=16), intent(in) :: rela_comp
-        character(len=16), intent(out) :: kit_comp(9)
+        character(len=16), intent(out) :: kit_comp(4)
     end subroutine comp_meca_rkit
 end interface

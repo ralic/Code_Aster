@@ -73,7 +73,7 @@ subroutine carc_read(info_carc_valk, info_carc_valr, model)
     integer :: type_matr_t=0, iter_inte_pas=0, iter_deborst_max=0
     real(kind=8) :: ipostiter=0.d0, ipostincr=0.d0
     character(len=16) :: rela_comp=' ', rela_comp_py=' '
-    character(len=16) :: kit_comp(9) = (/' ',' ',' ',' ',' ',' ',' ',' ',' '/)
+    character(len=16) :: kit_comp(4) = (/' ',' ',' ',' '/)
     character(len=16):: rela_thmc=' ', rela_hydr=' ', rela_ther=' ', rela_meca=' ', rela_meca_py=' '
     aster_logical :: l_kit_thm=.false._1, l_mfront=.false._1
     aster_logical :: l_mfront_offi=.false._1, l_umat=.false._1

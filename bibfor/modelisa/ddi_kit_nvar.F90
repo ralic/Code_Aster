@@ -1,5 +1,5 @@
-subroutine ddi_kit_nvar(rela_flua   , rela_plas   , rela_cpla   , rela_coup, nb_vari_flua,&
-                        nb_vari_plas, nb_vari_cpla, nb_vari_coup)
+subroutine ddi_kit_nvar(rela_flua   , rela_plas   , rela_cpla   , rela_coup     , nb_vari_flua,&
+                        nb_vari_plas, nb_vari_cpla, nb_vari_coup, nume_comp_plas)
 !
 implicit none
 !
@@ -34,6 +34,7 @@ implicit none
     integer, intent(out) :: nb_vari_plas
     integer, intent(out) :: nb_vari_cpla
     integer, intent(out) :: nb_vari_coup
+    integer, intent(out) :: nume_comp_plas
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,6 +52,7 @@ implicit none
 ! Out nb_vari_plas     : number of internal variables for plasticity
 ! Out nb_vari_cpla     : number of internal variables for plane stress
 ! Out nb_vari_coup     : number of internal variables for coupling
+! Out nume_comp_plas   : number LCxxxx subroutine for plasticity
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,10 +61,11 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nb_vari_flua = 0
-    nb_vari_plas = 0
-    nb_vari_cpla = 0
-    nb_vari_coup = 0
+    nb_vari_flua   = 0
+    nb_vari_plas   = 0
+    nb_vari_cpla   = 0
+    nb_vari_coup   = 0
+    nume_comp_plas = 0
     if (rela_flua .ne. ' ') then
         call lccree(1, rela_flua, rela_py)
         call lcinfo(rela_py, ibid, nb_vari_flua)
@@ -70,7 +73,7 @@ implicit none
     endif
     if (rela_plas .ne. ' ') then
         call lccree(1, rela_plas, rela_py)
-        call lcinfo(rela_py, ibid, nb_vari_plas)
+        call lcinfo(rela_py, nume_comp_plas, nb_vari_plas)
         call lcdiscard(rela_py)
     endif
     if (rela_cpla .ne. ' ') then

@@ -8,13 +8,8 @@ subroutine nmcpla(fami, kpg   , ksp  , ndim  , typmod,&
 implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/lccree.h"
-#include "asterc/lcinfo.h"
-#include "asterc/lcdiscard.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
-#include "asterfort/betnvi.h"
 #include "asterfort/granvi.h"
 #include "asterfort/lcopil.h"
 #include "asterfort/lcprmv.h"
@@ -128,7 +123,7 @@ implicit none
     integer :: nvi_plas, idx_vi_plas, i, retcom
     integer :: cerr(5)
     character(len=8) :: elem_model, nomc(5)
-    character(len=16) :: comcod, rela_flua, rela_plas
+    character(len=16) :: rela_flua, rela_plas
     character(len=16) :: compor_creep(3), compor_plas(3)
     real(kind=8) :: rbid, nu, angmas(3)
     real(kind=8) :: espi_creep(6), epsfld(6), epsflf(6), depsfl(6)
@@ -137,8 +132,7 @@ implicit none
     real(kind=8) :: epsicv, toler, ndsig, nsigf
     real(kind=8) :: dsigf(6), hydrd, hydrf, sechd, sechf, sref
     real(kind=8) :: epseld(6), epself(6), epsthe
-    integer :: k, nbvar2
-    integer :: iter, itemax, iret1, iret2, iret3, numlc2
+    integer :: k, iter, itemax, iret1, iret2, iret3, nume_plas
     real(kind=8) :: sigf2(6), r8bid
     real(kind=8) :: tmpdmx, tmpfmx, epsth
     real(kind=8) :: alphad, alphaf, bendod, bendof, kdessd, kdessf
@@ -156,6 +150,8 @@ implicit none
     rela_flua   = compor(8)
     rela_plas   = compor(9)
     elem_model  = typmod(1)
+    read (compor(16),'(I16)') nvi_plas
+    read (compor(15),'(I16)') nume_plas
 !
 ! - Number of internal variables in Granger (take maximum from 3D)
 !
@@ -172,25 +168,6 @@ implicit none
 !
     call granvi(elem_model, ndt, ndi)
     idx_vi_plas = nvi_flua + 1
-    if (rela_plas(1:5) .eq. 'ELAS ' .or.&
-        rela_plas(1:9) .eq. 'VMIS_ISOT') then
-        if (rela_plas(1:5) .eq. 'ELAS ') then
-            nvi_plas = 1
-        endif
-        if (rela_plas(1:9) .eq. 'VMIS_ISOT') then
-            nvi_plas = 2
-        endif
-    else if (rela_plas(1:8).eq. 'ROUSS_PR' .or.&
-             rela_plas(1:15).eq.'BETON_DOUBLE_DP') then
-        if (rela_plas(1:8) .eq. 'ROUSS_PR') then
-            call rslnvi('3D', nvi_ = nvi_plas)
-        endif
-        if (rela_plas(1:15) .eq. 'BETON_DOUBLE_DP') then
-            call betnvi('3D', nvi_ = nvi_plas)
-        endif
-    else
-        ASSERT(.false.)
-    endif
     ASSERT(nvi_tot .eq. (nvi_flua + nvi_plas))
 !
 ! - Prepare COMPOR <CARTE> for plasticity
@@ -311,14 +288,11 @@ implicit none
                     vind(idx_vi_plas), option   , sigf, vinf(idx_vi_plas), dsde  ,&
                     rbid             , rbid     , iret)
     else if (rela_plas(1:8).eq. 'ROUSS_PR' .or. rela_plas(1:15).eq.'BETON_DOUBLE_DP') then
-        call lccree(1, compor_plas, comcod)
-        call lcinfo(comcod, numlc2, nbvar2)
-        call lcdiscard(comcod)
         call redece(fami             , kpg              , ksp   , ndim , typmod,&
                     imat             , compor_plas      , crit  , timed, timef ,&
                     neps             , epsdt            , deps  , nsig , sigd  ,&
                     vind(idx_vi_plas), option           , angmas, nwkin, wkin  ,&
-                    cp               , numlc2           , r8bid , r8bid, r8bid ,&
+                    cp               , nume_plas        , r8bid , r8bid, r8bid ,&
                     sigf             , vinf(idx_vi_plas), ndsde , dsde , nwkout,&
                     wkout            , retcom)
     else

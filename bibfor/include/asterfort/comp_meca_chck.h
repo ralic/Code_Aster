@@ -16,7 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine comp_meca_chck(model      , mesh          , full_elem_s, l_etat_init, info_comp_valk,&
+    subroutine comp_meca_chck(model      , mesh        , full_elem_s, l_etat_init, info_comp_valk,&
                               l_auto_elas, l_auto_deborst, l_comp_erre)
         character(len=8), intent(in) :: model
         character(len=8), intent(in) :: mesh

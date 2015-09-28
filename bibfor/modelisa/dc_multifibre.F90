@@ -52,7 +52,7 @@ subroutine dc_multifibre(nbocci, sdcomp)
     integer :: ibid, nbg, nbgrfib, jnmgrfib, ig, ig1, jnbfig, iaff
     integer :: nbvf, nbv, icp
     character(len=8) :: materi, sdgf, mator
-    character(len=16) :: rela_comp, defo_comp, algo1d, rela_comp_py, kit_comp(9)
+    character(len=16) :: rela_comp, defo_comp, algo1d, rela_comp_py, kit_comp(4)
     character(len=16) :: moclef
     character(len=24) :: vnbfig, vnmfig, kgroup
     aster_logical :: l_kit, l_auto_deborst

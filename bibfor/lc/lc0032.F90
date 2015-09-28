@@ -29,7 +29,7 @@ subroutine lc0032(fami, kpg, ksp, ndim, imate,&
     real(kind=8) :: crit(12), angmas(3), instam, instap, tampon(*)
     real(kind=8) :: epsm(neps), deps(neps), sigm(6), sigp(6), vim(*), vip(*)
     real(kind=8) :: dsidep(6, 6), tm, tp, tref
-    character(len=16) :: compor(16), option, algo
+    character(len=16) :: compor(*), option, algo
     character(len=8) :: typmod(*)
     character(len=11) :: meting
     character(len=*) :: fami

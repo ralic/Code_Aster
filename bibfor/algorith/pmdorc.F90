@@ -60,13 +60,12 @@ implicit none
 !
     integer, parameter :: carsiz=20
     character(len=19) :: list_vari_name
-    integer :: iocc, i, nume_comp, nbocc_compor, nbocc_carcri
+    integer :: iocc, nume_comp(4), nbocc_compor, nbocc_carcri, nb_vari_comp(4)
     integer :: nbocc1, nbocc2, nbocc3
     character(len=16) :: keywordfact
-    character(len=16) :: rela_comp, algo_inte, type_matg, post_iter, defo_comp, type_comp
-    character(len=16) :: mult_comp
-    aster_logical :: l_cristal, l_exte_comp, l_matr_tgsc, l_crit_rupt, l_kit_thm
-    aster_logical :: l_etat_init
+    character(len=16) :: rela_comp, algo_inte, defo_comp, type_comp
+    character(len=16) :: mult_comp, kit_comp(4), type_cpla, type_matg, post_iter
+    aster_logical :: l_kit_thm, l_etat_init
     real(kind=8) :: algo_inte_r, iter_inte_maxi, resi_inte_rela
     character(len=16), pointer :: p_info_comp_valk(:) => null()
     integer, pointer :: p_info_comp_vali(:) => null()
@@ -79,10 +78,8 @@ implicit none
     call jemarq()
 !
     list_vari_name = '&&PMDORC.LIST_VARI'
-    keywordfact = 'COMPORTEMENT'
-    do i = 1, 20
-        compor(i) = 'VIDE'
-    end do
+    keywordfact    = 'COMPORTEMENT'
+    compor(1:20)   = 'VIDE'
 !
 ! - Initial state
 !
@@ -109,23 +106,30 @@ implicit none
 ! - Save it
 !
     iocc = 1
-    nb_vari = p_info_comp_nvar(10*(iocc-1) + 2)
-    nume_comp = p_info_comp_nvar(10*(iocc-1) + 1)
-    rela_comp = p_info_comp_valk(16*(iocc-1) + 1)
-    defo_comp = p_info_comp_valk(16*(iocc-1) + 2)
-    type_comp = p_info_comp_valk(16*(iocc-1) + 3)
-    mult_comp = p_info_comp_valk(16*(iocc-1) + 14)
-    type_matg = p_info_comp_valk(16*(iocc-1) + 15)
-    post_iter = p_info_comp_valk(16*(iocc-1) + 16)
-    call comp_meca_l(rela_comp, 'MATR_TGSC', l_matr_tgsc, type_matg = type_matg)
-    call comp_meca_l(rela_comp, 'CRIT_RUPT', l_crit_rupt, post_iter = post_iter)
-    call comp_meca_l(rela_comp, 'CRISTAL', l_cristal)
-    call comp_meca_l(rela_comp, 'EXTE_COMP', l_exte_comp)
-    call comp_meca_l(rela_comp, 'KIT_THM', l_kit_thm)
+    nb_vari         = p_info_comp_nvar(10*(iocc-1) + 1)
+    nb_vari_comp(1) = p_info_comp_nvar(10*(iocc-1) + 2)
+    nb_vari_comp(2) = p_info_comp_nvar(10*(iocc-1) + 3)
+    nb_vari_comp(3) = p_info_comp_nvar(10*(iocc-1) + 4)
+    nb_vari_comp(4) = p_info_comp_nvar(10*(iocc-1) + 5)
+    nume_comp(1)    = p_info_comp_nvar(10*(iocc-1) + 6)
+    nume_comp(2)    = p_info_comp_nvar(10*(iocc-1) + 7)
+    nume_comp(3)    = p_info_comp_nvar(10*(iocc-1) + 8)
+    nume_comp(4)    = p_info_comp_nvar(10*(iocc-1) + 9)
+    rela_comp       = p_info_comp_valk(16*(iocc-1) + 1)
+    defo_comp       = p_info_comp_valk(16*(iocc-1) + 2)
+    type_comp       = p_info_comp_valk(16*(iocc-1) + 3)
+    type_cpla       = p_info_comp_valk(16*(iocc-1) + 4)
+    kit_comp(1)     = p_info_comp_valk(16*(iocc-1) + 5)
+    kit_comp(2)     = p_info_comp_valk(16*(iocc-1) + 6)
+    kit_comp(3)     = p_info_comp_valk(16*(iocc-1) + 7)
+    kit_comp(4)     = p_info_comp_valk(16*(iocc-1) + 8)
+    mult_comp       = p_info_comp_valk(16*(iocc-1) + 14)
+    type_matg       = p_info_comp_valk(16*(iocc-1) + 15)
+    post_iter       = p_info_comp_valk(16*(iocc-1) + 16)
+    call comp_meca_l(rela_comp, 'KIT_THM'  , l_kit_thm)
     if (l_kit_thm) then
         call utmess('F', 'COMPOR2_7')
     endif
-
     if (type_comp .eq. 'COMP_ELAS') then
         incela = 2
     else if (type_comp.eq.'COMP_INCR') then
@@ -133,29 +137,26 @@ implicit none
     else
         ASSERT(.false.)
     endif
-!
-    compor(1) = rela_comp
+!  
+    compor(1)  = rela_comp
     write (compor(2),'(I16)') nb_vari
-    compor(3) = defo_comp
-    compor(4) = type_comp
-    write (compor(6),'(I16)') nume_comp
-    compor(7) = mult_comp
-    compor(8) = p_info_comp_valk(16*(iocc-1) + 5)
-    compor(9) = p_info_comp_valk(16*(iocc-1) + 6)
-    compor(10) = p_info_comp_valk(16*(iocc-1) + 7)
-    compor(11) = p_info_comp_valk(16*(iocc-1) + 8)
+    compor(3)  = defo_comp
+    compor(4)  = type_comp
+    write (compor(6),'(I16)') nume_comp(1)
+    compor(7)  = mult_comp
+    compor(8)  = kit_comp(1)
+    compor(9)  = kit_comp(2)
+    compor(10) = kit_comp(3)
+    compor(11) = kit_comp(4)
     write (compor(12),'(I16)') iocc
-    compor(13) = p_info_comp_valk(16*(iocc-1) + 15)
-    compor(14) = p_info_comp_valk(16*(iocc-1) + 16)
-    compor(15) = p_info_comp_valk(16*(iocc-1) + 12)
-    compor(16) = p_info_comp_valk(16*(iocc-1) + 13)
-!
-! - No THM
-!
-    write (compor(17),'(I16)') 0
-    write (compor(18),'(I16)') 0
-    write (compor(19),'(I16)') 0
-    write (compor(20),'(I16)') 0
+    compor(13) = type_matg
+    compor(14) = post_iter
+    write (compor(15),'(I16)') nume_comp(2)
+    write (compor(16),'(I16)') nume_comp(3)
+    write (compor(17),'(I16)') nb_vari_comp(1)
+    write (compor(18),'(I16)') nb_vari_comp(2)
+    write (compor(19),'(I16)') nb_vari_comp(3)
+    write (compor(20),'(I16)') nb_vari_comp(4)
 !
 ! - Prepare informations about internal variables
 !

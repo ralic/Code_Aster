@@ -16,13 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine comp_meca_code(rela_comp   , defo_comp   , type_cpla, kit_comp, defo_comp_py,&
-                              rela_comp_py, rela_meta_py)
+    subroutine comp_meca_code(rela_comp, defo_comp   , type_cpla   , kit_comp    , type_matg,&
+                              post_iter, comp_elem_py, rela_comp_py, rela_meta_py)
         character(len=16), intent(in) :: rela_comp
         character(len=16), intent(in) :: defo_comp
         character(len=16), intent(in) :: type_cpla
-        character(len=16), intent(in) :: kit_comp(9)
-        character(len=16), intent(out) :: defo_comp_py
+        character(len=16), intent(in) :: kit_comp(4)
+        character(len=16), intent(in) :: type_matg
+        character(len=16), intent(in) :: post_iter
+        character(len=16), intent(out) :: comp_elem_py
         character(len=16), intent(out) :: rela_comp_py
         character(len=16), intent(out) :: rela_meta_py
     end subroutine comp_meca_code

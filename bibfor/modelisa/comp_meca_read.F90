@@ -66,12 +66,10 @@ implicit none
     integer :: nb_vari_all
     character(len=16) :: defo_comp, rela_comp, type_cpla, mult_comp, type_comp
     character(len=16) :: type_matg, post_iter, nom_mod_mfront
-    character(len=16) :: kit_comp(9)
+    character(len=16) :: kit_comp(4)
     character(len=255) :: libr_name, subr_name
     integer :: unit_comp, nb_vari_exte
-    aster_logical :: l_cristal, l_umat, l_mfront, l_mfront_offi
-    aster_logical :: l_kit
-    aster_logical :: l_matr_tgsc, l_crit_rupt
+    aster_logical :: l_cristal, l_umat, l_mfront, l_mfront_offi, l_kit
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -92,7 +90,7 @@ implicit none
         libr_name     = ' '
         type_matg     = ' '
         post_iter     = ' '
-        kit_comp(1:9) = 'VIDE'
+        kit_comp(1:4) = 'VIDE'
 !
 ! ----- Get RELATION from command file
 !
@@ -118,8 +116,6 @@ implicit none
 !
 ! ----- Detection of specific cases
 !
-        call comp_meca_l(rela_comp, 'MATR_TGSC'  , l_matr_tgsc, type_matg = type_matg)
-        call comp_meca_l(rela_comp, 'CRIT_RUPT'  , l_crit_rupt, post_iter = post_iter)
         call comp_meca_l(rela_comp, 'CRISTAL'    , l_cristal)
         call comp_meca_l(rela_comp, 'KIT'        , l_kit)
         call comp_meca_l(rela_comp, 'UMAT'       , l_umat)
@@ -190,11 +186,6 @@ implicit none
         info_comp_valk(16*(iocc-1) + 6)  = kit_comp(2)
         info_comp_valk(16*(iocc-1) + 7)  = kit_comp(3)
         info_comp_valk(16*(iocc-1) + 8)  = kit_comp(4)
-        info_comp_valk(16*(iocc-1) + 9)  = kit_comp(5)
-        info_comp_valk(16*(iocc-1) + 10) = kit_comp(6)
-        info_comp_valk(16*(iocc-1) + 11) = kit_comp(7)
-        info_comp_valk(16*(iocc-1) + 12) = kit_comp(8)
-        info_comp_valk(16*(iocc-1) + 13) = kit_comp(9)
         info_comp_valk(16*(iocc-1) + 14) = mult_comp
         info_comp_valk(16*(iocc-1) + 15) = type_matg
         info_comp_valk(16*(iocc-1) + 16) = post_iter

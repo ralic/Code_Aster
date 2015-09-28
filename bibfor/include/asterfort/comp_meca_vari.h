@@ -16,16 +16,19 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine comp_meca_vari(rela_comp   , defo_comp   , type_cpla   , nb_vari     , kit_comp,&
-                              mult_comp   , nb_vari_exte, nb_vari_comp, nume_comp   )
+    subroutine comp_meca_vari(rela_comp , defo_comp , type_cpla , nb_vari      , kit_comp_    ,&
+                              type_matg_, post_iter_, mult_comp_, nb_vari_exte_, nb_vari_comp_,&
+                              nume_comp_)
         character(len=16), intent(in) :: rela_comp
         character(len=16), intent(in) :: defo_comp
         character(len=16), intent(in) :: type_cpla
         integer, intent(out) :: nb_vari
-        character(len=16), optional, intent(in) :: kit_comp(9)
-        character(len=16), optional, intent(in) :: mult_comp
-        integer, optional, intent(out) :: nb_vari_comp(9)
-        integer, optional, intent(in) :: nb_vari_exte
-        integer, optional, intent(out) :: nume_comp
+        character(len=16), optional, intent(in) :: kit_comp_(4)
+        character(len=16), optional, intent(in) :: type_matg_
+        character(len=16), optional, intent(in) :: post_iter_
+        character(len=16), optional, intent(in) :: mult_comp_
+        integer, optional, intent(out) :: nb_vari_comp_(4)
+        integer, optional, intent(in) :: nb_vari_exte_
+        integer, optional, intent(out) :: nume_comp_(4)
     end subroutine comp_meca_vari
 end interface
