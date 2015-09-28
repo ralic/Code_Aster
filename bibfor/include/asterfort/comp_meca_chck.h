@@ -16,11 +16,12 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine comp_meca_chck(model      , mesh       , full_elem_s, info_comp_valk, l_auto_elas,&
-                              l_auto_deborst, l_comp_erre)
+    subroutine comp_meca_chck(model      , mesh          , full_elem_s, l_etat_init, info_comp_valk,&
+                              l_auto_elas, l_auto_deborst, l_comp_erre)
         character(len=8), intent(in) :: model
         character(len=8), intent(in) :: mesh
         character(len=19), intent(in) :: full_elem_s
+        aster_logical, intent(in) :: l_etat_init
         character(len=16), intent(inout) :: info_comp_valk(:)
         aster_logical, intent(out) :: l_auto_elas
         aster_logical, intent(out) :: l_auto_deborst

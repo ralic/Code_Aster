@@ -1,5 +1,5 @@
-subroutine comp_meca_chck(model         , mesh       , full_elem_s, info_comp_valk, l_auto_elas,&
-                          l_auto_deborst, l_comp_erre)
+subroutine comp_meca_chck(model      , mesh          , full_elem_s, l_etat_init, info_comp_valk,&
+                          l_auto_elas, l_auto_deborst, l_comp_erre)
 !
 implicit none
 !
@@ -42,6 +42,7 @@ implicit none
     character(len=8), intent(in) :: model
     character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: full_elem_s
+    aster_logical, intent(in) :: l_etat_init
     character(len=16), intent(inout) :: info_comp_valk(:)
     aster_logical, intent(out) :: l_auto_elas
     aster_logical, intent(out) :: l_auto_deborst
@@ -58,10 +59,11 @@ implicit none
 ! In  mesh             : name of mesh
 ! In  model            : name of model
 ! In  full_elem_s      : <CHELEM_S> of FULL_MECA option
-! In  info_comp_valk : comportment informations (character)
-! Out l_auto_elas    : .true. if at least one element use ELAS by default
-! Out l_auto_deborst : .true. if at least one element swap to Deborst algorithm
-! Out l_comp_erre    : .true. if at least one element use comportment on element doesn't support it
+! In  l_etat_init      : .true. if initial state is defined
+! IO  info_comp_valk   : comportment informations (character)
+! Out l_auto_elas      : .true. if at least one element use ELAS by default
+! Out l_auto_deborst   : .true. if at least one element swap to Deborst algorithm
+! Out l_comp_erre      : .true. if at least one element use comportment on element doesn't support it
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -118,6 +120,12 @@ implicit none
 ! ----- Detection of specific cases
 !
         call comp_meca_l(rela_comp, 'KIT_THM', l_kit_thm)
+!
+! ----- Warning if ELASTIC comportment and initial state
+!
+        if (l_etat_init .and. rela_comp(1:10).eq.'ELAS_VMIS_') then
+            call utmess('A', 'COMPOR1_61')
+        endif
 !
 ! ----- Coding comportment (Python)
 !

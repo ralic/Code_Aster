@@ -23,7 +23,7 @@ loi = LoiComportement(
     nom='ELAS_VMIS_PUIS',
     doc="""Elasticité non linéaire de Von Mises - Hencky à écrouissage isotrope défini
 par une courbe de traction analytique (loi en puissance)""",
-    num_lc=1,
+    num_lc=9999,
     nb_vari=2,
     nom_vari=('EPSPEQ', 'INDIPLAS'),
     mc_mater = ('ELAS', 'ECRO_PUIS'),

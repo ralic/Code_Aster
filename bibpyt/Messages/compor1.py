@@ -308,6 +308,11 @@ sont des éléments de bord qui ne portent pas de rigidité.
 Il faut supprimer cette occurrence pour que le calcul fonctionne.
 """),
 
+    61: _(u"""
+Vous utilisez un comportement élastique non-linéaire avec un état initial.
+Cet état initial ne sera pas pris en compte. 
+"""),
+
     63 : _(u"""
    ATTENTION SR > 1    SR = %(r1)f
    SECHM %(r2)f    SECHP %(r3)f    W0 %(r4)f
