@@ -112,7 +112,6 @@ subroutine cbondp(load, mesh, ndim, vale_type)
            if (val_nb .ne. 1) then
                signde = '&FOZERO'
             endif
-            write(6,*) 'signde =',signde
 !
 ! --------- Affectation of values in <CARTE> - Wave function
 !
