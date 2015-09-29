@@ -189,7 +189,7 @@ for num_calc in range(nbre_calcul):
                         NEWTON=_F(REAC_ITER=1),
                         CONVERGENCE=_F(
                                         ITER_GLOB_MAXI=20,
-                                        ITER_GLOB_ELAS=25),
+                                 ),
                         COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',),
                         INCREMENT=_F(LIST_INST=DEFLIST,
                                      INST_FIN=inst_fin,),);

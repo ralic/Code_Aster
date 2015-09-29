@@ -921,7 +921,7 @@ POLYZ3=STAT_NON_LINE(MODELE=TROISD,INFO=1,
                      INCREMENT=(_F(LIST_INST=LINST3,),),
                      NEWTON=(_F(PREDICTION='EXTRAPOLE'),),
                      CONVERGENCE=_F(ITER_GLOB_MAXI=11,
-                                    ITER_GLOB_ELAS=25),
+                                   ),
                      ARCHIVAGE=_F(LIST_INST=LINST3,),
                                      );
 

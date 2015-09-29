@@ -379,7 +379,6 @@ RESU = STAT_NON_LINE (
                       CONVERGENCE=_F(
                                      RESI_GLOB_RELA=RESI_GLOB_RELA,
                                      ITER_GLOB_MAXI=Nmax,
-                                     ITER_GLOB_ELAS=Nmax,
                                      ),
                   );
 

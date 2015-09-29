@@ -337,7 +337,6 @@ U2=STAT_NON_LINE(
 
                 CONVERGENCE=_F(
                         ITER_GLOB_MAXI=40,
-                        ITER_GLOB_ELAS=50,
                         RESI_GLOB_RELA = RESI_GLOB_RELA,
                 ),
               )

@@ -118,18 +118,18 @@ RESULTAT=STAT_NON_LINE(      MODELE=MOD_B,
                                  _F( CHARGE = CHAR0),
                                        _F( CHARGE = PRES_LIM,
                                         TYPE_CHARGE = 'FIXE_PILO')),
-
+ 
                              COMPORTEMENT=_F( RELATION = 'Chaboche',
                                               RESI_INTE_RELA=1.E-12,
                                             ),
                              INCREMENT=_F( LIST_INST = LIS_INST),
-
+ 
                                        NEWTON=_F(
                                         PAS_MINI_ELAS = 0.24,
                                         REAC_INCR = 1,
                                         REAC_ITER = 1,
                                         REAC_ITER_ELAS = 1),
-
+ 
                                        CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-6,
                                         ITER_GLOB_MAXI = 1030,ITER_GLOB_ELAS = 50,),
                               PILOTAGE=_F( TYPE = 'DDL_IMPO',

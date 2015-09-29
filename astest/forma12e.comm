@@ -269,7 +269,7 @@ DYNADNL=DYNA_NON_LINE(MODELE=MODELE,
                                       FORMULATION='DEPLACEMENT',),
                       NEWTON=_F(),
                       CONVERGENCE=_F(ITER_GLOB_MAXI=30,
-                                     ITER_GLOB_ELAS=25,
+                                     
                                      ARRET='OUI',),);
 
 DEPLPDZn=RECU_FONCTION(RESULTAT=DYNADNL,

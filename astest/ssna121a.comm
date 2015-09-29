@@ -188,7 +188,7 @@ RESUMECA=STAT_NON_LINE(
                        NEWTON=_F(PREDICTION = 'ELASTIQUE',MATRICE='TANGENTE',REAC_ITER=1),
                        CONVERGENCE=_F(
                                       ITER_GLOB_MAXI=10,
-                                      ITER_GLOB_ELAS=10),
+                                    ),
 
                        OBSERVATION=(_F(LIST_INST=LINST,
                                        NOM_CHAM='VARI_ELGA',

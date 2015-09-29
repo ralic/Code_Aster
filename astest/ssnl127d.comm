@@ -193,7 +193,7 @@ CHMAT2=AFFE_MATERIAU(   MAILLAGE=MAIL,
 
 REST2=STAT_NON_LINE(MODELE=MODELE,
                     CHAM_MATER=CHMAT2,
-
+ 
                     EXCIT=_F(CHARGE=CHART,
                              FONC_MULT=FONCT,),
                     COMPORTEMENT=_F(RELATION='CORR_ACIER',
@@ -265,7 +265,7 @@ CHMAT3=AFFE_MATERIAU(   MAILLAGE=MAIL,
 
 REST3=STAT_NON_LINE(MODELE=MODELE,
                     CHAM_MATER=CHMAT3,
-
+ 
                     EXCIT=_F(CHARGE=CHART,
                              FONC_MULT=FONCT,),
                     COMPORTEMENT=_F(RELATION='CORR_ACIER',
