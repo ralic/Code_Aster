@@ -61,7 +61,10 @@ class POUTRE:
         for gr in self.dic_gma.keys():
             vect = self.get_vecty_group_ma(gr)
             dic_orie = {'VX': vect[0], 'VY': vect[1], 'VZ': vect[2], }
-            dic_gr_cara_supp[gr] = dic_orie
+            if dic_gr_cara_supp.has_key(gr):
+                dic_gr_cara_supp[gr].update(dic_orie)
+            else:
+                dic_gr_cara_supp[gr] = dic_orie
         return dic_gr_cara_supp
 
 #------------------------------------------------------------------------

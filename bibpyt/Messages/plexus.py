@@ -312,8 +312,7 @@ ne contient pas de champ %(k1)s. Il ne peut pas être traité.
 """),
 
     52 : _(u"""
-La valeur %(k1)s n'est pas autorisée pour l'opérande %(k2)s dans CALC_EUROPLEXUS pour le mot-clé
-facteur %(k3)s d'AFFE_CARA_ELEM.
+CALC_EUROPLEXUS ne sait pas traduire une instance du mot-clé facteur %(k1)s d'AFFE_CARA_ELEM.
 """),
 
     53 : _(u"""

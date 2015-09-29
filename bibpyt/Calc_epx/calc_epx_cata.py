@@ -462,6 +462,9 @@ mode_epx_fin = ['RNFR']
 """
     CARA_ELEM :
 
+    SELECT : Dictionnaire contenant les mot-clés permettant de sélectionner
+             les bonnes caractéristiques quand il y a plusieurs choix.
+             Il est à renseigner même s'il n'y a qu'un choix possible. 
     TITRE : Titre a écrire dans le fichier de commande epx pour le mot-clé
             correspondant.
     DIRECTIVE : Nom de la directive dans laquelle les informations doivent être
@@ -476,73 +479,122 @@ mode_epx_fin = ['RNFR']
     CARA_EPX : Nom des caractéristiques nécessaires dans EPX (si MOT_CLE_EPX ne
                suffit pas).
     IS_VALE_ASTER : True si la caractéristique EPX correspondante est fournie
-                    dans VALE de Code_Aster.
+                    dans VALE de Code_Aster. A ne renseigner que si MOT_CLE_ASTER
+                    et CARA_EPX sont simultanément présents 
     MODE_EPX : A renseigner des le cas ou une même modelisation aster avec la
                meme maille support peut correspondre à plusieurs modelisations
                dans EPX (ex: DIS_T et DIS_TR).
+    VERIF : Autres mot-clé qui doivent avoir une valeur définie (dans ce cas
+            on donne la valeur), ou qui sont présents dans l'occurrence mais 
+            dont la valeur n'importe pas (dans ce cas on donne la valeur None)
+    COEF_MULT : Coefficient multiplicateur pour la passage aster-> EPX
 
 """
 cata_cara_elem = {
     'DISCRET': [
         {
+            'SELECT' : {'CARA' : 'M_T_D_N'},
             'TITRE': 'MASSES AJOUTEES',
             'DIRECTIVE': 'MATE',
-            'MOT_CLE_EPX': 'MASSE',
             'MOT_CLE_ASTER': 'M_T_D_N',
+            'MOT_CLE_EPX': 'MASSE',
             'MODE_EPX': 'PMAT',
         },
         {
+            'SELECT' : {'CARA' : 'K_T_D_N'},
             'TITRE': 'SUPPORT ELASTIQUE',
             'DIRECTIVE': 'MATE',
-            'MOT_CLE_EPX': 'SUPPORT',
             'MOT_CLE_ASTER': 'K_T_D_N',
+            'MOT_CLE_EPX': 'SUPPORT',
             'CARA_EPX': ['KX', 'KY', 'KZ', 'NFKT',],
             'IS_VALE_ASTER': [True, True, True, False,],
             'MODE_EPX': 'APPU',
         },
         {
+            'SELECT' : {'CARA' : 'K_TR_D_N'},
             'TITRE': 'SUPPORT ELASTIQUE',
             'DIRECTIVE': 'MATE',
-            'MOT_CLE_EPX': 'SUPPORT',
             'MOT_CLE_ASTER': 'K_TR_D_N',
+            'MOT_CLE_EPX': 'SUPPORT',
             'CARA_EPX': ['KX', 'KY', 'KZ', 'NFKT', 'KRX', 'KRY', 'KRZ', 'NFKR'],
             'IS_VALE_ASTER': [True, True, True, False, True, True, True, False],
         },
         {
+            'SELECT' : {'CARA' : 'A_T_D_N'},
             'TITRE': 'SUPPORT ELASTIQUE',
             'DIRECTIVE': 'MATE',
-            'MOT_CLE_EPX': 'SUPPORT',
             'MOT_CLE_ASTER': 'A_T_D_N',
+            'MOT_CLE_EPX': 'SUPPORT',
             'CARA_EPX': ['AX', 'AY', 'AZ', 'NFAT', ],
             'IS_VALE_ASTER': [True, True, True, False, ],
             'MODE_EPX': 'APPU',
         },
         {
+            'SELECT' : {'CARA' : 'A_TR_D_N'},
             'TITRE': 'SUPPORT ELASTIQUE',
             'DIRECTIVE': 'MATE',
-            'MOT_CLE_EPX': 'SUPPORT',
             'MOT_CLE_ASTER': 'A_TR_D_N',
+            'MOT_CLE_EPX': 'SUPPORT',
             'CARA_EPX': ['AX', 'AY', 'AZ', 'NFAT', 'ARX', 'ARY', 'ARZ', 'NFAR'],
             'IS_VALE_ASTER': [True, True, True, False, True, True, True, False],
         },
         {
-            'TITRE': 'SUPPORT ELASTIQUE',
+            'SELECT' : {'CARA' : 'K_T_D_L',
+                        'REPERE': 'LOCAL'
+                       },
+            'TITRE': 'RESSORT/AMORTISSEUR LINEIQUE EN REPERE LOCAL',
             'DIRECTIVE': 'MATE',
-            'MOT_CLE_EPX': 'KLIN',
             'MOT_CLE_ASTER': 'K_T_D_L',
-            'CARA_EPX': ['KL', 'KT', 'KT'],
-            'IS_VALE_ASTER': [True, True, True],
+            'MOT_CLE_EPX': 'RESL',
+            'CARA_EPX': ['KL', 'KT1', 'KT2','NFKT','VX','VY','VZ'],
+            'IS_VALE_ASTER': [True, True, True, False, False, False ,False],
             'MODE_EPX': 'RL3D',
-            'VERIF': {'REPERE': ['LOCAL'],
-                      },
+        },
+        {
+            'SELECT' : {'CARA' : 'A_T_D_L',
+                        'REPERE': 'LOCAL'
+                       },
+            'TITRE': 'RESSORT/AMORTISSEUR LINEIQUE EN REPERE LOCAL',
+            'DIRECTIVE': 'MATE',
+            'MOT_CLE_ASTER': 'A_T_D_L',
+            'MOT_CLE_EPX': 'RESL',
+            'CARA_EPX': ['AL', 'AT1', 'AT2','NFAT','VX','VY','VZ'],
+            'IS_VALE_ASTER': [True, True, True, False, False, False ,False],
+            'MODE_EPX': 'RL3D',
+        },
+        {
+            'SELECT' : {'CARA' : 'K_T_D_L',
+                        'REPERE': 'GLOBAL'
+                       },
+            'TITRE': 'RESSORT/AMORTISSEUR LINEIQUE EN REPERE GLOBAL',
+            'DIRECTIVE': 'MATE',
+            'MOT_CLE_ASTER': 'K_T_D_L',
+            'MOT_CLE_EPX': 'RESG',
+            'CARA_EPX': ['KX', 'KY', 'KZ','NFKT'],
+            'IS_VALE_ASTER': [True, True, True, False],
+            'MODE_EPX': 'RL3D',
+        },
+        {
+            'SELECT' : {'CARA' : 'A_T_D_L',
+                        'REPERE': 'GLOBAL'
+                       },
+            'TITRE': 'RESSORT/AMORTISSEUR LINEIQUE EN REPERE GLOBAL',
+            'DIRECTIVE': 'MATE',
+            'MOT_CLE_ASTER': 'A_T_D_L',
+            'MOT_CLE_EPX': 'RESG',
+            'CARA_EPX': ['AX', 'AY', 'AZ','NFAT'],
+            'IS_VALE_ASTER': [True, True, True, False],
+            'MODE_EPX': 'RL3D',
         },
     ],
     'COQUE': [
         {
+            'SELECT' : {'EPAIS' : None,
+                       },
             'TITRE': 'COQUES',
             'DIRECTIVE': 'COMPLEMENT',
-            'MOT_CLE_EPX': 'EPAIS',
             'MOT_CLE_ASTER': 'EPAIS',
+            'MOT_CLE_EPX': 'EPAIS',
             'VERIF': {
                       'VECTEUR': None,  # pris en compte ailleurs
                       'ANGL_REP': None,  # pris en compte ailleurs
@@ -555,13 +607,28 @@ cata_cara_elem = {
     ],
     'POUTRE': [
         {
+            'SELECT' : {'SECTION': 'RECTANGLE',
+                       },
             'TITRE': 'ELEMENTS POUTRES',
             'DIRECTIVE': 'COMPLEMENT',
-            'MOT_CLE_EPX': 'GEOP',
-            'INFO_CLE': 'SECTION',
+            'MOT_CLE_EPX': 'GEOP RECT',
             'CARA_ASTER': [' ', ' ', ' ', 'HY', 'HZ'],
             'CARA_EPX': ['VX', 'VY', 'VZ', 'AY', 'AZ'],
-            'VERIF': {'SECTION': ['RECTANGLE'],
+            'VERIF': {
+                      'VARI_SECT': ['CONSTANT',],
+                      },
+        },
+        
+        {
+            'SELECT' : {'SECTION': 'CERCLE',
+                       },
+            'TITRE': 'ELEMENTS POUTRES',
+            'DIRECTIVE': 'COMPLEMENT',
+            'MOT_CLE_EPX': 'GEOP CIRC',
+            'CARA_ASTER': [' ', ' ', ' ', 'R'],
+            'CARA_EPX': ['VX', 'VY', 'VZ', 'DEXT'],
+            'COEF_MULT' : [1., 1., 1., 2.],
+            'VERIF': {
                       'VARI_SECT': ['CONSTANT',],
                       },
         }
@@ -569,6 +636,7 @@ cata_cara_elem = {
     'RIGI_PARASOL': [
         #    Ne pas prendre RIGI_PARASOL pour modèle : cas spécial.
         {
+            'SELECT': {},
             'TITRE': 'RESSORTS DE SOL',
             'DIRECTIVE': 'MATE',
             'MOT_CLE_EPX': 'SUPPORT',
@@ -583,11 +651,13 @@ cata_cara_elem = {
     ],
     'BARRE': [
         {
+            'SELECT' : {'CARA': 'A',
+                        'SECTION': 'GENERALE'
+                       },
             'TITRE': 'BARRES',
             'DIRECTIVE': 'COMPLEMENT',
-            'MOT_CLE_EPX': 'SECT',
             'MOT_CLE_ASTER': 'A',
-            'VERIF': {'SECTION': ['GENERALE']},
+            'MOT_CLE_EPX': 'SECT',
         }
     ],
     'ORIENTATION': None,  # utilisé dans la classe poutre

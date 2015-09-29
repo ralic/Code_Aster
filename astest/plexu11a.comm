@@ -53,12 +53,14 @@ MATER=AFFE_MATERIAU(MAILLAGE=MA,
 
 ELEM = AFFE_CARA_ELEM(MODELE = MO,
                       POUTRE=_F(GROUP_MA=('POUT1','POUT2',),
-                                SECTION = 'RECTANGLE',
-                                CARA=('HY', 'HZ'),
-                                VALE =(0.035449077018110321,0.035449077018110321),
+                                SECTION = 'CERCLE',
+                                CARA=('R',),
+                                VALE =(0.02),
                                 VARI_SECT = 'CONSTANT',
                                ),
-                      ORIENTATION = _F(GROUP_MA=('POUT1','POUT2',),CARA = 'ANGL_VRIL',VALE= 0.),
+                      ORIENTATION = (_F(GROUP_MA=('POUT1','POUT2',),CARA = 'VECT_Y',VALE= (0.,1.,0.)),
+                                     _F(GROUP_MA=('SUPP1',),CARA = 'VECT_Y',VALE= (1.,0.,0.)),
+                                    ),
                       DISCRET = (
                                  _F(
                                     GROUP_MA = ('MASS1', 'MASS2'),
@@ -68,12 +70,23 @@ ELEM = AFFE_CARA_ELEM(MODELE = MO,
                                  _F(
                                     GROUP_MA = ('SUPP2',),
                                     CARA     = 'K_T_D_N',
-                                    VALE     = (0.,75398.,0.,),
+                                    VALE     = (60000.,75000.,50000.,),
+                                    ),
+                                 _F(
+                                    GROUP_MA = ('SUPP2',),
+                                    CARA     = 'A_T_D_N',
+                                    VALE     = (6000.,7500.,5000.,),
                                     ),
                                 _F(
                                     GROUP_MA = ('SUPP1',),
                                     CARA     = 'K_T_D_L',
-                                    VALE     = (75398.0,0.,0.,),
+                                    VALE     = (75000.0,60000.,50000.,),
+                                    REPERE = 'LOCAL',
+                                    ),
+                                _F(
+                                    GROUP_MA = ('SUPP1',),
+                                    CARA     = 'A_T_D_L',
+                                    VALE     = (7500.0,6000.,5000.,),
                                     REPERE = 'LOCAL',
                                     ),
                                  ),
@@ -87,8 +100,9 @@ BLOQ=AFFE_CHAR_MECA(MODELE=MO,
                     );
 
 FORC=AFFE_CHAR_MECA(MODELE=MO,
-                     FORCE_NODALE=(_F(FY= 1000.,GROUP_NO = ('P_1_0_0', 'T_1_0_0'),),
-                     ),
+                     FORCE_NODALE=(
+                                   _F(FY= 1000.,GROUP_NO = ('P_1_0_0', 'T_1_0_0')),
+                                  ),
                     );
 
 F_FORC=DEFI_FONCTION(NOM_PARA='INST',
@@ -97,14 +111,28 @@ F_FORC=DEFI_FONCTION(NOM_PARA='INST',
                      );
 
 NFKT=DEFI_FONCTION(NOM_PARA='INST',
-                   VALE=(-100.0,     100.0,
-                          0.0,     0.0,
-                          100.0,     -100.0,
+                   VALE=(-1E-1,     0.5,
+                          -2E-3,     2E-3,
+                          0.,     0.,
+                          2E-3, -2E-3,
+                          1E-1, -0.5,
                         ),
-                   );
+                   )
+
+NFAT=DEFI_FONCTION(NOM_PARA='INST',
+                   VALE=(-1E-1,     0.5,
+                          -3E-3,     3E-3,
+                          0.,     0.,
+                          3E-3, -3E-3,
+                          1E-1, -0.5,
+                        ),
+                   )
+
+
 
 U = CALC_EUROPLEXUS(
    LANCEMENT = 'OUI',
+   VERSION_EUROPLEXUS = '2015_DEV',
    MODELE=MO,
    CHAM_MATER=MATER,
    COMPORTEMENT =(_F(
@@ -114,8 +142,9 @@ U = CALC_EUROPLEXUS(
               ),
    CARA_ELEM=ELEM,
    FONC_PARASOL = _F(
-                     GROUP_MA =('SUPP2'),
+                     GROUP_MA =('SUPP2','SUPP1', ),
                      NFKT = NFKT,
+                     NFAT = NFAT,
                     ),
    EXCIT=(_F(CHARGE=BLOQ,),
           _F(CHARGE=FORC,FONC_MULT=F_FORC,),
@@ -126,47 +155,47 @@ U = CALC_EUROPLEXUS(
                INST_FIN  = 1.0234,
                NMAX      = 2000000,
                ),
-   ARCHIVAGE   = _F(INST=2.562047E-01,),
+   ARCHIVAGE   = _F(INST=[2.8E-1, 1.0234]),
    );
 
 
-
+IMPR_RESU(RESU=_F(RESULTAT=U, NOM_CHAM='DEPL'))
+#
 TEST_RESU(
    RESU=(
         _F(
           RESULTAT   = U,
-          #INST       = 2.562047E-01,
-          NUME_ORDRE = 23469,
+          NUME_ORDRE = 91609,
           NOM_CHAM   = 'DEPL',
           NOM_CMP    = 'DY',
           GROUP_NO   = 'P_1_0_0',
           REFERENCE  = 'SOURCE_EXTERNE',
-          VALE_CALC  = 0.0129519151791,
-          VALE_REFE  = 1.29492E-02,),
+          VALE_CALC  = 0.00352219880348,
+          VALE_REFE  = 3.52220E-03,),
         _F(
           RESULTAT   = U,
-          #INST       = 2.562047E-01,
-          NUME_ORDRE = 23469,
+          NUME_ORDRE = 91609,
           NOM_CHAM   = 'DEPL',
           NOM_CMP    = 'DY',
           GROUP_NO   = 'T_1_0_0',
           REFERENCE  = 'SOURCE_EXTERNE',
-          VALE_CALC  = 0.0129519702163,
-          VALE_REFE  = 1.29492E-02,),
+          VALE_CALC  = 0.00352219953822,
+          VALE_REFE  = 3.52220E-03,),
     )
   );
 
 
 
-
 ELEM2 = AFFE_CARA_ELEM(MODELE = MO,
                       POUTRE=_F(GROUP_MA=('POUT1','POUT2',),
-                                SECTION = 'RECTANGLE',
-                                CARA=('HY', 'HZ'),
-                                VALE =(0.035449077018110321,0.035449077018110321),
+                                SECTION = 'CERCLE',
+                                CARA=('R',),
+                                VALE =(0.02),
                                 VARI_SECT = 'CONSTANT',
                                ),
-                      ORIENTATION = _F(GROUP_MA=('POUT1','POUT2',),CARA = 'ANGL_VRIL',VALE= 0.),
+                      ORIENTATION = (_F(GROUP_MA=('POUT1','POUT2',),CARA = 'VECT_Y',VALE= (0.,1.,0.)),
+                                     _F(GROUP_MA=('SUPP1',),CARA = 'VECT_Y',VALE= (1.,0.,0.)),
+                                    ),
                       DISCRET = (
                                  _F(
                                     GROUP_MA = ('MASS1', 'MASS2'),
@@ -176,27 +205,39 @@ ELEM2 = AFFE_CARA_ELEM(MODELE = MO,
                                  _F(
                                     GROUP_MA = ('SUPP2',),
                                     CARA     = 'K_T_D_N',
-                                    VALE     = (0.,75398.,0.,),
+                                    VALE     = (60000.,75000.,50000.,),
                                     ),
                                  _F(
                                     GROUP_MA = ('SUPP2',),
                                     CARA     = 'A_T_D_N',
-                                    VALE     = (0.,100.,0.,),
+                                    VALE     = (6000.,7500.,5000.,),
                                     ),
-                                 _F(
+                                _F(
                                     GROUP_MA = ('SUPP1',),
                                     CARA     = 'K_T_D_L',
-                                    VALE     = (75398.0,0.,0.,),
-                                    REPERE = 'LOCAL',
+                                    VALE     = (60000.,75000.,50000.,),
+                                    REPERE = 'GLOBAL',
+                                    ),
+                                _F(
+                                    GROUP_MA = ('SUPP1',),
+                                    CARA     = 'A_T_D_L',
+                                    VALE     = (6000.,7500.,5000.,),
+                                    REPERE = 'GLOBAL',
                                     ),
                                  ),
                      INFO=1,);
 
 
-
+FORC2=AFFE_CHAR_MECA(MODELE=MO,
+                     FORCE_NODALE=(_F(FX= 1000.,GROUP_NO = ('P_1_0_0', 'T_1_0_0')),
+                                   _F(FY= 1000.,GROUP_NO = ('P_1_0_0', 'T_1_0_0')),
+                                   _F(FZ= 1000.,GROUP_NO = ('P_1_0_0', 'T_1_0_0')),
+                                  ),
+                    );
 
 U2 = CALC_EUROPLEXUS(
    LANCEMENT = 'OUI',
+   VERSION_EUROPLEXUS = '2015_DEV',
    MODELE=MO,
    CHAM_MATER=MATER,
    COMPORTEMENT =(_F(
@@ -206,12 +247,12 @@ U2 = CALC_EUROPLEXUS(
               ),
    CARA_ELEM=ELEM2,
    FONC_PARASOL = _F(
-                     GROUP_MA =('SUPP2'),
+                     GROUP_MA =('SUPP2','SUPP1', ),
                      NFKT = NFKT,
-                     NFAT = NFKT,
+                     NFAT = NFAT,
                     ),
    EXCIT=(_F(CHARGE=BLOQ,),
-          _F(CHARGE=FORC,FONC_MULT=F_FORC,),
+          _F(CHARGE=FORC2,FONC_MULT=F_FORC,),
          ),
    CALCUL = _F(TYPE_DISCRETISATION  ='AUTO',
                CSTAB     = 0.8,
@@ -219,33 +260,74 @@ U2 = CALC_EUROPLEXUS(
                INST_FIN  = 1.0234,
                NMAX      = 2000000,
                ),
-   ARCHIVAGE   = _F(INST=2.562047E-01,),
+   ARCHIVAGE   = _F(INST=[2.8E-1, 1.0234]),
    );
 
 
+IMPR_RESU(RESU=_F(RESULTAT=U2, NOM_CHAM='DEPL'))
 
 TEST_RESU(
    RESU=(
         _F(
           RESULTAT   = U2,
-          #INST       = 2.562047E-01,
-          NUME_ORDRE = 23469,
+          #INST       = 2.8E-01,
+          NUME_ORDRE = 25064,
+          NOM_CHAM   = 'DEPL',
+          NOM_CMP    = 'DX',
+          GROUP_NO   = 'P_1_0_0',
+          REFERENCE  = 'SOURCE_EXTERNE',
+          VALE_CALC  = -1.62765915604E-05,
+          VALE_REFE  = -1.62766E-05,),
+        _F(
+          RESULTAT   = U2,
+          #INST       = 2.8E-01,
+          NUME_ORDRE = 25064,
+          NOM_CHAM   = 'DEPL',
+          NOM_CMP    = 'DX',
+          GROUP_NO   = 'T_1_0_0',
+          REFERENCE  = 'SOURCE_EXTERNE',
+          VALE_CALC  = -1.62765915604E-05,
+          VALE_REFE  = -1.62766E-05,),
+        _F(
+          RESULTAT   = U2,
+          #INST       = 2.8E-01,
+          NUME_ORDRE = 25064,
           NOM_CHAM   = 'DEPL',
           NOM_CMP    = 'DY',
           GROUP_NO   = 'P_1_0_0',
           REFERENCE  = 'SOURCE_EXTERNE',
-          VALE_CALC  = 0.0129519151791,
-          VALE_REFE  = 1.29492E-02,),
+          VALE_CALC  = 0.00367803713319,
+          VALE_REFE  = 3.67804E-03,),
         _F(
           RESULTAT   = U2,
-          #INST       = 2.562047E-01,
-          NUME_ORDRE = 23469,
+          #INST       = 2.8E-01,
+          NUME_ORDRE = 25064,
           NOM_CHAM   = 'DEPL',
           NOM_CMP    = 'DY',
           GROUP_NO   = 'T_1_0_0',
           REFERENCE  = 'SOURCE_EXTERNE',
-          VALE_CALC  = 0.0128707475239,
-          VALE_REFE  = 1.28680E-02,),
+          VALE_CALC  = 0.00367803713319,
+          VALE_REFE  = 3.67804E-03,),
+        _F(
+          RESULTAT   = U2,
+          #INST       = 2.8E-01,
+          NUME_ORDRE = 25064,
+          NOM_CHAM   = 'DEPL',
+          NOM_CMP    = 'DZ',
+          GROUP_NO   = 'P_1_0_0',
+          REFERENCE  = 'SOURCE_EXTERNE',
+          VALE_CALC  = 0.0045813775793,
+          VALE_REFE  = 4.58138E-03,),
+        _F(
+          RESULTAT   = U2,
+          #INST       = 2.8E-01,
+          NUME_ORDRE = 25064,
+          NOM_CHAM   = 'DEPL',
+          NOM_CMP    = 'DZ',
+          GROUP_NO   = 'T_1_0_0',
+          REFERENCE  = 'SOURCE_EXTERNE',
+          VALE_CALC  = 0.0045813775793,
+          VALE_REFE  = 4.58138E-03,),
     )
   );
 
