@@ -1,6 +1,8 @@
-subroutine nmcrob(meshz     , modelz    , result, sddisc   , sd_inout ,&
-                  cara_elemz, matez     , compor, disp_curr, strx_curr,&
-                  varc_curr , varc_refe , time  , sd_obsv  )
+subroutine nmcrob(meshz     , modelz, sddisc   , ds_inout , cara_elemz,&
+                  matez     , compor, disp_curr, strx_curr, varc_curr ,&
+                  varc_refe , time  , sd_obsv  )
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -33,9 +35,8 @@ implicit none
 !
     character(len=*), intent(in) :: meshz
     character(len=*), intent(in) :: modelz
-    character(len=8), intent(in) :: result
     character(len=19), intent(in) :: sddisc
-    character(len=24), intent(in) :: sd_inout
+    type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=*), intent(in) :: cara_elemz
     character(len=*), intent(in) :: matez
     character(len=19), intent(in) :: compor
@@ -57,8 +58,7 @@ implicit none
 ! In  mesh             : name of mesh
 ! In  model            : name of model
 ! In  result           : name of results datastructure
-! In  sddisc           : datastructure for discretization
-! In  sd_inout         : datastructure for input/output parameters
+! In  ds_inout         : datastructure for input/output management
 ! In  cara_elem        : name of datastructure for elementary parameters (CARTE)
 ! In  mate             : name of material characteristics (field)
 ! In  compor           : name of <CARTE> COMPOR
@@ -73,6 +73,7 @@ implicit none
 !
     integer :: nb_obsv, nb_keyw_fact, nume_reuse
     character(len=19) :: sdarch
+    character(len=8) :: result
     character(len=14) :: sdextr_obsv
     character(len=16) :: keyw_fact
     character(len=24) :: arch_info
@@ -87,6 +88,7 @@ implicit none
     keyw_fact = 'OBSERVATION'
     call getfac(keyw_fact, nb_keyw_fact)
     ASSERT(nb_keyw_fact.le.99)
+    result    = ds_inout%result
 !
 ! - Access to storage datastructure
 !
@@ -97,7 +99,7 @@ implicit none
 ! - Read datas for extraction
 !
     sdextr_obsv = sd_obsv(1:14)
-    call nmextr(meshz       , modelz    , sdextr_obsv, sd_inout, keyw_fact,&
+    call nmextr(meshz       , modelz    , sdextr_obsv, ds_inout, keyw_fact,&
                 nb_keyw_fact, nb_obsv   ,&
                 cara_elemz  , matez     , compor     , disp_curr, strx_curr,&
                 varc_curr   , varc_refe , time       )

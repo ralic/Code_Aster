@@ -16,9 +16,12 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmviss(numedd, sddyna, instam, instap, vecasz)
+    subroutine nmviss(numedd, sddyna, ds_inout, instam, instap,&
+                      vecasz)
+        use NonLin_Datastructure_type
         character(len=24) :: numedd
         character(len=19) :: sddyna
+        type(NL_DS_InOut), intent(in) :: ds_inout
         real(kind=8) :: instam
         real(kind=8) :: instap
         character(len=*) :: vecasz

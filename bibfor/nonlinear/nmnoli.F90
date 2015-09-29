@@ -1,20 +1,16 @@
-subroutine nmnoli(result, sddisc, sderro, carcri, ds_print,&
-                  sdcrit, fonact, sddyna, sdpost, modele  ,&
-                  mate  , carele, lisch2, sdpilo, sdtime  ,&
-                  sdener, sdieto, sdcriq)
+subroutine nmnoli(sddisc, sderro, carcri, ds_print, sdcrit  ,&
+                  fonact, sddyna, sdpost, modele  , mate    ,&
+                  carele, sdpilo, sdtime, sdener  , ds_inout,&
+                  sdcriq)
 !
 use NonLin_Datastructure_type
 !
 implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/gnomsd.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nmarch.h"
 #include "asterfort/nmetpl.h"
@@ -40,31 +36,29 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=19) :: sddisc, sdcrit, lisch2, sddyna, sdpost, sdpilo, sdener
+    character(len=19) :: sddisc, sdcrit, sddyna, sdpost, sdpilo, sdener
     character(len=24) :: sderro, carcri
     character(len=24) :: modele, mate, carele
-    character(len=24) :: sdieto, sdtime, sdcriq
-    character(len=8) :: result
+    character(len=24) :: sdtime, sdcriq
+    type(NL_DS_InOut), intent(inout) :: ds_inout
     integer :: fonact(*)
     type(NL_DS_Print), intent(in) :: ds_print
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (SD EVOL_NOLI)
+! MECA_NON_LINE - Init
 !
-! PREPARATION DE LA SD EVOL_NOLI
+! Prepare storing
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-!
-! IN  RESULT : NOM DE LA SD RESULTAT
 ! IN  NOMA   : NOM DU MAILLAGE
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! In  ds_print         : datastructure for printing parameters
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IN  SDPOST : SD POUR POST-TRAITEMENTS (CRIT_STAB ET MODE_VIBR)
 ! IN  SDDYNA : SD DYNAMIQUE
-! IN  SDIETO : SD GESTION IN ET OUT
+! IO  ds_inout         : datastructure for input/output management
 ! IN  SDCRIT : INFORMATIONS RELATIVES A LA CONVERGENCE
 ! IN  SDPILO : SD PILOTAGE
 ! IN  SDTIME : SD TIMER
@@ -75,22 +69,19 @@ implicit none
 ! IN  MATE   : CHAMP DE MATERIAU
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
-! IN  LISCH2 : NOM DE LA SD INFO CHARGE POUR STOCKAGE DANS LA SD
-!              RESULTAT
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: arcinf
-    integer :: jarinf
     character(len=19) :: sdarch
+    character(len=24) :: sdarch_ainf
+    integer, pointer :: v_sdarch_ainf(:) => null()
     integer :: numarc, numins
     integer :: ifm, niv
-    character(len=24) :: noobj
     aster_logical :: lreuse
+    character(len=8) :: result
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('MECA_NON_LINE', ifm, niv)
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> PREPARATION DE LA SD EVOL_NOLI'
@@ -104,22 +95,19 @@ implicit none
 !
     numins = 0
 !
-! --- DETERMINATION DU NOM DE LA SD INFO_CHARGE STOCKEE
-! --- DANS LA SD RESULTAT
+! - Get name of result's datastructure
 !
-    noobj = '12345678'//'.1234'//'.EXCIT'
-    call gnomsd(' ', noobj, 10, 13)
-    lisch2 = noobj(1:19)
+    result = ds_inout%result
 !
 ! --- ACCES SD ARCHIVAGE
 !
-    sdarch = sddisc(1:14)//'.ARCH'
-    arcinf = sdarch(1:19)//'.AINF'
+    sdarch      = sddisc(1:14)//'.ARCH'
+    sdarch_ainf = sdarch(1:19)//'.AINF'
 !
-! --- NUMERO ARCHIVAGE COURANT
+! - Current storing index
 !
-    call jeveuo(arcinf, 'L', jarinf)
-    numarc = zi(jarinf+1-1)
+    call jeveuo(sdarch_ainf, 'L', vi = v_sdarch_ainf)
+    numarc = v_sdarch_ainf(1)
 !
 ! --- CREATION DE LA SD EVOL_NOLI OU NETTOYAGE DES ANCIENS NUMEROS
 !
@@ -135,16 +123,14 @@ implicit none
 !
     if (.not.lreuse) then
         call utmess('I', 'ARCHIVAGE_4')
-        call nmarch(result, numins, modele  , mate, carele,&
-                    fonact, carcri, ds_print, sddisc, sdpost,&
-                    sdcrit, sdtime, sderro  , sddyna, sdpilo,&
-                    sdener, sdieto, sdcriq  , lisch2)
+        call nmarch(numins  , modele  , mate  , carele, fonact,&
+                    carcri  , ds_print, sddisc, sdpost, sdcrit,&
+                    sdtime  , sderro  , sddyna, sdpilo, sdener,&
+                    ds_inout, sdcriq  )
     endif
 !
 ! --- AU PROCHAIN ARCHIVAGE, SAUVEGARDE DES CHAMPS AU TEMPS T+
 !
-    call nmetpl(sdieto)
-!
-    call jedema()
+    call nmetpl(ds_inout)
 !
 end subroutine

@@ -1,13 +1,14 @@
-subroutine nminvc(modelz, mate  , carele, compor, sdtime,&
-                  sddisc, sddyna, valinc, solalg, lischa,&
-                  comref, resoco, resocu, numedd, fonact,&
+subroutine nminvc(modelz, mate  , carele, compor, sdtime  ,&
+                  sddisc, sddyna, valinc, solalg, lischa  ,&
+                  comref, resoco, resocu, numedd, ds_inout,&
                   veelem, veasse, measse)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/infdbg.h"
-#include "asterfort/isfonc.h"
 #include "asterfort/nmcvec.h"
 #include "asterfort/nmxvec.h"
 !
@@ -29,13 +30,13 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    integer :: fonact(*)
     character(len=*) :: modelz
     character(len=24) :: mate, carele
     character(len=24) :: compor
     character(len=19) :: sddisc, sddyna, lischa
     character(len=24) :: resoco, resocu
     character(len=24) :: comref, numedd, sdtime
+    type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=19) :: veelem(*), veasse(*), measse(*)
     character(len=19) :: solalg(*), valinc(*)
 !
@@ -47,8 +48,6 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
-!
-! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
 ! IN  SDDYNA : SD DYNAMIQUE
 ! IN  COMPOR : CARTE COMPORTEMENT
 ! IN  MODELE : NOM DU MODELE
@@ -57,6 +56,7 @@ implicit none
 ! IN  RESOCO : SD RESOLUTION CONTACT
 ! IN  RESOCU : SD RESOLUTION LIAISON_UNILATER
 ! IN  LISCHA : LISTE DES CHARGEMENTS
+! In  ds_inout         : datastructure for input/output management
 ! IN  MATE   : NOM DU CHAMP DE MATERIAU
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  SDDISC : SD DISCRETISATION
@@ -68,7 +68,6 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
-    aster_logical :: ldidi
     integer :: ifm, niv
     integer :: numins
     integer :: nbvect
@@ -83,23 +82,11 @@ implicit none
         write (ifm,*) '<MECANONLINE> PRECALCUL DES VECT_ELEM CONSTANTES'
     endif
 !
-! --- FONCTIONNALITES ACTIVEES
-!
-    ldidi = isfonc(fonact,'DIDI')
-!
 ! --- INITIALISATIONS
 !
     numins = 1
-!
     call nmcvec('INIT', ' ', ' ', .false._1, .false._1,&
                 nbvect, ltypve, loptve, lcalve, lassve)
-!
-! --- CREATION DU VECT_ELEM POUR DIRICHLET DIFFERENTIEL
-!
-    if (ldidi) then
-        call nmcvec('AJOU', 'CNDIDI', ' ', .true._1, .true._1,&
-                    nbvect, ltypve, loptve, lcalve, lassve)
-    endif
 !
 ! --- CREATION DU VECT_ELEM POUR FORCE DE REFERENCE LIEE
 ! --- AUX VAR. COMMANDES EN T-
@@ -113,8 +100,8 @@ implicit none
         call nmxvec(modelz, mate  , carele, compor, sdtime,&
                     sddisc, sddyna, numins, valinc, solalg,&
                     lischa, comref, resoco, resocu, numedd,&
-                    veelem, veasse, measse, nbvect, ltypve,&
-                    lcalve, loptve, lassve)
+                    ds_inout, veelem, veasse, measse, nbvect,&
+                    ltypve  , lcalve, loptve, lassve)
     endif
 !
 end subroutine

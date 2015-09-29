@@ -18,7 +18,8 @@
 interface
     subroutine nmobsv(meshz     , modelz, sddisc, sd_obsv  , nume_time,&
                       cara_elemz, matez , compor, varc_refe, valinc   ,&
-                      sd_inout)
+                      ds_inout  )
+        use NonLin_Datastructure_type
         character(len=*), intent(in) :: meshz
         character(len=19), intent(in) :: sd_obsv
         integer, intent(in) :: nume_time
@@ -29,6 +30,6 @@ interface
         character(len=19), intent(in) :: compor
         character(len=*), intent(in) :: varc_refe
         character(len=19), intent(in) :: valinc(*)
-        character(len=24), optional, intent(in) :: sd_inout
+        type(NL_DS_InOut), optional, intent(in) :: ds_inout
     end subroutine nmobsv
 end interface

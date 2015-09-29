@@ -1,8 +1,8 @@
-subroutine nmener(valinc, veasse, measse, sddyna, eta   ,&
+subroutine nmener(valinc, veasse, measse, sddyna, eta        ,&
                   sdener, fonact, numedd, numfix, ds_algopara,&
-                  meelem, numins, modele, mate  , carele,&
-                  compor, sdtime, sddisc, solalg, lischa,&
-                  comref, resoco, resocu, veelem)
+                  meelem, numins, modele, mate  , carele     ,&
+                  compor, sdtime, sddisc, solalg, lischa     ,&
+                  comref, resoco, resocu, veelem, ds_inout)
 !
 use NonLin_Datastructure_type
 !
@@ -51,6 +51,7 @@ implicit none
     character(len=24) :: sdtime, comref, resoco, resocu
     real(kind=8) :: eta
     integer :: fonact(*), numins
+    type(NL_DS_InOut), intent(in) :: ds_inout
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
 !
 ! ----------------------------------------------------------------------
@@ -74,6 +75,7 @@ implicit none
 ! IN  NUMINS : NUMERO D'INSTANT
 ! IN  MODELE : MODELE
 ! IN  MATE   : CHAMP MATERIAU
+! In  ds_inout         : datastructure for input/output management
 ! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  COMPOR : COMPORTEMENT
@@ -334,10 +336,10 @@ implicit none
 ! --- ON LE FAIT ICI AFIN DE DISPOSER D UNE MATRICE D AMORTISSEMENT.
 !
     if (numins .eq. 1) then
-        call nmfini(sddyna, valinc, measse, modele, mate  ,&
-                    carele, compor, sdtime, sddisc, numins,&
-                    solalg, lischa, comref, resoco, resocu,&
-                    numedd, veelem, veasse)
+        call nmfini(sddyna  , valinc, measse, modele, mate  ,&
+                    carele  , compor, sdtime, sddisc, numins,&
+                    solalg  , lischa, comref, resoco, resocu,&
+                    ds_inout, numedd, veelem, veasse)
     endif
 !
 ! --- PREPARATION DES CHAMPS DE FORCE

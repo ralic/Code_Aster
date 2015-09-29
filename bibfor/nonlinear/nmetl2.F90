@@ -1,4 +1,6 @@
-subroutine nmetl2(keyword_fact, sd_inout, i_field)
+subroutine nmetl2(i_field, ds_inout)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -6,7 +8,6 @@ implicit none
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -34,9 +35,8 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=24), intent(in) :: sd_inout
     integer, intent(in) :: i_field
-    character(len=16), intent(in) :: keyword_fact
+    type(NL_DS_InOut), intent(inout) :: ds_inout
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,119 +46,101 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sd_inout         : datastructure for input/output parameters
 ! In  i_field          : field index
-! In  keyword_fact     : factor keyword for ETAT_INIT
+! IO  ds_inout         : datastructure for input/output management
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: io_lcha, io_info
-    character(len=24), pointer :: v_io_para(:) => null()
-    integer, pointer :: v_io_info(:) => null()
-    integer :: zioch, ilecc, iret
+    integer :: iret
+    aster_logical :: l_field_read
     character(len=24) :: valk(3)
-    character(len=24) :: field_resu, field_resu_cv, field_algo, keyw_etat_init
-    character(len=24) :: flag_etat_init, field_name_resu, field_state
-    character(len=24) :: field_name_algo, field_name_init, field_disc_in, field_disc_out
+    character(len=24) :: field_read, field_read_cv, field_algo
+    character(len=24) :: field_type
+    character(len=4) :: init_type, disc_type
+    character(len=24) :: algo_name, field_disc_in, init_name
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    field_resu_cv = '&&NMETL2.CHAMP.CONVER'
-    ilecc         = 0
-!
-! - Access to datastructure
-!
-    io_lcha = sd_inout(1:19)//'.LCHA'
-    io_info = sd_inout(1:19)//'.INFO'
-    call jeveuo(io_lcha, 'E', vk24 = v_io_para)
-    call jeveuo(io_info, 'L', vi   = v_io_info)
-    zioch = v_io_info(4)
+    field_read_cv = '&&NMETL2.CHAMP.CONVER'
 !
 ! - Field to read ?
 !
-    flag_etat_init = v_io_para(zioch*(i_field-1)+8 )
-    if (flag_etat_init .eq. 'OUI') then
+    if (ds_inout%l_field_acti(i_field).and.ds_inout%field(i_field)%l_read_init) then
 !
 ! ----- Name of field (type) in results datastructure
 !
-        field_name_resu = v_io_para(zioch*(i_field-1)+1 )
+        field_type     = ds_inout%field(i_field)%type
 !
-! ----- Name of field for initial state (ETAT_INIT)
+! ----- Name of field for initial state
 !
-        field_name_init = v_io_para(zioch*(i_field-1)+2 )
+        init_name      = ds_inout%field(i_field)%init_name
 !
 ! ----- Spatial discretization of field
 !
-        field_disc_out  = v_io_para(zioch*(i_field-1)+5 )
+        disc_type      = ds_inout%field(i_field)%disc_type
 !
 ! ----- Name of field in algorithm
 !
-        field_name_algo = v_io_para(zioch*(i_field-1)+6 )
-        call nmetnc(field_name_algo, field_algo)
+        algo_name      = ds_inout%field(i_field)%algo_name
+        call nmetnc(algo_name, field_algo)
 !
 ! ----- Actual state of field
 !
-        field_state = v_io_para(zioch*(i_field-1)+4 )
+        init_type     = ds_inout%field(i_field)%init_type
 !
-! ----- Keyword for initial state
+! ----- Informations about field read in ETAT_INIT
 !
-        keyw_etat_init = v_io_para(zioch*(i_field-1)+3 )
-!
-! ----- Read field
-!
-        if (keyw_etat_init .ne. ' ') then
-            call getvid(keyword_fact, keyw_etat_init, iocc=1, scal=field_resu, nbret=ilecc)
-        endif
+        field_read    = ds_inout%field(i_field)%field_read
+        l_field_read  = ds_inout%l_field_read(i_field)
 !
 ! ----- Read initial field
 !
-        if (ilecc .eq. 0) then
-            if ((field_state.ne.'SDRESU') .and. (field_name_init.ne.' ')) then
-                call copisd('CHAMP', 'V', field_name_init, field_algo)
-                v_io_para(zioch*(i_field-1)+4) = 'ZERO'
-            endif
-        else
+        if (l_field_read) then
 !
 ! --------- Discretization of input field
 !
-            call dismoi('TYPE_CHAMP', field_resu, 'CHAMP', repk=field_disc_in, arret='C', ier=iret)
+            call dismoi('TYPE_CHAMP', field_read, 'CHAMP', repk=field_disc_in, arret='C', ier=iret)
             if (iret .eq. 1) then
-                call utmess('F', 'ETATINIT_50', sk=field_resu)
+                call utmess('F', 'ETATINIT_50', sk=field_read)
             endif
 !
-! --------- Try to convert field (discretization) if necessary
+! --------- Try to convert field (discretization) if necessary and copy it
 !
-            if(field_name_resu.eq.'COHE_ELEM') then
-                call xetco(field_resu, field_algo, field_name_init)
-            endif
-            if(field_name_resu.eq.'COHE_ELEM') goto 98
-!
-            call nmetcv(field_name_init, field_resu, field_disc_in, field_resu_cv, field_disc_out)
-!
-! --------- Copy field
-!
-            if (field_disc_out .eq. 'NOEU') then
-                call vtcopy(field_resu_cv, field_algo, ' ', iret)
-                if (iret .ne. 0) then
-                    valk(1) = field_resu_cv
-                    valk(2) = field_algo
-                    call utmess('A', 'MECANONLINE_2', nk=2, valk=valk)
-                endif
-            else if ((field_disc_out.eq.'ELGA').or.(field_disc_out.eq.'ELEM').or.&
-                     (field_disc_out.eq.'ELNO')) then
-                call copisd('CHAMP_GD', 'V', field_resu_cv, field_algo)
+            if (field_type.eq.'COHE_ELEM') then
+                call xetco(field_read, field_algo, init_name)
             else
-                write(6,*) 'DISCRETISATION NON TRAITEE: ',field_disc_in
-                ASSERT(.false.)
+                call nmetcv(init_name, field_read, field_disc_in, field_read_cv, disc_type)
+                if (disc_type .eq. 'NOEU') then
+                    call vtcopy(field_read_cv, field_algo, ' ', iret)
+                    if (iret .ne. 0) then
+                        valk(1) = field_read_cv
+                        valk(2) = field_algo
+                        call utmess('A', 'MECANONLINE_2', nk=2, valk=valk)
+                    endif
+                else if ((disc_type.eq.'ELGA').or.(disc_type.eq.'ELEM').or.&
+                         (disc_type.eq.'ELNO')) then
+                    call copisd('CHAMP_GD', 'V', field_read_cv, field_algo)
+                else
+                    write(6,*) 'DISCRETISATION NON TRAITEE: ',field_disc_in
+                    ASSERT(.false.)
+                endif
             endif
-98          continue
 !
 ! --------- New state of field
 !
-            v_io_para(zioch*(i_field-1)+4) = 'CHAMP'
+            ds_inout%field(i_field)%init_type = 'READ'
+        endif
+!
+! ----- Copy initial field
+!
+        if (.not.l_field_read) then
+            if (init_name .ne. ' '.and.ds_inout%field(i_field)%init_type.eq.' ') then
+                call copisd('CHAMP', 'V', init_name, field_algo)
+                ds_inout%field(i_field)%init_type = 'ZERO'
+            endif
         endif
     endif
 !
-    call detrsd('CHAMP', field_resu_cv)
+    call detrsd('CHAMP', field_read_cv)
 !
 end subroutine

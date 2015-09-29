@@ -18,14 +18,14 @@
 ! aslint: disable=W1504
 !
 interface
-    subroutine nmnewt(noma       , modele  , numins, numedd , numfix,&
-                      mate       , carele  , comref, compor , lischa,&
-                      ds_algopara, fonact  , carcri, sdstat , sdtime,&
-                      sderro     , ds_print, sdnume, sddyna , sddisc,&
-                      sdcrit     , sdsuiv  , sdpilo, ds_conv, solveu,&
-                      maprec     , matass  , valinc, solalg , meelem,&
-                      measse     , veelem  , veasse, defico , resoco,&
-                      deficu     , resocu  , eta   , nbiter)
+    subroutine nmnewt(noma       , modele  , numins  , numedd , numfix,&
+                      mate       , carele  , comref  , compor , lischa,&
+                      ds_algopara, fonact  , carcri  , sdstat , sdtime,&
+                      sderro     , ds_print, sdnume  , sddyna , sddisc,&
+                      sdcrit     , sdsuiv  , sdpilo  , ds_conv, solveu,&
+                      maprec     , matass  , ds_inout, valinc , solalg,&
+                      meelem     , measse  , veelem  , veasse , defico,&
+                      resoco     , deficu  , resocu  , eta    , nbiter)
         use NonLin_Datastructure_type
         character(len=8) :: noma
         character(len=24) :: modele
@@ -45,6 +45,7 @@ interface
         character(len=24) :: sderro
         type(NL_DS_Print), intent(inout) :: ds_print
         type(NL_DS_Conv), intent(inout) :: ds_conv
+        type(NL_DS_InOut), intent(in) :: ds_inout
         character(len=19) :: sdnume
         character(len=19) :: sddyna
         character(len=19) :: sddisc

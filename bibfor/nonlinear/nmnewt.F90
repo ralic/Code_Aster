@@ -1,11 +1,11 @@
-subroutine nmnewt(noma       , modele  , numins, numedd , numfix,&
-                  mate       , carele  , comref, compor , lischa,&
-                  ds_algopara, fonact  , carcri, sdstat , sdtime,&
-                  sderro     , ds_print, sdnume, sddyna , sddisc,&
-                  sdcrit     , sdsuiv  , sdpilo, ds_conv, solveu,&
-                  maprec     , matass  , valinc, solalg , meelem,&
-                  measse     , veelem  , veasse, defico , resoco,&
-                  deficu     , resocu  , eta   , nbiter)
+subroutine nmnewt(noma       , modele  , numins  , numedd , numfix,&
+                  mate       , carele  , comref  , compor , lischa,&
+                  ds_algopara, fonact  , carcri  , sdstat , sdtime,&
+                  sderro     , ds_print, sdnume  , sddyna , sddisc,&
+                  sdcrit     , sdsuiv  , sdpilo  , ds_conv, solveu,&
+                  maprec     , matass  , ds_inout, valinc , solalg,&
+                  meelem     , measse  , veelem  , veasse , defico,&
+                  resoco     , deficu  , resocu  , eta    , nbiter)
 !
 use NonLin_Datastructure_type
 !
@@ -76,6 +76,7 @@ implicit none
     character(len=19) :: measse(*), veasse(*)
     type(NL_DS_Print), intent(inout) :: ds_print
     type(NL_DS_Conv), intent(inout) :: ds_conv
+    type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=19) :: lischa
     character(len=19) :: solveu, maprec, matass
     character(len=24) :: modele, numedd, numfix
@@ -93,7 +94,6 @@ implicit none
 ! ALGORITHME DE NEWTON (STATIQUE ET DYNAMIQUE)
 !
 ! ----------------------------------------------------------------------
-!
 !
 ! IN  MODELE : MODELE
 ! IN  NUMEDD : NUME_DDL (VARIABLE AU COURS DU CALCUL)
@@ -113,6 +113,7 @@ implicit none
 ! IN  SDERRO : GESTION DES ERREURS
 ! IO  ds_print         : datastructure for printing parameters
 ! IO  ds_conv          : datastructure for convergence management
+! In  ds_inout         : datastructure for input/output management
 ! IN  NUMINS : NUMERO D'INSTANT
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
@@ -186,11 +187,11 @@ implicit none
 !
 ! --- CALCUL DES CHARGEMENTS CONSTANTS AU COURS DU PAS DE TEMPS
 !
-    call nmchar('FIXE', ' '   , modele, numedd, mate  ,&
-                carele, compor, lischa, numins, sdtime,&
-                sddisc, fonact, resoco, resocu, comref,&
-                valinc, solalg, veelem, measse, veasse,&
-                sddyna)
+    call nmchar('FIXE'  , ' '   , modele, numedd, mate  ,&
+                carele  , compor, lischa, numins, sdtime,&
+                sddisc  , fonact, resoco, resocu, comref,&
+                ds_inout, valinc, solalg, veelem, measse,&
+                veasse  , sddyna)
 !
 ! ======================================================================
 !     BOUCLE POINTS FIXES
@@ -225,8 +226,8 @@ implicit none
                 fonact, carcri, ds_print, sdstat     , sdtime,&
                 sddisc, sdnume, sderro  , numins     , valinc,&
                 solalg, matass, maprec  , defico     , resoco,&
-                resocu, sddyna, meelem  , measse     , veelem,&
-                veasse, lerrit)
+                resocu, sddyna, ds_inout, meelem     , measse,&
+                veelem, veasse, lerrit)
 !
     if (lerrit) goto 315
 !
@@ -253,12 +254,12 @@ implicit none
 !
 ! --- CALCUL DES FORCES APRES CORRECTION
 !
-    call nmfcor(modele, numedd, mate  , carele     , comref,&
-                compor, lischa, fonact, ds_algopara, carcri,&
-                numins, iterat, sdstat, sdtime     , sddisc,&
-                sddyna, sdnume, sderro, defico     , resoco,&
-                resocu, valinc, solalg, veelem     , veasse,&
-                meelem, measse, matass, lerrit )
+    call nmfcor(modele, numedd  , mate  , carele     , comref,&
+                compor, lischa  , fonact, ds_algopara, carcri,&
+                numins, iterat  , sdstat, sdtime     , sddisc,&
+                sddyna, sdnume  , sderro, defico     , resoco,&
+                resocu, ds_inout, valinc, solalg     , veelem,&
+                veasse, meelem  , measse, matass     , lerrit)
 !
     if (lerrit) goto 315
 !
@@ -271,12 +272,12 @@ implicit none
 ! --- ESTIMATION DE LA CONVERGENCE
 !
 315 continue
-    call nmconv(noma  , modele, mate   , numedd  , sdnume     ,&
-                fonact, sddyna, ds_conv, ds_print, sdstat     ,&
-                sddisc, sdtime, sdcrit , sderro  , ds_algopara,&
-                comref, matass, solveu , numins  , iterat     ,&
-                eta   , defico, resoco , valinc  , solalg     ,&
-                measse, veasse)
+    call nmconv(noma    , modele, mate   , numedd  , sdnume     ,&
+                fonact  , sddyna, ds_conv, ds_print, sdstat     ,&
+                sddisc  , sdtime, sdcrit , sderro  , ds_algopara,&
+                ds_inout, comref, matass , solveu  , numins     ,&
+                iterat  , eta   , defico , resoco  , valinc     ,&
+                solalg  , measse, veasse )
 !
 ! --- MISE A JOUR DES EFFORTS DE CONTACT
 !

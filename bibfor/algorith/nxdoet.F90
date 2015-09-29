@@ -1,17 +1,13 @@
-subroutine nxdoet(model    , nume_ddl, l_reuse, l_stat, sd_inout,&
-                  type_init, inst_0)
+subroutine nxdoet(model, nume_dof, l_stat, ds_inout)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/getfac.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/getvid.h"
-#include "asterfort/getvr8.h"
-#include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -41,11 +37,8 @@ implicit none
 ! ======================================================================
 !
     character(len=24), intent(in) :: model
-    aster_logical, intent(in) :: l_reuse
-    character(len=24), intent(in) :: nume_ddl
-    character(len=24), intent(in) :: sd_inout
-    real(kind=8), intent(out) :: inst_0
-    integer, intent(out) :: type_init
+    character(len=24), intent(in) :: nume_dof
+    type(NL_DS_InOut), intent(inout) :: ds_inout
     aster_logical, intent(out) :: l_stat
 !
 ! --------------------------------------------------------------------------------------------------
@@ -57,33 +50,18 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  model            : name of model
-! In  nume_ddl         : name of nume_ddl object (numbering equation)
-! In  sd_inout         : datastructure for input/output parameters
-! In  l_reuse          : .true. if reuse results datastructure
-! Out inst_0           : time for initial state (R8VIDE if not defined)
-! Out type_init        : type of initialization
-!              -1 : PAS D'INITIALISATION. (VRAI STATIONNAIRE)
-!               0 : CALCUL STATIONNAIRE
-!               1 : VALEUR UNIFORME
-!               2 : CHAMP AUX NOEUDS
-!               3 : RESULTAT D'UN AUTRE CALCUL
+! In  nume_dof         : name of nume_dof object (numbering equation)
+! IO  ds_inout         : datastructure for input/output management
 ! Out l_stat           : .true. if stationnary
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: io_lcha, io_info
-    character(len=24), pointer :: v_io_para(:) => null()
-    integer, pointer :: v_io_info(:) => null()
-    integer :: zioch, nb_field
-    character(len=8) :: calcri, result
-    character(len=24) :: answer, evol
-    character(len=24) :: field_name_resu, field_name_algo, field_algo
-    integer :: i_field
-    character(len=16) :: keyword_fact
-    integer :: i, neq, nocc, nume_store_0
-    real(kind=8) :: tempct
     integer :: ifm, niv
-    aster_logical :: l_init_evol, l_init_state
+    character(len=8) :: calcri
+    character(len=24) :: stin_evol, field_type, algo_name, field_algo
+    integer :: nb_field, i_field, neq, init_nume
+    real(kind=8) :: temp_init, init_time
+    aster_logical :: l_stin_evol, l_state_init, l_field_read, l_init_stat, l_init_vale, l_reuse
     real(kind=8), pointer :: vale(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
@@ -93,37 +71,27 @@ implicit none
 !
 ! - Initializations
 !
-    type_init = -2
-    inst_0   = r8vide()
-    l_init_evol = .false.
-    l_stat = .false.
-    l_init_state = .false.
-    keyword_fact = 'ETAT_INIT'
+    call dismoi('NB_EQUA', nume_dof, 'NUME_DDL', repi=neq)
 !
-    call dismoi('NB_EQUA', nume_ddl, 'NUME_DDL', repi=neq)
-!
-! - Access to input/output datastructure
-!
-    io_lcha = sd_inout(1:19)//'.LCHA'
-    io_info = sd_inout(1:19)//'.INFO'
-    call jeveuo(io_lcha, 'L', vk24 = v_io_para)
-    call jeveuo(io_info, 'L', vi   = v_io_info)
-    nb_field = v_io_info(1)
-    zioch    = v_io_info(4)
-!
-! - ON VERIFIE QUE LE MODELE SAIT CALCULER UNE RIGIDITE
+! - Model can compute rigidity ?
 !
     call dismoi('CALC_RIGI', model, 'MODELE', repk=calcri)
     if (calcri .ne. 'OUI') then
         call utmess('F', 'CALCULEL2_65', sk=model)
     endif
 !
+! - Parameters from input/output datastructure
+!
+    nb_field     = ds_inout%nb_field
+    l_reuse      = ds_inout%l_reuse
+    l_init_stat  = ds_inout%l_init_stat
+    l_init_vale  = ds_inout%l_init_vale
+    temp_init    = ds_inout%temp_init
+    l_state_init = ds_inout%l_state_init
+!
 ! - PAS D'ETAT INITIAL EN PRESENCE D'UN CONCEPT REENTRANT
 !
-    call getfac(keyword_fact, nocc)
-    ASSERT(nocc.le.1)
-    l_init_state = nocc.gt.0
-    if (l_init_state) then
+    if (l_state_init) then
         if (niv .ge. 2) then
             write (ifm,*) '<THERNONLINE> LECTURE ETAT INITIAL'
         endif
@@ -135,34 +103,33 @@ implicit none
         endif
     endif
 !
-! - CONCEPT EVOL_THER DONNE DANS ETAT_INIT
+! - Get name of result datastructure in ETAT_INIT
 !
-    call getvid(keyword_fact, 'EVOL_THER', iocc=1, scal=evol, nbret=nocc)
-    ASSERT(nocc.le.1)
-    l_init_evol = nocc.gt.0
+    l_stin_evol = ds_inout%l_stin_evol
+    stin_evol   = ds_inout%stin_evol
 !
-! - INSTANT INITIAL
+! - Initial storing index and time
+!
+    call nmdoin(ds_inout)
+    init_time = ds_inout%init_time
+    init_nume = ds_inout%init_nume
+!
+! - Print
 !
     if (niv .ge. 2) then
         write (ifm,*) '<THERNONLINE> ... INSTANT INITIAL'
-    endif
-    call nmdoin(evol, l_init_evol, inst_0, nume_store_0)
-    if (niv .ge. 2) then
-        if (inst_0 .eq. r8vide()) then
+        if (init_nume.eq.-1) then
             write (ifm,*) '<THERNONLINE> ...... NON DEFINI PAR ETAT_INIT'
         else
-            write (ifm,*) '<THERNONLINE> ...... VALEUR    : ',inst_0
-            write (ifm,*) '<THERNONLINE> ...... NUME_ORDRE: ',nume_store_0
+            write (ifm,*) '<THERNONLINE> ...... VALEUR    : ',init_time
+            write (ifm,*) '<THERNONLINE> ...... NUME_ORDRE: ',init_nume
         endif
     endif
 !
-! - PAS DE PRECISION --> C'EST UN CALCUL STATIONNAIRE
+! - No initial state => stationnary
 !
-    call getfac(keyword_fact, nocc)
-    ASSERT(nocc.le.1)
-    if (nocc .eq. 0) then
+    if (.not.l_state_init) then
         l_stat    = .true.
-        type_init = -1
         goto 99
     endif
 !
@@ -170,70 +137,57 @@ implicit none
 !
     do i_field = 1, nb_field
 !
-! ----- Initial state defined by EVOL_THER results 
-!
-        result = evol(1:8)
-!
 ! ----- Read field for ETAT_INIT
 !
-        if (l_init_evol) then
+        if (l_stin_evol) then
 !
-! --------- Read field for ETAT_INIT - From results datastructure
+! --------- Initial temperature: from results datastructure
 !
-            type_init = 3
-            call nmetl1(result, nume_store_0, sd_inout, i_field)
+            call nmetl1(i_field, ds_inout)
         else
 !
 ! --------- Name of field (type) in results datastructure
 !
-            field_name_resu = v_io_para(zioch*(i_field-1)+1 )
+            field_type = ds_inout%field(i_field)%type
 !
 ! --------- Name of field in algorithm
 !
-            field_name_algo = v_io_para(zioch*(i_field-1)+6 )
-            call nmetnc(field_name_algo, field_algo)
+            algo_name  = ds_inout%field(i_field)%algo_name
+            call nmetnc(algo_name, field_algo)
 !
-            if (field_name_resu .eq. 'TEMP') then
+! --------- Informations about initial state
+!
+            l_field_read  = ds_inout%l_field_read(i_field)
+            if (field_type .eq. 'TEMP') then
                 call jeveuo(field_algo(1:19)//'.VALE', 'E', vr=vale)
 !
 ! ------------- Initial temperature: from field
 !
-                call getvid(keyword_fact, 'CHAM_NO', iocc=1, nbret=nocc)
-                if (nocc .eq. 1) then
-                    type_init = 2
-                    call nmetl2(keyword_fact, sd_inout, i_field)
+                if (l_field_read) then
+                    call nmetl2(i_field, ds_inout)
                 endif
 !
 ! ------------- Initial temperature: stationnary computation
 !
-                call getvtx(keyword_fact, 'STATIONNAIRE', iocc=1, scal=answer, nbret=nocc)
-                if (nocc .gt. 0) then
-                    if (answer(1:3) .eq. 'OUI') then
-                        l_stat = .true.
-                        type_init = 0
-                        v_io_para(zioch*(i_field-1)+4) = 'STATIONNAIRE'
-                    endif
+                if (l_init_stat) then
+                    l_stat = .true.
+                    ds_inout%field(i_field)%init_type = 'STAT'
                 endif
 !
 ! ------------- Initial temperature: constant
 !
-                call getvr8(keyword_fact, 'VALE', iocc=1, scal=tempct, nbret=nocc)
-                if (nocc .gt. 0) then
-                    type_init = 1
-                    do i = 1, neq
-                        vale(i) = tempct
-                        v_io_para(zioch*(i_field-1)+4) = 'VALE'
-                    end do
+                if (l_init_vale) then
+                    vale(1:neq) = temp_init
+                    ds_inout%field(i_field)%init_type = 'VALE'
                 endif
-!
             else
-                call nmetl2(keyword_fact, sd_inout, i_field)
+                call nmetl2(i_field, ds_inout)
             endif
         endif
 !
 ! ----- Read field for ETAT_INIT - Some checks
 !
-        call ntetl3(result, sd_inout, i_field, tempct)
+        call ntetl3(i_field, ds_inout, temp_init)
     end do
 !
  99 continue

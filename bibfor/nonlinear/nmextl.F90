@@ -50,7 +50,6 @@ implicit none
 !
 ! In  mesh             : name of mesh
 ! In  model            : name of model
-! In  sd_inout         : datastructure for input/output parameters
 ! In  keyw_fact        : factor keyword to read extraction parameters
 ! In  i_keyw_fact      : index of keyword to read extraction parameters
 ! In  field_type       : type of field (name in results datastructure)

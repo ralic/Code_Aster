@@ -18,14 +18,11 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nxdoet(model    , nume_ddl, l_reuse, l_stat, sd_inout,&
-                      type_init, inst_0)
+    subroutine nxdoet(model, nume_dof, l_stat, ds_inout)
+        use NonLin_Datastructure_type
         character(len=24), intent(in) :: model
-        aster_logical, intent(in) :: l_reuse
-        character(len=24), intent(in) :: nume_ddl
-        character(len=24), intent(in) :: sd_inout
-        real(kind=8), intent(out) :: inst_0
-        integer, intent(out) :: type_init
+        character(len=24), intent(in) :: nume_dof
+        type(NL_DS_InOut), intent(inout) :: ds_inout
         aster_logical, intent(out) :: l_stat
     end subroutine nxdoet
 end interface

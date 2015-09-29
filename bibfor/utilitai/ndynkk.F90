@@ -225,9 +225,9 @@ subroutine ndynkk(sddyna, chaine, nomsd)
         ASSERT(.false.)
     endif
 !
-999 continue
-!
     nomsd = cham24(1:19)
+!
+999 continue
 !
     call jedema()
 !

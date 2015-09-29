@@ -18,15 +18,15 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmarce(sdieto, result   , sddisc, instan, numarc,&
-                      force , ds_print_)
-        use NonLin_Datastructure_type
-        character(len=24) :: sdieto
-        character(len=8) :: result
-        character(len=19) :: sddisc
-        real(kind=8) :: instan
-        integer :: numarc
-        aster_logical :: force
+    subroutine nmarce(ds_inout, result   , sddisc, time, nume_store,&
+                      force   , ds_print_)
+        use NonLin_Datastructure_type   
+        type(NL_DS_InOut), intent(in) :: ds_inout
+        character(len=8), intent(in) :: result
+        character(len=19), intent(in) :: sddisc
+        real(kind=8), intent(in) :: time
+        integer, intent(in) :: nume_store
+        aster_logical, intent(in) :: force
         type(NL_DS_Print), optional, intent(in) :: ds_print_
     end subroutine nmarce
 end interface

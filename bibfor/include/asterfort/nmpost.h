@@ -18,13 +18,13 @@
 ! aslint: disable=W1504
 !
 interface
-    subroutine nmpost(modele, mesh   , numedd  , numfix, carele     ,&
-                      compor, numins  , mate  , comref     ,&
-                      lischa, defico , resoco  , resocu, ds_algopara,&
-                      fonact, carcri , ds_print, sdstat, sddisc     ,&
-                      sdtime, sd_obsv, sderro  , sddyna, sdpost     ,&
-                      valinc, solalg , meelem  , measse, veelem     ,&
-                      veasse, sdener , sdcriq  , eta)
+    subroutine nmpost(modele , mesh    , numedd, numfix     , carele  ,&
+                      compor , numins  , mate  , comref     , ds_inout,&
+                      defico , resoco  , resocu, ds_algopara, fonact  ,&
+                      carcri , ds_print, sdstat, sddisc     , sdtime  ,&
+                      sd_obsv, sderro  , sddyna, sdpost     , valinc  ,&
+                      solalg , meelem  , measse, veelem     , veasse  ,&
+                      sdener , sdcriq  , eta   , lischa)
         use NonLin_Datastructure_type
         character(len=24) :: modele
         character(len=8), intent(in) :: mesh
@@ -35,10 +35,10 @@ interface
         integer :: numins
         character(len=24) :: mate
         character(len=24) :: comref
-        character(len=19) :: lischa
         character(len=24) :: defico
         character(len=24) :: resoco
         character(len=24) :: resocu
+        type(NL_DS_InOut), intent(in) :: ds_inout
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         integer :: fonact(*)
         character(len=24) :: carcri
@@ -50,6 +50,7 @@ interface
         character(len=24) :: sderro
         character(len=24) :: sdieto
         character(len=19) :: sddyna
+        character(len=19) :: lischa
         character(len=19) :: sdpost
         character(len=19) :: valinc(*)
         character(len=19) :: solalg(*)

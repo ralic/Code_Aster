@@ -1,27 +1,10 @@
 subroutine op0116()
-    implicit none
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
 #include "asterfort/utmess.h"
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
-!
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-!
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-!
-! person_in_charge: hassan.berro@edf.fr
-! OPERATEUR CALCULANT LE CHAMP DE PRESSION DANS UN FLUIDE SELON LES
-! HYPOTHESES D'UN ECOULEMENT POTENTIEL
-!
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8pi.h"
@@ -51,7 +34,31 @@ subroutine op0116()
 #include "asterfort/tabcor.h"
 #include "asterfort/vtcmbl.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/CreateInOutDS.h"
+#include "asterfort/ReadInOut.h"
 !
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+!
+! person_in_charge: hassan.berro@edf.fr
+! OPERATEUR CALCULANT LE CHAMP DE PRESSION DANS UN FLUIDE SELON LES
+! HYPOTHESES D'UN ECOULEMENT POTENTIEL
+!
+
     aster_logical :: ltrans, lbid
     integer :: i, ib, imod,  nbmod, j1, jdisc, dim, icor(2), iadx, iady 
     integer :: nbdesc, nbrefe, nbvale, nbcoefs, icoef, jcoef
@@ -61,10 +68,11 @@ subroutine op0116()
     character(len=8) :: mailla, maflui, nume
     character(len=19) :: k19b, chamno, vectas, solve1, solve2, resuas, nomch(3)
     character(len=19) :: tmpmod
-    character(len=24) :: typres, nomcom, mate, metres, sdieto, arcinf, inflis
+    character(len=24) :: typres, nomcom, mate, metres, arcinf, inflis
     character(len=24) :: chcmb2, vesolx, vesoly, vesolz, vect2
     character(len=24) :: liditr, nuddl, modele, bl24, chcomb, chamnx, chamny, chamnz
     complex(kind=8) :: c16b
+    type(NL_DS_InOut) :: ds_inout
     modele  = ' '
     mater   = ' '
     mate    = ' '
@@ -78,6 +86,7 @@ subroutine op0116()
     epstol = 1.d5*r8prem()
     r8b=0.d0
     c16b = dcmplx(0.,0.)
+    
 !---------------------------------------------------------------------
     call jemarq()
 !---------------------------------------------------------------------
@@ -121,7 +130,14 @@ subroutine op0116()
 
     vect2 = '&&OP0116.2ND.MEMBRE'
     call chflch(rigthe,vect2)
-
+!
+! - Create input/output management datastructure
+!
+    call CreateInOutDS('THER', ds_inout)
+!
+! - Read parameters for input/output management
+!
+    call ReadInOut('THER', nomres, ds_inout)
 
 !---------------------------------------------------------------------
 !---------- APPEL A CALFLU -------------------------------------------
@@ -198,8 +214,7 @@ subroutine op0116()
             if (i .eq. 1) then
                 ltrans = .false.
                 k19b = '                   '
-                sdieto = '&&OP0116.SDIETO'
-                call ntetcr(nuddl, .false._1, sdieto)
+                call ntetcr(nuddl, .false._1, ds_inout)
 !
                 inflis = '&&OP0116.SDDIS.ARCH.INFL'
                 call wkvect(inflis, 'V V R', 3, j1)
@@ -216,8 +231,7 @@ subroutine op0116()
                 zr(jdisc+1-1) = freq
 !
                 call nxnoli(modele, mate, bl24, .false._1, .false._1,&
-                            .false._1, ltrans, para, arcinf(1:19), k19b,&
-                            sdieto, k19b)
+                            ltrans,  para, arcinf(1:19), k19b, ds_inout)
             endif
             
             k19b = '                   '
@@ -231,8 +245,7 @@ subroutine op0116()
             zr(jdisc+i-1) = freq
 
             call ntarch(i-1, modele, mate, bl24, .false._1,&
-                        para, arcinf(1:19), k19b, sdieto, k19b,&
-                        lbid)
+                        para, arcinf(1:19), k19b, ds_inout, lbid)
 !
 10      continue
     endif

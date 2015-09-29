@@ -1,4 +1,6 @@
-subroutine nmextc(sd_inout, keyw_fact, i_keyw_fact, field_type, l_extr)
+subroutine nmextc(ds_inout, keyw_fact, i_keyw_fact, field_type, l_extr)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -25,7 +27,7 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=24), intent(in) :: sd_inout
+    type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=16), intent(in) :: keyw_fact
     integer, intent(in) :: i_keyw_fact
     character(len=24), intent(out) :: field_type
@@ -39,7 +41,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sd_inout         : datastructure for input/output parameters
+! In  ds_inout         : datastructure for input/output management
 ! In  keyw_fact        : factor keyword to read extraction parameters
 ! In  i_keyw_fact      : index of keyword to read extraction parameters
 ! Out field_type       : type of field (name in results datastructure)
@@ -47,8 +49,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nchp, n1
-    integer :: i_field
+    integer :: nchp, n1, i_field
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -64,16 +65,12 @@ implicit none
 !
     call getvtx(keyw_fact, 'NOM_CHAM', iocc=i_keyw_fact, scal=field_type)
 !
-! - Get index of field in sd_inout
+! - Get index of field in input/output datastructure
 !
-    call nmetob(sd_inout, field_type, i_field)
+    call nmetob(ds_inout, field_type, i_field)
 !
 ! - Can been monitored ?
 !
-    if (i_field .eq. 0) then
-        l_extr = .false.
-    else
-        l_extr = .true.
-    endif
+    l_extr = i_field.gt.0
 !
 end subroutine

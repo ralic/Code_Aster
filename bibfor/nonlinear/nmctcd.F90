@@ -1,7 +1,10 @@
-subroutine nmctcd(modele, mate  , carele, fonact, compor,&
-                  sdtime, sddisc, sddyna, numins, valinc,&
-                  solalg, lischa, comref, defico, resoco,&
-                  resocu, numedd, veelem, veasse, measse)
+subroutine nmctcd(modele, mate  , carele  , fonact, compor,&
+                  sdtime, sddisc, sddyna  , numins, valinc,&
+                  solalg, lischa, comref  , defico, resoco,&
+                  resocu, numedd, ds_inout, veelem, veasse,&
+                  measse)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -36,6 +39,7 @@ implicit none
     character(len=24) :: mate, carele
     character(len=24) :: compor
     integer :: numins
+    type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=19) :: sddisc, sddyna, lischa
     character(len=24) :: defico, resoco, resocu, comref, numedd
     character(len=24) :: sdtime
@@ -69,6 +73,7 @@ implicit none
 ! IN  CARCRI : PARAMETRES METHODES D'INTEGRATION LOCALES (VOIR NMLECT)
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IN  NUMINS : NUMERO D'INSTANT
+! In  ds_inout         : datastructure for input/output management
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
 ! IN  NBVECT : NOMBRE DE VECT_ELEM DANS LA LISTE
@@ -136,11 +141,11 @@ implicit none
 !
 ! --- CALCUL EFFECTIF
 !
-    call nmxvec(modele, mate  , carele, compor, sdtime,&
-                sddisc, sddyna, numins, valinc, solalg,&
-                lischa, comref, resoco, resocu, numedd,&
-                veelem, veasse, measse, nbvect, ltypve,&
-                lcalve, loptve, lassve)
+    call nmxvec(modele  , mate  , carele, compor, sdtime,&
+                sddisc  , sddyna, numins, valinc, solalg,&
+                lischa  , comref, resoco, resocu, numedd,&
+                ds_inout, veelem, veasse, measse, nbvect,&
+                ltypve  , lcalve, loptve, lassve)
 !
  99 continue
 !

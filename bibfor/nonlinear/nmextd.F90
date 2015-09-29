@@ -1,8 +1,9 @@
-subroutine nmextd(field_name_resu, sd_inout, field)
+subroutine nmextd(field_type, ds_inout, field_algo)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
-#include "asterfort/jeveuo.h"
 #include "asterfort/nmetnc.h"
 #include "asterfort/nmetob.h"
 !
@@ -24,9 +25,9 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=24), intent(in) :: sd_inout
-    character(len=*), intent(in) :: field_name_resu
-    character(len=*), intent(out) :: field 
+    character(len=*), intent(in) :: field_type
+    type(NL_DS_InOut), intent(in) :: ds_inout
+    character(len=*), intent(out) :: field_algo
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -36,39 +37,27 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sd_inout        : datastructure for input/output paramnmextnmeters
-! In  field_name_resu : name of field in algorithme
-! Out field           : name of datastructure for field
+! In  field_type       : name of field (type) in results datastructure
+! In  ds_inout         : datastructure for input/output management
+! Out field_algo       : name of datastructure for field
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: io_lcha, io_info
-    character(len=24), pointer :: v_io_para(:) => null()
-    integer, pointer :: v_io_info(:) => null()
-    integer :: zioch
-    character(len=24) :: field_name_algo
+    character(len=24) :: algo_name
     integer :: i_field_obsv
 !
 ! --------------------------------------------------------------------------------------------------
 !
 !
-! - Access to datastructure
-!
-    io_lcha = sd_inout(1:19)//'.LCHA'
-    io_info = sd_inout(1:19)//'.INFO'
-    call jeveuo(io_lcha, 'L', vk24 = v_io_para)
-    call jeveuo(io_info, 'L', vi   = v_io_info)
-    zioch = v_io_info(4)
-!
 ! - Get index of field used for OBSERVATION
 !
-    call nmetob(sd_inout, field_name_resu, i_field_obsv)
+    call nmetob(ds_inout, field_type, i_field_obsv)
 !
 ! - Get name of datastructure for field
 !
     if (i_field_obsv.ne.0) then
-        field_name_algo  = v_io_para(zioch*(i_field_obsv-1)+6 )
-        call nmetnc(field_name_algo, field)
+        algo_name  = ds_inout%field(i_field_obsv)%algo_name
+        call nmetnc(algo_name, field_algo)
     endif
 !
 end subroutine

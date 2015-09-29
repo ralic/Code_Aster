@@ -1,24 +1,17 @@
-subroutine ntinit(result, modele, mate, carele, lischa,&
-                  lisch2, solveu, para, numedd, lostat,&
-                  levol, lnonl, sddisc, sd_inout, mailla,&
-                  sdcrit, time)
+subroutine ntinit(modele, mate    , carele, lischa, solveu,&
+                  para  , numedd  , lostat, l_evol, lnonl ,&
+                  sddisc, ds_inout, mailla, sdcrit, time)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/gcucon.h"
-#include "asterfort/getvid.h"
-#include "asterfort/copisd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/gnomsd.h"
-#include "asterfort/infniv.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/ntcrch.h"
 #include "asterfort/ntcrcv.h"
 #include "asterfort/ntetcr.h"
-#include "asterfort/ntcra0.h"
 #include "asterfort/numero.h"
 #include "asterfort/nxdoet.h"
 #include "asterfort/nxnoli.h"
@@ -44,12 +37,12 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    aster_logical :: lostat, levol, lnonl
-    character(len=19) :: lischa, lisch2, solveu
+    aster_logical :: lostat, l_evol, lnonl
+    character(len=19) :: lischa, solveu
     character(len=19) :: sddisc, sdcrit
     character(len=24) :: modele, mate, carele
-    character(len=24) :: result, numedd, time
-    character(len=24), intent(out) :: sd_inout
+    character(len=24) :: numedd, time
+    type(NL_DS_InOut), intent(inout) :: ds_inout
     character(len=8) :: mailla
     real(kind=8) :: para(*)
 !
@@ -59,35 +52,18 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, initpr, n1
-    integer :: niv, ifm
+    character(len=8) :: result
     character(len=14) :: nuposs
-    character(len=19) :: lisins
-    character(len=24) :: noojb, k24bla, vhydr, hydr0
-    real(kind=8) :: instin
-    aster_logical :: lreuse
+    character(len=24) :: noojb, vhydr, hydr0
+    real(kind=8) :: init_time
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
-    call infniv(ifm, niv)
-!
-! --- INITIALISATIONS
-!
-    lreuse = .false.
-    lisins = ' '
-    k24bla = ' '
-    vhydr = k24bla
+    vhydr  = ' '
     lostat = .false.
-    time = result(1:8)//'.CHTPS'
+    result = ds_inout%result
+    time   = result(1:8)//'.CHTPS'
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=mailla)
-!
-! --- CONCEPT REENTRANT ?
-!
-    call gcucon(result, 'EVOL_THER', iret)
-    if (iret .gt. 0) then
-        lreuse = .true.
-    endif
 !
 ! --- NUMEROTATION ET CREATION DU PROFIL DE LA MATRICE
 !
@@ -104,46 +80,27 @@ implicit none
 !
     call ntcrch(modele, numedd, hydr0, vhydr)
 !
-! --- CREATION DE LA SD IN ET OUT
+! - Create input/output datastructure
 !
-    call ntetcr(numedd, lnonl, sd_inout)
+    call ntetcr(numedd, lnonl, ds_inout,&
+                list_load_ = lischa)
 !
-! --- LECTURE ETAT INITIAL
+! - Read initial state
 !
-    call nxdoet(modele, numedd, lreuse, lostat, sd_inout,&
-                initpr, instin)
+    call nxdoet(modele, numedd, lostat, ds_inout)
+    init_time = ds_inout%init_time
 !
-! - Transient computation ?
+! - Time discretization and storing datastructures
 !
-    levol = .false.
-    call getvid('INCREMENT', 'LIST_INST', iocc=1, scal=lisins, nbret=n1)
-    if (n1 .eq. 0) then
-        if (.not.lostat) then
-            call utmess('F', 'DISCRETISATION_8')
-        endif
-        levol = .false.
-    else
-        levol = .true.
-    endif
+    call tiinit(ds_inout, sddisc, lostat, l_evol)
 !
-! --- CREATION SD DISCRETISATION ET ARCHIVAGE
+! - Prepare storing
 !
-    if (levol) then
-        call tiinit(result, lreuse, instin, lisins, sddisc)
-    else
-        call ntcra0(sddisc)
-    endif
-!
-! --- CREATION DE LA SD EVOL_THER
-!
-    call nxnoli(modele, mate, carele, lostat, lreuse,&
-                lnonl, levol, para, sddisc, sdcrit,&
-                sd_inout, lisch2)
-    call copisd('LISTE_CHARGES', 'G', lischa, lisch2)
+    call nxnoli(modele, mate, carele, lostat, lnonl   ,&
+                l_evol, para, sddisc, sdcrit, ds_inout)
 !
 ! --- CREATION DE LA SD POUR ARCHIVAGE DES INFORMATIONS DE CONVERGENCE
 !
     call ntcrcv(sdcrit)
 !
-    call jedema()
 end subroutine

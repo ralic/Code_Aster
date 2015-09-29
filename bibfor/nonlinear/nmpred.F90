@@ -3,8 +3,8 @@ subroutine nmpred(modele, numedd, numfix  , mate       , carele,&
                   fonact, carcri, ds_print, sdstat     , sdtime,&
                   sddisc, sdnume, sderro  , numins     , valinc,&
                   solalg, matass, maprec  , defico     , resoco,&
-                  resocu, sddyna, meelem  , measse     , veelem,&
-                  veasse, lerrit)
+                  resocu, sddyna, ds_inout, meelem     , measse,&
+                  veelem, veasse, lerrit)
 !
 use NonLin_Datastructure_type
 !
@@ -43,6 +43,7 @@ implicit none
     character(len=19) :: matass, maprec
     character(len=24) :: sdtime, sdstat
     type(NL_DS_Print), intent(inout) :: ds_print
+    type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=19) :: lischa, solveu, sddisc, sddyna, sdnume
     character(len=24) :: modele, mate, carele, comref, compor
     character(len=24) :: numedd, numfix
@@ -75,6 +76,7 @@ implicit none
 ! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
 ! IO  ds_print         : datastructure for printing parameters
+! In  ds_inout         : datastructure for input/output management
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
 ! IN  SDTIME : SD TIMER
 ! IN  SDSTAT : SD STATISTIQUES
@@ -120,13 +122,13 @@ implicit none
 !
     if ((ds_algopara%matrix_pred .eq. 'ELASTIQUE').or.&
         (ds_algopara%matrix_pred .eq. 'TANGENTE')) then
-        call nmprta(modele, numedd, numfix  , mate       , carele,&
-                    comref, compor, lischa  , ds_algopara, solveu,&
-                    fonact, carcri, ds_print, sdstat     , sdtime,&
-                    sddisc, numins, valinc  , solalg     , matass,&
-                    maprec, defico, resoco  , resocu     , sddyna,&
-                    meelem, measse, veelem  , veasse     , sdnume,&
-                    ldccvg, faccvg, rescvg  , codere) 
+        call nmprta(modele  , numedd, numfix  , mate       , carele,&
+                    comref  , compor, lischa  , ds_algopara, solveu,&
+                    fonact  , carcri, ds_print, sdstat     , sdtime,&
+                    sddisc  , numins, valinc  , solalg     , matass,&
+                    maprec  , defico, resoco  , resocu     , sddyna,&
+                    meelem  , measse, veelem  , veasse     , sdnume,&
+                    ds_inout, ldccvg, faccvg  , rescvg     , codere)
 !
 ! --- PREDICTION PAR EXTRAPOLATION DU PAS PRECEDENT OU PAR DEPLACEMENT
 ! --- CALCULE

@@ -20,7 +20,9 @@
 interface
     subroutine nxlect(l_ther_nonl, list_load  , solver    , ther_para_i, ther_para_r,&
                       ther_crit_i, ther_crit_r, result_dry, matcst     , coecst     ,&
-                      result     , model      , mate      , cara_elem  , compor     )
+                      result     , model      , mate      , cara_elem  , compor     ,&
+                      ds_inout)
+        use NonLin_Datastructure_type
         aster_logical, intent(in) :: l_ther_nonl
         character(len=19), intent(inout) :: list_load
         character(len=19), intent(in) :: solver
@@ -31,10 +33,11 @@ interface
         character(len=8), intent(out) :: result_dry
         aster_logical, intent(out) :: matcst
         aster_logical, intent(out) :: coecst
-        character(len=24), intent(out) :: result
+        character(len=8), intent(out) :: result
         character(len=24), intent(out) :: model
         character(len=24), intent(out) :: mate
         character(len=24), intent(out) :: cara_elem
         character(len=24), intent(out) :: compor
+        type(NL_DS_InOut), intent(inout) :: ds_inout
     end subroutine nxlect
 end interface

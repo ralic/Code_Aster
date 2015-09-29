@@ -18,10 +18,8 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmdoin(evol_noli, l_init_evol, inst_init, nume_init)
-        character(len=24), intent(in) :: evol_noli
-        aster_logical, intent(in) :: l_init_evol
-        integer, intent(out) :: nume_init
-        real(kind=8), intent(out) :: inst_init
+    subroutine nmdoin(ds_inout)
+        use NonLin_Datastructure_type
+        type(NL_DS_InOut), intent(inout) :: ds_inout
     end subroutine nmdoin
 end interface

@@ -18,8 +18,9 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmextc(sd_inout, keyw_fact, i_keyw_fact, field_type, l_extr)
-        character(len=24), intent(in) :: sd_inout
+    subroutine nmextc(ds_inout, keyw_fact, i_keyw_fact, field_type, l_extr)
+        use NonLin_Datastructure_type
+        type(NL_DS_InOut), intent(in) :: ds_inout
         character(len=16), intent(in) :: keyw_fact
         integer, intent(in) :: i_keyw_fact
         character(len=24), intent(out) :: field_type

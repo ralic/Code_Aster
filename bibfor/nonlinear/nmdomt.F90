@@ -59,7 +59,7 @@ implicit none
 !
     call infniv(ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> ... Read parameters for algorithm parameters'
+        write (ifm,*) '<MECANONLINE> . Read parameters for algorithm parameters'
     endif
 !
 ! - Get method

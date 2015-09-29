@@ -16,12 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmcrdd(meshz , modelz   , sd_inout , cara_elemz, matez    ,&
+    subroutine nmcrdd(meshz , modelz   , ds_inout , cara_elemz, matez    ,&
                       compor, disp_curr, strx_curr, varc_curr , varc_refe,&
                       time  , sd_suiv)
+        use NonLin_Datastructure_type
         character(len=*), intent(in) :: meshz
         character(len=*), intent(in) :: modelz
-        character(len=24), intent(in) :: sd_inout
+        type(NL_DS_InOut), intent(in) :: ds_inout
         character(len=*), intent(in) :: cara_elemz
         character(len=*), intent(in) :: matez
         character(len=19), intent(in) :: compor

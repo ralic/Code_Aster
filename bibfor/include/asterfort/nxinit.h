@@ -18,25 +18,24 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nxinit(result, modele, mate, carele, compor,&
-                      lischa, lisch2, solveu, para, numedd,&
-                      lostat, levol, lnonl, sddisc, sd_inout,&
-                      vhydr, sdobse, mailla, sdcrit, time)
-        character(len=24) :: result
+    subroutine nxinit(modele, mate  , carele  , compor, lischa,&
+                      solveu, para  , numedd  , lostat, l_evol,&
+                      lnonl , sddisc, ds_inout, vhydr , sdobse,&
+                      mailla, sdcrit, time)
+        use NonLin_Datastructure_type
         character(len=24) :: modele
         character(len=24) :: mate
         character(len=24) :: carele
         character(len=24) :: compor
         character(len=19) :: lischa
-        character(len=19) :: lisch2
         character(len=19) :: solveu
         real(kind=8) :: para(*)
         character(len=24) :: numedd
         aster_logical :: lostat
-        aster_logical :: levol
+        aster_logical :: l_evol
         aster_logical :: lnonl
         character(len=19) :: sddisc
-        character(len=24), intent(out) :: sd_inout
+        type(NL_DS_InOut), intent(inout) :: ds_inout
         character(len=24) :: vhydr
         character(len=19) :: sdobse
         character(len=8) :: mailla

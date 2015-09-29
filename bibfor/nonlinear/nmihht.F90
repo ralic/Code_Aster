@@ -2,7 +2,9 @@ subroutine nmihht(model      , nume_dof , mate     , compor        , comp_para  
                   cara_elem  , list_load, varc_refe, list_func_acti, sdstat     ,&
                   sddyna     , sdtime   , sdnume   , sdcont_defi   , sdcont_solv,&
                   sdunil_solv, hval_incr, sddisc   , hval_algo     , hval_veasse,&
-                  result)
+                  hval_measse, ds_inout)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -49,7 +51,8 @@ implicit none
     character(len=19), intent(in) :: hval_incr(*)
     character(len=19), intent(in) :: hval_algo(*)
     character(len=19), intent(in) :: hval_veasse(*)
-    character(len=8), intent(in) :: result
+    character(len=19), intent(in) :: hval_measse(*)
+    type(NL_DS_InOut), intent(in) :: ds_inout
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -79,7 +82,8 @@ implicit none
 ! In  hval_incr        : hat-variable for incremental values fields
 ! In  hval_algo        : hat-variable for algorithms fields
 ! In  hval_veasse      : hat-variable for vectors (node fields)
-! In  result           : name of result datastructure (EVOL_NOLI)
+! In  hval_measse      : hat-variable for matrix
+! In  ds_inout         : datastructure for input/output management
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -104,7 +108,7 @@ implicit none
                     list_load  , nume_dof   , varc_refe, list_func_acti, sdstat     ,&
                     sddyna     , sdtime     , sddisc   , sdnume        , sdcont_defi,&
                     sdcont_solv, sdunil_solv, hval_incr, hval_algo     , hval_veasse,&
-                    result)
+                    hval_measse, ds_inout)
     endif
 
 end subroutine

@@ -1,6 +1,8 @@
 subroutine nmobsv(meshz     , modelz, sddisc, sd_obsv  , nume_time,&
                   cara_elemz, matez , compor, varc_refe, valinc   ,&
-                  sd_inout)
+                  ds_inout  )
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -40,7 +42,7 @@ implicit none
     character(len=19), intent(in) :: compor
     character(len=*), intent(in) :: varc_refe
     character(len=19), intent(in) :: valinc(*)
-    character(len=24), optional, intent(in) :: sd_inout
+    type(NL_DS_InOut), optional, intent(in) :: ds_inout
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -60,7 +62,7 @@ implicit none
 ! In  compor           : name of <CARTE> COMPOR
 ! In  varc_refe        : command variable for reference
 ! In  valinc           : hat variable for algorithm fields
-! In  sd_inout         : datastructure for input/output parameters
+! In  ds_inout         : datastructure for input/output management
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -116,7 +118,7 @@ implicit none
             i_field      = v_extr_info(7+7*(i_keyw_fact-1)+7)
             i_field      = abs(i_field)
             field_type   = v_extr_field(4*(i_field-1)+1)
-            call nmextd(field_type, sd_inout, field)
+            call nmextd(field_type, ds_inout, field)
             v_extr_field(4*(i_field-1)+4) = field
         end do
     endif

@@ -18,9 +18,9 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmfonc(ds_conv       , ds_algopara, solver , model , sdcont_defi,&
-                      list_load     , l_cont     , l_unil , sdnume, sddyna     ,&
-                      sdcriq        , mate       , compor_, result, comp_para  ,&
+    subroutine nmfonc(ds_conv       , ds_algopara, solver , model   , sdcont_defi,&
+                      list_load     , l_cont     , l_unil , sdnume  , sddyna     ,&
+                      sdcriq        , mate       , compor_, ds_inout, comp_para  ,&
                       list_func_acti)
         use NonLin_Datastructure_type
         type(NL_DS_Conv), intent(in) :: ds_conv
@@ -36,7 +36,7 @@ interface
         character(len=24), intent(in) :: sdcriq
         character(len=24), intent(in) :: mate
         character(len=*), intent(in) :: compor_
-        character(len=8), intent(in) :: result
+        type(NL_DS_InOut), intent(in) :: ds_inout
         character(len=24), intent(in) :: comp_para
         integer, intent(inout) :: list_func_acti(*)
     end subroutine nmfonc

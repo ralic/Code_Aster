@@ -16,10 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmetc0(model, cara_elem, compor, sd_inout)
+    subroutine nmetc0(model, cara_elem, compor, ds_inout)
+        use NonLin_Datastructure_type
         character(len=24), intent(in) :: model
         character(len=24), intent(in) :: cara_elem
         character(len=19), intent(in) :: compor
-        character(len=24), intent(in) :: sd_inout
+        type(NL_DS_InOut), intent(in) :: ds_inout
     end subroutine nmetc0
 end interface

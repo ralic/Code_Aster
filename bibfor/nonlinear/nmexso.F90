@@ -1,4 +1,24 @@
-subroutine nmexso(noma, result, sddyna, numedd)
+subroutine nmexso(mesh, ds_inout, sddyna, nume_dof)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/nbec.h"
+#include "asterfort/ndynkk.h"
+#include "asterfort/utmess.h"
+#include "asterfort/wkvect.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,49 +36,31 @@ subroutine nmexso(noma, result, sddyna, numedd)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! person_in_charge: mickael.abbas at edf.fr
 !
-! aslint: disable=
-    implicit none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/nbec.h"
-#include "asterfort/ndynkk.h"
-#include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
+    character(len=8), intent(in) :: mesh
+    type(NL_DS_InOut), intent(in) :: ds_inout
+    character(len=19), intent(in) :: sddyna
+    character(len=24), intent(in) :: nume_dof
 !
-    character(len=8) :: noma, result
-    character(len=19) :: sddyna
-    character(len=24) :: numedd
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! MECA_NON_LINE - Computation
 !
-! ROUTINE MECA_NON_LINE (DYNAMIQUE)
+! Initialization of FORCE_SOL load
 !
-! INITIALISATION FORCES DE SOL
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! In  mesh             : name of mesh
+! In  ds_inout         : datastructure for input/output management
+! In  sddyna           : name of dynamic parameters datastructure
+! In  nume_dof         : name of numbering object (NUME_DDL)
 !
-!
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  RESULT : NOM DU RESULTAT
-! IN  SDDYNA : SD DYNAMIQUE
-! IN  NUMEDD : NUME_DDL
-!
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     character(len=15) :: sdexso
     character(len=19) :: sdexsz
-    character(len=8) :: cnfsol
-    character(len=8) :: nomacr
+    character(len=8) :: cnfsol, result, nomacr
     character(len=24) :: magrno, maille, nprno
     character(len=24) :: tabequ, tabfrq, tabinf, nomres
     integer :: ieqint, jfrq, iddint, jnomre
@@ -79,9 +81,13 @@ subroutine nmexso(noma, result, sddyna, numedd)
     character(len=8), pointer :: vnomacr(:) => null()
     character(len=24), pointer :: veiss(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
+!
+! - Get parameters
+!
+    result      = ds_inout%result
 !
 ! --- INITIALISATIONS
 !
@@ -89,8 +95,8 @@ subroutine nmexso(noma, result, sddyna, numedd)
 !
 ! --- ACCES NUMEROTATION
 !
-    call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
-    call dismoi('NUM_GD_SI', numedd, 'NUME_DDL', repi=gd)
+    call dismoi('NB_EQUA', nume_dof, 'NUME_DDL', repi=neq)
+    call dismoi('NUM_GD_SI', nume_dof, 'NUME_DDL', repi=gd)
     nec = nbec(gd)
 !
 ! --- ACCES SD EXCIT_SOL
@@ -127,20 +133,20 @@ subroutine nmexso(noma, result, sddyna, numedd)
     gnintf = veiss(5)
     if (gnintf .eq. ' ') then
         maille = veiss(6)
-        call jeveuo(noma//'.NOMACR', 'L', vk8=vnomacr)
-        call jenonu(jexnom(noma//'.SUPMAIL', maille), ima)
+        call jeveuo(mesh//'.NOMACR', 'L', vk8=vnomacr)
+        call jenonu(jexnom(mesh//'.SUPMAIL', maille), ima)
         nomacr = vnomacr(ima)
         call jelira(nomacr//'.LINO', 'LONMAX', ival=nbno)
         call jeveuo(nomacr//'.LINO', 'L', idno)
     else
-        magrno = noma(1:8)//'.GROUPENO'
+        magrno = mesh(1:8)//'.GROUPENO'
         call jelira(jexnom(magrno, gnintf), 'LONUTI', ival=nbno)
         call jeveuo(jexnom(magrno, gnintf), 'L', idno)
     endif
 !
 ! --- NOMBRE DE DDL INTERNES
 !
-    nprno = numedd(1:14)//'.NUME.PRNO'
+    nprno = nume_dof(1:14)//'.NUME.PRNO'
     call jenonu(jexnom(nprno(1:19)//'.LILI', '&MAILLA'), ibid)
     call jeveuo(jexnum(nprno, ibid), 'L', aprno)
     nddint = 0
@@ -255,8 +261,8 @@ subroutine nmexso(noma, result, sddyna, numedd)
     if (uniter .ne. 0) then
         do ifreq = 1, nfreq
             read(uniter,*) rinst
-            read(uniter,1000) ((zr(jrig+(ifreq-1)*nbmod2+(i2-1)&
-            *nbmode+i1-1), i2=1,nbmode),i1=1,nbmode)
+            read(uniter,100) &
+                ((zr(jrig+(ifreq-1)*nbmod2+(i2-1)*nbmode+i1-1), i2=1,nbmode),i1=1,nbmode)
         end do
     endif
 !
@@ -267,8 +273,8 @@ subroutine nmexso(noma, result, sddyna, numedd)
     if (unitem .ne. 0) then
         do ifreq = 1, nfreq
             read(unitem,*) rinst
-            read(unitem,1000) ((zr(jmas+(ifreq-1)*nbmod2+(i2-1)&
-            *nbmode+i1-1), i2=1,nbmode),i1=1,nbmode)
+            read(unitem,100) &
+                ((zr(jmas+(ifreq-1)*nbmod2+(i2-1)*nbmode+i1-1), i2=1,nbmode),i1=1,nbmode)
         end do
     endif
 !
@@ -279,12 +285,12 @@ subroutine nmexso(noma, result, sddyna, numedd)
     if (unitea .ne. 0) then
         do ifreq = 1, nfreq
             read(unitea,*) rinst
-            read(unitea,1000) ((zr(jamo+(ifreq-1)*nbmod2+(i2-1)&
-            *nbmode+i1-1), i2=1,nbmode),i1=1,nbmode)
+            read(unitea,100) &
+                ((zr(jamo+(ifreq-1)*nbmod2+(i2-1)*nbmode+i1-1), i2=1,nbmode),i1=1,nbmode)
         end do
     endif
 !
     call jedetr(tabfrq)
-    1000 format((6(1x,1pe13.6)))
+100 format((6(1x,1pe13.6)))
     call jedema()
 end subroutine

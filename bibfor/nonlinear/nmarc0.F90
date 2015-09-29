@@ -1,6 +1,22 @@
-subroutine nmarc0(result, modele, mate, carele, fonact,&
-                  sdcrit, sddyna, sdpost, carcri, sdcriq,&
-                  sdpilo, lisch2, numarc, time_curr)
+subroutine nmarc0(result, modele        , mate  , carele   , fonact,&
+                  sdcrit, sddyna        , sdpost, carcri   , sdcriq,&
+                  sdpilo, list_load_resu, numarc, time_curr)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/ndaram.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/ndynre.h"
+#include "asterfort/nmarcp.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rssepa.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,26 +36,12 @@ subroutine nmarc0(result, modele, mate, carele, fonact,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/ndaram.h"
-#include "asterfort/ndynlo.h"
-#include "asterfort/ndynre.h"
-#include "asterfort/nmarcp.h"
-#include "asterfort/rsadpa.h"
-#include "asterfort/rssepa.h"
     character(len=8) :: result
     integer :: numarc
     integer :: fonact(*)
     real(kind=8) :: time_curr
     character(len=19) :: sddyna, sdpost, sdpilo
-    character(len=19) :: lisch2, sdcrit
+    character(len=19) :: list_load_resu, sdcrit
     character(len=24) :: modele, mate, carele, sdcriq, carcri
 !
 ! ----------------------------------------------------------------------
@@ -63,7 +65,7 @@ subroutine nmarc0(result, modele, mate, carele, fonact,&
 ! IN  SDPOST : SD POUR POST-TRAITEMENTS (CRIT_STAB ET MODE_VIBR)
 ! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
 ! IN  SDDYNA : SD DEDIEE A LA DYNAMIQUE
-! IN  LISCH2 : NOM DE LA SD INFO CHARGE POUR STOCKAGE DANS LA SD
+! In  list_load_resu : name of list of loads saved in results datastructure
 ! IN  NUMARC : NUMERO D'ARCHIVAGE
 ! IN  INSTAN : VALEUR DE L'INSTANT
 !
@@ -164,7 +166,7 @@ subroutine nmarc0(result, modele, mate, carele, fonact,&
 ! --- ARCHIVAGE DU MODELE, MATERIAU, CARA_ELEM ET DE LA SD CHARGE
 !
     call rssepa(result, numarc, modele(1:8), mate(1:8), carele(1:8),&
-                lisch2)
+                list_load_resu)
 !
 ! --- ARCHIVAGE DES CRITERES DE CONVERGENCE
 !

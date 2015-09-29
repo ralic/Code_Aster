@@ -37,14 +37,14 @@ def C_ETAT_INIT( COMMAND, statut ) :  #COMMUN#
     kwargs['INST']           = SIMP(statut='f',typ='R')
     kwargs['NUME_DIDI']      = SIMP(statut='f',typ='I')
     kwargs['INST_ETAT_INIT'] = SIMP(statut='f',typ='R')
-    kwargs['CRITERE']        = SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU"))
+    kwargs['CRITERE']        = SIMP(statut='d',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU"))
 
     if COMMAND == 'DYNA_NON_LINE':
         mcfact = FACT(statut=statut,max='**',
                   regles=(AU_MOINS_UN('EVOL_NOLI','ACCE','VITE','DEPL','SIGM','VARI',),
                           EXCLUS('NUME_ORDRE','INST'), ),
                   b_prec_rela=BLOC(condition="(CRITERE=='RELATIF')",
-                                   PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-6,),),
+                                   PRECISION       =SIMP(statut='d',typ='R',defaut= 1.E-6,),),
                   b_prec_abso=BLOC(condition="(CRITERE=='ABSOLU')",
                                    PRECISION       =SIMP(statut='o',typ='R',),),
                     **kwargs

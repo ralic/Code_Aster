@@ -16,13 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine ntcrob(meshz  , modelz, result, sddisc, sd_inout,&
+    subroutine ntcrob(meshz  , modelz, result, sddisc, ds_inout,&
                       sd_obsv)
+        use NonLin_Datastructure_type
         character(len=*), intent(in) :: meshz
         character(len=*), intent(in) :: modelz
         character(len=8), intent(in) :: result
         character(len=19), intent(in) :: sddisc
-        character(len=24), intent(in) :: sd_inout
+        type(NL_DS_InOut), intent(in) :: ds_inout
         character(len=19), intent(out) :: sd_obsv
     end subroutine ntcrob 
 end interface

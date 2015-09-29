@@ -18,13 +18,15 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine ntetcr(nume_ddl, l_temp_nonl, sd_inout,&
-                      comporz , hydrz      , hydr_initz)
-        character(len=24), intent(in) :: nume_ddl
+    subroutine ntetcr(nume_dof  , l_temp_nonl, ds_inout  ,&
+                      list_load_, compor_    , hydr_     , hydr_init_)
+        use NonLin_Datastructure_type
+        character(len=24), intent(in) :: nume_dof
         aster_logical, intent(in) :: l_temp_nonl
-        character(len=24), intent(out) :: sd_inout
-        character(len=*), optional, intent(in) :: comporz
-        character(len=*), optional, intent(in) :: hydrz
-        character(len=*), optional, intent(in) :: hydr_initz
+        type(NL_DS_InOut), intent(inout) :: ds_inout
+        character(len=19), optional, intent(in) :: list_load_
+        character(len=*), optional, intent(in) :: compor_
+        character(len=*), optional, intent(in) :: hydr_
+        character(len=*), optional, intent(in) :: hydr_init_
     end subroutine ntetcr
 end interface

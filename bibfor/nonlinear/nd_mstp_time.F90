@@ -1,4 +1,6 @@
-subroutine nd_mstp_time(result, list_func_acti, time_prev_step, l_comp_mstp)
+subroutine nd_mstp_time(ds_inout, list_func_acti, time_prev_step, l_comp_mstp)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -31,7 +33,7 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=8), intent(in) :: result
+    type(NL_DS_InOut), intent(in) :: ds_inout
     integer, intent(in) :: list_func_acti(*)
     real(kind=8), intent(out) :: time_prev_step
     aster_logical, intent(out) :: l_comp_mstp
@@ -44,26 +46,25 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  result           : name of result datastructure (EVOL_NOLI)
+! In  ds_inout         : datastructure for input/output management
 ! In  list_func_acti   : list of active functionnalities
 ! Out time_prev_step   : previous time for multi-step schemes
 ! Out l_comp_mstp      : .true. if compute second member
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=16) :: keywf
-    aster_logical :: l_reuse, l_init_state, l_init_evol
-    integer :: nocc, nume_init, nume_prev_step, nume_last
+    aster_logical :: l_reuse, l_init_state, l_stin_evol
+    integer :: init_nume, nume_prev_step, nume_last
     integer :: j_inst
-    real(kind=8) :: inst_init
-    character(len=24) :: result_init
+    character(len=24) :: stin_evol
+    character(len=8) :: result
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    keywf          = 'ETAT_INIT'
     time_prev_step = r8vide()
     l_comp_mstp    = .false.
-    result_init    = ' '
+    result         = ds_inout%result
+    init_nume      = ds_inout%init_nume
 !
 ! - Does ETAT_INIT (initial state) exist ?
 !
@@ -75,25 +76,22 @@ implicit none
 !
 ! - Get name of result datastructure in ETAT_INIT
 !
-    call getvid(keywf, 'EVOL_NOLI', iocc=1, scal=result_init, nbret=nocc)
-    l_init_evol = nocc .gt. 0
+    l_stin_evol  = ds_inout%l_stin_evol
+    stin_evol    = ds_inout%stin_evol 
 !
 ! - Initial state: get time if possible
 !
     if (l_init_state) then
 !
-! ----- Initial storing index and time
-!
-        call nmdoin(result_init, l_init_evol, inst_init, nume_init)
-        nume_prev_step = nume_init - 1
+        nume_prev_step = init_nume - 1
 !
 ! ----- Get previous time
 !
-        if (l_init_evol) then
+        if (l_stin_evol) then
             if (nume_prev_step.le.0) then
                 call utmess('I','DYNAMIQUE_50')
             else
-                call rsadpa(result_init, 'L', 1, 'INST_PREC', nume_prev_step,&
+                call rsadpa(stin_evol, 'L', 1, 'INST_PREC', nume_prev_step,&
                             0, sjv=j_inst, istop = 0)
                 if (j_inst.eq.isnnem()) then
                     call utmess('I','DYNAMIQUE_51')

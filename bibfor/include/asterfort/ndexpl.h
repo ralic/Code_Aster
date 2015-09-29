@@ -18,12 +18,12 @@
 ! aslint: disable=W1504
 !
 interface
-    subroutine ndexpl(modele, numedd  , numfix, mate       , carele,&
-                      comref, compor  , lischa, ds_algopara, fonact,&
-                      carcri, ds_print, sdstat, sdnume     , sddyna,&
-                      sddisc, sdtime  , sderro, valinc     , numins,&
-                      solalg, solveu  , matass, maprec     , meelem,&
-                      measse, veelem  , veasse, nbiter)
+    subroutine ndexpl(modele, numedd  , numfix, mate       , carele  ,&
+                      comref, compor  , lischa, ds_algopara, fonact  ,&
+                      carcri, ds_print, sdstat, sdnume     , sddyna  ,&
+                      sddisc, sdtime  , sderro, valinc     , numins  ,&
+                      solalg, solveu  , matass, maprec     , ds_inout,&
+                      meelem, measse  , veelem, veasse     , nbiter)
         use NonLin_Datastructure_type
         character(len=24) :: modele
         character(len=24) :: numedd
@@ -36,6 +36,7 @@ interface
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         integer :: fonact(*)
         character(len=24) :: carcri
+        type(NL_DS_InOut), intent(in) :: ds_inout
         type(NL_DS_Print), intent(inout) :: ds_print
         character(len=24) :: sdstat
         character(len=19) :: sdnume

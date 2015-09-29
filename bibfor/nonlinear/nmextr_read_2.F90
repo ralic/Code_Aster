@@ -1,5 +1,7 @@
-subroutine nmextr_read_2(sdextrz      , sd_inout, nb_keyw_fact, list_field, rela_field_keyw,&
+subroutine nmextr_read_2(sdextrz      , ds_inout, nb_keyw_fact, list_field, rela_field_keyw,&
                          nb_field_comp)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -28,7 +30,7 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=24), intent(in) :: sd_inout
+    type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=*), intent(in) :: sdextrz
     integer, intent(in) :: nb_keyw_fact
     character(len=24), intent(in), pointer :: list_field(:)
@@ -44,7 +46,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  sdextr           : name of datastructure for extraction
-! In  sd_inout         : datastructure for input/output parameters
+! In  ds_inout         : datastructure for input/output management
 ! In  nb_keyw_fact     : number of factor keyword to read extraction parameters
 ! In  list_field       : list of fields
 ! In  rela_field_keyw  : relation between field index and keyword index
@@ -87,7 +89,7 @@ implicit none
                 field_type = list_field(i_field)
                 if (field_type.eq.'EPSI_ELGA') then
                     field_disc = 'ELGA'
-                    call nmextd(field_type, sd_inout, field_comp)
+                    call nmextd(field_type, ds_inout, field_comp)
                 else
                     ASSERT(.false.)
                 endif

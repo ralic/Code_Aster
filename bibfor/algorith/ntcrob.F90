@@ -1,5 +1,7 @@
-subroutine ntcrob(meshz  , modelz, result, sddisc, sd_inout,&
+subroutine ntcrob(meshz  , modelz, result, sddisc, ds_inout,&
                   sd_obsv)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -34,7 +36,7 @@ implicit none
     character(len=*), intent(in) :: modelz
     character(len=8), intent(in) :: result
     character(len=19), intent(in) :: sddisc
-    character(len=24), intent(in) :: sd_inout
+    type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=19), intent(out) :: sd_obsv
 !
 ! --------------------------------------------------------------------------------------------------
@@ -49,7 +51,7 @@ implicit none
 ! In  model            : name of model
 ! In  result           : name of results datastructure
 ! In  sddisc           : datastructure for discretization
-! In  sd_inout         : datastructure for input/output parameters
+! In  ds_inout         : datastructure for input/output management
 ! Out sd_obsv          : datastructure for observation parameters
 !
 ! --------------------------------------------------------------------------------------------------
@@ -80,7 +82,7 @@ implicit none
 ! - Read datas for extraction
 !
     sdextr_obsv = sd_obsv(1:14)
-    call nmextr(meshz       , modelz , sdextr_obsv, sd_inout, keyw_fact,&
+    call nmextr(meshz       , modelz , sdextr_obsv, ds_inout, keyw_fact,&
                 nb_keyw_fact, nb_obsv)
 !
 ! - Set reuse index in OBSERVATION table

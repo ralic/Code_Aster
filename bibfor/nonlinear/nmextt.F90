@@ -1,9 +1,10 @@
-subroutine nmextt(sd_inout, field_type, field_disc)
+subroutine nmextt(ds_inout, field_type, field_disc)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
 #include "asterfort/assert.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/nmetob.h"
 !
 ! ======================================================================
@@ -24,7 +25,7 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=24), intent(in) :: sd_inout
+    type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=24), intent(in) :: field_type
     character(len=4), intent(out) :: field_disc
 !
@@ -36,36 +37,25 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sd_inout         : datastructure for input/output parameters
+! In  ds_inout         : datastructure for input/output management
 ! In  field_type       : type of field (name in results datastructure)
 ! Out field_disc       : localization of field (discretization: NOEU or ELGA)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: io_lcha, io_info
-    character(len=24), pointer :: v_io_para(:) => null()
-    integer, pointer :: v_io_info(:) => null()
-    integer :: zioch, i_field
+    integer :: i_field
 !
 ! --------------------------------------------------------------------------------------------------
 !
     field_disc = 'XXXX'
 !
-! - Access to datastructure
-!
-    io_lcha = sd_inout(1:19)//'.LCHA'
-    io_info = sd_inout(1:19)//'.INFO'
-    call jeveuo(io_lcha, 'L', vk24 = v_io_para)
-    call jeveuo(io_info, 'L', vi   = v_io_info)
-    zioch    = v_io_info(4)
-!
 ! - Index of field
 !
-    call nmetob(sd_inout, field_type, i_field)
+    call nmetob(ds_inout, field_type, i_field)
 !
 ! - Get localization of field
 !
-    field_disc = v_io_para(zioch*(i_field-1)+5 )(1:4)
+    field_disc = ds_inout%field(i_field)%disc_type
 !
 ! - Check
 !

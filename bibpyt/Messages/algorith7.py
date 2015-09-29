@@ -47,11 +47,6 @@ cata_msg = {
  COMP1D et SIMO_MIEHE incompatibles
 """),
 
-
-    20 : _(u"""
- le champ de déplacement DIDI n'est pas trouvé dans le concept  %(k1)s
-"""),
-
     61 : _(u"""
  option  %(k1)s  non traitée
 """),

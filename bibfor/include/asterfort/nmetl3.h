@@ -18,15 +18,11 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmetl3(model   , compor      , l_init_evol, result, nume_store_0,&
-                      sd_inout, l_init_state, i_field)
+    subroutine nmetl3(model, compor, i_field, ds_inout)
+        use NonLin_Datastructure_type
         character(len=24), intent(in) :: model
         character(len=24), intent(in) :: compor
-        aster_logical, intent(in) :: l_init_evol
-        character(len=8), intent(in) :: result
-        integer, intent(in) :: nume_store_0
-        character(len=24), intent(in) :: sd_inout
-        aster_logical, intent(in) :: l_init_state
+        type(NL_DS_InOut), intent(in) :: ds_inout
         integer, intent(in) :: i_field
     end subroutine nmetl3
 end interface

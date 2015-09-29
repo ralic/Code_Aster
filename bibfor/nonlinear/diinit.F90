@@ -1,6 +1,6 @@
-subroutine diinit(mesh_         , model_     , result , mate       , cara_elem,&
-                  list_func_acti, sddyna     , ds_conv, ds_algopara, inst_init,&
-                  solver        , sdcont_defi, sddisc)
+subroutine diinit(mesh_         , model_     , ds_inout, mate       , cara_elem,&
+                  list_func_acti, sddyna     , ds_conv , ds_algopara, solver   ,&
+                  sdcont_defi   , sddisc)
 !
 use NonLin_Datastructure_type
 !
@@ -42,10 +42,9 @@ implicit none
     character(len=19), intent(in) :: sddyna
     character(len=24), intent(in) :: cara_elem
     character(len=24), intent(in) :: mate
-    real(kind=8), intent(in) :: inst_init
     type(NL_DS_Conv), intent(in) :: ds_conv
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-    character(len=8), intent(in) :: result
+    type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=19), intent(in) :: solver
     character(len=24), intent(in) :: sdcont_defi
     integer, intent(in) :: list_func_acti(*)
@@ -62,27 +61,32 @@ implicit none
 ! In  model            : name of model
 ! In  mate             : name of material characteristics (field)
 ! In  cara_elem        : name of elementary characteristics (field)
-! In  result           : name of the results datastructure
 ! In  sddyna           : name of dynamic parameters
 ! In  ds_conv          : datastructure for convergence management
-! In  ds_algopara      : datastructure for algorithm parameters
+! In  ds_algo          : datastructure for algorithm management
 ! In  list_func_acti   : active functionnalities vector (see nmfonc)
 ! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
 ! In  solver           : name of solver parameters
 ! In  sddisc           : datastructure for time discretization
-! In  inst_init        : initial time if ETAT_INIT
+! In  ds_inout         : datastructure for input/output management
 !
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: l_expl, l_implex, l_cont_disc
     character(len=19) :: list_inst
-    character(len=8) :: model, mesh
+    character(len=8) :: model, mesh, result
+    real(kind=8) :: init_time
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call getvid('INCREMENT', 'LIST_INST', iocc=1, scal=list_inst)
     model = model_
     mesh  = mesh_
+!
+! - Get parameters
+!
+    init_time = ds_inout%init_time
+    result    = ds_inout%result
 !
 ! - Active functionnalities
 !
@@ -92,7 +96,7 @@ implicit none
 !
 ! - Create time discretization datastructure
 !
-    call nmcrli(inst_init, list_inst, sddisc)
+    call nmcrli(init_time, list_inst, sddisc)
 !
 ! - Courant condition
 !

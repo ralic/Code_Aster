@@ -18,13 +18,13 @@
 ! aslint: disable=W1504
 !
 interface
-    subroutine nmprta(modele, numedd, numfix  , mate       , carele,&
-                      comref, compor, lischa  , ds_algopara, solveu,&
-                      fonact, carcri, ds_print, sdstat     , sdtime,&
-                      sddisc, numins, valinc  , solalg     , matass,&
-                      maprec, defico, resoco  , resocu     , sddyna,&
-                      meelem, measse, veelem  , veasse     , sdnume,&
-                      ldccvg, faccvg, rescvg  , codere)
+    subroutine nmprta(modele  , numedd, numfix  , mate       , carele,&
+                      comref  , compor, lischa  , ds_algopara, solveu,&
+                      fonact  , carcri, ds_print, sdstat     , sdtime,&
+                      sddisc  , numins, valinc  , solalg     , matass,&
+                      maprec  , defico, resoco  , resocu     , sddyna,&
+                      meelem  , measse, veelem  , veasse     , sdnume,&
+                      ds_inout, ldccvg, faccvg  , rescvg     , codere)
         use NonLin_Datastructure_type
         character(len=24) :: modele
         character(len=24) :: numedd
@@ -34,6 +34,7 @@ interface
         character(len=24) :: comref
         character(len=24) :: compor
         character(len=19) :: lischa
+        type(NL_DS_InOut), intent(in) :: ds_inout
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         character(len=19) :: solveu
         integer :: fonact(*)

@@ -1,5 +1,5 @@
-subroutine nmarce(sdieto, result   , sddisc, instan, numarc,&
-                  force , ds_print_)
+subroutine nmarce(ds_inout, result   , sddisc, time, nume_store,&
+                  force   , ds_print_)
 !
 use NonLin_Datastructure_type
 !
@@ -27,53 +27,47 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=24) :: sdieto
-    character(len=8) :: result
-    character(len=19) :: sddisc
-    integer :: numarc
-    real(kind=8) :: instan
-    aster_logical :: force
+    type(NL_DS_InOut), intent(in) :: ds_inout
+    character(len=8), intent(in) :: result
+    character(len=19), intent(in) :: sddisc
+    real(kind=8), intent(in) :: time
+    integer, intent(in) :: nume_store
+    aster_logical, intent(in) :: force
     type(NL_DS_Print), optional, intent(in) :: ds_print_
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (ALGORITHME - ARCHIVAGE )
+! *_NON_LINE - Input/output datastructure
 !
-! ARCHIVAGE DES CHAMPS
+! Save fields in results datastructure
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-!
-! IN  SDIETO : SD GESTION IN ET OUT
+! In  result           : name of datastructure for results
+! In  ds_inout         : datastructure for input/output management
 ! In  ds_print         : datastructure for printing parameters
-! IN  RESULT : NOM UTILISATEUR DU CONCEPT RESULTAT
-! IN  FORCE  : VRAI SI ON SOUHAITE FORCER L'ARCHIVAGE DE TOUS LES CHAMPS
-! IN  SDDISC : SD DISCRETISATION TEMPORELLE
-! IN  INSTAN : INSTANT D'ARCHIVAGE
-! IN  NUMARC : NUMERO D'ARCHIVAGE
+! In  sddisc           : datastructure for discretization
+! In  time             : current time
+! In  force            : .true. to store field whatever storing options
+! In  nume_store       : index to store in results
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: sdieto_info
-    integer, pointer :: v_sdieto_info(:) => null()
-    integer :: nbcham
-    integer :: icham
+    integer :: nb_field, i_field
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    sdieto_info = sdieto(1:19)//'.INFO'
-    call jeveuo(sdieto_info, 'L', vi = v_sdieto_info)
-    nbcham = v_sdieto_info(1)
+    nb_field = ds_inout%nb_field
 !
 ! - Loop on fields
 !
-    do icham = 1, nbcham
+    do i_field = 1, nb_field
         if (present(ds_print_)) then
-            call nmeteo(result, sddisc, sdieto   , force, numarc, &
-                        instan, icham , ds_print_)
+            call nmeteo(result, sddisc , ds_inout , force, nume_store, &
+                        time  , i_field, ds_print_)
         else
-            call nmeteo(result, sddisc, sdieto   , force, numarc, &
-                        instan, icham)
+            call nmeteo(result, sddisc , ds_inout , force, nume_store, &
+                        time  , i_field)
         endif
     end do
 !

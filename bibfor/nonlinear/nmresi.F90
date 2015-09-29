@@ -1,7 +1,8 @@
-subroutine nmresi(noma  , mate   , numedd  , sdnume, fonact,&
-                  sddyna, ds_conv, ds_print, defico, resoco,&
-                  matass, numins , eta     , comref, valinc,&
-                  solalg, veasse , measse  , vresi , vchar)
+subroutine nmresi(noma  , mate   , numedd  , sdnume  , fonact,&
+                  sddyna, ds_conv, ds_print, defico  , resoco,&
+                  matass, numins , eta     , comref  , valinc,&
+                  solalg, veasse , measse  , ds_inout, vresi ,&
+                  vchar)
 !
 use NonLin_Datastructure_type
 !
@@ -9,7 +10,6 @@ implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/getfac.h"
 #include "asterc/r8vide.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infdbg.h"
@@ -54,6 +54,7 @@ implicit none
     character(len=24) :: numedd
     character(len=24) :: defico, resoco
     type(NL_DS_Conv), intent(inout) :: ds_conv
+    type(NL_DS_Print), intent(inout) :: ds_print
     character(len=24) :: mate
     integer :: numins
     character(len=19) :: sddyna, sdnume
@@ -63,9 +64,9 @@ implicit none
     character(len=24) :: comref
     integer :: fonact(*)
     real(kind=8) :: eta
+    type(NL_DS_InOut), intent(in) :: ds_inout
     real(kind=8), intent(out) :: vchar
     real(kind=8), intent(out) :: vresi
-    type(NL_DS_Print), intent(inout) :: ds_print
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -79,6 +80,7 @@ implicit none
 ! IO  ds_print         : datastructure for printing parameters
 ! IN  NUMEDD : NUMEROTATION NUME_DDL
 ! IN  SDNUME : NOM DE LA SD NUMEROTATION
+! In  ds_inout         : datastructure for input/output management
 ! IO  ds_conv          : datastructure for convergence management
 ! IN  COMREF : VARI_COM REFE
 ! IN  MATASS : MATRICE DU PREMIER MEMBRE ASSEMBLEE
@@ -90,14 +92,13 @@ implicit none
 ! IN  VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE
 ! IN  MEASSE : VARIABLE CHAPEAU POUR NOM DES MATR_ASSE
 ! IN  ETA    : COEFFICIENT DE PILOTAGE
-! OUT CONV   : INFORMATIONS SUR LA CONVERGENCE DU CALCUL
 ! Out vresi            : norm of equilibrium residual
 ! Out vchar            : norm of exterior loads
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: jccid=0, jdiri=0, jvcfo=0, jiner=0
-    integer :: ifm=0, niv=0, nocc=0
+    integer :: ifm=0, niv=0
     integer :: neq=0
     character(len=8) :: noddlm=' '
     aster_logical :: ldyna, lstat, lcine, lctcc
@@ -164,8 +165,7 @@ implicit none
     lpilo = isfonc(fonact,'PILOTAGE')
     lcine = isfonc(fonact,'DIRI_CINE')
     lctcc = isfonc(fonact,'CONT_CONTINU')
-    call getfac('ETAT_INIT', nocc)
-    linit = (numins.eq.1).and.(nocc.eq.0)
+    linit = (numins.eq.1).and.(ds_inout%l_state_init)
 !
 ! --- DECOMPACTION DES VARIABLES CHAPEAUX
 !

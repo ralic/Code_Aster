@@ -1,4 +1,6 @@
-subroutine nmetc0(model, cara_elem, compor, sd_inout)
+subroutine nmetc0(model, cara_elem, compor, ds_inout)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -6,8 +8,6 @@ implicit none
 #include "asterfort/calcul.h"
 #include "asterfort/copisd.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/alchml.h"
 !
@@ -32,67 +32,55 @@ implicit none
     character(len=24), intent(in) :: model
     character(len=24), intent(in) :: cara_elem
     character(len=19), intent(in) :: compor
-    character(len=24), intent(in) :: sd_inout
+    type(NL_DS_InOut), intent(in) :: ds_inout
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! *_NON_LINE - Input/output datastructure
 !
-! Compute initial field if necessary
+! Compute initial fields if necessary
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sd_inout         : datastructure for input/output parameters
 ! In  model            : name of model
 ! In  cara_elem        : name of datastructure for elementary parameters (CARTE)
 ! In  compor           : name of <CARTE> COMPOR
+! In  ds_inout         : datastructure for input/output management
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: io_lcha, io_info
-    character(len=24), pointer :: v_io_para(:) => null()
-    integer, pointer :: v_io_info(:) => null()
-    character(len=24) :: field_type, field_name_init
+    character(len=24) :: field_type, init_name
     character(len=24) :: sief_init, vari_init, strx_init
-    integer :: i_field, nb_field, zioch, iret
+    integer :: i_field, nb_field, iret
     character(len=8) :: lpain(1), lpaout(2)
     character(len=24) :: lchin(1), lchout(2)
     character(len=19) :: ligrmo
-    aster_logical :: l_sief, l_vari, l_strx
+    aster_logical :: l_sief, l_vari, l_strx, l_acti
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
-!
-! - Access to datastructure
-!
-    io_lcha = sd_inout(1:19)//'.LCHA'
-    call jeveuo(io_lcha, 'L', vk24 = v_io_para)
-    io_info = sd_inout(1:19)//'.INFO'
-    call jeveuo(io_info, 'L', vi   = v_io_info)
-!
-    nb_field = v_io_info(1)
-    zioch    = v_io_info(4)
+    nb_field = ds_inout%nb_field
 !
 ! - Create initial fields or not ?
 !
-    l_sief = .false.
-    l_vari = .false.
-    l_strx = .false.
+    l_sief = .false._1
+    l_vari = .false._1
+    l_strx = .false._1
     do i_field = 1, nb_field
-        field_type      = v_io_para(zioch*(i_field-1)+1 )
-        field_name_init = v_io_para(zioch*(i_field-1)+2 )
-        if (field_type .eq. 'SIEF_ELGA') then
+        field_type = ds_inout%field(i_field)%type
+        init_name  = ds_inout%field(i_field)%init_name
+        l_acti     = ds_inout%l_field_acti(i_field)
+        if (field_type .eq. 'SIEF_ELGA' .and. l_acti) then
             l_sief    = .true.
-            sief_init = field_name_init
+            sief_init = init_name
         endif
-        if (field_type .eq. 'VARI_ELGA') then
+        if (field_type .eq. 'VARI_ELGA' .and. l_acti) then
             l_vari    = .true.
-            vari_init = field_name_init
+            vari_init = init_name
         endif
-        if (field_type .eq. 'STRX_ELGA') then
+        if (field_type .eq. 'STRX_ELGA' .and. l_acti) then
             l_strx    = .true.
-            strx_init = field_name_init
+            strx_init = init_name
         endif
     end do
 !
@@ -116,5 +104,4 @@ implicit none
                     'OUI')
     endif
 !
-    call jedema()
 end subroutine

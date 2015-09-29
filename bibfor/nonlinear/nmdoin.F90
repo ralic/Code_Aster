@@ -1,13 +1,12 @@
-subroutine nmdoin(evol_noli, l_init_evol, inst_init, nume_init)
+subroutine nmdoin(ds_inout)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
-#include "asterfort/getvis.h"
-#include "asterfort/getvr8.h"
-#include "asterfort/getvtx.h"
 #include "asterfort/utmess.h"
 #include "asterfort/rs_gettime.h"
 #include "asterfort/rs_getlast.h"
@@ -31,86 +30,86 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=24), intent(in) :: evol_noli
-    aster_logical, intent(in) :: l_init_evol
-    integer, intent(out) :: nume_init
-    real(kind=8), intent(out) :: inst_init
+    type(NL_DS_InOut), intent(inout) :: ds_inout
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Non-linear algorithm - Time management
+! Non-linear algorithm - Input/output management
 !
 ! Initial storing index and time
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  evol_noli        : name of result datastructure in ETAT_INIT
-! In  l_init_evol      : .true. if result datastructure in ETAT_INIT
-! Out nume_init        : initial storing index
-!                        -1 if not defined
-! Out inst_init        : initial time
-!                        r8vide if not defined
+! IO  ds_inout         : datastructure for input/output management
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nume_last, nume_user
-    integer :: n1, n2, iret
-    real(kind=8) :: prec, inst_user, inst_last, inst_etat_init
-    character(len=8) :: criter
-    character(len=16) :: keyw_fact
+    integer :: last_nume, user_nume, init_nume
+    real(kind=8) :: last_time, user_time, init_time, stin_time
+    character(len=8) :: criterion
+    real(kind=8) :: precision
+    integer :: iret
+    aster_logical :: l_user_time, l_stin_time, l_user_nume
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    inst_init = r8vide()
-    nume_init = -1
-    keyw_fact = 'ETAT_INIT'
+    init_time = r8vide()
+    init_nume = -1
+!
+! - Get parameters
+!
+    criterion   = ds_inout%criterion
+    precision   = ds_inout%precision
+    user_time   = ds_inout%user_time 
+    l_user_time = ds_inout%l_user_time
+    user_nume   = ds_inout%user_nume
+    l_user_nume = ds_inout%l_user_nume
+    stin_time   = ds_inout%stin_time
+    l_stin_time = ds_inout%l_stin_time
 !
 ! - Initial time search
 !
-    if (l_init_evol) then
-!
-! ----- Read storing index and time by user
-!
-        call getvr8(keyw_fact, 'INST'      , iocc=1, scal=inst_user, nbret=n1)
-        call getvis(keyw_fact, 'NUME_ORDRE', iocc=1, scal=nume_user, nbret=n2)
+    if (ds_inout%l_stin_evol) then
 !
 ! ----- No storing index/time by user => last one in results datastructure
 !
-        if (n1+n2 .eq. 0) then
-            call rs_getlast(evol_noli, nume_last, inst_last)
-            nume_init = nume_last
-            inst_init = inst_last
+        if ((.not.l_user_time) .and. (.not.l_user_nume)) then
+            call rs_getlast(ds_inout%stin_evol, last_nume, last_time)
+            init_nume = last_nume
+            init_time = last_time
         endif
 !
 ! ----- Time by user => get storing index
 !
-        if (n1 .ne. 0) then
-            inst_init = inst_user
-            call getvr8(keyw_fact, 'PRECISION', iocc=1, scal=prec)
-            call getvtx(keyw_fact, 'CRITERE', iocc=1, scal=criter)
-            call rs_getnume(evol_noli, inst_init, criter, prec, nume_init, iret)           
+        if (l_user_time) then
+            init_time = user_time
+            call rs_getnume(ds_inout%stin_evol, init_time, criterion, precision, init_nume, iret)
             if (iret .eq. 0) then
-                call utmess('F', 'ETATINIT_3', sk=evol_noli)
+                call utmess('F', 'ETATINIT_3', sk=ds_inout%stin_evol)
             endif
             if (iret .eq. 2) then
-                call utmess('F', 'ETATINIT_4', sk=evol_noli)
+                call utmess('F', 'ETATINIT_4', sk=ds_inout%stin_evol)
             endif
             ASSERT(iret.eq.1)
         endif
 !
 ! ----- Storing index by user => get time
 !
-        if (n2 .ne. 0) then
-            nume_init = nume_user
-            call rs_gettime(evol_noli, nume_init, inst_init)
+        if (l_user_nume) then
+            init_nume = user_nume
+            call rs_gettime(ds_inout%stin_evol, init_nume, init_time)
         endif
     endif
 !
 ! - Initial time defined by user
 !
-    call getvr8(keyw_fact, 'INST_ETAT_INIT', iocc=1, scal=inst_etat_init, nbret=n2)
-    if (n2 .ne. 0) then
-        inst_init = inst_etat_init
+    if (l_stin_time) then
+        init_time = stin_time
     endif
+!
+! - Set parameters
+!
+    ds_inout%init_time = init_time
+    ds_inout%init_nume = init_nume
 !
 end subroutine

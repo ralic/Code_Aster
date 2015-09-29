@@ -147,4 +147,66 @@ implicit none
         aster_logical          :: l_matr_rigi_syme
     end type NL_DS_AlgoPara
 !
+! - Type: fields for input/output management
+!
+!     type            Name of field (type) in results datastructure
+!     gran_name       Type of GRANDEUR
+!     field_read      Name of field read in ETAT_INIT
+!     disc_type       Spatial discretization of field (ELEM, ELGA, ELNO)
+!     init_keyw       Keyword for ETAT_INIT
+!     obsv_keyw       Keyword for OBSERVATION
+!     l_read_init     Field can been read for initial state
+!     l_store         Field can been store (ARCHIVAGE)
+!     l_obsv          Field can been observed (OBSERVATION)
+!     algo_name       Name of field in algorithm
+!     init_name       Name of field for initial state (ETAT_INIT)
+!     init_type       State of field during initialization
+!                       ZERO: field for zero field (given by init_name)
+!                       RESU: field from result datastructure
+!                       READ: field from ETAT_INIT field by field
+    type NL_DS_Field
+        character(len=16) :: type           
+        character(len=8)  :: gran_name
+        character(len=8)  :: field_read
+        character(len=4)  :: disc_type
+        character(len=8)  :: init_keyw
+        character(len=16) :: obsv_keyw
+        aster_logical     :: l_read_init
+        aster_logical     :: l_store
+        aster_logical     :: l_obsv
+        character(len=24) :: algo_name
+        character(len=24) :: init_name
+        character(len=4)  :: init_type                                                              
+    end type NL_DS_Field
+!
+! - Type: input/output management
+! 
+    type NL_DS_InOut
+        character(len=8)  :: result
+        integer           :: nb_field
+        integer           :: nb_field_maxi = 21
+        type(NL_DS_Field) :: field(21)
+        character(len=8)  :: stin_evol
+        aster_logical     :: l_stin_evol
+        aster_logical     :: l_field_acti(21)
+        aster_logical     :: l_field_read(21)
+        aster_logical     :: l_state_init
+        aster_logical     :: l_reuse
+        integer           :: didi_nume
+        character(len=8)  :: criterion
+        real(kind=8)      :: precision
+        real(kind=8)      :: user_time
+        aster_logical     :: l_user_time
+        integer           :: user_nume
+        aster_logical     :: l_user_nume
+        real(kind=8)      :: stin_time
+        aster_logical     :: l_stin_time
+        real(kind=8)      :: init_time
+        integer           :: init_nume
+        character(len=19) :: list_load_resu
+        aster_logical     :: l_init_stat
+        aster_logical     :: l_init_vale
+        real(kind=8)      :: temp_init
+    end type NL_DS_InOut
+!
 end module

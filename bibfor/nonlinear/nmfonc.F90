@@ -1,6 +1,6 @@
-subroutine nmfonc(ds_conv       , ds_algopara, solver , model , sdcont_defi,&
-                  list_load     , l_cont     , l_unil , sdnume, sddyna     ,&
-                  sdcriq        , mate       , compor_, result, comp_para  ,&
+subroutine nmfonc(ds_conv       , ds_algopara, solver , model   , sdcont_defi,&
+                  list_load     , l_cont     , l_unil , sdnume  , sddyna     ,&
+                  sdcriq        , mate       , compor_, ds_inout, comp_para  ,&
                   list_func_acti)
 !
 use NonLin_Datastructure_type
@@ -8,7 +8,6 @@ use NonLin_Datastructure_type
 implicit none
 !
 #include "asterf_types.h"
-#include "asterc/gcucon.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
 #include "asterc/r8vide.h"
@@ -60,7 +59,7 @@ implicit none
     character(len=24), intent(in) :: sdcriq
     character(len=24), intent(in) :: mate
     character(len=*), intent(in) :: compor_
-    character(len=8), intent(in) :: result
+    type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=24), intent(in) :: comp_para
     integer, intent(inout) :: list_func_acti(*)
 !
@@ -87,7 +86,7 @@ implicit none
 ! In  sdcriq           : datastructure for quality indicators
 ! In  mate             : name of material characteristics (field)
 ! In  compor           : name of comportment definition (field)
-! In  result           : name of results datastructure
+! In  ds_inout         : datastructure for input/output management
 ! In  comp_para        : parameters for comportment
 ! IO  list_func_acti   : list of active functionnalities
 !
@@ -383,13 +382,15 @@ implicit none
 !
 ! - REUSE ?
 !
-    call gcucon(result, 'EVOL_NOLI', iret)
-    if (iret .gt. 0) list_func_acti(39) = 1
+    if (ds_inout%l_reuse) then
+        list_func_acti(39) = 1
+    endif
 !
 ! - Does ETAT_INIT (initial state) exist ?
 !
-    call getfac('ETAT_INIT', nocc)
-    if (nocc.gt.0) list_func_acti(59) = 1
+    if (ds_inout%l_state_init) then
+        list_func_acti(59) = 1
+    endif
 !
 ! - Solvers
 !

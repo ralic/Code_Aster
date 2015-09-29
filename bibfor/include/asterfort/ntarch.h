@@ -18,19 +18,14 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine ntarch(numins, modele, mate, carele, lnonl,&
-                      para, sddisc, sdcrit, sdieto, lisch2,&
-                      force)
+    subroutine ntarch(numins, modele, mate  , carele  , lnonl,&
+                      para  , sddisc, sdcrit, ds_inout, force)
+        use NonLin_Datastructure_type
+        type(NL_DS_InOut), intent(in) :: ds_inout
         integer :: numins
-        character(len=24) :: modele
-        character(len=24) :: mate
-        character(len=24) :: carele
-        aster_logical :: lnonl
         real(kind=8) :: para(*)
-        character(len=19) :: sddisc
-        character(len=19) :: sdcrit
-        character(len=24) :: sdieto
-        character(len=19) :: lisch2
-        aster_logical :: force
+        aster_logical :: lnonl, force
+        character(len=19) :: sddisc, sdcrit
+        character(len=24) :: modele, mate, carele
     end subroutine ntarch
 end interface

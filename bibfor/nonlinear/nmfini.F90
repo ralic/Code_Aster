@@ -1,7 +1,9 @@
-subroutine nmfini(sddyna, valinc, measse, modele, mate  ,&
-                  carele, compor, sdtime, sddisc, numins,&
-                  solalg, lischa, comref, resoco, resocu,&
-                  numedd, veelem, veasse)
+subroutine nmfini(sddyna  , valinc, measse, modele, mate  ,&
+                  carele  , compor, sdtime, sddisc, numins,&
+                  solalg  , lischa, comref, resoco, resocu,&
+                  ds_inout, numedd, veelem, veasse)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -35,11 +37,12 @@ implicit none
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: ludovic.idoux at edf.fr
+! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=19) :: sddyna, valinc(*), measse(*)
     character(len=24) :: modele, mate, carele, compor, sdtime, comref
     character(len=24) :: resoco, resocu, numedd
+    type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=19) :: sddisc, solalg(*), lischa, veelem(*), veasse(*)
     integer :: numins
 !
@@ -62,6 +65,7 @@ implicit none
 ! IN  SDTIME : SD TIMER
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IN  NUMINS : NUMERO D'INSTANT
+! In  ds_inout         : datastructure for input/output management
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
 ! IN  LISCHA : LISTE DES CHARGES
 ! IN  COMREF : VARI_COM DE REFERENCE
@@ -151,11 +155,11 @@ implicit none
     nbvect=0
     call nmcvec('AJOU', 'CNFNOD', 'SIGMOI', .true._1, .true._1,&
                 nbvect, ltypve, loptve, lcalve, lassve)
-    call nmxvec(modele, mate  , carele, compor, sdtime,&
-                sddisc, sddyna, numins, valinc, solalg,&
-                lischa, comref, resoco, resocu, numedd,&
-                veelem, veasse, measse, nbvect, ltypve,&
-                lcalve, loptve, lassve)
+    call nmxvec(modele  , mate  , carele, compor, sdtime,&
+                sddisc  , sddyna, numins, valinc, solalg,&
+                lischa  , comref, resoco, resocu, numedd,&
+                ds_inout, veelem, veasse, measse, nbvect,&
+                ltypve  , lcalve, loptve, lassve)
     call nmchex(veasse, 'VEASSE', 'CNFNOD', cnfnod)
     call jeveuo(cnfnod//'.VALE', 'L', vr=cnfno)
     do iaux = 1, neq

@@ -1,12 +1,11 @@
-subroutine nmetl1(result, nume_store_0, sd_inout, i_field)
+subroutine nmetl1(i_field, ds_inout)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/nmetnc.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/utmess.h"
@@ -30,10 +29,8 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=24), intent(in) :: sd_inout
-    character(len=8), intent(in) :: result
     integer, intent(in) :: i_field
-    integer, intent(in) :: nume_store_0
+    type(NL_DS_InOut), intent(inout) :: ds_inout
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -43,91 +40,78 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  result          : name of datastructure for results
-! In  sd_inout        : datastructure for input/output parameters
-! In  nume_store_0    : initial number of storage in results
-! In  i_field         : field index
+! In  i_field          : field index
+! IO  ds_inout         : datastructure for input/output management
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: io_lcha, io_info
-    character(len=24), pointer :: v_io_para(:) => null()
-    integer, pointer :: v_io_info(:) => null()
-    integer :: zioch, ievol, iret
+    character(len=8) :: stin_evol
+    integer :: ievol, iret, init_nume
     character(len=24) :: valk(2)
     character(len=24) :: field_resu, field_algo
-    character(len=24) :: flag_etat_init, field_name_resu
-    character(len=24) :: field_name_algo, field_name_init, field_disc
+    character(len=16) :: field_type
+    character(len=24) :: algo_name, init_name
+    character(len=4) :: disc_type
 !
 ! --------------------------------------------------------------------------------------------------
 !
     field_resu = '&&NMETL1.CHAMP'
 !
-! - Access to datastructure
+! - Get parameters
 !
-    io_lcha = sd_inout(1:19)//'.LCHA'
-    io_info = sd_inout(1:19)//'.INFO'
-    call jeveuo(io_lcha, 'E', vk24 = v_io_para)
-    call jeveuo(io_info, 'L', vi   = v_io_info)
-    zioch = v_io_info(4)
+    stin_evol = ds_inout%stin_evol
+    init_nume = ds_inout%init_nume
 !
 ! - Field to read ?
 !
-    flag_etat_init = v_io_para(zioch*(i_field-1)+8 )
-    if (flag_etat_init .eq. 'OUI') then
+    if (ds_inout%l_field_acti(i_field).and.ds_inout%field(i_field)%l_read_init) then
 !
 ! ----- Name of field (type) in results datastructure
 !
-        field_name_resu = v_io_para(zioch*(i_field-1)+1 )
+        field_type = ds_inout%field(i_field)%type
 !
-! ----- Name of field for initial state (ETAT_INIT)
+! ----- Name of field for initial state
 !
-        field_name_init = v_io_para(zioch*(i_field-1)+2 )
+        init_name  = ds_inout%field(i_field)%init_name
 !
 ! ----- Spatial discretization of field
 !
-        field_disc = v_io_para(zioch*(i_field-1)+5 )
+        disc_type  = ds_inout%field(i_field)%disc_type
 !
 ! ----- Name of field in algorithm
 !
-        field_name_algo  = v_io_para(zioch*(i_field-1)+6 )
-        call nmetnc(field_name_algo, field_algo)
+        algo_name  = ds_inout%field(i_field)%algo_name
+        call nmetnc(algo_name, field_algo)
 !
 ! ----- Get field in resultats datastructure
 !
-        call rsexch(' ', result, field_name_resu, nume_store_0, field_resu,&
+        call rsexch(' '  , stin_evol, field_type, init_nume, field_resu,&
                     ievol)
 !
-! ----- Field conversion if necessary
+! ----- Copy field
 !
-        if (ievol .ne. 0) then
-            if (field_name_init .ne. ' ') then
-!
-! ------------- Not present: take initial state
-!
-                call copisd('CHAMP', 'V', field_name_init, field_algo)
-                v_io_para(zioch*(i_field-1)+4) = 'ZERO'
-            endif
-        else
-            if (field_disc .eq. 'NOEU') then
+        if (ievol .eq. 0) then
+            if (disc_type .eq. 'NOEU') then
                 call vtcopy(field_resu, field_algo, ' ', iret)
                 if (iret .ne. 0) then
                     valk(1) = field_resu
                     valk(2) = field_algo
                     call utmess('A', 'MECANONLINE_2', nk=2, valk=valk)
                 endif
-            elseif ((field_disc.eq.'ELGA').or.&
-                    (field_disc.eq.'ELNO').or.&
-                    (field_disc.eq.'ELEM')) then
+            elseif ((disc_type.eq.'ELGA').or.&
+                    (disc_type.eq.'ELNO').or.&
+                    (disc_type.eq.'ELEM')) then
                 call copisd('CHAMP_GD', 'V', field_resu, field_algo)
             else
-                write(6,*) 'LOCCHA: ',field_disc
+                write(6,*) 'LOCCHA: ',disc_type
                 ASSERT(.false.)
             endif
-!
-! --------- Present
-!
-            v_io_para(zioch*(i_field-1)+4) = 'SDRESU'
+            ds_inout%field(i_field)%init_type = 'RESU'
+        else
+            if (init_name .ne. ' '.and.ds_inout%field(i_field)%init_type.eq.' ') then
+                call copisd('CHAMP', 'V', init_name, field_algo)
+                ds_inout%field(i_field)%init_type = 'ZERO'
+            endif
         endif
     endif
 !

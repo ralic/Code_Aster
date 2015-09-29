@@ -1,7 +1,7 @@
-subroutine nmarch(result, numins, modele  , mate  , carele,&
-                  fonact, carcri, ds_print, sddisc, sdpost,&
-                  sdcrit, sdtime, sderro  , sddyna, sdpilo,&
-                  sdener, sdieto, sdcriq  , lisch2)
+subroutine nmarch(numins  , modele  , mate  , carele, fonact,&
+                  carcri  , ds_print, sddisc, sdpost, sdcrit,&
+                  sdtime  , sderro  , sddyna, sdpilo, sdener,&
+                  ds_inout, sdcriq  )
 !
 use NonLin_Datastructure_type
 !
@@ -11,8 +11,6 @@ implicit none
 #include "jeveux.h"
 #include "asterfort/diinst.h"
 #include "asterfort/dinuar.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/nmarc0.h"
 #include "asterfort/nmarce.h"
 #include "asterfort/nmarpc.h"
@@ -43,28 +41,25 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=8) :: result
     integer :: fonact(*)
     integer :: numins
     type(NL_DS_Print), intent(in) :: ds_print
-    character(len=24) :: sdieto, sdtime
+    type(NL_DS_InOut), intent(in) :: ds_inout
+    character(len=24) :: sdtime
     character(len=19) :: sddisc, sdcrit, sddyna, sdpost, sdpilo, sdener
     character(len=24) :: carcri
     character(len=24) :: sderro, sdcriq
-    character(len=19) :: lisch2
     character(len=24) :: modele, mate, carele
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (ALGORITHME)
+! MECA_NON_LINE - Algorithm
 !
-! ARCHIVAGE
+! Storing results
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-!
-! IN  RESULT : NOM DE LA SD RESULTAT
-! IN  SDIETO : SD GESTION IN ET OUT
+! In  ds_inout         : datastructure for input/output management
 ! In  ds_print         : datastructure for printing parameters
 ! IN  NUMINS : NUMERO DE L'INSTANT
 ! IN  MODELE : NOM DU MODELEE
@@ -82,55 +77,57 @@ implicit none
 ! IN  SDTIME : SD TIMER
 ! IN  SDENER : SD ENERGIE
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
-! IN  LISCH2 : NOM DE LA SD INFO CHARGE POUR STOCKAGE DANS LA SD
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    integer :: jinst
-    integer :: iret
-    integer :: numarc
+    integer :: jinst, iret, numarc
     real(kind=8) :: instam, instan
-    character(len=8) :: k8bid
+    character(len=8) :: result
     aster_logical :: force, lprint
-    character(len=19) :: k19bid
+    character(len=19) :: k19bid, list_load_resu
     character(len=4) :: etcalc
     integer :: numrep
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
+    result         = ds_inout%result
+    list_load_resu = ds_inout%list_load_resu
 !
-! --- DEBUT MESURE TEMPS
+! - Begin timer
 !
     call nmtime(sdtime, 'RUN', 'ARC')
 !
-! --- CONVERGENCE DU CALCUL ?
+! - Loop state.
 !
     call nmleeb(sderro, 'CALC', etcalc)
 !
-! --- DERNIER PAS -> ON FORCE L'ARCHIVAGE
+! - Last step => storing
 !
     force = .false.
     call nmfinp(sddisc, numins, force)
 !
-! --- ON FORCE L'ARCHIVAGE
+! - Storing
 !
-    if (etcalc .eq. 'CONV') force = .true.
-    if (etcalc .eq. 'STOP') force = .true.
+    if (etcalc .eq. 'CONV') then 
+        force = .true.
+    endif
+    if (etcalc .eq. 'STOP') then
+        force = .true.
+    endif
 !
-! --- IMPRESSION EVENTUELLE DES MESURES DE TEMPS
+! - Print timer
 !
     call uttcpg('IMPR', 'INCR')
 !
-! --- NUMERO D'ARCHIVAGE
+! - Get index for storing
 !
     call dinuar(sddisc, numins, force, numarc, numrep)
 !
-! --- INSTANT COURANT
+! - Current time
 !
     instan = diinst(sddisc,numins)
 !
-! --- ARCHIVAGE DES PARAMETRES CALCULES DANS LA TABLE PARA_CALC
+! - Stroring in PARA_CALC table
 !
     call nmarpc(result, sdener, numrep, instan)
 !
@@ -138,48 +135,51 @@ implicit none
 !
     lprint = ds_print%l_print
 !
-! ----------------------------------------------------------------------
+! - Storing
 !
     if (numarc .ge. 0) then
 !
-! ----- INSTANT DEJA ARCHIVE ?
+! ----- Already stored ?
 !
         if (numarc .ge. 2) then
             call rsadpa(result, 'L', 1, 'INST', numarc-1,&
-                        0, sjv=jinst, styp=k8bid)
+                        0, sjv=jinst)
             instam = zr(jinst)
-            if (instan .le. instam) goto 999
+            if (instan .le. instam) then
+                goto 999
+            endif
         endif
 !
-! ----- AFFICHAGE
+! ----- Print head
 !
         if (lprint) then
             call utmess('I', 'ARCHIVAGE_5')
         endif
 !
-! ----- EXTENSION DE RESULT SI TROP PETIT (DOUBLEMENT)
+! ----- Increased result datastructure if necessary
 !
         call rsexch(' ', result, 'DEPL', numarc, k19bid,&
                     iret)
-        if (iret .eq. 110) call rsagsd(result, 0)
+        if (iret .eq. 110) then
+            call rsagsd(result, 0)
+        endif
 !
-! ----- ARCHIVAGE DES PARAMETRES
+! ----- Storing parameters
 !
-        call nmarc0(result, modele, mate, carele, fonact,&
-                    sdcrit, sddyna, sdpost, carcri, sdcriq,&
-                    sdpilo, lisch2, numarc, instan)
+        call nmarc0(result, modele        , mate  , carele, fonact,&
+                    sdcrit, sddyna        , sdpost, carcri, sdcriq,&
+                    sdpilo, list_load_resu, numarc, instan)
 !
-! ----- ARCHIVAGE DES CHAMPS
+! ----- Stroring fields
 !
-        call nmarce(sdieto, result  , sddisc, instan, numarc,&
-                    force , ds_print)
+        call nmarce(ds_inout, result  , sddisc, instan, numarc,&
+                    force   , ds_print)
     endif
 !
 999 continue
 !
-! --- FIN MESURE TEMPS
+! - End timer
 !
     call nmtime(sdtime, 'END', 'ARC')
 !
-    call jedema()
 end subroutine

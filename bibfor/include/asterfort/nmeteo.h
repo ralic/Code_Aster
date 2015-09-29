@@ -18,10 +18,10 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmeteo(result, sddisc , sd_inout, force, nume_store,&
+    subroutine nmeteo(result, sddisc , ds_inout , force, nume_store,&
                       time  , i_field, ds_print_)
         use NonLin_Datastructure_type
-        character(len=24), intent(in) :: sd_inout
+        type(NL_DS_InOut), intent(in) :: ds_inout
         character(len=19), intent(in) :: sddisc
         character(len=8), intent(in) :: result
         integer, intent(in) :: i_field

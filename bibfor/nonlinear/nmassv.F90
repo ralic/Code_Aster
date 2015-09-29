@@ -1,27 +1,12 @@
-subroutine nmassv(typvez, modelz, lischa, mate, carele,&
-                  compor, numedd, instam, instap, resoco,&
-                  resocu, sddyna, sdtime, valinc, comref,&
-                  measse, vecelz, vecasz)
+subroutine nmassv(typvez  , modelz, lischa, mate  , carele,&
+                  compor  , numedd, instam, instap, resoco,&
+                  resocu  , sddyna, sdtime, valinc, comref,&
+                  ds_inout, measse, vecelz, vecasz)
 !
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
+use NonLin_Datastructure_type
 !
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+implicit none
 !
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
-!
-    implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/asasve.h"
@@ -48,6 +33,25 @@ subroutine nmassv(typvez, modelz, lischa, mate, carele,&
 #include "asterfort/nmtime.h"
 #include "asterfort/nmvcpr.h"
 #include "asterfort/nmviss.h"
+!
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: mickael.abbas at edf.fr
+!
     character(len=*) :: modelz, typvez
     character(len=19) :: lischa
     real(kind=8) :: instap, instam
@@ -55,16 +59,16 @@ subroutine nmassv(typvez, modelz, lischa, mate, carele,&
     character(len=24) :: mate, carele, compor, numedd, comref, sdtime
     character(len=24) :: resoco, resocu
     character(len=19) :: measse(*), valinc(*)
+    type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=*) :: vecasz, vecelz
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (CALCUL)
 !
 ! ASSEMBLAGE DES VECTEURS ELEMENTAIRES
 !
-! ----------------------------------------------------------------------
-!
+! --------------------------------------------------------------------------------------------------
 !
 ! IN  TYPVEC : TYPE DE CALCUL VECT_ELEM
 ! IN  MODELE : MODELE
@@ -80,11 +84,11 @@ subroutine nmassv(typvez, modelz, lischa, mate, carele,&
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  COMREF : VARI_COM DE REFERENCE
 ! IN  SDTIME : SD TIMER
+! In  ds_inout         : datastructure for input/output management
 ! IN  VECELE : VECT_ELEM A ASSEMBLER
 ! OUT VECASS : VECT_ASSE CALCULEE
 !
-!
-!
+! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: r8bid
     character(len=19) :: sstru
@@ -158,12 +162,6 @@ subroutine nmassv(typvez, modelz, lischa, mate, carele,&
         call asasve(vecele, numedd, 'R', vadido)
         call ascova('D', vadido, fomult, 'INST', instap,&
                     'R', vecass)
-!
-! --- DEPLACEMENTS DIRICHLET DIFFERENTIEL
-!
-    else if (typvec.eq.'CNDIDI') then
-        call assvec('V', vecass, 1, vecele, [1.d0],&
-                    numedd, ' ', 'ZERO', 1)
 !
 ! --- DEPLACEMENTS DIRICHLET PILOTE
 !
@@ -246,7 +244,8 @@ subroutine nmassv(typvez, modelz, lischa, mate, carele,&
 ! --- FORCES VEC_ISS
 !
     else if (typvec.eq.'CNVISS') then
-        call nmviss(numedd, sddyna, instam, instap, vecass)
+        call nmviss(numedd, sddyna, ds_inout, instam, instap,&
+                    vecass)
 !
 ! --- FORCES ISSUES DES MACRO-ELEMENTS (PAS DE VECT_ELEM)
 ! --- VECT_ASSE(MACR_ELEM) = MATR_ASSE(MACR_ELEM) * VECT_DEPL

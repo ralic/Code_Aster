@@ -22,7 +22,8 @@ interface
                       cara_elem  , list_load, varc_refe, list_func_acti, sdstat     ,&
                       sddyna     , sdtime   , sdnume   , sdcont_defi   , sdcont_solv,&
                       sdunil_solv, hval_incr, sddisc   , hval_algo     , hval_veasse,&
-                      result)
+                      hval_measse, ds_inout)
+        use NonLin_Datastructure_type
         character(len=24), intent(in) :: model
         character(len=24), intent(in) :: mate
         character(len=24), intent(in) :: cara_elem
@@ -43,6 +44,7 @@ interface
         character(len=19), intent(in) :: hval_incr(*)
         character(len=19), intent(in) :: hval_algo(*)
         character(len=19), intent(in) :: hval_veasse(*)
-        character(len=8), intent(in) :: result
+        character(len=19), intent(in) :: hval_measse(*)
+        type(NL_DS_InOut), intent(in) :: ds_inout
     end subroutine nmihht
 end interface

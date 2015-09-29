@@ -1,6 +1,18 @@
-subroutine nxnoli(modele, mate, carele, lostat, lreuse,&
-                  lnonl, levol, para, sddisc, sdcrit,&
-                  sdieto, lisch2)
+subroutine nxnoli(modele, mate, carele, lostat, lnonl   ,&
+                  levol , para, sddisc, sdcrit, ds_inout)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/ntarch.h"
+#include "asterfort/rscrsd.h"
+#include "asterfort/rsrusd.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,84 +32,57 @@ subroutine nxnoli(modele, mate, carele, lostat, lreuse,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/getres.h"
-#include "asterfort/assert.h"
-#include "asterfort/gnomsd.h"
-#include "asterfort/infniv.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/ntarch.h"
-#include "asterfort/rscrsd.h"
-#include "asterfort/rsrusd.h"
-#include "asterfort/utmess.h"
+    type(NL_DS_InOut), intent(inout) :: ds_inout
     real(kind=8) :: para(*)
-    aster_logical :: lnonl, lostat, lreuse, levol
+    aster_logical :: lnonl, lostat, levol
     character(len=19) :: sddisc, sdcrit
-    character(len=24) :: modele, mate, carele, sdieto
-    character(len=19) :: lisch2
+    character(len=24) :: modele, mate, carele
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE THER_* (SD EVOL_THER)
+! THER_* - Init
 !
-! PREPARATION DE LA SD EVOL_THER
+! Prepare storing
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-!
-!
-!
-!
-!
-    character(len=24) :: arcinf
-    integer :: jarinf
-    character(len=16) :: k16b1, k16b2
     character(len=19) :: sdarch
+    character(len=24) :: sdarch_ainf
+    integer, pointer :: v_sdarch_ainf(:) => null()
     integer :: numarc, numins
     integer :: ifm, niv
-    character(len=24) :: noobj, result
-    aster_logical :: force
+    aster_logical :: force, lreuse
+    character(len=8) :: result
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
     call infniv(ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<THERMIQUE> PREPARATION DE LA SD EVOL_THER'
     endif
 !
-! --- INSTANT INITIAL
+! - INSTANT INITIAL
 !
     numins = 0
     force = .true.
 !
-! --- DETERMINATION DU NOM DE LA SD INFO_CHARGE STOCKEE
-! --- DANS LA SD RESULTAT
+! - Get parameters in input/ouput management datastructure
 !
-    noobj = '12345678.1234.EXCIT'
-    call gnomsd(' ', noobj, 10, 13)
-    lisch2 = noobj(1:19)
+    result = ds_inout%result
+    lreuse = ds_inout%l_reuse
 !
 ! --- ACCES SD ARCHIVAGE
 !
-    sdarch = sddisc(1:14)//'.ARCH'
-    arcinf = sdarch(1:19)//'.AINF'
+    sdarch      = sddisc(1:14)//'.ARCH'
+    sdarch_ainf = sdarch(1:19)//'.AINF'
 !
-! --- NUMERO ARCHIVAGE COURANT
+! - Current storing index
 !
-    call jeveuo(arcinf, 'L', jarinf)
-    numarc = zi(jarinf+1 -1)
+    call jeveuo(sdarch_ainf, 'L', vi = v_sdarch_ainf)
+    numarc = v_sdarch_ainf(1)
 !
 ! --- CREATION DE LA SD EVOL_THER OU NETTOYAGE DES ANCIENS NUMEROS
 !
-    call getres(result, k16b1, k16b2)
     if (lreuse) then
         ASSERT(numarc.ne.0)
         call rsrusd(result, numarc)
@@ -110,11 +95,8 @@ subroutine nxnoli(modele, mate, carele, lostat, lreuse,&
 !
     if ((.not.lreuse) .and. (.not.lostat) .and. levol) then
         call utmess('I', 'ARCHIVAGE_4')
-        call ntarch(numins, modele, mate, carele, lnonl,&
-                    para, sddisc, sdcrit, sdieto, lisch2,&
-                    force)
+        call ntarch(numins, modele, mate  , carele  , lnonl,&
+                    para  , sddisc, sdcrit, ds_inout, force)
     endif
-!
-    call jedema()
 !
 end subroutine

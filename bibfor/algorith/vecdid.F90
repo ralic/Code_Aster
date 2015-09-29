@@ -1,4 +1,25 @@
-subroutine vecdid(modele, lischa, depdid, vecelz)
+subroutine vecdid(model, list_load, disp_didi, vect_elem_)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/calcul.h"
+#include "asterfort/codent.h"
+#include "asterfort/dbgcal.h"
+#include "asterfort/exisd.h"
+#include "asterfort/inical.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mecact.h"
+#include "asterfort/memare.h"
+#include "asterfort/reajre.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,105 +39,59 @@ subroutine vecdid(modele, lischa, depdid, vecelz)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/calcul.h"
-#include "asterfort/codent.h"
-#include "asterfort/dbgcal.h"
-#include "asterfort/exisd.h"
-#include "asterfort/getvid.h"
-#include "asterfort/getvis.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/inical.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/mecact.h"
-#include "asterfort/memare.h"
-#include "asterfort/reajre.h"
-#include "asterfort/rsexch.h"
-#include "asterfort/utmess.h"
+    character(len=24), intent(in) :: model
+    character(len=19), intent(in) :: disp_didi
+    character(len=19), intent(in) :: list_load
+    character(len=*), intent(in) :: vect_elem_
 !
-    character(len=*) :: vecelz
-    character(len=24) :: modele
-    character(len=19) :: depdid
-    character(len=19) :: lischa
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! Mechanics - Load
 !
-! ROUTINE MECA_NON_LINE (CALCUL)
+! Elementary vector for Dirichlet BC (DIDI)
 !
-! CALCUL DES VECTEURS ELEMENTAIRES DIRICHLET DIFFERENTIEL
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! In  model            : name of the model
+! In  disp_didi        : displacement to compute DIDI loads
+! In  list_load        : name of datastructure for list of loads
+! In  vect_elem        : name of vect_elem for DIDI loads
 !
-!
-! IN  MODELE : MODELE
-! IN  LISCHA : SD L_CHARGES
-! IN  DEPDID : DEPLACEMENTS
-! OUT VECELE : VECTEURS ELEMENTAIRES DIRICHLET DIFFERENTIEL
-!
-!
-!
-!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: nbout, nbin
     parameter    (nbout=1, nbin=3)
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
-    integer :: numref, n1, nevo, iret
+    integer :: iret
     integer :: nchar, nbres, icha
     real(kind=8) :: alpha
     character(len=8) :: nomcha
-    character(len=19) :: vecele
+    character(len=19) :: vect_elem
     character(len=16) :: option
     character(len=1) :: base
-    character(len=24) :: evol, masque
+    character(len=24) :: masque
     character(len=24) :: ligrch, chalph
-    aster_logical :: debug
-    integer :: ifmdbg, nivdbg
     integer, pointer :: infc(:) => null()
     character(len=24), pointer :: lcha(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-    call infdbg('PRE_CALCUL', ifmdbg, nivdbg)
 !
 ! --- INITIALISATIONS
 !
-    vecele = vecelz
+    vect_elem = vect_elem_
     base = 'V'
-    call jeexin(lischa(1:19)// '.LCHA', iret)
-    if (iret .eq. 0) goto 9999
+    call jeexin(list_load(1:19)// '.LCHA', iret)
+    if (iret .eq. 0) goto 99
     option = 'MECA_BU_R'
-    if (nivdbg .ge. 2) then
-        debug = .true.
-    else
-        debug = .false.
-    endif
 !
 ! --- INITIALISATION DES CHAMPS POUR CALCUL
 !
     call inical(nbin, lpain, lchin, nbout, lpaout,&
                 lchout)
-!
-! --- CONSTRUCTION DE LA CONFIGURATION DE REFERENCE
-!
-    call getvis('ETAT_INIT', 'NUME_DIDI', iocc=1, scal=numref, nbret=n1)
-    call getvid('ETAT_INIT', 'EVOL_NOLI', iocc=1, scal=evol, nbret=nevo)
-    if ((n1.gt.0) .and. (nevo.gt.0)) then
-        call rsexch(' ', evol, 'DEPL', numref, depdid,&
-                    iret)
-        if (iret .ne. 0) then
-            call utmess('F', 'MECANONLINE5_20', sk=evol)
-        endif
-    endif
 !
 ! --- CONSTRUCTION DU VECTEUR BDIDI.UREF
 !
@@ -126,44 +101,44 @@ subroutine vecdid(modele, lischa, depdid, vecelz)
 !
 ! --- LISTE DES CHARGES
 !
-    call jelira(lischa(1:19)//'.LCHA', 'LONMAX', nchar)
-    call jeveuo(lischa(1:19)//'.LCHA', 'L', vk24=lcha)
-    call jeveuo(lischa(1:19)//'.INFC', 'L', vi=infc)
+    call jelira(list_load(1:19)//'.LCHA', 'LONMAX', nchar)
+    call jeveuo(list_load(1:19)//'.LCHA', 'L', vk24=lcha)
+    call jeveuo(list_load(1:19)//'.INFC', 'L', vi=infc)
 !
 ! --- ALLOCATION DE LA CARTE DU CONDITIONNEMENT DES LAGRANGES
 ! REM : A CE STADE, ON FIXE LE COND A 1
 !
     alpha=1.d0
     chalph = '&&VEBUME.CH_NEUT_R'
-    call mecact('V', chalph, 'MODELE', modele, 'NEUT_R  ',&
+    call mecact('V', chalph, 'MODELE', model, 'NEUT_R  ',&
                 ncmp=1, nomcmp='X1', sr=alpha)
 !
 ! --- PREPARATION DES VECT_ELEM
 !
-    call jeexin(vecele(1:19)// '.RELR', iret)
+    call jeexin(vect_elem(1:19)// '.RELR', iret)
     if (iret .eq. 0) then
-        call memare('V', vecele, modele(1:8), ' ', ' ',&
+        call memare('V', vect_elem, model(1:8), ' ', ' ',&
                     'CHAR_MECA')
     endif
-    call jedetr(vecele(1:19)//'.RELR')
-    call reajre(vecele, ' ', 'V')
-    masque = vecele(1:19)// '.VEXXX'
+    call jedetr(vect_elem(1:19)//'.RELR')
+    call reajre(vect_elem, ' ', 'V')
+    masque = vect_elem(1:19)// '.VEXXX'
 !
 ! --- BOUCLE SUR LES CHARGES DE TYPE DIRICHLET DIFFERENTIEL
 !
     nbres = 0
-    do 10 icha = 1, nchar
+    do icha = 1, nchar
 !
 ! --- VERIF SI CHARGE DE TYPE DIRICHLET DIFFERENTIEL
 !
         if (infc(icha+1) .le. 0 .or. infc(1+3*nchar+2+icha) .eq. 0) then
-            goto 10
+            cycle
         endif
         nomcha = lcha(icha)(1:8)
         call jeexin(nomcha(1:8)//'.CHME.LIGRE.LIEL', iret)
-        if (iret .le. 0) goto 10
+        if (iret .le. 0) cycle
         call exisd('CHAMP_GD', nomcha(1:8)//'.CHME.CMULT', iret)
-        if (iret .le. 0) goto 10
+        if (iret .le. 0) cycle
 !
         call codent(nbres+1, 'D0', masque(12:14))
 !
@@ -171,25 +146,19 @@ subroutine vecdid(modele, lischa, depdid, vecelz)
         lpain(1) = 'PDDLMUR'
         lchin(1) = nomcha// '.CHME.CMULT'
         lpain(2) = 'PDDLIMR'
-        lchin(2) = depdid
+        lchin(2) = disp_didi(1:19)
         lpain(3) = 'PALPHAR'
-        lchin(3) = chalph
+        lchin(3) = chalph(1:19)
         lpaout(1) = 'PVECTUR'
-        lchout(1) = masque
+        lchout(1) = masque(1:19)
         call calcul('S', option, ligrch, nbin, lchin,&
                     lpain, nbout, lchout, lpaout, base,&
                     'OUI')
-!
-        if (debug) then
-            call dbgcal(option, ifmdbg, nbin, lpain, lchin,&
-                        nbout, lpaout, lchout)
-        endif
-!
         nbres = nbres + 1
-        call reajre(vecele, lchout(1), 'V')
- 10 end do
+        call reajre(vect_elem, lchout(1), 'V')
+    end do
 !
-9999 continue
+99  continue
 !
     call jedema()
 end subroutine

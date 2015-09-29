@@ -18,26 +18,17 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine ntinit(result, modele, mate, carele, lischa,&
-                      lisch2, solveu, para, numedd, lostat,&
-                      levol, lnonl, sddisc, sd_inout, mailla,&
-                      sdcrit, time)
-        character(len=24) :: result
-        character(len=24) :: modele
-        character(len=24) :: mate
-        character(len=24) :: carele
-        character(len=19) :: lischa
-        character(len=19) :: lisch2
-        character(len=19) :: solveu
-        real(kind=8) :: para(*)
-        character(len=24) :: numedd
-        aster_logical :: lostat
-        aster_logical :: levol
-        aster_logical :: lnonl
-        character(len=19) :: sddisc
-        character(len=24), intent(out) :: sd_inout
+    subroutine ntinit(modele, mate    , carele, lischa, solveu,&
+                      para  , numedd  , lostat, l_evol, lnonl ,&
+                      sddisc, ds_inout, mailla, sdcrit, time)
+        use NonLin_Datastructure_type
+        aster_logical :: lostat, l_evol, lnonl
+        character(len=19) :: lischa, solveu
+        character(len=19) :: sddisc, sdcrit
+        character(len=24) :: modele, mate, carele
+        character(len=24) :: numedd, time
+        type(NL_DS_InOut), intent(inout) :: ds_inout
         character(len=8) :: mailla
-        character(len=19) :: sdcrit
-        character(len=24) :: time
+        real(kind=8) :: para(*)
     end subroutine ntinit
 end interface

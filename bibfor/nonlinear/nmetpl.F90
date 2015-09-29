@@ -1,9 +1,10 @@
-subroutine nmetpl(sd_inout)
+subroutine nmetpl(ds_inout)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
 #include "asterfort/assert.h"
-#include "asterfort/jeveuo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,7 +24,7 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=24), intent(in) :: sd_inout
+    type(NL_DS_InOut), intent(inout) :: ds_inout
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -35,46 +36,30 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sd_inout         : datastructure for input/output parameters
-! In  field_name_resu  : name of field (type) in results datastructure
-! Out i_field_obsv     : index of field - 0 if not used for OBSERVATION
+! IO  ds_inout         : datastructure for input/output management
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: io_lcha, io_info
-    character(len=24), pointer :: v_io_para(:) => null()
-    integer, pointer :: v_io_info(:) => null()
-    integer :: zioch, nb_field
-    integer :: i_field
-    character(len=24) :: field_algo_old, field_algo_new
+    integer :: nb_field, i_field
+    character(len=24) :: algo_name_old, algo_name_new
     character(len=6) :: hat_type, hat_vari
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!
-! - Access to datastructure
-!
-    io_lcha = sd_inout(1:19)//'.LCHA'
-    io_info = sd_inout(1:19)//'.INFO'
-    call jeveuo(io_lcha, 'E', vk24 = v_io_para)
-    call jeveuo(io_info, 'L', vi   = v_io_info)
-    nb_field = v_io_info(1)
-    zioch    = v_io_info(4)
-!
-! - Loop on fields
+    nb_field = ds_inout%nb_field
 !
     do i_field = 1, nb_field
-        field_algo_old = v_io_para(zioch*(i_field-1)+6 )
-        if (field_algo_old(1:5) .eq. 'CHAP#') then
-            hat_type = field_algo_old(6:11)
+        algo_name_old = ds_inout%field(i_field)%algo_name
+        if (algo_name_old(1:3) .eq. '#H#') then
+            hat_type = algo_name_old(4:9)
+            hat_vari = algo_name_old(11:16)
             if (hat_type .eq. 'VALINC') then
-                hat_vari = field_algo_old(13:18)
                 if (hat_vari .eq. 'TEMP') then
                     ASSERT(.false.)
                 endif
-                field_algo_new = field_algo_old
-                field_algo_new(16:18) = 'PLU'
-                v_io_para(zioch*(i_field-1)+6 ) = field_algo_new
+                algo_name_new = algo_name_old
+                algo_name_new(14:16) = 'PLU'
+                ds_inout%field(i_field)%algo_name = algo_name_new
             endif
         endif
     end do

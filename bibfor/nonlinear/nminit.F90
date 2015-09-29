@@ -1,12 +1,12 @@
-subroutine nminit(result  , model      , numedd , numfix     , mate       ,&
-                  compor  , carele     , lischa , ds_algopara, maprec     ,&
-                  solveu  , carcri     , numins , sdstat     , sddisc     ,&
-                  sdnume  , sdcont_defi, sdcrit , varc_refe  , fonact     ,&
-                  lisch2  , mesh       , sdpilo , sddyna     , ds_print   ,&
-                  sd_suiv , sd_obsv    , sdtime , sderro     , sdpost     ,&
-                  sd_inout, sdener     , ds_conv, sdcriq     , sdunil_defi,&
-                  resocu  , resoco     , valinc , solalg     , measse     ,&
-                  veelem  , meelem     , veasse , codere)
+subroutine nminit(result  , model      , numedd    , numfix     , mate    ,&
+                  compor  , carele     , list_load , ds_algopara, maprec  ,&
+                  solveu  , carcri     , numins    , sdstat     , sddisc  ,&
+                  sdnume  , sdcont_defi, sdcrit    , varc_refe  , fonact  ,&
+                  mesh    , sdpilo     , sddyna    , ds_print   , sd_suiv ,&
+                  sd_obsv , sdtime     , sderro    , sdpost     , ds_inout,&
+                  sdener  , ds_conv    , sdcriq    , sdunil_defi, resocu  ,&
+                  resoco  , valinc     , solalg    , measse     , veelem  ,&
+                  meelem  , veasse     , codere)
 !
 use NonLin_Datastructure_type
 !
@@ -35,6 +35,7 @@ implicit none
 #include "asterfort/nmcrdd.h"
 #include "asterfort/nmcrst.h"
 #include "asterfort/nmcrti.h"
+#include "asterfort/nmdidi.h"
 #include "asterfort/nmdoco.h"
 #include "asterfort/nmdoct.h"
 #include "asterfort/nmdoet.h"
@@ -83,7 +84,7 @@ implicit none
     character(len=8) :: result, mesh
     character(len=19) :: solveu, sdnume, sddisc, sdcrit, sdpilo, sdener
     character(len=19) :: sdpost
-    character(len=19) :: lischa, lisch2, sddyna
+    character(len=19) :: list_load, sddyna
     character(len=19) :: maprec
     character(len=24) :: model, compor, numedd, numfix
     character(len=24) :: resoco
@@ -97,7 +98,7 @@ implicit none
     character(len=24) :: varc_refe
     character(len=24), intent(out) :: sdcont_defi
     character(len=24), intent(out) :: sdunil_defi
-    character(len=24), intent(out) :: sd_inout
+    type(NL_DS_InOut), intent(inout) :: ds_inout
     character(len=19), intent(out) :: sd_obsv
     character(len=24), intent(out) :: sd_suiv
     type(NL_DS_Print), intent(inout) :: ds_print
@@ -116,12 +117,10 @@ implicit none
 ! In  model            : name of model
 ! IN  RESULT : NOM DE LA SD RESULTAT
 ! IN  SDNUME : NOM DE LA SD NUMEROTATION
-! OUT LISCH2 : NOM DE LA SD INFO CHARGE POUR STOCKAGE DANS LA SD
-!              RESULTAT
 ! OUT FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
 ! OUT NUMEDD : NUME_DDL (VARIABLE AU COURS DU CALCUL)
 ! OUT NUMFIX : NUME_DDL (FIXE AU COURS DU CALCUL)
-! Out sd_inout         : datastructure for input/output parameters
+! IO  ds_inout         : datastructure for input/output management
 ! Out sd_obsv          : datastructure for observation parameters
 ! Out sd_suiv          : datastructure for dof monitoring parameters
 ! Out sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
@@ -136,7 +135,7 @@ implicit none
     real(kind=8) :: r8bid3(3)
     real(kind=8) :: instin
     character(len=19) :: varc_prev, disp_prev, strx_prev
-    aster_logical :: lacc0, lpilo, lmpas, lsstf, lerrt, lviss, lrefe
+    aster_logical :: lacc0, lpilo, lmpas, lsstf, lerrt, lviss, lrefe, ldidi
     aster_logical :: lcont, lunil
     character(len=19) :: ligrcf, ligrxf
     character(len=24) :: sd_iden_rela
@@ -157,14 +156,13 @@ implicit none
 !
 ! --- SAISIE ET VERIFICATION DE LA COHERENCE DU CHARGEMENT CONTACT
 !
-    call nmdoct(mesh  , lischa, sdcont_defi, sdunil_defi , lcont, &
-                lunil , ligrcf, ligrxf     , sd_iden_rela)
+    call nmdoct(mesh  , list_load, sdcont_defi, sdunil_defi , lcont, &
+                lunil , ligrcf   , ligrxf     , sd_iden_rela)
 !
 ! --- CREATION DE LA NUMEROTATION ET PROFIL DE LA MATRICE
 !
-    call nmnume(model , result, lischa, lcont, sdcont_defi,&
-                compor, solveu, numedd, sdnume,&
-                sd_iden_rela)
+    call nmnume(model , result, list_load, lcont , sdcont_defi,&
+                compor, solveu, numedd   , sdnume, sd_iden_rela)
 !
 ! --- CREATION DE VARIABLES "CHAPEAU" POUR STOCKER LES NOMS
 !
@@ -173,9 +171,9 @@ implicit none
 !
 ! - Prepare active functionnalities information
 !
-    call nmfonc(ds_conv, ds_algopara, solveu, model , sdcont_defi,&
-                lischa , lcont      , lunil , sdnume, sddyna     ,&
-                sdcriq , mate       , compor, result, carcri     ,&
+    call nmfonc(ds_conv  , ds_algopara, solveu, model   , sdcont_defi,&
+                list_load, lcont      , lunil , sdnume  , sddyna     ,&
+                sdcriq   , mate       , compor, ds_inout, carcri     ,&
                 fonact)
 !
 ! - Check compatibility of some functionnalities
@@ -188,6 +186,7 @@ implicit none
     lerrt = isfonc(fonact,'ERRE_TEMPS_THM')
     lviss = ndynlo(sddyna,'VECT_ISS' )
     lrefe = isfonc(fonact,'RESI_REFE')
+    ldidi = isfonc(fonact,'DIDI')
 !
 ! --- CREATION DE LA STRUCTURE DE DONNEE RESULTAT DU CONTACT
 !
@@ -231,20 +230,19 @@ implicit none
 !
 ! - Create input/output datastructure
 !
-    call nmetcr(model , compor, fonact, sddyna, sdpost,&
-                sdcont_defi, resoco, sd_inout, carele)
+    call nmetcr(ds_inout, model      , compor, fonact, sddyna   ,&
+                sdpost  , sdcont_defi, resoco, carele, list_load)
 !
-! --- LECTURE ETAT_INIT
+! - Read initial state
 !
-    call nmdoet(model, compor, fonact, numedd, sdpilo,&
-                sddyna, sdcriq, sd_inout, solalg, lacc0,&
-                instin)
+    call nmdoet(model , compor, fonact, numedd, sdpilo  ,&
+                sddyna, sdcriq, solalg, lacc0 , ds_inout)
 !
 ! - Create time discretization and storing datastructures
 !
-    call diinit(mesh  , model      , result , mate       , carele,&
-                fonact, sddyna     , ds_conv, ds_algopara, instin,&
-                solveu, sdcont_defi, sddisc)
+    call diinit(mesh       , model , ds_inout, mate       , carele,&
+                fonact     , sddyna, ds_conv , ds_algopara, solveu,&
+                sdcont_defi, sddisc)
 !
 ! --- CREATION DU CHAMP DES VARIABLES DE COMMANDE DE REFERENCE
 !
@@ -252,7 +250,7 @@ implicit none
 !
 ! --- PRE-CALCUL DES MATR_ELEM CONSTANTES AU COURS DU CALCUL
 !
-    call nminmc(fonact, lischa, sddyna, model, compor,&
+    call nminmc(fonact, list_load, sddyna, model, compor,&
                 numedd, numfix, sdcont_defi, resoco, ds_algopara,&
                 carcri, solalg, valinc, mate, carele,&
                 sddisc, sdstat, sdtime, varc_refe, meelem,&
@@ -270,9 +268,9 @@ implicit none
 !
 ! --- CALCUL ET ASSEMBLAGE DES VECT_ELEM CONSTANTS AU COURS DU CALCUL
 !
-    call nminvc(model    , mate  , carele, compor, sdtime,&
-                sddisc   , sddyna, valinc, solalg, lischa,&
-                varc_refe, resoco, resocu, numedd, fonact,&
+    call nminvc(model    , mate  , carele, compor, sdtime   ,&
+                sddisc   , sddyna, valinc, solalg, list_load,&
+                varc_refe, resoco, resocu, numedd, ds_inout ,&
                 veelem   , veasse, measse)
 !
 ! - Compute reference vector for RESI_REFE_RELA
@@ -280,7 +278,14 @@ implicit none
     if (lrefe) then
         call nmrefe(model  , compor, mate  , carele, numedd,&
                     ds_conv, valinc, veelem, veasse)
-    endif              
+    endif
+!
+! - Compute vector for DIDI loads
+!
+    if (ldidi) then
+        call nmdidi(ds_inout, model , list_load, numedd, valinc,&
+                    veelem  , veasse)
+    endif 
 !
 ! --- CREATION DE LA SD POUR ARCHIVAGE DES INFORMATIONS DE CONVERGENCE
 !
@@ -289,22 +294,24 @@ implicit none
 ! --- INITIALISATION CALCUL PAR SOUS-STRUCTURATION
 !
     if (lsstf) then
-        call nmlssv('INIT', lischa, ibid)
+        call nmlssv('INIT', list_load, ibid)
     endif
 !
 ! --- CREATION DE LA SD EXCIT_SOL
 !
-    if (lviss) call nmexso(mesh, result, sddyna, numedd)
+    if (lviss) then
+        call nmexso(mesh, ds_inout, sddyna, numedd)
+    endif
 !
 ! --- CALCUL DE L'ACCELERATION INITIALE
 !
     if (lacc0) then
-        call nmchar('ACCI', ' '   , model , numedd, mate     ,&
-                    carele, compor, lischa, numins, sdtime   ,&
-                    sddisc, fonact, resoco, resocu, varc_refe,&
-                    valinc, solalg, veelem, measse, veasse   ,&
-                    sddyna)
-        call accel0(model      , numedd, numfix, fonact     , lischa,&
+        call nmchar('ACCI'  , ' '   , model    , numedd, mate     ,&
+                    carele  , compor, list_load, numins, sdtime   ,&
+                    sddisc  , fonact, resoco   , resocu, varc_refe,&
+                    ds_inout, valinc, solalg   , veelem, measse   ,&
+                    veasse  , sddyna)
+        call accel0(model      , numedd, numfix, fonact     , list_load,&
                     sdcont_defi, resoco, maprec, solveu     , valinc,&
                     sddyna     , sdstat, sdtime, ds_algopara, meelem,&
                     measse     , veelem, veasse, solalg)
@@ -317,13 +324,13 @@ implicit none
 !
 ! - Create observation datastructure
 !
-    call nmcrob(mesh     , model    , result, sddisc   , sd_inout ,&
-                carele   , mate     , compor, disp_prev, strx_prev,&
-                varc_prev, varc_refe, instin, sd_obsv  )
+    call nmcrob(mesh     , model , sddisc   , ds_inout , carele   ,&
+                mate     , compor, disp_prev, strx_prev, varc_prev,&
+                varc_refe, instin, sd_obsv  )
 !
 ! - Create dof monitoring datastructure
 !
-    call nmcrdd(mesh  , model    , sd_inout , carele   , mate     ,&
+    call nmcrdd(mesh  , model    , ds_inout , carele   , mate     ,&
                 compor, disp_prev, strx_prev, varc_prev, varc_refe,&
                 instin, sd_suiv)
 !
@@ -333,27 +340,21 @@ implicit none
 !
 ! --- PRE-CALCUL DES MATR_ASSE CONSTANTES AU COURS DU CALCUL
 !
-    call nminma(fonact, lischa, sddyna, numedd, ds_algopara,&
-                numfix, meelem, measse)
+    call nminma(fonact, list_load, sddyna, numedd, ds_algopara,&
+                numfix, meelem   , measse)
 !
-! --- CREATION DE LA SD EVOL_NOLI
+! - Prepare storing
 !
-    call nmnoli(result, sddisc  , sderro, carcri, ds_print,&
-                sdcrit, fonact  , sddyna, sdpost, model   ,&
-                mate  , carele  , lisch2, sdpilo, sdtime  ,&
-                sdener, sd_inout, sdcriq)
+    call nmnoli(sddisc, sderro, carcri, ds_print, sdcrit  ,&
+                fonact, sddyna, sdpost, model   , mate    ,&
+                carele, sdpilo, sdtime, sdener  , ds_inout,&
+                sdcriq)
 !
 ! - Make initial observation
 !
     call nmobsv(mesh    , model, sddisc, sd_obsv  , numins,&
                 carele  , mate , compor, varc_refe, valinc,&
-                sd_inout)
-!
-!NS   ICI ON UTILISE LISCPY A LA PLACE DE COPISD POUR
-!NS   RESPECTER L'ESPRIT DE COPISD QUI NE SERT QU'A
-!NS   RECOPIER DE SD SANS FILTRER
-!
-    call liscpy(lischa, lisch2, 'G')
+                ds_inout)
 !
 ! --- CREATION DE LA TABLE DES GRANDEURS
 !
@@ -364,11 +365,11 @@ implicit none
 ! --- CALCUL DU SECOND MEMBRE INITIAL POUR MULTI-PAS
 !
     if (lmpas) then
-        call nmihht(model , numedd, mate     , compor     , carcri,&
-                    carele, lischa, varc_refe, fonact     , sdstat,&
-                    sddyna, sdtime, sdnume   , sdcont_defi, resoco,&
-                    resocu, valinc, sddisc   , solalg     , veasse,&
-                    result)
+        call nmihht(model , numedd   , mate     , compor     , carcri,&
+                    carele, list_load, varc_refe, fonact     , sdstat,&
+                    sddyna, sdtime   , sdnume   , sdcont_defi, resoco,&
+                    resocu, valinc   , sddisc   , solalg     , veasse,&
+                    measse, ds_inout)
     endif
 !
 ! --- INITIALISATIONS TIMERS ET STATISTIQUES

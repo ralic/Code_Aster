@@ -176,11 +176,6 @@ implicit none
         call vedime(modele, charge, infoch, instap, 'R',&
                     vecele)
 !
-! --- DEPLACEMENTS DIRICHLET DIFFERENTIEL
-!
-    else if (typvec.eq.'CNDIDI') then
-        call nmdidi(modele, lischa, depmoi, vecele)
-!
 ! --- DEPLACEMENTS DIRICHLET PILOTE
 !
     else if (typvec.eq.'CNDIPI') then

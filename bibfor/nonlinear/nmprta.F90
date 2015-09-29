@@ -1,10 +1,10 @@
-subroutine nmprta(modele, numedd, numfix  , mate       , carele,&
-                  comref, compor, lischa  , ds_algopara, solveu,&
-                  fonact, carcri, ds_print, sdstat     , sdtime,&
-                  sddisc, numins, valinc  , solalg     , matass,&
-                  maprec, defico, resoco  , resocu     , sddyna,&
-                  meelem, measse, veelem  , veasse     , sdnume,&
-                  ldccvg, faccvg, rescvg  , codere)
+subroutine nmprta(modele  , numedd, numfix  , mate       , carele,&
+                  comref  , compor, lischa  , ds_algopara, solveu,&
+                  fonact  , carcri, ds_print, sdstat     , sdtime,&
+                  sddisc  , numins, valinc  , solalg     , matass,&
+                  maprec  , defico, resoco  , resocu     , sddyna,&
+                  meelem  , measse, veelem  , veasse     , sdnume,&
+                  ds_inout, ldccvg, faccvg  , rescvg     , codere)
 !
 use NonLin_Datastructure_type
 !
@@ -48,6 +48,7 @@ implicit none
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=24) :: sdtime, sdstat
     type(NL_DS_Print), intent(inout) :: ds_print
+    type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=19) :: matass, maprec
     character(len=19) :: lischa, solveu, sddisc, sddyna, sdnume
     character(len=24) :: modele, mate, carele, comref, compor
@@ -79,6 +80,7 @@ implicit none
 ! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
 ! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
 ! IO  ds_print         : datastructure for printing parameters
+! In  ds_inout         : datastructure for input/output management
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
 ! IN  SDTIME : SD TIMER
 ! IN  SDSTAT : SD STATISTIQUES
@@ -173,11 +175,11 @@ implicit none
 !
 ! --- CALCUL DES CHARGEMENTS VARIABLES AU COURS DU PAS DE TEMPS
 !
-    call nmchar('VARI', 'PREDICTION', modele, numedd, mate,&
-                carele, compor, lischa, numins, sdtime,&
-                sddisc, fonact, resoco, resocu, comref,&
-                valinc, solalg, veelem, measse, veasse,&
-                sddyna)
+    call nmchar('VARI'  , 'PREDICTION', modele, numedd, mate,&
+                carele  , compor      , lischa, numins, sdtime,&
+                sddisc  , fonact      , resoco, resocu, comref,&
+                ds_inout, valinc      , solalg, veelem, measse,&
+                veasse  , sddyna)
 !
 ! --- CALCUL DU SECOND MEMBRE POUR CONTACT/XFEM
 !

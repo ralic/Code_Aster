@@ -20,7 +20,7 @@ interface
         character(len=24), intent(in) :: field_refe
         character(len=24), intent(in) :: field_in
         character(len=24), intent(in) :: field_out
-        character(len=24), intent(in) :: field_disc_in
-        character(len=24), intent(in) :: field_disc_out
+        character(len=4), intent(in) :: field_disc_in
+        character(len=4), intent(in) :: field_disc_out
     end subroutine nmetcv
 end interface

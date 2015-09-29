@@ -58,7 +58,7 @@ implicit none
 !
     call infdbg('MECA_NON_LINE', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> ... Read parameters for convergence parameters'
+        write (ifm,*) '<MECANONLINE> . Read parameters for convergence parameters'
     endif
 !
 ! - Initializations

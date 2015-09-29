@@ -1,9 +1,9 @@
-subroutine nmconv(noma  , modele, mate   , numedd  , sdnume     ,&
-                  fonact, sddyna, ds_conv, ds_print, sdstat     ,&
-                  sddisc, sdtime, sdcrit , sderro  , ds_algopara,&
-                  comref, matass, solveu , numins  , iterat     ,&
-                  eta   , defico, resoco , valinc  , solalg     ,&
-                  measse, veasse )
+subroutine nmconv(noma    , modele, mate   , numedd  , sdnume     ,&
+                  fonact  , sddyna, ds_conv, ds_print, sdstat     ,&
+                  sddisc  , sdtime, sdcrit , sderro  , ds_algopara,&
+                  ds_inout, comref, matass , solveu  , numins     ,&
+                  iterat  , eta   , defico , resoco  , valinc     ,&
+                  solalg  , measse, veasse )
 !
 use NonLin_Datastructure_type
 !
@@ -68,6 +68,7 @@ implicit none
     character(len=24) :: numedd, modele
     character(len=24) :: defico, resoco
     character(len=24) :: sderro, sdstat, sdtime
+    type(NL_DS_InOut), intent(in) :: ds_inout
     type(NL_DS_Print), intent(inout) :: ds_print
     type(NL_DS_Conv), intent(inout) :: ds_conv
 !
@@ -85,6 +86,7 @@ implicit none
 ! IN  RESOCO : SD POUR LA RESOLUTION DU CONTACT
 ! IO  ds_conv          : datastructure for convergence management
 ! IN  SDTIME : SD TIMER
+! In  ds_inout         : datastructure for input/output management
 ! IO  ds_print         : datastructure for printing parameters
 ! IN  NUMEDD : NUMEROTATION NUME_DDL
 ! IN  SDNUME : NOM DE LA SD NUMEROTATION
@@ -182,10 +184,11 @@ implicit none
 !
 ! - Compute residuals
 !
-    call nmresi(noma  , mate   , numedd  , sdnume, fonact,&
-                sddyna, ds_conv, ds_print, defico, resoco,&
-                matass, numins , eta     , comref, valinc,&
-                solalg, veasse , measse  , vresi , vchar)
+    call nmresi(noma  , mate   , numedd  , sdnume  , fonact,&
+                sddyna, ds_conv, ds_print, defico  , resoco,&
+                matass, numins , eta     , comref  , valinc,&
+                solalg, veasse , measse  , ds_inout, vresi ,&
+                vchar)
 !
 ! - Evaluate convergence of residuals
 !

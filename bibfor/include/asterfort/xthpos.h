@@ -16,8 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xthpos(resulz, modele)
-        character(len=24) :: resulz
-        character(len=24) :: modele
+    subroutine xthpos(result, modele)
+        character(len=8), intent(in) :: result
+        character(len=24), intent(in) ::  modele
     end subroutine xthpos
 end interface

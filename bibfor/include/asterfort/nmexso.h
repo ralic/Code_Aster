@@ -16,10 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmexso(noma, result, sddyna, numedd)
-        character(len=8) :: noma
-        character(len=8) :: result
-        character(len=19) :: sddyna
-        character(len=24) :: numedd
+    subroutine nmexso(mesh, ds_inout, sddyna, nume_dof)
+        use NonLin_Datastructure_type
+        character(len=8), intent(in) :: mesh
+        type(NL_DS_InOut), intent(in) :: ds_inout
+        character(len=19), intent(in) :: sddyna
+        character(len=24), intent(in) :: nume_dof
     end subroutine nmexso
 end interface

@@ -1,8 +1,10 @@
-subroutine nmchar(mode  , phasez, modele, numedd, mate  ,&
-                  carele, compor, lischa, numins, sdtime,&
-                  sddisc, fonact, resoco, resocu, comref,&
-                  valinc, solalg, veelem, measse, veasse,&
-                  sddyna)
+subroutine nmchar(mode    , phasez, modele, numedd, mate  ,&
+                  carele  , compor, lischa, numins, sdtime,&
+                  sddisc  , fonact, resoco, resocu, comref,&
+                  ds_inout, valinc, solalg, veelem, measse,&
+                  veasse  , sddyna)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -41,6 +43,7 @@ implicit none
     character(len=19) :: sddyna, sddisc
     integer :: fonact(*)
     integer :: numins
+    type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=24) :: resoco, resocu
     character(len=19) :: veelem(*), measse(*), veasse(*)
     character(len=19) :: solalg(*), valinc(*)
@@ -71,6 +74,7 @@ implicit none
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! IN  COMREF : VARI_COM DE REFERENCE
+! In  ds_inout         : datastructure for input/output management
 ! IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
 ! IN  RESOCU : SD POUR LA RESOLUTION DE LIAISON_UNILATER
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
@@ -200,11 +204,11 @@ implicit none
 !
 ! --- CALCUL ET ASSEMBLAGE
 !
-        call nmxvec(modele, mate  , carele, compor, sdtime,&
-                    sddisc, sddyna, numins, valinc, solalg,&
-                    lischa, comref, resoco, resocu, numedd,&
-                    veelem, veasse, measse, nbvect, ltypve,&
-                    lcalve, loptve, lassve)
+        call nmxvec(modele  , mate  , carele, compor, sdtime,&
+                    sddisc  , sddyna, numins, valinc, solalg,&
+                    lischa  , comref, resoco, resocu, numedd,&
+                    ds_inout, veelem, veasse, measse, nbvect,&
+                    ltypve  , lcalve, loptve, lassve)
 !
 ! --- CHARGEMENTS VARIABLES PENDANT LE PAS DE TEMPS
 !
@@ -277,11 +281,11 @@ implicit none
 !
 ! --- CALCUL EFFECTIF
 !
-        call nmxvec(modele, mate  , carele, compor, sdtime,&
-                    sddisc, sddyna, numins, valinc, solalg,&
-                    lischa, comref, resoco, resocu, numedd,&
-                    veelem, veasse, measse, nbvect, ltypve,&
-                    lcalve, loptve, lassve)
+        call nmxvec(modele  , mate  , carele, compor, sdtime,&
+                    sddisc  , sddyna, numins, valinc, solalg,&
+                    lischa  , comref, resoco, resocu, numedd,&
+                    ds_inout, veelem, veasse, measse, nbvect,&
+                    ltypve  , lcalve, loptve, lassve)
 !
 ! --- CHARGEMENTS POUR ACCELERATION INITIALE
 !
@@ -345,11 +349,11 @@ implicit none
 !
 ! --- CALCUL ET ASSEMBLAGE
 !
-        call nmxvec(modele, mate  , carele, compor, sdtime,&
-                    sddisc, sddyna, numins, valinc, solalg,&
-                    lischa, comref, resoco, resocu, numedd,&
-                    veelem, veasse, measse, nbvect, ltypve,&
-                    lcalve, loptve, lassve)
+        call nmxvec(modele  , mate  , carele, compor, sdtime,&
+                    sddisc  , sddyna, numins, valinc, solalg,&
+                    lischa  , comref, resoco, resocu, numedd,&
+                    ds_inout, veelem, veasse, measse, nbvect,&
+                    ltypve  , lcalve, loptve, lassve)
     else
         ASSERT(.false.)
     endif

@@ -51,7 +51,7 @@ implicit none
 !
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> ... Read parameters for printing'
+        write (ifm,*) '<MECANONLINE> . Read parameters for printing'
     endif
 !
 ! - Initializations

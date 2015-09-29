@@ -1,9 +1,9 @@
-subroutine nmfcor(modele, numedd, mate  , carele     , comref,&
-                  compor, lischa, fonact, ds_algopara, carcri,&
-                  numins, iterat, sdstat, sdtime     , sddisc,&
-                  sddyna, sdnume, sderro, defico     , resoco,&
-                  resocu, valinc, solalg, veelem     , veasse,&
-                  meelem, measse, matass, lerrit )
+subroutine nmfcor(modele, numedd  , mate  , carele     , comref,&
+                  compor, lischa  , fonact, ds_algopara, carcri,&
+                  numins, iterat  , sdstat, sdtime     , sddisc,&
+                  sddyna, sdnume  , sderro, defico     , resoco,&
+                  resocu, ds_inout, valinc, solalg     , veelem,&
+                  veasse, meelem  , measse, matass     , lerrit)
 !
 use NonLin_Datastructure_type
 !
@@ -54,6 +54,7 @@ implicit none
     character(len=19) :: lischa, matass
     character(len=24) :: modele, numedd, mate, carele, comref, compor
     character(len=24) :: carcri, sderro
+    type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=19) :: meelem(*), veelem(*), measse(*), veasse(*)
     character(len=19) :: solalg(*), valinc(*)
     character(len=24) :: defico, resocu, resoco
@@ -67,7 +68,6 @@ implicit none
 ! DEPLACEMENTS/VITESSES ACCELERATIONS
 !
 ! ----------------------------------------------------------------------
-!
 !
 ! IN  MODELE : MODELE
 ! IN  NUMEDD : NUME_DDL
@@ -141,11 +141,11 @@ implicit none
 !
 ! --- CALCUL DES CHARGEMENTS VARIABLES AU COURS DU PAS DE TEMPS
 !
-    call nmchar('VARI', 'CORRECTION', modele, numedd, mate,&
-                carele, compor, lischa, numins, sdtime,&
-                sddisc, fonact, resoco, resocu, comref,&
-                valinc, solalg, veelem, measse, veasse,&
-                sddyna)
+    call nmchar('VARI'  , 'CORRECTION', modele, numedd, mate,&
+                carele  , compor, lischa, numins, sdtime,&
+                sddisc  , fonact, resoco, resocu, comref,&
+                ds_inout, valinc, solalg, veelem, measse,&
+                veasse  , sddyna)
 !
 ! --- CALCUL DU SECOND MEMBRE POUR CONTACT/XFEM
 !
@@ -184,10 +184,11 @@ implicit none
 ! --- CALCUL DES FORCES DE CONTACT ET LIAISON_UNILATER
 !
     if (lctcd .or. lunil) then
-        call nmctcd(modele, mate  , carele, fonact, compor,&
-                    sdtime, sddisc, sddyna, numins, valinc,&
-                    solalg, lischa, comref, defico, resoco,&
-                    resocu, numedd, veelem, veasse, measse)
+        call nmctcd(modele, mate  , carele  , fonact, compor,&
+                    sdtime, sddisc, sddyna  , numins, valinc,&
+                    solalg, lischa, comref  , defico, resoco,&
+                    resocu, numedd, ds_inout, veelem, veasse,&
+                    measse)
     endif
 !
 ! --- ASSEMBLAGE DES FORCES INTERIEURES

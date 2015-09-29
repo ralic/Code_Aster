@@ -1,5 +1,7 @@
-subroutine nmextr_read_1(sd_inout, keyw_fact    , nb_keyw_fact, list_field, rela_field_keyw,&
+subroutine nmextr_read_1(ds_inout, keyw_fact    , nb_keyw_fact, list_field, rela_field_keyw,&
                          nb_field, nb_field_comp)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -25,7 +27,7 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=24), intent(in) :: sd_inout
+    type(NL_DS_InOut), intent(in) :: ds_inout
     integer, intent(in) :: nb_keyw_fact
     character(len=16), intent(in) :: keyw_fact
     character(len=24), intent(out), pointer :: list_field(:)
@@ -41,7 +43,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sd_inout         : datastructure for input/output parameters
+! In  ds_inout         : datastructure for input/output management
 ! In  keyw_fact        : factor keyword to read extraction parameters
 ! In  nb_keyw_fact     : number of factor keyword to read extraction parameters
 ! Out list_field       : list of fields
@@ -75,7 +77,7 @@ implicit none
 !
 ! ----- Read field type
 !
-        call nmextc(sd_inout, keyw_fact, i_keyw_fact, field_type, l_extr)
+        call nmextc(ds_inout, keyw_fact, i_keyw_fact, field_type, l_extr)
         if (.not.l_extr) then
             field_type = 'NONE'
         endif

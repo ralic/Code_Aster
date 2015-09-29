@@ -18,10 +18,11 @@
 ! aslint: disable=W1504
 !
 interface
-    subroutine nmresi(noma  , mate   , numedd  , sdnume, fonact,&
-                      sddyna, ds_conv, ds_print, defico, resoco,&
-                      matass, numins , eta     , comref, valinc,&
-                      solalg, veasse , measse  , vresi , vchar)
+    subroutine nmresi(noma  , mate   , numedd  , sdnume  , fonact,&
+                      sddyna, ds_conv, ds_print, defico  , resoco,&
+                      matass, numins , eta     , comref  , valinc,&
+                      solalg, veasse , measse  , ds_inout, vresi ,&
+                      vchar)
         use NonLin_Datastructure_type
         character(len=8) :: noma
         character(len=24) :: numedd
@@ -41,6 +42,7 @@ interface
         character(len=19) :: solalg(*)
         character(len=19) :: veasse(*)
         character(len=19) :: measse(*)
+        type(NL_DS_InOut), intent(in) :: ds_inout
         real(kind=8), intent(out) :: vchar
         real(kind=8), intent(out) :: vresi
     end subroutine nmresi

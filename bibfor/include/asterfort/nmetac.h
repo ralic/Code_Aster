@@ -18,11 +18,11 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmetac(list_func_acti, sddyna, sdcont_defi, nb_field_maxi, list_field_acti)
-        integer, intent(in) :: nb_field_maxi
-        aster_logical, intent(inout) :: list_field_acti(nb_field_maxi)
-        character(len=19), intent(in) :: sddyna
+    subroutine nmetac(list_func_acti, sddyna, sdcont_defi, ds_inout)
+        use NonLin_Datastructure_type
         integer, intent(in) :: list_func_acti(*)
+        character(len=19), intent(in) :: sddyna
         character(len=24), intent(in) :: sdcont_defi
+        type(NL_DS_InOut), intent(inout) :: ds_inout
     end subroutine nmetac
 end interface

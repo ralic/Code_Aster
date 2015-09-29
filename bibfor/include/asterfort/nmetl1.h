@@ -16,10 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmetl1(result, nume_store_0, sd_inout, i_field)
-        character(len=24), intent(in) :: sd_inout
-        character(len=8), intent(in) :: result
+    subroutine nmetl1(i_field, ds_inout)
+        use NonLin_Datastructure_type
         integer, intent(in) :: i_field
-        integer, intent(in) :: nume_store_0
+        type(NL_DS_InOut), intent(inout) :: ds_inout
     end subroutine nmetl1
 end interface

@@ -70,6 +70,8 @@ résultats de nom <%(k2)s>"""),
 
     35 : _(u"""  Le champ de température initiale est donné par une valeur qui vaut %(r1)19.12e"""),
 
+    36 : _(u"""  Le champ <%(k1)s> est lu dans ETAT_INIT alors qu'il n'est pas nécessaire pour ce calcul. Il sera ignoré."""),
+
     50 : _(u"""
   Le champ <%(k1)s> est d'un type inconnu.
 """),

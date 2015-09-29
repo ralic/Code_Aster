@@ -29,9 +29,7 @@ implicit none
 !
 ! *_NON_LINE - Input/output datastructure
 !
-! Get name of datastructure for field
-!
-! This utiliy is required for "hat" variables
+! Get name of datastructure for field - This utiliy is required for "hat" variables
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,9 +44,9 @@ implicit none
 !
     field_algo = ' '
 !
-    if (field_name_algo(1:5) .eq. 'CHAP#') then
-        hat_type = field_name_algo(6:11)
-        hat_vari = field_name_algo(13:18)
+    if (field_name_algo(1:3) .eq. '#H#') then
+        hat_type = field_name_algo(4:9)
+        hat_vari = field_name_algo(11:16)
         if (hat_type .eq. 'VALINC') then
             if (hat_vari .eq. 'TEMP') then
                 field_algo = '&&NXLECTVAR_____'

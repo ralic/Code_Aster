@@ -1,8 +1,10 @@
-subroutine nmxvec(modelz, mate  , carele, compor, sdtime,&
-                  sddisc, sddyna, numins, valinc, solalg,&
-                  lischa, comref, resoco, resocu, numedd,&
-                  veelem, veasse, measse, nbvect, ltypve,&
-                  lcalve, loptve, lassve)
+subroutine nmxvec(modelz  , mate  , carele, compor, sdtime,&
+                  sddisc  , sddyna, numins, valinc, solalg,&
+                  lischa  , comref, resoco, resocu, numedd,&
+                  ds_inout, veelem, veasse, measse, nbvect,&
+                  ltypve  , lcalve, loptve, lassve)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -40,6 +42,7 @@ implicit none
     character(len=24) :: mate, carele, sdtime
     character(len=24) :: compor, numedd
     integer :: numins
+    type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=19) :: sddisc, sddyna, lischa
     character(len=24) :: resoco, resocu, comref
     character(len=19) :: veelem(*), veasse(*), measse(*)
@@ -70,6 +73,7 @@ implicit none
 ! IN  SOLVEU : SOLVEUR
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IN  NUMINS : NUMERO D'INSTANT
+! In  ds_inout         : datastructure for input/output management
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
 ! IN  NBVECT : NOMBRE DE VECT_ELEM DANS LA LISTE
@@ -141,11 +145,11 @@ implicit none
 ! --- ASSEMBLER VECT_ELEM
 !
         if (lasse) then
-            call nmchex(veasse, 'VEASSE', typvec, vecass)
-            call nmassv(typvec, modelz, lischa, mate, carele,&
-                        compor, numedd, instam, instap, resoco,&
-                        resocu, sddyna, sdtime, valinc, comref,&
-                        measse, vecele, vecass)
+            call nmchex(veasse  , 'VEASSE', typvec, vecass)
+            call nmassv(typvec  , modelz, lischa, mate, carele,&
+                        compor  , numedd, instam, instap, resoco,&
+                        resocu  , sddyna, sdtime, valinc, comref,&
+                        ds_inout, measse, vecele, vecass)
         endif
     end do
 !

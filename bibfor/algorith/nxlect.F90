@@ -1,6 +1,9 @@
 subroutine nxlect(l_ther_nonl, list_load  , solver    , ther_para_i, ther_para_r,&
                   ther_crit_i, ther_crit_r, result_dry, matcst     , coecst     ,&
-                  result     , model      , mate      , cara_elem  , compor     )
+                  result     , model      , mate      , cara_elem  , compor     ,&
+                  ds_inout   )
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -13,6 +16,7 @@ implicit none
 #include "asterfort/ntdoth.h"
 #include "asterfort/nxdocn.h"
 #include "asterfort/nxdomt.h"
+#include "asterfort/ReadInOut.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -42,11 +46,12 @@ implicit none
     character(len=8), intent(out) :: result_dry
     aster_logical, intent(out) :: matcst
     aster_logical, intent(out) :: coecst
-    character(len=24), intent(out) :: result
+    character(len=8), intent(out) :: result
     character(len=24), intent(out) :: model
     character(len=24), intent(out) :: mate
     character(len=24), intent(out) :: cara_elem
     character(len=24), intent(out) :: compor
+    type(NL_DS_InOut), intent(inout) :: ds_inout
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -71,6 +76,7 @@ implicit none
 ! Out mate             : name of material characteristics (field)
 ! Out cara_elem        : name of datastructure for elementary parameters (CARTE)
 ! Out compor           : name of <CARTE> COMPOR
+! IO  ds_inout         : datastructure for input/output management
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -110,5 +116,9 @@ implicit none
     else
         call ntdomt(ther_para_r)
     endif
+!
+! - Read parameters for input/output management
+!
+    call ReadInOut('THER', result, ds_inout)
 !
 end subroutine

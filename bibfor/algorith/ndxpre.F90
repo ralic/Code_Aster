@@ -1,9 +1,9 @@
-subroutine ndxpre(modele, numedd, numfix, mate       , carele,&
-                  comref, compor, lischa, ds_algopara, solveu,&
-                  fonact, carcri, sddisc, sdstat     , sdtime,&
-                  numins, valinc, solalg, matass     , maprec,&
-                  sddyna, sderro, meelem, measse     , veelem,&
-                  veasse, lerrit)
+subroutine ndxpre(modele, numedd, numfix  , mate       , carele,&
+                  comref, compor, lischa  , ds_algopara, solveu,&
+                  fonact, carcri, sddisc  , sdstat     , sdtime,&
+                  numins, valinc, solalg  , matass     , maprec,&
+                  sddyna, sderro, ds_inout, meelem     , measse,&
+                  veelem, veasse, lerrit)
 !
 use NonLin_Datastructure_type
 !
@@ -42,6 +42,7 @@ implicit none
 !
     integer :: fonact(*)
     integer :: numins
+    type(NL_DS_InOut), intent(in) :: ds_inout
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=19) :: matass, maprec
     character(len=24) :: sdtime, sdstat
@@ -63,7 +64,6 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  MODELE : MODELE
 ! IN  NUMEDD : NUME_DDL (VARIABLE AU COURS DU CALCUL)
 ! IN  NUMFIX : NUME_DDL (FIXE AU COURS DU CALCUL)
@@ -71,6 +71,7 @@ implicit none
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  COMREF : VARIABLES DE COMMANDE DE REFERENCE
 ! IN  COMPOR : COMPORTEMENT
+! In  ds_inout         : datastructure for input/output management
 ! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  SOLVEU : SOLVEUR
 ! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
@@ -144,11 +145,11 @@ implicit none
 !
 ! --- CALCUL DES CHARGEMENTS VARIABLES AU COURS DU PAS DE TEMPS
 !
-    call nmchar('VARI', 'PREDICTION', modele, numedd, mate,&
-                carele, compor, lischa, numins, sdtime,&
-                sddisc, fonact, k24bla, k24bla, comref,&
-                valinc, solalg, veelem, measse, veasse,&
-                sddyna)
+    call nmchar('VARI'  , 'PREDICTION', modele, numedd, mate,&
+                carele  , compor, lischa, numins, sdtime,&
+                sddisc  , fonact, k24bla, k24bla, comref,&
+                ds_inout, valinc, solalg, veelem, measse,&
+                veasse  , sddyna)
 !
 ! --- CALCUL DU SECOND MEMBRE
 !

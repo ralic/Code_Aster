@@ -1,10 +1,10 @@
-subroutine nmpost(modele, mesh   , numedd  , numfix, carele     ,&
-                  compor, numins  , mate  , comref     ,&
-                  lischa, defico , resoco  , resocu, ds_algopara,&
-                  fonact, carcri , ds_print, sdstat, sddisc     ,&
-                  sdtime, sd_obsv, sderro  , sddyna, sdpost     ,&
-                  valinc, solalg , meelem  , measse, veelem     ,&
-                  veasse, sdener , sdcriq  , eta)
+subroutine nmpost(modele , mesh    , numedd, numfix     , carele  ,&
+                  compor , numins  , mate  , comref     , ds_inout,&
+                  defico , resoco  , resocu, ds_algopara, fonact  ,&
+                  carcri , ds_print, sdstat, sddisc     , sdtime  ,&
+                  sd_obsv, sderro  , sddyna, sdpost     , valinc  ,&
+                  solalg , meelem  , measse, veelem     , veasse  ,&
+                  sdener , sdcriq  , eta   , lischa)
 !
 use NonLin_Datastructure_type
 !
@@ -43,10 +43,12 @@ implicit none
     integer :: numins
     character(len=8), intent(in) :: mesh
     real(kind=8) :: eta
+    type(NL_DS_InOut), intent(in) :: ds_inout
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=19) :: meelem(*)
     character(len=24) :: resoco, defico, resocu
-    character(len=19) :: lischa, sdener
+    character(len=19) :: sdener
+    character(len=19) :: lischa
     character(len=19) :: sddisc, sddyna, sdpost
     character(len=19), intent(in) :: sd_obsv
     type(NL_DS_Print), intent(in) :: ds_print
@@ -73,9 +75,9 @@ implicit none
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  COMREF : VARI_COM DE REFERENCE
 ! IN  COMPOR : COMPORTEMENT
-! IN  LISCHA : LISTE DES CHARGES
 ! IN  RESOCO : SD RESOLUTION CONTACT
 ! IN  DEFICO : SD DEFINITION CONTACT
+! In  ds_inout         : datastructure for input/output management
 ! In  ds_print         : datastructure for printing parameters
 ! IN  SDTIME : SD TIMER
 ! IN  SDSTAT : SD STATISTIQUES
@@ -144,11 +146,11 @@ implicit none
 ! --- CALCUL DES ENERGIES
 !
     if (lener) then
-        call nmener(valinc, veasse, measse, sddyna, eta   ,&
+        call nmener(valinc, veasse, measse, sddyna, eta        ,&
                     sdener, fonact, numedd, numfix, ds_algopara,&
-                    meelem, numins, modele, mate  , carele,&
-                    compor, sdtime, sddisc, solalg, lischa,&
-                    comref, resoco, resocu, veelem)
+                    meelem, numins, modele, mate  , carele     ,&
+                    compor, sdtime, sddisc, solalg, lischa     ,&
+                    comref, resoco, resocu, veelem, ds_inout)
     endif
 
 !

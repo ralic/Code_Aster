@@ -1,4 +1,6 @@
-subroutine nmetac(list_func_acti, sddyna, sdcont_defi, nb_field_maxi, list_field_acti)
+subroutine nmetac(list_func_acti, sddyna, sdcont_defi, ds_inout)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -9,6 +11,7 @@ implicit none
 #include "asterfort/cfdisl.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/ndynlo.h"
+#include "asterfort/SetIOField.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,11 +31,10 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    integer, intent(in) :: nb_field_maxi
-    aster_logical, intent(inout) :: list_field_acti(nb_field_maxi)
-    character(len=19), intent(in) :: sddyna
     integer, intent(in) :: list_func_acti(*)
+    character(len=19), intent(in) :: sddyna
     character(len=24), intent(in) :: sdcont_defi
+    type(NL_DS_InOut), intent(inout) :: ds_inout
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -45,16 +47,13 @@ implicit none
 ! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
 ! In  list_func_acti   : list of active functionnalities
 ! In  sddyna           : name of dynamic parameters datastructure
-! In  nb_field_maxi    : number of fields to active
-! IO  list_field_acti  : list of fields to active
+! IO  ds_inout         : datastructure for input/output management
 !
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: l_cont_xfem, l_frot_xfem, l_xfem_czm, l_cont
     aster_logical :: l_dyna, l_inte_node, l_muap, l_strx
     aster_logical :: l_vibr_mode, l_crit_stab, l_dof_stab, l_ener
-    integer :: i_field
-    integer, pointer :: work_flag(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -75,118 +74,80 @@ implicit none
         l_xfem_czm  = cfdisl(sdcont_defi,'EXIS_XFEM_CZM')
     endif
 !
-! - Working vector
+! - Standard: DEPL/SIEF_ELGA/VARI_ELGA/FORC_NODA/COMPOR/EPSI_ELGA
 !
-    AS_ALLOCATE(vi = work_flag, size = nb_field_maxi)
-!
-! - Standard: DEPL/SIEF_ELGA/VARI_ELGA/FORC_NODA
-!
-    list_field_acti(1)  = .true.
-    list_field_acti(2)  = .true.
-    list_field_acti(3)  = .true.
-    list_field_acti(16) = .true.
-    work_flag(1)  = 1
-    work_flag(2)  = 1
-    work_flag(3)  = 1
-    work_flag(16) = 1
-!
-! - Standard: COMPOR
-!
-    list_field_acti(4) = .true.
-    work_flag(4) = 1
+    call SetIOField(ds_inout, 'DEPL'        , l_acti_ = .true._1)
+    call SetIOField(ds_inout, 'SIEF_ELGA'   , l_acti_ = .true._1)
+    call SetIOField(ds_inout, 'EPSI_ELGA'   , l_acti_ = .true._1)
+    call SetIOField(ds_inout, 'VARI_ELGA'   , l_acti_ = .true._1)
+    call SetIOField(ds_inout, 'FORC_NODA'   , l_acti_ = .true._1)    
+    call SetIOField(ds_inout, 'COMPORTEMENT', l_acti_ = .true._1) 
 !
 ! - Dynamic: VITE/ACCE
 !
     if (l_dyna) then
-        list_field_acti(5) = .true.
-        list_field_acti(6) = .true.
+        call SetIOField(ds_inout, 'VITE', l_acti_ = .true._1)
+        call SetIOField(ds_inout, 'ACCE', l_acti_ = .true._1)
     endif
-    work_flag(5) = 1
-    work_flag(6) = 1
 !
 ! - XFEM
 !
     if (l_cont_xfem) then
-        list_field_acti(7) = .true.
+        call SetIOField(ds_inout, 'INDC_ELEM', l_acti_ = .true._1)
         if (l_frot_xfem) then
-            list_field_acti(8) = .true.
+            call SetIOField(ds_inout, 'SECO_ELEM', l_acti_ = .true._1)
         endif
         if (l_xfem_czm) then
-            list_field_acti(9) = .true.
+            call SetIOField(ds_inout, 'COHE_ELEM', l_acti_ = .true._1)
         endif
     endif
-    work_flag(7) = 1
-    work_flag(8) = 1
-    work_flag(9) = 1
 !
 ! - Contact
 !
     if (l_cont) then
         l_inte_node = cfdisl(sdcont_defi,'ALL_INTEG_NOEUD')
         if (l_inte_node) then
-            list_field_acti(10) = .true.
+            call SetIOField(ds_inout, 'CONT_NOEU', l_acti_ = .true._1)
         endif
     endif
-    work_flag(10) = 1
 !
 ! - Stability criterion (buckling)
 !
     if (l_crit_stab) then
-        list_field_acti(11) = .true.
+        call SetIOField(ds_inout, 'MODE_FLAMB', l_acti_ = .true._1)
     endif
-    work_flag(11) = 1
 !
 ! - Stability criterion (with dof selection)
 !
     if (l_dof_stab) then
-        list_field_acti(18) = .true.
+        call SetIOField(ds_inout, 'MODE_STAB', l_acti_ = .true._1)
     endif
-    work_flag(18) = 1
 !
 ! - Vibration modes
 !
     if (l_vibr_mode) then
-        list_field_acti(12) = .true.
+        call SetIOField(ds_inout, 'DEPL_VIBR', l_acti_ = .true._1)
     endif
-    work_flag(12) = 1
 !
 ! - "MULTI-APPUIS": DEPL/VITE/ACCE d'entrainement
 !
     if (l_muap) then
-        list_field_acti(13) = .true.
-        list_field_acti(14) = .true.
-        list_field_acti(15) = .true.
+        call SetIOField(ds_inout, 'DEPL_ABSOLU', l_acti_ = .true._1)
+        call SetIOField(ds_inout, 'VITE_ABSOLU', l_acti_ = .true._1)
+        call SetIOField(ds_inout, 'ACCE_ABSOLU', l_acti_ = .true._1)
     endif
-    work_flag(13) = 1
-    work_flag(14) = 1
-    work_flag(15) = 1
 !
 ! - Special elements: multifibers beams
 !
     if (l_strx) then
-        list_field_acti(17) = .true.
+        call SetIOField(ds_inout, 'STRX_ELGA', l_acti_ = .true._1)
     endif
-    work_flag(17) = 1
 !
 ! - Energy
 !
     if (l_ener) then
-        list_field_acti(19) = .true.
-        list_field_acti(20) = .true.
+        call SetIOField(ds_inout, 'FORC_AMOR', l_acti_ = .true._1)
+        call SetIOField(ds_inout, 'FORC_LIAI', l_acti_ = .true._1)
     endif
-    work_flag(19) = 1
-    work_flag(20) = 1
 !
-! - Standard: EPSI_ELGA
-!
-    work_flag(21) = 1
-    list_field_acti(21) = .true.
-!
-! - Check: if ASSERT -> you've forgotten to say what Aster do with the field
-!
-    do i_field = 1, nb_field_maxi
-        ASSERT(work_flag(i_field).eq.1)
-    end do
-!
-    AS_DEALLOCATE(vi = work_flag)
 end subroutine

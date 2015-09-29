@@ -1,9 +1,9 @@
-subroutine ndexpl(modele, numedd  , numfix, mate       , carele,&
-                  comref, compor  , lischa, ds_algopara, fonact,&
-                  carcri, ds_print, sdstat, sdnume     , sddyna,&
-                  sddisc, sdtime  , sderro, valinc     , numins,&
-                  solalg, solveu  , matass, maprec     , meelem,&
-                  measse, veelem  , veasse, nbiter )
+subroutine ndexpl(modele, numedd  , numfix, mate       , carele  ,&
+                  comref, compor  , lischa, ds_algopara, fonact  ,&
+                  carcri, ds_print, sdstat, sdnume     , sddyna  ,&
+                  sddisc, sdtime  , sderro, valinc     , numins  ,&
+                  solalg, solveu  , matass, maprec     , ds_inout,&
+                  meelem, measse  , veelem, veasse     , nbiter  )
 !
 use NonLin_Datastructure_type
 !
@@ -42,6 +42,7 @@ implicit none
     character(len=24) :: carcri
     character(len=24) :: sdstat, sdtime, sderro
     character(len=19) :: sdnume, sddyna, sddisc
+    type(NL_DS_InOut), intent(in) :: ds_inout
     type(NL_DS_Print), intent(inout) :: ds_print
     character(len=19) :: valinc(*), solalg(*)
     character(len=19) :: meelem(*), veelem(*)
@@ -69,6 +70,7 @@ implicit none
 ! IN  COMREF : VARIABLES DE COMMANDE DE REFERENCE
 ! IN  COMPOR : COMPORTEMENT
 ! IN  LISCHA : L_CHARGES
+! In  ds_inout         : datastructure for input/output management
 ! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  SOLVEU : SOLVEUR
 ! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
@@ -105,20 +107,20 @@ implicit none
 !
 ! --- CALCUL DES CHARGEMENTS CONSTANTS AU COURS DU PAS DE TEMPS
 !
-    call nmchar('FIXE', ' '   , modele, numedd, mate  ,&
-                carele, compor, lischa, numins, sdtime,&
-                sddisc, fonact, k24bla, k24bla, comref,&
-                valinc, solalg, veelem, measse, veasse,&
-                sddyna)
+    call nmchar('FIXE'  , ' '   , modele, numedd, mate  ,&
+                carele  , compor, lischa, numins, sdtime,&
+                sddisc  , fonact, k24bla, k24bla, comref,&
+                ds_inout, valinc, solalg, veelem, measse,&
+                veasse  , sddyna)
 !
 ! --- PREDICTION D'UNE DIRECTION DE DESCENTE
 !
-    call ndxpre(modele, numedd, numfix, mate       , carele,&
-                comref, compor, lischa, ds_algopara, solveu,&
-                fonact, carcri, sddisc, sdstat     , sdtime,&
-                numins, valinc, solalg, matass     , maprec,&
-                sddyna, sderro, meelem, measse     , veelem,&
-                veasse, lerrit)
+    call ndxpre(modele, numedd, numfix  , mate       , carele,&
+                comref, compor, lischa  , ds_algopara, solveu,&
+                fonact, carcri, sddisc  , sdstat     , sdtime,&
+                numins, valinc, solalg  , matass     , maprec,&
+                sddyna, sderro, ds_inout, meelem     , measse,&
+                veelem, veasse, lerrit)
 !
     if (lerrit) goto 315
 !

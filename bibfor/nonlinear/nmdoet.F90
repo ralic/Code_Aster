@@ -1,6 +1,7 @@
-subroutine nmdoet(model    , compor, list_func_acti, nume_ddl , sdpilo     ,&
-                  sddyna   , sdcriq, sdinout       , hval_algo, l_acce_zero,&
-                  inst_init)
+subroutine nmdoet(model , compor, list_func_acti, nume_ddl   , sdpilo  ,&
+                  sddyna, sdcriq, hval_algo     , l_acce_zero, ds_inout)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -9,7 +10,6 @@ implicit none
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/getvid.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -48,13 +48,12 @@ implicit none
     character(len=24), intent(in) :: compor
     character(len=24), intent(in) :: sdcriq
     character(len=24), intent(in) :: nume_ddl
-    character(len=24), intent(in) :: sdinout
     character(len=19), intent(in) :: sddyna
     character(len=19), intent(in) :: sdpilo
     character(len=19), intent(in) :: hval_algo(*)
     integer, intent(in) :: list_func_acti(*)
     aster_logical, intent(out) :: l_acce_zero
-    real(kind=8), intent(out) :: inst_init
+    type(NL_DS_InOut), intent(inout) :: ds_inout
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -72,30 +71,24 @@ implicit none
 ! In  hval_algo        : hat-variable for algorithms fields
 ! In  sdpilo           : continuation ("PILOTAGE") parameters datastructure
 ! In  sdcriq           : datastructure for quality indicators
-! In  sdinout          : datastructure for input/output parameters
+! IO  ds_inout         : datastructure for input/output management
 ! Out l_acce_zero      : .true. if initial acceleration must been computed
-! Out inst_init        : time for initial state (R8VIDE if not defined)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: sdinout_lcha, sdinout_info
-    character(len=24), pointer :: v_sdinout_lcha(:) => null()
-    integer, pointer :: v_sdinout_info(:) => null()
-    integer :: zioch, nb_field
-    character(len=24) :: field_name_resu
-    aster_logical :: l_init_evol, l_init_state
-    integer :: nb_equa, nocc, nume_init, iret, i, i_field
-    character(len=8) :: calcri, result
-    character(len=16) :: keywf
-    character(len=24) :: evol
+    integer :: nb_field
+    character(len=24) :: field_type
+    aster_logical :: l_stin_evol, l_state_init
+    integer :: nb_equa, init_nume, iret, i, i_field
+    character(len=8) :: calcri, stin_evol
     character(len=24) :: typpil, typsel
     character(len=19) :: depold
     character(len=24) :: champ1, champ2, dep2, dep1, errthm
     integer :: jinst, jerrt
     aster_logical :: l_pilo, lpiarc, l_cont_cont
     aster_logical :: l_expl_gene, l_reuse, l_erre_thm
-    aster_logical :: lzero, l_ener
-    real(kind=8) :: coefav
+    aster_logical :: l_zero, l_acti, l_ener
+    real(kind=8) :: coefav, init_time
     real(kind=8), pointer :: plir(:) => null()
     character(len=24), pointer :: pltk(:) => null()
     real(kind=8), pointer :: vdep1(:) => null()
@@ -112,7 +105,6 @@ implicit none
     dep2 = '&&CNPART.CHP2'
     l_acce_zero  = .false.
     lpiarc       = .false.
-    keywf        = 'ETAT_INIT'
     call dismoi('NB_EQUA', nume_ddl, 'NUME_DDL', repi=nb_equa)
 !
 ! - Model can compute rigidity ?
@@ -122,14 +114,9 @@ implicit none
         call utmess('F', 'CALCULEL2_65', sk=model)
     endif
 !
-! - Access to input/output datastructure
+! - Parameters from input/output datastructure
 !
-    sdinout_lcha = sdinout(1:19)//'.LCHA'
-    sdinout_info = sdinout(1:19)//'.INFO'
-    call jeveuo(sdinout_lcha, 'L', vk24 = v_sdinout_lcha)
-    call jeveuo(sdinout_info, 'L', vi   = v_sdinout_info)
-    nb_field = v_sdinout_info(1)
-    zioch    = v_sdinout_info(4)
+    nb_field = ds_inout%nb_field
 !
 ! - Active functionnalities
 !
@@ -146,7 +133,7 @@ implicit none
 !
 ! - Does ETAT_INIT (initial state) exist ?
 !
-    l_init_state = isfonc(list_func_acti,'ETAT_INIT')
+    l_state_init = isfonc(list_func_acti,'ETAT_INIT')
 !
 ! - PILOTAGE LONGUEUR D'ARC AVEC ANGL_INCR_DEPL: IL FAUT LES DEUX
 ! - DERNIERS DEPLACEMENTS POUR QUE CA MARCHE (CHAMP DEPOLD)
@@ -165,9 +152,8 @@ implicit none
 !
 ! - Get name of result datastructure in ETAT_INIT
 !
-    call getvid(keywf, 'EVOL_NOLI', iocc=1, scal=evol, nbret=nocc)
-    ASSERT(nocc.le.1)
-    l_init_evol = nocc .gt. 0
+    l_stin_evol = ds_inout%l_stin_evol
+    stin_evol   = ds_inout%stin_evol
 !
 ! - ALARME SI CONTACT CONTINU AVEC UN CONCEPT REENTRANT
 !
@@ -176,7 +162,7 @@ implicit none
             if (.not.isfonc(list_func_acti,'CONTACT_INIT')) then
                 call utmess('A', 'MECANONLINE4_14')
             endif
-        else if (l_init_evol) then
+        else if (l_stin_evol) then
             if (.not.isfonc(list_func_acti,'CONTACT_INIT')) then
                 call utmess('A', 'MECANONLINE4_15')
             endif
@@ -185,22 +171,24 @@ implicit none
 !
 ! - Initial storing index and time
 !
-    call nmdoin(evol, l_init_evol, inst_init, nume_init)
+    call nmdoin(ds_inout)
+    init_time = ds_inout%init_time
+    init_nume = ds_inout%init_nume
 !
 ! - Print
 !
-    if (l_init_state) then
+    if (l_state_init) then
         call utmess('I', 'ETATINIT_10')
         if (l_ener) then
             call utmess('I', 'ETATINIT_5')
         endif
-        if (l_init_evol) then
-            call utmess('I', 'ETATINIT_11', sk = evol, sr = inst_init, si = nume_init)
+        if (l_stin_evol) then
+            call utmess('I', 'ETATINIT_11', sk = stin_evol, sr = init_time, si = init_nume)
         else
-            if (nume_init.eq.-1) then
+            if (init_nume.eq.-1) then
                 call utmess('I', 'ETATINIT_20')
             else
-                call utmess('I', 'ETATINIT_12', sr = inst_init)
+                call utmess('I', 'ETATINIT_12', sr = init_time)
             endif
         endif
     else
@@ -215,35 +203,30 @@ implicit none
 !
     do i_field = 1, nb_field
 !
-! ----- Initial state defined by EVOL_NOLI results 
-!
-        result = evol(1:8)
-!
 ! ----- Read field for ETAT_INIT - From results datastructure
 !
-        if (l_init_evol) then
-            call nmetl1(result, nume_init, sdinout, i_field)
+        if (l_stin_evol) then
+            call nmetl1(i_field, ds_inout)
         endif
 !
 ! ----- Read field for ETAT_INIT - Field by field
 !
-        call nmetl2(keywf, sdinout, i_field)
+        call nmetl2(i_field, ds_inout)
 !
 ! ----- Read field for ETAT_INIT - Some checks
 !
-        call nmetl3(model  , compor      , l_init_evol, result, nume_init,&
-                    sdinout, l_init_state, i_field)
+        call nmetl3(model, compor, i_field, ds_inout)
     end do
 !
 ! - VERIFICATION COMPATIBILITE PILOTAGE
 !
-    if (l_init_evol .and. lpiarc) then
-        call rsexch(' ', result, 'DEPL', nume_init, champ1,&
+    if (l_stin_evol .and. lpiarc) then
+        call rsexch(' ', stin_evol, 'DEPL', init_nume, champ1,&
                     iret)
-        call rsexch(' ', result, 'DEPL', nume_init-1, champ2,&
+        call rsexch(' ', stin_evol, 'DEPL', init_nume-1, champ2,&
                     iret)
         if (iret .ne. 0) then
-            call utmess('F', 'MECANONLINE4_47', sk=evol)
+            call utmess('F', 'MECANONLINE4_47', sk=stin_evol)
         endif
         call vtcopy(champ1, dep1, 'F', iret)
         call vtcopy(champ2, dep2, 'F', iret)
@@ -254,7 +237,7 @@ implicit none
             depol(i) = vdep1(i) - vdep2(i)
         end do
         call jeveuo(sdpilo(1:19)//'.PLIR', 'E', vr=plir)
-        call rsadpa(result, 'L', 1, 'COEF_MULT', nume_init,&
+        call rsadpa(stin_evol, 'L', 1, 'COEF_MULT', init_nume,&
                     0, sjv=jinst, istop=0)
         coefav = zr(jinst)
         if (coefav .ne. 0.d0 .and. coefav .ne. r8vide()) then
@@ -264,13 +247,13 @@ implicit none
 !
 ! - LECTURE DES INDICATEURS D'ERREUR EN TEMPS EN THM
 !
-    if (l_init_evol .and. l_erre_thm) then
+    if (l_stin_evol .and. l_erre_thm) then
         errthm = sdcriq(1:19)//'.ERRT'
         call jeveuo(errthm, 'E', jerrt)
-        call rsadpa(result, 'L', 1, 'ERRE_TPS_LOC', nume_init,&
+        call rsadpa(stin_evol, 'L', 1, 'ERRE_TPS_LOC', init_nume,&
                     0, sjv=jinst, istop=0)
         zr(jerrt-1+1) = zr(jinst)
-        call rsadpa(result, 'L', 1, 'ERRE_TPS_GLOB', nume_init,&
+        call rsadpa(stin_evol, 'L', 1, 'ERRE_TPS_GLOB', init_nume,&
                     0, sjv=jinst, istop=0)
         zr(jerrt-1+2) = zr(jinst)
 !
@@ -279,15 +262,16 @@ implicit none
 ! - CAS DE LA DYNAMIQUE: VITESSE ET ACCELERATION INITIALES
 !
     do i_field = 1, nb_field
-        field_name_resu = v_sdinout_lcha(zioch*(i_field-1)+1 )
-        lzero = v_sdinout_lcha(zioch*(i_field-1)+4 ).eq.'ZERO'
-        if (field_name_resu .eq. 'VITE') then
-            if (lzero) then
+        field_type = ds_inout%field(i_field)%type
+        l_zero     = ds_inout%field(i_field)%init_type.eq.'ZERO'
+        l_acti     = ds_inout%l_field_acti(i_field)
+        if (field_type .eq. 'VITE') then
+            if (l_zero .and. l_acti) then
                 call utmess('I', 'MECANONLINE4_22')
             endif
         endif
-        if (field_name_resu .eq. 'ACCE') then
-            if (lzero) then
+        if (field_type .eq. 'ACCE') then
+            if (l_zero .and. l_acti) then
                 call utmess('I', 'MECANONLINE4_23')
                 l_acce_zero = .true.
             endif
@@ -297,8 +281,7 @@ implicit none
 ! - PROJECTION MODALE EN EXPLICITE
 !
     if (l_expl_gene) then
-        result = evol(1:8)
-        call ndloam(sddyna, result, l_init_evol, nume_init)
+        call ndloam(sddyna, stin_evol, l_stin_evol, init_nume)
     endif
 !
     call jedema()

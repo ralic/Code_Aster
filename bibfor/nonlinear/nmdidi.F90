@@ -1,4 +1,15 @@
-subroutine nmdidi(modele, lischa, depmoi, vedidi)
+subroutine nmdidi(ds_inout, model , list_load, nume_dof, valinc,&
+                  veelem  , veasse)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterfort/rsexch.h"
+#include "asterfort/vecdid.h"
+#include "asterfort/assvec.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,60 +29,59 @@ subroutine nmdidi(modele, lischa, depmoi, vedidi)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/getvid.h"
-#include "asterfort/getvis.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/rsexch.h"
-#include "asterfort/utmess.h"
-#include "asterfort/vecdid.h"
-    character(len=19) :: lischa, vedidi
-    character(len=24) :: modele
-    character(len=19) :: depmoi
+    type(NL_DS_InOut), intent(in) :: ds_inout
+    character(len=24), intent(in) :: model
+    character(len=19), intent(in) :: list_load
+    character(len=24), intent(in) :: nume_dof
+    character(len=19), intent(in) :: valinc(*)
+    character(len=19), intent(in) :: veelem(*)
+    character(len=19), intent(in) :: veasse(*)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (CALCUL)
+! MECA_NON_LINE - Computation
 !
-! CALCUL DES VECT_ELEM POUR DIRICHLET DIFFERENTIEL
+! Compute vector for DIDI loads
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  ds_inout         : datastructure for input/output management
+! In  model            : name of the model
+! In  list_load        : name of datastructure for list of loads
+! In  nume_dof         : name of numbering (NUME_DDL)
+! In  valinc           : hat variable for algorithm fields
+! In  veelem           : hat variable for elementary vectors
+! In  veasse           : hat variable for vectors
 !
-! IN  MODELE : MODELE
-! IN  LISCHA : SD L_CHARGES
-! IN  DEPMOI : DEPLACEMENTS EN T-
-! IN  VEDIDI : VECT_ELEM DES DIDI
+! --------------------------------------------------------------------------------------------------
 !
+    integer :: iret, didi_nume
+    character(len=19) :: disp_didi, disp_prev, vect_elem, vect_asse
 !
+! --------------------------------------------------------------------------------------------------
 !
+    call nmchex(valinc, 'VALINC', 'DEPMOI', disp_prev)
+    call nmchex(veelem, 'VEELEM', 'CNDIDI', vect_elem)
+    call nmchex(veasse, 'VEASSE', 'CNDIDI', vect_asse)
+    disp_didi = disp_prev
 !
-    integer :: numref, n1, nevo, iret
-    character(len=19) :: depdid
-    character(len=24) :: evol
+! - Get displacement field
 !
-! ----------------------------------------------------------------------
-!
-    call jemarq()
-!
-! --- CONSTRUCTION DE LA CONFIGURATION DE REFERENCE
-!
-    depdid = depmoi
-    call getvis('ETAT_INIT', 'NUME_DIDI', iocc=1, scal=numref, nbret=n1)
-    call getvid('ETAT_INIT', 'EVOL_NOLI', iocc=1, scal=evol, nbret=nevo)
-    if ((n1.gt.0) .and. (nevo.gt.0)) then
-        call rsexch(' ', evol, 'DEPL', numref, depdid,&
-                    iret)
+    didi_nume = ds_inout%didi_nume
+    if ((didi_nume.ge.0) .and. (ds_inout%l_stin_evol)) then
+        call rsexch(' ', ds_inout%stin_evol, 'DEPL', didi_nume, disp_didi, iret)
         if (iret .ne. 0) then
-            call utmess('F', 'ALGORITH7_20', sk=evol)
+            call utmess('F', 'MECANONLINE5_20', sk=ds_inout%stin_evol)
         endif
     endif
 !
-! --- CALCUL DES VECT_ELEM
+! - Compute elementary vectors
 !
-    call vecdid(modele, lischa, depdid, vedidi)
+    call vecdid(model, list_load, disp_didi, vect_elem)
 !
-    call jedema()
+! - Assembly
+!
+    call assvec('V', vect_asse, 1, vect_elem, [1.d0],&
+                nume_dof, ' ', 'ZERO', 1)
+!
 end subroutine

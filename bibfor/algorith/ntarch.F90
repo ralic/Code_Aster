@@ -1,6 +1,5 @@
-subroutine ntarch(numins, modele, mate, carele, lnonl,&
-                  para, sddisc, sdcrit, sdieto, lisch2,&
-                  force)
+subroutine ntarch(numins, modele, mate  , carele  , lnonl,&
+                  para  , sddisc, sdcrit, ds_inout, force)
 !
 use NonLin_Datastructure_type
 !
@@ -8,12 +7,9 @@ implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/getres.h"
 #include "asterfort/didern.h"
 #include "asterfort/diinst.h"
 #include "asterfort/dinuar.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/nmarce.h"
 #include "asterfort/ntarc0.h"
 #include "asterfort/rsadpa.h"
@@ -39,80 +35,78 @@ implicit none
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    character(len=24) :: sdieto
+    type(NL_DS_InOut), intent(in) :: ds_inout
     integer :: numins
     real(kind=8) :: para(*)
     aster_logical :: lnonl, force
     character(len=19) :: sddisc, sdcrit
     character(len=24) :: modele, mate, carele
-    character(len=19) :: lisch2
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE THER_* (ALGORITHME)
+! THER_*  - Algorithm
 !
-! ARCHIVAGE
+! Storing results
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  ds_inout         : datastructure for input/output management
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: instam, instan
     integer :: iret
     integer :: numarc
     integer :: jinst
-    character(len=19) :: k19bid
-    character(len=16) :: k16b1, k16b2
+    character(len=19) :: k19bid, list_load_resu
     character(len=8) :: result
     integer :: ibid
     character(len=24) :: k24bla
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
+    result         = ds_inout%result
+    list_load_resu = ds_inout%list_load_resu
 !
-! --- IMPRESSION EVENTUELLE DES MESURES DE TEMPS
+! - Print timer
 !
     call uttcpg('IMPR', 'INCR')
     k24bla = ' '
 !
-! --- DERNIER PAS : ON ARCHIVE TOUS LES CHAMPS
+! - Last step => storing
 !
     if (didern(sddisc,numins)) then
         force = .true.
     endif
 !
-! --- NUMERO D'ARCHIVAGE
+! - Get index for storing
 !
     call dinuar(sddisc, numins, force, numarc, ibid)
 !
-! --- INSTANT COURANT
+! - Current time
 !
     instan = diinst(sddisc,numins)
 !
-! ----------------------------------------------------------------------
+! - Storing
 !
     if (numarc .ge. 0) then
 !
-! ----- NOM SD RESULTAT
-!
-        call getres(result, k16b1, k16b2)
-!
-! ----- INSTANT DEJA ARCHIVE ?
+! ----- Already stored ?
 !
         if (numarc .ge. 2) then
             call rsadpa(result, 'L', 1, 'INST', numarc-1,&
                         0, sjv=jinst)
             instam = zr(jinst)
-            if (instan .le. instam) goto 999
+            if (instan .le. instam) then
+                goto 999
+            endif
         endif
 !
-! ----- AFFICHAGE
+! ----- Print head
 !
         call utmess('I', 'ARCHIVAGE_5')
 !
-! ----- EXTENSION DE RESULT SI TROP PETIT (DOUBLEMENT)
+! ----- Increased result datastructure if necessary
 !
         call rsexch(' ', result, 'TEMP', numarc, k19bid,&
                     iret)
@@ -120,19 +114,17 @@ implicit none
             call rsagsd(result, 0)
         endif
 !
-! ----- ARCHIVAGE DES PARAMETRES
+! ----- Storing parameters
 !
-        call ntarc0(result, modele, mate, carele, sdcrit,&
-                    lisch2, lnonl, para, numarc, instan)
+        call ntarc0(result        , modele, mate, carele, sdcrit,&
+                    list_load_resu, lnonl , para, numarc, instan)
 !
-! ----- ARCHIVAGE DES CHAMPS
+! ----- Stroring fields
 !
-        call nmarce(sdieto, result, sddisc, instan, numarc,&
+        call nmarce(ds_inout, result, sddisc, instan, numarc,&
                     force)
     endif
 !
 999 continue
-!
-    call jedema()
 !
 end subroutine

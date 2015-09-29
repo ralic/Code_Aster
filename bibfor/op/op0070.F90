@@ -85,7 +85,7 @@ implicit none
     character(len=8) :: result, mesh
 !
     character(len=16) :: k16bid
-    character(len=19) :: lischa, lisch2
+    character(len=19) :: lischa
     character(len=19) :: solveu, maprec, matass
     character(len=24) :: modele, mate, carele, compor
     character(len=24) :: numedd, numfix
@@ -97,14 +97,15 @@ implicit none
 !
 ! --- STRUCTURES DE DONNEES
 !
-    character(len=24) :: sdtime, sderro, sd_inout
+    character(len=24) :: sdtime, sderro
     character(len=24) :: sdstat, sd_suiv, sdcriq
     character(len=19) :: sdpilo, sdnume, sddyna, sddisc, sdcrit
     character(len=19) :: sd_obsv, sdpost, sdener
     character(len=24) :: defico, resoco, deficu, resocu
-    type(NL_DS_Print) :: ds_print
-    type(NL_DS_Conv) :: ds_conv
+    type(NL_DS_Print)    :: ds_print
+    type(NL_DS_Conv)     :: ds_conv
     type(NL_DS_AlgoPara) :: ds_algopara
+    type(NL_DS_InOut)    :: ds_inout
 !
 ! --- VARIABLES CHAPEAUX
 !
@@ -156,28 +157,28 @@ implicit none
 !
 ! - Creation of datastructures
 !
-    call nmini0(fonact  , eta    , numins     , matass, zmeelm,&
-                zmeass  , zveelm , zveass     , zsolal, zvalin,&
-                ds_print, ds_conv, ds_algopara)
+    call nmini0(fonact  , eta    , numins     , matass  , zmeelm,&
+                zmeass  , zveelm , zveass     , zsolal  , zvalin,&
+                ds_print, ds_conv, ds_algopara, ds_inout)
 !
 ! - Read parameters
 !
-    call nmdata(result  , modele     , mesh  , mate   , carele,&
-                compor  , lischa     , solveu, ds_conv, carcri,&
-                sddyna  , sdpost     , sderro, sdener , sdcriq,&
-                ds_print, ds_algopara)
+    call nmdata(modele     , mesh  , mate   , carele, compor  ,&
+                lischa     , solveu, ds_conv, carcri, sddyna  ,&
+                sdpost     , sderro, sdener , sdcriq, ds_print,&
+                ds_algopara, ds_inout)
 !
 ! - Initializations of datastructures
 !
-    call nminit(result  , modele , numedd , numfix     , mate    ,&
-                compor  , carele , lischa , ds_algopara, maprec  ,&
-                solveu  , carcri , numins , sdstat     , sddisc  ,&
-                sdnume  , defico , sdcrit , comref     , fonact  ,&
-                lisch2  , mesh   , sdpilo , sddyna     , ds_print,&
-                sd_suiv , sd_obsv, sdtime , sderro     , sdpost  ,&
-                sd_inout, sdener , ds_conv, sdcriq     , deficu  ,&
-                resocu  , resoco , valinc , solalg     , measse  ,&
-                veelem  , meelem , veasse , codere )
+    call nminit(result , modele , numedd, numfix     , mate    ,&
+                compor , carele , lischa, ds_algopara, maprec  ,&
+                solveu , carcri , numins, sdstat     , sddisc  ,&
+                sdnume , defico , sdcrit, comref     , fonact  ,&
+                mesh   , sdpilo , sddyna, ds_print   , sd_suiv ,&
+                sd_obsv, sdtime , sderro, sdpost     , ds_inout,&
+                sdener , ds_conv, sdcriq, deficu     , resocu  ,&
+                resoco , valinc , solalg, measse     , veelem  ,&
+                meelem , veasse , codere)
 !
 ! --- PREMIER INSTANT
 !
@@ -208,21 +209,21 @@ implicit none
 ! --- REALISATION DU PAS DE TEMPS
 !
     if (lexpl) then
-        call ndexpl(modele, numedd  , numfix, mate       , carele,&
-                    comref, compor  , lischa, ds_algopara, fonact,&
-                    carcri, ds_print, sdstat, sdnume     , sddyna,&
-                    sddisc, sdtime  , sderro, valinc     , numins,&
-                    solalg, solveu  , matass, maprec     , meelem,&
-                    measse, veelem  , veasse, nbiter)
+        call ndexpl(modele, numedd  , numfix, mate       , carele  ,&
+                    comref, compor  , lischa, ds_algopara, fonact  ,&
+                    carcri, ds_print, sdstat, sdnume     , sddyna  ,&
+                    sddisc, sdtime  , sderro, valinc     , numins  ,&
+                    solalg, solveu  , matass, maprec     , ds_inout,&
+                    meelem, measse, veelem  , veasse     , nbiter)
     else if (lstat.or.limpl) then
-        call nmnewt(mesh       , modele  , numins, numedd , numfix,&
-                    mate       , carele  , comref, compor , lischa,&
-                    ds_algopara, fonact  , carcri, sdstat , sdtime,&
-                    sderro     , ds_print, sdnume, sddyna , sddisc,&
-                    sdcrit     , sd_suiv , sdpilo, ds_conv, solveu,&
-                    maprec     , matass  , valinc, solalg , meelem,&
-                    measse     , veelem  , veasse, defico , resoco,&
-                    deficu     , resocu  , eta   , nbiter)
+        call nmnewt(mesh       , modele  , numins  , numedd , numfix,&
+                    mate       , carele  , comref  , compor , lischa,&
+                    ds_algopara, fonact  , carcri  , sdstat , sdtime,&
+                    sderro     , ds_print, sdnume  , sddyna , sddisc,&
+                    sdcrit     , sd_suiv , sdpilo  , ds_conv, solveu,&
+                    maprec     , matass  , ds_inout, valinc , solalg,&
+                    meelem     , measse  , veelem  , veasse , defico,&
+                    resoco     , deficu  , resocu  , eta    , nbiter)
     else
         ASSERT(.false.)
     endif
@@ -244,13 +245,13 @@ implicit none
 !
 ! --- POST-TRAITEMENTS
 !
-    call nmpost(modele, mesh   , numedd  , numfix, carele     ,&
-                compor, numins  , mate  , comref     ,&
-                lischa, defico , resoco  , resocu, ds_algopara,&
-                fonact, carcri , ds_print, sdstat, sddisc     ,&
-                sdtime, sd_obsv, sderro  , sddyna, sdpost     ,&
-                valinc, solalg , meelem  , measse, veelem     ,&
-                veasse, sdener , sdcriq  , eta)
+    call nmpost(modele , mesh    , numedd, numfix     , carele,&
+                compor , numins  , mate  , comref     , ds_inout,&
+                defico , resoco  , resocu, ds_algopara, fonact,&
+                carcri , ds_print, sdstat, sddisc     , sdtime,&
+                sd_obsv, sderro  , sddyna, sdpost     , valinc,&
+                solalg , meelem  , measse, veelem     , veasse,&
+                sdener , sdcriq  , eta   , lischa)
 !
 ! --- ETAT DE LA CONVERGENCE DU PAS DE TEMPS
 !
@@ -294,10 +295,10 @@ implicit none
 ! --- ARCHIVAGE DES RESULTATS
 !
     call onerrf(compex, k16bid, ibid)
-    call nmarch(result, numins, modele  , mate  , carele,&
-                fonact, carcri, ds_print, sddisc, sdpost,&
-                sdcrit, sdtime, sderro  , sddyna, sdpilo,&
-                sdener, sd_inout, sdcriq, lisch2)
+    call nmarch(numins  , modele  , mate  , carele, fonact,&
+                carcri  , ds_print, sddisc, sdpost, sdcrit,&
+                sdtime  , sderro  , sddyna, sdpilo, sdener,&
+                ds_inout, sdcriq  )
     call onerrf('EXCEPTION+VALID', k16bid, ibid)
 !
 ! --- ETAT DU CALCUL
@@ -327,10 +328,10 @@ implicit none
 ! --- ON COMMENCE PAR ARCHIVER LE PAS DE TEMPS PRECEDENT
 !
     if (numins .ne. 1) then
-        call nmarch(result, numins-1, modele  , mate  , carele,&
-                    fonact, carcri  , ds_print, sddisc, sdpost,&
-                    sdcrit, sdtime  , sderro  , sddyna, sdpilo,&
-                    sdener, sd_inout, sdcriq  , lisch2)
+        call nmarch(numins-1, modele  , mate  , carele, fonact,&
+                    carcri  , ds_print, sddisc, sdpost, sdcrit,&
+                    sdtime  , sderro  , sddyna, sdpilo, sdener,&
+                    ds_inout, sdcriq  )
     endif
 !
 ! --- GESTION DES ERREURS ET EXCEPTIONS

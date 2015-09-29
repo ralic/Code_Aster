@@ -1,4 +1,6 @@
-subroutine nmetob(sd_inout, field_name_resu, i_field_obsv)
+subroutine nmetob(ds_inout, field_type, i_field_obsv)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -22,8 +24,8 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=24), intent(in) :: sd_inout
-    character(len=24), intent(in) :: field_name_resu
+    type(NL_DS_InOut), intent(in) :: ds_inout
+    character(len=24), intent(in) :: field_type
     integer, intent(out) :: i_field_obsv
 !
 ! --------------------------------------------------------------------------------------------------
@@ -34,37 +36,25 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sd_inout         : datastructure for input/output parameters
-! In  field_name_resu  : name of field (type) in results datastructure
+! In  ds_inout         : datastructure for input/output management
+! In  field_type       : name of field (type) in results datastructure
 ! Out i_field_obsv     : index of field - 0 if not used for OBSERVATION
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: io_lcha, io_info
-    character(len=24), pointer :: v_io_para(:) => null()
-    integer, pointer :: v_io_info(:) => null()
-    integer :: zioch, nb_field
-    integer :: i_field
-    character(len=24) :: keyw_obsv
+    integer :: nb_field, i_field
+    character(len=24) :: obsv_keyw
 !
 ! --------------------------------------------------------------------------------------------------
 !
     i_field_obsv = 0
-!
-! - Access to datastructure
-!
-    io_lcha = sd_inout(1:19)//'.LCHA'
-    io_info = sd_inout(1:19)//'.INFO'
-    call jeveuo(io_lcha, 'L', vk24 = v_io_para)
-    call jeveuo(io_info, 'L', vi   = v_io_info)
-    nb_field = v_io_info(1)
-    zioch    = v_io_info(4)
+    nb_field     = ds_inout%nb_field
 !
 ! - Find field
 !
     do i_field = 1, nb_field
-        keyw_obsv = v_io_para(zioch*(i_field-1)+10)
-        if (keyw_obsv .eq. field_name_resu) then
+        obsv_keyw = ds_inout%field(i_field)%obsv_keyw
+        if (obsv_keyw .eq. field_type) then
             i_field_obsv = i_field
         endif
     end do

@@ -16,10 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine vecdid(modele, lischa, depdid, vecelz)
-        character(len=24) :: modele
-        character(len=19) :: lischa
-        character(len=19) :: depdid
-        character(len=*) :: vecelz
+    subroutine vecdid(model, list_load, disp_didi, vect_elem_)
+        character(len=24), intent(in) :: model
+        character(len=19), intent(in) :: disp_didi
+        character(len=19), intent(in) :: list_load
+        character(len=*), intent(in) :: vect_elem_
     end subroutine vecdid
 end interface

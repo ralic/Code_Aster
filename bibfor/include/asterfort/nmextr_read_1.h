@@ -16,9 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmextr_read_1(sd_inout, keyw_fact, nb_keyw_fact, list_field, rela_field_keyw,&
+    subroutine nmextr_read_1(ds_inout, keyw_fact    , nb_keyw_fact, list_field, rela_field_keyw,&
                              nb_field, nb_field_comp)
-        character(len=24), intent(in) :: sd_inout
+        use NonLin_Datastructure_type
+        type(NL_DS_InOut), intent(in) :: ds_inout
         integer, intent(in) :: nb_keyw_fact
         character(len=16), intent(in) :: keyw_fact
         character(len=24), intent(out), pointer :: list_field(:)

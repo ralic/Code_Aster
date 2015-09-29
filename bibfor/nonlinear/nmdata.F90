@@ -1,7 +1,7 @@
-subroutine nmdata(result  , model      , mesh  , mate   , carele,&
-                  compor  , lischa     , solveu, ds_conv, carcri,&
-                  sddyna  , sdpost     , sderro, sdener , sdcriq,&
-                  ds_print, ds_algopara)
+subroutine nmdata(model      , mesh    , mate   , carele, compor  ,&
+                  lischa     , solveu  , ds_conv, carcri, sddyna  ,&
+                  sdpost     , sderro  , sdener , sdcriq, ds_print,&
+                  ds_algopara, ds_inout)
 !
 use NonLin_Datastructure_type
 !
@@ -19,6 +19,8 @@ implicit none
 #include "asterfort/nmcrga.h"
 #include "asterfort/nmdocn.h"
 #include "asterfort/ReadPrint.h"
+#include "asterfort/ReadInOut.h"
+#include "asterfort/GetIOField.h"
 #include "asterfort/nmdomt.h"
 #include "asterfort/nmdomt_ls.h"
 #include "asterfort/nmdopo.h"
@@ -44,7 +46,6 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=8) :: result
     character(len=19) :: lischa, solveu, sddyna, sdpost, sdener
     character(len=24) :: mate, carele, compor
     character(len=24) :: carcri, sderro, sdcriq
@@ -53,6 +54,7 @@ implicit none
     type(NL_DS_Print), intent(inout) :: ds_print
     type(NL_DS_Conv), intent(inout) :: ds_conv
     type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
+    type(NL_DS_InOut), intent(inout) :: ds_inout
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -62,7 +64,6 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! OUT RESULT : NOM UTILISATEUR DU RESULTAT DE MECA_NON_LINE
 ! Out mesh             : name of mesh
 ! Out model            : name of model
 ! OUT MATE   : NOM DU CHAMP DE MATERIAU
@@ -81,31 +82,34 @@ implicit none
 ! IO  ds_print         : datastructure for printing parameters
 ! IO  ds_conv          : datastructure for convergence management
 ! IO  ds_algopara      : datastructure for algorithm parameters
+! IO  ds_inout         : datastructure for input/output management
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    integer :: n1, n2
-    character(len=8) :: k8bid
+    character(len=8) :: result
     character(len=16) :: k16bid, nomcmd
-    aster_logical :: l_etat_init
+    aster_logical :: l_etat_init, l_sigm
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call infdbg('MECA_NON_LINE', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> LECTURE DES DONNEES'
+        write (ifm,*) '<MECANONLINE> Read parameters'
     endif
 !
-! --- COMMANDE APPELANTE
+! - Get command parameters
 !
-    call getres(k8bid, k16bid, nomcmd)
+    call getres(result, k16bid, nomcmd)
 !
-! - Initial state
+! - Read parameters for input/output management
 !
-    call getvid('ETAT_INIT', 'EVOL_NOLI', iocc=1, nbret=n1)
-    call getvid('ETAT_INIT', 'SIGM', iocc=1, nbret=n2)
-    l_etat_init = ((n1.ne.0).or.(n2.ne.0))
+    call ReadInOut('MECA', result, ds_inout)
+!
+! - Initial state (EVOL_NOL or stresses)
+!
+    call GetIOField(ds_inout, 'SIEF_ELGA', l_read_ = l_sigm)
+    l_etat_init = ((ds_inout%l_stin_evol).or.(l_sigm))
 !
 ! --- LECTURE DONNEES GENERALES
 !
@@ -116,7 +120,7 @@ implicit none
 ! --- RELATION DE COMPORTEMENT ET CRITERES DE CONVERGENCE LOCAL
 !
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> ... LECTURE DONNEES COMPORTEMENT'
+        write (ifm,*) '<MECANONLINE> . Read parameters for comportment'
     endif
     call nmdorc(model(1:8), mate, l_etat_init, compor, carcri)
 !

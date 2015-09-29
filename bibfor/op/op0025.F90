@@ -1,5 +1,7 @@
 subroutine op0025()
 !
+use NonLin_Datastructure_type
+!
 implicit none
 !
 #include "asterf_types.h"
@@ -23,6 +25,7 @@ implicit none
 #include "asterfort/uttcpu.h"
 #include "asterfort/vtcreb.h"
 #include "asterfort/xthpos.h"
+#include "asterfort/CreateInOutDS.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -61,15 +64,16 @@ implicit none
     aster_logical :: matcst, coecst, lostat, levol, asme, asms, finpas, l_ther_nonl
     aster_logical :: reasvc, reasvt, reasmt, reasrg, reasms, force
     character(len=1) :: creas
-    character(len=8) :: result_dry, mesh
-    character(len=19) :: maprec, solver, list_load_save, sddisc, sdcrit, list_load
-    character(len=24) :: result, model, cara_elem
+    character(len=8) :: result, result_dry, mesh
+    character(len=19) :: maprec, solver, sddisc, sdcrit, list_load
+    character(len=24) :: model, cara_elem
     character(len=24) :: nume_dof
     character(len=24) :: mediri, matass
     character(len=24) :: cndirp, cnchci, time
     character(len=24) :: mate
     character(len=24) :: vec2nd
-    character(len=24) :: compor, sdieto
+    character(len=24) :: compor
+    type(NL_DS_InOut) :: ds_inout
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -93,21 +97,25 @@ implicit none
     cnchci      = ' '
     sddisc      = '&&OP0025.SDDISC'
 !
+! - Create input/output management datastructure
+!
+    call CreateInOutDS('THER', ds_inout)
+!
 ! - Read parameters
 !
     l_ther_nonl = .false.
     call nxlect(l_ther_nonl, list_load  , solver    , ther_para_i, ther_para_r,&
                 ther_crit_i, ther_crit_r, result_dry, matcst     , coecst     ,&
-                result     , model      , mate      , cara_elem  , compor     )
+                result     , model      , mate      , cara_elem  , compor     ,&
+                ds_inout)
     para(1) = ther_para_r(1)
     para(2) = 0.d0
 !
 ! - Initial state and some parameters
 !
-    call ntinit(result        , model      , mate  , cara_elem, list_load,&
-                list_load_save, solver     , para  , nume_dof , lostat   ,&
-                levol         , l_ther_nonl, sddisc, sdieto   , mesh     ,&
-                sdcrit        , time)
+    call ntinit(model , mate    , cara_elem, list_load, solver     ,&
+                para  , nume_dof, lostat   , levol    , l_ther_nonl,&
+                sddisc, ds_inout, mesh     , sdcrit   , time)
 !
 ! - Elementary matrix for Dirichlet BC
 !
@@ -209,9 +217,8 @@ implicit none
     else
         force = .false.
     endif
-    call ntarch(nume_inst, model , mate  , cara_elem, l_ther_nonl   ,&
-                para     , sddisc, sdcrit, sdieto   , list_load_save,&
-                force)
+    call ntarch(nume_inst, model , mate  , cara_elem, l_ther_nonl,&
+                para     , sddisc, sdcrit, ds_inout , force)
 !
 ! ------- VERIFICATION SI INTERRUPTION DEMANDEE PAR SIGNAL USR1
 !
