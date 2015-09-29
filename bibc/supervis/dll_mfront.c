@@ -197,6 +197,41 @@ void DEFSSSPPPPP(MFRONT_GET_POINTERS,
 #endif
 }
 
+void DEFSSSP(MFRONT_SET_OUTOFBOUNDS_POLICY,
+             mfront_set_outofbounds_policy,
+    char* nomlib, STRING_SIZE lnomlib, char* nomsub, STRING_SIZE lnomsub,
+    char* nommod, STRING_SIZE lnommod, INTEGER* value)
+{
+#ifdef _POSIX
+    char *libname, *symbol, *model, *symbname=NULL;
+    int retour = 0;
+    FUNC_MFRONT_SET_OUTOFBOUNDS_POLICY(f_mfront) = NULL;
+    PyObject* DLL_DICT;
+    DLL_DICT = get_dll_register_dict();
+
+    libname = MakeCStrFromFStr(nomlib, lnomlib);
+    symbol = MakeCStrFromFStr(nomsub, lnomsub);
+    model = MakeCStrFromFStr(nommod, lnommod);
+
+    mfront_name(libname, symbol, model, "_setOutOfBoundsPolicy", &symbname);
+    if ( symbname == NULL )
+    {
+        error_symbol_not_found(libname, symbname);
+    }
+
+    f_mfront = (FUNC_MFRONT_SET_OUTOFBOUNDS_POLICY())libsymb_get_symbol(DLL_DICT,libname,symbname);
+    CALLMFRONTSETOUTOFBOUNDSPOLICY(f_mfront, (unsigned short)(*value));
+
+    FreeStr(libname);
+    FreeStr(model);
+    FreeStr(symbol);
+    FreeStr(symbname);
+#else
+    printf("Not available under Windows.\n");
+    abort();
+#endif
+}
+
 void DEFSSSPP(MFRONT_GET_NBVARI, mfront_get_nbvari,
     char* nomlib, STRING_SIZE lnomlib, char* nomsub, STRING_SIZE lnomsub,
     char* nommod, STRING_SIZE lnommod,
@@ -249,7 +284,7 @@ void DEFSSSPP(MFRONT_GET_NBVARI, mfront_get_nbvari,
                 AS_ASSERT( *ndim == 2 || *ndim == 3 );
             }
         }
-       else if ( int_var[i] == 3 )
+        else if ( int_var[i] == 3 )
         {
                  (*nbvari) += 9;
         }

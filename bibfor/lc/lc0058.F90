@@ -74,6 +74,7 @@ subroutine lc0058(fami, kpg, ksp, ndim, typmod,&
 #include "asterfort/mfront_get_mater_value.h"
 #include "asterfort/mfront_varc.h"
 #include "asterfort/lcdetf.h"
+#include "asterfort/utmess.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/dscal.h"

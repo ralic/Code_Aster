@@ -43,6 +43,8 @@
 #define CALLMFRONTSETDOUBLE(NAME,a,b)                 (NAME)(a,b,strlen(a))
 #define DEFMFRONTSETINTEGER(NAME,a,b,la)               (NAME)(a,b,la)
 #define CALLMFRONTSETINTEGER(NAME,a,b)                 (NAME)(a,b,strlen(a))
+#define DEFMFRONTSETOUTOFBOUNDSPOLICY(NAME,a)               (NAME)(a)
+#define CALLMFRONTSETOUTOFBOUNDSPOLICY(NAME,a)                 (NAME)(a)
 
 /* Appels et signatures avec strlen juste après le pointeur de chaine */
 #else
@@ -65,6 +67,8 @@
 #define CALLMFRONTSETDOUBLE(NAME,a,b)                 (NAME)(a,strlen(a),b)
 #define DEFMFRONTSETINTEGER(NAME,a,b,la)               (NAME)(a,la,b)
 #define CALLMFRONTSETINTEGER(NAME,a,b)                 (NAME)(a,strlen(a),b)
+#define DEFMFRONTSETOUTOFBOUNDSPOLICY(NAME,a)               (NAME)(a)
+#define CALLMFRONTSETOUTOFBOUNDSPOLICY(NAME,a)                 (NAME)(a)
 
 #endif
 
