@@ -359,7 +359,19 @@ subroutine lc0058(fami, kpg, ksp, ndim, typmod,&
         endif
     endif
 !
-    if (pnewdt .lt. 0.99d0) codret=1
+    if (pnewdt .lt. 0.0d0) then
+        if (pnewdt .lt. -0.99d0 .and. pnewdt .gt. -1.01d0) then
+            codret=1
+        else if (pnewdt .lt. -1.99d0 .and. pnewdt .gt. -2.01d0) then
+            call utmess('F', 'MFRONT_1')
+        else if (pnewdt .lt. -2.99d0 .and. pnewdt .gt. -3.01d0) then
+            call utmess('F', 'MFRONT_2')
+        else if (pnewdt .lt. -3.99d0 .and. pnewdt .gt. -4.01d0) then
+            codret=1
+        else
+            call utmess('F', 'MFRONT_3')
+        endif
+    endif
     idbg=0
 !
 end subroutine

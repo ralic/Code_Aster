@@ -293,7 +293,6 @@ implicit none
     call dcopy(6, sigm, 1, ym, 1)
     call dscal(6, 1.d0/coef, ym, 1)
     call dcopy(6, epsm, 1, ym(7), 1)
-    WRITE(6,*) 'OP33: ',iter
 !
     if (pred .eq. 1) then
         call r8inir(12, 0.d0, dy, 1)
