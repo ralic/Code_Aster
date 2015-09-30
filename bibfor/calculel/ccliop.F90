@@ -96,8 +96,6 @@ subroutine ccliop(type, option, nobase, noliop, nopout)
         call jeveuo(jexnum('&CATA.OP.DESCOPT', opt), 'L', iaopds)
         if (zi(iaopds-1+2) .eq. 0) goto 9999
         call jeveuo(jexnum('&CATA.OP.LOCALIS', opt), 'L', iaoplo)
-!
-        if (zk24(iaoplo) .eq. 'VIDE') goto 9999
     endif
 !
 !     INITIALISATION DES ENTIERS
