@@ -16,7 +16,7 @@ implicit none
 #include "asterfort/reajre.h"
 #include "asterfort/load_neut_prep.h"
 #include "asterfort/load_neut_comp.h"
-#include "asterfort/hydr_resi.h"
+#include "asterfort/resi_ther.h"
 #include "asterfort/inical.h"
 #include "asterfort/load_list_info.h"
 !
@@ -55,9 +55,9 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Thermic - Loads
+! Thermic - Residuals
 ! 
-! Neumann loads elementary vectors (residuals)
+! Neumann loads elementary vectors
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -95,9 +95,6 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!
-! - Initializations
-!
     resu_elem   = '&&VERSTP.0000000'
     stop_calc   = 'S'
     base        = 'V'
@@ -112,9 +109,9 @@ implicit none
     call load_list_info(load_empty, nb_load   , v_load_name, v_load_info,&
                         lload_name, lload_info)
 !
-! - Hydratation vector
+! - Residuals from non-linear laws 
 !
-    call hydr_resi(model    , mate     , time     , compor    , temp_prev,&
+    call resi_ther(model    , mate     , time     , compor    , temp_prev,&
                    temp_iter, hydr_prev, hydr_curr, dry_prev  , dry_curr ,&
                    varc_curr, vect_elem)
 !

@@ -45,7 +45,7 @@ THER_NON_LINE=OPER(nom="THER_NON_LINE",op= 186,sd_prod=evol_ther,reentrant='f',
          INCREMENT       =C_INCREMENT('THERMIQUE'),
 #-------------------------------------------------------------------
          ETAT_INIT       =FACT(statut='f',
-           regles=(EXCLUS('STATIONNAIRE','EVOL_THER','CHAM_NO','VALE'),),
+           regles=(EXCLUS('EVOL_THER','CHAM_NO','VALE'),),
            STATIONNAIRE    =SIMP(statut='f',typ='TXM',into=("OUI",)),
            EVOL_THER       =SIMP(statut='f',typ=evol_ther),
            CHAM_NO         =SIMP(statut='f',typ=cham_no_sdaster),

@@ -7,7 +7,6 @@ subroutine nxpred(model , mate     , cara_elem, list_load, nume_dof ,&
 implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/asasve.h"
 #include "asterfort/ascova.h"
 #include "asterfort/copisd.h"
@@ -68,9 +67,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: k, j2nd, j2ni
-    integer :: jtempm
-    integer :: jbuem
+    integer :: k
     real(kind=8) :: rbid
     real(kind=8) :: time_curr
     character(len=1) :: typres
@@ -78,11 +75,13 @@ implicit none
     character(len=24) :: bidon, veresi, varesi, vabtla, vebtla
     character(len=24) :: vebuem, vabuem, cnvabt, cnvabu
     character(len=24) :: lload_name, lload_info
+    real(kind=8), pointer :: v_vec2ni(:) => null()
+    real(kind=8), pointer :: v_vec2nd(:) => null()
     real(kind=8), pointer :: v_cn2mbr(:) => null()
-    real(kind=8), pointer :: btla(:) => null()
-    real(kind=8), pointer :: dirp(:) => null()
-    real(kind=8), pointer :: temp(:) => null()
-    real(kind=8), pointer :: vare(:) => null()
+    real(kind=8), pointer :: v_cnvabt(:) => null()
+    real(kind=8), pointer :: v_cnvabu(:) => null()
+    real(kind=8), pointer :: v_cndirp(:) => null()
+    real(kind=8), pointer :: v_cnresi(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -105,12 +104,10 @@ implicit none
 !
 ! --- RECUPERATION D'ADRESSES
 !
-    call jeveuo(vec2nd(1:19)//'.VALE', 'L', j2nd)
+    call jeveuo(vec2nd(1:19)//'.VALE', 'L', vr = v_vec2nd)
     call jeveuo(cn2mbr(1:19)//'.VALE', 'E', vr = v_cn2mbr)
-    call jeveuo(vec2ni(1:19)//'.VALE', 'L', j2ni)
-    call jeveuo(cndirp(1:19)//'.VALE', 'L', vr=dirp)
-    call jeveuo(temp_iter(1:19)//'.VALE', 'E', jtempm)
-    call jeveuo(temp_prev(1:19)//'.VALE', 'L', vr=temp)
+    call jeveuo(vec2ni(1:19)//'.VALE', 'L', vr = v_vec2ni)
+    call jeveuo(cndirp(1:19)//'.VALE', 'L', vr = v_cndirp)
 !
     if (lostat) then
 !
@@ -121,7 +118,7 @@ implicit none
 ! ----- Neumann loads elementary vectors (residuals)
 !
         call verstp(model    , lload_name, lload_info, mate     , time_curr,&
-                    time     , compor    , temp_prev , temp_prev, hydr_prev,&
+                    time     , compor    , temp_prev , temp_iter, hydr_prev,&
                     hydr_curr, dry_prev  , dry_curr  , varc_curr, veresi)
 !
 ! ----- Neumann loads vector (residuals)
@@ -129,7 +126,7 @@ implicit none
         call asasve(veresi, nume_dof, typres, varesi)
         call ascova('D', varesi, bidon, 'INST', rbid,&
                     typres, cnresi)
-        call jeveuo(cnresi(1:19)//'.VALE', 'L', vr=vare)
+        call jeveuo(cnresi(1:19)//'.VALE', 'L', vr=v_cnresi)
 !
 ! --- BT LAMBDA - CALCUL ET ASSEMBLAGE
 !
@@ -138,7 +135,7 @@ implicit none
         call asasve(vebtla, nume_dof, typres, vabtla)
         call ascova('D', vabtla, bidon, 'INST', rbid,&
                     typres, cnvabt)
-        call jeveuo(cnvabt(1:19)//'.VALE', 'L', vr=btla)
+        call jeveuo(cnvabt(1:19)//'.VALE', 'L', vr=v_cnvabt)
 !
 ! --- B . TEMPERATURE - CALCUL ET ASSEMBLAGE
 !
@@ -147,10 +144,10 @@ implicit none
         call asasve(vebuem, nume_dof, typres, vabuem)
         call ascova('D', vabuem, bidon, 'INST', rbid,&
                     typres, cnvabu)
-        call jeveuo(cnvabu(1:19)//'.VALE', 'L', jbuem)
+        call jeveuo(cnvabu(1:19)//'.VALE', 'L', vr=v_cnvabu)
 !
         do k = 1, lonch
-            v_cn2mbr(k) = zr(j2nd+k-1) - vare(k) + dirp(k) - btla(k)- zr(jbuem+k-1)
+            v_cn2mbr(k) = v_vec2nd(k) - v_cnresi(k) + v_cndirp(k) - v_cnvabt(k)- v_cnvabu(k)
         end do
 !
 ! ----- Solve linear system
@@ -160,11 +157,7 @@ implicit none
 !
 ! --- RECOPIE DANS temp_iter DU CHAMP SOLUTION CHSOL
 !
-        call copisd('CHAMP_GD', 'V', chsol, temp_iter(1:19))
-        call jeveuo(temp_iter(1:19)//'.VALE', 'E', jtempm)
-        do k = 1, lonch
-            zr(jtempm+k-1) = zr(jtempm+k-1) + temp(k)
-        end do
+        call copisd('CHAMP_GD', 'V', chsol, temp_iter)
 !
     else
 !
@@ -173,9 +166,8 @@ implicit none
 !=======================================================================
 !
         do k = 1, lonch
-            v_cn2mbr(k) = zr(j2ni+k-1) + dirp(k)
+            v_cn2mbr(k) = v_vec2ni(k) + v_cndirp(k)
         end do
-
 !
 ! ----- Solve linear system
 !
@@ -184,7 +176,7 @@ implicit none
 !
 ! --- RECOPIE DANS temp_iter DU CHAMP SOLUTION CHSOL
 !
-        call copisd('CHAMP_GD', 'V', chsol, temp_iter(1:19))
+        call copisd('CHAMP_GD', 'V', chsol, temp_iter)
 !
     endif
 !

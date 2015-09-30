@@ -28,7 +28,12 @@ MO=AFFE_MODELE(MAILLAGE=MA,
 
 RHOCP=DEFI_CONSTANTE(VALE=0.,);
 
-LAMBD=DEFI_CONSTANTE(VALE=1.,);
+#LAMBD=DEFI_CONSTANTE(VALE=1.,);
+# Modified LAMBDA to test STATIONNAIRE + VALE in initial state
+LAMBD=DEFI_FONCTION(NOM_PARA='TEMP', 
+                     PROL_GAUCHE='LINEAIRE',
+                     VALE=(1., 1., 100., 1.),)
+ 
 
 MAT=DEFI_MATERIAU(THER_NL=_F(LAMBDA=LAMBD,
                              RHO_CP=RHOCP,),);
@@ -78,7 +83,7 @@ TEMPE=THER_NON_LINE(MODELE=MO,
                     EXCIT=(_F(CHARGE=CH,),
                            _F(CHARGE=CH2,),),
                     INCREMENT=_F(LIST_INST=LR8,),
-                    ETAT_INIT=_F(STATIONNAIRE='OUI',),);
+                    ETAT_INIT=_F(STATIONNAIRE='OUI',VALE=1.5),);
 
 T0=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
               OPERATION='EXTR',

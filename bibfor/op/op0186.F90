@@ -38,6 +38,8 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
+#include "asterfort/vtcreb.h"
+#include "asterfort/vtzero.h"
 #include "asterfort/CreateInOutDS.h"
 !
 ! ======================================================================
@@ -171,16 +173,27 @@ implicit none
     vtempp='&&NXLECTVAR_T_MO'
     vtempm='&&NXLECTVAR_T_PL'
     vtempr='&&NXLECTVAR_INIT'
-    call copisd('CHAMP_GD', 'V', vtemp(1:19), vtempm(1:19))
-    call copisd('CHAMP_GD', 'V', vtemp(1:19), vtempp(1:19))
-    call copisd('CHAMP_GD', 'V', vtemp(1:19), vtempr(1:19))
-    call copisd('CHAMP_GD', 'V', vtemp(1:19), vec2nd(1:19))
-    call copisd('CHAMP_GD', 'V', vtemp(1:19), vec2ni(1:19))
-    call copisd('CHAMP_GD', 'V', vhydr(1:19), vhydrp(1:19))
+    
+
+    if (lostat) then
+        call vtcreb(vtempm, 'V', 'R', nume_ddlz = nume_dof)
+        call vtcreb(vtempp, 'V', 'R', nume_ddlz = nume_dof)
+        call vtcreb(vtempr, 'V', 'R', nume_ddlz = nume_dof)
+        call vtcreb(vec2nd, 'V', 'R', nume_ddlz = nume_dof)
+        call vtcreb(vec2ni, 'V', 'R', nume_ddlz = nume_dof)
+    else
+        call copisd('CHAMP_GD', 'V', vtemp, vtempm)
+        call copisd('CHAMP_GD', 'V', vtemp, vtempp)
+        call copisd('CHAMP_GD', 'V', vtemp, vtempr)
+        call copisd('CHAMP_GD', 'V', vtemp, vec2nd)
+        call copisd('CHAMP_GD', 'V', vtemp, vec2ni)
+    endif
+
+    call copisd('CHAMP_GD', 'V', vhydr, vhydrp)
 !
 ! - Total second member
 !
-    call copisd('CHAMP_GD', 'V', vtemp(1:19), cn2mbr(1:19))
+    call copisd('CHAMP_GD', 'V', vtemp, cn2mbr)
 !
 ! --- CALCUL DES MATRICES ELEMENTAIRES DES DIRICHLETS
     call medith(model, list_load, mediri)
@@ -293,6 +306,7 @@ implicit none
                 vtemp , vhydr , varc_curr, tmpchi   , tmpchf  ,&
                 vec2nd, vec2ni, matass   , maprec   , cndirp  ,&
                 cnchci, mediri, compor)
+    
 !
 ! ======================================================================
 !                        PHASE DE PREDICTION
@@ -310,6 +324,7 @@ implicit none
                 neq   , maprec, varc_curr, vtemp    , vtempm  ,&
                 cn2mbr, vhydr , vhydrp   , tmpchi   , tmpchf  ,&
                 compor, cndirp, cnchci   , vec2nd   , vec2ni  )
+    
 !
 ! ======================================================================
 !              ITERATIONS DE LA METHODE DE NEWTON-RAPHSON
@@ -371,7 +386,6 @@ implicit none
         endif
         call jeveuo(vtempp(1:19)//'.VALE', 'L', jtempp)
         call jeveuo(vtempm(1:19)//'.VALE', 'E', vr=tempm)
-        call jeveuo(vtemp(1:19)//'.VALE', 'L', jtemp)
 !
 ! SOLUTION: VTEMPM = VTEMPR = T+,I+1BIS
         do k = 1, neq
@@ -449,7 +463,7 @@ implicit none
     call jeveuo(vtemp(1:19)//'.VALE', 'E', jtemp)
 ! VTEMPM --> VTEMP
     do k = 1, neq
-        zr(jtemp+k-1) = zr(jtempp+k-1)
+        zr(jtemp+k-1) = zr(jtempp+k-1) 
     end do
     call uttcpu('CPU.OP0186.3', 'FIN', ' ')
     call uttcpr('CPU.OP0186.3', 4, tps3)

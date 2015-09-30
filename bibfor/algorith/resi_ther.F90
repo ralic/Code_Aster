@@ -1,4 +1,4 @@
-subroutine hydr_resi(model    , mate     , time     , compor    , temp_prev,&
+subroutine resi_ther(model    , mate     , time     , compor    , temp_prev,&
                      temp_iter, hydr_prev, hydr_curr, dry_prev  , dry_curr ,&
                      varc_curr, vect_elem)
 !
@@ -44,9 +44,9 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Thermic - Loads
+! Thermic
 ! 
-! Hydratation elementary vectors (residuals)
+! Residuals from non-linear laws 
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -79,9 +79,6 @@ implicit none
     integer :: ibid
 !
 ! --------------------------------------------------------------------------------------------------
-!
-!
-! - Initializations
 !
     resu_elem    = '&&HYDRES.0000000'
     stop_calc    = 'S'
