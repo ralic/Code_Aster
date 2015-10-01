@@ -70,7 +70,7 @@ class GeneAcceParameters(object):
         self.args = kwargs
         self.seed = kwargs.get('INIT_ALEA')
         self.norme = kwargs.get('PESANTEUR')
-        # ModulationKeys
+  #  # ModulationKeys
         modkeys = kwargs.get('MODULATION')[0]
         keys = self.modulation_keys = modkeys.cree_dict_valeurs(
             modkeys.mc_liste)
@@ -94,7 +94,7 @@ class GeneAcceParameters(object):
         others.remove('MODULATION')
         others.remove('COEF_CORR')
         others.remove('MATR_COHE')
- #     # SimulationKeys
+ #  # SimulationKeys and MethodKeys
         if kwargs['COEF_CORR'] != None:
             corr_keys = {}
             corr_keys['TYPE'] = 'COEF_CORR'
@@ -110,37 +110,45 @@ class GeneAcceParameters(object):
            corr_keys = {}
            corr_keys['TYPE'] = 'SCALAR'
         self.simulation_keys = {'CORR_KEYS': corr_keys}
-        # MethodKeys
         if kwargs.get('DSP'):
             self.cas = 'DSP'
-            self.specmethode = None
             GeneratorKeys = kwargs.get('DSP')[0]
             method_keys = GeneratorKeys.cree_dict_valeurs(
                 GeneratorKeys.mc_liste)
             others.remove('DSP')
         else:
             self.cas = 'SPECTRE'
+            self.simulation_keys.update({'TYPE_ITER': 'MOYENNE'}) 
             if kwargs.get('SPEC_FRACTILE'):
-                self.specmethode = 'SPEC_FRACTILE'
+                GeneratorKeys = kwargs.get('SPEC_FRACTILE')[0]
+                self.simulation_keys.update({'SPEC_METHODE': 'SPEC_FRACTILE'})
+                others.remove('SPEC_FRACTILE')
             elif kwargs.get('SPEC_MEDIANE'):
-                self.specmethode = 'SPEC_MEDIANE'
+                GeneratorKeys = kwargs.get('SPEC_MEDIANE')[0]
+                self.simulation_keys.update({'SPEC_METHODE': 'SPEC_MEDIANE'})
+                self.simulation_keys.update({'TYPE_ITER': 'MEDIANE'})
+                others.remove('SPEC_MEDIANE')
+                if kwargs.get('NB_TIRAGE') == 1:
+                    UTMESS('F', 'SEISME_38')
+            elif kwargs.get('SPEC_MOYENNE'):
+                GeneratorKeys = kwargs.get('SPEC_MOYENNE')[0]
+                self.simulation_keys.update({'SPEC_METHODE': 'SPEC_MEDIANE'})
+                others.remove('SPEC_MOYENNE')
                 if kwargs.get('NB_TIRAGE') == 1:
                     UTMESS('F', 'SEISME_38')
             elif kwargs.get('SPEC_UNIQUE'):
-                self.specmethode = 'SPEC_UNIQUE'
-
-            self.simulation_keys.update({'SPEC_METHODE':self.specmethode })
-            GeneratorKeys = kwargs.get(self.specmethode)[0]
+                GeneratorKeys = kwargs.get('SPEC_UNIQUE')[0]
+                others.remove('SPEC_UNIQUE')
+                self.simulation_keys.update({'SPEC_METHODE': 'SPEC_UNIQUE'})           
             method_keys = GeneratorKeys.cree_dict_valeurs(
-                GeneratorKeys.mc_liste)
-            others.remove(self.specmethode)
+                GeneratorKeys.mc_liste)            
         self.method_keys = {}
         for key in method_keys:
             if method_keys[key] != None:
                 self.method_keys[key] = method_keys[key]
         if self.method_keys.has_key('NB_ITER') :
-            self.simulation_keys.update({'NB_ITER':self.method_keys['NB_ITER']})
-
+            self.simulation_keys.update({'NB_ITER': 
+                        self.method_keys['NB_ITER']})               
         # OtherKeys remplissage
         other_keys = {}
         for key in others:
@@ -172,7 +180,6 @@ class Generator(object):
         self.modul_params = params.modulation_keys
         self.method_params = params.method_keys
         self.simu_params = params.simulation_keys
-        self.specmethode = params.specmethode
         self.FREQ_FILTRE = params.simulation_keys['FREQ_FILTRE']
         self.FREQ_CORNER = params.simulation_keys['FREQ_CORNER']
         self.FREQ_PENTE = params.simulation_keys['FREQ_PENTE']
@@ -315,8 +322,13 @@ class GeneratorSpectrum(Generator):
             for keys in dico_err:
                 if len(dico_err[keys]) < 2:
                     dico_err[keys].append(err_def)
-            self.SRO_args.update({'DICO_ERR': dico_err,
-                                  'NB_ITER': self.method_params['NB_ITER']})
+            self.SRO_args.update({'DICO_ERR': dico_err, 
+                                  'NB_ITER': self.simu_params['NB_ITER']})
+            if self.simu_params['TYPE_ITER'] == 'MEDIANE':  
+                self.SRO_args.update({'TYPE_ITER' : 'SPEC_MEDIANE',})
+            elif  self.simu_params['TYPE_ITER'] == 'MOYENNE': 
+                self.SRO_args.update({'TYPE_ITER' : 'SPEC_MOYENNE',})
+
         spec_osci = self.method_params['SPEC_OSCI']
         l_freq_sro, sro_ref = spec_osci.Valeurs()
         ZPA = sro_ref[-1]
@@ -369,7 +381,7 @@ class GeneratorSpectrum(Generator):
                                  'FREQ_FOND': vop, 'AMORT': amo,
                                  'para_R0': R0, 'para_R2': R2,
                                  'fonc_FIT': f_FIT, 'TYPE_DSP': 'FR'})
-        if self.specmethode == 'SPEC_FRACTILE':
+        if self.simu_params['SPEC_METHODE'] == 'SPEC_FRACTILE':
             Periods = 1. / (self.sampler.liste_w2 / (2. * pi))
             Periods, MAT_COVC = corrcoefmodel(Periods,
                                               self.SRO_args['FONC_BETA'])

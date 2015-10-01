@@ -17,7 +17,7 @@
 # person_in_charge: mathieu.courtois at edf.fr
 def calc_fonction_prod(self, DERIVE, EXTRACTION, INTEGRE, INVERSE, COMB, COMB_C, MULT,
                        ENVELOPPE, FRACTILE, SPEC_OSCI, ASSE, FFT, COMPOSE, CORR_ACCE,
-                       PUISSANCE, LISS_ENVELOP, ABS, REGR_POLYNOMIALE, DSP, **args):
+                       PUISSANCE, LISS_ENVELOP, ABS, REGR_POLYNOMIALE, DSP, MOYENNE, **args):
 
    if (INTEGRE     != None): return fonction_sdaster
    if (DERIVE      != None): return fonction_sdaster
@@ -42,6 +42,7 @@ def calc_fonction_prod(self, DERIVE, EXTRACTION, INTEGRE, INVERSE, COMB, COMB_C,
          return fonction_c
    if (ENVELOPPE   != None): return AsType(ENVELOPPE[0]['FONCTION'])
    if (FRACTILE    != None): return AsType(FRACTILE[0] ['FONCTION'])
+   if (MOYENNE    != None): return AsType(MOYENNE[0] ['FONCTION'])
    if (EXTRACTION  != None): return fonction_sdaster
    if (SPEC_OSCI   != None): return nappe_sdaster
    if (DSP         != None): return fonction_sdaster
@@ -74,7 +75,7 @@ CALC_FONCTION=MACRO(nom="CALC_FONCTION",
          regles=(UN_PARMI('DERIVE', 'INTEGRE', 'SPEC_OSCI', 'DSP', 'FFT', 'CORR_ACCE',
                           'COMB', 'COMB_C', 'MULT', 'ASSE', 'INVERSE', 'ABS',
                           'ENVELOPPE', 'COMPOSE', 'EXTRACTION', 'PUISSANCE',
-                          'LISS_ENVELOP', 'FRACTILE', 'REGR_POLYNOMIALE'),),
+                          'LISS_ENVELOP', 'FRACTILE', 'REGR_POLYNOMIALE', 'MOYENNE'),),
          FFT             =FACT(statut='f',fr=tr("Transformée de Fourier ou de son inverse"),
            FONCTION        =SIMP(statut='o',typ=(fonction_sdaster,fonction_c) ),
            METHODE         =SIMP(statut='f',typ='TXM',defaut="PROL_ZERO",into=("PROL_ZERO","TRONCATURE","COMPLET") ),
@@ -164,6 +165,9 @@ CALC_FONCTION=MACRO(nom="CALC_FONCTION",
          FRACTILE        =FACT(statut='f',fr=tr("Fractile d une famille de fonctions ou de nappes"),
            FONCTION        =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster),max='**' ),
            FRACT           =SIMP(statut='o',typ='R',defaut=1.,val_min=0.,val_max=1.,fr=tr("Valeur du fractile") ),
+         ),
+         MOYENNE        =FACT(statut='f',fr=tr("Moyenne d une famille de fonctions ou de nappes"),
+           FONCTION        =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster),max='**' ),
          ),
          ASSE            =FACT(statut='f',fr=tr("Concatenation de fonctions"),
            FONCTION        =SIMP(statut='o',typ=fonction_sdaster,min=2,max=2 ),

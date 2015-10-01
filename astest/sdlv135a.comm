@@ -59,17 +59,23 @@ ZPA= 0.16
 
 SRO_NGA=DEFI_FONCTION(  NOM_PARA='FREQ',  INTERPOL='LIN',PROL_DROITE='CONSTANT',
                           VALE=(0.1000,  0.0080,
-                                 0.1333,  0.0127,0.2000, 0.0245,0.2500, 0.0303, 0.3333,  0.0414,0.5000, 0.0666,
-                                0.6667, 0.0922,1.0000,  0.1415,1.3333,  0.1843,2.0000,  0.2650, 2.5000,  0.3033, 3.3333,
-                                0.3430, 4.0000,  0.3647,5.0000, 0.3916,6.6667, 0.3807,10.0000, 0.3183,12.5000, 0.2648,20.0000, 
-                                0.2056,25.0000, 0.1901,33.3333, 0.1719, 50.0000, 0.1618,  100.0000, 0.1593,
-) )
+                                0.1333,  0.0127,0.2000, 0.0245,0.2500, 0.0303, 0.3333,  
+                                0.0414,0.5000, 0.0666,
+                                0.6667, 0.0922,1.0000,  0.1415,1.3333,  0.1843,2.0000,  
+                                 0.2650, 2.5000,  0.3033, 3.3333,
+                                0.3430, 4.0000,  0.3647,5.0000, 0.3916,6.6667, 0.3807,
+                                10.0000, 0.3183,12.5000, 0.2648,20.0000, 
+                                0.2056,25.0000, 0.1901,33.3333, 0.1719, 50.0000, 0.1618,  
+                                 100.0000, 0.1593,) )
 
 SIG_NGA=DEFI_FONCTION(  NOM_PARA='FREQ',  INTERPOL='LIN',PROL_DROITE='CONSTANT',
-                          VALE=(  0.1000, 0.0182, 0.1333,0.0272,  0.2000,0.0494,  0.2500,0.0579,  0.3333, 0.0791,  0.5000,0.1267,  0.6667,0.1742,
-                                  1.0000, 0.2637,    1.3333, 0.3397,  2.0000, 0.4782,   2.5000,0.5432,   3.3333, 0.6112,  4.0000, 0.6468,
-                                  5.0000,  0.6930,   6.6667, 0.6778,  10.0000, 0.5653,  12.5000, 0.4671,  20.0000,  0.3545,   25.0000, 0.3248,   33.3333, 0.2902,
-                                  50.0000,    0.2697, 100.0000,    0.2653,) )
+                          VALE=(  0.1000, 0.0182, 0.1333,0.0272,  0.2000,0.0494,  0.2500,0.0579,  
+                                  0.3333, 0.0791,  0.5000,0.1267,  0.6667,0.1742,
+                                  1.0000, 0.2637,    1.3333, 0.3397,  2.0000, 0.4782,   
+                                  2.5000,0.5432,   3.3333, 0.6112,  4.0000, 0.6468,
+                                  5.0000,  0.6930,   6.6667, 0.6778,  10.0000, 0.5653,  
+                                  12.5000, 0.4671,  20.0000,  0.3545,   25.0000, 0.3248,   
+                                  33.3333, 0.2902, 50.0000,    0.2697, 100.0000, 0.2653,) )
 
 DSP = CALC_FONCTION ( DSP =_F( FONCTION = SRO_NGA, AMOR_REDUIT = 0.05,
                                FREQ_PAS    = 0.1, FREQ_COUP   = 100, 
@@ -96,59 +102,72 @@ L_FREQ = DEFI_LIST_REEL(DEBUT=0.05,
 #*************************************************************************************
 alea = 100000
 #*****************************SPEC_UNIQUE
+
 ACCEU=GENE_ACCE_SEISME( INFO  =2, INIT_ALEA= alea, 
-                        PAS_INST = DT,PESANTEUR =9.81,NB_POIN = 2**12,
-                        DUREE_PHASE_FORTE = TSM, FREQ_FILTRE = 0.05, FREQ_CORNER = 0.01, NB_TIRAGE = 1, 
-                         MATR_COHE = _F(GROUP_NO_INTERF = GROUP_NO_INTER, MAILLAGE = MAILLAGE, #TYPE='ABRAHAMSON', ),
+                        PAS_INST = DT, PESANTEUR = 9.81,NB_POIN = 2**12,
+                        DUREE_PHASE_FORTE = TSM, FREQ_FILTRE = 0.05, 
+                        FREQ_CORNER = 0.01, NB_TIRAGE = 1, 
+                         MATR_COHE = _F(GROUP_NO_INTERF = GROUP_NO_INTER, MAILLAGE = MAILLAGE,
                                          TYPE='MITA_LUCO', VITE_ONDE = 600., PARA_ALPHA = 0.1),
-                        SPEC_UNIQUE = _F(SPEC_OSCI  = SRO_NGA, AMOR_REDUIT  = 0.05, FREQ_PAS = 0.01, #NB_ITER=2, 
-                                    METHODE = 'NIGAM', ERRE_ZPA  =(0.75, 0.05),ERRE_MAX  =(0.05, 0.2),ERRE_RMS  =(0.2,),),
+                        SPEC_UNIQUE = _F(SPEC_OSCI = SRO_NGA, AMOR_REDUIT  = 0.05, 
+                                         FREQ_PAS = 0.01,  METHODE = 'NIGAM', ),
                         MODULATION = _F(TYPE=   "JENNINGS_HOUSNER",), );
 
 ACCEI=GENE_ACCE_SEISME( INFO  =2, INIT_ALEA= alea, 
+                        PAS_INST = DT,PESANTEUR =9.81,NB_POIN = 2**12,
+                        DUREE_PHASE_FORTE = TSM, FREQ_FILTRE = 0.05, 
+                        FREQ_CORNER = 0.01, NB_TIRAGE = 1,  
+                        MATR_COHE = _F(GROUP_NO_INTERF = GROUP_NO_INTER, 
+                                       MAILLAGE = MAILLAGE, TYPE='MITA_LUCO',
+                                       VITE_ONDE = 600., PARA_ALPHA = 0.1),
+                       SPEC_UNIQUE = _F(SPEC_OSCI  = SRO_NGA, AMOR_REDUIT  = 0.05, 
+                                 FREQ_PAS = 0.01, NB_ITER=5, METHODE = 'NIGAM',
+                                 ERRE_ZPA = (0.3, 0.05),ERRE_MAX = (0.2, 0.2),ERRE_RMS = (0.5,),),
+                       MODULATION = _F(TYPE = "JENNINGS_HOUSNER",), );
+
+#***************************** DSP
+ACCED=GENE_ACCE_SEISME( INFO  = 2, INIT_ALEA = alea, 
                        PAS_INST = DT,PESANTEUR =9.81,NB_POIN = 2**12,
-                        DUREE_PHASE_FORTE = TSM, FREQ_FILTRE = 0.05, FREQ_CORNER = 0.01, NB_TIRAGE = 1,  
-                         MATR_COHE = _F(GROUP_NO_INTERF = GROUP_NO_INTER, MAILLAGE = MAILLAGE, #TYPE='ABRAHAMSON', ),
-                                         TYPE='MITA_LUCO', VITE_ONDE = 600., PARA_ALPHA = 0.1),
-                       SPEC_UNIQUE = _F(SPEC_OSCI  = SRO_NGA, AMOR_REDUIT  = 0.05, FREQ_PAS = 0.01, NB_ITER=5, 
-                                    METHODE = 'NIGAM', ERRE_ZPA  =(0.3, 0.05),ERRE_MAX  =(0.2, 0.2),ERRE_RMS  =(0.5,),),
-                        MODULATION = _F(TYPE=   "JENNINGS_HOUSNER",), );
-
-#*****************************DSP
-ACCED=GENE_ACCE_SEISME( INFO  =2, INIT_ALEA = alea, 
-                       PAS_INST = DT,PESANTEUR =9.81,NB_POIN = 2**12,
-                        DUREE_PHASE_FORTE = TSM, FREQ_FILTRE = 0.05, FREQ_CORNER = 0.01, NB_TIRAGE = 1,
-                        MATR_COHE = _F(GROUP_NO_INTERF = GROUP_NO_INTER, MAILLAGE = MAILLAGE,
-                                        TYPE='MITA_LUCO', VITE_ONDE = 600. , PARA_ALPHA = 0.1),
-                         DSP = _F(AMOR_REDUIT  = delta,  FREQ_FOND =frr, ),
-                         MODULATION = _F(TYPE=   "JENNINGS_HOUSNER", ACCE_MAX = ZPA),); 
-
-
+                       DUREE_PHASE_FORTE = TSM, FREQ_FILTRE = 0.05, 
+                       FREQ_CORNER = 0.01, NB_TIRAGE = 1,
+                       MATR_COHE = _F(GROUP_NO_INTERF = GROUP_NO_INTER, MAILLAGE = MAILLAGE,
+                                     TYPE = 'MITA_LUCO', VITE_ONDE = 600. , PARA_ALPHA = 0.1),
+                       DSP = _F(AMOR_REDUIT  = delta,  FREQ_FOND = frr, ),
+                       MODULATION = _F(TYPE=   "JENNINGS_HOUSNER", ACCE_MAX = ZPA),); 
 
 #*****************************SPEC_MEDIANE 
-ACCEM=GENE_ACCE_SEISME( INFO  =2, INIT_ALEA=alea, PAS_INST = DT,PESANTEUR =9.81,NB_POIN = 2**12,
-                        DUREE_PHASE_FORTE = TSM, FREQ_FILTRE = 0.05, FREQ_CORNER = 0.01, NB_TIRAGE = 3,
-                        MATR_COHE = _F(GROUP_NO_INTERF = GROUP_NO_INTER, MAILLAGE = MAILLAGE, TYPE='ABRAHAMSON', ),
-                        SPEC_MEDIANE = _F(SPEC_OSCI  = SRO_NGA,  AMOR_REDUIT  = 0.05, FREQ_PAS = 0.01,),
+ACCEM=GENE_ACCE_SEISME( INFO  =2, INIT_ALEA=alea, PAS_INST = DT,
+                        PESANTEUR =9.81,NB_POIN = 2**12,
+                        DUREE_PHASE_FORTE = TSM, FREQ_FILTRE = 0.05, 
+                        FREQ_CORNER = 0.01, NB_TIRAGE = 3,
+                        MATR_COHE = _F(GROUP_NO_INTERF = GROUP_NO_INTER, 
+                                       MAILLAGE = MAILLAGE, TYPE='ABRAHAMSON', ),
+                        SPEC_MEDIANE = _F(SPEC_OSCI  = SRO_NGA,  
+                                          AMOR_REDUIT  = 0.05, FREQ_PAS = 0.01,),
                         MODULATION = _F(TYPE=   "JENNINGS_HOUSNER",), );
 
-
-
-
-ACCEMI=GENE_ACCE_SEISME( INFO  =2, INIT_ALEA= alea,  PAS_INST = DT,PESANTEUR =9.81,NB_POIN = 2**12,
-                        DUREE_PHASE_FORTE = TSM, FREQ_FILTRE = 0.05, FREQ_CORNER = 0.01, NB_TIRAGE = 5,  
-                         MATR_COHE = _F(GROUP_NO_INTERF = GROUP_NO_INTER, MAILLAGE = MAILLAGE, TYPE='ABRAHAMSON', ),
-                       SPEC_MEDIANE = _F(SPEC_OSCI  = SRO_NGA, AMOR_REDUIT  = 0.05, FREQ_PAS = 0.01, NB_ITER=5, 
-                                    METHODE = 'NIGAM', ERRE_ZPA  =(0.3, 0.05),ERRE_MAX  =(0.2, 0.2),ERRE_RMS  =(0.5,),),
-                        MODULATION = _F(TYPE=   "JENNINGS_HOUSNER",), );
+ACCEMI=GENE_ACCE_SEISME( INFO  =2, INIT_ALEA= alea,  PAS_INST = DT, 
+                        PESANTEUR =9.81,NB_POIN = 2**12,
+                        DUREE_PHASE_FORTE = TSM, FREQ_FILTRE = 0.05, 
+                        FREQ_CORNER = 0.01, NB_TIRAGE = 5,  
+                        MATR_COHE = _F(GROUP_NO_INTERF = GROUP_NO_INTER, 
+                                       MAILLAGE = MAILLAGE, TYPE='ABRAHAMSON', ),
+                       SPEC_MEDIANE = _F(SPEC_OSCI  = SRO_NGA, AMOR_REDUIT  = 0.05, 
+                       FREQ_PAS = 0.01, NB_ITER = 7, METHODE ='NIGAM',                                        
+                       ERRE_ZPA = (0.3, 0.05), ERRE_MAX = (0.2, 0.2), ERRE_RMS =(0.5,),),
+                       MODULATION = _F(TYPE= "JENNINGS_HOUSNER",), );
 
 #*****************************SPEC_FRACTILE
 nbtir=10
-ACCEF=GENE_ACCE_SEISME( INFO  =2, INIT_ALEA= alea, PAS_INST = DT,PESANTEUR =9.81,NB_POIN = 2**12,
-                        DUREE_PHASE_FORTE = TSM, FREQ_FILTRE = 0.05, FREQ_CORNER = 0.1, NB_TIRAGE = nbtir, 
-                        MATR_COHE = _F(GROUP_NO_INTERF = GROUP_NO_INTER, MAILLAGE = MAILLAGE, TYPE='ABRAHAMSON', ),
-                        SPEC_FRACTILE = _F(SPEC_OSCI  = SRO_NGA, SPEC_1_SIGMA  =SIG_NGA, AMOR_REDUIT  = 0.05, FREQ_PAS = 0.01,),
-                        MODULATION      = _F(TYPE="GAMMA", INST_INI= 0.25, ),);
+ACCEF=GENE_ACCE_SEISME( INFO  =2, INIT_ALEA= alea, PAS_INST = DT,
+                        PESANTEUR =9.81,NB_POIN = 2**12,
+                        DUREE_PHASE_FORTE = TSM, FREQ_FILTRE = 0.05, 
+                        FREQ_CORNER = 0.1, NB_TIRAGE = nbtir, 
+                        MATR_COHE = _F(GROUP_NO_INTERF = GROUP_NO_INTER, 
+                        MAILLAGE = MAILLAGE, TYPE='ABRAHAMSON', ),
+                        SPEC_FRACTILE = _F(SPEC_OSCI = SRO_NGA, SPEC_1_SIGMA = SIG_NGA, 
+                                       AMOR_REDUIT  = 0.05, FREQ_PAS = 0.01,),
+                        MODULATION  = _F(TYPE="GAMMA", INST_INI= 0.25, ),);
 
 
 #*************************************************************************************   
@@ -192,11 +211,12 @@ FD3 = RECU_FONCTION(TABLE=ACCED, FILTRE=(_F( NOM_PARA = 'NUME_ORDRE',VALE_I = 1)
                                         _F(NOM_PARA = 'NOEUD', VALE_K = liste_nom_noe[2]),),
                                          NOM_PARA_TABL = 'FONCTION',)
 SROD3 = CALC_FONCTION(SPEC_OSCI=_F(FONCTION=FD3, 
-                             LIST_FREQ = L_FREQ,  NORME=9.81, AMOR_REDUIT=(0.05,),),); 
+                      LIST_FREQ = L_FREQ,  NORME=9.81, AMOR_REDUIT=(0.05,),),); 
 
-FM2 = RECU_FONCTION(TABLE=ACCEM, FILTRE=(_F( NOM_PARA = 'NUME_ORDRE',VALE_I = 2), 
-                                        _F(NOM_PARA = 'NOEUD', VALE_K = liste_nom_noe[1]),),
-                                         NOM_PARA_TABL = 'FONCTION',)
+FM2 = RECU_FONCTION(TABLE=ACCEM, 
+                     FILTRE=(_F( NOM_PARA = 'NUME_ORDRE',VALE_I = 2), 
+                             _F(NOM_PARA = 'NOEUD', VALE_K = liste_nom_noe[1]),),
+                      NOM_PARA_TABL = 'FONCTION',)
 SROM2 = CALC_FONCTION(SPEC_OSCI=_F(FONCTION=FM2, 
                              LIST_FREQ = L_FREQ,  NORME=9.81, AMOR_REDUIT=(0.05,),),); 
 
@@ -262,9 +282,9 @@ for (vale, noeud) in enumerate(liste_nom_noe) :
     SROMI5[vale]=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=ACCMI5[vale], LIST_FREQ = L_FREQ, 
                       NORME=9.81, AMOR_REDUIT=(0.05,),),); #  tirage 5
 
-# On calcule la mediane pour les trois noeud (un tirage)
-SRO_MED=CALC_FONCTION(FRACTILE=_F(FONCTION=l_SROU,  FRACT=0.5) )
-SROI_MED=CALC_FONCTION(FRACTILE=_F(FONCTION=l_SROI,  FRACT=0.5) )
+# On calcule la moyenne pour les trois noeud (un tirage)
+SRO_MOY=CALC_FONCTION(MOYENNE=_F(FONCTION=l_SROU, ) )
+SROI_MOY=CALC_FONCTION(MOYENNE=_F(FONCTION=l_SROI, ) )
 
 l_SROMI1.append(SROMI1_0)
 l_SROMI1.append(SROMI2_0)
@@ -286,27 +306,24 @@ l_SROMI3.append(SROMI5_2)
 
 
 # On calcule la mediane pour chaque noeud (sur 5 tirages)
-SRO_MEI1=CALC_FONCTION(FRACTILE=_F(FONCTION=l_SROMI1, FRACT=0.5) )
-SRO_MEI2=CALC_FONCTION(FRACTILE=_F(FONCTION=l_SROMI2,  FRACT=0.5) )
-SRO_MEI3=CALC_FONCTION(FRACTILE=_F(FONCTION=l_SROMI3,  FRACT=0.5) )
-
-
-
+SRO_MEI1 = CALC_FONCTION(MOYENNE = _F(FONCTION=l_SROMI1, ) )
+SRO_MEI2 = CALC_FONCTION(MOYENNE = _F(FONCTION=l_SROMI2, ) )
+SRO_MEI3 = CALC_FONCTION(MOYENNE = _F(FONCTION=l_SROMI3, ) )
 
 
 SA_25=0.1901
 SA_1=0.1415
 SA_10=0.3183
 
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.12214189256273,                        
+TEST_FONCTION(VALEUR=(_F(VALE_CALC = 0.13041624791837,                        
                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 50.0),
-                         FONCTION=SRO_MED,),
-#                        _F(VALE_CALC= 0.19668035  ,                 
+                         FONCTION=SRO_MOY,),
+#                        _F(VALE_CALC = 0.19668035  ,                 
 #                         NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 25.0), 
-#                         FONCTION=SRO_MED,),
-#                        _F(VALE_CALC=0.01240963 ,,                        
+#                         FONCTION=SRO_MOY,),
+#                        _F(VALE_CALC = 0.01240963 ,,                        
 #                         NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 0.1333),
-#                         FONCTION=SRO_MED,),
+#                         FONCTION=SRO_MOY,),
                          ),)
 
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.14645438710628,                        
@@ -332,48 +349,48 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC= 0.17922297952301,
                          ),)
 
 
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.14564575392169,
+TEST_FONCTION(VALEUR=(_F(VALE_CALC= 0.15006183484055,
                          VALE_REFE=ZPA    ,                        
                          REFERENCE='ANALYTIQUE',                       
                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 50.0),
                          PRECISION=0.1,
-                         FONCTION=SROI_MED,),
-                        _F(VALE_CALC= 0.17832375103462  ,
+                         FONCTION=SROI_MOY,),
+                        _F(VALE_CALC= 0.17247979211108  ,
                          VALE_REFE=SA_25  ,                        
                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 25.0),
                          REFERENCE='ANALYTIQUE',
                          PRECISION=0.1,
-                         FONCTION=SROI_MED,),
-                        _F(VALE_CALC=0.33843285600985 ,
+                         FONCTION=SROI_MOY,),
+                        _F(VALE_CALC= 0.32161648570005 ,
                          VALE_REFE=SA_10  ,                        
                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 10.),
                          REFERENCE='ANALYTIQUE',
                          PRECISION=0.1,
-                         FONCTION=SROI_MED,),
-                        _F(VALE_CALC = 0.12816394713878 ,
+                         FONCTION=SROI_MOY,),
+                        _F(VALE_CALC =  0.13281827560092,
                          VALE_REFE=SA_1  ,                        
                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 1.),
                          REFERENCE='ANALYTIQUE',
                          PRECISION=0.1,
-                         FONCTION=SROI_MED,),
+                         FONCTION=SROI_MOY,),
 
                          ),)
 
 
 
-TEST_FONCTION(VALEUR=(_F(VALE_CALC= 0.13595237106767,
+TEST_FONCTION(VALEUR=(_F(VALE_CALC= 0.15139694720319,
 #                         VALE_REFE=ZPA    ,                        
 #                         REFERENCE='ANALYTIQUE',                       
                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 50.0),
 #                         PRECISION =0.1,
                          FONCTION=SRO_MEI1,),
-                        _F(VALE_CALC= 0.17234157865816 ,
+                        _F(VALE_CALC= 0.18504358641395 ,
                          VALE_REFE=SA_25  ,                        
                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 25.0),
                          REFERENCE='ANALYTIQUE',
                          PRECISION=0.1,
                          FONCTION=SRO_MEI1,),
-                        _F(VALE_CALC= 0.32409033756274 ,
+                        _F(VALE_CALC= 0.33534483199442 ,
                          VALE_REFE=SA_10  ,                        
                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 10.),
                          REFERENCE='ANALYTIQUE',
@@ -383,19 +400,19 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC= 0.13595237106767,
 
 
 
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.16618836878674,
+TEST_FONCTION(VALEUR=(_F(VALE_CALC = 0.15646474605700,
                          VALE_REFE=ZPA    ,                        
                          REFERENCE='ANALYTIQUE',                       
                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 50.0),
-                         PRECISION=0.1,
+                         PRECISION = 0.1,
                          FONCTION=SRO_MEI2,),
-                        _F(VALE_CALC= 0.18684351387605  ,
+                        _F(VALE_CALC = 0.19016516487806  ,
                          VALE_REFE=SA_25  ,                        
                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 25.0),
                          REFERENCE='ANALYTIQUE',
                          PRECISION=0.1,
                          FONCTION=SRO_MEI2,),
-                        _F(VALE_CALC=0.31920777620017 ,
+                        _F(VALE_CALC = 0.32885676209221  ,
                          VALE_REFE=SA_10  ,                        
                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 10.),
                          REFERENCE='ANALYTIQUE',
@@ -403,19 +420,19 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.16618836878674,
                          FONCTION=SRO_MEI2,),
                          ),)
 
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.15300512265897,
+TEST_FONCTION(VALEUR=(_F(VALE_CALC = 0.16077072748559,
                          VALE_REFE=ZPA    ,                        
                          REFERENCE='ANALYTIQUE',                       
                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 50.0),
                          PRECISION=0.1,
                          FONCTION=SRO_MEI3,),
-                        _F(VALE_CALC= 0.17874018988329  ,
+                        _F(VALE_CALC = 0.19647974178681 ,
                          VALE_REFE=SA_25  ,                        
                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 25.0),
-                         REFERENCE='ANALYTIQUE',
+                         REFERENCE ='ANALYTIQUE',
                          PRECISION=0.1,
                          FONCTION=SRO_MEI3,),
-                        _F(VALE_CALC=0.31908302262420 ,
+                        _F(VALE_CALC = 0.33336827227467 ,
                          VALE_REFE=SA_10  ,                        
                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 10.),
                          REFERENCE='ANALYTIQUE',

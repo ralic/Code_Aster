@@ -944,6 +944,28 @@ def fractile(l_f, fract):
     return t_fonction(vale_x, vale_y, para)
 
 
+def moyenne(l_f):
+    """renvoie la moyenne de self et other.
+    """
+    para = copy.copy(l_f[0].para)
+    # Pour les prolongements et l'interpolation, c'est la première fonction
+    # qui prime
+    vale_x = []
+    for f in l_f:
+        vale_x = vale_x + f.vale_x.tolist()
+    # on ote les abscisses doublons
+    vale_x = list(set(vale_x))
+    vale_x.sort()
+    vale_x = NP.array(vale_x)
+    #
+    l_vale_y = []
+    for f in l_f:
+        vale_y = map(f, vale_x)
+        l_vale_y.append(vale_y)
+    vale_y = NP.mean(NP.array(l_vale_y), axis=0)
+    return t_fonction(vale_x, vale_y, para)
+
+
 def get_len_puis2(tab_in):
     """Retourne N, la plus grande puissance de 2 telle que 2**N <= len(tab_in)
     """

@@ -42,6 +42,12 @@ N3=DEFI_NAPPE(NOM_PARA='INST',
               DEFI_FONCTION=(_F(VALE=(1.0,8.0,2.0,7.0,),),
                              _F(VALE=(1.0,8.0,2.0,7.0,),),),)
 
+F0=DEFI_FONCTION(  NOM_PARA='INST',
+                   VALE=( 1., 1.,
+                          3., 2.,
+                          5., 2.,     )  )
+
+
 F1=DEFI_FONCTION(  NOM_PARA='INST',
                    VALE=( 1., 1.,
                           3., 3.,
@@ -290,5 +296,34 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=13.0,
                         NOM_PARA=('INST', 'X'),
                         FONCTION=E4,),
               )
+#========================================================================
+#     CAS NAPPE. MOYENNE
+# ========================================================================
+FM=CALC_FONCTION(MOYENNE=_F(FONCTION=(F0,F1,F2,F3), ) )
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=3.0,
+                        VALE_REFE=3.0,
+                        VALE_PARA=1.0,
+                        REFERENCE='ANALYTIQUE',
+                        NOM_PARA='INST',
+                        FONCTION=FM,),
+              )
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=2.5,
+                        VALE_REFE=2.5,
+                        VALE_PARA=3.0,
+                        REFERENCE='ANALYTIQUE',
+                        NOM_PARA='INST',
+                        FONCTION=FM,),
+              )
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.0,
+                        VALE_REFE=1.0,
+                        VALE_PARA=5.0,
+                        REFERENCE='ANALYTIQUE',
+                        NOM_PARA='INST',
+                        FONCTION=FM,),
+              )
+
 
 FIN();

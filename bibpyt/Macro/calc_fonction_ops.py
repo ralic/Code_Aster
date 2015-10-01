@@ -31,7 +31,7 @@ from Cata.cata import _F, fonction_sdaster, fonction_c, nappe_sdaster
 
 from Cata_Utils.t_fonction import (
     t_fonction, t_nappe,
-    homo_support_nappe, enveloppe, fractile,
+    homo_support_nappe, enveloppe, fractile, moyenne,
     FonctionError, ParametreError, InterpolationError, ProlongementError,
 )
 from Utilitai import liss_enveloppe as LISS
@@ -351,6 +351,23 @@ class CalcFonction_FRACTILE(CalcFonctionOper):
 
         else:
             self.resu = fractile(self._lf, fract)
+
+class CalcFonction_MOYENNE(CalcFonctionOper):
+    """Compute the mean of functions"""
+    def _run(self):
+        """MOYENNE"""
+        if self.typres is nappe_sdaster:
+            nap0 = self._lf[0]
+            vale_para = nap0.vale_para
+            para = nap0.para
+            l_fonc_f = []
+            for i in range(len(vale_para)):
+                self.ctxt.f = [nap.l_fonc[i].nom for nap in self._lf]
+                lfr = moyenne([nap.l_fonc[i] for nap in self._lf])
+                l_fonc_f.append(lfr)
+            self.resu = t_nappe(vale_para, l_fonc_f, para)
+        else:
+            self.resu = moyenne(self._lf)
 
 class CalcFonction_INTEGRE(CalcFonctionOper):
     """Integration"""

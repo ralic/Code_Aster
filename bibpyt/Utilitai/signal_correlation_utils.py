@@ -293,7 +293,6 @@ def itersimcor_SRO(self, FONC_DSP, data_cohe, **SRO_args):
    #  dsp in
     FMIN = SRO_args['FMIN']
     amort = SRO_args['AMORT']
-    METHODE_SRO = SRO_args['METHODE_SRO']
     dico_err = SRO_args['DICO_ERR']
     NB_ITER = SRO_args['NB_ITER']
     NB_TIRAGE = data_cohe['DIM']
@@ -341,9 +340,14 @@ def itersimcor_SRO(self, FONC_DSP, data_cohe, **SRO_args):
             acce = acce_filtre_CP(acce, dt, self.FREQ_FILTRE)
         f_acce = t_fonction(
              self.sampler.liste_temps, acce, para=self.modulator.para_fonc_modul)
-        f_sroi = ACCE2SROM(self, f_acce, amort, freq_sro, 2, METHODE_SRO)
+        f_sroi = ACCE2SROM(self, f_acce, amort, freq_sro, 2, 
+                                 SRO_args['METHODE_SRO'])
         liste_valesro.append(f_sroi.vale_y)
-    valesro = NP.median(NP.array(liste_valesro), axis=0)
+
+    if SRO_args['TYPE_ITER'] == 'SPEC_MEDIANE':
+        valesro = NP.median(NP.array(liste_valesro), axis=0)
+    elif SRO_args['TYPE_ITER'] == 'SPEC_MOYENNE':
+        valesro = NP.mean(NP.array(liste_valesro), axis=0)
 
     l_sro = [valesro]
     err_zpa, err_max, err_min, err_rms, freq_err = erre_spectre(
@@ -382,9 +386,12 @@ def itersimcor_SRO(self, FONC_DSP, data_cohe, **SRO_args):
             f_acce = t_fonction(
                 self.sampler.liste_temps, acce, para=self.modulator.para_fonc_modul)
             f_sroi = ACCE2SROM(
-                self, f_acce, amort, freq_sro, 2, METHODE_SRO)
+                self, f_acce, amort, freq_sro, 2, SRO_args['METHODE_SRO'])
             liste_valesro.append(f_sroi.vale_y)
-        valesro = NP.median(NP.array(liste_valesro), axis=0)
+        if SRO_args['TYPE_ITER'] == 'SPEC_MEDIANE':
+            valesro = NP.median(NP.array(liste_valesro), axis=0)
+        elif SRO_args['TYPE_ITER'] == 'SPEC_MOYENNE':
+            valesro = NP.mean(NP.array(liste_valesro), axis=0)
 
         #  CALCUL DES ERREURS
         l_sro.append(valesro)
@@ -434,23 +441,6 @@ def erre_spectre(Freq, valesro, vale_sro_ref):
     return errzpa, errmax, errmin, errms, freqerr
 
 
-def median_values(listes):
-    N = len(listes[0])
-    Nb = len(listes)
-    median_val = []
-    for ni1 in range(N):
-        vsorted = []
-        for ni2 in range(Nb):
-            vsorted.append(listes[ni2][ni1])
-        vsorted.sort()
-        if is_even(Nb):  # nombre pair
-            median_val.append(
-                0.5 * (vsorted[Nb / 2] + vsorted[Nb / 2 - 1]))  # even
-        else:  # nombre impair
-            median_val.append(vsorted[(Nb - 1) / 2])  # odd
-    return NP.array(median_val)
-
-
 def itersimcortir_SRO(self, FONC_DSP, data_cohe, NB_TIR, **SRO_args):
 #(f_dsp, f_sro,nb_iter,f_modul, SRO_args ,dico_err,NB_TIRAGE=1 )
 # FONC_SPEC, AMORT, FMIN,  PAS=None, LIST_FREQ=None
@@ -464,7 +454,6 @@ def itersimcortir_SRO(self, FONC_DSP, data_cohe, NB_TIR, **SRO_args):
    #  dsp in
     FMIN = SRO_args['FMIN']
     amort = SRO_args['AMORT']
-    METHODE_SRO = SRO_args['METHODE_SRO']
     dico_err = SRO_args['DICO_ERR']
     NB_ITER = SRO_args['NB_ITER']
     dim = data_cohe['DIM']
@@ -517,9 +506,13 @@ def itersimcortir_SRO(self, FONC_DSP, data_cohe, NB_TIR, **SRO_args):
             acce = acce_filtre_CP(acce, dt, self.FREQ_FILTRE)
         f_acce = t_fonction(
              self.sampler.liste_temps, acce, para=self.modulator.para_fonc_modul)
-        f_sroi = ACCE2SROM(self, f_acce, amort, freq_sro, 2, METHODE_SRO)
+        f_sroi = ACCE2SROM(self, f_acce, amort, freq_sro, 2, 
+                                 SRO_args['METHODE_SRO'])
         liste_valesro.append(f_sroi.vale_y)
-    valesro = NP.median(NP.array(liste_valesro), axis=0)
+    if SRO_args['TYPE_ITER'] == 'SPEC_MEDIANE':
+        valesro = NP.median(NP.array(liste_valesro), axis=0)
+    elif SRO_args['TYPE_ITER'] == 'SPEC_MOYENNE':
+        valesro = NP.mean(NP.array(liste_valesro), axis=0)
     l_sro = [valesro]
     err_zpa, err_max, err_min, err_rms, freq_err = erre_spectre(
         FRED, valesro[N1:], vale_sro_ref[N1:])
@@ -560,9 +553,12 @@ def itersimcortir_SRO(self, FONC_DSP, data_cohe, NB_TIR, **SRO_args):
             f_acce = t_fonction(
                 self.sampler.liste_temps, acce, para=self.modulator.para_fonc_modul)
             f_sroi = ACCE2SROM(
-                self, f_acce, amort, freq_sro, 2, METHODE_SRO)
+                self, f_acce, amort, freq_sro, 2, SRO_args['METHODE_SRO'])
             liste_valesro.append(f_sroi.vale_y)
-        valesro = NP.median(NP.array(liste_valesro), axis=0)
+        if SRO_args['TYPE_ITER'] == 'SPEC_MEDIANE':
+            valesro = NP.median(NP.array(liste_valesro), axis=0)
+        elif SRO_args['TYPE_ITER'] == 'SPEC_MOYENNE':
+            valesro = NP.mean(NP.array(liste_valesro), axis=0)
         #  CALCUL DES ERREURS
         l_sro.append(valesro)
         err_zpa, err_max, err_min, err_rms, freq_err = erre_spectre(
