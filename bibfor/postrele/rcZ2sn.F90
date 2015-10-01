@@ -1,4 +1,4 @@
-subroutine rc32sn(typz, lieu, numsip, pi, mi,&
+subroutine rcZ2sn(typz, lieu, numsip, pi, mi,&
                   numsiq, pj, mj, seisme, mse,&
                   snij)
     implicit none
@@ -9,8 +9,8 @@ subroutine rc32sn(typz, lieu, numsip, pi, mi,&
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/rc32s0.h"
-#include "asterfort/rc32st.h"
+#include "asterfort/rcZ2s0.h"
+#include "asterfort/rcZ2st.h"
     integer :: numsip, numsiq
     real(kind=8) :: pi, mi(*), pj, mj(*), mse(*), snij
     aster_logical :: seisme
@@ -34,7 +34,7 @@ subroutine rc32sn(typz, lieu, numsip, pi, mi,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !     ------------------------------------------------------------------
-!     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_B3200
+!     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_ZE200
 !     CALCUL DU SN OU SN*
 !
 ! IN  : TYPZ   : 'SN_SITU'  : CALCUL DU SN POUR LA SITUATION
@@ -50,13 +50,13 @@ subroutine rc32sn(typz, lieu, numsip, pi, mi,&
 ! IN  : MJ     : EFFORTS ASSOCIEES A L'ETAT STABILISE J (6)
 ! IN  : SEISME : =.FALSE. SI PAS DE SEISME, =.TRUE. SINON
 ! IN  : MSE    : EFFORTS DUS AU SEISME
-! VAR : SNIJ   : AMPLITUDE DE VARIATION DES CONTRAINTES LINEARISEES
+! OUT : SNIJ   : AMPLITUDE DE VARIATION DES CONTRAINTES LINEARISEES
 !     ------------------------------------------------------------------
 !
-    integer :: icmp, jsigu, icmps, nbinst, long, i1, nbthep, nbtheq, jther, ith
-    integer :: numth, jthun, indicp, indicq
-    real(kind=8) :: pij, mij(12), sn, sij(6), sigu, sqma(6), sqmi(6), sn1, sn2
-    real(kind=8) :: snth(6)
+    integer :: icmp, nbinst, long, i1, nbthep, nbtheq, jther, ith
+    integer :: numth, jthun, indicp, indicq, jvalin
+    real(kind=8) :: pij, mij(6), sn, sij, sqma(6), sqmi(6), sn1, sn2
+    real(kind=8) :: snth(6), racine, c1, c2, diam, ep, inertie
     character(len=4) :: typ2
     character(len=8) :: type, knumes, knumet
 ! DEB ------------------------------------------------------------------
@@ -64,35 +64,36 @@ subroutine rc32sn(typz, lieu, numsip, pi, mi,&
     sn = 0.d0
     sn1 = 0.d0
     sn2 = 0.d0
+    sij = 0.d0
+    racine = 0.d0
 !
-! --- CONTRAINTES LINEAIRISEES DUES AUX CHARGEMENTS UNITAIRES
+!--- RECUPERATION DES CARACTERISTIQUES GEOMETRIQUES
+!--- ET INDICES DE CONTRAINTE
 !
-    call jeveuo('&&RC3200.MECA_UNIT .'//lieu, 'L', jsigu)
+    call jeveuo('&&RC3200.INDI', 'L', jvalin)
+    c1 = zr(jvalin)  
+    c2 = zr(jvalin+1) 
+    diam = zr(jvalin+4) 
+    ep = zr(jvalin+5) 
+    inertie = zr(jvalin+6) 
 !
 ! --- DIFFERENCE DE PRESSION ENTRE LES ETATS I ET J
 !
     pij = pi - pj
 !
-! --- VARIATION DE MOMENT RESULTANT
+! --- SOMME QUADRATIQUE DES VARIATIONS DE MOMENT RESULTANT
 !
-    do 10 icmp = 1, 12
+    do 10 icmp = 1, 6
         mij(icmp) = mi(icmp) - mj(icmp)
+        racine = racine + mij(icmp)**2
  10 end do
 !
-! --- CALCUL DES CONTRAINTES LINEAIRISEES PAR COMBINAISON LINEAIRE
-!     POUR LE CHARGEMENT PIJ, MIJ
+! --- CALCUL DE SN (PARTIE B3600)
 !
-    do 30 icmps = 1, 6
-        sij(icmps) = 0.d0
-        do 20 icmp = 1, 12
-            sigu = zr(jsigu-1+78+6*(icmp-1)+icmps)
-            sij(icmps) = sij(icmps) + mij(icmp)*sigu
- 20     continue
-! ------ PRESSION
-        sigu = zr(jsigu-1+78+72+icmps)
-        sij(icmps) = sij(icmps) + pij*sigu
- 30 end do
+    sij = c1*diam*abs(pij)/(2*ep)
+    sij = sij + c2*diam*sqrt(racine)/(2*inertie)
 !
+! --- CALCUL DE SN (PARTIE B3200)
 ! --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE P
 !
     if (numsip .ne. 0) then
@@ -109,10 +110,10 @@ subroutine rc32sn(typz, lieu, numsip, pi, mi,&
                 typ2 = 'SITU'
             endif
             if (seisme) then
-                call rc32s0(typ2, mij, pij, mse, zr(jsigu+78),&
+                call rcZ2s0(mij, pij, mse,&
                             nbinst, zr(indicp), sn)
             else
-                call rc32st(sij, nbinst, zr(indicp), sn)
+                call rcZ2st(sij, nbinst, zr(indicp), sn)
             endif
             snij = max( snij , sn )
         else
@@ -121,8 +122,8 @@ subroutine rc32sn(typz, lieu, numsip, pi, mi,&
                 numth = zi(jther+ith-1)
                 knumet = 'T       '
                 call codent(numth, 'D0', knumet(2:8))
-                call jelira(jexnom('&&RC3200.THER_UNIT .'//lieu, knumet), 'LONUTI', long)
-                call jeveuo(jexnom('&&RC3200.THER_UNIT .'//lieu, knumet), 'L', jthun)
+                call jelira(jexnom('&&RC3200.THER .'//lieu, knumet), 'LONUTI', long)
+                call jeveuo(jexnom('&&RC3200.THER .'//lieu, knumet), 'L', jthun)
                 nbinst = 2
                 if (type .eq. 'SN_COMB') then
                     indicp = jthun + 6*nbinst
@@ -141,11 +142,11 @@ subroutine rc32sn(typz, lieu, numsip, pi, mi,&
                     snth(i1) = zr(indicp+6+i1-1) -zr(indicp+i1-1)
  14             continue
                 if (seisme) then
-                    call rc32s0(typ2, mij, pij, mse, zr(jsigu+78),&
+                    call rcZ2s0(mij, pij, mse,&
                                 nbinst, snth, sn)
                 else
                     if (typ2 .eq. 'SITU') then
-                        call rc32st(sij, nbinst, snth, sn)
+                        call rcZ2st(sij, nbinst, snth, sn)
                     else
                         sn = 0.d0
                     endif
@@ -172,18 +173,18 @@ subroutine rc32sn(typz, lieu, numsip, pi, mi,&
                 typ2 = 'SITU'
             endif
             if (seisme) then
-                call rc32s0(typ2, mij, pij, mse, zr(jsigu+78),&
+                call rcZ2s0(mij, pij, mse,&
                             nbinst, zr(indicq), sn)
             else
-                call rc32st(sij, nbinst, zr(indicq), sn)
+                call rcZ2st(sij, nbinst, zr(indicq), sn)
             endif
             snij = max( snij , sn )
             if (typ2 .eq. 'COMB' .and. nbthep .ne. 0) then
                 if (seisme) then
-                    call rc32s0(typ2, mij, pij, mse, zr(jsigu+78),&
+                    call rcZ2s0(mij, pij, mse,&
                                 nbinst, snth, sn)
                 else
-                    call rc32st(sij, 2, snth, sn)
+                    call rcZ2st(sij, 2, snth, sn)
                 endif
                 snij = max( snij , sn )
             endif
@@ -193,8 +194,8 @@ subroutine rc32sn(typz, lieu, numsip, pi, mi,&
                 numth = zi(jther+ith-1)
                 knumet = 'T       '
                 call codent(numth, 'D0', knumet(2:8))
-                call jelira(jexnom('&&RC3200.THER_UNIT .'//lieu, knumet), 'LONUTI', long)
-                call jeveuo(jexnom('&&RC3200.THER_UNIT .'//lieu, knumet), 'L', jthun)
+                call jelira(jexnom('&&RC3200.THER .'//lieu, knumet), 'LONUTI', long)
+                call jeveuo(jexnom('&&RC3200.THER .'//lieu, knumet), 'L', jthun)
                 nbinst = 2
                 if (type .eq. 'SN_COMB') then
                     indicq = jthun + 6*nbinst
@@ -214,10 +215,10 @@ subroutine rc32sn(typz, lieu, numsip, pi, mi,&
  24             continue
                 if (typ2 .eq. 'SITU') then
                     if (seisme) then
-                        call rc32s0(typ2, mij, pij, mse, zr(jsigu+ 78),&
+                        call rcZ2s0(mij, pij, mse,&
                                     nbinst, snth, sn)
                     else
-                        call rc32st(sij, nbinst, snth, sn)
+                        call rcZ2st(sij, nbinst, snth, sn)
                     endif
                 else
                     if (nbthep .ne. 0) then
@@ -226,14 +227,14 @@ subroutine rc32sn(typz, lieu, numsip, pi, mi,&
                             sqma(i1) = zr(indicp+6+i1-1) - zr(indicq+ i1-1)
 114                     continue
                         if (seisme) then
-                            call rc32s0(typ2, mij, pij, mse, zr( jsigu+78),&
+                            call rcZ2s0(mij, pij, mse,&
                                         nbinst, sqmi, sn1)
-                            call rc32s0(typ2, mij, pij, mse, zr( jsigu+78),&
+                            call rcZ2s0(mij, pij, mse,&
                                         nbinst, sqma, sn2)
                             sn = max( sn1, sn2 )
                         else
-                            call rc32st(sij, nbinst, sqmi, sn1)
-                            call rc32st(sij, nbinst, sqma, sn2)
+                            call rcZ2st(sij, nbinst, sqmi, sn1)
+                            call rcZ2st(sij, nbinst, sqma, sn2)
                             sn = max( sn1, sn2 )
                         endif
                     endif

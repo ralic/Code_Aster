@@ -1,4 +1,4 @@
-subroutine rc32r1(nomres)
+subroutine rcZ2r1(nomres)
     implicit none
 #include "jeveux.h"
 #include "asterfort/codent.h"
@@ -37,8 +37,8 @@ subroutine rc32r1(nomres)
     integer :: valei(3),   jnsg, jvale, jpmpb, nbgr, ioc, numgr
     integer :: is1, is2, jreas, jress, n1,  jcombi, ioc1, ioc2, iocs, ii
     integer :: npar0
-    parameter    ( npar0 = 35, npar2 = 7, npar1 = 11, npar4 = 15,&
-     &               npar6 = 13 )
+    parameter    ( npar0 = 28, npar2 = 7, npar1 = 11, npar4 = 12,&
+     &               npar6 = 9 )
     real(kind=8) :: utot, valer(2)
     complex(kind=8) :: c16b
     character(len=4) :: lieu(2)
@@ -53,18 +53,20 @@ subroutine rc32r1(nomres)
     data lieu   / 'ORIG' , 'EXTR' /
 !
     data nopar0 / 'TYPE', 'SEISME', 'NUME_GROUPE', 'LIEU' ,&
-     &              'PM_MAX', 'PB_MAX', 'PMPB_MAX', 'SM' ,&
      &              'SN/3SM' , 'SN_MAX' , 'SN*_MAX' , 'SP_MAX',&
      &              'KE_MAX', 'SALT_MAX', 'FACT_USAGE_CUMU',&
      &              'NUME_SITU', 'NUME_SITU_I', 'NUME_SITU_J',&
-     &              'PM' , 'PB' , 'PMPB', 'SN', 'SN*', 'SP', 'KE_MECA',&
+     &              'SN', 'SN*', 'SP', 'KE_MECA',&
      &              'KE_THER', 'SALT', 'NUME_SITU_K', 'NUME_SITU_L',&
      &              'FACT_USAGE',  '%_FACT_USAGE' ,&
      &              'SP1_IJ', 'SP2_IJ', 'SALT1_IJ', 'SALT2_IJ' /
-    data typar0 / 'K8', 'K8', 'I', 'K8',  'R', 'R', 'R', 'R', 'R',&
-     &              'R', 'R', 'R', 'R', 'R', 'R', 'I', 'I', 'I', 'R',&
-     &              'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'K8', 'K8',&
-     &              'R', 'R', 'R', 'R', 'R', 'R'  /
+    data typar0 / 'K8', 'K8', 'I', 'K8',&
+     &            'R', 'R', 'R', 'R',&
+     &            'R', 'R', 'R',&
+     &            'I', 'I', 'I',&
+     &            'R', 'R', 'R', 'R',&
+     &            'R', 'R', 'K8', 'K8',&
+     &            'R', 'R', 'R', 'R', 'R', 'R'  /
 !
 ! --- PARAMETRES FACTEUR D'USAGE
 !
@@ -80,17 +82,16 @@ subroutine rc32r1(nomres)
 ! --- PARAMETRES POUR CHAQUE SITUATION
 !
     data nopar4 / 'TYPE', 'SEISME', 'NUME_GROUPE', 'LIEU' ,&
-     &              'NUME_SITU', 'PM' , 'PB' , 'PMPB', 'SN', 'SN*',&
+     &              'NUME_SITU', 'SN', 'SN*',&
      &              'SP', 'KE_MECA', 'KE_THER', 'SALT', 'FACT_USAGE'  /
 !
 ! --- PARAMETRES POUR LES MAXIMA
 !
-    data nopar6 / 'TYPE', 'LIEU', 'PM_MAX', 'PB_MAX', 'PMPB_MAX',&
-     &              'SM' , 'SN/3SM' , 'SN_MAX' , 'SN*_MAX' , 'SP_MAX',&
-     &              'KE_MAX', 'SALT_MAX', 'FACT_USAGE_CUMU' /
+    data nopar6 / 'TYPE', 'LIEU', 'SN/3SM' , 'SN_MAX' , 'SN*_MAX' ,&
+     &             'SP_MAX', 'KE_MAX', 'SALT_MAX', 'FACT_USAGE_CUMU' /
 !
-    data typar6 / 'K8', 'K8', 'R', 'R', 'R', 'R', 'R', 'R',&
-     &                          'R', 'R', 'R', 'R', 'R'  /
+    data typar6 / 'K8', 'K8', 'R', 'R','R',&
+     &            'R', 'R', 'R', 'R'  /
 ! DEB ------------------------------------------------------------------
 !
     ibid=0
@@ -153,14 +154,14 @@ subroutine rc32r1(nomres)
             do 104 is = 1, nbsigr
                 ioc = zi(jnsg+is-1)
                 valei(2) = situ_numero(ioc)
-                call tbajli(nomres, npar4, nopar4, valei, zr(jreas- 1+10*(is-1)+1),&
+                call tbajli(nomres, npar4, nopar4, valei, zr(jreas- 1+7*(is-1)+1),&
                             [c16b], valek, 0)
 104          continue
             valek(2) = 'SANS'
             do 106 is = 1, nbsigr
                 ioc = zi(jnsg+is-1)
                 valei(2) = situ_numero(ioc)
-                call tbajli(nomres, npar4, nopar4, valei, zr(jress- 1+10*(is-1)+1),&
+                call tbajli(nomres, npar4, nopar4, valei, zr(jress- 1+7*(is-1)+1),&
                             [c16b], valek, 0)
 106          continue
 102      continue
@@ -213,7 +214,7 @@ subroutine rc32r1(nomres)
             valek(2) = lieu(im)
 !
             call jeveuo('&&RC3200.RESULTAT  .'//lieu(im), 'L', jvale)
-            utot = zr(jvale+10)
+            utot = zr(jvale+6)
 !
             k24t = '&&RC3200.FACT_USAGE '//lieu(im)
             call jeveuo(jexnum(k24t, numgr), 'L', jpmpb)

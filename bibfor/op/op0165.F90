@@ -32,6 +32,7 @@ subroutine op0165()
 #include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/rc3200.h"
+#include "asterfort/rcZ200.h"
 #include "asterfort/rc3600.h"
 #include "asterfort/rccome.h"
 #include "asterfort/rcevol.h"
@@ -97,7 +98,7 @@ subroutine op0165()
 !
 !     ------------------------------------------------------------------
 !
-    else
+    else if (typmec .eq. 'UNITAIRE') then
 !
         fatigu = .false.
         pmpb = .false.
@@ -130,6 +131,43 @@ subroutine op0165()
         call getvr8(' ', 'SY_MAX', scal=symax, nbret=n1)
 !
         call rc3200(pmpb, sn, snet, fatigu, lrocht,&
+                    nommat, symax)
+!
+!     ------------------------------------------------------------------
+!
+!     ------------------- TYPE_RESU_MECA = ZE200a -------------------
+!
+!     ------------------------------------------------------------------
+!
+    else
+!
+        fatigu = .false.
+        sn = .false.
+        snet = .false.
+        lrocht = .false.
+!
+        call getfac('RESU_THER', nbther)
+        if (nbther .ne. 0) then
+            snet = .true.
+            lrocht = .true.
+        endif
+!
+        call getvtx(' ', 'OPTION', nbval=0, nbret=n1)
+        nbopt = -n1
+        call getvtx(' ', 'OPTION', nbval=nbopt, vect=kopt, nbret=n1)
+        do 20 iopt = 1, nbopt
+            if (kopt(iopt) .eq. 'SN') then
+                sn = .true.
+            else if (kopt(iopt) .eq. 'FATIGUE') then
+                fatigu = .true.
+                sn = .true.
+            endif
+ 20     continue
+!
+        call getvid(' ', 'MATER', scal=nommat, nbret=n1)
+        call getvr8(' ', 'SY_MAX', scal=symax, nbret=n1)
+!
+        call rcZ200(sn, snet, fatigu, lrocht,&
                     nommat, symax)
 !
     endif

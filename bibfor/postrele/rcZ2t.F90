@@ -1,4 +1,4 @@
-subroutine rc32th()
+subroutine rcZ2t()
     implicit none
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -18,7 +18,7 @@ subroutine rc32th()
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !     ------------------------------------------------------------------
-!     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_B3200
+!     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_ZE200
 !     LECTURE DU MOT CLE FACTEUR "RESU_THER"
 !
 !     ------------------------------------------------------------------
@@ -59,8 +59,8 @@ subroutine rc32th()
     real(kind=8) :: tremin(2), tremax(2), tmin(2), tmax(2)
     complex(kind=8) :: cbid
     aster_logical :: exist
-    character(len=8) :: k8b, crit(2), nocmp(ncmp), table, knume, tbpres
-    character(len=16) :: motclf, valek(2), motcl2
+    character(len=8) :: k8b, crit(2), nocmp(ncmp), table, knume
+    character(len=16) :: motclf, valek(2)
     character(len=24) :: instan, abscur, jvorig, jvextr
     character(len=24) :: valk(7)
     real(kind=8), pointer :: contraintes(:) => null()
@@ -86,16 +86,12 @@ subroutine rc32th()
     crit(1) = 'RELATIF'
     crit(2) = 'RELATIF'
 !
-    jvorig = '&&RC3200.THER_UNIT .ORIG'
-    jvextr = '&&RC3200.THER_UNIT .EXTR'
+    jvorig = '&&RC3200.THER .ORIG'
+    jvextr = '&&RC3200.THER .EXTR'
     call jecrec(jvorig, 'V V R', 'NO', 'DISPERSE', 'VARIABLE',&
                 nbther)
     call jecrec(jvextr, 'V V R', 'NO', 'DISPERSE', 'VARIABLE',&
                 nbther)
-!
-    motcl2 = 'RESU_MECA_UNIT'
-    call getvid(motcl2, 'TABL_PRES', iocc=1, scal=tbpres, nbret=n1)
-    ASSERT(n1.ne.0)
 !
     do 10 iocc = 1, nbther, 1
 !
@@ -107,9 +103,6 @@ subroutine rc32th()
 !
 ! ------ ON VERIFIE L'ORDRE DES NOEUDS
         call rcveri(table)
-!
-! ------ ON VERIFIE LA COHERENCE AVEC LA TABLE TBPRES
-        call rcver1('THERMIQUE', tbpres, table)
 !
 ! ------ ON RECUPERE LES INSTANTS DANS LA TABLE
 !
