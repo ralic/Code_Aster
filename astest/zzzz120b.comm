@@ -70,7 +70,7 @@ def macr_gouj2e_mail(TYPE,VARIANTE,NB_FILET,H_CORP_BRID,R_EXT_BRID,
     # Decoupe de la chaine GIBI
     length = 50
 
-    seq = os.path.join(loc_datg, "gouj2.datg")
+    seq = os.path.join("..", "datg", "gouj2.datg")
     assert len(seq) <= 72, "Gibi does not support paths longer than 72 characters\npath:%s" % seq
     tt = [seq[i:i+length] for i in range(0, len(seq), length)]
     textp = textp + "PDATG = CHAINE '" + "'\n'".join(tt) + "'" + ";\n"
@@ -289,7 +289,6 @@ tab1=POST_RELEVE_T(ACTION=_F(INTITULE='RESU_T1',
                              FORMAT_C='MODULE',
                              RESULTAT=CALC,
                              NOM_CHAM='FORC_NODA',
-                            # TOUT_ORDRE='OUI',
                              NUME_ORDRE    = (1,2,3,4,5),
                              PRECISION=1e-06,
                              CRITERE='RELATIF',
@@ -341,12 +340,12 @@ TFORC=POST_RELEVE_T(ACTION=_F(INTITULE='C_TEST1',
                               GROUP_NO='NDFILETS',
                               RESULTAT=CALC,
                               NOM_CHAM='FORC_NODA',
-                              #TOUT_ORDRE='OUI',
                               NUME_ORDRE    = (1,2,3,4,5),
                               NOM_CMP='DY',
                               OPERATION='EXTRACTION',),);
 
 NTFORC=POST_GOUJ(TABLE=TFORC,);
+
 #---------------------------------------------
 # TEST DES VALEURS
 #---------------------------------------------
@@ -761,6 +760,5 @@ TEST_TABLE(
                    ),
            )
 
-#
-
 FIN();
+#
