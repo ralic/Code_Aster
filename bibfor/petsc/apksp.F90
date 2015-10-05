@@ -94,8 +94,8 @@ subroutine apksp(kptsc)
     else if (algo.eq.'GCR') then
         call KSPSetType(ksp, KSPGCR, ierr)
         ASSERT(ierr.eq.0)
-    else if (algo.eq.'BCGS') then
-        call KSPSetType(ksp, KSPBCGS, ierr)
+    else if (algo.eq.'FGMRES') then
+        call KSPSetType(ksp, KSPFGMRES, ierr)
         ASSERT(ierr.eq.0)
     else
         ASSERT(.false.)

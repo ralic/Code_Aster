@@ -64,7 +64,7 @@ EVOL=DYNA_NON_LINE(MODELE=MO,
                    NEWTON=_F(REAC_ITER=1),
                    INCREMENT=_F(LIST_INST=LIST,),
                    SOLVEUR=_F(METHODE='PETSC',
-                              ALGORITHME='GMRES',
+                              ALGORITHME='FGMRES',
                               PRE_COND='LDLT_SP',
                               PCENT_PIVOT=20,),);
 

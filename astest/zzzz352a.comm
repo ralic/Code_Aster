@@ -84,7 +84,7 @@ for czero in (False, True,) :
                if method1 not in ('PETSC','GCPC') :
                   solv1=_F(METHODE=method1, ELIM_LAGR='OUI'),
                elif method1=='PETSC' :
-                  solv1=_F(METHODE=method1, ELIM_LAGR='OUI',ALGORITHME='GMRES',PRE_COND=precond,RESI_RELA=1.e-8),
+                  solv1=_F(METHODE=method1, ELIM_LAGR='OUI',ALGORITHME='FGMRES',PRE_COND=precond,RESI_RELA=1.e-8),
                elif method1=='GCPC' :
                   solv1=_F(METHODE=method1, ELIM_LAGR='OUI',PRE_COND=precond,RESI_RELA=1.e-8),
 
