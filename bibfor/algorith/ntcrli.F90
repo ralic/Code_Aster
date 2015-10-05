@@ -1,10 +1,11 @@
-subroutine ntcrli(inst_init, list_inst, sddisc)
+subroutine ntcrli(inst_init, list_inst, sddisc, lostat)
 !
 implicit none
 !
 #include "asterf_types.h"
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
+#include "asterc/r8prem.h"
 #include "asterc/r8vide.h"
 #include "asterfort/deprecated_command.h"
 #include "asterfort/diinst.h"
@@ -14,7 +15,7 @@ implicit none
 #include "asterfort/jedup1.h"
 #include "asterfort/jedupo.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/nmcrlm.h"
+#include "asterfort/ntcrlm.h"
 #include "asterfort/nmcrls.h"
 #include "asterfort/nmcrpc.h"
 #include "asterfort/nmdifi.h"
@@ -44,6 +45,7 @@ implicit none
     character(len=19), intent(in) :: sddisc
     character(len=19), intent(in) :: list_inst
     real(kind=8), intent(in) :: inst_init
+    aster_logical, intent(in) :: lostat
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,6 +58,7 @@ implicit none
 ! In  sddisc           : datastructure for time discretization
 ! In  inst_init        : initial time if ETAT_INIT
 ! In  list_inst        : list of times from INCREMENT/LIST_INST
+! In  lostat           : .true. for initial stationnary computation
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -106,7 +109,7 @@ implicit none
 ! - Create list of times and information vector
 !
     if (list_inst_type .eq. 'LISTR8_SDASTER') then
-        call nmcrlm(list_inst, sddisc, list_inst_work)
+        call ntcrlm(list_inst, sddisc, list_inst_work)
         call deprecated_command('LIST_INST')
     else if (list_inst_type.eq.'LIST_INST') then
         sddisc_linf    = sddisc(1:19)//'.LINF'
@@ -122,6 +125,18 @@ implicit none
                 valr_ = dtmin)
     call utdidt('L', sddisc, 'LIST', 'NBINST',&
                 vali_ = nb_inst)
+!
+! - At least one step
+!
+    if (nb_inst .lt. 2 .and. .not.lostat) then
+        call utmess('F', 'DISCRETISATION_96')
+    endif
+!
+! - List must increase
+!
+    if (dtmin .le. r8prem()) then
+        call utmess('F', 'DISCRETISATION_87')
+    endif
 !
 ! - Acces to list of times
 !
@@ -151,7 +166,7 @@ implicit none
 !
 ! - Check
 !
-    if (nume_ini .ge. nume_end) then
+    if (nume_ini .ge. nume_end .and. .not.lostat) then
         call utmess('F', 'DISCRETISATION_92')
     endif
 !
@@ -171,12 +186,9 @@ implicit none
 ! - Save parameters
 !
     dt0 = diinst(sddisc,1) - diinst(sddisc,0)
-    call utdidt('E', sddisc, 'LIST', 'DT-',&
-                valr_ = dt0)
-    call utdidt('E', sddisc, 'LIST', 'NBINST',&
-                vali_ = nb_inst_new)
-    call utdidt('E', sddisc, 'LIST', 'DTMIN',&
-                valr_ = dtmin)
+    call utdidt('E', sddisc, 'LIST', 'DT-'   , valr_ = dt0)
+    call utdidt('E', sddisc, 'LIST', 'NBINST', vali_ = nb_inst_new)
+    call utdidt('E', sddisc, 'LIST', 'DTMIN' , valr_ = dtmin)
 !
 ! - Save object of time steps
 !

@@ -77,7 +77,7 @@ implicit none
 ! - Create time discretization datastructure and storing datastructure
 !
     if (l_evol) then
-        call ntcrli(init_time, list_inst, sddisc)
+        call ntcrli(init_time, list_inst, sddisc, lostat)
         call ntcrar(result, sddisc, l_reuse)
     else
         call ntcra0(sddisc)

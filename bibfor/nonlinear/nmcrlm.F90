@@ -2,10 +2,14 @@ subroutine nmcrlm(listr8_sdaster, sddisc, list_inst_work)
 !
 implicit none
 !
-#include "asterfort/dfllli.h"
+#include "asterc/r8maem.h"
+#include "asterc/r8prem.h"
 #include "asterfort/dfllvd.h"
 #include "asterfort/jedup1.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jeveuo.h"
 #include "asterfort/utdidt.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 ! ======================================================================
@@ -32,7 +36,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! *_NON_LINE - Time discretization datastructure
+! MECA_NON_LINE - Time discretization datastructure
 !
 ! Create list of times and information vector from LISTR8_SDASTER
 !
@@ -44,21 +48,42 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: llinr
-    integer :: nb_inst
-    real(kind=8) :: dtmin
+    integer :: llinr, nb_inst, i_inst
+    real(kind=8) :: dtmin, deltat
     character(len=8) :: list_method
     character(len=24) :: sddisc_linf
     real(kind=8), pointer :: v_sddisc_linf(:) => null()
+    real(kind=8), pointer :: v_vale(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
     llinr       = dfllvd('LLINR')
     sddisc_linf = sddisc(1:19)//'.LINF'
+    dtmin       = r8maem()
 !
-! - Some checks
+! - Access to list of times
 !
-    call dfllli(listr8_sdaster, dtmin, nb_inst)
+    call jeveuo(listr8_sdaster//'.VALE', 'L', vr=v_vale)
+    call jelira(listr8_sdaster//'.VALE', 'LONMAX', nb_inst)
+!
+! - At least one step
+!
+    if (nb_inst .lt. 2) then
+        call utmess('F', 'DISCRETISATION_95')
+    endif
+!
+! - Minimum time between two steps
+!
+    do i_inst = 1, nb_inst-1
+        deltat = v_vale(1+i_inst) - v_vale(i_inst)
+        dtmin  = min(deltat,dtmin)
+    end do
+!
+! - List must increase
+!
+    if (dtmin .le. r8prem()) then
+        call utmess('F', 'DISCRETISATION_87')
+    endif
 !
 ! - Copy listr8sdaster in list of times
 !

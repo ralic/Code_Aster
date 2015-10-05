@@ -81,12 +81,6 @@ Conseils :
 donc pas possible.
 """),
 
-    86 : _(u"""
-Il n'y a aucun pas de calcul temporel.
-En mécanique, 'LIST_INST' est absent.
-En thermique, 'LIST_INST' est absent ou un singleton.
-"""),
-
     87 : _(u"""
 La liste d'instants n'est pas strictement croissante.
 """),
@@ -105,6 +99,16 @@ On ne peut faire le calcul car l'instant final donné est égal au dernier insta
 L'instant final est introuvable dans la liste d'instants (LIST_INST).
 Risque & Conseil :
    Vérifiez le mot-clé INST_FIN (ou NUME_INST_FIN), en tenant compte de la précision (mot-clé PRECISION).
+"""),
+
+    95 : _(u"""
+La liste des instants ne contient qu'un instant.
+Pour un calcul en mécanique non-linéaire, il faut plusieurs instants de calcul.
+"""),
+
+    96 : _(u"""
+La liste des instants ne contient qu'un instant et ce n'est pas un calcul stationnaire.
+Pour un calcul en thermique non-linéaire, il faut plusieurs instants de calcul.
 """),
 
 
