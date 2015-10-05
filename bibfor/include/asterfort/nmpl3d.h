@@ -18,39 +18,39 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmpl3d(fami, nno, npg, ipoids, ivf,&
-                      idfde, geom, typmod, option, imate,&
-                      compor, lgpg, crit, instam, instap,&
-                      deplm, deplp, angmas, sigm, vim,&
-                      matsym, dfdi, def, sigp, vip,&
-                      matuu, vectu, codret)
-        integer :: lgpg
-        integer :: npg
-        integer :: nno
-        character(len=*) :: fami
-        integer :: ipoids
-        integer :: ivf
-        integer :: idfde
-        real(kind=8) :: geom(3, nno)
-        character(len=8) :: typmod(*)
-        character(len=16) :: option
-        integer :: imate
-        character(len=16) :: compor(*)
-        real(kind=8) :: crit(*)
-        real(kind=8) :: instam
-        real(kind=8) :: instap
-        real(kind=8) :: deplm(1:3, 1:nno)
-        real(kind=8) :: deplp(1:3, 1:nno)
-        real(kind=8) :: angmas(*)
-        real(kind=8) :: sigm(6, npg)
-        real(kind=8) :: vim(lgpg, npg)
-        aster_logical :: matsym
-        real(kind=8) :: dfdi(nno, 3)
-        real(kind=8) :: def(6, nno, 3)
-        real(kind=8) :: sigp(6, npg)
-        real(kind=8) :: vip(lgpg, npg)
-        real(kind=8) :: matuu(*)
-        real(kind=8) :: vectu(3, nno)
-        integer :: codret
+    subroutine nmpl3d(fami  , nno  , npg   , ipoids, ivf   ,&
+                      idfde , geom , typmod, option, imate ,&
+                      compor, lgpg , crit  , instam, instap,&
+                      deplm , deplp, angmas, sigm  , vim   ,&
+                      matsym, dfdi , def   , sigp  , vip   ,&
+                      matuu , vectu, codret)
+        character(len=*), intent(in) :: fami
+        integer, intent(in) :: nno
+        integer, intent(in) :: npg
+        integer, intent(in) :: ipoids
+        integer, intent(in) :: ivf
+        integer, intent(in) :: idfde
+        real(kind=8), intent(in) :: geom(3, nno)
+        character(len=8), intent(in) :: typmod(*)
+        character(len=16), intent(in) :: option
+        integer, intent(in) :: imate
+        character(len=16), intent(in) :: compor(*)
+        integer, intent(in) :: lgpg
+        real(kind=8), intent(in) :: crit(*)
+        real(kind=8), intent(in) :: instam
+        real(kind=8), intent(in) :: instap
+        real(kind=8), intent(inout) :: deplm(1:3, 1:nno)
+        real(kind=8), intent(inout) :: deplp(1:3, 1:nno)
+        real(kind=8), intent(in) :: angmas(*)
+        real(kind=8), intent(inout) :: sigm(6, npg)
+        real(kind=8), intent(inout) :: vim(lgpg, npg)
+        aster_logical, intent(in) :: matsym
+        real(kind=8), intent(inout) :: dfdi(nno, 3)
+        real(kind=8), intent(inout) :: def(6, nno, 3)
+        real(kind=8), intent(inout) :: sigp(6, npg)
+        real(kind=8), intent(inout) :: vip(lgpg, npg)
+        real(kind=8), intent(inout) :: matuu(*)
+        real(kind=8), intent(inout) :: vectu(3, nno)
+        integer, intent(inout) :: codret
     end subroutine nmpl3d
 end interface

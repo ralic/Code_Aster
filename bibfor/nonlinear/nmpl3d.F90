@@ -1,9 +1,18 @@
-subroutine nmpl3d(fami, nno, npg, ipoids, ivf,&
-                  idfde, geom, typmod, option, imate,&
-                  compor, lgpg, crit, instam, instap,&
-                  deplm, deplp, angmas, sigm, vim,&
-                  matsym, dfdi, def, sigp, vip,&
-                  matuu, vectu, codret)
+subroutine nmpl3d(fami  , nno  , npg   , ipoids, ivf   ,&
+                  idfde , geom , typmod, option, imate ,&
+                  compor, lgpg , crit  , instam, instap,&
+                  deplm , deplp, angmas, sigm  , vim   ,&
+                  matsym, dfdi , def   , sigp  , vip   ,&
+                  matuu , vectu, codret)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/codere.h"
+#include "asterfort/crirup.h"
+#include "asterfort/lcegeo.h"
+#include "asterfort/nmcomp.h"
+#include "asterfort/nmgeom.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,42 +30,46 @@ subroutine nmpl3d(fami, nno, npg, ipoids, ivf,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: jean-michel.proix at edf.fr
-!
 ! aslint: disable=W1504
-    implicit none
 !
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/codere.h"
-#include "asterfort/crirup.h"
-#include "asterfort/lcegeo.h"
-#include "asterfort/nmcomp.h"
-#include "asterfort/nmgeom.h"
-    integer :: nno, npg, imate, lgpg, codret, ndim
+    character(len=*), intent(in) :: fami
+    integer, intent(in) :: nno
+    integer, intent(in) :: npg
+    integer, intent(in) :: ipoids
+    integer, intent(in) :: ivf
+    integer, intent(in) :: idfde
+    real(kind=8), intent(in) :: geom(3, nno)
+    character(len=8), intent(in) :: typmod(*)
+    character(len=16), intent(in) :: option
+    integer, intent(in) :: imate
+    character(len=16), intent(in) :: compor(*)
+    integer, intent(in) :: lgpg
+    real(kind=8), intent(in) :: crit(*)
+    real(kind=8), intent(in) :: instam
+    real(kind=8), intent(in) :: instap
+    real(kind=8), intent(inout) :: deplm(1:3, 1:nno)
+    real(kind=8), intent(inout) :: deplp(1:3, 1:nno)
+    real(kind=8), intent(in) :: angmas(*)
+    real(kind=8), intent(inout) :: sigm(6, npg)
+    real(kind=8), intent(inout) :: vim(lgpg, npg)
+    aster_logical, intent(in) :: matsym
+    real(kind=8), intent(inout) :: dfdi(nno, 3)
+    real(kind=8), intent(inout) :: def(6, nno, 3)
+    real(kind=8), intent(inout) :: sigp(6, npg)
+    real(kind=8), intent(inout) :: vip(lgpg, npg)
+    real(kind=8), intent(inout) :: matuu(*)
+    real(kind=8), intent(inout) :: vectu(3, nno)
+    integer, intent(inout) :: codret
 !
-    character(len=*) :: fami
-    character(len=8) :: typmod(*)
-    character(len=16) :: option, compor(*)
+! --------------------------------------------------------------------------------------------------
 !
-    real(kind=8) :: instam, instap, angmas(*)
-    real(kind=8) :: geom(3, nno), crit(*)
-    real(kind=8) :: deplm(1:3, 1:nno), deplp(1:3, 1:nno), dfdi(nno, 3)
-    real(kind=8) :: def(6, nno, 3), rbid(1)
-    real(kind=8) :: sigm(6, npg), sigp(6, npg)
-    real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg)
-    real(kind=8) :: matuu(*), vectu(3, nno)
+! Elementary computation
 !
-    aster_logical :: matsym
-    common / nmpale / unsurk,unsurm,valden
-    real(kind=8) :: unsurk, unsurm, valden
+! Elements: 3D
+! Options: RIGI_MECA_TANG, RAPH_MECA and FULL_MECA - Hypoelasticity (PETIT/PETIT_REAC)
 !
+! --------------------------------------------------------------------------------------------------
 !
-!.......................................................................
-!
-!     BUT:  CALCUL  DES OPTIONS RIGI_MECA_TANG, RAPH_MECA ET FULL_MECA
-!           EN HYPO-ELASTICITE EN 3D
-!.......................................................................
 ! IN  NNO     : NOMBRE DE NOEUDS DE L'ELEMENT
 ! IN  NPG     : NOMBRE DE POINTS DE GAUSS
 ! IN  IPOIDS  : POIDS DES POINTS DE GAUSS
@@ -85,119 +98,108 @@ subroutine nmpl3d(fami, nno, npg, ipoids, ivf,&
 ! OUT VIP     : VARIABLES INTERNES    (RAPH_MECA ET FULL_MECA)
 ! OUT MATUU   : MATRICE DE RIGIDITE PROFIL (RIGI_MECA_TANG ET FULL_MECA)
 ! OUT VECTU   : FORCES NODALES (RAPH_MECA ET FULL_MECA)
-!......................................................................
+!
+! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: grand
-!
-    integer :: kpg, kk, n, i, m, j, j1, kl, kkd, cod(27), ipoids, ivf, idfde
-!
-    real(kind=8) :: dsidep(6, 6), f(3, 3), eps(6), deps(6), r, sigma(6), sign(6)
-    real(kind=8) :: sig(6)
+    integer :: kpg, kk, i_node, i_dim, m, j, j1, kl, kkd, i_tens
+    integer :: cod(27), ndim
+    real(kind=8) :: dsidep(6, 6), f(3, 3), eps(6), deps(6), r, sigma(6), sigm_norm(6)
+    real(kind=8) :: rbid(1), sig(6)
     real(kind=8) :: poids, tmp, rac2
     real(kind=8) :: elgeom(10, 27)
-! - INITIALISATION
 !
-    rac2 = sqrt(2.d0)
-    grand = .false.
+! --------------------------------------------------------------------------------------------------
 !
-! - CALCUL DES ELEMENTS GEOMETRIQUES SPECIFIQUES LOIS DE COMPORTEMENT
+    rac2  = sqrt(2.d0)
+    grand = .false._1
+    do kpg = 1, npg
+        cod(kpg) = 0
+    end do
 !
-    call lcegeo(nno, npg, ipoids, ivf, idfde,&
-                geom, typmod, compor, 3, dfdi,&
-                deplm, deplp, elgeom)
+! - Specific geometric parameters for some behaviours
 !
+    call lcegeo(nno  , npg   , ipoids, ivf, idfde,&
+                geom , typmod, compor, 3  , dfdi,&
+                deplm, deplp , elgeom)
 !
-! - INITIALISATION CODES RETOURS
-    do 1955 kpg = 1, npg
-        cod(kpg)=0
-1955 end do
+! - Loop on Gauss points
 !
-! - CALCUL POUR CHAQUE POINT DE GAUSS
+    do kpg = 1, npg
+        eps (1:6)=0.d0
+        deps(1:6)=0.d0
 !
-    do 800 kpg = 1, npg
+! ----- Kinematic - Previous strains
 !
-!
-! - CALCUL DES ELEMENTS GEOMETRIQUES
-!
-!     CALCUL DE DFDI,F,EPS,DEPS,R(EN AXI) ET POIDS
-!
-        do 20 j = 1, 6
-            eps (j)=0.d0
-            deps(j)=0.d0
- 20     continue
-!
-        call nmgeom(3, nno, .false._1, grand, geom,&
-                    kpg, ipoids, ivf, idfde, deplm,&
-                    .true._1, poids, dfdi, f, eps,&
+        call nmgeom(3       , nno   , .false._1, grand, geom ,&
+                    kpg     , ipoids, ivf      , idfde, deplm,&
+                    .true._1, poids , dfdi     , f    , eps  ,&
                     r)
 !
-!       CALCUL DE DEPS
+! ----- Kinematic - Increment of strains
 !
-        call nmgeom(3, nno, .false._1, grand, geom,&
-                    kpg, ipoids, ivf, idfde, deplp,&
-                    .false._1, poids, dfdi, f, deps,&
+        call nmgeom(3        , nno   , .false._1, grand, geom ,&
+                    kpg      , ipoids, ivf      , idfde, deplp,&
+                    .false._1, poids , dfdi     , f    , deps ,&
                     r)
 !
-!       CALCUL DES PRODUITS SYMETR. DE F PAR N,
-        do 40 n = 1, nno
-            do 30 i = 1, 3
-                def(1,n,i) = f(i,1)*dfdi(n,1)
-                def(2,n,i) = f(i,2)*dfdi(n,2)
-                def(3,n,i) = f(i,3)*dfdi(n,3)
-                def(4,n,i) = (f(i,1)*dfdi(n,2) + f(i,2)*dfdi(n,1))/ rac2
-                def(5,n,i) = (f(i,1)*dfdi(n,3) + f(i,3)*dfdi(n,1))/ rac2
-                def(6,n,i) = (f(i,2)*dfdi(n,3) + f(i,3)*dfdi(n,2))/ rac2
- 30         continue
- 40     continue
+! ----- Kinematic - Product [F].[B]
 !
-        do 60 i = 1, 3
-            sign(i) = sigm(i,kpg)
- 60     continue
-        do 65 i = 4, 6
-            sign(i) = sigm(i,kpg)*rac2
- 65     continue
+        do i_node = 1, nno
+            do i_dim = 1, 3
+                def(1,i_node,i_dim) = f(i_dim,1)*dfdi(i_node,1)
+                def(2,i_node,i_dim) = f(i_dim,2)*dfdi(i_node,2)
+                def(3,i_node,i_dim) = f(i_dim,3)*dfdi(i_node,3)
+                def(4,i_node,i_dim) = (f(i_dim,1)*dfdi(i_node,2) +&
+                                       f(i_dim,2)*dfdi(i_node,1))/ rac2
+                def(5,i_node,i_dim) = (f(i_dim,1)*dfdi(i_node,3) +&
+                                       f(i_dim,3)*dfdi(i_node,1))/ rac2
+                def(6,i_node,i_dim) = (f(i_dim,2)*dfdi(i_node,3) +&
+                                       f(i_dim,3)*dfdi(i_node,2))/ rac2
+            end do
+        end do
+        do i_tens = 1, 3
+            sigm_norm(i_tens) = sigm(i_tens,kpg)
+        end do
+        do i_tens = 4, 6
+            sigm_norm(i_tens) = sigm(i_tens,kpg)*rac2
+        end do
 !
+! ----- Compute behaviour
 !
-! - LOI DE COMPORTEMENT
-!
-! -    APPEL A LA LOI DE COMPORTEMENT
-        call nmcomp(fami, kpg, 1, 3, typmod,&
-                    imate, compor, crit, instam, instap,&
-                    6, eps, deps, 6, sign,&
-                    vim(1, kpg), option, angmas, 10, elgeom(1, kpg),&
-                    sigma, vip(1, kpg), 36, dsidep, 1,&
-                    rbid, cod(kpg))
+        call nmcomp(fami       , kpg        , 1     , 3     , typmod        ,&
+                    imate      , compor     , crit  , instam, instap        ,&
+                    6          , eps        , deps  , 6     , sigm_norm     ,&
+                    vim(1, kpg), option     , angmas, 10    , elgeom(1, kpg),&
+                    sigma      , vip(1, kpg), 36    , dsidep, 1             ,&
+                    rbid       , cod(kpg))
         if (cod(kpg) .eq. 1) then
-            goto 1956
+            goto 999
         endif
 !
-!
-! - CALCUL DE LA MATRICE DE RIGIDITE
+! ----- Rigidity matrix
 !
         if (option(1:10) .eq. 'RIGI_MECA_' .or. option(1: 9) .eq. 'FULL_MECA') then
-!
             if (matsym) then
-                do 160 n = 1, nno
-                    do 150 i = 1, 3
-                        kkd = (3*(n-1)+i-1) * (3*(n-1)+i) /2
-                        do 151 kl = 1, 6
+                do i_node = 1, nno
+                    do i_dim = 1, 3
+                        kkd = (3*(i_node-1)+i_dim-1) * (3*(i_node-1)+i_dim) /2
+                        do kl = 1, 6
                             sig(kl)=0.d0
-                            sig(kl)=sig(kl)+def(1,n,i)*dsidep(1,kl)
-                            sig(kl)=sig(kl)+def(2,n,i)*dsidep(2,kl)
-                            sig(kl)=sig(kl)+def(3,n,i)*dsidep(3,kl)
-                            sig(kl)=sig(kl)+def(4,n,i)*dsidep(4,kl)
-                            sig(kl)=sig(kl)+def(5,n,i)*dsidep(5,kl)
-                            sig(kl)=sig(kl)+def(6,n,i)*dsidep(6,kl)
-151                     continue
-                        do 140 j = 1, 3
-                            do 130 m = 1, n
-                                if (m .eq. n) then
-                                    j1 = i
+                            sig(kl)=sig(kl)+def(1,i_node,i_dim)*dsidep(1,kl)
+                            sig(kl)=sig(kl)+def(2,i_node,i_dim)*dsidep(2,kl)
+                            sig(kl)=sig(kl)+def(3,i_node,i_dim)*dsidep(3,kl)
+                            sig(kl)=sig(kl)+def(4,i_node,i_dim)*dsidep(4,kl)
+                            sig(kl)=sig(kl)+def(5,i_node,i_dim)*dsidep(5,kl)
+                            sig(kl)=sig(kl)+def(6,i_node,i_dim)*dsidep(6,kl)
+                        end do
+                        do j = 1, 3
+                            do m = 1, i_node
+                                if (m .eq. i_node) then
+                                    j1 = i_dim
                                 else
                                     j1 = 3
                                 endif
-!
-!                   RIGIDITE ELASTIQUE
                                 tmp=0.d0
                                 tmp=tmp+sig(1)*def(1,m,j)
                                 tmp=tmp+sig(2)*def(2,m,j)
@@ -205,33 +207,28 @@ subroutine nmpl3d(fami, nno, npg, ipoids, ivf,&
                                 tmp=tmp+sig(4)*def(4,m,j)
                                 tmp=tmp+sig(5)*def(5,m,j)
                                 tmp=tmp+sig(6)*def(6,m,j)
-!
-!                   STOCKAGE EN TENANT COMPTE DE LA SYMETRIE
                                 if (j .le. j1) then
                                     kk = kkd + 3*(m-1)+j
                                     matuu(kk) = matuu(kk) + tmp*poids
                                 endif
-!
-130                         continue
-140                     continue
-150                 continue
-160             continue
+                            end do
+                        end do
+                    end do
+                end do
             else
-                do 560 n = 1, nno
-                    do 550 i = 1, 3
-                        do 551 kl = 1, 6
+                do i_node = 1, nno
+                    do i_dim = 1, 3
+                        do kl = 1, 6
                             sig(kl)=0.d0
-                            sig(kl)=sig(kl)+def(1,n,i)*dsidep(1,kl)
-                            sig(kl)=sig(kl)+def(2,n,i)*dsidep(2,kl)
-                            sig(kl)=sig(kl)+def(3,n,i)*dsidep(3,kl)
-                            sig(kl)=sig(kl)+def(4,n,i)*dsidep(4,kl)
-                            sig(kl)=sig(kl)+def(5,n,i)*dsidep(5,kl)
-                            sig(kl)=sig(kl)+def(6,n,i)*dsidep(6,kl)
-551                     continue
-                        do 540 j = 1, 3
-                            do 530 m = 1, nno
-!
-!                   RIGIDITE ELASTIQUE
+                            sig(kl)=sig(kl)+def(1,i_node,i_dim)*dsidep(1,kl)
+                            sig(kl)=sig(kl)+def(2,i_node,i_dim)*dsidep(2,kl)
+                            sig(kl)=sig(kl)+def(3,i_node,i_dim)*dsidep(3,kl)
+                            sig(kl)=sig(kl)+def(4,i_node,i_dim)*dsidep(4,kl)
+                            sig(kl)=sig(kl)+def(5,i_node,i_dim)*dsidep(5,kl)
+                            sig(kl)=sig(kl)+def(6,i_node,i_dim)*dsidep(6,kl)
+                        end do
+                        do j = 1, 3
+                            do m = 1, nno
                                 tmp=0.d0
                                 tmp=tmp+sig(1)*def(1,m,j)
                                 tmp=tmp+sig(2)*def(2,m,j)
@@ -239,58 +236,48 @@ subroutine nmpl3d(fami, nno, npg, ipoids, ivf,&
                                 tmp=tmp+sig(4)*def(4,m,j)
                                 tmp=tmp+sig(5)*def(5,m,j)
                                 tmp=tmp+sig(6)*def(6,m,j)
-!
-!                   STOCKAGE SANS SYMETRIE
-                                kk = 3*nno*(3*(n-1)+i-1) + 3*(m-1)+j
+                                kk = 3*nno*(3*(i_node-1)+i_dim-1) + 3*(m-1)+j
                                 matuu(kk) = matuu(kk) + tmp*poids
-!
-530                         continue
-540                     continue
-550                 continue
-560             continue
+                            end do
+                        end do
+                    end do
+                end do
             endif
         endif
 !
-!
-! - CALCUL DE LA FORCE INTERIEURE ET DES CONTRAINTES DE CAUCHY
+! ----- Cauchy stresses and internal forces
 !
         if (option(1:9) .eq. 'FULL_MECA' .or. option(1:9) .eq. 'RAPH_MECA') then
-!
-            do 230 n = 1, nno
-                vectu(1,n)=vectu(1,n)+ poids* (def(1,n,1)*sigma(1)+&
-                def(4,n,1)*sigma(4)+ def(5,n,1)*sigma(5))
-                vectu(2,n)=vectu(2,n)+ poids* (def(2,n,2)*sigma(2)+&
-                def(4,n,2)*sigma(4)+ def(6,n,2)*sigma(6))
-                vectu(3,n)=vectu(3,n)+ poids* (def(3,n,3)*sigma(3)+&
-                def(5,n,3)*sigma(5)+ def(6,n,3)*sigma(6))
-230         continue
-!
-            do 310 kl = 1, 3
+            do i_node = 1, nno
+                vectu(1,i_node) = vectu(1,i_node)+ poids* (def(1,i_node,1)*sigma(1)+&
+                                  def(4,i_node,1)*sigma(4)+ def(5,i_node,1)*sigma(5))
+                vectu(2,i_node) = vectu(2,i_node)+ poids* (def(2,i_node,2)*sigma(2)+&
+                                  def(4,i_node,2)*sigma(4)+ def(6,i_node,2)*sigma(6))
+                vectu(3,i_node) = vectu(3,i_node)+ poids* (def(3,i_node,3)*sigma(3)+&
+                                  def(5,i_node,3)*sigma(5)+ def(6,i_node,3)*sigma(6))
+            end do
+            do kl = 1, 3
                 sigp(kl,kpg) = sigma(kl)
-310         continue
-            do 320 kl = 4, 6
+            end do
+            do kl = 4, 6
                 sigp(kl,kpg) = sigma(kl)/rac2
-320         continue
-!
+            end do
         endif
 !
-! - CALCUL DES CONTRAINTES DE CAUCHY POUR LA METHODE IMPLEX
+! ----- Cauchy stresses for IMPLEX
 !
-        if (option(1:16) .eq. 'RIGI_MECA_IMPLEX') then
-!
-            do 330 kl = 1, 3
+        if (option .eq. 'RIGI_MECA_IMPLEX') then
+            do kl = 1, 3
                 sigp(kl,kpg) = sigma(kl)
-330         continue
-            do 340 kl = 4, 6
+            end do
+            do kl = 4, 6
                 sigp(kl,kpg) = sigma(kl)/rac2
-340         continue
-!
+            end do
         endif
+    end do
 !
+! - For POST_ITER='CRIT_RUPT'
 !
-800 end do
-!
-!     POST_ITER='CRIT_RUPT'
     if (crit(13) .gt. 0.d0) then
         ndim = 3
         call crirup(fami, imate, ndim, npg, lgpg,&
@@ -298,7 +285,10 @@ subroutine nmpl3d(fami, nno, npg, ipoids, ivf,&
                     instam, instap)
     endif
 !
-1956 continue
-! - SYNTHESE DES CODES RETOURS
+999 continue
+!
+! - Return code summary
+!
     call codere(cod, npg, codret)
+!
 end subroutine

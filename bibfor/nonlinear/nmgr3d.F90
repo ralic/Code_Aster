@@ -1,9 +1,23 @@
-subroutine nmgr3d(nno, npg, ipoids, ivf, idfde,&
-                  geomi, typmod, option, imate, compor,&
-                  lgpg, crit, instam, instap, deplm,&
-                  deplp, angmas, sigm, vim, matsym,&
-                  dfdi, pff, def, sigp, vip,&
-                  matuu, vectu, codret)
+subroutine nmgr3d(nno  , npg   , ipoids, ivf   , idfde ,&
+                  geomi, typmod, option, imate , compor,&
+                  lgpg , crit  , instam, instap, deplm ,&
+                  deplp, angmas, sigm  , vim   , matsym,&
+                  dfdi , pff   , def   , sigp  , vip   ,&
+                  matuu, vectu , codret)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/r8inir.h"
+#include "asterc/r8nnem.h"
+#include "asterfort/codere.h"
+#include "asterfort/lcdetf.h"
+#include "asterfort/lcegeo.h"
+#include "asterfort/nmcomp.h"
+#include "asterfort/nmgeom.h"
+#include "asterfort/nmgrtg.h"
+#include "asterfort/pk2sig.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,42 +35,46 @@ subroutine nmgr3d(nno, npg, ipoids, ivf, idfde,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: jacques.pellet at edf.fr
-!
 ! aslint: disable=W1504
-    implicit none
+!        
+    integer, intent(in) :: nno
+    integer, intent(in) :: npg
+    integer, intent(in) :: ipoids
+    integer, intent(in) :: ivf
+    integer, intent(in) :: idfde
+    real(kind=8), intent(in) :: geomi(3, nno)
+    character(len=8), intent(in) :: typmod(*)
+    character(len=16), intent(in) :: option
+    integer, intent(in) :: imate
+    character(len=16), intent(in) :: compor(*)
+    integer, intent(in) :: lgpg
+    real(kind=8), intent(in) :: crit(*)
+    real(kind=8), intent(in) :: instam
+    real(kind=8), intent(in) :: instap
+    real(kind=8), intent(inout) :: deplm(1:3, 1:nno)
+    real(kind=8), intent(inout) :: deplp(1:3, 1:nno)
+    real(kind=8), intent(in) :: angmas(*)
+    real(kind=8), intent(inout) :: sigm(6, npg)
+    real(kind=8), intent(inout) :: vim(lgpg, npg)
+    aster_logical, intent(in) :: matsym
+    real(kind=8), intent(inout) :: dfdi(nno, 3)
+    real(kind=8), intent(inout) :: pff(6, nno, nno)
+    real(kind=8), intent(inout) :: def(6, nno, 3)
+    real(kind=8), intent(inout) :: sigp(6, npg)
+    real(kind=8), intent(inout) :: vip(lgpg, npg)
+    real(kind=8), intent(inout) :: matuu(*)
+    real(kind=8), intent(inout) :: vectu(3, nno)
+    integer, intent(inout) :: codret
 !
-#include "asterf_types.h"
-#include "asterc/r8nnem.h"
-#include "asterfort/codere.h"
-#include "asterfort/lcdetf.h"
-#include "asterfort/lcegeo.h"
-#include "asterfort/nmcomp.h"
-#include "asterfort/nmgeom.h"
-#include "asterfort/nmgrtg.h"
-#include "asterfort/pk2sig.h"
-#include "asterfort/r8inir.h"
-#include "asterfort/utmess.h"
-    integer :: nno, npg, imate, lgpg, codret, ipoids, ivf, idfde
+! --------------------------------------------------------------------------------------------------
 !
-    character(len=8) :: typmod(*)
-    character(len=16) :: option, compor(*)
+! Elementary computation
 !
-    real(kind=8) :: instam, instap
-    real(kind=8) :: geomi(3, nno), crit(3), detfm
-    real(kind=8) :: deplm(1:3, 1:nno), deplp(1:3, 1:nno), dfdi(nno, 3)
-    real(kind=8) :: sigm(6, npg), sigp(6, npg)
-    real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg)
-    real(kind=8) :: matuu(*), vectu(3, nno), maxeps
-    real(kind=8) :: pff(6, nno, nno), def(6, nno, 3)
-    aster_logical :: matsym
+! Elements: 3D
+! Options: RIGI_MECA_TANG, RAPH_MECA and FULL_MECA - Large displacements/rotations (GROT_GDEP)
 !
+! --------------------------------------------------------------------------------------------------
 !
-!.......................................................................
-!
-!     BUT:  CALCUL  DES OPTIONS RIGI_MECA_TANG, RAPH_MECA ET FULL_MECA
-!           EN GRANDES ROTATIONS 3D
-!.......................................................................
 ! IN  NNO     : NOMBRE DE NOEUDS DE L'ELEMENT
 ! IN  NPG     : NOMBRE DE POINTS DE GAUSS
 ! IN  POIDSG  : POIDS DES POINTS DE GAUSS
@@ -85,71 +103,60 @@ subroutine nmgr3d(nno, npg, ipoids, ivf, idfde,&
 ! OUT VIP     : VARIABLES INTERNES    (RAPH_MECA ET FULL_MECA)
 ! OUT MATUU   : MATRICE DE RIGIDITE PROFIL (RIGI_MECA_TANG ET FULL_MECA)
 ! OUT VECTU   : FORCES NODALES (RAPH_MECA ET FULL_MECA)
-!.......................................................................
+!
+! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: grand, axi
-!
     integer :: kpg, j, cod(27)
-!
     real(kind=8) :: dsidep(6, 6), f(3, 3), fm(3, 3), epsm(6), epsp(6), deps(6)
-    real(kind=8) :: r, sigma(6), sign(6), detf, poids, vff(1)
-    real(kind=8) :: elgeom(10, 27), angmas(3), rac2
+    real(kind=8) :: r, sigma(6), sigm_norm(6), detf, poids, vff(1)
+    real(kind=8) :: elgeom(10, 27), rac2, maxeps, detfm
 !
-!     INITIALISATION
+! --------------------------------------------------------------------------------------------------
 !
-    rac2 = sqrt(2.d0)
-    grand = .true.
-    axi=.false.
+    rac2  = sqrt(2.d0)
+    grand = .true._1
+    axi   = .false._1
+    do kpg = 1, npg
+        cod(kpg) = 0
+    end do
 !
-!     CALCUL DES ELEMENTS GEOMETRIQUES SPECIFIQUES AU COMPORTEMENT
+! - Specific geometric parameters for some behaviours
 !
-    call lcegeo(nno, npg, ipoids, ivf, idfde,&
-                geomi, typmod, compor, 3, dfdi,&
-                deplm, deplp, elgeom)
+    call lcegeo(nno  , npg   , ipoids, ivf, idfde,&
+                geomi, typmod, compor, 3  , dfdi ,&
+                deplm, deplp , elgeom)
 !
-!     INITIALISATION CODES RETOURS
+! - Only isotropic material !
 !
-    do 1955 kpg = 1, npg
-        cod(kpg)=0
-1955 end do
-!
-!     ANGLE DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
-!     INITIALISE A R8NNEM (ON NE S'EN SERT PAS)
     call r8inir(3, r8nnem(), angmas, 1)
 !
+! - Loop on Gauss points
 !
-!     CALCUL POUR CHAQUE POINT DE GAUSS
+    do kpg = 1, npg
+        epsm(1:6)=0.d0
+        epsp(1:6)=0.d0
 !
-    do 800 kpg = 1, npg
+! ----- Kinematic - Previous strains
 !
-!        CALCUL DES ELEMENTS GEOMETRIQUES
-!
-!        CALCUL DE EPSM EN T- POUR LDC
-!
-        call r8inir(6, 0.d0, epsm, 1)
-        call r8inir(6, 0.d0, epsp, 1)
-        call nmgeom(3, nno, .false._1, grand, geomi,&
-                    kpg, ipoids, ivf, idfde, deplm,&
-                    .true._1, poids, dfdi, fm, epsm,&
+        call nmgeom(3       , nno   , .false._1, grand, geomi,&
+                    kpg     , ipoids, ivf      , idfde, deplm,&
+                    .true._1, poids , dfdi     , fm   , epsm,&
                     r)
 !
-!        CALCUL DE F, EPSP, DFDI, R ET POIDS EN T+
+! ----- Kinematic - Increment of strains
 !
-        call nmgeom(3, nno, .false._1, grand, geomi,&
-                    kpg, ipoids, ivf, idfde, deplp,&
-                    .true._1, poids, dfdi, f, epsp,&
+        call nmgeom(3        , nno   , .false._1, grand, geomi,&
+                    kpg      , ipoids, ivf      , idfde, deplp,&
+                    .false._1, poids , dfdi     , f    , epsp ,&
                     r)
-!
-!
-!        CALCUL DE DEPS POUR LDC
-!
-        maxeps=0.d0
-        do 25 j = 1, 6
+        maxeps = 0.d0
+        do j = 1, 6
             deps (j)=epsp(j)-epsm(j)
             maxeps=max(maxeps,abs(epsp(j)))
- 25     continue
+        end do
 !
-!        VERIFICATION QUE EPS RESTE PETIT
+! ----- Check "small strains"
 !
         if (maxeps .gt. 0.05d0) then
             if (compor(1)(1:4) .ne. 'ELAS') then
@@ -157,48 +164,46 @@ subroutine nmgr3d(nno, npg, ipoids, ivf, idfde,&
             endif
         endif
 !
-!        CONTRAINTE CAUCHY -> CONTRAINTE LAGRANGE POUR LDC EN T-
+! ----- Stresses: convert Cauche to PK2
 !
         call lcdetf(3, fm, detfm)
-        call pk2sig(3, fm, detfm, sign, sigm(1, kpg),&
+        call pk2sig(3, fm, detfm, sigm_norm, sigm(1, kpg),&
                     -1)
-        sign(4) = sign(4)*rac2
-        sign(5) = sign(5)*rac2
-        sign(6) = sign(6)*rac2
+        sigm_norm(4) = sigm_norm(4)*rac2
+        sigm_norm(5) = sigm_norm(5)*rac2
+        sigm_norm(6) = sigm_norm(6)*rac2
 !
-!        INTEGRATION : APPEL A LA LOI DE COMPORTEMENT
+! ----- Compute behaviour
 !
-        call nmcomp('RIGI', kpg, 1, 3, typmod,&
-                    imate, compor, crit, instam, instap,&
-                    6, epsm, deps, 6, sign,&
-                    vim(1, kpg), option, angmas, 10, elgeom(1, kpg),&
-                    sigma, vip(1, kpg), 36, dsidep, 1,&
-                    vff, cod(kpg))
-!
+        call nmcomp('RIGI'     , kpg        , 1     , 3     , typmod        ,&
+                    imate      , compor     , crit  , instam, instap        ,&
+                    6          , epsm       , deps  , 6     , sigm_norm     ,&
+                    vim(1, kpg), option     , angmas, 10    , elgeom(1, kpg),&
+                    sigma      , vip(1, kpg), 36    , dsidep, 1             ,&
+                    vff        , cod(kpg))
         if (cod(kpg) .eq. 1) then
-            goto 1956
+            goto 999
         endif
 !
-!        CALCUL DE LA MATRICE DE RIGIDITE ET DE LA FORCE INTERIEURE
+! ----- Cauchy stresses and rigidity matrix
 !
-        call nmgrtg(3, nno, poids, kpg, vff,&
-                    dfdi, def, pff, option, axi,&
-                    r, fm, f, dsidep, sign,&
+        call nmgrtg(3    , nno   , poids, kpg   , vff      ,&
+                    dfdi , def   , pff  , option, axi      ,&
+                    r    , fm    , f    , dsidep, sigm_norm,&
                     sigma, matsym, matuu, vectu)
 !
-!        CALCUL DES CONTRAINTES DE CAUCHY, CONVERSION LAGRANGE -> CAUCHY
+! ----- Stresses: convert PK2 to Cauchy
 !
         if (option(1:4) .eq. 'RAPH' .or. option(1:4) .eq. 'FULL') then
             call lcdetf(3, f, detf)
             call pk2sig(3, f, detf, sigma, sigp(1, kpg),&
                         1)
         endif
+    end do
 !
-800 end do
+999 continue
 !
-1956 continue
-!
-! - SYNTHESE DES CODES RETOURS
+! - Return code summary
 !
     call codere(cod, npg, codret)
 !
