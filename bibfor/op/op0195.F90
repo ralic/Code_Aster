@@ -272,7 +272,9 @@ subroutine op0195()
         call dismoi('NOM_GD', chin, 'CHAMP', repk=nomgd2)
         if (nomgd .ne. nomgd2) then
 !          -- EXCEPTION : NOMGD='VARI_R' ET NOMGD2='VAR2_R'
-            if (.not. (nomgd.eq.'VARI_R'.and.nomgd2.eq.'VAR2_R')) then
+            if (nomgd.eq.'VARI_R'.and.nomgd2.eq.'VAR2_R') then
+            elseif (nomgd.eq.'VAR2_R'.and.nomgd2.eq.'VARI_R') then
+            else
                 valk(1) = chin
                 valk(2) = tychr1
                 call utmess('F', 'UTILITAI3_27', nk=2, valk=valk)

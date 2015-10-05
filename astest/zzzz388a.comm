@@ -1,0 +1,66 @@
+# -*- coding: utf-8 -*-
+# TITRE Validation de CREA_CHAMP opération DISC pour VARI_NOEU
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),);
+
+MA=LIRE_MAILLAGE(FORMAT='MED',);
+
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=_F(PHENOMENE='MECANIQUE',
+                       MODELISATION='3D',
+                       TOUT='OUI'),);
+
+liste_var = tuple(['V' + str(i) for i in range(1, 161)])
+liste_vale = tuple([float(i) for i in range(1, 161)])
+
+CHAM1=CREA_CHAMP(OPERATION='AFFE',
+                 TYPE_CHAM='ELGA_VARI_R',
+                 MODELE=MO,
+                 AFFE=(_F(TOUT='OUI',
+                          NOM_CMP=liste_var,
+                          VALE=liste_vale,),),);
+
+CHAM2=CREA_CHAMP(OPERATION='ASSE',
+                 TYPE_CHAM='ELGA_VARI_R',
+                 MODELE=MO,
+                 ASSE=(_F(TOUT='OUI',
+                          CHAM_GD=CHAM1,
+                          NOM_CMP=('V1','V25','V129'),
+                          NOM_CMP_RESU=('V1','V2','V3'),),),);
+
+CHAM3=CREA_CHAMP(OPERATION='DISC',
+                 TYPE_CHAM='NOEU_VAR2_R',
+                 MODELE=MO,
+                 CHAM_GD=CHAM2,
+                 INFO=2,);
+
+TEST_RESU(CHAM_NO=(_F(CHAM_GD=CHAM3,
+                      NOEUD='N1',
+                      NOM_CMP='V1',
+                      VALE_CALC=1.,),
+                   _F(CHAM_GD=CHAM3,
+                      NOEUD='N15',
+                      NOM_CMP='V2',
+                      VALE_CALC=25.,),
+                   _F(CHAM_GD=CHAM3,
+                      NOEUD='N27',
+                      NOM_CMP='V3',
+                      VALE_CALC=129.,),),);
+
+FIN();
