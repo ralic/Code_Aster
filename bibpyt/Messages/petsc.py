@@ -126,9 +126,11 @@ Solveur PETSc :
 16 : _(u"""
 Solveur PETSc :
   La résolution du système linéaire a abouti mais la solution obtenue ne vérifie pas le critère de convergence.
-  Cela peut arriver lorsque la matrice du système linéaire est mal conditionnée.
+  Cela peut arriver: 
+     - si la matrice du système linéaire est mal conditionnée
+     - si vous avez utilisé le préconditionneur 'LDLT_SP' avec ALGORITHME='GMRES'
 
-  Conseil : utilisez le préconditionneur 'LDLT_SP' ou un solveur direct ('MULT_FRONT' ou 'MUMPS')
+  Conseils : utilisez le préconditionneur 'LDLT_SP' avec ALGORITHME='FGMRES' ou un solveur direct ('MULT_FRONT' ou 'MUMPS')
 """),
 
 17 : _(u"""
