@@ -55,7 +55,7 @@ subroutine ap2foi(kptsc, mpicou, nosolv, lmd, indic,&
 !
 !     VARIABLES LOCALES
     integer, dimension(:), pointer :: slvi => null()
-    PetscInt :: ierr
+    PetscErrorCode ::  ierr
     KSP :: ksp
 !----------------------------------------------------------------
 

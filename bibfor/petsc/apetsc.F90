@@ -99,7 +99,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
 !----------------------------------------------------------------
 !
 !     Variables PETSc
-    PetscInt :: ierr
+    PetscErrorCode :: ierr
     Mat :: mbid
     Vec :: vbid
     PetscScalar :: sbid

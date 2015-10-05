@@ -18,10 +18,10 @@
 interface
     subroutine ldsp2( pc, x1, y, ierr )
 #ifdef _HAVE_PETSC
-       PC       ::  pc
-       Vec      ::  x1
-       Vec      ::  y
-       PetscInt ::  ierr
+       PC, intent(in)              ::  pc
+       Vec, intent(in)             ::  x1
+       Vec, intent(inout)          ::  y
+       PetscErrorCode, intent(out) ::  ierr
 #else
        integer  :: pc
        integer  :: x1

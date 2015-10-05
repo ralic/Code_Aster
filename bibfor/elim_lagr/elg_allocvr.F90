@@ -30,7 +30,7 @@ subroutine elg_allocvr(vect1, n1)
     integer :: n1
 !
 !================================================================
-    PetscInt :: ierr
+    PetscErrorCode :: ierr
     integer :: bs
     mpi_int :: mpicomm
 !----------------------------------------------------------------

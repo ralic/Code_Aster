@@ -51,7 +51,7 @@ subroutine elg_gest_common(action, mat1, mat2, rigi1)
 !
 !================================================================
     integer :: k, ktrou, iprem
-    PetscInt :: ierr
+    PetscErrorCode :: ierr
     save iprem
     data iprem / 0 /
 !----------------------------------------------------------------

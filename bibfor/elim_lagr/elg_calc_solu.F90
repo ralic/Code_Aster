@@ -63,7 +63,7 @@ subroutine elg_calc_solu(matas1, nsecm, rsolu2, rsolu1)
     integer, pointer :: delg(:) => null()
     integer, pointer :: dlg2(:) => null()
     character(len=24), pointer :: refa(:) => null()
-    PetscInt :: ierr
+    PetscErrorCode :: ierr
     PetscInt :: n1, n2, n3
     PetscScalar :: xx(1), p1
     PetscOffset :: xidx

@@ -75,7 +75,8 @@ subroutine appcpr(kptsc)
 !
 !----------------------------------------------------------------
 !     Variables PETSc
-    PetscInt :: low, high, ierr, bs, nterm, nsmooth
+    PetscInt :: low, high, bs, nterm, nsmooth
+    PetscErrorCode ::  ierr
     PetscReal :: fillp
     PetscScalar :: xx_v(1)
     PetscOffset :: xx_i  

@@ -50,7 +50,8 @@ subroutine extract_nonzero_col(a, acnz, icolnz_c)
     aster_logical :: verbose
     mpi_int :: mpicomm
     PetscInt :: inz, ii
-    PetscInt :: first, step, ma, na, nacnz, ierr
+    PetscInt :: first, step, ma, na, nacnz
+    PetscErrorCode :: ierr
     PetscInt, parameter :: ione = 1 , izero = 0
     IS :: isall, isnz
     PetscReal, dimension(:), allocatable :: norms

@@ -51,7 +51,7 @@ subroutine apksp(kptsc)
 !
 !----------------------------------------------------------------
 !     Variables PETSc
-    PetscInt :: ierr
+    PetscErrorCode :: ierr
     PetscInt :: maxits
     PetscReal :: rtol, atol, dtol, aster_petsc_default_real
     Mat :: a

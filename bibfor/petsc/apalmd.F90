@@ -70,7 +70,8 @@ subroutine apalmd(kptsc)
 !
 !----------------------------------------------------------------
 !     Variables PETSc
-    PetscInt :: low, high, ierr
+    PetscInt :: low, high
+    PetscErrorCode ::  ierr
     integer :: neql, neqg, bs 
     Vec :: tmp
     mpi_int :: mrank, msize

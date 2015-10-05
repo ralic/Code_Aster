@@ -101,7 +101,8 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 !----------------------------------------------------------------
 !     Variables PETSc
 !
-    PetscInt :: ierr, its, maxits
+    PetscInt :: its, maxits
+    PetscErrorCode ::  ierr
     PetscReal :: rtol, atol, dtol
     Vec :: r
     PetscScalar :: ires, fres

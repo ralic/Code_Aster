@@ -87,7 +87,8 @@ subroutine apmamd(kptsc)
 !
 !----------------------------------------------------------------
 !     Variables PETSc
-    PetscInt :: neql, neqg, ierr
+    PetscInt :: neql, neqg
+    PetscErrorCode ::  ierr
     PetscInt :: one = 1
     Mat :: a
 !----------------------------------------------------------------

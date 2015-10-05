@@ -57,7 +57,8 @@ subroutine apsolu(kptsc, lmd, rsolu)
 !
 !----------------------------------------------------------------
 !     Variables PETSc
-    PetscInt :: i, neqg, neql, nuglpe, high2, low2, ierr
+    PetscInt :: i, neqg, neql, nuglpe, high2, low2
+    PetscErrorCode ::  ierr
     PetscScalar :: xx(1)
     PetscOffset :: xidx
     VecScatter :: ctx

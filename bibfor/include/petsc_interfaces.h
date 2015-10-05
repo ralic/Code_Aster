@@ -38,7 +38,7 @@ interface
         PetscInt idx (*)
         PetscCopyMode mode ! PetscCopyMode
         IS is ! IS
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
@@ -49,13 +49,13 @@ interface
         PetscInt first
         PetscInt step
         IS       is
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine 
 ! -------------
 !
     subroutine ISDestroy(is, ierr)
         IS       is 
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 
 ! -------------
@@ -64,7 +64,7 @@ interface
        IS             is
        PetscInt       is_array(1)
        PetscOffset    i_is
-       PetscInt       ierr
+       PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
@@ -72,47 +72,47 @@ interface
        IS          is
        PetscInt    is_array(1)
        PetscOffset i_is
-       PetscInt    ierr
+       PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
     subroutine ISSort( is, ierr )
        IS          is
-       PetscInt    ierr
+       PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
     subroutine KSPCreate(comm, inksp, ierr)
         mpi_int comm
         KSP inksp ! KSP
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
     subroutine KSPDestroy(ksp, ierr)
         KSP ksp ! KSP
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
     subroutine KSPGetConvergedReason(ksp, reason, ierr)
         KSP ksp ! KSP
         KSPConvergedReason reason ! KSPConvergedReason
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
     subroutine KSPGetIterationNumber(ksp, its, ierr)
         KSP ksp ! KSP
         PetscInt its
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
     subroutine KSPGetPC(ksp, pc, ierr)
         KSP ksp ! KSP
         PC pc ! PC
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
@@ -123,7 +123,7 @@ interface
         PetscReal abstol
         PetscReal dtol
         PetscInt maxits
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
@@ -132,7 +132,7 @@ interface
         external monitor
         integer :: mctx
         external mdistroy
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
@@ -147,7 +147,7 @@ interface
 #ifdef ASTER_PETSC_VERSION_LEQ_34
         MatStructure flag
 #endif
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
@@ -158,20 +158,20 @@ interface
         PetscReal abstol
         PetscReal dtol
         PetscInt maxits
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
     subroutine KSPSetType(ksp, type, ierr)
         KSP ksp
         character(len=*) :: type
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
     subroutine KSPSetUp(ksp, ierr)
         KSP ksp ! KSP
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
@@ -179,41 +179,41 @@ interface
         KSP ksp ! KSP
         Vec b
         Vec x
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
     subroutine MatAssemblyBegin(mat, type, ierr)
         Mat mat
         MatAssemblyType type
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
     subroutine MatAssemblyEnd(mat, type, ierr)
         Mat mat
         MatAssemblyType type
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
     subroutine MatCreate(comm, A, ierr)
         mpi_int comm
         Mat A
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
     subroutine MatNullSpaceCreateRigidBody (coords, sp, ierr)
     Vec                :: coords
     MatNullSpace       :: sp
-    PetscInt :: ierr
+    PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
     subroutine MatNullSpaceDestroy(sp, ierr)
     MatNullSpace       :: sp
-    PetscInt :: ierr
+    PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
@@ -225,13 +225,13 @@ interface
         PetscInt nz
         PetscInt nnz(*)
         Mat a
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
     subroutine MatDestroy(A, ierr)
         Mat A
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
@@ -239,7 +239,7 @@ interface
         Mat mat
         MatDuplicateOption op
         Mat M
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
@@ -247,7 +247,7 @@ interface
         Mat A
         NormType type
         PetscReal norms(*)
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
@@ -255,7 +255,7 @@ interface
         Mat mat
         PetscInt m
         PetscInt n
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
@@ -266,7 +266,7 @@ interface
         PetscInt nterm
         PetscInt irow (*)
         PetscScalar vrow (*)
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
@@ -274,7 +274,7 @@ interface
         Mat mat
         PetscInt m
         PetscInt n
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
@@ -285,7 +285,7 @@ interface
         IS iscol ! IS
         MatReuse cll
         Mat newmat
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
@@ -297,14 +297,14 @@ interface
         PetscInt n
         PetscInt idxn (*)
         PetscScalar v (*)
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
     subroutine MatGetVecs( mat, right, left, ierr )
         Mat mat
         Vec  right, left
-        PetscInt  ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine MatGetVecs
 ! -------------
 !
@@ -315,7 +315,7 @@ interface
         MatReuse scall
         PetscReal fill
         Mat C
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
@@ -325,7 +325,7 @@ interface
        MatReuse scall
        PetscReal fill
        Mat C
-       PetscInt ierr
+       PetscErrorCode, intent(out) ::  ierr
      end subroutine
 
 ! -------------
@@ -336,7 +336,7 @@ interface
        MatReuse scall
        PetscReal fill
        Mat C
-       PetscInt ierr
+       PetscErrorCode, intent(out) ::  ierr
      end subroutine
 ! -------------
 !
@@ -347,7 +347,7 @@ interface
         PetscInt d_nnz (*)
         PetscInt o_nz
         PetscInt o_nnz (*)
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 
 ! -------------
@@ -356,7 +356,7 @@ interface
         Mat mat
         Vec x
         Vec y
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
@@ -364,7 +364,7 @@ interface
         Mat mat
         Vec x
         Vec y
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
@@ -375,7 +375,7 @@ interface
         MatReuse scall
         PetscReal fill
         Mat C
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
@@ -386,14 +386,14 @@ interface
         PetscInt ncols
         PetscInt cols(*)
         PetscScalar vals(*)
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
     subroutine MatSetNearNullSpace(mat, sp, ierr)
         Mat   mat
         MatNullSpace  sp
-        PetscInt  ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
@@ -401,21 +401,21 @@ interface
         Mat B
         PetscInt nz
         PetscInt nnz (*)
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
     subroutine MatSetBlockSize(mat, bs, ierr)
         Mat mat
         PetscInt bs
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
     subroutine MatSetOption(mat, op, flg, ierr)
         Mat mat
         PetscInt op
         PetscBool flg
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine 
 ! -------------
 !
@@ -426,14 +426,14 @@ interface
         PetscInt n
         PetscInt mupper
         PetscInt nupper
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
     subroutine MatSetType(mat, type, ierr)
         Mat mat
         character(len=*) :: type
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
@@ -444,7 +444,7 @@ interface
         PetscInt col
         PetscScalar value
         InsertMode addv
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
@@ -457,7 +457,7 @@ interface
         PetscInt idxn (*)
         PetscScalar v (*)
         InsertMode addv
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
@@ -465,7 +465,7 @@ interface
         Mat mat
         MatReuse reuse
         Mat B
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
@@ -476,14 +476,14 @@ interface
         MatReuse scall
         PetscReal fill
         Mat C
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
     subroutine MatView(mat, inviewer, ierr)
         Mat mat
         PetscViewer inviewer
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
@@ -495,14 +495,14 @@ interface
         PetscScalar diag
         Vec x
         Vec b
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
     subroutine PCGAMGSetNSmooths( pc, nsmooth, ierr)
         PC                 :: pc
         PetscInt           :: nsmooth
-        PetscInt :: ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
     subroutine PCBJacobiGetSubKSP(pc, n_local, first_local, ksp, ierr)
@@ -511,103 +511,103 @@ interface
         PetscInt first_local
         KSP      ksp
 !
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
     subroutine PCFactorSetFill(pc, fill, ierr)
         PC pc ! PC
         PetscReal fill
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
     subroutine PCFactorSetLevels(pc, levels, ierr)
         PC pc ! PC
         PetscInt levels
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
     subroutine PCFactorSetMatOrderingType(pc, ordering, ierr)
         PC pc
         character(len=*) :: ordering
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
     subroutine PCSetFromOptions(pc, ierr)
         PC pc ! PC
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
     subroutine PCSetType(pc, type, ierr)
         PC pc
         character(len=*) :: type
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
     subroutine PCSetUp(pc, ierr)
         PC pc ! PC
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
     subroutine PCShellSetApply(pc, sub, ierr)
         PC pc
         external sub
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
     subroutine PCShellSetSetUp(pc, sub, ierr)
         PC pc
         external sub
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
     subroutine PetscFinalize(ierr)
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
     subroutine PetscInitialize(X, ierr)
         character(len=*) :: X
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
     subroutine PetscInitializeFortran(ierr)
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
     subroutine PetscOptionsSetValue(iname, value, ierr)
         character(len=*) :: iname
         character(len=*) :: value
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
     subroutine PetscPushErrorHandler(handler, ctx, ierr)
       external handler
       PetscInt ctx
-      PetscInt ierr
+      PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
     subroutine VecAssemblyBegin(vec, ierr)
         Vec vec
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
     subroutine VecAssemblyEnd(vec, ierr)
         Vec vec
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
@@ -615,7 +615,7 @@ interface
         Vec y
         PetscScalar alpha
         Vec x
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
@@ -623,21 +623,21 @@ interface
         Vec y
         PetscScalar alpha
         Vec x
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
     subroutine VecCopy(x, y, ierr)
         Vec x
         Vec y
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
     subroutine VecCreate(comm, vec, ierr)
         mpi_int comm
         Vec vec
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
@@ -646,7 +646,7 @@ interface
         PetscInt n
         PetscInt nupper
         Vec v
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
@@ -654,20 +654,20 @@ interface
         mpi_int comm
         PetscInt n
         Vec v
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
     subroutine VecDestroy(v, ierr)
         Vec v
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
     subroutine VecDuplicate(v, newv, ierr)
         Vec v
         Vec newv
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
@@ -675,7 +675,7 @@ interface
         Vec vec
         PetscScalar x_array(*)
         PetscOffset i_x
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
@@ -683,14 +683,14 @@ interface
         Vec x
         PetscInt m
         PetscInt n
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
     subroutine VecGetSize(x, size, ierr)
         Vec x
         PetscInt size
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
@@ -698,7 +698,7 @@ interface
         Vec x
         IS is
         Vec y
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
    end subroutine
 ! -------------
 !
@@ -706,7 +706,7 @@ interface
         Vec x
         NormType type
         PetscReal val
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
@@ -714,14 +714,14 @@ interface
         Vec vec
         PetscScalar x_array(*)
         PetscOffset i_x
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
     subroutine VecScale( x, alpha, ierr )
       Vec x
       PetscScalar alpha
-      PetscInt ierr
+      PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
@@ -732,7 +732,7 @@ interface
         Vec y
         InsertMode addv
         ScatterMode mode
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
@@ -740,13 +740,13 @@ interface
         Vec vin
         VecScatter ctx
         Vec vout
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
     subroutine VecScatterDestroy(ctx, ierr)
         VecScatter ctx
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
@@ -757,21 +757,21 @@ interface
         Vec y
         InsertMode addv
         ScatterMode mode
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
     subroutine VecSet(x, alpha, ierr)
         Vec x
         PetscScalar alpha
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
     subroutine VecSetBlockSize(v, bs, ierr)
         Vec v
         PetscInt bs
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
@@ -779,14 +779,14 @@ interface
         Vec v
         PetscInt n
         PetscInt nupper
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
     subroutine VecSetType(vec, type, ierr)
         Vec vec
         character(len=*) :: type
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
@@ -797,14 +797,14 @@ interface
         PetscInt ix (*)
         PetscScalar y (*)
         InsertMode iora
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 ! -------------
 !
     subroutine VecView(vec, inviewer, ierr)
         Vec vec
         PetscViewer inviewer
-        PetscInt ierr
+        PetscErrorCode, intent(out) ::  ierr
     end subroutine
 !
 end interface

@@ -79,7 +79,8 @@ subroutine apmamc(kptsc)
 !
 !----------------------------------------------------------------
 !     Variables PETSc
-    PetscInt :: low2, high2, neq, ierr, jcol1, jcol2, low1
+    PetscInt :: low2, high2, neq, jcol1, jcol2, low1
+    PetscErrorCode ::  ierr
     PetscInt :: one = 1, zero = 0
     Mat :: a
 !----------------------------------------------------------------

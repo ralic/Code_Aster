@@ -62,7 +62,8 @@ subroutine apvsmb(kptsc, lmd, rsolu)
 !
 !----------------------------------------------------------------
 !     Variables PETSc
-    PetscInt :: low2, high2, ierr
+    PetscInt :: low2, high2
+    PetscErrorCode ::  ierr
     PetscScalar :: xx(1)
     PetscOffset :: xidx
     mpi_int :: mrank, msize

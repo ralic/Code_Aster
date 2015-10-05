@@ -73,7 +73,8 @@
       PetscInt :: nnz, ncons, nfree, nelim
       PetscInt :: mc, nc, ic, ii, jj, kk, ncol
       PetscInt :: nnzmax_row, loop
-      PetscInt :: ierr, maxloc_free_c
+      PetscInt :: maxloc_free_c
+      PetscErrorCode :: ierr
       PetscInt, dimension(:), allocatable :: col_c, colnorm_c
       PetscScalar, dimension(:), allocatable :: val, valnorm
       PetscInt, dimension(:), allocatable ::  idfree_c, idelim_c

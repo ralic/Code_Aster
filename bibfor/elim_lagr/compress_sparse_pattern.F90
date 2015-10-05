@@ -46,7 +46,8 @@ subroutine compress_sparse_pattern(a)
     integer :: ifm, niv
     aster_logical :: verbose
     mpi_int :: mpicomm    
-    PetscInt :: ii, jj, ma, na, ierr, passe, ncols_a
+    PetscInt :: ii, jj, ma, na, passe, ncols_a
+    PetscErrorCode :: ierr
     PetscInt :: inz, nanz, nnzmax_a, nnz_a
     PetscInt, parameter :: ione = 1 , izero = 0 
     PetscInt, dimension(:), allocatable :: nnz_acompressed, cols

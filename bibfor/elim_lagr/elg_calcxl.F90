@@ -59,7 +59,8 @@ subroutine elg_calcxl(x1, vlag)
     real(kind=8) :: norm
     aster_logical :: info
     PetscInt :: n1, n2, n3 
-    PetscInt :: ierr, reason 
+    PetscInt :: reason
+    PetscErrorCode :: ierr 
     PetscScalar, parameter :: neg_rone=-1.d0
     PetscOffset :: xidxay, xidxl
     Mat :: cct, atmp

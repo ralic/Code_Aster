@@ -61,7 +61,7 @@ subroutine elg_calc_rhs_red(matas1, nsecm, secm, solu2)
     character(len=24), pointer :: refa(:) => null()
     real(kind=8), pointer :: conl(:) => null()
     integer, pointer :: delg(:) => null()
-    PetscInt :: ierr
+    PetscErrorCode :: ierr
     PetscInt :: n1, n2, n3
     PetscScalar :: xx(1), m1
     PetscOffset :: xidxb, xidxc, xidxb2

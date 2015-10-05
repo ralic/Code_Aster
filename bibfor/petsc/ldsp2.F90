@@ -29,9 +29,10 @@ subroutine ldsp2(pc, x1, y, ierr)
     aster_logical :: prepos
 !----------------------------------------------------------------
 !     Variables PETSc
-    PC :: pc
-    Vec :: x1, y
-    PetscInt :: ierr
+    PC, intent(in)              :: pc
+    Vec, intent(in)             :: x1
+    Vec, intent(inout)          :: y
+    PetscErrorCode, intent(out) ::  ierr
 !
     PetscScalar :: xx(1)
     PetscOffset :: xidx

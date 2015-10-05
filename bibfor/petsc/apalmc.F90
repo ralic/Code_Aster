@@ -17,7 +17,7 @@ subroutine apalmc(kptsc)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-! person_in_charge: thomas.de-soza at edf.fr
+! person_in_charge: natacha.bereux at edf.fr
 #include "asterf_types.h"
 #include "asterf.h"
 #include "jeveux.h"
@@ -64,7 +64,8 @@ subroutine apalmc(kptsc)
 !
 !----------------------------------------------------------------
 !     Variables PETSc
-    PetscInt :: low2, high2, low1, high1,ierr
+    PetscInt :: low2, high2, low1, high1
+    PetscErrorCode ::  ierr
     integer :: neq, neq2
     Vec :: vtmp
     Mat :: a

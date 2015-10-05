@@ -65,7 +65,8 @@ subroutine elg_calc_matm_red(matas1, matas2, bas1)
     integer :: nbnom,  jdeeq2, jprno2, nec, icmp, icmpav, ino, inoav
     integer :: k1ec, k2ec, k3ec, k3ecav
     integer, allocatable :: nbddl(:), nueq(:), dejavu(:)
-    PetscInt :: ierr, n1, nterm
+    PetscInt :: n1, nterm
+    PetscErrorCode :: ierr
     PetscInt, allocatable :: irow(:)
     real(kind=8), allocatable :: vrow(:)
     integer, pointer :: deeq(:) => null()

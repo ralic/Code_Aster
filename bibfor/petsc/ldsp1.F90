@@ -34,8 +34,8 @@ subroutine ldsp1(pc, ierr)
 !----------------------------------------------------------------
 !     Variables PETSc
 ! because of conditional (if _HAVE_PETSC) and external types
-    PC       :: pc 
-    PetscInt :: ierr
+     PC, intent(inout)           :: pc 
+     PetscErrorCode, intent(out) :: ierr
 !----------------------------------------------------------------
 !     VARIABLES LOCALES
     integer :: jrefa, iret

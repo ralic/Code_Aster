@@ -44,7 +44,7 @@ subroutine skeleton_of_nullbasis( mat_c, mat_z, nnzmax )
     mpi_int :: mpicomm
     PetscInt :: mc, nc, ic, ii, jj, kk, ncol, maxloc_free_c, passe
     PetscInt :: ncons, nfree, nelim, nnz, loop
-    PetscInt :: ierr
+    PetscErrorCode :: ierr
     PetscInt, dimension(:), allocatable :: idfree_c
     PetscInt, dimension(:), allocatable :: col_c, colnorm_c
     PetscScalar, dimension(:), allocatable :: valnorm, val

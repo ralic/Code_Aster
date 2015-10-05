@@ -59,7 +59,7 @@ subroutine appcrs(kptsc, lmd)
 !
 !----------------------------------------------------------------
 !     Variables PETSc
-    PetscInt :: ierr
+    PetscErrorCode ::  ierr
     integer :: fill, neq, ndprop
     PetscReal :: fillp
     Mat :: a

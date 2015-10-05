@@ -33,8 +33,9 @@
 ! ======================================================================
       PetscScalar, parameter :: rone=1.d0, rzero=0.d0
       PetscInt, parameter  :: ione=1
-      PetscInt :: ierr , ncols
-      PetscInt ::  nrow, ncol, nrow_a, ncol_a, ii, kk, ll, i_c, j_c  
+      PetscInt :: ncols
+      PetscErrorCode :: ierr
+      PetscInt :: nrow, ncol, nrow_a, ncol_a, ii, kk, ll, i_c, j_c  
       PetscInt, dimension(:), allocatable :: cols
       PetscScalar, dimension(:), allocatable :: vals
       PetscInt, dimension(:), pointer :: idrow_loc_c => null()

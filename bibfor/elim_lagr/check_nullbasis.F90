@@ -38,7 +38,7 @@ implicit none
 ! Local variables
    integer                  :: ifm, niv
    Vec                      :: vec_cz
-   PetscInt                 :: ierr
+   PetscErrorCode           :: ierr
    PetscScalar              :: tol_loc, norm
    PetscScalar, parameter   :: tolmax=1.d-10
    aster_logical            :: verbose

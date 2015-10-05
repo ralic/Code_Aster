@@ -65,7 +65,8 @@ subroutine elg_calcx0()
     PC  :: pc
     integer :: ifm, niv
     mpi_int :: mpicomm, rang, nbproc
-    PetscInt :: its, ierr, reason
+    PetscInt :: its, reason
+    PetscErrorCode :: ierr
     PetscInt :: mm, nn 
     real(kind=8) :: norm
     PetscScalar, parameter ::  neg_rone = -1.d0
