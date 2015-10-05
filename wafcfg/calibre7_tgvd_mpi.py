@@ -24,12 +24,12 @@ def configure(self):
         '. /home/aster/etc/codeaster/profile_impi.sh'])
 
     self.env.prepend_value('LIBPATH', [
-        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster2/lib',
+        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster3/lib',
         YAMMROOT + '/prerequisites/Petsc_mpi-petsc_aster/lib',
     ])
 
     self.env.prepend_value('INCLUDES', [
-        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster2/include',
+        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster3/include',
         YAMMROOT + '/prerequisites/Petsc_mpi-petsc_aster/include',
     ])
 

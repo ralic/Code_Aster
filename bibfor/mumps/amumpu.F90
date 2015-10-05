@@ -32,7 +32,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
 ! OPTION=31 IDEM MAIS ON CREE UNE OCCURENCE MUMPS TEMPORAIRE. OPERATION
 !    UN PEU COUTEUSE A NE FAIRE QU'UNE FOIS PAR OPERATEUR(SD_SOLVEUR).
 ! DANS CES DEUX MODES, ON CONTROLE LE CARACTERE LICITE DU NUMERO DE
-! VERSIONS: 4.10.0, 5.0.1 ou SNAPSHOT-2015-07-23conso SINON UTMESS_F.
+! VERSIONS: 4.10.0, 5.0.1 ou 5.0.1consortium SINON UTMESS_F.
 !
 ! OPTION=4 RECUPERE LE DETERMINANT ET ON LE STOCKE DS L'OBJET JEVEUX
 !          '&&AMUMP.DETERMINANT' (V V R DIM=3)
@@ -562,7 +562,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
         kvers=''
         kvers=trim(adjustl(nvers))
         select case (kvers)
-            case('4.10.0','5.0.1','SNAPSHOT-2015-07-23conso')
+            case('4.10.0','5.0.1','5.0.1consortium')
         case default
             call utmess('F', 'FACTOR_72', sk=kvers)
         end select

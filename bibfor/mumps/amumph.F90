@@ -32,7 +32,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
 !     /'VERSION' : POUR RECUPERER LE NUMERO DE VERSION (SEULEMENT LA
 !              SD_SOLVEUR OU LA MATAS SONT REQUIS). CE NUMERO EST
 !              STOCKEE DANS SD_SOLVEUR.SLVK(12). IL DOIT ETRE LICITE
-!              (4.10.0, 5.0.1 ou SNAPSHOT-2015-07-23conso) SINON UTMESS_F.
+!              (4.10.0, 5.0.1 ou 5.0.1consortium) SINON UTMESS_F.
 !              PAR DEFAUT ON CHERCHE LE NUMERO DS LA SD_SOLVEUR, SINON ON PREND CELUI LIE
 !              AU PACKAGE MUMPS LINKE.
 !     /'PRERES'  : POUR DEMANDER LES ETAPES ANALYSE+FACTORISATION
@@ -234,7 +234,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
 ! --- STOCKE DANS LA SD_SOLVEUR
                     kvers=trim(adjustl(slvk(12)))
                     select case (kvers)
-                        case('4.10.0','5.0.1','SNAPSHOT-2015-07-23conso')
+                        case('4.10.0','5.0.1','5.0.1consortium')
                     case default
                         call utmess('F', 'FACTOR_72', sk=kvers)
                     end select

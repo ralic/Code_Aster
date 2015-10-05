@@ -203,7 +203,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
 
 ! ---     BLR
         if (blrok) then
-            if (kvers(1:24).eq.'SNAPSHOT-2015-07-23conso') then
+            if (kvers(1:24).eq.'5.0.1consortium') then
                 ! ok
             else
                 call utmess('A', 'FACTOR_48', sk=kvers)

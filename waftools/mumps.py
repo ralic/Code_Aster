@@ -91,7 +91,7 @@ def check_mumps_headers(self):
 @Configure.conf
 def check_mumps_version(self):
     # translate special tags, not yet used
-    dict_vers = { 'SNAPSHOT-2015-07-23consortium' : '5.0.1' }
+    dict_vers = { '5.0.1consortium' : '5.0.1' }
     fragment = r'''
 #include <stdio.h>
 #include "smumps_c.h"
