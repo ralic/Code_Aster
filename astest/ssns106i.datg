@@ -1,0 +1,96 @@
+[Project]
+project_name = CR_45_init
+projectdir = /local00/home/D47456/Bureau/DHRC/final/CR
+project_description = 
+geometry_view = 
+number_elements = 4448
+number_nodes = 7073
+type_identification = Elastic+Damage+Slidding
+
+[Geometry]
+x_size = 100.0
+y_size = 100.0
+z_size = 100.0
+d1x = 10.0
+d1y = 10.0
+d2x = 10.0
+d2y = 10.0
+h1x = 10.0
+h1y = 21.0
+h2x = 10.0
+h2y = 21.0
+
+[Material]
+s_young = 200.0
+s_poisson = 0.3
+s_y_strength = 570.0
+s_density = 7850.0
+c_type = User Defined
+c_young = 32.308
+c_poisson = 0.2
+c_density = 2200.0
+c_c_strength = 46.153
+c_c_strain = 2.296
+c_t_strength = 3.4
+p_type = Automatic - 1R - RIGI_PLAS
+l_type = Orthotropic TCD
+l_num = 6.0
+c_fpd = 36.922
+alpha_t_c1x = 85.4359260846
+gamma_t_c1x = 0.247756327119
+alpha_t_t1x = 1.0
+gamma_t_t1x = -0.0383410504095
+alpha_t_c1y = 85.4359260846
+gamma_t_c1y = 0.247756327119
+alpha_t_t1y = 1.0
+gamma_t_t1y = -0.0383410504095
+alpha_t_c1z = 88.7116292334
+gamma_t_c1z = 0.247756327119
+alpha_t_t1z = 1.0
+gamma_t_t1z = -0.0
+alpha_t_c2x = 85.4359260846
+gamma_t_c2x = 0.247756327119
+alpha_t_t2x = 1.0
+gamma_t_t2x = -0.0383410504095
+alpha_t_c2y = 85.4359260846
+gamma_t_c2y = 0.247756327119
+alpha_t_t2y = 1.0
+gamma_t_t2y = -0.0383410504095
+alpha_t_c2z = 88.7116292334
+gamma_t_c2z = 0.247756327119
+alpha_t_t2z = 1.0
+gamma_t_t2z = -0.0
+alpha_xy_c1x = 85.4359260846
+gamma_xy_c1x = 0.247756327119
+alpha_xy_t1x = 1.0
+gamma_xy_t1x = -0.0383410504095
+alpha_xy_c1y = 85.4359260846
+gamma_xy_c1y = 0.247756327119
+alpha_xy_t1y = 1.0
+gamma_xy_t1y = -0.0383410504095
+alpha_xy_c1z = 88.7116292334
+gamma_xy_c1z = 0.247756327119
+alpha_xy_t1z = 1.0
+gamma_xy_t1z = -0.0
+alpha_xy_c2x = 85.4359260846
+gamma_xy_c2x = 0.247756327119
+alpha_xy_t2x = 1.0
+gamma_xy_t2x = -0.0383410504095
+alpha_xy_c2y = 85.4359260846
+gamma_xy_c2y = 0.247756327119
+alpha_xy_t2y = 1.0
+gamma_xy_t2y = -0.0383410504095
+alpha_xy_c2z = 88.7116292334
+gamma_xy_c2z = 0.247756327119
+alpha_xy_t2z = 1.0
+gamma_xy_t2z = -0.0
+tau_crit = 1.6
+
+[Aster]
+file_comm = 
+file_mesh = CR_45_init.mmed
+file_distr = 
+server_name = Aster5
+nb_max_proc = 0
+runOk = 1
+
