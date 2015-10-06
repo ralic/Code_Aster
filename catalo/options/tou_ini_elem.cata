@@ -27,6 +27,7 @@ OPTION__
         PPRES_R PRES_R ELEM__
         PSOUR_R SOUR_R ELEM__
         PGEOM_R GEOM_R ELEM__
+        PFORC_R FORC_R ELEM__
 
    COND_CALCUL__   PLUS__  PHENO='ME'
                    PLUS__  PHENO='TH'
