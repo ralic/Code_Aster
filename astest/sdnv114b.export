@@ -5,7 +5,9 @@ P mpi_nbcpu 1
 P mpi_nbnoeud 1
 P testlist verification sequential
 
-F comm sdnv114a.comm D 1
+F comm sdnv114b.comm D 1
 F mmed sdnv114a.mmed D 20
 F libr sdnv114a.12 D 12
 F libr sdnv114a.11 D 11
+F libr sdnv114b.60 D 60
+F libr sdnv114b.61 D 61

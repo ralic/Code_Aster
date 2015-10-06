@@ -1,0 +1,284 @@
+# person_in_charge: sebastien.fayolle at edf.fr
+#
+# TITRE ESSAI SAFE MODELE GLRC_DM (STAT NON-LINEAIRE): MUR EN CISAILLEMENT
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+#  DETAILS : MODELISATION : DKTG (GLRC_DM)
+#            MAILLAGE     : QUA4
+#            CHARGEMENT   : CYCLIQUE TRACTION - COMPRESSION
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
+      DEBUG=_F(SDVERI='OUI',),);
+
+INST_FIN = 19.;
+
+#-----------------------------------------------
+# LECTURE DU MAILLAGE
+#-----------------------------------------------   
+MA1=LIRE_MAILLAGE(FORMAT='MED',);
+
+MA1=MODI_MAILLAGE(reuse=MA1,
+                  MAILLAGE=MA1,
+                  ORIE_NORM_COQUE=(_F(GROUP_MA='VOILE',
+                                      VECT_NORM=(0,0,1,),
+                                      GROUP_NO='A1',),
+                                   _F(GROUP_MA='FL1',
+                                      VECT_NORM=(-1,0,0,),
+                                      GROUP_NO='A1',),
+                                   _F(GROUP_MA='FL2',
+                                      VECT_NORM=(1,0,0,),
+                                      GROUP_NO='A2',),),);
+
+#-----------------------------------------------
+# CREATION DU MODELE
+#-----------------------------------------------
+MO=AFFE_MODELE(MAILLAGE=MA1,
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='DKTG',),);
+
+#-----------------------------------------------
+# DEFINTION DES MATERIAUX ET CARACTERSISTIQUES
+#-----------------------------------------------
+# materiau DHRC
+INCLUDE( UNITE = 60)
+INCLUDE( UNITE = 61)
+
+MATER=AFFE_MATERIAU(MAILLAGE=MA1,
+                    AFFE=(_F(GROUP_MA='VOILE',
+                             MATER=DHRC_V,),
+                          _F(GROUP_MA=('FL1','FL2',),
+                             MATER=DHRC_F,),),);
+
+CARA=AFFE_CARA_ELEM(MODELE=MO,
+                    COQUE=(_F(GROUP_MA='VOILE',
+                              EPAIS=0.2,
+                              ANGL_REP=(0,0,),
+                              INER_ROTA='OUI',),
+                           _F(GROUP_MA=('FL1','FL2',),
+                              EPAIS=0.16,
+                              ANGL_REP=(0,90,),
+                              INER_ROTA='OUI',),),);
+
+#-----------------------------------------------
+# DEFINTION DES CONDITIONS AUX LIMITES ET CHARGEMENTS
+#-----------------------------------------------
+CL=AFFE_CHAR_MECA(MODELE=MO,
+                  DDL_IMPO=(_F(GROUP_NO='BAS',
+                               LIAISON='ENCASTRE',),
+                            _F(GROUP_MA='HAUT',
+                               DZ=0,
+                               DRX=0,
+                               DRY=0,
+                               DRZ=0,),),
+                  LIAISON_UNIF=_F(GROUP_NO='HAUT',
+                                  DDL=('DX','DY',),),);
+
+DEPL=AFFE_CHAR_MECA(MODELE=MO,
+                    DDL_IMPO=(_F(GROUP_NO='A3',
+                                 DX=1.,),),);
+
+RAMPE=LIRE_FONCTION(UNITE=12,
+                    NOM_PARA='INST',);
+
+TEMPS=DEFI_LIST_REEL(DEBUT=0.,
+                     INTERVALLE=_F(JUSQU_A=INST_FIN,
+                                   PAS=0.01,),);
+
+LINST=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=TEMPS),
+                     ECHEC=_F(EVENEMENT='ERREUR',
+                              ACTION='DECOUPE',
+                              SUBD_METHODE='MANUEL',
+                              SUBD_NIVEAU=10,
+                              SUBD_PAS=10,),);
+
+#-----------------------------------------------
+# CALCUL DES RESULTATS POUR LE CHARGEMENT 
+#-----------------------------------------------        
+RESU=STAT_NON_LINE(MODELE=MO,
+                   CHAM_MATER=MATER,
+                   CARA_ELEM=CARA,
+                   EXCIT=(_F(CHARGE=CL,),
+                          _F(CHARGE=DEPL,FONC_MULT=RAMPE,),),
+                   COMPORTEMENT=_F(RELATION='DHRC',
+                                   TOUT='OUI',),
+                   INCREMENT=_F(LIST_INST=LINST,
+                                INST_FIN=INST_FIN,),
+                   NEWTON=_F(MATRICE='TANGENTE',
+                             REAC_ITER=1,),
+                   CONVERGENCE=_F(ITER_GLOB_MAXI=20,),);
+
+FORC=CALC_CHAMP(RESULTAT=RESU,
+                FORCE='FORC_NODA',
+                INST= [11.07,11.96,12.13,13.09,13.30,13.47,14.06,16.34,16.53,16.72,],);
+
+FX=POST_RELEVE_T(ACTION=_F(INTITULE='RESULTANTE',
+                           RESULTAT=FORC,
+                           OPERATION='EXTRACTION',
+                           GROUP_NO='HAUT',
+                           RESULTANTE='DX',
+                           REPERE='GLOBAL',
+                           NOM_CHAM='FORC_NODA',),);
+
+#-----------------------------------------------
+# CALCUL DES TEST_RESU
+#-----------------------------------------------    
+# les resultats experimentaux sont donnees dans le fichier joint
+# il s'agit des points de la numerisation de la courbe de reponse du specimen: deplacement (mm) et force (N)                   
+INCLUDE(UNITE = 11)
+
+TEST_TABLE(TABLE=FX,
+           NOM_PARA='DX',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=11.07,
+                     CRITERE='ABSOLU',
+                     CRIT_COMP='EQ',
+                     PRECISION=1.E-3,),
+           REFERENCE='SOURCE_EXTERNE',
+           VALE_CALC=2506333.42645,
+           VALE_REFE=val_exp[1107*2+1],
+           PRECISION=0.14,
+           CRITERE='RELATIF',
+           VALE_ABS='NON',);
+
+TEST_TABLE(TABLE=FX,
+           NOM_PARA='DX',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=11.96,
+                     CRITERE='ABSOLU',
+                     CRIT_COMP='EQ',
+                     PRECISION=1.E-3,),
+           REFERENCE='SOURCE_EXTERNE',
+           VALE_CALC=-2870878.30776 ,
+           VALE_REFE=val_exp[1196*2+1],
+           PRECISION=0.12,
+           CRITERE='RELATIF',
+           VALE_ABS='NON',);
+
+TEST_TABLE(TABLE=FX,
+           NOM_PARA='DX',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=12.13,
+                     CRITERE='ABSOLU',
+                     CRIT_COMP='EQ',
+                     PRECISION=1.E-3,),
+           REFERENCE='SOURCE_EXTERNE',
+           VALE_CALC=2245817.46729,
+           VALE_REFE=val_exp[1213*2+1],
+           PRECISION=0.17,
+           CRITERE='RELATIF',
+           VALE_ABS='NON',);
+
+TEST_TABLE(TABLE=FX,
+           NOM_PARA='DX',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=13.09 ,
+                     CRITERE='ABSOLU',
+                     CRIT_COMP='EQ',
+                     PRECISION=1.E-3,),
+           REFERENCE='SOURCE_EXTERNE',
+           VALE_CALC=-2652756.70858,
+           VALE_REFE=val_exp[1309*2+1],
+           PRECISION=0.08,
+           CRITERE='RELATIF',
+           VALE_ABS='NON',);
+
+TEST_TABLE(TABLE=FX,
+           NOM_PARA='DX',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=13.30,
+                     CRITERE='ABSOLU',
+                     CRIT_COMP='EQ',
+                     PRECISION=1.E-3,),
+           REFERENCE='SOURCE_EXTERNE',
+           VALE_CALC=2786660.66338,
+           VALE_REFE=val_exp[1330*2+1],
+           PRECISION=0.13,
+           CRITERE='RELATIF',
+           VALE_ABS='NON',);
+
+TEST_TABLE(TABLE=FX,
+           NOM_PARA='DX',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=13.47,
+                     CRITERE='ABSOLU',
+                     CRIT_COMP='EQ',
+                     PRECISION=1.E-3,),
+           REFERENCE='SOURCE_EXTERNE',
+           VALE_CALC=-3032448.18819,
+           VALE_REFE=val_exp[1347*2+1],
+           PRECISION=0.12,
+           CRITERE='RELATIF',
+           VALE_ABS='NON',);
+
+TEST_TABLE(TABLE=FX,
+           NOM_PARA='DX',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=14.06,
+                     CRITERE='ABSOLU',
+                     CRIT_COMP='EQ',
+                     PRECISION=1.E-3,),
+           REFERENCE='SOURCE_EXTERNE',
+           VALE_CALC=2182816.40335,
+           VALE_REFE=val_exp[1406*2+1],
+           PRECISION=0.09,
+           CRITERE='RELATIF',
+           VALE_ABS='NON',);
+
+TEST_TABLE(TABLE=FX,
+           NOM_PARA='DX',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=16.34 ,
+                     CRITERE='ABSOLU',
+                     CRIT_COMP='EQ',
+                     PRECISION=1.E-3,),
+           REFERENCE='SOURCE_EXTERNE',
+           VALE_CALC=-2872200.49559,
+           VALE_REFE=val_exp[1634*2+1],
+           PRECISION=0.09,
+           CRITERE='RELATIF',
+           VALE_ABS='NON',);
+
+TEST_TABLE(TABLE=FX,
+           NOM_PARA='DX',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=16.53,
+                     CRITERE='ABSOLU',
+                     CRIT_COMP='EQ',
+                     PRECISION=1.E-3,),
+           REFERENCE='SOURCE_EXTERNE',
+           VALE_CALC=3090169.60779,
+           VALE_REFE=val_exp[1653*2+1],
+           PRECISION=0.09,
+           CRITERE='RELATIF',
+           VALE_ABS='NON',);
+
+TEST_TABLE(TABLE=FX,
+           NOM_PARA='DX',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=16.72 ,
+                     CRITERE='ABSOLU',
+                     CRIT_COMP='EQ',
+                     PRECISION=1.E-3,),
+           REFERENCE='SOURCE_EXTERNE',
+           VALE_CALC=-2823393.30784,
+           VALE_REFE=val_exp[1672*2+1],
+           PRECISION=0.09,
+           CRITERE='RELATIF',
+           VALE_ABS='NON',);
+
+FIN();
