@@ -1,4 +1,4 @@
-subroutine aflrch(lisrez, chargz, elim)
+subroutine aflrch(lisrez, chargz, type_liai, elim)
     implicit none
 ! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
@@ -43,10 +43,12 @@ subroutine aflrch(lisrez, chargz, elim)
 #include "asterfort/jexnum.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/getvtx.h"
+#include "asterfort/agdual.h"
 #include "asterc/getexm.h"
 !
     character(len=*), intent(in) :: lisrez
     character(len=*), intent(in) :: chargz
+    character(len=*), intent(in) :: type_liai
     character(len=*), intent(in), optional :: elim
 !
 ! -------------------------------------------------------
@@ -63,6 +65,9 @@ subroutine aflrch(lisrez, chargz, elim)
 ! -------------------------------------------------------
 !  charge        - in    - k8   - : nom de la sd charge
 !                - jxvar -      -
+! -----------------------------------------------------------
+!  type_liai     - in    - k8   - : 'LIN'/'NLIN'
+!    'NLIN' : les relations sont lineaires si TYPE_CHARGE='SUIV'
 ! -----------------------------------------------------------
 !  (f) elim  : /'OUI' : on veut eliminer les doublons
 !              /'NON' : on ne veut pas eliminer les doublons
@@ -98,7 +103,7 @@ subroutine aflrch(lisrez, chargz, elim)
     integer ::    jnoli1, jnoli2, jdesc1, jdesc2, jncmp1,jncmp2,nedit
     integer ::    jlima01, jlima02,jlimac1, jlimac2,lontav1,lontav2
     integer :: nbcmp, nec, nbnema, nbrela, nbteli, nbterm, nddla
-    integer :: jliel0, jlielc, jnema0, jnemac
+    integer :: jliel0, jlielc, jnema0, jnemac, nbrela2, nbterm2
     character(len=3) :: rapide='OUI'
 
     integer :: niv, numel, nunewm, iexi, jlgns
@@ -138,6 +143,10 @@ subroutine aflrch(lisrez, chargz, elim)
         ligrch=charge//'.CHAC.LIGRE'
         nomgd='PRES_C'
         nomte='D_PRES_C_'
+    endif
+
+    if (type_liai.ne.'LIN') then
+        ASSERT(nomgd.eq.'DEPL_R')
     endif
 
 
@@ -401,6 +410,20 @@ subroutine aflrch(lisrez, chargz, elim)
         call jeecra(ligrch//'.NEMA','NUTIOC',ival= inema)
     endif
 
+!   -- Mise a jour de la SD char_dual :
+    nbrela2=0
+    nbterm2=0
+    do irela = 1, nbrela
+        indsur=rlsu(irela)
+        if (indsur .eq. 0) then
+            nbrela2=nbrela2+1
+            nbterm2=nbterm2+rlnt(irela)
+        endif
+    enddo
+
+    if (nomgd.eq.'DEPL_R') then
+        call agdual(charge, type_liai, nbrela2, nbterm2)
+    endif
 
 !
 !   -- impression des relations redondantes et donc supprimees :

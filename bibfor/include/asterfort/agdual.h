@@ -15,10 +15,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface 
-    subroutine agdual(load, nbliai, type_liai)
+interface
+    subroutine agdual(load, type_liai, nbrela, nbterm)
         character(len=8), intent(in) :: load
-        integer, intent(in) :: nbliai
         character(len=*), intent(in) :: type_liai
+        integer, intent(in) :: nbrela
+        integer, intent(in) :: nbterm
     end subroutine agdual
-end interface 
+end interface

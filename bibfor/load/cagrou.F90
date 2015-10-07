@@ -5,7 +5,6 @@ implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/aflrch.h"
-#include "asterfort/agdual.h"
 #include "asterfort/afrela.h"
 #include "asterfort/assert.h"
 #include "asterfort/getnode.h"
@@ -167,9 +166,8 @@ implicit none
 ! - Final linear relation affectation
 !
     if (phenom.eq.'MECA') then
-        call agdual(load,1,'LIN')
     endif
-    call aflrch(list_rela, load)
+    call aflrch(list_rela, load, 'LIN')
 !
 999  continue
     call jedema()

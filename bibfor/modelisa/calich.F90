@@ -6,7 +6,6 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterc/getfac.h"
 #include "asterfort/aflrch.h"
-#include "asterfort/agdual.h"
 #include "asterfort/afrela.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
@@ -305,9 +304,8 @@ implicit none
 ! --- AFFECTATION DE LA LISTE_RELA A LA CHARGE :
 !     ----------------------------------------
     if (phenom.eq.'MECA') then
-        call agdual(charge,1,'LIN')
     endif
-    call aflrch(lisrel, charge)
+    call aflrch(lisrel, charge, 'LIN')
 !
 ! --- MENAGE :
 !     ------

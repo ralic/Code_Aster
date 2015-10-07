@@ -8,7 +8,6 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
 #include "asterc/indik8.h"
 #include "asterc/r8gaem.h"
 #include "asterfort/aflrch.h"
-#include "asterfort/agdual.h"
 #include "asterfort/armin.h"
 #include "asterfort/assert.h"
 #include "asterfort/char_excl_keyw.h"
@@ -39,6 +38,7 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/codent.h"
+#include "asterfort/detrsd.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -82,7 +82,7 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
     integer :: iocc
     integer :: jnom, n1
     integer :: i_no
-    integer :: nb_cmp, nbec, ndim, nliai, inema, nbrela, nbterm, irela
+    integer :: nb_cmp, nbec, ndim, nbocc
     character(len=24) :: list_node
     integer :: jlino, numnoe
     integer :: nb_node
@@ -92,18 +92,14 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
     integer :: dim, k
     character(len=1) :: kdim
     character(len=8) :: cmp_name, type_rela, nom_noeuds_tmp(4)
-    character(len=8), pointer :: rcnom(:) => null()
-    character(len=8), pointer :: rctyr(:) => null()
-    integer, pointer :: nmata(:) => null()
-    integer, pointer :: rlnr(:) => null()
-    integer, pointer :: rlnt(:) => null()
+    character(len=8), pointer :: prdso(:) => null()
     integer, pointer :: prnm(:) => null()
     integer, pointer :: prnm1(:) => null()
     character(len=19) :: list_rela
     character(len=19) :: ligrch
     character(len=16) :: keywordfact
     character(len=24) :: keywordexcl
-    integer :: n_keyexcl, iexi
+    integer :: n_keyexcl, nuti
     integer :: cmp_index_dx, cmp_index_dy, cmp_index_dz
     integer :: cmp_index_drx, cmp_index_dry, cmp_index_drz
     aster_logical :: l_rota_2d, l_rota_3d
@@ -118,8 +114,8 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
 !
     call jemarq()
     keywordfact = 'LIAISON_SOLIDE'
-    call getfac(keywordfact, nliai)
-    if (nliai .eq. 0) goto 999
+    call getfac(keywordfact, nbocc)
+    if (nbocc .eq. 0) goto 999
 !
 ! - Initializations
 !
@@ -181,23 +177,13 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
     ASSERT(cmp_index_drx.gt.0)
     ASSERT(cmp_index_dry.gt.0)
     ASSERT(cmp_index_drz.gt.0)
-
-    call agdual(load,nliai,'?')
-    call jeveuo(load//'.DUAL.RCTYR', 'E', vk8 = rctyr)
-    call jeveuo(load//'.DUAL.NMATA', 'E', vi = nmata)
-    call jeveuo(load//'.DUAL.RCNOM', 'E', vk8 = rcnom)
 !
-!   -- calcul de inema : nombre de mailles tardives deja presentes dans ligrch :
     ligrch = load//'.CHME.LIGRE'
-    inema=0
-    call jeexin(ligrch//'.NEMA', iexi)
-    if (iexi .gt. 0) then
-        call jelira(ligrch//'.NEMA', 'NUTIOC', inema)
-    endif
 !
 ! - Loop on factor keyword
 !
-    do iocc = 1, nliai
+    do iocc = 1, nbocc
+        nom_noeuds_tmp(1:4)=' '
 !
 ! ----- Definition of position for lagrange multipliers
 !
@@ -228,7 +214,7 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
 !
         if (nb_node .eq. 1) then
             call utmess('I', 'CHARGES2_17')
-            goto 998
+            cycle
         endif
 !
 ! ----- Read transformation
@@ -241,9 +227,10 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
 ! ----- Apply translation
 !
         if (l_tran) then
+!           -- a resorber ? (issue24272)
             call drzrot(mesh, ligrmo, nb_node, list_node, type_lagr,&
                         tran, list_rela)
-            rctyr(iocc) = "TRAN"
+            type_rela = "LIN"
             goto 998
         endif
 !
@@ -269,16 +256,16 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
             if (l_rota_2d) then
                 call drz12d(mesh, ligrmo, vale_type, nb_node, list_node,&
                             cmp_index_drz, type_lagr, list_rela, nom_noeuds_tmp)
-                type_rela = "2D0ROTA"
-                rcnom(4*(iocc-1)+1) = nom_noeuds_tmp(1)
+                type_rela = "ROTA2D"
             else
                 call solide_tran('2D',mesh, vale_type, dist_mini, nb_node, list_node,&
                                  type_lagr, list_rela, nom_noeuds_tmp, dim)
-                call codent(dim, 'D0', kdim)
-                type_rela = "2D"//kdim
-                do k=1,dim+1
-                    rcnom(4*(iocc-1)+k) = nom_noeuds_tmp(k)
-                enddo
+                if (dim.eq.0) then
+                    type_rela = "LIN"
+                else
+                    call codent(dim, 'D0', kdim)
+                    type_rela = "2D"//kdim
+                endif
             endif
 !
 ! ----- Model: 3D
@@ -306,40 +293,37 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
                 call drz13d(mesh, ligrmo, vale_type, nb_node, list_node,&
                             cmp_index_dx, cmp_index_dy, cmp_index_dz, cmp_index_drx,&
                             cmp_index_dry, cmp_index_drz, type_lagr, list_rela, nom_noeuds_tmp)
-                type_rela = "3D0ROTA"
-                rcnom(4*(iocc-1)+1) = nom_noeuds_tmp(1)
+                type_rela = "ROTA3D"
             else
                 call solide_tran('3D',mesh, vale_type, dist_mini, nb_node, list_node,&
                                  type_lagr, list_rela, nom_noeuds_tmp, dim)
-                call codent(dim, 'D0', kdim)
-                type_rela = "3D"//kdim
-                do k=1,dim+1
-                    rcnom(4*(iocc-1)+k) = nom_noeuds_tmp(k)
-                enddo
+                if (dim.eq.0) then
+                    type_rela = "LIN"
+                else
+                    call codent(dim, 'D0', kdim)
+                    type_rela = "3D"//kdim
+                endif
             endif
         endif
-        rctyr(iocc) = type_rela
 !
-        call jeveuo(list_rela//'.RLNR', 'L', vi = rlnr)
-        call jeveuo(list_rela//'.RLNT', 'L', vi = rlnt)
-        nmata(2*(iocc-1) + 1) = -(inema+1)
-        nbrela = rlnr(1)
-        nbterm = 0
-        do irela = 1, nbrela
-            nbterm = nbterm + rlnt(irela)
-        enddo
-        nmata(2*(iocc-1) + 2) =  nbterm
-        inema = inema + nbterm
 !
 998     continue
+!
+!       - Final linear relation affectation
+!
+        call aflrch(list_rela, load, type_rela, elim='NON')
+        call detrsd('LISTE_RELA', list_rela)
+
+!       -- remplissage de l'objet .PRDSO :
+        call jeveuo(load//'.DUAL.PRDSO', 'E', vk8 = prdso)
+        call jelira(load//'.DUAL.PRDK', 'LONUTI', ival = nuti)
+        do k=1,4
+            prdso(4*(nuti-1)+k) = nom_noeuds_tmp(k)
+        enddo
 !
         call jedetr(list_node)
 !
     end do
-!
-! - Final linear relation affectation
-!
-    call aflrch(list_rela, load, elim='NON')
 !
     call jedetr(keywordexcl)
 !

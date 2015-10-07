@@ -7,7 +7,6 @@ implicit none
 #include "asterc/getfac.h"
 #include "asterfort/afddli.h"
 #include "asterfort/aflrch.h"
-#include "asterfort/agdual.h"
 #include "asterfort/afrela.h"
 #include "asterfort/assert.h"
 #include "asterfort/canort.h"
@@ -327,8 +326,7 @@ implicit none
 !
 ! - Final linear relation affectation
 !
-    call agdual(load,1,'LIN')
-    call aflrch(list_rela, load)
+    call aflrch(list_rela, load, 'LIN')
 !
     call jedetr('&&CANORT.NORMALE')
     call jedetr('&&CANORT.TANGENT')

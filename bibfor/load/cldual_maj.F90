@@ -13,6 +13,7 @@ implicit none
 #include "asterfort/load_list_info.h"
 #include "asterfort/ischar_iden.h"
 #include "asterfort/solide_tran_maj.h"
+#include "asterfort/utmess.h"
 
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -47,9 +48,9 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=3) :: dual_type
+    character(len=8) :: dual_type
     character(len=8) :: load_name
-    character(len=8), pointer :: dual_rctyr(:) => null()
+    character(len=8), pointer :: dual_prdk(:) => null()
     character(len=8), pointer :: load_type(:) => null()
     character(len=13)  :: load_dual
     aster_logical :: ltran
@@ -91,26 +92,31 @@ implicit none
 !
 ! --------- Some checks
 !
-            call jeexin(load_name//'.DUAL.RCTYR', iexi)
+            call jeexin(load_name//'.DUAL.PRDK', iexi)
             ASSERT(iexi.gt.0)
             call jeveuo(load_name//'.TYPE', 'L', vk8=load_type)
             ASSERT(load_type(1).eq.'MECA_RE')
 !
 ! --------- Datastructure access
 !
-            call jeveuo(load_dual//'.RCTYR', 'L', vk8=dual_rctyr)
-            call jelira(load_dual//'.RCTYR', 'LONUTI', ival=nb_link)
+            call jeveuo(load_dual//'.PRDK', 'L', vk8=dual_prdk)
+            call jelira(load_dual//'.PRDK', 'LONUTI', ival=nb_link)
 !
 ! --------- Find type of dual relation
 !
             do i_link = 1,nb_link
-               dual_type = dual_rctyr(i_link)(1:3)
-               if (dual_type.eq.' ' .or. dual_type.eq.'LIN' .or. dual_type.eq.'?') then
+               dual_type = dual_prdk(i_link)
+               if (dual_type.eq.' ' .or. dual_type.eq.'LIN') then
 ! -------- Nothing to do
                else if (dual_type(1:2).eq.'2D' .or.  dual_type(1:2).eq.'3D') then
                    ltran=.true._1
+               else if (dual_type.eq.'NLIN') then
+!                  -- Le nom de la charge est malheureusement inexploitable.
+!                     C'est une copie temporaire.
+                   call utmess('F','CHARGES_30')
                else
-                   ASSERT(.false.)
+!                  --  par exemple : 'ROTA3D', ...
+                   call utmess('F','CHARGES_30')
                endif
             enddo
 !

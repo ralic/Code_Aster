@@ -139,7 +139,7 @@ subroutine xtempc(nfiss, fiss, fonree, char)
 ! --- AFFECTATION DES RELATIONS LINEAIRES DANS LE LIGREL DE CHARGE
 !
     ASSERT(nrel.gt.0)
-    call aflrch(lisrel, char)
+    call aflrch(lisrel, char, 'LIN')
 !
     call jedema()
 end subroutine

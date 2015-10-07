@@ -8,7 +8,6 @@ implicit none
 #include "asterc/indik8.h"
 #include "asterc/r8gaem.h"
 #include "asterfort/aflrch.h"
-#include "asterfort/agdual.h"
 #include "asterfort/armin.h"
 #include "asterfort/assert.h"
 #include "asterfort/cescar.h"
@@ -231,8 +230,7 @@ implicit none
                 call jelibe(list_rela_old//'.RLNR')
                 if (nbrela .gt. 0) then
                     call copisd(' ', 'V', list_rela_old, list_rela_tmp)
-                    call agdual(load,1,'?')
-                    call aflrch(list_rela_tmp, load)
+                    call aflrch(list_rela_tmp, load, 'NLIN')
                 endif
 !
 ! ------------  Get information about cables
@@ -344,8 +342,7 @@ implicit none
                                     ASSERT(.false.)
                                 endif
                                 call jedetr(list_node)
-                                call agdual(load,1,'?')
-                                call aflrch(list_rela, load, elim='NON')
+                                call aflrch(list_rela, load, 'NLIN', elim='NON')
                             endif
 140                         continue
                         enddo

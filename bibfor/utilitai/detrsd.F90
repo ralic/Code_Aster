@@ -56,7 +56,7 @@ subroutine detrsd(typesd, nomsd)
 !          'LISTR8'    'LISTIS'
 !          (OU ' ' QUAND ON NE CONNAIT PAS LE TYPE).
 !          'LISTE_CHARGE'
-!          'NUML_DDL'  'CHAR_DUAL'
+!          'NUML_DDL'
 !       NOMSD   : NOM DE LA STRUCTURE DE DONNEES A DETRUIRE
 !          NUME_DDL(K14),MATR_ASSE(K19),VECT_ASSE(K19)
 !          CHAMP(K19), MATR_ELEM(K8), VECT_ELEM(K8), VARI_COM(K14)
@@ -72,7 +72,7 @@ subroutine detrsd(typesd, nomsd)
     integer :: iret, iad, long, i, nbch, ibid
     integer :: ityobj, inomsd, nblg, nbpa, nblp, n1
     integer :: iexi
-    character(len=8) :: metres, k8, load
+    character(len=8) :: metres, k8
     character(len=12) :: vge
     character(len=14) :: nu, com
     character(len=16) :: typ2sd, corres
@@ -666,19 +666,6 @@ subroutine detrsd(typesd, nomsd)
         call jedetr(liste//'.NBPA')
         call jedetr(liste//'.BINT')
         call jedetr(liste//'.VALE')
-!
-!     ------------------------------------------------------------------
-    else if (typ2sd.eq.'CHAR_DUAL') then
-!     -----------------------------------
-        load  = nomsd
-        call jedetr(load//'.TYPE')
-        call jedetr(load//'.CHME.MODEL.NOMO')
-        call detrs2('LIGREL',load//'.CHME.LIGRE')
-        call detrs2('CARTE', load//'.CHME.CMULT')
-        call detrs2('CARTE', load//'.CHME.CIMPO')
-        call jedetr(load//'.DUAL.RCTYR')
-        call jedetr(load//'.DUAL.NMATA')
-        call jedetr(load//'.DUAL.RCNOM')
 !
 !     ------------------------------------------------------------------
     else

@@ -37,7 +37,6 @@ subroutine calimc(chargz)
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/aflrch.h"
-#include "asterfort/agdual.h"
 #include "asterfort/afrela.h"
 #include "asterfort/assert.h"
 #include "asterfort/copmod.h"
@@ -370,8 +369,7 @@ subroutine calimc(chargz)
 !
 ! --- AFFECTATION DE LA LISTE_RELA A LA CHARGE :
 !     ----------------------------------------
-    call agdual(charge,1,'LIN')
-    call aflrch(lisrel, charge)
+    call aflrch(lisrel, charge, 'LIN')
 !
 ! --- MENAGE :
 !     ------

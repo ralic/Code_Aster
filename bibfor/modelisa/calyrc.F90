@@ -5,7 +5,6 @@ implicit none
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
 #include "asterfort/aflrch.h"
-#include "asterfort/agdual.h"
 #include "asterfort/afrela.h"
 #include "asterfort/assert.h"
 #include "asterfort/calirg.h"
@@ -634,8 +633,7 @@ implicit none
 !
 ! --- AFFECTATION DE LA LISTE DE RELATIONS A LA CHARGE :
 !     ------------------------------------------------
-    call agdual(charge,1,'LIN')
-    call aflrch(lisrel, charge)
+    call aflrch(lisrel, charge, 'LIN')
 !
 310 continue
     call jedema()

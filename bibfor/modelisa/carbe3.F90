@@ -21,7 +21,6 @@ subroutine carbe3(charge)
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
 #include "asterfort/aflrch.h"
-#include "asterfort/agdual.h"
 #include "asterfort/afrela.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -610,8 +609,7 @@ subroutine carbe3(charge)
 !
 !     -- AFFECTATION DE LA LISTE_RELA A LA CHARGE :
 !     ---------------------------------------------
-    call agdual(charge,1,'?')
-    call aflrch(lisrel, charge)
+    call aflrch(lisrel, charge, 'NLIN')
 !
     call jedema()
 !

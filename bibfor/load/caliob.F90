@@ -6,7 +6,6 @@ implicit none
 #include "asterc/getfac.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/aflrch.h"
-#include "asterfort/agdual.h"
 #include "asterfort/afrela.h"
 #include "asterfort/assert.h"
 #include "asterfort/char_excl_keyw.h"
@@ -220,8 +219,7 @@ implicit none
 !
 ! - Final linear relation affectation
 !
-    call agdual(load,1,'LIN')
-    call aflrch(lisrel, load)
+    call aflrch(lisrel, load, 'LIN')
 !
     call jedetc('V', '&&CALIOB.RLLISTE', 1)
     call jedetr(keywordexcl)

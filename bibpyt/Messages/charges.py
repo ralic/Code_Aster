@@ -74,6 +74,15 @@ On ne peut pas piloter la charge %(k1)s car c'est une charge fonction du temps.
 Il y a trop de chargements de type Dirichlet suiveur.
 """),
 
+    30 : _(u"""
+Erreur utilisateur :
+  Le chargement contient des relations cinématiques qui sont non-linéaires
+  lorsque l'on utilise EXCIT / TYPE_CHARGE='SUIV'.
+  Le code ne sait pas encore traiter ces relations non linéaires.
+"""),
+
+
+
     34 : _(u"""
 La charge de type EVOL_CHAR %(k1)s  ne peut pas être pilotée.
 """),

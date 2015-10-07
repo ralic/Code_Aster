@@ -30,33 +30,44 @@ class sd_char_gf_xx(AsBase):
 
 class sd_char_dual(AsBase):
 #   -- pour les C.L. dualisees eventuellement non-lineaires (TYPE_CHARGE='SUIV') :
-#      nbliai : nombre de "paquets" de relations dualisees
-#               1 paquet correspond par exemple aux relations dues a 1 occurrence du mot cle LIAISON_SOLIDE
+#      nb_paquet : nombre de "paquets" de relations cinematiques  dualisees
+#      Le "paquet" correspond a l'ensemble des relations ajoutees a la charge lors d'un appel a aflrch.F90
+#      Un paquet correspond par exemple aux relations dues a 1 occurrence du mot cle LIAISON_SOLIDE
+#      Les relations cinematiques dualisees sont linearisees pendant le calcul : B*U=U0
+#      Les coefficients de B sont stockes dans la carte .CMULT et ceux de U0 dans .CIMPO
+#      A chaque terme non nul de B est associe une maille tardive dans charge.LIGRE.NEMA.
+#      Les termes correspondant a une relation sont stockes a la suite les uns des autres.
+#      En resume :
+#         une charge contient une liste de paquets de relations
+#         un paquet de relation contient une liste de relations
+#         une relation correspond a une liste de termes
+#         pour chaque terme il existe une maille tardive dans .NEMA
 
     nomj = SDNom(fin=13)
-    RCTYR = AsVK8()
-    RCNOM = AsVK8()
-    NMATA = AsVI()
+    PRDK = AsVK8()
+    PRDI = AsVI()
+    PRDSO = AsVK8()
 
     def exists(self):
         # retourne True si la SD semble exister.
-        return self.RCTYR.exists
+        return self.PRDK.exists
 
-    def nb_liai(self):
+    def nb_paquet(self):
         if not self.exists() : return 0
-        return self.RCTYR.lonuti
+        return self.PRDK.lonuti
 
-    def check_RCTYR(self,checker):
+    def check_PRDK(self,checker):
 #       contient les "types" des paquets de relations
-        nbl=self.nb_liai()
+        nbl=self.nb_paquet()
         if nbl > 0 :
-           rctyr=self.RCTYR.get_stripped()
-           for typ1 in rctyr[0:nbl] :
-               print typ1
-               assert typ1 in ('LIN','?','2D2','2D1','2D0','3D3','3D2','3D1','3D0','TRAN','2D0ROTA','3D0ROTA')
-#              'LIN' : Le paquet ne contient que des relations TOUJOURS lineaires. Ex : FACE_IMPO
+           prdk=self.PRDK.get_stripped()
+           for typ1 in prdk[0:nbl] :
+               assert typ1 in ('LIN','NLIN','2D2','2D1','3D3','3D2','3D1','ROTA3D','ROTA2D')
+#              'LIN'  : Le paquet ne contient que des relations TOUJOURS lineaires. Ex : FACE_IMPO (sauf DNOR)
+#              'NLIN' : Le paquet contient des relations qu'il faut reactualiser si TYPE_CHARGE='SUIV'.
 
-#              '?' : Le paquet est peut etre sensible à TYPE_CHARGE='SUIV'. => erreur <F> par prudence
+
+#              Valeurs pour LIAISON_SOLIDE :
 #              '2D2' : Le paquet correspond au cas LIAISON_SOLIDE en 2D, avec des ddls de translation.
 #                      Le nuage des noeuds solidifie est surfacique
 #              '2D1' : Le paquet correspond au cas LIAISON_SOLIDE en 2D, avec des ddls de translation.
@@ -67,20 +78,19 @@ class sd_char_dual(AsBase):
 #                      Le nuage des noeuds solidifie est surfacique
 #              '3D1' : Le paquet correspond au cas LIAISON_SOLIDE en 3D, avec des ddls de translation.
 #                      Le nuage des noeuds solidifie est lineique
-#              'TRAN'    : ??
-#              '2D0ROTA' : ??
-#              '2D0ROTA' : ??
+#              'ROTA2D' : Le paquet correspond au cas LIAISON_SOLIDE en 2D, avec des ddls de rotation.
+#              'ROTA3D' : Le paquet correspond au cas LIAISON_SOLIDE en 3D, avec des ddls de rotation.
 
 
-    def check_RCNOM(self,checker):
-        nbl=self.nb_liai()
+    def check_PRDSO(self,checker):
+        nbl=self.nb_paquet()
         if nbl > 0 :
-           assert 4*nbl <= self.RCNOM.lonmax
+           assert 4*nbl <= self.PRDSO.lonmax
 
-    def check_NMATA(self,checker):
-        nbl=self.nb_liai()
+    def check_PRDI(self,checker):
+        nbl=self.nb_paquet()
         if nbl > 0 :
-           assert 2*nbl <= self.NMATA.lonmax
+           assert 3*nbl <= self.PRDI.lonmax
 
 
 class sd_char_chme(AsBase):

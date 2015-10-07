@@ -7,7 +7,6 @@ implicit none
 #include "asterc/getres.h"
 #include "asterfort/afddli.h"
 #include "asterfort/aflrch.h"
-#include "asterfort/agdual.h"
 #include "asterfort/assert.h"
 #include "asterfort/char_beam_lcs.h"
 #include "asterfort/char_excl_keyw.h"
@@ -207,8 +206,7 @@ implicit none
 !
 ! - Final linear relation affectation
 !
-    call agdual(load,1,'LIN')
-    call aflrch(lisrel, load)
+    call aflrch(lisrel, load, 'LIN')
 !
     call jedetr('&&CADDLP.DIRECT')
     AS_DEALLOCATE(vi=dimension)

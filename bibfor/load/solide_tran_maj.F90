@@ -67,10 +67,10 @@ implicit none
     character(len=13)  :: load_dual
     character(len=19)  :: deplas
     aster_logical :: l3d
-    integer, pointer :: dual_nmata(:) => null()
-    character(len=8), pointer :: dual_rctyr(:) => null()
+    integer, pointer :: dual_prdi(:) => null()
+    character(len=8), pointer :: dual_prdk(:) => null()
     character(len=8), pointer :: load_type(:) => null()
-    character(len=8), pointer :: dual_rcnom(:) => null()
+    character(len=8), pointer :: dual_prdso(:) => null()
     character(len=8), pointer :: deplc(:) => null()
     real(kind=8), pointer :: deplv(:) => null()
     integer, pointer :: depld(:) => null()
@@ -95,11 +95,11 @@ implicit none
     call jeveuo(load_name//'.TYPE', 'L', vk8=load_type)
     ASSERT(load_type(1).eq.'MECA_RE')
     load_dual=load_name//'.DUAL'
-    call jeveuo(load_dual//'.RCTYR', 'L', vk8=dual_rctyr)
-    call jelira(load_dual//'.RCTYR', 'LONUTI', ival=nb_link)
-    call jeveuo(load_dual//'.NMATA', 'L', vi=dual_nmata)
-    call jeveuo(load_dual//'.RCNOM', 'L', vk8=dual_rcnom)
-    ASSERT(size(dual_nmata).ge.2*nb_link)
+    call jeveuo(load_dual//'.PRDK', 'L', vk8=dual_prdk)
+    call jelira(load_dual//'.PRDK', 'LONUTI', ival=nb_link)
+    call jeveuo(load_dual//'.PRDI', 'L', vi=dual_prdi)
+    call jeveuo(load_dual//'.PRDSO', 'L', vk8=dual_prdso)
+    ASSERT(size(dual_prdi).ge.3*nb_link)
 !
 !   -- Acces aux cartes .CMULT et .CIMPO :
 !   ---------------------------------------
@@ -130,17 +130,17 @@ implicit none
 !   -- on boucle sur les liaisons de load_type '2Dx' ou '3Dx' :
 !   -------------------------------------------------------
     do i_link=1,nb_link
-        if (dual_rctyr(i_link)(1:2).ne.'2D' .and. dual_rctyr(i_link)(1:2).ne.'3D') cycle
+        if (dual_prdk(i_link)(1:2).ne.'2D' .and. dual_prdk(i_link)(1:2).ne.'3D') cycle
 
-        l3d=dual_rctyr(i_link)(1:1).eq.'3'
+        l3d=dual_prdk(i_link)(1:1).eq.'3'
         if (l3d) then
             ASSERT(deplc(kdz).eq.'DZ')
         endif
-        read (dual_rctyr(i_link)(3:3),'(I1)') dim
-        ASSERT(dim.ge.0 .and. dim.le.3)
+        read (dual_prdk(i_link)(3:3),'(I1)') dim
+        ASSERT(dim.ge.1 .and. dim.le.3)
 
-        ideb=dual_nmata(2*(i_link-1)+1)
-        nbterm1=dual_nmata(2*(i_link-1)+2)+dual_nmata(2*(i_link-1)+1)+1
+        ideb=dual_prdi(3*(i_link-1)+3)
+        nbterm1=dual_prdi(3*(i_link-1)+2)
 
 
 
@@ -150,11 +150,11 @@ implicit none
 !       qu'a la creation dans solide_tran.
 !       Puis, pour une relation donnee, il faut parcourir les ddls dans le meme ordre.
 
-        ico=-ideb-1
+        ico=ideb-1
 
 
         do ka=1,dim
-            nomnoe_a=dual_rcnom(4*(i_link-1)+ka)
+            nomnoe_a=dual_prdso(4*(i_link-1)+ka)
             call jenonu(jexnom(mesh//'.NOMNOE', nomnoe_a), numnoe_a)
             xa = mesh_coor(3*(numnoe_a-1)+1)
             ya = mesh_coor(3*(numnoe_a-1)+2)
@@ -165,7 +165,7 @@ implicit none
             if (l3d) wa = deplv((numnoe_a-1)*ncmp1 + kdz)
 
             do kb=ka+1,dim+1
-                nomnoe_b=dual_rcnom(4*(i_link-1)+kb)
+                nomnoe_b=dual_prdso(4*(i_link-1)+kb)
                 call jenonu(jexnom(mesh//'.NOMNOE', nomnoe_b), numnoe_b)
                 xb = mesh_coor(3*(numnoe_b-1)+1)
                 yb = mesh_coor(3*(numnoe_b-1)+2)
@@ -217,3 +217,4 @@ implicit none
 !
     call jedema()
 end subroutine
+        

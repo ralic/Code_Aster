@@ -9,7 +9,6 @@ implicit none
 #include "asterc/getres.h"
 #include "asterfort/afddli.h"
 #include "asterfort/aflrch.h"
-#include "asterfort/agdual.h"
 #include "asterfort/afrela.h"
 #include "asterfort/assert.h"
 #include "asterfort/catang.h"
@@ -285,8 +284,7 @@ implicit none
 !
 ! - Final linear relation affectation
 !
-    call agdual(load,1,'LIN')
-    call aflrch(list_rela, load)
+    call aflrch(list_rela, load, 'LIN')
 !
     call jedetr('&&CATANG.TANGENT')
     call jedetr('&&CAAREI.REPE_DEFI')

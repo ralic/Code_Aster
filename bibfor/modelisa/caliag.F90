@@ -7,7 +7,6 @@ implicit none
 #include "asterc/getfac.h"
 #include "asterc/indik8.h"
 #include "asterfort/aflrch.h"
-#include "asterfort/agdual.h"
 #include "asterfort/afrela.h"
 #include "asterfort/assert.h"
 #include "asterfort/caexno.h"
@@ -496,9 +495,8 @@ implicit none
 ! --- AFFECTATION DE LA LISTE DE RELATIONS A LA CHARGE  ---
 !
     if (phenom.eq.'MECA') then
-        call agdual(charge,1,'LIN')
     endif
-    call aflrch(lisrel, charge)
+    call aflrch(lisrel, charge, 'LIN')
 !
 999 continue
     call jedema()

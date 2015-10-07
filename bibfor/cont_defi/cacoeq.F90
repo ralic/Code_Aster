@@ -232,7 +232,7 @@ implicit none
     end do
 !
     if (l_line_rela) then
-        call aflrch(list_rela, sdcont)
+        call aflrch(list_rela, sdcont, 'NLIN')
         call cfsuex(sdcont_defi, v_list_excl, nb_excl, nb_cont_zone)
         call jedetr(connex_inv)
         AS_DEALLOCATE(vi = v_list_excl)

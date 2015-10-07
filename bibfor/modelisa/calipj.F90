@@ -319,7 +319,7 @@ subroutine calipj(chargz)
     AS_DEALLOCATE(vk8=idnomn)
     AS_DEALLOCATE(vk8=idnomd)
 !   affectation de la liste de relations à la charge
-    call aflrch(lisrel, charge)
+    call aflrch(lisrel, charge, 'NLIN')
 !
 999 continue
     call jedema()

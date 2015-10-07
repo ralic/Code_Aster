@@ -9,7 +9,6 @@ implicit none
 #include "asterc/indik8.h"
 #include "asterfort/afddli.h"
 #include "asterfort/aflrch.h"
-#include "asterfort/agdual.h"
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
 #include "asterfort/char_excl_keyw.h"
@@ -280,9 +279,8 @@ implicit none
 ! - Final linear relation affectation
 !
     if (keywordfact.eq.'DDL_IMPO') then
-        call agdual(load,1,'LIN')
     endif
-    call aflrch(list_rela, load)
+    call aflrch(list_rela, load, 'LIN')
 !
     call jedetr('&&CADDLI.DIRECT')
     call jedetr(keywordexcl)

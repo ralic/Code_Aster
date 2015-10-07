@@ -16,9 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-subroutine aflrch(lisrez, chargz, elim)
+subroutine aflrch(lisrez, chargz, type_liai, elim)
     character(len=*), intent(in) :: lisrez
     character(len=*), intent(in) :: chargz
+    character(len=*), intent(in) :: type_liai
     character(len=*), intent(in), optional :: elim
 end subroutine aflrch
 end interface
