@@ -237,8 +237,8 @@ vecel     = CALC_VECT_ELEM(CHARGE=CH_ALL, INST=1.0, CHAM_MATER=CHMAT, OPTION='CH
 numeddl   = NUME_DDL(MATR_RIGI = rigiel)
 matass    = ASSE_MATRICE(MATR_ELEM=rigiel , NUME_DDL=numeddl)
 vecas     = ASSE_VECTEUR(VECT_ELEM=vecel, NUME_DDL=numeddl)
-k         = FACTORISER(MATR_ASSE=matass);
-U6        = RESOUDRE( MATR = k, CHAM_NO= vecas )
+matass    = FACTORISER(reuse=matass, MATR_ASSE=matass);
+U6        = RESOUDRE( MATR = matass, CHAM_NO= vecas )
 TEST_RESU(CHAM_NO=_F(
                   REFERENCE='ANALYTIQUE',
                   CHAM_GD=U6,

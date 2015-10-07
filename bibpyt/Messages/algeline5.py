@@ -280,9 +280,11 @@ de fréquences demandées (%(i2)d).
 """),
 
     56: _(u"""
-    La matrice factorisée produit par l'opérateur FACTOR ne peut faire l'objet
-    d'un concept réentrant car la méthode de résolution définie dans NUME_DDL
-    est 'GCPC'.
+Commande FACTORISER :
+   Il faut toujours utiliser le mot clé 'reuse'.
+
+   Sauf si la méthode est 'GCPC' et le préconditionnement 'LDLT_INC', 
+   auquel cas, il est interdit d'utiliser 'reuse'
 """),
 
     57: _(u"""
@@ -346,6 +348,8 @@ de fréquences demandées (%(i2)d).
     Méthode 'QZ' dans CALC_MODES : On souhaite un nombre de valeurs
     propres %(i1)d supérieur au nombre de valeurs propres détectées %(i2)d !
 """),
+
+
 
 
 

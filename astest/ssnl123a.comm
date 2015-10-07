@@ -323,9 +323,6 @@ for i in range(1,3):
     MATR_ELEM=MELRI,
     NUME_DDL=NUMDDL,)
 
-# Factorisation de la matrice assemblee de rigidite
-  MASRIFA=FACTORISER(MATR_ASSE=MASRI,)
-
 # Prise en compte de la precontrainte au niveau elementaire
   VASFO=CREA_CHAMP(
     TYPE_CHAM='ELGA_SIEF_R',
@@ -374,7 +371,6 @@ for i in range(1,3):
   DETRUIRE( CONCEPT= _F( NOM= MELRI ) )
   DETRUIRE( CONCEPT= _F( NOM= NUMDDL ) )
   DETRUIRE( CONCEPT= _F( NOM= MASRI ) )
-  DETRUIRE( CONCEPT= _F( NOM= MASRIFA ) )
   DETRUIRE( CONCEPT= _F( NOM= VASFO ) )
   DETRUIRE( CONCEPT= _F( NOM= VASFI ) )
   DETRUIRE( CONCEPT= _F( NOM= MELGEO ) )

@@ -68,36 +68,46 @@ subroutine op0014()
     real(kind=8) :: fillin, epsmat, eps
 !     ------------------------------------------------------------------
     call jemarq()
-!
+
     call infmaj()
     call infniv(ifm, niv)
-!
+
     call getres(matfac, concep, nomcmd)
     mfac = matfac
     call getvid('  ', 'MATR_ASSE', scal=matass, nbret=ibid)
     mass = matass
     call dismoi('METH_RESO', mass, 'MATR_ASSE', repk=metres)
-!
+
+
+
+!   -- la commande peut-elle ou doit-elle etre reentrante ?
+!      reuse <=> precon.eq.'LDLT_SP'
+!   --------------------------------------------------------
+    precon=' '
+    call getvtx(' ', 'PRE_COND', scal=precon, nbret=ibid)
+    if (metres.eq.'GCPC' .and. precon .eq. 'LDLT_INC') then
+        if (mfac .eq. mass) then
+            call utmess('F', 'ALGELINE5_56')
+        endif
+    else
+        if (mfac .ne. mass) then
+            call utmess('F', 'ALGELINE5_56')
+        endif
+    endif
+
     if (metres .eq. 'GCPC' .or. metres .eq. 'PETSC') then
         call uttcpu('CPU.RESO.1', 'DEBUT', ' ')
         call uttcpu('CPU.RESO.4', 'DEBUT', ' ')
     endif
-!
-!
-!     CAS DU SOLVEUR  GCPC :
-!     ---------------------
+
+
+!   CAS DU SOLVEUR  GCPC :
+!   ---------------------
     if (metres .eq. 'GCPC') then
-!        VERIFICATION : CONCEPT REENTRANT INTERDIT
-        call exisd('MATR_ASSE', matfac, iret)
-        if (iret .eq. 1) then
-            call utmess('F', 'ALGELINE5_56')
-        endif
-!        VERIFICATION : MATR_ASSE A VALEURS COMPLEXES INTERDIT
+!       -- verification : matr_asse a valeurs complexes interdit
         if (concep(16:16) .eq. 'C') then
             call utmess('F', 'ALGELINE5_57')
         endif
-!
-        call getvtx(' ', 'PRE_COND', scal=precon, nbret=ibid)
 !
         if (precon .eq. 'LDLT_INC') then
 !          ON ECRIT DANS LA SD SOLVEUR LE TYPE DE PRECONDITIONNEU
@@ -107,6 +117,7 @@ subroutine op0014()
 !
             call getvis(' ', 'NIVE_REMPLISSAGE', scal=niremp, nbret=iret)
             call pcldlt(mfac, mass, niremp, 'G')
+
         else if (precon.eq.'LDLT_SP') then
 !          OBLIGATOIRE POUR AVOIR UN CONCEPT DE SORTIE SD_VERI OK
             if (mass .ne. mfac) call copisd('MATR_ASSE', 'G', mass, mfac)

@@ -68,11 +68,11 @@ VECAS=ASSE_VECTEUR(VECT_ELEM=VEL,
 # ----------------------------------------------------------------------
 # GCP + LDLT_INC
 
-KMATAS=FACTORISER(MATR_ASSE=MATAS);
+PRECON=FACTORISER(MATR_ASSE=MATAS,PRE_COND='LDLT_INC');
 
 KVECAS=RESOUDRE(MATR=MATAS,
                 CHAM_NO=VECAS,
-                MATR_PREC=KMATAS,
+                MATR_PREC=PRECON,
                 RESI_RELA=1E-8);
 
 TEST_RESU(CHAM_NO=(_F(NOEUD='NO2958',
@@ -116,11 +116,11 @@ TEST_RESU(CHAM_NO=(_F(NOEUD='NO2958',
 # ----------------------------------------------------------------------
 # GCP + LDLT_SP
 
-KMATAS2=FACTORISER(MATR_ASSE=MATAS,PRE_COND='LDLT_SP');
+MATAS=FACTORISER(reuse=MATAS, MATR_ASSE=MATAS, PRE_COND='LDLT_SP');
 
 KVECAS2=RESOUDRE(MATR=MATAS,
                  CHAM_NO=VECAS,
-                 MATR_PREC=KMATAS2,
+                 MATR_PREC=MATAS,
                  RESI_RELA=1E-8);
 
 TEST_RESU(CHAM_NO=(_F(NOEUD='NO2958',

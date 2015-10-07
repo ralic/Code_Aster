@@ -99,7 +99,7 @@ def macro_elas_mult_ops(self, MODELE, CHAM_MATER, CARA_ELEM, NUME_DDL,
 
         __nomras = ASSE_MATRICE(MATR_ELEM=__nomrig, NUME_DDL=num)
 
-        __nomraf = FACTORISER(MATR_ASSE=__nomras, NPREC=SOLVEUR[
+        __nomras = FACTORISER(reuse=__nomras, MATR_ASSE=__nomras, NPREC=SOLVEUR[
                               'NPREC'], STOP_SINGULIER=SOLVEUR['STOP_SINGULIER'])
 
 #
@@ -146,7 +146,7 @@ def macro_elas_mult_ops(self, MODELE, CHAM_MATER, CARA_ELEM, NUME_DDL,
 
             __nomras = ASSE_MATRICE(MATR_ELEM=__nomrig, NUME_DDL=num)
 
-            __nomraf = FACTORISER(MATR_ASSE=__nomras, NPREC=SOLVEUR[
+            __nomras = FACTORISER(MATR_ASSE=__nomras, NPREC=SOLVEUR[
                                   'NPREC'], STOP_SINGULIER=SOLVEUR['STOP_SINGULIER'])
 
         if m['VECT_ASSE'] == None:
@@ -165,7 +165,7 @@ def macro_elas_mult_ops(self, MODELE, CHAM_MATER, CARA_ELEM, NUME_DDL,
             __nomasv = m['VECT_ASSE']
 
         __nomchn = RESOUDRE(
-            MATR=__nomraf, CHAM_NO=__nomasv, TITRE=m['SOUS_TITRE'])
+            MATR=__nomras, CHAM_NO=__nomasv, TITRE=m['SOUS_TITRE'])
         nomchn.append(__nomchn)
 
 # fin de la boucle sur les items de CAS_CHARGE

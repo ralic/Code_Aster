@@ -65,7 +65,7 @@ VECAS=ASSE_VECTEUR(VECT_ELEM=VEL,
 
 # ----------------------------------------------------------------------
 # GCP + LDLT_INC
-KMATAS=FACTORISER(MATR_ASSE=MATAS,);
+KMATAS=FACTORISER(MATR_ASSE=MATAS,PRE_COND='LDLT_INC',);
 
 DEP=RESOUDRE(MATR=MATAS,
              CHAM_NO=VECAS,
@@ -320,12 +320,12 @@ TEST_RESU(RESU=(_F(INST=0.0,
 
 # ----------------------------------------------------------------------
 # GCP + LDLT_SP
-KMATAS2=FACTORISER(MATR_ASSE=MATAS,PRE_COND='LDLT_SP');
+MATAS=FACTORISER(reuse=MATAS,MATR_ASSE=MATAS,PRE_COND='LDLT_SP');
 
 DEP2=RESOUDRE(MATR=MATAS,
              CHAM_NO=VECAS,
              RESI_RELA=1.e-12,
-             MATR_PREC=KMATAS2,
+             MATR_PREC=KMATAS,
              NMAX_ITER=1000,
              INFO=2);
 
