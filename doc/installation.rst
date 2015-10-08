@@ -16,7 +16,7 @@ source folder (``cd path/to/codeaster-src``).
 Required dependencies
 =====================
 
-Python 2.6 or later with development files (under Debian python-dev)
+Python 2.7 or later with development files (under Debian python-dev)
 
 Building Code_Aster
 ===================
@@ -56,10 +56,10 @@ place (``install`` folder in the current directory for instance)::
 
     $ ./waf configure install --prefix=$PWD/install
 
-Then you must set your environment variables, e.g. (with python 2.6)::
+Then you must set your environment variables, e.g. (with python 2.7)::
 
     $ export ASTERPATH=$PWD/install/share/aster
-    $ export PYTHONPATH=$PWD/install/lib/python2.6/site-packages
+    $ export PYTHONPATH=$PWD/install/lib/python2.7/site-packages
     $ export LD_LIBRARY_PATH=$PWD/install/lib
     $ export PATH=$PWD/install/bin:$PATH
 
@@ -68,7 +68,7 @@ Running the validation tests
 
 To run a single test, use::
 
-    $ ./waf test <testcasename>
+    $ ./waf test -n <testcasename>
 
 To run all the test cases, get the devtools and run the script::
 
@@ -95,10 +95,10 @@ Building parallel version on Debian with petsc support::
     $ INCLUDES="/usr/include/mpi" ./waf configure build -p --parallel \
     --maths-libs='scalapack-openmpi blacs-openmpi' --enable-petsc
 
-Building sequential production version on Debian with Python2.6::
+Building sequential production version on Debian with Python2.7::
 
-    $ INCLUDES="/usr/include/mpi" PYTHON="python2.6" \
-    ./waf configure build -p -o py2.6-build \
+    $ INCLUDES="/usr/include/mpi" PYTHON="python2.7" \
+    ./waf configure build -p -o py2.7-build \
     --mumps-libs="dmumps_seq zmumps_seq smumps_seq cmumps_seq \
                   mumps_common_seq pord_seq mpiseq_seq"
 
@@ -132,7 +132,7 @@ For installing Homard, the steps are::
 
     $ tar xzf homard-9.8-1.all.tar.gz
     $ cd homard-9.8
-    $ echo "PYTHON | python | 2.4 | /usr/bin/python2.6" > config.txt
+    $ echo "PYTHON | python | 2.7 | /usr/bin/python2.7" > config.txt
     $ echo "REPOUT | exec   | 04  | /opt/users/dede/outils" >> config.txt
     $ echo $PWD/config.txt | python setup_homard.py
     $ rm config.txt
@@ -172,7 +172,7 @@ Appendix: running tests with ASTK for comparing results
 
 Running test in a dev machine::
 
-    $ cp dbg-build/aster /usr/lib/codeaster/STA10.3/asteru_py2.6
+    $ cp dbg-build/aster /usr/lib/codeaster/STA10.3/asteru_py2.7
     $ sed -i back -e 's:\(.*liste_internet.*\):#\1:' \
     -e 's:#\(.*liste_short_without_homard.*\):\1:' \
     /usr/lib/codeaster/STA10.3/astout.export

@@ -10,7 +10,7 @@ Repositories
 
 Code_Aster source files are stored into several repositories:
 
-- `src`_: source files (C, fortran, python) and build scripts (~350MB)
+- `src`_: source files (C, fortran, python), most of the verification testcases and build scripts (~350MB)
 - *validation*: a few testcase files with non-public data (~1GB)
 - *data*: data about materials that can not be freely distributed
 - `perf`_: this one containing some testcase files used for performance
@@ -19,30 +19,29 @@ Code_Aster source files are stored into several repositories:
 
 Other independent repositories exist:
 
-- `devtools`_: contains helper scripts
-- `i18n`_: repository created to share the gettext files for Code_Aster
-  messages
+- `devtools`_: contains helper scripts for the developers
+
 
 Branches and tags
 =================
 
 The branches are:
 
-* ``default``: version 12, the development branch where the current work goes
+* ``default``: currently version 13, the development branch where the current work goes
 
-* ``v11``: version 11, the maintenance branch for the stable version 11
+* ``v12``: version 12, the maintenance branch for the stable version 12
 
-* ``v10``: version 10, the branch for the old stable version 10
+* ``v11``: version 10, the branch for the old stable version 11
 
-Each published version is tagged with its number. Examples: 11.3.22, 12.1.13.
+Each published version is tagged with its number. Examples: 12.3.8, 13.0.9.
 
 Two tags are used aliases and moved when new versions are published:
 
 * ``stable``: the latest frozen state of the stable version in the
-  maintenance branch (ex. 11.4.0).
+  maintenance branch (ex. 12.4.0).
 
 * ``testing``: the latest frozen state of the development version in the
-  development branch (ex. 12.1.0).
+  development branch (ex. 13.1.0).
 
 Two names are often used in discussions to identify the code during its
 enhancements:
@@ -54,7 +53,6 @@ enhancements:
 .. _src: https://bitbucket.org/code_aster/codeaster-src
 .. _perf: https://bitbucket.org/code_aster/codeaster-perf
 .. _devtools: https://bitbucket.org/code_aster/codeaster-devtools
-.. _i18n: https://bitbucket.org/code_aster/codeaster-i18n
 
 Installation
 ============
