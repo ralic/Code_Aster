@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="sv-SE" sourcelanguage="fr">
+<TS version="2.0" language="fa" sourcelanguage="fr">
   <context>
     <name>@default</name>
     <message>
@@ -11,37 +11,37 @@
     <message>
       <location filename="../cata.py" line="3682"/>
       <source>Comportement utilisateur de type UMAT</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">رفتار کاربر از نوع UMAT</translation>
     </message>
     <message>
       <location filename="../cata.py" line="3682"/>
       <source>Nombre de variables internes</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">تعداد متغیرهای داخلی</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="3682"/>
       <source>Chemin vers la bibliothèque dynamique définissant le comportement UMAT</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">مسیر کتابخانه پویا تعریف کنندەی رفتار UMAT</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="3682"/>
       <source>Nom de la routine UMAT dans la bibliothèque</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">نام معمول UMAT در کتابخانه</translation>
     </message>
     <message>
       <location filename="../cata.py" line="3682"/>
       <source>Comportement utilisateur de type MFRONT</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">رفتار کاربر از نوع MFRONT</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="3682"/>
       <source>Chemin vers la bibliothèque dynamique définissant le comportement MFRONT</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">مسیر کتابخانه پویا تعریف کنندەی رفتار MFRONT</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="3682"/>
       <source>Nom de la routine MFRONT dans la bibliothèque</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">نام معمول MFRONT در کتابخانه</translation>
     </message>
     <message>
       <location filename="../cata.py" line="3682"/>
@@ -56,7 +56,7 @@
     <message>
       <location filename="../cata.py" line="3682"/>
       <source>lois de comportements thermo-hydro-mecaniques</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">قوانین رفتار ترمو-هیدرو-مکانیک</translation>
     </message>
     <message>
       <location filename="../cata.py" line="3682"/>
@@ -66,7 +66,7 @@
     <message>
       <location filename="../cata.py" line="3682"/>
       <source>nombre de phases metallurgiques</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">تعداد فازهای متالورژیکی</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="3682"/>
@@ -371,7 +371,7 @@
     <message>
       <location filename="../cata.py" line="5988"/>
       <source>Orientation des tuyaux.</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">جهت گیری لولەها.</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="5988"/>
@@ -7316,7 +7316,7 @@
     <message>
       <location filename="../cata.py" line="32359"/>
       <source>description</source>
-      <translation type="unfinished">beskrivning</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="32470"/>

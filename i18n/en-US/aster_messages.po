@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: code-aster\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-17 18:27+0200\n"
-"PO-Revision-Date: 2015-08-30 02:14-0400\n"
+"POT-Creation-Date: 2015-10-08 16:03+0200\n"
+"PO-Revision-Date: 2015-10-08 09:39-0400\n"
 "Last-Translator: ottovonvictor <ottovonvictor@yahoo.com>\n"
 "Language-Team: English\n"
 "Language: en_US\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Generator: crowdin.com\n"
 "X-Crowdin-Project: code-aster\n"
 "X-Crowdin-Language: en\n"
-"X-Crowdin-File: code_aster.po\n"
+"X-Crowdin-File: /v13/code_aster.po\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Build/B_MACRO_ETAPE.py:129
 #, python-format
@@ -807,7 +807,7 @@ msgstr "tensor damage, direction ZZ"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:224
 msgid "énergie résiduelle"
-msgstr "residual energy"
+msgstr "énegie residual"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:225
 msgid "épaisseur du joint clavé"
@@ -8808,23 +8808,13 @@ msgstr ""
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith.py:120
 msgid ""
 "\n"
-" BETON_DOUBLE_DP:\n"
-" le cas des contraintes planes n'est pas traité pour ce modèle.\n"
-msgstr ""
-"\n"
-" BETON_DOUBLE_DP: \n"
-" the case of the plane stresses is not treated for this model. \n"
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith.py:125
-msgid ""
-"\n"
 "  Le nombre de modes et de degré de liberté d'interface sont différents.\n"
 msgstr ""
 "\n"
 " The number of modes and degree of freedom of application interface are "
 "different. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith.py:129
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith.py:124
 #, python-format
 msgid ""
 "\n"
@@ -8835,7 +8825,7 @@ msgstr ""
 " The number of dynamic modes is %(i1)d,\n"
 " it is not a multiple amongst component. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith.py:134
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith.py:129
 #, python-format
 msgid ""
 "\n"
@@ -8846,7 +8836,7 @@ msgstr ""
 " The number of static modes is %(i1)d,\n"
 " it is not a multiple amongst component. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith.py:143
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith.py:138
 msgid ""
 "\n"
 " certains coefficients de masse ajoutée sont négatifs.\n"
@@ -8859,7 +8849,7 @@ msgstr ""
 "interface. \n"
 " adopted convention: structure towards fluid \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith.py:149
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith.py:144
 msgid ""
 "\n"
 " certains coefficients d'amortissement ajouté sont négatifs.\n"
@@ -8869,7 +8859,7 @@ msgstr ""
 " certain damping coefficients added are negative. \n"
 " possibility of flutter instability \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith.py:154
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith.py:149
 msgid ""
 "\n"
 " erreur dans le calcul des valeurs propres de la matrice de raideur\n"
@@ -8877,7 +8867,7 @@ msgstr ""
 "\n"
 " error in the computation of the eigenvalues of the stiffness matrix \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith.py:158
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith.py:153
 msgid ""
 "\n"
 " valeurs propres de la matrice de raideur non réelles\n"
@@ -8885,7 +8875,7 @@ msgstr ""
 "\n"
 " nonreal eigenvalues of the stiffness matrix \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith.py:162
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith.py:157
 msgid ""
 "\n"
 " valeurs propres de la matrice de raideur réelles négatives\n"
@@ -8893,7 +8883,7 @@ msgstr ""
 "\n"
 " negative eigenvalues of the stiffness matrix real \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith.py:166
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith.py:161
 msgid ""
 "\n"
 " erreur dans la sélection des valeurs propres de la matrice de raideur\n"
@@ -8901,7 +8891,7 @@ msgstr ""
 "\n"
 " error in the selection of the eigenvalues of the stiffness matrix \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith.py:170
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith.py:165
 msgid ""
 "\n"
 " tailles des matrices incompatibles pour calcul matrice diagonale\n"
@@ -8909,7 +8899,7 @@ msgstr ""
 "\n"
 " sizes of the incompatible matrixes for computation stamps diagonal \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith.py:174
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith.py:169
 msgid ""
 "\n"
 " option SECANTE non valide\n"
@@ -8917,7 +8907,7 @@ msgstr ""
 "\n"
 " nonvalid option SECANTE \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith.py:178
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith.py:173
 msgid ""
 "\n"
 " trop de familles de systèmes de glissement.\n"
@@ -8927,7 +8917,7 @@ msgstr ""
 " too many families of systems of sliding. \n"
 " increase the current limit (5) \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith.py:183
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith.py:178
 msgid ""
 "\n"
 " trop de familles de systèmes de glissement.\n"
@@ -8937,7 +8927,7 @@ msgstr ""
 " too many families of systems of sliding. \n"
 " modify GERPAS \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith.py:188
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith.py:183
 msgid ""
 "\n"
 " Le nombre de système de glissement est égal à 0\n"
@@ -8945,7 +8935,7 @@ msgstr ""
 "\n"
 " The number of system of sliding is equal to 0 \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith.py:192
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith.py:187
 msgid ""
 "\n"
 " tailles incompatibles pour le produit matrice * vecteur\n"
@@ -8953,7 +8943,7 @@ msgstr ""
 "\n"
 " incompatible sizes for the product stamps * vector \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith.py:196
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith.py:191
 msgid ""
 "\n"
 " traitement non prévu pour le type d'obstacle demandé\n"
@@ -8961,7 +8951,7 @@ msgstr ""
 "\n"
 " processing not planned for the type of obstacle requested \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith.py:200
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith.py:195
 msgid ""
 "\n"
 " obstacle de type discret mal défini (un angle est supérieur à pi).\n"
@@ -8969,7 +8959,7 @@ msgstr ""
 "\n"
 " obstacle of the discrete type definite evil (an angle is higher than pi). \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith.py:204
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith.py:199
 msgid ""
 "\n"
 " Le couplage FLUAGE/ENDO_ISOT_BETON n'est pas valide en THM.\n"
@@ -8977,7 +8967,7 @@ msgstr ""
 "\n"
 " The CREEP/ENDO_ISOT_BETON coupling is not valid in THM.\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith.py:208
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith.py:203
 msgid ""
 "\n"
 " ce mot clé de MODI_MAILLAGE attend un vecteur de norme non nulle.\n"
@@ -8985,7 +8975,7 @@ msgstr ""
 "\n"
 " this key word of MODI_MAILLAGE expects a vector of non-zero norm. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith.py:212
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith.py:207
 msgid ""
 "\n"
 " le mot clé REPERE de MODI_MAILLAGE attend deux vecteurs non nuls "
@@ -9224,22 +9214,12 @@ msgstr ""
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:133
 msgid ""
 "\n"
-" comportement de ROUSSELIER version PETIT_REAC non implanté en contraintes "
-"planes\n"
-msgstr ""
-"\n"
-" behavior of ROUSSELIER version PETIT_REAC not established in plane "
-"stresses \n"
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:137
-msgid ""
-"\n"
 " la porosité initiale F0 ne peut être négative\n"
 msgstr ""
 "\n"
 " initial porosity F0 cannot be negative \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:141
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:137
 #, python-format
 msgid ""
 "\n"
@@ -9248,7 +9228,7 @@ msgstr ""
 "\n"
 " one cannot post-treat the field of the type:  %(k1)s \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:145
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:141
 msgid ""
 "\n"
 " taille vecteurs incompatible\n"
@@ -9256,7 +9236,7 @@ msgstr ""
 "\n"
 " cut vectors incompatible \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:149
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:145
 msgid ""
 "\n"
 " il faut définir une BANDE ou un NUME_ORDRE\n"
@@ -9264,7 +9244,7 @@ msgstr ""
 "\n"
 " it is necessary to define a BANDE or a NUME_ORDRE \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:153
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:149
 msgid ""
 "\n"
 " il faut définir une \"BANDE\" ou une liste de \"NUME_ORDRE\"\n"
@@ -9272,7 +9252,7 @@ msgstr ""
 "\n"
 " it is necessary to define\" a BANDE\" or a list of\" NUME_ORDRE\" \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:157
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:153
 msgid ""
 "\n"
 " dimension spectrale fausse\n"
@@ -9280,7 +9260,7 @@ msgstr ""
 "\n"
 " false spectral dimension \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:161
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:157
 msgid ""
 "\n"
 " l'interspectre modal est de type \"ACCE\"\n"
@@ -9290,7 +9270,7 @@ msgstr ""
 " the modal interspectrum is of type\" ACCE\"\n"
 " one can only restore one acceleration \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:166
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:162
 msgid ""
 "\n"
 " l'interspectre modal est de type \"VITE\"\n"
@@ -9300,7 +9280,7 @@ msgstr ""
 " the modal interspectrum is of type\" VITE\"\n"
 " one can only restore one velocity \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:171
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:167
 msgid ""
 "\n"
 " l'interspectre modal est de type \"DEPL\"\n"
@@ -9310,7 +9290,7 @@ msgstr ""
 " the modal interspectrum is of type\" DEPL\"\n"
 " one cannot restore an acceleration \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:176
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:172
 msgid ""
 "\n"
 " l'interspectre modal est de type \"DEPL\"\n"
@@ -9320,14 +9300,14 @@ msgstr ""
 " the modal interspectrum is of type\" DEPL\"\n"
 " one cannot restore a velocity \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:181
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:177
 msgid ""
 "\n"
 " Il faut spécifier autant de noeuds (par GROUP_NO ou NOEUD) que de "
 "composants (NOM_CMP)\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:185
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:181
 msgid ""
 "\n"
 " il faut autant de \"MAILLE\" que de \"NOEUD\"\n"
@@ -9335,7 +9315,7 @@ msgstr ""
 "\n"
 " one needs as much\" MESH\" than of\" NODE\" \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:189
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:185
 msgid ""
 "\n"
 " il faut définir une liste de mailles pour post-traiter un CHAM_ELEM\n"
@@ -9343,7 +9323,7 @@ msgstr ""
 "\n"
 " it is necessary to define a list of meshes post-to treat a CHAM_ELEM \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:193
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:189
 #, python-format
 msgid ""
 "\n"
@@ -9354,7 +9334,7 @@ msgstr ""
 " the component %(k1)s of the node %(k2)s for the mesh %(k3)s does not "
 "exist. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:197
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:193
 msgid ""
 "\n"
 " mot-clé NB_BLOC inopérant on prend un bloc\n"
@@ -9362,7 +9342,7 @@ msgstr ""
 "\n"
 " inoperative key word NB_BLOC one takes a block \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:201
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:197
 msgid ""
 "\n"
 " vecteur de norme trop petite\n"
@@ -9370,7 +9350,7 @@ msgstr ""
 "\n"
 " vector of too small norm \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:205
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:201
 msgid ""
 "\n"
 " le seul comportement élastique valide est ELAS\n"
@@ -9380,7 +9360,7 @@ msgstr ""
 " the only valid elastic behavior is ELAS\n"
 " "
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:209
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:205
 #, python-format
 msgid ""
 "\n"
@@ -9391,7 +9371,7 @@ msgstr ""
 " the definition of the temperature is compulsory\n"
 " for a coupling law of the type  %(k1)s \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:215
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:211
 msgid ""
 "\n"
 " il faut un nom de champ\n"
@@ -9399,7 +9379,7 @@ msgstr ""
 "\n"
 " one needs a field name \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:219
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:215
 msgid ""
 "\n"
 " pas de champ autre que DEPL ou VITE ou ACCE\n"
@@ -9407,7 +9387,7 @@ msgstr ""
 "\n"
 " no the field other than DEPL or VITE or ACCE \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:223
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:219
 msgid ""
 "\n"
 " pour interpoler il faut fournir une liste de fréquences ou instants.\n"
@@ -9415,7 +9395,7 @@ msgstr ""
 "\n"
 " to interpolate it is necessary to provide a list of frequencies or times. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:227
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:223
 msgid ""
 "\n"
 " calcul du transitoire: pas de solution trouvée\n"
@@ -9425,7 +9405,7 @@ msgstr ""
 " computation of the transient: no the solution found\n"
 " to use the option ETAT_STAT = NON \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:232
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:228
 msgid ""
 "\n"
 " durée de l'excitation trop courte pour le calcul du transitoire.\n"
@@ -9433,7 +9413,7 @@ msgstr ""
 "\n"
 " period of the too short excitation for the computation of the transient. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:236
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:232
 msgid ""
 "\n"
 " pivot nul\n"
@@ -9441,7 +9421,7 @@ msgstr ""
 "\n"
 " null pivot \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:240
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:236
 msgid ""
 "\n"
 " on ne sait pas encore traiter la sous structuration en axisymétrique\n"
@@ -16061,26 +16041,6 @@ msgstr ""
 " Incompatible COMP1D and SIMO_MIEHE \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:50
-msgid ""
-"\n"
-" couplage fluage/fissuration :\n"
-" nombre total de variables internes incohérent <--> erreur de "
-"programmation.\n"
-msgstr ""
-"\n"
-" coupling creep/cracking: \n"
-" incoherent full number of intern variables <--> programming error. \n"
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:57
-#, python-format
-msgid ""
-"\n"
-" le champ de déplacement DIDI n'est pas trouvé dans le concept  %(k1)s\n"
-msgstr ""
-"\n"
-" the field of displacement DIDI is not found in the concept  %(k1)s \n"
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:61
 #, python-format
 msgid ""
 "\n"
@@ -16089,7 +16049,7 @@ msgstr ""
 "\n"
 "  %(k1)suntreated option \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:65
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:54
 msgid ""
 "\n"
 " pas existence de solution pour le saut\n"
@@ -16097,7 +16057,7 @@ msgstr ""
 "\n"
 " not existence of solution for the jump \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:69
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:58
 msgid ""
 "\n"
 " existence d'un élément à discontinuité trop grand\n"
@@ -16107,7 +16067,7 @@ msgstr ""
 " existence of a too large element to discontinuity\n"
 " not unicity of the jump \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:74
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:63
 msgid ""
 "\n"
 " non convergence du NEWTON pour le calcul du saut numéro 1\n"
@@ -16115,7 +16075,7 @@ msgstr ""
 "\n"
 " not convergence of the NEWTON for the computation of the jump number 1 \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:78
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:67
 msgid ""
 "\n"
 " non convergence du NEWTON pour le calcul du saut numéro 2\n"
@@ -16123,7 +16083,7 @@ msgstr ""
 "\n"
 " not convergence of the NEWTON for the computation of the jump number 2 \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:82
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:71
 msgid ""
 "\n"
 " non convergence du NEWTON pour le calcul du saut numéro 3\n"
@@ -16131,7 +16091,7 @@ msgstr ""
 "\n"
 " not convergence of the NEWTON for the computation of the jump number 3 \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:86
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:75
 msgid ""
 "\n"
 " erreur dans le calcul du saut\n"
@@ -16139,7 +16099,7 @@ msgstr ""
 "\n"
 " error in the computation of the jump \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:90
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:79
 #, python-format
 msgid ""
 "\n"
@@ -16148,7 +16108,7 @@ msgstr ""
 "\n"
 " model %(k1)s not established for the discrete elements \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:98
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:87
 msgid ""
 "\n"
 "  valeur de D_SIGM_EPSI non trouvée\n"
@@ -16156,7 +16116,7 @@ msgstr ""
 "\n"
 " value of D_SIGM_EPSI not found \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:102
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:91
 msgid ""
 "\n"
 "  valeur de SY non trouvée\n"
@@ -16164,7 +16124,7 @@ msgstr ""
 "\n"
 " value of SY not found \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:106
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:95
 msgid ""
 "\n"
 " développement non implanté\n"
@@ -16172,7 +16132,7 @@ msgstr ""
 "\n"
 " development not established \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:110
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:99
 msgid ""
 "\n"
 " loi de comportement avec irradiation, le paramètre PHI_ZERO doit être "
@@ -16182,7 +16142,7 @@ msgstr ""
 " constitutive law with irradiation, parameter PHI_ZERO must be higher than "
 "0 \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:114
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:103
 msgid ""
 "\n"
 " loi de comportement avec irradiation, le paramètre phi/K.PHI_ZERO+L doit "
@@ -16192,7 +16152,7 @@ msgstr ""
 " constitutive law with irradiation, the parameter phi/K.PHI_ZERO+L must be "
 "equal to or higher than 0 \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:118
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:107
 msgid ""
 "\n"
 " loi de comportement avec irradiation, le paramètre phi/K.PHI_ZERO+L vaut 0. "
@@ -16202,7 +16162,7 @@ msgstr ""
 " constitutive law with irradiation, the parameter phi/K.PHI_ZERO+L is worth "
 "0. Under these conditions parameter BETA must be positive or null \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:122
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:111
 msgid ""
 "\n"
 " il faut déclarer FONC_DESORP sous ELAS_FO pour le fluage de dessiccation\n"
@@ -16713,13 +16673,10 @@ msgstr ""
 " bad definition of the interspectrum. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith9.py:150
-#, fuzzy
 msgid ""
 "\n"
 " le \"NB_POIN\" doit être une puissance de 2.\n"
 msgstr ""
-"\n"
-" \"the NB_PTS\" must be a power of 2. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith9.py:154
 msgid ""
@@ -18650,7 +18607,7 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/calcchamp.py:55
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 "La récupération des chargements concernant le résultat %(k1)s n'est "
@@ -18661,17 +18618,9 @@ msgid ""
 "redéfinition des chargements,\n"
 "il faut vérifier la cohérence des chargements.\n"
 msgstr ""
-"\n"
-" The recovery of the loadings concerning the result %(k1)s is currently not "
-"possible. \n"
-" Code_Aster cannot thus check the coherence of the loadings. \n"
-" \n"
-" Advice: If you use a command with an option which requires the redefinition "
-"of the loadings,\n"
-" it is necessary to check the coherence of the loadings. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/calcchamp.py:63
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 "Le mot clef EXCIT de la commande n'est pas renseigné et la récupération des "
@@ -18680,12 +18629,6 @@ msgid ""
 "\n"
 "Conseil : Il faut renseigner le mot clef EXCIT de la commande CALC_CHAMP,\n"
 msgstr ""
-"\n"
-" Key word EXCIT of the command is not indicated and the recovery of the "
-"loadings concerning\n"
-" the result %(k1)s is currently not possible. \n"
-" \n"
-" Advice: It is necessary to inform key word EXCIT of the command, \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/calcessai0.py:22
 msgid ""
@@ -19058,7 +19001,7 @@ msgstr ""
 "FX, FY [FZ] \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/calcul.py:114
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 "Erreur dans un calcul élémentaire :\n"
@@ -19073,17 +19016,6 @@ msgid ""
 "trouvées\n"
 "  sur la maille.\n"
 msgstr ""
-"\n"
-"Error in an elementary computation: \n"
-" One did not find all the components desired of the field for the "
-"parameter:  %(k1)s \n"
-" - option:  %(k2)s \n"
-" - type_élément:  %(k3)s \n"
-" - mesh:  %(k4)s \n"
-" \n"
-"Risks and advices: \n"
-" Certain information on the context of this error is below printed. \n"
-" They can help to understand a possible error of use. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/calcul.py:126
 #, python-format
@@ -24972,7 +24904,7 @@ msgid ""
 " elle ne peut pas être différentielle.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:59
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:58
 #, python-format
 msgid ""
 "\n"
@@ -24982,7 +24914,7 @@ msgid ""
 "pilotables, il faut les séparer.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:65
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:64
 #, python-format
 msgid ""
 "\n"
@@ -24990,7 +24922,7 @@ msgid ""
 " elle ne peut pas être pilotée.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:70
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:69
 #, python-format
 msgid ""
 "\n"
@@ -24998,14 +24930,32 @@ msgid ""
 "temps.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:74
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:73
+#, fuzzy
+msgid ""
+"\n"
+"Il y a trop de chargements de type Dirichlet suiveur.\n"
+msgstr ""
+"\n"
+" There are too many columns of the type SUIVI_DDL ( %(i1)dcolumns). \n"
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:77
+msgid ""
+"\n"
+"Erreur utilisateur :\n"
+"  Le chargement contient des relations cinématiques qui sont non-linéaires\n"
+"  lorsque l'on utilise EXCIT / TYPE_CHARGE='SUIV'.\n"
+"  Le code ne sait pas encore traiter ces relations non linéaires.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:86
 #, python-format
 msgid ""
 "\n"
 "La charge de type EVOL_CHAR %(k1)s  ne peut pas être pilotée.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:78
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:90
 #, python-format
 msgid ""
 "\n"
@@ -25013,7 +24963,7 @@ msgid ""
 " car elle est pilotée.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:83
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:95
 msgid ""
 "\n"
 "On ne peut pas piloter en l'absence de forces de type FIXE_PILO.\n"
@@ -25021,7 +24971,7 @@ msgstr ""
 "\n"
 "One cannot control in the absence of forces of the type FIXE_PILO. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:87
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:99
 msgid ""
 "\n"
 "On ne peut piloter plus d'une charge.\n"
@@ -25029,7 +24979,7 @@ msgstr ""
 "\n"
 "One cannot control more than one load. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:91
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:103
 msgid ""
 "\n"
 "Le chargement FORCE_SOL n'est utilisable qu'en dynamique.\n"
@@ -25037,7 +24987,7 @@ msgstr ""
 "\n"
 "Loading FORCE_SOL is usable only in dynamics. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:95
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:107
 msgid ""
 "\n"
 "Le chargement FORCE_SOL ne peut pas être de type suiveur\n"
@@ -25045,7 +24995,7 @@ msgstr ""
 "\n"
 "Loading FORCE_SOL cannot be of following type \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:99
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:111
 msgid ""
 "\n"
 "Le chargement FORCE_SOL ne peut pas être de type Dirichlet différentiel.\n"
@@ -25053,7 +25003,7 @@ msgstr ""
 "\n"
 "Loading FORCE_SOL cannot be of differential Dirichlet type. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:103
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:115
 msgid ""
 "\n"
 "Le chargement FORCE_SOL ne peut pas être une fonction.\n"
@@ -25061,7 +25011,7 @@ msgstr ""
 "\n"
 "Loading FORCE_SOL cannot be a function. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:107
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:119
 msgid ""
 "\n"
 "Le chargement FORCE_SOL ne doit pas avoir de fonction multiplicatrice.\n"
@@ -26371,6 +26321,13 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:311
+msgid ""
+"\n"
+"Vous utilisez un comportement élastique non-linéaire avec un état initial.\n"
+"Cet état initial ne sera pas pris en compte. \n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:316
 #, python-format
 msgid ""
 "\n"
@@ -26381,7 +26338,7 @@ msgstr ""
 " ATTENTION SR > 1 SR = %(r1)f\n"
 " SECHM %(r2)f SECHP %(r3)f W0  %(r4)f \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:316
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:321
 #, python-format
 msgid ""
 "\n"
@@ -26392,7 +26349,7 @@ msgstr ""
 " ATTENTION SR < 0 SR = %(r1)f\n"
 " SECHM %(r2)f SECHP %(r3)f W0  %(r4)f \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:321
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:326
 #, python-format
 msgid ""
 "\n"
@@ -26403,7 +26360,7 @@ msgstr ""
 " Attention in the routine majpad the dissolved air pressure becomes\n"
 " negative with the mesh %(k1)s. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:326
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:331
 msgid ""
 "\n"
 "La loi de comportement ENDO_SCALAIRE n'est disponible que pour la "
@@ -26421,7 +26378,7 @@ msgstr ""
 " - AXIS_GRAD_VARI\n"
 " - 3D_GRAD_VARI \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:333
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:338
 msgid ""
 "\n"
 "Dans la définition du matériau RUPT_DUCT les coefficients de forme de la loi "
@@ -26431,7 +26388,7 @@ msgstr ""
 "In the definition of material RUPT_DUCT the coefficients of form of model "
 "CZM_TRA_MIX must check: COEF_EXTR <= COEF_PLAS \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:337
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:342
 #, python-format
 msgid ""
 "\n"
@@ -26442,7 +26399,7 @@ msgstr ""
 "The type of strains %(k1)s is not compatible with modelizations SHB. Use "
 "PETIT or GROT_GDEP. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:341
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:346
 msgid ""
 "\n"
 "Erreur dans le calcul du tenseur équivalent au sens de HILL.\n"
@@ -26451,7 +26408,7 @@ msgstr ""
 "Error in the computation of the equivalent tensor within the meaning of "
 "HILL. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:345
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:350
 #, python-format
 msgid ""
 "\n"
@@ -26462,7 +26419,7 @@ msgstr ""
 " The number of initial intern variables is incorrect:  %(i1)d ; it should be "
 "worth  %(i2)d \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:349
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:354
 msgid ""
 "\n"
 "Lors d'un calcul avec des poutres multifibres, il est nécessaire de "
@@ -26470,7 +26427,7 @@ msgid ""
 "AFFE_COMPOR dans AFFE_MATERIAU.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:354
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:359
 #, python-format
 msgid ""
 " == Paramètres de la loi %(k1)s ==\n"
@@ -26491,7 +26448,7 @@ msgstr ""
 "  %(k4)s \n"
 " =================================================="
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:363
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:368
 #, python-format
 msgid ""
 "\n"
@@ -26501,7 +26458,7 @@ msgstr ""
 "\n"
 "For the behavior %(k1)s the parameters %(k2)s and %(k3)s are compulsory. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:367
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:372
 #, python-format
 msgid ""
 "\n"
@@ -26510,7 +26467,7 @@ msgstr ""
 "\n"
 "The computation of ENEL_ELGA is not possible with DEFORMATION= %(k1)s. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:371
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:376
 #, python-format
 msgid ""
 "\n"
@@ -26519,7 +26476,7 @@ msgstr ""
 "\n"
 "The computation of ENER_TOTALE is not possible with DEFORMATION= %(k1)s. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:375
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:380
 #, python-format
 msgid ""
 "\n"
@@ -26528,7 +26485,7 @@ msgstr ""
 "\n"
 "The computation of ETOT_ELGA is not possible with DEFORMATION= %(k1)s. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:379
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:384
 #, python-format
 msgid ""
 "\n"
@@ -26537,7 +26494,7 @@ msgstr ""
 "\n"
 "DELTA1 = %(r1)f must always stay between 0 and 1.\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:383
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:388
 #, python-format
 msgid ""
 "\n"
@@ -26546,7 +26503,7 @@ msgstr ""
 "\n"
 "DELTA2 = %(r1)f must always remain between 0 and 1. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:387
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:392
 #, python-format
 msgid ""
 "\n"
@@ -26555,7 +26512,7 @@ msgstr ""
 "\n"
 "The temperature is compulsory for the crystal behavior %(k1)s. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:391
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:396
 msgid ""
 "\n"
 "L'état initial des contraintes n'est pas compatible avec le mécanisme "
@@ -26564,7 +26521,7 @@ msgid ""
 "paramètres matériaux PC0 et/ou D du modèle de HUJEUX.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:396
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:401
 #, python-format
 msgid ""
 "\n"
@@ -26573,13 +26530,13 @@ msgid ""
 "Conseils: modifiez sa valeur dans CIN1_CHAB / CIN2_CHAB.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:401
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:406
 msgid ""
 "\n"
 "Aucun groupe de fibres n'a de comportement.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:405
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:410
 #, python-format
 msgid ""
 "\n"
@@ -26588,7 +26545,7 @@ msgid ""
 "m=%(r1)f et p=%(r2)f ne respectent pas la contrainte m>p+2.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:410
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:415
 #, python-format
 msgid ""
 "\n"
@@ -26596,14 +26553,14 @@ msgid ""
 "ENDO_FISS_BETON).\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:414
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:419
 msgid ""
 "\n"
 "L'identification numérique des paramètres SIG0 et TAU à partir de FT et FC a "
 "échoué : valeurs exotiques ?\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:418
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:423
 #, python-format
 msgid ""
 "\n"
@@ -26611,7 +26568,7 @@ msgid ""
 "MU_MOY.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:422
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:427
 msgid ""
 "\n"
 "Loi d'endommagement de Sellier utilise une régularisation en énergie de "
@@ -26620,17 +26577,17 @@ msgid ""
 "Les résultats obtenus ne sont pas exactes avec un autre type d'élément.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:427
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:432
 msgid ""
 "\n"
-"La loi d'endommagement de Sellier est mal utilisée ou bien il y a un "
+"La loi d'endommagement de KIT_RGI est mal utilisée ou bien il y a un "
 "problème\n"
 "d'intégration local d'un phénomène.\n"
 "\n"
 "Vérifiez les propriétés matériaux et que la modélisation est 3D.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:434
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:439
 #, python-format
 msgid ""
 "\n"
@@ -26639,6 +26596,17 @@ msgid ""
 "\n"
 "Vérifiez les valeurs de la fonction.\n"
 msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:445
+#, fuzzy
+msgid ""
+"\n"
+"Seule la modélisation 3D est disponible avec la loi d'endommagement de "
+"KIT_RGI. \n"
+msgstr ""
+"\n"
+" Modelization C_PLAN is not compatible with constitutive law "
+"ELAS_VMIS_PUIS. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:22
 #, python-format
@@ -27952,17 +27920,13 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/compor5.py:111
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 "Les caractéristiques matériaux dans %(k1)s dépendent de la température mais "
 "elle n'est pas renseignée.\n"
 "Il faut une température dans AFFE_MATERIAU/AFFE_VARC.\n"
 msgstr ""
-"\n"
-"The characteristics of the material can depend only on the temperature. \n"
-"- > the Council: \n"
-"Please re-examine the data of the material. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/compor5.py:116
 msgid ""
@@ -27981,14 +27945,11 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/compor5.py:126
-#, fuzzy
 msgid ""
 "\n"
 "Il existe un champ de température mais il manque la température de référence "
 "dans AFFE_MATERIAU/AFFE_VARC.\n"
 msgstr ""
-"\n"
-" It is necessary to inform the Reference temperature in AFFE_MATERIAU. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/compor5.py:130
 msgid ""
@@ -27998,6 +27959,28 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/compor5.py:134
+#, fuzzy
+msgid ""
+"\n"
+" BETON_DOUBLE_DP:\n"
+" Le cas des contraintes planes n'est pas traité pour ce modèle.\n"
+msgstr ""
+"\n"
+" BETON_DOUBLE_DP: \n"
+" the case of the plane stresses is not treated for this model. \n"
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor5.py:139
+#, fuzzy
+msgid ""
+"\n"
+" ROUSSELIER:\n"
+" La version PETIT_REAC n'est pas disponible en contraintes planes.\n"
+msgstr ""
+"\n"
+" behavior of ROUSSELIER version PETIT_REAC not established in plane "
+"stresses \n"
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor5.py:144
 #, python-format
 msgid ""
 "\n"
@@ -28007,7 +27990,7 @@ msgid ""
 "     avoir en même temps les mots clés 'ELAS', 'ELAS_FO', 'ELAS_xxx',...\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor5.py:141
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor5.py:151
 #, python-format
 msgid ""
 "\n"
@@ -28016,13 +27999,13 @@ msgstr ""
 "\n"
 "The type %(k1)s material was not found.\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor5.py:145
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor5.py:155
 msgid ""
 "\n"
 "La déformation plastique cumulée est négative.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor5.py:149
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor5.py:159
 #, python-format
 msgid ""
 "\n"
@@ -28031,7 +28014,6 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/contact.py:22
-#, fuzzy
 msgid ""
 "\n"
 "Contact méthodes discrètes.\n"
@@ -28048,23 +28030,6 @@ msgid ""
 "renseignant SYME='OUI'\n"
 "    sous le mot-clé facteur SOLVEUR.\n"
 msgstr ""
-"\n"
-"Contact discrete methods. \n"
-" - > the discrete methods of contact suppose the symmetry of the matrix "
-"obtained after assembly. \n"
-" If your modelization produces a nonsymmetrical matrix, one thus forces his "
-"symmetry to solve\n"
-" the contact. \n"
-" - > Risks & advices: \n"
-" This change can lead to difficulties of convergence in the process of "
-"Newton but to in no case\n"
-" it does not produce false results. \n"
-" \n"
-" If the stiffness matrix of your structure is symmetric, you can be unaware "
-"of what precedes. \n"
-" Lastly, it is possible to remove the display of this alarm by informing "
-"SYME='OUI' \n"
-" under the key word factor SOLVER. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/contact.py:33
 #, python-format
@@ -28589,16 +28554,12 @@ msgstr ""
 "The direction of pairing fixes given by vector DIRE_APPA is null! \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/contact3.py:55
-#, fuzzy
 msgid ""
 "\n"
 "Contact méthode continue.\n"
 "La méthode d'intégration n'est pas aux noeuds, le champ CONT_NOEU n'est pas "
 "créé.\n"
 msgstr ""
-"\n"
-"Contact continuous method. \n"
-"The integration method is not 'AUTO', field VALE_CONT is not created. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/contact3.py:60
 #, python-format
@@ -28984,13 +28945,10 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/contactdefi0.py:27
-#, fuzzy
 msgid ""
 "\n"
 " <CONTACT>     Paramètres constants sur toutes les zones.\n"
 msgstr ""
-"\n"
-" parameter\" RHO\" is not defined for all the layers. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/contactdefi0.py:31
 #, python-format
@@ -29247,6 +29205,12 @@ msgstr ""
 " the number of nodes to the application interface:  %(i1)i is higher than "
 "the authorized limit:  %(i2)i \n"
 
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/crealac.py:23
+msgid ""
+"\n"
+"Cette maille n'est pas valable pour la méthode LAC de contact.\n"
+msgstr ""
+
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/debug.py:25
 #, python-format
 msgid ""
@@ -29397,24 +29361,12 @@ msgstr ""
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/discretisation.py:84
 msgid ""
 "\n"
-"Il n'y a aucun pas de calcul temporel.\n"
-"En mécanique, 'LIST_INST' est absent.\n"
-"En thermique, 'LIST_INST' est absent ou un singleton.\n"
-msgstr ""
-"\n"
-"There is no temporal computation step. \n"
-"In mechanics, 'LIST_INST' is absent. \n"
-"In thermal, 'LIST_INST' is absent or a singleton. \n"
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/discretisation.py:90
-msgid ""
-"\n"
 "La liste d'instants n'est pas strictement croissante.\n"
 msgstr ""
 "\n"
 "The list of times is not strictly increasing. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/discretisation.py:94
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/discretisation.py:88
 msgid ""
 "\n"
 "L'instant initial est introuvable dans la liste d'instants (LIST_INST).\n"
@@ -29428,7 +29380,7 @@ msgstr ""
 " Check key word INST_INIT (or NUME_INST_INIT), by taking account of the "
 "accuracy (key word PRECISION). \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/discretisation.py:100
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/discretisation.py:94
 msgid ""
 "\n"
 "On ne peut faire le calcul car l'instant final donné est égal au dernier "
@@ -29442,7 +29394,7 @@ msgstr ""
 "available whereas one needs at least two time steps in the nonlinear "
 "operators. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/discretisation.py:104
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/discretisation.py:98
 msgid ""
 "\n"
 "L'instant final est introuvable dans la liste d'instants (LIST_INST).\n"
@@ -29455,6 +29407,23 @@ msgstr ""
 "Risk & Conseil: \n"
 " Check key word INST_FIN (or NUME_INST_FIN), by taking account of the "
 "accuracy (key word PRECISION). \n"
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/discretisation.py:104
+msgid ""
+"\n"
+"La liste des instants ne contient qu'un instant.\n"
+"Pour un calcul en mécanique non-linéaire, il faut plusieurs instants de "
+"calcul.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/discretisation.py:109
+msgid ""
+"\n"
+"La liste des instants ne contient qu'un instant et ce n'est pas un calcul "
+"stationnaire.\n"
+"Pour un calcul en thermique non-linéaire, il faut plusieurs instants de "
+"calcul.\n"
+msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/discretisation2.py:22
 #, python-format
@@ -34160,6 +34129,13 @@ msgstr ""
 "%(r1)19.12e"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/etatinit.py:73
+#, fuzzy, python-format
+msgid ""
+"  Le champ <%(k1)s> est lu dans ETAT_INIT alors qu'il n'est pas nécessaire "
+"pour ce calcul. Il sera ignoré."
+msgstr "  The field  %(k1)s is read in ETAT_INIT, by an explicitly given field"
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/etatinit.py:75
 #, python-format
 msgid ""
 "\n"
@@ -34168,7 +34144,7 @@ msgstr ""
 "\n"
 " The field  %(k1)s is of an unknown type. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/etatinit.py:77
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/etatinit.py:79
 #, python-format
 msgid ""
 "  Le champ <%(k1)s> est de type <%(k2)s> mais on attend un champ de type <"
@@ -34179,7 +34155,7 @@ msgstr ""
 "is expected. \n"
 "It is converted automatically"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/etatinit.py:80
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/etatinit.py:82
 #, python-format
 msgid ""
 "\n"
@@ -34601,13 +34577,41 @@ msgstr ""
 "(blocking\n"
 " absent or superabundant). \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:120
-#, python-format
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:119
+#, fuzzy, python-format
 msgid ""
 "\n"
 "Solveur MUMPS :\n"
-"   Vous avez demandé comme numéroteur RENUM = '%(k1)s', or MUMPS en a\n"
-"   utilisé un autre.\n"
+"  Un opérateur a demandé à MUMPS d'activer la compression de rang faible. Or "
+"cette option n'est disponible\n"
+"  qu'a partir de la version 5.0.1 consortium. Votre exécutable est lui lié a "
+"MUMPS v: %(k1)s. \n"
+"  Pour continuer malgré tout le calcul, on a débranché cette option "
+"particulière de MUMPS et on a\n"
+"  demandé un calcul standard sans compression. Votre calcul risque juste "
+"d'être ralenti.\n"
+msgstr ""
+"\n"
+"Solver MUMPS: \n"
+" An operator asked MUMPS to calculate a determinant. However this option is "
+"available\n"
+" only from the v 4.10.0. However your executable is dependent has MUMPS v:  "
+"%(k1)s. \n"
+" \n"
+" Advices: \n"
+" - Rebuild executable by taking a good version of MUMPS,\n"
+" - linear Changer of solver (for example, key word SOLVER/"
+"METHODE='MULT_FRONT') in the accused\n"
+" operator. \n"
+" \n"
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:128
+#, fuzzy, python-format
+msgid ""
+"\n"
+"Solveur MUMPS :\n"
+"   Vous avez demandé comme numéroteur RENUM = '%(k1)s', or MUMPS en a "
+"utilisé un autre.\n"
 "\n"
 "Conseils :\n"
 "   Il se peut que votre version de MUMPS n'ait pas été compilée avec le "
@@ -34627,7 +34631,7 @@ msgstr ""
 " In the doubt, RENUM='AUTO' allows to let MUMPS make the best choice. \n"
 " "
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:130
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:137
 #, python-format
 msgid ""
 "\n"
@@ -34666,7 +34670,7 @@ msgstr ""
 " - If computation is parallel, reduce consumption JEVEUX by activating the "
 "option SOLVER/MATR_DISTRIBUEE. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:143
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:150
 #, python-format
 msgid ""
 "\n"
@@ -34686,7 +34690,7 @@ msgstr ""
 " - > the Council: \n"
 " Change linear solver by using key word METHODE of SOLVER. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:151
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:158
 #, python-format
 msgid ""
 "\n"
@@ -34709,7 +34713,7 @@ msgid ""
 "parallèle).\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:166
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:173
 msgid ""
 "\n"
 "Solveur MUMPS :\n"
@@ -34734,7 +34738,7 @@ msgstr ""
 "\" of which Aster (Mo)\") or\n"
 " increase the total memory (ASTK: put\" Mémoire total (Mo))\". \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:176
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:183
 #, python-format
 msgid ""
 "\n"
@@ -34755,7 +34759,7 @@ msgstr ""
 " Consult the instruction manual of MUMPS. \n"
 " Warn the development team of Code_Aster. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:186
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:193
 #, python-format
 msgid ""
 "\n"
@@ -34774,7 +34778,7 @@ msgstr ""
 "Advices: \n"
 " It is necessary to use TYPE_RESOL = 'NONSYM' (or 'AUTO'). \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:195
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:202
 #, python-format
 msgid ""
 "\n"
@@ -34795,7 +34799,7 @@ msgstr ""
 " Advices: \n"
 " One can increase the value of the key word SOLVER/RESI_RELA. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:205
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:212
 #, python-format
 msgid ""
 "\n"
@@ -34819,7 +34823,7 @@ msgid ""
 "  futures résolutions de systèmes linéaires avec MUMPS dans cet opérateur.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:221
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:228
 msgid ""
 "\n"
 "Solveur MUMPS :\n"
@@ -34837,7 +34841,7 @@ msgstr ""
 " There is undoubtedly a programming error. \n"
 " Contact the assistance. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:230
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:237
 msgid ""
 "\n"
 "Solveur MUMPS :\n"
@@ -34855,7 +34859,7 @@ msgstr ""
 "Advices: \n"
 " Contact the assistance. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:246
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:253
 #, python-format
 msgid ""
 "\n"
@@ -34875,7 +34879,7 @@ msgstr ""
 "Advices: \n"
 " One can test the value of key word POSTTRAITEMENTS='FORCE'. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:255
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:262
 msgid ""
 "\n"
 "Solveur MUMPS :\n"
@@ -34901,7 +34905,7 @@ msgstr ""
 "\" of which Aster (Mo)\") or\n"
 " increase the total memory (ASTK: put\" Mémoire total (Mo))\". \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:265
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:272
 msgid ""
 "\n"
 "Solveur MUMPS :\n"
@@ -34926,7 +34930,7 @@ msgstr ""
 "the number of processors\n"
 " allocated with computation. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:275
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:282
 msgid ""
 "\n"
 "Solveur MUMPS :\n"
@@ -34944,7 +34948,7 @@ msgstr ""
 "Advices: \n"
 " Increase the number of processors used. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:284
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:291
 msgid ""
 "\n"
 "Erreur d'utilisation (commande RESOUDRE) :\n"
@@ -34962,7 +34966,7 @@ msgstr ""
 "Advices: \n"
 " Check the coherence of arguments MATR and CHAM_NO. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:293
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:300
 msgid ""
 "\n"
 "Erreur d'utilisation (commande RESOUDRE) :\n"
@@ -34980,7 +34984,7 @@ msgstr ""
 "Advices: \n"
 " Check the coherence of arguments MATR and CHAM_NO. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:302
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:309
 #, python-format
 msgid ""
 "\n"
@@ -35014,7 +35018,7 @@ msgid ""
 "METHODE='PETSC' + PRECOND='LDLT_SP').\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:324
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:331
 #, python-format
 msgid ""
 "\n"
@@ -35036,7 +35040,7 @@ msgstr ""
 "unit\n"
 " %(i1)d. You can recover it (on processor 0) via ASTK. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:332
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:339
 #, python-format
 msgid ""
 "\n"
@@ -35063,15 +35067,14 @@ msgstr ""
 " you to recover your file more quickly. \n"
 " You can recover it (on processor 0) via ASTK. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:342
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:349
 #, python-format
 msgid ""
 "\n"
 "Solveur MUMPS :\n"
 "  Votre exécutable Aster embarque la version de MUMPS: %(k1)s\n"
-"  Les seules versions de MUMPS supportée dans Code_Aster sont, pour "
-"l'instant:\n"
-"                              la 4.9.2 et la 4.10.0.\n"
+"  Les seules versions de MUMPS supportée dans Code_Aster sont:\n"
+"                  la 5.0.1 et la 5.0.1 consortium (usage EDF seulement)\n"
 "\n"
 "Conseils :\n"
 "  Télécharger, installer et relier à Code_Aster une version de MUMPS "
@@ -35081,7 +35084,7 @@ msgid ""
 "  Sinon, contactez l'équipe de développement.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:354
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:361
 #, python-format
 msgid ""
 "\n"
@@ -35104,7 +35107,7 @@ msgid ""
 "  Sinon, contactez l'équipe de développement.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:369
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:376
 #, python-format
 msgid ""
 "\n"
@@ -35133,7 +35136,7 @@ msgid ""
 "l'option SOLVEUR/MATR_DISTRIBUEE.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:387
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:394
 #, python-format
 msgid ""
 "\n"
@@ -35161,7 +35164,7 @@ msgid ""
 "METHODE='PETSC' + PRECOND='LDLT_SP').\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:404
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:411
 #, python-format
 msgid ""
 "\n"
@@ -35196,7 +35199,7 @@ msgid ""
 "METHODE='PETSC' + PRECOND='LDLT_SP').\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:428
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:435
 msgid ""
 "\n"
 "Solveur MUMPS :\n"
@@ -35216,7 +35219,7 @@ msgstr ""
 " ERREUR_FATALE to enable you to start again your computation by taking "
 "account of these elements. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:435
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:442
 #, python-format
 msgid ""
 "\n"
@@ -35231,7 +35234,7 @@ msgstr ""
 " - %(i1)d too small terms,\n"
 " - %(i2)d too large terms. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:442
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:449
 #, python-format
 msgid ""
 "\n"
@@ -35241,7 +35244,7 @@ msgid ""
 "  limite est fixée à %(r2)g.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:448
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:455
 msgid ""
 "\n"
 "Solveur MUMPS :\n"
@@ -35256,7 +35259,7 @@ msgid ""
 "  Utilisez le solveur linéaire MUMPS avec TYPE_RESOL='AUTO'.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:459
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:466
 #, python-format
 msgid ""
 "\n"
@@ -35280,7 +35283,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:475
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:482
 msgid ""
 "\n"
 "Solveur MUMPS :\n"
@@ -35296,7 +35299,7 @@ msgid ""
 "consommations mémoires seront débranchées.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:483
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:490
 msgid ""
 "\n"
 "Solveur MUMPS :\n"
@@ -35311,7 +35314,7 @@ msgid ""
 "consommations mémoires seront débranchées.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:491
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:498
 msgid ""
 "\n"
 "Solveur MUMPS :\n"
@@ -35343,7 +35346,7 @@ msgstr ""
 "MUMPS\n"
 " with TYPE_RESOL='AUTO'. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:503
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:510
 #, python-format
 msgid ""
 "\n"
@@ -35367,58 +35370,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:518
-#, python-format
-msgid ""
-"\n"
-"Solveur MUMPS :\n"
-"  Un opérateur a demandé à MUMPS de ne pas conserver les termes de la "
-"matrice factorisée.\n"
-"  Cela permet d'optimiser un peu les performances dans les cas ou seul le "
-"déterminant, la\n"
-"  détection de singularité ou le test de Sturm sont requis (par ex. "
-"CALC_MODES option 'BANDE').\n"
-"  Or la version de MUMPS embarquée dans votre exécutable: %(k1)s\n"
-"  ne permet pas cette optimisation.\n"
-"\n"
-"  > On ne tient donc pas compte de cette optimisation et on stocke, comme "
-"pour un calcul standard,\n"
-"    tous les termes de la factorisée.\n"
-"\n"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:530
-#, python-format
-msgid ""
-"\n"
-"Solveur MUMPS :\n"
-"  Un opérateur a demandé à MUMPS de calculer un déterminant. Or cette option "
-"n'est disponible\n"
-"  qu'a partir de la v 4.10.0. Or votre exécutable est lié a MUMPS v: "
-"%(k1)s.\n"
-"\n"
-"  Conseils:\n"
-"    - Reconstruisez un exécutable en prenant une bonne version de MUMPS,\n"
-"    - Changer de solveur linéaire (par exemple, mot-clé SOLVEUR/"
-"METHODE='MULT_FRONT') dans l'opérateur\n"
-"      incriminé.\n"
-"\n"
-msgstr ""
-"\n"
-"Solver MUMPS: \n"
-" An operator asked MUMPS to calculate a determinant. However this option is "
-"available\n"
-" only from the v 4.10.0. However your executable is dependent has MUMPS v:  "
-"%(k1)s. \n"
-" \n"
-" Advices: \n"
-" - Rebuild executable by taking a good version of MUMPS,\n"
-" - linear Changer of solver (for example, key word SOLVER/"
-"METHODE='MULT_FRONT') in the accused\n"
-" operator. \n"
-" \n"
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:541
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/factor.py:525
 msgid ""
 "\n"
 "Solveur MUMPS :\n"
@@ -37900,6 +37852,24 @@ msgid ""
 "  n'existe pas pour le champ %(k2)s du résultat %(k1)s.\n"
 msgstr ""
 
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/imprresusp.py:50
+#, fuzzy, python-format
+msgid ""
+"\n"
+"  Visualisation aux sous-points :\n"
+"  La composante %(k1)s du champ %(k2)s n'existe pas.\n"
+msgstr ""
+"\n"
+" the component\" %(k1)s\" of the node\" %(k2)s\" does not exist. \n"
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/imprresusp.py:55
+#, python-format
+msgid ""
+"\n"
+"  Visualisation aux sous-points :\n"
+"  Une maille du GROUP_MA ne porte pas une des composantes du champ %(k1)s.\n"
+msgstr ""
+
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/indicateur.py:22
 #, python-format
 msgid ""
@@ -38619,11 +38589,9 @@ msgstr ""
 " Invalid call, brand name becomes negative \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/jeveux.py:49
-#, fuzzy, python-format
+#, python-format
 msgid "Destruction de '%(k1)s'\n"
 msgstr ""
-"\n"
-" Destruction of  %(k1)s \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/jeveux.py:52
 #, python-format
@@ -42062,6 +42030,39 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline5.py:215
+#, fuzzy
+msgid ""
+"\n"
+"La recherche linéaire est incompatible avec des chargements de Dirichlet de "
+"type suiveur.\n"
+msgstr ""
+"\n"
+"Linear search is incompatible with the control of the type DDL_IMPO. \n"
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline5.py:219
+msgid ""
+"\n"
+"La dynamique avec des chargements de Dirichlet de type suiveur.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline5.py:223
+msgid ""
+"\n"
+"Les chargements de Dirichlet de type suiveur impliquent la réactualisation "
+"de la matrice REAC_ITER=1.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline5.py:227
+#, fuzzy
+msgid ""
+"\n"
+"Le pilotage est incompatible avec des chargements de Dirichlet de type "
+"suiveur.\n"
+msgstr ""
+"\n"
+" Control is incompatible with method NEWTON_KRYLOV. \n"
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline5.py:230
 msgid ""
 "\n"
 "  -> Les paramètres RHO_MIN et RHO_MAX sont identiques.\n"
@@ -42069,7 +42070,7 @@ msgstr ""
 "\n"
 " - > parameters RHO_MIN and RHO_MAX are identical. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline5.py:218
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline5.py:233
 msgid ""
 "\n"
 "  -> La définition des paramètres RHO_MIN et RHO_MAX est contradictoire.\n"
@@ -42079,7 +42080,7 @@ msgstr ""
 " - > the definition of parameters RHO_MIN and RHO_MAX is contradictory. \n"
 " One chooses to take RHO_MIN smaller than RHO_MAX. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline5.py:224
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline5.py:239
 msgid ""
 "\n"
 "Il faut préciser un concept EVOL_NOLI en prédiction de type 'DEPL_CALCULE'\n"
@@ -42088,7 +42089,7 @@ msgstr ""
 "It is necessary to specify a concept EVOL_NOLI in prediction of the type "
 "'DEPL_CALCULE' \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline5.py:228
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline5.py:243
 msgid ""
 "\n"
 "  -> La définition des paramètres RHO_MIN et RHO_EXCL est contradictoire.\n"
@@ -42104,7 +42105,7 @@ msgstr ""
 " RHO_MIN should not be understood between - RHO_EXCL and RHO_EXCL \n"
 " \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline5.py:236
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline5.py:251
 msgid ""
 "\n"
 "  -> La définition des paramètres RHO_MAX et RHO_EXCL est contradictoire.\n"
@@ -42120,7 +42121,7 @@ msgstr ""
 " RHO_MAX should not be understood between - RHO_EXCL and RHO_EXCL \n"
 " \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline5.py:244
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline5.py:259
 msgid ""
 "\n"
 "  Le pilotage est incompatible avec la méthode NEWTON_KRYLOV.\n"
@@ -42128,7 +42129,7 @@ msgstr ""
 "\n"
 " Control is incompatible with method NEWTON_KRYLOV. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline5.py:249
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline5.py:264
 #, python-format
 msgid ""
 "\n"
@@ -42141,7 +42142,7 @@ msgstr ""
 " The component  %(k1)s was not found in the dialup. \n"
 " Check NOM_CMP in keyword PILOTAGE. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline5.py:255
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline5.py:270
 msgid ""
 "\n"
 " Pour utiliser METHODE='NEWTON_KRYLOV', il faut utiliser une méthode "
@@ -42151,7 +42152,7 @@ msgstr ""
 " To use METHODE='NEWTON_KRYLOV', it is necessary to use an iterative method "
 "(PCG, PETSC) under the key word SOLVER. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline5.py:259
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline5.py:274
 msgid ""
 "\n"
 "   Le critère RESI_COMP_RELA est interdit en dynamique. Utilisez un autre "
@@ -42161,7 +42162,7 @@ msgstr ""
 " Criterion RESI_COMP_RELA is interdict in dynamics. Use another convergence "
 "criterion \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline5.py:264
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline5.py:279
 #, python-format
 msgid ""
 "\n"
@@ -42174,7 +42175,7 @@ msgstr ""
 "%(k1)s. \n"
 " You must inform the value of reference %(k2)s in CONVERGENCE. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline5.py:269
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline5.py:284
 msgid ""
 "\n"
 "  Il n'est pas possible actuellement de calculer des modes vibratoires "
@@ -42183,7 +42184,7 @@ msgid ""
 "non-symétrique.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline5.py:274
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline5.py:289
 msgid ""
 "\n"
 "De manière générale, PREDICTION = 'DEPL_CALCULE' est là pour éviter de "
@@ -44247,6 +44248,32 @@ msgid ""
 "\n"
 "  Conseil : Pour que cette impression soit possible, il vous faut\n"
 "            faire une demande d'évolution.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/mfront.py:22
+msgid ""
+"\n"
+"  Une erreur a été détectée par MFront. Le calcul ne peut pas continuer.\n"
+"\n"
+"  Conseil : Vérifiez le nombre de propriété matériau fournit à la loi\n"
+"  de comportement.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/mfront.py:29
+msgid ""
+"\n"
+"  Une variable utilisée ou produite par MFront a dépassée les bornes "
+"physiques\n"
+"  ou les bornes de corrélation de la loi de comportement.\n"
+"\n"
+"  Conseils : Vérifiez les coefficients matériau donnés à la loi de "
+"comportement.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/mfront.py:36
+msgid ""
+"\n"
+"  Erreur générique dans MFront, le calcul ne peut pas continuer.\n"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/miss0.py:21
@@ -46835,13 +46862,11 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa2.py:284
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 " LIAISON_PROJ : Le noeud %(k1)s ne porte pas le DDL %(k2)s.\n"
 msgstr ""
-"\n"
-" The nodes group %(k1)s does not belong to the mesh %(k2)s. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa2.py:288
 #, python-format
@@ -57184,30 +57209,21 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost5.py:116
-#, fuzzy
 msgid ""
 "\n"
 "Erreur utilisateur dans la commande EXTR_RESU / RESTREINT :\n"
 "  La structure de donnée contient des champs par éléments.\n"
 "  Le mot clé MODELE est obligatoire.\n"
 msgstr ""
-"\n"
-"User error in command PROJ_CHAMP: \n"
-" One wants to project fields with elements (CHAM_ELEM), key word MODELE_2\n"
-" is then compulsory. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost5.py:122
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 "Erreur utilisateur dans la commande EXTR_RESU / RESTREINT :\n"
 "  Le maillage associé à certains champs de %(k1)s est %(k2)s.\n"
 "  Il devrait être %(k3)s.\n"
 msgstr ""
-"\n"
-"User error in command CREA_RESU / AFFE: \n"
-" Mesh associated with key word CHAM_GD:  %(k1)s \n"
-" is different from that associated with key word MODELE:  %(k2)s \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost5.py:135
 #, python-format
@@ -57326,7 +57342,7 @@ msgid ""
 "   problème champ :  %(k2)s\n"
 msgstr ""
 "\n"
-" erroneous call result:  %(k1)s filing number:  %(i1)d \n"
+" Erroneous call result:  %(k1)s filing number:  %(i1)d \n"
 " return code of rsexch:  %(i2)d \n"
 " problem field:  %(k2)s \n"
 
@@ -60349,7 +60365,19 @@ msgstr ""
 "If you use CALC_THETA/THETA_2D or CALC_G/THETA in 2d, please provide\n"
 " a zero value for the 3rd component. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:243
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:241
+msgid ""
+"\n"
+"DELTA_K_EQ contient une ou plusieurs valeurs négatives.\n"
+"Cela peut provenir d'un calcul erroné de DELTA_K_EQ par l'utilisateur ou "
+"bien de l'utilisation\n"
+"de l'opérande CUMUL='MODE_I' dans POST_RUPTURE dans le cas où K_I aurait des "
+"valeurs négatives.\n"
+"-> Risque et Conseils\n"
+"Vérifiez le calcul de DELTA_K_EQ.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:249
 #, python-format
 msgid ""
 "\n"
@@ -60373,7 +60401,7 @@ msgstr ""
 " corresponding to a plane crack. The crack used here is too irregular and\n"
 " there is thus a risk to obtain results vague. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:252
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:258
 #, python-format
 msgid ""
 "\n"
@@ -60388,7 +60416,7 @@ msgstr ""
 "- > Risk and the Council: \n"
 "Check the parameter preset under key word NUME_FOND of POST_K1_K2_K3. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:258
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:264
 msgid ""
 "\n"
 "La récupération des contraintes à partir de la SD Résultat n'est permise que "
@@ -60402,7 +60430,7 @@ msgstr ""
 "- > Risk and the Council: \n"
 "Take care not to be used to you as CRACK with key word CALCUL_CONTRAINTE. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:264
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:270
 #, python-format
 msgid ""
 "\n"
@@ -60413,7 +60441,7 @@ msgid ""
 "de la résolution mécanique.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:270
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:276
 msgid ""
 "\n"
 "Attention, dans CALC_G vous utilisez le mot clef RELATION.\n"
@@ -60421,7 +60449,7 @@ msgid ""
 "MECA_STATIQUE ou STAT_NON_LINE.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:276
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:282
 #, python-format
 msgid ""
 "\n"
@@ -60450,7 +60478,7 @@ msgid ""
 "hypothèses.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:296
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:302
 msgid ""
 "\n"
 "Les paramètres K1 et/ou K2 et/ou G sont absents du tableau des facteurs "
@@ -60471,7 +60499,7 @@ msgstr ""
 "contain these three\n"
 " parameters like K3 in 3D. Please check the contents of your table of SIF. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:304
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:310
 #, python-format
 msgid ""
 "\n"
@@ -60490,7 +60518,7 @@ msgid ""
 "résultat est bien cohérent.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:316
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:322
 msgid ""
 "\n"
 "Le taux de restitution d'énergie G est négatif ou nul sur certains des "
@@ -60510,7 +60538,7 @@ msgstr ""
 "maximum\n"
 ", standard curvilinear abscisse of smoothing,'). \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:324
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:330
 msgid ""
 "\n"
 "Vous demandez un calcul de G en post-traitement d'un calcul élastoplastique. "
@@ -60524,7 +60552,7 @@ msgid ""
 "(modèle issue de la recherche interne EDF R&D, en cours de validation.)\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:334
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:340
 msgid ""
 "\n"
 "Attention vous utilisez l'option de calcul CALC_GTP qui est issue de la "
@@ -60533,7 +60561,7 @@ msgid ""
 "Le défaut doit alors être régularisé par une zone cohésive ou une entaille.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:340
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:346
 #, python-format
 msgid ""
 "\n"
@@ -60543,7 +60571,7 @@ msgid ""
 "comportement de type: %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:345
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:351
 msgid ""
 "\n"
 "PROPA_FISS / METHODE = 'MAILLAGE' : les noeuds définissant la fissure "
@@ -60554,7 +60582,7 @@ msgstr ""
 "PROPA_FISS / METHODE = 'MESH': the nodes defining initial crack\n"
 " are not ordered. Check the mesh given in input (MAIL_ACTUEL). \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:350
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:356
 msgid ""
 "\n"
 "PROPA_FISS / METHODE = 'INITIALISATION' : les deux vecteurs VECT_X et "
@@ -60568,7 +60596,7 @@ msgstr ""
 " defining initial crack, of elliptic form, are not orthogonal. Check\n"
 " the data input. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:356
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:362
 #, python-format
 msgid ""
 "\n"
@@ -60577,7 +60605,7 @@ msgstr ""
 "\n"
 "Time %(r1)f does not belong to the result %(k1)s. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:360
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:366
 msgid ""
 "\n"
 "Les champs de contraintes et de déformations ne sont pas de même taille. "
@@ -60588,7 +60616,7 @@ msgstr ""
 "The stress fields and of strains are not of the same size. Check that your\n"
 " mechanical computation occurred well. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:365
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:371
 msgid ""
 "\n"
 "Problème dans la liste d'instants du résultats: 2 instants consécutifs sont "
@@ -60598,7 +60626,7 @@ msgstr ""
 "Problem in the list of times of the results: 2 consecutive times are "
 "equal. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:369
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:375
 #, python-format
 msgid ""
 "\n"
@@ -60607,7 +60635,7 @@ msgstr ""
 "\n"
 "The stress of reference is null at time %(r1)f. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:373
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:379
 msgid ""
 "\n"
 "Problème dans la dimension du modèle. POST_BORDET ne supporte pas les "
@@ -60617,7 +60645,7 @@ msgstr ""
 "Problem in the dimension of the model. POST_BORDET does not support "
 "connections 2D-3D \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:377
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:383
 msgid ""
 "\n"
 "L'utilisation de POST_BORDET n'est possible qu'avec 1 seul MODELE et 1 seul\n"
@@ -60627,7 +60655,7 @@ msgstr ""
 "The use of POST_BORDET is not possible that with 1 alone MODELE and 1 only\n"
 " CHAM_MATERIAU \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:382
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:388
 #, python-format
 msgid ""
 "\n"
@@ -60636,7 +60664,7 @@ msgstr ""
 "\n"
 "The array %(k1)s does not contain the parameter %(k2)s. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:386
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:392
 msgid ""
 "\n"
 "Le critère 'K2_NUL' donne des mauvais résultats pour des angles supérieurs à "
@@ -60649,7 +60677,7 @@ msgstr ""
 "It may be that the sign of the angle is false. \n"
 "Advice: use the by default criterion. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:392
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:398
 msgid ""
 "\n"
 "Impossible de réaliser le comptage sur les quantités demandées car\n"
@@ -60663,7 +60691,7 @@ msgstr ""
 "Advice: limit the counting of the cycles to only one quantity (K_EQ for "
 "example). \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:398
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:404
 #, python-format
 msgid ""
 "\n"
@@ -60672,7 +60700,7 @@ msgstr ""
 "\n"
 "For the operation %(k1)s, the array must be réentrante (compulsory reuse). \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:402
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:408
 #, python-format
 msgid ""
 "La récupération des contraintes à partir de la SD Résultat\n"
@@ -60685,7 +60713,7 @@ msgstr ""
 "For the operation %(k1)s, the array should not be réentrante (prohibited "
 "reuse). \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:407
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:413
 #, python-format
 msgid ""
 "\n"
@@ -60702,7 +60730,7 @@ msgstr ""
 "Advice: Check the array in input or use another type of counting of the "
 "cycles. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:413
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:419
 #, python-format
 msgid ""
 "\n"
@@ -60711,7 +60739,7 @@ msgstr ""
 "\n"
 "The array %(k1)s should not contain the parameter %(k2)s. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:417
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:423
 #, python-format
 msgid ""
 "\n"
@@ -60722,7 +60750,7 @@ msgstr ""
 "The operation %(k1)s requires only one array under the key word COUNTS, but "
 "it there of A. %(i1)d \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:421
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:427
 msgid ""
 "\n"
 "Les caractéristiques du matériau ne peuvent dépendre que de la température.\n"
@@ -60734,7 +60762,7 @@ msgstr ""
 "- > the Council: \n"
 "Please re-examine the data of the material. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:427
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:433
 msgid ""
 "\n"
 "La macro-commande POST_RUPTURE ne fonctionne pas quand les paramètres "
@@ -60744,7 +60772,7 @@ msgstr ""
 "Macro-command POST_RUPTURE does not function when the parameters material "
 "are not constant. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:431
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:437
 #, python-format
 msgid ""
 "\n"
@@ -60752,7 +60780,7 @@ msgid ""
 "La relation de comportement %(k1)s n'est pas prévue dans CALC_G\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:436
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:442
 msgid ""
 "\n"
 "GTP :\n"
@@ -60762,7 +60790,7 @@ msgid ""
 "être présent.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:442
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:448
 #, python-format
 msgid ""
 "\n"
@@ -60779,7 +60807,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:453
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:459
 #, python-format
 msgid ""
 "\n"
@@ -60793,7 +60821,7 @@ msgid ""
 "(commande AFFE_MATERIAU, mot clé facteur AFFE_VARC)\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:462
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:468
 msgid ""
 "\n"
 "CALC_G :\n"
@@ -62168,14 +62196,11 @@ msgstr ""
 "d. o. f. number interfaces:  %(i1)d , modes number identify:  %(i2)d \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/soustruc.py:368
-#, fuzzy
 msgid ""
 "\n"
 "Cette fonctionnalité n'est pas disponible pour les modes complexes.\n"
 "    "
 msgstr ""
-"\n"
-" the option %(k1)s is not available for the behavior  %(k2)s \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/soustruc.py:372
 #, python-format
@@ -63955,14 +63980,13 @@ msgid "Librairie PETSc : non disponible"
 msgstr "PETSc library: not available"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/supervis2.py:168
-#, fuzzy, python-format
+#, python-format
 msgid "Version de la librairie MFront : %(k1)s"
-msgstr "MUMPS library version: %(k1)s"
+msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/supervis2.py:172
-#, fuzzy
 msgid "Librairie MFront : non disponible"
-msgstr "MED library : unavailable"
+msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/supervis2.py:179
 #, python-format
@@ -64398,15 +64422,13 @@ msgstr ""
 "Impossible TEST_FICHIER, non-existent file:  %(k1)s \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/test0.py:36
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 "  Nom du fichier   : %(k1)s\n"
 "\n"
 "                         Calculé                            Référence\n"
 msgstr ""
-"\n"
-"  %(k1)s  %(r1)f  %(r2)f \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/test0.py:42
 msgid ""
@@ -64425,45 +64447,34 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/test0.py:54
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 "Le paramètre est de type '%(k1)s' alors que la valeur de référence est de "
 "type '%(k2)s'.\n"
 msgstr ""
-"\n"
-" the parameter has values of the type\" %(k1)s\" and the value of reference "
-"of the type\" %(k2)s\". \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/test0.py:58
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 "Valeur de TYPE_TEST non supportée : '%(k1)s'\n"
 msgstr ""
-"\n"
-" TYPE_RESU unknown:  %(k1)s \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/test0.py:62
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 "Le champ '%(k1)s' est de type '%(k2)s' alors que la valeur de référence est "
 "de type '%(k3)s'.\n"
 msgstr ""
-"\n"
-" The field %(k1)s is with values of the type %(k2)s and the value of "
-"reference of\n"
-" the type %(k3)s. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/test0.py:66
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 "Le champ '%(k1)s' est de type inconnu.\n"
 msgstr ""
-"\n"
-" the field %(k1)s is of unknown type. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/test0.py:70
 msgid ""
@@ -64494,29 +64505,27 @@ msgid "  Réels :"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/test0.py:88
-#, fuzzy, python-format
+#, python-format
 msgid "  Nombre de valeurs : %(i1)-17d                       %(i2)-17d"
-msgstr "    * Many pairings:  %(i1)d"
+msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/test0.py:90
-#, fuzzy, python-format
+#, python-format
 msgid "  Somme des valeurs : %(i1)-17d                       %(i2)-17d"
-msgstr "    * Many pairings:  %(i1)d"
+msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/test0.py:92
-#, fuzzy, python-format
+#, python-format
 msgid "  Somme des valeurs : %(r1)17.10e                  %(r2)17.10e"
-msgstr "=> Norme of the error =  %(r1)f \n"
+msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/test0.py:94
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "  Somme de contrôle : %(k1)s  %(k2)s\n"
 "\n"
 "\n"
 msgstr ""
-"\n"
-" nonidentical meshes:  %(k1)s and  %(k2)s \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/thernonline4.py:22
 #, python-format
@@ -64615,7 +64624,6 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/unilater.py:22
-#, fuzzy
 msgid ""
 "\n"
 "Définition d'une liaison unilatérale.\n"
@@ -64632,23 +64640,6 @@ msgid ""
 "renseignant SYME='OUI'\n"
 "    sous le mot-clé facteur SOLVEUR.\n"
 msgstr ""
-"\n"
-"Definition of a unilateral connection. \n"
-" - > This functionality supposes the symmetry of the matrix obtained after "
-"assembly. \n"
-" If your modelization produces a nonsymmetrical matrix, one thus forces his "
-"symmetry to solve\n"
-" the contact. \n"
-" - > Risks & advices: \n"
-" This change can lead to difficulties of convergence in the process of "
-"Newton but to in no case\n"
-" it does not produce false results. \n"
-" \n"
-" If the stiffness matrix of your structure is symmetric, you can be unaware "
-"of what precedes. \n"
-" Lastly, it is possible to remove the display of this alarm by informing "
-"SYME='OUI' \n"
-" under the key word factor SOLVER. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/unilater.py:34
 msgid ""
@@ -67095,7 +67086,7 @@ msgid ""
 " pas de lignes définies\n"
 msgstr ""
 "\n"
-" no definite lines \n"
+" no lines definite \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai4.py:261
 msgid ""
@@ -68801,7 +68792,7 @@ msgid ""
 " pas de champs pour l'accès  %(k1)s de valeur  %(r1)g\n"
 msgstr ""
 "\n"
-" no fields for the access %(k1)s of value  %(r1)g \n"
+" No fields for the access %(k1)s of value  %(r1)g \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai8.py:232
 #, python-format
@@ -69048,10 +69039,10 @@ msgid ""
 "\n"
 "  -> Le type de modélisation volumes finis (TYPVF)  %(i1)i   est inconnu.\n"
 "     Vous avez le choix entre :\n"
-"                          TYPVF=1  => Schéma VF a deux points\n"
-"                          TYPVF=2  => Schéma SUDM\n"
+"                          TYPVF=1  => Schéma VF a deux points (supprimée)\n"
+"                          TYPVF=2  => Schéma SUDM (supprimée)\n"
 "                          TYPVF=3  => Schéma SUDA\n"
-"                          TYPVF=4  => Schéma SUC\n"
+"                          TYPVF=4  => Schéma SUC (supprimée)\n"
 "\n"
 msgstr ""
 
@@ -69090,15 +69081,6 @@ msgstr ""
 msgid ""
 "\n"
 "  -> l'élément %(k1)s et la face  %(i1)i est non plane\n"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/volufini.py:70
-msgid ""
-"\n"
-"  -> Le nombre de noeuds de l'élément est inconnu en VF.\n"
-"     Nous pouvons utiliser uniquement des mailles quadratiques. Il est donc\n"
-"     possible d'avoir 7 noeuds on a alors une maille TRIA7,\n"
-"     9 noeuds on a alors un QUAD9, etc...\n"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:24
@@ -69642,7 +69624,7 @@ msgstr ""
 " minimum. Please refine the mesh between cracks (or draw aside cracks). \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:282
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 "      La maille %(k1)s est quadratique et elle est connectée à 2 fissures,\n"
@@ -69653,11 +69635,6 @@ msgid ""
 "      minimum. Veuillez raffiner le maillage entre les fissures (ou écarter "
 "les fissures).\n"
 msgstr ""
-"\n"
-" The mesh %(k1)s is quadratic and it is connected to 2 cracks,\n"
-" multi-Heaviside was not generalized into quadratic. \n"
-" Not to activate multi-Heaviside, the cracks must be separate of 2 meshes\n"
-" minimum. Please refine the mesh between cracks (or draw aside cracks). \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:289
 #, python-format
@@ -71795,7 +71772,7 @@ msgstr "value of %s"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1529
 msgid "type non supporté"
-msgstr "type not supported"
+msgstr "type unsupported"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1534
 #, python-format
@@ -71844,7 +71821,7 @@ msgstr "Ok"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Stanley/ihm_parametres.py:285
 msgid "Quitter"
-msgstr "Leave"
+msgstr "Exit"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Stanley/ihm_parametres.py:285
 msgid "Voulez-vous quitter ? Les paramètres modifiés seront perdus."
@@ -72260,9 +72237,9 @@ msgid "Fichier de messages non trouvé: {0}"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Utilitai/Utmess.py:276
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "Impossible de construire le texte du message: {0}"
-msgstr "Impossible to save the parameters in: %s"
+msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Utilitai/Utmess.py:282
 #, python-format
@@ -72332,7 +72309,7 @@ msgstr "Total time"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Utilitai/as_timer.py:97
 msgid "cpu"
-msgstr "CPU"
+msgstr "cpu"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Utilitai/as_timer.py:98
 msgid "system"
@@ -72526,180 +72503,28 @@ msgstr "Simple key word: %s %s"
 
 #~ msgid ""
 #~ "\n"
-#~ " le phénomène  %(k1)s  n'est pas admis pour la symétrisation des "
-#~ "matrices.\n"
-#~ " seuls sont admis les phénomènes \"MECANIQUE\" et \"THERMIQUE\"\n"
+#~ " couplage fluage/fissuration :\n"
+#~ " nombre total de variables internes incohérent <--> erreur de "
+#~ "programmation.\n"
 #~ msgstr ""
 #~ "\n"
-#~ " the phenomenon %(k1)s is not allowed for the symmetrization of the "
-#~ "matrixes. \n"
-#~ " only the phenomena MECANIQUE and\" THERMAL\" are\" allowed\" \n"
+#~ " coupling creep/cracking: \n"
+#~ " incoherent full number of intern variables <--> programming error. \n"
 
 #~ msgid ""
 #~ "\n"
-#~ "  La température n'est pas correctement renseignée\n"
+#~ " le champ de déplacement DIDI n'est pas trouvé dans le concept  %(k1)s\n"
 #~ msgstr ""
 #~ "\n"
-#~ " The temperature is not correctly indicated \n"
+#~ " the field of displacement DIDI is not found in the concept  %(k1)s \n"
 
 #~ msgid ""
 #~ "\n"
-#~ " TYPE_TEST inconnu\n"
+#~ "Il n'y a aucun pas de calcul temporel.\n"
+#~ "En mécanique, 'LIST_INST' est absent.\n"
+#~ "En thermique, 'LIST_INST' est absent ou un singleton.\n"
 #~ msgstr ""
 #~ "\n"
-#~ " TYPE_TEST unknown \n"
-
-#~ msgid ""
-#~ "\n"
-#~ " le champ  %(k1)s  est a valeurs de type  \" %(k2)s \"  et la valeur de "
-#~ "référence de type  \" %(k3)s \".\n"
-#~ msgstr ""
-#~ "\n"
-#~ " the field %(k1)s has values of the type\" %(k2)s\" and the value of "
-#~ "reference of the type\" %(k3)s\". \n"
-
-#~ msgid ""
-#~ "\n"
-#~ " le paramètre \"pnosym\" n'existe pas dans le catalogue de l'élément  "
-#~ "%(k1)s  .\n"
-#~ msgstr ""
-#~ "\n"
-#~ " the parameter\" pnosym\" does not exist in the catalogue of the element "
-#~ "%(k1)s. \n"
-
-#~ msgid ""
-#~ "\n"
-#~ " la taille de la matrice non-symétrique en entrée est fausse.\n"
-#~ msgstr ""
-#~ "\n"
-#~ " the size of the nonsymmetrical matrix in input is false. \n"
-
-#~ msgid ""
-#~ "\n"
-#~ " la taille de la matrice symétrique en sortie est fausse.\n"
-#~ msgstr ""
-#~ "\n"
-#~ " the size of the symmetric matrix in output is false. \n"
-
-#~ msgid ""
-#~ "\n"
-#~ " le noeud  %(k1)s  non modélisé par un discret\n"
-#~ msgstr ""
-#~ "\n"
-#~ " the node %(k1)s not modelized by discrete \n"
-
-#~ msgid ""
-#~ "\n"
-#~ " pas de noeuds du Radier modélisés par des discrets\n"
-#~ msgstr ""
-#~ "\n"
-#~ " no nodes of the Basemat modelized by the discrete ones \n"
-
-#~ msgid ""
-#~ "\n"
-#~ " La température de référence doit être comprise entre %(r1)f et %(r2)f.\n"
-#~ msgstr ""
-#~ "\n"
-#~ " The reference temperature must be understood enters %(r1)f and %(r2)f. \n"
-
-#~ msgid ""
-#~ "\n"
-#~ " impossible d'affecter des caractéristiques à des noeuds de ce modèle\n"
-#~ " car aucun noeud ne supporte un élément\n"
-#~ msgstr ""
-#~ "\n"
-#~ " impossible to assign characteristics to nodes of this model\n"
-#~ " because no node supports an element \n"
-
-#~ msgid ""
-#~ "\n"
-#~ " le noeud  %(k1)s  n'a pas été affecté par une matrice.\n"
-#~ msgstr ""
-#~ "\n"
-#~ " the node %(k1)s was not affected by a matrix. \n"
-
-#~ msgid ""
-#~ "\n"
-#~ " VERIF : 2 arguments max\n"
-#~ msgstr ""
-#~ "\n"
-#~ " VERIF: 2 arguments max \n"
-
-#~ msgid ""
-#~ "\n"
-#~ "Erreur d'accès aux données.\n"
-#~ msgstr ""
-#~ "\n"
-#~ "Error of access to information. \n"
-
-#~ msgid ""
-#~ "\n"
-#~ "    Nom du fichier   : %(k3)s\n"
-#~ "\n"
-#~ "    Valeurs de références :\n"
-#~ "     - Nombre de valeurs : %(i2)d\n"
-#~ "     - Somme des valeurs : %(k4)s\n"
-#~ "     - Somme de contrôle : %(k2)s\n"
-#~ "\n"
-#~ "    Valeurs du fichier :\n"
-#~ "     - Nombre de valeurs : %(i1)d\n"
-#~ "     - Somme des valeurs : %(r1)20.13e\n"
-#~ "     - Somme de contrôle : %(k1)s\n"
-#~ msgstr ""
-#~ "\n"
-#~ " Filename:  %(k3)s \n"
-#~ " \n"
-#~ " Values of reference: \n"
-#~ " - Many values:  %(i2)d \n"
-#~ " - Somme of the values:  %(k4)s \n"
-#~ " - Checksum:  %(k2)s \n"
-#~ " \n"
-#~ " Values of the file: \n"
-#~ " - Many values:  %(i1)d \n"
-#~ " - Somme of the values:  %(r1)20.13e \n"
-#~ " - Checksum:  %(k1)s \n"
-
-#~ msgid ""
-#~ "\n"
-#~ "      Fichier de configuration                    : %(k1)s\n"
-#~ "      Identifiant pour la mesure des performances : %(k2)s\n"
-#~ msgstr ""
-#~ "\n"
-#~ " Setup file:  %(k1)s \n"
-#~ " Identifying for the measurement of the performances:  %(k2)s \n"
-
-#~ msgid ""
-#~ "\n"
-#~ "La commande '%(k1)s' n'a pas été exécutée %(i1)d fois.\n"
-#~ msgstr ""
-#~ "\n"
-#~ "The command  %(k1)s time %(i1)d was not executed. \n"
-
-#~ msgid ""
-#~ "\n"
-#~ "- soit PRECISION contient une seule valeur, et alors, celle-ci sera "
-#~ "utilisée\n"
-#~ "  pour toutes les machines,\n"
-#~ "- soit PRECISION contient autant de valeurs qu'il y a de machines.\n"
-#~ msgstr ""
-#~ "\n"
-#~ "- either PRECISION contains only one value, and then, the aforementioned "
-#~ "will be used\n"
-#~ " for all the machines,\n"
-#~ " - or PRECISION contains as many values as there are machines. \n"
-
-#~ msgid ""
-#~ "Les temps de référence ne sont pas connus pour l'identifiant '%(k1)s'.\n"
-#~ "On utilise les valeurs de '%(k2)s'.\n"
-#~ msgstr ""
-#~ "Times of reference are not known for the identifier  %(k1)s. \n"
-#~ "One uses the values of  %(k2)s. \n"
-
-#~ msgid ""
-#~ "\n"
-#~ "Les listes fournies aux mots-clés MACHINE et VALE doivent avoir le même "
-#~ "cardinal.\n"
-#~ msgstr ""
-#~ "\n"
-#~ "The lists provided to key words MACHINE and VALE must have the same "
-#~ "cardinal. \n"
+#~ "There is no temporal computation step. \n"
+#~ "In mechanics, 'LIST_INST' is absent. \n"
+#~ "In thermal, 'LIST_INST' is absent or a singleton. \n"
