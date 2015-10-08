@@ -16,7 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine rcZ2rt(pi, pj, simpij)
+    subroutine rcZ2rt(transip, pi, pj, simpij)
+        aster_logical :: transip
         real(kind=8) :: pi
         real(kind=8) :: pj
         real(kind=8) :: simpij

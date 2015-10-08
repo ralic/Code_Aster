@@ -1,4 +1,4 @@
-subroutine rcZ201(lsn, lsnet, lfatig, lrocht,&
+subroutine rcZ201(transip, lsn, lsnet, lfatig, lrocht,&
                   lieu, ig, iocs, seisme, npass,&
                   mater, snmax, snemax, spmax, kemax,&
                   spmecm, spthem, samax, utot, sm,&
@@ -38,7 +38,7 @@ subroutine rcZ201(lsn, lsnet, lfatig, lrocht,&
     integer :: ig, iocs, npass
     real(kind=8) :: snmax, snemax, spmax, kemax, samax, utot, sm, sigpm
     real(kind=8) :: resuas(*), resuss(*), resuca(*), resucs(*), factus(*)
-    aster_logical :: lsn, lsnet, lfatig, lrocht, seisme, lbid
+    aster_logical :: transip, lsn, lsnet, lfatig, lrocht, seisme, lbid
     character(len=4) :: lieu
     character(len=8) :: mater
 !     ------------------------------------------------------------------
@@ -167,21 +167,21 @@ subroutine rcZ201(lsn, lsnet, lfatig, lrocht,&
         if (lsn) then
             call rcZ2sn('SN_SITU', lieu, nsitup, ppi, sij0,&
                         nsituq, ppi, sij0, seisme, mse,&
-                        sn)
+                        sn, transip)
             resuas(7*(is1-1)+1) = sn
             snmax = max( snmax , sn )
         endif
         if (lsn .and. lsnet) then
             call rcZ2sn('SN*_SITU', lieu, nsitup, ppi, sij0,&
                         nsituq, ppi, sij0, seisme, mse,&
-                        snet)
+                        snet, transip)
             resuas(7*(is1-1)+2) = snet
             snemax = max( snemax , snet )
         endif
         if (lfatig) then
             call rcZ2sp('SP_SITU', lieu, nsitup, ppi, sij0,&
                         nsituq, ppi, sij0, seisme, mse,&
-                        sp, typeke, spmeca, spthep)
+                        sp, typeke, spmeca, spthep, transip)
             call rc32sa('SITU', mater, matpi, matpi, sn,&
                         sp, typeke, spmeca, spthep, kemeca,&
                         kether, saltse, sm, fuse)
@@ -248,33 +248,33 @@ subroutine rcZ201(lsn, lsnet, lfatig, lrocht,&
         if (lsn) then
             call rcZ2sn('SN_SITU', lieu, nsitup, ppi, mpi,&
                         nsituq, ppj, mpj, .false._1, mse,&
-                        sn)
+                        sn, transip)
             resuss(7*(is1-1)+1) = sn
             snmax = max(snmax,sn)
         endif
         if (lsn .and. lsnet) then
             call rcZ2sn('SN*_SITU', lieu, nsitup, ppi, mpi,&
                         nsituq, ppj, mpj, .false._1, mse,&
-                        snet)
+                        snet, transip)
             resuss(7*(is1-1)+2) = snet
             snemax = max(snemax,snet)
         endif
         if (lrocht) then
-            call rcZ2rt(ppi, ppj, simpij)
+            call rcZ2rt(transip, ppi, ppj, simpij)
             sigpm = max ( sigpm, simpij )
         endif
         if (seisme) then
             if (lsn) then
                 call rcZ2sn('SN_SITU', lieu, nsitup, ppi, mpi,&
                             nsituq, ppj, mpj, seisme, mse,&
-                            sns)
+                            sns, transip)
                 resuas(7*(is1-1)+1) = sns
                 snmax = max(snmax,sns)
             endif
             if (lsn .and. lsnet) then
                 call rcZ2sn('SN*_SITU', lieu, nsitup, ppi, mpi,&
                             nsituq, ppj, mpj, seisme, mse,&
-                            snets)
+                            snets, transip)
                 resuas(7*(is1-1)+2) = snets
                 snemax = max(snemax,snets)
             endif
@@ -301,7 +301,7 @@ subroutine rcZ201(lsn, lsnet, lfatig, lrocht,&
         nocc = situ_nb_occur(1+2*ioc1-2)
         call rcZ2sp('SP_SITU', lieu, nsitup, ppi, mpi,&
                     nsituq, ppj, mpj, .false._1, mse,&
-                    sp, typeke, spmeca, spthep)
+                    sp, typeke, spmeca, spthep, transip)
         spmecp = spmeca(1)
         call rc32sa('SITU', mater, matpi, matpj, sn,&
                     sp, typeke, spmeca, spthep, kemeca,&
@@ -321,7 +321,7 @@ subroutine rcZ201(lsn, lsnet, lfatig, lrocht,&
             matrice_fu_b(indi+1) = fuij(1)
             call rcZ2sp('SP_SITU', lieu, nsitup, ppi, mpi,&
                         nsituq, ppj, mpj, seisme, mse,&
-                        sps, typeke, spmecs, spthes)
+                        sps, typeke, spmecs, spthes, transip)
             call rc32sa('SITU', mater, matpi, matpj, sns,&
                         sps, typeke, spmecs, spthes, kemecs,&
                         kethes, salijs, smm, fuij)
@@ -386,53 +386,53 @@ subroutine rcZ201(lsn, lsnet, lfatig, lrocht,&
             call rcma02('B', ioc2, matqj)
 !
             if (lrocht) then
-                call rcZ2rt(pqi, pqj, simpij)
+                call rcZ2rt(transip, pqi, pqj, simpij)
                 sigpm = max ( sigpm, simpij )
-                call rcZ2rt(ppi, pqi, simpij)
+                call rcZ2rt(transip, ppi, pqi, simpij)
                 sigpm = max ( sigpm, simpij )
-                call rcZ2rt(ppi, pqj, simpij)
+                call rcZ2rt(transip, ppi, pqj, simpij)
                 sigpm = max ( sigpm, simpij )
-                call rcZ2rt(ppj, pqi, simpij)
+                call rcZ2rt(transip, ppj, pqi, simpij)
                 sigpm = max ( sigpm, simpij )
-                call rcZ2rt(ppj, pqj, simpij)
+                call rcZ2rt(transip, ppj, pqj, simpij)
                 sigpm = max ( sigpm, simpij )
             endif
 !
 ! ------- CALCUL DU SN(P,Q), ON A 4 COMBINAISONS + SN(P,P) et SN(Q,Q)
             call rcZ2sn('SN_COMB', lieu, nsitup, ppi, mpi,&
                         nsituq, pqi, mqi, .false._1, mse,&
-                        sn)
+                        sn, transip)
             call rcZ2sn('SN_COMB', lieu, nsitup, ppi, mpi,&
                         nsituq, pqj, mqj, .false._1, mse,&
-                        sn)
+                        sn, transip)
             call rcZ2sn('SN_COMB', lieu, nsitup, ppj, mpj,&
                         nsituq, pqj, mqj, .false._1, mse,&
-                        sn)
+                        sn, transip)
             call rcZ2sn('SN_COMB', lieu, nsitup, ppj, mpj,&
                         nsituq, pqi, mqi, .false._1, mse,&
-                        sn)
+                        sn, transip)
             call rcZ2sn('SN_SITU', lieu, nsituq, pqi, mqi,&
                         nsituq, pqj, mqj, .false._1, mse,&
-                        sn)
+                        sn, transip)
             icss = icss + 1
             resucs(icss) = sn
             snmax = max(snmax,sn)
             if (seisme) then
                 call rcZ2sn('SN_COMB', lieu, nsitup, ppi, mpi,&
                             nsituq, pqi, mqi, seisme, mse,&
-                            sns)
+                            sns, transip)
                 call rcZ2sn('SN_COMB', lieu, nsitup, ppi, mpi,&
                             nsituq, pqj, mqj, seisme, mse,&
-                            sns)
+                            sns, transip)
                 call rcZ2sn('SN_COMB', lieu, nsitup, ppj, mpj,&
                             nsituq, pqj, mqj, seisme, mse,&
-                            sns)
+                            sns, transip)
                 call rcZ2sn('SN_COMB', lieu, nsitup, ppj, mpj,&
                             nsituq, pqi, mqi, seisme, mse,&
-                            sns)
+                            sns, transip)
                 call rcZ2sn('SN_SITU', lieu, nsituq, pqi, mqi,&
                             nsituq, pqj, mqj, seisme, mse,&
-                            sns)
+                            sns, transip)
                 icas = icas + 1
                 resuca(icas) = sns
                 snmax = max(snmax,sns)
@@ -447,10 +447,10 @@ subroutine rcZ201(lsn, lsnet, lfatig, lrocht,&
 ! NOMBRE DE PAS DE TEMPS POUR DISTINGUER LE CAS MECANIQUE PUR
             knumes = 'S       '
             call codent(nsitup, 'D0', knumes(2:8))
-            call jelira(jexnom('&&RC3200.SITU_THERMIQUE', knumes), 'LONUTI', nbthep)
+            call jelira(jexnom('&&RC3200.SITU_THER', knumes), 'LONUTI', nbthep)
             knumes = 'S       '
             call codent(nsituq, 'D0', knumes(2:8))
-            call jelira(jexnom('&&RC3200.SITU_THERMIQUE', knumes), 'LONUTI', nbtheq)
+            call jelira(jexnom('&&RC3200.SITU_THER', knumes), 'LONUTI', nbtheq)
 !
             meca = .false.
             if ((nbthep+nbtheq) .eq. 0) meca = .true.
@@ -459,7 +459,7 @@ subroutine rcZ201(lsn, lsnet, lfatig, lrocht,&
 ! - PREMIERE COMBINAISON : PI - QI
             call rcZ2sp('SP_COMB', lieu, nsitup, ppi, mpi,&
                         nsituq, pqi, mqi, .false._1, mse,&
-                        sp12ma, typeke, spmeca, spther)
+                        sp12ma, typeke, spmeca, spther, transip)
 !
             do 119 i4 = 1, 8
                 mat1(i4) = matpi(i4)
@@ -469,13 +469,13 @@ subroutine rcZ201(lsn, lsnet, lfatig, lrocht,&
             if (seisme) then
                 call rcZ2sp('SP_COMB', lieu, nsitup, ppi, mpi,&
                             nsituq, pqi, mqi, seisme, mse,&
-                            sps, typeke, spmecs, spthes)
+                            sps, typeke, spmecs, spthes, transip)
             endif
 !
 ! - DEUXIEME COMBINAISON : PI - QJ
             call rcZ2sp('SP_COMB', lieu, nsitup, ppi, mpi,&
                         nsituq, pqj, mqj, .false._1, mse,&
-                        sp2, typeke, spmec2, spthe2)
+                        sp2, typeke, spmec2, spthe2, transip)
 !
             if (typeke .gt. 0.d0) then
                 call rc32ms(.true._1, spmeca, spmec2, lbid)
@@ -485,7 +485,7 @@ subroutine rcZ201(lsn, lsnet, lfatig, lrocht,&
             if (seisme) then
                 call rcZ2sp('SP_COMB', lieu, nsitup, ppi, mpi,&
                             nsituq, pqj, mqj, seisme, mse,&
-                            sp2s, typeke, spmes2, spthes)
+                            sp2s, typeke, spmes2, spthes, transip)
                 call rc32ms(meca, sps, sp2s, cmax)
                 if (typeke .gt. 0.d0) then
                     call rc32ms(.true._1, spmecs, spmes2, lbid)
@@ -504,7 +504,7 @@ subroutine rcZ201(lsn, lsnet, lfatig, lrocht,&
 ! - TROISIEME COMBINAISON : PJ - QI
             call rcZ2sp('SP_COMB', lieu, nsitup, ppj, mpj,&
                         nsituq, pqi, mqi, .false._1, mse,&
-                        sp2, typeke, spmec2, spthe2)
+                        sp2, typeke, spmec2, spthe2, transip)
 !
             if (typeke .gt. 0.d0) then
                 call rc32ms(.true._1, spmeca, spmec2, lbid)
@@ -514,7 +514,7 @@ subroutine rcZ201(lsn, lsnet, lfatig, lrocht,&
             if (seisme) then
                 call rcZ2sp('SP_COMB', lieu, nsitup, ppj, mpj,&
                             nsituq, pqi, mqi, seisme, mse,&
-                            sp2s, typeke, spmes2, spthes)
+                            sp2s, typeke, spmes2, spthes, transip)
                 call rc32ms(meca, sps, sp2s, cmax)
                 if (typeke .gt. 0.d0) then
                     call rc32ms(.true._1, spmecs, spmes2, lbid)
@@ -533,7 +533,7 @@ subroutine rcZ201(lsn, lsnet, lfatig, lrocht,&
 ! - QUATRIEME COMBINAISON : PJ - QJ
             call rcZ2sp('SP_COMB', lieu, nsitup, ppj, mpj,&
                         nsituq, pqj, mqj, .false._1, mse,&
-                        sp2, typeke, spmec2, spthe2)
+                        sp2, typeke, spmec2, spthe2, transip)
 !
             if (typeke .gt. 0.d0) then
                 call rc32ms(.true._1, spmeca, spmec2, lbid)
@@ -543,7 +543,7 @@ subroutine rcZ201(lsn, lsnet, lfatig, lrocht,&
             if (seisme) then
                 call rcZ2sp('SP_COMB', lieu, nsitup, ppj, mpj,&
                             nsituq, pqj, mqj, seisme, mse,&
-                            sp2s, typeke, spmes2, spthes)
+                            sp2s, typeke, spmes2, spthes, transip)
                 call rc32ms(meca, sps, sp2s, cmax)
                 if (typeke .gt. 0.d0) then
                     call rc32ms(.true._1, spmecs, spmes2, lbid)
@@ -562,7 +562,7 @@ subroutine rcZ201(lsn, lsnet, lfatig, lrocht,&
 ! -  CINQUIEME COMBINAISON : QI - QJ
             call rcZ2sp('SP_SITU', lieu, nsituq, pqi, mqi,&
                         0, pqj, mqj, .false._1, mse,&
-                        sqq, typeke, spmecq, sptheq)
+                        sqq, typeke, spmecq, sptheq, transip)
             spp = resuss(7*(is1-1)+3)
             if (sqq(1) .ge. sp12ma(1)) then
                 sp12ma(1) = sqq(1)
@@ -587,7 +587,7 @@ subroutine rcZ201(lsn, lsnet, lfatig, lrocht,&
             if (seisme) then
                 call rcZ2sp('SP_SITU', lieu, nsituq, pqi, mqi,&
                             nsituq, pqj, mqj, seisme, mse,&
-                            sqqs, typeke, spmeqs, spthes)
+                            sqqs, typeke, spmeqs, spthes, transip)
                 if (sqqs(1) .ge. sps(1)) then
                     sps(1) = sqqs(1)
                     spps = resuas(7*(is1-1)+3)

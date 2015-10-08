@@ -498,10 +498,10 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
 ! NOMBRE DE PAS DE TEMPS POUR DISTINGUER LE CAS MECANIQUE PUR
             knumes = 'S       '
             call codent(nsitup, 'D0', knumes(2:8))
-            call jelira(jexnom('&&RC3200.SITU_THERMIQUE', knumes), 'LONUTI', nbthep)
+            call jelira(jexnom('&&RC3200.SITU_THER', knumes), 'LONUTI', nbthep)
             knumes = 'S       '
             call codent(nsituq, 'D0', knumes(2:8))
-            call jelira(jexnom('&&RC3200.SITU_THERMIQUE', knumes), 'LONUTI', nbtheq)
+            call jelira(jexnom('&&RC3200.SITU_THER', knumes), 'LONUTI', nbtheq)
 !
             meca = .false.
             if ((nbthep+nbtheq) .eq. 0) meca = .true.

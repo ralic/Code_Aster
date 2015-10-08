@@ -1,5 +1,5 @@
 subroutine rcZ2ac(lsn, lsnet, lfatig, lrocht,&
-                  mater)
+                  mater, transip)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -23,7 +23,7 @@ subroutine rcZ2ac(lsn, lsnet, lfatig, lrocht,&
 #include "asterfort/rcma02.h"
 #include "asterfort/rcmoZ2.h"
 #include "asterfort/wkvect.h"
-    aster_logical :: lsn, lsnet, lfatig, lrocht
+    aster_logical :: lsn, lsnet, lfatig, lrocht, transip
     character(len=8) :: mater
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -239,7 +239,7 @@ subroutine rcZ2ac(lsn, lsnet, lfatig, lrocht,&
                 seisme = .true.
             endif
 !
-            call rcZ201(lsn, lsnet, lfatig, lrocht,&
+            call rcZ201(transip, lsn, lsnet, lfatig, lrocht,&
                         lieu(im), numgr, iocs, seisme, npass,&
                         mater, snmax, snemax, spmax, kemax,&
                         spmecm, spthem, samax, utot, sm,&
@@ -320,7 +320,7 @@ subroutine rcZ2ac(lsn, lsnet, lfatig, lrocht,&
                     sn = 0.d0
                     call rcZ2sn('SN_SITU', lieu(im), nsitup, ppi, mpi,&
                                 nsituq, ppj, mpj, seisme, mse,&
-                                sn)
+                                sn, transip)
                     snmax = max ( snmax , sn )
                     zr(jress-1+7*(is1-1)+1) = sn
                     if (niv .ge. 2) then
@@ -334,7 +334,7 @@ subroutine rcZ2ac(lsn, lsnet, lfatig, lrocht,&
                     snet = 0.d0
                     call rcZ2sn('SN*_SITU', lieu(im), nsitup, ppi, mpi,&
                                 nsituq, ppj, mpj, seisme, mse,&
-                                snet)
+                                snet, transip)
                     snemax = max ( snemax , snet )
                     zr(jress-1+7*(is1-1)+2) = snet
                     if (niv .ge. 2) then
@@ -345,7 +345,7 @@ subroutine rcZ2ac(lsn, lsnet, lfatig, lrocht,&
 ! ----------- CALCUL DU ROCHET THERMIQUE
 !
                 if (lrocht) then
-                    call rcZ2rt(ppi, ppj, simpij)
+                    call rcZ2rt(transip, ppi, ppj, simpij)
                     sipmax = max ( sipmax, simpij )
                     write (ifm,2034) nsitup, simpij
                 endif
@@ -359,7 +359,7 @@ subroutine rcZ2ac(lsn, lsnet, lfatig, lrocht,&
                 typeke=matpi(8)
                 call rcZ2sp('SP_SITU', lieu(im), nsitup, ppi, mpi,&
                             nsituq, ppj, mpj, seisme, mse,&
-                            sp, typeke, spmeca, spther)
+                            sp, typeke, spmeca, spther, transip)
                 spthem = max ( spthem , spther(1) )
                 spmax = max ( spmax , sp(1) )
                 if (niv .ge. 2) write (ifm,2040) nsitup, sp(1)
@@ -447,7 +447,7 @@ subroutine rcZ2ac(lsn, lsnet, lfatig, lrocht,&
 !
             npass = 7
 !
-            call rcZ201(lsn, lsnet, lfatig, lrocht,&
+            call rcZ201(transip, lsn, lsnet, lfatig, lrocht,&
                         lieu(im), numgr, iocs, seisme, npass,&
                         mater, snmax, snemax, spmax, kemax,&
                         spmecm, spthem, samax, utot, sm,&

@@ -112,7 +112,7 @@ subroutine rc32sp(typz, lieu, numsip, pi, mi,&
     if (numsip .ne. 0) then
         knumes = 'S       '
         call codent(numsip, 'D0', knumes(2:8))
-        call jelira(jexnom('&&RC3200.SITU_THERMIQUE', knumes), 'LONUTI', nbthep)
+        call jelira(jexnom('&&RC3200.SITU_THER', knumes), 'LONUTI', nbthep)
         if (nbthep .eq. 0) then
             nbinst = 0
             jthun = 1
@@ -131,7 +131,7 @@ subroutine rc32sp(typz, lieu, numsip, pi, mi,&
             spij(1) = max(spij(1),sp)
             if (typ2 .eq. 'COMB') spij(2) = max(spij(2),sp)
         else
-            call jeveuo(jexnom('&&RC3200.SITU_THERMIQUE', knumes), 'L', jther)
+            call jeveuo(jexnom('&&RC3200.SITU_THER', knumes), 'L', jther)
             numth = zi(jther)
             knumet = 'T       '
             call codent(numth, 'D0', knumet(2:8))
@@ -169,7 +169,7 @@ subroutine rc32sp(typz, lieu, numsip, pi, mi,&
     if (numsiq .ne. 0) then
         knumes = 'S       '
         call codent(numsiq, 'D0', knumes(2:8))
-        call jelira(jexnom('&&RC3200.SITU_THERMIQUE', knumes), 'LONUTI', nbtheq)
+        call jelira(jexnom('&&RC3200.SITU_THER', knumes), 'LONUTI', nbtheq)
         if (nbtheq .eq. 0) then
             nbinst = 0
             jthun = 1
@@ -198,7 +198,7 @@ subroutine rc32sp(typz, lieu, numsip, pi, mi,&
                 endif
             endif
         else
-            call jeveuo(jexnom('&&RC3200.SITU_THERMIQUE', knumes), 'L', jther)
+            call jeveuo(jexnom('&&RC3200.SITU_THER', knumes), 'L', jther)
             numth = zi(jther)
             knumet = 'T       '
             call codent(numth, 'D0', knumet(2:8))

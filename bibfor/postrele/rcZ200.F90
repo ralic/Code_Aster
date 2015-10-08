@@ -1,5 +1,5 @@
 subroutine rcZ200(sn, snet, fatigu, lrocht,&
-                  mater, symax)
+                  mater, symax, transip)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -13,7 +13,7 @@ subroutine rcZ200(sn, snet, fatigu, lrocht,&
 #include "asterfort/rcZ2rs.h"
 
     real(kind=8) :: symax
-    aster_logical :: sn, snet, fatigu, lrocht
+    aster_logical :: sn, snet, fatigu, lrocht, transip
     character(len=8) :: mater
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -41,7 +41,7 @@ subroutine rcZ200(sn, snet, fatigu, lrocht,&
 !              TRAITEMENT DES SITUATIONS (GROUPES, PASSAGE...)
 !     ------------------------------------------------------------------
 !
-    call rc32si()
+    call rc32si(transip)
 !
 !     ------------------------------------------------------------------
 !              RECUPERATION DES CARACTERISTIQUES MATERIAU
@@ -75,7 +75,7 @@ subroutine rcZ200(sn, snet, fatigu, lrocht,&
 !     ------------------------------------------------------------------
 !
     call rcZ2ac(sn, snet, fatigu, lrocht,&
-                mater)
+                mater, transip)
 !
 !     ------------------------------------------------------------------
 !                       STOCKAGE DES RESULTATS

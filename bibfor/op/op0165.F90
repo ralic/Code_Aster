@@ -40,7 +40,7 @@ subroutine op0165()
 #include "asterfort/utmess.h"
     integer :: n1, nbopt, iopt, nbther
     real(kind=8) :: symax
-    aster_logical :: pmpb, sn, snet, fatigu, lrocht
+    aster_logical :: pmpb, sn, snet, fatigu, lrocht, transip
     integer :: icodre
     character(len=8) :: nommat
     character(len=16) :: typtab, typmec, kopt(4)
@@ -105,6 +105,7 @@ subroutine op0165()
         sn = .false.
         snet = .false.
         lrocht = .false.
+        transip = .false.
 !
         call getfac('RESU_THER', nbther)
         if (nbther .ne. 0) then
@@ -135,7 +136,7 @@ subroutine op0165()
 !
 !     ------------------------------------------------------------------
 !
-!     ------------------- TYPE_RESU_MECA = ZE200a -------------------
+!     ---------------TYPE_RESU_MECA = ZE200a, ZE200b -------------------
 !
 !     ------------------------------------------------------------------
 !
@@ -145,11 +146,16 @@ subroutine op0165()
         sn = .false.
         snet = .false.
         lrocht = .false.
+        transip = .false.
 !
         call getfac('RESU_THER', nbther)
         if (nbther .ne. 0) then
             snet = .true.
             lrocht = .true.
+        endif
+!
+        if (typmec .eq. 'ZE200b') then
+            transip = .true.
         endif
 !
         call getvtx(' ', 'OPTION', nbval=0, nbret=n1)
@@ -168,7 +174,7 @@ subroutine op0165()
         call getvr8(' ', 'SY_MAX', scal=symax, nbret=n1)
 !
         call rcZ200(sn, snet, fatigu, lrocht,&
-                    nommat, symax)
+                    nommat, symax, transip)
 !
     endif
 !

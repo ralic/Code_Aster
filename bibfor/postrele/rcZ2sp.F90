@@ -1,10 +1,12 @@
 subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
                   numsiq, pj, mj, seisme, mse,&
-                  spij, typeke, spmeca, spther)
+                  spij, typeke, spmeca, spther, transip)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 !
+#include "asterfort/jemarq.h"
+#include "asterfort/jedema.h"
 #include "asterfort/codent.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
@@ -15,7 +17,7 @@ subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
     integer :: numsip, numsiq
     real(kind=8) :: pi, mi(*), pj, mj(*), mse(*), spij(2), typeke, spmeca(2)
     real(kind=8) :: spther(2)
-    aster_logical :: seisme
+    aster_logical :: seisme, transip
     character(len=4) :: lieu
     character(len=*) :: typz
 !     ------------------------------------------------------------------
@@ -55,14 +57,16 @@ subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
 ! OUT : SPMECA : AMPLITUDE DE VARIATION DES CONTRAINTES MECANIQUES
 ! OUT : SPTHER : AMPLITUDE DE VARIATION DES CONTRAINTES THERMIQUES
 !
-    integer :: icmp, long, nbinst, nbthep, nbtheq, jther, numth
-    integer :: jthunq, i1, jthunp, jthun, jvalin
+    integer :: icmp, long, nbinst, nbthep, nbtheq, jther, numt
+    integer :: jthunq, i1, jthunp, jthun, jvalin, nbprep, nbp, jpres
+    integer :: nbpreq, nbq
     real(kind=8) :: pij, mij(6), sp, sij, sij0, sqma(6), sqmi(6)
     real(kind=8) :: sp1, sp2, spth(6), spqma(2), spqmi(2), sqth(6)
     real(kind=8) :: racine, c1, c2, diam, ep, inertie, k1, k2
     character(len=4) :: typ2
     character(len=8) :: type, knumes, knumet
 ! DEB ------------------------------------------------------------------
+    call jemarq()
     type = typz
 !
     spij(1) = 0.d0
@@ -118,8 +122,14 @@ subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
     if (numsip .ne. 0) then
         knumes = 'S       '
         call codent(numsip, 'D0', knumes(2:8))
-        call jelira(jexnom('&&RC3200.SITU_THERMIQUE', knumes), 'LONUTI', nbthep)
-        if (nbthep .eq. 0) then
+        call jelira(jexnom('&&RC3200.SITU_THER', knumes), 'LONUTI', nbthep)
+        if (transip) then 
+            call jelira(jexnom('&&RC3200.SITU_PRES', knumes), 'LONUTI', nbprep)
+        else
+            nbprep = 0
+        endif
+        nbp = max(nbthep, nbprep)
+        if (nbp .eq. 0) then
             nbinst = 0
             jthun = 1
             typ2 = '????'
@@ -137,12 +147,17 @@ subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
             spij(1) = max(spij(1),sp)
             if (typ2 .eq. 'COMB') spij(2) = max(spij(2),sp)
         else
-            call jeveuo(jexnom('&&RC3200.SITU_THERMIQUE', knumes), 'L', jther)
-            numth = zi(jther)
+            if (nbthep .ne. 0) then
+                call jeveuo(jexnom('&&RC3200.SITU_THER', knumes), 'L', jther)
+                numt = zi(jther)
+            else
+                call jeveuo(jexnom('&&RC3200.SITU_PRES', knumes), 'L', jpres)
+                numt = zi(jpres)
+            endif
             knumet = 'T       '
-            call codent(numth, 'D0', knumet(2:8))
-            call jelira(jexnom('&&RC3200.THER .'//lieu, knumet), 'LONUTI', long)
-            call jeveuo(jexnom('&&RC3200.THER .'//lieu, knumet), 'L', jthunp)
+            call codent(numt, 'D0', knumet(2:8))
+            call jelira(jexnom('&&RC3200.T .'//lieu, knumet), 'LONUTI', long)
+            call jeveuo(jexnom('&&RC3200.T .'//lieu, knumet), 'L', jthunp)
             nbinst = 2
             typ2 = '????'
             if (type .eq. 'SP_COMB') then
@@ -175,8 +190,14 @@ subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
     if (numsiq .ne. 0) then
         knumes = 'S       '
         call codent(numsiq, 'D0', knumes(2:8))
-        call jelira(jexnom('&&RC3200.SITU_THERMIQUE', knumes), 'LONUTI', nbtheq)
-        if (nbtheq .eq. 0) then
+        call jelira(jexnom('&&RC3200.SITU_THER', knumes), 'LONUTI', nbtheq)
+        if (transip) then
+            call jelira(jexnom('&&RC3200.SITU_PRES', knumes), 'LONUTI', nbpreq)
+        else
+            nbpreq = 0
+        endif 
+        nbq = max (nbtheq, nbpreq)
+        if (nbq .eq. 0) then
             nbinst = 0
             jthun = 1
             typ2 = '????'
@@ -194,7 +215,7 @@ subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
             spij(1) = max(spij(1),sp)
             if (typ2 .eq. 'COMB') spij(2) = max(spij(2),sp)
 ! - CAS NBQ = 0 / NBP != 0
-            if (typ2 .eq. 'COMB' .and. nbthep .ne. 0) then
+            if (typ2 .eq. 'COMB' .and. nbp .ne. 0) then
                 if (seisme) then
                     call rcZ2s0(mij, pij, mse, &
                                 1, spth, sp)
@@ -204,12 +225,17 @@ subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
                 endif
             endif
         else
-            call jeveuo(jexnom('&&RC3200.SITU_THERMIQUE', knumes), 'L', jther)
-            numth = zi(jther)
+            if (nbtheq .ne. 0) then
+                call jeveuo(jexnom('&&RC3200.SITU_THER', knumes), 'L', jther)
+                numt = zi(jther)
+            else
+                call jeveuo(jexnom('&&RC3200.SITU_PRES', knumes), 'L', jpres)
+                numt = zi(jpres)
+            endif
             knumet = 'T       '
-            call codent(numth, 'D0', knumet(2:8))
-            call jelira(jexnom('&&RC3200.THER .'//lieu, knumet), 'LONUTI', long)
-            call jeveuo(jexnom('&&RC3200.THER .'//lieu, knumet), 'L', jthunq)
+            call codent(numt, 'D0', knumet(2:8))
+            call jelira(jexnom('&&RC3200.T .'//lieu, knumet), 'LONUTI', long)
+            call jeveuo(jexnom('&&RC3200.T .'//lieu, knumet), 'L', jthunq)
             nbinst = 2
             typ2 = '????'
             if (type .eq. 'SP_COMB') then
@@ -227,7 +253,7 @@ subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
                 spij(1) = sp
             else
 ! - CAS NBP = 0 / NBQ != 0
-                if (nbthep .eq. 0) then
+                if (nbp .eq. 0) then
                     do 113 i1 = 1, 6
                         sqth(i1) = zr(jthunq+i1-1) - zr(jthunq+6+i1-1)
 113                 continue
@@ -291,4 +317,5 @@ subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
 !
     endif
 !
+    call jedema()
 end subroutine

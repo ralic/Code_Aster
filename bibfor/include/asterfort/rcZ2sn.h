@@ -20,7 +20,7 @@
 interface
     subroutine rcZ2sn(typz, lieu, numsip, pi, mi,&
                       numsiq, pj, mj, seisme, mse,&
-                      snij)
+                      snij, transip)
         character(len=*) :: typz
         character(len=4) :: lieu
         integer :: numsip
@@ -32,5 +32,6 @@ interface
         aster_logical :: seisme
         real(kind=8) :: mse(*)
         real(kind=8) :: snij
+        aster_logical :: transip
     end subroutine rcZ2sn
 end interface

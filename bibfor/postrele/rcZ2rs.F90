@@ -5,7 +5,7 @@ subroutine rcZ2rs(sn, snet, fatigu, lrocht,&
 #include "asterc/getres.h"
 #include "asterfort/rcZ2r0.h"
 #include "asterfort/rcZ2r1.h"
-#include "asterfort/rc32r8.h"
+#include "asterfort/rcZ2r8.h"
 #include "asterfort/tbcrsd.h"
     aster_logical :: sn, snet, fatigu, lrocht
     real(kind=8) :: symax

@@ -19,7 +19,7 @@ subroutine rcZ2t()
 ! ======================================================================
 !     ------------------------------------------------------------------
 !     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_ZE200
-!     LECTURE DU MOT CLE FACTEUR "RESU_THER"
+!     LECTURE DES MOTS CLES FACTEURS "RESU_THER" ET "RESU_PRES"
 !
 !     ------------------------------------------------------------------
 !
@@ -52,24 +52,31 @@ subroutine rcZ2t()
 #include "asterfort/as_allocate.h"
 !
     integer :: ibid, n1, iocc, nbther, nume, nbinst, jinst, i, j, k, l, ndim
-    integer :: nbabsc, jabsc, jorig, jextr, ncmp, iret, kk
+    integer :: nbabsc, jabsc, jorig, jextr, ncmp, iret, kk, nbpres, nb, n2
+    integer :: nn, n4, nume2, ither, numether, ipres, numepres
     parameter  ( ncmp = 6 )
     real(kind=8) :: prec(2), momen0, momen1, vale(2)
-    real(kind=8) :: sigth(1000*ncmp), tresc(2), r3(2)
+    real(kind=8) :: sigth(1000*ncmp), tresc(2), r3(2), sigpr(1000*ncmp), sigtot(1000*ncmp)
     real(kind=8) :: tremin(2), tremax(2), tmin(2), tmax(2)
     complex(kind=8) :: cbid
     aster_logical :: exist
-    character(len=8) :: k8b, crit(2), nocmp(ncmp), table, knume
-    character(len=16) :: motclf, valek(2)
+    character(len=8) :: k8b, crit(2), nocmp(ncmp), table, knume, table2
+    character(len=16) :: motclf, motclf2, motclf3, valek(2)
     character(len=24) :: instan, abscur, jvorig, jvextr
     character(len=24) :: valk(7)
-    real(kind=8), pointer :: contraintes(:) => null()
+    real(kind=8), pointer :: contraintesth(:) => null()
+    real(kind=8), pointer :: contraintespr(:) => null()
+    real(kind=8), pointer :: contraintestot(:) => null()
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !
     motclf = 'RESU_THER'
+    motclf2 = 'RESU_PRES'
+    motclf3 = 'SITUATION'
     call getfac(motclf, nbther)
-    if (nbther .eq. 0) goto 9999
+    call getfac(motclf, nbpres)
+    nb = nbther+nbpres
+    if (nb .eq. 0) goto 9999
 !
     nocmp(1) = 'SIXX'
     nocmp(2) = 'SIYY'
@@ -86,51 +93,107 @@ subroutine rcZ2t()
     crit(1) = 'RELATIF'
     crit(2) = 'RELATIF'
 !
-    jvorig = '&&RC3200.THER .ORIG'
-    jvextr = '&&RC3200.THER .EXTR'
+    jvorig = '&&RC3200.T .ORIG'
+    jvextr = '&&RC3200.T .EXTR'
     call jecrec(jvorig, 'V V R', 'NO', 'DISPERSE', 'VARIABLE',&
-                nbther)
+                nb)
     call jecrec(jvextr, 'V V R', 'NO', 'DISPERSE', 'VARIABLE',&
-                nbther)
+                nb)
 !
-    do 10 iocc = 1, nbther, 1
+    do 10 iocc = 1, nb, 1
 !
-        call getvis(motclf, 'NUME_RESU_THER', iocc=iocc, scal=nume, nbret=n1)
+! ------ CREATION DU NOM DE TRANSITOIRE T1, T2, ....
+!
         knume = 'T       '
-        call codent(nume, 'D0', knume(2:8))
+        call codent(iocc, 'D0', knume(2:8))
+        call getvis(motclf3, 'NUME_RESU_THER', iocc=iocc, scal=nume, nbret=n1)
+        call getvis(motclf3, 'NUME_RESU_PRES', iocc=iocc, scal=nume2, nbret=n2)
+        nn=n1+n2
+        if (nn .eq. 0) goto 8888
 !
-        call getvid(motclf, 'TABL_RESU_THER', iocc=iocc, scal=table, nbret=n1)
-!
-! ------ ON VERIFIE L'ORDRE DES NOEUDS
-        call rcveri(table)
-!
-! ------ ON RECUPERE LES INSTANTS DANS LA TABLE
-!
-        call tbexip(table, valek(1), exist, k8b)
-        if (.not. exist) then
-            valk (1) = table
-            valk (2) = valek(1)
-            call utmess('F', 'POSTRCCM_1', nk=2, valk=valk)
+        if (n1 .ne. 0) then 
+            do 20 ither =1, nbther, 1
+                call getvis(motclf, 'NUME_RESU_THER', iocc=ither, scal=numether, nbret=n4)
+                if (numether .eq. nume) then
+                    call getvid(motclf, 'TABL_RESU_THER', iocc=ither, scal=table, nbret=n4)
+                endif
+20          continue
         endif
-        instan = '&&RC32TH.INSTANT'
-        call tbexv1(table, valek(1), instan, 'V', nbinst,&
-                    k8b)
-        call jeveuo(instan, 'L', jinst)
 !
-! ------ ON RECUPERE L'ABSC_CURV DANS LA TABLE
-!
-        call tbexip(table, valek(2), exist, k8b)
-        if (.not. exist) then
-            valk (1) = table
-            valk (2) = valek(2)
-            call utmess('F', 'POSTRCCM_1', nk=2, valk=valk)
+        if (n2 .ne. 0) then 
+            do 30 ipres =1, nbpres, 1
+                call getvis(motclf2, 'NUME_RESU_PRES', iocc=ipres, scal=numepres, nbret=n4)
+                if (numepres .eq. nume2) then
+                    call getvid(motclf2, 'TABL_RESU_PRES', iocc=ipres, scal=table2, nbret=n4)
+                endif
+30          continue
         endif
-        abscur = '&&RC32TH.ABSC_CURV'
-        call tbexv1(table, valek(2), abscur, 'V', nbabsc,&
-                    k8b)
-        call jeveuo(abscur, 'L', jabsc)
+
 !
-        AS_ALLOCATE(vr=contraintes, size=nbabsc)
+! ------ RECUPERATION DES INSTANTS ET DES ABSCISSES
+!
+! -------- SOIT GRACE A LA TABLE THERMIQUE
+! ---------- on verifie l'ordre des noeuds de la table thermique
+        if (n1 .ne. 0) then
+            call rcveri(table) 
+! ---------- on recupere les instants de la table thermique
+            call tbexip(table, valek(1), exist, k8b)
+            if (.not. exist) then
+                valk (1) = table
+                valk (2) = valek(1)
+                call utmess('F', 'POSTRCCM_1', nk=2, valk=valk)
+            endif
+            instan = '&&RC32TH.INSTANT'
+            call tbexv1(table, valek(1), instan, 'V', nbinst,&
+                        k8b)
+            call jeveuo(instan, 'L', jinst)
+! ---------- on recupere les abscisses curvilignes de la table thermique
+            call tbexip(table, valek(2), exist, k8b)
+            if (.not. exist) then
+                valk (1) = table
+                valk (2) = valek(2)
+                call utmess('F', 'POSTRCCM_1', nk=2, valk=valk)
+            endif
+            abscur = '&&RC32TH.ABSC_CURV'
+            call tbexv1(table, valek(2), abscur, 'V', nbabsc,&
+                        k8b)
+            call jeveuo(abscur, 'L', jabsc)
+! -------- SOIT GRACE A LA TABLE DE PRESSION
+        else
+! ---------- on verifie l'ordre des noeuds de la table de pression
+            call rcveri(table2)
+! ---------- on recupere les instants de la table de pression
+            call tbexip(table2, valek(1), exist, k8b)
+            if (.not. exist) then
+                valk (1) = table2
+                valk (2) = valek(1)
+                call utmess('F', 'POSTRCCM_1', nk=2, valk=valk)
+            endif
+            instan = '&&RC32TH.INSTANT'
+            call tbexv1(table2, valek(1), instan, 'V', nbinst,&
+                        k8b)
+            call jeveuo(instan, 'L', jinst)
+! ---------- on recupere les abscisses curvilignes de la table de pression
+            call tbexip(table2, valek(2), exist, k8b)
+            if (.not. exist) then
+               valk (1) = table2
+               valk (2) = valek(2)
+               call utmess('F', 'POSTRCCM_1', nk=2, valk=valk)
+            endif
+            abscur = '&&RC32TH.ABSC_CURV'
+            call tbexv1(table2, valek(2), abscur, 'V', nbabsc,&
+                        k8b)
+            call jeveuo(abscur, 'L', jabsc)
+        endif
+!
+! -------------- ON VERIFIE LA COHERENCE DES DEUX TABLES (PRESSION ET THERMIQUE)
+        if (n1 .ne. 0 .and. n2 .ne. 0) then
+            call rcver1('MECANIQUE', table2, table)
+        endif
+!
+        AS_ALLOCATE(vr=contraintesth, size=nbabsc)
+        AS_ALLOCATE(vr=contraintespr, size=nbabsc)
+        AS_ALLOCATE(vr=contraintestot, size=nbabsc)
 !
         ndim = 4 * ncmp * 2
         call jecroc(jexnom(jvorig, knume))
@@ -145,6 +208,8 @@ subroutine rcZ2t()
 !
         do 116 k = 1, nbabsc*ncmp
             sigth(k) = 0.d0
+            sigpr(k) = 0.d0
+            sigtot(k) = 0.d0
 116     continue
         do 1116 k = 1, 2
             tresc(k) = 0.d0
@@ -165,23 +230,41 @@ subroutine rcZ2t()
                     kk = kk + 1
                     vale(2) = zr(jabsc+k-1)
 !
-                    call tbliva(table, 2, valek, [ibid], vale,&
-                                [cbid], k8b, crit, prec, nocmp(j),&
-                                k8b, ibid, contraintes(k), cbid, k8b,&
-                                iret)
-                    if (iret .ne. 0) then
-                        valk (1) = table
-                        valk (2) = nocmp(j)
-                        valk (3) = valek(1)
-                        valk (4) = valek(2)
-                        call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
-                                    valr=vale)
+                    if (n1 .ne. 0) then
+                        call tbliva(table, 2, valek, [ibid], vale,&
+                                    [cbid], k8b, crit, prec, nocmp(j),&
+                                    k8b, ibid, contraintesth(k), cbid, k8b,&
+                                    iret)
+                        if (iret .ne. 0) then
+                            valk (1) = table
+                            valk (2) = nocmp(j)
+                            valk (3) = valek(1)
+                            valk (4) = valek(2)
+                            call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
+                                        valr=vale)
+                        endif
+                        sigth((k-1)*ncmp+j) = contraintesth(k)
                     endif
-                    sigth((k-1)*ncmp+j) = contraintes(k)
+                    if (n2 .ne. 0) then
+                        call tbliva(table2, 2, valek, [ibid], vale,&
+                                    [cbid], k8b, crit, prec, nocmp(j),&
+                                    k8b, ibid, contraintespr(k), cbid, k8b,&
+                                    iret)
+                        if (iret .ne. 0) then
+                            valk (1) = table2
+                            valk (2) = nocmp(j)
+                            valk (3) = valek(1)
+                            valk (4) = valek(2)
+                            call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
+                                        valr=vale)
+                        endif
+                        sigpr((k-1)*ncmp+j) = contraintespr(k)
+                    endif
+                    sigtot((k-1)*ncmp+j) = sigth((k-1)*ncmp+j)+ sigpr((k-1)*ncmp+j)
                     if (j .eq. ncmp) then
-                        call rctres(sigth((k-1)*ncmp+1), tresc(kk))
+                        call rctres(sigtot((k-1)*ncmp+1), tresc(kk))
 !
-                        if (trace(3,sigth((k-1)*ncmp+1)) .lt. 0.d0) then
+                        if (trace(3,sigtot((k-1)*ncmp+1)) .lt. 0.d0) then
                             r3(kk) = tresc(kk)*(-1.0d0)
                         else
                             r3(kk) = tresc(kk)
@@ -215,13 +298,22 @@ subroutine rcZ2t()
             do 166 k = 1, nbabsc
                 vale(2) = zr(jabsc+k-1)
 !
-                call tbliva(table, 2, valek, [ibid], vale,&
-                            [cbid], k8b, crit, prec, nocmp(j),&
-                            k8b, ibid, contraintes(k), cbid, k8b,&
-                            iret)
+                if (n1 .ne. 0) then
+                    call tbliva(table, 2, valek, [ibid], vale,&
+                                [cbid], k8b, crit, prec, nocmp(j),&
+                                k8b, ibid, contraintesth(k), cbid, k8b,&
+                                iret)
+                endif
+                if (n2 .ne. 0) then
+                    call tbliva(table2, 2, valek, [ibid], vale,&
+                                [cbid], k8b, crit, prec, nocmp(j),&
+                                k8b, ibid, contraintespr(k), cbid, k8b,&
+                                iret)
+                endif
+                contraintestot(k)=contraintesth(k)+contraintespr(k)
 166         continue
-            zr(jorig-1+j) = contraintes(1)
-            call rc32my(nbabsc, zr(jabsc), contraintes, momen0, momen1)
+            zr(jorig-1+j) = contraintestot(1)
+            call rc32my(nbabsc, zr(jabsc), contraintestot, momen0, momen1)
 !
             l = ncmp*2 + j
             zr(jorig-1+l) = momen0 - 0.5d0*momen1
@@ -236,14 +328,23 @@ subroutine rcZ2t()
             do 266 k = 1, nbabsc
                 vale(2) = zr(jabsc+k-1)
 !
-                call tbliva(table, 2, valek, [ibid], vale,&
-                            [cbid], k8b, crit, prec, nocmp(j),&
-                            k8b, ibid, contraintes(k), cbid, k8b,&
-                            iret)
+                if (n1 .ne. 0) then
+                    call tbliva(table, 2, valek, [ibid], vale,&
+                                [cbid], k8b, crit, prec, nocmp(j),&
+                                k8b, ibid, contraintesth(k), cbid, k8b,&
+                                iret)
+                endif
+                if (n2 .ne. 0) then
+                    call tbliva(table2, 2, valek, [ibid], vale,&
+                                [cbid], k8b, crit, prec, nocmp(j),&
+                                k8b, ibid, contraintespr(k), cbid, k8b,&
+                                iret)
+                endif
+                contraintestot(k)=contraintesth(k)+contraintespr(k)
 266         continue
-            zr(jextr-1+j) = contraintes(nbabsc)
+            zr(jextr-1+j) = contraintestot(nbabsc)
 !
-            call rc32my(nbabsc, zr(jabsc), contraintes, momen0, momen1)
+            call rc32my(nbabsc, zr(jabsc), contraintestot, momen0, momen1)
 !
             l = ncmp*2 + j
             zr(jextr-1+l) = momen0 + 0.5d0*momen1
@@ -259,15 +360,24 @@ subroutine rcZ2t()
             do 366 k = 1, nbabsc
                 vale(2) = zr(jabsc+k-1)
 !
-                call tbliva(table, 2, valek, [ibid], vale,&
-                            [cbid], k8b, crit, prec, nocmp(j),&
-                            k8b, ibid, contraintes(k), cbid, k8b,&
-                            iret)
+                if (n1 .ne. 0) then
+                    call tbliva(table, 2, valek, [ibid], vale,&
+                                [cbid], k8b, crit, prec, nocmp(j),&
+                                k8b, ibid, contraintesth(k), cbid, k8b,&
+                                iret)
+                endif
+                if (n2 .ne. 0) then
+                    call tbliva(table2, 2, valek, [ibid], vale,&
+                                [cbid], k8b, crit, prec, nocmp(j),&
+                                k8b, ibid, contraintespr(k), cbid, k8b,&
+                                iret)
+                endif
+                contraintestot(k)=contraintesth(k)+contraintespr(k)
 366         continue
             l = ncmp + j
-            zr(jorig-1+l) = contraintes(1)
+            zr(jorig-1+l) = contraintestot(1)
 !
-            call rc32my(nbabsc, zr(jabsc), contraintes, momen0, momen1)
+            call rc32my(nbabsc, zr(jabsc), contraintestot, momen0, momen1)
 !
             l = ncmp*3 + j
             zr(jorig-1+l) = momen0 - 0.5d0*momen1
@@ -282,15 +392,24 @@ subroutine rcZ2t()
             do 466 k = 1, nbabsc
                 vale(2) = zr(jabsc+k-1)
 !
-                call tbliva(table, 2, valek, [ibid], vale,&
-                            [cbid], k8b, crit, prec, nocmp(j),&
-                            k8b, ibid, contraintes(k), cbid, k8b,&
-                            iret)
+                if (n1 .ne. 0) then
+                    call tbliva(table, 2, valek, [ibid], vale,&
+                                [cbid], k8b, crit, prec, nocmp(j),&
+                                k8b, ibid, contraintesth(k), cbid, k8b,&
+                                iret)
+                endif 
+                if (n2 .ne. 0) then
+                    call tbliva(table2, 2, valek, [ibid], vale,&
+                                [cbid], k8b, crit, prec, nocmp(j),&
+                                k8b, ibid, contraintespr(k), cbid, k8b,&
+                                iret)
+                endif
+                contraintestot(k)=contraintesth(k)+contraintespr(k)
 466         continue
             l = ncmp + j
-            zr(jextr-1+l) = contraintes(nbabsc)
+            zr(jextr-1+l) = contraintestot(nbabsc)
 !
-            call rc32my(nbabsc, zr(jabsc), contraintes, momen0, momen1)
+            call rc32my(nbabsc, zr(jabsc), contraintestot, momen0, momen1)
 !
             l = ncmp*3 + j
             zr(jextr-1+l) = momen0 + 0.5d0*momen1
@@ -303,8 +422,11 @@ subroutine rcZ2t()
  66     continue
         call jedetr(instan)
         call jedetr(abscur)
-        AS_DEALLOCATE(vr=contraintes)
+        AS_DEALLOCATE(vr=contraintesth)
+        AS_DEALLOCATE(vr=contraintespr)
+        AS_DEALLOCATE(vr=contraintestot)
 !
+8888 continue
  10 end do
 !
 9999 continue

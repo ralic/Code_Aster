@@ -19,11 +19,12 @@
 !
 interface
     subroutine rcZ2ac(lsn, lsnet, lfatig, lrocht,&
-                      mater)
+                      mater, transip)
         aster_logical :: lsn
         aster_logical :: lsnet
         aster_logical :: lfatig
         aster_logical :: lrocht
         character(len=8) :: mater
+        aster_logical :: transip
     end subroutine rcZ2ac
 end interface

@@ -1,4 +1,4 @@
-subroutine rcZ2rt(pi, pj, simpij)
+subroutine rcZ2rt(transip, pi, pj, simpij)
     implicit   none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -6,6 +6,7 @@ subroutine rcZ2rt(pi, pj, simpij)
 #include "asterfort/jemarq.h"
 #include "asterfort/jedema.h"
     real(kind=8) :: pi, pj, simpij
+    aster_logical :: transip
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
