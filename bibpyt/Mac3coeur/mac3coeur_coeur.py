@@ -129,6 +129,7 @@ class Coeur(object):
         self.nbac = len(tab)
         for rows in tab:
             idAC = rows['idAC'].strip()
+            print 'idAC = ',idAC
             typeAC = rows['Milieu'].strip()
             nameAC = rows['Repere'].strip()
             ac = self.factory.get(typeAC)(self.typ_coeur)

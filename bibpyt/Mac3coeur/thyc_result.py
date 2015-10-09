@@ -21,7 +21,7 @@
 Ce module définit des fonctions permettant de manipuler un résultat issu de THYC
 """
 
-import string
+import string,re
 
 
 class ThycResult(object):
@@ -39,10 +39,11 @@ def cherche_rubrique_nom(fobj, nom):
             break
         # if line.strip() == nom:
         #     return 1
-        strtmp = line[0:len(line) - 1]
-        if len(line) >= len(nom):
-            if line[0:len(nom)] == nom:
-                return 1
+        #strtmp = line[0:len(line) - 1]
+        #if len(line) >= len(nom):
+            #if line[0:len(nom)] == nom:
+                #return 1
+        if re.search(nom,line) : return True
     return None
 
 
@@ -133,8 +134,8 @@ def lire_resu_thyc(coeur, MODELE, nom_fic):
 
     f = open(nom_fic, 'r')
     f2 = open(nom_fic, 'r')
-    cherche_rubrique_nom(f, ' EFFORTS TRANSVERSES selon X en N')
-    cherche_rubrique_nom(f2, ' EFFORTS TRANSVERSES selon Y en N')
+    cherche_rubrique_nom(f, 'EFFORTS TRANSVERSES selon X en N')
+    cherche_rubrique_nom(f2, 'EFFORTS TRANSVERSES selon Y en N')
     line = f.readline().split()
     line2 = f2.readline().split()
     line2 = f2.readline().split()
@@ -172,6 +173,8 @@ def lire_resu_thyc(coeur, MODELE, nom_fic):
     for i in range(0, coeur.NBAC):
         line = f.readline().split()
         line2 = f2.readline().split()
+        print 'line = ',line
+        print 'line2 = ',line2
         posi_aster1 = coeur.position_fromthyc(int(line[0]),int(line[1]))
         posi_aster2 = coeur.position_fromthyc(int(line2[0]),int(line2[1]))
         if (posi_aster1 != posi_aster2):
@@ -202,7 +205,7 @@ def lire_resu_thyc(coeur, MODELE, nom_fic):
 
     # Recuperation des efforts axiaux
     cherche_rubrique_nom(
-        f, ' *    FORCE HYDRODYNAMIQUE AXIALE en (N)           *')
+        f, 'FORCE HYDRODYNAMIQUE AXIALE')
     line = f.readline().split()
     line = f.readline().split()
     line = f.readline().split()
@@ -213,6 +216,8 @@ def lire_resu_thyc(coeur, MODELE, nom_fic):
         line = f.readline().split()
         posi_aster=coeur.position_fromthyc(int(line[0]),int(line[1]))
         idAC = coeur.position_todamac(posi_aster)
+        
+        print coeur.collAC.keys()
 
         ac = coeur.collAC[idAC]
         KTOT = ac.K_GRM * \
