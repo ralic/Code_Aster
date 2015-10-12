@@ -3,17 +3,17 @@
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #       CALCUL EN CONTRAINTES PLANES
 #
@@ -22,11 +22,11 @@ DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'))
 
 MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),FORMAT='MED',  )
 
-MO=AFFE_MODELE(  MAILLAGE=MA, 
+MO=AFFE_MODELE(  MAILLAGE=MA,
       AFFE=_F( TOUT = 'OUI',PHENOMENE = 'MECANIQUE',MODELISATION = 'C_PLAN'))
 
 MA=MODI_MAILLAGE( reuse=MA,   MAILLAGE=MA,
-                  ORIE_PEAU_2D=_F(GROUP_MA = ('LEV_SUP', 
+                  ORIE_PEAU_2D=_F(GROUP_MA = ('LEV_SUP',
                                               'LEV_INF',) )
                      )
 
@@ -34,9 +34,9 @@ MAT=DEFI_MATERIAU(ELAS=_F(  E = 1000., NU = 0.3))
 
 CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,AFFE=_F(  TOUT = 'OUI',MATER = MAT))
 
-MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA, 
-                     CREA_GROUP_NO=_F( 
-                   GROUP_MA = ( 'L12',  'L56',   'LPOP11',  'LPOP11S', 
+MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
+                     CREA_GROUP_NO=_F(
+                   GROUP_MA = ( 'L12',  'L56',   'LPOP11',  'LPOP11S',
                                 'LEV_SUP',
                                 'LEV_INF' ))
                  )
@@ -53,9 +53,9 @@ COSH5 = FORMULE(NOM_PARA='X',VALE='( cosh(5. * X) ) ')
 COS1 = FORMULE(NOM_PARA='X',VALE='( cos(X) ) ')
 COS5 = FORMULE(NOM_PARA='X',VALE='( cos(2.4048255577 * X))')
 
-CL=AFFE_CHAR_MECA(   MODELE=MO, 
+CL=AFFE_CHAR_MECA(   MODELE=MO,
 
-            DDL_IMPO=_F( GROUP_NO = ( 'L12',  'L56',  'LPOP11',  
+            DDL_IMPO=_F( GROUP_NO = ( 'L12',  'L56',  'LPOP11',
                                       'LPOP11S', ), DY = 0.),
 
             LIAISON_DDL=_F(  GROUP_NO = ('P0',  'P0BIS',),
@@ -63,57 +63,57 @@ CL=AFFE_CHAR_MECA(   MODELE=MO,
                           COEF_MULT = (1., 1.,),
                           COEF_IMPO = 0.) )
 
-CH_UNI=AFFE_CHAR_MECA(   MODELE=MO, 
-                 PRES_REP=_F(  GROUP_MA = ( 'LEV_SUP', 
-                                            'LEV_INF' ),  
+CH_UNI=AFFE_CHAR_MECA(   MODELE=MO,
+                 PRES_REP=_F(  GROUP_MA = ( 'LEV_SUP',
+                                            'LEV_INF' ),
                                 PRES = 1.)
                                   )
 
-CH_EXP1=AFFE_CHAR_MECA_F(   MODELE=MO, 
-                 PRES_REP=_F(  GROUP_MA = ( 'LEV_SUP', 
-                                            'LEV_INF' ),  
+CH_EXP1=AFFE_CHAR_MECA_F(   MODELE=MO,
+                 PRES_REP=_F(  GROUP_MA = ( 'LEV_SUP',
+                                            'LEV_INF' ),
                                 PRES = EXP1)
                                   )
 
-CH_EXP5=AFFE_CHAR_MECA_F(   MODELE=MO, 
-                 PRES_REP=_F(   GROUP_MA = ( 'LEV_SUP', 
-                                             'LEV_INF' ),  
+CH_EXP5=AFFE_CHAR_MECA_F(   MODELE=MO,
+                 PRES_REP=_F(   GROUP_MA = ( 'LEV_SUP',
+                                             'LEV_INF' ),
                                  PRES = EXP5)
                                   )
 
-CH_SINH1=AFFE_CHAR_MECA_F(   MODELE=MO, 
-                  PRES_REP=_F(   GROUP_MA = ( 'LEV_SUP', 
-                                              'LEV_INF' ),  
+CH_SINH1=AFFE_CHAR_MECA_F(   MODELE=MO,
+                  PRES_REP=_F(   GROUP_MA = ( 'LEV_SUP',
+                                              'LEV_INF' ),
                                  PRES = SINH1)
                                   )
 
-CH_SINH5=AFFE_CHAR_MECA_F(   MODELE=MO, 
-                  PRES_REP=_F(   GROUP_MA = ( 'LEV_SUP', 
-                                              'LEV_INF' ), 
+CH_SINH5=AFFE_CHAR_MECA_F(   MODELE=MO,
+                  PRES_REP=_F(   GROUP_MA = ( 'LEV_SUP',
+                                              'LEV_INF' ),
                                   PRES = SINH5)
                                   )
 
-CH_COSH1=AFFE_CHAR_MECA_F(   MODELE=MO, 
-                  PRES_REP=_F(   GROUP_MA = ( 'LEV_SUP', 
+CH_COSH1=AFFE_CHAR_MECA_F(   MODELE=MO,
+                  PRES_REP=_F(   GROUP_MA = ( 'LEV_SUP',
                                               'LEV_INF' ),
                                   PRES = COSH1)
                                   )
 
-CH_COSH5=AFFE_CHAR_MECA_F(   MODELE=MO, 
-                  PRES_REP=_F(   GROUP_MA = ( 'LEV_SUP', 
+CH_COSH5=AFFE_CHAR_MECA_F(   MODELE=MO,
+                  PRES_REP=_F(   GROUP_MA = ( 'LEV_SUP',
                                               'LEV_INF' ),
                                    PRES = COSH5)
                                   )
 
-CH_COS1=AFFE_CHAR_MECA_F(   MODELE=MO, 
-                 PRES_REP=_F(   GROUP_MA = ( 'LEV_SUP', 
-                                             'LEV_INF' ),  
+CH_COS1=AFFE_CHAR_MECA_F(   MODELE=MO,
+                 PRES_REP=_F(   GROUP_MA = ( 'LEV_SUP',
+                                             'LEV_INF' ),
                                  PRES = COS1)
                                   )
 
-CH_COS5=AFFE_CHAR_MECA_F(   MODELE=MO, 
-                 PRES_REP=_F(   GROUP_MA = ( 'LEV_SUP', 
-                                             'LEV_INF' ), 
+CH_COS5=AFFE_CHAR_MECA_F(   MODELE=MO,
+                 PRES_REP=_F(   GROUP_MA = ( 'LEV_SUP',
+                                             'LEV_INF' ),
                                  PRES = COS5)
                                   )
 
@@ -172,16 +172,13 @@ G_0=CALC_G(RESULTAT=RESU,
                    ),
            THETA=_F(FOND_FISS=FOND,
                     R_INF = C1,
-                    R_SUP = C2,
-                    DIRECTION=(1., 0., 0., ),),
+                    R_SUP = C2,),
            OPTION='CALC_K_G'
                         )
 
 G_EXP10=CALC_G(RESULTAT=RESU,
                NOM_CAS='CH_EXP1',
-               THETA=_F(
-                         DIRECTION=(1., 0., 0., ),
-                         R_INF = C1,
+               THETA=_F( R_INF = C1,
                          R_SUP = C2,
                          FOND_FISS=FOND),
                 OPTION='CALC_K_G'
@@ -193,7 +190,6 @@ G_EXP10=CALC_G(RESULTAT=RESU,
 
 G_1=CALC_G(RESULTAT=RESU,
            THETA=_F(FOND_FISS=FOND,
-                    DIRECTION=(1., 0., 0., ),
                     R_INF = C2,
                     R_SUP = C3),
            OPTION='CALC_K_G')
@@ -204,7 +200,6 @@ G_1=CALC_G(RESULTAT=RESU,
 
 G_2=CALC_G(RESULTAT=RESU,
            THETA=_F(FOND_FISS=FOND,
-                    DIRECTION=(1., 0., 0., ),
                     R_INF = C3,
                     R_SUP = C4),
            OPTION='CALC_K_G')
@@ -224,7 +219,6 @@ G_3=CALC_G(RESULTAT=RESU,
                     'CH_COS1',
                    ),
            THETA=_F(FOND_FISS=FOND,
-                    DIRECTION=(1., 0., 0., ),
                     R_INF = C4,
                     R_SUP = C5),
            OPTION='CALC_K_G')
@@ -232,11 +226,10 @@ G_3=CALC_G(RESULTAT=RESU,
 G_COS53=CALC_G(RESULTAT=RESU,
                NOM_CAS='CH_COS5',
                THETA=_F(FOND_FISS=FOND,
-                        DIRECTION=(1., 0., 0., ),
                         R_INF = C4,
                         R_SUP = C5),
                OPTION='CALC_K_G')
-               
+
 # IMPRESSION DES RESULTATS COURONNE 0 (TRIANGLES)
 # -----------------------------------------------
 
@@ -1420,21 +1413,20 @@ LI1 = DEFI_LIST_REEL (DEBUT = -1., INTERVALLE=_F(JUSQU_A=1., PAS=0.01),)
 CO1 = CALC_FONC_INTERP (FONCTION= COS1, LIST_PARA = LI1,
             INTERPOL='LIN', TITRE='FONCTION COS1' )
 
-CH_COS1F=AFFE_CHAR_MECA_F(   MODELE=MO, 
-                 PRES_REP=_F(   GROUP_MA = ( 'LEV_SUP', 
-                                             'LEV_INF' ), 
+CH_COS1F=AFFE_CHAR_MECA_F(   MODELE=MO,
+                 PRES_REP=_F(   GROUP_MA = ( 'LEV_SUP',
+                                             'LEV_INF' ),
                                  PRES = CO1)
                                   )
-RE_TMP=MECA_STATIQUE(   MODELE=MO,   
+RE_TMP=MECA_STATIQUE(   MODELE=MO,
                         CHAM_MATER=CHMAT,
-                        EXCIT=( _F( CHARGE = CH_UNI), 
+                        EXCIT=( _F( CHARGE = CH_UNI),
                                 _F( CHARGE = CH_COS1F),
                                 _F( CHARGE = CL))
                          )
 
 G_TMP=CALC_G(RESULTAT=RE_TMP,
              THETA=_F(FOND_FISS=FOND,
-                      DIRECTION=(1., 0., 0., ),
                       R_INF = C1,
                       R_SUP = C2,),
              OPTION='CALC_K_G'

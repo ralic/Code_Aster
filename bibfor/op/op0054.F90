@@ -195,8 +195,6 @@ subroutine op0054()
                 call getvr8(' ', 'DIRECTION', nbval=3, vect=dir, nbret=nbr8)
                 ldirec = .true.
             endif
-        else
-            call utmess('F', 'RUPTURE0_81')
         endif
 !
         call gver2d(noma, nocc2d, 'THETA_2D', nomno, noeud,&

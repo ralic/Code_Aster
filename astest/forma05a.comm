@@ -92,7 +92,6 @@ G=CALC_G(OPTION='CALC_G',
          THETA=_F(FOND_FISS=FISS,
                   R_INF=RINF,
                   R_SUP=RSUP,
-                  DIRECTION=(1,0,0)
                   ),
          )
 
@@ -103,7 +102,6 @@ GK=CALC_G(OPTION='CALC_K_G',
           THETA=_F(FOND_FISS=FISS,
                    R_INF=RINF,
                    R_SUP=RSUP,
-                   DIRECTION=(1,0,0)
                    ),
           )
 

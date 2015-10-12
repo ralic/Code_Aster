@@ -80,7 +80,7 @@ subroutine op0100()
 #include "asterfort/xcourb.h"
     integer :: nbord, iord, ibid, i, iad, jnord, ivec, iret, nbpara
     integer :: lnoff, jinst, ndeg, nbropt, iadrco, iadrno, j, ipuls, iord0
-    integer :: iord1, iord2, nborn, nbco, ibor, ig, nbval, iadfis, iadnoe 
+    integer :: iord1, iord2, nborn, nbco, ibor, ig, nbval, iadfis, iadnoe
     integer :: ndimte, ier, ndim, jopt
     integer :: nxpara
     parameter (nxpara = 15)
@@ -235,10 +235,6 @@ subroutine op0100()
         if (ndim .eq. 2) dir(3)=0.d0
         if (iret .eq. 0) then
             direc=.false.
-!         A VIRER !!
-            if (typfis .eq. 'FONDFISS' .and. ndim .eq. 2) then
-                call utmess('F', 'RUPTURE0_81')
-            endif
         else if (iret.lt.0) then
             ASSERT(.false.)
         else if (iret.gt.0) then

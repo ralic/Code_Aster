@@ -137,7 +137,6 @@ for i in range(2):
    K1K2[i]=CALC_G(RESULTAT=ELADP[i],
                   INST = 1,
                   THETA=_F(FOND_FISS=FOND,
-                           DIRECTION=( 8.6602540379E-01, 0.5, 0.),
                            R_INF = 10.,
                            R_SUP = 20.),
                   OPTION='CALC_K_G')

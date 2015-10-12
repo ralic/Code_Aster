@@ -26,7 +26,7 @@ MA=LIRE_MAILLAGE(FORMAT='MED',   )
 # -------------------------------------------------------------- #
 
 MOTH=AFFE_MODELE(         MAILLAGE=MA,
-                            
+
                               AFFE=_F(  TOUT = 'OUI',
                                       PHENOMENE = 'THERMIQUE',
                                       MODELISATION = 'PLAN') )
@@ -68,7 +68,7 @@ TEMP=RESOUDRE(           MATR=KTH,
 # -------------------------------------------------------------- #
 
 MO=AFFE_MODELE(            MAILLAGE=MA,
-                                 
+
                                 AFFE=_F(  TOUT = 'OUI',
                                        PHENOMENE = 'MECANIQUE',
                                        MODELISATION = 'D_PLAN'))
@@ -159,7 +159,6 @@ G1=CALC_G(
 GK1=CALC_G(        RESULTAT=RESU,
                    THETA=_F(R_INF = 10.,
                               R_SUP = 40.,
-                              DIRECTION=(1.,0.,0.,),
                               FOND_FISS=FOND),
                     EXCIT=_F(CHARGE=CH,),
                     OPTION='CALC_K_G')
@@ -171,7 +170,6 @@ G2=CALC_G(        RESULTAT=RESU,
 GK2=CALC_G(          RESULTAT=RESU,
                      THETA=_F(R_INF = 15.,
                               R_SUP = 45.,
-                              DIRECTION=(1.,0.,0.,),
                               FOND_FISS=FOND),
                     EXCIT=_F(CHARGE=CH,),
                     OPTION='CALC_K_G')
@@ -183,7 +181,6 @@ G3=CALC_G(         RESULTAT=RESU,
 GK3=CALC_G(          RESULTAT=RESU,
                      THETA=_F(R_INF = 5.0,
                               R_SUP = 47.,
-                              DIRECTION=(1.,0.,0.,),
                               FOND_FISS=FOND),
                      EXCIT=_F(CHARGE=CH,),
                      OPTION='CALC_K_G')
@@ -197,7 +194,6 @@ GK4=CALC_G(         RESULTAT=RESU,
                     NUME_ORDRE=1,
                     THETA=_F(R_INF = 3.0,
                               R_SUP = 48.,
-                              DIRECTION=(1.,0.,0.,),
                               FOND_FISS=FOND),
                     EXCIT=_F(CHARGE=CH,),
                     OPTION='CALC_K_G')
@@ -205,8 +201,8 @@ GK4=CALC_G(         RESULTAT=RESU,
 
 GK5=CALC_G(         RESULTAT=RESU,
                     NUME_ORDRE=1,
-                    THETA=_F( DIRECTION=(1.,0.,0.,),
-                              FOND_FISS=FOND),
+                    THETA=_F( FOND_FISS=FOND,
+                             ),
                     EXCIT=_F(CHARGE=CH,),
                     OPTION='CALC_K_G')
 

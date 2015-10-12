@@ -90,7 +90,6 @@ GK0=CALC_G(RESULTAT=CHAMDEPL,
            THETA=_F(FOND_FISS=FISS,
                     R_INF = RINF,
                     R_SUP = RSUP,
-                    DIRECTION=(1., 0., 0.),
                     ),
            OPTION='CALC_K_G')
 
@@ -195,7 +194,6 @@ G1=CALC_G(RESULTAT=DEPL_ROT,
 GK1=CALC_G(THETA=_F(FOND_FISS=FISS,
                     R_INF = RINF,
                     R_SUP = RSUP,
-                    DIRECTION=(1., 0., 0.),
                     ),
           RESULTAT=DEPL_ROT,
           OPTION='CALC_K_G')

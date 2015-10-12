@@ -107,7 +107,6 @@ GK1=CALC_G(                  RESULTAT=RESU,
                              THETA=_F(
                                  R_INF = 22.04078,
                                  R_SUP = 30.,
-                                 DIRECTION=( 1., 0., 0.,),
                                  FOND_FISS=FOND),
                             OPTION='CALC_K_G')
 
@@ -118,7 +117,6 @@ GK2=CALC_G(                  RESULTAT=RESU,
                              THETA=_F(
                                   R_SUP = 22.04078,
                                   R_INF = 15.3061094,
-                                  DIRECTION=( 1., 0., 0.,),
                                   FOND_FISS=FOND),
                              OPTION='CALC_K_G')
 
@@ -129,7 +127,6 @@ GK3=CALC_G(                  RESULTAT=RESU,
                              THETA=_F(
                                   R_INF = 9.79591846,
                                   R_SUP = 15.3061094,
-                                  DIRECTION=( 1., 0., 0.,),
                                   FOND_FISS=FOND),
                             OPTION='CALC_K_G')
 
@@ -140,7 +137,6 @@ GK4=CALC_G(                  RESULTAT=RESU,
                              THETA=_F(
                                   R_SUP = 9.79591846,
                                   R_INF = 5.510197639,
-                                  DIRECTION=( 1., 0., 0.,),
                                   FOND_FISS=FOND),
                              OPTION='CALC_K_G')
 
@@ -151,7 +147,6 @@ GK5=CALC_G(                  RESULTAT=RESU,
                              THETA=_F(
                                   R_INF = 2.448979377,
                                   R_SUP = 5.510197639,
-                                  DIRECTION=( 1., 0., 0.,),
                                   FOND_FISS=FOND),
                             OPTION='CALC_K_G')
 
@@ -162,13 +157,11 @@ GK6=CALC_G(                  RESULTAT=RESU,
                              THETA=_F(
                                   R_SUP = 2.448979377,
                                   R_INF = 0.61225116,
-                                  DIRECTION=( 1., 0., 0.,),
                                   FOND_FISS=FOND),
                             OPTION='CALC_K_G')
 
 GK7=CALC_G(                  RESULTAT=RESU,
                              THETA=_F(
-                                  DIRECTION=( 1., 0., 0.,),
                                   FOND_FISS=FOND),
                             OPTION='CALC_K_G')
 

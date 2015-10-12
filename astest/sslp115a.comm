@@ -1,19 +1,19 @@
 # TITRE DISQUE FISSURE EN PRESENCE DE CONTRAINTES INITIALES
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
@@ -144,7 +144,7 @@ SIEFELNO=CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
                     RESULTAT=RESUMECA,
                     NOM_CHAM='SIEF_ELNO',
                     INST=1,);
-                    
+
 SIEFNOEU=CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R',
                     OPERATION='EXTR',
                     RESULTAT=RESUMECA,
@@ -231,7 +231,7 @@ THETA3=CALC_THETA(MODELE=MO,
                               MODULE=1,
                               R_INF=Rinf3,
                               R_SUP=Rsup3,),);
-                              
+
 # Calcul de G pour les 3 couronnes, a partir de SIEF_ELGA
 #--------------------------------------------------------
 
@@ -249,7 +249,7 @@ GINGA2=CALC_G(THETA=_F(THETA=THETA2),
 #              COMPORTEMENT=_F(RELATION='ELAS'),
               ETAT_INIT =_F(SIGM=SIEFELGA),
 #              CALCUL_CONTRAINTE='NON',
-              OPTION='CALC_G')  
+              OPTION='CALC_G')
 
 GINGA3=CALC_G(THETA=_F(THETA=THETA3),
               RESULTAT=RESUINI,
@@ -257,7 +257,7 @@ GINGA3=CALC_G(THETA=_F(THETA=THETA3),
 #              COMPORTEMENT=_F(RELATION='ELAS'),
               ETAT_INIT =_F(SIGM=SIEFELGA),
 #              CALCUL_CONTRAINTE='NON',
-              OPTION='CALC_G')              
+              OPTION='CALC_G')
 
 # Calcul de G pour les 3 couronnes, a partir de SIEF_NOEU
 #--------------------------------------------------------
@@ -278,7 +278,7 @@ GINNO3=CALC_G(THETA=_F(THETA=THETA3),
               RESULTAT=RESUINI,
               INST=3,
               ETAT_INIT =_F(SIGM=SIEFNOEU),
-              OPTION='CALC_G')             
+              OPTION='CALC_G')
 
 # Calcul de G pour les 3 couronnes, a partir de SIEF_ELNO
 #--------------------------------------------------------
@@ -293,19 +293,18 @@ GINELNO2=CALC_G(THETA=_F(THETA=THETA2),
                 RESULTAT=RESUINI,
                 INST=3,
                 ETAT_INIT=_F(SIGM=SIEFELNO),
-                OPTION='CALC_G')                
+                OPTION='CALC_G')
 
 GINELNO3=CALC_G(THETA=_F(THETA=THETA3),
                 RESULTAT=RESUINI,
                 INST=3,
                 ETAT_INIT=_F(SIGM=SIEFELNO),
-                OPTION='CALC_G')          
+                OPTION='CALC_G')
 
 # Calcul de G et K pour les 3 couronnes, a partir de SIEF_ELNO
 #------------------------------------------------------------
 
-GINELNK1=CALC_G(THETA=_F(DIRECTION=(-1,0,0,),
-                        FOND_FISS=FISS1,
+GINELNK1=CALC_G(THETA=_F(FOND_FISS=FISS1,
                         R_INF=Rinf1,
                         R_SUP=Rsup1),
                 RESULTAT=RESUINI,
@@ -313,29 +312,26 @@ GINELNK1=CALC_G(THETA=_F(DIRECTION=(-1,0,0,),
                 ETAT_INIT =_F(SIGM=SIEFELNO),
                 OPTION='CALC_K_G')
 
-GINELNK2=CALC_G(THETA=_F(DIRECTION=(-1,0,0,),
-                        FOND_FISS=FISS1,
+GINELNK2=CALC_G(THETA=_F(FOND_FISS=FISS1,
                         R_INF=Rinf2,
                         R_SUP=Rsup2),
                 RESULTAT=RESUINI,
                 INST=3,
                 ETAT_INIT =_F(SIGM=SIEFELNO),
-                OPTION='CALC_K_G')   
+                OPTION='CALC_K_G')
 
-GINELNK3=CALC_G(THETA=_F(DIRECTION=(-1,0,0,),
-                        FOND_FISS=FISS1,
+GINELNK3=CALC_G(THETA=_F(FOND_FISS=FISS1,
                         R_INF=Rinf3,
                         R_SUP=Rsup3),
                 RESULTAT=RESUINI,
                 INST=3,
                 ETAT_INIT =_F(SIGM=SIEFELNO),
-                OPTION='CALC_K_G')             
-                     
+                OPTION='CALC_K_G')
+
 # Calcul de G et K pour les 3 couronnes, a partir de SIEF_ELGA
 #------------------------------------------------------------
 
-GINGAK1=CALC_G(THETA=_F(DIRECTION=(-1,0,0,),
-                        FOND_FISS=FISS1,
+GINGAK1=CALC_G(THETA=_F(FOND_FISS=FISS1,
                         R_INF=Rinf1,
                         R_SUP=Rsup1),
                 RESULTAT=RESUINI,
@@ -343,23 +339,21 @@ GINGAK1=CALC_G(THETA=_F(DIRECTION=(-1,0,0,),
                 ETAT_INIT =_F(SIGM=SIEFELGA),
                 OPTION='CALC_K_G')
 
-GINGAK2=CALC_G(THETA=_F(DIRECTION=(-1,0,0,),
-                        FOND_FISS=FISS1,
+GINGAK2=CALC_G(THETA=_F(FOND_FISS=FISS1,
                         R_INF=Rinf2,
                         R_SUP=Rsup2),
                 RESULTAT=RESUINI,
                 INST=3,
                 ETAT_INIT =_F(SIGM=SIEFELGA),
-                OPTION='CALC_K_G')   
+                OPTION='CALC_K_G')
 
-GINGAK3=CALC_G(THETA=_F(DIRECTION=(-1,0,0,),
-                        FOND_FISS=FISS1,
+GINGAK3=CALC_G(THETA=_F(FOND_FISS=FISS1,
                         R_INF=Rinf3,
                         R_SUP=Rsup3),
                 RESULTAT=RESUINI,
                 INST=3,
                 ETAT_INIT =_F(SIGM=SIEFELGA),
-                OPTION='CALC_K_G')  
+                OPTION='CALC_K_G')
 # Calcul de G a partir du RESOUVFI
 #---------------------------------
 
@@ -380,8 +374,8 @@ KTHER=POST_K1_K2_K3(MODELISATION='D_PLAN',
 KMECA=POST_K1_K2_K3(MODELISATION='D_PLAN',
                     MATER = MAMEC,
                     FOND_FISS=FISS1,
-                    RESULTAT=RESUINI)                    
- 
+                    RESULTAT=RESUINI)
+
 IMPR_TABLE(TABLE=KTHER,UNITE=9)
 IMPR_TABLE(TABLE=KMECA,UNITE=9)
 IMPR_TABLE(TABLE=GTHER3,UNITE=9)

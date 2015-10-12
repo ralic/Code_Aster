@@ -16,7 +16,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #
-# Pour des raisons de performances, on force SDVERI='NON'. 
+# Pour des raisons de performances, on force SDVERI='NON'.
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
       DEBUG=_F(SDVERI='NON'))
 
@@ -162,7 +162,7 @@ GLMO1=CALC_G(OPTION='CALC_K_G',
              THETA=_F(FOND_FISS=FF1,
                       R_INF=5.E-6,
                       R_SUP=5.E-5,
-                      DIRECTION = (-1.0, 0.0, 0.0),),
+                    ),
                     );
 
 IMPR_TABLE(TABLE =GLMO1);
@@ -295,7 +295,7 @@ IMPR_TABLE(TABLE=KT1)
 
 TEST_TABLE(
            VALE_CALC=4.4999014467721E+05,
-           
+
            NOM_PARA='K1',
            TABLE=KT1,
            FILTRE=_F(NOM_PARA='INST',
@@ -308,13 +308,12 @@ GLMO2=CALC_G(NUME_MODE = 1,
              RESULTAT=MODE,
              THETA=_F(FOND_FISS=FF1,
                       R_INF=5.E-6,
-                      R_SUP=5.E-5,
-                      DIRECTION = (-1.0, 0.0, 0.0),),
+                      R_SUP=5.E-5,),
                     );
 
 TEST_TABLE(
            VALE_CALC=-1.9210656530516E+10,
-           
+
            NOM_PARA='K1',
            TABLE=GLMO2,
            FILTRE=_F(NOM_PARA='NUME_MODE',
@@ -328,11 +327,11 @@ GLMO3=CALC_G(OPTION='CALC_K_G',
              THETA=_F(FOND_FISS=FF1,
                       R_INF=5.E-6,
                       R_SUP=5.E-5,
-                      DIRECTION = (-1.0, 0.0, 0.0),),);
+                      ),);
 
 TEST_TABLE(
            VALE_CALC=-1.9210656530516E+10,
-           
+
            NOM_PARA='K1',
            TABLE=GLMO3,
            FILTRE=_F(NOM_PARA='NUME_MODE',

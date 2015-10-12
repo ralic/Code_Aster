@@ -79,34 +79,41 @@ GK01=CALC_G(              RESULTAT=CHAMDEPL,
                           THETA=_F(
                                     R_INF = 0.00001875,
                                     R_SUP = 0.000075 ,
-                                    DIRECTION=(0.7986, 0.6018, 0.,),
                                     FOND_FISS=FOND1),
                           OPTION='CALC_K_G'
                       )
 
 # references analytiques
-Gref  = 1.001883E2
-K1ref = 3.574968087E6
-K2ref = 2.693931681E6
+#sigma=100.E6
+#beta=37.0
+#a=1E-3
+#E=2.E11
+#K1ref=sigma*sqrt(pi*a)*(cos(beta*pi/180.0))**2
+#K2ref=sigma*sqrt(pi*a)*cos(beta*pi/180.0)*sin(beta*pi/180.0)
+#Gref=1/E*(K1ref**2+K2ref**2)
+
+Gref  = 1.0018832364198484E02
+K1ref = 3.5749680873316796E06
+K2ref = 2.6939316811970267E06
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
-           VALE_CALC=101.348034558,
-           VALE_REFE=100.1883,
+           VALE_CALC=101.34887012,
+           VALE_REFE=Gref,
            NOM_PARA='G',
            TABLE=GK01,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=1.E-2,
-           VALE_CALC= 3.60330402E+06,
-           VALE_REFE=3.5749680869999998E6,
+           VALE_CALC= 3603329.32542,
+           VALE_REFE=K1ref,
            NOM_PARA='K1',
            TABLE=GK01,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=1.E-2,
-           VALE_CALC= 2.69951786E+06,
-           VALE_REFE=2.6939316809999999E6,
+           VALE_CALC=2699548.77577,
+           VALE_REFE=K2ref,
            NOM_PARA='K2',
            TABLE=GK01,)
 
@@ -120,22 +127,22 @@ TABL_K=POST_K1_K2_K3(  MODELISATION='C_PLAN',
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.040000000000000001,
-           VALE_CALC=101.474663368,
-           VALE_REFE=100.1883,
+           VALE_CALC=101.474663367,
+           VALE_REFE=Gref,
            NOM_PARA='G',
            TABLE=TABL_K,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.012,
-           VALE_CALC= 3.60726395E+06,
-           VALE_REFE=3.5749680869999998E6,
+           VALE_CALC=3607263.95081,
+           VALE_REFE=K1ref,
            NOM_PARA='K1',
            TABLE=TABL_K,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.029999999999999999,
-           VALE_CALC= 2.70234510E+06,
-           VALE_REFE=2.6939316809999999E6,
+           VALE_CALC=2702345.09759,
+           VALE_REFE=K2ref,
            NOM_PARA='K2',
            TABLE=TABL_K,)
 

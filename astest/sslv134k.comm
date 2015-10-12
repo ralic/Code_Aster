@@ -126,8 +126,7 @@ for i in range(2):
 
    GK0[i]=CALC_G(THETA=_F(FOND_FISS=FISS,
                           R_INF = RINF,
-                          R_SUP = RSUP,
-                          DIRECTION=(1., 0., 0.,),),
+                          R_SUP = RSUP,),
                 RESULTAT=CHAMD[i],
                 INST = 1,
                 OPTION='CALC_K_G')

@@ -91,7 +91,6 @@ G1=CALC_G(              RESULTAT=CHAMDEPL,
 GK1=CALC_G(             RESULTAT=CHAMDEPL,
                         THETA=_F(R_INF = 22.04078,
                                  R_SUP = 30.,
-                                 DIRECTION=( 1., 0., 0.,),
                                  FOND_FISS=FOND),
                         OPTION='CALC_K_G')
 
@@ -104,7 +103,6 @@ GK2=CALC_G(             RESULTAT=CHAMDEPL,
                         THETA=_F(
                                  R_SUP = 22.04078,
                                  R_INF = 15.3061094,
-                                 DIRECTION=( 1., 0., 0.,),
                                  FOND_FISS=FOND),
                         OPTION='CALC_K_G')
 
@@ -115,7 +113,6 @@ GK3=CALC_G(             RESULTAT=CHAMDEPL,
                         THETA=_F(
                                  R_INF = 9.79591846,
                                  R_SUP = 15.3061094,
-                                 DIRECTION=( 1., 0., 0.,),
                                  FOND_FISS=FOND),
                         OPTION='CALC_K_G')
 
@@ -126,7 +123,6 @@ GK4=CALC_G(              RESULTAT=CHAMDEPL,
                          THETA=_F(
                                  R_SUP = 9.79591846,
                                  R_INF = 5.510197639,
-                                 DIRECTION=( 1., 0., 0.,),
                                  FOND_FISS=FOND),
                          OPTION='CALC_K_G')
 
@@ -137,7 +133,6 @@ GK5=CALC_G(              RESULTAT=CHAMDEPL,
                          THETA=_F(
                                  R_INF = 2.448979377,
                                  R_SUP = 5.510197639,
-                                 DIRECTION=( 1., 0., 0.,),
                                  FOND_FISS=FOND),
                          OPTION='CALC_K_G')
 
@@ -148,13 +143,11 @@ GK6=CALC_G(              RESULTAT=CHAMDEPL,
                             THETA=_F(
                                 R_SUP = 2.448979377,
                                 R_INF = 0.61225116,
-                                DIRECTION=( 1., 0., 0.,),
                                 FOND_FISS=FOND),
                          OPTION='CALC_K_G')
 
 GK7=CALC_G(              RESULTAT=CHAMDEPL,
                             THETA=_F(
-                                DIRECTION=( 1., 0., 0.,),
                                 FOND_FISS=FOND),
                          OPTION='CALC_K_G')
 
@@ -221,7 +214,7 @@ TEST_TABLE(PRECISION=5.0000000000000001E-3,
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.0E+00,
-           
+
            NOM_PARA='K2',
            TABLE=GK2,)
 
@@ -255,7 +248,7 @@ TEST_TABLE(PRECISION=5.0000000000000001E-3,
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.0E+00,
-           
+
            NOM_PARA='K2',
            TABLE=GK3,)
 
@@ -289,7 +282,7 @@ TEST_TABLE(PRECISION=5.0000000000000001E-3,
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.0E+00,
-           
+
            NOM_PARA='K2',
            TABLE=GK4,)
 
@@ -323,7 +316,7 @@ TEST_TABLE(PRECISION=5.0000000000000001E-3,
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.0E+00,
-           
+
            NOM_PARA='K2',
            TABLE=GK5,)
 
@@ -357,7 +350,7 @@ TEST_TABLE(PRECISION=5.0000000000000001E-3,
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.0E+00,
-           
+
            NOM_PARA='K2',
            TABLE=GK6,)
 
@@ -393,7 +386,7 @@ MASSES=POST_ELEM(        MODELE=MO,
                      )
 
 TEST_TABLE(VALE_CALC=25000.0,
-           
+
            NOM_PARA='MASSE',
            TABLE=MASSES,
            FILTRE=_F(NOM_PARA='LIEU',
@@ -401,7 +394,7 @@ TEST_TABLE(VALE_CALC=25000.0,
            )
 
 TEST_TABLE(VALE_CALC=1.3020833333333E+08,
-           
+
            NOM_PARA='IX_G',
            TABLE=MASSES,
            FILTRE=_F(NOM_PARA='LIEU',
@@ -409,7 +402,7 @@ TEST_TABLE(VALE_CALC=1.3020833333333E+08,
            )
 
 TEST_TABLE(VALE_CALC=2.0833333333333E+07,
-           
+
            NOM_PARA='IY_G',
            TABLE=MASSES,
            FILTRE=_F(NOM_PARA='LIEU',
@@ -417,7 +410,7 @@ TEST_TABLE(VALE_CALC=2.0833333333333E+07,
            )
 
 TEST_TABLE(VALE_CALC=1.5104166666667E+08,
-           
+
            NOM_PARA='IZ_G',
            TABLE=MASSES,
            FILTRE=_F(NOM_PARA='LIEU',

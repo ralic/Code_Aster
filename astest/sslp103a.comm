@@ -133,7 +133,6 @@ GCP=CALC_G(RESULTAT=ELASCP,
 
 K1K2CP=CALC_G(RESULTAT=ELASCP,
               THETA=_F(FOND_FISS=FOND,
-                       DIRECTION=( 8.6602540379E-01, 0.5, 0.),
                        R_INF = 10.,
                        R_SUP = 20.,),
               OPTION='CALC_K_G')
@@ -170,7 +169,6 @@ GDP=CALC_G(RESULTAT=ELASDP,
 
 K1K2DP=CALC_G(RESULTAT=ELASDP,
               THETA=_F(FOND_FISS=FOND,
-                       DIRECTION=( 8.6602540379E-01, 0.5, 0.),
                        R_INF = 10.,
                        R_SUP = 20.,),
               OPTION='CALC_K_G')

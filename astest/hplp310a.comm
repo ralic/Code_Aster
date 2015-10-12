@@ -256,7 +256,6 @@ GK0_P=CALC_G(    RESULTAT=CHAMDEPP,
                          THETA=_F(
                                    R_INF = 0.0025,
                                    R_SUP = 0.005,
-                                   DIRECTION=(1., 0., 0.,),
                                    FOND_FISS=FOND),
                          OPTION='CALC_K_G'
                      )
@@ -272,7 +271,6 @@ GK1_P=CALC_G(    RESULTAT=CHAMDEPP,
                          THETA=_F(
                                    R_INF = 0.005,
                                    R_SUP = 0.0075,
-                                   DIRECTION=(1., 0., 0.,),
                                    FOND_FISS=FOND,),
                          OPTION='CALC_K_G'
                      )
@@ -288,7 +286,6 @@ GK2_P=CALC_G(    RESULTAT=CHAMDEPP,
                          THETA=_F(
                                    R_INF = 0.0075,
                                    R_SUP = 0.01,
-                                   DIRECTION=(1., 0., 0.,),
                                    FOND_FISS=FOND),
                          OPTION='CALC_K_G'
                      )
@@ -304,7 +301,6 @@ GK3_P=CALC_G(    RESULTAT=CHAMDEPP,
                          THETA=_F(
                                    R_INF = 0.005,
                                    R_SUP = 0.03,
-                                   DIRECTION=(1., 0., 0.,),
                                    FOND_FISS=FOND),
                          OPTION='CALC_K_G'
                      )
@@ -314,7 +310,6 @@ GK3_P=CALC_G(    RESULTAT=CHAMDEPP,
 
 GK4_P=CALC_G(    RESULTAT=CHAMDEPP,
                          THETA=_F(
-                                   DIRECTION=(1., 0., 0.,),
                                    FOND_FISS=FOND),
                          OPTION='CALC_K_G'
                      )
@@ -334,7 +329,6 @@ GK0_T=CALC_G(    RESULTAT=CHAMDEPT,
                          THETA=_F(
                                    R_INF = 0.0025,
                                    R_SUP = 0.005,
-                                   DIRECTION=(1., 0., 0.,),
                                    FOND_FISS=FOND),
                          OPTION='CALC_K_G'
                      )
@@ -350,7 +344,6 @@ GK1_T=CALC_G(    RESULTAT=CHAMDEPT,
                          THETA=_F(
                                    R_INF = 0.005,
                                    R_SUP = 0.0075,
-                                   DIRECTION=(1., 0., 0.,),
                                    FOND_FISS=FOND,),
                          OPTION='CALC_K_G'
                      )
@@ -366,7 +359,6 @@ GK2_T=CALC_G(    RESULTAT=CHAMDEPT,
                          THETA=_F(
                                    R_INF = 0.0075,
                                    R_SUP = 0.01,
-                                   DIRECTION=(1., 0., 0.,),
                                    FOND_FISS=FOND),
                          OPTION='CALC_K_G'
                      )
@@ -382,7 +374,6 @@ GK3_T=CALC_G(    RESULTAT=CHAMDEPT,
                          THETA=_F(
                                    R_INF = 0.005,
                                    R_SUP = 0.03,
-                                   DIRECTION=(1., 0., 0.,),
                                    FOND_FISS=FOND),
                          OPTION='CALC_K_G'
                      )
@@ -392,7 +383,6 @@ GK3_T=CALC_G(    RESULTAT=CHAMDEPT,
 
 GK4_T=CALC_G(    RESULTAT=CHAMDEPT,
                          THETA=_F(
-                                   DIRECTION=(1., 0., 0.,),
                                    FOND_FISS=FOND),
                          OPTION='CALC_K_G'
                      )
@@ -412,7 +402,6 @@ GK0_C=CALC_G(   RESULTAT=CHAMDEP0,
                          THETA=_F(
                                    R_INF = 0.0025,
                                    R_SUP = 0.005,
-                                   DIRECTION=(1., 0., 0.,),
                                    FOND_FISS=FOND),
                          OPTION='CALC_K_G'
                      )
@@ -428,7 +417,6 @@ GK1_C=CALC_G(   RESULTAT=CHAMDEP0,
                          THETA=_F(
                                    R_INF = 0.005,
                                    R_SUP = 0.0075,
-                                   DIRECTION=(1., 0., 0.,),
                                    FOND_FISS=FOND,),
                          OPTION='CALC_K_G'
                      )
@@ -444,7 +432,6 @@ GK2_C=CALC_G(   RESULTAT=CHAMDEP0,
                          THETA=_F(
                                    R_INF = 0.0075,
                                    R_SUP = 0.01,
-                                   DIRECTION=(1., 0., 0.,),
                                    FOND_FISS=FOND),
                          OPTION='CALC_K_G'
                      )
@@ -460,7 +447,6 @@ GK3_C=CALC_G(   RESULTAT=CHAMDEP0,
                          THETA=_F(
                                    R_INF = 0.005,
                                    R_SUP = 0.03,
-                                   DIRECTION=(1., 0., 0.,),
                                    FOND_FISS=FOND),
                          OPTION='CALC_K_G'
                      )
@@ -470,7 +456,6 @@ GK3_C=CALC_G(   RESULTAT=CHAMDEP0,
 
 GK4_C=CALC_G(   RESULTAT=CHAMDEP0,
                          THETA=_F(
-                                   DIRECTION=(1., 0., 0.,),
                                    FOND_FISS=FOND),
                          OPTION='CALC_K_G'
                      )

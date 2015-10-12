@@ -3,6 +3,7 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
                   dir)
     implicit none
 #include "asterf_types.h"
+#include "asterfort/assert.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterc/r8prem.h"
@@ -19,6 +20,7 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
@@ -75,7 +77,7 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
 !
 !
     integer :: itheta, i, irefe, idesc, num, nbel, numa
-    integer :: nec, ibid, numfon, n1, n2, ndim, jgtl
+    integer :: nec, ibid, numfon, n1, n2, ndim, jgtl, estbf
     parameter     (ndim=2)
     real(kind=8) :: xm, ym, xi, yi, eps, d, norme, alpha, valx, valy
     character(len=8) :: k8b, fiss
@@ -84,6 +86,8 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
     character(len=24) :: chamno
     real(kind=8), pointer :: fondfiss(:) => null()
     real(kind=8), pointer :: cnsv(:) => null()
+    real(kind=8), pointer :: vbasfd(:) => null()
+    aster_logical :: estfem
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -98,15 +102,26 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
         call getvid('THETA', 'FOND_FISS', iocc=1, scal=k8b, nbret=n1)
         call getvid('THETA', 'FISSURE', iocc=1, scal=fiss, nbret=n2)
     endif
+
+!   TEST DU TYPE DE FISSURE ET RECUPERATION DU NUMERO DE NOEUD DU FOND DE FISSURE FEM
+    estfem=.true.
+    if (n1 .ne. 0) then
+        estfem=.true.
+        call jenonu(jexnom(nomno, noeud), num)
+    else if (n2 .ne. 0) then
+        estfem=.false.
+        num = 0
+    end if
 !
 !     DANS LE CAS X-FEM, SI LA DIRECTION A ETE DONNEE, ON LA GARDE FIXE
 !     SI ELLE N'A PAS ETE DONNEE, ON PREND UNE DIRECTION VARIABLE QUI
 !     VAUT LE GRADIENT DE LA LEVEL SET TANGENTE
-!
+
+    ! On verifie l'existence de basefond
+    call jeexin(k8b//'.BASEFOND', estbf)
+
     if (ldirec) then
-!
 !     --- LA DIRECTION DE THETA EST DONNEE, ON LA NORME ---
-!
         norme = 0.d0
         do i = 1, 2
             norme = norme + dir(i)*dir(i)
@@ -114,15 +129,32 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
         norme = sqrt(norme)
         dir(1) = dir(1)/norme
         dir(2) = dir(2)/norme
-!
-    endif
-!
-!     --- RECUPERATION DU NUMERO DE NOEUD DU FOND DE FISSURE ---
-!
-    if (n1 .ne. 0) then
-        call jenonu(jexnom(nomno, noeud), num)
-    else if (n2.ne.0) then
-        num = 0
+        if (estbf .ne. 0) then
+            ! Si basefond existe alors il est risque pour l'util.
+            ! de renseigner la direction qui peut être fausse.
+            call utmess('A', 'RUPTURE0_20')
+        end if
+!     --- LA DIRECTION DE THETA N'EST DONNEE, ON LA RECUPERE
+!         DE BASEFOND CALCULE DANS DEFI_FOND_FISS. ---
+    else if (estfem) then
+        if (estbf .eq. 0) then
+           ! basefond n'existe pas, la fissure est probablement
+           ! definie avec calc_theta sans passer par defi_fond_fiss. Il FAUT
+           ! alors renseigner DIRECTION.
+            call utmess('F', 'RUPTURE0_58')
+        end if
+
+        call jeveuo(k8b//'.BASEFOND', 'L', vr=vbasfd)
+        if (size(vbasfd).gt.4) then
+            ! le front ne doit contenir qu'un noeud, donc 4 composantes dans basefond
+            call utmess('F', 'RUPTURE0_33')
+        end if
+        norme = sqrt(vbasfd(3)**2+vbasfd(4)**2)
+!       Basefond contient 4*1 composantes (XN YN XP YP)i
+!       Avec N pour direction normale et P pour direction plan.
+        dir(1) = vbasfd(3)/norme
+        dir(2) = vbasfd(4)/norme
+        dir(3) = 0.d0
     endif
 !
 !  .DESC
@@ -149,14 +181,14 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
 !     --- CALCUL DE THETA ---
 !
 !     CAS CLASSIQUE
-    if (n1 .ne. 0) then
+    if (estfem) then
 !       NOEUD DU FOND DE FISSURE
         zr(itheta + (num-1)*2 + 1 - 1) = module*dir(1)
         zr(itheta + (num-1)*2 + 2 - 1) = module*dir(2)
         xi = coor((num-1)*3+1)
         yi = coor((num-1)*3+2)
 !     CAS X-FEM
-    else if (n2.ne.0) then
+    else if (.not. estfem) then
         call getvis('THETA', 'NUME_FOND', iocc=1, scal=numfon, nbret=ibid)
         call jeveuo(fiss//'.FONDFISS', 'L', vr=fondfiss)
         xi = fondfiss(4*(numfon-1)+1)
@@ -181,7 +213,7 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
             ym = coor((i-1)*3+2)
             d = sqrt((xi-xm)*(xi-xm)+(yi-ym)*(yi-ym))
             alpha = (d-rinf)/(rsup-rinf)
-            if (.not.ldirec) then
+            if ((.not.ldirec) .and. (.not. estfem)) then
 !           LE GRANDIENT EST DÉFINI
                 if (zl(jgtl-1+ndim*(i-1)+1)) then
                     dir(1) = cnsv(ndim*(i-1)+1)

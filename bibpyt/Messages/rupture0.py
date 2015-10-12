@@ -154,6 +154,17 @@ Pour un calcul avec POST_K1_K2_K3, la lèvre supérieure de la fissure doit
 LEVRE_SUP. Vérifier la définition du fond de fissure.
 """),
 
+    20: _(u"""
+Vous avez défini le mot clef DIRECTION pour une fissure maillée :
+-> Risque et Conseil :
+  - Si vous avez défini CONFIG_INIT='COLLEE' dans DEFI_FOND_FISS, la direction
+peut être calculée automatiquement à partir des informations géométriques
+du maillage. Il est donc préférable de ne pas renseigner DIRECTION à moins que l'on
+soit sûr de la valeur entrée.
+  - Si vous avez défini CONFIG_INIT='DECOLLEE', la direction  est calculée par défaut
+à partir de la normale au front définie dans DEFI_FOND_FISS. L'ajout de l'information
+DIRECTION dans CALC_G la supplante, il faut donc être sûr de ce vecteur.
+"""),
 
     21: _(u"""
 Les noeuds ne sont pas en vis-à-vis dans le plan perpendiculaire
@@ -217,6 +228,12 @@ Il n'y a pas de mailles de bord connectées au noeud %(k1)s.
 
     32: _(u"""
 Le paramètre ABSC_CURV_MAXI automatiquement choisi vaut : %(r1)f.
+"""),
+
+    33: _(u"""
+Le front de fissure contient plus qu'un noeud en 2D. La fissure est mal définie.
+-> Risque et Conseil :
+Vérifiez les données d'entrée de la fissure dans DEFI_FOND_FISS, CALC_G ou CALC_THETA.
 """),
 
     34: _(u"""
@@ -351,12 +368,11 @@ mots-clés FOND_FISS, R_SUP, R_INF, MODULE, et DIRECTION pour la détermination
 automatique du champ thêta.
 """),
 
-
-
-
-
-
-
+    58: _(u"""
+Le mot clef DIRECTION n'a pas été renseigné et la fissure n'a pas été définie dans DEFI_FOND FISS.
+-> Risque et Conseil :
+Définissez la fissure dans DEFI_FOND_FISS ou renseignez le mot clef DIRECTION.
+"""),
 
     60 : _(u"""
 Mélange de mailles de type SEG2 et SEG3 dans la définition du fond de fissure.
@@ -470,13 +486,6 @@ La tangente à l'extrémité n'est pas orthogonale à la normale :
 -> Risque et Conseil :
 La tangente à l'extrémité est nécessairement dans le plan de la fissure,
 donc orthogonale à la normale fournie. Vérifier les données.
-"""),
-
-    81: _(u"""
-Il faut donner la direction de propagation en 2D
-La direction par défaut n'existe plus.
--> Risque et Conseil :
-Veuillez renseigner le mot-clé DIRECTION.
 """),
 
     83: _(u"""

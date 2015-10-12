@@ -197,7 +197,6 @@ G00=CALC_G(        RESULTAT=RESU,
 GK00=CALC_G(        RESULTAT=RESU,
                     THETA=_F(R_INF = 3.75E-4,
                               R_SUP = 7.50E-4,
-                              DIRECTION=(1., 0., 0.,),
                               FOND_FISS=FOND),
                     EXCIT=_F(CHARGE=CH,),
                     OPTION='CALC_K_G'
@@ -240,7 +239,6 @@ G01=CALC_G(        RESULTAT=RESU,
 GK01=CALC_G(        RESULTAT=RESU,
                     THETA=_F(R_INF = 7.50E-4,
                               R_SUP = 1.125E-3,
-                              DIRECTION=(1., 0., 0.,),
                               FOND_FISS=FOND),
                     EXCIT=_F(CHARGE=CH,),
                     OPTION='CALC_K_G'
@@ -283,7 +281,6 @@ G02=CALC_G(        RESULTAT=RESU,
 GK02=CALC_G(        RESULTAT=RESU,
                     THETA=_F(R_INF = 1.125E-3,
                                R_SUP = 1.500E-3,
-                               DIRECTION=(1., 0., 0.,),
                                FOND_FISS=FOND),
                     EXCIT=_F(CHARGE=CH,),
                     OPTION='CALC_K_G'
@@ -326,7 +323,6 @@ G03=CALC_G(        RESULTAT=RESU,
 GK03=CALC_G(       RESULTAT=RESU,
                    THETA=_F(R_INF = 1.500E-3,
                              R_SUP = 1.875E-3,
-                             DIRECTION=(1., 0., 0.,),
                              FOND_FISS=FOND),
                    EXCIT=_F( CHARGE=CH,),
                    OPTION='CALC_K_G'
@@ -352,8 +348,7 @@ TEST_TABLE(PRECISION=0.050000000000000003,
 
 #
 GK04=CALC_G(       RESULTAT=RESU,
-                   THETA=_F( DIRECTION=(1., 0., 0.,),
-                             FOND_FISS=FOND),
+                   THETA=_F( FOND_FISS=FOND),
                    EXCIT=_F( CHARGE=CH,),
                    OPTION='CALC_K_G'
                       )

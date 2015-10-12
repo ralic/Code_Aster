@@ -110,7 +110,6 @@ GPRES1=CALC_G(      RESULTAT=RESU1,
 GKPRES1=CALC_G(     RESULTAT=RESU1,
                     THETA=_F(  R_INF = 22.04078,
                                R_SUP = 30.,
-                               DIRECTION=( 1., 0., 0.,),
                                FOND_FISS=FOND),
                     OPTION='CALC_K_G')
 
@@ -120,7 +119,6 @@ GPRES2=CALC_G(      RESULTAT=RESU1,
 GKPRES2=CALC_G(     RESULTAT=RESU1,
                     THETA=_F( R_SUP = 22.04078,
                               R_INF = 15.3061094,
-                              DIRECTION=( 1., 0., 0.,),
                               FOND_FISS=FOND),
                     OPTION='CALC_K_G')
 
@@ -130,7 +128,6 @@ GPRES3=CALC_G(      RESULTAT=RESU1,
 GKPRES3=CALC_G(     RESULTAT=RESU1,
                     THETA=_F( R_INF = 9.79591846,
                               R_SUP = 15.3061094,
-                              DIRECTION=( 1., 0., 0.,),
                               FOND_FISS=FOND),
                     OPTION='CALC_K_G')
 
@@ -140,7 +137,6 @@ GPRES4=CALC_G(      RESULTAT=RESU1,
 GKPRES4=CALC_G(     RESULTAT=RESU1,
                     THETA=_F( R_SUP = 9.79591846,
                               R_INF = 5.510197639,
-                              DIRECTION=( 1., 0., 0.,) ,
                               FOND_FISS=FOND),
                     OPTION='CALC_K_G')
 
@@ -150,7 +146,6 @@ GPRES5=CALC_G(      RESULTAT=RESU1,
 GKPRES5=CALC_G(     RESULTAT=RESU1,
                     THETA=_F( R_INF = 2.448979377,
                               R_SUP = 5.510197639,
-                              DIRECTION=( 1., 0., 0.,),
                               FOND_FISS=FOND),
                     OPTION='CALC_K_G')
 
@@ -160,7 +155,6 @@ GPRES6=CALC_G(      RESULTAT=RESU1,
 GKPRES6=CALC_G(     RESULTAT=RESU1,
                     THETA=_F(R_SUP = 2.448979377,
                              R_INF = 0.61225116,
-                             DIRECTION=( 1., 0., 0.,),
                              FOND_FISS=FOND),
                     OPTION='CALC_K_G')
 
@@ -172,7 +166,6 @@ GFCON1=CALC_G(      RESULTAT=RESU2,
 GKFCON1=CALC_G(     RESULTAT=RESU2,
                     THETA=_F(  R_INF = 22.04078,
                                R_SUP = 30.,
-                               DIRECTION=( 1., 0., 0.,),
                                FOND_FISS=FOND),
                     OPTION='CALC_K_G')
 
@@ -182,7 +175,6 @@ GFCON2=CALC_G(      RESULTAT=RESU2,
 GKFCON2=CALC_G(     RESULTAT=RESU2,
                     THETA=_F( R_SUP = 22.04078,
                                R_INF = 15.3061094,
-                               DIRECTION=( 1., 0., 0.,),
                                FOND_FISS=FOND),
                     OPTION='CALC_K_G')
 
@@ -192,7 +184,6 @@ GFCON3=CALC_G(      RESULTAT=RESU2,
 GKFCON3=CALC_G(     RESULTAT=RESU2,
                     THETA=_F( R_INF = 9.79591846,
                               R_SUP = 15.3061094,
-                              DIRECTION=( 1., 0., 0.,),
                               FOND_FISS=FOND),
                     OPTION='CALC_K_G')
 
@@ -202,7 +193,6 @@ GFCON4=CALC_G(      RESULTAT=RESU2,
 GKFCON4=CALC_G(     RESULTAT=RESU2,
                     THETA=_F( R_SUP = 9.79591846,
                               R_INF = 5.510197639,
-                              DIRECTION=( 1., 0., 0.,),
                               FOND_FISS=FOND),
                     OPTION='CALC_K_G')
 
@@ -212,7 +202,6 @@ GFCON5=CALC_G(      RESULTAT=RESU2,
 GKFCON5=CALC_G(     RESULTAT=RESU2,
                     THETA=_F( R_INF = 2.448979377,
                               R_SUP = 5.510197639,
-                              DIRECTION=( 1., 0., 0.,),
                               FOND_FISS=FOND),
                     OPTION='CALC_K_G')
 
@@ -222,7 +211,6 @@ GFCON6=CALC_G(      RESULTAT=RESU2,
 GKFCON6=CALC_G(     RESULTAT=RESU2,
                     THETA=_F( R_SUP = 2.448979377,
                               R_INF = 0.61225116,
-                              DIRECTION=( 1., 0., 0.,),
                               FOND_FISS=FOND),
                     OPTION='CALC_K_G')
 
@@ -256,7 +244,7 @@ TEST_TABLE(PRECISION=5.0000000000000001E-3,
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.0,
-           
+
            NOM_PARA='K2',
            TABLE=GKPRES1,)
 
@@ -290,7 +278,7 @@ TEST_TABLE(PRECISION=5.0000000000000001E-3,
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.0,
-           
+
            NOM_PARA='K2',
            TABLE=GKPRES2,)
 
@@ -324,7 +312,7 @@ TEST_TABLE(PRECISION=0.050000000000000003,
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.0,
-           
+
            NOM_PARA='K2',
            TABLE=GKPRES3,)
 
@@ -358,7 +346,7 @@ TEST_TABLE(PRECISION=0.050000000000000003,
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.0,
-           
+
            NOM_PARA='K2',
            TABLE=GKPRES4,)
 
@@ -392,7 +380,7 @@ TEST_TABLE(PRECISION=0.050000000000000003,
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.0,
-           
+
            NOM_PARA='K2',
            TABLE=GKPRES5,)
 
@@ -426,7 +414,7 @@ TEST_TABLE(PRECISION=0.050999999999999997,
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.0,
-           
+
            NOM_PARA='K2',
            TABLE=GKPRES6,)
 
@@ -460,7 +448,7 @@ TEST_TABLE(PRECISION=5.0000000000000001E-3,
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.0,
-           
+
            NOM_PARA='K2',
            TABLE=GKFCON1,)
 
@@ -494,7 +482,7 @@ TEST_TABLE(PRECISION=5.0000000000000001E-3,
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.0,
-           
+
            NOM_PARA='K2',
            TABLE=GKFCON2,)
 
@@ -528,7 +516,7 @@ TEST_TABLE(PRECISION=0.050000000000000003,
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.0,
-           
+
            NOM_PARA='K2',
            TABLE=GKFCON3,)
 
@@ -562,7 +550,7 @@ TEST_TABLE(PRECISION=0.050000000000000003,
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.0,
-           
+
            NOM_PARA='K2',
            TABLE=GKFCON4,)
 
@@ -596,7 +584,7 @@ TEST_TABLE(PRECISION=0.050000000000000003,
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.0,
-           
+
            NOM_PARA='K2',
            TABLE=GKFCON5,)
 
@@ -630,7 +618,7 @@ TEST_TABLE(PRECISION=0.050999999999999997,
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.0,
-           
+
            NOM_PARA='K2',
            TABLE=GKFCON6,)
 
