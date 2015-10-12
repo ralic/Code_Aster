@@ -63,11 +63,12 @@ subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
     real(kind=8) :: pij, mij(6), sp, sij, sij0, sqma(6), sqmi(6)
     real(kind=8) :: sp1, sp2, spth(6), spqma(2), spqmi(2), sqth(6)
     real(kind=8) :: racine, c1, c2, diam, ep, inertie, k1, k2
-    character(len=4) :: typ2
+    character(len=4) :: typ2, typ3
     character(len=8) :: type, knumes, knumet
 ! DEB ------------------------------------------------------------------
     call jemarq()
     type = typz
+    typ3 = 'SP'
 !
     spij(1) = 0.d0
     spij(2) = 0.d0
@@ -144,7 +145,7 @@ subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
                 typ2 = 'SITU'
             endif
             if (seisme) then
-                call rcZ2s0(mij, pij, mse,&
+                call rcZ2s0(typ3, mij, pij, mse,&
                             nbinst, zr(jthun), sp)
             else
                 call rcZ2st(sij, nbinst, zr(jthun), sp)
@@ -168,7 +169,7 @@ subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
  14         continue
             if (typ2 .eq. 'SITU') then
                 if (seisme) then
-                    call rcZ2s0(mij, pij, mse,&
+                    call rcZ2s0(typ3, mij, pij, mse,&
                                 1, spth, sp)
                 else
                     call rcZ2st(sij, nbinst, spth, sp)
@@ -210,7 +211,7 @@ subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
                 typ2 = 'SITU'
             endif
             if (seisme) then
-                call rcZ2s0(mij, pij, mse, &
+                call rcZ2s0(typ3, mij, pij, mse, &
                             nbinst, zr(jthun), sp)
             else
                 call rcZ2st(sij, nbinst, zr(jthun), sp)
@@ -220,7 +221,7 @@ subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
 ! - CAS NBQ = 0 / NBP != 0
             if (typ2 .eq. 'COMB' .and. nbp .ne. 0) then
                 if (seisme) then
-                    call rcZ2s0(mij, pij, mse, &
+                    call rcZ2s0(typ3, mij, pij, mse, &
                                 1, spth, sp)
                     spij(1) = sp
                 else
@@ -241,7 +242,7 @@ subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
             endif
             if (typ2 .eq. 'SITU') then
                 if (seisme) then
-                    call rcZ2s0(mij, pij, mse,&
+                    call rcZ2s0(typ3, mij, pij, mse,&
                                 nbinst, spth, sp)
                 else
                     call rcZ2st(sij, nbinst, spth, sp)
@@ -254,7 +255,7 @@ subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
                         sqth(i1) = zr(jthunq+i1-1) - zr(jthunq+6+i1-1)
 113                 continue
                     if (seisme) then
-                        call rcZ2s0(mij, pij, mse,&
+                        call rcZ2s0(typ3, mij, pij, mse,&
                                     nbinst, sqth, sp)
                         spij(1) = sp
                     else
@@ -266,9 +267,9 @@ subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
                         sqma(i1) = zr(jthunp+6+i1-1) - zr(jthunq+i1-1)
 114                 continue
                     if (seisme) then
-                        call rcZ2s0(mij, pij, mse,&
+                        call rcZ2s0(typ3, mij, pij, mse,&
                                     1, sqmi, sp1)
-                        call rcZ2s0(mij, pij, mse,&
+                        call rcZ2s0(typ3, mij, pij, mse,&
                                     1, sqma, sp2)
                         spij(1) = max(sp1,sp2)
                         spij(2) = min(sp1,sp2)
@@ -304,7 +305,7 @@ subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
             typ2 = 'SITU'
         endif
         if (seisme) then
-            call rcZ2s0(mij, pij, mse,&
+            call rcZ2s0(typ3, mij, pij, mse,&
                         nbinst, zr(jthun), sp)
         else
             call rcZ2st(sij, nbinst, zr(jthun), sp)

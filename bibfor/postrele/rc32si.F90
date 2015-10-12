@@ -332,13 +332,21 @@ subroutine rc32si(transip, transif)
                         nbret=n1)
         endif
 !
-! ------ SEISME : PAS DE TRANSITOIRE THERMIQUE
+! ------ SEISME : PAS DE TRANSITOIRE THERMIQUE NI DE PRESSION
 !        ---------------------------------------------
         nbth = 0
         call jecroc(jexnom('&&RC3200.SITU_THER', knume))
         nbm = max(1,nbth)
         call jeecra(jexnom('&&RC3200.SITU_THER', knume), 'LONMAX', nbm)
         call jeecra(jexnom('&&RC3200.SITU_THER', knume), 'LONUTI', 0)
+!
+        if (transip .or. transif) then
+            nbpres = 0
+            call jecroc(jexnom('&&RC3200.SITU_PRESSION', knume))
+            nbm = max(1,nbpres)
+            call jeecra(jexnom('&&RC3200.SITU_PRESSION', knume), 'LONMAX', nbm)
+            call jeecra(jexnom('&&RC3200.SITU_PRESSION', knume), 'LONUTI', 0)
+        endif       
 !
 110 end do
 !

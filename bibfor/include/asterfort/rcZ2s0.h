@@ -16,8 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine rcZ2s0(mm, pr, mse,&
+    subroutine rcZ2s0(option, mm, pr, mse,&
                       nbinst, sth, snp)
+        character(len=4) :: option
         integer :: nbinst
         real(kind=8) :: mm(*)
         real(kind=8) :: pr
