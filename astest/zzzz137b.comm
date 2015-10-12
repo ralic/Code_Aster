@@ -1,4 +1,4 @@
-# TITRE VALIDATION DE AFFE_CHAR_THER/EVOL_CHAR
+# TITRE VALIDATION DE AFFE_CHAR_THER / EVOL_CHAR
 
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -42,6 +42,9 @@ LTMPS=DEFI_LIST_REEL(   DEBUT=0.,INTERVALLE=(
                             _F(  JUSQU_A = 1.0,   NOMBRE = 2))
                          )
 
+# 1. Calcul de reference :
+#-------------------------
+
 TEMPE=THER_LINEAIRE(  MODELE=MODEL,
                           ETAT_INIT=_F(  VALE = 0.E0),
                           INCREMENT=_F(  LIST_INST = LTMPS),
@@ -58,16 +61,15 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   VALE_CALC=22.4232294839,),
           )
 
-# 
+
+
+# 2. Validation de AFFE_CHAR_THER / EVOL_CHAR avec des cham_elem / ELEM :
+#------------------------------------------------------------------------
 
 TEMP_EX1 = CREA_CHAMP(TYPE_CHAM = 'CART_TEMP_R',
                      OPERATION = 'AFFE',
                      MODELE    = MODEL,
-                     AFFE      = (_F(TOUT='OUI',
-                                     NOM_CMP='TEMP',
-                                     VALE=0.0
-                                    ),
-                                   _F(
+                     AFFE      = (_F(
                                     GROUP_MA='AB',
                                     NOM_CMP=('TEMP',),
                                     VALE=(0.,),
@@ -77,11 +79,7 @@ TEMP_EX1 = CREA_CHAMP(TYPE_CHAM = 'CART_TEMP_R',
 TEMP_EX2 = CREA_CHAMP(TYPE_CHAM = 'CART_TEMP_R',
                      OPERATION = 'AFFE',
                      MODELE    = MODEL,
-                     AFFE      = (_F(TOUT='OUI',
-                                     NOM_CMP='TEMP',
-                                     VALE=0.0
-                                    ),
-                                   _F(
+                     AFFE      = (_F(
                                     GROUP_MA='AB',
                                     NOM_CMP=('TEMP',),
                                     VALE=(50.,),
@@ -91,11 +89,7 @@ TEMP_EX2 = CREA_CHAMP(TYPE_CHAM = 'CART_TEMP_R',
 TEMP_EX3 = CREA_CHAMP(TYPE_CHAM = 'CART_TEMP_R',
                      OPERATION = 'AFFE',
                      MODELE    = MODEL,
-                     AFFE      = (_F(TOUT='OUI',
-                                     NOM_CMP='TEMP',
-                                     VALE=0.0
-                                    ),
-                                   _F(
+                     AFFE      = (_F(
                                     GROUP_MA='AB',
                                     NOM_CMP=('TEMP',),
                                     VALE=(50.,),
@@ -105,10 +99,7 @@ TEMP_EX3 = CREA_CHAMP(TYPE_CHAM = 'CART_TEMP_R',
 COEF_H1 = CREA_CHAMP(TYPE_CHAM = 'CART_COEH_R',
                      OPERATION = 'AFFE',
                      MODELE    = MODEL,
-                     AFFE      = (_F(TOUT='OUI',
-                                     NOM_CMP=('H',),
-                                     VALE=(0.,),),
-                                  _F(GROUP_MA='AB',
+                     AFFE      = (_F(GROUP_MA='AB',
                                      NOM_CMP=('H',),
                                      VALE=(0.,),
                                  ),),
@@ -117,10 +108,7 @@ COEF_H1 = CREA_CHAMP(TYPE_CHAM = 'CART_COEH_R',
 COEF_H2 = CREA_CHAMP(TYPE_CHAM = 'CART_COEH_R',
                      OPERATION = 'AFFE',
                      MODELE    = MODEL,
-                     AFFE      = (_F(TOUT='OUI',
-                                     NOM_CMP=('H',),
-                                     VALE=(0.,),),
-                                  _F(GROUP_MA='AB',
+                     AFFE      = (_F(GROUP_MA='AB',
                                      NOM_CMP=('H',),
                                      VALE=(1.0,),
                                  ),),
@@ -129,17 +117,14 @@ COEF_H2 = CREA_CHAMP(TYPE_CHAM = 'CART_COEH_R',
 COEF_H3 = CREA_CHAMP(TYPE_CHAM = 'CART_COEH_R',
                      OPERATION = 'AFFE',
                      MODELE    = MODEL,
-                     AFFE      = (_F(TOUT='OUI',
-                                     NOM_CMP=('H',),
-                                     VALE=(0.,),),
-                                  _F(GROUP_MA='AB',
+                     AFFE      = (_F(GROUP_MA='AB',
                                      NOM_CMP=('H',),
                                      VALE=(1.0,),
                                  ),),
                      )
 
-EVOL_RE = CREA_RESU(OPERATION='AFFE', 
-                    TYPE_RESU='EVOL_CHAR', 
+EVOL_RE = CREA_RESU(OPERATION='AFFE',
+                    TYPE_RESU='EVOL_CHAR',
                     NOM_CHAM='T_EXT',
                     AFFE=(_F( CHAM_GD=TEMP_EX1, INST=0., ),
                           _F( CHAM_GD=TEMP_EX2, INST=0.5, ),
@@ -147,17 +132,35 @@ EVOL_RE = CREA_RESU(OPERATION='AFFE',
                           ),
                     )
 EVOL_RE = CREA_RESU(OPERATION='AFFE', reuse =EVOL_RE,
-                    TYPE_RESU='EVOL_CHAR', 
+                    TYPE_RESU='EVOL_CHAR',
                     NOM_CHAM='COEF_H',
                     AFFE=(_F( CHAM_GD=COEF_H1, INST=0., ),
                           _F( CHAM_GD=COEF_H2, INST=0.5, ),
                           _F( CHAM_GD=COEF_H3, INST=1.0, ),
                           ),
                     )
-         
-             
+
+
+# Pour simuler l'usage de AFFE_CHAR_THER / EVOL_CHAR avec des champs provenant
+# de Code_Saturne (carte -> cham_elem / ELEM) :
+#  * on imprime les cartes au format MED
+#  * on relit des cham_elem / ELEM
+
+IMPR_RESU(FORMAT='MED', UNITE=81,  RESU=_F(RESULTAT=EVOL_RE))
+EVOL_RE1=LIRE_RESU(TYPE_RESU='EVOL_CHAR', FORMAT='MED',  UNITE=81,
+              MODELE=MODEL, PROL_ZERO='OUI',  TOUT_ORDRE='OUI',
+              FORMAT_MED=(
+                   _F(NOM_RESU='EVOL_RE', NOM_CHAM='T_EXT'),
+                   _F(NOM_RESU='EVOL_RE', NOM_CHAM='COEF_H'),
+              ));
+
+# Pour simuler la projection d'un maillage sur un autre :
+EVOL_RE2=PROJ_CHAMP(RESULTAT=EVOL_RE1, MODELE_1=MODEL, MODELE_2=MODEL, PROL_ZERO='OUI',
+                    VIS_A_VIS= _F(GROUP_MA_1='AB',GROUP_MA_2='AB', ),
+)
+
 CHTH2=AFFE_CHAR_THER(MODELE=MODEL,
-                     EVOL_CHAR=EVOL_RE,
+                     EVOL_CHAR=EVOL_RE2,
                      )
 
 TEMPE2=THER_LINEAIRE(  MODELE=MODEL,
@@ -174,11 +177,142 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   NOM_CHAM='TEMP',
                   NOEUD='N15',
                   NOM_CMP='TEMP',
-                  VALE_CALC=22.4232294839,             
+                  VALE_CALC=22.4232294839,
                   VALE_REFE=22.4232294839,
                   PRECISION=1.E-6),
           )
 
+
+
+# 3. Validation de AFFE_CHAR_THER / EVOL_CHAR avec des cartes :
+#------------------------------------------------------------------------
+
+TEMPEX10 = CREA_CHAMP(TYPE_CHAM = 'CART_TEMP_R',
+                     OPERATION = 'AFFE',
+                     MODELE    = MODEL,
+                     AFFE      = (_F(
+                                    TOUT='OUI',
+                                    NOM_CMP=('TEMP',),
+                                    VALE=(0.,),
+                                    ),
+                                  _F(
+                                    GROUP_MA='AB',
+                                    NOM_CMP=('TEMP',),
+                                    VALE=(0.,),
+                                    ),),
+                     )
+
+TEMPEX20 = CREA_CHAMP(TYPE_CHAM = 'CART_TEMP_R',
+                     OPERATION = 'AFFE',
+                     MODELE    = MODEL,
+                     AFFE      = (_F(
+                                    TOUT='OUI',
+                                    NOM_CMP=('TEMP',),
+                                    VALE=(0.,),
+                                    ),
+                                  _F(
+                                    GROUP_MA='AB',
+                                    NOM_CMP=('TEMP',),
+                                    VALE=(50.,),
+                                    ),),
+                     )
+
+TEMPEX30 = CREA_CHAMP(TYPE_CHAM = 'CART_TEMP_R',
+                     OPERATION = 'AFFE',
+                     MODELE    = MODEL,
+                     AFFE      = (_F(
+                                    TOUT='OUI',
+                                    NOM_CMP=('TEMP',),
+                                    VALE=(0.,),
+                                    ),
+                                  _F(
+                                    GROUP_MA='AB',
+                                    NOM_CMP=('TEMP',),
+                                    VALE=(50.,),
+                                    ),),
+                     )
+
+COEF_H10 = CREA_CHAMP(TYPE_CHAM = 'CART_COEH_R',
+                     OPERATION = 'AFFE',
+                     MODELE    = MODEL,
+                     AFFE      = (_F(
+                                    TOUT='OUI',
+                                    NOM_CMP=('H',),
+                                    VALE=(0.,),
+                                    ),
+                                  _F(GROUP_MA='AB',
+                                     NOM_CMP=('H',),
+                                     VALE=(0.,),
+                                 ),),
+                     )
+
+COEF_H20 = CREA_CHAMP(TYPE_CHAM = 'CART_COEH_R',
+                     OPERATION = 'AFFE',
+                     MODELE    = MODEL,
+                     AFFE      = (_F(
+                                    TOUT='OUI',
+                                    NOM_CMP=('H',),
+                                    VALE=(0.,),
+                                    ),
+                                  _F(GROUP_MA='AB',
+                                     NOM_CMP=('H',),
+                                     VALE=(1.0,),
+                                 ),),
+                     )
+
+COEF_H30 = CREA_CHAMP(TYPE_CHAM = 'CART_COEH_R',
+                     OPERATION = 'AFFE',
+                     MODELE    = MODEL,
+                     AFFE      = (_F(
+                                    TOUT='OUI',
+                                    NOM_CMP=('H',),
+                                    VALE=(0.,),
+                                    ),
+                                  _F(GROUP_MA='AB',
+                                     NOM_CMP=('H',),
+                                     VALE=(1.0,),
+                                 ),),
+                     )
+
+EVOL_RE3= CREA_RESU(OPERATION='AFFE',
+                    TYPE_RESU='EVOL_CHAR',
+                    NOM_CHAM='T_EXT',
+                    AFFE=(_F( CHAM_GD=TEMPEX10, INST=0., ),
+                          _F( CHAM_GD=TEMPEX20, INST=0.5, ),
+                          _F( CHAM_GD=TEMPEX30, INST=1.0, ),
+                          ),
+                    )
+EVOL_RE3= CREA_RESU(OPERATION='AFFE', reuse =EVOL_RE3,
+                    TYPE_RESU='EVOL_CHAR',
+                    NOM_CHAM='COEF_H',
+                    AFFE=(_F( CHAM_GD=COEF_H10, INST=0., ),
+                          _F( CHAM_GD=COEF_H20, INST=0.5, ),
+                          _F( CHAM_GD=COEF_H30, INST=1.0, ),
+                          ),
+                    )
+
+CHTH3=AFFE_CHAR_THER(MODELE=MODEL,
+                     EVOL_CHAR=EVOL_RE3,
+                     )
+
+TEMPE3=THER_LINEAIRE(  MODELE=MODEL,
+                          ETAT_INIT=_F(  VALE = 0.E0),
+                          INCREMENT=_F(  LIST_INST = LTMPS),
+                          CHAM_MATER=CHMAT,
+                          EXCIT=_F( CHARGE = CHTH3)
+                       )
+
+# Comparison with TEMPE
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  RESULTAT=TEMPE3,
+                  REFERENCE='AUTRE_ASTER',
+                  NOM_CHAM='TEMP',
+                  NOEUD='N15',
+                  NOM_CMP='TEMP',
+                  VALE_CALC=22.4232294839,
+                  VALE_REFE=22.4232294839,
+                  PRECISION=1.E-6),
+          )
 
 FIN()
 #

@@ -210,6 +210,10 @@ class NOM_CHAM_INTO:  #COMMUN#
                                  _(u"Source de chaleur à partir d'un potentiel électrique"), ),
             "ETHE_ELEM":        ( (),
                                  _(u"Énergie dissipée thermiquement"), ),
+            "COEF_H":           ( (),
+                                 _(u"Coefficient d'échange constant par élément"), ),
+            "T_EXT":            ( (),
+                                 _(u"Temperature extérieure constante par élément"), ),
         }
         d['ACOUSTIQUE'] = {
             "PRAC_ELNO":        ( (),

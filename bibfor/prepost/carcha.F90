@@ -191,6 +191,16 @@ subroutine carcha(noch, nomgd, typcha, option, param)
     else if (noch.eq.'FSUR_3D') then
         nomgd = 'FORC_R'
         typcha = 'ELEM'
+    else if (noch.eq.'T_EXT') then
+        nomgd = 'TEMP_R'
+        typcha = 'ELEM'
+        option = 'CHAR_THER_TEXT_R'
+        param = 'PT_EXTR'
+    else if (noch.eq.'COEF_H') then
+        nomgd = 'COEH_R'
+        typcha = 'ELEM'
+        option = 'CHAR_THER_TEXT_R'
+        param = 'PCOEFHR'
 !
 !     ERREUR
     else

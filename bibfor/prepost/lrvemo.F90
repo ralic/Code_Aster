@@ -36,7 +36,7 @@ subroutine lrvemo(modele)
     integer :: n1
 !
     character(len=8) :: chanom, typech
-    character(len=16) :: typres, pheno, valk(2), nomcmd, tych
+    character(len=16) :: typres, pheno, valk(2), nomcmd
 !
 !-----------------------------------------------------------------------
 !
@@ -50,22 +50,14 @@ subroutine lrvemo(modele)
     if (nomcmd(1:9) .eq. 'LIRE_RESU') then
         call getvtx(' ', 'TYPE_RESU', scal=typres, nbret=n1)
         call dismoi('PHENOMENE', modele, 'MODELE', repk=pheno)
-        valk(1)=pheno
-        valk(2)=typres
         if (typres(1:9) .eq. 'EVOL_THER') then
             if (pheno(1:9) .eq. 'MECANIQUE') then
-                call utmess('F+', 'MED_54')
-                call utmess('F', 'MED_56', nk=2, valk=valk)
-            endif
-        else
-            if (pheno(1:9) .eq. 'THERMIQUE') then
+                valk(1)=pheno
+                valk(2)=typres
                 call utmess('F+', 'MED_54')
                 call utmess('F', 'MED_56', nk=2, valk=valk)
             endif
         endif
-    else if (nomcmd(1:10).eq.'LIRE_CHAMP') then
-        call dismoi('PHENOMENE', modele, 'MODELE', repk=pheno)
-        call getvtx(' ', 'TYPE_CHAM', scal=tych, nbret=n1)
     endif
 !
     call jedema()

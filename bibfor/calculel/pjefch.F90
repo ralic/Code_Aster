@@ -43,6 +43,7 @@ subroutine pjefch(corres, ch1, ch2, tychv, prfchn,&
 !
     character(len=19) :: ch1, ch2, ch0s, ch1s, ch2s, ch3s, prfchn, ligrel
     character(len=16) :: option, corres
+    character(len=8) :: param
     character(len=4) :: tych, tychv
     character(len=1) :: base
     character(len=*) :: prol0
@@ -118,11 +119,12 @@ subroutine pjefch(corres, ch1, ch2, tychv, prfchn,&
 !
     else if ((tych.eq.'ELEM') .or. (tych.eq.'ELNO')) then
         call jeveuo(ch1//'.CELK', 'L', vk24=celk)
-        option = celk(2)
+        option = celk(2)(1:16)
+        param = celk(6)(1:8)
         if (ligrel .eq. ' ') then
             call utmess('F', 'CALCULEL4_73')
         endif
-        call cescel(ch2s, ligrel, option, ' ', prol0,&
+        call cescel(ch2s, ligrel, option, param, prol0,&
                     nncp, base, ch2, 'A', iret)
     endif
 !
