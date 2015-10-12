@@ -1,6 +1,6 @@
 subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
                   numsiq, pj, mj, seisme, mse,&
-                  spij, typeke, spmeca, spther, transip, transif)
+                  spij, typeke, spmeca, transip, transif)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"

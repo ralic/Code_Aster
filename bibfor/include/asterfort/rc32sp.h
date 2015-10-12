@@ -20,7 +20,7 @@
 interface
     subroutine rc32sp(typz, lieu, numsip, pi, mi,&
                       numsiq, pj, mj, seisme, mse,&
-                      spij, typeke, spmeca, spther)
+                      spij, typeke, spmeca)
         character(len=*) :: typz
         character(len=4) :: lieu
         integer :: numsip
@@ -34,6 +34,5 @@ interface
         real(kind=8) :: spij(2)
         real(kind=8) :: typeke
         real(kind=8) :: spmeca(2)
-        real(kind=8) :: spther(2)
     end subroutine rc32sp
 end interface

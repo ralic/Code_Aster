@@ -1,5 +1,5 @@
 subroutine rc32sa(typz, nommat, mati, matj, snpq,&
-                  spij, typeke, spmeca, spther, kemeca,&
+                  spij, typeke, spmeca, kemeca,&
                   kether, saltij, sm, fuij)
     implicit none
 #include "asterf_types.h"
@@ -42,7 +42,6 @@ subroutine rc32sa(typz, nommat, mati, matj, snpq,&
 ! IN  : SPIJ   : AMPLITUDE DE VARIATION DES CONTRAINTES TOTALES
 ! IN  : TYPEKE    : =-1 SI KE_MECA, =1 SI KE_MIXTE
 ! IN  : SPMECA   : AMPLITUDE DE VARIATION DES CONTRAINTES MECANIQUES
-! IN  : SPTHER   : AMPLITUDE DE VARIATION DES CONTRAINTES THERMIQUES
 ! OUT : SALTIJ : AMPLITUDE DE CONTRAINTE ENTRE LES ETATS I ET J
 ! OUT : FUIJ : FACTEUR D USAGE POUR LA COMBINAISON ENTRE I ET J
 !
@@ -94,6 +93,7 @@ subroutine rc32sa(typz, nommat, mati, matj, snpq,&
         kether = max(1.d0,kethe1)
         call prccm3(nommat, para, sm, snpq, spmeca(1),&
                     kemeca, saltm, nadm(1))
+        spther(1)=max(0.d0,spij(1)-spmeca(1))
         salth = 0.5d0 * para(3) * kether * spther(1)
         saltij(1) = saltm + salth
 !
@@ -116,6 +116,7 @@ subroutine rc32sa(typz, nommat, mati, matj, snpq,&
         if (typz .eq. 'COMB') then
             call prccm3(nommat, para, sm, snpq, spmeca(2),&
                         kemeca, saltm, nadm(1))
+            spther(2)=max(0.d0,spij(2)-spmeca(2))
             salth = 0.5d0 * para(3) * kether * spther(2)
             saltij(2) = saltm + salth
 ! --- CALCUL DU NOMBRE DE CYCLES ADMISSIBLE nadm(1) : TR. 2

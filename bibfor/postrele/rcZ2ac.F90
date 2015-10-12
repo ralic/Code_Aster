@@ -359,16 +359,16 @@ subroutine rcZ2ac(lsn, lsnet, lfatig, lrocht,&
                 typeke=matpi(8)
                 call rcZ2sp('SP_SITU', lieu(im), nsitup, ppi, mpi,&
                             nsituq, ppj, mpj, seisme, mse,&
-                            sp, typeke, spmeca, spther, transip, transif)
-                spthem = max ( spthem , spther(1) )
+                            sp, typeke, spmeca, transip, transif)
                 spmax = max ( spmax , sp(1) )
+                spthem = spmax-spmeca(1)
                 if (niv .ge. 2) write (ifm,2040) nsitup, sp(1)
                 zr(jress-1+7*(is1-1)+3) = sp(1)
 !
 ! ----------- CALCUL DU SALT
 !
                 call rc32sa('SITU', mater, matpi, matpj, sn,&
-                            sp, typeke, spmeca, spther, kemeca,&
+                            sp, typeke, spmeca, kemeca,&
                             kether, saltij, smm, fuij)
                 kemax = max ( kemax , kemeca )
                 if (niv .ge. 2) then

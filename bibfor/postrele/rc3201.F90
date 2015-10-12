@@ -196,9 +196,9 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
         if (lfatig) then
             call rc32sp('SP_SITU', lieu, nsitup, ppi, sij0,&
                         nsituq, ppi, sij0, seisme, mse,&
-                        sp, typeke, spmeca, spthep)
+                        sp, typeke, spmeca)
             call rc32sa('SITU', mater, matpi, matpi, sn,&
-                        sp, typeke, spmeca, spthep, kemeca,&
+                        sp, typeke, spmeca, kemeca,&
                         kether, saltse, sm, fuse)
             resuas(10*(is1-1)+6) = sp(1)
             resuas(10*(is1-1)+7) = kemeca
@@ -216,7 +216,8 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
             if (lfatig) write (ifm,*) '  SEISME,   SP = ',sp(1)
             if (typeke .gt. 0.d0 .and. lfatig) then
                 write (ifm,*) '            SPMECA = ',spmeca(1)
-                write (ifm,*) '            SPTHER = ',spthep
+                spthep(1)=sp(1)-spmeca(1)
+                write (ifm,*) '            SPTHER = ',spthep(1)
                 write (ifm,*) '            KEMECA = ',kemeca
                 write (ifm,*) '            KETHER = ',kether
             endif
@@ -351,10 +352,10 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
         nocc = situ_nb_occur(1+2*ioc1-2)
         call rc32sp('SP_SITU', lieu, nsitup, ppi, mpi,&
                     nsituq, ppj, mpj, .false._1, mse,&
-                    sp, typeke, spmeca, spthep)
+                    sp, typeke, spmeca)
         spmecp = spmeca(1)
         call rc32sa('SITU', mater, matpi, matpj, sn,&
-                    sp, typeke, spmeca, spthep, kemeca,&
+                    sp, typeke, spmeca, kemeca,&
                     kether, saltij, smm, fuij)
         resuss(10*(is1-1)+6) = sp(1)
         resuss(10*(is1-1)+7) = kemeca
@@ -371,9 +372,9 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
             matrice_fu_b(indi+1) = fuij(1)
             call rc32sp('SP_SITU', lieu, nsitup, ppi, mpi,&
                         nsituq, ppj, mpj, seisme, mse,&
-                        sps, typeke, spmecs, spthes)
+                        sps, typeke, spmecs)
             call rc32sa('SITU', mater, matpi, matpj, sns,&
-                        sps, typeke, spmecs, spthes, kemecs,&
+                        sps, typeke, spmecs, kemecs,&
                         kethes, salijs, smm, fuij)
             resuas(10*(is1-1)+6) = sps(1)
             resuas(10*(is1-1)+7) = kemecs
@@ -386,11 +387,12 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
 !
         spmax = max(spmax,sps(1),sp(1))
         spmecm = max(spmecm,spmecs(1),spmeca(1))
-        spthem = max(spthem,spthes(1),spther(1))
+        spthem = spmax-spmecm
         if (niv .ge. 2) then
             write (ifm,1018) nsitup, sp(1)
             if (seisme) write (ifm,1019) nsitup, sps(1)
             if (typeke .gt. 0.d0) then
+                spthep(1)=sp(1)-spmeca(1)
                 write (ifm,1050) nsitup,spmeca(1),spthep(1),kemeca,&
                 kether
                 if (seisme) write (ifm,1051) nsitup,spmecs(1),kemecs
@@ -510,7 +512,7 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
 ! - PREMIERE COMBINAISON : PI - QI
             call rc32sp('SP_COMB', lieu, nsitup, ppi, mpi,&
                         nsituq, pqi, mqi, .false._1, mse,&
-                        sp12ma, typeke, spmeca, spther)
+                        sp12ma, typeke, spmeca)
 !
             do 119 i4 = 1, 8
                 mat1(i4) = matpi(i4)
@@ -520,23 +522,22 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
             if (seisme) then
                 call rc32sp('SP_COMB', lieu, nsitup, ppi, mpi,&
                             nsituq, pqi, mqi, seisme, mse,&
-                            sps, typeke, spmecs, spthes)
+                            sps, typeke, spmecs)
             endif
 !
 ! - DEUXIEME COMBINAISON : PI - QJ
             call rc32sp('SP_COMB', lieu, nsitup, ppi, mpi,&
                         nsituq, pqj, mqj, .false._1, mse,&
-                        sp2, typeke, spmec2, spthe2)
+                        sp2, typeke, spmec2)
 !
             if (typeke .gt. 0.d0) then
                 call rc32ms(.true._1, spmeca, spmec2, lbid)
-                call rc32ms(.true._1, spther, spthe2, lbid)
             endif
 !
             if (seisme) then
                 call rc32sp('SP_COMB', lieu, nsitup, ppi, mpi,&
                             nsituq, pqj, mqj, seisme, mse,&
-                            sp2s, typeke, spmes2, spthes)
+                            sp2s, typeke, spmes2)
                 call rc32ms(meca, sps, sp2s, cmax)
                 if (typeke .gt. 0.d0) then
                     call rc32ms(.true._1, spmecs, spmes2, lbid)
@@ -555,17 +556,16 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
 ! - TROISIEME COMBINAISON : PJ - QI
             call rc32sp('SP_COMB', lieu, nsitup, ppj, mpj,&
                         nsituq, pqi, mqi, .false._1, mse,&
-                        sp2, typeke, spmec2, spthe2)
+                        sp2, typeke, spmec2)
 !
             if (typeke .gt. 0.d0) then
                 call rc32ms(.true._1, spmeca, spmec2, lbid)
-                call rc32ms(.true._1, spther, spthe2, lbid)
             endif
 !
             if (seisme) then
                 call rc32sp('SP_COMB', lieu, nsitup, ppj, mpj,&
                             nsituq, pqi, mqi, seisme, mse,&
-                            sp2s, typeke, spmes2, spthes)
+                            sp2s, typeke, spmes2)
                 call rc32ms(meca, sps, sp2s, cmax)
                 if (typeke .gt. 0.d0) then
                     call rc32ms(.true._1, spmecs, spmes2, lbid)
@@ -584,17 +584,16 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
 ! - QUATRIEME COMBINAISON : PJ - QJ
             call rc32sp('SP_COMB', lieu, nsitup, ppj, mpj,&
                         nsituq, pqj, mqj, .false._1, mse,&
-                        sp2, typeke, spmec2, spthe2)
+                        sp2, typeke, spmec2)
 !
             if (typeke .gt. 0.d0) then
                 call rc32ms(.true._1, spmeca, spmec2, lbid)
-                call rc32ms(.true._1, spther, spthe2, lbid)
             endif
 !
             if (seisme) then
                 call rc32sp('SP_COMB', lieu, nsitup, ppj, mpj,&
                             nsituq, pqj, mqj, seisme, mse,&
-                            sp2s, typeke, spmes2, spthes)
+                            sp2s, typeke, spmes2)
                 call rc32ms(meca, sps, sp2s, cmax)
                 if (typeke .gt. 0.d0) then
                     call rc32ms(.true._1, spmecs, spmes2, lbid)
@@ -613,7 +612,7 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
 ! -  CINQUIEME COMBINAISON : QI - QJ
             call rc32sp('SP_SITU', lieu, nsituq, pqi, mqi,&
                         0, pqj, mqj, .false._1, mse,&
-                        sqq, typeke, spmecq, sptheq)
+                        sqq, typeke, spmecq)
             spp = resuss(10*(is1-1)+6)
             if (sqq(1) .ge. sp12ma(1)) then
                 sp12ma(1) = sqq(1)
@@ -629,16 +628,12 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
                     spmeca(1) = spmecq(1)
                     spmeca(2) = spmecp
                 endif
-                if (sptheq(1) .ge. spther(1)) then
-                    spther(1) = sptheq(1)
-                    spther(2) = spthep(1)
-                endif
             endif
 !
             if (seisme) then
                 call rc32sp('SP_SITU', lieu, nsituq, pqi, mqi,&
                             nsituq, pqj, mqj, seisme, mse,&
-                            sqqs, typeke, spmeqs, spthes)
+                            sqqs, typeke, spmeqs)
                 if (sqqs(1) .ge. sps(1)) then
                     sps(1) = sqqs(1)
                     spps = resuas(10*(is1-1)+6)
@@ -668,10 +663,6 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
                     spmeca(1) = spmecp
                     spmeca(2) = spmecq(1)
                 endif
-                if (spthep(1) .ge. spther(1)) then
-                    spther(1) = spthep(1)
-                    spther(2) = sptheq(1)
-                endif
             endif
 !
             if (seisme) then
@@ -691,7 +682,7 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
 !
 ! - CALCUL DE SALT ASSOCIE A SP1 ET SP2
             call rc32sa('COMB', mater, mat1, mat2, sn,&
-                        sp12ma, typeke, spmeca, spther, kemeca,&
+                        sp12ma, typeke, spmeca, kemeca,&
                         kether, saltij, smm, fuij)
             icss = icss + 1
             resucs(icss) = sp12ma(1)
@@ -716,7 +707,7 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
                 matrice_fu_b(indi+1) = fuij(1)+fuij(2)
 ! ON PREND SPTHES = SPTHER
                 call rc32sa('COMB', mater, mat1, mat2, sns,&
-                            sps, typeke, spmecs, spther, kemecs,&
+                            sps, typeke, spmecs, kemecs,&
                             kethes, salijs, smm, fuij)
                 icas = icas + 1
                 resuca(icas) = sps(1)
@@ -732,12 +723,14 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
             endif
             spmax = max(spmax,sps(1),sp12ma(1),sps(2),sp12ma(2))
             spmecm = max(spmecm,spmecs(1),spmeca(1))
-            spthem = max(spthem,spthes(1),spther(1))
+            spthem = spmax-spmecm
             if (niv .ge. 2) then
                 write (ifm,1121) sp12ma(1), sp12ma(2)
                 if (seisme) write (ifm,1122) sps(1), sps(2)
                 if (typeke .gt. 0.d0) then
                     write (ifm,1131) spmeca(1),spmeca(2),kemeca
+                    spther(1)=sp12ma(1)-spmeca(1)
+                    spther(2)=sp12ma(2)-spmeca(2)
                     write (ifm,1132) spther(1),spther(2),kether
                     if (seisme) write (ifm,1133) spmecs(1),spmecs(2), kemecs
                 endif

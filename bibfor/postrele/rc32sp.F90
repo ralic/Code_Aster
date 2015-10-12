@@ -1,6 +1,6 @@
 subroutine rc32sp(typz, lieu, numsip, pi, mi,&
                   numsiq, pj, mj, seisme, mse,&
-                  spij, typeke, spmeca, spther)
+                  spij, typeke, spmeca)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -14,7 +14,6 @@ subroutine rc32sp(typz, lieu, numsip, pi, mi,&
 #include "asterfort/rc32st.h"
     integer :: numsip, numsiq
     real(kind=8) :: pi, mi(*), pj, mj(*), mse(*), spij(2), typeke, spmeca(2)
-    real(kind=8) :: spther(2)
     aster_logical :: seisme
     character(len=4) :: lieu
     character(len=*) :: typz
@@ -53,7 +52,6 @@ subroutine rc32sp(typz, lieu, numsip, pi, mi,&
 ! IN  : MSE    : EFFORTS DUS AU SEISME
 ! OUT : SPIJ   : AMPLITUDE DE VARIATION DES CONTRAINTES TOTALES
 ! OUT : SPMECA : AMPLITUDE DE VARIATION DES CONTRAINTES MECANIQUES
-! OUT : SPTHER : AMPLITUDE DE VARIATION DES CONTRAINTES THERMIQUES
 !
     integer :: icmp, jsigu, icmps, long, nbinst, nbthep, nbtheq, jther, numth
     integer :: jthunq, i1, jthunp, jthun
@@ -66,8 +64,6 @@ subroutine rc32sp(typz, lieu, numsip, pi, mi,&
 !
     spij(1) = 0.d0
     spij(2) = 0.d0
-    spther(1) = 0.d0
-    spther(2) = 0.d0
     spmeca(1) = 0.d0
     spmeca(2) = 0.d0
     do 8 i1 = 1, 6
@@ -155,10 +151,6 @@ subroutine rc32sp(typz, lieu, numsip, pi, mi,&
                     call rc32st(sij, nbinst, spth, sp)
                 endif
                 spij(1) = max(spij(1),sp)
-! --- CALCUL DE KE_THER POUR LA SITUATION P
-                if (typeke .gt. 0.d0) then
-                    call rc32s2(sij0, spth, spther)
-                endif
             endif
         endif
     endif
@@ -249,13 +241,6 @@ subroutine rc32sp(typz, lieu, numsip, pi, mi,&
                         call rc32s2(sij, sqma, spqma)
                         spij(1) = max(spqma(1),spqmi(1))
                         spij(2) = min(spqma(1),spqmi(1))
-                    endif
-! --- CALCUL DE KE_THER POUR LA COMBINAISON DES SITUATIONS P ET Q
-                    if (typeke .gt. 0.d0) then
-                        call rc32s2(sij0, sqmi, spqmi)
-                        call rc32s2(sij0, sqma, spqma)
-                        spther(1) = max(spqma(1),spqmi(1))
-                        spther(2) = min(spqma(1),spqmi(1))
                     endif
                 endif
             endif
