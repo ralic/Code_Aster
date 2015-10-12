@@ -16,12 +16,12 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine veri_noe(mailla, lnuma, liproj, limano, nbmaok,&
-                                    x3dca, iproj, noe, numail )
+    subroutine veri_noe(mailla, dmax_cable, lnuma, liproj,&
+                        nbmaok, x3dca, iproj, noe, numail )
         character(len=8) :: mailla
+        real(kind=8) :: dmax_cable
         integer :: lnuma(*)
         integer :: liproj(*)
-        integer :: limano(*)
         integer :: nbmaok
         real(kind=8) :: x3dca(3)
         integer :: iproj

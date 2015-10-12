@@ -1,5 +1,5 @@
-subroutine veri_seg(mailla, lnuma, liproj, lidoubno, nbmaok,&
-                                x3dca, iproj, n1, n2, numail)
+subroutine veri_seg(mailla, dmax_cable, lnuma, liproj, lidoubno,&
+                    nbmaok, x3dca, iproj, n1, n2, numail)
     implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -25,13 +25,14 @@ subroutine veri_seg(mailla, lnuma, liproj, lidoubno, nbmaok,&
 !       ANALYSE LA LISTE DES SEGMENTS CANDIDATS A UNE PROJECTION DU 
 !       NOEUD DE CABLE
 !
-!       POUR QUE LA PROJECTION SOIT POSSIBLE IL FAUT RETROUVER UN MEME
-!       SEGMENT POUR DEUX MAILLES DIFFERENTES
+!       POUR QUE LA PROJECTION SOIT POSSIBLE IL FAUT QU'IL EXISTE UNE
+!       AUTRE MAILLE CONNECTEE AU SEGMENT CANDIDAT
 !
 !       IPROJ : 0 SI PROJECTION AUTORISE SUR UN SEGMENT
 !              -1 SINON
 !       OUT : N1, PREMIER NOEUD DU SEGMENT
 !       OUT : N2, DEUXIEME NOEUD DU SEGMENT
+!       OUT : NUMAIL, NUMERO DE LA MAILLE PORTANT LE SEGMENT
 !-------------------   DECLARATION DES VARIABLES   ---------------------
 !
 !
@@ -49,68 +50,104 @@ subroutine veri_seg(mailla, lnuma, liproj, lidoubno, nbmaok,&
 ! ARGUMENTS
 ! ---------
     character(len=8) :: mailla
-    real(kind=8) :: x3dca(3)
+    real(kind=8) :: x3dca(3), dmax_cable
     integer :: iproj, n1, n2, lnuma(*),lidoubno(*), liproj(*), nbmaok
     integer :: numail
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: imail, j, jno, jconx1, jcoor, jconx2, nbcnx, inoma, noe
-    integer :: jtyma, ntyma, itria, inoeu, icote, iproj2, i
-    integer, pointer :: linos(:) => null()
+    integer :: imail, nb_seg, nn1, nn2, jconx1, jcoor, jconx2, nbcnx, inoma, noe
+    integer :: jtyma, ntyma, itria, inoeu, icote, iproj2, i, jnoeu, jmail
+    integer :: numail2, noe2, jseg
+    integer, pointer :: liseg(:) => null()
     character(len=24) :: conxma, coorno, tymama
     real(kind=8) :: xyzma(3, 9), normal(3), excent, xbar(3), x3dp(3), prec
-    parameter (prec=5.d-2)
+    real(kind=8) :: quart, d
+    parameter (prec=1.d-2, quart = 0.25d0)
 !
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 !
 !
 
-    AS_ALLOCATE(vi=linos, size=2*nbmaok)
-    j=0
+    AS_ALLOCATE(vi=liseg, size=nbmaok)
+    nb_seg=0
     iproj = -1
+    
+    conxma = mailla//'.CONNEX'
+    call jeveuo(conxma, 'L', jconx1)
+    coorno = mailla//'.COORDO    .VALE'
+    call jeveuo(coorno, 'L', jcoor)
+    tymama = mailla//'.TYPMAIL'
+    call jeveuo(tymama, 'L', jtyma)
+    call jeveuo(jexatr(mailla//'.CONNEX', 'LONCUM'), 'L', jconx2)
+!
     do imail = 1, nbmaok
-        ! je pense qu'il ne peut pas y avoir plusieurs segments retenus
-        ASSERT(j.le.2)
         if (liproj(imail).eq.20)then
             n1 = lidoubno(3*imail-2)
             n2 = lidoubno(3*imail-1)
             numail = lnuma(imail)
-            do jno = 1,j
-                 if (linos(jno).eq.n1)then
-                    if (mod(jno,2).eq.1) then
-                        if (linos(jno+1).eq.n2)then
+!           on regarde d'abord s'il y a le iproj 20 complémentaire
+            do jmail = imail+1, nbmaok
+                if (liproj(jmail).eq.20)then
+                    nn1 = lidoubno(3*jmail-2)
+                    nn2 = lidoubno(3*jmail-1)
+                    if (nn1 .eq. n1)then
+                        if (nn2 .eq. n2)then
                             iproj = 0
                             goto 999
                         endif
-                    else
-                        if (linos(jno-1).eq.n2)then
+                    elseif (nn1 .eq. n2)then
+                        if (nn2 .eq. n1)then
                             iproj = 0
                             goto 999
                         endif
                     endif
-                 endif
+                endif
             enddo
-            j = j+2
-            linos(j-1) = n1
-            linos(j)   = n2
+!           on regarde ensuite s'il existe une maille connectée à ce coté dans
+!           la liste (cas où les précisions n'aurait pas misent cette maille en iproj 20)
+            do jmail = 1, nbmaok
+                if (liproj(jmail).ne.20)then
+                    numail2 = lnuma(jmail)
+                    nbcnx = zi(jconx2+numail2)-zi(jconx2-1+numail2)
+                    do inoma = 1, nbcnx
+                        noe = zi(jconx1-1+zi(jconx2+numail2-1)+inoma-1)
+                        if (noe .eq. n1)then
+                            if (inoma .eq.nbcnx) then
+                                noe2 = zi(jconx1-1+zi(jconx2+numail2-1)+1-1)
+                            else
+                                noe2 = zi(jconx1-1+zi(jconx2+numail2-1)+inoma-1+1)
+                            endif
+                            if (noe .eq. n2)then
+                                iproj = 0
+                                goto 999
+                            endif
+                        elseif (noe .eq. n2)then
+                            if (inoma .eq.nbcnx) then
+                                noe2 = zi(jconx1-1+zi(jconx2+numail2-1)+1-1)
+                            else
+                                noe2 = zi(jconx1-1+zi(jconx2+numail2-1)+inoma-1+1)
+                            endif
+                            if (noe .eq. n1)then
+                                iproj = 0
+                                goto 999
+                            endif
+                        endif
+                    enddo
+                endif
+            enddo
+!           le segment est un bord du maillage, on garde les infos en mémoire
+            nb_seg = nb_seg + 1 
+            liseg(nb_seg) = numail
         endif
     enddo
 !
 !   tstbar est très sévère sur les cas limites
 !   en cas d'echec on regarde si on est suffisamment près du bord pour
 !   accepter la projection sur ce coté.
-    if (iproj.eq.-1 .and. j .ge. 2)then
-        ASSERT(j.eq.2)
-        conxma = mailla//'.CONNEX'
-        call jeveuo(conxma, 'L', jconx1)
-        coorno = mailla//'.COORDO    .VALE'
-        call jeveuo(coorno, 'L', jcoor)
-        tymama = mailla//'.TYPMAIL'
-        call jeveuo(tymama, 'L', jtyma)
-        call jeveuo(jexatr(mailla//'.CONNEX', 'LONCUM'), 'L', jconx2)
-!      
+    do jseg = 1, nb_seg
+        numail = liseg(jseg)
         nbcnx = zi(jconx2+numail)-zi(jconx2-1+numail)
         
         do inoma = 1, nbcnx
@@ -132,13 +169,23 @@ subroutine veri_seg(mailla, lnuma, liproj, lidoubno, nbmaok,&
                     itria, inoeu, icote, xbar, iproj2)  
         ASSERT(iproj2 .eq.20)
         do i =1,3
-            if(xbar(i).lt.0.d0 .and. abs(xbar(i)).le. prec)then
-                iproj = 0
+            if(xbar(i).lt.0.d0 .and. abs(xbar(i)).le. quart)then
+                inoeu = icote
+                jnoeu = icote + 2
+                if (jnoeu .eq. nbcnx + 1) jnoeu = 1
+                if (jnoeu .eq. nbcnx + 2) jnoeu = 2
+                d = sqrt((xyzma(1,jnoeu)-xyzma(1,inoeu))**2&
+                    +(xyzma(2,jnoeu)-xyzma(2,inoeu))**2&
+                    +(xyzma(3,jnoeu)-xyzma(3,inoeu))**2)
+                if (d*abs(xbar(i)) .le. prec*dmax_cable)then
+                    iproj = 0
+                    goto 999
+                endif
             endif
         enddo
-    endif    
+    enddo    
 !
 999 continue
-    AS_DEALLOCATE(vi=linos)
+    AS_DEALLOCATE(vi=liseg)
 !
 end subroutine

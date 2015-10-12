@@ -96,6 +96,7 @@ subroutine projca(tablca, lirela, nmabet, nbmabe, mailla,&
     integer :: jnunob, jxca, jyca, jzca, nbcnx, nblign
     integer :: nbno, nbpara, nnomax, noe, noebe, numail
     real(kind=8) :: d2, d2min, dx, dy, dz, excent, normal(3), x3dca(3), xbar(3)
+    real(kind=8) :: dmax_cable
     complex(kind=8) :: cbid
     character(len=8) :: nnoeca, voisin(2)
     character(len=24) :: coorno, nomama, nonoca, nonoma
@@ -175,10 +176,30 @@ subroutine projca(tablca, lirela, nmabet, nbmabe, mailla,&
     AS_ALLOCATE(vr=xyz_noemai, size=3*nnomax)
     AS_ALLOCATE(vi=cnx_maille, size=nnomax)
 !
+!   calcul de la dimension max du cable (approximativement)
+!   principe : les noeuds des plus éloignés sont soit :
+!       - les deux ancrages (cas des cables verticaux
+!       - le premier noeud et le noeud milieu (cables horizontaux)
+    dmax_cable = 0.d0
+    inoca = 1 
+    x3dca(1) = zr(jxca+ideca+inoca-1)
+    x3dca(2) = zr(jyca+ideca+inoca-1)
+    x3dca(3) = zr(jzca+ideca+inoca-1)
+    inoca = nbno
+    dx = x3dca(1) - zr(jxca+ideca+inoca-1)
+    dy = x3dca(2) - zr(jyca+ideca+inoca-1)
+    dz = x3dca(3) - zr(jzca+ideca+inoca-1)
+    dmax_cable = sqrt(dx * dx + dy * dy + dz * dz)
+    inoca = nbno/2
+    dx = x3dca(1) - zr(jxca+ideca+inoca-1)
+    dy = x3dca(2) - zr(jyca+ideca+inoca-1)
+    dz = x3dca(3) - zr(jzca+ideca+inoca-1)
+    d2 = sqrt(dx * dx + dy * dy + dz * dz)
+    if (d2 .gt. dmax_cable) dmax_cable = d2
+!
 ! 2.2 BOUCLE SUR LE NOMBRE DE NOEUDS DU CABLE
 ! ---
     do inoca = 1, nbno
-!
         nnoeca = zk8(jnoca+ideca+inoca-1)
         x3dca(1) = zr(jxca+ideca+inoca-1)
         x3dca(2) = zr(jyca+ideca+inoca-1)
@@ -208,7 +229,7 @@ subroutine projca(tablca, lirela, nmabet, nbmabe, mailla,&
 !
 ! 2.2.2  TENTATIVE DE PROJECTION DU NOEUD CABLE
 !
-        call projkm(nmabet, nbmabe, nbnobe, mailla, caelem,&
+        call projkm(nmabet, nbmabe, nbnobe, mailla, caelem, dmax_cable, &
                     nnoeca, x3dca(1), noebe, numail, nbcnx,&
                     cnx_maille, xyz_noemai, normal(1), itria, xbar(1),&
                     iproj, excent)

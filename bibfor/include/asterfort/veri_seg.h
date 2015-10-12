@@ -16,9 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine veri_seg(mailla, lnuma, liproj, lidoubno, nbmaok,&
-                                    x3dca, iproj, n1, n2, numail)
+    subroutine veri_seg(mailla, dmax_cable, lnuma, liproj, lidoubno,&
+                        nbmaok, x3dca, iproj, n1, n2, numail)
         character(len=8) :: mailla
+        real(kind=8) :: dmax_cable
         integer :: lnuma(*)
         integer :: liproj(*)
         integer :: lidoubno(*)

@@ -261,7 +261,9 @@ La présence de la caractéristique %(k1)s est obligatoire.
 """),
 
     82 : _(u"""
- mot-clé <DEFI_CABLE>, occurrence no  %(i1)d , le noeud de câble  %(k1)s n'appartient pas au béton (modélisé en coque).
+ mot-clé <DEFI_CABLE>, occurrence no  %(i1)d : 
+    soit le noeud de câble  %(k1)s n'appartient pas au béton (modélisé en coque),
+    soit les mailles de béton autour de ce noeud sont trop déformées.
 """),
 
     83 : _(u"""

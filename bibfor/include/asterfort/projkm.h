@@ -16,7 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem,&
+    subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem, dmax_cable, &
                   nnoeca, x3dca, noebe, numail, nbcnx,&
                   cxma, xyzma, normal, itria, xbar,&
                   iproj, excent)
@@ -25,6 +25,7 @@ interface
         integer :: nbnobe
         character(len=8) :: mailla
         character(len=8) :: caelem
+        real(kind=8) :: dmax_cable
         character(len=8) :: nnoeca
         real(kind=8) :: x3dca(*)
         integer :: noebe
