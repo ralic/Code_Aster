@@ -35,14 +35,15 @@ subroutine rc3200(pmpb, sn, snet, fatigu, lrocht,&
 !
 ! DEB ------------------------------------------------------------------
 !
-    aster_logical :: transip
+    aster_logical :: transip, transif
 !
 !     ------------------------------------------------------------------
 !                           LES SITUATIONS
 !     ------------------------------------------------------------------
 !
     transip = .false.
-    call rc32si(transip)
+    transif = .false.
+    call rc32si(transip, transif)
 !
 !     ------------------------------------------------------------------
 !              RECUPERATION DES CARACTERISTIQUES MATERIAU

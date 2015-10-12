@@ -1,4 +1,4 @@
-subroutine rcmoZ2(etat, numsit, vale)
+subroutine rcmoZ2(transif, etat, numsit, vale)
     implicit   none
 #include "jeveux.h"
 !
@@ -7,6 +7,7 @@ subroutine rcmoZ2(etat, numsit, vale)
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
+    aster_logical :: transif
     integer :: numsit
     real(kind=8) :: vale(*)
     character(len=1) :: etat
@@ -30,6 +31,7 @@ subroutine rcmoZ2(etat, numsit, vale)
 !     ------------------------------------------------------------------
 !     RECUPERATION DES MOMENTS POUR UN ETAT STABILISE
 !
+! IN  : TRANSIF: SI OUI B3200
 ! IN  : ETAT   : ETAT STABILISE "A" OU "B"
 !              : OU "S" SI SEISME
 ! IN  : NUMSIT : NUMERO DE LA SITUATION
@@ -56,45 +58,47 @@ subroutine rcmoZ2(etat, numsit, vale)
 !
 ! --- LISTE DES CHARGEMENTS POUR LE NUMERO DE SITUATION
 !
-    if ((etat.eq.'S') .or. (etat.eq.'A')) then
-        etats = 'A'
-    else
-        etats = 'B'
-    endif
-!
-    call jeexin(jexnom('&&RC3200.SITU_ETAT_'//etats, knumes), iret)
-    if (iret .eq. 0) goto 9999
-!
-    call jelira(jexnom('&&RC3200.SITU_ETAT_'//etats, knumes), 'LONUTI', nbchar)
-    call jeveuo(jexnom('&&RC3200.SITU_ETAT_'//etats, knumes), 'L', jlcha)
-!
-!
-    do 100 i = 1, nbchar
-!
-        numcha = zi(jlcha-1+i)
-        knumec = 'C       '
-        call codent(numcha, 'D0', knumec(2:8))
-!
-        call jeveuo(jexnom('&&RC3200.VALE_CHAR', knumec), 'L', jchar)
-!
-        if (etat .eq. 'S') then
-            do 102 j = 1, 6
-                vale(j) = vale(j) + zr(jchar-1+j)**2
-102          continue
+    if (.not. transif) then
+        if ((etat.eq.'S') .or. (etat.eq.'A')) then
+            etats = 'A'
         else
-            do 104 j = 1, 6
-                vale(j) = vale(j) + zr(jchar-1+j)
-104          continue
+            etats = 'B'
         endif
 !
-100  end do
+        call jeexin(jexnom('&&RC3200.SITU_ETAT_'//etats, knumes), iret)
+        if (iret .eq. 0) goto 9999
 !
-    if (etat .eq. 'S') then
-        do 106 j = 1, 6
-            vale(j) = sqrt ( vale(j) )
-106      continue
+        call jelira(jexnom('&&RC3200.SITU_ETAT_'//etats, knumes), 'LONUTI', nbchar)
+        call jeveuo(jexnom('&&RC3200.SITU_ETAT_'//etats, knumes), 'L', jlcha)
+!
+!
+        do 100 i = 1, nbchar
+!
+            numcha = zi(jlcha-1+i)
+            knumec = 'C       '
+            call codent(numcha, 'D0', knumec(2:8))
+!
+            call jeveuo(jexnom('&&RC3200.VALE_CHAR', knumec), 'L', jchar)
+!
+            if (etat .eq. 'S') then
+                do 102 j = 1, 6
+                    vale(j) = vale(j) + zr(jchar-1+j)**2
+102              continue
+            else
+                do 104 j = 1, 6
+                    vale(j) = vale(j) + zr(jchar-1+j)
+104              continue
+            endif
+!
+100     end do
+!
+        if (etat .eq. 'S') then
+            do 106 j = 1, 6
+                vale(j) = sqrt ( vale(j) )
+106          continue
+        endif
+!
+9999    continue
+!
     endif
-!
-9999  continue
-!
 end subroutine

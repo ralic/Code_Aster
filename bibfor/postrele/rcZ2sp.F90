@@ -1,6 +1,6 @@
 subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
                   numsiq, pj, mj, seisme, mse,&
-                  spij, typeke, spmeca, spther, transip)
+                  spij, typeke, spmeca, spther, transip, transif)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -17,7 +17,7 @@ subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
     integer :: numsip, numsiq
     real(kind=8) :: pi, mi(*), pj, mj(*), mse(*), spij(2), typeke, spmeca(2)
     real(kind=8) :: spther(2)
-    aster_logical :: seisme, transip
+    aster_logical :: seisme, transip, transif
     character(len=4) :: lieu
     character(len=*) :: typz
 !     ------------------------------------------------------------------
@@ -59,7 +59,7 @@ subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
 !
     integer :: icmp, long, nbinst, nbthep, nbtheq, jther, numt
     integer :: jthunq, i1, jthunp, jthun, jvalin, nbprep, nbp, jpres
-    integer :: nbpreq, nbq
+    integer :: nbpreq, nbq, nbmecap, nbmecaq
     real(kind=8) :: pij, mij(6), sp, sij, sij0, sqma(6), sqmi(6)
     real(kind=8) :: sp1, sp2, spth(6), spqma(2), spqmi(2), sqth(6)
     real(kind=8) :: racine, c1, c2, diam, ep, inertie, k1, k2
@@ -128,7 +128,12 @@ subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
         else
             nbprep = 0
         endif
-        nbp = max(nbthep, nbprep)
+        if (transif) then 
+            call jelira(jexnom('&&RC3200.SITU_MECA', knumes), 'LONUTI', nbmecap)
+        else
+            nbmecap = 0
+        endif
+        nbp = max(nbthep, nbprep,nbmecap)
         if (nbp .eq. 0) then
             nbinst = 0
             jthun = 1
@@ -147,15 +152,8 @@ subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
             spij(1) = max(spij(1),sp)
             if (typ2 .eq. 'COMB') spij(2) = max(spij(2),sp)
         else
-            if (nbthep .ne. 0) then
-                call jeveuo(jexnom('&&RC3200.SITU_THER', knumes), 'L', jther)
-                numt = zi(jther)
-            else
-                call jeveuo(jexnom('&&RC3200.SITU_PRES', knumes), 'L', jpres)
-                numt = zi(jpres)
-            endif
             knumet = 'T       '
-            call codent(numt, 'D0', knumet(2:8))
+            call codent(numsip, 'D0', knumet(2:8))
             call jelira(jexnom('&&RC3200.T .'//lieu, knumet), 'LONUTI', long)
             call jeveuo(jexnom('&&RC3200.T .'//lieu, knumet), 'L', jthunp)
             nbinst = 2
@@ -195,8 +193,13 @@ subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
             call jelira(jexnom('&&RC3200.SITU_PRES', knumes), 'LONUTI', nbpreq)
         else
             nbpreq = 0
+        endif
+        if (transif) then
+            call jelira(jexnom('&&RC3200.SITU_MECA', knumes), 'LONUTI', nbmecaq)
+        else
+            nbmecaq = 0
         endif 
-        nbq = max (nbtheq, nbpreq)
+        nbq = max (nbtheq, nbpreq, nbmecaq)
         if (nbq .eq. 0) then
             nbinst = 0
             jthun = 1
@@ -225,15 +228,8 @@ subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
                 endif
             endif
         else
-            if (nbtheq .ne. 0) then
-                call jeveuo(jexnom('&&RC3200.SITU_THER', knumes), 'L', jther)
-                numt = zi(jther)
-            else
-                call jeveuo(jexnom('&&RC3200.SITU_PRES', knumes), 'L', jpres)
-                numt = zi(jpres)
-            endif
             knumet = 'T       '
-            call codent(numt, 'D0', knumet(2:8))
+            call codent(numsiq, 'D0', knumet(2:8))
             call jelira(jexnom('&&RC3200.T .'//lieu, knumet), 'LONUTI', long)
             call jeveuo(jexnom('&&RC3200.T .'//lieu, knumet), 'L', jthunq)
             nbinst = 2

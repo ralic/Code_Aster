@@ -1,6 +1,6 @@
 subroutine rcZ2sn(typz, lieu, numsip, pi, mi,&
                   numsiq, pj, mj, seisme, mse,&
-                  snij, transip)
+                  snij, transip, transif)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -15,7 +15,7 @@ subroutine rcZ2sn(typz, lieu, numsip, pi, mi,&
 #include "asterfort/rcZ2st.h"
     integer :: numsip, numsiq
     real(kind=8) :: pi, mi(*), pj, mj(*), mse(*), snij
-    aster_logical :: seisme, transip
+    aster_logical :: seisme, transip, transif
     character(len=4) :: lieu
     character(len=*) :: typz
 !     ------------------------------------------------------------------
@@ -56,8 +56,8 @@ subroutine rcZ2sn(typz, lieu, numsip, pi, mi,&
 !     ------------------------------------------------------------------
 !
     integer :: icmp, nbinst, long, i1, nbthep, nbtheq, jther, it
-    integer :: numt, jthun, indicp, indicq, jvalin
-    integer :: jpres,nbprep, nbp, nbpreq, nbq
+    integer :: jthun, indicp, indicq, jvalin
+    integer :: jpres,nbprep, nbp, nbpreq, nbq, nbmecap, nbmecaq
     real(kind=8) :: pij, mij(6), sn, sij, sqma(6), sqmi(6), sn1, sn2
     real(kind=8) :: snth(6), racine, c1, c2, diam, ep, inertie
     character(len=4) :: typ2
@@ -98,7 +98,7 @@ subroutine rcZ2sn(typz, lieu, numsip, pi, mi,&
     sij = sij + c2*diam*sqrt(racine)/(2*inertie)
 !
 ! --- CALCUL DE SN (PARTIE B3200)
-! --- ON BOUCLE SUR LES INSTANTS DU TRANSITOIRE (THERMIQUE ou PRESSION) DE P (B3200)
+! --- ON BOUCLE SUR LES INSTANTS DU TRANSITOIRE (THERMIQUE/PRESSION/MECA) DE P (B3200)
 !
     if (numsip .ne. 0) then
         knumes = 'S       '
@@ -109,7 +109,12 @@ subroutine rcZ2sn(typz, lieu, numsip, pi, mi,&
         else
             nbprep = 0
         endif 
-        nbp=max(nbthep,nbprep)
+        if (transif) then
+            call jelira(jexnom('&&RC3200.SITU_MECA', knumes), 'LONUTI', nbmecap)
+        else
+            nbmecap = 0 
+        endif
+        nbp=max(nbthep,nbprep, nbmecap)
         if (nbp .eq. 0) then
             nbinst = 0
             indicp = 1
@@ -127,52 +132,43 @@ subroutine rcZ2sn(typz, lieu, numsip, pi, mi,&
             endif
             snij = max( snij , sn )
         else
-            do 100 it = 1, nbp
-                if (nbthep .ne. 0) then
-                    call jeveuo(jexnom('&&RC3200.SITU_THER', knumes), 'L', jther)                
-                    numt = zi(jther+it-1)
+            knumet = 'T       '
+            call codent(numsip, 'D0', knumet(2:8))
+            call jelira(jexnom('&&RC3200.T .'//lieu, knumet), 'LONUTI', long)
+            call jeveuo(jexnom('&&RC3200.T .'//lieu, knumet), 'L', jthun)
+            nbinst = 2
+            if (type .eq. 'SN_COMB') then
+                indicp = jthun + 6*nbinst
+                typ2 = 'COMB'
+            else if (type .eq. 'SN*_COMB') then
+                indicp = jthun + 12*nbinst
+                typ2 = 'COMB'
+            else if (type .eq. 'SN_SITU') then
+                indicp = jthun + 6*nbinst
+                typ2 = 'SITU'
+            else if (type .eq. 'SN*_SITU') then
+                indicp = jthun + 12*nbinst
+                typ2 = 'SITU'
+            endif
+            do 14 i1 = 1, 6
+                snth(i1) = zr(indicp+6+i1-1) -zr(indicp+i1-1)
+ 14         continue
+            if (seisme) then
+                call rcZ2s0(mij, pij, mse,&
+                            nbinst, snth, sn)
+            else
+                if (typ2 .eq. 'SITU') then
+                    call rcZ2st(sij, nbinst, snth, sn)
                 else
-                    call jeveuo(jexnom('&&RC3200.SITU_PRES', knumes), 'L', jpres)                
-                    numt = zi(jpres+it-1)
+                    sn = 0.d0
                 endif
-                knumet = 'T       '
-                call codent(numt, 'D0', knumet(2:8))
-                call jelira(jexnom('&&RC3200.T .'//lieu, knumet), 'LONUTI', long)
-                call jeveuo(jexnom('&&RC3200.T .'//lieu, knumet), 'L', jthun)
-                nbinst = 2
-                if (type .eq. 'SN_COMB') then
-                    indicp = jthun + 6*nbinst
-                    typ2 = 'COMB'
-                else if (type .eq. 'SN*_COMB') then
-                    indicp = jthun + 12*nbinst
-                    typ2 = 'COMB'
-                else if (type .eq. 'SN_SITU') then
-                    indicp = jthun + 6*nbinst
-                    typ2 = 'SITU'
-                else if (type .eq. 'SN*_SITU') then
-                    indicp = jthun + 12*nbinst
-                    typ2 = 'SITU'
-                endif
-                do 14 i1 = 1, 6
-                    snth(i1) = zr(indicp+6+i1-1) -zr(indicp+i1-1)
- 14             continue
-                if (seisme) then
-                    call rcZ2s0(mij, pij, mse,&
-                                nbinst, snth, sn)
-                else
-                    if (typ2 .eq. 'SITU') then
-                        call rcZ2st(sij, nbinst, snth, sn)
-                    else
-                        sn = 0.d0
-                    endif
-                endif
-                snij = max( snij , sn )
-100         continue
+            endif
+            snij = max( snij , sn )
         endif
     endif
 !
 !
-! --- ON BOUCLE SUR LES INSTANTS DU TRANSITOIRE (THERMIQUE ou PRESSION) DE Q (B3200)
+! --- ON BOUCLE SUR LES INSTANTS DU TRANSITOIRE (THERMIQUE/PRESSION/MECA) DE Q (B3200)
 !
     if (numsiq .ne. 0) then
         knumes = 'S       '
@@ -182,8 +178,13 @@ subroutine rcZ2sn(typz, lieu, numsip, pi, mi,&
             call jelira(jexnom('&&RC3200.SITU_PRES', knumes), 'LONUTI', nbpreq)
         else
             nbpreq = 0
+        endif
+        if (transif) then
+            call jelira(jexnom('&&RC3200.SITU_MECA', knumes), 'LONUTI', nbmecaq)
+        else
+            nbmecaq = 0
         endif 
-        nbq = max(nbpreq,nbtheq)
+        nbq = max(nbpreq,nbtheq, nbmecaq)
         if (nbq .eq. 0) then
             nbinst = 0
             indicq = 1
@@ -210,63 +211,54 @@ subroutine rcZ2sn(typz, lieu, numsip, pi, mi,&
                 snij = max( snij , sn )
             endif
         else
-            do 110 it = 1, nbq
-                if (nbtheq .ne. 0) then
-                    call jeveuo(jexnom('&&RC3200.SITU_THER', knumes), 'L', jther)                
-                    numt = zi(jther+it-1)
+            knumet = 'T       '
+            call codent(numsiq, 'D0', knumet(2:8))
+            call jelira(jexnom('&&RC3200.T .'//lieu, knumet), 'LONUTI', long)
+            call jeveuo(jexnom('&&RC3200.T .'//lieu, knumet), 'L', jthun)
+            nbinst = 2
+            if (type .eq. 'SN_COMB') then
+                indicq = jthun + 6*nbinst
+                typ2 = 'COMB'
+            else if (type .eq. 'SN*_COMB') then
+                indicq = jthun + 12*nbinst
+                typ2 = 'COMB'
+            else if (type .eq. 'SN_SITU') then
+                indicq = jthun + 6*nbinst
+                typ2 = 'SITU'
+            else if (type .eq. 'SN*_SITU') then
+                indicq = jthun + 12*nbinst
+                typ2 = 'SITU'
+            endif
+            do 24 i1 = 1, 6
+                snth(i1) = zr(indicq+6+i1-1) -zr(indicq+i1-1)
+ 24         continue
+            if (typ2 .eq. 'SITU') then
+                if (seisme) then
+                    call rcZ2s0(mij, pij, mse,&
+                                nbinst, snth, sn)
                 else
-                    call jeveuo(jexnom('&&RC3200.SITU_PRES', knumes), 'L', jpres)                
-                    numt = zi(jpres+it-1)
+                    call rcZ2st(sij, nbinst, snth, sn)
                 endif
-                knumet = 'T       '
-                call codent(numt, 'D0', knumet(2:8))
-                call jelira(jexnom('&&RC3200.T .'//lieu, knumet), 'LONUTI', long)
-                call jeveuo(jexnom('&&RC3200.T .'//lieu, knumet), 'L', jthun)
-                nbinst = 2
-                if (type .eq. 'SN_COMB') then
-                    indicq = jthun + 6*nbinst
-                    typ2 = 'COMB'
-                else if (type .eq. 'SN*_COMB') then
-                    indicq = jthun + 12*nbinst
-                    typ2 = 'COMB'
-                else if (type .eq. 'SN_SITU') then
-                    indicq = jthun + 6*nbinst
-                    typ2 = 'SITU'
-                else if (type .eq. 'SN*_SITU') then
-                    indicq = jthun + 12*nbinst
-                    typ2 = 'SITU'
-                endif
-                do 24 i1 = 1, 6
-                    snth(i1) = zr(indicq+6+i1-1) -zr(indicq+i1-1)
- 24             continue
-                if (typ2 .eq. 'SITU') then
+            else
+                if (nbp .ne. 0) then
+                    do 114 i1 = 1, 6
+                        sqmi(i1) = zr(indicp+i1-1) - zr(indicq+6+ i1-1)
+                        sqma(i1) = zr(indicp+6+i1-1) - zr(indicq+ i1-1)
+114                 continue
                     if (seisme) then
                         call rcZ2s0(mij, pij, mse,&
-                                    nbinst, snth, sn)
+                                    nbinst, sqmi, sn1)
+                        call rcZ2s0(mij, pij, mse,&
+                                    nbinst, sqma, sn2)
+                        sn = max( sn1, sn2 )
                     else
-                        call rcZ2st(sij, nbinst, snth, sn)
-                    endif
-                else
-                    if (nbp .ne. 0) then
-                        do 114 i1 = 1, 6
-                            sqmi(i1) = zr(indicp+i1-1) - zr(indicq+6+ i1-1)
-                            sqma(i1) = zr(indicp+6+i1-1) - zr(indicq+ i1-1)
-114                     continue
-                        if (seisme) then
-                            call rcZ2s0(mij, pij, mse,&
-                                        nbinst, sqmi, sn1)
-                            call rcZ2s0(mij, pij, mse,&
-                                        nbinst, sqma, sn2)
-                            sn = max( sn1, sn2 )
-                        else
-                            call rcZ2st(sij, nbinst, sqmi, sn1)
-                            call rcZ2st(sij, nbinst, sqma, sn2)
-                            sn = max( sn1, sn2 )
-                        endif
+                        call rcZ2st(sij, nbinst, sqmi, sn1)
+                        call rcZ2st(sij, nbinst, sqma, sn2)
+                        sn = max( sn1, sn2 )
                     endif
                 endif
-                snij = max( snij , sn )
-110         continue
+            endif
+            snij = max( snij , sn )
         endif
     endif
 !

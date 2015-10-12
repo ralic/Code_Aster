@@ -16,7 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine rcmoZ2(etat, numsit, vale)
+    subroutine rcmoZ2(transif, etat, numsit, vale)
+        aster_logical :: transif
         character(len=1) :: etat
         integer :: numsit
         real(kind=8) :: vale(*)

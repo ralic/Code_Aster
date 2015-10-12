@@ -1,5 +1,5 @@
 subroutine rcZ200(sn, snet, fatigu, lrocht,&
-                  mater, symax, transip)
+                  mater, symax, transip, transif)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -13,7 +13,7 @@ subroutine rcZ200(sn, snet, fatigu, lrocht,&
 #include "asterfort/rcZ2rs.h"
 
     real(kind=8) :: symax
-    aster_logical :: sn, snet, fatigu, lrocht, transip
+    aster_logical :: sn, snet, fatigu, lrocht, transip, transif
     character(len=8) :: mater
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -33,7 +33,7 @@ subroutine rcZ200(sn, snet, fatigu, lrocht,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !     ------------------------------------------------------------------
-!     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_ZE200
+!     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_ZE200 et B3200_T
 !
 ! DEB ------------------------------------------------------------------
 !
@@ -41,7 +41,7 @@ subroutine rcZ200(sn, snet, fatigu, lrocht,&
 !              TRAITEMENT DES SITUATIONS (GROUPES, PASSAGE...)
 !     ------------------------------------------------------------------
 !
-    call rc32si(transip)
+    call rc32si(transip, transif)
 !
 !     ------------------------------------------------------------------
 !              RECUPERATION DES CARACTERISTIQUES MATERIAU
@@ -54,17 +54,22 @@ subroutine rcZ200(sn, snet, fatigu, lrocht,&
 !              ET DES CARACTERISTIQUES DE LA TUYAUTERIE
 !     ------------------------------------------------------------------
 !
-    call rcZ2in()
+    call rcZ2in(transif)
 ! 
 !     ------------------------------------------------------------------
-!              RECUPERATION DES CHARGES MECANIQUES
+!              RECUPERATION DES CHARGES MECANIQUES si ZE200
+!              SOUS CHAR_MECA (si B200_T, ELLES SONT SOUS RESU_MECA) 
 !     ------------------------------------------------------------------
 !
-    call rcZ2cm()
+    if (.not. transif) then
+        call rcZ2cm()
+    endif
 !
 !     ------------------------------------------------------------------
 !                  RECUPERATION DES TRANSITOIRES :
 !                    - THERMIQUES(si RESU_THER)
+!                    - DE PRESSION(si RESU_PRES)
+!                    - EFFORTS EXTERNES(si RESU_MECA)
 !     ------------------------------------------------------------------
 !
     call rcZ2t()
@@ -75,7 +80,7 @@ subroutine rcZ200(sn, snet, fatigu, lrocht,&
 !     ------------------------------------------------------------------
 !
     call rcZ2ac(sn, snet, fatigu, lrocht,&
-                mater, transip)
+                mater, transip, transif)
 !
 !     ------------------------------------------------------------------
 !                       STOCKAGE DES RESULTATS

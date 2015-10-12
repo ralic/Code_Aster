@@ -1,4 +1,4 @@
-subroutine rc32si(transip)
+subroutine rc32si(transip, transif)
     implicit none
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -42,14 +42,14 @@ subroutine rc32si(transip)
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    aster_logical :: transip
+    aster_logical :: transip, transif
 !
     integer :: n1, nbsitu, iocc, nume, ii, nocc, ing, jnbocc, jnumgr
     integer :: jpresa, jpresb, nbchar, jchar, jnsitu, jcombi, ig
     integer :: numpas(2), nbvg, jnbvg, nbgr, numgr, nbsigr, jnsg, nbth, jseigr
     integer :: nscy, nbm, vali(3), nbgrt, numg1, numg2, nbseis, numgs, nbsg1
     integer :: nbsg2, nbsg3, nbp12, nbp23, nbp13, ndim, jspas, jsigr, jsp12
-    integer :: jsp23, jsp13, nbpres, n2, nbm2, jchar2
+    integer :: jsp23, jsp13, nbpres, n2, nbm2, jchar2, n3, nbmec, nbm3, jchar3
     aster_logical :: yapass
     character(len=8) :: k8b, knume, ouinon
     character(len=16) :: motcl1, motcl2
@@ -60,7 +60,7 @@ subroutine rc32si(transip)
 !
     motcl1 = 'SITUATION'
     motcl2 = 'SEISME'
-    cst = 1.d0
+    cst = 0.d0
 !
     call getfac(motcl1, nbsitu)
     call getfac(motcl2, nbseis)
@@ -81,6 +81,8 @@ subroutine rc32si(transip)
     call jecrec('&&RC3200.SITU_THER', 'V V I', 'NO', 'DISPERSE', 'VARIABLE',&
                 ndim)
     call jecrec('&&RC3200.SITU_PRES', 'V V I', 'NO', 'DISPERSE', 'VARIABLE',&
+                ndim)
+    call jecrec('&&RC3200.SITU_MECA', 'V V I', 'NO', 'DISPERSE', 'VARIABLE',&
                 ndim)
 !
     call wkvect('&&RC32SI.PASSAGE_1_2', 'V V I', ndim, jsp12)
@@ -114,7 +116,7 @@ subroutine rc32si(transip)
 ! ------ LES PRESSIONS:
 !        --------------
 !
-        if (transip) then
+        if (transip .or. transif) then
             zr(jpresa+iocc-1)= cst
             zr(jpresb+iocc-1)= cst
         else
@@ -202,25 +204,27 @@ subroutine rc32si(transip)
 !
 ! ------ ETAT DE CHARGEMENT POUR "A":
 !        ----------------------------
-        call getvis(motcl1, 'CHAR_ETAT_A', iocc=iocc, nbval=0, nbret=n1)
-        nbchar = -n1
-        call jecroc(jexnom('&&RC3200.SITU_ETAT_A', knume))
-        call jeecra(jexnom('&&RC3200.SITU_ETAT_A', knume), 'LONMAX', nbchar)
-        call jeecra(jexnom('&&RC3200.SITU_ETAT_A', knume), 'LONUTI', nbchar)
-        call jeveuo(jexnom('&&RC3200.SITU_ETAT_A', knume), 'E', jchar)
-        call getvis(motcl1, 'CHAR_ETAT_A', iocc=iocc, nbval=nbchar, vect=zi(jchar),&
-                    nbret=n1)
+        if (.not. transif) then
+            call getvis(motcl1, 'CHAR_ETAT_A', iocc=iocc, nbval=0, nbret=n1)
+            nbchar = -n1
+            call jecroc(jexnom('&&RC3200.SITU_ETAT_A', knume))
+            call jeecra(jexnom('&&RC3200.SITU_ETAT_A', knume), 'LONMAX', nbchar)
+            call jeecra(jexnom('&&RC3200.SITU_ETAT_A', knume), 'LONUTI', nbchar)
+            call jeveuo(jexnom('&&RC3200.SITU_ETAT_A', knume), 'E', jchar)
+            call getvis(motcl1, 'CHAR_ETAT_A', iocc=iocc, nbval=nbchar, vect=zi(jchar),&
+                        nbret=n1)
 !
 ! ------ ETAT DE CHARGEMENT POUR "B":
 !        ----------------------------
-        call getvis(motcl1, 'CHAR_ETAT_B', iocc=iocc, nbval=0, nbret=n1)
-        nbchar = -n1
-        call jecroc(jexnom('&&RC3200.SITU_ETAT_B', knume))
-        call jeecra(jexnom('&&RC3200.SITU_ETAT_B', knume), 'LONMAX', nbchar)
-        call jeecra(jexnom('&&RC3200.SITU_ETAT_B', knume), 'LONUTI', nbchar)
-        call jeveuo(jexnom('&&RC3200.SITU_ETAT_B', knume), 'E', jchar)
-        call getvis(motcl1, 'CHAR_ETAT_B', iocc=iocc, nbval=nbchar, vect=zi(jchar),&
-                    nbret=n1)
+            call getvis(motcl1, 'CHAR_ETAT_B', iocc=iocc, nbval=0, nbret=n1)
+            nbchar = -n1
+            call jecroc(jexnom('&&RC3200.SITU_ETAT_B', knume))
+            call jeecra(jexnom('&&RC3200.SITU_ETAT_B', knume), 'LONMAX', nbchar)
+            call jeecra(jexnom('&&RC3200.SITU_ETAT_B', knume), 'LONUTI', nbchar)
+            call jeveuo(jexnom('&&RC3200.SITU_ETAT_B', knume), 'E', jchar)
+            call getvis(motcl1, 'CHAR_ETAT_B', iocc=iocc, nbval=nbchar, vect=zi(jchar),&
+                        nbret=n1)
+        endif
 !
 ! ------ TRANSITOIRE THERMIQUE ASSOCIE A LA SITUATION:
 !        ---------------------------------------------
@@ -241,7 +245,7 @@ subroutine rc32si(transip)
 !
 ! ------ TRANSITOIRE DE PRESSION ASSOCIE A LA SITUATION:
 !        ---------------------------------------------
-        if (transip) then
+        if (transip .or. transif) then
             call getvis(motcl1, 'NUME_RESU_PRES', iocc=iocc, nbval=0, nbret=n2)
             nbpres = -n2
             call jecroc(jexnom('&&RC3200.SITU_PRES', knume))
@@ -254,6 +258,24 @@ subroutine rc32si(transip)
                 call jeveuo(jexnom('&&RC3200.SITU_PRES', knume), 'E', jchar2)
                 call getvis(motcl1, 'NUME_RESU_PRES', iocc=iocc, nbval=nbpres, vect=zi(jchar2),&
                             nbret=n2)
+            endif
+        endif
+!
+! ------ TRANSITOIRE MECANIQUE ASSOCIE A LA SITUATION:
+!        ---------------------------------------------
+        if (transif) then
+            call getvis(motcl1, 'NUME_RESU_MECA', iocc=iocc, nbval=0, nbret=n3)
+            nbmec = -n3
+            call jecroc(jexnom('&&RC3200.SITU_MECA', knume))
+            nbm3 = max(1,nbmec)
+            call jeecra(jexnom('&&RC3200.SITU_MECA', knume), 'LONMAX', nbm3)
+            if (nbmec .eq. 0) then
+                call jeecra(jexnom('&&RC3200.SITU_MECA', knume), 'LONUTI', 0)
+            else
+                call jeecra(jexnom('&&RC3200.SITU_MECA', knume), 'LONUTI', nbmec)
+                call jeveuo(jexnom('&&RC3200.SITU_MECA', knume), 'E', jchar3)
+                call getvis(motcl1, 'NUME_RESU_MECA', iocc=iocc, nbval=nbmec, vect=zi(jchar3),&
+                            nbret=n3)
             endif
         endif
  10 end do
@@ -282,14 +304,33 @@ subroutine rc32si(transip)
 !
 ! ------ ETAT DE CHARGEMENT:
 !        -------------------
-        call getvis(motcl2, 'CHAR_ETAT', iocc=iocc, nbval=0, nbret=n1)
-        nbchar = -n1
-        call jecroc(jexnom('&&RC3200.SITU_ETAT_A', knume))
-        call jeecra(jexnom('&&RC3200.SITU_ETAT_A', knume), 'LONMAX', nbchar)
-        call jeecra(jexnom('&&RC3200.SITU_ETAT_A', knume), 'LONUTI', nbchar)
-        call jeveuo(jexnom('&&RC3200.SITU_ETAT_A', knume), 'E', jchar)
-        call getvis(motcl2, 'CHAR_ETAT', iocc=iocc, nbval=nbchar, vect=zi(jchar),&
-                    nbret=n1)
+! ------ TRANSITOIRE MECANIQUE ASSOCIE A LA SITUATION:
+!        ---------------------------------------------
+        if (transif) then
+            call getvis(motcl2, 'NUME_RESU_MECA', iocc=iocc, nbval=0, nbret=n3)
+            nbmec = -n3
+            call jecroc(jexnom('&&RC3200.SITU_MECA', knume))
+            nbm3 = max(1,nbmec)
+            call jeecra(jexnom('&&RC3200.SITU_MECA', knume), 'LONMAX', nbm3)
+!
+            if (nbmec .eq. 0) then
+                call jeecra(jexnom('&&RC3200.SITU_MECA', knume), 'LONUTI', 0)
+            else
+                call jeecra(jexnom('&&RC3200.SITU_MECA', knume), 'LONUTI', nbmec)
+                call jeveuo(jexnom('&&RC3200.SITU_MECA', knume), 'E', jchar3)
+                call getvis(motcl2, 'NUME_RESU_MECA', iocc=iocc, nbval=nbmec, vect=zi(jchar3),&
+                            nbret=n3)
+            endif
+        else  
+            call getvis(motcl2, 'CHAR_ETAT', iocc=iocc, nbval=0, nbret=n1)
+            nbchar = -n1
+            call jecroc(jexnom('&&RC3200.SITU_ETAT_A', knume))
+            call jeecra(jexnom('&&RC3200.SITU_ETAT_A', knume), 'LONMAX', nbchar)
+            call jeecra(jexnom('&&RC3200.SITU_ETAT_A', knume), 'LONUTI', nbchar)
+            call jeveuo(jexnom('&&RC3200.SITU_ETAT_A', knume), 'E', jchar)
+            call getvis(motcl2, 'CHAR_ETAT', iocc=iocc, nbval=nbchar, vect=zi(jchar),&
+                        nbret=n1)
+        endif
 !
 ! ------ SEISME : PAS DE TRANSITOIRE THERMIQUE
 !        ---------------------------------------------

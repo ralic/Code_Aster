@@ -1,4 +1,4 @@
-subroutine rcZ2in()
+subroutine rcZ2in(transif)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -32,25 +32,37 @@ subroutine rcZ2in()
 !
 !     ------------------------------------------------------------------
 !
-    character(len=16) :: motclf, motclf2
+    character(len=16) :: motclf, motclf2    
     integer :: n1, jvalin, ndim, iocc
+    aster_logical :: transif
 !
 ! DEB ------------------------------------------------------------------
     call jemarq()
     ndim = 7
-    call wkvect('&&RC3200.INDI', 'V V R8', ndim, jvalin)
-
-    motclf = 'INDI_SIGM'
-    call getvr8(motclf, 'C1', scal=zr(jvalin), iocc=iocc, nbret=n1)
-    call getvr8(motclf, 'C2', scal=zr(jvalin+1), iocc=iocc, nbret=n1)  
-    call getvr8(motclf, 'K1', scal=zr(jvalin+2), iocc=iocc, nbret=n1)  
-    call getvr8(motclf, 'K2', scal=zr(jvalin+3), iocc=iocc, nbret=n1)
+    call wkvect('&&RC3200.INDI', 'V V R', ndim, jvalin)
 !
-    motclf2 = 'GEOM_TUY'
-    call getvr8(motclf2, 'DIAM', scal=zr(jvalin+4),iocc=iocc, nbret=n1)
-    call getvr8(motclf2, 'EP', scal=zr(jvalin+5), iocc=iocc,nbret=n1)  
-    call getvr8(motclf2, 'INERTIE', scal=zr(jvalin+6),iocc=iocc, nbret=n1)
+    if (.not. transif) then
+        motclf = 'INDI_SIGM'
+        motclf2 = 'GEOM_TUY'       
+        call getvr8(motclf, 'C1', scal=zr(jvalin), iocc=iocc, nbret=n1)
+        call getvr8(motclf, 'C2', scal=zr(jvalin+1), iocc=iocc, nbret=n1)  
+        call getvr8(motclf, 'K1', scal=zr(jvalin+2), iocc=iocc, nbret=n1)  
+        call getvr8(motclf, 'K2', scal=zr(jvalin+3), iocc=iocc, nbret=n1)
 !
-    call jedema()     
+        call getvr8(motclf2, 'DIAM', scal=zr(jvalin+4),iocc=iocc, nbret=n1)
+        call getvr8(motclf2, 'EP', scal=zr(jvalin+5), iocc=iocc,nbret=n1)  
+        call getvr8(motclf2, 'INERTIE', scal=zr(jvalin+6),iocc=iocc, nbret=n1)
+!
+    else
+        zr(jvalin) = 0
+        zr(jvalin+1) = 0
+        zr(jvalin+2) = 0
+        zr(jvalin+3) = 0
+        zr(jvalin+4) = 1
+        zr(jvalin+5) = 1
+        zr(jvalin+6) = 1
+!      
+    endif              
+!
+    call jedema()    
 end subroutine
-

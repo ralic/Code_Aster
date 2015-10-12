@@ -19,7 +19,7 @@
 !
 interface
     subroutine rcZ200(sn, snet, fatigu, lrocht,&
-                      mater, symax, transip)
+                      mater, symax, transip, transif)
         aster_logical :: sn
         aster_logical :: snet
         aster_logical :: fatigu
@@ -27,5 +27,6 @@ interface
         character(len=8) :: mater
         real(kind=8) :: symax
         aster_logical :: transip
+        aster_logical :: transif
     end subroutine rcZ200
 end interface

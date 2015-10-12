@@ -40,7 +40,7 @@ subroutine op0165()
 #include "asterfort/utmess.h"
     integer :: n1, nbopt, iopt, nbther
     real(kind=8) :: symax
-    aster_logical :: pmpb, sn, snet, fatigu, lrocht, transip
+    aster_logical :: pmpb, sn, snet, fatigu, lrocht, transip, transif
     integer :: icodre
     character(len=8) :: nommat
     character(len=16) :: typtab, typmec, kopt(4)
@@ -136,7 +136,7 @@ subroutine op0165()
 !
 !     ------------------------------------------------------------------
 !
-!     ---------------TYPE_RESU_MECA = ZE200a, ZE200b -------------------
+!     ----------TYPE_RESU_MECA = ZE200a, ZE200b, B3200_T ---------------
 !
 !     ------------------------------------------------------------------
 !
@@ -147,6 +147,7 @@ subroutine op0165()
         snet = .false.
         lrocht = .false.
         transip = .false.
+        transif = .false.
 !
         call getfac('RESU_THER', nbther)
         if (nbther .ne. 0) then
@@ -156,6 +157,10 @@ subroutine op0165()
 !
         if (typmec .eq. 'ZE200b') then
             transip = .true.
+        endif
+!
+        if (typmec .eq. 'B3200_T') then
+            transif = .true.
         endif
 !
         call getvtx(' ', 'OPTION', nbval=0, nbret=n1)
@@ -174,7 +179,7 @@ subroutine op0165()
         call getvr8(' ', 'SY_MAX', scal=symax, nbret=n1)
 !
         call rcZ200(sn, snet, fatigu, lrocht,&
-                    nommat, symax, transip)
+                    nommat, symax, transip, transif)
 !
     endif
 !

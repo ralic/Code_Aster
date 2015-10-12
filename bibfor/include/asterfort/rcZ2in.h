@@ -16,6 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine rcZ2in()
+    subroutine rcZ2in(transif)
+        aster_logical :: transif
     end subroutine rcZ2in
 end interface

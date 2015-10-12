@@ -16,7 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine rc32si(transip)
+    subroutine rc32si(transip, transif)
         aster_logical :: transip
+        aster_logical :: transif
     end subroutine rc32si
 end interface

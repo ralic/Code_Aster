@@ -1,4 +1,4 @@
-subroutine rcZ2rt(transip, pi, pj, simpij)
+subroutine rcZ2rt(transip, transif, pi, pj, simpij)
     implicit   none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -6,7 +6,7 @@ subroutine rcZ2rt(transip, pi, pj, simpij)
 #include "asterfort/jemarq.h"
 #include "asterfort/jedema.h"
     real(kind=8) :: pi, pj, simpij
-    aster_logical :: transip
+    aster_logical :: transip, transif
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -39,14 +39,15 @@ subroutine rcZ2rt(transip, pi, pj, simpij)
 !
     call jeveuo('&&RC3200.INDI', 'L', jvalin)
     diam = zr(jvalin+4) 
-    ep = zr(jvalin+5)  
-
-! --- CONTRAINTE DE MEMBRANE = PD/2e
+    ep = zr(jvalin+5)
 !
-    presi= pi*diam/(2*ep)
-    presj= pj*diam/(2*ep)  
-!
-    simpij = max(presi, presj)
+    if (transip .or. transif) then
+        simpij = 0.d0
+    else
+        presi= pi*diam/(2*ep)
+        presj= pj*diam/(2*ep)  
+        simpij = max(presi, presj)
+   endif
 !
     call jedema()
 end subroutine

@@ -18,13 +18,14 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine rcZ201(transip, lsn, lsnet, lfatig, lrocht,&
+    subroutine rcZ201(transip, transif, lsn, lsnet, lfatig, lrocht,&
                       lieu, ig, iocs, seisme, npass,&
                       mater, snmax, snemax, spmax, kemax,&
                       spmecm, spthem, samax, utot, sm,&
                       sigpm, resuas, resuss, resuca, resucs,&
                       factus)
         aster_logical :: transip
+        aster_logical :: transif
         aster_logical :: lsn
         aster_logical :: lsnet
         aster_logical :: lfatig

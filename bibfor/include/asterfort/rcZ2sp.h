@@ -20,7 +20,7 @@
 interface
     subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
                       numsiq, pj, mj, seisme, mse,&
-                      spij, typeke, spmeca, spther, transip)
+                      spij, typeke, spmeca, spther, transip, transif)
         character(len=*) :: typz
         character(len=4) :: lieu
         integer :: numsip
@@ -36,5 +36,6 @@ interface
         real(kind=8) :: spmeca(2)
         real(kind=8) :: spther(2)
         aster_logical :: transip
+        aster_logical :: transif
     end subroutine rcZ2sp
 end interface
