@@ -59,6 +59,7 @@ subroutine rcZ2t()
     real(kind=8) :: prec(2), momen0, momen1, vale(2), sigmec(1000*ncmp)
     real(kind=8) :: sigth(1000*ncmp), tresc(2), r3(2), sigpr(1000*ncmp), sigtot(1000*ncmp)
     real(kind=8) :: tremin(2), tremax(2), tmin(2), tmax(2)
+    real(kind=8) :: momen0m, momen1m
     complex(kind=8) :: cbid
     aster_logical :: exist
     character(len=8) :: k8b, crit(2), nocmp(ncmp), table, knume, table2
@@ -70,6 +71,7 @@ subroutine rcZ2t()
     real(kind=8), pointer :: contraintespr(:) => null()
     real(kind=8), pointer :: contraintestot(:) => null()
     real(kind=8), pointer :: contraintesmec(:) => null()
+    real(kind=8), pointer :: contraintesm(:) => null()
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !
@@ -193,12 +195,17 @@ subroutine rcZ2t()
             call rcver1('MECANIQUE', table3, table2)
         endif
 !
+! ------ CREATION ET REMPLISSAGE DE 2*5 TABLES A 6 composantes 
+! ------ (CONT. TOT.+ CONT. MECA. en tminsp et tmaxsp)
+! ------ (CONT. TOT. LIN. + M_0 + M_1 en tminsp et tmaxsp)
+!
         AS_ALLOCATE(vr=contraintesth, size=nbabsc)
         AS_ALLOCATE(vr=contraintespr, size=nbabsc)
         AS_ALLOCATE(vr=contraintestot, size=nbabsc)
         AS_ALLOCATE(vr=contraintesmec, size=nbabsc)
+        AS_ALLOCATE(vr=contraintesm, size=nbabsc)
 !
-        ndim = 4 * ncmp * 2
+        ndim = 5 * ncmp * 2
         call jecroc(jexnom(jvorig, knume))
         call jeecra(jexnom(jvorig, knume), 'LONMAX', ndim)
         call jeecra(jexnom(jvorig, knume), 'LONUTI', ndim)
@@ -336,6 +343,7 @@ subroutine rcZ2t()
                                 iret)
                 endif
                 contraintestot(k)=contraintesth(k)+contraintespr(k)+contraintesmec(k)
+                contraintesm(k)=contraintespr(k)+contraintesmec(k)
 166         continue
             zr(jorig-1+j) = contraintestot(1)
             call rc32my(nbabsc, zr(jabsc), contraintestot, momen0, momen1)
@@ -348,6 +356,9 @@ subroutine rcZ2t()
 !
             l = ncmp*6 + j
             zr(jorig-1+l) = 0.5d0*momen1
+!
+            l = ncmp*8 + j
+            zr(jorig-1+l) = contraintesm(1)
 !
             vale(1) = tmin(2)
             do 266 k = 1, nbabsc
@@ -372,6 +383,7 @@ subroutine rcZ2t()
                                 iret)
                 endif
                 contraintestot(k)=contraintesth(k)+contraintespr(k)+contraintesmec(k)
+                contraintesm(k)=contraintespr(k)+contraintesmec(k)
 266         continue
             zr(jextr-1+j) = contraintestot(nbabsc)
 !
@@ -385,6 +397,9 @@ subroutine rcZ2t()
 !
             l = ncmp*6 + j
             zr(jextr-1+l) = 0.5d0*momen1
+!
+            l = ncmp*8 + j
+            zr(jextr-1+l) = contraintesm(nbabsc)
 !
 !   POUR LA VALEUR MAXIMALE
             vale(1) = tmax(1)
@@ -410,6 +425,7 @@ subroutine rcZ2t()
                                 iret)
                 endif
                 contraintestot(k)=contraintesth(k)+contraintespr(k)+contraintesmec(k)
+                contraintesm(k)=contraintespr(k)+contraintesmec(k)
 366         continue
             l = ncmp + j
             zr(jorig-1+l) = contraintestot(1)
@@ -424,6 +440,9 @@ subroutine rcZ2t()
 !
             l = ncmp*7 + j
             zr(jorig-1+l) = 0.5d0*momen1
+!
+            l = ncmp*9 + j
+            zr(jorig-1+l) = contraintesm(1)
 !
             vale(1) = tmax(2)
             do 466 k = 1, nbabsc
@@ -448,6 +467,7 @@ subroutine rcZ2t()
                                 iret)
                 endif
                 contraintestot(k)=contraintesth(k)+contraintespr(k)+contraintesmec(k)
+                contraintestot(k)=contraintespr(k)+contraintesmec(k)
 466         continue
             l = ncmp + j
             zr(jextr-1+l) = contraintestot(nbabsc)
@@ -462,9 +482,14 @@ subroutine rcZ2t()
 !
             l = ncmp*7 + j
             zr(jextr-1+l) = 0.5d0*momen1
+!
+            l = ncmp*9 + j
+            zr(jextr-1+l) = contraintesm(nbabsc)
+!
  66     continue
         call jedetr(instan)
         call jedetr(abscur)
+        AS_DEALLOCATE(vr=contraintesm)
         AS_DEALLOCATE(vr=contraintesmec)
         AS_DEALLOCATE(vr=contraintesth)
         AS_DEALLOCATE(vr=contraintespr)

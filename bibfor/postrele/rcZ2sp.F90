@@ -16,7 +16,6 @@ subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
 #include "asterfort/rcZ2st.h"
     integer :: numsip, numsiq
     real(kind=8) :: pi, mi(*), pj, mj(*), mse(*), spij(2), typeke, spmeca(2)
-    real(kind=8) :: spther(2)
     aster_logical :: seisme, transip, transif
     character(len=4) :: lieu
     character(len=*) :: typz
@@ -55,14 +54,14 @@ subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
 ! IN  : MSE    : EFFORTS DUS AU SEISME
 ! OUT : SPIJ   : AMPLITUDE DE VARIATION DES CONTRAINTES TOTALES
 ! OUT : SPMECA : AMPLITUDE DE VARIATION DES CONTRAINTES MECANIQUES
-! OUT : SPTHER : AMPLITUDE DE VARIATION DES CONTRAINTES THERMIQUES
 !
     integer :: icmp, long, nbinst, nbthep, nbtheq, jther, numt
     integer :: jthunq, i1, jthunp, jthun, jvalin, nbprep, nbp, jpres
-    integer :: nbpreq, nbq, nbmecap, nbmecaq
-    real(kind=8) :: pij, mij(6), sp, sij, sij0, sqma(6), sqmi(6)
+    integer :: nbpreq, nbq, nbmecap, nbmecaq, indicp, indicq
+    real(kind=8) :: pij, mij(6), sp, sij, sqma(6), sqmi(6)
     real(kind=8) :: sp1, sp2, spth(6), spqma(2), spqmi(2), sqth(6)
     real(kind=8) :: racine, c1, c2, diam, ep, inertie, k1, k2
+    real(kind=8) :: spqmec1(6), spqmec2(6)
     character(len=4) :: typ2, typ3
     character(len=8) :: type, knumes, knumet
 ! DEB ------------------------------------------------------------------
@@ -72,8 +71,6 @@ subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
 !
     spij(1) = 0.d0
     spij(2) = 0.d0
-    spther(1) = 0.d0
-    spther(2) = 0.d0
     spmeca(1) = 0.d0
     spmeca(2) = 0.d0
 !
@@ -83,7 +80,6 @@ subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
   8 end do
 !
     sij = 0.d0
-    sij0 = 0.d0
     racine = 0.d0
 !
 !--- RECUPERATION DES CARACTERISTIQUES GEOMETRIQUES
@@ -115,8 +111,6 @@ subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
     sij = sij + k2*c2*diam*sqrt(racine)/(2*inertie)
 !
 ! --- CALCUL DE SN (PARTIE B3200)
-!
-! CAS DE KE_MECA (PAS DE PARTITION MECANIQUE - THERMIQUE)
 !
 ! --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE P
 !
@@ -152,6 +146,7 @@ subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
             endif
             spij(1) = max(spij(1),sp)
             if (typ2 .eq. 'COMB') spij(2) = max(spij(2),sp)
+            if (typeke .gt. 0.d0) spmeca(1)=sp
         else
             knumet = 'T       '
             call codent(numsip, 'D0', knumet(2:8))
@@ -175,11 +170,18 @@ subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
                     call rcZ2st(sij, nbinst, spth, sp)
                 endif
                 spij(1) = max(spij(1),sp)
-! --- CALCUL DE KE_THER POUR LA SITUATION P
+! CAS DE KE_MIXTE (CALCUL DE SP_MECA) pour la situation p
                 if (typeke .gt. 0.d0) then
-                    call rcZ2s2(sij0, spth, spther)
+                    nbinst = 2
+! on vient chercher les contraintes mécaniques seules
+                    indicp = jthunp + nbinst*6*4
+                    do 116 i1 = 1, 6
+                        spqmec2(i1) = zr(indicp+6+i1-1) - zr(indicp+i1-1)
+116                 continue
+                    call rcZ2s2(sij, spqmec2, spqma)
+                    spmeca(1) = spqma(1)
                 endif
-            endif
+            endif  
         endif
     endif
 !
@@ -261,6 +263,17 @@ subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
                     else
                         call rcZ2s2(sij, sqth, spij)
                     endif
+! CAS DE KE_MIXTE (CALCUL DE SP_MECA) pour la situation p
+                    if (typeke .gt. 0.d0) then
+                       nbinst = 2
+! on vient chercher les contraintes mécaniques seules
+                        indicq = jthunq + nbinst*6*4
+                        do 118 i1 = 1, 6
+                            spqmec2(i1) = zr(indicq+6+i1-1) - zr(indicq+i1-1)
+118                     continue
+                        call rcZ2s2(sij, spqmec2, spqma)
+                        spmeca(1) = spqma(1)
+                    endif
                 else
                     do 114 i1 = 1, 6
                         sqmi(i1) = zr(jthunp+i1-1) - zr(jthunq+6+i1-1)
@@ -279,39 +292,23 @@ subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
                         spij(1) = max(spqma(1),spqmi(1))
                         spij(2) = min(spqma(1),spqmi(1))
                     endif
-! --- CALCUL DE KE_THER POUR LA COMBINAISON DES SITUATIONS P ET Q
+! CAS DE KE_MIXTE (CALCUL DE SP_MECA) pour les situations p et q
                     if (typeke .gt. 0.d0) then
-                        call rcZ2s2(sij0, sqmi, spqmi)
-                        call rcZ2s2(sij0, sqma, spqma)
-                        spther(1) = max(spqma(1),spqmi(1))
-                        spther(2) = min(spqma(1),spqmi(1))
+                        nbinst = 2
+! on vient chercher les contraintes mécaniques seules
+                        indicp = jthunp + nbinst*6*4
+                        indicq = jthunq + nbinst*6*4
+                        do 112 i1 = 1, 6
+                            spqmec1(i1) = zr(indicp+i1-1) - zr(indicq+6+i1-1)
+                            spqmec2(i1) = zr(indicp+6+i1-1) - zr(indicq+i1-1)
+112                     continue
+                        call rcZ2s2(sij, spqmec1, spqmi)
+                        call rcZ2s2(sij, spqmec2, spqma)
+                        spmeca(1) = max(spqma(1),spqmi(1))
                     endif
                 endif
             endif
         endif
-    endif
-!
-! CAS DE KE_MIXTE (PARTITION MECANIQUE - THERMIQUE)
-!
-    if (typeke .gt. 0.d0) then
-!
-! --- CALCUL DE KE_MECA
-        nbinst = 0
-        jthun = 1
-        typ2 = '????'
-        if (type .eq. 'SP_COMB') then
-            typ2 = 'COMB'
-        else if (type .eq. 'SP_SITU') then
-            typ2 = 'SITU'
-        endif
-        if (seisme) then
-            call rcZ2s0(typ3, mij, pij, mse,&
-                        nbinst, zr(jthun), sp)
-        else
-            call rcZ2st(sij, nbinst, zr(jthun), sp)
-        endif
-        spmeca(1) =sp
-!
     endif
 !
     call jedema()

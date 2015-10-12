@@ -55,7 +55,7 @@ subroutine rc32sp(typz, lieu, numsip, pi, mi,&
 !
     integer :: icmp, jsigu, icmps, long, nbinst, nbthep, nbtheq, jther, numth
     integer :: jthunq, i1, jthunp, jthun
-    real(kind=8) :: pij, mij(12), sp, sij(6), sigu, sij0(6), sqma(6), sqmi(6)
+    real(kind=8) :: pij, mij(12), sp, sij(6), sigu, sqma(6), sqmi(6)
     real(kind=8) :: sp1, sp2, spth(6), spqma(2), spqmi(2), sqth(6)
     character(len=4) :: typ2
     character(len=8) :: type, knumes, knumet
@@ -90,7 +90,6 @@ subroutine rc32sp(typz, lieu, numsip, pi, mi,&
 !
     do 30 icmps = 1, 6
         sij(icmps) = 0.d0
-        sij0(icmps) = 0.d0
         do 20 icmp = 1, 12
             sigu = zr(jsigu-1+6*(icmp-1)+icmps)
             sij(icmps) = sij(icmps) + mij(icmp)*sigu
