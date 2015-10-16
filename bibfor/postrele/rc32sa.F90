@@ -3,12 +3,14 @@ subroutine rc32sa(typz, nommat, mati, matj, snpq,&
                   kether, saltij, sm, fuij)
     implicit none
 #include "asterf_types.h"
+#include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8vide.h"
 #include "asterfort/limend.h"
 #include "asterfort/prccm3.h"
 #include "asterfort/rcvale.h"
 #include "asterfort/utmess.h"
+#include "asterfort/jeveuo.h"
     real(kind=8) :: mati(*), matj(*), snpq, spij(2), saltij(2), sm
     real(kind=8) :: typeke, spmeca(2), spther(2), fuij(2)
     character(len=8) :: nommat
@@ -48,9 +50,9 @@ subroutine rc32sa(typz, nommat, mati, matj, snpq,&
 !     ------------------------------------------------------------------
 !
     real(kind=8) :: e, ec, para(3), m, n, nadm(1), saltm, salth, kemeca, kether
-    real(kind=8) :: kethe1, valr(2)
+    real(kind=8) :: kethe1, valr(2), ktsn, ktsp
     character(len=8) :: kbid
-    integer :: icodre(1)
+    integer :: icodre(1), jvalin
     aster_logical :: endur
 ! DEB ------------------------------------------------------------------
 !
@@ -70,6 +72,16 @@ subroutine rc32sa(typz, nommat, mati, matj, snpq,&
     saltij(2) = 0.d0
     fuij(1) = 0.d0
     fuij(2) = 0.d0
+!
+! --- APPLICATION D'UN KT A SN et/ou SP
+    call jeveuo('&&RC3200.INDI', 'L', jvalin)
+    ktsn = zr(jvalin+7)
+    ktsp = zr(jvalin+8) 
+    snpq = ktsn * snpq
+    spij(1) = ktsp * spij(1)
+    spij(2) = ktsp * spij(2)
+    spmeca(1) = ktsp * spmeca(1)
+    spmeca(2) = ktsp * spmeca(2)
 !
 ! --- CALCUL DU COEFFICIENT DE CONCENTRATION ELASTO-PLASTIQUE KE
 ! --- CALCUL DE LA CONTRAINTE EQUIVALENTE ALTERNEE SALT

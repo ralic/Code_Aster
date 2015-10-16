@@ -1,4 +1,4 @@
-subroutine rcZ2in(transif)
+subroutine rc32in()
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -24,17 +24,13 @@ subroutine rcZ2in(transif)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !     ------------------------------------------------------------------
-!     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_ZE200
-!     RECUPERATION DES INDICES DE CONTRAINTE ET DES CARACTERISTIQUES 
-!     GEOMETRIQUES DE LA TUYAUTERIE
-!          DE  C1, C2, K1, K2      SOUS INDI_SIGM
-!          DE  DIAM, INERTIE, EP   SOUS CARAC_TUYAU
-!
+!     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_B3200
+!     RECUPERATION DES FACTEURS D'INTENSITE DE CONTRAINTE 
+!                  KT_SN ET KT_SP
 !     ------------------------------------------------------------------
 !
-    character(len=16) :: motclf, motclf2, motclf3  
+    character(len=16) :: motclf3    
     integer :: n1, jvalin, ndim, iocc, n2, n3
-    aster_logical :: transif
     real(kind=8) :: ktsn, ktsp
 !
 ! DEB ------------------------------------------------------------------
@@ -42,43 +38,28 @@ subroutine rcZ2in(transif)
     ndim = 9
     call wkvect('&&RC3200.INDI', 'V V R', ndim, jvalin)
 !
-    if (.not. transif) then
-        motclf = 'INDI_SIGM'
-        motclf2 = 'GEOM_TUY'       
-        call getvr8(motclf, 'C1', scal=zr(jvalin), iocc=iocc, nbret=n1)
-        call getvr8(motclf, 'C2', scal=zr(jvalin+1), iocc=iocc, nbret=n1)  
-        call getvr8(motclf, 'K1', scal=zr(jvalin+2), iocc=iocc, nbret=n1)  
-        call getvr8(motclf, 'K2', scal=zr(jvalin+3), iocc=iocc, nbret=n1)
+    zr(jvalin) = 0
+    zr(jvalin+1) = 0
+    zr(jvalin+2) = 0
+    zr(jvalin+3) = 0
+    zr(jvalin+4) = 1
+    zr(jvalin+5) = 1
+    zr(jvalin+6) = 1
 !
-        call getvr8(motclf2, 'DIAM', scal=zr(jvalin+4),iocc=iocc, nbret=n1)
-        call getvr8(motclf2, 'EP', scal=zr(jvalin+5), iocc=iocc,nbret=n1)  
-        call getvr8(motclf2, 'INERTIE', scal=zr(jvalin+6),iocc=iocc, nbret=n1)
-!
+    motclf3 = 'FACT_SIGM'
+    call getvr8(motclf3, 'KT_SN', scal=ktsn, iocc=iocc, nbret=n2)
+    if (n2 .eq. 0) then
         zr(jvalin+7) = 1
+    else
+        zr(jvalin+7) = ktsn
+    endif
+    call getvr8(motclf3, 'KT_SP', scal=ktsp, iocc=iocc, nbret=n3) 
+    if (n3 .eq. 0) then
         zr(jvalin+8) = 1
     else
-        zr(jvalin) = 0
-        zr(jvalin+1) = 0
-        zr(jvalin+2) = 0
-        zr(jvalin+3) = 0
-        zr(jvalin+4) = 1
-        zr(jvalin+5) = 1
-        zr(jvalin+6) = 1
-        motclf3 = 'FACT_SIGM'
-        call getvr8(motclf3, 'KT_SN', scal=ktsn, iocc=iocc, nbret=n2)
-        if (n2 .eq. 0) then
-            zr(jvalin+7) = 1
-        else
-            zr(jvalin+7) = ktsn
-        endif
-        call getvr8(motclf3, 'KT_SP', scal=ktsp, iocc=iocc, nbret=n3) 
-        if (n3 .eq. 0) then
-            zr(jvalin+8) = 1
-        else
-            zr(jvalin+8) = ktsp
-        endif
-!      
+        zr(jvalin+8) = ktsp
     endif              
 !
     call jedema()    
 end subroutine
+

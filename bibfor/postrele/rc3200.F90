@@ -10,6 +10,7 @@ subroutine rc3200(pmpb, sn, snet, fatigu, lrocht,&
 #include "asterfort/rc32rs.h"
 #include "asterfort/rc32si.h"
 #include "asterfort/rc32th.h"
+#include "asterfort/rc32in.h"
     real(kind=8) :: symax
     aster_logical :: pmpb, sn, snet, fatigu, lrocht
     character(len=8) :: mater
@@ -50,6 +51,12 @@ subroutine rc3200(pmpb, sn, snet, fatigu, lrocht,&
 !     ------------------------------------------------------------------
 !
     call rc32ma(mater)
+!
+!     ------------------------------------------------------------------
+!              RECUPERATION DES FACTEURS D'INTENSITE DE CONTRAINTE
+!     ------------------------------------------------------------------
+!
+    call rc32in()
 !
 !     ------------------------------------------------------------------
 !              RECUPERATION DU CALCUL MECANIQUE UNITAIRE
