@@ -17,9 +17,10 @@
 !
 interface
     subroutine nmpilo(sdpilo, deltat, rho, solalg, veasse,&
-                      modele, mate, compor, resoco, valinc,&
+                      modele, mate, compor, ds_contact, valinc,&
                       nbatte, numedd, nbeffe, eta, pilcvg,&
                       carele)
+        use NonLin_Datastructure_type
         integer :: nbatte
         character(len=19) :: sdpilo
         real(kind=8) :: deltat
@@ -29,7 +30,7 @@ interface
         character(len=24) :: modele
         character(len=24) :: mate
         character(len=24) :: compor
-        character(len=24) :: resoco
+        type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19) :: valinc(*)
         character(len=24) :: numedd
         integer :: nbeffe

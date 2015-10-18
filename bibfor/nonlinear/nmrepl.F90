@@ -244,7 +244,7 @@ implicit none
 ! ----- RESOLUTION DE L'EQUATION DE PILOTAGE: NVELLE DIRECT. DE DESCENTE
 !
         call nmpilo(sdpilo, deltat, rho, solalg, veasse,&
-                    modele, mate, compor, ds_contact%sdcont_solv, valinc,&
+                    modele, mate, compor, ds_contact, valinc,&
                     nbatte, numedd, nbeffe, proeta, pilcvg,&
                     carele)
         if (pilcvg .eq. 1) goto 999

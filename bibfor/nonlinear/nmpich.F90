@@ -115,24 +115,20 @@ implicit none
 ! --- RESOLUTION DE L'EQUATION DE PILOTAGE
 !
     call nmpilo(sdpilo, deltat, rho, solalg, veasse,&
-                modele, mate, compor, ds_contact%sdcont_solv, valinc,&
+                modele, mate, compor, ds_contact, valinc,&
                 nbatte, numedd, nbeffe, proeta, pilcvg,&
                 carele)
 !
-    if (pilcvg .eq. 1) then
-        goto 999
+! - CHOIX DE ETA_PILOTAGE
+!
+    if (pilcvg .ne. 1) then
+        call nmceta(modele, numedd, mate, carele, comref,&
+                    compor, lischa, carcri, fonact, sdstat,&
+                    ds_contact, sdpilo, iterat, sdnume, valinc,&
+                    solalg, veelem, veasse, sdtime, sddisc,&
+                    nbeffe, irecli, proeta, offset, rho,&
+                    eta, ldccvg, pilcvg, residu, matass)
     endif
-!
-! --- CHOIX DE ETA_PILOTAGE
-!
-    call nmceta(modele, numedd, mate, carele, comref,&
-                compor, lischa, carcri, fonact, sdstat,&
-                ds_contact, sdpilo, iterat, sdnume, valinc,&
-                solalg, veelem, veasse, sdtime, sddisc,&
-                nbeffe, irecli, proeta, offset, rho,&
-                eta, ldccvg, pilcvg, residu, matass)
-!
-999 continue
 !
 ! --- LE CALCUL DE PILOTAGE A FORCEMENT ETE REALISE
 !

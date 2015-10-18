@@ -17,16 +17,17 @@
 !
 interface
     subroutine nmpipe(modele, ligrpi, cartyp, careta, mate,&
-                      compor, resoco, valinc, depdel, ddepl0,&
+                      compor, ds_contact, valinc, depdel, ddepl0,&
                       ddepl1, tau, nbeffe, eta, pilcvg,&
                       typpil, carele)
+        use NonLin_Datastructure_type
         character(len=24) :: modele
         character(len=19) :: ligrpi
         character(len=19) :: cartyp
         character(len=19) :: careta
         character(len=24) :: mate
         character(len=24) :: compor
-        character(len=24) :: resoco
+        type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19) :: valinc(*)
         character(len=19) :: depdel
         character(len=19) :: ddepl0

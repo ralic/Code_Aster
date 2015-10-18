@@ -1,7 +1,27 @@
 subroutine nmpilo(sdpilo, deltat, rho, solalg, veasse,&
-                  modele, mate, compor, resoco, valinc,&
+                  modele, mate, compor, ds_contact, valinc,&
                   nbatte, numedd, nbeffe, eta, pilcvg,&
                   carele)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exixfe.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmpial.h"
+#include "asterfort/nmpidd.h"
+#include "asterfort/nmpila.h"
+#include "asterfort/nmpipe.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,22 +41,6 @@ subroutine nmpilo(sdpilo, deltat, rho, solalg, veasse,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/exixfe.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/nmchex.h"
-#include "asterfort/nmpial.h"
-#include "asterfort/nmpidd.h"
-#include "asterfort/nmpila.h"
-#include "asterfort/nmpipe.h"
-#include "asterfort/utmess.h"
     integer :: nbatte, nbeffe
     integer :: pilcvg
     real(kind=8) :: deltat, rho, eta(nbatte)
@@ -44,7 +48,7 @@ subroutine nmpilo(sdpilo, deltat, rho, solalg, veasse,&
     character(len=19) :: solalg(*), veasse(*), valinc(*)
     character(len=24) :: modele, mate, compor, carele
     character(len=24) :: numedd
-    character(len=24) :: resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! ----------------------------------------------------------------------
 !
@@ -68,7 +72,7 @@ subroutine nmpilo(sdpilo, deltat, rho, solalg, veasse,&
 ! IN  NUMEDD : NUME_DDL
 ! IN  MATE   : MATERIAU
 ! IN  COMPOR : COMPORTEMENT
-! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
@@ -187,7 +191,7 @@ subroutine nmpilo(sdpilo, deltat, rho, solalg, veasse,&
 !
     else if (typpil.eq.'PRED_ELAS' .or. typpil.eq.'DEFORMATION') then
         call nmpipe(modele, ligrpi, cartyp, careta, mate,&
-                    compor, resoco, valinc, depdel, ddepl0,&
+                    compor, ds_contact, valinc, depdel, ddepl0,&
                     ddepl1, dtau, nbeffe, eta, pilcvg,&
                     typpil, carele)
     else

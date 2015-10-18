@@ -1,27 +1,12 @@
 subroutine nmpipe(modele, ligrpi, cartyp, careta, mate,&
-                  compor, resoco, valinc, depdel, ddepl0,&
+                  compor, ds_contact, valinc, depdel, ddepl0,&
                   ddepl1, tau, nbeffe, eta, pilcvg,&
                   typpil, carele)
 !
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
+use NonLin_Datastructure_type
 !
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+implicit none
 !
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
-!
-    implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8vide.h"
@@ -43,6 +28,25 @@ subroutine nmpipe(modele, ligrpi, cartyp, careta, mate,&
 #include "asterfort/pipere.h"
 #include "asterfort/sdmpic.h"
 #include "asterfort/wkvect.h"
+!
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: mickael.abbas at edf.fr
+!
     integer :: pilcvg, nbeffe
     real(kind=8) :: tau, eta(2)
     character(len=24) :: typpil
@@ -50,7 +54,7 @@ subroutine nmpipe(modele, ligrpi, cartyp, careta, mate,&
     character(len=19) :: ligrpi, cartyp, careta
     character(len=24) :: modele, mate, compor, carele
     character(len=19) :: depdel, valinc(*)
-    character(len=24) :: resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! ----------------------------------------------------------------------
 !
@@ -68,7 +72,7 @@ subroutine nmpipe(modele, ligrpi, cartyp, careta, mate,&
 ! IN  MATE   : MATERIAU
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  COMPOR : COMPORTEMENT
-! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  DEPDEL : INCREMENT DE DEPLACEMENT
 ! IN  DDEPL0 : VARIATION DE DEPLACEMENT K-1.F0
 ! IN  DDEPL1 : VARIATION DE DEPLACEMENT K-1.F1
@@ -150,9 +154,9 @@ subroutine nmpipe(modele, ligrpi, cartyp, careta, mate,&
 !
 ! --- RECUPERATION DES DONNEES XFEM
 !
-    xindco = resoco(1:14)//'.XFIP'
-    xdonco = resoco(1:14)//'.XFDO'
-    xcohes = resoco(1:14)//'.XCOH'
+    xindco = ds_contact%sdcont_solv(1:14)//'.XFIP'
+    xdonco = ds_contact%sdcont_solv(1:14)//'.XFDO'
+    xcohes = ds_contact%sdcont_solv(1:14)//'.XCOH'
     lnno = modele(1:8)//'.LNNO'
     ltno = modele(1:8)//'.LTNO'
     pinter = modele(1:8)//'.TOPOFAC.OE'
