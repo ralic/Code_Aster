@@ -1,6 +1,22 @@
 subroutine nmfocc(phase, modele, mate, numedd, fonact,&
-                  defico, resoco, sdstat, sdtime, solalg,&
+                  ds_contact, sdstat, sdtime, solalg,&
                   valinc, veelem, veasse)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assvec.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmdebg.h"
+#include "asterfort/nmelcv.h"
+#include "asterfort/nmrinc.h"
+#include "asterfort/nmtime.h"
+#include "asterfort/vtaxpy.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,20 +36,8 @@ subroutine nmfocc(phase, modele, mate, numedd, fonact,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "asterfort/assvec.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/isfonc.h"
-#include "asterfort/nmchex.h"
-#include "asterfort/nmdebg.h"
-#include "asterfort/nmelcv.h"
-#include "asterfort/nmrinc.h"
-#include "asterfort/nmtime.h"
-#include "asterfort/vtaxpy.h"
     character(len=10) :: phase
-    character(len=24) :: defico, resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
     integer :: fonact(*)
     character(len=19) :: solalg(*), valinc(*)
     character(len=19) :: veelem(*), veasse(*)
@@ -48,7 +52,6 @@ subroutine nmfocc(phase, modele, mate, numedd, fonact,&
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  PHASE  : PHASE DE CALCUL
 !               'PREDICTION' - PHASE DE PREDICTION
 !               'CONVERGENC' - PHASE DE CONVERGENCE
@@ -57,8 +60,7 @@ subroutine nmfocc(phase, modele, mate, numedd, fonact,&
 ! IN  NUMEDD : NUME_DDL
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! IN  MATE   : CHAMP MATERIAU
-! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
-! IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  SDSTAT : SD STATISTIQUES
 ! IN  SDTIME : SD TIMER
 ! IN  VEELEM : VARIABLE CHAPEAU POUR NOM DES VECT_ELEM
@@ -128,7 +130,7 @@ subroutine nmfocc(phase, modele, mate, numedd, fonact,&
     if (leltc .and. (.not.lallv)) then
         call nmtime(sdtime, 'INI', 'CTCC_VECT')
         call nmtime(sdtime, 'RUN', 'CTCC_VECT')
-        call nmelcv('CONT', modele, defico, resoco, mate,&
+        call nmelcv('CONT', modele, ds_contact, mate,&
                     depmoi, depdel, vitmoi, vitplu, accmoi,&
                     veeltc)
         call assvec('V', cneltc, 1, veeltc, [1.d0],&
@@ -145,7 +147,7 @@ subroutine nmfocc(phase, modele, mate, numedd, fonact,&
     if (leltf .and. (.not.lallv)) then
         call nmtime(sdtime, 'INI', 'CTCC_VECT')
         call nmtime(sdtime, 'RUN', 'CTCC_VECT')
-        call nmelcv('FROT', modele, defico, resoco, mate,&
+        call nmelcv('FROT', modele, ds_contact, mate,&
                     depmoi, depdel, vitmoi, vitplu, accmoi,&
                     veeltf)
         call assvec('V', cneltf, 1, veeltf, [1.d0],&

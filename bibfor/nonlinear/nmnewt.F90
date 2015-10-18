@@ -278,8 +278,8 @@ implicit none
 !
 ! --- MISE A JOUR DES EFFORTS DE CONTACT
 !
-    call nmfcon(modele, numedd, mate  , fonact, ds_contact%sdcont_defi,&
-                ds_contact%sdcont_solv, sdstat, sdtime, valinc, solalg,&
+    call nmfcon(modele, numedd, mate  , fonact, ds_contact,&
+                sdstat, sdtime, valinc, solalg,&
                 veelem, veasse)
 !
 ! --- ETAT DE LA CONVERGENCE DE NEWTON

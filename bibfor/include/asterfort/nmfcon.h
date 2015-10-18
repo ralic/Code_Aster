@@ -16,15 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmfcon(modele, numedd, mate, fonact, defico,&
-                      resoco, sdstat, sdtime, valinc, solalg,&
+    subroutine nmfcon(modele, numedd, mate, fonact, ds_contact,&
+                      sdstat, sdtime, valinc, solalg,&
                       veelem, veasse)
+        use NonLin_Datastructure_type
         character(len=24) :: modele
         character(len=24) :: numedd
         character(len=24) :: mate
         integer :: fonact(*)
-        character(len=24) :: defico
-        character(len=24) :: resoco
+        type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=24) :: sdstat
         character(len=24) :: sdtime
         character(len=19) :: valinc(*)

@@ -17,15 +17,15 @@
 !
 interface
     subroutine nmfocc(phase, modele, mate, numedd, fonact,&
-                      defico, resoco, sdstat, sdtime, solalg,&
+                      ds_contact, sdstat, sdtime, solalg,&
                       valinc, veelem, veasse)
+        use NonLin_Datastructure_type
         character(len=10) :: phase
         character(len=24) :: modele
         character(len=24) :: mate
         character(len=24) :: numedd
         integer :: fonact(*)
-        character(len=24) :: defico
-        character(len=24) :: resoco
+        type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=24) :: sdstat
         character(len=24) :: sdtime
         character(len=19) :: solalg(*)

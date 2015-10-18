@@ -149,7 +149,7 @@ implicit none
 !
     if (leltc) then
         call nmfocc('CONVERGENC', modele, mate, numedd, fonact,&
-                    ds_contact%sdcont_defi, ds_contact%sdcont_solv, sdstat, sdtime, solalg,&
+                    ds_contact, sdstat, sdtime, solalg,&
                     valinc, veelem, veasse)
     endif
 !

@@ -1,6 +1,14 @@
-subroutine nmfcon(modele, numedd, mate, fonact, defico,&
-                  resoco, sdstat, sdtime, valinc, solalg,&
+subroutine nmfcon(modele, numedd, mate, fonact, ds_contact,&
+                  sdstat, sdtime, valinc, solalg,&
                   veelem, veasse)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/nmfocc.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,15 +28,12 @@ subroutine nmfcon(modele, numedd, mate, fonact, defico,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "asterfort/isfonc.h"
-#include "asterfort/nmfocc.h"
     integer :: fonact(*)
     character(len=24) :: modele, numedd, mate
     character(len=19) :: veelem(*), veasse(*)
     character(len=19) :: solalg(*), valinc(*)
-    character(len=24) :: defico, resoco, sdstat, sdtime
+    character(len=24) :: sdstat, sdtime
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! ----------------------------------------------------------------------
 !
@@ -38,13 +43,11 @@ subroutine nmfcon(modele, numedd, mate, fonact, defico,&
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  MODELE : MODELE
 ! IN  NUMEDD : NUME_DDL
 ! IN  MATE   : CHAMP MATERIAU
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
-! IN  DEFICO : SD DEFINITION CONTACT
-! IN  RESOCO : SD RESOLUTION CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  SDSTAT : SD STATISTIQUES
 ! IN  SDTIME : SD TIMER
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
@@ -67,7 +70,7 @@ subroutine nmfcon(modele, numedd, mate, fonact, defico,&
 !
     if (leltc) then
         call nmfocc('CORRECTION', modele, mate, numedd, fonact,&
-                    defico, resoco, sdstat, sdtime, solalg,&
+                    ds_contact, sdstat, sdtime, solalg,&
                     valinc, veelem, veasse)
     endif
 !
