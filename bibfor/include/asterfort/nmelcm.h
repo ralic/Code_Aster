@@ -16,13 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmelcm(phase, modele, defico, resoco, mate,&
-                      depmoi, depdel, vitmoi, vitplu, accmoi,&
+    subroutine nmelcm(phase , modele, ds_contact, mate  ,&
+                      depmoi, depdel, vitmoi    , vitplu, accmoi,&
                       mectce)
+        use NonLin_Datastructure_type
         character(len=4) :: phase
         character(len=24) :: modele
-        character(len=24) :: defico
-        character(len=24) :: resoco
+        type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=*) :: mate
         character(len=19) :: depmoi
         character(len=19) :: depdel

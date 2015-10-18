@@ -17,14 +17,16 @@
 !
 #include "asterf_types.h"
 !
+! aslint: disable=W1504
+!
 interface
-    subroutine nmxmat(modelz, mate, carele, compor, carcri,&
-                      sddisc, sddyna, fonact, numins, iterat,&
-                      valinc, solalg, lischa, comref, defico,&
-                      resoco, numedd, numfix, sdstat, ds_algopara,&
-                      sdtime, nbmatr, ltypma, loptme, loptma,&
-                      lcalme, lassme, lcfint, meelem, measse,&
-                      veelem, ldccvg, codere)
+    subroutine nmxmat(modelz, mate  , carele, compor     , carcri,&
+                      sddisc, sddyna, fonact, numins     , iterat,&
+                      valinc, solalg, lischa, comref     , &
+                      numedd, numfix, sdstat, ds_algopara,&
+                      sdtime, nbmatr, ltypma, loptme     , loptma,&
+                      lcalme, lassme, lcfint, meelem     , measse,&
+                      veelem, ldccvg, codere, ds_contact_)
         use NonLin_Datastructure_type        
         character(len=*) :: modelz
         character(len=*) :: mate
@@ -40,8 +42,6 @@ interface
         character(len=19) :: solalg(*)
         character(len=19) :: lischa
         character(len=24) :: comref
-        character(len=24) :: defico
-        character(len=24) :: resoco
         character(len=24) :: numedd
         character(len=24) :: numfix
         character(len=24) :: sdstat
@@ -59,5 +59,6 @@ interface
         integer :: ldccvg
         character(len=24) :: codere
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
+        type(NL_DS_Contact), optional, intent(in) :: ds_contact_
     end subroutine nmxmat
 end interface

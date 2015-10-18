@@ -1,4 +1,22 @@
-subroutine nmasfr(defico, resoco, matass)
+subroutine nmasfr(ds_contact, matass)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/cfdisd.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infbav.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/infmue.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mtcmbl.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,23 +36,8 @@ subroutine nmasfr(defico, resoco, matass)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/cfdisd.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/detrsd.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/infbav.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/infmue.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/mtcmbl.h"
-    character(len=24) :: resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19) :: matass
-    character(len=24) :: defico
 !
 ! ----------------------------------------------------------------------
 !
@@ -44,15 +47,12 @@ subroutine nmasfr(defico, resoco, matass)
 !
 ! ----------------------------------------------------------------------
 !
-!
-! IN  DEFICO  : SD DE DEFINITION DU CONTACT
-! IN  RESOCO  : SD CONTACT
+! In  ds_contact       : datastructure for contact management
 ! I/O MATASS  : IN  MATR_ASSE TANGENTE
 !               OUT MATR_ASSE TANGENTE + MATRICE CONTACT/FROTTEMENT
 !                  (EVENTUELLE)
 !
-!
-!
+! ----------------------------------------------------------------------
 !
     integer :: ifm, niv
     character(len=14) :: numedf
@@ -72,8 +72,8 @@ subroutine nmasfr(defico, resoco, matass)
 !
 ! --- INITIALISATIONS
 !
-    lmodim = cfdisl(defico,'MODI_MATR_GLOB')
-    nbliac = cfdisd(resoco,'NBLIAC')
+    lmodim = cfdisl(ds_contact%sdcont_defi,'MODI_MATR_GLOB')
+    nbliac = cfdisd(ds_contact%sdcont_solv,'NBLIAC')
     if (nbliac .eq. 0) then
         goto 999
     endif
@@ -85,8 +85,8 @@ subroutine nmasfr(defico, resoco, matass)
         write (ifm,*) '<CONTACT> AJOUT MATRICE CONTACT/FROTTEMENT'
     endif
 !
-    matrcf = resoco(1:14)//'.MATR'
-    nosdco = resoco(1:14)//'.NOSDCO'
+    matrcf = ds_contact%sdcont_solv(1:14)//'.MATR'
+    nosdco = ds_contact%sdcont_solv(1:14)//'.NOSDCO'
     call jeveuo(nosdco, 'L', jnosdc)
     limat(1) = matass
     limat(2) = matrcf

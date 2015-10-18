@@ -21,7 +21,7 @@ interface
     subroutine nmprma(modelz     , mate    , carele, compor, carcri,&
                       ds_algopara, lischa  , numedd, numfix, solveu,&
                       comref     , ds_print, sdstat, sdtime, sddisc,&
-                      sddyna     , numins  , fonact, defico, resoco,&
+                      sddyna     , numins  , fonact, ds_contact,&
                       valinc     , solalg  , veelem, meelem, measse,&
                       maprec     , matass  , codere, faccvg, ldccvg)
         use NonLin_Datastructure_type
@@ -43,8 +43,7 @@ interface
         character(len=19) :: sddyna
         integer :: numins
         integer :: fonact(*)
-        character(len=24) :: defico
-        character(len=24) :: resoco
+        type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19) :: valinc(*)
         character(len=19) :: solalg(*)
         character(len=19) :: veelem(*)

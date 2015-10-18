@@ -1,11 +1,11 @@
-subroutine nmnewt(noma       , modele  , numins  , numedd , numfix,&
-                  mate       , carele  , comref  , compor , lischa,&
-                  ds_algopara, fonact  , carcri  , sdstat , sdtime,&
-                  sderro     , ds_print, sdnume  , sddyna , sddisc,&
-                  sdcrit     , sdsuiv  , sdpilo  , ds_conv, solveu,&
-                  maprec     , matass  , ds_inout, valinc , solalg,&
-                  meelem     , measse  , veelem  , veasse , defico,&
-                  resoco     , deficu  , resocu  , eta    , nbiter)
+subroutine nmnewt(noma       , modele  , numins  , numedd , numfix    ,&
+                  mate       , carele  , comref  , compor , lischa    ,&
+                  ds_algopara, fonact  , carcri  , sdstat , sdtime    ,&
+                  sderro     , ds_print, sdnume  , sddyna , sddisc    ,&
+                  sdcrit     , sdsuiv  , sdpilo  , ds_conv, solveu    ,&
+                  maprec     , matass  , ds_inout, valinc , solalg    ,&
+                  meelem     , measse  , veelem  , veasse , ds_contact,&
+                  eta        , nbiter)
 !
 use NonLin_Datastructure_type
 !
@@ -82,7 +82,7 @@ implicit none
     character(len=24) :: modele, numedd, numfix
     character(len=24) :: comref, compor
     character(len=24) :: mate, carele
-    character(len=24) :: defico, resoco, deficu, resocu
+    type(NL_DS_Contact), intent(in) :: ds_contact
     real(kind=8) :: eta
     integer :: nbiter
     character(len=8) :: noma
@@ -121,9 +121,7 @@ implicit none
 ! IN  MEASSE : VARIABLE CHAPEAU POUR NOM DES MATR_ASSE
 ! IN  VEELEM : VARIABLE CHAPEAU POUR NOM DES VECT_ELEM
 ! IN  VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE
-! IN  DEFICO : SD DEFINITION CONTACT
-! IN  RESOCO : SD RESOLUTION CONTACT
-! IN  RESOCU : SD RESOLUTION LIAISON_UNILATER
+! In  ds_contact       : datastructure for contact management
 ! IN  SDDYNA : SD DYNAMIQUE
 ! IN  MATASS : NOM DE LA MATRICE DU PREMIER MEMBRE ASSEMBLEE
 ! IN  MAPREC : NOM DE LA MATRICE DE PRECONDITIONNEMENT (GCPC)
@@ -181,15 +179,15 @@ implicit none
 !
     call nmnpas(modele  , noma  , mate  , carele, fonact ,&
                 ds_print, sddisc, sdsuiv, sddyna, sdnume ,&
-                sdstat  , sdtime, numedd, numins, defico ,&
-                resoco  , valinc, solalg, solveu, ds_conv,&
+                sdstat  , sdtime, numedd, numins, ds_contact%sdcont_defi,&
+                ds_contact%sdcont_solv  , valinc, solalg, solveu, ds_conv,&
                 lischa  )
 !
 ! --- CALCUL DES CHARGEMENTS CONSTANTS AU COURS DU PAS DE TEMPS
 !
     call nmchar('FIXE'  , ' '   , modele, numedd, mate  ,&
                 carele  , compor, lischa, numins, sdtime,&
-                sddisc  , fonact, resoco, resocu, comref,&
+                sddisc  , fonact, ds_contact%sdcont_solv, ds_contact%sdunil_solv, comref,&
                 ds_inout, valinc, solalg, veelem, measse,&
                 veasse  , sddyna)
 !
@@ -204,14 +202,14 @@ implicit none
 !
 ! --- GESTION DEBUT DE BOUCLE POINTS FIXES
 !
-    call nmible(niveau, modele, noma  , defico, resoco  ,&
+    call nmible(niveau, modele, noma  , ds_contact%sdcont_defi, ds_contact%sdcont_solv  ,&
                 fonact, numedd, sdstat, sdtime, ds_print)
 !
 ! --- CREATION OBJETS POUR CONTACT CONTINU
 !
     call nmnble(numins, modele, noma  , numedd, sdstat,&
-                sdtime, sddyna, sddisc, fonact, defico,&
-                resoco, valinc, solalg)
+                sdtime, sddyna, sddisc, fonact, ds_contact%sdcont_defi,&
+                ds_contact%sdcont_solv, valinc, solalg)
 !
 ! ======================================================================
 !     PREDICTION
@@ -221,13 +219,13 @@ implicit none
 !
 ! --- PREDICTION D'UNE DIRECTION DE DESCENTE
 !
-    call nmpred(modele, numedd, numfix  , mate       , carele,&
-                comref, compor, lischa  , ds_algopara, solveu,&
-                fonact, carcri, ds_print, sdstat     , sdtime,&
-                sddisc, sdnume, sderro  , numins     , valinc,&
-                solalg, matass, maprec  , defico     , resoco,&
-                resocu, sddyna, ds_inout, meelem     , measse,&
-                veelem, veasse, lerrit)
+    call nmpred(modele  , numedd, numfix  , mate       , carele,&
+                comref  , compor, lischa  , ds_algopara, solveu,&
+                fonact  , carcri, ds_print, sdstat     , sdtime,&
+                sddisc  , sdnume, sderro  , numins     , valinc,&
+                solalg  , matass, maprec  , ds_contact , sddyna,&
+                ds_inout, meelem, measse  , veelem     , veasse,&
+                lerrit)
 !
     if (lerrit) goto 315
 !
@@ -242,24 +240,23 @@ implicit none
 ! --- EN CORRIGEANT LA (LES) DIRECTIONS DE DESCENTE
 ! --- SI CONTACT OU PILOTAGE OU RECHERCHE LINEAIRE
 !
-    call nmdepl(modele, numedd , mate  , carele, comref     ,&
-                compor, lischa , fonact, sdstat, ds_algopara,&
-                carcri, noma   , numins, iterat, solveu     ,&
-                matass, sddisc , sddyna, sdnume, sdpilo     ,&
-                sdtime, sderro , defico, resoco, deficu     ,&
-                resocu, valinc , solalg, veelem, veasse     ,&
-                eta   , ds_conv, lerrit)
+    call nmdepl(modele, numedd, mate      , carele , comref     ,&
+                compor, lischa, fonact    , sdstat , ds_algopara,&
+                carcri, noma  , numins    , iterat , solveu     ,&
+                matass, sddisc, sddyna    , sdnume , sdpilo     ,&
+                sdtime, sderro, ds_contact, valinc , solalg     ,&
+                veelem, veasse, eta       , ds_conv, lerrit)
 !
     if (lerrit) goto 315
 !
 ! --- CALCUL DES FORCES APRES CORRECTION
 !
-    call nmfcor(modele, numedd  , mate  , carele     , comref,&
-                compor, lischa  , fonact, ds_algopara, carcri,&
-                numins, iterat  , sdstat, sdtime     , sddisc,&
-                sddyna, sdnume  , sderro, defico     , resoco,&
-                resocu, ds_inout, valinc, solalg     , veelem,&
-                veasse, meelem  , measse, matass     , lerrit)
+    call nmfcor(modele, numedd, mate  , carele     , comref  ,&
+                compor, lischa, fonact, ds_algopara, carcri  ,&
+                numins, iterat, sdstat, sdtime     , sddisc  ,&
+                sddyna, sdnume, sderro, ds_contact , ds_inout,&
+                valinc, solalg, veelem, veasse     , meelem  ,&
+                measse, matass, lerrit)
 !
     if (lerrit) goto 315
 !
@@ -276,18 +273,18 @@ implicit none
                 fonact  , sddyna, ds_conv, ds_print, sdstat     ,&
                 sddisc  , sdtime, sdcrit , sderro  , ds_algopara,&
                 ds_inout, comref, matass , solveu  , numins     ,&
-                iterat  , eta   , defico , resoco  , valinc     ,&
+                iterat  , eta   , ds_contact%sdcont_defi , ds_contact%sdcont_solv  , valinc     ,&
                 solalg  , measse, veasse )
 !
 ! --- MISE A JOUR DES EFFORTS DE CONTACT
 !
-    call nmfcon(modele, numedd, mate  , fonact, defico,&
-                resoco, sdstat, sdtime, valinc, solalg,&
+    call nmfcon(modele, numedd, mate  , fonact, ds_contact%sdcont_defi,&
+                ds_contact%sdcont_solv, sdstat, sdtime, valinc, solalg,&
                 veelem, veasse)
 !
 ! --- ETAT DE LA CONVERGENCE DE NEWTON
 !
-    call nmcvgn(sddisc, sderro, valinc, defico, resoco)
+    call nmcvgn(sddisc, sderro, valinc, ds_contact%sdcont_defi, ds_contact%sdcont_solv)
     call nmleeb(sderro, 'NEWT', etnewt)
 !
 ! - Set iteration number in convergence table
@@ -305,13 +302,13 @@ implicit none
 !
 320 continue
 !
-    call nmdesc(modele, numedd  , numfix, mate  , carele     ,&
-                comref, compor  , lischa, resoco, ds_algopara,&
-                solveu, carcri  , fonact, numins, iterat     ,&
-                sddisc, ds_print, sdstat, sdtime, sddyna     ,&
-                sdnume, sderro  , matass, maprec, defico     ,&
-                valinc, solalg  , meelem, measse, veasse     ,&
-                veelem, lerrit  )
+    call nmdesc(modele, numedd  , numfix, mate      , carele     ,&
+                comref, compor  , lischa, ds_contact, ds_algopara,&
+                solveu, carcri  , fonact, numins    , iterat     ,&
+                sddisc, ds_print, sdstat, sdtime    , sddyna     ,&
+                sdnume, sderro  , matass, maprec    , valinc     ,&
+                solalg, meelem  , measse, veasse    , veelem     ,&
+                lerrit)
 !
     if (lerrit) goto 315
 !
@@ -351,7 +348,7 @@ implicit none
 ! - Print statistics during Newton iteration
 !
     call nmstat('N'   , fonact, sdstat, sdtime, ds_print,&
-                defico)
+                ds_contact%sdcont_defi)
 !
 ! --- ON CONTINUE NEWTON ?
 !
@@ -366,7 +363,7 @@ implicit none
 !
 ! --- GESTION DES ACTIONS A LA FIN DE LA BOUCLE DE NEWTON
 !
-    call nmactn(ds_print, sddisc, sderro, defico, resoco,&
+    call nmactn(ds_print, sddisc, sderro, ds_contact%sdcont_defi, ds_contact%sdcont_solv,&
                 ds_conv , iterat, numins)
 !
 ! --- ON FAIT DES ITERATIONS SUPPLEMENTAIRES ?
@@ -380,18 +377,18 @@ implicit none
 !
 ! --- GESTION FIN DE BOUCLE POINTS FIXES
 !
-    call nmtble(niveau, modele, noma    , mate  , defico, &
-                resoco, fonact, ds_print, sdstat, sdtime,&
+    call nmtble(niveau, modele, noma    , mate  , ds_contact%sdcont_defi, &
+                ds_contact%sdcont_solv, fonact, ds_print, sdstat, sdtime,&
                 sddyna, sderro, ds_conv , sddisc, numins,&
                 valinc, solalg)
 !
 ! --- ETAT DE LA CONVERGENCE POINT FIXE
 !
-    call nmcvgf(sddisc, sderro, valinc, defico, resoco)
+    call nmcvgf(sddisc, sderro, valinc, ds_contact%sdcont_defi, ds_contact%sdcont_solv)
 !
 ! --- GESTION DES ACTIONS A LA FIN D'UNE BOUCLE DE POINT FIXE
 !
-    call nmactf(ds_print, sddisc, sderro, defico, resoco,&
+    call nmactf(ds_print, sddisc, sderro, ds_contact%sdcont_defi, ds_contact%sdcont_solv,&
                 ds_conv , iterat, numins)
 !
 ! --- POUR LA CONTINUATION DU POINT FIXE: GLUTE DUE AU CONTACT DISCRET

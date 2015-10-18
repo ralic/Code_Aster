@@ -1,10 +1,10 @@
-subroutine nmpred(modele, numedd, numfix  , mate       , carele,&
-                  comref, compor, lischa  , ds_algopara, solveu,&
-                  fonact, carcri, ds_print, sdstat     , sdtime,&
-                  sddisc, sdnume, sderro  , numins     , valinc,&
-                  solalg, matass, maprec  , defico     , resoco,&
-                  resocu, sddyna, ds_inout, meelem     , measse,&
-                  veelem, veasse, lerrit)
+subroutine nmpred(modele  , numedd, numfix  , mate       , carele,&
+                  comref  , compor, lischa  , ds_algopara, solveu,&
+                  fonact  , carcri, ds_print, sdstat     , sdtime,&
+                  sddisc  , sdnume, sderro  , numins     , valinc,&
+                  solalg  , matass, maprec  , ds_contact , sddyna,&
+                  ds_inout, meelem, measse  , veelem     , veasse,&
+                  lerrit)
 !
 use NonLin_Datastructure_type
 !
@@ -47,8 +47,8 @@ implicit none
     character(len=19) :: lischa, solveu, sddisc, sddyna, sdnume
     character(len=24) :: modele, mate, carele, comref, compor
     character(len=24) :: numedd, numfix
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=24) :: carcri, sderro
-    character(len=24) :: defico, resoco, resocu
     character(len=19) :: meelem(*), veelem(*)
     character(len=19) :: measse(*), veasse(*)
     character(len=19) :: solalg(*), valinc(*)
@@ -61,7 +61,6 @@ implicit none
 ! PHASE DE PREDICTION
 !
 ! ----------------------------------------------------------------------
-!
 !
 ! IN  MODELE : MODELE
 ! IN  NUMEDD : NUME_DDL (VARIABLE AU COURS DU CALCUL)
@@ -77,6 +76,7 @@ implicit none
 ! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
 ! IO  ds_print         : datastructure for printing parameters
 ! In  ds_inout         : datastructure for input/output management
+! In  ds_contact       : datastructure for contact management
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
 ! IN  SDTIME : SD TIMER
 ! IN  SDSTAT : SD STATISTIQUES
@@ -89,9 +89,7 @@ implicit none
 ! IN  MEASSE : VARIABLE CHAPEAU POUR NOM DES MATR_ASSE
 ! IN  VEELEM : VARIABLE CHAPEAU POUR NOM DES VECT_ELEM
 ! IN  VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE
-! IN  DEFICO : SD DEFINITION CONTACT
-! IN  RESOCO : SD RESOLUTION CONTACT
-! IN  RESOCU : SD RESOLUTION LIAISON_UNILATER
+! IO  ds_print         : datastructure for printing parameters
 ! IN  SDDYNA : SD DYNAMIQUE
 ! IN  MATASS : NOM DE LA MATRICE DU PREMIER MEMBRE ASSEMBLEE
 ! IN  MAPREC : NOM DE LA MATRICE DE PRECONDITIONNEMENT (GCPC)
@@ -126,7 +124,7 @@ implicit none
                     comref  , compor, lischa  , ds_algopara, solveu,&
                     fonact  , carcri, ds_print, sdstat     , sdtime,&
                     sddisc  , numins, valinc  , solalg     , matass,&
-                    maprec  , defico, resoco  , resocu     , sddyna,&
+                    maprec  , ds_contact, sddyna,&
                     meelem  , measse, veelem  , veasse     , sdnume,&
                     ds_inout, ldccvg, faccvg  , rescvg     , codere)
 !
@@ -139,7 +137,7 @@ implicit none
                     comref, compor, lischa  , ds_algopara, solveu,&
                     fonact, carcri, ds_print, sdstat     , sdtime,&
                     sddisc, numins, valinc  , solalg     , matass,&
-                    maprec, defico, resoco  , sddyna     , meelem,&
+                    maprec, ds_contact, sddyna     , meelem,&
                     measse, veelem, veasse  , ldccvg     , faccvg,&
                     rescvg, codere)
     else

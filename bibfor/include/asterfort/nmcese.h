@@ -18,10 +18,11 @@
 interface
     subroutine nmcese(modele, numedd, mate, carele, comref,&
                       compor, lischa, carcri, fonact, sdstat,&
-                      defico, iterat, sdnume, sdpilo, valinc,&
+                      ds_contact, iterat, sdnume, sdpilo, valinc,&
                       solalg, veelem, veasse, sdtime, offset,&
                       typsel, sddisc, licite, rho, eta,&
                       etaf, criter, ldccvg, pilcvg, matass)
+        use NonLin_Datastructure_type
         character(len=24) :: modele
         character(len=24) :: numedd
         character(len=24) :: mate
@@ -32,7 +33,7 @@ interface
         character(len=24) :: carcri
         integer :: fonact(*)
         character(len=24) :: sdstat
-        character(len=24) :: defico
+        type(NL_DS_Contact), intent(in) :: ds_contact
         integer :: iterat
         character(len=19) :: sdnume
         character(len=19) :: sdpilo

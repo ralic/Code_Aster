@@ -1,7 +1,7 @@
-subroutine nmrelp(modele , numedd, mate  , carele     , comref,&
-                  compor , lischa, carcri, fonact     , iterat,&
-                  sdstat , sdnume, sddyna, ds_algopara, defico,&
-                  valinc , solalg, veelem, veasse     , sdtime,&
+subroutine nmrelp(modele , numedd, mate  , carele     , comref    ,&
+                  compor , lischa, carcri, fonact     , iterat    ,&
+                  sdstat , sdnume, sddyna, ds_algopara, ds_contact,&
+                  valinc , solalg, veelem, veasse     , sdtime    ,&
                   ds_conv, ldccvg)
 !
 use NonLin_Datastructure_type
@@ -59,7 +59,8 @@ implicit none
     integer :: fonact(*)
     integer :: iterat, ldccvg
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-    character(len=24) :: carcri, sdtime, defico, sdstat
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=24) :: carcri, sdtime, sdstat
     character(len=19) :: lischa, sddyna, sdnume
     character(len=24) :: modele, numedd, mate, carele, comref, compor
     character(len=19) :: veelem(*), veasse(*)
@@ -87,6 +88,7 @@ implicit none
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! IN  ITERAT : NUMERO D'ITERATION DE NEWTON
 ! IN  SDNUME : SD NUMEROTATION
+! In  ds_contact       : datastructure for contact management
 ! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
@@ -279,7 +281,7 @@ implicit none
 !
 ! ----- ASSEMBLAGE DES FORCES INTERIEURES
 !
-        call nmaint(numedd, fonact, defico, veasse, vefint,&
+        call nmaint(numedd, fonact, ds_contact, veasse, vefint,&
                     cnfins(act), sdnume)
 !
 ! ----- REACTUALISATION DES REACTIONS D'APPUI BT.LAMBDA
@@ -288,7 +290,7 @@ implicit none
         call nmtime(sdtime, 'RUN', 'SECO_MEMB')
         call nmdiri(modele, mate, carele, lischa, sddyna,&
                     depplt, k19bla, k19bla, vediri)
-        call nmadir(numedd, fonact, defico, veasse, vediri,&
+        call nmadir(numedd, fonact, ds_contact, veasse, vediri,&
                     cndirs(act))
         call nmtime(sdtime, 'END', 'SECO_MEMB')
         if (niv .ge. 2) then

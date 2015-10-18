@@ -1,6 +1,6 @@
 subroutine nmflam(option, modele, numedd, numfix     , carele,&
                   compor, numins, mate       , comref,&
-                  lischa, defico, resoco, ds_algopara, fonact,&
+                  lischa, ds_contact, ds_algopara, fonact,&
                   carcri, sdstat, sddisc, sdtime     , sddyna,&
                   sdpost, valinc, solalg, meelem     , measse,&
                   veelem, sderro)
@@ -53,7 +53,7 @@ implicit none
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=16) :: option
     character(len=19) :: meelem(*)
-    character(len=24) :: resoco, defico
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=24) :: sdstat, sdtime, sderro
     character(len=19) :: lischa, sddisc, sddyna, sdpost
     character(len=24) :: modele, numedd, numfix, carele, compor
@@ -71,7 +71,6 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  OPTION : TYPE DE CALCUL
 !              'FLAMBSTA' MODES DE FLAMBEMENT EN STATIQUE
 !              'FLAMBDYN' MODES DE FLAMBEMENT EN DYNAMIQUE
@@ -84,8 +83,7 @@ implicit none
 ! IN  COMREF : VARI_COM DE REFERENCE
 ! IN  COMPOR : COMPORTEMENT
 ! IN  LISCHA : LISTE DES CHARGES
-! IN  RESOCO : SD RESOLUTION CONTACT
-! IN  DEFICO : SD DEFINITION CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  SDTIME : SD TIMER
 ! IN  SDSTAT : SD STATISTIQUES
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
@@ -144,7 +142,7 @@ implicit none
     call nmflma(typmat, mod45 , defo  , ds_algopara, modele,&
                 mate  , carele, sddisc, sddyna     , fonact,&
                 numins, valinc, solalg, lischa     , comref,&
-                defico, resoco, numedd     , numfix,&
+                ds_contact, numedd     , numfix,&
                 compor, carcri, sdstat, sdtime     , meelem,&
                 measse, veelem, nddle , ddlexc     , modrig,&
                 ldccvg, matas2, matgeo)

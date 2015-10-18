@@ -1,8 +1,7 @@
-subroutine nmchht(model      , mate       , cara_elem, compor        , comp_para  ,&
-                  list_load  , nume_dof   , varc_refe, list_func_acti, sdstat     ,&
-                  sddyna     , sdtime     , sddisc   , sdnume        , sdcont_defi,&
-                  sdcont_solv, sdunil_solv, hval_incr, hval_algo     , hval_veasse,&
-                  hval_measse, ds_inout)
+subroutine nmchht(model    , mate     , cara_elem  , compor        , comp_para ,&
+                  list_load, nume_dof , varc_refe  , list_func_acti, sdstat    ,&
+                  sddyna   , sdtime   , sddisc     , sdnume        , ds_contact,&
+                  hval_incr, hval_algo, hval_veasse, hval_measse   , ds_inout)
 !
 use NonLin_Datastructure_type
 !
@@ -60,9 +59,7 @@ implicit none
     character(len=24), intent(in) :: sdtime
     character(len=19), intent(in) :: sddisc
     character(len=19), intent(in) :: sdnume
-    character(len=24), intent(in) :: sdcont_defi
-    character(len=24), intent(in) :: sdcont_solv
-    character(len=24), intent(in) :: sdunil_solv
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19), intent(in) :: hval_incr(*)
     character(len=19), intent(in) :: hval_algo(*)
     character(len=19), intent(in) :: hval_veasse(*)
@@ -91,9 +88,7 @@ implicit none
 ! In  sdtime           : datastructure for timers management
 ! In  sddisc           : datastructure for time discretization
 ! In  sdnume           : datastructure for dof positions
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
-! In  sdcont_solv      : name of contact definition datastructure for solving
-! In  sdunil_defi      : name of unilateral condition datastructure (from DEFI_CONTACT)
+! In  ds_contact       : datastructure for contact management
 ! In  hval_incr        : hat-variable for incremental values fields
 ! In  hval_algo        : hat-variable for algorithms fields
 ! In  hval_veasse      : hat-variable for vectors (node fields)
@@ -200,7 +195,7 @@ implicit none
                 comp_para, list_func_acti, iterat   , sddyna   , sdstat,&
                 sdtime   , hval_incr     , hval_algo, ldccvg   , codere,&
                 vefint)
-    call nmaint(nume_dof, list_func_acti, sdcont_defi, hval_veasse, vefint,&
+    call nmaint(nume_dof, list_func_acti, ds_contact, hval_veasse, vefint,&
                 cnfint  , sdnume)
 !
 ! - Given displacements
@@ -210,8 +205,8 @@ implicit none
                 time_init     , hval_incr, hval_algo, sddyna   , k16bla        ,&
                 vedido)
     call nmassv('CNDIDO'   , model      , list_load      , mate     , cara_elem  ,&
-                compor     , nume_dof   , time_prev_step , time_init, sdcont_solv,&
-                sdunil_solv, sddyna     , sdtime         , hval_incr, varc_refe  ,&
+                compor     , nume_dof   , time_prev_step , time_init, ds_contact%sdcont_solv,&
+                ds_contact%sdunil_solv, sddyna     , sdtime         , hval_incr, varc_refe  ,&
                 ds_inout   , hval_measse, vedido  , cndido)
     if (ldidi) then
         call nmcalv('CNDIDI'      , model    , list_load, mate     , cara_elem     ,&
@@ -219,8 +214,8 @@ implicit none
                     time_init     , hval_incr, hval_algo, sddyna   , k16bla        ,&
                     vedidi)
         call nmassv('CNDIDI'   , model      , list_load      , mate     , cara_elem  ,&
-                    compor     , nume_dof   , time_prev_step , time_init, sdcont_solv,&
-                    sdunil_solv, sddyna     , sdtime         , hval_incr, varc_refe  ,&
+                    compor     , nume_dof   , time_prev_step , time_init, ds_contact%sdcont_solv,&
+                    ds_contact%sdunil_solv, sddyna     , sdtime         , hval_incr, varc_refe  ,&
                     ds_inout   , hval_measse, vedidi         , cndidi)
     endif
 !
@@ -232,8 +227,8 @@ implicit none
                     time_init     , hval_incr, hval_algo, sddyna   , k16bla        ,&
                     velapl)
         call nmassv('CNLAPL'   , model      , list_load      , mate     , cara_elem  ,&
-                    compor     , nume_dof   , time_prev_step , time_init, sdcont_solv,&
-                    sdunil_solv, sddyna     , sdtime         , hval_incr, varc_refe  ,&
+                    compor     , nume_dof   , time_prev_step , time_init, ds_contact%sdcont_solv,&
+                    ds_contact%sdunil_solv, sddyna     , sdtime         , hval_incr, varc_refe  ,&
                     ds_inout   , hval_measse, velapl  , cnlapl)
     endif
 !
@@ -245,8 +240,8 @@ implicit none
                     time_init     , hval_incr, hval_algo, sddyna   , k16bla        ,&
                     veondp)
         call nmassv('CNONDP'   , model      , list_load      , mate     , cara_elem  ,&
-                    compor     , nume_dof   , time_prev_step , time_init, sdcont_solv,&
-                    sdunil_solv, sddyna     , sdtime         , hval_incr, varc_refe  ,&
+                    compor     , nume_dof   , time_prev_step , time_init, ds_contact%sdcont_solv,&
+                    ds_contact%sdunil_solv, sddyna     , sdtime         , hval_incr, varc_refe  ,&
                     ds_inout   , hval_measse, veondp, cnondp)
     endif
 !
@@ -258,8 +253,8 @@ implicit none
                     time_init     , hval_incr, hval_algo, sddyna   , k16bla        ,&
                     vesstf)
         call nmassv('CNSSTF'   , model      , list_load      , mate     , cara_elem  ,&
-                    compor     , nume_dof   , time_prev_step , time_init, sdcont_solv,&
-                    sdunil_solv, sddyna     , sdtime         , hval_incr, varc_refe  ,&
+                    compor     , nume_dof   , time_prev_step , time_init, ds_contact%sdcont_solv,&
+                    ds_contact%sdunil_solv, sddyna     , sdtime         , hval_incr, varc_refe  ,&
                     ds_inout   , hval_measse, vesstf  , cnsstf)
     endif
 !
@@ -267,8 +262,8 @@ implicit none
 !
     if (lviss) then
         call nmassv('CNVISS'   , model      , list_load      , mate     , cara_elem  ,&
-                    compor     , nume_dof   , time_prev_step , time_init, sdcont_solv,&
-                    sdunil_solv, sddyna     , sdtime         , hval_incr, varc_refe  ,&
+                    compor     , nume_dof   , time_prev_step , time_init, ds_contact%sdcont_solv,&
+                    ds_contact%sdunil_solv, sddyna     , sdtime         , hval_incr, varc_refe  ,&
                     ds_inout   , hval_measse, k16bla  , cnviss)
     endif
 !
@@ -279,15 +274,15 @@ implicit none
                 time_init     , hval_incr, hval_algo, sddyna   , k16bla        ,&
                 vefedo)
     call nmassv('CNFEDO'   , model      , list_load      , mate     , cara_elem  ,&
-                compor     , nume_dof   , time_prev_step , time_init, sdcont_solv,&
-                sdunil_solv, sddyna     , sdtime         , hval_incr, varc_refe  ,&
+                compor     , nume_dof   , time_prev_step , time_init, ds_contact%sdcont_solv,&
+                ds_contact%sdunil_solv, sddyna     , sdtime         , hval_incr, varc_refe  ,&
                 ds_inout   , hval_measse, vefedo  , cnfedo)
 !
 ! - Given displacements (AFFE_CHAR_CINE)
 !
     call nmassv('CNCINE'   , model      , list_load      , mate     , cara_elem  ,&
-                compor     , nume_dof   , time_prev_step , time_init, sdcont_solv,&
-                sdunil_solv, sddyna     , sdtime         , hval_incr, varc_refe  ,&
+                compor     , nume_dof   , time_prev_step , time_init, ds_contact%sdcont_solv,&
+                ds_contact%sdunil_solv, sddyna     , sdtime         , hval_incr, varc_refe  ,&
                 ds_inout   , hval_measse, k16bla  , cncine)
 !
 99  continue

@@ -2,7 +2,7 @@ subroutine nmprta(modele  , numedd, numfix  , mate       , carele,&
                   comref  , compor, lischa  , ds_algopara, solveu,&
                   fonact  , carcri, ds_print, sdstat     , sdtime,&
                   sddisc  , numins, valinc  , solalg     , matass,&
-                  maprec  , defico, resoco  , resocu     , sddyna,&
+                  maprec  , ds_contact , sddyna,&
                   meelem  , measse, veelem  , veasse     , sdnume,&
                   ds_inout, ldccvg, faccvg  , rescvg     , codere)
 !
@@ -55,7 +55,7 @@ implicit none
     character(len=24) :: numedd, numfix
     character(len=24) :: carcri, codere
     character(len=19) :: solalg(*), valinc(*)
-    character(len=24) :: defico, resoco, resocu
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19) :: veelem(*), veasse(*)
     character(len=19) :: meelem(*), measse(*)
 !
@@ -92,9 +92,7 @@ implicit none
 ! IN  MEASSE : VARIABLE CHAPEAU POUR NOM DES MATR_ASSE
 ! IN  VEELEM : VARIABLE CHAPEAU POUR NOM DES VECT_ELEM
 ! IN  VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE
-! IN  DEFICO : SD DEFINITION CONTACT
-! IN  RESOCO : SD RESOLUTION CONTACT
-! IN  RESOCU : SD RESOLUTION LIAISON_UNILATER
+! In  ds_contact       : datastructure for contact management
 ! IN  SDDYNA : SD DYNAMIQUE
 ! IN  MATASS : NOM DE LA MATRICE DU PREMIER MEMBRE ASSEMBLEE
 ! IN  MAPREC : NOM DE LA MATRICE DE PRECONDITIONNEMENT (GCPC)
@@ -164,7 +162,7 @@ implicit none
     call nmprma(modele     , mate    , carele, compor, carcri,&
                 ds_algopara, lischa  , numedd, numfix, solveu,&
                 comref     , ds_print, sdstat, sdtime, sddisc,&
-                sddyna     , numins  , fonact, defico, resoco,&
+                sddyna     , numins  , fonact, ds_contact,&
                 valinc     , solalg  , veelem, meelem, measse,&
                 maprec     , matass  , codere, faccvg, ldccvg)
 !
@@ -177,7 +175,7 @@ implicit none
 !
     call nmchar('VARI'  , 'PREDICTION', modele, numedd, mate,&
                 carele  , compor      , lischa, numins, sdtime,&
-                sddisc  , fonact      , resoco, resocu, comref,&
+                sddisc  , fonact      , ds_contact%sdcont_defi, ds_contact%sdunil_defi, comref,&
                 ds_inout, valinc      , solalg, veelem, measse,&
                 veasse  , sddyna)
 !
@@ -185,7 +183,7 @@ implicit none
 !
     if (leltc) then
         call nmfocc('PREDICTION', modele, mate, numedd, fonact,&
-                    defico, resoco, sdstat, sdtime, solalg,&
+                    ds_contact%sdcont_defi, ds_contact%sdcont_solv, sdstat, sdtime, solalg,&
                     valinc, veelem, veasse)
     endif
 !
@@ -193,7 +191,7 @@ implicit none
 !
     call nmassp(modele, numedd, mate  , carele, comref,&
                 compor, lischa, carcri, fonact, sdstat,&
-                defico, sddyna, valinc, solalg, veelem,&
+                ds_contact, sddyna, valinc, solalg, veelem,&
                 veasse, sdtime, ldccvg, codere, cnpilo,&
                 cndonn, sdnume, matass)
 !

@@ -2,7 +2,7 @@ subroutine nmprde(modele, numedd, numfix  , mate       , carele,&
                   comref, compor, lischa  , ds_algopara, solveu,&
                   fonact, carcri, ds_print, sdstat     , sdtime,&
                   sddisc, numins, valinc  , solalg     , matass,&
-                  maprec, defico, resoco  , sddyna     , meelem,&
+                  maprec, ds_contact , sddyna     , meelem,&
                   measse, veelem, veasse  , ldccvg     , faccvg,&
                   rescvg, codere)
 !
@@ -49,7 +49,7 @@ implicit none
     character(len=24) :: numedd, numfix
     character(len=24) :: modele, mate, carele, comref, compor
     character(len=24) :: carcri
-    character(len=24) :: defico, resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=24) :: codere
     character(len=19) :: veelem(*), veasse(*)
     character(len=19) :: meelem(*), measse(*)
@@ -81,8 +81,7 @@ implicit none
 ! IN  SDTIME : SD TIMER
 ! IN  SDSTAT : SD STATISTIQUES
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
-! IN  RESOCO : SD RESOLUTION CONTACT
-! IN  DEFICO : SD DEFINITION CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! IN  NUMINS : NUMERO D'INSTANT
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
@@ -165,7 +164,7 @@ implicit none
                     comref, compor, lischa  , ds_algopara, solveu,&
                     fonact, carcri, ds_print, sdstat     , sddisc,&
                     sdtime, numins, valinc  , solalg     , matass,&
-                    maprec, defico, resoco  , sddyna     , meelem,&
+                    maprec, ds_contact, sddyna     , meelem,&
                     measse, veelem, veasse  , depest     , ldccvg,&
                     faccvg, rescvg, codere)
     endif

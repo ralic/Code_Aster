@@ -1,8 +1,35 @@
 subroutine nmcere(modele, numedd, mate, carele, comref,&
                   compor, lischa, carcri, fonact, sdstat,&
-                  defico, iterat, sdnume, valinc, solalg,&
+                  ds_contact, iterat, sdnume, valinc, solalg,&
                   veelem, veasse, sdtime, offset, rho,&
                   eta, residu, ldccvg, matass)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/majour.h"
+#include "asterfort/nmadir.h"
+#include "asterfort/nmaint.h"
+#include "asterfort/nmbudi.h"
+#include "asterfort/nmcha0.h"
+#include "asterfort/nmchai.h"
+#include "asterfort/nmchcp.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmchso.h"
+#include "asterfort/nmdiri.h"
+#include "asterfort/nmfext.h"
+#include "asterfort/nmfint.h"
+#include "asterfort/nmpilr.h"
+#include "asterfort/nmtime.h"
+#include "asterfort/r8inir.h"
+#include "blas/daxpy.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,40 +48,15 @@ subroutine nmcere(modele, numedd, mate, carele, comref,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
-!
 ! aslint: disable=W1504
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/majour.h"
-#include "asterfort/nmadir.h"
-#include "asterfort/nmaint.h"
-#include "asterfort/nmbudi.h"
-#include "asterfort/nmcha0.h"
-#include "asterfort/nmchai.h"
-#include "asterfort/nmchcp.h"
-#include "asterfort/nmchex.h"
-#include "asterfort/nmchso.h"
-#include "asterfort/nmdiri.h"
-#include "asterfort/nmfext.h"
-#include "asterfort/nmfint.h"
-#include "asterfort/nmpilr.h"
-#include "asterfort/nmtime.h"
-#include "asterfort/r8inir.h"
-#include "blas/daxpy.h"
+!
     integer :: fonact(*)
     integer :: iterat, ldccvg
     real(kind=8) :: eta, rho, offset, residu
     character(len=19) :: lischa, sdnume, matass
     character(len=24) :: modele, numedd, mate, carele, comref, compor
-    character(len=24) :: carcri, defico
+    character(len=24) :: carcri
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=24) :: sdtime, sdstat
     character(len=19) :: veelem(*), veasse(*)
     character(len=19) :: solalg(*), valinc(*)
@@ -67,7 +69,6 @@ subroutine nmcere(modele, numedd, mate, carele, comref,&
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  MODELE : MODELE
 ! IN  NUMEDD : NUME_DDL
 ! IN  MATE   : CHAMP MATERIAU
@@ -77,7 +78,7 @@ subroutine nmcere(modele, numedd, mate, carele, comref,&
 ! IN  LISCHA : LISTE DES CHARGES
 ! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
-! IN  DEFICO : SD DEFINITION CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  SDNUME : SD NUMEROTATION
 ! IN  SDSTAT : SD STATISTIQUES
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
@@ -100,9 +101,9 @@ subroutine nmcere(modele, numedd, mate, carele, comref,&
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: zvalin, zsolal
-    parameter    (zvalin=28,zsolal=17)
-!
+    integer :: ifm, niv
+    integer, parameter :: zvalin = 28
+    integer, parameter :: zsolal = 17
     aster_logical :: lgrot, lendo
     integer :: neq, nmax
     character(len=19) :: vefint, vediri, vebudi
@@ -115,7 +116,6 @@ subroutine nmcere(modele, numedd, mate, carele, comref,&
     character(len=19) :: depplu
     character(len=19) :: sigplu, varplu, complu
     character(len=19) :: depl, vite, acce, k19bla
-    integer :: ifm, niv
     real(kind=8), pointer :: ddepl(:) => null()
     real(kind=8), pointer :: depdl(:) => null()
     real(kind=8), pointer :: depdt(:) => null()
@@ -126,11 +126,7 @@ subroutine nmcere(modele, numedd, mate, carele, comref,&
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('PILOTAGE', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<PILOTAGE> ...... CALCUL DU RESIDU'
     endif
@@ -214,7 +210,7 @@ subroutine nmcere(modele, numedd, mate, carele, comref,&
 !
 ! --- ASSEMBLAGE DES FORCES INTERIEURES
 !
-    call nmaint(numedd, fonact, defico, veasse, vefint,&
+    call nmaint(numedd, fonact, ds_contact, veasse, vefint,&
                 cnfint, sdnume)
 !
 ! --- MESURES
@@ -226,7 +222,7 @@ subroutine nmcere(modele, numedd, mate, carele, comref,&
 !
     call nmdiri(modele, mate, carele, lischa, k19bla,&
                 depl, vite, acce, vediri)
-    call nmadir(numedd, fonact, defico, veasse, vediri,&
+    call nmadir(numedd, fonact, ds_contact, veasse, vediri,&
                 cndiri)
 !
 ! --- REACTUALISATION DES CONDITIONS DE DIRICHLET B.U
@@ -252,5 +248,4 @@ subroutine nmcere(modele, numedd, mate, carele, comref,&
                     eta)
     endif
 !
-    call jedema()
 end subroutine

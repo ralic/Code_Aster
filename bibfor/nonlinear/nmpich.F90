@@ -1,9 +1,19 @@
-subroutine nmpich(modele, numedd, mate, carele, comref,&
-                  compor, lischa, carcri, fonact, sdstat,&
-                  defico, resoco, sdpilo, iterat, sdnume,&
-                  deltat, valinc, solalg, veelem, veasse,&
-                  sdtime, sddisc, eta, rho, offset,&
-                  ldccvg, pilcvg, matass)
+subroutine nmpich(modele    , numedd, mate  , carele, comref,&
+                  compor    , lischa, carcri, fonact, sdstat,&
+                  ds_contact, sdpilo, iterat, sdnume, deltat,&
+                  valinc    , solalg, veelem, veasse, sdtime,&
+                  sddisc    , eta   , rho   , offset, ldccvg,&
+                  pilcvg    , matass)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/nmceta.h"
+#include "asterfort/nmpilo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,23 +32,14 @@ subroutine nmpich(modele, numedd, mate, carele, comref,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
-!
 ! aslint: disable=W1504
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/nmceta.h"
-#include "asterfort/nmpilo.h"
+!
     integer :: fonact(*)
     integer :: iterat, pilcvg, ldccvg
     real(kind=8) :: deltat, eta, rho, offset
     character(len=19) :: lischa, sdnume, sdpilo, sddisc, matass
     character(len=24) :: carcri, modele, numedd, mate, carele, comref, compor
-    character(len=24) :: defico, resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=24) :: sdstat, sdtime
     character(len=19) :: veelem(*), veasse(*)
     character(len=19) :: solalg(*), valinc(*)
@@ -50,7 +51,6 @@ subroutine nmpich(modele, numedd, mate, carele, comref,&
 ! CALCUL DU ETA DE PILOTAGE ET CALCUL DE LA CORRECTION
 !
 ! ----------------------------------------------------------------------
-!
 !
 ! IN  MODELE : MODELE
 ! IN  NUMEDD : NUME_DDL
@@ -64,8 +64,7 @@ subroutine nmpich(modele, numedd, mate, carele, comref,&
 ! IN  SDPILO : SD PILOTAGE
 ! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
-! IN  DEFICO : SD DEFINITION CONTACT
-! IN  RESOCO : SD RESOLUTION CONTACT VOLATILE OP0070
+! In  ds_contact       : datastructure for contact management
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
 ! IN  VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE
@@ -100,11 +99,7 @@ subroutine nmpich(modele, numedd, mate, carele, comref,&
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('PILOTAGE', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<PILOTAGE> ... PILOTAGE SANS RECH_LINE'
     endif
@@ -120,26 +115,27 @@ subroutine nmpich(modele, numedd, mate, carele, comref,&
 ! --- RESOLUTION DE L'EQUATION DE PILOTAGE
 !
     call nmpilo(sdpilo, deltat, rho, solalg, veasse,&
-                modele, mate, compor, resoco, valinc,&
+                modele, mate, compor, ds_contact%sdcont_solv, valinc,&
                 nbatte, numedd, nbeffe, proeta, pilcvg,&
                 carele)
 !
-    if (pilcvg .eq. 1) goto 9999
+    if (pilcvg .eq. 1) then
+        goto 999
+    endif
 !
 ! --- CHOIX DE ETA_PILOTAGE
 !
     call nmceta(modele, numedd, mate, carele, comref,&
                 compor, lischa, carcri, fonact, sdstat,&
-                defico, sdpilo, iterat, sdnume, valinc,&
+                ds_contact, sdpilo, iterat, sdnume, valinc,&
                 solalg, veelem, veasse, sdtime, sddisc,&
                 nbeffe, irecli, proeta, offset, rho,&
                 eta, ldccvg, pilcvg, residu, matass)
 !
-9999 continue
+999 continue
 !
 ! --- LE CALCUL DE PILOTAGE A FORCEMENT ETE REALISE
 !
     ASSERT(pilcvg.ge.0)
 !
-    call jedema()
 end subroutine

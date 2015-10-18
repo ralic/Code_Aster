@@ -18,14 +18,14 @@
 ! aslint: disable=W1504
 !
 interface
-    subroutine nmnewt(noma       , modele  , numins  , numedd , numfix,&
-                      mate       , carele  , comref  , compor , lischa,&
-                      ds_algopara, fonact  , carcri  , sdstat , sdtime,&
-                      sderro     , ds_print, sdnume  , sddyna , sddisc,&
-                      sdcrit     , sdsuiv  , sdpilo  , ds_conv, solveu,&
-                      maprec     , matass  , ds_inout, valinc , solalg,&
-                      meelem     , measse  , veelem  , veasse , defico,&
-                      resoco     , deficu  , resocu  , eta    , nbiter)
+    subroutine nmnewt(noma       , modele  , numins  , numedd , numfix    ,&
+                      mate       , carele  , comref  , compor , lischa    ,&
+                      ds_algopara, fonact  , carcri  , sdstat , sdtime    ,&
+                      sderro     , ds_print, sdnume  , sddyna , sddisc    ,&
+                      sdcrit     , sdsuiv  , sdpilo  , ds_conv, solveu    ,&
+                      maprec     , matass  , ds_inout, valinc , solalg    ,&
+                      meelem     , measse  , veelem  , veasse , ds_contact,&
+                      eta        , nbiter)
         use NonLin_Datastructure_type
         character(len=8) :: noma
         character(len=24) :: modele
@@ -61,10 +61,7 @@ interface
         character(len=19) :: measse(*)
         character(len=19) :: veelem(*)
         character(len=19) :: veasse(*)
-        character(len=24) :: defico
-        character(len=24) :: resoco
-        character(len=24) :: deficu
-        character(len=24) :: resocu
+        type(NL_DS_Contact), intent(in) :: ds_contact
         real(kind=8) :: eta
         integer :: nbiter
     end subroutine nmnewt

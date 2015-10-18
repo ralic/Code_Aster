@@ -1,9 +1,8 @@
-subroutine nmspec(modele  , numedd, numfix     , carele, compor,&
-                  numins, mate       , comref, lischa,&
-                  defico  , resoco, ds_algopara, fonact, carcri,&
-                  ds_print, sdstat, sdtime     , sddisc, valinc,&
-                  solalg  , meelem, measse     , veelem, sddyna,&
-                  sdpost  , sderro)
+subroutine nmspec(modele     , numedd, numfix, carele  , compor    ,&
+                  numins     , mate  , comref, lischa  , ds_contact,&
+                  ds_algopara, fonact, carcri, ds_print, sdstat    ,&
+                  sdtime     , sddisc, valinc, solalg  , meelem    ,&
+                  measse     , veelem, sddyna, sdpost  , sderro)
 !
 use NonLin_Datastructure_type
 !
@@ -42,7 +41,7 @@ implicit none
     integer :: numins
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=19) :: meelem(*)
-    character(len=24) :: resoco, defico
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=24) :: sdstat, sdtime, sderro
     character(len=19) :: lischa, sddisc, sddyna, sdpost
     character(len=24) :: modele, numedd, numfix, carele, compor
@@ -69,8 +68,7 @@ implicit none
 ! IN  COMREF : VARI_COM DE REFERENCE
 ! IN  COMPOR : COMPORTEMENT
 ! IN  LISCHA : LISTE DES CHARGES
-! IN  RESOCO : SD RESOLUTION CONTACT
-! IN  DEFICO : SD DEFINITION CONTACT
+! In  ds_contact       : datastructure for contact management
 ! In  ds_print         : datastructure for printing parameters
 ! IN  SDTIME : SD TIMER
 ! IN  SDSTAT : SD STATISTIQUES
@@ -140,7 +138,7 @@ implicit none
 !
             call nmflam(option, modele, numedd, numfix     , carele,&
                         compor, numins, mate       , comref,&
-                        lischa, defico, resoco, ds_algopara, fonact,&
+                        lischa, ds_contact, ds_algopara, fonact,&
                         carcri, sdstat, sddisc, sdtime     , sddyna,&
                         sdpost, valinc, solalg, meelem     , measse,&
                         veelem, sderro)
@@ -163,7 +161,7 @@ implicit none
 !
             call nmflam(option, modele, numedd, numfix     , carele,&
                         compor, numins, mate       , comref,&
-                        lischa, defico, resoco, ds_algopara, fonact,&
+                        lischa, ds_contact, ds_algopara, fonact,&
                         carcri, sdstat, sddisc, sdtime     , sddyna,&
                         sdpost, valinc, solalg, meelem     , measse,&
                         veelem, sderro)

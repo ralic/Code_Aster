@@ -213,16 +213,16 @@ implicit none
                     carcri, ds_print, sdstat, sdnume     , sddyna  ,&
                     sddisc, sdtime  , sderro, valinc     , numins  ,&
                     solalg, solveu  , matass, maprec     , ds_inout,&
-                    meelem, measse, veelem  , veasse     , nbiter)
+                    meelem, measse  , veelem, veasse     , nbiter)
     else if (lstat.or.limpl) then
-        call nmnewt(mesh       , modele  , numins  , numedd , numfix,&
-                    mate       , carele  , comref  , compor , lischa,&
-                    ds_algopara, fonact  , carcri  , sdstat , sdtime,&
-                    sderro     , ds_print, sdnume  , sddyna , sddisc,&
-                    sdcrit     , sd_suiv , sdpilo  , ds_conv, solveu,&
-                    maprec     , matass  , ds_inout, valinc , solalg,&
-                    meelem     , measse  , veelem  , veasse , defico,&
-                    resoco     , deficu  , resocu  , eta    , nbiter)
+        call nmnewt(mesh       , modele  , numins  , numedd , numfix    ,&
+                    mate       , carele  , comref  , compor , lischa    ,&
+                    ds_algopara, fonact  , carcri  , sdstat , sdtime    ,&
+                    sderro     , ds_print, sdnume  , sddyna , sddisc    ,&
+                    sdcrit     , sd_suiv , sdpilo  , ds_conv, solveu    ,&
+                    maprec     , matass  , ds_inout, valinc , solalg    ,&
+                    meelem     , measse  , veelem  , veasse , ds_contact,&
+                    eta        , nbiter)
     else
         ASSERT(.false.)
     endif
@@ -246,7 +246,7 @@ implicit none
 !
     call nmpost(modele , mesh    , numedd, numfix     , carele,&
                 compor , numins  , mate  , comref     , ds_inout,&
-                defico , resoco  , resocu, ds_algopara, fonact,&
+                ds_contact, ds_algopara, fonact,&
                 carcri , ds_print, sdstat, sddisc     , sdtime,&
                 sd_obsv, sderro  , sddyna, sdpost     , valinc,&
                 solalg , meelem  , measse, veelem     , veasse,&

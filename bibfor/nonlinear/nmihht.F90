@@ -1,8 +1,7 @@
-subroutine nmihht(model      , nume_dof , mate     , compor        , comp_para  ,&
-                  cara_elem  , list_load, varc_refe, list_func_acti, sdstat     ,&
-                  sddyna     , sdtime   , sdnume   , sdcont_defi   , sdcont_solv,&
-                  sdunil_solv, hval_incr, sddisc   , hval_algo     , hval_veasse,&
-                  hval_measse, ds_inout)
+subroutine nmihht(model    , nume_dof , mate       , compor        , comp_para,&
+                  cara_elem, list_load, varc_refe  , list_func_acti, sdstat   ,&
+                  sddyna   , sdtime   , sdnume     , ds_contact    , hval_incr,&
+                  sddisc   , hval_algo, hval_veasse, hval_measse   , ds_inout)
 !
 use NonLin_Datastructure_type
 !
@@ -45,9 +44,7 @@ implicit none
     character(len=24), intent(in) :: sdtime
     character(len=19), intent(in) :: sddisc
     character(len=19), intent(in) :: sdnume
-    character(len=24), intent(in) :: sdcont_defi
-    character(len=24), intent(in) :: sdcont_solv
-    character(len=24), intent(in) :: sdunil_solv
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19), intent(in) :: hval_incr(*)
     character(len=19), intent(in) :: hval_algo(*)
     character(len=19), intent(in) :: hval_veasse(*)
@@ -76,9 +73,7 @@ implicit none
 ! In  sdtime           : datastructure for timers management
 ! In  sddisc           : datastructure for time discretization
 ! In  sdnume           : datastructure for dof positions
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
-! In  sdcont_solv      : name of contact definition datastructure for solving
-! In  sdunil_defi      : name of unilateral condition datastructure (from DEFI_CONTACT)
+! In  ds_contact       : datastructure for contact management
 ! In  hval_incr        : hat-variable for incremental values fields
 ! In  hval_algo        : hat-variable for algorithms fields
 ! In  hval_veasse      : hat-variable for vectors (node fields)
@@ -103,12 +98,11 @@ implicit none
 !
 ! - Compute previous second member for multi-step schemes
 !
-    if (l_reuse.or.l_init_state) then
-        call nmchht(model      , mate       , cara_elem, compor        , comp_para  ,&
-                    list_load  , nume_dof   , varc_refe, list_func_acti, sdstat     ,&
-                    sddyna     , sdtime     , sddisc   , sdnume        , sdcont_defi,&
-                    sdcont_solv, sdunil_solv, hval_incr, hval_algo     , hval_veasse,&
-                    hval_measse, ds_inout)
+    if (l_reuse .or. l_init_state) then
+        call nmchht(model    , mate     , cara_elem  , compor        , comp_para ,&
+                    list_load, nume_dof , varc_refe  , list_func_acti, sdstat    ,&
+                    sddyna   , sdtime   , sddisc     , sdnume        , ds_contact,&
+                    hval_incr, hval_algo, hval_veasse, hval_measse   , ds_inout)
     endif
 
 end subroutine

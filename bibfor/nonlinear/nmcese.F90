@@ -1,9 +1,26 @@
 subroutine nmcese(modele, numedd, mate, carele, comref,&
                   compor, lischa, carcri, fonact, sdstat,&
-                  defico, iterat, sdnume, sdpilo, valinc,&
+                  ds_contact, iterat, sdnume, sdpilo, valinc,&
                   solalg, veelem, veasse, sdtime, offset,&
                   typsel, sddisc, licite, rho, eta,&
                   etaf, criter, ldccvg, pilcvg, matass)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/exixfe.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmceai.h"
+#include "asterfort/nmceni.h"
+#include "asterfort/nmcere.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmrcyc.h"
+#include "asterfort/utdidt.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,30 +39,15 @@ subroutine nmcese(modele, numedd, mate, carele, comref,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
-!
 ! aslint: disable=W1504
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/exixfe.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/nmceai.h"
-#include "asterfort/nmceni.h"
-#include "asterfort/nmcere.h"
-#include "asterfort/nmchex.h"
-#include "asterfort/nmrcyc.h"
-#include "asterfort/utdidt.h"
-#include "asterfort/utmess.h"
+!
     integer :: fonact(*)
     integer :: iterat
     real(kind=8) :: rho, offset, eta(2)
     character(len=19) :: lischa, sdnume, sdpilo, sddisc, matass
     character(len=24) :: modele, numedd, mate, carele, comref, compor
-    character(len=24) :: carcri, defico
+    character(len=24) :: carcri
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19) :: veelem(*), veasse(*)
     character(len=19) :: solalg(*), valinc(*)
     character(len=24) :: typsel, sdtime, sdstat
@@ -61,7 +63,6 @@ subroutine nmcese(modele, numedd, mate, carele, comref,&
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  MODELE : MODELE
 ! IN  NUMEDD : NUME_DDL
 ! IN  MATE   : CHAMP MATERIAU
@@ -74,7 +75,7 @@ subroutine nmcese(modele, numedd, mate, carele, comref,&
 ! IN  SDNUME : SD NUMEROTATION
 ! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
-! IN  DEFICO : SD DEFINITION CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
 ! IN  ITERAT : NUMERO D'ITERATION DE NEWTON
@@ -125,7 +126,6 @@ subroutine nmcese(modele, numedd, mate, carele, comref,&
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('PILOTAGE', ifm, niv)
 !
 ! --- LE CALCUL DE PILOTAGE A FORCEMENT ETE REALISE
@@ -225,12 +225,12 @@ subroutine nmcese(modele, numedd, mate, carele, comref,&
     if (typsel .eq. 'RESIDU' .or. mixte) then
         call nmcere(modele, numedd, mate, carele, comref,&
                     compor, lischa, carcri, fonact, sdstat,&
-                    defico, iterat, sdnume, valinc, solalg,&
+                    ds_contact, iterat, sdnume, valinc, solalg,&
                     veelem, veasse, sdtime, offset, rho,&
                     eta(1), f(1), ldccv(1), matass)
         call nmcere(modele, numedd, mate, carele, comref,&
                     compor, lischa, carcri, fonact, sdstat,&
-                    defico, iterat, sdnume, valinc, solalg,&
+                    ds_contact, iterat, sdnume, valinc, solalg,&
                     veelem, veasse, sdtime, offset, rho,&
                     eta(2), f(2), ldccv(2), matass)
 !
@@ -285,5 +285,4 @@ subroutine nmcese(modele, numedd, mate, carele, comref,&
     ldccvg = ldccv(sel)
     criter = f(sel)
 !
-    call jedema()
 end subroutine

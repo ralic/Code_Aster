@@ -1,8 +1,20 @@
-subroutine nmassp(modele, numedd, mate, carele, comref,&
-                  compor, lischa, carcri, fonact, sdstat,&
-                  defico, sddyna, valinc, solalg, veelem,&
-                  veasse, sdtime, ldccvg, codere, cnpilo,&
-                  cndonn, sdnume, matass)
+subroutine nmassp(modele    , numedd, mate  , carele, comref,&
+                  compor    , lischa, carcri, fonact, sdstat,&
+                  ds_contact, sddyna, valinc, solalg, veelem,&
+                  veasse    , sdtime, ldccvg, codere, cnpilo,&
+                  cndonn    , sdnume, matass)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/ndassp.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nsassp.h"
+#include "asterfort/vtzero.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,25 +33,15 @@ subroutine nmassp(modele, numedd, mate, carele, comref,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
-!
 ! aslint: disable=W1504
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/ndassp.h"
-#include "asterfort/ndynlo.h"
-#include "asterfort/nsassp.h"
-#include "asterfort/vtzero.h"
+!
     integer :: ldccvg
     integer :: fonact(*)
     character(len=19) :: lischa, sddyna, sdnume, matass
-    character(len=24) :: defico, sdtime, sdstat
+    character(len=24) :: sdtime, sdstat
     character(len=24) :: modele, numedd, mate, codere
     character(len=24) :: carele, compor, comref, carcri
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19) :: solalg(*), valinc(*)
     character(len=19) :: veasse(*), veelem(*)
     character(len=19) :: cnpilo, cndonn
@@ -52,7 +54,6 @@ subroutine nmassp(modele, numedd, mate, carele, comref,&
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  MODELE : NOM DU MODELE
 ! IN  NUMEDD : NOM DE LA NUMEROTATION
 ! IN  MATE   : NOM DU CHAMP DE MATERIAU
@@ -60,7 +61,7 @@ subroutine nmassp(modele, numedd, mate, carele, comref,&
 ! IN  COMREF : VALEURS DE REF DES VARIABLES DE COMMANDE
 ! IN  COMPOR : CARTE DECRIVANT LE TYPE DE COMPORTEMENT
 ! IN  LISCHA : SD L_CHARGES
-! IN  DEFICO : SD DEFINITION CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  CARCRI : CARTE DES CRITERES DE CONVERGENCE LOCAUX
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! IN  SDSTAT : SD STATISTIQUES
@@ -89,11 +90,7 @@ subroutine nmassp(modele, numedd, mate, carele, comref,&
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('MECA_NON_LINE', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> ... CALCUL SECOND MEMBRE'
     endif
@@ -114,16 +111,15 @@ subroutine nmassp(modele, numedd, mate, carele, comref,&
     if (ldyna) then
         call ndassp(modele, numedd, mate, carele, comref,&
                     compor, lischa, carcri, sdstat, fonact,&
-                    defico, sddyna, valinc, solalg, veelem,&
+                    ds_contact, sddyna, valinc, solalg, veelem,&
                     veasse, sdtime, ldccvg, codere, cndonn,&
                     sdnume, matass)
     else if (lstat) then
         call nsassp(modele, numedd, lischa, fonact, sddyna,&
                     sdtime, valinc, veelem, veasse, cnpilo,&
-                    cndonn, mate, carele, defico, matass)
+                    cndonn, mate, carele, ds_contact, matass)
     else
         ASSERT(.false.)
     endif
 !
-    call jedema()
 end subroutine

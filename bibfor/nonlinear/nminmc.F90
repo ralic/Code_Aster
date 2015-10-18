@@ -1,5 +1,5 @@
 subroutine nminmc(fonact, lischa, sddyna, modele, compor,&
-                  numedd, numfix, defico, resoco, ds_algopara,&
+                  numedd, numfix, ds_contact, ds_algopara,&
                   carcri, solalg, valinc, mate, carele,&
                   sddisc, sdstat, sdtime, comref, meelem,&
                   measse, veelem, codere)
@@ -39,7 +39,8 @@ implicit none
 !
     integer :: fonact(*)
     character(len=19) :: lischa, sddyna
-    character(len=24) :: numedd, numfix, resoco, defico
+    character(len=24) :: numedd, numfix
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=24) :: modele, compor
     character(len=24) :: carcri
     character(len=24) :: mate, carele
@@ -67,7 +68,6 @@ implicit none
 ! IN  NUMEDD : NUME_DDL (VARIABLE AU COURS DU CALCUL)
 ! IN  NUMFIX : NUME_DDL (FIXE AU COURS DU CALCUL)
 ! IN  COMREF : VARIABLES DE COMMANDE DE REFERENCE
-! IN  RESOCO : SD RESOLUTION CONTACT
 ! IN  LISCHA : LISTE DES CHARGEMENTS
 ! IN  MATE   : NOM DU CHAMP DE MATERIAU
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
@@ -201,11 +201,11 @@ implicit none
     if (nb_matr .gt. 0) then
         call nmxmat(modele, mate, carele, compor, carcri,&
                     sddisc, sddyna, fonact, numins, iterat,&
-                    valinc, solalg, lischa, comref, defico,&
-                    resoco,  numedd, numfix, sdstat, ds_algopara,&
+                    valinc, solalg, lischa, comref,&
+                    numedd, numfix, sdstat, ds_algopara,&
                     sdtime, nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
                     list_l_calc, list_l_asse, lcfint, meelem, measse,&
-                    veelem, ldccvg, codere)
+                    veelem, ldccvg, codere, ds_contact)
         if (ldccvg .gt. 0) then
             call utmess('F', 'MECANONLINE_1')
         endif

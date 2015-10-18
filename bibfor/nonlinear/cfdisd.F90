@@ -25,7 +25,7 @@ function cfdisd(resoco, questz)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-    character(len=24) :: resoco
+    character(len=19) :: resoco
     character(len=*) :: questz
 !
 ! ----------------------------------------------------------------------

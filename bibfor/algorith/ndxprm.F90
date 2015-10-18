@@ -112,7 +112,6 @@ implicit none
     integer :: ifm, niv, ibid
     integer :: iterat
     integer :: nb_matr
-    character(len=24) :: k24bla
     character(len=6) :: list_matr_type(20)
     character(len=16) :: list_calc_opti(20), list_asse_opti(20)
     aster_logical :: list_l_asse(20), list_l_calc(20)
@@ -132,7 +131,6 @@ implicit none
     ldccvg = -1
     iterat = 0
     lcamor = .false.
-    k24bla = ' '
 !
 ! - Active functionnalities
 !
@@ -219,8 +217,8 @@ implicit none
     if (nb_matr .gt. 0) then
         call nmxmat(modelz, mate, carele, compor, carcri,&
                     sddisc, sddyna, fonact, numins, iterat,&
-                    valinc, solalg, lischa, comref, k24bla,&
-                    k24bla, numedd, numfix, sdstat, ds_algopara,&
+                    valinc, solalg, lischa, comref, &
+                    numedd, numfix, sdstat, ds_algopara,&
                     sdtime, nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
                     list_l_calc, list_l_asse, lcfint, meelem, measse,&
                     veelem, ldccvg, codere)

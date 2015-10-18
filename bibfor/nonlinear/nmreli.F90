@@ -1,6 +1,6 @@
 subroutine nmreli(modele , numedd, mate  , carele     , comref,&
                   compor , lischa, carcri, fonact     , iterat,&
-                  sdstat , sdnume, sddyna, ds_algopara, defico,&
+                  sdstat , sdnume, sddyna, ds_algopara, ds_contact,&
                   valinc , solalg, veelem, veasse     , sdtime,&
                   ds_conv, ldccvg)
 !
@@ -34,7 +34,8 @@ implicit none
     integer :: fonact(*)
     integer :: iterat, ldccvg
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-    character(len=24) :: carcri, sdtime, defico, sdstat
+    character(len=24) :: carcri, sdtime, sdstat
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19) :: lischa, sddyna, sdnume
     character(len=24) :: modele, numedd, mate, carele, comref, compor
     character(len=19) :: veelem(*), veasse(*)
@@ -58,7 +59,7 @@ implicit none
 ! IN  LISCHA : LISTE DES CHARGES
 ! IN  SDTIME : SD TIMER
 ! IN  SDSTAT : SD STATISTIQUES
-! IN  DEFICO : SD DEFINITION CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! IN  ITERAT : NUMERO D'ITERATION DE NEWTON
@@ -93,7 +94,7 @@ implicit none
 !
     call nmrelp(modele , numedd, mate  , carele     , comref,&
                 compor , lischa, carcri, fonact     , iterat,&
-                sdstat , sdnume, sddyna, ds_algopara, defico,&
+                sdstat , sdnume, sddyna, ds_algopara, ds_contact,&
                 valinc , solalg, veelem, veasse     , sdtime,&
                 ds_conv, ldccvg)
 !

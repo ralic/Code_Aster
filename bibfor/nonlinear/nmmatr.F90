@@ -1,6 +1,7 @@
-subroutine nmmatr(phasez, fonact, lischa, numedd, sddyna,&
-                  numins, defico, resoco, meelem, measse,&
-                  matass)
+subroutine nmmatr(phasez, fonact    , lischa, numedd, sddyna,&
+                  numins, ds_contact, meelem, measse, matass)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -37,7 +38,7 @@ implicit none
     character(len=*) :: phasez
     character(len=19) :: matass
     character(len=19) :: sddyna
-    character(len=24) :: defico, resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
     integer :: fonact(*)
     integer :: numins
     character(len=19) :: meelem(*), measse(*)
@@ -52,13 +53,11 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  PHASE  : PHASE DE CALCUL
 !                'PREDICTION'
 !                'CORRECTION'
 !                'ACCEL_INIT'
-! IN  RESOCO : SD RESOLUTION CONTACT
-! IN  DEFICO : SD DEF. CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  SDDYNA : SD DYNAMIQUE
 ! IN  NUMINS : NUMERO D'INSTANT
 ! IN  NUMEDD : NOM DE LA NUMEROTATION MECANIQUE
@@ -215,7 +214,7 @@ implicit none
 ! --- PRISE EN COMPTE DE LA MATRICE TANGENTE DU FROTTEMENT
 !
     if (lctcd .and. (phase.eq.'CORRECTION')) then
-        call nmasfr(defico, resoco, matass)
+        call nmasfr(ds_contact, matass)
     endif
 !
 999 continue

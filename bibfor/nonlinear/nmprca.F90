@@ -2,7 +2,7 @@ subroutine nmprca(modele, numedd, numfix  , mate       , carele,&
                   comref, compor, lischa  , ds_algopara, solveu,&
                   fonact, carcri, ds_print, sdstat     , sddisc,&
                   sdtime, numins, valinc  , solalg     , matass,&
-                  maprec, defico, resoco  , sddyna     , meelem,&
+                  maprec, ds_contact, sddyna     , meelem,&
                   measse, veelem, veasse  , depest     , ldccvg,&
                   faccvg, rescvg, codere  )
 !
@@ -51,7 +51,7 @@ implicit none
     character(len=24) :: numedd, numfix
     character(len=24) :: carcri
     type(NL_DS_Print), intent(inout) :: ds_print
-    character(len=24) :: defico, resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=24) :: codere
     character(len=19) :: veelem(*), veasse(*)
     character(len=19) :: meelem(*), measse(*)
@@ -89,8 +89,7 @@ implicit none
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
 ! IN  MATASS : MATRICE ASSEMBLEE
 ! IN  MAPREC : MATRICE DE PRECONDITIONNEMENT (GCPC)
-! IN  DEFICO : SD DEFINITION CONTACT
-! IN  RESOCO : SD RESOLUTION CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
 ! IN  MEELEM : VARIABLE CHAPEAU POUR NOM DES MATR_ELEM
 ! IN  MEASSE : VARIABLE CHAPEAU POUR NOM DES MATR_ASSE
@@ -154,7 +153,7 @@ implicit none
     call nmprma(modele     , mate    , carele, compor, carcri,&
                 ds_algopara, lischa  , numedd, numfix, solveu,&
                 comref     , ds_print, sdstat, sdtime, sddisc,&
-                sddyna     , numins  , fonact, defico, resoco,&
+                sddyna     , numins  , fonact, ds_contact,&
                 valinc     , solalg  , veelem, meelem, measse,&
                 maprec     , matass  , codere, faccvg, ldccvg)
 !

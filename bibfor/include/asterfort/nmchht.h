@@ -18,11 +18,10 @@
 ! aslint: disable=W1504
 !
 interface
-    subroutine nmchht(model      , mate       , cara_elem, compor        , comp_para  ,&
-                      list_load  , nume_dof   , varc_refe, list_func_acti, sdstat     ,&
-                      sddyna     , sdtime     , sddisc   , sdnume        , sdcont_defi,&
-                      sdcont_solv, sdunil_solv, hval_incr, hval_algo     , hval_veasse,&
-                      hval_measse, ds_inout)
+    subroutine nmchht(model    , mate     , cara_elem  , compor        , comp_para ,&
+                      list_load, nume_dof , varc_refe  , list_func_acti, sdstat    ,&
+                      sddyna   , sdtime   , sddisc     , sdnume        , ds_contact,&
+                      hval_incr, hval_algo, hval_veasse, hval_measse   , ds_inout)
         use NonLin_Datastructure_type
         character(len=24), intent(in) :: model
         character(len=24), intent(in) :: mate
@@ -38,9 +37,7 @@ interface
         character(len=24), intent(in) :: sdtime
         character(len=19), intent(in) :: sddisc
         character(len=19), intent(in) :: sdnume
-        character(len=24), intent(in) :: sdcont_defi
-        character(len=24), intent(in) :: sdcont_solv
-        character(len=24), intent(in) :: sdunil_solv
+        type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19), intent(in) :: hval_incr(*)
         character(len=19), intent(in) :: hval_algo(*)
         character(len=19), intent(in) :: hval_veasse(*)

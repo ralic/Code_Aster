@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmasfr(defico, resoco, matass)
-        character(len=24) :: defico
-        character(len=24) :: resoco
+    subroutine nmasfr(ds_contact, matass)
+        use NonLin_Datastructure_type
+        type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19) :: matass
     end subroutine nmasfr
 end interface

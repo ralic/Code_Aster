@@ -1,7 +1,6 @@
-subroutine nmprac(fonact     , lischa, numedd, numfix, solveu,&
-                  sddyna     , sdstat, sdtime, defico, resoco,&
-                  ds_algopara, meelem, measse, maprec, matass,&
-                  faccvg)
+subroutine nmprac(fonact, lischa, numedd, numfix    , solveu     ,&
+                  sddyna, sdstat, sdtime, ds_contact, ds_algopara,&
+                  meelem, measse, maprec, matass    , faccvg)
 !
 use NonLin_Datastructure_type
 !
@@ -49,7 +48,7 @@ implicit none
     character(len=24) :: numedd, numfix
     character(len=19) :: solveu
     character(len=19) :: meelem(*), measse(*)
-    character(len=24) :: defico, resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19) :: maprec, matass
     integer :: faccvg
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
@@ -62,12 +61,10 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  NUMEDD : NUME_DDL (VARIABLE AU COURS DU CALCUL)
 ! IN  NUMFIX : NUME_DDL (FIXE AU COURS DU CALCUL)
 ! IN  LISCHA : LISTE DES CHARGES
-! IN  RESOCO : SD RESOLUTION CONTACT
-! IN  DEFICO : SD DEFINITION CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  SDTIME : SD TIMER
 ! IN  SDSTAT : SD STATISTIQUES
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
@@ -128,9 +125,8 @@ implicit none
 !
 ! --- CALCUL DE LA MATRICE ASSEMBLEE GLOBALE
 !
-    call nmmatr('ACCEL_INIT', fonact, lischa, numedd,&
-                sddyna, numins, defico, resoco, meelem,&
-                measse, matass)
+    call nmmatr('ACCEL_INIT', fonact    , lischa, numedd, sddyna,&
+                numins      , ds_contact, meelem, measse, matass)
 !
 ! --- SI METHODE CONTINUE ON REMPLACE LES TERMES DIAGONAUX NULS PAR
 ! --- DES UNS POUR POUVOIR INVERSER LA MATRICE ASSEMBLE MATASS

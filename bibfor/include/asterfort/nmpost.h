@@ -20,7 +20,7 @@
 interface
     subroutine nmpost(modele , mesh    , numedd, numfix     , carele  ,&
                       compor , numins  , mate  , comref     , ds_inout,&
-                      defico , resoco  , resocu, ds_algopara, fonact  ,&
+                      ds_contact, ds_algopara, fonact  ,&
                       carcri , ds_print, sdstat, sddisc     , sdtime  ,&
                       sd_obsv, sderro  , sddyna, sdpost     , valinc  ,&
                       solalg , meelem  , measse, veelem     , veasse  ,&
@@ -35,9 +35,7 @@ interface
         integer :: numins
         character(len=24) :: mate
         character(len=24) :: comref
-        character(len=24) :: defico
-        character(len=24) :: resoco
-        character(len=24) :: resocu
+        type(NL_DS_Contact), intent(in) :: ds_contact
         type(NL_DS_InOut), intent(in) :: ds_inout
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         integer :: fonact(*)

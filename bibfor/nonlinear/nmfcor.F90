@@ -1,8 +1,8 @@
 subroutine nmfcor(modele, numedd  , mate  , carele     , comref,&
                   compor, lischa  , fonact, ds_algopara, carcri,&
                   numins, iterat  , sdstat, sdtime     , sddisc,&
-                  sddyna, sdnume  , sderro, defico     , resoco,&
-                  resocu, ds_inout, valinc, solalg     , veelem,&
+                  sddyna, sdnume  , sderro, ds_contact,&
+                  ds_inout, valinc, solalg     , veelem,&
                   veasse, meelem  , measse, matass     , lerrit)
 !
 use NonLin_Datastructure_type
@@ -57,7 +57,7 @@ implicit none
     type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=19) :: meelem(*), veelem(*), measse(*), veasse(*)
     character(len=19) :: solalg(*), valinc(*)
-    character(len=24) :: defico, resocu, resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
     aster_logical :: lerrit
 !
 ! ----------------------------------------------------------------------
@@ -86,9 +86,7 @@ implicit none
 ! IN  NUMINS : NUMERO D'INSTANT
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IN  SDERRO : GESTION DES ERREURS
-! IN  DEFICO : SD DEFINITION CONTACT
-! IN  RESOCO : SD RESOLUTION CONTACT
-! IN  RESOCU : SD RESOLUTION LIAISON_UNILATERALE
+! In  ds_contact       : datastructure for contact management
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
 ! IN  VEELEM : VARIABLE CHAPEAU POUR NOM DES VECT_ELEM
@@ -143,7 +141,7 @@ implicit none
 !
     call nmchar('VARI'  , 'CORRECTION', modele, numedd, mate,&
                 carele  , compor, lischa, numins, sdtime,&
-                sddisc  , fonact, resoco, resocu, comref,&
+                sddisc  , fonact, ds_contact%sdcont_solv, ds_contact%sdunil_solv, comref,&
                 ds_inout, valinc, solalg, veelem, measse,&
                 veasse  , sddyna)
 !
@@ -151,14 +149,14 @@ implicit none
 !
     if (leltc) then
         call nmfocc('CONVERGENC', modele, mate, numedd, fonact,&
-                    defico, resoco, sdstat, sdtime, solalg,&
+                    ds_contact%sdcont_defi, ds_contact%sdcont_solv, sdstat, sdtime, solalg,&
                     valinc, veelem, veasse)
     endif
 !
 ! --- OPTION POUR MERIMO
 !
     call nmchfi(ds_algopara, fonact, sddisc, sddyna, numins,&
-                iterat     , defico, lcfint, lcdiri, lcbudi,&
+                iterat     , ds_contact, lcfint, lcdiri, lcbudi,&
                 lcrigi     , option)
 !
 ! --- CALCUL DES FORCES INTERNES ET DE LA RIGIDITE SI NECESSAIRE
@@ -186,8 +184,8 @@ implicit none
     if (lctcd .or. lunil) then
         call nmctcd(modele, mate  , carele  , fonact, compor,&
                     sdtime, sddisc, sddyna  , numins, valinc,&
-                    solalg, lischa, comref  , defico, resoco,&
-                    resocu, numedd, ds_inout, veelem, veasse,&
+                    solalg, lischa, comref  , ds_contact%sdcont_defi, ds_contact%sdcont_solv,&
+                    ds_contact%sdunil_solv, numedd, ds_inout, veelem, veasse,&
                     measse)
     endif
 !
@@ -196,7 +194,7 @@ implicit none
     call nmtime(sdtime, 'INI', 'SECO_MEMB')
     call nmtime(sdtime, 'RUN', 'SECO_MEMB')
     if (lcfint) then
-        call nmaint(numedd, fonact, defico, veasse, vefint,&
+        call nmaint(numedd, fonact, ds_contact, veasse, vefint,&
                     cnfint, sdnume)
     endif
 !
@@ -205,7 +203,7 @@ implicit none
     if (lcdiri) then
         call nmdiri(modele, mate, carele, lischa, sddyna,&
                     depplu, vitplu, accplu, vediri)
-        call nmadir(numedd, fonact, defico, veasse, vediri,&
+        call nmadir(numedd, fonact, ds_contact, veasse, vediri,&
                     cndiri)
     endif
 !

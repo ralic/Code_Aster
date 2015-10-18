@@ -1,8 +1,30 @@
 subroutine ndassp(modele, numedd, mate, carele, comref,&
                   compor, lischa, carcri, sdstat, fonact,&
-                  defico, sddyna, valinc, solalg, veelem,&
+                  ds_contact, sddyna, valinc, solalg, veelem,&
                   veasse, sdtime, ldccvg, codere, cndonn,&
                   sdnume, matass)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/ndasva.h"
+#include "asterfort/ndynin.h"
+#include "asterfort/ndynre.h"
+#include "asterfort/nmadir.h"
+#include "asterfort/nmaint.h"
+#include "asterfort/nmasdi.h"
+#include "asterfort/nmasfi.h"
+#include "asterfort/nmasva.h"
+#include "asterfort/nmbudi.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmdiri.h"
+#include "asterfort/nmfint.h"
+#include "asterfort/nmtime.h"
+#include "asterfort/vtaxpy.h"
+#include "asterfort/vtzero.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,35 +43,15 @@ subroutine ndassp(modele, numedd, mate, carele, comref,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
-!
 ! aslint: disable=W1504
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/ndasva.h"
-#include "asterfort/ndynin.h"
-#include "asterfort/ndynre.h"
-#include "asterfort/nmadir.h"
-#include "asterfort/nmaint.h"
-#include "asterfort/nmasdi.h"
-#include "asterfort/nmasfi.h"
-#include "asterfort/nmasva.h"
-#include "asterfort/nmbudi.h"
-#include "asterfort/nmchex.h"
-#include "asterfort/nmdiri.h"
-#include "asterfort/nmfint.h"
-#include "asterfort/nmtime.h"
-#include "asterfort/vtaxpy.h"
-#include "asterfort/vtzero.h"
+!
     integer :: ldccvg
     integer :: fonact(*)
     character(len=19) :: lischa, sddyna, sdnume, matass
     character(len=24) :: sdstat
     character(len=24) :: modele, numedd, mate, codere, sdtime
-    character(len=24) :: carele, compor, comref, carcri, defico
+    character(len=24) :: carele, compor, comref, carcri
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19) :: solalg(*), valinc(*)
     character(len=19) :: veasse(*), veelem(*)
     character(len=19) :: cndonn
@@ -62,7 +64,6 @@ subroutine ndassp(modele, numedd, mate, carele, comref,&
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  MODELE : NOM DU MODELE
 ! IN  NUMEDD : NOM DE LA NUMEROTATION
 ! IN  LISCHA : SD LISTE CHARGES
@@ -73,6 +74,7 @@ subroutine ndassp(modele, numedd, mate, carele, comref,&
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  VEELEM : VARIABLE CHAPEAU POUR NOM DES VECT_ELEM
 ! IN  VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE
+! In  ds_contact       : datastructure for contact management
 ! IN  SDNUME : SD NUMEROTATION
 ! IN  MATASS  : SD MATRICE ASSEMBLEE
 ! OUT CNDONN : VECTEUR ASSEMBLE DES FORCES DONNEES
@@ -102,10 +104,6 @@ subroutine ndassp(modele, numedd, mate, carele, comref,&
     real(kind=8) :: coeequ
 !
 ! ----------------------------------------------------------------------
-!
-    call jemarq()
-!
-! --- INITIALISATIONS
 !
     ldccvg = -1
     iterat = 0
@@ -187,7 +185,7 @@ subroutine ndassp(modele, numedd, mate, carele, comref,&
     call nmchex(veasse, 'VEASSE', 'CNDIRI', cndiri)
     call nmdiri(modele, mate, carele, lischa, k19bla,&
                 depmoi, k19bla, k19bla, vediri)
-    call nmadir(numedd, fonact, defico, veasse, vediri,&
+    call nmadir(numedd, fonact, ds_contact, veasse, vediri,&
                 cndiri)
 !
     call nmtime(sdtime, 'END', 'SECO_MEMB')
@@ -201,11 +199,11 @@ subroutine ndassp(modele, numedd, mate, carele, comref,&
 !
 ! --- ERREUR SANS POSSIBILITE DE CONTINUER
 !
-    if (ldccvg .eq. 1) goto 9999
+    if (ldccvg .eq. 1) goto 999
 !
 ! --- ASSEMBLAGE DES FORCES INTERIEURES
 !
-    call nmaint(numedd, fonact, defico, veasse, vefint,&
+    call nmaint(numedd, fonact, ds_contact, veasse, vefint,&
                 cnfint, sdnume)
 !
 ! --- CHARGEMENTS DONNES
@@ -233,11 +231,10 @@ subroutine ndassp(modele, numedd, mate, carele, comref,&
     if (nbvec .gt. nbcoef) then
         ASSERT(.false.)
     endif
-    do 10 i = 1, nbvec
+    do i = 1, nbvec
         call vtaxpy(coef(i), vect(i), cndonn)
- 10 end do
+    end do
 !
-9999 continue
+999 continue
 !
-    call jedema()
 end subroutine

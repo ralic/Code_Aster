@@ -1,7 +1,9 @@
-subroutine nmcalm(typmat, modelz, lischa, mate  , carele,&
-                  compor, instam, instap, valinc, solalg,&
-                  optmaz, base  , meelem, defico, resoco,&
+subroutine nmcalm(typmat, modelz, lischa, mate      , carele,&
+                  compor, instam, instap, valinc    , solalg,&
+                  optmaz, base  , meelem, ds_contact,&
                   matele)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -48,7 +50,7 @@ implicit none
     character(len=*) :: mate, carele
     character(len=24) :: compor
     real(kind=8) :: instam, instap
-    character(len=24) :: defico, resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19) :: lischa
     character(len=6) :: typmat
     character(len=*) :: optmaz
@@ -64,10 +66,10 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  MODELE : NOM DU MODELE
 ! IN  LISCHA : LISTE DES CHARGEMENTS
 ! IN  MATE   : CHAMP MATERIAU
+! In  ds_contact       : datastructure for contact management
 ! IN  TYPMAT : TYPE DE MATRICE A CALCULER
 !                MERIGI  - MATRICE POUR RIGIDITE
 !                MEDIRI  - MATRICE POUR CL DIRICHLET LAGRANGE
@@ -198,15 +200,15 @@ implicit none
 ! --- MATR_ELEM DES ELTS DE CONTACT (XFEM+CONTINUE)
 !
     else if (typmat.eq.'MEELTC') then
-        call nmelcm('CONT', modele, defico, resoco, mate,&
-                    depmoi, depdel, vitmoi, vitplu, accmoi,&
+        call nmelcm('CONT', modele, ds_contact, mate,&
+                    depmoi, depdel, vitmoi    , vitplu, accmoi,&
                     matele)
 !
 ! --- MATR_ELEM DES ELTS DE FROTTEMENT (XFEM+CONTINUE)
 !
     else if (typmat.eq.'MEELTF') then
-        call nmelcm('FROT', modele, defico, resoco, mate,&
-                    depmoi, depdel, vitmoi, vitplu, accmoi,&
+        call nmelcm('FROT', modele, ds_contact, mate,&
+                    depmoi, depdel, vitmoi    , vitplu, accmoi,&
                     matele)
     else
         ASSERT(.false.)

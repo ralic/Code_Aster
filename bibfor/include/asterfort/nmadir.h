@@ -16,11 +16,12 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmadir(numedd, fonact, defico, veasse, vediri,&
+    subroutine nmadir(numedd, fonact, ds_contact, veasse, vediri,&
                       cndiri)
+        use NonLin_Datastructure_type
         character(len=24) :: numedd
         integer :: fonact(*)
-        character(len=24) :: defico
+        type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19) :: veasse(*)
         character(len=19) :: vediri
         character(len=19) :: cndiri

@@ -16,10 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmasco(typvec, fonact, defico, veasse, cncont)
+    subroutine nmasco(typvec, fonact, ds_contact, veasse, cncont)
+        use NonLin_Datastructure_type
         character(len=6) :: typvec
         integer :: fonact(*)
-        character(len=24) :: defico
+        type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19) :: veasse(*)
         character(len=19) :: cncont
     end subroutine nmasco

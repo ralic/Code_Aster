@@ -22,7 +22,7 @@ interface
                       comref, compor, lischa  , ds_algopara, solveu,&
                       fonact, carcri, ds_print, sdstat     , sddisc,&
                       sdtime, numins, valinc  , solalg     , matass,&
-                      maprec, defico, resoco  , sddyna     , meelem,&
+                      maprec, ds_contact, sddyna     , meelem,&
                       measse, veelem, veasse  , depest     , ldccvg,&
                       faccvg, rescvg, codere  )
         use NonLin_Datastructure_type
@@ -47,8 +47,7 @@ interface
         character(len=19) :: solalg(*)
         character(len=19) :: matass
         character(len=19) :: maprec
-        character(len=24) :: defico
-        character(len=24) :: resoco
+        type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19) :: sddyna
         character(len=19) :: meelem(*)
         character(len=19) :: measse(*)

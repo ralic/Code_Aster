@@ -1,4 +1,15 @@
-subroutine nmasco(typvec, fonact, defico, veasse, cncont)
+subroutine nmasco(typvec, fonact, ds_contact, veasse, cncont)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/vtaxpy.h"
+#include "asterfort/vtzero.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,19 +29,9 @@ subroutine nmasco(typvec, fonact, defico, veasse, cncont)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/nmchex.h"
-#include "asterfort/vtaxpy.h"
-#include "asterfort/vtzero.h"
     character(len=6) :: typvec
     integer :: fonact(*)
-    character(len=24) :: defico
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19) :: veasse(*)
     character(len=19) :: cncont
 !
@@ -42,12 +43,11 @@ subroutine nmasco(typvec, fonact, defico, veasse, cncont)
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  TYPVEC : TYPE DE VECTEUR APPELANT
 !                'CNFINT' - FORCES INTERNES
 !                'CNDIRI' - REACTIONS D'APPUI
 ! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
-! IN  DEFICO : SD DEFINITION CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE
 ! OUT CNCONT : VECT_ASSE DES CONTRIBUTIONS DE CONTACT/FROTTEMENT (C/F)
 !               C/F METHODE CONTINUE
@@ -66,10 +66,6 @@ subroutine nmasco(typvec, fonact, defico, veasse, cncont)
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
-!
-! --- INITIALISATIONS
-!
     ifdo = 0
     call vtzero(cncont)
 !
@@ -78,7 +74,7 @@ subroutine nmasco(typvec, fonact, defico, veasse, cncont)
     leltc = isfonc(fonact,'ELT_CONTACT')
     leltf = isfonc(fonact,'ELT_FROTTEMENT')
     lctfd = isfonc(fonact,'FROT_DISCRET')
-    lpenac = cfdisl(defico,'CONT_PENA')
+    lpenac = cfdisl(ds_contact%sdcont_defi,'CONT_PENA')
     lallv = isfonc(fonact,'CONT_ALL_VERIF' )
 !
 ! --- FORCES DE FROTTEMENT DISCRET
@@ -111,9 +107,8 @@ subroutine nmasco(typvec, fonact, defico, veasse, cncont)
 !
 ! --- VECTEUR RESULTANT
 !
-    do 10 n = 1, ifdo
+    do n = 1, ifdo
         call vtaxpy(coef(n), vect(n), cncont)
- 10 end do
+    end do
 !
-    call jedema()
 end subroutine

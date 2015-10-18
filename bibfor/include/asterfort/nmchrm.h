@@ -19,7 +19,7 @@
 !
 interface
     subroutine nmchrm(phasis     , ds_algopara, list_func_acti, sddisc   , sddyna   ,&
-                      nume_inst  , iter_newt  , sdcont_defi   , type_pred, type_corr,&
+                      nume_inst  , iter_newt  , ds_contact    , type_pred, type_corr,&
                       l_matr_asse)
         use NonLin_Datastructure_type
         character(len=10), intent(in) :: phasis
@@ -28,7 +28,7 @@ interface
         character(len=19), intent(in) :: sddyna
         integer, intent(in) :: nume_inst
         integer, intent(in) :: iter_newt
-        character(len=24), intent(in) :: sdcont_defi
+        type(NL_DS_Contact), intent(in) :: ds_contact
         integer, intent(in) :: list_func_acti(*)
         character(len=16), intent(out) :: type_corr
         character(len=16), intent(out) :: type_pred

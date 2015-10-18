@@ -1,8 +1,8 @@
 subroutine nmdesc(modele, numedd  , numfix, mate  , carele     ,&
-                  comref, compor  , lischa, resoco, ds_algopara,&
+                  comref, compor  , lischa, ds_contact, ds_algopara,&
                   solveu, carcri  , fonact, numins, iterat     ,&
                   sddisc, ds_print, sdstat, sdtime, sddyna     ,&
-                  sdnume, sderro  , matass, maprec, defico     ,&
+                  sdnume, sderro  , matass, maprec, &
                   valinc, solalg  , meelem, measse, veasse     ,&
                   veelem, lerrit  )
 !
@@ -48,7 +48,8 @@ implicit none
     character(len=19) :: lischa, solveu, sddisc, sddyna, sdnume
     character(len=24) :: numedd, numfix
     character(len=24) :: modele, mate, carele, comref, compor, carcri
-    character(len=24) :: defico, resoco, sderro
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=24) :: sderro
     integer :: fonact(*)
     character(len=19) :: meelem(*), veelem(*)
     character(len=19) :: solalg(*), valinc(*)
@@ -63,7 +64,6 @@ implicit none
 ! CALCUL DE LA DIRECTION DE DESCENTE
 !
 ! ----------------------------------------------------------------------
-!
 !
 ! IN  MODELE : MODELE
 ! IN  NUMEDD : NUME_DDL (VARIABLE AU COURS DU CALCUL)
@@ -81,7 +81,7 @@ implicit none
 ! IN  SDNUME : SD NUMEROTATION
 ! IN  ITERAT : NUMERO D'ITERATION DE NEWTON
 ! IN  NUMINS : NUMERO D'INSTANT
-! IN  RESOCO : SD RESOLUTION CONTACT
+! In  ds_contact       : datastructure for contact management
 ! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLE
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
@@ -132,8 +132,8 @@ implicit none
     call nmcoma(modele     , mate  , carele, compor  , carcri,&
                 ds_algopara, lischa, numedd, numfix  , solveu,&
                 comref     , sddisc, sddyna, ds_print, sdstat,&
-                sdtime     , numins, iterat, fonact  , defico,&
-                resoco     , valinc, solalg, veelem  , meelem,&
+                sdtime     , numins, iterat, fonact  , ds_contact,&
+                valinc     , solalg, veelem  , meelem,&
                 measse     , veasse, maprec, matass  , codere,&
                 faccvg     , ldccvg, sdnume)
 !

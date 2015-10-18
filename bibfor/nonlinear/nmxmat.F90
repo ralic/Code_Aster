@@ -1,10 +1,10 @@
 subroutine nmxmat(modelz, mate, carele, compor, carcri,&
                   sddisc, sddyna, fonact, numins, iterat,&
-                  valinc, solalg, lischa, comref, defico,&
-                  resoco, numedd, numfix, sdstat, ds_algopara,&
+                  valinc, solalg, lischa, comref,&
+                  numedd, numfix, sdstat, ds_algopara,&
                   sdtime, nbmatr, ltypma, loptme, loptma,&
                   lcalme, lassme, lcfint, meelem, measse,&
-                  veelem, ldccvg, codere)
+                  veelem, ldccvg, codere, ds_contact_)
 !
 use NonLin_Datastructure_type
 !
@@ -50,7 +50,6 @@ implicit none
     character(len=24) :: compor, carcri, carele
     integer :: numins, iterat, ldccvg
     character(len=19) :: sddisc, sddyna, lischa
-    character(len=24) :: defico, resoco
     character(len=24) :: numedd, numfix
     character(len=24) :: comref, codere
     character(len=19) :: meelem(*), measse(*), veelem(*)
@@ -58,6 +57,7 @@ implicit none
     integer :: fonact(*)
     aster_logical :: lcfint
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
+    type(NL_DS_Contact), optional, intent(in) :: ds_contact_
 !
 ! ----------------------------------------------------------------------
 !
@@ -66,7 +66,6 @@ implicit none
 ! CALCUL ET ASSEMBLAGE DES MATR_ELEM DE LA LISTE
 !
 ! ----------------------------------------------------------------------
-!
 !
 ! IN  MODELE : MODELE
 ! IN  NUMEDD : NUME_DDL (VARIABLE AU COURS DU CALCUL)
@@ -78,7 +77,7 @@ implicit none
 ! IN  LISCHA : LISTE DES CHARGES
 ! IN  SDTIME : SD TIMER
 ! IN  SDSTAT : SD STATISTIQUES
-! IN  RESOCO : SD RESOLUTION CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
 ! IN  METHOD : INFORMATIONS SUR LES METHODES DE RESOLUTION (VOIR NMLECT)
 ! IN  PARMET : PARAMETRES DES METHODES DE RESOLUTION (VOIR NMLECT)
@@ -153,10 +152,9 @@ implicit none
                     call nmtime(sdtime, 'INI', 'CTCC_MATR')
                     call nmtime(sdtime, 'RUN', 'CTCC_MATR')
                 endif
-                call nmcalm(typmat, modelz, lischa, mate  , carele,&
-                            compor, instam, instap, valinc, solalg,&
-                            optcal, base  , meelem, defico, resoco,&
-                            matele)
+                call nmcalm(typmat, modelz, lischa, mate       , carele,&
+                            compor, instam, instap, valinc     , solalg,&
+                            optcal, base  , meelem, ds_contact_, matele)
                 if ((typmat.eq.'MEELTC') .or. (typmat.eq.'MEELTF')) then
                     call nmtime(sdtime, 'END', 'CTCC_MATR')
                     call nmrinc(sdstat, 'CTCC_MATR')

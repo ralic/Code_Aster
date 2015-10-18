@@ -16,10 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmcalm(typmat, modelz, lischa, mate  , carele,&
-                      compor, instam, instap, valinc, solalg,&
-                      optmaz, base  , meelem, defico, resoco,&
+    subroutine nmcalm(typmat, modelz, lischa, mate      , carele,&
+                      compor, instam, instap, valinc    , solalg,&
+                      optmaz, base  , meelem, ds_contact,&
                       matele)
+        use NonLin_Datastructure_type
         character(len=6) :: typmat
         character(len=*) :: modelz
         character(len=19) :: lischa
@@ -33,8 +34,7 @@ interface
         character(len=*) :: optmaz
         character(len=1) :: base
         character(len=19) :: meelem(*)
-        character(len=24) :: defico
-        character(len=24) :: resoco
+        type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19) :: matele
     end subroutine nmcalm
 end interface

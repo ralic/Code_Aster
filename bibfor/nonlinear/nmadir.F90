@@ -1,5 +1,18 @@
-subroutine nmadir(numedd, fonact, defico, veasse, vediri,&
+subroutine nmadir(numedd, fonact, ds_contact, veasse, vediri,&
                   cndiri)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assvec.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/nmasco.h"
+#include "asterfort/nmdebg.h"
+#include "asterfort/vtaxpy.h"
+#include "asterfort/vtzero.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,23 +32,11 @@ subroutine nmadir(numedd, fonact, defico, veasse, vediri,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/assvec.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/nmasco.h"
-#include "asterfort/nmdebg.h"
-#include "asterfort/vtaxpy.h"
-#include "asterfort/vtzero.h"
     integer :: fonact(*)
     character(len=24) :: numedd
     character(len=19) :: veasse(*)
     character(len=19) :: vediri, cndiri
-    character(len=24) :: defico
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! ----------------------------------------------------------------------
 !
@@ -45,9 +46,8 @@ subroutine nmadir(numedd, fonact, defico, veasse, vediri,&
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  NUMEDD : NOM DE LA NUMEROTATION
-! IN  DEFICO : SD DEFINITION CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! IN  VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE
 ! IN  VEDIRI : VECT_ELEM DES REACTIONS D'APPUIS
@@ -63,11 +63,7 @@ subroutine nmadir(numedd, fonact, defico, veasse, vediri,&
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('MECA_NON_LINE', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> ... ASSEMBLAGE DES REAC. APPUI'
     endif
@@ -83,7 +79,7 @@ subroutine nmadir(numedd, fonact, defico, veasse, vediri,&
 ! --- CONTRIBUTIONS DU CONTACT
 !
     if (lcont) then
-        call nmasco('CNDIRI', fonact, defico, veasse, cncont)
+        call nmasco('CNDIRI', fonact, ds_contact, veasse, cncont)
     endif
 !
 ! --- ASSEMBLAGE DES REACTIONS D'APPUI
@@ -103,5 +99,4 @@ subroutine nmadir(numedd, fonact, defico, veasse, vediri,&
         call nmdebg('VECT', cndiri, 6)
     endif
 !
-    call jedema()
 end subroutine

@@ -16,12 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmpich(modele, numedd, mate, carele, comref,&
-                      compor, lischa, carcri, fonact, sdstat,&
-                      defico, resoco, sdpilo, iterat, sdnume,&
-                      deltat, valinc, solalg, veelem, veasse,&
-                      sdtime, sddisc, eta, rho, offset,&
-                      ldccvg, pilcvg, matass)
+    subroutine nmpich(modele    , numedd, mate  , carele, comref,&
+                      compor    , lischa, carcri, fonact, sdstat,&
+                      ds_contact, sdpilo, iterat, sdnume, deltat,&
+                      valinc    , solalg, veelem, veasse, sdtime,&
+                      sddisc    , eta   , rho   , offset, ldccvg,&
+                      pilcvg    , matass)
+        use NonLin_Datastructure_type
         character(len=24) :: modele
         character(len=24) :: numedd
         character(len=24) :: mate
@@ -32,8 +33,7 @@ interface
         character(len=24) :: carcri
         integer :: fonact(*)
         character(len=24) :: sdstat
-        character(len=24) :: defico
-        character(len=24) :: resoco
+        type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19) :: sdpilo
         integer :: iterat
         character(len=19) :: sdnume

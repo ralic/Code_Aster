@@ -1,8 +1,8 @@
 subroutine nmcoma(modelz     , mate  , carele, compor  , carcri,&
                   ds_algopara, lischa, numedd, numfix  , solveu,&
                   comref     , sddisc, sddyna, ds_print, sdstat,&
-                  sdtime     , numins, iterat, fonact  , defico,&
-                  resoco     , valinc, solalg, veelem  , meelem,&
+                  sdtime     , numins, iterat, fonact  , ds_contact,&
+                  valinc     , solalg, veelem, meelem  ,&
                   measse     , veasse, maprec, matass  , codere,&
                   faccvg     , ldccvg, sdnume)
 !
@@ -50,26 +50,6 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-!
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
-!
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-!
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
-! aslint: disable=W1504
-!
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     integer :: fonact(*)
     character(len=*) :: modelz
@@ -83,7 +63,7 @@ implicit none
     character(len=19) :: solalg(*), valinc(*)
     character(len=19) :: measse(*), veasse(*)
     integer :: numins, iterat, ibid
-    character(len=24) :: defico, resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19) :: maprec, matass
     integer :: faccvg, ldccvg
 !
@@ -103,8 +83,7 @@ implicit none
 ! IN  COMREF : VARI_COM DE REFERENCE
 ! IN  COMPOR : COMPORTEMENT
 ! IN  LISCHA : LISTE DES CHARGES
-! IN  RESOCO : SD RESOLUTION CONTACT
-! IN  DEFICO : SD DEF. CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
 ! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  SOLVEU : SOLVEUR
@@ -182,7 +161,7 @@ implicit none
 ! --- CHOIX DE REASSEMBLAGE DE LA MATRICE GLOBALE
 !
     call nmchrm('CORRECTION', ds_algopara, fonact, sddisc, sddyna,&
-                numins, iterat, defico, metpre, metcor,&
+                numins, iterat, ds_contact, metpre, metcor,&
                 reasma)
 !
 ! --- CHOIX DE REASSEMBLAGE DE L'AMORTISSEMENT
@@ -193,8 +172,8 @@ implicit none
 !
 ! --- RE-CREATION DU NUME_DDL OU PAS
 !
-    call nmrenu(modelz, fonact, lischa, defico,&
-                resoco, numedd, renume)
+    call nmrenu(modelz, fonact, lischa, ds_contact, numedd,&
+                renume)
 !
 ! --- OPTION DE CALCUL POUR MERIMO
 !
@@ -219,7 +198,7 @@ implicit none
 !
     if (lcfint) then
         lcfint = .false.
-        call nmaint(numedd, fonact, defico, veasse, vefint,&
+        call nmaint(numedd, fonact, ds_contact, veasse, vefint,&
                     cnfint, sdnume)
     endif
 !
@@ -279,11 +258,11 @@ implicit none
     if (nb_matr .gt. 0) then
         call nmxmat(modelz, mate, carele, compor, carcri,&
                     sddisc, sddyna, fonact, numins, iterat,&
-                    valinc, solalg, lischa, comref, defico,&
-                    resoco, numedd, numfix, sdstat, ds_algopara,&
+                    valinc, solalg, lischa, comref,&
+                    numedd, numfix, sdstat, ds_algopara,&
                     sdtime, nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
                     list_l_calc, list_l_asse, lcfint, meelem, measse,&
-                    veelem, ldccvg, codere)
+                    veelem, ldccvg, codere, ds_contact)
     endif
 !
 ! --- ERREUR SANS POSSIBILITE DE CONTINUER
@@ -293,9 +272,8 @@ implicit none
 ! --- CALCUL DE LA MATRICE ASSEMBLEE GLOBALE
 !
     if (reasma) then
-        call nmmatr('CORRECTION', fonact, lischa, numedd,&
-                    sddyna, numins, defico, resoco, meelem,&
-                    measse, matass)
+        call nmmatr('CORRECTION', fonact    , lischa, numedd, sddyna,&
+                    numins      , ds_contact, meelem, measse, matass)
     endif
 !
 ! - Set matrix type in convergence table

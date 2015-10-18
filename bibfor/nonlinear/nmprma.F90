@@ -1,7 +1,7 @@
 subroutine nmprma(modelz     , mate    , carele, compor, carcri,&
                   ds_algopara, lischa  , numedd, numfix, solveu,&
                   comref     , ds_print, sdstat, sdtime, sddisc,&
-                  sddyna     , numins  , fonact, defico, resoco,&
+                  sddyna     , numins  , fonact, ds_contact,&
                   valinc     , solalg  , veelem, meelem, measse,&
                   maprec     , matass  , codere, faccvg, ldccvg)
 !
@@ -58,7 +58,7 @@ implicit none
     character(len=19) :: solalg(*), valinc(*)
     character(len=19) :: veelem(*), meelem(*), measse(*)
     integer :: numins
-    character(len=24) :: defico, resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19) :: maprec, matass
     integer :: faccvg, ldccvg
 !
@@ -78,8 +78,7 @@ implicit none
 ! IN  COMREF : VARI_COM DE REFERENCE
 ! IN  COMPOR : COMPORTEMENT
 ! IN  LISCHA : LISTE DES CHARGES
-! IN  RESOCO : SD RESOLUTION CONTACT
-! IN  DEFICO : SD DEFINITION CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IO  ds_print         : datastructure for printing parameters
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
 ! IN  SDTIME : SD TIMER
@@ -152,7 +151,7 @@ implicit none
 ! --- CHOIX DE REASSEMBLAGE DE LA MATRICE GLOBALE
 !
     call nmchrm('PREDICTION', ds_algopara, fonact, sddisc, sddyna,&
-                numins, iterat, defico, metpre, metcor,&
+                numins, iterat, ds_contact, metpre, metcor,&
                 reasma)
 !
 ! --- CHOIX DE REASSEMBLAGE DE L'AMORTISSEMENT
@@ -163,8 +162,8 @@ implicit none
 !
 ! --- RE-CREATION DU NUME_DDL OU PAS
 !
-    call nmrenu(modelz, fonact, lischa, defico,&
-                resoco, numedd, renume)
+    call nmrenu(modelz, fonact, lischa, ds_contact, numedd,&
+                renume)
 !
 ! --- OPTION DE CALCUL POUR MERIMO
 !
@@ -231,11 +230,11 @@ implicit none
     if (nb_matr .gt. 0) then
         call nmxmat(modelz, mate, carele, compor, carcri,&
                     sddisc, sddyna, fonact, numins, iterat,&
-                    valinc, solalg, lischa, comref, defico,&
-                    resoco, numedd, numfix, sdstat, ds_algopara,&
+                    valinc, solalg, lischa, comref,&
+                    numedd, numfix, sdstat, ds_algopara,&
                     sdtime, nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
                     list_l_calc, list_l_asse, lcfint, meelem, measse,&
-                    veelem, ldccvg, codere)
+                    veelem, ldccvg, codere, ds_contact)
     endif
 !
 ! --- ERREUR SANS POSSIBILITE DE CONTINUER
@@ -245,9 +244,8 @@ implicit none
 ! --- CALCUL DE LA MATRICE ASSEMBLEE GLOBALE
 !
     if (reasma) then
-        call nmmatr('PREDICTION', fonact, lischa, numedd,&
-                    sddyna, numins, defico, resoco, meelem,&
-                    measse, matass)
+        call nmmatr('PREDICTION', fonact    , lischa, numedd, sddyna,&
+                    numins      , ds_contact, meelem, measse, matass)
         call nmimck(ds_print, 'MATR_ASSE', metpre, .true._1)
     else
         call nmimck(ds_print, 'MATR_ASSE', ' '   , .false._1)

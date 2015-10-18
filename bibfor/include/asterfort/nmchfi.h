@@ -18,8 +18,8 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmchfi(ds_algopara, fonact, sddisc, sddyna, numins,&
-                      iterat     , defico, lcfint, lcdiri, lcbudi,&
+    subroutine nmchfi(ds_algopara, fonact    , sddisc, sddyna, numins,&
+                      iterat     , ds_contact, lcfint, lcdiri, lcbudi,&
                       lcrigi     , option)
         use NonLin_Datastructure_type
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
@@ -28,7 +28,7 @@ interface
         character(len=19) :: sddyna
         integer :: numins
         integer :: iterat
-        character(len=24) :: defico
+        type(NL_DS_Contact), intent(in) :: ds_contact
         aster_logical :: lcfint
         aster_logical :: lcdiri
         aster_logical :: lcbudi

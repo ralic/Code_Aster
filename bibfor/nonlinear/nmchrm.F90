@@ -1,5 +1,5 @@
 subroutine nmchrm(phasis     , ds_algopara, list_func_acti, sddisc   , sddyna   ,&
-                  nume_inst  , iter_newt  , sdcont_defi   , type_pred, type_corr,&
+                  nume_inst  , iter_newt  , ds_contact    , type_pred, type_corr,&
                   l_matr_asse)
 !
 use NonLin_Datastructure_type
@@ -39,7 +39,7 @@ implicit none
     character(len=19), intent(in) :: sddyna
     integer, intent(in) :: nume_inst
     integer, intent(in) :: iter_newt
-    character(len=24), intent(in) :: sdcont_defi
+    type(NL_DS_Contact), intent(in) :: ds_contact
     integer, intent(in) :: list_func_acti(*)
     character(len=16), intent(out) :: type_corr
     character(len=16), intent(out) :: type_pred
@@ -61,7 +61,7 @@ implicit none
 ! In  nume_inst        : index of current time step
 ! In  iter_newt        : index of current Newton iteration
 ! In  list_func_acti   : list of active functionnalities
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  ds_contact       : datastructure for contact management
 ! In  ds_algopara      : datastructure for algorithm parameters
 ! In  sddyna           : name of dynamic parameters datastructure
 ! Out type_corr        : type of matrix for correction (Newton)
@@ -117,7 +117,7 @@ implicit none
 ! - Add contact matrix in global matrix ?
 !
     if (l_cont_disc) then
-        l_matr_cont = cfdisl(sdcont_defi,'MODI_MATR_GLOB')
+        l_matr_cont = cfdisl(ds_contact%sdcont_defi,'MODI_MATR_GLOB')
     endif
 !
 ! - Elastic matrix for time_incr < PAS_MINI_ELAS

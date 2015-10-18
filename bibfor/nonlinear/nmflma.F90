@@ -1,7 +1,7 @@
 subroutine nmflma(typmat, mod45 , defo  , ds_algopara, modelz,&
                   mate  , carele, sddisc, sddyna     , fonact,&
                   numins, valinc, solalg, lischa     , comref,&
-                  defico, resoco, numedd     , numfix,&
+                  ds_contact, numedd     , numfix,&
                   compor, carcri, sdstat, sdtime     , meelem,&
                   measse, veelem, nddle , ddlexc     , modrig,&
                   ldccvg, matass, matgeo)
@@ -63,7 +63,7 @@ implicit none
     character(len=24) :: sdtime, sdstat
     integer :: numins, ldccvg, nddle
     character(len=19) :: sddisc, sddyna, lischa
-    character(len=24) :: defico, resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=24) :: comref, numedd, numfix, ddlexc
     character(len=19) :: meelem(*), measse(*), veelem(*)
     character(len=19) :: solalg(*), valinc(*)
@@ -96,8 +96,7 @@ implicit none
 ! IN  LISCHA : LISTE DES CHARGES
 ! IN  SDTIME : SD TIMER
 ! IN  SDSTAT : SD STATISTIQUES
-! IN  RESOCO : SD RESOLUTION CONTACT
-! IN  DEFICO : SD DEFINITION CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
 ! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  CARCRI : PARAMETRES METHODES D'INTEGRATION LOCALES (VOIR NMLECT)
@@ -274,11 +273,11 @@ implicit none
     if (nb_matr .gt. 0) then
         call nmxmat(modelz, mate, carele, compor, carcri,&
                     sddisc, sddyna, fonact, numins, iterat,&
-                    valin2, solalg, lischa, comref, defico,&
-                    resoco, numedd, numfix, sdstat, ds_algopara,&
+                    valin2, solalg, lischa, comref,&
+                    numedd, numfix, sdstat, ds_algopara,&
                     sdtime, nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
                     list_l_calc, list_l_asse, lcfint, meelem, measse,&
-                    veelem, ldccvg, codere)
+                    veelem, ldccvg, codere, ds_contact)
     endif
 !
 ! --- ON RECONSTRUIT RIGI2 TOUJOURS SYMETRIQUE

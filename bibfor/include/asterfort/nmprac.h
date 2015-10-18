@@ -16,10 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmprac(fonact     , lischa, numedd, numfix, solveu,&
-                      sddyna     , sdstat, sdtime, defico, resoco,&
-                      ds_algopara, meelem, measse, maprec, matass,&
-                      faccvg)
+    subroutine nmprac(fonact, lischa, numedd, numfix    , solveu     ,&
+                      sddyna, sdstat, sdtime, ds_contact, ds_algopara,&
+                      meelem, measse, maprec, matass    , faccvg)
         use NonLin_Datastructure_type        
         integer :: fonact(*)
         character(len=19) :: lischa
@@ -29,8 +28,7 @@ interface
         character(len=19) :: sddyna
         character(len=24) :: sdstat
         character(len=24) :: sdtime
-        character(len=24) :: defico
-        character(len=24) :: resoco
+        type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19) :: meelem(*)
         character(len=19) :: measse(*)
         character(len=19) :: maprec

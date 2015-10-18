@@ -20,7 +20,7 @@
 interface
     subroutine nmrelp(modele , numedd, mate  , carele     , comref,&
                       compor , lischa, carcri, fonact     , iterat,&
-                      sdstat , sdnume, sddyna, ds_algopara, defico,&
+                      sdstat , sdnume, sddyna, ds_algopara, ds_contact,&
                       valinc , solalg, veelem, veasse     , sdtime,&
                       ds_conv, ldccvg)
         use NonLin_Datastructure_type
@@ -38,7 +38,7 @@ interface
         character(len=19) :: sdnume
         character(len=19) :: sddyna
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-        character(len=24) :: defico
+        type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19) :: valinc(*)
         character(len=19) :: solalg(*)
         character(len=19) :: veelem(*)

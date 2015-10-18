@@ -20,13 +20,12 @@
 ! aslint: disable=W1504
 !
 interface
-    subroutine nmdepl(modele, numedd , mate  , carele, comref     ,&
-                      compor, lischa , fonact, sdstat, ds_algopara,&
-                      carcri, noma   , numins, iterat, solveu     ,&
-                      matass, sddisc , sddyna, sdnume, sdpilo     ,&
-                      sdtime, sderro , defico, resoco, deficu     ,&
-                      resocu, valinc , solalg, veelem, veasse     ,&
-                      eta   , ds_conv, lerrit)
+    subroutine nmdepl(modele, numedd , mate      , carele , comref     ,&
+                      compor, lischa , fonact    , sdstat , ds_algopara,&
+                      carcri, noma   , numins    , iterat , solveu     ,&
+                      matass, sddisc , sddyna    , sdnume , sdpilo     ,&
+                      sdtime, sderro , ds_contact, valinc , solalg     ,&
+                      veelem, veasse , eta       , ds_conv, lerrit)
         use NonLin_Datastructure_type
         character(len=24) :: modele
         character(len=24) :: numedd
@@ -50,10 +49,7 @@ interface
         character(len=19) :: sdpilo
         character(len=24) :: sdtime
         character(len=24) :: sderro
-        character(len=24) :: defico
-        character(len=24) :: resoco
-        character(len=24) :: deficu
-        character(len=24) :: resocu
+        type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19) :: valinc(*)
         character(len=19) :: solalg(*)
         character(len=19) :: veelem(*)

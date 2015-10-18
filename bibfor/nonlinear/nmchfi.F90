@@ -1,5 +1,5 @@
-subroutine nmchfi(ds_algopara, fonact, sddisc, sddyna, numins,&
-                  iterat     , defico, lcfint, lcdiri, lcbudi,&
+subroutine nmchfi(ds_algopara, fonact    , sddisc, sddyna, numins,&
+                  iterat     , ds_contact, lcfint, lcdiri, lcbudi,&
                   lcrigi     , option)
 !
 use NonLin_Datastructure_type
@@ -34,7 +34,7 @@ implicit none
     character(len=16) :: option
     character(len=19) :: sddisc, sddyna
     integer :: numins, iterat
-    character(len=24) :: defico
+    type(NL_DS_Contact), intent(in) :: ds_contact
     aster_logical :: lcfint, lcrigi, lcdiri, lcbudi
 !
 ! ----------------------------------------------------------------------
@@ -51,7 +51,7 @@ implicit none
 ! IN  SDDYNA : SD DYNAMIQUE
 ! IN  NUMINS : NUMERO D'INSTANT
 ! IN  ITERAT : NUMERO D'ITERATION
-! IN  DEFICO : SD DEF. CONTACT
+! In  ds_contact       : datastructure for contact management
 ! OUT LCFINT  : .TRUE. SI CALCUL DES VECT_ELEM DES FORCES INTERIEURS
 ! OUT LCDIRI  : .TRUE. SI CALCUL DES VECT_ELEM DES REACTIONS D'APPUI
 ! OUT LCRIGI  : .TRUE. SI CALCUL DES MATR_ELEM DES MATRICES DE RIGIDITE
@@ -66,9 +66,6 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
-!
-! --- FONCTIONNALITES ACTIVEES
-!
     lunil = isfonc(fonact,'LIAISON_UNILATER')
     lctcd = isfonc(fonact,'CONT_DISCRET')
     lreli = isfonc(fonact,'RECH_LINE')
@@ -77,7 +74,7 @@ implicit none
 ! --- CHOIX DE REASSEMBLAGE DE LA MATRICE GLOBALE
 !
     call nmchrm('FORCES_INT', ds_algopara, fonact, sddisc, sddyna,&
-                numins, iterat, defico, metpre, metcor,&
+                numins, iterat, ds_contact, metpre, metcor,&
                 reasma)
 !
 ! --- OPTION DE CALCUL

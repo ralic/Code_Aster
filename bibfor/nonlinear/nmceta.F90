@@ -1,9 +1,22 @@
 subroutine nmceta(modele, numedd, mate, carele, comref,&
                   compor, lischa, carcri, fonact, sdstat,&
-                  defico, sdpilo, iterat, sdnume, valinc,&
+                  ds_contact, sdpilo, iterat, sdnume, valinc,&
                   solalg, veelem, veasse, sdtime, sddisc,&
                   nbeffe, irecli, proeta, offset, rho,&
                   etaf, ldccvg, pilcvg, residu, matass)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterc/r8maem.h"
+#include "asterc/r8vide.h"
+#include "asterfort/assert.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmcere.h"
+#include "asterfort/nmcese.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,20 +35,8 @@ subroutine nmceta(modele, numedd, mate, carele, comref,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
-!
 ! aslint: disable=W1504
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/r8maem.h"
-#include "asterc/r8vide.h"
-#include "asterfort/assert.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/nmcere.h"
-#include "asterfort/nmcese.h"
+!
     integer :: fonact(*)
     aster_logical :: irecli
     integer :: iterat, nbeffe
@@ -43,7 +44,8 @@ subroutine nmceta(modele, numedd, mate, carele, comref,&
     real(kind=8) :: etaf, proeta(2), rho, offset, residu
     character(len=19) :: lischa, sdnume, sdpilo, matass
     character(len=24) :: modele, numedd, mate, carele, comref, compor
-    character(len=24) :: carcri, defico
+    character(len=24) :: carcri
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=24) :: sdstat, sdtime
     character(len=19) :: veelem(*), veasse(*)
     character(len=19) :: solalg(*), valinc(*)
@@ -56,7 +58,6 @@ subroutine nmceta(modele, numedd, mate, carele, comref,&
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  MODELE : MODELE
 ! IN  NUMEDD : NUME_DDL
 ! IN  MATE   : CHAMP MATERIAU
@@ -68,7 +69,7 @@ subroutine nmceta(modele, numedd, mate, carele, comref,&
 ! IN  SDNUME : SD NUMEROTATION
 ! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
-! IN  DEFICO : SD DEFINITION CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  SDSTAT : SD STATISTIQUES
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
@@ -110,11 +111,7 @@ subroutine nmceta(modele, numedd, mate, carele, comref,&
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('PILOTAGE', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<PILOTAGE> ...... SELECTION DU ETA_PILOTAGE'
     endif
@@ -167,18 +164,18 @@ subroutine nmceta(modele, numedd, mate, carele, comref,&
 ! --- INTERSECTION AVEC L'INTERVALLE DE CONTROLE ETA_PILO_R_*
 !
     j=0
-    do 20 i = 1, nbeffe
+    do i = 1, nbeffe
         if (proeta(i) .ge. conmin .and. proeta(i) .le. conmax) then
             j = j+1
             eta(j) = proeta(i)
             licite(j) = licite(i)
         endif
- 20 end do
+    end do
     nbeffe = j
 !
     if (nbeffe .eq. 0) then
         pilcvg = 1
-        goto 9999
+        goto 999
     endif
 !
 ! --- INTERSECTION AVEC L'INTERVALLE ETA_PILO_*
@@ -186,7 +183,7 @@ subroutine nmceta(modele, numedd, mate, carele, comref,&
 !      - DANS TOUS LES CAS, LICITE = -1 INDIQUE QU'ON A FRANCHI LES
 !        BORNES
 !
-    do 50 i = 1, nbeffe
+    do i = 1, nbeffe
         if (bormax) then
             if (eta(i) .gt. etamax) then
                 if (projbo .eq. 'OUI') eta(i) = etamax
@@ -199,7 +196,7 @@ subroutine nmceta(modele, numedd, mate, carele, comref,&
                 licite(i) = 2
             endif
         endif
- 50 end do
+    end do
 !
 ! --- SELECTION DU PARAMETRE DE PILOTAGE ETAF
 !     S'IL EXISTE DEUX ETA SOLUTIONS :
@@ -207,7 +204,7 @@ subroutine nmceta(modele, numedd, mate, carele, comref,&
     if (nbeffe .eq. 2) then
         call nmcese(modele, numedd, mate, carele, comref,&
                     compor, lischa, carcri, fonact, sdstat,&
-                    defico, iterat, sdnume, sdpilo, valinc,&
+                    ds_contact, iterat, sdnume, sdpilo, valinc,&
                     solalg, veelem, veasse, sdtime, offset,&
                     typsel, sddisc, licite, rho, eta,&
                     etaf, residu, ldccvg, pilcvg, matass)
@@ -225,7 +222,7 @@ subroutine nmceta(modele, numedd, mate, carele, comref,&
         if (typsel .eq. 'RESIDU' .and. nbeffe .eq. 2)     continue
         call nmcere(modele, numedd, mate, carele, comref,&
                     compor, lischa, carcri, fonact, sdstat,&
-                    defico, iterat, sdnume, valinc, solalg,&
+                    ds_contact, iterat, sdnume, valinc, solalg,&
                     veelem, veasse, sdtime, offset, rho,&
                     etaf, residu, ldccvg, matass)
     endif
@@ -237,11 +234,10 @@ subroutine nmceta(modele, numedd, mate, carele, comref,&
         write (ifm,*) '<PILOTAGE> ...... RESIDU OPTI.: ',residu
     endif
 !
-9999 continue
+999 continue
 !
 ! --- LE CALCUL DE PILOTAGE A FORCEMENT ETE REALISE
 !
     ASSERT(pilcvg.ge.0)
 !
-    call jedema()
 end subroutine

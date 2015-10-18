@@ -1,20 +1,17 @@
-subroutine accel0(modele, numedd, numfix, fonact     , lischa,&
-                  defico, resoco, maprec, solveu     , valinc,&
-                  sddyna, sdstat, sdtime, ds_algopara, meelem,&
-                  measse, veelem, veasse, solalg)
+subroutine accel0(modele    , numedd, numfix     , fonact, lischa,&
+                  ds_contact, maprec, solveu     , valinc, sddyna,&
+                  sdstat    , sdtime, ds_algopara, meelem, measse,&
+                  veelem    , veasse, solalg)
 !
 use NonLin_Datastructure_type
 !
 implicit none
 !
-#include "jeveux.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detlsp.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/lspini.h"
 #include "asterfort/nmassi.h"
 #include "asterfort/nmchex.h"
@@ -46,7 +43,7 @@ implicit none
     character(len=19) :: sddyna
     character(len=24) :: sdtime, sdstat
     character(len=24) :: numedd, numfix, modele
-    character(len=24) :: defico, resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19) :: meelem(*), measse(*), veasse(*), veelem(*)
     character(len=19) :: solalg(*), valinc(*)
     integer :: fonact(*)
@@ -71,7 +68,7 @@ implicit none
 ! IN  NUMEDD : NUME_DDL (VARIABLE AU COURS DU CALCUL)
 ! IN  NUMFIX : NUME_DDL (FIXE AU COURS DU CALCUL)
 ! IN  LISCHA : LISTE DES CHARGES
-! IN  DEFICO : SD DEFINITION CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! IN  SDTIME : SD TIMER
 ! IN  SDSTAT : SD STATISTIQUES
@@ -84,23 +81,18 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
+    integer :: ifm, niv
     integer :: neq
     integer :: faccvg, rescvg
     character(len=19) :: matass, depso1, depso2
     character(len=19) :: cncine, cncinx, cndonn, k19bla
     character(len=19) :: accmoi
-    integer :: ifm, niv
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('MECA_NON_LINE', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> ... CALCUL DE L''ACCELERATION '//&
-        'INITIALE'
+        write (ifm,*) '<MECANONLINE> ... CALCUL DE L''ACCELERATION INITIALE'
     endif
     call utmess('I', 'MECANONLINE_24')
 !
@@ -121,10 +113,9 @@ implicit none
 !
 ! --- ASSEMBLAGE ET FACTORISATION DE LA MATRICE
 !
-    call nmprac(fonact     , lischa, numedd, numfix, solveu,&
-                sddyna     , sdstat, sdtime, defico, resoco,&
-                ds_algopara, meelem, measse, maprec, matass,&
-                faccvg)
+    call nmprac(fonact, lischa, numedd, numfix    , solveu     ,&
+                sddyna, sdstat, sdtime, ds_contact, ds_algopara,&
+                meelem, measse, maprec, matass    , faccvg)
     if (faccvg .eq. 2) then
         call vtzero(accmoi)
         call utmess('A', 'MECANONLINE_69')
@@ -173,5 +164,4 @@ implicit none
 ! --- EN SECOND DE LA MATRICE ASSEMBLEE
     call detrsd('MATR_ASSE', matass)
 !
-    call jedema()
 end subroutine

@@ -20,7 +20,7 @@
 interface
     subroutine nmflam(option, modele, numedd, numfix     , carele,&
                       compor, numins, mate       , comref,&
-                      lischa, defico, resoco, ds_algopara, fonact,&
+                      lischa, ds_contact, ds_algopara, fonact,&
                       carcri, sdstat, sddisc, sdtime     , sddyna,&
                       sdpost, valinc, solalg, meelem     , measse,&
                       veelem, sderro)
@@ -35,8 +35,7 @@ interface
         character(len=24) :: mate
         character(len=24) :: comref
         character(len=19) :: lischa
-        character(len=24) :: defico
-        character(len=24) :: resoco
+        type(NL_DS_Contact), intent(in) :: ds_contact
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         integer :: fonact(*)
         character(len=24) :: carcri

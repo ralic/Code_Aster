@@ -21,8 +21,8 @@ interface
     subroutine nmcoma(modelz     , mate  , carele, compor  , carcri,&
                       ds_algopara, lischa, numedd, numfix  , solveu,&
                       comref     , sddisc, sddyna, ds_print, sdstat,&
-                      sdtime     , numins, iterat, fonact  , defico,&
-                      resoco     , valinc, solalg, veelem  , meelem,&
+                      sdtime     , numins, iterat, fonact  , ds_contact,&
+                      valinc     , solalg, veelem  , meelem,&
                       measse     , veasse, maprec, matass  , codere,&
                       faccvg     , ldccvg, sdnume)
         use NonLin_Datastructure_type
@@ -45,8 +45,7 @@ interface
         integer :: numins
         integer :: iterat
         integer :: fonact(*)
-        character(len=24) :: defico
-        character(len=24) :: resoco
+        type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19) :: valinc(*)
         character(len=19) :: solalg(*)
         character(len=19) :: veelem(*)

@@ -18,9 +18,10 @@
 interface
     subroutine ndassp(modele, numedd, mate, carele, comref,&
                       compor, lischa, carcri, sdstat, fonact,&
-                      defico, sddyna, valinc, solalg, veelem,&
+                      ds_contact, sddyna, valinc, solalg, veelem,&
                       veasse, sdtime, ldccvg, codere, cndonn,&
                       sdnume, matass)
+        use NonLin_Datastructure_type
         character(len=24) :: modele
         character(len=24) :: numedd
         character(len=24) :: mate
@@ -31,7 +32,7 @@ interface
         character(len=24) :: carcri
         character(len=24) :: sdstat
         integer :: fonact(*)
-        character(len=24) :: defico
+        type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19) :: sddyna
         character(len=19) :: valinc(*)
         character(len=19) :: solalg(*)

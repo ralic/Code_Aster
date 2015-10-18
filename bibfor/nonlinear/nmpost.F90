@@ -1,6 +1,6 @@
 subroutine nmpost(modele , mesh    , numedd, numfix     , carele  ,&
                   compor , numins  , mate  , comref     , ds_inout,&
-                  defico , resoco  , resocu, ds_algopara, fonact  ,&
+                  ds_contact, ds_algopara, fonact  ,&
                   carcri , ds_print, sdstat, sddisc     , sdtime  ,&
                   sd_obsv, sderro  , sddyna, sdpost     , valinc  ,&
                   solalg , meelem  , measse, veelem     , veasse  ,&
@@ -46,7 +46,7 @@ implicit none
     type(NL_DS_InOut), intent(in) :: ds_inout
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=19) :: meelem(*)
-    character(len=24) :: resoco, defico, resocu
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19) :: sdener
     character(len=19) :: lischa
     character(len=19) :: sddisc, sddyna, sdpost
@@ -75,10 +75,9 @@ implicit none
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  COMREF : VARI_COM DE REFERENCE
 ! IN  COMPOR : COMPORTEMENT
-! IN  RESOCO : SD RESOLUTION CONTACT
-! IN  DEFICO : SD DEFINITION CONTACT
 ! In  ds_inout         : datastructure for input/output management
 ! In  ds_print         : datastructure for printing parameters
+! In  ds_contact       : datastructure for contact management
 ! IN  SDTIME : SD TIMER
 ! IN  SDSTAT : SD STATISTIQUES
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
@@ -124,7 +123,7 @@ implicit none
     if (lcont) then
         call nmtime(sdtime, 'INI', 'POST_TRAITEMENT')
         call nmtime(sdtime, 'RUN', 'POST_TRAITEMENT')
-        call cfmxpo(mesh  , modele, defico, resoco, numins,&
+        call cfmxpo(mesh  , modele, ds_contact%sdcont_defi, ds_contact%sdcont_solv, numins,&
                     sddisc, sdstat, solalg, valinc, veasse)
         call nmtime(sdtime, 'END', 'POST_TRAITEMENT')
     endif
@@ -136,7 +135,7 @@ implicit none
         call nmtime(sdtime, 'RUN', 'POST_TRAITEMENT')
         call nmspec(modele  , numedd, numfix     , carele, compor,&
                     numins, mate       , comref, lischa,&
-                    defico  , resoco, ds_algopara, fonact, carcri,&
+                    ds_contact, ds_algopara, fonact, carcri,&
                     ds_print, sdstat, sdtime     , sddisc, valinc,&
                     solalg  , meelem, measse     , veelem, sddyna,&
                     sdpost  , sderro)
@@ -150,7 +149,7 @@ implicit none
                     sdener, fonact, numedd, numfix, ds_algopara,&
                     meelem, numins, modele, mate  , carele     ,&
                     compor, sdtime, sddisc, solalg, lischa     ,&
-                    comref, resoco, resocu, veelem, ds_inout)
+                    comref, ds_contact%sdcont_solv, ds_contact%sdunil_solv, veelem, ds_inout)
     endif
 
 !

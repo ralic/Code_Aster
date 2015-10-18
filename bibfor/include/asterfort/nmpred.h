@@ -20,13 +20,13 @@
 ! aslint: disable=W1504
 !
 interface
-    subroutine nmpred(modele, numedd, numfix  , mate       , carele,&
-                      comref, compor, lischa  , ds_algopara, solveu,&
-                      fonact, carcri, ds_print, sdstat     , sdtime,&
-                      sddisc, sdnume, sderro  , numins     , valinc,&
-                      solalg, matass, maprec  , defico     , resoco,&
-                      resocu, sddyna, ds_inout, meelem     , measse,&
-                      veelem, veasse, lerrit)
+    subroutine nmpred(modele  , numedd, numfix  , mate       , carele,&
+                      comref  , compor, lischa  , ds_algopara, solveu,&
+                      fonact  , carcri, ds_print, sdstat     , sdtime,&
+                      sddisc  , sdnume, sderro  , numins     , valinc,&
+                      solalg  , matass, maprec  , ds_contact , sddyna,&
+                      ds_inout, meelem, measse  , veelem     , veasse,&
+                      lerrit)
         use NonLin_Datastructure_type
         character(len=24) :: modele
         character(len=24) :: numedd
@@ -52,9 +52,7 @@ interface
         character(len=19) :: solalg(*)
         character(len=19) :: matass
         character(len=19) :: maprec
-        character(len=24) :: defico
-        character(len=24) :: resoco
-        character(len=24) :: resocu
+        type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19) :: sddyna
         character(len=19) :: meelem(*)
         character(len=19) :: measse(*)

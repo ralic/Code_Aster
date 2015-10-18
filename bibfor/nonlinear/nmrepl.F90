@@ -1,7 +1,7 @@
 subroutine nmrepl(modele , numedd, mate       , carele, comref,&
                   compor , lischa, ds_algopara, carcri, fonact,&
                   iterat , sdstat, sdpilo     , sdnume, sddyna,&
-                  defico , resoco, deltat     , valinc, solalg,&
+                  ds_contact, deltat     , valinc, solalg,&
                   veelem , veasse, sdtime     , sddisc, etan  ,&
                   ds_conv, eta   , offset     , ldccvg, pilcvg,&
                   matass )
@@ -52,7 +52,8 @@ implicit none
     real(kind=8) :: deltat, eta, etan, offset
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=19) :: lischa, sddyna, sdnume, sdpilo, sddisc, matass
-    character(len=24) :: carcri, defico, resoco
+    character(len=24) :: carcri
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=24) :: sdstat, sdtime
     character(len=24) :: modele, numedd, mate, carele, comref, compor
     character(len=19) :: veelem(*), veasse(*)
@@ -83,8 +84,7 @@ implicit none
 ! IN  SDDYNA : SD DYNAMIQUE
 ! IN  SDSTAT : SD STATISTIQUES
 ! In  ds_algopara      : datastructure for algorithm parameters
-! IN  DEFICO : SD DEFINITION DU CONTACT
-! IN  RESOCO : SD RESOLUTION DU CONTACT VOLATILE OP0070
+! In  ds_contact       : datastructure for contact management
 ! IN  DELTAT : INCREMENT DE TEMPS
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
@@ -186,7 +186,7 @@ implicit none
     if (typilo .eq. 'DDL_IMPO') then
         call nmrelp(modele , numedd, mate  , carele     , comref,&
                     compor , lischa, carcri, fonact     , iterat,&
-                    sdstat , sdnume, sddyna, ds_algopara, defico,&
+                    sdstat , sdnume, sddyna, ds_algopara, ds_contact,&
                     valinc , solalg, veelem, veasse     , sdtime,&
                     ds_conv, ldccvg)
         goto 999
@@ -244,7 +244,7 @@ implicit none
 ! ----- RESOLUTION DE L'EQUATION DE PILOTAGE: NVELLE DIRECT. DE DESCENTE
 !
         call nmpilo(sdpilo, deltat, rho, solalg, veasse,&
-                    modele, mate, compor, resoco, valinc,&
+                    modele, mate, compor, ds_contact%sdcont_solv, valinc,&
                     nbatte, numedd, nbeffe, proeta, pilcvg,&
                     carele)
         if (pilcvg .eq. 1) goto 999
@@ -262,7 +262,7 @@ implicit none
         call nmchso(veasse, 'VEASSE', 'CNFINT', cnfins(act), veasst)
         call nmceta(modele, numedd, mate, carele, comref,&
                     compor, lischa, carcri, fonact, sdstat,&
-                    defico, sdpilo, iterat, sdnume, valint(1, act),&
+                    ds_contact, sdpilo, iterat, sdnume, valint(1, act),&
                     solalg, veelem, veasst, sdtime, sddisc,&
                     nbeffe, irecli, proeta, offset, rho,&
                     eta, ldccvg, pilcvg, residu, matass)

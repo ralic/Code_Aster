@@ -16,9 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nsassp(modele, numedd, lischa, fonact, sddyna,&
-                      sdtime, valinc, veelem, veasse, cnpilo,&
-                      cndonn, mate, carele, defico, matass)
+    subroutine nsassp(modele, numedd, lischa, fonact    , sddyna,&
+                      sdtime, valinc, veelem, veasse    , cnpilo,&
+                      cndonn, mate  , carele, ds_contact, matass)
+        use NonLin_Datastructure_type
         character(len=24) :: modele
         character(len=24) :: numedd
         character(len=19) :: lischa
@@ -32,7 +33,7 @@ interface
         character(len=19) :: cndonn
         character(len=24) :: mate
         character(len=24) :: carele
-        character(len=24) :: defico
+        type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19) :: matass
     end subroutine nsassp
 end interface

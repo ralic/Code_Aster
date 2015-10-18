@@ -21,7 +21,7 @@ interface
     subroutine nmrepl(modele , numedd, mate       , carele, comref,&
                       compor , lischa, ds_algopara, carcri, fonact,&
                       iterat , sdstat, sdpilo     , sdnume, sddyna,&
-                      defico , resoco, deltat     , valinc, solalg,&
+                      ds_contact, deltat     , valinc, solalg,&
                       veelem , veasse, sdtime     , sddisc, etan  ,&
                       ds_conv, eta   , offset     , ldccvg, pilcvg,&
                       matass )
@@ -41,8 +41,7 @@ interface
         character(len=19) :: sdpilo
         character(len=19) :: sdnume
         character(len=19) :: sddyna
-        character(len=24) :: defico
-        character(len=24) :: resoco
+        type(NL_DS_Contact), intent(in) :: ds_contact
         real(kind=8) :: deltat
         character(len=19) :: valinc(*)
         character(len=19) :: solalg(*)

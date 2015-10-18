@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+! aslint: disable=W1504
+!
 interface
-    subroutine nminmc(fonact, lischa, sddyna, modele, compor,&
-                      numedd, numfix, defico, resoco, ds_algopara,&
-                      carcri, solalg, valinc, mate, carele,&
-                      sddisc, sdstat, sdtime, comref, meelem,&
+    subroutine nminmc(fonact, lischa, sddyna    , modele, compor,&
+                      numedd, numfix, ds_contact, ds_algopara,&
+                      carcri, solalg, valinc    , mate, carele,&
+                      sddisc, sdstat, sdtime    , comref, meelem,&
                       measse, veelem, codere)
         use NonLin_Datastructure_type        
         integer :: fonact(*)
@@ -29,8 +31,7 @@ interface
         character(len=24) :: compor
         character(len=24) :: numedd
         character(len=24) :: numfix
-        character(len=24) :: defico
-        character(len=24) :: resoco
+        type(NL_DS_Contact), intent(in) :: ds_contact
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         character(len=24) :: carcri
         character(len=19) :: solalg(*)

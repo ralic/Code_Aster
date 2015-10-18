@@ -1,5 +1,7 @@
-subroutine nmrenu(modelz     , list_func_acti, list_load, sdcont_defi,&
-                  sdcont_solv, nume_ddl      , l_renumber)
+subroutine nmrenu(modelz  , list_func_acti, list_load, ds_contact, nume_dof,&
+                  l_renumber)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -31,10 +33,9 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=*), intent(in) :: modelz
-    character(len=24), intent(inout) :: nume_ddl
+    character(len=24), intent(inout) :: nume_dof
     character(len=19), intent(in) :: list_load
-    character(len=24), intent(in) :: sdcont_defi
-    character(len=24), intent(in) :: sdcont_solv
+    type(NL_DS_Contact), intent(in) :: ds_contact
     integer, intent(in) :: list_func_acti(*)
     aster_logical, intent(out) :: l_renumber
 !
@@ -46,13 +47,11 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! IO  nume_ddl       : name of numbering object (NUME_DDL)
-! In  model          : name of model datastructure
-! In  list_load      : list of loads
-! In  sdcont_defi    : name of contact definition datastructure (from DEFI_CONTACT)
-! In  sdcont_solv    : name of contact solving datastructure
-! In  list_func_acti : list of active functionnalities
-! Out l_renumber     : .true. if renumber
+! In  model            : name of model datastructure
+! In  list_load        : list of loads
+! In  ds_contact       : datastructure for contact management
+! In  list_func_acti   : list of active functionnalities
+! Out l_renumber       : .true. if renumber
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -70,8 +69,8 @@ implicit none
 !
 ! - Initializations
 !
-    crnudd       = sdcont_solv(1:14)//'.NUDD'
-    nosdco       = sdcont_solv(1:14)//'.NOSDCO'
+    crnudd       = ds_contact%sdcont_solv(1:14)//'.NUDD'
+    nosdco       = ds_contact%sdcont_solv(1:14)//'.NOSDCO'
     l_renumber   = .false.
     l_cont       = isfonc(list_func_acti,'CONTACT')
     if (.not.l_cont) then
@@ -93,7 +92,7 @@ implicit none
 !
     if (l_cont_elem) then
         if (l_cont_xfem) then
-            l_cont_xfem_gg = cfdisl(sdcont_defi,'CONT_XFEM_GG')
+            l_cont_xfem_gg = cfdisl(ds_contact%sdcont_defi,'CONT_XFEM_GG')
             if (l_cont_xfem_gg) then
                l_renumber = .true.
             else
@@ -112,7 +111,7 @@ implicit none
         if (niv .ge. 2) then
             write (ifm,*) '<MECANONLINE> ...... RE-CREATION DU NUME_DDL '
         endif
-        call numer3(modelz, list_load, nume_ddl, sd_iden_rela)
+        call numer3(modelz, list_load, nume_dof, sd_iden_rela)
     endif
 !
 999 continue

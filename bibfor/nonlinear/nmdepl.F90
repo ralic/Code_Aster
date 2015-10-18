@@ -1,10 +1,9 @@
-subroutine nmdepl(modele, numedd , mate  , carele, comref     ,&
-                  compor, lischa , fonact, sdstat, ds_algopara,&
-                  carcri, noma   , numins, iterat, solveu     ,&
-                  matass, sddisc , sddyna, sdnume, sdpilo     ,&
-                  sdtime, sderro , defico, resoco, deficu     ,&
-                  resocu, valinc , solalg, veelem, veasse     ,&
-                  eta   , ds_conv, lerrit)
+subroutine nmdepl(modele, numedd , mate      , carele , comref     ,&
+                  compor, lischa , fonact    , sdstat , ds_algopara,&
+                  carcri, noma   , numins    , iterat , solveu     ,&
+                  matass, sddisc , sddyna    , sdnume , sdpilo     ,&
+                  sdtime, sderro , ds_contact, valinc , solalg     ,&
+                  veelem, veasse , eta       , ds_conv, lerrit)
 !
 use NonLin_Datastructure_type
 !
@@ -61,7 +60,7 @@ implicit none
     character(len=24) :: carcri, sdtime, sderro, sdstat
     character(len=19) :: veelem(*), veasse(*)
     character(len=19) :: solalg(*), valinc(*)
-    character(len=24) :: defico, deficu, resocu, resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
     aster_logical :: lerrit
 !
 ! --------------------------------------------------------------------------------------------------
@@ -96,10 +95,7 @@ implicit none
 ! IN  SDDYNA : SD DYNAMIQUE
 ! IN  SDPILO : SD PILOTAGE
 ! IN  SDERRO : SD GESTION DES ERREURS
-! IN  DEFICO : SD DEFINITION CONTACT
-! IN  RESOCO : SD RESOLUTION CONTACT
-! IN  DEFICU : SD DEFINITION LIAISON_UNILATERALE
-! IN  RESOCU : SD RESOLUTION LIAISON_UNILATERALE
+! In  ds_contact       : datastructure for contact management
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
 ! IN  VEELEM : VARIABLE CHAPEAU POUR NOM DES VECT_ELEM
@@ -166,7 +162,7 @@ implicit none
         if (lpilo) then
             call nmpich(modele, numedd, mate  , carele, comref,&
                         compor, lischa, carcri, fonact, sdstat,&
-                        defico, resoco, sdpilo, iterat, sdnume,&
+                        ds_contact, sdpilo, iterat, sdnume,&
                         deltat, valinc, solalg, veelem, veasse,&
                         sdtime, sddisc, eta   , rho   , offset,&
                         ldccvg, pilcvg, matass)
@@ -181,14 +177,14 @@ implicit none
             call nmrepl(modele , numedd, mate       , carele, comref,&
                         compor , lischa, ds_algopara, carcri, fonact,&
                         iterat , sdstat, sdpilo     , sdnume, sddyna,&
-                        defico , resoco, deltat     , valinc, solalg,&
+                        ds_contact, deltat  , valinc, solalg,&
                         veelem , veasse, sdtime     , sddisc, etan  ,&
                         ds_conv, eta   , offset     , ldccvg, pilcvg,&
                         matass )
         else
             call nmreli(modele , numedd, mate  , carele     , comref,&
                         compor , lischa, carcri, fonact     , iterat,&
-                        sdstat , sdnume, sddyna, ds_algopara, defico,&
+                        sdstat , sdnume, sddyna, ds_algopara, ds_contact,&
                         valinc , solalg, veelem, veasse     , sdtime,&
                         ds_conv, ldccvg)
         endif
@@ -210,7 +206,8 @@ implicit none
 !
     if (lunil .or. lctcd) then
         call nmcoun(noma  , fonact, solveu, numedd, matass,&
-                    defico, resoco, deficu, resocu, iterat,&
+                    ds_contact%sdcont_defi, ds_contact%sdcont_solv,&
+                    ds_contact%sdunil_defi, ds_contact%sdunil_solv, iterat,&
                     valinc, solalg, veasse, instap, resi_glob_rela,&
                     sdtime, sdstat, ctccvg)
         if (ctccvg .eq. 0) then

@@ -17,7 +17,7 @@
 !
 interface
     function cfdisd(resoco, questz)
-        character(len=24) :: resoco
+        character(len=19) :: resoco
         character(len=*) :: questz
         integer :: cfdisd
     end function cfdisd

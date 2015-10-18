@@ -1,6 +1,29 @@
-subroutine nmelcm(phase, modele, defico, resoco, mate,&
-                  depmoi, depdel, vitmoi, vitplu, accmoi,&
+subroutine nmelcm(phase , modele, ds_contact, mate  ,&
+                  depmoi, depdel, vitmoi    , vitplu, accmoi,&
                   mectce)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/calcul.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/copisd.h"
+#include "asterfort/dbgcal.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/inical.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/megeom.h"
+#include "asterfort/memare.h"
+#include "asterfort/reajre.h"
+#include "asterfort/xmchex.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,28 +43,10 @@ subroutine nmelcm(phase, modele, defico, resoco, mate,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/calcul.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/copisd.h"
-#include "asterfort/dbgcal.h"
-#include "asterfort/detrsd.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/inical.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/megeom.h"
-#include "asterfort/memare.h"
-#include "asterfort/reajre.h"
-#include "asterfort/xmchex.h"
     character(len=4) :: phase
     character(len=19) :: mectce, depdel
-    character(len=24) :: modele, defico, resoco
+    character(len=24) :: modele
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19) :: depmoi, accmoi, vitmoi, vitplu
     character(len=*) :: mate
 !
@@ -53,10 +58,8 @@ subroutine nmelcm(phase, modele, defico, resoco, mate,&
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  PHASE  : CONTACT OU FROTTEMENT
-! IN  DEFICO : SD POUR LA DEFINITION DU CONTACT
-! IN  RESOCO : SD POUR LA RESOLUTION DU CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  MATE   : CHAMP MATERIAU
 ! IN  DEPMOI : CHAM_NO DES DEPLACEMENTS A L'INSTANT PRECEDENT
 ! IN  MODELE : NOM DU MODELE
@@ -98,7 +101,7 @@ subroutine nmelcm(phase, modele, defico, resoco, mate,&
 !
 ! --- TYPE DE CONTACT
 !
-    lallv = cfdisl(defico,'ALL_VERIF')
+    lallv = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF')
     if (lallv) then
         goto 99
     endif
@@ -120,11 +123,11 @@ subroutine nmelcm(phase, modele, defico, resoco, mate,&
 !
 ! --- TYPE DE CONTACT
 !
-    lctcc = cfdisl(defico,'FORMUL_CONTINUE')
-    lxfcm = cfdisl(defico,'FORMUL_XFEM')
-    ltfcm = cfdisl(defico,'CONT_XFEM_GG')
-    lexip = cfdisl(defico,'EXIS_PENA')
-    lxczm = cfdisl(defico,'EXIS_XFEM_CZM')
+    lctcc = cfdisl(ds_contact%sdcont_defi,'FORMUL_CONTINUE')
+    lxfcm = cfdisl(ds_contact%sdcont_defi,'FORMUL_XFEM')
+    ltfcm = cfdisl(ds_contact%sdcont_defi,'CONT_XFEM_GG')
+    lexip = cfdisl(ds_contact%sdcont_defi,'EXIS_PENA')
+    lxczm = cfdisl(ds_contact%sdcont_defi,'EXIS_XFEM_CZM')
 !
 ! --- OPTION A CALCULER
 !
@@ -153,7 +156,7 @@ subroutine nmelcm(phase, modele, defico, resoco, mate,&
 !
 ! --- CHOIX DU LIGREL
 !
-    nosdco = resoco(1:14)//'.NOSDCO'
+    nosdco = ds_contact%sdcont_solv(1:14)//'.NOSDCO'
     call jeveuo(nosdco, 'L', jnosdc)
     if (lctcc) then
         ligrel = zk24(jnosdc+2-1)(1:19)
@@ -201,16 +204,16 @@ subroutine nmelcm(phase, modele, defico, resoco, mate,&
 !
     if (lctcc) then
 ! ----- CHAM_ELEM POUR ELEMENTS TARDIFS DE CONTACT/FROTTEMENT
-        chmlcf = resoco(1:14)//'.CHML'
+        chmlcf = ds_contact%sdcont_solv(1:14)//'.CHML'
     endif
 !
 ! --- CHAMPS METHODE XFEM (PETITS GLISSEMENTS)
 !
     if (lxfcm) then
-        xindco = resoco(1:14)//'.XFIN'
-        xdonco = resoco(1:14)//'.XFDO'
-        xseuco = resoco(1:14)//'.XFSE'
-        xcohes = resoco(1:14)//'.XCOH'
+        xindco = ds_contact%sdcont_solv(1:14)//'.XFIN'
+        xdonco = ds_contact%sdcont_solv(1:14)//'.XFDO'
+        xseuco = ds_contact%sdcont_solv(1:14)//'.XFSE'
+        xcohes = ds_contact%sdcont_solv(1:14)//'.XCOH'
         lnno = modele(1:8)//'.LNNO'
         ltno = modele(1:8)//'.LTNO'
         pinter = modele(1:8)//'.TOPOFAC.OE'
@@ -238,14 +241,14 @@ subroutine nmelcm(phase, modele, defico, resoco, mate,&
 ! --- CHAMPS METHODE XFEM (GRANDS GLISSEMENTS)
 !
     if (ltfcm) then
-        cpoint = resoco(1:14)//'.XFPO'
-        stano = resoco(1:14)//'.XFST'
-        cpinte = resoco(1:14)//'.XFPI'
-        cainte = resoco(1:14)//'.XFAI'
-        ccface = resoco(1:14)//'.XFCF'
-        heavno = resoco(1:14)//'.XFPL'
-        hea_fa = resoco(1:14)//'.XFHF'
-        hea_no = resoco(1:14)//'.XFHN'
+        cpoint = ds_contact%sdcont_solv(1:14)//'.XFPO'
+        stano = ds_contact%sdcont_solv(1:14)//'.XFST'
+        cpinte = ds_contact%sdcont_solv(1:14)//'.XFPI'
+        cainte = ds_contact%sdcont_solv(1:14)//'.XFAI'
+        ccface = ds_contact%sdcont_solv(1:14)//'.XFCF'
+        heavno = ds_contact%sdcont_solv(1:14)//'.XFPL'
+        hea_fa = ds_contact%sdcont_solv(1:14)//'.XFHF'
+        hea_no = ds_contact%sdcont_solv(1:14)//'.XFHN'
     endif
 !
 ! --- CREATION DES LISTES DES CHAMPS IN ET OUT

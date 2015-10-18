@@ -21,10 +21,10 @@
 !
 interface
     subroutine nmdesc(modele, numedd  , numfix, mate  , carele     ,&
-                      comref, compor  , lischa, resoco, ds_algopara,&
+                      comref, compor  , lischa, ds_contact, ds_algopara,&
                       solveu, carcri  , fonact, numins, iterat     ,&
                       sddisc, ds_print, sdstat, sdtime, sddyna     ,&
-                      sdnume, sderro  , matass, maprec, defico     ,&
+                      sdnume, sderro  , matass, maprec, &
                       valinc, solalg  , meelem, measse, veasse     ,&
                       veelem, lerrit  )
         use NonLin_Datastructure_type
@@ -36,7 +36,7 @@ interface
         character(len=24) :: comref
         character(len=24) :: compor
         character(len=19) :: lischa
-        character(len=24) :: resoco
+        type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19) :: solveu
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         character(len=24) :: carcri
@@ -52,7 +52,6 @@ interface
         character(len=24) :: sderro
         character(len=19) :: matass
         character(len=19) :: maprec
-        character(len=24) :: defico
         character(len=19) :: valinc(*)
         character(len=19) :: solalg(*)
         character(len=19) :: meelem(*)

@@ -1,5 +1,24 @@
-subroutine nmaint(numedd, fonact, defico, veasse, vefint,&
+subroutine nmaint(numedd, fonact, ds_contact, veasse, vefint,&
                   cnfint, sdnume)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/assvec.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmasco.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmdebg.h"
+#include "asterfort/vtaxpy.h"
+#include "asterfort/vtzero.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,27 +38,12 @@ subroutine nmaint(numedd, fonact, defico, veasse, vefint,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/assvec.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/nmasco.h"
-#include "asterfort/nmchex.h"
-#include "asterfort/nmdebg.h"
-#include "asterfort/vtaxpy.h"
-#include "asterfort/vtzero.h"
     integer :: fonact(*)
     character(len=24) :: numedd
     character(len=19) :: veasse(*)
     character(len=19) :: vefint, cnfint
     character(len=19) :: sdnume
-    character(len=24) :: defico
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! ----------------------------------------------------------------------
 !
@@ -49,9 +53,8 @@ subroutine nmaint(numedd, fonact, defico, veasse, vefint,&
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  NUMEDD : NOM DE LA NUMEROTATION
-! IN  DEFICO : SD DEFINITION CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! IN  VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE
 ! IN  VEFINT : VECT_ELEM FORCES INTERNES
@@ -74,9 +77,6 @@ subroutine nmaint(numedd, fonact, defico, veasse, vefint,&
 !
     call jemarq()
     call infdbg('MECA_NON_LINE', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> ... ASSEMBLAGE DES FORCES INTERNES'
     endif
@@ -93,7 +93,7 @@ subroutine nmaint(numedd, fonact, defico, veasse, vefint,&
 ! --- CONTRIBUTIONS DU CONTACT
 !
     if (lcont) then
-        call nmasco('CNFINT', fonact, defico, veasse, cncont)
+        call nmasco('CNFINT', fonact, ds_contact, veasse, cncont)
     endif
 !
 ! --- ASSEMBLAGE DES FORCES INTERIEURES
@@ -124,8 +124,6 @@ subroutine nmaint(numedd, fonact, defico, veasse, vefint,&
             endif
 !
         end do
-!        WRITE(6,*) 'NB_ENDO_NPROJ=', ENDOP1
-!        WRITE(6,*) 'NB_ENDO_PROJ=', ENDOP2
     endif
 !
 ! --- CONTRIBUTIONS DU CONTACT

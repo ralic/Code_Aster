@@ -259,7 +259,7 @@ implicit none
 ! --- PRE-CALCUL DES MATR_ELEM CONSTANTES AU COURS DU CALCUL
 !
     call nminmc(fonact, list_load, sddyna, model, compor,&
-                numedd, numfix, sdcont_defi, sdcont_solv, ds_algopara,&
+                numedd, numfix, ds_contact, ds_algopara,&
                 carcri, solalg, valinc, mate, carele,&
                 sddisc, sdstat, sdtime, varc_refe, meelem,&
                 measse, veelem, codere)
@@ -319,10 +319,10 @@ implicit none
                     sddisc  , fonact, sdcont_solv   , sdunil_solv, varc_refe,&
                     ds_inout, valinc, solalg   , veelem, measse   ,&
                     veasse  , sddyna)
-        call accel0(model      , numedd, numfix, fonact     , list_load,&
-                    sdcont_defi, sdcont_solv, maprec, solveu     , valinc,&
-                    sddyna     , sdstat, sdtime, ds_algopara, meelem,&
-                    measse     , veelem, veasse, solalg)
+        call accel0(model     , numedd, numfix     , fonact, list_load,&
+                    ds_contact, maprec, solveu     , valinc, sddyna   ,&
+                    sdstat    , sdtime, ds_algopara, meelem, measse   ,&
+                    veelem    , veasse, solalg)
     endif
 !
 ! - Extract variables
@@ -377,11 +377,10 @@ implicit none
 ! --- CALCUL DU SECOND MEMBRE INITIAL POUR MULTI-PAS
 !
     if (lmpas) then
-        call nmihht(model , numedd   , mate     , compor     , carcri,&
-                    carele, list_load, varc_refe, fonact     , sdstat,&
-                    sddyna, sdtime   , sdnume   , sdcont_defi, sdcont_solv,&
-                    sdunil_solv, valinc   , sddisc   , solalg     , veasse,&
-                    measse, ds_inout)
+        call nmihht(model , numedd   , mate     , compor    , carcri,&
+                    carele, list_load, varc_refe, fonact    , sdstat,&
+                    sddyna, sdtime   , sdnume   , ds_contact, valinc,&
+                    sddisc, solalg   , veasse   , measse    , ds_inout)
     endif
 !
 ! --- INITIALISATIONS TIMERS ET STATISTIQUES

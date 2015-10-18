@@ -1,6 +1,24 @@
-subroutine nsassp(modele, numedd, lischa, fonact, sddyna,&
-                  sdtime, valinc, veelem, veasse, cnpilo,&
-                  cndonn, mate, carele, defico, matass)
+subroutine nsassp(modele, numedd, lischa, fonact    , sddyna,&
+                  sdtime, valinc, veelem, veasse    , cnpilo,&
+                  cndonn, mate  , carele, ds_contact, matass)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/nmadir.h"
+#include "asterfort/nmasdi.h"
+#include "asterfort/nmasfi.h"
+#include "asterfort/nmasva.h"
+#include "asterfort/nmbudi.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmdiri.h"
+#include "asterfort/nmtime.h"
+#include "asterfort/vtaxpy.h"
+#include "asterfort/vtzero.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,26 +38,10 @@ subroutine nsassp(modele, numedd, lischa, fonact, sddyna,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/nmadir.h"
-#include "asterfort/nmasdi.h"
-#include "asterfort/nmasfi.h"
-#include "asterfort/nmasva.h"
-#include "asterfort/nmbudi.h"
-#include "asterfort/nmchex.h"
-#include "asterfort/nmdiri.h"
-#include "asterfort/nmtime.h"
-#include "asterfort/vtaxpy.h"
-#include "asterfort/vtzero.h"
     integer :: fonact(*)
     character(len=19) :: lischa, sddyna, matass
-    character(len=24) :: modele, numedd, mate, carele, defico, sdtime
+    character(len=24) :: modele, numedd, mate, carele, sdtime
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19) :: veasse(*), veelem(*), valinc(*)
     character(len=19) :: cnpilo, cndonn
 !
@@ -51,12 +53,12 @@ subroutine nsassp(modele, numedd, lischa, fonact, sddyna,&
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  MODELE : NOM DU MODELE
 ! IN  NUMEDD : NOM DE LA NUMEROTATION
 ! IN  LISCHA : SD L_CHARGES
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! IN  SDDYNA : SD DYNAMIQUE
+! In  ds_contact       : datastructure for contact management
 ! IN  SDTIME : SD TIMER
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  VEELEM : VARIABLE CHAPEAU POUR NOM DES VECT_ELEM
@@ -80,10 +82,6 @@ subroutine nsassp(modele, numedd, lischa, fonact, sddyna,&
     aster_logical :: lmacr, leltc, leltf, lallv
 !
 ! ----------------------------------------------------------------------
-!
-    call jemarq()
-!
-! --- INITIALISATIONS
 !
     call vtzero(cndonn)
     call vtzero(cnpilo)
@@ -136,7 +134,7 @@ subroutine nsassp(modele, numedd, lischa, fonact, sddyna,&
     call nmchex(veasse, 'VEASSE', 'CNDIRI', cndiri)
     call nmdiri(modele, mate, carele, lischa, k19bla,&
                 depmoi, k19bla, k19bla, vediri)
-    call nmadir(numedd, fonact, defico, veasse, vediri,&
+    call nmadir(numedd, fonact, ds_contact, veasse, vediri,&
                 cndiri)
 !
 ! --- CONDITIONS DE DIRICHLET B.U
@@ -193,9 +191,9 @@ subroutine nsassp(modele, numedd, lischa, fonact, sddyna,&
     if (nbvec .gt. nbcoef) then
         ASSERT(.false.)
     endif
-    do 10 i = 1, nbvec
+    do i = 1, nbvec
         call vtaxpy(coef(i), vect(i), cndonn)
- 10 end do
+    end do
 !
 ! --- CHARGEMENT PILOTE
 !
@@ -207,11 +205,10 @@ subroutine nsassp(modele, numedd, lischa, fonact, sddyna,&
     if (nbvec .gt. nbcoef) then
         ASSERT(.false.)
     endif
-    do 18 i = 1, nbvec
+    do i = 1, nbvec
         call vtaxpy(coef(i), vect(i), cnpilo)
- 18 end do
+    end do
 !
     call nmtime(sdtime, 'END', 'SECO_MEMB')
 !
-    call jedema()
 end subroutine
