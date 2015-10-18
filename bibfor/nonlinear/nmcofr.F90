@@ -1,6 +1,23 @@
-subroutine nmcofr(noma, depplu, depdel, ddepla, solveu,&
-                  numedd, matass, defico, resoco, iterat,&
-                  resigr, sdstat, sdtime, ctccvg, instan)
+subroutine nmcofr(noma  , depplu, depdel    , ddepla, solveu,&
+                  numedd, matass, ds_contact, iterat, resigr,&
+                  sdstat, sdtime, ctccvg    , instan)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfalgo.h"
+#include "asterfort/cfgeom.h"
+#include "asterfort/cfsvfr.h"
+#include "asterfort/cfsvmu.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmtime.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,24 +37,12 @@ subroutine nmcofr(noma, depplu, depdel, ddepla, solveu,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/cfalgo.h"
-#include "asterfort/cfgeom.h"
-#include "asterfort/cfsvfr.h"
-#include "asterfort/cfsvmu.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/nmtime.h"
     character(len=8) :: noma
     character(len=19) :: depplu
     character(len=19) :: depdel, ddepla
     character(len=14) :: numedd
-    character(len=24) :: defico, resoco, sdtime, sdstat
+    character(len=24) :: sdtime, sdstat
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19) :: solveu, matass
     real(kind=8) :: resigr
     integer :: iterat, ctccvg
@@ -52,7 +57,6 @@ subroutine nmcofr(noma, depplu, depdel, ddepla, solveu,&
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  NOMA   : NOM DU MAILLAGE
 ! IN  DEPPLU : CHAMP DE DEPLACEMENTS A L'ITERATION DE NEWTON PRECEDENTE
 ! IN  DEPDEL : INCREMENT DE DEPLACEMENT CUMULE
@@ -60,8 +64,7 @@ subroutine nmcofr(noma, depplu, depdel, ddepla, solveu,&
 ! IN  SOLVEU : SD SOLVEUR
 ! IN  NUMEDD : NUME_DDL
 ! IN  MATASS : NOM DE LA MATRICE DU PREMIER MEMBRE ASSEMBLEE
-! IN  DEFICO : SD DE DEFINITION DU CONTACT
-! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  SDTIME : SD TIMER
 ! IN  SDSTAT : SD STATISTIQUES
 ! IN  RESIGR : RESI_GLOB_RELA
@@ -83,6 +86,9 @@ subroutine nmcofr(noma, depplu, depdel, ddepla, solveu,&
 !
     call jemarq()
     call infdbg('CONTACT', ifm, niv)
+    if (niv .ge. 2) then
+        write (ifm,*) '<CONTACT> DEBUT DU TRAITEMENT DES CONDITIONS DE CONTACT'
+    endif
 !
 ! --- INITIALISATIONS
 !
@@ -90,7 +96,7 @@ subroutine nmcofr(noma, depplu, depdel, ddepla, solveu,&
 !
 ! --- ACCES OBJETS
 !
-    clreac = resoco(1:14)//'.REAL'
+    clreac = ds_contact%sdcont_solv(1:14)//'.REAL'
     call jeveuo(clreac, 'E', jclrea)
 !
 ! --- PARAMETRES POUR BOUCLES GEOMETRIQUE/PT FIXE
@@ -98,37 +104,29 @@ subroutine nmcofr(noma, depplu, depdel, ddepla, solveu,&
     reageo = zl(jclrea+1-1)
     ctcfix = zl(jclrea+2-1)
 !
-! --- AFFICHAGE
-!
-    if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> DEBUT DU TRAITEMENT '//&
-     &                'DES CONDITIONS DE CONTACT'
-    endif
-!
 ! --- SAUVEGARDE AVANT APPARIEMENT
 !
     if (reageo) then
-        call cfsvmu(defico, resoco, .false._1)
-        call cfsvfr(defico, resoco, .false._1)
+        call cfsvmu(ds_contact%sdcont_defi, ds_contact%sdcont_solv, .false._1)
+        call cfsvfr(ds_contact%sdcont_defi, ds_contact%sdcont_solv, .false._1)
     endif
 !
 ! --- APPARIEMENT
 !
     call cfgeom(reageo, iterat, noma, sdtime, sdstat,&
-                defico, resoco, depplu, instan)
+                ds_contact%sdcont_defi, ds_contact%sdcont_solv, depplu, instan)
 !
 ! --- ALGORITHMES DE CONTACT
 !
     call nmtime(sdtime, 'INI', 'CTCD_ALGO')
     call nmtime(sdtime, 'RUN', 'CTCD_ALGO')
-    call cfalgo(noma, sdstat, resigr, iterat, defico,&
-                resoco, solveu, numedd, matass, ddepla,&
+    call cfalgo(noma, sdstat, resigr, iterat, ds_contact%sdcont_defi,&
+                ds_contact%sdcont_solv, solveu, numedd, matass, ddepla,&
                 depdel, ctccvg, ctcfix)
     call nmtime(sdtime, 'END', 'CTCD_ALGO')
 !
     if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> FIN DU TRAITEMENT '//&
-     &                'DES CONDITIONS DE CONTACT'
+        write (ifm,*) '<CONTACT> FIN DU TRAITEMENT DES CONDITIONS DE CONTACT'
     endif
 !
 ! --- DESACTIVATION REAC_GEOM

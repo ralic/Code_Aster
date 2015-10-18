@@ -17,8 +17,9 @@
 !
 interface
     subroutine nmcofr(noma, depplu, depdel, ddepla, solveu,&
-                      numedd, matass, defico, resoco, iterat,&
+                      numedd, matass, ds_contact, iterat,&
                       resigr, sdstat, sdtime, ctccvg,instan)
+        use NonLin_Datastructure_type
         character(len=8) :: noma
         character(len=19) :: depplu
         character(len=19) :: depdel
@@ -26,8 +27,7 @@ interface
         character(len=19) :: solveu
         character(len=14) :: numedd
         character(len=19) :: matass
-        character(len=24) :: defico
-        character(len=24) :: resoco
+        type(NL_DS_Contact), intent(in) :: ds_contact
         integer :: iterat
         real(kind=8) :: resigr
         character(len=24) :: sdstat

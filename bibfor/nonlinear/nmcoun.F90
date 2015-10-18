@@ -1,7 +1,18 @@
-subroutine nmcoun(noma, fonact, solveu, numedz, matass,&
-                  defico, resoco, deficu, resocu, iterat,&
-                  valinc, solalg, veasse, instan, resigr,&
-                  sdtime, sdstat, ctccvg)
+subroutine nmcoun(noma      , fonact, solveu, numedz, matass,&
+                  ds_contact, iterat, valinc, solalg, veasse,&
+                  instan    , resigr, sdtime, sdstat, ctccvg)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmcofr.h"
+#include "asterfort/nmunil.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,20 +32,9 @@ subroutine nmcoun(noma, fonact, solveu, numedz, matass,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/nmchex.h"
-#include "asterfort/nmcofr.h"
-#include "asterfort/nmunil.h"
     character(len=8) :: noma
-    character(len=24) :: defico, resoco
-    character(len=24) :: deficu, resocu, sdtime, sdstat
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=24) :: sdtime, sdstat
     character(len=19) :: valinc(*)
     character(len=19) :: solalg(*), veasse(*)
     character(len=19) :: solveu, matass
@@ -55,16 +55,12 @@ subroutine nmcoun(noma, fonact, solveu, numedz, matass,&
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  MAILLA : NOM DU MAILLAGE
 ! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
 ! IN  SOLVEU : SD SOLVEUR
 ! IN  NUMEDD : NUME_DDL
 ! IN  MATASS : NOM DE LA MATRICE DU PREMIER MEMBRE ASSEMBLEE
-! IN  DEFICO : SD DE DEFINITION DU CONTACT
-! IN  RESOCO : SD DE RESOLUTION DU CONTACT
-! IN  DEFICU : SD DE DEFINITION DE LIAISON_UNILATER
-! IN  RESOCU : SD DE RESOLUTION DE LIAISON_UNILATER
+! In  ds_contact       : datastructure for contact management
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
 !               OUT: DDEPLA
@@ -91,7 +87,6 @@ subroutine nmcoun(noma, fonact, solveu, numedz, matass,&
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
@@ -110,11 +105,11 @@ subroutine nmcoun(noma, fonact, solveu, numedz, matass,&
 ! --- TRAITEMENT DU CONTACT ET/OU DU FROTTEMENT DISCRET
 !
     if (lctcd) then
-        lallv = cfdisl(defico,'ALL_VERIF')
+        lallv = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF')
         if (.not.lallv) then
-            call nmcofr(noma, depplu, depdel, ddepla, solveu,&
-                        numedd, matass, defico, resoco, iterat,&
-                        resigr, sdstat, sdtime, ctccvg, instan)
+            call nmcofr(noma  , depplu, depdel    , ddepla, solveu,&
+                        numedd, matass, ds_contact, iterat, resigr,&
+                        sdstat, sdtime, ctccvg    , instan)
         endif
         ctccvg = 0
     endif
@@ -122,14 +117,12 @@ subroutine nmcoun(noma, fonact, solveu, numedz, matass,&
 ! --- TRAITEMENT DE LIAISON_UNILATER
 !
     if (lunil) then
-        call nmunil(noma, depplu, ddepla, solveu, matass,&
-                    deficu, resocu, cncine, iterat, instan,&
-                    ctccvg)
+        call nmunil(noma      , depplu, ddepla, solveu, matass,&
+                    ds_contact, cncine, iterat, instan, ctccvg)
     endif
 !
 ! --- LE CALCUL DE CONTACT A FORCEMENT ETE REALISE
 !
     ASSERT(ctccvg.ge.0)
 !
-    call jedema()
 end subroutine

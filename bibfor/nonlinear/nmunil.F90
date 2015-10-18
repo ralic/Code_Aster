@@ -1,6 +1,19 @@
-subroutine nmunil(mailla, depplu, ddepla, solveu, matass,&
-                  deficu, resocu, cncine, iterat, inst,&
-                  ctccvg)
+subroutine nmunil(mailla    , depplu, ddepla, solveu, matass,&
+                  ds_contact, cncine, iterat, inst  , ctccvg)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "jeveux.h"
+#include "asterfort/algocu.h"
+#include "asterfort/assert.h"
+#include "asterfort/cuprep.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mtdsc3.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,20 +33,9 @@ subroutine nmunil(mailla, depplu, ddepla, solveu, matass,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/algocu.h"
-#include "asterfort/assert.h"
-#include "asterfort/cuprep.h"
-#include "asterfort/infniv.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/mtdsc3.h"
     character(len=8) :: mailla
     character(len=19) :: depplu, ddepla, solveu, matass, cncine
-    character(len=24) :: deficu
-    character(len=24) :: resocu
+    type(NL_DS_Contact), intent(in) :: ds_contact
     integer :: iterat
     real(kind=8) :: inst
     integer :: ctccvg
@@ -46,12 +48,10 @@ subroutine nmunil(mailla, depplu, ddepla, solveu, matass,&
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  DEPPLU : CHAMP DE DEPLACEMENTS A L'ITERATION DE NEWTON PRECEDENTE
 ! IN  DEPPLA : INCREMENT DE DEPLACEMENTS CALCULE EN IGNORANT LE CONTACT
 ! IN  SOLVEU : SD SOLVEUR
-! IN  DEFICU : SD DE DEFINITION (ISSUE D'AFFE_CHAR_MECA)
-! IN  RESOCU : SD DE TRAITEMENT NUMERIQUE
+! In  ds_contact       : datastructure for contact management
 ! IN  CNCINE : CHAM_NO CINEMATIQUE
 ! IN  ITERAT : ITERATION DE NEWTON
 ! IN  INST   : VALEUR DE L'INSTANT DE CALCUL
@@ -75,7 +75,7 @@ subroutine nmunil(mailla, depplu, ddepla, solveu, matass,&
 !
 ! --- RECUPERATION DU DESCRIPTEUR DE LA MATRICE DE LIAISON UNIL
 !
-    matr = resocu(1:14)//'.MATC'
+    matr = ds_contact%sdunil_solv(1:14)//'.MATC'
     call mtdsc3(matr)
     call jeveuo(matr(1:19)//'.&INT', 'E', ldscon)
 !
@@ -91,13 +91,13 @@ subroutine nmunil(mailla, depplu, ddepla, solveu, matass,&
 !
     if (iterat .eq. 0) then
         neq = zi(lmat+2)
-        call cuprep(mailla, neq, deficu, resocu, depplu,&
+        call cuprep(mailla, neq, ds_contact%sdunil_defi, ds_contact%sdunil_solv, depplu,&
                     inst)
     endif
 !
 ! --- CHOIX DE L'ALGO DE RESOLUTION
 !
-    call algocu(deficu, resocu, solveu, lmat, ldscon,&
+    call algocu(ds_contact%sdunil_defi, ds_contact%sdunil_solv, solveu, lmat, ldscon,&
                 cncine, ddepla, ctccvg)
 !
 ! --- LE CALCUL DE CONTACT A FORCEMENT ETE REALISE

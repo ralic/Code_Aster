@@ -205,11 +205,9 @@ implicit none
 ! --- MODIFICATIONS DEPLACEMENTS SI CONTACT DISCRET OU LIAISON_UNILA
 !
     if (lunil .or. lctcd) then
-        call nmcoun(noma  , fonact, solveu, numedd, matass,&
-                    ds_contact%sdcont_defi, ds_contact%sdcont_solv,&
-                    ds_contact%sdunil_defi, ds_contact%sdunil_solv, iterat,&
-                    valinc, solalg, veasse, instap, resi_glob_rela,&
-                    sdtime, sdstat, ctccvg)
+        call nmcoun(noma      , fonact        , solveu, numedd, matass,&
+                    ds_contact, iterat        , valinc, solalg, veasse,&
+                    instap    , resi_glob_rela, sdtime, sdstat, ctccvg)
         if (ctccvg .eq. 0) then
             call nmsolm(sddyna, solalg)
         else

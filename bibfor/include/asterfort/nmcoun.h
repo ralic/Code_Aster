@@ -16,19 +16,16 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmcoun(noma, fonact, solveu, numedz, matass,&
-                      defico, resoco, deficu, resocu, iterat,&
-                      valinc, solalg, veasse, instan, resigr,&
-                      sdtime, sdstat, ctccvg)
+    subroutine nmcoun(noma      , fonact, solveu, numedz, matass,&
+                      ds_contact, iterat, valinc, solalg, veasse,&
+                      instan    , resigr, sdtime, sdstat, ctccvg)
+        use NonLin_Datastructure_type
         character(len=8) :: noma
         integer :: fonact(*)
         character(len=19) :: solveu
         character(len=*) :: numedz
         character(len=19) :: matass
-        character(len=24) :: defico
-        character(len=24) :: resoco
-        character(len=24) :: deficu
-        character(len=24) :: resocu
+        type(NL_DS_Contact), intent(in) :: ds_contact
         integer :: iterat
         character(len=19) :: valinc(*)
         character(len=19) :: solalg(*)

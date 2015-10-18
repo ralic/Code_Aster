@@ -16,16 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmunil(mailla, depplu, ddepla, solveu, matass,&
-                      deficu, resocu, cncine, iterat, inst,&
-                      ctccvg)
+    subroutine nmunil(mailla    , depplu, ddepla, solveu, matass,&
+                      ds_contact, cncine, iterat, inst  , ctccvg)
+        use NonLin_Datastructure_type
         character(len=8) :: mailla
         character(len=19) :: depplu
         character(len=19) :: ddepla
         character(len=19) :: solveu
         character(len=19) :: matass
-        character(len=24) :: deficu
-        character(len=24) :: resocu
+        type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19) :: cncine
         integer :: iterat
         real(kind=8) :: inst
