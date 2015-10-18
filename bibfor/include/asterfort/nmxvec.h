@@ -22,7 +22,7 @@
 interface
     subroutine nmxvec(modelz  , mate  , carele, compor, sdtime,&
                       sddisc  , sddyna, numins, valinc, solalg,&
-                      lischa  , comref, resoco, resocu, numedd,&
+                      lischa  , comref, numedd,&
                       ds_inout, veelem, veasse, measse, nbvect,&
                       ltypve  , lcalve, loptve, lassve)
         use NonLin_Datastructure_type
@@ -38,8 +38,6 @@ interface
         character(len=19) :: solalg(*)
         character(len=19) :: lischa
         character(len=24) :: comref
-        character(len=24) :: resoco
-        character(len=24) :: resocu
         character(len=24) :: numedd
         type(NL_DS_InOut), intent(in) :: ds_inout
         character(len=19) :: veelem(*)

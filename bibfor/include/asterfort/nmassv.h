@@ -17,8 +17,8 @@
 !
 interface
     subroutine nmassv(typvez  , modelz, lischa, mate  , carele,&
-                      compor  , numedd, instam, instap, resoco,&
-                      resocu  , sddyna, sdtime, valinc, comref,&
+                      compor  , numedd, instam, instap,&
+                      sddyna, sdtime, valinc, comref,&
                       ds_inout, measse, vecelz, vecasz)
         use NonLin_Datastructure_type
         character(len=*) :: typvez
@@ -30,8 +30,6 @@ interface
         character(len=24) :: numedd
         real(kind=8) :: instam
         real(kind=8) :: instap
-        character(len=24) :: resoco
-        character(len=24) :: resocu
         character(len=19) :: sddyna
         character(len=24) :: sdtime
         character(len=19) :: valinc(*)

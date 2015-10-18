@@ -2,7 +2,7 @@ subroutine nmener(valinc, veasse, measse, sddyna, eta        ,&
                   sdener, fonact, numedd, numfix, ds_algopara,&
                   meelem, numins, modele, mate  , carele     ,&
                   compor, sdtime, sddisc, solalg, lischa     ,&
-                  comref, resoco, resocu, veelem, ds_inout)
+                  comref, veelem, ds_inout)
 !
 use NonLin_Datastructure_type
 !
@@ -48,7 +48,7 @@ implicit none
     character(len=19) :: sddyna, sdener, valinc(*), veasse(*), measse(*)
     character(len=19) :: meelem(*), sddisc, solalg(*), lischa, veelem(*)
     character(len=24) :: numedd, numfix, modele, mate, carele, compor
-    character(len=24) :: sdtime, comref, resoco, resocu
+    character(len=24) :: sdtime, comref
     real(kind=8) :: eta
     integer :: fonact(*), numins
     type(NL_DS_InOut), intent(in) :: ds_inout
@@ -84,9 +84,6 @@ implicit none
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
 ! IN  LISCHA : LISTE DES CHARGES
 ! IN  COMREF : VARI_COM DE REFERENCE
-! IN  DEFICO : SD DEF. CONTACT
-! IN  RESOCO : SD RESOLUTION CONTACT
-! IN  RESOCU : SD RESOLUTION LIAISON_UNILATER
 ! IN  VEELEM : VECTEURS ELEMENTAIRES
 !
 ! ----------------------------------------------------------------------
@@ -338,7 +335,7 @@ implicit none
     if (numins .eq. 1) then
         call nmfini(sddyna  , valinc, measse, modele, mate  ,&
                     carele  , compor, sdtime, sddisc, numins,&
-                    solalg  , lischa, comref, resoco, resocu,&
+                    solalg  , lischa, comref,&
                     ds_inout, numedd, veelem, veasse)
     endif
 !

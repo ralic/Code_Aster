@@ -175,7 +175,7 @@ implicit none
 !
     call nmchar('VARI'  , 'PREDICTION', modele, numedd, mate,&
                 carele  , compor      , lischa, numins, sdtime,&
-                sddisc  , fonact      , ds_contact%sdcont_defi, ds_contact%sdunil_defi, comref,&
+                sddisc  , fonact      , comref,&
                 ds_inout, valinc      , solalg, veelem, measse,&
                 veasse  , sddyna)
 !

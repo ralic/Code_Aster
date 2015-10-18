@@ -1,6 +1,6 @@
 subroutine nmassv(typvez  , modelz, lischa, mate  , carele,&
-                  compor  , numedd, instam, instap, resoco,&
-                  resocu  , sddyna, sdtime, valinc, comref,&
+                  compor  , numedd, instam, instap, &
+                  sddyna, sdtime, valinc, comref,&
                   ds_inout, measse, vecelz, vecasz)
 !
 use NonLin_Datastructure_type
@@ -15,10 +15,7 @@ implicit none
 #include "asterfort/assmiv.h"
 #include "asterfort/assvec.h"
 #include "asterfort/assvss.h"
-#include "asterfort/cffoco.h"
-#include "asterfort/cffofr.h"
 #include "asterfort/copisd.h"
-#include "asterfort/cufoco.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -57,7 +54,6 @@ implicit none
     real(kind=8) :: instap, instam
     character(len=19) :: sddyna
     character(len=24) :: mate, carele, compor, numedd, comref, sdtime
-    character(len=24) :: resoco, resocu
     character(len=19) :: measse(*), valinc(*)
     type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=*) :: vecasz, vecelz
@@ -79,8 +75,6 @@ implicit none
 ! IN  NUMEDD : NUME_DDL
 ! IN  INSTAP : INSTANT PLUS
 ! IN  SDDYNA : SD DYNAMIQUE
-! IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
-! IN  RESOCU : SD POUR LA RESOLUTION LIAISON_UNILATER
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  COMREF : VARI_COM DE REFERENCE
 ! IN  SDTIME : SD TIMER
@@ -281,22 +275,6 @@ implicit none
     else if (typvec.eq.'CNMODC') then
         call nmamod('CORR', numedd, sddyna, vitplu, vitkm1,&
                     vecass)
-!
-! --- FORCES DE FROTTEMENT DISCRET (PAS DE VECT_ELEM)
-!
-    else if (typvec.eq.'CNCTDF') then
-        call cffofr(numedd, resoco, vecass)
-!
-! --- FORCES DE CONTACT DISCRET (PAS DE VECT_ELEM)
-!
-    else if (typvec.eq.'CNCTDC') then
-        call cffoco(numedd, resoco, vecass)
-!
-! --- FORCES DE LIAISON_UNILATER (PAS DE VECT_ELEM)
-!
-    else if (typvec.eq.'CNUNIL') then
-        call cufoco(numedd, resocu, vecass)
-!
     else
         ASSERT(.false.)
     endif

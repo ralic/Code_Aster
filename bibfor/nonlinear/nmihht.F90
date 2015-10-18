@@ -55,7 +55,7 @@ implicit none
 !
 ! MECA_NON_LINE - Init
 !
-! Initialiasations for multi-step schemes
+! Initializations for multi-step schemes
 !
 ! --------------------------------------------------------------------------------------------------
 !

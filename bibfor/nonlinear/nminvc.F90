@@ -1,6 +1,6 @@
 subroutine nminvc(modelz, mate  , carele, compor, sdtime  ,&
                   sddisc, sddyna, valinc, solalg, lischa  ,&
-                  comref, resoco, resocu, numedd, ds_inout,&
+                  comref, numedd, ds_inout,&
                   veelem, veasse, measse)
 !
 use NonLin_Datastructure_type
@@ -34,7 +34,6 @@ implicit none
     character(len=24) :: mate, carele
     character(len=24) :: compor
     character(len=19) :: sddisc, sddyna, lischa
-    character(len=24) :: resoco, resocu
     character(len=24) :: comref, numedd, sdtime
     type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=19) :: veelem(*), veasse(*), measse(*)
@@ -53,8 +52,6 @@ implicit none
 ! IN  MODELE : NOM DU MODELE
 ! IN  SOLVEU : SOLVEUR
 ! IN  NUMEDD : NUME_DDL
-! IN  RESOCO : SD RESOLUTION CONTACT
-! IN  RESOCU : SD RESOLUTION LIAISON_UNILATER
 ! IN  LISCHA : LISTE DES CHARGEMENTS
 ! In  ds_inout         : datastructure for input/output management
 ! IN  MATE   : NOM DU CHAMP DE MATERIAU
@@ -99,7 +96,7 @@ implicit none
     if (nbvect .gt. 0) then
         call nmxvec(modelz, mate  , carele, compor, sdtime,&
                     sddisc, sddyna, numins, valinc, solalg,&
-                    lischa, comref, resoco, resocu, numedd,&
+                    lischa, comref, numedd,&
                     ds_inout, veelem, veasse, measse, nbvect,&
                     ltypve  , lcalve, loptve, lassve)
     endif

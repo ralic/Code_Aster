@@ -1,6 +1,6 @@
 subroutine nmfini(sddyna  , valinc, measse, modele, mate  ,&
                   carele  , compor, sdtime, sddisc, numins,&
-                  solalg  , lischa, comref, resoco, resocu,&
+                  solalg  , lischa, comref,&
                   ds_inout, numedd, veelem, veasse)
 !
 use NonLin_Datastructure_type
@@ -41,7 +41,7 @@ implicit none
 !
     character(len=19) :: sddyna, valinc(*), measse(*)
     character(len=24) :: modele, mate, carele, compor, sdtime, comref
-    character(len=24) :: resoco, resocu, numedd
+    character(len=24) :: numedd
     type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=19) :: sddisc, solalg(*), lischa, veelem(*), veasse(*)
     integer :: numins
@@ -69,9 +69,6 @@ implicit none
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
 ! IN  LISCHA : LISTE DES CHARGES
 ! IN  COMREF : VARI_COM DE REFERENCE
-! IN  DEFICO : SD DEF. CONTACT
-! IN  RESOCO : SD RESOLUTION CONTACT
-! IN  RESOCU : SD RESOLUTION LIAISON_UNILATER
 ! IN  NUMEDD : NUME_DDL
 ! IN  VEELEM : VECTEURS ELEMENTAIRES
 ! IN  VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE
@@ -157,7 +154,7 @@ implicit none
                 nbvect, ltypve, loptve, lcalve, lassve)
     call nmxvec(modele  , mate  , carele, compor, sdtime,&
                 sddisc  , sddyna, numins, valinc, solalg,&
-                lischa  , comref, resoco, resocu, numedd,&
+                lischa  , comref, numedd,&
                 ds_inout, veelem, veasse, measse, nbvect,&
                 ltypve  , lcalve, loptve, lassve)
     call nmchex(veasse, 'VEASSE', 'CNFNOD', cnfnod)

@@ -20,7 +20,7 @@
 interface
     subroutine nmchar(mode    , phasez, modele, numedd, mate  ,&
                       carele  , compor, lischa, numins, sdtime,&
-                      sddisc  , fonact, resoco, resocu, comref,&
+                      sddisc  , fonact, comref,&
                       ds_inout, valinc, solalg, veelem, measse,&
                       veasse  , sddyna)
         use NonLin_Datastructure_type
@@ -36,8 +36,6 @@ interface
         character(len=24) :: sdtime
         character(len=19) :: sddisc
         integer :: fonact(*)
-        character(len=24) :: resoco
-        character(len=24) :: resocu
         character(len=24) :: comref
         type(NL_DS_InOut), intent(in) :: ds_inout
         character(len=19) :: valinc(*)

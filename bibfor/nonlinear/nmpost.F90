@@ -149,7 +149,7 @@ implicit none
                     sdener, fonact, numedd, numfix, ds_algopara,&
                     meelem, numins, modele, mate  , carele     ,&
                     compor, sdtime, sddisc, solalg, lischa     ,&
-                    comref, ds_contact%sdcont_solv, ds_contact%sdunil_solv, veelem, ds_inout)
+                    comref, veelem, ds_inout)
     endif
 
 !

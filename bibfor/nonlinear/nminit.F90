@@ -278,7 +278,7 @@ implicit none
 !
     call nminvc(model    , mate  , carele, compor, sdtime   ,&
                 sddisc   , sddyna, valinc, solalg, list_load,&
-                varc_refe, sdcont_solv, sdunil_solv, numedd, ds_inout ,&
+                varc_refe, numedd, ds_inout ,&
                 veelem   , veasse, measse)
 !
 ! - Compute reference vector for RESI_REFE_RELA
@@ -316,7 +316,7 @@ implicit none
     if (lacc0) then
         call nmchar('ACCI'  , ' '   , model    , numedd, mate     ,&
                     carele  , compor, list_load, numins, sdtime   ,&
-                    sddisc  , fonact, sdcont_solv   , sdunil_solv, varc_refe,&
+                    sddisc  , fonact, varc_refe,&
                     ds_inout, valinc, solalg   , veelem, measse   ,&
                     veasse  , sddyna)
         call accel0(model     , numedd, numfix     , fonact, list_load,&

@@ -18,7 +18,7 @@
 interface
     subroutine nminvc(modelz, mate  , carele, compor, sdtime  ,&
                       sddisc, sddyna, valinc, solalg, lischa  ,&
-                      comref, resoco, resocu, numedd, ds_inout,&
+                      comref, numedd, ds_inout,&
                       veelem, veasse, measse)
         use NonLin_Datastructure_type
         character(len=*) :: modelz
@@ -33,8 +33,6 @@ interface
         type(NL_DS_InOut), intent(in) :: ds_inout
         character(len=19) :: lischa
         character(len=24) :: comref
-        character(len=24) :: resoco
-        character(len=24) :: resocu
         character(len=24) :: numedd
         character(len=19) :: veelem(*)
         character(len=19) :: veasse(*)

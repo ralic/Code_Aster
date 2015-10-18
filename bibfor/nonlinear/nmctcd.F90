@@ -1,8 +1,4 @@
-subroutine nmctcd(modele, mate  , carele  , fonact, compor,&
-                  sdtime, sddisc, sddyna  , numins, valinc,&
-                  solalg, lischa, comref  , defico, resoco,&
-                  resocu, numedd, ds_inout, veelem, veasse,&
-                  measse)
+subroutine nmctcd(list_func_acti, ds_contact, nume_dof, hval_veasse)
 !
 use NonLin_Datastructure_type
 !
@@ -12,8 +8,10 @@ implicit none
 #include "asterfort/cfdisl.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/isfonc.h"
-#include "asterfort/nmcvec.h"
-#include "asterfort/nmxvec.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/cffoco.h"
+#include "asterfort/cffofr.h"
+#include "asterfort/cufoco.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,121 +30,71 @@ implicit none
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
-! aslint: disable=W1504
 !
-    integer :: fonact(*)
-    character(len=24) :: modele
-    character(len=24) :: mate, carele
-    character(len=24) :: compor
-    integer :: numins
-    type(NL_DS_InOut), intent(in) :: ds_inout
-    character(len=19) :: sddisc, sddyna, lischa
-    character(len=24) :: defico, resoco, resocu, comref, numedd
-    character(len=24) :: sdtime
-    character(len=19) :: veelem(*), veasse(*), measse(*)
-    character(len=19) :: solalg(*), valinc(*)
+    integer, intent(in) :: list_func_acti(*)
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=24), intent(in) :: nume_dof
+    character(len=19), intent(in) :: hval_veasse(*)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (ALGORITHME - CALCUL)
+! MECA_NON_LINE - Compute
 !
-! CALCUL ET ASSEMBLAGE DES FORCES LIEES AU CONTACT
-! DISCRET ET LIAISON_UNILATER
+! Compute vectors for DISCRETE contact
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! IN  MODELE : MODELE
-! IN  NUMEDD : NUME_DDL
-! IN  MATE   : CHAMP MATERIAU
-! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
-! IN  COMREF : VARI_COM DE REFERENCE
-! IN  COMPOR : COMPORTEMENT
-! IN  LISCHA : LISTE DES CHARGES
-! IN  RESOCO : SD RESOLUTION CONTACT
-! IN  RESOCU : SD RESOLUTION LIAISON_UNILATER
-! IN  DEFICO : SD DEF. CONTACT
-! IN  SDDYNA : SD POUR LA DYNAMIQUE
-! IN  SDTIME : SD TIMER
-! IN  METHOD : INFORMATIONS SUR LES METHODES DE RESOLUTION (VOIR NMLECT)
-! IN  PARMET : PARAMETRES DES METHODES DE RESOLUTION (VOIR NMLECT)
-! IN  SOLVEU : SOLVEUR
-! IN  CARCRI : PARAMETRES METHODES D'INTEGRATION LOCALES (VOIR NMLECT)
-! IN  SDDISC : SD DISCRETISATION TEMPORELLE
-! IN  NUMINS : NUMERO D'INSTANT
-! In  ds_inout         : datastructure for input/output management
-! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
-! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
-! IN  NBVECT : NOMBRE DE VECT_ELEM DANS LA LISTE
-! IN  LTYPVE : LISTE DES NOMS DES VECT_ELEM
-! IN  LOPTVE : LISTE DES OPTIONS DES VECT_ELEM
-! IN  LASSVE : SI VECT_ELEM A ASSEMBLER
-! IN  LCALVE : SI VECT_ELEM A CALCULER
+! In  list_func_acti   : list of active functionnalities
+! In  nume_dof         : name of numbering (NUME_DDL)
+! In  ds_contact       : datastructure for contact management
+! In  hval_veasse      : hat-variable for vectors (node fields)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    integer :: nbvect
-    aster_logical :: lunil, lctcd, lctfd, lallv
-    aster_logical :: lpenac
-    character(len=6) :: ltypve(20)
-    character(len=16) :: loptve(20)
-    aster_logical :: lassve(20), lcalve(20)
+    aster_logical :: l_unil, l_cont_disc, l_frot_disc, l_all_verif
+    aster_logical :: l_cont_pena
+    character(len=24) :: vect_asse
 !
-! ----------------------------------------------------------------------
-!
-!
-! --- ALL VERIF ?
-!
-    lallv = cfdisl(defico,'ALL_VERIF')
-    if (lallv) then
-        goto 99
-    endif
-!
-! - Print
+! --------------------------------------------------------------------------------------------------
 !
     call infdbg('MECA_NON_LINE', ifm, niv)
-    if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> ...... CALCUL FORCES CONTACT'
+!
+! - Active functionnalites
+!
+    l_cont_disc = isfonc(list_func_acti        , 'CONT_DISCRET')
+    l_frot_disc = isfonc(list_func_acti        , 'FROT_DISCRET')
+    l_cont_pena = cfdisl(ds_contact%sdcont_defi, 'CONT_PENA')
+    l_unil      = isfonc(list_func_acti        , 'LIAISON_UNILATER')
+    l_all_verif = cfdisl(ds_contact%sdcont_defi, 'ALL_VERIF')
+    if (.not.l_all_verif) then
+!
+! ----- Print
+!
+        if (niv .ge. 2) then
+            write (ifm,*) '<MECANONLINE> ...... CALCUL FORCES CONTACT'
+        endif
+!
+! ----- Contact (DISCRETE) forces
+!
+        if (l_cont_disc) then
+            call nmchex(hval_veasse, 'VEASSE', 'CNCTDC', vect_asse)
+            call cffoco(nume_dof, ds_contact%sdcont_solv, vect_asse)
+        endif
+!
+! ----- Friction (DISCRETE) forces
+!
+        if ((l_frot_disc) .or. (l_cont_pena)) then
+            call nmchex(hval_veasse, 'VEASSE', 'CNCTDF', vect_asse)
+            call cffofr(nume_dof, ds_contact%sdcont_solv, vect_asse)
+        endif
+!
+! ----- Unilateral conditions (DISCRETE) forces
+!
+        if (l_unil) then
+            call nmchex(hval_veasse, 'VEASSE', 'CNUNIL', vect_asse)
+            call cufoco(nume_dof, ds_contact%sdunil_solv, vect_asse)
+        endif
     endif
-!
-! --- INITIALISATIONS
-!
-    call nmcvec('INIT', ' ', ' ', .false._1, .false._1,&
-                nbvect, ltypve, loptve, lcalve, lassve)
-!
-! --- FONCTIONNALITES ACTIVEES
-!
-    lctcd = isfonc(fonact,'CONT_DISCRET')
-    lctfd = isfonc(fonact,'FROT_DISCRET')
-    lpenac = cfdisl(defico,'CONT_PENA')
-    lunil = isfonc(fonact,'LIAISON_UNILATER')
-!
-! --- FORCES DE CONTACT/FROTTEMENT DISCRETS
-!
-    if (lctcd) then
-        call nmcvec('AJOU', 'CNCTDC', ' ', .false._1, .true._1,&
-                    nbvect, ltypve, loptve, lcalve, lassve)
-    endif
-    if ((lctfd) .or. (lpenac)) then
-        call nmcvec('AJOU', 'CNCTDF', ' ', .false._1, .true._1,&
-                    nbvect, ltypve, loptve, lcalve, lassve)
-    endif
-!
-! --- FORCES DE LIAISON_UNILATER (PAS DE VECT_ELEM)
-!
-    if (lunil) then
-        call nmcvec('AJOU', 'CNUNIL', ' ', .false._1, .true._1,&
-                    nbvect, ltypve, loptve, lcalve, lassve)
-    endif
-!
-! --- CALCUL EFFECTIF
-!
-    call nmxvec(modele  , mate  , carele, compor, sdtime,&
-                sddisc  , sddyna, numins, valinc, solalg,&
-                lischa  , comref, resoco, resocu, numedd,&
-                ds_inout, veelem, veasse, measse, nbvect,&
-                ltypve  , lcalve, loptve, lassve)
-!
- 99 continue
 !
 end subroutine

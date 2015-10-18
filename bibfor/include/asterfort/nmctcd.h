@@ -18,32 +18,11 @@
 ! aslint: disable=W1504
 !
 interface
-    subroutine nmctcd(modele, mate  , carele  , fonact, compor,&
-                      sdtime, sddisc, sddyna  , numins, valinc,&
-                      solalg, lischa, comref  , defico, resoco,&
-                      resocu, numedd, ds_inout, veelem, veasse,&
-                      measse)
+    subroutine nmctcd(list_func_acti, ds_contact, nume_dof, hval_veasse)
         use NonLin_Datastructure_type
-        character(len=24) :: modele
-        character(len=24) :: mate
-        character(len=24) :: carele
-        integer :: fonact(*)
-        character(len=24) :: compor
-        character(len=24) :: sdtime
-        character(len=19) :: sddisc
-        character(len=19) :: sddyna
-        integer :: numins
-        character(len=19) :: valinc(*)
-        character(len=19) :: solalg(*)
-        character(len=19) :: lischa
-        character(len=24) :: comref
-        character(len=24) :: defico
-        character(len=24) :: resoco
-        character(len=24) :: resocu
-        character(len=24) :: numedd
-        type(NL_DS_InOut), intent(in) :: ds_inout
-        character(len=19) :: veelem(*)
-        character(len=19) :: veasse(*)
-        character(len=19) :: measse(*)
+        integer, intent(in) :: list_func_acti(*)
+        type(NL_DS_Contact), intent(in) :: ds_contact
+        character(len=24), intent(in) :: nume_dof
+        character(len=19), intent(in) :: hval_veasse(*)
     end subroutine nmctcd
 end interface

@@ -99,7 +99,7 @@ implicit none
 !
     real(kind=8) :: instap
     character(len=19) :: cncine, cndonn, cnzero
-    character(len=24) :: k24bla, codere
+    character(len=24) :: codere
     integer :: ldccvg, faccvg, rescvg
     integer :: ifm, niv
 !
@@ -113,7 +113,6 @@ implicit none
 ! --- INITIALISATIONS
 !
     instap = diinst(sddisc,numins)
-    k24bla = ' '
     cndonn = '&&CNCHAR.DONN'
     cnzero = '&&CNPART.ZERO'
     call vtzero(cndonn)
@@ -147,7 +146,7 @@ implicit none
 !
     call nmchar('VARI'  , 'PREDICTION', modele, numedd, mate,&
                 carele  , compor, lischa, numins, sdtime,&
-                sddisc  , fonact, k24bla, k24bla, comref,&
+                sddisc  , fonact, comref,&
                 ds_inout, valinc, solalg, veelem, measse,&
                 veasse  , sddyna)
 !

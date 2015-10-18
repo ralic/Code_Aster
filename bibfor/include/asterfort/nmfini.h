@@ -18,7 +18,7 @@
 interface
     subroutine nmfini(sddyna  , valinc, measse, modele, mate  ,&
                       carele  , compor, sdtime, sddisc, numins,&
-                      solalg  , lischa, comref, resoco, resocu,&
+                      solalg  , lischa, comref,&
                       ds_inout, numedd, veelem, veasse)
         use NonLin_Datastructure_type
         character(len=19) :: sddyna
@@ -35,8 +35,6 @@ interface
         character(len=19) :: solalg(*)
         character(len=19) :: lischa
         character(len=24) :: comref
-        character(len=24) :: resoco
-        character(len=24) :: resocu
         character(len=24) :: numedd
         character(len=19) :: veelem(*)
         character(len=19) :: veasse(*)

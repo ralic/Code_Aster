@@ -141,7 +141,7 @@ implicit none
 !
     call nmchar('VARI'  , 'CORRECTION', modele, numedd, mate,&
                 carele  , compor, lischa, numins, sdtime,&
-                sddisc  , fonact, ds_contact%sdcont_solv, ds_contact%sdunil_solv, comref,&
+                sddisc  , fonact, comref,&
                 ds_inout, valinc, solalg, veelem, measse,&
                 veasse  , sddyna)
 !
@@ -179,14 +179,10 @@ implicit none
 !
     if (ldccvg .eq. 1) goto 999
 !
-! --- CALCUL DES FORCES DE CONTACT ET LIAISON_UNILATER
+! - Compute vectors for DISCRETE contact
 !
     if (lctcd .or. lunil) then
-        call nmctcd(modele, mate  , carele  , fonact, compor,&
-                    sdtime, sddisc, sddyna  , numins, valinc,&
-                    solalg, lischa, comref  , ds_contact%sdcont_defi, ds_contact%sdcont_solv,&
-                    ds_contact%sdunil_solv, numedd, ds_inout, veelem, veasse,&
-                    measse)
+        call nmctcd(fonact, ds_contact, numedd, veasse)
     endif
 !
 ! --- ASSEMBLAGE DES FORCES INTERIEURES

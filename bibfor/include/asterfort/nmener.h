@@ -22,7 +22,7 @@ interface
                       sdener, fonact, numedd, numfix, ds_algopara,&
                       meelem, numins, modele, mate  , carele     ,&
                       compor, sdtime, sddisc, solalg, lischa     ,&
-                      comref, resoco, resocu, veelem, ds_inout)
+                      comref, veelem, ds_inout)
         use NonLin_Datastructure_type
         character(len=19) :: valinc(*)
         character(len=19) :: veasse(*)
@@ -46,8 +46,6 @@ interface
         character(len=19) :: solalg(*)
         character(len=19) :: lischa
         character(len=24) :: comref
-        character(len=24) :: resoco
-        character(len=24) :: resocu
         character(len=19) :: veelem(*)
     end subroutine nmener
 end interface

@@ -187,7 +187,7 @@ implicit none
 !
     call nmchar('FIXE'  , ' '   , modele, numedd, mate  ,&
                 carele  , compor, lischa, numins, sdtime,&
-                sddisc  , fonact, ds_contact%sdcont_solv, ds_contact%sdunil_solv, comref,&
+                sddisc  , fonact, comref,&
                 ds_inout, valinc, solalg, veelem, measse,&
                 veasse  , sddyna)
 !

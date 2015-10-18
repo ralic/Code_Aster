@@ -92,12 +92,11 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
-    character(len=24) :: k24bla
     aster_logical :: lerrit
 !
 ! ----------------------------------------------------------------------
 !
-    k24bla = ' '
+
 !
 ! --- INITIALISATION DES CHAMPS D'INCONNUES POUR LE NOUVEAU PAS DE TEMPS
 !
@@ -109,7 +108,7 @@ implicit none
 !
     call nmchar('FIXE'  , ' '   , modele, numedd, mate  ,&
                 carele  , compor, lischa, numins, sdtime,&
-                sddisc  , fonact, k24bla, k24bla, comref,&
+                sddisc  , fonact, comref,&
                 ds_inout, valinc, solalg, veelem, measse,&
                 veasse  , sddyna)
 !

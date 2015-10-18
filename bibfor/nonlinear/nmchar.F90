@@ -1,6 +1,6 @@
 subroutine nmchar(mode    , phasez, modele, numedd, mate  ,&
                   carele  , compor, lischa, numins, sdtime,&
-                  sddisc  , fonact, resoco, resocu, comref,&
+                  sddisc  , fonact, comref,&
                   ds_inout, valinc, solalg, veelem, measse,&
                   veasse  , sddyna)
 !
@@ -44,7 +44,6 @@ implicit none
     integer :: fonact(*)
     integer :: numins
     type(NL_DS_InOut), intent(in) :: ds_inout
-    character(len=24) :: resoco, resocu
     character(len=19) :: veelem(*), measse(*), veasse(*)
     character(len=19) :: solalg(*), valinc(*)
 !
@@ -75,8 +74,6 @@ implicit none
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! IN  COMREF : VARI_COM DE REFERENCE
 ! In  ds_inout         : datastructure for input/output management
-! IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
-! IN  RESOCU : SD POUR LA RESOLUTION DE LIAISON_UNILATER
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  MEASSE : VARIABLE CHAPEAU POUR NOM DES MATR_ASSE
 ! IN  VEELEM : VARIABLE CHAPEAU POUR NOM DES VECT_ELEM
@@ -206,7 +203,7 @@ implicit none
 !
         call nmxvec(modele  , mate  , carele, compor, sdtime,&
                     sddisc  , sddyna, numins, valinc, solalg,&
-                    lischa  , comref, resoco, resocu, numedd,&
+                    lischa  , comref, numedd,&
                     ds_inout, veelem, veasse, measse, nbvect,&
                     ltypve  , lcalve, loptve, lassve)
 !
@@ -283,7 +280,7 @@ implicit none
 !
         call nmxvec(modele  , mate  , carele, compor, sdtime,&
                     sddisc  , sddyna, numins, valinc, solalg,&
-                    lischa  , comref, resoco, resocu, numedd,&
+                    lischa  , comref, numedd,&
                     ds_inout, veelem, veasse, measse, nbvect,&
                     ltypve  , lcalve, loptve, lassve)
 !
@@ -351,7 +348,7 @@ implicit none
 !
         call nmxvec(modele  , mate  , carele, compor, sdtime,&
                     sddisc  , sddyna, numins, valinc, solalg,&
-                    lischa  , comref, resoco, resocu, numedd,&
+                    lischa  , comref, numedd,&
                     ds_inout, veelem, veasse, measse, nbvect,&
                     ltypve  , lcalve, loptve, lassve)
     else

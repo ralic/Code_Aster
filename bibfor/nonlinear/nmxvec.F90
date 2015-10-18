@@ -1,6 +1,6 @@
 subroutine nmxvec(modelz  , mate  , carele, compor, sdtime,&
                   sddisc  , sddyna, numins, valinc, solalg,&
-                  lischa  , comref, resoco, resocu, numedd,&
+                  lischa  , comref, numedd,&
                   ds_inout, veelem, veasse, measse, nbvect,&
                   ltypve  , lcalve, loptve, lassve)
 !
@@ -44,7 +44,7 @@ implicit none
     integer :: numins
     type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=19) :: sddisc, sddyna, lischa
-    character(len=24) :: resoco, resocu, comref
+    character(len=24) :: comref
     character(len=19) :: veelem(*), veasse(*), measse(*)
     character(len=19) :: solalg(*), valinc(*)
 !
@@ -64,8 +64,6 @@ implicit none
 ! IN  COMREF : VARI_COM DE REFERENCE
 ! IN  COMPOR : COMPORTEMENT
 ! IN  LISCHA : LISTE DES CHARGES
-! IN  RESOCO : SD RESOLUTION CONTACT
-! IN  RESOCU : SD RESOLUTION LIAISON_UNILATER
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
 ! IN  SDTIME : SD TIMER
 ! IN  METHOD : INFORMATIONS SUR LES METHODES DE RESOLUTION (VOIR NMLECT)
@@ -147,8 +145,8 @@ implicit none
         if (lasse) then
             call nmchex(veasse  , 'VEASSE', typvec, vecass)
             call nmassv(typvec  , modelz, lischa, mate, carele,&
-                        compor  , numedd, instam, instap, resoco,&
-                        resocu  , sddyna, sdtime, valinc, comref,&
+                        compor  , numedd, instam, instap, &
+                        sddyna, sdtime, valinc, comref,&
                         ds_inout, measse, vecele, vecass)
         endif
     end do
