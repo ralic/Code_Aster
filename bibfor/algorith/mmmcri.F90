@@ -6,15 +6,12 @@ use NonLin_Datastructure_type
 implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/cnomax.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
@@ -42,7 +39,7 @@ implicit none
     character(len=19) :: depmoi
     character(len=19) :: depgeo
     character(len=19) :: depplu
-    type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_Contact), intent(inout) :: ds_contact
     real(kind=8) :: epsmax
     aster_logical :: mmconv
     character(len=16) :: cvgnoe
@@ -58,7 +55,7 @@ implicit none
 !
 ! IN  CRITER : 'GEOM' OU 'FROT'
 ! IN  NOMA   : NOM DU MAILLAGE
-! In  ds_contact       : datastructure for contact management
+! IO  ds_contact       : datastructure for contact management
 ! IN  DEPMOI : CHAMP GEOMETRIQUE A L'ITERATION GEOM. N-2
 ! IN  DEPGEO : CHAMP GEOMETRIQUE A L'ITERATION GEOM. N-1
 ! IN  DEPPLU : CHAMP GEOMETRIQUE A L'ITERATION GEOM. N
@@ -71,19 +68,13 @@ implicit none
 !
 !
     real(kind=8) :: vmax1, vmax2, vmax3, vmax4, vmaxi, rmin
-    real(kind=8) :: cridep, crilbd, alpha
+    real(kind=8) :: cridep, crilbd, alpha, geom_maxi
     character(len=24) :: vtdiff, vtdif2
     character(len=8) :: licmp(3), nomnoe
     integer :: ncmp, numno1, numno2, numno3, numno4, numnoe
     aster_logical :: mmcvge, mmcvfr
-    character(len=24) :: maxdep
-    integer :: jmaxde
 !
 ! ----------------------------------------------------------------------
-!
-    call jemarq()
-!
-! --- CALCUL DU CRITERE (DEPLACEMENT RELATIF)
 !
     mmconv = .false.
 !
@@ -128,15 +119,15 @@ implicit none
 !
 ! --- STOCKAGE DU MAX DE LA NORME DU DEPLACEMENT
 !
-        maxdep = ds_contact%sdcont_solv(1:14)//'.MAXD'
-        call jeveuo(maxdep, 'E', jmaxde)
-        if (zr(jmaxde) .lt. 0.d0) then
-            zr(jmaxde-1+1) = vmax2
+        geom_maxi = ds_contact%geom_maxi
+        if (geom_maxi .lt. 0.d0) then
+            geom_maxi = vmax2
             rmin = r8prem()
         else
-            zr(jmaxde-1+1) = max(zr(jmaxde-1+1),vmax2)
-            rmin = 1.d-6*zr(jmaxde-1+1)
+            geom_maxi = max(geom_maxi,vmax2)
+            rmin = 1.d-6*geom_maxi
         endif
+        ds_contact%geom_maxi = geom_maxi
 !
         if (vmax2 .le. rmin) then
             if (vmax2 .eq. 0.d0) then
@@ -214,5 +205,4 @@ implicit none
         call detrsd('CHAMP_GD', vtdif2)
     endif
 !
-    call jedema()
 end subroutine

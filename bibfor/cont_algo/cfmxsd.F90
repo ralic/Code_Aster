@@ -63,8 +63,6 @@ implicit none
     character(len=8) :: model, mesh
     integer :: nb_cont_zone
     aster_logical :: l_cont_disc, l_cont_cont, l_cont_xfem, l_cont_allv
-    character(len=24) :: sdcont_maxdep
-    real(kind=8), pointer :: v_sdcont_maxdep(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -97,12 +95,6 @@ implicit none
     if (l_cont_cont .or. l_cont_disc) then
         call cfmmap(mesh, ds_contact)
     endif
-!
-! - Create datastructure for geometric loop parameter
-!
-    sdcont_maxdep = ds_contact%sdcont_solv(1:14)//'.MAXD'
-    call wkvect(sdcont_maxdep, 'V V R', 1, vr = v_sdcont_maxdep)
-    v_sdcont_maxdep(1) = -1.d0
 !
 ! - Create datastructures for solving
 !

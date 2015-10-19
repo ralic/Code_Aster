@@ -264,6 +264,8 @@ implicit none
         type(NL_DS_Loop)  :: loop(3)
 ! ----- Flag for (re) numbering
         aster_logical     :: l_renumber
+! ----- Geometric loop control
+        real(kind=8)      :: geom_maxi
     end type NL_DS_Contact
 !
 end module

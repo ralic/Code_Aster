@@ -115,4 +115,8 @@ implicit none
 !
     ds_contact%l_renumber = .false._1
 !
+! - Geometric loop control
+!
+    ds_contact%geom_maxi = -1.d0
+!
 end subroutine

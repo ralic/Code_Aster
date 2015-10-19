@@ -26,7 +26,7 @@ interface
         character(len=19) :: depmoi
         character(len=19) :: depgeo
         character(len=19) :: depplu
-        type(NL_DS_Contact), intent(in) :: ds_contact
+        type(NL_DS_Contact), intent(inout) :: ds_contact
         real(kind=8) :: epsmax
         character(len=16) :: cvgnoe
         real(kind=8) :: cvgval

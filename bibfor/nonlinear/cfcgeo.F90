@@ -6,7 +6,6 @@ use NonLin_Datastructure_type
 implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
@@ -16,8 +15,6 @@ implicit none
 #include "asterfort/cfdisr.h"
 #include "asterfort/cfverl.h"
 #include "asterfort/cnomax.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
@@ -69,12 +66,11 @@ implicit none
     integer :: ii, numno1, numno2
     integer :: neq
     integer :: ncmp, mmitgo, nbreag, maxgeo
-    real(kind=8) :: autono, temp1, temp2, epsgeo, rmin
+    real(kind=8) :: autono, temp1, temp2, epsgeo, rmin, geom_maxi
     character(len=8) :: nomnoe, licmp(3)
     aster_logical :: premie, alarme
     character(len=19) :: depdel
-    character(len=24) :: maxdep, autoc1, autoc2
-    integer :: jmaxde
+    character(len=24) :: autoc1, autoc2
     aster_logical :: geoala
     real(kind=8), pointer :: auto1(:) => null()
     real(kind=8), pointer :: auto2(:) => null()
@@ -82,21 +78,15 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
-!
-! --- DECOMPACTION VARIABLES CHAPEAUX
-!
     call nmchex(solalg, 'SOLALG', 'DEPDEL', depdel)
 !
 ! --- ACCES OBJETS
 !
     autoc1 = ds_contact%sdcont_solv(1:14)//'.REA1'
     autoc2 = ds_contact%sdcont_solv(1:14)//'.REA2'
-    maxdep = ds_contact%sdcont_solv(1:14)//'.MAXD'
     call jeveuo(depdel(1:19)//'.VALE', 'L', vr=depde)
     call jeveuo(autoc1(1:19)//'.VALE', 'E', vr=auto1)
     call jeveuo(autoc2(1:19)//'.VALE', 'E', vr=auto2)
-    call jeveuo(maxdep, 'E', jmaxde)
 !
 ! --- TOLERANCE POUR REACTUALISATION GEOMETRIQUE AUTOMATIQUE
 ! --- NOMBRE MAXI D'ITERATIONS DE REACTUALISATION GEOMETRIQUE EN AUTO
@@ -137,13 +127,15 @@ implicit none
 !
 ! --- STOCKAGE DU MAX DE LA NORME DU DEPL
 !
-    if (zr(jmaxde) .lt. 0.d0) then
-        zr(jmaxde-1+1) = temp2
+    geom_maxi = ds_contact%geom_maxi
+    if (geom_maxi .lt. 0.d0) then
+        geom_maxi = temp2
         rmin = r8prem()
     else
-        zr(jmaxde-1+1) = max(zr(jmaxde-1+1),temp2)
-        rmin = 1.d-6*zr(jmaxde-1+1)
+        geom_maxi = max(geom_maxi,temp2)
+        rmin = 1.d-6*geom_maxi
     endif
+    ds_contact%geom_maxi = geom_maxi
 !
 ! --- VALEUR DE DEPL. MAX MESURE
 !
@@ -220,5 +212,4 @@ implicit none
         call utmess('A', 'CONTACT3_96')
     endif
 !
-    call jedema()
 end subroutine
