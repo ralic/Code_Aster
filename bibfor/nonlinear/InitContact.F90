@@ -56,7 +56,7 @@ implicit none
     character(len=24) :: iden_rela
     aster_logical :: l_cont, l_unil
     aster_logical :: l_form_disc, l_form_cont, l_form_xfem, l_form_lac
-    aster_logical :: l_cont_xfem_gg, l_edge_elim
+    aster_logical :: l_cont_xfem_gg, l_edge_elim, l_all_verif
     integer :: i_exist
     character(len=8), pointer :: v_load_type(:) => null()
 !
@@ -101,7 +101,8 @@ implicit none
         l_form_lac     = cont_form .eq. 5
         l_cont         = cont_form .ne. 4
         l_cont_xfem_gg = cfdisl(sdcont_defi, 'CONT_XFEM_GG')
-        l_edge_elim    = cfdisl(sdcont_defi, 'ELIM_ARETE')    
+        l_edge_elim    = cfdisl(sdcont_defi, 'ELIM_ARETE')
+        l_all_verif    = cfdisl(sdcont_defi, 'ALL_VERIF')  
 !
 ! ----- Field for CONT_NODE
 !
@@ -179,6 +180,16 @@ implicit none
 !
         if (l_form_lac) then
             ASSERT(.false.)
+        endif
+!
+! ----- Flag for (re) numbering
+!
+        if (l_form_cont) then
+            if (l_all_verif) then
+                ds_contact%l_renumber = .false._1
+            else
+                ds_contact%l_renumber = .true._1
+            endif
         endif
 !
 ! ----- Save parameters

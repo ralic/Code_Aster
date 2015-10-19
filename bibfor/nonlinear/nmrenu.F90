@@ -35,7 +35,7 @@ implicit none
     character(len=*), intent(in) :: modelz
     character(len=24), intent(inout) :: nume_dof
     character(len=19), intent(in) :: list_load
-    type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_Contact), intent(inout) :: ds_contact
     integer, intent(in) :: list_func_acti(*)
     aster_logical, intent(out) :: l_renumber
 !
@@ -47,9 +47,10 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
+! IO  nume_dof         : name of numbering object (NUME_DDL)
 ! In  model            : name of model datastructure
 ! In  list_load        : list of loads
-! In  ds_contact       : datastructure for contact management
+! IO  ds_contact       : datastructure for contact management
 ! In  list_func_acti   : list of active functionnalities
 ! Out l_renumber       : .true. if renumber
 !
@@ -58,8 +59,6 @@ implicit none
     integer :: ifm, niv
     aster_logical :: l_cont, l_cont_cont, l_cont_xfem, l_cont_elem, l_cont_xfem_gg
     character(len=24) :: sd_iden_rela
-    character(len=24) :: crnudd
-    aster_logical, pointer :: v_crnudd(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -67,7 +66,6 @@ implicit none
 !
 ! - Initializations
 !
-    crnudd       = ds_contact%sdcont_solv(1:14)//'.NUDD'
     l_renumber   = .false.
     l_cont       = isfonc(list_func_acti,'CONTACT')
     if (.not.l_cont) then
@@ -95,9 +93,8 @@ implicit none
                l_renumber = .false.
             endif
         else
-            call jeveuo(crnudd, 'E', vl = v_crnudd)
-            l_renumber = v_crnudd(1)
-            v_crnudd(1) = .false.
+            l_renumber = ds_contact%l_renumber
+            ds_contact%l_renumber = .false.
         endif
     endif
 !

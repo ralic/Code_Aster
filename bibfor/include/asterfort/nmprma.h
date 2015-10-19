@@ -43,7 +43,7 @@ interface
         character(len=19) :: sddyna
         integer :: numins
         integer :: fonact(*)
-        type(NL_DS_Contact), intent(in) :: ds_contact
+        type(NL_DS_Contact), intent(inout) :: ds_contact
         character(len=19) :: valinc(*)
         character(len=19) :: solalg(*)
         character(len=19) :: veelem(*)

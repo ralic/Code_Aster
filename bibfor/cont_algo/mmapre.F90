@@ -55,7 +55,7 @@ implicit none
 !
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: nume_dof
-    type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_Contact), intent(inout) :: ds_contact
     character(len=19), intent(in) :: sdappa
 !
 ! ----------------------------------------------------------------------
@@ -68,15 +68,15 @@ implicit none
 !
 ! In  mesh             : name of mesh
 ! In  nume_dof         : name of numbering object (NUME_DDL)
-! In  ds_contact       : datastructure for contact management
+! IO  ds_contact       : datastructure for contact management
 ! IN  SDAPPA : NOM DE LA SD APPARIEMENT
 !
 ! ----------------------------------------------------------------------
 !
     integer :: ifm, niv
     integer :: nzoco, ndimg
-    character(len=24) :: tabfin, crnudd
-    integer :: jtabf, jcrnud
+    character(len=24) :: tabfin
+    integer :: jtabf
     integer :: izone, ip, imae, iptm, ztabf
     integer :: iptc
     integer :: ntpc, nbpt, nbmae, nptm, neq, nnomae
@@ -116,9 +116,7 @@ implicit none
 ! --- ACCES SD CONTACT
 !
     tabfin = ds_contact%sdcont_solv(1:14)//'.TABFIN'
-    crnudd = ds_contact%sdcont_solv(1:14)//'.NUDD'
     call jeveuo(tabfin, 'E', jtabf)
-    call jeveuo(crnudd, 'E', jcrnud)
     ztabf = cfmmvd('ZTABF')
 !
 ! --- BOUCLE SUR LES ZONES
@@ -232,9 +230,9 @@ implicit none
     zr(jtabf-1+1) = ntpc
     ASSERT(ntpc.eq.cfdisi(ds_contact%sdcont_defi, 'NTPC'))
 !
-! --- INDICATEUR DE REAPPARIEMENT
+! - Flag for (re) numbering
 !
-    zl(jcrnud-1+1) = lappar
+    ds_contact%l_renumber = lappar
 !
 ! --- AFFICHAGE
 !
@@ -243,6 +241,5 @@ implicit none
     endif
 !
     call jedema()
-!    call detrsd('CHAM_NO_S', cnsplu)
-!    call detrsd('CHAM_NO_S', cnscon)
+!
 end subroutine

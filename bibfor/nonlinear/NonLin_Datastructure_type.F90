@@ -262,7 +262,8 @@ implicit none
         integer           :: nb_loop
         integer           :: nb_loop_maxi = 3
         type(NL_DS_Loop)  :: loop(3)
-
+! ----- Flag for (re) numbering
+        aster_logical     :: l_renumber
     end type NL_DS_Contact
 !
 end module

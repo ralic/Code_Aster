@@ -68,8 +68,8 @@ implicit none
     character(len=24) :: tabfin
     integer :: jtabf
     integer :: jvalv
-    character(len=19) :: ligrcf, chmlcf, crnudd
-    integer :: ifm, niv, jcrnud
+    character(len=19) :: ligrcf, chmlcf
+    integer :: ifm, niv
     character(len=24) :: sd_cycl_his
     integer :: jcyhis
     real(kind=8) :: instam, instap, deltat
@@ -102,8 +102,6 @@ implicit none
     tabfin = ds_contact%sdcont_solv(1:14)//'.TABFIN'
     call jeveuo(jeusup, 'L', jjsup)
     call jeveuo(tabfin, 'L', jtabf)
-    crnudd = ds_contact%sdcont_solv(1:14)//'.NUDD'
-    call jeveuo(crnudd, 'L', jcrnud)
 !
     ztabf = cfmmvd('ZTABF')
 !
@@ -146,7 +144,7 @@ implicit none
 !
 ! --- DESTRUCTION/CREATION DU CHAM_ELEM SI NECESSAIRE
 !
-    lappar = zl(jcrnud)
+    lappar = ds_contact%l_renumber
     if (lappar) then
         call detrsd('CHAM_ELEM', chmlcf)
         call alchml(ligrcf, 'RIGI_CONT', 'PCONFR', 'V', chmlcf,&

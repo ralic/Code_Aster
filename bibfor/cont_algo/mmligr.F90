@@ -78,14 +78,12 @@ implicit none
     integer, pointer :: v_list_elem(:) => null()
     integer, pointer :: v_cnt_cont(:) => null()
     integer, pointer :: v_cnt_frot(:) => null()
-    aster_logical :: l_pair, l_axi, l_frot
+    aster_logical :: l_renumber, l_axi, l_frot
     integer, pointer :: v_connex(:) => null()
     integer, pointer :: v_connex_lcum(:) => null()
     integer :: ztabf
     character(len=24) :: sdcont_tabfin
     real(kind=8), pointer :: v_sdcont_tabfin(:) => null()
-    character(len=24) :: sdcont_crnudd
-    aster_logical, pointer :: v_sdcont_crnudd(:) => null()
     integer, pointer :: v_ligrcf_nbno(:) => null()
     integer, pointer :: v_ligrcf_nema(:) => null()
     integer, pointer :: v_ligrcf_liel(:) => null()
@@ -96,14 +94,9 @@ implicit none
 !
     call infdbg('CONTACT', ifm, niv)
 !
-! - Datastructure for contact solving
+! - Re-create LIGREL or not ?
 !
-    sdcont_crnudd = ds_contact%sdcont_solv(1:14)//'.NUDD'
-    call jeveuo(sdcont_crnudd, 'L', vl   = v_sdcont_crnudd)
-!
-! - Pairing or not ?
-!
-    l_pair = v_sdcont_crnudd(1)
+    l_renumber   = ds_contact%l_renumber
 !
 ! - Get parameters
 !
@@ -114,7 +107,7 @@ implicit none
 !
 ! - Print
 !
-    if (l_pair) then
+    if (l_renumber) then
         if (niv .ge. 2) then
             write (ifm,*) '<CONTACT> . Create late elements for contact'
         endif

@@ -49,7 +49,7 @@ implicit none
     character(len=24) :: numedd, numfix
     character(len=24) :: modele, mate, carele, comref, compor
     character(len=24) :: carcri
-    type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_Contact), intent(inout) :: ds_contact
     character(len=24) :: codere
     character(len=19) :: veelem(*), veasse(*)
     character(len=19) :: meelem(*), measse(*)
@@ -81,7 +81,7 @@ implicit none
 ! IN  SDTIME : SD TIMER
 ! IN  SDSTAT : SD STATISTIQUES
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
-! In  ds_contact       : datastructure for contact management
+! IO  ds_contact       : datastructure for contact management
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! IN  NUMINS : NUMERO D'INSTANT
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES

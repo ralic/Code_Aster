@@ -48,7 +48,7 @@ implicit none
     character(len=19) :: lischa, solveu, sddisc, sddyna, sdnume
     character(len=24) :: numedd, numfix
     character(len=24) :: modele, mate, carele, comref, compor, carcri
-    type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_Contact), intent(inout) :: ds_contact
     character(len=24) :: sderro
     integer :: fonact(*)
     character(len=19) :: meelem(*), veelem(*)
@@ -81,7 +81,7 @@ implicit none
 ! IN  SDNUME : SD NUMEROTATION
 ! IN  ITERAT : NUMERO D'ITERATION DE NEWTON
 ! IN  NUMINS : NUMERO D'INSTANT
-! In  ds_contact       : datastructure for contact management
+! IO  ds_contact       : datastructure for contact management
 ! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLE
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS

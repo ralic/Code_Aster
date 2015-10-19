@@ -24,7 +24,7 @@ interface
         character(len=*), intent(in) :: modelz
         character(len=24), intent(inout) :: nume_dof
         character(len=19), intent(in) :: list_load
-        type(NL_DS_Contact), intent(in) :: ds_contact
+        type(NL_DS_Contact), intent(inout) :: ds_contact
         integer, intent(in) :: list_func_acti(*)
         aster_logical, intent(out) :: l_renumber
     end subroutine nmrenu

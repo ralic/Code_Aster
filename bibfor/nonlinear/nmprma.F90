@@ -58,7 +58,7 @@ implicit none
     character(len=19) :: solalg(*), valinc(*)
     character(len=19) :: veelem(*), meelem(*), measse(*)
     integer :: numins
-    type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_Contact), intent(inout) :: ds_contact
     character(len=19) :: maprec, matass
     integer :: faccvg, ldccvg
 !
@@ -78,7 +78,7 @@ implicit none
 ! IN  COMREF : VARI_COM DE REFERENCE
 ! IN  COMPOR : COMPORTEMENT
 ! IN  LISCHA : LISTE DES CHARGES
-! In  ds_contact       : datastructure for contact management
+! IO  ds_contact       : datastructure for contact management
 ! IO  ds_print         : datastructure for printing parameters
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
 ! IN  SDTIME : SD TIMER

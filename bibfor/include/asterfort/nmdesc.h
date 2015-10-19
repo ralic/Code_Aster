@@ -36,7 +36,7 @@ interface
         character(len=24) :: comref
         character(len=24) :: compor
         character(len=19) :: lischa
-        type(NL_DS_Contact), intent(in) :: ds_contact
+        type(NL_DS_Contact), intent(inout) :: ds_contact
         character(len=19) :: solveu
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         character(len=24) :: carcri

@@ -47,7 +47,7 @@ implicit none
     character(len=19) :: lischa, solveu, sddisc, sddyna, sdnume
     character(len=24) :: modele, mate, carele, comref, compor
     character(len=24) :: numedd, numfix
-    type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_Contact), intent(inout) :: ds_contact
     character(len=24) :: carcri, sderro
     character(len=19) :: meelem(*), veelem(*)
     character(len=19) :: measse(*), veasse(*)
@@ -76,7 +76,7 @@ implicit none
 ! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
 ! IO  ds_print         : datastructure for printing parameters
 ! In  ds_inout         : datastructure for input/output management
-! In  ds_contact       : datastructure for contact management
+! IO  ds_contact       : datastructure for contact management
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
 ! IN  SDTIME : SD TIMER
 ! IN  SDSTAT : SD STATISTIQUES

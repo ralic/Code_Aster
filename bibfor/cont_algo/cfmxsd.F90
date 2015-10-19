@@ -63,8 +63,6 @@ implicit none
     character(len=8) :: model, mesh
     integer :: nb_cont_zone
     aster_logical :: l_cont_disc, l_cont_cont, l_cont_xfem, l_cont_allv
-    character(len=24) :: sdcont_crnudd
-    aster_logical, pointer :: v_sdcont_crnudd(:) => null()
     character(len=24) :: sdcont_maxdep
     real(kind=8), pointer :: v_sdcont_maxdep(:) => null()
 !
@@ -98,18 +96,6 @@ implicit none
 !
     if (l_cont_cont .or. l_cont_disc) then
         call cfmmap(mesh, ds_contact)
-    endif
-!
-! - Create datastructure for renumbering flag
-!
-    if (l_cont_cont) then
-        sdcont_crnudd = ds_contact%sdcont_solv(1:14)//'.NUDD'
-        call wkvect(sdcont_crnudd, 'V V L', 1, vl = v_sdcont_crnudd)
-        if (l_cont_allv) then
-            v_sdcont_crnudd(1) = .false.
-        else
-            v_sdcont_crnudd(1) = .true.
-        endif
     endif
 !
 ! - Create datastructure for geometric loop parameter

@@ -51,7 +51,7 @@ implicit none
     character(len=24) :: numedd, numfix
     character(len=24) :: carcri
     type(NL_DS_Print), intent(inout) :: ds_print
-    type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_Contact), intent(inout) :: ds_contact
     character(len=24) :: codere
     character(len=19) :: veelem(*), veasse(*)
     character(len=19) :: meelem(*), measse(*)

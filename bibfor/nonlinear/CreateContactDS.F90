@@ -111,4 +111,8 @@ implicit none
     ds_contact%fields_cont_node = ' '
     ds_contact%field_cont_perc  = ' '
 !
+! - Flag for (re) numbering
+!
+    ds_contact%l_renumber = .false._1
+!
 end subroutine

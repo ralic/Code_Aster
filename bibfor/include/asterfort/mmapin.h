@@ -19,7 +19,7 @@ interface
     subroutine mmapin(mesh, ds_contact, nume_dof, sdtime, sdstat)
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
-        type(NL_DS_Contact), intent(in) :: ds_contact
+        type(NL_DS_Contact), intent(inout) :: ds_contact
         character(len=24), intent(in) :: sdtime
         character(len=24), intent(in) :: sdstat    
         character(len=24), intent(in) :: nume_dof
