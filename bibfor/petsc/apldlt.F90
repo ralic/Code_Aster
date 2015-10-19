@@ -18,6 +18,8 @@ subroutine apldlt(kptsc, action, prepost, rsolu, vcine, nbsol)
 !
     implicit none
 ! person_in_charge: jacques.pellet at edf.fr
+! aslint: disable=W0104
+! W0104 because of ifdef PETSc
 
 #include "asterf_types.h"
 #include "asterf.h"
