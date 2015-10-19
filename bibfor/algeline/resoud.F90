@@ -4,6 +4,7 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -52,8 +53,7 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
 ! IN/JXIN  K19 MATASS : MATR_ASSE PREMIER MEMBRE DU SYSTEME LINEAIRE
 ! IN/JXIN  K19 MATPRE : MATR_ASSE DE PRECONDITIONNEMENT
 !                       POUR SOLVEUR ITERATIF GCPC (OU ' ' SINON)
-! IN/JXIN  K19 SOLVEU : SD_SOLVEUR (OU ' ')
-!                       SI SOLVEU=' ' ON PREND LE SOLVEUR DE MATASS
+! IN/JXIN  K19 SOLVEU : SD_SOLVEUR
 ! IN/JXIN  K*  CHCINE : CHAMP ASSOCIE AUX CHARGES CINEMATIQUES (OU ' ')
 ! IN       I   NSECM  : / 0 => ON UTILISE CHSECM, CHSOLU, BASE
 !                       / N => ON UTILISE RSOLU (OU CSOLU)
@@ -94,6 +94,7 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
     call uttcpu('CPU.RESO.5', 'DEBUT', ' ')
     matas1=matass
     solve1=solveu
+    ASSERT(solve1.ne.' ')
 !
     call dismoi('XFEM',matass,'MATR_ASSE',repk=kxfem)
 !

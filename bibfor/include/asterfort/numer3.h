@@ -15,12 +15,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine numer3(modelz, list_loadz, solverz, nume_ddlz, sd_iden_relaz)
-        character(len=*), intent(in) :: modelz
-        character(len=*), intent(inout) :: nume_ddlz
-        character(len=*), intent(in) :: list_loadz
-        character(len=*), intent(in) :: solverz
-        character(len=*), intent(in) :: sd_iden_relaz
-    end subroutine numer3
-end interface
+          interface 
+            subroutine numer3(modelz,list_loadz,nume_ddlz,sd_iden_relaz)
+              character(len=*), intent(in) :: modelz
+              character(len=*), intent(in) :: list_loadz
+              character(len=*), intent(inout) :: nume_ddlz
+              character(len=*), intent(in) :: sd_iden_relaz
+            end subroutine numer3
+          end interface 

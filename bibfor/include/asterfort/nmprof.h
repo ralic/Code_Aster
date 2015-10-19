@@ -15,14 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine nmprof(model        , result, list_load, solver, nume_ddl,&
-                      sd_iden_relaz)
-        character(len=24), intent(in) :: model
-        character(len=24), intent(out) :: nume_ddl
-        character(len=8), intent(in) :: result
-        character(len=19), intent(in) :: list_load
-        character(len=19), intent(in) :: solver
-        character(len=*), optional, intent(in) :: sd_iden_relaz
-    end subroutine nmprof
-end interface
+          interface 
+            subroutine nmprof(model,result,list_load,nume_ddl,          &
+     &sd_iden_relaz)
+              character(len=24), intent(in) :: model
+              character(len=8), intent(in) :: result
+              character(len=19), intent(in) :: list_load
+              character(len=24), intent(out) :: nume_ddl
+              character(len=*) ,optional, intent(in) :: sd_iden_relaz
+            end subroutine nmprof
+          end interface 

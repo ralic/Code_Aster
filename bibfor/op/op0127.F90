@@ -29,7 +29,6 @@ subroutine op0127()
 !
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterfort/crnslv.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
@@ -82,7 +81,6 @@ subroutine op0127()
     else if (ibid2.ne.0) then
         call nummod(nugene, modmec)
     endif
-    call crnslv(nugene, 'LDLT', 'SANS', 'G')
 !
 !     -- ON CREE LE PROFIL LCIEL:
     rtbloc=jevtbl('TAILLE_BLOC')

@@ -108,7 +108,7 @@ M_ELEM=CALC_MATR_ELEM(OPTION='MASS_MECA',
 # NUMEROTATION POUR LE CALCUL MODAL
 
 NUMERO_2=NUME_DDL(MATR_RIGI=(K2_ELEM,KS_ELEM,KR_ELEM),
-                  METHODE='MULT_FRONT',);
+                  );
 #
 # ASSEMBLAGE DE LA MATRICE DE RAIDEUR STATIQUE KTOT = K + KW
 
@@ -173,7 +173,7 @@ TEST_RESU(RESU=(_F(PARA='FREQ',
                    REFERENCE='SOURCE_EXTERNE',
                    RESULTAT=MODE_2,
 # TOLE_MACHINE: Mauvais conditionnement de la matrice (1E+12)
-                   TOLE_MACHINE = 1.E-5, 
+                   TOLE_MACHINE = 1.E-5,
                    VALE_CALC=1.75979,
                    VALE_REFE=1.75,
                    CRITERE='RELATIF',

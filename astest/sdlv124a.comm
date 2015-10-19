@@ -99,8 +99,8 @@ FELEM=CALC_VECT_ELEM(OPTION='CHAR_MECA',
                      CHARGE=PRES,);
 
 NUME=NUME_DDL(MATR_RIGI=KELEM,
-              METHODE='MULT_FRONT',
-              RENUM='METIS',);
+
+              );
 
 KASS=ASSE_MATRICE(MATR_ELEM=KELEM,
                   NUME_DDL=NUME,
@@ -324,7 +324,7 @@ DGX2=RECU_FONCTION (   RESU_GENE = DYNHGEN,
                       NOM_CHAM = 'DEPL')
 
 # TEST DE POST_GENE_PHYS SUR UN HARM_GENE
-PGP_DGX2=POST_GENE_PHYS(RESU_GENE=DYNHGEN, 
+PGP_DGX2=POST_GENE_PHYS(RESU_GENE=DYNHGEN,
                        OBSERVATION=(_F(NOM_CHAM = 'DEPL',
                                        NOM_CMP='DX',
                                        NOEUD = 'N433',

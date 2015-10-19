@@ -21,7 +21,6 @@ subroutine ssrige(nomu)
 !     ----------
 #include "jeveux.h"
 #include "asterfort/assmam.h"
-#include "asterfort/crnslv.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -85,32 +84,32 @@ subroutine ssrige(nomu)
     call jeveuo(nomu//'.VARM', 'L', vr=varm)
     time = varm(2)
 !
-!        -- CALCULS MATRICES ELEMENTAIRES DE RIGIDITE:
+!   -- CALCULS MATRICES ELEMENTAIRES DE RIGIDITE:
     call merime(nomo, nchaci, zk8(iarefm-1+9+1), mate, cara,&
                 .true._1, time, ' ', matel, ibid,&
                 base)
 !
-!        -- NUME_DDL:
-    call numddl(nu, 'GG', 1, matel, 'RCMK')
-    call crnslv(nu, 'LDLT', 'RCMK', 'G')
+!   -- NUME_DDL:
+    call numddl(nu, 'GG', 1, matel)
 !
-!        -- ON MET LES DDLS INTERNES AVANT LES EXTERNES
-!           AVANT DE CONSTRUIRE LE PROFIL :
+!   -- ON MET LES DDLS INTERNES AVANT LES EXTERNES
+!      AVANT DE CONSTRUIRE LE PROFIL :
     call ssriu1(nomu)
     call promor(nu, 'G')
     rtbloc=varm(1)
     call smosli(nu//'.SMOS', nu//'.SLCS', 'G', rtbloc)
 !
-!        -- ASSEMBLAGE:
+!   -- ASSEMBLAGE:
     call assmam('G', matas, 1, matel, [1.d0],&
                 nu, 'ZERO', 1)
-!     -- IL FAUT COMPLETER LA MATRICE SI LES CALCULS SONT DISTRIBUES:
+                
+!   -- IL FAUT COMPLETER LA MATRICE SI LES CALCULS SONT DISTRIBUES:
     call sdmpic('MATR_ASSE', matas)
 !
 !
     call ssriu2(nomu)
 !
-!        -- MISE A JOUR DE .REFM(5) ET REFM(6)
+!   -- MISE A JOUR DE .REFM(5) ET REFM(6)
     zk8(iarefm-1+5)=nu(1:8)
     zk8(iarefm-1+6)='OUI_RIGI'
 !

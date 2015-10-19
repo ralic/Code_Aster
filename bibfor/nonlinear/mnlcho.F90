@@ -1,6 +1,6 @@
 subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
                   nchoc, h, hf, parcho, adime,&
-                  ninc, tabchoc, lcine)
+                  ninc, tabchoc, lcine, solveu)
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -75,6 +75,7 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
     integer :: imat(2), nd, nchoc, h, hf, ninc
     character(len=14) :: numedd, xcdl, parcho, adime
     character(len=8) :: tabchoc
+    character(len=19) :: solveu
 !
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES VARIABLES LOCALES
@@ -83,12 +84,10 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
     integer :: j, nunoe, iadim, pdlmax, neq, iei, ier2, i, iorig
     integer :: icmp, icmp1, icmp2, iorigx, iorigy, iorigz
     character(len=19) :: matk, matm, nomcmp1, nomcmp2, origx, origy, origz
-    character(len=19) :: solveu
     character(len=8) :: tchoc, kvide, typval, mailla
     character(len=8) :: noeud(2)
     character(len=8) :: cmp(6)
     character(len=24) :: magrno, manono, grno
-    character(len=24), pointer :: refa(:) => null()
     real(kind=8) :: orig(3)
     complex(kind=8) :: cbid
     real(kind=8), pointer :: ei2(:) => null()
@@ -105,6 +104,7 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
     cbid = dcmplx(0.d0, 0.d0)
 !
     call jemarq()
+    solveu = '&&OP0061.SOLVEUR'
 !
 ! ----------------------------------------------------------------------
 ! --- INITIALISATION DU NOMBRE TOTAL D'INCONNUE DU SYSTEME
@@ -162,8 +162,6 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
 ! --- RECUPERATION : NOM DE LA MATRICE DE RAIDEUR ET DU VECTEUR D'INDICE
 ! ----------------------------------------------------------------------
     matk=zk24(zi(imat(1)+1))(1:19)
-    call jeveuo(matk(1:19)//'.REFA', 'L', vk24=refa)
-    solveu = refa(7)(1:19)
     matm=zk24(zi(imat(2)+1))(1:19)
     call jeveuo(xcdl, 'L', iind)
 ! ----------------------------------------------------------------------
@@ -282,7 +280,7 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
     zr(iei-1+pdlmax)=1.d0
     call preres(solveu, 'V', ier, ' ', matk,&
                 ier2, 0)
-    call resoud(matk, ' ', ' ', ' ', 1,&
+    call resoud(matk, ' ', solveu, ' ', 1,&
                 ' ', ' ', 'V', zr(iei), [cbid],&
                 ' ', .false._1, 0, ier)
     zr(iadim-1+1)=1.d0/zr(iei-1+pdlmax)
@@ -292,7 +290,7 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
                     ier2, 0)
         call dscal(neq, 0.d0, zr(iei), 1)
         zr(iei-1+pdlmax)=1.d0
-        call resoud(matm, ' ', ' ', ' ', 1,&
+        call resoud(matm, ' ', solveu, ' ', 1,&
                     ' ', ' ', 'V', zr(iei), [cbid],&
                     ' ', .false._1, 0, ier)
         zr(iadim-1+2)=1.d0/zr(iei-1+pdlmax)

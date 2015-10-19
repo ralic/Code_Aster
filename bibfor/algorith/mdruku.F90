@@ -88,7 +88,7 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
     character(len=8) :: nomfon(*), foncv, fonca, foncp, namerk, nomamo
     character(len=14) :: matpre
     character(len=16) :: typbas, method
-    character(len=19) :: matasm
+    character(len=19) :: matasm, solveu
     character(len=24) :: cpal
 !
     aster_logical :: okprem
@@ -104,6 +104,7 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
 ! ======================================================================
 !
     call jemarq()
+    solveu='&&OP0074.SOLVEUR'
 !
     nbobjs=1
     call codent(nbobjs, 'D0', intk)
@@ -200,7 +201,7 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
     else if (typbas.eq.'MODELE_GENE     ') then
         matpre='&&RUKUT.MATPRE'
         matasm=zk24(zi(descmm+1))(1:19)
-        call preres(' ', 'V', iret, matpre, matasm,&
+        call preres(solveu, 'V', iret, matpre, matasm,&
                     ibid, -9999)
     else
         call wkvect('&&RUKUT.MASS', 'V V R8', neqgen, jmass)

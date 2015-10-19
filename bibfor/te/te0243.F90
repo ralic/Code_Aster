@@ -142,10 +142,11 @@ subroutine te0243(option, nomte)
 !
     do 200 ise = 1, nse
 !
-        do 205 i = 1, nno
-            do 205 j = 1, 2
+        do i = 1, nno
+            do j = 1, 2
                 coorse(2*(i-1)+j) = zr(igeom-1+2*(c(ise,i)-1)+j)
-205          continue
+            enddo
+        enddo
 !
         if (zk16(icomp)(1:5) .eq. 'THER_') then
 !
@@ -172,7 +173,7 @@ subroutine te0243(option, nomte)
                 call rcfode(ifon(2), tpg, lambda, r8bid)
 !
                 if (lteatt('AXIS','OUI')) poids = poids*r
-!DIR$ IVDEP
+!!DIR$_IVDEP
                 do 105 i = 1, nno
                     vectt(c(ise,i)) = vectt(&
                                       c(ise,i)) + poids * theta*lambda* (dfdx(i)*dtpgdx+dfdy(i)*d&
@@ -183,10 +184,11 @@ subroutine te0243(option, nomte)
 !
 ! ------- TERME DE MASSE : 3EME FAMILLE DE PTS DE GAUSS -----------
 !
-            do 405 i = 1, nno
-                do 405 j = 1, 2
+            do i = 1, nno
+                do j = 1, 2
                     coorse(2*(i-1)+j) = zr(igeom-1+2*(c(ise,i)-1)+j)
-405              continue
+                enddo
+            enddo
 !
             call ntfcma(zk16(icomp), zi(imate), ifon)
             do 401 kp = 1, npg2

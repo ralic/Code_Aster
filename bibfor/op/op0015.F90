@@ -70,8 +70,12 @@ subroutine op0015()
     if (nb .eq. 1) call chpver('F', vcine, 'NOEU', '*', ier)
 !
 !
-!     --- CREATION D'1 SOLVEUR TEMPORAIRE : SOLVE2 (SAUF SI MUMPS)
-    call dismoi('SOLVEUR', matr, 'MATR_ASSE', repk=solve1)
+!   -- CREATION D'1 SOLVEUR TEMPORAIRE : SOLVE2 (SAUF SI MUMPS)
+    if (matf.eq.' ') then
+        call dismoi('SOLVEUR', matr, 'MATR_ASSE', repk=solve1)
+    else
+        call dismoi('SOLVEUR', matf, 'MATR_ASSE', repk=solve1)
+    endif
     call jeveuo(solve1//'.SLVK', 'E', j1)
     metres=zk24(j1-1+1)
     if (metres .ne. 'MUMPS' .and. metres .ne. 'PETSC') then

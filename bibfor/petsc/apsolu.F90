@@ -68,8 +68,8 @@ subroutine apsolu(kptsc, lmd, rsolu)
     call jemarq()
 !
 !     -- LECTURE DU COMMUN
-    nomat = nomats(kptsc)
-    nonu = nonus(kptsc)
+    nomat = nomat_courant
+    nonu = nonu_courant
     bs = tblocs(kptsc)
     fictif = fictifs(kptsc)
 !
@@ -153,7 +153,7 @@ subroutine apsolu(kptsc, lmd, rsolu)
 ! Pour corriger issue23375
 ! Probleme possible du compilateur Intel sur athosdev :
 ! Version 14.0.2.144 Build 20140120
-!DIR$ NOVECTOR
+!!DIR$_NOVECTOR
         do ieq1 = 1, neq1
             ieq2=new_ieq(ieq1)
             rsolu(ieq1)=xx(xidx+ieq2)

@@ -113,7 +113,7 @@ implicit none
 !
 ! - Initial state and some parameters
 !
-    call ntinit(model , mate    , cara_elem, list_load, solver     ,&
+    call ntinit(model , mate    , cara_elem, list_load,&
                 para  , nume_dof, lostat   , levol    , l_ther_nonl,&
                 sddisc, ds_inout, mesh     , sdcrit   , time)
 !

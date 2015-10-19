@@ -35,7 +35,7 @@ subroutine ssriu2(nomu)
 #include "asterfort/mtdsc2.h"
 #include "asterfort/mtdscr.h"
 #include "asterfort/rldlr8.h"
-#include "asterfort/tldlgg.h"
+#include "asterfort/tldlg3.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
@@ -99,8 +99,8 @@ subroutine ssriu2(nomu)
 !     -----------------------------------------------------
     call mtdscr(matas)
     call jeveuo(matas(1:19)//'.&INT', 'E', lmat)
-    call tldlgg(1, lmat, 1, nddli, 0,&
-                ndeci, isingu, npvneg, ier)
+    call tldlg3('LDLT', ' ', 1, lmat, 1, nddli, 0,&
+                ndeci, isingu, npvneg, ier, ' ')
     if (ier .gt. 0) then
         call utmess('F', 'ALGORITH5_19')
     endif

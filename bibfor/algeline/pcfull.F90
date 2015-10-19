@@ -86,15 +86,13 @@ subroutine pcfull(n, icpl, icpc, icpd, icplp,&
 !     => POUR CHACUN DES L(I,J) NON NUL DE LA LIGNE I (BOUCLE 3: J < I)
 !        ON RECHERCHE S'IL EXISTE UN U(J,JJ) NON NUL  (BOUCLE 4: J < JJ)
 !        SI ON EN TROUVE UN, ON TESTE L'EXISTENCE DU COEFFICIENT A(I,JJ)
-!        A L'AIDE DU TABLEAU INDIC. ON CREE UN COEFFICIENT DE REMPLISSAG
-! E
+!        A L'AIDE DU TABLEAU IND. ON CREE UN COEFFICIENT DE REMPLISSAGE
 !        SI NECESSAIRE.
 !
 !     => POUR CHACUN DES U(J,I) NON NUL DE LA LIGNE I (BOUCLE 3: J < I)
 !        ON RECHERCHE S'IL EXISTE UN L(JJ,J) NON NUL  (BOUCLE 4: J < JJ)
 !        SI ON EN TROUVE UN, ON TESTE L'EXISTENCE DU COEFFICIENT A(I,JJ)
-!        A L'AIDE DU TABLEAU INDIC. ON CREE UN COEFFICIENT DE REMPLISSAG
-! E
+!        A L'AIDE DU TABLEAU IND. ON CREE UN COEFFICIENT DE REMPLISSAGE
 !        SI NECESSAIRE.
 !
 !    REMARQUE :  DANS LES FORMULES (1) ET (2) LES SOMMES SONT CALCULEES
@@ -103,8 +101,6 @@ subroutine pcfull(n, icpl, icpc, icpd, icplp,&
 !
 !=======================================================================
 !
-!     INITIALISATION DU TABLEAU INDIC
-!     -------------------------------
 !-----------------------------------------------------------------------
     integer :: i, ic1, ic2, ier, istop, j, jj
     integer :: k, k1, k2, kp1, kp2, l, lca
@@ -132,7 +128,7 @@ subroutine pcfull(n, icpl, icpc, icpd, icplp,&
             goto 90
         endif
 !
-!       MISE A JOUR DU TABLEAU INDIC
+!       MISE A JOUR DU TABLEAU IND
         k2=icpl(i)
         do 20 k = k1, k2
             j=icpc(k)
@@ -156,7 +152,7 @@ subroutine pcfull(n, icpl, icpc, icpd, icplp,&
                         goto 90
                     endif
                     icpcp(ic1)=jj
-!             MISE A JOUR DU TABLEAU INDIC
+!             MISE A JOUR DU TABLEAU IND
                     ind(jj)=i
                 endif
 30          continue
@@ -227,10 +223,6 @@ subroutine pcfull(n, icpl, icpc, icpd, icplp,&
 !
 70      continue
 80  end do
-!
-!     LE NOMBRE DE COEFFICIENTS DE LA MATRICE FACTORISEE
-!     NZCA = NZERO
-!     WRITE (6,*) ' FIN DU S-P FILLIN  TAILLE FACTORISEE= ',NZCA
     goto 140
 !
 !

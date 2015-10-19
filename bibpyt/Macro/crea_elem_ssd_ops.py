@@ -62,9 +62,7 @@ def crea_elem_ssd_ops(self,  NUME_DDL, INTERFACE, BASE_MODALE,
                              MODELE=args['MODELE'],
                              CHAM_MATER=args['CHAM_MATER'],)
 
-    _nume_ddl = NUME_DDL(MATR_RIGI=_kelem,
-                         METHODE=SOLVEUR[0]['METHODE'],
-                         RENUM=SOLVEUR[0]['RENUM'],)
+    _nume_ddl = NUME_DDL(MATR_RIGI=_kelem,)
 
     _matrigi = ASSE_MATRICE(NUME_DDL=_nume_ddl,
                             MATR_ELEM=_kelem,)

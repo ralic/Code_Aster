@@ -82,12 +82,6 @@ def macro_elas_mult_ops(self, MODELE, CHAM_MATER, CARA_ELEM, NUME_DDL,
         if lnume:
             # On peut passer des mots cles egaux a None. Ils sont ignores
             motscles = {}
-            if SOLVEUR:
-                motscles['METHODE'] = SOLVEUR['METHODE']
-                motscles['RENUM'] = SOLVEUR['RENUM']
-            else:
-                motscles['METHODE'] = 'MULT_FRONT'
-                motscles['RENUM'] = 'METIS'
             if numeddl != None:
                 self.DeclareOut('num', numeddl)
                 num = NUME_DDL(MATR_RIGI=__nomrig, **motscles)
@@ -99,8 +93,12 @@ def macro_elas_mult_ops(self, MODELE, CHAM_MATER, CARA_ELEM, NUME_DDL,
 
         __nomras = ASSE_MATRICE(MATR_ELEM=__nomrig, NUME_DDL=num)
 
-        __nomras = FACTORISER(reuse=__nomras, MATR_ASSE=__nomras, NPREC=SOLVEUR[
-                              'NPREC'], STOP_SINGULIER=SOLVEUR['STOP_SINGULIER'])
+        __nomras = FACTORISER(reuse=__nomras, MATR_ASSE=__nomras,
+                              NPREC          =SOLVEUR['NPREC'],
+                              STOP_SINGULIER =SOLVEUR['STOP_SINGULIER'],
+                              METHODE        =SOLVEUR['METHODE'],
+                              RENUM          =SOLVEUR['RENUM'],
+                              )
 
 #
 # boucle sur les items de CAS_CHARGE
@@ -139,15 +137,18 @@ def macro_elas_mult_ops(self, MODELE, CHAM_MATER, CARA_ELEM, NUME_DDL,
                 OPTION='RIGI_MECA', MODELE=MODELE, **motscles)
 
             if lnume:
-                _num = NUME_DDL(
-                    MATR_RIGI=__nomrig, METHODE=SOLVEUR['METHODE'], RENUM=SOLVEUR['RENUM'])
+                _num = NUME_DDL(MATR_RIGI=__nomrig, )
                 num = _num
                 lnume = 0
 
             __nomras = ASSE_MATRICE(MATR_ELEM=__nomrig, NUME_DDL=num)
 
-            __nomras = FACTORISER(MATR_ASSE=__nomras, NPREC=SOLVEUR[
-                                  'NPREC'], STOP_SINGULIER=SOLVEUR['STOP_SINGULIER'])
+            __nomras = FACTORISER(reuse=__nomras, MATR_ASSE=__nomras,
+                              NPREC          =SOLVEUR['NPREC'],
+                              STOP_SINGULIER =SOLVEUR['STOP_SINGULIER'],
+                              METHODE        =SOLVEUR['METHODE'],
+                              RENUM          =SOLVEUR['RENUM'],
+                              )
 
         if m['VECT_ASSE'] == None:
             motscles = {}

@@ -75,8 +75,8 @@ subroutine elg_calc_matk_red(mat1z, solv1z, mat2z, bas1)
 !   -- mise a jour de matas1.refa(19):
     call jeveuo(matas1//'.REFA', 'E', vk24=refa)
     if (refa(19) .ne. ' ') then
-! ce n'est peut etre pas tres normal de reduire une matrice qui
-! a deja ete reduite ...
+!       Ce n'est peut etre pas tres normal de reduire une matrice qui
+!       a deja ete reduite ...
         ASSERT(.false.)
         call detrsd('MATR_ASSE', refa(19))
     endif

@@ -67,7 +67,7 @@ subroutine mnltan(lcal, imat, numdrv, matdrv, xcdl,&
     aster_logical :: lcal
     integer :: imat(2), ninc, nd, nchoc, h, hf
     character(len=14) :: numdrv, xcdl, parcho, adime, xvect, xtang
-    character(len=19) :: matdrv
+    character(len=19) :: matdrv,solveu
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES VARIABLES LOCALES
 ! ----------------------------------------------------------------------
@@ -75,8 +75,10 @@ subroutine mnltan(lcal, imat, numdrv, matdrv, xcdl,&
     real(kind=8) :: norme
     complex(kind=8) :: cbid
     cbid = dcmplx(0.d0, 0.d0)
+! ----------------------------------------------------------------------
 !
     call jemarq()
+    solveu = '&&OP0061.SOLVEUR'
 ! ----------------------------------------------------------------------
 ! --- CREATION VECTEURS TEMPORAIRES
 ! ----------------------------------------------------------------------
@@ -106,7 +108,7 @@ subroutine mnltan(lcal, imat, numdrv, matdrv, xcdl,&
 ! ----------------------------------------------------------------------
 ! --- ON RESOUD TANGENTE=DRDV\[0 ... 0 1]
 ! ----------------------------------------------------------------------
-    call resoud(matdrv, ' ', ' ', ' ', 1,&
+    call resoud(matdrv, ' ', solveu, ' ', 1,&
                 ' ', ' ', 'v', zr(ib), [cbid],&
                 ' ', .false._1, 0, iret)
     call dcopy(ninc, zr(ib), 1, zr(itang), 1)

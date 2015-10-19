@@ -166,9 +166,6 @@ MELM=CALC_MATR_ELEM(OPTION='MASS_MECA',
 
 
 NUM=NUME_DDL(MATR_RIGI=MELR,
-   #          METHODE='MULT_FRONT',
-   #          RENUM='LDLT');
-   #          RENUM='MDA'
              );
 
 
@@ -330,7 +327,7 @@ ASSEMBLAGE(MODELE=MODELE,
 #                                          'LIGRAD'),
 #                                ),
 #                   );
-# # 
+# #
 # IMPR_TABLE(TABLE=MASSTOT,);
 
 

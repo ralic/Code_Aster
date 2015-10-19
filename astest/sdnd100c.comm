@@ -77,8 +77,7 @@ RIGIELEM=CALC_MATR_ELEM(  MODELE=MODELE,   CHARGE=CHARGE,
                             OPTION='RIGI_MECA')
 
 #
-NUME=NUME_DDL(  MATR_RIGI=RIGIELEM,
-                  METHODE='LDLT',  RENUM='RCMK')
+NUME=NUME_DDL(  MATR_RIGI=RIGIELEM) 
 
 #
 U1=U0 * ANG
@@ -117,7 +116,7 @@ TRAN_DI=DYNA_NON_LINE(
                                 ALPHA = -0.02),  #0.01
                 CONVERGENCE=_F(  RESI_GLOB_RELA = 1.E-4,
                              ITER_GLOB_MAXI = 7),
-                SOLVEUR=_F( METHODE = 'LDLT', RENUM = 'RCMK'),
+                SOLVEUR=_F( METHODE = 'LDLT',),
                 NEWTON=_F( REAC_ITER = 1)
                       )
 

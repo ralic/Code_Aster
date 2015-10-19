@@ -16,6 +16,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
 ! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+
 !
     implicit none
 ! person_in_charge: natacha.bereux at edf.fr
@@ -25,6 +26,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
 #include "asterfort/apmain.h"
+#include "asterfort/apldlt.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -85,7 +87,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
 !
 !     VARIABLES LOCALES
     integer :: iprem, k, nglo, kdeb, jnequ
-    integer :: jrefa, kptsc
+    integer ::  kptsc
     integer :: np
     real(kind=8) :: r8
     PetscInt :: m, n
@@ -95,6 +97,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
     character(len=4) :: etamat
     character(len=1) :: rouc
     real(kind=8), pointer :: travail(:) => null()
+    character(len=24), pointer :: refa(:) => null()
 !
 !----------------------------------------------------------------
 !
@@ -135,7 +138,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
 !
     if (iprem .eq. 0) then
 !     --------------------
-!        -- quelques vérifications sur la cohérence Aster / Petsc :
+!        -- quelques verifications sur la coherence Aster / Petsc :
         ASSERT(kind(rbid).eq.kind(r8))
         ASSERT(kind(sbid).eq.kind(r8))
         ASSERT(kind(mbid).eq.kind(np))
@@ -168,16 +171,15 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
         iprem = 1
     endif
     ASSERT(matas.ne.' ')
-!
-!
-!
-!   1. on ne veut pas de matrice complexe :
+
+
+!   1. On ne veut pas de matrice complexe :
 !   ----------------------------------------
     call jelira(matas//'.VALM', 'TYPE', cval=rouc)
     if (rouc .ne. 'R') call utmess('F', 'PETSC_2')
-!
-!
-!   2. on cherche si la matrice est dans le common :
+
+
+!   2. On cherche si la matrice est dans le common :
 !   -------------------------------------------------
 !   On teste le nom de la matrice, celui du nume_ddl,
 !   et la taille des matrices aster et petsc
@@ -205,28 +207,26 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
             endif
         endif
     enddo
-!
+
     ASSERT(action.ne.'RESOUD')
-!
+
     if (action .eq. 'DETR_MAT') goto 999
-!
-!   y-a-t-il encore une place libre dans le common ?
-!   --------------------------------------------------
+
+
+!   Y-a-t-il encore une place libre dans le common ? Calcul de kptsc :
+!   ------------------------------------------------------------------
     do k = 1, nmxins
         if (nomats(k) .eq. ' ') then
             kptsc = k
             goto 1
         endif
     end do
-!
     call utmess('F', 'PETSC_3')
-!
-!
-!
-!
-!   3. quelques verifications et petites actions :
-!   ----------------------------------------------
  1  continue
+
+
+!   3. Quelques verifications et petites actions :
+!   ----------------------------------------------
 !
     if (action .eq. 'PRERES') then
 !        -- remplissage du commun
@@ -237,50 +237,58 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
         ASSERT(solveu.ne.' ')
         ASSERT(nu .ne.' ')
         nomats(kptsc) = matas
-        nosols(kptsc) = solveu
         nonus(kptsc) = nu
-!
-!        -- verification que la matrice n'a pas ete factorisee
-        call jeveuo(matas//'.REFA', 'E', jrefa)
-        etamat = zk24(jrefa-1+8)(1:4)
-        if (etamat .eq. 'DECT') then
-            call utmess('A', 'PETSC_4')
-            goto 999
-        else
-            zk24(jrefa-1+8) = 'DECT'
-        endif
-!
-!        -- elimination des ddls (affe_char_cine)
-        ASSERT(zk24(jrefa-1+3).ne.'ELIMF')
-        if (zk24(jrefa-1+3) .eq. 'ELIML') call mtmchc(matas, 'ELIMF')
-        ASSERT(zk24(jrefa-1+3).ne.'ELIML')
+        nosols(kptsc) = solveu
 !
     else if (action.eq.'RESOUD') then
         ASSERT(nbsol.ge.1)
         ASSERT((istop.eq.0).or.(istop.eq.2))
-!
-    else if (action.eq.'DETR_MAT') then
-!        RIEN A VERIFIER
-!
+
     else if (action.eq.'ELIM_LAGR') then
 !        -- remplissage du commun spetsc
         nomats(kptsc) = matas
-        nosols(kptsc) = solveu
         nonus(kptsc) = nu
+        nosols(kptsc) = solveu
         tblocs(kptsc) = -1
         fictifs(kptsc) = -1
         new_ieqs(kptsc)%pi4 => null()
         old_ieqs(kptsc)%pi4 => null()
+
+    endif
+
+
+!   4. Si LDLT_INC, il faut renumeroter la matrice (RCMK) :
+!   --------------------------------------------------------
+    call apldlt(kptsc,action,'PRE',rsolu,vcine,nbsol)
+
+
+!   5. Verifications + elimination des ddls (affe_char_cine)
+!   --------------------------------------------------------
+    call jeveuo(nomat_courant//'.REFA', 'E', vk24=refa)
+    if (action .eq. 'PRERES' .or. nomat_courant.eq.'&&apldlt.matr') then
+!
+!       -- Verification que la matrice n'a pas deja ete factorisee
+        etamat = refa(8)
+        if (etamat .eq. 'DECT') then
+            call utmess('A', 'PETSC_4')
+            goto 999
+        else
+            refa(8) = 'DECT'
+        endif
+!
+!        -- elimination des ddls (affe_char_cine)
+        ASSERT(refa(3).ne.'ELIMF')
+        if (refa(3) .eq. 'ELIML') call mtmchc(nomat_courant, 'ELIMF')
+        ASSERT(refa(3).ne.'ELIML')
+
+    else if (action.eq.'ELIM_LAGR') then
         call elg_apelim(kptsc)
         iret=0
         goto 999
-    else
-        ASSERT(.false.)
     endif
-!
-!
-!
-!   4. APPEL DE PETSC :
+
+
+!   5. APPEL DE PETSC :
 !   -------------------
     if (action .eq. 'RESOUD') then
         AS_ALLOCATE(vr=travail, size=nglo)
@@ -295,7 +303,13 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
     else
         call apmain(action, kptsc, rsolu, vcine, istop, iret)
     endif
-!
+
+
+!   6. Si LDLT_INC, il faut revenir a la numerotation initiale :
+!   -------------------------------------------------------------
+    call apldlt(kptsc,action,'POST',rsolu,vcine,nbsol)
+
+
 999 continue
     call jedema()
 #else

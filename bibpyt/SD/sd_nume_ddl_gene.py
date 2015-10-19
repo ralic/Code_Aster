@@ -18,12 +18,12 @@
 
 from SD import *
 
-from SD.sd_nume_ddl_com import sd_nume_ddl_com
 from SD.sd_nume_eqge import sd_nume_eqge
 from SD.sd_nume_elim import sd_nume_elim
+from SD.sd_stockage import sd_stockage
 
 
-class sd_nume_ddl_gene(sd_nume_ddl_com):
+class sd_nume_ddl_gene(sd_stockage):
 #---------------------------------------
     nomj = SDNom(fin=14)
     nume = Facultatif(sd_nume_eqge(SDNom(nomj='.NUME')))

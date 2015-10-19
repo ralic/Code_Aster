@@ -87,6 +87,7 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
 ! ----------------------------------------------------------------------
     integer :: k
 !
+    character(len=19) :: solveu
     real(kind=8) :: nvec, nratio, necar, ac, nudom
     complex(kind=8) :: cbid
     real(kind=8), pointer :: alpha(:) => null()
@@ -95,7 +96,9 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
     real(kind=8), pointer :: ratio(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !
+! ----------------------------------------------------------------------
     call jemarq()
+    solveu = '&&OP0061.SOLVEUR'
 ! ----------------------------------------------------------------------
 ! --- ON RECUPERE LE VECTEUR INITIAL, TANGENT ET LA SERIE
 ! ----------------------------------------------------------------------
@@ -146,7 +149,7 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
         end do
         fpnl(ninc)=0.d0
 ! ---   RESOLUTION DU SYSTEME LINEAIRE UPS(:,P) = K\FPNL
-        call resoud(matdrv, ' ', ' ', ' ', 1,&
+        call resoud(matdrv, ' ', solveu, ' ', 1,&
                     ' ', ' ', 'v', fpnl, [cbid],&
                     ' ', .false._1, 0, iret)
         call dcopy(ninc, fpnl, 1, zr(iups+p*ninc), 1)

@@ -15,15 +15,16 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine trasst(modgen, numsst, isst1, lisint, nbeq1,&
-                      nbmod, nbint)
-        character(len=8) :: modgen
-        integer :: numsst
-        integer :: isst1
-        character(len=24) :: lisint
-        integer :: nbeq1
-        integer :: nbmod
-        integer :: nbint
-    end subroutine trasst
-end interface
+          interface 
+            subroutine trasst(modgen,numsst,isst1,lisint,nbeq1,nbmod,   &
+     &nbint,solveu)
+              character(len=8) :: modgen
+              integer :: numsst
+              integer :: isst1
+              character(len=24) :: lisint
+              integer :: nbeq1
+              integer :: nbmod
+              integer :: nbint
+              character(len=19) :: solveu
+            end subroutine trasst
+          end interface 

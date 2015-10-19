@@ -96,7 +96,7 @@ ASSEMBLAGE(        MODELE=MODELE,
                      CHAM_MATER=AFF_MAT,
                          CHARGE=(COND_LIM,),
                        NUME_DDL=CO("NU"),
-                        SOLVEUR=_F(  METHODE = 'LDLT'),MATR_ASSE=(
+                        MATR_ASSE=(
                       _F(  MATRICE = CO("M"),  OPTION = 'MASS_MECA'),
                       _F(  MATRICE = CO("K"),  OPTION = 'RIGI_MECA'),),
                           TITRE='MAT_ASSE'
@@ -184,12 +184,12 @@ TEST_RESU(RESU=(
                    PARA = 'CHAR_CRIT',
                    CRITERE = 'RELATIF',
                    NUME_ORDRE = 1,
-                   VALE_CALC = 2.7194293382909E-13),
+                   VALE_CALC=2.71935702793E-13),
                 _F(RESULTAT = MODE_PG2,
                    PARA = 'FREQ',
                    CRITERE = 'RELATIF',
                    NUME_ORDRE = 1,
-                   VALE_CALC = 8.29964E-08),
+                   VALE_CALC=8.29952517944E-08),
     ),)
 
 #

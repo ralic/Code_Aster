@@ -126,7 +126,7 @@ subroutine op0093()
     call jeveuo(raidfa(1:19)//'.&INT', 'E', lmatr)
     call jeveuo(raidfa(1:19)//'.REFA', 'E', jrefa)
     zk24(jrefa-1+7)=solveu
-    call preres(' ', 'V', iret, matpre, raidfa,&
+    call preres(solveu, 'V', iret, matpre, raidfa,&
                 ibid, -9999)
     if (iret .eq. 2) then
         valk = raide

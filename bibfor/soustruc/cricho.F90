@@ -84,12 +84,9 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
     integer, pointer :: slvi(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !
-!
-!      SEUIL=1.D0
 !-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
+    solveu='&&OP0074.SOLVEUR'
     seuil=0.d0
-!      EPS=1.D-50
     eps = r8prem( )
     ifac = 0
     nblig = neq
@@ -146,8 +143,6 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
                             .true._1)
 !
                 if (ifac .eq. 0) then
-                    call dismoi('SOLVEUR', marig, 'MATR_ASSE', repk=solveu)
-                    ASSERT(solveu.eq.'&&OP0074.SOLVEUR')
                     matpre='&&OP0074.BIDON'
 !
 !             ISTOP MIS A 2 POUR NE PAS ARRETER L'EXECUTION EN CAS
@@ -170,7 +165,7 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
                 endif
 !
 !           FIMPO : DEFORMEE STATIQUE (K-1*N)
-                call resoud(marig, ' ', ' ', ' ', 1,&
+                call resoud(marig, ' ', solveu, ' ', 1,&
                             ' ', ' ', ' ', fimpo, [cbid],&
                             ' ', .true._1, 0, iret)
 !           NORMX : NORME K-1*N

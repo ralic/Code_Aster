@@ -36,7 +36,6 @@ subroutine calmaa(moint, mate, dir, ligrmo, lchin,&
 #include "asterfort/assmam.h"
 #include "asterfort/calcul.h"
 #include "asterfort/codent.h"
-#include "asterfort/crnslv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/jemarq.h"
@@ -80,9 +79,8 @@ subroutine calmaa(moint, mate, dir, ligrmo, lchin,&
 !-------------------- NUMEROTATION ----------------------------------
 !
     num = '&&CALMAA.NUM'//dir
-    call numddl(num, 'VV', 1, matel, 'RCMK')
+    call numddl(num, 'VV', 1, matel)
     call promor(num, 'V')
-    call crnslv(num, 'MULT_FRONT', 'METIS', 'V')
 !
 !---------------ASSEMBLAGE DES MATRICES AX OU AY DES N(I)N(J)NX OU NY
 !

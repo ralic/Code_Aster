@@ -162,7 +162,7 @@ implicit none
 ! --- CREATION DE LA NUMEROTATION ET PROFIL DE LA MATRICE
 !
     call nmnume(model , result, list_load, lcont , sdcont_defi,&
-                compor, solveu, numedd   , sdnume, sd_iden_rela)
+                compor, numedd   , sdnume, sd_iden_rela)
 !
 ! --- CREATION DE VARIABLES "CHAPEAU" POUR STOCKER LES NOMS
 !

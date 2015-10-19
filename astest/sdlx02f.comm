@@ -94,7 +94,7 @@ ASSEMBLAGE(      MODELE=MO,
                    CHAM_MATER=AFFMAT,
                        CHARGE=CHAR,
                      NUME_DDL=CO("NU"),
-                      SOLVEUR=_F(  METHODE = 'LDLT'),MATR_ASSE=(
+                      MATR_ASSE=(
                     _F(  MATRICE = CO("K"),  OPTION = 'RIGI_MECA'),
                     _F(  MATRICE = CO("M"),  OPTION = 'MASS_MECA')),
                         TITRE='MAT_ASSE'

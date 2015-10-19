@@ -125,7 +125,7 @@ VECT_ELE=CALC_VECT_ELEM(     OPTION='CHAR_MECA',
                              CHARGE=LIAISON
                            )
 
-NUMEDDL=NUME_DDL(    MATR_RIGI=RIGI_ELE,   METHODE='LDLT')
+NUMEDDL=NUME_DDL(    MATR_RIGI=RIGI_ELE)
 
 RIGIDITE=ASSE_MATRICE(    MATR_ELEM=RIGI_ELE,
                             NUME_DDL=NUMEDDL
@@ -148,6 +148,7 @@ TEMPLI=DEFI_LIST_REEL(DEBUT=0., INTERVALLE=_F( JUSQU_A = 0.8, NOMBRE = 1000))
 INTLI=DEFI_LIST_ENTI( DEBUT=1, INTERVALLE=_F( JUSQU_A = 1001, PAS = 1))
 
 DYNA=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
+                        SOLVEUR=_F(METHODE='LDLT'),
                         MODELE=MODELE,
                         MATR_MASS=MASSE,
                         MATR_RIGI=RIGIDITE,
@@ -156,9 +157,7 @@ DYNA=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                           _F(  VECT_ASSE = VECAS,
                                COEF_MULT = 1.),
                           _F(  CHARGE = ONDE)),
-####CDURAND####         ETAT_INIT=_F(  INST_INIT = 0.),
                         INCREMENT=_F( LIST_INST = TEMPLI),
-#                        ARCHIVAGE=_F(  LIST_ARCH = INTLI),
                         SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                         )
 

@@ -196,7 +196,7 @@ UCL =  DYNA_NON_LINE(MODELE=MODE,
                     NEWTON=_F(MATRICE='TANGENTE',
                               REAC_ITER=1,),
                     SOLVEUR =_F(METHODE='LDLT',
-                                RENUM='SANS',),
+                               ),
                     CONVERGENCE=_F(ITER_GLOB_MAXI=150,),
                     )
 

@@ -124,7 +124,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
                    INCREMENT=_F(LIST_INST=LINST,),
 
                    SOLVEUR=_F(METHODE='LDLT',
-                              RENUM='SANS'),
+                              ),
                    NEWTON=_F(MATRICE='TANGENTE',
                              REAC_ITER=1,),
                    CONVERGENCE=_F(RESI_GLOB_RELA=9.9999999999999995E-07,

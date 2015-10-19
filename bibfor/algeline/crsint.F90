@@ -60,7 +60,7 @@ subroutine crsint(solveu)
     zk24(islvk-1+7) = 'NON'
     zk24(islvk-1+8) = 'NON'
     zk24(islvk-1+9) = 'IN_CORE'
-    zk24(islvk-1+10) = 'NON'
+    zk24(islvk-1+10) = 'XXXX'
     zk24(islvk-1+11) = 'AUTO'
     zk24(islvk-1+12) = 'XXXX'
 !

@@ -53,7 +53,7 @@ subroutine renuno(nu, renum)
 !     IN:
 !     ---
 !     RENUM: 'RCMK' :  REVERSE-CUTHIL-MAC-KEE.
-!            ' '    :  PAS DE RENUMEROTATION.
+!            'SANS' :  PAS DE RENUMEROTATION.
 !     NU : NOM DU NUME_DDL  AUQUEL ON VA AJOUTER  LES OBJETS
 !     .NEWN ET .OLDN
 !     (ON SE SERT EN ENTREE DU SEUL OBJET NU//'.NUME.LILI')
@@ -108,15 +108,13 @@ subroutine renuno(nu, renum)
 !     ------------------
     integer :: nm, nl, nbnom, nbntt
     character(len=8) :: ma, mo
-!
-!
-!     -- CALCUL DE .EXI1 :
-!     --------------------
 !-----------------------------------------------------------------------
     integer :: i,  ianewn, iaoldn, ico, nlili
     integer, pointer :: exi1(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
+
+!   -- calcul de .exi1 :
     call reexi1(nu, mo, ma, nlili, nm,&
                 nl, nbntt)
     nbnom = nm + nl
@@ -137,10 +135,7 @@ subroutine renuno(nu, renum)
 !     -- 'REVERSE-CUTHIL-MAC-KEE':
         call rercmk(nu, mo, ma, nlili, nm,&
                     nl, nbntt)
-        else if (renum(1:4).eq.'SANS' .or. renum(1:2).eq.'MD' .or.&
-    renum(1:5).eq.'METIS' .or. renum(1:3).eq.'AMD' .or. renum(1:3)&
-    .eq.'AMF' .or. renum(1:4).eq.'QAMD' .or. renum(1:4).eq.'PORD'&
-    .or. renum(1:6).eq.'SCOTCH'.or. renum(1:4).eq.'AUTO' )then
+        else if (renum(1:4).eq.'SANS') then
 !     -- 'SANS RENUMEROTATION CUTHIL-MAC-KEE':
         ico = 0
         do 10,i = 1,nm

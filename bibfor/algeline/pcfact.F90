@@ -39,63 +39,57 @@ subroutine pcfact(matas, nequ, in, ip, ac,&
     integer :: in(nequ)
     integer(kind=4) :: ip(*)
     integer :: vali
-!
-!
-!     TDEB = SECOND()
-!          ---- MISE A 0  DU VECTEUR AUXILIAIRE POUR PROD-SCAL CREUX
-!-----------------------------------------------------------------------
     integer :: i, j, jdeb, jfin, jj, kdeb, kfin
     integer :: ki, kk, jrefa
     character(len=24) numedd
     character(len=8) name_node, name_cmp, valk(2)
     real(kind=8) :: cumul, epsi
 !-----------------------------------------------------------------------
-    do 10 j = 1, nequ
+    do j = 1, nequ
         vect(j) = 0.d0
-10  end do
-!
-!       ---- PREMIER TERME DIAGONAL...ON STOCKE LES INVERSES
+    enddo
+
+!   -- PREMIER TERME DIAGONAL...ON STOCKE LES INVERSES
     prc(1) = 1.d0/ac(1)
-!
-!---- BOUCLE SUR LES LIGNES DE LA MATRICE
-    do 50 i = 2, nequ
-!CCC  DO 100 I = 2 , 100
+
+!   -- BOUCLE SUR LES LIGNES DE LA MATRICE
+    do i = 2, nequ
         jfin = in(i)
         jdeb = in(i-1) + 1
-!      ---- TEST SI LIGNE VIDE
+!       -- TEST SI LIGNE VIDE
         if (jdeb .le. jfin) then
-!        ---- TEST SI LIGNE(I)=SEUL TERME DIAG
+!           -- TEST SI LIGNE(I)=SEUL TERME DIAG
             if (jdeb .eq. jfin) then
                 cumul = ac(jfin)
             else
-!        ---- PREMIER TERME DE LA LIGNE
+!               -- PREMIER TERME DE LA LIGNE
                 prc(jdeb) = ac(jdeb)
 !                ALTERATION DU VECTEUR AUXILIAIRE POUR PROD-SCAL CREUX
                 vect(ip(jdeb)) = ac(jdeb)
-!          ---- TERMES COURANTS DE LA LIGNE
-                do 30 jj = jdeb + 1, jfin - 1
+!               -- TERMES COURANTS DE LA LIGNE
+                do jj = jdeb + 1, jfin - 1
                     cumul = ac(jj)
                     j = ip(jj)
                     kfin = in(j)
                     kdeb = in(j-1) + 1
-                    do 20 kk = kdeb, kfin - 1
+                    do kk = kdeb, kfin - 1
                         cumul = cumul - prc(kk)*vect(ip(kk))
-20                  continue
+                    enddo
                     prc(jj) = cumul
-!                ALTERATION DU VECTEUR AUXILIAIRE POUR PROD-SCAL CREUX
+!                   -- ALTERATION DU VECTEUR AUXILIAIRE POUR PROD-SCAL CREUX
                     vect(ip(jj)) = cumul
-30              continue
-!          ---- TERME DIAGONAL
+                enddo
+!               -- TERME DIAGONAL
                 cumul = ac(jfin)
-!DIR$ IVDEP
-                do 40 ki = jdeb, jfin - 1
+!!DIR$_IVDEP
+                do ki = jdeb, jfin - 1
                     prc(ki) = prc(ki)*prc(in(ip(ki)))
                     cumul = cumul - prc(ki)*vect(ip(ki))
 !                   REMISE A 0 PARTIELLE DU VECTEUR AUXILIAIRE
                     vect(ip(ki)) = 0.d0
-40              continue
+                enddo
             endif
-!        ---- TEST DE SINGULARITE
+!           -- TEST DE SINGULARITE
             if (abs(cumul) .lt. epsi) then
                 vali = i
                 call jeveuo(matas//'.REFA', 'L', jrefa)
@@ -108,9 +102,6 @@ subroutine pcfact(matas, nequ, in, ip, ac,&
             endif
             prc(jfin) = 1.d0/cumul
         endif
-50  end do
-!     TFIN = SECOND() - TDEB
-!     NCOEF = IN(NEQU)
-!     WRITE (6,*) ' S-P PCFACT NCOEF= ',NCOEF
-!     WRITE (6,*) '       DUREE ',TFIN
+    enddo
+
 end subroutine

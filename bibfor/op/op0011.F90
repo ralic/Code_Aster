@@ -45,30 +45,16 @@ subroutine op0011()
 #include "asterfort/wkvect.h"
     integer :: nlimat, imatel
     parameter   (nlimat=100)
-    integer :: ifm, nbid, nbmat, niv, nbcha, iacha, jnslv, il
-    real(kind=8) :: blreps, blrfront
+    integer :: ifm, nbid, nbmat, niv, nbcha, iacha, il
     character(len=2) :: base
-    character(len=8) ::  tlimat(nlimat), nuuti, renum, mo
+    character(len=8) ::  tlimat(nlimat), nuuti, mo
     character(len=14) :: nudev
-    character(len=16) :: type, oper, method
-    character(len=19) :: ch19, solveu
+    character(len=16) :: type, oper
+    character(len=19) :: ch19
     character(len=24) :: list_load
 !----------------------------------------------------------------------
     call infmaj()
     call infniv(ifm, niv)
-!
-    call getvtx(' ', 'METHODE', iocc=1, scal=method, nbret=nbid)
-    ASSERT(nbid.eq.1)
-    call getvtx(' ', 'RENUM', iocc=1, scal=renum, nbret=nbid)
-    ASSERT(nbid.eq.1)
-    blrfront=0.d0
-    blreps=0.d0
-    if (method(1:5).eq.'MUMPS') then
-        call getvr8(' ', 'LOW_RANK_TAILLE', iocc=1, scal=blrfront, nbret=nbid)
-        ASSERT(nbid.eq.1)
-        call getvr8(' ', 'LOW_RANK_SEUIL', iocc=1, scal=blreps, nbret=nbid)
-        ASSERT(nbid.eq.1)
-    endif
 !
     list_load = '&&OP0011.CHARGES   .LCHA'
     base ='GG'
@@ -77,12 +63,6 @@ subroutine op0011()
 !     ----------------------------------------------------------
     call getres(nuuti, type, oper)
     nudev = nuuti
-!
-!
-!     -- CREATION D'UNE SD SOLVEUR :
-!     --------------------------------
-    solveu=nuuti//'.SOLVEUR'
-    call crsolv(method, renum, blrfront, blreps, solveu, 'G')
 
 !
 !
@@ -98,7 +78,7 @@ subroutine op0011()
             call wkvect(list_load, 'V V K24', nbcha, iacha)
             call getvid(' ', 'CHARGE', nbval=nbcha, vect=zk24(iacha), nbret=nbid)
         endif
-        call numero(nudev, solveu, base,&
+        call numero(nudev, base,&
                     modelz = mo, list_loadz = list_load)
         call jedetr(list_load)
     else
@@ -113,8 +93,8 @@ subroutine op0011()
         call uttcpu('CPU.RESO.2', 'DEBUT', ' ')
 !
 ! ----- CALCUL DE LA NUMEROTATION PROPREMENT DITE :
-! 
-        call numddl(nudev, 'GG', nbmat, zk24(imatel), renum)
+!
+        call numddl(nudev, 'GG', nbmat, zk24(imatel))
 !
 ! ----- CREATION ET CALCUL DU STOCKAGE MORSE DE LA MATRICE :
 !
@@ -122,12 +102,7 @@ subroutine op0011()
 !
         call uttcpu('CPU.RESO.1', 'FIN', ' ')
         call uttcpu('CPU.RESO.2', 'FIN', ' ')
-!
-! ----- CREATION DE L'OBJET .NSLV :
-!
-        call wkvect(nudev//'.NSLV', 'G V K24', 1, jnslv)
-        zk24(jnslv-1+1)=solveu
-!
+
     endif
 !
 ! - Clean

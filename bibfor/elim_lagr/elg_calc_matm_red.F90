@@ -188,10 +188,10 @@ subroutine elg_calc_matm_red(matas1, matas2, bas1)
     nomgds=zk24(j1-1+2)(1:8)
     call dismoi('NB_EC', nomgds, 'GRANDEUR', repi=nec)
 !
-!     nu2.NSLV :
+!     nu2.REFN :
 !     ----------
-    call jeveuo(nu2//'.NSLV', 'E', j1)
-    zk24(j1-1+1)=' '
+    call jeveuo(nu2//'.NUME.REFN', 'E', j1)
+    zk24(j1-1+4)='ELIM_LAGR'
 !
 !     nu2.NEQU :
 !     ----------

@@ -1,4 +1,4 @@
-subroutine gcpc(m, in, ip, ac, inpc,&
+subroutine gcpc(m, in, ip, ac, inpc, perm,&
                 ippc, acpc, bf, xp, r,&
                 rr, p, irep, niter, epsi,&
                 criter, solveu, matas, istop,&
@@ -52,7 +52,7 @@ subroutine gcpc(m, in, ip, ac, inpc,&
 !                              AVEC BF SI MEME ARGUMENT
 !     ------------------------------------------------------------------
 ! CORPS DU PROGRAMME
-! aslint: disable=W1304 
+! aslint: disable=W1304
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
@@ -72,20 +72,21 @@ subroutine gcpc(m, in, ip, ac, inpc,&
 #include "asterfort/r8inir.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
 #include "blas/dnrm2.h"
 #include "blas/dscal.h"
+
     integer(kind=4) :: ip(*), ippc(*)
-    integer :: m, in(m), inpc(m), irep, niter
+    integer :: m, in(m), inpc(m), irep, niter, perm(m)
     real(kind=8) :: ac(m), acpc(m), bf(m), xp(m), r(m), rr(m), p(m), epsi
     character(len=19) :: criter, matas, solveu
     integer :: istop, iret
-!
-!
-! DECLARATION VARIABLES LOCALES
-!
+
+! -----------------------------------------------------------------
     real(kind=8) :: zero, bnorm, anorm, epsix, anormx, rrri, gama, rrrim1
     real(kind=8) :: paraaf, anorxx, rau, valr(2)
     integer :: ifm, niv, jcri, jcrr, jcrk, iter, ier, vali
@@ -93,7 +94,9 @@ subroutine gcpc(m, in, ip, ac, inpc,&
     complex(kind=8) :: cbid
     integer, pointer :: slvi(:) => null()
     character(len=24), pointer :: slvk(:) => null()
-!     ------------------------------------------------------------------
+    real(kind=8), pointer :: xtrav(:) => null()
+    real(kind=8), pointer :: ytrav(:) => null()
+! -----------------------------------------------------------------
 !
     cbid=(0.d0,0.d0)
     call jemarq()
@@ -103,6 +106,8 @@ subroutine gcpc(m, in, ip, ac, inpc,&
 !
 !-----RECUPERATION DU NIVEAU D'IMPRESSION
     call infniv(ifm, niv)
+
+
 !
 !-----PARAMETRE D'AFFICHAGE DE LA DECROISSANCE DU RESIDU
 !     (SI ON GAGNE PARAAF * 100%)
@@ -121,6 +126,13 @@ subroutine gcpc(m, in, ip, ac, inpc,&
     if (precon .eq. 'LDLT_SP') then
         solvbd = slvk(3)
         call crsmsp(solvbd, matas, 0)
+    endif
+
+
+!-----Pour tenir compte de la renumerotation de la matrice de preconditionnement (LDLT):
+    if (precon .eq. 'LDLT_INC') then
+        AS_ALLOCATE(vr=xtrav, size=m)
+        AS_ALLOCATE(vr=ytrav, size=m)
     endif
 !
 !-----CALCULS PRELIMINAIRES
@@ -178,8 +190,7 @@ subroutine gcpc(m, in, ip, ac, inpc,&
 !                                                   RK <--- R()
 !                                                  ZK <--- RR()
         if (precon .eq. 'LDLT_INC') then
-            call gcldm1(m, inpc, ippc, acpc, r,&
-                        rr)
+            call gcldm1(m, inpc, ippc, acpc, r, rr, perm, xtrav, ytrav)
         else if (precon.eq.'LDLT_SP') then
           call dcopy(m, r, 1, rr, 1)
 !         ON PASSE ' ' AU LIEU DE VCINE, DEJA PRIS EN COMPTE DANS RESGRA
@@ -240,14 +251,14 @@ subroutine gcpc(m, in, ip, ac, inpc,&
         endif
     end do
 !
-!  
-    
+!
+
 !        ---  NON CONVERGENCE
     vali = iter
     valr (1) = anorm/anorxx
     valr (2) = epsi
-    if ( istop == 0 ) then 
-!            ERREUR <F>    
+    if ( istop == 0 ) then
+!            ERREUR <F>
         select case (precon)
         case('LDLT_INC')
             call utmess('F', 'ALGELINE4_3', si=vali, nr=2, valr=valr)
@@ -291,6 +302,10 @@ subroutine gcpc(m, in, ip, ac, inpc,&
 !
     call matfpe(1)
 !
+    if (precon .eq. 'LDLT_INC') then
+        AS_DEALLOCATE(vr=xtrav)
+        AS_DEALLOCATE(vr=ytrav)
+    endif
     call jedema()
 !
 end subroutine

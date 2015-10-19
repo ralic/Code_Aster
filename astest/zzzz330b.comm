@@ -59,7 +59,6 @@ CHARGT=AFFE_CHAR_MECA(MODELE=MOPOU,
 
 # RESOLUTION DU PROBLEME ELASTIQUE
 U1=MECA_STATIQUE(MODELE=MOPOU, CHAM_MATER=CHMAT, CARA_ELEM=POUCA,
-             #    SOLVEUR=_F(METHODE='LDLT',RENUM='RCMK',STOP_SINGULIER='OUI',),
                   EXCIT=(_F(CHARGE=BLOQUAGE,),  _F(CHARGE=CHARGT,),),);
 
 
@@ -116,7 +115,7 @@ RIGIELE=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                             CHARGE = BLOQUAGE,
                             );
         #  -------------                  -----------------
-NUM=NUME_DDL(#RENUM='METIS',
+NUM=NUME_DDL(
                    MATR_RIGI=RIGIELE,
                      );
         #  -------------                  -----------------

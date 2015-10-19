@@ -42,12 +42,13 @@ subroutine algocu(deficu, resocu, solveu, lmat, ldscon,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/rldlgg.h"
-#include "asterfort/tldlgg.h"
+#include "asterfort/rldlg3.h"
+#include "asterfort/tldlg3.h"
 #include "blas/daxpy.h"
     character(len=24) :: deficu
     character(len=24) :: resocu
     character(len=19) :: solveu, cncine, resu
+character(len=24), pointer :: slvk(:) => null()
     integer :: lmat
     integer :: ldscon
     integer :: ctccvg
@@ -280,8 +281,9 @@ subroutine algocu(deficu, resocu, solveu, lmat, ldscon,&
                 write(ifm,*)'<LIA_UNIL> <> FACTORISATION MATRICE'
             endif
 !
-            call tldlgg(2, ldscon, indfac, nbliac, 0,&
-                        ndeci, isingu, npvneg, ier)
+call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
+            call tldlg3('LDLT', ' ', 2, ldscon, indfac, nbliac, 0,&
+                        ndeci, isingu, npvneg, ier, ' ')
 !
             indfac = nbliac + 1
 !
@@ -303,7 +305,7 @@ subroutine algocu(deficu, resocu, solveu, lmat, ldscon,&
 !
         neqmax = zi(ldscon+2)
         zi(ldscon+2) = nbliac
-        call rldlgg(ldscon, zr(jmu), [cbid], 1)
+        call rldlg3('LDLT', ldscon, zr(jmu), [cbid], 1)
         zi(ldscon+2) = neqmax
 !
 ! --- CALCUL DE DELTA = DELT0 - C-1.AT.MU

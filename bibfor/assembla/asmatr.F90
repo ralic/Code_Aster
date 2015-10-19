@@ -53,7 +53,7 @@ subroutine asmatr(nbmat, tlimat, licoef, nu, &
 !                  / sd_infcha (k19)
 !                  / nom d'un objet jeveux (k24) contenant
 !                    les noms des charges cinematiques (k24)
-! in  k4 cumul : 'ZERO' ou 'CUMU'
+! in  k4 cumul  : 'ZERO' ou 'CUMU'
 !                 'ZERO':si un objet de nom matas et de type
 !                        matr_asse existe on ecrase son contenu.
 !                 'CUMU':si un objet de nom matas et de type

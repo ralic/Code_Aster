@@ -34,22 +34,21 @@ subroutine ualfva(mataz, basz)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!     CREATION DE L'OBJET MATAZ.VALM A PARTIR DE L'OBJET MATAZ.UALF
-!     L'OBJET .UALF DOIT CONTENIR LA MATRICE INITIALE NON FACTORISEE :
-!       - ON CREE L'OBJET.VALM
-!       - ON DETRUIT .UALF (A LA FIN DE LA ROUTINE)
-!       - ON CREE LE STOCKAGE MORSE DANS LE NUME_DDL S'IL N'EXISTE PAS.
+!     creation de l'objet mataz.VALM a partir de l'objet mataz.UALF
+!     l'objet .UALF doit contenir la matrice initiale non factorisee :
+!       - on cree l'objet.valm
+!       - on detruit .ualf (a la fin de la routine)
+!       - on cree le stockage morse dans le nume_ddl s'il n'existe pas.
 !
-!     CETTE ROUTINE NE DEVRAIT ETRE UTILISEE QUE RAREMENT :
-!        LORSQUE LA MATR_ASSE A ETE CREE SOUS LA FORME .UALF POUR DES
-!        RAISONS HISTORIQUES.
+!     cette routine ne devrait etre utilisee que rarement :
+!        lorsque la matr_asse a ete cree sous la forme .ualf pour des
+!        raisons historiques.
 !
-!     ------------------------------------------------------------------
-! IN  JXVAR K19 MATAZ     : NOM D'UNE S.D. MATR_ASSE
-! IN        K1  BASZ      : BASE DE CREATION POUR .VALM
-!                  SI BASZ=' ' ON PREND LA MEME BASE QUE CELLE DE .UALF
-!     REMARQUE : ON DETRUIT L'OBJET .UALF
-!     ------------------------------------------------------------------
+! ---------------------------------------------------------------------
+! in  jxvar k19 mataz     : nom d'une s.d. matr_asse
+! in        k1  basz      : base de creation pour .VALM
+!                  si basz=' ' on prend la meme base que celle de .ualf
+!     remarque : on detruit l'objet .UALF
 !
 !-----------------------------------------------------------------------
 !     VARIABLES LOCALES
@@ -68,35 +67,37 @@ subroutine ualfva(mataz, basz)
     integer, pointer :: smdi(:) => null()
     character(len=24), pointer :: refa(:) => null()
     integer, pointer :: scde(:) => null()
-!     ------------------------------------------------------------------
-!
-!
-!
+!   ------------------------------------------------------------------
+
+
     call jemarq()
     matas=mataz
     base=basz
     if (base .eq. ' ') call jelira(matas//'.UALF', 'CLAS', cval=base)
-!
-!     -- .VALM NE DOIT PAS EXISTER :
+
+!   -- .VALM ne doit pas exister :
     call jeexin(matas//'.VALM', iret)
     ASSERT(iret.eq.0)
-!
+
     call jeveuo(matas//'.REFA', 'L', vk24=refa)
     nu=refa(2)(1:14)
     stomor=nu//'.SMOS'
     stolci=nu//'.SLCS'
-!
+
+!   -- On ne sait traiter que les matrices generalisees :
+    ASSERT(refa(10).eq.'GENE')
+
     call jeveuo(stolci//'.SCDE', 'L', vi=scde)
     call jeveuo(stolci//'.SCDI', 'L', vi=scdi)
     call jeveuo(stolci//'.SCHC', 'L', vi=schc)
     call jeveuo(stolci//'.SCIB', 'L', vi=scib)
     neq=scde(1)
     nbloc= scde(3)
-!
-!     -- SI STOMOR N'EXISTE PAS, ON LE CREE :
+
+!   -- si stomor n'existe pas, on le cree :
     call jeexin(stomor//'.SMDI', iret)
     if (iret .eq. 0) then
-!        -- ON NE SAIT TRAITER QUE LES MATRICES DIAGONALES OU PLEINES :
+!        -- on ne sait traiter que les matrices diagonales ou pleines :
         ldiag=.true.
         lplein=.true.
         do 5 ieq = 1, neq
@@ -113,33 +114,33 @@ subroutine ualfva(mataz, basz)
             endif
         endif
     endif
-!
+
     call jeveuo(stomor//'.SMDI', 'L', vi=smdi)
     call jeveuo(stomor//'.SMHC', 'L', jsmhc)
     call jeveuo(stomor//'.SMDE', 'L', vi=smde)
     itbloc= smde(2)
-!
+
     call jelira(matas//'.UALF', 'NMAXOC', nblocl)
     ASSERT(nblocl.eq.nbloc .or. nblocl.eq.2*nbloc)
     nblocm=1
     if (nblocl .eq. 2*nbloc) nblocm=2
-!
-!     -- REEL OU COMPLEXE ?
+
+!   -- reel ou complexe ?
     call jelira(matas//'.UALF', 'TYPE', cval=tyrc)
     ASSERT(tyrc.eq.'R' .or. tyrc.eq.'C')
-!
-!
-!     1. ALLOCATION DE .VALM :
+
+
+!     1. Allocation de .VALM :
 !     ----------------------------------------
     call jecrec(matas//'.VALM', base//' V '//tyrc, 'NU', 'DISPERSE', 'CONSTANT',&
                 nblocm)
     call jeecra(matas//'.VALM', 'LONMAX', itbloc)
-    do 3 kblocm = 1, nblocm
+    do kblocm = 1, nblocm
         call jecroc(jexnum(matas//'.VALM', kblocm))
-  3 end do
-!
-!
-!     2. REMPLISSAGE DE .VALM :
+    enddo
+
+
+!     2. Remplissage de .VALM :
 !     ----------------------------------------
     do 10 kblocm = 1, nblocm
         call jeveuo(jexnum(matas//'.VALM', kblocm), 'E', jvale)
@@ -148,8 +149,8 @@ subroutine ualfva(mataz, basz)
         do 1 ieq = 1, neq
             iscdi=scdi(ieq)
             ibloc=scib(ieq)+nbloc*(kblocm-1)
-!
-!          -- ON RAMENE LE BLOC EN MEMOIRE SI NECESSAIRE:
+
+!          -- on ramene le bloc en memoire si necessaire:
             if (ibloc .ne. ibloav) then
                 call jeveuo(jexnum(matas//'.UALF', ibloc), 'L', jualf)
                 if (ibloav .ne. 0) then
@@ -157,10 +158,10 @@ subroutine ualfva(mataz, basz)
                 endif
                 ibloav=ibloc
             endif
-!
+
             ismdi=smdi(ieq)
             nbterm=ismdi-ismdi0
-!
+
             do 2 kterm = 1, nbterm
                 ilig=zi4(jsmhc-1+ismdi0+kterm)
                 if (tyrc .eq. 'R') then
@@ -172,15 +173,15 @@ subroutine ualfva(mataz, basz)
                 endif
   2         continue
             ASSERT(ilig.eq.ieq)
-!
+
             ismdi0=ismdi
   1     continue
  10 end do
-!
-!
-!
+
+
+
     call jedetr(matas//'.UALF')
-!
+
     call jedema()
 !     CALL CHEKSD('sd_matr_asse',MATAS,IRET)
 end subroutine

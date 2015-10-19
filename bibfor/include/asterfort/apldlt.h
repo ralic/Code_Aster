@@ -16,10 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine crnslv(nuz, metres, renum, base)
-        character(len=*) :: nuz
-        character(len=*) :: metres
-        character(len=*) :: renum
-        character(len=*) :: base
-    end subroutine crnslv
+    subroutine apldlt(kptsc, action, prepost, rsolu, vcine, nbsol)
+        integer, intent(in) :: kptsc
+        character(len=*), intent(in) :: action, prepost
+        real(kind=8), intent(inout) :: rsolu(*)
+        character(len=19), intent(inout) :: vcine
+        integer, intent(in) :: nbsol
+    end subroutine apldlt
 end interface

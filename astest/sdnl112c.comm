@@ -123,16 +123,16 @@ MELM=CALC_MATR_ELEM(      MODELE=MODELE,
                           OPTION='MASS_FLUI_STRU'
 )
 
-NUM=NUME_DDL(  MATR_RIGI=MELR , METHODE='MULT_FRONT',RENUM='MDA'  )
+NUM=NUME_DDL(  MATR_RIGI=MELR)
 
 MATRR=ASSE_MATRICE(  MATR_ELEM=MELR,  NUME_DDL=NUM   )
 
 MATRM=ASSE_MATRICE(  MATR_ELEM=MELM,  NUME_DDL=NUM   )
 
 MODES=CALC_MODES(MATR_RIGI=MATRR,
+                 SOLVEUR=_F(METHODE='MULT_FRONT', RENUM='MDA'),
                  OPTION='BANDE',
-                 CALC_FREQ=_F(FREQ=( 1.000000,140.000000,),
-                              ),
+                 CALC_FREQ=_F(FREQ=( 1.000000,140.000000,),),
                  MATR_MASS=MATRM,
                  SOLVEUR_MODAL=_F(DIM_SOUS_ESPACE=20,
                                   METHODE='TRI_DIAG',
@@ -148,7 +148,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=MODES,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC=32.7816150968,
+                   VALE_CALC=32.7816150951,
                    ),
                 _F(NUME_ORDRE=1,
                    TYPE_TEST='SOMM_ABS',
@@ -179,14 +179,14 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=MODES,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DRY',
-                   VALE_CALC=96.0337183156,
+                   VALE_CALC=96.0337183144,
                    ),
                 _F(NUME_ORDRE=1,
                    TYPE_TEST='SOMM_ABS',
                    RESULTAT=MODES,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DRZ',
-                   VALE_CALC=14.9707658923,
+                   VALE_CALC=14.970765898,
                    ),
                 _F(NUME_ORDRE=2,
                    TYPE_TEST='SOMM_ABS',
@@ -209,7 +209,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=MODES,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC=5.44289373074,
+                   VALE_CALC=5.44289373077,
                    CRITERE='ABSOLU',
                    ),
                 _F(NUME_ORDRE=2,
@@ -217,7 +217,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=MODES,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DRX',
-                   VALE_CALC=82.1268742397,
+                   VALE_CALC=82.1268742399,
                    CRITERE='ABSOLU',
                    ),
                 _F(NUME_ORDRE=2,
@@ -241,7 +241,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=MODES,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC=35.5695274299,
+                   VALE_CALC=35.5695274338,
                    ),
                 _F(NUME_ORDRE=3,
                    TYPE_TEST='SOMM_ABS',
@@ -272,14 +272,14 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=MODES,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DRY',
-                   VALE_CALC=110.214658829,
+                   VALE_CALC=110.214658841,
                    ),
                 _F(NUME_ORDRE=3,
                    TYPE_TEST='SOMM_ABS',
                    RESULTAT=MODES,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DRZ',
-                   VALE_CALC=149.452232554,
+                   VALE_CALC=149.452232571,
                    ),
                 _F(NUME_ORDRE=4,
                    TYPE_TEST='SOMM_ABS',
@@ -517,7 +517,7 @@ IMPR_TABLE(  TABLE=TABLE,
  )
 #
 
-TEST_TABLE(VALE_CALC=0.00746164804084,
+TEST_TABLE(VALE_CALC=0.00745766644707,
            TOLE_MACHINE=5.E-3,                          # TODO TOLE_MACHINE
            NOM_PARA='RMS',
            TABLE=TABLE,
@@ -528,7 +528,7 @@ TEST_TABLE(VALE_CALC=0.00746164804084,
                    ),
            )
 
-TEST_TABLE(VALE_CALC=0.00746164804084,
+TEST_TABLE(VALE_CALC=0.00745766644707,
            TOLE_MACHINE=5.E-3,                          # TODO TOLE_MACHINE
            NOM_PARA='RMS',
            TABLE=TABLE,
@@ -539,7 +539,7 @@ TEST_TABLE(VALE_CALC=0.00746164804084,
                    ),
            )
 
-TEST_TABLE(VALE_CALC=127.736731577,
+TEST_TABLE(VALE_CALC=127.740010433,
            TOLE_MACHINE=5.E-3,                          # TODO TOLE_MACHINE
            NOM_PARA='RMS',
            TABLE=TABLE,
@@ -550,7 +550,7 @@ TEST_TABLE(VALE_CALC=127.736731577,
                    ),
            )
 
-TEST_TABLE(VALE_CALC=0.00746164804084,
+TEST_TABLE(VALE_CALC=0.00745766644707,
            TOLE_MACHINE=5.E-3,                          # TODO TOLE_MACHINE
            NOM_PARA='RMS',
            TABLE=TABLE,
@@ -561,7 +561,7 @@ TEST_TABLE(VALE_CALC=0.00746164804084,
                    ),
            )
 
-TEST_TABLE(VALE_CALC=0.00746164804084,
+TEST_TABLE(VALE_CALC=0.00745766644707,
            TOLE_MACHINE=5.E-3,                          # TODO TOLE_MACHINE
            NOM_PARA='RMS',
            TABLE=TABLE,
@@ -572,7 +572,7 @@ TEST_TABLE(VALE_CALC=0.00746164804084,
                    ),
            )
 
-TEST_TABLE(VALE_CALC=127.736731577,
+TEST_TABLE(VALE_CALC=127.740010433,
            TOLE_MACHINE=5.E-3,                          # TODO TOLE_MACHINE
            NOM_PARA='RMS',
            TABLE=TABLE,

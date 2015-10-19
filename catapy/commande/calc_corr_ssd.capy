@@ -28,5 +28,6 @@ CALC_CORR_SSD=OPER(nom="CALC_CORR_SSD",op=  91,sd_prod=table_container,
            PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-3 ),
            CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
          ),
+         SOLVEUR =C_SOLVEUR('CALC_CORR_SSD'),
          TITRE          =SIMP(statut='f',typ='TXM',max='**'),
 )  ;

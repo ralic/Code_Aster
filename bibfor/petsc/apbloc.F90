@@ -55,7 +55,7 @@ subroutine apbloc(kptsc)
 !
 !----------------------------------------------------------------
 !   -- variables locales :
-    character(len=19) :: matass, solveu
+    character(len=19) :: nomat, solveu
     character(len=14) :: nonu
     character(len=8) :: nomgd,noma,exilag
     integer :: tbloc, tbloc2
@@ -82,10 +82,10 @@ subroutine apbloc(kptsc)
     call jemarq()
     tbloc=1
     fictif=0
-    matass = nomats(kptsc)
-    if (dbg) write(6,*) 'apbloc matass=',matass
+    nomat = nomat_courant
+    nonu = nonu_courant
+    if (dbg) write(6,*) 'apbloc nomat=',nomat
     solveu = nosols(kptsc)
-    nonu = nonus(kptsc)
 
 
 !   -- Quel preconditionneur ?
@@ -104,7 +104,7 @@ subroutine apbloc(kptsc)
 !   -- La matrice/solveur est-elle ELIM_LAGR='OUI' ?  A-t-elle des ddls de Lagrange ?
 !   -----------------------------------------------------------------------------------
     leliml = slvk(13)(1:3).eq.'OUI'
-    call dismoi('EXIS_LAGR', matass, 'MATR_ASSE', repk=exilag)
+    call dismoi('EXIS_LAGR', nomat, 'MATR_ASSE', repk=exilag)
 
 
 !   --  Si ELIM_LAGR='OUI', la matrice ne sera pas utilisee telle quelle pour la resolution Petsc.
@@ -124,7 +124,7 @@ subroutine apbloc(kptsc)
 !   ----------------------------------------------------------------------------------------------
     leliml2=.false.
     if (.not.leliml) then
-        call jeveuo(matass//'.REFA', 'L', vk24=refa)
+        call jeveuo(nomat//'.REFA', 'L', vk24=refa)
         if (refa(20).ne.' ') leliml2=.true.
     endif
     if (dbg) write(6,*) 'apbloc leliml2=',leliml2
@@ -144,7 +144,7 @@ subroutine apbloc(kptsc)
 !                  (sans ajouter de ddls fictifs)
 !              1 : Tous les noeuds auront le meme nombre de ddls si on ajoute des ddls fictifs
 !   -------------------------------------------------------------------------------------------
-    call dismoi('NOM_MAILLA', matass, 'MATR_ASSE', repk=noma)
+    call dismoi('NOM_MAILLA', nomat, 'MATR_ASSE', repk=noma)
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoma)
     call dismoi('NOM_GD', nonu, 'NUME_DDL', repk=nomgd)
     call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nbec)

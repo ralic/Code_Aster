@@ -134,7 +134,6 @@ EVOL=STAT_NON_LINE(MODELE=MO,
                               PRE_COND='LDLT_SP',
                               RESI_RELA=1e-06,
                               NMAX_ITER=0,
-                              RENUM='SANS',
                               REAC_PRECOND=30,
                               PCENT_PIVOT=100,),);
 

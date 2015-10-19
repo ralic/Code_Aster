@@ -76,7 +76,7 @@ subroutine rigflu(modele, time, nomcmp, tps, nbchar,&
 !
 !----------------  NUMEROTATION
 !
-    call numero(nu, solveu, 'VV',&
+    call numero(nu, 'VV',&
                 modelz = modele , list_loadz = list_load)
 
 !

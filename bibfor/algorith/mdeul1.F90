@@ -156,6 +156,7 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
     character(len=3) :: finpal(palmax)
     character(len=6) :: typal(palmax)
     character(len=8) :: cnpal(palmax)
+    character(len=19) :: solveu
     character(len=24) :: cpal
     real(kind=8) :: fsauv(palmax, 3), vrot, arot, vrotin, arotin
     real(kind=8), pointer :: acce(:) => null()
@@ -170,6 +171,7 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
 !   ------------------------------------------------------------------------------------
 !
     call jemarq()
+    solveu='&&OP0074.SOLVEUR'
     zero = 0.d0
     deux = 2.d0
     jchor = 1
@@ -247,7 +249,7 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
     else if (typbas.eq.'MODELE_GENE     ') then
         matpre='&&MDEUL1.MATPRE'
         matasm=zk24(zi(descmm+1))(1:19)
-        call preres(' ', 'V', iret, matpre, matasm,&
+        call preres(solveu, 'V', iret, matpre, matasm,&
                     ibid, -9999)
     else
         call wkvect('&&MDEUL1.MASS', 'V V R8', neqgen, jmass)

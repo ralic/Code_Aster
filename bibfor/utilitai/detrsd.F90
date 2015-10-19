@@ -352,7 +352,7 @@ subroutine detrsd(typesd, nomsd)
         call jedetr(table//'.TITR')
 !
 !     ------------------------------------------------------------------
-        else if (typ2sd.eq.'MATR_ASSE_GENE' .or. typ2sd.eq.'MATR_ASSE')&
+    else if (typ2sd.eq.'MATR_ASSE_GENE' .or. typ2sd.eq.'MATR_ASSE')&
     then
 !     ---------------------------------------
         matas = nomsd
@@ -394,6 +394,7 @@ subroutine detrsd(typesd, nomsd)
         call jedetr(matas//'.DIGS')
         call jedetr(matas//'.LIME')
         call jedetr(matas//'.REFA')
+        call jedetr(matas//'.PERM')
         call jedetr(matas//'.UALF')
         call jedetr(matas//'.VALF')
         call jedetr(matas//'.VALM')
@@ -518,6 +519,8 @@ subroutine detrsd(typesd, nomsd)
         call jedetr(stock//'.SCDE')
         call jedetr(stock//'.SCHC')
         call jedetr(stock//'.SCIB')
+        call jedetr(stock//'.M2LC')
+        call jedetr(stock//'.LC2M')
 !
         call jedetr(stock//'.SMDI')
         call jedetr(stock//'.SMDE')
@@ -533,6 +536,8 @@ subroutine detrsd(typesd, nomsd)
         call jedetr(stock//'.SCDE')
         call jedetr(stock//'.SCHC')
         call jedetr(stock//'.SCIB')
+        call jedetr(stock//'.M2LC')
+        call jedetr(stock//'.LC2M')
 !
 !
 !     ------------------------------------------------------------------
@@ -551,7 +556,6 @@ subroutine detrsd(typesd, nomsd)
         call detrs2('MLTF', nu//'.MLTF')
         call detrs2('STOCKAGE', nu//'.SLCS')
         call detrs2('STOCKAGE', nu//'.SMOS')
-        call jedetr(nu//'.NSLV')
 !
         call jedetr(nu//'.DERLI')
         call jedetr(nu//'.EXISTE')

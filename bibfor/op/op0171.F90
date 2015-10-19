@@ -171,7 +171,7 @@ implicit none
     noojb='12345678.00000.NUME.PRNO'
     call gnomsd(' ', noojb, 10, 14)
     nume_dof=noojb(1:14)
-    call numero(nume_dof, solver, 'VG',&
+    call numero(nume_dof, 'VG',&
                 modelz = model , list_loadz = list_load)
 !
     call vtcreb(vtemp, 'V', 'R', nume_ddlz=nume_dof)

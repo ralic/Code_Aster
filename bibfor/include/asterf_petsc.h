@@ -44,8 +44,8 @@ sequence
 end type
 
 integer, parameter :: nmxins=5
-character(len=19)  :: nomats(nmxins), nosols(nmxins)
-character(len=14)  :: nonus(nmxins)
+character(len=19)  :: nomats(nmxins), nosols(nmxins), nomat_courant
+character(len=14)  :: nonus(nmxins),nonu_courant
 Mat :: ap(nmxins)
 KSP :: kp(nmxins)
 Vec :: b, x
@@ -54,7 +54,7 @@ Vec :: b, x
 integer(kind=4) :: tblocs(nmxins),fictifs(nmxins)
 type(p_int4), target :: new_ieqs(nmxins), old_ieqs(nmxins)
 common /spetsc/ap, kp, b, x, tblocs,fictifs, new_ieqs, old_ieqs, &
-       nomats, nosols, nonus
+       nomats, nomat_courant, nosols, nonus, nonu_courant
 !
 !----------------------------------------------------------------
 !   ldltsp : common pour le preconditionneur simple precision ldlt_sp

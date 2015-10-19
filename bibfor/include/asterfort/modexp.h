@@ -15,16 +15,17 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
-                      numlia, tramod, modet)
-        character(len=8) :: modgen
-        character(len=8) :: sst1
-        character(len=24) :: indin1
-        character(len=24) :: lino1
-        integer :: nbmod
-        integer :: numlia
-        character(len=24) :: tramod
-        character(len=24) :: modet
-    end subroutine modexp
-end interface
+          interface 
+            subroutine modexp(modgen,sst1,indin1,lino1,nbmod,numlia,    &
+     &tramod,modet,solveu)
+              character(len=8) :: modgen
+              character(len=8) :: sst1
+              character(len=24) :: indin1
+              character(len=24) :: lino1
+              integer :: nbmod
+              integer :: numlia
+              character(len=24) :: tramod
+              character(len=24) :: modet
+              character(len=19) :: solveu
+            end subroutine modexp
+          end interface 

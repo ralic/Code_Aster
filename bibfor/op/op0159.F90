@@ -49,7 +49,7 @@ subroutine op0159()
     integer :: ifm, niv, neq, jvals, nb, imd, ier
 !
     character(len=8) :: xsol, secmbr, vcine
-    character(len=16) :: concep, nomcmd, metres
+    character(len=16) :: concep, nomcmd
     complex(kind=8) :: cbid
     character(len=24), pointer :: refa(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
@@ -76,11 +76,6 @@ subroutine op0159()
     call getvid('  ', 'CHAM_CINE', scal=vcine, nbret=nb)
     if (nb .eq. 1) call chpver('F', vcine, 'NOEU', '*', ier)
     vci19=vcine
-!
-    call dismoi('METH_RESO', matr, 'MATR_ASSE', repk=metres)
-    if (metres .ne. 'LDLT' .and. metres .ne. 'MULT_FRONT' .and. metres .ne. 'MUMPS') then
-        call utmess('F', 'ALGELINE4_1')
-    endif
 !
     mat19=matr
     call mtdscr(mat19)

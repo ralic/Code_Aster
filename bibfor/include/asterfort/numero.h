@@ -15,21 +15,17 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine numero(nume_ddlz    , solverz     , base,&
-                      old_nume_ddlz, modelocz    ,&
-                      modelz       , list_loadz  ,&
-                      nb_matr_elem , list_matr_elem,&
-                      sd_iden_relaz)
-        character(len=*), intent(in) :: solverz
-        character(len=*), intent(inout) :: nume_ddlz
-        character(len=2), intent(in) :: base
-        character(len=*), optional, intent(in) :: modelz
-        character(len=*), optional, intent(in) :: list_loadz
-        character(len=24), optional, intent(in) :: list_matr_elem(*)
-        integer, optional, intent(in) :: nb_matr_elem
-        character(len=*), optional, intent(in) :: old_nume_ddlz
-        character(len=*), optional, intent(in) :: modelocz
-        character(len=*), optional, intent(in) :: sd_iden_relaz
-    end subroutine numero
-end interface
+          interface 
+            subroutine numero(nume_ddlz,base,old_nume_ddlz,modelocz, &
+      modelz,list_loadz,nb_matr_elem,list_matr_elem,sd_iden_relaz)
+              character(len=*), intent(inout) :: nume_ddlz
+              character(len=2), intent(in) :: base
+              character(len=*) ,optional, intent(in) :: old_nume_ddlz
+              character(len=*) ,optional, intent(in) :: modelocz
+              character(len=*) ,optional, intent(in) :: modelz
+              character(len=*) ,optional, intent(in) :: list_loadz
+              integer ,optional, intent(in) :: nb_matr_elem
+              character(len=24) ,optional, intent(in) :: list_matr_elem(*)
+              character(len=*) ,optional, intent(in) :: sd_iden_relaz
+            end subroutine numero
+          end interface 

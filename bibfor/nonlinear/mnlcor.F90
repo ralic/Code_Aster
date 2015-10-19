@@ -73,7 +73,7 @@ subroutine mnlcor(imat, numdrv, matdrv, xcdl, parcho,&
 !
     integer :: imat(2), ninc, nd, nchoc, h, hf, itemax, info
     character(len=14) :: numdrv, xcdl, parcho, adime, xvect
-    character(len=19) :: matdrv
+    character(len=19) :: matdrv,solveu
     real(kind=8) :: epscor
     aster_logical :: cor
 ! ----------------------------------------------------------------------
@@ -84,10 +84,11 @@ subroutine mnlcor(imat, numdrv, matdrv, xcdl, parcho,&
     real(kind=8) :: eps, normr, normc
     complex(kind=8) :: cbid
     cbid = dcmplx(0.d0, 0.d0)
+!-----------------------------------------------------------------------
 !
     ifres = iunifi ('MESSAGE')
-!
     call jemarq()
+    solveu = '&&OP0061.SOLVEUR'
 ! ----------------------------------------------------------------------
 ! --- CREATION DE VECTEURS UTILES
 ! ----------------------------------------------------------------------
@@ -143,7 +144,7 @@ subroutine mnlcor(imat, numdrv, matdrv, xcdl, parcho,&
                     parcho, adime, xtemp, zr(itang), ninc,&
                     nd, nchoc, h, hf)
 ! ---   ON RESOUD LE SYSTEME LINEAIRE (DRDV\XTANG)
-        call resoud(matdrv, ' ', ' ', ' ', 1,&
+        call resoud(matdrv, ' ', solveu, ' ', 1,&
                     ' ', ' ', 'V', zr(iru), [cbid],&
                     ' ', .false._1, 0, iret)
 ! ---   ON AJOUTE AU VECTEUR SOLUTION

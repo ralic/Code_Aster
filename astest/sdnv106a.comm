@@ -91,7 +91,6 @@ ASSEMBLAGE ( MODELE = MO,
                   CHAM_MATER=CHMAT,
                   CHARGE     = (LIAISON,),
                   NUME_DDL   = CO('NUMSTA'),
-                  SOLVEUR=_F(METHODE='MULT_FRONT',RENUM='METIS'),
                   MATR_ASSE=(
                    _F( MATRICE= CO('RIGSTA'), OPTION= 'RIGI_MECA'),
                    _F( MATRICE= CO('MASSTA'), OPTION= 'MASS_MECA'),),);
@@ -107,7 +106,6 @@ ASSEMBLAGE ( MODELE = MO,
                   CHAM_MATER=CHMAT2,
                   CHARGE    = (LIAISON,),
                   NUME_DDL  = CO('NUMST2'),
-                  SOLVEUR=_F(METHODE='MULT_FRONT',RENUM='METIS'),
                   MATR_ASSE=(
                    _F( MATRICE= CO('RIGST2'), OPTION= 'RIGI_MECA'),
                    _F( MATRICE= CO('MASST2'), OPTION= 'MASS_MECA'),),);

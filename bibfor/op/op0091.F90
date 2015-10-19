@@ -35,6 +35,7 @@ subroutine op0091()
 #include "asterc/r8pi.h"
 #include "asterfort/arch93.h"
 #include "asterfort/codent.h"
+#include "asterfort/cresol.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/gcncon.h"
@@ -123,7 +124,12 @@ subroutine op0091()
                     0, sjv=jadr, styp=kb)
         zr(lomeg+i1-1)=2*r8pi()*zr(jadr)
     end do
-!
+
+!   -- creation d'un solveur pour la resolution des systemes lineaires :
+    solveu = '&&OP0091.SOLVEUR'
+    call cresol(solveu)
+
+
     call jelira(modgen//'      .MODG.SSNO', 'NOMMAX', nbsst)
     call wkvect('&&OP0091.NOM_SST', 'V V K8', nbsst, lnosst)
     call wkvect('&&OP0091.NUME_SST', 'V V I', nbsst+1, lnusst)
@@ -240,11 +246,11 @@ subroutine op0091()
         if (imast1 .eq. -1) then
             modet='&&OP0091.MET'//k4bid//sst1
             call modexp(modgen, sst1, indin1, lino1, nbmod,&
-                        i1, tramo1, modet)
+                        i1, tramo1, modet, solveu)
         else
             modet='&&OP0091.MET'//k4bid//sst2
             call modexp(modgen, sst2, indin2, lino2, nbmod,&
-                        i1, tramo2, modet)
+                        i1, tramo2, modet, solveu)
         endif
 !-- DESTRUCTION DES CONCEPTS TEMPORAIRES
         call jedetr(lino1)
@@ -334,7 +340,7 @@ subroutine op0091()
 !-- CALCUL DES TRAVAUX POUR L'INTERIEUR DES SST ET EFFORTS ASSOCIES
         lisint='&&OP0091.INTERFACES'
         call trasst(modgen, i1, isst1, lisint, nbeq1,&
-                    nbmod, nbint)
+                    nbmod, nbint, solveu)
         call jedetr('&&OP0091.MODE_SST1')
         call jedetr('&&OP0091.MODE_SST1_EFF1')
         call jedetr('&&OP0091.MODE_SST1_EFF2')
@@ -347,7 +353,6 @@ subroutine op0091()
         mmass=zk24(lbid+1)(1:8)
         call jeveuo(zk8(ibid)//'.MAEL_RAID_REFE', 'L', lbid)
         mraid=zk24(lbid+1)(1:8)
-        call dismoi('SOLVEUR', mraid, 'MATR_ASSE', repk=solveu)
         call resoud(imped, ' ', solveu, ' ', nbmod,&
                     ' ', ' ', ' ', zr(lsecme), [cbid],&
                     ' ', .true._1, 0, iret)

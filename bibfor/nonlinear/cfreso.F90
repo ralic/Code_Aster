@@ -23,7 +23,7 @@ subroutine cfreso(resoco, ldscon, ndim, nbliac, llf,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/rldlgg.h"
+#include "asterfort/rldlg3.h"
     character(len=24) :: resoco
     integer :: ndim
     integer :: nbliac, llf, llf1, llf2
@@ -80,7 +80,7 @@ subroutine cfreso(resoco, ldscon, ndim, nbliac, llf,&
 ! --- RESOLUTION : [-A.C-1.AT].{MU} = {JEU(DEPTOT) - A.DDEPL0}
 !
     c16bid = dcmplx(0.d0, 0.d0)
-    call rldlgg(ldscon, zr(jmu), [c16bid], 1)
+    call rldlg3('LDLT', ldscon, zr(jmu), [c16bid], 1)
     zi(ldscon+2) = neqmax
 !
     call jedema()

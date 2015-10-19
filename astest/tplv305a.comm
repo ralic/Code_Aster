@@ -79,9 +79,7 @@ VCTER0=CALC_VECT_ELEM(  OPTION='CHAR_THER',
                              CHARGE=CHTH0
                           )
 
-NUDL0=NUME_DDL(   MATR_RIGI=MTRE0,
-                        METHODE='LDLT',  RENUM='RCMK'
-                    )
+NUDL0=NUME_DDL(   MATR_RIGI=MTRE0)
 
 MTRA0=ASSE_MATRICE(   MATR_ELEM=MTRE0,
                            NUME_DDL=NUDL0
@@ -91,7 +89,7 @@ VCTA0=ASSE_VECTEUR(   VECT_ELEM=VCTER0,
                            NUME_DDL=NUDL0
                         )
 
-MTRA0=FACTORISER( reuse=MTRA0,  MATR_ASSE=MTRA0 )
+MTRA0=FACTORISER( reuse=MTRA0,  MATR_ASSE=MTRA0, METHODE='LDLT')
 
 TMOD0=RESOUDRE(   MATR=MTRA0,
                         CHAM_NO=VCTA0
@@ -111,9 +109,7 @@ VCTER1=CALC_VECT_ELEM(  OPTION='CHAR_THER',
                              CHARGE=CHTH1
                           )
 
-NUDL1=NUME_DDL(   MATR_RIGI=MTRE1,
-                        METHODE='LDLT',  RENUM='RCMK'
-                    )
+NUDL1=NUME_DDL(   MATR_RIGI=MTRE1) 
 
 MTRA1=ASSE_MATRICE(   MATR_ELEM=MTRE1,
                            NUME_DDL=NUDL1
@@ -123,7 +119,7 @@ VCTA1=ASSE_VECTEUR(   VECT_ELEM=VCTER1,
                            NUME_DDL=NUDL1
                         )
 
-MTRA1=FACTORISER( reuse=MTRA1,  MATR_ASSE=MTRA1 )
+MTRA1=FACTORISER( reuse=MTRA1,  MATR_ASSE=MTRA1, METHODE='LDLT')
 
 TMOD1=RESOUDRE(   MATR=MTRA1,
                         CHAM_NO=VCTA1

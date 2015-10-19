@@ -1,4 +1,4 @@
-subroutine numddl(nume_ddlz, base, nb_matr, list_matr, renumz)
+subroutine numddl(nume_ddlz, base, nb_matr, list_matr)
 !
 implicit none
 !
@@ -7,6 +7,7 @@ implicit none
 #include "asterfort/jedetr.h"
 #include "asterfort/nueffe.h"
 #include "asterfort/numoch.h"
+#include "asterc/getres.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,7 +29,6 @@ implicit none
 !
     character(len=2), intent(in) :: base
     character(len=*), intent(in) :: nume_ddlz
-    character(len=*), intent(in) :: renumz
     character(len=*), intent(in) :: list_matr(*)
     integer, intent(in) :: nb_matr
 !
@@ -46,7 +46,6 @@ implicit none
 !                      base(2:2) => NUME_DDL objects
 ! In  list_matr      : list of elementary matrixes
 ! In  nb_matr        : number of elementary matrixes
-! In  renum          : method for renumbering equation
 !                       SANS/RCMKs
 !
 ! --------------------------------------------------------------------------------------------------
@@ -55,6 +54,9 @@ implicit none
     integer :: nb_ligr
     character(len=24), pointer :: list_ligr(:) => null()
     integer :: i_matr
+    character(len=4) :: renum
+    character(len=8) :: nomres
+    character(len=16) :: typres,nomcom
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,7 +70,15 @@ implicit none
 !
 ! - Numbering - Create NUME_EQUA objects
 !
-    call nueffe(nb_ligr, list_ligr, base, nume_ddlz, renumz)
+
+    call getres(nomres, typres, nomcom)
+    if (nomcom.eq.'MACR_ELEM_STAT') then
+        renum='RCMK'
+    else
+        renum='SANS'
+    endif
+
+    call nueffe(nb_ligr, list_ligr, base, nume_ddlz, renum)
 !
     AS_DEALLOCATE(vk24 = list_ligr)
 !

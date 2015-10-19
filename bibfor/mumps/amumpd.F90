@@ -58,6 +58,7 @@ subroutine amumpd(action, kxmps, rsolu, vcine, nbsol,&
 #include "asterfort/amumpt.h"
 #include "asterfort/amumpu.h"
 #include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -81,6 +82,7 @@ subroutine amumpd(action, kxmps, rsolu, vcine, nbsol,&
     integer :: rang, nbproc, niv, ifm, ibid, ietdeb, ifactm, nbfact
     integer :: ietrat, nprec, ifact, iaux, iaux1, vali(4), pcpi
     character(len=1) :: rouc, type, prec
+    character(len=3) :: matd
     character(len=5) :: etam, klag2
     character(len=8) :: ktypr
     character(len=12) :: usersm, k12bid
@@ -159,7 +161,8 @@ subroutine amumpd(action, kxmps, rsolu, vcine, nbsol,&
     nbproc=dmpsk%nprocs
 !
 ! --- MATRICE ASTER DISTRIBUEE ?
-    lmd = slvk(10)(1:3).eq.'OUI'
+    call dismoi('MATR_DISTRIBUEE', nomat, 'MATR_ASSE', repk=matd)
+    lmd = matd.eq.'OUI'
 !
 ! --- MUMPS EST-IL UTILISE COMME PRECONDITIONNEUR ?
 ! --- SI OUI, ON DEBRANCHE LES ALARMES ET INFO (PAS LES UTMESS_F)

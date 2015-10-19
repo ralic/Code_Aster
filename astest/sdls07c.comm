@@ -53,9 +53,7 @@ MASELEM=CALC_MATR_ELEM(   MODELE=MODEL,
                                  CARA_ELEM=CARELEM,  CHAM_MATER=CHMAT,
                                 OPTION='MASS_MECA' )
 
-NUM=NUME_DDL(   MATR_RIGI=RIGELEM,
-                METHODE  ='MULT_FRONT',
-                RENUM    ='MDA' ),
+NUM=NUME_DDL(   MATR_RIGI=RIGELEM) 
 
 RIGASS=ASSE_MATRICE(   MATR_ELEM=RIGELEM,   NUME_DDL=NUM   )
 

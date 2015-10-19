@@ -21,7 +21,7 @@
 
 def assemblage_ops(
     self, MODELE, CHAM_MATER, CARA_ELEM, CHARGE, MATR_ASSE, VECT_ASSE,
-        SOLVEUR, NUME_DDL, CHAR_CINE, INST, INFO, **args):
+          NUME_DDL, CHAR_CINE, INST, INFO, **args):
 #  """
 #     Ecriture de la macro MACRO_ASSE
 #  """
@@ -38,10 +38,6 @@ def assemblage_ops(
 
     # La macro compte pour 1 dans la numerotation des commandes
     self.set_icmd(1)
-
-    # Les mots cles simples sous SOLVEUR sont par defaut MULT_FRONT/METIS
-    methode = SOLVEUR['METHODE']
-    renum = SOLVEUR['RENUM']
 
     if numeddl in self.sdprods:
         # Si le concept numeddl est dans self.sdprods
@@ -133,9 +129,7 @@ def assemblage_ops(
 
             if lnume and option in ('RIGI_MECA', 'RIGI_THER', 'RIGI_ACOU', 'RIGI_FLUI_STRU'):
                 self.DeclareOut('num', numeddl)
-                # On peut passer des mots cles egaux a None. Ils sont ignores
-                num = NUME_DDL(
-                    MATR_RIGI=_a, METHODE=methode, RENUM=renum, INFO=info)
+                num = NUME_DDL(MATR_RIGI=_a, INFO=info)
             else:
                 num = numeddl
 

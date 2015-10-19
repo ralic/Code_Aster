@@ -80,7 +80,7 @@ MATAF=AFFE_MATERIAU(MAILLAGE=MAILTOT,
 # -------------------------------------------------
 
 LEMOD=AFFE_MODELE(MAILLAGE=MAILTOT,
-                  
+
                   AFFE=(_F(GROUP_MA=('ACPLUS','ACMOINS',),
                            PHENOMENE='MECANIQUE',
                            MODELISATION='GRILLE_EXCENTRE',),
@@ -150,7 +150,6 @@ ASSEMBLAGE(MODELE=LEMOD,
                 CARA_ELEM=LACAR,
                 CHARGE=CHAR0,
                 NUME_DDL=NUM,
-                SOLVEUR=_F(METHODE='LDLT',),
                 MATR_ASSE=(_F(MATRICE=CO('MATASSR1'),
                               OPTION='RIGI_MECA',),
                            _F(MATRICE=CO('MATASSM1'),

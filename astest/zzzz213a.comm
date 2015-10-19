@@ -58,49 +58,49 @@ vecel = CALC_VECT_ELEM(CHARGE=ch0, CHAM_MATER = chmat, OPTION = 'CHAR_MECA')
 
 # 1.1) avec LDLT :
 #-----------------
-nu11    = NUME_DDL(MATR_RIGI = rigiel, METHODE= 'LDLT', RENUM= 'RCMK');
+nu11    = NUME_DDL(MATR_RIGI = rigiel);
 matas11 = ASSE_MATRICE (MATR_ELEM = rigiel, NUME_DDL  = nu11, CHAR_CINE = chcine);
 vecas11 = ASSE_VECTEUR(  VECT_ELEM=vecel,   NUME_DDL=nu11 )
 vcine11 = CALC_CHAR_CINE (NUME_DDL=nu11, CHAR_CINE=chcine);
-matas11 = FACTORISER(reuse=matas11,MATR_ASSE=matas11);
+matas11 = FACTORISER(reuse=matas11,MATR_ASSE=matas11, METHODE= 'LDLT');
 u11=RESOUDRE( MATR = matas11, CHAM_NO= vecas11 , CHAM_CINE= vcine11)
 TEST_RESU(CHAM_NO=_F(REFERENCE='ANALYTIQUE',
                      NOM_CMP='DY',
                      GROUP_NO='E',
                      CHAM_GD=u11,
-                     VALE_CALC=1.500000000,
+                     VALE_CALC=1.5,
                      VALE_REFE=1.5,),
           )
 
 # 1.2) avec MULT_FRONT :
 #-----------------------
-nu12    = NUME_DDL(MATR_RIGI = rigiel, METHODE= 'MULT_FRONT', RENUM= 'MD');
+nu12    = NUME_DDL(MATR_RIGI = rigiel);
 matas12 = ASSE_MATRICE (MATR_ELEM = rigiel, NUME_DDL  = nu12, CHAR_CINE = chcine);
 vecas12 = ASSE_VECTEUR(  VECT_ELEM=vecel,   NUME_DDL=nu12 )
 vcine12 = CALC_CHAR_CINE (NUME_DDL=nu12, CHAR_CINE=chcine);
-matas12 = FACTORISER(reuse=matas12,MATR_ASSE=matas12);
+matas12 = FACTORISER(reuse=matas12,MATR_ASSE=matas12, METHODE= 'MULT_FRONT', RENUM= 'MD');
 u12=RESOUDRE( MATR = matas12, CHAM_NO= vecas12 , CHAM_CINE= vcine12 )
 TEST_RESU(CHAM_NO=_F(REFERENCE='ANALYTIQUE',
                      NOM_CMP='DY',
                      GROUP_NO='E',
                      CHAM_GD=u12,
-                     VALE_CALC=1.500000000,
+                     VALE_CALC=1.5,
                      VALE_REFE=1.5,),
           )
 
 # 1.3) avec GCPC :
 #-----------------------
-nu13    = NUME_DDL(MATR_RIGI = rigiel, METHODE= 'GCPC' );
+nu13    = NUME_DDL(MATR_RIGI = rigiel );
 matas13 = ASSE_MATRICE (MATR_ELEM = rigiel, NUME_DDL  = nu13, CHAR_CINE = chcine);
 vecas13 = ASSE_VECTEUR(  VECT_ELEM=vecel,   NUME_DDL=nu13 )
 vcine13 = CALC_CHAR_CINE (NUME_DDL=nu13, CHAR_CINE=chcine);
-pmatas13=FACTORISER(MATR_ASSE=matas13, PRE_COND='LDLT_INC' )
+pmatas13=FACTORISER(MATR_ASSE=matas13,METHODE= 'GCPC' , PRE_COND='LDLT_INC' )
 u13=RESOUDRE(MATR_PREC=pmatas13, MATR=matas13, CHAM_NO=vecas13,CHAM_CINE=vcine13 )
 TEST_RESU(CHAM_NO=_F(REFERENCE='ANALYTIQUE',
                      NOM_CMP='DY',
                      GROUP_NO='E',
                      CHAM_GD=u13,
-                     VALE_CALC=1.499999993,
+                     VALE_CALC=1.49999999263,
                      VALE_REFE=1.5,),
           )
 
@@ -111,58 +111,58 @@ TEST_RESU(CHAM_NO=_F(REFERENCE='ANALYTIQUE',
 
 # 2.1) avec LDLT :
 #-----------------
-nu21    = NUME_DDL(MATR_RIGI = rigiel, METHODE= 'LDLT', RENUM= 'RCMK');
+nu21    = NUME_DDL(MATR_RIGI = rigiel);
 matas21a = ASSE_MATRICE (MATR_ELEM = rigiel, NUME_DDL  = nu21, CHAR_CINE = chcine);
 matas21b = ASSE_MATRICE (MATR_ELEM = rigiel2, NUME_DDL  = nu21, CHAR_CINE = chcine);
 vecas21 = ASSE_VECTEUR(  VECT_ELEM=vecel,   NUME_DDL=nu21 )
 vcine21 = CALC_CHAR_CINE (NUME_DDL=nu21, CHAR_CINE=chcine);
 matas21=COMB_MATR_ASSE( COMB_R=(  _F(  MATR_ASSE = matas21a, COEF_R = 1.),
                                   _F(  MATR_ASSE = matas21b, COEF_R = 1.)))
-matas21 = FACTORISER(reuse=matas21,MATR_ASSE=matas21);
+matas21 = FACTORISER(reuse=matas21,MATR_ASSE=matas21, METHODE= 'LDLT');
 u21=RESOUDRE( MATR = matas21, CHAM_NO= vecas21 , CHAM_CINE= vcine21)
 TEST_RESU(CHAM_NO=_F(REFERENCE='ANALYTIQUE',
                      NOM_CMP='DY',
                      GROUP_NO='E',
                      CHAM_GD=u21,
-                     VALE_CALC=1.500000000,
+                     VALE_CALC=1.5,
                      VALE_REFE=1.5,),
           )
 
 # 2.2) avec MULT_FRONT :
 #------------------------
-nu22    = NUME_DDL(MATR_RIGI = rigiel, METHODE= 'MULT_FRONT', RENUM= 'MD');
+nu22    = NUME_DDL(MATR_RIGI = rigiel);
 matas22a = ASSE_MATRICE (MATR_ELEM = rigiel, NUME_DDL  = nu22, CHAR_CINE = chcine);
 matas22b = ASSE_MATRICE (MATR_ELEM = rigiel2, NUME_DDL  = nu22, CHAR_CINE = chcine);
 vecas22 = ASSE_VECTEUR(  VECT_ELEM=vecel,   NUME_DDL=nu22 )
 vcine22 = CALC_CHAR_CINE (NUME_DDL=nu22, CHAR_CINE=chcine);
 matas22=COMB_MATR_ASSE( COMB_R=(  _F(  MATR_ASSE = matas22a, COEF_R = 1.),
                                   _F(  MATR_ASSE = matas22b, COEF_R = 1.)))
-matas22 = FACTORISER(reuse=matas22,MATR_ASSE=matas22);
+matas22 = FACTORISER(reuse=matas22,MATR_ASSE=matas22, METHODE= 'MULT_FRONT', RENUM= 'MD');
 u22=RESOUDRE( MATR = matas22, CHAM_NO= vecas22 , CHAM_CINE= vcine22)
 TEST_RESU(CHAM_NO=_F(REFERENCE='ANALYTIQUE',
                      NOM_CMP='DY',
                      GROUP_NO='E',
                      CHAM_GD=u22,
-                     VALE_CALC=1.500000000,
+                     VALE_CALC=1.5,
                      VALE_REFE=1.5,),
           )
 
 # 2.3) avec GCPC :
 #------------------------
-nu23    = NUME_DDL(MATR_RIGI = rigiel, METHODE= 'GCPC');
+nu23    = NUME_DDL(MATR_RIGI = rigiel);
 matas23a = ASSE_MATRICE (MATR_ELEM = rigiel, NUME_DDL  = nu23, CHAR_CINE = chcine);
 matas23b = ASSE_MATRICE (MATR_ELEM = rigiel2, NUME_DDL  = nu23, CHAR_CINE = chcine);
 vecas23 = ASSE_VECTEUR(  VECT_ELEM=vecel,   NUME_DDL=nu23 )
 vcine23 = CALC_CHAR_CINE (NUME_DDL=nu23, CHAR_CINE=chcine);
 matas23=COMB_MATR_ASSE( COMB_R=(  _F(  MATR_ASSE = matas23a, COEF_R = 1.),
                                   _F(  MATR_ASSE = matas23b, COEF_R = 1.)))
-pmatas23=FACTORISER(MATR_ASSE=matas23, PRE_COND='LDLT_INC' )
+pmatas23=FACTORISER(MATR_ASSE=matas23, METHODE= 'GCPC', PRE_COND='LDLT_INC' )
 u23=RESOUDRE(MATR_PREC=pmatas23, MATR=matas23, CHAM_NO=vecas23,CHAM_CINE=vcine23 )
 TEST_RESU(CHAM_NO=_F(REFERENCE='ANALYTIQUE',
                      NOM_CMP='DY',
                      GROUP_NO='E',
                      CHAM_GD=u23,
-                     VALE_CALC=1.499999946,
+                     VALE_CALC=1.49999994562,
                      VALE_REFE=1.5,),
           )
 
@@ -227,7 +227,7 @@ DETRUIRE(CONCEPT=_F(NOM=(XXXX, TAB1),),)
 #-------------------------------------------------------------------------------------------------
 is_ok = 0
 try :
-      nu33    = NUME_DDL(MATR_RIGI = rigiel, METHODE= 'LDLT', RENUM= 'RCMK');
+      nu33    = NUME_DDL(MATR_RIGI = rigiel);
       matas33a = ASSE_MATRICE (MATR_ELEM = rigiel, NUME_DDL  = nu33, CHAR_CINE = chcine);
       matas33b = ASSE_MATRICE (MATR_ELEM = rigiel2, NUME_DDL  = nu33, CHAR_CINE = chcine2);
       XXXX=COMB_MATR_ASSE( COMB_R=(  _F(  MATR_ASSE = matas33a, COEF_R = 1.),
@@ -258,11 +258,11 @@ DETRUIRE(CONCEPT=_F(NOM=(XXXX, TAB1),),)
 #-------------------------------------------------------------------------------------------------
 is_ok = 0
 try :
-     nu34    = NUME_DDL(MATR_RIGI = rigiel, METHODE= 'MULT_FRONT', RENUM= 'MD');
+     nu34    = NUME_DDL(MATR_RIGI = rigiel);
      matas34 = ASSE_MATRICE (MATR_ELEM = rigiel, NUME_DDL  = nu34, CHAR_CINE = chcine);
      vecas34 = ASSE_VECTEUR(  VECT_ELEM=vecel,   NUME_DDL=nu34 )
      vcine34 = CALC_CHAR_CINE (NUME_DDL=nu34, CHAR_CINE=chcine2);
-     matas34 = FACTORISER(reuse=matas34,MATR_ASSE=matas34);
+     matas34 = FACTORISER(reuse=matas34,MATR_ASSE=matas34, METHODE= 'MULT_FRONT', RENUM= 'MD');
      u34=RESOUDRE( MATR = matas34, CHAM_NO= vecas34 , CHAM_CINE= vcine34 )
 
 except aster.error,err:

@@ -193,7 +193,7 @@ implicit none
 !
 ! --- RE-CREATION DU NUME_DDL OU PAS
 !
-    call nmrenu(modelz, fonact, lischa, solveu, defico,&
+    call nmrenu(modelz, fonact, lischa, defico,&
                 resoco, numedd, renume)
 !
 ! --- OPTION DE CALCUL POUR MERIMO

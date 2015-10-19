@@ -84,8 +84,8 @@ FELEM=CALC_VECT_ELEM(OPTION='CHAR_MECA',
 
 # Numerotation et assemblage
 NUME=NUME_DDL(MATR_RIGI=KELEM,
-              METHODE='MULT_FRONT',
-              RENUM='METIS',);
+
+              );
 
 KASS=ASSE_MATRICE(MATR_ELEM=KELEM,
                   NUME_DDL=NUME,

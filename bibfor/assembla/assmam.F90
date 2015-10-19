@@ -106,6 +106,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
     character(len=16) :: k16bid, nomcmd
     character(len=19) :: matdev, mat19, resu, matel, ligre1
     character(len=1) :: matsym
+    character(len=3) :: matd
     real(kind=8) :: c1, temps(6)
 !
     aster_logical :: acreer, cumul, dbg, ldist
@@ -126,7 +127,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
     integer :: nblc, nbnomx, nbnoss, nbresu
     integer :: ncmp, nbvel, nec, nel, nequ, nbproc, vali(4)
     integer :: niv, nlili, nmxcmp, nnoe, jptvoi, jelvoi
-    integer :: nugd, rang, ieq, idia, ellagr, jrepe, itypel, imatd, iexi
+    integer :: nugd, rang, ieq, idia, ellagr, jrepe, itypel, iexi
     character(len=24), pointer :: prtk(:) => null()
     integer, pointer :: smde(:) => null()
     character(len=24), pointer :: noli(:) => null()
@@ -184,8 +185,8 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
         iconx2=0
     endif
 !
-    call jeexin(nudev//'.NUML.NULG', imatd)
-    if (imatd .ne. 0) then
+    call dismoi('MATR_DISTRIBUEE', nudev, 'NUME_DDL', repk=matd)
+    if (matd.eq.'OUI') then
         call jeveuo(nudev//'.NUML.NUEQ', 'L', jnueq)
     else
         call jeveuo(nudev//'.NUME.NUEQ', 'L', jnueq)
@@ -274,13 +275,13 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
 !            DISTRIBUE AVEC LA CMDE ECLATE (ASSE_MATRICE) POUR LAQUELLE
 !            ON A COMPLETE AU PREALABLE LES MATR_ELEMS(CALC_MATR_ELEM).
 !            LDIST='F',KAMPIC='OUI',REFA(11)='MPI_COMPLET',
-!            IMATD=0
+!            MATD='NON'
 !        2/ CALCUL PARALLELE DISTRIBUE STD:
 !            LDIST='T',KAMPIC='NON',REFA(11)='MPI_INCOMPLET',
-!            IMATD=0
+!            MATD='NON'
 !        3/ CAS PARTICULIER DU PRECEDENT: MATR_DISTRIBUE='OUI'
 !            LDIST='T',KAMPIC='NON',REFA(11)='MATR_DISTR',
-!            IMATD>0
+!            MATD='OUI'
 !
 !         FINALEMENT LES VARIABLES KAMPIC ET LDIST TRADUISENT LES MEMES
 !         CHOSES MAIS LEURS PROVENANCES SONT DISTINCTES:
@@ -381,7 +382,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
 !
     call jeveuo(nu14//'.SMOS.SMHC', 'L', jsmhc)
     call jeveuo(nu14//'.SMOS.SMDI', 'L', jsmdi)
-    if (imatd .ne. 0) then
+    if (matd.eq.'OUI') then
         call jeveuo(nu14//'.NUML.PRNO', 'L', jprn1)
         call jeveuo(jexatr(nu14//'.NUML.PRNO', 'LONCUM'), 'L', jprn2)
     else
@@ -640,7 +641,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
 !           LE CARACTERE MPI_COMPLET/INCOMPLET ET MATR_DISTR
 !           TOUT DEPEND PAR LA SUITE DU TYPE DE QUESTION QUE L'ON POSE
 !           POUR RECUPERER CETTE INFO
-    if (imatd .ne. 0) then
+    if (matd.eq.'OUI') then
 !        -- CALCUL DISTRIBUE AVEC MUMPS + OPTION MATR_DISTRIBUEE='OUI'
         ASSERT(ldist)
         zk24(jrefa-1+11)='MATR_DISTR'

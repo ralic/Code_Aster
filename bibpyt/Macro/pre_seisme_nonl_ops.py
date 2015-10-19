@@ -855,7 +855,7 @@ class StatDyna(object):
                                    CHARGE = lchar,
                                   );
 
-        _NUME = NUME_DDL( MATR_RIGI = _rigiEle, METHODE='MUMPS' );
+        _NUME = NUME_DDL( MATR_RIGI = _rigiEle);
         _MATKZ = ASSE_MATRICE( MATR_ELEM = _rigiEle, NUME_DDL = _NUME );
 
         _DEPL1 = CREA_CHAMP(TYPE_CHAM = 'NOEU_DEPL_R',

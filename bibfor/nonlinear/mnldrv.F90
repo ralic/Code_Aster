@@ -356,8 +356,7 @@ subroutine mnldrv(lcal, imat, numdrv, matdrv, xcdl,&
 ! ----------------------------------------------------------------------
 ! --- FACTORISATION DE LA MATRICE
 ! ----------------------------------------------------------------------
-    call jeveuo(matdrv//'.REFA', 'L', irefa)
-    solveu=zk24(irefa-1+7)(1:19)
+    solveu = '&&OP0061.SOLVEUR'
     call preres(solveu, 'V', iret, ' ', matdrv,&
                 ibid, -9999)
 !

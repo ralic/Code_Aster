@@ -15,14 +15,16 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine gcldm1(m, in, ip, prec, x,&
-                      y)
-        integer :: m
-        integer :: in(*)
-        integer(kind=4) :: ip(*)
-        real(kind=8) :: prec(*)
-        real(kind=8) :: x(*)
-        real(kind=8) :: y(*)
-    end subroutine gcldm1
-end interface
+          interface 
+            subroutine gcldm1(m,in,ip,prec,x,y,perm,xtrav,ytrav)
+              integer, intent(in) :: m
+              integer, intent(in) :: in(*)
+              integer(kind=4), intent(in) :: ip(*)
+              real(kind=8), intent(in) :: prec(*)
+              real(kind=8), intent(in) :: x(*)
+              real(kind=8), intent(out) :: y(*)
+              integer, intent(in) :: perm(*)
+              real(kind=8), intent(inout) :: xtrav(*)
+              real(kind=8), intent(inout) :: ytrav(*)
+            end subroutine gcldm1
+          end interface 

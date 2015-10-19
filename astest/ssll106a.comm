@@ -1024,7 +1024,7 @@ ASSEMBLAGE(
                       CHARGE=(CHAR0,),
                       CHAM_MATER=CHMAT,
                       NUME_DDL=NUM,
-                             SOLVEUR=_F(  METHODE = 'LDLT'),MATR_ASSE=(
+                             MATR_ASSE=(
                 _F(  MATRICE = CO("MATASSR1"),  OPTION = 'RIGI_MECA'),
                           _F(  MATRICE = CO("MATASSM1"),  OPTION = 'MASS_MECA'))
                    )

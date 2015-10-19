@@ -130,9 +130,6 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
     nume_equal = numddl//'.NUME'
     call copisd('NUME_EQUA', base, nume_equa1, nume_equal)
 !
-! --- RECOPIE DU .NSLV DE LA PREMIERE MATRICE SUR LA MATRICE
-    call jedup1(numdd1//'.NSLV', base, numddl//'.NSLV')
-!
 ! --- RECUPERATION DU NOMBRE D'EQUATIONS DE LA PREMIERE MATRICE
 ! --- A COMBINER (C'EST LE MEME POUR TOUTES LES MATRICES) :
 !     ---------------------------------------------------

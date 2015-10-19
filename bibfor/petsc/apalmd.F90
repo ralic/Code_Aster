@@ -86,9 +86,9 @@ subroutine apalmd(kptsc)
     nbproc = to_aster_int(msize)
 !
 !     -- LECTURE DU COMMUN
-    nomat = nomats(kptsc)
+    nomat = nomat_courant
+    nonu = nonu_courant
     nosolv = nosols(kptsc)
-    nonu = nonus(kptsc)
 !
     call jeveuo(nonu//'.NUML.JOIN', 'L', jnbjoi)
     call jelira(nonu//'.NUML.JOIN', 'LONMAX', nbjoin)

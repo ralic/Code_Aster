@@ -24,7 +24,7 @@ subroutine cffact(ldscon, ndim, isto, nbliac, llf,&
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/tldlgg.h"
+#include "asterfort/tldlg3.h"
     integer :: ndim
     integer :: nbliac, llf, llf1, llf2, indfac
     integer :: ldscon
@@ -87,8 +87,8 @@ subroutine cffact(ldscon, ndim, isto, nbliac, llf,&
         endif
         ilideb = indfac
         ilifin = nbliac+(ndim-1)*llf+llf1+llf2
-        call tldlgg(2, ldscon, ilideb, ilifin, 0,&
-                    ndeci, isingu, npvneg, ier)
+        call tldlg3('LDLT',' ',2, ldscon, ilideb, ilifin, 0,&
+                    ndeci, isingu, npvneg, ier,' ')
         indfac = ilifin + 1
         if (ier .gt. isto) then
             lechec = .true.

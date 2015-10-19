@@ -15,18 +15,15 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-#include "asterf_types.h"
-!
-interface
-    subroutine nmrenu(modelz     , list_func_acti, list_load, solver, sdcont_defi,&
-                      sdcont_solv, nume_ddl      , l_renumber)
-        character(len=*), intent(in) :: modelz
-        character(len=24), intent(inout) :: nume_ddl
-        character(len=19), intent(in) :: list_load
-        character(len=19), intent(in) :: solver
-        character(len=24), intent(in) :: sdcont_defi
-        character(len=24), intent(in) :: sdcont_solv
-        integer, intent(in) :: list_func_acti(*)
-        aster_logical, intent(out) :: l_renumber
-    end subroutine nmrenu
-end interface
+          interface 
+            subroutine nmrenu(modelz,list_func_acti,list_load,          &
+     &sdcont_defi,sdcont_solv,nume_ddl,l_renumber)
+              character(len=*), intent(in) :: modelz
+              integer, intent(in) :: list_func_acti(*)
+              character(len=19), intent(in) :: list_load
+              character(len=24), intent(in) :: sdcont_defi
+              character(len=24), intent(in) :: sdcont_solv
+              character(len=24), intent(inout) :: nume_ddl
+              aster_logical, intent(out) :: l_renumber
+            end subroutine nmrenu
+          end interface 

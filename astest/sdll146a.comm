@@ -75,9 +75,9 @@ KELE=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                             CHAM_MATER=CHMAT,
                             );
 
-NUM=NUME_DDL(RENUM='METIS',
+NUM=NUME_DDL(
                      MATR_RIGI=KELE,
-                     METHODE='MULT_FRONT',
+
                      );
 
 MASS=ASSE_MATRICE(NUME_DDL=NUM,

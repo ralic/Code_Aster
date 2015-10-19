@@ -1,6 +1,5 @@
 subroutine op0014()
     implicit none
-!     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,19 +16,19 @@ subroutine op0014()
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!     ------------------------------------------------------------------
 !     OPERATEUR FACTORISER
 !     BUT: - FACTORISE UNE MATRICE ASSEMBLEE EN 2 MATRICES TRIANGULAIRES
 !            (SOLVEUR MUMPS,MULT_FRONT,LDLT), OU
 !          - DETERMINE UNE MATRICE DE PRECONDITIONNEMENT POUR L'ALGO DU
 !            GRADIENT CONJUGUE PRCONDITIONNE (SOLVEUR GCPC)
 !     ------------------------------------------------------------------
-!
+
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/apetsc.h"
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
+#include "asterfort/crsolv.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
 #include "asterfort/gcncon.h"
@@ -50,23 +49,26 @@ subroutine op0014()
 #include "asterfort/pcldlt.h"
 #include "asterfort/pcmump.h"
 #include "asterfort/titre.h"
-#include "asterfort/tldlgg.h"
+#include "asterfort/tldlg3.h"
 #include "asterfort/utmess.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/vrrefe.h"
+
     character(len=3) :: kstop
     character(len=5) :: klag2
     character(len=24) :: valk(2)
     character(len=8) :: matass, matfac, type, ktypr, ktyps, precon, mixpre
     character(len=12) :: kooc
-    character(len=16) :: concep, nomcmd, metres
+    character(len=16) :: concep, nomcmd, metres , renum
     character(len=19) :: mass, mfac, solveu, solvbd
     integer :: nprec, iatfac, ibdeb, ibfin, ibid, ier1, ifm, ildeb, ilfin
-    integer :: iret, iretgc, isingu, istop, jadia, pcpiv, niremp
+    integer :: iret, isingu, istop, jadia, pcpiv, niremp
     integer :: ldtblo, lfnblo, ndeci, neq, niv, npvneg
     integer :: jslvk, jslvr, jslvi, reacpr
-    real(kind=8) :: fillin, epsmat, eps
-!     ------------------------------------------------------------------
+    real(kind=8) :: fillin, epsmat, eps, blrfront, blreps
+    character(len=24), pointer :: refa(:) => null()
+    aster_logical :: lreuse
+!   ------------------------------------------------------------------
     call jemarq()
 
     call infmaj()
@@ -76,112 +78,124 @@ subroutine op0014()
     mfac = matfac
     call getvid('  ', 'MATR_ASSE', scal=matass, nbret=ibid)
     mass = matass
-    call dismoi('METH_RESO', mass, 'MATR_ASSE', repk=metres)
+    lreuse=mfac.eq.mass
 
+
+!   -- recuperation de certains mots cles :
+!   ----------------------------------------
+    call getvtx(' ', 'METHODE', scal=metres)
+    call getvtx(' ', 'RENUM', scal=renum)
+
+    if (metres.eq.'MUMPS') then
+        call getvr8(' ', 'LOW_RANK_TAILLE', iocc=1, scal=blrfront)
+        call getvr8(' ', 'LOW_RANK_SEUIL', iocc=1, scal=blreps)
+    else
+        blrfront=0.d0
+        blreps=0.d0
+    endif
+
+    if (metres .eq. 'GCPC' .or. metres .eq. 'PETSC') then
+        call getvtx(' ', 'PRE_COND', scal=precon)
+    else
+        precon=' '
+    endif
+
+    if (metres .eq. 'LDLT' .or. metres .eq. 'MUMPS' .or. metres .eq. 'MULT_FONT') then
+        call getvis('  ', 'NPREC', scal=nprec)
+        call getvtx('  ', 'STOP_SINGULIER', scal=kstop)
+        if (kstop .eq. 'OUI') then
+            istop = 0
+        else if (kstop.eq.'NON') then
+            istop = 1
+        endif
+    else
+        nprec=0
+        kstop=' '
+        istop=0
+    endif
 
 
 !   -- la commande peut-elle ou doit-elle etre reentrante ?
-!      reuse <=> precon.eq.'LDLT_SP'
+!      .not.reuse <=> PCPC + LDLT_SP
 !   --------------------------------------------------------
     precon=' '
     call getvtx(' ', 'PRE_COND', scal=precon, nbret=ibid)
     if (metres.eq.'GCPC' .and. precon .eq. 'LDLT_INC') then
-        if (mfac .eq. mass) then
+        if (lreuse) then
             call utmess('F', 'ALGELINE5_56')
         endif
     else
-        if (mfac .ne. mass) then
+        if (.not.lreuse) then
             call utmess('F', 'ALGELINE5_56')
         endif
     endif
 
-    if (metres .eq. 'GCPC' .or. metres .eq. 'PETSC') then
-        call uttcpu('CPU.RESO.1', 'DEBUT', ' ')
-        call uttcpu('CPU.RESO.4', 'DEBUT', ' ')
-    endif
+
+!   -- on cree un solveur minimal pour retenir les infos entre FACTORISER et RESOUDRE:
+!   ----------------------------------------------------------------------------------
+    solveu=mfac(1:8)//'.SOLVEUR'
+    call crsolv(metres, renum, blrfront, blreps, solveu, 'G')
+    call jeveuo(mass//'.REFA', 'E', vk24=refa)
+    refa(7)=solveu
+    call jeveuo(solveu//'.SLVK', 'E', jslvk)
+    call jeveuo(solveu//'.SLVR', 'E', jslvr)
+    call jeveuo(solveu//'.SLVI', 'E', jslvi)
 
 
-!   CAS DU SOLVEUR  GCPC :
-!   ---------------------
+    call uttcpu('CPU.RESO.1', 'DEBUT', ' ')
+    call uttcpu('CPU.RESO.4', 'DEBUT', ' ')
+
+
+!   -- CAS DU SOLVEUR  GCPC :
+!   -------------------------
     if (metres .eq. 'GCPC') then
-!       -- verification : matr_asse a valeurs complexes interdit
-        if (concep(16:16) .eq. 'C') then
-            call utmess('F', 'ALGELINE5_57')
-        endif
-!
+        if (concep(16:16) .eq. 'C')  call utmess('F', 'ALGELINE5_57')
+        zk24(jslvk-1+2) = precon
+
         if (precon .eq. 'LDLT_INC') then
-!          ON ECRIT DANS LA SD SOLVEUR LE TYPE DE PRECONDITIONNEU
-            call dismoi('SOLVEUR', mass, 'MATR_ASSE', repk=solveu)
-            call jeveuo(solveu//'.SLVK', 'E', jslvk)
-            zk24(jslvk-1+2) = precon
-!
+            ASSERT(.not.lreuse)
+            call copisd('MATR_ASSE', 'G', mass, mfac)
+!           -- on ecrit dans la sd solveur le type de preconditionneur
+
             call getvis(' ', 'NIVE_REMPLISSAGE', scal=niremp, nbret=iret)
             call pcldlt(mfac, mass, niremp, 'G')
+            call jeveuo(mfac//'.REFA', 'E', vk24=refa)
+            refa(7)=solveu
 
         else if (precon.eq.'LDLT_SP') then
-!          OBLIGATOIRE POUR AVOIR UN CONCEPT DE SORTIE SD_VERI OK
-            if (mass .ne. mfac) call copisd('MATR_ASSE', 'G', mass, mfac)
-!          ON EST OBLIGE DE MODIFIER DIRECTEMENT MASS
-            mfac=mass
-!          CREATION D'UN NOM UNIQUE POUR LA SD SOLVEUR MUMPS
-!          SIMPLE PRECISION
+!           -- nom du solveur pour mumps simple precision
             call gcncon('.', solvbd)
-!          LECTURE PARAMETRE
+            zk24(jslvk-1+3) = solvbd
+
             call getvis(' ', 'REAC_PRECOND', scal=reacpr, nbret=ibid)
             call getvis(' ', 'PCENT_PIVOT', scal=pcpiv, nbret=ibid)
-!
-!      --- ON REMPLIT LA SD_SOLVEUR GCPC
-            call dismoi('SOLVEUR', mass, 'MATR_ASSE', repk=solveu)
-            call jeveuo(solveu//'.SLVK', 'E', jslvk)
-            call jeveuo(solveu//'.SLVR', 'E', jslvr)
-            call jeveuo(solveu//'.SLVI', 'E', jslvi)
-            zk24(jslvk-1+1) = 'GCPC'
-            zk24(jslvk-1+2) = precon
-            zk24(jslvk-1+3) = solvbd
             zi(jslvi-1+5) = 0
             zi(jslvi-1+6) = reacpr
             zi(jslvi-1+7) = pcpiv
-!
-!      --- APPEL A LA CONSTRUCTION DU PRECONDITIONNEUR
-            call pcmump(mfac, solveu, iretgc)
-            if (iretgc .ne. 0) then
+
+!           -- appel a la construction du preconditionneur
+            call pcmump(mass, solveu, iret)
+            if (iret .ne. 0) then
                 call utmess('F', 'ALGELINE5_76')
             endif
         endif
-!
         goto 999
     endif
-!
-!
-    call getvis('  ', 'NPREC', scal=nprec, nbret=ibid)
-    call getvtx('  ', 'STOP_SINGULIER', scal=kstop, nbret=ibid)
-    if (kstop .eq. 'OUI') then
-        istop = 0
-    else if (kstop.eq.'NON') then
-        istop = 1
-    endif
-!
-!
-!
-!     CAS DU SOLVEUR MUMPS :
-!     ----------------------
+
+
+!   -- CAS DU SOLVEUR MUMPS :
+!   --------------------------
     if (metres .eq. 'MUMPS') then
-        kooc='AUTO'
+        call getvtx(' ', 'TYPE_RESOL', scal=ktypr)
+        call getvtx(' ', 'PRETRAITEMENTS', scal=ktyps)
+        call getvtx(' ', 'ELIM_LAGR', scal=klag2)
+        ASSERT(klag2.eq.'NON' .or. klag2.eq.'LAGR2')
+        call getvtx(' ', 'GESTION_MEMOIRE', scal=kooc)
         mixpre='NON'
         epsmat=-1.d0
         eps=-1.d0
-        if (mass .ne. mfac) call copisd('MATR_ASSE', 'G', mass, mfac)
-        call dismoi('SOLVEUR', mass, 'MATR_ASSE', repk=solveu)
         call getvis(' ', 'PCENT_PIVOT', scal=pcpiv, nbret=ibid)
-        call getvtx(' ', 'TYPE_RESOL', scal=ktypr, nbret=ibid)
-        call getvtx(' ', 'PRETRAITEMENTS', scal=ktyps, nbret=ibid)
-        call getvtx(' ', 'ELIM_LAGR', scal=klag2, nbret=ibid)
-        ASSERT(klag2.eq.'NON' .or. klag2.eq.'LAGR2')
-!
-        call getvtx(' ', 'GESTION_MEMOIRE', scal=kooc, nbret=ibid)
-        call jeveuo(solveu//'.SLVI', 'E', jslvi)
-        call jeveuo(solveu//'.SLVK', 'E', jslvk)
-        call jeveuo(solveu//'.SLVR', 'E', jslvr)
+
         zi(jslvi-1+1) =nprec
         zi(jslvi-1+2) =pcpiv
         zi(jslvi-1+3) =istop
@@ -200,68 +214,60 @@ subroutine op0014()
         ildeb = 1
         ilfin = 0
     endif
-!
-!
-!     CAS DU SOLVEUR PETSC :
-!     ----------------------
+
+
+!   -- CAS DU SOLVEUR PETSC :
+!   --------------------------
     if (metres .eq. 'PETSC') then
-!        OBLIGATOIRE POUR AVOIR UN CONCEPT DE SORTIE SD_VERI OK
-        if (mass .ne. mfac) call copisd('MATR_ASSE', 'G', mass, mfac)
-!        ON EST OBLIGE DE MODIFIER DIRECTEMENT MASS
+!       -- avec PETSC, on est forcement en reuse :
         mfac=mass
-        call dismoi('SOLVEUR', mass, 'MATR_ASSE', repk=solveu)
-        call getvtx(' ', 'PRE_COND', scal=precon, nbret=ibid)
-        call jeveuo(solveu//'.SLVK', 'E', jslvk)
-        call jeveuo(solveu//'.SLVR', 'E', jslvr)
-        call jeveuo(solveu//'.SLVI', 'E', jslvi)
         zk24(jslvk-1+2) = precon
-!
+
         if (precon .eq. 'LDLT_INC') then
             call getvis(' ', 'NIVE_REMPLISSAGE', scal=niremp, nbret=ibid)
             call getvr8(' ', 'REMPLISSAGE', scal=fillin, nbret=ibid)
             zr(jslvr-1+3) = fillin
             zi(jslvi-1+4) = niremp
+
         else if (precon.eq.'LDLT_SP') then
-!          CREATION D'UN NOM UNIQUE POUR LA SD SOLVEUR MUMPS
-!          SIMPLE PRECISION
+!           -- nom du solveur pour mumps simple precision
             call gcncon('.', solvbd)
-!          LECTURE PARAMETRE
+            zk24(jslvk-1+3) = solvbd
+
             call getvis(' ', 'REAC_PRECOND', scal=reacpr, nbret=ibid)
             call getvis(' ', 'PCENT_PIVOT', scal=pcpiv, nbret=ibid)
-            zk24(jslvk-1+3) = solvbd
             zi(jslvi-1+5) = 0
             zi(jslvi-1+6) = reacpr
             zi(jslvi-1+7) = pcpiv
-        else
-            ASSERT(.false.)
         endif
+
         call apetsc('DETR_MAT', ' ', mfac, [0.d0], ' ',&
                     0, ibid, iret)
         call apetsc('PRERES', solveu, mfac, [0.d0], ' ',&
                     0, ibid, iret)
-        iret=0
+        ASSERT(iret.eq.0)
         goto 999
     endif
-!
-!
-!     CAS DES SOLVEURS LDLT/MULT_FRONT/MUMPS :
-!     -------------------------------------
-!
-!     --- RECUPERATION DES INDICES DE DEBUT ET FIN DE LA FACTORISATION -
-!     - 1) AVEC DDL_XXX
+
+
+!   -- CAS DES SOLVEURS LDLT/MULT_FRONT/MUMPS :
+!   -------------------------------------------
+
+!   -- RECUPERATION DES INDICES DE DEBUT ET FIN DE LA FACTORISATION -
     if (metres .ne. 'MUMPS') then
+!       -- 1) AVEC DDL_XXX
         ildeb = 1
         ilfin = 0
         call getvis('  ', 'DDL_DEBUT', scal=ildeb, nbret=ibid)
         call getvis('  ', 'DDL_FIN', scal=ilfin, nbret=ibid)
-!     - 2) AVEC BLOC_XXX
+!       -- 2) AVEC BLOC_XXX
         ibdeb = 1
         ibfin = 0
         call getvis('  ', 'BLOC_DEBUT', scal=ibdeb, nbret=ldtblo)
         call getvis('  ', 'BLOC_FIN', scal=ibfin, nbret=lfnblo)
-!
-!
-!     --- EXISTENCE / COMPATIBILITE DES MATRICES ---
+
+
+!       -- EXISTENCE / COMPATIBILITE DES MATRICES ---
         call mtexis(mfac, iret)
         if (iret .ne. 0) then
             call vrrefe(mass, mfac, ier1)
@@ -282,25 +288,25 @@ subroutine op0014()
             ASSERT(iret.eq.0)
         endif
     endif
-!
-!     --- CHARGEMENT DES DESCRIPTEURS DE LA MATRICE A FACTORISER ---
+
+!   -- CHARGEMENT DES DESCRIPTEURS DE LA MATRICE A FACTORISER ---
     call mtdscr(mfac)
     call jeveuo(mfac(1:19)//'.&INT', 'E', iatfac)
     if (iatfac .eq. 0) then
         call utmess('F', 'ALGELINE2_19', sk=matfac)
     endif
     call mtdsc2(zk24(zi(iatfac+1)), 'SXDI', 'L', jadia)
-!
-!     --- NEQ : NOMBRE D'EQUATIONS (ORDRE DE LA MATRICE) ---
+
+!   -- NEQ : NOMBRE D'EQUATIONS (ORDRE DE LA MATRICE) ---
     neq = zi(iatfac+2)
-!
+
     if (metres .ne. 'MUMPS') then
-!
-!     --- VERIFICATION DES ARGUMENTS RELATIF A LA PARTIE A FACTORISER --
-!     --- 1) AVEC DDL_XXX
+
+!       -- VERIFICATION DES ARGUMENTS RELATIF A LA PARTIE A FACTORISER
+!       -- 1) AVEC DDL_XXX
         if (ilfin .lt. ildeb .or. ilfin .gt. neq) ilfin = neq
-!
-!     --- 2) AVEC BLOC_XXX
+
+!       -- 2) AVEC BLOC_XXX
         if (ldtblo .ne. 0) then
             if (ibdeb .lt. 1) then
                 call utmess('A', 'ALGELINE2_1')
@@ -319,8 +325,8 @@ subroutine op0014()
             endif
             ilfin = zi(jadia+ibfin-1)
         endif
-!
-!     --- IMPRESSION SUR LE FICHIER MESSAGE ----------------------------
+
+!       -- IMPRESSION SUR LE FICHIER MESSAGE ----------------------------
         if (niv .eq. 2) then
             write(ifm,*)' +++ EXECUTION DE "',nomcmd,'"'
             write(ifm,*)'       NOM DE LA MATRICE ASSEMBLEE  "',matass,'"'
@@ -336,21 +342,20 @@ subroutine op0014()
             write(ifm,*)' +++ -------------------------------------------'
         endif
     endif
-!
-!
-!     ------------------ FACTORISATION EFFECTIVE -------------------
-    call tldlgg(istop, iatfac, ildeb, ilfin, nprec,&
-                ndeci, isingu, npvneg, iret)
-!     --------------------------------------------------------------
-!
+
+
+!   ------------------ FACTORISATION EFFECTIVE -------------------
+    call tldlg3(metres, renum, istop, iatfac, ildeb,&
+                ilfin, nprec, ndeci, isingu, npvneg,&
+                iret, ' ')
+!   --------------------------------------------------------------
+
 999 continue
-!
-    if (metres .eq. 'GCPC' .or. metres .eq. 'PETSC') then
-        call uttcpu('CPU.RESO.1', 'FIN', ' ')
-        call uttcpu('CPU.RESO.4', 'FIN', ' ')
-    endif
-!
+
+    call uttcpu('CPU.RESO.1', 'FIN', ' ')
+    call uttcpu('CPU.RESO.4', 'FIN', ' ')
+
     call titre()
-!
+
     call jedema()
 end subroutine

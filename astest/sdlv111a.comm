@@ -243,10 +243,7 @@ NUMA=NUME_DDL(
             MATR_RIGI=MRA
                  )
 
-NUMB=NUME_DDL(
-            MATR_RIGI=MRB,
-                 RENUM='MD'
-                 )
+NUMB=NUME_DDL( MATR_RIGI=MRB )
 
 MASRA=ASSE_MATRICE(  MATR_ELEM=MRA,    NUME_DDL=NUMA  )
 

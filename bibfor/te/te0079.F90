@@ -88,7 +88,7 @@ subroutine te0079(option, nomte)
                 end do
                 poids = poids*r
             endif
-!DIR$ IVDEP
+!!DIR$_IVDEP
 !CC      write(6,*)  '--->>> ZR(ISOUR+',KP,'-1) = ', ZR(ISOUR+KP-1)
 !
             do i = 1, nno

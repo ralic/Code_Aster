@@ -514,7 +514,7 @@ RESUMECA=STAT_NON_LINE(MODELE=MOMECA,
                        INCREMENT=_F(LIST_INST=LISTMECA,),
                        CONVERGENCE=_F(ITER_GLOB_MAXI=40,),
                        SOLVEUR=_F(METHODE='LDLT',
-                                  RENUM='RCMK',),
+                                  ),
                        NEWTON=_F(MATRICE='TANGENTE',),);
 
 RESUMECA=CALC_CHAMP(reuse=RESUMECA,RESULTAT=RESUMECA,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'))
@@ -544,7 +544,7 @@ RESUSTAT=MECA_STATIQUE(MODELE=MOMECA,
                        EXCIT=_F(CHARGE=CHMECA,),
                        LIST_INST=LISTMECA,
                        SOLVEUR=_F(METHODE='LDLT',
-                                  RENUM='RCMK',),);
+                                  ),);
 
 #
 

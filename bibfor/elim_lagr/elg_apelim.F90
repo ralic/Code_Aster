@@ -99,9 +99,9 @@ subroutine elg_apelim(kptsc)
 !
 !
 !     -- LECTURE DU COMMUN
-    nomat = nomats(kptsc)
+    nomat = nomat_courant
+    nonu = nonu_courant
     nosolv = nosols(kptsc)
-    nonu = nonus(kptsc)
 !
     call jeveuo(nosolv//'.SLVK', 'L', vk24=slvk)
 !

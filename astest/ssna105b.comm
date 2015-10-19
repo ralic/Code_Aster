@@ -173,7 +173,7 @@ RESU = STAT_NON_LINE (MODELE = MO,
                                      GROUP_MA = 'MAILP'),),
                       INCREMENT =_F(LIST_INST =L_INST,),
                       SOLVEUR =_F( METHODE='LDLT',
-                                   RENUM='SANS',),
+                                  ),
                       NEWTON    =_F(
                                 MATRICE ='TANGENTE',
                                 REAC_ITER= 1),

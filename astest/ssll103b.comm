@@ -77,7 +77,7 @@ BLOQ=AFFE_CHAR_MECA(   MODELE=MO,DDL_IMPO=(
 RIGEL=CALC_MATR_ELEM(MODELE=MO,    OPTION='RIGI_MECA',
           CHAM_MATER=CHMAT,  CARA_ELEM=CARAC, CHARGE=BLOQ )
 
-NU=NUME_DDL( MATR_RIGI=RIGEL,  METHODE='LDLT',  RENUM='SANS')
+NU=NUME_DDL( MATR_RIGI=RIGEL)
 
 RIGAS=ASSE_MATRICE(MATR_ELEM=RIGEL,NUME_DDL=NU)
 
@@ -173,14 +173,14 @@ NB_MODES = INFO_MODE( MATR_RIGI=RIGAS,
                       MATR_RIGI_GEOM=RIGASG_2,
                       TYPE_MODE='MODE_FLAMB',
                       CHAR_CRIT=(-9.97E+6,-1.E+6))
-                            
+
 TEST_TABLE(
            VALE_CALC_I=10,
            NOM_PARA='NB_MODE',
            TABLE=NB_MODES,
            )
 
-           
+
 MOD_2=CALC_MODES(MATR_RIGI=RIGAS,
                  VERI_MODE=_F(STOP_ERREUR='OUI',
                               ),
@@ -321,7 +321,7 @@ NB_MODE = INFO_MODE( MATR_A=RIGAS,
                       MATR_B=RIGASG_2,
                       TYPE_MODE='GENERAL',
                       CHAR_CRIT=(-9.97E+6,-1.E+6))
-                            
+
 TEST_TABLE(TABLE=NB_MODE,
            NOM_PARA='NB_MODE',
            VALE_CALC_I=10,

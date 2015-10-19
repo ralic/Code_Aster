@@ -20,7 +20,6 @@ subroutine cfcrma(neqmat, noma, resoco)
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/crnslv.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
@@ -224,7 +223,6 @@ subroutine cfcrma(neqmat, noma, resoco)
 ! --- ON CREE AUSSI LE STOCKAGE "MORSE" CORRESPONDANT A UNE
 ! --- MATRICE PLEINE
 !
-    call crnslv(stoc(1:14), 'LDLT', 'SANS', 'V')
 !
 ! --- CREATION .REFA
 !

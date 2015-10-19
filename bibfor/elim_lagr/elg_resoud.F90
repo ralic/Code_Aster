@@ -16,6 +16,8 @@ subroutine elg_resoud(matas1, matpre, chcine, nsecm, chsecm,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/resou1.h"
+#include "asterfort/vtcrem.h"
+#include "asterfort/detrsd.h"
 #include "asterfort/uttcpu.h"
 !-----------------------------------------------------------------------
 ! But : faire "resoud" si ELIM_LAGR='OUI'
@@ -52,7 +54,7 @@ subroutine elg_resoud(matas1, matpre, chcine, nsecm, chsecm,&
 ! ======================================================================
 ! ----------------------------------------------------------------------
     integer :: jsolu1, jsolu2, nsecmb
-    character(len=19) :: matas2, secm19, solve2, solu19
+    character(len=19) :: matas2, secm19, solve2, solu19, chcin2
     character(len=24) :: solu2
     real(kind=8), pointer :: secm(:) => null()
     character(len=24), pointer :: refa(:) => null()
@@ -84,13 +86,20 @@ subroutine elg_resoud(matas1, matpre, chcine, nsecm, chsecm,&
     endif
 !
 !
+!   -- On cree chcin2 (qui est nul) car ELIM_LAGR n'admet pas AFFE_CHAR_CINE :
+!   ----------------------------------------------------------------------------
+    chcin2='&&elg_resoud.cine'
+    call vtcrem(chcin2, matas2, 'V', 'R')
+
+!
 !   -- on appelle resou1 avec le(s) second-membre(s) reduit(s) :
 !   ------------------------------------------------------------
     call jeveuo(solu2, 'E', jsolu2)
     nsecmb=max(nsecm,1)
-    call resou1(matas2, matpre, solve2, chcine, nsecmb,&
+    call resou1(matas2, matpre, solve2, chcin2, nsecmb,&
                 ' ', ' ', 'V', zr(jsolu2), csolu,&
                 criter, prepos, istop, iret)
+    call detrsd('CHAMP',chcin2)
 !
 !
 !   -- Solution(s) : passage reduit -> complet :

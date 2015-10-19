@@ -97,19 +97,21 @@ subroutine te0242(option, nomte)
 !
     call connec(nomte, nse, nnop2, c)
 !
-    do 10 i = 1, nnop2
-        do 10 j = 1, nnop2
+    do i = 1, nnop2
+        do j = 1, nnop2
             mt(i,j)=0.d0
-10      continue
+        enddo
+    enddo
 !
 ! BOUCLE SUR LES SOUS-ELEMENTS
 !
     do 200 ise = 1, nse
 !
-        do 205 i = 1, nno
-            do 205 j = 1, 2
+        do i = 1, nno
+            do j = 1, 2
                 coorse(2*(i-1)+j) = zr(igeom-1+2*(c(ise,i)-1)+j)
-205          continue
+            enddo
+        enddo
 !
 !
         if (zk16(icomp)(1:5) .eq. 'THER_') then
@@ -131,24 +133,26 @@ subroutine te0242(option, nomte)
                 call rcfode(ifon(2), tpgi, lambda, r8bid)
 !
                 ij = imattt - 1
-                do 103 i = 1, nno
-!DIR$ IVDEP
-                    do 103 j = 1, nno
+                do i = 1, nno
+!!DIR$_IVDEP
+                    do j = 1, nno
                         ij = ij + 1
                         mt(c(ise,i),c(ise,j)) = mt(&
                                                 c(ise, i),&
                                                 c(ise, j))+ poids* lambda*theta*(dfdx(i)*dfdx(j)+&
                                                 &dfdy(i)* dfdy(j)&
                                                 )
-103                  continue
+                    enddo
+                enddo
 101          continue
 !
 ! ------- TERME DE MASSE : 3EME FAMILLE DE PTS DE GAUSS -----------
 !
-            do 405 i = 1, nno
-                do 405 j = 1, 2
+            do i = 1, nno
+                do j = 1, 2
                     coorse(2*(i-1)+j) = zr(igeom-1+2*(c(ise,i)-1)+j)
-405              continue
+                enddo
+             enddo
 !
             call ntfcma(zk16(icomp), zi(imate), ifon)
             do 401 kp = 1, npg2
@@ -165,16 +169,17 @@ subroutine te0242(option, nomte)
                 call rcfode(ifon(1), tpgi, r8bid, rhocp)
 !
                 ij = imattt - 1
-                do 403 i = 1, nno
-!DIR$ IVDEP
-                    do 403 j = 1, nno
+                do i = 1, nno
+!!DIR$_IVDEP
+                    do j = 1, nno
                         ij = ij + 1
                         mt(c(ise,i),c(ise,j)) = mt(&
                                                 c(ise, i),&
                                                 c(ise, j))+ poids* khi*rhocp*zr(ivf2+k+i-1)*zr(iv&
                                                 &f2+k+j-1&
                                                 ) /deltat
-403                  continue
+                    enddo
+                enddo
 401          continue
 !
 ! --- SECHAGE
@@ -199,46 +204,49 @@ subroutine te0242(option, nomte)
                 call rcdiff(zi(imate), zk16(icomp), tpsec, tpg, diff)
 !
                 ij = imattt - 1
-                do 202 i = 1, nno
+                do i = 1, nno
 !
-                    do 202 j = 1, nno
+                    do j = 1, nno
                         ij = ij + 1
                         mt(c(ise,i),c(ise,j)) = mt(&
                                                 c(ise, i),&
                                                 c(ise, j)) + poids*( diff*theta*(dfdx(i)*dfdx(j)+&
                                                 &dfdy(i)* dfdy(j))&
                                                 )
-202                  continue
+                    enddo
+                enddo
 203          continue
 !
 ! ------- TERME DE MASSE : 3EME FAMILLE DE PTS DE GAUSS -----------
 !
-            do 301 i = 1, nno
-                do 301 j = 1, 2
+            do i = 1, nno
+                do j = 1, 2
                     coorse(2*(i-1)+j) = zr(igeom-1+2*(c(ise,i)-1)+j)
-301              continue
+                enddo
+            enddo
 !
             do 304 kp = 1, npg2
                 k=(kp-1)*nno
                 call dfdm2d(nno, kp, ipoid2, idfde2, coorse,&
                             poids, dfdx, dfdy)
                 r = 0.d0
-                do 302 i = 1, nno
+                do i = 1, nno
                     r = r + coorse(2*(i-1)+1) *zr(ivf2+k+i-1)
-302              continue
+                enddo
                 if (lteatt('AXIS','OUI')) poids = poids*r
 !
                 ij = imattt - 1
-                do 303 i = 1, nno
+                do i = 1, nno
 !
-                    do 303 j = 1, nno
+                    do j = 1, nno
                         ij = ij + 1
                         mt(c(ise,i),c(ise,j)) = mt(&
                                                 c(ise, i),&
                                                 c(ise, j)) + poids*( khi*zr(ivf2+k+i-1)*zr(ivf2+k&
                                                 &+j-1)/ deltat&
                                                 )
-303                  continue
+                    enddo
+                enddo
 304          continue
         endif
 !
@@ -248,10 +256,11 @@ subroutine te0242(option, nomte)
 !
 ! MISE SOUS FORME DE VECTEUR
     ij = imattt-1
-    do 406 i = 1, nnop2
-        do 406 j = 1, i
+    do i = 1, nnop2
+        do j = 1, i
             ij = ij +1
             zr(ij)=mt(i,j)
-406      continue
+        enddo
+    enddo
 ! FIN ------------------------------------------------------------------
 end subroutine

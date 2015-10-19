@@ -1,5 +1,5 @@
 subroutine trasst(modgen, numsst, isst1, lisint, nbeq1,&
-                  nbmod, nbint)
+                  nbmod, nbint, solveu)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -112,7 +112,6 @@ subroutine trasst(modgen, numsst, isst1, lisint, nbeq1,&
     call mtdscr(imped)
     call jeveuo(imped(1:19)//'.&INT', 'E', limped)
 !
-    call dismoi('SOLVEUR', mraid, 'MATR_ASSE', repk=solveu)
 !
     call preres(solveu, 'V', iret, '&&OP0091.MATPRE', imped,&
                 ibid, -9999)

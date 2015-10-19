@@ -66,7 +66,7 @@ CHTH=AFFE_CHAR_THER(   MODELE=MOTH,ECHANGE=(
 TEMPE=THER_LINEAIRE(       MODELE=MOTH,
                             CHAM_MATER=CHMAT,
                                  EXCIT=_F(  CHARGE = CHTH),
-                               SOLVEUR=_F( METHODE = 'LDLT', RENUM = 'RCMK')
+                               SOLVEUR=_F( METHODE = 'LDLT',)
                          )
 
 #

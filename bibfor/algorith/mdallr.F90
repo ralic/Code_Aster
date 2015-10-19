@@ -32,7 +32,6 @@ subroutine mdallr(resu1, resu2, basemo, nbmode, nbsauv,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/crnslv.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
@@ -68,7 +67,6 @@ subroutine mdallr(resu1, resu2, basemo, nbmode, nbsauv,&
 !
 ! CREATION DE LA NUMEROTATION GENERALISE SUPPORT
     call nummo1(nugene, basemo, nbmode, 'PLEIN')
-    call crnslv(nugene, 'LDLT', 'SANS', 'G')
 !
 ! CREATION DE LA MATRICE GENERALISE SUPPORT
     call wkvect(matgen//'           .REFA', 'V V K24', 20, jrefa)

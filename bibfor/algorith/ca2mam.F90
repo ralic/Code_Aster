@@ -37,7 +37,6 @@ subroutine ca2mam(moint, incr, ligrmo, lchin, lpain,&
 #include "asterfort/assmam.h"
 #include "asterfort/calcul.h"
 #include "asterfort/codent.h"
-#include "asterfort/crnslv.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -84,9 +83,8 @@ subroutine ca2mam(moint, incr, ligrmo, lchin, lpain,&
 !-------------------- NUMEROTATION ----------------------------------
 !
     num = 'NUM'//incr
-    call numddl(num, 'VV', 1, matel, 'RCMK')
+    call numddl(num, 'VV', 1, matel)
     call promor(num, 'V')
-    call crnslv(num, 'MULT_FRONT', 'METIS', 'V')
 !
 !---------------ASSEMBLAGE DES MATRICES  DES DN(I)DN(J)--------------
 !

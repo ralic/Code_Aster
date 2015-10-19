@@ -20,7 +20,7 @@ import math
 MPa = 1e6
 #-----------------------------------------------
 # PARAMETRES DU CALCUL
-#-----------------------------------------------  
+#-----------------------------------------------
 ## BETON
 # epaisseur de la plaque
 ep_beton = 0.50
@@ -53,7 +53,7 @@ Nu_acier = 0.0
 # limite elastique acier
 sy_acier = 400*MPa
 # module d'ecrouissage acier
-Dsde_acier = 3280*MPa 
+Dsde_acier = 3280*MPa
 # masse volumique acier
 Rho_acier = 7800
 
@@ -64,7 +64,7 @@ INCLUDE(UNITE=92)
 
 #-----------------------------------------------
 # LECTURE DU MAILLAGE
-#-----------------------------------------------    
+#-----------------------------------------------
 MA=LIRE_MAILLAGE(FORMAT='MED',);
 
 MA=DEFI_GROUP(reuse =MA,
@@ -81,7 +81,7 @@ MA=MODI_MAILLAGE(reuse =MA,
 
 #-----------------------------------------------
 # CREATION DU MODELE
-#-----------------------------------------------     
+#-----------------------------------------------
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                  INFO=1,
@@ -92,8 +92,8 @@ MO=AFFE_MODELE(MAILLAGE=MA,
 
 
 #-----------------------------------------------
-# DEFINTION DES MATERIAUX 
-#-----------------------------------------------    
+# DEFINTION DES MATERIAUX
+#-----------------------------------------------
 BETON = DEFI_MATERIAU(ELAS=_F(E=E_beton,
                             NU=Nu_beton,
                             RHO=Rho_beton,
@@ -110,38 +110,38 @@ ACIER = DEFI_MATERIAU(ELAS=_F(E=E_acier,
                                 D_SIGM_EPSI=Dsde_acier,
                                  SY=sy_acier,
                                  ),);
- 
+
 MAT_T = DEFI_GLRC(
          RELATION = 'GLRC_DM',
          BETON =_F(MATER = BETON,
                     EPAIS = ep_beton),
          NAPPE =_F(MATER = ACIER,
                     OMX = section_acier ,
-                    OMY = section_acier, 
+                    OMY = section_acier,
                     RX = excentr/ep_beton*2,
                     RY = excentr/ep_beton*2,
                 ),
-        PENTE ='PLAS_ACIER',   
+        PENTE ='PLAS_ACIER',
         AMOR_ALPHA=8.E-5,
-        AMOR_BETA=20.,               
-        INFO =2        
-)            
+        AMOR_BETA=20.,
+        INFO =2
+)
 
 MATER=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=(_F(GROUP_MA='POUTRE',
-                             MATER=MAT_T,), 
+                             MATER=MAT_T,),
                              ),);
 
 CAEL=AFFE_CARA_ELEM(MODELE=MO,
                       COQUE=_F(GROUP_MA='POUTRE',
                                EPAIS=ep_beton,
                                ANGL_REP=(0.0,0.0,),
-                               INER_ROTA='OUI',),       
+                               INER_ROTA='OUI',),
                                );
-                               
+
 #-----------------------------------------------
-# DEFINTION DES CONDITIONS AUX LIMITES ET CHARGEMENTS 
-#-----------------------------------------------     
+# DEFINTION DES CONDITIONS AUX LIMITES ET CHARGEMENTS
+#-----------------------------------------------
 CL=AFFE_CHAR_MECA(MODELE=MO,
                        DDL_IMPO=(_F(GROUP_NO='A',
                                     DX=0.0,
@@ -150,17 +150,17 @@ CL=AFFE_CHAR_MECA(MODELE=MO,
                                     DRX=0.0,
                                     DRY=0.0,),
                                  _F(GROUP_MA='B',
-                                    DY=0.0,), 
+                                    DY=0.0,),
                                  _F(GROUP_MA ='POUTRE',
                                     DZ =0.0,
                                     DRX = 0.0,
-                                    DRY = 0.0)       
+                                    DRY = 0.0)
                                     ),
                                     );
 
 MASS_ELE=CALC_MATR_ELEM(MODELE=MO, OPTION='MASS_MECA', CARA_ELEM=CAEL, CHAM_MATER=MATER, CHARGE=CL,);
 RIGI_ELE=CALC_MATR_ELEM(MODELE=MO, OPTION='RIGI_MECA', CARA_ELEM=CAEL, CHAM_MATER=MATER, CHARGE=CL,);
-NUMEDDL=NUME_DDL(MATR_RIGI=RIGI_ELE, METHODE='LDLT', RENUM='SANS',);
+NUMEDDL=NUME_DDL(MATR_RIGI=RIGI_ELE)
 MASSE=ASSE_MATRICE(MATR_ELEM=MASS_ELE, NUME_DDL=NUMEDDL,);
 #
 # ON DEFINIT L'ACCELEROGRAMME DU SEISME
@@ -182,10 +182,10 @@ LINST= DEFI_LIST_REEL(
 )
 
 #-----------------------------------------------
-# CALCUL DES RESULTATS POUR LE CHARGEMENT 
+# CALCUL DES RESULTATS POUR LE CHARGEMENT
 #-----------------------------------------------
-RESU = DYNA_NON_LINE (MODELE=MO, 
-                      CHAM_MATER=MATER, 
+RESU = DYNA_NON_LINE (MODELE=MO,
+                      CHAM_MATER=MATER,
                       CARA_ELEM=CAEL,
                       SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
                                 FORMULATION='DEPLACEMENT',),
@@ -194,13 +194,13 @@ RESU = DYNA_NON_LINE (MODELE=MO,
                       EXCIT=(_F(CHARGE=CL,),
                              _F(CHARGE=CHASEISM, FONC_MULT=ACCELERO,),
                              ),
-                      COMPORTEMENT=_F(GROUP_MA ='POUTRE', 
+                      COMPORTEMENT=_F(GROUP_MA ='POUTRE',
                                     RELATION='GLRC_DM',
                                    ITER_INTE_MAXI=30
                                    ),
                       INCREMENT=_F(LIST_INST=LINST,
                       ),
-                      CONVERGENCE=_F(RESI_GLOB_RELA=1.E-5, 
+                      CONVERGENCE=_F(RESI_GLOB_RELA=1.E-5,
                                      ITER_GLOB_MAXI=350,
                                      ARRET='OUI',),
                       ARCHIVAGE=_F( LIST_INST=LINST, ),

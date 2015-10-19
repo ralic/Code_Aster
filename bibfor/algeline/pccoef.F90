@@ -20,7 +20,7 @@ subroutine pccoef(n, in, ip, ac, icpl,&
 !   ENTREE
 !   N          : TAILLE DE A
 !   IN,IP,AC   : MATRICE D'ENTREE FORMAT SYMETRIQUE
-!   CX      : TRAVAIL
+!   CX         : TRAVAIL
 !   ICPL       : IDEM IN POUR LA MATRICE DE PRECOND.
 !   ICPC       : IDEM IP POUR LA MATRICE DE PRECOND.
 !
@@ -41,15 +41,11 @@ subroutine pccoef(n, in, ip, ac, icpl,&
     real(kind=8) :: acpc(*), cx(n)
     integer :: icpl(0:n)
 !----------------------------------------------------------------------
-!----------------------------------------------------------------------
-!
-!
 !
 ! AC ---> ACPC
 ! ==========================
-!   MISE A 0 DE ACPC
 !-----------------------------------------------------------------------
-    integer :: i, imp, j,  k, k1, k2
+    integer :: i, j,  k, k1, k2
     integer :: kk, kk1, kk2
     integer, pointer :: ind(:) => null()
 !-----------------------------------------------------------------------
@@ -79,10 +75,6 @@ subroutine pccoef(n, in, ip, ac, icpl,&
         acpc(kk2) = ac(k2)
 40  end do
 !
-    imp = 0
-    if (imp .eq. 1) then
-!       WRITE (6,*) ' FIN DU S-P PCCOEF'
-    endif
     AS_DEALLOCATE(vi=ind)
 !
 end subroutine

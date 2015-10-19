@@ -1,4 +1,4 @@
-subroutine numero(nume_ddlz    , solverz     , base,&
+subroutine numero(nume_ddlz, base,&
                   old_nume_ddlz, modelocz    ,&
                   modelz       , list_loadz  ,&
                   nb_matr_elem , list_matr_elem,&
@@ -32,7 +32,6 @@ implicit none
 ! ----------------------------------------------------------------------
 ! person_in_charge: jacques.pellet at edf.fr
 !
-    character(len=*), intent(in) :: solverz
     character(len=*), intent(inout) :: nume_ddlz
     character(len=2), intent(in) :: base
     character(len=*), optional, intent(in) :: modelz
@@ -52,7 +51,6 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! IO  nume_ddl       : name of numbering object (NUME_DDL)
-! In  solver         : name of solver datastructure
 ! In  base           : JEVEUX base to create objects
 !                      base(1:1) => PROF_CHNO objects
 !                      base(2:2) => NUME_DDL objects
@@ -108,7 +106,7 @@ implicit none
 !
 ! - Create numbering
 !
-    call numer2(nb_ligr     , list_ligr, solverz     , base, nume_ddlz,&
+    call numer2(nb_ligr, list_ligr, base, nume_ddlz,&
                 old_nume_ddl, modeloc  , sd_iden_rela)
 !
     AS_DEALLOCATE(vk24 = list_ligr)

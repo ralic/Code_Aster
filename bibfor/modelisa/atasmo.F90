@@ -110,7 +110,6 @@ subroutine atasmo(neq, az, apddl, apptr, numedz,&
     call copisd('NUME_EQUA', base, numedd//'.NUME', numddl//'.NUME')
 !     UNE DROLE DE GLUTE A RESORBER :
     call jedup1(numedd//'.MLTF.RENU', base, numddl//'.MLTF.RENU')
-    call jedup1(numedd//'.NSLV', base, numddl//'.NSLV')
 !
     un = 1.0d0
 !

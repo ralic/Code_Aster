@@ -24,7 +24,7 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
 !         POUR LES SOLVEURS LINEAIRES: LDLT, MULT_FRONT, MUMPS
 !
 !     IN  METRES :  /'LDLT' /'MULT_FRONT'/'MUMPS'
-!     IN  RENUM :  /'MD' /'MDA' /'METIS' /' ' (POUR MULT_FRONT)
+!     IN  RENUM :  /'MD' /'MDA' /'METIS' /' ' (sert a MULT_FRONT)
 !     IN  ISTOP :  /0 -> SI IRET>0 : ERREUR <F>
 !                  /1 -> SI IRET=1 : ALARME <A>
 !                        SI IRET=2 : ERREUR <F>
@@ -88,8 +88,10 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
 #include "asterfort/tldur8.h"
 #include "asterfort/ualfcr.h"
 #include "asterfort/utmess.h"
+
     character(len=1) :: codmes
-    character(len=19) :: noma19, stolci, solvop
+    character(len=19) :: noma19, stolci
+    character(len=*) :: solvop
     character(len=14) :: nu
     character(len=*) :: metrez, renum
     character(len=16) :: metres
@@ -97,7 +99,7 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
     character(len=40) ::  valk(2)
     integer :: istop, lmat, ildeb, ilfin, ndigit, ndigi2, iret, npvneg, iretz
     integer :: ifm, niv,  nom, neq,  iretp, npvnez
-    integer :: typvar, typsym, nbbloc, ilfin1
+    integer :: typvar, typsym, nbbloc, ilfin1, iexi
     integer :: ieq3, isingu, ieq, ndeci, jdigs, npivot
     integer :: ndeci1, ndeci2, ieq4, nzero, vali(6), ipiv
     real(kind=8) :: eps, dmax, dmin, d1
@@ -106,6 +108,7 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
     character(len=24), pointer :: refa(:) => null()
     integer, pointer :: scbl(:) => null()
     integer, pointer :: scdi(:) => null()
+    integer, pointer :: lc2m(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
     nom=zi(lmat+1)
@@ -125,7 +128,7 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
         call utmess('F', 'ALGELINE4_1')
     endif
 !
-!     -- DDLS ELIMINES :
+!   -- DDLS ELIMINES :
     call jeveuo(noma19//'.REFA', 'L', vk24=refa)
     ASSERT(refa(3).ne.'ELIMF')
     if (refa(3) .eq. 'ELIML') call mtmchc(noma19, 'ELIMF')
@@ -153,13 +156,14 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
     endif
 !
 !
-!     -- VALEUR DE NDIGIT PAR DEFAUT : 8
+!   -- VALEUR DE NDIGIT PAR DEFAUT : 8
     if (ndigit .eq. 0) then
         ndigi2=8
     else
         ndigi2=ndigit
     endif
-!     -- ON NE PERMET PAS LE DEBRANCHEMENT DE LA RECHERCHE DE SINGU
+
+!   -- ON NE PERMET PAS LE DEBRANCHEMENT DE LA RECHERCHE DE SINGU
 !        LARITE AVEC LDLT ET MULT_FRONT (POUR L'INSTANT)
     if (metres .ne. 'MUMPS') ndigi2=abs(ndigi2)
 !
@@ -169,13 +173,13 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
         ilfin1=ilfin
     endif
 !
-!     ON ALLOUE (SI NECESSAIRE) UN VECTEUR QUI CONTIENDRA
-!     LA DIAGONALE "AVANT" ET LA DIAGONALE "APRES" :
+!   ON ALLOUE (SI NECESSAIRE) UN VECTEUR QUI CONTIENDRA
+!   LA DIAGONALE "AVANT" ET LA DIAGONALE "APRES" :
     if (metres .ne. 'MUMPS') call diagav(noma19, neq, ilfin1, typvar, eps)
 !
 !
     if (metres .eq. 'LDLT') then
-!     ---------------------------------------
+!   ---------------------------------------
 !       -- ALLOCATION DE LA MATRICE FACTORISEE (.UALF)  ET RECOPIE
 !          DE .VALM DANS .UALF
         if ((noma19.ne.'&&OP0070.RESOC.MATC') .and. (noma19.ne.'&&OP0070.RESUC.MATC')) then
@@ -205,10 +209,10 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
                             neq, nbbloc/2, ildeb, ilfin1, eps)
             endif
         endif
-!
-!
+
+
     else if (metres.eq.'MULT_FRONT') then
-!     ---------------------------------------
+!   ---------------------------------------
         if (typvar .eq. 1) then
             call mulfr8(noma19, npivot, neq, typsym, eps,&
                         renum)
@@ -219,7 +223,7 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
 !
 !
     else if (metres.eq.'MUMPS') then
-!     ---------------------------------------
+!   ---------------------------------------
         call amumph('DETR_OCC', solvop, noma19, [0.d0], [cbid],&
                     ' ', 0, iretz, .true._1)
         call amumph('PRERES', solvop, noma19, [0.d0], [cbid],&
@@ -264,14 +268,14 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
 !            (CAS IRETZ=2 PAS EXPLOIE ICI MAIS DIRECTEMENT DS AMUMPR/C
 !             AVEC LES ERREURS MUMPS INFO(1)=-10)
 !
-!     -- LA FACTORISATION S'EST BIEN PASSEE. ON CHERCHE LES SINGULARITES
+!               -- LA FACTORISATION S'EST BIEN PASSEE. ON CHERCHE LES SINGULARITES
                 if (zi(ipiv) .eq. 0) then
-!             -- PAS DE SINGULARITE
+!                   -- PAS DE SINGULARITE
                     iretz=0
                     isingu=-999
                     npivot=-zi(ipiv+1)
                 else if (zi(ipiv).gt.0) then
-!             -- AU MOINS UNE SINGULARITE
+!                   -- AU MOINS UNE SINGULARITE
                     iretz=1
                     isingu=zi(ipiv+2)
                     ASSERT(isingu.gt.0 .and. isingu.le.neq)
@@ -280,8 +284,8 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
                     ASSERT(.false.)
                 endif
             else
-!     -- LA FACTO S'EST BIEN PASSEE ET ON NE CHERCHE PAS A TESTER LES
-!        EVENTUELLES SINGULARITES
+!               -- LA FACTO S'EST BIEN PASSEE ET ON NE CHERCHE PAS A TESTER LES
+!                  EVENTUELLES SINGULARITES
                 isingu=-999
                 npivot=-999
             endif
@@ -299,8 +303,8 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
     endif
 !
 !
-!     -- CALCUL DU CODE RETOUR: IRETZ,NDECIET ISINGU:
-!     ------------------------------------------------
+!   -- Calcul du code retour: iretz, ndeci et isingu:
+!   ------------------------------------------------
     if (metres(1:5) .ne. 'MUMPS') then
         if (npivot .gt. 0) then
             iretz=2
@@ -309,8 +313,8 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
             ASSERT(isingu.gt.0 .and. isingu.le.neq)
         else
 !
-!     -- ON REGARDE CE QUE SONT DEVENUS LES TERMES DIAGONAUX :
-!     -------------------------------------------------------
+!           -- On regarde ce que sont devenus les termes diagonaux :
+!           -------------------------------------------------------
             call jeveuo(noma19//'.DIGS', 'L', jdigs)
             dmax=0.d0
             dmin=r8maem()
@@ -347,18 +351,18 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
             endif
         endif
     endif
-!
-!
-!
-!     -- EMISSION EVENTUELLE D'UN MESSAGE D'ERREUR :
-!     ----------------------------------------------
+
+
+
+!   -- Emission eventuelle d'un message d'erreur :
+!   ----------------------------------------------
     if ((ndigi2.lt.0) .and. (metres.eq.'MUMPS')) goto 30
     if (istop .eq. 2) then
         goto 20
-!
+
     else if (iretz.eq.0) then
         goto 20
-!
+
     else if (istop.eq.1) then
         if (iretz .eq. 1) then
             codmes='A'
@@ -370,34 +374,45 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
     else if (istop.eq.0) then
         codmes='F'
     endif
-!
-!
+
+!   -- si LDLT et si stolci.LC2M existe et si isingu > 0, il faut en tenir compte :
+    if (metres.eq.'LDLT') then
+        if (isingu.gt.0) then
+            call jeexin(stolci//'.LC2M', iexi)
+            if (iexi.gt.0) then
+                call jeveuo(stolci//'.LC2M', 'L',vi=lc2m)
+                isingu=lc2m(isingu)
+            endif
+        endif
+    endif
+
+
     ASSERT(isingu.eq.-999 .or. isingu.gt.0)
     vali(1)=isingu
-!
+
     ASSERT(ndeci.eq.-999 .or. ndeci.ge.0)
     if (isingu .eq. -999) then
         ASSERT(ndeci.eq.-999)
     endif
     vali(2)=ndeci
 !
-! - Error 
+! - Error
 !
     if (isingu.eq.-999) then
         call utmess(codmes, 'FACTOR_12')
     endif
     if (isingu .gt. 0) then
-        call rgndas(nu, isingu, l_print = .true.)    
+        call rgndas(nu, isingu, l_print = .true.)
         if (ndeci.eq.-999) then
             call utmess(codmes, 'FACTOR_11', si=isingu)
         else
             call utmess(codmes, 'FACTOR_10', ni=2, vali=vali)
         endif
     endif
-!
  20 continue
-!     -- IMPRESSIONS INFO=2 :
-!     ------------------------
+
+!   -- impressions info=2 :
+!   ------------------------
     if (niv .eq. 2) then
         call utmess('I', 'FACTOR3_12', sk = noma19)
         if (nzero .gt. 0) then

@@ -18,11 +18,11 @@
 
 from SD import *
 
-from SD.sd_nume_ddl_com import sd_nume_ddl_com
 from SD.sd_nume_equa import sd_nume_equa
+from SD.sd_stockage import sd_stockage
 
 
-class sd_nume_ddl_gd(sd_nume_ddl_com):
+class sd_nume_ddl_gd(sd_stockage):
 #--------------------------------
     nomj = SDNom(fin=14)
     nume = sd_nume_equa(SDNom(nomj='.NUME'))

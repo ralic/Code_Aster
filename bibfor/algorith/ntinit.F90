@@ -1,4 +1,4 @@
-subroutine ntinit(modele, mate    , carele, lischa, solveu,&
+subroutine ntinit(modele, mate    , carele, lischa,&
                   para  , numedd  , lostat, l_evol, lnonl ,&
                   sddisc, ds_inout, mailla, sdcrit, time)
 !
@@ -38,7 +38,7 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     aster_logical :: lostat, l_evol, lnonl
-    character(len=19) :: lischa, solveu
+    character(len=19) :: lischa
     character(len=19) :: sddisc, sdcrit
     character(len=24) :: modele, mate, carele
     character(len=24) :: numedd, time
@@ -72,7 +72,7 @@ implicit none
     call gnomsd(' ', noojb, 10, 14)
     numedd = noojb(1:14)
     call rsnume(result, 'TEMP', nuposs)
-    call numero(numedd, solveu, 'VG',&
+    call numero(numedd, 'VG',&
                 old_nume_ddlz = nuposs,&
                 modelz = modele , list_loadz = lischa)
 !

@@ -108,9 +108,9 @@ subroutine op0046()
 ! -- INITIALISATIONS
 !
     base ='G'
-    solveu = '&&'//nompro//'.SOLVEUR   '
-    lischa = '&&'//nompro//'.LISCHA    '
-    matass = '&&'//nompro//'_MATR_ASSEM'
+    solveu = '&&OP0046.SOLVEUR'
+    lischa = '&&OP0046.LISCHA'
+    matass = '&&OP0046.MATR_RIGI'
     chtime = ' '
     charge = ' '
     nh = 0

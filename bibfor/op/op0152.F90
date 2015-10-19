@@ -30,7 +30,6 @@ subroutine op0152()
 #include "asterfort/calmdg.h"
 #include "asterfort/chpver.h"
 #include "asterfort/cresol.h"
-#include "asterfort/crnslv.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
@@ -149,7 +148,6 @@ subroutine op0152()
 !       ------------------------------------
         nugene = nomres
         stolci = nugene//'.SLCS'
-        call crnslv(nugene, 'LDLT', 'SANS', 'G')
 !
         nbmode = -n6
         call wkvect(stolci//'.SCHC', 'G V I', nbmode, jschc)

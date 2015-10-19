@@ -30,7 +30,7 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-!
+
     integer :: repi, ierd
     character(len=*) :: questi
     character(len=*) :: nomobz, repkz
@@ -42,7 +42,7 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
 !       REPI   : REPONSE ( SI ENTIERE )
 !       REPKZ  : REPONSE ( SI CHAINE DE CARACTERES )
 !       IERD   : CODE RETOUR (0--> OK, 1 --> PB)
-!
+
 ! ----------------------------------------------------------------------
 !     VARIABLES LOCALES:
 !     ------------------
@@ -62,16 +62,16 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
     repk = ' '
     repi = 0
     ierd = 0
-!
+
     nomob = nomobz
     call jeveuo(nomob//'.REFA', 'L', vk24=refa)
-!
-!
+
+
     if (questi(1:9) .eq. 'NUM_GD_SI') then
         call dismnu(questi, refa(2)(1:14), repi, repk, ierd)
     else if (questi(1:9).eq.'NOM_GD_SI') then
         call dismnu('NOM_GD', refa(2)(1:14), repi, repk, ierd)
-!
+
     else if (questi.eq.'TYPE_MATRICE') then
         typmat=refa(9)(1:2)
         if (typmat .eq. 'MS') then
@@ -81,19 +81,30 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
         else
             ASSERT(.false.)
         endif
-!
+
     else if (questi.eq.'NB_EQUA') then
         call dismnu(questi, refa(2)(1:14), repi, repk, ierd)
-!
+
+    else if (questi.eq.'MATR_DISTRIBUEE') then
+        call dismnu(questi, refa(2)(1:14), repi, repk, ierd)
+        if (repk.eq.'OUI') then
+            ASSERT (refa(11) .eq. 'MATR_DISTR')
+        endif
+
+    else if (questi.eq.'SOLVEUR') then
+        if (refa(7) .ne. ' ') then
+            repk=refa(7)
+        endif
+
     else if (questi.eq.'NOM_MODELE') then
         call dismnu(questi, refa(2)(1:14), repi, repk, ierd)
-!
+
     else if (questi.eq.'NOM_MAILLA') then
         repk= refa(1)(1:8)
-!
+
     else if (questi.eq.'NOM_NUME_DDL') then
         repk= refa(2)(1:14)
-!
+
     else if (questi.eq.'EXIS_LAGR') then
         call jeexin(nomob//'.CONL', ier)
         if (ier .eq. 0) then
@@ -111,13 +122,6 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
     else if (questi.eq.'XFEM_PC_INV') then
         repk=refa(16)(1:19)
 
-    else if (questi.eq.'SOLVEUR') then
-        if (refa(7) .ne. ' ') then
-            repk=refa(7)
-        else
-            call dismnu(questi, refa(2)(1:14), repi, repk, ierd)
-        endif
-!
     else if (questi.eq.'METH_RESO'.or.questi.eq.'RENUM_RESO') then
         if (refa(7) .ne. ' ') then
             solveu=refa(7)(1:19)
@@ -127,22 +131,20 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
             else
                 repk=slvk(4)
             endif
-        else
-            call dismnu(questi, refa(2)(1:14), repi, repk, ierd)
         endif
-!
+
     else if (questi.eq.'PROF_CHNO') then
         repk= refa(2)(1:14)//'.NUME'
-!
+
     else if (questi.eq.'NUME_EQUA') then
         repk= refa(2)(1:14)//'.NUME'
-!
+
     else if (questi.eq.'PHENOMENE') then
         call dismnu(questi, refa(2)(1:14), repi, repk, ierd)
-!
+
     else if (questi.eq.'SUR_OPTION') then
         repk= refa(4)(1:16)
-!
+
     else if (questi.eq. 'MPI_COMPLET') then
         k24 = refa(11)
         ASSERT((k24.eq.'MPI_COMPLET') .or. ( k24.eq.'MPI_INCOMPLET') .or. (k24.eq.'MATR_DISTR'))
@@ -151,7 +153,7 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
         else
             repk='NON'
         endif
-!
+
     else if (questi.eq. 'MATR_DISTR') then
         k24 = refa(11)
         ASSERT((k24.eq.'MPI_COMPLET') .or. ( k24.eq.'MPI_INCOMPLET') .or. (k24.eq.'MATR_DISTR'))
@@ -160,7 +162,7 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
         else
             repk='NON'
         endif
-!
+
         else if((questi.eq.'CHAM_MATER').or. (questi.eq.'CARA_ELEM'))&
     then
         call jeveuo(nomob//'.LIME', 'L', vk24=lime)
@@ -189,7 +191,7 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
     else
         ierd=1
     endif
-!
+
     repkz = repk
     call jedema()
 end subroutine

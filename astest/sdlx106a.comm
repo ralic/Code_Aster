@@ -161,7 +161,7 @@ vectele6=CALC_VECT_ELEM(   OPTION='CHAR_MECA',
                              CHARGE= charge6
                             );
 
-nume_ddl = NUME_DDL( MATR_RIGI= rigi_ele,METHODE='MUMPS' );
+nume_ddl = NUME_DDL( MATR_RIGI= rigi_ele)
 
 #
 # Assemblage des matrices et vecteurs=

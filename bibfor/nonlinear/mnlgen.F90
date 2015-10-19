@@ -36,7 +36,6 @@ subroutine mnlgen(numdrv, matdrv, ninc)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cresol.h"
-#include "asterfort/crnslv.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecreo.h"
 #include "asterfort/jecroc.h"
@@ -119,7 +118,7 @@ subroutine mnlgen(numdrv, matdrv, ninc)
     zk24(mrefa-1+4)='&&MELANGE'
     zk24(mrefa-1+5)=' '
     zk24(mrefa-1+6)=' '
-    zk24(mrefa-1+7)=solveu
+    zk24(mrefa-1+7)=' '
 !    numdrv//'.SOLV'
     zk24(mrefa-1+8)=' '
     zk24(mrefa-1+9)='MR'

@@ -149,7 +149,7 @@ subroutine mestat(modelz, fomulz, lischz, mate, caraz,&
 !
     call rsnume(result, 'DEPL', nuposs)
 !
-    call numero(numedd, solveu, 'VG',&
+    call numero(numedd, 'VG',&
                 old_nume_ddlz = nuposs,&
                 modelz = modele , list_loadz = lischa)
 !

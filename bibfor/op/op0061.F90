@@ -37,6 +37,7 @@ subroutine op0061()
 #include "asterfort/assert.h"
 #include "asterfort/compno.h"
 #include "asterfort/cremnl.h"
+#include "asterfort/cresol.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
@@ -45,6 +46,7 @@ subroutine op0061()
 #include "asterfort/iunifi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetc.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -81,12 +83,12 @@ subroutine op0061()
     real(kind=8) :: epsman, epscor, epsbif
     character(len=24) :: numedd
     character(len=14) :: numdrv
-    character(len=19) :: matdrv, nomobj, nomvect
+    character(len=19) :: matdrv, nomobj, nomvect, solveu, matas
     character(len=8) :: modini, modrep, vk8, typval, lnm, mailla
     character(len=24) :: masse, grno
 !
     integer :: neq, nd, ijmax, iadim, ier, ninc, p, i, k, j, jj, ii, nbordr0, nbordr
-    integer :: prodsci
+    integer :: prodsci, iexi, jrefa
     character(len=14) :: xcdl, parcho, adime
     real(kind=8) :: ampl, amax, ap, epscor2, vr
     aster_logical :: cor, lbif, reprise, lcine
@@ -98,13 +100,19 @@ subroutine op0061()
     complex(kind=8) :: vc
 !
     integer :: ibif
+!-----------------------------------------------------------------------------------------
 !
     call jemarq()
 !
     ifres = iunifi ('MESSAGE')
     call getvis(' ', 'INFO', scal=info)
     baseno = '&&'//nompro
-!
+
+
+    solveu = '&&OP0061.SOLVEUR'
+    call cresol(solveu)
+
+
     call getvis('ETAT_INIT', 'NUME_ORDRE', iocc=1, scal=num_ordr)
     call getvid('ETAT_INIT', 'MODE_NON_LINE', iocc=1, scal=modrep, nbret=ier)
     if (ier .eq. 1) then
@@ -198,7 +206,7 @@ subroutine op0061()
 !
     call mnlcho(reprise, imat, numedd, xcdl, nd,&
                 nchoc, h, hf, parcho, adime,&
-                ninc, vk8, lcine)
+                ninc, vk8, lcine, solveu)
 ! ----------------------------------------------------------------------
 ! --- NOMBRE D'INCONNUE TOTAL DU SYSTEME
 ! ----------------------------------------------------------------------
@@ -381,6 +389,24 @@ subroutine op0061()
     if (.not.cor) then
         call utmess('S', 'MECANONLINE9_62')
     endif
-!
+
+
+!   -- pour etre OK sdveri, il ne faut pas faire reference au solveur
+!      temporaire :
+!   -------------------------------------------------------------------
+    call getvid(' ', 'MATR_RIGI', scal=matas)
+    call jeexin(matas//'.REFA',iexi)
+    if (iexi.gt.0) then
+        call jeveuo(matas//'.REFA', 'L', jrefa)
+        zk24(jrefa-1+7)=' '
+    endif
+    call getvid(' ', 'MATR_MASS', scal=matas)
+    call jeexin(matas//'.REFA',iexi)
+    if (iexi.gt.0) then
+        call jeveuo(matas//'.REFA', 'L', jrefa)
+        zk24(jrefa-1+7)=' '
+    endif
+
+
     call jedema()
 end subroutine

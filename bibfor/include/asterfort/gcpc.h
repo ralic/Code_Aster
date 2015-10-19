@@ -15,31 +15,29 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine gcpc(m, in, ip, ac, inpc,&
-                    ippc, acpc, bf, xp, r,&
-                    rr, p, irep, niter, epsi,&
-                    criter, solveu, matas, istop,&
-                    iret)
-        integer :: m
-        integer :: in(m)
-        integer(kind=4) :: ip(*)
-        real(kind=8) :: ac(m)
-        integer :: inpc(m)
-        integer(kind=4) :: ippc(*)
-        real(kind=8) :: acpc(m)
-        real(kind=8) :: bf(m)
-        real(kind=8) :: xp(m)
-        real(kind=8) :: r(m)
-        real(kind=8) :: rr(m)
-        real(kind=8) :: p(m)
-        integer :: irep
-        integer :: niter
-        real(kind=8) :: epsi
-        character(len=19) :: criter
-        character(len=19) :: solveu
-        character(len=19) :: matas
-        integer :: istop
-        integer :: iret
-    end subroutine gcpc
-end interface
+          interface 
+            subroutine gcpc(m,in,ip,ac,inpc,perm,ippc,acpc,bf,xp,r,rr,p,&
+     &irep,niter,epsi,criter,solveu,matas,istop,iret)
+              integer :: m
+              integer :: in(m)
+              integer(kind=4) :: ip(*)
+              real(kind=8) :: ac(m)
+              integer :: inpc(m)
+              integer :: perm(m)
+              integer(kind=4) :: ippc(*)
+              real(kind=8) :: acpc(m)
+              real(kind=8) :: bf(m)
+              real(kind=8) :: xp(m)
+              real(kind=8) :: r(m)
+              real(kind=8) :: rr(m)
+              real(kind=8) :: p(m)
+              integer :: irep
+              integer :: niter
+              real(kind=8) :: epsi
+              character(len=19) :: criter
+              character(len=19) :: solveu
+              character(len=19) :: matas
+              integer :: istop
+              integer :: iret
+            end subroutine gcpc
+          end interface 

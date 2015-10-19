@@ -15,10 +15,9 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine nugllo(nu, base, solveu)
-        character(len=14) :: nu
-        character(len=2) :: base
-        character(len=19) :: solveu
-    end subroutine nugllo
-end interface
+          interface 
+            subroutine nugllo(nu,base)
+              character(len=14) :: nu
+              character(len=2) :: base
+            end subroutine nugllo
+          end interface 

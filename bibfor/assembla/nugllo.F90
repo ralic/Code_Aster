@@ -1,4 +1,4 @@
-subroutine nugllo(nu, base, solveu)
+subroutine nugllo(nu, base)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +41,6 @@ subroutine nugllo(nu, base, solveu)
 !
     character(len=14) :: nu
     character(len=2) :: base
-    character(len=19) :: solveu
 !----------------------------------------------------------------------
 !---- OBJET : CREATION D'UN CHAMP .NUML A LA S.D. NUME_DDL NU
 !             CE .NUML DECRIT LA NUMEROTATION LOCALE UTILE POUR MUMPS
@@ -77,7 +76,6 @@ subroutine nugllo(nu, base, solveu)
     integer, pointer :: delg(:) => null()
     integer, pointer :: adne(:) => null()
     integer, pointer :: dime(:) => null()
-    character(len=24), pointer :: slvk(:) => null()
     integer, pointer :: prn1(:) => null()
     integer, pointer :: maille(:) => null()
     mpi_int :: mrank, msize
@@ -337,9 +335,8 @@ subroutine nugllo(nu, base, solveu)
         end do
     end do
 !
-    call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
 !     POUR PETSC ON A BESOIN D'INFORMATIONS SUPPLEMENTAIRES
-    if (slvk(1) .eq. 'PETSC') call nupodd(nu, base, rang, nbproc)
+    call nupodd(nu, base, rang, nbproc)
 !
     AS_DEALLOCATE(vi=tab_no)
     AS_DEALLOCATE(vi=tab_eq)

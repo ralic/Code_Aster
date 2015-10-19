@@ -85,6 +85,7 @@ subroutine resgra(mat, matf, vcine, niter, epsi,&
     character(len=24), pointer :: refa(:) => null()
     character(len=24), pointer :: slvk(:) => null()
     integer, pointer :: in(:) => null()
+    integer, pointer :: perm(:) => null()
 !
 !----------------------------------------------------------------------
 !     DEBUT
@@ -118,9 +119,9 @@ subroutine resgra(mat, matf, vcine, niter, epsi,&
         endif
         call jeveuo(vcin19//'.VALE', 'L', vr=vale)
         do 10,k=1,nsecm
-        kdeb=(k-1)*neq+1
-        cbid = dcmplx(0.d0, 0.d0)
-        call csmbgg(lmat, rsolu(kdeb), vale, [cbid], [cbid], 'R')
+            kdeb=(k-1)*neq+1
+            cbid = dcmplx(0.d0, 0.d0)
+            call csmbgg(lmat, rsolu(kdeb), vale, [cbid], [cbid], 'R')
 10      continue
     endif
 !
@@ -169,6 +170,7 @@ subroutine resgra(mat, matf, vcine, niter, epsi,&
         call jeveuo(kstocf//'.SMDI', 'L', idinpc)
         call jeveuo(kstocf//'.SMHC', 'L', idippc)
         call jeveuo(jexnum(matfac//'.VALM', 1), 'L', idacpc)
+        call jeveuo(matfac//'.PERM','L',vi=perm)
     else
         idinpc=1
         idippc=1
@@ -191,22 +193,22 @@ subroutine resgra(mat, matf, vcine, niter, epsi,&
 !
     kdeb=(k-1)*neq+1
     istop_solv = istop
-!   
-    if ( precon(1:7) == 'LDLT_SP' ) then  
+!
+    if ( precon(1:7) == 'LDLT_SP' ) then
 !   ACTIVATION DE LA SECONDE CHANCE : stop_singulier = non
         istop_solv = 2
-    endif 
+    endif
  !
-    call gcpc(neq, in, zi4(idip), zr(idac), zi(idinpc),&
+    call gcpc(neq, in, zi4(idip), zr(idac), zi(idinpc), perm,&
               zi4(idippc), zr(idacpc), rsolu(kdeb), w4, w1,&
               w2, w3, 0, niter, epsi,&
               criter, solveu, matas, istop_solv,&
               iret)
 !
 !     9-1 SECONDE CHANCE AVEC LE PRECONDITIONNEUR LDLT_SP
-!     (cf ap2foi)    
-    if (( iret == 1 ).and.(precon(1:7) == 'LDLT_SP' )) then 
-!       ON ACTUALISE LE PRECONDITIONNEUR 
+!     (cf ap2foi)
+    if (( iret == 1 ).and.(precon(1:7) == 'LDLT_SP' )) then
+!       ON ACTUALISE LE PRECONDITIONNEUR
         call utmess('I', 'ALGELINE4_63')
 !   -- bascule pour la mesure du temps CPU : RESOUD -> PRERES :
         call uttcpu('CPU.RESO.5', 'FIN', ' ')
@@ -219,7 +221,7 @@ subroutine resgra(mat, matf, vcine, niter, epsi,&
 !       alors il faut effectuer le calcul du préconditionneur LDLT_SP (voir pcmump)
         call jeveuo(solveu//'.SLVI', 'E', vi=slvi)
         slvi(5) = 0
-!       reset matrix state 
+!       reset matrix state
         refa(8) = ' '
         call pcmump(matas, solveu, iret)
         if (iret .ne. 0) then
@@ -231,14 +233,14 @@ subroutine resgra(mat, matf, vcine, niter, epsi,&
     call uttcpu('CPU.RESO.4', 'FIN', ' ')
     call uttcpu('CPU.RESO.5', 'DEBUT', ' ')
 !
-!       PUIS ON RESOUT A NOUVEAU 
-        call gcpc(neq, in, zi4(idip), zr(idac), zi(idinpc),&
+!       PUIS ON RESOUT A NOUVEAU
+        call gcpc(neq, in, zi4(idip), zr(idac), zi(idinpc), perm,&
               zi4(idippc), zr(idacpc), rsolu(kdeb), w4, w1,&
               w2, w3, 0, niter, epsi,&
               criter, solveu, matas, istop, &
               iret)
 
-    endif 
+    endif
 !
     do ieq=1,neq
     rsolu(kdeb-1+ieq)=w4(ieq)

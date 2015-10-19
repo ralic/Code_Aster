@@ -452,7 +452,7 @@ RESUMECA=STAT_NON_LINE(MODELE=MOMECA,
                        NEWTON=_F(MATRICE='TANGENTE',),
                        CONVERGENCE=_F(ITER_GLOB_MAXI=40,),
                        SOLVEUR=_F(METHODE='LDLT',
-                                  RENUM='RCMK',),);
+                                  ),);
 
 #
 
@@ -472,7 +472,7 @@ RESUSTAT=MECA_STATIQUE(MODELE=MOMECA,
                        EXCIT=_F(CHARGE=CHMECA,),
                        LIST_INST=LISTMECA,
                        SOLVEUR=_F(METHODE='LDLT',
-                                  RENUM='RCMK',),);
+                                  ),);
 
 #
 

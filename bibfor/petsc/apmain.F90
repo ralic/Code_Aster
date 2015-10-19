@@ -62,6 +62,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 #include "asterfort/assert.h"
 #include "asterfort/csmbgg.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/filter_smd.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -90,6 +91,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
     character(len=24), dimension(:), pointer :: slvk  => null()
     character(len=19) :: nomat, nosolv
     character(len=14) :: nonu
+    character(len=3) :: matd
     character(len=1) :: rouc
 !
     real(kind=8) :: divtol, resipc
@@ -123,13 +125,14 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
     call asmpi_info(rank=rang, size=nbproc)
 !
 !     -- LECTURE DU COMMUN
-    nomat = nomats(kptsc)
+    nomat = nomat_courant
+    nonu = nonu_courant
     nosolv = nosols(kptsc)
-    nonu = nonus(kptsc)
 !
     call jeveuo(nosolv//'.SLVK', 'L', vk24=slvk)
     precon = slvk(2)
-    lmd = slvk(10)(1:3).eq.'OUI'
+    call dismoi('MATR_DISTRIBUEE', nomat, 'MATR_ASSE', repk=matd)
+    lmd = matd.eq.'OUI'
 !
 !
     if (action .eq. 'PRERES') then

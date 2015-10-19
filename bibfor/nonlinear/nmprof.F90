@@ -1,4 +1,4 @@
-subroutine nmprof(model        , result, list_load, solver, nume_ddl,&
+subroutine nmprof(model        , result, list_load, nume_ddl,&
                   sd_iden_relaz)
 !
 implicit none
@@ -29,7 +29,6 @@ implicit none
     character(len=24), intent(out) :: nume_ddl
     character(len=8), intent(in) :: result
     character(len=19), intent(in) :: list_load
-    character(len=19), intent(in) :: solver
     character(len=*), optional, intent(in) :: sd_iden_relaz
 !
 ! --------------------------------------------------------------------------------------------------
@@ -41,7 +40,6 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! Out nume_ddl       : name of numbering object (NUME_DDL)
-! In  solver         : name of solver datastructure
 ! In  result         : name of result datastructure (EVOL_NOLI)
 ! In  model          : name of model datastructure
 ! In  list_load      : list of loads
@@ -69,7 +67,7 @@ implicit none
 !
 ! - Create numbering
 !
-    call numero(nume_ddl, solver, 'VG',&
+    call numero(nume_ddl, 'VG',&
                 old_nume_ddlz = nuposs,&
                 modelz = model , list_loadz = list_load,&
                 sd_iden_relaz = sd_iden_rela)

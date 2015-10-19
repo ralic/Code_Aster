@@ -1,8 +1,9 @@
-subroutine numer2(nb_ligr      , list_ligr, solverz      , base, nume_ddlz,&
+subroutine numer2(nb_ligr , list_ligr, base, nume_ddlz,&
                   nume_ddl_oldz, modelocz , sd_iden_relaz)
 !
 implicit none
 !
+#include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/idensd.h"
 #include "asterfort/jedema.h"
@@ -10,6 +11,7 @@ implicit none
 #include "asterfort/jedupo.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/matdis.h"
 #include "asterfort/nueffe.h"
 #include "asterfort/nugllo.h"
 #include "asterfort/promor.h"
@@ -35,7 +37,6 @@ implicit none
 !
     integer, intent(in) :: nb_ligr
     character(len=24), pointer, intent(in) :: list_ligr(:)
-    character(len=*), intent(in) :: solverz
     character(len=2), intent(in) :: base
     character(len=*), intent(inout) :: nume_ddlz
     character(len=*), intent(in) :: nume_ddl_oldz
@@ -55,7 +56,6 @@ implicit none
 ! In  base           : JEVEUX base to create objects
 !                      base(1:1) => PROF_CHNO objects
 !                      base(2:2) => NUME_DDL objects
-! In  solver         : name of solver datastructure
 ! IO  nume_ddl       : name of numbering object (NUME_DDL)
 ! In  modeloc        : local mode for GRANDEUR numbering
 ! In  nume_ddl_old   : name of previous nume_ddl object
@@ -68,18 +68,16 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=19) :: prof_chno, prof_chno_old
-    character(len=19) :: solver
     character(len=14) :: nume_ddl , nume_ddl_old, moloc
-    character(len=24) :: renum, sd_iden_rela
+    character(len=24) :: sd_iden_rela
+    character(len=3) :: matd
     logical :: l_matr_dist
-    character(len=24), pointer :: slvk(:) => null()
     character(len=24), pointer :: nslv(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 !
-    solver        = solverz
     nume_ddl      = nume_ddlz
     moloc         = modelocz
     nume_ddl_old  = nume_ddl_oldz
@@ -95,21 +93,23 @@ implicit none
         sd_iden_rela = sd_iden_relaz
     endif
 !
-! - Method for renumbering equation
-!
-    call jeveuo(solver//'.SLVK', 'L', vk24=slvk)
-    renum       = slvk(4)
-    l_matr_dist = slvk(10) .eq. 'OUI'
+    call matdis(matd)
+    ASSERT(matd.eq.'OUI' .or. matd.eq.'NON')
+    if (matd.eq.'OUI') then
+        l_matr_dist = .true.
+    else
+        l_matr_dist = .false.
+    endif
 !
 ! - Create NUME_EQUA objects
 !
-    call nueffe(nb_ligr, list_ligr, base, nume_ddl, renum,&
-                solver , modelocz = moloc, sd_iden_relaz = sd_iden_rela)
+    call nueffe(nb_ligr, list_ligr, base, nume_ddl, 'SANS',&
+                modelocz = moloc, sd_iden_relaz = sd_iden_rela)
 !
 ! - Create NUML_EQUA objects
 !
     if (l_matr_dist) then
-        call nugllo(nume_ddlz, base, solver)
+        call nugllo(nume_ddlz, base)
     endif
 !
 ! - Trying to reuse old nume_ddl
@@ -128,12 +128,6 @@ implicit none
 ! - Create matrix topology
 !
     call promor(nume_ddl, base(1:1))
-!
-! - Create NSLV object
-!
-    call jedetr(nume_ddl//'.NSLV')
-    call wkvect(nume_ddl//'.NSLV', base(1:1)//' V K24', 1, vk24 = nslv)
-    nslv(1)=solver
 !
 ! - Cleaning
 !

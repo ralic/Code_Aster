@@ -15,17 +15,17 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine mestat(modelz, fomulz, lischz, mate, caraz,&
-                      ltpsz, solvez, compor, matasz)
-        character(len=*) :: modelz
-        character(len=*) :: fomulz
-        character(len=*) :: lischz
-        character(len=*) :: mate
-        character(len=*) :: caraz
-        character(len=*) :: ltpsz
-        character(len=*) :: solvez
-        character(len=24) :: compor
-        character(len=*) :: matasz
-    end subroutine mestat
-end interface
+          interface 
+            subroutine mestat(modelz,fomulz,lischz,mate,caraz,ltpsz,    &
+     &solvez,compor,matasz)
+              character(len=*) :: modelz
+              character(len=*) :: fomulz
+              character(len=*) :: lischz
+              character(len=*) :: mate
+              character(len=*) :: caraz
+              character(len=*) :: ltpsz
+              character(len=*) :: solvez
+              character(len=24) :: compor
+              character(len=*) :: matasz
+            end subroutine mestat
+          end interface 

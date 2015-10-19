@@ -71,9 +71,7 @@ M_ELEM=CALC_MATR_ELEM(      MODELE=ROUET,
                                 CHARGE=( LIMIT, ))
 
 #
-NUM=NUME_DDL(  MATR_RIGI=K_ELEM,
-                       METHODE='MULT_FRONT',
-                          RENUM='MD'   )
+NUM=NUME_DDL(  MATR_RIGI=K_ELEM) 
 
 #
 K_ASSE=ASSE_MATRICE(  MATR_ELEM=K_ELEM,

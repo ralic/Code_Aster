@@ -83,7 +83,7 @@ MAT_EL_M=CALC_MATR_ELEM(OPTION='MASS_MECA',
 
 
 NUM=NUME_DDL(MATR_RIGI=MAT_EL_R,
-             METHODE='MULT_FRONT',);
+             );
 #
 #
 #

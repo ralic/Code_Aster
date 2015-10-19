@@ -276,7 +276,7 @@ U=STAT_NON_LINE(
                 INST = 20.),
                            SOLVEUR=_F(
                 METHODE = 'LDLT',
-                RENUM = 'RCMK')
+               )
               )
 
 U=STAT_NON_LINE( reuse=U,
@@ -303,7 +303,7 @@ U=STAT_NON_LINE( reuse=U,
                 LIST_INST = L_ARCH),
                            SOLVEUR=_F(
                 METHODE = 'LDLT',
-                RENUM = 'RCMK')
+               )
               )
 
 U=CALC_CHAMP(reuse=U,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U)

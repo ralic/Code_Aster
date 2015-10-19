@@ -56,7 +56,7 @@ subroutine dismnu(questi, nomobz, repi, repkz, ierd)
 !         CE N'EST PAS LE NOM D'UN LIGREL
 !
 !-----------------------------------------------------------------------
-    integer ::  iarefe, iret, jnslv, jslvk
+    integer ::  iarefe,imatd
     integer, pointer :: nequ(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
@@ -85,6 +85,14 @@ subroutine dismnu(questi, nomobz, repi, repkz, ierd)
     else if (questi.eq.'NOM_MODELE') then
         call dismpn(questi, nomob//'.NUME', repi, repk, ierd)
 !
+    else if (questi.eq.'MATR_DISTRIBUEE') then
+        call jeexin(nomob//'.NUML.NULG', imatd)
+        if (imatd.eq.0) then
+            repk='NON'
+        else
+            repk='OUI'
+        endif
+!
     else if (questi.eq.'PHENOMENE') then
         call jenuno(jexnum(nomob//'.NUME.LILI', 2), nomlig)
         if (nomlig(1:8) .eq. 'LIAISONS') then
@@ -96,36 +104,6 @@ subroutine dismnu(questi, nomobz, repi, repkz, ierd)
     else if (questi.eq.'NOM_MAILLA') then
         call jeveuo(nomob//'.NUME.REFN', 'L', iarefe)
         repk = zk24(iarefe) (1:8)
-!
-    else if (questi.eq.'SOLVEUR') then
-        repk='XXXX'
-        call jeexin(nomob//'.NSLV', iret)
-        if (iret .gt. 0) then
-            call jeveuo(nomob//'.NSLV', 'L', jnslv)
-            repk=zk24(jnslv)(1:19)
-        endif
-!
-    else if (questi.eq.'METH_RESO') then
-        repk='XXXX'
-        call jeexin(nomob//'.NSLV', iret)
-        if (iret .gt. 0) then
-            call jeveuo(nomob//'.NSLV', 'L', jnslv)
-            if (zk24(jnslv) .ne. ' ') then
-                call jeveuo(zk24(jnslv)(1:19)//'.SLVK', 'L', jslvk)
-                repk=zk24(jslvk-1+1)
-            endif
-        endif
-!
-    else if (questi.eq.'RENUM_RESO') then
-        repk='XXXX'
-        call jeexin(nomob//'.NSLV', iret)
-        if (iret .gt. 0) then
-            call jeveuo(nomob//'.NSLV', 'L', jnslv)
-            if (zk24(jnslv) .ne. ' ') then
-                call jeveuo(zk24(jnslv)(1:19)//'.SLVK', 'L', jslvk)
-                repk=zk24(jslvk-1+4)
-            endif
-        endif
 !
     else
         ierd = 1

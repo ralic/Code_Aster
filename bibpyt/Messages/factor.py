@@ -225,14 +225,8 @@ Attention :
   futures résolutions de systèmes linéaires avec MUMPS dans cet opérateur.
 """),
 
-    59: _(u"""
-Solveur MUMPS :
-  La matrice est déjà factorisée. On ne fait rien.
 
-Conseils :
-  Il y a sans doute une erreur de programmation.
-  Contactez l'assistance.
-"""),
+
 
     60: _(u"""
 Solveur MUMPS :

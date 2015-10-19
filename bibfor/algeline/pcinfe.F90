@@ -66,10 +66,6 @@ subroutine pcinfe(n, icpl, icpc, icpd, icplp,&
     integer(kind=4) :: icpc(*)
     integer :: icpl(0:n), icpd(n)
     integer :: icplp(0:n), icpcp(*), ind(n)
-!
-!     INITIALISATION DU TABLEAU INDIC
-!     -------------------------------
-!
 !-----------------------------------------------------------------------
     integer :: i, ic1, ic2, ier, istop, j, jj
     integer :: k, k1, k2, kp1, kp2, l, lca
@@ -88,7 +84,7 @@ subroutine pcinfe(n, icpl, icpc, icpd, icplp,&
     do 50 i = 1, n
         k2 = icpl(i)
 !
-!     MISE A JOUR DU TABLEAU INDIC
+!     MISE A JOUR DU TABLEAU IND
 !
         do 20 k = k1, k2
             j = icpc(k)
@@ -129,7 +125,7 @@ subroutine pcinfe(n, icpl, icpc, icpd, icplp,&
 !
                     icpcp(ic1) = jj
 !
-!     MISE A JOUR DU TABLEAU INDIC
+!     MISE A JOUR DU TABLEAU IND
 !
                     ind(jj) = i
                 endif

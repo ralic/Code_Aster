@@ -85,7 +85,6 @@ INTERVALLE=(_F(JUSQU_A=1.0,  NOMBRE=1,),
 
 # RESOLUTION DU PROBLEME ELASTIQUE
 U1=STAT_NON_LINE(MODELE=MOPOU, CHAM_MATER=CHMAT, CARA_ELEM=POUCA,
-             #    SOLVEUR=_F(METHODE='LDLT',RENUM='RCMK',STOP_SINGULIER='OUI',),
                   COMPORTEMENT=(_F(RELATION='MULTIFIBRE'),),
                   INCREMENT=_F(LIST_INST=LINST,
                               ),
@@ -144,7 +143,7 @@ RIGIELE=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                             CHARGE = BLOQUAGE,
                             );
         #  -------------                  -----------------
-NUM=NUME_DDL(#RENUM='METIS',
+NUM=NUME_DDL(
                    MATR_RIGI=RIGIELE,
                      );
         #  -------------                  -----------------

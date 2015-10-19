@@ -629,7 +629,7 @@ TEMPE=THER_LINEAIRE(MODELE=MOTH,
                                  NUME_INST_FIN=40,),
                     ETAT_INIT=_F(VALE=700.0,),
                     SOLVEUR=_F(METHODE='LDLT',
-                               RENUM='RCMK',),
+                               ),
                     PARM_THETA=0.57,);
 
 TEMPE=CALC_META(reuse =TEMPE,
@@ -657,7 +657,7 @@ TEMPE1=THER_LINEAIRE(reuse =TEMPE1,
                      ETAT_INIT=_F(EVOL_THER=TEMPE,
                                   NUME_ORDRE=40,),
                      SOLVEUR=_F(METHODE='LDLT',
-                                RENUM='RCMK',),
+                                ),
                      PARM_THETA=0.57,);
 
 TEMPE1=CALC_META(reuse =TEMPE1,

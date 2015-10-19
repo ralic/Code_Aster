@@ -21,8 +21,12 @@ from SD import *
 
 class sd_stoc_lciel(AsBase):
     nomj = SDNom(fin=19)
+    SCDE = AsVI(lonmax=6)
     SCDI = AsVI()
     SCBL = AsVI()
     SCHC = AsVI()
     SCIB = AsVI()
-    SCDE = AsVI(lonmax=6)
+
+#   les deux objets suivants ne sont crees qu'au moment de la factorisation avec LDLT :
+    M2LC = Facultatif(AsVI())
+    LC2M = Facultatif(AsVI())

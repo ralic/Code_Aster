@@ -572,7 +572,7 @@ subroutine op0044()
 !
             call wp1mul(lmasse, lamor, lraide, zc(lvalp), tolaju,&
                         nitaju, nbmod, mxresf, nbmod, zi(lresui),&
-                        zr(lresur))
+                        zr(lresur),solveu)
         endif
 !
         if (mxfreq .ne. 0) then

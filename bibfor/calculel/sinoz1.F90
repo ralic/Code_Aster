@@ -117,7 +117,7 @@ subroutine sinoz1(modele, sigma, signo)
 !     -- CREATION DU SOLVEUR :
     solveu = '&&OP0042.SOLVEUR'
 
-    call numero(nupgm, solveu, 'VV',&
+    call numero(nupgm, 'VV',&
                 modelocz = 'DDL_NOZ1',&
                 nb_matr_elem = 1     , list_matr_elem = massel)
 !

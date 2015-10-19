@@ -104,7 +104,7 @@ CARA_ELE=AFFE_CARA_ELEM(  MODELE=MODELE,
 
 ASSEMBLAGE(  MODELE=MODELE,   CHARGE=CON_LIM,   CARA_ELEM=CARA_ELE,
                    NUME_DDL=CO("NUM"),
-                 SOLVEUR=_F(  METHODE = 'LDLT',  RENUM = 'RCMK'),MATR_ASSE=(
+                 MATR_ASSE=(
                  _F(  MATRICE = CO("RIGIDITE"),  OPTION = 'RIGI_MECA'),
                            _F(  MATRICE = CO("MASSE"),     OPTION = 'MASS_MECA'))
                )
@@ -148,7 +148,7 @@ TRAN_DY=DYNA_NON_LINE(  MODELE=MODELE,
                SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENT',
                                FORMULATION='ACCELERATION',
                                STOP_CFL='NON',),
-               SOLVEUR=_F(  METHODE = 'LDLT',  RENUM = 'RCMK'),
+               SOLVEUR=_F(  METHODE = 'LDLT', ),
                NEWTON=_F(  REAC_ITER = 1),
                INCREMENT=_F(  LIST_INST = L_INST),
                ARCHIVAGE=_F(  LIST_INST = L_INST2),
@@ -186,7 +186,7 @@ TRAN_DY2=DYNA_NON_LINE(  MODELE=MODELE,
                            GROUP_MA = 'RESSORT1'),
                _F(  RELATION = 'DIS_CHOC',
                            GROUP_MA = 'MASSES1')),
-               SOLVEUR=_F(  METHODE = 'LDLT',  RENUM = 'RCMK'),
+               SOLVEUR=_F(  METHODE = 'LDLT', ),
                INCREMENT=_F(  LIST_INST = L_INST),
                ARCHIVAGE=_F(  LIST_INST = L_INST2),
                SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',

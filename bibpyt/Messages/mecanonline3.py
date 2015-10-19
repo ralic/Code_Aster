@@ -60,13 +60,10 @@ Contact méthode continue et recherche linéaire sont incompatibles
 Contact méthode continue et pilotage sont incompatibles
 """),
 
-    93 : _(u"""
-  -> Vous utilisez la formulation 'CONTINUE' de contact conjointement avec le solveur linéaire '%(k1)s' et le renuméroteur 'RCMK'.
-     Le renuméroteur 'RCMK' n'est actuellement pas autorisé avec la formulation 'CONTINUE'.
 
-  -> Conseil :
-     Il ne faut pas utiliser de renuméroteur (renseignez RENUM='SANS' sous le mot-clé facteur SOLVEUR).
-"""),
+
+
+
 
     94 : _(u"""
  Le contact de type liaison unilatérale (sans appariement) et le pilotage sont des fonctionnalités incompatibles

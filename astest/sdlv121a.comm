@@ -132,7 +132,7 @@ VECT_ELE=CALC_VECT_ELEM(     OPTION='CHAR_MECA',
                            )
 
 
-NUMEDDL=NUME_DDL(    MATR_RIGI=RIGI_ELE,   METHODE='LDLT')
+NUMEDDL=NUME_DDL(    MATR_RIGI=RIGI_ELE)
 
 
 #------------------------------------------------------------------------------------

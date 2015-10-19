@@ -113,14 +113,11 @@ implicit none
 ! - Check if nume_ddl is correct (Distributed matrix)
 !
     if (present(nume_ddlz)) then
-        call jeexin(nume_ddlz(1:14)//'.NSLV', iexi)
-        if (iexi.gt.0) then
-            nume_equl   = nume_ddlz//'.NUML'
-            call jeexin(nume_equl(1:19)//'.NUGL', iexi)
-            l_matr_dist = iexi.ne.0
-            if (l_matr_dist) then
-                call jeveuo(nume_equl(1:19)//'.NUGL', 'L', vi = v_nugl)
-            endif
+        nume_equl   = nume_ddlz//'.NUML'
+        call jeexin(nume_equl(1:19)//'.NUGL', iexi)
+        l_matr_dist = iexi.ne.0
+        if (l_matr_dist) then
+            call jeveuo(nume_equl(1:19)//'.NUGL', 'L', vi = v_nugl)
         endif
     endif
 !

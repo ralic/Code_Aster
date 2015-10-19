@@ -35,7 +35,7 @@ MAILLA_1=DEFI_GROUP( reuse=MAILLA_1,   MAILLAGE=MAILLA_1,
 CH_MAT_1=AFFE_MATERIAU(  MAILLAGE=MAILLA_1,
                             AFFE=_F(  TOUT = 'OUI',   MATER = MATERI_1) )
 
-MODELE_1=AFFE_MODELE(  MAILLAGE=MAILLA_1, 
+MODELE_1=AFFE_MODELE(  MAILLAGE=MAILLA_1,
                      AFFE=_F( TOUT = 'OUI', MODELISATION = 'COQUE_3D',
                                 PHENOMENE = 'MECANIQUE') )
 
@@ -71,17 +71,6 @@ VEFY=CALC_VECT_ELEM(   CHARGE=(CINE, CHFY,),   CARA_ELEM=CARAC__1,
 NU=NUME_DDL(   MODELE = MODELE_1,
                CHARGE =  CINE,
                INFO = 1 )
-
-NU1=NUME_DDL(   MODELE  = MODELE_1,
-                CHARGE  =  CINE,
-                METHODE = 'MULT_FRONT',
-                RENUM   = 'MDA',
-                INFO    = 1 )
-
-NU2=NUME_DDL(   MODELE  = MODELE_1,
-                METHODE = 'MULT_FRONT',
-                RENUM   = 'MDA',
-                INFO    = 1 )
 
 MATASS=ASSE_MATRICE(   MATR_ELEM=MATELE_1,   NUME_DDL=NU )
 

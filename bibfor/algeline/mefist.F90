@@ -9,7 +9,6 @@ subroutine mefist(melflu, ndim, som, alpha, ru,&
     implicit none
 !
 #include "jeveux.h"
-#include "asterfort/crnslv.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/gnomsd.h"
 #include "asterfort/iunifi.h"
@@ -186,7 +185,6 @@ subroutine mefist(melflu, ndim, som, alpha, ru,&
     call smosli(nugene//'.SMOS', nugene//'.SLCS', 'G', rtbloc)
 !
 !     -- SOLVEUR PAR DEFAUT :
-    call crnslv(nugene, 'LDLT', 'SANS', 'G')
 !
 ! --- ON GREFFE UNE STRUCTURE TABLE AU CONCEPT "MELFLU" POUR
 !     STOCKER LES MATRICES CREEES

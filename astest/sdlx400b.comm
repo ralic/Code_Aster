@@ -3,17 +3,17 @@
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # MELANGE D'ELEMNTS POUTRE, COQUE ET VOLUME
 # ELEMENTS  : MEPOUDE,DKQQU8 ET HEXA20
@@ -21,14 +21,14 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'))
 
-ACIER=DEFI_MATERIAU(          
+ACIER=DEFI_MATERIAU(
                          ELAS=_F(  RHO = 2400.,
-                           NU = 0., 
+                           NU = 0.,
                            E = 6.7E10))
 
 MAYA=LIRE_MAILLAGE(FORMAT='MED', )
 
-MATER=AFFE_MATERIAU(    MAILLAGE=MAYA,AFFE=( 
+MATER=AFFE_MATERIAU(    MAILLAGE=MAYA,AFFE=(
                                  _F(  GROUP_MA = 'VOLUME',
                                         MATER = ACIER),
                                       _F(  GROUP_MA = 'POUTRE',
@@ -36,20 +36,20 @@ MATER=AFFE_MATERIAU(    MAILLAGE=MAYA,AFFE=(
 
 STRUC_1=AFFE_MODELE(    MAILLAGE=MAYA,AFFE=(
                                _F(  GROUP_MA = 'VOLUME',
-                                      MODELISATION = '3D', 
+                                      MODELISATION = '3D',
                                       PHENOMENE = 'MECANIQUE'),
-                                    _F(  GROUP_MA = 'FACES', 
-                                      MODELISATION = '3D', 
+                                    _F(  GROUP_MA = 'FACES',
+                                      MODELISATION = '3D',
                                       PHENOMENE = 'MECANIQUE'),
 
                                     _F(  GROUP_MA = 'POUTRE',
-                                      MODELISATION = 'POU_D_E', 
+                                      MODELISATION = 'POU_D_E',
                                       PHENOMENE = 'MECANIQUE'))
                        )
 
 CARA_1=AFFE_CARA_ELEM(      MODELE=STRUC_1,
 
-                                POUTRE=_F( 
+                                POUTRE=_F(
                             GROUP_MA = 'POUTRE',
                             SECTION = 'RECTANGLE',
                             CARA = ( 'HY',  'HZ', ),
@@ -73,13 +73,13 @@ FIXA_1=AFFE_CHAR_MECA(      MODELE=STRUC_1,
 K_EL_1=CALC_MATR_ELEM(        MODELE=STRUC_1,
                                  CARA_ELEM=CARA_1,
                                     CHARGE=FIXA_1,
-                                CHAM_MATER=MATER, 
+                                CHAM_MATER=MATER,
                                    OPTION='RIGI_MECA' )
 
 M_EL_1=CALC_MATR_ELEM(        MODELE=STRUC_1,
                                  CARA_ELEM=CARA_1,
                                     CHARGE=FIXA_1,
-                                CHAM_MATER=MATER, 
+                                CHAM_MATER=MATER,
                                    OPTION='MASS_MECA' )
 
 # NUMEROTATION
@@ -89,10 +89,10 @@ NUMERO_1=NUME_DDL(    MATR_RIGI=K_EL_1 )
 # ASSEMBLAGE DES MATRICES DE RIGIDITE ET DE MASSE
 
 
-K_AS_1=ASSE_MATRICE(    MATR_ELEM=K_EL_1, 
+K_AS_1=ASSE_MATRICE(    MATR_ELEM=K_EL_1,
                              NUME_DDL=NUMERO_1)
 
-M_AS_1=ASSE_MATRICE(    MATR_ELEM=M_EL_1, 
+M_AS_1=ASSE_MATRICE(    MATR_ELEM=M_EL_1,
                              NUME_DDL=NUMERO_1 )
 
 # CALCUL DES MODES PAR SORENSEN + BANDE
@@ -209,18 +209,18 @@ TEST_RESU(RESU=(_F(PARA='FREQ',
 
 STRUC_2=AFFE_MODELE(    MAILLAGE=MAYA,AFFE=(
                                _F(  GROUP_MA = 'VOLUME',
-                                      MODELISATION = '3D', 
+                                      MODELISATION = '3D',
                                       PHENOMENE = 'MECANIQUE'),
-                                    _F(  GROUP_MA = 'FACES', 
-                                      MODELISATION = '3D', 
+                                    _F(  GROUP_MA = 'FACES',
+                                      MODELISATION = '3D',
                                       PHENOMENE = 'MECANIQUE'),
                                     _F(  GROUP_MA = 'FAC_RES',
-                                      MODELISATION = '3D', 
+                                      MODELISATION = '3D',
                                       PHENOMENE = 'MECANIQUE'),
 
 
                                     _F(  GROUP_MA = 'POUTRE',
-                                      MODELISATION = 'POU_D_E', 
+                                      MODELISATION = 'POU_D_E',
                                       PHENOMENE = 'MECANIQUE'),
 
                                     _F(  GROUP_MA = 'RESSORT',
@@ -230,19 +230,19 @@ STRUC_2=AFFE_MODELE(    MAILLAGE=MAYA,AFFE=(
 
 CARA_2=AFFE_CARA_ELEM(      MODELE=STRUC_2,
 
-                                POUTRE=_F( 
+                                POUTRE=_F(
                             GROUP_MA = 'POUTRE',
                             SECTION = 'RECTANGLE',
                             CARA = ( 'HY',  'HZ', ),
                             VALE = ( 0.014,  0.014,  )),
 
-                               DISCRET=(_F( 
+                               DISCRET=(_F(
                             CARA = 'K_TR_D_N',
                             GROUP_MA = 'RESSORT',
                             REPERE = 'GLOBAL',
                             VALE = ( 0.,18000.,0.,
                                         0.,0.,0.,       )),
-                                          _F( 
+                                          _F(
                             CARA = 'M_TR_D_N',
                             GROUP_MA = 'RESSORT',
                             REPERE = 'GLOBAL',
@@ -269,26 +269,26 @@ FIXA_2=AFFE_CHAR_MECA(      MODELE=STRUC_2,
 K_EL_2=CALC_MATR_ELEM(        MODELE=STRUC_2,
                                  CARA_ELEM=CARA_2,
                                     CHARGE=FIXA_2,
-                                CHAM_MATER=MATER, 
+                                CHAM_MATER=MATER,
                                    OPTION='RIGI_MECA' )
 
 M_EL_2=CALC_MATR_ELEM(        MODELE=STRUC_2,
                                  CARA_ELEM=CARA_2,
                                     CHARGE=FIXA_2,
-                                CHAM_MATER=MATER, 
+                                CHAM_MATER=MATER,
                                    OPTION='MASS_MECA' )
 
 # NUMEROTATION
 
-NUMERO_2=NUME_DDL(    MATR_RIGI=K_EL_2,METHODE='MULT_FRONT',RENUM='MDA' )
+NUMERO_2=NUME_DDL(    MATR_RIGI=K_EL_2)
 
 # ASSEMBLAGE DES MATRICES DE RIGIDITE ET DE MASSE
 
 
-K_AS_2=ASSE_MATRICE(    MATR_ELEM=K_EL_2, 
+K_AS_2=ASSE_MATRICE(    MATR_ELEM=K_EL_2,
                              NUME_DDL=NUMERO_2)
 
-M_AS_2=ASSE_MATRICE(    MATR_ELEM=M_EL_2, 
+M_AS_2=ASSE_MATRICE(    MATR_ELEM=M_EL_2,
                              NUME_DDL=NUMERO_2 )
 
 # CALCUL DES MODES PAR SORENSEN + BANDE

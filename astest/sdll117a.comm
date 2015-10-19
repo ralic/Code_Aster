@@ -148,7 +148,7 @@ MELM=CALC_MATR_ELEM(
 
 #
 
-NUM=NUME_DDL(   MATR_RIGI=MELR,   METHODE='LDLT')
+NUM=NUME_DDL(   MATR_RIGI=MELR)
 
 #
 
@@ -235,21 +235,21 @@ AMOR1_2=RECU_FONCTION(
                           )
 
 #
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=32.28970274066,
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=32.28970274086,
                          VALE_REFE=32.29,
                          REFERENCE='NON_DEFINI',
                          PRECISION=1.E-3,
                          VALE_PARA=1.5,
                          FONCTION=FREQ1_1,
                          ),
-                      _F(VALE_CALC=32.28970274084,
+                      _F(VALE_CALC=32.28970274105,
                          VALE_REFE=32.29,
                          REFERENCE='NON_DEFINI',
                          PRECISION=1.E-3,
                          VALE_PARA=1.5,
                          FONCTION=FREQ1_2,
                          ),
-                      _F(VALE_CALC=8.943517832643E-03,
+                      _F(VALE_CALC=8.943517832668E-03,
                          VALE_REFE=8.944E-3,
                          REFERENCE='NON_DEFINI',
                          CRITERE='ABSOLU',
@@ -257,7 +257,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=32.28970274066,
                          VALE_PARA=1.5,
                          FONCTION=AMOR1_1,
                          ),
-                      _F(VALE_CALC=8.943517832665E-03,
+                      _F(VALE_CALC=8.943517832691E-03,
                          VALE_REFE=8.944E-3,
                          REFERENCE='NON_DEFINI',
                          CRITERE='ABSOLU',
@@ -372,21 +372,21 @@ AMOR2_2=RECU_FONCTION(
 #
 
 TEST_FONCTION(VALEUR=(_F(VALE_REFE=32.29,
-                         VALE_CALC=32.28970274066,
+                         VALE_CALC=32.28970274086,
                          REFERENCE='NON_DEFINI',
                          PRECISION=1.E-3,
                          VALE_PARA=1.5,
                          FONCTION=FREQ2_1,
                          ),
                       _F(VALE_REFE=32.29,
-                         VALE_CALC=32.28970274084,
+                         VALE_CALC=32.28970274105,
                          REFERENCE='NON_DEFINI',
                          PRECISION=1.E-3,
                          VALE_PARA=1.5,
                          FONCTION=FREQ2_2,
                          ),
                       _F(VALE_REFE=8.944E-03,
-                         VALE_CALC=8.943517832643E-03,
+                         VALE_CALC=8.943517832668E-03,
                          REFERENCE='NON_DEFINI',
                          CRITERE='ABSOLU',
                          PRECISION=1.E-3,
@@ -394,7 +394,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_REFE=32.29,
                          FONCTION=AMOR2_1,
                          ),
                       _F(VALE_REFE=8.944E-03,
-                         VALE_CALC=8.943517832665E-03,
+                         VALE_CALC=8.943517832691E-03,
                          REFERENCE='NON_DEFINI',
                          CRITERE='ABSOLU',
                          PRECISION=1.E-3,
@@ -489,21 +489,21 @@ AMOR3_2=RECU_FONCTION(
 #
 
 TEST_FONCTION(VALEUR=(_F(VALE_REFE=31.40,
-                         VALE_CALC=31.40286865667,
+                         VALE_CALC=31.40286865691,
                          REFERENCE='NON_DEFINI',
                          PRECISION=1.E-3,
                          VALE_PARA=1.5,
                          FONCTION=FREQ3_1,
                          ),
                       _F(VALE_REFE=31.40,
-                         VALE_CALC=31.40286865689,
+                         VALE_CALC=31.40286865715,
                          REFERENCE='NON_DEFINI',
                          PRECISION=1.E-3,
                          VALE_PARA=1.5,
                          FONCTION=FREQ3_2,
                          ),
                       _F(VALE_REFE=9.157E-03,
-                         VALE_CALC=9.156813243107E-03,
+                         VALE_CALC=9.156813243199E-03,
                          REFERENCE='NON_DEFINI',
                          CRITERE='ABSOLU',
                          PRECISION=1.E-3,
@@ -511,7 +511,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_REFE=31.40,
                          FONCTION=AMOR3_1,
                          ),
                       _F(VALE_REFE=9.157E-03,
-                         VALE_CALC=9.156813243189E-03,
+                         VALE_CALC=9.156813243285E-03,
                          REFERENCE='NON_DEFINI',
                          CRITERE='ABSOLU',
                          PRECISION=1.E-3,
@@ -625,21 +625,21 @@ AMOR4_2=RECU_FONCTION(
 #
 
 TEST_FONCTION(VALEUR=(_F(VALE_REFE=31.40,
-                         VALE_CALC=31.40286865667,
+                         VALE_CALC=31.40286865691,
                          REFERENCE='NON_DEFINI',
                          PRECISION=1.E-3,
                          VALE_PARA=1.5,
                          FONCTION=FREQ4_1,
                          ),
                       _F(VALE_REFE=31.40,
-                         VALE_CALC=31.40286865689,
+                         VALE_CALC=31.40286865715,
                          REFERENCE='NON_DEFINI',
                          PRECISION=1.E-3,
                          VALE_PARA=1.5,
                          FONCTION=FREQ4_2,
                          ),
                       _F(VALE_REFE=9.157E-03,
-                         VALE_CALC=9.156813243107E-03,
+                         VALE_CALC=9.156813243199E-03,
                          REFERENCE='NON_DEFINI',
                          CRITERE='ABSOLU',
                          PRECISION=1.E-3,
@@ -647,7 +647,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_REFE=31.40,
                          FONCTION=AMOR4_1,
                          ),
                       _F(VALE_REFE=9.157E-03,
-                         VALE_CALC=9.156813243189E-03,
+                         VALE_CALC=9.156813243285E-03,
                          REFERENCE='NON_DEFINI',
                          CRITERE='ABSOLU',
                          PRECISION=1.E-3,
@@ -734,21 +734,21 @@ AMOR5_2=RECU_FONCTION(
 #
 
 TEST_FONCTION(VALEUR=(_F(VALE_REFE=32.20,
-                         VALE_CALC=32.20166887784,
+                         VALE_CALC=32.20166887804,
                          REFERENCE='NON_DEFINI',
                          PRECISION=1.E-3,
                          VALE_PARA=1.5,
                          FONCTION=FREQ5_1,
                          ),
                       _F(VALE_REFE=32.20,
-                         VALE_CALC=32.20166887802,
+                         VALE_CALC=32.20166887823,
                          REFERENCE='NON_DEFINI',
                          PRECISION=1.E-3,
                          VALE_PARA=1.5,
                          FONCTION=FREQ5_2,
                          ),
                       _F(VALE_REFE=5.951E-03,
-                         VALE_CALC=5.951453293610E-03,
+                         VALE_CALC=5.951453294144E-03,
                          REFERENCE='NON_DEFINI',
                          CRITERE='ABSOLU',
                          PRECISION=1.E-3,
@@ -756,7 +756,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_REFE=32.20,
                          FONCTION=AMOR5_1,
                          ),
                       _F(VALE_REFE=5.951E-03,
-                         VALE_CALC=5.951453294086E-03,
+                         VALE_CALC=5.951453294630E-03,
                          REFERENCE='NON_DEFINI',
                          CRITERE='ABSOLU',
                          PRECISION=1.E-3,
@@ -845,21 +845,21 @@ AMOR6_2=RECU_FONCTION(
 
 #
 
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=32.60393607785,
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=32.60393607805,
                          VALE_REFE=32.604652275020001,
                          REFERENCE='NON_DEFINI',
                          PRECISION=1.E-3,
                          VALE_PARA=1.5,
                          FONCTION=FREQ6_1,
                          ),
-                      _F(VALE_CALC=32.60393607803,
+                      _F(VALE_CALC=32.60393607825,
                          VALE_REFE=32.604652275145,
                          REFERENCE='NON_DEFINI',
                          PRECISION=1.E-3,
                          VALE_PARA=1.5,
                          FONCTION=FREQ6_2,
                          ),
-                      _F(VALE_CALC=0.01292797821353,
+                      _F(VALE_CALC=0.01292797821421,
                          VALE_REFE=0.012930255640873,
                          REFERENCE='NON_DEFINI',
                          CRITERE='ABSOLU',
@@ -867,7 +867,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=32.60393607785,
                          VALE_PARA=1.5,
                          FONCTION=AMOR6_1,
                          ),
-                      _F(VALE_CALC=0.01292797821413,
+                      _F(VALE_CALC=0.01292797821478,
                          VALE_REFE=0.012930255641235001,
                          REFERENCE='NON_DEFINI',
                          CRITERE='ABSOLU',
@@ -966,21 +966,21 @@ AMOR7_2=RECU_FONCTION(
 
 #
 
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=32.28970274072,
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=32.28970274092,
                          VALE_REFE=32.290407286433002,
                          REFERENCE='NON_DEFINI',
                          PRECISION=1.E-3,
                          VALE_PARA=1.5,
                          FONCTION=FREQ7_1,
                          ),
-                      _F(VALE_CALC=32.28970274090,
+                      _F(VALE_CALC=32.28970274112,
                          VALE_REFE=32.290407286552998,
                          REFERENCE='NON_DEFINI',
                          PRECISION=1.E-3,
                          VALE_PARA=1.5,
                          FONCTION=FREQ7_2,
                          ),
-                      _F(VALE_CALC=6.075605507857E-03,
+                      _F(VALE_CALC=6.075605508391E-03,
                          VALE_REFE=6.0774959041148E-3,
                          REFERENCE='NON_DEFINI',
                          CRITERE='ABSOLU',
@@ -988,7 +988,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=32.28970274072,
                          VALE_PARA=1.5,
                          FONCTION=AMOR7_1,
                          ),
-                      _F(VALE_CALC=6.075605508336E-03,
+                      _F(VALE_CALC=6.075605508902E-03,
                          VALE_REFE=6.0774959044317999E-3,
                          REFERENCE='NON_DEFINI',
                          CRITERE='ABSOLU',
@@ -1061,7 +1061,7 @@ for i in range(len(vite)):
 #           )
 
 TEST_TABLE(
-           VALE_CALC=2.22488120822E-06,
+           VALE_CALC=2.22488120812E-06,
            VALE_REFE=2.2245009941048001E-06,
            REFERENCE='NON_DEFINI',
            PRECISION=1.E-3,
@@ -1075,7 +1075,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=1.5881571955E-05,
+           VALE_CALC=1.58815719545E-05,
            VALE_REFE=1.5879709874746999E-05,
            REFERENCE='NON_DEFINI',
            PRECISION=1.E-3,
@@ -1089,7 +1089,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=7.42851748039E-05,
+           VALE_CALC=7.42851747992E-05,
            VALE_REFE=7.4268014427209997E-05,
            REFERENCE='NON_DEFINI',
            PRECISION=1.E-3,
@@ -1205,21 +1205,21 @@ AMOR8_2=RECU_FONCTION(
 
 #
 
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=32.28970274072,
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=32.28970274092,
                          VALE_REFE=32.290407286433002,
                          REFERENCE='NON_DEFINI',
                          PRECISION=1.E-3,
                          VALE_PARA=1.5,
                          FONCTION=FREQ8_1,
                          ),
-                      _F(VALE_CALC=32.28970274090,
+                      _F(VALE_CALC=32.28970274112,
                          VALE_REFE=32.290407286552998,
                          REFERENCE='NON_DEFINI',
                          PRECISION=1.E-3,
                          VALE_PARA=1.5,
                          FONCTION=FREQ8_2,
                          ),
-                      _F(VALE_CALC=6.075605507857E-03,
+                      _F(VALE_CALC=6.075605508391E-03,
                          VALE_REFE=6.0774959041148E-3,
                          REFERENCE='NON_DEFINI',
                          CRITERE='ABSOLU',
@@ -1227,7 +1227,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=32.28970274072,
                          VALE_PARA=1.5,
                          FONCTION=AMOR8_1,
                          ),
-                      _F(VALE_CALC=6.075605508336E-03,
+                      _F(VALE_CALC=6.075605508902E-03,
                          VALE_REFE=6.0774959044317999E-3,
                          REFERENCE='NON_DEFINI',
                          CRITERE='ABSOLU',
@@ -1307,7 +1307,7 @@ for i in range(len(vite)):
 #           )
 
 TEST_TABLE(
-           VALE_CALC=2.07003136951E-06,
+           VALE_CALC=2.07003136941E-06,
            VALE_REFE=2.0696652715740001E-06,
            REFERENCE='NON_DEFINI',
            PRECISION=1.E-3,
@@ -1321,7 +1321,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=1.47762280622E-05,
+           VALE_CALC=1.47762280617E-05,
            VALE_REFE=1.4774407445775E-05,
            REFERENCE='NON_DEFINI',
            PRECISION=1.E-3,
@@ -1335,7 +1335,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=6.91149898546E-05,
+           VALE_CALC=6.91149898502E-05,
            VALE_REFE=6.9098611623958994E-05,
            REFERENCE='NON_DEFINI',
            PRECISION=1.E-3,
@@ -1418,7 +1418,7 @@ for i in range(len(vite)):
 #          )
 
 TEST_TABLE(
-           VALE_CALC=5.3652595616E-06,
+           VALE_CALC=5.36525956139E-06,
            VALE_REFE=5.3645293500426998E-06,
            REFERENCE='NON_DEFINI',
            PRECISION=1.E-3,
@@ -1432,7 +1432,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=2.59626719354E-05,
+           VALE_CALC=2.59626719347E-05,
            VALE_REFE=2.5960351119112001E-05,
            REFERENCE='NON_DEFINI',
            PRECISION=1.E-3,
@@ -1446,7 +1446,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=6.15631762491E-05,
+           VALE_CALC=6.15631762476E-05,
            VALE_REFE=6.1557954058177004E-05,
            REFERENCE='NON_DEFINI',
            PRECISION=1.E-3,
@@ -1537,7 +1537,7 @@ for i in range(len(vite)):
 #           )
 
 TEST_TABLE(
-           VALE_CALC=4.99184206197E-06,
+           VALE_CALC=4.99184206178E-06,
            VALE_REFE=4.9911328983653999E-06,
            REFERENCE='NON_DEFINI',
            PRECISION=1.E-3,
@@ -1551,7 +1551,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=2.4155692063E-05,
+           VALE_CALC=2.41556920624E-05,
            VALE_REFE=2.4153388688736999E-05,
            REFERENCE='NON_DEFINI',
            PRECISION=1.E-3,
@@ -1565,7 +1565,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=5.72784315727E-05,
+           VALE_CALC=5.72784315713E-05,
            VALE_REFE=5.7273231183531003E-05,
            REFERENCE='NON_DEFINI',
            PRECISION=1.E-3,

@@ -459,7 +459,7 @@ def macr_cara_poutre_ops(self, MAILLAGE, SYME_Y, SYME_Z, GROUP_MA_BORD,
         # ON DEFINIT LE NUME_DDL ASSOCIE AU MATR_ELEM DEFINI
         # PRECEDEMMENT POUR CONSTRUIRE LE CHAMNO UTILISE POUR ECRIRE LA
         # RELATION LINEAIRE ENTRE DDLS :
-        __numddl = NUME_DDL(MATR_RIGI=__matel, METHODE='LDLT',)
+        __numddl = NUME_DDL(MATR_RIGI=__matel,)
 
         # ON CONSTRUIT LE CHAMNO QUI VA ETRE UTILISE POUR ECRIRE LA
         # RELATION LINEAIRE ENTRE DDLS :
@@ -492,7 +492,7 @@ def macr_cara_poutre_ops(self, MAILLAGE, SYME_Y, SYME_Z, GROUP_MA_BORD,
             MODELE=__nomot2,
             CHAM_MATER=__chmat2,
             EXCIT=(_F(CHARGE=__chart5,), _F(CHARGE=__chart6,),),
-            SOLVEUR=_F(METHODE='LDLT', RENUM='SANS', STOP_SINGULIER='NON',),)
+            SOLVEUR=_F(STOP_SINGULIER='NON',),)
 
         # CALCUL DE L INERTIE DE GAUCHISSEMENT :
         nomres = POST_ELEM(

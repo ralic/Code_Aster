@@ -65,12 +65,14 @@ subroutine mdacce(typbas, neqgen, pulsa2, masgen, descm,&
 !
 !
     real(kind=8) :: x1, x2
-    character(len=19) :: matr
+    character(len=19) :: matr, solveu
 !
 !-----------------------------------------------------------------------
     integer :: im, iret, jmass
     cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
+    solveu='&&OP0074.SOLVEUR'
+    
     if (typbas(1:9) .eq. 'MODE_MECA' .or. typbas(1:9) .eq. 'MODE_GENE') then
         if (lamor) then
             do im = 1, neqgen
@@ -128,7 +130,7 @@ subroutine mdacce(typbas, neqgen, pulsa2, masgen, descm,&
 !
         ASSERT(descm.ne.0)
         matr = zk24(zi(descm+1))(1:19)
-        call resoud(matr, ' ', ' ', ' ', 1,&
+        call resoud(matr, ' ', solveu, ' ', 1,&
                     ' ', ' ', ' ', accgen, [cbid],&
                     ' ', .true._1, 0, iret)
     endif

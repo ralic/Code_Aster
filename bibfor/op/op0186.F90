@@ -155,7 +155,7 @@ implicit none
 ! --- INITIALISATIONS
 !
     call nxinit(model      , mate  , cara_elem, compor, list_load,&
-                solver     , para  , nume_dof , lostat, levol    ,&
+                para       , nume_dof , lostat, levol    ,&
                 l_ther_nonl, sddisc, ds_inout , vhydr , sdobse   ,&
                 mailla     , sdcrit, time  )
 !

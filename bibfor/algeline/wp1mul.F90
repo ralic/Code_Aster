@@ -1,6 +1,6 @@
 subroutine wp1mul(lmasse, lamor, lraide, ptorig, tolf,&
                   nitf, nbfreq, mxresf, nprec, resufi,&
-                  resufr)
+                  resufr, solveu)
     implicit none
 #include "jeveux.h"
 #include "asterfort/detrsd.h"
@@ -14,10 +14,12 @@ subroutine wp1mul(lmasse, lamor, lraide, ptorig, tolf,&
 #include "asterfort/preres.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/wp1dft.h"
+    integer :: mxresf, nprec
     integer :: lmasse, lamor, lraide, nitf, nbfreq, resufi(mxresf, *)
     complex(kind=8) :: ptorig(3, *)
     real(kind=8) :: tolf, resufr(mxresf, *)
-!     ------------------------------------------------------------------
+    character(len=19) :: solveu
+!------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,16 +58,14 @@ subroutine wp1mul(lmasse, lamor, lraide, ptorig, tolf,&
 !
     character(len=1) :: typcst(3), base
     character(len=8) :: nomddl
-    character(len=19) :: matdyn, solveu, matpre
+    character(len=19) :: matdyn,matpre
     character(len=24) :: nmat(3), ndynam
     complex(kind=8) :: res0, res1, res2, h0, h1, lambda, delta, zz, g0, gg, gg1
     complex(kind=8) :: gg2, z0, z1, z2
     integer :: idet0, idet1, idet2, ibid
     real(kind=8) :: det0, det1, det2, rn1, rn2, err, errz, const(6)
-!     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, icomb, imode, istu, iter, ldynam, lzero
-    integer :: mxresf, nprec
 !-----------------------------------------------------------------------
     data          nomddl /'        '/
 !     ------------------------------------------------------------------
@@ -94,7 +94,6 @@ subroutine wp1mul(lmasse, lamor, lraide, ptorig, tolf,&
     call wkvect('&&WP1MUL.ZERO.POLYNOME', 'V V C', nbfreq, lzero)
 !
 !     --- BOUCLE SUR LE NOMBRE DE MODES DEMANDE ----
-    solveu=' '
     base='V'
     matpre=' '
     do 100 imode = 1, nbfreq

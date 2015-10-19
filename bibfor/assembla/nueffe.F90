@@ -1,5 +1,5 @@
-subroutine nueffe(nb_ligr, list_ligr, base         , nume_ddlz   , renumz,&
-                  solver , modelocz , sd_iden_relaz)
+subroutine nueffe(nb_ligr, list_ligr, base , nume_ddlz , renumz,&
+                  modelocz , sd_iden_relaz)
 !
 implicit none
 !
@@ -57,7 +57,6 @@ implicit none
     character(len=2), intent(in) :: base
     character(len=*), intent(in) :: nume_ddlz
     character(len=*), intent(in) :: renumz
-    character(len=19),optional, intent(in) :: solver
     character(len=*), optional, intent(in) :: modelocz
     character(len=*), optional, intent(in) :: sd_iden_relaz
 !
@@ -75,9 +74,8 @@ implicit none
 ! In  base           : JEVEUX base to create objects
 !                      base(1:1) => PROF_CHNO objects
 !                      base(2:2) => NUME_DDL objects
-! In  renum          : method for renumbering equation
-!                       SANS/RCMK/MD/MDA/METIS
-! In  solver         : name of solver datastructure
+! In  renum          : method for renumbering equations
+!                       SANS/RCMK
 ! In  modelocz       : local mode for GRANDEUR numbering
 ! In  sd_iden_rela   : name of object for identity relations between dof
 !
@@ -131,9 +129,8 @@ implicit none
     integer, pointer :: adne(:) => null()
     integer, pointer :: qrns(:) => null()
     integer, pointer :: p_nequ(:) => null()
-    character(len=24), pointer :: slvk(:) => null()
     integer, pointer :: v_sdiden_info(:) => null()
-    
+
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -236,6 +233,7 @@ implicit none
 !
     call infniv(ifm, niv)
     nume_ddl = nume_ddlz
+!ASSERT(.false.)
 !
 ! - Local mode
 !
@@ -317,7 +315,7 @@ implicit none
     v_nnli(1) = nb_node
     call jecrec(nuno, 'V V I ', 'NU', 'CONTIG', 'VARIABLE',&
                 nlili)
-    
+
 
 ! --- ALLOCATION DE PRNO :
 !     -------------------------------------------------
@@ -1037,11 +1035,6 @@ implicit none
     call wkvect(refn, base(1:1)//' V K24', 4, idref)
     zk24(idref) = mesh
     zk24(idref+1) = gran_name
-    if (present(solver)) then
-        call jeveuo(solver(1:19)//'.SLVK', 'L', vk24=slvk)
-        zk24(idref+2) = slvk(1)
-        zk24(idref+3) = slvk(6)
-    endif
 !
 ! - Create NUEQ object
 !
@@ -1086,12 +1079,11 @@ implicit none
     call jedetr(derli)
     call jedetr(vsuiv)
     call jedetr(dsclag)
-    
+
     call jedetr(newn)
     call jedetr(oldn)
-    
+
 !   call jedema() FORBIDDEN !
 
 !
 end subroutine
-

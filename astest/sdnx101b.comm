@@ -16,7 +16,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-# Pour des raisons de performances, on force SDVERI='NON'. 
+# Pour des raisons de performances, on force SDVERI='NON'.
 DEBUT(   CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'));
 
 MAIL0=LIRE_MAILLAGE(FORMAT='MED',);
@@ -194,9 +194,6 @@ MELM=CALC_MATR_ELEM(OPTION='MASS_MECA',
 
 
 NUM=NUME_DDL(MATR_RIGI=MELR,
-   #          METHODE='MULT_FRONT',
-   #          RENUM='LDLT');
-   #          RENUM='MDA'
              );
 
 

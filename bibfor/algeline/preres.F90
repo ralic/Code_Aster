@@ -37,7 +37,7 @@ subroutine preres(solveu, base, iret, matpre, matass,&
 ! BUT : FACTORISER UNE MATR_ASSE (LDLT/MULT_FRONT/MUMPS)
 !       OU FABRIQUER UNE MATRICE DE PRECONDITIONNEMENT (GCPC,PETSC)
 !
-! SOLVEU (K19) IN : OBJET SOLVEUR (OU ' ')
+! SOLVEU (K19) IN : OBJET SOLVEUR 
 ! BASE (K1)    IN : BASE SUR LAQUELLE ON CREE LA MATRICE FACTORISEE
 !                  (OU LA MATRICE DE PRECONDITIONNEMENT)
 ! IRET (I)     OUT : CODE_RETOUR :
@@ -76,6 +76,7 @@ subroutine preres(solveu, base, iret, matpre, matass,&
     call uttcpu('CPU.RESO.1', 'DEBUT', ' ')
     call uttcpu('CPU.RESO.4', 'DEBUT', ' ')
     matas1=matass
+    ASSERT(solveu.ne.' ')
 
 
 !    VERIFICATION SI XFEM :

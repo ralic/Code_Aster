@@ -30,6 +30,7 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
                       'CALC_MATR_AJOU',
                       'CALC_PRECONT',
                       'CREA_ELEM_SSD',
+                      'CALC_CORR_SSD',
                       'DEFI_BASE_MODALE',
                       'DYNA_LINE_HARM',
                       'DYNA_LINE_TRAN',
@@ -71,6 +72,7 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
 
 #  Classification ('SD'/'LIN'/'NL')
    if COMMAND in ('CREA_ELEM_SSD',
+                  'CALC_CORR_SSD',
                   'DEFI_BASE_MODALE',
                   'DYNA_LINE_HARM',
                   'DYNA_TRAN_MODAL',
@@ -138,15 +140,13 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
 # ----------------------------------------------------------------------------------------------------------------------------------
 
    _singu  = True
-   _rcmk   = True
    _resol  = True
    _cmodal = False
 
-#  Avec les solveurs modaux STOP_SINGULIER n'existe pas, de plus RCMK n'est pas disponible
+#  Avec les solveurs modaux STOP_SINGULIER n'existe pas
    if COMMAND in ('INFO_MODE','MODE_ITER_INV','MODE_ITER_SIMULT'):
       _cmodal= True
       _singu = False
-      _rcmk  = False
 #     Dans INFO_MODE on ne fait que factoriser
       if COMMAND == 'INFO_MODE':
          _resol = False
@@ -221,14 +221,9 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
 #  RENUM
    _BlocMF['RENUM'] = SIMP(statut='f', typ='TXM', defaut="METIS", into=("MD", "MDA", "METIS", ), )
 
-   if _rcmk:
-      _into = ("RCMK", "SANS", )
-      _defaut = "RCMK"
-   else:
-      _into = ("SANS",)
-      _defaut = "SANS"
+   
 
-   _BlocLD['RENUM'] = SIMP(statut='f', typ='TXM', defaut=_defaut, into=_into, )
+   _BlocLD['RENUM'] = SIMP(statut='f', typ='TXM', defaut="SANS", into=("SANS",), )
 
    _BlocMU['RENUM'] = SIMP(statut='f', typ='TXM', defaut="AUTO", into=("AMD", "AMF", "PORD", "METIS", "QAMD", "SCOTCH", "AUTO", ), )
 
@@ -349,8 +344,8 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
 
 # ----------------------------------------------------------------------------------------------------------------------------------
 
-   _BlocGC_INC['RENUM'] = SIMP(statut='f', typ='TXM', defaut="RCMK", into=("SANS","RCMK"), )
-   _BlocPE_INC['RENUM'] = SIMP(statut='f', typ='TXM', defaut="RCMK", into=("SANS","RCMK"), )
+   _BlocGC_INC['RENUM'] = SIMP(statut='f', typ='TXM', defaut="SANS", into=("SANS",), )
+   _BlocPE_INC['RENUM'] = SIMP(statut='f', typ='TXM', defaut="SANS", into=("SANS",), )
 
 # ----------------------------------------------------------------------------------------------------------------------------------
 
@@ -380,7 +375,7 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
 
 # ----------------------------------------------------------------------------------------------------------------------------------
 
-   _BlocXX_Autres['RENUM'] = SIMP(statut='f', typ='TXM', defaut="SANS", into=("SANS","RCMK", ), )
+   _BlocXX_Autres['RENUM'] = SIMP(statut='f', typ='TXM', defaut="SANS", into=("SANS", ), )
 
 
 # ----------------------------------------------------------------------------------------------------------------------------------

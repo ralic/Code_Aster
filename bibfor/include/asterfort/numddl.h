@@ -16,10 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine numddl(nume_ddlz, base, nb_matr, list_matr, renumz)
+    subroutine numddl(nume_ddlz, base, nb_matr, list_matr)
         character(len=2), intent(in) :: base
         character(len=*), intent(in) :: nume_ddlz
-        character(len=*), intent(in) :: renumz
         character(len=*), intent(in) :: list_matr(*)
         integer, intent(in) :: nb_matr
     end subroutine numddl

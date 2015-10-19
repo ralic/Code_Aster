@@ -64,7 +64,6 @@ ASSEMBLAGE(MODELE=MODNUM,
            CARA_ELEM=CARE,
            CHARGE=CHARGE_L,
            NUME_DDL=CO("NU"),
-           SOLVEUR=_F( METHODE = 'MUMPS'),
            MATR_ASSE=(_F(  MATRICE = CO("K"),  OPTION = 'RIGI_MECA'),
                       _F(  MATRICE = CO("M"),  OPTION = 'MASS_MECA'),),
            );
@@ -80,7 +79,6 @@ ASSEMBLAGE(MODELE=MODNUM,
            CARA_ELEM=CARE,
            CHARGE=(CHAR_G,CHARGE_L),
            NUME_DDL=CO("NU_G"),
-           SOLVEUR=_F( METHODE = 'MUMPS'),
            MATR_ASSE=(_F(  MATRICE = CO("K1"),  OPTION = 'RIGI_MECA'),
                       _F(  MATRICE = CO("M1"),  OPTION = 'MASS_MECA'),),
            );
@@ -131,7 +129,6 @@ ASSEMBLAGE(MODELE=MODEXP,
            CARA_ELEM=CARE2,
            CHAM_MATER=MATEX,
            NUME_DDL=CO("NUMEXP"),
-           SOLVEUR=_F( METHODE = 'MUMPS'),
            MATR_ASSE=(_F(  MATRICE = CO("KASEXP"),  OPTION = 'RIGI_MECA'),
                       _F(  MATRICE = CO("MASEXP"),  OPTION = 'MASS_MECA'),),);
 

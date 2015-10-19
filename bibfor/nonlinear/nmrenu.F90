@@ -1,4 +1,4 @@
-subroutine nmrenu(modelz     , list_func_acti, list_load, solver, sdcont_defi,&
+subroutine nmrenu(modelz     , list_func_acti, list_load, sdcont_defi,&
                   sdcont_solv, nume_ddl      , l_renumber)
 !
 implicit none
@@ -33,7 +33,6 @@ implicit none
     character(len=*), intent(in) :: modelz
     character(len=24), intent(inout) :: nume_ddl
     character(len=19), intent(in) :: list_load
-    character(len=19), intent(in) :: solver
     character(len=24), intent(in) :: sdcont_defi
     character(len=24), intent(in) :: sdcont_solv
     integer, intent(in) :: list_func_acti(*)
@@ -48,7 +47,6 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! IO  nume_ddl       : name of numbering object (NUME_DDL)
-! In  solver         : name of solver datastructure
 ! In  model          : name of model datastructure
 ! In  list_load      : list of loads
 ! In  sdcont_defi    : name of contact definition datastructure (from DEFI_CONTACT)
@@ -114,7 +112,7 @@ implicit none
         if (niv .ge. 2) then
             write (ifm,*) '<MECANONLINE> ...... RE-CREATION DU NUME_DDL '
         endif
-        call numer3(modelz, list_load, solver, nume_ddl, sd_iden_rela)
+        call numer3(modelz, list_load, nume_ddl, sd_iden_rela)
     endif
 !
 999 continue

@@ -39,7 +39,6 @@ subroutine op0158()
     character(len=16) :: concep, nomcmd
     character(len=8) :: matass, matfac
 !
-    character(len=16) :: metres
     integer :: ibid, ifm
     integer :: niv
     character(len=24), pointer :: refa(:) => null()
@@ -53,11 +52,6 @@ subroutine op0158()
     call getvid('  ', 'MATR_ASSE', scal=matass, nbret=ibid)
     ASSERT(matass.eq.matfac)
     mass = matass
-    call dismoi('METH_RESO', mass, 'MATR_ASSE', repk=metres)
-!
-    if (metres .ne. 'LDLT' .and. metres .ne. 'MULT_FRONT' .and. metres .ne. 'MUMPS') then
-        call utmess('F', 'ALGELINE4_1')
-    endif
 !
     call jeveuo(mass//'.REFA', 'L', vk24=refa)
     if (refa(3) .eq. 'ELIML') call mtmchc(mass, 'ELIMF')

@@ -114,8 +114,8 @@ FELEM=CALC_VECT_ELEM(OPTION='CHAR_MECA',
 
 # Nmerotation & Assemblage
 NUME=NUME_DDL(MATR_RIGI=KELEM,
-              METHODE='MULT_FRONT',
-              RENUM='METIS',);
+
+              );
 
 #IMPR_CO(CHAINE='.SMOS',POSITION=15,ATTRIBUT='OUI',)
 

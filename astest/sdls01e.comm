@@ -63,7 +63,7 @@ CHCAS1=AFFE_CHAR_MECA(  MODELE=MO,
 ASSEMBLAGE(   MODELE=MO,           CARA_ELEM=CARELEM,
                        CHARGE=CHCAS1,       CHAM_MATER=CHMAT,
                  NUME_DDL=CO("NUM"),
-                  SOLVEUR=_F( METHODE = 'LDLT'),MATR_ASSE=(
+                  MATR_ASSE=(
                 _F(  MATRICE = CO("MATASSR1"),  OPTION = 'RIGI_MECA'),
                           _F(  MATRICE = CO("MATASSM1"),  OPTION = 'MASS_MECA'))
                    )
@@ -74,7 +74,7 @@ ASSEMBLAGE(   MODELE=MO,           CARA_ELEM=CARELEM,
 ASSEMBLAGE(   MODELE=MO,           CARA_ELEM=CARELEM,
                                            CHAM_MATER=CHMAT,
                  NUME_DDL=CO("NUM2"),
-                  SOLVEUR=_F( METHODE = 'LDLT'),MATR_ASSE=(
+                  MATR_ASSE=(
                 _F(  MATRICE = CO("MATASSR2"),  OPTION = 'RIGI_MECA'),
                           _F(  MATRICE = CO("MATASSM2"),  OPTION = 'MASS_MECA'))
                    )

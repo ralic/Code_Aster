@@ -63,7 +63,7 @@ implicit none
     aster_logical :: l_cont, lallv, l_cont_cont, l_cont_disc, lpena, leltc
     aster_logical :: l_pilo, l_line_search, lmacr, l_unil, l_diri_undead
     aster_logical :: l_vibr_mode, l_buckling, lexpl, lxfem, lmodim
-    aster_logical :: lrcmk, lgcpc, lpetsc, lamg, limpex, l_matr_rigi_syme
+    aster_logical :: lgcpc, lpetsc, lamg, limpex, l_matr_rigi_syme
     aster_logical :: londe, l_dyna, l_grot_gdep, ltheta, l_newt_krylov, l_mumps
     aster_logical :: l_energy, lproj, lmatdi, lldsp, lctgcp, l_comp_rela
     character(len=24) :: typilo, metres
@@ -119,7 +119,6 @@ implicit none
     call jeveuo(solver//'.SLVK', 'E', vk24=slvk)
     call jeveuo(solver//'.SLVI', 'E', vi  =slvi)
     metres = slvk(1)
-    lrcmk = slvk(4) .eq. 'RCMK'
     lamg  = ((slvk(2).eq.'ML') .or. (slvk(2).eq.'BOOMER'))
 !
 ! - Contact (DISCRETE)
@@ -164,9 +163,6 @@ implicit none
         endif
         if (l_line_search) then
             call utmess('F', 'MECANONLINE3_91')
-        endif
-        if (lrcmk) then
-            call utmess('F', 'MECANONLINE3_93', sk=slvk(1))
         endif
         if (lamg) then
             call utmess('F', 'MECANONLINE3_97', sk=slvk(2))

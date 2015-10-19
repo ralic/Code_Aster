@@ -435,7 +435,7 @@ RESUPLAS=STAT_NON_LINE(MODELE=MODMECA,
                        CONVERGENCE=_F(RESI_GLOB_MAXI=1.E-4,
                                       ITER_GLOB_MAXI=50),
                        SOLVEUR=_F(METHODE='LDLT',
-                                  RENUM='SANS',),
+                                 ),
                        INFO=1,);
 
 RESUPLA1=STAT_NON_LINE(MODELE=MODMECA,
@@ -454,7 +454,7 @@ RESUPLA1=STAT_NON_LINE(MODELE=MODMECA,
                        CONVERGENCE=_F(RESI_GLOB_MAXI=1.E-4,
                                       ITER_GLOB_MAXI=50),
                        SOLVEUR=_F(METHODE='LDLT',
-                                  RENUM='SANS',),
+                                 ),
                        INFO=1,);
 
 # ====================================================================

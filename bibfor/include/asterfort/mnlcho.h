@@ -15,23 +15,22 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-#include "asterf_types.h"
-!
-interface 
-    subroutine mnlcho(reprise, imat, numedd, xcdl, nd, nchoc,&
-                      h, hf, parcho, adime, ninc, tabchoc, lcine)
-        aster_logical :: reprise
-        integer :: imat(2)
-        character(len=14) :: numedd
-        character(len=14) :: xcdl
-        integer :: nd
-        integer :: nchoc
-        integer :: h
-        integer :: hf
-        character(len=14) :: parcho
-        character(len=14) :: adime
-        integer :: ninc
-        character(len=8) :: tabchoc
-        aster_logical :: lcine
-    end subroutine mnlcho
-end interface 
+          interface 
+            subroutine mnlcho(reprise,imat,numedd,xcdl,nd,nchoc,h,hf,   &
+     &parcho,adime,ninc,tabchoc,lcine,solveu)
+              aster_logical :: reprise
+              integer :: imat(2)
+              character(len=14) :: numedd
+              character(len=14) :: xcdl
+              integer :: nd
+              integer :: nchoc
+              integer :: h
+              integer :: hf
+              character(len=14) :: parcho
+              character(len=14) :: adime
+              integer :: ninc
+              character(len=8) :: tabchoc
+              aster_logical :: lcine
+              character(len=19) :: solveu
+            end subroutine mnlcho
+          end interface 

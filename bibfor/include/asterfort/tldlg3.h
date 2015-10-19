@@ -30,6 +30,6 @@ interface
         integer :: isingu
         integer :: npvneg
         integer :: iret
-        character(len=19) :: solvop
+        character(len=*) :: solvop
     end subroutine tldlg3
 end interface

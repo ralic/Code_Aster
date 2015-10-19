@@ -63,7 +63,7 @@ subroutine crea_nume_erc(baseno, numnu,matprod,nom_nume_erc,nom_matr_erc,nom_vec
     character(len=19) :: prgene
     integer :: ismde,ismdi,ismhc,improdsmde,improdsmhc,improdsmdi,improdvalm,neq,nozero,inewsmde
     integer :: inewsmdi,inewsmhc,cumul_non_zero,non_zero_impe,non_zero_matprod,hors_diag_impe
-    integer :: hd_matprod,nz_colncour,ii,jj,kk,tt,jnslv,lddesc,ldnequ,k,jrefn
+    integer :: hd_matprod,nz_colncour,ii,jj,kk,tt,lddesc,ldnequ,k,jrefn
     integer :: lddeeq,lddelg,ldnueq,ibid,ldprno,ldorig,mrefa,mdesc,vdesc,mvale,vvale,ll
 !
 ! --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
@@ -87,8 +87,6 @@ subroutine crea_nume_erc(baseno, numnu,matprod,nom_nume_erc,nom_matr_erc,nom_vec
 ! --- SOLVEUR
     solveu=nom_nume_erc//'.SOLV'
     call cresol(solveu)
-    call wkvect(nom_nume_erc//'.NSLV', 'G V K24', 1, jnslv)
-    zk24(jnslv)=solveu
 ! --- CREATION DU PROF_GENE
     prgene=nom_nume_erc//'.NUME'
 ! --- DESC

@@ -136,7 +136,7 @@ MELM=CALC_MATR_ELEM(OPTION='MASS_MECA',
 #----------------------------------------------
 
 NUM=NUME_DDL(MATR_RIGI=MELR,
-             METHODE='MULT_FRONT',);
+             );
 
 MATR=ASSE_MATRICE(MATR_ELEM=MELR,
                   NUME_DDL=NUM,);

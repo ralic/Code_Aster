@@ -37,10 +37,8 @@ subroutine pcstru(n, in, ip, icpl, icpc,&
 !   ICPCX      : IDEM ICPC
 !   ICPLX      : IDEM ICPL
 !----------------------------------------------------------------------
-!----------------------------------------------------------------------
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterfort/jedetr.h"
 #include "asterfort/pcdiag.h"
 #include "asterfort/pcfalu.h"
@@ -49,26 +47,20 @@ subroutine pcstru(n, in, ip, icpl, icpc,&
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+
     integer :: n, in(n)
     integer(kind=4) :: ip(*), icpc(*)
     integer :: icpl(0:n), icpd(n)
     integer :: icplx(0:n), icpcx(*)
 !
     aster_logical :: complt
-!----------------------------------------------------------------------
-!
-!     TDEB = SECOND()
-!     WRITE (6,1500)
-!     WRITE (6,1000) NIVEAU,LCA
-!     NCOEF = IN(N)
-!     WRITE (6,*) ' TAILLE INITIALE ',NCOEF
-! IN-IP---> IPL-IPC
-! =================
-!-----------------------------------------------------------------------
     integer :: i, ier, imp, k, k1, k2
     integer :: kk, lca, niv, niveau, nz
     integer, pointer :: ind(:) => null()
 !-----------------------------------------------------------------------
+
+! IN-IP---> IPL-IPC
+! =================
     AS_ALLOCATE(vi=ind, size=n)
     call pcfalu(n, in, ip, icpl, icpc,&
                 ind, imp)
@@ -101,7 +93,6 @@ subroutine pcstru(n, in, ip, icpl, icpc,&
  10 end do
 !
  20 continue
-!     WRITE(6,*)' MATRICE APRES FACTORISATION SYMBOLIQUE'
 !
 ! ICPL,ICPC FORMAT LU ---> FORMAT SYMETRIQUE
 ! ================================
@@ -121,17 +112,9 @@ subroutine pcstru(n, in, ip, icpl, icpc,&
         icpc(kk) = int(i, 4)
  40 end do
     icpl(n-1) = kk
-!
-!     TFIN = SECOND() - TDEB
-!     WRITE (6,*) ' S-P PCSTRU FIN NORMALE'
-!     WRITE (6,*) ' TAILLE FINALE APRES REMPLISSAGE ',ICPL(N)
-!     WRITE (6,*) ' DUREE  ',TFIN
     goto 60
 !
  50 continue
-!     TFIN = SECOND() - TDEB
-!     WRITE (6,*) ' S-P PCSTRU FIN ANORMALE !!! '
-!     WRITE (6,*) ' DUREE  ',TFIN
  60 continue
 !
     AS_DEALLOCATE(vi=ind)

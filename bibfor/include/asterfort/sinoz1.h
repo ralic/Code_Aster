@@ -15,10 +15,10 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine sinoz1(modele, sigma, signo)
-        character(len=8) :: modele
-        character(len=24) :: sigma
-        character(len=24) :: signo
-    end subroutine sinoz1
-end interface
+          interface 
+            subroutine sinoz1(modele,sigma,signo)
+              character(len=8) :: modele
+              character(len=24) :: sigma
+              character(len=24) :: signo
+            end subroutine sinoz1
+          end interface 

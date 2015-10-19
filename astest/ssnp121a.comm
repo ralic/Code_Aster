@@ -116,7 +116,7 @@ RESU=STAT_NON_LINE (
                                  ),
                    SOLVEUR     =_F(
                                METHODE='LDLT',
-                               RENUM='SANS',),
+                              ),
                    );
 
 

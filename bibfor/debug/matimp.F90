@@ -64,11 +64,10 @@ subroutine matimp(matz, ific, typimz)
     typimp=typimz
 !
     call jeveuo(mat19//'.REFA', 'L', vk24=refa)
-    noma=refa(1)
-    nonu=refa(2)
+    noma=refa(1)(1:8)
+    nonu=refa(2)(1:14)
 !
-    lmd=.false.
-    if (refa(11) .eq. 'MATR_DISTR') lmd=.true.
+    lmd= (refa(11) .eq. 'MATR_DISTR')
 !
     call jeveuo(nonu//'.SMOS.SMDI', 'L', vi=smdi)
     call jelira(nonu//'.SMOS.SMDI', 'LONMAX', nsmdi)
@@ -207,7 +206,7 @@ subroutine matimp(matz, ific, typimz)
         call jeveuo(nonu//'.NUME.DEEQ', 'L', vi=deeq)
         call jeveuo(nonu//'.NUME.REFN', 'L', vk24=refn)
         call jelira(nonu//'.NUME.DEEQ', 'LONMAX', n1)
-        nomgd=refn(2)
+        nomgd=refn(2)(1:8)
         call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jcmp)
         ASSERT(n1.eq.2*n)
         do 2 k = 1, n

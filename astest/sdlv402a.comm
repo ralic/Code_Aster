@@ -36,9 +36,9 @@ DEBUG=_F(SDVERI='NON'))
 #**************************************
 
 MAYA1=LIRE_MAILLAGE(UNITE=20);
-                                                                                                                            
+
 # Pertubation legere des coordonnes du maillage pour eviter les modes multiples ou retournes :
-MAYA1=MODI_MAILLAGE(reuse =MAYA1, MAILLAGE=MAYA1, DEFORME=_F(OPTION='TRAN', ALEA=1.e-8,),) 
+MAYA1=MODI_MAILLAGE(reuse =MAYA1, MAILLAGE=MAYA1, DEFORME=_F(OPTION='TRAN', ALEA=1.e-8,),)
 
 MAYA1=DEFI_GROUP( reuse=MAYA1,   MAILLAGE=MAYA1,
   CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
@@ -74,8 +74,8 @@ MELEM1=CALC_MATR_ELEM(OPTION='MASS_MECA',
                       CHARGE=CHARGE1,);
 
 NUME1=NUME_DDL(MATR_RIGI=KELEM1,
-               METHODE='MULT_FRONT',
-               RENUM='METIS',);
+
+              );
 
 KASS1=ASSE_MATRICE(MATR_ELEM=KELEM1,
                    NUME_DDL=NUME1,);
@@ -155,8 +155,8 @@ MELEM2=CALC_MATR_ELEM(OPTION='MASS_MECA',
                       CHARGE=CHARGE2,);
 
 NUME2=NUME_DDL(MATR_RIGI=KELEM2,
-               METHODE='MULT_FRONT',
-               RENUM='METIS',);
+
+              );
 
 KASS2=ASSE_MATRICE(MATR_ELEM=KELEM2,
                    NUME_DDL=NUME2,);

@@ -129,7 +129,7 @@ RESU=STAT_NON_LINE (
                                 ITER_GLOB_MAXI=40,),
                    SOLVEUR     =_F(
                                METHODE='LDLT',
-                               RENUM='SANS',),);
+                              ),);
 
 
 RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CRITERES=('SIEQ_ELNO'),CONTRAINTE=('SIEF_ELNO'))

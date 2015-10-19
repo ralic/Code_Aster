@@ -24,7 +24,6 @@
 # ======================================================================
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),
-     #IGNORE_ALARM=('ALGELINE5_15','ALGELINE5_23','DISCRETS_27',),
       )
 
 
@@ -73,14 +72,27 @@ if 1 :
     K2=ELIM_LAGR(MATR_RIGI=K1)
     M2=ELIM_LAGR(MATR_ASSE=M1, MATR_RIGI=K1)
 
+#   2.1 avec MULT_FRONT :
     MODE2=CALC_MODES( OPTION='BANDE',
                       MATR_RIGI=K2,
                       MATR_MASS=M2,
                       CALC_FREQ=_F( FREQ=(10., 250.) ),
-                      VERI_MODE=_F( SEUIL=1e-03 )
+                      VERI_MODE=_F( SEUIL=1e-03 ),
+                      SOLVEUR=_F(METHODE='MULT_FRONT'),
                      )
 
     TEST_RESU(RESU=_F(RESULTAT=MODE2, NUME_MODE=2, PARA='FREQ', VALE_CALC= 85.631015163879, ))
+
+#   2.2 avec MUMPS :
+    MODE3=CALC_MODES( OPTION='BANDE',
+                      MATR_RIGI=K2,
+                      MATR_MASS=M2,
+                      CALC_FREQ=_F( FREQ=(10., 250.) ),
+                      VERI_MODE=_F( SEUIL=1e-03 ),
+                      SOLVEUR=_F(METHODE='MUMPS'),
+                     )
+
+    TEST_RESU(RESU=_F(RESULTAT=MODE3, NUME_MODE=2, PARA='FREQ', VALE_CALC= 85.631015163879, ))
 
 
 FIN();

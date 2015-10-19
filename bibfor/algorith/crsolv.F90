@@ -94,7 +94,7 @@ subroutine crsolv(method, renum, blrfront, blreps, solve, bas)
     if (method .eq. 'MUMPS') then
         zr(islvr-1+3) = blrfront
         zr(islvr-1+4) = blreps
-    else 
+    else
         zr(islvr-1+3) = jevtbl('TAILLE_BLOC')
         zr(islvr-1+4) = 0.d0
     endif

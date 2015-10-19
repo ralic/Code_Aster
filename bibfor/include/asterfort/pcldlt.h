@@ -16,10 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine pcldlt(matf, mat, niremp, bas)
+    subroutine pcldlt(matf, mat, niremp, base)
         character(len=*) :: matf
         character(len=*) :: mat
         integer :: niremp
-        character(len=*) :: bas
+        character(len=*) :: base
     end subroutine pcldlt
 end interface

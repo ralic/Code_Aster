@@ -1,5 +1,5 @@
 subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
-                  numlia, tramod, modet)
+                  numlia, tramod, modet, solveu)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -190,19 +190,18 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
     nbvect=2*nbmod
 !
 !-- Factorisation de la matrice de raideur
-    call dismoi('SOLVEUR', raide, 'MATR_ASSE', repk=solveu)
     call preres(solveu, 'V', ibid, '&&OP0091.MATPRE', raide,&
                 ibid, 1)
 !
 !-- ON BOUCLE POUR AVOIR UNE EXPANSION CORRECTE. TANT QUE C'EST PAS BON,
 !-- ON ENRICHIT LA BASE DES MODES D'INTERFACE
 500 continue
-!  IL FAUDRA TRAVAILLER CE POINT POUR RENDRE L'EXPANSION PLUS ROBUSTE    
+!  IL FAUDRA TRAVAILLER CE POINT POUR RENDRE L'EXPANSION PLUS ROBUSTE
     call modint(ssami, raiint, nddlin, nbvect, shift,&
                 matmod, masse, raide, nbeq1, coint,&
                 noddli, nbno, vefreq, 0)
     call jeveuo(matmod, 'L', lmatmo)
-    
+
 !
 !---------------------------C
 !--                       --C
@@ -227,10 +226,10 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
             do i1 = 1, nl
                 zr(lcphi+(j1-1)*nl+i1-1)=zr(lcphi+(j1-1)*nl+i1-1)+&
                 zr(ltramo+(k1-1)*nl+(i1-1))*zr(lmatmo+(j1-1)*nc+(k1-1)&
-                )                
+                )
             end do
         end do
-    end do  
+    end do
 !      CALL DGEMM('N','N',NL,NBVECT,NC,1.,ZR(LTRAMO),
 !     &            NL,ZR(LMATMO),NC,0.,ZR(LCPHI),NL)
 !
@@ -314,7 +313,7 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
             write(ifm,*) '*----------------------------*'
             ASSERT(.false.)
         endif
-!        
+!
         write(ifm,*) 'Residu de l''expansion :',swork(1)
         nbvect=nbvect+nbmod
 !

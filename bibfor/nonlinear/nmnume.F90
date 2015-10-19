@@ -1,5 +1,5 @@
 subroutine nmnume(model , result, list_load, l_cont, sdcont_defi ,&
-                  compor, solver, nume_ddl , sdnume, sd_iden_relaz)
+                  compor, nume_ddl , sdnume, sd_iden_relaz)
 !
 implicit none
 !
@@ -34,7 +34,6 @@ implicit none
     character(len=24), intent(out) :: nume_ddl
     character(len=8), intent(in) :: result
     character(len=19), intent(in) :: list_load
-    character(len=19), intent(in) :: solver
     character(len=19), intent(in) :: sdnume
     aster_logical, intent(in) :: l_cont
     character(len=*), optional, intent(in) :: sd_iden_relaz
@@ -49,7 +48,6 @@ implicit none
 !
 ! Out nume_ddl       : name of numbering object (NUME_DDL)
 ! In  compor         : name of <CARTE> COMPOR
-! In  solver         : name of solver datastructure
 ! In  result         : name of result datastructure (EVOL_NOLI)
 ! In  model          : name of model datastructure
 ! In  sdcont_defi    : name of contact definition datsatructure (from DEFI_CONTACT)
@@ -69,7 +67,7 @@ implicit none
 !
 ! - Create numbering 
 !
-    call nmprof(model        , result, list_load, solver, nume_ddl,&
+    call nmprof(model, result, list_load, nume_ddl,&
                 sd_iden_relaz)
 !
 ! - Get position of large rotation dof

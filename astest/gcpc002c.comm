@@ -1,4 +1,4 @@
-# TITRE DSR3 SANS RENUM/AFFE_CHAR_MECA/MECA_STAT(GCPC)
+# TITRE DSR3  AFFE_CHAR_MECA/MECA_STAT(GCPC)
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,7 +56,6 @@ VECAS=MECA_STATIQUE(MODELE=MO,
                     SOLVEUR=_F(METHODE='GCPC',
                                PRE_COND='LDLT_INC',
                                NIVE_REMPLISSAGE=1,
-                               RENUM='SANS',
                                RESI_RELA=1.E-11,
                                NMAX_ITER=0,),);
 

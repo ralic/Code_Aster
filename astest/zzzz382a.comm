@@ -27,14 +27,14 @@ MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=(_F(TOUT='OUI',
                             PHENOMENE='MECANIQUE',
                             MODELISATION='POU_D_T',),),);
-
+                
 HP45=DEFI_MATERIAU(ELAS=(_F(E=2.085e+11,
                             NU=0.3,
                             RHO=7800.0,),),);
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=(_F(TOUT='OUI',MATER=HP45,),),);
-
+                             
 nbT=len(tours)
 CEK=[None]*nbT
 CEM=[None]*nbT
@@ -51,7 +51,7 @@ for i, nbTour in enumerate(tours):
                                      VARI_SECT='CONSTANT',
                                      CARA=('R','EP'),
                                      VALE=(0.265,0.265,),),),);
-
+                                        
 for i, nbTour in enumerate(tours):
     CEM[i]=AFFE_CARA_ELEM(MODELE=MODELE,
                           POUTRE=(_F(MAILLE='M1',
@@ -64,7 +64,7 @@ for i, nbTour in enumerate(tours):
                                      VARI_SECT='CONSTANT',
                                      CARA=('R','EP'),
                                      VALE=(0.265,0.265,),),),);
-
+                                        
 BCR=AFFE_CHAR_MECA(MODELE=MODELE,
                    DDL_IMPO=(_F(GROUP_NO='NOEU3',DRY=0.0,DRX=0.0,DRZ=0.0,DZ=0.0,),
                              _F(GROUP_NO='NOEU2',DX=0.,DY=0.,),
@@ -75,7 +75,7 @@ NDDL=[None]*nbT
 K=[None]*nbT
 Me=[None]*nbT
 M=[None]*nbT
-
+                   
 for j,NTRIM in enumerate(tours):
     Ke[j]=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                          MODELE=MODELE,
@@ -181,7 +181,7 @@ for j,NTRIM in enumerate(tours):
     MG[j]=PROJ_MATR_BASE(BASE=BASET,MATR_ASSE=M[j],NUME_DDL_GENE=NUMGE,);
     KG[j]=PROJ_MATR_BASE(BASE=BASET,MATR_ASSE=K[j],NUME_DDL_GENE=NUMGE,);
     CG[j]=PROJ_MATR_BASE(BASE=BASET,MATR_ASSE=GOM[j],NUME_DDL_GENE=NUMGE,);
-
+    
     MODG[j]=CALC_MODES(SOLVEUR_MODAL=_F(METHODE='QZ',),
                        MATR_RIGI=KG[j],
                        MATR_MASS=MG[j],
@@ -193,7 +193,7 @@ for j,NTRIM in enumerate(tours):
     MODP[j]=REST_GENE_PHYS(RESU_GENE=MODG[j],TOUT_CHAM='OUI',TOUT_ORDRE='OUI',);
 
 vale = [ 5.73636463754074E+09, 5.72513726818827E+09, 9.28565159059657E+09, 9.28609959440268E+09 ]
-
+                
 CHA=[None]*nbT
 for j,NTRIM in enumerate(tours):
     CHA[j]=CALC_CHAMP(RESULTAT=MODP[j],ENERGIE='EPOT_ELEM',);

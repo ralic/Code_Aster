@@ -1,4 +1,4 @@
-subroutine numer3(modelz, list_loadz, solverz, nume_ddlz, sd_iden_relaz)
+subroutine numer3(modelz, list_loadz, nume_ddlz, sd_iden_relaz)
 !
 implicit none
 !
@@ -30,7 +30,6 @@ implicit none
     character(len=*), intent(in) :: modelz
     character(len=*), intent(inout) :: nume_ddlz
     character(len=*), intent(in) :: list_loadz
-    character(len=*), intent(in) :: solverz
     character(len=*), intent(in) :: sd_iden_relaz
 !
 ! --------------------------------------------------------------------------------------------------
@@ -42,7 +41,6 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! IO  nume_ddl       : name of numbering object (NUME_DDL)
-! In  solver         : name of solver datastructure
 ! In  model          : name of model datastructure
 ! In  list_load      : list of loads
 ! In  sd_iden_rela   : name of object for identity relations between dof
@@ -61,7 +59,7 @@ implicit none
 !
 ! - Numbering
 !
-    call numero(nume_ddlz, solverz, 'VG',&
+    call numero(nume_ddlz, 'VG',&
                 modelz = modelz , list_loadz = list_loadz,&
                 sd_iden_relaz = sd_iden_relaz)
 !

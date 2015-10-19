@@ -25,17 +25,13 @@ subroutine rldlgg(lmat, xsol, cxsol, nbsol)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!
-!
     character(len=19) :: mat19
     character(len=8) :: metres
-!------------------------------------------------------------------
-!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     call uttcpu('CPU.RESO.1', 'DEBUT', ' ')
     call uttcpu('CPU.RESO.5', 'DEBUT', ' ')
 !
-    mat19=zk24(zi(lmat+1))
+    mat19=zk24(zi(lmat+1))(1:19)
     call dismoi('METH_RESO', mat19, 'MATR_ASSE', repk=metres)
     call rldlg3(metres, lmat, xsol, cxsol, nbsol)
 !

@@ -136,7 +136,7 @@ RESU=STAT_NON_LINE (
                                 RESI_GLOB_MAXI=2.E-8,),
                    SOLVEUR     =_F(
                                METHODE='LDLT',
-                               RENUM='SANS',),
+                              ),
                                  );
 
 

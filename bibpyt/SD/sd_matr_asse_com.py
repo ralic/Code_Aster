@@ -42,6 +42,7 @@ class sd_matr_asse_com(sd_titre):
     DIGS = Facultatif(OJBVect(type=Parmi('C', 'R')))
                       # seulement si solveurs LDLT et MULT_FRONT
     LIME = Facultatif(AsVK24())
+    PERM = Facultatif(AsVI())
     cine = Facultatif(sd_matr_cine(SDNom(nomj='')))
 
     def exists(self):
@@ -92,3 +93,6 @@ class sd_matr_asse_com(sd_titre):
             # J. Pellet ne comprend pas pourquoi ca plante le test zzzz351a :
             # sd2=sd_matr_asse(refa[19]) ; sd2.check(checker)
             pass
+        if refa[6] != '' :
+            sd2 = sd_solveur(refa[6])
+            sd2.check(checker)

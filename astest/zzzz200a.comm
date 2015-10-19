@@ -393,8 +393,7 @@ MASS_ELE=CALC_MATR_ELEM( MODELE=STICKMOD,  OPTION='MASS_MECA',
 
 #
 
-NUMEDDL=NUME_DDL(  MATR_RIGI=RIGI_ELE,
-                          METHODE='LDLT',    RENUM='RCMK')
+NUMEDDL=NUME_DDL(  MATR_RIGI=RIGI_ELE) 
 
 RIGIDITE=ASSE_MATRICE(  MATR_ELEM=RIGI_ELE,  NUME_DDL=NUMEDDL )
 
@@ -404,10 +403,9 @@ MASSE=ASSE_MATRICE(  MATR_ELEM=MASS_ELE,  NUME_DDL=NUMEDDL )
 # CALCUL DES MODES :
 #---------------------------------------------
 
-MODE=CALC_MODES(CALC_FREQ=_F(NMAX_FREQ=10,
-                             ),
+MODE=CALC_MODES(CALC_FREQ=_F(NMAX_FREQ=10, ),
+                SOLVEUR=_F(METHODE='LDLT'),
                 MATR_RIGI=RIGIDITE,
-                #MATR_AMOR: AMORT
                 MATR_MASS=MASSE,
                 )
 

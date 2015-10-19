@@ -1,5 +1,5 @@
 subroutine crsvmu(motfac, solveu, istop, nprec,&
-                  epsmat, mixpre, kmd, kellag, kxfem)
+                  epsmat, mixpre, kellag, kxfem)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -22,7 +22,7 @@ subroutine crsvmu(motfac, solveu, istop, nprec,&
 #include "asterfort/wkvect.h"
     integer :: istop, nprec
     real(kind=8) :: epsmat
-    character(len=3) :: mixpre, kmd, kellag
+    character(len=3) :: mixpre, kellag
     character(len=8) :: kxfem
     character(len=16) :: motfac
     character(len=19) :: solveu
@@ -52,7 +52,6 @@ subroutine crsvmu(motfac, solveu, istop, nprec,&
 ! IN  IN NPREC   :                           NPREC
 ! IN  R8 EPSMAT  :                           FILTRAGE_MATRICE
 ! IN  K3 MIXPRE  :                           MIXER_PRECISION
-! IN  K3 KMD     :                           MATR_DISTRIBUEE
 ! IN  K3 KELLAG  :                           ELIM_LAGR
 ! IN  K8 KXFEM   :                           PRE_COND_XFEM
 ! ----------------------------------------------------------
@@ -257,7 +256,7 @@ subroutine crsvmu(motfac, solveu, istop, nprec,&
     slvk(7) = mixpre
     slvk(8) = 'NON'
     slvk(9) = kooc
-    slvk(10) = kmd
+    slvk(10) = 'XXXX'
     slvk(11) = ktypp
     slvk(12) = 'XXXX'
     slvk(13)= kellag

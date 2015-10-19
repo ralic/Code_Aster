@@ -22,19 +22,19 @@ subroutine pcfalu(n, inc, ipc, inx, ipx,&
     integer :: inc(n), index(*)
     integer(kind=4) :: ipc(*), ipx(*)
     integer :: inx(0:n)
-!
+!-----------------------------------------------------------------------
 ! FONCTION  INC;IPC ------------>INX;IPX
 !           SYMETRIQUE           PLEINE FORMAT LU
+!-----------------------------------------------------------------------
+    integer :: i, ii, ii1, ii2, imp, j, kkk
+!-----------------------------------------------------------------------
 !
 !
 !  CALCUL DU NOMBRE DE COEFS PAR LIGNE COMPLETE
 !        SANS LA DIAGONALE
-! 111111111111111111111111111111111111111111111
+! ----------------------------------------------
 !
 !  DEMI-LIGNE
-!-----------------------------------------------------------------------
-    integer :: i, ii, ii1, ii2, imp, j, kkk
-!-----------------------------------------------------------------------
     index(1) = 0
     do 10 i = 2, n
         index(i) = inc(i) - inc(i-1) - 1
@@ -56,30 +56,23 @@ subroutine pcfalu(n, inc, ipc, inx, ipx,&
             ii1 = min(ii1,index(i))
             ii2 = max(ii2,index(i))
 40      continue
-!       WRITE (6,*) ' MATRICE PLEINE NOMBRE DE COEFFS PAR LIGNE '
-!       WRITE (6,*) '     MIN ',II1
-!       WRITE (6,*) '     MAX ',II2
     endif
 !
 ! CALCUL NOUVEAU INX POINTEUR DEBUT DE LIGNE
 !                             QUI SE DECALE ENSUITE
-! 222222222222222222
+! --------------------------------------------------
 !
     inx(0) = 0
     inx(1) = 1
     do 50 i = 2, n
         inx(i) = inx(i-1) + index(i-1)
 50  end do
-    if (imp .eq. 1) then
-!       WRITE (6,*) 'POINTEUR DEBUT DE LIGNE LU '
-!       WRITE (6,*) (INX(I),I=1,5)
-!       WRITE (6,*) (INX(I),I=N-5,N)
-    endif
+
 !
 ! CALCUL NOUVEAUX IPX
 !    INX(I)= DEBUT LIGNE I DE L
 !    INDEX(I)=POINTEUR DERNIER COEF LIGNE I DE U
-! 33333333333333333333333
+! ------------------------------------------------
 !
     index(1) = 0
     do 70 i = 2, n
@@ -89,17 +82,16 @@ subroutine pcfalu(n, inc, ipc, inx, ipx,&
         do 60 ii = ii1, ii2 - 1
             kkk = kkk + 1
             ipx(kkk) = ipc(ii)
-!     call jxveri(' ',' ')
-!  SYMETRIQUES
             j = ipc(ii)
             index(j) = index(j) + 1
             ipx(index(j)) = int(i, 4)
 60      continue
         index(i) = kkk
 70  end do
-!
+
+
 !  TRANSFORMATION DE INX DE DEBUT EN FIN DE LIGNE DE LU
-! 44444444444444444444444444444444444444444444444444444
+!  ----------------------------------------------------
     inx(0) = 0
     do 80 i = 1, n - 1
         inx(i) = inx(i+1) - 1
@@ -108,11 +100,8 @@ subroutine pcfalu(n, inc, ipc, inx, ipx,&
 !
     if (imp .eq. 1) then
         do 90 i = 1, 5
-!         WRITE (6,*) ' '
-!         WRITE (6,*) ' LIGNE ',I
             ii1 = inx(i-1) + 1
             ii2 = inx(i)
-!         WRITE (6,*) ('(',IPX(II),')',II=II1,II2)
 90      continue
     endif
 end subroutine

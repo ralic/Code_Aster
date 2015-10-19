@@ -17,13 +17,14 @@ subroutine pcdiag(n, icpl, icpc, icpd)
 ! ======================================================================
 !  CALCULE LE POINTEUT ICPD=ADRESSE DANS CA DU DERNIER COEFF
 !  DE L (DIAGONALE A PART)
+!-----------------------------------------------------------------------
 ! aslint: disable=W1304
     implicit none
+    integer :: n
     integer(kind=4) :: icpc(*)
     integer :: icpd(n), icpl(0:n)
-!
 !-----------------------------------------------------------------------
-    integer :: i, k, k1, k2, n
+    integer :: i, k, k1, k2
 !-----------------------------------------------------------------------
     k1 = 1
     do 30 i = 1, n

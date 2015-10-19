@@ -15,20 +15,23 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-#include "asterf_types.h"
-!
-interface
-    subroutine ntinit(modele, mate    , carele, lischa, solveu,&
-                      para  , numedd  , lostat, l_evol, lnonl ,&
-                      sddisc, ds_inout, mailla, sdcrit, time)
-        use NonLin_Datastructure_type
-        aster_logical :: lostat, l_evol, lnonl
-        character(len=19) :: lischa, solveu
-        character(len=19) :: sddisc, sdcrit
-        character(len=24) :: modele, mate, carele
-        character(len=24) :: numedd, time
-        type(NL_DS_InOut), intent(inout) :: ds_inout
-        character(len=8) :: mailla
-        real(kind=8) :: para(*)
-    end subroutine ntinit
-end interface
+          interface 
+            subroutine ntinit(modele,mate,carele,lischa,para,numedd,    &
+     &lostat,l_evol,lnonl,sddisc,ds_inout,mailla,sdcrit,time)
+              use nonlin_datastructure_type
+              character(len=24) :: modele
+              character(len=24) :: mate
+              character(len=24) :: carele
+              character(len=19) :: lischa
+              real(kind=8) :: para(*)
+              character(len=24) :: numedd
+              aster_logical :: lostat
+              aster_logical :: l_evol
+              aster_logical :: lnonl
+              character(len=19) :: sddisc
+              type (NL_DS_InOut), intent(inout) :: ds_inout
+              character(len=8) :: mailla
+              character(len=19) :: sdcrit
+              character(len=24) :: time
+            end subroutine ntinit
+          end interface 

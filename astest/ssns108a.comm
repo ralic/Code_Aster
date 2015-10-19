@@ -136,7 +136,7 @@ modele_aff.append({'GROUP_MA':  MURS,
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                INFO=1,
-               
+
                AFFE=modele_aff,
                 ) ;
 
@@ -283,9 +283,7 @@ MASS_ELE = CALC_MATR_ELEM( MODELE=MO,
                            CHAM_MATER=MATER,
                            CHARGE=CHAR0);
 
-NUM_DDL = NUME_DDL( MATR_RIGI=RIGI_ELE,
-                     METHODE='LDLT',
-                     RENUM='SANS');
+NUM_DDL = NUME_DDL( MATR_RIGI=RIGI_ELE); 
 
 MASSE = ASSE_MATRICE( MATR_ELEM=MASS_ELE,
                          NUME_DDL=NUM_DDL );
