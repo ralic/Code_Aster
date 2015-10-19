@@ -1,5 +1,4 @@
-subroutine nmctce(model    , mesh, ds_contact, sddyna, sddisc,&
-                  nume_inst)
+subroutine mmchml_l(ds_contact, ligrcf, chmlcf, sddyna, time_incr)
 !
 use NonLin_Datastructure_type
 !
@@ -7,11 +6,6 @@ implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/mmchml.h"
-#include "asterfort/xmcart.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,58 +23,28 @@ implicit none
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=8), intent(in) :: model
-    character(len=8), intent(in) :: mesh
     type(NL_DS_Contact), intent(in) :: ds_contact
-    character(len=19), intent(in)  :: sddyna
-    character(len=19), intent(in)  :: sddisc
-    integer, intent(in) :: nume_inst
+    character(len=19), intent(in) :: ligrcf
+    character(len=19), intent(in) :: chmlcf
+    character(len=19), intent(in) :: sddyna
+    real(kind=8), intent(in) :: time_incr
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! MECA_NON_LINE - Continue/XFEM method
+! Contact - Solve
 !
-! Create elements for contact
+! LAC method - Create and fill input field
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  model            : name of model
 ! In  mesh             : name of mesh
 ! In  ds_contact       : datastructure for contact management
-! In  sddyna           : dynamic parameters datastructure
 ! In  sddisc           : datastructure for time discretization
-! In  nume_inst        : index of current step time
+! In  sddyna           : datastructure for dynamic
+! In  nume_inst        : index of current time step
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: cont_form
-    aster_logical :: l_cont_xfem_gg
-!
-! --------------------------------------------------------------------------------------------------
-!
-    call infdbg('MECANONLINE', ifm, niv)
-    if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> Create input fields for contact'
-    endif
-!
-! - Parameters
-!
-    cont_form      = cfdisi(ds_contact%sdcont_defi,'FORMULATION')
-    l_cont_xfem_gg = cfdisl(ds_contact%sdcont_defi,'CONT_XFEM_GG')
-!
-! - Create input fields for contact
-!
-    if (cont_form .eq. 2) then
-        call mmchml(ds_contact, sddisc, sddyna, nume_inst)
-    elseif  (cont_form .eq. 3) then
-        if (l_cont_xfem_gg) then
-            call xmcart(mesh, model, ds_contact)
-        endif
-    else
-        ASSERT(.false.)
-    endif
-!
+
 end subroutine

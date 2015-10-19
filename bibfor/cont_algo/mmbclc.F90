@@ -127,7 +127,7 @@ implicit none
     if (lnewtc .or. lnewtg) then
         call nmtime(sdtime, 'INI', 'CTCC_PREP')
         call nmtime(sdtime, 'RUN', 'CTCC_PREP')
-        call mmchml(mesh, ds_contact, sddisc, sddyna, numins)
+        call mmchml(ds_contact, sddisc, sddyna, numins)
         call nmtime(sdtime, 'END', 'CTCC_PREP')
         call nmrinc(sdstat, 'CTCC_PREP')
     endif

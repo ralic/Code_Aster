@@ -16,11 +16,12 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mmchml(ds_contact, sddisc, sddyna, nume_inst)
+    subroutine mmchml_c(ds_contact, ligrcf, chmlcf, sddyna, time_incr)
         use NonLin_Datastructure_type
         type(NL_DS_Contact), intent(in) :: ds_contact
-        character(len=19), intent(in) :: sddisc
+        character(len=19), intent(in) :: ligrcf
+        character(len=19), intent(in) :: chmlcf
         character(len=19), intent(in) :: sddyna
-        integer, intent(in) :: nume_inst
-    end subroutine mmchml
+        real(kind=8), intent(in) :: time_incr
+    end subroutine mmchml_c
 end interface

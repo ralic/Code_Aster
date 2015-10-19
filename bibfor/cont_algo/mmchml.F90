@@ -1,28 +1,18 @@
-subroutine mmchml(mesh, ds_contact, sddisc, sddyna, nume_inst)
+subroutine mmchml(ds_contact, sddisc, sddyna, nume_inst)
 !
 use NonLin_Datastructure_type
 !
 implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/alchml.h"
 #include "asterfort/assert.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/cfmmco.h"
-#include "asterfort/cfmmvd.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/cfdisl.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/diinst.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/mmimp3.h"
-#include "asterfort/mminfi.h"
-#include "asterfort/mminfr.h"
-#include "asterfort/ndynlo.h"
-#include "asterfort/ndynre.h"
+#include "asterfort/mmchml_c.h"
+#include "asterfort/mmchml_l.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,81 +31,38 @@ implicit none
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    character(len=8), intent(in) :: mesh
     type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19), intent(in) :: sddisc
     character(len=19), intent(in) :: sddyna
     integer, intent(in) :: nume_inst
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (METHODE CONTINUE - CREATION OBJETS - CHAM_ELEM)
+! Contact - Solve
 !
-! CREATION DU CHAM_ELEM CONTENANT LES INFOS DE CONTACT
+! Continue methods - Create and fill input field
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! In  mesh             : name of mesh
 ! In  ds_contact       : datastructure for contact management
+! In  sddisc           : datastructure for time discretization
+! In  sddyna           : datastructure for dynamic
+! In  nume_inst        : index of current time step
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: ncmp = 28
-    integer :: ztabf
-    integer :: iptc, izone, ntpc
-    character(len=24) :: jeusup
-    integer :: jjsup
-    character(len=24) :: tabfin
-    integer :: jtabf
-    integer :: jvalv
-    character(len=19) :: ligrcf, chmlcf
     integer :: ifm, niv
-    character(len=24) :: sd_cycl_his
-    integer :: jcyhis
-    real(kind=8) :: instam, instap, deltat
-    aster_logical :: ldyna, ltheta, lappar
-    real(kind=8) :: theta
-    integer :: iform
-    real(kind=8) :: coefff
-    real(kind=8) :: coefac, coefaf
-    integer :: ialgoc, ialgof
-    integer :: iresof, iresog
-    integer :: iret, ntliel, decal
-    integer :: nbgrel, nbliel
-    integer :: igr, iel
-    character(len=24) :: celd, celv
-    integer :: jceld, jcelv, jliel
-    integer :: nceld1, nceld2, nceld3
-    parameter   (nceld1=4,nceld2=4,nceld3=4)
+    character(len=19) :: ligrcf, chmlcf
+    real(kind=8) :: time_prev, time_curr, time_incr
+    aster_logical :: l_new_pair, l_cont_cont, l_cont_lac
+    integer :: iret
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('CONTACT', ifm, niv)
     if (niv .ge. 2) then
         write (ifm,*) '<CONTACT> CREATION DU CHAM_ELEM POUR LES ELEMENTS DE CONTACT'
     endif
-!
-! --- ACCES OBJETS
-!
-    jeusup = ds_contact%sdcont_solv(1:14)//'.JSUPCO'
-    tabfin = ds_contact%sdcont_solv(1:14)//'.TABFIN'
-    call jeveuo(jeusup, 'L', jjsup)
-    call jeveuo(tabfin, 'L', jtabf)
-!
-    ztabf = cfmmvd('ZTABF')
-!
-! - Acces to cycling objects
-!
-    sd_cycl_his = ds_contact%sdcont_solv(1:14)//'.CYCHIS'
-    call jeveuo(sd_cycl_his, 'L', jcyhis)
-!
-! --- FONCTIONNALITES ACTIVEES
-!
-    ldyna = ndynlo(sddyna,'DYNAMIQUE')
-    ltheta = ndynlo(sddyna,'THETA_METHODE')
-    iresof = cfdisi(ds_contact%sdcont_defi,'ALGO_RESO_FROT')
-    iresog = cfdisi(ds_contact%sdcont_defi,'ALGO_RESO_GEOM')
 !
 ! - <LIGREL> for contact elements
 !
@@ -125,108 +72,33 @@ implicit none
 !
     chmlcf = ds_contact%field_input
 !
-! --- INITIALISATIONS
+! - Get parameters
 !
-    ntpc = nint(zr(jtabf-1+1))
-    instam = diinst(sddisc,nume_inst-1)
-    instap = diinst(sddisc,nume_inst)
-    deltat = instap-instam
-    theta = 0.d0
-    iform = 0
-    if (ldyna) then
-        if (ltheta) then
-            theta = ndynre(sddyna,'THETA')
-            iform = 2
-        else
-            iform = 1
-        endif
-    endif
+    l_cont_cont  = cfdisl(ds_contact%sdcont_defi, 'FORMUL_CONTINUE')
+    l_cont_lac   = .false._1
+!   l_cont_lac   = cfdisl(ds_contact%sdcont_defi, 'FORMUL_LAC')
 !
-! --- DESTRUCTION/CREATION DU CHAM_ELEM SI NECESSAIRE
+! - Get time parameters
 !
-    lappar = ds_contact%l_renumber
-    if (lappar) then
+    time_prev = diinst(sddisc,nume_inst-1)
+    time_curr = diinst(sddisc,nume_inst)
+    time_incr = time_curr-time_prev
+!
+! - Create input field
+!
+    l_new_pair = ds_contact%l_renumber
+    if (l_new_pair) then
         call detrsd('CHAM_ELEM', chmlcf)
-        call alchml(ligrcf, 'RIGI_CONT', 'PCONFR', 'V', chmlcf,&
-                    iret, ' ')
+        call alchml(ligrcf, 'RIGI_CONT', 'PCONFR', 'V', chmlcf, iret, ' ')
         ASSERT(iret.eq.0)
     endif
 !
-! --- RECUPERATION DU DESCRIPTEUR DU CHAM_ELEM
+! - Fill input field
 !
-    celd = chmlcf//'.CELD'
-    call jeveuo(celd, 'L', jceld)
-    nbgrel = zi(jceld-1+2)
+    if (l_cont_cont) then
+        call mmchml_c(ds_contact, ligrcf, chmlcf, sddyna, time_incr)
+    else if (l_cont_lac) then
+!       call mmchml_l(ds_contact, ligrcf, chmlcf, sddyna, time_incr)
+    endif
 !
-! --- ACCES AUX VALEURS DU CHAM_ELEM
-!
-    celv = chmlcf//'.CELV'
-    call jeveuo(celv, 'E', jcelv)
-!
-! --- REMPLISSAGE DU CHAM_ELEM
-!
-    ntliel = 0
-    do igr = 1, nbgrel
-!       ADRESSE DANS CELD DES INFORMATIONS DU GREL IGR
-        decal = zi(jceld-1+nceld1+igr)
-!       NOMBRE D'ELEMENTS DU GREL IGR
-        nbliel = zi(jceld-1+decal+1)
-!       VERIF TAILLE CHAM_ELEM
-        ASSERT(zi(jceld-1+decal+3).eq.ncmp)
-!       RECUPERATION DES MAILLES DU GREL IGR
-        call jeveuo(jexnum(ligrcf//'.LIEL', igr), 'L', jliel)
-        do iel = 1, nbliel
-!         MAILLE TARDIVE ZI(JLIEL-1+IEL) < 0
-            iptc = -zi(jliel-1+iel)
-            izone = nint(zr(jtabf+ztabf*(iptc-1)+13))
-            coefff = mminfr(ds_contact%sdcont_defi,'COEF_COULOMB' ,izone )
-            ialgoc = mminfi(ds_contact%sdcont_defi,'ALGO_CONT' ,izone )
-            ialgof = mminfi(ds_contact%sdcont_defi,'ALGO_FROT' ,izone )
-            call cfmmco(ds_contact, izone, 'COEF_AUGM_CONT', 'L', coefac)
-            call cfmmco(ds_contact, izone, 'COEF_AUGM_FROT', 'L', coefaf)
-!         ADRESSE DANS CELV DE L'ELEMENT IEL DU GREL IGR
-            jvalv = jcelv-1+zi(jceld-1+decal+nceld2+nceld3*(iel-1)+4)
-! ------- DONNNES DE PROJECTION
-            zr(jvalv-1+1) = zr(jtabf+ztabf*(iptc-1)+3 )
-            zr(jvalv-1+2) = zr(jtabf+ztabf*(iptc-1)+4 )
-            zr(jvalv-1+3) = zr(jtabf+ztabf*(iptc-1)+5 )
-            zr(jvalv-1+4) = zr(jtabf+ztabf*(iptc-1)+6 )
-            zr(jvalv-1+5) = zr(jtabf+ztabf*(iptc-1)+7 )
-            zr(jvalv-1+6) = zr(jtabf+ztabf*(iptc-1)+8 )
-            zr(jvalv-1+7) = zr(jtabf+ztabf*(iptc-1)+9 )
-            zr(jvalv-1+8) = zr(jtabf+ztabf*(iptc-1)+10)
-            zr(jvalv-1+9) = zr(jtabf+ztabf*(iptc-1)+11)
-            zr(jvalv-1+10) = zr(jtabf+ztabf*(iptc-1)+12)
-            zr(jvalv-1+11) = zr(jtabf+ztabf*(iptc-1)+14)
-! ------- STATUT DE CONTACT
-            zr(jvalv-1+12) = zr(jtabf+ztabf*(iptc-1)+22)
-! ------- SEUIL DE FROTTEMENT
-            zr(jvalv-1+13) = zr(jtabf+ztabf*(iptc-1)+16)
-! ------- JEU SUPPLEMENTAIRE
-            zr(jvalv-1+14) = zr(jjsup-1+iptc)
-! ------- ALGO/COEF DU CONTACT
-            zr(jvalv-1+15) = ialgoc
-            zr(jvalv-1+16) = zr(jcyhis-1+25*(iptc-1)+2)
-! ------- ALGO/COEF DU FROTTEMENT
-            zr(jvalv-1+17) = iresof
-            zr(jvalv-1+25) = iresog
-            zr(jvalv-1+18) = ialgof
-            zr(jvalv-1+19) = zr(jcyhis-1+25*(iptc-1)+6)
-            zr(jvalv-1+20) = coefff
-! ------- EXCLUSION
-            zr(jvalv-1+21) = zr(jtabf+ztabf*(iptc-1)+19)
-! ------- DYNAMIQUE
-            zr(jvalv-1+22) = iform
-            zr(jvalv-1+23) = deltat
-            zr(jvalv-1+24) = theta
-!
-            if (niv .ge. 2) then
-                call mmimp3(ifm, mesh, iptc, jvalv, jtabf)
-            endif
-        enddo
-        ntliel = ntliel + nbliel
-    enddo
-    ASSERT(ntliel.eq.ntpc)
-!
-    call jedema()
 end subroutine
