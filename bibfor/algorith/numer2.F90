@@ -72,7 +72,6 @@ implicit none
     character(len=24) :: sd_iden_rela
     character(len=3) :: matd
     logical :: l_matr_dist
-    character(len=24), pointer :: nslv(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

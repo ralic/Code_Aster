@@ -55,7 +55,6 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
     integer ::  nblime
     character(len=24), pointer :: lime(:) => null()
     character(len=24), pointer :: refa(:) => null()
-    integer, pointer :: deeq(:) => null()
     character(len=24), pointer :: slvk(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()

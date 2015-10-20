@@ -62,8 +62,6 @@ subroutine op0046()
 #include "asterfort/utmess.h"
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
-    character(len=6) :: nompro
-    parameter ( nompro = 'OP0046' )
 !
     integer :: ibid, nh, nbchre, n1, n4, n5, n7
     integer :: iordr, nbmax, nchar, jchar

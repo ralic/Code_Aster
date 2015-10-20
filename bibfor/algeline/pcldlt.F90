@@ -86,7 +86,6 @@ subroutine pcldlt(matf, mat, niremp, base)
     integer, pointer :: smdi(:) => null()
     character(len=24), pointer :: refa(:) => null()
     character(len=24), pointer :: refaf(:) => null()
-    integer, pointer :: perm(:) => null()
 
 !----------------------------------------------------------------------
     call jemarq()
