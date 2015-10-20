@@ -27,4 +27,3 @@ interface
     end function in_liste_entier
 end interface
 
-

@@ -23,4 +23,3 @@ interface
         character(len=255), intent(out) :: table_line
     end subroutine PrepareTableLine
 end interface
-

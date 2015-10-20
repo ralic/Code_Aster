@@ -26,4 +26,3 @@ interface
         aster_logical, optional, intent(out) :: l_refe_test_
     end subroutine GetResiRefe
 end interface
-

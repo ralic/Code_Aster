@@ -218,4 +218,3 @@ subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, eps, vint, a, ap1, ap2, as1, 
     end do
 !
 end subroutine dhrc_calc_a
-

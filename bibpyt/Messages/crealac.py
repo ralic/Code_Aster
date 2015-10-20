@@ -24,4 +24,3 @@ cata_msg = {
 Cette maille n'est pas valable pour la méthode LAC de contact.
 """),
 }
-

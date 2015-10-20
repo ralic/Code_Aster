@@ -42,4 +42,3 @@ IMPR_RESU_SP=MACRO(nom="IMPR_RESU_SP",
     UNITE =SIMP(statut='o',typ='I',max=1,min=1,fr=tr("Unité du fichier d'archive.")),
 )
 
-

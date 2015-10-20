@@ -26,4 +26,3 @@ interface
 
     end subroutine crea_nume_erc
 end interface 
-

@@ -594,4 +594,3 @@ def itersimcortir_SRO(self, FONC_DSP, data_cohe, NB_TIR, **SRO_args):
     return f_dsp_opt, list_rv
 
 
-

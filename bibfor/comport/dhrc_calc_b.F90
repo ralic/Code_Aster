@@ -78,4 +78,3 @@ subroutine dhrc_calc_b(ab, gb, vint, b, bp1, bp2, bs1, bs2)
     end do
 !
 end subroutine
-

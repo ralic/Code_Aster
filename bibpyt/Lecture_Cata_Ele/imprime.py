@@ -1780,4 +1780,3 @@ def verif_phenmode(capy):
     s3=s2.difference(s1)
     for tyel in s3 :
         ERR.mess('E', "L'element "+tyel+" n'est pas decrit dans un catalogue d'element .")
-

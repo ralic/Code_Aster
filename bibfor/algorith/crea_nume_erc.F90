@@ -263,4 +263,3 @@ subroutine crea_nume_erc(baseno, numnu,matprod,nom_nume_erc,nom_matr_erc,nom_vec
     valei(8)=nozero*2-2*neq 
 !
 end subroutine
-

@@ -32,4 +32,3 @@ interface
         aster_logical, optional, intent(in) :: l_resi_test_
     end subroutine SetResi
 end interface
-
