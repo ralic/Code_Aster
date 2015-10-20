@@ -95,7 +95,8 @@ class ListProtocol(Protocol):
 
     def default(self, obj):
         if type(obj) is tuple:
-            if len(obj) > 0 and obj[0] in ('RI', 'MP'):
+            if (len(obj) == 3 and obj[0] in ('RI', 'MP')
+                and is_float_or_int(obj[1]) and is_float_or_int(obj[2])):
                 # il s'agit d'un complexe ancienne mode. La cardinalite vaut 1
                 return (obj,)
             else:
