@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -15,19 +15,9 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-#include "asterf_types.h"
-!
 interface
-    subroutine rcZ200(sn, snet, fatigu, lrocht,&
-                      mater, symax, transip, transif, fatiguenv)
-        aster_logical :: sn
-        aster_logical :: snet
-        aster_logical :: fatigu
-        aster_logical :: lrocht
-        character(len=8) :: mater
-        real(kind=8) :: symax
-        aster_logical :: transip
-        aster_logical :: transif
-        aster_logical :: fatiguenv
-    end subroutine rcZ200
+    subroutine rcZ2r1env(nomres)
+        character(len=8) :: nomres
+    end subroutine rcZ2r1env
 end interface
+

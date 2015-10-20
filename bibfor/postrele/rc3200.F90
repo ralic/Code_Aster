@@ -1,5 +1,5 @@
 subroutine rc3200(pmpb, sn, snet, fatigu, lrocht,&
-                  mater, symax)
+                  mater, symax, fatiguenv)
     implicit none
 #include "asterf_types.h"
 #include "asterfort/jedetc.h"
@@ -13,6 +13,7 @@ subroutine rc3200(pmpb, sn, snet, fatigu, lrocht,&
 #include "asterfort/rc32in.h"
     real(kind=8) :: symax
     aster_logical :: pmpb, sn, snet, fatigu, lrocht
+    aster_logical :: fatiguenv
     character(len=8) :: mater
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -89,14 +90,14 @@ subroutine rc3200(pmpb, sn, snet, fatigu, lrocht,&
 !     -------------------------
 !
     call rc32ac(pmpb, sn, snet, fatigu, lrocht,&
-                mater)
+                mater, fatiguenv)
 !
 !
 ! --- STOCKAGE DES RESULTATS
 !     ----------------------
 !
     call rc32rs(pmpb, sn, snet, fatigu, lrocht,&
-                mater, symax)
+                mater, symax, fatiguenv)
 !
     call jedetc('V', '&&RC3200', 1)
 !

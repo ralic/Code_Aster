@@ -19,12 +19,13 @@
 !
 interface
     subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
-                      mater)
+                      mater, fatiguenv)
         aster_logical :: lpmpb
         aster_logical :: lsn
         aster_logical :: lsnet
         aster_logical :: lfatig
         aster_logical :: lrocht
         character(len=8) :: mater
+        aster_logical :: fatiguenv
     end subroutine rc32ac
 end interface

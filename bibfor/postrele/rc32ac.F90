@@ -1,5 +1,5 @@
 subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
-                  mater)
+                  mater, fatiguenv)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -15,6 +15,7 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/jexnom.h"
 #include "asterfort/rc3201.h"
 #include "asterfort/rc32pm.h"
 #include "asterfort/rc32rt.h"
@@ -24,7 +25,8 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
 #include "asterfort/rcma02.h"
 #include "asterfort/rcmo02.h"
 #include "asterfort/wkvect.h"
-    aster_logical :: lpmpb, lsn, lsnet, lfatig, lrocht
+#include "asterfort/codent.h"
+    aster_logical :: lpmpb, lsn, lsnet, lfatig, lrocht, fatiguenv
     character(len=8) :: mater
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -79,16 +81,17 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
 !     ------------------------------------------------------------------
 !
     integer :: ig, nbgr, nbsigr, jnsg, is1, ioc1, nocc, numgr, jcombi
-    integer :: im, npass, ifm, niv, iocs, jresu
+    integer :: im, npass, ifm, niv, iocs, jresu, jfen1
     integer :: nsitup, nsituq, iret, i1, jfact, i, j, jreas, jress
     integer :: jreca, jrecs, ndim, nbp12, nbp23, nbp13
     real(kind=8) :: ppi, ppj, snmax, spmax, samax, utot, saltij(2), typeke, ug
     real(kind=8) :: pmbmax, fuij(2), mpi(12), mpj(12), sm, sn, snet, sp(2), smm
     real(kind=8) :: matpi(8), matpj(8), mse(12), spmeca(2), spther(2), spthem
     real(kind=8) :: spmecm, kemeca, kether, pm, pb, pmpb, sipmax, simpij, snemax
-    real(kind=8) :: kemax, pmmax, pbmax
+    real(kind=8) :: kemax, pmmax, pbmax, utotenv, feni, ke
     aster_logical :: seisme, cfait
     character(len=4) :: lieu(2)
+    character(len=8) :: knume1
     character(len=24) :: k24as, k24ss, k24ca, k24cs, k24fu
     integer, pointer :: situ_numero(:) => null()
     real(kind=8), pointer :: situ_pres_a(:) => null()
@@ -186,6 +189,7 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
         spthem = 0.d0
         samax = 0.d0
         utot = 0.d0
+        utotenv = 0.d0
         sipmax = 0.d0
 !
 ! ----------------------------------------------------------------------
@@ -227,7 +231,7 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
             call jeveuo(jexnum(k24cs, ig), 'E', jrecs)
 !
             call jecroc(jexnum(k24fu, ig))
-            call jeecra(jexnum(k24fu, ig), 'LONMAX', 4*50)
+            call jeecra(jexnum(k24fu, ig), 'LONMAX', 6*50)
             call jeveuo(jexnum(k24fu, ig), 'E', jfact)
 !
             if (ig .eq. 1) then
@@ -248,9 +252,9 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
             call rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
                         lieu(im), numgr, iocs, seisme, npass,&
                         mater, snmax, snemax, spmax, kemax,&
-                        spmecm, spthem, samax, utot, sm,&
+                        spmecm, spthem, samax, utot, utotenv, sm,&
                         sipmax, zr(jreas), zr(jress), zr(jreca), zr(jrecs),&
-                        zr(jfact), pmmax, pbmax, pmbmax)
+                        zr(jfact), pmmax, pbmax, pmbmax, fatiguenv)
 !
 100     continue
 !
@@ -418,6 +422,17 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
                 if (niv .ge. 2) then
                     write (ifm,2060) nsitup, ug
                 endif
+!
+                if (typeke .lt. 0) then
+                    ke = kemeca
+                else
+                    ke = (kemeca*spmeca(1)+kether*(sp(1)-spmeca(1)))/(sp(1))
+                endif
+                if (fatiguenv) then
+                    call rcZ2env(nsitup, nsitup, ke, feni)
+                    utotenv = utotenv + ug*feni
+                endif
+!
                 utot = utot + ug
 !
 210         continue
@@ -469,7 +484,7 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
             call jeveuo(jexnum(k24cs, ig), 'E', jrecs)
 !
             call jecroc(jexnum(k24fu, ig))
-            call jeecra(jexnum(k24fu, ig), 'LONMAX', 4*50)
+            call jeecra(jexnum(k24fu, ig), 'LONMAX', 6*50)
             call jeveuo(jexnum(k24fu, ig), 'E', jfact)
 !
             npass = 7
@@ -477,9 +492,9 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
             call rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
                         lieu(im), numgr, iocs, seisme, npass,&
                         mater, snmax, snemax, spmax, kemax,&
-                        spmecm, spthem, samax, utot, sm,&
+                        spmecm, spthem, samax, utot, utotenv, sm,&
                         sipmax, zr(jreas), zr(jress), zr(jreca), zr(jrecs),&
-                        zr(jfact), pmmax, pbmax, pmbmax)
+                        zr(jfact), pmmax, pbmax, pmbmax, fatiguenv)
 !
 !
 310     continue
@@ -489,7 +504,7 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
 ! ------ ON STOCKE LES RESULTATS DE CALCUL
 !        ---------------------------------
 !
-        call wkvect('&&RC3200.RESULTAT  .'//lieu(im), 'V V R', 13, jresu)
+        call wkvect('&&RC3200.RESULTAT  .'//lieu(im), 'V V R', 14, jresu)
 !        - LE PM
         zr(jresu ) = pmmax
 !        - LE PB
@@ -516,9 +531,11 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
         zr(jresu+9) = samax
 !        - LE FACTEUR D'USAGE TOTAL
         zr(jresu+10) = utot
+!        - LE FACTEUR D'USAGE TOTAL AVEC ENVIRONNEMENT
+        zr(jresu+11) = utotenv
 !        - LE ROCHET THERMIQUE
-        zr(jresu+11) = sipmax
-        zr(jresu+12) = spthem
+        zr(jresu+12) = sipmax
+        zr(jresu+13) = spthem
 !
         if (lfatig) write (ifm,2070) utot
 !

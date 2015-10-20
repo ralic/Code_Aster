@@ -21,9 +21,9 @@ interface
     subroutine rcZ201(transip, transif, lsn, lsnet, lfatig, lrocht,&
                       lieu, ig, iocs, seisme, npass,&
                       mater, snmax, snemax, spmax, kemax,&
-                      spmecm, spthem, samax, utot, sm,&
+                      spmecm, spthem, samax, utot, utotenv, sm,&
                       sigpm, resuas, resuss, resuca, resucs,&
-                      factus)
+                      factus, fatiguenv)
         aster_logical :: transip
         aster_logical :: transif
         aster_logical :: lsn
@@ -44,6 +44,7 @@ interface
         real(kind=8) :: spthem
         real(kind=8) :: samax
         real(kind=8) :: utot
+        real(kind=8) :: utotenv
         real(kind=8) :: sm
         real(kind=8) :: sigpm
         real(kind=8) :: resuas(*)
@@ -51,5 +52,6 @@ interface
         real(kind=8) :: resuca(*)
         real(kind=8) :: resucs(*)
         real(kind=8) :: factus(*)
+        aster_logical :: fatiguenv
     end subroutine rcZ201
 end interface

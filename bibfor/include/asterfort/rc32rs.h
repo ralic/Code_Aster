@@ -19,7 +19,7 @@
 !
 interface
     subroutine rc32rs(pmpb, sn, snet, fatigu, lrocht,&
-                      mater, symax)
+                      mater, symax, fatiguenv)
         aster_logical :: pmpb
         aster_logical :: sn
         aster_logical :: snet
@@ -27,5 +27,6 @@ interface
         aster_logical :: lrocht
         character(len=8) :: mater
         real(kind=8) :: symax
+        aster_logical :: fatiguenv
     end subroutine rc32rs
 end interface

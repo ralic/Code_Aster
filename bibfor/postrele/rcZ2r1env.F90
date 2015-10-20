@@ -1,6 +1,7 @@
-subroutine rcZ2r1(nomres)
+subroutine rcZ2r1env(nomres)
     implicit none
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/codent.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jelira.h"
@@ -8,11 +9,12 @@ subroutine rcZ2r1(nomres)
 #include "asterfort/jexnum.h"
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
+#include "asterfort/getvr8.h"
 !
     character(len=8) :: nomres
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -28,7 +30,7 @@ subroutine rcZ2r1(nomres)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !     ------------------------------------------------------------------
-!     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_B3200
+!     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_ENV
 !     STOCKAGE DES RESULTATS DANS LA TABLE DE SORTIE
 !
 !     ------------------------------------------------------------------
@@ -36,10 +38,10 @@ subroutine rcZ2r1(nomres)
     integer :: ibid, npar2, npar1, npar4, npar6, im, ig, is, i3, nbsigr
     integer :: valei(3),   jnsg, jvale, jpmpb, nbgr, ioc, numgr
     integer :: is1, is2, jreas, jress, n1,  jcombi, ioc1, ioc2, iocs, ii
-    integer :: npar0
-    parameter    ( npar0 = 28, npar2 = 7, npar1 = 11, npar4 = 12,&
-     &               npar6 = 9 )
-    real(kind=8) :: utot, valer(2)
+    integer :: npar0, n5
+    parameter    ( npar0 = 31, npar2 = 9, npar1 = 11, npar4 = 12,&
+     &               npar6 = 10 )
+    real(kind=8) :: utot, valer(4), fenint, utotenv
     complex(kind=8) :: c16b
     character(len=4) :: lieu(2)
     character(len=8) :: k8b, valek(4), typar0(npar0), typar6(npar6), typtab
@@ -54,24 +56,25 @@ subroutine rcZ2r1(nomres)
 !
     data nopar0 / 'TYPE', 'SEISME', 'NUME_GROUPE', 'LIEU' ,&
      &              'SN/3SM' , 'SN_MAX' , 'SN*_MAX' , 'SP_MAX',&
-     &              'KE_MAX', 'SALT_MAX', 'FACT_USAGE_CUMU',&
+     &              'KE_MAX', 'SALT_MAX', 'FACT_USAGE_CUMU','FACT_US_CUMU_ENV',&
      &              'NUME_SITU', 'NUME_SITU_I', 'NUME_SITU_J',&
      &              'SN', 'SN*', 'SP', 'KE_MECA',&
      &              'KE_THER', 'SALT', 'NUME_SITU_K', 'NUME_SITU_L',&
-     &              'FACT_USAGE',  '%_FACT_USAGE' ,&
+     &              'FACT_USAGE',  '%_FACT_USAGE' ,'FACT_ENV' ,'FACT_US_ENV',&
      &              'SP1_IJ', 'SP2_IJ', 'SALT1_IJ', 'SALT2_IJ' /
-    data typar0 / 'K8', 'K8', 'I', 'K8',&
-     &            'R', 'R', 'R', 'R',&
-     &            'R', 'R', 'R',&
-     &            'I', 'I', 'I',&
+    data typar0 / 'K8', 'K8', 'I', 'K8',& 
+     &            'R','R', 'R', 'R',&
+     &            'R', 'R', 'R', 'R' ,&
+     &            'I', 'I', 'I',& 
      &            'R', 'R', 'R', 'R',&
      &            'R', 'R', 'K8', 'K8',&
-     &            'R', 'R', 'R', 'R', 'R', 'R'  /
+     &            'R', 'R','R', 'R',&
+     &            'R', 'R', 'R', 'R'  /
 !
 ! --- PARAMETRES FACTEUR D'USAGE
 !
     data nopar2 / 'TYPE', 'NUME_GROUPE', 'LIEU', 'NUME_SITU_K',&
-     &              'NUME_SITU_L', 'FACT_USAGE' , '%_FACT_USAGE' /
+     &              'NUME_SITU_L', 'FACT_USAGE' , '%_FACT_USAGE', 'FACT_ENV' ,'FACT_US_ENV' /
 !
 ! --- PARAMETRES POUR LE CALCUL DU FACTEUR D'USAGE
 !
@@ -87,11 +90,12 @@ subroutine rcZ2r1(nomres)
 !
 ! --- PARAMETRES POUR LES MAXIMA
 !
-    data nopar6 / 'TYPE', 'LIEU', 'SN/3SM' , 'SN_MAX' , 'SN*_MAX' ,&
-     &             'SP_MAX', 'KE_MAX', 'SALT_MAX', 'FACT_USAGE_CUMU' /
+    data nopar6 / 'TYPE', 'LIEU',&
+     &              'SN/3SM' , 'SN_MAX' , 'SN*_MAX' , 'SP_MAX',&
+     &              'KE_MAX', 'SALT_MAX', 'FACT_USAGE_CUMU' ,'FACT_US_CUMU_ENV'/
 !
-    data typar6 / 'K8', 'K8', 'R', 'R','R',&
-     &            'R', 'R', 'R', 'R'  /
+    data typar6 / 'K8', 'K8', 'R', 'R',&
+     &                          'R', 'R', 'R', 'R', 'R', 'R'   /
 ! DEB ------------------------------------------------------------------
 !
     ibid=0
@@ -123,6 +127,14 @@ subroutine rcZ2r1(nomres)
         valek(2) = lieu(im)
 !
         call jeveuo('&&RC3200.RESULTAT  .'//lieu(im), 'L', jvale)
+!
+        utot = zr(jvale+6)
+        utotenv = zr(jvale+7)
+        call getvr8('ENVIRONNEMENT', 'FEN_INTEGRE', iocc=1, scal=fenint, nbret=n5)
+        if (utotenv/utot .gt. fenint) then
+            utotenv = utotenv/fenint
+            zr(jvale+7)=utotenv  
+        endif
 !
         call tbajli(nomres, npar6, nopar6, [ibid], zr(jvale),&
                     [c16b], valek, 0)
@@ -215,6 +227,8 @@ subroutine rcZ2r1(nomres)
 !
             call jeveuo('&&RC3200.RESULTAT  .'//lieu(im), 'L', jvale)
             utot = zr(jvale+6)
+            utotenv = zr(jvale+7)
+            call getvr8('ENVIRONNEMENT', 'FEN_INTEGRE', iocc=1, scal=fenint, nbret=n5)
 !
             k24t = '&&RC3200.FACT_USAGE '//lieu(im)
             call jeveuo(jexnum(k24t, numgr), 'L', jpmpb)
@@ -224,6 +238,13 @@ subroutine rcZ2r1(nomres)
                 is1 = int( zr(jpmpb-1+6*(is-1)+2) )
                 is2 = int( zr(jpmpb-1+6*(is-1)+3) )
                 valer(1) = zr(jpmpb-1+6*(is-1)+4)
+                if (utotenv/utot .gt. fenint) then
+                    valer(3) = zr(jpmpb-1+6*(is-1)+5)/fenint
+                    valer(4) = zr(jpmpb-1+6*(is-1)+6)/fenint
+                else
+                    valer(3) = zr(jpmpb-1+6*(is-1)+5)
+                    valer(4) = zr(jpmpb-1+6*(is-1)+6)
+                endif
                 if (utot .eq. 0.d0) then
                     valer(2) = 0.d0
                 else
@@ -244,3 +265,4 @@ subroutine rcZ2r1(nomres)
 9999  continue
 !
 end subroutine
+

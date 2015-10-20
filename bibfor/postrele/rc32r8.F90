@@ -75,8 +75,8 @@ subroutine rc32r8(nomres, mater, symax)
 !
         call jeveuo('&&RC3200.RESULTAT  .'//lieu(im), 'L', jresu)
 !
-        valer(2) = zr(jresu+12)
-        valer(3) = zr(jresu+11)
+        valer(2) = zr(jresu+13)
+        valer(3) = zr(jresu+12)
 !
         call rcmcrt(symax, valer(3), valer(4), valer(5))
 !

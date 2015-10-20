@@ -63,7 +63,7 @@ subroutine rcZ2t()
     complex(kind=8) :: cbid
     aster_logical :: exist
     character(len=8) :: k8b, crit(2), nocmp(ncmp), table, knume, table2
-    character(len=8) :: knumes, table3, tableok
+    character(len=8) :: table3, tableok
     character(len=16) :: motclf, motclf2, motclf3, motclf4, valek(2)
     character(len=24) :: instan, abscur, jvorig, jvextr
     character(len=24) :: valk(7)
@@ -112,8 +112,6 @@ subroutine rcZ2t()
 !
         knume = 'T       '
         call codent(iocc, 'D0', knume(2:8))
-        knumes = 'S       '
-        call codent(iocc, 'D0', knumes(2:8))
 !
         call getvis(motclf4, 'NUME_RESU_THER', iocc=iocc, scal=nume, nbret=n1)
         call getvis(motclf4, 'NUME_RESU_PRES', iocc=iocc, scal=nume2, nbret=n2)

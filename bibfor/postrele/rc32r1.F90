@@ -218,11 +218,11 @@ subroutine rc32r1(nomres)
             k24t = '&&RC3200.FACT_USAGE '//lieu(im)
             call jeveuo(jexnum(k24t, numgr), 'L', jpmpb)
             do 114 is = 1, 50
-                i3 = int( zr(jpmpb-1+4*(is-1)+1) )
+                i3 = int( zr(jpmpb-1+6*(is-1)+1) )
                 if (i3 .eq. 0) goto 116
-                is1 = int( zr(jpmpb-1+4*(is-1)+2) )
-                is2 = int( zr(jpmpb-1+4*(is-1)+3) )
-                valer(1) = zr(jpmpb-1+4*(is-1)+4)
+                is1 = int( zr(jpmpb-1+6*(is-1)+2) )
+                is2 = int( zr(jpmpb-1+6*(is-1)+3) )
+                valer(1) = zr(jpmpb-1+6*(is-1)+4)
                 if (utot .eq. 0.d0) then
                     valer(2) = 0.d0
                 else

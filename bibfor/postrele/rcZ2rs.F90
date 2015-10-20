@@ -1,5 +1,5 @@
 subroutine rcZ2rs(sn, snet, fatigu, lrocht,&
-                  mater, symax)
+                  mater, symax, fatiguenv)
     implicit none
 #include "asterf_types.h"
 #include "asterc/getres.h"
@@ -7,7 +7,8 @@ subroutine rcZ2rs(sn, snet, fatigu, lrocht,&
 #include "asterfort/rcZ2r1.h"
 #include "asterfort/rcZ2r8.h"
 #include "asterfort/tbcrsd.h"
-    aster_logical :: sn, snet, fatigu, lrocht
+#include "asterfort/rcZ2r1env.h"
+    aster_logical :: sn, snet, fatigu, lrocht, fatiguenv
     real(kind=8) :: symax
     character(len=8) :: mater
 !     ------------------------------------------------------------------
@@ -44,9 +45,12 @@ subroutine rcZ2rs(sn, snet, fatigu, lrocht,&
 !
     if (fatigu) then
 !
-        call rcZ2r1(nomres)
+        if (fatiguenv) then
+            call rcZ2r1env(nomres)
+        else
+            call rcZ2r1(nomres)
+        endif
 !
-!     -----------------------------------------------------------------
     else
 !
         call rcZ2r0(nomres, sn, snet)

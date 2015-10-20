@@ -19,12 +19,13 @@
 !
 interface
     subroutine rcZ2rs(sn, snet, fatigu, lrocht,&
-                      mater, symax)
+                      mater, symax, fatiguenv)
         aster_logical :: sn
         aster_logical :: snet
         aster_logical :: fatigu
         aster_logical :: lrocht
         character(len=8) :: mater
         real(kind=8) :: symax
+        aster_logical :: fatiguenv
     end subroutine rcZ2rs
 end interface

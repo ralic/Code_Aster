@@ -1,5 +1,5 @@
 subroutine rc32fp(nbsigr, nocc, situ, sigr, fuij,&
-                  ug, factus)
+                  ke, lieu, ug, factus, ugenv, fatiguenv)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -13,8 +13,13 @@ subroutine rc32fp(nbsigr, nocc, situ, sigr, fuij,&
 #include "asterfort/rc32f4.h"
 #include "asterfort/rc32f5.h"
 #include "asterfort/rc32f6.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/codent.h"
+#include "asterfort/rcZ2env.h"
     integer :: nbsigr, nocc(*), situ(*), sigr(*)
-    real(kind=8) :: fuij(*), ug, factus(*)
+    real(kind=8) :: fuij(*), ug, factus(*), ugenv, ke(*)
+    character(len=4) :: lieu
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -42,10 +47,11 @@ subroutine rc32fp(nbsigr, nocc, situ, sigr, fuij,&
 !     ------------------------------------------------------------------
     integer :: isk, isl, k, l, nk, nl, n0, i1, nsitup, ifm, niv, icompt
     integer :: nbsg1, nbsg2, nbsg3, nbp12, nbp23, nbp13
-    real(kind=8) :: fumax, ukl
-    aster_logical :: trouve, yapass
+    real(kind=8) :: fumax, ukl, fenkl, kekl
+    aster_logical :: trouve, yapass, fatiguenv
     character(len=3) :: typass
     integer, pointer :: passage_sit(:) => null()
+    character(len=8) :: knume1, knume2
 !     ------------------------------------------------------------------
 !
     call infniv(ifm, niv)
@@ -76,6 +82,7 @@ subroutine rc32fp(nbsigr, nocc, situ, sigr, fuij,&
 !
     icompt = 0
     ug = 0.d0
+    ugenv = 0.d0
 !
  10 continue
     fumax = 0.d0
@@ -96,13 +103,21 @@ subroutine rc32fp(nbsigr, nocc, situ, sigr, fuij,&
                 nbp13, sigr, yapass, typass, nsitup)
 !
     ukl = dble( n0 ) * fumax
+    kekl = ke(nbsigr*(isk-1)+isl)
 !
     if (icompt .le. 49) then
         icompt = icompt + 1
-        factus(4*(icompt-1)+1) = 1
-        factus(4*(icompt-1)+2) = situ(isk)
-        factus(4*(icompt-1)+3) = situ(isl)
-        factus(4*(icompt-1)+4) = ukl
+        factus(6*(icompt-1)+1) = 1
+        factus(6*(icompt-1)+2) = situ(isk)
+        factus(6*(icompt-1)+3) = situ(isl)
+        factus(6*(icompt-1)+4) = ukl
+        if (fatiguenv) then
+            call rcZ2env(situ(isk), situ(isl), kekl, lieu, fenkl)
+        else
+            fenkl = 1
+        endif 
+        factus(6*(icompt-1)+5) = fenkl
+        factus(6*(icompt-1)+6) = fenkl*ukl
     endif
 !
     if (niv .ge. 2) then
@@ -155,6 +170,7 @@ subroutine rc32fp(nbsigr, nocc, situ, sigr, fuij,&
     endif
 !
     ug = ug + ukl
+    ugenv = ugenv + fenkl*ukl
     goto 10
 !
 9999 continue

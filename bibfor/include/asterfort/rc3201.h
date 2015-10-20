@@ -21,9 +21,9 @@ interface
     subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
                       lieu, ig, iocs, seisme, npass,&
                       mater, snmax, snemax, spmax, kemax,&
-                      spmecm, spthem, samax, utot, sm,&
+                      spmecm, spthem, samax, utot, utotenv, sm,&
                       sigpm, resuas, resuss, resuca, resucs,&
-                      factus, pmmax, pbmax, pmbmax)
+                      factus, pmmax, pbmax, pmbmax, fatiguenv)
         aster_logical :: lpmpb
         aster_logical :: lsn
         aster_logical :: lsnet
@@ -43,6 +43,7 @@ interface
         real(kind=8) :: spthem
         real(kind=8) :: samax
         real(kind=8) :: utot
+        real(kind=8) :: utotenv
         real(kind=8) :: sm
         real(kind=8) :: sigpm
         real(kind=8) :: resuas(*)
@@ -53,5 +54,6 @@ interface
         real(kind=8) :: pmmax
         real(kind=8) :: pbmax
         real(kind=8) :: pmbmax
+        aster_logical :: fatiguenv
     end subroutine rc3201
 end interface

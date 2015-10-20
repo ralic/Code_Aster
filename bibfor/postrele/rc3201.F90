@@ -1,9 +1,9 @@
 subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
                   lieu, ig, iocs, seisme, npass,&
                   mater, snmax, snemax, spmax, kemax,&
-                  spmecm, spthem, samax, utot, sm,&
+                  spmecm, spthem, samax, utot, utotenv, sm,&
                   sigpm, resuas, resuss, resuca, resucs,&
-                  factus, pmmax, pbmax, pmbmax)
+                  factus, pmmax, pbmax, pmbmax, fatiguenv)
 ! aslint: disable=W1501,W1501,W1504
     implicit none
 #include "asterf_types.h"
@@ -37,10 +37,11 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
 #include "asterfort/as_allocate.h"
 !
     integer :: ig, iocs, npass
-    real(kind=8) :: snmax, snemax, spmax, kemax, samax, utot, sm, sigpm
-    real(kind=8) :: resuas(*), resuss(*), resuca(*), resucs(*), factus(*), pmmax
-    real(kind=8) :: pbmax, pmbmax
+    real(kind=8) :: snmax, snemax, spmax, kemax, samax, utot, sm, sigpm, utotenv
+    real(kind=8) :: resuas(*), resuss(*), resuca(*), resucs(*), factus(*), ke
+    real(kind=8) :: pmmax, pbmax, pmbmax
     aster_logical :: lpmpb, lsn, lsnet, lfatig, lrocht, seisme, lbid
+    aster_logical :: fatiguenv
     character(len=4) :: lieu
     character(len=8) :: mater
 !     ------------------------------------------------------------------
@@ -80,13 +81,13 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
     integer :: nbsigr, nbsig2, jnsg, is1, ioc1, is2, ioc2, inds, jcombi
     integer :: ifm, niv, i1, i2, ndim, nscy, ns, jmsn
     integer :: nsitup, nsituq, indi, i, icas, icss, nbsitu, i4
-    integer :: jmfu, nbthep, nbtheq
+    integer :: jmfu, nbthep, nbtheq, jmke
     real(kind=8) :: ppi, ppj, pqi, pqj, saltij(2), salijs(2), ug, sn, sp(2), smm
     real(kind=8) :: sns, sps(2), spp, sqq(2), sqqs(2), mpi(12), mpj(12), mqi(12)
     real(kind=8) :: mqj(12), mse(12), sij0(12), matpi(8), matpj(8), matqi(8)
     real(kind=8) :: mat1(8), mat2(8), matqj(8), saltse(2), snet, snets, vale(2)
     real(kind=8) :: sp12ma(2), sp2(2), fuij(2), fuse(2), spmeps, sp2s(2), spps
-    real(kind=8) :: typeke, spmes2(2), spmeqs(2), spmeca(2), spther(2)
+    real(kind=8) :: typeke, spmes2(2), spmeqs(2), spmeca(2), spther(2), ugenv
     real(kind=8) :: spmecs(2), spthes(2), spthem, spmecm, simpij, kemeca, kether
     real(kind=8) :: kemecs, kethes, pm, pb, pmpb, pms, pbs, pmpbs, spmec2(2)
     real(kind=8) :: spmecp, spmecq(2), spthe2(2), spthep(2), sptheq(2)
@@ -138,6 +139,7 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
     AS_ALLOCATE(vi=impr_situ, size=nbsig2)
     call wkvect('&&RC3201.MATRICE_SN', 'V V R', ndim, jmsn)
     call wkvect('&&RC3201.MATRICE_FU', 'V V R', ndim, jmfu)
+    call wkvect('&&RC3201.MATRICE_KE', 'V V R', ndim, jmke)
     if (seisme) then
         AS_ALLOCATE(vr=matrice_fu_b, size=ndim)
         AS_ALLOCATE(vr=matrice_fu_s, size=ndim)
@@ -364,6 +366,11 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
         kemax = max( kemax , kemeca )
 !
         zr(jmfu-1+indi+1) = fuij(1)
+        if (typeke .lt. 0) then
+            zr(jmke-1+indi+1) = kemeca
+        else
+            zr(jmke-1+indi+1) = (kemeca*spmeca(1)+kether*(sp(1)-spmeca(1)))/(sp(1))
+        endif
         if (saltij(1) .gt. samax) then
             samax = saltij(1)
             sm = smm
@@ -695,6 +702,13 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
             kemax = max( kemax , kemeca )
             zr(jmfu-1+indi+1) = fuij(1)+fuij(2)
             zr(jmfu-1+inds+1) = fuij(1)+fuij(2)
+            if (typeke .lt. 0) then
+                zr(jmke-1+indi+1) = kemax
+                zr(jmke-1+inds+1) = kemax
+            else
+                zr(jmke-1+indi+1) = (kemeca*spmeca(1)+kether*(sp12ma(1)-spmeca(1)))/(sp12ma(1))
+                zr(jmke-1+inds+1) = (kemeca*spmeca(1)+kether*(sp12ma(1)-spmeca(1)))/(sp12ma(1))
+            endif
             if (saltij(1) .gt. samax) then
                 samax = saltij(1)
                 sm = smm
@@ -750,13 +764,14 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
             utot = utot + ug
         endif
         if (npass .eq. 0) then
-            call rc32fu(nbsig2, nb_occurr, impr_situ, zr(jmfu), ug,&
-                        factus)
+            call rc32fu(nbsig2, nb_occurr, impr_situ, zr(jmfu), zr(jmke),&
+                        lieu, ug, factus, ugenv, fatiguenv)
         else
-            call rc32fp(nbsig2, nb_occurr, impr_situ, zi(jnsg), zr(jmfu),&
-                        ug, factus)
+            call rc32fp(nbsig2, nb_occurr, impr_situ, zi(jnsg), zr(jmfu),zr(jmke),&
+                        lieu, ug, factus, ugenv, fatiguenv)
         endif
         utot = utot + ug
+        utotenv = utotenv + ugenv
     endif
 !
     if (seisme) then
@@ -765,6 +780,7 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
     endif
     call jedetr('&&RC3201.MATRICE_FU')
     call jedetr('&&RC3201.MATRICE_SN')
+    call jedetr('&&RC3201.MATRICE_KE')
     AS_DEALLOCATE(vi=nb_occurr)
     AS_DEALLOCATE(vi=impr_situ)
 !

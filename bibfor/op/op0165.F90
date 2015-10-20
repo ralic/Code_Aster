@@ -40,7 +40,8 @@ subroutine op0165()
 #include "asterfort/utmess.h"
     integer :: n1, nbopt, iopt, nbther
     real(kind=8) :: symax
-    aster_logical :: pmpb, sn, snet, fatigu, lrocht, transip, transif
+    aster_logical :: pmpb, sn, snet, fatigu, lrocht
+    aster_logical :: transip, transif, fatiguenv
     integer :: icodre
     character(len=8) :: nommat
     character(len=16) :: typtab, typmec, kopt(4)
@@ -101,6 +102,7 @@ subroutine op0165()
     else if (typmec .eq. 'UNITAIRE') then
 !
         fatigu = .false.
+        fatiguenv = .false.
         pmpb = .false.
         sn = .false.
         snet = .false.
@@ -125,6 +127,11 @@ subroutine op0165()
                 fatigu = .true.
                 pmpb = .true.
                 sn = .true.
+            else if (kopt(iopt) .eq. 'EFAT') then
+                fatigu = .true.
+                pmpb = .true.
+                sn = .true.
+                fatiguenv = .true.
             endif
  30     continue
 !
@@ -132,7 +139,7 @@ subroutine op0165()
         call getvr8(' ', 'SY_MAX', scal=symax, nbret=n1)
 !
         call rc3200(pmpb, sn, snet, fatigu, lrocht,&
-                    nommat, symax)
+                    nommat, symax, fatiguenv)
 !
 !     ------------------------------------------------------------------
 !
@@ -143,6 +150,7 @@ subroutine op0165()
     else
 !
         fatigu = .false.
+        fatiguenv = .false.
         sn = .false.
         snet = .false.
         lrocht = .false.
@@ -172,6 +180,10 @@ subroutine op0165()
             else if (kopt(iopt) .eq. 'FATIGUE') then
                 fatigu = .true.
                 sn = .true.
+            else if (kopt(iopt) .eq. 'EFAT') then
+                fatigu = .true.
+                sn = .true.
+                fatiguenv = .true.
             endif
  20     continue
 !
@@ -179,7 +191,7 @@ subroutine op0165()
         call getvr8(' ', 'SY_MAX', scal=symax, nbret=n1)
 !
         call rcZ200(sn, snet, fatigu, lrocht,&
-                    nommat, symax, transip, transif)
+                    nommat, symax, transip, transif, fatiguenv)
 !
     endif
 !

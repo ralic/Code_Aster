@@ -1,5 +1,5 @@
 subroutine rc32rs(pmpb, sn, snet, fatigu, lrocht,&
-                  mater, symax)
+                  mater, symax, fatiguenv)
     implicit none
 #include "asterf_types.h"
 #include "asterc/getres.h"
@@ -7,7 +7,8 @@ subroutine rc32rs(pmpb, sn, snet, fatigu, lrocht,&
 #include "asterfort/rc32r1.h"
 #include "asterfort/rc32r8.h"
 #include "asterfort/tbcrsd.h"
-    aster_logical :: pmpb, sn, snet, fatigu, lrocht
+#include "asterfort/rc32r1env.h"
+    aster_logical :: pmpb, sn, snet, fatigu, lrocht, fatiguenv
     real(kind=8) :: symax
     character(len=8) :: mater
 !     ------------------------------------------------------------------
@@ -44,9 +45,12 @@ subroutine rc32rs(pmpb, sn, snet, fatigu, lrocht,&
 !
     if (fatigu) then
 !
-        call rc32r1(nomres)
+        if (fatiguenv) then
+            call rc32r1env(nomres)
+        else
+            call rc32r1(nomres)
+        endif
 !
-!     -----------------------------------------------------------------
     else
 !
         call rc32r0(nomres, pmpb, sn, snet)

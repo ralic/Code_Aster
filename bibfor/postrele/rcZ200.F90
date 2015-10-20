@@ -1,5 +1,5 @@
 subroutine rcZ200(sn, snet, fatigu, lrocht,&
-                  mater, symax, transip, transif)
+                  mater, symax, transip, transif, fatiguenv)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -14,6 +14,7 @@ subroutine rcZ200(sn, snet, fatigu, lrocht,&
 
     real(kind=8) :: symax
     aster_logical :: sn, snet, fatigu, lrocht, transip, transif
+    aster_logical :: fatiguenv
     character(len=8) :: mater
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -80,14 +81,14 @@ subroutine rcZ200(sn, snet, fatigu, lrocht,&
 !     ------------------------------------------------------------------
 !
     call rcZ2ac(sn, snet, fatigu, lrocht,&
-                mater, transip, transif)
+                mater, transip, transif, fatiguenv)
 !
 !     ------------------------------------------------------------------
 !                       STOCKAGE DES RESULTATS
 !     ------------------------------------------------------------------
 !
     call rcZ2rs(sn, snet, fatigu, lrocht,&
-                mater, symax)
+                mater, symax, fatiguenv)
 !
     call jedetc('V', '&&RC3200', 1)
 !

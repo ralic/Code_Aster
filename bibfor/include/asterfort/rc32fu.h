@@ -16,13 +16,17 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine rc32fu(nbsigr, nocc, situ, fuij, ug,&
-                      factus)
+    subroutine rc32fu(nbsigr, nocc, situ, fuij, ke, lieu,&
+                      ug, factus, ugenv, fatiguenv)
         integer :: nbsigr
         integer :: nocc(*)
         integer :: situ(*)
         real(kind=8) :: fuij(*)
+        real(kind=8) :: ke(*)
+        character(len=4) :: lieu
         real(kind=8) :: ug
         real(kind=8) :: factus(*)
+        real(kind=8) :: ugenv
+        aster_logical :: fatiguenv
     end subroutine rc32fu
 end interface
