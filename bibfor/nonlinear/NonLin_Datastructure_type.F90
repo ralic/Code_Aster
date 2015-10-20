@@ -266,6 +266,8 @@ implicit none
         aster_logical     :: l_renumber
 ! ----- Geometric loop control
         real(kind=8)      :: geom_maxi
+! ----- Get-off indicator
+        aster_logical     :: l_getoff
     end type NL_DS_Contact
 !
 end module

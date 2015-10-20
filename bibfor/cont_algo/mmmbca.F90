@@ -107,8 +107,6 @@ implicit none
     real(kind=8) :: coef_cont, coef_frot
     character(len=8) :: elem_slav_type
     character(len=19) :: cnscon, cnsfr1, cnsfr2
-    character(len=24) :: sdcont_mdecol
-    aster_logical, pointer :: v_sdcont_mdecol(:) => null()
     character(len=19) :: oldgeo, newgeo
     character(len=19) :: speed_field, chdepd
     character(len=19) :: depdel, depplu, vitplu
@@ -153,11 +151,9 @@ implicit none
     sdcont_tabfin = ds_contact%sdcont_solv(1:14)//'.TABFIN'
     sdcont_jsupco = ds_contact%sdcont_solv(1:14)//'.JSUPCO'
     sdcont_apjeu  = ds_contact%sdcont_solv(1:14)//'.APJEU'
-    sdcont_mdecol = ds_contact%sdcont_solv(1:14)//'.MDECOL'
     call jeveuo(sdcont_tabfin, 'E', vr = v_sdcont_tabfin)
     call jeveuo(sdcont_jsupco, 'E', vr = v_sdcont_jsupco)
     call jeveuo(sdcont_apjeu , 'E', vr = v_sdcont_apjeu)
-    call jeveuo(sdcont_mdecol, 'E', vl = v_sdcont_mdecol)
 !
 ! - Acces to cycling objects
 !
@@ -174,7 +170,7 @@ implicit none
 !
 ! - Get off indicator for speed schemes
 !
-    scotch = v_sdcont_mdecol(1)
+    scotch = ds_contact%l_getoff
 !
 ! - Geometric update
 !
@@ -412,7 +408,7 @@ implicit none
 !
 ! - Get off indicator for speed schemes
 !
-    v_sdcont_mdecol(1) = scotch
+    ds_contact%l_getoff = scotch
 !
 ! - Cleaning
 !

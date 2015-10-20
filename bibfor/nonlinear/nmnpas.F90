@@ -88,7 +88,7 @@ implicit none
 ! ----------------------------------------------------------------------
 !
     aster_logical :: lgrot, ldyna, lnkry
-    aster_logical :: l_cont, l_cont_cont, l_diri_undead
+    aster_logical :: l_cont, l_cont_cont, l_diri_undead, scotch
     integer :: neq
     character(len=19) :: depmoi, varmoi
     character(len=19) :: depplu, varplu
@@ -96,9 +96,6 @@ implicit none
     real(kind=8) :: instan
     integer :: jdepde
     integer :: indro
-    aster_logical :: scotch
-    character(len=24) :: mdecol
-    integer :: jmdeco
     integer :: iterat
     real(kind=8), pointer :: depp(:) => null()
 !
@@ -173,11 +170,9 @@ implicit none
 !
     if (ldyna) then
         if (l_cont_cont) then
-            mdecol = ds_contact%sdcont_solv(1:14)//'.MDECOL'
-            call jeveuo(mdecol, 'L', jmdeco)
-            scotch = zl(jmdeco+1-1)
+            scotch = ds_contact%l_getoff
         else
-            scotch = .false.
+            scotch = .false._1
         endif
         call ndnpas(fonact, numedd, numins, sddisc, sddyna,&
                     scotch, valinc, solalg)

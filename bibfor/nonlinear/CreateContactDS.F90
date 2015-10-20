@@ -119,4 +119,8 @@ implicit none
 !
     ds_contact%geom_maxi = -1.d0
 !
+! - Get-off indicator
+!
+    ds_contact%l_getoff  = .false._1
+!
 end subroutine

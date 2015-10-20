@@ -56,8 +56,6 @@ implicit none
     integer :: ifm, niv
     integer :: nt_cont_poin
     aster_logical :: l_dyna, l_inte_node
-    character(len=24) :: sdcont_mdecol
-    aster_logical, pointer :: v_sdcont_mdecol(:) => null()
     character(len=24) :: sdcont_etatct
     real(kind=8), pointer :: v_sdcont_etatct(:) => null()
     character(len=24) :: sdcont_tabfin
@@ -85,12 +83,6 @@ implicit none
     ztabf = cfmmvd('ZTABF')
     call wkvect(sdcont_tabfin, 'V V R', ztabf*nt_cont_poin+1, vr = v_sdcont_tabfin)
     v_sdcont_tabfin(1) = nt_cont_poin
-!
-! - Create datastructure for get-off indicator
-!
-    sdcont_mdecol = ds_contact%sdcont_solv(1:14)//'.MDECOL'
-    call wkvect(sdcont_mdecol, 'V V L', 1, vl = v_sdcont_mdecol)
-    v_sdcont_mdecol(1) = .false.
 !
 ! - Create fields for dynamic management
 !
