@@ -21,6 +21,7 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
 #include "asterfort/rc32rt.h"
 #include "asterfort/rc32sa.h"
 #include "asterfort/rc32sn.h"
+#include "asterfort/rcZ2env.h"
 #include "asterfort/rc32sp.h"
 #include "asterfort/rcma02.h"
 #include "asterfort/rcmo02.h"
@@ -81,17 +82,16 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
 !     ------------------------------------------------------------------
 !
     integer :: ig, nbgr, nbsigr, jnsg, is1, ioc1, nocc, numgr, jcombi
-    integer :: im, npass, ifm, niv, iocs, jresu, jfen1
+    integer :: im, npass, ifm, niv, iocs, jresu
     integer :: nsitup, nsituq, iret, i1, jfact, i, j, jreas, jress
     integer :: jreca, jrecs, ndim, nbp12, nbp23, nbp13
     real(kind=8) :: ppi, ppj, snmax, spmax, samax, utot, saltij(2), typeke, ug
     real(kind=8) :: pmbmax, fuij(2), mpi(12), mpj(12), sm, sn, snet, sp(2), smm
-    real(kind=8) :: matpi(8), matpj(8), mse(12), spmeca(2), spther(2), spthem
+    real(kind=8) :: matpi(8), matpj(8), mse(12), spmeca(2), spthem
     real(kind=8) :: spmecm, kemeca, kether, pm, pb, pmpb, sipmax, simpij, snemax
     real(kind=8) :: kemax, pmmax, pbmax, utotenv, feni, ke
     aster_logical :: seisme, cfait
     character(len=4) :: lieu(2)
-    character(len=8) :: knume1
     character(len=24) :: k24as, k24ss, k24ca, k24cs, k24fu
     integer, pointer :: situ_numero(:) => null()
     real(kind=8), pointer :: situ_pres_a(:) => null()
@@ -429,7 +429,7 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
                     ke = (kemeca*spmeca(1)+kether*(sp(1)-spmeca(1)))/(sp(1))
                 endif
                 if (fatiguenv) then
-                    call rcZ2env(nsitup, nsitup, ke, feni)
+                    call rcZ2env(nsitup, nsitup, ke, lieu(im), feni)
                     utotenv = utotenv + ug*feni
                 endif
 !

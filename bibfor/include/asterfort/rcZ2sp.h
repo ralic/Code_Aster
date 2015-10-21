@@ -19,7 +19,7 @@
 !
 interface
     subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
-                      numsiq, pj, mj, seisme, mse,&
+                      numsiq, pj, mj, seisme, mse, sn,&
                       spij, typeke, spmeca, transip, transif)
         character(len=*) :: typz
         character(len=4) :: lieu
@@ -31,6 +31,7 @@ interface
         real(kind=8) :: mj(*)
         aster_logical :: seisme
         real(kind=8) :: mse(*)
+        real(kind=8) :: sn
         real(kind=8) :: spij(2)
         real(kind=8) :: typeke
         real(kind=8) :: spmeca(2)

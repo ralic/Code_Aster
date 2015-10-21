@@ -83,7 +83,7 @@ subroutine op0165()
 !
 !     ------------------------------------------------------------------
 !
-    else if (typmec .eq. 'TUYAUTERIE') then
+    else if (typmec .eq. 'B3600') then
 !
         call getvtx(' ', 'OPTION', scal=kopt(1), nbret=n1)
 !
@@ -99,7 +99,7 @@ subroutine op0165()
 !
 !     ------------------------------------------------------------------
 !
-    else if (typmec .eq. 'UNITAIRE') then
+    else if (typmec .eq. 'B3200_UNIT') then
 !
         fatigu = .false.
         fatiguenv = .false.

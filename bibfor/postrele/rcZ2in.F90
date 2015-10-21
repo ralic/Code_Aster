@@ -3,12 +3,14 @@ subroutine rcZ2in(transif)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
+#include "asterc/getfac.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jedema.h"
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,50 +34,81 @@ subroutine rcZ2in(transif)
 !
 !     ------------------------------------------------------------------
 !
-    character(len=16) :: motclf, motclf2, motclf3  
-    integer :: n1, jvalin, ndim, iocc, n2, n3
+    character(len=16) :: motclf, motclf2, motclf3
+    integer :: n1, jvalin, ndim, iocc, nb1, nb2, ik1, jk1
+    integer :: ik2, jk2, ik3, jk3, ik4, jk4, nb3
     aster_logical :: transif
-    real(kind=8) :: ktsn, ktsp
 !
 ! DEB ------------------------------------------------------------------
     call jemarq()
-    ndim = 9
+    ndim = 11
     call wkvect('&&RC3200.INDI', 'V V R', ndim, jvalin)
+    motclf = 'INDI_SIGM'
+    motclf2 = 'TUYAU'
+    motclf3 = 'FACT_SIGM'
 !
     if (.not. transif) then
-        motclf = 'INDI_SIGM'
-        motclf2 = 'GEOM_TUY'       
-        call getvr8(motclf, 'C1', scal=zr(jvalin), iocc=iocc, nbret=n1)
-        call getvr8(motclf, 'C2', scal=zr(jvalin+1), iocc=iocc, nbret=n1)  
-        call getvr8(motclf, 'K1', scal=zr(jvalin+2), iocc=iocc, nbret=n1)  
-        call getvr8(motclf, 'K2', scal=zr(jvalin+3), iocc=iocc, nbret=n1)
+
+! ---RECHERCHE DE LA DERNIERE OCCURENCE DES MOTS-CLES OBLIGATOIRES
+        call getfac(motclf, nb1)
+        call getfac(motclf2, nb2)
 !
-        call getvr8(motclf2, 'DIAM', scal=zr(jvalin+4),iocc=iocc, nbret=n1)
-        call getvr8(motclf2, 'EP', scal=zr(jvalin+5), iocc=iocc,nbret=n1)  
-        call getvr8(motclf2, 'INERTIE', scal=zr(jvalin+6),iocc=iocc, nbret=n1)
+        do iocc = 1, nb1
+            call getvr8(motclf, 'K1', iocc=iocc, nbval=0, nbret=ik1)
+            if (ik1 .ne. 0) jk1 = iocc
+        end do
 !
-        zr(jvalin+7) = 1
-        zr(jvalin+8) = 1
+        do iocc = 1, nb2
+            call getvr8(motclf2, 'EP', iocc=iocc, nbval=0, nbret=ik2)
+            if (ik2 .ne. 0) jk2 = iocc
+        end do
+!       
+        call getvr8(motclf, 'K1', scal=zr(jvalin), iocc=jk1, nbret=n1)
+        call getvr8(motclf, 'C1', scal=zr(jvalin+1), iocc=jk1, nbret=n1)  
+        call getvr8(motclf, 'K2', scal=zr(jvalin+2), iocc=jk1, nbret=n1)  
+        call getvr8(motclf, 'C2', scal=zr(jvalin+3), iocc=jk1, nbret=n1)
+        call getvr8(motclf, 'K3', scal=zr(jvalin+4), iocc=jk1, nbret=n1)  
+        call getvr8(motclf, 'C3', scal=zr(jvalin+5), iocc=jk1, nbret=n1)
+!
+        call getvr8(motclf2, 'R', scal=zr(jvalin+6),iocc=jk2, nbret=n1)
+        call getvr8(motclf2, 'EP', scal=zr(jvalin+7),iocc=jk2, nbret=n1)
+        call getvr8(motclf2, 'I', scal=zr(jvalin+8),iocc=jk2, nbret=n1)
+!
+        zr(jvalin+9) = 1
+        zr(jvalin+10) = 1
     else
         zr(jvalin) = 0
         zr(jvalin+1) = 0
         zr(jvalin+2) = 0
         zr(jvalin+3) = 0
-        zr(jvalin+4) = 1
-        zr(jvalin+5) = 1
+        zr(jvalin+4) = 0
+        zr(jvalin+5) = 0
         zr(jvalin+6) = 1
-        motclf3 = 'FACT_SIGM'
-        call getvr8(motclf3, 'KT_SN', scal=ktsn, iocc=iocc, nbret=n2)
-        if (n2 .eq. 0) then
-            zr(jvalin+7) = 1
-        else
-            zr(jvalin+7) = ktsn
-        endif
-        call getvr8(motclf3, 'KT_SP', scal=ktsp, iocc=iocc, nbret=n3) 
-        if (n3 .eq. 0) then
-            zr(jvalin+8) = 1
-        else
-            zr(jvalin+8) = ktsp
+        zr(jvalin+7) = 1
+        zr(jvalin+8) = 1
+!
+        call getfac(motclf3, nb3)
+        if(nb3 .eq. 0) then
+            zr(jvalin+9) = 1
+            zr(jvalin+10) = 1
+        else 
+            do iocc = 1, nb3
+                call getvr8(motclf3, 'KT_SN', iocc=iocc, nbval=0, nbret=ik3)
+                if (ik3 .ne. 0) then
+                    jk3 = iocc
+                    call getvr8(motclf3, 'KT_SN', scal=zr(jvalin+9), iocc=jk3, nbret=n1)
+                else
+                    zr(jvalin+9) = 1
+                endif
+!
+                call getvr8(motclf3, 'KT_SP', iocc=iocc, nbval=0, nbret=ik4)
+                if (ik4 .ne. 0) then
+                    jk4 = iocc
+                    call getvr8(motclf3, 'KT_SP', scal=zr(jvalin+10), iocc=jk4, nbret=n1)
+                else
+                    zr(jvalin+10) = 1
+                endif
+            end do
         endif
 !      
     endif              

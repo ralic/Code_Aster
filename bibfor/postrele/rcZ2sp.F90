@@ -1,5 +1,5 @@
 subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
-                  numsiq, pj, mj, seisme, mse,&
+                  numsiq, pj, mj, seisme, mse, sn,&
                   spij, typeke, spmeca, transip, transif)
     implicit none
 #include "asterf_types.h"
@@ -16,6 +16,7 @@ subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
 #include "asterfort/rcZ2st.h"
     integer :: numsip, numsiq
     real(kind=8) :: pi, mi(*), pj, mj(*), mse(*), spij(2), typeke, spmeca(2)
+    real(kind=8) :: sn
     aster_logical :: seisme, transip, transif
     character(len=4) :: lieu
     character(len=*) :: typz
@@ -55,12 +56,12 @@ subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
 ! OUT : SPIJ   : AMPLITUDE DE VARIATION DES CONTRAINTES TOTALES
 ! OUT : SPMECA : AMPLITUDE DE VARIATION DES CONTRAINTES MECANIQUES
 !
-    integer :: icmp, long, nbinst, nbthep, nbtheq, jther, numt
-    integer :: jthunq, i1, jthunp, jthun, jvalin, nbprep, nbp, jpres
+    integer :: icmp, long, nbinst, nbthep, nbtheq
+    integer :: jthunq, i1, jthunp, jthun, jvalin, nbprep, nbp
     integer :: nbpreq, nbq, nbmecap, nbmecaq, indicp, indicq
     real(kind=8) :: pij, mij(6), sp, sij, sqma(6), sqmi(6)
     real(kind=8) :: sp1, sp2, spth(6), spqma(2), spqmi(2), sqth(6)
-    real(kind=8) :: racine, c1, c2, diam, ep, inertie, k1, k2
+    real(kind=8) :: racine, c1, c2, diam, ep, inertie, k1, k2, k3, c3
     real(kind=8) :: spqmec1(6), spqmec2(6)
     character(len=4) :: typ2, typ3
     character(len=8) :: type, knumes, knumet
@@ -86,13 +87,15 @@ subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
 !--- ET INDICES DE CONTRAINTE
 !
     call jeveuo('&&RC3200.INDI', 'L', jvalin)
-    c1 = zr(jvalin)  
-    c2 = zr(jvalin+1)
-    k1 = zr(jvalin+2)  
-    k2 = zr(jvalin+3) 
-    diam = zr(jvalin+4) 
-    ep = zr(jvalin+5) 
-    inertie = zr(jvalin+6) 
+    k1 = zr(jvalin)
+    c1 = zr(jvalin+1)
+    k2 = zr(jvalin+2)
+    c2 = zr(jvalin+3)
+    k3 = zr(jvalin+4)  
+    c3 = zr(jvalin+5) 
+    diam = zr(jvalin+6)*2
+    ep = zr(jvalin+7) 
+    inertie = zr(jvalin+8) 
 !
 ! --- DIFFERENCE DE PRESSION ENTRE LES ETATS I ET J
 !
@@ -105,12 +108,20 @@ subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
         racine = racine + mij(icmp)**2
  10 end do
 !
-! --- CALCUL DE SN (PARTIE B3600)
+! --- CALCUL DE SP (PARTIE B3600)
 !
-    sij = k1*c1*diam*abs(pij)/(2*ep)
-    sij = sij + k2*c2*diam*sqrt(racine)/(2*inertie)
+    if (.not. transif) then
+        if (.not. transip) then 
+            sij = (k1-k3+1)*c1*diam*abs(pij)/(2*ep)
+            sij = sij + (k2-k3+1)*c2*diam*sqrt(racine)/(2*inertie)
+            sij = sij + (k3-1)*sn
+        else
+            sij = sij + k2*c2*diam*sqrt(racine)/(2*inertie)
+            sij = sij + (k3-1)*sn      
+        endif
+    endif
 !
-! --- CALCUL DE SN (PARTIE B3200)
+! --- CALCUL DE SP (PARTIE B3200)
 !
 ! --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE P
 !

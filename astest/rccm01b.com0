@@ -21,7 +21,7 @@ POURSUITE(CODE='OUI',)
 # VALIDATION DU CALCUL EN FATIGUE : SITUATION 1 + SITUATION 2 + SEISME
 FAT12_AS = POST_RCCM( MATER=MAT,
                  TYPE_RESU='DETAILS',
-                 TYPE_RESU_MECA='UNITAIRE',
+                 TYPE_RESU_MECA='B3200_UNIT',
                  OPTION='FATIGUE',
                  INFO=2,
                  TYPE_KE='KE_MECA',
@@ -83,7 +83,7 @@ IMPR_TABLE(    TABLE=FAT12_AS,)
 
 FAT12_BS = POST_RCCM( MATER=MAT,
                  TYPE_RESU='DETAILS',
-                 TYPE_RESU_MECA='UNITAIRE',
+                 TYPE_RESU_MECA='B3200_UNIT',
                  OPTION='FATIGUE',
                  INFO=2,
                  TYPE_KE='KE_MECA',

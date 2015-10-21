@@ -37,7 +37,7 @@ subroutine rcZ201(transip, transif, lsn, lsnet, lfatig, lrocht,&
 !
     integer :: ig, iocs, npass
     real(kind=8) :: snmax, snemax, spmax, kemax, samax, utot, sm, sigpm, utotenv
-    real(kind=8) :: resuas(*), resuss(*), resuca(*), resucs(*), factus(*), ke
+    real(kind=8) :: resuas(*), resuss(*), resuca(*), resucs(*), factus(*)
     aster_logical :: transip, transif, lsn, lsnet, lfatig, lrocht, seisme, lbid
     aster_logical :: fatiguenv
     character(len=4) :: lieu
@@ -88,7 +88,7 @@ subroutine rcZ201(transip, transif, lsn, lsnet, lfatig, lrocht,&
     real(kind=8) :: typeke, spmes2(2), spmeqs(2), spmeca(2), spther(2)
     real(kind=8) :: spmecs(2), spthes(2), spthem, spmecm, simpij, kemeca, kether
     real(kind=8) :: kemecs, kethes, spmec2(2), ugenv
-    real(kind=8) :: spmecp, spmecq(2), spthe2(2), spthep(2), sptheq(2)
+    real(kind=8) :: spmecp, spmecq(2), spthep(2)
     character(len=8) :: knumes, kbid
 !
     integer :: icodre(1)
@@ -182,7 +182,7 @@ subroutine rcZ201(transip, transif, lsn, lsnet, lfatig, lrocht,&
         endif
         if (lfatig) then
             call rcZ2sp('SP_SITU', lieu, nsitup, ppi, sij0,&
-                        nsituq, ppi, sij0, seisme, mse,&
+                        nsituq, ppi, sij0, seisme, mse, sn,&
                         sp, typeke, spmeca, transip, transif)
             call rc32sa('SITU', mater, matpi, matpi, sn,&
                         sp, typeke, spmeca, kemeca,&
@@ -303,7 +303,7 @@ subroutine rcZ201(transip, transif, lsn, lsnet, lfatig, lrocht,&
 !
         nocc = situ_nb_occur(1+2*ioc1-2)
         call rcZ2sp('SP_SITU', lieu, nsitup, ppi, mpi,&
-                    nsituq, ppj, mpj, .false._1, mse,&
+                    nsituq, ppj, mpj, .false._1, mse, sn,&
                     sp, typeke, spmeca, transip, transif)
         spmecp = spmeca(1)
         call rc32sa('SITU', mater, matpi, matpj, sn,&
@@ -329,7 +329,7 @@ subroutine rcZ201(transip, transif, lsn, lsnet, lfatig, lrocht,&
         if (seisme) then
             matrice_fu_b(indi+1) = fuij(1)
             call rcZ2sp('SP_SITU', lieu, nsitup, ppi, mpi,&
-                        nsituq, ppj, mpj, seisme, mse,&
+                        nsituq, ppj, mpj, seisme, mse, sns,&
                         sps, typeke, spmecs, transip, transif)
             call rc32sa('SITU', mater, matpi, matpj, sns,&
                         sps, typeke, spmecs, kemecs,&
@@ -424,8 +424,6 @@ subroutine rcZ201(transip, transif, lsn, lsnet, lfatig, lrocht,&
             call rcZ2sn('SN_SITU', lieu, nsituq, pqi, mqi,&
                         nsituq, pqj, mqj, .false._1, mse,&
                         sn, transip, transif)
-            icss = icss + 1
-            resucs(icss) = sn
             snmax = max(snmax,sn)
             if (seisme) then
                 call rcZ2sn('SN_COMB', lieu, nsitup, ppi, mpi,&
@@ -447,8 +445,6 @@ subroutine rcZ201(transip, transif, lsn, lsnet, lfatig, lrocht,&
                 resuca(icas) = sns
                 snmax = max(snmax,sns)
             endif
-            if (niv .ge. 2) write (ifm,1110) nsitup,nsituq,sn
-            if ((niv.ge.2) .and. seisme) write (ifm,1111) sns
             inds = nbsig2*(i1-1) + (i2-1)
             indi = nbsig2*(i2-1) + (i1-1)
 !
@@ -468,7 +464,7 @@ subroutine rcZ201(transip, transif, lsn, lsnet, lfatig, lrocht,&
 !
 ! - PREMIERE COMBINAISON : PI - QI
             call rcZ2sp('SP_COMB', lieu, nsitup, ppi, mpi,&
-                        nsituq, pqi, mqi, .false._1, mse,&
+                        nsituq, pqi, mqi, .false._1, mse, sn,&
                         sp12ma, typeke, spmeca, transip, transif)
 !
             do 119 i4 = 1, 8
@@ -478,13 +474,13 @@ subroutine rcZ201(transip, transif, lsn, lsnet, lfatig, lrocht,&
 !
             if (seisme) then
                 call rcZ2sp('SP_COMB', lieu, nsitup, ppi, mpi,&
-                            nsituq, pqi, mqi, seisme, mse,&
+                            nsituq, pqi, mqi, seisme, mse, sns,&
                             sps, typeke, spmecs, transip, transif)
             endif
 !
 ! - DEUXIEME COMBINAISON : PI - QJ
             call rcZ2sp('SP_COMB', lieu, nsitup, ppi, mpi,&
-                        nsituq, pqj, mqj, .false._1, mse,&
+                        nsituq, pqj, mqj, .false._1, mse, sn,&
                         sp2, typeke, spmec2, transip, transif)
 !
             if (typeke .gt. 0.d0) then
@@ -493,7 +489,7 @@ subroutine rcZ201(transip, transif, lsn, lsnet, lfatig, lrocht,&
 !
             if (seisme) then
                 call rcZ2sp('SP_COMB', lieu, nsitup, ppi, mpi,&
-                            nsituq, pqj, mqj, seisme, mse,&
+                            nsituq, pqj, mqj, seisme, mse, sns,&
                             sp2s, typeke, spmes2, transip, transif)
                 call rc32ms(meca, sps, sp2s, cmax)
                 if (typeke .gt. 0.d0) then
@@ -512,7 +508,7 @@ subroutine rcZ201(transip, transif, lsn, lsnet, lfatig, lrocht,&
 !
 ! - TROISIEME COMBINAISON : PJ - QI
             call rcZ2sp('SP_COMB', lieu, nsitup, ppj, mpj,&
-                        nsituq, pqi, mqi, .false._1, mse,&
+                        nsituq, pqi, mqi, .false._1, mse, sn,&
                         sp2, typeke, spmec2, transip, transif)
 !
             if (typeke .gt. 0.d0) then
@@ -521,7 +517,7 @@ subroutine rcZ201(transip, transif, lsn, lsnet, lfatig, lrocht,&
 !
             if (seisme) then
                 call rcZ2sp('SP_COMB', lieu, nsitup, ppj, mpj,&
-                            nsituq, pqi, mqi, seisme, mse,&
+                            nsituq, pqi, mqi, seisme, mse, sns,&
                             sp2s, typeke, spmes2, transip, transif)
                 call rc32ms(meca, sps, sp2s, cmax)
                 if (typeke .gt. 0.d0) then
@@ -540,7 +536,7 @@ subroutine rcZ201(transip, transif, lsn, lsnet, lfatig, lrocht,&
 !
 ! - QUATRIEME COMBINAISON : PJ - QJ
             call rcZ2sp('SP_COMB', lieu, nsitup, ppj, mpj,&
-                        nsituq, pqj, mqj, .false._1, mse,&
+                        nsituq, pqj, mqj, .false._1, mse, sn,&
                         sp2, typeke, spmec2, transip, transif)
 !
             if (typeke .gt. 0.d0) then
@@ -549,7 +545,7 @@ subroutine rcZ201(transip, transif, lsn, lsnet, lfatig, lrocht,&
 !
             if (seisme) then
                 call rcZ2sp('SP_COMB', lieu, nsitup, ppj, mpj,&
-                            nsituq, pqj, mqj, seisme, mse,&
+                            nsituq, pqj, mqj, seisme, mse, sns,&
                             sp2s, typeke, spmes2, transip, transif)
                 call rc32ms(meca, sps, sp2s, cmax)
                 if (typeke .gt. 0.d0) then
@@ -568,7 +564,7 @@ subroutine rcZ201(transip, transif, lsn, lsnet, lfatig, lrocht,&
 !
 ! -  CINQUIEME COMBINAISON : QI - QJ
             call rcZ2sp('SP_SITU', lieu, nsituq, pqi, mqi,&
-                        0, pqj, mqj, .false._1, mse,&
+                        0, pqj, mqj, .false._1, mse, sn,&
                         sqq, typeke, spmecq, transip, transif)
             spp = resuss(7*(is1-1)+3)
             if (sqq(1) .ge. sp12ma(1)) then
@@ -589,7 +585,7 @@ subroutine rcZ201(transip, transif, lsn, lsnet, lfatig, lrocht,&
 !
             if (seisme) then
                 call rcZ2sp('SP_SITU', lieu, nsituq, pqi, mqi,&
-                            nsituq, pqj, mqj, seisme, mse,&
+                            nsituq, pqj, mqj, seisme, mse, sns,&
                             sqqs, typeke, spmeqs, transip, transif)
                 if (sqqs(1) .ge. sps(1)) then
                     sps(1) = sqqs(1)
@@ -642,6 +638,8 @@ subroutine rcZ201(transip, transif, lsn, lsnet, lfatig, lrocht,&
                         sp12ma, typeke, spmeca, kemeca,&
                         kether, saltij, smm, fuij)
             icss = icss + 1
+            resucs(icss) = sn
+            icss = icss + 1
             resucs(icss) = sp12ma(1)
             icss = icss + 1
             resucs(icss) = sp12ma(2)
@@ -688,6 +686,8 @@ subroutine rcZ201(transip, transif, lsn, lsnet, lfatig, lrocht,&
             spmax = max(spmax,sps(1),sp12ma(1),sps(2),sp12ma(2))
             spmecm = max(spmecm,spmecs(1),spmeca(1))
             spthem = spmax-spmecm
+            if (niv .ge. 2) write (ifm,1110) nsitup,nsituq,sn
+            if ((niv.ge.2) .and. seisme) write (ifm,1111) sns
             if (niv .ge. 2) then
                 write (ifm,1121) sp12ma(1), sp12ma(2)
                 if (seisme) write (ifm,1122) sps(1), sps(2)

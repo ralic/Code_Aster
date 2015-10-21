@@ -39,10 +39,10 @@ subroutine rcZ2s0(option, mm, pr, mse,&
 ! OUT : SNP    : AMPLITUDE DE VARIATION DES CONTRAINTES DE TRESCA
 !     ------------------------------------------------------------------
 !
-    integer :: i1, i2, i3, i4, i5, i6, i, icmps, icmp, jcorp, jvalin
-    integer :: i11, i21, i31, i41, i51, i61, fact
-    real(kind=8) :: mtt(6), mtc(6), sij, snp1, sth1, tresca
-    real(kind=8) :: sigt, sigc, sigp, factp, factm
+    integer :: i1, i2, i3, i, icmp, jcorp, jvalin
+    integer :: i11, i21, i31, fact
+    real(kind=8) :: mtt(6), mtc(6), sij, snp1, tresca
+    real(kind=8) :: factp, factm
     real(kind=8) :: e1(2), e2(2), e3(2), e4(2), e5(2), e6(2), e7(2)
 ! DEB ------------------------------------------------------------------
 !
@@ -51,14 +51,14 @@ subroutine rcZ2s0(option, mm, pr, mse,&
 ! LES PERFORMANCES
     call jeveuo('&&RC3200.CORPS', 'L ', jcorp)
 ! ON RECUPERE LES CARACTERISTIQUES DE LA TUYAUTERIE
-    call jeveuo('&&RCZ200.INDI', 'L', jvalin)
+    call jeveuo('&&RC3200.INDI', 'L', jvalin)
 !
     if (option .eq. 'SN') then 
-        factp= zr(jvalin)
-        factm= zr(jvalin+1)
+        factp= zr(jvalin+1)
+        factm= zr(jvalin+3)
     else if (option .eq. 'SP') then
-        factp= zr(jvalin)*zr(jvalin+2)
-        factm= zr(jvalin+1)*zr(jvalin+3)
+        factp= zr(jvalin)*zr(jvalin+1)
+        factm= zr(jvalin+2)*zr(jvalin+3)
     endif
 !
     fact = 2

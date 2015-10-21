@@ -1,0 +1,202 @@
+# TITRE VALIDATION DE L'OPERATEUR POST_RCCM / ZE200A
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+
+
+COURFATA = FORMULE(NOM_PARA='SIGM',VALE='5.E5/SIGM ')
+
+L_INST=DEFI_LIST_REEL(  DEBUT=1.,
+                        INTERVALLE=_F(  JUSQU_A = 1000., PAS = 1.) )
+                           
+FWOHLER=CALC_FONC_INTERP( FONCTION=COURFATA, LIST_PARA=L_INST,
+                          NOM_PARA = 'SIGM',PROL_DROITE='LINEAIRE',
+                          PROL_GAUCHE='CONSTANT',
+                          NOM_RESU='NADM'       )
+
+MAT=DEFI_MATERIAU(  ELAS=_F( E = 200000.,  NU = 0.3,  ALPHA = 1.0E-5),
+                    FATIGUE=_F(  WOHLER = FWOHLER, E_REFE = 200000.),
+                    RCCM=_F(  M_KE = 2.,
+                              N_KE = 0.2,
+                              SM = 2000.,
+                              SY_02 = 200.)
+                               )
+
+#  CONTRAINTES THERMIQUES (SITUATION 1)                 
+T_THER = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
+                      NUME_TABLE=1,)
+
+#  CONTRAINTES THERMIQUES (SITUATION 2)                 
+T_THER2 = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
+                      NUME_TABLE=2,)
+      
+# VALIDATION DU CALCUL DE SN SANS CONTRAINTES THERMIQUES
+SN1 = POST_RCCM( MATER=MAT,
+                 TYPE_RESU='DETAILS',
+                 TYPE_RESU_MECA='ZE200a',
+                 OPTION='SN',
+                 INFO=2,
+                 TYPE_KE='KE_MECA',
+                 INDI_SIGM=(
+                   _F(C1=1.0,
+                      K1=1.0,
+                      C2=2.0,
+                      C3=1.0,
+                      K3=1.0,),),
+                 TUYAU=(
+                   _F(R=0.5,
+                      EP=1.0,
+                      I=1.0,),),
+                 CHAR_MECA=(
+                  _F(NUME_CHAR=1,
+                     NOM_CHAR='ETAT A - SITU1',
+                     MX=21.0,  MY=0.0,  MZ=0.0,),
+                  _F(NUME_CHAR=2,
+                     NOM_CHAR='ETAT B - SITU1',
+                     MX=1.0,  MY=0.0,  MZ=0.0,),   
+                  _F(NUME_CHAR=3,
+                     NOM_CHAR='ETAT A - SITU2',
+                     MX=1.0,  MY=0.0,  MZ=0.0,),
+                  _F(NUME_CHAR=4,
+                     NOM_CHAR='ETAT B - SITU2',
+                     MX=61.0,  MY=0.0,  MZ=0.0,),),
+                 SITUATION=(
+                  _F(NB_OCCUR=1,
+                     NUME_SITU=1,
+                     NOM_SITU='Situation 1',
+                     NUME_GROUPE=1,
+                     CHAR_ETAT_A=1,
+                     CHAR_ETAT_B=2,
+                     PRES_A=201,
+                     PRES_B=1,
+                      ),
+                  _F(NB_OCCUR=1,
+                     NUME_SITU=2,
+                     NOM_SITU='Situation 2',
+                     NUME_GROUPE=1,
+                     CHAR_ETAT_A=3,
+                     CHAR_ETAT_B=4,
+                     PRES_A=0,
+                     PRES_B=0,
+                        ),),);
+
+IMPR_TABLE(    TABLE=SN1,)
+
+# VALIDATION DU CALCUL DE SN AVEC CONTRAINTES THERMIQUES
+SN2 = POST_RCCM( MATER=MAT,
+                 TYPE_RESU='DETAILS',
+                 TYPE_RESU_MECA='ZE200a',
+                 OPTION='SN',
+                 INFO=2,
+                 TYPE_KE='KE_MECA',
+                 INDI_SIGM=(
+                   _F(C1=1.0,
+                      K1=1.0,
+                      K2=1.0,
+                      C2=2.0,
+                      C3=1.0,
+                      K3=1.0,),),
+                 TUYAU=(
+                   _F(R=0.5,
+                      EP=1.0,
+                      I=1.0,),),
+                 CHAR_MECA=(
+                  _F(NUME_CHAR=1,
+                     NOM_CHAR='ETAT A - SITU1',
+                     MX=21.0,  MY=0.0,  MZ=0.0,),
+                  _F(NUME_CHAR=2,
+                     NOM_CHAR='ETAT B - SITU1',
+                     MX=1.0,  MY=0.0,  MZ=0.0,),   
+                  _F(NUME_CHAR=3,
+                     NOM_CHAR='ETAT A - SITU2',
+                     MX=1.0,  MY=0.0,  MZ=0.0,),
+                  _F(NUME_CHAR=4,
+                     NOM_CHAR='ETAT B - SITU2',
+                     MX=61.0,  MY=0.0,  MZ=0.0,),),
+                 RESU_THER= (_F(NUME_RESU_THER=1,
+                            TABL_RESU_THER=T_THER, ), 
+                            _F(NUME_RESU_THER=2,
+                            TABL_RESU_THER=T_THER2, ), ),
+                 SITUATION=(
+                  _F(NB_OCCUR=1,
+                     NUME_SITU=1,
+                     NOM_SITU='Situation 1',
+                     NUME_GROUPE=1,
+                     NUME_RESU_THER = 1,
+                     CHAR_ETAT_A=1,
+                     CHAR_ETAT_B=2,
+                     PRES_A=201,
+                     PRES_B=1,
+                      ),
+                  _F(NB_OCCUR=1,
+                     NUME_SITU=2,
+                     NOM_SITU='Situation 2',
+                     NUME_GROUPE=1,
+                     NUME_RESU_THER = 2,
+                     CHAR_ETAT_A=3,
+                     CHAR_ETAT_B=4,
+                     PRES_A=0,
+                     PRES_B=0,
+                        ),),);
+
+IMPR_TABLE(    TABLE=SN2,)  
+
+#-------------------------------------------------------------------------------
+#   TEST (SOLUTION DE REFERENCE ANALYTIQUE)
+#--------------------------------------------------------------------------------
+
+# SN - SITUATIONS 1 ET 2
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=120.000000000,
+           VALE_REFE=120.0,
+           NOM_PARA='SN_MAX',
+           TABLE=SN1,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=120.000000000,
+           VALE_REFE=120.0,
+           NOM_PARA='SN_MAX',
+           TABLE=SN1,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
+
+# SN2 - SITUATION 1 ET 2
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=210.000000000,
+           VALE_REFE=210.0,
+           NOM_PARA='SN_MAX',
+           TABLE=SN2,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=355.000000000,
+           VALE_REFE=355.0,
+           NOM_PARA='SN_MAX',
+           TABLE=SN2,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
+
+FIN();

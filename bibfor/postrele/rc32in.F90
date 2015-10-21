@@ -2,13 +2,14 @@ subroutine rc32in()
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterc/getfac.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jedema.h"
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -30,35 +31,47 @@ subroutine rc32in()
 !     ------------------------------------------------------------------
 !
     character(len=16) :: motclf3    
-    integer :: n1, jvalin, ndim, iocc, n2, n3
-    real(kind=8) :: ktsn, ktsp
+    integer :: jvalin, ndim, iocc, n1, ik3, jk3, ik4, jk4, nb3
 !
 ! DEB ------------------------------------------------------------------
     call jemarq()
-    ndim = 9
+    ndim = 11
     call wkvect('&&RC3200.INDI', 'V V R', ndim, jvalin)
+    motclf3 = 'FACT_SIGM'
 !
     zr(jvalin) = 0
     zr(jvalin+1) = 0
     zr(jvalin+2) = 0
     zr(jvalin+3) = 0
-    zr(jvalin+4) = 1
-    zr(jvalin+5) = 1
+    zr(jvalin+4) = 0
+    zr(jvalin+5) = 0
     zr(jvalin+6) = 1
+    zr(jvalin+7) = 1
+    zr(jvalin+8) = 1
 !
-    motclf3 = 'FACT_SIGM'
-    call getvr8(motclf3, 'KT_SN', scal=ktsn, iocc=iocc, nbret=n2)
-    if (n2 .eq. 0) then
-        zr(jvalin+7) = 1
-    else
-        zr(jvalin+7) = ktsn
-    endif
-    call getvr8(motclf3, 'KT_SP', scal=ktsp, iocc=iocc, nbret=n3) 
-    if (n3 .eq. 0) then
-        zr(jvalin+8) = 1
-    else
-        zr(jvalin+8) = ktsp
-    endif              
+    call getfac(motclf3, nb3)
+    if(nb3 .eq. 0) then
+        zr(jvalin+9) = 1
+        zr(jvalin+10) = 1
+    else 
+        do iocc = 1, nb3
+            call getvr8(motclf3, 'KT_SN', iocc=iocc, nbval=0, nbret=ik3)
+            if (ik3 .ne. 0) then
+                jk3 = iocc
+                call getvr8(motclf3, 'KT_SN', scal=zr(jvalin+9), iocc=jk3, nbret=n1)
+            else
+                zr(jvalin+9) = 1
+            endif
+!
+            call getvr8(motclf3, 'KT_SP', iocc=iocc, nbval=0, nbret=ik4)
+            if (ik4 .ne. 0) then
+                jk4 = iocc
+                call getvr8(motclf3, 'KT_SP', scal=zr(jvalin+10), iocc=jk4, nbret=n1)
+            else
+                zr(jvalin+10) = 1
+            endif
+        end do
+    endif             
 !
     call jedema()    
 end subroutine

@@ -50,13 +50,14 @@ subroutine rcZ2env(k,l, ke, lieu, fen)
 #include "asterfort/wkvect.h"
 #include "asterfort/lcqeqv.h"
 #include "asterfort/rcjaco.h"
+#include "asterfort/rcveri.h"
 !
     character(len=16) :: motclf, motclf2, motclf3, motclf4, valek(2)
     character(len=16) :: motclf5, val
     integer :: nb, nbther, nbpres, nbmeca, situ(2), ncmp
     integer :: n1, n2, n3, nume1, nume2, nume3, ither, ipres, imeca
     integer :: numether, numepres, numemeca, n4, nbinst, jinst, nbabsc, jabsc
-    integer :: i, j, kk, m, ibid, iret, mm, ndim, jcont, nbinst2, jdepsi
+    integer :: i, j, m, ibid, iret, ndim, jcont, nbinst2, jdepsi
     integer :: jj, jfen, n5(14), jtemp, n6, n7, jtempy, nbtempy, ii
     parameter  ( ncmp = 6 )
     character(len=8) :: nocmp(ncmp), crit(2), table1, table2, table3
@@ -66,7 +67,7 @@ subroutine rcZ2env(k,l, ke, lieu, fen)
     real(kind=8) :: prinmax, e, nume(2), deno(2), epset, set, oet, tet
     real(kind=8) :: a, b, c, epsisup, epsiinf, temp, tmoy, tsup, tinf
     real(kind=8) :: valtinf, valtsup, valtmoynum, valtmoyden, epsiet
-    real(kind=8) :: critepsi, tempmin, tempmax, tempii, emin, emax, toto(1) 
+    real(kind=8) :: critepsi, tempmin, tempmax, tempii, emin, emax 
     character(len=24) :: instan, abscur, instany
     complex(kind=8) :: cbid
 !
@@ -283,7 +284,8 @@ subroutine rcZ2env(k,l, ke, lieu, fen)
                                 tresca = 0.d0
 ! --------- si cette cont. princ. max est >0, la vitesse de déformation vaut ke*tresca/(E*(ti+1-ti))
                             else
-                                tresca = max ( abs(equi(1)-equi(2)), abs(equi(1)-equi(3)), abs(equi(2)-equi(3)) )
+                                tresca = max ( abs(equi(1)-equi(2)),&
+                            & abs(equi(1)-equi(3)), abs(equi(2)-equi(3)) )
                             endif                             
                         endif
 ! --------- calcul de e
@@ -359,9 +361,10 @@ subroutine rcZ2env(k,l, ke, lieu, fen)
 !
     call jedetr(instany)
 !
-    fen = (nume(1)+nume(2))/(deno(1)+deno(2))
     if (deno(1)+deno(2) .le. critepsi) then
         fen = 1
+    else
+        fen = (nume(1)+nume(2))/(deno(1)+deno(2))
     endif 
 !
     call jedema()

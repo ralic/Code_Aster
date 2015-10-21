@@ -26,7 +26,7 @@ DETRUIRE ( CONCEPT=_F(NOM=FAT12_MS ) )
 # VALIDATION DU CALCUL DE PM ET PB
 PMPB1=POST_RCCM( MATER=MAT,
                  TYPE_RESU='VALE_MAX',
-                 TYPE_RESU_MECA='UNITAIRE',
+                 TYPE_RESU_MECA='B3200_UNIT',
                  OPTION='PM_PB',
                  INFO=2,
                  CHAR_MECA=(
@@ -62,7 +62,7 @@ IMPR_TABLE(    TABLE=PMPB1,)
 # VALIDATION DU CALCUL DE SN ET DE SN*
 SN3=POST_RCCM( MATER=MAT,
                  TYPE_RESU='DETAILS',
-                 TYPE_RESU_MECA='UNITAIRE',
+                 TYPE_RESU_MECA='B3200_UNIT',
                  OPTION='SN',
                  INFO=1,
                  CHAR_MECA=(
@@ -99,7 +99,7 @@ IMPR_TABLE(    TABLE=SN3,)
 # VALIDATION DU CALCUL EN FATIGUE : SITUATION 1 + SITUATION 3
 FAT13_B = POST_RCCM( MATER=MAT,
                  TYPE_RESU='DETAILS',
-                 TYPE_RESU_MECA='UNITAIRE',
+                 TYPE_RESU_MECA='B3200_UNIT',
                  OPTION='FATIGUE',
                  INFO=1,
                  TYPE_KE='KE_MECA',
@@ -154,7 +154,7 @@ IMPR_TABLE(    TABLE=FAT13_B,)
 # SITUATION 1 + SITUATION 2 + SEISME
 FAT12_MS = POST_RCCM( MATER=MAT,
                  TYPE_RESU='DETAILS',
-                 TYPE_RESU_MECA='UNITAIRE',
+                 TYPE_RESU_MECA='B3200_UNIT',
                  OPTION='FATIGUE',
                  INFO=2,
                  TYPE_KE='KE_MIXTE',
@@ -316,8 +316,8 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC= 6.40924091E-03,
-           VALE_REFE=6.4089999999999998E-3,
+           VALE_CALC= 6.61155050374E-03,
+           VALE_REFE=6.6116E-3,
            NOM_PARA='FACT_USAGE_CUMU',
            TABLE=FAT12_MS,
            FILTRE=_F(NOM_PARA='LIEU',

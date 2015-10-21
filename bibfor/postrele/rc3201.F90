@@ -4,7 +4,6 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
                   spmecm, spthem, samax, utot, utotenv, sm,&
                   sigpm, resuas, resuss, resuca, resucs,&
                   factus, pmmax, pbmax, pmbmax, fatiguenv)
-! aslint: disable=W1501,W1501,W1504
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -38,7 +37,7 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
 !
     integer :: ig, iocs, npass
     real(kind=8) :: snmax, snemax, spmax, kemax, samax, utot, sm, sigpm, utotenv
-    real(kind=8) :: resuas(*), resuss(*), resuca(*), resucs(*), factus(*), ke
+    real(kind=8) :: resuas(*), resuss(*), resuca(*), resucs(*), factus(*)
     real(kind=8) :: pmmax, pbmax, pmbmax
     aster_logical :: lpmpb, lsn, lsnet, lfatig, lrocht, seisme, lbid
     aster_logical :: fatiguenv
@@ -90,7 +89,7 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
     real(kind=8) :: typeke, spmes2(2), spmeqs(2), spmeca(2), spther(2), ugenv
     real(kind=8) :: spmecs(2), spthes(2), spthem, spmecm, simpij, kemeca, kether
     real(kind=8) :: kemecs, kethes, pm, pb, pmpb, pms, pbs, pmpbs, spmec2(2)
-    real(kind=8) :: spmecp, spmecq(2), spthe2(2), spthep(2), sptheq(2)
+    real(kind=8) :: spmecp, spmecq(2), spthep(2)
     character(len=8) :: knumes, kbid
 !CC
     integer :: icodre(1)

@@ -51,7 +51,6 @@ subroutine rc32fp(nbsigr, nocc, situ, sigr, fuij,&
     aster_logical :: trouve, yapass, fatiguenv
     character(len=3) :: typass
     integer, pointer :: passage_sit(:) => null()
-    character(len=8) :: knume1, knume2
 !     ------------------------------------------------------------------
 !
     call infniv(ifm, niv)

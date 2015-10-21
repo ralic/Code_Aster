@@ -74,14 +74,16 @@ subroutine rc32sa(typz, nommat, mati, matj, snpq,&
     fuij(2) = 0.d0
 !
 ! --- APPLICATION D'UN KT A SN et/ou SP
-    call jeveuo('&&RC3200.INDI', 'L', jvalin)
-    ktsn = zr(jvalin+7)
-    ktsp = zr(jvalin+8) 
-    snpq = ktsn * snpq
-    spij(1) = ktsp * spij(1)
-    spij(2) = ktsp * spij(2)
-    spmeca(1) = ktsp * spmeca(1)
-    spmeca(2) = ktsp * spmeca(2)
+    if(typz .eq. 'COMB') then
+        call jeveuo('&&RC3200.INDI', 'L', jvalin)
+        ktsn = zr(jvalin+9)
+        ktsp = zr(jvalin+10) 
+        snpq = ktsn * snpq
+        spij(1) = ktsp * spij(1)
+        spij(2) = ktsp * spij(2)
+        spmeca(1) = ktsp * spmeca(1)
+        spmeca(2) = ktsp * spmeca(2)
+    endif
 !
 ! --- CALCUL DU COEFFICIENT DE CONCENTRATION ELASTO-PLASTIQUE KE
 ! --- CALCUL DE LA CONTRAINTE EQUIVALENTE ALTERNEE SALT

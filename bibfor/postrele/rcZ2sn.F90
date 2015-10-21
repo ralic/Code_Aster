@@ -55,9 +55,9 @@ subroutine rcZ2sn(typz, lieu, numsip, pi, mi,&
 ! OUT : SNIJ   : AMPLITUDE DE VARIATION DES CONTRAINTES LINEARISEES
 !     ------------------------------------------------------------------
 !
-    integer :: icmp, nbinst, long, i1, nbthep, nbtheq, jther, it
+    integer :: icmp, nbinst, long, i1, nbthep, nbtheq
     integer :: jthun, indicp, indicq, jvalin
-    integer :: jpres,nbprep, nbp, nbpreq, nbq, nbmecap, nbmecaq
+    integer :: nbprep, nbp, nbpreq, nbq, nbmecap, nbmecaq
     real(kind=8) :: pij, mij(6), sn, sij, sqma(6), sqmi(6), sn1, sn2
     real(kind=8) :: snth(6), racine, c1, c2, diam, ep, inertie
     character(len=4) :: typ2, typ3
@@ -76,11 +76,11 @@ subroutine rcZ2sn(typz, lieu, numsip, pi, mi,&
 !--- ET INDICES DE CONTRAINTE
 !
     call jeveuo('&&RC3200.INDI', 'L', jvalin)
-    c1 = zr(jvalin)  
-    c2 = zr(jvalin+1) 
-    diam = zr(jvalin+4) 
-    ep = zr(jvalin+5) 
-    inertie = zr(jvalin+6) 
+    c1 = zr(jvalin+1)  
+    c2 = zr(jvalin+3) 
+    diam = zr(jvalin+6)*2 
+    ep = zr(jvalin+7) 
+    inertie = zr(jvalin+8) 
 !
 ! --- DIFFERENCE DE PRESSION ENTRE LES ETATS I ET J
 !

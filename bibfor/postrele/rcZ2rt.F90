@@ -9,7 +9,7 @@ subroutine rcZ2rt(transip, transif, pi, pj, simpij)
     aster_logical :: transip, transif
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -31,21 +31,21 @@ subroutine rcZ2rt(transip, transif, pi, pj, simpij)
 !     - AVEC TRANSITOIRES DE PRESSION P(t), LA CONTRAINTE VAUT ???
 !     ------------------------------------------------------------------
 !
-    real(kind=8) :: presi, presj
-    integer :: jvalin, diam, ep
+    real(kind=8) :: presi, presj, rayon, ep
+    integer :: jvalin
 ! DEB ------------------------------------------------------------------
 !
     call jemarq()
 !
     call jeveuo('&&RC3200.INDI', 'L', jvalin)
-    diam = zr(jvalin+4) 
-    ep = zr(jvalin+5)
+    rayon = zr(jvalin+6)
+    ep = zr(jvalin+7)
 !
     if (transip .or. transif) then
         simpij = 0.d0
     else
-        presi= pi*diam/(2*ep)
-        presj= pj*diam/(2*ep)  
+        presi= pi*rayon/ep
+        presj= pj*rayon/ep  
         simpij = max(presi, presj)
    endif
 !
