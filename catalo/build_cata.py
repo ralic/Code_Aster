@@ -28,17 +28,22 @@ import shutil
 
 def build(target, debug):
     """Create the jeveux object of the catalog"""
+    from Execution.i18n import localization
+    from Utilitai.as_timer import ASTER_TIMER
     from cataelem.elem import CataElem
     from cataelem.Tools.build_jeveux import impr_cata
+    timer = ASTER_TIMER()
+    timer.Start('T0')
     cel = CataElem()
     cel.build()
+    timer.Stop('T0')
     debugdir = None
     if debug:
         debugdir = osp.join(osp.dirname(target), 'debug')
         if osp.exists(debugdir):
             shutil.rmtree(debugdir)
         os.makedirs(debugdir)
-    impr_cata(cel, target, debugdir)
+    impr_cata(cel, target, timer, debugdir)
 
 
 if __name__ == '__main__':

@@ -42,13 +42,13 @@ ERR = JV.ERR
 #
 # Fonction principale :
 #
-def impr_cata(cel, nomfic, dbgdir=None):
+def impr_cata(cel, nomfic, timer, dbgdir=None):
 #============================
 # imprimer les catalogues d'elements (cel) sur le fichier (nomfic) au
 # format "objets jeveux"
 
     fimpr = open(nomfic, "w")
-    imprime_ojb(cel, fimpr, dbgdir)
+    imprime_ojb(cel, fimpr, timer, dbgdir)
     fimpr.close()
     ERR.fini()
 
@@ -75,7 +75,8 @@ def txtpad(long, chaine):
 # impression au format 'ojb' :
 #-------------------------------------------------------------------------
 
-def imprime_ojb(cel, file, dbgdir=None):
+def imprime_ojb(cel, file, timer, dbgdir):
+    timer.Start('T1')
     ERR.mess(
         'I', "Debut de la transformation de l'ENSEMBLE des catalogues en objets jeveux")
 
@@ -147,6 +148,8 @@ def imprime_ojb(cel, file, dbgdir=None):
 
     #  catalogue des TYPE_MAILLE :
     #-----------------------------------------
+    timer.Stop('T1')
+    timer.Start('T2')
     ERR.contexte("Examen du catalogue des types de mailles")
     NOMTM = JV.cree_pn(d, nom='&CATA.TM.NOMTM', tsca='K8')
     NOELRF = JV.cree_pn(d, nom='&CATA.TM.NOELRF', tsca='K8')
@@ -193,6 +196,8 @@ def imprime_ojb(cel, file, dbgdir=None):
 
     #  catalogue des grandeurs :
     #-----------------------------------------
+    timer.Stop('T2')
+    timer.Start('T3')
     ERR.contexte("Examen du catalogue des grandeurs")
 
     # calcul de l_gdsimp et l_gdelem :
@@ -265,6 +270,8 @@ def imprime_ojb(cel, file, dbgdir=None):
 
     #  catalogues des options :
     #-----------------------------------------
+    timer.Stop('T3')
+    timer.Start('T4')
     options = cel.getOptions()
     nbop = len(options)
     NOMOP = JV.cree_pn(d, nom='&CATA.OP.NOMOPT', tsca='K16')
@@ -367,9 +374,13 @@ def imprime_ojb(cel, file, dbgdir=None):
 
 #   --- debut instructions imprime_ojb pour les elements :
 #   ------------------------------------------------------
+    timer.Stop('T4')
+    timer.Start('T5')
 #   -- calcul de 2 dictionnaires qui seront utilises plus loin :
     opt_contrainte, opt_a_calculer = liste_opt_a_calculer(cel, dbgdir)
 
+    timer.Stop('T5')
+    timer.Start('T6')
     nbte = len(cel.getElements())
     nblocfpg = cel.getNbLocations()
     nbopte = calc_nbopte(cel, opt_a_calculer)
@@ -414,6 +425,8 @@ def imprime_ojb(cel, file, dbgdir=None):
         for kk in range(n1):
             FPG_LISTE.ecri_co(nom=nofpgl, indice=kk + 1, valeur=l1[kk])
 
+    timer.Stop('T6')
+    timer.Start('T7')
     # dbgele can be set to True for an element
     dbgele = False
     k = 0
@@ -421,6 +434,7 @@ def imprime_ojb(cel, file, dbgdir=None):
     ielrefe = 0
     iflpg = 0
     for cata in cel.getElements():
+        timer.Start('T7.1')
         k = k + 1
         l_elref1 = cata.elrefe
         l_decl_en = cata.nodes
@@ -458,6 +472,8 @@ def imprime_ojb(cel, file, dbgdir=None):
 
         # objets PNLOCFPG et NOLOCFPG :
         # ---------------------------------
+        timer.Stop('T7.1')
+        timer.Start('T7.2')
         num_elref1 = 0
         for elref1 in cata.elrefe:
             num_elref1 = num_elref1 + 1
@@ -485,6 +501,8 @@ def imprime_ojb(cel, file, dbgdir=None):
                 PNLOCFPG.ecri_os(indice=iflpg, valeur=noflpg)
                 NOLOCFPG.ecri_os(indice=iflpg, valeur=ifpg)
 
+        timer.Stop('T7.2')
+        timer.Start('T7.2b')
         # objet CTE_ATTR:
         # ---------------------------------
         liattr = get_liattr(cel, cata)
@@ -495,12 +513,16 @@ def imprime_ojb(cel, file, dbgdir=None):
 
         # modes locaux :
         # ---------------
+        timer.Stop('T7.2b')
+        timer.Start('T7.3')
         modlocs = liste_mode_local(cata, dbgdir)
         ERR.contexte("Examen du catalogue du type_elem: " + note)
         ERR.contexte(
             "  rubrique: modes locaux utilises par le type_elem ", "AJOUT")
 
         # modes locaux "simples" :
+        timer.Stop('T7.3')
+        timer.Start('T7.4')
         for moloc in modlocs:
             if moloc.type not in ('ELEM', 'ELNO', 'ELGA'):
                 continue
@@ -621,6 +643,8 @@ def imprime_ojb(cel, file, dbgdir=None):
                     print nomolo, 'nbscal=', nbscal
 
         # modes locaux "vecteurs" :
+        timer.Stop('T7.4')
+        timer.Start('T7.5')
         for moloc in modlocs:
             if moloc.type not in ('VEC',):
                 continue
@@ -641,6 +665,8 @@ def imprime_ojb(cel, file, dbgdir=None):
             if dbgele:
                 print nomolo, nogd, igd, nbscal, NOMMOLOC.jenonu(note2 + molo1)
 
+        timer.Stop('T7.5')
+        timer.Start('T7.6')
         # modes locaux "matrices" :
         for moloc in modlocs:
             if moloc.type not in ('MAT',):
@@ -675,6 +701,8 @@ def imprime_ojb(cel, file, dbgdir=None):
             if dbgele:
                 print nomolo, nogd, igd, nbscal, NOMMOLOC.jenonu(note2 + molo1), NOMMOLOC.jenonu(note2 + molo2)
 
+        timer.Stop('T7.6')
+        timer.Start('T7.7')
         # options :
         # ---------------
         dico_opt_te = {}
@@ -733,6 +761,8 @@ def imprime_ojb(cel, file, dbgdir=None):
                         if dbgele:
                             print noop, 'out', param, mode, nbin + kk + 1, 3 + nbin + kk + 1, NOMMOLOC.jenonu(note2 + mode)
 
+        timer.Stop('T7.7')
+        timer.Start('T7.8')
         # -- on emet une erreur si le type_elem calcule des options qu'il NE DEVRAIT PAS calculer
         ERR.contexte("Examen du catalogue du type_elem : " + note)
         for noop in dico_opt_te.keys():
@@ -745,6 +775,8 @@ def imprime_ojb(cel, file, dbgdir=None):
                     ERR.mess(
                         'E', "L'option: " + noop + " NE DOIT PAS etre calculee par le TYPE_ELEM: " + note)
 
+        timer.Stop('T7.8')
+        timer.Start('T7.9')
         # -- on ajoute des "-1" pour les options que le type_elem DEVRAIT calculer
         #    et qu'il ne calcule pas.
         for noop in opt_a_calculer[note]:
@@ -762,9 +794,12 @@ def imprime_ojb(cel, file, dbgdir=None):
                 OPTMOD.ecri_co(nom=str(ioptte), indice=2, valeur=nbin)
                 OPTMOD.ecri_co(nom=str(ioptte), indice=3, valeur=nbou)
 
+        timer.Stop('T7.9')
         del cata
 
     assert(ioptte == nbopte)
+    timer.Stop('T7')
+    timer.Start('T8')
 
     #  catalogue des PHENOMENE_MODELISATION :
     #--------------------------------------------------------
@@ -794,6 +829,8 @@ def imprime_ojb(cel, file, dbgdir=None):
                 MODELI.ecri_co(
                     nom=mod, indice=NOMTM.jenonu(nom=tyma.name), valeur=NOMTE.jenonu(nom=tyel.name))
 
+    timer.Stop('T8')
+    timer.Start('T9')
     #  impression des obj :
     #-----------------------------------------
     likeys = d.keys()
@@ -806,7 +843,8 @@ def imprime_ojb(cel, file, dbgdir=None):
             ojb.impr(open(fdbg, 'wb'))
     ERR.mess(
         'I', "Fin de la transformation de l'ENSEMBLE des catalogues en objets jeveux")
-
+    timer.Stop('T9')
+    print timer
 
 #---------------------------------------------------------------------------
 def get_liattr(cel, cata):
