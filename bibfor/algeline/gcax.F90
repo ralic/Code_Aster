@@ -47,8 +47,8 @@ subroutine gcax(m, in, ip, ac, x,&
 30      continue
         y(i) = dtemp
         dtemp = x(i)
-!!DIR$_IVDEP
-!!DIR$_NOPREFETCH_Y
+!DIR$ IVDEP
+!DIR$ NOPREFETCH Y
         do 20 ki = kdeb, kfin
             y(ip(ki)) = y(ip(ki)) + ac(ki)*dtemp
 20      continue

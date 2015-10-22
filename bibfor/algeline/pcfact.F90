@@ -81,7 +81,7 @@ subroutine pcfact(matas, nequ, in, ip, ac,&
                 enddo
 !               -- TERME DIAGONAL
                 cumul = ac(jfin)
-!!DIR$_IVDEP
+!DIR$ IVDEP
                 do ki = jdeb, jfin - 1
                     prc(ki) = prc(ki)*prc(in(ip(ki)))
                     cumul = cumul - prc(ki)*vect(ip(ki))

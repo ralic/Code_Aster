@@ -173,7 +173,7 @@ subroutine te0243(option, nomte)
                 call rcfode(ifon(2), tpg, lambda, r8bid)
 !
                 if (lteatt('AXIS','OUI')) poids = poids*r
-!!DIR$_IVDEP
+!DIR$ IVDEP
                 do 105 i = 1, nno
                     vectt(c(ise,i)) = vectt(&
                                       c(ise,i)) + poids * theta*lambda* (dfdx(i)*dtpgdx+dfdy(i)*d&

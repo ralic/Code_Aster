@@ -78,8 +78,8 @@ subroutine gcldm1(m, in, ip, prec, x, y, perm, xtrav, ytrav)
         fac = ytrav(i)
 !
 !        ---- PROCEDURE A LA MAIN
-!!DIR$_IVDEP
-!!DIR$_NOPREFETCH_Y
+!DIR$ IVDEP
+!DIR$ NOPREFETCH Y
         do 30 ki = kdeb, kfin
             ytrav(ip(ki)) = ytrav(ip(ki))-prec(ki)*fac
 30      continue

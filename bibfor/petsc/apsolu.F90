@@ -153,7 +153,7 @@ subroutine apsolu(kptsc, lmd, rsolu)
 ! Pour corriger issue23375
 ! Probleme possible du compilateur Intel sur athosdev :
 ! Version 14.0.2.144 Build 20140120
-!!DIR$_NOVECTOR
+!DIR$ NOVECTOR
         do ieq1 = 1, neq1
             ieq2=new_ieq(ieq1)
             rsolu(ieq1)=xx(xidx+ieq2)

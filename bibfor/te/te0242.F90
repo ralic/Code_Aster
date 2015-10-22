@@ -134,7 +134,7 @@ subroutine te0242(option, nomte)
 !
                 ij = imattt - 1
                 do i = 1, nno
-!!DIR$_IVDEP
+!DIR$ IVDEP
                     do j = 1, nno
                         ij = ij + 1
                         mt(c(ise,i),c(ise,j)) = mt(&
@@ -170,7 +170,7 @@ subroutine te0242(option, nomte)
 !
                 ij = imattt - 1
                 do i = 1, nno
-!!DIR$_IVDEP
+!DIR$ IVDEP
                     do j = 1, nno
                         ij = ij + 1
                         mt(c(ise,i),c(ise,j)) = mt(&
