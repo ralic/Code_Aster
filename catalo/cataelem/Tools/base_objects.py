@@ -240,7 +240,7 @@ class Attribute(BaseCataEntity):
 
     def isValid(self, value):
         """Tell if the value is a possible value"""
-        return value in self._value
+        return value in self._value or value is None
 
 
 class SetOfNodes(BaseCataEntity):
@@ -491,17 +491,19 @@ class CondCalcul(object):
             # les valeurs possibles des attributs automatiques 'MODELI',
             # 'ALIAS8' ne sont pas encore connues:
             if attr1 in ('MODELI', 'ALIAS8'):
-                assign.append((attr1, val1))
+                attr = checkAttr(attr1, None)
+                assign.append((attr, val1))
                 continue
             check_type([attr1, val1], str)
             attr = checkAttr(attr1, val1)
+            check_type([attr], Attribute)
             assign.append((attr, val1))
         self._condition = assign
 
     def __getCondition(self):
         """Return the list of conditions"""
         return self._condition
-    conditionStr = property(__getCondition)
+    conditions = property(__getCondition)
 
     def addCondition(self):
         """Tell if the condition is an addition"""
@@ -703,6 +705,7 @@ class Element(BaseCataEntity):
         for attr1, val1 in attrs:
             check_type([attr1, val1], str)
             attr = checkAttr(attr1, val1)
+            check_type([attr], Attribute)
             assign.append((attr, val1))
         self._attrs = assign
 
@@ -754,6 +757,7 @@ class Modelisation(object):
             for attr1, val1 in attrs:
                 check_type([attr1, val1], str)
                 attr = checkAttr(attr1, val1)
+                check_type([attr], Attribute)
                 assign.append((attr, val1))
             attrs = assign
         if elements:
@@ -895,7 +899,7 @@ def checkAttr(attrname, value):
         raise ValueError("unknown attribute '{1}'".format(attrname))
     assert attr.isValid(value), ("Attr {0}: unexpected value {1}"
                                  .format(attrname, value))
-    return attrname
+    return attr
 
 
 #===============================================================================================

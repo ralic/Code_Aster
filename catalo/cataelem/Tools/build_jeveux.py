@@ -29,6 +29,7 @@ import traceback
 import copy
 from collections import OrderedDict
 
+from cataelem.Commons import attributes as AT
 from cataelem.Tools import jeveux_utils as JV
 
 ERR = JV.ERR
@@ -505,9 +506,10 @@ def imprime_ojb(cel, file, timer, dbgdir):
         # ---------------------------------
         liattr = get_liattr(cel, cata)
         nbattr = len(liattr)
-        CTE_ATTR.cree_oc(nom=note, long=nbattr)
+        CTE_ATTR.cree_oc(nom=note, long=nbattr * 2)
         for iattr in range(nbattr):
-            CTE_ATTR.ecri_co(nom=note, indice=iattr + 1, valeur=liattr[iattr])
+            CTE_ATTR.ecri_co(nom=note, indice=2*iattr + 1, valeur=liattr[iattr][0].name)
+            CTE_ATTR.ecri_co(nom=note, indice=2*iattr + 2, valeur=liattr[iattr][1])
 
         # modes locaux :
         # ---------------
@@ -772,6 +774,7 @@ def imprime_ojb(cel, file, timer, dbgdir):
                 if noop not in opt_a_calculer[note]:
                     ERR.mess(
                         'E', "L'option: " + noop + " NE DOIT PAS etre calculee par le TYPE_ELEM: " + note)
+                    raise
 
         timer.Stop('T7.8')
         timer.Start('T7.9')
@@ -845,6 +848,7 @@ def imprime_ojb(cel, file, timer, dbgdir):
     print timer
 
 #---------------------------------------------------------------------------
+# TODO should be CataElem.getAttrsElement(element)
 _cache_attr = {}
 def get_liattr(cel, cata):
     #     retourne la liste des attributs d'un type_elem :
@@ -869,9 +873,8 @@ def get_liattr(cel, cata):
     # affecte la valeur "###" (qui veut dire plusieurs) ou (-999 si c'est un entier)
     #    Si c'est embetant, il faut redefinir l'attribut au niveau du type_elem
 
-    lattr_AUTO = [
-        'ALIAS8', 'PHENO', 'MODELI', 'DIM_TOPO_MODELI', 'DIM_COOR_MODELI', 'DIM_TOPO_MAILLE',
-                  'PRINCIPAL', 'BORD', 'DISCRET']
+    lattr_AUTO = [AT.ALIAS8, AT.PHENO, AT.MODELI, AT.DIM_TOPO_MODELI,
+                  AT.DIM_COOR_MODELI, AT.DIM_TOPO_MAILLE, AT.BORD, AT.DISCRET]
 
     for pheno, modeli in cel.getElemModel(cata.name):
             codph = pheno.code
@@ -888,86 +891,76 @@ def get_liattr(cel, cata):
 
             # Si les attributs automatiques existent deja, c'est que l'element est partage.
             # On verifie alors la coherence des informations
-            if not 'ALIAS8' in dicattr:
-                dicattr['DIM_TOPO_MAILLE'] = str(dimtma)
-                dicattr['DIM_TOPO_MODELI'] = str(d1)
-                dicattr['DIM_COOR_MODELI'] = str(d2)
-                dicattr['ALIAS8'] = str(codph)[0:2] + str(
-                    codmod)[0:3] + str(codtma)[0:3]
-                dicattr['PHENO'] = str(codph)[0:2]
-                dicattr['MODELI'] = str(codmod)[0:3]
+            if dicattr.get(AT.ALIAS8) is None:
+                dicattr[AT.DIM_TOPO_MAILLE] = str(dimtma)
+                dicattr[AT.DIM_TOPO_MODELI] = str(d1)
+                dicattr[AT.DIM_COOR_MODELI] = str(d2)
+                dicattr[AT.ALIAS8] = str(codph)[0:2] + str(codmod)[0:3] + str(codtma)[0:3]
+                dicattr[AT.PHENO] = str(codph)[0:2]
+                dicattr[AT.MODELI] = str(codmod)[0:3]
 
             else:
-                if dicattr['DIM_TOPO_MAILLE'] != str(dimtma):
+                if dicattr[AT.DIM_TOPO_MAILLE] != str(dimtma):
                     ERR.mess('E', "DIM_TOPO_MAILLE mal defini (plusieurs)")
-                if dicattr['DIM_TOPO_MODELI'] != str(d1):
+                if dicattr[AT.DIM_TOPO_MODELI] != str(d1):
                     ERR.mess('E', "DIM_TOPO_MODELI mal defini (plusieurs)")
-                if dicattr['DIM_COOR_MODELI'] != str(d2):
+                if dicattr[AT.DIM_COOR_MODELI] != str(d2):
                     ERR.mess('E', "DIM_COOR_MODELI mal defini (plusieurs)")
-                if dicattr['ALIAS8'][5:] != str(codtma)[0:3]:
+                if dicattr[AT.ALIAS8][5:] != str(codtma)[0:3]:
                     ERR.mess(
                         'E', "code type_maille mal defini (plusieurs)")
 
-                alias8 = dicattr['ALIAS8']
+                alias8 = dicattr[AT.ALIAS8]
                 if alias8[:2] != str(codph)[0:2]:
-                    dicattr['PHENO'] = '##'
+                    dicattr[AT.PHENO] = '##'
                     alias8 = '##' + alias8[2:]
                 if alias8[2:5] != str(codmod)[0:3]:
-                    dicattr['MODELI'] = '###'
+                    dicattr[AT.MODELI] = '###'
                     alias8 = alias8[:2] + '###' + alias8[5:]
-                dicattr['ALIAS8'] = alias8
+                dicattr[AT.ALIAS8] = alias8
 
             # le cas d1 == -1 est particulier : il est reserve aux
             # modelisations discrètes DIS_xxx
             if d1 == -1:
-                dicattr['DISCRET'] = 'OUI'
-                dicattr['PRINCIPAL'] = 'OUI'
-                dicattr['BORD'] = '0'
+                dicattr[AT.DISCRET] = 'OUI'
+                dicattr[AT.PRINCIPAL] = 'OUI'
+                dicattr[AT.BORD] = '0'
             else:
-                dicattr['DISCRET'] = 'NON'
+                dicattr[AT.DISCRET] = 'NON'
                 if d1 > d2:
                     ERR.mess(
                         'E', "Pb. pour les dimensions  d1 d2 de la modelisation:" + mod)
 
                 if dimtma == d1:
-                    dicattr['PRINCIPAL'] = 'OUI'
-                    dicattr['BORD'] = '0'
+                    dicattr[AT.PRINCIPAL] = 'OUI'
+                    dicattr[AT.BORD] = '0'
                 else:
                     if dimtma == d1 - 1:
-                        dicattr['BORD'] = '-1'
+                        dicattr[AT.BORD] = '-1'
                     elif dimtma == d1 - 2:
-                        dicattr['BORD'] = '-2'
+                        dicattr[AT.BORD] = '-2'
                     elif dimtma == d1 - 3:
-                        dicattr['BORD'] = '-3'
+                        dicattr[AT.BORD] = '-3'
                     elif dimtma == d1 + 1:
-                        dicattr['BORD'] = '+1'
+                        dicattr[AT.BORD] = '+1'
                     else:
                         assert False, (mod, d1, dimtma)
 
-            if lattrib:
-                for k in range(len(lattrib)):
-                    no_attr = lattrib[k][0]
-                    if no_attr in lattr_AUTO:
-                        ERR.mess(
-                            'E', "Il est interdit de redefinir l'attribut:" + no_attr)
-                    val_attr = lattrib[k][1]
-                    dicattr[no_attr] = val_attr
+            for attr, val_attr in modeli.attrs or []:
+                if attr in lattr_AUTO:
+                    ERR.mess(
+                        'E', "Il est interdit de redefinir l'attribut:" + attr.name)
+                dicattr[attr] = val_attr
 
     # surcharge eventuelle des attributs definis pour le type_elem:
-    lattrib = cata.attrs
-    if lattrib:
-        for k in range(len(lattrib)):
-            no_attr = lattrib[k][0]
-            if no_attr in lattr_AUTO and no_attr in dicattr:
-                ERR.mess('E',
-                         "Il est interdit de redefinir l'attribut:" + no_attr)
-            val_attr = lattrib[k][1]
-            dicattr[no_attr] = val_attr
+    for attr, val_attr in cata.attrs or []:
+        # XXX was "and" !
+        if attr in lattr_AUTO or attr in dicattr:
+            ERR.mess(
+                'E', "Il est interdit de redefinir l'attribut:" + attr.name)
+        dicattr[attr] = val_attr
 
-    liattr = []
-    for k in dicattr.keys():
-        liattr.append(k)
-        liattr.append(dicattr[k])
+    liattr = dicattr.items()
     _cache_attr[note] = liattr
     return liattr
 
@@ -992,15 +985,9 @@ def liste_opt_a_calculer(cel, dbgdir=None):
         nomte = cata.name
         opt_a_calculer[nomte] = []
         liattr = get_liattr(cel, cata)
-        n1 = len(liattr)
-        assert n1 % 2 == 0, n1
-        for k in range(n1 / 2):
-            attr1 = liattr[2 * k] + '=' + liattr[2 * k + 1]
-            if not attr1 in dic1:
-                dic1[attr1] = []
-            dic1[attr1].append(nomte)
-    for attr1 in dic1.keys():
-        dic1[attr1] = set(dic1[attr1])
+        for attr, val in liattr:
+            dic1[(attr, val)] = dic1.get((attr, val), set())
+            dic1[(attr, val)].add(nomte)
 
 #   -- On remplit opt_a_calculer :
 #   -------------------------------
@@ -1014,17 +1001,15 @@ def liste_opt_a_calculer(cel, dbgdir=None):
         opt_contrainte[noop] = 1
         set_total = set()
         for cond_calc in cond_calcul:
-            l1 = []
-            for attr, val in cond_calc.conditionStr:
-                l1.append(attr + '=' + val)
-            set1 = set(dic1[l1[0]])
-            for attr1 in l1[1:]:
-                set1 = set1.intersection(dic1[attr1])
+            cond1 = cond_calc.conditions[0]
+            set1 = set(dic1[cond1])
+            for cond1 in cond_calc.conditions[:]:
+                set1.intersection_update(dic1[cond1])
 
             if cond_calc.addCondition():
-                set_total = set_total.union(set1)
+                set_total.update(set1)
             else:
-                set_total = set_total.difference(set1)
+                set_total.difference_update(set1)
         l1 = list(set_total)
         for nomte in l1:
             opt_a_calculer[nomte].append(noop)
