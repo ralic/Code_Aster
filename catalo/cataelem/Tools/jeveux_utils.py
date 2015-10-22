@@ -74,7 +74,7 @@ class ERREUR:
         x = {}
         for xx in liste:
             param = xx[0]
-            if x.has_key(param):
+            if x.get(param):
                 self.mess(code, "Le paramètre " + param +
                           " apparait plusieurs fois dans la liste: " + str(liste))
             x[param] = 1

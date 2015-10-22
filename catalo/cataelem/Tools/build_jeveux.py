@@ -361,7 +361,8 @@ def imprime_ojb(cel, file, timer, dbgdir):
         liec = [0] * nbec
         rangav = -1
         for icmp in range(len(lcmp)):
-            ERR.veri_appartient_liste('F', lcmp[icmp], lcmp_gd)
+            # ERR.veri_appartient_liste('F', lcmp[icmp], lcmp_gd)
+            # index will raise IndexError
             rangcmp = lcmp_gd.index(lcmp[icmp])
             if rangcmp < rangav:
                 ERR.mess('E', " CMPS dans un ordre incorrect. " +
@@ -411,20 +412,21 @@ def imprime_ojb(cel, file, timer, dbgdir):
     # objets FPG_LISTE et NOFPG_LISTE :
     # --------------------------------------
     ERR.contexte("fabrication de l'objet .FPG_LISTE")
-    # lifpgl={NOMTE(1:16)//nofpgl(1:8):[nofpg1,nofpg2,...,ELREFE]}
-    lifpgl = get_lifpgl(cel)
+    # locations={NOMTE(1:16)//nofpgl(1:8):[nofpg1,nofpg2,...,ELREFE]}
+    locations = getAllLocations(cel)
     FPG_LISTE = JV.cree_co(d, nom='&CATA.TE.FPG_LISTE', tsca='K8',
                            tsca_pn='K24', contig='CONTIG', acces='NU', longv=0)
     NOFPG_LISTE = JV.cree_pn(d, nom='&CATA.TE.NOFPG_LISTE', tsca='K24')
-    lnofpgl = lifpgl.keys()
-    lnofpgl.sort()
-    for nofpgl in lnofpgl:
+    locIndex = {}
+    i = 0
+    for nofpgl, loc in locations.items():
         NOFPG_LISTE.ajout_nom(nofpgl)
-        l1 = lifpgl[nofpgl]
-        n1 = len(l1)
-        FPG_LISTE.cree_oc(nom=nofpgl, long=n1)
-        for kk in range(n1):
-            FPG_LISTE.ecri_co(nom=nofpgl, indice=kk + 1, valeur=l1[kk])
+        nbpt = len(loc)
+        FPG_LISTE.cree_oc(nom=nofpgl, long=nbpt)
+        for kk in range(nbpt):
+            FPG_LISTE.ecri_co(nom=nofpgl, indice=kk + 1, valeur=loc[kk])
+        i += 1
+        locIndex[nofpgl] = i
 
     timer.Stop('T6')
     timer.Start('T7')
@@ -551,10 +553,9 @@ def imprime_ojb(cel, file, timer, dbgdir):
                 elref1 = l_elref1[0]
 
                 # on cherche d'abord dans les familles "simples" :
-                if nofpg1 in elref1.gauss:
-                    globa = elref1.gauss[nofpg1]
-                    (nbpt, ifpg) = elrefe_npg(
-                        NOFPG, cata.elrefe[0].elrefe, globa)
+                globa = elref1.gauss.get(nofpg1)
+                if globa:
+                    nbpt, ifpg = elrefe_npg(NOFPG, cata.elrefe[0].elrefe, globa)
 
                 # si on n'a pas trouve, on regarde la famille "MATER" :
                 if nbpt == -999:
@@ -567,7 +568,7 @@ def imprime_ojb(cel, file, timer, dbgdir):
                                 NOFPG, cata.elrefe[0].elrefe, globa)
                             nbpt_l = nbpt_l + nbpt
                         nbpt = nbpt_l
-                        ifpg = -(lnofpgl.index(note2 + nofpg1) + 1)
+                        ifpg = - locIndex[note2 + nofpg1]
 
             if nbpt == -999:
                 ERR.mess(
@@ -707,8 +708,7 @@ def imprime_ojb(cel, file, timer, dbgdir):
         # ---------------
         dico_opt_te = {}
         if len(cata.calculs) > 0:
-            for noop in cata.calculs.keys():
-                opt = cata.calculs[noop]
+            for noop, opt in cata.calculs.items():
                 numte = opt.te
                 nbin = len(opt.para_in)
                 nbou = len(opt.para_out)
@@ -717,7 +717,7 @@ def imprime_ojb(cel, file, timer, dbgdir):
                 ERR.veri_pas_doublon_lpara('E', opt.para_in)
                 ERR.veri_pas_doublon_lpara('E', opt.para_out)
 
-                if noop in dico_opt_te:
+                if dico_opt_te.get(noop):
                     ERR.mess(
                         'E', "L'option: " + noop + " est definie plusieurs fois pour le TYPE_ELEM: " + note)
                 else:
@@ -1051,20 +1051,20 @@ def calc_nbopte(cel, opt_a_calculer):
                 nbopte = nbopte + 1
     return nbopte
 
-
-def get_lifpgl(cel):
+# TODO CataElem.allLocations()
+def getAllLocations(cel):
     #  retourne un dictionnaire contenant toutes les definitions des familles "liste" de PG
     #-------------------------------------------------------------------------
     lifpgl = {}
     for cata in cel.getElements():
         note2 = txtpad(16, cata.name)
-
         for elref1 in cata.elrefe:
             if len(elref1.mater) > 0:
                 nofpgl = "MATER"
                 lifpgl[note2 + nofpgl] = copy.deepcopy(elref1.mater)
                 lifpgl[note2 + nofpgl].append(elref1.elrefe.name)
-    return lifpgl
+    locations = OrderedDict(sorted(lifpgl.items(), key=lambda i: i[0]))
+    return locations
 
 
 #-------------------------------------------------------------------------
