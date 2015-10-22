@@ -501,8 +501,6 @@ def imprime_ojb(cel, file, timer, dbgdir):
                 PNLOCFPG.ecri_os(indice=iflpg, valeur=noflpg)
                 NOLOCFPG.ecri_os(indice=iflpg, valeur=ifpg)
 
-        timer.Stop('T7.2')
-        timer.Start('T7.2b')
         # objet CTE_ATTR:
         # ---------------------------------
         liattr = get_liattr(cel, cata)
@@ -513,7 +511,7 @@ def imprime_ojb(cel, file, timer, dbgdir):
 
         # modes locaux :
         # ---------------
-        timer.Stop('T7.2b')
+        timer.Stop('T7.2')
         timer.Start('T7.3')
         modlocs = liste_mode_local(cata, dbgdir)
         ERR.contexte("Examen du catalogue du type_elem: " + note)
@@ -847,23 +845,21 @@ def imprime_ojb(cel, file, timer, dbgdir):
     print timer
 
 #---------------------------------------------------------------------------
+_cache_attr = {}
 def get_liattr(cel, cata):
     #     retourne la liste des attributs d'un type_elem :
     #     (y compris les attributs definis au niveau des modelisations)
     #     (y compris les attributs definis AUTOMATIQUEMENT)
     #-------------------------------------------------------------------------
     note = cata.name
+    if _cache_attr.get(note):
+        return _cache_attr[note]
     tyma1 = cata.meshType
 
     # recherche d'informations sur le type de maille : codtma (K3) + dimension
     # topologique
-    for tm in cel.getMeshTypes():
-        notm = tm.name
-        if not tm.name == tyma1.name:
-            continue
-        dimtma = int(tm.dim)
-        codtma = tm.code
-        assert dimtma in (0, 1, 2, 3), dimtma
+    dimtma = tyma1.dim
+    codtma = tyma1.code
 
     dicattr = {}
 
@@ -876,100 +872,86 @@ def get_liattr(cel, cata):
     lattr_AUTO = [
         'ALIAS8', 'PHENO', 'MODELI', 'DIM_TOPO_MODELI', 'DIM_COOR_MODELI', 'DIM_TOPO_MAILLE',
                   'PRINCIPAL', 'BORD', 'DISCRET']
-  # for (ph, lmod, codph) in cel.phenmod.keys():
-    for pheno in cel.getPhenomenons():
-        ph = pheno.name
-        codph = pheno.code
-        lmod = pheno.modelisations
 
-    #   for (mod, laffe, codmod, (d1, d2), lattrib) in lmod:
-        for mod in lmod.keys():
-            modeli = lmod[mod]
+    for pheno, modeli in cel.getElemModel(cata.name):
+            codph = pheno.code
             codmod = modeli.code
             (d1, d2) = modeli.dim
             laffe = modeli.elements
             lattrib = modeli.attrs
+            d1 = int(d1)
+            d2 = int(d2)
+            assert d1 in (-1, 0, 1, 2, 3), d1
+            assert d2 in (0, 1, 2, 3), d2
+            # On ajoute les attributs definis AUTOMATIQUEMENT (ceux de
+            # lattr_AUTO) :
 
-            # la modelisation inclut-elle le type_elem note ?
-            trouve = 0
-            for (tyma, tyel) in laffe:
-                if tyel.name == note:
-                    trouve = 1
+            # Si les attributs automatiques existent deja, c'est que l'element est partage.
+            # On verifie alors la coherence des informations
+            if not 'ALIAS8' in dicattr:
+                dicattr['DIM_TOPO_MAILLE'] = str(dimtma)
+                dicattr['DIM_TOPO_MODELI'] = str(d1)
+                dicattr['DIM_COOR_MODELI'] = str(d2)
+                dicattr['ALIAS8'] = str(codph)[0:2] + str(
+                    codmod)[0:3] + str(codtma)[0:3]
+                dicattr['PHENO'] = str(codph)[0:2]
+                dicattr['MODELI'] = str(codmod)[0:3]
 
-            if trouve:
-                d1 = int(d1)
-                d2 = int(d2)
-                assert d1 in (-1, 0, 1, 2, 3), d1
-                assert d2 in (0, 1, 2, 3), d2
-                # On ajoute les attributs definis AUTOMATIQUEMENT (ceux de
-                # lattr_AUTO) :
+            else:
+                if dicattr['DIM_TOPO_MAILLE'] != str(dimtma):
+                    ERR.mess('E', "DIM_TOPO_MAILLE mal defini (plusieurs)")
+                if dicattr['DIM_TOPO_MODELI'] != str(d1):
+                    ERR.mess('E', "DIM_TOPO_MODELI mal defini (plusieurs)")
+                if dicattr['DIM_COOR_MODELI'] != str(d2):
+                    ERR.mess('E', "DIM_COOR_MODELI mal defini (plusieurs)")
+                if dicattr['ALIAS8'][5:] != str(codtma)[0:3]:
+                    ERR.mess(
+                        'E', "code type_maille mal defini (plusieurs)")
 
-                # Si les attributs automatiques existent deja, c'est que l'element est partage.
-                # On verifie alors la coherence des informations
-                if not 'ALIAS8' in dicattr:
-                    dicattr['DIM_TOPO_MAILLE'] = str(dimtma)
-                    dicattr['DIM_TOPO_MODELI'] = str(d1)
-                    dicattr['DIM_COOR_MODELI'] = str(d2)
-                    dicattr['ALIAS8'] = str(codph)[0:2] + str(
-                        codmod)[0:3] + str(codtma)[0:3]
-                    dicattr['PHENO'] = str(codph)[0:2]
-                    dicattr['MODELI'] = str(codmod)[0:3]
+                alias8 = dicattr['ALIAS8']
+                if alias8[:2] != str(codph)[0:2]:
+                    dicattr['PHENO'] = '##'
+                    alias8 = '##' + alias8[2:]
+                if alias8[2:5] != str(codmod)[0:3]:
+                    dicattr['MODELI'] = '###'
+                    alias8 = alias8[:2] + '###' + alias8[5:]
+                dicattr['ALIAS8'] = alias8
 
-                else:
-                    if dicattr['DIM_TOPO_MAILLE'] != str(dimtma):
-                        ERR.mess('E', "DIM_TOPO_MAILLE mal defini (plusieurs)")
-                    if dicattr['DIM_TOPO_MODELI'] != str(d1):
-                        ERR.mess('E', "DIM_TOPO_MODELI mal defini (plusieurs)")
-                    if dicattr['DIM_COOR_MODELI'] != str(d2):
-                        ERR.mess('E', "DIM_COOR_MODELI mal defini (plusieurs)")
-                    if dicattr['ALIAS8'][5:] != str(codtma)[0:3]:
-                        ERR.mess(
-                            'E', "code type_maille mal defini (plusieurs)")
+            # le cas d1 == -1 est particulier : il est reserve aux
+            # modelisations discrètes DIS_xxx
+            if d1 == -1:
+                dicattr['DISCRET'] = 'OUI'
+                dicattr['PRINCIPAL'] = 'OUI'
+                dicattr['BORD'] = '0'
+            else:
+                dicattr['DISCRET'] = 'NON'
+                if d1 > d2:
+                    ERR.mess(
+                        'E', "Pb. pour les dimensions  d1 d2 de la modelisation:" + mod)
 
-                    alias8 = dicattr['ALIAS8']
-                    if alias8[:2] != str(codph)[0:2]:
-                        dicattr['PHENO'] = '##'
-                        alias8 = '##' + alias8[2:]
-                    if alias8[2:5] != str(codmod)[0:3]:
-                        dicattr['MODELI'] = '###'
-                        alias8 = alias8[:2] + '###' + alias8[5:]
-                    dicattr['ALIAS8'] = alias8
-
-                # le cas d1 == -1 est particulier : il est reserve aux
-                # modelisations discrètes DIS_xxx
-                if d1 == -1:
-                    dicattr['DISCRET'] = 'OUI'
+                if dimtma == d1:
                     dicattr['PRINCIPAL'] = 'OUI'
                     dicattr['BORD'] = '0'
                 else:
-                    dicattr['DISCRET'] = 'NON'
-                    if d1 > d2:
-                        ERR.mess(
-                            'E', "Pb. pour les dimensions  d1 d2 de la modelisation:" + mod)
-
-                    if dimtma == d1:
-                        dicattr['PRINCIPAL'] = 'OUI'
-                        dicattr['BORD'] = '0'
+                    if dimtma == d1 - 1:
+                        dicattr['BORD'] = '-1'
+                    elif dimtma == d1 - 2:
+                        dicattr['BORD'] = '-2'
+                    elif dimtma == d1 - 3:
+                        dicattr['BORD'] = '-3'
+                    elif dimtma == d1 + 1:
+                        dicattr['BORD'] = '+1'
                     else:
-                        if dimtma == d1 - 1:
-                            dicattr['BORD'] = '-1'
-                        elif dimtma == d1 - 2:
-                            dicattr['BORD'] = '-2'
-                        elif dimtma == d1 - 3:
-                            dicattr['BORD'] = '-3'
-                        elif dimtma == d1 + 1:
-                            dicattr['BORD'] = '+1'
-                        else:
-                            assert False, (mod, d1, dimtma)
+                        assert False, (mod, d1, dimtma)
 
-                if lattrib:
-                    for k in range(len(lattrib)):
-                        no_attr = lattrib[k][0]
-                        if no_attr in lattr_AUTO:
-                            ERR.mess(
-                                'E', "Il est interdit de redefinir l'attribut:" + no_attr)
-                        val_attr = lattrib[k][1]
-                        dicattr[no_attr] = val_attr
+            if lattrib:
+                for k in range(len(lattrib)):
+                    no_attr = lattrib[k][0]
+                    if no_attr in lattr_AUTO:
+                        ERR.mess(
+                            'E', "Il est interdit de redefinir l'attribut:" + no_attr)
+                    val_attr = lattrib[k][1]
+                    dicattr[no_attr] = val_attr
 
     # surcharge eventuelle des attributs definis pour le type_elem:
     lattrib = cata.attrs
@@ -986,6 +968,7 @@ def get_liattr(cel, cata):
     for k in dicattr.keys():
         liattr.append(k)
         liattr.append(dicattr[k])
+    _cache_attr[note] = liattr
     return liattr
 
 
