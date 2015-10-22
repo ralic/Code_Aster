@@ -80,7 +80,6 @@ subroutine nurenu(nu, base)
     do 10 iddl = 0, neql-1
         if (pddl(iddl+1) .eq. rang) nbrddl=nbrddl+1
 10  end do
-    if ( nbrddl .eq. 0 ) call utmess('F', 'PETSC_17')
 !
     call wkvect(nonbdd, 'V V I', nbproc, jnbddl)
     zi(jnbddl+rang)=nbrddl
