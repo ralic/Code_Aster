@@ -242,10 +242,12 @@ CHP_MATL=AFFE_MATERIAU(
                              NOM_VARC='TEMP',
                              NOM_CHAM='TEMP'),),);
 
-INST_M=DEFI_LIST_REEL(
+L_INST=DEFI_LIST_REEL(
                 DEBUT=0.0,INTERVALLE=(
            _F( JUSQU_A = 1.00, NOMBRE = 1),
                       _F( JUSQU_A = 2.00, NOMBRE = 200)))
+
+INST_M=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=       L_INST)) 
 
 F_CHAR=DEFI_FONCTION(
             NOM_PARA='INST',
@@ -294,13 +296,15 @@ U=STAT_NON_LINE(reuse=U,
                    ITER_GLOB_MAXI = 50),
      RECH_LINEAIRE=_F( ITER_LINE_MAXI = 3))
 
-U=CALC_CHAMP(reuse=U,RESULTAT=U,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'))
 
 
-U=CALC_CHAMP(reuse=U,
-      RESULTAT=U,
-        CONTRAINTE='SIGM_NOEU',VARI_INTERNE='VARI_NOEU')
-
+U=CALC_CHAMP(reuse        = U,
+             RESULTAT     = U,
+             CONTRAINTE   = 'SIGM_NOEU',
+             VARI_INTERNE = 'VARI_NOEU',
+             DEFORMATION  = ('EPSI_NOEU','EPVC_NOEU','EPME_NOEU','EPSP_NOEU')
+            )
+#
 CHSIY11=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_SIEF_R',
 RESULTAT=U, NOM_CHAM='SIGM_NOEU',
                        INST=1.1 )
@@ -313,6 +317,19 @@ CHVAR11=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_VAR2_R',
 RESULTAT=U, NOM_CHAM='VARI_NOEU',
                        INST=1.1 )
 
+CHEPT11=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_EPSI_R',
+RESULTAT=U, NOM_CHAM='EPVC_NOEU',
+                       INST=1.1 )
+
+CHEPM11=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_EPSI_R',
+RESULTAT=U, NOM_CHAM='EPME_NOEU',
+                       INST=1.1 )
+
+CHEPP11=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_EPSI_R',
+RESULTAT=U, NOM_CHAM='EPSP_NOEU',
+                       INST=1.1 )
+
+#
 CHSIY14=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_SIEF_R',
 RESULTAT=U, NOM_CHAM='SIGM_NOEU',
                        INST=1.4 )
@@ -325,6 +342,19 @@ CHVAR14=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_VAR2_R',
 RESULTAT=U, NOM_CHAM='VARI_NOEU',
                        INST=1.4)
 
+CHEPT14=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_EPSI_R',
+RESULTAT=U, NOM_CHAM='EPVC_NOEU',
+                       INST=1.4 )
+
+CHEPM14=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_EPSI_R',
+RESULTAT=U, NOM_CHAM='EPME_NOEU',
+                       INST=1.4 )
+
+CHEPP14=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_EPSI_R',
+RESULTAT=U, NOM_CHAM='EPSP_NOEU',
+                       INST=1.4 )
+
+#
 CHSIY20=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_SIEF_R',
 RESULTAT=U, NOM_CHAM='SIGM_NOEU',
                        INST=2. )
@@ -337,6 +367,19 @@ CHVAR20=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_VAR2_R',
 RESULTAT=U, NOM_CHAM='VARI_NOEU',
                        INST=2.)
 
+CHEPT20=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_EPSI_R',
+RESULTAT=U, NOM_CHAM='EPVC_NOEU',
+                       INST=2. )
+
+CHEPM20=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_EPSI_R',
+RESULTAT=U, NOM_CHAM='EPME_NOEU',
+                       INST=2. )
+
+CHEPP20=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_EPSI_R',
+RESULTAT=U, NOM_CHAM='EPSP_NOEU',
+                       INST=2. )
+
+#
 
 TEST_RESU(CHAM_NO=(_F(NOEUD='NO3',
                       NOM_CMP='SIYY',
@@ -397,6 +440,51 @@ TEST_RESU(CHAM_NO=(_F(NOEUD='NO3',
                       NOM_CMP='V7',
                       CHAM_GD=CHVAR20,
                       VALE_CALC=149.42791762,
+                      ),
+                   _F(NOEUD='NO3',
+                      NOM_CMP='EPTHER_L',
+                      CHAM_GD=CHEPT11,
+                      VALE_CALC=0.001,
+                      ),
+                   _F(NOEUD='NO3',
+                      NOM_CMP='EPTHER_L',
+                      CHAM_GD=CHEPT14,
+                      VALE_CALC=0.001,
+                      ),
+                   _F(NOEUD='NO3',
+                      NOM_CMP='EPTHER_L',
+                      CHAM_GD=CHEPT20,
+                      VALE_CALC=0.001,
+                      ),
+                   _F(NOEUD='NO3',
+                      NOM_CMP='EPYY',
+                      CHAM_GD=CHEPM11,
+                      VALE_CALC=0.003,
+                      ),
+                   _F(NOEUD='NO3',
+                      NOM_CMP='EPYY',
+                      CHAM_GD=CHEPM14,
+                      VALE_CALC=0.012 ,
+                      ),
+                   _F(NOEUD='NO3',
+                      NOM_CMP='EPYY',
+                      CHAM_GD=CHEPM20,
+                      VALE_CALC=0.03 ,
+                      ),
+                   _F(NOEUD='NO3',
+                      NOM_CMP='EPYY',
+                      CHAM_GD=CHEPP11,
+                      VALE_CALC=0.00239726027397 ,
+                      ),
+                   _F(NOEUD='NO3',
+                      NOM_CMP='EPYY',
+                      CHAM_GD=CHEPP14,
+                      VALE_CALC=0.0110411899313,
+                      ),
+                   _F(NOEUD='NO3',
+                      NOM_CMP='EPYY',
+                      CHAM_GD=CHEPP20,
+                      VALE_CALC=0.0287528604119,
                       ),
                    ),
           )
