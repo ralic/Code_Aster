@@ -7,8 +7,6 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/matrot.h"
 #include "asterfort/get_elas_id.h"
-#include "asterfort/get_meta_phasis.h"
-#include "asterfort/get_meta_id.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/tecael.h"
@@ -68,15 +66,12 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=8) :: elem_name
-    character(len=16) :: elas_keyword, rela_comp
-    character(len=32) :: valk(2)
-    integer :: elas_id, meta_id, nb_phasis, iret
-    real(kind=8) :: angl(3), phase(2)
+    character(len=16) :: elas_keyword
+    integer :: elas_id
+    real(kind=8) :: angl(3)
     real(kind=8) :: dire(3), orig(3), p_glob_loca(3, 3), epsi_ther_vect(6)
     real(kind=8) :: epsth, epsth_anis(3)
-    real(kind=8) :: vepst1(6), vepst2(6), zcold, zhot
-    integer :: iadzi, iazk24, icompo
+    real(kind=8) :: vepst1(6), vepst2(6)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -86,27 +81,6 @@ implicit none
 !
     call get_elas_id(j_mater, elas_id, elas_keyword)
     ASSERT(elas_id.le.3)
-!
-! - Comportment
-!
-    call tecach('NNO', 'PCOMPOR', 'L', iret, iad=icompo)
-    if (iret.eq.0) then
-        rela_comp  = zk16(icompo)
-    else
-        rela_comp = 'Unknown'
-    endif
-!
-! - Strains for metallurgical laws: not possible except META_LEMA_ANI
-!
-    if (elas_keyword.eq.'ELAS_META') then
-        if (rela_comp.ne.'META_LEMA_ANI') then
-            call tecael(iadzi, iazk24)
-            elem_name = zk24(iazk24-1+3) (1:8)
-            valk(1) = elem_name
-            valk(2) = 'EPVC_ELGA'
-            call utmess('F', 'COMPOR5_11', nk = 2, valk = valk)
-        endif
-    endif
 !
 ! - Non-isotropic elasticity: prepare basis
 !
@@ -130,9 +104,7 @@ implicit none
 ! - Compute (local) thermic strains
 !
     if (elas_id.eq.1) then
-        if (rela_comp.eq.'META_LEMA_ANI') then
-            call get_meta_id(meta_id, nb_phasis)
-            ASSERT(nb_phasis.eq.3)
+        if (elas_keyword.eq.'ELAS_META') then
             call verift(fami, kpg, ksp, poum, j_mater,&
                         epsth_meta_= epsth)
         else

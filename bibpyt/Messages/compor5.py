@@ -55,13 +55,6 @@ Erreur utilisateur :
   Le comportement ou l'élément concerné ne savent pas gérer ce cas.
 """),
 
-    11 : _(u"""
-  Sur la maille %(k1)s le matériau est de type métallurgique (ELAS_META).
-  L'option %(k2)s que l'on cherche à calculer n'est pas possible.
-  NB: si vous calculer une déformation partielle comme EPSP_ELGA, il est nécessaire de calculer la 
-contribution thermique EPVC_ELGA.
-"""),
-
     12 : _(u"""
 Problème lors du calcul des déformations hydriques (retrait endogène).
 Il manque la définition du coefficient B_ENDOGE dans DEFI_MATERIAU.

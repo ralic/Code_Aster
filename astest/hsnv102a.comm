@@ -304,7 +304,7 @@ L_INST=DEFI_LIST_REEL(  DEBUT=0.0,INTERVALLE=(
              _F( JUSQU_A = 90.,      NOMBRE = 13))
            )
 
-U=STAT_NON_LINE(     MODELE=MO,
+U=STAT_NON_LINE(     INFO = 2,MODELE=MO,
                      CHAM_MATER=CM2,
                      EXCIT=_F(      CHARGE = CH_FO,
                                     FONC_MULT = RAMPE),
@@ -536,6 +536,38 @@ TEST_RESU(CHAM_ELEM=(_F(NOEUD='N13',
                         PRECISION=2.9999999999999997E-4,),
                      ),
           )
+#
+# Test Strains
+#
+U=CALC_CHAMP(reuse=U,RESULTAT=U,DEFORMATION=('EPVC_NOEU'))
+#U=CALC_CHAMP(reuse=U,RESULTAT=U,DEFORMATION=('EPSI_NOEU','EPSP_NOEU','EPVC_NOEU','EPME_NOEU'))
+TEST_RESU(RESU=(
+                _F(INST=24.,
+                   RESULTAT=U,
+                   NOM_CHAM='EPVC_NOEU',
+                   NOEUD='N13',
+                   NOM_CMP='EPTHER_L',
+                   VALE_CALC=-0.005640,
+                   VALE_REFE=-0.005640,
+                   REFERENCE = 'ANALYTIQUE', ),
+                _F(INST=26.,
+                   RESULTAT=U,
+                   NOM_CHAM='EPVC_NOEU',
+                   NOEUD='N13',
+                   NOM_CMP='EPTHER_L',
+                   VALE_CALC=-0.00488407018382,
+                   VALE_REFE=-0.004884,
+                   REFERENCE = 'ANALYTIQUE',),
+                _F(INST=40.,
+                   RESULTAT=U,
+                   NOM_CHAM='EPVC_NOEU',
+                   NOEUD='N13',
+                   NOM_CMP='EPTHER_L',
+                   VALE_CALC=-0.00354576525951,
+                   VALE_REFE=-0.003546,
+                   REFERENCE = 'ANALYTIQUE',),
+           ),)
+
 
 FIN()
 #
