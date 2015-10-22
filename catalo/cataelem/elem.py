@@ -46,6 +46,7 @@ class CataElem(object):
             'InputParameter': EmptyDict(),
             'OutputParameter': EmptyDict(),
             'LocatedComponents': EmptyDict(),
+            'ElemModel': {},
         }
         self._initCache()
 
@@ -215,6 +216,20 @@ class CataElem(object):
             print("INFO: {1:6} {0}".format(klass, len(self._store[klass])))
         # to ease debugging objects can be sorted
         self._sortObjects()
+        # build dict(Element: Modelisation)
+        self._buildElemModel()
+
+    def _buildElemModel(self):
+        """Build a dict to return the Modelisations that contain an Element"""
+        delem = self._store['ElemModel']
+        for pheno in self.getPhenomenons():
+            for modname, modeli in pheno.modelisations.items():
+                for mesh, elem in modeli.elements or []:
+                    delem[elem.name] = delem.get(elem.name, []) + [(pheno, modeli)]
+
+    def getElemModel(self, element):
+        """Return the modelisations using this element"""
+        return self._store['ElemModel'].get(element, [])
 
 
 class EmptyDict(dict):
