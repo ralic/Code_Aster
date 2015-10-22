@@ -34,12 +34,7 @@ cata_msg = {
 """),
 
 
-    91 : _(u"""
-   La sous-structuration n'est compatible qu'avec un mode de parallélisme centralisé.
 
-   Conseil :
-     - Renseignez le mot-clé PARTITION/PARALLELISME de AFFE_MODELE (ou MODI_MODELE) avec 'CENTRALISE'
-  """),
 
     93 : _(u"""
  Il y a moins de mailles (%(i1)d) dans le modèle que de processeurs participant au calcul (%(i2)d).

@@ -1,4 +1,4 @@
-subroutine assma2(lmasym, tt, nu14, ncmp, matel,&
+subroutine assma2(ldistme, lmasym, tt, nu14, ncmp, matel,&
                   c1, jvalm, jtmp2, lgtmp2)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,10 +18,10 @@ subroutine assma2(lmasym, tt, nu14, ncmp, matel,&
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
 !
-! aslint: disable=
     implicit none
+
 !-----------------------------------------------------------------------
-! BUT : ASSEMBLER LES MACRO-ELEMENTS DANS UNE MATR_ASSE
+! but : assembler les macro-elements dans une matr_asse
 !-----------------------------------------------------------------------
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -40,30 +40,39 @@ subroutine assma2(lmasym, tt, nu14, ncmp, matel,&
 #include "asterfort/jexnum.h"
 #include "asterfort/nbec.h"
 #include "asterfort/ssvalm.h"
-!
-    character(len=16) :: optio
+#include "asterfort/asmpi_info.h"
 !-----------------------------------------------------------------------
-    real(kind=8) :: c1
-    aster_logical :: lmasym, lmesym
-    character(len=2) :: tt
-    character(len=19) :: matel
+   aster_logical, intent(in) :: ldistme, lmasym
+   character(len=2), intent(in) :: tt
+   character(len=14), intent(in) :: nu14
+   integer, intent(in) :: ncmp
+   character(len=19), intent(in) :: matel
+   real(kind=8), intent(in) :: c1
+   integer :: jvalm(2)
+   integer :: jtmp2
+   integer :: lgtmp2
+!-----------------------------------------------------------------------
+    character(len=16) :: optio
+    aster_logical :: lmesym
     character(len=8) :: mo, ma, nogdco, nogdsi, nomacr
-    character(len=14) :: nu14, num2
+    character(len=14) :: num2
     integer :: nbecmx
     parameter(nbecmx=10)
     integer :: icodla(nbecmx), icodge(nbecmx)
     integer :: i1, i2, iad1, iad11, iad2, iad21
     integer :: jsupma, jnulo1, jprno, jposd1
     integer :: iec, ima, inold, nbterm, jprn1, jprn2
-    integer :: jresl, jsmdi, jsmhc, jvalm(2), k1
+    integer :: jresl, jsmdi, jsmhc, k1
     integer :: k2, n1, nugd, iancmp, lgncmp, icmp
-    integer :: nbsma, nbssa, ncmp, nbvel, nddl1, nddl2, jtmp2, lgtmp2
-    integer :: nec, nm, nmxcmp, nnoe, i, jec
+    integer :: nbsma, nbssa, nbvel, nddl1, nddl2
+    integer :: nec, nm, nmxcmp, nnoe, i, jec, rang
     integer :: lshift
     integer, pointer :: conx(:) => null()
     character(len=8), pointer :: vnomacr(:) => null()
     integer, pointer :: sssa(:) => null()
     integer, pointer :: nueq(:) => null()
+    mpi_int :: mrank, msize
+
 !-----------------------------------------------------------------------
 !     FONCTIONS FORMULES :
 !-----------------------------------------------------------------------
@@ -79,7 +88,14 @@ subroutine assma2(lmasym, tt, nu14, ncmp, matel,&
 !
     call dismoi('NB_SS_ACTI', matel, 'MATR_ELEM', repi=nbssa)
     if (nbssa .eq. 0) goto 100
-!
+
+!   -- si ldistme, il ne faut pas assembler plusieurs fois les macro-elements.
+!      Seul le proc 0 le fait
+    call asmpi_info(rank=mrank, size=msize)
+    rang = to_aster_int(mrank)
+    if (ldistme .and. rang.gt.0) goto 100
+
+
     lmesym=.true.
     do i = 1, nbecmx
         icodla(i)=0
@@ -121,9 +137,9 @@ subroutine assma2(lmasym, tt, nu14, ncmp, matel,&
     call ssvalm('DEBUT', optio, mo, ma, 0,&
                 jresl, nbvel)
 !
+!   -- boucle sur les macro-elements :
+!   ----------------------------------
     do ima = 1, nbsma
-!             -- BOUCLE SUR LES MACRO-ELEMENTS :
-!             ----------------------------------
         if (sssa(ima) .eq. 0) goto 90
 !
         call jeveuo(jexnum(ma//'.SUPMAIL', ima), 'L', jsupma)
@@ -182,7 +198,7 @@ subroutine assma2(lmasym, tt, nu14, ncmp, matel,&
         end do
 !
 !
-!             ---- POUR FINIR, ON RECOPIE EFFECTIVEMENT LES TERMES:
+!       -- pour finir, on recopie effectivement les termes:
         call ascopr(lmasym, lmesym, 'R'//tt(2:2), jtmp2, nbterm,&
                     jresl, c1, jvalm)
  90     continue

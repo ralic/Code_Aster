@@ -51,17 +51,6 @@ cata_msg = {
  modèles discordants
 """),
 
-    6 : _(u"""
-Erreur utilisateur ?
-   On utilise la fonctionnalité MATR_DISTRIBUEE='OUI', mais il semble que les
-   matrices élémentaires aient été calculées sur tout le modèle. Ce n'est pas normal.
-
-Risques et conseils :
-   Cette erreur est peut être une erreur d'utilisation liée à un calcul (par exemple STAT_NON_LINE)
-   pour lequel, les charges utilisées (mot clé EXCIT) ne sont pas associées au modèle utilisé pour le calcul.
-   Ce problème peut survenir par exemple avec les modèles X-FEM ou les modèles "évolutifs" (quand on ajoute
-   ou quand on supprime des éléments au cours d'un transitoire).
-"""),
 
 
 

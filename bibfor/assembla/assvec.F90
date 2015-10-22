@@ -101,7 +101,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
     character(len=19) :: vecas, vprof, vecel, a19, b19, c19, resu, nume_equa
     character(len=24) :: kmaila, k24prn, knueq, knequ
     character(len=24) :: knulil, kvelil, kveref, kvedsc, nomli, kvale
-    aster_logical :: ldist, ldgrel, dbg
+    aster_logical :: ldist, ldgrel, dbg, lcalc_me
     integer :: i, i1, iad, iad1, ialcha
     integer :: iamail, iancmp, ianueq, ianulo, iaprol, iapsdl
     integer :: ichar, icmp, iconx2
@@ -209,40 +209,15 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
 !
 !
 !
-!
 ! ------------------------------------------------------------------
-!     -- SI LES CALCULS ONT ETE "DISTRIBUES" :
-!        CALCUL DE :
-!           * LDIST : .TRUE. : LES CALCULS ONT ETE DISTRIBUES
-!           * LDGREL: .TRUE. : LA PARTITION EST DE TYPE 'GROUP_ELEM'
-!           * JNUMSD : ADRESSE DE PARTIT//'.NUPROC.MAILLE'
-!
-!     -- IL EXISTE DEUX FORMES DE CALCUL DISTRIBUE BASES SUR UNE PARTI
-!        TION:
-!        * DISTRIBUE (AVEC OU SANS MUMPS) EN STD: FLAG LDIST
-!        * DISTRIBUE AVEC MUMPS + OPTION MATR_DISTIBUEE: LDIST (PAS
-!             CONCERNE ICI, ON NE RETAILLE QUE LES MATRICES)
-!
-!        AU SENS ASSVEC, LES DEUX DERNIERS CAS DE FIGURES SONT IDENTI
-!        QUES. POUR PLUS D'INFO CF. COMMENTAIRES DS ASSMAM.
-!
-!         EN BREF ON A 3 CAS DE FIGURES DE CALCUL ASTER ET ILS SE DECLI
-!         NENT COMME SUIT VIS-A-VIS DES VARIABLES DE ASSVEC:
-!        1/ CALCUL STD SEQ :
-!            LDIST='F'
-!        2/ CALCUL PARALLELE (AVEC OU SANS MUMPS) DISTRIBUE STD:
-!            LDIST='T'
-!        3/ CAS PARTICULIER DU PRECEDENT: SOLVEUR=MUMPS + OPTION MATR
-!          DISTRIBUEE ACTIVEE     (PAS CONCERNE ICI)
-!            LDIST='T'
-!
-! ------------------------------------------------------------------
+
+!   -- calcul de ldist : .true. : les vect_elem sont distribues
     ldist=.false.
     ldgrel=.false.
     rang=0
     nbproc=1
     call parti0(nbvec, tlivec, partit)
-!
+
     if (partit .ne. ' ') then
         ldist=.true.
         call asmpi_info(rank=mrank, size=msize)
@@ -254,7 +229,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
             vali(2)=nbproc
             call utmess('F', 'CALCUL_35', ni=2, vali=vali)
         endif
-!
+
         call jeveuo(partit//'.PRTK', 'L', vk24=prtk)
         ldgrel=prtk(1) .eq. 'GROUP_ELEM'
         if (.not.ldgrel) then
@@ -376,11 +351,19 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
             call utmess('F', 'ASSEMBLA_5')
         endif
 !
-!         -- TRAITEMENT DES SOUS-STRUCTURES :
-!         -----------------------------------
+!       -- traitement des macro-elements :
+!       -----------------------------------
         call dismoi('EXI_ELEM', mo, 'MODELE', repk=exiele)
         call dismoi('NB_SS_ACTI', vecel, 'VECT_ELEM', repi=nbssa)
-        if (nbssa .gt. 0) then
+        if (nbssa.gt.0) then
+            lcalc_me=.true.
+!           -- Si ldist : seul le processeur 0 assemble les macro-elements :
+            if (ldist .and. rang.ne.0) lcalc_me=.false.
+        else
+            lcalc_me=.false.
+        endif
+
+        if (lcalc_me) then
             nomcas=' '
             call dismoi('NB_SM_MAILLA', mo, 'MODELE', repi=nbsma)
             call dismoi('NOM_MAILLA', mo, 'MODELE', repk=ma)
@@ -394,7 +377,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
                 call jeveuo(jexnum(vecel//'.RELC', ichar), 'L', ialcha)
 !
                 do ima = 1, nbsma
-!             -- ON N'ASSEMBLE QUE LES SSS VRAIMENT ACTIVES :
+!                   -- on n'assemble que les sss vraiment actives :
                     if (sssa(ima) .eq. 0) goto 80
                     if (zi(ialcha-1+ima) .eq. 0) goto 80
                     call jeveuo(jexnum(ma//'.SUPMAIL', ima), 'L', iamail)
@@ -474,9 +457,8 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
                 call jenonu(jexnom(kvelil, nomli), ilive)
                 call jenonu(jexnom(knulil, nomli), ilinu)
 !
-!               ==========================
-!               BOUCLE SUR LES GRELS DU LIGREL
-!               ==========================
+!               boucle sur les grels du ligrel
+!               ===============================
                 do igr = 1, adli(1+3*(ilive-1))
                     if (ldgrel .and. mod(igr,nbproc) .ne. rang) goto 220
 !
@@ -495,9 +477,8 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
                         call jeveuo(jexnum(resu//'.RESL', igr), 'L', jresl)
                         ncmpel=digdel(mode)
 !
-!                       =========================
-!                       BOUCLE SUR LES ELEMENTS DU GREL IGR
-!                       =========================
+!                       boucle sur les elements du grel igr
+!                       ====================================
                         do iel = 1, nel
 !                           NUMA : NUMERO DE LA MAILLE
                             numa=zi(adli(1+3*(ilive-1)+1)-&
@@ -595,12 +576,12 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
                                 endif
                                 il=0
                                 do k1 = 1, nnoe
-! n1 : indice du noeuds ds le .nema du ligrel de charge
+!                                   n1 : indice du noeuds ds le .nema du ligrel de charge
                                     n1=zi(adne(1+3*(ilive-1)+1)&
                                         -1+ zi(adne(1+3*(ilive-1)+&
                                         2)+numa-1)+k1-1)
                                     if (n1 .lt. 0) then
-! NOEUD TARDIF
+!                                       -- NOEUD TARDIF
                                         n1=-n1
 !
 !
@@ -628,7 +609,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
                                             call utmess('F', 'ASSEMBLA_46', ni=2, vali=vali)
                                         endif
                                     else
-! NOEUD PHYSIQUE
+!                                       -- NOEUD PHYSIQUE
                                         iad1=zi(idprn1-1+zi(idprn2+&
                                         ilimnu-1)+ (n1-1)*(nec+2)+1-1)
                                         call corddl(admodl, lcmodl, idprn1, idprn2, ilimnu,&
@@ -699,20 +680,15 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
                         temps(5), temps(6)
     endif
 !
-!
-!
-!
-!
-!
 !   -- reduction + diffusion de vecas a tous les proc
     if (ldist) call asmpi_comm_jev('MPI_SUM', kvale)
 !
-!
 270 continue
-!
-!     -- les vect_elem peuvent contenir des cham_no (vect_asse)
-!        il faut les cumuler dans kvale :
-!     ----------------------------------------------------------
+
+
+!   -- les vect_elem peuvent contenir des cham_no (vect_asse)
+!      il faut les cumuler dans kvale :
+!   ----------------------------------------------------------
     kvale=vecas//'.VALE'
     do i = 1, nbvec
         a19=tlivec(i)

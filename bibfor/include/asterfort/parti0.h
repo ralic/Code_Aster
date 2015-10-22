@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine parti0(nbvec, tlivec, partit)
-        integer :: nbvec
-        character(len=*) :: tlivec(*)
+    subroutine parti0(nbmat, tlimat, partit)
+        integer :: nbmat
+        character(len=*) :: tlimat(*)
         character(len=*) :: partit
     end subroutine parti0
 end interface

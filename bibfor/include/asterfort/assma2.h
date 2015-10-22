@@ -18,14 +18,14 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine assma2(lmasym, tt, nu14, ncmp, matel,&
+    subroutine assma2(ldistme, lmasym, tt, nu14, ncmp, matel,&
                       c1, jvalm, jtmp2, lgtmp2)
-        aster_logical :: lmasym
-        character(len=2) :: tt
-        character(len=14) :: nu14
-        integer :: ncmp
-        character(len=19) :: matel
-        real(kind=8) :: c1
+        aster_logical, intent(in) :: ldistme, lmasym
+        character(len=2), intent(in) :: tt
+        character(len=14), intent(in) :: nu14
+        integer, intent(in) :: ncmp
+        character(len=19), intent(in) :: matel
+        real(kind=8), intent(in) :: c1
         integer :: jvalm(2)
         integer :: jtmp2
         integer :: lgtmp2

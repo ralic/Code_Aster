@@ -75,43 +75,40 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!     ASSEMBLAGE MORSE AVEC PRECONDITIONNEMENT DES MATR_ELEM DE MAILLES
-!     "LAGRANGE" PAR -(MAX(!A(I,I)!)+MIN(!A(I,I)!))/2
+! Assemblage Morse avec preconditionnement des matr_elem de mailles
+! "Lagrange".
 !-----------------------------------------------------------------------
-! --- DESCRIPTION DES PARAMETRES
-! INT K* BASE   : BASE SUR LAQUELLE ON VEUT CREER LA MATR_ASSE
-! OUT K* MATAS  :L'OBJET MATAS DE TYPE MATR_ASSE EST CREE ET REMPLI
-! IN  K* MATAS  : NOM DE L'OBJET DE TYPE MATR_ASSE A CREER
-! IN  I  NBMAT  : NOMBRE DE MATR_ELEM  DE LA LISTE TLIMAT
-! IN  K* TLIMAT : LISTE DES MATR_ELEM
-! IN  I  LICOEF : LISTE DES COEFFICIENTS MULTIPLICATEURS DES MATR_ELEM
-! IN  K* NU     : NOM DU NUMERO_DDL
-! IN  K4 MOTCLE : 'ZERO' OU 'CUMU'
-!                 'ZERO':SI UN OBJET DE NOM MATAS ET DE TYPE
-!                        MATR_ASSE EXISTE ON L'ECRASE
-!                 'CUMU':SI UN OBJET DE NOM MATAS ET DE TYPE
-!                        MATR_ASSE EXISTE ON L'ENRICHI
-! IN  I   ITYSCA  : TYPE (R/C) DE LA MATR_ASSE
-!                          1 --> REELLES
-!                          2 --> COMPLEXES
+! int k* base   : base sur laquelle on veut creer la matr_asse
+! out k* matas  :l'objet matas de type matr_asse est cree et rempli
+! in  k* matas  : nom de l'objet de type matr_asse a creer
+! in  i  nbmat  : nombre de matr_elem  de la liste tlimat
+! in  k* tlimat : liste des matr_elem
+! in  i  licoef : liste des coefficients multiplicateurs des matr_elem
+! in  k* nu     : nom du numero_ddl
+! in  k4 motcle : 'ZERO' ou 'cumu'
+!                 'ZERO':si un objet de nom matas et de type
+!                        matr_asse existe on l'ecrase
+!                 'CUMU':si un objet de nom matas et de type
+!                        matr_asse existe on l'enrichi
+! in  i   itysca  : type (r/c) de la matr_asse
+!                          1 --> reelles
+!                          2 --> complexes
 !-----------------------------------------------------------------------
     character(len=16) :: optio, optio2, codvoi, nomte
-!-----------------------------------------------------------------------
     character(len=1) :: base1, typsca
     character(len=2) :: tt
     character(len=8) :: k8bid, nogdco, nogdsi, ma, ma2, mo, mo2, partit
     character(len=8) :: symel, kempic, kampic, exivf
     character(len=12) :: vge
     character(len=14) :: nudev, nu14
-    character(len=16) :: k16bid, nomcmd
     character(len=19) :: matdev, mat19, resu, matel, ligre1
     character(len=1) :: matsym
     character(len=3) :: matd
     real(kind=8) :: c1, temps(6)
-!
-    aster_logical :: acreer, cumul, dbg, ldist
+
+    aster_logical :: acreer, cumul, dbg, ldistme, lmatd
     aster_logical :: lmasym, lmesym, ldgrel
-!
+
     integer :: admodl, i
     integer :: jdesc
     integer :: jadli, jadne, jnueq, jnulo1, jnulo2
@@ -134,21 +131,67 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
     integer, pointer :: prti(:) => null()
     character(len=24), pointer :: relr(:) => null()
     character(len=16), pointer :: nvge(:) => null()
-!
+
 !-----------------------------------------------------------------------
 !     FONCTIONS FORMULES :
 !-----------------------------------------------------------------------
     mpi_int :: mrank, msize
-!
+
 #define zzngel(ili) zi(jadli+3*(ili-1))
 #define zznelg(ili,igrel) zi(zi(jadli+3*(ili-1)+2)+igrel)- \
     zi(zi(jadli+3*(ili-1)+2)+igrel-1)-1
 #define zzliel(ili,igrel,iel) zi(zi(jadli+3*(ili-1)+1)-1+ \
     zi(zi(jadli+3*(ili-1)+2)+igrel-1)+iel-1)
+
 !----------------------------------------------------------------------
+! Gestion du parallisme :
+! -----------------------
+! La routine assemble des matr_elem pour en faire une matr_asse.
+! Si les matr_elem sont "distribues" (c'est a dire que chaque processeur
+! ne connait qu'une partie des matrices elementaires), on va produire
+! une matr_asse "distribuee" (de contenu different sur chaque processeur).
+!
+! Une matr_asse "distribuee" peut etre de petite taille (MATR_DISTRIBUEE='OUI')
+! ou non (MATR_DISTRIBUEE='NON').
+!
+! 2 booleens pilotent le parallelisme de cette routine :
+!  ldistme : il existe au moins un matr_elem distribue
+!            => la matr_asse produite sera "distribuee"
+!  lmatd : l'utilisateur a demande MATR_DISTRIBUEE='OUI'
+!
+! On verifie que :
+!   lmatd=.T.    => ldistme=.T.
 !
 !
+! Precisions :
+! ------------
+!  Le booleen lmatd sert essentiellement a determiner le stockage de la matr_asse
+!  qu'il faut utiliser : un stockage global ou un stockage local.
 !
+!  La decision de produire une matr_asse distribuee est prise des que l'on
+!  trouve un (ou plusieurs) resuelem distribue(s) dans les matr_elem a assembler.
+!
+!  Quand une matr_asse est distribuee, la matrice "totale" peut etre obtenue
+!  en faisant (au moins par la pensee) une "simple" somme des matr_asse possedees
+!  par les differents processeurs. Il est donc fondamental qu'une matrice elementaire
+!  (ou la matrice d'un macro-element) ne soit assemblee que sur un seul processeur.
+!
+!  Si un resuelem est distribue, on peut recuperer la partition attachee a ce
+!  resuelem. C'est cette parttion qui servira pour l'assemblage : chaque processeur
+!  n'assemble que "ses" elements dans la partition.
+!  Si plusieurs resuelem sont distribues, on verifie que leurs partitions sont
+!  identiques. Sinon : erreur <F>.
+!  Le nombre de processeurs lors de l'assemblage doit etre identique a celui de la
+!  partition.
+!
+!  Les matrices liees aux macro-elements sont attachees aux matr_elem.
+!  Elles sont toujours calculees (et identiques) sur TOUS les processeurs
+!  (operateur MACR_ELEM_STAT).
+!  Si la matr_asse est distribuee, c'est le processeur 0 (et lui seul) qui va assembler
+!  les matrices des macro-elements.
+!
+!----------------------------------------------------------------------
+
     call jemarq()
     dbg=.false.
     call jedbg2(idbgav, 0)
@@ -157,12 +200,12 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
     call uttcpu('CPU.CALC.1', 'DEBUT', ' ')
     call uttcpu('CPU.ASSE.1', 'DEBUT', ' ')
     call uttcpu('CPU.ASSE.2', 'DEBUT', ' ')
-!
+
     base1=base
     matdev=matas
     nudev=nu
     if (dbg) call cheksd(nudev, 'SD_NUME_DDL', iret)
-!
+
     call dismoi('NOM_MODELE', nudev, 'NUME_DDL', repk=mo)
     call dismoi('NOM_MAILLA', mo, 'MODELE', repk=ma)
     call dismoi('NOM_MAILLA', nudev, 'NUME_DDL', repk=ma2)
@@ -184,34 +227,34 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
         iconx1=0
         iconx2=0
     endif
-!
+!   ellagr : 0 : il n'existe pas d'element de lagrange
+!            1 : il existe des elements de lagrange
+    ellagr=0
+
+
+!   -- calcul de lmatd et jnueq :
+!   -----------------------------
     call dismoi('MATR_DISTRIBUEE', nudev, 'NUME_DDL', repk=matd)
-    if (matd.eq.'OUI') then
+    lmatd = (matd.eq.'OUI')
+    if (lmatd) then
         call jeveuo(nudev//'.NUML.NUEQ', 'L', jnueq)
     else
         call jeveuo(nudev//'.NUME.NUEQ', 'L', jnueq)
     endif
-!
-!   ELLAGR : 0 : PAS D'ELEMENT DE LAGRANGE
-!            1 : IL EXISTE DES ELEMENTS DE LAGRANGE
-    ellagr=0
-!   kampic : 'OUI' -> la matr_asse est 'MPI_COMPLET'
-    kampic='OUI'
-!
-!
-!
-!
-!     -- CALCUL DE :
-!       LMASYM: .TRUE   : MATRICE ASSEMBLEE SYMETRIQUE
-!               .FALSE. : MATRICE ASSEMBLEE NON-SYMETRIQUE
-!       ACREER: .TRUE.  : IL FAUT CREER LA MATR_ASSE
-!               .FALSE. : LA MATR_ASSE EXISTE DEJA
-!       CUMUL : .TRUE.  : ON ACCUMULE DANS LA MATR_ASSE
-!               .FALSE. : ON REMET LA MATR_ASSE A ZERO
-!                         (ELLE DOIT EXISTER)
-!       TT  : TT(1) : TYPE (R/C) DE CE QUE L'ON ASSEMBLE
-!             TT(2) : TYPE (R/C) DE LA SD_MATR_ASSE
-!     ------------------------------------------------------
+
+
+!   -- calcul de :
+!   --------------
+!     lmasym: .true   : matrice assemblee symetrique
+!             .false. : matrice assemblee non-symetrique
+!     acreer: .true.  : il faut creer la matr_asse
+!             .false. : la matr_asse existe deja
+!     cumul : .true.  : on accumule dans la matr_asse
+!             .false. : on remet la matr_asse a zero
+!                       (elle doit exister)
+!     tt  : tt(1) : type (r/c) de ce que l'on assemble
+!           tt(2) : type (r/c) de la sd_matr_asse
+!------------------------------------------------------------
     matsym=typmat(nbmat,tlimat)
     ASSERT(matsym.eq.'S' .or. matsym.eq.'N')
     lmasym=(matsym.eq.'S')
@@ -233,70 +276,20 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
     else if (itysca.eq.2) then
         tt='?C'
     endif
-    !
+
     call jelira(nudev//'.NUME.REFN', 'LONMAX', n1)
     ASSERT(n1.eq.4)
-!
-! ------------------------------------------------------------------
-!
-!     -- IL EXISTE DEUX FORMES DE CALCUL DISTRIBUE (DS LE SENS TOUS LES
-!        PROCESSEURS NE CONNAISSENT QU'UNE PARTIE DE LA MATRICE) BASES
-!        SUR UNE PARTITION:
-!        * // DISTRIBUE
-!        * // DISTRIBUE AVEC MUMPS + OPTION MATR_DISTIBUEE
-!
-!     -- IL EXISTE DEUX FORMES DE CALCUL CENTRALISE (TOUS LES PROC CON
-!        NAISSENT LA MATRICE):
-!        * // CENTRALISE
-!        * // DISTRIBUE DANS ASSE_MATRICE
-!
-!        D'AUTRE PART ON TRACE DS LE REFA(11) DE LA MATRICE, SON CARAC
-!        TERE COMPLET OU INCOMPLET AU SENS PARALLELISME:
-!        * 'MPI_COMPLET': TOUS LES PROCS CONNAISSENT LA STRUCTURE DE
-!           DONNEES, PAS BESOIN DE LA COMPLETER POUR FAIRE PAR EX. UN
-!           PRODUIT MATRICE-VECTEUR. C'EST LE CAS D'UN CALCUL NON
-!           DISTRIBUE (DISTRIBUE TYPE 1).
-!        * 'MPI_INCOMPLET': CHAQUE PROC NE CONNAIT QUE QUELQUES COMPO
-!           SANTES, IL FAUT ALORS PARFOIS COMPLETER PAR UNE COMM
-!           MPI AD HOC (CF APPEL A ROUTINE MPICM1). C'EST LE CAS D'UN
-!           CALCUL DISTRIBUE DE TYPE 2 (CF LISTE CI-DESSUS).
-!
-!         DS CES DEUX CAS DE FIGURE, LA SD EST DIMENSIONNEE DE LA MEME
-!         FACON SUR TOUS LES PROCS (MEME TAILLE QU'EN SEQ, DES ZEROS COM
-!         PLETENT LES TERMES NON CALCULES).
-!         DANS LE TROISIEME CAS DE FIGURE (MATR_DISTRIBUEE), ON RETAILLE
-!         AU PLUS JUSTE LEUR DIMENSION PAR PROC POUR GAGNER EN MEMOIRE.
-!         ON NE PEUT PLUS COMPLETER SI SIMPLEMENT, CE CAS DE FIGURE EST
-!         TAGGE PAR REFA(11)='MATR_DISTR'
-!
-!         EN BREF ON A 3 CAS DE FIGURES DE CALCUL ASTER ET ILS SE DECLI
-!         NENT COMME SUIT VIS-A-VIS DES VARIABLES DE ASSMAM:
-!        1/ CALCUL STD SEQ  OU CALCUL // CENTRALISE OU CALCUL //
-!            DISTRIBUE AVEC LA CMDE ECLATE (ASSE_MATRICE) POUR LAQUELLE
-!            ON A COMPLETE AU PREALABLE LES MATR_ELEMS(CALC_MATR_ELEM).
-!            LDIST='F',KAMPIC='OUI',REFA(11)='MPI_COMPLET',
-!            MATD='NON'
-!        2/ CALCUL PARALLELE DISTRIBUE STD:
-!            LDIST='T',KAMPIC='NON',REFA(11)='MPI_INCOMPLET',
-!            MATD='NON'
-!        3/ CAS PARTICULIER DU PRECEDENT: MATR_DISTRIBUE='OUI'
-!            LDIST='T',KAMPIC='NON',REFA(11)='MATR_DISTR',
-!            MATD='OUI'
-!
-!         FINALEMENT LES VARIABLES KAMPIC ET LDIST TRADUISENT LES MEMES
-!         CHOSES MAIS LEURS PROVENANCES SONT DISTINCTES:
-!           - LDIST: EXISTENCE D'UNE SD_PARTITION
-!           - KAMPIC: COMPLETUDE DES MATR_ELEMS
-!           - LDGREL: LA SD_PARTITION EST DE TYPE 'GROUP_ELEM'
-!         CELA PERMET DE CORROBORER LES INFORMATIONS
-! ------------------------------------------------------------------
+
+
+!   -- calcul de ldistme, partit, ldgrel, jnumsd :
+!   -----------------------------------------------
     rang=0
-    ldist=.false.
+    ldistme=.false.
     ldgrel=.false.
     call parti0(nbmat, tlimat, partit)
-!
+
     if (partit .ne. ' ') then
-        ldist=.true.
+        ldistme=.true.
         call asmpi_info(rank=mrank, size=msize)
         rang = to_aster_int(mrank)
         nbproc = to_aster_int(msize)
@@ -312,35 +305,32 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
             call jeveuo(partit//'.NUPROC.MAILLE', 'L', jnumsd)
         endif
     endif
-!
-!     -- SI C'EST LA COMMANDE ASSE_MATRICE, LES RESUELEM ONT ETE
-!        COMPLETES. ON SE RETROUVE DANS LE CAS LDIST=.FALSE.
-    call getres(k8bid, k16bid, nomcmd)
-    if (nomcmd(1:12) .eq. 'ASSE_MATRICE') then
-        ldist=.false.
-        ldgrel=.false.
+
+
+    if (lmatd) then
+        ASSERT(ldistme)
     endif
-!
-!
-!     -- ALLOCATION DES OBJETS .NUMLOX ET .POSDDX:
-!     ----------------------------------------------
-!     50 EST SUPPOSE ETRE LE + GD NOMBRE DE NOEUDS D'UNE MAILLE
-!        STANDARD (JUSQU'A PRESENT : 27 (HEXA27))
+
+
+
+!   -- allocation des objets .NUMLOX et .POSDDX:
+!   ----------------------------------------------
+!   50 est suppose etre le + gd nombre de noeuds d'une maille
+!      standard (jusqu'a present : 27 (hexa27))
     nbnomx=max(nbnoss,50)
     call wkvect('&&ASSMAM.NUMLO1', 'V V I', 2*nbnomx, jnulo1)
     call wkvect('&&ASSMAM.NUMLO2', 'V V I', 2*nbnomx, jnulo2)
     call wkvect('&&ASSMAM.POSDD1', 'V V I', nbnomx*nmxcmp, jposd1)
     call wkvect('&&ASSMAM.POSDD2', 'V V I', nbnomx*nmxcmp, jposd2)
-!
-!     -- ALLOCATION D'UN OBJET DE TRAVAIL UTILISE DANS ASRETM :
-!        CE VECTEUR EST AGRANDI SI NECESSAIRE DANS ASRETM
+
+!   -- allocation d'un objet de travail utilise dans asretm :
+!      ce vecteur est agrandi si necessaire dans asretm
     lgtmp2=400
     call wkvect('&&ASSMAM.TMP2', 'V V I', lgtmp2, jtmp2)
-!
+
     if (acreer) then
         call detrsd('MATR_ASSE', matdev)
     else
-!
         mat19=matdev
         nu14=nudev
         call jeveuo(mat19//'.REFA', 'L', jrefa)
@@ -348,51 +338,49 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
         call jedetr(mat19//'.LIME')
         call jedetr(mat19//'.REFA')
     endif
-!
-!
-!
-!     -- RECOPIE DE LA LISTE DES MATR_ELEM DANS 1 OBJET JEVEUX
+
+
+!   -- recopie de la liste des matr_elem dans 1 objet jeveux
     call wkvect(matdev//'.LIME', base1//' V K24 ', nbmat, ilimat)
     do i = 1, nbmat
         zk24(ilimat+i-1)=tlimat(i)
         if (dbg .and. tlimat(i) .ne. ' ') call cheksd(tlimat(i), 'SD_MATR_ELEM', iret)
     end do
-!
-!
-!
-!     -- CALCUL D UN REPERTOIRE,TEMPORAIRE, MATDEV.LILI A PARTIR
-!     DE LA LISTE DE MATRICES ELEMENTAIRES MATDEV.LIME
+
+
+!  -- calcul d un repertoire,temporaire, matdev.lili a partir
+!     de la liste de matrices elementaires matdev.lime
     call crelil('F', nbmat, ilimat, matdev//'.LILI', 'V',&
                 '&MAILLA', matdev, ibid, ma, ibid,&
                 ibid, ilimo, nlili, nbelm)
     call jeveuo(matdev//'.ADLI', 'E', jadli)
     call jeveuo(matdev//'.ADNE', 'E', jadne)
-!
-!
-!
+
+
     if (niv .ge. 2) then
         call uttcpu('CPU.ASSMAM', 'INIT ', ' ')
         call uttcpu('CPU.ASSMAM', 'DEBUT', ' ')
     endif
-!
-!         -- CALCUL DE MAT19 ET NU14 :
-!         -------------------------------------
+
+
+!   -- calcul de mat19, nu14, jsmhc, jsmdi, ... :
+!   ----------------------------------------------
     mat19=matdev
     nu14=nudev
-!
+
     call jeveuo(nu14//'.SMOS.SMHC', 'L', jsmhc)
     call jeveuo(nu14//'.SMOS.SMDI', 'L', jsmdi)
-    if (matd.eq.'OUI') then
+    if (lmatd) then
         call jeveuo(nu14//'.NUML.PRNO', 'L', jprn1)
         call jeveuo(jexatr(nu14//'.NUML.PRNO', 'LONCUM'), 'L', jprn2)
     else
         call jeveuo(nu14//'.NUME.PRNO', 'L', jprn1)
         call jeveuo(jexatr(nu14//'.NUME.PRNO', 'LONCUM'), 'L', jprn2)
     endif
-!
-!
-!         -- CREATION ET REMPLISSAGE DE .REFA
-!         -------------------------------------
+
+
+!   -- creation et remplissage de .REFA
+!   -------------------------------------
     call wkvect(mat19//'.REFA', base1//' V K24', 20, jrefa)
     zk24(jrefa-1+1)=ma
     zk24(jrefa-1+2)=nu14
@@ -403,8 +391,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
         zk24(jrefa-1+9)='MR'
     endif
     zk24(jrefa-1+10)='NOEU'
-!
-!
+
     call jeveuo(nu14//'.SMOS.SMDE', 'L', vi=smde)
     nequ=smde(1)
     itbloc=smde(2)
@@ -414,15 +401,13 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
     else
         nblc=2
     endif
-!
-!
-!
-!         -- ALLOCATION (OU NON) DE .VALM :
-!         ---------------------------------
+
+
+!   -- allocation (ou non) de .VALM :
+!   ---------------------------------
     if (acreer) then
         call jecrec(mat19//'.VALM', base1//' V '//tt(2:2), 'NU', 'DISPERSE', 'CONSTANT',&
                     nblc)
-!
         call jeecra(mat19//'.VALM', 'LONMAX', itbloc)
         do i = 1, nblc
             call jecroc(jexnum(mat19//'.VALM', i))
@@ -434,8 +419,10 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
             end do
         endif
     endif
-!
-!         -- MISE EN MEMOIRE DES 1 (OU 2) BLOCS DE .VALM :
+
+
+!   -- mise en memoire des 1 (ou 2) blocs de .VALM :
+!   ------------------------------------------------
     call jeveuo(jexnum(mat19//'.VALM', 1), 'E', jvalm(1))
     call jelira(jexnum(mat19//'.VALM', 1), 'TYPE', cval=typsca)
     ASSERT(tt(2:2).eq.typsca)
@@ -444,77 +431,60 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
     else
         jvalm(2)=0
     endif
-!
-!
-!
-!
-!
-!         3. BOUCLE SUR LES MATR_ELEM
-!         =============================
+
+
+!   3. boucle sur les matr_elem
+!   =============================
     do imat = 1, nbmat
         c1=licoef(imat)
         matel=zk24(ilimat+imat-1)(1:19)
         call dismoi('NOM_MODELE', matel, 'MATR_ELEM', repk=mo2)
         call dismoi('SUR_OPTION', matel, 'MATR_ELEM', repk=optio)
-!
+
         if (imat .eq. 1) then
             optio2=optio
         else
             if (optio2 .ne. optio) optio2='&&MELANGE'
         endif
-!
+
         if (mo2 .ne. mo) then
             call utmess('F', 'ASSEMBLA_5')
         endif
-!
-!
-!           3.1 TRAITEMENT DES MACRO-ELEMENTS :
-!           ----------------------------------
-        call assma2(lmasym, tt, nu14, ncmp, matel,&
+
+
+!       3.1 traitement des macro-elements :
+!       ----------------------------------
+        call assma2(ldistme, lmasym, tt, nu14, ncmp, matel,&
                     c1, jvalm, jtmp2, lgtmp2)
-!
-!
-!           3.2 TRAITEMENT DES ELEMENTS FINIS CLASSIQUES
-!           -------------------------------------------
+
+
+!       3.2 traitement des elements finis classiques
+!       -------------------------------------------
         call jeexin(matel//'.RELR', iret)
         if (iret .eq. 0) goto 80
-!
+
         call jelira(matel//'.RELR', 'LONUTI', nbresu)
         if (nbresu .gt. 0) call jeveuo(matel//'.RELR', 'L', vk24=relr)
-!
-!           BOUCLE SUR LES RESU_ELEM
-!           ==========================
+
+!       -- boucle sur les resu_elem
+!       ============================
         do iresu = 1, nbresu
             resu=relr(iresu)(1:19)
             call jeexin(resu//'.DESC', ier)
             if (ier .eq. 0) goto 70
-!
-!
-!           -- calcul de kampic :
+
             call dismoi('MPI_COMPLET', resu, 'RESUELEM', repk=kempic)
             if (kempic .eq. 'NON') then
-                ASSERT(ldist)
-                kampic='NON'
-            else
-                if (ldist) then
-!                   -- Si la matrice est distribuee, les resuelem ne sont pas MPI_COMPLET
-!                      => un ASSERT devrait suffire.
-!                      Mais cette situation semble pouvoir se produire (issue23778).
-!                      En attendant la correction de issue18990, on emet un message d'erreur
-!                      pour tenter d'aider l'utilisateur :
-                       call utmess('F', 'ASSEMBLA_6')
-                endif
+                 ASSERT(ldistme)
             endif
-!
-!
-!                   -- PARFOIS, CERTAINS RESUELEM SONT == 0.
+
+!           -- parfois, certains resuelem sont == 0.
             if (zerobj(resu//'.RESL')) goto 70
-!
-!
-!                   -- NOM DU LIGREL
+
+!           -- nom du ligrel
             call jeveuo(resu//'.NOLI', 'L', vk24=noli)
             ligre1=noli(1)(1:19)
-!
+
             call dismoi('EXI_VF', ligre1, 'LIGREL', repk=exivf)
             if (exivf .eq. 'OUI') then
                 ASSERT(.not.lmasym)
@@ -524,12 +494,10 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
                 call jeveuo(vge//'.PTVOIS', 'L', jptvoi)
                 call jeveuo(vge//'.ELVOIS', 'L', jelvoi)
             endif
-!
-!
+
             call jenonu(jexnom(matdev//'.LILI', ligre1), ilima)
             call jenonu(jexnom(nu14//'.NUME.LILI', ligre1), ilinu)
-!
-!
+
             call dismoi('TYPE_SCA', resu, 'RESUELEM', repk=typsca)
             ASSERT(typsca.eq.'R' .or. typsca.eq.'C')
             tt(1:1)=typsca
@@ -539,16 +507,16 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
             if (lmasym) then
                 ASSERT(lmesym)
             endif
-!
-!                   -- BOUCLE SUR LES GRELS DU LIGREL
-!                   ==================================
+
+!           -- boucle sur les grels du ligrel
+!           ==================================
             do igr = 1, zzngel(ilima)
                 if (ldgrel .and. mod(igr,nbproc) .ne. rang) goto 60
-!
-!                       -- IL SE PEUT QUE LE GREL IGR SOIT VIDE :
+
+!               -- il se peut que le grel igr soit vide :
                 call jaexin(jexnum(resu//'.RESL', igr), iexi)
                 if (iexi .eq. 0) goto 60
-!
+
                 call jeveuo(resu//'.DESC', 'L', jdesc)
                 mode=zi(jdesc+igr+1)
                 if (mode .gt. 0) then
@@ -564,13 +532,13 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
                         call jenuno(jexnum('&CATA.TE.NOMTE', itypel), nomte)
                         call teattr('S', 'TYPE_VOISIN', codvoi, ibid, typel=nomte)
                     endif
-!
-!                           BOUCLE SUR LES ELEMENTS DU GREL
-!                           ================================
+
+!                   boucle sur les elements du grel
+!                   -------------------------------
                     do iel = 1, nel
                         call assma3(lmasym, lmesym, tt, igr, iel,&
                                     c1, rang, jnueq, jnumsd, jresl,&
-                                    jrsvi, nbvel, nnoe, ldist, ldgrel,&
+                                    jrsvi, nbvel, nnoe, ldistme, ldgrel,&
                                     ilima, jadli, jadne, jprn1, jprn2,&
                                     jnulo1, jnulo2, jposd1, jposd2, admodl,&
                                     lcmodl, mode, nec, nmxcmp, ncmp,&
@@ -586,19 +554,16 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
         end do
  80     continue
     end do
-!
-!
-!         -- MISE A JOUR DE REFA(4)
+
+
+!   -- mise a jour de REFA(4)
     call jeveuo(mat19//'.REFA', 'E', jrefa)
     if (acreer) then
         zk24(jrefa-1+4)=optio2
     else
         if (zk24(jrefa-1+4) .ne. optio2) zk24(jrefa-1+4)='&&MELANGE'
     endif
-!
-!
-!
-!
+
     if (niv .ge. 2) then
         call uttcpu('CPU.ASSMAM', 'FIN', ' ')
         call uttcpr('CPU.ASSMAM', 6, temps)
@@ -606,49 +571,38 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
                         ) 'TEMPS CPU/SYS ASSEMBLAGE M                : ',&
                         temps(5), temps(6)
     endif
-!
-!
+
+
     if (.not.lmasym) then
-!           -- ON AFFECTE AUX TERMES DIAGONAUX DU BLOC INFERIEUR
-!              LES VALEURS DES TERMES DIAGONAUX DU BLOC SUPERIEUR
+!       -- par prudence, on affecte aux termes diagonaux du bloc inferieur
+!          les valeurs des termes diagonaux du bloc superieur
         do ieq = 1, nequ
             idia=zi(jsmdi+ieq-1)
             zr(jvalm(2)+idia-1)=zr(jvalm(1)+idia-1)
         end do
     endif
-!
-!         -- IL FAUT COMMUNIQUER ELLAGR ENTRE LES PROCS :
-    if (ldist) then
+
+!   -- il faut communiquer ellagr entre les procs :
+    if (ldistme) then
         call asmpi_comm_vect('MPI_MAX', 'I', sci=ellagr)
     endif
-!
-!
-!         -- MISE A L'ECHELLE DES COEF. DE LAGRANGE SI NECESSAIRE :
-    if (ellagr .gt. 0) call assma1(mat19, ldist)
-!
-!
-    if (kampic .eq. 'OUI') then
-!         -- calcul std ou calcul distribue complete
-!            (cmd eclatee asse_matrice)
-        ASSERT(.not.ldist)
+
+
+!   -- mise a l'echelle des coef. de lagrange si necessaire :
+    if (ellagr .gt. 0) call assma1(mat19, ldistme)
+
+
+    if (.not.ldistme) then
         zk24(jrefa-1+11)='MPI_COMPLET'
     else
-!         -- calcul distribue avec ou sans mumps
-        ASSERT(ldist)
-        zk24(jrefa-1+11)='MPI_INCOMPLET'
+        if (lmatd) then
+            zk24(jrefa-1+11)='MATR_DISTR'
+        else
+            zk24(jrefa-1+11)='MPI_INCOMPLET'
+        endif
     endif
-!        -- DANGEREUX DE CUMULER DEUX TYPES D'INFORMATIONS EN REFA(11)
-!           LE CARACTERE MPI_COMPLET/INCOMPLET ET MATR_DISTR
-!           TOUT DEPEND PAR LA SUITE DU TYPE DE QUESTION QUE L'ON POSE
-!           POUR RECUPERER CETTE INFO
-    if (matd.eq.'OUI') then
-!        -- CALCUL DISTRIBUE AVEC MUMPS + OPTION MATR_DISTRIBUEE='OUI'
-        ASSERT(ldist)
-        zk24(jrefa-1+11)='MATR_DISTR'
-    endif
-!
-!
-!
+
+
     call jedetr(matdev//'.ADNE')
     call jedetr(matdev//'.ADLI')
     call jedetr('&&ASSMAM.NUMLO1')
@@ -658,7 +612,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
     call jedetr('&&ASSMAM.TMP2')
     call jedbg2(ibid, idbgav)
     if (dbg) call cheksd(matdev, 'SD_MATR_ASSE', iret)
-!
+
     call asmpi_barrier()
     call uttcpu('CPU.CALC.1', 'FIN', ' ')
     call uttcpu('CPU.ASSE.1', 'FIN', ' ')

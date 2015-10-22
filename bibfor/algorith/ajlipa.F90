@@ -52,7 +52,7 @@ subroutine ajlipa(modelz, base)
 ! ----------------------------------------------------------------------
 !
 !
-    character(len=8) :: modele, partit, ma, mopart, valk(3)
+    character(len=8) :: modele, partit, mopart, valk(3)
     character(len=19) :: ligrmo, partit1
     character(len=24) :: k24b, kdis
 !
@@ -60,7 +60,7 @@ subroutine ajlipa(modelz, base)
     integer :: idd, nbmasd, i2, nmpp, nmp0, nmp0af, ico, nbpro1, krang, nmp1
     integer :: iexi
     integer :: icobis, dist0, jnumsd, jparsd, jfeta, vali(3), nbmamo, ima
-    integer :: nbgrel, jrepe, jprti, jprtk, nbsma
+    integer :: nbgrel, jrepe, jprti, jprtk
 !
     aster_logical :: plein0
     integer, pointer :: fdim(:) => null()
@@ -123,14 +123,6 @@ subroutine ajlipa(modelz, base)
 !     ------------------------------------------------------------
     call getvtx('PARTITION', 'PARALLELISME', iocc=1, scal=kdis, nbret=ibid)
     if (kdis .eq. 'CENTRALISE') goto 99
-!
-!     -- EN DISTRIBUE, LES SOUS-STRUCTURES SONT INTERDITES :
-!     ------------------------------------------------------
-    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=ma)
-    call dismoi('NB_SM_MAILLA', ma, 'MAILLAGE', repi=nbsma)
-    if (nbsma .gt. 0) then
-        call utmess('F', 'PARTITION1_91')
-    endif
 !
 ! ----------------------------------------------------------------------
 !

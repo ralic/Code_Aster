@@ -1,4 +1,4 @@
-subroutine parti0(nbvec, tlivec, partit)
+subroutine parti0(nbmat, tlimat, partit)
     implicit none
 !
 ! ======================================================================
@@ -21,25 +21,29 @@ subroutine parti0(nbvec, tlivec, partit)
 !
 #include "asterfort/dismoi.h"
 #include "asterfort/utmess.h"
-    character(len=*) :: tlivec(*), partit
-    integer :: nbvec
-! ----------------------------------------------------------------------
-! BUT : DETERMINER LE NOM DE LA PARTITION ATTACHEE A LA LISTE DE
-!       VECT_ELEM (OU DE MATR_ELEM)  TLIVEC
-! OUT K8 PARTIT  : NOM DE LA PARTITION
-!        - SI PARTIT=' ' : IL N'Y A PAS DE PARTITION. LES RESUELEM ONT
-!                          ETE COMPLETEMENT CALCULES SUR TOUS LES PROCS.
-! ----------------------------------------------------------------------
+    character(len=*) :: tlimat(*), partit
+    integer :: nbmat
+!----------------------------------------------------------------------
+! but : determiner le nom de la partition attachee a la liste de
+!       matr_elem (ou de vect_elem)  tlimat
+!
+! out k8 partit  : nom de la partition
+!        - si partit=' ' : il n'y a pas de partition. Tous les resuelem de
+!          tous les matr_elem ete completement calcules
+!          sur tous les procs.
+! Remarque : si les resuelem des matr_elem n'ont pas ete calcules avec la
+!            meme partition : erreur <F>
+!----------------------------------------------------------------------
     character(len=8) :: part1
-    character(len=19) :: vecel
+    character(len=19) :: matel
     character(len=24) :: valk(5)
     integer :: i
-!
-!
+!----------------------------------------------------------------------
+
     partit=' '
-    do i = 1, nbvec
-        vecel = tlivec(i)
-        call dismoi('PARTITION', vecel, 'VECT_ELEM', repk=part1)
+    do i = 1, nbmat
+        matel = tlimat(i)
+        call dismoi('PARTITION', matel, 'MATR_ELEM', repk=part1)
         if (partit .eq. ' ' .and. part1 .ne. ' ') partit=part1
         if (partit .ne. ' ' .and. part1 .eq. ' ') goto 10
         if (partit .ne. ' ' .and. partit .ne. part1) then
