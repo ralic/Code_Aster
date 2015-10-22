@@ -16,8 +16,7 @@ subroutine pcfact(matas, nequ, in, ip, ac,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! aslint: disable=W1304
-! aslint: disable=C1513
+! aslint: disable=W1304, C1513
     implicit none
 #include "jeveux.h"
 #include "asterfort/jeveuo.h"

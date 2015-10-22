@@ -15,7 +15,7 @@ subroutine gcldm1(m, in, ip, prec, x, y, perm, xtrav, ytrav)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! aslint: disable=W1304
+! aslint: disable=W1304, C1513
     implicit none
 
     integer,intent(in) :: m
