@@ -238,6 +238,10 @@ class Attribute(BaseCataEntity):
         return self._value
     value = property(__getValue)
 
+    def isValid(self, value):
+        """Tell if the value is a possible value"""
+        return value in self._value
+
 
 class SetOfNodes(BaseCataEntity):
 
@@ -482,17 +486,17 @@ class CondCalcul(object):
         a_creer_seulement_dans(self, ['Options'])
         assert sign in '+-', sign
         self._add = sign == '+'
+        assign = []
         for attr1, val1 in lcond:
             # les valeurs possibles des attributs automatiques 'MODELI',
             # 'ALIAS8' ne sont pas encore connues:
             if attr1 in ('MODELI', 'ALIAS8'):
+                assign.append((attr1, val1))
                 continue
             check_type([attr1, val1], str)
-            # TODO this checking should be initiated by CatalElem
-            # attr = cel.attribute(attr1)
-            # assert val1 in attr.value, (
-            #     "Attribute '{0}': unexpected value: {1}".format(attr1, val1))
-        self._condition = lcond
+            attr = checkAttr(attr1, val1)
+            assign.append((attr, val1))
+        self._condition = assign
 
     def __getCondition(self):
         """Return the list of conditions"""
@@ -695,7 +699,12 @@ class Element(BaseCataEntity):
 
     def __setAttrs(self, attrs):
         """Set the attributes"""
-        self._attrs = attrs
+        assign = []
+        for attr1, val1 in attrs:
+            check_type([attr1, val1], str)
+            attr = checkAttr(attr1, val1)
+            assign.append((attr, val1))
+        self._attrs = assign
 
     attrs = property(__getAttrs, __setAttrs)
 
@@ -741,12 +750,12 @@ class Modelisation(object):
         assert len(code) == 3, code
         check_type([code], str)
         if attrs:
+            assign = []
             for attr1, val1 in attrs:
                 check_type([attr1, val1], str)
-                # TODO this checking should be initiated by CatalElem
-                # attr = cel.attribute(attr1)
-                # assert val1 in attr.value, ("Attribute '{0}': "
-                #     "unexpected value: {1}".format(attr1, val1))
+                attr = checkAttr(attr1, val1)
+                assign.append((attr, val1))
+            attrs = assign
         if elements:
             for tyma, tyel in elements:
                 check_type([tyma], MeshType)
@@ -875,6 +884,19 @@ def check_type(sequence, types):
     for value in sequence:
         assert type(value) in types, type(value)
     return sequence
+
+def checkAttr(attrname, value):
+    """Check the value of an attribute"""
+    # XXX recursive import not necessary when attrs won't be strings!
+    from cataelem.Commons.attributes import ATTRS
+    try:
+        attr = ATTRS[attrname]
+    except KeyError:
+        raise ValueError("unknown attribute '{1}'".format(attrname))
+    assert attr.isValid(value), ("Attr {0}: unexpected value {1}"
+                                 .format(attrname, value))
+    return attrname
+
 
 #===============================================================================================
 # utilitaires:
