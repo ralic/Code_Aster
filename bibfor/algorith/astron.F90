@@ -1,7 +1,7 @@
 subroutine astron(nomsy, psmo, monoap, muapde, nbsup,&
                   nsupp, neq, nbmode, id, vecmod,&
-                  parmod, gamma0, nomsup, reasup, recmor,&
-                  recmop)
+                  momec, gamma0, nomsup, reasup, recmor,&
+                  recmop, nopara, nordr)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -10,17 +10,18 @@ subroutine astron(nomsy, psmo, monoap, muapde, nbsup,&
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsorac.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nbsup, nsupp(*), neq, nbmode, id, tordr(1)
-    real(kind=8) :: vecmod(neq, *), parmod(nbmode, *), gamma0(*)
+    integer :: nbsup, nsupp(*), neq, nbmode, id, tordr(1), nordr(*)
+    real(kind=8) :: vecmod(neq, *), gamma0(*)
     real(kind=8) :: reasup(nbsup, nbmode, *), recmop(nbsup, neq, *)
     real(kind=8) :: recmor(nbsup, neq, *)
-    character(len=16) :: nomsy
-    character(len=*) :: psmo, nomsup(nbsup, *)
+    character(len=16) :: nomsy, nopara(*)
+    character(len=*) :: psmo, nomsup(nbsup, *), momec
     aster_logical :: monoap, muapde
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -54,15 +55,16 @@ subroutine astron(nomsy, psmo, monoap, muapde, nbsup,&
 ! IN  : NBMODE : NOMBRE DE MODES
 ! IN  : ID     : LA DIRECTION DE CALCUL
 ! IN  : VECMOD : VECTEUR DES DEFORMEES MODALES
-! IN  : PARMOD : VECTEUR DES PARAMETRES MODAUX
+! IN  : MOMEC  : MODES MECANIQUES
 ! IN  : GAMMA0 : TABLEAU DES CORRECTIONS STATIQUES (PAR SUPPORT ET DIRECTION) 
 ! IN  : NOMSUP : VECTEUR DES NOMS DES SUPPORTS
 ! IN  : REASUP : VECTEUR DES REACTIONS MODALES AUX SUPPORTS
 ! OUT : RECMOP : VECTEUR DES COMBINAISONS DES REPONSES PERIO DES MODES
 ! OUT : RECMOR : VECTEUR DES COMBINAISONS DES REPONSES RIGIDES DES MODES
+! IN  : NORDR  : LISTE DES NUMEROS DE MODES
 !     ------------------------------------------------------------------
-    integer :: ibid, im, in, iordr, iret, is, jmod, jvale, nbtrou
-    real(kind=8) :: r8b, rni, un, xxx
+    integer :: ibid, im, in, iordr, iret, is, jmod, jvale, nbtrou, ival
+    real(kind=8) :: r8b, rni, un, xxx, omega2
     complex(kind=8) :: cbid
     character(len=8) :: k8b, noeu, cmp, nomcmp(3)
     character(len=16) :: monacc, acces(3)
@@ -84,12 +86,17 @@ subroutine astron(nomsy, psmo, monoap, muapde, nbsup,&
 !
 !           --- CONTRIBUTION MODALE ---
             call wkvect('&&ASTRON.VECTEUR_MODA', 'V V R', neq, jmod)
-            do 30 im = 1, nbmode
-                xxx = parmod(im,2+id) / parmod(im,1)
-                do 32 in = 1, neq
+            do im = 1, nbmode
+                call rsadpa(momec, 'L', 1, nopara(1), nordr(im),&
+                            0, sjv=ival, istop=0)
+                omega2 = zr(ival)
+                call rsadpa(momec, 'L', 1, nopara(2+id), nordr(im),&
+                            0, sjv=ival, istop=0)
+                xxx = zr(ival) / omega2
+                do in = 1, neq
                     zr(jmod+in-1) = zr(jmod+in-1) + xxx*vecmod(in,im)
- 32             continue
- 30         continue
+                enddo
+            enddo
 !
 !           --- DEFORMEE STATIQUE ---
             call rsorac(psmo, 'NOEUD_CMP', ibid, r8b, acces(id),&
@@ -105,16 +112,16 @@ subroutine astron(nomsy, psmo, monoap, muapde, nbsup,&
                 call jeveuo(chextr//'.CELV', 'L', jvale)
             endif
 !
-            do 34 in = 1, neq
+            do in = 1, neq
                 xxx = gamma0(id) * ( zr(jvale+in-1) - zr(jmod+in-1) )
                 recmor(nbsup,in,id) = recmor(nbsup,in,id) + xxx
- 34         continue
+            enddo
             call jedetr('&&ASTRON.VECTEUR_MODA')
 !
         else
 !
             cmp = nomcmp(id)
-            do 40 is = 1, nsupp(id)
+            do is = 1, nsupp(id)
                 noeu = nomsup(is,id)
                 monacc = noeu//cmp
                 call rsorac(psmo, 'NOEUD_CMP', ibid, r8b, monacc,&
@@ -132,26 +139,31 @@ subroutine astron(nomsy, psmo, monoap, muapde, nbsup,&
 !
 !              --- CONTRIBUTION MODALE ---
                 call wkvect('&&ASTRON.VECTEUR_MODA', 'V V R', neq, jmod)
-                do 50 im = 1, nbmode
+                do im = 1, nbmode
                     rni = -un*reasup(is,im,id)
-                    xxx = rni/(parmod(im,2)*parmod(im,1)*parmod(im,1))
-                    do 52 in = 1, neq
+                    call rsadpa(momec, 'L', 1, nopara(1), nordr(im),&
+                                0, sjv=ival, istop=0)
+                    omega2 = zr(ival)
+                    call rsadpa(momec, 'L', 1, nopara(2), nordr(im),&
+                                0, sjv=ival, istop=0)
+                    xxx = rni/(zr(ival)*omega2*omega2)
+                    do in = 1, neq
                         zr(jmod+in-1) = zr(jmod+in-1) + xxx*vecmod(in, im)
- 52                 continue
- 50             continue
+                    enddo
+                enddo
                 if (muapde) then
-                    do 42 in = 1, neq
+                    do in = 1, neq
                         xxx = gamma0(is+nbsup*(id-1)) * ( zr(jvale+in-1) - zr(jmod+in- 1) )
                         recmop(is,in,id) = recmop(is,in,id) + xxx*xxx
- 42                 continue
+                    enddo
                 else
-                    do 44 in = 1, neq
+                    do in = 1, neq
                         xxx = gamma0(is+nbsup*(id-1)) * ( zr(jvale+in-1) - zr(jmod+in- 1) )
                         recmop(1,in,id) = recmop(1,in,id) + xxx*xxx
- 44                 continue
+                    enddo
                 endif
                 call jedetr('&&ASTRON.VECTEUR_MODA')
- 40         continue
+            enddo
         endif
     endif
 !

@@ -20,8 +20,8 @@
 interface
     subroutine astron(nomsy, psmo, monoap, muapde, nbsup,&
                       nsupp, neq, nbmode, id, vecmod,&
-                      parmod, gamma0, nomsup, reasup, recmor,&
-                      recmop)
+                      momec, gamma0, nomsup, reasup, recmor,&
+                      recmop, nopara, nordr)
         integer :: nbmode
         integer :: neq
         integer :: nbsup
@@ -32,11 +32,13 @@ interface
         integer :: nsupp(*)
         integer :: id
         real(kind=8) :: vecmod(neq, *)
-        real(kind=8) :: parmod(nbmode, *)
+        character(len=*) :: momec
         real(kind=8) :: gamma0(*)
         character(len=*) :: nomsup(nbsup, *)
         real(kind=8) :: reasup(nbsup, nbmode, *)
         real(kind=8) :: recmor(nbsup, neq, *)
         real(kind=8) :: recmop(nbsup, neq, *)
+        character(len=16) :: nopara(*)
+        integer :: nordr(*)
     end subroutine astron
 end interface

@@ -100,7 +100,7 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
 ! IN  : F2GUP  : FREQUENCE F2 POUR LA METHODE DE GUPTA
 !     ------------------------------------------------------------------
     integer :: id, iopt, iret, jcrer, jcrep, jdir, jmod, jrep1, jtabs
-    integer :: jval, nbmode, nbopt, nbpara, nbpari, nbpark, nbparr, nbsup, ndepl
+    integer :: nbmode, nbopt, nbpara, nbpari, nbpark, nbparr, nbsup, ndepl
     integer :: neq, jrep2, nbdis(nbsup), noc, ioc, n1, nno, is, ino, igr
     integer :: ngr, jdgn, ier, ncompt, nintra, nbvect
     parameter     ( nbpara = 5 )
@@ -261,7 +261,6 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
                     neq, nbmode, ctyp, nbpari, nbparr,&
                     nbpark)
         call jeveuo(kvec, 'L', jmod)
-        call jeveuo(kval, 'L', jval)
         call wkvect(kvx1, 'V V R', 3*neq*nbsup, jrep1)
         call wkvect(kvx2, 'V V R', 3*neq*nbsup, jrep2)
         call wkvect(kve2, 'V V R', 3*neq*nbsup, jcrep)
@@ -282,11 +281,11 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
 !              --- COMBINAISON DES REPONSES MODALES ---
 !
                 call ascorm(monoap, typcmo, nbsup, nsupp, neq,&
-                            nbmode, zr(jrep1), zr(jrep2), amort, zr(jval),&
+                            nbmode, zr(jrep1), zr(jrep2), amort, mome,&
                             id, temps, zr(jcrer), zr(jcrep), zr(jtabs),&
                             nomsy, zr(jmod), reasup, spectr, corfre,&
                             muapde, tcosup, nintra, nbdis, f1gup,&
-                            f2gup)
+                            f2gup, nopara, nordr)
 !
 !              --- PRISE EN COMPTE DES EFFETS D'ENTRAINEMENT ---
 !              --- DANS LE CAS DE CALCUL DE REPONSE GLOBALE  ---
@@ -303,15 +302,16 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
                 if (tronc) then
                     call astron(nomsy, psmo, monoap, muapde, nbsup,&
                                 nsupp, neq, nbmode, id, zr(jmod),&
-                                zr(jval), gamma0, nomsup, reasup, zr(jcrer),&
-                                zr(jcrep))
+                                mome, gamma0, nomsup, reasup, zr(jcrer),&
+                                zr(jcrep), nopara, nordr)
                 endif
 !
 !              ----CALCUL DE L ACCELERATION ABSOLUE
 !
                 call asacce(nomsy, monoap, nbsup, neq,&
-                            nbmode, id, moncha, zr(jmod), zr(jval),&
-                            gamma0, zr( jcrer), zr(jcrep), nbdis)
+                            nbmode, id, moncha, zr(jmod), mome,&
+                            gamma0, zr( jcrer), zr(jcrep), nbdis, nopara,&
+                            nordr)
 !
 !              --- CALCUL DES RECOMBINAISONS PAR DIRECTIONS---
                 call asdir(monoap, muapde, id, neq, nbsup,&

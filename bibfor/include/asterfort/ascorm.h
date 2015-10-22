@@ -19,11 +19,11 @@
 !
 interface
     subroutine ascorm(monoap, typcmo, nbsup, nsupp, neq,&
-                      nbmode, repmo1, repmo2, amort, modal,&
+                      nbmode, repmo1, repmo2, amort, momec,&
                       id, temps, recmor, recmop, tabs,&
                       nomsy, vecmod, reasup, spectr, corfre,&
                       muapde, tcosup, nintra, nbdis, f1gup,&
-                      f2gup)
+                      f2gup, nopara, nordr)
         integer :: nbmode
         integer :: neq
         integer :: nbsup
@@ -33,7 +33,7 @@ interface
         real(kind=8) :: repmo1(nbsup, neq, *)
         real(kind=8) :: repmo2(nbsup, neq, *)
         real(kind=8) :: amort(*)
-        real(kind=8) :: modal(nbmode, *)
+        character(len=*) :: momec
         integer :: id
         real(kind=8) :: temps
         real(kind=8) :: recmor(nbsup, neq, *)
@@ -50,5 +50,7 @@ interface
         integer :: nbdis(nbsup)
         real(kind=8) :: f1gup
         real(kind=8) :: f2gup
+        character(len=16) :: nopara(*)
+        integer :: nordr(*)
     end subroutine ascorm
 end interface

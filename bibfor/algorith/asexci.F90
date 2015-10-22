@@ -1,6 +1,7 @@
-subroutine asexci(masse, parmod, amort, nbmode, corfre,&
+subroutine asexci(masse, momec, amort, nbmode, corfre,&
                   impr, ndir, monoap, muapde, kspect,&
-                  kasysp, nbsup, nsupp, knoeu)
+                  kasysp, nbsup, nsupp, knoeu, nopara,&
+                  nordr)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -18,9 +19,10 @@ subroutine asexci(masse, parmod, amort, nbmode, corfre,&
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    integer :: nbmode, impr, ndir(*), nbsup, nsupp(*)
-    real(kind=8) :: parmod(nbmode, *), amort(*)
-    character(len=*) :: masse, kspect, kasysp, knoeu
+    integer :: nbmode, impr, ndir(*), nbsup, nsupp(*), nordr(*)
+    real(kind=8) :: amort(*)
+    character(len=*) :: masse, kspect, kasysp, knoeu, momec
+    character(len=24) :: nopara(*)
     aster_logical :: monoap, muapde, corfre
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -46,7 +48,7 @@ subroutine asexci(masse, parmod, amort, nbmode, corfre,&
 !                CALCUL DES ASYMPTOTES DES SPECTRES
 !     ------------------------------------------------------------------
 ! IN  : MASSE  : MATRICE DE MASSE ASSEMBLEE
-! IN  : PARMOD : VECTEUR DES PARAMETRES MODAUX
+! IN  : MOMEC  : MODES MECANIQUES
 ! IN  : AMORT  : VECTEUR DES AMORTISSEMENTS MODAUX
 ! IN  : NBMODE : NOMBRE DE MODES
 ! IN  : CORFRE : = .TRUE.  , CORRECTION FREQUENCE
@@ -135,8 +137,9 @@ subroutine asexci(masse, parmod, amort, nbmode, corfre,&
         nbsup = 1
         call wkvect(kspect, 'V V R', nbmode*3, jspe)
         call wkvect(kasysp, 'V V R', 3, jasy)
-        call asexc1(motfac, nbocc, nbmode, parmod, amort,&
-                    corfre, ndir, zr(jspe), zr(jasy))
+        call asexc1(motfac, nbocc, nbmode, momec, amort,&
+                    corfre, ndir, zr(jspe), zr(jasy), nopara,&
+                    nordr)
     else
         call dismoi('NOM_NUME_DDL', masse, 'MATR_ASSE', repk=nume)
         call dismoi('NOM_MAILLA', masse, 'MATR_ASSE', repk=noma)
@@ -152,10 +155,10 @@ subroutine asexci(masse, parmod, amort, nbmode, corfre,&
         AS_ALLOCATE(vr=dir_spectre, size=3*nbbloq)
         AS_ALLOCATE(vr=ech_spectre, size=3*nbbloq)
         AS_ALLOCATE(vi=nat_spectre, size=3*nbbloq)
-        call asexc2(motfac, nbocc, nbmode, parmod, amort,&
+        call asexc2(motfac, nbocc, nbmode, momec, amort,&
                     corfre, noma, ndir, nom_noeud, nom_spectre,&
                     dir_spectre, ech_spectre, nat_spectre, nbsup, nsupp,&
-                    knoeu, kspect, kasysp)
+                    knoeu, kspect, kasysp, nopara, nordr)
         call jedetr('&&ASEXCI.POSITION.DDL1')
         AS_DEALLOCATE(vk8=nom_noeud)
         AS_DEALLOCATE(vk8=nom_spectre)

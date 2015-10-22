@@ -254,4 +254,124 @@ Conseil:
     calcul de type multi-appui ou avec prise en compte de la correction statique.
 """),
 
+    46: _(u"""
+ --- GRANDEURS MODALES ---
+                              FACTEUR DE   MASSE MODALE       FRACTION
+ MODE     FREQUENCE  DIR   PARTICIPATION      EFFECTIVE   MASSE TOTALE   CUMUL
+"""),
+
+    47: _(u""" %(i1)4d  %(r1)12.5e    %(k1)s    %(r2)12.5e   %(r3)12.5e   %(r4)12.4f   %(r5)12.4f
+"""),
+
+    48: _(u"""
+ --- GRANDEURS MODALES ---
+                              FACTEUR DE   MASSE MODALE
+ MODE     FREQUENCE  DIR   PARTICIPATION      EFFECTIVE
+"""),
+
+    49: _(u""" %(i1)4d  %(r1)12.5e    %(k1)s    %(r2)12.5e    %(r3).5e
+"""),
+
+    50: _(u"""
+ MASSE TOTALE DE LA STRUCTURE :  %(r1).5e
+"""),
+
+    51: _(u"""
+ MASSE MODALE EFFECTIVE CUMULÉE : 
+"""),
+
+    52: _(u"""       DIRECTION : %(k1)s, CUMUL :  %(r1).5e, SOIT %(r2)12.3f %%
+"""),
+
+    53: _(u"""
+ --- VALEURS DU SPECTRE ---
+ MODE      FREQUENCE    AMORTISSEMENT    DIR         SPECTRE
+"""),
+
+    54: _(u""" %(i1)4d   %(r1)12.5e     %(r2)12.5e      %(k1)s    %(r3)12.5e 
+"""),
+
+    55: _(u"""                                           %(k1)s    %(r1)12.5e 
+"""),
+
+    56: _(u"""
+ --- VALEURS CORRECTION STATIQUE ---
+ DIRECTION
+"""),
+
+    57: _(u"""         %(k1)s    %(r1)12.5e 
+"""),
+
+    58: _(u"""                       %(k1)s    %(r1)12.5e   %(r2)12.5e   %(r3)12.4f   %(r4)12.4f
+"""),
+
+    59: _(u"""
+ --- VALEURS DU SPECTRE ---
+ MODE      FREQUENCE   AMORTISSEMENT   DIR   SUPPORT         SPECTRE
+"""),
+
+    60: _(u""" %(i1)4d   %(r1)12.5e    %(r2)12.5e   %(k1)s     %(k2).8s         %(r3)12.5e 
+"""),
+
+    61: _(u"""                                             %(k1).8s         %(r1)12.5e 
+"""),
+
+    62: _(u"""
+ --- VALEURS CORRECTION STATIQUE ---
+  DIRECTION                          
+"""),
+
+    63: _(u"""          %(k1)s  %(k2).8s     %(r1)12.5e 
+"""),
+
+    64: _(u"""             %(k1).8s    %(r1)12.5e 
+"""),
+
+    65: _(u"""
+--------------------------------------------------------------------------------
+"""),
+
+    66: _(u"""
+ --- COMPOSANTE PRIMAIRE ---
+ COMBI SUPPORT
+"""),
+
+    67: _(u"""  %(k1)s
+"""),
+
+    68: _(u"""
+  --- COMPOSANTE SECONDAIRE ---
+   CAS      SUPPORT     CMP        VALEUR    NOEUD_REFE  NOM_CAS
+"""),
+
+    69: _(u"""  %(i1)4d      %(k1).8s       %(k2).8s       %(r1)12.5e   %(k3).8s          %(k4).8s
+"""),
+
+    70: _(u"""
+ GROUPE DE CAS
+ NUME_ORDRE     COMBI     LIST_CAS
+"""),
+
+    71: _(u"""  %(i1)4d            %(k1)s
+"""),
+
+    72: _(u"""
+  SOMME QUADRATIQUE DES OCCURRENCES DE COMB_DEPL_APPUI    
+
+ NUME_ORDRE     CUMUL
+"""),
+
+    73: _(u"""                                       %(k1)s     %(k2).8s         %(r1)12.5e 
+"""),
+
+    74: _(u"""
+  COMBINAISON DIRECTION :  %(k1)s   
+"""),
+
+    75: _(u"""       DIRECTION : %(k1)s , CUMUL :  %(r1)12.5e
+"""),
+
+    76: _(u"""                       %(k1)s    %(r1)12.5e   %(r2)12.5e
+"""),
+
 }

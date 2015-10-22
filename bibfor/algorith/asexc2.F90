@@ -1,7 +1,7 @@
-subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
+subroutine asexc2(motfac, nbocc, nbmode, momec, amort,&
                   corfre, noma, ndir, nomsup, nomspe,&
                   dirspe, echspe, nature, nbsupm, nsupp,&
-                  knoeu, kvspe, kaspe)
+                  knoeu, kvspe, kaspe, nopara, nordr)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -11,7 +11,6 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/iunifi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -22,15 +21,17 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/rsadpa.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    integer :: nbocc, nbmode, ndir(*), nature(3, *), nsupp(*)
-    real(kind=8) :: parmod(nbmode, *), amort(*), dirspe(3, *), echspe(3, *)
+    integer :: nbocc, nbmode, ndir(*), nature(3, *), nsupp(*), nordr(*)
+    real(kind=8) :: amort(*), dirspe(3, *), echspe(3, *)
     character(len=8) :: nomsup(3, *), nomspe(3, *), noma
-    character(len=*) :: motfac, kvspe, kaspe, knoeu
+    character(len=*) :: motfac, kvspe, kaspe, knoeu, momec
+    character(len=24):: nopara(*)
     aster_logical :: corfre
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -58,7 +59,7 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
 ! IN  : NBOCC  : NOMBRE D'OCCURENCE DU MOT CLE FACTEUR
 ! IN  : NBMODE : NOMBRE DE MODES
 ! IN  : AMORT  : AMORTISSEMENTS MODAUX
-! IN  : PARMOD : PARAMETRES MODAUX
+! IN  : MOMEC  : MODES MECANIQUES
 ! IN  : CORFRE : CORRECTION FREQUENCE SI .TRUE.
 ! OUT : NDIR   : DIRECTION DU SEISME A ETUDIER
 ! OUT : VALSPE : VALEURS DU SPECTRE
@@ -68,7 +69,7 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
 !
 !
 !
-    integer :: i, id, ier, ifm, igr, ii, iii, im, inat, ino, ioc
+    integer :: i, id, ier, igr, ii, iii, im, inat, ino, ioc
     integer :: iret, is, j, jaspe, jdgn, jkno
     integer :: jvspe, n1, nbsupm, ngr, nimpr
     integer :: nno
@@ -79,10 +80,10 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
 !
     character(len=1) :: dir(3)
     character(len=4) :: knat
-    character(len=8) :: k8b, spect, noeu, nomsp0(3), nompu(2)
+    character(len=8) :: k8b, spect, noeu, nomsp0(3), nompu(2),dircopy
     character(len=9) :: niveau
     character(len=24) :: obj1, obj2, valk(2), grnoeu
-    integer :: iarg
+    integer :: iarg, ival
     character(len=24), pointer :: group_no(:) => null()
     character(len=8), pointer :: noeud(:) => null()
     real(kind=8) :: correc
@@ -96,7 +97,6 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
 !
     call jemarq()
     ier = 0
-    ifm = iunifi('RESULTAT')
     epsi = 1.d-03
     zero = 0.d0
     un = 1.d0
@@ -115,7 +115,9 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
 !
     call getvr8(' ', 'FREQ_COUP', iocc=1, scal=fcoup, nbret=n1)
     if (n1 .eq. 0) then
-        fcoup = uns2pi * sqrt(parmod(nbmode,2))
+        call rsadpa(momec, 'L', 1, nopara(2), nordr(nbmode),&
+                    0, sjv=ival, istop=0)
+        fcoup = uns2pi * sqrt(zr(ival))
     endif
 !
 !     --- NOMBRE DE SUPPORTS PAR DIRECTION ---
@@ -289,14 +291,15 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
 !
 !     --- INTERPOLATION DES SPECTRES ---
     if (niveau .eq. 'TOUT     ' .or. niveau .eq. 'SPEC_OSCI') then
-        write(ifm,1000)
-        write(ifm,1020)
+        call utmess('I', 'SEISME_59')
     endif
     call wkvect(kvspe, 'V V R', 3*nbsupm*nbmode, jvspe)
     do im = 1, nbmode
         ii = 0
         amor = amort(im)
-        omega2 = parmod(im,2)
+        call rsadpa(momec, 'L', 1, nopara(2), nordr(im),&
+                    0, sjv=ival, istop=0)
+        omega2 = zr(ival)
         omega = sqrt( omega2 )
         freq = uns2pi * omega
         valpu(1) = amor
@@ -322,15 +325,18 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
                         if (ii .eq. 0) then
                             ii = 1
                             iii = 1
-                            write(ifm,1200)im,freq,amor,dir(id),&
-                            nomsup(id,is),resu
+                            dircopy = dir(id)
+                            call utmess('I', 'SEISME_60',si=im, nk=2, valk=[dircopy,&
+                                        nomsup(id,is)], nr=3, valr=[freq,amor,resu])
                         else
                             if (iii .eq. 0) then
                                 iii = 1
-                                write(ifm,1210)dir(id),nomsup(id,is),&
-                                resu
+                                dircopy = dir(id)
+                                call utmess('I', 'SEISME_73',nk=2, valk=[dircopy,&
+                                        nomsup(id,is)], sr=resu)
                             else
-                                write(ifm,1220)nomsup(id,is),resu
+                                call utmess('I', 'SEISME_61', sk=nomsup(id,is),&
+                                            sr=resu)
                             endif
                         endif
                     endif
@@ -341,8 +347,7 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
 !
 !     --- VALEURS ASYMPTOTIQUES DES SPECTRES ---
     if (niveau .eq. 'TOUT     ' .or. niveau .eq. 'SPEC_OSCI') then
-        write(ifm,1300)
-        write(ifm,1320)
+        call utmess('I', 'SEISME_62')
     endif
     call wkvect(kaspe, 'V V R', 3*nbsupm, jaspe)
     do id = 1, 3
@@ -369,25 +374,16 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
                 if (niveau .eq. 'TOUT     ' .or. niveau .eq. 'SPEC_OSCI') then
                     if (iii .eq. 0) then
                         iii = 1
-                        write(ifm,1420)dir(id),nomsup(id,is),resu
+                        call utmess('I', 'SEISME_63', nk=2,& 
+                                    valk=[dir(id),nomsup(id,is)],sr=resu)
                     else
-                        write(ifm,1430)nomsup(id,is),resu
+                        call utmess('I', 'SEISME_64',&
+                                    sk=nomsup(id,is),sr=resu)
                     endif
                 endif
             end do
         endif
     end do
-!
-    1000 format(/,1x,'--- VALEURS DU SPECTRE ---')
-    1020 format(1x,'MODE      FREQUENCE   AMORTISSEMENT   ',&
-     &          'DIR   SUPPORT         SPECTRE')
-    1200 format(1p,1x,i4,3x,d12.5,4x,d12.5,4x,a1,4x,a8,3x,d12.5)
-    1210 format(1p,40x,a1,4x,a8,3x,d12.5)
-    1220 format(1p,45x,a8,3x,d12.5)
-    1300 format(/,1x,'--- VALEURS CORRECTION STATIQUE ---')
-    1320 format(1x,' DIRECTION                          ')
-    1420 format(1p,10x,a1,3x,a8,3x,d12.5)
-    1430 format(1p,14x,a8,3x,d12.5)
 !
     call jedema()
 end subroutine

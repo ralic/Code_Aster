@@ -18,12 +18,13 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine asexci(masse, parmod, amort, nbmode, corfre,&
+    subroutine asexci(masse, momec, amort, nbmode, corfre,&
                       impr, ndir, monoap, muapde, kspect,&
-                      kasysp, nbsup, nsupp, knoeu)
+                      kasysp, nbsup, nsupp, knoeu, nopara,&
+                      nordr)
         integer :: nbmode
         character(len=*) :: masse
-        real(kind=8) :: parmod(nbmode, *)
+        character(len=*) :: momec
         real(kind=8) :: amort(*)
         aster_logical :: corfre
         integer :: impr
@@ -35,5 +36,7 @@ interface
         integer :: nbsup
         integer :: nsupp(*)
         character(len=*) :: knoeu
+        character(len=24) :: nopara(*)
+        integer :: nordr(*)
     end subroutine asexci
 end interface

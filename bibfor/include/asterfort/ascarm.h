@@ -19,9 +19,9 @@
 !
 interface
     subroutine ascarm(nomsy, monoap, nbsup, nsupp, neq,&
-                      nbmode, vecmod, parmod, id, reasup,&
+                      nbmode, vecmod, momec, id, reasup,&
                       spectr, repmod, corfre, amort, muapde,&
-                      tcosup, im, nbdis)
+                      tcosup, im, nbdis, nopara, nordr)
         integer :: nbmode
         integer :: neq
         integer :: nbsup
@@ -29,7 +29,7 @@ interface
         aster_logical :: monoap
         integer :: nsupp(*)
         real(kind=8) :: vecmod(neq, *)
-        real(kind=8) :: parmod(nbmode, *)
+        character(len=*) :: momec
         integer :: id
         real(kind=8) :: reasup(nbsup, nbmode, *)
         real(kind=8) :: spectr(*)
@@ -40,5 +40,7 @@ interface
         integer :: tcosup(nbsup, *)
         integer :: im
         integer :: nbdis(*)
+        character(len=16) :: nopara(*)
+        integer :: nordr(*)
     end subroutine ascarm
 end interface

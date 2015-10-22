@@ -58,7 +58,7 @@ subroutine op0109()
 !
     integer :: vali(2)
 !-----------------------------------------------------------------------
-    integer :: iam, ibid, id, ifm, ifu, ii
+    integer :: iam, ibid, id, ifu, ii
     integer :: im, info, iret, j, jamo2
     integer :: jamor, jarm, jasy, jcsu, jdep, jdir
     integer :: jkno, jnsu, jopt, jordr, jrea, jspe
@@ -107,7 +107,6 @@ subroutine op0109()
     call jemarq()
     r8b=0.d0
     zero = 0.d0
-    ifm = iunifi('RESULTAT')
     tronc = .false.
     comdir = .false.
     rundef = r8vide()
@@ -287,12 +286,13 @@ subroutine op0109()
         endif
     endif
 !     ----- RECUPERATION DES EXCITATIONS -----
-    write(ifm,1060)
+    call utmess('I','SEISME_65')
     call wkvect('&&OP0109.DIRECTION', 'V V I', 3, jdir)
     call wkvect('&&OP0109.NB_SUPPOR', 'V V I', 3, jnsu)
-    call asexci(masse, zr(lval), zr(jamor), nbmode, corfre,&
+    call asexci(masse, meca, zr(jamor), nbmode, corfre,&
                 info, zi(jdir), monoap, muapde, kspect,&
-                kasysp, nbsup, zi(jnsu), knoeu)
+                kasysp, nbsup, zi(jnsu), knoeu, nopara,&
+                zi(jordr))
     call jeveuo(kasysp, 'E', jasy)
     call jeveuo(kspect, 'E', jspe)
     if (.not.monoap) then
@@ -379,13 +379,10 @@ subroutine op0109()
     endif
 !
     if (niveau .eq. 'TOUT     ' .or. niveau .eq. 'MASS_EFFE') then
-        write(ifm,1070)
         if (calmas) then
-            write(ifm,1082)
-            write(ifm,1092)
+            call utmess('I','SEISME_46')
         else
-            write(ifm,1080)
-            write(ifm,1090)
+            call utmess('I','SEISME_48')
         endif
         mastot(1) = zero
         mastot(2) = zero
@@ -411,31 +408,39 @@ subroutine op0109()
                     if (ii .eq. 0) then
                         ii = 1
                         if (calmas) then
-                            write(ifm,1102) im,freq,dir(id),facpar,&
-                            masmod,xfm,cumul(id)
+                            call utmess('I','SEISME_47', si=im, sk=dir(id),&
+                                        nr=5, valr=[freq,facpar,masmod,xfm,cumul(id)])
                         else
-                            write(ifm,1100)im,freq,dir(id),facpar,&
-                            masmod
+                            call utmess('I','SEISME_49', si=im, sk=dir(id),&
+                                        nr=3, valr=[freq,facpar,masmod])
                         endif
                     else
                         if (calmas) then
-                            write(ifm,1112) dir(id),facpar,masmod,xfm,&
-                            cumul(id)
+                            call utmess('I','SEISME_58', sk=dir(id),&
+                                        nr=4, valr=[facpar,masmod,xfm,cumul(id)])
                         else
-                            write(ifm,1110)dir(id),facpar,masmod
+                            call utmess('I','SEISME_76', sk=dir(id),&
+                                        nr=2, valr=[facpar,masmod])
                         endif
                     endif
                 endif
             end do
         end do
-        if (calmas) write(ifm,1160) xmastr
-        write(ifm,1162)
+        if (calmas) then
+            call utmess('I','SEISME_50', sr=xmastr)
+        endif
+        call utmess('I','SEISME_51', sr=xmastr)
         do id = 1, 3
             xfm = mastot(id) / xmastr
             if (calmas) then
-                if (zi(jdir+id-1) .eq. 1) write(ifm, 1166) dir(id), mastot(id), xfm
+                if (zi(jdir+id-1) .eq. 1) then
+                    call utmess('I','SEISME_52', sk=dir(id),&
+                                        nr=2, valr=[mastot(id), 100.d0*xfm])
+                endif
             else
-                if (zi(jdir+id-1) .eq. 1) write(ifm,1164)dir(id),mastot( id)
+                if (zi(jdir+id-1) .eq. 1) then
+                    call utmess('I','SEISME_75', sk=dir(id), sr=mastot( id))
+                endif
             endif
         end do
     endif
@@ -489,7 +494,9 @@ subroutine op0109()
                 typcmo, temps, comdir, typcdi, tronc,&
                 zr(jamor), zr(jspe), zr(jasy), zk8(jkno), zr(jrea),&
                 zr(jdep), zi(jcsu), corfre, f1gup, f2gup)
-    if ((.not. monoap) .and. comdir) write(ifm, *)' COMBINAISON DIRECTION : ', typcdi
+    if ((.not. monoap) .and. comdir) then
+        call utmess('I', 'SEISME_74', sk=typcdi)
+    endif
     if (ndepl .ne. 0) call asimpr(nbsup, zi(jcsu), zk8(jkno))
 !
 !
@@ -503,25 +510,6 @@ subroutine op0109()
                 ' ', iret)
 !
 !
-!
-    1060 format(/,80('-'))
-    1070 format(/,1x,'--- GRANDEURS MODALES ---')
-    1080 format(30x,'FACTEUR DE   MASSE MODALE')
-    1082 format(30x,'FACTEUR DE   MASSE MODALE       FRACTION')
-    1090 format(1x,&
-     &      'MODE     FREQUENCE  DIR   PARTICIPATION      EFFECTIVE')
-    1092 format(1x,'MODE     FREQUENCE  DIR   ',&
-     &      'PARTICIPATION      EFFECTIVE   MASSE TOTALE   CUMUL')
-    1100 format(1p,1x,i4,2x,d12.5,4x,a1,4x,d12.5,3x,d12.5)
-    1102 format(1p,1x,i4,2x,d12.5,4x,a1,4x,d12.5,3x,d12.5,&
-     &                 6x,0p,f7.4,6x,0p,f7.4)
-    1110 format(1p,23x,a1,4x,d12.5,3x,d12.5)
-    1112 format(1p,23x,a1,4x,1pd12.5,3x,1pd12.5,6x,0p,f7.4,6x,0p,f7.4)
-    1160 format(/,1p,1x,'MASSE TOTALE DE LA STRUCTURE : ',d12.5)
-    1162 format(/,1x,'MASSE MODALE EFFECTIVE CUMULEE : ')
-    1164 format(1p,7x,'DIRECTION : ',a1,' , CUMUL : ',d12.5)
-    1166 format(1p,7x,'DIRECTION : ',a1,&
-     &       ' , CUMUL : ',d12.5,', SOIT ',2p,f7.3,' %')
 !      DEPLACEMENT: (QN/MN)*DNM, FORCE: (QN/MN*W2)*DNM.
     call jedema()
 end subroutine

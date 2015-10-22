@@ -18,16 +18,19 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine asexc1(motfac, nbocc, nbmode, parmod, amort,&
-                      corfre, ndir, valspe, asyspe)
+    subroutine asexc1(motfac, nbocc, nbmode, momec, amort,&
+                      corfre, ndir, valspe, asyspe, nopara,&
+                      nordr)
         integer :: nbmode
         character(len=*) :: motfac
         integer :: nbocc
-        real(kind=8) :: parmod(nbmode, *)
+        character(len=*) :: momec
         real(kind=8) :: amort(*)
         aster_logical :: corfre
         integer :: ndir(*)
         real(kind=8) :: valspe(3, *)
         real(kind=8) :: asyspe(*)
+        character(len=24) :: nopara(*)
+        integer :: nordr(*)
     end subroutine asexc1
 end interface

@@ -1,14 +1,18 @@
 subroutine ascarm(nomsy, monoap, nbsup, nsupp, neq,&
-                  nbmode, vecmod, parmod, id, reasup,&
+                  nbmode, vecmod, momec, id, reasup,&
                   spectr, repmod, corfre, amort, muapde,&
-                  tcosup, im, nbdis)
+                  tcosup, im, nbdis, nopara, nordr)
     implicit none
+#include "jeveux.h"
 #include "asterf_types.h"
+#include "asterfort/rsadpa.h"
     integer :: nbsup, nsupp(*), neq, nbmode, id, tcosup(nbsup, *), im, nbdis(*)
+    integer :: nordr(*)
     real(kind=8) :: vecmod(neq, *), spectr(*), amort(*)
-    real(kind=8) :: parmod(nbmode, *), repmod(nbsup, neq, *)
+    real(kind=8) :: repmod(nbsup, neq, *)
     real(kind=8) :: reasup(nbsup, nbmode, *)
-    character(len=16) :: nomsy
+    character(len=16) :: nomsy, nopara(*)
+    character(len=*) :: momec
     aster_logical :: monoap, corfre, muapde
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -38,7 +42,7 @@ subroutine ascarm(nomsy, monoap, nbsup, nsupp, neq,&
 ! IN  : NEQ    : NOMBRE D'EQUATIONS
 ! IN  : NBMODE : NOMBRE DE MODES
 ! IN  : VECMOD : VECTEUR DES MODES
-! IN  : PARMOD : VECTEUR DES PARAMETRES MODAUX
+! IN  : MOMEC : MODES MECANIQUES
 ! IN  : ID     : DIRECTION
 ! IN  : REASUP : TABLEAU DES REACTIONS MODALES AUX SUPPORTS
 ! IN  : SPECTR : TABLEAU DES VALEURS DU SPECTRE
@@ -47,58 +51,62 @@ subroutine ascarm(nomsy, monoap, nbsup, nsupp, neq,&
 ! IN  : AMORT  : VECTEUR DES AMORTISSEMENTS MODAUX
 ! IN  : NBDIS  : APPARTENANCE DES SUPPORTS AUX INTRAGROUPES
 !     ------------------------------------------------------------------
-    integer :: in, is, ind, ioc
+    integer :: in, is, ind, ioc, ival
     real(kind=8) :: un, xamo, omega, omega2, xxm, xxx, yyy
 !     ------------------------------------------------------------------
 !
     un = 1.d0
+    call rsadpa(momec, 'L', 1, nopara(1), nordr(im),&
+                0, sjv=ival, istop=0)
+    omega = sqrt(zr(ival))
+    xamo = amort(im)
+    if (corfre) omega = omega * sqrt( un - xamo*xamo )
+    omega2 = omega * omega
 !
 !     --- CAS DU MONO-APPUI ---
 !
     if (monoap) then
-        omega = sqrt(parmod(im,1))
-        xamo = amort(im)
-        if (corfre) omega = omega * sqrt( un - xamo*xamo )
-        omega2 = omega * omega
         ind = id + 3*(im-1)
-        xxx = ( parmod(im,2+id) * spectr(ind) ) / omega2
+        
+        call rsadpa(momec, 'L', 1, nopara(2+id), nordr(im),&
+                    0, sjv=ival, istop=0)
+        xxx = ( zr(ival) * spectr(ind) ) / omega2
+        
         if (nomsy(1:4) .eq. 'VITE') xxx = xxx * omega
         if (nomsy(1:4) .eq. 'ACCE') xxx = xxx * omega2
-        do 12 in = 1, neq
+        do in = 1, neq
             repmod(nbsup,in,id) = xxx * vecmod(in,im)
- 12     continue
+        enddo
 !
 !     --- CAS DU MULTI-APPUI ---
 !
     else
-        do 13 is = 1, nbsup
-            do 17 in = 1, neq
+        do is = 1, nbsup
+            do in = 1, neq
                 repmod(is,in,id) = 0.d0
- 17         continue
- 13     continue
-        omega = sqrt(parmod(im,1))
-        xamo = amort(im)
-        if (corfre) omega = omega * sqrt( un - xamo*xamo )
-        omega2 = omega * omega
-        xxm = -un / ( parmod(im,2) * omega2 * omega2 )
+            enddo
+        enddo
+        call rsadpa(momec, 'L', 1, nopara(2), nordr(im),&
+                    0, sjv=ival, istop=0)
+        xxm = -un / ( zr(ival) * omega2 * omega2 )
         if (nomsy(1:4) .eq. 'VITE') xxm = xxm * omega
         if (nomsy(1:4) .eq. 'ACCE') xxm = xxm * omega2
-        do 22 is = 1, nsupp(id)
+        do is = 1, nsupp(id)
             ind = id + 3*(im-1) + 3*nbmode*(is-1)
             xxx = reasup(is,im,id) * xxm * spectr(ind)
-            do 24 in = 1, neq
+            do in = 1, neq
                 ioc = nbdis(is)
                 repmod(ioc,in,id) = repmod(ioc,in,id)+ xxx * vecmod( in,im)
- 24         continue
- 22     continue
+            enddo
+        enddo
     endif
 !
 ! --- CAS CORRELE : ON RECOMBINE LES SUPPORTS
 !
     if (.not.muapde) then
-        do 100 in = 1, neq
+        do in = 1, neq
             yyy=0.d0
-            do 110 is = 1, nsupp(id)
+            do is = 1, nsupp(id)
                 if (tcosup(is,id) .eq. 1) then
 !              --- COMBINAISON QUADRATIQUE ---
                     xxx = repmod(is,in,id)
@@ -114,9 +122,9 @@ subroutine ascarm(nomsy, monoap, nbsup, nsupp, neq,&
                     xxx = abs( repmod(is,in,id) )
                     yyy=yyy+xxx
                 endif
-110         continue
+            enddo
             repmod(1,in,id) = yyy
-100     continue
+        enddo
     endif
 !
 end subroutine

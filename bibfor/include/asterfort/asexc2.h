@@ -18,14 +18,14 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
+    subroutine asexc2(motfac, nbocc, nbmode, momec, amort,&
                       corfre, noma, ndir, nomsup, nomspe,&
                       dirspe, echspe, nature, nbsupm, nsupp,&
-                      knoeu, kvspe, kaspe)
+                      knoeu, kvspe, kaspe, nopara, nordr)
         integer :: nbmode
         character(len=*) :: motfac
         integer :: nbocc
-        real(kind=8) :: parmod(nbmode, *)
+        character(len=*) :: momec
         real(kind=8) :: amort(*)
         aster_logical :: corfre
         character(len=8) :: noma
@@ -40,5 +40,7 @@ interface
         character(len=*) :: knoeu
         character(len=*) :: kvspe
         character(len=*) :: kaspe
+        character(len=24) :: nopara(*)
+        integer :: nordr(*)
     end subroutine asexc2
 end interface
