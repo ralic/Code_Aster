@@ -332,9 +332,9 @@ subroutine te0472(option, nomte)
                 do 80 i = 1, nno2
                     l = 3* (i-1) - 1
                     if (.not.perman) then
-                        zr(ires+l+3) = zr(ires+l+3) - poids2*deltat* flu1*zr(ivf2+kk+i-1)
+                        zr(ires+l+3) = zr(ires+l+3) - poids*deltat* flu1*zr(ivf2+kk+i-1)
                     else
-                        zr(ires+l+3) = zr(ires+l+3) - poids2*flu1*zr( ivf2+kk+i-1)
+                        zr(ires+l+3) = zr(ires+l+3) - poids*flu1*zr( ivf2+kk+i-1)
                     endif
  80             continue
             endif

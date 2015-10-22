@@ -1,0 +1,247 @@
+# TITRE   MODELISATION D INJECTION D EAU INCOMPRESSIBLEDANS UNE EPROUVETTE SATUREE
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+#Modelisation lumpee
+# (CALCUL AXIS_HMD)
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), )
+
+UN=DEFI_CONSTANTE(    VALE=1.)
+
+ZERO=DEFI_CONSTANTE(    VALE=0.)
+
+VISCOLIQ=DEFI_CONSTANTE(    VALE=1.E-3)
+
+DVISCOL=DEFI_CONSTANTE(    VALE=0.)
+
+DVISCOG=DEFI_CONSTANTE(    VALE=0.)
+
+
+KINT =DEFI_CONSTANTE(    VALE=1E-12)
+
+
+#*********************************************************
+# CI
+#*********************************************************
+PREF = 1.e5
+
+
+
+#*************************************************************
+# LISTE DES INSTANTS DE CALCULS
+#*************************************************************
+#
+TFIN=100.
+
+INST1=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=(_F( JUSQU_A = TFIN     , NOMBRE = 1,),
+                     ),);
+ 
+LI =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INST1 ,),
+                   ECHEC=_F(ACTION        = 'DECOUPE',
+                            SUBD_METHODE  = 'MANUEL',
+                            SUBD_PAS=5,
+                            SUBD_PAS_MINI=0.1,),) 
+
+#***********************************************************************
+#    MAILLAGE + MODELE
+#***********************************************************************
+
+
+
+MAILLAGE=LIRE_MAILLAGE(FORMAT='MED',);
+
+MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
+                    MAILLAGE=MAILLAGE,
+                    CREA_GROUP_MA=(_F(NOM='down',  GROUP_MA='GM8', ),
+                                   _F(NOM='up',    GROUP_MA='GM7', ),
+                                   _F(NOM='left',  GROUP_MA='GM9',),
+                                   _F(NOM='right', GROUP_MA='GM10', ),
+                                   _F(NOM='ROCHE', TOUT='OUI'),
+                                   ),
+                    CREA_GROUP_NO=(_F(GROUP_MA='down',),
+                                   _F(NOM='up',
+                                      GROUP_MA='up',
+                                      OPTION='NOEUD_ORDO',
+                                      NOEUD_ORIG='N3',
+                                      NOEUD_EXTR='N4',),
+                                   _F(GROUP_MA='right',),
+                                   _F(GROUP_MA='left',),
+                                   _F(GROUP_MA='ROCHE',),
+                                   ),
+                    );
+MAILLAGE=MODI_MAILLAGE(reuse=MAILLAGE,MAILLAGE=MAILLAGE,
+                   ORIE_PEAU_2D=(
+                   _F(GROUP_MA=('up','down')))
+                    );                    
+
+MODELE=AFFE_MODELE( MAILLAGE=MAILLAGE,
+                    AFFE=_F(TOUT = 'OUI',
+                            PHENOMENE = 'MECANIQUE',
+                            MODELISATION = 'AXIS_HMD',
+                            ),
+                    );
+
+
+SOL=DEFI_MATERIAU(   ELAS=_F(  E = 7.5E15,    
+                               NU = 0.3,
+                               RHO = 2300.,
+                               ALPHA = 1.E-5,
+                               ),
+                     COMP_THM = 'LIQU_SATU',
+                     THM_LIQU=_F(RHO = 1000.,
+                                 UN_SUR_K = 1.E-20,
+                                 ALPHA = 1.E-4,
+                                 CP = 4180.,
+                                 VISC = VISCOLIQ,
+                                 D_VISC_TEMP = DVISCOL,
+                                 ),
+                     THM_DIFFU=_F(R_GAZ = 8.315,
+                                  RHO = 2200.,
+                                  CP = 1050.,
+                                  BIOT_COEF = 0.6,
+                                  PESA_X = 0.,
+                                  PESA_Y = 0.,
+                                  PESA_Z = 0.,
+                                  PERM_IN = KINT,
+                                  ),
+                     THM_INIT=_F(TEMP = 293.0,
+                                 PRE1 = 0.,
+                                 PORO = 0.2,
+                                 PRES_VAPE = 0.1,
+                                 ),
+                     );
+                           
+CHMAT=AFFE_MATERIAU( MAILLAGE=MAILLAGE,
+                     AFFE=(_F(GROUP_MA = 'ROCHE',    
+                              MATER = SOL,  ),
+                           ),
+                     );
+
+#*************************************************************
+# AFFECTATION DES CL
+#*************************************************************
+#
+FLUX = AFFE_CHAR_MECA ( MODELE = MODELE ,
+                        FLUX_THM_REP = _F( GROUP_MA  = 'up' ,
+                                           FLUN_HYDR1 = 1.0 ,),
+                        );
+
+
+
+CHIMP = AFFE_CHAR_MECA ( MODELE = MODELE ,
+                         DDL_IMPO  = _F( GROUP_MA = ('down',), 
+                                         PRE1   = PREF ,
+                                         ),
+                         );
+
+CLIM = AFFE_CHAR_MECA ( MODELE = MODELE ,
+                        DDL_IMPO  = (
+                                     _F(GROUP_MA='left',DX = 0. ,),
+                                     _F(GROUP_MA='down',DY = 0. ,),
+                                     ),
+                        );
+
+# AFFECTATION DE L ETAT INITIAL
+#
+DEPINIT=CREA_CHAMP(MAILLAGE=MAILLAGE,
+                    OPERATION='AFFE',
+                    TYPE_CHAM='NOEU_DEPL_R',
+                    AFFE=(_F(GROUP_NO='ROCHE',
+                             NOM_CMP=('PRE1','DX','DY',),
+                             VALE   =(PREF   ,0.0 ,0.0 ,),
+                              ),
+                          ),);
+
+SIGINIT=CREA_CHAMP(MAILLAGE=MAILLAGE,
+                   OPERATION='AFFE',
+                   TYPE_CHAM='CART_SIEF_R',
+                   AFFE=_F(TOUT='OUI',
+                           NOM_CMP=
+                           ('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ',
+                            'SIPXX','SIPYY','SIPZZ','SIPXY','SIPXZ','SIPYZ',
+                            'M11','FH11X','FH11Y','FH11Z'),
+                           VALE=
+                           (0.0,0.0,0.0,0.0,0.0,0.0,
+                            0.0,0.0,0.0,0.0,0.0,0.0,
+                            0.0,0.0,0.0,0.0),),);
+
+
+
+#flux de liquide entrant
+cofl=DEFI_FONCTION(NOM_PARA='INST',
+                   VALE=(0,1,                   
+                         TFIN, 1,
+                         ),
+                   PROL_DROITE='CONSTANT',);
+
+
+################### Calcul
+
+U1=STAT_NON_LINE(ETAT_INIT = _F(SIGM=SIGINIT,
+                                DEPL=DEPINIT),
+                 MODELE=MODELE,
+                 CHAM_MATER=CHMAT,
+                 EXCIT=(_F( CHARGE    = CLIM ),
+                        _F( CHARGE    = CHIMP ),
+                        _F( CHARGE    = FLUX ,
+                            FONC_MULT = cofl ,) ,
+                        ),
+                 COMPORTEMENT=_F( RELATION = 'KIT_HM',
+                                  RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL'),
+                                  ITER_INTE_MAXI=300,
+                                  ),
+                 NEWTON=_F( MATRICE='TANGENTE',
+                            ),
+                 INCREMENT=_F( INST_INIT = 0.,
+                               LIST_INST = LI,
+                               INST_FIN=TFIN,
+                               ),
+                 CONVERGENCE=_F( ITER_GLOB_MAXI=100,
+                                 RESI_GLOB_RELA=1.0E-6,
+                                 ),
+                 );
+
+
+#Pression du liquide
+
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U1,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N3',
+                  NOM_CMP='PRE1',
+                  VALE_CALC=1099446.54669,
+                  VALE_REFE=1.1E6,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),)
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U1,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N4',
+                  NOM_CMP='PRE1',
+                  VALE_CALC=1104919.91348 ,
+                  VALE_REFE=1.1E6,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
+
+FIN () ;
+
