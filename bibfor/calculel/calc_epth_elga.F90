@@ -74,7 +74,7 @@ implicit none
     integer :: elas_id, meta_id, nb_phasis, iret
     real(kind=8) :: angl(3), phase(2)
     real(kind=8) :: dire(3), orig(3), p_glob_loca(3, 3), epsi_ther_vect(6)
-    real(kind=8) :: epsth, epsth_meta(2), epsth_anis(3)
+    real(kind=8) :: epsth, epsth_anis(3)
     real(kind=8) :: vepst1(6), vepst2(6), zcold, zhot
     integer :: iadzi, iazk24, icompo
 !
@@ -133,11 +133,8 @@ implicit none
         if (rela_comp.eq.'META_LEMA_ANI') then
             call get_meta_id(meta_id, nb_phasis)
             ASSERT(nb_phasis.eq.3)
-            call get_meta_phasis(fami     , '+' , kpg   , ksp , meta_id,&
-                                 nb_phasis, phase, zcold_ = zcold, zhot_ = zhot)
-            call verift(fami, kpg, ksp, '+', j_mater,&
-                        epsth_meta_=epsth_meta)
-            epsth = zhot*epsth_meta(1) + zcold*epsth_meta(2)
+            call verift(fami, kpg, ksp, poum, j_mater,&
+                        epsth_meta_= epsth)
         else
             call verift(fami, kpg, ksp, poum, j_mater,&
                         epsth_ = epsth)

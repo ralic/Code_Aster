@@ -106,7 +106,7 @@ implicit none
     real(kind=8) :: coeff8, coeff9, dv, rb, n0(3)
     real(kind=8) :: mat0(3, 3), mat1(3, 3), mat2(6, 3, 3), mat3(3, 3)
     real(kind=8) :: rbid
-    real(kind=8) :: valres(12), epsth_meta(2)
+    real(kind=8) :: valres(12)
     character(len=1) :: poum
     integer :: icodre(12), test
     character(len=16) :: nomres(12)
@@ -165,31 +165,25 @@ implicit none
     call rcvarc(' ', 'TEMP', poum, fami, kpg,&
                 ksp, temp, iret1)
     call verift(fami, kpg, ksp, poum, imat,&
-                iret_ = iret1, epsth_meta_=epsth_meta)
+                iret_ = iret1, epsth_meta_=epsth)
 !
 ! ****************************************
 ! 2 - RECUPERATION DES CARACTERISTIQUES
 ! ****************************************
 !
-! 2.1 - ELASTIQUE ET THERMIQUE
+! 2.1 - ELASTIQUE
 !
     nomres(1)='E'
     nomres(2)='NU'
-    nomres(3)='F_ALPHA'
-    nomres(4)='C_ALPHA'
-    nomres(5)='PHASE_REFE'
-    nomres(6)='EPSF_EPSC_TREF'
 !
     call rcvalb(fami, kpg, ksp, '-', imat,&
                 ' ', 'ELAS_META', 0, ' ', [0.d0],&
-                6, nomres, valres, icodre, 2)
+                2, nomres, valres, icodre, 2)
     mum=valres(1)/(2.d0*(1.d0+valres(2)))
 !
     call rcvalb(fami, kpg, ksp, poum, imat,&
                 ' ', 'ELAS_META', 0, ' ', [0.d0],&
-                6, nomres, valres, icodre, 2)
-    epsth = phase(nb_phasis)*(epsth_meta(1)-(1.d0-valres(5))*valres(6)) +&
-            zalpha*(epsth_meta(2)+valres(5)*valres(6))
+                2, nomres, valres, icodre, 2)
     e=valres(1)
     nu=valres(2)
     mu=e/(2.d0*(1.d0+nu))

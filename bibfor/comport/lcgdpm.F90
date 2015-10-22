@@ -88,7 +88,7 @@ implicit none
     integer :: i, j, k, l, mode, iret2
     integer :: ind(3, 3), nbr
     real(kind=8) :: phase(5), phasm(5), zalpha
-    real(kind=8) :: temp, dt, epsthe(3)
+    real(kind=8) :: temp, dt
     real(kind=8) :: epsth, e, nu, mu, mum, troisk
     real(kind=8) :: fmel, sy(5), h(5), hmoy, hplus(5), r(5), rmoy
     real(kind=8) :: theta(8)
@@ -166,7 +166,7 @@ implicit none
 ! - Compute thermic strain
 !
     call verift(fami, kpg, ksp, poum, imat,&
-                epsth_meta_=epsthe)
+                epsth_meta_=epsth)
     call rcvarc(' ', 'TEMP', poum, fami, kpg,&
                 ksp, temp, iret2)
 !
@@ -174,25 +174,19 @@ implicit none
 ! 2 - RECUPERATION DES CARACTERISTIQUES
 ! ****************************************
 !
-! 2.1 - ELASTIQUE ET THERMIQUE
+! 2.1 - ELASTIQUE
 !
     nomres(1)='E'
     nomres(2)='NU'
-    nomres(3)='F_ALPHA'
-    nomres(4)='C_ALPHA'
-    nomres(5)='PHASE_REFE'
-    nomres(6)='EPSF_EPSC_TREF'
 !
     call rcvalb(fami, kpg, ksp, '-', imat,&
                 ' ', 'ELAS_META', 0, ' ', [0.d0],&
-                6, nomres, valres, icodre, 2)
+                2, nomres, valres, icodre, 2)
     mum=valres(1)/(2.d0*(1.d0+valres(2)))
 !
     call rcvalb(fami, kpg, ksp, poum, imat,&
                 ' ', 'ELAS_META', 0, ' ', [0.d0],&
-                6, nomres, valres, icodre, 2)
-    epsth = phase(nb_phasis)*(epsthe(1)-(1.d0-valres(5))*valres(6)) +&
-            zalpha*(epsthe(2)+valres(5)*valres(6))
+                2, nomres, valres, icodre, 2)
     e=valres(1)
     nu=valres(2)
     mu=e/(2.d0*(1.d0+nu))

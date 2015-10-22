@@ -28,7 +28,7 @@ interface
         integer, optional, intent(out) :: iret_
         real(kind=8), optional, intent(out) :: epsth_
         real(kind=8), optional, intent(out) :: epsth_anis_(3)
-        real(kind=8), optional, intent(out) :: epsth_meta_(2)
+        real(kind=8), optional, intent(out) :: epsth_meta_
         real(kind=8), optional, intent(out) :: temp_prev_
         real(kind=8), optional, intent(out) :: temp_curr_
         real(kind=8), optional, intent(out) :: temp_refe_

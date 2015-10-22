@@ -7,9 +7,12 @@ implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/get_elasth_para.h"
+#include "asterfort/get_meta_phasis.h"
+#include "asterfort/get_meta_id.h"
 #include "asterfort/get_elas_id.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/tecael.h"
+#include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
@@ -38,7 +41,7 @@ implicit none
     integer, optional, intent(out) :: iret_
     real(kind=8), optional, intent(out) :: epsth_
     real(kind=8), optional, intent(out) :: epsth_anis_(3)
-    real(kind=8), optional, intent(out) :: epsth_meta_(2)
+    real(kind=8), optional, intent(out) :: epsth_meta_
     real(kind=8), optional, intent(out) :: temp_prev_
     real(kind=8), optional, intent(out) :: temp_curr_
     real(kind=8), optional, intent(out) :: temp_refe_
@@ -72,14 +75,16 @@ implicit none
     character(len=8) :: elem_name, materi
     integer :: iret_temp_prev, iret_temp_curr, iret_temp, iret_temp_refe
     real(kind=8) :: temp_prev, temp_refe, temp_curr
-    real(kind=8) :: epsth, epsth_anis(3), epsth_meta(2)
+    real(kind=8) :: epsth, epsth_anis(3), epsth_meta
     real(kind=8) :: alpha_p(2)
     real(kind=8) :: alpha_l_p, alpha_t_p, alpha_n_p
     real(kind=8) :: alpha_c(2)
     real(kind=8) :: alpha_l_c, alpha_t_c, alpha_n_c
+    real(kind=8) :: zcold_p, zhot_p, zcold_c, zhot_c, epsth_meta_h, epsth_meta_c
+    real(kind=8) :: z_h_r, deps_ch_tref
     integer :: iadzi, iazk24
-    integer :: elas_id
-    character(len=16) :: elas_keyword
+    integer :: elas_id, iret_cmp, icompo, meta_id, nb_phasis
+    character(len=16) :: elas_keyword, rela_comp
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -94,7 +99,7 @@ implicit none
     iret_temp_refe  = 0
     epsth           = 0.d0
     epsth_anis(1:3) = 0.d0
-    epsth_meta(1:2) = 0.d0
+    epsth_meta      = 0.d0
 !
 ! - No temperature -> thermic strain is zero
 !
@@ -170,6 +175,31 @@ implicit none
             elem_name = zk24(iazk24-1+3) (1:8)
             call utmess('F', 'COMPOR5_10', sk=elem_name)
         endif
+!
+        call get_meta_id(meta_id, nb_phasis)
+!
+        if (poum.eq.'T'.or.poum.eq.'-') then
+            if (iret_temp_prev.eq.0) then
+                call get_meta_phasis(fami, '-', kpg ,ksp, meta_id, nb_phasis,& 
+                                     zcold_ = zcold_p,& 
+                                     zhot_  = zhot_p)
+            endif
+        endif
+!
+        if (poum.eq.'T'.or.poum.eq.'+') then
+            if (iret_temp_prev.eq.0) then
+                call get_meta_phasis(fami, '+', kpg, ksp, meta_id, nb_phasis,& 
+                                     zcold_ = zcold_c,& 
+                                     zhot_  = zhot_c)
+            endif
+        endif
+!   - Check behavior name (used only in metallurgical case)
+        call tecach('NNO', 'PCOMPOR', 'L', iret_cmp, iad=icompo)
+        if (iret_cmp.eq.0) then
+            rela_comp  = zk16(icompo)
+        else
+            rela_comp = 'Unknown'
+        endif
     endif
 !
 ! - Compute thermic strain
@@ -178,10 +208,18 @@ implicit none
         if (iret_temp_prev+iret_temp_curr.eq.0) then
             if (elas_id.eq.1) then
                 if (elas_keyword.eq.'ELAS_META') then
-                    epsth_meta(1) = alpha_c(1)*(temp_curr-temp_refe)-&
-                                    alpha_p(1)*(temp_prev-temp_refe)
-                    epsth_meta(2) = alpha_c(2)*(temp_curr-temp_refe)-&
-                                     alpha_p(2)*(temp_prev-temp_refe)
+                    epsth_meta_h = zhot_c*alpha_c(1)*(temp_curr-temp_refe)-&
+                                   zhot_p*alpha_p(1)*(temp_prev-temp_refe)
+                    epsth_meta_c = zcold_c*alpha_c(2)*(temp_curr-temp_refe)-&
+                                   zcold_p*alpha_p(2)*(temp_prev-temp_refe)
+                    if (rela_comp.ne.'META_LEMA_ANI') then
+                        call get_elasth_para(fami     , j_mater     , '+', kpg    , ksp,&
+                                             elas_id,   elas_keyword, materi_ = materi,&
+                                             z_h_r_ = z_h_r  , deps_ch_tref_ = deps_ch_tref)
+                        epsth_meta_h = epsth_meta_h + (1-z_h_r)*deps_ch_tref*(zhot_p-zhot_c)
+                        epsth_meta_c = epsth_meta_c + z_h_r*deps_ch_tref*(zcold_c-zcold_p)
+                    endif
+                    epsth_meta = epsth_meta_h + epsth_meta_c
                 else
                     epsth = alpha_c(1)*(temp_curr-temp_refe)-alpha_p(1)*(temp_prev-temp_refe)
                 endif
@@ -200,8 +238,16 @@ implicit none
         if (iret_temp_prev.eq.0) then
             if (elas_id.eq.1) then
                 if (elas_keyword.eq.'ELAS_META') then
-                    epsth_meta(1) = alpha_p(1)*(temp_prev-temp_refe)
-                    epsth_meta(2) = alpha_p(2)*(temp_prev-temp_refe)
+                    epsth_meta_h = zhot_p*alpha_p(1)*(temp_prev-temp_refe)
+                    epsth_meta_c = zcold_p*alpha_p(2)*(temp_prev-temp_refe)
+                    if (rela_comp.ne.'META_LEMA_ANI') then
+                        call get_elasth_para(fami     , j_mater     , '+', kpg    , ksp,&
+                                             elas_id,   elas_keyword, materi_ = materi,&
+                                             z_h_r_ = z_h_r  , deps_ch_tref_ = deps_ch_tref)
+                        epsth_meta_h = epsth_meta_h - zhot_p*(1-z_h_r)*deps_ch_tref
+                        epsth_meta_c = epsth_meta_c + zcold_p*z_h_r*deps_ch_tref
+                    endif
+                    epsth_meta   = epsth_meta_h + epsth_meta_c
                 else
                     epsth = alpha_p(1)*(temp_prev-temp_refe)
                 endif
@@ -220,8 +266,16 @@ implicit none
         if (iret_temp_curr.eq.0) then
             if (elas_id.eq.1) then
                 if (elas_keyword.eq.'ELAS_META') then
-                    epsth_meta(1) = alpha_c(1)*(temp_curr-temp_refe)
-                    epsth_meta(2) = alpha_c(2)*(temp_curr-temp_refe)
+                    epsth_meta_h = zhot_c*alpha_c(1)*(temp_curr-temp_refe)
+                    epsth_meta_c = zcold_c*alpha_c(2)*(temp_curr-temp_refe)
+                    if (rela_comp.ne.'META_LEMA_ANI') then
+                        call get_elasth_para(fami     , j_mater     , '+', kpg    , ksp,&
+                                             elas_id,   elas_keyword, materi_ = materi,&
+                                             z_h_r_ = z_h_r  , deps_ch_tref_ = deps_ch_tref)
+                        epsth_meta_h = epsth_meta_h - zhot_c*(1-z_h_r)*deps_ch_tref
+                        epsth_meta_c = epsth_meta_c + zcold_c*z_h_r*deps_ch_tref
+                    endif
+                    epsth_meta   = epsth_meta_h + epsth_meta_c
                 else
                     epsth = alpha_c(1)*(temp_curr-temp_refe)
                 endif
@@ -257,7 +311,7 @@ implicit none
 ! - Output strains
 !
     if (present(epsth_meta_)) then
-        epsth_meta_(1:2) = epsth_meta(1:2)
+        epsth_meta_ = epsth_meta
     endif
     if (present(epsth_anis_)) then
         epsth_anis_(1:3) = epsth_anis(1:3)

@@ -46,16 +46,10 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbres
-    parameter (nbres=2)
-    character(len=16) :: nomres(nbres)
-    integer :: icodre(nbres)
-    real(kind=8) :: valres(nbres)
 !
-    real(kind=8) :: zcold, zhot
-    real(kind=8) :: coef, coef1, coef2
+    real(kind=8) :: coef
     real(kind=8) :: young, nu
-    real(kind=8) :: epsth, epsth_meta(2)
+    real(kind=8) :: epsth
     real(kind=8) :: dfdx(27), dfdy(27), dfdz(27)
     real(kind=8) :: poids
     integer :: nb_node, ispg, kp, npg, i_node, elas_id
@@ -67,8 +61,6 @@ implicit none
 !
     l_meta = .true.
     ispg = 1
-    nomres(1) = 'PHASE_REFE'
-    nomres(2) = 'EPSF_EPSC_TREF'
 !
 ! - Get metallurgy type
 !
@@ -105,16 +97,10 @@ implicit none
         call dfdm3d(nb_node, kp, ipoids, idfde, zr(j_geom),&
                     poids, dfdx, dfdy, dfdz)
 !
-! ----- Get phasis
-!
-        call get_meta_phasis('RIGI', '+', kp, ispg, meta_id,&
-                             nb_phasis,&
-                             zcold_ = zcold, zhot_ = zhot)
-!
 ! ----- Compute thermic strain
 !
         call verift('RIGI', kp, 1, '+', j_mater,&
-                    epsth_meta_=epsth_meta)
+                    epsth_meta_=epsth)
 !
 ! ----- Get elastic parameters
 !
@@ -122,18 +108,9 @@ implicit none
                            elas_id, e = young, nu = nu)
         ASSERT(elas_id.eq.1)
 !
-! ----- Get thermal parameters
-!
-        call rcvalb('RIGI', kp, ispg, '+', j_mater,&
-                    ' ', 'ELAS_META', 0, ' ', [0.d0],&
-                    2, nomres, valres, icodre, 1)
-!
 ! ----- Compute
 !
         coef = young/(1.d0-2.d0*nu)
-        coef1 = zhot* (epsth_meta(1)- (1-valres(1))*valres(2))
-        coef2 = zcold* (epsth_meta(2)+valres(1)*valres(2))
-        epsth = coef1 + coef2
         poids = poids*coef*epsth
 !
         do i_node = 1, nb_node
