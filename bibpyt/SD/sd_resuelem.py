@@ -26,8 +26,6 @@ class sd_resuelem(AsBase):
     DESC = AsVI(docu='RESL', )
     RESL = AsColl(acces='NU', stockage='DISPERSE',
                   modelong='VARIABLE', type=Parmi('C', 'R'))
-    RSVI = Facultatif(
-        AsColl(acces='NU', stockage='CONTIG', modelong='VARIABLE', type='I'))
 
     def exists(self):
         # retourne "vrai" si la SD semble exister (et donc qu'elle peut etre
@@ -42,9 +40,7 @@ class sd_resuelem(AsBase):
         sd2.check(checker)
         assert noli[1] != '', noli
         assert noli[2] in ('MPI_COMPLET', 'MPI_INCOMPLET'), noli
-        assert noli[3] in ('', 'VOISIN_VF'), noli
-        if noli[3] == 'VOISIN_VF':
-            assert self.RSVI.exists
+        assert noli[3] == '', noli
 
         desc = self.DESC.get()
         assert desc[0] > 0 and desc[0] < 1000, desc

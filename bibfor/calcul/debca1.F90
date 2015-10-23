@@ -16,7 +16,7 @@ subroutine debca1(nomop, ligrel, nin)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
-use calcul_module, only : ca_caindz_, ca_calvoi_, ca_evfini_, ca_iadsgd_,&
+use calcul_module, only : ca_caindz_, ca_calvoi_, ca_iadsgd_,&
      ca_iainel_, ca_ialiel_, ca_iamaco_, ca_iamloc_,&
      ca_iamsco_, ca_ianoop_, ca_ianote_, ca_iaobtr_, ca_iaopds_, ca_iaopmo_,&
      ca_iaopno_, ca_iaoppa_, ca_iaoptt_,&
@@ -64,7 +64,7 @@ implicit none
     integer :: iret, ier, opt,  nbscmx, nbpara
     integer :: nnomx, nbopt, nbte, i
     character(len=16) :: nomop2, nomte
-    character(len=3) :: bevois, exivf, exiele
+    character(len=3) :: bevois, exiele
     character(len=12) :: vge
     real(kind=8) :: rundef
     integer, pointer :: nbligcol(:) => null()
@@ -136,18 +136,11 @@ implicit none
 !
 !
 !     ---------------------------------
-    call dismoi('EXI_VF', ligrel, 'LIGREL', repk=exivf)
     call dismoi('BESOIN_VOISIN', ligrel, 'LIGREL', repk=bevois)
-    if (exivf .eq. 'OUI') then
-        ca_evfini_=1
+    if (bevois .eq. 'OUI') then
         ca_calvoi_=1
     else
-        ca_evfini_=0
-        if (bevois .eq. 'OUI') then
-            ca_calvoi_=1
-        else
-            ca_calvoi_=0
-        endif
+        ca_calvoi_=0
     endif
     if (ca_calvoi_ .eq. 1) then
         call jeexin(ligrel//'.REPE', ier)

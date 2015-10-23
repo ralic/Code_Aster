@@ -7,7 +7,6 @@ subroutine caethm(nomte, axi, perman, vf, typvf,&
                   ivf, idfde, ipoid2, ivf2, idfde2,&
                   npi2, jgano)
 ! ======================================================================
-! ======================================================================
 ! person_in_charge: sylvie.granet at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,8 +23,6 @@ subroutine caethm(nomte, axi, perman, vf, typvf,&
 ! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-! ======================================================================
 ! ======================================================================
 ! --- BUT : PREPARATION DU CALCUL SUR UN ELEMENT THM -------------------
 ! ======================================================================

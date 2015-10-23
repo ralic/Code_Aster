@@ -19,7 +19,7 @@ subroutine debcal(nomop, ligrel, nin, lchin, lpain,&
 ! ======================================================================
 !
 ! person_in_charge: jacques.pellet at edf.fr
-use calcul_module, only : ca_evfini_, ca_iachii_, ca_iachik_, ca_iachix_, &
+use calcul_module, only : ca_iachii_, ca_iachik_, ca_iachix_, &
     ca_iactif_, ca_iaobtr_, ca_iaopds_, ca_iaoppa_, ca_nbobtr_
 implicit none
 !     ARGUMENTS:
@@ -183,10 +183,6 @@ implicit none
         if (jpar .eq. 0) goto 60
 !
         call dismoi('TYPE_CHAMP', chin, 'CHAMP', repk=tych)
-!
-!        -- SI LE CHAMP EST UN RESUELEM DE TYPE "VOISIN_VF"
-!           ON NE SAIT PAS ENCORE FAIRE ...
-        ASSERT(.not.(ca_evfini_.eq.1.and.tych.eq.'RESL'))
 !
 !        -- SI LE CHAMP EST UN CHAM_ELEM( OU UN RESUELEM)
 !           ET QU'IL N'A PAS ETE CALCULE AVEC LE LIGREL DE CALCUL,

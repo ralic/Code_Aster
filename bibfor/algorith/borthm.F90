@@ -1,7 +1,6 @@
 subroutine borthm(axi, vf, perman, typvf, typmod,&
                   ndim, ndlno, ndlnm)
 ! ======================================================================
-! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,7 +15,6 @@ subroutine borthm(axi, vf, perman, typvf, typmod,&
 ! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
 ! ======================================================================
     implicit none
 #include "asterf_types.h"

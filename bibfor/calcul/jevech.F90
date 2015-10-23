@@ -1,5 +1,5 @@
 subroutine jevech(nmparz, louez, itab)
-use calcul_module, only : ca_caindz_, ca_capoiz_, ca_evfini_, ca_iachoi_,&
+use calcul_module, only : ca_caindz_, ca_capoiz_, ca_iachoi_,&
      ca_iachok_, ca_iaoppa_, ca_iawlo2_, ca_iawloc_,&
      ca_iel_, ca_igr_, ca_nbgr_, ca_nomte_, ca_nparin_, ca_npario_, ca_option_
 implicit none
@@ -53,7 +53,7 @@ implicit none
     integer :: ilchlo, k, kk, debugr
     integer ::  iparg,  lgcata
     integer ::    jceld, adiel
-    integer :: debgr2, lonchl, decael, iadzi, iazk24, jrsvi, jcrsvi, i1
+    integer :: debgr2, lonchl, decael, iadzi, iazk24, i1
     integer :: opt, iaopd2, iaoplo, iapara, ipara, npari2
 !
     integer :: ich
@@ -103,18 +103,6 @@ implicit none
     ilchlo=zi(ca_iawloc_-1+3*(iparg-1)+2)
     lgcata=zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+2)
     debugr=zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+5)
-!
-!     -- CALCUL DE JRSVI ET JCRSVI :
-    jrsvi=0
-    if (ca_evfini_ .eq. 1) then
-        ich=zi(ca_iawloc_-1+3*(iparg-1)+3)
-        if (iparg .gt. ca_nparin_ .and. ich .gt. 0) then
-            if (zk8(ca_iachok_-1+2*(ich-1)+1) .eq. 'RESL') then
-                jrsvi=zi(ca_iachoi_-1+3*(ich-1)+2)
-                jcrsvi=zi(ca_iachoi_-1+3*(ich-1)+3)
-            endif
-        endif
-    endif
 !
     if (lgcata .eq. -1) then
         valk(1) = nompar
@@ -168,15 +156,8 @@ implicit none
         decael = (adiel-debgr2)
         lonchl = zi(jceld-1+zi(jceld-1+4+ca_igr_)+4+4* (ca_iel_-1)+3)
     else
-        if (jrsvi .eq. 0) then
-            decael = (ca_iel_-1)*lgcata
-            lonchl = lgcata
-        else
-            i1 = zi(jcrsvi-1+ca_igr_)
-            decael = zi(jrsvi-1+i1-1+ca_iel_)
-            lonchl = zi(jrsvi-1+i1-1+ca_iel_+1) - decael
-            decael = decael -1
-        endif
+        decael = (ca_iel_-1)*lgcata
+        lonchl = lgcata
     endif
     itab = iachlo+debugr-1+decael
 !

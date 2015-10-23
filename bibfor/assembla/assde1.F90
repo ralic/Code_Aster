@@ -74,7 +74,6 @@ subroutine assde1(tych, champ)
         call jedetr(champ2//'.NOLI')
         call jedetr(champ2//'.DESC')
         call jedetr(champ2//'.RESL')
-        call jedetr(champ2//'.RSVI')
 !
     else if (tych.eq.'CHAMP') then
         call jedetr(champ2//'.CELD')
@@ -89,7 +88,6 @@ subroutine assde1(tych, champ)
         call jedetr(champ2//'.PTMS')
         call jedetr(champ2//'.REFE')
         call jedetr(champ2//'.RESL')
-        call jedetr(champ2//'.RSVI')
         call jedetr(champ2//'.VALE')
         call jedetr(champ2//'.VALV')
     else

@@ -98,7 +98,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
     character(len=1) :: base1, typsca
     character(len=2) :: tt
     character(len=8) :: k8bid, nogdco, nogdsi, ma, ma2, mo, mo2, partit
-    character(len=8) :: symel, kempic, kampic, exivf
+    character(len=8) :: symel, kempic
     character(len=12) :: vge
     character(len=14) :: nudev, nu14
     character(len=19) :: matdev, mat19, resu, matel, ligre1
@@ -114,7 +114,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
     integer :: jadli, jadne, jnueq, jnulo1, jnulo2
     integer :: jposd1, jposd2, jtmp2, lgtmp2
     integer :: ibid, iconx1, iconx2, idbgav
-    integer :: jprn1, jprn2, jresl, jrsvi
+    integer :: jprn1, jprn2, jresl
     integer :: iel, ier, ifm, igr
     integer :: ilima, ilimat, ilimo, ilinu
     integer :: imat, jnumsd, iresu
@@ -485,16 +485,6 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
             call jeveuo(resu//'.NOLI', 'L', vk24=noli)
             ligre1=noli(1)(1:19)
 
-            call dismoi('EXI_VF', ligre1, 'LIGREL', repk=exivf)
-            if (exivf .eq. 'OUI') then
-                ASSERT(.not.lmasym)
-                call jeveuo(ligre1//'.REPE', 'L', jrepe)
-                call jeveuo(ligre1//'.NVGE', 'L', vk16=nvge)
-                vge=nvge(1)(1:12)
-                call jeveuo(vge//'.PTVOIS', 'L', jptvoi)
-                call jeveuo(vge//'.ELVOIS', 'L', jelvoi)
-            endif
-
             call jenonu(jexnom(matdev//'.LILI', ligre1), ilima)
             call jenonu(jexnom(nu14//'.NUME.LILI', ligre1), ilinu)
 
@@ -526,24 +516,18 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
 !                           -- nombre d'elements du grel igr du ligrel ligre1/ilima
                     nel=zznelg(ilima,igr)
                     call jeveuo(jexnum(resu//'.RESL', igr), 'L', jresl)
-                    if (exivf .eq. 'OUI') then
-                        call jeveuo(jexnum(resu//'.RSVI', igr), 'L', jrsvi)
-                        itypel=zzliel(ilima,igr,nel+1)
-                        call jenuno(jexnum('&CATA.TE.NOMTE', itypel), nomte)
-                        call teattr('S', 'TYPE_VOISIN', codvoi, ibid, typel=nomte)
-                    endif
 
 !                   boucle sur les elements du grel
 !                   -------------------------------
                     do iel = 1, nel
                         call assma3(lmasym, lmesym, tt, igr, iel,&
                                     c1, rang, jnueq, jnumsd, jresl,&
-                                    jrsvi, nbvel, nnoe, ldistme, ldgrel,&
+                                    nbvel, nnoe, ldistme, ldgrel,&
                                     ilima, jadli, jadne, jprn1, jprn2,&
                                     jnulo1, jnulo2, jposd1, jposd2, admodl,&
                                     lcmodl, mode, nec, nmxcmp, ncmp,&
                                     jsmhc, jsmdi, iconx1, iconx2, jtmp2,&
-                                    lgtmp2, jvalm, ilinu, ellagr, exivf,&
+                                    lgtmp2, jvalm, ilinu, ellagr,&
                                     jdesc, jrepe, jptvoi, jelvoi, codvoi)
                     end do
                     call jelibe(jexnum(resu//'.RESL', igr))

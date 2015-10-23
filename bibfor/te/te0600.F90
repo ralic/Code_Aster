@@ -23,7 +23,6 @@ subroutine te0600(option, nomte)
 #include "asterfort/vecini.h"
     character(len=16) :: option, nomte
 ! =====================================================================
-! =====================================================================
 ! person_in_charge: sylvie.granet at edf.fr
 ! =====================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG

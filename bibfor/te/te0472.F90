@@ -10,7 +10,6 @@ subroutine te0472(option, nomte)
 #include "asterfort/lteatt.h"
     character(len=16) :: option, nomte
 ! ======================================================================
-! ======================================================================
 ! person_in_charge: sylvie.granet at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG

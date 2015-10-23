@@ -1,6 +1,6 @@
 subroutine dchlmx(opt, ligrel, iparg, nin, lpain,&
                   nout, lpaout, taille)
-use calcul_module, only : ca_calvoi_, ca_evfini_, ca_iachii_, ca_iachik_, &
+use calcul_module, only : ca_calvoi_, ca_iachii_, ca_iachik_, &
      ca_iachoi_, ca_iachok_, ca_iaoppa_, ca_iawlo2_,&
      ca_igr_, ca_nbelgr_, ca_nbgr_
 implicit none
@@ -46,7 +46,7 @@ implicit none
     integer :: max
     integer :: iparin, iparou, jceld, debugr
     integer :: npin, npou, te, ipar, nval, mode
-    integer :: nbsp, ncdyn, jel, taill1, jrsvi, jcrsvi
+    integer :: nbsp, ncdyn, jel, taill1
     character(len=8) :: tych, nopare, nompar
 !
 ! DEB-------------------------------------------------------------------
@@ -61,8 +61,8 @@ implicit none
         npin = nbpara(opt,te,'IN ')
         npou = nbpara(opt,te,'OUT')
 !
-!           ---IN:
-!           ------
+!       ---IN:
+!       ------
         do 10 ipar = 1, npin
             nopare = nopara(opt,te,'IN ',ipar)
             if (nopare .eq. nompar) then
@@ -97,8 +97,8 @@ implicit none
             endif
 10      continue
 !
-!           ---OUT:
-!           ------
+!       ---OUT:
+!       ------
         do 20 ipar = 1, npou
             nopare = nopara(opt,te,'OUT',ipar)
             if (nopare .eq. nompar) then
@@ -108,19 +108,12 @@ implicit none
                 tych = zk8(ca_iachok_-1+2* (iparou-1)+1)
 !
                 if (tych(1:4) .eq. 'CHML') then
-!             -- CAS DES CHAM_ELEM :
+!                   -- CAS DES CHAM_ELEM :
                     jceld = zi(ca_iachoi_-1+3*(iparou-1)+1)
                     taill1 = zi(jceld-1+zi(jceld-1+4+ca_igr_)+4)
                 else
-!             -- CAS DES RESUELEM :
+!                   -- CAS DES RESUELEM :
                     taill1 = nval*ca_nbelgr_
-                    if (ca_evfini_ .eq. 1) then
-                        jrsvi = zi(ca_iachoi_-1+3*(iparou-1)+2)
-                        if (jrsvi .ne. 0) then
-                            jcrsvi = zi(ca_iachoi_-1+3*(iparou-1)+3)
-                            taill1 = zi(jrsvi-1+zi(jcrsvi-1+ca_igr_)+ ca_nbelgr_)-1
-                        endif
-                    endif
                 endif
                 goto 29
             endif

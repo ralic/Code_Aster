@@ -1,6 +1,6 @@
 subroutine monte1(opt, te2, nout, lchout, lpaout,&
                   igr2)
-use calcul_module, only : ca_evfini_, ca_iachoi_, ca_iadsgd_, ca_iaoppa_, &
+use calcul_module, only : ca_iachoi_, ca_iadsgd_, ca_iaoppa_, &
      ca_iawlo2_, ca_iawloc_, ca_iawtyp_, ca_nbelgr_, ca_nbgr_, ca_npario_
 implicit none
 ! ======================================================================
@@ -110,8 +110,6 @@ implicit none
             call jeveuo(jexnum(ch19//'.RESL', igr2), 'E', jresl)
 !
             if (lparal) then
-!           -- POUR L'INSTANT ON N'ACCEPTE PAS EVFINI=1
-                ASSERT(ca_evfini_.eq.0)
                 ncmpel=digde2(mod1)
                 do 10 iel = 1, ca_nbelgr_
                     if (zl(jparal-1+iel)) then

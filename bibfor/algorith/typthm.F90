@@ -75,7 +75,7 @@ subroutine typthm(axi, perman, vf, typvf, typmod,&
         perman = .false.
     endif
 !
-! MODELISATIONS SUSHI VOLUMES FINIS
+!   -- MODELISATIONS SUSHI VOLUMES FINIS
     if (lteatt('CODMOD','3AD').or.lteatt('CODMOD','2DA')) then
         vf = .true.
         typvf=3

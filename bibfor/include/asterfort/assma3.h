@@ -19,12 +19,12 @@
 interface
     subroutine assma3(lmasym, lmesym, tt, igr, iel,&
                       c1, rang, jnueq, jnumsd, jresl,&
-                      jrsvi, nbvel, nnoe, ldist, ldgrel,&
+                      nbvel, nnoe, ldist, ldgrel,&
                       ilima, jadli, jadne, jprn1, jprn2,&
                       jnulo1, jnulo2, jposd1, jposd2, admodl,&
                       lcmodl, mode, nec, nmxcmp, ncmp,&
                       jsmhc, jsmdi, iconx1, iconx2, jtmp2,&
-                      lgtmp2, jvalm, ilinu, ellagr, exivf,&
+                      lgtmp2, jvalm, ilinu, ellagr,&
                       jdesc, jrepe, jptvoi, jelvoi, codvoi)
         aster_logical :: lmasym
         aster_logical :: lmesym
@@ -36,7 +36,6 @@ interface
         integer :: jnueq
         integer :: jnumsd
         integer :: jresl
-        integer :: jrsvi
         integer :: nbvel
         integer :: nnoe
         aster_logical :: ldist
@@ -65,7 +64,6 @@ interface
         integer :: jvalm(2)
         integer :: ilinu
         integer :: ellagr
-        character(len=*) :: exivf
         integer :: jdesc
         integer :: jrepe
         integer :: jptvoi

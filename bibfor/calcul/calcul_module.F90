@@ -187,8 +187,6 @@ implicit none
 !             v(2) :  adresse de l_chout(i).celv
 !         -- si resl :
 !             v(1) :  adresse de l_chout(i).desc
-!             v(2) :  adresse de l_chout(i).rsvi
-!             v(3) :  adresse de loncum de l_chout(i).rsvi
 !
 !======================================================================
     integer :: ca_iel_
@@ -271,15 +269,13 @@ implicit none
 !     td      : valeur de l'instant "-" du "petit" pas de temps
 !     tf      : valeur de l'instant "+" du "petit" pas de temps
 !======================================================================
-    integer :: ca_evfini_, ca_calvoi_, ca_jrepe_, ca_jptvoi_, ca_jelvoi_
+    integer :: ca_calvoi_, ca_jrepe_, ca_jptvoi_, ca_jelvoi_
 !
-!     ca_evfini_  = 1 : le ligrel contient des "volumes finis"
-!     ca_evfini_  = 0 : sinon
 !     ca_calvoi_  = 1 : dans une routine te00ij, on veut pouvoir acceder
 !                   aux champs des elements voisins (tecac2.f)
 !     ca_calvoi_  = 0 : sinon
 !
-!     les 3 adresses suivantes sont remplies si ca_calvoi_=1 ou ca_evfini_=1 :
+!     les 3 adresses suivantes sont remplies si ca_calvoi_=1
 !      * ca_jrepe_   : adresse jeveux de ligrel.repe
 !      * ca_jptvoi_  : adresse jeveux de maillage.vge.ptvois
 !      * ca_jelvoi_  : adresse jeveux de maillage.vge.elvois

@@ -55,7 +55,7 @@ subroutine promor(nuz, base)
 !     ------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    character(len=8) :: ma, mo, exiele, exivf
+    character(len=8) :: ma, mo, exiele
 !----------------------------------------------------------------------
     character(len=14) :: nu
     aster_logical :: ldist, ldgrel, lmadis
@@ -265,7 +265,6 @@ subroutine promor(nuz, base)
     do ili = 2, nlili
         call jenuno(jexnum(nu//'.NUME.LILI', ili), nomlig)
         call dismoi('EXI_ELEM', nomlig, 'LIGREL', repk=exiele)
-        call dismoi('EXI_VF', nomlig, 'LIGREL', repk=exivf)
 !
         if (nomlig(1:8) .eq. mo) then
             call dismoi('NB_SS_ACTI', mo, 'MODELE', repi=nbss)
@@ -277,162 +276,85 @@ subroutine promor(nuz, base)
 !
 !       1. TRAITEMENT DES ELEMENTS FINIS CLASSIQUES:
 !       --------------------------------------------
-        if (exivf .eq. 'NON') then
-            do igr = 1, zzngel(ili)
-                if (lmadis) then
-                    if (ldgrel .and. mod(igr,nbproc) .ne. rang) goto 80
-                endif
-                nel=zznelg(ili,igr)
-                do iel = 1, nel
-                    nddlt=0
-                    numa=zzliel(ili,igr,iel)
+        do igr = 1, zzngel(ili)
+            if (lmadis) then
+                if (ldgrel .and. mod(igr,nbproc) .ne. rang) goto 80
+            endif
+            nel=zznelg(ili,igr)
+            do iel = 1, nel
+                nddlt=0
+                numa=zzliel(ili,igr,iel)
 !
-                    if (numa .gt. 0) then
-!             -- MAILLES DU MAILLAGE :
-                        if (lmadis .and. ldist .and. .not.ldgrel) then
-                            if (maille(numa) .ne. rang) goto 70
-                        endif
-!
-                        nnoe=zznbne(numa)
-                        do k1 = 1, nnoe
-                            n1=zzconx(numa,k1)
-                            iad1=zzprno(1,n1,1)
-                            nddl1=zzprno(1,n1,2)
-                            if (mxddlt .lt. (nddlt+nddl1)) then
-                                mxddlt=2*(nddlt+nddl1)
-                                call juveca('&&PROMOR.ANCIEN.LM', mxddlt)
-                                call jeveuo('&&PROMOR.ANCIEN.LM', 'E', jalm)
-                            endif
-                            do iddl = 1, nddl1
-                                zi(jalm+nddlt+iddl-1)=zi(jnueq-1+iad1+&
-                                iddl-1)
-                            end do
-                            nddlt=nddlt+nddl1
-                        end do
-!
-                    else
-!             -- MAILLES TARDIVES :
-                        if (lmadis .and. ldist .and. .not.ldgrel) then
-                            if (rang .ne. 0) goto 70
-                        endif
-!
-                        numa=-numa
-                        nnoe=zznsup(ili,numa)
-                        do k1 = 1, nnoe
-                            n1=zznema(ili,numa,k1)
-                            if (n1 .lt. 0) then
-                                n1=-n1
-                                iad1=zzprno(ili,n1,1)
-                                nddl1=zzprno(ili,n1,2)
-                            else
-                                iad1=zzprno(1,n1,1)
-                                nddl1=zzprno(1,n1,2)
-                            endif
-                            if (mxddlt .lt. (nddlt+nddl1)) then
-                                mxddlt=2*(nddlt+nddl1)
-                                call juveca('&&PROMOR.ANCIEN.LM', mxddlt)
-                                call jeveuo('&&PROMOR.ANCIEN.LM', 'E', jalm)
-                            endif
-                            do iddl = 1, nddl1
-                                zi(jalm+nddlt+iddl-1)=zi(jnueq-1+iad1+&
-                                iddl-1)
-                            end do
-                            nddlt=nddlt+nddl1
-                        end do
+                if (numa .gt. 0) then
+!                   -- MAILLES DU MAILLAGE :
+                    if (lmadis .and. ldist .and. .not.ldgrel) then
+                        if (maille(numa) .ne. rang) goto 70
                     endif
 !
-!           -- TRI EN ORDRE CROISSANT POUR L'INSERTION DES COLONNES
-                    ASSERT(nddlt.le.mxddlt)
-                    call uttrii(zi(jalm), nddlt)
-!
-!           -- INSERTION DES COLONNES DE L'ELEMENT DANS
-!               LA STRUCTURE CHAINEE
-                    do iddl = 0, nddlt-1
-                        jddl=jsmdi+zi(jalm+iddl)-1
-                        if (zi(jddl) .eq. 0) neqx=neqx+1
-                        call moinsr(zi(jalm+iddl), iddl+1, jalm, jsmdi, jsuiv,&
-                                    '&&PROMOR.NOSUIV', jnoip, '&&PROMOR.NOIP', iilib, iimax)
-                    end do
- 70                 continue
-                end do
- 80             continue
-            end do
-!
-!
-!
-!       2. TRAITEMENT DES ELEMENTS FINIS DE TYPE VOISIN_VF :
-!       ----------------------------------------------------
-        else if (exivf.eq.'OUI') then
-            call jeveuo(nomlig//'.REPE', 'L', jrepe)
-            call jeveuo(nomlig//'.NVGE', 'L', vk16=nvge)
-            vge=nvge(1)(1:12)
-            call jeveuo(vge//'.PTVOIS', 'L', jptvoi)
-            call jeveuo(vge//'.ELVOIS', 'L', jelvoi)
-            do igr = 1, zzngel(ili)
-                nel=zznelg(ili,igr)
-                itypel=zzliel(ili,igr,nel+1)
-                call jenuno(jexnum('&CATA.TE.NOMTE', itypel), nomte)
-                call teattr('S', 'TYPE_VOISIN', codvoi, ibid, typel=nomte)
-                do iel = 1, nel
-                    nddlt=0
-                    numa=zzliel(ili,igr,iel)
-                    ASSERT(numa.gt.0)
                     nnoe=zznbne(numa)
-                    call voiuti(numa, codvoi, nvoima, nscoma, jrepe,&
-                                jptvoi, jelvoi, nbvois, livois, tyvois,&
-                                nbnovo, nbsoco, lisoco)
-                    do kvois = 1, nbvois
-                        numav=livois(kvois)
-                        nnoe=zznbne(numa)
-                        do k1 = 1, nnoe
-                            n1=zzconx(numa,k1)
-                            iad1=zzprno(1,n1,1)
-                            nddl1=zzprno(1,n1,2)
-                            if (mxddlt .lt. (nddlt+nddl1)) then
-                                mxddlt=2*(nddlt+nddl1)
-                                call juveca('&&PROMOR.ANCIEN.LM', mxddlt)
-                                call jeveuo('&&PROMOR.ANCIEN.LM', 'E', jalm)
-                            endif
-                            do iddl = 1, nddl1
-                                zi(jalm+nddlt+iddl-1)=zi(jnueq-1+iad1+&
-                                iddl-1)
-                            end do
-                            nddlt=nddlt+nddl1
+                    do k1 = 1, nnoe
+                        n1=zzconx(numa,k1)
+                        iad1=zzprno(1,n1,1)
+                        nddl1=zzprno(1,n1,2)
+                        if (mxddlt .lt. (nddlt+nddl1)) then
+                            mxddlt=2*(nddlt+nddl1)
+                            call juveca('&&PROMOR.ANCIEN.LM', mxddlt)
+                            call jeveuo('&&PROMOR.ANCIEN.LM', 'E', jalm)
+                        endif
+                        do iddl = 1, nddl1
+                            zi(jalm+nddlt+iddl-1)=zi(jnueq-1+iad1+&
+                            iddl-1)
                         end do
-                        ASSERT(nddlt.le.mxddlt)
-!
-                        nnov=zznbne(numav)
-                        do k1 = 1, nnov
-                            n1=zzconx(numav,k1)
-                            iad1=zzprno(1,n1,1)
-                            nddl1=zzprno(1,n1,2)
-                            if (mxddlt .lt. (nddlt+nddl1)) then
-                                mxddlt=2*(nddlt+nddl1)
-                                call juveca('&&PROMOR.ANCIEN.LM', mxddlt)
-                                call jeveuo('&&PROMOR.ANCIEN.LM', 'E', jalm)
-                            endif
-                            do iddl = 1, nddl1
-                                zi(jalm+nddlt+iddl-1)=zi(jnueq-1+iad1+&
-                                iddl-1)
-                            end do
-                            nddlt=nddlt+nddl1
-                        end do
-                        ASSERT(nddlt.le.mxddlt)
-!
-                        call uttrii(zi(jalm), nddlt)
-                        do iddl = 0, nddlt-1
-                            jddl=jsmdi+zi(jalm+iddl)-1
-                            if (zi(jddl) .eq. 0) neqx=neqx+1
-                            call moinsr(zi(jalm+iddl), iddl+1, jalm, jsmdi, jsuiv,&
-                                        '&&PROMOR.NOSUIV', jnoip, '&&PROMOR.NOIP', iilib, iimax)
-                        end do
+                        nddlt=nddlt+nddl1
                     end do
-                end do
-            end do
 !
-        else
-            ASSERT(.false.)
-        endif
+                else
+!                   -- MAILLES TARDIVES :
+                    if (lmadis .and. ldist .and. .not.ldgrel) then
+                        if (rang .ne. 0) goto 70
+                    endif
+!
+                    numa=-numa
+                    nnoe=zznsup(ili,numa)
+                    do k1 = 1, nnoe
+                        n1=zznema(ili,numa,k1)
+                        if (n1 .lt. 0) then
+                            n1=-n1
+                            iad1=zzprno(ili,n1,1)
+                            nddl1=zzprno(ili,n1,2)
+                        else
+                            iad1=zzprno(1,n1,1)
+                            nddl1=zzprno(1,n1,2)
+                        endif
+                        if (mxddlt .lt. (nddlt+nddl1)) then
+                            mxddlt=2*(nddlt+nddl1)
+                            call juveca('&&PROMOR.ANCIEN.LM', mxddlt)
+                            call jeveuo('&&PROMOR.ANCIEN.LM', 'E', jalm)
+                        endif
+                        do iddl = 1, nddl1
+                            zi(jalm+nddlt+iddl-1)=zi(jnueq-1+iad1+&
+                            iddl-1)
+                        end do
+                        nddlt=nddlt+nddl1
+                    end do
+                endif
+!
+!       -- TRI EN ORDRE CROISSANT POUR L'INSERTION DES COLONNES
+                ASSERT(nddlt.le.mxddlt)
+                call uttrii(zi(jalm), nddlt)
+!
+!       -- INSERTION DES COLONNES DE L'ELEMENT DANS
+!           LA STRUCTURE CHAINEE
+                do iddl = 0, nddlt-1
+                    jddl=jsmdi+zi(jalm+iddl)-1
+                    if (zi(jddl) .eq. 0) neqx=neqx+1
+                    call moinsr(zi(jalm+iddl), iddl+1, jalm, jsmdi, jsuiv,&
+                                '&&PROMOR.NOSUIV', jnoip, '&&PROMOR.NOIP', iilib, iimax)
+                end do
+ 70             continue
+            end do
+ 80         continue
+        end do
 !
 !
 !

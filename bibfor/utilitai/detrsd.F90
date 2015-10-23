@@ -477,7 +477,6 @@ subroutine detrsd(typesd, nomsd)
         call jedetr(k19//'.DESC')
         call jedetr(k19//'.NOLI')
         call jedetr(k19//'.RESL')
-        call jedetr(k19//'.RSVI')
 !
 !     ------------------------------------------------------------------
     else if (typ2sd.eq.'MLTF') then
@@ -612,7 +611,6 @@ subroutine detrsd(typesd, nomsd)
         call jedetr(champ//'.PTMS')
         call jedetr(champ//'.REFE')
         call jedetr(champ//'.RESL')
-        call jedetr(champ//'.RSVI')
         call jedetr(champ//'.VALE')
         call jedetr(champ//'.VALV')
 !

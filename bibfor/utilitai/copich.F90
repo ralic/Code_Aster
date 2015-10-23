@@ -142,7 +142,6 @@ subroutine copich(base, ch1z, ch2z)
         call jedup1(ch1//'.DESC', base, ch2//'.DESC')
         call jedup1(ch1//'.NOLI', base, ch2//'.NOLI')
         call jedup1(ch1//'.RESL', base, ch2//'.RESL')
-        call jedup1(ch1//'.RSVI', base, ch2//'.RSVI')
 !
 !
     else

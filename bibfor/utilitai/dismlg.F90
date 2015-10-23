@@ -111,26 +111,6 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
 !
 !
 !     -----------------------------------------------------------------
-    else if ((questi.eq.'EXI_VF')) then
-!     -----------------------------------------------------------------
-        repk='NON'
-        call jeexin(nomob//'.LIEL', iexi)
-        if (iexi .gt. 0) then
-            call jelira(nomob//'.LIEL', 'NUTIOC', nbgrel)
-            do 10 igrel = 1, nbgrel
-                call jeveuo(jexnum(nomob//'.LIEL', igrel), 'L', jliel)
-                call jelira(jexnum(nomob//'.LIEL', igrel), 'LONMAX', nel)
-                itypel=zi(jliel-1+nel)
-                call jenuno(jexnum('&CATA.TE.NOMTE', itypel), nomte)
-                if (lteatt('VF_AVEC_VOISIN','OUI', typel=nomte)) then
-                    repk='OUI'
-                    goto 10
-!
-                endif
- 10         continue
-        endif
-!
-!     -----------------------------------------------------------------
     else if ((questi.eq.'BESOIN_VOISIN')) then
 !     -----------------------------------------------------------------
         repk='NON'

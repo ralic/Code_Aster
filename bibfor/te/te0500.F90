@@ -110,7 +110,6 @@ subroutine te0500(option, nomte)
 ! 1. RECUPERATION D'INFORMATIONS SUR L'ELEMENT THM
 ! =====================================================================
     ibid = 0
-    typvf = 0
     vf = .false.
     call caethm(nomte, laxi, perman, vf, typvf,&
                 typmod, modint, mecani, press1, press2,&

@@ -9,7 +9,6 @@ subroutine te0515(option, nomte)
 #include "asterfort/fnoesu.h"
 #include "asterfort/jevech.h"
     character(len=16) :: option, nomte
-! =====================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,7 +24,6 @@ subroutine te0515(option, nomte)
 ! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
 ! =====================================================================
 !    - FONCTION REALISEE:  CALCUL DES OPTIONS NON-LINEAIRES MECANIQUES
 !                          ELEMENTS HH2_SUDA, (SUSHI DECENTRE ARRETE)

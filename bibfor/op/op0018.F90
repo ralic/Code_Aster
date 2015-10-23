@@ -89,7 +89,7 @@ subroutine op0018()
     integer, pointer :: p_list_node(:) => null()
     integer :: nb_node
     aster_logical :: l_elem, l_node, l_grandeur_cara
-    aster_logical :: l_calc_rigi, l_veri_elem, l_volu_fini, l_need_neigh
+    aster_logical :: l_calc_rigi, l_veri_elem, l_need_neigh
     integer :: inode, ielem, iaffe
     integer :: vali(4), ico, imodel, idx_modelisa
     integer, pointer :: p_cata_dim(:) => null()
@@ -578,11 +578,6 @@ subroutine op0018()
         call cetucr(keywordfact, model)
     endif
 !
-! - Finite volumes ?
-!
-    call dismoi('EXI_VF', ligrel, 'LIGREL', repk=repk)
-    l_volu_fini = repk.eq.'OUI'
-!
 ! - Need neighbours ?
 !
     call dismoi('BESOIN_VOISIN', ligrel, 'LIGREL', repk=repk)
@@ -590,7 +585,7 @@ subroutine op0018()
 !
 ! - Create SD_VOISINAGE if necessary
 !
-    if (l_volu_fini .or. l_need_neigh) then
+    if (l_need_neigh) then
         call crevge(ligrel, 'G')
     endif
 !

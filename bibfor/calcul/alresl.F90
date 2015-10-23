@@ -1,5 +1,4 @@
 subroutine alresl(opt, ligrel, nochou, nompar, base)
-use calcul_module, only : ca_evfini_
 implicit none
 !
 ! ======================================================================
@@ -25,8 +24,6 @@ implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/digde2.h"
-#include "asterfort/digde3.h"
-#include "asterfort/digde4.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/grdeur.h"
 #include "asterfort/inpara.h"
@@ -74,9 +71,8 @@ implicit none
     integer :: ngrel, igr, te, nel, mode, ncmpel, ipar
     integer :: desc, gd, jnoli, iel, idesc
     integer :: lon1, lontot, iparmx, ibid
-    integer :: jrsvi, dim1
+    integer :: dim1
     character(len=8) :: scal, nomgd, tymat
-    aster_logical :: lmatvf
 !
 !
     call jemarq()
@@ -99,22 +95,8 @@ implicit none
     if (iparmx .eq. 0) goto 30
 !
 !
-!     -- LE RESUELEM EST-IL "VOISIN_VF" ET DE TYPE "MATRICE" ?
-!        (I.E. LMATVF=.TRUE.)
     call jenuno(jexnum('&CATA.GD.NOMGD', gd), nomgd)
     call dismoi('TYPE_MATRICE', nomgd, 'GRANDEUR', repk=tymat)
-    lmatvf=.false.
-    if (ca_evfini_ .eq. 1) then
-        if (tymat .eq. ' ') then
-!         -- C'EST UN RESUELEM DE TYPE "VECTEUR"
-            lmatvf=.false.
-        else
-            lmatvf=.true.
-            if (tymat .ne. 'NON_SYM') then
-                call utmess('F', 'CALCUL_25')
-            endif
-        endif
-    endif
 !
 !
 !     ----CREATION DE L'OBJET NOLI :
@@ -122,7 +104,6 @@ implicit none
     zk24(jnoli-1+1) = ligrel
     zk24(jnoli-1+2) = nomopt
     zk24(jnoli-1+3) = 'MPI_COMPLET'
-    if (lmatvf) zk24(jnoli-1+4) = 'VOISIN_VF'
 !
 !     ----CREATION DE L'OBJET DESC :
     call wkvect(nochou//'.DESC', bas2//' V I', 2+ngrel, idesc)
@@ -131,17 +112,6 @@ implicit none
 !     ---CREATION DE LA COLLECTION DIPERSEE RESL  :
     call jecrec(nochou//'.RESL', bas2//' V '//scal(1:4), 'NU', 'DISPERSE', 'VARIABLE',&
                 ngrel)
-!
-    if (lmatvf) then
-        call jecrec(nochou//'.RSVI', bas2//' V I', 'NU', 'CONTIG', 'VARIABLE',&
-                    ngrel)
-        lontot=0
-        do igr = 1, ngrel
-            nel = nbelem(ligrel,igr,1)
-            lontot=lontot+nel+1
-        end do
-        call jeecra(nochou//'.RSVI', 'LONT', lontot, ' ')
-    endif
 !
 !
 !     -- REMPLISSAGE DE DESC ET ALLOCATION DE .RESL:
@@ -157,38 +127,14 @@ implicit none
 !        -- SI LE TYPE_ELEMENT NE CONNAIT PAS LE PARAMETRE:
         if (ipar .eq. 0) then
             zi(desc-1+2+igr) = 0
-!          -- LES COLLECTIONS NUMEROTEES CONTIG DOIVENT ETRE COMPLETES:
-            if (lmatvf) then
-                call jeecra(jexnum(nochou//'.RSVI', igr), 'LONMAX', 1)
-                call jeveuo(jexnum(nochou//'.RSVI', igr), 'E', jrsvi)
-            endif
         else
             mode = modatt(opt,te,'OUT',ipar)
             ASSERT(mode.gt.0)
             zi(desc-1+2+igr) = mode
             call jecroc(jexnum(nochou//'.RESL', igr))
-            if (lmatvf) call jecroc(jexnum(nochou//'.RSVI', igr))
 !
-            if (.not.lmatvf) then
-                ncmpel = digde2(mode)
-                call jeecra(jexnum(nochou//'.RESL', igr), 'LONMAX', ncmpel*nel)
-            else
-                call jeecra(jexnum(nochou//'.RSVI', igr), 'LONMAX', nel+ 1)
-                call jeveuo(jexnum(nochou//'.RSVI', igr), 'E', jrsvi)
-                call jenuno(jexnum('&CATA.TE.NOMTE', te), nomte)
-                call teattr('S', 'TYPE_VOISIN', codvoi, ibid, typel=nomte)
-!
-!           -- CALCUL DE LA LONGUEUR DU GREL : LONTOT
-                lontot=0
-                zi(jrsvi-1+1)=lontot+1
-                dim1=digde3(mode,'L')
-                do iel = 1, nel
-                    lon1=digde4(igr,iel,opt,ipar,dim1,codvoi)
-                    lontot=lontot+lon1
-                    zi(jrsvi-1+iel+1)=lontot+1
-                end do
-                call jeecra(jexnum(nochou//'.RESL', igr), 'LONMAX', lontot)
-            endif
+            ncmpel = digde2(mode)
+            call jeecra(jexnum(nochou//'.RESL', igr), 'LONMAX', ncmpel*nel)
         endif
     end do
  30 continue

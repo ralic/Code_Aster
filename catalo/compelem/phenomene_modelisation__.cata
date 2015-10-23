@@ -193,11 +193,6 @@ PHENOMENE_MODELISATION__
 %        En general : '6' pour les elements 3D, '4' pour certains elements 2D
 %
 %
-%  VF_AVEC_VOISIN = 'OUI' : l'element est de type "volume fini". Cela implique :
-%               - les matrices elementaires sont de type "VOISIN_VF"
-%               - les calculs elementaires utilisent les voisins (routine tecac2.f)
-%
-%
 %  TYPE_VOISIN = typvoi : type du voisinage des elements de type "volume_fini"
 %                la chaine de caracteres typvoi est formee d'une suite de K2 tels que :
 %                  'F3' : voisin 3D par une face

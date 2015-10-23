@@ -181,11 +181,7 @@ Conseils :
    (Ou de n'avoir renseigné que AFFE_VARC/VALE_REF sans avoir renseigné EVOL ou CHAM_GD)
 """),
 
-    25 : _(u"""
- Erreur de programmation (catalogue des éléments finis) :
- Les éléments finis ayant l'attribut VF_AVEC_VOISIN='OUI' ne peuvent créer que des
- matrices élémentaires non-symétriques.
-"""),
+
 
     26 : _(u"""
  Erreur utilisateur :

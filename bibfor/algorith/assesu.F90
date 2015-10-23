@@ -254,7 +254,6 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
     real(kind=8) :: rhol, rhog, drhol1, drhol2, drhog1, drhog2
     real(kind=8) :: alpha, zero
 !     DANS LE CAS DES ELEMENTS FINIS ANGMAS EST NECESSAIRE
-!     DANS LE CAS DES VOLUMES FINIS ON INITIALISE À 0 ANGMAS(3)
     real(kind=8) :: angbid(3)
     integer :: iadp1k, iadp2k
     integer :: adcm1, adcm2

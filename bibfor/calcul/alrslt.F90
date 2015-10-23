@@ -1,6 +1,6 @@
 subroutine alrslt(iopt, ligrel, nout, lchout, lpaout,&
                   base, ldist)
-use calcul_module, only : ca_evfini_, ca_iachoi_, ca_iachok_, ca_iaobtr_, ca_nbobtr_
+use calcul_module, only : ca_iachoi_, ca_iachok_, ca_iaobtr_, ca_nbobtr_
 implicit none
 !
 ! ======================================================================
@@ -144,11 +144,6 @@ implicit none
             zk8(ca_iachok_-1+2* (i-1)+1) = 'CHML'
         else
             call jeveuo(nochou//'.DESC', 'E', zi(ca_iachoi_-1+3* (i-1)+1))
-            if (ca_evfini_ .eq. 1 .and. code .gt. 3) then
-                ASSERT(code.eq.5)
-                call jeveuo(nochou//'.RSVI', 'L', zi(ca_iachoi_-1+3* (i-1)+ 2))
-                call jeveuo(jexatr(nochou//'.RSVI', 'LONCUM'), 'L', zi(ca_iachoi_-1+3* (i-1)+3))
-            endif
             zk8(ca_iachok_-1+2* (i-1)+1) = 'RESL'
         endif
  30     continue
