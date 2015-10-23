@@ -740,6 +740,16 @@ class Element(BaseCataEntity):
                 para_out = orig.para_out
         self._calculs[option.name] = Calcul(option, te, para_in, para_out)
 
+    def usedLocatedComponents(self):
+        """Return the LocatedComponents used by this element"""
+        loco = set()
+        for calc in self._calculs.values():
+            for _, loc_i in list(calc.para_in) + list(calc.para_out):
+                loco.add(loc_i)
+                if type(loc_i) is ArrayOfComponents:
+                    loco.update(loc_i.locatedComponents)
+        return list(loco)
+
 
 class Modelisation(object):
 

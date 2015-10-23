@@ -53,12 +53,9 @@ def impr_cata(cel, nomfic, timer, dbgdir=None):
     fimpr.close()
     ERR.fini()
 
-
 #
 # utilitaires :
 #
-
-
 def txtpad(long, chaine):
     #---------------------------------------
     # retourne une chaine de longueur "long" en completant chaine par des
@@ -69,7 +66,6 @@ def txtpad(long, chaine):
 #-------------------------------------------------------------------------
 # impression au format 'ojb' :
 #-------------------------------------------------------------------------
-
 def imprime_ojb(cel, file, timer, dbgdir):
     timer.Start('T1')
     ERR.mess(
@@ -511,7 +507,7 @@ def imprime_ojb(cel, file, timer, dbgdir):
         # ---------------
         timer.Stop('T7.2')
         timer.Start('T7.3')
-        modlocs = liste_mode_local(cata, dbgdir)
+        modlocs = cata.usedLocatedComponents()
         ERR.contexte("Examen du catalogue du type_elem: " + note)
         ERR.contexte(
             "  rubrique: modes locaux utilises par le type_elem ", "AJOUT")
@@ -1061,29 +1057,6 @@ def getAllLocations(cel):
     return locations
 
 
-#-------------------------------------------------------------------------
-
-#-------------------------------------------------------------------------
-def liste_mode_local(type_elem, dbgdir=None):
-    # retourne la liste des modes locaux utilises par le type_elem
-    dico = {}
-    for opt in type_elem.calculs.values():
-        for param, moloc in opt.para_in:
-            dico[moloc] = 1
-            if hasattr(moloc, 'locatedComponents'):
-                for xx in moloc.locatedComponents:
-                    dico[xx] = 1
-        for param, moloc in opt.para_out:
-            dico[moloc] = 1
-            if hasattr(moloc, 'locatedComponents'):
-                for xx in moloc.locatedComponents:
-                    dico[xx] = 1
-    if dbgdir:
-        fdbg = open(
-            osp.join(dbgdir, 'liste_mode_local.' + type_elem.name), 'wb')
-        fdbg.write(os.linesep.join(sorted([i.name for i in dico.keys()])))
-        dico = OrderedDict(sorted(dico.items(), key=lambda i: i[0].name))
-    return dico.keys()
 
 #============================================================================================
 # Quelques fonctions utiles pour engendrer des fichiers pratiques pour les programmeurs
@@ -1098,16 +1071,16 @@ def impr_CMP(nomfic, cel):
     #-------------------------------------------------------------------------
     file = open(nomfic, "w")
 
-    for cata in cel.getElements()():
+    for cata in cel.getElements():
         note = cata.name
-        modlocs = liste_mode_local(cata)
+        modlocs = cata.usedLocatedComponents()
 
         dicmod = {}
         for moloc in modlocs:
             if moloc.type not in ('ELEM', 'ELNO', 'ELGA'):
                 continue
             nomolo = moloc.name
-            nogd = moloc.grandeur.name
+            nogd = moloc.physicalQuantity.name
             typept = moloc.type
             diff = moloc.diff
 
@@ -1128,14 +1101,14 @@ def impr_CMP(nomfic, cel):
             for noop in cata.calculs.keys():
                 opt = cata.calculs[noop]
                 numte = opt.te
-                nbin = len(opt.ParamIn)
-                nbou = len(opt.ParamOut)
+                nbin = len(opt.para_in)
+                nbou = len(opt.para_out)
 
                 if numte > 0:
 
                     for kk in range(nbin):
-                        param = opt.ParamIn[kk][0].name
-                        mode = opt.ParamIn[kk][1].name
+                        param = opt.para_in[kk][0].name
+                        mode = opt.para_in[kk][1].name
                         if mode in dicmod:
                             nogd, licmp = dicmod[mode]
                             for cmp in licmp:
@@ -1143,8 +1116,8 @@ def impr_CMP(nomfic, cel):
                                     noop + " " + note + " IN " + param + " " + nogd + " " + cmp + "\n")
 
                     for kk in range(nbou):
-                        param = opt.ParamOut[kk][0].name
-                        mode = opt.ParamOut[kk][1].name
+                        param = opt.para_out[kk][0].name
+                        mode = opt.para_out[kk][1].name
                         if mode in dicmod:
                             nogd, licmp = dicmod[mode]
                             for cmp in licmp:
@@ -1158,36 +1131,36 @@ def impr_param_options(nomfic, cel):
     #-------------------------------------------------------------------------
     file = open(nomfic, "w")
 
-    for cata in cel.getElements()():
+    for cata in cel.getElements():
         note = cata.name
-        modlocs = liste_mode_local(cata)
+        modlocs = cata.usedLocatedComponents()
         dicmod = {}
         for moloc in modlocs:
             nomolo = moloc.name
             assert nomolo != None, 'Il faut nommer explicitement tous les modes locaux crees dans les boucles.'
-            nogd = moloc.grandeur.name
+            nogd = moloc.physicalQuantity.name
             dicmod[nomolo] = nogd
 
         if len(cata.calculs) > 0:
             for noop in cata.calculs.keys():
                 opt = cata.calculs[noop]
                 numte = opt.te
-                nbin = len(opt.ParamIn)
-                nbou = len(opt.ParamOut)
+                nbin = len(opt.para_in)
+                nbou = len(opt.para_out)
 
                 if numte > 0:
 
                     for kk in range(nbin):
-                        param = opt.ParamIn[kk][0].name
-                        mode = opt.ParamIn[kk][1].name
+                        param = opt.para_in[kk][0].name
+                        mode = opt.para_in[kk][1].name
                         if mode in dicmod:
                             nogd = dicmod[mode]
                             file.write(
                                 noop + " " + note + " IN " + param + " " + nogd + "\n")
 
                     for kk in range(nbou):
-                        param = opt.ParamOut[kk][0].name
-                        mode = opt.ParamOut[kk][1].name
+                        param = opt.para_out[kk][0].name
+                        mode = opt.para_out[kk][1].name
                         if mode in dicmod:
                             nogd = dicmod[mode]
                             file.write(
@@ -1201,7 +1174,7 @@ def PbOptions(cel):
     #-------------------------------------------------------------------------
     # La fonction n'est pas a jour ... Il faut la corriger !
     utilise = {}
-    for cata in cel.getElements()():
+    for cata in cel.getElements():
         entete, modlocs, opts = cata.cata_te
         note = entete[0]
 
@@ -1283,18 +1256,21 @@ def nomte_nomtm(nomfic, cel):
     # pour imprimer les lignes (type_elem, type_maille, attribut1, attribut2, ... )
     #-------------------------------------------------------------------------
     file = open(nomfic, "w")
-    dico = {}
-    for cata in cel.getElements()():
-        note = "%-16s" % cata.name
-        notm = "%-8s" % cata.meshType.name
+    lines = []
+    for cata in cel.getElements():
+        note = cata.name
+        notm = cata.meshType.name
         liattr = get_liattr(cel, cata)
-        n1 = len(liattr)
-        assert 2 * (n1 / 2) == n1, n1
-        l1 = " "
-        for k in range(n1 / 2):
-            x1 = "%-17s" % (liattr[2 * k] + "=" + liattr[2 * k + 1],)
-            l1 = l1 + x1 + " "
-        file.write(note + ' ' + notm + l1 + '\n')
+        # n1 = len(liattr)
+        # assert 2 * (n1 / 2) == n1, n1
+        # l1 = " "
+        line = " ".join(["{}={}".format(attr.name, val) for attr, val in liattr])
+        lines.append("{:16} {:8} {:17}".format(note, notm, line))
+        # for k in range(n1 / 2):
+        #     x1 = "%-17s" % (liattr[2 * k] + "=" + liattr[2 * k + 1],)
+        #     l1 = l1 + x1 + " "
+    lines.append('')
+    file.write('\n'.join(lines))
 
 
 #-------------------------------------------------------------------------
