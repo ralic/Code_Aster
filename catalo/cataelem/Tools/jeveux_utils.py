@@ -71,13 +71,10 @@ class ERREUR:
     def veri_pas_doublon_lpara(self, code, liste):
         # verifier qu'un parametre n'apparait pas plus d'une fois dans une
         # liste de couples [(param, modloc)]
-        x = {}
-        for xx in liste:
-            param = xx[0]
-            if x.get(param):
-                self.mess(code, "Le paramètre " + param +
-                          " apparait plusieurs fois dans la liste: " + str(liste))
-            x[param] = 1
+        lpara = set([val[0] for val in liste])
+        if len(lpara) != len(liste):
+            self.mess(code, "Le paramètre " + param +
+                      " apparait plusieurs fois dans la liste: " + str(liste))
 
     def veri_long_chaine(self, code, chaine, n):
         if len(chaine) > n:
@@ -106,22 +103,13 @@ class ERREUR:
 ERR = ERREUR()
 
 
-def chaine(var, long, cadre='G'):
-    # une petite fonction pour formater les chaines de carateres
-    if cadre == 'G':
-        return str(var)[0:long] + " " * (long - len(str(var)))
-    elif cadre == 'D':
-        return " " * (long - len(str(var))) + str(var)[0:long]
-    else:
-        ERR.mess('F', "Erreur")
-
 #
 #  3    utilitaires pour creation des objets jeveux en Python
 #
 
 
 def cree_os(dicobj, nom, tsca, long):
-    if dicobj.has_key(nom):
+    if dicobj.get(nom) is not None:
         ERR.mess('F', "Erreur objet deja declare:" + nom)
     o1 = JV_SIMPLE(nom, tsca, long)
     dicobj[nom] = o1
@@ -129,7 +117,7 @@ def cree_os(dicobj, nom, tsca, long):
 
 
 def cree_pn(dicobj, nom, tsca):
-    if dicobj.has_key(nom):
+    if dicobj.get(nom) is not None:
         ERR.mess('F', "Erreur objet deja declare:" + nom)
     o1 = JV_PNOM(nom, tsca)
     dicobj[nom] = o1
@@ -137,7 +125,7 @@ def cree_pn(dicobj, nom, tsca):
 
 
 def cree_co(dicobj, nom, tsca, tsca_pn, contig, acces, longv):
-    if dicobj.has_key(nom):
+    if dicobj.get(nom) is not None:
         ERR.mess('F', "Erreur objet deja declare:" + nom)
     o1 = JV_COLLEC(nom, tsca, tsca_pn, contig, acces, longv)
     dicobj[nom] = o1
@@ -208,29 +196,31 @@ class JV_COLLEC:
         else:
             modlon = 'CONSTANT'
 
-        file.write("|TYPE_JEVEUX=COLLEC" + "\n")
-        file.write("|NOM=" + chaine(self.nom, 24) + "|TYPE=" + chaine(self.tsca, 3) + "|NMAXOC=" + chaine(nmaxoc, 12, 'D') +
-                   "|NUTIOC=" + chaine(nmaxoc, 12, 'D') + "|ACCES=" + chaine(self.acces, 2) + "|STOCKAGE=" + chaine(self.contig, 8) +
-                   "|MODELONG=" + chaine(modlon, 8) + "|LONMAX=" + chaine(self.longv, 12, 'D') + "|LONT=" + chaine(lont, 12, 'D') + "\n")
+        lines = []
+        lines.append("|TYPE_JEVEUX=COLLEC")
+        # TODO nutioc == nmaxoc ?
+        lines.append("|NOM={self.nom:24}|TYPE={self.tsca:3}|NMAXOC={nmaxoc:>12}"
+                     "|NUTIOC={nmaxoc:>12}|ACCES={self.acces:2}|STOCKAGE={self.contig:8}"
+                     "|MODELONG={modlon:8}|LONMAX={self.longv:>12}|LONT={lont:>12}"
+                     .format(self=self, nmaxoc=nmaxoc, modlon=modlon, lont=lont))
 
         for oc1 in self.objs:
             if self.acces == "NO":
                 # les collections ayant leur pointeur de nom en interne ont un
                 # acces K8
-                file.write("|NOM=" + chaine(oc1.nom, 8) +
-                           "|LONMAX=" + chaine(len(oc1.valeurs), 12, 'D') + "\n")
+                lines.append("|NOM={nom:8}|LONMAX={len:>12}"
+                             .format(nom=oc1.nom, len=len(oc1.valeurs)))
             else:
-                file.write(
-                    "|LONMAX=" + chaine(len(oc1.valeurs), 12, 'D') + "\n")
+                lines.append("|LONMAX={len:>12}".format(len=len(oc1.valeurs)))
 
             if self.tsca[0] == "K":
-                for val in oc1.valeurs:
-                    file.write(str(val) + "\n")
+                lines.extend(oc1.valeurs)
             elif self.tsca[0] == "I":
-                for val in oc1.valeurs:
-                    file.write(chaine(val, 12, 'D') + "\n")
+                lines.extend(["{:>12}".format(val) for val in oc1.valeurs])
             else:
                 ERR.mess('F', "Erreur : programmation a ajouter ...")
+        lines.append('')
+        file.write("\n".join(lines))
 
 
 class JV_SIMPLE:
@@ -277,17 +267,18 @@ class JV_SIMPLE:
         return self.valeurs[indice - 1]
 
     def impr(self, file):
-        file.write("|TYPE_JEVEUX=SIMPLE" + "\n")
-        file.write("|NOM=" + chaine(self.nom, 24) + "|TYPE=" +
-                   chaine(self.tsca, 3) + "|LONMAX=" + chaine(self.long, 12, 'D') + "\n")
+        lines = []
+        lines.append("|TYPE_JEVEUX=SIMPLE")
+        lines.append("|NOM={self.nom:24}|TYPE={self.tsca:3}|LONMAX={self.long:>12}"
+                     .format(self=self))
         if self.tsca[0] == "K":
-            for val in self.valeurs:
-                file.write(str(val) + "\n")
+            lines.extend(self.valeurs)
         elif self.tsca[0] == "I":
-            for val in self.valeurs:
-                file.write(chaine(val, 12, 'D') + "\n")
+            lines.extend(["{:>12}".format(val) for val in self.valeurs])
         else:
             ERR.mess('F', "Erreur : programmation a ajouter ...")
+        lines.append('')
+        file.write('\n'.join(lines))
 
 
 class JV_PNOM:
@@ -312,8 +303,9 @@ class JV_PNOM:
             ERR.mess('F', "Erreur : on attend nom=chaine.")
         ERR.veri_long_chaine('E', nom, int(self.tsca[1:3]))
         nom2 = nom[0:int(self.tsca[1:3])]
-        if self.dico.has_key(nom2):
-            return self.dico[nom2]
+        num = self.dico.get(nom2)
+        if num is not None:
+            return num
         else:
             if stop != "COOL":
                 ERR.mess(
@@ -327,7 +319,7 @@ class JV_PNOM:
     def ajout_nom(self, nom):
         # ajoute un nom dans un pointeur de noms.
         # s'arrete en erreur fatale si le nom existe deja
-        if self.dico.has_key(nom):
+        if self.dico.get(nom) is not None:
             ERR.mess(
                 'F', "Erreur: le nom: " + nom + " existe deja dans: " + self.nom)
         else:
@@ -339,9 +331,11 @@ class JV_PNOM:
             self.valeurs.append(nom2)
 
     def impr(self, file):
-        file.write("|TYPE_JEVEUX=PT_NOM" + "\n")
-        file.write("|NOM=" + chaine(self.nom, 24) + "|TYPE=" +
-                   chaine(self.tsca, 3) + "|NOMMAX=" + chaine(self.nomuti, 12, 'D') + "\n")
+        lines = []
+        lines.append("|TYPE_JEVEUX=PT_NOM")
+        lines.append("|NOM={self.nom:24}|TYPE={self.tsca:3}|NOMMAX={self.nomuti:>12}"
+                     .format(self=self))
         nchar = int(self.tsca[1:4])
-        for val in self.valeurs:
-            file.write(chaine(val, nchar) + "\n")
+        lines.extend(["{:{size}}".format(val, size=nchar) for val in self.valeurs])
+        lines.append('')
+        file.write('\n'.join(lines))

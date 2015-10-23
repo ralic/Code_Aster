@@ -63,13 +63,7 @@ def txtpad(long, chaine):
     #---------------------------------------
     # retourne une chaine de longueur "long" en completant chaine par des
     # "blancs"
-    if len(chaine) > long:
-        return chaine[0:long]
-    chaine2 = chaine + " " * (long - len(chaine))
-    return chaine2
-
-
-#
+    return chaine[:long].ljust(long)
 
 
 #-------------------------------------------------------------------------
@@ -1047,7 +1041,7 @@ def calc_nbopte(cel, opt_a_calculer):
 
 #       -- 2. les couples absents (pas encore programmes => -1) :
         for noop in opt_a_calculer[note]:
-            if not noop in dico_opt_te:
+            if not dico_opt_te.get(noop):
                 nbopte = nbopte + 1
     return nbopte
 
