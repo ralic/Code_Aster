@@ -31,6 +31,7 @@ subroutine calela(imate, angmas, mdal, dalal, t,&
     parameter   ( dim1   =  4 )
     parameter   ( dim2   =  8 )
     parameter   ( dim3   =  11 )
+    integer :: icodr3(dim3)
     integer :: icodr2(dim2)
     integer :: icodr1(dim1)
     real(kind=8) :: elas3(dim3)
@@ -160,8 +161,6 @@ subroutine calela(imate, angmas, mdal, dalal, t,&
             tal(2,2) = elas2(6)
             tal(3,3) = elas2(7)
 !            alpha3 = elas2(7)
-            call utbtab('ZERO', 3, 3, tal, pass,&
-                        work, talg)
             al(1) = talg(1,1)
             al(2) = talg(2,2)
             al(3) = talg(3,3)
@@ -207,7 +206,7 @@ subroutine calela(imate, angmas, mdal, dalal, t,&
                 call utmess('F', 'ALGORITH17_36')
             endif
             call rcvala(imate, ' ', 'ELAS_ORTH', 1, 'TEMP',&
-                        [t], 10, ncra3(1), elas3(1), icodr2,&
+                        [t], 10, ncra3(1), elas3(1), icodr3,&
                         0)
             young1 = elas3(1)
             young3 = elas3(2)
