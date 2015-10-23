@@ -70,7 +70,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'))
 # uniquement le développeur.
 previous_errors = [
     'ALCHML', 'AMDBAR', 'AMUMPS', 'ASCSEP',
-    'BiCG', 'CHARACTER', 'CHNO', 'CHPVER',
+    'CHARACTER', 'CHNO', 'CHPVER',
     'CINX', 'CLO', 'COMBU', 'CVRC', 'DEEQ', 'DELG',
     'DEP', 'DEPSI', 'DEPSIMAX', 'DEUXMU', 'DISMOI', 'DLAHQR', 'DOMM', 'DPMAT',
     'DPMAX', 'DPSIDS', 'DRMAX', 'DTREVC', 'ECLAU', 'EDITGD', 'EFNEMA',

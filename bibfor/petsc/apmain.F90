@@ -282,19 +282,30 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 !
             else if (indic.eq.KSP_DIVERGED_DTOL) then
 !               DIVERGENCE
-                divtol = dtol
-                call utmess('F', 'PETSC_6', sr=divtol)
-
+                if ( istop == 0 ) then
+!                  ERREUR <F>
+                  divtol = dtol
+                  call utmess('F', 'PETSC_6', sr=divtol)
+                else if ( istop == 2 ) then
+!                  ON CONTINUE ET ON REMONTE UN CODE D'ERREUR
+                   iret = 1
+                   goto 999
+                else
+                   ASSERT (.false.)
+                endif
 !
             else if (indic.eq.KSP_DIVERGED_BREAKDOWN) then
 !               BREAKDOWN
-                call utmess('F', 'PETSC_7')
-
-!
-            else if (indic.eq.KSP_DIVERGED_BREAKDOWN_BICG) then
-!               BREAKDOWN BiCG
-                call utmess('F', 'PETSC_8')
-
+                if ( istop == 0 ) then
+!                  ERREUR <F>
+                   call utmess('F', 'PETSC_7')
+                else if ( istop == 2 ) then
+!                  ON CONTINUE ET ON REMONTE UN CODE D'ERREUR
+                   iret = 1
+                   goto 999
+                else
+                   ASSERT (.false.)
+                endif
 !
             else if (indic.eq.KSP_DIVERGED_NONSYMMETRIC) then
 !               MATRICE NON SYMETRIQUE
@@ -304,12 +315,23 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
             else if (indic.eq.KSP_DIVERGED_INDEFINITE_PC) then
 !              PRECONDITIONNEUR NON DEFINI
                 call utmess('F', 'PETSC_10')
-
+!            
+            else if (indic.eq.KSP_DIVERGED_NANORINF) then
+!               NANORINF 
+                if ( istop == 0 ) then
+!                  ERREUR <F>
+                   call utmess('F', 'PETSC_8')
+                else if ( istop == 2 ) then
+!                  ON CONTINUE ET ON REMONTE UN CODE D'ERREUR
+                   iret = 1
+                   goto 999
+                else
+                   ASSERT (.false.)
+                endif
 !
             else if (indic.eq.KSP_DIVERGED_INDEFINITE_MAT) then
 !               MATRICE NON DEFINIE
                 call utmess('F', 'PETSC_11')
-
 !
             else
 !              AUTRE ERREUR

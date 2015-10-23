@@ -68,9 +68,7 @@ Solveur PETSc :
 
 8 : _(u"""
 Solveur PETSc :
-  On a rencontré un 'breakdown' dans l'algorithme BiCG, le résidu initial est orthogonal au résidu
-  initial préconditionné.
-  Il faut changer de préconditionneur ou d'algorithme.
+  Le solveur a échoué : la norme du résidu est une valeur invalide. 
 """),
 
 9 : _(u"""
