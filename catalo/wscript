@@ -8,7 +8,9 @@ from waflib import TaskGen, Logs, Utils, Errors, Task, Context
 
 
 def build(self):
-    env = self.all_envs[self.variant]
+    env = self.all_envs[self.variant].derive()
+    if self.variant == "debug":
+        env.OPTDEBUG = '-g'
     if self.cmd.startswith('uninstall'):
         elem = osp.join(env.ASTERLIBDIR, 'elem.1')
         try:
@@ -42,6 +44,7 @@ class printcata(Task.Task):
     run_str = ' '.join(('PYTHONPATH=${BIBPYTPATH}:${SRC[0].abspath()}',
                         '${PYTHON}',
                         '-m', 'build_cata',
+                        '${OPTDEBUG}',
                         '-o', '${TGT[0].abspath()}'))
 
     def sig_explicit_deps(self):

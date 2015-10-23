@@ -74,31 +74,22 @@ def imprime_ojb(cel, file, timer, dbgdir):
     d = {}  # dictionnaire des ojb
 
     #=========================================================================
-    # xxut1:
     # Bouts de code pouvant servir aux developpeurs pour generer des fichiers pratiques pour les scripts :
     # Ces bouts de code sont places ici, avant les "del cata"
-    xxut1 = False
-    if xxut1:
-        nomfic = "/local00/home/B27918/U/CATA_liCMP.txt"
-        # pour imprimer tous les 6-uplets ( OPTION  TYPELEM  IN/OUT  PARAM
-        # GRANDEUR  CMP )
-        impr_CMP(nomfic, cel)
-    if xxut1:
-        nomfic = "/local00/home/B27918/U/CATA_param_options.txt"
+    if dbgdir:
+        # pour imprimer tous les 6-uplets :
+        # ( OPTION  TYPELEM  IN/OUT  PARAM  GRANDEUR  CMP )
+        impr_CMP(osp.join(dbgdir, "CATA_liCMP.txt"), cel)
         # le fichier produit est moins gros que liCMP mais surtout il contient
-        # les paramètres RESL
-        # pour imprimer tous les 5-uplets ( OPTION  TYPELEM  IN/OUT  PARAM
-        # GRANDEUR)
-        impr_param_options(nomfic, cel)
-    if xxut1:
-        nomfic = "/local00/home/B27918/U/CATA_nomte_nomtm.txt"
+        # les paramètres RESL  pour imprimer tous les 5-uplets
+        # ( OPTION  TYPELEM  IN/OUT  PARAM  GRANDEUR)
+        impr_param_options(osp.join(dbgdir, "CATA_param_options.txt"), cel)
         # pour imprimer les lignes (type_elem, type_maille, attribut1,
         # attribut2, ... )
-        nomte_nomtm(nomfic, cel)
-    if xxut1:
-        nomfic = "/local00/home/B27918/U/CATA_numte_lnomte.txt"
+        nomte_nomtm(osp.join(dbgdir, "CATA_nomte_nomtm.txt"), cel)
         # pour imprimer les lignes (te00ij -> (type_elem1, type_elem2, ...)
-        numte_lnomte(nomfic, cel)
+        numte_lnomte(osp.join(dbgdir, "CATA_numte_lnomte.txt"), cel)
+
     #=========================================================================
     # Verifications de coherence des catalogues :
     #--------------------------------------------
