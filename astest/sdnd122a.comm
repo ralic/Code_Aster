@@ -25,9 +25,6 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
      )
 
 MA=LIRE_MAILLAGE(FORMAT='ASTER',);
-                                                                                                                            
-# Pertubation legere des coordonnes du maillage pour eviter les modes multiples ou retournes :
-MA=MODI_MAILLAGE(reuse =MA, MAILLAGE=MA, DEFORME=_F(OPTION='TRAN', ALEA=1.e-8,),) 
 
 MO = AFFE_MODELE( MAILLAGE = MA,
         AFFE = (_F(  MAILLE=('M1','P2',), PHENOMENE='MECANIQUE', MODELISATION = 'DIS_T'),
@@ -83,10 +80,13 @@ ndiscr=1;
 kchoc = 50.
 jeu = 0.01
 
-MNL = MODE_NON_LINE(MATR_RIGI=K,
+MNL = MODE_NON_LINE(MATR_RIGI=K,   INFO=1,
                  MATR_MASS=M,
                  ETAT_INIT=_F(MODE_LINE = MODES,NUME_ORDRE = 1,
                               DIR_EVOLUTION=1,),
+                 # Le mot cle RESI_RELA=1.e-10 permet de se convaincre que
+                 # les systemes lineaires sont resolus avec precision.
+                 SOLVEUR=_F(METHODE='MUMPS', RESI_RELA=1.e-10),
                  RESOLUTION=_F(METHODE='EHMAN',
                             NB_HARM_LINE=hu,
                             NB_HARM_NONL=hf,
@@ -103,7 +103,6 @@ MNL = MODE_NON_LINE(MATR_RIGI=K,
                           RIGI_NOR=kchoc,
                           PARA_REGUL=0.00005,),
                       ),
-                 INFO=1,
                  )
 
 #test recuperation caracteristiques de choc
@@ -113,14 +112,10 @@ CHOCX = EXTR_TABLE(TABLE=MNL,
                      FILTRE = _F(NOM_PARA = 'NUME_ORDRE',
                                  VALE_I = 5,),
                     )
-#IMPR_TABLE(TABLE=CHOCX)
 
 MNL = CALC_STABILITE(reuse=MNL,MODE_NON_LINE=MNL,
-                     # FILTRE=_F( FREQ_MIN = 0.61, FREQ_MAX =0.62,),
                      FILTRE=_F( FREQ_MIN = 0.64, FREQ_MAX =0.65,),
                    )
-
-#IMPR_TABLE(TABLE=MNL)
 
 FREQC=RECU_FONCTION(TABLE=MNL,
                     PARA_X='ENERGIE',
@@ -141,7 +136,8 @@ T = math.sqrt(m/k)*tau_p
 fsc = 1./T
 
 TEST_FONCTION(VALEUR=_F(VALE_PARA=es,
-                       TOLE_MACHINE=5.e-6, VALE_CALC=0.64669392749957,
+                       # Le TOLE_MACHINE reste a expliquer. Voir issue24306.
+                       TOLE_MACHINE=2.e-5, VALE_CALC=0.64669392749957,
                        REFERENCE='ANALYTIQUE',
                        VALE_REFE=fsc,
                        FONCTION=FREQC,),
@@ -151,9 +147,6 @@ TEST_FONCTION(VALEUR=_F(VALE_PARA=es,
 TCOMPR =CALC_TABLE(TABLE=MNL,
                    ACTION=(_F(OPERATION='FILTRE',NOM_PARA=('NUME_ORDRE'),VALE=80,),
                          ),)
-
-#IMPR_TABLE(TABLE=TCOMPR)
-
 
 MODE_20 = REST_MODE_NONL(MODE_NON_LINE=MNL,
                      TYPE_RESU = 'DYNA_TRANS',
