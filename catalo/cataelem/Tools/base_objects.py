@@ -606,7 +606,7 @@ class Calcul(object):
 
     def __getOption(self):
         """Return the computed Option"""
-        return self.__getOption
+        return self._option
     option = property(__getOption)
 
     def __getTe(self):
