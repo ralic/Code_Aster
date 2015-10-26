@@ -65,13 +65,12 @@ implicit none
 !     FONCTIONS EXTERNES:
 !     -------------------
     character(len=1) :: bas2
-    character(len=16) :: nomopt, codvoi, nomte
+    character(len=16) :: nomopt
 !
 !     VARIABLES LOCALES:
     integer :: ngrel, igr, te, nel, mode, ncmpel, ipar
-    integer :: desc, gd, jnoli, iel, idesc
-    integer :: lon1, lontot, iparmx, ibid
-    integer :: dim1
+    integer :: desc, gd, jnoli, idesc
+    integer ::  iparmx
     character(len=8) :: scal, nomgd, tymat
 !
 !

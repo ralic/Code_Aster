@@ -120,7 +120,7 @@ implicit none
     integer ::   iparg
     integer ::  jceld,  adiel, debugr, nbspt, ncdyn
     integer :: lgcata,  decael, lonchl, iachlo, ilchlo
-    integer :: k, i1, ich, iel2, igr2, debgr2
+    integer :: k, iel2, igr2, debgr2
 !
 !
     character(len=24) :: valk(3)

@@ -53,10 +53,9 @@ implicit none
     integer :: ilchlo, k, kk, debugr
     integer ::  iparg,  lgcata
     integer ::    jceld, adiel
-    integer :: debgr2, lonchl, decael, iadzi, iazk24, i1
+    integer :: debgr2, lonchl, decael, iadzi, iazk24
     integer :: opt, iaopd2, iaoplo, iapara, ipara, npari2
 !
-    integer :: ich
 !
     aster_logical :: etendu
     character(len=24) :: valk(5)

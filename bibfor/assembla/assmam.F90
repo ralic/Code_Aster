@@ -94,12 +94,11 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
 !                          1 --> reelles
 !                          2 --> complexes
 !-----------------------------------------------------------------------
-    character(len=16) :: optio, optio2, codvoi, nomte
+    character(len=16) :: optio, optio2, codvoi
     character(len=1) :: base1, typsca
     character(len=2) :: tt
-    character(len=8) :: k8bid, nogdco, nogdsi, ma, ma2, mo, mo2, partit
+    character(len=8) ::  nogdco, nogdsi, ma, ma2, mo, mo2, partit
     character(len=8) :: symel, kempic
-    character(len=12) :: vge
     character(len=14) :: nudev, nu14
     character(len=19) :: matdev, mat19, resu, matel, ligre1
     character(len=1) :: matsym
@@ -124,13 +123,12 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
     integer :: nblc, nbnomx, nbnoss, nbresu
     integer :: ncmp, nbvel, nec, nel, nequ, nbproc, vali(4)
     integer :: niv, nlili, nmxcmp, nnoe, jptvoi, jelvoi
-    integer :: nugd, rang, ieq, idia, ellagr, jrepe, itypel, iexi
+    integer :: nugd, rang, ieq, idia, ellagr, jrepe, iexi
     character(len=24), pointer :: prtk(:) => null()
     integer, pointer :: smde(:) => null()
     character(len=24), pointer :: noli(:) => null()
     integer, pointer :: prti(:) => null()
     character(len=24), pointer :: relr(:) => null()
-    character(len=16), pointer :: nvge(:) => null()
 
 !-----------------------------------------------------------------------
 !     FONCTIONS FORMULES :

@@ -62,27 +62,21 @@ subroutine promor(nuz, base)
     character(len=19) :: nomlig
     integer :: iconx2, ili, iel
     integer :: idprn1
-    integer :: idprn2, ifm, niv, iret, ibid, nnoe, jnueq
+    integer :: idprn2, ifm, niv, iret, nnoe, jnueq
     integer :: vali(3), neqx, iilib, igr, numa, k1, n1, iad1, nddl1
     integer :: iddl, jddl, iamail, jsmhc, ncoef, jsmde, igd, nbss
     integer :: iadequ, nlili, nequ, iimax, jnoip, jsuiv, mxddlt
-    integer :: ima, nddlt, jalm, jsmdi, nel, nec, nbsma, itypel
-    integer :: nnov, numav, kvois, rang, imd, jsmh1
+    integer :: ima, nddlt, jalm, jsmdi, nel, nec, nbsma
+    integer ::  rang, imd, jsmh1
 !
     character(len=8) :: partit
     real(kind=8) :: valr(2), rcoef, requ
-    character(len=16) :: codvoi, nomte
-    character(len=12) :: vge
-    integer :: nvoima, nscoma, jrepe, jptvoi, jelvoi, nbvois
-    parameter(nvoima=100,nscoma=4)
-    integer :: livois(1:nvoima), tyvois(1:nvoima), nbnovo(1:nvoima)
-    integer :: nbsoco(1:nvoima), lisoco(1:nvoima, 1:nscoma, 1:2), nbproc
+    integer :: nbproc
     integer, pointer :: maille(:) => null()
     integer, pointer :: adne(:) => null()
     integer, pointer :: connex(:) => null()
     integer, pointer :: adli(:) => null()
     character(len=24), pointer :: prtk(:) => null()
-    character(len=16), pointer :: nvge(:) => null()
     integer, pointer :: sssa(:) => null()
     mpi_int :: mrank, msize
 !

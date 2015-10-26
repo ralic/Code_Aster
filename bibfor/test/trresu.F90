@@ -61,7 +61,7 @@ subroutine trresu(ific, nocc)
 !
     integer :: vali, iocc, iret, ivari, jlue, jordr, n1, n2, n3, n4
     integer :: nbordr, numord, nupo, nbcmp
-    integer :: n1r, n2r, n3r, irefrr, irefir, irefcr
+    integer :: n1r, n2r, n3r, irefrr, irefir, irefcr, n1a, n1b
     integer :: nusp, irefr, irefi, irefc, nref, nl1, nl2, nl11, nl22
     real(kind=8) :: valr, epsi, epsir, prec, ordgrd
     complex(kind=8) :: valc
@@ -450,9 +450,11 @@ subroutine trresu(ific, nocc)
                     endif
                 else if (typch(1:2).eq.'EL') then
                     call getvem(nomma, 'MAILLE', 'RESU', 'MAILLE', iocc,&
-                                iarg, 1, nomail, n1)
-                    if (n1 .eq. 0) then
-                        call utmess('F', 'CALCULEL5_8')
+                                iarg, 1, nomail, n1a)
+                    if (n1a .eq. 0) then
+                        call getvem(nomma, 'MAILLE', 'RESU', 'GROUP_MA', iocc,&
+                                iarg, 1, nomail, n1b)
+                        if (n1b .eq. 0) call utmess('F', 'CALCULEL5_8')
                     endif
 !
                     nl1 = lxlgut(lign1)

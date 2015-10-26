@@ -52,10 +52,7 @@ subroutine assma3(lmasym, lmesym, tt, igr, iel,&
     aster_logical :: ldist, ldgrel
 !
     character(len=16) :: codvoi
-    integer :: nvoima, nscoma, jrepe, jptvoi, jelvoi, nbvois
-    parameter(nvoima=100,nscoma=4)
-    integer :: livois(1:nvoima), tyvois(1:nvoima), nbnovo(1:nvoima)
-    integer :: nbsoco(1:nvoima), lisoco(1:nvoima, 1:nscoma, 1:2)
+    integer :: jrepe, jptvoi, jelvoi
     integer :: nbi1mx, nbi1
     parameter (nbi1mx=27*27*20*20)
     integer :: ti1(nbi1mx)
@@ -64,7 +61,6 @@ subroutine assma3(lmasym, lmesym, tt, igr, iel,&
 !     FONCTIONS FORMULES :
 !-----------------------------------------------------------------------
     integer :: ellagr
-    integer :: nnov, igr2, mode2, numav, kvois
 !
 #define zzconx(imail,j) zi(iconx1-1+zi(iconx2+imail-1)+j-1)
 #define zzliel(ili,igrel,j) zi(zi(jadli+3*(ili-1)+1)-1+ \

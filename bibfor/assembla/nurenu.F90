@@ -107,37 +107,37 @@ subroutine nurenu(nu, base)
     call jeveuo(nu//'.NUML.JOIN', 'L', vi=join)
     call jelira(nu//'.NUML.JOIN', 'LONMAX', njoint)
 !
-    do 40, iaux=0,njoint-1
-    numpro=join(iaux+1)
-    if (numpro .eq. -1) goto 40
+    do iaux=0,njoint-1
+        numpro=join(iaux+1)
+        if (numpro .eq. -1) cycle
 !
-    num=iaux+1
-    call codent(num, 'G', chnbjo)
-    nojoin=nu//'.NUML.'//chnbjo
-    call jeveuo(nojoin, 'L', jjoint)
-    call jelira(nojoin, 'LONMAX', nbddlj)
-    AS_ALLOCATE(vi=tmp, size=nbddlj)
-    if (rang .lt. numpro) then
-!     !!! VERIFIER QU'ON EST OK SUR LES NUM GLOBAUX
-        do 50, iddl=0,nbddlj-1
-        numddl=zi(jjoint+iddl)
-        tmp(iddl+1)=zi(jnulg+numddl-1)
-50      continue
-        call asmpi_comm_point('MPI_SEND', 'I', numpro, iaux, nbval=nbddlj,&
-                              vi=tmp)
-    else if (rang.gt.numpro) then
-!     !!! VERIFIER QU'ON EST OK SUR LES NUM GLOBAUX
-        call asmpi_comm_point('MPI_RECV', 'I', numpro, iaux, nbval=nbddlj,&
-                              vi=tmp)
-        do 60, iddl=0,nbddlj-1
-        numddl=zi(jjoint+iddl)
-        zi(jnulg+numddl-1)=tmp(iddl+1)
-60      continue
-    else
-        ASSERT(.false.)
-    endif
-    AS_DEALLOCATE(vi=tmp)
-    40 end do
+        num=iaux+1
+        call codent(num, 'G', chnbjo)
+        nojoin=nu//'.NUML.'//chnbjo
+        call jeveuo(nojoin, 'L', jjoint)
+        call jelira(nojoin, 'LONMAX', nbddlj)
+        AS_ALLOCATE(vi=tmp, size=nbddlj)
+        if (rang .lt. numpro) then
+!           !!! VERIFIER QU'ON EST OK SUR LES NUM GLOBAUX
+            do 50, iddl=0,nbddlj-1
+                numddl=zi(jjoint+iddl)
+                tmp(iddl+1)=zi(jnulg+numddl-1)
+50          continue
+            call asmpi_comm_point('MPI_SEND', 'I', numpro, iaux, nbval=nbddlj,&
+                                  vi=tmp)
+        else if (rang.gt.numpro) then
+!           !!! VERIFIER QU'ON EST OK SUR LES NUM GLOBAUX
+            call asmpi_comm_point('MPI_RECV', 'I', numpro, iaux, nbval=nbddlj,&
+                                  vi=tmp)
+            do 60, iddl=0,nbddlj-1
+                numddl=zi(jjoint+iddl)
+                zi(jnulg+numddl-1)=tmp(iddl+1)
+60          continue
+        else
+            ASSERT(.false.)
+        endif
+        AS_DEALLOCATE(vi=tmp)
+    end do
 !
     call jedema()
 !

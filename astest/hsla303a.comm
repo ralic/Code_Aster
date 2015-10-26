@@ -21,13 +21,15 @@ MAIL=LIRE_MAILLAGE(FORMAT='MED',   )
 
 #
 # DEFINITION DES GROUPES DE NOEUDS
-MAIL=DEFI_GROUP( reuse=MAIL,   MAILLAGE=MAIL,CREA_GROUP_NO=(
+MAIL=DEFI_GROUP( reuse=MAIL,   MAILLAGE=MAIL,
+                  CREA_GROUP_NO=(
                        _F(  GROUP_MA = 'EFFOND'),
                        _F(  GROUP_MA = 'CONT_PR'),
                        _F(  NOM = 'RESULT',
                                        NOEUD = ('N1', 'N2', 'N3', 'N4', )),
-                       _F(  GROUP_MA = 'LCD'))
-                   )
+                       _F(  GROUP_MA = 'LCD')),
+                  CREA_GROUP_MA= _F(NOM='M1', MAILLE='M1',),
+                )
 
 #
 # DEFINITION DU MODELE
@@ -191,7 +193,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_REFE=1.2E-3,
                   REFERENCE = 'ANALYTIQUE',
                   PRECISION=1.E-4,
-                  MAILLE='M1',),
+                  GROUP_MA='M1',),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,

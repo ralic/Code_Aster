@@ -109,13 +109,20 @@ MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
               CREA_GROUP_NO=(_F(GROUP_MA='FA',),
                              _F(GROUP_MA='CD',),),
-              CREA_GROUP_MA=(_F(GROUP_MA='PLAQ_P1',NOM='PLAQ_P1S',),),
-              );
+              CREA_GROUP_MA=(
+                     _F(NOM='PLAQ_P1S', GROUP_MA='PLAQ_P1',),
+              ));
 
 MAIL=CREA_MAILLAGE(MAILLAGE=MA,INFO=2,
                  CREA_MAILLE=_F(NOM='PLAQ_P1I',
                                   GROUP_MA='PLAQ_P1S',
                                   PREF_MAILLE='S',),);
+MAIL=DEFI_GROUP(reuse =MAIL,
+              MAILLAGE=MAIL,
+              CREA_GROUP_MA=(
+                     _F(NOM='M13', MAILLE='M13',),
+                     _F(NOM='SM3', MAILLE='SM3',),
+              ));
 
 MODEL=AFFE_MODELE(MAILLAGE=MAIL,
                   AFFE=_F(TOUT='OUI',
@@ -306,7 +313,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',NOM_PARA='EP',TABLE=TABCOQ,
 #----------------------------
 CANBSP=CREA_CHAMP(TYPE_CHAM='ELEM_NBSP_I', OPERATION='EXTR', CARA_ELEM=CARA,
                NOM_CHAM='.CANBSP', INFO=2,)
-TEST_RESU(CHAM_ELEM=_F( CHAM_GD = CANBSP, MAILLE='SM3', POINT=1, SOUS_POINT=1,
+TEST_RESU(CHAM_ELEM=_F( CHAM_GD = CANBSP, GROUP_MA='SM3', POINT=1, SOUS_POINT=1,
           REFERENCE='ANALYTIQUE', NOM_CMP = 'COQ_NCOU', VALE_REFE_I=1, VALE_CALC_I=1,))
 
 #---------------------------------------------------------------------------------------
@@ -322,7 +329,7 @@ TEST_RESU(CHAM_ELEM=_F( CHAM_GD = CANBSP, MAILLE='SM3', POINT=1, SOUS_POINT=1,
 F1D3D=CREA_CHAMP(TYPE_CHAM='CART_FORC_R', OPERATION='EXTR', CHARGE=FORCE,
                NOM_CHAM='.CHME.F1D3D', INFO=2,)
 TEST_RESU(CARTE=_F(REFERENCE='ANALYTIQUE', NOM_CMP='FZ', VALE_CALC=-2.E5, VALE_REFE=-2.E5,
-          MAILLE='M13', CHAM_GD=F1D3D,))
+          GROUP_MA='M13', CHAM_GD=F1D3D,))
 
 # On verifie egalement que la carte extraite peut etre transformee en table :
 TABF13=CREA_TABLE(RESU=_F(CHAM_GD=F1D3D, MAILLE=('M13','M14'), TOUT_CMP='OUI',),)

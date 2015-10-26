@@ -46,7 +46,7 @@ subroutine trcart(ific, nocc)
 !
 !
     integer :: iocc, iret
-    integer :: n1, n2, n3, n1r, n2r, n3r, ivari
+    integer :: n1, n2, n3, n1r, n2r, n3r, ivari, n1a, n1b
     integer :: nl1, nl2, vali, valir
     real(kind=8) :: epsi, epsir, valr, valrr
     complex(kind=8) :: valc, valcr
@@ -123,8 +123,12 @@ subroutine trcart(ific, nocc)
         call getvtx('CARTE', 'NOM_CMP', iocc=iocc, scal=noddl, nbret=n1)
         call dismoi('NOM_MAILLA', cham19, 'CHAMP', repk=nomma)
         call getvem(nomma, 'MAILLE', 'CARTE', 'MAILLE', iocc,&
-                    iarg, 1, nomail, n1)
-        ASSERT(n1.eq.1)
+                    iarg, 1, nomail, n1a)
+        if (n1a.eq.0) then
+            call getvem(nomma, 'MAILLE', 'CARTE', 'GROUP_MA', iocc,&
+                    iarg, 1, nomail, n1b)
+            ASSERT(n1b.eq.1)
+        endif
         nl1 = lxlgut(lign1)
         nl2 = lxlgut(lign2)
         lign1(1:nl1+16)=lign1(1:nl1-1)//' MAILLE'

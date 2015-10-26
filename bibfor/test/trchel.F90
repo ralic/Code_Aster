@@ -54,7 +54,7 @@ subroutine trchel(ific, nocc)
 !
     integer :: iocc, iret, nbcmp, jcmp, n1, n2, n3, n4, ivari, nupo, nusp
     integer :: irefr, irefi, irefc, nref, nl1, nl2, nl11, nl22, n1r, n2r, n3r
-    integer :: irefrr, irefir, irefcr
+    integer :: irefrr, irefir, irefcr, n1a, n1b
     real(kind=8) :: epsi, epsir
     character(len=1) :: typres
     character(len=3) :: ssigne
@@ -261,8 +261,16 @@ subroutine trchel(ific, nocc)
 !
             call getvtx('CHAM_ELEM', 'NOM_CMP', iocc=iocc, scal=noddl, nbret=n1)
             call dismoi('NOM_MAILLA', cham19, 'CHAMP', repk=nomma)
+            n1=0
             call getvem(nomma, 'MAILLE', 'CHAM_ELEM', 'MAILLE', iocc,&
-                        iarg, 1, nomail, n1)
+                        iarg, 1, nomail, n1a)
+            if (n1a .eq. 1) then
+                n1=1
+            else if (n1a .eq. 0) then
+                call getvem(nomma, 'MAILLE', 'CHAM_ELEM', 'GROUP_MA', iocc,&
+                        iarg, 1, nomail, n1b)
+                if (n1b .eq. 1) n1=1
+            endif
             if (n1 .ne. 0) then
                 nl1 = lxlgut(lign1)
                 nl2 = lxlgut(lign2)
