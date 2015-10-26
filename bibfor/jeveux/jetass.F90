@@ -27,6 +27,9 @@ subroutine jetass(clas)
 #include "asterfort/jxecro.h"
 #include "asterfort/jxlibd.h"
 #include "asterfort/jxliro.h"
+#include "asterfort/jesvos.h"
+
+
     character(len=1) :: clas
 ! ----------------------------------------------------------------------
 ! COMPRESSION D'UNE BASE DE DONNEES PAR RECUPERATION DES ENREGISTREMENTS
@@ -87,6 +90,10 @@ subroutine jetass(clas)
     iaddi(2) = 0
     iaddib(2) = 0
     kclas = clas
+!
+!   ON COMMENCE PAR S'ASSURER QUE TOUS LES OBJETS POSSEDENT UNE IMAGE DISQUE 
+! 
+    call jesvos ( kclas )    
     if (kclas .eq. ' ') then
         ncla1 = 1
         ncla2 = index ( classe , '$' ) - 1
@@ -268,3 +275,4 @@ subroutine jetass(clas)
 100 end do
 ! FIN ------------------------------------------------------------------
 end subroutine
+
