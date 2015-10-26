@@ -1,0 +1,915 @@
+# TITRE disque plein sous pression variable
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
+
+#----------------------------------------------
+#                   MAILLAGE
+#----------------------------------------------
+
+# dimensions de la structure
+
+E1=1.e9
+E2=1.0e9
+nu1=0.2
+nu2=0.2
+
+def radius(x,y):
+    return (x**2+y**2)**0.5
+    
+def theta(x,y):
+    return atan2(y,x)
+
+R1 = 1.0;
+R2 = 0.6;
+R3 = 0.2;
+
+alpha= 1.0e5;
+p    = 1.0e7;
+
+
+#=================================================
+#|       pour le chargement constant         |
+#=================================================
+
+#pression de contact
+
+pres_cont_c = 2*p*( 1-nu1**2 )/E1*R1**2/( R1**2-R2**2 )/( (1+nu1)/E1*(R2**2*(1-2*nu1)+R1**2)/(R1**2-R2**2)+(1+nu2)/E2*(1-2*nu2) )
+
+def press_c(x,y):
+    return pres_cont_c
+
+# constantes couronne externe pour pression constante
+
+A11 = (1+nu1)*(1-2*nu1)*(pres_cont_c*R2*R2-p*R1*R1) / ( E1*(R1*R1-R2*R2) )
+B11 = (pres_cont_c-p)*(1+nu1)*R1*R1*R2*R2 / ( E1*(R1*R1-R2*R2) )
+
+# constantes couronne interne pour pression constante
+
+A12 = -(1+nu2)*(1-2*nu2)*pres_cont_c / E2
+
+# deplacements couronne externe
+
+def ux1_c(x,y):
+    r=radius(x,y)
+    th=theta(x,y)
+    return (A11*r+B11/r)*cos(th)
+
+def uy1_c(x,y):
+    r=radius(x,y)
+    th=theta(x,y)
+    return (A11*r+B11/r)*sin(th)
+
+# deplacements couronne interne
+
+def ux2_c(x,y):
+    r=radius(x,y)
+    th=theta(x,y)
+    return (A12*r)*cos(th)
+
+def uy2_c(x,y):
+    r=radius(x,y)
+    th=theta(x,y)
+    return (A12*r)*sin(th)
+
+
+# contraintes polaires couronne externe
+
+def SIGMA_rr_1_c(x,y):
+    r=radius(x,y)
+    th=theta(x,y)
+    return E1/(1+nu1)*( A11-B11/r**2 + nu1/(1-2*nu1)*(2*A11) )
+
+def SIGMA_thth_1_c(x,y):
+    r=radius(x,y)
+    th=theta(x,y)
+    return E1/(1+nu1)*( A11+B11/r**2 + nu1/(1-2*nu1)*(2*A11) )
+    
+
+# contraintes polaires couronne interne
+
+def SIGMA_rr_2_c(x,y):
+    r=radius(x,y)
+    th=theta(x,y)
+    return E1/( (1+nu1)*(1-2*nu1) )*A12
+
+def SIGMA_thth_2_c(x,y):
+    r=radius(x,y)
+    th=theta(x,y)
+    return E1/( (1+nu1)*(1-2*nu1) )*A12
+    
+
+
+# contraintes couronnes externe
+
+def SIGMA_XX_1_c(x,y):
+    r=radius(x,y)
+    th=theta(x,y) 
+    c=cos(th)
+    s=sin(th)     
+    return SIGMA_rr_1_c(x,y)*c**2 + SIGMA_thth_1_c(x,y)*s**2
+    
+def SIGMA_YY_1_c(x,y):
+    r=radius(x,y)
+    th=theta(x,y) 
+    c=cos(th)
+    s=sin(th)     
+    return SIGMA_rr_1_c(x,y)*s**2 + SIGMA_thth_1_c(x,y)*c**2
+
+def SIGMA_ZZ_1_c(x,y):    
+    r=radius(x,y)
+    th=theta(x,y) 
+    return nu1*( SIGMA_XX_1_c(x,y) + SIGMA_YY_1_c(x,y) )
+
+def SIGMA_XY_1_c(x,y):
+    r=radius(x,y)
+    th=theta(x,y) 
+    c=cos(th)
+    s=sin(th)     
+    return ( SIGMA_rr_1_c(x,y) - SIGMA_thth_1_c(x,y) )*c*s
+
+# contraintes couronnes interne
+
+def SIGMA_XX_2_c(x,y):
+    r=radius(x,y)
+    th=theta(x,y) 
+    c=cos(th)
+    s=sin(th)     
+    return SIGMA_rr_2_c(x,y)*c**2 + SIGMA_thth_2_c(x,y)*s**2
+    
+def SIGMA_YY_2_c(x,y):
+    r=radius(x,y)
+    th=theta(x,y) 
+    c=cos(th)
+    s=sin(th)     
+    return SIGMA_rr_2_c(x,y)*s**2 + SIGMA_thth_2_c(x,y)*c**2
+
+def SIGMA_ZZ_2_c(x,y):    
+    r=radius(x,y)
+    th=theta(x,y) 
+    return nu2*( SIGMA_XX_2_c(x,y) + SIGMA_YY_2_c(x,y) )
+
+def SIGMA_XY_2_c(x,y):
+    r=radius(x,y)
+    th=theta(x,y) 
+    c=cos(th)
+    s=sin(th)     
+    return ( SIGMA_rr_2_c(x,y) - SIGMA_thth_2_c(x,y) )*c*s
+
+# deformation couronne externe
+def EPSI_XX_1_c(x,y):    
+    return 1/E1*( (1+nu1)*SIGMA_XX_1_c(x,y) - nu1*(SIGMA_XX_1_c(x,y)+SIGMA_YY_1_c(x,y)+SIGMA_ZZ_1_c(x,y)) )
+    
+def EPSI_YY_1_c(x,y):    
+    return 1/E1*( (1+nu1)*SIGMA_YY_1_c(x,y) - nu1*(SIGMA_XX_1_c(x,y)+SIGMA_YY_1_c(x,y)+SIGMA_ZZ_1_c(x,y)) )
+    
+def EPSI_ZZ_1_c(x,y):    
+    return 1/E1*( (1+nu1)*SIGMA_ZZ_1_c(x,y) - nu1*(SIGMA_XX_1_c(x,y)+SIGMA_YY_1_c(x,y)+SIGMA_ZZ_1_c(x,y)) )
+
+def EPSI_XY_1_c(x,y):
+    return 1/E1*( (1+nu1)*SIGMA_XY_1_c(x,y) )
+
+# deformation couronne interne
+
+def EPSI_XX_2_c(x,y): 
+    return 1/E2*( (1+nu2)*SIGMA_XX_2_c(x,y) - nu2*(SIGMA_XX_2_c(x,y)+SIGMA_YY_2_c(x,y)+SIGMA_ZZ_2_c(x,y)) )
+    
+def EPSI_YY_2_c(x,y):
+    return 1/E2*( (1+nu2)*SIGMA_YY_2_c(x,y) - nu2*(SIGMA_XX_2_c(x,y)+SIGMA_YY_2_c(x,y)+SIGMA_ZZ_2_c(x,y)) )
+
+def EPSI_ZZ_2_c(x,y):    
+    return 1/E2*( (1+nu2)*SIGMA_ZZ_2_c(x,y) - nu2*(SIGMA_XX_2_c(x,y)+SIGMA_YY_2_c(x,y)+SIGMA_ZZ_2_c(x,y)) )
+
+def EPSI_XY_2_c(x,y):
+    return 1/E2*( (1+nu2)*SIGMA_XY_2_c(x,y) )
+
+#==========================================
+#  pour le chargement fonction de theta
+#==========================================
+
+#Calcul des constantes
+
+def deter(f):
+    return (1-f)**3
+
+def calc_1(pe,pi,Re,Ri):
+
+    f=(Ri/Re)**2
+
+    det=deter(f)
+
+    A= ( pe*(2*f**2+f+1) -pi*(f**3+f**2+2*f) )/(2*det)
+    b=-( pe*(3*f**2+f)-pi*(f**3+3*f**2) )/(6*det)
+    c= ( pe*(f+3)-pi*(3*f+1) )/(6*det)
+    d=-( pe*(f**2+f+2)-pi*(2*f**2+f+1) )/(2*det)
+
+    B=b/Ri**2
+    C=c*Ri**4
+    D=d*Ri**2
+
+    return A,B,C,D
+
+def calc_2(pe,Re):
+
+    A = pe/2.
+    B = -pe/( 6*Re**2 )
+
+    return A,B
+
+f1=(R2/R1)**2
+det1=deter(f1)
+
+term1=(1+nu1)/(E1*6*det1)* \
+( -3*(2*f1**2+f1+1)+(f1+3)+6*(-f1**2-f1-2)-nu1*(2*(-3*f1**2-f1)+6*(-f1**2-f1-2)) )
+
+term2=(1+nu1)/(E1*6*det1)*\
+( -3*(f1**3+f1**2+2*f1)+(3*f1+1)+6*(-2*f1**2-f1-1)-nu1*(2*(-f1**3-3*f1**2)+6*(-2*f1**2-f1-1)) )
+
+term3=(1+nu2)/(E2*6)*( -3 + 2*nu2 )
+
+pc=term1/(term3+term2)*alpha
+
+A21=0.
+B21=0.
+C21=0.
+D21=0.
+
+A22=0.
+B22=0.
+
+A21,B21,C21,D21 = calc_1(alpha,pc,R1,R2)
+A22,B22         = calc_2(pc,R2)
+
+#pression de contact
+
+def press_v(x,y):
+    r=radius(x,y)
+    th=theta(x,y)    
+    return ( 2*A21 + 6*C21/r**4 + 4*D21/r**2 )*cos(2*th)
+
+
+# deplacements polaires couronne externe
+def Ur1_v(x,y):
+    r=radius(x,y)
+    th=theta(x,y)    
+    return (1+nu1)/E1 * ( (-2*A21*r + 2*C21/r**3 + 4*D21/r) - nu1*(4*B21*r**3 + 4*D21/r) ) * cos(2*th)
+
+def Uth1_v(x,y):
+    r=radius(x,y)
+    th=theta(x,y)    
+    return (1+nu1)/E1 * ( (2*A21*r + 6*B21*r**3 + 2*C21/r**3 - 2*D21/r) - nu1*(4*B21*r**3 - 4*D21/r) ) * sin(2*th)
+
+# deplacements polaires couronne interne
+def Ur2_v(x,y):
+    r=radius(x,y)
+    th=theta(x,y)    
+    return (1+nu2)/E2 * ( (-2*A22*r) - nu2*(4*B22*r**3) ) * cos(2*th)
+
+def Uth2_v(x,y):
+    r=radius(x,y)
+    th=theta(x,y)    
+    return (1+nu2)/E2 * ( (2*A22*r + 6*B22*r**3) - nu2*(4*B22*r**3) ) * sin(2*th)
+
+
+# deplacements couronne externe
+
+def ux1_v(x,y):
+    r=radius(x,y)
+    th=theta(x,y)
+    return Ur1_v(x,y)*cos(th) - Uth1_v(x,y)*sin(th)
+
+def uy1_v(x,y):
+    r=radius(x,y)
+    th=theta(x,y)
+    return Ur1_v(x,y)*sin(th) + Uth1_v(x,y)*cos(th)
+
+# deplacements couronne interne
+
+def ux2_v(x,y):
+    r=radius(x,y)
+    th=theta(x,y)
+    return Ur2_v(x,y)*cos(th) - Uth2_v(x,y)*sin(th)
+
+def uy2_v(x,y):
+    r=radius(x,y)
+    th=theta(x,y)
+    return Ur2_v(x,y)*sin(th) + Uth2_v(x,y)*cos(th)
+
+# contraintes polaires couronne externe
+def SIGMA_rr_1_v(x,y):
+    r=radius(x,y)
+    th=theta(x,y) 
+    return ( -2*A21 - 6*C21/r**4 - 4*D21/r**2 )*cos(2*th)
+    
+def SIGMA_thth_1_v(x,y):
+    r=radius(x,y)
+    th=theta(x,y) 
+    return ( 2*A21 + 12*B21*r**2 + 6*C21/r**4 )*cos(2*th)
+
+def SIGMA_rth_1_v(x,y):
+    r=radius(x,y)
+    th=theta(x,y) 
+    return 2*( A21 + 3*B21*r**2 - 3*C21/r**4 - D21/r**2 )*sin(2*th)
+    
+    
+# contraintes polaires couronne interne
+def SIGMA_rr_2_v(x,y):
+    r=radius(x,y)
+    th=theta(x,y) 
+    return ( -2*A22 )*cos(2*th)
+    
+def SIGMA_thth_2_v(x,y):
+    r=radius(x,y)
+    th=theta(x,y) 
+    return ( 2*A22 + 12*B22*r**2 )*cos(2*th)
+
+def SIGMA_rth_2_v(x,y):
+    r=radius(x,y)
+    th=theta(x,y) 
+    return 2*( A22 + 3*B22*r**2 )*sin(2*th)
+
+
+# contrainte couronne externe
+def SIGMA_XX_1_v(x,y):
+    r=radius(x,y)
+    th=theta(x,y) 
+    c=cos(th)
+    s=sin(th)     
+    return SIGMA_rr_1_v(x,y)*c*c + SIGMA_thth_1_v(x,y)*s*s - SIGMA_rth_1_v(x,y)*2*s*c
+    
+def SIGMA_YY_1_v(x,y):
+    r=radius(x,y)
+    th=theta(x,y) 
+    c=cos(th)
+    s=sin(th)     
+    return SIGMA_rr_1_v(x,y)*s*s + SIGMA_thth_1_v(x,y)*c*c + SIGMA_rth_1_v(x,y)*2*s*c
+    
+def SIGMA_ZZ_1_v(x,y):    
+    r=radius(x,y)
+    th=theta(x,y) 
+    return nu1*( SIGMA_XX_1_v(x,y) + SIGMA_YY_1_v(x,y) )
+
+def SIGMA_XY_1_v(x,y):
+    r=radius(x,y)
+    th=theta(x,y) 
+    c=cos(th)
+    s=sin(th)     
+    return SIGMA_rr_1_v(x,y)*s*c - SIGMA_thth_1_v(x,y)*s*c + SIGMA_rth_1_v(x,y)*(c*c - s*s)
+
+# contrainte couronne interne
+
+def SIGMA_XX_2_v(x,y):
+    r=radius(x,y)
+    th=theta(x,y) 
+    c=cos(th)
+    s=sin(th)     
+    return SIGMA_rr_2_v(x,y)*c*c + SIGMA_thth_2_v(x,y)*s*s - SIGMA_rth_2_v(x,y)*2*s*c
+    
+def SIGMA_YY_2_v(x,y):
+    r=radius(x,y)
+    th=theta(x,y) 
+    c=cos(th)
+    s=sin(th)     
+    return SIGMA_rr_2_v(x,y)*s*s + SIGMA_thth_2_v(x,y)*c*c + SIGMA_rth_2_v(x,y)*2*s*c
+
+def SIGMA_ZZ_2_v(x,y):    
+    r=radius(x,y)
+    th=theta(x,y) 
+    return nu2*( SIGMA_XX_2_v(x,y) + SIGMA_YY_2_v(x,y) )
+
+def SIGMA_XY_2_v(x,y):
+    r=radius(x,y)
+    th=theta(x,y) 
+    c=cos(th)
+    s=sin(th)     
+    return SIGMA_rr_2_v(x,y)*s*c - SIGMA_thth_2_v(x,y)*s*c + SIGMA_rth_2_v(x,y)*(c*c - s*s)
+
+
+# deformation couronne externe
+def EPSI_XX_1_v(x,y):    
+    return 1/E1*( (1+nu1)*SIGMA_XX_1_v(x,y) - nu1*(SIGMA_XX_1_v(x,y)+SIGMA_YY_1_v(x,y)+SIGMA_ZZ_1_v(x,y)) )
+    
+def EPSI_YY_1_v(x,y):    
+    return 1/E1*( (1+nu1)*SIGMA_YY_1_v(x,y) - nu1*(SIGMA_XX_1_v(x,y)+SIGMA_YY_1_v(x,y)+SIGMA_ZZ_1_v(x,y)) )
+    
+def EPSI_ZZ_1_v(x,y):    
+    return 1/E1*( (1+nu1)*SIGMA_ZZ_1_v(x,y) - nu1*(SIGMA_XX_1_v(x,y)+SIGMA_YY_1_v(x,y)+SIGMA_ZZ_1_v(x,y)) )
+
+def EPSI_XY_1_v(x,y):
+    return 1/E1*( (1+nu1)*SIGMA_XY_1_v(x,y) )
+
+# deformation couronne interne
+
+def EPSI_XX_2_v(x,y): 
+    return 1/E2*( (1+nu2)*SIGMA_XX_2_v(x,y) - nu2*(SIGMA_XX_2_v(x,y)+SIGMA_YY_2_v(x,y)+SIGMA_ZZ_2_v(x,y)) )
+    
+def EPSI_YY_2_v(x,y):
+    return 1/E2*( (1+nu2)*SIGMA_YY_2_v(x,y) - nu2*(SIGMA_XX_2_v(x,y)+SIGMA_YY_2_v(x,y)+SIGMA_ZZ_2_v(x,y)) )
+
+def EPSI_ZZ_2_v(x,y):    
+    return 1/E2*( (1+nu2)*SIGMA_ZZ_2_v(x,y) - nu2*(SIGMA_XX_2_v(x,y)+SIGMA_YY_2_v(x,y)+SIGMA_ZZ_2_v(x,y)) )
+
+def EPSI_XY_2_v(x,y):
+    return 1/E2*( (1+nu2)*SIGMA_XY_2_v(x,y) )
+
+#=============================================================
+# calcul des champs par solide pour le chargement total
+#=============================================================
+
+# deplacement couronne externe
+
+ux1s = FORMULE(NOM_PARA=('X','Y',), VALE='ux1_c(X,Y)+ux1_v(X,Y)');
+
+uy1s = FORMULE(NOM_PARA=('X','Y',), VALE='uy1_c(X,Y)+uy1_v(X,Y)');
+
+# deplacement couronne externe
+
+ux2s = FORMULE(NOM_PARA=('X','Y',), VALE='ux2_c(X,Y)+ux2_v(X,Y)');
+
+uy2s = FORMULE(NOM_PARA=('X','Y',), VALE='uy2_c(X,Y)+uy2_v(X,Y)');
+
+# contraintes couronne externe
+
+SIG_XX_1=FORMULE(NOM_PARA=('X','Y',), VALE='SIGMA_XX_1_c(X,Y)+SIGMA_XX_1_v(X,Y)')
+SIG_YY_1=FORMULE(NOM_PARA=('X','Y',), VALE='SIGMA_YY_1_c(X,Y)+SIGMA_YY_1_v(X,Y)')
+SIG_ZZ_1=FORMULE(NOM_PARA=('X','Y',), VALE='SIGMA_ZZ_1_c(X,Y)+SIGMA_ZZ_1_v(X,Y)')
+SIG_XY_1=FORMULE(NOM_PARA=('X','Y',), VALE='SIGMA_XY_1_c(X,Y)+SIGMA_XY_1_v(X,Y)')
+
+# contraintes couronne interne
+
+SIG_XX_2=FORMULE(NOM_PARA=('X','Y',), VALE='SIGMA_XX_2_c(X,Y)+SIGMA_XX_2_v(X,Y)')
+SIG_YY_2=FORMULE(NOM_PARA=('X','Y',), VALE='SIGMA_YY_2_c(X,Y)+SIGMA_YY_2_v(X,Y)')
+SIG_ZZ_2=FORMULE(NOM_PARA=('X','Y',), VALE='SIGMA_ZZ_2_c(X,Y)+SIGMA_ZZ_2_v(X,Y)')
+SIG_XY_2=FORMULE(NOM_PARA=('X','Y',), VALE='SIGMA_XY_2_c(X,Y)+SIGMA_XY_2_v(X,Y)')
+
+# deformations couronne externe
+
+EPS_XX_1=FORMULE(NOM_PARA=('X','Y',), VALE='EPSI_XX_1_c(X,Y)+EPSI_XX_1_v(X,Y)')
+EPS_YY_1=FORMULE(NOM_PARA=('X','Y',), VALE='EPSI_YY_1_c(X,Y)+EPSI_YY_1_v(X,Y)')
+EPS_ZZ_1=FORMULE(NOM_PARA=('X','Y',), VALE='EPSI_ZZ_1_c(X,Y)+EPSI_ZZ_1_v(X,Y)')
+EPS_XY_1=FORMULE(NOM_PARA=('X','Y',), VALE='EPSI_XY_1_c(X,Y)+EPSI_XY_1_v(X,Y)')
+
+# deformations couronne interne
+
+EPS_XX_2=FORMULE(NOM_PARA=('X','Y',), VALE='EPSI_XX_2_c(X,Y)+EPSI_XX_2_v(X,Y)')
+EPS_YY_2=FORMULE(NOM_PARA=('X','Y',), VALE='EPSI_YY_2_c(X,Y)+EPSI_YY_2_v(X,Y)')
+EPS_ZZ_2=FORMULE(NOM_PARA=('X','Y',), VALE='EPSI_ZZ_2_c(X,Y)+EPSI_ZZ_2_v(X,Y)')
+EPS_XY_2=FORMULE(NOM_PARA=('X','Y',), VALE='EPSI_XY_2_c(X,Y)+EPSI_XY_2_v(X,Y)')
+
+# pression
+pression  = FORMULE(NOM_PARA=('X','Y',), VALE=' -press_c(X,Y)-press_v(X,Y)');
+
+p_app     = FORMULE(NOM_PARA=('X','Y',), VALE=' +press_c(X,Y)+press_v(X,Y)');
+
+#=============================================================
+# Fusion des declarations de champs de deplacement
+#=============================================================
+
+def ux_f(x,y):
+    r=radius(x,y)
+    if(r>R2):
+        return ux1_c(x,y)+ux1_v(x,y)
+    else: 
+        return ux2_c(x,y)+ux2_v(x,y)
+
+def uy_f(x,y):
+    r=radius(x,y)
+    if(r>R2):
+        return uy1_c(x,y)+uy1_v(x,y)
+    else: 
+        return uy2_c(x,y)+uy2_v(x,y)
+
+ux = FORMULE(NOM_PARA=('X','Y',), VALE='ux_f(X,Y)');
+
+uy = FORMULE(NOM_PARA=('X','Y',), VALE='uy_f(X,Y)');
+
+#=============================================================
+# Fusion des declarations de champs de contraintes
+#=============================================================
+
+def SIG_XX_f(x,y):
+    r=radius(x,y)
+    if(r>R2):
+        return SIGMA_XX_1_c(x,y)+SIGMA_XX_1_v(x,y)
+    else: 
+        return SIGMA_XX_2_c(x,y)+SIGMA_XX_2_v(x,y)
+
+def SIG_YY_f(x,y):
+    r=radius(x,y)
+    if(r>R2):
+        return SIGMA_YY_1_c(x,y)+SIGMA_YY_1_v(x,y)
+    else: 
+        return SIGMA_YY_2_c(x,y)+SIGMA_YY_2_v(x,y)
+
+def SIG_ZZ_f(x,y):
+    r=radius(x,y)
+    if(r>R2):
+        return SIGMA_ZZ_1_c(x,y)+SIGMA_ZZ_1_v(x,y)
+    else: 
+        return SIGMA_ZZ_2_c(x,y)+SIGMA_ZZ_2_v(x,y)
+
+def SIG_XY_f(x,y):
+    r=radius(x,y)
+    if(r>R2):
+        return SIGMA_XY_1_c(x,y)+SIGMA_XY_1_v(x,y)
+    else: 
+        return SIGMA_XY_2_c(x,y)+SIGMA_XY_2_v(x,y)
+
+SIG_XX=FORMULE(NOM_PARA=('X','Y',), VALE='SIG_XX_f(X,Y)')
+SIG_YY=FORMULE(NOM_PARA=('X','Y',), VALE='SIG_YY_f(X,Y)')
+SIG_ZZ=FORMULE(NOM_PARA=('X','Y',), VALE='SIG_ZZ_f(X,Y)')
+SIG_XY=FORMULE(NOM_PARA=('X','Y',), VALE='SIG_XY_f(X,Y)')
+
+#=============================================================
+# Fusion des declarations de champs de deformation
+#=============================================================
+
+def EPS_XX_f(x,y):
+    r=radius(x,y)
+    if(r>R2):
+        return EPSI_XX_1_c(x,y)+EPSI_XX_1_v(x,y)
+    else: 
+        return EPSI_XX_2_c(x,y)+EPSI_XX_2_v(x,y)
+
+def EPS_YY_f(x,y):
+    r=radius(x,y)
+    if(r>R2):
+        return EPSI_YY_1_c(x,y)+EPSI_YY_1_v(x,y)
+    else: 
+        return EPSI_YY_2_c(x,y)+EPSI_YY_2_v(x,y)
+
+def EPS_ZZ_f(x,y):
+    r=radius(x,y)
+    if(r>R2):
+        return EPSI_ZZ_1_c(x,y)+EPSI_ZZ_1_v(x,y)
+    else: 
+        return EPSI_ZZ_2_c(x,y)+EPSI_ZZ_2_v(x,y)
+
+def EPS_XY_f(x,y):
+    r=radius(x,y)
+    if(r>R2):
+        return EPSI_XY_1_c(x,y)+EPSI_XY_1_v(x,y)
+    else: 
+        return EPSI_XY_2_c(x,y)+EPSI_XY_2_v(x,y)
+
+EPS_XX=FORMULE(NOM_PARA=('X','Y',), VALE='EPS_XX_f(X,Y)')
+EPS_YY=FORMULE(NOM_PARA=('X','Y',), VALE='EPS_YY_f(X,Y)')
+EPS_ZZ=FORMULE(NOM_PARA=('X','Y',), VALE='EPS_ZZ_f(X,Y)')
+EPS_XY=FORMULE(NOM_PARA=('X','Y',), VALE='EPS_XY_f(X,Y)')
+
+#----------------------------------------------
+#                   MODELE ET FISSURE
+#----------------------------------------------
+
+MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1,);
+
+MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
+                    MAILLAGE=MAILLAG1,
+                    CREA_GROUP_NO=(_F(GROUP_MA='C',),),
+                                     );
+
+MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
+                     AFFE=(_F(GROUP_MA=('C',),
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION='D_PLAN',),
+                            ),
+                      );
+
+X0=0.
+Y0=0.
+
+LN=FORMULE(NOM_PARA=('X','Y'),VALE='(X-X0)**2+(Y-Y0)**2-R2*R2');
+
+FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,
+                    TYPE_DISCONTINUITE='INTERFACE',
+                    DEFI_FISS=_F(FONC_LN=LN,),
+                    GROUP_MA_ENRI='C',);
+
+MODELEK1=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
+                          FISSURE=(FISS,),
+                          CONTACT='STANDARD');
+
+MODELEK2=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
+                          FISSURE=(FISS,),
+                          CONTACT='SANS');
+
+CTXFEM = DEFI_CONTACT(MODELE         = MODELEK1,
+                      FORMULATION    = 'XFEM',
+                      ITER_CONT_MAXI = 4,
+                      REAC_GEOM      = 'SANS',
+                      ZONE=(
+                            _F(
+                               FISS_MAIT    = FISS,
+                               INTEGRATION  = 'GAUSS',
+                               ORDRE_INT=4,
+                               CONTACT_INIT = 'OUI',
+                               ALGO_CONT    = 'STANDARD',
+                               ALGO_LAGR    = 'VERSION2',
+                               ),
+                         ),
+                   );
+
+#
+#----------------------------------------------
+#                   MATERIAU
+#----------------------------------------------
+
+E=E1
+nu=nu1
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
+                            NU=nu,),);
+
+MAT1=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
+                        MODELE=MODELEK1,
+                        AFFE=_F(GROUP_MA=('C',),
+                                 MATER=ACIER,
+                                 ),);
+
+MAT2=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
+                        MODELE=MODELEK2,
+                        AFFE=_F(GROUP_MA=('C',),
+                                 MATER=ACIER,
+                                 ),);
+
+#----------------------------------------------
+#                   CHARGEMENTS
+#----------------------------------------------
+
+CH1=AFFE_CHAR_MECA_F(MODELE=MODELEK1,
+                     DDL_IMPO=(_F(GROUP_MA='S1R1',
+                                          DX=ux,
+                                          DY=uy,),
+                               _F(GROUP_MA='S2R3',
+                                          DX=ux,
+                                          DY=uy,),
+                               ),
+                    INFO=1,);
+
+CH2=AFFE_CHAR_MECA_F(MODELE=MODELEK2,
+                    DDL_IMPO=(_F(GROUP_MA='S1R1',DX=ux,DY=uy,),
+                              _F(GROUP_MA='S2R3',DX=ux,DY=uy,),  
+                             ),
+                     PRES_REP=(_F(FISSURE=FISS,
+                                  PRES    = p_app,
+                                 ),
+                               ),
+                    INFO=1,);
+
+#----------------------------------------------
+#                   RESOLUTION
+#----------------------------------------------
+
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=_F(JUSQU_A=1.0,
+                                    NOMBRE=1,),);
+
+UTOT1=STAT_NON_LINE(MODELE=MODELEK1,
+                   CHAM_MATER=MAT1,
+                   EXCIT=(_F(CHARGE=CH1,),),
+                   CONTACT  = CTXFEM,
+                   COMPORTEMENT=_F(GROUP_MA=('C', ),
+                                   RELATION='ELAS',
+                                   DEFORMATION='PETIT',),
+                   INCREMENT=_F(LIST_INST=L_INST,
+                                INST_FIN=1.0,),
+                   CONVERGENCE=(_F(ARRET='OUI',
+                                   RESI_GLOB_RELA=1.E-6,
+                                   ITER_GLOB_MAXI=30,)),
+                   SOLVEUR=_F(METHODE='MUMPS',),
+                   NEWTON=_F(REAC_ITER=1,),
+                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
+                   INFO=1,);
+
+UTOT2=STAT_NON_LINE(MODELE=MODELEK2,
+                   CHAM_MATER=MAT2,
+                   EXCIT=(_F(CHARGE=CH2,),),
+                   COMPORTEMENT=_F(GROUP_MA=('C', ),
+                                   RELATION='ELAS',
+                                   DEFORMATION='PETIT',),
+                   INCREMENT=_F(LIST_INST=L_INST,
+                                INST_FIN=1.0,),
+                   CONVERGENCE=(_F(ARRET='OUI',
+                                   RESI_GLOB_RELA=1.E-6,
+                                   ITER_GLOB_MAXI=30,)),
+                   SOLVEUR=_F(METHODE='MUMPS',),
+                   NEWTON=_F(REAC_ITER=1,),
+                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
+                   INFO=1,);
+
+
+#-------------------------------------------------
+#             IMPRESSION du calcul avec contact
+#-------------------------------------------------
+
+MA_XFEM1=POST_MAIL_XFEM(MODELE        = MODELEK1,
+                        INFO          = 2)
+ 
+
+MOD_VIS1=AFFE_MODELE(MAILLAGE=MA_XFEM1,
+                      AFFE=_F(TOUT='OUI',
+                               PHENOMENE='MECANIQUE',
+                               MODELISATION='D_PLAN',),)
+
+R_XFEM1=POST_CHAM_XFEM(MODELE_VISU   = MOD_VIS1,
+                         RESULTAT      = UTOT1,
+                         INFO          = 2)
+ 
+IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=R_XFEM1));
+
+#-------------------------------------------------
+#             IMPRESSION du calcul sans contact
+#-------------------------------------------------
+
+MA_XFEM2=POST_MAIL_XFEM(MODELE        = MODELEK2,
+                        INFO          = 2)
+ 
+
+MOD_VIS2=AFFE_MODELE(MAILLAGE=MA_XFEM2,
+                      AFFE=_F(TOUT='OUI',
+                               PHENOMENE='MECANIQUE',
+                               MODELISATION='D_PLAN',),)
+
+R_XFEM2=POST_CHAM_XFEM(MODELE_VISU   = MOD_VIS2,
+                         RESULTAT      = UTOT2,
+                         INFO          = 2)
+
+IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=R_XFEM2));
+
+
+
+#+----------------------------------------+
+#|       test table avec contact          |
+#+----------------------------------------+
+
+
+DEP1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
+                             GROUP_NO=('NFISSU',),
+                             RESULTAT=R_XFEM1,
+                             NOM_CHAM='DEPL',
+                             NUME_ORDRE=1,
+                             TOUT_CMP='OUI',
+                             OPERATION='EXTRACTION',
+                            ),
+                  );
+
+DEP1P = CALC_TABLE(TABLE = DEP1,
+                   ACTION = (_F(OPERATION = 'FILTRE',
+                                NOM_PARA  = 'NOEUD',
+                                CRIT_COMP = 'REGEXP',
+                                VALE_K    = 'N[^P]',
+                               ),
+                            ),
+                  );
+
+
+# TEST MAX
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.00441227880075,
+           VALE_REFE=ux2s(-R2,0.),
+           NOM_PARA='DX',
+           TYPE_TEST='MAX',
+           TABLE=DEP1P,)
+
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.00422772119926,
+           VALE_REFE=uy2s(0.,-R2),
+           NOM_PARA='DY',
+           TYPE_TEST='MAX',
+           TABLE=DEP1P,)
+
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC=-9851939.2293,
+           VALE_REFE=pression(0.,R2),
+           NOM_PARA='LAGS_C',
+           TYPE_TEST='MAX',
+           TABLE=DEP1P,)
+
+# TEST MIN
+
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC=-0.00441227880075,
+           VALE_REFE=ux2s(R2,0.),
+           NOM_PARA='DX',
+           TYPE_TEST='MIN',
+           TABLE=DEP1P,)
+
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC=-0.00422772119926,
+           VALE_REFE=uy2s(0.,R2),
+           NOM_PARA='DY',
+           TYPE_TEST='MIN',
+           TABLE=DEP1P,)
+
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC=-10148060.7707,
+           VALE_REFE=pression(R2,0.),
+           NOM_PARA='LAGS_C',
+           TYPE_TEST='MIN',
+           TABLE=DEP1P,)
+
+
+#+----------------------------------------+
+#|       test table sans contact          |
+#+----------------------------------------+
+
+
+DEP2=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
+                             GROUP_NO=('NFISSU',),
+                             RESULTAT=R_XFEM2,
+                             NOM_CHAM='DEPL',
+                             NUME_ORDRE=1,
+                             TOUT_CMP='OUI',
+                             OPERATION='EXTRACTION',
+                            ),
+                  );
+
+DEP2P = CALC_TABLE(TABLE = DEP2,
+                   ACTION = (_F(OPERATION = 'FILTRE',
+                                NOM_PARA  = 'NOEUD',
+                                CRIT_COMP = 'REGEXP',
+                                VALE_K    = 'N[^P]',
+                               ),
+                            ),
+                  );
+
+
+# TEST MAX
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.00441230845435,
+           VALE_REFE=ux2s(-R2,0.),
+           NOM_PARA='DX',
+           TYPE_TEST='MAX',
+           TABLE=DEP2P,)
+
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.00422769154567,
+           VALE_REFE=uy2s(0.,-R2),
+           NOM_PARA='DY',
+           TYPE_TEST='MAX',
+           TABLE=DEP2P,)
+
+
+
+# TEST MIN
+
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC=-0.00441230845435,
+           VALE_REFE=ux2s(R2,0.),
+           NOM_PARA='DX',
+           TYPE_TEST='MIN',
+           TABLE=DEP2P,)
+
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC=-0.00422769154567,
+           VALE_REFE=uy2s(0.,R2),
+           NOM_PARA='DY',
+           TYPE_TEST='MIN',
+           TABLE=DEP2P,)
+
+
+
+
+
+
+
+
+
+
+ 
+FIN();
+
