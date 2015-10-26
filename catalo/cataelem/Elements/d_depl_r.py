@@ -18,7 +18,7 @@
 # ======================================================================
 
 from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents, SetOfNodes, ElrefeLoc
-from cataelem.Tools.base_objects import Calcul, Element, AbstractElement
+from cataelem.Tools.base_objects import Calcul, NewElement
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.located_components as LC
 import cataelem.Commons.parameters as SP
@@ -41,7 +41,7 @@ for cmp in ( 'DH', 'DRX', 'DRY', 'DRZ', 'DX', 'DY', 'DZ', 'E1X', 'E1Y', 'E1Z', '
              'PRES12', 'PRES13', 'PRES21', 'PRES22', 'PRES23', 'PRES31', 'PRES32', 'PRES33', 'TEMP',
              'UI2', 'UI3', 'UI4', 'UI5', 'UI6', 'UO2', 'UO3', 'UO4', 'UO5', 'UO6', 'V11', 'V12', 'V13',
              'V21', 'V22', 'V23', 'V31', 'V32', 'V33', 'VI2', 'VI3', 'VI4', 'VI5', 'VI6', 'VO2', 'VO3',
-             'VO4', 'VO5', 'VO6', 'WI1', 'WI2', 'WI3', 'WI4', 'WI5', 'WI6', 
+             'VO4', 'VO5', 'VO6', 'WI1', 'WI2', 'WI3', 'WI4', 'WI5', 'WI6',
              'WO', 'WO1', 'WO2', 'WO3', 'WO4', 'WO5', 'WO6',):
 
 
@@ -74,50 +74,47 @@ for cmp in ( 'DH', 'DRX', 'DRY', 'DRZ', 'DX', 'DY', 'DZ', 'E1X', 'E1Y', 'E1Z', '
       MVECTUC.setName('MVECTUC')
       MMATUUR.setName('MMATUUR')
 
+      name = 'D_DEPL_R_' + cmp
 
-      #------------------------------------------------------------
-      nomel='D_DEPL_R_' + cmp
-      ele=Element()
-      exec "%s = ele" % (nomel,)
-      exec "%s.setName('%s')" % (nomel,nomel)
-      #------------------------------------------------------------
+      class TempClass(NewElement):
+          """Please document this element"""
+          _name = name
 
+          meshType = MT.SEG3
+          nodes = (
+                  SetOfNodes('EN1', (2,3,)),
+                  SetOfNodes('EN2', (1,)),
+              )
+          attrs = ((AT.CL_DUAL,'OUI'),)
 
-      ele.meshType = MT.SEG3
-      ele.nodes = (
-              SetOfNodes('EN1', (2,3,)),
-              SetOfNodes('EN2', (1,)),
+          calculs = (
+              OP.MECA_BTLA_R( te=2,
+                  para_in=((SP.PDDLMUR, LC.MDDLMUR), (OP.MECA_BTLA_R.PLAGRAR, DDL_MECA), ),
+                  para_out=((SP.PVECTUR, MVECTUR), ),
+              ),
+              OP.MECA_BU_R( te=2,
+                  para_in=((SP.PALPHAR, LC.MALPHAR), (OP.MECA_BU_R.PDDLIMR, DDL_MECA), (SP.PDDLMUR, LC.MDDLMUR),
+                           ),
+                  para_out=((SP.PVECTUR, MVECTUR), ),
+              ),
+              OP.MECA_DDLI_F( te=2,
+                  para_in=((SP.PDDLIMF, LC.MDDLIMF), (SP.PGEOMER, MGEOMER), (SP.PTEMPSR, LC.MTEMPSR),
+                           ),
+                  para_out=((SP.PVECTUR, MVECTUR), ),
+              ),
+              OP.MECA_DDLI_R( te=2,
+                  para_in=((OP.MECA_DDLI_R.PDDLIMR, LC.MDDLIMR), ),
+                  para_out=((SP.PVECTUR, MVECTUR), ),
+              ),
+              OP.MECA_DDLI_C( te=2,
+                  para_in=((SP.PDDLIMC, LC.MDDLIMC), ),
+                  para_out=((SP.PVECTUC, MVECTUC), ),
+              ),
+              OP.MECA_DDLM_R( te=2,
+                  para_in=((SP.PDDLMUR, LC.MDDLMUR), ),
+                  para_out=((SP.PMATUUR, MMATUUR), ),
+              )
           )
-      ele.attrs= ((AT.CL_DUAL,'OUI'),)
 
-      ele.addCalcul(OP.MECA_BTLA_R, te=2,
-          para_in=((SP.PDDLMUR, LC.MDDLMUR), (OP.MECA_BTLA_R.PLAGRAR, DDL_MECA), ),
-          para_out=((SP.PVECTUR, MVECTUR), ),
-      )
-
-      ele.addCalcul(OP.MECA_BU_R, te=2,
-          para_in=((SP.PALPHAR, LC.MALPHAR), (OP.MECA_BU_R.PDDLIMR, DDL_MECA), (SP.PDDLMUR, LC.MDDLMUR),
-                   ),
-          para_out=((SP.PVECTUR, MVECTUR), ),
-      )
-
-      ele.addCalcul(OP.MECA_DDLI_F, te=2,
-          para_in=((SP.PDDLIMF, LC.MDDLIMF), (SP.PGEOMER, MGEOMER), (SP.PTEMPSR, LC.MTEMPSR),
-                   ),
-          para_out=((SP.PVECTUR, MVECTUR), ),
-      )
-
-      ele.addCalcul(OP.MECA_DDLI_R, te=2,
-          para_in=((OP.MECA_DDLI_R.PDDLIMR, LC.MDDLIMR), ),
-          para_out=((SP.PVECTUR, MVECTUR), ),
-      )
-
-      ele.addCalcul(OP.MECA_DDLI_C, te=2,
-          para_in=((SP.PDDLIMC, LC.MDDLIMC), ),
-          para_out=((SP.PVECTUC, MVECTUC), ),
-      )
-
-      ele.addCalcul(OP.MECA_DDLM_R, te=2,
-          para_in=((SP.PDDLMUR, LC.MDDLMUR), ),
-          para_out=((SP.PMATUUR, MMATUUR), ),
-      )
+      exec name + " = TempClass"
+      del TempClass

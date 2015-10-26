@@ -18,7 +18,7 @@
 # ======================================================================
 
 from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents, SetOfNodes, ElrefeLoc
-from cataelem.Tools.base_objects import Calcul, Element, AbstractElement
+from cataelem.Tools.base_objects import Calcul, NewElement
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.located_components as LC
 import cataelem.Commons.parameters as SP
@@ -56,48 +56,49 @@ for cmp in ('TEMP','TEMP_INF','TEMP_MIL','TEMP_SUP','E1','H1',) :
       MVECTTR.setName('MVECTTR')
       MMATTTR.setName('MMATTTR')
 
+      name = ('D_TEMP_R_' + cmp)[:16]
 
-      #------------------------------------------------------------
-      nomel='D_TEMP_R_' + cmp
-      if len(nomel) > 16 :  nomel=nomel[:16]
-      ele=Element()
-      exec "%s = ele" % (nomel,)
-      exec "%s.setName('%s')" % (nomel,nomel)
-      #------------------------------------------------------------
+      class TempClass(NewElement):
+          """Please document this element"""
+          _name = name
+
+          meshType = MT.SEG3
+          nodes = (
+                  SetOfNodes('EN1', (2,3,)),
+                  SetOfNodes('EN2', (1,)),
+              )
+          attrs = ((AT.CL_DUAL,'OUI'),)
 
 
-      ele.meshType = MT.SEG3
-      ele.nodes = (
-              SetOfNodes('EN1', (2,3,)),
-              SetOfNodes('EN2', (1,)),
+          calculs = (
+              OP.THER_BTLA_R(te=2,
+                  para_in=((SP.PDDLMUR, LC.MDDLMUR), (OP.THER_BTLA_R.PLAGRAR, DDL_THER),
+                           ),
+                  para_out=((SP.PVECTTR, MVECTTR), ),
+              ),
+
+              OP.THER_BU_R(te=2,
+                  para_in=((SP.PALPHAR, LC.MALPHAR), (OP.THER_BU_R.PDDLIMR, DDL_THER),
+                           (SP.PDDLMUR, LC.MDDLMUR), ),
+                  para_out=((SP.PVECTTR, MVECTTR), ),
+              ),
+
+              OP.THER_DDLI_F(te=2,
+                  para_in=((SP.PDDLIMF, LC.MDDLIMF), (SP.PGEOMER, MGEOMER),
+                           (SP.PTEMPSR, LC.MTEMPSR), ),
+                  para_out=((SP.PVECTTR, MVECTTR), ),
+              ),
+
+              OP.THER_DDLI_R(te=2,
+                  para_in=((OP.THER_DDLI_R.PDDLIMR, LC.MDDLIMR), ),
+                  para_out=((SP.PVECTTR, MVECTTR), ),
+              ),
+
+              OP.THER_DDLM_R(te=2,
+                  para_in=((SP.PDDLMUR, LC.MDDLMUR), ),
+                  para_out=((OP.THER_DDLM_R.PMATTTR, MMATTTR), ),
+              ),
           )
-      ele.attrs= ((AT.CL_DUAL,'OUI'),)
 
-
-      ele.addCalcul(OP.THER_BTLA_R, te=2,
-          para_in=((SP.PDDLMUR, LC.MDDLMUR), (OP.THER_BTLA_R.PLAGRAR, DDL_THER),
-                   ),
-          para_out=((SP.PVECTTR, MVECTTR), ),
-      )
-
-      ele.addCalcul(OP.THER_BU_R, te=2,
-          para_in=((SP.PALPHAR, LC.MALPHAR), (OP.THER_BU_R.PDDLIMR, DDL_THER),
-                   (SP.PDDLMUR, LC.MDDLMUR), ),
-          para_out=((SP.PVECTTR, MVECTTR), ),
-      )
-
-      ele.addCalcul(OP.THER_DDLI_F, te=2,
-          para_in=((SP.PDDLIMF, LC.MDDLIMF), (SP.PGEOMER, MGEOMER),
-                   (SP.PTEMPSR, LC.MTEMPSR), ),
-          para_out=((SP.PVECTTR, MVECTTR), ),
-      )
-
-      ele.addCalcul(OP.THER_DDLI_R, te=2,
-          para_in=((OP.THER_DDLI_R.PDDLIMR, LC.MDDLIMR), ),
-          para_out=((SP.PVECTTR, MVECTTR), ),
-      )
-
-      ele.addCalcul(OP.THER_DDLM_R, te=2,
-          para_in=((SP.PDDLMUR, LC.MDDLMUR), ),
-          para_out=((OP.THER_DDLM_R.PMATTTR, MMATTTR), ),
-      )
+      exec name + " = TempClass"
+      del TempClass
