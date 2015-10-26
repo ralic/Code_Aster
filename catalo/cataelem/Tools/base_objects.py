@@ -44,7 +44,6 @@ This modules defines the base classes for the finite elements description:
 # ParaOptOut        OutputParameter
 # ParamIn           para_in
 # ParamOut          para_out
-# ElementModele     AbstractElement
 
 import sys
 import os
@@ -629,132 +628,6 @@ class Calcul(object):
     para_out = property(__getParaOut)
 
 
-class AbstractElement(object):
-
-    """Definition of a 'model' element"""
-    _currentId = -1
-
-    def __init__(self):
-        """Initialisation"""
-        a_creer_seulement_dans(self, ['located_components', 'Elements'])
-        self._calculs = OrderedDict()
-
-    def addCalcul(self, option, te, para_in=None, para_out=None):
-        """Define a calculation on this element"""
-        self._calculs[option.name] = Calcul(option, te, para_in, para_out)
-
-
-class Element(BaseCataEntity):
-
-    """Definition of a finite element"""
-    _currentId = -1
-    idLength = 16
-
-    def __init__(self, modele=None):
-        """Initialisation"""
-        super(Element, self).__init__()
-        a_creer_seulement_dans(self, ['located_components', 'Elements'])
-        self._meshType = None
-        self._nodes = None
-        self._elrefe = []
-        self._attrs = []
-        self._calculs = OrderedDict()
-        self._derivated = modele is not None
-        if modele:
-            self._calculs = modele._calculs.copy()
-
-    def __getMeshType(self):
-        """Return the mesh support"""
-        return self._meshType
-
-    def __setMeshType(self, meshType):
-        """Set the mesh support"""
-        self._meshType = meshType
-
-    meshType = property(__getMeshType, __setMeshType)
-
-    def __getNodes(self):
-        """Return the mesh support"""
-        return self._nodes
-
-    def __setNodes(self, nodes):
-        """Set the nodes"""
-        self._nodes = nodes
-
-    nodes = property(__getNodes, __setNodes)
-
-    def __getElrefe(self):
-        """Return the list of Elrefe"""
-        return self._elrefe
-
-    def __setElrefe(self, elrefe):
-        """Set the list of elrefe"""
-        self._elrefe = elrefe
-
-    elrefe = property(__getElrefe, __setElrefe)
-
-    def __getAttrs(self):
-        """Return the attributes"""
-        return self._attrs
-
-    def __setAttrs(self, attrs):
-        """Set the attributes"""
-        assign = []
-        for attr, val in attrs:
-            attr = checkAttr(attr, val)
-            assign.append((attr, val))
-        self._attrs = assign
-
-    attrs = property(__getAttrs, __setAttrs)
-
-    def __getCalculs(self):
-        """Return the Calcul objects"""
-        return self._calculs
-    calculs = property(__getCalculs)
-
-    def getAttrs(self):
-        """Return the attributes"""
-        return self._attrs
-
-    def getCalculs(self):
-        """Return the list of calculations supported by the element"""
-        return self._calculs.items()
-
-    def addCalcul(self, option, te, para_in=None, para_out=None):
-        """Define a calculation on this element"""
-        assert option.name not in self._calculs, option.name
-        assert te > 0, te
-        self._calculs[option.name] = Calcul(option, te, para_in, para_out)
-
-    def modifyCalcul(self, option, te, para_in=None, para_out=None):
-        """Change a calculation on this element"""
-        assert self._derivated, (
-            "Element '{0}' is not derivated from a "
-            "AbstractElement ".format(self._name))
-        orig = self._calculs.get(option.name)
-        assert orig, "Element '{0}': unknown option '{1}'".format(self._name)
-
-        if te < 0:
-            assert not para_in, para_in
-            assert not para_out, para_out
-        else:
-            if not para_in:
-                para_in = orig.para_in
-            if not para_out:
-                para_out = orig.para_out
-        self._calculs[option.name] = Calcul(option, te, para_in, para_out)
-
-    def usedLocatedComponents(self):
-        """Return the LocatedComponents used by this element"""
-        loco = set()
-        for calc in self._calculs.values():
-            for _, loc_i in list(calc.para_in) + list(calc.para_out):
-                loco.add(loc_i)
-                if type(loc_i) is ArrayOfComponents:
-                    loco.update(loc_i.locatedComponents)
-        return list(loco)
-
-
 class NewElement(BaseCataEntity):
 
     """Definition of a finite element by subclassing
@@ -872,7 +745,7 @@ class Modelisation(object):
         if elements:
             for tyma, tyel in elements:
                 check_type([tyma], MeshType)
-                check_type([tyel], (Element, NewElement))
+                check_type([tyel], NewElement)
         self._dim = dim
         self._code = code
         self._attrs = attrs
