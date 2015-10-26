@@ -184,10 +184,10 @@ EVOL_DEV = DEFI_FONCTION( NOM_PARA    = 'INST',
 
 U2 = STAT_NON_LINE(  MODELE     = MODELE, CHAM_MATER = CHMAT,
 
-#      On utilise le solveur PETSC + NMAX_ITER pour forcer le passage dans la routine ap2foi.F90
-#      (voir issue22110 et issue21962)
-       SOLVEUR=_F(METHODE='PETSC', PCENT_PIVOT=50., NMAX_ITER=40,RESI_RELA=1.e-10),
-      #SOLVEUR=_F(METHODE='MUMPS',   ),
+#      On utilise le solveur PETSC + GMRES + NMAX_ITER pour forcer le passage dans la routine ap2foi.F90
+#      (voir issue22110, issue21962 et issue24287).
+#      Ne pas utiliser FGMRES
+       SOLVEUR=_F(METHODE='PETSC', ALGORITHME='GMRES', PCENT_PIVOT=50., NMAX_ITER=20,RESI_RELA=1.e-10),
 
        EXCIT      = (
           _F( CHARGE    = DEP_SYM),
