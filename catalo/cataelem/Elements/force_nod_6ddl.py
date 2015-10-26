@@ -17,7 +17,7 @@
 # ======================================================================
 
 from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents, SetOfNodes, ElrefeLoc
-from cataelem.Tools.base_objects import Calcul, NewElement
+from cataelem.Tools.base_objects import Calcul, Element
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.located_components as LC
 import cataelem.Commons.parameters as SP
@@ -51,7 +51,7 @@ MGEOMER  = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
 MVECTUR  = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=(DDL_MECA,))
 
 #------------------------------------------------------------
-class FORCE_NOD_6DDL(NewElement):
+class FORCE_NOD_6DDL(Element):
     """Please document this element"""
     meshType = MT.POI1
 

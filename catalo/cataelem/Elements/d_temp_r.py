@@ -18,7 +18,7 @@
 # ======================================================================
 
 from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents, SetOfNodes, ElrefeLoc
-from cataelem.Tools.base_objects import Calcul, NewElement
+from cataelem.Tools.base_objects import Calcul, Element
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.located_components as LC
 import cataelem.Commons.parameters as SP
@@ -58,7 +58,7 @@ for cmp in ('TEMP','TEMP_INF','TEMP_MIL','TEMP_SUP','E1','H1',) :
 
       name = ('D_TEMP_R_' + cmp)[:16]
 
-      class TempClass(NewElement):
+      class TempClass(Element):
           """Please document this element"""
           _name = name
 

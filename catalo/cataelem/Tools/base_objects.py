@@ -628,7 +628,7 @@ class Calcul(object):
     para_out = property(__getParaOut)
 
 
-class NewElement(BaseCataEntity):
+class Element(BaseCataEntity):
 
     """Definition of a finite element by subclassing
     Subclasses must defined:
@@ -652,7 +652,7 @@ class NewElement(BaseCataEntity):
 
     def __init__(self):
         """Initialisation"""
-        super(NewElement, self).__init__()
+        super(Element, self).__init__()
         self.elrefe = force_tuple(self.elrefe)
         check_type([self.meshType], MeshType)
         if self.nodes:
@@ -671,7 +671,7 @@ class NewElement(BaseCataEntity):
         self._calculs = OrderedDict()
         # walk on inheritance from the abstract class to the element one
         for klass in reversed(self.__class__.mro()):
-            if issubclass(klass, NewElement):
+            if issubclass(klass, Element):
                 for calc in klass.calculs or []:
                     if not self._calculs.get(calc.option.name):
                         self.addCalcul(calc)
@@ -745,7 +745,7 @@ class Modelisation(object):
         if elements:
             for tyma, tyel in elements:
                 check_type([tyma], MeshType)
-                check_type([tyel], NewElement)
+                check_type([tyel], Element)
         self._dim = dim
         self._code = code
         self._attrs = attrs

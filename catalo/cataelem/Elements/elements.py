@@ -17,13 +17,13 @@
 
 # person_in_charge: jacques.pellet@edf.fr
 
-from cataelem.Tools.base_objects import AbstractEntityStore, NewElement
+from cataelem.Tools.base_objects import AbstractEntityStore, Element
 from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents
 
 
 class ElementStore(AbstractEntityStore):
     """Helper class to give access to all elements"""
-    entityType = NewElement
+    entityType = Element
     subTypes = (LocatedComponents, ArrayOfComponents)
 
 

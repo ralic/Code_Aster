@@ -17,7 +17,7 @@
 # ======================================================================
 
 from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents, SetOfNodes, ElrefeLoc
-from cataelem.Tools.base_objects import Calcul, NewElement
+from cataelem.Tools.base_objects import Calcul, Element
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.located_components as LC
 import cataelem.Commons.parameters as SP
@@ -112,7 +112,7 @@ MMATUNS  = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=(DDL_MECA,DDL_ME
 
 
 #------------------------------------------------------------
-class THH_HEXA20D(NewElement):
+class THH_HEXA20D(Element):
     """Please document this element"""
     meshType = MT.HEXA20
     nodes = (

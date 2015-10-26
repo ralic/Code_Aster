@@ -17,7 +17,7 @@
 # ======================================================================
 
 from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents, SetOfNodes, ElrefeLoc
-from cataelem.Tools.base_objects import Calcul, NewElement
+from cataelem.Tools.base_objects import Calcul, Element
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.located_components as LC
 import cataelem.Commons.parameters as SP
@@ -206,7 +206,7 @@ VMATUUR  = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=(NDEPLAR,NDEPLAR
 
 
 #------------------------------------------------------------
-class MIAXOSQU4(NewElement):
+class MIAXOSQU4(Element):
     """Please document this element"""
     meshType = MT.QUAD4
     nodes = (

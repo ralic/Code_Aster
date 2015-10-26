@@ -18,7 +18,7 @@
 # ======================================================================
 
 from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents, SetOfNodes, ElrefeLoc
-from cataelem.Tools.base_objects import Calcul, NewElement
+from cataelem.Tools.base_objects import Calcul, Element
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.located_components as LC
 import cataelem.Commons.parameters as SP
@@ -52,7 +52,7 @@ MVECTTC  = ArrayOfComponents(phys=PHY.VPRE_C, locatedComponents=(DDL_ACOU,))
 MMATTTC  = ArrayOfComponents(phys=PHY.MPRE_C, locatedComponents=(DDL_ACOU,DDL_ACOU))
 
 #------------------------------------------------------------
-class D_PRES_C_PRES(NewElement):
+class D_PRES_C_PRES(Element):
     """Please document this element"""
     meshType = MT.SEG3
     nodes = (

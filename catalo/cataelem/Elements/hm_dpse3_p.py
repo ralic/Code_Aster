@@ -17,7 +17,7 @@
 # ======================================================================
 
 from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents, SetOfNodes, ElrefeLoc
-from cataelem.Tools.base_objects import Calcul, NewElement
+from cataelem.Tools.base_objects import Calcul, Element
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.located_components as LC
 import cataelem.Commons.parameters as SP
@@ -67,7 +67,7 @@ MVECTUR  = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=(DDL_MECA,))
 
 
 #------------------------------------------------------------
-class HM_DPSE3_P(NewElement):
+class HM_DPSE3_P(Element):
     """Please document this element"""
     meshType = MT.SEG3
     nodes = (

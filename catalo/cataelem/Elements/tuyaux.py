@@ -16,7 +16,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 
 from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents, SetOfNodes, ElrefeLoc
-from cataelem.Tools.base_objects import Calcul, NewElement
+from cataelem.Tools.base_objects import Calcul, Element
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.located_components as LC
 import cataelem.Commons.parameters as SP
@@ -229,7 +229,7 @@ MMATUUR.setName('MMATUUR')
 MMATUUC.setName('MMATUUC')
 
 
-class MET3SEG3(NewElement):
+class MET3SEG3(Element):
     """Please document this element"""
     meshType = MT.SEG3
     elrefe =(
@@ -632,7 +632,7 @@ MMATUUR.setName('MMATUUR')
 MMATUUC.setName('MMATUUC')
 
 
-class MET3SEG4(NewElement):
+class MET3SEG4(Element):
     """Please document this element"""
     meshType = MT.SEG4
     elrefe =(
@@ -1041,7 +1041,7 @@ MMATUUR.setName('MMATUUR')
 MMATUUC.setName('MMATUUC')
 
 
-class MET6SEG3(NewElement):
+class MET6SEG3(Element):
     """Please document this element"""
     meshType = MT.SEG3
     elrefe =(
