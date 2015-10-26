@@ -369,14 +369,6 @@ TYPMOD2 = Attribute( value=(
 """)
 
 
-VF_AVEC_VOISIN= Attribute( value=(
-     'OUI' ,
-    ),
-    comment="""
-    ...
-""")
-
-
 XFEM    = Attribute( value=(
      'XH' ,
      'XH1' ,
