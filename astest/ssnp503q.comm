@@ -81,7 +81,6 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                                  COEF_PENA_CONT= 1.E13,
                                  COEF_PENA_FROT= 1.E9,
                                  FISS_MAIT     = FISS1,
-                                 ALGO_LAGR     = 'VERSION2',
                               ),
                              _F(
                                  INTEGRATION   = 'NOEUD',
@@ -94,7 +93,6 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                                  COEF_PENA_CONT= 1.E13,
                                  COEF_PENA_FROT= 1.E9,
                                  FISS_MAIT     = FISS2,
-                                 ALGO_LAGR     = 'VERSION2',
                               ),
                             )
                     );

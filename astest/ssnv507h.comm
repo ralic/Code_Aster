@@ -66,6 +66,7 @@ MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
 
 CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                       FORMULATION    = 'XFEM',
+#                      REAC_GEOM      = 'SANS',
                       REAC_GEOM      = 'AUTOMATIQUE',
                       ITER_CONT_MAXI = 15,
                       ITER_GEOM_MAXI = 20,
@@ -78,7 +79,6 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                                  FISS_MAIT     = FISS,
                                ALGO_CONT    = 'STANDARD',
                                COEF_CONT    = 100.,
-                               ALGO_LAGR    = 'VERSION2',
                               ),
                             )
                     );
@@ -97,6 +97,7 @@ CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
                                 ));
 
 DTH=-pi/2.
+#DTH=0
 
 VAR1=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,1.,1.,1.));
 
@@ -134,6 +135,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                           _F(CHARGE=ROT)),
                    CONTACT  = CTXFEM,
                    COMPORTEMENT=(_F(RELATION='ELAS',
+#                                 DEFORMATION='PETIT')),
                                  DEFORMATION='GROT_GDEP')),
                    NEWTON=_F(REAC_INCR=1,REAC_ITER=1),
                    INCREMENT=_F(LIST_INST=L_INST),

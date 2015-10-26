@@ -1,15 +1,17 @@
 subroutine xneuvi(nb_edgez, nb_edge, nbno, tabdir, scorno,&
-                  noeud, sdline_crack)
+                  noeud, crack, tabhyp)
 !
 ! aslint: disable=W1306
     implicit none
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
     integer :: nb_edgez, nb_edge, nbno
     integer :: tabdir(nb_edgez, 2), scorno(2*nb_edgez), noeud(2*nb_edgez)
-    character(len=14) :: sdline_crack
+    character(len=8) :: crack
+    aster_logical, intent(in) :: tabhyp(nb_edgez)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,8 +52,9 @@ subroutine xneuvi(nb_edgez, nb_edge, nbno, tabdir, scorno,&
 ! IN  TABDIR : TABLEAU DES NOEUDS DES ARETES NH
 ! IN  SCORNO : REDONE LE SCORE DES NOEUDS DES ARETES
 ! IN  NOEUD  : REDONE LE NUMERO GLOBAL DES NOEUDS DES ARETES
-! IN  sdline_crack : NOM DE LA LISTE DE RELATION D'EGALITE (SERT A
-!              RECUPERER LE NOM DE LA FISSURE)
+! IN  CRACK  : NOM DE LA FISSURE
+! IN  TABHYP : TABLEAU DES ARETES HYPERSTATIQUES, QUI NE SERONT PAS STOCKEES
+!              DANS CONNECTANT / CONNECTES
 !
 !
 !
@@ -79,7 +82,7 @@ subroutine xneuvi(nb_edgez, nb_edge, nbno, tabdir, scorno,&
 !
 ! --- ON CONSTRUIT LE VECTEUR DES NOEUDS CONNECTANTS
     if (nnovit .ne. 0) then
-        call wkvect(sdline_crack(1:8)//'.CONNECTANT', 'G V I', 3*nnovit, jcntan)
+        call wkvect(crack(1:8)//'.CONNECTANT', 'G V I', 3*nnovit, jcntan)
         do i = 1, nnovit
 ! --- POUR CHAQUE NOEUD VITAL, ON STOQUE SON NUMERO, LE NOMBRE DE NOEUDS
 ! --- QU'IL CONNECTE ET LEPOINTEUR SUR LES NOEUDS QU'IL CONECTE
@@ -89,11 +92,12 @@ subroutine xneuvi(nb_edgez, nb_edge, nbno, tabdir, scorno,&
             nncone = nncone + scorno(novit(i))
         end do
 ! --- ON CONSTRUIT LE VECTEUR DES NOEUDS CONNECTÉS
-        call wkvect(sdline_crack(1:8)//'.CONNECTES ', 'G V I', nncone, jcntes)
+        call wkvect(crack(1:8)//'.CONNECTES ', 'G V I', nncone, jcntes)
         k=0
         do i = 1, nnovit
 ! --- POUR CHAQUE NOEUD VITAL, ON STOQUE SES NOEUDS CONECTÉS
             do ia = 1, nb_edge
+                if(tabhyp(ia)) cycle
                 if (tabdir(ia,1) .eq. novit(i)) then
                     k = k+1
                     zi(jcntes-1+k) = noeud(tabdir(ia,2))

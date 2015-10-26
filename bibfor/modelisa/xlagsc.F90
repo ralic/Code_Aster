@@ -1,6 +1,6 @@
 subroutine xlagsc(nb_dim, nb_node_mesh, nb_edge, nb_edge_max, algo_lagr,&
                   jtabno, jtabin      , jtabcr , crack      , sdline_crack,&
-                  l_pilo)
+                  l_pilo, tabai, l_ainter)
 !
 implicit none
 !
@@ -11,6 +11,7 @@ implicit none
 #include "asterfort/wkvect.h"
 #include "asterfort/xrell1.h"
 #include "asterfort/xrell2.h"
+#include "asterfort/xrell3.h"
 #include "asterfort/xsella.h"
 !
 ! ======================================================================
@@ -40,7 +41,9 @@ implicit none
     integer, intent(in) :: algo_lagr
     character(len=14), intent(in) :: sdline_crack
     character(len=8), intent(in) :: crack
-    aster_logical, intent(in) :: l_pilo
+    aster_logical, intent(in) :: l_pilo, l_ainter
+    character(len=19) :: tabai
+
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -90,14 +93,23 @@ implicit none
 !
 ! ----- Create list of linear relations (algorithm 1)
 !
-        call xrell1(zi(jtabno)  , nb_edge, zi(jpino), nb_node_sele, sdline_crack)
+        call xrell1(zi(jtabno)  , nb_edge, zi(jpino), nb_node_sele, sdline_crack,&
+                       tabai, l_ainter)
 
     else if (algo_lagr.eq.2) then
 !
 ! ----- Create list of linear relations (algorithm 2)
 !
         call xrell2(zi(jtabno)    , nb_dim      , nb_edge, zr(jtabin), zr(jtabcr),&
-                    l_create_group, sdline_crack, l_pilo)
+                    l_create_group, sdline_crack, l_pilo, tabai, l_ainter)
+
+    else if (algo_lagr.eq.3) then
+!
+! ----- Create list of linear relations (algorithm 3)
+!
+        call xrell3(zi(jtabno), nb_edge, crack, sdline_crack,&
+                    zr(jtabcr), tabai, l_ainter)
+
     endif
 !
     call jedetr('&&XLAGSP.PICKNO')

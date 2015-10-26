@@ -66,12 +66,15 @@ implicit none
 !
     integer :: algo_lagr, i_cmp, nb_cmp
     character(len=14) :: sdline_crack
+    character(len=19) :: tabai
     integer :: nb_edge
     character(len=8), pointer :: v_list_cmp(:) => null()
-    aster_logical :: l_pilo
+    aster_logical :: l_pilo, l_ainter
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    tabai = '&&NMMEIN.TABAI'
+    l_ainter = .false.
     sdline_crack = '&&NMMEIN.LISEQ'
     algo_lagr    = 2
     nb_node_sele = 0
@@ -81,7 +84,7 @@ implicit none
 ! - Lagrange multiplier space selection for contact
 !
     call xlagsp(mesh        , model , crack, algo_lagr, nb_dim,&
-                sdline_crack, l_pilo)
+                sdline_crack, l_pilo, tabai, l_ainter)
 !
 ! - Init continuation method for XFEM
 !

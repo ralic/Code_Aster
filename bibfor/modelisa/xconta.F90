@@ -7,6 +7,7 @@ implicit none
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
+#include "asterfort/imprsd.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -63,7 +64,7 @@ implicit none
     character(len=8) :: crack
     character(len=24) :: sdcont_defi, sdline
     character(len=14) :: sdline_crack
-    character(len=19) :: faclon, ainter
+    character(len=19) :: faclon, ainter, tabai
     character(len=8), pointer :: v_crack(:) => null()
     integer, pointer :: v_crack_nb(:) => null()
     character(len=24), pointer :: v_sdline(:) => null()
@@ -78,6 +79,7 @@ implicit none
     sdcont_defi = sdcont(1:8)//'.CONTACT'
     faclon = '&&XCONTA.FACLON'
     ainter = '&&XCONTA.AINTER'
+    tabai  = '&&XCONTA.TABAI'
     call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nb_elem)
 !
 ! - Access to cracks datastructure
@@ -127,11 +129,11 @@ implicit none
 ! ----- Lagrange multiplier space selection
 !
         call xdefco(mesh        , model, crack, algo_lagr, nb_dim,&
-                    sdline_crack)
+                    sdline_crack, tabai)
 !
 ! ----- "ARETE VITALE" detection
 !
-        call xbarvi(mesh, model, crack, faclon, ainter)
+        call xbarvi(mesh, model, crack, faclon, ainter, tabai)
     end do
 !
 ! - Convert CHAM_ELEM_S -> CHAM_ELEM

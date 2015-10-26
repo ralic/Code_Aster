@@ -1,5 +1,5 @@
 subroutine xlagsp(mesh        , model , crack, algo_lagr, nb_dim,&
-                  sdline_crack, l_pilo)
+                  sdline_crack, l_pilo, tabai, l_ainter)
 !
 implicit none
 !
@@ -57,7 +57,8 @@ implicit none
     character(len=8), intent(in)  :: crack
     integer, intent(in) :: algo_lagr
     character(len=14), intent(in) :: sdline_crack
-    aster_logical, intent(in) :: l_pilo
+    aster_logical, intent(in) :: l_pilo, l_ainter
+    character(len=19) :: tabai
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -117,6 +118,11 @@ implicit none
     integer, pointer :: typmail(:) => null()
     integer, pointer :: connex(:) => null()
     aster_logical, pointer :: tab_enl(:) => null()
+!
+!   tolerances --- absolue et relative --- pour determiner si deux valeurs du critere sont egales
+    real(kind=8), parameter :: atol=1.e-12
+    real(kind=8), parameter :: rtol=1.e-12
+    aster_logical :: near
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -454,9 +460,6 @@ implicit none
         AS_DEALLOCATE(vl=tab_enl)
     endif
 !
-    
-!
-!
 ! --- CRITERE POUR DEPARTAGER LES ARETES HYPERSTATIQUES:
 !     LONGUEUR DE FISSURE CONTROLÏ¿ŒE, I.E.
 !     SOMME DES LONGUEURS DES ARETES DES FACETTES
@@ -488,7 +491,10 @@ implicit none
                     lon = lon+(cc(i)-c(i))*(cc(i)-c(i))
                 end do
                 lon=sqrt(lon)
-                if (lon .lt. dist1) then
+!
+!               lon est-il egal a dist1 ?
+                near = abs(lon-dist1) .le. (atol + dist1*rtol)
+                if (lon .lt. dist1 .and. .not. near) then
                     dist1=lon
                     ia1=iia
                 endif
@@ -504,7 +510,9 @@ implicit none
                     lon = lon+(cc(i)-c(i))*(cc(i)-c(i))
                 end do
                 lon=sqrt(lon)
-                if (lon .lt. dist2) then
+!               lon est-il egal a dist2 ?
+                near = abs(lon-dist2) .le. (atol + dist2*rtol)
+                if (lon .lt. dist2 .and. .not. near) then
                     dist2=lon
                     ia2=iia
                 endif
@@ -526,7 +534,7 @@ implicit none
 !
     call xlagsc(nb_dim, nb_node_mesh, nbarto, nb_edge_max, algo_lagr,&
                 jtabno, jtabin      , jtabcr, crack      , sdline_crack,&
-                l_pilo)
+                l_pilo, tabai, l_ainter)
 !
 ! --- SI LE MULTI-HEAVISIDE EST ACTIF, ON CREE UNE SD SUPPLEMENTAIRE
 ! --- CONTENANT LE NUMÉROS DE LAGRANGIEN CORESPONDANT.

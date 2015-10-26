@@ -540,8 +540,8 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                                           ORDRE_INT = SIMP(statut='f',typ='I',defaut=3,val_min=3,val_max=8),
                                             ),
 
-                                       ALGO_LAGR      = SIMP(statut='f',typ='TXM',defaut="VERSION1",
-                                                             into=("NON","VERSION1","VERSION2"),),
+                                       ALGO_LAGR      = SIMP(statut='f',typ='TXM',defaut="AUTO",
+                                                             into=("AUTO","NON","VERSION1","VERSION2","VERSION3"),),
 
                                        ALGO_CONT      = SIMP(statut='f',typ='TXM',defaut="STANDARD",
                                                                   into=("STANDARD","PENALISATION","CZM"),),

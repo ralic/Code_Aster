@@ -99,7 +99,6 @@ CTXFEM = DEFI_CONTACT(
                      ORDRE_INT=3,
                      ALGO_CONT='CZM',
                      FISS_MAIT = FISS,
-                     ALGO_LAGR='VERSION2',
                      RELATION='CZM_EXP_REG',
                      )));
 

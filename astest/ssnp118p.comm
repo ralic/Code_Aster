@@ -72,7 +72,6 @@ CTXFEM = DEFI_CONTACT(
                      ORDRE_INT=2,
                      ALGO_CONT='CZM',
                      FISS_MAIT = FISS,
-                     ALGO_LAGR='VERSION2',
                      RELATION='CZM_TAC_MIX',),),);
 
 

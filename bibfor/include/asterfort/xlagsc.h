@@ -20,7 +20,7 @@
 interface
     subroutine xlagsc(nb_dim, nb_node_mesh, nb_edge, nb_edge_max, algo_lagr   ,&
                       jtabno, jtabin      , jtabcr , crack      , sdline_crack,&
-                      l_pilo)
+                      l_pilo, tabai, l_ainter)
         integer, intent(in) :: jtabno
         integer, intent(in) :: jtabin
         integer, intent(in) :: jtabcr
@@ -32,5 +32,7 @@ interface
         character(len=14), intent(in) :: sdline_crack
         character(len=8), intent(in) :: crack
         aster_logical, intent(in) :: l_pilo
+        aster_logical, intent(in) :: l_ainter
+        character(len=19) :: tabai
     end subroutine xlagsc
 end interface

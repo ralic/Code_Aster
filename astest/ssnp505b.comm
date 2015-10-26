@@ -145,31 +145,23 @@ MODELEK=MODI_MODELE_XFEM(MODELE_IN=MO,
 CTXFEM = DEFI_CONTACT(MODELE             = MODELEK,
                       FORMULATION    = 'XFEM', ELIM_ARETE = 'ELIM',
                       ZONE = (_F(INTEGRATION   = 'NOEUD',
-                                 FISS_MAIT     = FISS1,
-                                 ALGO_LAGR     = 'VERSION2',),
+                                 FISS_MAIT     = FISS1,),
                               _F(INTEGRATION   = 'NOEUD',
-                                 FISS_MAIT     = FISS2,
-                                 ALGO_LAGR     = 'VERSION2',),
+                                 FISS_MAIT     = FISS2,),
                               _F(INTEGRATION   = 'NOEUD',
-                                 FISS_MAIT     = FISS3,
-                                 ALGO_LAGR     = 'VERSION2',),
+                                 FISS_MAIT     = FISS3,),
                               _F(INTEGRATION   = 'NOEUD',
-                                 FISS_MAIT     = FISS4,
-                                 ALGO_LAGR     = 'VERSION2',),
+                                 FISS_MAIT     = FISS4,),
                               _F(INTEGRATION   = 'NOEUD',
                                  FISS_MAIT     = FISS5,
-                                 ALGO_LAGR     = 'VERSION2',
                                  COEF_CONT     = 100000.0,),
                               _F(INTEGRATION   = 'NOEUD',
-                                 FISS_MAIT     = FISS6,
-                                 ALGO_LAGR     = 'VERSION2',),
+                                 FISS_MAIT     = FISS6,),
                               _F(INTEGRATION   = 'NOEUD',
-                                 FISS_MAIT     = FISS7,
-                                 ALGO_LAGR     = 'VERSION2',),
+                                 FISS_MAIT     = FISS7,),
                               _F(INTEGRATION   = 'NOEUD',
-                                 FISS_MAIT     = FISS8,
-                                 ALGO_LAGR     = 'VERSION2',),
-                            )
+                                 FISS_MAIT     = FISS8,),
+                             )
                       );
 
 
@@ -256,7 +248,7 @@ for i in range(14):
 TEST_TABLE(TABLE=PK[0],
            NOM_PARA='K1',
            CRITERE='RELATIF',
-           VALE_CALC=1.75249000515,
+           VALE_CALC=1.75244687265,
            VALE_ABS='NON',
            INFO=1,)
 
@@ -270,7 +262,7 @@ TEST_TABLE(TABLE=PK[0],
 TEST_TABLE(TABLE=PK[1],
            NOM_PARA='K1',
            CRITERE='RELATIF',
-           VALE_CALC=1.23497089531,
+           VALE_CALC=1.23497450713,
            VALE_ABS='NON',
            INFO=1,)
 
@@ -284,21 +276,21 @@ TEST_TABLE(TABLE=PK[1],
 TEST_TABLE(TABLE=PK[2],
            NOM_PARA='K1',
            CRITERE='ABSOLU',
-           VALE_CALC=-0.587203786142,
+           VALE_CALC=-0.587201143707,
            VALE_ABS='NON',
            INFO=1,)
 
 TEST_TABLE(TABLE=PK[2],
            NOM_PARA='K2',
            CRITERE='ABSOLU',
-           VALE_CALC=0.440698265473,
+           VALE_CALC=0.440695800418,
            VALE_ABS='NON',
            INFO=1,)
 
 TEST_TABLE(TABLE=PK[3],
            NOM_PARA='K1',
            CRITERE='ABSOLU',
-           VALE_CALC=0.167726886073,
+           VALE_CALC=0.167759081025,
            VALE_ABS='NON',
            INFO=1,)
 
@@ -306,21 +298,21 @@ TEST_TABLE(TABLE=PK[3],
 TEST_TABLE(TABLE=PK[3],
            NOM_PARA='K2',
            CRITERE='ABSOLU',
-           VALE_CALC=0.282652856876,
+           VALE_CALC=0.282659173287,
            VALE_ABS='NON',
            INFO=1,)
 
 TEST_TABLE(TABLE=PK[4],
            NOM_PARA='K1',
            CRITERE='ABSOLU',
-           VALE_CALC=-0.347099923379,
+           VALE_CALC=-0.346984412822,
            VALE_ABS='NON',
            INFO=1,)
 
 TEST_TABLE(TABLE=PK[4],
            NOM_PARA='K2',
            CRITERE='ABSOLU',
-           VALE_CALC=0.156046340257,
+          VALE_CALC=0.156052354117,
            VALE_ABS='NON',
            INFO=1,)
 
@@ -334,7 +326,7 @@ TEST_TABLE(TABLE=PK[5],
 TEST_TABLE(TABLE=PK[5],
            NOM_PARA='K2',
            CRITERE='ABSOLU',
-           VALE_CALC=-0.040397286992,
+           VALE_CALC=-0.0403987001186,
            VALE_ABS='NON',
            INFO=1,)
 
@@ -348,7 +340,7 @@ TEST_TABLE(TABLE=PK[6],
 TEST_TABLE(TABLE=PK[6],
            NOM_PARA='K2',
            CRITERE='ABSOLU',
-           VALE_CALC=0.253938624419,
+           VALE_CALC=0.253936932557,
            VALE_ABS='NON',
            INFO=1,)
 
@@ -369,7 +361,7 @@ TEST_TABLE(TABLE=PK[7],
 TEST_TABLE(TABLE=PK[8],
            NOM_PARA='K1',
            CRITERE='RELATIF',
-           VALE_CALC=2.68071488667,
+           VALE_CALC=2.68071788185,
            VALE_ABS='NON',
            INFO=1,)
 
@@ -390,7 +382,7 @@ TEST_TABLE(TABLE=PK[9],
 TEST_TABLE(TABLE=PK[9],
            NOM_PARA='K2',
            CRITERE='ABSOLU',
-           VALE_CALC=-0.104318290031,
+           VALE_CALC=-0.104320697879,
            VALE_ABS='NON',
            INFO=1,)
 
@@ -404,7 +396,7 @@ TEST_TABLE(TABLE=PK[10],
 TEST_TABLE(TABLE=PK[10],
            NOM_PARA='K2',
            CRITERE='ABSOLU',
-           VALE_CALC=-0.162745281342,
+           VALE_CALC=-0.162746424616,
            VALE_ABS='NON',
            INFO=1,)
 
@@ -418,7 +410,7 @@ TEST_TABLE(TABLE=PK[11],
 TEST_TABLE(TABLE=PK[11],
            NOM_PARA='K2',
            CRITERE='ABSOLU',
-           VALE_CALC=0.932153247123,
+           VALE_CALC=0.932152188966,
            VALE_ABS='NON',
            INFO=1,)
 
@@ -432,7 +424,7 @@ TEST_TABLE(TABLE=PK[12],
 TEST_TABLE(TABLE=PK[12],
            NOM_PARA='K2',
            CRITERE='ABSOLU',
-           VALE_CALC=-0.356583626024,
+           VALE_CALC=-0.356585239679,
            VALE_ABS='NON',
            INFO=1,)
 
@@ -446,7 +438,7 @@ TEST_TABLE(TABLE=PK[13],
 TEST_TABLE(TABLE=PK[13],
            NOM_PARA='K2',
            CRITERE='ABSOLU',
-           VALE_CALC=0.105463926379,
+           VALE_CALC=0.105462073638,
            VALE_ABS='NON',
            INFO=1,)
 

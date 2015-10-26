@@ -1,5 +1,5 @@
 subroutine xdefco(mesh        , model, crack, algo_lagr, nb_dim,&
-                  sdline_crack)
+                  sdline_crack, tabai)
 !
 implicit none
 !
@@ -31,6 +31,7 @@ implicit none
     character(len=8), intent(in)  :: crack
     integer, intent(in) :: algo_lagr
     character(len=14), intent(in) :: sdline_crack
+    character(len=19) :: tabai
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,16 +47,18 @@ implicit none
 ! In  algo_lagr      : type of Lagrange multiplier space selection
 ! In  nb_dim         : dimension of space
 ! In  sdline_crack   : name of datastructure of linear relations for crack
+! In/Out tabai       : (table) The 5th cmp of TOPOFAC.AI 
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: l_xfem, l_pilo
+    aster_logical :: l_xfem, l_pilo, l_ainter
     integer :: ier
 !
 ! --------------------------------------------------------------------------------------------------
 !
     l_xfem = .false.
     l_pilo = .false.
+    l_ainter = .true.
     call jeexin(crack//'.MAILFISS.HEAV', ier)
     if (ier .ne. 0) l_xfem=.true.
     call jeexin(crack//'.MAILFISS.CTIP', ier)
@@ -65,6 +68,6 @@ implicit none
     ASSERT(l_xfem)
 !
     call xlagsp(mesh        , model, crack, algo_lagr, nb_dim,&
-                sdline_crack, l_pilo)
+                sdline_crack, l_pilo, tabai, l_ainter)
 
 end subroutine

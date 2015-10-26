@@ -125,7 +125,6 @@ CTXFEM = DEFI_CONTACT(
                      ORDRE_INT=2,
                      ALGO_CONT='CZM',
                      FISS_MAIT = FISS,
-                     ALGO_LAGR='VERSION2',
                      RELATION='CZM_OUV_MIX',
                      ),),);
 
@@ -298,54 +297,54 @@ FY = RECU_FONCTION ( TABLE  = FORCE,
 #--------------------------------------------------------------
 # TESTS SUR LA REPONSE GLOBALE
 #--------------------------------------------------------------
-TEST_TABLE(VALE_CALC= 2.9189129595655E-03,
+TEST_TABLE(VALE_CALC=0.00292361130325,
            NOM_PARA='DY',
            TABLE=TAB_U,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=50,),
            )
 
-TEST_TABLE(VALE_CALC= 2.9439277714182E+07,
+TEST_TABLE(VALE_CALC=29521094.4968,
            NOM_PARA='DY',
            TABLE=FORCE,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=50,),
            )
 
-TEST_TABLE(VALE_CALC=6.604335015817E-03,
+TEST_TABLE(VALE_CALC=0.00660243731831,
            NOM_PARA='DY',
            TABLE=TAB_U,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=75,),
            )
 
-TEST_TABLE(VALE_CALC= 1.0854989750114E+07,
+TEST_TABLE(VALE_CALC=10859045.2122,
            NOM_PARA='DY',
            TABLE=FORCE,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=75,),
            )
-TEST_TABLE(VALE_CALC=7.2936505266874E-03,
+TEST_TABLE(VALE_CALC=0.0073070616116,
            NOM_PARA='DY',
            TABLE=TAB_U,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=100,),
            )
 
-TEST_TABLE(VALE_CALC=5.2103954541529E+06,
+TEST_TABLE(VALE_CALC=5192456.3364,
            NOM_PARA='DY',
            TABLE=FORCE,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=100,),
            )
-TEST_TABLE(VALE_CALC=0.014454169164263,
+TEST_TABLE(VALE_CALC=0.0146055105699,
            NOM_PARA='DY',
            TABLE=TAB_U,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=140,),
            )
 
-TEST_TABLE(VALE_CALC= 9.5855E+05,
+TEST_TABLE(VALE_CALC=938769.395016,
            NOM_PARA='DY',
            TABLE=FORCE,
            FILTRE=_F(NOM_PARA='INST',

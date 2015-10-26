@@ -16,7 +16,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #
-#       CAS_TEST SSNV209F: 3D, ELEMENTS QUAD8, METHODE CONTINUE
+#       CAS_TEST SSNV209F: 3D, ELEMENTS HEXA8, METHODE CONTINUE
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
@@ -26,13 +26,15 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 #  AVEC XFEM
 #......................................................
 #
-# Cas reference 3D: methode continue
+# Cas reference 3D: methode continue (Modélisation FEM)
 #
 #----------------------------------------------
 #                MAILLAGE
 #----------------------------------------------
 
 MA=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI'),)
+
+y0=-0.00952381
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
@@ -73,21 +75,21 @@ MATPLA=DEFI_MATERIAU(ELAS=_F(E = 1.3E11,NU = 0.2,),);
 MATBAT=DEFI_MATERIAU(ELAS=_F(E = 1.E16,NU = 0.0,),);
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
-                    AFFE=(_F(GROUP_MA ='VPLAQ',
-                             MATER = MATPLA,),
-                          _F(GROUP_MA ='VBATI',
-                             MATER = MATBAT,),),)
+                    AFFE=(_F(GROUP_MA ='MTOT',
+                             MATER = MATPLA,),),)
 
 #----------------------------------------------
 #                   CHARGEMENTS
 #----------------------------------------------
 
-CHCINE=AFFE_CHAR_CINE(MODELE=MO,
-#                     ENCASTREMENT DU BAS
-                      MECA_IMPO=(_F(GROUP_MA='SENCAV',
-                                    DX=0.,DY=0.),
-                                 _F(GROUP_NO=('PHA','PHS','PHAP','PHSP',),
-                                    DZ=0.),),);
+
+CHCINE=AFFE_CHAR_MECA(MODELE=MO,
+#                 Blockage du bâti
+                  DDL_IMPO=(_F(GROUP_MA=('VBATI'),
+                                DX=0.,
+                                DY=0.,
+                                DZ=0.),  
+                           ),);
 
 CHA1=AFFE_CHAR_MECA(MODELE=MO,
                     PRES_REP=(_F(GROUP_MA = 'SPRESV',
@@ -218,7 +220,7 @@ TEST_RESU(RESU=(_F(GROUP_NO='PPA',
                    RESULTAT=U2M,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC=3.0697055365648997E-05,
+                   VALE_CALC=3.06971229984E-05,
 
                    ),
                 _F(GROUP_NO='PPB',
@@ -226,7 +228,7 @@ TEST_RESU(RESU=(_F(GROUP_NO='PPA',
                    RESULTAT=U2M,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC=2.9258807505021E-05,
+                   VALE_CALC=2.92588754096E-05,
 
                    ),
                 _F(GROUP_NO='PPC',
@@ -234,7 +236,7 @@ TEST_RESU(RESU=(_F(GROUP_NO='PPA',
                    RESULTAT=U2M,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC=2.4735987440627999E-05,
+                   VALE_CALC=2.47360419196E-05,
 
                    ),
                 _F(GROUP_NO='PPD',
@@ -242,7 +244,7 @@ TEST_RESU(RESU=(_F(GROUP_NO='PPA',
                    RESULTAT=U2M,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC=2.1587122445095999E-05,
+                   VALE_CALC=2.158716719E-05,
 
                    ),
                 _F(GROUP_NO='PPE',
@@ -250,7 +252,7 @@ TEST_RESU(RESU=(_F(GROUP_NO='PPA',
                    RESULTAT=U2M,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC=1.7004520074141002E-05,
+                   VALE_CALC=1.70045594304E-05,
 
                    ),
                 ),

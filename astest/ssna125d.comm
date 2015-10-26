@@ -183,7 +183,6 @@ CONT_G  = DEFI_CONTACT(MODELE = MODELEK,
                        FORMULATION    = 'XFEM',
                        ZONE =(
                            _F(FISS_MAIT = FISS,
-                              ALGO_LAGR='VERSION2',
                               CONTACT_INIT  = 'OUI',
                               GLISSIERE     = 'NON',
                               ),),);

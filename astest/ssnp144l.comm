@@ -27,12 +27,12 @@ MAILLAG2= COPIER(CONCEPT= MAILLAG1)
 #----------------------------------------------
 
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
-                     AFFE=(_F(GROUP_MA='SURF',
-                              PHENOMENE='MECANIQUE',
-                              MODELISATION='C_PLAN',),
-                           _F(GROUP_MA=('LIG1','LIG3',),
-                              PHENOMENE='MECANIQUE',
-                              MODELISATION='C_PLAN',),),);
+                    AFFE=(_F(GROUP_MA='SURF',
+                             PHENOMENE='MECANIQUE',
+                             MODELISATION='C_PLAN',),
+                          _F(GROUP_MA=('LIG1','LIG3',),
+                             PHENOMENE='MECANIQUE',
+                             MODELISATION='C_PLAN',),),);
 
 MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                     MAILLAGE=MAILLAG2,
@@ -92,7 +92,6 @@ CTXFEM = DEFI_CONTACT(
                        ORDRE_INT=3,
                        ALGO_CONT='CZM',
                        FISS_MAIT = FISS,
-                       ALGO_LAGR='VERSION2',
                        RELATION='CZM_EXP_REG',),),);
 
 #----------------------------------------------

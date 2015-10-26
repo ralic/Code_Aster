@@ -17,12 +17,13 @@
 !
 interface
     subroutine xdefco(mesh        , model, crack, algo_lagr, nb_dim,&
-                      sdline_crack)
+                      sdline_crack, tabai)
         integer, intent(in) :: nb_dim
         character(len=8), intent(in) :: mesh
         character(len=8), intent(in) :: model
         character(len=8), intent(in)  :: crack
         integer, intent(in) :: algo_lagr
         character(len=14), intent(in) :: sdline_crack
+        character(len=19) :: tabai
     end subroutine xdefco
 end interface

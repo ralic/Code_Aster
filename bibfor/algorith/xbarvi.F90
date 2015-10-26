@@ -1,4 +1,4 @@
-subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
+subroutine xbarvi(noma, nomo, fiss, faclon, ainter, tabai)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -21,7 +21,7 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
     character(len=8) :: noma, nomo, fiss
-    character(len=19) :: faclon, ainter
+    character(len=19) :: faclon, ainter, tabai
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,30 +61,27 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
 !
 ! ----------------------------------------------------------------------
 !
-! IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  NOMO   : NOM DU MODELE
-! IN  FISS   : NOM DE LA FISSURE EN COURS
-! IN FACLON  : TOPOFAC.LO SIMPLIFIÉ
+! IN  CHAR      : NOM UTILISATEUR DU CONCEPT DE CHARGE
+! IN  NOMA      : NOM DU MAILLAGE
+! IN  NOMO      : NOM DU MODELE
+! IN  FISS      : NOM DE LA FISSURE EN COURS
+! IN FACLON     : TOPOFAC.LO SIMPLIFIÉ
 ! IN/OUT AINTER : TOPOFAC.AI SIMPLIFIÉ
-!
+! IN TABAI      : 
 !
 !
 !
     integer :: jcsd1, jcsl1, jcsd2, jcsl2, jconx2
-    integer :: jlis1, ima, pin, iad, iret, ninter, ifiss
-    integer :: ar(12, 3), i, ia, nbar, nloc(2), nglo(2), nuno(2), neq, no
+    integer :: ima, pin, iad, iret, ninter, ifiss, dimai, nbedge
+    integer :: ar(12, 3), i, ia, nbar, nloc(2), nglo(2), no
     character(len=24) :: grp(3), elfis_heav, elfis_ctip, elfis_hect
-    character(len=19) :: nliseq
     character(len=8) :: typma
     character(len=6) :: nompro
     parameter (nompro = 'XBARVI')
-    integer :: zxain, in, jn, iac, ier, ncta, ncte
-    integer :: jcntes, jcnte2, narcon
-    aster_logical :: lmulti, lconne
-    integer :: kk, jgrp, ienr, nmaenr
-    integer, pointer :: arcon(:) => null()
-    integer, pointer :: connectant(:) => null()
+    integer :: zxain, ier
+    aster_logical :: lmulti
+    integer :: igrp, jgrp, ienr, nmaenr, iar
+    integer, pointer :: vtabai(:) => null()    
     integer, pointer :: connex(:) => null()
     integer, pointer :: typmail(:) => null()
     integer, pointer :: nbsp(:) => null()
@@ -98,8 +95,6 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
 ! --- INITIALISATIONS
 !
     zxain = xxmmvd('ZXAIN')
-    narcon = 0
-    iac = 0
 !
 ! --- LE MULTI-HEAVISIDE EST-IL ACTIF ?
 !
@@ -112,28 +107,15 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
         call jeveuo('&&XCONTA.NBSP', 'L', vi=nbsp)
     endif
 !
-! --- ON RECUPERE LA LISTE DES RELATIONS D'EGALITÉS
+! --- Le tableau tabai a été créé par xlagsp ?
 !
-    nliseq = fiss(1:8)//'.LISEQ'
-    call jeexin(nliseq, ier)
-    if (ier .eq. 0) then
-        neq = 0
-    else
-        call jeveuo(nliseq, 'L', jlis1)
-        call jelira(nliseq, 'LONMAX', neq)
-    endif
-!
-! --- Y A T-IL DES ARETES CONNECTÉES ?
-!
-    call jeexin(fiss(1:8)//'.CONNECTANT', ier)
-    if (ier .eq. 0) then
-        lconne = .false.
-        ncta = 0
-    else
-        lconne = .true.
-        call jeveuo(fiss(1:8)//'.CONNECTANT', 'L', vi=connectant)
-        call jelira(fiss(1:8)//'.CONNECTANT', 'LONMAX', ncta)
-        call jeveuo(fiss(1:8)//'.CONNECTES ', 'L', jcntes)
+    call jeexin(tabai, ier)
+    if(ier.ne.0) then
+        call jeveuo(tabai, 'L', vi=vtabai)
+        call jelira(tabai, 'LONMAX', dimai)
+        nbedge=dimai/3
+    else 
+        nbedge=0
     endif
 !
 ! --- ON RECUPERE DES INFOS GLOBALES SUR LE MAILLAGE
@@ -162,229 +144,88 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
     grp(2)=elfis_ctip
     grp(3)=elfis_hect
 !
-! --- PREMIÈRE PASSE POUR DIMENSIONER LE VECT DES ARETES CONNECTÉES
+! --- Boucle sur les groupes de mailles
 !
-    if ((.not.lconne)) goto 41
+    do igrp = 1, 3
+        call jeexin(grp(igrp), iret)
+        if (iret .eq. 0) cycle
+        call jeveuo(grp(igrp), 'L', jgrp)
+        call jelira(grp(igrp), 'LONMAX', nmaenr)
 !
-! --- BOUCLE SUR LES GRP
+! --- Boucle sur les mailles du groupe
 !
-    do 81 kk = 1, 3
-        call jeexin(grp(kk), iret)
-        if (iret .eq. 0) goto 81
-        call jeveuo(grp(kk), 'L', jgrp)
-        call jelira(grp(kk), 'LONMAX', nmaenr)
-!
-! --- BOUCLE SUR LES MAILLES DU GROUPE
-!
-        do 11 ienr = 1, nmaenr
+        do ienr = 1, nmaenr
             ima = zi(jgrp-1+ienr)
             if (lmulti) ifiss = nbsp(ima)
-            if (ifiss .eq. 0) goto 11
-            call cesexi('C', jcsd1, jcsl1, ima, 1,&
-                        ifiss, 1, iad)
-            if (iad .eq. 0) goto 11
+            if (ifiss .eq. 0) cycle
+            call cesexi('C', jcsd1, jcsl1, ima, 1, ifiss, 1, iad)
+            if (iad .eq. 0) cycle
             ASSERT(iad.gt.0)
             ninter = csv1(iad)
-            if (ninter .eq. 0) goto 11
+            if (ninter .eq. 0) cycle
             ASSERT(ninter.gt.0)
             call jenuno(jexnum('&CATA.TM.NOMTM', typmail(ima)), typma)
             call conare(typma, ar, nbar)
-            do 21 pin = 1, ninter
 !
-! --- NUMERO DE L'ARETE INTERSECTÉ
+! --- Boucle sur les arêtes intersectées
 !
-                call cesexi('S', jcsd2, jcsl2, ima, 1,&
-                            ifiss, zxain*(pin-1)+ 1, iad)
+            do pin = 1, ninter
+                call cesexi('S', jcsd2, jcsl2, ima, 1, ifiss, zxain*(pin-1)+ 1, iad)
                 ASSERT(iad.gt.0)
                 ia=nint(csv2(iad))
-                if (ia .eq. 0) goto 21
-                ASSERT(ia.gt.0)
-!
-! --- S IL S'AGIT D'UNE ARRETE, RECUP DES NUM GLOBAUX DE SES NOEUDS
-!
-                do 31 i = 1, 2
-                    nloc(i) = ar(ia,i)
-                    nglo(i) = connex(zi(jconx2+ima-1)+nloc(i)-1)
- 31             continue
-!
-! --- COMPARAISON AVEC LES NOEUDS DE LA LISTE DE NOEUDS CONNECTANTS
-!
-                do 51 in = 1, ncta/3
-                    nuno(1) = connectant(3*(in-1)+1)
-                    if (nuno(1) .eq. nglo(1) .or. nuno(1) .eq. nglo(2)) then
-                        ncte = connectant(3*(in-1)+2)
-                        jcnte2 = connectant(3*(in-1)+3)
-                        do 61 jn = 1, ncte
-                            nuno(2) = zi(jcntes-1 + jcnte2 + jn)
-                            if (nuno(2) .eq. nglo(1) .or. nuno(2) .eq. nglo( 2)) then
-                                narcon = narcon + 1
-                                goto 21
-                            endif
- 61                     continue
-                    endif
- 51             continue
- 21         continue
- 11     continue
- 81 continue
-    ASSERT(narcon.gt.0)
-    AS_ALLOCATE(vi=arcon, size=4*narcon)
-!
- 41 continue
-!
-! --- BOUCLE SUR LES GRP
-!
-    do 80 kk = 1, 3
-        call jeexin(grp(kk), iret)
-        if (iret .eq. 0) goto 80
-        call jeveuo(grp(kk), 'L', jgrp)
-        call jelira(grp(kk), 'LONMAX', nmaenr)
-!
-! --- BOUCLE SUR LES MAILLES DU GROUPE
-!
-        do 10 ienr = 1, nmaenr
-            ima = zi(jgrp-1+ienr)
-            if (lmulti) ifiss = nbsp(ima)
-            if (ifiss .eq. 0) goto 10
-            call cesexi('C', jcsd1, jcsl1, ima, 1,&
-                        ifiss, 1, iad)
-            if (iad .eq. 0) goto 10
-            ASSERT(iad.gt.0)
-            ninter = csv1(iad)
-            if (ninter .eq. 0) goto 10
-            ASSERT(ninter.gt.0)
-            call jenuno(jexnum('&CATA.TM.NOMTM', typmail(ima)), typma)
-            call conare(typma, ar, nbar)
-            do 20 pin = 1, ninter
-!
-! --- NUMERO DE L'ARETE INTERSECTÉE
-!
-                call cesexi('S', jcsd2, jcsl2, ima, 1,&
-                            ifiss, zxain*(pin-1)+ 1, iad)
-                ASSERT(iad.gt.0)
-                ia=nint(csv2(iad))
-                call cesexi('S', jcsd2, jcsl2, ima, 1,&
-                            ifiss, zxain*(pin-1)+ 2, iad)
+                call cesexi('S', jcsd2, jcsl2, ima, 1, ifiss, zxain*(pin-1)+ 2, iad)
                 ASSERT(iad.gt.0)
                 no=nint(csv2(iad))
                 ASSERT(no.ge.0)
-                call cesexi('S', jcsd2, jcsl2, ima, 1,&
-                            ifiss, zxain*(pin-1)+ 5, iad)
+                call cesexi('S', jcsd2, jcsl2, ima, 1, ifiss, zxain*(pin-1)+ 5, iad)
                 if (iad .le. 0) iad = -iad
 !
 ! --- S IL S'AGIT D'UN NOEUD, ALORS IL EST VITAL
 !
                 if (no .gt. 0) then
-                    csv2(iad)=1
-                    zl(jcsl2-1+iad)=.true.
+                    csv2(iad) = 1
+                    zl(jcsl2-1+iad) = .true.
                 endif
-                if (ia .gt. 0) then
 !
 ! --- S IL S'AGIT D'UNE ARRETE, RECUP DES NUM GLOBAUX DE SES NOEUDS
 !
-                    do 30 i = 1, 2
+                if (ia .gt. 0) then
+                    do i = 1, 2
                         nloc(i) = ar(ia,i)
-                        nglo(i) = connex(zi(jconx2+ima-1)+nloc(i) -1)
- 30                 continue
+                        nglo(i) = connex(zi(jconx2+ima-1)+nloc(i)-1)
+                    enddo
 !
-! --- COMPARAISON AVEC LES COUPLES DE NO DE LA LISTE DE RELAT D'EGALITÉS
+! --- Initialisation: on écrit 0 par défaut
 !
-                    do 50 i = 1, neq/2
-                        nuno(1) = zi(jlis1-1+2*(i-1)+1)
-                        nuno(2) = zi(jlis1-1+2*(i-1)+2)
-                        if (nuno(1) .eq. nglo(1) .and. nuno(2) .eq. nglo(2) .or. nuno(1)&
-                            .eq. nglo(2) .and. nuno(2) .eq. nglo(1)) then
+                    csv2(iad) = 0
+                    zl(jcsl2-1+iad) = .true.
 !
-! --- SI C EGAL, ON EST SUR UNE ARETE VITALE, ON MET LE STATUT À 1
+! --- Recherche de l'arête pour récupérer son statut stocké dans tabai
 !
-                            csv2(iad)=1
-                            zl(jcsl2-1+iad)=.true.
-!
-! --- COMPARAISON AVEC LES NOEUDS DE LA LISTE DE NOEUDS CONNECTANTS
-!
-                            do 60 in = 1, ncta/3
-                                nuno(1) = connectant(3*(in-1)+1)
-                                if (nuno(1) .eq. nglo(1) .or. nuno(1) .eq. nglo(2)) then
-!
-! --- SI C EGALE, ON RECUPERE LA LISTE DES NOEUDS CONNECTES
-!
-                                    ncte = connectant(3*(in-1)+2)
-                                    jcnte2 = connectant(3*(in-1)+3)
-                                    do 70 jn = 1, ncte
-!
-! --- ON COMPARE LES NUMEROS DE CETTE LISTE À CELLE DE L'ARETE
-!
-                                        nuno(2) = zi(jcntes-1 + jcnte2 + jn)
-                                        if (nuno(2) .eq. nglo(1) .or. nuno( 2) .eq. nglo(2)) then
-!
-! --- SI C EGALE, ON NOTE LE NUMERO DE MAILLE, LE NUMERO LOCAL DE
-! --- L'ARETE ET ON SORT
-!
-                                            iac = iac + 1
-                                            ASSERT(iac.le.narcon)
-                                            arcon(4*(iac-1)+1) = in
-                                            arcon(4*(iac-1)+2) = ima
-                                            arcon(4*(iac-1)+3) = ia
-                                            arcon(4*(iac-1)+4) = jn
-                                            goto 20
-                                        endif
- 70                                 continue
-                                endif
- 60                         continue
-                            goto 20
-                        else
-                            csv2(iad)=0
-                            zl(jcsl2-1+iad)=.true.
+                    do iar = 1, nbedge
+                        if ((vtabai(3*(iar-1) + 1).eq.nglo(1) .and. &
+                             vtabai(3*(iar-1) + 2).eq.nglo(2)) .or.&
+                            (vtabai(3*(iar-1) + 1).eq.nglo(2) .and. &
+                             vtabai(3*(iar-1) + 2).eq.nglo(1))) then
+!                           'iar' est l'indice de l'arête recherchée. On copie les informations
+                            csv2(iad) = vtabai(3*(iar-1) + 3)  
                         endif
+                    enddo
 !
- 50                 continue
-!
-                endif
-!
- 20         continue
- 10     continue
- 80 continue
-!   menage
-    do kk = 1, 3
-        call jeexin(grp(kk), iret)
-        if (iret .ne. 0) call jedetr(grp(kk)) 
+                endif 
+            enddo
+        enddo
     enddo
 !
-    ASSERT(iac.eq.narcon)
-    if (narcon .gt. 0) then
+!   menage
 !
-! --- ON ECRIT LE VECTEUR DES ARETES CONECTÉES
+    do igrp = 1, 3
+        call jeexin(grp(igrp), iret)
+        if (iret .ne. 0) call jedetr(grp(igrp)) 
+    enddo
 !
-        call wkvect(fiss(1:8)//'.CNCTE     ', 'G V I', 4*narcon, jcntes)
-        ncte = 0
-!
-! --- ON BOUCLE SUR TOUT LES NOEUDS CONNECTANT, CHAQUE NOEUD
-! --- CONNECTANT DEFINI UN GROUPE
-!
-        do 90 in = 1, ncta/3
-!
-! --- ON BOUCLE SUR TOUTES LES ARETES CONNECTEES
-!
-            do 100 iac = 1, narcon
-                if (arcon(4*(iac-1)+2) .eq. in) then
-                    ncte = ncte+1
-!
-! --- DES QU'IL Y EN A UNE QUI CORRESPOND AU GROUPE EN COURS,
-! --- ON LE STOQUE DANS CE GROUPE
-!
-                    zi(jcntes-1+4*(ncte-1)+1) = arcon(4*(iac-1)+ 4)
-                    zi(jcntes-1+4*(ncte-1)+2) = in
-                    zi(jcntes-1+4*(ncte-1)+3) = arcon(4*(iac-1)+ 2)
-                    zi(jcntes-1+4*(ncte-1)+4) = arcon(4*(iac-1)+ 3)
-                endif
-100         continue
- 90     continue
-!
-! --- MENAGE
-!
-        call jedetr(fiss(1:8)//'.CONNECTANT')
-        call jedetr(fiss(1:8)//'.CONNECTES ')
-        AS_DEALLOCATE(vi=arcon)
-    endif
+    call jedetr(tabai)
+    call jedetr(fiss(1:8)//'.PILO')
 !
     call jedema()
 end subroutine

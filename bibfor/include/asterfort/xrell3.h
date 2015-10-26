@@ -1,4 +1,4 @@
-!
+
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,16 +15,17 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
-    subroutine xneuvi(nb_edgez, nb_edge, nbno, tabdir, scorno,&
-                      noeud, crack, tabhyp)
-        integer :: nbno
-        integer :: nb_edgez
-        integer :: nb_edge
-        integer :: tabdir(nb_edgez, 2)
-        integer :: scorno(2*nb_edgez)
-        integer :: noeud(2*nb_edgez)
+     subroutine xrell3(tabnoz, nbarz, crack, sdline_crack,&
+                       tabl_scor, tabai, l_ainter)
+        integer, intent(in) :: nbarz
+        integer, intent(in) :: tabnoz(3, nbarz)
         character(len=8) :: crack
-        aster_logical, intent(in) :: tabhyp(nb_edgez)
-    end subroutine xneuvi
+        character(len=14), intent(in) :: sdline_crack
+        aster_logical, intent(in) :: l_ainter
+        real(kind=8), intent(in) :: tabl_scor(nbarz)
+        character(len=19) :: tabai
+    end subroutine xrell3
 end interface

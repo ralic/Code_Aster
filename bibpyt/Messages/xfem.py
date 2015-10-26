@@ -630,6 +630,20 @@ L'opération ASSE_DEPL de l'opérateur CREA_CHAMP ne doit pas être utilisée si
 L'opération ASSE_DEPL de l'opérateur CREA_CHAMP ne prend pas en charge les éléments HM." 
 """),
 
+    90: _(u"""
+  -> Le mot-clé ALGO_LAGR de DEFI_CONTACT vaut 'VERSION3' et le maillage est composé d'éléments linéaires.
+  -> Risque & Conseil:
+     Le choix ALGO_LAGR='VERSION3' n'est utilisable qu'avec un maillage composé d'éléments quadratiques.
+"""),
+
+    91: _(u"""
+  -> Le mot-clé ALGO_LAGR de DEFI_CONTACT vaut 'VERSION3' et le maillage est la formulation du contact en
+     grands glissements est utilisée.
+  -> Risque & Conseil:
+     Le choix ALGO_LAGR='VERSION3' n'est utilisable qu'avec la formulation du contact en petits glissements,
+     i.e. REAC_GEOM='SANS".
+"""),
+
     93: _(u"""
      --> La loi cohésive CZM_LIN_MIX est utilisable uniquement avec un contact de type mortier
          dans le modèle %(k1)s. En revanche, les autres lois cohésives et de contact-frottement

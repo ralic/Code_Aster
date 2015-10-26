@@ -77,7 +77,6 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                                  CONTACT_INIT  = 'OUI',
                                  GLISSIERE     = 'NON',
                                  FISS_MAIT     = FISS1,
-                                 ALGO_LAGR     = 'VERSION2',
                               ),
                              _F(
                                  INTEGRATION   = 'NOEUD',
@@ -86,7 +85,6 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                                  CONTACT_INIT  = 'OUI',
                                  GLISSIERE     = 'NON',
                                  FISS_MAIT     = FISS2,
-                                 ALGO_LAGR     = 'VERSION2',
                               ),
                             )
                     );

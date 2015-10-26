@@ -22,7 +22,6 @@
 
 # GRANDES ROTATIONS AVEC XFEM
 # TRIANGLES, CONTACT OUI
-#
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
 
@@ -76,12 +75,11 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                                  CONTACT_INIT  = 'OUI',
                                  GLISSIERE     = 'OUI',
                                  FISS_MAIT     = FISS,
-                               ALGO_CONT    = 'STANDARD',
-                               COEF_CONT    = 100.,
-                               ALGO_LAGR    = 'VERSION2',
-                              ),
-                            )
-                    );
+                                 ALGO_CONT    = 'STANDARD',
+                                 COEF_CONT    = 100.,
+                                ),
+                             )
+                     );
 
 
 E=100.0E6
@@ -167,9 +165,9 @@ RES_XFEM=POST_CHAM_XFEM( MODELE_VISU  = MOD_VISU,
 
 LAG=[None]*5
 inst=[0.0,0.25,0.5,0.75,1.0]
-valref=[-1.0641595212028E+06,-1.0913093647876E+06,-1.0727495684307E+06,
+valref=[-1.0641595212028E+06,-1.09560479239E+06,-1.07197933604E+06,
 -1.0865393622901E+06,-1.0751141511207E+06,-1.0858947346535E+06,
--1.0754529124068E+06,-1.0841377323676E+06]
+-1.075447794778E+06,-1.0841377323676E+06]
 
 a=-9.7799511e-3
 b=0.0880195599

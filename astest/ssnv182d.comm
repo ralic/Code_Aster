@@ -59,7 +59,7 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                                COULOMB      = 1.0,
                                ALGO_CONT    = 'STANDARD',
                                COEF_CONT    = 100.,
-                               ALGO_LAGR    = 'NON',
+                               ALGO_LAGR='NON',
                              ),
                          ),
                    );

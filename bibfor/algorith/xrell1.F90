@@ -1,9 +1,12 @@
-subroutine xrell1(tabl_node   , nb_edge, node_sele, nb_node_sele, sdline_crack)
+subroutine xrell1(tabl_node   , nb_edge, node_sele, nb_node_sele, sdline_crack,&
+                  tabai, l_ainter)
 !
 implicit none
 !
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
 !
@@ -31,6 +34,8 @@ implicit none
     integer, intent(in) :: tabl_node(3, nb_edge)
     integer, intent(inout) :: node_sele(nb_edge)
     character(len=14), intent(in) :: sdline_crack
+    aster_logical, intent(in) :: l_ainter
+    character(len=19) :: tabai
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,7 +59,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: i, j, in, dimeq, ia, ext, libre, k, eq(100), tabno(nb_edge, 3), ie
-    integer :: liseqt(nb_edge, 2), nreleq, jlis1
+    integer :: liseqt(nb_edge, 2), nreleq, jlis1, jtabai, ier
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -97,6 +102,21 @@ implicit none
             liseqt(nreleq,2)=tabno(eq(ie) , 2)
         end do
     end do
+!
+! --- Stockage du tableau temporaire: liaison dans tabai (5ème composante de TOPOFAC.AI)
+!
+    if (l_ainter) then
+        call jeexin(tabai,ier)
+        ASSERT(ier.eq.0)
+        if(nreleq.ne.0) then
+            call wkvect(tabai, 'V V I', nreleq*3, jtabai)
+            do i = 1, nreleq
+                zi(jtabai-1+3*(i-1)+1) = liseqt(i,1)
+                zi(jtabai-1+3*(i-1)+2) = liseqt(i,2)
+                zi(jtabai-1+3*(i-1)+3) = 1
+            enddo
+        endif
+    endif
 !
 ! --- STOCKAGE DE LISEQT
 !

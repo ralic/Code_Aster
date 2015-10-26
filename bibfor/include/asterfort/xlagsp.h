@@ -19,13 +19,14 @@
 !
 interface
     subroutine xlagsp(mesh        , model, crack, algo_lagr, nb_dim,&
-                      sdline_crack, l_pilo)
+                      sdline_crack, l_pilo, tabai, l_ainter)
         integer, intent(in) :: nb_dim
         character(len=8), intent(in) :: mesh
         character(len=8), intent(in) :: model
         character(len=8), intent(in)  :: crack
         integer, intent(in) :: algo_lagr
         character(len=14), intent(in) :: sdline_crack
-        aster_logical, intent(in) :: l_pilo
+        aster_logical, intent(in) :: l_pilo, l_ainter
+        character(len=19) :: tabai
     end subroutine xlagsp
 end interface

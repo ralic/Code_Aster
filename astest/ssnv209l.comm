@@ -20,9 +20,6 @@
 DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),
       IGNORE_ALARM=('MODELE1_63'))
 
-# <MODELE1_63> : DANS UN MODELE, IL EXISTE DES ELEMENTS DE TYPE "BORD" QUI N'ONT PAS DE VOISIN AVEC RIGIDITE
-#  LE MODELE PROVOQUANT CES ALARMES CONTIENT UNE SURFACE RIGIDE POUR LE CONTACT
-
 #......................................................
 #  CALCUL TEST ELEMENTS FINIS XFEM ET CONTACT 3D QUAD8
 #  PLAQUE EN CONTACT FROTTANT SUR BATI RIGIDE
@@ -79,14 +76,6 @@ MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                                        ),
                                     _F(NOM='PLAQ',
                                        DIFFE=('PL','SURF','LIG1','LIG2','LIG3','LIG4')),
-                                    _F(OPTION='CYLINDRE',
-                                       NOM='BA',
-                                       GROUP_NO_CENTRE='P1',
-                                       VECT_NORMALE= (1.,0.,0.),
-                                       RAYON=0.00999,
-                                       ),
-                                    _F(NOM='BAT',
-                                       DIFFE=('BA','SURF','LIG1','LIG2','LIG3','LIG4')),
                                     ),
                     INFO=1);
 
@@ -127,6 +116,11 @@ MAILLAG2=MODI_MAILLAGE(reuse=MAILLAG2,
                        ORIE_PEAU_3D=(_F(GROUP_MA = 'SUR2'),
                                      _F(GROUP_MA = 'SUR3'),
                                      _F(GROUP_MA = 'SUR4')));
+
+# visualiser le maillage
+IMPR_RESU(UNITE=81,
+          FORMAT='MED',
+          RESU=_F(MAILLAGE=MAILLAG2))
 
 #----------------------------------------------
 #                   MODELE ET FISSURE
@@ -203,7 +197,6 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                                COEF_PENA_CONT = 1.E15,
                                ALGO_FROT      = 'PENALISATION',
                                COEF_PENA_FROT = 1.0E7,
-                              ALGO_LAGR      = 'VERSION2',
                              ),
                          ),
                    );

@@ -59,7 +59,6 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                                ORDRE_INT    = 3,
                                ALGO_CONT    = 'CZM',
                                RELATION     = 'CZM_LIN_MIX',
-                               ALGO_LAGR    = 'VERSION2',
                              ),
                          ),
                    );

@@ -64,8 +64,8 @@ subroutine nmaret(nbarvz   , nb_node    , nb_dim     , sdline_crack, nb_node_sel
     integer :: jgro1, jgro2, j, jgro, i, l, nreleq, repere, jlis1
     integer :: effac, nar, narm, iret, vali(2)
     aster_logical :: noeuad
-    character(len=19) :: nlise2
-    aster_logical :: l_create_group, l_pilo
+    character(len=19) :: nlise2, tabai
+    aster_logical :: l_create_group, l_pilo, l_ainter
 !
 ! ----------------------------------------------------------------------
 !
@@ -135,9 +135,12 @@ subroutine nmaret(nbarvz   , nb_node    , nb_dim     , sdline_crack, nb_node_sel
 !
     l_create_group = .true.
     l_pilo = .true.
+    l_ainter=.false.
+    tabai='&&NMARET.TABAI'
     nlise2 = '&&NMARET.LISEQ'
     call xrell2(tabnoz, nb_dim, nbarvi, tabcoz, tabcrz,&
-                l_create_group, nlise2, l_pilo)
+                l_create_group, nlise2, l_pilo, tabai, l_ainter)
+    call jedetr(nlise2(1:8)//'.PILO')
     nar=nbarvi
     call jeexin(nlise2, iret)
     if (iret .ne. 0) then

@@ -75,7 +75,6 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                                COEF_PENA_CONT    = 1.E15,
                                ALGO_FROT    = 'PENALISATION',
                                COEF_PENA_FROT    = 1.E8,
-                               ALGO_LAGR    = 'VERSION2',
                              ),
                          ),
                    );

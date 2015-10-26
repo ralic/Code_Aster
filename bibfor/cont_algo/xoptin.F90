@@ -74,7 +74,7 @@ implicit none
     real(kind=8) :: rre, coor(3)
     character(len=8) :: elem_type
     character(len=19) :: chs(7)
-    character(len=24) :: xfimai, cncte
+    character(len=24) :: xfimai
     character(len=24) :: tabfin, maescx
     integer :: jtabf, jmaesx
     aster_logical :: l_cont_init, l_gliss
@@ -147,7 +147,6 @@ implicit none
         type_inte   =  mminfi(sdcont_defi, 'INTEGRATION'   , i_zone)
         l_gliss     =  mminfl(sdcont_defi, 'GLISSIERE_ZONE', i_zone)
         l_cont_init = (mminfi(sdcont_defi, 'CONTACT_INIT'  , i_zone).eq.1)
-        cncte       = zk8(jfimai-1+i_zone)//'.CNCTE'
 !
 ! ----- Current slave element
 !
@@ -234,18 +233,24 @@ implicit none
 ! ------------- Essential integration point
 !
                 if (mod(type_inte,10) .eq. 2) then
+!                   If a Gauss quadrature rule is considered, no integration point
+!                   is located on a cut edge so that all integration points are activated
                     nvit  = 1
-                    group = 0
-                    naret = 0
                 else
-                    call xpivit(jcesd      , jcesv         , jcesl  , i_crack, cncte ,&
+                    call xpivit(jcesd      , jcesv         , jcesl  , i_crack, &
                                 model_ndim , elem_slav_nume, i_facet, ksipc1 , ksipc2,&
-                                nvit       , group         , naret)
+                                nvit       )
                     if (state_slave .lt. 0) then
                         nvit = 0
                     endif
                 endif
                 zr(jtabf+ztabf*nt_cont_poin+ztabf*(i_cont_poin-1)+27) = nvit
+!
+!               Group and edge indices are not used any more, but we keep them
+!               so that no array size has to be changed
+                group = 0
+                naret = 0
+!
                 zr(jtabf+ztabf*nt_cont_poin+ztabf*(i_cont_poin-1)+4)  = group
                 zr(jtabf+ztabf*nt_cont_poin+ztabf*(i_cont_poin-1)+5)  = naret
 !

@@ -219,7 +219,6 @@ for i in range(nbcalc) :
                                   ORDRE_INT=4,
                                   ALGO_CONT='CZM',
                                   FISS_MAIT=FISS[i],
-                                  ALGO_LAGR='VERSION2',
                                   RELATION='CZM_LIN_MIX',
                          )));
 #

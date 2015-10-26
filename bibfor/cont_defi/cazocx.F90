@@ -62,7 +62,7 @@ implicit none
     real(kind=8) :: coef_pena_cont,  coef_pena_frot, coef_augm_cont, coef_augm_frot
     real(kind=8) :: algo_cont, algo_frot
     real(kind=8) :: coef_coul_frot, seuil_init, tole_proj_ext
-    aster_logical :: l_frot
+    aster_logical :: l_frot, l_xfem_gg
     integer, pointer :: v_xfem_cont(:) => null()
     character(len=24) :: sdcont_caraxf
     real(kind=8), pointer :: v_sdcont_caraxf(:) => null()
@@ -98,6 +98,7 @@ implicit none
 ! - Parameters
 !
     l_frot      = cfdisl(sdcont_defi,'FROTTEMENT')
+    l_xfem_gg   = cfdisl(sdcont_defi,'CONT_XFEM_GG')
 !
 ! - Check model (XFEM)
 !
@@ -222,6 +223,23 @@ implicit none
         v_sdcont_caraxf(zcmxf*(i_zone-1)+9) = 1.d0
     else if (s_algo_lagr.eq.'VERSION2') then
         v_sdcont_caraxf(zcmxf*(i_zone-1)+9) = 2.d0
+    else if (s_algo_lagr.eq.'VERSION3') then
+!       Algorithme uniquement disponible pour des éléments quadratiques
+        if (v_xfem_cont(1).ne.3) call utmess('F', 'XFEM_90')
+!       Algorithme uniquement disponible en petits glissements
+        if (l_xfem_gg) call utmess('F', 'XFEM_91')
+
+        v_sdcont_caraxf(zcmxf*(i_zone-1)+9) = 3.d0
+    else if (s_algo_lagr.eq.'AUTO') then
+!       cas 'AUTO' :
+!          - si quadratique et formulation petits glissements,
+!            on choisit l'algo P2/P1*
+!          - sinon, on choisit l'algo "version 2" (P1/P1 ou P2/P1-)
+        if (v_xfem_cont(1).eq.3.and..not.l_xfem_gg) then
+            v_sdcont_caraxf(zcmxf*(i_zone-1)+9) = 3.d0
+        else
+            v_sdcont_caraxf(zcmxf*(i_zone-1)+9) = 2.d0
+        endif
     else
         ASSERT(.false.)
     endif

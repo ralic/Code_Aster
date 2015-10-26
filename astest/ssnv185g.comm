@@ -80,7 +80,6 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                       ZONE=(
                             _F(
                                FISS_MAIT    = FISS,
-                               ALGO_LAGR    = 'VERSION2',
                                INTEGRATION  = 'GAUSS',
                                CONTACT_INIT = 'OUI',
                              ),
