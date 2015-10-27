@@ -602,6 +602,37 @@ TEST_RESU(RESU=(
                    REFERENCE = 'ANALYTIQUE',),
            ),)
 
+U=CALC_CHAMP(reuse=U,RESULTAT=U,DEFORMATION=('EPSP_NOEU'))
+
+TEST_RESU(RESU=(
+                _F(INST=24.,
+                   RESULTAT=U,
+                   NOM_CHAM='EPSP_NOEU',
+                   NOEUD='N13',
+                   NOM_CMP='EPYY',
+                   VALE_CALC=0.0,
+                   VALE_REFE=0.0,
+                   REFERENCE = 'ANALYTIQUE', 
+                   ORDRE_GRANDEUR = 1.E-6,
+                   CRITERE='ABSOLU',),
+                _F(INST=26.,
+                   RESULTAT=U,
+                   NOM_CHAM='EPSP_NOEU',
+                   NOEUD='N13',
+                   NOM_CMP='EPYY',
+                   VALE_CALC=0.0372173072357,
+                   VALE_REFE=0.0372,
+                   REFERENCE = 'ANALYTIQUE',),
+                _F(INST=40.,
+                   RESULTAT=U,
+                   NOM_CHAM='EPSP_NOEU',
+                   NOEUD='N13',
+                   NOM_CMP='EPYY',
+                   VALE_CALC=0.0625234626492,
+                   VALE_REFE=0.0625,
+                   REFERENCE = 'ANALYTIQUE',),
+           ),)
+
 #U=CALC_CHAMP(reuse=U,RESULTAT=U,DEFORMATION=('EPSI_NOEU','EPSP_NOEU','EPVC_NOEU','EPME_NOEU'))
 
 FIN()

@@ -19,10 +19,6 @@
 
 cata_msg = {
 
-    1 : _(u"""
-On ne sait pas calculer les déformations plastiques avec des lois prenant en compte la métallurgie.
-"""),
-
     2 : _(u"""
 On ne sait pas calculer les déformations plastiques avec de l'élasticité non-isotrope.
 """),
