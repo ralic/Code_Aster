@@ -361,6 +361,7 @@ def post_mac3coeur_ops(self, **args):
     POST_LAME = self['LAME']
     POST_DEF = self['DEFORMATION']
     _inst = self['INST']
+    _format_standard = self['FORMAT_R'] == 'STANDARD'
 
     datg = aster_core.get_option("repdex")
     coeur_factory = CoeurFactory(datg)
@@ -780,9 +781,13 @@ def post_mac3coeur_ops(self, **args):
                                      )
 
                 # impression de la table de sortie
+                if _format_standard : 
+                    formt = 'E12.5'
+                else :
+                    formt = 'F5.1'
                 IMPR_TABLE(TABLE=_TABOUT,
                            TITRE='---',
-                           FORMAT_R='F5.1',
+                           FORMAT_R=formt,
                            UNITE=_unit,
                            COMMENTAIRE='',
                            SEPARATEUR='\t',
