@@ -22,6 +22,8 @@ This module defines the main objects that contains all the informations
 about the elements, options and other low level types.
 """
 
+import sys
+import os
 from collections import OrderedDict
 from cataelem.Tools.base_objects import Element
 
@@ -90,7 +92,7 @@ class CataElem(object):
                              "'{1}'".format(name, klass))
         self._initCache()
         self._store[klass][name] = obj
-        # print("DEBUG: registering '{0}' {1}".format(name, obj))
+        # self.msg("DEBUG registering '{0}' {1}".format(name, obj))
         return name
 
     def registerAll(self, objects):
@@ -99,10 +101,10 @@ class CataElem(object):
         for name, obj in sortedObjects:
             try:
                 obj.setName(self.register(obj, name))
-                # print("DEBUG: naming '{0}' {1}".format(obj.name, obj))
+                # self.msg("DEBUG naming '{0}' {1}".format(obj.name, obj))
             except:
                 klass = obj.__class__.__name__
-                print("ERROR for object {0} {1}".format(name, obj))
+                self.msg("ERROR for object {0} {1}".format(name, obj))
                 raise
 
     # XXX "getByName": to remove if not use!
@@ -216,7 +218,7 @@ class CataElem(object):
         # summary
         for klass in ('Attribute', 'PhysicalQuantity', 'ArrayOfQuantities',
                       'MeshType', 'Elrefe', 'Option', 'Element', 'Phenomenon'):
-            print("INFO: {1:6} {0}".format(klass, len(self._store[klass])))
+            self.msg("INFO: {1:6} {0}".format(klass, len(self._store[klass])))
         # to ease debugging objects can be sorted
         self._sortObjects()
         # build dict(Element: Modelisation)
@@ -233,6 +235,10 @@ class CataElem(object):
     def getElemModel(self, element):
         """Return the modelisations using this element"""
         return self._store['ElemModel'].get(element, [])
+
+    def msg(self, string):
+        """Print a message"""
+        sys.stderr.write(string + os.linesep)
 
 
 class EmptyDict(dict):

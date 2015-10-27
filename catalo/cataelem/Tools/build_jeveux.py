@@ -68,8 +68,7 @@ def txtpad(long, chaine):
 #-------------------------------------------------------------------------
 def imprime_ojb(cel, file, timer, dbgdir):
     timer.Start('T1')
-    ERR.mess(
-        'I', "Debut de la transformation de l'ENSEMBLE des catalogues en objets jeveux")
+    cel.msg("INFO Debut de la transformation de l'ENSEMBLE des catalogues en objets jeveux")
 
     d = {}  # dictionnaire des ojb
 
@@ -368,7 +367,7 @@ def imprime_ojb(cel, file, timer, dbgdir):
     nblocfpg = cel.getNbLocations()
     nbopte = calc_nbopte(cel, opt_a_calculer)
     if dbgdir:
-        print "DEBUG:", [nbte, nblocfpg, nbopte]
+        cel.msg("DEBUG {} {} {}".format(nbte, nblocfpg, nbopte))
 
     NOMTE = JV.cree_pn(d, nom='&CATA.TE.NOMTE', tsca='K16')
     TYPEMA = JV.cree_os(d, nom='&CATA.TE.TYPEMA', tsca='K8', long=nbte)
@@ -423,11 +422,11 @@ def imprime_ojb(cel, file, timer, dbgdir):
         l_elref1 = cata.elrefe
         l_decl_en = cata.nodes
         note = cata.name
-        print "<I> On va traiter le TYPE_ELEM: " + note
+        cel.msg("<I> On va traiter le TYPE_ELEM: {0}".format(note))
         ERR.contexte("Examen du catalogue du type_elem : " + note)
         ERR.contexte("  rubrique: entete ", "AJOUT")
         if dbgele:
-            print 'nodes:', [(i.name, i.nodes) for i in l_decl_en or []]
+            cel.msg('DEBUG nodes: {}'.format([(i.name, i.nodes) for i in l_decl_en or []]))
 
         NOMTE.ajout_nom(note)
         nute = NOMTE.jenonu(nom=note)
@@ -580,7 +579,7 @@ def imprime_ojb(cel, file, timer, dbgdir):
                 MODELOC.ecri_co(
                     nom=nomolo2, indice=4 + nec * nbpt3 + 1, valeur=ifpg)
             if dbgele:
-                print nomolo, typept, nogd, igd, diff, nbpt, nbpt2, nbpt3, nec
+                cel.msg(repr(nomolo, typept, nogd, igd, diff, nbpt, nbpt2, nbpt3, nec))
 
             if not diff:
                 point = moloc.components
@@ -591,7 +590,7 @@ def imprime_ojb(cel, file, timer, dbgdir):
                 nbscal = len(point) * nbpt
                 MODELOC.ecri_co(nom=nomolo2, indice=3, valeur=nbscal)
                 if dbgele:
-                    print nomolo, nbscal, 4 + kk + 1, liec
+                    cel.msg(repr(nomolo, nbscal, 4 + kk + 1, liec))
             else:
                 nbscal = 0
                 for xx in moloc.components:
@@ -605,7 +604,7 @@ def imprime_ojb(cel, file, timer, dbgdir):
                         if en2 == en:
                             liste = liste2
                     if dbgele:
-                        print note, nomolo, point, lcmp_gd, liec, liste
+                        cel.msg(repr(note, nomolo, point, lcmp_gd, liec, liste))
                     if not liste:
                         # la verif. ci-dessous est trop sevère. Voir fiche REX
                         # 18068.
@@ -618,11 +617,11 @@ def imprime_ojb(cel, file, timer, dbgdir):
                                 MODELOC.ecri_co(
                                     nom=nomolo2, indice=4 + (ino - 1) * nec + kk + 1, valeur=liec[kk])
                                 if dbgele:
-                                    print nomolo, 'ec=', liec[kk]
+                                    cel.msg("{0} ec={1}".format(nomolo, liec[kk]))
                             nbscal = nbscal + len(point)
                 MODELOC.ecri_co(nom=nomolo2, indice=3, valeur=nbscal)
                 if dbgele:
-                    print nomolo, 'nbscal=', nbscal
+                    cel.msg("{0} nbscal={1}".format(nomolo, nbscal))
 
         # modes locaux "vecteurs" :
         timer.Stop('T7.4')
@@ -645,7 +644,7 @@ def imprime_ojb(cel, file, timer, dbgdir):
             MODELOC.ecri_co(
                 nom=nomolo2, indice=4, valeur=NOMMOLOC.jenonu(note2 + molo1))
             if dbgele:
-                print nomolo, nogd, igd, nbscal, NOMMOLOC.jenonu(note2 + molo1)
+                cel.msg(repr(nomolo, nogd, igd, nbscal, NOMMOLOC.jenonu(note2 + molo1)))
 
         timer.Stop('T7.5')
         timer.Start('T7.6')
@@ -681,7 +680,7 @@ def imprime_ojb(cel, file, timer, dbgdir):
             MODELOC.ecri_co(
                 nom=nomolo2, indice=5, valeur=NOMMOLOC.jenonu(note2 + molo2))
             if dbgele:
-                print nomolo, nogd, igd, nbscal, NOMMOLOC.jenonu(note2 + molo1), NOMMOLOC.jenonu(note2 + molo2)
+                cel.msg(repr(nomolo, nogd, igd, nbscal, NOMMOLOC.jenonu(note2 + molo1), NOMMOLOC.jenonu(note2 + molo2)))
 
         timer.Stop('T7.6')
         timer.Start('T7.7')
@@ -718,7 +717,7 @@ def imprime_ojb(cel, file, timer, dbgdir):
             OPTMOD.ecri_co(nom=str(ioptte), indice=2, valeur=nbin)
             OPTMOD.ecri_co(nom=str(ioptte), indice=3, valeur=nbou)
             if dbgele:
-                print noop, nuop, nute, numte, nbin, nbou
+                cel.msg(repr(noop, nuop, nute, numte, nbin, nbou))
 
             if numte > 0:
                 for kk in range(nbin):
@@ -729,7 +728,7 @@ def imprime_ojb(cel, file, timer, dbgdir):
                     OPTMOD.ecri_co(
                         nom=str(ioptte), indice=3 + kk + 1, valeur=NOMMOLOC.jenonu(note2 + mode))
                     if dbgele:
-                        print noop, 'in', param, mode, kk + 1, 3 + kk + 1, NOMMOLOC.jenonu(note2 + mode)
+                        cel.msg(repr(noop, 'in', param, mode, kk + 1, 3 + kk + 1, NOMMOLOC.jenonu(note2 + mode)))
 
                 for kk in range(nbou):
                     param = opt.para_out[kk][0].name
@@ -739,7 +738,7 @@ def imprime_ojb(cel, file, timer, dbgdir):
                     OPTMOD.ecri_co(
                         nom=str(ioptte), indice=3 + nbin + kk + 1, valeur=NOMMOLOC.jenonu(note2 + mode))
                     if dbgele:
-                        print noop, 'out', param, mode, nbin + kk + 1, 3 + nbin + kk + 1, NOMMOLOC.jenonu(note2 + mode)
+                        cel.msg(repr(noop, 'out', param, mode, nbin + kk + 1, 3 + nbin + kk + 1, NOMMOLOC.jenonu(note2 + mode)))
 
         timer.Stop('T7.7')
         timer.Start('T7.8')
@@ -822,10 +821,9 @@ def imprime_ojb(cel, file, timer, dbgdir):
         if dbgdir:
             fdbg = osp.join(dbgdir, nomojb.replace(' ', '_') + '.ojb')
             ojb.impr(open(fdbg, 'wb'))
-    ERR.mess(
-        'I', "Fin de la transformation de l'ENSEMBLE des catalogues en objets jeveux")
+    cel.msg("INFO Fin de la transformation de l'ENSEMBLE des catalogues en objets jeveux")
     timer.Stop('T9')
-    print timer
+    cel.msg(repr(timer))
 
 #---------------------------------------------------------------------------
 # TODO should be CataElem.getAttrsElement(element)

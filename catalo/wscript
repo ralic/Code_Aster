@@ -40,12 +40,18 @@ def pre_build_catalo(self):
 
 
 class printcata(Task.Task):
-    shell = True
-    run_str = ' '.join(('PYTHONPATH=${BIBPYTPATH}:${SRC[0].abspath()}',
-                        '${PYTHON}',
-                        '-m', 'build_cata',
-                        '${OPTDEBUG}',
-                        '-o', '${TGT[0].abspath()}'))
+
+    def run(self):
+        """Execute the command"""
+        environ = os.environ.copy()
+        # add src/bibpyt + catalo in PYTHONPATH
+        python_path = self.env["BIBPYTPATH"] + ":" + self.inputs[0].abspath()
+        add_to_env_paths(environ, "PYTHONPATH", python_path)
+        exec_pyaster(self.generator.bld,
+                     osp.join(self.inputs[0].abspath(), "build_cata.py"),
+                     env=environ,
+                     args=[self.env['OPTDEBUG'] or "",
+                           "-o", self.outputs[0].abspath()])
 
     def sig_explicit_deps(self):
         self.dep_nodes[:] = self.inputs[1:]
@@ -93,19 +99,24 @@ def build_cata_ele(self, ojb, install_path):
         exec_pyaster(self, 'Execution/E_SUPERV.py', cwd=bldnode.abspath(),
                      args=['-commandes', comm.abspath(),
                            '-memjeveux', '500',
-                           '-tpmax', '120'])
+                           '-tpmax', '120'],
+                     with_aster=True)
     finally: # fort.4 -> .ojb
         os.rename(after, before)
 
     elem = bldnode.find_node('elem.1')
     tsk = self.do_install(elem.abspath(), install_path)
 
-def exec_pyaster(self, pyfile, args, **kwargs):
+def exec_pyaster(self, pyfile, args, with_aster=False, **kwargs):
     """Execute aster depending on the configuration"""
     env = self.all_envs[self.variant]
-    environ = os.environ.copy()
+    if "env" in kwargs:
+        environ = kwargs["env"]
+        del kwargs["env"]
+    else:
+        environ = os.environ.copy()
     cmdenv = []
-    if env.ASTER_EMBEDS and 'bibc' in env.ASTER_EMBEDS:
+    if with_aster and env.ASTER_EMBEDS and 'bibc' in env.ASTER_EMBEDS:
         exec_task = self.get_tgen_by_name('asterexec')
         python = osp.join(exec_task.install_task.dest, exec_task.target)
     else:
