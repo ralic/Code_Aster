@@ -73,7 +73,7 @@ implicit none
         result_type = 'EVOL_THER'
     else
         ASSERT(.false.)
-    endif 
+    endif
 !
 ! - Set name of result datastructure
 !
@@ -121,13 +121,14 @@ implicit none
         if (nocc.eq.1) then
             ds_inout%l_init_vale = .true._1
             ds_inout%temp_init   = temp_init
-        endif        
+        endif
     endif
 !
 ! - Read fields
 !
-    do i_field = 1, ds_inout%nb_field_maxi
+    do i_field = 1, ds_inout%nb_field
         init_keyw = ds_inout%field(i_field)%init_keyw
+        print *, "ReadInOut:", i_field, '>', init_keyw, '<'
         if (getexm(keywf,init_keyw) .eq. 1 .and. ds_inout%field(i_field)%l_read_init) then
             call getvid(keywf, init_keyw, scal = field, iocc=1, nbret=nocc)
             if (nocc.eq.1) then
@@ -138,7 +139,7 @@ implicit none
     end do
 !
 ! - Get parameters to read initial state
-!   
+!
     call getvr8(keywf, 'PRECISION'     , iocc=1, scal=precision, nbret = nocc)
     if (nocc.eq.0) then
         ds_inout%precision = 1.d-6
