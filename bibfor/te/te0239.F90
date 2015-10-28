@@ -18,7 +18,7 @@ subroutine te0239(option, nomte)
 !                          COQUE 1D
 !                          OPTION : 'RIGI_MECA_TANG ',
 !                                   'FULL_MECA      ','RAPH_MECA      '
-!                          ELEMENT: MECXSE3,METCSE3,METDSE3
+!                          ELEMENT: MECXSE3 (COQUE_AXIS)
 !    - ARGUMENTS:
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
@@ -63,7 +63,7 @@ subroutine te0239(option, nomte)
     real(kind=8) :: rtangi(9, 9), rtange(9, 9), sigm2d(4), sigp2d(4)
     real(kind=8) :: angmas(3)
     integer :: nno, nnos, jgano, ndim, kp, npg, i, j, k, imatuu, icaco, ndimv
-    integer :: ivarix, mod
+    integer :: ivarix
     integer :: ipoids, ivf, idfdk, igeom, imate
     integer :: nbpar, cod, iret, ksp
     aster_logical :: vecteu, matric, testl1, testl2
@@ -195,7 +195,8 @@ subroutine te0239(option, nomte)
         nu = valres(2)
         cisail = valres(1)/ (un+nu)
 !
-        if (nomte .eq. 'MECXSE3') jacp = jacp*r
+!       ON EST EN AXIS:
+        jacp = jacp*r
 !
         test = abs(h*cour/deux)
         if (test .ge. un) correc = zero
@@ -249,20 +250,6 @@ subroutine te0239(option, nomte)
                             sina, cosa, cour, zr( ivf+k), dfdx,&
                             zr(ideplp), deps2d, depsx3)
 !
-!           COQUE_D_PLAN
-                if (nomte .eq. 'METDSE3') then
-                    eps2d(2) = 0.d0
-                    deps2d(2) = 0.d0
-                    mod=2
-!           COQUE_C_PLAN
-                else if (nomte.eq.'METCSE3') then
-                    eps2d(2) = 0.d0
-                    deps2d(2) = 0.d0
-                    mod=-1
-!           COQUE_AXIS
-                else if (nomte.eq.'MECXSE3') then
-                    mod=1
-                endif
 !
 !           CONSTRUCTION DE LA DEFORMATION GSX3
 !           ET DE LA CONTRAINTE SGMSX3
@@ -280,7 +267,7 @@ subroutine te0239(option, nomte)
  55             continue
 !
 !  APPEL AU COMPORTEMENT
-                call comcq1('RIGI', kp, ksp, mod, zi(imate),&
+                call comcq1('RIGI', kp, ksp, zi(imate),&
                             zk16(icompo), zr(icarcr), zr(iinstm), zr(iinstp), eps2d,&
                             deps2d, tempm, tempp, sigm2d, zr(ivarim+k2),&
                             option, angmas, sigp2d, zr( ivarip+k2), dsidep,&
@@ -315,19 +302,12 @@ subroutine te0239(option, nomte)
 !
                 if (vecteu) then
 !-- CALCULS DES EFFORTS INTERIEURS : BOUCLE SUR L'EPAISSEUR
-                    if (nomte .eq. 'MECXSE3') then
-                        sigtdi(1) = zr(icontp-1+k1+1)/rhos
-                        sigtdi(2) = x3*zr(icontp-1+k1+1)/rhos
-                        sigtdi(3) = zr(icontp-1+k1+2)/rhot
-                        sigtdi(4) = x3*zr(icontp-1+k1+2)/rhot
-                        sigtdi(5) = sgmsx3/rhos
-                    else
-                        sigtdi(1) = zr(icontp-1+k1+1)/rhos
-                        sigtdi(2) = x3*zr(icontp-1+k1+1)/rhos
-                        sigtdi(3) = sgmsx3/rhos
-                        sigtdi(4) = 0.d0
-                        sigtdi(5) = 0.d0
-                    endif
+!
+                    sigtdi(1) = zr(icontp-1+k1+1)/rhos
+                    sigtdi(2) = x3*zr(icontp-1+k1+1)/rhos
+                    sigtdi(3) = zr(icontp-1+k1+2)/rhot
+                    sigtdi(4) = x3*zr(icontp-1+k1+2)/rhot
+                    sigtdi(5) = sgmsx3/rhos
 !
                     do 90 i = 1, 5
                         sigmtd(i) = sigmtd(i) + sigtdi(i)*0.5d0*hic* coef

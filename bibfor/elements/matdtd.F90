@@ -99,18 +99,6 @@ subroutine matdtd(nomte, testl1, testl2, dsidep, cisail,&
         dtildi(5,4)=dtildi(4,5)
 !
     else
-        if (nomte .eq. 'METDSE3') then
-            mata(1,1)=dsidep(1,1)
-            mata(1,2)=0.d0
-            mata(2,1)=0.d0
-            mata(2,2)=cisail*kappa/2.d0
-        else if (nomte .eq. 'METCSE3') then
-            mata(1,1)=dsidep(1,1) - (dsidep(1,2)*dsidep(2,1))/dsidep(&
-            2,2)
-            mata(1,2)=0.d0
-            mata(2,1)=0.d0
-            mata(2,2)=cisail*kappa/2.d0
-        endif
 !
         if (testl1) then
             rhos=1.d0

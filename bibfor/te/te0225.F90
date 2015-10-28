@@ -30,7 +30,7 @@ subroutine te0225(option, nomte)
 !    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES
 !                          COQUE 1D
 !                          OPTION : 'CHAR_MECA_TEMP_R'
-!                          ELEMENT: MECXSE3,METCSE3,METDSE3
+!                          ELEMENT: MECXSE3
 !    - ARGUMENTS:
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
@@ -123,7 +123,7 @@ subroutine te0225(option, nomte)
                 endif
                 nu = valres(2)
                 coef = valres(1)*jac*epsthe*zr(ipoids+ip-1)* (h/deux)
-                if (nomte .ne. 'METCSE3 ') coef = coef/ (un-nu)
+                coef = coef/ (un-nu)              
 !
                 do 20 i = 1, nno
                     j = 3* (i-1)

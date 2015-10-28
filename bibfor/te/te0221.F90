@@ -29,7 +29,7 @@ subroutine te0221(option, nomte)
 !    - FONCTION REALISEE:  CALCUL DES MATRICES ELEMENTAIRES
 !                          COQUE 1D
 !                          OPTION : 'RIGI_MECA      '
-!                          ELEMENT: MECXSE3,METCSE3,METDSE3
+!                          ELEMENT: MECXSE3
 !
 !    - ARGUMENTS:
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL
@@ -159,27 +159,6 @@ subroutine te0221(option, nomte)
                       )*coeff1
             endif
             jacp = jacp*r
-        else
-!
-!     CALCUL DES COEFFICIENTS RIGIDITE TRANCHE COQUE
-!     CONTRAINTES PLANES ET DEFORMATIONS PLANES
-!     COUR : COURBURE RS
-!     H    : EPAISSEUR
-!
-            if (nomte .eq. 'METDSE3 ') valres(1) = coeff1
-            if (test .le. eps .or. correc .eq. zero) then
-                css = valres(1)*h
-                bss = zero
-                dss = valres(1)*h**3/douze
-                gss = coeff2*kappa*h/deux
-            else
-                cons = log((un+ (h*cour/deux))/ (un- (h*cour/deux)))
-                css = cons/cour
-                bss = - (h*cour**2-cons*cour)*valres(1)/ (cour**3)
-                dss = (cons-h*cour)*valres(1)/ (cour**3)
-                gss = css*kappa*coeff2/deux
-                css = css*valres(1)
-            endif
         endif
 !
         coefxx = sina*sina

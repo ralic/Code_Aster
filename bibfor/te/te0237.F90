@@ -33,7 +33,7 @@ subroutine te0237(option, nomte)
 ! .                            COQUE 1D
 ! .                        OPTION  : 'SIEF_ELGA'
 ! .                                  'EPSI_ELGA'
-! .                        ELEMENT: MECXSE3,METCSE3,METDSE3
+! .                        ELEMENT: MECXSE3
 ! .  - ARGUMENTS:
 ! .      DONNEES:      OPTION       -->  OPTION DE CALCUL
 ! .                    NOMTE        -->  NOM DU TYPE ELEMENT
@@ -140,15 +140,10 @@ subroutine te0237(option, nomte)
                 e11=eps(2)*cosa-eps(1)*sina
                 k11=eps(3)
                 esx3=eps(5)+eps(1)*cosa+eps(2)*sina
-                if (nomte .eq. 'MECXSE3') then
-                    e22=eps(4)/r
-                    k22=-eps(5)*sina/r
-                    ep22=(e22+x3*k22)/(1.d0+(correc*x3*cosa/r))
-                else
-                    e22=0.d0
-                    k22=0.d0
-                    ep22=0.d0
-                endif
+                e22=eps(4)/r
+                k22=-eps(5)*sina/r
+                ep22=(e22+x3*k22)/(1.d0+(correc*x3*cosa/r))
+
 !
                 ep11=(e11+x3*k11)/(1.d0+(correc*x3*cour))
                 ep12=esx3/(1.d0+(correc*x3*cour))
@@ -213,16 +208,9 @@ subroutine te0237(option, nomte)
                     c1=e/(1.d0+nu)
                     c2=c1/(1.d0-nu)
 !
-                    if (nomte.eq.'MECXSE3') then
-                        si11=c2*(ep11+nu*ep22)-epsthe
-                        si22=c2*(ep22+nu*ep11)-epsthe
-                    else if (nomte.eq.'METDSE3 ') then
-                        si11=c2*ep11-epsthe
-                        si22=c2*nu*ep11-epsthe
-                    else
-                        si11=e*(ep11-epsthe)
-                        si22=0.d0
-                    endif
+                    si11=c2*(ep11+nu*ep22)-epsthe
+                    si22=c2*(ep22+nu*ep11)-epsthe
+
                     si12=c1*ep12
 !
                     zr(icont+idec-1+1)=si11

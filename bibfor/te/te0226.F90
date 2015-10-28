@@ -31,7 +31,7 @@ subroutine te0226(option, nomte)
 !    - FONCTION REALISEE:  CALCUL DES MATRICES ELEMENTAIRES
 !                          COQUE 1D
 !                          OPTION : 'MASS_MECA       '
-!                          ELEMENT: MECXSE3,METCSE3,METDSE3
+!                          ELEMENT: MECXSE3
 !
 !    - ARGUMENTS:
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL
@@ -88,9 +88,6 @@ subroutine te0226(option, nomte)
             rmf = rf* (cour+nx/r)
         endif
 !
-        if (nomte .eq. 'METDSE3' .or. nomte .eq. 'METCSE3') then
-            rmf = rf*cour
-        endif
         kd1 = 5
         kd2 = 3
         kd3 = 2

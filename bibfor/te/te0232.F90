@@ -82,27 +82,20 @@ subroutine te0232(option, nomte)
 !
 ! - Checking
 !
-    if (nomte .eq. 'METDSE3' .or. nomte .eq. 'METCSE3') then
-! AXE=direction Oz
-        if (abs(rota_axis(3)) .le. r8miem()) then
-            call utmess('F', 'CHARGES2_67')
-        endif
-        if (abs(rota_axis(1)) .gt. r8miem() .or. abs(rota_axis(2)) .gt. r8miem()) then
-            call utmess('F', 'CHARGES2_67')
-        endif
-    else if (nomte.eq.'MECXSE3') then
+
+
 ! AXE=Oy et CENTRE=ORIGINE
-        if (abs(rota_axis(1)) .gt. r8miem() .or. abs(rota_axis(3)) .gt. r8miem()) then
-            call utmess('F', 'CHARGES2_65')
-        endif
-        if (abs(rota_axis(2)) .le. r8miem()) then
-            call utmess('F', 'CHARGES2_65')
-        endif
-        if (abs(rota_cent(1)) .gt. r8miem() .or. abs(rota_cent(2)) .gt. r8miem() .or.&
-            abs(rota_cent(3)) .gt. r8miem()) then
-            call utmess('F', 'CHARGES2_66')
-        endif
+    if (abs(rota_axis(1)) .gt. r8miem() .or. abs(rota_axis(3)) .gt. r8miem()) then
+        call utmess('F', 'CHARGES2_65')
     endif
+    if (abs(rota_axis(2)) .le. r8miem()) then
+        call utmess('F', 'CHARGES2_65')
+    endif
+    if (abs(rota_cent(1)) .gt. r8miem() .or. abs(rota_cent(2)) .gt. r8miem() .or.&
+        abs(rota_cent(3)) .gt. r8miem()) then
+        call utmess('F', 'CHARGES2_66')
+    endif
+
 !
 ! - Material
 !
@@ -128,18 +121,9 @@ subroutine te0232(option, nomte)
             rx = rx + zr(j_geom+2*i-2)*zr(ivf+k+i-1)
             ry = ry + zr(j_geom+2*i-1)*zr(ivf+k+i-1)
         end do
-        if (nomte .eq. 'MECXSE3') then
-            poids = poids*rx
-            do i = 1, nno
-                zr(j_vect+3*i-3) = zr(j_vect+3*i-3) + poids*rota_axis(2)**2*rx*zr(ivf+k+i-1)
-            end do
-        else
-            rx = rx - rota_cent(1)
-            ry = ry - rota_cent(2)
-            do i = 1, nno
-                zr(j_vect+3*i-3) = zr(j_vect+3*i-3) + poids*rota_axis(3)**2*rx*zr(ivf+k+i-1)
-                zr(j_vect+3*i-2) = zr(j_vect+3*i-2) + poids*rota_axis(3)**2*ry*zr(ivf+k+i-1)
-            end do
-        endif
+        poids = poids*rx
+        do i = 1, nno
+            zr(j_vect+3*i-3) = zr(j_vect+3*i-3) + poids*rota_axis(2)**2*rx*zr(ivf+k+i-1)
+        end do
     end do
 end subroutine

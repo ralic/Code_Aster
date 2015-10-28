@@ -60,8 +60,7 @@ subroutine te0496(option, nomte)
     if (jnbsp .eq. 0) goto 9999
 !
 ! --- CAS DES ELEMENTS "COQUE EPAISSE" (MULTI-COUCHE) :
-    if ((nomte.eq.'MEC3QU9H') .or. (nomte.eq.'MEC3TR7H') .or. (nomte.eq.'METCSE3') .or.&
-        (nomte.eq.'METDSE3') .or. (nomte.eq.'MECXSE3')) then
+    if ((nomte.eq.'MEC3QU9H') .or. (nomte.eq.'MEC3TR7H').or. (nomte.eq.'MECXSE3')) then
         nbcou = zi(jnbsp-1+1)
         npgh = 3
         zi(jdcel-1+1) = npgh*nbcou

@@ -120,7 +120,7 @@ subroutine te0234(option, nomte)
  10 end do
 !
     kpki = 0
-    do 60 kp = 1, npg
+    do kp = 1, npg
 !-- BOUCLE SUR LES POINTS D'INTEGRATION SUR LA SURFACE
 !
         k = (kp-1)*nno
@@ -132,9 +132,9 @@ subroutine te0234(option, nomte)
         call moytpg('RIGI', kp, npge, '+', tpg,&
                     iret)
 !
-        do 20 i = 1, nno
+        do i = 1, nno
             r = r + zr(igeom+2*i-2)*zr(ivf+k+i-1)
- 20     continue
+        end do
 !
         call rcvala(zi(imate), ' ', 'ELAS', 1, 'TEMP',&
                     [tpg], 2, nomres, valres, icodre,&
@@ -153,8 +153,8 @@ subroutine te0234(option, nomte)
                  .le. eps .or. abs(cosa-cour*r) .le. eps&
                  )
 !
-        do 50 icou = 1, nbcou
-            do 40 inte = 1, npge
+        do icou = 1, nbcou
+            do inte = 1, npge
                 if (inte .eq. 1) then
                     zic = zmin + (icou-1)*hic
                     coef = 1.d0/3.d0
@@ -188,9 +188,6 @@ subroutine te0234(option, nomte)
                             sina, cosa, cour, zr(ivf+k), dfdx,&
                             zr(ideplm), eps2d, epsx3)
 !
-                if (nomte .eq. 'METDSE3' .or. nomte .eq. 'METCSE3') then
-                    eps2d(2) = 0.d0
-                endif
 !
 !-- CONSTRUCTION DE LA DEFORMATION GSX3 ET DE LA CONTRAINTE SGMSX3
 !
@@ -203,33 +200,26 @@ subroutine te0234(option, nomte)
                 k1 = 4* (kpki-1)
 !-- CALCUL DES CONTRAINTES TILDE, ON A REMPLACE ICONTP PAR ICONTM
 !
-                if (nomte .eq. 'MECXSE3') then
-!                                                    AXISYM
-                    sigtdi(1) = zr(icontm-1+k1+1)/rhos
-                    sigtdi(2) = x3*zr(icontm-1+k1+1)/rhos
-                    sigtdi(3) = zr(icontm-1+k1+2)/rhot
-                    sigtdi(4) = x3*zr(icontm-1+k1+2)/rhot
-                    sigtdi(5) = sgmsx3/rhos
-                else
-                    sigtdi(1) = zr(icontm-1+k1+1)/rhos
-                    sigtdi(2) = x3*zr(icontm-1+k1+1)/rhos
-                    sigtdi(3) = sgmsx3/rhos
-                    sigtdi(4) = 0.d0
-                    sigtdi(5) = 0.d0
-                endif
+
+                sigtdi(1) = zr(icontm-1+k1+1)/rhos
+                sigtdi(2) = x3*zr(icontm-1+k1+1)/rhos
+                sigtdi(3) = zr(icontm-1+k1+2)/rhot
+                sigtdi(4) = x3*zr(icontm-1+k1+2)/rhot
+                sigtdi(5) = sgmsx3/rhos
+
 !
-                do 30 i = 1, 5
+                do i = 1, 5
                     sigmtd(i) = sigmtd(i) + sigtdi(i)*0.5d0*hic*coef
- 30             continue
+                end do
 !
- 40         continue
- 50     continue
+            end do
+        end do
 !
 !-- CALCUL DES EFFORTS INTERIEURS
 !
         call effi(nomte, sigmtd, zr(ivf+k), dfdx, jacp,&
                   sina, cosa, r, zr(ivectu))
 !
- 60 continue
+    end do
 !
 end subroutine

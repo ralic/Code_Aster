@@ -155,13 +155,6 @@ subroutine ef0231(nomte)
                 *x3*(h/2.d0)* (c*(ep11+nu*ep22)-epsthe)
                 effopg(6*(kp-1)+5)=effopg(6*(kp-1)+5)+ zr(ipoids-1+ip)&
                 *x3*(h/2.d0)* (c*(nu*ep11+ep22)-epsthe)
-            else if (nomte.eq.'METCSE3 ') then
-                effopg(6*(kp-1)+1)=effopg(6*(kp-1)+1)+ zr(ipoids-1+ip)&
-                *(h/2.d0)* (e*(ep11-epsthe))
-                effopg(6*(kp-1)+4)=effopg(6*(kp-1)+4)+ zr(ipoids-1+ip)&
-                *x3*(h/2.d0)* (e*(ep11-epsthe))
-                effopg(6*(kp-1)+2)=0.d0
-                effopg(6*(kp-1)+5)=0.d0
             else
                 effopg(6*(kp-1)+1)=effopg(6*(kp-1)+1)+ zr(ipoids-1+ip)&
                 *(h/2.d0)*(c*ep11-epsthe)

@@ -28,7 +28,7 @@ subroutine te0233(option, nomte)
 !    - FONCTION REALISEE:  CALCUL DES TERMES ELEMENTAIRES EN MECANIQUE
 !                          COQUE 1D
 !                          OPTION : 'CHAR_MECA_PESA_R'
-!                          ELEMENT: MECXSE3,METCSE3,METDSE3
+!                          ELEMENT: MECXSE3
 !    - ARGUMENTS:
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
@@ -64,25 +64,19 @@ subroutine te0233(option, nomte)
                 ' ', 'ELAS', 0, ' ', [0.d0],&
                 1, 'RHO', rho, icodre, 1)
 !
-    do 40 kp = 1, npg
+    do kp = 1, npg
         k = (kp-1)*nno
         call dfdm1d(nno, zr(ipoids+kp-1), zr(idfdk+k), zr(igeom), dfdx,&
                     cour, poids, nx, ny)
         poids = poids*rho(1)*zr(ipesa)*zr(icaco)
-        if (nomte .eq. 'MECXSE3') then
-            rx = 0.d0
-            do 10 i = 1, nno
-                rx = rx + zr(igeom+2*i-2)*zr(ivf+k+i-1)
-10          continue
-            poids = poids*rx
-            do 20 i = 1, nno
-                zr(ivectu+3*i-2) = zr(ivectu+3*i-2) + poids*zr(ipesa+ 2)*zr(ivf+k+i-1)
-20          continue
-        else
-            do 30 i = 1, nno
-                zr(ivectu+3*i-3) = zr(ivectu+3*i-3) + poids*zr(ipesa+ 1)*zr(ivf+k+i-1)
-                zr(ivectu+3*i-2) = zr(ivectu+3*i-2) + poids*zr(ipesa+ 2)*zr(ivf+k+i-1)
-30          continue
-        endif
-40  end do
+        rx = 0.d0
+        do i = 1, nno
+            rx = rx + zr(igeom+2*i-2)*zr(ivf+k+i-1)
+        end do
+        poids = poids*rx
+        do  i = 1, nno
+            zr(ivectu+3*i-2) = zr(ivectu+3*i-2) + poids*zr(ipesa+ 2)*zr(ivf+k+i-1)
+        end do
+
+    end do
 end subroutine

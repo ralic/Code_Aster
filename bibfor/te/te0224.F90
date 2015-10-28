@@ -29,7 +29,7 @@ subroutine te0224(option, nomte)
 !    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES
 !                          COQUE 1D
 !                          OPTION : 'CHAR_MECA_FFCO2D  '
-!                          ELEMENT: MECXSE3,METCSE3,METDSE3
+!                          ELEMENT: MECXSE3
 !    - ARGUMENTS:
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL
 !                      NOMTE        -->  NOM DU TYPE ELEMENT

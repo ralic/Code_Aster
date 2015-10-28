@@ -79,8 +79,8 @@ subroutine te0185(option, nomte)
         else if (cmod.eq.'CQ3') then
 !         -- COQUE_3D
             call ef0410(nomte)
-        else if (cmod.eq.'CQA'.or.cmod.eq.'CQC'.or.cmod.eq.'CQD') then
-!         -- COQUE_AXIS, COQUE_C_PLAN, COQUE_D_PLAN
+        else if (cmod.eq.'CQA') then
+!         -- COQUE_AXIS
             call ef0231(nomte)
         else if (cmod.eq.'DIT') then
 !         -- DIS_T
@@ -141,8 +141,8 @@ subroutine te0185(option, nomte)
         else if (cmod.eq.'CQ3') then
 !         -- COQUE_3D
             call ef0415(nomte)
-        else if (cmod.eq.'CQA'.or.cmod.eq.'CQC'.or.cmod.eq.'CQD') then
-!         -- COQUE_AXIS, COQUE_C_PLAN, COQUE_D_PLAN
+        else if (cmod.eq.'CQA') then
+!         -- COQUE_AXIS
             ASSERT(.false.)
         else if (cmod.eq.'DIT') then
 !         -- DIS_T

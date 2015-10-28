@@ -41,15 +41,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if (model .eq. 'COQUE_C_PLAN') then
-        vali = 13
-        valk    = "MODELISATION='COQUE_C_PLAN'"
-!
-    else if (model .eq. 'COQUE_D_PLAN') then
-        vali = 13
-        valk    = "MODELISATION='COQUE_D_PLAN'"
-!
-    else if (model .eq. '3D_GRAD_EPSI') then
+    if (model .eq. '3D_GRAD_EPSI') then
         vali = 13
         valk    = "MODELISATION='3D_GRAD_EPSI'"
 !

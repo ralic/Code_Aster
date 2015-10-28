@@ -29,7 +29,7 @@ subroutine te0397(option, nomte)
 !    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES
 !                          COQUE 1D
 !                          OPTION : 'CHAR_MECA_PRES_R  '
-!                          ELEMENT: MECXSE3,METCSE3,METDSE3
+!                          ELEMENT: MECXSE3
 !    - ARGUMENTS:
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
@@ -57,14 +57,14 @@ subroutine te0397(option, nomte)
 !          ------------------------------
         call jevech('PPRESSR', 'L', ipres)
 !
-        do 30 kp = 1, npg
+        do kp = 1, npg
             k = (kp-1)*nno
             call dfdm1d(nno, zr(ipoids+kp-1), zr(idfdk+k), zr(igeom), dfdx,&
                         cour, poids, nx, ny)
             r = 0.d0
             fx = 0.d0
             fy = 0.d0
-            do 10 i = 1, nno
+            do i = 1, nno
                 l = (kp-1)*nno + i
 !-----------------------------------------------------
 !              LE SIGNE MOINS CORRESPOND A LA CONVENTION :
@@ -74,14 +74,14 @@ subroutine te0397(option, nomte)
                 fx = fx + nx*f3*zr(ivf+l-1)
                 fy = fy + ny*f3*zr(ivf+l-1)
                 r = r + zr(igeom+2* (i-1))*zr(ivf+l-1)
-10          continue
-            if (nomte .eq. 'MECXSE3') poids = poids*r
-            do 20 i = 1, nno
+            end do
+            poids = poids*r
+            do i = 1, nno
                 l = (kp-1)*nno + i
                 zr(ivectu+nddl* (i-1)) = zr(ivectu+nddl* (i-1)) + fx*zr(ivf+l-1 )*poids
                 zr(ivectu+nddl* (i-1)+1) = zr( ivectu+nddl* (i-1)+1 ) + fy*zr(ivf+l-1 )*poids
-20          continue
-30      continue
+            end do
+        end do
 !
     else if (option.eq.'CHAR_MECA_PRES_F') then
 !              ------------------------------
@@ -92,7 +92,7 @@ subroutine te0397(option, nomte)
         nompar(1) = 'X'
         nompar(2) = 'Y'
         nompar(3) = 'Z'
-        do 40 i = 0, nno - 1
+        do i = 0, nno - 1
             valpar(1) = zr(igeom+3*i)
             valpar(2) = zr(igeom+3*i+1)
             valpar(3) = zr(igeom+3*i+2)
@@ -104,7 +104,7 @@ subroutine te0397(option, nomte)
                 valk = nomail
                 call utmess('F', 'ELEMENTS4_92', sk=valk)
             endif
-40      continue
+        end do
 !
     endif
 !

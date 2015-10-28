@@ -173,7 +173,7 @@ subroutine te0478(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !   COQUE(2D)
-    else if((nomte.eq.'METCSE3').or.(nomte.eq.'MECXSE3').or.(nomte.eq.'METDSE3')) then
+    else if(nomte.eq.'MECXSE3') then
         ASSERT(ndim.eq.2)
         call jevech('PNBSP_I', 'L', inbf)
         nbcou=zi(inbf)
@@ -192,13 +192,11 @@ subroutine te0478(option, nomte)
             kk = (ig-1)*nno
             call dfdm1d(nno, zr(ipoids+ig-1), zr(idfde+kk), zr(igeom), dfdx,&
                         cour, jacp, cosa, sina)
-            if (nomte .eq. 'MECXSE3') then
-                rr = 0.d0
-                do ii = 1, nno
-                    rr = rr + zr(igeom+2*(ii-1))*zr(ivf+kk+ii-1)
-                enddo
-                jacp = jacp*rr
-            endif
+            rr = 0.d0
+            do ii = 1, nno
+                rr = rr + zr(igeom+2*(ii-1))*zr(ivf+kk+ii-1)
+            enddo
+            jacp = jacp*rr
             gm2(1)=cosa
             gm2(2)=sina
 !

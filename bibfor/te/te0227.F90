@@ -32,7 +32,7 @@ subroutine te0227(option, nomte)
 !    - FONCTION REALISEE:  CALCUL DES MATRICES ELEMENTAIRES
 !                          COQUE 1D
 !                          OPTION : 'MASS_INER       '
-!                          ELEMENT: MECXSE3 , METCSE3 , METDSE3
+!                          ELEMENT: MECXSE3 
 !
 !    - ARGUMENTS:
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL
@@ -119,33 +119,17 @@ subroutine te0227(option, nomte)
 50      continue
 60  end do
 !
-    if (nomte .eq. 'MECXSE3') then
-        yg = zr(lcastr+2)/volume
-        zr(lcastr) = depi*volume*rm
-        zr(lcastr+3) = yg
-        zr(lcastr+1) = zero
-        zr(lcastr+2) = zero
+    yg = zr(lcastr+2)/volume
+    zr(lcastr) = depi*volume*rm
+    zr(lcastr+3) = yg
+    zr(lcastr+1) = zero
+    zr(lcastr+2) = zero
 !
-!        --- ON DONNE LES INERTIES AU CDG ---
-        matine(6) = matine(3)*rm*depi
-        matine(1) = matine(1)*rm*depi + matine(6)/2.d0 - zr(lcastr)* yg*yg
-        matine(2) = zero
-        matine(3) = matine(1)
-!
-    else
-        zr(lcastr) = volume*rm
-        zr(lcastr+1) = zr(lcastr+1)/volume
-        zr(lcastr+2) = zr(lcastr+2)/volume
-        zr(lcastr+3) = zero
-!
-!        --- ON DONNE LES INERTIES AU CDG ---
-        xg = zr(lcastr+1)
-        yg = zr(lcastr+2)
-        matine(1) = matine(1)*rm - zr(lcastr)*yg*yg
-        matine(2) = matine(2)*rm - zr(lcastr)*xg*yg
-        matine(3) = matine(3)*rm - zr(lcastr)*xg*xg
-        matine(6) = matine(1) + matine(3)
-    endif
+!    --- ON DONNE LES INERTIES AU CDG ---
+    matine(6) = matine(3)*rm*depi
+    matine(1) = matine(1)*rm*depi + matine(6)/2.d0 - zr(lcastr)* yg*yg
+    matine(2) = zero
+    matine(3) = matine(1)
     zr(lcastr+4) = matine(1)
     zr(lcastr+5) = matine(3)
     zr(lcastr+6) = matine(6)

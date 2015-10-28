@@ -28,7 +28,7 @@ subroutine te0228(option, nomte)
 ! .                        COQUE 1D
 ! .
 ! .                        OPTIONS : 'DEGE_ELNO  '
-! .                        ELEMENT: MECXSE3,METCSE3,METDSE3
+! .                        ELEMENT: MECXSE3
 ! .
 ! .  - ARGUMENTS:
 ! .      DONNEES:      OPTION       -->  OPTION DE CALCUL
@@ -79,13 +79,9 @@ subroutine te0228(option, nomte)
 20      continue
         e11 = eps(2)*cosa - eps(1)*sina
         k11 = eps(3)
-        if (nomte .eq. 'MECXSE3') then
-            e22 = eps(4)/r
-            k22 = -eps(5)*sina/r
-        else
-            e22 = zero
-            k22 = zero
-        endif
+        e22 = eps(4)/r
+        k22 = -eps(5)*sina/r
+
 !
         degepg(6* (kp-1)+1) = e11
         degepg(6* (kp-1)+2) = e22
