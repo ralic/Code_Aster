@@ -18,7 +18,7 @@ subroutine rcZ2t()
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !     ------------------------------------------------------------------
-!     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_ZE200 et B3200_T
+!     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_ZE200 et B3200
 !     STOCKAGE DES CONTRAINTES TOTALES ET LINEARISEES :
 !                 - THERMIQUES SOUS "RESU_THER"
 !                 - DE PRESSION SOUS "RESU_PRES"
@@ -62,6 +62,7 @@ subroutine rcZ2t()
     real(kind=8) :: prec(2), momen0, momen1, vale(2),sigmec(1000*ncmp),siglin(1000*ncmp)
     real(kind=8) :: sigth(1000*ncmp), tresc(2), r3(2), sigpr(1000*ncmp),sigtot(1000*ncmp)
     real(kind=8) :: tremin(2), tremax(2), tminsp(2), tmaxsp(2), tminsn(2), tmaxsn(2)
+    real(kind=8) :: treminb(2), tremaxb(2), trescb(2), r3b(2)
     complex(kind=8) :: cbid
     aster_logical :: exist
     character(len=8) :: k8b, crit(2), nocmp(ncmp), table, knume, table2, table3
@@ -235,13 +236,17 @@ subroutine rcZ2t()
 116     continue
         do 1116 k = 1, 2
             tresc(k) = 0.d0
+            trescb(k) = 0.d0
             r3(k) = 0.d0
+            r3b(k) = 0.d0
             tminsp(k) = 0.d0
             tminsn(k) = 0.d0
             tremin(k) = 0.d0
+            treminb(k) = 0.d0
             tmaxsp(k) = 0.d0
             tmaxsn(k) = 0.d0
             tremax(k) = 0.d0
+            tremaxb(k) = 0.d0
 1116    continue
 !
         do 12 i = 1, nbinst
@@ -330,7 +335,7 @@ subroutine rcZ2t()
                     tminsp(kk) = vale(1)
                     tmaxsp(kk) = vale(1)
                 else
-                    if (r3(kk) .le. tremin(kk)) then
+                    if (r3(kk) .lt. tremin(kk)) then
                         tremin(kk) = r3(kk)
                         tminsp(kk) = vale(1)
                     endif
@@ -344,33 +349,36 @@ subroutine rcZ2t()
 ! --------- on calcule tmaxsn et tminsn
 !
             kk=0
+!
             do 19 k = 1, nbabsc, nbabsc-1
                 kk=kk+1
-                call rctres(siglin((k-1)*ncmp+1), tresc(kk))
+                call rctres(siglin((k-1)*ncmp+1), trescb(kk))
 !
                 if (trace(3,siglin((k-1)*ncmp+1)) .lt. 0.d0) then
-                    r3(kk) = tresc(kk)*(-1.0d0)
+                    r3b(kk) = trescb(kk)*(-1.0d0)
                 else
-                    r3(kk) = tresc(kk)
+                    r3b(kk) = trescb(kk)
                 endif
                 if (i .eq. 1) then
-                    tremin(kk) = r3(kk)
-                    tremax(kk) = r3(kk)
+                    treminb(kk) = r3b(kk)
+                    tremaxb(kk) = r3b(kk)
                     tminsn(kk) = vale(1)
                     tmaxsn(kk) = vale(1)
                 else
-                    if (r3(kk) .le. tremin(kk)) then
-                        tremin(kk) = r3(kk)
+                    if (r3b(kk) .lt. treminb(kk)) then
+                        treminb(kk) = r3b(kk)
                         tminsn(kk) = vale(1)
                     endif
-                    if (r3(kk) .gt. tremax(kk)) then
-                        tremax(kk) = r3(kk)
+                    if (r3b(kk) .gt. tremaxb(kk)) then
+                        tremaxb(kk) = r3b(kk)
                         tmaxsn(kk) = vale(1)
                     endif
                 endif
  19         continue
 !
  12     continue
+        write(*,*)'TOTO',tmaxsn
+        write(*,*)'TITI',tminsn
 !
 ! --------- on remplit les vecteurs
 ! --------- pour tminsp a l'origine    

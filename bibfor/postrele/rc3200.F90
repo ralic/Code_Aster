@@ -9,7 +9,7 @@ subroutine rc3200(pmpb, sn, snet, fatigu, lrocht,&
 #include "asterfort/rc32mu.h"
 #include "asterfort/rc32rs.h"
 #include "asterfort/rc32si.h"
-#include "asterfort/rc32th.h"
+#include "asterfort/rcZ2t.h"
 #include "asterfort/rc32in.h"
     real(kind=8) :: symax
     aster_logical :: pmpb, sn, snet, fatigu, lrocht
@@ -75,7 +75,7 @@ subroutine rc3200(pmpb, sn, snet, fatigu, lrocht,&
 !              RECUPERATION DES RESULTATS THERMIQUES
 !     ------------------------------------------------------------------
 !
-    call rc32th()
+    call rcZ2t()
 !
 !     ------------------------------------------------------------------
 !              CALCULS DES AMPLITUDES DE CONTRAINTES

@@ -53,7 +53,7 @@ subroutine rc32sp(typz, lieu, numsip, pi, mi,&
 ! OUT : SPIJ   : AMPLITUDE DE VARIATION DES CONTRAINTES TOTALES
 ! OUT : SPMECA : AMPLITUDE DE VARIATION DES CONTRAINTES MECANIQUES
 !
-    integer :: icmp, jsigu, icmps, long, nbinst, nbthep, nbtheq, jther, numth
+    integer :: icmp, jsigu, icmps, long, nbinst, nbthep, nbtheq
     integer :: jthunq, i1, jthunp, jthun
     real(kind=8) :: pij, mij(12), sp, sij(6), sigu, sqma(6), sqmi(6)
     real(kind=8) :: sp1, sp2, spth(6), spqma(2), spqmi(2), sqth(6)
@@ -126,12 +126,10 @@ subroutine rc32sp(typz, lieu, numsip, pi, mi,&
             spij(1) = max(spij(1),sp)
             if (typ2 .eq. 'COMB') spij(2) = max(spij(2),sp)
         else
-            call jeveuo(jexnom('&&RC3200.SITU_THER', knumes), 'L', jther)
-            numth = zi(jther)
             knumet = 'T       '
-            call codent(numth, 'D0', knumet(2:8))
-            call jelira(jexnom('&&RC3200.THER_UNIT .'//lieu, knumet), 'LONUTI', long)
-            call jeveuo(jexnom('&&RC3200.THER_UNIT .'//lieu, knumet), 'L', jthunp)
+            call codent(numsip, 'D0', knumet(2:8))
+            call jelira(jexnom('&&RC3200.T .'//lieu, knumet), 'LONUTI', long)
+            call jeveuo(jexnom('&&RC3200.T .'//lieu, knumet), 'L', jthunp)
             nbinst = 2
             typ2 = '????'
             if (type .eq. 'SP_COMB') then
@@ -189,12 +187,10 @@ subroutine rc32sp(typz, lieu, numsip, pi, mi,&
                 endif
             endif
         else
-            call jeveuo(jexnom('&&RC3200.SITU_THER', knumes), 'L', jther)
-            numth = zi(jther)
             knumet = 'T       '
-            call codent(numth, 'D0', knumet(2:8))
-            call jelira(jexnom('&&RC3200.THER_UNIT .'//lieu, knumet), 'LONUTI', long)
-            call jeveuo(jexnom('&&RC3200.THER_UNIT .'//lieu, knumet), 'L', jthunq)
+            call codent(numsiq, 'D0', knumet(2:8))
+            call jelira(jexnom('&&RC3200.T .'//lieu, knumet), 'LONUTI', long)
+            call jeveuo(jexnom('&&RC3200.T .'//lieu, knumet), 'L', jthunq)
             nbinst = 2
             typ2 = '????'
             if (type .eq. 'SP_COMB') then

@@ -53,8 +53,8 @@ subroutine rc32sn(typz, lieu, numsip, pi, mi,&
 ! VAR : SNIJ   : AMPLITUDE DE VARIATION DES CONTRAINTES LINEARISEES
 !     ------------------------------------------------------------------
 !
-    integer :: icmp, jsigu, icmps, nbinst, long, i1, nbthep, nbtheq, jther, ith
-    integer :: numth, jthun, indicp, indicq
+    integer :: icmp, jsigu, icmps, nbinst, long, i1, nbthep, nbtheq
+    integer :: jthun, indicp, indicq
     real(kind=8) :: pij, mij(12), sn, sij(6), sigu, sqma(6), sqmi(6), sn1, sn2
     real(kind=8) :: snth(6)
     character(len=4) :: typ2
@@ -116,42 +116,38 @@ subroutine rc32sn(typz, lieu, numsip, pi, mi,&
             endif
             snij = max( snij , sn )
         else
-            call jeveuo(jexnom('&&RC3200.SITU_THER', knumes), 'L', jther)
-            do 100 ith = 1, nbthep
-                numth = zi(jther+ith-1)
-                knumet = 'T       '
-                call codent(numth, 'D0', knumet(2:8))
-                call jelira(jexnom('&&RC3200.THER_UNIT .'//lieu, knumet), 'LONUTI', long)
-                call jeveuo(jexnom('&&RC3200.THER_UNIT .'//lieu, knumet), 'L', jthun)
-                nbinst = 2
-                if (type .eq. 'SN_COMB') then
-                    indicp = jthun + 6*nbinst
-                    typ2 = 'COMB'
-                else if (type .eq. 'SN*_COMB') then
-                    indicp = jthun + 12*nbinst
-                    typ2 = 'COMB'
-                else if (type .eq. 'SN_SITU') then
-                    indicp = jthun + 6*nbinst
-                    typ2 = 'SITU'
-                else if (type .eq. 'SN*_SITU') then
-                    indicp = jthun + 12*nbinst
-                    typ2 = 'SITU'
-                endif
-                do 14 i1 = 1, 6
-                    snth(i1) = zr(indicp+6+i1-1) -zr(indicp+i1-1)
- 14             continue
-                if (seisme) then
-                    call rc32s0(typ2, mij, pij, mse, zr(jsigu+78),&
-                                nbinst, snth, sn)
+            knumet = 'T       '
+            call codent(numsip, 'D0', knumet(2:8))
+            call jelira(jexnom('&&RC3200.T .'//lieu, knumet), 'LONUTI', long)
+            call jeveuo(jexnom('&&RC3200.T .'//lieu, knumet), 'L', jthun)
+            nbinst = 2
+            if (type .eq. 'SN_COMB') then
+                indicp = jthun + 6*nbinst
+                typ2 = 'COMB'
+            else if (type .eq. 'SN*_COMB') then
+                indicp = jthun + 12*nbinst
+                typ2 = 'COMB'
+            else if (type .eq. 'SN_SITU') then
+                indicp = jthun + 6*nbinst
+                typ2 = 'SITU'
+            else if (type .eq. 'SN*_SITU') then
+                indicp = jthun + 12*nbinst
+                typ2 = 'SITU'
+            endif
+            do 14 i1 = 1, 6
+                snth(i1) = zr(indicp+6+i1-1) -zr(indicp+i1-1)
+ 14         continue
+            if (seisme) then
+                call rc32s0(typ2, mij, pij, mse, zr(jsigu+78),&
+                            nbinst, snth, sn)
+            else
+                if (typ2 .eq. 'SITU') then
+                    call rc32st(sij, nbinst, snth, sn)
                 else
-                    if (typ2 .eq. 'SITU') then
-                        call rc32st(sij, nbinst, snth, sn)
-                    else
-                        sn = 0.d0
-                    endif
+                    sn = 0.d0
                 endif
-                snij = max( snij , sn )
-100         continue
+            endif
+            snij = max( snij , sn )
         endif
     endif
 !
@@ -188,58 +184,54 @@ subroutine rc32sn(typz, lieu, numsip, pi, mi,&
                 snij = max( snij , sn )
             endif
         else
-            call jeveuo(jexnom('&&RC3200.SITU_THER', knumes), 'L', jther)
-            do 110 ith = 1, nbtheq
-                numth = zi(jther+ith-1)
-                knumet = 'T       '
-                call codent(numth, 'D0', knumet(2:8))
-                call jelira(jexnom('&&RC3200.THER_UNIT .'//lieu, knumet), 'LONUTI', long)
-                call jeveuo(jexnom('&&RC3200.THER_UNIT .'//lieu, knumet), 'L', jthun)
-                nbinst = 2
-                if (type .eq. 'SN_COMB') then
-                    indicq = jthun + 6*nbinst
-                    typ2 = 'COMB'
-                else if (type .eq. 'SN*_COMB') then
-                    indicq = jthun + 12*nbinst
-                    typ2 = 'COMB'
-                else if (type .eq. 'SN_SITU') then
-                    indicq = jthun + 6*nbinst
-                    typ2 = 'SITU'
-                else if (type .eq. 'SN*_SITU') then
-                    indicq = jthun + 12*nbinst
-                    typ2 = 'SITU'
-                endif
-                do 24 i1 = 1, 6
-                    snth(i1) = zr(indicq+6+i1-1) -zr(indicq+i1-1)
- 24             continue
-                if (typ2 .eq. 'SITU') then
-                    if (seisme) then
-                        call rc32s0(typ2, mij, pij, mse, zr(jsigu+ 78),&
-                                    nbinst, snth, sn)
-                    else
-                        call rc32st(sij, nbinst, snth, sn)
-                    endif
+            knumet = 'T       '
+            call codent(numsiq, 'D0', knumet(2:8))
+            call jelira(jexnom('&&RC3200.T .'//lieu, knumet), 'LONUTI', long)
+            call jeveuo(jexnom('&&RC3200.T .'//lieu, knumet), 'L', jthun)
+            nbinst = 2
+            if (type .eq. 'SN_COMB') then
+                indicq = jthun + 6*nbinst
+                typ2 = 'COMB'
+            else if (type .eq. 'SN*_COMB') then
+                indicq = jthun + 12*nbinst
+                typ2 = 'COMB'
+            else if (type .eq. 'SN_SITU') then
+                indicq = jthun + 6*nbinst
+                typ2 = 'SITU'
+            else if (type .eq. 'SN*_SITU') then
+                indicq = jthun + 12*nbinst
+                typ2 = 'SITU'
+            endif
+            do 24 i1 = 1, 6
+                snth(i1) = zr(indicq+6+i1-1) -zr(indicq+i1-1)
+ 24         continue
+            if (typ2 .eq. 'SITU') then
+                if (seisme) then
+                    call rc32s0(typ2, mij, pij, mse, zr(jsigu+ 78),&
+                                nbinst, snth, sn)
                 else
-                    if (nbthep .ne. 0) then
-                        do 114 i1 = 1, 6
-                            sqmi(i1) = zr(indicp+i1-1) - zr(indicq+6+ i1-1)
-                            sqma(i1) = zr(indicp+6+i1-1) - zr(indicq+ i1-1)
-114                     continue
-                        if (seisme) then
-                            call rc32s0(typ2, mij, pij, mse, zr( jsigu+78),&
-                                        nbinst, sqmi, sn1)
-                            call rc32s0(typ2, mij, pij, mse, zr( jsigu+78),&
-                                        nbinst, sqma, sn2)
-                            sn = max( sn1, sn2 )
-                        else
-                            call rc32st(sij, nbinst, sqmi, sn1)
-                            call rc32st(sij, nbinst, sqma, sn2)
-                            sn = max( sn1, sn2 )
-                        endif
+                    call rc32st(sij, nbinst, snth, sn)
+                endif
+            else
+                if (nbthep .ne. 0) then
+                    do 114 i1 = 1, 6
+                        sqmi(i1) = zr(indicp+i1-1) - zr(indicq+6+ i1-1)
+                        sqma(i1) = zr(indicp+6+i1-1) - zr(indicq+ i1-1)
+114                 continue
+                    if (seisme) then
+                        call rc32s0(typ2, mij, pij, mse, zr( jsigu+78),&
+                                    nbinst, sqmi, sn1)
+                        call rc32s0(typ2, mij, pij, mse, zr( jsigu+78),&
+                                    nbinst, sqma, sn2)
+                        sn = max( sn1, sn2 )
+                    else
+                        call rc32st(sij, nbinst, sqmi, sn1)
+                        call rc32st(sij, nbinst, sqma, sn2)
+                        sn = max( sn1, sn2 )
                     endif
                 endif
-                snij = max( snij , sn )
-110         continue
+            endif
+            snij = max( snij , sn )
         endif
     endif
 !
