@@ -45,8 +45,7 @@ implicit none
     real(kind=8), intent(in) :: epsm(*)
     real(kind=8), intent(in) :: deps(*)
     real(kind=8), intent(in) :: sigm(*)
-! intent(inout) for vim: sqrt(2) on shear stresses
-    real(kind=8), intent(inout) :: vim(25)
+    real(kind=8), intent(in) :: vim(25)
     character(len=16), intent(in) :: option
     real(kind=8), intent(out) :: sigp(*)
     real(kind=8), intent(out) :: vip(25)
@@ -101,13 +100,13 @@ implicit none
     real(kind=8) :: sigel(6), sigel2(6), sig0(6), sieleq, sigeps
     real(kind=8) :: plasti, dp, seuil
     real(kind=8) :: coef1, coef2, coef3, dv, n0(3), b
-    real(kind=8) :: rac2
     real(kind=8) :: valres(12), epsth_meta(2)
     character(len=1) :: poum
     integer :: icodre(12)
     character(len=16) :: nomres(12)
     aster_logical :: resi, rigi
     real(kind=8), parameter :: kron(6) = (/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/)
+    real(kind=8), parameter :: rac2 = sqrt(2.d0)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -146,16 +145,6 @@ implicit none
 !
     call verift(fami, kpg, ksp, poum, imat,&
                 epsth_meta_=epsth_meta)
-!
-! 1.4 - MISE AU FORMAT DES CONTRAINTES DE RAPPEL
-!
-    rac2 = sqrt(2.d0)
-    do i = 4, ndimsi
-        do k = 1, nb_phasis
-            l=i+(k-1)*6
-            vim(l)=vim(l)*rac2
-        end do
-    end do
 !
 ! ****************************************
 ! 2 - RECUPERATION DES CARACTERISTIQUES
@@ -326,6 +315,15 @@ implicit none
             end do
         end do
 !
+!    - MISE AU FORMAT DES CONTRAINTES DE RAPPEL
+!
+        do i = 4, ndimsi
+            do k = 1, nb_phasis
+                l=i+(k-1)*6
+                vi(l)=vi(l)*rac2
+             end do
+         end do
+!
 ! 2.8 - RESTAURATION D ORIGINE VISQUEUSE
 !
         do i = 1, ndimsi
@@ -399,6 +397,9 @@ implicit none
             do i = 1, ndimsi
                 l=i+(k-1)*6
                 vi(l)=vim(l)
+                if (i .gt. 3) then
+                    vi(l)=vi(l)*rac2
+                end if
             end do
         end do
         trans=0.d0
@@ -492,6 +493,9 @@ implicit none
                 l=i+(k-1)*6
                 if (phase(k) .gt. 0.d0) then
                     vip(l) = vi(l)+3.d0*dp*sig0(i)/2.d0
+                    if (i .gt. 3) then
+                        vip(l) = vip(l)/rac2
+                    end if
                 else
                     vip(l) = 0.d0
                 endif
@@ -499,6 +503,9 @@ implicit none
         end do
         do i = 1, ndimsi
             vip(18+i)= xmoy(i)+3.d0*hmoy*dp*sig0(i)/2.d0
+            if (i .gt. 3) then
+                vip(18+i) = vip(18+i)/rac2
+            end if
         end do
     endif
 !
@@ -587,17 +594,6 @@ implicit none
             end do
         end do
     endif
-!
-! 6 - MISE AU FORMAT CONTRAINTE DE RAPPEL
-!
-    do i = 4, ndimsi
-        do k = 1, nb_phasis
-            l=i+(k-1)*6
-            vim(l)=vim(l)/rac2
-            if (resi) vip(l)=vip(l)/rac2
-        end do
-        if (resi) vip(18+i)= vip(18+i)/rac2
-    end do
 !
 999 continue
 !
