@@ -6,4 +6,4 @@ P mpi_nbnoeud 1
 P testlist verification sequential
 
 F comm sslx100d.comm D 1
-F mail sslx100d.mail D 20
+F mmed sslx100d.mmed D 20

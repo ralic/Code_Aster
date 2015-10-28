@@ -6,4 +6,4 @@ P mpi_nbnoeud 1
 P testlist verification sequential
 
 F comm sdls109g.comm D 1
-F mail sdls109g.mail D 20
+F mmed sdls109g.mmed D 20

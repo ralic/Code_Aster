@@ -1,6 +1,6 @@
-# TITRE VALIDATION DU CALCUL DES COORDONNEES DES SOUS POINTS D'INTEGRATION POUR LA MODELISATION COQUE_C_PLAN
+# TITRE VALIDATION DU CALCUL DES COORDONNEES DES SOUS POINTS D'INTEGRATION POUR LA MODELISATION COQUE_AXIS
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,7 +21,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 MA=LIRE_MAILLAGE(UNITE=20,);
 
 MO=AFFE_MODELE( MAILLAGE=MA,
-                AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='COQUE_C_PLAN',),);
+                AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='COQUE_AXIS',),);
 
 BETON=DEFI_MATERIAU(ELAS=_F(E=3.7272000000E10, NU=0.0,  RHO=2400.0,),)
 
@@ -70,8 +70,20 @@ U = STAT_NON_LINE(MODELE=MO,
                                 ITER_GLOB_MAXI=250,),
                  );
 
+U2 = MECA_STATIQUE(MODELE=MO,
+                 CHAM_MATER=CHMAT,
+                 CARA_ELEM=COQUE,
+                 EXCIT=(_F(CHARGE=BLOCAGE,),
+                        _F(CHARGE=CHARGE,
+                           FONC_MULT=FOFO,),),
+                 LIST_INST=LINST,
+                 );
+
 TB=CREA_TABLE(RESU=_F(RESULTAT=U,GROUP_MA='COQUE',NOM_CHAM='SIEF_ELGA',TOUT_CMP='OUI',NUME_ORDRE = 1))
 IMPR_TABLE(TABLE=TB)
+
+TB2=CREA_TABLE(RESU=_F(RESULTAT=U2,GROUP_MA='COQUE',NOM_CHAM='SIEF_ELGA',TOUT_CMP='OUI',NUME_ORDRE = 2))
+IMPR_TABLE(TABLE=TB2)
 
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -628,7 +640,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.840028435,
-           VALE_REFE=0.84002843500000002,
+           VALE_REFE=0.840028435,
            NOM_PARA='COOR_Y',
            TABLE=TB,
            FILTRE=(_F(NOM_PARA='POINT',
@@ -639,12 +651,40 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=0.790028435,
-           VALE_REFE=0.79002843499999997,
+           VALE_CALC=0.79002843462272,
+           VALE_REFE=0.790028435,
            NOM_PARA='COOR_Y',
            TABLE=TB,
            FILTRE=(_F(NOM_PARA='POINT',
                       VALE_I=2,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=12,),
+                   ),
+           )
+
+TEST_TABLE(
+           VALE_CALC=-10.431960775265,
+           VALE_REFE=-10.432,
+           PRECISION=1.E-3,
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='SIXX',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=1,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=12,),
+                   ),
+           )
+
+TEST_TABLE(
+           VALE_CALC=-10.431960775265,
+           VALE_REFE=-10.432,
+           PRECISION=1.E-3,
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='SIXX',
+           TABLE=TB2,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=1,),
                    _F(NOM_PARA='SOUS_POINT',
                       VALE_I=12,),
                    ),

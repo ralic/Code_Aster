@@ -1,9 +1,10 @@
+
 # person_in_charge: patrick.massin at edf.fr
-# DATE   : 12/04/2000
+# DATE   : 13/04/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
 # TITRE  : POUTRE ENCASTREE SOUMISE A UNE PRESSION UNIFORME
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,195 +22,174 @@
 #---------------------------------------------------------------------
 #  - CALCUL QUASI-STATIQUE D'UNE POUTRE CONSTITUEE D'UN MATERIAU
 #    ELASTIQUE PARFAITEMENT PLASTIQUE
-#  - MODELISATION AVEC DES ELEMENTS 'DKT'(TRIA3)
+#  - MODELISATION AVEC DES ELEMENTS 'DKT'(QUAD4)
 #---------------------------------------------------------------------
-#
-DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'))
 
-MAIL_B=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI'), )
-MAIL_B=DEFI_GROUP(reuse =MAIL_B,
-              MAILLAGE=MAIL_B,
-              CREA_GROUP_NO=(_F(GROUP_MA='LFE',),),);
-#
-MOD_B=AFFE_MODELE(   MAILLAGE=MAIL_B,
-                           AFFE=_F( TOUT = 'OUI',
-                                 PHENOMENE = 'MECANIQUE',
-                                 MODELISATION = 'DKT')
-                     )
+DEBUT(CODE=_F(
+              NIV_PUB_WEB='INTERNET',),);
 
+MAIL_C=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI',),FORMAT='MED',);
+
+MAIL_C=DEFI_GROUP(reuse =MAIL_C,
+                  MAILLAGE=MAIL_C,
+                  CREA_GROUP_NO=(_F(GROUP_MA='LFE',),),);
+
+MOD_C=AFFE_MODELE(MAILLAGE=MAIL_C,
+                  AFFE=_F(TOUT='OUI',
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION='DKT',),);
 #
 #---------------------------------------------------------------------
 #                     CARACTERISTIQUES ELEMENTAIRES
 #---------------------------------------------------------------------
-#
-CAR_EL_B=AFFE_CARA_ELEM(   MODELE=MOD_B,
-                              COQUE=_F( GROUP_MA = 'TOUT_ELT',COQUE_NCOU=3,
-                                     EPAIS = 0.025)
-                           )
 
+CAR_EL_C=AFFE_CARA_ELEM(MODELE=MOD_C,
+                        COQUE=_F(GROUP_MA='TOUT_ELT',
+                                 EPAIS=0.025,
+                                 COQUE_NCOU=3,),);
 #
 #---------------------------------------------------------------------
 #                     CARACTERISTIQUES MATERIAUX
 #---------------------------------------------------------------------
-#
-MAT_B=DEFI_MATERIAU(        ELAS=_F( E = 2.E+11,
-                                    NU = 0.3),
-                         ECRO_LINE=_F( D_SIGM_EPSI = 0.,
-                                    SY = 2.35E+08)
-                       )
 
-#
-CH_MAT_B=AFFE_MATERIAU(   MAILLAGE=MAIL_B,
-                                AFFE=_F( TOUT = 'OUI', MATER = MAT_B)
-                          )
+MAT_C=DEFI_MATERIAU(ELAS=_F(E=200000000000.0,
+                            NU=0.3,),
+                    ECRO_LINE=_F(D_SIGM_EPSI=0.0,
+                                 SY=235000000.0,),);
 
+CH_MAT_C=AFFE_MATERIAU(MAILLAGE=MAIL_C,
+                       AFFE=_F(TOUT='OUI',
+                               MATER=MAT_C,),);
 #
 #---------------------------------------------------------------------
 #                     CHARGEMENTS
 #---------------------------------------------------------------------
-#
-CHAR0=AFFE_CHAR_MECA(     MODELE=MOD_B,
-                           DDL_IMPO=(
-                          _F( GROUP_MA = 'LAB',
-                                    DX = 0., DY = 0., DZ = 0.,
-                                    DRX = 0., DRY = 0., DRZ = 0.),
-                          _F( GROUP_MA = 'LFE',
-                                    DRZ = 0.)),
-                   LIAISON_OBLIQUE=_F( GROUP_NO = 'LFE',
-                                    DX = 0.,
-                                    ANGL_NAUT = (135., 0., 0.,))
-                        )
-#
-PRES_LIM=AFFE_CHAR_MECA(         MODELE=MOD_B,
-                              FORCE_COQUE=_F( TOUT = 'OUI',
-                                           PRES = -261111.11)
-                            )
 
+CHAR0=AFFE_CHAR_MECA(MODELE=MOD_C,
+                     DDL_IMPO=(_F(GROUP_MA='LAB',
+                                  DX=0.0,
+                                  DY=0.0,
+                                  DZ=0.0,
+                                  DRX=0.0,
+                                  DRY=0.0,
+                                  DRZ=0.0,),
+                               _F(GROUP_MA='LFE',
+                                  DRZ=0.0,),),
+                     LIAISON_OBLIQUE=_F(GROUP_NO='LFE',
+                                        ANGL_NAUT=(135.0,0.0,0.0,),
+                                        DX=0.0,),);
+
+PRES_LIM=AFFE_CHAR_MECA(MODELE=MOD_C,
+                        FORCE_COQUE=_F(TOUT='OUI',
+                                       PRES=-261111.111,),);
 #
 #---------------------------------------------------------------------
 #                        RESOLUTION
 #---------------------------------------------------------------------
-#
-LIS_INST=DEFI_LIST_REEL(        DEBUT=0.,INTERVALLE=(
-                             _F( JUSQU_A = 2., NOMBRE = 9),
-                             _F( JUSQU_A = 10., NOMBRE = 16),
-                             _F( JUSQU_A = 15., NOMBRE = 20),
-                             _F( JUSQU_A = 25., NOMBRE = 30))
-                           )
 
-RESULTAT=STAT_NON_LINE(      MODELE=MOD_B,
-                            CHAM_MATER=CH_MAT_B,
-                             CARA_ELEM=CAR_EL_B,EXCIT=(
-                                 _F( CHARGE = CHAR0),
-                                       _F( CHARGE = PRES_LIM,
-                                        TYPE_CHARGE = 'FIXE_PILO')),
-                             COMPORTEMENT=_F( RELATION = 'VMIS_ISOT_LINE',
-                                           ITER_INTE_MAXI = 30,
- 
-               ),
-                             INCREMENT=_F( LIST_INST = LIS_INST),
- 
-                                       NEWTON=_F(
-                                        PAS_MINI_ELAS = 0.24,
-                                        MATRICE = 'TANGENTE',
-                                        REAC_INCR = 1,
-                                        REAC_ITER = 1,
-                                        REAC_ITER_ELAS = 1),
- 
-                                       CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-6,
-                                        ITER_GLOB_MAXI = 30,ITER_GLOB_ELAS = 50,),
-                              PILOTAGE=_F( TYPE = 'DDL_IMPO',
-                                        GROUP_NO = 'E',
-                                        NOM_CMP = 'DX',
-                                        COEF_MULT = -213.9708)
-                          )
+LIS_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                        INTERVALLE=(_F(JUSQU_A=5.0,
+                                       NOMBRE=10,),
+                                    _F(JUSQU_A=8.5,
+                                       NOMBRE=20,),
+                                    _F(JUSQU_A=25.0,
+                                       NOMBRE=40,),),);
 
+RESULT_C=STAT_NON_LINE(MODELE=MOD_C,
+                       CHAM_MATER=CH_MAT_C,
+                       CARA_ELEM=CAR_EL_C,
+                       EXCIT=(_F(CHARGE=CHAR0,),
+                              _F(CHARGE=PRES_LIM,
+                                 TYPE_CHARGE='FIXE_PILO',),),
+                       COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',
+                                    ITER_INTE_MAXI=40,),
+                       INCREMENT=_F(LIST_INST=LIS_INST,),
+                       NEWTON=_F(MATRICE='TANGENTE',
+                                 REAC_ITER=1,),
+                       PILOTAGE=_F(TYPE='DDL_IMPO',
+                                   COEF_MULT=-213.9708,
+                                   GROUP_NO='F',
+                                   NOM_CMP='DY',),
+                       CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
+                                      ITER_GLOB_MAXI=40,),);
 
-TABLE_DX=POST_RELEVE_T(
-                          ACTION=_F( GROUP_NO = 'E',
-                          INTITULE = 'TAB_DX',
-                          RESULTAT = RESULTAT,
-                          NOM_CHAM = 'DEPL',
-                          NOM_CMP = 'DX',
-                          TOUT_ORDRE = 'OUI',
-                          OPERATION = 'EXTRACTION')
-                          )
+TABLE_DX=POST_RELEVE_T(ACTION=_F(INTITULE='TAB_DX',
+                                 GROUP_NO='E',
+                                 RESULTAT=RESULT_C,
+                                 NOM_CHAM='DEPL',
+                                 TOUT_ORDRE='OUI',
+                                 NOM_CMP='DX',
+                                 OPERATION='EXTRACTION',),);
 
-IMPR_TABLE(  TABLE=TABLE_DX)
+IMPR_TABLE(TABLE=TABLE_DX,);
 
-TABLE_DY=POST_RELEVE_T( ACTION=_F( GROUP_NO = 'E',
-                          INTITULE = 'TAB_DY',
-                          RESULTAT = RESULTAT,
-                          NOM_CHAM = 'DEPL',
-                          NOM_CMP = 'DY',
-                          TOUT_ORDRE = 'OUI',
-                          OPERATION = 'EXTRACTION')
-                          )
+TABLE_DY=POST_RELEVE_T(ACTION=_F(INTITULE='TAB_DY',
+                                 GROUP_NO='E',
+                                 RESULTAT=RESULT_C,
+                                 NOM_CHAM='DEPL',
+                                 TOUT_ORDRE='OUI',
+                                 NOM_CMP='DY',
+                                 OPERATION='EXTRACTION',),);
 
-IMPR_TABLE(  TABLE=TABLE_DY)
+IMPR_TABLE(TABLE=TABLE_DY,);
 
-DEPX=RECU_FONCTION (   RESULTAT = RESULTAT,
-                          NOM_CMP = 'DX',
-                          NOM_CHAM = 'DEPL',
-                          GROUP_NO = 'E',
-                          TOUT_ORDRE = 'OUI')
+DEPX=RECU_FONCTION(RESULTAT=RESULT_C,
+                   NOM_CHAM='DEPL',
+                   TOUT_ORDRE='OUI',
+                   NOM_CMP='DX',
+                   GROUP_NO='E',);
 
-DEPY=RECU_FONCTION (   RESULTAT = RESULTAT,
-                          NOM_CMP = 'DY',
-                          NOM_CHAM = 'DEPL',
-                          GROUP_NO = 'E',
-                          TOUT_ORDRE = 'OUI')
+DEPY=RECU_FONCTION(RESULTAT=RESULT_C,
+                   NOM_CHAM='DEPL',
+                   TOUT_ORDRE='OUI',
+                   NOM_CMP='DY',
+                   GROUP_NO='E',);
 
-ETA=RECU_FONCTION (   RESULTAT = RESULTAT,
-                          NOM_PARA_RESU = 'ETA_PILOTAGE',
-                          TOUT_ORDRE = 'OUI')
+ETA=RECU_FONCTION(RESULTAT=RESULT_C,
+                  NOM_PARA_RESU='ETA_PILOTAGE',
+                  TOUT_ORDRE='OUI',);
 
-IMPR_FONCTION ( UNITE=25, UNITE_DIGR=26,FORMAT='AGRAF',
-               COURBE=_F( FONCTION = DEPX),
-    TITRE='Depx en fonction du temps'
-              )
+IMPR_FONCTION(UNITE=25, UNITE_DIGR=26,
+            FORMAT='AGRAF',
+            TITRE='Depx en fonction du temps',
+            COURBE=_F(FONCTION=DEPX,),);
 
-IMPR_FONCTION (UNITE=27, UNITE_DIGR=28, FORMAT='AGRAF',
-               COURBE=_F( FONCTION = ETA),
-    TITRE='Eta en fonction du temps'
-              )
+IMPR_FONCTION(UNITE=27, UNITE_DIGR=28,
+            FORMAT='AGRAF',
+            TITRE='Eta en fonction du temps',
+            COURBE=_F(FONCTION=ETA,),);
 
-IMPR_FONCTION (UNITE=29, UNITE_DIGR=30,FORMAT='AGRAF',
-               COURBE=_F( FONCTION = DEPY),
-    TITRE='Depy en fonction du temps'
-              )
+IMPR_FONCTION(UNITE=29, UNITE_DIGR=30,
+            FORMAT='AGRAF',
+            TITRE='Depy en fonction du temps',
+            COURBE=_F(FONCTION=DEPY,),);
 
-
-DEPL=CREA_CHAMP(     RESULTAT=RESULTAT,
-                      OPERATION='EXTR',
-                      TYPE_CHAM='NOEU_DEPL_R',
-                       NOM_CHAM='DEPL',
-                     NUME_ORDRE=1
-                   )
+DEPL=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                OPERATION='EXTR',
+                RESULTAT=RESULT_C,
+                NOM_CHAM='DEPL',
+                NUME_ORDRE=1,);
 
 #
 #---------------------------------------------------------------------
 #                        VERIFICATION DES RESULTATS
 #---------------------------------------------------------------------
-#
-TEST_RESU(RESU=(_F(NUME_ORDRE=30,
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=53,
                    PARA='ETA_PILOTAGE',
                    REFERENCE='ANALYTIQUE',
-                   RESULTAT=RESULTAT,
-                   VALE_CALC=1.1374939608748,
+                   RESULTAT=RESULT_C,
+                   VALE_CALC=1.099463234,
                    VALE_REFE=1.0,
-                   PRECISION=0.14999999999999999,),
-                _F(NUME_ORDRE=40,
+                   PRECISION=0.10000000000000001,),
+                _F(NUME_ORDRE=63,
                    PARA='ETA_PILOTAGE',
                    REFERENCE='ANALYTIQUE',
-                   RESULTAT=RESULTAT,
-                   VALE_CALC=1.1392945681832,
+                   RESULTAT=RESULT_C,
+                   VALE_CALC=1.099705540,
                    VALE_REFE=1.0,
-                   PRECISION=0.14999999999999999,),
+                   PRECISION=0.10000000000000001,),
                 ),
           )
 
-#
-FIN()
-#
-#
+FIN();

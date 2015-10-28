@@ -240,7 +240,6 @@
     Olivier Wilk
     Antoine Yessayan
     Irmela Zentner
-    XXXX YYYY
 #
 # And here is a list of EXTERNAL CONTRIBUTORS:
 #

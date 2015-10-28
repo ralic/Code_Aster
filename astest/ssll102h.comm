@@ -1,7 +1,6 @@
-# person_in_charge: patrick.massin at edf.fr
-# TITRE  : POUTRE ENCASTREE SOUMISE A DES EFFORTS UNITAIRES
+# TITRE POUTRE DROITE APPUYEE EN SES DEUX EXTREMITES SOUMISE A UN
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -16,269 +15,360 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-#---------------------------------------------------------------------
-#  - VERIFICATION SIMPLE DES CALCULS DE POUTRES DROITES EN MECANIQUE
-#    DES STRUCTURES STATIQUES LINEAIRE
-#  - MODELISATION AVEC DES ELEMENTS 'COQUE_C_PLAN'
-#---------------------------------------------------------------------
-
-DEBUT(CODE=_F(
-              NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),);
-
+# CHARGEMENT REPARTI LINEAIRE.REFERENCE ANALYTIQUE
+# CALCUL DE LA FLECHE, DE L'EFFORT TRANCHANT, DU MOMENT DE FLEXION ET
+# DE LA CONTRAINTE MAXIMALE ASSOCIEE.
+# MODELISATION TUYAU
+#======================================================================
 #
-#PRE_IDEAS ();
-
-POUTMAIL=LIRE_MAILLAGE(FORMAT='MED',);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #
 
-POUTMODE=AFFE_MODELE(MAILLAGE=POUTMAIL,
-                     AFFE=_F(TOUT='OUI',
-                             PHENOMENE='MECANIQUE',
-                             MODELISATION='COQUE_C_PLAN',),);
+M1=LIRE_MAILLAGE()
+
+
+MA=CREA_MAILLAGE(     MAILLAGE=M1,
+       MODI_MAILLE=_F(  OPTION = 'SEG3_4', TOUT = 'OUI')
+)
+MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
+  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+
+MO=AFFE_MODELE(        MAILLAGE=MA,
+  AFFE=_F( TOUT = 'OUI', PHENOMENE = 'MECANIQUE', MODELISATION = 'TUYAU_3M')
+                        )
+#
+MATR=DEFI_MATERIAU(    ELAS=_F( E = 2.E11,
+                               NU = 0.3)
+                     )
 
 #
-#---------------------------------------------------------------------
-#                       CARACTERISTIQUES ELEMENTAIRES
-#---------------------------------------------------------------------
-
-CARELEM=AFFE_CARA_ELEM(MODELE=POUTMODE,
-                       COQUE=_F(GROUP_MA='TOUT_ELT',
-                                EPAIS=0.2,),);
+CHMAT=AFFE_MATERIAU(    MAILLAGE=MA,
+                              AFFE=_F( TOUT = 'OUI',
+                                    MATER = MATR)
+                        )
 
 #
-#---------------------------------------------------------------------
-#                       CARACTERISTIQUES MATERIAUX
-#---------------------------------------------------------------------
-#
-#PUISQU'IL S'AGIT D'UNE MODELISATION DE TYPE 'COQUE_C_PLAN', LE MODULE
-#D'YOUNG EST MULTIPLIE PAR LA LARGEUR QUI EST DE 0.1
+CAREL=AFFE_CARA_ELEM(    MODELE=MO,INFO=2,
+ORIENTATION=_F( GROUP_NO = 'P1', CARA = 'GENE_TUYAU', VALE = (0., 0., -1.,), ),
+                           POUTRE=_F(
+       GROUP_MA = 'TOUT',
 
-POUTMATE=DEFI_MATERIAU(ELAS=_F(E=2.E+10,
-                               NU=0.3,
-                               RHO=7800.,),);
-
-#
-
-POUTAF_M=AFFE_MATERIAU(MAILLAGE=POUTMAIL,
-                       AFFE=_F(TOUT='OUI',
-                               MATER=POUTMATE,),);
+                                    SECTION = 'CERCLE',
+                                    CARA = ('R',  'EP',),
+                                    VALE = ( 0.100,0.01,
+                                              ))
+                       )
 
 #
-#---------------------------------------------------------------------
-#                       CHARGEMENTS
-#---------------------------------------------------------------------
-
-COND_LIM=AFFE_CHAR_MECA(MODELE=POUTMODE,
-                        DDL_IMPO=_F(GROUP_NO='O',
-                                    DX=0.,
-                                    DY=0.,
-                                    DRZ=0.,),);
+F1=DEFI_FONCTION(    NOM_PARA='X',
+                           VALE=(0.,  0.,
+                                 6.,  6000.,
+                                ),
+                       INTERPOL='LIN'
+                   )
 
 #
-
-CHARGE1=AFFE_CHAR_MECA(MODELE=POUTMODE,
-                       FORCE_NODALE=_F(GROUP_NO='B',
-                                       FX=1.,),);
-
-#
-
-CHARGE2=AFFE_CHAR_MECA(MODELE=POUTMODE,
-                       FORCE_NODALE=_F(GROUP_NO='B',
-                                       FY=1.,),);
-
-#
-
-CHARGE3=AFFE_CHAR_MECA(MODELE=POUTMODE,
-                       FORCE_NODALE=_F(GROUP_NO='B',
-                                       MZ=1.,),);
+CHARG1=AFFE_CHAR_MECA(      MODELE=MO,DDL_IMPO=(
+                            _F( GROUP_NO = 'P1',
+                                      DX = 0.,
+                                      DY = 0.,
+                                      DZ = 0.,
+                                      DRX = 0.,
+                                      DRY = 0.),
+                            _F( GROUP_NO = 'P11',
+                                      DY = 0.))
+                        )
 
 #
+CHARG2=AFFE_CHAR_MECA_F(          MODELE=MO,
+                              FORCE_POUTRE=_F(
+       GROUP_MA = 'TOUT',
 
-CHARGE4=AFFE_CHAR_MECA(MODELE=POUTMODE,
-                       ROTATION=_F(VITESSE=100.,
-                                   AXE=(0.,0.,1.,),),);
+                                            FY = F1)
+                          )
 
-#
-#---------------------------------------------------------------------
-#                       RESOLUTION
-#---------------------------------------------------------------------
-
-RESU=MACRO_ELAS_MULT(MODELE=POUTMODE,
-                     CHAM_MATER=POUTAF_M,
-                     CARA_ELEM=CARELEM,
-                     CHAR_MECA_GLOBAL=COND_LIM,
-                     CAS_CHARGE=(_F(NOM_CAS='CHARGE NUMERO 1',
-                                    CHAR_MECA=CHARGE1,),
-                                 _F(NOM_CAS='CHARGE NUMERO 2',
-                                    CHAR_MECA=CHARGE2,),
-                                 _F(NOM_CAS='CHARGE NUMERO 3',
-                                    CHAR_MECA=CHARGE3,),
-                                 _F(NOM_CAS='CHARGE NUMERO 4',
-                                    CHAR_MECA=CHARGE4,),),);
+LINST=DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.,  NOMBRE=1,));
+MEST1=STAT_NON_LINE(MODELE=MO,
+                 CHAM_MATER=CHMAT,
+                 CARA_ELEM=CAREL,
+                 EXCIT=(_F(CHARGE=CHARG1,),
+                        _F(CHARGE=CHARG2,),),
+                 COMPORTEMENT=_F(RELATION='ELAS',),
+                 INCREMENT=_F(LIST_INST=LINST,),
+                 NEWTON=_F(MATRICE='ELASTIQUE',),)
 
 #
-
-RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CONTRAINTE=('EFGE_ELNO','SIGM_ELNO'),DEFORMATION=('DEGE_ELNO'))
-
-
-RESUPOS=POST_CHAMP(RESULTAT=RESU,
-                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
-                                   NUME_COUCHE=1,
-                                   NIVE_COUCHE='SUP',),);
-#IMPR_RESU(RESU=_F(RESULTAT=RESU,),);
 #
-#---------------------------------------------------------------------
-#                       VERIFICATION DES RESULTATS
-#---------------------------------------------------------------------
-TEST_RESU(RESU=(_F(GROUP_NO='B',
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=RESU,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DX',
-                   VALE_CALC= 5.00000000E-10,
-                   VALE_REFE=5.0000000000000003E-10,
-                   PRECISION=1.E-2,
-                   NOM_CAS='CHARGE NUMERO 1',),
-                _F(GROUP_NO='O',
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=RESUPOS,
-                   NOM_CHAM='SIGM_ELNO',
-                   NOM_CMP='SIXX',
-                   VALE_CALC=5.000000000,
-                   VALE_REFE=5.0,
-                   PRECISION=1.E-2,
-                   MAILLE='MA1',
-                   NOM_CAS='CHARGE NUMERO 1',),
-                _F(GROUP_NO='B',
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=RESU,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DY',
-                   VALE_CALC= 2.00666121E-07,
-                   VALE_REFE=1.9999999999999999E-07,
-                   PRECISION=1.E-2,
-                   NOM_CAS='CHARGE NUMERO 2',),
-                _F(GROUP_NO='B',
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=RESU,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DRZ',
-                   VALE_CALC= 1.50000000E-07,
-                   VALE_REFE=1.4999999999999999E-07,
-                   PRECISION=1.E-2,
-                   NOM_CAS='CHARGE NUMERO 2',),
-                _F(GROUP_NO='O',
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=RESUPOS,
-                   NOM_CHAM='SIGM_ELNO',
-                   NOM_CMP='SIXX',
-                   VALE_CALC=289.273455684,
-                   VALE_REFE=300.0,
-                   PRECISION=0.035999999999999997,
-                   MAILLE='MA1',
-                   NOM_CAS='CHARGE NUMERO 2',),
-                _F(GROUP_NO='B',
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=RESU,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DY',
-                   VALE_CALC= 1.50000000E-07,
-                   VALE_REFE=1.4999999999999999E-07,
-                   PRECISION=1.E-2,
-                   NOM_CAS='CHARGE NUMERO 3',),
-                _F(GROUP_NO='B',
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=RESU,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DRZ',
-                   VALE_CALC= 1.50000000E-07,
-                   VALE_REFE=1.4999999999999999E-07,
-                   PRECISION=1.E-2,
-                   NOM_CAS='CHARGE NUMERO 3',),
-                _F(GROUP_NO='O',
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=RESUPOS,
-                   NOM_CHAM='SIGM_ELNO',
-                   NOM_CMP='SIXX',
-                   VALE_CALC=150.000000000,
-                   VALE_REFE=150.0,
-                   PRECISION=1.E-2,
-                   MAILLE='MA1',
-                   NOM_CAS='CHARGE NUMERO 3',),
-                _F(GROUP_NO='B',
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=RESU,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DX',
-                   VALE_CALC=0.0104,
-                   VALE_REFE=0.0104,
-                   PRECISION=1.E-3,
-                   NOM_CAS='CHARGE NUMERO 4',),
-                _F(GROUP_NO='O',
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=RESUPOS,
-                   NOM_CHAM='SIGM_ELNO',
-                   NOM_CMP='SIXX',
-                   VALE_CALC=1.57625000E8,
-                   VALE_REFE=1.57625000E8,
-                   PRECISION=1.E-3,
-                   MAILLE='MA1',
-                   NOM_CAS='CHARGE NUMERO 4',),
-                ),
+MEST1=CALC_CHAMP(reuse=MEST1,RESULTAT=MEST1,CONTRAINTE=('EFGE_ELNO'))
+
+MEST1=CALC_CHAMP( reuse=MEST1,
+                         RESULTAT=MEST1,
+                           FORCE=('FORC_NODA','REAC_NODA'),CONTRAINTE='EFGE_NOEU'
+                   )
+#
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='P7',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MEST1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=0.00944033108251,
+                  VALE_REFE=9.3887999999999992E-3,
+                  CRITERE='RELATIF',
+                  PRECISION=6.0000000000000001E-3,),
           )
 
-POUTMAIL=MODI_MAILLAGE(reuse =POUTMAIL,
-                       MAILLAGE=POUTMAIL,
-                       TRANSLATION=(10.,10.,),);
-
-
-CHARGE5=AFFE_CHAR_MECA(MODELE=POUTMODE,
-                       ROTATION=_F(VITESSE = 100.,
-                                   AXE = (0.,0.,1.,),
-                                   CENTRE=(10.,10.,0.,),)
-                       );
-#
-
-RESU5=MACRO_ELAS_MULT(MODELE=POUTMODE,
-                     CHAM_MATER=POUTAF_M,
-                     CARA_ELEM=CARELEM,
-                     CHAR_MECA_GLOBAL=COND_LIM,
-                     CAS_CHARGE=(_F(NOM_CAS='CHARGE NUMERO 5',
-                                    CHAR_MECA=CHARGE5,),))
-
-#
-
-RESU5=CALC_CHAMP(reuse=RESU5,RESULTAT=RESU5,CONTRAINTE=('EFGE_ELNO','SIGM_ELNO'),DEFORMATION=('DEGE_ELNO'))
-
-
-RESU5POS=POST_CHAMP(RESULTAT=RESU5,
-                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
-                                   NUME_COUCHE=1,
-                                   NIVE_COUCHE='SUP',),);
-TEST_RESU(RESU=(_F(GROUP_NO='B',
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=RESU5,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DX',
-                   VALE_REFE=0.0104,
-                   VALE_CALC=0.0104,
-                   PRECISION=1.E-3,
-                   NOM_CAS='CHARGE NUMERO 5',),
-                _F(GROUP_NO='O',
-                   RESULTAT=RESU5POS,
-                   REFERENCE='ANALYTIQUE',
-                   NOM_CHAM='SIGM_ELNO',
-                   NOM_CMP='SIXX',
-                   VALE_REFE=1.57625000E8,
-                   VALE_CALC=1.57625000E8,
-                   PRECISION=1.E-3,
-                   MAILLE='MA1',
-                   NOM_CAS='CHARGE NUMERO 5',),
-                ),
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='P1',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MEST1,
+                  NOM_CHAM='EFGE_NOEU',
+                  NOM_CMP='VY',
+                  VALE_CALC=6007.64158728,
+                  VALE_REFE=6000.0,
+                  CRITERE='RELATIF',
+                  PRECISION=2.E-3,),
           )
 
-FIN();
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='P1',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MEST1,
+                  NOM_CHAM='REAC_NODA',
+                  NOM_CMP='DY',
+                  VALE_CALC=-5999.99999478,
+                  VALE_REFE=-6000.0,
+                  CRITERE='RELATIF',),
+          )
 
 #
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='P11',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MEST1,
+                  NOM_CHAM='EFGE_NOEU',
+                  NOM_CMP='VY',
+                  VALE_CALC=-11994.9387293,
+                  VALE_REFE=-1.2000E4,
+                  CRITERE='RELATIF',),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='P11',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MEST1,
+                  NOM_CHAM='REAC_NODA',
+                  NOM_CMP='DY',
+                  VALE_CALC=-11999.9999904,
+                  VALE_REFE=-1.2000E4,
+                  CRITERE='RELATIF',),
+          )
+
+#
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='P8',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MEST1,
+                  NOM_CHAM='EFGE_NOEU',
+                  NOM_CMP='MFZ',
+                  VALE_CALC=-13880.0779838,
+                  VALE_REFE=-1.385641E4,
+                  CRITERE='RELATIF',
+                  PRECISION=2.E-3,),
+          )
+
+#
+MEST1B=MECA_STATIQUE(        MODELE=MO,
+                          CHAM_MATER=CHMAT,
+                           CARA_ELEM=CAREL,EXCIT=(
+                               _F( CHARGE = CHARG1),
+                                     _F( CHARGE = CHARG2))
+                      )
+
+MEST1B=CALC_CHAMP(reuse=MEST1B,RESULTAT=MEST1B,CONTRAINTE=('EFGE_ELNO'))
+
+MEST1B=CALC_CHAMP( reuse=MEST1B,
+                         RESULTAT=MEST1B,
+                           FORCE=('FORC_NODA','REAC_NODA'),CONTRAINTE='EFGE_NOEU'
+                   )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='P7',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MEST1B,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=0.00944033108251,
+                  VALE_REFE=9.3887999999999992E-3,
+                  CRITERE='RELATIF',
+                  PRECISION=6.0000000000000001E-3,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='P1',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MEST1B,
+                  NOM_CHAM='EFGE_NOEU',
+                  NOM_CMP='VY',
+                  VALE_CALC=6007.64158728,
+                  VALE_REFE=6000.0,
+                  CRITERE='RELATIF',
+                  PRECISION=2.E-3,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='P1',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MEST1B,
+                  NOM_CHAM='REAC_NODA',
+                  NOM_CMP='DY',
+                  VALE_CALC=-5999.99999478,
+                  VALE_REFE=-6000.0,
+                  CRITERE='RELATIF',),
+          )
+
+#
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='P11',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MEST1B,
+                  NOM_CHAM='EFGE_NOEU',
+                  NOM_CMP='VY',
+                  VALE_CALC=-11994.9387293,
+                  VALE_REFE=-1.2000E4,
+                  CRITERE='RELATIF',),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='P11',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MEST1B,
+                  NOM_CHAM='REAC_NODA',
+                  NOM_CMP='DY',
+                  VALE_CALC=-11999.9999904,
+                  VALE_REFE=-1.2000E4,
+                  CRITERE='RELATIF',),
+          )
+
+#
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='P8',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MEST1B,
+                  NOM_CHAM='EFGE_NOEU',
+                  NOM_CMP='MFZ',
+                  VALE_CALC=-13880.0779838,
+                  VALE_REFE=-1.385641E4,
+                  CRITERE='RELATIF',
+                  PRECISION=2.E-3,),
+          )
+
+# test de ANGLE
+
+IY=2.70098E-05
+
+MZMAX=-13856.41
+
+R=0.1
+
+EP=0.01
+
+SIMAX=MZMAX*(R-EP/2.)/IY
+
+MEST1B=CALC_CHAMP(reuse=MEST1B,RESULTAT=MEST1B,CONTRAINTE=('SIGM_ELNO'))
+
+
+SITU90=POST_CHAMP(RESULTAT=MEST1B,
+
+                  EXTR_TUYAU=_F(NOM_CHAM='SIGM_ELNO',
+                                NUME_COUCHE=1,
+                                NIVE_COUCHE='SUP',
+                                ANGLE=90,),);
+# la maille la plus proche de L/SQRT(3)
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='P8',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=SITU90,
+                  NOM_CHAM='SIGM_ELNO',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=-49016918.0174,
+                  VALE_REFE=-4.8736345696747109E7,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,
+                  MAILLE='M12',),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='P8',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=SITU90,
+                  NOM_CHAM='SIGM_ELNO',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=-49062380.3144,
+                  VALE_REFE=-4.8736345696747109E7,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,
+                  MAILLE='M11',),
+          )
+
+SITU89=POST_CHAMP(RESULTAT=MEST1B,
+
+                  EXTR_TUYAU=_F(NOM_CHAM='SIGM_ELNO',
+                                NUME_COUCHE=1,
+                                NIVE_COUCHE='SUP',
+                                ANGLE=89,),);
+# la maille la plus proche de L/SQRT(3)
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='P8',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=SITU89,
+                  NOM_CHAM='SIGM_ELNO',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=-48933198.3432,
+                  VALE_REFE=-4.8736345696747109E7,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,
+                  MAILLE='M12',),
+          )
+
+SITU91=POST_CHAMP(RESULTAT=MEST1B,
+
+                  EXTR_TUYAU=_F(NOM_CHAM='SIGM_ELNO',
+                                NUME_COUCHE=1,
+                                NIVE_COUCHE='SUP',
+                                ANGLE=91,),);
+# la maille la plus proche de L/SQRT(3)
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='P8',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=SITU91,
+                  NOM_CHAM='SIGM_ELNO',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=-48933198.3432,
+                  VALE_REFE=-4.8736345696747109E7,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,
+                  MAILLE='M12',),
+          )
+
+SITU0=POST_CHAMP(RESULTAT=MEST1B,
+
+                 EXTR_TUYAU=_F(NOM_CHAM='SIGM_ELNO',
+                               NUME_COUCHE=1,
+                               NIVE_COUCHE='SUP',
+                               ANGLE=360,),);
+# la maille la plus proche de L/SQRT(3)
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='P8',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=SITU0,
+                  NOM_CHAM='SIGM_ELNO',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=0.,       # valeur calculée de l'ordre de 1.E-5
+                  VALE_REFE=0.0,
+                  CRITERE='ABSOLU',
+                  PRECISION   =1.E-2,
+                  MAILLE='M12',),
+          )
+
+FIN( )

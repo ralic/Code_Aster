@@ -1,4 +1,5 @@
-# TITRE FREQUENCES PROPRES D'UN ANNEAU CYLINDRIQUE EPAIS
+
+# TITRE FREQUENCES PROPRES D'UN ANNEAU CYLINDRIQUE EPAIS MODELISATION SHB
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,142 +16,181 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MAIL=LIRE_MAILLAGE();
+DEBUT(CODE=_F(
+              NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
 
-MOD_3M=AFFE_MODELE(AFFE=_F(GROUP_MA='AXE_S',
-                           PHENOMENE='MECANIQUE',
-                           MODELISATION='TUYAU_3M',),
-                   MAILLAGE=MAIL,);
+MAIL1=LIRE_MAILLAGE(FORMAT='MED', );
 
-MOD_6M=AFFE_MODELE(AFFE=_F(GROUP_MA='AXE_S',
-                           PHENOMENE='MECANIQUE',
-                           MODELISATION='TUYAU_6M',),
-                   MAILLAGE=MAIL,);
-M_S=DEFI_MATERIAU(ELAS=_F(NU=0.29999999999999999,
-                          RHO=7800.0,
-                          E=1.85000000000E11,),);
-CHAM_MAT=AFFE_MATERIAU(AFFE=_F(MATER=M_S,
-                               GROUP_MA='AXE_S',),
-                       MAILLAGE=MAIL,);
-CARA_3M=AFFE_CARA_ELEM(MODELE=MOD_3M,
-                       ORIENTATION=_F(VALE=(1.0,0.0,0.0),
-                                      CARA='GENE_TUYAU',
-                                      GROUP_NO='P1',),
-                       POUTRE=_F(SECTION='CERCLE',
-                                 GROUP_MA='AXE_S',
-                                 VALE=(0.39500000000000002,0.048000000000000001),
-                                 CARA=('R','EP'),),);
-CARA_6M=AFFE_CARA_ELEM(MODELE=MOD_6M,
-                       ORIENTATION=_F(VALE=(1.0,0.0,0.0),
-                                      CARA='GENE_TUYAU',
-                                      GROUP_NO='P1',),
-                       POUTRE=_F(SECTION='CERCLE',
-                                 GROUP_MA='AXE_S',
-                                 VALE=(0.39500000000000002,0.048000000000000001),
-                                 CARA=('R','EP'),),);
-MK_3M=CALC_MATR_ELEM(OPTION='RIGI_MECA',
-                     MODELE=MOD_3M,
-                     CHAM_MATER=CHAM_MAT,
-                     CARA_ELEM=CARA_3M,);
-MM_3M=CALC_MATR_ELEM(OPTION='MASS_MECA',
-                     MODELE=MOD_3M,
-                     CHAM_MATER=CHAM_MAT,
-                     CARA_ELEM=CARA_3M,);
-NUM_3M=NUME_DDL(MATR_RIGI=MK_3M,);
-MASK_3M=ASSE_MATRICE(MATR_ELEM=MK_3M,
-                      NUME_DDL=NUM_3M,);
-MASM_3M=ASSE_MATRICE(MATR_ELEM=MM_3M,
-                      NUME_DDL=NUM_3M,);
-MODE_3M=CALC_MODES(MATR_RIGI=MASK_3M,
-                   OPTION='BANDE',
-                   CALC_FREQ=_F(FREQ=(200.0,800.0),
-                                ),
-                   MATR_MASS=MASM_3M,
-                   SOLVEUR_MODAL=_F(METHODE='SORENSEN',
-                                    ),
-                   )
+MODKT=AFFE_MODELE(MAILLAGE=MAIL1,
+                  AFFE=_F(GROUP_MA='SURF_S',
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION='DKT',),);
 
-MK_6M=CALC_MATR_ELEM(OPTION='RIGI_MECA',
-                     MODELE=MOD_6M,
-                     CHAM_MATER=CHAM_MAT,
-                     CARA_ELEM=CARA_6M,);
-MM_6M=CALC_MATR_ELEM(OPTION='MASS_MECA',
-                     MODELE=MOD_6M,
-                     CHAM_MATER=CHAM_MAT,
-                     CARA_ELEM=CARA_6M,);
-NUM_6M=NUME_DDL(MATR_RIGI=MK_6M,);
-MASK_6M=ASSE_MATRICE(MATR_ELEM=MK_6M,
-                      NUME_DDL=NUM_6M,);
-MASM_6M=ASSE_MATRICE(MATR_ELEM=MM_6M,
-                      NUME_DDL=NUM_6M,);
-MODE_6M=CALC_MODES(MATR_RIGI=MASK_6M,
-                   OPTION='BANDE',
-                   CALC_FREQ=_F(FREQ=(200.0,800.0),
-                                ),
-                   MATR_MASS=MASM_6M,
-                   SOLVEUR_MODAL=_F(METHODE='SORENSEN',
-                                    ),
-                   )
+MAIL1=MODI_MAILLAGE(reuse =MAIL1,
+                    MAILLAGE=MAIL1,
+                    ORIE_NORM_COQUE=_F(GROUP_MA='SURF_S',
+                                       VECT_NORM=(0.0,0.0,1.0,),
+                                       GROUP_NO='P3_0',),
+                    );
 
+MAIL=CREA_MAILLAGE(MAILLAGE=MAIL1,
+                   COQU_VOLU=_F(NOM='VOLUH',
+                                GROUP_MA='SURF_S',
+                                EPAIS=0.048,
+                                PREF_MAILLE='MH',
+                                PREF_NOEUD='NH',
+                                PLAN='MOY',
+                                TRANSLATION='SUP',),);
+
+MAIL=MODI_MAILLAGE(reuse =MAIL,
+                   MAILLAGE=MAIL,
+                   ORIE_SHB=_F(GROUP_MA='VOLUH',),);
+
+MOD_SHB=AFFE_MODELE(MAILLAGE=MAIL,
+                    AFFE=_F(TOUT='OUI',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='SHB',),);
+
+M_S=DEFI_MATERIAU(ELAS=_F(E=185000000000.0,
+                          NU=0.3,
+                          RHO=7800.0,),);
+
+CHAM_MAT=AFFE_MATERIAU(MAILLAGE=MAIL,
+                       AFFE=_F(GROUP_MA='VOLUH',
+                               MATER=M_S,),);
+
+MK_SHB=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                      MODELE=MOD_SHB,
+                      CHAM_MATER=CHAM_MAT,);
+
+MM_SHB=CALC_MATR_ELEM(OPTION='MASS_MECA',
+                      MODELE=MOD_SHB,
+                      CHAM_MATER=CHAM_MAT,);
+
+NUM_SHB=NUME_DDL(MATR_RIGI=MK_SHB,);
+
+MASK_SHB=ASSE_MATRICE(MATR_ELEM=MK_SHB,
+                      NUME_DDL=NUM_SHB,);
+
+MASM_SHB=ASSE_MATRICE(MATR_ELEM=MM_SHB,
+                      NUME_DDL=NUM_SHB,);
+
+MODE_SHB=CALC_MODES(MATR_RIGI=MASK_SHB,
+                    OPTION='BANDE',
+                    CALC_FREQ=_F(FREQ=(200.0,800.0,),
+                                 ),
+                    MATR_MASS=MASM_SHB,
+                    SOLVEUR_MODAL=_F(MODE_RIGIDE='NON',
+                                     METHODE='TRI_DIAG',
+                                     ),
+                    )
+
+# modes hors plan
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
-                   REFERENCE='AUTRE_ASTER',
-                   RESULTAT=MODE_3M,
-                   VALE_CALC=209.024818026,
-                   VALE_REFE=210.55000000000001,
-                   PRECISION=1.E-2,),
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE_SHB,
+                   VALE_CALC=208.049060799,
+                   VALE_REFE=205.88999999999999,
+                   PRECISION=0.012,),
                 _F(NUME_ORDRE=2,
                    PARA='FREQ',
-                   REFERENCE='AUTRE_ASTER',
-                   RESULTAT=MODE_3M,
-                   VALE_CALC=209.024818039,
-                   VALE_REFE=210.55000000000001,
-                   PRECISION=1.E-2,),
-                _F(NUME_ORDRE=5,
-                   PARA='FREQ',
-                   REFERENCE='AUTRE_ASTER',
-                   RESULTAT=MODE_3M,
-                   VALE_CALC=591.000197179,
-                   VALE_REFE=587.91999999999996,
-                   PRECISION=1.E-2,),
-                _F(NUME_ORDRE=6,
-                   PARA='FREQ',
-                   REFERENCE='AUTRE_ASTER',
-                   RESULTAT=MODE_3M,
-                   VALE_CALC=591.000197215,
-                   VALE_REFE=587.91999999999996,
-                   PRECISION=1.E-2,),
-                _F(NUME_ORDRE=1,
-                   PARA='FREQ',
-                   REFERENCE='AUTRE_ASTER',
-                   RESULTAT=MODE_6M,
-                   VALE_CALC=209.024818025,
-                   VALE_REFE=210.55000000000001,
-                   PRECISION=1.E-2,),
-                _F(NUME_ORDRE=2,
-                   PARA='FREQ',
-                   REFERENCE='AUTRE_ASTER',
-                   RESULTAT=MODE_6M,
-                   VALE_CALC=209.024818039,
-                   VALE_REFE=210.55000000000001,
-                   PRECISION=1.E-2,),
-                _F(NUME_ORDRE=5,
-                   PARA='FREQ',
-                   REFERENCE='AUTRE_ASTER',
-                   RESULTAT=MODE_6M,
-                   VALE_CALC=591.000197180,
-                   VALE_REFE=587.91999999999996,
-                   PRECISION=1.E-2,),
-                _F(NUME_ORDRE=6,
-                   PARA='FREQ',
-                   REFERENCE='AUTRE_ASTER',
-                   RESULTAT=MODE_6M,
-                   VALE_CALC=591.000197216,
-                   VALE_REFE=587.91999999999996,
-                   PRECISION=1.E-2,),
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE_SHB,
+                   VALE_CALC=208.049060826,
+                   VALE_REFE=205.88999999999999,
+                   PRECISION=0.012,),
                 ),
           )
+
+# modes d ovalidation
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=3,
+                   PARA='FREQ',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE_SHB,
+                   VALE_CALC=210.709364037,
+                   VALE_REFE=210.55000000000001,
+                   PRECISION=8.9999999999999993E-3,),
+                _F(NUME_ORDRE=4,
+                   PARA='FREQ',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE_SHB,
+                   VALE_CALC=210.709364056,
+                   VALE_REFE=210.55000000000001,
+                   PRECISION=8.9999999999999993E-3,),
+                ),
+          )
+
+# modes trifolies
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=5,
+                   PARA='FREQ',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE_SHB,
+                   VALE_CALC=590.847700930,
+                   VALE_REFE=587.91999999999996,
+                   PRECISION=5.0000000000000001E-3,),
+                _F(NUME_ORDRE=6,
+                   PARA='FREQ',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE_SHB,
+                   VALE_CALC=590.847700989,
+                   VALE_REFE=587.91999999999996,
+                   PRECISION=5.0000000000000001E-3,),
+                ),
+          )
+
+# modes hors plan
+TEST_RESU(RESU=(_F(NUME_ORDRE=7,
+                   PARA='FREQ',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE_SHB,
+                   VALE_CALC=595.294815752,
+                   VALE_REFE=588.88,
+                   PRECISION=0.010999999999999999,),
+                _F(NUME_ORDRE=8,
+                   PARA='FREQ',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE_SHB,
+                   VALE_CALC=595.294815838,
+                   VALE_REFE=588.88,
+                   PRECISION=0.010999999999999999,),
+                ),
+          )
+
+MASSIN=POST_ELEM(MASS_INER=_F(TOUT='OUI',),
+                 MODELE=MOD_SHB,
+                 CHAM_MATER=CHAM_MAT,);
+
+IMPR_TABLE(TABLE=MASSIN,);
+RM = 0.369;
+
+EP = 0.048;
+
+L = 0.05;
+
+RHO = 7800.0;
+
+REXT = RM+0.5*EP;
+
+RINT = RM-0.5*EP;
+
+SURF = 3.1415926535*(REXT*REXT-RINT*RINT);
+
+VOL = SURF*L;
+
+MASS = VOL*RHO
+
+
+
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC=43.373681594,
+           VALE_REFE=43.402233481457792,
+           NOM_PARA='MASSE',
+           TABLE=MASSIN,)
 
 FIN();

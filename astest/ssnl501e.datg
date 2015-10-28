@@ -1,30 +1,32 @@
-opti dime 3 elem qua8;
+opti dime 3 elem seg2 ;
 opti niveau 8 ;
 
-*--------------------------
+* modelisation des elements cables par poutres
+* h1 : epaisseur poutre interne
+* h2 : epaisseur poutre externe
+* --------------------------------------------------
 
-A = 0.53033     0.    0.    ;
-E = 0.   0.53033    0.    ;
-B = 0.53033     0.    0.15  ;
-F = 0.   0.53033    0.15  ;
+a = cos(78.5) ;
+b = sin(78.5) ;
+
+a2 = 0.75*a ;
+b2 = 0.75*b ;
+
+a3 =2.1-a2 ;
+b3 =b2 + 0.7 ;
+
+no1 = 2.1     0.7    0.    ;
+no2 = a3     b3     0.    ;
 
 
+tout_elt = no1 droi 10 no2 ;
 
-lBF = droit 10 B F ;
-lEA = droit 10 E A ;
-lFE = droit 1 F E ;
-lAB = droit 1 A B ;
-
-surf = daller lAB lBF lFE lEA plan;
-
-
-tout_elt = surf et lAB et lBF et lFE et lEA ;
 trac tout_elt ;
 
 list (nbno tout_elt) ;
 list (nbel tout_elt) ;
 
-opti sauv form 'ssnl501e.mgib' ;
+opti sauv form 'ssnl501f.mgib' ;
 sort tout_elt ;
 sauv form tout_elt ;
 

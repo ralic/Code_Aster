@@ -1,5 +1,5 @@
 P time_limit 60
-P memory_limit 512
+P memory_limit 256
 P ncpus 1
 P mpi_nbcpu 1
 P mpi_nbnoeud 1
@@ -8,3 +8,4 @@ P testlist verification sequential
 F comm ssll102i.comm D 1
 F mail ssll102i.mail D 20
 F datg ssll102i.datg D 16
+F libr ssll102i.18 D 18

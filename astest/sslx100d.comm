@@ -1,277 +1,211 @@
-# TITRE MELANGE 3D-PLAQUE-POUTRE SANS NOEUD COMMUN ENTRE ELEMENTS.
+# TITRE MELANGE 2D-DISCRET
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-# (AT YOUR OPTION) ANY LATER VERSION.
-#
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-#
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MAINI=LIRE_MAILLAGE();
-
-MA=CREA_MAILLAGE(MAILLAGE=MAINI,
-                 MODI_MAILLE=_F(GROUP_MA='GRMA1',
-                                OPTION='QUAD8_9',),);
+MA=LIRE_MAILLAGE(FORMAT='MED',);
 
 MO=AFFE_MODELE(MAILLAGE=MA,
-               AFFE=(_F(MAILLE=('HE1','F1',),
+               AFFE=(_F(GROUP_MA='MAIL2D',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='3D',),
-                     _F(MAILLE='MORIG',
+                        MODELISATION='C_PLAN',),
+                     _F(GROUP_MA='DISCRET',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='DIS_TR',),
-                     _F(GROUP_MA=('GRMA1','GRMA3',),
-                        PHENOMENE='MECANIQUE',
-                        MODELISATION='COQUE_3D',),
-                     _F(GROUP_MA='GRMA2',
-                        PHENOMENE='MECANIQUE',
-                        MODELISATION='POU_D_E',),),);
+                        MODELISATION='2D_DIS_TR',),),);
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=200000.0,
-                          NU=0.3,
+                          NU=0.0,
                           ALPHA=0.0,),);
 
 CHMA=AFFE_MATERIAU(MAILLAGE=MA,
                    AFFE=_F(TOUT='OUI',
                            MATER=MAT,),);
 
-CARA=AFFE_CARA_ELEM(MODELE=MO,
-                    POUTRE=_F(GROUP_MA='GRMA2',
-                              SECTION='RECTANGLE',
-                              CARA=('HZ','HY',),
-                              VALE=(3.0,1.0,),),
-                    COQUE=_F(GROUP_MA=('GRMA1','GRMA3',),
-                             EPAIS=1.0,
-                             ANGL_REP=(0.0,0.0,),
-                             COEF_RIGI_DRZ=0.001,),
-                    DISCRET=(_F(MAILLE='MORIG',
-                               CARA='M_TR_D_N',
-                               VALE=(0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,),),
-                             _F(MAILLE='MORIG',
-                               CARA='K_TR_D_N',
-                               VALE=(0.0,0.0,0.0,0.0,0.0,0.0,),),
-                          ));
-F0 = 0.0;
+CARELEM=AFFE_CARA_ELEM(MODELE=MO,
+                       DISCRET_2D=_F(REPERE='LOCAL',CARA='K_TR_D_L', GROUP_MA='DISCRET',
+                                     VALE=(4.0E5, 2.0E5, 4.0E5),),)
 
-FM1 = -1.0;
-
-
+# TRACTION
+# --------
 CHME=AFFE_CHAR_MECA(MODELE=MO,
-                    DDL_IMPO=(_F(GROUP_NO='ORIG',
-                                 DX=F0,
-                                 DY=F0,
-                                 DZ=F0,
-                                 DRX=F0,
-                                 DRY=F0,
-                                 DRZ=F0,),
-                              _F(NOEUD=('N10','N11','N26','N23','N27',),
-                                 DZ=F0,),),
-                    LIAISON_GROUP=(_F(NOEUD_1=('N4','N16',),
-                                      NOEUD_2=('N21','N25',),
-                                      DDL_1='DX',
-                                      COEF_MULT_1=1.0,
-                                      DDL_2='DX',
-                                      COEF_MULT_2=-1.0,
-                                      COEF_IMPO=F0,),
-                                   _F(NOEUD_1=('N4','N16',),
-                                      NOEUD_2=('N21','N25',),
-                                      DDL_1='DY',
-                                      COEF_MULT_1=1.0,
-                                      DDL_2='DY',
-                                      COEF_MULT_2=-1.0,
-                                      COEF_IMPO=F0,),
-                                   _F(NOEUD_1=('N4','N16',),
-                                      NOEUD_2=('N21','N25',),
-                                      DDL_1='DZ',
-                                      COEF_MULT_1=1.0,
-                                      DDL_2='DZ',
-                                      COEF_MULT_2=-1.0,
-                                      COEF_IMPO=F0,),
-                                   _F(NOEUD_1=('N5','N11','N17',),
-                                      GROUP_NO_2='GRNO3',
-                                      DDL_1='DX',
-                                      COEF_MULT_1=1.0,
-                                      DDL_2='DRZ',
-                                      COEF_MULT_2=0.5,
-                                      COEF_IMPO=F0,),
-                                   _F(NOEUD_1=('N3','N15','N10',),
-                                      GROUP_NO_2='GRNO3',
-                                      DDL_1='DX',
-                                      COEF_MULT_1=1.0,
-                                      DDL_2='DRZ',
-                                      COEF_MULT_2=-0.5,
-                                      COEF_IMPO=F0,),),
-                    LIAISON_ELEM=(_F(OPTION='COQ_POU',
-                                     GROUP_MA_1='GRMA3',
-                                     GROUP_NO_2='C',
-                                     CARA_ELEM=CARA,
-                                     AXE_POUTRE=(1.0,0.0,0.0,),),
-                                  _F(OPTION='3D_POU',
-                                     GROUP_MA_1='FACE1',
-                                     GROUP_NO_2='ORIG',),),
-                    FORCE_NODALE=_F(NOEUD='N29',
-                                    FY=FM1,),
-                    INFO=2,);
-
-DEP=MECA_STATIQUE(MODELE=MO,
+                    DDL_IMPO=_F(GROUP_MA='GAUCHE',
+                                DX=0.0,
+                                DY=0.0,),
+                    LIAISON_ELEM=_F(OPTION='2D_POU',
+                                    GROUP_MA_1='DROIT',
+                                    GROUP_NO_2='G',),
+                    FORCE_NODALE=_F(GROUP_NO='EXTREM',
+                                    FX=100000.0,),);
+ 
+RES=MECA_STATIQUE(MODELE=MO,
                   CHAM_MATER=CHMA,
-                  CARA_ELEM=CARA,
+                  CARA_ELEM  = CARELEM,
                   EXCIT=_F(CHARGE=CHME,),);
 
-DEP=CALC_CHAMP(reuse =DEP,
-               RESULTAT=DEP,
-               CONTRAINTE=('SIGM_ELNO','EFGE_ELNO',),);
-
-
-DEP1=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+DEP=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                 OPERATION='EXTR',
-                RESULTAT=DEP,
+                RESULTAT=RES,
                 NOM_CHAM='DEPL',
                 NUME_ORDRE=1,);
 
-TEST_RESU(
-          CHAM_NO=(_F(NOEUD='N26',
-                      REFERENCE='ANALYTIQUE',
-                      NOM_CMP='DY',
-                      PRECISION=0.029999999999999999,
-                      CHAM_GD=DEP1,
-                      VALE_CALC=-0.026040805,
-                      VALE_REFE=-0.026700000000000002,),
-                   _F(NOEUD='N4',
-                      REFERENCE='ANALYTIQUE',
-                      NOM_CMP='DY',
-                      PRECISION=0.029999999999999999,
-                      CHAM_GD=DEP1,
-                      VALE_CALC=-0.025900268,
-                      VALE_REFE=-0.026700000000000002,),
-                   _F(NOEUD='N22',
-                      REFERENCE='ANALYTIQUE',
-                      NOM_CMP='DY',
-                      PRECISION=1.E-2,
-                      CHAM_GD=DEP1,
-                      VALE_CALC=-0.093398031,
-                      VALE_REFE=-0.093299999999999994,),
-                   _F(NOEUD='N23',
-                      REFERENCE='ANALYTIQUE',
-                      NOM_CMP='DY',
-                      PRECISION=1.E-2,
-                      CHAM_GD=DEP1,
-                      VALE_CALC=-0.093457532,
-                      VALE_REFE=-0.093299999999999994,),
-                   _F(NOEUD='N29',
-                      REFERENCE='ANALYTIQUE',
-                      NOM_CMP='DY',
-                      PRECISION=1.E-2,
-                      CHAM_GD=DEP1,
-                      VALE_CALC=-0.180831473,
-                      VALE_REFE=-0.17999999999999999,),
-                   ),)
 
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=DEP,
-                   NOM_CHAM='EFGE_ELNO',
-                   NOEUD='N27',
-                   NOM_CMP='MFZ',
-                   VALE_CALC=-10.000000000,
-                   VALE_REFE=-10.0,
-                   PRECISION=1.E-2,
-                   MAILLE='S1',),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=DEP,
-                   NOM_CHAM='EFGE_ELNO',
-                   NOEUD='N29',
-                   NOM_CMP='MFZ',
-                   VALE_CALC=-5.68434189E-14,
-                   VALE_REFE=0.0,
-                   CRITERE='ABSOLU',
-                   PRECISION=1.E-2,
-                   MAILLE='S2',),
-                ),
+TEST_RESU(CHAM_NO=(_F(NOEUD='N13',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DX',
+                      PRECISION=9.9999999999999995E-08,
+                      CHAM_GD=DEP,
+                      VALE_CALC=2.500000000,
+                      VALE_REFE=2.5,),
+                   _F(NOEUD='N75',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DX',
+                      PRECISION=9.9999999999999995E-08,
+                      CHAM_GD=DEP,
+                      VALE_CALC=7.500000000,
+                      VALE_REFE=7.5,),
+                   _F(NOEUD='N131',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DX',
+                      PRECISION=9.9999999999999995E-08,
+                      CHAM_GD=DEP,
+                      VALE_CALC=12.500000000,
+                      VALE_REFE=12.5,),
+                   _F(NOEUD='N133',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DX',
+                      PRECISION=9.9999999999999995E-08,
+                      CHAM_GD=DEP,
+                      VALE_CALC=15.000000000,
+                      VALE_REFE=15.0,),
+                   _F(NOEUD='N141',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DX',
+                      PRECISION=9.9999999999999995E-08,
+                      CHAM_GD=DEP,
+                      VALE_CALC=15.000000000,
+                      VALE_REFE=15.0,),
+                   _F(NOEUD='N125',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DX',
+                      PRECISION=9.9999999999999995E-08,
+                      CHAM_GD=DEP,
+                      VALE_CALC=15.000000000,
+                      VALE_REFE=15.0,),
+                   _F(NOEUD='N178',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DX',
+                      PRECISION=9.9999999999999995E-08,
+                      CHAM_GD=DEP,
+                      VALE_CALC=15.000000000,
+                      VALE_REFE=15.0,),
+                   _F(NOEUD='N179',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DX',
+                      PRECISION=9.9999999999999995E-08,
+                      CHAM_GD=DEP,
+                      VALE_CALC=15.250000000,
+                      VALE_REFE=15.25,),
+                   ),
           )
 
-DEP=CALC_CHAMP(reuse =DEP,
-            RESULTAT=DEP,
-            FORCE='FORC_NODA',
-            TOUT='OUI',);
+# FLEXION
+# -------
+                             
+CHME2=AFFE_CHAR_MECA(MODELE=MO,
+                    DDL_IMPO=_F(GROUP_MA='GAUCHE',
+                                DX=0.0,DY=0.0,),
+                    LIAISON_ELEM=_F(OPTION='2D_POU',
+                                    GROUP_MA_1='DROIT',
+                                    GROUP_NO_2='G',),
+                    FORCE_NODALE=_F(GROUP_NO='EXTREM',
+                                    FY=-1.0,),);
 
-TABLEAU1=POST_RELEVE_T(ACTION=_F(INTITULE='MOMENT',
-                                 GROUP_NO='GRNO1',
-                                 RESULTAT=DEP,
-                                 NOM_CHAM='FORC_NODA',
-                                 RESULTANTE=('DX','DY','DZ',),
-                                 MOMENT=('DRX','DRY','DRZ',),
-                                 POINT=(0.0,0.0,0.0,),
-                                 REPERE='GLOBAL',
-                                 OPERATION='MOYENNE',),);
+ 
 
-TABLEAU2=POST_RELEVE_T(ACTION=_F(INTITULE='MOMENT',
-                                 GROUP_NO='GRNO2',
-                                 RESULTAT=DEP,
-                                 NOM_CHAM='FORC_NODA',
-                                 RESULTANTE=('DX','DY','DZ',),
-                                 MOMENT=('DRX','DRY','DRZ',),
-                                 POINT=(10.0,0.0,0.0,),
-                                 REPERE='GLOBAL',
-                                 OPERATION='MOYENNE',),);
+RES2=MECA_STATIQUE(MODELE=MO,
+                  CHAM_MATER=CHMA,
+                  CARA_ELEM  = CARELEM,
+                  EXCIT=_F(CHARGE=CHME2,),);
 
-TABLEAU3=POST_RELEVE_T(ACTION=_F(INTITULE='MOMENT',
-                                 GROUP_NO='GRNO3',
-                                 RESULTAT=DEP,
-                                 NOM_CHAM='FORC_NODA',
-                                 RESULTANTE=('DX','DY','DZ',),
-                                 MOMENT=('DRX','DRY','DRZ',),
-                                 POINT=(20.0,0.0,0.0,),
-                                 REPERE='GLOBAL',
-                                 OPERATION='MOYENNE',),);
+DEP2=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                OPERATION='EXTR',
+                RESULTAT=RES2,
+                NOM_CHAM='DEPL',
+                NUME_ORDRE=1,);
 
 
-
-
-# validation (non-regression) de CALC_FERRAILLAGE sur COQUE_3D :
-#---------------------------------------------------------------
-DEP=CALC_FERRAILLAGE(reuse =DEP,
-                   RESULTAT=DEP, TYPE_COMB='ELS', INST=(0.),
-                   AFFE  = (_F( TOUT='OUI', ENROBG=0.04, CEQUI=15.E0, SIGM_ACIER=2.3E8, SIGM_BETON=3.5E7))
-                   );
-
-TEST_RESU(RESU=(_F(INST=0.0,
-                   POINT=1,
-                   RESULTAT=DEP,
-                   NOM_CHAM='FERRAILLAGE',
-                   NOM_CMP='DNSXS',
-                   VALE_CALC=2.3058708523766001E-06,
-                   CRITERE='RELATIF',
-                   MAILLE='C1',),
-                _F(INST=0.0,
-                   POINT=1,
-                   RESULTAT=DEP,
-                   NOM_CHAM='FERRAILLAGE',
-                   NOM_CMP='DNSYI',
-                   VALE_CALC=2.2907787687229001E-06,
-                   CRITERE='RELATIF',
-                   MAILLE='C1',),
-                _F(INST=0.0,
-                   POINT=1,
-                   RESULTAT=DEP,
-                   NOM_CHAM='FERRAILLAGE',
-                   NOM_CMP='SIGMBE',
-                   VALE_CALC=1.307140814631E5,
-                   CRITERE='RELATIF',
-                   MAILLE='C1',),
-                ),
+TEST_RESU(CHAM_NO=(_F(NOEUD='N13',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DY',
+                      PRECISION=1.E-4,
+                      CHAM_GD=DEP2,
+                      VALE_CALC=-0.021250697,
+                      VALE_REFE=-0.021250000000000002,),
+                   _F(NOEUD='N75',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DY',
+                      PRECISION=1.E-4,
+                      CHAM_GD=DEP2,
+                      VALE_CALC=-0.168758616,
+                      VALE_REFE=-0.16875000000000001,),
+                   _F(NOEUD='N131',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DY',
+                      PRECISION=1.E-4,
+                      CHAM_GD=DEP2,
+                      VALE_CALC=-0.406266579,
+                      VALE_REFE=-0.40625,),
+                   _F(NOEUD='N133',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DY',
+                      PRECISION=1.E-4,
+                      CHAM_GD=DEP2,
+                      VALE_CALC=-0.540020400,
+                      VALE_REFE=-0.54000000000000004,),
+                   _F(NOEUD='N141',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DY',
+                      PRECISION=1.E-4,
+                      CHAM_GD=DEP2,
+                      VALE_CALC=-0.540020926,
+                      VALE_REFE=-0.54000000000000004,),
+                   _F(NOEUD='N125',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DY',
+                      PRECISION=1.E-4,
+                      CHAM_GD=DEP2,
+                      VALE_CALC=-0.540020926,
+                      VALE_REFE=-0.54000000000000004,),
+                   _F(NOEUD='N178',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DY',
+                      PRECISION=1.E-4,
+                      CHAM_GD=DEP2,
+                      VALE_CALC=-0.540020647,
+                      VALE_REFE=-0.54000000000000004,),
+                   _F(NOEUD='N179',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DY',
+                      PRECISION=1.E-4,
+                      CHAM_GD=DEP2,
+                      VALE_CALC=-0.540025647,
+                      VALE_REFE=-0.54000000000000004,),
+                   ),
           )
 
 FIN();

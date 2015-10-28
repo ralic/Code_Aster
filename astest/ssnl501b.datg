@@ -1,4 +1,4 @@
-opti dime 3 elem tri3;
+opti dime 3 elem qua4;
 opti niveau 8 ;
 
 *--------------------------
@@ -19,13 +19,13 @@ surf = daller lAB lBF lFE lEA plan;
 
 
 tout_elt = surf et lAB et lBF et lFE et lEA ;
-
+elim 0.001 tout_elt ;
 trac tout_elt ;
 
 list (nbno tout_elt) ;
 list (nbel tout_elt) ;
 
-opti sauv form 'ssnl501b.mgib' ;
+opti sauv form 'ssnl501c.mgib' ;
 sort tout_elt ;
 sauv form tout_elt ;
 

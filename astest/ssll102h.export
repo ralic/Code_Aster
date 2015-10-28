@@ -6,5 +6,5 @@ P mpi_nbnoeud 1
 P testlist verification sequential
 
 F comm ssll102h.comm D 1
-F msup ssll102h.msup D 19
-F mmed ssll102h.mmed D 20
+F mail ssll102h.mail D 20
+F datg ssll102h.datg D 16

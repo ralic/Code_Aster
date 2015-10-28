@@ -1,28 +1,30 @@
-opti dime 3 elem qua4;
+opti dime 3 elem qua8;
 opti niveau 8 ;
 
 *--------------------------
 
-A = 0.     0.    0.    ;
-E = 0.75   0.    0.    ;
-B = 0.     0.    0.15  ;
-F = 0.75   0.    0.15  ;
+A = 0.53033     0.    0.    ;
+E = 0.   0.53033    0.    ;
+B = 0.53033     0.    0.15  ;
+F = 0.   0.53033    0.15  ;
 
 
 
-lBF = droit 20 B F ;
-lEA = droit 20 E A ;
+lBF = droit 10 B F ;
+lEA = droit 10 E A ;
 lFE = droit 1 F E ;
 lAB = droit 1 A B ;
 
 surf = daller lAB lBF lFE lEA plan;
+
+
 tout_elt = surf et lAB et lBF et lFE et lEA ;
 trac tout_elt ;
 
 list (nbno tout_elt) ;
 list (nbel tout_elt) ;
 
-opti sauv form 'ssnl501d.mgib' ;
+opti sauv form 'ssnl501e.mgib' ;
 sort tout_elt ;
 sauv form tout_elt ;
 

@@ -1,9 +1,9 @@
 P time_limit 60
-P memory_limit 512
+P memory_limit 256
 P ncpus 1
 P mpi_nbcpu 1
 P mpi_nbnoeud 1
 P testlist verification sequential
 
-F comm ssls114j.comm D 1
-F mail ssls114j.mail D 20
+F comm sslx100e.comm D 1
+F mmed sslx100e.mmed D 20
