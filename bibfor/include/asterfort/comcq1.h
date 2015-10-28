@@ -16,11 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine comcq1(fami, kpg, ksp, imate,&
-                      compor, carcri, instm, instp, eps,&
-                      deps, tempm, tempp, sigm, vim,&
-                      option, angmas, sigp, vip, dsde,&
-                      codret)
+    subroutine comcq1(fami  ,kpg   ,ksp   ,imate ,compor,&
+                      carcri,instm ,instp ,eps   ,deps  ,&
+                      sigm  ,vim   ,option,angmas,sigp  ,&
+                      vip   , dsde ,codret)
         character(len=*) :: fami
         integer :: kpg
         integer :: ksp
@@ -31,8 +30,6 @@ interface
         real(kind=8) :: instp
         real(kind=8) :: eps(4)
         real(kind=8) :: deps(4)
-        real(kind=8) :: tempm
-        real(kind=8) :: tempp
         real(kind=8) :: sigm(4)
         real(kind=8) :: vim(*)
         character(len=16) :: option

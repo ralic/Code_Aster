@@ -32,6 +32,7 @@ subroutine ef0231(nomte)
 !     CALCUL DE EFGE_ELNO
 !     ------------------------------------------------------------------
 !
+! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
     character(len=8) :: elrefe
     character(len=16) :: nomres(3)
     integer :: icodre(3)
@@ -67,28 +68,28 @@ subroutine ef0231(nomte)
 !JMP  CORREC = ZR(ICACO+2)
     correc=nint(zr(icaco+2))
 !
-    do 10 i = 1, npg*6
+    do  i = 1, npg*6
         effopg(i)=0.d0
-10  end do
+    end do
 !
 !
-    do 50 kp = 1, npg
+    do kp = 1, npg
         k=(kp-1)*nno
         call dfdm1d(nno, zr(ipoids+kp-1), zr(idfdk+k), zr(igeom), dfdx,&
                     cour, jac, cosa, sina)
 !
-        do 20 i = 1, 5
+        do  i = 1, 5
             eps(i)=0.d0
-20      continue
+        end do
         r=0.d0
-        do 30 i = 1, nno
+        do  i = 1, nno
             eps(1)=eps(1)+dfdx(i)*zr(idepl+3*i-3)
             eps(2)=eps(2)+dfdx(i)*zr(idepl+3*i-2)
             eps(3)=eps(3)+dfdx(i)*zr(idepl+3*i-1)
             eps(4)=eps(4)+zr(ivf+k+i-1)*zr(idepl+3*i-3)
             eps(5)=eps(5)+zr(ivf+k+i-1)*zr(idepl+3*i-1)
             r=r+zr(ivf+k+i-1)*zr(igeom+2*i-2)
-30      continue
+        end do
 !
         e11=eps(2)*cosa-eps(1)*sina
         k11=eps(3)
@@ -113,7 +114,7 @@ subroutine ef0231(nomte)
 !---- UTILISATION DE 4 POINTS DE GAUSS DANS L'EPAISSEUR
 !---- COMME POUR LA LONGUEUR
 !
-        do 40 ip = 1, npg
+        do ip = 1, npg
             x3=zr(jcoopg-1+ip)
             if (iret4 .eq. 0) then
                 tpg=tgmoy*(1.d0-(x3)**2)+tgsup*x3*(1.d0+x3)/2.d0-&
@@ -166,11 +167,11 @@ subroutine ef0231(nomte)
                 *x3*(h/2.d0)* (c*nu*ep11-epsthe)
             endif
 !
-40      continue
+        end do
         effopg(6*(kp-1)+3)=0.d0
         effopg(6*(kp-1)+6)=0.d0
 !
-50  end do
+  end do
 !
     call ppgan2(jgano, 1, 6, effopg, zr(ieffor))
 end subroutine

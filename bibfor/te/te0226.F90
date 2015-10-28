@@ -38,6 +38,7 @@ subroutine te0226(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 !
+! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
     character(len=8) :: elrefe, fami, poum
     integer :: icodre(1), kpg, spt
@@ -71,19 +72,19 @@ subroutine te0226(option, nomte)
     rm = rho(1)*h
     rf = rho(1)*h**3/12.d0
 !
-    do 10 k = 1, nvec
+    do  k = 1, nvec
         matv(k) = 0.0d0
-10  end do
+    end do
 !
-    do 60 kp = 1, npg
+    do  kp = 1, npg
         k = (kp-1)*nno
         call dfdm1d(nno, zr(ipoids+kp-1), zr(idfdk+k), zr(igeom), dfdx,&
                     cour, poids, nx, ny)
         if (nomte .eq. 'MECXSE3') then
             r = 0.0d0
-            do 20 i = 1, nno
+            do  i = 1, nno
                 r = r + zr(igeom+2* (i-1))*zr(ivf+k+i-1)
-20          continue
+            end do
             poids = poids*r
             rmf = rf* (cour+nx/r)
         endif
@@ -91,12 +92,12 @@ subroutine te0226(option, nomte)
         kd1 = 5
         kd2 = 3
         kd3 = 2
-        do 50 i = 1, 3*nno, 3
+        do i = 1, 3*nno, 3
             kd1 = kd1 + 3*i - 6
             kd2 = kd2 + 3*i - 3
             kd3 = kd3 + 3*i
             ii = (i+2)/3
-            do 30 j = 1, i, 3
+            do  j = 1, i, 3
                 jj = (j+2)/3
                 ij1 = kd1 + j - 2
                 ij2 = kd2 + j - 2
@@ -109,9 +110,9 @@ subroutine te0226(option, nomte)
                 matv(ij3) = matv(ij3) + vfi*vfj*poids*rmf*ny
                 matv(ij3+1) = matv(ij3+1) - vfi*vfj*poids*rmf*nx
                 matv(ij3+2) = matv(ij3+2) + vfi*vfj*poids*rf
-30          continue
+           end do
 !
-            do 40 j = 1, i - 3, 3
+            do  j = 1, i - 3, 3
                 jj = (j+2)/3
                 ij1 = kd1 + j - 2
                 ij2 = kd2 + j - 2
@@ -119,17 +120,17 @@ subroutine te0226(option, nomte)
                 matv(ij1+1) = matv(ij2)
                 matv(ij1+2) = matv(ij3)
                 matv(ij2+2) = matv(ij3+1)
-40          continue
-50      continue
-60  end do
+          end do
+       end do
+  end do
 !
     if (option .eq. 'MASS_MECA') then
 !
         call jevech('PMATUUR', 'E', imatuu)
 !
-        do 70 i = 1, nvec
+        do  i = 1, nvec
             zr(imatuu+i-1) = matv(i)
-70      continue
+        end do
 !
     else if (option.eq.'M_GAMMA') then
 !

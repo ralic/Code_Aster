@@ -115,9 +115,9 @@ subroutine te0234(option, nomte)
 !---- INITIALISATION DU VECTEUR FORCE INTERNE
 !
     call jevech('PVECTUR', 'E', ivectu)
-    do 10 i = 1, 3*nno
+    do  i = 1, 3*nno
         zr(ivectu+i-1) = 0.d0
- 10 end do
+   end do
 !
     kpki = 0
     do kp = 1, npg

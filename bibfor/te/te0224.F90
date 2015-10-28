@@ -36,6 +36,7 @@ subroutine te0224(option, nomte)
 ! ......................................................................
 !
 !-----------------------------------------------------------------------
+! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
     integer :: icode, jgano, nbres, ndim, nnos
 !-----------------------------------------------------------------------
     parameter (nbres=3)
@@ -67,18 +68,18 @@ subroutine te0224(option, nomte)
     global = zk8(iforc+5) .eq. 'GLOBAL'
     locapr = zk8(iforc+5) .eq. 'LOCAL_PR'
 !
-    do 30 kp = 1, npg
+    do  kp = 1, npg
         k = (kp-1)*nno
         call dfdm1d(nno, zr(ipoids+kp-1), zr(idfdk+k), zr(igeom), dfdx,&
                     cour, poids, nx, ny)
         r = 0.d0
         z = 0.d0
-        do 10 i = 1, nno
+        do  i = 1, nno
             l = (kp-1)*nno + i
             r = r + zr(igeom+2*i-2)*zr(ivf+l-1)
 !
             z = z + zr(igeom+2*i-1)*zr(ivf+l-1)
- 10     continue
+        end do
         if (nomte .eq. 'MECXSE3') poids = poids*r
         valpar(1) = r
         valpar(2) = z
@@ -113,11 +114,11 @@ subroutine te0224(option, nomte)
             fy = ny*f3 + nx*f1
             mz = m2
         endif
-        do 20 i = 1, nno
+        do  i = 1, nno
             l = (kp-1)*nno + i
             zr(ivectu+nddl* (i-1)) = zr(ivectu+nddl* (i-1)) + fx*zr( ivf+l-1 )*poids
             zr(ivectu+nddl* (i-1)+1) = zr(ivectu+nddl* (i-1)+1) + fy*zr(ivf+l-1 )*poids
             zr(ivectu+nddl* (i-1)+2) = zr(ivectu+nddl* (i-1)+2) + mz*zr(ivf+l-1 )*poids
- 20     continue
- 30 end do
+      end do
+  end do
 end subroutine

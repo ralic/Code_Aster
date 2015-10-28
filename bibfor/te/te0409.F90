@@ -17,7 +17,6 @@ subroutine te0409(option, nomte)
 ! ======================================================================
 ! person_in_charge: sebastien.fayolle at edf.fr
     implicit none
-! aslint: disable=W0104
 !
 #include "asterf_types.h"
 #include "jeveux.h"

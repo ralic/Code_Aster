@@ -34,6 +34,7 @@ subroutine te0223(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 !
+! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
     character(len=8) :: elrefe
     real(kind=8) :: poids, r, fx, fy, mz, f1, f3, m2, nx, ny, cour, dfdx(3)
     integer :: nno, nddl, kp, npg, ipoids, ivf, idfdk, igeom
@@ -56,7 +57,7 @@ subroutine te0223(option, nomte)
     nddl = 3
     global = abs(zr(iforc+5)) .lt. 1.d-3
 !
-    do 30 kp = 1, npg
+    do  kp = 1, npg
         k = (kp-1)*nno
         call dfdm1d(nno, zr(ipoids+kp-1), zr(idfdk+k), zr(igeom), dfdx,&
                     cour, poids, nx, ny)
@@ -64,7 +65,7 @@ subroutine te0223(option, nomte)
         fx = 0.d0
         fy = 0.d0
         mz = 0.d0
-        do 10 i = 1, nno
+        do i = 1, nno
             l = (kp-1)*nno + i
             if (global) then
                 fx = fx + zr(iforc-1+6* (i-1)+1)*zr(ivf+l-1)
@@ -84,15 +85,15 @@ subroutine te0223(option, nomte)
                 mz = mz + m2*zr(ivf+l-1)
             endif
             r = r + zr(igeom+2* (i-1))*zr(ivf+l-1)
- 10     continue
+        end do
         if (nomte .eq. 'MECXSE3') then
             poids = poids*r
         endif
-        do 20 i = 1, nno
+        do  i = 1, nno
             l = (kp-1)*nno + i
             zr(ivectu+nddl* (i-1)) = zr(ivectu+nddl* (i-1)) + fx*zr( ivf+l-1 )*poids
             zr(ivectu+nddl* (i-1)+1) = zr(ivectu+nddl* (i-1)+1) + fy*zr(ivf+l-1 )*poids
             zr(ivectu+nddl* (i-1)+2) = zr(ivectu+nddl* (i-1)+2) + mz*zr(ivf+l-1 )*poids
- 20     continue
- 30 end do
+      end do
+  end do
 end subroutine

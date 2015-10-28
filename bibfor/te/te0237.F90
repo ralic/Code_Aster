@@ -104,8 +104,8 @@ subroutine te0237(option, nomte)
     ki(2)=0.d0
     ki(3)=1.d0
 !
-    do 50 icou = 1, nbcou
-        do 40 inte = 1, npge
+    do  icou = 1, nbcou
+        do inte = 1, npge
             niv=ki(inte)
 !
             if (inte .eq. 1) then
@@ -117,25 +117,25 @@ subroutine te0237(option, nomte)
             endif
             x3=zic
 !
-            do 30 kp = 1, npg
+            do kp = 1, npg
                 k=(kp-1)*nno
                 idec=nbcmp*(kp-1)*npge*nbcou+ nbcmp*(icou-1)*npge+&
                 nbcmp*(inte-1)
                 call dfdm1d(nno, zr(ipoids+kp-1), zr(idfdk+k), zr(igeom), dfdx,&
                             cour, jac, cosa, sina)
 !
-                do 10 i = 1, 5
+                do  i = 1, 5
                     eps(i)=0.d0
-10              continue
+                end do
                 r=0.d0
-                do 20 i = 1, nno
+                do  i = 1, nno
                     eps(1)=eps(1)+dfdx(i)*zr(idepl+3*i-3)
                     eps(2)=eps(2)+dfdx(i)*zr(idepl+3*i-2)
                     eps(3)=eps(3)+dfdx(i)*zr(idepl+3*i-1)
                     eps(4)=eps(4)+zr(ivf+k+i-1)*zr(idepl+3*i-3)
                     eps(5)=eps(5)+zr(ivf+k+i-1)*zr(idepl+3*i-1)
                     r=r+zr(ivf+k+i-1)*zr(igeom+2*i-2)
-20              continue
+                end do
 !
                 e11=eps(2)*cosa-eps(1)*sina
                 k11=eps(3)
@@ -221,9 +221,9 @@ subroutine te0237(option, nomte)
                     ASSERT(.false.)
                 endif
 !
-30          continue
+          end do
 !
-40      continue
-50  end do
+       end do
+  end do
 !
 end subroutine

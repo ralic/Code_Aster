@@ -236,7 +236,7 @@ subroutine dktnli(nomte, opt, xyzl, ul, dul,&
 !
 !     -- PARTITION DU DEPLACEMENT EN MEMBRANE/FLEXION :
 !     -------------------------------------------------
-    do 30 ino = 1, nnoel
+    do  ino = 1, nnoel
         um(1,ino) = ul(1,ino)
         um(2,ino) = ul(2,ino)
         uf(1,ino) = ul(3,ino)
@@ -247,7 +247,7 @@ subroutine dktnli(nomte, opt, xyzl, ul, dul,&
         duf(1,ino) = dul(3,ino)
         duf(2,ino) = dul(5,ino)
         duf(3,ino) = -dul(4,ino)
- 30 end do
+    end do
 !
 !     -- INTEGRATIONS SUR LA SURFACE DE L'ELEMENT:
 !     --------------------------------------------
@@ -281,7 +281,7 @@ subroutine dktnli(nomte, opt, xyzl, ul, dul,&
 !
 !     -- BOUCLE SUR LES POINTS DE GAUSS DE LA SURFACE:
 !     -------------------------------------------------
-    do 130 ipg = 1, npg
+    do  ipg = 1, npg
         call r8inir(3, 0.d0, n, 1)
         call r8inir(3, 0.d0, m, 1)
         call r8inir(9, 0.d0, df, 1)
@@ -313,28 +313,28 @@ subroutine dktnli(nomte, opt, xyzl, ul, dul,&
 !     -- EULER_ALMANSI - TERMES QUADRATIQUES
         if (leul) then
             call r8inir(6, 0.d0, bmq, 1)
-            do 145 i = 1, 2
-                do 146 k = 1, nnoel
-                    do 142 j = 1, 2
+            do  i = 1, 2
+                do  k = 1, nnoel
+                    do  j = 1, 2
                         bmq(i,j) = bmq(i,j) + bm(i,2*(k-1)+i)*dum(j,k)
-142                 continue
+                     end do
                     bmq(i,3) = bmq(i,3) + bm(i,2*(k-1)+i)*duf(1,k)
-146             continue
-145         continue
+                end do
+            end do
 !
-            do 150 k = 1, 3
-                do 155 i = 1, 2
+            do k = 1, 3
+                do  i = 1, 2
                     deps(i) = deps(i) - 0.5d0*bmq(i,k)*bmq(i,k)
-155             continue
+                end do
                 deps(3) = deps(3) - bmq(1,k)*bmq(2,k)
-150         continue
+            end do
         endif
 !
 !       -- CALCUL DE L'ECOULEMENT PLASTIQUE SUR CHAQUE COUCHE:
 !          PAR INTEGRATION EN TROIS POINTS
 !       ------------------------------------------------------
-        do 80 icou = 1, nbcou
-            do 70 igauh = 1, npgh
+        do  icou = 1, nbcou
+            do  igauh = 1, npgh
                 ksp=(icou-1)*npgh+igauh
                 isp=(icou-1)*npgh+igauh
                 ivpg = ((ipg-1)*nbsp + isp-1)*nbvar
@@ -371,9 +371,9 @@ subroutine dktnli(nomte, opt, xyzl, ul, dul,&
 !
 !         -- APPEL A NMCOMP POUR RESOUDRE LE PB SUR LA COUCHE :
 !         -----------------------------------------------------
-                do 1 j = 1, 4
+                do  j = 1, 4
                     sigm(j)=zr(icontm+icpg-1+j)
-  1             continue
+               end do
                 sigm(4)=sigm(4)*rac2
 ! --- ANGLE DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
 ! --- INITIALISE A R8VIDE (ON NE S'EN SERT PAS)
@@ -423,28 +423,28 @@ subroutine dktnli(nomte, opt, xyzl, ul, dul,&
                     d2d(7) = dsidep(4,1)/rac2
                     d2d(8) = dsidep(4,2)/rac2
                     d2d(9) = dsidep(4,4)/deux
-                    do 60 k = 1, 9
+                    do  k = 1, 9
                         dm(k) = dm(k) + coef*hic/deux*poids*d2d(k)
                         dmf(k) = dmf(k) + coef*hic/deux*poids*zic*d2d( k)
                         df(k) = df(k) + coef*hic/deux*poids*zic*zic* d2d(k)
- 60                 continue
+                    end do
                 endif
- 70         continue
- 80     continue
+          end do
+        end do
 !
 !       -- CALCUL DE DIV(SIGMA) ET RECOPIE DE N ET M DANS 'PCONTPR':
 !       ----------------------------------------------------------
 !       BTSIG = BTSIG + BFT*M + BMT*N
         if (vecteu) then
-            do 120 ino = 1, nnoel
-                do 110 k = 1, 3
+            do ino = 1, nnoel
+                do k = 1, 3
                     btsig(1,ino) = btsig(1,ino) + bm(k,2* (ino-1)+1)* n(k)*poids
                     btsig(2,ino) = btsig(2,ino) + bm(k,2* (ino-1)+2)* n(k)*poids
                     btsig(3,ino) = btsig(3,ino) + bf(k,3* (ino-1)+1)* m(k)*poids
                     btsig(5,ino) = btsig(5,ino) + bf(k,3* (ino-1)+2)* m(k)*poids
                     btsig(4,ino) = btsig(4,ino) - bf(k,3* (ino-1)+3)* m(k)*poids
-110             continue
-120         continue
+                end do
+         end do
         endif
 !
 !
@@ -469,7 +469,7 @@ subroutine dktnli(nomte, opt, xyzl, ul, dul,&
         endif
 !
 !       -- FIN BOUCLE SUR LES POINTS DE GAUSS
-130 end do
+ end do
 !
 !     -- ACCUMULATION DES SOUS MATRICES DANS KTAN :
 !     -----------------------------------------------

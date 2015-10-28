@@ -1,8 +1,7 @@
-subroutine comcq1(fami, kpg, ksp, imate,&
-                  compor, carcri, instm, instp, eps,&
-                  deps, tempm, tempp, sigm, vim,&
-                  option, angmas, sigp, vip, dsde,&
-                  codret)
+subroutine comcq1(fami  ,kpg   ,ksp   ,imate ,compor,&
+                  carcri,instm ,instp ,eps   ,deps  ,&
+                  sigm  ,vim   ,option,angmas,sigp  ,&
+                  vip   ,dsde  ,codret)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +18,7 @@ subroutine comcq1(fami, kpg, ksp, imate,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! aslint: disable=W1504
+! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
     implicit none
 #include "asterfort/nm1dci.h"
 #include "asterfort/nm1dis.h"
@@ -32,13 +31,12 @@ subroutine comcq1(fami, kpg, ksp, imate,&
 !
 !  VARIABLE ENTREE/SORTIE
     character(len=*) :: fami
-    character(len=16) :: option, compor(*), valkm(2)
+    character(len=16) :: option, compor(*)
     integer :: codret, kpg, ksp, imate
-    real(kind=8) :: tempm, tempp, angmas(3), sigm(4), eps(4), deps(4), val(1)
+    real(kind=8) :: angmas(3), sigm(4), eps(4), deps(4)
     real(kind=8) :: vim(*), vip(*), sigp(4), dsde(6, 6), carcri(*), lc(1)
-    real(kind=8) :: instm, instp, ep, em, depsth, etg, depsm, wkout(1)
-    character(len=8) :: typmod(2), nompar
-    integer :: codres(1)
+    real(kind=8) :: instm, instp,  wkout(1)
+    character(len=8) :: typmod(2)
 !
 !
     call r8inir(36, 0.d0, dsde, 1)

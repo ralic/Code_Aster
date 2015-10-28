@@ -15,7 +15,7 @@ subroutine te0185(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: jacques.pellet at edf.fr
+! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
     implicit none
 ! aslint: disable=W0104
 #include "asterf_types.h"

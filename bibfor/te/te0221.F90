@@ -15,6 +15,7 @@ subroutine te0221(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
     implicit none
 #include "jeveux.h"
 !
@@ -76,14 +77,14 @@ subroutine te0221(option, nomte)
     nomres(2) = 'NU'
     call jevech('PMATUUR', 'E', imatuu)
 !
-    do 90 kp = 1, npg
+    do  kp = 1, npg
         k = (kp-1)*nno
         call dfdm1d(nno, zr(ipoids+kp-1), zr(idfdk+k), zr(igeom), dfdx,&
                     cour, jacp, cosa, sina)
         r = zero
-        do 10 i = 1, nno
+        do  i = 1, nno
             r = r + zr(igeom+2*i-2)*zr(ivf+k+i-1)
-10      continue
+        end do
 !===============================================================
 !     -- RECUPERATION DE LA TEMPERATURE POUR LE MATERIAU:
 !
@@ -167,12 +168,12 @@ subroutine te0221(option, nomte)
         kd1 = 5
         kd2 = 3
         kd3 = 2
-        do 50 i = 1, 3*nno, 3
+        do  i = 1, 3*nno, 3
             kd1 = kd1 + 3*i - 6
             kd2 = kd2 + 3*i - 3
             kd3 = kd3 + 3*i
             ii = (i+2)/3
-            do 30 j = 1, i, 3
+            do  j = 1, i, 3
                 jj = (j+2)/3
                 ij1 = imatuu + kd1 + j - 3
                 ij2 = imatuu + kd2 + j - 3
@@ -185,8 +186,8 @@ subroutine te0221(option, nomte)
                 zr(ij3) = zr(ij3) + dfdx(jj)*jacp* (cosa*gss*vfi+sina* bss*dfdx(ii))
                 zr(ij3+1) = zr(ij3+1) - dfdx(jj)*jacp* (cosa*bss*dfdx( ii)-sina*gss*vfi)
                 zr(ij3+2) = zr(ij3+2) + jacp* (dss*dfdx(ii)*dfdx(jj)+ gss*vfi*vfj)
-30          continue
-            do 40 j = 1, i - 3, 3
+             end do
+            do  j = 1, i - 3, 3
                 jj = (j+2)/3
                 ij1 = imatuu + kd1 + j - 3
                 ij2 = imatuu + kd2 + j - 3
@@ -195,19 +196,19 @@ subroutine te0221(option, nomte)
                 zr(ij1+1) = zr(ij1+1) + dfdx(ii)*dfdx(jj)*jacp*coefxy* (css-gss)
                 zr(ij1+2) = zr(ij1+2) + dfdx(ii)*jacp* (cosa*gss*vfj+ sina*bss*dfdx(jj))
                 zr(ij2+2) = zr(ij2+2) + dfdx(ii)*jacp* (sina*gss*vfj- cosa*bss*dfdx(jj))
-40          continue
-50      continue
+            end do
+        end do
 !
         if (nomte.eq.'MECXSE3') then
             kd1 = 5
             kd2 = 3
             kd3 = 2
-            do 80 i = 1, 3*nno, 3
+            do  i = 1, 3*nno, 3
                 kd1 = kd1 + 3*i - 6
                 kd2 = kd2 + 3*i - 3
                 kd3 = kd3 + 3*i
                 ii = (i+2)/3
-                do 60 j = 1, i, 3
+                do  j = 1, i, 3
                     jj = (j+2)/3
                     ij1 = imatuu + kd1 + j - 3
                     ij2 = imatuu + kd2 + j - 3
@@ -222,8 +223,8 @@ subroutine te0221(option, nomte)
                     zr(ij3+1) = zr(ij3+1) + jacp*nu*bts*deux*coefxy* dfdx(jj)* vfi/r
                     zr(ij3+2) = zr(ij3+2) + jacp*sina* (dtt*sina*vfi* vfj/ (r*r)+ nu*dts* (vfi*df&
                                 &dx(jj)+dfdx(ii)*vfj)/r)
-60              continue
-                do 70 j = 1, i - 3, 3
+                 end do
+                do  j = 1, i - 3, 3
                     jj = (j+2)/3
                     ij1 = imatuu + kd1 + j - 3
                     ij2 = imatuu + kd2 + j - 3
@@ -233,9 +234,9 @@ subroutine te0221(option, nomte)
                     zr(ij1+2) = zr(ij1+2) + jacp*nu*bts*deux* (coefxx* vfj*dfdx(ii)-dfdx(jj)*vfi)&
                                 &/r - jacp*btt*sina*vfj* vfi/r
                     zr(ij2+2) = zr(ij2+2) + jacp*nu*bts*deux*coefxy* dfdx(ii)* vfj/r
-70              continue
-80          continue
+                end do
+            end do
         endif
 !
-90  end do
+  end do
 end subroutine

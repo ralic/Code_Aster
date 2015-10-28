@@ -35,6 +35,7 @@ subroutine te0228(option, nomte)
 ! .                    NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 !
+! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
     integer :: i, k, kp, igeom, idepl, idefor, nno, nnos, jgano, ndim, npg
     integer :: ivf, idfdk, ipoids, idefpg
     character(len=8) :: elrefe
@@ -61,22 +62,22 @@ subroutine te0228(option, nomte)
         call jevech('PDEFOPG', 'E', idefpg)
     endif
 !
-    do 30 kp = 1, npg
+    do  kp = 1, npg
         k = (kp-1)*nno
         call dfdm1d(nno, zr(ipoids+kp-1), zr(idfdk+k), zr(igeom), dfdx,&
                     cour, jac, cosa, sina)
-        do 10 i = 1, 5
+        do  i = 1, 5
             eps(i) = zero
-10      continue
+        end do
         r = zero
-        do 20 i = 1, nno
+        do  i = 1, nno
             eps(1) = eps(1) + dfdx(i)*zr(idepl+3*i-3)
             eps(2) = eps(2) + dfdx(i)*zr(idepl+3*i-2)
             eps(3) = eps(3) + dfdx(i)*zr(idepl+3*i-1)
             eps(4) = eps(4) + zr(ivf+k+i-1)*zr(idepl+3*i-3)
             eps(5) = eps(5) + zr(ivf+k+i-1)*zr(idepl+3*i-1)
             r = r + zr(ivf+k+i-1)*zr(igeom+2* (i-1))
-20      continue
+      end do
         e11 = eps(2)*cosa - eps(1)*sina
         k11 = eps(3)
         e22 = eps(4)/r
@@ -97,7 +98,7 @@ subroutine te0228(option, nomte)
             zr(idefpg-1+6*(kp-1)+5) = k22
             zr(idefpg-1+6*(kp-1)+6) = zero
         endif
-30  end do
+  end do
 !
 !
 !     -- PASSAGE GAUSS -> NOEUDS :
