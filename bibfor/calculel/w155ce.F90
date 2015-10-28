@@ -15,7 +15,7 @@ subroutine w155ce(nomres, resu, nbordr, liordr)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: jacques.pellet at edf.fr
+! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 ! ======================================================================
 !     COMMANDE :  POST_CHAMP / COQU_EXCENT
 ! ----------------------------------------------------------------------
@@ -72,7 +72,7 @@ subroutine w155ce(nomres, resu, nbordr, liordr)
     modeav=' '
     ldetli=.false.
     lvide=.true.
-    do 20 iocc = 1, nocc
+    do  iocc = 1, nocc
 !
 !     -- 2.  : NOMSYM, MPLAN :
 !     --------------------------------------------------
@@ -84,9 +84,9 @@ subroutine w155ce(nomres, resu, nbordr, liordr)
         lnoeu=nomsym.eq.'EFGE_ELNO'
 !
 !
-!     -- 3. : BOUCLE SUR LES CHAMPS
+!     -- 3. : BOUCLE SUR LES NUMERO D ORDRE
 !     --------------------------------------------------
-        do 10 i = 1, nbordr
+        do  i = 1, nbordr
             nuordr=liordr(i)
             call rsexch(' ', resu19, nomsym, nuordr, chin,&
                         iret)
@@ -157,8 +157,8 @@ subroutine w155ce(nomres, resu, nbordr, liordr)
                     call rsnoch(nomres, nomsym, nuordr)
                 endif
             endif
- 10     continue
- 20 end do
+        end do
+ end do
 !
     if (ldetli) call detrsd('LIGREL', ligrel)
     if (lvide) then

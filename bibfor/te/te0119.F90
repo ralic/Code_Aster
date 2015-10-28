@@ -43,15 +43,11 @@ subroutine te0119(option, nomte)
 !
 !
 !     2. VERIFICATION QUE L'EXCENTREMENT EST NUL POUR
-!        CERTAINES MODELISATIONS:
+!        CERTAINES MODELISATIONS: COQUE_3D
 !     --------------------------------------------------
-    if (cmod .eq. 'DTG' .or. cmod .eq. 'CQ3') then
+    if ( cmod .eq. 'CQ3') then
         call jevech('PCACOQU', 'L', j1)
-        if (cmod .eq. 'DTG') then
-            excent=zr(j1-1+5)
-        else
             excent=zr(j1-1+6)
-        endif
         if (excent .ne. 0.d0) then
             call tecael(iadzi, iazk24)
             valk(1)=zk24(iazk24-1+3)(1:8)

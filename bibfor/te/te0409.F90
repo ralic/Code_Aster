@@ -1,5 +1,4 @@
 subroutine te0409(option, nomte)
-!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -14,11 +13,11 @@ subroutine te0409(option, nomte)
 !
 ! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: sebastien.fayolle at edf.fr
-!
     implicit none
+! aslint: disable=W0104
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -164,6 +163,7 @@ subroutine te0409(option, nomte)
     real(kind=8) :: lambda, deuxmu, deumuf, lamf, gt, gc, gf, seuil, alphaf
     real(kind=8) :: r8bid, win(1), wout(1)
     real(kind=8) :: alpha, beta
+    real(kind=8) :: excen
 
 !   -- variables pour dhrc
     real(kind=8) :: a0(6, 6), c0(2, 2, 2)
@@ -281,6 +281,7 @@ subroutine te0409(option, nomte)
 !       --  EPAISSEUR TOTALE
         ep = zr(icacoq)
         ctor = zr(icacoq+3)
+        excen = zr(icacoq+4)
 !
         if (resi) then
             call jevech('PCONTPR', 'E', icontp)
@@ -430,7 +431,7 @@ subroutine te0409(option, nomte)
                     epsm(i) = eps(i)
                     epsm(i+3) = khi(i)
                 end do
-!
+
                 do i = 1, nbsig
                     sig(i) = efform(icpg + i)
                     sigm(i) = sig(i)
@@ -454,6 +455,8 @@ subroutine te0409(option, nomte)
                     end do
                 end do
 !
+!EXCENTREMENT RAJOUTE UN COUPLAGE MEMBRANE_FLEXION : EPSI = EPSI+EXCENT*KHI
+! ON NE FAIT RIEN CAR LE COUPLAGE MEMBRANE_FLEXION INDUIT EST PRIS EN COMPTE DANS DXMATE
 !               --  prise en compte de la dilatation thermique
                 if (.not.lrgm) then
                     call coqgth(zi(imate), compor, 'RIGI', ipg, ep, epsm, deps)
@@ -466,7 +469,6 @@ subroutine te0409(option, nomte)
                         dsig(i) = dsig(i)+dsidep(i,j)*deps(j)
                     end do
                 end do
-!
 !               -- calcul de l'accoissement effort cisaillement
                 if (q4gg) then
                     dsig(7) = dcc(1,1)*dgam(1)
@@ -495,7 +497,12 @@ subroutine te0409(option, nomte)
 !
 !               --  prise en compte de la dilatation thermique
                 call coqgth(zi(imate), compor, 'RIGI', ipg, ep, epsm, deps)
-
+!EXCENTREMENT RAJOUTE UN COUPLAGE MEMBRANE_FLEXION : EPSI = EPSI+EXCENT*KHI
+                do i = 1, 3
+                    deps(i+3) = deps(i+3)+excen*dkhi(i)
+                    epsm(i) = epsm(i)+excen*khi(i)
+                    epsm(i+3) = epsm(i+3)+excen*khi(i)
+                end do
                 do i = 1, 6
                     epst(i) = epsm(i) + deps(i)
                 end do
@@ -581,6 +588,12 @@ subroutine te0409(option, nomte)
 !                   La routine coqgth nous arretera s'il y a de la dilatation
                 call coqgth(zi(imate), compor, 'RIGI', ipg, ep, epsm, deps)
 !
+!EXCENTREMENT RAJOUTE UN COUPLAGE MEMBRANE_FLEXION : EPSI = EPSI+EXCENT*KHI
+                do i = 1, 3
+                    deps(i+3) = deps(i+3)+excen*dkhi(i)
+                    epsm(i) = epsm(i)+excen*khi(i)
+                    epsm(i+3) = epsm(i+3)+excen*khi(i)
+                end do
 !               -- endommagement plus plasticite
                 call r8inir(3, r8vide(), angmas, 1)
                 call nmcoup('RIGI', ipg, 1, 3, k8bid,&

@@ -1,0 +1,10 @@
+P time_limit 60
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist verification sequential
+
+F comm ssls111h.comm D 1
+F datg ssls111h.datg D 16
+F mgib ssls111d.mgib D 19

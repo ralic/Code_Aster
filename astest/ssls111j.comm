@@ -1,0 +1,176 @@
+# TITRE PLAQUE EXCENTREE
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# SSLS111D
+# PLAQUE EXCENTREE SELON OZ
+# SOLUTION ANALYTIQUE DE POUTRE (NU=0.)
+# MODELISATIONS DKT
+# ------------------------------------------------
+#
+#
+#----------------------------------------------------------------------
+#POINTS:  A4                          A3
+#           -------------------------    ->
+#           !                       !    -> FX (+FZ vers le bas)
+#           !                       !    ->
+#           !                       !    ->
+#           !                       !    ->
+#           -------------------------    ->
+#         A1                          A2
+#
+# ______________________________________________________________________
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+
+# constantes :
+#------------
+L=10.     # longueur (m)     (selon x)
+l=5.      # largeur  (m)     (selon y)
+h=0.8     # epaisseur (m)    (selon z)
+e=0.4     # excentrement (m) (vers le haut z>0)
+E=2.E11   # module d'Young   (N/m^2)
+nu=0.     # coefficient de Poisson
+rho=1.e3  # masse volumique  (kg/M^3)
+
+G=E             # car nu=0.
+I=(l*h**3)/12.  # inertie de la section autour de Oy
+
+
+fx=4000.  # force lineique selon x (N/m)
+fz=-1000. # force lineique selon z (N/m)
+
+# ______________________________________________________________________
+#
+# 1 PLAQUE EXCENTREE EN FLEXION + EXTENSION (DKT)
+# ______________________________________________________________________
+
+PRE_GIBI();
+MA1=LIRE_MAILLAGE();
+IMPR_RESU(RESU=_F(MAILLAGE=MA1,  ))
+# On force la normale de la plaque vers z>0 :
+MA1=MODI_MAILLAGE(MAILLAGE=MA1,reuse=MA1,
+                  ORIE_NORM_COQUE=_F(GROUP_MA=('PLAQ1',), VECT_NORM=(0.0,0.0,1.0), GROUP_NO='A1',))
+
+
+MO1=AFFE_MODELE(MAILLAGE=MA1,
+                AFFE=_F(GROUP_MA=('PLAQ1', 'L12',),
+                        PHENOMENE='MECANIQUE', MODELISATION='DKT',),);
+
+EP1=AFFE_CARA_ELEM(MODELE=MO1,
+                   COQUE=_F(GROUP_MA=('PLAQ1','L12'),
+                             EPAIS=h,
+                             EXCENTREMENT=e, INER_ROTA='OUI',
+                             ))
+
+MATISO=DEFI_MATERIAU(ELAS=_F(E=E, NU=nu, RHO=rho,),);
+CHMAT1=AFFE_MATERIAU(MAILLAGE=MA1,
+                     AFFE=(_F(GROUP_MA='PLAQ1',
+                              MATER=MATISO,)))
+
+# egalite des deplacements car ils sont calcules sur le plan mail
+
+CL1=AFFE_CHAR_MECA(MODELE=MO1,
+                     DDL_IMPO=(_F(GROUP_MA='L14',
+                                  DX=0.0,
+                                  DY=0.0,
+                                  DZ=0.0,
+                                  DRX=0.0,
+                                  DRY=0.0,
+                                  DRZ=0.0,),),
+                                     );
+
+# calcul statique :
+#------------------
+CHME1A=AFFE_CHAR_MECA(MODELE=MO1,
+                      FORCE_ARETE=_F(GROUP_MA='L12', FX=fx, FZ=fz),);
+
+
+
+                    
+LINST=DEFI_LIST_REEL(DEBUT=0.,
+                      INTERVALLE=_F(JUSQU_A = 1.0, NOMBRE = 1));
+                      
+                      
+RESU1A=STAT_NON_LINE(MODELE=MO1,
+                CHAM_MATER=CHMAT1,
+                CARA_ELEM=EP1,
+                INCREMENT  = _F(LIST_INST = LINST),
+                CONVERGENCE=_F(ARRET='OUI',
+                               ITER_GLOB_MAXI=100,
+                               ITER_GLOB_ELAS=25,),
+                EXCIT=(
+                      _F(CHARGE=CL1),
+                      _F(CHARGE=CHME1A),
+                      ))
+
+RESU1A=CALC_CHAMP(reuse=RESU1A,RESULTAT=RESU1A,CONTRAINTE=('EFGE_ELGA','EFGE_ELNO','EFGE_NOEU'))
+
+
+#IMPR_RESU(RESU=_F(MAILLAGE=MA1))
+IMPR_RESU(RESU=_F(RESULTAT=RESU1A, NOM_CHAM=('DEPL','EFGE_ELNO','EFGE_ELGA', 'EFGE_NOEU',),
+             #GROUP_NO=('A1','A3'),
+              MAILLE=('M1','M71', 'M180', 'M200'),
+              ))
+
+
+# validation de la fleche sur le bord A2 A3 :
+#----------------------------------------------------------
+vref1=(2*fz*L)*l*L**2/(6*E*I)    # du au moment de la force fz
+vref2=(3*fx*e)*l*L**2/(6*E*I)    # du au moment de la force fx
+vref3=fz*L/(G*h*5/6)             # du a l'effort tranchant de la force fx
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1, GROUP_NO='A3', RESULTAT=RESU1A, NOM_CHAM='DEPL', NOM_CMP='DZ',
+                  REFERENCE='ANALYTIQUE', VALE_REFE=(vref1+vref2+vref3), PRECISION=5.e-3,
+                  VALE_CALC=-2.96691894498E-05))
+
+
+# validation de la densité d'effort sur le bord A1 A4
+#------------------------------------------------------------
+nxx=fx
+TEST_RESU(RESU=_F(NUME_ORDRE=1, GROUP_NO='A1', RESULTAT=RESU1A, NOM_CHAM='EFGE_NOEU', NOM_CMP='NXX',
+                  REFERENCE='ANALYTIQUE', VALE_REFE=nxx, PRECISION=0.15,
+                  VALE_CALC=4468.74999998 ,))
+
+mxx=-fz*L - e*fx
+mxx=-fz*L
+TEST_RESU(RESU=_F(NUME_ORDRE=1, GROUP_NO='A1', RESULTAT=RESU1A, NOM_CHAM='EFGE_NOEU', NOM_CMP='MXX',
+                  REFERENCE='ANALYTIQUE', VALE_REFE=mxx, 
+                  VALE_CALC=9999.99999843,))
+
+
+
+
+# Validation de POST_CHAMP / COQU_EXCENT
+#------------------------------------------------------------
+RESU1B=POST_CHAMP(RESULTAT=RESU1A, GROUP_MA='PLAQ1',
+                 COQU_EXCENT=_F(NOM_CHAM='EFGE_ELNO', MODI_PLAN='OUI',))
+IMPR_RESU(RESU=_F(RESULTAT=RESU1B,  NOM_CHAM='EFGE_ELNO', MAILLE='M1'))
+mxx=-fz*L
+mxx=-fz*L - e*fx
+TEST_RESU(RESU=_F(NUME_ORDRE=1, MAILLE='M1', NOEUD='N11', RESULTAT=RESU1B, NOM_CHAM='EFGE_ELNO', NOM_CMP='MXX',
+                  REFERENCE='ANALYTIQUE', VALE_REFE=mxx,  PRECISION=0.05,
+                  VALE_CALC=8212.49999912,))
+
+
+
+
+
+
+
+
+FIN();
