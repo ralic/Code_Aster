@@ -101,6 +101,7 @@ subroutine aceaor(noma, nomo, lmax, nbepo, ntyele, nomele, ivr, nbocc)
 !   RECONSTRUCTION DES NOMS JEVEUX DU CONCEPT MODELE
     modmai = nomo//'.MAILLE'
     modnoe = nomo//'.NOEUD'
+    write (6,*) "modmai",modmai
 !
 !   RECONSTRUCTION DES NOMS JEVEUX DU CONCEPT MAILLAGE ASSOCIE
     mlgnma = noma//'.NOMMAI'
