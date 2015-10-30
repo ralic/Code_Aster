@@ -34,7 +34,7 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
   # On importe les definitions des commandes a utiliser dans la macro
   #
     CREA_TABLE = self.get_cmd("CREA_TABLE")
-    DYNA_LINE_HARM = self.get_cmd('DYNA_LINE_HARM')
+    DYNA_VIBRA = self.get_cmd('DYNA_VIBRA')
     DETRUIRE = self.get_cmd('DETRUIRE')
 
     DEFI_FONCTION = self.get_cmd('DEFI_FONCTION')
@@ -599,7 +599,8 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
             # On excite la base de la colonne avec un bruit blanc (dans la
             # direction X )
 
-        __DYNHARM = DYNA_LINE_HARM(MODELE=__MODELE,
+        __DYNHARM = DYNA_VIBRA    (TYPE_CALCUL='HARM', BASE_CALCUL='PHYS',
+                                   MODELE=__MODELE,
                                    CHAM_MATER=__CHAMPMAH,
                                    MATR_MASS=__MASSEH,
                                    MATR_RIGI=__RIGIHYST,
@@ -1211,7 +1212,8 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
                 __VECASXR = CALC_CHAR_SEISME(
                     MATR_MASS=__MASSER, DIRECTION=(1., 0., 0.,), MONO_APPUI='OUI')
 
-                __DYNTEMP = DYNA_LINE_TRAN(MATR_MASS=__MASSER,
+                __DYNTEMP = DYNA_VIBRA    (TYPE_CALCUL='TRAN', BASE_CALCUL='PHYS',
+                                           MATR_MASS=__MASSER,
                                            MATR_RIGI=__RIGIDITE,
                                            MATR_AMOR=__AMORTIR,
 

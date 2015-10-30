@@ -130,18 +130,19 @@ dsinom = FORMULE(VALE='om*cos(om*INST)',
 d2sinom = FORMULE(VALE='-om**2*sin(om*INST)',
                   NOM_PARA='INST',);
 
-TRANGENE=DYNA_TRAN_MODAL(SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
-                         MATR_MASS=MASPRO,
-                         MATR_RIGI=RIGPRO,
-                         VITE_ROTA=0.0,
-                         INCREMENT=_F(PAS=pa,
-                                      INST_FIN=tfin,),
-                         EXCIT=_F(VECT_ASSE_GENE=PESPRO,
-                                  FONC_MULT=sinom,
-                                  CORR_STAT='OUI',
-                                  D_FONC_DT=dsinom,
-                                  D_FONC_DT2=d2sinom,),
-                         MODE_CORR=CORGRA,);
+TRANGENE= DYNA_VIBRA(TYPE_CALCUL='TRAN', BASE_CALCUL='GENE',
+                     SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
+                     MATR_MASS=MASPRO,
+                     MATR_RIGI=RIGPRO,
+                     VITE_ROTA=0.0,
+                     INCREMENT=_F(PAS=pa,
+                                  INST_FIN=tfin,),
+                     EXCIT=_F(VECT_ASSE_GENE=PESPRO,
+                              FONC_MULT=sinom,
+                              CORR_STAT='OUI',
+                              D_FONC_DT=dsinom,
+                              D_FONC_DT2=d2sinom,),
+                     MODE_CORR=CORGRA,);
 
 MODEX=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODEF,),
                              _F(MODE_INTF=CORGRA,),),
@@ -156,7 +157,7 @@ PROJ_BASE(BASE=MODEX,
           VECT_ASSE_GENE=_F(VECTEUR=CO('PESPRX'),
                             VECT_ASSE=PESA,),);
 
-TRANXENE=DYNA_TRAN_MODAL(SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
+TRANXENE= DYNA_VIBRA (TYPE_CALCUL='TRAN', BASE_CALCUL='GENE',SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                          MATR_MASS=MASPRX,
                          MATR_RIGI=RIGPRX,
                          VITE_ROTA=0.0,
@@ -197,12 +198,13 @@ DEPLPDXx=RECU_FONCTION(RESU_GENE=TRANXENE,
                        NOM_CMP='DX',
                        GROUP_NO='P',);
 
-TRANSD=DYNA_LINE_TRAN(MATR_MASS=MASSE,
-                      MATR_RIGI=RIGIDITE,
-                      SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
-                      EXCIT=_F(VECT_ASSE=PESA,
-                               FONC_MULT=sinom,),
-                      INCREMENT=_F(LIST_INST=LISTR,),);
+TRANSD=DYNA_VIBRA(TYPE_CALCUL='TRAN', BASE_CALCUL='PHYS',
+                  MATR_MASS=MASSE,
+                  MATR_RIGI=RIGIDITE,
+                  SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
+                  EXCIT=_F(VECT_ASSE=PESA,
+                           FONC_MULT=sinom,),
+                  INCREMENT=_F(LIST_INST=LISTR,),);
 
 DEPLPDZd=RECU_FONCTION(RESULTAT=TRANSD,
                        NOM_CHAM='DEPL',

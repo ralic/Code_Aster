@@ -173,7 +173,7 @@ TRAN_GEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                   MATR_MASS=M_PROJ,
                                   MATR_RIGI=K_PROJ,
                                   MATR_AMOR=A_PROJ,
-                                  SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                                  SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',),
                                   EXCIT=_F(VECT_ASSE_GENE = F_PROJ,
                                             COEF_MULT = 1.),
                                  INCREMENT=_F(  INST_INIT = 0.,
@@ -186,6 +186,7 @@ RESULT1=REST_GENE_PHYS(   RESU_GENE=TRAN_GEN,
                             TOUT_CHAM='OUI',
                              LIST_INST=LIST_R,
                              INTERPOL='LIN')
+
 # CES TEST EST AJOUTE POUR LA COUVERTURE DE CODE
 #
 # RESTITUTION SUR UNE GROUPE_MA AVEC UNE BASE MODALE ISSUE DE LIRE_RESU
@@ -475,7 +476,7 @@ TRANGENE=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                 MATR_MASS=M_GENE,
                                 MATR_RIGI=K_GENE,
                                 MATR_AMOR=A_GENE,
-                                SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                                SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',),
                                 SOLVEUR=_F(METHODE='LDLT',),
 
                                      EXCIT=_F(VECT_ASSE_GENE = F_GENE,

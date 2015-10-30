@@ -399,7 +399,7 @@ DF       = (F_FIN-F_INIT)/(N_POIN_0-1)
 NB_TIR = 1
 T_FIN  = NB_TIR/DF
 T_ETAB = T_FIN
-T_PAS  = 1.E-4
+T_PAS  = 1.E-5
 T_INI  = 0.
 
 N_POIN_1 = 1./(2.*DF*T_PAS)
@@ -464,16 +464,11 @@ EFPROJ4=RECU_FONCTION(INTE_SPEC=VECTINT,
 OBST1=DEFI_OBSTACLE(  TYPE='PLAN_Y'  )
 
 TRANGENE=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
-                    SCHEMA_TEMPS=_F(SCHEMA='ITMI',
-                                   BASE_ELAS_FLUI=MELFLUI,
-                                   CHOC_FLUI='OUI',
-                                   NUME_VITE_FLUI=1,
-                                   NB_MODE=4,
-                                   NB_MODE_FLUI=4,
-                                   PREC_DUREE=1.000000E-01,
-                                   TS_REG_ETAB=T_ETAB,),
                     MATR_MASS=MASSPROJ,
                     MATR_RIGI=RIGIPROJ,
+                    BASE_ELAS_FLUI=MELFLUI,
+                    NUME_VITE_FLUI=1,
+                    SCHEMA_TEMPS=_F(SCHEMA='ITMI'),
                   AMOR_MODAL=_F(AMOR_REDUIT=(
                                 1.000000E-02, 1.000000E-02,
                                 1.000000E-02, 1.000000E-02, ),),
@@ -604,9 +599,9 @@ T_04_001=POST_FATIGUE(CHARGEMENT='UNIAXIAL',
 
 IMPR_TABLE(  TABLE=T_04_001 )
 
-# LES VALEURS DE NON-REGRESSION SONT PAR RAPPORT A LA 12.0.20
+# LES VALEURS DE NON-REGRESSION SONT PAR RAPPORT A LA 13.1
 
-TEST_TABLE(VALE_CALC=4.92202872265E-08,
+TEST_TABLE(VALE_CALC=4.94009215909E-08,
            NOM_PARA='DOMM_CUMU',
            TABLE=T_04_001,
            TOLE_MACHINE=0.02, # Variabilité de 2% justifiée en raison de l'utilisation d'un chargement

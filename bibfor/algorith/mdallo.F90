@@ -11,9 +11,7 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mdtr74grd.h"
 #include "asterfort/r8inir.h"
@@ -81,7 +79,7 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
 ! IN  : NBREDE : NOMBRE DE RELATIONS EFFORT DEPLACEMENT (RED)
 ! IN  : FONRED : TABLEAU DES FONCTIONS DE RED
 ! IN  : NBREVI : NOMBRE DE RELATIONS EFFORT VITESSE (REV)
-! IN  : METHOD : ALGORITHME UTILISE (DEVOGE, EULER, ...)
+! IN  : METHOD : ALGORITHME UTILISE (DEVOGE, DIFF_CENTRE, ...)
 !                DANS LE CAS ITMI, UN OBJET EST DIFFERENT
 ! IN  : TYPCAL : VAUT 'HARM' OU 'TRAN'
 ! IN  : SAUVE :  VAUT 'GLOB' OU 'VOLA'
@@ -99,11 +97,10 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
     character(len=16) :: method2
     character(len=24) :: matric(3)
 !-----------------------------------------------------------------------
-    call jemarq()
-!
 !   --- 0 - Obligatory arguments, validation of the input values
     ASSERT((typcal.eq.'TRAN').or.(typcal.eq.'HARM'))
     ASSERT(nbsauv.ge.0)
+
 !
 !   --- Default values of input arguments
     basemo = ' '
@@ -350,9 +347,9 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
                     zc(jchmp+i) = dcmplx(0.d0,0.d0)
                 enddo
             endif
-            if (nomsym2(inom) .eq. 'DEPL') jdepl=jchmp
-            if (nomsym2(inom) .eq. 'VITE') jvite=jchmp
-            if (nomsym2(inom) .eq. 'ACCE') jacce=jchmp
+            if ((nomsym2(inom) .eq. 'DEPL').and.(present(jdepl))) jdepl=jchmp
+            if ((nomsym2(inom) .eq. 'VITE').and.(present(jvite))) jvite=jchmp
+            if ((nomsym2(inom) .eq. 'ACCE').and.(present(jacce))) jacce=jchmp
         enddo
 !
 !       OBJETS COMMUNS
@@ -428,5 +425,4 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
         endif
     endif
 !
-    call jedema()
 end subroutine

@@ -19,13 +19,6 @@
 
 cata_msg = {
 
-    1 : _(u"""
- nombre de pas de calcul       :  %(i1)d
- nombre d'itérations           :  %(i2)d
- ----------------------------------------------
-
-"""),
-
     2 : _(u"""
   Informations sur les noeuds de choc
   lieu de choc   :  %(i1)d
@@ -70,23 +63,6 @@ cata_msg = {
  <INFO> Pour l'occurrence numéro %(i1)d du mot-clé facteur CHOC, RIGI_TAN est
  renseigné mais pas AMOR_TAN. Le code a donc attribué à AMOR_TAN une valeur
  optimisée : %(r1)f
-"""),
-
-    12 : _(u"""
- le nombre d'amortissements réduits est trop grand
- le nombre de modes retenus vaut  %(i1)d
- et le nombre de coefficients :  %(i2)d
- on ne garde donc que les  %(i3)d
-   %(k1)s
-"""),
-
-    13 : _(u"""
- le nombre d'amortissements réduits est insuffisant
- il en manque :  %(i1)d
- car le nombre de modes vaut :  %(i2)d
- on rajoute  %(i3)d
- amortissements réduits avec la valeur du dernier mode propre
-
 """),
 
     14 : _(u"""
@@ -142,70 +118,6 @@ cata_msg = {
 
     21 : _(u"""
  taux de souplesse négligée : %(r1)f
-"""),
-
-    22 : _(u"""
- calcul par superposition modale :
- la base de projection est un %(k1)s
- le nombre d'équations est          : %(i1)d
- la méthode utilisée est        : %(k2)s
- la base utilisée est           : %(k3)s
- le nombre de vecteurs de base est  :  %(i2)d
-"""),
-
-    23 : _(u"""
- le pas de temps initial est  : %(r1)f
- le nombre de pas d'archive est     :  %(i1)d
-"""),
-
-    24 : _(u"""
- NUME_VITE_FLUI                 :  %(i1)d
- vitesse gap                    :  %(r1)f
- le nombre de modes de BASE_FLUI    :  %(i2)d
- le nombre total de modes de la base:  %(i3)d
- le pas de temps initial est    :  %(r2)f
- durée de l'excitation          :  %(r3)f
-"""),
-
-    25 : _(u"""
- le nombre de pas d'archive est     :  %(i1)d
-"""),
-
-    26 : _(u"""
- le pas de temps du calcul est  : %(r1)f
- le nombre de pas de calcul est     :  %(i1)d
- le nombre de pas d'archive est     :  %(i2)d
-"""),
-
-    38 : _(u"""
- mode dynamique           :  %(i1)d
- amortissement trop grand :  %(r1)f
- amortissement critique   :  %(r2)f
- problème de convergence possible %(k1)s
-"""),
-
-    39 : _(u"""
- sous-structuration dynamique
- calcul par superposition modale
-
- la numérotation utilisée est   :  %(k1)s
- le nombre d'équations est          :  %(i1)d
- la méthode utilisée est        :  %(k2)s
-    - nombre de vecteurs dynamiques :  %(i2)d
-    - nombre de déformées statiques :  %(i3)d
-"""),
-
-    40 : _(u"""
- le pas de temps initial est  : %(r1)f
-"""),
-
-    41 : _(u"""
- le pas de temps du calcul est  : %(r1)f
- le nombre de pas de calcul est     :  %(i1)d
-"""),
-
-    42 : _(u"""
- le nombre de pas d'archive est     :  %(i1)d
 """),
 
     44 : _(u"""
@@ -355,42 +267,6 @@ Risques & conseils :
      - Temps CPU restant :            %(r3)f
   """),
 
-    78 : _(u"""
-  Précision du transitoire : %(r1)f
-  """),
-
-    79 : _(u"""
- Couplage temporel avec NB modes : %(i1)d
-  """),
-
-    80 : _(u"""
- Le nombre de lieu(x) de choc est : %(i1)d
-  """),
-
-    81 : _(u"""
- Le nombre de dispositifs anti-sismique est : %(i1)d
-  """),
-
-    82 : _(u"""
- le nombre de lieu(x) de choc avec flambement est : %(i1)d
-  """),
-
-    83 : _(u"""
- Le nombre de RELA_EFFO_DEPL est : %(i1)d
-  """),
-
-    84 : _(u"""
- Le nombre de RELA_EFFO_VITE est : %(i1)d
-  """),
-
-    87 : _(u"""
-   Arrêt par manque de temps CPU
-     - Instant courant :              %(r1)f
-     - Nombre d'appels à ALITMI :     %(i1)d
-     - Temps moyen par pas de temps : %(r2)f
-     - Temps CPU restant :            %(r3)f
-  """),
-
     88 : _(u"""
    Arrêt par manque de temps CPU au pas de temps : %(i1)d
      - A l'instant  :                %(r1)f
@@ -401,14 +277,6 @@ Risques & conseils :
     89 : _(u"""
    On passe outre car VERI_PAS = NON
   """),
-
-
-
-    92 : _(u"""
-   Au noeud de choc %(k1)s
-  """),
-
-
 
     94 : _(u"""
   il manque les paramètres de Van Genuchten

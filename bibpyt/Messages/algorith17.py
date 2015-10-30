@@ -18,7 +18,14 @@
 # person_in_charge: josselin.delmas at edf.fr
 
 cata_msg = {
-
+    1: _(u"""
+  Une divergence a été détectée à l'instant %(r1)f, inutile de poursuivre avec 
+  l'intégration temporelle. 
+  
+  Conseil : réduire le pas de temps du schéma d'intégration ou choisir un schéma 
+  adaptatif avec une valeur de tolérance adaptée à la raideur du système dynamique 
+  aussi bien en vol libre qu'en état de choc.
+"""),
 
     2: _(u"""
          Comportement %(k1)s non implanté pour l'élément d'interface

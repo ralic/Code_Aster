@@ -10,7 +10,7 @@ subroutine distno(xlocal, signe, typeob, xjeu, dist1,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/tbliva.h"
 #include "asterfort/utmess.h"
-    real(kind=8) :: xlocal(6), signe(*)
+    real(kind=8) :: xlocal(6), signe(2)
     character(len=8) :: typeob
 !---------------------------------------------------------------------
 ! ======================================================================
@@ -167,11 +167,11 @@ subroutine distno(xlocal, signe, typeob, xjeu, dist1,&
                     cost = -un
                 endif
                 dnorm = (xlocal(2)-y1)*cost+(xlocal(3)-z1)*sint
-                goto 9999
+                goto 99
             endif
 10      continue
     endif
 !
-9999  continue
+99  continue
     call jedema()
 end subroutine

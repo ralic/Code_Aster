@@ -23,7 +23,7 @@ subroutine mdfnli(nbmode, depgen, vitgen, accgen, fexgen,&
     real(kind=8) :: parcho(*), saucho(nbchoc, *)
     real(kind=8) :: saured(*), dplrev(*), dplred(*), saurev(*)
     real(kind=8) :: accgen(*), dplmod(nbchoc, nbmode, *)
-    real(kind=8) :: temps, psidel(nbchoc, nbexci, *), ltemps(3)
+    real(kind=8) :: temps, psidel(nbchoc, nbexci, *), ltemps(2)
     character(len=8) :: noecho(*), fonred(*), fonrev(*), monmot
     character(len=8) :: nofdep(nbexci), nofvit(nbexci), nofacc(nbexci)
     character(len=8) :: fk(2), dfk(2), foncp
@@ -94,11 +94,11 @@ subroutine mdfnli(nbmode, depgen, vitgen, accgen, fexgen,&
 ! IN  : MONMOT : = OUI SI MULTI-APPUIS
 ! ----------------------------------------------------------------------
 !
+
 !   FORCES NON-LINEAIRES DE TYPE CHOC
     if (nbchoc .ne. 0 .and. nbrfis .eq. 0) then
         ltemps(1) = temps
         ltemps(2) = dt
-        ltemps(3) = numpas
         call mdfcho(nbmode, depgen, vitgen, accgen, fexgen,&
                     nbchoc, logcho, dplmod, parcho, noecho,&
                     saucho, ltemps, nofdep, nofvit, nofacc,&

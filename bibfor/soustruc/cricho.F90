@@ -143,7 +143,8 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
                             .true._1)
 !
                 if (ifac .eq. 0) then
-                    matpre='&&OP0074.BIDON'
+                    call dismoi('SOLVEUR', marig, 'MATR_ASSE', repk=solveu)
+                    matpre='&&OP0029.BIDON'
 !
 !             ISTOP MIS A 2 POUR NE PAS ARRETER L'EXECUTION EN CAS
 !             DE MATRICE SINGULIERE (MODES STATIQUES)
@@ -200,7 +201,7 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
                     cs=scf**2*usr
                     if (info .ge. 2) then
                         soupl(j)=cs
-                        if (soup .ne. 0.d0) then
+                        if (abs(soup).gt.eps) then
                             trloc(j)=cs/soup
                         else
                             trloc(j)=0.d0
@@ -208,7 +209,7 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
                         indic(j)=j
                         trlocj=trloc(j)
                     else
-                        if (soup .ne. 0.d0) then
+                        if (abs(soup).gt.eps) then
                             trlocj=cs/soup
                         else
                             trlocj=0.d0

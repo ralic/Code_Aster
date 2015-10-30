@@ -34,7 +34,7 @@ subroutine dylach(nomo, mate, carele, lischa, numedd,&
 !
 ! ----------------------------------------------------------------------
 !
-! DYNA_LINE_HARM
+! DYNA_VIBRA//HARM/GENE
 !
 ! CALCUL ET PRE-ASSEMBLAGE DU CHARGEMENT
 !

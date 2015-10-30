@@ -303,7 +303,7 @@ VECPRO=PROJ_VECT_BASE(BASE=RESGEN,
 # ----- CALCULS TRANSITOIRES
 
 TRANGEN1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
-                         SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                         SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',),
                          MATR_MASS=MASPRO,
                          MATR_RIGI=RIGPRO,
                          INCREMENT=_F(INST_INIT=0.,

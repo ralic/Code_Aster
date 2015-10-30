@@ -1,7 +1,7 @@
 subroutine dlarch(result, neq, istoc, iarchi, texte,&
-                  alarm, ifm, temps, nbtyar, typear,&
-                  masse, depl, vite, acce, fexte,&
-                  famor, fliai)
+                  alarm, temps, nbtyar, typear, masse,&
+                  depl, vite, acce, fexte, famor,&
+                  fliai)
 ! ---------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,7 +53,7 @@ subroutine dlarch(result, neq, istoc, iarchi, texte,&
 #include "asterfort/rsnoch.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vtcrem.h"
-    integer :: neq, istoc, iarchi, alarm, ifm
+    integer :: neq, istoc, iarchi, alarm
     integer :: nbtyar
 !
     real(kind=8) :: depl(neq), vite(neq), acce(neq)
@@ -150,19 +150,9 @@ subroutine dlarch(result, neq, istoc, iarchi, texte,&
 !
     endif
 !
-    21 end do
+    21 continue
 !
     istoc = 1
 !
-    if (lgcomm .eq. 0) then
-        write(ifm,2000) (typear(iaux),iaux=1,nbtyar), iarchi, temps
-    else
-        write(ifm,2001) texte(1:lgcomm), (typear(iaux),iaux=1,nbtyar),&
-        iarchi, temps
-    endif
-    2000 format(1p,3x,'CHAMP(S) STOCKE(S):',3(1x,a4),3(1x,a9),&
-     &             ' NUME_ORDRE:',i8,' INSTANT:',d12.5)
-    2001 format(1p,3x,a,1x,'CHAMP(S) STOCKE(S):',3(1x,a4),3(1x,a9),&
-     &             ' NUME_ORDRE:',i8,' INSTANT:',d12.5)
 !
 end subroutine

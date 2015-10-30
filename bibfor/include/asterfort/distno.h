@@ -19,7 +19,7 @@ interface
     subroutine distno(xlocal, signe, typeob, xjeu, dist1,&
                       dist2, dnorm, cost, sint)
         real(kind=8) :: xlocal(6)
-        real(kind=8) :: signe(*)
+        real(kind=8) :: signe(2)
         character(len=8) :: typeob
         real(kind=8) :: xjeu
         real(kind=8) :: dist1

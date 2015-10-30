@@ -741,6 +741,7 @@ for k in range(1,NF):
                     BASE_CALCUL='PHYS',
                     MATR_MASS=MATRMASB, MATR_RIGI=MATRRIGB,
                       MATR_AMOR=MATRAMOB,
+                      SCHEMA_TEMPS=_F(SCHEMA='NEWMARK'),
                       ETAT_INIT=_F(DEPL=DEP0, VITE=VIT0,),
                       INCREMENT=_F(LIST_INST=TEMPL2C,),
                       ARCHIVAGE=_F(PAS_ARCH=1,),
@@ -768,20 +769,21 @@ for k in range(1,NF):
     EVOL=DYNA_VIBRA(TYPE_CALCUL='TRAN',
                     BASE_CALCUL='PHYS',
                     MATR_MASS=MATRMASB, MATR_RIGI=MATRRIGB,
-                      MATR_AMOR=MATRAMOB,
-                      ETAT_INIT=_F(DEPL=DEP0, VITE=VIT0,),
-                      INCREMENT=_F(LIST_INST=TEMPL2C,),
-                      ARCHIVAGE=_F(PAS_ARCH=1,),
-                      AMOR_MODAL=_F(MODE_MECA = MODEB,
-                                    AMOR_REDUIT = 0.05),
-                     EXCIT=(
-                            _F( VECT_ASSE=VECASPP, COEF_MULT = 1.0,),
-                            _F( VECT_ASSE=VECASFO, FONC_MULT = ACCE,),
-                           ),
-                     EXCIT_RESU=(
-                            _F( RESULTAT = resunl, COEF_MULT = -1.0,),
-                                ),
-                        );
+                    MATR_AMOR=MATRAMOB,
+                    SCHEMA_TEMPS=_F(SCHEMA='NEWMARK'),
+                    ETAT_INIT=_F(DEPL=DEP0, VITE=VIT0,),
+                    INCREMENT=_F(LIST_INST=TEMPL2C,),
+                    ARCHIVAGE=_F(PAS_ARCH=1,),
+                    AMOR_MODAL=_F(MODE_MECA = MODEB,
+                                  AMOR_REDUIT = 0.05),
+                    EXCIT=(
+                           _F( VECT_ASSE=VECASPP, COEF_MULT = 1.0,),
+                           _F( VECT_ASSE=VECASFO, FONC_MULT = ACCE,),
+                          ),
+                    EXCIT_RESU=(
+                           _F( RESULTAT = resunl, COEF_MULT = -1.0,),
+                               ),
+                       );
 
     DETRUIRE(INFO=1,CONCEPT=_F(NOM=resunl));
 

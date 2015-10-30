@@ -36,7 +36,7 @@ subroutine dyexre(numddl, freq, nbexre, exreco, exresu,&
 !
 ! ----------------------------------------------------------------------
 !
-! DYNA_LINE_HARM
+! DYNA_VIBRA//HARM/GENE
 !
 ! APPLICATION EXCIT_RESU
 !

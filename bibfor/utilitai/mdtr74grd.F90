@@ -28,7 +28,7 @@ function mdtr74grd(nomgrd)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!       Dimension pour les comportements non-linéaires de DYNA_TRAN_MODAL
+!       Dimension pour les comportements non-linéaires de DYNA_VIBRA//TRAN/GENE
 !
 ! --------------------------------------------------------------------------------------------------
 !

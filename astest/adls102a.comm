@@ -180,7 +180,7 @@ DYNA=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                    MATR_AMOR=AMOR,
                    SCHEMA_TEMPS=_F(SCHEMA='NEWMARK'),
                    INCREMENT=_F(LIST_INST=TEMPCAL,),
-                   ARCHIVAGE=_F(CHAM_EXCLU=('VITE','ACCE',),),
+                   ARCHIVAGE=_F(CHAM_EXCLU=('ACCE',),),
                   )
 
 #

@@ -19,7 +19,7 @@
 interface
     subroutine mdinit(basemo, nbmode, nbchoc, depgen, vitgen,&
                       vint, ier, tinit, intitu, noecho, &
-                      reprise, accgen)
+                      reprise, accgen, index)
         character(len=8) :: basemo
         integer :: nbmode
         integer :: nbchoc
@@ -32,5 +32,6 @@ interface
         character(len=8), optional, intent(in) :: noecho(nbchoc,*)
         aster_logical, optional, intent(out) :: reprise
         real(kind=8), optional, intent(out) :: accgen(*)
+        integer, optional, intent(out) :: index
     end subroutine mdinit
 end interface

@@ -22,7 +22,7 @@
 #
 #                   DISCRET COMPORTEMENT ZENER GENERALISE
 #
-#   Validation du comportement avec DYNA_VIBRA Schéma d'Euler
+#   Validation du comportement avec DYNA_VIBRA Schéma d'Euler (DIFF_CENTRE)
 #
 #
 # --------------------------------------------------------------------------------------------------
@@ -148,7 +148,7 @@ PROJ_BASE(
 Resultat=DYNA_VIBRA(
     TYPE_CALCUL='TRAN', BASE_CALCUL='GENE',
     MATR_MASS=MasseGen, MATR_RIGI=RigidGen,
-    SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+    SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',),
     INCREMENT=_F(PAS=0.5/Frequence/40.0, INST_INIT=0.0, INST_FIN=4.0*Tsignal,),
     MODE_STAT=ModeSta,
     EXCIT=(
@@ -345,7 +345,7 @@ IMPR_FONCTION(UNITE=26,
 ResultA=DYNA_VIBRA(
     TYPE_CALCUL='TRAN', BASE_CALCUL='GENE',
     MATR_MASS=MasseGen, MATR_RIGI=RigidGen,
-    SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+    SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',),
     INCREMENT=_F(PAS=0.5/Frequence/40.0, INST_INIT=0.0, INST_FIN=2.0*Tsignal,),
     MODE_STAT=ModeSta,
     EXCIT=(
@@ -362,7 +362,7 @@ ResultA=DYNA_VIBRA(
 ResultB=DYNA_VIBRA(
     TYPE_CALCUL='TRAN', BASE_CALCUL='GENE',
     MATR_MASS=MasseGen, MATR_RIGI=RigidGen,
-    SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+    SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',),
     ETAT_INIT=_F(RESULTAT=ResultA,),
     INCREMENT=_F(PAS=0.5/Frequence/40.0, INST_INIT=2.0*Tsignal, INST_FIN=4.0*Tsignal,),
     MODE_STAT=ModeSta,
@@ -374,9 +374,9 @@ ResultB=DYNA_VIBRA(
         NOEUD_1='N01', NOEUD_2='N02',
         K1=120.0, K2=10.0, K3=60.0, C=1.7, PUIS_ALPHA=0.5,
     ),
-    IMPRESSION=_F(UNITE_DIS_VISC =35),
+    IMPRESSION=_F(UNITE_DIS_VISC=35),
 )
-#
+
 # dans unite=35 : INST FORCE DEPLVISC DEPL PUISS
 # 1er calcul
 ForcA=LIRE_FONCTION(UNITE=35, NOM_PARA='INST', NOM_RESU='Forc',
@@ -391,7 +391,7 @@ DeplB=LIRE_FONCTION(UNITE=35, NOM_PARA='INST', NOM_RESU='Depl',
 #
 ForcAB = CALC_FONCTION(ASSE=_F(FONCTION=(ForcA,ForcB),),)
 DeplAB = CALC_FONCTION(ASSE=_F(FONCTION=(DeplA,DeplB),),)
-#
+
 DDeplAB0 = CALC_FONCTION(
     COMB=(
         _F(FONCTION=DeplAB, COEF =-1.0),
@@ -426,14 +426,14 @@ TEST_TABLE(TABLE=TDDeplAB,
     NOM_PARA='Depl',
     REFERENCE='SOURCE_EXTERNE', CRITERE='ABSOLU',
      PRECISION=1.0E-08,
-    VALE_REFE= 1.0E-09, VALE_CALC=0.0,
+    VALE_REFE= 1.0E-09, VALE_CALC=0.,
 )
 TEST_TABLE(TABLE=TDForcAB,
     FILTRE=_F(NOM_PARA='Forc',CRIT_COMP ='MAXI_ABS',),
     NOM_PARA='Forc',
     REFERENCE='SOURCE_EXTERNE', CRITERE='ABSOLU',
      PRECISION=1.0E-08,
-    VALE_REFE= 1.0E-09, VALE_CALC=0.0,
+    VALE_REFE= 1.0E-09, VALE_CALC=0.,
 )
 #
 IMPR_FONCTION(UNITE=36,

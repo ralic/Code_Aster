@@ -19,7 +19,7 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
       IGNORE_ALARM=('MODELISA4_9',) )
 
-tfin = 1.;
+tfin = 1.01;
 fmax=250.
 
 pas = 1e-05;
@@ -221,10 +221,11 @@ PROJ_BASE(  BASE=BMOD,
 TRANGEN = DYNA_VIBRA   (     MATR_MASS=MASGEN,   MATR_RIGI=RIGGEN,
                              BASE_CALCUL ='GENE',
                              TYPE_CALCUL ='TRAN',
-                             SCHEMA_TEMPS=_F(SCHEMA='EULER'),
+                             SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE'),
                              AMOR_MODAL= _F(AMOR_REDUIT=.5),
                              VITESSE_VARIABLE='NON',
                              VITE_ROTA=-10.*pi,
+                             ARCHIVAGE=_F(INST=[0.9, 1.0]),
                              INCREMENT=_F(  INST_INIT = 0.,  INST_FIN = tfin, PAS = pas, VERI_PAS='NON'),
                              EXCIT=(
                                     _F(VECT_ASSE_GENE=VAGFZ,FONC_MULT=RAMP,),

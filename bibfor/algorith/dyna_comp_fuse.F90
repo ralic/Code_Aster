@@ -35,7 +35,7 @@ subroutine dyna_comp_fuse(mesh, comp_noli, comp_fuse)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! DYNA_LINE_HARM
+! DYNA_VIBRA//HARM/GENE
 !
 ! Fuse COMPOR <CARTE>
 !

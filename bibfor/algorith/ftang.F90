@@ -48,6 +48,7 @@ subroutine ftang(fn, xlocal, vitloc, cfrotd, cfrots,&
 !    VT              -->  VITESSE TANGENTIELLE DE CHOC REP. LOCAL
 !-----------------------------------------------------------------------
     implicit none
+#include "asterc/r8prem.h"
     integer :: iadher
     real(kind=8) :: vitloc(3), flocal(3), xlocal(3), oldxlo(3), vt(2)
     real(kind=8) :: fn, ftange(2), ktang, ctang, dxt(2)
@@ -56,7 +57,8 @@ subroutine ftang(fn, xlocal, vitloc, cfrotd, cfrots,&
 !     CALCUL DE LA VITESSE TANGENTIELLE
 !
 !-----------------------------------------------------------------------
-    real(kind=8) :: xnftan, xnorvt, xscal
+    real(kind=8) :: xnftan, xnorvt, xscal, eps
+    eps   = r8prem()
 !-----------------------------------------------------------------------
     vt(1) = -sint*vitloc(2) + cost*vitloc(3)
     vt(2) = vitloc(1)
@@ -96,7 +98,7 @@ subroutine ftang(fn, xlocal, vitloc, cfrotd, cfrots,&
         xnftan=sqrt(ftange(1)**2+ftange(2)**2)
         if (xnftan .gt. (cfrots*fn)) then
             iadher = 0
-            if (xnorvt .eq. 0.d0) then
+            if (abs(xnorvt).le.eps) then
                 ftange(1)=0.0d0
                 ftange(2)=0.0d0
             else
@@ -115,7 +117,7 @@ subroutine ftang(fn, xlocal, vitloc, cfrotd, cfrots,&
 !
 !     CALCUL DE LA FORCE DANS LE REPERE LOCAL
 !
-    flocal(1)=flocal(1)+ftange(2)
-    flocal(2)=flocal(2)-ftange(1)*sint
-    flocal(3)=flocal(3)+ftange(1)*cost
+    flocal(1)=ftange(2)
+    flocal(2)=-ftange(1)*sint
+    flocal(3)=ftange(1)*cost
 end subroutine

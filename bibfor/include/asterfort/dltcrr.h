@@ -19,17 +19,16 @@
 !
 interface
     subroutine dltcrr(result, neq, nbordr, iarchi, texte,&
-                      ifm, t0, lcrea, typres, masse,&
-                      rigid, amort, dep0, vit0, acc0,&
-                      fexte, famor, fliai, numedd, nume,&
-                      nbtyar, typear)
+                      t0, lcrea, typres, masse, rigid,&
+                      amort, dep0, vit0, acc0, fexte,&
+                      famor, fliai, numedd, nume, nbtyar,&
+                      typear)
         integer :: nbtyar
         integer :: neq
         character(len=8) :: result
         integer :: nbordr
         integer :: iarchi
         character(len=*) :: texte
-        integer :: ifm
         real(kind=8) :: t0
         aster_logical :: lcrea
         character(len=16) :: typres

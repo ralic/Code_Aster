@@ -99,16 +99,17 @@ LIST3D=DEFI_LIST_REEL(DEBUT=Ti,
                                    PAS=10*dt,),
                                 ),);
 
-Ref3D=DYNA_LINE_TRAN(MODELE=MOD3D,
-                   CHAM_MATER=RefMAT,
-                   MATR_MASS=M3D,
-                   MATR_RIGI=K3D,
-                   SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
-                                  GAMMA=0.5+alpha,
-                                  BETA=(1+alpha)**2/4,),
-                   EXCIT=_F(VECT_ASSE=F3Dass,
-                            FONC_MULT=FSIN,),
-                   INCREMENT=_F(LIST_INST=LIST3D,),);
+Ref3D=DYNA_VIBRA(TYPE_CALCUL='TRAN', BASE_CALCUL='PHYS',
+                 MODELE=MOD3D,
+                 CHAM_MATER=RefMAT,
+                 MATR_MASS=M3D,
+                 MATR_RIGI=K3D,
+                 SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                                GAMMA=0.5+alpha,
+                                BETA=(1+alpha)**2/4,),
+                 EXCIT=_F(VECT_ASSE=F3Dass,
+                          FONC_MULT=FSIN,),
+                 INCREMENT=_F(LIST_INST=LIST3D,),);
 
 T3D=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                             INTITULE='NdR',

@@ -219,7 +219,7 @@ MUR=DEFI_OBSTACLE(   TYPE='PLAN_Z' )
 TRAN_GE1=DYNA_VIBRA( TYPE_CALCUL='TRAN',
                      BASE_CALCUL='GENE',
                  MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
-                SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',),
                 AMOR_MODAL=_F(AMOR_REDUIT=0.07,),
                 MODE_STAT=MODE_STA,
                EXCIT=_F(  VECT_ASSE_GENE = VECT_X,  ACCE = ACCELER1,
@@ -277,7 +277,7 @@ GRILLE=DEFI_OBSTACLE(   TYPE='BI_PLAN_Z' )
 TRAN_GE2=DYNA_VIBRA(  TYPE_CALCUL='TRAN',
                      BASE_CALCUL='GENE',
                      MATR_MASS=MGEN_BIC,   MATR_RIGI=RGEN_BIC,
-                 SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                 SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',),
                  AMOR_MODAL=_F(AMOR_REDUIT=( 0.07,  0.07, ),),
                  MODE_STAT=MSTA_BIC,
                 EXCIT=(

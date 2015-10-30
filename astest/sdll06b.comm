@@ -139,7 +139,7 @@ PROJ_BASE(  BASE=MODE_MEC,
 
 TRAN_GEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                     MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
-                    SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                    SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',),
                        EXCIT=_F(VECT_ASSE_GENE = VECT_X,    FONC_MULT = FONC_X),
                        INCREMENT=_F(  INST_INIT = 0.,   INST_FIN = 0.21,
                                    PAS = 1.E-3) )

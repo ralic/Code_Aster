@@ -149,7 +149,6 @@ subroutine dltlec(result, modele, numedd, materi, mate,&
     call getvid(' ', 'MATR_MASS', scal=masse, nbret=nm)
     call getvid(' ', 'MATR_AMOR', scal=amort, nbret=na)
     if (na .le. 0) then
-        write(ifm,*)'PAS DE MATRICE D''AMORTISSEMENT'
         lamort = .false.
     endif
     call mtdscr(rigid)

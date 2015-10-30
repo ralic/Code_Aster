@@ -44,7 +44,7 @@ def dyna_iss_vari_ops(
     COMB_MATR_ASSE = self.get_cmd('COMB_MATR_ASSE')
     LIRE_IMPE_MISS = self.get_cmd('LIRE_IMPE_MISS')
     LIRE_FORC_MISS = self.get_cmd('LIRE_FORC_MISS')
-    DYNA_LINE_HARM = self.get_cmd('DYNA_LINE_HARM')
+    DYNA_VIBRA     = self.get_cmd('DYNA_VIBRA')
 
     DEFI_FONCTION = self.get_cmd('DEFI_FONCTION')
     CALC_FONCTION = self.get_cmd('CALC_FONCTION')
@@ -235,7 +235,7 @@ def dyna_iss_vari_ops(
                                 ISSF=ISSF,
                                 FREQ_EXTR=PAS,)
                                 
-        __dyge0 = DYNA_LINE_HARM(
+        __dyge0 = DYNA_VIBRA(TYPE_CALCUL='HARM', BASE_CALCUL='GENE',
             MATR_MASS=MATR_GENE['MATR_MASS'],
             MATR_RIGI=__rito,
             LIST_FREQ=__lfre,  # tuple(l_freq_sig),

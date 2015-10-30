@@ -1,6 +1,6 @@
 subroutine mdinit(basemo, nbmode, nbchoc, depgen, vitgen,&
                   vint, ier, tinit, intitu, noecho,&
-                  reprise, accgen)
+                  reprise, accgen, index)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -34,13 +34,14 @@ subroutine mdinit(basemo, nbmode, nbchoc, depgen, vitgen,&
 #include "asterfort/mdtr74grd.h"
 #include "asterfort/utmess.h"
     character(len=8) :: basemo
-    integer :: nbmode, nbchoc
+    integer :: nbmode, nbchoc, i
     real(kind=8) :: depgen(*), vitgen(*), vint(*)
     integer :: ier
     real(kind=8) :: tinit
     character(len=8), optional, intent(in) :: intitu(*), noecho(nbchoc, *)
     aster_logical, optional, intent(out) :: reprise
     real(kind=8), optional, intent(out) :: accgen(*)
+    integer, optional, intent(out) :: index
 !
 !
 ! DONNEES INITIALES
@@ -152,6 +153,9 @@ subroutine mdinit(basemo, nbmode, nbchoc, depgen, vitgen,&
 !           les calculs sont donc déjà fait au pas de récupération
         call getvtx('ETAT_INIT', 'CRITERE', iocc=1, scal=crit, nbret=nc)
         call getvr8('ETAT_INIT', 'PRECISION', iocc=1, scal=prec, nbret=np)
+        if (nc.eq.0) crit = 'RELATIF'
+        if (np.eq.0) prec = 1.d-6
+        
         call getvr8('ETAT_INIT', 'INST_INIT', iocc=1, scal=tinit, nbret=ni)
         call jeveuo(tran//'           .DISC', 'E', vr=disc)
         call jelira(tran//'           .DISC', 'LONUTI', nbinst)
@@ -160,7 +164,7 @@ subroutine mdinit(basemo, nbmode, nbchoc, depgen, vitgen,&
         inter = 'NON'
         call jeveuo(tran//'           .DEPL', 'E', vr=depl)
         call extrac(inter, prec, crit, nbinst, disc,&
-                    tinit, depl, nbmode, depgen, ier)
+                    tinit, depl, nbmode, depgen, ier, index)
         if (ier .ne. 0) then
             call utmess('F', 'ALGORITH5_46')
         endif
@@ -194,7 +198,12 @@ subroutine mdinit(basemo, nbmode, nbchoc, depgen, vitgen,&
             endif
         endif
         if (present(reprise)) reprise = .true.
-    endif
+    else
+        nbvint = nbchoc*mdtr74grd('MAXVINT')
+        do i = 1, nbvint
+            vint(i) = 0.d0
+        end do
+    end if
 !
     call jedema()
 end subroutine

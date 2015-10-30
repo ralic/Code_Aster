@@ -50,7 +50,7 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
 !     OPERATEUR "ECRIRE RESULTAT"
 !     IN:
 !       RESIN : SD_RESULTAT INITIALE HARMONIQUE
-!               (VENANT DE DYNA_LINE_HARM)
+!               (VENANT DE DYNA_VIBRA//HARM/GENE)
 !       NPARA : POINTEUR DU TABLEAU DE DONNEE VENANT DE LA FFT
 !       NBVA  : NOMBRE D'INSTANTS
 !       GRAND : GRANDEUR PHYSIQUE (DEPL, VITE, ACCE)

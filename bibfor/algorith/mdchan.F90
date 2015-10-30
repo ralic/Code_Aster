@@ -3,6 +3,7 @@ subroutine mdchan(motfac, ioc, iliai, mdgene, typnum,&
     implicit none
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
+#include "asterc/r8prem.h"
 #include "asterfort/angvx.h"
 #include "asterfort/angvxy.h"
 #include "asterfort/getvr8.h"
@@ -58,10 +59,11 @@ subroutine mdchan(motfac, ioc, iliai, mdgene, typnum,&
 !     ------------------------------------------------------------------
     integer :: n1, jnorm
     real(kind=8) :: txloc(3), tzloc(3), tyloc(3), ang(3), alpha, beta
-    real(kind=8) :: normx(3), normy(3), angl, rnorm, rad
+    real(kind=8) :: normx(3), normy(3), angl, rnorm, rad, eps
 !     ------------------------------------------------------------------
 !
     rad = r8dgrd()
+    eps = r8prem()
 !
     if (motfac .eq. 'CHOC' .or. motfac .eq. 'FLAMBAGE') then
 !          ------------------------------------------
@@ -163,7 +165,6 @@ subroutine mdchan(motfac, ioc, iliai, mdgene, typnum,&
             endif
 !
         else
-            call utmess('I', 'ALGORITH5_25')
             angl = 0.d0
             if (typnum .eq. 'NUME_DDL_SDASTER' .or. repere .eq. 'GLOBAL') then
                 call angvx(txloc, alpha, beta)
@@ -200,7 +201,7 @@ subroutine mdchan(motfac, ioc, iliai, mdgene, typnum,&
         tyloc(2) = (parcho(iliai,12) - parcho(iliai,9))
         tyloc(3) = (parcho(iliai,13) - parcho(iliai,10))
         call normev(tyloc, rnorm)
-        if (rnorm .eq. 0.0d0) then
+        if (abs(rnorm).le.eps) then
             call utmess('F', 'ALGORITH5_26')
         endif
 !

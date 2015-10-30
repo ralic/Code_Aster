@@ -264,15 +264,6 @@ cata_msg = {
   or GROUP_NO_2 =  %(k4)s
 """),
 
-    68 : _(u"""
- nombre de points pas période             :  %(i1)d
- coefficient de remontée du pas de temps  :  %(r1)f
- coefficient de division du pas de temps  :  %(r2)f
- pas de temps minimal                     :  %(r3)f
- pas de temps maximal                     :  %(r4)f
- nombre maximal de réductions du pas      :  %(i2)d
- vitesse minimale variable                :  %(k1)s
-"""),
 
     69 : _(u"""
  nombre incorrect de sous-structures

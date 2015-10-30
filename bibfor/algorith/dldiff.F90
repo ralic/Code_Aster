@@ -105,7 +105,7 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
     parameter ( nbtyar = 6 )
     integer :: iwk0, iwk1, iwk2
     integer :: ifm, niv, ne
-    integer :: ieq, iexcl
+    integer :: ieq, iexcl, perc, freqpr, last_prperc
     integer :: ivite1, ivite2, iacce1, iarchi
     integer :: ibid
     integer :: alarm, archiv
@@ -120,7 +120,7 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
     character(len=19) :: lisarc
     character(len=24) :: lisins, lispas, libint, linbpa
     character(len=24) :: sop
-    real(kind=8) :: tps1(4), tps2(4)
+    real(kind=8) :: tps1(4), tps2(4), lastarch
     real(kind=8) :: dt, dtm, dtmax, temps, dt1, tf
     real(kind=8) :: omeg, deuxpi
     real(kind=8) :: r8bid
@@ -150,8 +150,7 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
     call wkvect('&&DLDIFF.F0', 'V V R', neq, iwk0)
     call wkvect('&&DLDIFF.F1', 'V V R', neq, iwk1)
     call wkvect('&&DLDIFF.F2', 'V V R', neq, iwk2)
-    call vtcreb('&&DLDIFF.DEPL1', 'V', 'R',&
-                nume_ddlz = numedd)
+    call vtcreb('&&DLDIFF.DEPL1', 'V', 'R', nume_ddlz = numedd)
     call jeveuo('&&DLDIFF.DEPL1     '//'.VALE', 'E', vr=vale)
     call wkvect('&&DLDIFF.VITE1', 'V V R', neq, ivite1)
     call wkvect('&&DLDIFF.VITE2', 'V V R', neq, ivite2)
@@ -214,7 +213,7 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
     if (nbexcl .eq. nbtyar) then
         call utmess('F', 'ALGORITH3_14')
     endif
-    do iexcl = 1,nbexcl
+    do iexcl = 1, nbexcl
         if (typ1(iexcl) .eq. 'DEPL') then
             typear(1) = '    '
         else if (typ1(iexcl).eq.'VITE') then
@@ -224,37 +223,16 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
         endif
     end do
 !
-! 1.7. ==> --- AFFICHAGE DE MESSAGES SUR LE CALCUL ---
-!
-    write(ifm,*) '-------------------------------------------------'
-    write(ifm,*) '--- CALCUL PAR INTEGRATION TEMPORELLE DIRECTE ---'
-    write(ifm,*) '! LA MATRICE DE MASSE EST         : ',masse
-    write(ifm,*) '! LA MATRICE DE RIGIDITE EST      : ',rigid
-    if (lamort) write(ifm,*)'! LA MATRICE D''AMORTISSEMENT EST : ',amort
-    write(ifm,*) '! LE NB D''EQUATIONS EST          : ',neq
-    if (nume .ne. 0) write(ifm,*)'! REPRISE A PARTIR DU NUME_ORDRE  : ',nume
-    do igrpa = 1,nbgrpa
-        dt = zr(jlpas-1+igrpa)
-        nbptpa = zi(jnbpa-1+igrpa)
-        t0 = zr(jbint-1+igrpa)
-        tf = t0 + nbptpa*dt
-        write(ifm,*)'! L''INSTANT INITIAL EST        : ',t0
-        write(ifm,*)'! L''INSTANT FINAL EST          : ',tf
-        write(ifm,*)'! LE PAS DE TEMPS DU CALCUL EST : ',dt
-        write(ifm,*)'! LE NB DE PAS DE CALCUL EST    : ',nbptpa
-    end do
-    write(ifm,*) '----------------------------------------------',' '
-!
 !====
 ! 2. CREATION DU CONCEPT RESULTAT
 !====
 !
     t0 = zr(jbint)
     call dltcrr(result, neq, nbordr, iarchi, ' ',&
-                ifm, t0, lcrea, typres, masse,&
-                rigid, amort, dep0, vit0, acc0,&
-                fexte, famor, fliai, numedd, nume,&
-                nbtyar, typear)
+                t0, lcrea, typres, masse, rigid,&
+                amort, dep0, vit0, acc0, fexte,&
+                famor, fliai, numedd, nume, nbtyar,&
+                typear)
 !
 !
     call titre()
@@ -272,7 +250,7 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
     call uttcpu('CPU.DLDIFF.1', 'INIT', ' ')
     call uttcpu('CPU.DLDIFF.2', 'INIT', ' ')
 !
-    do igrpa = 1,nbgrpa
+    do igrpa = 1, nbgrpa
 !
 ! 3.1.1. ==> PREALABLES
 !
@@ -309,9 +287,12 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
 ! ==> FIN DE VERIFICATION
 !
 !
+        freqpr = 5
+        if (niv .eq. 2) freqpr = 1
+        last_prperc = 0
 ! 3.1.3. ==> BOUCLE SUR LES NBPTPA "PETITS" PAS DE TEMPS
 !
-        do ipepa = 1 , nbptpa
+        do ipepa = 1, nbptpa
             ipas = ipas+1
             if (ipas .gt. npatot) goto 99
             istoc = 0
@@ -320,14 +301,25 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
             archiv = zi(jstoc+ipas-1)
 !
             call dldif0(result, force1, neq, istoc, iarchi,&
-                        ifm, lamort, imat, masse, rigid,&
-                        amort, dep0, vit0, acc0, vale,&
-                        zr(ivite1), zr(iacce1), zr(ivite2), fexte(1), famor(1),&
-                        fliai(1), nchar, nveca, liad, lifo,&
-                        modele, ener, solveu, mate, carele,&
-                        charge, infoch, fomult, numedd, dt,&
-                        temps, zr(iwk0), zr(iwk1), archiv, nbtyar,&
-                        typear, numrep)
+                        lamort, imat, masse, rigid, amort,&
+                        dep0, vit0, acc0, vale, zr(ivite1),&
+                        zr(iacce1), zr(ivite2), fexte(1), famor(1), fliai(1),&
+                        nchar, nveca, liad, lifo, modele,&
+                        ener, solveu, mate, carele, charge,&
+                        infoch, fomult, numedd, dt, temps,&
+                        zr(iwk0), zr(iwk1), archiv, nbtyar, typear,&
+                        numrep)
+!
+            if (archiv .eq. 1) lastarch = temps
+            perc = int(100.d0*(real(ipas)/real(npatot)))
+            if (perc .ne. last_prperc) then
+                if (mod(perc,freqpr) .eq. 0) then
+                    call utmess('I', 'DYNAMIQUE_89', ni=2, vali=[perc, ipas], nr=2,&
+                                valr=[temps, lastarch])
+                    last_prperc = perc
+                end if
+            end if
+!
 !
 ! 3.5. ==> VERIFICATION DU TEMPS DE CALCUL RESTANT
 !
@@ -359,7 +351,7 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
 ! ------- FIN BOUCLE SUR LES GROUPES DE PAS DE TEMPS
     end do
 !
-99  continue
+ 99 continue
 !
 !====
 ! 4. ARCHIVAGE DU DERNIER INSTANT DE CALCUL POUR LES CHAMPS QUI ONT
@@ -368,16 +360,16 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
 !
     if (nbexcl .ne. 0) then
 !
-        do iexcl = 1,nbexcl
+        do iexcl = 1, nbexcl
             typear(iexcl) = typ1(iexcl)
         end do
 !
         alarm = 0
 !
         call dlarch(result, neq, istoc, iarchi, ' ',&
-                    alarm, ifm, temps, nbexcl, typear,&
-                    masse, vale, zr(ivite1), zr( iacce1), fexte(1+neq),&
-                    famor(1+neq), fliai(1+neq))
+                    alarm, temps, nbexcl, typear, masse,&
+                    vale, zr(ivite1), zr( iacce1), fexte(1+neq), famor(1+neq),&
+                    fliai(1+neq))
 !
     endif
 !

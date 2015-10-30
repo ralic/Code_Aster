@@ -145,11 +145,16 @@ PROJ_BASE(
 #
 # --------------------------------------------------------------------------------------------------
 #
+# For improved precision over TEST_RESU, define a fixed list of instants to be calculated
+# and saved.
+dtarch = 1.e-2
+ARCHLIST = [0.0 + dtarch*i for i in range(int(4.0*Tsignal/dtarch)+1)] 
+
 Resultat=DYNA_VIBRA(
     TYPE_CALCUL='TRAN', BASE_CALCUL='GENE',
     MATR_MASS=MasseGen, MATR_RIGI=RigidGen,
-    SCHEMA_TEMPS=_F(SCHEMA='RUNGE_KUTTA_32',TOLERANCE=1.0E-7),
-    INCREMENT=_F(PAS=0.5/Frequence/40.0, INST_INIT=0.0, INST_FIN=4.0*Tsignal,),
+    SCHEMA_TEMPS=_F(SCHEMA='RUNGE_KUTTA_32',TOLERANCE=1.0E-9),
+    INCREMENT=_F(PAS=0.5/Frequence/80.0, INST_INIT=0.0, INST_FIN=4.0*Tsignal,),
     MODE_STAT=ModeSta,
     EXCIT=(
         _F(VECT_ASSE_GENE=Depl1Gen, FONC_MULT=DEPLAI,),
@@ -160,6 +165,7 @@ Resultat=DYNA_VIBRA(
         K1=120.0, K2=10.0, K3=60.0, C=1.7, PUIS_ALPHA=0.5,
     ),
     IMPRESSION=_F(UNITE_DIS_VISC =25),
+    ARCHIVAGE=_F(INST=ARCHLIST, PAS_ARCH=1.E8)
 )
 #
 # dans unite=25 : INST FORCE DEPLVISC DEPL PUISS
@@ -321,13 +327,13 @@ TEST_TABLE(TABLE=TDDepl,
     FILTRE=_F(NOM_PARA='Depl',CRIT_COMP ='MAXI_ABS',),
     NOM_PARA='Depl',
     REFERENCE='SOURCE_EXTERNE', CRITERE='ABSOLU',PRECISION=5.0E-03,
-    VALE_REFE=2.81E-04, VALE_CALC=0.000152993886405,
+    VALE_REFE=2.81E-04, VALE_CALC=0.000721715447256,
 )
 TEST_TABLE(TABLE=TDForc,
     FILTRE=_F(NOM_PARA='Forc',CRIT_COMP ='MAXI_ABS',),
     NOM_PARA='Forc',
     REFERENCE='SOURCE_EXTERNE', CRITERE='ABSOLU',PRECISION=5.0E-03,
-    VALE_REFE=3.22E-04, VALE_CALC=0.000178396554617,
+    VALE_REFE=3.22E-04, VALE_CALC=0.000802085383848,
 )
 #
 IMPR_FONCTION(UNITE=26,
@@ -340,13 +346,17 @@ IMPR_FONCTION(UNITE=26,
 #
 # --------------------------------------------------------------------------------------------------
 #
-# Calcul en 2 fois
+# Calcul en 2 fois avec RUNGE_KUTTA à pas constant
 #
+ARCHLIST1 = [0.0 + dtarch*i for i in range(int(2.0*Tsignal/dtarch)+1)] 
+ARCHLIST2 = [2.0*Tsignal + dtarch*i for i in range(1,int(2.0*Tsignal/dtarch)+1)] 
+
+pdt = 0.5/Frequence/640.0
 ResultA=DYNA_VIBRA(
     TYPE_CALCUL='TRAN', BASE_CALCUL='GENE',
     MATR_MASS=MasseGen, MATR_RIGI=RigidGen,
-    SCHEMA_TEMPS=_F(SCHEMA='RUNGE_KUTTA_32',TOLERANCE=1.0E-7),
-    INCREMENT=_F(PAS=0.5/Frequence/40.0, INST_INIT=0.0, INST_FIN=2.0*Tsignal,),
+    SCHEMA_TEMPS=_F(SCHEMA='RUNGE_KUTTA_32', PAS_MAXI=pdt, PAS_MINI=pdt),
+    INCREMENT=_F(PAS=pdt, INST_INIT=0.0, INST_FIN=2.0*Tsignal,),
     MODE_STAT=ModeSta,
     EXCIT=(
         _F(VECT_ASSE_GENE=Depl1Gen, FONC_MULT=DEPLAI,),
@@ -357,14 +367,15 @@ ResultA=DYNA_VIBRA(
         K1=120.0, K2=10.0, K3=60.0, C=1.7, PUIS_ALPHA=0.5,
     ),
     IMPRESSION=_F(UNITE_DIS_VISC =35),
+    ARCHIVAGE=_F(INST=ARCHLIST1, PAS_ARCH=1.E8)
 )
 #
 ResultB=DYNA_VIBRA(
     TYPE_CALCUL='TRAN', BASE_CALCUL='GENE',
     MATR_MASS=MasseGen, MATR_RIGI=RigidGen,
-    SCHEMA_TEMPS=_F(SCHEMA='RUNGE_KUTTA_32',TOLERANCE=1.0E-7),
+    SCHEMA_TEMPS=_F(SCHEMA='RUNGE_KUTTA_32', PAS_MAXI=pdt, PAS_MINI=pdt),
     ETAT_INIT=_F(RESULTAT=ResultA,),
-    INCREMENT=_F(PAS=0.5/Frequence/40.0, INST_INIT=2.0*Tsignal, INST_FIN=4.0*Tsignal,),
+    INCREMENT=_F(PAS=pdt, INST_INIT=2.0*Tsignal, INST_FIN=4.0*Tsignal,),
     MODE_STAT=ModeSta,
     EXCIT=(
         _F(VECT_ASSE_GENE=Depl1Gen, FONC_MULT=DEPLAI,),
@@ -375,6 +386,7 @@ ResultB=DYNA_VIBRA(
         K1=120.0, K2=10.0, K3=60.0, C=1.7, PUIS_ALPHA=0.5,
     ),
     IMPRESSION=_F(UNITE_DIS_VISC =35),
+    ARCHIVAGE=_F(INST=ARCHLIST2, PAS_ARCH=1.E8)
 )
 #
 # dans unite=35 : INST FORCE DEPLVISC DEPL PUISS
@@ -426,14 +438,14 @@ TEST_TABLE(TABLE=TDDeplAB,
     NOM_PARA='Depl',
     REFERENCE='SOURCE_EXTERNE', CRITERE='ABSOLU',
      PRECISION=5.0E-03,
-    VALE_REFE= 6.0E-08, VALE_CALC=2.64297363441E-08,
+    VALE_REFE= 6.0E-08, VALE_CALC=0.000413450479769,
 )
 TEST_TABLE(TABLE=TDForcAB,
     FILTRE=_F(NOM_PARA='Forc',CRIT_COMP ='MAXI_ABS',),
     NOM_PARA='Forc',
     REFERENCE='SOURCE_EXTERNE', CRITERE='ABSOLU',
      PRECISION=5.0E-03,
-    VALE_REFE= 7.0E-08, VALE_CALC=2.6134895278E-08,
+    VALE_REFE= 7.0E-08, VALE_CALC=0.000469248055085,
 )
 #
 IMPR_FONCTION(UNITE=36,

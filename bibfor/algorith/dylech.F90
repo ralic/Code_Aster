@@ -37,7 +37,7 @@ subroutine dylech(nomo, lischa, nbexre, exreco, exresu)
 !
 ! ----------------------------------------------------------------------
 !
-! DYNA_LINE_HARM
+! DYNA_VIBRA//HARM
 !
 ! LECTURE DES CHARGEMENTS
 !
@@ -60,7 +60,7 @@ subroutine dylech(nomo, lischa, nbexre, exreco, exresu)
 ! ----------------------------------------------------------------------
 !
     motfac = 'EXCIT'
-    nomcmd = 'DYNA_LINE_HARM'
+    nomcmd = 'DYNA_VIBRA'
     nbexre = 0
     call infniv(ifm, niv)
 !

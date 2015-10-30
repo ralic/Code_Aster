@@ -120,7 +120,7 @@ BICERCI=DEFI_OBSTACLE(  TYPE='BI_CERC_INT' )
 
 #
 DYNAMOD4=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
-                       SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                       SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',),
                        MATR_MASS=MASSEPRO,
                        MATR_RIGI=RIGIPROJ,
                        AMOR_MODAL=_F(AMOR_REDUIT=(  0.001,  ),),

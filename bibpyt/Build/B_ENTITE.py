@@ -78,7 +78,7 @@ class ENTITE:
         motcles = []
         for k, v in self.entites.items():
             if v.label == 'BLOC':
-                motcles = motcles + v.get_mc_simp()
+                motcles = motcles + v.get_mc_simp(niv=niv)
             elif v.label == 'SIMP':
                 motcles.append(k)
             elif v.label == 'FACT':

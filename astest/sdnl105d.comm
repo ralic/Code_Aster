@@ -374,7 +374,7 @@ for k in range(1,ns+1):
 ###
 #
    TRAN_GE1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
-                             SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                             SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',),
                              MATR_MASS=M_PROJ,
                              MATR_RIGI=K_PROJ,
 #                             MATR_AMOR=A_PROJ,

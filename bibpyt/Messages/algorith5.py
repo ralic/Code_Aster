@@ -79,20 +79,12 @@ On arrête tout.
 Le déterminant de la matrice à inverser est nul.
 """),
 
-    22 : _(u"""
-La matrice masse est singulière.
-"""),
-
     23 : _(u"""
 Le pas de temps minimal a été atteint. Le calcul s'arrête.
 """),
 
     24 : _(u"""
 Données erronées.
-"""),
-
-    25 : _(u"""
-Pour l'angle nautique GAMMA, la valeur par défaut est zéro.
 """),
 
     26 : _(u"""
@@ -173,14 +165,6 @@ On n'a pas trouvé le ddl DZ pour le noeud  %(k1)s .
  les bases utilisées n'ont pas le même nombre de vecteurs.
 """),
 
-    44 : _(u"""
- les numérotations des matrices sont différentes.
-"""),
-
-    45 : _(u"""
- les numérotations des vecteurs d'excitation sont différentes.
-"""),
-
     46 : _(u"""
  on n'a pas pu trouver les déplacements initiaux
 """),
@@ -194,33 +178,6 @@ On n'a pas trouvé le ddl DZ pour le noeud  %(k1)s .
  reprise choc avec flambage
 """),
 
-    49 : _(u"""
- absence de terme de forçage externe.
- l'algorithme ITMI n'est pas prévu pour calculer la réponse libre
- d'une structure.
-"""),
-
-    50 : _(u"""
- absence de non-linéarités de choc.
- pour traiter le régime linéaire, préciser une non-linéarité de choc
- avec un jeu important.
-"""),
-
-    51 : _(u"""
- impossible de traiter le type d'obstacle choisi avec méthode ITMI
- (obstacle de type  %(k1)s  au noeud  %(k2)s ).
-"""),
-
-    52 : _(u"""
- durée de la simulation temporelle après transitoire inférieure à
- la durée demandée (excitation temporelle trop courte)
-"""),
-
-    53 : _(u"""
- variation du déplacement entre deux instants successifs supérieure à
- la valeur de tolérance proposée
-"""),
-
     54 : _(u"""
  le calcul de la réponse temporelle n'est pas possible pour le type
  de structure étudiée.
@@ -228,39 +185,6 @@ On n'a pas trouvé le ddl DZ pour le noeud  %(k1)s .
 
     55 : _(u"""
  le couplage fluide-structure n'a pas été pris en compte en amont.
-"""),
-
-    56 : _(u"""
- NB_MODE est supérieur au nombre de modes du concept  %(k1)s .
- on impose donc NB_MODE =  %(k2)s ,
- i.e. égal au nombre de modes du concept  %(k3)s .
-"""),
-
-    58 : _(u"""
- le calcul des paramètres du mode no %(k1)s  par l'opérateur <CALC_FLUI_STRU>
- n'a pas convergé pour la vitesse no %(k2)s .
- le calcul de la réponse dynamique de la structure n'est donc pas possible.
-"""),
-
-    59 : _(u"""
- pas de mot-clé <NB_MODE_FLUI>.
- les  %(k1)s  modes du concept  %(k2)s  sont pris en compte pour le calcul
- du saut de force fluidélastique d'amortissement au cours des phases de choc.
-"""),
-
-    60 : _(u"""
- NB_MODE_FLUI est plus grand que le nombre de modes du concept  %(k1)s .
- %(k2)s  modes sont pris en compte pour le calcul du saut de force fluidélastique
- d'amortissement au cours des phases de choc.
-"""),
-
-    61 : _(u"""
- la matrice KTILDA est singulière.
-"""),
-
-    62 : _(u"""
-  instant initial non trouvé
-  valeur prise : 0
 """),
 
     63 : _(u"""
@@ -271,80 +195,25 @@ On n'a pas trouvé le ddl DZ pour le noeud  %(k1)s .
  l'argument du mot-clé "SOUS_STRUC" n'est pas un nom de sous-structure
 """),
 
-    65 : _(u"""
- type de base inconnu.
-"""),
-
     66 : _(u"""
  le taux de souplesse négligée est supérieur au seuil.
-"""),
-
-    67 : _(u"""
- algorithme de DEVOGE: développement "AMOR_GENE" non implanté.
-"""),
-
-    69 : _(u"""
- algorithme ITMI :
- il faut renseigner obligatoirement les mots-clés
- BASE_ELAS_FLUI et NUME_VITE_FLUI
- pour définir une base modale sous écoulement
-"""),
-
-    70 : _(u"""
- algorithme ITMI :
- il faut renseigner obligatoirement le mot clé PAS ,
- i.e. donner la valeur du pas de temps initial
-"""),
-
-    71 : _(u"""
- algorithme ITMI : lorsque l'on affecte "OUI" à ETAT_STAT,
- il faut renseigner TS_REG_ETAB
-"""),
-
-    72 : _(u"""
- calcul non-linéaire par sous-structuration :
- option SOUS_STRUC_1 non implantée dans la méthode ITMI.
-"""),
-
-    73 : _(u"""
-  l'option NOEUD_2 n'est pas implantée dans la méthode ITMI.
-"""),
-
-    74 : _(u"""
- calcul non-linéaire par sous-structuration :
- option SOUS_STRUC_2 non implantée dans la méthode ITMI.
-"""),
-
-    75 : _(u"""
- algorithme de NEWMARK: développement %(k1)s non implanté.
 """),
 
     76 : _(u"""
  NUME_ORDRE plus grand que le nombre de modes de la base
 """),
 
-    78 : _(u"""
- mauvaise définition de l'excitation
- mot clé VECT_GENE non autorisé pour ITMI
-"""),
-
     79 : _(u"""
  KSIB non inversible
 """),
 
-    80 : _(u"""
- la prise en compte des fissures dans les rotors n'est possible que pour SCHEMA_TEMP=EULER
-"""),
-
     81 : _(u"""
-Pour la commande %(k1)s.
-
-L'utilisation de %(k1)s est incompatible avec le schéma d'intégration %(k3)s.
+  L'utilisation de %(k1)s avec DYNA_VIBRA n'est pas validée pour le schéma 
+  d'intégration %(k2)s. 
 """),
-
 
     82 : _(u"""
-Vous réalisez une poursuite d'un calcul avec DYNA_VIBRA ou DYNA_TRAN_MODAL.
+Vous réalisez une poursuite d'un calcul avec DYNA_VIBRA.
 Le nombre de dispositif de choc est différent.
     Avant      : %(i1)d
     Maintenant : %(i2)d
@@ -354,7 +223,7 @@ Conseil :
 """),
 
     83 : _(u"""
-Vous réalisez une poursuite d'un calcul avec DYNA_VIBRA ou DYNA_TRAN_MODAL.
+Vous réalisez une poursuite d'un calcul avec DYNA_VIBRA.
 La nature, les noeuds du ou des dispositifs de choc sont différents.
 
               Avant     Maintenant
@@ -365,6 +234,5 @@ La nature, les noeuds du ou des dispositifs de choc sont différents.
 Conseil :
    Vérifier vos données concernant les dispositifs de choc.
 """),
-
 
 }

@@ -19,24 +19,25 @@ interface
     subroutine mdfcho(nbmode, depgen, vitgen, accgen, fexgen,&
                       nbchoc, logcho, dplmod, parcho, noecho,&
                       saucho, ltemps, nofdep, nofvit, nofacc,&
-                      nbexci, psidel, nonmot)
+                      nbexci, psidel, nonmot, fextgt)
         integer :: nbexci
         integer :: nbchoc
         integer :: nbmode
-        real(kind=8) :: depgen(*)
-        real(kind=8) :: vitgen(*)
-        real(kind=8) :: accgen(*)
-        real(kind=8) :: fexgen(*)
+        real(kind=8) :: depgen(nbmode)
+        real(kind=8) :: vitgen(nbmode)
+        real(kind=8) :: accgen(nbmode)
+        real(kind=8) :: fexgen(nbmode)
         integer :: logcho(nbchoc, *)
         real(kind=8) :: dplmod(nbchoc, nbmode, *)
         real(kind=8) :: parcho(nbchoc, *)
         character(len=8) :: noecho(nbchoc, *)
         real(kind=8) :: saucho(nbchoc, *)
-        real(kind=8) :: ltemps(3)
+        real(kind=8) :: ltemps(2)
         character(len=8) :: nofdep(nbexci)
         character(len=8) :: nofvit(nbexci)
         character(len=8) :: nofacc(nbexci)
         real(kind=8) :: psidel(nbchoc, nbexci, *)
         character(len=8) :: nonmot
+        real(kind=8), optional, intent(out) :: fextgt(nbmode)
     end subroutine mdfcho
 end interface

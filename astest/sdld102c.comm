@@ -26,9 +26,9 @@
 #
 # LA BASE DE PROJECTION DES SOUS-STRUCTURES EST DE TYPE 'CRAIGB'.
 #
-# 3 SCHEMAS D'INTEGRATION DE DYNA_VIBRA ('EULER', 'NEWMARK'
-# ET 'ADAPT') SONT TESTES (LE SCHEME 'DEVOGE' NE SUPPORTANT PAS LA
-# PRISE EN COMPTE DE L'AMORTISSEMENT).
+# 6 SCHEMAS D'INTEGRATION DE DYNA_VIBRA ('DIFF_CENTRE', 'NEWMARK'
+# 'ADAPT_ORDRE_2', 'RUNGE_KUTTA_32', 'RUNGE_KUTTA_54', ET 'DEVOGE') 
+# SONT TESTES.
 #
 # A PARTIR DU NUME_DDL_GENE, ON DUPLIQUE LE CALCUL CALC_MODES(L'UN BASE SUR LES
 # MODES CALCULES PAR METHODE DE SOUS-ESPACE ET L'AUTRE BASE SUR LA METHODE DES
@@ -293,8 +293,8 @@ LIST_R=DEFI_LIST_REEL(       DEBUT=0.,
 #-----------------------------------------------------------------
 
 # CAS 1
-TRANGEN1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
-                             SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+TRANG11=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                             SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',),
                              MATR_MASS=MASPRO,
                              MATR_RIGI=RIGPRO,
                              MATR_AMOR=AMOPRO,
@@ -302,10 +302,10 @@ TRANGEN1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                        COEF_MULT = 1.),
                             INCREMENT=_F( INST_INIT = 0.,
                                        INST_FIN = 82.,
-                                       PAS = 0.01),
+                                       PAS = 0.001),
                             ARCHIVAGE=_F( PAS_ARCH = 10)
                             )
-TRANGEN2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+TRANG12=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                              SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
                                             BETA=0.27,GAMMA=0.52),
                              MATR_MASS=MASPRO,
@@ -318,8 +318,12 @@ TRANGEN2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                        PAS = 0.01),
                             ARCHIVAGE=_F( PAS_ARCH = 10)
                             )
-TRANGEN3=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
-                             SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',),
+TRANG13=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                             SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',
+# POUR AMELIORER LE TEMPS CPU ON A IMPOSE UN PAS_MAXI PLUS GRAND QUE PAS
+                                       PAS_MAXI = 0.1,
+                                       NB_POIN_PERIODE = 300,
+                                       VITE_MIN = 'MAXI'),
                              MATR_MASS=MASPRO,
                              MATR_RIGI=RIGPRO,
                              MATR_AMOR=AMOPRO,
@@ -327,16 +331,63 @@ TRANGEN3=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                        COEF_MULT = 1.),
                             INCREMENT=_F( INST_INIT = 0.,
                                        INST_FIN = 82.,
-# POUR AMELIORER LE TEMPS CPU ON A IMPOSE UN PAS_MAXI PLUS GRAND QUE PAS
-                                       PAS_MAXI = 0.1,
                                        PAS = 0.01,
-                                       NB_POIN_PERIODE = 300,
-                                       VITE_MIN = 'MAXI'),
-                            ARCHIVAGE=_F( PAS_ARCH = 10)
+                                       ),
+                            ARCHIVAGE=_F( PAS_ARCH = 1)
                             )
+
+TRANG14=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                             SCHEMA_TEMPS=_F(SCHEMA='RUNGE_KUTTA_32',
+                                       PAS_MAXI = 0.1,
+                                       TOLERANCE=1.E-7),
+                             MATR_MASS=MASPRO,
+                             MATR_RIGI=RIGPRO,
+                             MATR_AMOR=AMOPRO,
+                                EXCIT=_F( VECT_ASSE_GENE = VECPRO,
+                                       COEF_MULT = 1.),
+                            INCREMENT=_F( INST_INIT = 0.,
+                                       INST_FIN = 82.,
+                                       PAS = 0.01,
+                                       ),
+                            ARCHIVAGE=_F( PAS_ARCH = 1)
+                            )
+
+TRANG15=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                             SCHEMA_TEMPS=_F(SCHEMA='RUNGE_KUTTA_54',
+                                       PAS_MAXI = 0.1,
+                                       TOLERANCE=1.E-7),
+                             MATR_MASS=MASPRO,
+                             MATR_RIGI=RIGPRO,
+                             MATR_AMOR=AMOPRO,
+                                EXCIT=_F( VECT_ASSE_GENE = VECPRO,
+                                       COEF_MULT = 1.),
+                            INCREMENT=_F( INST_INIT = 0.,
+                                       INST_FIN = 82.,
+                                       PAS = 0.01,
+                                       ),
+                            ARCHIVAGE=_F( PAS_ARCH = 1)
+                            )
+
+TRANG16=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                             SCHEMA_TEMPS=_F(SCHEMA='DEVOGE',
+                                       PAS_MAXI = 0.1,
+                                       TOLERANCE=1.E-8),
+                             MATR_MASS=MASPRO,
+                             MATR_RIGI=RIGPRO,
+                             MATR_AMOR=AMOPRO,
+                                EXCIT=_F( VECT_ASSE_GENE = VECPRO,
+                                       COEF_MULT = 1.),
+                            INCREMENT=_F( INST_INIT = 0.,
+                                       INST_FIN = 82.,
+                                       PAS = 0.01,
+                                       ),
+                            ARCHIVAGE=_F( PAS_ARCH = 1)
+                            )
+
+
 # CAS 2
-TRANGEN4=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
-                             SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+TRANG21=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                             SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',),
                              MATR_MASS=MASPRO2,
                              MATR_RIGI=RIGPRO2,
                              MATR_AMOR=AMOPRO2,
@@ -347,7 +398,7 @@ TRANGEN4=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                        PAS = 0.01),
                             ARCHIVAGE=_F( PAS_ARCH = 10)
                             )
-TRANGEN5=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+TRANG22=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                              SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                              MATR_MASS=MASPRO2,
                              MATR_RIGI=RIGPRO2,
@@ -359,8 +410,11 @@ TRANGEN5=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                        PAS = 0.01),
                             ARCHIVAGE=_F( PAS_ARCH = 10)
                             )
-TRANGEN6=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
-                             SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',),
+TRANG23=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                             SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',
+                                       PAS_MAXI = 0.1,
+                                       NB_POIN_PERIODE = 300,
+                                       VITE_MIN = 'MAXI'),
                              MATR_MASS=MASPRO2,
                              MATR_RIGI=RIGPRO2,
                              MATR_AMOR=AMOPRO2,
@@ -368,37 +422,100 @@ TRANGEN6=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                        COEF_MULT = 1.),
                             INCREMENT=_F( INST_INIT = 0.,
                                        INST_FIN = 82.,
-                                       PAS_MAXI = 0.1,
-                                       PAS = 0.01,
-                                       NB_POIN_PERIODE = 300,
-                                       VITE_MIN = 'MAXI'),
+                                       PAS = 0.01,),
                             ARCHIVAGE=_F( PAS_ARCH = 10)
                             )
+
+TRANG24=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                             SCHEMA_TEMPS=_F(SCHEMA='RUNGE_KUTTA_32',
+                                       PAS_MAXI = 0.1,
+                                       TOLERANCE=1.E-7),
+                             MATR_MASS=MASPRO2,
+                             MATR_RIGI=RIGPRO2,
+                             MATR_AMOR=AMOPRO2,
+                                EXCIT=_F( VECT_ASSE_GENE = VECPRO2,
+                                       COEF_MULT = 1.),
+                            INCREMENT=_F( INST_INIT = 0.,
+                                       INST_FIN = 82.,
+                                       PAS = 0.01,
+                                       ),
+                            ARCHIVAGE=_F( PAS_ARCH = 1)
+                            )
+
+TRANG25=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                             SCHEMA_TEMPS=_F(SCHEMA='RUNGE_KUTTA_54',
+                                       PAS_MAXI = 0.1,
+                                       TOLERANCE=1.E-7),
+                             MATR_MASS=MASPRO2,
+                             MATR_RIGI=RIGPRO2,
+                             MATR_AMOR=AMOPRO2,
+                                EXCIT=_F( VECT_ASSE_GENE = VECPRO2,
+                                       COEF_MULT = 1.),
+                            INCREMENT=_F( INST_INIT = 0.,
+                                       INST_FIN = 82.,
+                                       PAS = 0.01,
+                                       ),
+                            ARCHIVAGE=_F( PAS_ARCH = 1)
+                            )
+
+TRANG26=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                             SCHEMA_TEMPS=_F(SCHEMA='DEVOGE',
+                                       PAS_MAXI = 0.1,
+                                       TOLERANCE=1.E-8),
+                             MATR_MASS=MASPRO2,
+                             MATR_RIGI=RIGPRO2,
+                             MATR_AMOR=AMOPRO2,
+                                EXCIT=_F( VECT_ASSE_GENE = VECPRO2,
+                                       COEF_MULT = 1.),
+                            INCREMENT=_F( INST_INIT = 0.,
+                                       INST_FIN = 82.,
+                                       PAS = 0.01,
+                                       ),
+                            ARCHIVAGE=_F( PAS_ARCH = 1)
+                            )
+
+
 #  RESTITUTIONS
 #------------------------------------------------------------------
 
 # CAS 1
-TRAN1=REST_GENE_PHYS(   RESU_GENE=TRANGEN1,
+TRAN11=REST_GENE_PHYS(   RESU_GENE=TRANG11,
                         TOUT_CHAM='OUI',
                         LIST_INST=LIST_R,
                         INTERPOL='LIN',
                         MODE_MECA=MODGLO )
-TRAN2=REST_GENE_PHYS(   RESU_GENE=TRANGEN2,
+TRAN12=REST_GENE_PHYS(   RESU_GENE=TRANG12,
                         TOUT_CHAM='OUI',
                         LIST_INST=LIST_R,
                         INTERPOL='LIN',
                         MODE_MECA=MODGLO )
-TRAN3=REST_GENE_PHYS(   RESU_GENE=TRANGEN3,
+TRAN13=REST_GENE_PHYS(   RESU_GENE=TRANG13,
                         TOUT_CHAM='OUI',
                         LIST_INST=LIST_R,
                         INTERPOL='LIN',
                         MODE_MECA=MODGLO )
+TRAN14=REST_GENE_PHYS(   RESU_GENE=TRANG14,
+                        TOUT_CHAM='OUI',
+                        LIST_INST=LIST_R,
+                        INTERPOL='LIN',
+                        MODE_MECA=MODGLO )
+TRAN15=REST_GENE_PHYS(   RESU_GENE=TRANG15,
+                        TOUT_CHAM='OUI',
+                        LIST_INST=LIST_R,
+                        INTERPOL='LIN',
+                        MODE_MECA=MODGLO )
+TRAN16=REST_GENE_PHYS(   RESU_GENE=TRANG16,
+                        TOUT_CHAM='OUI',
+                        LIST_INST=LIST_R,
+                        INTERPOL='LIN',
+                        MODE_MECA=MODGLO )
+
 TEST_RESU(RESU=_F(INST=80.0,
-                  RESULTAT=TRAN1,
+                  RESULTAT=TRAN11,
                   NOM_CHAM='DEPL',
                   NOEUD='NO3',
                   NOM_CMP='DX',
-                  VALE_CALC=0.496371220,
+                  VALE_CALC=0.498448216502,
                   VALE_REFE=0.49867,
                   REFERENCE='NON_DEFINI',
                   CRITERE='RELATIF',
@@ -406,11 +523,11 @@ TEST_RESU(RESU=_F(INST=80.0,
           )
 
 TEST_RESU(RESU=_F(INST=80.0,
-                  RESULTAT=TRAN2,
+                  RESULTAT=TRAN12,
                   NOM_CHAM='DEPL',
                   NOEUD='NO3',
                   NOM_CMP='DX',
-                  VALE_CALC=0.499329924,
+                  VALE_CALC=0.499329924534,
                   VALE_REFE=0.49867,
                   REFERENCE='NON_DEFINI',
                   CRITERE='RELATIF',
@@ -418,39 +535,90 @@ TEST_RESU(RESU=_F(INST=80.0,
           )
 
 TEST_RESU(RESU=_F(INST=80.0,
-                  RESULTAT=TRAN3,
+                  RESULTAT=TRAN13,
                   NOM_CHAM='DEPL',
                   NOEUD='NO3',
                   NOM_CMP='DX',
-                  VALE_CALC=0.498697649,
+                  VALE_CALC=0.477970613665,
+                  VALE_REFE=0.49867,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=5.E-2,),
+          )
+
+TEST_RESU(RESU=_F(INST=80.0,
+                  RESULTAT=TRAN14,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO3',
+                  NOM_CMP='DX',
+                  VALE_CALC=0.498672315067,
                   VALE_REFE=0.49867,
                   REFERENCE='NON_DEFINI',
                   CRITERE='RELATIF',
                   PRECISION=1.E-2,),
           )
 
+TEST_RESU(RESU=_F(INST=80.0,
+                  RESULTAT=TRAN15,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO3',
+                  NOM_CMP='DX',
+                  VALE_CALC=0.498698351091,
+                  VALE_REFE=0.49867,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
+
+TEST_RESU(RESU=_F(INST=80.0,
+                  RESULTAT=TRAN16,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO3',
+                  NOM_CMP='DX',
+                  VALE_CALC=0.498671813861,
+                  VALE_REFE=0.49867,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
 # CAS 2
-TRAN4=REST_GENE_PHYS(   RESU_GENE=TRANGEN4,
+TRAN21=REST_GENE_PHYS(   RESU_GENE=TRANG21,
                         TOUT_CHAM='OUI',
                         LIST_INST=LIST_R,
                         INTERPOL='LIN',
                         MODE_MECA=MODGLO2 )
-TRAN5=REST_GENE_PHYS(   RESU_GENE=TRANGEN5,
+TRAN22=REST_GENE_PHYS(   RESU_GENE=TRANG22,
                         TOUT_CHAM='OUI',
                         LIST_INST=LIST_R,
                         INTERPOL='LIN',
                         MODE_MECA=MODGLO2 )
-TRAN6=REST_GENE_PHYS(   RESU_GENE=TRANGEN6,
+TRAN23=REST_GENE_PHYS(   RESU_GENE=TRANG23,
                         TOUT_CHAM='OUI',
                         LIST_INST=LIST_R,
                         INTERPOL='LIN',
                         MODE_MECA=MODGLO2 )
+TRAN24=REST_GENE_PHYS(   RESU_GENE=TRANG24,
+                        TOUT_CHAM='OUI',
+                        LIST_INST=LIST_R,
+                        INTERPOL='LIN',
+                        MODE_MECA=MODGLO2 )
+TRAN25=REST_GENE_PHYS(   RESU_GENE=TRANG25,
+                        TOUT_CHAM='OUI',
+                        LIST_INST=LIST_R,
+                        INTERPOL='LIN',
+                        MODE_MECA=MODGLO2 )
+TRAN26=REST_GENE_PHYS(   RESU_GENE=TRANG26,
+                        TOUT_CHAM='OUI',
+                        LIST_INST=LIST_R,
+                        INTERPOL='LIN',
+                        MODE_MECA=MODGLO2 )
+
 TEST_RESU(RESU=_F(INST=80.0,
-                  RESULTAT=TRAN4,
+                  RESULTAT=TRAN21,
                   NOM_CHAM='DEPL',
                   NOEUD='NO3',
                   NOM_CMP='DX',
-                  VALE_CALC=0.496371220,
+                  VALE_CALC=0.496371220241,
                   VALE_REFE=0.49867,
                   REFERENCE='NON_DEFINI',
                   CRITERE='RELATIF',
@@ -458,11 +626,11 @@ TEST_RESU(RESU=_F(INST=80.0,
           )
 
 TEST_RESU(RESU=_F(INST=80.0,
-                  RESULTAT=TRAN5,
+                  RESULTAT=TRAN22,
                   NOM_CHAM='DEPL',
                   NOEUD='NO3',
                   NOM_CMP='DX',
-                  VALE_CALC=0.498828772,
+                  VALE_CALC=0.498828771871,
                   VALE_REFE=0.49867,
                   REFERENCE='NON_DEFINI',
                   CRITERE='RELATIF',
@@ -470,11 +638,47 @@ TEST_RESU(RESU=_F(INST=80.0,
           )
 
 TEST_RESU(RESU=_F(INST=80.0,
-                  RESULTAT=TRAN6,
+                  RESULTAT=TRAN23,
                   NOM_CHAM='DEPL',
                   NOEUD='NO3',
                   NOM_CMP='DX',
-                  VALE_CALC=0.498697649,
+                  VALE_CALC=0.477985744328,
+                  VALE_REFE=0.49867,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=5.E-2,),
+          )
+
+TEST_RESU(RESU=_F(INST=80.0,
+                  RESULTAT=TRAN24,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO3',
+                  NOM_CMP='DX',
+                  VALE_CALC=0.498672315068,
+                  VALE_REFE=0.49867,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
+
+TEST_RESU(RESU=_F(INST=80.0,
+                  RESULTAT=TRAN25,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO3',
+                  NOM_CMP='DX',
+                  VALE_CALC=0.498698351091,
+                  VALE_REFE=0.49867,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
+
+TEST_RESU(RESU=_F(INST=80.0,
+                  RESULTAT=TRAN26,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO3',
+                  NOM_CMP='DX',
+                  VALE_CALC=0.498671814192,
                   VALE_REFE=0.49867,
                   REFERENCE='NON_DEFINI',
                   CRITERE='RELATIF',

@@ -127,18 +127,19 @@ dsinom = FORMULE(VALE='om*cos(om*INST)',
 d2sinom = FORMULE(VALE='-om**2*sin(om*INST)',
                   NOM_PARA='INST',);
 
-TRANGENE=DYNA_TRAN_MODAL(SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
-                         MATR_MASS=MASPRO,
-                         MATR_RIGI=RIGPRO,
-                         VITE_ROTA=0.0,
-                         INCREMENT=_F(PAS=pa,
-                                      INST_FIN=tfin,),
-                         EXCIT=_F(VECT_ASSE_GENE=PESPRO,
-                                  FONC_MULT=sinom,
-                                  CORR_STAT='OUI',
-                                  D_FONC_DT=dsinom,
-                                  D_FONC_DT2=d2sinom,),
-                         MODE_CORR=CORGRA,);
+TRANGENE= DYNA_VIBRA(TYPE_CALCUL='TRAN', BASE_CALCUL='GENE',
+                     SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
+                     MATR_MASS=MASPRO,
+                     MATR_RIGI=RIGPRO,
+                     VITE_ROTA=0.0,
+                     INCREMENT=_F(PAS=pa,
+                                  INST_FIN=tfin,),
+                     EXCIT=_F(VECT_ASSE_GENE=PESPRO,
+                              FONC_MULT=sinom,
+                              CORR_STAT='OUI',
+                              D_FONC_DT=dsinom,
+                              D_FONC_DT2=d2sinom,),
+                     MODE_CORR=CORGRA,);
 
 
 DEPLPDZ=RECU_FONCTION(RESU_GENE=TRANGENE,
@@ -180,14 +181,14 @@ IMPR_FONCTION(FORMAT='XMGRACE',
 TEST_FONCTION(VALEUR=(_F(
                          FONCTION=DEPLPDZc,
                          VALE_PARA=0.05,
-                         VALE_CALC=0.14533949
+                         VALE_CALC=0.14737789061041
 
                       )))
 
 TEST_FONCTION(VALEUR=(_F(
                          FONCTION=DEPLPDXc,
                          VALE_PARA=0.05,
-                         VALE_CALC=0.00016691249
+                         VALE_CALC=1.587087698170E-04
                        )))
 
 FIN();

@@ -111,7 +111,7 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
     integer :: nbtyar
     parameter ( nbtyar = 6 )
     integer :: ifm, niv, alarm
-    integer :: iv1, iv2, ieq
+    integer :: iv1, iv2, ieq, perc, last_prperc, freqpr
     integer :: jdepl
     integer :: jvite, jvit2
     integer :: jacce, jacc2
@@ -170,8 +170,7 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
     call wkvect('&&DLADAP.F1', 'V V R', neq, iwk1)
     call wkvect('&&DLADAP.F2', 'V V R', neq, iwk2)
     call wkvect('&&DLADAP.DEPL', 'V V R', neq, jdepl)
-    call vtcreb('&&DLADAP.DEP2', 'V', 'R',&
-                nume_ddlz = numedd)
+    call vtcreb('&&DLADAP.DEP2', 'V', 'R', nume_ddlz = numedd)
     call jeveuo('&&DLADAP.DEP2      '//'.VALE', 'E', vr=vale)
     call wkvect('&&DLADAP.VITE', 'V V R', neq, jvite)
     call wkvect('&&DLADAP.VIT2', 'V V R', neq, jvit2)
@@ -299,7 +298,7 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
     if (nbexcl .eq. nbtyar) then
         call utmess('F', 'ALGORITH3_14')
     endif
-    do iexcl = 1,nbexcl
+    do iexcl = 1, nbexcl
         if (typ1(iexcl) .eq. 'DEPL') then
             typear(1) = '    '
         else if (typ1(iexcl).eq.'VITE') then
@@ -309,30 +308,15 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
         endif
     end do
 !
-! 1.8. ==> --- AFFICHAGE DE MESSAGES SUR LE CALCUL ---
-!
-    write(ifm,*) '-------------------------------------------------'
-    write(ifm,*) '--- CALCUL PAR INTEGRATION TEMPORELLE DIRECTE ---'
-    write(ifm,*) '! LA MATRICE DE MASSE EST         : ',masse
-    write(ifm,*) '! LA MATRICE DE RIGIDITE EST      : ',rigid
-    if (lamort) write(ifm,*)'! LA MATRICE D''AMORTISSEMENT EST : ',amort
-    write(ifm,*) '! LE NB D''EQUATIONS EST          : ',neq
-    if (nume .ne. 0) write(ifm,*)'! REPRISE A PARTIR DU NUME_ORDRE  : ',nume
-    write(ifm,*)'! L''INSTANT INITIAL EST        : ',tinit
-    write(ifm,*)'! L''INSTANT FINAL EST          : ',tfin
-    write(ifm,*)'! LE PAS DE TEMPS MAX DU CALCUL EST : ',dti
-    write(ifm,*)'! LE NB MIN DE PAS DE CALCUL EST    : ',nbipas
-    write(ifm,*) '----------------------------------------------',' '
-!
 !====
 ! 2. CREATION DES CONCEPTS RESULTAT
 !====
 !
     call dltcrr(result, neq, nbordr, iarchi, 'PREMIER(S)',&
-                ifm, tinit, lcrea, typres, masse,&
-                rigid, amort, dep0, vit0, acc0,&
-                fexte, famor, fliai, numedd, nume,&
-                nbtyar, typear)
+                tinit, lcrea, typres, masse, rigid,&
+                amort, dep0, vit0, acc0, fexte,&
+                famor, fliai, numedd, nume, nbtyar,&
+                typear)
 !
 !
     call titre()
@@ -359,6 +343,10 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
             fexte(ieq)=fexte(ieq+neq)
         end do
     endif
+!
+    freqpr = 5
+    if (niv .eq. 2) freqpr = 1
+    last_prperc = 0
 !
     if (temps .lt. tfin) then
         istoc = 0
@@ -466,6 +454,7 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
         endif
         ipas = ipas + 1
 !
+!
 !       --- ARCHIVAGE EVENTUEL DANS L'OBJET SOLUTION ---
         if ((temps.le.tarch .and. temp2.ge.tarch) .or. (temp2.eq.tfin)) then
             istoc = 0
@@ -473,18 +462,28 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
             if ((temp2-tarch) .le. (tarch-temps)) then
                 tarchi = temp2
                 call dlarch(result, neq, istoc, iarchi, ' ',&
-                            alarm, ifm, temp2, nbtyar, typear,&
-                            masse, vale, zr( jvip2), zr(jacc2), fexte(1+neq),&
-                            famor(1+neq), fliai(1+ neq))
+                            alarm, temp2, nbtyar, typear, masse,&
+                            vale, zr( jvip2), zr(jacc2), fexte(1+neq), famor(1+neq),&
+                            fliai(1+ neq))
             else
                 tarchi = temps
                 call dlarch(result, neq, istoc, iarchi, ' ',&
-                            alarm, ifm, temps, nbtyar, typear,&
-                            masse, zr(jdepl), zr( jvip1), zr(jacce), fexte,&
-                            famor, fliai)
+                            alarm, temps, nbtyar, typear, masse,&
+                            zr(jdepl), zr( jvip1), zr(jacce), fexte, famor,&
+                            fliai)
             endif
             tarch = tarch + dtarch
         endif
+!
+        perc = int(100.d0*((temps-tinit)/(tfin-tinit)))
+        if (perc .ne. last_prperc) then
+            if (mod(perc,freqpr) .eq. 0) then
+                call utmess('I', 'DYNAMIQUE_89', ni=2, vali=[perc, ipas], nr=2,&
+                            valr=[temps, tarch-dtarch])
+                last_prperc = perc
+            end if
+        end if
+!
 !
         sdener=solveu(1:8)//'.ENER      '
         if (ener) then
@@ -545,15 +544,15 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
 !
     if (nbexcl .ne. 0) then
 !
-        do iexcl = 1,nbexcl
+        do iexcl = 1, nbexcl
             typear(iexcl) = typ1(iexcl)
         end do
 !
         alarm = 0
         call dlarch(result, neq, istoc, iarchi, 'DERNIER(S)',&
-                    alarm, ifm, temps, nbtyar, typear,&
-                    masse, zr(jdepl), zr(jvip1), zr(jacce), fexte(neq+1),&
-                    famor(neq+1), fliai(neq+1))
+                    alarm, temps, nbtyar, typear, masse,&
+                    zr(jdepl), zr(jvip1), zr(jacce), fexte(neq+1), famor(neq+1),&
+                    fliai(neq+1))
     endif
 !
 !====

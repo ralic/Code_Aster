@@ -61,14 +61,15 @@ FSI=CALC_FONC_INTERP(FONCTION=fs,
                      PROL_DROITE='CONSTANT',
                      PROL_GAUCHE='CONSTANT',);
 
-DTM=DYNA_TRAN_MODAL(MATR_MASS=MASPRO,
-                    MATR_RIGI=RIPRO,
-                    AMOR_MODAL=_F(AMOR_REDUIT=.05,),
-                    INCREMENT=_F(INST_FIN=tfi,
-                                 PAS=pas,),
-                    SCHEMA_TEMPS=_F(SCHEMA='EULER'),
-                    EXCIT=_F(VECT_ASSE_GENE=FYPRO,
-                             FONC_MULT=FSI,),);
+DTM=DYNA_VIBRA(TYPE_CALCUL = 'TRAN', BASE_CALCUL='GENE',
+               MATR_MASS   = MASPRO,
+               MATR_RIGI   = RIPRO,
+               AMOR_MODAL  = _F(AMOR_REDUIT    = .05,),
+               INCREMENT   = _F(INST_FIN       = tfi,
+                                PAS            = pas,),
+               SCHEMA_TEMPS= _F(SCHEMA         = 'DIFF_CENTRE'),
+               EXCIT       = _F(VECT_ASSE_GENE = FYPRO, 
+                                FONC_MULT      = FSI,),);
 
 DEPY_B=RECU_FONCTION(RESU_GENE=DTM,
                      NOM_CHAM='DEPL',
@@ -96,12 +97,13 @@ LFR=DEFI_LIST_REEL(DEBUT=0,
                    INTERVALLE=_F(JUSQU_A=60,
                                  PAS=.1,),);
 
-DLH=DYNA_LINE_HARM(MATR_MASS=MASPRO,
-                   MATR_RIGI=RIPRO,
-                   AMOR_MODAL=_F(AMOR_REDUIT=.05,),
-                   LIST_FREQ=LFR,
-                   EXCIT=_F(VECT_ASSE_GENE=FYPRO,
-                            COEF_MULT=amF,),);
+DLH=DYNA_VIBRA( TYPE_CALCUL='HARM', BASE_CALCUL='GENE',
+                MATR_MASS=MASPRO,
+                MATR_RIGI=RIPRO,
+                AMOR_MODAL=_F(AMOR_REDUIT=.05,),
+                LIST_FREQ=LFR,
+                EXCIT=_F(VECT_ASSE_GENE=FYPRO,
+                         COEF_MULT=amF,),);
 
 DHB=REST_GENE_PHYS(RESU_GENE=DLH,
                    NOM_CHAM=('DEPL','ACCE',),

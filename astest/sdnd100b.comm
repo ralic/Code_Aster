@@ -140,34 +140,6 @@ PLANZ=DEFI_OBSTACLE(   TYPE='BI_PLAN_Z' )
 PLANY=DEFI_OBSTACLE(   TYPE='BI_PLAN_Y' )
 
 #
-DYNAMODA=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
-                             SCHEMA_TEMPS=_F(SCHEMA='DEVOGE',),
-                             MATR_MASS=MASSEGEN,
-                             MATR_RIGI=RIGIDGEN,
-                             AMOR_MODAL=_F(AMOR_REDUIT=0.,),
-                             ETAT_INIT=_F( DEPL = DEPINI),
-                             INCREMENT=_F( INST_INIT = 0.,
-                                        INST_FIN = 0.3,
-                                        PAS = 0.0005),
-                            CHOC=_F(  NOEUD_1 = 'NO1',
-                                   NOEUD_2 = 'NO2',
-                                   INTITULE = 'LIAISON',
-                                   OBSTACLE = PLANZ,
-                                   NORM_OBST = (0., 1., 0.,),
-                                   DIST_1 = 0.250,
-                                   DIST_2 = 0.250,
-                                   RIGI_NOR = 20.,
-                                   RIGI_TAN = 400000.,
-                                   FROTTEMENT='COULOMB',
-                                   COULOMB = COULOMB)
-                          )
-
-#
-
-LISTEIMP=DEFI_LIST_REEL(  DEBUT=0.,
-                     INTERVALLE=_F(  JUSQU_A = 0.299, PAS = 5.E-4))
-
-#
 
 W0=( K / M ) ** 0.5
 
@@ -188,6 +160,35 @@ R3=( ( 6. * C ) - U0 ) * ANG
 T4=4. * pi / W0
 
 R4=( U0 - ( 8. * C ) ) * ANG
+#
+DYNAMODA=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                             SCHEMA_TEMPS=_F(SCHEMA='DEVOGE', TOLERANCE=1.E-6),
+                             MATR_MASS=MASSEGEN,
+                             MATR_RIGI=RIGIDGEN,
+                             AMOR_MODAL=_F(AMOR_REDUIT=0.,),
+                             ETAT_INIT=_F( DEPL = DEPINI),
+                             INCREMENT=_F( INST_INIT = 0.,
+                                        INST_FIN = 0.3,
+                                        PAS = 0.0005),
+                            CHOC=_F(  NOEUD_1 = 'NO1',
+                                   NOEUD_2 = 'NO2',
+                                   INTITULE = 'LIAISON',
+                                   OBSTACLE = PLANZ,
+                                   NORM_OBST = (0., 1., 0.,),
+                                   DIST_1 = 0.250,
+                                   DIST_2 = 0.250,
+                                   RIGI_NOR = 20.,
+                                   RIGI_TAN = 400000.,
+                                   FROTTEMENT='COULOMB',
+                                   COULOMB = COULOMB),
+                            ARCHIVAGE=_F(INST=( T1, T2, T3, T4, ),),
+                          )
+
+#
+
+LISTEIMP=DEFI_LIST_REEL(  DEBUT=0.,
+                     INTERVALLE=_F(  JUSQU_A = 0.299, PAS = 5.E-4))
+
 
 DYNATRA1=REST_GENE_PHYS(   RESU_GENE=DYNAMODA,
                                NOM_CHAM='DEPL',
@@ -201,7 +202,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOEUD='NO1',
                    NOM_CMP='DY',
                    VALE_REFE=-4.596E-4,
-                   VALE_CALC=-4.5952668690449E-4,
+                   VALE_CALC=-0.000459617463395,
                    REFERENCE='ANALYTIQUE',
                    PRECISION=1.E-3,
                    ),
@@ -211,7 +212,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOEUD='NO1',
                    NOM_CMP='DY',
                    VALE_REFE=3.182E-4,
-                   VALE_CALC=3.1810442684801E-4,
+                   VALE_CALC=0.00031819484816,
                    REFERENCE='ANALYTIQUE',
                    PRECISION=1.E-3,
                    ),
@@ -221,7 +222,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOEUD='NO1',
                    NOM_CMP='DY',
                    VALE_REFE=-1.768E-4,
-                   VALE_CALC=-1.7674476717973E-4,
+                   VALE_CALC=-0.000176772782483,
                    REFERENCE='ANALYTIQUE',
                    PRECISION=1.E-3,
                    ),
@@ -231,7 +232,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOEUD='NO1',
                    NOM_CMP='DY',
                    VALE_REFE=3.536E-05,
-                   VALE_CALC=3.5424940918051E-05,
+                   VALE_CALC=3.53510340993E-05,
                    REFERENCE='ANALYTIQUE',
                    PRECISION=5.0E-3,),
                 ),

@@ -36,7 +36,7 @@ cata_msg = {
 """),
 
     10 : _(u"""
-  -> Contact avec DYNA_TRAN_MODAL : Il y a interpénétration d'une valeur supérieure à (DIST_MAIT + DIST_ESCL).
+  -> Contact avec DYNA_VIBRA : Il y a interpénétration d'une valeur supérieure à (DIST_MAIT + DIST_ESCL).
   -> Risque & Conseil :
      DIST_MAIT et DIST_ESCL permettent de tenir compte d'une épaisseur de matériau non représentée dans le maillage
      (rayon d'une poutre, épaisseur d'une coque ou simplement une bosse). Une trop forte interpénétration peut venir
@@ -62,11 +62,6 @@ cata_msg = {
  on archive au moins un champ.
 """),
 
-    15 : _(u"""
- La méthode d'intégration %(k1)s n'est pas disponible pour les analyses
- transitoires sur base modale
-"""),
-
     16 : _(u"""
 A l'instant %(r1)f, l'erreur vaut %(r2)f
 Cette erreur est supérieure à 1.
@@ -82,11 +77,6 @@ On arrête de le réduire, car le nombre de réductions a atteint %(i1)d, qui es
  La liste des instants de calcul ne doit contenir qu'un seul pas
  Conseil: si vous avez défini une liste d'instants manuellement par des valeurs discrètes,
  veillez à ce que le pas soit constant dans tout l'intervalle.
-"""),
-
-    19 : _(u"""
- La méthode d'intégration %(k1)s n'est pas disponible pour les analyses
- transitoires sur base physique
 """),
 
     20 : _(u"""
@@ -112,14 +102,6 @@ Nombre d'itérations     : %(i2)d
 
     27 : _(u"""
  le champ "ACCE" n'est pas trouve dans le concept DYNA_TRANS  %(k1)s
-"""),
-
-    28 : _(u"""
- déplacements initiaux nuls.
-"""),
-
-    29 : _(u"""
- vitesses initiales nulles.
 """),
 
     36 : _(u"""

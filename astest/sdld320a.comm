@@ -165,10 +165,13 @@ SINOMEGT = FORMULE(VALE='sin(59.69026*INST) ',
                    NOM_PARA='INST',);
 
 #
+pdt = 5.e-6
 
+# Interpolation -à priori - of the excitation function in order to speedup 
+# DYNA_VIBRA's resolution
 LIEXCIT=DEFI_LIST_REEL(DEBUT=0.,
-                       INTERVALLE=_F(JUSQU_A=5.,
-                                     PAS=0.01,),);
+                       INTERVALLE=_F(JUSQU_A=5.+pdt,
+                                     PAS=pdt,),);
 
 #
 
@@ -180,42 +183,37 @@ FONCMULT=CALC_FONC_INTERP(FONCTION=SINOMEGT,
                           TITRE='SINUS OMEGA T',);
 
 #
+# DEFINITION DES INSTANTS DE CALCUL DE LA SOLUTION
+#-------------------------------------------------
+
+L_REELD = (0.09, 0.32, 1.18, 4.92);
+LISTRD=DEFI_LIST_REEL(VALE=L_REELD,);
+
+L_REELV = (0.05, 0.32, 1.18, 3.55);
+LISTRV=DEFI_LIST_REEL(VALE=L_REELV,);
+
+L_REELA = (0.09, 0.18, 0.55, 1.18, 4.92);
+LISTRA=DEFI_LIST_REEL(VALE=L_REELA,);
+
+L_RELAT = (0.18, 0.55, 0.82, 1.18, 1.92, 3.55, 4.92);
+LISTREL=DEFI_LIST_REEL(VALE=L_RELAT,);
+
+# Archive list
+listarch = list(set(list(L_REELD)+list(L_REELV)+list(L_REELA)+list(L_RELAT)))
+listarch.sort()
 
 DYNAMODA=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                          SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
-                                       BETA=0.27,GAMMA=0.52),
+                                         BETA=0.27,GAMMA=0.52),
                          MATR_MASS=MASSEGEN,
                          MATR_RIGI=RIGIDGEN,
                          MATR_AMOR=AMORTGEN,
                          INCREMENT=_F(INST_INIT=0.,
                                       INST_FIN=5.,
-                                      PAS=0.0001,),
+                                      PAS=pdt,),
                          EXCIT=_F(VECT_ASSE_GENE=EFFOGENE,
-                                  FONC_MULT=SINOMEGT,),);
-
-#
-# DEFINITION DES INSTANTS DE CALCUL DE LA SOLUTION
-#-------------------------------------------------
-L_REELD = (0.089999999999999997, 0.32000000000000001, 1.1799999999999999, 4.9199999999999999);
-
-
-LISTRD=DEFI_LIST_REEL(VALE=L_REELD,);
-L_REELV = (0.050000000000000003, 0.32000000000000001, 1.1799999999999999, 3.5499999999999998);
-
-
-LISTRV=DEFI_LIST_REEL(VALE=L_REELV,);
-L_REELA = (0.089999999999999997, 0.17999999999999999, 0.55000000000000004, 1.1799999999999999, 4.9199999999999999);
-
-
-LISTRA=DEFI_LIST_REEL(VALE=L_REELA,);
-L_RELAT = (0.17999999999999999, 0.55000000000000004, 0.81999999999999995, 1.1799999999999999, 1.9199999999999999, 3.5499999999999998, 4.9199999999999999);
-
-
-LISTREL=DEFI_LIST_REEL(VALE=L_RELAT,);
-
-LISTRT=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=_F(JUSQU_A=5.0,
-                                    PAS=.0005,),);
+                                  FONC_MULT=FONCMULT,),
+                         ARCHIVAGE=_F(PAS_ARCH=1.e8, INST=listarch));
 
 #
 # RETOUR DANS L'ESPACE PHYSIQUE
@@ -242,7 +240,7 @@ DYNATRAR=REST_GENE_PHYS(RESU_GENE=DYNAMODA,
                         NOM_CHAM='DEPL',);
 
 DYNATRAT=REST_GENE_PHYS(RESU_GENE=DYNAMODA,
-                        LIST_INST=LISTRT,
+                        LIST_INST=LISTRD,
                         NOM_CHAM='DEPL',
                         GROUP_NO='NOEUDS',);
 
@@ -276,7 +274,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CHAM='DEPL',
                   NOEUD='P3',
                   NOM_CMP='DX',
-                  VALE_CALC= 6.73946923E-06,
+                  VALE_CALC=6.73944583039E-06,
                   VALE_REFE=6.7394999999999996E-06,
                   PRECISION=5.E-3,),
           )
@@ -287,7 +285,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   NOM_CHAM='DEPL',
                   NOEUD='P3',
                   NOM_CMP='DX',
-                  VALE_CALC= 1.10189975E-05,
+                  VALE_CALC=1.10194688041E-05,
                   VALE_REFE=1.1019000000000001E-05,
                   PRECISION=7.E-3,),
           )
@@ -298,9 +296,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=3,
                   NOM_CHAM='DEPL',
                   NOEUD='P3',
                   NOM_CMP='DX',
-                  VALE_CALC= 3.66818757E-05,
+                  VALE_CALC=3.66816396476E-05,
                   VALE_REFE=3.6683000000000001E-05,
-                  PRECISION=8.E-3,),
+                  CRITERE='ABSOLU',
+                  PRECISION=1.E-7,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=4,
@@ -309,9 +308,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   NOM_CHAM='DEPL',
                   NOEUD='P3',
                   NOM_CMP='DX',
-                  VALE_CALC= 1.66144642E-04,
+                  VALE_CALC=0.000166140288908,
                   VALE_REFE=1.6615E-4,
-                  PRECISION=7.E-3,),
+                  CRITERE = 'ABSOLU',
+                  PRECISION=1.E-6,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
@@ -320,9 +320,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CHAM='VITE',
                   NOEUD='P3',
                   NOM_CMP='DX',
-                  VALE_CALC= 1.34249766E-04,
+                  VALE_CALC=0.000134247760429,
                   VALE_REFE=1.3425000000000001E-4,
-                  PRECISION=5.E-3,),
+                  CRITERE = 'ABSOLU',
+                  PRECISION=1.E-6,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=2,
@@ -331,7 +332,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   NOM_CHAM='VITE',
                   NOEUD='P3',
                   NOM_CMP='DX',
-                  VALE_CALC=-6.41076850E-05,
+                  VALE_CALC=-6.41163650079E-05,
                   VALE_REFE=-6.4110999999999997E-05,
                   PRECISION=5.E-3,),
           )
@@ -342,9 +343,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=3,
                   NOM_CHAM='VITE',
                   NOEUD='P3',
                   NOM_CMP='DX',
-                  VALE_CALC= 1.61084412E-05,
+                  VALE_CALC=1.6079067495E-05,
                   VALE_REFE=1.6104E-05,
-                  PRECISION=0.012,),
+                  CRITERE = 'ABSOLU',
+                  PRECISION=1.E-6,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=4,
@@ -353,9 +355,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   NOM_CHAM='VITE',
                   NOEUD='P3',
                   NOM_CMP='DX',
-                  VALE_CALC= 4.42397083E-05,
+                  VALE_CALC=4.42674770509E-05,
                   VALE_REFE=4.4261999999999997E-05,
-                  PRECISION=7.E-3,),
+                  CRITERE = 'ABSOLU',
+                  PRECISION=1.E-6,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
@@ -364,9 +367,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CHAM='ACCE',
                   NOEUD='P3',
                   NOM_CMP='DX',
-                  VALE_CALC=-3.56915374E-03,
+                  VALE_CALC=-0.00356994073406,
+                  CRITERE = 'ABSOLU',
                   VALE_REFE=-3.5693999999999999E-3,
-                  PRECISION=5.E-3,),
+                  PRECISION=1.E-6,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=2,
@@ -375,9 +379,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   NOM_CHAM='ACCE',
                   NOEUD='P3',
                   NOM_CMP='DX',
-                  VALE_CALC=-4.39249770E-03,
+                  VALE_CALC=-0.00439221735986,
+                  CRITERE = 'ABSOLU',
                   VALE_REFE=-4.3924000000000003E-3,
-                  PRECISION=5.E-3,),
+                  PRECISION=1.E-6,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=3,
@@ -386,9 +391,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=3,
                   NOM_CHAM='ACCE',
                   NOEUD='P3',
                   NOM_CMP='DX',
-                  VALE_CALC= 4.37662687E-03,
+                  VALE_CALC=0.00437646885645,
                   VALE_REFE=4.3765999999999996E-3,
-                  PRECISION=5.0000000000000001E-3,),
+                  CRITERE = 'ABSOLU',
+                  PRECISION=1.E-6,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=4,
@@ -397,9 +403,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   NOM_CHAM='ACCE',
                   NOEUD='P3',
                   NOM_CMP='DX',
-                  VALE_CALC= 4.24600122E-03,
+                  VALE_CALC=0.00424572306147,
                   VALE_REFE=4.2459000000000004E-3,
-                  PRECISION=5.0000000000000001E-3,),
+                  CRITERE = 'ABSOLU',
+                  PRECISION=1.E-6,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=5,
@@ -408,99 +415,100 @@ TEST_RESU(RESU=_F(NUME_ORDRE=5,
                   NOM_CHAM='ACCE',
                   NOEUD='P3',
                   NOM_CMP='DX',
-                  VALE_CALC=-4.22335568E-03,
+                  VALE_CALC=-0.00422330795826,
                   VALE_REFE=-4.2233000000000001E-3,
-                  PRECISION=5.0000000000000001E-3,),
+                  CRITERE = 'ABSOLU',
+                  PRECISION=1.E-6,),
           )
 
-TEST_RESU(RESU=_F(INST=0.089999999999999997,
+TEST_RESU(RESU=_F(INST=0.09,
                   REFERENCE='SOURCE_EXTERNE',
                   RESULTAT=DYNATRAT,
                   NOM_CHAM='DEPL',
                   NOEUD='P3',
                   NOM_CMP='DX',
-                  VALE_CALC= 6.73946923E-06,
+                  VALE_CALC=6.73944583039E-06,
                   VALE_REFE=6.7394999999999996E-06,
                   CRITERE=('RELATIF', 'ABSOLU'),
                   PRECISION=1.E-4,),
           )
 
-TEST_RESU(RESU=_F(INST=0.32000000000000001,
+TEST_RESU(RESU=_F(INST=0.32,
                   REFERENCE='SOURCE_EXTERNE',
                   RESULTAT=DYNATRAT,
                   NOM_CHAM='DEPL',
                   NOEUD='P3',
                   NOM_CMP='DX',
-                  VALE_CALC= 1.10189975E-05,
+                  VALE_CALC=1.10194688041E-05,
                   VALE_REFE=1.1019000000000001E-05,
                   CRITERE=('RELATIF', 'ABSOLU'),
                   PRECISION=1.E-4, ),
           )
 
-TEST_RESU(RESU=_F(INST=1.1799999999999999,
+TEST_RESU(RESU=_F(INST=1.18,
                   REFERENCE='SOURCE_EXTERNE',
                   RESULTAT=DYNATRAT,
                   NOM_CHAM='DEPL',
                   NOEUD='P3',
                   NOM_CMP='DX',
-                  VALE_CALC= 3.66818757E-05,
+                  VALE_CALC=3.66816396476E-05,
                   VALE_REFE=3.6683000000000001E-05,
-                  CRITERE=('RELATIF', 'ABSOLU'),
-                  PRECISION=1.E-4, ),
+                  CRITERE='ABSOLU',
+                  PRECISION=1.E-7, ),
           )
 
-TEST_RESU(RESU=_F(INST=4.9199999999999999,
+TEST_RESU(RESU=_F(INST=4.92,
                   REFERENCE='SOURCE_EXTERNE',
                   RESULTAT=DYNATRAT,
                   NOM_CHAM='DEPL',
                   NOEUD='P3',
                   NOM_CMP='DX',
-                  VALE_CALC= 1.66144642E-04,
+                  VALE_CALC=0.000166140288906,
                   VALE_REFE=1.6615E-4,
-                  CRITERE=('RELATIF', 'ABSOLU'),
+                  CRITERE=('ABSOLU'),
                   PRECISION=1.E-4, ),
           )
 
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=8.09845694437e-06,
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=8.098570293387E-06,
                          VALE_REFE=8.0986999999999992E-06,
                          REFERENCE='NON_DEFINI',
-                         VALE_PARA=0.17999999999999999,
+                         VALE_PARA=0.18,
                          PRECISION=1.E-2,
                          FONCTION=P3MP1,),
-                      _F(VALE_CALC=-6.22442451734e-06,
+                      _F(VALE_CALC=-6.224785321241E-06,
                          VALE_REFE=-6.2245999999999997E-06,
                          REFERENCE='NON_DEFINI',
                          VALE_PARA=0.55,
                          PRECISION=1.E-2,
                          FONCTION=P3MP1,),
-                      _F(VALE_CALC=5.30625353981e-06,
+                      _F(VALE_CALC=5.306504582729E-06,
                          VALE_REFE=5.3063999999999997E-06,
                          REFERENCE='NON_DEFINI',
-                         VALE_PARA=0.81999999999999995,
+                         VALE_PARA=0.82,
                          PRECISION=1.E-2,
                          FONCTION=P3MP1,),
-                      _F(VALE_CALC=-4.55492524103e-06,
+                      _F(VALE_CALC=-4.555148264757E-06,
                          VALE_REFE=-4.5552E-06,
                          REFERENCE='NON_DEFINI',
-                         VALE_PARA=1.1799999999999999,
+                         VALE_PARA=1.18,
                          PRECISION=1.E-2,
                          FONCTION=P3MP1,),
-                      _F(VALE_CALC=-3.04148048823e-06,
+                      _F(VALE_CALC=-3.041636223453E-06,
                          VALE_REFE=-3.0415999999999998E-06,
                          REFERENCE='NON_DEFINI',
-                         VALE_PARA=1.9199999999999999,
+                         VALE_PARA=1.92,
                          PRECISION=1.E-2,
                          FONCTION=P3MP1,),
-                      _F(VALE_CALC=1.84438373239e-06,
+                      _F(VALE_CALC=1.844564263320E-06,
                          VALE_REFE=1.8447999999999999E-06,
                          REFERENCE='NON_DEFINI',
-                         VALE_PARA=3.5499999999999998,
+                         VALE_PARA=3.55,
                          PRECISION=1.E-2,
                          FONCTION=P3MP1,),
-                      _F(VALE_CALC=1.48326950342e-06,
+                      _F(VALE_CALC=1.483306415952E-06,
                          VALE_REFE=1.4832E-06,
                          REFERENCE='NON_DEFINI',
-                         VALE_PARA=4.9199999999999999,
+                         VALE_PARA=4.92,
                          PRECISION=1.E-2,
                          FONCTION=P3MP1,),
                       ),

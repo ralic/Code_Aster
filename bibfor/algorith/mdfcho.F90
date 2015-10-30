@@ -1,7 +1,7 @@
 subroutine mdfcho(nbmode, depgen, vitgen, accgen, fexgen,&
                   nbchoc, logcho, dplmod, parcho, noecho,&
                   saucho, ltemps, nofdep, nofvit, nofacc,&
-                  nbexci, psidel, nonmot)
+                  nbexci, psidel, nonmot, fextgt)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,6 +24,8 @@ subroutine mdfcho(nbmode, depgen, vitgen, accgen, fexgen,&
 !
     implicit none
 !
+#include "asterc/r8maem.h"
+#include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/distno.h"
 #include "asterfort/fnorm.h"
@@ -39,18 +41,21 @@ subroutine mdfcho(nbmode, depgen, vitgen, accgen, fexgen,&
 #include "asterfort/tophy3.h"
 #include "asterfort/tophys.h"
 #include "asterfort/utmess.h"
+#include "asterfort/vecini.h"
 #include "asterfort/zengen.h"
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nbchoc, nbmode, logcho(nbchoc, *)
-    real(kind=8) :: depgen(*), vitgen(*), fexgen(*), accgen(*)
+    real(kind=8) :: depgen(nbmode), vitgen(nbmode), fexgen(nbmode), accgen(nbmode)
     real(kind=8) :: parcho(nbchoc, *), saucho(nbchoc, *)
     real(kind=8) :: dplmod(nbchoc, nbmode, *)
     character(len=8) :: noecho(nbchoc, *)
     character(len=8) :: nonmot
     integer :: nbexci
     character(len=8) :: nofdep(nbexci), nofvit(nbexci), nofacc(nbexci)
-    real(kind=8) :: ltemps(3), psidel(nbchoc, nbexci, *)
+    real(kind=8) :: ltemps(2), psidel(nbchoc, nbexci, *)
+    real(kind=8), optional, intent(out) :: fextgt(nbmode)
+
 ! --------------------------------------------------------------------------------------------------
 !
 !     CALCUL LES FORCES DE CHOC DE LA STRUCTURE
@@ -70,7 +75,6 @@ subroutine mdfcho(nbmode, depgen, vitgen, accgen, fexgen,&
 ! IN  : NOECHO : NOM DES NOEUDS DE CHOC ET TYPE D'OBSTACLE
 ! OUT : SAUCHO : SAUVEGARDE DES VALEURS DE CHOC
 !
-! IN  : LTEMPS : TEMPS, DT, NUMPAS
 ! IN  : NOFDEP : NOM DE LA FONCTION DEPL_IMPO
 ! IN  : NOFVIT : NOM DE LA FONCTION VITE_IMPO
 ! IN  : NOFACC : NOM DE LA FONCTION ACCE_IMPO
@@ -78,13 +82,15 @@ subroutine mdfcho(nbmode, depgen, vitgen, accgen, fexgen,&
 ! IN  : PSIDEL : TABLEAU DE VALEURS DE PSI*DELTA
 ! IN  : NONMOT : = OUI SI MULTI-APPUIS
 !
+! OUT : FEXTGT : FORCE TANGENTE EXTRAITE DE LA FORCE TOTALE FEXGEN
+!
 ! --------------------------------------------------------------------------------------------------
     real(kind=8) :: knorm, ktang, deploc(6), depglo(6), flocal(3), fgloba(3)
     real(kind=8) :: vitglo(6), vitloc(6), orig(3), origob(3), accglo(6)
     real(kind=8) :: accloc(6), ftange(2), vtang(2), ddeplo(3), oldft(2)
-    real(kind=8) :: oldxl(3), oldvt(2), signe(2), fdispo
+    real(kind=8) :: oldxl(3), oldvt(2), signe(2), fdispo, fextgt0(nbmode)
 ! --------------------------------------------------------------------------------------------------
-    integer :: iex, i
+    integer :: iex, i, im
     character(len=8) :: nompar
     real(kind=8) :: coedep(nbexci), coevit(nbexci), coeacc(nbexci)
 !
@@ -97,11 +103,11 @@ subroutine mdfcho(nbmode, depgen, vitgen, accgen, fexgen,&
     real(kind=8) :: dnorm, ffluid, flim, fn, fseuil, rigifl, sina
     real(kind=8) :: sinb, sing, sint, ux1, ux2, uy1, uy2
     real(kind=8) :: uz1, uz2, vnorm, vx1, vx2, vy1, vy2
-    real(kind=8) :: vz1, vz2, xjeu, xmax, zero,temps,dtemps
+    real(kind=8) :: vz1, vz2, xjeu, xmax, zero,temps,dtemps, eps
 ! --------------------------------------------------------------------------------------------------
 !   COMPORTEMENT DIS_VISC
 !   équations du système : sigma , epsivis, epsi, puiss
-    integer :: nbequa, nbdecp,iret
+    integer :: nbequa, nbdecp, iret
     parameter  (nbequa=4)
     real(kind=8) :: y0(nbequa), dy0(nbequa), resu(nbequa*2)
     real(kind=8) :: errmax
@@ -112,6 +118,7 @@ subroutine mdfcho(nbmode, depgen, vitgen, accgen, fexgen,&
 ! --------------------------------------------------------------------------------------------------
     temps  = ltemps(1)
     dtemps = ltemps(2)
+    eps = r8prem()
 !
     zero    = 0.d0
     orig(1) = zero
@@ -319,6 +326,7 @@ subroutine mdfcho(nbmode, depgen, vitgen, accgen, fexgen,&
 !       Si ce n'est pas un DIS_VISC
         if (logcho(i,6).ne.1) then
 !           CALCUL DE LA DISTANCE NORMALE
+            dnorm = 0.d0
             call distno(deploc, signe, noecho(i, 9), xjeu, dist1,&
                         dist2, dnorm, cost, sint)
         endif
@@ -429,7 +437,19 @@ subroutine mdfcho(nbmode, depgen, vitgen, accgen, fexgen,&
                 call mdflam(dnorm, vitloc, knorm, cost, sint,&
                             flim, fseuil, rigifl, defpla, fn,&
                             flocal, vnorm)
-                if (( cfrots .ne. zero ) .or. ( cfrotd .ne. zero )) then
+!               PASSAGE DE LA FORCE DANS LE REPERE GLOBAL
+                call locglo(flocal, sina, cosa, sinb, cosb,&
+                            sing, cosg, fgloba)
+!               PASSAGE A LA FORCE GENERALISEE NOEUD_1
+                call togene(i, 0, dplmod, nbchoc, nbmode,&
+                            fgloba(1), fgloba(2), fgloba(3), fexgen)
+!               LA FORCE OPPOSEE SUR NOEUD_2 ---
+                if (noecho(i,9)(1:2) .eq. 'BI') then
+                    call togene(i, 3, dplmod, nbchoc, nbmode,&
+                                -fgloba(1), - fgloba(2), -fgloba(3), fexgen)
+                endif
+
+                if (( abs(cfrots).gt.eps ) .or. ( abs(cfrotd) .gt. eps )) then
                     oldft(1) = parcho(i,26)
                     oldft(2) = parcho(i,27)
                     oldxl(1) = parcho(i,23)
@@ -437,6 +457,9 @@ subroutine mdfcho(nbmode, depgen, vitgen, accgen, fexgen,&
                     oldxl(3) = parcho(i,25)
                     oldvt(1) = parcho(i,28)
                     oldvt(2) = parcho(i,29)
+                    if (max(vitloc(1),vitloc(2),vitloc(3)).gt.(0.5d0*sqrt(r8maem()))) then
+                        call utmess('F', 'ALGORITH17_1', sr=temps)
+                    end if
                     call ftang(fn, ddeplo, vitloc, cfrotd, cfrots,&
                                ktang, ctang, logcho(i, 1), oldvt, oldft,&
                                oldxl, cost, sint, ftange, flocal,&
@@ -448,17 +471,28 @@ subroutine mdfcho(nbmode, depgen, vitgen, accgen, fexgen,&
                     parcho(i,25) = oldxl(3)
                     parcho(i,28) = oldvt(1)
                     parcho(i,29) = oldvt(2)
-                endif
-!               PASSAGE DE LA FORCE DANS LE REPERE GLOBAL
-                call locglo(flocal, sina, cosa, sinb, cosb,&
-                            sing, cosg, fgloba)
-!               PASSAGE A LA FORCE GENERALISEE NOEUD_1
-                call togene(i, 0, dplmod, nbchoc, nbmode,&
-                            fgloba(1), fgloba(2), fgloba(3), fexgen)
-!               LA FORCE OPPOSEE SUR NOEUD_2 ---
-                if (noecho(i,9)(1:2) .eq. 'BI') then
-                    call togene(i, 3, dplmod, nbchoc, nbmode,&
-                                -fgloba(1), - fgloba(2), -fgloba(3), fexgen)
+
+!                   PASSAGE DE LA FORCE DANS LE REPERE GLOBAL
+                    call locglo(flocal, sina, cosa, sinb, cosb,&
+                                sing, cosg, fgloba)
+!                   PASSAGE A LA FORCE GENERALISEE NOEUD_1
+                    call vecini(nbmode, 0.d0, fextgt0)
+                    call togene(i, 0, dplmod, nbchoc, nbmode,&
+                                fgloba(1), fgloba(2), fgloba(3), fextgt0)
+!                   LA FORCE OPPOSEE SUR NOEUD_2
+                    if (noecho(i,9)(1:2) .eq. 'BI') then
+                        call togene(i, 3, dplmod, nbchoc, nbmode,&
+                                    -fgloba(1), - fgloba(2), -fgloba(3), fextgt0)
+                    endif
+
+                    do im = 1, nbmode
+                        fexgen(im) = fexgen(im) + fextgt0(im)
+                    end do
+                    if (present(fextgt)) then
+                        do im = 1, nbmode
+                            fextgt(im) = fextgt(im) + fextgt0(im)
+                        end do
+                    end if
                 endif
             else
                 parcho(i,23) = ddeplo(1)
@@ -476,10 +510,24 @@ subroutine mdfcho(nbmode, depgen, vitgen, accgen, fexgen,&
 ! --------------------------------------------------------------------------------------------------
 !           CAS DU CHOC SEC
             if (dnorm .le. zero) then
+
 !               CALCUL DE LA FORCE NORMALE REPERE LOCAL
                 call fnorm(dnorm, vitloc, knorm, cnorm, cost,&
                            sint, fn, flocal, vnorm)
-                if (( cfrots .ne. zero ) .or. ( cfrotd .ne. zero )) then
+
+!               PASSAGE DE LA FORCE NORMALE DANS LE REPERE GLOBAL
+                call locglo(flocal, sina, cosa, sinb, cosb,&
+                            sing, cosg, fgloba)
+!               PASSAGE A LA FORCE GENERALISEE NOEUD_1
+                call togene(i, 0, dplmod, nbchoc, nbmode,&
+                            fgloba(1), fgloba(2), fgloba(3), fexgen)
+!               LA FORCE OPPOSEE SUR NOEUD_2
+                if (noecho(i,9)(1:2) .eq. 'BI') then
+                    call togene(i, 3, dplmod, nbchoc, nbmode,&
+                                -fgloba(1), - fgloba(2), -fgloba(3), fexgen)
+                endif
+
+                if (( abs(cfrots) .gt. eps ) .or. ( abs(cfrotd) .gt. eps )) then
                     oldft(1) = parcho(i,26)
                     oldft(2) = parcho(i,27)
                     oldxl(1) = parcho(i,23)
@@ -487,6 +535,9 @@ subroutine mdfcho(nbmode, depgen, vitgen, accgen, fexgen,&
                     oldxl(3) = parcho(i,25)
                     oldvt(1) = parcho(i,28)
                     oldvt(2) = parcho(i,29)
+                    if (max(vitloc(1),vitloc(2),vitloc(3)).gt.(0.5d0*sqrt(r8maem()))) then
+                        call utmess('F', 'ALGORITH17_1', sr=temps)
+                    end if                    
                     call ftang(fn, ddeplo, vitloc, cfrotd, cfrots,&
                                ktang, ctang, logcho(i, 1), oldvt, oldft,&
                                oldxl, cost, sint, ftange, flocal,&
@@ -498,17 +549,28 @@ subroutine mdfcho(nbmode, depgen, vitgen, accgen, fexgen,&
                     parcho(i,25) = oldxl(3)
                     parcho(i,28) = oldvt(1)
                     parcho(i,29) = oldvt(2)
-                endif
-!               PASSAGE DE LA FORCE DANS LE REPERE GLOBAL
-                call locglo(flocal, sina, cosa, sinb, cosb,&
-                            sing, cosg, fgloba)
-!               PASSAGE A LA FORCE GENERALISEE NOEUD_1
-                call togene(i, 0, dplmod, nbchoc, nbmode,&
-                            fgloba(1), fgloba(2), fgloba(3), fexgen)
-!               LA FORCE OPPOSEE SUR NOEUD_2
-                if (noecho(i,9)(1:2) .eq. 'BI') then
-                    call togene(i, 3, dplmod, nbchoc, nbmode,&
-                                -fgloba(1), - fgloba(2), -fgloba(3), fexgen)
+
+!                   PASSAGE DE LA FORCE DANS LE REPERE GLOBAL
+                    call locglo(flocal, sina, cosa, sinb, cosb,&
+                                sing, cosg, fgloba)
+                    call vecini(nbmode, 0.d0, fextgt0)
+!                   PASSAGE A LA FORCE GENERALISEE NOEUD_1
+                    call togene(i, 0, dplmod, nbchoc, nbmode,&
+                                fgloba(1), fgloba(2), fgloba(3), fextgt0)
+!                   LA FORCE OPPOSEE SUR NOEUD_2
+                    if (noecho(i,9)(1:2) .eq. 'BI') then
+                        call togene(i, 3, dplmod, nbchoc, nbmode,&
+                                    -fgloba(1), - fgloba(2), -fgloba(3), fextgt0)
+                    endif
+
+                    do im = 1, nbmode
+                        fexgen(im) = fexgen(im) + fextgt0(im)
+                    end do
+                    if (present(fextgt)) then
+                        do im = 1, nbmode
+                            fextgt(im) = fextgt(im) + fextgt0(im)
+                        end do
+                    end if
                 endif
             else
                 parcho(i,23) = ddeplo(1)

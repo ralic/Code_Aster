@@ -263,9 +263,18 @@ OBSTACLE=DEFI_OBSTACLE( TYPE='CERCLE')
 ###### CALCULS TRANSITOIRES SUR BASE MODALE
 ###
 #
-t_fin = 0.16
+
+#
+t_depl = 0.1315  # max depl
+t_vite = 0.1566  # max vite
+
+t_fin = 1.0
+dt_arch = 1.e-2
+ARCHLIST = [dt_arch*i for i in range(int(round(t_fin/dt_arch)))] + [t_depl, t_vite]
+ARCHLIST.sort()
+
 TRAN_GE1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
-                    SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                    SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',),
                     MATR_MASS=M_PROJ,
                     MATR_RIGI=K_PROJ,
                     EXCIT=_F(VECT_ASSE_GENE = F_PROJ,
@@ -273,7 +282,6 @@ TRAN_GE1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                     INCREMENT=_F(  INST_INIT = 0.,
                                         INST_FIN = 1.,
                                         PAS = 1.E-5),
-                            ARCHIVAGE=_F( PAS_ARCH = 10),
                                  CHOC=_F( NOEUD_1 = 'N5',
                                        SOUS_STRUC_1 = 'COTE2',
                                        OBSTACLE = OBSTACLE,
@@ -281,12 +289,12 @@ TRAN_GE1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                        ORIG_OBST = (0.5, 0., 0.,),
                                        NORM_OBST = (1.,  0., 0.,),
                                        JEU = 1.E-4,
-                                       RIGI_NOR = 1.E+8)
+                                       RIGI_NOR = 1.E+8),
+                                 ARCHIVAGE=_F(INST=ARCHLIST, PAS_ARCH=1.E10)
                              )
-
 #
 TRAN_GE2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
-                             SCHEMA_TEMPS=_F(SCHEMA='DEVOGE',),
+                             SCHEMA_TEMPS=_F(SCHEMA='DEVOGE', TOLERANCE=1.E-8, PAS_MAXI=2.E-5),
                              MATR_MASS=M_PROJ,
                              MATR_RIGI=K_PROJ,
                                 EXCIT=_F(VECT_ASSE_GENE = F_PROJ,
@@ -300,63 +308,59 @@ TRAN_GE2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                        ORIG_OBST = (1., 0., 0.,),
                                        NORM_OBST = (1., 0., 0.,),
                                        JEU = 1.E-4,
-                                       RIGI_NOR = 1.E+8)
+                                       RIGI_NOR = 1.E+8),
+                                 ARCHIVAGE=_F(INST=ARCHLIST, PAS_ARCH=1.E10)
                              )
 
 #
 TRAN_GE3=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
-                             SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',),
+                             SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',
+# ON IMPOSE PAS_MAXI = PAS POUR RETROUVER LES ANCIENS RESULTATS
+# POUR AMELIORER LE TEMPS CPU IL VAUT MIEUX TESTER AVEC UN PAS_MAXI PLUS GRAND
+                                             PAS_MAXI = 1.E-5,),
                              MATR_MASS=M_PROJ,
                              MATR_RIGI=K_PROJ,
                              EXCIT=_F(VECT_ASSE_GENE = F_PROJ,
                                        COEF_MULT = 1.),
                             INCREMENT=_F(  INST_INIT = 0.,
                                         INST_FIN = 1.,
-# ON IMPOSE PAS_MAXI = PAS POUR RETROUVER LES ANCIENS RESULTATS
-# POUR AMELIORER LE TEMPS CPU IL VAUT MIEUX TESTER AVEC UN PAS_MAXI PLUS GRAND
-                                        PAS_MAXI = 1.E-5,
                                         PAS = 1.E-5),
-                            ARCHIVAGE=_F( PAS_ARCH = 10),
                                  CHOC=_F( NOEUD_1 = 'N5',
                                        SOUS_STRUC_1 = 'COTE2',
                                        OBSTACLE = OBSTACLE,
                                        ORIG_OBST = (1., 0., 0.,),
                                        NORM_OBST = (1., 0., 0.,),
                                        JEU = 1.E-4,
-                                       RIGI_NOR = 1.E+8)
+                                       RIGI_NOR = 1.E+8),
+                            ARCHIVAGE=_F( PAS_ARCH = 1.E10, INST=ARCHLIST),
                              )
 
-#
-t_depl = 0.1315  # max depl
-t_vite = 0.1566  # max vite
-LIST_R=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=_F(JUSQU_A = 0.16,
-                                     NOMBRE = 1600),
-                       )
 
+#
+LIST_R=DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A = 0.16, NOMBRE = 1600), )
 LIST_R2=DEFI_LIST_REEL(DEBUT=0.1, INTERVALLE=_F( JUSQU_A = 1., NOMBRE = 9))
 
 #
-DEBUG(SDVERI='OUI')
+DEBUG(SDVERI='NON')
 
 TRAN1=REST_GENE_PHYS(   RESU_GENE=TRAN_GE1,
                             TOUT_CHAM='OUI',
-                             LIST_INST=LIST_R,
-                             INTERPOL='LIN',
+                             INST = ARCHLIST,
+                             INTERPOL='NON',
                              MODE_MECA=MODGLO )
 
 #
 TRAN2=REST_GENE_PHYS(   RESU_GENE=TRAN_GE2,
                             TOUT_CHAM='OUI',
-                             LIST_INST=LIST_R,
-                             INTERPOL='LIN',
+                             INST = ARCHLIST,
+                             INTERPOL='NON',
                              MODE_MECA=MODGLO )
 
 #
 TRAN3=REST_GENE_PHYS(   RESU_GENE=TRAN_GE3,
                             TOUT_CHAM='OUI',
-                             LIST_INST=LIST_R,
-                             INTERPOL='LIN',
+                             INST = ARCHLIST,
+                             INTERPOL='NON',
                              MODE_MECA=MODGLO )
 
 DEBUG(SDVERI='OUI')
@@ -395,7 +399,7 @@ TEST_RESU(RESU=_F(INST=t_depl,
                   NOM_CHAM='DEPL',
                   NOEUD='NO12',
                   NOM_CMP='DY',
-                  VALE_CALC=-1.71881962586E-06,
+                  VALE_CALC=-1.71882430863E-06,
                   VALE_REFE=valref,
                   REFERENCE='AUTRE_ASTER',
                   PRECISION=9.0E-2,
@@ -408,7 +412,7 @@ TEST_RESU(RESU=_F(INST=t_vite,
                   NOM_CHAM='VITE',
                   NOEUD='NO12',
                   NOM_CMP='DY',
-                  VALE_CALC=-0.00448667267816,
+                  VALE_CALC=-0.00448667308637,
                   VALE_REFE=valrefv,
                   REFERENCE='AUTRE_ASTER',
                   PRECISION=9.E-02,),
@@ -460,7 +464,7 @@ TEST_RESU(RESU=_F(INST=0.0,
                   NOM_CHAM='SIPM_ELNO',
                   NOEUD='N1',
                   NOM_CMP='SIXXMAX',
-                  VALE_CALC=665.45203364127,
+                  VALE_CALC=665.452033642,
                   MAILLE='S1',
                   ),
           )
@@ -475,7 +479,7 @@ t_cin1=POST_ELEM(ENER_CIN=_F(GROUP_MA='TOUT',
                 );
 
 
-TEST_TABLE(VALE_CALC=0.0193738393747,
+TEST_TABLE(VALE_CALC=0.0193738393748,
            NOM_PARA='TOTALE',
            TABLE=t_cin1,
            FILTRE=(_F(NOM_PARA='LIEU',
@@ -506,7 +510,7 @@ t_cin2=POST_ELEM(ENER_CIN=_F(GROUP_MA='TOUT',
                 );
 
 
-TEST_TABLE(VALE_CALC=0.0493802986224,
+TEST_TABLE(VALE_CALC=0.0493802986221,
            NOM_PARA='TOTALE',
            TABLE=t_cin2,
            FILTRE=(_F(NOM_PARA='LIEU',

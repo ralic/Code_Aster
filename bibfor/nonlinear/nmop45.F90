@@ -206,7 +206,7 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
     matopa = '&&NMOP45.DYN_FAC_C '
 !   pour gerer l'appel depuis modint :    
     call dismoi('SOLVEUR', matrig, 'MATR_ASSE', repk=solveu)
-    if (solveu(1:8) .ne. '&&NUME91') then
+    if ((solveu(1:8) .ne. '&&NUME91') .and. (solveu(1:8) .ne. '&&DTM&&&')) then
         solveu='&&OP0070.SOLVEUR'
     endif
 ! --- VERIF SOLVEUR LINEAIRE

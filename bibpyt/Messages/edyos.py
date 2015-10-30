@@ -223,11 +223,6 @@ cata_msg = {
       Conseil : tester le schéma en temps adaptatif
 """),
 
-    47 : _(u"""
-      Le code EDYOS n'a pas convergé
-      Avec le schéma en temps adaptatif, on va tenter de diminuer le pas de temps
-"""),
-
     48 : _(u"""
       Erreur de syntaxe pour le couplage avec EDYOS :
       Il faut obligatoirement renseigner COUPLAGE_EDYOS et PALIERS_EDYOS

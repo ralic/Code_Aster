@@ -1441,13 +1441,13 @@ class DispFRFDialogue(Toplevel):
                 kass = resu.kass
                 mass = resu.mass
                 cass = resu.cass
-                self.dyna[num_resu] = self.calc_dyna_line_harm(
+                self.dyna[num_resu] = self.calc_dyna_vibra_harm(
                     resu, mass, kass, cass, param)
             else:
                 kass = self.modes_couple.kass
                 mass = self.modes_couple.mass
                 cass = self.modes_couple.cass
-                self.dyna[num_resu] = self.calc_dyna_line_harm(
+                self.dyna[num_resu] = self.calc_dyna_vibra_harm(
                     resu, mass, kass, cass, param)
                 # etape supplementaire pour les calculs de modif struct
                 try:
@@ -1530,12 +1530,12 @@ class DispFRFDialogue(Toplevel):
 
         self.update()
 
-    def calc_dyna_line_harm(self, resu, mass, kass, cass, param):
-        """ Calcul harmonique sur base physique avec DYNA_LINE_HARM"""
+    def calc_dyna_vibra_harm(self, resu, mass, kass, cass, param):
+        """ Calcul harmonique sur base physique avec DYNA_VIBRA//HARM"""
         # TODO :  rendre possible un calcul sur base modale, en fabriquant les
         # matrices de mass et de raideur generalisees a partir des donnees
         # mesurees
-        from Cata.cata import DYNA_LINE_HARM, AFFE_CHAR_MECA, DEFI_FONCTION
+        from Cata.cata import DYNA_VIBRA, AFFE_CHAR_MECA, DEFI_FONCTION
 
         f_min = string.atof(param['freq_min'].get())
         f_max = string.atof(param['freq_max'].get())
@@ -1552,7 +1552,9 @@ class DispFRFDialogue(Toplevel):
             __char = AFFE_CHAR_MECA(MODELE=modele,
                                     FORCE_NODALE=mcfact)
 
-            __dyna = DYNA_LINE_HARM(MATR_MASS=mass,
+            #                                     base du calcul a modifier si evolution
+            __dyna = DYNA_VIBRA    (TYPE_CALCUL='HARM', BASE_CALCUL='PHYS',
+                                    MATR_MASS=mass,
                                     MATR_RIGI=kass,
                                     MATR_AMOR=cass,
                                     NOM_CHAM=('DEPL', 'VITE', 'ACCE'),

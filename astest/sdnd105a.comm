@@ -18,7 +18,7 @@
 # PLASTIQUE
 # ----------------------------------------------------------------------
 #
-
+# DEBUG DEBUG DEBUG DEBUG, REAL ERROR OCCURS FORCE_EX IN sd_int
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
 
 MAILLAG0=LIRE_MAILLAGE( )
@@ -136,7 +136,7 @@ PLANY=DEFI_OBSTACLE(TYPE='PLAN_Y')
 
 TRAN_GEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                             MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
-                            SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                            SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',),
                       ETAT_INIT=_F(  VITE = VIT_GENE),
 
                       FLAMBAGE=_F(  NOEUD_1 = 'N02',
@@ -156,7 +156,9 @@ TRAN_GEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
 
 TRAN_GEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                       reuse=TRAN_GEN,  MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
-                      SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',),
+                      SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',
+                                      PAS_MAXI = 0.001,
+                                      PAS_MINI = 2.E-8,),
                       ETAT_INIT=_F(  RESULTAT = TRAN_GEN,
                                   INST_INIT = 0.5),
 
@@ -170,14 +172,12 @@ TRAN_GEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                  FNOR_POST_FL = 0.5,
                                  RIGI_NOR_POST_FL = 0.5),
 
-                      INCREMENT=_F(
-                                 INST_FIN = 1.,  PAS = 0.0002,PAS_MAXI = 0.001,
-                                 PAS_MINI = 2.E-8,)
+                      INCREMENT=_F(INST_FIN = 1.,  PAS = 0.0002,)
                             )
 
 TRAN_GEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                       reuse=TRAN_GEN,  MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
-                      SCHEMA_TEMPS=_F(SCHEMA='DEVOGE',),
+                      SCHEMA_TEMPS=_F(SCHEMA='DEVOGE', PAS_MINI=0.001, PAS_MAXI=0.001),
                       ETAT_INIT=_F(  RESULTAT = TRAN_GEN),
 
 
@@ -209,7 +209,7 @@ t0 = pi/6 +2*sqrt(3.) +(pi+6)/sqrt(2.)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=1.E-3,
-           VALE_CALC=2.998584194,
+           VALE_CALC=2.99863402847,
            VALE_REFE=3.0,
            NOM_PARA='ECRAS_RESI',
            TABLE=TABLE,
@@ -222,7 +222,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=1.E-3,
-           VALE_CALC=0.524108941,
+           VALE_CALC=0.523895026469,
            VALE_REFE=0.52359877559829882,
            NOM_PARA='INST_FLAMB',
            TABLE=TABLE,
@@ -239,7 +239,7 @@ TEST_RESU(RESU=_F(INST=10.45178254693452,
                   NOM_CHAM='DEPL',
                   NOEUD='N02',
                   NOM_CMP='DX',
-                  VALE_CALC=-2.15416813E-03,
+                  VALE_CALC=-0.00205677193395,
                   TOLE_MACHINE=(1.E-6, 5.0E-05), # ce n'est pas un "vrai" TOLE_MACHINE ! (1.e-6)
                   VALE_REFE=0.0,
                   CRITERE=('ABSOLU', 'RELATIF'),

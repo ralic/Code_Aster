@@ -209,7 +209,7 @@ PROJ_BASE(BASE=MODES,
 ###
 
 TRANSMO=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
-                        SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                        SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',),
                         MATR_MASS=MAGE,
                         MATR_RIGI=RIGE,
                         # ETAT_INIT=_F(DEPL=DIGE,),
@@ -235,20 +235,18 @@ DXGEM2=RECU_FONCTION(RESU_GENE=TRANSMO,
                      NUME_CMP_GENE=1,)
 
 TRANSMOV=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
-                        SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                        SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                         MATR_MASS=MAGE,
                         MATR_RIGI=RIGE,
                         ETAT_INIT=_F(DEPL=DIGE,),
                         INCREMENT=_F(LIST_INST=LINST,
                                      NUME_FIN=300,),
-                        ARCHIVAGE=_F(INST=1.5,
-                                     CRITERE='ABSOLU',
-                                     PRECISION=1E-6,),);
+                        ARCHIVAGE=_F(INST=1.5),);
 
-IMPR_GENE(GENE=_F(RESU_GENE=TRANSMOV,
-                  NOM_CHAM='VITE',
-                  NUME_CMP_GENE=1,
-                  TOUT_INST=('OUI'),),);
+# IMPR_GENE(GENE=_F(RESU_GENE=TRANSMOV,
+#                   NOM_CHAM='VITE',
+#                   NUME_CMP_GENE=1,
+#                   TOUT_INST=('OUI'),),);
 
 VXGEDIS2=RECU_FONCTION(RESU_GENE=TRANSMOV,
                        NOM_CHAM='VITE',
@@ -290,13 +288,13 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.999999866513,
                          VALE_REFE=3.1415926535897931,
                          VALE_PARA=1.5,
                          REFERENCE='ANALYTIQUE',
-                         PRECISION=9.9999999999999995E-07,
+                         PRECISION=1.E-6,
                          FONCTION=VX_DIS2,),
-                      _F(VALE_CALC=3.14198024478,
+                      _F(VALE_CALC=3.141592417698,
                          VALE_REFE=3.1415926535897931,
                          VALE_PARA=1.5,
                          REFERENCE='ANALYTIQUE',
-                         PRECISION=1.E-3,
+                         PRECISION=1.E-6,
                          FONCTION=VXGEDIS2,),
                       ),
               )

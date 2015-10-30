@@ -20,7 +20,7 @@ subroutine dylema(baseno, nbmat, nomat, raide, masse,&
 ! ======================================================================
 ! ----------------------------------------------------------------------
 !
-! DYNAMIQUE: LECTURE DES MATRICES ASSEMBLEES EN ENTREE DE DYNA_LINE_HARM
+! DYNAMIQUE: LECTURE DES MATRICES ASSEMBLEES EN ENTREE DE DYNA_VIBRA//HARM
 ! **         **          *        *
 !
 ! ----------------------------------------------------------------------

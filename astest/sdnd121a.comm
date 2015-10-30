@@ -110,7 +110,7 @@ pas_archi = 1
 
 # Schema d'Euler:
 DTMEULER=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
-                         SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                         SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',),
                          MATR_MASS=M_GENE,
                          MATR_RIGI=K_GENE,
                          INCREMENT=_F(INST_INIT=0.,
@@ -134,17 +134,17 @@ DTMEULER=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
 
 # Schema des differences centrees ('ADAPT' a pas constant):
 DTMADAPT=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
-                         SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',),
+                         SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',
+# ON IMPOSE PAS_MAXI = PAS POUR RETROUVER LES ANCIENS RESULTATS
+# POUR AMELIORER LE TEMPS CPU IL VAUT MIEUX TESTER AVEC UN PAS_MAXI PLUS GRAND
+                                      PAS_MAXI=pdt,
+                                      COEF_MULT_PAS=1.0,
+                                      COEF_DIVI_PAS=1.0,),
                          MATR_MASS=M_GENE,
                          MATR_RIGI=K_GENE,
                          INCREMENT=_F(INST_INIT=0.,
                                       INST_FIN=duree,
                                       PAS=pdt,
-# ON IMPOSE PAS_MAXI = PAS POUR RETROUVER LES ANCIENS RESULTATS
-# POUR AMELIORER LE TEMPS CPU IL VAUT MIEUX TESTER AVEC UN PAS_MAXI PLUS GRAND
-                                      PAS_MAXI=pdt,
-                                      COEF_MULT_PAS=1.0,
-                                      COEF_DIVI_PAS=1.0,
                                       ),
                          ARCHIVAGE=_F(
                                       PAS_ARCH=pas_archi,
@@ -165,17 +165,17 @@ DTMADAPT=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
 
 # Schema 'ADAPT' (ne sert que pour verifier les forces de contact) :
 DTMADAP2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
-                         SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',),
+                         SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',
+# ON IMPOSE PAS_MAXI = PAS POUR RETROUVER LES ANCIENS RESULTATS
+# POUR AMELIORER LE TEMPS CPU IL VAUT MIEUX TESTER AVEC UN PAS_MAXI PLUS GRAND
+                                      PAS_MAXI=3.E-5,
+                                      COEF_MULT_PAS=1.2,
+                                      COEF_DIVI_PAS=1.4,),
                          MATR_MASS=M_GENE,
                          MATR_RIGI=K_GENE,
                          INCREMENT=_F(INST_INIT=0.,
                                       INST_FIN=3.0,
                                       PAS=3.E-5,
-# ON IMPOSE PAS_MAXI = PAS POUR RETROUVER LES ANCIENS RESULTATS
-# POUR AMELIORER LE TEMPS CPU IL VAUT MIEUX TESTER AVEC UN PAS_MAXI PLUS GRAND
-                                      PAS_MAXI=3.E-5,
-                                      COEF_MULT_PAS=1.2,
-                                      COEF_DIVI_PAS=1.4,
                                       ),
                          ARCHIVAGE=_F(
                                       PAS_ARCH=100,

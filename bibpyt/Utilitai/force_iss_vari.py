@@ -30,7 +30,7 @@ def force_iss_vari(self,imod,MATR_GENE,NOM_CMP,ISSF,INFO,UNITE_RESU_FORC,
     from Utilitai.Utmess import  UTMESS
     from Cata.cata import (
      _F, DETRUIRE, LIRE_IMPE_MISS, LIRE_FORC_MISS, CREA_CHAMP, COMB_MATR_ASSE,
-     DYNA_LINE_HARM
+     DYNA_VIBRA
     )
     #--------------------------------------------------------------------------------
     NB_FREQ = 1+int((fmax-fini)/PAS)
@@ -361,7 +361,7 @@ def force_iss_vari(self,imod,MATR_GENE,NOM_CMP,ISSF,INFO,UNITE_RESU_FORC,
             #  Calcul harmonique
           __fosi.RECU_VECT_GENE_C(FSISM)
           if MATR_GENE['MATR_AMOR'] is not None :
-            __dyge = DYNA_LINE_HARM(
+            __dyge = DYNA_VIBRA(TYPE_CALCUL='HARM', BASE_CALCUL='GENE',
                 MATR_MASS=MATR_GENE['MATR_MASS'],
                 MATR_RIGI=__rito,
                 FREQ=freqk,
@@ -370,7 +370,7 @@ def force_iss_vari(self,imod,MATR_GENE,NOM_CMP,ISSF,INFO,UNITE_RESU_FORC,
                          COEF_MULT=1.0,), 
                   )
           else :
-            __dyge = DYNA_LINE_HARM(
+            __dyge = DYNA_VIBRA(TYPE_CALCUL='HARM', BASE_CALCUL='GENE',
                 MATR_MASS=MATR_GENE['MATR_MASS'],
                 MATR_RIGI=__rito,
                 FREQ=freqk,
@@ -394,7 +394,7 @@ def force_iss_vari(self,imod,MATR_GENE,NOM_CMP,ISSF,INFO,UNITE_RESU_FORC,
             #  Calcul harmonique
             __fosi.RECU_VECT_GENE_C(FSISM)
             if MATR_GENE['MATR_AMOR'] is not None :
-              __dyge = DYNA_LINE_HARM(
+              __dyge = DYNA_VIBRA(TYPE_CALCUL='HARM', BASE_CALCUL='GENE',
                 MATR_MASS=MATR_GENE['MATR_MASS'],
                 MATR_RIGI=__rito,
                 FREQ=freqk,
@@ -403,7 +403,7 @@ def force_iss_vari(self,imod,MATR_GENE,NOM_CMP,ISSF,INFO,UNITE_RESU_FORC,
                          COEF_MULT=1.0,), 
                   )
             else :
-              __dyge = DYNA_LINE_HARM(
+              __dyge = DYNA_VIBRA(TYPE_CALCUL='HARM', BASE_CALCUL='GENE',
                 MATR_MASS=MATR_GENE['MATR_MASS'],
                 MATR_RIGI=__rito,
                 FREQ=freqk,

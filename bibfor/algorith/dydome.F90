@@ -24,7 +24,7 @@ subroutine dydome(nomo, mate, carele)
 !
 ! ----------------------------------------------------------------------
 !
-! DYNA_LINE_HARM
+! DYNA_VIBRA//HARM/GENE
 !
 ! LECTURE DONNEES MECANIQUES
 !

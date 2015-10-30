@@ -243,18 +243,16 @@ if plus:
 # CALCUL DYNAMIQUE TEMPOREL SUR BASE MODALE
 #######################################################
   DYNTGEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
-                           MASS_GENE=MDIAG,
-                           RIGI_GENE=KDIAG,
-                           AMOR_GENE=CDIAG,
-                           EXCIT=_F(VECT_ASSE_GENE = FDIAG,
-                                    FONC_MULT = SINOMEGT,
-                                    ),
-                             INCREMENT=
-                              _F(
-                               INST_INIT = 0.0*periode,
-                               INST_FIN = 100.0*periode,
-                               PAS = pas),
-                             );
+                     SCHEMA_TEMPS=_F(SCHEMA='DEVOGE'),
+                     MATR_MASS=MDIAG,
+                     MATR_RIGI=KDIAG,
+                     MATR_AMOR=CDIAG,
+                     EXCIT=_F(VECT_ASSE_GENE = FDIAG,
+                              FONC_MULT = SINOMEGT,),
+                     INCREMENT=_F(INST_INIT = 0.0*periode,
+                                 INST_FIN = 100.0*periode,
+                                 PAS = pas),
+                     ARCHIVAGE=_F(LIST_INST=LISTRD),);
 
   DYNTPHY=REST_GENE_PHYS(RESU_GENE=DYNTGEN,
                        PRECISION=1.E-7,

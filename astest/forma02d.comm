@@ -162,15 +162,16 @@ LISTER=DEFI_LIST_REEL(DEBUT=0.0,
 #
 #-----------------------------------------------------------------------
 
-TRANGEN1=DYNA_TRAN_MODAL(MATR_MASS=MASS_GEN,
-                         MATR_RIGI=RIGI_GEN,
-                         AMOR_MODAL=_F(AMOR_REDUIT=0.05),
-                         INCREMENT=_F(PAS=1.E-4,
-                                      INST_INIT=0.0,
-                                      INST_FIN=2.0,),
-                         SCHEMA_TEMPS=_F(SCHEMA='EULER'),
-                         EXCIT=_F(VECT_ASSE_GENE=VGEN_FY,
-                                  FONC_MULT=EVINT_FY,),);
+TRANGEN1=DYNA_VIBRA (TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                     MATR_MASS=MASS_GEN,
+                     MATR_RIGI=RIGI_GEN,
+                     AMOR_MODAL=_F(AMOR_REDUIT=0.05),
+                     INCREMENT=_F(PAS=1.E-4,
+                                  INST_INIT=0.0,
+                                  INST_FIN=2.0,),
+                     SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE'),
+                     EXCIT=_F(VECT_ASSE_GENE=VGEN_FY,
+                              FONC_MULT=EVINT_FY,),);
 
 #
 # RECUPERATION DES DEPLACEMENTS ET VITESSES CALCULES EN B, C, D

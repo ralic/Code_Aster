@@ -256,7 +256,7 @@ INCLUDE(UNITE=11,
 MUR=DEFI_OBSTACLE(TYPE='PLAN_Z',)
 
 TRAN_GE1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
-                         SCHEMA_TEMPS=_F(SCHEMA='EULER'),
+                         SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE'),
                          MATR_MASS=MASS_GEN,
                          MATR_RIGI=RIGI_GEN,
                          MODE_STAT=MODE_STA,

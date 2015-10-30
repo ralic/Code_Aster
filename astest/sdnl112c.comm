@@ -382,8 +382,7 @@ DF       = (F_FIN-F_INIT)/(N_POIN_0-1)
 
 NB_TIR = 1
 T_FIN  = NB_TIR/DF
-T_ETAB = T_FIN
-T_PAS  = 1.E-4
+T_PAS  = 1.E-5
 T_INI  = 0.
 
 N_POIN_1 = 1./(2.*DF*T_PAS)
@@ -441,13 +440,8 @@ EFPROJ4=RECU_FONCTION(INTE_SPEC=VECTINT,
 OBST1=DEFI_OBSTACLE(  TYPE='PLAN_Y'   )
 
 TRANGENE=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
-                                   SCHEMA_TEMPS=_F(SCHEMA='ITMI',
-                                   BASE_ELAS_FLUI=MELFLUI,
-                                   CHOC_FLUI='OUI',
-                                   NUME_VITE_FLUI=1,
-                                   NB_MODE_FLUI=4,
-                                   PREC_DUREE=1.000000E-01,
-                                   TS_REG_ETAB=T_ETAB,),
+                    BASE_ELAS_FLUI=MELFLUI, NUME_VITE_FLUI=1,
+                    SCHEMA_TEMPS=_F(SCHEMA='RUNGE_KUTTA_32'),
                     MATR_MASS=MASSPROJ,
                     MATR_RIGI=RIGIPROJ,
                   AMOR_MODAL=_F(AMOR_REDUIT=(
@@ -479,6 +473,7 @@ TRANGENE=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                  ANGL_VRIL = 0.000000E+00,
                  FROTTEMENT='COULOMB',
                  COULOMB = 4.000000E-01),
+          TRAITEMENT_NONL='IMPLICITE',
           INCREMENT=_F(
                   INST_INIT = T_INI,
                   INST_FIN = T_FIN,
@@ -490,7 +485,6 @@ TRANGENE=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
 # TESTS DES RESULTATS
 # -------------------
 #
-#INST_F = 0.920
 INST_F = T_FIN,
 
 TABLE=POST_DYNA_MODA_T(  RESU_GENE=TRANGENE,
@@ -517,7 +511,7 @@ IMPR_TABLE(  TABLE=TABLE,
  )
 #
 
-TEST_TABLE(VALE_CALC=0.00745766644707,
+TEST_TABLE(VALE_CALC=0.0074259838065,
            TOLE_MACHINE=5.E-3,                          # TODO TOLE_MACHINE
            NOM_PARA='RMS',
            TABLE=TABLE,
@@ -528,7 +522,7 @@ TEST_TABLE(VALE_CALC=0.00745766644707,
                    ),
            )
 
-TEST_TABLE(VALE_CALC=0.00745766644707,
+TEST_TABLE(VALE_CALC=0.0074259838065,
            TOLE_MACHINE=5.E-3,                          # TODO TOLE_MACHINE
            NOM_PARA='RMS',
            TABLE=TABLE,
@@ -539,7 +533,7 @@ TEST_TABLE(VALE_CALC=0.00745766644707,
                    ),
            )
 
-TEST_TABLE(VALE_CALC=127.740010433,
+TEST_TABLE(VALE_CALC=127.778468069,
            TOLE_MACHINE=5.E-3,                          # TODO TOLE_MACHINE
            NOM_PARA='RMS',
            TABLE=TABLE,
@@ -550,7 +544,7 @@ TEST_TABLE(VALE_CALC=127.740010433,
                    ),
            )
 
-TEST_TABLE(VALE_CALC=0.00745766644707,
+TEST_TABLE(VALE_CALC=0.0074259838065,
            TOLE_MACHINE=5.E-3,                          # TODO TOLE_MACHINE
            NOM_PARA='RMS',
            TABLE=TABLE,
@@ -561,7 +555,7 @@ TEST_TABLE(VALE_CALC=0.00745766644707,
                    ),
            )
 
-TEST_TABLE(VALE_CALC=0.00745766644707,
+TEST_TABLE(VALE_CALC=0.0074259838065,
            TOLE_MACHINE=5.E-3,                          # TODO TOLE_MACHINE
            NOM_PARA='RMS',
            TABLE=TABLE,
@@ -572,7 +566,7 @@ TEST_TABLE(VALE_CALC=0.00745766644707,
                    ),
            )
 
-TEST_TABLE(VALE_CALC=127.740010433,
+TEST_TABLE(VALE_CALC=127.778468069,
            TOLE_MACHINE=5.E-3,                          # TODO TOLE_MACHINE
            NOM_PARA='RMS',
            TABLE=TABLE,

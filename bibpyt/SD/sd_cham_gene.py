@@ -37,7 +37,7 @@ class sd_cham_gene(AsBase):
         if not self.exists():
             return
         refe = self.REFE.get_stripped()
-        # ce test fait planter les verif de SD issues de DYNA_TRAN_MODAL + RECU_GENE
+        # ce test fait planter les verif de SD issues de DYNA_VIBRA//GENE + RECU_GENE
         # op0037 cree un refe[1]='$TRAN_GENE' bidon
         # if refe[1] in  ('$TRAN_GENE','$HARM_GENE') : return
         if refe[1]:

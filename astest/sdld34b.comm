@@ -109,7 +109,7 @@ PROJ_BASE(BASE=MODES,
 rel = FORMULE(VALE='-.1*2*pi*DX', NOM_PARA='DX',);
 
 TRANSMO=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
-                        SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                        SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',),
                         MATR_MASS=MAGE,
                         MATR_RIGI=RIGE,
                         AMOR_MODAL=_F(AMOR_REDUIT=.1,),
@@ -122,7 +122,7 @@ DXGEMO=RECU_FONCTION(RESU_GENE=TRANSMO,
                      NUME_CMP_GENE=1,)
 
 TRANSMR=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
-                        SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                        SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',),
                         MATR_MASS=MAGE,
                         MATR_RIGI=RIGE,
                         ETAT_INIT=_F(DEPL=DIGE,),

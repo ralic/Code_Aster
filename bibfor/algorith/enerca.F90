@@ -64,7 +64,7 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
 !  IN  : LDYNA     : LOGICAL .TRUE. SI CALCUL DYNAMIQUE
 !  IN  : LEXPL     : LOGICAL .TRUE. SI CALCUL EXPLICITE DANS DNL
 !  IN  : SDENER    : SD ENERGIE
-!  IN  : SCHEMA    : NOM DU SCHEMA POUR DYNA_LINE_TRAN
+!  IN  : SCHEMA    : NOM DU SCHEMA POUR DYNA_VIBRA//TRAN/PHYS
 !
 ! ----------------------------------------------------------------------
 ! DECLARATION PARAMETRES D'APPELS
@@ -133,7 +133,7 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
 !
     if (ldyna) then
 ! ----------------------------------------------------------------------
-! CALCUL DYNAMIQUE (DYNA_NON_LINE OU DYNA_LINE_TRAN)
+! CALCUL DYNAMIQUE (DYNA_NON_LINE OU DYNA_VIBRA)
 ! - RECUPERATION DE LA MATRICE DE MASSE
 ! - RECUPERATION DE LA MATRICE D AMORTISSEMENT SI ELLE EXISTE
 ! - CREATION DES VECTEURS DE DEPLACEMENT MOYEN ET D INCREMENT
@@ -173,7 +173,7 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
         if (sdener(1:8) .eq. '&&OP0070') then
 ! ON NE GARDE QUE LES DDL NODAUX PHYSIQUES
             call nmchex(valinc, 'VALINC', 'DEPPLU', depplu)
-        else if (sdener(1:8).eq.'&&OP0048') then
+        else if (sdener(1:8).eq.'&&COMDLT') then
             depplu=schema//'.DEPL1     '
             if (schema .eq. '&&DLADAP') then
                 depplu=schema//'.DEP2 '
@@ -215,11 +215,11 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
 ! --------------------------------------------------------------------
 ! WINT : TRAVAIL REEL DES EFFORTS CALCULE COMME LE TRAVAIL DES FORCES
 !        INTERNES
-! - SI DYNA_LINE_TRAN : EGAL A L ENERGIE DE DEFORMATION ELASTIQUE
+! - SI DYNA_VIBRA : EGAL A L ENERGIE DE DEFORMATION ELASTIQUE
 ! - SI MECA_NON_LINE : TRAVAIL DES FORCES INTERNES
 ! --------------------------------------------------------------------
     AS_ALLOCATE(vr=fmoy, size=neq)
-    if (sdener(1:8) .eq. '&&OP0048') then
+    if (sdener(1:8) .eq. '&&COMDLT') then
         AS_ALLOCATE(vr=kumoyz, size=neq)
         call mrmult('ZERO', irigid, zr(iumoyz), kumoyz, 1,&
                     .true._1)
@@ -248,8 +248,8 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
     if (sdener(1:8) .eq. '&&OP0070') then
         wext=ddot(neq,fmoy,1,fcine(1),1)
     endif
-! 2. CONTRIBUTION DE Bt.LAMBDA (DIRICHLETS) POUR OP0048
-    if (sdener(1:8) .eq. '&&OP0048') then
+! 2. CONTRIBUTION DE Bt.LAMBDA (DIRICHLETS) POUR COMDLT
+    if (sdener(1:8) .eq. '&&COMDLT') then
         if (lexpl) then
 ! LAGRANGES PORTES PAR LA MATRICE DE MASSE
             call wkvect('&&ENERCA.MUMOY', 'V V R', neq, imumoy)
@@ -291,7 +291,7 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
     wext = wext + ddot(neq,fmoy,1,zr(iupmuz),1)
 ! --------------------------------------------------------------------
 ! LIAI : ENERGIE DISSIPEE PAR LES LIAISONS
-! - UNIQUEMENT IMPE_ABSO POUR DYNA_LINE_TRAN
+! - UNIQUEMENT IMPE_ABSO POUR DYNA_VIBRA
 ! --------------------------------------------------------------------
     do iaux = 1, neq
         fmoy(iaux)=(fliai(iaux)+fliai(iaux+neq))*5.d-1

@@ -19,21 +19,20 @@
 !
 interface
     subroutine dldif0(result, force1, neq, istoc, iarchi,&
-                      ifm, lamort, imat, masse, rigid,&
-                      amort, dep0, vit0, acc0, depl1,&
-                      vite1, acce1, vite2, fexte, famor,&
-                      fliai, nchar, nveca, liad, lifo,&
-                      modele, ener, solveu, mate, carele,&
-                      charge, infoch, fomult, numedd, dt,&
-                      temps, tabwk0, tabwk1, archiv, nbtyar,&
-                      typear, numrep)
+                      lamort, imat, masse, rigid, amort,&
+                      dep0, vit0, acc0, depl1, vite1,&
+                      acce1, vite2, fexte, famor, fliai,&
+                      nchar, nveca, liad, lifo, modele,&
+                      ener, solveu, mate, carele, charge,&
+                      infoch, fomult, numedd, dt, temps,&
+                      tabwk0, tabwk1, archiv, nbtyar, typear,&
+                      numrep)
         integer :: nbtyar
         integer :: neq
         character(len=8) :: result
         character(len=19) :: force1
         integer :: istoc
         integer :: iarchi
-        integer :: ifm
         aster_logical :: lamort
         integer :: imat(3)
         character(len=8) :: masse

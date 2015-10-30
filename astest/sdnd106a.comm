@@ -115,18 +115,19 @@ OBSTA_F=DEFI_OBSTACLE(TYPE='PLAN_Z',);
 duration = 0.35;
 time_step = 1.e-04;
 
+testlist = [0.02, 0.15, 0.339965]
+
 RESU_GEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
-                         SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',),
+                         SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',PAS_MAXI=time_step,),
+# ON IMPOSE PAS_MAXI = PAS POUR RETROUVER LES ANCIENS RESULTATS
+# POUR AMELIORER LE TEMPS CPU IL VAUT MIEUX TESTER AVEC UN PAS_MAXI PLUS GRAND
                          MATR_MASS=M_GENERA,
                          MATR_RIGI=K_GENERA,
                          INCREMENT=_F(INST_INIT=0.,
                                       INST_FIN=duration,
                                       PAS=time_step,
-# ON IMPOSE PAS_MAXI = PAS POUR RETROUVER LES ANCIENS RESULTATS
-# POUR AMELIORER LE TEMPS CPU IL VAUT MIEUX TESTER AVEC UN PAS_MAXI PLUS GRAND
-                                      PAS_MAXI=time_step,
                                      ),
-                         ARCHIVAGE=_F(PAS_ARCH=1),
+                         ARCHIVAGE=_F(PAS_ARCH=1, INST=testlist),
                          EXCIT=_F(VECT_ASSE_GENE=F_GENERA,
                                   FONC_MULT=F_FUNCT,),
                          CHOC=(_F(GROUP_NO_1='N_FRICT',
@@ -149,7 +150,7 @@ DX_IMPOF=RECU_FONCTION(RESU_GENE=RESU_GEN,
                       TOUT_INST='OUI',
                       NOM_CHAM='DEPL',
                       NOM_CMP='DX',
-                      GROUP_NO='N_IMPOF',);
+                      GROUP_NO='N_IMPOF');
 
 SX_IMPOF=RECU_FONCTION(RESU_GENE=RESU_GEN,
                     #   RESULTAT=RESU_PHY,
@@ -239,14 +240,14 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=2.062164499878E-05,
                          REFERENCE='ANALYTIQUE',
                          PRECISION=1.E-4,
                          FONCTION=DX_IMPOF,),
-                      _F(VALE_CALC=-3.380282328341E-05,
+                      _F(VALE_CALC=-3.375499081490E-05,
                          VALE_REFE=0.0,
                          CRITERE='ABSOLU',
                          VALE_PARA=0.33996500000000002,
                          REFERENCE='ANALYTIQUE',
                          PRECISION=1.E-4,
                          FONCTION=SX_FRICT,),
-                      _F(VALE_CALC=3.970121467045,
+                      _F(VALE_CALC=3.970109739183,
                          VALE_REFE=3.9681299999999999,
                          CRITERE='ABSOLU',
                          VALE_PARA=0.33996500000000002,

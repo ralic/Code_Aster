@@ -61,7 +61,7 @@ subroutine dltini(lcrea, nume, result, depini, vitini,&
     integer :: ire, iret, jvale
     integer :: nai, ndi, ndy, nvi, nocc
     integer :: ierr
-    character(len=8) :: reuse
+    character(len=8) :: reuse, dep, vit
     character(len=19) :: champ, cham2
 !     ------------------------------------------------------------------
 !
@@ -85,6 +85,9 @@ subroutine dltini(lcrea, nume, result, depini, vitini,&
 !====
 !
     if (ndy .ne. 0) then
+
+        call utmess('I', 'DYNAMIQUE_78', sk=reuse)
+
         if (lener) then
             linfo = .true.
         endif
@@ -163,9 +166,10 @@ subroutine dltini(lcrea, nume, result, depini, vitini,&
             call vtcopy(champ, cham2, ' ', iret)
             call jeveuo(cham2//'.VALE', 'L', jvale)
             call dcopy(neq, zr(jvale), 1, depini, 1)
+            dep = champ(1:8)
         else
-            call utmess('I', 'ALGORITH3_28')
-        endif
+            dep = 'nul'
+        end if
 !
         call getvid('ETAT_INIT', 'VITE', iocc=1, scal=champ, nbret=nvi)
         if (nvi .gt. 0) then
@@ -181,9 +185,12 @@ subroutine dltini(lcrea, nume, result, depini, vitini,&
             call vtcopy(champ, cham2, ' ', iret)
             call jeveuo(cham2//'.VALE', 'L', jvale)
             call dcopy(neq, zr(jvale), 1, vitini, 1)
+            vit = champ(1:8)
         else
-            call utmess('I', 'ALGORITH3_29')
-        endif
+            vit = 'nul'
+        end if
+        call utmess('I', 'DYNAMIQUE_79', nk=2, valk=[dep,vit])
+
 !
         call getvid('ETAT_INIT', 'ACCE', iocc=1, scal=champ, nbret=nai)
         if (nai .gt. 0) then
@@ -199,7 +206,10 @@ subroutine dltini(lcrea, nume, result, depini, vitini,&
             call vtcopy(champ, cham2, ' ', iret)
             call jeveuo(cham2//'.VALE', 'L', jvale)
             call dcopy(neq, zr(jvale), 1, accini, 1)
-        endif
+            call utmess('I', 'DYNAMIQUE_84', sk=champ)
+        else
+            call utmess('I', 'DYNAMIQUE_84', sk='calculee')
+        end if
 !
     endif
 !

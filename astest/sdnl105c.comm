@@ -458,7 +458,7 @@ OBSTACLE=DEFI_OBSTACLE( TYPE='BI_PLAN_Y')
 TRAN_GE1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                              #METHODE='ADAPT',
                              #METHODE='DEVOGE',
-                             SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                             SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',),
                              MATR_MASS=M_PROJ,
                              MATR_RIGI=K_PROJ,
                              AMOR_MODAL=_F(AMOR_REDUIT=(0.,),),
@@ -505,7 +505,7 @@ TRAN1=REST_GENE_PHYS(   RESU_GENE=TRAN_GE1,
 ###
 #
 TRANGE2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
-                             SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                             SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',),
                              MATR_MASS=MATRMASS,
                              MATR_RIGI=MATRRIGI,
                              MATR_AMOR=AMO,

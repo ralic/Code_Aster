@@ -19,24 +19,23 @@
 !
 interface
     subroutine dlnew0(result, force0, force1, iinteg, neq,&
-                      istoc, iarchi, ifm, nbexci, nondp,&
-                      nmodam, lamort, limped, lmodst, imat,&
-                      masse, rigid, amort, nchar, nveca,&
-                      liad, lifo, modele, mate, carele,&
-                      charge, infoch, fomult, numedd, depla,&
-                      vitea, accea, dep0, vit0, acc0,&
-                      fexte, famor, fliai, depl1, vite1,&
-                      acce1, psdel, fammo, fimpe, fonde,&
-                      vien, vite, vita1, mltap, a0,&
-                      a2, a3, a4, a5, a6,&
-                      a7, a8, c0, c1, c2,&
-                      c3, c4, c5, nodepl, novite,&
-                      noacce, matres, maprec, solveu, criter,&
-                      chondp, ener, vitini, vitent, valmod,&
-                      basmod, veanec, vaanec, vaonde, veonde,&
-                      dt, theta, tempm, temps, iforc2,&
-                      tabwk1, tabwk2, archiv, nbtyar, typear,&
-                      numrep)
+                      istoc, iarchi, nbexci, nondp, nmodam,&
+                      lamort, limped, lmodst, imat, masse,&
+                      rigid, amort, nchar, nveca, liad,&
+                      lifo, modele, mate, carele, charge,&
+                      infoch, fomult, numedd, depla, vitea,&
+                      accea, dep0, vit0, acc0, fexte,&
+                      famor, fliai, depl1, vite1, acce1,&
+                      psdel, fammo, fimpe, fonde, vien,&
+                      vite, vita1, mltap, a0, a2,&
+                      a3, a4, a5, a6, a7,&
+                      a8, c0, c1, c2, c3,&
+                      c4, c5, nodepl, novite, noacce,&
+                      matres, maprec, solveu, criter, chondp,&
+                      ener, vitini, vitent, valmod, basmod,&
+                      veanec, vaanec, vaonde, veonde, dt,&
+                      theta, tempm, temps, iforc2, tabwk1,&
+                      tabwk2, archiv, nbtyar, typear, numrep)
         integer :: nbtyar
         integer :: nondp
         integer :: nbexci

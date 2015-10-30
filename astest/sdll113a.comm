@@ -138,7 +138,7 @@ PROJ_BASE(  BASE=MODES,
 
 #
 TRAN_GEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
-                            SCHEMA_TEMPS=_F(SCHEMA='EULER'),
+                            SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE'),
                             MATR_MASS=M_PROJ,
                             MATR_RIGI=K_PROJ,
                             EXCIT=_F(VECT_ASSE_GENE = F_PROJ,
@@ -389,7 +389,7 @@ TRANGENE=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                        INST_FIN = 0.0195,
                                        PAS = 1.E-6),
                           ARCHIVAGE=_F(  PAS_ARCH = 5),
-                          SCHEMA_TEMPS=_F(SCHEMA='EULER'),
+                          SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE'),
                             )
 
 #

@@ -1754,7 +1754,7 @@ OBST=DEFI_OBSTACLE(   TYPE='DISCRET',
 
 #
 DYNAMODE=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
-                       SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                       SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',),
                        MATR_MASS=MASSEPRO,
                        MATR_RIGI=RIGIPROJ,
                        AMOR_MODAL=_F(AMOR_REDUIT=( 0.01,  0.01,  0.01, 0.01,

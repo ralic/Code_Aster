@@ -1,12 +1,12 @@
 subroutine dldif0(result, force1, neq, istoc, iarchi,&
-                  ifm, lamort, imat, masse, rigid,&
-                  amort, dep0, vit0, acc0, depl1,&
-                  vite1, acce1, vite2, fexte, famor,&
-                  fliai, nchar, nveca, liad, lifo,&
-                  modele, ener, solveu, mate, carele,&
-                  charge, infoch, fomult, numedd, dt,&
-                  temps, tabwk0, tabwk1, archiv, nbtyar,&
-                  typear, numrep)
+                  lamort, imat, masse, rigid, amort,&
+                  dep0, vit0, acc0, depl1, vite1,&
+                  acce1, vite2, fexte, famor, fliai,&
+                  nchar, nveca, liad, lifo, modele,&
+                  ener, solveu, mate, carele, charge,&
+                  infoch, fomult, numedd, dt, temps,&
+                  tabwk0, tabwk1, archiv, nbtyar, typear,&
+                  numrep)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -67,7 +67,7 @@ subroutine dldif0(result, force1, neq, istoc, iarchi,&
 #include "asterfort/nmarpc.h"
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
-    integer :: neq, istoc, iarchi, ifm, ivit0r
+    integer :: neq, istoc, iarchi, ivit0r
     integer :: ifnobi, ifcibi
     integer :: archiv, nbtyar
     integer :: imat(3)
@@ -101,10 +101,10 @@ subroutine dldif0(result, force1, neq, istoc, iarchi,&
 !
 ! --- CALCUL DES DEPLACEMENTS ET VITESSES
 !
-    do 21 , ieq = 1 , neq
+    do ieq = 1 , neq
     vite1(ieq) = vit0(ieq) + dt*acc0(ieq)
     depl1(ieq) = dep0(ieq) + dt*vite1(ieq)
-    21 end do
+    end do
 !
 !====
 ! 3. CALCUL DU SECOND MEMBRE F*
@@ -133,14 +133,14 @@ subroutine dldif0(result, force1, neq, istoc, iarchi,&
 !
     r8bid = dt/2.d0
 !
-    do 40 , ieq = 1 , neq
+    do ieq = 1 , neq
 !
-    acce1(ieq) = tabwk1(ieq)*zr(iforc1+ieq-1)
+        acce1(ieq) = tabwk1(ieq)*zr(iforc1+ieq-1)
 !
 !        --- VITESSE AUX INSTANTS 'TEMPS + DT' ---
-    vite2(ieq) = vite1(ieq) + r8bid*acce1(ieq)
+        vite2(ieq) = vite1(ieq) + r8bid*acce1(ieq)
 !
-    40 end do
+    end do
 !
 !
 !====
@@ -186,9 +186,9 @@ subroutine dldif0(result, force1, neq, istoc, iarchi,&
         alarm = 1
 !
         call dlarch(result, neq, istoc, iarchi, ' ',&
-                    alarm, ifm, temps, nbtyar, typear,&
-                    masse, depl1, vite2, acce1, fexte(neq+ 1),&
-                    famor(neq+1), fliai(neq+1))
+                    alarm, temps, nbtyar, typear, masse,&
+                    depl1, vite2, acce1, fexte(neq+ 1), famor(neq+1),&
+                    fliai(neq+1))
 !
     endif
 !===

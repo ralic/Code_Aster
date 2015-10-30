@@ -170,7 +170,7 @@ Il faut vérifier les affectations sous AFFE_CARA_ELEM/DISCRET.
 """),
 
     28 : _(u"""
-Vous utilisez la matrice d'amortissement pour un discrets %(k1)s alors que vous n'avez pas affecté
+Vous utilisez la matrice d'amortissement pour un discret %(k1)s alors que vous n'avez pas affecté
 les caractéristiques d'amortissements. Par défaut l'amortissement est nul.
 Il faut vérifier les affectations sous AFFE_CARA_ELEM/DISCRET.
 """),
@@ -196,7 +196,7 @@ L'utilisation des discrets non-symétriques n'est actuellement pas possible pour
 """),
 
     41: _(u"""
-DYNA_TRAN_MODAL : Pour l'élément discret de type DIS_VISC.
+DYNA_VIBRA : Pour l'élément discret de type DIS_VISC.
 La raideur tangente est nulle ou trop petite.
 Vérifier les caractéristiques : K1 K2 K3 UNSUR_K1 UNSUR_K2 UNSUR_K3
 
@@ -204,7 +204,7 @@ La raideur tangente : 1/K1 + 1/K3 + K2/(K1*K3) ne doit pas être nulle ou trop p
 """),
 
     42: _(u"""
-DYNA_TRAN_MODAL : Pour l'élément discret de type DIS_VISC.
+DYNA_VIBRA : Pour l'élément discret de type DIS_VISC.
 
 L'intégration de la loi de comportement du discret pose problème.
 L'erreur est supérieure à RESI_INTE_RELA=%(r1)12.5E pour un nombre
@@ -217,7 +217,7 @@ Conseils :
 """),
 
     43: _(u"""
-DYNA_TRAN_MODAL : Pour l'élément discret de type DIS_VISC.
+DYNA_VIBRA : Pour l'élément discret de type DIS_VISC.
 
 Sa longueur est nulle ou trop petite.
 Il n'est pas possible de calculer le vecteur directeur de l'élément.

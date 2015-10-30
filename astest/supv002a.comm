@@ -69,7 +69,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'))
 # du message incriminé ou bien mettre un ASSERT(condition) si cela concerne
 # uniquement le développeur.
 previous_errors = [
-    'ALCHML', 'ALITMI', 'AMDBAR', 'AMUMPS', 'ASCSEP',
+    'ALCHML', 'AMDBAR', 'AMUMPS', 'ASCSEP',
     'BiCG', 'CHARACTER', 'CHNO', 'CHPVER',
     'CINX', 'CLO', 'COMBU', 'CVRC', 'DEEQ', 'DELG',
     'DEP', 'DEPSI', 'DEPSIMAX', 'DEUXMU', 'DISMOI', 'DLAHQR', 'DOMM', 'DPMAT',
@@ -78,7 +78,7 @@ previous_errors = [
     'FTREVC', 'GAMDEV', 'GERPAS', 'GILIRE', 'GL', 'GREL',
     'HDFCRF', 'HEXS', 'ICHIN', 'ICOEF', 'IDDL',
     'IM', 'INFOG', 'JECROC', 'JENONU', 'JENUNO', 'JEXNOM', 'JEXNUM', 'JM', 'JUVECA',
-    'KMOD', 'KSIB', 'KTILDA', 'LCDPPA', 'LIBRARY', 'LIGREL',
+    'KMOD', 'KSIB', 'LCDPPA', 'LIBRARY', 'LIGREL',
     'LMAT', 'LONCUM', 'LONT', 'LTNT', 'Map', 'NBCMP', 'NBDDL',
     'NBMECA', 'NBPOIN', 'NBRUP', 'NBSIGM', 'NDDL', 'NDS',
     'NEMA', 'NEQUA', 'NMCOMP', 'NMCONV', 'NMHUJ', 'NMVPIR', 'NMXINS', 'NNOE', 'NOCART',
@@ -107,7 +107,7 @@ previous_errors = [
     'CELK', 'DRDY', 'DRDYB', 'LIGREL', 'LILI', 'dmax', 'elem', 'ep', 'erjac', 'gl',
     'kr', 'lg', 'lt', 'nmax', 'nume', 'resuelem', 'resultat', 'sd', 'vect',
     # pour comport2 qui écrit un morceau de fichier de commandes
-    'EXZ', 'EYZ', 'EZZ',
+    'EXZ', 'EYZ', 'EZZ', 'conservatif'
     ]
 
 # this replaces 'import supv002a.33'

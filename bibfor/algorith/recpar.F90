@@ -47,37 +47,37 @@ subroutine recpar(neq, dti, dtmax, vmin, vvar,&
 !
 !     --- VITESSE DE REFERENCE ---
 !
-    call getvtx('INCREMENT', 'VITE_MIN', iocc=1, scal=vvar, nbret=nv)
-    do 10 i = 1, neq
+    call getvtx('SCHEMA_TEMPS', 'VITE_MIN', iocc=1, scal=vvar, nbret=nv)
+    do i = 1, neq
         vmin(i) = 1.d-15
-10  end do
+    end do
 !
 !     --- COEFFICIENT DE REMONTEE DU PAS DE TEMPS ---
 !
-    call getvr8('INCREMENT', 'COEF_MULT_PAS', iocc=1, scal=cmp, nbret=n1)
+    call getvr8('SCHEMA_TEMPS', 'COEF_MULT_PAS', iocc=1, scal=cmp, nbret=n1)
 !
 !     --- COEFFICIENT DE DIVISION DU PAS DE TEMPS ---
 !
-    call getvr8('INCREMENT', 'COEF_DIVI_PAS', iocc=1, scal=cdp, nbret=n1)
+    call getvr8('SCHEMA_TEMPS', 'COEF_DIVI_PAS', iocc=1, scal=cdp, nbret=n1)
 !
 !     --- COEFFICIENT DETERMINANT DT MIN (=DT INIT * CPMIN) --
 !
-    call getvr8('INCREMENT', 'PAS_MINI', iocc=1, scal=dtmin, nbret=n1)
+    call getvr8('SCHEMA_TEMPS', 'PAS_MINI', iocc=1, scal=dtmin, nbret=n1)
 !
 !     --- COEFFICIENT DETERMINANT DT MIN (=DT INIT * CPMIN) --
 !
     if (n1 .eq. 0) then
-        call getvr8('INCREMENT', 'PAS_LIMI_RELA', iocc=1, scal=cpmin, nbret=n1)
+        call getvr8('SCHEMA_TEMPS', 'PAS_LIMI_RELA', iocc=1, scal=cpmin, nbret=n1)
         dtmin = dti * cpmin
     endif
 !
 !     --- NOMBRE DE POINTS PAR PERIODE
 !
-    call getvis('INCREMENT', 'NB_POIN_PERIODE', iocc=1, scal=nper, nbret=n1)
+    call getvis('SCHEMA_TEMPS', 'NB_POIN_PERIODE', iocc=1, scal=nper, nbret=n1)
 !
 !     --- NMAX_REDUC_PAS
 !
-    call getvis('INCREMENT', 'NMAX_ITER_PAS', iocc=1, scal=nrmax, nbret=n1)
+    call getvis('SCHEMA_TEMPS', 'NMAX_ITER_PAS', iocc=1, scal=nrmax, nbret=n1)
 !
 !
     vali (1) = nper
@@ -87,6 +87,5 @@ subroutine recpar(neq, dti, dtmax, vmin, vvar,&
     valr (3) = dtmin
     valr (4) = dtmax
     valk = vvar
-    call utmess('I', 'ALGORITH15_68', sk=valk, ni=2, vali=vali,&
-                nr=4, valr=valr)
+
 end subroutine

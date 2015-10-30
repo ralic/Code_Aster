@@ -147,7 +147,7 @@ PLANY=DEFI_OBSTACLE(   TYPE='PLAN_Y' )
 
 #
 DYNAMODA=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
-                              SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                              SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',),
                               MATR_MASS=MASSEGEN,
                               MATR_RIGI=RIGIDGEN,
                               AMOR_MODAL=_F(AMOR_REDUIT=0.,),

@@ -295,7 +295,7 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
 ! ----- NOMBRE DE PAS DE TEMPS DU RESULTAT
         call jelira(resu//'.DISC', 'LONMAX', ninst)
         call jeveuo(resu//'.DISC', 'L', vr=disc)
-! ----- EXCITATION STOCKEE DANS LE CHAMP DEPL (IDEM QUE DYNA_LINE_TRAN)
+! ----- EXCITATION STOCKEE DANS LE CHAMP DEPL (IDEM QUE DYNA_VIBRA//TRAN/PHYS)
         call jeveuo(resu//'.DEPL', 'L', jdepl)
 !
         ii = nexci+nbmode*(i-1)

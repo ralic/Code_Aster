@@ -1,22 +1,21 @@
 subroutine dlnew0(result, force0, force1, iinteg, neq,&
-                  istoc, iarchi, ifm, nbexci, nondp,&
-                  nmodam, lamort, limped, lmodst, imat,&
-                  masse, rigid, amort, nchar, nveca,&
-                  liad, lifo, modele, mate, carele,&
-                  charge, infoch, fomult, numedd, depla,&
-                  vitea, accea, dep0, vit0, acc0,&
-                  fexte, famor, fliai, depl1, vite1,&
-                  acce1, psdel, fammo, fimpe, fonde,&
-                  vien, vite, vita1, mltap, a0,&
-                  a2, a3, a4, a5, a6,&
-                  a7, a8, c0, c1, c2,&
-                  c3, c4, c5, nodepl, novite,&
-                  noacce, matres, maprec, solveu, criter,&
-                  chondp, ener, vitini, vitent, valmod,&
-                  basmod, veanec, vaanec, vaonde, veonde,&
-                  dt, theta, tempm, temps, iforc2,&
-                  tabwk1, tabwk2, archiv, nbtyar, typear,&
-                  numrep)
+                  istoc, iarchi, nbexci, nondp, nmodam,&
+                  lamort, limped, lmodst, imat, masse,&
+                  rigid, amort, nchar, nveca, liad,&
+                  lifo, modele, mate, carele, charge,&
+                  infoch, fomult, numedd, depla, vitea,&
+                  accea, dep0, vit0, acc0, fexte,&
+                  famor, fliai, depl1, vite1, acce1,&
+                  psdel, fammo, fimpe, fonde, vien,&
+                  vite, vita1, mltap, a0, a2,&
+                  a3, a4, a5, a6, a7,&
+                  a8, c0, c1, c2, c3,&
+                  c4, c5, nodepl, novite, noacce,&
+                  matres, maprec, solveu, criter, chondp,&
+                  ener, vitini, vitent, valmod, basmod,&
+                  veanec, vaanec, vaonde, veonde, dt,&
+                  theta, tempm, temps, iforc2, tabwk1,&
+                  tabwk2, archiv, nbtyar, typear, numrep)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -113,7 +112,7 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
     integer :: nbexci, nondp, nmodam, iinteg, neq
-    integer :: istoc, iarchi, ifm, imat(3), nchar, nveca, liad(*)
+    integer :: istoc, iarchi, imat(3), nchar, nveca, liad(*)
     integer :: iforc2, archiv, nbtyar, mltap(nbexci)
 !
     real(kind=8) :: depla(neq), vitea(neq), accea(neq), dep0(*), vit0(*)
@@ -300,8 +299,8 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
 !
     call getfac('EXCIT_RESU', nbexre)
     if (nbexre .ne. 0) then
-        call jeveuo('&&OP0048.COEF_RRE', 'L', vr=coef_rre)
-        call jeveuo('&&OP0048.LISTRESU', 'L', vk8=listresu)
+        call jeveuo('&&COMDLT.COEF_RRE', 'L', vr=coef_rre)
+        call jeveuo('&&COMDLT.LISTRESU', 'L', vk8=listresu)
         prec=1.d-9
         eps0 =1.d-12
         do iresu = 1, nbexre
@@ -484,16 +483,16 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
             accea(ieq) = accea(ieq) + acc0(ieq)
 101         continue
             call dlarch(result, neq, istoc, iarchi, ' ',&
-                        alarm, ifm, temps, nbtyar, typa,&
-                        masse, depla, vitea, accea, fexte( neq+1),&
-                        famor(neq+1), fliai(neq+1))
+                        alarm, temps, nbtyar, typa, masse,&
+                        depla, vitea, accea, fexte( neq+1), famor(neq+1),&
+                        fliai(neq+1))
 !
         endif
 !
         call dlarch(result, neq, istoc, iarchi, ' ',&
-                    alarm, ifm, temps, nbtyar, typear,&
-                    masse, dep0, vit0, acc0, fexte(neq+1),&
-                    famor(neq+1), fliai(neq+1))
+                    alarm, temps, nbtyar, typear, masse,&
+                    dep0, vit0, acc0, fexte(neq+1), famor(neq+1),&
+                    fliai(neq+1))
 !
     endif
 !

@@ -59,7 +59,7 @@ subroutine lisccc(nomcmd, motclc, nbauth, nbnaut, mclaut)
     character(len=16) :: motclf
     aster_logical :: lfind
 !
-! --- DYNA_LINE_HARM
+! --- DYNA_VIBRA//HARM/GENE
 !
     data autdlh /&
      &     'DIRI_DUAL'       ,'FORCE_NODALE'    ,'EPSI_INIT'       ,&
@@ -95,7 +95,7 @@ subroutine lisccc(nomcmd, motclc, nbauth, nbnaut, mclaut)
 !
 ! --- SELECTION DATA DE LA COMMANDE ACTIVE
 !
-    if (nomcmd .eq. 'DYNA_LINE_HARM') then
+    if (nomcmd .eq. 'DYNA_VIBRA') then
         nbgcmd = zbgdlh
     else if (nomcmd.eq.'CALC_G') then
         nbgcmd = zbgccg
@@ -113,7 +113,7 @@ subroutine lisccc(nomcmd, motclc, nbauth, nbnaut, mclaut)
 ! --------- BOUCLE SUR LES MOTS-CLEFS AUTORISES
 !
             do 21 iauth = 1, nbgcmd
-                if (nomcmd .eq. 'DYNA_LINE_HARM') then
+                if (nomcmd .eq. 'DYNA_VIBRA') then
                     motclf = autdlh(iauth)
                     call lisdef('POSM', motclf, ibid, k8bid, iposit)
                 else if (nomcmd.eq.'CALC_G') then

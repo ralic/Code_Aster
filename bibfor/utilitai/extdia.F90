@@ -31,12 +31,13 @@ subroutine extdia(matr, numddl, icode, diag)
 !                 0 SINON
 !    DIAG   /O/ : VECTEUR CONTENANT LA DIAGONALE DE MATR
 !-----------------------------------------------------------------------
-!
+!   Note : if the matrix is complex, return the moduli of the diagonal terms
 !
 !
 !
 !
 #include "jeveux.h"
+#include "asterc/gettco.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -57,16 +58,22 @@ subroutine extdia(matr, numddl, icode, diag)
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
+    aster_logical :: iscmplx
     integer :: idia, j,  jbloc,   k
     integer :: l, lmat, nbacti, nbbloq, nblagr, nbliai, neq
+    character(len=24) :: typmatr
     integer, pointer :: vtypddl(:) => null()
     integer, pointer :: smdi(:) => null()
     integer, pointer :: smde(:) => null()
+
 !
 !-----------------------------------------------------------------------
     call jemarq()
     call mtdscr(matr)
     call jeveuo(matr//'           .&INT', 'L', lmat)
+!
+    call gettco(matr, typmatr)
+    iscmplx = (typmatr(1:9).eq.'MATR_ASSE') .and. (typmatr(16:16).eq.'C')
 !
     call jeveuo(numddl(1:8)//'      .SMOS.SMDE', 'L', vi=smde)
     neq = smde(1)
@@ -84,17 +91,31 @@ subroutine extdia(matr, numddl, icode, diag)
     k = 0
     l = 0
     call jeveuo(jexnum(matr//'           .VALM', 1), 'L', jbloc)
-    do 40 j = 1, neq
-        k = k + 1
-        if (vtypddl(k) .ne. 0) then
-            idia=smdi(k)
-            l=l+1
-            diag(l)=zr(jbloc-1+idia)
-        else if (icode.eq.0.or.icode.eq.2) then
-            l=l+1
-            diag(l)=0.d0
-        endif
-40  end do
+    if (.not.(iscmplx) )then
+        do j = 1, neq
+            k = k + 1
+            if (vtypddl(k) .ne. 0) then
+                idia=smdi(k)
+                l=l+1
+                diag(l)=zr(jbloc-1+idia)
+            else if (icode.eq.0.or.icode.eq.2) then
+                l=l+1
+                diag(l)=0.d0
+            endif
+        end do
+    else 
+        do j = 1, neq
+            k = k + 1
+            if (vtypddl(k) .ne. 0) then
+                idia=smdi(k)
+                l=l+1
+                diag(l)=sqrt(real(zc(jbloc-1+idia))**2+imag(zc(jbloc-1+idia))**2)
+            else if (icode.eq.0.or.icode.eq.2) then
+                l=l+1
+                diag(l)=0.d0
+            endif
+        end do
+    end if
     AS_DEALLOCATE(vi=vtypddl)
 !
     call jedema()

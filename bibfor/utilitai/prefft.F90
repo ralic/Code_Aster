@@ -40,7 +40,7 @@ subroutine prefft(resin, method, symetr, nsens, grand,&
 !     OPERATEUR "ENVOI A FFT : CREATION DE FONCTIONS"
 !     IN:
 !       RESIN    : SD_RESULTAT INITIALE HARMONIQUE
-!                  (VENANT DE DYNA_LINE_HARM OU DYNA_TRAN_MODAL)
+!                  (VENANT DE DYNA_VIBRA//HARM OU //TRAN/GEN)
 !       METHOD   : METHODE POUR FFT
 !       SYMETRIE : SPECTRE SYMETRIQUE OU NON
 !       NSENS    : SENS FFT (1=DIRECT,-1=INVERSE)

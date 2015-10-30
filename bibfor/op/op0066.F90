@@ -78,7 +78,7 @@ subroutine op0066()
 !
     baseno='&&OP0066'
     deuxpi = r8depi()
-    maprec = '&&OP0060.MAPREC'
+    maprec = '&&OP0066.MAPREC'
 !
     call getres(result, typcon, nomcmd)
 !

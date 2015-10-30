@@ -31,8 +31,8 @@ subroutine mdveri()
 #include "asterfort/getvtx.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
-    integer :: i, nbchoc, nbrede, nbrevi, ibid, jref1
-    character(len=8) :: nomres, method, amogen, ouinon, channo
+    integer :: i, ibid, jref1
+    character(len=8) :: nomres, method, amogen, channo
     character(len=8) :: matr1, matr2, basemo
     character(len=24) :: ref1, ref2
     character(len=16) :: typres, nomcmd
@@ -40,8 +40,7 @@ subroutine mdveri()
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: kf, n1, nagen, nared, nbasfl, nbexc, nm
-    integer :: npas, nts
+    integer :: kf, n1, nagen, nared, nbexc, nm
     character(len=24), pointer :: vref2(:) => null()
 !-----------------------------------------------------------------------
     call getres(nomres, typres, nomcmd)
@@ -49,68 +48,11 @@ subroutine mdveri()
 !
     call getvid(' ', 'MATR_AMOR', scal=amogen, nbret=nagen)
     call getvr8('AMOR_MODAL', 'AMOR_REDUIT', iocc=1, nbval=0, nbret=nared)
-    if (nagen .ne. 0 .and. method .eq. 'DEVOGE') then
-        call utmess('E', 'ALGORITH5_67')
-    endif
+
 !     IF (NAGEN.EQ.0 .AND. NARED.EQ.0 .AND. METHOD(1:4).EQ.'ITMI') THEN
 !        CALL UTMESS('E','ALGORITH5_68')
 !     ENDIF
 !
-    if (method(1:4) .eq. 'ITMI') then
-        call getvid('SCHEMA_TEMPS', 'BASE_ELAS_FLUI', iocc=1, nbval=0, nbret=nbasfl)
-        if (nbasfl .eq. 0) then
-            call utmess('E', 'ALGORITH5_69')
-        endif
-!
-        call getvr8('INCREMENT', 'PAS', iocc=1, nbval=0, nbret=npas)
-        if (npas .eq. 0) then
-            call utmess('E', 'ALGORITH5_70')
-        endif
-!
-        call getvtx('SCHEMA_TEMPS', 'ETAT_STAT', iocc=1, scal=ouinon, nbret=ibid)
-        if (ouinon(1:3) .eq. 'OUI') then
-            call getvr8('SCHEMA_TEMPS', 'TS_REG_ETAB', iocc=1, nbval=0, nbret=nts)
-            if (nts .eq. 0) then
-                call utmess('E', 'ALGORITH5_71')
-            endif
-        endif
-!
-        call getvtx('CHOC', 'SOUS_STRUC_1', iocc=1, nbval=0, nbret=n1)
-        if (n1 .ne. 0) then
-            call utmess('E', 'ALGORITH5_72')
-        endif
-!
-        call getvtx('CHOC', 'NOEUD_2', iocc=1, nbval=0, nbret=n1)
-        if (n1 .ne. 0) then
-            call utmess('E', 'ALGORITH5_73')
-        endif
-!
-        call getvtx('CHOC', 'SOUS_STRUC_2', iocc=1, nbval=0, nbret=n1)
-        if (n1 .ne. 0) then
-            call utmess('E', 'ALGORITH5_74')
-        endif
-    endif
-!
-    call getfac('RELA_EFFO_DEPL', nbrede)
-    if (nbrede .ne. 0) then
-        if (method .eq. 'NEWMARK') then
-            call utmess('E', 'ALGORITH5_75', sk='RELA_EFFO_DEPL')
-        endif
-    endif
-!
-    call getfac('RELA_EFFO_VITE', nbrevi)
-    if (nbrevi .ne. 0) then
-        if (method .eq. 'NEWMARK') then
-            call utmess('E', 'ALGORITH5_75', sk='RELA_EFFO_VITE')
-        endif
-    endif
-!
-    call getfac('CHOC', nbchoc)
-    if (nbchoc .ne. 0) then
-        if (method .eq. 'NEWMARK') then
-            call utmess('E', 'ALGORITH5_75', sk='CHOC')
-        endif
-    endif
 !
     call getfac('EXCIT', nbexc)
     kf = 0
@@ -120,9 +62,6 @@ subroutine mdveri()
             kf = kf+1
         endif
     end do
-    if (kf .ne. 0 .and. method(1:4) .eq. 'ITMI') then
-        call utmess('E', 'ALGORITH5_78')
-    endif
 !
 !     COHERENCE MATRICES
     call getvid(' ', 'MATR_MASS', scal=matr1, nbret=ibid)

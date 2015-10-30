@@ -87,7 +87,7 @@ subroutine dltp0(t0, nume)
             call rsorac(dyna, 'LONUTI', 0, r8b, k8b,&
                         c16b, r8b, k8b, nbordr, 1,&
                         ibid)
-            call wkvect('&&OP0048.NUME_ORDRE', 'V V I', nbordr(1), jordr)
+            call wkvect('&&COMDLT.NUME_ORDRE', 'V V I', nbordr(1), jordr)
             call rsorac(dyna, 'TOUT_ORDRE', 0, r8b, k8b,&
                         c16b, r8b, k8b, zi(jordr), nbordr(1),&
                         ibid)
@@ -117,9 +117,6 @@ subroutine dltp0(t0, nume)
 !
             t0 = 0.d0
             call getvr8('INCREMENT', 'INST_INIT', iocc=1, scal=t0, nbret=np)
-            if (np .eq. 0) then
-                call utmess('I', 'ALGORITH5_62')
-            endif
         endif
     endif
 !

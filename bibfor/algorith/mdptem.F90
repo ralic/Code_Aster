@@ -1,7 +1,6 @@
 subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
-                  parcho, noecho, dt, dts, dtu,&
-                  dtmax, dtmin, tinit, tfin, nbpas,&
-                  info, ier, lisins)
+                  parcho, noecho, dt, dtmax, dtmin,&
+                  tinit, tfin, nbpas, ier, lisins)
     implicit none
 #include "jeveux.h"
 #include "asterc/getres.h"
@@ -15,11 +14,11 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: nbchoc, nbpas, info, ier, nbmode
+    integer :: nbchoc, nbpas, ier, nbmode
     real(kind=8) :: masgen(*), pulsat(*), parcho(nbchoc, *)
     real(kind=8) :: dplmod(nbchoc, nbmode, *)
-    real(kind=8) :: dt, tinit, tfin, dtmax, dts, dtu, dtmin
-    character(len=8) :: noecho(nbchoc, *)
+    real(kind=8) :: dt, tinit, tfin, dtmax, dtmin
+    character(len=*) :: noecho(nbchoc, *)
     character(len=24) :: lisins
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -49,8 +48,6 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
 ! IN  : PARCHO : TABLEAU DES PARAMETRES DE CHOC
 ! IN  : NOECHO : TABLEAU DES NOMS DES NOEUDS DE CHOC
 ! OUT : DT     : PAS DE TEMPS
-! OUT : DTS    : PAS DE TEMPS LIMITE (BASE ET CHOCS)
-! OUT : DTU    : PAS DE TEMPS UTILISATEUR
 ! OUT : TINIT  : TEMPS INITIAL
 ! OUT : TFIN   : TEMPS FINAL
 ! OUT : NBPAS  : NOMBRE DE PAS CALCULE (INITIAL NON COMPRIS)
@@ -62,9 +59,9 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
     integer :: n1, n2, n3, n4, n5, n6, nr, nt, nni
     integer :: nbgrpa, nbinst, nbinsr, numef, nbordr
     integer :: vali
-    real(kind=8) :: knorm, ktang, r8bid
+    real(kind=8) :: dts, dtu, knorm, ktang, r8bid
     real(kind=8) :: valr(3)
-    real(kind=8) :: zero, deuxpi, dti, dtp
+    real(kind=8) :: zero, deuxpi, dti, dtp, eps
     character(len=8) :: veripa, nomres, tran, li
     character(len=16) :: typres, nomcmd, method
 !     ------------------------------------------------------------------
@@ -81,10 +78,10 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
     iveri = 0
     zero = 0.d0
     deuxpi = r8depi()
+    eps = r8prem()
     dts = 1.d10
     dtu = 1.d+10
     dtmax = 1.d+10
-    lisins= ' '
     call getvtx('SCHEMA_TEMPS', 'SCHEMA', iocc=1, scal=method, nbret=n1)
 !
 !     VERIFICATION DE PRESENCE DU PAS SI ADAPT OU RUNGE-KUTTA
@@ -125,9 +122,6 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
             tinit = zr (jbint)
         else
             call getvr8('INCREMENT', 'INST_INIT', iocc=1, scal=tinit, nbret=n2)
-            if (n2 .eq. 0) then
-                call utmess('I', 'ALGORITH5_62')
-            endif
         endif
     endif
 !
@@ -173,7 +167,7 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
     else
         call getvr8('INCREMENT', 'INST_FIN', iocc=1, scal=tfin, nbret=n3)
         call getvr8('INCREMENT', 'PAS', iocc=1, scal=dtu, nbret=n4)
-        if (dtu .eq. 0.d0) then
+        if (abs(dtu).le.eps) then
             call utmess('F', 'ALGORITH3_12')
         endif
     endif
@@ -181,12 +175,12 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
     call getvtx('INCREMENT', 'VERI_PAS', iocc=1, scal=veripa, nbret=n5)
     if (veripa .eq. 'OUI') iveri = 1
 !
-    do 10 i = 1, nbmode
-        if (pulsat(i) .ne. zero) then
+    do i = 1, nbmode
+        if (abs(pulsat(i)).gt.eps) then
             dti = deuxpi / pulsat(i)
             dts = min( dts , dti )
         endif
-10  end do
+    end do
 !
     if (nbchoc .gt. 0) then
 !
@@ -196,13 +190,10 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
             ic = 1
             ia = 0
 24          continue
-            if (info .eq. 2) then
-                call utmess('I', 'ALGORITH16_92', sk=noecho(i, ic))
-            endif
             do 22 j = 1, nbmode
-                if (pulsat(j) .eq. zero) goto 22
+                if (abs(pulsat(j)).le.eps) goto 22
 !
-                if (knorm .ne. zero) then
+                if (abs(knorm).gt.eps) then
                     dti = deuxpi / sqrt(pulsat(j)**2 + knorm * dplmod( i,j,1+ia)**2 / masgen(j))
                     dts = min(dts, dti)
                     dti = deuxpi / sqrt(pulsat(j)**2 + knorm * dplmod( i,j,2+ia)**2 / masgen(j))
@@ -210,7 +201,7 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
                     dti = deuxpi / sqrt(pulsat(j)**2 + knorm * dplmod( i,j,3+ia)**2 / masgen(j))
                     dts = min(dts, dti)
                 endif
-                if (ktang .ne. zero) then
+                if (abs(ktang).gt.eps) then
                     dti = deuxpi / sqrt(pulsat(j)**2 + ktang * dplmod( i,j,1+ia)**2 / masgen(j))
                     dts = min(dts, dti)
                     dti = deuxpi / sqrt(pulsat(j)**2 + ktang * dplmod( i,j,2+ia)**2 / masgen(j))
@@ -236,11 +227,8 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
         dt = min( dtp , dtu )
     else if (method(1:5).eq.'RUNGE') then
         dt = dtu
-    else if (method .eq. 'ITMI') then
-        dt = dtu
-        goto 9999
     else
-!      CASE METHOD .EQ. 'EULER' OR OTHER
+!      CASE METHOD .EQ. 'DIFF_CENTRE' OR OTHER
         dtp = dts / 20.d0
         dt = min( dtp , dtu )
     endif
@@ -273,7 +261,7 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
             nbpas = nint( ( tfin - tinit ) / dt )
         endif
     endif
-9999  continue
+
 !
 !     SI LA METHODE N'EST PAS ADAPT, RUNGE-KUTTA OU ITMI:
 !     SI LIST_INST DANS ARCHIVAGE ALORS:
@@ -282,25 +270,21 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
     call getvid('ARCHIVAGE', 'LIST_INST', iocc=1, nbval=0, nbret=n6)
     call getvr8('ARCHIVAGE', 'INST', iocc=1, nbval=0, nbret=n7)
     if (n6 .ne. 0 .or. n7 .ne. 0) then
-        if ((method(1:5) .ne. 'ADAPT') .or. (method.ne.'ITMI') .or.&
-            (method(1:5).ne.'RUNGE')) then
 !
-            call wkvect('&&OP0074.MD_JVALE', 'V V R', nbpas+1, jvale)
-            j=0
-            zr(jvale)=tinit
-            do 30 k = 1, nbpas
-                j = j + 1
-                zr(jvale+j) = tinit + k*dt
-30          continue
-            lisins= '&&OP0074.MD_JVALE'
-        endif
+        call wkvect(lisins, 'V V R', nbpas+1, jvale)
+        j=0
+        zr(jvale)=tinit
+        do 30 k = 1, nbpas
+            j = j + 1
+            zr(jvale+j) = tinit + k*dt
+30      continue
     endif
 !
 !     GESTION DU PAS MAXIMAL POUR SCHEMA ADAPT OU RUNGE-KUTTA
-    if (method(1:5) .eq. 'ADAPT' .or. (method(1:5).eq.'RUNGE')) then
-        call getvr8('INCREMENT', 'PAS_MAXI', iocc=1, scal=r8bid, nbret=n6)
+    if (method(1:5) .eq. 'ADAPT' .or. (method(1:5).eq.'RUNGE') .or. (method(1:6).eq.'DEVOGE') ) then
+        call getvr8('SCHEMA_TEMPS', 'PAS_MAXI', iocc=1, scal=r8bid, nbret=n6)
         if (n6 .ne. 0) then
-            call getvr8('INCREMENT', 'PAS_MAXI', iocc=1, scal=dtmax, nbret=n6)
+            call getvr8('SCHEMA_TEMPS', 'PAS_MAXI', iocc=1, scal=dtmax, nbret=n6)
             if (dtmax .gt. (dts/20.d0)) then
                 valr (1) = dtmax
                 valr (2) = dt
@@ -322,9 +306,9 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
 !
 !     GESTION DU PAS MINI POUR SCHEMA RUNGE-KUTTA
     if (method(1:5) .eq. 'RUNGE') then
-        call getvr8('INCREMENT', 'PAS_MINI', iocc=1, scal=r8bid, nbret=n6)
+        call getvr8('SCHEMA_TEMPS', 'PAS_MINI', iocc=1, scal=r8bid, nbret=n6)
         if (n6 .ne. 0) then
-            call getvr8('INCREMENT', 'PAS_MINI', iocc=1, scal=dtmin, nbret=n6)
+            call getvr8('SCHEMA_TEMPS', 'PAS_MINI', iocc=1, scal=dtmin, nbret=n6)
         else
             dtmin = 1000.d0*r8prem()
         endif

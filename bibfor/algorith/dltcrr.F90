@@ -1,8 +1,8 @@
 subroutine dltcrr(result, neq, nbordr, iarchi, texte,&
-                  ifm, t0, lcrea, typres, masse,&
-                  rigid, amort, dep0, vit0, acc0,&
-                  fexte, famor, fliai, numedd, nume,&
-                  nbtyar, typear)
+                  t0, lcrea, typres, masse, rigid,&
+                  amort, dep0, vit0, acc0, fexte,&
+                  famor, fliai, numedd, nume, nbtyar,&
+                  typear)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -52,8 +52,10 @@ subroutine dltcrr(result, neq, nbordr, iarchi, texte,&
 #include "asterfort/rsagsd.h"
 #include "asterfort/rscrsd.h"
 #include "asterfort/titre.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: neq, nbordr, iarchi, ifm, ir
+
+    integer :: neq, nbordr, iarchi, ir
     integer :: nume, nbtyar
 !
     real(kind=8) :: dep0(neq), vit0(neq), acc0(neq), t0
@@ -95,9 +97,13 @@ subroutine dltcrr(result, neq, nbordr, iarchi, texte,&
         istoc = 0
 !
         call dlarch(result, neq, istoc, iarchi, texte,&
-                    1, ifm, t0, nbtyar, typear,&
-                    masse, dep0, vit0, acc0, fexte(neq+1),&
-                    famor( neq+1), fliai(neq+1))
+                    1, t0, nbtyar, typear, masse,&
+                    dep0, vit0, acc0, fexte(neq+1), famor( neq+1),&
+                    fliai(neq+1))
+!
+        call utmess('I', 'DYNAMIQUE_89', ni=2, vali=[0, 0],&
+                                               nr=2, valr=[t0, t0])
+
 !
         iarchi = 0
 !

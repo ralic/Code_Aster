@@ -36,7 +36,7 @@ subroutine dy2mbr(numddl, neq, lischa, freq, vediri,&
 !
 ! ----------------------------------------------------------------------
 !
-! DYNA_LINE_HARM
+! DYNA_VIBRA//HARM/GENE
 !
 ! CALCUL DU SECOND MEMBRE
 !

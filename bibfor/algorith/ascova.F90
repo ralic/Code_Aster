@@ -204,7 +204,7 @@ subroutine ascova(detr, vachar, fomulz, npara, vpara,&
  30     continue
         call jedetr(vachar)
     else if (detr.eq.'G') then
-!       -- EN PRINCIPE UTILISE PAR DYNA_LINE_HARM
+!       -- EN PRINCIPE UTILISE PAR DYNA_VIBRA//HARM
     else
         ASSERT(.false.)
     endif

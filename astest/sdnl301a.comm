@@ -179,7 +179,7 @@ VECTPROJ=PROJ_VECT_BASE(BASE         =MODE,
                         TYPE_VECT    ='FORC');
 
 TRANGENE=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
-                         SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                         SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',),
                          MATR_MASS=MASSPROJ,
                          MATR_RIGI=RIGIPROJ,
                          MATR_AMOR=AMORPROJ,
@@ -466,7 +466,7 @@ VECTPRO2=PROJ_VECT_BASE(BASE         =BASEMODA,
                         TYPE_VECT    ='FORC');
 
 TRANGEN2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
-                         SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                         SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',),
                          MATR_MASS=MASSPRO2,
                          MATR_RIGI=RIGIPRO2,
                          MATR_AMOR=AMORPRO2,

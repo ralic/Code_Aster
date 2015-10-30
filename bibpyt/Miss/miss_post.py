@@ -42,7 +42,7 @@ from Cata.cata import (
     _F, DETRUIRE, DEFI_FICHIER,
     NUME_DDL_GENE, PROJ_VECT_BASE, PROJ_MATR_BASE, COMB_MATR_ASSE,
     LIRE_IMPE_MISS, LIRE_FORC_MISS,
-    DYNA_LINE_HARM, REST_SPEC_TEMP,
+    DYNA_VIBRA, REST_SPEC_TEMP,
     DEFI_LIST_REEL, CALC_FONCTION, RECU_FONCTION, DEFI_FONCTION,
     FORMULE, CALC_FONC_INTERP, CREA_TABLE, LIRE_FONCTION,
     DEFI_CONSTANTE, CREA_CHAMP, AFFE_CHAR_MECA_F
@@ -315,7 +315,7 @@ class PostMissTran(PostMiss):
 
 
     def boucle_dlh(self):
-        """Exécution des DYNA_LINE_HARM"""
+        """Exécution des DYNA_VIBRA//HARM"""
         first = True
         for freq in self.list_freq_DLH:
             opts = {}
@@ -406,14 +406,16 @@ class PostMissTran(PostMiss):
         if len(self.excit_harmo) > 0:
             excit.extend( self.excit_harmo )
         if self.amorgen :
-            dyge = self.dyna_line_harm(MATR_MASS=self.massgen,
+            dyge = self.dyna_vibra_harm(TYPE_CALCUL='HARM', BASE_CALCUL='GENE',
+                                     MATR_MASS=self.massgen,
                                      MATR_AMOR=self.amorgen,
                                      MATR_RIGI=rigtot,
                                      FREQ=freq,
                                      EXCIT=excit,
                                      **opts)
         else :
-            dyge = self.dyna_line_harm(MATR_MASS=self.massgen,
+            dyge = self.dyna_vibra_harm(TYPE_CALCUL='HARM', BASE_CALCUL='GENE',
+                                     MATR_MASS=self.massgen,
                                      MATR_RIGI=rigtot,
                                      FREQ=freq,
                                      AMOR_MODAL=_F(
@@ -423,9 +425,9 @@ class PostMissTran(PostMiss):
         return dyge
 
 
-    def dyna_line_harm(self, **kwargs):
-        """Execution de DYNA_LINE_HARM. Produit un concept temporaire."""
-        __dyge = DYNA_LINE_HARM(**kwargs)
+    def dyna_vibra_harm(self, **kwargs):
+        """Execution de DYNA_VIBRA//HARM. Produit un concept temporaire."""
+        __dyge = DYNA_VIBRA(**kwargs)
         return __dyge
 
 
@@ -465,9 +467,9 @@ class PostMissHarm(PostMissTran):
         """Prépare et produit les concepts de sortie."""
         self.initco()
 
-    def dyna_line_harm(self, **kwargs):
-        """Execution de DYNA_LINE_HARM. Produit le concept définitif."""
-        trangene = DYNA_LINE_HARM(**kwargs)
+    def dyna_vibra_harm(self, **kwargs):
+        """Execution de DYNA_VIBRA. Produit le concept définitif."""
+        trangene = DYNA_VIBRA(**kwargs)
         return trangene
 
 
@@ -513,7 +515,7 @@ class PostMissTabl(PostMiss):
         self.dyge_x = self.dyge_y = self.dyge_z = None
 
     def boucle_dlh(self):
-        """Exécution des DYNA_LINE_HARM dans les 3 directions (chargement unitaire)"""
+        """Exécution des DYNA_VIBRA//HARM dans les 3 directions (chargement unitaire)"""
         first = True
         for freq in self.list_freq_DLH:
             opts = {}
@@ -548,7 +550,7 @@ class PostMissTabl(PostMiss):
             first = False
 
     def iteration_dlh(self, dir, rigtot, freq, opts):
-        """Exécution d'un DYNA_LINE_HARM"""
+        """Exécution d'un DYNA_VIBRA//HARM"""
         __fosx = LIRE_FORC_MISS(BASE=self.param['BASE_MODALE'],
                                 NUME_DDL_GENE=self.nddlgen,
                                 ISSF=self.param['ISSF'],
@@ -556,7 +558,8 @@ class PostMissTabl(PostMiss):
                                 NOM_CHAM='ACCE',
                                 UNITE_RESU_FORC=self.param['UNITE_RESU_FORC'],
                                 FREQ_EXTR=freq,)
-        __dyge = DYNA_LINE_HARM(MATR_MASS=self.massgen,
+        __dyge = DYNA_VIBRA    (TYPE_CALCUL='HARM', BASE_CALCUL='GENE',
+                                MATR_MASS=self.massgen,
                                 MATR_RIGI=rigtot,
                                 FREQ=freq,
                                 AMOR_MODAL=_F(

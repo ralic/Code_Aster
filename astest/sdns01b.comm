@@ -228,7 +228,7 @@ for k in range(1,ns+1):
 # GENERATION D UNE REALISATION ALEATOIRE DU PROCESSUS STOCHASTIQUE
 
     DM100=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
-                            SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                            SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',),
                             MATR_MASS=MATM100,
                             MATR_RIGI=MATK100,
                             MATR_AMOR=MATD100,

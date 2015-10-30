@@ -16,7 +16,35 @@ subroutine op0029()
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+#include "asterfort/comdtm.h"
+#include "asterfort/comdlt.h"
+#include "asterfort/comdlh.h"
+#include "asterfort/getvtx.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
 #include "asterfort/utmess.h"
-!-------------------------------------------------------------
-    call utmess('F', 'FERMETUR_5')
+!   Local variables
+    character(len=4) :: typcal, bascal
+!
+!   0 - Initializations
+    call jemarq()
+
+!   --------------------------------------------------------------------------------------
+!   1 - Calculation type (transient or harmonic) and basis (physical or reducted)
+!   --------------------------------------------------------------------------------------
+
+    call getvtx(' ', 'TYPE_CALCUL', iocc=1, scal=typcal)
+    call getvtx(' ', 'BASE_CALCUL', iocc=1, scal=bascal)
+
+    if (typcal.eq.'HARM') then
+        call comdlh()
+    else
+        if (bascal.eq.'PHYS') then
+            call comdlt()
+        else
+            call comdtm()
+        end if
+    end if
+    call utmess('I','DYNAMIQUE_97')
+    call jedema()
 end subroutine

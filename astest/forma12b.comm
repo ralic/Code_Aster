@@ -110,12 +110,13 @@ sinom = FORMULE(VALE='sin(om*INST)',
                 NOM_PARA='INST',);
 
 
-TRANSD=DYNA_LINE_TRAN(MATR_MASS=MASSE,
-                      MATR_RIGI=RIGIDITE,
-                      SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
-                      EXCIT=_F(VECT_ASSE=PESA,
-                               FONC_MULT=sinom,),
-                      INCREMENT=_F(LIST_INST=LISTR,),);
+TRANSD=DYNA_VIBRA(TYPE_CALCUL='TRAN', BASE_CALCUL='PHYS',
+                  MATR_MASS=MASSE,
+                  MATR_RIGI=RIGIDITE,
+                  SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
+                  EXCIT=_F(VECT_ASSE=PESA,
+                           FONC_MULT=sinom,),
+                  INCREMENT=_F(LIST_INST=LISTR,),);
 
 DEPLPDZd=RECU_FONCTION(RESULTAT=TRANSD,
                        NOM_CHAM='DEPL',

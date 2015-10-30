@@ -185,33 +185,34 @@ DY_GED2=RECU_FONCTION(RESU_GENE=TRANSMO,
                       INTERPOL='LIN',);
 
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=5.718208E-04,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=5.710702372363E-04,
                         VALE_REFE=5.7209999999999997E-4,
                         VALE_PARA=4.9979100000000001,
                         REFERENCE='AUTRE_ASTER',
+                        PRECISION=5.E-3,
                         FONCTION=DY_GED2,),
               )
 
 TEST_FONCTION(VALEUR=_F(VALE_REFE=5.7220000000000003E-4,
-                        VALE_CALC=5.718208E-04,
-                        PRECISION=1.E-3,
+                        VALE_CALC=5.710702372363E-04,
+                        PRECISION=5.E-3,
                         REFERENCE='AUTRE_ASTER',
                         VALE_PARA=4.9979100000000001,
                         FONCTION=DY_GED2,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=7.010297E-04,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=7.001067836608E-04,
                         VALE_REFE=7.023E-4,
                         VALE_PARA=4.9989299999999997,
                         REFERENCE='AUTRE_ASTER',
-                        PRECISION=2.5000000000000001E-3,
+                        PRECISION=5.E-3,
                         FONCTION=DZ_GED2,),
               )
 
 TEST_FONCTION(VALEUR=_F(VALE_REFE=7.0169999999999998E-4,
-                        VALE_CALC=7.010297E-4,
-                        PRECISION=1.E-3,
+                        VALE_CALC=7.001067836608E-04,
+                        PRECISION=5.E-3,
                         REFERENCE='AUTRE_ASTER',
                         VALE_PARA=4.9989299999999997,
                         FONCTION=DZ_GED2,

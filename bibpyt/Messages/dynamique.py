@@ -172,8 +172,18 @@ intervalle (écart inférieur à PAS_MINI), l'une des deux sera supprimée de la
 ces deux valeurs car l'une d'elles peut correspondre à une fréquence de résonance"
 """),
 
-    28 : _(u"""NUME_ORDRE : %(i1)5d,   FREQ : %(r1)f,   CHAMP(S) STOCKE(S) : %(k1)s %(k2)s %(k3)s
-      """),
+    28 : _(u"""
+ Le nombre d'obstacles de choc est limité à %(i1)d en cas de traitement implicite des non-linéarités dans
+ DYNA_VIBRA.
+ Conseil : si la modélisation ne permet pas de réduire le nombre de lieux de choc, il faudrait
+ repasser le calcul mais avec un traitement explicite des chocs.
+"""),
+
+    29 : _(u"""
+ La matrice d'amortissement n'est pas diagonale. Or, la méthode ITMI ne permet pas de modéliser
+ de couplage dynamique par l'amortissement. Les termes diagonaux seront alors extraits pour la suite
+ du calcul.
+"""),
 
     30 : _(u"""
  La fréquence d'actualisation de FORCE_SOL dans le fichier des masses est incohérente avec
@@ -252,9 +262,214 @@ On n'a pas de structure de données résultat dans le mot-clef ETAT_INIT parce q
 On ignore donc le calcul du second membre pour cet instant.
 """), 
 
-    52 : _(u"""
-Schéma multi-pas
-L'instant précédent et l'instant initial sont presque confondus.
-On ignore donc le calcul du second membre pour cet instant.
+    55 : _(u"""
+--------------------------------------------------------------------------------------
+
+%(k1)s
+=====================================================================================
+                     Calcul %(k2)s sur base %(k3)s
+=====================================================================================
 """), 
+
+    56 : _(u"""
+Superposition modale classique
+--------------------------------------------------------------------------------------
+    >> base modale de projection : %(k1)s
+    >> nombre de DDL avant projection (physiques) : %(i1)d"""), 
+
+    57 : _(u"""
+Modèle de sous-structuration dynamique
+--------------------------------------------------------------------------------------
+    >> modèle généralisé : %(k1)s
+    >> numérotation généralisée : %(k2)s"""), 
+
+    58 : _(u"""
+Modèle sous interaction fluide-structure
+--------------------------------------------------------------------------------------
+    >> base de couplage fluide-élastique : %(k1)s
+    >> vitesse du fluide  :%(r1)12.5e"""), 
+
+    59 : _(u"""    >> nombre de modes    : %(i1)d
+    >> fréquence minimale :%(r1)12.5e
+    >> fréquence maximale :%(r2)12.5e
+"""), 
+
+    60 : _(u"""
+Matrices dynamiques pour la résolution
+--------------------------------------------------------------------------------------"""), 
+
+    61 : _(u"""    >> matrice de masse        : %(k1)s
+    >> matrice de rigidité     : %(k2)s"""), 
+
+    62 : _(u"""    >> matrice d'amortissement : %(k1)s
+"""), 
+
+    63 : _(u"""    >> amortissement modal diagonal
+"""), 
+
+    64 : _(u"""    >> système conservatif, sans amortissement.
+"""), 
+
+    65 : _(u"""    >> masse diagonale extraite de la base de couplage fluide-élastique
+    >> rigidité diagonale extraite de la base de couplage fluide-élastique
+    >> amortissement modal diagonal, extrait de la base de couplage fluide-élastique
+"""), 
+
+    66 : _(u"""
+Schéma d'intégration %(k1)s à pas adaptatif
+--------------------------------------------------------------------------------------
+    >> type de schéma                 : explicite
+    >> pas d'intégration initial      :%(r1)12.5e
+    >> pas d'intégration minimal      :%(r2)12.5e  (arrêt du calcul si inférieur)
+    >> pas d'intégration maximal      :%(r3)12.5e  (plafond maximal du pas d'intégration)"""), 
+
+    67 : _(u"""    >> tolérance                      :%(r1)12.5e"""), 
+
+    68 : _(u"""    >> coefficient de division du pas :%(r1)12.5e"""), 
+
+    69 : _(u"""    >> nombre minimum de pas calculés : %(i1)d
+    >> nombre maximum de pas calculés : %(i2)d"""),
+
+    70 : _(u"""
+Schéma d'intégration %(k1)s à pas constant
+--------------------------------------------------------------------------------------
+    >> type de schéma         : %(k2)s
+    >> pas d'intégration      :%(r1)12.5e
+    >> nombre de pas calculés : %(i1)d"""),
+  
+    71 : _(u"""
+Non-linéarités localisées
+--------------------------------------------------------------------------------------"""),
+
+    72 : _(u"""    >> nombre de lieux de choc                  : %(i1)d
+    >> méthode de traitement de chocs           : %(k1)s"""),
+
+    73 : _(u"""    >> nombre de dispositifs anti-sismique      : %(i1)d"""),
+
+    74 : _(u"""    >> nombre de lieux de choc avec flambement  : %(i1)d"""),
+
+    75 : _(u"""    >> nombre de relations effort-déplacement   : %(i1)d"""),
+
+    76 : _(u"""    >> nombre de relations effort-vitesse       : %(i1)d"""),
+
+    77 : _(u"""    >> nombre de couplages dissipatifs visqueux : %(i1)d"""),
+
+    78 : _(u"""
+État initial
+--------------------------------------------------------------------------------------
+    >> extrait à partir du résultat : %(k1)s
+"""),
+
+    79 : _(u"""
+État initial
+--------------------------------------------------------------------------------------
+    >> déplacement  : %(k1)s
+    >> vitesse      : %(k2)s"""),
+
+    80 : _(u"""
+Durée de la simulation
+--------------------------------------------------------------------------------------
+    >> instant initial :%(r1)12.5e
+    >> instant final   :%(r2)12.5e"""),
+
+    81 : _(u"""  
+Archivage
+--------------------------------------------------------------------------------------
+    >> fréquence d'archivage         : tous les %(i1)d pas calculés
+    >> instants d'archivage forcés   : instants initial et final, et %(i2)d autres instants
+    >> champs archivés (généralisés) : DEPL, VITE, ACCE
+
+======================================================================================
+
+Avancement du calcul
+--------------------------------------------------------------------------------------
+"""),
+
+    82 : _(u"""
+Modèle physique
+--------------------------------------------------------------------------------------
+    >> modèle mécanique : %(k1)s
+    >> nombre de DDL physiques : %(i1)d
+"""), 
+
+    83 : _(u"""
+La méthode intégrale (ITMI) est uniquement disponible si les matrices dynamiques sont
+diagonales. Vérifiez que le stockage diagonal a été choisi lors de la numérotation des 
+DDL généralisés.
+"""),     
+    84 : _(u"""    >> accélération : %(k1)s"""),
+
+    85 : _(u"""  
+Archivage
+--------------------------------------------------------------------------------------
+    >> fréquence d'archivage : tous les %(i1)d pas calculés"""),
+
+    86 : _(u"""  
+Archivage
+--------------------------------------------------------------------------------------
+    >> nombre d'instants d'archivage : %(i1)d instants"""),
+
+    87 : _(u"""    >> matrice d'impédance     : %(k1)s"""),
+
+    88 : _(u"""  
+Résolution
+--------------------------------------------------------------------------------------
+    >> fréquence minimale :%(r1)12.5e
+    >> fréquence maximale :%(r2)12.5e
+    >> nombre de fréquences calculées : %(i1)d
+
+Archivage
+--------------------------------------------------------------------------------------
+    >> fréquences archivées : toutes (%(i1)d fréquences)
+    >> champs archivés      : %(k1)s
+
+======================================================================================
+
+Avancement du calcul
+--------------------------------------------------------------------------------------
+"""),
+
+    89 : _(u"""[%(i1)3d%%] Instant calculé :%(r1)12.5e, dernier instant archivé :%(r2)12.5e, au numéro d'ordre : %(i2)5d"""),
+
+    90 : _(u"""
+Entrée/Changement d'état de choc détecté à l'instant %(r1)12.5e
+---------------------------------------------------------------------------------------------
+    >> Descriptif de l'état :"""),
+
+    91 : _(u"""           %(k1)s
+          | Choc numéro | %(k2)s"""),
+
+
+    92 : _(u"""          | État        %(k1)s
+           %(k2)s"""),
+
+    93 : _(u"""    >> Repassage en état de vol libre détecté à l'instant %(r1)12.5e
+
+"""),
+
+    94 : _(u"""    >> Premier passage dans cet état, mise à jour des matrices dynamiques et calcul d'une 
+       nouvelle base de modes propres :
+       """),
+    95 : _(u"""[%(i1)3d%%] Fréquence calculée :%(r1)12.5e, archivée au numéro d'ordre : %(i2)5d"""),
+
+    96 : _(u"""    >> champs archivés       : %(k1)s
+
+======================================================================================
+
+Avancement du calcul
+--------------------------------------------------------------------------------------
+"""),
+
+    97 : _(u"""
+======================================================================================
+                                                                        Fin du calcul
+
+"""),
+
+    98 : _(u"""    >> nombre de modélisations de rotor fissuré : %(i1)d"""),
+
+    99 : _(u"""    >> nombre de modélisations de palier : %(i1)d"""),
+
 }
+
+

@@ -27,7 +27,7 @@ riginor = 2.88E7
 
 TRAN_GE2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                  MATR_MASS=MGEN_BIC,   MATR_RIGI=RGEN_BIC,
-                 SCHEMA_TEMPS=_F(SCHEMA='EULER'),
+                 SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE'),
                  AMOR_MODAL=_F(AMOR_REDUIT=( 0.07,  0.07, ),),
                  MODE_STAT=MSTA_BIC,
                 EXCIT=(

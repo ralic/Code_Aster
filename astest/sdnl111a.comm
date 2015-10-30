@@ -122,7 +122,7 @@ CERCLE=DEFI_OBSTACLE(  TYPE='BI_CERCLE' )
 
 #
 DYNAMODA=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
-                       SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                       SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',),
                        MATR_MASS=MASSEPRO,
                        MATR_RIGI=RIGIPROJ,
                        AMOR_MODAL=_F(AMOR_REDUIT=(0.001,  ),),
@@ -149,7 +149,7 @@ DYNAMODA=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
 
 #
 DYNAMOD2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
-                       SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                       SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',),
                        MATR_MASS=MASSEPRO,
                        MATR_RIGI=RIGIPROJ,
                        AMOR_MODAL=_F(AMOR_REDUIT=(0.001,  ),),
@@ -176,7 +176,7 @@ DYNAMOD2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
 
 #
 DYNAMOD3=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
-                       SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                       SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',),
                        MATR_MASS=MASSEPRO,
                        MATR_RIGI=RIGIPROJ,
                        AMOR_MODAL=_F(AMOR_REDUIT=(0.001,  ),),

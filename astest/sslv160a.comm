@@ -122,7 +122,8 @@ LIST3D=DEFI_LIST_REEL(DEBUT=Ti,
                                    PAS=10*dt,),
                                 ),);
 
-RefM3D=DYNA_LINE_TRAN(MODELE=MODELE,
+RefM3D=DYNA_VIBRA(    TYPE_CALCUL='TRAN', BASE_CALCUL='PHYS',
+                      MODELE=MODELE,
                       CHAM_MATER=CHMAT,
                       CARA_ELEM=CAREL3D,
                       MATR_MASS=MASSE,

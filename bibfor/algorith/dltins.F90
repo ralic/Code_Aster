@@ -90,9 +90,9 @@ subroutine dltins(nbgrpa, lispas, libint, linbpa, npatot,&
             if (abs(zr(jbint+iint)-tinit) .lt. eps) iint = iint + 1
             nbintn = nbgrpa - iint + 1
 !           --- ON CREE UNE NOUVELLE LISTE ---
-            call wkvect('&&OP0048.LI_BINT', 'V V R', nbintn+1, jbin2)
-            call wkvect('&&OP0048.LI_LPAS', 'V V R', nbintn, jlpa2)
-            call wkvect('&&OP0048.LI_NBPA', 'V V I', nbintn, jnbp2)
+            call wkvect('&&COMDLT.LI_BINT', 'V V R', nbintn+1, jbin2)
+            call wkvect('&&COMDLT.LI_LPAS', 'V V R', nbintn, jlpa2)
+            call wkvect('&&COMDLT.LI_NBPA', 'V V I', nbintn, jnbp2)
             j = 0
             do 110 i = iint+1, nbgrpa
                 j = j + 1
@@ -127,9 +127,9 @@ subroutine dltins(nbgrpa, lispas, libint, linbpa, npatot,&
 122          continue
             zi(jnbp2) = nbpf - iv
             zr(jlpa2) = zr(jlpas+iint-1)
-            lispas = '&&OP0048.LI_LPAS'
-            libint = '&&OP0048.LI_BINT'
-            linbpa = '&&OP0048.LI_NBPA'
+            lispas = '&&COMDLT.LI_LPAS'
+            libint = '&&COMDLT.LI_BINT'
+            linbpa = '&&COMDLT.LI_NBPA'
             jnbpa = jnbp2
             jlpas = jlpa2
             jbint = jbin2
@@ -139,7 +139,7 @@ subroutine dltins(nbgrpa, lispas, libint, linbpa, npatot,&
                 npatot = npatot + zi(jnbpa+ip-1)
 130          continue
             nbinst = npatot + 1
-            call wkvect('&&OP0048.FI_JVALE', 'V V R', nbinst, jvale)
+            call wkvect('&&COMDLT.FI_JVALE', 'V V R', nbinst, jvale)
             j = 0
             zr(jvale) = tinit
             do 140 i = 1, nbgrpa
@@ -151,7 +151,7 @@ subroutine dltins(nbgrpa, lispas, libint, linbpa, npatot,&
                     zr(jvale+j) = t0 + k*dt
 142              continue
 140          continue
-            lisins= '&&OP0048.FI_JVALE'
+            lisins= '&&COMDLT.FI_JVALE'
         endif
 !
         call getvis('INCREMENT', 'NUME_FIN', iocc=1, scal=numef, nbret=n1)
@@ -181,9 +181,9 @@ subroutine dltins(nbgrpa, lispas, libint, linbpa, npatot,&
 202      continue
         nbintn = iint
 !        --- ON CREE UNE NOUVELLE LISTE ---
-        call wkvect('&&OP0048.LI_BINTF', 'V V R', nbintn+1, jbin2)
-        call wkvect('&&OP0048.LI_LPASF', 'V V R', nbintn, jlpa2)
-        call wkvect('&&OP0048.LI_NBPAF', 'V V I', nbintn, jnbp2)
+        call wkvect('&&COMDLT.LI_BINTF', 'V V R', nbintn+1, jbin2)
+        call wkvect('&&COMDLT.LI_LPASF', 'V V R', nbintn, jlpa2)
+        call wkvect('&&COMDLT.LI_NBPAF', 'V V I', nbintn, jnbp2)
         do 210 i = 1, iint
             zi(jnbp2+i-1) = zi(jnbpa+i-1)
             zr(jbin2+i-1) = zr(jbint+i-1)
@@ -207,9 +207,9 @@ subroutine dltins(nbgrpa, lispas, libint, linbpa, npatot,&
         call utmess('F', 'ALGORITH12_92', nr=4, valr=valr)
 232      continue
         zi(jnbp2+iint-1) = iv - nbpd
-        lispas = '&&OP0048.LI_LPASF'
-        libint = '&&OP0048.LI_BINTF'
-        linbpa = '&&OP0048.LI_NBPAF'
+        lispas = '&&COMDLT.LI_LPASF'
+        libint = '&&COMDLT.LI_BINTF'
+        linbpa = '&&COMDLT.LI_NBPAF'
         jnbpa = jnbp2
         jlpas = jlpa2
         jbint = jbin2
@@ -219,7 +219,7 @@ subroutine dltins(nbgrpa, lispas, libint, linbpa, npatot,&
             npatot = npatot + zi(jnbpa+ip-1)
 240      continue
         nbinst = npatot + 1
-        call wkvect('&&OP0048.FI_JVALF', 'V V R', nbinst, jvale)
+        call wkvect('&&COMDLT.FI_JVALF', 'V V R', nbinst, jvale)
         zr(jvale) = zr(jbint)
         j=0
         do 250 i = 1, nbgrpa
@@ -231,7 +231,7 @@ subroutine dltins(nbgrpa, lispas, libint, linbpa, npatot,&
                 zr(jvale+j) = t0 + k*dt
 252          continue
 250      continue
-        lisins='&&OP0048.FI_JVALF'
+        lisins='&&COMDLT.FI_JVALF'
 !
         goto 9999
     endif
@@ -243,23 +243,23 @@ subroutine dltins(nbgrpa, lispas, libint, linbpa, npatot,&
     if (dt .eq. 0.d0) then
         call utmess('F', 'ALGORITH3_12')
     endif
-    call wkvect('&&OP0048.LI_BINT', 'V V R', 2, jbin2)
-    call wkvect('&&OP0048.LI_LPAS', 'V V R', 1, jlpa2)
-    call wkvect('&&OP0048.LI_NBPA', 'V V I', 1, jnbp2)
+    call wkvect('&&COMDLT.LI_BINT', 'V V R', 2, jbin2)
+    call wkvect('&&COMDLT.LI_LPAS', 'V V R', 1, jlpa2)
+    call wkvect('&&COMDLT.LI_NBPA', 'V V I', 1, jnbp2)
     npatot = nint((tfin-tinit)/dt)
     zi(jnbp2) = npatot
     zr(jbin2) = tinit
     zr(jbin2+1) = tfin
     zr(jlpa2) = dt
     nbgrpa=1
-    lispas = '&&OP0048.LI_LPAS'
-    libint = '&&OP0048.LI_BINT'
-    linbpa = '&&OP0048.LI_NBPA'
-    call wkvect('&&OP0048.LI_VALE', 'V V R', npatot+1, jval2)
+    lispas = '&&COMDLT.LI_LPAS'
+    libint = '&&COMDLT.LI_BINT'
+    linbpa = '&&COMDLT.LI_NBPA'
+    call wkvect('&&COMDLT.LI_VALE', 'V V R', npatot+1, jval2)
     do 23 i = 0, npatot
         zr(jval2+i)=tinit+i*dt
 23  end do
-    lisins = '&&OP0048.LI_VALE'
+    lisins = '&&COMDLT.LI_VALE'
 !
 9999  continue
     call jedema()

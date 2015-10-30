@@ -78,6 +78,7 @@ implicit none
     integer :: n1
     integer :: npilo, nb_excit, nb_load
     integer :: infmax, i_excit, i_load, iret, infc, j, i_load_new
+    character(len=4) :: typcal
     character(len=5) :: suffix
     character(len=8) :: k8bid, load_type, parcha, load_apply
     character(len=8) :: fctcsr
@@ -125,7 +126,7 @@ implicit none
 !
     l_apply_user   = .false.
     if (l_load_user) then
-        if (nomcmd.eq.'DYNA_LINE_TRAN' .or. nomcmd.eq.'DYNA_LINE_HARM') then
+        if (nomcmd(1:10).eq.'DYNA_VIBRA') then
             l_apply_user   = .false.
         else
             l_apply_user   = .true.
@@ -201,10 +202,12 @@ implicit none
 !
 ! --------- FONCTIONS MULTIPLICATIVES DES CHARGES
 !
-            lfcplx = (&
-                     nomcmd .eq. 'DYNA_LINE_HARM' .or.&
-                     ( nomcmd.eq.'LIRE_RESU' .and. typesd.eq.'DYNA_HARMO' )&
-                     )
+            if (nomcmd(1:10) .eq. 'DYNA_VIBRA') then
+                call getvtx(' ', 'TYPE_CALCUL', iocc=1, scal=typcal)
+                lfcplx = (typcal.eq.'HARM')
+            else
+                lfcplx = (nomcmd.eq.'LIRE_RESU' .and. typesd.eq.'DYNA_HARMO' )
+            end if
             lacce = (nomcmd.eq.'DYNA_NON_LINE'.or. nomcmd.eq.'LIRE_RESU')
             call lislfc(list_load_resu, i_load, i_excit, l_load_user, nb_excit,&
                         lfcplx, lacce, fctcsr, nomfct)

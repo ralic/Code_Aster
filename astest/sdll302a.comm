@@ -261,10 +261,10 @@ L_INSTA=DEFI_LIST_REEL(         DEBUT=DEBUTR,
                           )
 
 REPBASE1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
-                               SCHEMA_TEMPS=_F(SCHEMA='DEVOGE'),
+                               SCHEMA_TEMPS=_F(SCHEMA='DEVOGE', PAS_MAXI=PAS, PAS_MINI=PAS),
                                MATR_RIGI=RIGIGEN1,
                                MATR_MASS=MASSGEN1,
-                               ARCHIVAGE=_F( LIST_INST = L_INSTA),
+                               ARCHIVAGE=_F( PAS_ARCH=10),
                                INCREMENT=_F(  INST_INIT = DEBUTR,
                                           PAS = PAS,
                                           INST_FIN = TFIN),

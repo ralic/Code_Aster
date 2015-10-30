@@ -17,9 +17,9 @@
 !
 interface
     subroutine dlarch(result, neq, istoc, iarchi, texte,&
-                      alarm, ifm, temps, nbtyar, typear,&
-                      masse, depl, vite, acce, fexte,&
-                      famor, fliai)
+                      alarm, temps, nbtyar, typear, masse,&
+                      depl, vite, acce, fexte, famor,&
+                      fliai)
         integer :: nbtyar
         integer :: neq
         character(len=8) :: result
@@ -27,7 +27,6 @@ interface
         integer :: iarchi
         character(len=*) :: texte
         integer :: alarm
-        integer :: ifm
         real(kind=8) :: temps
         character(len=16) :: typear(nbtyar)
         character(len=8) :: masse
