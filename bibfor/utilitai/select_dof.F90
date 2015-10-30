@@ -95,7 +95,7 @@ implicit none
     integer :: iexi
     logical :: l_matr_dist, l_prof_gene
     integer :: node_nume, idx_gd, length_prno
-    integer :: i_equ, i_node, i_cmp, i_dof, i_equ_l, i_cmp_glob, i_ec
+    integer :: i_equ, i_node, i_cmp, i_dof,  i_cmp_glob, i_ec
     integer :: nb_node, nb_ec, nb_cmp, nb_cmp_gd, nb_node_mesh, nb_cmp_node
     integer, pointer :: cmp_sele(:) => null()
     integer, pointer :: node_sele(:) => null()
@@ -274,17 +274,12 @@ implicit none
                     i_cmp      = cmp_sele(i_cmp_glob)
                     if (i_cmp.ne.0) then
                         i_equ = v_nueq(i_dof)
-                        if (l_matr_dist) then
-                            i_equ_l = v_nugl(i_equ)
-                        else
-                            i_equ_l = i_equ
-                        endif
                         if (present(list_idx_dof)) then
-                            list_idx_dof(i_cmp) = i_equ_l
+                            list_idx_dof(i_cmp) = i_equ
                         elseif (present(list_equa)) then
-                            list_equa(i_equ_l) = 1
+                            list_equa(i_equ) = 1
                         elseif (present(tabl_equa)) then
-                            tabl_equa(i_equ_l, i_cmp) = 1
+                            tabl_equa(i_equ, i_cmp) = 1
                         endif
                     endif
                 endif
