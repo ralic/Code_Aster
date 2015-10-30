@@ -182,9 +182,9 @@ vale = [[0.0,-6.3355791974025E+04,-6.0652835573768E+04,-5.0757742731615E+04,0.0]
 
 VALE_CALC=[
  [0.0,
- -61740.011620067,
- -60998.808056569,
- -51944.825894008,
+ -61732.3989181,
+ -60991.8799143,
+ -51941.5395562,
  0.0,],
  [0.0,
  -1.7715127310263E+05,
@@ -239,7 +239,7 @@ for i in [1,2,3,4]: #Boucle sur les increments
         critere = 'RELATIF'
       TEST_TABLE(TABLE=LAG[i],
                  NOM_PARA='LAGS_C',
-                 VALE_CALC=VALE_CALC[i-1][j], VALE_REFE=vale[i-1][j], TOLE_MACHINE=6.E-05,
+                 VALE_CALC=VALE_CALC[i-1][j], VALE_REFE=vale[i-1][j],
                  CRITERE=critere,
                  PRECISION=precision,
                  REFERENCE='AUTRE_ASTER',

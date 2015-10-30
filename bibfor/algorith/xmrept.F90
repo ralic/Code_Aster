@@ -75,6 +75,11 @@ subroutine xmrept(jcesd, jcesv, jcesl, izone, ndim,&
     integer :: jmaesx
     integer :: zxain
 !
+!   tolerances --- absolue et relative --- pour determiner si deux distances sont egales
+    real(kind=8), parameter :: atol=1.e-12
+    real(kind=8), parameter :: rtol=1.e-12
+    aster_logical :: near
+!
 ! --------------------------------------------------------------------
 !
     call jemarq()
@@ -135,7 +140,11 @@ subroutine xmrept(jcesd, jcesv, jcesl, izone, ndim,&
             call cesexi('S', jcesd(2), jcesl(2), nummai, 1,&
                         ifiss, zxain*( ini-1)+2, iad)
             if (nint(zr(jcesv(2)-1+iad)) .eq. 0 .and. ini .eq. 3 .and. ndim .eq. 2) goto 110
-            if (dist .lt. dmin) then
+
+!           dist est-elle egale a dmin ?
+            near = abs(dist-dmin) .le. (atol + dmin*rtol)
+
+            if (dist .lt. dmin .and. .not. near) then
                 call cesexi('S', jcesd(2), jcesl(2), nummai, 1,&
                             ifiss, zxain*(ini-1)+1, iad)
                 ASSERT(iad.gt.0)

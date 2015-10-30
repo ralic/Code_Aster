@@ -48,15 +48,32 @@ subroutine cfadju(alias, ksi1, ksi2, toleou, iproj)
 !
 ! ----------------------------------------------------------------------
 !
-    real(kind=8) :: ecart, ksi1e, ksi2e
+    real(kind=8) :: ecart, ksi1e, ksi2e, k1pk2, k2mk1
     integer :: izone
+!
+!   tolerances --- absolue et relative --- pour determiner si deux distances sont egales
+    real(kind=8), parameter :: atol=1.e-12
+    real(kind=8), parameter :: rtol=1.e-12
+    aster_logical :: near
 !
 ! ----------------------------------------------------------------------
 !
     iproj = 0
     ecart = -1.d0
 !
+!   calcul de ksi1 + ksi2 et ksi2 - ksi1 (utilises pour le cas du triangle)
+    k1pk2 = ksi1 + ksi2
+    k2mk1 = ksi2 - ksi1
+!
     if (alias(1:2) .eq. 'SE') then
+!
+!       premier ajustement : on positionne le point de coordonnees (ksi1, ksi2) sur
+!       le bord, s'il est à une distance (normalisee) inférieure a atol du bord
+!
+!       ksi1 = -1 ?
+        if (abs(ksi1+1.d0).le.atol) ksi1=-1.d0
+!       ksi1 = +1 ?
+        if (abs(ksi1-1.d0).le.atol) ksi1=+1.d0
 !
         if ((ksi1.ge.-1.d0) .and. (ksi1.le.1.d0)) then
             goto 999
@@ -76,13 +93,30 @@ subroutine cfadju(alias, ksi1, ksi2, toleou, iproj)
             ksi1 = 1.d0
         endif
 !
-        if (ecart .gt. toleou) then
+!       ecart est-il egal a toleou ?
+        near = abs(ecart-toleou) .le. (atol + toleou*rtol)
+!
+        if (ecart .gt. toleou .and. .not. near) then
             iproj = 2
         endif
 !
     else if (alias(1:2).eq.'TR') then
 !
-        if ((ksi1.ge.0.d0) .and. (ksi2.ge.0.d0) .and. ((ksi1+ksi2) .le.1.d0)) then
+!       premier ajustement : on positionne le point de coordonnees (ksi1, ksi2) sur
+!       le bord, s'il est à une distance (normalisee) inférieure a atol du bord
+!
+!       ksi1 = 0 ?
+        if (abs(ksi1).le.atol) ksi1=0.d0
+!       ksi2 = 0 ?
+        if (abs(ksi2).le.atol) ksi2=0.d0
+!       ksi1 + ksi2 = 1 ?
+        if (abs(k1pk2-1.d0).le.atol) k1pk2=+1.d0
+!       ksi2 - ksi1 = -1 ?
+        if (abs(k2mk1+1.d0).le.atol) k2mk1=-1.d0
+!       ksi2 - ksi1 = 1 ?
+        if (abs(k2mk1-1.d0).le.atol) k2mk1=+1.d0
+!
+        if ((ksi1.ge.0.d0) .and. (ksi2.ge.0.d0) .and. (k1pk2 .le.1.d0)) then
             goto 999
         endif
 !
@@ -112,14 +146,14 @@ subroutine cfadju(alias, ksi1, ksi2, toleou, iproj)
             endif
         endif
         if (ksi1 .ge. 0.d0) then
-            if (ksi2 .gt. (ksi1+1.d0)) then
+            if (k2mk1 .gt. 1.d0) then
                 izone = 4
-                elseif ((ksi2.gt.(-ksi1+1.d0)).and. (ksi2.ge.(ksi1-1.d0))&
-            .and. (ksi2.le.(ksi1+1.d0))) then
+                elseif ((k1pk2.gt.1.d0).and. (k2mk1.ge.-1.d0)&
+            .and. (k2mk1.le.1.d0)) then
                 izone = 5
                 ksi1e = 5.d-1*(1.d0+ksi1-ksi2)
                 ksi2e = 5.d-1*(1.d0-ksi1+ksi2)
-            else if ((ksi2.ge.0.d0).and. (ksi2.lt.(ksi1-1.d0))) then
+            else if ((ksi2.ge.0.d0).and. (k2mk1.lt.-1.d0)) then
                 izone = 6
             endif
         endif
@@ -164,13 +198,30 @@ subroutine cfadju(alias, ksi1, ksi2, toleou, iproj)
             ksi2 = 0.d0
         endif
 !
-        if (ecart .gt. toleou) then
+!       ecart est-il egal a toleou ?
+        near = abs(ecart-toleou) .le. (atol + toleou*rtol)
+!
+        if (ecart .gt. toleou .and. .not. near) then
             iproj = 2
         endif
 !
     else if (alias(1:2).eq.'QU') then
 !
-        if ((abs(ksi1).le.1.d0) .and. (abs(ksi2).le.1.d0)) then
+!       premier ajustement : on positionne le point de coordonnees (ksi1, ksi2) sur
+!       le bord, s'il est à une distance (normalisee) inférieure a atol du bord
+!
+!       ksi1 = -1 ?
+        if (abs(ksi1+1.d0).le.atol) ksi1=-1.d0
+!       ksi1 = +1 ?
+        if (abs(ksi1-1.d0).le.atol) ksi1=+1.d0
+!       ksi2 = -1 ?
+        if (abs(ksi2+1.d0).le.atol) ksi2=-1.d0
+!       ksi2 = +1 ?
+        if (abs(ksi2-1.d0).le.atol) ksi2=+1.d0
+!
+!        if ((abs(ksi1).le.1.d0) .and. (abs(ksi2).le.1.d0)) then
+        if ((ksi1.ge.-1.d0) .and. (ksi1.le.1.d0) .and. &
+            (ksi2.ge.-1.d0) .and. (ksi2.le.1.d0)) then
             goto 999
         endif
 !
@@ -256,7 +307,10 @@ subroutine cfadju(alias, ksi1, ksi2, toleou, iproj)
             ksi2 = -1.d0
         endif
 !
-        if (ecart .gt. toleou) then
+!       ecart est-il egal a toleou ?
+        near = abs(ecart-toleou) .le. (atol + toleou*rtol)
+!
+        if (ecart .gt. toleou .and. .not. near) then
             iproj = 2
         endif
 !

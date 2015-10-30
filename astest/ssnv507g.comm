@@ -170,8 +170,8 @@ b=0.0880195599
 LAGS_A = E*a-(E*b)/(8*8)
 
 VALE_CALC=[
- -8.8170385314422E+05,
- -1.2375572628036E+06,
+ -881695.571978,
+ -1237533.70885,
  -9.2115268715311E+05,
  -1.2704004587724E+06,
  -8.817394495597E+05,
@@ -206,7 +206,6 @@ for i in [1,2,3,4]: #Boucle sur les increments
                              PRECISION=0.22,
              VALE_CALC=VALE_CALC[(i-1)*2+0],
              VALE_REFE=LAGS_A,
-             TOLE_MACHINE=5.E-5,                 # TODO TOLE_MACHINE
              NOM_PARA='LAGS_C',
              TYPE_TEST='MAX',
              TABLE=LAG[i],)
@@ -216,7 +215,6 @@ for i in [1,2,3,4]: #Boucle sur les increments
                              PRECISION=0.22,
              VALE_CALC=VALE_CALC[(i-1)*2+1],
              VALE_REFE=LAGS_A,
-             TOLE_MACHINE=5.E-5,                 # TODO TOLE_MACHINE
              NOM_PARA='LAGS_C',
              TYPE_TEST='MIN',
              TABLE=LAG[i],)

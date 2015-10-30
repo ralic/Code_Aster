@@ -176,9 +176,9 @@ if (typma==2):
 
 VALE_CALC=[
  [0.0,
- -63325.334426595,
- -60856.991820392,
- -51239.370007317,
+ -63324.4012379,
+ -60855.8766861,
+ -51243.1130569,
  0.0,],
  [0.0,
  -4.2235753464271E+05,
@@ -229,7 +229,7 @@ for i in [1,2,3,4]: #Boucle sur les increments
       if ((i==4) and (j==3)): precision = 12.E-2
       TEST_TABLE(TABLE=LAG[i],
                  NOM_PARA='LAGS_C',
-                 VALE_CALC=VALE_CALC[i-1][j], VALE_REFE=vale[i-1][j], TOLE_MACHINE=2.E-06,
+                 VALE_CALC=VALE_CALC[i-1][j], VALE_REFE=vale[i-1][j],
                  CRITERE=critere,
                  PRECISION=precision,
                  REFERENCE='AUTRE_ASTER',

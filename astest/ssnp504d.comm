@@ -178,9 +178,9 @@ noeud = ['N43','N228','N247','N266','N81']
 
 VALE_CALC=[
  [0.0,
- -54272.090016831,
- -53786.55788659,
- -45959.428932758,
+ -54265.3217211,
+ -53780.2618914,
+ -45956.3701111,
  0.0,],
  [0.0,
  -1.5744565502282E+05,
@@ -229,7 +229,7 @@ for i in [1,2,3,4]: #Boucle sur les increments
         critere = 'RELATIF'
       TEST_TABLE(TABLE=LAG[i],
                  NOM_PARA='LAGS_C',
-                 VALE_CALC=VALE_CALC[i-1][j], VALE_REFE=vale[i-1][j], TOLE_MACHINE=6.E-05,
+                 VALE_CALC=VALE_CALC[i-1][j], VALE_REFE=vale[i-1][j],
                  CRITERE=critere,
                  PRECISION=precision,
                  REFERENCE='AUTRE_ASTER',

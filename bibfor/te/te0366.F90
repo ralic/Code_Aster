@@ -26,6 +26,7 @@ subroutine te0366(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/matini.h"
 #include "asterfort/ttprsm.h"
+#include "asterfort/tecael.h"
 #include "asterfort/tecach.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xlacti.h"
@@ -87,8 +88,10 @@ subroutine te0366(option, nomte)
     integer :: ndeple, nne(3), nnm(3), ddle(2), ddlm(2), nfhe, nfhm
     real(kind=8) :: ffec(8)
     aster_logical :: lmulti
+    integer :: iadzi, iazk24
 ! ----------------------------------------------------------------------
 !
+    call tecael(iadzi, iazk24)
 !
 ! --- INFOS SUR LA MAILLE DE CONTACT
 !

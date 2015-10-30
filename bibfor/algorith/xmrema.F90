@@ -130,6 +130,11 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
     integer, pointer :: connex(:) => null()
     integer, pointer :: typmail(:) => null()
 !
+!   tolerances --- absolue et relative --- pour determiner si deux distances sont egales
+    real(kind=8), parameter :: atol=1.e-12
+    real(kind=8), parameter :: rtol=1.e-12
+    aster_logical :: near
+!
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -335,7 +340,11 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
 !
                 call mmjeux(alias, nptm, ndim, coorma, xi,&
                             yi, geom, jeu, r3bid)
-                if (jeu .lt. jeumin) then
+!
+!               jeu est-il egal a jeumin ?
+                near = abs(jeu-jeumin) .le. (atol + jeumin*rtol)
+
+                if (jeu .lt. jeumin .and. .not. near) then
                     nummin = nummai
                     ifamin = ifacem
                     jeumin = jeu
@@ -359,6 +368,7 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
         lappar = .true.
         goto 200
     endif
+!
     if (iprojm .le. 1) projin = .true.
     if (toleou .eq. -1.d0) projin = .true.
 !

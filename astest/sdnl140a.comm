@@ -67,7 +67,7 @@ contact=DEFI_CONTACT(MODELE=modele,
                      ZONE=_F(GROUP_MA_MAIT='Haut_Contact',
                              GROUP_MA_ESCL='Bas_Contact',
                              CONTACT_INIT='OUI',
-                             COEF_FROT=1.E7,COEF_CONT=1.E9,
+                             COEF_FROT=1.E7,COEF_CONT=1.E12,
                              SANS_NOEUD = ('N529','N530','N531'), 
                              COULOMB=0.2),);
 
