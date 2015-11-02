@@ -1,4 +1,5 @@
 
+
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +20,7 @@
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
+import cataelem.Commons.attributes as AT
 
 
 
@@ -31,11 +33,11 @@ VERI_JACOBIEN = Option(
         SP.PCODRET,
     ),
     condition=(
-      CondCalcul('+', (('DIM_COOR_MODELI','3'),('DIM_TOPO_MODELI','3'),('BORD','0'),)),
-      CondCalcul('+', (('DIM_COOR_MODELI','2'),('DIM_TOPO_MODELI','2'),('BORD','0'),)),
-      CondCalcul('-', (('INTERFACE','OUI'),)),
-      CondCalcul('-', (('MODTHM','SUSHI'),)),
-      CondCalcul('-', (('MODELI','2FP'),)),
+      CondCalcul('+', ((AT.DIM_COOR_MODELI,'3'),(AT.DIM_TOPO_MODELI,'3'),(AT.BORD,'0'),)),
+      CondCalcul('+', ((AT.DIM_COOR_MODELI,'2'),(AT.DIM_TOPO_MODELI,'2'),(AT.BORD,'0'),)),
+      CondCalcul('-', ((AT.INTERFACE,'OUI'),)),
+      CondCalcul('-', ((AT.MODTHM,'SUSHI'),)),
+      CondCalcul('-', ((AT.MODELI,'2FP'),)),
     ),
     comment=""" verification que les jacobiens des differents points de Gauss
    ont tous le meme signe """,

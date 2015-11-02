@@ -1,4 +1,5 @@
 
+
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +20,7 @@
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
+import cataelem.Commons.attributes as AT
 
 
 
@@ -70,9 +72,9 @@ CHAR_MECA_FR3D3D = Option(
         SP.PVECTUR,
     ),
     condition=(
-      CondCalcul('+', (('PHENO','ME'),('BORD','0'),('DIM_TOPO_MODELI','3'),)),
-      CondCalcul('-', (('PHENO','ME'),('INTERFACE','OUI'),)),
-      CondCalcul('-', (('PHENO','ME'),('MODELI','D3D'),)),
+      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),(AT.DIM_TOPO_MODELI,'3'),)),
+      CondCalcul('-', ((AT.PHENO,'ME'),(AT.INTERFACE,'OUI'),)),
+      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'D3D'),)),
     ),
     comment=""" CHAR_MECA_FR3D3D (MOT-CLE : FORCE_INTERNE): CALCUL DU SECOND
            MEMBRE ELEMENTAIRE CORRESPONDANT A DES FORCES INTERNES APPLIQUEES

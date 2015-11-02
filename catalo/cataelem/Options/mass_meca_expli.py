@@ -1,4 +1,5 @@
 
+
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +20,7 @@
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
+import cataelem.Commons.attributes as AT
 
 
 
@@ -57,7 +59,7 @@ MASS_MECA_EXPLI = Option(
         SP.PMATUUR,
     ),
     condition=(
-      CondCalcul('+', (('PHENO','ME'),('BORD','0'),)),
+      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
     ),
     comment=""" matrice de masse "diagonale" adaptee a la commande DYNA_TRAN_EXPLI.
 

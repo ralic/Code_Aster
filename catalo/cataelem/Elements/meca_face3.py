@@ -1,4 +1,5 @@
 
+
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,6 +24,7 @@ import cataelem.Commons.located_components as LC
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.mesh_types as MT
 from cataelem.Options.options import OP
+import cataelem.Commons.attributes as AT
 
 #----------------
 # Modes locaux :
@@ -422,7 +424,7 @@ ele.meshType = MT.TRIA3
 ele.nodes = (
         SetOfNodes('EN1', (1,2,3,)),
     )
-ele.attrs= (('BORD_ISO','OUI'),)
+ele.attrs= ((AT.BORD_ISO,'OUI'),)
 ele.elrefe=(
         ElrefeLoc(MT.TR3, gauss = ('RIGI=FPG3',), mater=('RIGI',),),
     )
@@ -435,7 +437,7 @@ ele.meshType = MT.QUAD4
 ele.nodes = (
         SetOfNodes('EN1', (1,2,3,4,)),
     )
-ele.attrs= (('BORD_ISO','OUI'),)
+ele.attrs= ((AT.BORD_ISO,'OUI'),)
 ele.elrefe=(
         ElrefeLoc(MT.QU4, gauss = ('RIGI=FPG4',), mater=('RIGI',),),
     )
@@ -448,7 +450,7 @@ ele.meshType = MT.TRIA6
 ele.nodes = (
         SetOfNodes('EN1', (1,2,3,4,5,6,)),
     )
-ele.attrs= (('BORD_ISO','OUI'),)
+ele.attrs= ((AT.BORD_ISO,'OUI'),)
 ele.elrefe=(
         ElrefeLoc(MT.TR6, gauss = ('RIGI=FPG6',), mater=('RIGI',),),
     )
@@ -461,7 +463,7 @@ ele.meshType = MT.QUAD8
 ele.nodes = (
         SetOfNodes('EN1', (1,2,3,4,5,6,7,8,)),
     )
-ele.attrs= (('BORD_ISO','OUI'),)
+ele.attrs= ((AT.BORD_ISO,'OUI'),)
 ele.elrefe=(
         ElrefeLoc(MT.QU8, gauss = ('RIGI=FPG9',), mater=('RIGI',),),
     )
@@ -474,7 +476,7 @@ ele.meshType = MT.QUAD9
 ele.nodes = (
         SetOfNodes('EN1', (1,2,3,4,5,6,7,8,9,)),
     )
-ele.attrs= (('BORD_ISO','OUI'),)
+ele.attrs= ((AT.BORD_ISO,'OUI'),)
 ele.elrefe=(
         ElrefeLoc(MT.QU9, gauss = ('RIGI=FPG9',), mater=('RIGI',),),
     )

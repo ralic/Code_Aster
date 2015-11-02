@@ -1,4 +1,5 @@
 
+
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +20,7 @@
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
+import cataelem.Commons.attributes as AT
 
 
 
@@ -32,8 +34,8 @@ INI_SP_MATER = Option(
         SP.PTEMMAT,
     ),
     condition=(
-      CondCalcul('+', (('PHENO','ME'),('BORD','0'),('COQUE','OUI'),)),
-      CondCalcul('+', (('PHENO','ME'),('BORD','0'),('TUYAU','OUI'),)),
-      CondCalcul('+', (('PHENO','ME'),('BORD','0'),('TYPMOD2','PMF'),)),
+      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),(AT.COQUE,'OUI'),)),
+      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),(AT.TUYAU,'OUI'),)),
+      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),(AT.TYPMOD2,'PMF'),)),
     ),
 )

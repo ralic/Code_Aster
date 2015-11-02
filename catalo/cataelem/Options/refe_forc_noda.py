@@ -1,4 +1,5 @@
 
+
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +20,7 @@
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
+import cataelem.Commons.attributes as AT
 
 
 
@@ -109,7 +111,7 @@ REFE_FORC_NODA = Option(
         SP.PVECTUR,
     ),
     condition=(
-      CondCalcul('+', (('PHENO','ME'),('BORD','0'),)),
+      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
     ),
     comment="""  REFE_FORC_NODA : CALCUL DE LA REFERENCE DE FORCE INTERNE
         POUR LE CRITERE DE CONVERGENCE EN SUPER-RESIDU """,

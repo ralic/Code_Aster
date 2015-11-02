@@ -1,4 +1,5 @@
 
+
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +20,7 @@
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
+import cataelem.Commons.attributes as AT
 
 
 
@@ -33,8 +35,8 @@ CHAR_MECA_FF1D3D = Option(
         SP.PVECTUR,
     ),
     condition=(
-      CondCalcul('+', (('PHENO','ME'),('BORD','-2'),('DIM_TOPO_MODELI','3'),)),
-      CondCalcul('+', (('PHENO','ME'),('BORD','-1'),('DIM_TOPO_MODELI','2'),)),
+      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'-2'),(AT.DIM_TOPO_MODELI,'3'),)),
+      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'-1'),(AT.DIM_TOPO_MODELI,'2'),)),
     ),
     comment=""" CHAR_MECA_FF1D3D (MOT-CLE : FORCE_ARETE): CALCUL DU SECOND MEMBRE
            ELEMENTAIRE CORRESPONDANT A DES FORCES LINEIQUES APPLIQUEES SUR

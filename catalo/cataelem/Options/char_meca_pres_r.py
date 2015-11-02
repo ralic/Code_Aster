@@ -1,4 +1,5 @@
 
+
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +20,7 @@
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
+import cataelem.Commons.attributes as AT
 
 
 
@@ -115,14 +117,14 @@ CHAR_MECA_PRES_R = Option(
         SP.PVECTUR,
     ),
     condition=(
-      CondCalcul('+', (('PHENO','ME'),('BORD','-1'),)),
-      CondCalcul('+', (('PHENO','ME'),('BORD','0'),('COQUE','OUI'),)),
-      CondCalcul('+', (('PHENO','ME'),('BORD','0'),('TUYAU','OUI'),)),
-      CondCalcul('-', (('PHENO','ME'),('BORD','-1'),('COQUE','OUI'),)),
-      CondCalcul('-', (('PHENO','ME'),('MODELI','GRM'),)),
-      CondCalcul('-', (('PHENO','ME'),('MODELI','GRC'),)),
-      CondCalcul('-', (('PHENO','ME'),('MODELI','MMB'),)),
-      CondCalcul('+', (('PHENO','ME'),('BORD','0'),('LXFEM','OUI'),)),
+      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'-1'),)),
+      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),(AT.COQUE,'OUI'),)),
+      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),(AT.TUYAU,'OUI'),)),
+      CondCalcul('-', ((AT.PHENO,'ME'),(AT.BORD,'-1'),(AT.COQUE,'OUI'),)),
+      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'GRM'),)),
+      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'GRC'),)),
+      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'MMB'),)),
+      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),(AT.LXFEM,'OUI'),)),
     ),
     comment=""" SECOND MEMBRE POUR UNE PRESSION CONSTANTE """,
 )

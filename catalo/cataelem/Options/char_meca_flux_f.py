@@ -1,4 +1,5 @@
 
+
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +20,7 @@
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
+import cataelem.Commons.attributes as AT
 
 
 
@@ -75,7 +77,7 @@ CHAR_MECA_FLUX_F = Option(
         SP.PVECTUR,
     ),
     condition=(
-      CondCalcul('+', (('PHENO','ME'),('THM','OUI'),('BORD','-1'),)),
+      CondCalcul('+', ((AT.PHENO,'ME'),(AT.THM,'OUI'),(AT.BORD,'-1'),)),
     ),
     comment=""" CHAR_MECA_FLUX_F (MOT-CLE FLUX_THM_REP) : CALCUL DU SECOND MEMBRE
            CORRESPONDANT A UN FLUX DE CHALEUR ET/OU UN APPORT DE MASSE FLUIDE

@@ -1,4 +1,5 @@
 
+
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +20,7 @@
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
+import cataelem.Commons.attributes as AT
 
 
 
@@ -58,7 +60,7 @@ SIPO_ELNO = Option(
         SP.PCONTPO,
     ),
     condition=(
-      CondCalcul('+', (('PHENO','ME'),('DIM_TOPO_MODELI','1'),)),
+      CondCalcul('+', ((AT.PHENO,'ME'),(AT.DIM_TOPO_MODELI,'1'),)),
     ),
     comment="""  SIPO_ELNO : CALCUL DES CONTRAINTES AUX NOEUDS DANS LA SECTION
            DE POUTRE DECOMPOSEE EN CONTRIBUTIONS DE CHAQUE EFFORT GENERALISE

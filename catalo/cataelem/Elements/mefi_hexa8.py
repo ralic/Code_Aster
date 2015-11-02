@@ -1,4 +1,5 @@
 
+
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,6 +24,7 @@ import cataelem.Commons.located_components as LC
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.mesh_types as MT
 from cataelem.Options.options import OP
+import cataelem.Commons.attributes as AT
 
 #----------------
 # Modes locaux :
@@ -238,7 +240,7 @@ ele.addCalcul(OP.VARI_ELNO, te=122,
 MEFI_HEXA8 = Element(modele=abstractElement)
 ele = MEFI_HEXA8
 ele.meshType = MT.HEXA8
-ele.attrs= (('TYPE_VOISIN','F3'),)
+ele.attrs= ((AT.TYPE_VOISIN,'F3'),)
 ele.elrefe=(
         ElrefeLoc(MT.QU4, gauss = ('RIGI=FPG4','MASS=FPG4','NOEU_S=NOEU_S','NOEU=NOEU','FPG1=FPG1',), mater=('RIGI','FPG1',),),
     )
@@ -248,7 +250,7 @@ ele.elrefe=(
 MEFI_PENTA6 = Element(modele=abstractElement)
 ele = MEFI_PENTA6
 ele.meshType = MT.PENTA6
-ele.attrs= (('TYPE_VOISIN','F3'),)
+ele.attrs= ((AT.TYPE_VOISIN,'F3'),)
 ele.elrefe=(
         ElrefeLoc(MT.TR3, gauss = ('RIGI=FPG1','MASS=FPG1','NOEU_S=NOEU_S','NOEU=NOEU','FPG1=FPG1',), mater=('RIGI','FPG1',),),
     )

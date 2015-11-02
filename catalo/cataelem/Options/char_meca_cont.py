@@ -1,4 +1,5 @@
 
+
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +20,7 @@
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
+import cataelem.Commons.attributes as AT
 
 
 
@@ -101,7 +103,7 @@ CHAR_MECA_CONT = Option(
         SP.PVECTUR,
     ),
     condition=(
-      CondCalcul('+', (('CONTACT','OUI'),)),
+      CondCalcul('+', ((AT.CONTACT,'OUI'),)),
     ),
     comment=""" CHAR_MECA_CONT: CALCUL DU SECOND MEMBRE
            ELEMENTAIRE DE CONTACT AVEC LA METHODE CONTINUE ET XFEM """,

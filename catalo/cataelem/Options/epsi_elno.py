@@ -1,4 +1,5 @@
 
+
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +20,7 @@
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
+import cataelem.Commons.attributes as AT
 
 
 
@@ -44,11 +46,11 @@ EPSI_ELNO = Option(
         SP.PDEFONO,
     ),
     condition=(
-      CondCalcul('+', (('PHENO','ME'),('BORD','0'),)),
-      CondCalcul('-', (('PHENO','ME'),('DISCRET','OUI'),)),
-      CondCalcul('-', (('PHENO','ME'),('MODELI','3FI'),)),
-      CondCalcul('-', (('PHENO','ME'),('MODELI','AFI'),)),
-      CondCalcul('-', (('PHENO','ME'),('MODELI','PFI'),)),
+      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
+      CondCalcul('-', ((AT.PHENO,'ME'),(AT.DISCRET,'OUI'),)),
+      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'3FI'),)),
+      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'AFI'),)),
+      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'PFI'),)),
     ),
     comment="""  EPSI_ELNO : DEFORMATIONS PAR ELEMENT AUX NOEUDS """,
 )

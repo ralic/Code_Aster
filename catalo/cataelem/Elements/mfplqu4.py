@@ -1,4 +1,5 @@
 
+
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,6 +24,7 @@ import cataelem.Commons.located_components as LC
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.mesh_types as MT
 from cataelem.Options.options import OP
+import cataelem.Commons.attributes as AT
 
 #----------------
 # Modes locaux :
@@ -233,7 +235,7 @@ ele.addCalcul(OP.VARI_ELNO, te=122,
 MFPLQU4 = Element(modele=abstractElement)
 ele = MFPLQU4
 ele.meshType = MT.QUAD4
-ele.attrs= (('TYPE_VOISIN','A2'),)
+ele.attrs= ((AT.TYPE_VOISIN,'A2'),)
 ele.elrefe=(
         ElrefeLoc(MT.QU4, gauss = ('RIGI=FIS2','FPG1=FPG1',), mater=('RIGI','FPG1',),),
     )
@@ -243,7 +245,7 @@ ele.elrefe=(
 MFAXQU4 = Element(modele=abstractElement)
 ele = MFAXQU4
 ele.meshType = MT.QUAD4
-ele.attrs= (('TYPE_VOISIN','A2'),)
+ele.attrs= ((AT.TYPE_VOISIN,'A2'),)
 ele.elrefe=(
         ElrefeLoc(MT.QU4, gauss = ('RIGI=FIS2','FPG1=FPG1',), mater=('RIGI','FPG1',),),
     )

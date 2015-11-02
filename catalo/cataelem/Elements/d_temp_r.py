@@ -1,4 +1,5 @@
 
+
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,6 +24,7 @@ import cataelem.Commons.located_components as LC
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.mesh_types as MT
 from cataelem.Options.options import OP
+import cataelem.Commons.attributes as AT
 
 
 MGEOMER  = LocatedComponents(phys=PHY.GEOM_R, type='ELNO', diff=True,
@@ -69,7 +71,7 @@ for cmp in ('TEMP','TEMP_INF','TEMP_MIL','TEMP_SUP','E1','H1',) :
               SetOfNodes('EN1', (2,3,)),
               SetOfNodes('EN2', (1,)),
           )
-      ele.attrs= (('CL_DUAL','OUI'),)
+      ele.attrs= ((AT.CL_DUAL,'OUI'),)
 
 
       ele.addCalcul(OP.THER_BTLA_R, te=2,

@@ -1,4 +1,5 @@
 
+
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +20,7 @@
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
+import cataelem.Commons.attributes as AT
 
 
 
@@ -56,10 +58,10 @@ TOPOSE = Option(
            PPMILTO,
     ),
     condition=(
-      CondCalcul('+', (('PHENO','ME'),('BORD','0'),('LXFEM','OUI'),)),
-      CondCalcul('+', (('PHENO','ME'),('BORD','-1'),('LXFEM','OUI'),)),
-      CondCalcul('+', (('PHENO','TH'),('BORD','0'),('LXFEM','OUI'),)),
-      CondCalcul('+', (('PHENO','TH'),('BORD','-1'),('LXFEM','OUI'),)),
+      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),(AT.LXFEM,'OUI'),)),
+      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'-1'),(AT.LXFEM,'OUI'),)),
+      CondCalcul('+', ((AT.PHENO,'TH'),(AT.BORD,'0'),(AT.LXFEM,'OUI'),)),
+      CondCalcul('+', ((AT.PHENO,'TH'),(AT.BORD,'-1'),(AT.LXFEM,'OUI'),)),
     ),
     comment=""" TOPOSE : CALCUL DU DE LA TOPOLOGIE DES
            SOUS-ELEMENTS POUR L INTEGRATION AVEC X-FEM """,

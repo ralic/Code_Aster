@@ -1,4 +1,5 @@
 
+
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +20,7 @@
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
+import cataelem.Commons.attributes as AT
 
 
 
@@ -33,10 +35,10 @@ IMPE_MECA = Option(
         SP.PMATUUR,
     ),
     condition=(
-      CondCalcul('+', (('MODELI','3FA'),)),
-      CondCalcul('+', (('MODELI','2FA'),)),
-      CondCalcul('+', (('MODELI','3FL'),('BORD','-1'),)),
-      CondCalcul('+', (('MODELI','2FL'),('BORD','-1'),)),
-      CondCalcul('+', (('MODELI','AXF'),('BORD','-1'),)),
+      CondCalcul('+', ((AT.MODELI,'3FA'),)),
+      CondCalcul('+', ((AT.MODELI,'2FA'),)),
+      CondCalcul('+', ((AT.MODELI,'3FL'),(AT.BORD,'-1'),)),
+      CondCalcul('+', ((AT.MODELI,'2FL'),(AT.BORD,'-1'),)),
+      CondCalcul('+', ((AT.MODELI,'AXF'),(AT.BORD,'-1'),)),
     ),
 )

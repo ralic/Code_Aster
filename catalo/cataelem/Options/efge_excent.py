@@ -1,4 +1,5 @@
 
+
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +20,7 @@
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
+import cataelem.Commons.attributes as AT
 
 
 
@@ -38,7 +40,7 @@ EFGE_EXCENT = Option(
         SP.PEFFOENR,
     ),
     condition=(
-      CondCalcul('+', (('PHENO','ME'),('EFGE','OUI'),('BORD','0'),)),
+      CondCalcul('+', ((AT.PHENO,'ME'),(AT.EFGE,'OUI'),(AT.BORD,'0'),)),
     ),
     comment="""  EFGE_EXCENT : CALCUL DES EFFORTS GENERALISES
            DANS LE "PLAN" MOYEN DES ELEMENTS DE COQUES EXCENTREES """,

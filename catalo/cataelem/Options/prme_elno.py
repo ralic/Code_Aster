@@ -1,4 +1,5 @@
 
+
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +20,7 @@
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
+import cataelem.Commons.attributes as AT
 
 
 
@@ -31,9 +33,9 @@ PRME_ELNO = Option(
         SP.PPRME_R,
     ),
     condition=(
-      CondCalcul('+', (('PHENO','ME'),('MODELI','3FL'),('BORD','0'),)),
-      CondCalcul('+', (('PHENO','ME'),('MODELI','2FL'),('BORD','0'),)),
-      CondCalcul('+', (('PHENO','ME'),('MODELI','AXF'),('BORD','0'),)),
+      CondCalcul('+', ((AT.PHENO,'ME'),(AT.MODELI,'3FL'),(AT.BORD,'0'),)),
+      CondCalcul('+', ((AT.PHENO,'ME'),(AT.MODELI,'2FL'),(AT.BORD,'0'),)),
+      CondCalcul('+', ((AT.PHENO,'ME'),(AT.MODELI,'AXF'),(AT.BORD,'0'),)),
     ),
     comment="""  PRME_ELNO : CALCUL DE LA PRESSION AUX NOEUDS,
            POUR LES ELEMENTS MECANIQUES XXX_FLUIDE """,

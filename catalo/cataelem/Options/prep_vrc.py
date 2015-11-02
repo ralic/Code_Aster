@@ -1,4 +1,5 @@
 
+
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +20,7 @@
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
+import cataelem.Commons.attributes as AT
 
 
 
@@ -42,8 +44,8 @@ PREP_VRC = Option(
         SP.PTEMPCR,
     ),
     condition=(
-      CondCalcul('+', (('PHENO','ME'),('COQUE','OUI'),('BORD','0'),)),
-      CondCalcul('-', (('PHENO','ME'),('MODELI','GRC'),)),
+      CondCalcul('+', ((AT.PHENO,'ME'),(AT.COQUE,'OUI'),(AT.BORD,'0'),)),
+      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'GRC'),)),
     ),
     comment=""" CALCUL DE LA TEMPERATURE SUR LES COUCHES DES COQUES MULTICOUCHE
    UTILISE PAR CREA_RESU/PREP_VRC EN PREVISION D'UN CALCUL MECANIQUE

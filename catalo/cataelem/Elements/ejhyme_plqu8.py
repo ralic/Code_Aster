@@ -1,4 +1,5 @@
 
+
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,6 +24,7 @@ import cataelem.Commons.located_components as LC
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.mesh_types as MT
 from cataelem.Options.options import OP
+import cataelem.Commons.attributes as AT
 
 #----------------
 # Modes locaux :
@@ -258,7 +260,7 @@ ele.nodes = (
         SetOfNodes('EN3', (6,8,)),
         SetOfNodes('EN4', (7,)),
     )
-ele.attrs= (('TYPE_VOISIN','A2'),)
+ele.attrs= ((AT.TYPE_VOISIN,'A2'),)
 ele.elrefe=(
         ElrefeLoc(MT.SE3, gauss = ('RIGI=FPG2',), mater=('RIGI',),),
         ElrefeLoc(MT.SE2, gauss = ('RIGI=FPG2',),),

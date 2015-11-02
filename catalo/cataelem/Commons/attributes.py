@@ -29,7 +29,7 @@ ABSO    = Attribute( value=(
 """)
 
 
-ALIAS8  = Attribute( value=(
+ALIAS8  = Attribute(auto=True, value=(
      'MEDTRSE2' ,
     ),
     comment="""
@@ -94,7 +94,7 @@ C_PLAN  = Attribute( value=(
 """)
 
 
-DIM_COOR_MODELI= Attribute( value=(
+DIM_COOR_MODELI= Attribute(auto=True, value=(
      '2' ,
      '3' ,
     ),
@@ -103,7 +103,7 @@ DIM_COOR_MODELI= Attribute( value=(
 """)
 
 
-DIM_TOPO_MODELI= Attribute( value=(
+DIM_TOPO_MODELI= Attribute(auto=True, value=(
      '0' ,
      '1' ,
      '2' ,
@@ -230,7 +230,7 @@ METH_CONTINUE= Attribute( value=(
 """)
 
 
-MODELI  = Attribute( value=(
+MODELI  = Attribute(auto=True, value=(
      '2FA' ,
      '2FL' ,
      '2FP' ,

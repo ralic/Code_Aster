@@ -1,4 +1,5 @@
 
+
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +20,7 @@
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
+import cataelem.Commons.attributes as AT
 
 
 
@@ -45,7 +47,7 @@ ARLQ_MATR = Option(
         SP.PMATUN2,
     ),
     condition=(
-      CondCalcul('+', (('PHENO','ME'),('BORD','0'),)),
+      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
     ),
     comment="""  ARLQ_MATR : CALCUL DES MATRICES DE COUPLAGE ARLEQUIN """,
 )

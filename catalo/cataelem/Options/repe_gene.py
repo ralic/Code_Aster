@@ -1,4 +1,5 @@
 
+
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +20,7 @@
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
+import cataelem.Commons.attributes as AT
 
 
 
@@ -48,11 +50,11 @@ REPE_GENE = Option(
         SP.PEFNOOUT,
     ),
     condition=(
-      CondCalcul('+', (('PHENO','ME'),('MODELI','CQ3'),('BORD','0'),)),
-      CondCalcul('+', (('PHENO','ME'),('MODELI','DKT'),('BORD','0'),)),
-      CondCalcul('+', (('PHENO','ME'),('MODELI','DST'),('BORD','0'),)),
-      CondCalcul('+', (('PHENO','ME'),('MODELI','Q4G'),('BORD','0'),)),
-      CondCalcul('+', (('PHENO','ME'),('MODELI','DTG'),('BORD','0'),)),
-      CondCalcul('+', (('PHENO','ME'),('MODELI','Q4S'),('BORD','0'),)),
+      CondCalcul('+', ((AT.PHENO,'ME'),(AT.MODELI,'CQ3'),(AT.BORD,'0'),)),
+      CondCalcul('+', ((AT.PHENO,'ME'),(AT.MODELI,'DKT'),(AT.BORD,'0'),)),
+      CondCalcul('+', ((AT.PHENO,'ME'),(AT.MODELI,'DST'),(AT.BORD,'0'),)),
+      CondCalcul('+', ((AT.PHENO,'ME'),(AT.MODELI,'Q4G'),(AT.BORD,'0'),)),
+      CondCalcul('+', ((AT.PHENO,'ME'),(AT.MODELI,'DTG'),(AT.BORD,'0'),)),
+      CondCalcul('+', ((AT.PHENO,'ME'),(AT.MODELI,'Q4S'),(AT.BORD,'0'),)),
     ),
 )

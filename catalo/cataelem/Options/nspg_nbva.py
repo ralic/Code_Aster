@@ -1,4 +1,5 @@
 
+
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +20,7 @@
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
+import cataelem.Commons.attributes as AT
 
 
 
@@ -40,15 +42,15 @@ NSPG_NBVA = Option(
         SP.PDCEL_I,
     ),
     condition=(
-      CondCalcul('+', (('PHENO','ME'),('BORD','0'),)),
-      CondCalcul('+', (('PHENO','TH'),('BORD','0'),)),
-      CondCalcul('+', (('PHENO','ME'),('BORD_ISO','OUI'),)),
-      CondCalcul('-', (('PHENO','ME'),('MODELI','FLS'),)),
-      CondCalcul('-', (('PHENO','ME'),('MODELI','FS2'),)),
-      CondCalcul('-', (('PHENO','ME'),('MODELI','3DA'),)),
-      CondCalcul('-', (('PHENO','ME'),('MODELI','DPA'),)),
-      CondCalcul('-', (('PHENO','ME'),('MODELI','3FA'),)),
-      CondCalcul('-', (('PHENO','ME'),('MODELI','2FA'),)),
+      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
+      CondCalcul('+', ((AT.PHENO,'TH'),(AT.BORD,'0'),)),
+      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD_ISO,'OUI'),)),
+      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'FLS'),)),
+      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'FS2'),)),
+      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'3DA'),)),
+      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'DPA'),)),
+      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'3FA'),)),
+      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'2FA'),)),
     ),
     comment=""" OPTION SERVANT A CALCULER LES 2 NOMBRES :
    NPG_DYN  : NOMBRE DE SOUS-POINTS (POUR LES ELEMENTS DE STRUCTURE EN GENERAL)

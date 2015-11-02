@@ -1,4 +1,5 @@
 
+
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +20,7 @@
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
+import cataelem.Commons.attributes as AT
 
 
 
@@ -63,12 +65,12 @@ SIGM_ELNO = Option(
            PSIEFNOR,
     ),
     condition=(
-      CondCalcul('+', (('PHENO','ME'),('BORD','0'),)),
-      CondCalcul('-', (('PHENO','ME'),('BORD','0'),('EFGE','OUI'),('SIGM','NON'),)),
-      CondCalcul('-', (('PHENO','ME'),('INTERFACE','OUI'),)),
-      CondCalcul('-', (('PHENO','ME'),('MODELI','3FI'),)),
-      CondCalcul('-', (('PHENO','ME'),('MODELI','AFI'),)),
-      CondCalcul('-', (('PHENO','ME'),('MODELI','PFI'),)),
+      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
+      CondCalcul('-', ((AT.PHENO,'ME'),(AT.BORD,'0'),(AT.EFGE,'OUI'),(AT.SIGM,'NON'),)),
+      CondCalcul('-', ((AT.PHENO,'ME'),(AT.INTERFACE,'OUI'),)),
+      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'3FI'),)),
+      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'AFI'),)),
+      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'PFI'),)),
     ),
     comment="""  SIGM_ELNO : CALCUL DES CONTRAINTES PAR ELEMENT AUX NOEUDS  """,
 )

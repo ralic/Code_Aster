@@ -1,4 +1,5 @@
 
+
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +20,7 @@
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
+import cataelem.Commons.attributes as AT
 
 
 
@@ -111,7 +113,7 @@ RIGI_CONT = Option(
         SP.PMATUUR,
     ),
     condition=(
-      CondCalcul('+', (('CONTACT','OUI'),)),
+      CondCalcul('+', ((AT.CONTACT,'OUI'),)),
     ),
     comment=""" RIGI_CONT: CALCUL DE LA MATRICE
            ELEMENTAIRE DE CONTACT AVEC LA METHODE CONTINUE ET XFEM """,

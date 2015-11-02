@@ -1,4 +1,5 @@
 
+
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +20,7 @@
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
+import cataelem.Commons.attributes as AT
 
 
 
@@ -105,14 +107,14 @@ CHAR_MECA_PESA_R = Option(
         SP.PVECTUR,
     ),
     condition=(
-      CondCalcul('+', (('PHENO','ME'),('BORD','0'),)),
-      CondCalcul('-', (('PHENO','ME'),('INTERFACE','OUI'),)),
-      CondCalcul('-', (('PHENO','ME'),('ABSO','OUI'),)),
-      CondCalcul('-', (('PHENO','ME'),('MODELI','3FL'),)),
-      CondCalcul('-', (('PHENO','ME'),('MODELI','2FL'),)),
-      CondCalcul('-', (('PHENO','ME'),('MODELI','2FP'),)),
-      CondCalcul('-', (('PHENO','ME'),('MODELI','D2D'),)),
-      CondCalcul('-', (('PHENO','ME'),('MODELI','D3D'),)),
+      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
+      CondCalcul('-', ((AT.PHENO,'ME'),(AT.INTERFACE,'OUI'),)),
+      CondCalcul('-', ((AT.PHENO,'ME'),(AT.ABSO,'OUI'),)),
+      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'3FL'),)),
+      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'2FL'),)),
+      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'2FP'),)),
+      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'D2D'),)),
+      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'D3D'),)),
     ),
     comment=""" CHAR_MECA_PESA_R  : calcul du second membre
    correspondant aux forces de gravite (MOT-CLE: PESANTEUR) """,

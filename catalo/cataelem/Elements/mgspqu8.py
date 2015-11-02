@@ -1,4 +1,5 @@
 
+
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,6 +24,7 @@ import cataelem.Commons.located_components as LC
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.mesh_types as MT
 from cataelem.Options.options import OP
+import cataelem.Commons.attributes as AT
 
 #----------------
 # Modes locaux :
@@ -571,7 +573,7 @@ ele.nodes = (
         SetOfNodes('EN2', (5,6,7,8,)),
         SetOfNodes('EN1', (1,2,3,4,)),
     )
-ele.attrs= (('TYPE_VOISIN','A2'),)
+ele.attrs= ((AT.TYPE_VOISIN,'A2'),)
 ele.elrefe=(
         ElrefeLoc(MT.QU8, gauss = ('RIGI=FPG9','FPG1=FPG1','MASS=FPG9','NOEU=NOEU',), mater=('RIGI','FPG1',),),
         ElrefeLoc(MT.QU4, gauss = ('RIGI=FPG9','MASS=FPG9','NOEU=NOEU',),),
@@ -586,7 +588,7 @@ ele.nodes = (
         SetOfNodes('EN2', (4,5,6,)),
         SetOfNodes('EN1', (1,2,3,)),
     )
-ele.attrs= (('TYPE_VOISIN','A2'),)
+ele.attrs= ((AT.TYPE_VOISIN,'A2'),)
 ele.elrefe=(
         ElrefeLoc(MT.TR6, gauss = ('RIGI=FPG3','FPG1=FPG1','MASS=FPG3','NOEU=NOEU',), mater=('RIGI','FPG1',),),
         ElrefeLoc(MT.TR3, gauss = ('RIGI=FPG3','MASS=FPG3','NOEU=NOEU',),),
