@@ -67,7 +67,7 @@ def txtpad(long, chaine):
 # impression au format 'ojb' :
 #-------------------------------------------------------------------------
 def imprime_ojb(cel, file, timer, dbgdir):
-    timer.Start('T1')
+    timer.Start('T0.debug')
     cel.msg("INFO Debut de la transformation de l'ENSEMBLE des catalogues en objets jeveux")
 
     d = {}  # dictionnaire des ojb
@@ -89,6 +89,8 @@ def imprime_ojb(cel, file, timer, dbgdir):
         # pour imprimer les lignes (te00ij -> (type_elem1, type_elem2, ...)
         numte_lnomte(osp.join(dbgdir, "CATA_numte_lnomte.txt"), cel)
 
+    timer.Stop('T0.debug')
+    timer.Start('T1')
     #=========================================================================
     # Verifications de coherence des catalogues :
     #--------------------------------------------

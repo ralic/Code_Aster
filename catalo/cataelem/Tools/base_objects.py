@@ -823,7 +823,8 @@ class AbstractEntityStore(object):
         l_mod = [osp.splitext(osp.basename(modname))[0]
                  for modname in glob(osp.join(pkgdir, '*.py'))]
         l_mod = [modname for modname in l_mod if modname not in ('__init__',)]
-        self._entities = {}
+        l_mod.sort()
+        self._entities = OrderedDict()
         for modname in l_mod:
             try:
                 mod = __import__('cataelem.%s.%s' %
