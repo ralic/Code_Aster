@@ -21,6 +21,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterc/getfac.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/angvxy.h"
 #include "asterfort/assach.h"
@@ -120,6 +121,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
     integer :: iexist, jcesd_gauss, jcesl_gauss, icoo
     character(len=19) :: celgauss, cesgauss
     real(kind=8), pointer :: coo_gauss(:) => null()
+    integer :: iocc, nocc
     !
     call jemarq()
     ipaxe = 0
@@ -183,8 +185,8 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
     call utmess('F', 'ALGORITH12_42', nk=3, valk=valk)
 100 continue
     call jedetr('&&CHRPEL.NOEUDS')
-    call jedetr('&&CHRPEL.GROUP_NO')
-! Nombre de mailles total dans le maillage
+    call jedetr('&&CHRPEL.GROUP_NO') 
+!   nombre total de mailles dans le maillage
     nbma = zi(jcesd-1+1)
 !   nombre de composantes du champ simple chams1 
     ncmp = zi(jcesd-1+2)
@@ -195,42 +197,49 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
     ndim = 3
     call dismoi('Z_CST', ma, 'MAILLAGE', repk=k8b)
     if (k8b .eq. 'OUI') ndim = 2
-    !
-! Construction de la liste des numéros de mailles 
-! sélectionnées par les mots-clés GROUP_MA et MAILLE 
-    call reliem(' ', ma, 'NU_MAILLE', 'AFFE', icham,&
-                2, motcle, typmcl, mesmai, nbm)
-    if (nbm .gt. 0) then
-        nbmail = nbm
-        call jeveuo(mesmai, 'L', idmail)
-    else
-        nbmail = nbma
-    endif
-    !
+!
     call jeexin(ma//'.CONNEX', iret)
     ASSERT(iret.ne.0)
     call jeveuo(ma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
     call jeveuo(chams1//'.CESV', 'E', jcesv)
     call jeveuo(chams1//'.CESL', 'L', jcesl)
-    !
-    do i = 1, 3
-        axez(i) = 0.0d0
-        orig(i) = 0.0d0
-        angnot(i) = 0.0d0
-    end do
-    !
+!
+!  -- Le mot-clé AFFE définit les caractéristiques du nouveau repère 
+!     On peut définir un repère variable en définissant ces paramètres
+!     par mailles/groupes de mailles  
+    call getfac('AFFE', nocc)
+! Boucle sur les occurrences de AFFE 
+    do iocc = 1, nocc
+!  -- Construction de la liste des numéros de mailles 
+!     sélectionnées par les mots-clés GROUP_MA et MAILLE 
+        call reliem(' ', ma, 'NU_MAILLE', 'AFFE', iocc,&
+                2, motcle, typmcl, mesmai, nbm)
+        if (nbm .gt. 0) then
+            nbmail = nbm
+            call jeveuo(mesmai, 'L', idmail)
+        else
+            nbmail = nbma
+        endif
+!   -- Remise à zéro des tableaux stockant les caractéristiques du repère
+        do i = 1, 3
+          axez(i) = 0.0d0
+          orig(i) = 0.0d0
+          angnot(i) = 0.0d0
+        end do
+!
+!   -- Traitement en fonction du type de repère 
+!
 !**
-!*** Changement de repère "UTILISATEUR"
+!***    Changement de repère "UTILISATEUR"
 !**
-    !
-    if (repere(1:11) .eq. 'UTILISATEUR') then
-        !
+!
+        if (repere(1:11) .eq. 'UTILISATEUR') then
 !        SI LE NOUVEAU REPERE EST DONNE VIA DES VECTEURS
-        call getvr8('AFFE', 'VECT_X', iocc=1, nbval=3, vect=vectx,&
+        call getvr8('AFFE', 'VECT_X', iocc=iocc, nbval=3, vect=vectx,&
                     nbret=ibid)
         if (ibid .ne. 0) then
-            call getvr8('AFFE', 'VECT_Y', iocc=1, nbval=3, vect=vecty,&
+            call getvr8('AFFE', 'VECT_Y', iocc=iocc, nbval=3, vect=vecty,&
                         nbret=ibid)
             if (ndim .ne. 3) then
                 call utmess('F', 'ALGORITH2_4')
@@ -238,13 +247,13 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
             call angvxy(vectx, vecty, angnot)
         else
             if (ndim .eq. 3) then
-                call getvr8('AFFE', 'ANGL_NAUT', iocc=1, nbval=3, vect=angnot,&
+                call getvr8('AFFE', 'ANGL_NAUT', iocc=iocc, nbval=3, vect=angnot,&
                             nbret=ibid)
                 if (ibid .ne. 3) then
                     call utmess('F', 'ALGORITH2_7')
                 endif
             else
-                call getvr8('AFFE', 'ANGL_NAUT', iocc=1, scal=angnot(1), nbret=ibid)
+                call getvr8('AFFE', 'ANGL_NAUT', iocc=iocc, scal=angnot(1), nbret=ibid)
                 if (ibid .ne. 1) then
                     valr = angnot(1)
                     call utmess('A', 'ALGORITH12_43', sr=valr)
@@ -252,16 +261,16 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
             endif
             angnot(:) = angnot(:)*r8dgrd()
         endif
-        !
-! Calcul de pgu = matrice de passage du repère par défaut (repère global du maillage) 
-! vers le repère utilisateur  
-        call matrot(angnot, pgl)
-! matrot retourne la transposée de la matrice de passage : on transpose pour avoir 
-! la matrice de passage 
-        pgu=transpose(pgl) 
-        !
-! Appliquer le changement de repère pour les mailles sélectionnées 
-        !
+!
+!      Calcul de pgu = matrice de passage du repère par défaut (repère global du maillage) 
+!      vers le repère utilisateur  
+       call matrot(angnot, pgl)
+!      matrot retourne la transposée de la matrice de passage : on transpose pour avoir 
+!      la matrice de passage 
+       pgu=transpose(pgl) 
+!
+!      Appliquer le changement de repère pour les mailles sélectionnées 
+!
         do inel = 1, nbmail
             if (nbm .ne. 0) then
                 imai = zi(idmail+inel-1)
@@ -290,12 +299,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
             enddo
  10         continue
         enddo
-! Champ simple -> Champ
-        call dismoi('NOM_OPTION', champ1, 'CHAM_ELEM', repk=option)
-        call cescel(chams1, ligrel, option, ' ', 'OUI',&
-                    nncp, 'G', champ1, 'F', ibid)
-        call detrsd('CHAM_ELEM_S', chams1)
-        !
+
 !**
 !*** Changement de repère "CYLINDRIQUE"
 !**
@@ -304,23 +308,23 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
         call dismoi('TYPE_CHAMP', champ1, 'CHAMP', repk=tych, arret='C',&
                     ier=iret)
         if (ndim .eq. 3) then
-            call getvr8('AFFE', 'ORIGINE', iocc=1, nbval=3, vect=orig,&
+            call getvr8('AFFE', 'ORIGINE', iocc=iocc, nbval=3, vect=orig,&
                         nbret=ibid)
             if (ibid .ne. 3) then
                 call utmess('F', 'ALGORITH2_8')
             endif
-            call getvr8('AFFE', 'AXE_Z', iocc=1, nbval=3, vect=axez,&
+            call getvr8('AFFE', 'AXE_Z', iocc=iocc, nbval=3, vect=axez,&
                         nbret=ibid)
             if (ibid .eq. 0) then
                 call utmess('F', 'ALGORITH2_9')
             endif
         else
-            call getvr8('AFFE', 'ORIGINE', iocc=1, nbval=2, vect=orig,&
+            call getvr8('AFFE', 'ORIGINE', iocc=iocc, nbval=2, vect=orig,&
                         nbret=ibid)
             if (ibid .ne. 2) then
                 call utmess('A', 'ALGORITH2_10')
             endif
-            call getvr8('AFFE', 'AXE_Z', iocc=1, nbval=0, nbret=ibid)
+            call getvr8('AFFE', 'AXE_Z', iocc=iocc, nbval=0, nbret=ibid)
             if (ibid .ne. 0) then
                 call utmess('A', 'ALGORITH2_11')
             endif
@@ -331,10 +335,9 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
         xnormr = 0.0d0
         call normev(axez, xnormr)
         call jeveuo(ma//'.COORDO    .VALE', 'L', vr=vale)
-        !
-
+!
 ! Permutation des composantes en dimension 2
-        !
+!
 ! Initialisation à l'identité 
         permvec(:)=(/(i,i=1,6)/)
         if (ndim == 2) then
@@ -479,18 +482,36 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
             end do 
  20         continue 
         end do 
-        !
+!
+       if (ipaxe .ne. 0) then
+            call utmess('A', 'ALGORITH17_22', si=ipaxe)
+        endif
+       endif
+!     
+       call jeexin(mesmai, iret)
+       if (iret .ne. 0) call jedetr(mesmai)   
+! Fin de la boucle sur les occurrences du mot-clé AFFE             
+     enddo
+! 
+      if ((repere(1:11).eq.'CYLINDRIQUE').or.(repere(1:11) .eq. 'UTILISATEUR')) then 
+!
+! Champ simple -> Cham_elem
         call dismoi('NOM_OPTION', champ1, 'CHAM_ELEM', repk=option)
         call cescel(chams1, ligrel, option, ' ', 'OUI',&
                     nncp, 'G', champ1, 'F', ibid)
         call detrsd('CHAM_ELEM_S', chams1)
-        if (ipaxe .ne. 0) then
-            call utmess('A', 'ALGORITH17_22', si=ipaxe)
-        endif
+      endif 
         !
-        else if((repere(1:5) .eq.'COQUE') .or. (repere(1:15).eq.'COQUE_INTR_UTIL').or. &
+! ****************************************
+!  Changement de repère sur une coque
+! ****************************************
+       if((repere(1:5) .eq.'COQUE') .or. (repere(1:15).eq.'COQUE_INTR_UTIL').or. &
        (repere(1:15).eq.'COQUE_UTIL_INTR').or.(repere(1:14).eq.'COQUE_UTIL_CYL')) &
        then
+! Pour l'instant on ne traite pas le cas de plusieurs occurrences du mot-clé AFFE 
+        if ( nocc /= 1 ) then 
+            call utmess('F', 'ALGORITH17_23', sk=repere, si=nocc)
+        endif
         !
         call megeom(modele, chgeom)
         call mecara(carele, chcara)
@@ -637,8 +658,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
     AS_DEALLOCATE(vk8=nom_cmp)
     call exisd('CHAM_ELEM_S', canbsp, iret1)
     if (iret1 .ne. 0) call detrsd('CHAM_ELEM_S', canbsp)
-    call jeexin(mesmai, iret)
-    if (iret .ne. 0) call jedetr(mesmai)
+  
     call jedema()
     !
 end subroutine chrpel

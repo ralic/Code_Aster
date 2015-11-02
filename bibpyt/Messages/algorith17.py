@@ -115,7 +115,9 @@ cata_msg = {
   Il y a %(i1)d points de Gauss sur l'axe de rotation. En ces points les axes Or et suivant thêta ne sont pas définis. On prend
    un axe Or quelconque normal à Oz pour continuer le changement de repère mais seules les composantes suivant z ont un sens en ces points.
 """),
-
+    23 : _(u"""
+    Vous effectuez un changement de repère %(k1)s. Le repère est défini par %(i1)d occurrences du mot-clé AFFE : or une seule occurrence de ce mot-clé est autorisée pour ce type de changement de repère. 
+"""),
     25 : _(u"""
   Lors de la reprise du calcul, la liste des champs calculés (DEPL, VITE, ACCE) doit être la même
   pour le concept entrant et sortant.

@@ -19,6 +19,7 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
     implicit none
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
+#include "asterc/getfac.h"
 #include "asterfort/angvxy.h"
 #include "asterfort/cnocns.h"
 #include "asterfort/cnscno.h"
@@ -82,6 +83,7 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
     real(kind=8), pointer :: vale(:) => null()
     integer, pointer :: cnsd(:) => null()
     character(len=8), pointer :: cnsk(:) => null()
+    integer iocc, nocc
 !
     call jemarq()
     epsi = 1.0d-6
@@ -127,7 +129,15 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
     call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbma)
 !
 !
-    call reliem(' ', ma, 'NU_NOEUD', 'AFFE', icham,&
+!
+!  -- Le mot-clé AFFE définit les caractéristiques du nouveau repère 
+!     On peut définir un repère variable en définissant ces paramètres
+!     par mailles/groupes de mailles  
+    call getfac('AFFE', nocc)
+    do iocc = 1, nocc
+! Construction de la liste des numéros de noeuds
+! sélectionnées par les mots-clés GROUP_NO et NOEUD 
+    call reliem(' ', ma, 'NU_NOEUD', 'AFFE', iocc,&
                 4, motcle, typmcl, mesnoe, nbn)
 !
     if (nbn .gt. 0) then
@@ -180,10 +190,10 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
 !
     if (repere(1:11) .eq. 'UTILISATEUR') then
 !        SI LE NOUVEAU REPERE EST DONNE VIA DES VECTEURS
-        call getvr8('AFFE', 'VECT_X', iocc=1, nbval=3, vect=vectx,&
+        call getvr8('AFFE', 'VECT_X', iocc=iocc, nbval=3, vect=vectx,&
                     nbret=ibid)
         if (ibid .ne. 0) then
-            call getvr8('AFFE', 'VECT_Y', iocc=1, nbval=3, vect=vecty,&
+            call getvr8('AFFE', 'VECT_Y', iocc=iocc, nbval=3, vect=vecty,&
                         nbret=ibid)
             if (ndim .ne. 3) then
                 call utmess('F', 'ALGORITH2_4')
@@ -191,13 +201,13 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
             call angvxy(vectx, vecty, angnot)
         else
             if (ndim .eq. 3) then
-                call getvr8('AFFE', 'ANGL_NAUT', iocc=1, nbval=3, vect=angnot,&
+                call getvr8('AFFE', 'ANGL_NAUT', iocc=iocc, nbval=3, vect=angnot,&
                             nbret=ibid)
                 if (ibid .ne. 3) then
                     call utmess('F', 'ALGORITH2_7')
                 endif
             else
-                call getvr8('AFFE', 'ANGL_NAUT', iocc=1, scal=angnot(1), nbret=ibid)
+                call getvr8('AFFE', 'ANGL_NAUT', iocc=iocc, scal=angnot(1), nbret=ibid)
                 if (ibid .ne. 1) then
                     valr = angnot(1)
                     call utmess('A', 'ALGORITH12_43', sr=valr)
@@ -326,23 +336,23 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
     else
 ! REPERE CYLINDRIQUE
         if (ndim .eq. 3) then
-            call getvr8('AFFE', 'ORIGINE', iocc=1, nbval=3, vect=orig,&
+            call getvr8('AFFE', 'ORIGINE', iocc=iocc, nbval=3, vect=orig,&
                         nbret=ibid)
             if (ibid .ne. 3) then
                 call utmess('F', 'ALGORITH2_8')
             endif
-            call getvr8('AFFE', 'AXE_Z', iocc=1, nbval=3, vect=axez,&
+            call getvr8('AFFE', 'AXE_Z', iocc=iocc, nbval=3, vect=axez,&
                         nbret=ibid)
             if (ibid .eq. 0) then
                 call utmess('F', 'ALGORITH2_9')
             endif
         else
-            call getvr8('AFFE', 'ORIGINE', iocc=1, nbval=2, vect=orig,&
+            call getvr8('AFFE', 'ORIGINE', iocc=iocc, nbval=2, vect=orig,&
                         nbret=ibid)
             if (ibid .ne. 2) then
                 call utmess('A', 'ALGORITH2_10')
             endif
-            call getvr8('AFFE', 'AXE_Z', iocc=1, nbval=0, nbret=ibid)
+            call getvr8('AFFE', 'AXE_Z', iocc=iocc, nbval=0, nbret=ibid)
             if (ibid .ne. 0) then
                 call utmess('A', 'ALGORITH2_11')
             endif
@@ -644,11 +654,15 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
             end do
         endif
     endif
+
+! Fin de la boucle sur les occcurrences du mot-clé AFFE
+    call jedetr(mesnoe)
+   enddo
     call cnscno(chams1, ' ', 'NON', 'G', champ1,&
                 'F', ibid)
     call detrsd('CHAM_NO_S', chams1)
     AS_DEALLOCATE(vk8=nom_cmp)
-    call jedetr(mesnoe)
+   
     call jedema()
 !
 end subroutine
