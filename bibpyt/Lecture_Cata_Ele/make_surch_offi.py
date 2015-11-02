@@ -79,7 +79,7 @@ def main(surch, unigest, nom_capy_offi, resu_ojb):
     dirav = os.getcwd()
     os.chdir(trav)
     try:
-        _main(surch, unigest, nom_capy_offi, resu_ojb)
+        _main(nom_capy_offi, resu_ojb)
     except:
         print 60 * '-' + ' debut trace back'
         traceback.print_exc(file=sys.stdout)
@@ -90,30 +90,9 @@ def main(surch, unigest, nom_capy_offi, resu_ojb):
         shutil.rmtree(trav)
 
 
-def _main(surch, unigest, nom_capy_offi, resu_ojb):
-    """Script pour surcharger les catalogues officiels"""
-    from Lecture_Cata_Ele.lecture import lire_cata
-    from Lecture_Cata_Ele.imprime import impr_cata
-    import Lecture_Cata_Ele.utilit as utilit
+def _main(nom_capy_offi, resu_ojb):
 
-    capy_surch = None
-    if surch and osp.isfile(surch):
-        # pour ne pas utiliser trop de mémoire, on decoupe
-        # le fichier pour la lecture :
-        liste_morceaux = utilit.cata_split(surch, "morceau", 5000)
-        capy_surch = lire_cata(liste_morceaux[0])
-        for k in range(len(liste_morceaux) - 1):
-            capy_surc2 = lire_cata(liste_morceaux[k + 1])
-            utilit.concat_capy(capy_surch, capy_surc2)
-
-    capy_offi = utilit.read_capy(nom_capy_offi)
-
-    # prise en compte des destructions demandées via unigest :
-    utilit.detruire_cata(capy_offi, unigest)
-
-    utilit.surch_capy(capy_offi, capy_surch)
-
-    impr_cata(capy_offi, resu_ojb, 'ojb')
+    shutil.copy(nom_capy_offi,resu_ojb)
 
 
 if __name__ == '__main__':

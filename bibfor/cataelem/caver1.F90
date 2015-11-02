@@ -99,7 +99,6 @@ subroutine caver1()
             ioptte = optte((te-1)*lgco+opt)
             if (ioptte .eq. 0) goto 30
             call jeveuo(jexnum('&CATA.TE.OPTMOD', ioptte), 'L', iaopmo)
-            call jeveuo(jexnum('&CATA.TE.OPTNOM', ioptte), 'L', iaopno)
             nucalc = zi(iaopmo-1+1)
             nbinte = zi(iaopmo-1+2)
 !
@@ -107,8 +106,10 @@ subroutine caver1()
             call jeveuo(jexnom('&CATA.TM.NBNO', typmai), 'L', jnbno)
             nbno = zi(jnbno)
 !
-!              ON NE TRAQUE PAS LES ERREURS SI NUCALC=0,-1 OU -2
+!           -- on ne traque pas les erreurs si nucalc = 0, -1 ou -2
             if ((nucalc.le.0) .and. (nucalc.ge.-2)) goto 30
+
+            call jeveuo(jexnum('&CATA.TE.OPTNOM', ioptte), 'L', iaopno)
             do 10 ipara = 1, nbinte
                 para = zk8(iaopno-1+ipara)
                 imolo = zi(iaopmo-1+3+ipara)
@@ -212,13 +213,13 @@ subroutine caver1()
                 typou2=zk8(iapara-1+nbin+nbout+itrou)
                 typout='????'
                 if (icode .ge. 4) then
-                    typout='RESL__'
+                    typout='RESL'
                 else if (icode.eq.3) then
-                    typout='ELGA__'
+                    typout='ELGA'
                 else if (icode.eq.2) then
-                    typout='ELNO__'
+                    typout='ELNO'
                 else if (icode.eq.1) then
-                    typout='ELEM__'
+                    typout='ELEM'
                 endif
 !
                 if (typout .ne. typou2) then

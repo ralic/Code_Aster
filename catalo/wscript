@@ -2,10 +2,10 @@
 
 import os
 import os.path as osp
-import shutil
 from functools import partial
 from itertools import chain
 from waflib import TaskGen, Logs, Utils, Errors, Task, Context
+
 
 def build(self):
     env = self.all_envs[self.variant]
@@ -29,47 +29,31 @@ def build(self):
 @TaskGen.feature('catalo')
 @TaskGen.before('process_source')
 def pre_build_catalo(self):
-    # deps => any change in these files induce a rebuild of the pickled
-    deps = self.bld.srcnode.ant_glob('*/Lecture_Cata_Ele/*.py')
     catalo = self.path
+    deps = catalo.ant_glob('**/*.py')
     catalo.get_bld().mkdir()
-    pickled = catalo.get_bld().make_node('cata_ele.pickled')
     ojb = catalo.get_bld().make_node('cata_ele.ojb')
-    self.create_task('picklecata', src=[catalo] + deps, tgt=pickled)
-    self.create_task('surchcata', src=[pickled], tgt=ojb)
+    self.create_task('printcata', src=[catalo] + deps, tgt=ojb)
     self.source = [ojb] # bypass the execution of process_source
 
-class surchcata(Task.Task):
-    shell = True
-    run_str = ' '.join(('PYTHONPATH=${BIBPYTPATH}', '${PYTHON}',
-                        '-m', 'Lecture_Cata_Ele.make_surch_offi',
-                        '-i', '${SRC[0].abspath()}',
-                        '-o', '${TGT[0].abspath()}'))
-    def exec_command(self, cmd, **kw):
-        try:
-            self.generator.bld.cmd_and_log(cmd, quiet=0, **kw)
-        except Errors.WafError, err:
-            if hasattr(err, 'stdout'):
-                Logs.warn('stdout: %s' % err.stdout)
-                Logs.warn('stderr: %s' % err.stderr)
-            raise
 
-class picklecata(surchcata):
+class printcata(Task.Task):
     shell = True
-    run_str = ' '.join(('PYTHONPATH=${BIBPYTPATH}', '${PYTHON}',
-                        '-m', 'Lecture_Cata_Ele.make_capy_offi',
-                        '-i', '${SRC[0].abspath()}',
+    run_str = ' '.join(('PYTHONPATH=${BIBPYTPATH}:${SRC[0].abspath()}',
+                        '${PYTHON}',
+                        '-m', 'build_cata',
                         '-o', '${TGT[0].abspath()}'))
 
     def sig_explicit_deps(self):
         self.dep_nodes[:] = self.inputs[1:]
         catalo = self.inputs[0]
-        # put *.cata files into self.inputs in order to let the
+        # put catalo/*.py files into self.inputs in order to let the
         # original sig_explicit_deps compute their signature which is
         # used to rebuild on any changes.
-        self.inputs[:] = catalo.ant_glob('**/*.cata')
-        super(picklecata, self).sig_explicit_deps()
+        self.inputs[:] = catalo.ant_glob('**/*.py')
+        super(printcata, self).sig_explicit_deps()
         self.inputs[:] = [catalo]
+
 
 @TaskGen.extension('.ojb')
 def buildcata(self, node):

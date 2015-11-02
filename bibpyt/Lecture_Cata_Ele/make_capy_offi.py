@@ -19,7 +19,7 @@
 
 '''
 script à appeler à la fin de la procédure majnew
-     apres la mise à jour de vers/catalo/*/*.cata
+     apres la mise à jour de vers/catalo/*/*.py
 
 ce script fabrique une version "capy" des catalogues d'éléments officiels
 pour que la procédure ccat92 de surcharge des catalogues soit plus rapide en
@@ -44,7 +44,7 @@ def parse_args(argv=None):
     parser.add_option('--bibpyt', dest='rep_scripts', metavar='FOLDER',
                       help="path to Code_Aster python source files")
     parser.add_option('-i', '--input', dest='rep_cata_offi', metavar='FOLDER',
-                      help='path to .cata files')
+                      help='path to .py files')
     parser.add_option('-o', '--output', dest='nom_capy_offi', metavar='FILE',
                       default='cata_ele.pickled',
                       help='file path use as output (default: %default)')
@@ -93,31 +93,20 @@ def main(rep_cata_offi, nom_capy_offi):
 
 def _main(rep_cata_offi, nom_capy_offi):
     """Script pour construire le catalogue officiel cata_ele.picked"""
-    from Lecture_Cata_Ele.lecture import lire_cata
-    import Lecture_Cata_Ele.utilit as utilit
+    print "AJACOT rep_cata_offi=",rep_cata_offi
+    print "AJACOT nom_capy_offi=",nom_capy_offi
+    import sys
+    print "ajacot sys.argv=",sys.argv
+    print "ajacot sys.path 1=",sys.path
+    dir_src=osp.dirname(sys.path[1]) # AJACOT NON !!!
+    print "ajacot dir_src=",dir_src
+    sys.path.insert(0,dir_src)
+    print "ajacot sys.path 2=",sys.path
 
-    # concaténation des catalogues
-    #-----------------------------
-    with open('tou.cata', 'w') as toucata:
-        for soucat in ("compelem", "options", "typelem"):
-            lisfic = glob.glob(osp.join(rep_cata_offi, soucat, "*.cata"))
-            for nomfic in lisfic:
-                with open(nomfic) as cata:
-                    texte = cata.read()
-                    toucata.write(texte)
+    import catalo
+    import catalo.Tools.imprime as imprime
 
-    # lecture des catalogues
-    #-----------------------
-    # pour ne pas utiliser trop de mémoire, on splite le fichier pour
-    # la lecture :
-    liste_morceaux = utilit.cata_split('tou.cata', 'morceau', 5000)
-
-    capy = lire_cata(liste_morceaux[0])
-    for k in range(len(liste_morceaux) - 1):
-        capy2 = lire_cata(liste_morceaux[k + 1])
-        utilit.concat_capy(capy, capy2)
-
-    utilit.write_capy(capy, nom_capy_offi)
+    imprime.impr_cata(catalo.cel, nom_capy_offi)
 
 
 if __name__ == '__main__':
