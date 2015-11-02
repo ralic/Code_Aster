@@ -17,7 +17,7 @@
 # ======================================================================
 
 from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents, SetOfNodes, ElrefeLoc
-from cataelem.Tools.base_objects import Calcul, Element, AbstractElement
+from cataelem.Tools.base_objects import Calcul, NewElement
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.located_components as LC
 import cataelem.Commons.parameters as SP
@@ -87,88 +87,86 @@ MVECTUR  = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=(DDL_MECA,))
 
 
 #------------------------------------------------------------
-abstractElement = AbstractElement()
-ele = abstractElement
+class THHM_FACE8(NewElement):
+    """Please document this element"""
+    meshType = MT.QUAD8
+    nodes = (
+            SetOfNodes('EN2', (5,6,7,8,)),
+            SetOfNodes('EN1', (1,2,3,4,)),
+        )
+    elrefe =(
+            ElrefeLoc(MT.QU8, gauss = ('RIGI=FPG9',),),
+            ElrefeLoc(MT.QU4, gauss = ('RIGI=FPG9',),),
+        )
+    calculs = (
 
-ele.addCalcul(OP.CHAR_MECA_FLUX_F, te=466,
-    para_in=((SP.PFLUXF, CFLUXF), (SP.PGEOMER, NGEOMER),
-             (SP.PTEMPSR, CTEMPSR), ),
-    para_out=((SP.PVECTUR, MVECTUR), ),
-)
+        OP.CHAR_MECA_FLUX_F(te=466,
+            para_in=((SP.PFLUXF, CFLUXF), (SP.PGEOMER, NGEOMER),
+                     (SP.PTEMPSR, CTEMPSR), ),
+            para_out=((SP.PVECTUR, MVECTUR), ),
+        ),
 
-ele.addCalcul(OP.CHAR_MECA_FLUX_R, te=466,
-    para_in=((SP.PFLUXR, EFLUXE), (SP.PGEOMER, NGEOMER),
-             (SP.PTEMPSR, CTEMPSR), ),
-    para_out=((SP.PVECTUR, MVECTUR), ),
-)
+        OP.CHAR_MECA_FLUX_R(te=466,
+            para_in=((SP.PFLUXR, EFLUXE), (SP.PGEOMER, NGEOMER),
+                     (SP.PTEMPSR, CTEMPSR), ),
+            para_out=((SP.PVECTUR, MVECTUR), ),
+        ),
 
-ele.addCalcul(OP.CHAR_MECA_FR2D3D, te=466,
-    para_in=((SP.PFR2D3D, EFORCNO), (SP.PGEOMER, NGEOMER),
-             ),
-    para_out=((SP.PVECTUR, MVECTUR), ),
-)
+        OP.CHAR_MECA_FR2D3D(te=466,
+            para_in=((SP.PFR2D3D, EFORCNO), (SP.PGEOMER, NGEOMER),
+                     ),
+            para_out=((SP.PVECTUR, MVECTUR), ),
+        ),
 
-ele.addCalcul(OP.CHAR_MECA_PRES_F, te=466,
-    para_in=((SP.PGEOMER, NGEOMER), (SP.PPRESSF, CPRESSF),
-             (SP.PTEMPSR, CTEMPSR), ),
-    para_out=((SP.PVECTUR, MVECTUR), ),
-)
+        OP.CHAR_MECA_PRES_F(te=466,
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PPRESSF, CPRESSF),
+                     (SP.PTEMPSR, CTEMPSR), ),
+            para_out=((SP.PVECTUR, MVECTUR), ),
+        ),
 
-ele.addCalcul(OP.CHAR_MECA_PRES_R, te=466,
-    para_in=((SP.PGEOMER, NGEOMER), (SP.PPRESSR, EPRESNO),
-             ),
-    para_out=((SP.PVECTUR, MVECTUR), ),
-)
+        OP.CHAR_MECA_PRES_R(te=466,
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PPRESSR, EPRESNO),
+                     ),
+            para_out=((SP.PVECTUR, MVECTUR), ),
+        ),
 
-ele.addCalcul(OP.COOR_ELGA, te=488,
-    para_in=((SP.PGEOMER, NGEOMER), ),
-    para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R), ),
-)
+        OP.COOR_ELGA(te=488,
+            para_in=((SP.PGEOMER, NGEOMER), ),
+            para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R), ),
+        ),
 
-ele.addCalcul(OP.FLHN_ELGA, te=493,
-    para_in=((SP.PCONTR, NSIEF_R), (SP.PGEOMER, NGEOMER),
-             ),
-    para_out=((SP.PFLHN, EFLHN), ),
-)
+        OP.FLHN_ELGA(te=493,
+            para_in=((SP.PCONTR, NSIEF_R), (SP.PGEOMER, NGEOMER),
+                     ),
+            para_out=((SP.PFLHN, EFLHN), ),
+        ),
 
-ele.addCalcul(OP.SIRO_ELEM, te=411,
-    para_in=((SP.PGEOMER, NGEOMER), (SP.PSIG3D, ECONTNO),
-             ),
-    para_out=((SP.PPJSIGM, LC.EPJSIGM), ),
-)
+        OP.SIRO_ELEM(te=411,
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PSIG3D, ECONTNO),
+                     ),
+            para_out=((SP.PPJSIGM, LC.EPJSIGM), ),
+        ),
 
-ele.addCalcul(OP.TOU_INI_ELGA, te=99,
-    para_out=((OP.TOU_INI_ELGA.PGEOM_R, EGGEOP_R), ),
-)
+        OP.TOU_INI_ELGA(te=99,
+            para_out=((OP.TOU_INI_ELGA.PGEOM_R, EGGEOP_R), ),
+        ),
 
-ele.addCalcul(OP.TOU_INI_ELNO, te=99,
-    para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), ),
-)
+        OP.TOU_INI_ELNO(te=99,
+            para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), ),
+        ),
 
-
-#------------------------------------------------------------
-THHM_FACE8 = Element(modele=abstractElement)
-ele = THHM_FACE8
-ele.meshType = MT.QUAD8
-ele.nodes = (
-        SetOfNodes('EN2', (5,6,7,8,)),
-        SetOfNodes('EN1', (1,2,3,4,)),
-    )
-ele.elrefe=(
-        ElrefeLoc(MT.QU8, gauss = ('RIGI=FPG9',),),
-        ElrefeLoc(MT.QU4, gauss = ('RIGI=FPG9',),),
     )
 
 
 #------------------------------------------------------------
-THHM_FACE6 = Element(modele=abstractElement)
-ele = THHM_FACE6
-ele.meshType = MT.TRIA6
-ele.nodes = (
-        SetOfNodes('EN2', (4,5,6,)),
-        SetOfNodes('EN1', (1,2,3,)),
-    )
-ele.elrefe=(
-        ElrefeLoc(MT.TR6, gauss = ('RIGI=FPG6',),),
-        ElrefeLoc(MT.TR3, gauss = ('RIGI=FPG6',),),
-    )
+class THHM_FACE6(THHM_FACE8):
+    """Please document this element"""
+    meshType = MT.TRIA6
+    nodes = (
+            SetOfNodes('EN2', (4,5,6,)),
+            SetOfNodes('EN1', (1,2,3,)),
+        )
+    elrefe =(
+            ElrefeLoc(MT.TR6, gauss = ('RIGI=FPG6',),),
+            ElrefeLoc(MT.TR3, gauss = ('RIGI=FPG6',),),
+        )

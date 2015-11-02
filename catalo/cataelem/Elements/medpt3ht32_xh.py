@@ -17,7 +17,7 @@
 # ======================================================================
 
 from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents, SetOfNodes, ElrefeLoc
-from cataelem.Tools.base_objects import Calcul, Element, AbstractElement
+from cataelem.Tools.base_objects import Calcul, NewElement
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.located_components as LC
 import cataelem.Commons.parameters as SP
@@ -87,479 +87,477 @@ MMATUNS  = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=(DDL_MECA,DDL_ME
 
 
 #------------------------------------------------------------
-abstractElement = AbstractElement()
-ele = abstractElement
+class MEDPT3HT32_XH(NewElement):
+    """Please document this element"""
+    meshType = MT.TR3TR3
+    nodes = (
+            SetOfNodes('EN1', (1,2,3,)),
+            SetOfNodes('EN6', (4,5,6,)),
+        )
+    elrefe =(
+            ElrefeLoc(MT.TR3, gauss = ('NOEU=NOEU',),),
+            ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
+        )
+    calculs = (
 
-ele.addCalcul(OP.CHAR_MECA_CONT, te=367,
-    para_in=((SP.PCAR_AI, CCONAI), (SP.PCAR_CF, CCONCF),
-             (SP.PCAR_PI, CCONPI), (SP.PCAR_PT, LC.CCONPT),
-             (SP.PDEPL_M, DDL_MECA), (SP.PDEPL_P, DDL_MECA),
-             (SP.PGEOMER, NGEOMER), (SP.PHEAVNO, PLALA_I),
-             (OP.CHAR_MECA_CONT.PHEA_FA, CCONHE), (OP.CHAR_MECA_CONT.PHEA_NO, LC.N40NEUI),
-             (OP.CHAR_MECA_CONT.PSTANO, STANO_I), ),
-    para_out=((SP.PVECTUR, MVECTUR), ),
-)
+        OP.CHAR_MECA_CONT(te=367,
+            para_in=((SP.PCAR_AI, CCONAI), (SP.PCAR_CF, CCONCF),
+                     (SP.PCAR_PI, CCONPI), (SP.PCAR_PT, LC.CCONPT),
+                     (SP.PDEPL_M, DDL_MECA), (SP.PDEPL_P, DDL_MECA),
+                     (SP.PGEOMER, NGEOMER), (SP.PHEAVNO, PLALA_I),
+                     (OP.CHAR_MECA_CONT.PHEA_FA, CCONHE), (OP.CHAR_MECA_CONT.PHEA_NO, LC.N40NEUI),
+                     (OP.CHAR_MECA_CONT.PSTANO, STANO_I), ),
+            para_out=((SP.PVECTUR, MVECTUR), ),
+        ),
 
-ele.addCalcul(OP.CHAR_MECA_FROT, te=367,
-    para_in=((SP.PCAR_AI, CCONAI), (SP.PCAR_CF, CCONCF),
-             (SP.PCAR_PI, CCONPI), (SP.PCAR_PT, LC.CCONPT),
-             (SP.PDEPL_M, DDL_MECA), (SP.PDEPL_P, DDL_MECA),
-             (SP.PGEOMER, NGEOMER), (SP.PHEAVNO, PLALA_I),
-             (OP.CHAR_MECA_FROT.PHEA_FA, CCONHE), (OP.CHAR_MECA_FROT.PHEA_NO, LC.N40NEUI),
-             (OP.CHAR_MECA_FROT.PSTANO, STANO_I), ),
-    para_out=((SP.PVECTUR, MVECTUR), ),
-)
+        OP.CHAR_MECA_FROT(te=367,
+            para_in=((SP.PCAR_AI, CCONAI), (SP.PCAR_CF, CCONCF),
+                     (SP.PCAR_PI, CCONPI), (SP.PCAR_PT, LC.CCONPT),
+                     (SP.PDEPL_M, DDL_MECA), (SP.PDEPL_P, DDL_MECA),
+                     (SP.PGEOMER, NGEOMER), (SP.PHEAVNO, PLALA_I),
+                     (OP.CHAR_MECA_FROT.PHEA_FA, CCONHE), (OP.CHAR_MECA_FROT.PHEA_NO, LC.N40NEUI),
+                     (OP.CHAR_MECA_FROT.PSTANO, STANO_I), ),
+            para_out=((SP.PVECTUR, MVECTUR), ),
+        ),
 
-ele.addCalcul(OP.RIGI_CONT, te=366,
-    para_in=((SP.PCAR_AI, CCONAI), (SP.PCAR_CF, CCONCF),
-             (SP.PCAR_PI, CCONPI), (SP.PCAR_PT, LC.CCONPT),
-             (SP.PDEPL_M, DDL_MECA), (SP.PDEPL_P, DDL_MECA),
-             (SP.PGEOMER, NGEOMER), (SP.PHEAVNO, PLALA_I),
-             (OP.RIGI_CONT.PHEA_FA, CCONHE), (OP.RIGI_CONT.PHEA_NO, LC.N40NEUI),
-             (OP.RIGI_CONT.PSTANO, STANO_I), ),
-    para_out=((SP.PMATUNS, MMATUNS), (SP.PMATUUR, MMATUUR),
-             ),
-)
+        OP.RIGI_CONT(te=366,
+            para_in=((SP.PCAR_AI, CCONAI), (SP.PCAR_CF, CCONCF),
+                     (SP.PCAR_PI, CCONPI), (SP.PCAR_PT, LC.CCONPT),
+                     (SP.PDEPL_M, DDL_MECA), (SP.PDEPL_P, DDL_MECA),
+                     (SP.PGEOMER, NGEOMER), (SP.PHEAVNO, PLALA_I),
+                     (OP.RIGI_CONT.PHEA_FA, CCONHE), (OP.RIGI_CONT.PHEA_NO, LC.N40NEUI),
+                     (OP.RIGI_CONT.PSTANO, STANO_I), ),
+            para_out=((SP.PMATUNS, MMATUNS), (SP.PMATUUR, MMATUUR),
+                     ),
+        ),
 
-ele.addCalcul(OP.RIGI_FROT, te=366,
-    para_in=((SP.PCAR_AI, CCONAI), (SP.PCAR_CF, CCONCF),
-             (SP.PCAR_PI, CCONPI), (SP.PCAR_PT, LC.CCONPT),
-             (SP.PDEPL_M, DDL_MECA), (SP.PDEPL_P, DDL_MECA),
-             (SP.PGEOMER, NGEOMER), (SP.PHEAVNO, PLALA_I),
-             (OP.RIGI_FROT.PHEA_FA, CCONHE), (OP.RIGI_FROT.PHEA_NO, LC.N40NEUI),
-             (OP.RIGI_FROT.PSTANO, STANO_I), ),
-    para_out=((SP.PMATUNS, MMATUNS), (SP.PMATUUR, MMATUUR),
-             ),
-)
+        OP.RIGI_FROT(te=366,
+            para_in=((SP.PCAR_AI, CCONAI), (SP.PCAR_CF, CCONCF),
+                     (SP.PCAR_PI, CCONPI), (SP.PCAR_PT, LC.CCONPT),
+                     (SP.PDEPL_M, DDL_MECA), (SP.PDEPL_P, DDL_MECA),
+                     (SP.PGEOMER, NGEOMER), (SP.PHEAVNO, PLALA_I),
+                     (OP.RIGI_FROT.PHEA_FA, CCONHE), (OP.RIGI_FROT.PHEA_NO, LC.N40NEUI),
+                     (OP.RIGI_FROT.PSTANO, STANO_I), ),
+            para_out=((SP.PMATUNS, MMATUNS), (SP.PMATUUR, MMATUUR),
+                     ),
+        ),
 
-ele.addCalcul(OP.TOU_INI_ELNO, te=99,
-    para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), ),
-)
+        OP.TOU_INI_ELNO(te=99,
+            para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), ),
+        ),
 
-ele.addCalcul(OP.XCVBCA, te=363,
-    para_in=((SP.PCAR_AI, CCONAI), (SP.PCAR_PT, LC.CCONPT),
-             (SP.PDEPL_P, DDL_MECA), (SP.PGEOMER, NGEOMER),
-             (SP.PHEAVNO, PLALA_I), (OP.XCVBCA.PHEA_FA, CCONHE),
-             (OP.XCVBCA.PHEA_NO, LC.N40NEUI), ),
-    para_out=((SP.PINDCOO, LC.I3NEUT_I), ),
-)
+        OP.XCVBCA(te=363,
+            para_in=((SP.PCAR_AI, CCONAI), (SP.PCAR_PT, LC.CCONPT),
+                     (SP.PDEPL_P, DDL_MECA), (SP.PGEOMER, NGEOMER),
+                     (SP.PHEAVNO, PLALA_I), (OP.XCVBCA.PHEA_FA, CCONHE),
+                     (OP.XCVBCA.PHEA_NO, LC.N40NEUI), ),
+            para_out=((SP.PINDCOO, LC.I3NEUT_I), ),
+        ),
 
-
-#------------------------------------------------------------
-MEDPT3HT32_XH = Element(modele=abstractElement)
-ele = MEDPT3HT32_XH
-ele.meshType = MT.TR3TR3
-ele.nodes = (
-        SetOfNodes('EN1', (1,2,3,)),
-        SetOfNodes('EN6', (4,5,6,)),
-    )
-ele.elrefe=(
-        ElrefeLoc(MT.TR3, gauss = ('NOEU=NOEU',),),
-        ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
     )
 
 
 #------------------------------------------------------------
-MEDPT3HT33_XH = Element(modele=abstractElement)
-ele = MEDPT3HT33_XH
-ele.meshType = MT.TR3TR3
-ele.nodes = (
-        SetOfNodes('EN1', (1,2,3,)),
-        SetOfNodes('EN7', (4,5,6,)),
-    )
-ele.elrefe=(
-        ElrefeLoc(MT.TR3, gauss = ('NOEU=NOEU',),),
-        ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
-    )
+class MEDPT3HT33_XH(MEDPT3HT32_XH):
+    """Please document this element"""
+    meshType = MT.TR3TR3
+    nodes = (
+            SetOfNodes('EN1', (1,2,3,)),
+            SetOfNodes('EN7', (4,5,6,)),
+        )
+    elrefe =(
+            ElrefeLoc(MT.TR3, gauss = ('NOEU=NOEU',),),
+            ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
+        )
 
 
 #------------------------------------------------------------
-MEDPT3HT34_XH = Element(modele=abstractElement)
-ele = MEDPT3HT34_XH
-ele.meshType = MT.TR3TR3
-ele.nodes = (
-        SetOfNodes('EN1', (1,2,3,)),
-        SetOfNodes('EN8', (4,5,6,)),
-    )
-ele.elrefe=(
-        ElrefeLoc(MT.TR3, gauss = ('NOEU=NOEU',),),
-        ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
-    )
+class MEDPT3HT34_XH(MEDPT3HT32_XH):
+    """Please document this element"""
+    meshType = MT.TR3TR3
+    nodes = (
+            SetOfNodes('EN1', (1,2,3,)),
+            SetOfNodes('EN8', (4,5,6,)),
+        )
+    elrefe =(
+            ElrefeLoc(MT.TR3, gauss = ('NOEU=NOEU',),),
+            ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
+        )
 
 
 #------------------------------------------------------------
-MEDPT32T3H_XH = Element(modele=abstractElement)
-ele = MEDPT32T3H_XH
-ele.meshType = MT.TR3TR3
-ele.nodes = (
-        SetOfNodes('EN2', (1,2,3,)),
-        SetOfNodes('EN5', (4,5,6,)),
-    )
-ele.elrefe=(
-        ElrefeLoc(MT.TR3, gauss = ('NOEU=NOEU',),),
-        ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
-    )
+class MEDPT32T3H_XH(MEDPT3HT32_XH):
+    """Please document this element"""
+    meshType = MT.TR3TR3
+    nodes = (
+            SetOfNodes('EN2', (1,2,3,)),
+            SetOfNodes('EN5', (4,5,6,)),
+        )
+    elrefe =(
+            ElrefeLoc(MT.TR3, gauss = ('NOEU=NOEU',),),
+            ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
+        )
 
 
 #------------------------------------------------------------
-MEDPT32T32_XH = Element(modele=abstractElement)
-ele = MEDPT32T32_XH
-ele.meshType = MT.TR3TR3
-ele.nodes = (
-        SetOfNodes('EN2', (1,2,3,)),
-        SetOfNodes('EN6', (4,5,6,)),
-    )
-ele.elrefe=(
-        ElrefeLoc(MT.TR3, gauss = ('NOEU=NOEU',),),
-        ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
-    )
+class MEDPT32T32_XH(MEDPT3HT32_XH):
+    """Please document this element"""
+    meshType = MT.TR3TR3
+    nodes = (
+            SetOfNodes('EN2', (1,2,3,)),
+            SetOfNodes('EN6', (4,5,6,)),
+        )
+    elrefe =(
+            ElrefeLoc(MT.TR3, gauss = ('NOEU=NOEU',),),
+            ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
+        )
 
 
 #------------------------------------------------------------
-MEDPT32T33_XH = Element(modele=abstractElement)
-ele = MEDPT32T33_XH
-ele.meshType = MT.TR3TR3
-ele.nodes = (
-        SetOfNodes('EN2', (1,2,3,)),
-        SetOfNodes('EN7', (4,5,6,)),
-    )
-ele.elrefe=(
-        ElrefeLoc(MT.TR3, gauss = ('NOEU=NOEU',),),
-        ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
-    )
+class MEDPT32T33_XH(MEDPT3HT32_XH):
+    """Please document this element"""
+    meshType = MT.TR3TR3
+    nodes = (
+            SetOfNodes('EN2', (1,2,3,)),
+            SetOfNodes('EN7', (4,5,6,)),
+        )
+    elrefe =(
+            ElrefeLoc(MT.TR3, gauss = ('NOEU=NOEU',),),
+            ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
+        )
 
 
 #------------------------------------------------------------
-MEDPT32T34_XH = Element(modele=abstractElement)
-ele = MEDPT32T34_XH
-ele.meshType = MT.TR3TR3
-ele.nodes = (
-        SetOfNodes('EN2', (1,2,3,)),
-        SetOfNodes('EN8', (4,5,6,)),
-    )
-ele.elrefe=(
-        ElrefeLoc(MT.TR3, gauss = ('NOEU=NOEU',),),
-        ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
-    )
+class MEDPT32T34_XH(MEDPT3HT32_XH):
+    """Please document this element"""
+    meshType = MT.TR3TR3
+    nodes = (
+            SetOfNodes('EN2', (1,2,3,)),
+            SetOfNodes('EN8', (4,5,6,)),
+        )
+    elrefe =(
+            ElrefeLoc(MT.TR3, gauss = ('NOEU=NOEU',),),
+            ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
+        )
 
 
 #------------------------------------------------------------
-MEDPT33T3H_XH = Element(modele=abstractElement)
-ele = MEDPT33T3H_XH
-ele.meshType = MT.TR3TR3
-ele.nodes = (
-        SetOfNodes('EN3', (1,2,3,)),
-        SetOfNodes('EN5', (4,5,6,)),
-    )
-ele.elrefe=(
-        ElrefeLoc(MT.TR3, gauss = ('NOEU=NOEU',),),
-        ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
-    )
+class MEDPT33T3H_XH(MEDPT3HT32_XH):
+    """Please document this element"""
+    meshType = MT.TR3TR3
+    nodes = (
+            SetOfNodes('EN3', (1,2,3,)),
+            SetOfNodes('EN5', (4,5,6,)),
+        )
+    elrefe =(
+            ElrefeLoc(MT.TR3, gauss = ('NOEU=NOEU',),),
+            ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
+        )
 
 
 #------------------------------------------------------------
-MEDPT33T32_XH = Element(modele=abstractElement)
-ele = MEDPT33T32_XH
-ele.meshType = MT.TR3TR3
-ele.nodes = (
-        SetOfNodes('EN3', (1,2,3,)),
-        SetOfNodes('EN6', (4,5,6,)),
-    )
-ele.elrefe=(
-        ElrefeLoc(MT.TR3, gauss = ('NOEU=NOEU',),),
-        ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
-    )
+class MEDPT33T32_XH(MEDPT3HT32_XH):
+    """Please document this element"""
+    meshType = MT.TR3TR3
+    nodes = (
+            SetOfNodes('EN3', (1,2,3,)),
+            SetOfNodes('EN6', (4,5,6,)),
+        )
+    elrefe =(
+            ElrefeLoc(MT.TR3, gauss = ('NOEU=NOEU',),),
+            ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
+        )
 
 
 #------------------------------------------------------------
-MEDPT33T33_XH = Element(modele=abstractElement)
-ele = MEDPT33T33_XH
-ele.meshType = MT.TR3TR3
-ele.nodes = (
-        SetOfNodes('EN3', (1,2,3,)),
-        SetOfNodes('EN7', (4,5,6,)),
-    )
-ele.elrefe=(
-        ElrefeLoc(MT.TR3, gauss = ('NOEU=NOEU',),),
-        ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
-    )
+class MEDPT33T33_XH(MEDPT3HT32_XH):
+    """Please document this element"""
+    meshType = MT.TR3TR3
+    nodes = (
+            SetOfNodes('EN3', (1,2,3,)),
+            SetOfNodes('EN7', (4,5,6,)),
+        )
+    elrefe =(
+            ElrefeLoc(MT.TR3, gauss = ('NOEU=NOEU',),),
+            ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
+        )
 
 
 #------------------------------------------------------------
-MEDPT33T34_XH = Element(modele=abstractElement)
-ele = MEDPT33T34_XH
-ele.meshType = MT.TR3TR3
-ele.nodes = (
-        SetOfNodes('EN3', (1,2,3,)),
-        SetOfNodes('EN8', (4,5,6,)),
-    )
-ele.elrefe=(
-        ElrefeLoc(MT.TR3, gauss = ('NOEU=NOEU',),),
-        ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
-    )
+class MEDPT33T34_XH(MEDPT3HT32_XH):
+    """Please document this element"""
+    meshType = MT.TR3TR3
+    nodes = (
+            SetOfNodes('EN3', (1,2,3,)),
+            SetOfNodes('EN8', (4,5,6,)),
+        )
+    elrefe =(
+            ElrefeLoc(MT.TR3, gauss = ('NOEU=NOEU',),),
+            ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
+        )
 
 
 #------------------------------------------------------------
-MEDPT34T3H_XH = Element(modele=abstractElement)
-ele = MEDPT34T3H_XH
-ele.meshType = MT.TR3TR3
-ele.nodes = (
-        SetOfNodes('EN4', (1,2,3,)),
-        SetOfNodes('EN5', (4,5,6,)),
-    )
-ele.elrefe=(
-        ElrefeLoc(MT.TR3, gauss = ('NOEU=NOEU',),),
-        ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
-    )
+class MEDPT34T3H_XH(MEDPT3HT32_XH):
+    """Please document this element"""
+    meshType = MT.TR3TR3
+    nodes = (
+            SetOfNodes('EN4', (1,2,3,)),
+            SetOfNodes('EN5', (4,5,6,)),
+        )
+    elrefe =(
+            ElrefeLoc(MT.TR3, gauss = ('NOEU=NOEU',),),
+            ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
+        )
 
 
 #------------------------------------------------------------
-MEDPT34T32_XH = Element(modele=abstractElement)
-ele = MEDPT34T32_XH
-ele.meshType = MT.TR3TR3
-ele.nodes = (
-        SetOfNodes('EN4', (1,2,3,)),
-        SetOfNodes('EN6', (4,5,6,)),
-    )
-ele.elrefe=(
-        ElrefeLoc(MT.TR3, gauss = ('NOEU=NOEU',),),
-        ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
-    )
+class MEDPT34T32_XH(MEDPT3HT32_XH):
+    """Please document this element"""
+    meshType = MT.TR3TR3
+    nodes = (
+            SetOfNodes('EN4', (1,2,3,)),
+            SetOfNodes('EN6', (4,5,6,)),
+        )
+    elrefe =(
+            ElrefeLoc(MT.TR3, gauss = ('NOEU=NOEU',),),
+            ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
+        )
 
 
 #------------------------------------------------------------
-MEDPT34T33_XH = Element(modele=abstractElement)
-ele = MEDPT34T33_XH
-ele.meshType = MT.TR3TR3
-ele.nodes = (
-        SetOfNodes('EN4', (1,2,3,)),
-        SetOfNodes('EN7', (4,5,6,)),
-    )
-ele.elrefe=(
-        ElrefeLoc(MT.TR3, gauss = ('NOEU=NOEU',),),
-        ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
-    )
+class MEDPT34T33_XH(MEDPT3HT32_XH):
+    """Please document this element"""
+    meshType = MT.TR3TR3
+    nodes = (
+            SetOfNodes('EN4', (1,2,3,)),
+            SetOfNodes('EN7', (4,5,6,)),
+        )
+    elrefe =(
+            ElrefeLoc(MT.TR3, gauss = ('NOEU=NOEU',),),
+            ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
+        )
 
 
 #------------------------------------------------------------
-MEDPT34T34_XH = Element(modele=abstractElement)
-ele = MEDPT34T34_XH
-ele.meshType = MT.TR3TR3
-ele.nodes = (
-        SetOfNodes('EN4', (1,2,3,)),
-        SetOfNodes('EN8', (4,5,6,)),
-    )
-ele.elrefe=(
-        ElrefeLoc(MT.TR3, gauss = ('NOEU=NOEU',),),
-        ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
-    )
+class MEDPT34T34_XH(MEDPT3HT32_XH):
+    """Please document this element"""
+    meshType = MT.TR3TR3
+    nodes = (
+            SetOfNodes('EN4', (1,2,3,)),
+            SetOfNodes('EN8', (4,5,6,)),
+        )
+    elrefe =(
+            ElrefeLoc(MT.TR3, gauss = ('NOEU=NOEU',),),
+            ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
+        )
 
 
 #------------------------------------------------------------
-MEDPQ4HQ42_XH = Element(modele=abstractElement)
-ele = MEDPQ4HQ42_XH
-ele.meshType = MT.QU4QU4
-ele.nodes = (
-        SetOfNodes('EN1', (1,2,3,4,)),
-        SetOfNodes('EN6', (5,6,7,8,)),
-    )
-ele.elrefe=(
-        ElrefeLoc(MT.QU4, gauss = ('NOEU=NOEU',),),
-        ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
-    )
+class MEDPQ4HQ42_XH(MEDPT3HT32_XH):
+    """Please document this element"""
+    meshType = MT.QU4QU4
+    nodes = (
+            SetOfNodes('EN1', (1,2,3,4,)),
+            SetOfNodes('EN6', (5,6,7,8,)),
+        )
+    elrefe =(
+            ElrefeLoc(MT.QU4, gauss = ('NOEU=NOEU',),),
+            ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
+        )
 
 
 #------------------------------------------------------------
-MEDPQ4HQ43_XH = Element(modele=abstractElement)
-ele = MEDPQ4HQ43_XH
-ele.meshType = MT.QU4QU4
-ele.nodes = (
-        SetOfNodes('EN1', (1,2,3,4,)),
-        SetOfNodes('EN7', (5,6,7,8,)),
-    )
-ele.elrefe=(
-        ElrefeLoc(MT.QU4, gauss = ('NOEU=NOEU',),),
-        ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
-    )
+class MEDPQ4HQ43_XH(MEDPT3HT32_XH):
+    """Please document this element"""
+    meshType = MT.QU4QU4
+    nodes = (
+            SetOfNodes('EN1', (1,2,3,4,)),
+            SetOfNodes('EN7', (5,6,7,8,)),
+        )
+    elrefe =(
+            ElrefeLoc(MT.QU4, gauss = ('NOEU=NOEU',),),
+            ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
+        )
 
 
 #------------------------------------------------------------
-MEDPQ4HQ44_XH = Element(modele=abstractElement)
-ele = MEDPQ4HQ44_XH
-ele.meshType = MT.QU4QU4
-ele.nodes = (
-        SetOfNodes('EN1', (1,2,3,4,)),
-        SetOfNodes('EN8', (5,6,7,8,)),
-    )
-ele.elrefe=(
-        ElrefeLoc(MT.QU4, gauss = ('NOEU=NOEU',),),
-        ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
-    )
+class MEDPQ4HQ44_XH(MEDPT3HT32_XH):
+    """Please document this element"""
+    meshType = MT.QU4QU4
+    nodes = (
+            SetOfNodes('EN1', (1,2,3,4,)),
+            SetOfNodes('EN8', (5,6,7,8,)),
+        )
+    elrefe =(
+            ElrefeLoc(MT.QU4, gauss = ('NOEU=NOEU',),),
+            ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
+        )
 
 
 #------------------------------------------------------------
-MEDPQ42Q4H_XH = Element(modele=abstractElement)
-ele = MEDPQ42Q4H_XH
-ele.meshType = MT.QU4QU4
-ele.nodes = (
-        SetOfNodes('EN2', (1,2,3,4,)),
-        SetOfNodes('EN5', (5,6,7,8,)),
-    )
-ele.elrefe=(
-        ElrefeLoc(MT.QU4, gauss = ('NOEU=NOEU',),),
-        ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
-    )
+class MEDPQ42Q4H_XH(MEDPT3HT32_XH):
+    """Please document this element"""
+    meshType = MT.QU4QU4
+    nodes = (
+            SetOfNodes('EN2', (1,2,3,4,)),
+            SetOfNodes('EN5', (5,6,7,8,)),
+        )
+    elrefe =(
+            ElrefeLoc(MT.QU4, gauss = ('NOEU=NOEU',),),
+            ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
+        )
 
 
 #------------------------------------------------------------
-MEDPQ42Q42_XH = Element(modele=abstractElement)
-ele = MEDPQ42Q42_XH
-ele.meshType = MT.QU4QU4
-ele.nodes = (
-        SetOfNodes('EN2', (1,2,3,4,)),
-        SetOfNodes('EN6', (5,6,7,8,)),
-    )
-ele.elrefe=(
-        ElrefeLoc(MT.QU4, gauss = ('NOEU=NOEU',),),
-        ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
-    )
+class MEDPQ42Q42_XH(MEDPT3HT32_XH):
+    """Please document this element"""
+    meshType = MT.QU4QU4
+    nodes = (
+            SetOfNodes('EN2', (1,2,3,4,)),
+            SetOfNodes('EN6', (5,6,7,8,)),
+        )
+    elrefe =(
+            ElrefeLoc(MT.QU4, gauss = ('NOEU=NOEU',),),
+            ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
+        )
 
 
 #------------------------------------------------------------
-MEDPQ42Q43_XH = Element(modele=abstractElement)
-ele = MEDPQ42Q43_XH
-ele.meshType = MT.QU4QU4
-ele.nodes = (
-        SetOfNodes('EN2', (1,2,3,4,)),
-        SetOfNodes('EN7', (5,6,7,8,)),
-    )
-ele.elrefe=(
-        ElrefeLoc(MT.QU4, gauss = ('NOEU=NOEU',),),
-        ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
-    )
+class MEDPQ42Q43_XH(MEDPT3HT32_XH):
+    """Please document this element"""
+    meshType = MT.QU4QU4
+    nodes = (
+            SetOfNodes('EN2', (1,2,3,4,)),
+            SetOfNodes('EN7', (5,6,7,8,)),
+        )
+    elrefe =(
+            ElrefeLoc(MT.QU4, gauss = ('NOEU=NOEU',),),
+            ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
+        )
 
 
 #------------------------------------------------------------
-MEDPQ42Q44_XH = Element(modele=abstractElement)
-ele = MEDPQ42Q44_XH
-ele.meshType = MT.QU4QU4
-ele.nodes = (
-        SetOfNodes('EN2', (1,2,3,4,)),
-        SetOfNodes('EN8', (5,6,7,8,)),
-    )
-ele.elrefe=(
-        ElrefeLoc(MT.QU4, gauss = ('NOEU=NOEU',),),
-        ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
-    )
+class MEDPQ42Q44_XH(MEDPT3HT32_XH):
+    """Please document this element"""
+    meshType = MT.QU4QU4
+    nodes = (
+            SetOfNodes('EN2', (1,2,3,4,)),
+            SetOfNodes('EN8', (5,6,7,8,)),
+        )
+    elrefe =(
+            ElrefeLoc(MT.QU4, gauss = ('NOEU=NOEU',),),
+            ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
+        )
 
 
 #------------------------------------------------------------
-MEDPQ43Q4H_XH = Element(modele=abstractElement)
-ele = MEDPQ43Q4H_XH
-ele.meshType = MT.QU4QU4
-ele.nodes = (
-        SetOfNodes('EN3', (1,2,3,4,)),
-        SetOfNodes('EN5', (5,6,7,8,)),
-    )
-ele.elrefe=(
-        ElrefeLoc(MT.QU4, gauss = ('NOEU=NOEU',),),
-        ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
-    )
+class MEDPQ43Q4H_XH(MEDPT3HT32_XH):
+    """Please document this element"""
+    meshType = MT.QU4QU4
+    nodes = (
+            SetOfNodes('EN3', (1,2,3,4,)),
+            SetOfNodes('EN5', (5,6,7,8,)),
+        )
+    elrefe =(
+            ElrefeLoc(MT.QU4, gauss = ('NOEU=NOEU',),),
+            ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
+        )
 
 
 #------------------------------------------------------------
-MEDPQ43Q42_XH = Element(modele=abstractElement)
-ele = MEDPQ43Q42_XH
-ele.meshType = MT.QU4QU4
-ele.nodes = (
-        SetOfNodes('EN3', (1,2,3,4,)),
-        SetOfNodes('EN6', (5,6,7,8,)),
-    )
-ele.elrefe=(
-        ElrefeLoc(MT.QU4, gauss = ('NOEU=NOEU',),),
-        ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
-    )
+class MEDPQ43Q42_XH(MEDPT3HT32_XH):
+    """Please document this element"""
+    meshType = MT.QU4QU4
+    nodes = (
+            SetOfNodes('EN3', (1,2,3,4,)),
+            SetOfNodes('EN6', (5,6,7,8,)),
+        )
+    elrefe =(
+            ElrefeLoc(MT.QU4, gauss = ('NOEU=NOEU',),),
+            ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
+        )
 
 
 #------------------------------------------------------------
-MEDPQ43Q43_XH = Element(modele=abstractElement)
-ele = MEDPQ43Q43_XH
-ele.meshType = MT.QU4QU4
-ele.nodes = (
-        SetOfNodes('EN3', (1,2,3,4,)),
-        SetOfNodes('EN7', (5,6,7,8,)),
-    )
-ele.elrefe=(
-        ElrefeLoc(MT.QU4, gauss = ('NOEU=NOEU',),),
-        ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
-    )
+class MEDPQ43Q43_XH(MEDPT3HT32_XH):
+    """Please document this element"""
+    meshType = MT.QU4QU4
+    nodes = (
+            SetOfNodes('EN3', (1,2,3,4,)),
+            SetOfNodes('EN7', (5,6,7,8,)),
+        )
+    elrefe =(
+            ElrefeLoc(MT.QU4, gauss = ('NOEU=NOEU',),),
+            ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
+        )
 
 
 #------------------------------------------------------------
-MEDPQ43Q44_XH = Element(modele=abstractElement)
-ele = MEDPQ43Q44_XH
-ele.meshType = MT.QU4QU4
-ele.nodes = (
-        SetOfNodes('EN3', (1,2,3,4,)),
-        SetOfNodes('EN8', (5,6,7,8,)),
-    )
-ele.elrefe=(
-        ElrefeLoc(MT.QU4, gauss = ('NOEU=NOEU',),),
-        ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
-    )
+class MEDPQ43Q44_XH(MEDPT3HT32_XH):
+    """Please document this element"""
+    meshType = MT.QU4QU4
+    nodes = (
+            SetOfNodes('EN3', (1,2,3,4,)),
+            SetOfNodes('EN8', (5,6,7,8,)),
+        )
+    elrefe =(
+            ElrefeLoc(MT.QU4, gauss = ('NOEU=NOEU',),),
+            ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
+        )
 
 
 #------------------------------------------------------------
-MEDPQ44Q4H_XH = Element(modele=abstractElement)
-ele = MEDPQ44Q4H_XH
-ele.meshType = MT.QU4QU4
-ele.nodes = (
-        SetOfNodes('EN4', (1,2,3,4,)),
-        SetOfNodes('EN5', (5,6,7,8,)),
-    )
-ele.elrefe=(
-        ElrefeLoc(MT.QU4, gauss = ('NOEU=NOEU',),),
-        ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
-    )
+class MEDPQ44Q4H_XH(MEDPT3HT32_XH):
+    """Please document this element"""
+    meshType = MT.QU4QU4
+    nodes = (
+            SetOfNodes('EN4', (1,2,3,4,)),
+            SetOfNodes('EN5', (5,6,7,8,)),
+        )
+    elrefe =(
+            ElrefeLoc(MT.QU4, gauss = ('NOEU=NOEU',),),
+            ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
+        )
 
 
 #------------------------------------------------------------
-MEDPQ44Q42_XH = Element(modele=abstractElement)
-ele = MEDPQ44Q42_XH
-ele.meshType = MT.QU4QU4
-ele.nodes = (
-        SetOfNodes('EN4', (1,2,3,4,)),
-        SetOfNodes('EN6', (5,6,7,8,)),
-    )
-ele.elrefe=(
-        ElrefeLoc(MT.QU4, gauss = ('NOEU=NOEU',),),
-        ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
-    )
+class MEDPQ44Q42_XH(MEDPT3HT32_XH):
+    """Please document this element"""
+    meshType = MT.QU4QU4
+    nodes = (
+            SetOfNodes('EN4', (1,2,3,4,)),
+            SetOfNodes('EN6', (5,6,7,8,)),
+        )
+    elrefe =(
+            ElrefeLoc(MT.QU4, gauss = ('NOEU=NOEU',),),
+            ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
+        )
 
 
 #------------------------------------------------------------
-MEDPQ44Q43_XH = Element(modele=abstractElement)
-ele = MEDPQ44Q43_XH
-ele.meshType = MT.QU4QU4
-ele.nodes = (
-        SetOfNodes('EN4', (1,2,3,4,)),
-        SetOfNodes('EN7', (5,6,7,8,)),
-    )
-ele.elrefe=(
-        ElrefeLoc(MT.QU4, gauss = ('NOEU=NOEU',),),
-        ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
-    )
+class MEDPQ44Q43_XH(MEDPT3HT32_XH):
+    """Please document this element"""
+    meshType = MT.QU4QU4
+    nodes = (
+            SetOfNodes('EN4', (1,2,3,4,)),
+            SetOfNodes('EN7', (5,6,7,8,)),
+        )
+    elrefe =(
+            ElrefeLoc(MT.QU4, gauss = ('NOEU=NOEU',),),
+            ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
+        )
 
 
 #------------------------------------------------------------
-MEDPQ44Q44_XH = Element(modele=abstractElement)
-ele = MEDPQ44Q44_XH
-ele.meshType = MT.QU4QU4
-ele.nodes = (
-        SetOfNodes('EN4', (1,2,3,4,)),
-        SetOfNodes('EN8', (5,6,7,8,)),
-    )
-ele.elrefe=(
-        ElrefeLoc(MT.QU4, gauss = ('NOEU=NOEU',),),
-        ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
-    )
+class MEDPQ44Q44_XH(MEDPT3HT32_XH):
+    """Please document this element"""
+    meshType = MT.QU4QU4
+    nodes = (
+            SetOfNodes('EN4', (1,2,3,4,)),
+            SetOfNodes('EN8', (5,6,7,8,)),
+        )
+    elrefe =(
+            ElrefeLoc(MT.QU4, gauss = ('NOEU=NOEU',),),
+            ElrefeLoc(MT.SE2, gauss = ('NOEU=NOEU',),),
+        )

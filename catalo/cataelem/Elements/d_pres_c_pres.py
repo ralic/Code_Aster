@@ -18,7 +18,7 @@
 # ======================================================================
 
 from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents, SetOfNodes, ElrefeLoc
-from cataelem.Tools.base_objects import Calcul, Element, AbstractElement
+from cataelem.Tools.base_objects import Calcul, NewElement
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.located_components as LC
 import cataelem.Commons.parameters as SP
@@ -52,27 +52,29 @@ MVECTTC  = ArrayOfComponents(phys=PHY.VPRE_C, locatedComponents=(DDL_ACOU,))
 MMATTTC  = ArrayOfComponents(phys=PHY.MPRE_C, locatedComponents=(DDL_ACOU,DDL_ACOU))
 
 #------------------------------------------------------------
-D_PRES_C_PRES = Element()
-ele = D_PRES_C_PRES
-ele.meshType = MT.SEG3
-ele.nodes = (
-        SetOfNodes('EN1', (2,3,)),
-        SetOfNodes('EN2', (1,)),
+class D_PRES_C_PRES(NewElement):
+    """Please document this element"""
+    meshType = MT.SEG3
+    nodes = (
+            SetOfNodes('EN1', (2,3,)),
+            SetOfNodes('EN2', (1,)),
+        )
+    attrs = ((AT.CL_DUAL,'OUI'),)
+
+    calculs = (
+        OP.ACOU_DDLI_C(te=2,
+        para_in=((SP.PDDLIMC, LC.MDDLIMC), ),
+        para_out=((SP.PVECTTC, MVECTTC), ),
+        ),
+
+        OP.ACOU_DDLI_F(te=2,
+        para_in=((SP.PDDLIMF, LC.MDDLIMF), (SP.PGEOMER, MGEOMER),
+                 (SP.PTEMPSR, LC.MTEMPSR), ),
+        para_out=((SP.PVECTTC, MVECTTC), ),
+        ),
+
+        OP.ACOU_DDLM_C(te=2,
+        para_in=((SP.PDDLMUC, MDDLMUC), ),
+        para_out=((SP.PMATTTC, MMATTTC), ),
+        ),
     )
-ele.attrs= ((AT.CL_DUAL,'OUI'),)
-
-ele.addCalcul(OP.ACOU_DDLI_C, te=2,
-    para_in=((SP.PDDLIMC, LC.MDDLIMC), ),
-    para_out=((SP.PVECTTC, MVECTTC), ),
-)
-
-ele.addCalcul(OP.ACOU_DDLI_F, te=2,
-    para_in=((SP.PDDLIMF, LC.MDDLIMF), (SP.PGEOMER, MGEOMER),
-             (SP.PTEMPSR, LC.MTEMPSR), ),
-    para_out=((SP.PVECTTC, MVECTTC), ),
-)
-
-ele.addCalcul(OP.ACOU_DDLM_C, te=2,
-    para_in=((SP.PDDLMUC, MDDLMUC), ),
-    para_out=((SP.PMATTTC, MMATTTC), ),
-)

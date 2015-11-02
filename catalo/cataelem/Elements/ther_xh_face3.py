@@ -17,7 +17,7 @@
 # ======================================================================
 
 from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents, SetOfNodes, ElrefeLoc
-from cataelem.Tools.base_objects import Calcul, Element, AbstractElement
+from cataelem.Tools.base_objects import Calcul, NewElement
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.located_components as LC
 import cataelem.Commons.parameters as SP
@@ -51,49 +51,47 @@ DDL_THER = LocatedComponents(phys=PHY.TEMP_R, type='ELNO',
 
 
 #------------------------------------------------------------
-abstractElement = AbstractElement()
-ele = abstractElement
+class THER_XH_FACE3(NewElement):
+    """Please document this element"""
+    meshType = MT.TRIA3
+    elrefe =(
+            ElrefeLoc(MT.TR3, gauss = ('RIGI=FPG4',),),
+        )
+    calculs = (
 
-ele.addCalcul(OP.INI_XFEM_ELNO, te=99,
-    para_out=((OP.INI_XFEM_ELNO.PLSN, LC.N1NEUT_R), (OP.INI_XFEM_ELNO.PLST, LC.N1NEUT_R),
-             (OP.INI_XFEM_ELNO.PSTANO, STANO_I), ),
-)
+        OP.INI_XFEM_ELNO(te=99,
+            para_out=((OP.INI_XFEM_ELNO.PLSN, LC.N1NEUT_R), (OP.INI_XFEM_ELNO.PLST, LC.N1NEUT_R),
+                     (OP.INI_XFEM_ELNO.PSTANO, STANO_I), ),
+        ),
 
-ele.addCalcul(OP.TOPONO, te=120,
-    para_in=((OP.TOPONO.PCNSETO, LC.E36NEUI), (OP.TOPONO.PHEAVTO, E6NEUTI),
-             (SP.PLEVSET, LC.N1NEUT_R), (OP.TOPONO.PLONCHA, LC.E10NEUTI),
-             ),
-    para_out=((OP.TOPONO.PHEA_NO, LC.N5NEUTI), (OP.TOPONO.PHEA_SE, E6NEUTI),
-             ),
-)
+        OP.TOPONO(te=120,
+            para_in=((OP.TOPONO.PCNSETO, LC.E36NEUI), (OP.TOPONO.PHEAVTO, E6NEUTI),
+                     (SP.PLEVSET, LC.N1NEUT_R), (OP.TOPONO.PLONCHA, LC.E10NEUTI),
+                     ),
+            para_out=((OP.TOPONO.PHEA_NO, LC.N5NEUTI), (OP.TOPONO.PHEA_SE, E6NEUTI),
+                     ),
+        ),
 
-ele.addCalcul(OP.TOPOSE, te=514,
-    para_in=((SP.PGEOMER, NGEOMER), (SP.PLEVSET, LC.N1NEUT_R),
-             ),
-    para_out=((OP.TOPOSE.PCNSETO, LC.E36NEUI), (OP.TOPOSE.PHEAVTO, E6NEUTI),
-             (OP.TOPOSE.PLONCHA, LC.E10NEUTI), (OP.TOPOSE.PPINTTO, LC.E12NEUTR),
-             (OP.TOPOSE.PPMILTO, E33NEUTR), ),
-)
+        OP.TOPOSE(te=514,
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PLEVSET, LC.N1NEUT_R),
+                     ),
+            para_out=((OP.TOPOSE.PCNSETO, LC.E36NEUI), (OP.TOPOSE.PHEAVTO, E6NEUTI),
+                     (OP.TOPOSE.PLONCHA, LC.E10NEUTI), (OP.TOPOSE.PPINTTO, LC.E12NEUTR),
+                     (OP.TOPOSE.PPMILTO, E33NEUTR), ),
+        ),
 
-ele.addCalcul(OP.TOU_INI_ELNO, te=99,
-    para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), ),
-)
+        OP.TOU_INI_ELNO(te=99,
+            para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), ),
+        ),
 
-
-#------------------------------------------------------------
-THER_XH_FACE3 = Element(modele=abstractElement)
-ele = THER_XH_FACE3
-ele.meshType = MT.TRIA3
-ele.elrefe=(
-        ElrefeLoc(MT.TR3, gauss = ('RIGI=FPG4',),),
     )
 
 
 #------------------------------------------------------------
-THER_XH_FACE4 = Element(modele=abstractElement)
-ele = THER_XH_FACE4
-ele.meshType = MT.QUAD4
-ele.elrefe=(
-        ElrefeLoc(MT.QU4, gauss = ('RIGI=FPG4',),),
-        ElrefeLoc(MT.TR3, gauss = ('RIGI=FPG4',),),
-    )
+class THER_XH_FACE4(THER_XH_FACE3):
+    """Please document this element"""
+    meshType = MT.QUAD4
+    elrefe =(
+            ElrefeLoc(MT.QU4, gauss = ('RIGI=FPG4',),),
+            ElrefeLoc(MT.TR3, gauss = ('RIGI=FPG4',),),
+        )

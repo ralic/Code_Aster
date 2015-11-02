@@ -17,7 +17,7 @@
 # ======================================================================
 
 from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents, SetOfNodes, ElrefeLoc
-from cataelem.Tools.base_objects import Calcul, Element, AbstractElement
+from cataelem.Tools.base_objects import Calcul, NewElement
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.located_components as LC
 import cataelem.Commons.parameters as SP
@@ -35,45 +35,43 @@ DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO',
 
 
 #------------------------------------------------------------
-abstractElement = AbstractElement()
-ele = abstractElement
+class CFP2E3D(NewElement):
+    """Please document this element"""
+    meshType = MT.SEG2
+    calculs = (
 
-ele.addCalcul(OP.EXISTE_DDL, te=99,
-    para_out=((OP.EXISTE_DDL.PDEPL_R, DDL_MECA), ),
-)
+        OP.EXISTE_DDL(te=99,
+            para_out=((OP.EXISTE_DDL.PDEPL_R, DDL_MECA), ),
+        ),
 
-
-#------------------------------------------------------------
-CFP2E3D = Element(modele=abstractElement)
-ele = CFP2E3D
-ele.meshType = MT.SEG2
+    )
 
 
 #------------------------------------------------------------
-CFQ4E3D = Element(modele=abstractElement)
-ele = CFQ4E3D
-ele.meshType = MT.QUAD4
+class CFQ4E3D(CFP2E3D):
+    """Please document this element"""
+    meshType = MT.QUAD4
 
 
 #------------------------------------------------------------
-CFT3E3D = Element(modele=abstractElement)
-ele = CFT3E3D
-ele.meshType = MT.TRIA3
+class CFT3E3D(CFP2E3D):
+    """Please document this element"""
+    meshType = MT.TRIA3
 
 
 #------------------------------------------------------------
-CFQ8E3D = Element(modele=abstractElement)
-ele = CFQ8E3D
-ele.meshType = MT.QUAD8
+class CFQ8E3D(CFP2E3D):
+    """Please document this element"""
+    meshType = MT.QUAD8
 
 
 #------------------------------------------------------------
-CFT6E3D = Element(modele=abstractElement)
-ele = CFT6E3D
-ele.meshType = MT.TRIA6
+class CFT6E3D(CFP2E3D):
+    """Please document this element"""
+    meshType = MT.TRIA6
 
 
 #------------------------------------------------------------
-CFQ9E3D = Element(modele=abstractElement)
-ele = CFQ9E3D
-ele.meshType = MT.QUAD9
+class CFQ9E3D(CFP2E3D):
+    """Please document this element"""
+    meshType = MT.QUAD9

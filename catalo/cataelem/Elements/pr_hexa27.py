@@ -17,7 +17,7 @@
 # ======================================================================
 
 from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents, SetOfNodes, ElrefeLoc
-from cataelem.Tools.base_objects import Calcul, Element, AbstractElement
+from cataelem.Tools.base_objects import Calcul, NewElement
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.located_components as LC
 import cataelem.Commons.parameters as SP
@@ -35,189 +35,187 @@ ENEU1_R  = LocatedComponents(phys=PHY.NEUT_R, type='ELEM',
 
 
 #------------------------------------------------------------
-abstractElement = AbstractElement()
-ele = abstractElement
+class PR_HEXA27(NewElement):
+    """Please document this element"""
+    meshType = MT.HEXA27
+    elrefe =(
+            ElrefeLoc(MT.H27,),
+        )
+    calculs = (
 
-ele.addCalcul(OP.TOU_INI_ELEM, te=99,
-    para_out=((SP.PNEU1_R, ENEU1_R), ),
-)
+        OP.TOU_INI_ELEM(te=99,
+            para_out=((SP.PNEU1_R, ENEU1_R), ),
+        ),
 
-
-#------------------------------------------------------------
-PR_HEXA27 = Element(modele=abstractElement)
-ele = PR_HEXA27
-ele.meshType = MT.HEXA27
-ele.elrefe=(
-        ElrefeLoc(MT.H27,),
     )
 
 
 #------------------------------------------------------------
-PR_HEXA20 = Element(modele=abstractElement)
-ele = PR_HEXA20
-ele.meshType = MT.HEXA20
-ele.elrefe=(
-        ElrefeLoc(MT.H20,),
-    )
+class PR_HEXA20(PR_HEXA27):
+    """Please document this element"""
+    meshType = MT.HEXA20
+    elrefe =(
+            ElrefeLoc(MT.H20,),
+        )
 
 
 #------------------------------------------------------------
-PR_HEXA8 = Element(modele=abstractElement)
-ele = PR_HEXA8
-ele.meshType = MT.HEXA8
-ele.elrefe=(
-        ElrefeLoc(MT.HE8,),
-    )
+class PR_HEXA8(PR_HEXA27):
+    """Please document this element"""
+    meshType = MT.HEXA8
+    elrefe =(
+            ElrefeLoc(MT.HE8,),
+        )
 
 
 #------------------------------------------------------------
-PR_PENTA18 = Element(modele=abstractElement)
-ele = PR_PENTA18
-ele.meshType = MT.PENTA18
-ele.elrefe=(
-        ElrefeLoc(MT.P18,),
-    )
+class PR_PENTA18(PR_HEXA27):
+    """Please document this element"""
+    meshType = MT.PENTA18
+    elrefe =(
+            ElrefeLoc(MT.P18,),
+        )
 
 
 #------------------------------------------------------------
-PR_PENTA15 = Element(modele=abstractElement)
-ele = PR_PENTA15
-ele.meshType = MT.PENTA15
-ele.elrefe=(
-        ElrefeLoc(MT.P15,),
-    )
+class PR_PENTA15(PR_HEXA27):
+    """Please document this element"""
+    meshType = MT.PENTA15
+    elrefe =(
+            ElrefeLoc(MT.P15,),
+        )
 
 
 #------------------------------------------------------------
-PR_PENTA6 = Element(modele=abstractElement)
-ele = PR_PENTA6
-ele.meshType = MT.PENTA6
-ele.elrefe=(
-        ElrefeLoc(MT.PE6,),
-    )
+class PR_PENTA6(PR_HEXA27):
+    """Please document this element"""
+    meshType = MT.PENTA6
+    elrefe =(
+            ElrefeLoc(MT.PE6,),
+        )
 
 
 #------------------------------------------------------------
-PR_TETRA10 = Element(modele=abstractElement)
-ele = PR_TETRA10
-ele.meshType = MT.TETRA10
-ele.elrefe=(
-        ElrefeLoc(MT.T10,),
-    )
+class PR_TETRA10(PR_HEXA27):
+    """Please document this element"""
+    meshType = MT.TETRA10
+    elrefe =(
+            ElrefeLoc(MT.T10,),
+        )
 
 
 #------------------------------------------------------------
-PR_TETRA4 = Element(modele=abstractElement)
-ele = PR_TETRA4
-ele.meshType = MT.TETRA4
-ele.elrefe=(
-        ElrefeLoc(MT.TE4,),
-    )
+class PR_TETRA4(PR_HEXA27):
+    """Please document this element"""
+    meshType = MT.TETRA4
+    elrefe =(
+            ElrefeLoc(MT.TE4,),
+        )
 
 
 #------------------------------------------------------------
-PR_PYRAM13 = Element(modele=abstractElement)
-ele = PR_PYRAM13
-ele.meshType = MT.PYRAM13
-ele.elrefe=(
-        ElrefeLoc(MT.P13,),
-    )
+class PR_PYRAM13(PR_HEXA27):
+    """Please document this element"""
+    meshType = MT.PYRAM13
+    elrefe =(
+            ElrefeLoc(MT.P13,),
+        )
 
 
 #------------------------------------------------------------
-PR_PYRAM5 = Element(modele=abstractElement)
-ele = PR_PYRAM5
-ele.meshType = MT.PYRAM5
-ele.elrefe=(
-        ElrefeLoc(MT.PY5,),
-    )
+class PR_PYRAM5(PR_HEXA27):
+    """Please document this element"""
+    meshType = MT.PYRAM5
+    elrefe =(
+            ElrefeLoc(MT.PY5,),
+        )
 
 
 #------------------------------------------------------------
-PR_QUAD9 = Element(modele=abstractElement)
-ele = PR_QUAD9
-ele.meshType = MT.QUAD9
-ele.elrefe=(
-        ElrefeLoc(MT.QU9,),
-    )
+class PR_QUAD9(PR_HEXA27):
+    """Please document this element"""
+    meshType = MT.QUAD9
+    elrefe =(
+            ElrefeLoc(MT.QU9,),
+        )
 
 
 #------------------------------------------------------------
-PR_QUAD8 = Element(modele=abstractElement)
-ele = PR_QUAD8
-ele.meshType = MT.QUAD8
-ele.elrefe=(
-        ElrefeLoc(MT.QU8,),
-    )
+class PR_QUAD8(PR_HEXA27):
+    """Please document this element"""
+    meshType = MT.QUAD8
+    elrefe =(
+            ElrefeLoc(MT.QU8,),
+        )
 
 
 #------------------------------------------------------------
-PR_QUAD4 = Element(modele=abstractElement)
-ele = PR_QUAD4
-ele.meshType = MT.QUAD4
-ele.elrefe=(
-        ElrefeLoc(MT.QU4,),
-    )
+class PR_QUAD4(PR_HEXA27):
+    """Please document this element"""
+    meshType = MT.QUAD4
+    elrefe =(
+            ElrefeLoc(MT.QU4,),
+        )
 
 
 #------------------------------------------------------------
-PR_TRIA7 = Element(modele=abstractElement)
-ele = PR_TRIA7
-ele.meshType = MT.TRIA7
-ele.elrefe=(
-        ElrefeLoc(MT.TR7,),
-    )
+class PR_TRIA7(PR_HEXA27):
+    """Please document this element"""
+    meshType = MT.TRIA7
+    elrefe =(
+            ElrefeLoc(MT.TR7,),
+        )
 
 
 #------------------------------------------------------------
-PR_TRIA6 = Element(modele=abstractElement)
-ele = PR_TRIA6
-ele.meshType = MT.TRIA6
-ele.elrefe=(
-        ElrefeLoc(MT.TR6,),
-    )
+class PR_TRIA6(PR_HEXA27):
+    """Please document this element"""
+    meshType = MT.TRIA6
+    elrefe =(
+            ElrefeLoc(MT.TR6,),
+        )
 
 
 #------------------------------------------------------------
-PR_TRIA3 = Element(modele=abstractElement)
-ele = PR_TRIA3
-ele.meshType = MT.TRIA3
-ele.elrefe=(
-        ElrefeLoc(MT.TR3,),
-    )
+class PR_TRIA3(PR_HEXA27):
+    """Please document this element"""
+    meshType = MT.TRIA3
+    elrefe =(
+            ElrefeLoc(MT.TR3,),
+        )
 
 
 #------------------------------------------------------------
-PR_SEG4 = Element(modele=abstractElement)
-ele = PR_SEG4
-ele.meshType = MT.SEG4
-ele.elrefe=(
-        ElrefeLoc(MT.SE4,),
-    )
+class PR_SEG4(PR_HEXA27):
+    """Please document this element"""
+    meshType = MT.SEG4
+    elrefe =(
+            ElrefeLoc(MT.SE4,),
+        )
 
 
 #------------------------------------------------------------
-PR_SEG3 = Element(modele=abstractElement)
-ele = PR_SEG3
-ele.meshType = MT.SEG3
-ele.elrefe=(
-        ElrefeLoc(MT.SE3,),
-    )
+class PR_SEG3(PR_HEXA27):
+    """Please document this element"""
+    meshType = MT.SEG3
+    elrefe =(
+            ElrefeLoc(MT.SE3,),
+        )
 
 
 #------------------------------------------------------------
-PR_SEG2 = Element(modele=abstractElement)
-ele = PR_SEG2
-ele.meshType = MT.SEG2
-ele.elrefe=(
-        ElrefeLoc(MT.SE2,),
-    )
+class PR_SEG2(PR_HEXA27):
+    """Please document this element"""
+    meshType = MT.SEG2
+    elrefe =(
+            ElrefeLoc(MT.SE2,),
+        )
 
 
 #------------------------------------------------------------
-PR_POI1 = Element(modele=abstractElement)
-ele = PR_POI1
-ele.meshType = MT.POI1
-ele.elrefe=(
-        ElrefeLoc(MT.PO1,),
-    )
+class PR_POI1(PR_HEXA27):
+    """Please document this element"""
+    meshType = MT.POI1
+    elrefe =(
+            ElrefeLoc(MT.PO1,),
+        )

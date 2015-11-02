@@ -17,7 +17,7 @@
 # ======================================================================
 
 from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents, SetOfNodes, ElrefeLoc
-from cataelem.Tools.base_objects import Calcul, Element, AbstractElement
+from cataelem.Tools.base_objects import Calcul, NewElement
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.located_components as LC
 import cataelem.Commons.parameters as SP
@@ -58,41 +58,39 @@ MVECTUR  = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=(DDL_MECA,))
 
 
 #------------------------------------------------------------
-abstractElement = AbstractElement()
-ele = abstractElement
+class ZHH2_FACE9_SUDA(NewElement):
+    """Please document this element"""
+    meshType = MT.QUAD9
+    nodes = (
+            SetOfNodes('EN3', (5,6,7,8,9,)),
+            SetOfNodes('EN2', (5,6,7,8,)),
+            SetOfNodes('EN1', (1,2,3,4,)),
+            SetOfNodes('EN4', (9,)),
+        )
+    elrefe =(
+            ElrefeLoc(MT.QU9, gauss = ('RIGI=FPG1',),),
+            ElrefeLoc(MT.QU4, gauss = ('RIGI=FPG1',),),
+        )
+    calculs = (
 
-ele.addCalcul(OP.CHAR_MECA_FLUX_F, te=466,
-    para_in=((SP.PFLUXF, CFLUXF), (SP.PGEOMER, NGEOMER),
-             (SP.PTEMPSR, CTEMPSR), ),
-    para_out=((SP.PVECTUR, MVECTUR), ),
-)
+        OP.CHAR_MECA_FLUX_F(te=466,
+            para_in=((SP.PFLUXF, CFLUXF), (SP.PGEOMER, NGEOMER),
+                     (SP.PTEMPSR, CTEMPSR), ),
+            para_out=((SP.PVECTUR, MVECTUR), ),
+        ),
 
-ele.addCalcul(OP.CHAR_MECA_FLUX_R, te=466,
-    para_in=((SP.PFLUXR, EFLUXE), (SP.PGEOMER, NGEOMER),
-             (SP.PTEMPSR, CTEMPSR), ),
-    para_out=((SP.PVECTUR, MVECTUR), ),
-)
+        OP.CHAR_MECA_FLUX_R(te=466,
+            para_in=((SP.PFLUXR, EFLUXE), (SP.PGEOMER, NGEOMER),
+                     (SP.PTEMPSR, CTEMPSR), ),
+            para_out=((SP.PVECTUR, MVECTUR), ),
+        ),
 
-ele.addCalcul(OP.TOU_INI_ELGA, te=99,
-    para_out=((OP.TOU_INI_ELGA.PGEOM_R, EGEOMER), ),
-)
+        OP.TOU_INI_ELGA(te=99,
+            para_out=((OP.TOU_INI_ELGA.PGEOM_R, EGEOMER), ),
+        ),
 
-ele.addCalcul(OP.TOU_INI_ELNO, te=99,
-    para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), ),
-)
+        OP.TOU_INI_ELNO(te=99,
+            para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), ),
+        ),
 
-
-#------------------------------------------------------------
-ZHH2_FACE9_SUDA = Element(modele=abstractElement)
-ele = ZHH2_FACE9_SUDA
-ele.meshType = MT.QUAD9
-ele.nodes = (
-        SetOfNodes('EN3', (5,6,7,8,9,)),
-        SetOfNodes('EN2', (5,6,7,8,)),
-        SetOfNodes('EN1', (1,2,3,4,)),
-        SetOfNodes('EN4', (9,)),
-    )
-ele.elrefe=(
-        ElrefeLoc(MT.QU9, gauss = ('RIGI=FPG1',),),
-        ElrefeLoc(MT.QU4, gauss = ('RIGI=FPG1',),),
     )

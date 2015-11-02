@@ -17,7 +17,7 @@
 # ======================================================================
 
 from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents, SetOfNodes, ElrefeLoc
-from cataelem.Tools.base_objects import Calcul, Element, AbstractElement
+from cataelem.Tools.base_objects import Calcul, NewElement
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.located_components as LC
 import cataelem.Commons.parameters as SP
@@ -47,106 +47,104 @@ MMATTTR  = ArrayOfComponents(phys=PHY.MTEM_R, locatedComponents=(DDL_THER,DDL_TH
 
 
 #------------------------------------------------------------
-abstractElement = AbstractElement()
-ele = abstractElement
+class THER_FACE33(NewElement):
+    """Please document this element"""
+    meshType = MT.TRIA33
+    elrefe =(
+            ElrefeLoc(MT.TR3, gauss = ('RIGI=COT3',),),
+        )
+    calculs = (
 
-ele.addCalcul(OP.CHAR_THER_PARO_F, te=304,
-    para_in=((SP.PGEOMER, NGEOMER), (SP.PHECHPF, LC.CHECHPF),
-             (SP.PTEMPER, DDL_THER), (SP.PTEMPSR, CTEMPSR),
-             ),
-    para_out=((SP.PVECTTR, MVECTTR), ),
-)
+        OP.CHAR_THER_PARO_F(te=304,
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PHECHPF, LC.CHECHPF),
+                     (SP.PTEMPER, DDL_THER), (SP.PTEMPSR, CTEMPSR),
+                     ),
+            para_out=((SP.PVECTTR, MVECTTR), ),
+        ),
 
-ele.addCalcul(OP.CHAR_THER_PARO_R, te=303,
-    para_in=((SP.PGEOMER, NGEOMER), (SP.PHECHPR, LC.EHECHPR),
-             (SP.PTEMPER, DDL_THER), (SP.PTEMPSR, CTEMPSR),
-             ),
-    para_out=((SP.PVECTTR, MVECTTR), ),
-)
+        OP.CHAR_THER_PARO_R(te=303,
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PHECHPR, LC.EHECHPR),
+                     (SP.PTEMPER, DDL_THER), (SP.PTEMPSR, CTEMPSR),
+                     ),
+            para_out=((SP.PVECTTR, MVECTTR), ),
+        ),
 
-ele.addCalcul(OP.MTAN_THER_PARO_F, te=389,
-    para_in=((SP.PGEOMER, NGEOMER), (SP.PHECHPF, LC.CHECHPF),
-             (SP.PTEMPSR, CTEMPSR), ),
-    para_out=((OP.MTAN_THER_PARO_F.PMATTTR, MMATTTR), ),
-)
+        OP.MTAN_THER_PARO_F(te=389,
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PHECHPF, LC.CHECHPF),
+                     (SP.PTEMPSR, CTEMPSR), ),
+            para_out=((OP.MTAN_THER_PARO_F.PMATTTR, MMATTTR), ),
+        ),
 
-ele.addCalcul(OP.MTAN_THER_PARO_R, te=388,
-    para_in=((SP.PGEOMER, NGEOMER), (SP.PHECHPR, LC.EHECHPR),
-             (SP.PTEMPSR, CTEMPSR), ),
-    para_out=((OP.MTAN_THER_PARO_R.PMATTTR, MMATTTR), ),
-)
+        OP.MTAN_THER_PARO_R(te=388,
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PHECHPR, LC.EHECHPR),
+                     (SP.PTEMPSR, CTEMPSR), ),
+            para_out=((OP.MTAN_THER_PARO_R.PMATTTR, MMATTTR), ),
+        ),
 
-ele.addCalcul(OP.RESI_THER_PARO_F, te=278,
-    para_in=((SP.PGEOMER, NGEOMER), (SP.PHECHPF, LC.CHECHPF),
-             (SP.PTEMPEI, DDL_THER), (SP.PTEMPSR, CTEMPSR),
-             ),
-    para_out=((SP.PRESIDU, MVECTTR), ),
-)
+        OP.RESI_THER_PARO_F(te=278,
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PHECHPF, LC.CHECHPF),
+                     (SP.PTEMPEI, DDL_THER), (SP.PTEMPSR, CTEMPSR),
+                     ),
+            para_out=((SP.PRESIDU, MVECTTR), ),
+        ),
 
-ele.addCalcul(OP.RESI_THER_PARO_R, te=276,
-    para_in=((SP.PGEOMER, NGEOMER), (SP.PHECHPR, LC.EHECHPR),
-             (SP.PTEMPEI, DDL_THER), (SP.PTEMPSR, CTEMPSR),
-             ),
-    para_out=((SP.PRESIDU, MVECTTR), ),
-)
+        OP.RESI_THER_PARO_R(te=276,
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PHECHPR, LC.EHECHPR),
+                     (SP.PTEMPEI, DDL_THER), (SP.PTEMPSR, CTEMPSR),
+                     ),
+            para_out=((SP.PRESIDU, MVECTTR), ),
+        ),
 
-ele.addCalcul(OP.RIGI_THER_PARO_F, te=302,
-    para_in=((SP.PGEOMER, NGEOMER), (SP.PHECHPF, LC.CHECHPF),
-             (SP.PTEMPSR, CTEMPSR), ),
-    para_out=((OP.RIGI_THER_PARO_F.PMATTTR, MMATTTR), ),
-)
+        OP.RIGI_THER_PARO_F(te=302,
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PHECHPF, LC.CHECHPF),
+                     (SP.PTEMPSR, CTEMPSR), ),
+            para_out=((OP.RIGI_THER_PARO_F.PMATTTR, MMATTTR), ),
+        ),
 
-ele.addCalcul(OP.RIGI_THER_PARO_R, te=301,
-    para_in=((SP.PGEOMER, NGEOMER), (SP.PHECHPR, LC.EHECHPR),
-             (SP.PTEMPSR, CTEMPSR), ),
-    para_out=((OP.RIGI_THER_PARO_R.PMATTTR, MMATTTR), ),
-)
+        OP.RIGI_THER_PARO_R(te=301,
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PHECHPR, LC.EHECHPR),
+                     (SP.PTEMPSR, CTEMPSR), ),
+            para_out=((OP.RIGI_THER_PARO_R.PMATTTR, MMATTTR), ),
+        ),
 
-ele.addCalcul(OP.TOU_INI_ELNO, te=99,
-    para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), ),
-)
+        OP.TOU_INI_ELNO(te=99,
+            para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), ),
+        ),
 
-
-#------------------------------------------------------------
-THER_FACE33 = Element(modele=abstractElement)
-ele = THER_FACE33
-ele.meshType = MT.TRIA33
-ele.elrefe=(
-        ElrefeLoc(MT.TR3, gauss = ('RIGI=COT3',),),
     )
 
 
 #------------------------------------------------------------
-THER_FACE44 = Element(modele=abstractElement)
-ele = THER_FACE44
-ele.meshType = MT.QUAD44
-ele.elrefe=(
-        ElrefeLoc(MT.QU4, gauss = ('RIGI=FPG4',),),
-    )
+class THER_FACE44(THER_FACE33):
+    """Please document this element"""
+    meshType = MT.QUAD44
+    elrefe =(
+            ElrefeLoc(MT.QU4, gauss = ('RIGI=FPG4',),),
+        )
 
 
 #------------------------------------------------------------
-THER_FACE66 = Element(modele=abstractElement)
-ele = THER_FACE66
-ele.meshType = MT.TRIA66
-ele.elrefe=(
-        ElrefeLoc(MT.TR6, gauss = ('RIGI=FPG6',),),
-    )
+class THER_FACE66(THER_FACE33):
+    """Please document this element"""
+    meshType = MT.TRIA66
+    elrefe =(
+            ElrefeLoc(MT.TR6, gauss = ('RIGI=FPG6',),),
+        )
 
 
 #------------------------------------------------------------
-THER_FACE88 = Element(modele=abstractElement)
-ele = THER_FACE88
-ele.meshType = MT.QUAD88
-ele.elrefe=(
-        ElrefeLoc(MT.QU8, gauss = ('RIGI=FPG9',),),
-    )
+class THER_FACE88(THER_FACE33):
+    """Please document this element"""
+    meshType = MT.QUAD88
+    elrefe =(
+            ElrefeLoc(MT.QU8, gauss = ('RIGI=FPG9',),),
+        )
 
 
 #------------------------------------------------------------
-THER_FACE99 = Element(modele=abstractElement)
-ele = THER_FACE99
-ele.meshType = MT.QUAD99
-ele.elrefe=(
-        ElrefeLoc(MT.QU9, gauss = ('RIGI=FPG9',),),
-    )
+class THER_FACE99(THER_FACE33):
+    """Please document this element"""
+    meshType = MT.QUAD99
+    elrefe =(
+            ElrefeLoc(MT.QU9, gauss = ('RIGI=FPG9',),),
+        )

@@ -17,7 +17,7 @@
 # ======================================================================
 
 from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents, SetOfNodes, ElrefeLoc
-from cataelem.Tools.base_objects import Calcul, Element, AbstractElement
+from cataelem.Tools.base_objects import Calcul, NewElement
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.located_components as LC
 import cataelem.Commons.parameters as SP
@@ -51,18 +51,20 @@ MGEOMER  = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
 MVECTUR  = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=(DDL_MECA,))
 
 #------------------------------------------------------------
-FORCE_NOD_6DDL = Element()
-ele = FORCE_NOD_6DDL
-ele.meshType = MT.POI1
+class FORCE_NOD_6DDL(NewElement):
+    """Please document this element"""
+    meshType = MT.POI1
 
-ele.addCalcul(OP.CHAR_MECA_FORC_F, te=1,
-    para_in=((SP.PFORNOF, MFORCEF), (SP.PGEOMER, MGEOMER),
-             (SP.PTEMPSR, LC.MTEMPSR), ),
-    para_out=((SP.PVECTUR, MVECTUR), ),
-)
+    calculs = (
+        OP.CHAR_MECA_FORC_F(te=1,
+        para_in=((SP.PFORNOF, MFORCEF), (SP.PGEOMER, MGEOMER),
+                 (SP.PTEMPSR, LC.MTEMPSR), ),
+        para_out=((SP.PVECTUR, MVECTUR), ),
+        ),
 
-ele.addCalcul(OP.CHAR_MECA_FORC_R, te=1,
-    para_in=((SP.PFORNOR, MFORCER), (SP.PGEOMER, MGEOMER),
-             ),
-    para_out=((SP.PVECTUR, MVECTUR), ),
-)
+        OP.CHAR_MECA_FORC_R(te=1,
+        para_in=((SP.PFORNOR, MFORCER), (SP.PGEOMER, MGEOMER),
+                 ),
+        para_out=((SP.PVECTUR, MVECTUR), ),
+        ),
+    )

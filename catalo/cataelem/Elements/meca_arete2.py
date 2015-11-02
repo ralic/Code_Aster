@@ -17,7 +17,7 @@
 # ======================================================================
 
 from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents, SetOfNodes, ElrefeLoc
-from cataelem.Tools.base_objects import Calcul, Element, AbstractElement
+from cataelem.Tools.base_objects import Calcul, NewElement
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.located_components as LC
 import cataelem.Commons.parameters as SP
@@ -73,55 +73,53 @@ MVECTUR  = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=(DDL_MECA,))
 
 
 #------------------------------------------------------------
-abstractElement = AbstractElement()
-ele = abstractElement
+class MECA_ARETE2(NewElement):
+    """Please document this element"""
+    meshType = MT.SEG2
+    elrefe =(
+            ElrefeLoc(MT.SE2, gauss = ('RIGI=FPG2',),),
+        )
+    calculs = (
 
-ele.addCalcul(OP.CHAR_MECA_FF1D3D, te=469,
-    para_in=((SP.PFF1D3D, MFORCEF), (SP.PGEOMER, NGEOMER),
-             (SP.PTEMPSR, LC.MTEMPSR), ),
-    para_out=((SP.PVECTUR, MVECTUR), ),
-)
+        OP.CHAR_MECA_FF1D3D(te=469,
+            para_in=((SP.PFF1D3D, MFORCEF), (SP.PGEOMER, NGEOMER),
+                     (SP.PTEMPSR, LC.MTEMPSR), ),
+            para_out=((SP.PVECTUR, MVECTUR), ),
+        ),
 
-ele.addCalcul(OP.CHAR_MECA_FR1D3D, te=469,
-    para_in=((SP.PFR1D3D, MFORCE), (SP.PGEOMER, NGEOMER),
-             ),
-    para_out=((SP.PVECTUR, MVECTUR), ),
-)
+        OP.CHAR_MECA_FR1D3D(te=469,
+            para_in=((SP.PFR1D3D, MFORCE), (SP.PGEOMER, NGEOMER),
+                     ),
+            para_out=((SP.PVECTUR, MVECTUR), ),
+        ),
 
-ele.addCalcul(OP.COOR_ELGA, te=478,
-    para_in=((SP.PGEOMER, NGEOMER), ),
-    para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R), ),
-)
+        OP.COOR_ELGA(te=478,
+            para_in=((SP.PGEOMER, NGEOMER), ),
+            para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R), ),
+        ),
 
-ele.addCalcul(OP.TOU_INI_ELEM, te=99,
-    para_out=((OP.TOU_INI_ELEM.PGEOM_R, CGEOMER), ),
-)
+        OP.TOU_INI_ELEM(te=99,
+            para_out=((OP.TOU_INI_ELEM.PGEOM_R, CGEOMER), ),
+        ),
 
-ele.addCalcul(OP.TOU_INI_ELGA, te=99,
-    para_out=((OP.TOU_INI_ELGA.PDEPL_R, EDEPLPG), (OP.TOU_INI_ELGA.PGEOM_R, EGGEOM_R),
-             (OP.TOU_INI_ELGA.PNEUT_F, EGNEUT_F), (OP.TOU_INI_ELGA.PNEUT_R, EGNEUT_R),
-             ),
-)
+        OP.TOU_INI_ELGA(te=99,
+            para_out=((OP.TOU_INI_ELGA.PDEPL_R, EDEPLPG), (OP.TOU_INI_ELGA.PGEOM_R, EGGEOM_R),
+                     (OP.TOU_INI_ELGA.PNEUT_F, EGNEUT_F), (OP.TOU_INI_ELGA.PNEUT_R, EGNEUT_R),
+                     ),
+        ),
 
-ele.addCalcul(OP.TOU_INI_ELNO, te=99,
-    para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), (OP.TOU_INI_ELNO.PNEUT_F, LC.ENNEUT_F),
-             (OP.TOU_INI_ELNO.PNEUT_R, LC.ENNEUT_R), ),
-)
+        OP.TOU_INI_ELNO(te=99,
+            para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), (OP.TOU_INI_ELNO.PNEUT_F, LC.ENNEUT_F),
+                     (OP.TOU_INI_ELNO.PNEUT_R, LC.ENNEUT_R), ),
+        ),
 
-
-#------------------------------------------------------------
-MECA_ARETE2 = Element(modele=abstractElement)
-ele = MECA_ARETE2
-ele.meshType = MT.SEG2
-ele.elrefe=(
-        ElrefeLoc(MT.SE2, gauss = ('RIGI=FPG2',),),
     )
 
 
 #------------------------------------------------------------
-MECA_ARETE3 = Element(modele=abstractElement)
-ele = MECA_ARETE3
-ele.meshType = MT.SEG3
-ele.elrefe=(
-        ElrefeLoc(MT.SE3, gauss = ('RIGI=FPG3',),),
-    )
+class MECA_ARETE3(MECA_ARETE2):
+    """Please document this element"""
+    meshType = MT.SEG3
+    elrefe =(
+            ElrefeLoc(MT.SE3, gauss = ('RIGI=FPG3',),),
+        )

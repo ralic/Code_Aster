@@ -17,7 +17,7 @@
 # ======================================================================
 
 from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents, SetOfNodes, ElrefeLoc
-from cataelem.Tools.base_objects import Calcul, Element, AbstractElement
+from cataelem.Tools.base_objects import Calcul, NewElement
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.located_components as LC
 import cataelem.Commons.parameters as SP
@@ -71,132 +71,130 @@ MMATTTR  = ArrayOfComponents(phys=PHY.MTEM_R, locatedComponents=(DDL_THER,DDL_TH
 
 
 #------------------------------------------------------------
-abstractElement = AbstractElement()
-ele = abstractElement
+class THFOQU4(NewElement):
+    """Please document this element"""
+    meshType = MT.QUAD4
+    elrefe =(
+            ElrefeLoc(MT.QU4, gauss = ('RIGI=FPG4','FPG1=FPG1','MASS=FPG4',), mater=('FPG1',),),
+            ElrefeLoc(MT.SE2, gauss = ('RIGI=FPG2',),),
+        )
+    calculs = (
 
-ele.addCalcul(OP.CHAR_THER_SOUR_F, te=264,
-    para_in=((SP.PGEOMER, NGEOMER), (SP.PSOURCF, LC.CSOURCF),
-             (SP.PTEMPSR, CTEMPSR), ),
-    para_out=((SP.PVECTTR, MVECTTR), ),
-)
+        OP.CHAR_THER_SOUR_F(te=264,
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PSOURCF, LC.CSOURCF),
+                     (SP.PTEMPSR, CTEMPSR), ),
+            para_out=((SP.PVECTTR, MVECTTR), ),
+        ),
 
-ele.addCalcul(OP.CHAR_THER_SOUR_R, te=263,
-    para_in=((SP.PGEOMER, NGEOMER), (SP.PSOURCR, ESOURCR),
-             ),
-    para_out=((SP.PVECTTR, MVECTTR), ),
-)
+        OP.CHAR_THER_SOUR_R(te=263,
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PSOURCR, ESOURCR),
+                     ),
+            para_out=((SP.PVECTTR, MVECTTR), ),
+        ),
 
-ele.addCalcul(OP.COOR_ELGA, te=479,
-    para_in=((SP.PGEOMER, NGEOMER), ),
-    para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R), ),
-)
+        OP.COOR_ELGA(te=479,
+            para_in=((SP.PGEOMER, NGEOMER), ),
+            para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R), ),
+        ),
 
-ele.addCalcul(OP.DURT_ELNO, te=551,
-    para_in=((SP.PMATERC, LC.CMATERC), (OP.DURT_ELNO.PPHASIN, LC.EPHASNO_),
-             ),
-    para_out=((SP.PDURT_R, LC.EDURTNO), ),
-)
+        OP.DURT_ELNO(te=551,
+            para_in=((SP.PMATERC, LC.CMATERC), (OP.DURT_ELNO.PPHASIN, LC.EPHASNO_),
+                     ),
+            para_out=((SP.PDURT_R, LC.EDURTNO), ),
+        ),
 
-ele.addCalcul(OP.FLUX_ELGA, te=266,
-    para_in=((SP.PGEOMER, NGEOMER), (SP.PHARMON, LC.CHARMON),
-             (SP.PMATERC, LC.CMATERC), (SP.PTEMPER, DDL_THER),
-             (SP.PTEMPSR, CTEMPSR), ),
-    para_out=((OP.FLUX_ELGA.PFLUXPG, EFLUXPG), ),
-)
+        OP.FLUX_ELGA(te=266,
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PHARMON, LC.CHARMON),
+                     (SP.PMATERC, LC.CMATERC), (SP.PTEMPER, DDL_THER),
+                     (SP.PTEMPSR, CTEMPSR), ),
+            para_out=((OP.FLUX_ELGA.PFLUXPG, EFLUXPG), ),
+        ),
 
-ele.addCalcul(OP.FLUX_ELNO, te=4,
-    para_in=((OP.FLUX_ELNO.PFLUXPG, EFLUXPG), ),
-    para_out=((SP.PFLUXNO, EFLUXNO), ),
-)
+        OP.FLUX_ELNO(te=4,
+            para_in=((OP.FLUX_ELNO.PFLUXPG, EFLUXPG), ),
+            para_out=((SP.PFLUXNO, EFLUXNO), ),
+        ),
 
-ele.addCalcul(OP.META_ELNO, te=67,
-    para_in=((OP.META_ELNO.PCOMPOR, CCOMPOR), (SP.PFTRC, LC.CFTRC),
-             (SP.PMATERC, LC.CMATERC), (OP.META_ELNO.PPHASIN, LC.EPHASNO_),
-             (SP.PTEMPAR, DDL_THER), (SP.PTEMPER, DDL_THER),
-             (SP.PTEMPIR, DDL_THER), (SP.PTEMPSR, CTEMPSR),
-             ),
-    para_out=((SP.PPHASNOU, LC.EPHASNO_), ),
-)
+        OP.META_ELNO(te=67,
+            para_in=((OP.META_ELNO.PCOMPOR, CCOMPOR), (SP.PFTRC, LC.CFTRC),
+                     (SP.PMATERC, LC.CMATERC), (OP.META_ELNO.PPHASIN, LC.EPHASNO_),
+                     (SP.PTEMPAR, DDL_THER), (SP.PTEMPER, DDL_THER),
+                     (SP.PTEMPIR, DDL_THER), (SP.PTEMPSR, CTEMPSR),
+                     ),
+            para_out=((SP.PPHASNOU, LC.EPHASNO_), ),
+        ),
 
-ele.addCalcul(OP.META_INIT_ELNO, te=320,
-    para_in=((OP.META_INIT_ELNO.PCOMPOR, CCOMPOR), (SP.PMATERC, LC.CMATERC),
-             (OP.META_INIT_ELNO.PPHASIN, LC.CPHASIN_), (SP.PTEMPER, DDL_THER),
-             ),
-    para_out=((SP.PPHASNOU, LC.EPHASNO_), ),
-)
+        OP.META_INIT_ELNO(te=320,
+            para_in=((OP.META_INIT_ELNO.PCOMPOR, CCOMPOR), (SP.PMATERC, LC.CMATERC),
+                     (OP.META_INIT_ELNO.PPHASIN, LC.CPHASIN_), (SP.PTEMPER, DDL_THER),
+                     ),
+            para_out=((SP.PPHASNOU, LC.EPHASNO_), ),
+        ),
 
-ele.addCalcul(OP.RIGI_THER, te=260,
-    para_in=((SP.PGEOMER, NGEOMER), (SP.PHARMON, LC.CHARMON),
-             (SP.PMATERC, LC.CMATERC), (SP.PTEMPSR, CTEMPSR),
-             ),
-    para_out=((OP.RIGI_THER.PMATTTR, MMATTTR), ),
-)
+        OP.RIGI_THER(te=260,
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PHARMON, LC.CHARMON),
+                     (SP.PMATERC, LC.CMATERC), (SP.PTEMPSR, CTEMPSR),
+                     ),
+            para_out=((OP.RIGI_THER.PMATTTR, MMATTTR), ),
+        ),
 
-ele.addCalcul(OP.TOU_INI_ELEM, te=99,
-    para_out=((OP.TOU_INI_ELEM.PSOUR_R, LC.CSOURCR), ),
-)
+        OP.TOU_INI_ELEM(te=99,
+            para_out=((OP.TOU_INI_ELEM.PSOUR_R, LC.CSOURCR), ),
+        ),
 
-ele.addCalcul(OP.TOU_INI_ELGA, te=99,
-    para_out=((OP.TOU_INI_ELGA.PGEOM_R, EGGEOP_R), ),
-)
+        OP.TOU_INI_ELGA(te=99,
+            para_out=((OP.TOU_INI_ELGA.PGEOM_R, EGGEOP_R), ),
+        ),
 
-ele.addCalcul(OP.TOU_INI_ELNO, te=99,
-    para_out=((OP.TOU_INI_ELNO.PGEOM_R, ENGEOM_R), (OP.TOU_INI_ELNO.PINST_R, LC.ENINST_R),
-             (OP.TOU_INI_ELNO.PNEUT_F, LC.ENNEUT_F), (OP.TOU_INI_ELNO.PNEUT_R, LC.ENNEUT_R),
-             ),
-)
+        OP.TOU_INI_ELNO(te=99,
+            para_out=((OP.TOU_INI_ELNO.PGEOM_R, ENGEOM_R), (OP.TOU_INI_ELNO.PINST_R, LC.ENINST_R),
+                     (OP.TOU_INI_ELNO.PNEUT_F, LC.ENNEUT_F), (OP.TOU_INI_ELNO.PNEUT_R, LC.ENNEUT_R),
+                     ),
+        ),
 
-ele.addCalcul(OP.VERI_JACOBIEN, te=328,
-    para_in=((SP.PGEOMER, NGEOMER), ),
-    para_out=((SP.PCODRET, LC.ECODRET), ),
-)
+        OP.VERI_JACOBIEN(te=328,
+            para_in=((SP.PGEOMER, NGEOMER), ),
+            para_out=((SP.PCODRET, LC.ECODRET), ),
+        ),
 
-
-#------------------------------------------------------------
-THFOQU4 = Element(modele=abstractElement)
-ele = THFOQU4
-ele.meshType = MT.QUAD4
-ele.elrefe=(
-        ElrefeLoc(MT.QU4, gauss = ('RIGI=FPG4','FPG1=FPG1','MASS=FPG4',), mater=('FPG1',),),
-        ElrefeLoc(MT.SE2, gauss = ('RIGI=FPG2',),),
     )
 
 
 #------------------------------------------------------------
-THFOQU8 = Element(modele=abstractElement)
-ele = THFOQU8
-ele.meshType = MT.QUAD8
-ele.elrefe=(
-        ElrefeLoc(MT.QU8, gauss = ('RIGI=FPG9','FPG1=FPG1','MASS=FPG9',), mater=('FPG1',),),
-        ElrefeLoc(MT.SE3, gauss = ('RIGI=FPG4',),),
-    )
+class THFOQU8(THFOQU4):
+    """Please document this element"""
+    meshType = MT.QUAD8
+    elrefe =(
+            ElrefeLoc(MT.QU8, gauss = ('RIGI=FPG9','FPG1=FPG1','MASS=FPG9',), mater=('FPG1',),),
+            ElrefeLoc(MT.SE3, gauss = ('RIGI=FPG4',),),
+        )
 
 
 #------------------------------------------------------------
-THFOQU9 = Element(modele=abstractElement)
-ele = THFOQU9
-ele.meshType = MT.QUAD9
-ele.elrefe=(
-        ElrefeLoc(MT.QU9, gauss = ('RIGI=FPG9','FPG1=FPG1','MASS=FPG9',), mater=('FPG1',),),
-        ElrefeLoc(MT.SE3, gauss = ('RIGI=FPG4',),),
-    )
+class THFOQU9(THFOQU4):
+    """Please document this element"""
+    meshType = MT.QUAD9
+    elrefe =(
+            ElrefeLoc(MT.QU9, gauss = ('RIGI=FPG9','FPG1=FPG1','MASS=FPG9',), mater=('FPG1',),),
+            ElrefeLoc(MT.SE3, gauss = ('RIGI=FPG4',),),
+        )
 
 
 #------------------------------------------------------------
-THFOTR3 = Element(modele=abstractElement)
-ele = THFOTR3
-ele.meshType = MT.TRIA3
-ele.elrefe=(
-        ElrefeLoc(MT.TR3, gauss = ('RIGI=FPG1','FPG1=FPG1','MASS=FPG3',), mater=('FPG1',),),
-        ElrefeLoc(MT.SE2, gauss = ('RIGI=FPG2',),),
-    )
+class THFOTR3(THFOQU4):
+    """Please document this element"""
+    meshType = MT.TRIA3
+    elrefe =(
+            ElrefeLoc(MT.TR3, gauss = ('RIGI=FPG1','FPG1=FPG1','MASS=FPG3',), mater=('FPG1',),),
+            ElrefeLoc(MT.SE2, gauss = ('RIGI=FPG2',),),
+        )
 
 
 #------------------------------------------------------------
-THFOTR6 = Element(modele=abstractElement)
-ele = THFOTR6
-ele.meshType = MT.TRIA6
-ele.elrefe=(
-        ElrefeLoc(MT.TR6, gauss = ('RIGI=FPG3','FPG1=FPG1','MASS=FPG6',), mater=('FPG1',),),
-        ElrefeLoc(MT.SE3, gauss = ('RIGI=FPG4',),),
-    )
+class THFOTR6(THFOQU4):
+    """Please document this element"""
+    meshType = MT.TRIA6
+    elrefe =(
+            ElrefeLoc(MT.TR6, gauss = ('RIGI=FPG3','FPG1=FPG1','MASS=FPG6',), mater=('FPG1',),),
+            ElrefeLoc(MT.SE3, gauss = ('RIGI=FPG4',),),
+        )

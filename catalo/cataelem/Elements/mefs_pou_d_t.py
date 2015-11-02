@@ -17,7 +17,7 @@
 # ======================================================================
 
 from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents, SetOfNodes, ElrefeLoc
-from cataelem.Tools.base_objects import Calcul, Element, AbstractElement
+from cataelem.Tools.base_objects import Calcul, NewElement
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.located_components as LC
 import cataelem.Commons.parameters as SP
@@ -64,39 +64,37 @@ MMATUUR  = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=(DDL_MECA,DDL_ME
 
 
 #------------------------------------------------------------
-abstractElement = AbstractElement()
-ele = abstractElement
+class MEFS_POU_D_T(NewElement):
+    """Please document this element"""
+    meshType = MT.SEG2
+    calculs = (
 
-ele.addCalcul(OP.MASS_MECA, te=241,
-    para_in=((SP.PCAGEPO, CCAGEPO), (SP.PCAGNPO, CCAGNPO),
-             (OP.MASS_MECA.PCAORIE, CCAORIE), (SP.PGEOMER, NGEOMER),
-             (SP.PMATERC, LC.CMATERC), ),
-    para_out=((SP.PMATUUR, MMATUUR), ),
-)
+        OP.MASS_MECA(te=241,
+            para_in=((SP.PCAGEPO, CCAGEPO), (SP.PCAGNPO, CCAGNPO),
+                     (OP.MASS_MECA.PCAORIE, CCAORIE), (SP.PGEOMER, NGEOMER),
+                     (SP.PMATERC, LC.CMATERC), ),
+            para_out=((SP.PMATUUR, MMATUUR), ),
+        ),
 
-ele.addCalcul(OP.REPERE_LOCAL, te=135,
-    para_in=((OP.REPERE_LOCAL.PCAORIE, CCAORIE), ),
-    para_out=((SP.PREPLO1, CGEOMER), (SP.PREPLO2, CGEOMER),
-             (SP.PREPLO3, CGEOMER), ),
-)
+        OP.REPERE_LOCAL(te=135,
+            para_in=((OP.REPERE_LOCAL.PCAORIE, CCAORIE), ),
+            para_out=((SP.PREPLO1, CGEOMER), (SP.PREPLO2, CGEOMER),
+                     (SP.PREPLO3, CGEOMER), ),
+        ),
 
-ele.addCalcul(OP.RIGI_MECA, te=240,
-    para_in=((SP.PCAGNPO, CCAGNPO), (OP.RIGI_MECA.PCAORIE, CCAORIE),
-             (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
-             ),
-    para_out=((SP.PMATUUR, MMATUUR), ),
-)
+        OP.RIGI_MECA(te=240,
+            para_in=((SP.PCAGNPO, CCAGNPO), (OP.RIGI_MECA.PCAORIE, CCAORIE),
+                     (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
+                     ),
+            para_out=((SP.PMATUUR, MMATUUR), ),
+        ),
 
-ele.addCalcul(OP.TOU_INI_ELEM, te=99,
-    para_out=((OP.TOU_INI_ELEM.PGEOM_R, CGEOMER), ),
-)
+        OP.TOU_INI_ELEM(te=99,
+            para_out=((OP.TOU_INI_ELEM.PGEOM_R, CGEOMER), ),
+        ),
 
-ele.addCalcul(OP.TOU_INI_ELNO, te=99,
-    para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), ),
-)
+        OP.TOU_INI_ELNO(te=99,
+            para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), ),
+        ),
 
-
-#------------------------------------------------------------
-MEFS_POU_D_T = Element(modele=abstractElement)
-ele = MEFS_POU_D_T
-ele.meshType = MT.SEG2
+    )

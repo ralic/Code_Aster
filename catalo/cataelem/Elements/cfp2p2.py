@@ -17,7 +17,7 @@
 # ======================================================================
 
 from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents, SetOfNodes, ElrefeLoc
-from cataelem.Tools.base_objects import Calcul, Element, AbstractElement
+from cataelem.Tools.base_objects import Calcul, NewElement
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.located_components as LC
 import cataelem.Commons.parameters as SP
@@ -47,403 +47,401 @@ MMATUNS  = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=(DDL_MECA,DDL_ME
 
 
 #------------------------------------------------------------
-abstractElement = AbstractElement()
-ele = abstractElement
+class CFP2P2(NewElement):
+    """Please document this element"""
+    meshType = MT.SEG22
+    nodes = (
+            SetOfNodes('EN2', (1,2,)),
+            SetOfNodes('EN1', (3,4,)),
+        )
+    calculs = (
 
-ele.addCalcul(OP.CHAR_MECA_CONT, te=365,
-    para_in=((SP.PACCE_M, DDL_MECA), (SP.PCONFR, LC.CCONFR),
-             (SP.PDEPL_M, DDL_MECA), (SP.PDEPL_P, DDL_MECA),
-             (SP.PGEOMER, NGEOMER), (SP.PVITE_M, DDL_MECA),
-             (SP.PVITE_P, DDL_MECA), ),
-    para_out=((SP.PVECTUR, MVECTUR), ),
-)
+        OP.CHAR_MECA_CONT(te=365,
+            para_in=((SP.PACCE_M, DDL_MECA), (SP.PCONFR, LC.CCONFR),
+                     (SP.PDEPL_M, DDL_MECA), (SP.PDEPL_P, DDL_MECA),
+                     (SP.PGEOMER, NGEOMER), (SP.PVITE_M, DDL_MECA),
+                     (SP.PVITE_P, DDL_MECA), ),
+            para_out=((SP.PVECTUR, MVECTUR), ),
+        ),
 
-ele.addCalcul(OP.CHAR_MECA_FROT, te=365,
-    para_in=((SP.PACCE_M, DDL_MECA), (SP.PCONFR, LC.CCONFR),
-             (SP.PDEPL_M, DDL_MECA), (SP.PDEPL_P, DDL_MECA),
-             (SP.PGEOMER, NGEOMER), (SP.PVITE_M, DDL_MECA),
-             (SP.PVITE_P, DDL_MECA), ),
-    para_out=((SP.PVECTUR, MVECTUR), ),
-)
+        OP.CHAR_MECA_FROT(te=365,
+            para_in=((SP.PACCE_M, DDL_MECA), (SP.PCONFR, LC.CCONFR),
+                     (SP.PDEPL_M, DDL_MECA), (SP.PDEPL_P, DDL_MECA),
+                     (SP.PGEOMER, NGEOMER), (SP.PVITE_M, DDL_MECA),
+                     (SP.PVITE_P, DDL_MECA), ),
+            para_out=((SP.PVECTUR, MVECTUR), ),
+        ),
 
-ele.addCalcul(OP.RIGI_CONT, te=364,
-    para_in=((SP.PACCE_M, DDL_MECA), (SP.PCONFR, LC.CCONFR),
-             (SP.PDEPL_M, DDL_MECA), (SP.PDEPL_P, DDL_MECA),
-             (SP.PGEOMER, NGEOMER), (SP.PVITE_M, DDL_MECA),
-             (SP.PVITE_P, DDL_MECA), ),
-    para_out=((SP.PMATUNS, MMATUNS), (SP.PMATUUR, MMATUUR),
-             ),
-)
+        OP.RIGI_CONT(te=364,
+            para_in=((SP.PACCE_M, DDL_MECA), (SP.PCONFR, LC.CCONFR),
+                     (SP.PDEPL_M, DDL_MECA), (SP.PDEPL_P, DDL_MECA),
+                     (SP.PGEOMER, NGEOMER), (SP.PVITE_M, DDL_MECA),
+                     (SP.PVITE_P, DDL_MECA), ),
+            para_out=((SP.PMATUNS, MMATUNS), (SP.PMATUUR, MMATUUR),
+                     ),
+        ),
 
-ele.addCalcul(OP.RIGI_FROT, te=364,
-    para_in=((SP.PACCE_M, DDL_MECA), (SP.PCONFR, LC.CCONFR),
-             (SP.PDEPL_M, DDL_MECA), (SP.PDEPL_P, DDL_MECA),
-             (SP.PGEOMER, NGEOMER), (SP.PVITE_M, DDL_MECA),
-             (SP.PVITE_P, DDL_MECA), ),
-    para_out=((SP.PMATUNS, MMATUNS), (SP.PMATUUR, MMATUUR),
-             ),
-)
+        OP.RIGI_FROT(te=364,
+            para_in=((SP.PACCE_M, DDL_MECA), (SP.PCONFR, LC.CCONFR),
+                     (SP.PDEPL_M, DDL_MECA), (SP.PDEPL_P, DDL_MECA),
+                     (SP.PGEOMER, NGEOMER), (SP.PVITE_M, DDL_MECA),
+                     (SP.PVITE_P, DDL_MECA), ),
+            para_out=((SP.PMATUNS, MMATUNS), (SP.PMATUUR, MMATUUR),
+                     ),
+        ),
 
-ele.addCalcul(OP.TOU_INI_ELNO, te=99,
-    para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), ),
-)
+        OP.TOU_INI_ELNO(te=99,
+            para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), ),
+        ),
 
-
-#------------------------------------------------------------
-CFP2P2 = Element(modele=abstractElement)
-ele = CFP2P2
-ele.meshType = MT.SEG22
-ele.nodes = (
-        SetOfNodes('EN2', (1,2,)),
-        SetOfNodes('EN1', (3,4,)),
     )
 
 
 #------------------------------------------------------------
-CFQ4Q4 = Element(modele=abstractElement)
-ele = CFQ4Q4
-ele.meshType = MT.QUAD44
-ele.nodes = (
-        SetOfNodes('EN2', (1,2,3,4,)),
-        SetOfNodes('EN1', (5,6,7,8,)),
-    )
+class CFQ4Q4(CFP2P2):
+    """Please document this element"""
+    meshType = MT.QUAD44
+    nodes = (
+            SetOfNodes('EN2', (1,2,3,4,)),
+            SetOfNodes('EN1', (5,6,7,8,)),
+        )
 
 
 #------------------------------------------------------------
-CFT3T3 = Element(modele=abstractElement)
-ele = CFT3T3
-ele.meshType = MT.TRIA33
-ele.nodes = (
-        SetOfNodes('EN1', (4,5,6,)),
-        SetOfNodes('EN2', (1,2,3,)),
-    )
+class CFT3T3(CFP2P2):
+    """Please document this element"""
+    meshType = MT.TRIA33
+    nodes = (
+            SetOfNodes('EN1', (4,5,6,)),
+            SetOfNodes('EN2', (1,2,3,)),
+        )
 
 
 #------------------------------------------------------------
-CFQ4T3 = Element(modele=abstractElement)
-ele = CFQ4T3
-ele.meshType = MT.QU4TR3
-ele.nodes = (
-        SetOfNodes('EN2', (1,2,3,4,)),
-        SetOfNodes('EN1', (5,6,7,)),
-    )
+class CFQ4T3(CFP2P2):
+    """Please document this element"""
+    meshType = MT.QU4TR3
+    nodes = (
+            SetOfNodes('EN2', (1,2,3,4,)),
+            SetOfNodes('EN1', (5,6,7,)),
+        )
 
 
 #------------------------------------------------------------
-CFT3Q4 = Element(modele=abstractElement)
-ele = CFT3Q4
-ele.meshType = MT.TR3QU4
-ele.nodes = (
-        SetOfNodes('EN2', (1,2,3,)),
-        SetOfNodes('EN1', (4,5,6,7,)),
-    )
+class CFT3Q4(CFP2P2):
+    """Please document this element"""
+    meshType = MT.TR3QU4
+    nodes = (
+            SetOfNodes('EN2', (1,2,3,)),
+            SetOfNodes('EN1', (4,5,6,7,)),
+        )
 
 
 #------------------------------------------------------------
-CFT6T3 = Element(modele=abstractElement)
-ele = CFT6T3
-ele.meshType = MT.TR6TR3
-ele.nodes = (
-        SetOfNodes('EN2', (1,2,3,4,5,6,)),
-        SetOfNodes('EN1', (7,8,9,)),
-    )
+class CFT6T3(CFP2P2):
+    """Please document this element"""
+    meshType = MT.TR6TR3
+    nodes = (
+            SetOfNodes('EN2', (1,2,3,4,5,6,)),
+            SetOfNodes('EN1', (7,8,9,)),
+        )
 
 
 #------------------------------------------------------------
-CFT3T6 = Element(modele=abstractElement)
-ele = CFT3T6
-ele.meshType = MT.TR3TR6
-ele.nodes = (
-        SetOfNodes('EN2', (1,2,3,)),
-        SetOfNodes('EN1', (4,5,6,7,8,9,)),
-    )
+class CFT3T6(CFP2P2):
+    """Please document this element"""
+    meshType = MT.TR3TR6
+    nodes = (
+            SetOfNodes('EN2', (1,2,3,)),
+            SetOfNodes('EN1', (4,5,6,7,8,9,)),
+        )
 
 
 #------------------------------------------------------------
-CFT6Q4 = Element(modele=abstractElement)
-ele = CFT6Q4
-ele.meshType = MT.TR6QU4
-ele.nodes = (
-        SetOfNodes('EN2', (1,2,3,4,5,6,)),
-        SetOfNodes('EN1', (7,8,9,10,)),
-    )
+class CFT6Q4(CFP2P2):
+    """Please document this element"""
+    meshType = MT.TR6QU4
+    nodes = (
+            SetOfNodes('EN2', (1,2,3,4,5,6,)),
+            SetOfNodes('EN1', (7,8,9,10,)),
+        )
 
 
 #------------------------------------------------------------
-CFQ4T6 = Element(modele=abstractElement)
-ele = CFQ4T6
-ele.meshType = MT.QU4TR6
-ele.nodes = (
-        SetOfNodes('EN2', (1,2,3,4,)),
-        SetOfNodes('EN1', (5,6,7,8,9,10,)),
-    )
+class CFQ4T6(CFP2P2):
+    """Please document this element"""
+    meshType = MT.QU4TR6
+    nodes = (
+            SetOfNodes('EN2', (1,2,3,4,)),
+            SetOfNodes('EN1', (5,6,7,8,9,10,)),
+        )
 
 
 #------------------------------------------------------------
-CFT6Q8 = Element(modele=abstractElement)
-ele = CFT6Q8
-ele.meshType = MT.TR6QU8
-ele.nodes = (
-        SetOfNodes('EN2', (1,2,3,4,5,6,)),
-        SetOfNodes('EN1', (7,8,9,10,11,12,13,14,)),
-    )
+class CFT6Q8(CFP2P2):
+    """Please document this element"""
+    meshType = MT.TR6QU8
+    nodes = (
+            SetOfNodes('EN2', (1,2,3,4,5,6,)),
+            SetOfNodes('EN1', (7,8,9,10,11,12,13,14,)),
+        )
 
 
 #------------------------------------------------------------
-CFQ8T6 = Element(modele=abstractElement)
-ele = CFQ8T6
-ele.meshType = MT.QU8TR6
-ele.nodes = (
-        SetOfNodes('EN2', (1,2,3,4,5,6,7,8,)),
-        SetOfNodes('EN1', (9,10,11,12,13,14,)),
-    )
+class CFQ8T6(CFP2P2):
+    """Please document this element"""
+    meshType = MT.QU8TR6
+    nodes = (
+            SetOfNodes('EN2', (1,2,3,4,5,6,7,8,)),
+            SetOfNodes('EN1', (9,10,11,12,13,14,)),
+        )
 
 
 #------------------------------------------------------------
-CFT6Q9 = Element(modele=abstractElement)
-ele = CFT6Q9
-ele.meshType = MT.TR6QU9
-ele.nodes = (
-        SetOfNodes('EN2', (1,2,3,4,5,6,)),
-        SetOfNodes('EN1', (7,8,9,10,11,12,13,14,15,)),
-    )
+class CFT6Q9(CFP2P2):
+    """Please document this element"""
+    meshType = MT.TR6QU9
+    nodes = (
+            SetOfNodes('EN2', (1,2,3,4,5,6,)),
+            SetOfNodes('EN1', (7,8,9,10,11,12,13,14,15,)),
+        )
 
 
 #------------------------------------------------------------
-CFQ9T6 = Element(modele=abstractElement)
-ele = CFQ9T6
-ele.meshType = MT.QU9TR6
-ele.nodes = (
-        SetOfNodes('EN2', (1,2,3,4,5,6,7,8,9,)),
-        SetOfNodes('EN1', (10,11,12,13,14,15,)),
-    )
+class CFQ9T6(CFP2P2):
+    """Please document this element"""
+    meshType = MT.QU9TR6
+    nodes = (
+            SetOfNodes('EN2', (1,2,3,4,5,6,7,8,9,)),
+            SetOfNodes('EN1', (10,11,12,13,14,15,)),
+        )
 
 
 #------------------------------------------------------------
-CFQ8T3 = Element(modele=abstractElement)
-ele = CFQ8T3
-ele.meshType = MT.QU8TR3
-ele.nodes = (
-        SetOfNodes('EN2', (1,2,3,4,5,6,7,8,)),
-        SetOfNodes('EN1', (9,10,11,)),
-    )
+class CFQ8T3(CFP2P2):
+    """Please document this element"""
+    meshType = MT.QU8TR3
+    nodes = (
+            SetOfNodes('EN2', (1,2,3,4,5,6,7,8,)),
+            SetOfNodes('EN1', (9,10,11,)),
+        )
 
 
 #------------------------------------------------------------
-CFT3Q8 = Element(modele=abstractElement)
-ele = CFT3Q8
-ele.meshType = MT.TR3QU8
-ele.nodes = (
-        SetOfNodes('EN2', (1,2,3,)),
-        SetOfNodes('EN1', (4,5,6,7,8,9,10,11,)),
-    )
+class CFT3Q8(CFP2P2):
+    """Please document this element"""
+    meshType = MT.TR3QU8
+    nodes = (
+            SetOfNodes('EN2', (1,2,3,)),
+            SetOfNodes('EN1', (4,5,6,7,8,9,10,11,)),
+        )
 
 
 #------------------------------------------------------------
-CFQ8Q4 = Element(modele=abstractElement)
-ele = CFQ8Q4
-ele.meshType = MT.QU8QU4
-ele.nodes = (
-        SetOfNodes('EN2', (1,2,3,4,5,6,7,8,)),
-        SetOfNodes('EN1', (9,10,11,12,)),
-    )
+class CFQ8Q4(CFP2P2):
+    """Please document this element"""
+    meshType = MT.QU8QU4
+    nodes = (
+            SetOfNodes('EN2', (1,2,3,4,5,6,7,8,)),
+            SetOfNodes('EN1', (9,10,11,12,)),
+        )
 
 
 #------------------------------------------------------------
-CFQ4Q8 = Element(modele=abstractElement)
-ele = CFQ4Q8
-ele.meshType = MT.QU4QU8
-ele.nodes = (
-        SetOfNodes('EN2', (1,2,3,4,)),
-        SetOfNodes('EN1', (5,6,7,8,9,10,11,12,)),
-    )
+class CFQ4Q8(CFP2P2):
+    """Please document this element"""
+    meshType = MT.QU4QU8
+    nodes = (
+            SetOfNodes('EN2', (1,2,3,4,)),
+            SetOfNodes('EN1', (5,6,7,8,9,10,11,12,)),
+        )
 
 
 #------------------------------------------------------------
-CFQ8Q9 = Element(modele=abstractElement)
-ele = CFQ8Q9
-ele.meshType = MT.QU8QU9
-ele.nodes = (
-        SetOfNodes('EN2', (1,2,3,4,5,6,7,8,)),
-        SetOfNodes('EN1', (9,10,11,12,13,14,15,16,17,)),
-    )
+class CFQ8Q9(CFP2P2):
+    """Please document this element"""
+    meshType = MT.QU8QU9
+    nodes = (
+            SetOfNodes('EN2', (1,2,3,4,5,6,7,8,)),
+            SetOfNodes('EN1', (9,10,11,12,13,14,15,16,17,)),
+        )
 
 
 #------------------------------------------------------------
-CFQ9Q8 = Element(modele=abstractElement)
-ele = CFQ9Q8
-ele.meshType = MT.QU9QU8
-ele.nodes = (
-        SetOfNodes('EN2', (1,2,3,4,5,6,7,8,9,)),
-        SetOfNodes('EN1', (10,11,12,13,14,15,16,17,)),
-    )
+class CFQ9Q8(CFP2P2):
+    """Please document this element"""
+    meshType = MT.QU9QU8
+    nodes = (
+            SetOfNodes('EN2', (1,2,3,4,5,6,7,8,9,)),
+            SetOfNodes('EN1', (10,11,12,13,14,15,16,17,)),
+        )
 
 
 #------------------------------------------------------------
-CFQ9Q4 = Element(modele=abstractElement)
-ele = CFQ9Q4
-ele.meshType = MT.QU9QU4
-ele.nodes = (
-        SetOfNodes('EN2', (1,2,3,4,5,6,7,8,9,)),
-        SetOfNodes('EN1', (10,11,12,13,)),
-    )
+class CFQ9Q4(CFP2P2):
+    """Please document this element"""
+    meshType = MT.QU9QU4
+    nodes = (
+            SetOfNodes('EN2', (1,2,3,4,5,6,7,8,9,)),
+            SetOfNodes('EN1', (10,11,12,13,)),
+        )
 
 
 #------------------------------------------------------------
-CFQ4Q9 = Element(modele=abstractElement)
-ele = CFQ4Q9
-ele.meshType = MT.QU4QU9
-ele.nodes = (
-        SetOfNodes('EN2', (1,2,3,4,)),
-        SetOfNodes('EN1', (5,6,7,8,9,10,11,12,13,)),
-    )
+class CFQ4Q9(CFP2P2):
+    """Please document this element"""
+    meshType = MT.QU4QU9
+    nodes = (
+            SetOfNodes('EN2', (1,2,3,4,)),
+            SetOfNodes('EN1', (5,6,7,8,9,10,11,12,13,)),
+        )
 
 
 #------------------------------------------------------------
-CFQ9T3 = Element(modele=abstractElement)
-ele = CFQ9T3
-ele.meshType = MT.QU9TR3
-ele.nodes = (
-        SetOfNodes('EN2', (1,2,3,4,5,6,7,8,9,)),
-        SetOfNodes('EN1', (10,11,12,)),
-    )
+class CFQ9T3(CFP2P2):
+    """Please document this element"""
+    meshType = MT.QU9TR3
+    nodes = (
+            SetOfNodes('EN2', (1,2,3,4,5,6,7,8,9,)),
+            SetOfNodes('EN1', (10,11,12,)),
+        )
 
 
 #------------------------------------------------------------
-CFT3Q9 = Element(modele=abstractElement)
-ele = CFT3Q9
-ele.meshType = MT.TR3QU9
-ele.nodes = (
-        SetOfNodes('EN2', (1,2,3,)),
-        SetOfNodes('EN1', (4,5,6,7,8,9,10,11,12,)),
-    )
+class CFT3Q9(CFP2P2):
+    """Please document this element"""
+    meshType = MT.TR3QU9
+    nodes = (
+            SetOfNodes('EN2', (1,2,3,)),
+            SetOfNodes('EN1', (4,5,6,7,8,9,10,11,12,)),
+        )
 
 
 #------------------------------------------------------------
-CFQ8Q8 = Element(modele=abstractElement)
-ele = CFQ8Q8
-ele.meshType = MT.QUAD88
-ele.nodes = (
-        SetOfNodes('EN2', (1,2,3,4,5,6,7,8,)),
-        SetOfNodes('EN1', (9,10,11,12,13,14,15,16,)),
-    )
+class CFQ8Q8(CFP2P2):
+    """Please document this element"""
+    meshType = MT.QUAD88
+    nodes = (
+            SetOfNodes('EN2', (1,2,3,4,5,6,7,8,)),
+            SetOfNodes('EN1', (9,10,11,12,13,14,15,16,)),
+        )
 
 
 #------------------------------------------------------------
-CFQ9Q9 = Element(modele=abstractElement)
-ele = CFQ9Q9
-ele.meshType = MT.QUAD99
-ele.nodes = (
-        SetOfNodes('EN2', (1,2,3,4,5,6,7,8,9,)),
-        SetOfNodes('EN1', (10,11,12,13,14,15,16,17,18,)),
-    )
+class CFQ9Q9(CFP2P2):
+    """Please document this element"""
+    meshType = MT.QUAD99
+    nodes = (
+            SetOfNodes('EN2', (1,2,3,4,5,6,7,8,9,)),
+            SetOfNodes('EN1', (10,11,12,13,14,15,16,17,18,)),
+        )
 
 
 #------------------------------------------------------------
-CFT6T6 = Element(modele=abstractElement)
-ele = CFT6T6
-ele.meshType = MT.TRIA66
-ele.nodes = (
-        SetOfNodes('EN2', (1,2,3,4,5,6,)),
-        SetOfNodes('EN1', (7,8,9,10,11,12,)),
-    )
+class CFT6T6(CFP2P2):
+    """Please document this element"""
+    meshType = MT.TRIA66
+    nodes = (
+            SetOfNodes('EN2', (1,2,3,4,5,6,)),
+            SetOfNodes('EN1', (7,8,9,10,11,12,)),
+        )
 
 
 #------------------------------------------------------------
-CFS2T3 = Element(modele=abstractElement)
-ele = CFS2T3
-ele.meshType = MT.SE2TR3
-ele.nodes = (
-        SetOfNodes('EN2', (1,2,)),
-        SetOfNodes('EN1', (3,4,5,)),
-    )
+class CFS2T3(CFP2P2):
+    """Please document this element"""
+    meshType = MT.SE2TR3
+    nodes = (
+            SetOfNodes('EN2', (1,2,)),
+            SetOfNodes('EN1', (3,4,5,)),
+        )
 
 
 #------------------------------------------------------------
-CFS2T6 = Element(modele=abstractElement)
-ele = CFS2T6
-ele.meshType = MT.SE2TR6
-ele.nodes = (
-        SetOfNodes('EN2', (1,2,)),
-        SetOfNodes('EN1', (3,4,5,6,7,8,)),
-    )
+class CFS2T6(CFP2P2):
+    """Please document this element"""
+    meshType = MT.SE2TR6
+    nodes = (
+            SetOfNodes('EN2', (1,2,)),
+            SetOfNodes('EN1', (3,4,5,6,7,8,)),
+        )
 
 
 #------------------------------------------------------------
-CFS2Q4 = Element(modele=abstractElement)
-ele = CFS2Q4
-ele.meshType = MT.SE2QU4
-ele.nodes = (
-        SetOfNodes('EN2', (1,2,)),
-        SetOfNodes('EN1', (3,4,5,6,)),
-    )
+class CFS2Q4(CFP2P2):
+    """Please document this element"""
+    meshType = MT.SE2QU4
+    nodes = (
+            SetOfNodes('EN2', (1,2,)),
+            SetOfNodes('EN1', (3,4,5,6,)),
+        )
 
 
 #------------------------------------------------------------
-CFS2Q8 = Element(modele=abstractElement)
-ele = CFS2Q8
-ele.meshType = MT.SE2QU8
-ele.nodes = (
-        SetOfNodes('EN2', (1,2,)),
-        SetOfNodes('EN1', (3,4,5,6,7,8,9,10,)),
-    )
+class CFS2Q8(CFP2P2):
+    """Please document this element"""
+    meshType = MT.SE2QU8
+    nodes = (
+            SetOfNodes('EN2', (1,2,)),
+            SetOfNodes('EN1', (3,4,5,6,7,8,9,10,)),
+        )
 
 
 #------------------------------------------------------------
-CFS2Q9 = Element(modele=abstractElement)
-ele = CFS2Q9
-ele.meshType = MT.SE2QU9
-ele.nodes = (
-        SetOfNodes('EN2', (1,2,)),
-        SetOfNodes('EN1', (3,4,5,6,7,8,9,10,11,)),
-    )
+class CFS2Q9(CFP2P2):
+    """Please document this element"""
+    meshType = MT.SE2QU9
+    nodes = (
+            SetOfNodes('EN2', (1,2,)),
+            SetOfNodes('EN1', (3,4,5,6,7,8,9,10,11,)),
+        )
 
 
 #------------------------------------------------------------
-CFS3T3 = Element(modele=abstractElement)
-ele = CFS3T3
-ele.meshType = MT.SE3TR3
-ele.nodes = (
-        SetOfNodes('EN2', (1,2,3,)),
-        SetOfNodes('EN1', (3,4,5,)),
-    )
+class CFS3T3(CFP2P2):
+    """Please document this element"""
+    meshType = MT.SE3TR3
+    nodes = (
+            SetOfNodes('EN2', (1,2,3,)),
+            SetOfNodes('EN1', (3,4,5,)),
+        )
 
 
 #------------------------------------------------------------
-CFS3T6 = Element(modele=abstractElement)
-ele = CFS3T6
-ele.meshType = MT.SE3TR6
-ele.nodes = (
-        SetOfNodes('EN2', (1,2,3,)),
-        SetOfNodes('EN1', (3,4,5,6,7,8,)),
-    )
+class CFS3T6(CFP2P2):
+    """Please document this element"""
+    meshType = MT.SE3TR6
+    nodes = (
+            SetOfNodes('EN2', (1,2,3,)),
+            SetOfNodes('EN1', (3,4,5,6,7,8,)),
+        )
 
 
 #------------------------------------------------------------
-CFS3Q4 = Element(modele=abstractElement)
-ele = CFS3Q4
-ele.meshType = MT.SE3QU4
-ele.nodes = (
-        SetOfNodes('EN2', (1,2,3,)),
-        SetOfNodes('EN1', (3,4,5,6,)),
-    )
+class CFS3Q4(CFP2P2):
+    """Please document this element"""
+    meshType = MT.SE3QU4
+    nodes = (
+            SetOfNodes('EN2', (1,2,3,)),
+            SetOfNodes('EN1', (3,4,5,6,)),
+        )
 
 
 #------------------------------------------------------------
-CFS3Q8 = Element(modele=abstractElement)
-ele = CFS3Q8
-ele.meshType = MT.SE3QU8
-ele.nodes = (
-        SetOfNodes('EN2', (1,2,3,)),
-        SetOfNodes('EN1', (3,4,5,6,7,8,9,10,)),
-    )
+class CFS3Q8(CFP2P2):
+    """Please document this element"""
+    meshType = MT.SE3QU8
+    nodes = (
+            SetOfNodes('EN2', (1,2,3,)),
+            SetOfNodes('EN1', (3,4,5,6,7,8,9,10,)),
+        )
 
 
 #------------------------------------------------------------
-CFS3Q9 = Element(modele=abstractElement)
-ele = CFS3Q9
-ele.meshType = MT.SE3QU9
-ele.nodes = (
-        SetOfNodes('EN2', (1,2,3,)),
-        SetOfNodes('EN1', (3,4,5,6,7,8,9,10,11,)),
-    )
+class CFS3Q9(CFP2P2):
+    """Please document this element"""
+    meshType = MT.SE3QU9
+    nodes = (
+            SetOfNodes('EN2', (1,2,3,)),
+            SetOfNodes('EN1', (3,4,5,6,7,8,9,10,11,)),
+        )

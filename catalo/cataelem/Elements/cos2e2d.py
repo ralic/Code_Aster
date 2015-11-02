@@ -17,7 +17,7 @@
 # ======================================================================
 
 from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents, SetOfNodes, ElrefeLoc
-from cataelem.Tools.base_objects import Calcul, Element, AbstractElement
+from cataelem.Tools.base_objects import Calcul, NewElement
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.located_components as LC
 import cataelem.Commons.parameters as SP
@@ -35,21 +35,19 @@ DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO',
 
 
 #------------------------------------------------------------
-abstractElement = AbstractElement()
-ele = abstractElement
+class COS2E2D(NewElement):
+    """Please document this element"""
+    meshType = MT.SEG2
+    calculs = (
 
-ele.addCalcul(OP.EXISTE_DDL, te=99,
-    para_out=((OP.EXISTE_DDL.PDEPL_R, DDL_MECA), ),
-)
+        OP.EXISTE_DDL(te=99,
+            para_out=((OP.EXISTE_DDL.PDEPL_R, DDL_MECA), ),
+        ),
 
-
-#------------------------------------------------------------
-COS2E2D = Element(modele=abstractElement)
-ele = COS2E2D
-ele.meshType = MT.SEG2
+    )
 
 
 #------------------------------------------------------------
-COS3E2D = Element(modele=abstractElement)
-ele = COS3E2D
-ele.meshType = MT.SEG3
+class COS3E2D(COS2E2D):
+    """Please document this element"""
+    meshType = MT.SEG3

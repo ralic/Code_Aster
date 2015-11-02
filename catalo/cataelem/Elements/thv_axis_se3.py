@@ -17,7 +17,7 @@
 # ======================================================================
 
 from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents, SetOfNodes, ElrefeLoc
-from cataelem.Tools.base_objects import Calcul, Element, AbstractElement
+from cataelem.Tools.base_objects import Calcul, NewElement
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.located_components as LC
 import cataelem.Commons.parameters as SP
@@ -69,50 +69,48 @@ MVECTUR  = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=(DDL_MECA,))
 
 
 #------------------------------------------------------------
-abstractElement = AbstractElement()
-ele = abstractElement
+class THV_AXIS_SE3(NewElement):
+    """Please document this element"""
+    meshType = MT.SEG3
+    nodes = (
+            SetOfNodes('EN2', (3,)),
+            SetOfNodes('EN1', (1,2,)),
+        )
+    elrefe =(
+            ElrefeLoc(MT.SE3, gauss = ('RIGI=FPG4',),),
+            ElrefeLoc(MT.SE2, gauss = ('RIGI=FPG4',),),
+        )
+    calculs = (
 
-ele.addCalcul(OP.CHAR_MECA_FLUX_F, te=472,
-    para_in=((SP.PFLUXF, CFLUXF), (SP.PGEOMER, NGEOMER),
-             (SP.PTEMPSR, CTEMPSR), ),
-    para_out=((SP.PVECTUR, MVECTUR), ),
-)
+        OP.CHAR_MECA_FLUX_F(te=472,
+            para_in=((SP.PFLUXF, CFLUXF), (SP.PGEOMER, NGEOMER),
+                     (SP.PTEMPSR, CTEMPSR), ),
+            para_out=((SP.PVECTUR, MVECTUR), ),
+        ),
 
-ele.addCalcul(OP.CHAR_MECA_FLUX_R, te=472,
-    para_in=((SP.PFLUXR, EFLUXE), (SP.PGEOMER, NGEOMER),
-             (SP.PTEMPSR, CTEMPSR), ),
-    para_out=((SP.PVECTUR, MVECTUR), ),
-)
+        OP.CHAR_MECA_FLUX_R(te=472,
+            para_in=((SP.PFLUXR, EFLUXE), (SP.PGEOMER, NGEOMER),
+                     (SP.PTEMPSR, CTEMPSR), ),
+            para_out=((SP.PVECTUR, MVECTUR), ),
+        ),
 
-ele.addCalcul(OP.COOR_ELGA, te=467,
-    para_in=((SP.PGEOMER, NGEOMER), ),
-    para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R), ),
-)
+        OP.COOR_ELGA(te=467,
+            para_in=((SP.PGEOMER, NGEOMER), ),
+            para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R), ),
+        ),
 
-ele.addCalcul(OP.FLHN_ELGA, te=468,
-    para_in=((SP.PCONTR, NSIEF_R), (SP.PGEOMER, NGEOMER),
-             ),
-    para_out=((SP.PFLHN, EFLHN), ),
-)
+        OP.FLHN_ELGA(te=468,
+            para_in=((SP.PCONTR, NSIEF_R), (SP.PGEOMER, NGEOMER),
+                     ),
+            para_out=((SP.PFLHN, EFLHN), ),
+        ),
 
-ele.addCalcul(OP.TOU_INI_ELGA, te=99,
-    para_out=((OP.TOU_INI_ELGA.PGEOM_R, EGGEOP_R), ),
-)
+        OP.TOU_INI_ELGA(te=99,
+            para_out=((OP.TOU_INI_ELGA.PGEOM_R, EGGEOP_R), ),
+        ),
 
-ele.addCalcul(OP.TOU_INI_ELNO, te=99,
-    para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), ),
-)
+        OP.TOU_INI_ELNO(te=99,
+            para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), ),
+        ),
 
-
-#------------------------------------------------------------
-THV_AXIS_SE3 = Element(modele=abstractElement)
-ele = THV_AXIS_SE3
-ele.meshType = MT.SEG3
-ele.nodes = (
-        SetOfNodes('EN2', (3,)),
-        SetOfNodes('EN1', (1,2,)),
-    )
-ele.elrefe=(
-        ElrefeLoc(MT.SE3, gauss = ('RIGI=FPG4',),),
-        ElrefeLoc(MT.SE2, gauss = ('RIGI=FPG4',),),
     )

@@ -17,7 +17,7 @@
 # ======================================================================
 
 from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents, SetOfNodes, ElrefeLoc
-from cataelem.Tools.base_objects import Calcul, Element, AbstractElement
+from cataelem.Tools.base_objects import Calcul, NewElement
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.located_components as LC
 import cataelem.Commons.parameters as SP
@@ -68,61 +68,59 @@ MVECTUR  = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=(DDL_MECA,))
 
 
 #------------------------------------------------------------
-abstractElement = AbstractElement()
-ele = abstractElement
+class MEBODKT(NewElement):
+    """Please document this element"""
+    meshType = MT.SEG2
+    elrefe =(
+            ElrefeLoc(MT.SE2, gauss = ('RIGI=FPG2',),),
+        )
+    calculs = (
 
-ele.addCalcul(OP.CARA_SECT_POUT3, te=570,
-    para_in=((SP.PCACOQU, CCACOQU), (OP.CARA_SECT_POUT3.PCAORIE, CGEOMER),
-             (SP.PGEOMER, MGEOMER), ),
-    para_out=((SP.PCASECT, ECASECT), ),
-)
+        OP.CARA_SECT_POUT3(te=570,
+            para_in=((SP.PCACOQU, CCACOQU), (OP.CARA_SECT_POUT3.PCAORIE, CGEOMER),
+                     (SP.PGEOMER, MGEOMER), ),
+            para_out=((SP.PCASECT, ECASECT), ),
+        ),
 
-ele.addCalcul(OP.CARA_SECT_POUT4, te=570,
-    para_in=((SP.PCACOQU, CCACOQU), (OP.CARA_SECT_POUT4.PCAORIE, CGEOMER),
-             (SP.PGEOMER, MGEOMER), (SP.PORIGIN, CGEOMER),
-             ),
-    para_out=((SP.PVECTU1, MVECTUR), (SP.PVECTU2, MVECTUR),
-             ),
-)
+        OP.CARA_SECT_POUT4(te=570,
+            para_in=((SP.PCACOQU, CCACOQU), (OP.CARA_SECT_POUT4.PCAORIE, CGEOMER),
+                     (SP.PGEOMER, MGEOMER), (SP.PORIGIN, CGEOMER),
+                     ),
+            para_out=((SP.PVECTU1, MVECTUR), (SP.PVECTU2, MVECTUR),
+                     ),
+        ),
 
-ele.addCalcul(OP.CARA_SECT_POUT5, te=570,
-    para_in=((SP.PCACOQU, CCACOQU), (OP.CARA_SECT_POUT5.PCAORIE, CGEOMER),
-             (SP.PGEOMER, MGEOMER), (SP.PNUMMOD, LC.CNUMMOD),
-             (SP.PORIGFI, CGEOMER), (SP.PORIGIN, CGEOMER),
-             ),
-    para_out=((SP.PVECTU1, MVECTUR), (SP.PVECTU2, MVECTUR),
-             (SP.PVECTU3, MVECTUR), ),
-)
+        OP.CARA_SECT_POUT5(te=570,
+            para_in=((SP.PCACOQU, CCACOQU), (OP.CARA_SECT_POUT5.PCAORIE, CGEOMER),
+                     (SP.PGEOMER, MGEOMER), (SP.PNUMMOD, LC.CNUMMOD),
+                     (SP.PORIGFI, CGEOMER), (SP.PORIGIN, CGEOMER),
+                     ),
+            para_out=((SP.PVECTU1, MVECTUR), (SP.PVECTU2, MVECTUR),
+                     (SP.PVECTU3, MVECTUR), ),
+        ),
 
-ele.addCalcul(OP.CHAR_MECA_FF1D3D, te=34,
-    para_in=((SP.PFF1D3D, MFORCEF), (SP.PGEOMER, MGEOMER),
-             (SP.PTEMPSR, LC.MTEMPSR), ),
-    para_out=((SP.PVECTUR, MVECTUR), ),
-)
+        OP.CHAR_MECA_FF1D3D(te=34,
+            para_in=((SP.PFF1D3D, MFORCEF), (SP.PGEOMER, MGEOMER),
+                     (SP.PTEMPSR, LC.MTEMPSR), ),
+            para_out=((SP.PVECTUR, MVECTUR), ),
+        ),
 
-ele.addCalcul(OP.CHAR_MECA_FR1D3D, te=34,
-    para_in=((SP.PFR1D3D, MFORCER), (SP.PGEOMER, MGEOMER),
-             ),
-    para_out=((SP.PVECTUR, MVECTUR), ),
-)
+        OP.CHAR_MECA_FR1D3D(te=34,
+            para_in=((SP.PFR1D3D, MFORCER), (SP.PGEOMER, MGEOMER),
+                     ),
+            para_out=((SP.PVECTUR, MVECTUR), ),
+        ),
 
-ele.addCalcul(OP.TOU_INI_ELEM, te=99,
-    para_out=((OP.TOU_INI_ELEM.PGEOM_R, CGEOMER), ),
-)
+        OP.TOU_INI_ELEM(te=99,
+            para_out=((OP.TOU_INI_ELEM.PGEOM_R, CGEOMER), ),
+        ),
 
-ele.addCalcul(OP.TOU_INI_ELGA, te=99,
-    para_out=((OP.TOU_INI_ELGA.PGEOM_R, EGEOMER), ),
-)
+        OP.TOU_INI_ELGA(te=99,
+            para_out=((OP.TOU_INI_ELGA.PGEOM_R, EGEOMER), ),
+        ),
 
-ele.addCalcul(OP.TOU_INI_ELNO, te=99,
-    para_out=((OP.TOU_INI_ELNO.PGEOM_R, MGEOMER), ),
-)
+        OP.TOU_INI_ELNO(te=99,
+            para_out=((OP.TOU_INI_ELNO.PGEOM_R, MGEOMER), ),
+        ),
 
-
-#------------------------------------------------------------
-MEBODKT = Element(modele=abstractElement)
-ele = MEBODKT
-ele.meshType = MT.SEG2
-ele.elrefe=(
-        ElrefeLoc(MT.SE2, gauss = ('RIGI=FPG2',),),
     )

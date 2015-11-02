@@ -477,6 +477,10 @@ class Option(BaseCataEntity):
             self._fillParaDict()
         return self._cacheParaDict[attr]
 
+    def __call__(self, te, para_in=None, para_out=None):
+        """Define how to commpute this option for an element"""
+        return Calcul(self, te, para_in, para_out)
+
 
 class CondCalcul(object):
 
@@ -708,6 +712,14 @@ class Element(BaseCataEntity):
         return self._calculs
     calculs = property(__getCalculs)
 
+    def getAttrs(self):
+        """Return the attributes"""
+        return self._attrs
+
+    def getCalculs(self):
+        """Return the list of calculations supported by the element"""
+        return self._calculs.items()
+
     def addCalcul(self, option, te, para_in=None, para_out=None):
         """Define a calculation on this element"""
         assert option.name not in self._calculs, option.name
@@ -743,6 +755,103 @@ class Element(BaseCataEntity):
         return list(loco)
 
 
+class NewElement(BaseCataEntity):
+
+    """Definition of a finite element by subclassing
+    Subclasses must defined:
+    - meshType
+    - elrefe
+    - nodes
+    - attrs
+    - calculs
+    The first attributes are overridden by subclassing.
+    The `calculs` attribute is extended at each subclassing. An existing Calcul
+    is modified by subclassing.
+    """
+
+    _currentId = -1
+    idLength = 16
+    meshType = None
+    elrefe = ()
+    nodes = ()
+    calculs = None
+    attrs = ()
+
+    def __init__(self):
+        """Initialisation"""
+        super(NewElement, self).__init__()
+        self.elrefe = force_tuple(self.elrefe)
+        check_type([self.meshType], MeshType)
+        if self.nodes:
+            self.nodes = force_tuple(self.nodes)
+            check_type(self.nodes, SetOfNodes)
+        check_type(self.elrefe, ElrefeLoc)
+        # check attributes
+        assign = []
+        for attr, val in self.attrs:
+            attr = checkAttr(attr, val)
+            assign.append((attr, val))
+        self._attrs = assign
+        # fill _calculs
+        self.calculs = force_tuple(self.calculs)
+        check_type(self.calculs, Calcul)
+        self._calculs = OrderedDict()
+        # walk on inheritance from the abstract class to the element one
+        for klass in reversed(self.__class__.mro()):
+            if issubclass(klass, NewElement):
+                for calc in klass.calculs or []:
+                    if not self._calculs.get(calc.option.name):
+                        self.addCalcul(calc)
+                    else:
+                        self.modifyCalcul(calc)
+
+    def getAttrs(self):
+        """Return the attributes"""
+        return self._attrs
+
+    def getCalculs(self):
+        """Return the list of calculations supported by the element"""
+        return self._calculs.items()
+
+    def addCalcul(self, calc):
+        """Define a calculation on this element"""
+        optname = calc.option.name
+        assert optname, ("Element '{0}' {1}: options must be named "
+                         "before accessing them".format(self.name, self))
+        assert not self._calculs.get(optname), optname
+        # assert calc.te > 0, calc.te
+        self._calculs[optname] = calc
+
+    def modifyCalcul(self, calc):
+        """Change a calculation on this element"""
+        optname = calc.option.name
+        orig = self._calculs.get(optname)
+        assert orig, "Element '{0}': unknown option '{1}'".format(self._name)
+        if calc.te < 0:
+            assert not calc.para_in, calc.para_in
+            assert not calc.para_out, calc.para_out
+            self._calculs[optname] = calc
+        else:
+            para_in = calc.para_in
+            if not calc.para_in:
+                para_in = orig.para_in
+            para_out = calc.para_out
+            if not calc.para_out:
+                para_out = orig.para_out
+            self._calculs[optname] = Calcul(calc.option, calc.te,
+                                            para_in, para_out)
+
+    def usedLocatedComponents(self):
+        """Return the LocatedComponents used by this element"""
+        loco = set()
+        for calc in self._calculs.values():
+            for _, loc_i in list(calc.para_in) + list(calc.para_out):
+                loco.add(loc_i)
+                if type(loc_i) is ArrayOfComponents:
+                    loco.update(loc_i.locatedComponents)
+        return list(loco)
+
+
 class Modelisation(object):
 
     """Definition of the properties of a modelisation"""
@@ -763,7 +872,7 @@ class Modelisation(object):
         if elements:
             for tyma, tyel in elements:
                 check_type([tyma], MeshType)
-                check_type([tyel], Element)
+                check_type([tyel], (Element, NewElement))
         self._dim = dim
         self._code = code
         self._attrs = attrs
@@ -835,6 +944,7 @@ class AbstractEntityStore(object):
         """Initialisation: import all entities (of type `entityType`) available
         in the `package` under `cataelem`, objects of `subTypes` are named."""
         assert self.entityType, "must be subclassed!"
+        types = force_tuple(self.entityType)
         pkgdir = osp.dirname(package)
         pkg = osp.basename(pkgdir)
         l_mod = [osp.splitext(osp.basename(modname))[0]
@@ -853,8 +963,10 @@ class AbstractEntityStore(object):
                 if name in ignore_names:
                     continue
                 obj = getattr(mod, name)
-                if type(obj) is self.entityType:
+                if type(obj) in types:
                     self._entities[name] = obj
+                elif (type(obj) is type and obj not in types and issubclass(obj, types)):
+                    self._entities[name] = obj()
                 elif type(obj) in self.subTypes:
                     obj.setName(name)
 
@@ -886,7 +998,7 @@ def check_type(sequence, types):
     of one of the given types"""
     types = force_tuple(types)
     for value in sequence:
-        assert type(value) in types, type(value)
+        assert isinstance(value, types), type(value)
     return sequence
 
 def checkAttr(attr, value):

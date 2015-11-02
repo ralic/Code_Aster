@@ -688,59 +688,58 @@ def imprime_ojb(cel, file, timer, dbgdir):
         # options :
         # ---------------
         dico_opt_te = {}
-        if len(cata.calculs) > 0:
-            for noop, opt in cata.calculs.items():
-                numte = opt.te
-                nbin = len(opt.para_in)
-                nbou = len(opt.para_out)
-                ERR.contexte("Examen du catalogue du type_elem : " + note)
-                ERR.contexte("  rubrique: option : " + noop, "AJOUT")
-                ERR.veri_pas_doublon_lpara('E', opt.para_in)
-                ERR.veri_pas_doublon_lpara('E', opt.para_out)
+        for noop, opt in cata.getCalculs():
+            numte = opt.te
+            nbin = len(opt.para_in)
+            nbou = len(opt.para_out)
+            ERR.contexte("Examen du catalogue du type_elem : " + note)
+            ERR.contexte("  rubrique: option : " + noop, "AJOUT")
+            ERR.veri_pas_doublon_lpara('E', opt.para_in)
+            ERR.veri_pas_doublon_lpara('E', opt.para_out)
 
-                if dico_opt_te.get(noop):
-                    ERR.mess(
-                        'E', "L'option: " + noop + " est definie plusieurs fois pour le TYPE_ELEM: " + note)
-                else:
-                    dico_opt_te[noop] = numte
+            if dico_opt_te.get(noop):
+                ERR.mess(
+                    'E', "L'option: " + noop + " est definie plusieurs fois pour le TYPE_ELEM: " + note)
+            else:
+                dico_opt_te[noop] = numte
 
-                if numte < 0:
-                    assert numte == -1 or numte == -2, (note, noop, numte)
-                    nbin = 0
-                    nbout = 0
+            if numte < 0:
+                assert numte == -1 or numte == -2, (note, noop, numte)
+                nbin = 0
+                nbout = 0
 
-                ioptte = ioptte + 1
-                nuop = NOMOP.jenonu(nom=noop)
-                OPTT2.ecri_os(indice=2 * (ioptte - 1) + 1, valeur=nuop)
-                OPTT2.ecri_os(indice=2 * (ioptte - 1) + 2, valeur=nute)
-                OPTMOD.cree_oc(nom=str(ioptte), long=3 + nbin + nbou)
-                OPTNOM.cree_oc(nom=str(ioptte), long=nbin + nbou)
-                OPTMOD.ecri_co(nom=str(ioptte), indice=1, valeur=numte)
-                OPTMOD.ecri_co(nom=str(ioptte), indice=2, valeur=nbin)
-                OPTMOD.ecri_co(nom=str(ioptte), indice=3, valeur=nbou)
-                if dbgele:
-                    print noop, nuop, nute, numte, nbin, nbou
+            ioptte = ioptte + 1
+            nuop = NOMOP.jenonu(nom=noop)
+            OPTT2.ecri_os(indice=2 * (ioptte - 1) + 1, valeur=nuop)
+            OPTT2.ecri_os(indice=2 * (ioptte - 1) + 2, valeur=nute)
+            OPTMOD.cree_oc(nom=str(ioptte), long=3 + nbin + nbou)
+            OPTNOM.cree_oc(nom=str(ioptte), long=nbin + nbou)
+            OPTMOD.ecri_co(nom=str(ioptte), indice=1, valeur=numte)
+            OPTMOD.ecri_co(nom=str(ioptte), indice=2, valeur=nbin)
+            OPTMOD.ecri_co(nom=str(ioptte), indice=3, valeur=nbou)
+            if dbgele:
+                print noop, nuop, nute, numte, nbin, nbou
 
-                if numte > 0:
-                    for kk in range(nbin):
-                        param = opt.para_in[kk][0].name
-                        mode = opt.para_in[kk][1].name
-                        OPTNOM.ecri_co(
-                            nom=str(ioptte), indice=kk + 1, valeur=param)
-                        OPTMOD.ecri_co(
-                            nom=str(ioptte), indice=3 + kk + 1, valeur=NOMMOLOC.jenonu(note2 + mode))
-                        if dbgele:
-                            print noop, 'in', param, mode, kk + 1, 3 + kk + 1, NOMMOLOC.jenonu(note2 + mode)
+            if numte > 0:
+                for kk in range(nbin):
+                    param = opt.para_in[kk][0].name
+                    mode = opt.para_in[kk][1].name
+                    OPTNOM.ecri_co(
+                        nom=str(ioptte), indice=kk + 1, valeur=param)
+                    OPTMOD.ecri_co(
+                        nom=str(ioptte), indice=3 + kk + 1, valeur=NOMMOLOC.jenonu(note2 + mode))
+                    if dbgele:
+                        print noop, 'in', param, mode, kk + 1, 3 + kk + 1, NOMMOLOC.jenonu(note2 + mode)
 
-                    for kk in range(nbou):
-                        param = opt.para_out[kk][0].name
-                        mode = opt.para_out[kk][1].name
-                        OPTNOM.ecri_co(
-                            nom=str(ioptte), indice=nbin + kk + 1, valeur=param)
-                        OPTMOD.ecri_co(
-                            nom=str(ioptte), indice=3 + nbin + kk + 1, valeur=NOMMOLOC.jenonu(note2 + mode))
-                        if dbgele:
-                            print noop, 'out', param, mode, nbin + kk + 1, 3 + nbin + kk + 1, NOMMOLOC.jenonu(note2 + mode)
+                for kk in range(nbou):
+                    param = opt.para_out[kk][0].name
+                    mode = opt.para_out[kk][1].name
+                    OPTNOM.ecri_co(
+                        nom=str(ioptte), indice=nbin + kk + 1, valeur=param)
+                    OPTMOD.ecri_co(
+                        nom=str(ioptte), indice=3 + nbin + kk + 1, valeur=NOMMOLOC.jenonu(note2 + mode))
+                    if dbgele:
+                        print noop, 'out', param, mode, nbin + kk + 1, 3 + nbin + kk + 1, NOMMOLOC.jenonu(note2 + mode)
 
         timer.Stop('T7.7')
         timer.Start('T7.8')
@@ -934,7 +933,7 @@ def get_liattr(cel, cata):
                 dicattr[attr] = val_attr
 
     # surcharge eventuelle des attributs definis pour le type_elem:
-    for attr, val_attr in cata.attrs or []:
+    for attr, val_attr in cata.getAttrs() or []:
         # XXX was "and" !
         if attr in lattr_AUTO or attr in dicattr:
             ERR.mess(
@@ -1022,7 +1021,7 @@ def calc_nbopte(cel, opt_a_calculer):
         dico_opt_te = {}
 
 #       -- 1. les couples declares dans les catalogues de type_elem :
-        for noop in cata.calculs.keys():
+        for noop, opt in cata.getCalculs():
             dico_opt_te[noop] = 1
             nbopte = nbopte + 1
 
@@ -1088,32 +1087,30 @@ def impr_CMP(nomfic, cel):
             licmp.sort()
             dicmod[nomolo] = (nogd, licmp)
 
-        if len(cata.calculs) > 0:
-            for noop in cata.calculs.keys():
-                opt = cata.calculs[noop]
-                numte = opt.te
-                nbin = len(opt.para_in)
-                nbou = len(opt.para_out)
+        for noop, opt in cata.getCalculs():
+            numte = opt.te
+            nbin = len(opt.para_in)
+            nbou = len(opt.para_out)
 
-                if numte > 0:
+            if numte > 0:
 
-                    for kk in range(nbin):
-                        param = opt.para_in[kk][0].name
-                        mode = opt.para_in[kk][1].name
-                        if mode in dicmod:
-                            nogd, licmp = dicmod[mode]
-                            for cmp in licmp:
-                                file.write(
-                                    noop + " " + note + " IN " + param + " " + nogd + " " + cmp + "\n")
+                for kk in range(nbin):
+                    param = opt.para_in[kk][0].name
+                    mode = opt.para_in[kk][1].name
+                    if mode in dicmod:
+                        nogd, licmp = dicmod[mode]
+                        for cmp in licmp:
+                            file.write(
+                                noop + " " + note + " IN " + param + " " + nogd + " " + cmp + "\n")
 
-                    for kk in range(nbou):
-                        param = opt.para_out[kk][0].name
-                        mode = opt.para_out[kk][1].name
-                        if mode in dicmod:
-                            nogd, licmp = dicmod[mode]
-                            for cmp in licmp:
-                                file.write(
-                                    noop + " " + note + " OUT " + param + " " + nogd + " " + cmp + "\n")
+                for kk in range(nbou):
+                    param = opt.para_out[kk][0].name
+                    mode = opt.para_out[kk][1].name
+                    if mode in dicmod:
+                        nogd, licmp = dicmod[mode]
+                        for cmp in licmp:
+                            file.write(
+                                noop + " " + note + " OUT " + param + " " + nogd + " " + cmp + "\n")
 
 
 #-------------------------------------------------------------------------
@@ -1132,30 +1129,28 @@ def impr_param_options(nomfic, cel):
             nogd = moloc.physicalQuantity.name
             dicmod[nomolo] = nogd
 
-        if len(cata.calculs) > 0:
-            for noop in cata.calculs.keys():
-                opt = cata.calculs[noop]
-                numte = opt.te
-                nbin = len(opt.para_in)
-                nbou = len(opt.para_out)
+        for noop, opt in cata.getCalculs():
+            numte = opt.te
+            nbin = len(opt.para_in)
+            nbou = len(opt.para_out)
 
-                if numte > 0:
+            if numte > 0:
 
-                    for kk in range(nbin):
-                        param = opt.para_in[kk][0].name
-                        mode = opt.para_in[kk][1].name
-                        if mode in dicmod:
-                            nogd = dicmod[mode]
-                            file.write(
-                                noop + " " + note + " IN " + param + " " + nogd + "\n")
+                for kk in range(nbin):
+                    param = opt.para_in[kk][0].name
+                    mode = opt.para_in[kk][1].name
+                    if mode in dicmod:
+                        nogd = dicmod[mode]
+                        file.write(
+                            noop + " " + note + " IN " + param + " " + nogd + "\n")
 
-                    for kk in range(nbou):
-                        param = opt.para_out[kk][0].name
-                        mode = opt.para_out[kk][1].name
-                        if mode in dicmod:
-                            nogd = dicmod[mode]
-                            file.write(
-                                noop + " " + note + " OUT " + param + " " + nogd + "\n")
+                for kk in range(nbou):
+                    param = opt.para_out[kk][0].name
+                    mode = opt.para_out[kk][1].name
+                    if mode in dicmod:
+                        nogd = dicmod[mode]
+                        file.write(
+                            noop + " " + note + " OUT " + param + " " + nogd + "\n")
 
 
 #-------------------------------------------------------------------------
@@ -1223,16 +1218,14 @@ def numte_lnomte(nomfic, cel):
     dico = {}
     for cata in cel.getElements():
         note = cata.name
-        if len(cata.calculs) > 0:
-            for noop in cata.calculs.keys():
-                opt = cata.calculs[noop]
-                numte = opt.te
-                if numte > 0 and numte != 99:
-                    numte = 1000 + numte
-                    numte = 'te0' + str(numte)[1:]
-                    if not numte in dico:
-                        dico[numte] = []
-                    dico[numte].append(note)
+        for noop, opt in cata.getCalculs():
+            numte = opt.te
+            if numte > 0 and numte != 99:
+                numte = 1000 + numte
+                numte = 'te0' + str(numte)[1:]
+                if not numte in dico:
+                    dico[numte] = []
+                dico[numte].append(note)
     l1 = dico.keys()
     l1.sort()
     for numte in l1:

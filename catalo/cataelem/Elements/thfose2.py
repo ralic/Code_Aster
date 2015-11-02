@@ -17,7 +17,7 @@
 # ======================================================================
 
 from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents, SetOfNodes, ElrefeLoc
-from cataelem.Tools.base_objects import Calcul, Element, AbstractElement
+from cataelem.Tools.base_objects import Calcul, NewElement
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.located_components as LC
 import cataelem.Commons.parameters as SP
@@ -71,74 +71,72 @@ MMATTTR  = ArrayOfComponents(phys=PHY.MTEM_R, locatedComponents=(DDL_THER,DDL_TH
 
 
 #------------------------------------------------------------
-abstractElement = AbstractElement()
-ele = abstractElement
+class THFOSE2(NewElement):
+    """Please document this element"""
+    meshType = MT.SEG2
+    elrefe =(
+            ElrefeLoc(MT.SE2, gauss = ('RIGI=FPG4',),),
+        )
+    calculs = (
 
-ele.addCalcul(OP.CHAR_THER_FLUN_F, te=272,
-    para_in=((SP.PFLUXNF, CFLUXNF), (SP.PGEOMER, NGEOMER),
-             (SP.PTEMPSR, CTEMPSR), ),
-    para_out=((SP.PVECTTR, MVECTTR), ),
-)
+        OP.CHAR_THER_FLUN_F(te=272,
+            para_in=((SP.PFLUXNF, CFLUXNF), (SP.PGEOMER, NGEOMER),
+                     (SP.PTEMPSR, CTEMPSR), ),
+            para_out=((SP.PVECTTR, MVECTTR), ),
+        ),
 
-ele.addCalcul(OP.CHAR_THER_FLUN_R, te=271,
-    para_in=((SP.PFLUXNR, CFLUXNR), (SP.PGEOMER, NGEOMER),
-             ),
-    para_out=((SP.PVECTTR, MVECTTR), ),
-)
+        OP.CHAR_THER_FLUN_R(te=271,
+            para_in=((SP.PFLUXNR, CFLUXNR), (SP.PGEOMER, NGEOMER),
+                     ),
+            para_out=((SP.PVECTTR, MVECTTR), ),
+        ),
 
-ele.addCalcul(OP.CHAR_THER_TEXT_F, te=270,
-    para_in=((SP.PCOEFHF, CCOEFHF), (SP.PGEOMER, NGEOMER),
-             (SP.PTEMPER, DDL_THER), (SP.PTEMPSR, CTEMPSR),
-             (SP.PT_EXTF, CT_EXTF), ),
-    para_out=((SP.PVECTTR, MVECTTR), ),
-)
+        OP.CHAR_THER_TEXT_F(te=270,
+            para_in=((SP.PCOEFHF, CCOEFHF), (SP.PGEOMER, NGEOMER),
+                     (SP.PTEMPER, DDL_THER), (SP.PTEMPSR, CTEMPSR),
+                     (SP.PT_EXTF, CT_EXTF), ),
+            para_out=((SP.PVECTTR, MVECTTR), ),
+        ),
 
-ele.addCalcul(OP.CHAR_THER_TEXT_R, te=269,
-    para_in=((SP.PCOEFHR, CCOEFHR), (SP.PGEOMER, NGEOMER),
-             (SP.PTEMPER, DDL_THER), (SP.PTEMPSR, CTEMPSR),
-             (SP.PT_EXTR, LC.ET_EXTR), ),
-    para_out=((SP.PVECTTR, MVECTTR), ),
-)
+        OP.CHAR_THER_TEXT_R(te=269,
+            para_in=((SP.PCOEFHR, CCOEFHR), (SP.PGEOMER, NGEOMER),
+                     (SP.PTEMPER, DDL_THER), (SP.PTEMPSR, CTEMPSR),
+                     (SP.PT_EXTR, LC.ET_EXTR), ),
+            para_out=((SP.PVECTTR, MVECTTR), ),
+        ),
 
-ele.addCalcul(OP.COOR_ELGA, te=478,
-    para_in=((SP.PGEOMER, NGEOMER), ),
-    para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R), ),
-)
+        OP.COOR_ELGA(te=478,
+            para_in=((SP.PGEOMER, NGEOMER), ),
+            para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R), ),
+        ),
 
-ele.addCalcul(OP.RIGI_THER_COEH_F, te=268,
-    para_in=((SP.PCOEFHF, CCOEFHF), (SP.PGEOMER, NGEOMER),
-             (SP.PTEMPSR, CTEMPSR), ),
-    para_out=((OP.RIGI_THER_COEH_F.PMATTTR, MMATTTR), ),
-)
+        OP.RIGI_THER_COEH_F(te=268,
+            para_in=((SP.PCOEFHF, CCOEFHF), (SP.PGEOMER, NGEOMER),
+                     (SP.PTEMPSR, CTEMPSR), ),
+            para_out=((OP.RIGI_THER_COEH_F.PMATTTR, MMATTTR), ),
+        ),
 
-ele.addCalcul(OP.RIGI_THER_COEH_R, te=267,
-    para_in=((SP.PCOEFHR, CCOEFHR), (SP.PGEOMER, NGEOMER),
-             (SP.PTEMPSR, CTEMPSR), ),
-    para_out=((OP.RIGI_THER_COEH_R.PMATTTR, MMATTTR), ),
-)
+        OP.RIGI_THER_COEH_R(te=267,
+            para_in=((SP.PCOEFHR, CCOEFHR), (SP.PGEOMER, NGEOMER),
+                     (SP.PTEMPSR, CTEMPSR), ),
+            para_out=((OP.RIGI_THER_COEH_R.PMATTTR, MMATTTR), ),
+        ),
 
-ele.addCalcul(OP.TOU_INI_ELGA, te=99,
-    para_out=((OP.TOU_INI_ELGA.PGEOM_R, EGGEOP_R), ),
-)
+        OP.TOU_INI_ELGA(te=99,
+            para_out=((OP.TOU_INI_ELGA.PGEOM_R, EGGEOP_R), ),
+        ),
 
-ele.addCalcul(OP.TOU_INI_ELNO, te=99,
-    para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), ),
-)
+        OP.TOU_INI_ELNO(te=99,
+            para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), ),
+        ),
 
-
-#------------------------------------------------------------
-THFOSE2 = Element(modele=abstractElement)
-ele = THFOSE2
-ele.meshType = MT.SEG2
-ele.elrefe=(
-        ElrefeLoc(MT.SE2, gauss = ('RIGI=FPG4',),),
     )
 
 
 #------------------------------------------------------------
-THFOSE3 = Element(modele=abstractElement)
-ele = THFOSE3
-ele.meshType = MT.SEG3
-ele.elrefe=(
-        ElrefeLoc(MT.SE3, gauss = ('RIGI=FPG4',),),
-    )
+class THFOSE3(THFOSE2):
+    """Please document this element"""
+    meshType = MT.SEG3
+    elrefe =(
+            ElrefeLoc(MT.SE3, gauss = ('RIGI=FPG4',),),
+        )

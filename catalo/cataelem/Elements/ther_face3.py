@@ -17,7 +17,7 @@
 # ======================================================================
 
 from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents, SetOfNodes, ElrefeLoc
-from cataelem.Tools.base_objects import Calcul, Element, AbstractElement
+from cataelem.Tools.base_objects import Calcul, NewElement
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.located_components as LC
 import cataelem.Commons.parameters as SP
@@ -90,297 +90,295 @@ MMATTTR  = ArrayOfComponents(phys=PHY.MTEM_R, locatedComponents=(DDL_THER,DDL_TH
 
 
 #------------------------------------------------------------
-abstractElement = AbstractElement()
-ele = abstractElement
+class THER_FACE3(NewElement):
+    """Please document this element"""
+    meshType = MT.TRIA3
+    elrefe =(
+            ElrefeLoc(MT.TR3, gauss = ('RIGI=COT3','NOEU=NOEU','FPG1=FPG1',), mater=('FPG1',),),
+        )
+    calculs = (
 
-ele.addCalcul(OP.ACCEPTANCE, te=329,
-    para_in=((SP.PACCELR, NACCELR), (SP.PGEOMER, NGEOMER),
-             (SP.PNUMMOD, LC.CNUMMOD), ),
-    para_out=((SP.PVECTUR, MVECTAR), ),
-)
+        OP.ACCEPTANCE(te=329,
+            para_in=((SP.PACCELR, NACCELR), (SP.PGEOMER, NGEOMER),
+                     (SP.PNUMMOD, LC.CNUMMOD), ),
+            para_out=((SP.PVECTUR, MVECTAR), ),
+        ),
 
-ele.addCalcul(OP.AMOR_AJOU, te=327,
-    para_in=((SP.PACCELR, NACCELR), (SP.PGEOMER, NGEOMER),
-             ),
-    para_out=((OP.AMOR_AJOU.PMATTTR, MMATTTR), ),
-)
+        OP.AMOR_AJOU(te=327,
+            para_in=((SP.PACCELR, NACCELR), (SP.PGEOMER, NGEOMER),
+                     ),
+            para_out=((OP.AMOR_AJOU.PMATTTR, MMATTTR), ),
+        ),
 
-ele.addCalcul(OP.CHAR_THER_ACCE_R, te=325,
-    para_in=((SP.PACCELR, NACCELR), (SP.PGEOMER, NGEOMER),
-             (SP.PMATERC, LC.CMATERC), ),
-    para_out=((SP.PVECTTR, MVECTTR), ),
-)
+        OP.CHAR_THER_ACCE_R(te=325,
+            para_in=((SP.PACCELR, NACCELR), (SP.PGEOMER, NGEOMER),
+                     (SP.PMATERC, LC.CMATERC), ),
+            para_out=((SP.PVECTTR, MVECTTR), ),
+        ),
 
-ele.addCalcul(OP.CHAR_THER_ACCE_X, te=325,
-    para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
-             (SP.PTEMPER, DDL_THER), ),
-    para_out=((SP.PVECTTR, MVECTTR), ),
-)
+        OP.CHAR_THER_ACCE_X(te=325,
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
+                     (SP.PTEMPER, DDL_THER), ),
+            para_out=((SP.PVECTTR, MVECTTR), ),
+        ),
 
-ele.addCalcul(OP.CHAR_THER_ACCE_Y, te=325,
-    para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
-             (SP.PTEMPER, DDL_THER), ),
-    para_out=((SP.PVECTTR, MVECTTR), ),
-)
+        OP.CHAR_THER_ACCE_Y(te=325,
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
+                     (SP.PTEMPER, DDL_THER), ),
+            para_out=((SP.PVECTTR, MVECTTR), ),
+        ),
 
-ele.addCalcul(OP.CHAR_THER_ACCE_Z, te=325,
-    para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
-             (SP.PTEMPER, DDL_THER), ),
-    para_out=((SP.PVECTTR, MVECTTR), ),
-)
+        OP.CHAR_THER_ACCE_Z(te=325,
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
+                     (SP.PTEMPER, DDL_THER), ),
+            para_out=((SP.PVECTTR, MVECTTR), ),
+        ),
 
-ele.addCalcul(OP.CHAR_THER_FLUNL, te=273,
-    para_in=((SP.PFLUXNL, CFLUXNF), (SP.PGEOMER, NGEOMER),
-             (SP.PTEMPER, DDL_THER), (SP.PTEMPSR, CTEMPSR),
-             ),
-    para_out=((SP.PVECTTR, MVECTTR), ),
-)
+        OP.CHAR_THER_FLUNL(te=273,
+            para_in=((SP.PFLUXNL, CFLUXNF), (SP.PGEOMER, NGEOMER),
+                     (SP.PTEMPER, DDL_THER), (SP.PTEMPSR, CTEMPSR),
+                     ),
+            para_out=((SP.PVECTTR, MVECTTR), ),
+        ),
 
-ele.addCalcul(OP.CHAR_THER_FLUN_F, te=58,
-    para_in=((SP.PFLUXNF, CFLUXNF), (SP.PGEOMER, NGEOMER),
-             (SP.PTEMPSR, CTEMPSR), ),
-    para_out=((SP.PVECTTR, MVECTTR), ),
-)
+        OP.CHAR_THER_FLUN_F(te=58,
+            para_in=((SP.PFLUXNF, CFLUXNF), (SP.PGEOMER, NGEOMER),
+                     (SP.PTEMPSR, CTEMPSR), ),
+            para_out=((SP.PVECTTR, MVECTTR), ),
+        ),
 
-ele.addCalcul(OP.CHAR_THER_FLUN_R, te=57,
-    para_in=((SP.PFLUXNR, CFLUXNR), (SP.PGEOMER, NGEOMER),
-             ),
-    para_out=((SP.PVECTTR, MVECTTR), ),
-)
+        OP.CHAR_THER_FLUN_R(te=57,
+            para_in=((SP.PFLUXNR, CFLUXNR), (SP.PGEOMER, NGEOMER),
+                     ),
+            para_out=((SP.PVECTTR, MVECTTR), ),
+        ),
 
-ele.addCalcul(OP.CHAR_THER_FLUTNL, te=526,
-    para_in=((SP.PFLUXNL, CFLUXNF), (SP.PGEOMER, NGEOMER),
-             (SP.PTEMPEI, DDL_THER), (SP.PTEMPER, DDL_THER),
-             (SP.PTEMPSR, CTEMPSR), ),
-    para_out=((SP.PRESIDU, MVECTTR), ),
-)
+        OP.CHAR_THER_FLUTNL(te=526,
+            para_in=((SP.PFLUXNL, CFLUXNF), (SP.PGEOMER, NGEOMER),
+                     (SP.PTEMPEI, DDL_THER), (SP.PTEMPER, DDL_THER),
+                     (SP.PTEMPSR, CTEMPSR), ),
+            para_out=((SP.PRESIDU, MVECTTR), ),
+        ),
 
-ele.addCalcul(OP.CHAR_THER_PHID_R, te=326,
-    para_in=((SP.PACCELR, NACCELR), (SP.PGEOMER, NGEOMER),
-             (SP.PMATERC, LC.CMATERC), (SP.PTEMPER, DDL_THER),
-             ),
-    para_out=((SP.PVECTTR, MVECTTR), ),
-)
+        OP.CHAR_THER_PHID_R(te=326,
+            para_in=((SP.PACCELR, NACCELR), (SP.PGEOMER, NGEOMER),
+                     (SP.PMATERC, LC.CMATERC), (SP.PTEMPER, DDL_THER),
+                     ),
+            para_out=((SP.PVECTTR, MVECTTR), ),
+        ),
 
-ele.addCalcul(OP.CHAR_THER_RAYO_F, te=60,
-    para_in=((SP.PGEOMER, NGEOMER), (SP.PRAYONF, LC.CRAYONF),
-             (SP.PTEMPER, DDL_THER), (SP.PTEMPSR, CTEMPSR),
-             ),
-    para_out=((SP.PVECTTR, MVECTTR), ),
-)
+        OP.CHAR_THER_RAYO_F(te=60,
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PRAYONF, LC.CRAYONF),
+                     (SP.PTEMPER, DDL_THER), (SP.PTEMPSR, CTEMPSR),
+                     ),
+            para_out=((SP.PVECTTR, MVECTTR), ),
+        ),
 
-ele.addCalcul(OP.CHAR_THER_RAYO_R, te=59,
-    para_in=((SP.PGEOMER, NGEOMER), (SP.PRAYONR, LC.CRAYONR),
-             (SP.PTEMPER, DDL_THER), (SP.PTEMPSR, CTEMPSR),
-             ),
-    para_out=((SP.PVECTTR, MVECTTR), ),
-)
+        OP.CHAR_THER_RAYO_R(te=59,
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PRAYONR, LC.CRAYONR),
+                     (SP.PTEMPER, DDL_THER), (SP.PTEMPSR, CTEMPSR),
+                     ),
+            para_out=((SP.PVECTTR, MVECTTR), ),
+        ),
 
-ele.addCalcul(OP.CHAR_THER_TEXT_F, te=60,
-    para_in=((SP.PCOEFHF, CCOEFHF), (SP.PGEOMER, NGEOMER),
-             (SP.PTEMPER, DDL_THER), (SP.PTEMPSR, CTEMPSR),
-             (SP.PT_EXTF, CT_EXTF), ),
-    para_out=((SP.PVECTTR, MVECTTR), ),
-)
+        OP.CHAR_THER_TEXT_F(te=60,
+            para_in=((SP.PCOEFHF, CCOEFHF), (SP.PGEOMER, NGEOMER),
+                     (SP.PTEMPER, DDL_THER), (SP.PTEMPSR, CTEMPSR),
+                     (SP.PT_EXTF, CT_EXTF), ),
+            para_out=((SP.PVECTTR, MVECTTR), ),
+        ),
 
-ele.addCalcul(OP.CHAR_THER_TEXT_R, te=59,
-    para_in=((SP.PCOEFHR, CCOEFHR), (SP.PGEOMER, NGEOMER),
-             (SP.PTEMPER, DDL_THER), (SP.PTEMPSR, CTEMPSR),
-             (SP.PT_EXTR, LC.ET_EXTR), ),
-    para_out=((SP.PVECTTR, MVECTTR), ),
-)
+        OP.CHAR_THER_TEXT_R(te=59,
+            para_in=((SP.PCOEFHR, CCOEFHR), (SP.PGEOMER, NGEOMER),
+                     (SP.PTEMPER, DDL_THER), (SP.PTEMPSR, CTEMPSR),
+                     (SP.PT_EXTR, LC.ET_EXTR), ),
+            para_out=((SP.PVECTTR, MVECTTR), ),
+        ),
 
-ele.addCalcul(OP.COOR_ELGA, te=488,
-    para_in=((SP.PGEOMER, NGEOMER), ),
-    para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R), ),
-)
+        OP.COOR_ELGA(te=488,
+            para_in=((SP.PGEOMER, NGEOMER), ),
+            para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R), ),
+        ),
 
-ele.addCalcul(OP.FLUX_FLUI_X, te=309,
-    para_in=((SP.PGEOMER, NGEOMER), ),
-    para_out=((OP.FLUX_FLUI_X.PMATTTR, MMATTTR), ),
-)
+        OP.FLUX_FLUI_X(te=309,
+            para_in=((SP.PGEOMER, NGEOMER), ),
+            para_out=((OP.FLUX_FLUI_X.PMATTTR, MMATTTR), ),
+        ),
 
-ele.addCalcul(OP.FLUX_FLUI_Y, te=309,
-    para_in=((SP.PGEOMER, NGEOMER), ),
-    para_out=((OP.FLUX_FLUI_Y.PMATTTR, MMATTTR), ),
-)
+        OP.FLUX_FLUI_Y(te=309,
+            para_in=((SP.PGEOMER, NGEOMER), ),
+            para_out=((OP.FLUX_FLUI_Y.PMATTTR, MMATTTR), ),
+        ),
 
-ele.addCalcul(OP.FLUX_FLUI_Z, te=309,
-    para_in=((SP.PGEOMER, NGEOMER), ),
-    para_out=((OP.FLUX_FLUI_Z.PMATTTR, MMATTTR), ),
-)
+        OP.FLUX_FLUI_Z(te=309,
+            para_in=((SP.PGEOMER, NGEOMER), ),
+            para_out=((OP.FLUX_FLUI_Z.PMATTTR, MMATTTR), ),
+        ),
 
-ele.addCalcul(OP.MTAN_THER_COEF_F, te=131,
-    para_in=((SP.PCOEFHF, CCOEFHF), (SP.PGEOMER, NGEOMER),
-             (SP.PTEMPSR, CTEMPSR), ),
-    para_out=((OP.MTAN_THER_COEF_F.PMATTTR, MMATTTR), ),
-)
+        OP.MTAN_THER_COEF_F(te=131,
+            para_in=((SP.PCOEFHF, CCOEFHF), (SP.PGEOMER, NGEOMER),
+                     (SP.PTEMPSR, CTEMPSR), ),
+            para_out=((OP.MTAN_THER_COEF_F.PMATTTR, MMATTTR), ),
+        ),
 
-ele.addCalcul(OP.MTAN_THER_COEF_R, te=130,
-    para_in=((SP.PCOEFHR, CCOEFHR), (SP.PGEOMER, NGEOMER),
-             (SP.PTEMPSR, CTEMPSR), ),
-    para_out=((OP.MTAN_THER_COEF_R.PMATTTR, MMATTTR), ),
-)
+        OP.MTAN_THER_COEF_R(te=130,
+            para_in=((SP.PCOEFHR, CCOEFHR), (SP.PGEOMER, NGEOMER),
+                     (SP.PTEMPSR, CTEMPSR), ),
+            para_out=((OP.MTAN_THER_COEF_R.PMATTTR, MMATTTR), ),
+        ),
 
-ele.addCalcul(OP.MTAN_THER_FLUXNL, te=132,
-    para_in=((SP.PFLUXNL, CFLUXNF), (SP.PGEOMER, NGEOMER),
-             (SP.PTEMPEI, DDL_THER), (SP.PTEMPSR, CTEMPSR),
-             ),
-    para_out=((OP.MTAN_THER_FLUXNL.PMATTTR, MMATTTR), ),
-)
+        OP.MTAN_THER_FLUXNL(te=132,
+            para_in=((SP.PFLUXNL, CFLUXNF), (SP.PGEOMER, NGEOMER),
+                     (SP.PTEMPEI, DDL_THER), (SP.PTEMPSR, CTEMPSR),
+                     ),
+            para_out=((OP.MTAN_THER_FLUXNL.PMATTTR, MMATTTR), ),
+        ),
 
-ele.addCalcul(OP.MTAN_THER_RAYO_F, te=131,
-    para_in=((SP.PGEOMER, NGEOMER), (SP.PRAYONF, LC.CRAYONF),
-             (SP.PTEMPEI, DDL_THER), (SP.PTEMPSR, CTEMPSR),
-             ),
-    para_out=((OP.MTAN_THER_RAYO_F.PMATTTR, MMATTTR), ),
-)
+        OP.MTAN_THER_RAYO_F(te=131,
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PRAYONF, LC.CRAYONF),
+                     (SP.PTEMPEI, DDL_THER), (SP.PTEMPSR, CTEMPSR),
+                     ),
+            para_out=((OP.MTAN_THER_RAYO_F.PMATTTR, MMATTTR), ),
+        ),
 
-ele.addCalcul(OP.MTAN_THER_RAYO_R, te=130,
-    para_in=((SP.PGEOMER, NGEOMER), (SP.PRAYONR, LC.CRAYONR),
-             (SP.PTEMPEI, DDL_THER), (SP.PTEMPSR, CTEMPSR),
-             ),
-    para_out=((OP.MTAN_THER_RAYO_R.PMATTTR, MMATTTR), ),
-)
+        OP.MTAN_THER_RAYO_R(te=130,
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PRAYONR, LC.CRAYONR),
+                     (SP.PTEMPEI, DDL_THER), (SP.PTEMPSR, CTEMPSR),
+                     ),
+            para_out=((OP.MTAN_THER_RAYO_R.PMATTTR, MMATTTR), ),
+        ),
 
-ele.addCalcul(OP.NORME_L2, te=563,
-    para_in=((SP.PCALCI, LC.EMNEUT_I), (SP.PCHAMPG, EGNEUT_R),
-             (SP.PCOEFR, EMNEUT_R), (OP.NORME_L2.PCOORPG, EGGEOP_R),
-             ),
-    para_out=((SP.PNORME, LC.ENORME), ),
-)
+        OP.NORME_L2(te=563,
+            para_in=((SP.PCALCI, LC.EMNEUT_I), (SP.PCHAMPG, EGNEUT_R),
+                     (SP.PCOEFR, EMNEUT_R), (OP.NORME_L2.PCOORPG, EGGEOP_R),
+                     ),
+            para_out=((SP.PNORME, LC.ENORME), ),
+        ),
 
-ele.addCalcul(OP.RESI_THER_COEF_F, te=128,
-    para_in=((SP.PCOEFHF, CCOEFHF), (SP.PGEOMER, NGEOMER),
-             (SP.PTEMPEI, DDL_THER), (SP.PTEMPSR, CTEMPSR),
-             ),
-    para_out=((SP.PRESIDU, MVECTTR), ),
-)
+        OP.RESI_THER_COEF_F(te=128,
+            para_in=((SP.PCOEFHF, CCOEFHF), (SP.PGEOMER, NGEOMER),
+                     (SP.PTEMPEI, DDL_THER), (SP.PTEMPSR, CTEMPSR),
+                     ),
+            para_out=((SP.PRESIDU, MVECTTR), ),
+        ),
 
-ele.addCalcul(OP.RESI_THER_COEF_R, te=127,
-    para_in=((SP.PCOEFHR, CCOEFHR), (SP.PGEOMER, NGEOMER),
-             (SP.PTEMPEI, DDL_THER), (SP.PTEMPSR, CTEMPSR),
-             ),
-    para_out=((SP.PRESIDU, MVECTTR), ),
-)
+        OP.RESI_THER_COEF_R(te=127,
+            para_in=((SP.PCOEFHR, CCOEFHR), (SP.PGEOMER, NGEOMER),
+                     (SP.PTEMPEI, DDL_THER), (SP.PTEMPSR, CTEMPSR),
+                     ),
+            para_out=((SP.PRESIDU, MVECTTR), ),
+        ),
 
-ele.addCalcul(OP.RESI_THER_COEH_F, te=308,
-    para_in=((SP.PCOEFHF, CCOEFHF), (SP.PGEOMER, NGEOMER),
-             (SP.PTEMPEI, DDL_THER), (SP.PTEMPSR, CTEMPSR),
-             ),
-    para_out=((SP.PRESIDU, MVECTTR), ),
-)
+        OP.RESI_THER_COEH_F(te=308,
+            para_in=((SP.PCOEFHF, CCOEFHF), (SP.PGEOMER, NGEOMER),
+                     (SP.PTEMPEI, DDL_THER), (SP.PTEMPSR, CTEMPSR),
+                     ),
+            para_out=((SP.PRESIDU, MVECTTR), ),
+        ),
 
-ele.addCalcul(OP.RESI_THER_COEH_R, te=306,
-    para_in=((SP.PCOEFHR, CCOEFHR), (SP.PGEOMER, NGEOMER),
-             (SP.PTEMPEI, DDL_THER), (SP.PTEMPSR, CTEMPSR),
-             ),
-    para_out=((SP.PRESIDU, MVECTTR), ),
-)
+        OP.RESI_THER_COEH_R(te=306,
+            para_in=((SP.PCOEFHR, CCOEFHR), (SP.PGEOMER, NGEOMER),
+                     (SP.PTEMPEI, DDL_THER), (SP.PTEMPSR, CTEMPSR),
+                     ),
+            para_out=((SP.PRESIDU, MVECTTR), ),
+        ),
 
-ele.addCalcul(OP.RESI_THER_FLUXNL, te=129,
-    para_in=((SP.PFLUXNL, CFLUXNF), (SP.PGEOMER, NGEOMER),
-             (SP.PTEMPEI, DDL_THER), (SP.PTEMPSR, CTEMPSR),
-             ),
-    para_out=((SP.PRESIDU, MVECTTR), ),
-)
+        OP.RESI_THER_FLUXNL(te=129,
+            para_in=((SP.PFLUXNL, CFLUXNF), (SP.PGEOMER, NGEOMER),
+                     (SP.PTEMPEI, DDL_THER), (SP.PTEMPSR, CTEMPSR),
+                     ),
+            para_out=((SP.PRESIDU, MVECTTR), ),
+        ),
 
-ele.addCalcul(OP.RESI_THER_RAYO_F, te=128,
-    para_in=((SP.PGEOMER, NGEOMER), (SP.PRAYONF, LC.CRAYONF),
-             (SP.PTEMPEI, DDL_THER), (SP.PTEMPSR, CTEMPSR),
-             ),
-    para_out=((SP.PRESIDU, MVECTTR), ),
-)
+        OP.RESI_THER_RAYO_F(te=128,
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PRAYONF, LC.CRAYONF),
+                     (SP.PTEMPEI, DDL_THER), (SP.PTEMPSR, CTEMPSR),
+                     ),
+            para_out=((SP.PRESIDU, MVECTTR), ),
+        ),
 
-ele.addCalcul(OP.RESI_THER_RAYO_R, te=127,
-    para_in=((SP.PGEOMER, NGEOMER), (SP.PRAYONR, LC.CRAYONR),
-             (SP.PTEMPEI, DDL_THER), (SP.PTEMPSR, CTEMPSR),
-             ),
-    para_out=((SP.PRESIDU, MVECTTR), ),
-)
+        OP.RESI_THER_RAYO_R(te=127,
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PRAYONR, LC.CRAYONR),
+                     (SP.PTEMPEI, DDL_THER), (SP.PTEMPSR, CTEMPSR),
+                     ),
+            para_out=((SP.PRESIDU, MVECTTR), ),
+        ),
 
-ele.addCalcul(OP.RIGI_THER_COEH_F, te=53,
-    para_in=((SP.PCOEFHF, CCOEFHF), (SP.PGEOMER, NGEOMER),
-             (SP.PTEMPSR, CTEMPSR), ),
-    para_out=((OP.RIGI_THER_COEH_F.PMATTTR, MMATTTR), ),
-)
+        OP.RIGI_THER_COEH_F(te=53,
+            para_in=((SP.PCOEFHF, CCOEFHF), (SP.PGEOMER, NGEOMER),
+                     (SP.PTEMPSR, CTEMPSR), ),
+            para_out=((OP.RIGI_THER_COEH_F.PMATTTR, MMATTTR), ),
+        ),
 
-ele.addCalcul(OP.RIGI_THER_COEH_R, te=52,
-    para_in=((SP.PCOEFHR, CCOEFHR), (SP.PGEOMER, NGEOMER),
-             (SP.PTEMPSR, CTEMPSR), ),
-    para_out=((OP.RIGI_THER_COEH_R.PMATTTR, MMATTTR), ),
-)
+        OP.RIGI_THER_COEH_R(te=52,
+            para_in=((SP.PCOEFHR, CCOEFHR), (SP.PGEOMER, NGEOMER),
+                     (SP.PTEMPSR, CTEMPSR), ),
+            para_out=((OP.RIGI_THER_COEH_R.PMATTTR, MMATTTR), ),
+        ),
 
-ele.addCalcul(OP.RIGI_THER_COET_F, te=527,
-    para_in=((SP.PCOEFHF, CCOEFHF), (SP.PGEOMER, NGEOMER),
-             (SP.PTEMPSR, CTEMPSR), ),
-    para_out=((OP.RIGI_THER_COET_F.PMATTTR, MMATTTR), ),
-)
+        OP.RIGI_THER_COET_F(te=527,
+            para_in=((SP.PCOEFHF, CCOEFHF), (SP.PGEOMER, NGEOMER),
+                     (SP.PTEMPSR, CTEMPSR), ),
+            para_out=((OP.RIGI_THER_COET_F.PMATTTR, MMATTTR), ),
+        ),
 
-ele.addCalcul(OP.RIGI_THER_COET_R, te=523,
-    para_in=((SP.PCOEFHR, CCOEFHR), (SP.PGEOMER, NGEOMER),
-             (SP.PTEMPSR, CTEMPSR), ),
-    para_out=((OP.RIGI_THER_COET_R.PMATTTR, MMATTTR), ),
-)
+        OP.RIGI_THER_COET_R(te=523,
+            para_in=((SP.PCOEFHR, CCOEFHR), (SP.PGEOMER, NGEOMER),
+                     (SP.PTEMPSR, CTEMPSR), ),
+            para_out=((OP.RIGI_THER_COET_R.PMATTTR, MMATTTR), ),
+        ),
 
-ele.addCalcul(OP.RIGI_THER_FLUTNL, te=524,
-    para_in=((SP.PFLUXNL, CFLUXNF), (SP.PGEOMER, NGEOMER),
-             (SP.PTEMPER, DDL_THER), (SP.PTEMPSR, CTEMPSR),
-             ),
-    para_out=((OP.RIGI_THER_FLUTNL.PMATTTR, MMATTTR), ),
-)
+        OP.RIGI_THER_FLUTNL(te=524,
+            para_in=((SP.PFLUXNL, CFLUXNF), (SP.PGEOMER, NGEOMER),
+                     (SP.PTEMPER, DDL_THER), (SP.PTEMPSR, CTEMPSR),
+                     ),
+            para_out=((OP.RIGI_THER_FLUTNL.PMATTTR, MMATTTR), ),
+        ),
 
-ele.addCalcul(OP.TOU_INI_ELGA, te=99,
-    para_out=((OP.TOU_INI_ELGA.PGEOM_R, LC.GGEOMER), (OP.TOU_INI_ELGA.PNEUT_F, EGNEUT_F),
-             (OP.TOU_INI_ELGA.PNEUT_R, EGNEUT_R), ),
-)
+        OP.TOU_INI_ELGA(te=99,
+            para_out=((OP.TOU_INI_ELGA.PGEOM_R, LC.GGEOMER), (OP.TOU_INI_ELGA.PNEUT_F, EGNEUT_F),
+                     (OP.TOU_INI_ELGA.PNEUT_R, EGNEUT_R), ),
+        ),
 
-ele.addCalcul(OP.TOU_INI_ELNO, te=99,
-    para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), (OP.TOU_INI_ELNO.PNEUT_F, LC.ENNEUT_F),
-             (OP.TOU_INI_ELNO.PNEUT_R, LC.ENNEUT_R), ),
-)
+        OP.TOU_INI_ELNO(te=99,
+            para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), (OP.TOU_INI_ELNO.PNEUT_F, LC.ENNEUT_F),
+                     (OP.TOU_INI_ELNO.PNEUT_R, LC.ENNEUT_R), ),
+        ),
 
-
-#------------------------------------------------------------
-THER_FACE3 = Element(modele=abstractElement)
-ele = THER_FACE3
-ele.meshType = MT.TRIA3
-ele.elrefe=(
-        ElrefeLoc(MT.TR3, gauss = ('RIGI=COT3','NOEU=NOEU','FPG1=FPG1',), mater=('FPG1',),),
     )
 
 
 #------------------------------------------------------------
-THER_FACE4 = Element(modele=abstractElement)
-ele = THER_FACE4
-ele.meshType = MT.QUAD4
-ele.elrefe=(
-        ElrefeLoc(MT.QU4, gauss = ('RIGI=FPG4','NOEU=NOEU','FPG1=FPG1',), mater=('FPG1',),),
-    )
+class THER_FACE4(THER_FACE3):
+    """Please document this element"""
+    meshType = MT.QUAD4
+    elrefe =(
+            ElrefeLoc(MT.QU4, gauss = ('RIGI=FPG4','NOEU=NOEU','FPG1=FPG1',), mater=('FPG1',),),
+        )
 
 
 #------------------------------------------------------------
-THER_FACE6 = Element(modele=abstractElement)
-ele = THER_FACE6
-ele.meshType = MT.TRIA6
-ele.elrefe=(
-        ElrefeLoc(MT.TR6, gauss = ('RIGI=FPG6','NOEU=NOEU','FPG1=FPG1',), mater=('FPG1',),),
-    )
+class THER_FACE6(THER_FACE3):
+    """Please document this element"""
+    meshType = MT.TRIA6
+    elrefe =(
+            ElrefeLoc(MT.TR6, gauss = ('RIGI=FPG6','NOEU=NOEU','FPG1=FPG1',), mater=('FPG1',),),
+        )
 
 
 #------------------------------------------------------------
-THER_FACE8 = Element(modele=abstractElement)
-ele = THER_FACE8
-ele.meshType = MT.QUAD8
-ele.elrefe=(
-        ElrefeLoc(MT.QU8, gauss = ('RIGI=FPG9','NOEU=NOEU','FPG1=FPG1',), mater=('FPG1',),),
-    )
+class THER_FACE8(THER_FACE3):
+    """Please document this element"""
+    meshType = MT.QUAD8
+    elrefe =(
+            ElrefeLoc(MT.QU8, gauss = ('RIGI=FPG9','NOEU=NOEU','FPG1=FPG1',), mater=('FPG1',),),
+        )
 
 
 #------------------------------------------------------------
-THER_FACE9 = Element(modele=abstractElement)
-ele = THER_FACE9
-ele.meshType = MT.QUAD9
-ele.elrefe=(
-        ElrefeLoc(MT.QU9, gauss = ('RIGI=FPG9','NOEU=NOEU','FPG1=FPG1',), mater=('FPG1',),),
-    )
+class THER_FACE9(THER_FACE3):
+    """Please document this element"""
+    meshType = MT.QUAD9
+    elrefe =(
+            ElrefeLoc(MT.QU9, gauss = ('RIGI=FPG9','NOEU=NOEU','FPG1=FPG1',), mater=('FPG1',),),
+        )

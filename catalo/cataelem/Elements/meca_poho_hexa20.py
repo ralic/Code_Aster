@@ -17,7 +17,7 @@
 # ======================================================================
 
 from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents, SetOfNodes, ElrefeLoc
-from cataelem.Tools.base_objects import Calcul, Element, AbstractElement
+from cataelem.Tools.base_objects import Calcul, NewElement
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.located_components as LC
 import cataelem.Commons.parameters as SP
@@ -69,81 +69,79 @@ MMATUUR  = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=(DDL_MECA,DDL_ME
 
 
 #------------------------------------------------------------
-abstractElement = AbstractElement()
-ele = abstractElement
+class MECA_POHO_HEXA20(NewElement):
+    """Please document this element"""
+    meshType = MT.HEXA20
+    nodes = (
+            SetOfNodes('EN2', (9,10,11,12,13,14,15,16,17,18,19,20,)),
+            SetOfNodes('EN1', (1,2,3,4,5,6,7,8,)),
+        )
+    elrefe =(
+            ElrefeLoc(MT.H20, gauss = ('RIGI=FPG27','FPG1=FPG1',), mater=('RIGI','FPG1',),),
+            ElrefeLoc(MT.POHOH20,),
+        )
+    calculs = (
 
-ele.addCalcul(OP.COOR_ELGA, te=488,
-    para_in=((SP.PGEOMER, NGEOMER), ),
-    para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R), ),
-)
+        OP.COOR_ELGA(te=488,
+            para_in=((SP.PGEOMER, NGEOMER), ),
+            para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R), ),
+        ),
 
-ele.addCalcul(OP.MASS_INER, te=65,
-    para_in=((SP.PCAGNPO, CCAGNPO), (SP.PCAPOUF, CCAPOUF),
-             (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
-             ),
-    para_out=((SP.PMASSINE, LC.EMASSINE), ),
-)
+        OP.MASS_INER(te=65,
+            para_in=((SP.PCAGNPO, CCAGNPO), (SP.PCAPOUF, CCAPOUF),
+                     (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
+                     ),
+            para_out=((SP.PMASSINE, LC.EMASSINE), ),
+        ),
 
-ele.addCalcul(OP.MASS_MECA, te=470,
-    para_in=((SP.PCAGNPO, CCAGNPO), (OP.MASS_MECA.PCAORIE, CCAORIE),
-             (SP.PCAPOUF, CCAPOUF), (SP.PGEOMER, NGEOMER),
-             (SP.PMATERC, LC.CMATERC), ),
-    para_out=((SP.PMATUUR, MMATUUR), ),
-)
+        OP.MASS_MECA(te=470,
+            para_in=((SP.PCAGNPO, CCAGNPO), (OP.MASS_MECA.PCAORIE, CCAORIE),
+                     (SP.PCAPOUF, CCAPOUF), (SP.PGEOMER, NGEOMER),
+                     (SP.PMATERC, LC.CMATERC), ),
+            para_out=((SP.PMATUUR, MMATUUR), ),
+        ),
 
-ele.addCalcul(OP.REPERE_LOCAL, te=135,
-    para_in=((OP.REPERE_LOCAL.PCAORIE, CCAORIE), ),
-    para_out=((SP.PREPLO1, CGEOMER), (SP.PREPLO2, CGEOMER),
-             (SP.PREPLO3, CGEOMER), ),
-)
+        OP.REPERE_LOCAL(te=135,
+            para_in=((OP.REPERE_LOCAL.PCAORIE, CCAORIE), ),
+            para_out=((SP.PREPLO1, CGEOMER), (SP.PREPLO2, CGEOMER),
+                     (SP.PREPLO3, CGEOMER), ),
+        ),
 
-ele.addCalcul(OP.RIGI_MECA, te=471,
-    para_in=((SP.PCAGNPO, CCAGNPO), (OP.RIGI_MECA.PCAORIE, CCAORIE),
-             (SP.PCAPOUF, CCAPOUF), (SP.PGEOMER, NGEOMER),
-             (SP.PMATERC, LC.CMATERC), ),
-    para_out=((SP.PMATUUR, MMATUUR), ),
-)
+        OP.RIGI_MECA(te=471,
+            para_in=((SP.PCAGNPO, CCAGNPO), (OP.RIGI_MECA.PCAORIE, CCAORIE),
+                     (SP.PCAPOUF, CCAPOUF), (SP.PGEOMER, NGEOMER),
+                     (SP.PMATERC, LC.CMATERC), ),
+            para_out=((SP.PMATUUR, MMATUUR), ),
+        ),
 
-ele.addCalcul(OP.TOU_INI_ELEM, te=99,
-    para_out=((OP.TOU_INI_ELEM.PGEOM_R, CGEOMER), ),
-)
+        OP.TOU_INI_ELEM(te=99,
+            para_out=((OP.TOU_INI_ELEM.PGEOM_R, CGEOMER), ),
+        ),
 
-ele.addCalcul(OP.TOU_INI_ELGA, te=99,
-    para_out=((OP.TOU_INI_ELGA.PGEOM_R, EGGEOP_R), ),
-)
+        OP.TOU_INI_ELGA(te=99,
+            para_out=((OP.TOU_INI_ELGA.PGEOM_R, EGGEOP_R), ),
+        ),
 
-ele.addCalcul(OP.TOU_INI_ELNO, te=99,
-    para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), ),
-)
+        OP.TOU_INI_ELNO(te=99,
+            para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), ),
+        ),
 
-ele.addCalcul(OP.VERI_JACOBIEN, te=328,
-    para_in=((SP.PGEOMER, NGEOMER), ),
-    para_out=((SP.PCODRET, LC.ECODRET), ),
-)
+        OP.VERI_JACOBIEN(te=328,
+            para_in=((SP.PGEOMER, NGEOMER), ),
+            para_out=((SP.PCODRET, LC.ECODRET), ),
+        ),
 
-
-#------------------------------------------------------------
-MECA_POHO_HEXA20 = Element(modele=abstractElement)
-ele = MECA_POHO_HEXA20
-ele.meshType = MT.HEXA20
-ele.nodes = (
-        SetOfNodes('EN2', (9,10,11,12,13,14,15,16,17,18,19,20,)),
-        SetOfNodes('EN1', (1,2,3,4,5,6,7,8,)),
-    )
-ele.elrefe=(
-        ElrefeLoc(MT.H20, gauss = ('RIGI=FPG27','FPG1=FPG1',), mater=('RIGI','FPG1',),),
-        ElrefeLoc(MT.POHOH20,),
     )
 
 
 #------------------------------------------------------------
-MECA_POHO_HEXA8 = Element(modele=abstractElement)
-ele = MECA_POHO_HEXA8
-ele.meshType = MT.HEXA8
-ele.nodes = (
-        SetOfNodes('EN1', (1,2,3,4,5,6,7,8,)),
-    )
-ele.elrefe=(
-        ElrefeLoc(MT.HE8, gauss = ('RIGI=FPG8','FPG1=FPG1',), mater=('RIGI','FPG1',),),
-        ElrefeLoc(MT.POHOH8,),
-    )
+class MECA_POHO_HEXA8(MECA_POHO_HEXA20):
+    """Please document this element"""
+    meshType = MT.HEXA8
+    nodes = (
+            SetOfNodes('EN1', (1,2,3,4,5,6,7,8,)),
+        )
+    elrefe =(
+            ElrefeLoc(MT.HE8, gauss = ('RIGI=FPG8','FPG1=FPG1',), mater=('RIGI','FPG1',),),
+            ElrefeLoc(MT.POHOH8,),
+        )

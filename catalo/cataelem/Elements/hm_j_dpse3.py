@@ -17,7 +17,7 @@
 # ======================================================================
 
 from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents, SetOfNodes, ElrefeLoc
-from cataelem.Tools.base_objects import Calcul, Element, AbstractElement
+from cataelem.Tools.base_objects import Calcul, NewElement
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.located_components as LC
 import cataelem.Commons.parameters as SP
@@ -67,47 +67,45 @@ MVECTUR  = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=(DDL_MECA,))
 
 
 #------------------------------------------------------------
-abstractElement = AbstractElement()
-ele = abstractElement
+class HM_J_DPSE3(NewElement):
+    """Please document this element"""
+    meshType = MT.SEG3
+    nodes = (
+            SetOfNodes('EN2', (3,)),
+            SetOfNodes('EN1', (1,2,)),
+        )
+    elrefe =(
+            ElrefeLoc(MT.SE3, gauss = ('RIGI=FPG1',),),
+            ElrefeLoc(MT.SE2, gauss = ('RIGI=FPG1',),),
+        )
+    calculs = (
 
-ele.addCalcul(OP.CHAR_MECA_FLUX_R, te=314,
-    para_in=((SP.PFLUXR, EFLUXE), (SP.PGEOMER, NGEOMER),
-             (SP.PTEMPSR, CTEMPSR), ),
-    para_out=((SP.PVECTUR, MVECTUR), ),
-)
+        OP.CHAR_MECA_FLUX_R(te=314,
+            para_in=((SP.PFLUXR, EFLUXE), (SP.PGEOMER, NGEOMER),
+                     (SP.PTEMPSR, CTEMPSR), ),
+            para_out=((SP.PVECTUR, MVECTUR), ),
+        ),
 
-ele.addCalcul(OP.CHAR_MECA_PRES_F, te=580,
-    para_in=((SP.PPRESSF, CPRESSF), ),
-    para_out=((SP.PVECTUR, MVECTUR), ),
-)
+        OP.CHAR_MECA_PRES_F(te=580,
+            para_in=((SP.PPRESSF, CPRESSF), ),
+            para_out=((SP.PVECTUR, MVECTUR), ),
+        ),
 
-ele.addCalcul(OP.CHAR_MECA_PRES_R, te=580,
-    para_in=((SP.PPRESSR, EPRESNO), ),
-    para_out=((SP.PVECTUR, MVECTUR), ),
-)
+        OP.CHAR_MECA_PRES_R(te=580,
+            para_in=((SP.PPRESSR, EPRESNO), ),
+            para_out=((SP.PVECTUR, MVECTUR), ),
+        ),
 
-ele.addCalcul(OP.TOU_INI_ELEM, te=99,
-    para_out=((OP.TOU_INI_ELEM.PGEOM_R, CGEOMER), ),
-)
+        OP.TOU_INI_ELEM(te=99,
+            para_out=((OP.TOU_INI_ELEM.PGEOM_R, CGEOMER), ),
+        ),
 
-ele.addCalcul(OP.TOU_INI_ELGA, te=99,
-    para_out=((OP.TOU_INI_ELGA.PGEOM_R, EGEOMER), ),
-)
+        OP.TOU_INI_ELGA(te=99,
+            para_out=((OP.TOU_INI_ELGA.PGEOM_R, EGEOMER), ),
+        ),
 
-ele.addCalcul(OP.TOU_INI_ELNO, te=99,
-    para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), ),
-)
+        OP.TOU_INI_ELNO(te=99,
+            para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), ),
+        ),
 
-
-#------------------------------------------------------------
-HM_J_DPSE3 = Element(modele=abstractElement)
-ele = HM_J_DPSE3
-ele.meshType = MT.SEG3
-ele.nodes = (
-        SetOfNodes('EN2', (3,)),
-        SetOfNodes('EN1', (1,2,)),
-    )
-ele.elrefe=(
-        ElrefeLoc(MT.SE3, gauss = ('RIGI=FPG1',),),
-        ElrefeLoc(MT.SE2, gauss = ('RIGI=FPG1',),),
     )

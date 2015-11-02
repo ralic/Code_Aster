@@ -23,6 +23,7 @@ about the elements, options and other low level types.
 """
 
 from collections import OrderedDict
+from cataelem.Tools.base_objects import NewElement
 
 
 class CataElem(object):
@@ -80,6 +81,8 @@ class CataElem(object):
         """Register the object with 'name' if the name is valid.
         Raise ValueError if it is not possible."""
         klass = obj.__class__.__name__
+        if not self._store.get(klass) and issubclass(obj.__class__, NewElement):
+            klass = 'Element'
         assert self._store.get(klass) is not None, ("unsupported type: "
             "'{0}'".format(klass))
         if self._store[klass].get(name) is not None:

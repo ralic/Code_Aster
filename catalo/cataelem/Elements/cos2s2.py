@@ -17,7 +17,7 @@
 # ======================================================================
 
 from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents, SetOfNodes, ElrefeLoc
-from cataelem.Tools.base_objects import Calcul, Element, AbstractElement
+from cataelem.Tools.base_objects import Calcul, NewElement
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.located_components as LC
 import cataelem.Commons.parameters as SP
@@ -47,106 +47,104 @@ MMATUNS  = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=(DDL_MECA,DDL_ME
 
 
 #------------------------------------------------------------
-abstractElement = AbstractElement()
-ele = abstractElement
+class COS2S2(NewElement):
+    """Please document this element"""
+    meshType = MT.SEG22
+    nodes = (
+            SetOfNodes('EN1', (1,2,)),
+            SetOfNodes('EN2', (3,4,)),
+        )
+    calculs = (
 
-ele.addCalcul(OP.CHAR_MECA_CONT, te=365,
-    para_in=((SP.PACCE_M, DDL_MECA), (SP.PCONFR, LC.CCONFR),
-             (SP.PDEPL_M, DDL_MECA), (SP.PDEPL_P, DDL_MECA),
-             (SP.PGEOMER, NGEOMER), (SP.PVITE_M, DDL_MECA),
-             (SP.PVITE_P, DDL_MECA), ),
-    para_out=((SP.PVECTUR, MVECTUR), ),
-)
+        OP.CHAR_MECA_CONT(te=365,
+            para_in=((SP.PACCE_M, DDL_MECA), (SP.PCONFR, LC.CCONFR),
+                     (SP.PDEPL_M, DDL_MECA), (SP.PDEPL_P, DDL_MECA),
+                     (SP.PGEOMER, NGEOMER), (SP.PVITE_M, DDL_MECA),
+                     (SP.PVITE_P, DDL_MECA), ),
+            para_out=((SP.PVECTUR, MVECTUR), ),
+        ),
 
-ele.addCalcul(OP.RIGI_CONT, te=364,
-    para_in=((SP.PACCE_M, DDL_MECA), (SP.PCONFR, LC.CCONFR),
-             (SP.PDEPL_M, DDL_MECA), (SP.PDEPL_P, DDL_MECA),
-             (SP.PGEOMER, NGEOMER), (SP.PVITE_M, DDL_MECA),
-             (SP.PVITE_P, DDL_MECA), ),
-    para_out=((SP.PMATUNS, MMATUNS), (SP.PMATUUR, MMATUUR),
-             ),
-)
+        OP.RIGI_CONT(te=364,
+            para_in=((SP.PACCE_M, DDL_MECA), (SP.PCONFR, LC.CCONFR),
+                     (SP.PDEPL_M, DDL_MECA), (SP.PDEPL_P, DDL_MECA),
+                     (SP.PGEOMER, NGEOMER), (SP.PVITE_M, DDL_MECA),
+                     (SP.PVITE_P, DDL_MECA), ),
+            para_out=((SP.PMATUNS, MMATUNS), (SP.PMATUUR, MMATUUR),
+                     ),
+        ),
 
-ele.addCalcul(OP.TOU_INI_ELNO, te=99,
-    para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), ),
-)
+        OP.TOU_INI_ELNO(te=99,
+            para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), ),
+        ),
 
-
-#------------------------------------------------------------
-COS2S2 = Element(modele=abstractElement)
-ele = COS2S2
-ele.meshType = MT.SEG22
-ele.nodes = (
-        SetOfNodes('EN1', (1,2,)),
-        SetOfNodes('EN2', (3,4,)),
     )
 
 
 #------------------------------------------------------------
-COS3S3 = Element(modele=abstractElement)
-ele = COS3S3
-ele.meshType = MT.SEG33
-ele.nodes = (
-        SetOfNodes('EN2', (4,5,6,)),
-        SetOfNodes('EN1', (1,2,3,)),
-    )
+class COS3S3(COS2S2):
+    """Please document this element"""
+    meshType = MT.SEG33
+    nodes = (
+            SetOfNodes('EN2', (4,5,6,)),
+            SetOfNodes('EN1', (1,2,3,)),
+        )
 
 
 #------------------------------------------------------------
-COS2S3 = Element(modele=abstractElement)
-ele = COS2S3
-ele.meshType = MT.SEG23
-ele.nodes = (
-        SetOfNodes('EN1', (1,2,)),
-        SetOfNodes('EN2', (3,4,5,)),
-    )
+class COS2S3(COS2S2):
+    """Please document this element"""
+    meshType = MT.SEG23
+    nodes = (
+            SetOfNodes('EN1', (1,2,)),
+            SetOfNodes('EN2', (3,4,5,)),
+        )
 
 
 #------------------------------------------------------------
-COS3S2 = Element(modele=abstractElement)
-ele = COS3S2
-ele.meshType = MT.SEG32
-ele.nodes = (
-        SetOfNodes('EN1', (1,2,3,)),
-        SetOfNodes('EN2', (4,5,)),
-    )
+class COS3S2(COS2S2):
+    """Please document this element"""
+    meshType = MT.SEG32
+    nodes = (
+            SetOfNodes('EN1', (1,2,3,)),
+            SetOfNodes('EN2', (4,5,)),
+        )
 
 
 #------------------------------------------------------------
-COS2S2A = Element(modele=abstractElement)
-ele = COS2S2A
-ele.meshType = MT.SEG22
-ele.nodes = (
-        SetOfNodes('EN1', (1,2,)),
-        SetOfNodes('EN2', (3,4,)),
-    )
+class COS2S2A(COS2S2):
+    """Please document this element"""
+    meshType = MT.SEG22
+    nodes = (
+            SetOfNodes('EN1', (1,2,)),
+            SetOfNodes('EN2', (3,4,)),
+        )
 
 
 #------------------------------------------------------------
-COS3S3A = Element(modele=abstractElement)
-ele = COS3S3A
-ele.meshType = MT.SEG33
-ele.nodes = (
-        SetOfNodes('EN2', (4,5,6,)),
-        SetOfNodes('EN1', (1,2,3,)),
-    )
+class COS3S3A(COS2S2):
+    """Please document this element"""
+    meshType = MT.SEG33
+    nodes = (
+            SetOfNodes('EN2', (4,5,6,)),
+            SetOfNodes('EN1', (1,2,3,)),
+        )
 
 
 #------------------------------------------------------------
-COS2S3A = Element(modele=abstractElement)
-ele = COS2S3A
-ele.meshType = MT.SEG23
-ele.nodes = (
-        SetOfNodes('EN1', (1,2,)),
-        SetOfNodes('EN2', (3,4,5,)),
-    )
+class COS2S3A(COS2S2):
+    """Please document this element"""
+    meshType = MT.SEG23
+    nodes = (
+            SetOfNodes('EN1', (1,2,)),
+            SetOfNodes('EN2', (3,4,5,)),
+        )
 
 
 #------------------------------------------------------------
-COS3S2A = Element(modele=abstractElement)
-ele = COS3S2A
-ele.meshType = MT.SEG32
-ele.nodes = (
-        SetOfNodes('EN1', (1,2,3,)),
-        SetOfNodes('EN2', (4,5,)),
-    )
+class COS3S2A(COS2S2):
+    """Please document this element"""
+    meshType = MT.SEG32
+    nodes = (
+            SetOfNodes('EN1', (1,2,3,)),
+            SetOfNodes('EN2', (4,5,)),
+        )
