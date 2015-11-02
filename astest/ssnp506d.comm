@@ -1,0 +1,313 @@
+# person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
+# TITRE VERIFICATION EXCENTREMENT PLAQUE TROUEE EN TRACTION EN PLASTICITE 
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+DEBUT(CODE=_F(
+              NIV_PUB_WEB='INTERNET',
+VISU_EFICAS='OUI',),DEBUG=_F(SDVERI='OUI'))
+
+
+# LECTURE DU MAILLAGE
+MAIL0=LIRE_MAILLAGE(FORMAT='MED',);
+
+
+
+# AFFECTATION DU MODELE (CONTRAINTES PLANES)
+MODE=AFFE_MODELE(MAILLAGE=MAIL0,
+                 AFFE=_F(TOUT='OUI',
+                         PHENOMENE='MECANIQUE',
+                         MODELISATION='DKTG',),);
+
+MODE1=AFFE_MODELE(MAILLAGE=MAIL0,
+                 AFFE=_F(TOUT='OUI',
+                         PHENOMENE='MECANIQUE',
+                         MODELISATION='DKTG',),);
+ep=2.0
+EP=AFFE_CARA_ELEM(MODELE=MODE,
+                   COQUE= (
+                           _F(GROUP_MA=('ALL_FAC',),
+                             EPAIS=ep,COQUE_NCOU=5,),
+                           ),  
+                             )
+
+EP1=AFFE_CARA_ELEM(MODELE=MODE1,
+                   COQUE= (
+                           _F(GROUP_MA=('ALL_FAC',),
+                             EPAIS=ep/2,EXCENTREMENT=ep/4.0, INER_ROTA='OUI',),
+                           _F(GROUP_MA=('ALL_FAC',),
+                             EPAIS=ep/2,EXCENTREMENT=-ep/4.0, INER_ROTA='OUI',COQUE_NCOU=5,)
+                           ),  
+                             )
+
+
+# DEFINITION DU MATERIAU
+
+E=30000.0
+NU=0.3
+EB=30000.0
+NUB=0.3
+
+MAT_B=DEFI_MATERIAU(ELAS=_F(E=EB,
+                            NU=NUB,
+                            RHO=2500.0,),
+                    BETON_ECRO_LINE=_F(D_SIGM_EPSI=0.1*EB,
+                                       SYT=5.,
+                                       SYC=-52,),);
+
+MAT_A=DEFI_MATERIAU(ELAS=_F(E=0.0,
+                            NU=NU,),
+                    ECRO_LINE=_F(D_SIGM_EPSI=0.0,
+                                 SY=2.E2,),);
+                                 
+
+
+# Taux de ferraillage
+AX = 0.0007854;
+
+# Taux de ferraillage
+AY = 0.0007854;
+
+
+QP = 0.15;
+CPRG=0.0
+EZ=0.0;
+R0 = (EZ / (0.5 * ep));
+
+
+
+MAGLRC=DEFI_GLRC(RELATION='GLRC_DAMAGE',
+              BETON=_F(MATER=MAT_B,
+                       EPAIS=ep,
+                       GAMMA=0.0,
+                       QP1=QP,
+                       QP2=QP,
+                       C1N1=CPRG,
+                       C1N2=CPRG,
+                       C1N3=CPRG,
+                       C2N1=CPRG,
+                       C2N2=CPRG,
+                       C2N3=CPRG,
+                       C1M1=CPRG,
+                       C1M2=CPRG,
+                       C1M3=CPRG,
+                       C2M1=CPRG,
+                       C2M2=CPRG,
+                       C2M3=CPRG,),
+              NAPPE=(_F(MATER=MAT_A,
+                        OMX=AX,
+                        OMY=AY,
+                        RX=R0,
+                        RY=R0,),
+                     _F(MATER=MAT_A,
+                        OMX=AX,
+                        OMY=AY,
+                        RX=-R0,
+                        RY=-R0,),),
+              INFO=2,);
+
+
+
+MAGLRC1=DEFI_GLRC(RELATION='GLRC_DAMAGE',
+              BETON=_F(MATER=MAT_B,
+                       EPAIS=ep/2,
+                       GAMMA=0.0,
+                       QP1=QP,
+                       QP2=QP,
+                       C1N1=CPRG,
+                       C1N2=CPRG,
+                       C1N3=CPRG,
+                       C2N1=CPRG,
+                       C2N2=CPRG,
+                       C2N3=CPRG,
+                       C1M1=CPRG,
+                       C1M2=CPRG,
+                       C1M3=CPRG,
+                       C2M1=CPRG,
+                       C2M2=CPRG,
+                       C2M3=CPRG,),
+              NAPPE=(_F(MATER=MAT_A,
+                        OMX=AX,
+                        OMY=AY,
+                        RX=R0,
+                        RY=R0,),
+                     _F(MATER=MAT_A,
+                        OMX=AX,
+                        OMY=AY,
+                        RX=-R0,
+                        RY=-R0,),),
+              INFO=2,);
+
+CHMATE=AFFE_MATERIAU(MAILLAGE=MAIL0,
+                     AFFE=_F(TOUT='OUI',
+                           MATER=MAGLRC,),);
+                           
+CHMATE1=AFFE_MATERIAU(MAILLAGE=MAIL0,
+                     AFFE=_F(GROUP_MA=('ALL_FAC',),
+                           MATER=MAGLRC1,),);
+
+
+# CONDITIONS DE SYMETRIE
+CHSYME=AFFE_CHAR_MECA(MODELE=MODE,
+                      DDL_IMPO=(_F(GROUP_MA='bas',
+                                 DY=0.0,DZ=0.0,DRY=0.0,),
+                                 _F(GROUP_MA='gauche',
+                                 DX=0.0,DZ=0.0,DRX=0.0),
+                                # _F(GROUP_NO='F',
+                                # DRX=0.0,DRY=0.0,DRZ=0.0,),
+                                 ),
+                                );
+
+CHSYME1=AFFE_CHAR_MECA(MODELE=MODE1,
+                      DDL_IMPO=(_F(GROUP_MA='bas',
+                                 DY=0.0,DZ=0.0,DRY=0.0,),
+                                 _F(GROUP_MA='gauche',
+                                 DX=0.0,DZ=0.0,DRX=0.0),
+                                # _F(GROUP_NO='F',
+                                # DRX=0.0,DRY=0.0,DRZ=0.0,),
+                                 ),
+                                );
+
+# CHARGEMENT EN FORCE
+CHFORC=AFFE_CHAR_MECA(MODELE=MODE,
+                      FORCE_ARETE=_F(GROUP_MA='haut', FY=10.0,),);
+                      
+CHFORC1=AFFE_CHAR_MECA(MODELE=MODE1,
+                      FORCE_ARETE=_F(GROUP_MA='haut', FY=10.0,),);
+                      
+# RAMPE APPLICATION CHARGEMENT
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
+                           1000.,1000.,
+                           ),);
+
+# DISCRETISATION EN TEMPS
+TFIN  = 0.03
+
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=(_F(JUSQU_A=TFIN,
+                                     PAS=0.001,),
+                                  ),);
+
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST,),
+                        ECHEC=_F(EVENEMENT='ERREUR',
+                                 SUBD_NIVEAU=5,
+                                 ACTION='DECOUPE',),)
+
+
+########################################################################
+#
+# PREMIER CALCUL : 
+#
+########################################################################
+
+RESU=STAT_NON_LINE(MODELE=MODE,
+                     CHAM_MATER=CHMATE,
+                   CARA_ELEM=EP,
+                     EXCIT=(_F(CHARGE=CHSYME,),
+                            _F(CHARGE=CHFORC,
+                               FONC_MULT=RAMPE,
+                               ),),
+                     COMPORTEMENT=_F(RELATION='GLRC_DAMAGE',),
+                     CONVERGENCE=_F(RESI_GLOB_RELA=5.E-3,ITER_GLOB_MAXI=100,),
+                     INCREMENT=_F(LIST_INST=DEFLIST,
+                                  INST_FIN=TFIN,),);
+RESU1=STAT_NON_LINE(MODELE=MODE1,
+                     CHAM_MATER=CHMATE1,
+                   CARA_ELEM=EP1,
+                     EXCIT=(_F(CHARGE=CHSYME1,),
+                            _F(CHARGE=CHFORC1,
+                               FONC_MULT=RAMPE,
+                               ),),
+                     COMPORTEMENT=_F(RELATION='GLRC_DAMAGE',),
+                     CONVERGENCE=_F(RESI_GLOB_RELA=5.E-3,ITER_GLOB_MAXI=100,),
+                     INCREMENT=_F(LIST_INST=DEFLIST,
+                                  INST_FIN=TFIN,),);
+
+
+
+#RESU=DYNA_NON_LINE(MODELE=MODE,
+                    #CHAM_MATER=CHMATE,
+                    #CARA_ELEM=EP,
+                    #COMPORTEMENT=_F(RELATION='GLRC_DAMAGE',
+                                    #),
+                    #INCREMENT=_F(LIST_INST=DEFLIST,
+                                 #PRECISION=1.E-1),
+                    #EXCIT=(_F(CHARGE=CHSYME,),
+                           #_F(CHARGE=CHFORC,
+                              #FONC_MULT=RAMPE,),),
+                    #SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENT',
+                                    #FORMULATION='ACCELERATION',),
+                    #ARCHIVAGE=_F(LIST_INST=L_INST,),
+                    #MASS_DIAG='OUI',);
+
+
+#RESU1=DYNA_NON_LINE(MODELE=MODE1,
+                    #CHAM_MATER=CHMATE1,
+                    #CARA_ELEM=EP1,
+                    #COMPORTEMENT=_F(RELATION='GLRC_DAMAGE',
+                                    #),
+                    #INCREMENT=_F(LIST_INST=DEFLIST,
+                                 #PRECISION=1.E-1),
+                    #EXCIT=(_F(CHARGE=CHSYME1,),
+                           #_F(CHARGE=CHFORC1,
+                              #FONC_MULT=RAMPE,),),
+                    #SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENT',
+                                    #FORMULATION='ACCELERATION',),
+                    #ARCHIVAGE=_F(LIST_INST=L_INST,),
+                    #MASS_DIAG='OUI',);
+
+
+########################################################################
+#
+# POST_TRAITEMENT
+#
+########################################################################
+########RESU
+# INTERPOLATION DES CONTRAINTES AUX NOEUDS
+RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,DEFORMATION=('DEGE_NOEU'),CONTRAINTE=('EFGE_NOEU'))
+########RESU1
+RESU1=CALC_CHAMP(reuse=RESU1,RESULTAT=RESU1,DEFORMATION=('DEGE_NOEU'),CONTRAINTE=('EFGE_NOEU'))
+          
+TEST_RESU(RESU=_F(
+                   INST=TFIN,
+                  GROUP_NO='B',
+                  RESULTAT=RESU,
+                  NOM_CHAM='EFGE_NOEU',
+                  NOM_CMP='NYY',
+                  VALE_CALC=0.391457450791,
+                  CRITERE='RELATIF',),
+          )
+
+          
+          
+TEST_RESU(RESU=_F(
+                  REFERENCE='AUTRE_ASTER',
+                   INST=TFIN,
+                  GROUP_NO='B',
+                  RESULTAT=RESU1,
+                  NOM_CHAM='EFGE_NOEU',
+                  NOM_CMP='NYY',
+                  VALE_CALC=0.352588562347,
+                  VALE_REFE=0.391457450791,
+                  CRITERE='RELATIF',PRECISION=0.15,),
+          )
+
+
+
+
+
+FIN();

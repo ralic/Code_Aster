@@ -281,6 +281,8 @@ subroutine te0409(option, nomte)
         ep = zr(icacoq)
         ctor = zr(icacoq+3)
         excen = zr(icacoq+4)
+ 
+        
 !
         if (resi) then
             call jevech('PCONTPR', 'E', icontp)
@@ -498,6 +500,7 @@ subroutine te0409(option, nomte)
                 call coqgth(zi(imate), compor, 'RIGI', ipg, ep, epsm, deps)
 !EXCENTREMENT RAJOUTE UN COUPLAGE MEMBRANE_FLEXION : EPSI = EPSI+EXCENT*KHI
                 do i = 1, 3
+!                     deps(i) = deps(i)+excen*dkhi(i)
                     deps(i+3) = deps(i+3)+excen*dkhi(i)
                     epsm(i) = epsm(i)+excen*khi(i)
                     epsm(i+3) = epsm(i+3)+excen*khi(i)
@@ -540,6 +543,13 @@ subroutine te0409(option, nomte)
                                      deuxmu=deuxmu, lamf=lamf, deumuf=deumuf, &
                                      gt=gt, gc=gc, gf=gf, seuil=seuil,&
                                      alpha=alphaf, alfmc=alfmc)
+!EXCENTREMENT RAJOUTE UN COUPLAGE MEMBRANE_FLEXION : EPSI = EPSI+EXCENT*KHI
+                do i = 1, 3
+!                     deps(i) = deps(i)+excen*dkhi(i)
+                    deps(i+3) = deps(i+3)+excen*dkhi(i)
+                    epsm(i) = epsm(i)+excen*khi(i)
+                    epsm(i+3) = epsm(i+3)+excen*khi(i)
+                end do
 !
 !               --  prise en compte de la dilatation thermique
                 call coqgth(zi(imate), compor, 'RIGI', ipg, ep, epsm, deps)
@@ -562,6 +572,13 @@ subroutine te0409(option, nomte)
                 call dhrc_recup_mate(zi(imate), compor, a0, c0,&
                                      aa_t, ga_t, ab_, gb_, ac_,&
                                      gc_, aa_c, ga_c, cstseu)
+!EXCENTREMENT RAJOUTE UN COUPLAGE MEMBRANE_FLEXION : EPSI = EPSI+EXCENT*KHI
+                do i = 1, 3
+!                     deps(i) = deps(i)+excen*dkhi(i)
+                    deps(i+3) = deps(i+3)+excen*dkhi(i)
+                    epsm(i) = epsm(i)+excen*khi(i)
+                    epsm(i+3) = epsm(i+3)+excen*khi(i)
+                end do
 !
 !               --  prise en compte de la dilatation thermique
                 call coqgth(zi(imate), compor, 'RIGI', ipg, ep, epsm, deps)
@@ -581,18 +598,18 @@ subroutine te0409(option, nomte)
                         ecr(i) = zr(ivarim-1 + icpv + i)
                     end do
                 endif
+!EXCENTREMENT RAJOUTE UN COUPLAGE MEMBRANE_FLEXION : EPSI = EPSI+EXCENT*KHI
+                do i = 1, 3
+!                     deps(i) = deps(i)+excen*dkhi(i)
+                    deps(i+3) = deps(i+3)+excen*dkhi(i)
+                    epsm(i) = epsm(i)+excen*khi(i)
+                    epsm(i+3) = epsm(i+3)+excen*khi(i)
+                end do
 !
 !               --  Prise en compte de la dilatation thermique
 !                   En realite, on ne sait pas encore faire ...
 !                   La routine coqgth nous arretera s'il y a de la dilatation
                 call coqgth(zi(imate), compor, 'RIGI', ipg, ep, epsm, deps)
-!
-!EXCENTREMENT RAJOUTE UN COUPLAGE MEMBRANE_FLEXION : EPSI = EPSI+EXCENT*KHI
-                do i = 1, 3
-                    deps(i+3) = deps(i+3)+excen*dkhi(i)
-                    epsm(i) = epsm(i)+excen*khi(i)
-                    epsm(i+3) = epsm(i+3)+excen*khi(i)
-                end do
 !               -- endommagement plus plasticite
                 call r8inir(3, r8vide(), angmas, 1)
                 call nmcoup('RIGI', ipg, 1, 3, k8bid,&
@@ -615,10 +632,16 @@ subroutine te0409(option, nomte)
             if (resi) then
 !
 !               -- EFFORTS RESULTANTS (N, M ET Q)
+
                 do i = 1, 3
                     n(i) = sig(i)
                     m(i) = sig(i+3)
                 end do
+!               -- PRISE EN COMPTE DE L'EXCENTREMENT DANS LE TERME DE FLEXION (VOIR AUSSI DKTNLI)
+!                 do i = 1, 3
+!                     m(i) = m(i)+excen*n(i)
+!                 end do
+
                 do i = 1, 2
                     q(i) = sig(i+6)
                 end do
@@ -669,6 +692,14 @@ subroutine te0409(option, nomte)
                         df(l) = df(l) + poids*dsidep(j+3,i+3)
                     end do
                 end do
+!               -- PRISE EN COMPTE DE L'EXCENTREMENT (VOIR AUSSI DKTNLI)
+!                 do i = 1, 3
+!                     do j = 1, 3
+!                         l = l + 1
+!                         dmf(l)= dmf(l) + excen*dm(l)
+!                         df(l) = df(l)  + excen*excen*dm(l)
+!                     end do
+!                 end do
 !
                 if (q4gg) then
                     dc(1,1) = poids*dcc(1,1)
