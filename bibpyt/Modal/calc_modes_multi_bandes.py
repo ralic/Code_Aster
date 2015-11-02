@@ -573,7 +573,7 @@ def gestion_frequence(solveur_lineaire, nnfreq, nbproc):
         if ((nbproc < nnfreq - 1) | ((nbproc > nnfreq - 1) & (solveur_lineaire != 'MUMPS'))):
             aster.affiche('MESSAGE', 72 * '-')
             UTMESS('F', 'MODAL_10', vali=(
-                nbproc, nnfreq), valk=solveur_lineaire)
+                nbproc, nnfreq-1), valk=solveur_lineaire)
             aster.affiche('MESSAGE', 72 * '-')
         div = None
         reste = None

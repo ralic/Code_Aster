@@ -97,9 +97,9 @@ Opérateur CALC_MODES sur plusieurs sous-bandes, en mode parallèle:
 """),
     10: _(u"""
 Opérateurs INFO_MODE ou CALC_MODES sur plusieurs sous-bandes, en mode parallèle:
-  Le nombre de processeurs, %(i1)d, et le nombre de fréquences, %(i2)d, sont incompatibles !
+  Le nombre de processeurs, %(i1)d, et le nombre de sous-bandes fréquentielles, %(i2)d, sont incompatibles !
   Avec le solveur linéaire MUMPS, ce nombre de processeurs peut être supérieur ou égale
-  (idéalement proportionnel) au nombre de fréquences - 1.
+  (idéalement proportionnel) au nombre de sous-bandes.
   Avec les autres solveurs linéaires ces deux paramètres doivent être rigoureusement égaux.
   Ici le solveur linéaire utilisé est %(k1)s.
 

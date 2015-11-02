@@ -399,7 +399,7 @@ subroutine op0032()
         if ((nbproc.lt.(nbmod-1)) .or.&
             ((nbproc.gt.(nbmod-1)).and.( metres(1:5).ne.'MUMPS'))) then
             vali(1)=nbproc
-            vali(2)=nbmod
+            vali(2)=nbmod-1
             valk(1)=metres
             call utmess('F', 'MODAL_10', sk=valk(1), ni=2, vali=vali)
         endif
