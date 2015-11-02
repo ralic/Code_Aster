@@ -1,11 +1,14 @@
-subroutine mmelem_data(cont_indx      , model_ndim_    , l_axi_       ,&
-                       elem_1_        , elem_2_        , nb_node_elem_,&
-                       cont_geom_nume_, nb_cont_type_  , &
-                       cont_geom_name_, cont_elem_name_, frot_elem_name_)
+subroutine mmelem_data_l(set_cont_indx_ , l_axi_         , model_ndim_,&
+                         elem_1_        , elem_2_        ,&
+                         nb_cont_type_  , nb_node_elem_  ,&
+                         cont_geom_nume_, cont_geom_name_,&
+                         cont_elem_name_, frot_elem_name_,&
+                         get_cont_indx_ )
 !
 implicit none
 !
 #include "asterf_types.h"
+#include "asterfort/assert.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
@@ -28,9 +31,9 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    integer, intent(inout) :: cont_indx
-    integer, intent(in), optional :: model_ndim_
+    integer, intent(in), optional :: set_cont_indx_
     aster_logical, intent(in), optional :: l_axi_
+    integer, intent(in), optional :: model_ndim_
     character(len=8), intent(in), optional :: elem_1_
     character(len=8), intent(in), optional :: elem_2_
     integer, intent(out), optional :: nb_node_elem_
@@ -39,18 +42,19 @@ implicit none
     character(len=8), intent(out), optional :: cont_elem_name_
     character(len=8), intent(out), optional :: frot_elem_name_
     character(len=8), intent(out), optional :: cont_geom_name_
+    integer, intent(out), optional :: get_cont_indx_
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Contact - Solve
 !
-! Continue method - Define late elements for contact 
+! LAC method - Define late elements for contact 
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! IO  cont_indx        : index of late element for contact
+! In  set_cont_indx    : index of late element for contact (to set)
+! In  l_axi            : .true. for axi-symetric model
 ! In  model_ndim       : size of model
-! In  l_axi            : .true. if axi-symetric model
 ! In  elem_1           : first geometric element to identify contact element
 ! In  elem_2           : second geometric element to identify contact element
 ! Out nb_node_elem     : number of nodes for late element contact
@@ -59,11 +63,11 @@ implicit none
 ! Out cont_elem_name   : type of contact element (finite element)
 ! Out frot_elem_name   : type of friction element (finite element)
 ! Out cont_geom_name   : name in element catalog for late element contact
+! Out get_cont_indx    : index of late element for contact (to get/identification)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_cont_type
-    parameter   (nb_cont_type=40)
+    integer, parameter :: nb_cont_type = 40
 !
 ! - Type of contact element (geometry)
 !
@@ -144,22 +148,20 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
+
+!
+! - Identify contact element 
+!
     if (present(elem_1_).and.present(elem_2_)) then
-!
-! ----- Identify contact element
-!
-        cont_indx    = 0
+        get_cont_indx_ = 0
         do i_cont_elem = 1, nb_cont_type
             if (elem_1_ .eq. list_geom_slav(i_cont_elem)) then
                 if (elem_2_ .eq. list_geom_mast(i_cont_elem)) then
-                    cont_indx    = i_cont_elem
+                    get_cont_indx_ = i_cont_elem
                 endif
             endif
         end do
-!
-! ----- Not found
-!
-        if (cont_indx .eq. 0) then
+        if (get_cont_indx_ .eq. 0) then
             valk(1) = elem_1_
             valk(2) = elem_2_
             call utmess('F', 'CONTACT_96', nk=2, valk=valk)
@@ -167,15 +169,26 @@ implicit none
 !
 ! ----- Contact element (geometry)
 !
-        cont_geom_name = list_cont_geom(cont_indx)
+        cont_geom_name = list_cont_geom(get_cont_indx_)
 !
 ! ----- For beam elements
 !
         if (cont_geom_name .eq. 'SEG22') then
             if (model_ndim_ .eq. 2) then
-                cont_indx = 1
+                get_cont_indx_ = 1
             else
-                cont_indx = 30
+                get_cont_indx_ = 30
+            endif
+        endif
+!
+! ----- Change name for axisymetric
+!
+        if (l_axi_) then
+            if (cont_geom_name(1:3) .eq. 'SEG') then
+                cont_elem_name_(7:7) = 'A'
+                frot_elem_name_(7:7) = 'A'
+            else
+                ASSERT(.false.)
             endif
         endif
     endif
@@ -189,38 +202,32 @@ implicit none
 ! - Number of nodes
 !
     if (present(nb_node_elem_)) then
-        nb_node_elem_ = nb_node(cont_indx)
+        nb_node_elem_ = nb_node(set_cont_indx_)
     endif
 !
 ! - Index in element catalog
 !
     if (present(cont_geom_nume_)) then
-        cont_geom_name = list_cont_geom(cont_indx)
+        cont_geom_name = list_cont_geom(set_cont_indx_)
         call jenonu(jexnom('&CATA.TM.NOMTM', cont_geom_name), cont_geom_nume_)
     endif
 !
 ! - Type of contact element (finite element)
 !
     if (present(cont_elem_name_)) then
-        cont_elem_name_ = list_cont_elem(cont_indx)
-        if (l_axi_) then
-            cont_elem_name_(7:7) = 'A'
-        endif
+        cont_elem_name_ = list_cont_elem(set_cont_indx_)
     endif
 !
 ! - Type of friction element (finite element)
 !
     if (present(frot_elem_name_)) then
-        frot_elem_name_ = list_frot_elem(cont_indx)
-        if (l_axi_) then
-            frot_elem_name_(7:7) = 'A'
-        endif
+        frot_elem_name_ = list_frot_elem(set_cont_indx_)
     endif
 !
 ! - Name in element catalog for late element contact
 !
     if (present(cont_geom_name_)) then
-        cont_geom_name_ = list_cont_geom(cont_indx)
+        cont_geom_name_ = list_cont_geom(set_cont_indx_)
     endif
 !
 end subroutine

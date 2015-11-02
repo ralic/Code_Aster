@@ -15,16 +15,16 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-#include "asterf_types.h"
-!
 interface
-    subroutine mmelem_data(cont_indx      , model_ndim_    , l_axi_       ,&
-                           elem_1_        , elem_2_        , nb_node_elem_,&
-                           cont_geom_nume_, nb_cont_type_  , &
-                           cont_geom_name_, cont_elem_name_, frot_elem_name_)
-        integer, intent(inout) :: cont_indx
-        integer, intent(in), optional :: model_ndim_
+    subroutine mmelem_data_l(set_cont_indx_ , l_axi_         , model_ndim_,&
+                             elem_1_        , elem_2_        ,&
+                             nb_cont_type_  , nb_node_elem_  ,&
+                             cont_geom_nume_, cont_geom_name_,&
+                             cont_elem_name_, frot_elem_name_,&
+                             get_cont_indx_ )
+        integer, intent(in), optional :: set_cont_indx_
         aster_logical, intent(in), optional :: l_axi_
+        integer, intent(in), optional :: model_ndim_
         character(len=8), intent(in), optional :: elem_1_
         character(len=8), intent(in), optional :: elem_2_
         integer, intent(out), optional :: nb_node_elem_
@@ -33,5 +33,6 @@ interface
         character(len=8), intent(out), optional :: cont_elem_name_
         character(len=8), intent(out), optional :: frot_elem_name_
         character(len=8), intent(out), optional :: cont_geom_name_
-    end subroutine mmelem_data
+        integer, intent(out), optional :: get_cont_indx_
+    end subroutine mmelem_data_l
 end interface

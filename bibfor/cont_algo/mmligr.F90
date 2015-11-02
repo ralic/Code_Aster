@@ -23,7 +23,8 @@ implicit none
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/mmelem_data.h"
+#include "asterfort/mmelem_data_c.h"
+#include "asterfort/mmelem_data_l.h"
 #include "asterfort/mmimp2.h"
 #include "asterfort/mminfl.h"
 #include "asterfort/mmlige.h"
@@ -71,7 +72,7 @@ implicit none
     integer :: elem_mast_nume, elem_slav_nume, cont_indx
     integer :: ligrcf_liel_lont, cont_elem_nume, cont_geom_nume, frot_elem_nume
     integer :: nb_node_elem, nb_node_mast, nb_node_slav, nb_grel, nt_node
-    aster_logical :: l_cont_cont
+    aster_logical :: l_cont_cont, l_cont_lac
     character(len=8) :: cont_geom_name, cont_elem_name, frot_elem_name
     character(len=19) :: ligrcf
     integer, pointer :: v_list_elem(:) => null()
@@ -90,6 +91,8 @@ implicit none
     integer, pointer :: v_ligrcf_nbno(:) => null()
     integer, pointer :: v_ligrcf_nema(:) => null()
     integer, pointer :: v_ligrcf_liel(:) => null()
+!   character(len=24) :: sdcont_aplist
+!   integer, pointer :: v_sdcont_aplist(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -110,6 +113,8 @@ implicit none
 !
     l_axi        = cfdisl(ds_contact%sdcont_defi, 'AXISYMETRIQUE')
     l_cont_cont  = cfdisl(ds_contact%sdcont_defi, 'FORMUL_CONTINUE')
+    l_cont_lac   = .false._1
+!   l_cont_lac   = cfdisl(ds_contact%sdcont_defi, 'FORMUL_LAC')
 !
 ! - Print
 !
@@ -126,9 +131,14 @@ implicit none
 !
 ! - Access to contact elements
 !
-    sdcont_tabfin = ds_contact%sdcont_solv(1:14)//'.TABFIN'
-    call jeveuo(sdcont_tabfin, 'L', vr   = v_sdcont_tabfin)
-    ztabf = cfmmvd('ZTABF')
+    if (l_cont_cont) then
+        sdcont_tabfin = ds_contact%sdcont_solv(1:14)//'.TABFIN'
+        call jeveuo(sdcont_tabfin, 'L', vr   = v_sdcont_tabfin)
+        ztabf = cfmmvd('ZTABF')
+    else if (l_cont_lac) then
+!       sdcont_aplist = ds_contact%sdcont_solv(1:14)//'.APLIST'
+!       call jeveuo(sdcont_aplist, 'L', vi = v_sdcont_aplist)
+    endif
 !
 ! - Get list of late elements for contact (LIGREL)
 !
@@ -159,9 +169,14 @@ implicit none
 !
 ! ----- Get parameters
 !
-        i_cont_poin    = i_cont_elem
-        elem_slav_nume = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+2))
-        elem_mast_nume = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+3))
+        if (l_cont_cont) then
+            i_cont_poin    = i_cont_elem
+            elem_slav_nume = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+2))
+            elem_mast_nume = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+3))
+        else
+!           elem_slav_nume = v_sdcont_aplist(3*(i_cont_elem-1)+1)
+!           elem_mast_nume = v_sdcont_aplist(3*(i_cont_elem-1)+2)   
+        endif
 !
 ! ----- Check number of nodes
 !
@@ -216,9 +231,15 @@ implicit none
 !
 ! --------- Current contact element
 !
-            call mmelem_data(cont_indx, l_axi_ = l_axi,&
-                             cont_geom_name_ = cont_geom_name,&
-                             cont_elem_name_ = cont_elem_name)
+            if (l_cont_cont) then
+                call mmelem_data_c(set_cont_indx_  = cont_indx     , l_axi_ = l_axi,&
+                                   cont_geom_name_ = cont_geom_name,&
+                                   cont_elem_name_ = cont_elem_name)
+            else
+!               call mmelem_data_l(set_cont_indx_  = cont_indx     ,&
+!                                  cont_geom_name_ = cont_geom_name,&
+!                                  cont_elem_name_ = cont_elem_name)
+            endif
 !
 ! --------- Index of contact element in catalog
 !
@@ -231,9 +252,14 @@ implicit none
             jco = 0
             do i_cont_elem = 1, nb_cont_elem
                 if (v_list_elem(2*(i_cont_elem-1)+1) .eq. cont_geom_nume) then
-                    i_cont_poin    = i_cont_elem
-                    i_zone         = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+14))
-                    l_frot         = mminfl(ds_contact%sdcont_defi,'FROTTEMENT_ZONE', i_zone )
+                    if (l_cont_cont) then
+                        i_cont_poin    = i_cont_elem
+                        i_zone         = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+14))
+                        l_frot         = mminfl(ds_contact%sdcont_defi,'FROTTEMENT_ZONE', i_zone )
+                    else
+!                       i_zone = v_sdcont_aplist(3*(i_cont_elem-1)+3)
+!                       l_frot = .false._1 
+                    endif
                     if (.not.l_frot) then
                         jco = jco + 1
                         v_ligrcf_liel(jco) = -i_cont_elem
@@ -253,9 +279,15 @@ implicit none
 !
 ! --------- Current friction element
 !
-            call mmelem_data(cont_indx, l_axi_ = l_axi,&
-                             cont_geom_name_ = cont_geom_name,&
-                             frot_elem_name_ = frot_elem_name)
+            if (l_cont_cont) then
+                call mmelem_data_c(set_cont_indx_  = cont_indx     , l_axi_ = l_axi,&
+                                   cont_geom_name_ = cont_geom_name,&
+                                   frot_elem_name_ = frot_elem_name)
+            else
+!               call mmelem_data_l(set_cont_indx_  = cont_indx     ,&
+!                                  cont_geom_name_ = cont_geom_name,&
+!                                  frot_elem_name_ = frot_elem_name)
+            endif
 !
 ! --------- Index of friction element in catalog
 !
@@ -268,9 +300,14 @@ implicit none
             jco = 0
             do i_cont_elem = 1, nb_cont_elem
                 if (v_list_elem(2*(i_cont_elem-1)+1) .eq. cont_geom_nume) then
-                    i_cont_poin    = i_cont_elem
-                    i_zone         = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+14))
-                    l_frot         = mminfl(ds_contact%sdcont_defi,'FROTTEMENT_ZONE', i_zone )
+                    if (l_cont_cont) then
+                        i_cont_poin    = i_cont_elem
+                        i_zone         = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+14))
+                        l_frot         = mminfl(ds_contact%sdcont_defi,'FROTTEMENT_ZONE', i_zone )
+                    else
+!                       i_zone = v_sdcont_aplist(3*(i_cont_elem-1)+3)
+!                       l_frot = .false._1 
+                    endif
                     if (l_frot) then
                         jco = jco + 1
                         v_ligrcf_liel(jco) = -i_cont_elem

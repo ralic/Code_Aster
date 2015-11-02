@@ -15,7 +15,8 @@ implicit none
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/mmelem_data.h"
+#include "asterfort/mmelem_data_c.h"
+#include "asterfort/mmelem_data_l.h"
 #include "asterfort/mminfl.h"
 !
 ! ======================================================================
@@ -76,11 +77,13 @@ implicit none
     character(len=8) :: slav_type_name, mast_type_name
     integer :: slav_type_nume, mast_type_nume
     integer :: ifm, niv
-    aster_logical :: l_frot, l_cont_cont
+    aster_logical :: l_frot, l_cont_cont, l_cont_lac
     integer, pointer :: v_mesh_typmail(:) => null()
     integer :: ztabf
     character(len=24) :: sdcont_tabfin
     real(kind=8), pointer :: v_sdcont_tabfin(:) => null()
+!    character(len=24) :: sdcont_aplist
+!   integer, pointer :: v_sdcont_aplist(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -97,6 +100,8 @@ implicit none
     nb_cont_poin = cfdisi(ds_contact%sdcont_defi, 'NTPC')
     model_ndim   = cfdisi(ds_contact%sdcont_defi, 'NDIM')
     l_cont_cont  = cfdisl(ds_contact%sdcont_defi, 'FORMUL_CONTINUE')
+    l_cont_lac   = .false._1
+!   l_cont_lac   = cfdisl(ds_contact%sdcont_defi, 'FORMUL_LAC')
 !
 ! - Datastructure for contact solving
 !
@@ -110,7 +115,14 @@ implicit none
 !
 ! - Get number of contact elements
 !
-    nb_cont_elem = nb_cont_poin
+    if (l_cont_cont) then
+        nb_cont_elem = nb_cont_poin
+    else
+!       sdcont_aplist = ds_contact%sdcont_solv(1:14)//'.APLIST'
+!       call jeveuo(sdcont_aplist, 'L', vi = v_sdcont_aplist)
+!       call jelira(sdcont_aplist, 'LONUTI', nb_cont_elem)
+!       nb_cont_elem = nb_cont_elem/3
+    endif
 !
 ! - Print
 !
@@ -120,7 +132,11 @@ implicit none
 !
 ! - Total number of late elements defined
 !
-    call mmelem_data(cont_indx, nb_cont_type_ = nb_cont_type)
+    if (l_cont_cont) then
+        call mmelem_data_c(nb_cont_type_ = nb_cont_type)
+    else
+!       call mmelem_data_l(nb_cont_type_ = nb_cont_type)
+    endif
     AS_ALLOCATE(vi = v_cnt_cont, size = nb_cont_type)
     AS_ALLOCATE(vi = v_cnt_frot, size = nb_cont_type)
 !
@@ -134,11 +150,18 @@ implicit none
 !
 ! ----- Get parameters
 !
-        i_cont_poin    = i_cont_elem
-        i_zone         = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+14))
-        l_frot         = mminfl(ds_contact%sdcont_defi,'FROTTEMENT_ZONE', i_zone )
-        elem_slav_nume = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+2))
-        elem_mast_nume = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+3))
+        if (l_cont_cont) then
+            i_cont_poin    = i_cont_elem
+            i_zone         = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+14))
+            l_frot         = mminfl(ds_contact%sdcont_defi,'FROTTEMENT_ZONE', i_zone )
+            elem_slav_nume = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+2))
+            elem_mast_nume = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+3))
+        else
+!           i_zone = v_sdcont_aplist(3*(i_cont_elem-1)+3)
+!           l_frot = .false._1
+!           elem_slav_nume = v_sdcont_aplist(3*(i_cont_elem-1)+1)
+!           elem_mast_nume = v_sdcont_aplist(3*(i_cont_elem-1)+2)   
+        endif
 !
 ! ----- Type of slave/master element
 !  
@@ -149,11 +172,19 @@ implicit none
 !
 ! ----- Contact element
 !
-        call mmelem_data(cont_indx       = cont_indx     ,&
-                         model_ndim_     = model_ndim    ,&
-                         elem_1_         = slav_type_name, elem_2_ = mast_type_name,&
-                         nb_node_elem_   = nb_node_elem  ,&
-                         cont_geom_nume_ = cont_geom_nume)
+        if (l_cont_cont) then
+            call mmelem_data_c(model_ndim_     = model_ndim    ,&
+                               elem_1_         = slav_type_name, elem_2_ = mast_type_name,&
+                               nb_node_elem_   = nb_node_elem  ,&
+                               cont_geom_nume_ = cont_geom_nume,&
+                               get_cont_indx_  = cont_indx)
+        else
+!           call mmelem_data_l(model_ndim_     = model_ndim    ,&
+!                              elem_1_         = slav_type_name, elem_2_ = mast_type_name,&
+!                              nb_node_elem_   = nb_node_elem  ,&
+!                              cont_geom_nume_ = cont_geom_nume,&
+!                              get_cont_indx_  = cont_indx)
+        endif
         v_list_elem(2*(i_cont_elem-1)+1) = cont_geom_nume
         v_list_elem(2*(i_cont_elem-1)+2) = nb_node_elem
 !
@@ -170,7 +201,11 @@ implicit none
 !
     do i_cont_type = 1, nb_cont_type
         cont_indx = i_cont_type
-        call mmelem_data(cont_indx, nb_node_elem_ = nb_node_elem)
+        if (l_cont_cont) then
+            call mmelem_data_c(set_cont_indx_ = cont_indx, nb_node_elem_ = nb_node_elem)
+        else
+!           call mmelem_data_l(set_cont_indx_ = cont_indx, nb_node_elem_ = nb_node_elem)
+        endif  
         nt_node = nt_node + (v_cnt_cont(i_cont_type)+v_cnt_frot(i_cont_type))*(nb_node_elem+1)
     end do
     if (niv .ge. 2) then
