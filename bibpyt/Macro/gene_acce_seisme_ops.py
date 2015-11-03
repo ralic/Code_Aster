@@ -733,6 +733,7 @@ class SimulatorDSPVector(Simulator):
             liste_nom, l2 = get_group_nom_coord(
                              self.DEFI_COHE['GROUP_NO_INTERF'], 
                              self.DEFI_COHE['MAILLAGE']) 
+            self.DEFI_COHE.update({ 'NOEUDS_INTERF' : l2})
         for iii in range(self.nbtirage):
             Xt = self.build_TimeHistory(generator)
             nba = 1
@@ -766,6 +767,7 @@ class SimulatorSPECVector(Simulator):
                            self.DEFI_COHE['GROUP_NO_INTERF'], 
                            self.DEFI_COHE['MAILLAGE']) 
             self.DEFI_COHE.update({ 'DIM' : len(self.liste_nom)})
+            self.DEFI_COHE.update({ 'NOEUDS_INTERF' : l2})
         if self.simu_params['SPEC_METHODE'] == 'SPEC_MEDIANE' and 'NB_ITER' in self.simu_params:
             self.build_TimeHistories(generator)
         else:

@@ -51,7 +51,7 @@ from Cata.cata import (
 from Utilitai.Table import Table
 from Utilitai.Utmess import UTMESS
 from Utilitai.utils import set_debug, _print, _printDBG
-from Utilitai.force_iss_vari import force_iss_vari
+from Miss.force_iss_vari import force_iss_vari
 
 from Miss.miss_resu_miss import MissCsolReader
 

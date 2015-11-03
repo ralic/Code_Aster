@@ -353,6 +353,7 @@ def force_iss_vari(self,imod,MATR_GENE,NOM_CMP,ISSF,INFO,UNITE_RESU_FORC,
            #   force sismique resultante: somme des mode POD
          XO_s=NP.sum(XO,0)
          FS = NP.dot(KRS,XO_s)
+
       FSISM[nbmodd:nbmodt][:] =FS
       if imod==3 :
          SP = NP.zeros((nbmodt, nbmodt))
@@ -390,6 +391,8 @@ def force_iss_vari(self,imod,MATR_GENE,NOM_CMP,ISSF,INFO,UNITE_RESU_FORC,
           for k1 in range(0, nbme):
             #  calcul de la force sismique mode POD par mode POD
             FS = NP.dot(KRS, XO[k1])
+            print 'TEST XO', XO[k1]
+            print 'TEST mode POD', k1, 'FS', FS 
             FSISM[nbmodd:nbmodt][:] = FS
             #  Calcul harmonique
             __fosi.RECU_VECT_GENE_C(FSISM)

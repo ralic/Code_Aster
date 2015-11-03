@@ -45,47 +45,52 @@ import aster
 # COHERENCY MATRIX
 # --------------------------------------------------------------------
 def CALC_COHE(freq, **kwargs):
-#    kwargs: VITE_ONDE, PARA_ALPHA, TYPE  
+#    Frequency is in rad/s: freq= f*2*pi 
+#    kwargs: VITE_ONDE, PARA_ALPHA, TYPE, MAILLAGE, 
     model = kwargs['TYPE']
     nom_mail = kwargs['MAILLAGE']
     nom_group_inter = kwargs['GROUP_NO_INTERF']
-    liste_nom, noe_interf = get_group_nom_coord(nom_group_inter, nom_mail) 
-    XX = noe_interf[:,0]
-    YY = noe_interf[:,1]
-    nbno = len(XX)
+    if 'NOEUDS_INTERF' in kwargs:
+        noe_interf = kwargs['NOEUDS_INTERF']
+    else:
+        liste_nom, noe_interf = get_group_nom_coord(nom_group_inter, nom_mail)
+    if 'DIST' in kwargs:
+        DIST2 = kwargs['DIST']
+    else:
+        DIST2 = calc_dist2(noe_interf)
     # # ----MITA & LUCO
     if model == 'MITA_LUCO' :
        # PARAMETRES fonction de coherence
         VITE_ONDE = kwargs['VITE_ONDE']
         alpha = kwargs['PARA_ALPHA']
-        XN=NP.repeat(XX, nbno)
-        YN=NP.repeat(YY, nbno)
-        XR=NP.reshape(XN, (nbno, nbno))
-        YR=NP.reshape(YN, (nbno, nbno))
-        XRT = NP.transpose(XR)
-        YRT = NP.transpose(YR)
-        DX = XR - XRT
-        DY = YR - YRT
-        DIST = DX**2 + DY**2
-        COHE = NP.exp(- (DIST * (alpha * 2 *  pi * freq / VITE_ONDE)**2.))
+#        XN=NP.repeat(XX, nbno)
+#        YN=NP.repeat(YY, nbno)
+#        XR=NP.reshape(XN, (nbno, nbno))
+ #       YR=NP.reshape(YN, (nbno, nbno))
+ #       XRT = NP.transpose(XR)
+ #       YRT = NP.transpose(YR)
+ #       DX = XR - XRT
+ #       DY = YR - YRT
+ #       DIST = DX**2 + DY**2
+        COHE = NP.exp(- (DIST2 * (alpha * freq / VITE_ONDE)**2.))
      #----ABRAHAMSON ROCK (EPRI)      
     elif model == 'ABRAHAMSON' :
         p_a1 = 1.647
         p_a2 = 1.01
         p_a3 = 0.4
         p_n1 = 7.02
+        nbno =len(noe_interf)
         freqk = freq / (2.*pi)
         COHE = NP.zeros((nbno, nbno))
         for no1 in range(nbno):
             for no2 in range(nbno):
-                dist_xi = sqrt((XX[no1] - XX[no2])**2 + (YY[no1] - YY[no2])**2)
+#                dist_xi = sqrt((XX[no1] - XX[no2])**2 + (YY[no1] - YY[no2])**2)
+                dist_xi = sqrt(DIST2[no1,no2])
                 p_n2 = 5.1 - 0.51 * log(dist_xi + 10.)
                 pfc = -1.886 + 2.221 * log(4000. / (dist_xi + 1.) + 1.5)
                 term1 = 1. + (freqk * tanh(p_a3 * dist_xi) / (p_a1 * pfc))**p_n1
                 term2 = 1. + (freqk * tanh(p_a3 * dist_xi) / (p_a2 * pfc))**p_n2
                 COHE[no1,no2] = 1. / sqrt(term1 * term2)
-#    rho =0.0
-#    COHE = NP.matrix([[1.0 ,rho ,rho],[rho ,1.0, rho],[rho ,rho, 1.0]])
     return COHE
 
 def get_group_nom_coord(group_inter, nom_mail):
@@ -102,6 +107,21 @@ def get_group_nom_coord(group_inter, nom_mail):
     coord_no_interf = COORD_3D[liste_no_interf]
     return liste_nom_no_int, coord_no_interf
 
+def calc_dist2(noe_interf):
+    XX = noe_interf[:,0]
+    YY = noe_interf[:,1]
+    nbno = len(XX)
+    XN=NP.repeat(XX, nbno)
+    YN=NP.repeat(YY, nbno)
+    XR=NP.reshape(XN, (nbno, nbno))
+    YR=NP.reshape(YN, (nbno, nbno))
+    XRT = NP.transpose(XR)
+    YRT = NP.transpose(YR)
+    DX = XR - XRT
+    DY = YR - YRT
+    DIST = DX**2 + DY**2
+    return DIST
+      
 
 # -------------------------------------------------------------------
 # CORRELATION MATRIX
