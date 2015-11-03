@@ -16,17 +16,16 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mmmres(noma, inst, ds_contact, depplu,&
-                      depdel, sddisc, veasse, cnsinr, cnsper)
+    subroutine mmmres(mesh       , time_incr, ds_contact, disp_cumu_inst, sddisc, &
+                      hval_veasse, cnsinr   , cnsper)
         use NonLin_Datastructure_type
-        character(len=8) :: noma
-        real(kind=8) :: inst(*)
+        character(len=8), intent(in) :: mesh
+        real(kind=8), intent(in) :: time_incr
         type(NL_DS_Contact), intent(in) :: ds_contact
-        character(len=19) :: depplu
-        character(len=19) :: depdel
-        character(len=19) :: sddisc
-        character(len=19) :: veasse(*)
-        character(len=19) :: cnsinr
-        character(len=19) :: cnsper
+        character(len=19), intent(in) :: disp_cumu_inst
+        character(len=19), intent(in) :: sddisc
+        character(len=19), intent(in) :: hval_veasse(*)
+        character(len=19), intent(in) :: cnsinr
+        character(len=19), intent(in) :: cnsper
     end subroutine mmmres
 end interface

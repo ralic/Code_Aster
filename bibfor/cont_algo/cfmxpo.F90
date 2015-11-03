@@ -1,4 +1,4 @@
-subroutine cfmxpo(mesh  , model_   , ds_contact, nume_inst  , sddisc, &
+subroutine cfmxpo(mesh  , model_   , ds_contact, nume_inst  , sddisc,&
                   sdstat, hval_algo, hval_incr , hval_veasse)
 !
 use NonLin_Datastructure_type
@@ -6,14 +6,11 @@ use NonLin_Datastructure_type
 implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/cfdeco.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/cfmxre.h"
 #include "asterfort/cfverl.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/mmdeco.h"
 #include "asterfort/xmdeco.h"
 !
@@ -35,51 +32,48 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    type(NL_DS_Contact), intent(in) :: ds_contact
-    character(len=24), intent(in) :: sdstat
     character(len=8), intent(in) :: mesh
+    character(len=*), intent(in) :: model_
+    character(len=24), intent(in) :: sdstat
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    integer, intent(in) :: nume_inst
     character(len=19), intent(in) :: sddisc
     character(len=19), intent(in) :: hval_algo(*)
-    character(len=19), intent(in) :: hval_veasse(*) 
     character(len=19), intent(in) :: hval_incr(*)
-    character(len=*), intent(in) :: model_
-    integer, intent(in) :: nume_inst
+    character(len=19), intent(in) :: hval_veasse(*)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (POST_TRAITEMENT)
+! Contact
 !
-! POST_TRAITEMENT DU CONTACT (TOUTES METHODES)
+! Post-treatment for contact
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! In  ds_contact       : datastructure for contact management
-! In  model            : name of model
 ! In  mesh             : name of mesh
-! In  nume_inst        : index of current step time
-! In  sddisc           : datastructure for time discretization
+! In  model            : name of model
 ! In  sdstat           : datastructure for statistics
-! In  hval_incr        : hat-variable for incremental values fields
+! In  ds_contact       : datastructure for contact management
+! In  nume_inst        : index of current time step
+! In  sddisc           : datastructure for discretization
 ! In  hval_algo        : hat-variable for algorithms fields
+! In  hval_incr        : hat-variable for incremental values fields
 ! In  hval_veasse      : hat-variable for vectors (node fields)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: l_cont_disc, l_cont_cont, l_all_verif, l_cont_xfem
-    character(len=8) :: model
+    aster_logical :: l_cont_cont, l_cont_disc, l_cont_xfem, l_all_verif, l_cont_lac
 !
-! ----------------------------------------------------------------------
-!
-    model = model_
-!
-! --- TYPE DE CONTACT
+! --------------------------------------------------------------------------------------------------
 !
     l_cont_cont = cfdisl(ds_contact%sdcont_defi,'FORMUL_CONTINUE')
     l_cont_disc = cfdisl(ds_contact%sdcont_defi,'FORMUL_DISCRETE')
-    l_all_verif = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF')
     l_cont_xfem = cfdisl(ds_contact%sdcont_defi,'FORMUL_XFEM')
+    l_cont_lac  = .false._1
+!   l_cont_lac  = cfdisl(ds_contact%sdcont_defi, 'FORMUL_LAC')
+    l_all_verif = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF') 
 !
-! --- GESTION DE LA  DECOUPE
+! - Time step cut management
 !
     if (.not.l_all_verif) then
         if (l_cont_disc) then
@@ -88,18 +82,20 @@ implicit none
             call mmdeco(ds_contact)
         else if (l_cont_xfem) then
             call xmdeco(ds_contact)
+        else if (l_cont_lac) then
+            ASSERT(.false.)
         endif
     endif
 !
-! --- VERIFICATION FACETTISATION
+! - Check normals
 !
-    if (l_cont_disc .or. l_cont_cont) then
+    if (l_cont_cont .or. l_cont_disc) then
         call cfverl(ds_contact)
     endif
 !
-! --- REMPLISSAGE DU CHAM_NO CONT_NOEU ET PERCUSSION
+! - Save post-treatment fields for contact
 !
-    call cfmxre(mesh, model, sdstat, ds_contact,nume_inst,&
+    call cfmxre(mesh  , model_   , sdstat   , ds_contact , nume_inst,&
                 sddisc, hval_algo, hval_incr, hval_veasse)
 !
 end subroutine

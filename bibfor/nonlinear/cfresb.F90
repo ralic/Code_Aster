@@ -1,6 +1,9 @@
-subroutine cfresb(ndim, lag2d, typlia, fctf, tang,&
+subroutine cfresb(ndim, lag2d, typlia, fctf, tau1, tau2,&
                   rtx, rty, rtz)
 !
+implicit none
+!
+#include "asterf_types.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,14 +22,11 @@ subroutine cfresb(ndim, lag2d, typlia, fctf, tang,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
     integer :: ndim
     aster_logical :: lag2d
     character(len=2) :: typlia
     real(kind=8) :: fctf(3)
-    real(kind=8) :: tang(6)
+    real(kind=8) :: tau1(3), tau2(3)
     real(kind=8) :: rtx
     real(kind=8) :: rty
     real(kind=8) :: rtz
@@ -60,39 +60,39 @@ subroutine cfresb(ndim, lag2d, typlia, fctf, tang,&
 ! ----------------------------------------------------------------------
 !
     if (lag2d) then
-        proj1 = fctf(1) * tang(1) + fctf(2) * tang(2)
-        rtx = proj1 * tang(1)
-        rty = proj1 * tang(2)
+        proj1 = fctf(1) * tau1(1) + fctf(2) * tau1(2)
+        rtx = proj1 * tau1(1)
+        rty = proj1 * tau1(2)
         goto 100
     endif
 !
     if ((typlia.eq.'F0') .or. (typlia.eq.'GL')) then
-        proj1 = fctf(1) * tang(1) + fctf(2) * tang(2)
-        proj2 = fctf(1) * tang(4) + fctf(2) * tang(5)
+        proj1 = fctf(1) * tau1(1) + fctf(2) * tau1(2)
+        proj2 = fctf(1) * tau2(1) + fctf(2) * tau2(2)
         if (ndim .eq. 3) then
-            proj1 = proj1 + fctf(3) * tang(3)
-            proj2 = proj2 + fctf(3) * tang(6)
+            proj1 = proj1 + fctf(3) * tau1(3)
+            proj2 = proj2 + fctf(3) * tau2(3)
         endif
     else if (typlia.eq.'F1') then
-        proj1 = fctf(1) * tang(1) + fctf(2) * tang(2)
+        proj1 = fctf(1) * tau1(1) + fctf(2) * tau1(2)
         proj2 = 0.d0
         if (ndim .eq. 3) then
-            proj1 = proj1 + fctf(3) * tang(3)
+            proj1 = proj1 + fctf(3) * tau1(3)
         endif
     else if (typlia.eq.'F2') then
         proj1 = 0.d0
-        proj2 = fctf(1) * tang(4) + fctf(2) * tang(5)
+        proj2 = fctf(1) * tau2(1) + fctf(2) * tau2(2)
         if (ndim .eq. 3) then
             proj1 = 0.d0
-            proj2 = proj2 + fctf(3) * tang(6)
+            proj2 = proj2 + fctf(3) * tau2(3)
         endif
     endif
 !
-    rtx = proj1 * tang(1) + proj2 * tang(4)
-    rty = proj1 * tang(2) + proj2 * tang(5)
+    rtx = proj1 * tau1(1) + proj2 * tau2(1)
+    rty = proj1 * tau1(2) + proj2 * tau2(2)
     rtz = 0.d0
     if (ndim .eq. 3) then
-        rtz = proj1 * tang(3) + proj2 * tang(6)
+        rtz = proj1 * tau1(3) + proj2 * tau2(3)
     endif
 !
 100 continue

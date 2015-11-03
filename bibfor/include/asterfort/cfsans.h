@@ -16,11 +16,12 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfsans(defico, npt, jeux, enti, zone)
-        character(len=24) :: defico
-        integer :: npt
-        character(len=24) :: jeux
-        character(len=24) :: enti
-        character(len=24) :: zone
+    subroutine cfsans(ds_contact, nt_ncomp_poin, v_ncomp_jeux, v_ncomp_enti, v_ncomp_zone)
+        use NonLin_Datastructure_type
+        type(NL_DS_Contact), intent(in) :: ds_contact
+        integer, intent(in) :: nt_ncomp_poin
+        real(kind=8), pointer, intent(in) :: v_ncomp_jeux(:)
+        character(len=16), pointer, intent(in) :: v_ncomp_enti(:)
+        integer, pointer, intent(in) :: v_ncomp_zone(:)
     end subroutine cfsans
 end interface

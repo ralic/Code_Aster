@@ -1,4 +1,11 @@
-subroutine mmnorm(ndim, tau1, tau2, norm, noor)
+subroutine mmnorm(ndim, tau1, tau2, norm, noor_)
+!
+implicit none
+!
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/normev.h"
+#include "asterfort/provec.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,16 +25,11 @@ subroutine mmnorm(ndim, tau1, tau2, norm, noor)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterc/r8prem.h"
-#include "asterfort/assert.h"
-#include "asterfort/normev.h"
-#include "asterfort/provec.h"
-    integer :: ndim
-    real(kind=8) :: tau1(3)
-    real(kind=8) :: tau2(3)
-    real(kind=8) :: norm(3)
-    real(kind=8) :: noor
+    integer, intent(in) :: ndim
+    real(kind=8), intent(in) :: tau1(3)
+    real(kind=8), intent(in) :: tau2(3)
+    real(kind=8), intent(out) :: norm(3)
+    real(kind=8), optional, intent(out) :: noor_
 !
 ! ----------------------------------------------------------------------
 !
@@ -50,7 +52,7 @@ subroutine mmnorm(ndim, tau1, tau2, norm, noor)
 !
 ! ----------------------------------------------------------------------
 !
-!
+    real(kind=8) :: noor
 !
 ! ----------------------------------------------------------------------
 !
@@ -66,5 +68,8 @@ subroutine mmnorm(ndim, tau1, tau2, norm, noor)
     endif
 !
     call normev(norm, noor)
+    if (present(noor_)) then
+        noor_ = noor
+    endif
 !
 end subroutine

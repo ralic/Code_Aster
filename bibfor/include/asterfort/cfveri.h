@@ -16,18 +16,18 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfveri(mesh, ds_contact, newgeo, sdappa, npt   , &
-                      jeux, loca      , enti  , zone  , instan)
+    subroutine cfveri(mesh        , ds_contact  , newgeo      , sdappa      , nt_ncomp_poin,&
+                      v_ncomp_jeux, v_ncomp_loca, v_ncomp_enti, v_ncomp_zone, time_curr)
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
         type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19), intent(in) :: newgeo
         character(len=19), intent(in) :: sdappa
-        character(len=24), intent(in) :: jeux
-        character(len=24), intent(in) :: loca
-        character(len=24), intent(in) :: enti
-        character(len=24), intent(in) :: zone
-        integer, intent(in) :: npt
-        real(kind=8), intent(in) :: instan
+        integer, intent(in) :: nt_ncomp_poin
+        real(kind=8), pointer, intent(in) :: v_ncomp_jeux(:)
+        integer, pointer, intent(in) :: v_ncomp_loca(:)
+        character(len=16), pointer, intent(in) :: v_ncomp_enti(:)
+        integer, pointer, intent(in) :: v_ncomp_zone(:)
+        real(kind=8), intent(in) :: time_curr
     end subroutine cfveri
 end interface

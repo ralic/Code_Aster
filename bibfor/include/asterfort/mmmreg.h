@@ -16,14 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mmmreg(noma, defico, resoco, depcn, ndd1,&
-                      glie, glim)
-        character(len=8) :: noma
-        character(len=24) :: defico
-        character(len=24) :: resoco
-        character(len=19) :: depcn
-        integer :: ndd1
-        character(len=24) :: glie
-        character(len=24) :: glim
+    subroutine mmmreg(mesh        , ds_contact  , v_disp_cumu, nb_dof,&
+                      v_slav_slide, v_mast_slide)
+        use NonLin_Datastructure_type
+        character(len=8), intent(in) :: mesh
+        type(NL_DS_Contact), intent(in) :: ds_contact
+        integer, intent(in) :: nb_dof
+        real(kind=8), pointer, intent(in) :: v_disp_cumu(:)
+        real(kind=8), pointer, intent(inout) :: v_slav_slide(:)
+        real(kind=8), pointer, intent(inout) :: v_mast_slide(:)
     end subroutine mmmreg
 end interface

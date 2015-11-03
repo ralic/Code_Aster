@@ -16,19 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfresu(noma, numins, inst, sddisc, ds_contact,&
-                      depplu, depdel, ddepla, cnsinr,&
-                      cnsper)
+    subroutine cfresu(time_incr, sddisc, ds_contact, disp_cumu_inst, disp_iter,&
+                      cnsinr   , cnsper)
         use NonLin_Datastructure_type
-        character(len=8) :: noma
-        integer :: numins
-        real(kind=8) :: inst(*)
-        character(len=19) :: sddisc
+        real(kind=8), intent(in) :: time_incr
+        character(len=19), intent(in) :: sddisc
         type(NL_DS_Contact), intent(in) :: ds_contact
-        character(len=19) :: depplu
-        character(len=19) :: depdel
-        character(len=19) :: ddepla
-        character(len=19) :: cnsinr
-        character(len=19) :: cnsper
+        character(len=19), intent(in) :: disp_cumu_inst
+        character(len=19), intent(in) :: disp_iter
+        character(len=19), intent(in) :: cnsinr
+        character(len=19), intent(in) :: cnsper
     end subroutine cfresu
 end interface

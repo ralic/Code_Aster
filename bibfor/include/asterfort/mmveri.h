@@ -16,18 +16,18 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mmveri(noma, ds_contact, newgeo, sdappa,&
-                      npt, jeux, loca, enti, zone,instan)
+    subroutine mmveri(mesh        , ds_contact  , newgeo      , sdappa      , nt_ncomp_poin,&
+                      v_ncomp_jeux, v_ncomp_loca, v_ncomp_enti, v_ncomp_zone, time_curr)
         use NonLin_Datastructure_type
-        character(len=8) :: noma
+        character(len=8), intent(in) :: mesh
         type(NL_DS_Contact), intent(in) :: ds_contact
-        character(len=19) :: newgeo
-        character(len=19) :: sdappa
-        integer :: npt
-        character(len=24) :: jeux
-        character(len=24) :: loca
-        character(len=24) :: enti
-        character(len=24) :: zone
-        real(kind=8) :: instan
+        character(len=19), intent(in) :: newgeo
+        character(len=19), intent(in) :: sdappa
+        integer, intent(in) :: nt_ncomp_poin
+        real(kind=8), pointer, intent(in) :: v_ncomp_jeux(:)
+        integer, pointer, intent(in) :: v_ncomp_loca(:)
+        character(len=16), pointer, intent(in) :: v_ncomp_enti(:)
+        integer, pointer, intent(in) :: v_ncomp_zone(:)
+        real(kind=8), intent(in) :: time_curr
     end subroutine mmveri
 end interface

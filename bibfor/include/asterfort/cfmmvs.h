@@ -16,12 +16,12 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfmmvs(ds_contact, npt, jeux, loca, zone)
+    subroutine cfmmvs(ds_contact, nt_ncomp_poin, v_ncomp_jeux, v_ncomp_loca, v_ncomp_zone)
         use NonLin_Datastructure_type
         type(NL_DS_Contact), intent(in) :: ds_contact
-        integer :: npt
-        character(len=24) :: jeux
-        character(len=24) :: loca
-        character(len=24) :: zone
+        integer, intent(in) :: nt_ncomp_poin
+        real(kind=8), pointer, intent(in) :: v_ncomp_jeux(:)
+        integer, pointer, intent(in) :: v_ncomp_loca(:)
+        integer, pointer, intent(in) :: v_ncomp_zone(:)
     end subroutine cfmmvs
 end interface

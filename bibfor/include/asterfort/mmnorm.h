@@ -16,11 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mmnorm(ndim, tau1, tau2, norm, noor)
-        integer :: ndim
-        real(kind=8) :: tau1(3)
-        real(kind=8) :: tau2(3)
-        real(kind=8) :: norm(3)
-        real(kind=8) :: noor
+    subroutine mmnorm(ndim, tau1, tau2, norm, noor_)
+        integer, intent(in) :: ndim
+        real(kind=8), intent(in) :: tau1(3)
+        real(kind=8), intent(in) :: tau2(3)
+        real(kind=8), intent(out) :: norm(3)
+        real(kind=8), optional, intent(out) :: noor_
     end subroutine mmnorm
 end interface

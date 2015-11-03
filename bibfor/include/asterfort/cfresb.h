@@ -18,13 +18,13 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine cfresb(ndim, lag2d, typlia, fctf, tang,&
+    subroutine cfresb(ndim, lag2d, typlia, fctf, tau1, tau2,&
                       rtx, rty, rtz)
         integer :: ndim
         aster_logical :: lag2d
         character(len=2) :: typlia
         real(kind=8) :: fctf(3)
-        real(kind=8) :: tang(6)
+        real(kind=8) :: tau1(3), tau2(3)
         real(kind=8) :: rtx
         real(kind=8) :: rty
         real(kind=8) :: rtz
