@@ -254,6 +254,10 @@ implicit none
         character(len=19) :: field_input
 ! ----- NUME_DOF for discrete friction methods 
         character(len=14) :: nume_dof_frot
+! ----- Field for CONT_NODE 
+        character(len=19) :: field_cont_node
+        character(len=19) :: fields_cont_node
+        character(len=19) :: field_cont_perc    
 ! ----- Loops
         integer           :: nb_loop
         integer           :: nb_loop_maxi = 3

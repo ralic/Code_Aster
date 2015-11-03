@@ -68,12 +68,11 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=19) :: xindco, xcohes, xseuco
-    character(len=24) :: nochco, sdcont_solv
-    character(len=24), pointer :: cont_sdname(:) => null()
+    character(len=24) :: sdcont_solv
     character(len=19) :: vecfla, vecvib, vecsta
     character(len=19) :: depabs, vitabs, accabs
     real(kind=8) :: r8bid
-    integer :: ibid, iret
+    integer :: ibid
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -109,12 +108,7 @@ implicit none
         algo_name = compor
         init_name = ' '
     else if (field_type.eq.'CONT_NOEU') then
-        nochco = sdcont_solv(1:14)//'.NOCHCO'
-        call jeexin(nochco, iret)
-        if (iret.ne.0) then
-            call jeveuo(nochco, 'L', vk24 = cont_sdname)
-            algo_name = cont_sdname(2)(1:19)
-        endif
+        algo_name = ds_contact%field_cont_node
         init_name = ' '
     else if (field_type.eq.'INDC_ELEM') then
         algo_name = xindco

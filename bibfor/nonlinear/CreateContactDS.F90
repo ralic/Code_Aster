@@ -105,4 +105,10 @@ implicit none
         ds_contact%loop(i_loop)%counter = 0
     end do
 !
+! - Field for CONT_NODE
+!
+    ds_contact%field_cont_node  = ' '
+    ds_contact%fields_cont_node = ' '
+    ds_contact%field_cont_perc  = ' '
+!
 end subroutine

@@ -75,8 +75,6 @@ implicit none
     character(len=19) :: ddepla, depdel, depplu
     real(kind=8) :: inst(2), instan
     character(len=19) :: prno
-    character(len=24) :: nochco
-    integer :: jnochc
     character(len=19) :: cnsinr, cnsper, cnoinr
     integer :: ibid, iret
 !
@@ -93,13 +91,11 @@ implicit none
     lexiv = cfdisl(ds_contact%sdcont_defi,'EXIS_VERIF')
     lallv = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF')
 !
-! --- NOM DES CHAM_NO
+! - Get fields name
 !
-    nochco = ds_contact%sdcont_solv(1:14)//'.NOCHCO'
-    call jeveuo(nochco, 'L', jnochc)
-    cnsinr = zk24(jnochc+1-1)(1:19)
-    cnoinr = zk24(jnochc+2-1)(1:19)
-    cnsper = zk24(jnochc+3-1)(1:19)
+    cnsinr = ds_contact%fields_cont_node
+    cnoinr = ds_contact%field_cont_node
+    cnsper = ds_contact%field_cont_perc
 !
 ! --- TOUT VERIF -> ON SAUTE
 !

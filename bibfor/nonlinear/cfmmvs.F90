@@ -1,7 +1,8 @@
-subroutine cfmmvs(defico, resoco, npt, jeux, loca,&
-                  zone)
+subroutine cfmmvs(ds_contact, npt, jeux, loca, zone)
 !
-    implicit none
+use NonLin_Datastructure_type
+!
+implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -31,8 +32,7 @@ subroutine cfmmvs(defico, resoco, npt, jeux, loca,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=24) :: defico
-    character(len=24) :: resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=24) :: jeux, loca, zone
     integer :: npt
 !
@@ -44,8 +44,7 @@ subroutine cfmmvs(defico, resoco, npt, jeux, loca,&
 !
 ! ----------------------------------------------------------------------
 !
-!
-! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  JEUX   : NOM DE LA SD STOCKANT LE JEU
 ! IN  LOCA   : NUMERO DU NOEUD POUR LE POINT DE CONTACT (-1 SI LE POINT
 !              N'EST PAS UN NOEUD ! )
@@ -53,11 +52,6 @@ subroutine cfmmvs(defico, resoco, npt, jeux, loca,&
 !              POINT
 ! IN  NPT    : NOMBRE DE POINTS EN MODE VERIF
 !
-!
-!
-!
-    character(len=24) :: nochco
-    integer :: jnochc
     character(len=19) :: cnsinr
     integer :: jcnslr
     integer :: jjeux, jloca, jzone
@@ -76,11 +70,9 @@ subroutine cfmmvs(defico, resoco, npt, jeux, loca,&
 !
     zresu = cfmmvd('ZRESU')
 !
-! --- NOM DU CHAM_NO CONT_NOEU
+! - Get fields name
 !
-    nochco = resoco(1:14)//'.NOCHCO'
-    call jeveuo(nochco, 'L', jnochc)
-    cnsinr = zk24(jnochc+1-1)(1:19)
+    cnsinr = ds_contact%fields_cont_node
 !
 ! --- ACCES AU CHAM_NO_S POUR LE CONTACT
 !
@@ -103,7 +95,7 @@ subroutine cfmmvs(defico, resoco, npt, jeux, loca,&
         numnoe = zi(jloca+ipt-1)
         lsauv = .true.
         izone = zi(jzone+ipt-1)
-        jeuref = mminfr(defico,'TOLE_INTERP',izone)
+        jeuref = mminfr(ds_contact%sdcont_defi,'TOLE_INTERP',izone)
 !
 ! ----- ETAT DU CONTACT
 !

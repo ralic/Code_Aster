@@ -101,7 +101,15 @@ implicit none
         l_form_lac     = cont_form .eq. 5
         l_cont         = cont_form .ne. 4
         l_cont_xfem_gg = cfdisl(sdcont_defi, 'CONT_XFEM_GG')
-        l_edge_elim    = cfdisl(sdcont_defi, 'ELIM_ARETE')
+        l_edge_elim    = cfdisl(sdcont_defi, 'ELIM_ARETE')    
+!
+! ----- Field for CONT_NODE
+!
+        if (l_form_cont .or. l_form_disc .or. l_form_xfem) then
+            ds_contact%field_cont_node  = '&&CFMXR0.CNOINR'
+            ds_contact%fields_cont_node = '&&CFMXR0.CNSINR'
+            ds_contact%field_cont_perc  = '&&CFMXR0.CNSPER'
+        endif
 !
 ! ----- Special for discrete contact
 !

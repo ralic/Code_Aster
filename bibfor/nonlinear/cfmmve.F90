@@ -138,8 +138,7 @@ implicit none
 !
 ! --- SAUVEGARDE DANS LA SD RESULTAT
 !
-    call cfmmvs(ds_contact%sdcont_defi, ds_contact%sdcont_solv, npt, jeux, loca,&
-                zone)
+    call cfmmvs(ds_contact, npt, jeux, loca, zone)
 !
 ! --- NETTOYAGE
 !

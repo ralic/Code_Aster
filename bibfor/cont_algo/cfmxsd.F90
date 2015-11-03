@@ -90,11 +90,13 @@ implicit none
 !
 ! - Create CONT_NOEU datastructure
 !
-    call cfmxr0(ds_contact, mesh)
+    if (l_cont_cont .or. l_cont_disc .or. l_cont_xfem) then
+        call cfmxr0(mesh, ds_contact)
+    endif
 !
 ! - Create pairing datastructure
 !
-    if (l_cont_cont.or.l_cont_disc) then
+    if (l_cont_cont .or. l_cont_disc) then
         call cfmmap(mesh, ds_contact)
     endif
 !

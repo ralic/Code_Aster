@@ -1,4 +1,4 @@
-subroutine cfmxr0(ds_contact, mesh)
+subroutine cfmxr0(mesh, ds_contact)
 !
 use NonLin_Datastructure_type
 !
@@ -39,8 +39,8 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=8), intent(in) :: mesh
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,22 +50,19 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  ds_contact       : datastructure for contact management
 ! In  mesh             : name of mesh
+! In  ds_contact       : datastructure for contact management
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer, parameter :: nb_cmp = 30
-    integer, parameter:: nb_per = 4
-!
+    integer, parameter :: nb_per = 4
     integer :: zresu, zperc
     integer :: ifm, niv
     integer :: i_zone, i_cmp, i_node_slav, ibid
     integer :: nb_node_slav, node_slav_indx(1), node_slav_nume(1)
     integer :: nb_node_mesh, i_node, node_nume
     integer :: nb_cont_zone
-    character(len=24) :: sdcont_nochco
-    character(len=24), pointer :: v_sdcont_nochco(:) => null()
     character(len=19) :: cnsinr, cnsper, cnoinr
     integer :: jcnslr
     integer :: jcnslp
@@ -102,21 +99,13 @@ implicit none
     nb_cont_zone = cfdisi(ds_contact%sdcont_defi,'NZOCO' )
     call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi=nb_node_mesh)
 !
-! - Initializations
+! - Get fields name
 !
-    cnsinr = '&&CFMXR0.CNSINR'
-    cnoinr = '&&CFMXR0.CNOINR'
-    cnsper = '&&CFMXR0.CNSPER'
+    cnsinr = ds_contact%fields_cont_node
+    cnoinr = ds_contact%field_cont_node
+    cnsper = ds_contact%field_cont_perc
 !
-! - Save fields name
-!
-    sdcont_nochco = ds_contact%sdcont_solv(1:14)//'.NOCHCO'
-    call wkvect(sdcont_nochco, 'V V K24', 3, vk24 = v_sdcont_nochco)
-    v_sdcont_nochco(1) = cnsinr
-    v_sdcont_nochco(2) = cnoinr
-    v_sdcont_nochco(3) = cnsper
-!
-! - Sizex
+! - Sizes
 !
     zresu = cfmmvd('ZRESU')
     zperc = cfmmvd('ZPERC')
