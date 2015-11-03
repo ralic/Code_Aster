@@ -36,7 +36,7 @@ subroutine rslesd(result, nuord, modele, materi, carele,&
 ! person_in_charge: jacques.pellet at edf.fr
 !
 !     BUT:
-!         LIRE OU ECRIRE DES NOMS DE CONCEPT DE LA SD RESULTAT ET
+!         LIRE DES NOMS DE CONCEPT DE LA SD RESULTAT ET
 !         D'EXPLOITER DES OBJETS DE LA SD CORRESPONDANT AUX CHARGES.
 !
 !
@@ -126,11 +126,6 @@ subroutine rslesd(result, nuord, modele, materi, carele,&
         endif
     endif
 !
-    if (nomsd .eq. ' ' .and. nomlu .ne. ' ') then
-        call rsadpa(result, 'E', 1, 'MODELE', nuord,&
-                    0, sjv=jpara, styp=k8b)
-        zk8(jpara)=modele
-    endif
 !
 !==========================================================
 !
@@ -167,11 +162,6 @@ subroutine rslesd(result, nuord, modele, materi, carele,&
         endif
     endif
 !
-    if (nomsd .eq. ' ' .and. nomlu .ne. ' ') then
-        call rsadpa(result, 'E', 1, 'CARAELEM', nuord,&
-                    0, sjv=jpara, styp=k8b)
-        zk8(jpara)=carele
-    endif
 !
 !==========================================================
 !
@@ -210,11 +200,6 @@ subroutine rslesd(result, nuord, modele, materi, carele,&
         endif
     endif
 !
-    if (nomsd .eq. ' ' .and. nomlu .ne. ' ') then
-        call rsadpa(result, 'E', 1, 'CHAMPMAT', nuord,&
-                    0, sjv=jpara, styp=k8b)
-        zk8(jpara)=materi
-    endif
 !
 !
 !==========================================================
