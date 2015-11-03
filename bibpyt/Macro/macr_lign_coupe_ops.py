@@ -858,6 +858,7 @@ def macr_lign_coupe_ops(self, RESULTAT, CHAM_GD, UNITE_MAILLAGE, LIGN_COUPE,
                 argsup['VECT_ORIE'] = m2.get('VECT_ORIE')
 
             __mailla = DEFI_GROUP(reuse=__mailla, MAILLAGE=__mailla,
+                                  DETR_GROUP_NO=_F(NOM=str(m['GROUP_MA'])),
                                   CREA_GROUP_NO=_F(OPTION='NOEUD_ORDO', NOM=str(m['GROUP_MA']), GROUP_MA=m['GROUP_MA'], **argsup))
 
             collgrno = aster.getcolljev(__mailla.nom.ljust(8) + '.GROUPENO')

@@ -16,10 +16,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(
-              NIV_PUB_WEB='INTERNET',
-              VISU_EFICAS='OUI',),
-      DEBUG=_F(SDVERI='OUI',),);
+DEBUT(CODE=_F( NIV_PUB_WEB='INTERNET', VISU_EFICAS='OUI',),DEBUG=_F(SDVERI='OUI',))
 #
 # Remarque : ce cas est analogue a WTNP116B, mais avec la structure alignee
 #            selon l'axe Ox
@@ -121,7 +118,6 @@ MAIL_00=CREA_MAILLAGE(MAILLAGE=MAIL_AUX,
 DEFI_GROUP(reuse =MAIL_00,  MAILLAGE=MAIL_00,
            CREA_GROUP_NO=(
               _F(NOEUD='N14',    NOM='POURTEST',),
-            # _F(GROUP_MA='GM3', NOM='GM3',),
            ))
 #
 # 3. Calcul en hydro-mecanique permanent sur le maillage 0
@@ -259,6 +255,12 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=2,
 # 5. Post-traitement : graphique de la pression et des deplacements
 #
 # 5.2. Recuperation des valeurs de pression et deplacement longitudinal
+
+
+# Pour verifier la correction de issue24423 :
+DEFI_GROUP(reuse =MAIL_00, MAILLAGE=MAIL_00,
+           CREA_GROUP_NO= _F(GROUP_MA='GM3', NOM='GM3',))
+
 V_X_00=MACR_LIGN_COUPE(RESULTAT=RESU_00, NOM_CHAM='DEPL', INST=400000.0,
                      LIGN_COUPE=(
                         _F(TYPE='GROUP_MA',  MAILLAGE=MAIL_00, GROUP_MA='GM3',
