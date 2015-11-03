@@ -6,13 +6,11 @@ implicit none
 #include "asterfort/apcopt.h"
 #include "asterfort/apinfi.h"
 #include "asterfort/aporth.h"
-#include "asterfort/appari.h"
-#include "asterfort/apparr.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdisr.h"
+#include "asterfort/mminfi.h"
+#include "asterfort/mminfr.h"
 #include "asterfort/approj.h"
-#include "asterfort/apzoni.h"
-#include "asterfort/apzonl.h"
-#include "asterfort/apzonr.h"
-#include "asterfort/apzonv.h"
 #include "asterfort/assert.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jeveuo.h"
@@ -94,11 +92,11 @@ implicit none
 !
 ! - Get parameters
 !
-    call appari(sdappa, 'APPARI_NBZONE' , nb_cont_zone)
-    call appari(sdappa, 'PROJ_NEWT_ITER', iter_maxi)
-    call apparr(sdappa, 'PROJ_NEWT_RESI', epsi_maxi)
-    call appari(sdappa, 'APPARI_NDIMG'  , model_ndim)
-    call appari(sdappa, 'APPARI_NTPT'   , nt_poin)
+    nb_cont_zone = cfdisi(sdcont_defi,'NZOCO' )
+    iter_maxi    = cfdisi(sdcont_defi,'PROJ_NEWT_ITER')
+    epsi_maxi    = cfdisr(sdcont_defi,'PROJ_NEWT_RESI')
+    model_ndim   = cfdisi(sdcont_defi,'NDIM'  )
+    nt_poin      = cfdisi(sdcont_defi,'NTPT'  )
 !
 ! - Loop on contact zones
 !
@@ -107,13 +105,15 @@ implicit none
 !
 ! ----- Parameters on current zone
 !
-        call apzoni(sdappa, i_zone, 'NBPT'          , nb_poin)
-        call apzonl(sdappa, i_zone, 'APPA_MAIT_ESCL', l_pair_masl)
-        call apzonl(sdappa, i_zone, 'DIRE_APPA_FIXE', l_pair_dire)
+        nb_poin     = mminfi(sdcont_defi, 'NBPT'     , i_zone)
+        l_pair_masl = mminfi(sdcont_defi, 'APPARIEMENT', i_zone).eq.1
+        l_pair_dire = mminfi(sdcont_defi, 'TYPE_APPA'  , i_zone).eq.1
         if (l_pair_dire) then
-            call apzonv(sdappa, i_zone, 'DIRE_APPA_VECT', pair_vect)
+            pair_vect(1) = mminfr(sdcont_defi, 'TYPE_APPA_DIRX', i_zone)
+            pair_vect(2) = mminfr(sdcont_defi, 'TYPE_APPA_DIRY', i_zone)
+            pair_vect(3) = mminfr(sdcont_defi, 'TYPE_APPA_DIRZ', i_zone)            
         endif
-        call apzonr(sdappa, i_zone, 'TOLE_PROJ_EXT', tole_proj_ext)
+        tole_proj_ext = mminfr(sdcont_defi, 'TOLE_PROJ_EXT', i_zone)
 !
 ! ----- Loop on points
 !

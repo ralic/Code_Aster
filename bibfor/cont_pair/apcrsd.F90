@@ -1,10 +1,9 @@
-subroutine apcrsd(sdappa      , nb_cont_zone, nt_poin, nb_cont_elem, nb_cont_node,&
+subroutine apcrsd(sdappa      , nt_poin     , nb_cont_elem, nb_cont_node,&
                   nt_elem_node, nb_node_mesh)
 !
 implicit none
 !
 #include "jeveux.h"
-#include "asterfort/apmmvd.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jedema.h"
@@ -31,7 +30,6 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=19), intent(in) :: sdappa
-    integer, intent(in) :: nb_cont_zone
     integer, intent(in) :: nt_poin
     integer, intent(in) :: nb_cont_elem
     integer, intent(in) :: nb_cont_node
@@ -47,7 +45,6 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  sdappa           : name of pairing datastructure
-! In  nb_cont_zone     : number of contact zones
 ! In  nt_poin          : total number of points (contact and non-contact)
 ! In  nb_cont_elem     : total number of contact elements
 ! In  nb_cont_node     : total number of contact nodes
@@ -57,7 +54,6 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    integer :: zinzr, zinzi, zinfi, zinfr
     character(len=24) :: sdappa_poin
     real(kind=8), pointer :: v_sdappa_poin(:) => null()
     character(len=24) :: sdappa_infp
@@ -66,14 +62,6 @@ implicit none
     character(len=16), pointer :: v_sdappa_noms(:) => null()
     character(len=24) :: sdappa_appa
     integer, pointer :: v_sdappa_appa(:) => null()
-    character(len=24) :: sdappa_inzi
-    integer, pointer :: v_sdappa_inzi(:) => null()
-    character(len=24) :: sdappa_inzr
-    real(kind=8), pointer :: v_sdappa_inzr(:) => null()
-    character(len=24) :: sdappa_infi
-    integer, pointer :: v_sdappa_infi(:) => null()
-    character(len=24) :: sdappa_infr
-    real(kind=8), pointer :: v_sdappa_infr(:) => null()
     character(len=24) :: sdappa_dist
     real(kind=8), pointer :: v_sdappa_dist(:) => null()
     character(len=24) :: sdappa_tau1
@@ -96,13 +84,6 @@ implicit none
     if (niv .ge. 2) then
         write (ifm,*) '<PAIRING> Create datastructure'
     endif
-!
-! - Length
-!
-    zinzr = apmmvd('ZINZR')
-    zinzi = apmmvd('ZINZI')
-    zinfr = apmmvd('ZINFR')
-    zinfi = apmmvd('ZINFI')
 !
 ! - Datastructure for pairing results
 !
@@ -132,20 +113,6 @@ implicit none
 !
     sdappa_infp = sdappa(1:19)//'.INFP'
     call wkvect(sdappa_infp, 'V V I', nt_poin, vi = v_sdappa_infp)
-!
-! - Datastructures for general parameters
-!
-    sdappa_infi = sdappa(1:19)//'.INFI'
-    call wkvect(sdappa_infi, 'V V I', zinfi, vi = v_sdappa_infi)
-    sdappa_infr = sdappa(1:19)//'.INFR'
-    call wkvect(sdappa_infr, 'V V R', zinfr, vr = v_sdappa_infr)
-!
-! - Datastructures for zone parameters
-!
-    sdappa_inzi = sdappa(1:19)//'.INZI'
-    call wkvect(sdappa_inzi, 'V V I', zinzi*nb_cont_zone, vi = v_sdappa_inzi)
-    sdappa_inzr = sdappa(1:19)//'.INZR'
-    call wkvect(sdappa_inzr, 'V V R', zinzr*nb_cont_zone, vr = v_sdappa_inzr)
 !
 ! - Datastructure for name of contact points
 !

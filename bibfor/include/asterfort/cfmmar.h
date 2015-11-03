@@ -16,15 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfmmar(ds_contact  , nb_cont_zone, model_ndim, nt_poin, nb_cont_elem,&
-                      nb_cont_node, nt_elem_node)
+    subroutine cfmmar(ds_contact, nb_cont_elem, nt_elem_node)
         use NonLin_Datastructure_type
-        type(NL_DS_Contact), intent(in) :: ds_contact
-        integer, intent(in) :: model_ndim
-        integer, intent(in) :: nb_cont_zone
-        integer, intent(in) :: nt_poin    
+        type(NL_DS_Contact), intent(in) :: ds_contact 
         integer, intent(in) :: nb_cont_elem
-        integer, intent(in) :: nb_cont_node
         integer, intent(in) :: nt_elem_node
     end subroutine cfmmar
 end interface

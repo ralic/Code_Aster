@@ -4,7 +4,6 @@ use NonLin_Datastructure_type
 !
 implicit none
 !
-#include "asterfort/apzoni.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfmmex.h"
@@ -104,9 +103,9 @@ implicit none
 !
 ! ----- Get parameters on current zone
 !
-        call apzoni(sdappa, i_zone, 'NBMAE' , nb_elem_slav)
-        call apzoni(sdappa, i_zone, 'JDECME', jdecme)
-        type_inte = mminfi(ds_contact%sdcont_defi,'INTEGRATION',i_zone )
+        nb_elem_slav = mminfi(ds_contact%sdcont_defi, 'NBMAE' , i_zone)
+        jdecme       = mminfi(ds_contact%sdcont_defi, 'JDECME', i_zone)
+        type_inte    = mminfi(ds_contact%sdcont_defi,'INTEGRATION',i_zone )
 !
 ! ----- Loop on slave elements
 !

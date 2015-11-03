@@ -1,10 +1,10 @@
-subroutine apcpou(sdappa, i_zone, elem_name, zone_type, tau1,&
-                  tau2)
+subroutine apcpou(sdcont_defi, i_zone, elem_name, zone_type,&
+                  tau1       , tau2)
 !
 implicit none
 !
-#include "asterfort/apzoni.h"
-#include "asterfort/apzonv.h"
+#include "asterfort/mminfi.h"
+#include "asterfort/mminfr.h"
 #include "asterfort/assert.h"
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
@@ -29,7 +29,7 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=19), intent(in) :: sdappa
+    character(len=24), intent(in) :: sdcont_defi
     integer, intent(in) :: i_zone
     character(len=8), intent(in) :: elem_name
     character(len=4), intent(in) :: zone_type
@@ -44,7 +44,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sdappa           : name of pairing datastructure
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
 ! In  i_zone           : index of contact zone
 ! In  elem_name        : name of element
 ! In  zone_type        : type of zone
@@ -64,11 +64,15 @@ implicit none
 ! - Type of normal
 !
     if (zone_type .eq. 'ESCL') then
-        call apzoni(sdappa, i_zone, 'TYPE_NORM_ESCL', itype)
-        call apzonv(sdappa, i_zone, 'VECT_ESCL', vector)
+        itype = mminfi(sdcont_defi, 'VECT_ESCL', i_zone)
+        vector(1) = mminfr(sdcont_defi, 'VECT_ESCL_DIRX', i_zone)
+        vector(2) = mminfr(sdcont_defi, 'VECT_ESCL_DIRY', i_zone)
+        vector(3) = mminfr(sdcont_defi, 'VECT_ESCL_DIRZ', i_zone)
     else if (zone_type.eq.'MAIT') then
-        call apzoni(sdappa, i_zone, 'TYPE_NORM_MAIT', itype)
-        call apzonv(sdappa, i_zone, 'VECT_MAIT', vector)
+        itype = mminfi(sdcont_defi, 'VECT_MAIT', i_zone)
+        vector(1) = mminfr(sdcont_defi, 'VECT_MAIT_DIRX', i_zone)
+        vector(2) = mminfr(sdcont_defi, 'VECT_MAIT_DIRY', i_zone)
+        vector(3) = mminfr(sdcont_defi, 'VECT_MAIT_DIRZ', i_zone)
     else
         ASSERT(.false.)
     endif

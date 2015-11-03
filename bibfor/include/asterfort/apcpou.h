@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine apcpou(sdappa, i_zone, elem_name, zone_type, tau1,&
-                      tau2)
-        character(len=19), intent(in) :: sdappa
+    subroutine apcpou(sdcont_defi, i_zone, elem_name, zone_type,&
+                      tau1       , tau2)
+        character(len=24), intent(in) :: sdcont_defi
         integer, intent(in) :: i_zone
         character(len=8), intent(in) :: elem_name
         character(len=4), intent(in) :: zone_type

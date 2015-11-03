@@ -4,7 +4,7 @@ use NonLin_Datastructure_type
 !
 implicit none
 !
-#include "asterfort/apzoni.h"
+#include "asterfort/mminfi.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfcorn.h"
 #include "asterfort/cfdisi.h"
@@ -95,9 +95,9 @@ implicit none
 !
 ! ----- Get parameters on current zone
 !
-        call apzoni(sdappa, i_zone, 'NBPT'  , nb_poin)
-        call apzoni(sdappa, i_zone, 'NBNOE' , nb_node_slav)
-        call apzoni(sdappa, i_zone, 'JDECNE', jdecne)
+        nb_poin      = mminfi(ds_contact%sdcont_defi, 'NBPT'  , i_zone)
+        nb_node_slav = mminfi(ds_contact%sdcont_defi, 'NBNOE' , i_zone)
+        jdecne       = mminfi(ds_contact%sdcont_defi, 'JDECNE', i_zone)
         ASSERT(nb_poin .eq. nb_node_slav)
 !
 ! ----- Loop on contact nodes

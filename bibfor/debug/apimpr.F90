@@ -9,9 +9,9 @@ implicit none
 #include "asterfort/apnomp.h"
 #include "asterfort/cfnumm.h"
 #include "asterfort/cfnumn.h"
-#include "asterfort/appari.h"
+#include "asterfort/cfdisi.h"
 #include "asterfort/apvect.h"
-#include "asterfort/apzoni.h"
+#include "asterfort/mminfi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
@@ -55,12 +55,12 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbzone, ntpt, nbpt
+    integer :: nb_cont_zone, ntpt, nbpt
     integer :: typapp, entapp
     real(kind=8) :: coorpt(3)
     real(kind=8) :: dist, ksi1, ksi2, tau1(3), tau2(3)
     character(len=16) :: nompt
-    integer :: izone, ip, k, i
+    integer :: i_zone, ip, k, i
     integer :: numnom(1), elem_mast_nume
     integer :: posnom(1), elem_mast_indx
     character(len=8) :: nomnom, nommam
@@ -72,8 +72,8 @@ implicit none
 ! --- INITIALISATIONS
 !
     ip = 1
-    call appari(sdappa, 'APPARI_NBZONE', nbzone)
-    call appari(sdappa, 'APPARI_NTPT', ntpt)
+    ntpt         = cfdisi(sdcont_defi,'NTPT'  )
+    nb_cont_zone = cfdisi(sdcont_defi,'NZOCO' )
 !
 ! ----------------------------------------------------------------------
 ! --- INFOS SUR LES ZONES
@@ -81,7 +81,7 @@ implicit none
 !
     write(ifm,*) '<APPARIEMENT> ------ ZONES ------ '
 !
-    write(ifm,100) nbzone
+    write(ifm,100) nb_cont_zone
     write(ifm,101) ntpt
 !
 100 format (' <APPARIEMENT> NOMBRE DE ZONES                   : ',i6)
@@ -89,11 +89,11 @@ implicit none
 !
 ! --- BOUCLE SUR LES ZONES
 !
-    do izone = 1, nbzone
+    do i_zone = 1, nb_cont_zone
 !
 ! ----- INFORMATION SUR LA ZONE
 !
-        call apzoni(sdappa, izone, 'NBPT', nbpt)
+        nbpt = mminfi(sdcont_defi, 'NBPT' , i_zone)
 !
 ! ----- BOUCLE SUR LES POINTS
 !

@@ -72,12 +72,11 @@ implicit none
 !
 ! - Create pairing datastructure
 !
-    call apcrsd(sdappa      , nb_cont_zone, nt_poin, nb_cont_elem, nb_cont_node,&
+    call apcrsd(sdappa      , nt_poin     , nb_cont_elem, nb_cont_node,&
                 nt_elem_node, nb_node_mesh)
 !
 ! - Fill pairing datastructure
 !
-    call cfmmar(ds_contact , nb_cont_zone, model_ndim, nt_poin,&
-                nb_cont_elem, nb_cont_node, nt_elem_node)
+    call cfmmar(ds_contact , nb_cont_elem, nt_elem_node)
 !
 end subroutine

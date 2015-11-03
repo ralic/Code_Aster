@@ -156,14 +156,14 @@ implicit none
 ! --------- Compute local basis for these node
 !
             if (l_poi1) then
-                call apcpoi(sdappa, model_ndim, i_zone, elem_name, zone_type,&
-                            tau1  , tau2)
+                call apcpoi(sdcont_defi, model_ndim, i_zone, elem_name,&
+                            zone_type, tau1       , tau2)
             else
                 call mmctan(elem_name, elem_type, elem_nbnode, elem_ndim, elem_coor,&
                             node_coor, iter_maxi, epsi_maxi  , tau1, tau2)
                 if (l_beam) then
-                    call apcpou(sdappa, i_zone, elem_name, zone_type, tau1,&
-                                tau2)
+                    call apcpou(sdcont_defi, i_zone, elem_name, zone_type,&
+                                tau1       , tau2)
                 endif
             endif
 !

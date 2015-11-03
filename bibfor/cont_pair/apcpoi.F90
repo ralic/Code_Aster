@@ -1,11 +1,11 @@
-subroutine apcpoi(sdappa, model_ndim, i_zone, elem_name, zone_type,&
-                  tau1  , tau2)
+subroutine apcpoi(sdcont_defi, model_ndim, i_zone, elem_name,&
+                  zone_type  , tau1      , tau2)
 !
 implicit none
 !
 #include "asterc/r8prem.h"
-#include "asterfort/apzoni.h"
-#include "asterfort/apzonv.h"
+#include "asterfort/mminfi.h"
+#include "asterfort/mminfr.h"
 #include "asterfort/assert.h"
 #include "asterfort/mmmron.h"
 #include "asterfort/normev.h"
@@ -29,7 +29,7 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=19), intent(in) :: sdappa
+    character(len=24), intent(in) :: sdcont_defi
     integer, intent(in) :: model_ndim
     integer, intent(in) :: i_zone
     character(len=8), intent(in) :: elem_name
@@ -45,7 +45,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sdappa           : name of pairing datastructure
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
 ! In  model_ndim       : dimension of model
 ! In  i_zone           : index of contact zone
 ! In  elem_name        : name of element
@@ -68,9 +68,11 @@ implicit none
     if (zone_type .eq. 'MAIT') then
         call utmess('F', 'APPARIEMENT_75')
     endif
-    call apzoni(sdappa, i_zone, 'TYPE_NORM_ESCL', itype)
+    itype = mminfi(sdcont_defi, 'VECT_ESCL', i_zone)
     if (itype .ne. 0) then
-        call apzonv(sdappa, i_zone, 'VECT_ESCL', normal)
+        normal(1) = mminfr(sdcont_defi, 'VECT_ESCL_DIRX', i_zone)
+        normal(2) = mminfr(sdcont_defi, 'VECT_ESCL_DIRY', i_zone)
+        normal(3) = mminfr(sdcont_defi, 'VECT_ESCL_DIRZ', i_zone)
         call normev(normal, norme)
     endif
 !

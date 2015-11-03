@@ -16,10 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine apcrsd(sdappa      , nb_cont_zone, nt_poin, nb_cont_elem, nb_cont_node,&
+    subroutine apcrsd(sdappa      , nt_poin     , nb_cont_elem, nb_cont_node,&
                       nt_elem_node, nb_node_mesh)
         character(len=19), intent(in) :: sdappa
-        integer, intent(in) :: nb_cont_zone
         integer, intent(in) :: nt_poin
         integer, intent(in) :: nb_cont_elem
         integer, intent(in) :: nb_cont_node

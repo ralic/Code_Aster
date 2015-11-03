@@ -9,9 +9,9 @@ implicit none
 #include "asterfort/cfnben.h"
 #include "asterfort/cfnumm.h"
 #include "asterfort/cfnumn.h"
-#include "asterfort/appari.h"
-#include "asterfort/apzoni.h"
-#include "asterfort/apzonl.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/mminfi.h"
+#include "asterfort/cfcald.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
@@ -105,8 +105,8 @@ implicit none
 !
 ! - Get parameters
 !
-    call appari(sdappa, 'APPARI_NBZONE', nb_cont_zone)
-    call appari(sdappa, 'APPARI_NDIMG' , model_ndim)
+    model_ndim   = cfdisi(sdcont_defi,'NDIM'  )
+    nb_cont_zone = cfdisi(sdcont_defi,'NZOCO' )
 !
 ! - Loop on contact zones
 !
@@ -115,9 +115,9 @@ implicit none
 !
 ! ----- Parameters on current zone - Master
 !
-        call apzoni(sdappa, i_zone, 'NBNOM'         , nb_node_mast)
-        call apzoni(sdappa, i_zone, 'JDECNM'        , jdecnm)
-        call apzonl(sdappa, i_zone, 'CALC_NORM_MAIT', apcald)
+        nb_node_mast = mminfi(sdcont_defi, 'NBNOM'    , i_zone)
+        jdecnm       = mminfi(sdcont_defi, 'JDECNM'   , i_zone)
+        apcald       = cfcald(sdcont_defi, i_zone, 'MAIT')  
         if (apcald) then
 !
 ! --------- Loop on nodes

@@ -6,11 +6,9 @@ implicit none
 #include "asterc/r8gaem.h"
 #include "asterc/r8prem.h"
 #include "asterfort/apcopt.h"
-#include "asterfort/appari.h"
-#include "asterfort/apzoni.h"
-#include "asterfort/apzonl.h"
-#include "asterfort/apzonr.h"
-#include "asterfort/apzonv.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/mminfi.h"
+#include "asterfort/mminfr.h"
 #include "asterfort/assert.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jeveuo.h"
@@ -99,8 +97,8 @@ implicit none
 !
 ! - Get parameters
 !
-    call appari(sdappa, 'APPARI_NBZONE', nb_cont_zone)
-    call appari(sdappa, 'APPARI_NTPT'  , nt_poin)
+    nb_cont_zone = cfdisi(sdcont_defi,'NZOCO' )
+    nt_poin      = cfdisi(sdcont_defi,'NTPT'  )
 !
 ! - Loop on contact zones
 !
@@ -109,14 +107,17 @@ implicit none
 !
 ! ----- Parameters on current zone
 !
-        call apzoni(sdappa, i_zone, 'NBPT'          , nb_poin)
-        call apzoni(sdappa, i_zone, 'NBNOM'         , nb_node_mast)
-        call apzonl(sdappa, i_zone, 'DIRE_APPA_FIXE', l_pair_dire)
-        call apzoni(sdappa, i_zone, 'JDECNM'        , jdecnm)
+        jdecnm       = mminfi(sdcont_defi, 'JDECNM'   , i_zone)
+        pair_tole    = mminfr(sdcont_defi, 'TOLE_APPA', i_zone)
+        nb_poin      = mminfi(sdcont_defi, 'NBPT'     , i_zone)
+        nb_node_mast = mminfi(sdcont_defi, 'NBNOM'    , i_zone)
+        l_pair_dire  = mminfi(sdcont_defi, 'TYPE_APPA', i_zone).eq.1
         if (l_pair_dire) then
-            call apzonv(sdappa, i_zone, 'DIRE_APPA_VECT', pair_vect)
+            pair_vect(1) = mminfr(sdcont_defi, 'TYPE_APPA_DIRX', i_zone)
+            pair_vect(2) = mminfr(sdcont_defi, 'TYPE_APPA_DIRY', i_zone)
+            pair_vect(3) = mminfr(sdcont_defi, 'TYPE_APPA_DIRZ', i_zone)            
         endif
-        call apzonr(sdappa, i_zone, 'TOLE_APPA', pair_tole)
+
 !
 ! ----- Loop on points
 !

@@ -65,7 +65,7 @@ implicit none
 !
 ! - Check pairing
 !
-    call apvepa(sdappa)
+    call apvepa(sdappa, sdcont_defi)
 !
 ! - Debug print
 !

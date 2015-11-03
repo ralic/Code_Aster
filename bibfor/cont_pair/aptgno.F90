@@ -3,11 +3,11 @@ subroutine aptgno(sdappa, mesh, sdcont_defi)
 implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/appari.h"
+#include "asterfort/cfcald.h"
+#include "asterfort/cfdisi.h"
 #include "asterfort/aptgnn.h"
-#include "asterfort/apzoni.h"
-#include "asterfort/apzonl.h"
-#include "asterfort/apzonv.h"
+#include "asterfort/mminfi.h"
+#include "asterfort/mminfr.h"
 #include "asterfort/infdbg.h"
 !
 ! ======================================================================
@@ -63,8 +63,8 @@ implicit none
 !
 ! - Get parameters
 !
-    call appari(sdappa, 'APPARI_NDIMG', model_ndim)
-    call appari(sdappa, 'APPARI_NBZONE', nb_cont_zone)
+    model_ndim   = cfdisi(sdcont_defi,'NDIM'  )
+    nb_cont_zone = cfdisi(sdcont_defi,'NZOCO' )
 !
 ! - Loop on contact zones
 !
@@ -72,14 +72,19 @@ implicit none
 !
 ! ----- Parameters on current zone - Master
 !
-        call apzoni(sdappa, i_zone, 'NBNOM'         , nb_node_mast)
-        call apzoni(sdappa, i_zone, 'JDECNM'        , jdecnm)
-        call apzoni(sdappa, i_zone, 'TYPE_NORM_MAIT', norm_type)
-        call apzonv(sdappa, i_zone, 'VECT_MAIT'     , norm_vect)
+        nb_node_mast   = mminfi(sdcont_defi, 'NBNOM'    , i_zone)
+        jdecnm         = mminfi(sdcont_defi, 'JDECNM'   , i_zone)
+        norm_type      = mminfi(sdcont_defi, 'VECT_MAIT', i_zone)
+        norm_vect(1:3) = 0.d0
+        if (norm_type .ne. 0) then
+            norm_vect(1) = mminfr(sdcont_defi, 'VECT_MAIT_DIRX', i_zone)
+            norm_vect(2) = mminfr(sdcont_defi, 'VECT_MAIT_DIRY', i_zone)
+            norm_vect(3) = mminfr(sdcont_defi, 'VECT_MAIT_DIRZ', i_zone)
+        endif      
 !
 ! ----- Compute tangents at each node by smoothing - On current zone/Master
 !
-        call apzonl(sdappa, i_zone, 'CALC_NORM_MAIT', apcald)
+        apcald = cfcald(sdcont_defi, i_zone, 'MAIT')
         if (apcald) then
             call aptgnn(sdappa      , mesh     , sdcont_defi, model_ndim, jdecnm,&
                         nb_node_mast, norm_type, norm_vect)
@@ -87,14 +92,19 @@ implicit none
 !
 ! ----- Parameters on current zone - Slave
 !
-        call apzoni(sdappa, i_zone, 'NBNOE'         , nb_node_slav)
-        call apzoni(sdappa, i_zone, 'JDECNE'        , jdecne)
-        call apzoni(sdappa, i_zone, 'TYPE_NORM_ESCL', norm_type)
-        call apzonv(sdappa, i_zone, 'VECT_ESCL'     , norm_vect)
+        nb_node_slav   = mminfi(sdcont_defi, 'NBNOE'    , i_zone)
+        jdecne         = mminfi(sdcont_defi, 'JDECNE'   , i_zone)
+        norm_type      = mminfi(sdcont_defi, 'VECT_ESCL', i_zone)
+        norm_vect(1:3) = 0.d0
+        if (norm_type .ne. 0) then
+            norm_vect(1) = mminfr(sdcont_defi, 'VECT_ESCL_DIRX', i_zone)
+            norm_vect(2) = mminfr(sdcont_defi, 'VECT_ESCL_DIRY', i_zone)
+            norm_vect(3) = mminfr(sdcont_defi, 'VECT_ESCL_DIRZ', i_zone)
+        endif
 !
 ! ----- Compute tangents at each node by smoothing - On current zone/salve
 !
-        call apzonl(sdappa, i_zone, 'CALC_NORM_ESCL', apcald)
+        apcald = cfcald(sdcont_defi, i_zone, 'ESCL')
         if (apcald) then
             call aptgnn(sdappa      , mesh     , sdcont_defi, model_ndim, jdecne,&
                         nb_node_slav, norm_type, norm_vect)

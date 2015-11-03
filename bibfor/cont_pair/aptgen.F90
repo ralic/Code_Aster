@@ -3,11 +3,12 @@ subroutine aptgen(sdappa, mesh, sdcont_defi, newgeo)
 implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/appari.h"
-#include "asterfort/apparr.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdisr.h"
 #include "asterfort/aptgem.h"
-#include "asterfort/apzoni.h"
-#include "asterfort/apzonl.h"
+#include "asterfort/mminfi.h"
+#include "asterfort/mminfr.h"
+#include "asterfort/cfcald.h"
 #include "asterfort/infdbg.h"
 !
 ! ======================================================================
@@ -67,10 +68,10 @@ implicit none
 !
 ! - Get parameters
 !
-    call apparr(sdappa, 'PROJ_NEWT_RESI', epsi_maxi)
-    call appari(sdappa, 'PROJ_NEWT_ITER', iter_maxi)
-    call appari(sdappa, 'APPARI_NDIMG'  , model_ndim)
-    call appari(sdappa, 'APPARI_NBZONE' , nb_cont_zone)
+    epsi_maxi    = cfdisr(sdcont_defi,'PROJ_NEWT_RESI')
+    iter_maxi    = cfdisi(sdcont_defi,'PROJ_NEWT_ITER')
+    model_ndim   = cfdisi(sdcont_defi,'NDIM'  )
+    nb_cont_zone = cfdisi(sdcont_defi,'NZOCO' )
 !
 ! - Loop on contact zones
 !
@@ -78,13 +79,13 @@ implicit none
 !
 ! ----- Parameters on current zone - Master
 !
-        call apzoni(sdappa, i_zone, 'NBMAM' , nb_elem_mast)
-        call apzoni(sdappa, i_zone, 'JDECMM', jdecmm)
+        nb_elem_mast = mminfi(sdcont_defi, 'NBMAM' , i_zone)
+        jdecmm       = mminfi(sdcont_defi, 'JDECMM', i_zone)
         zone_type = 'MAIT'
 !
 ! ----- Compute tangents at each node for each element - Master
 !
-        call apzonl(sdappa, i_zone, 'CALC_NORM_MAIT', apcald)
+        apcald = cfcald(sdcont_defi, i_zone, 'MAIT')
         if (apcald) then
             call aptgem(sdappa      , mesh     , newgeo   , sdcont_defi, model_ndim,&
                         i_zone      , zone_type, iter_maxi, epsi_maxi  , jdecmm    ,&
@@ -93,13 +94,13 @@ implicit none
 !
 ! ----- Parameters on current zone - Slave
 !
-        call apzoni(sdappa, i_zone, 'NBMAE' , nb_elem_slav)
-        call apzoni(sdappa, i_zone, 'JDECME', jdecme)
+        nb_elem_slav = mminfi(sdcont_defi, 'NBMAE' , i_zone)
+        jdecme       = mminfi(sdcont_defi, 'JDECME', i_zone)
         zone_type = 'ESCL'
 !
 ! ----- Compute tangents at each node for each element - Slave
 !
-        call apzonl(sdappa, i_zone, 'CALC_NORM_ESCL', apcald)
+        apcald = cfcald(sdcont_defi, i_zone, 'ESCL')
         if (apcald) then
             call aptgem(sdappa      , mesh     , newgeo   , sdcont_defi, model_ndim,&
                         i_zone      , zone_type, iter_maxi, epsi_maxi  , jdecme    ,&

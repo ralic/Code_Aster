@@ -1,11 +1,11 @@
-subroutine apvepa(sdappa)
+subroutine apvepa(sdappa, sdcont_defi)
 !
 implicit none
 !
 #include "jeveux.h"
 #include "asterfort/apinfi.h"
-#include "asterfort/appari.h"
-#include "asterfort/apzoni.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/mminfi.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/utmess.h"
 !
@@ -28,6 +28,7 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=19), intent(in) :: sdappa
+    character(len=24), intent(in) :: sdcont_defi
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -38,6 +39,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  sdappa           : name of pairing datastructure
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,8 +63,8 @@ implicit none
 !
 ! - Get parameters
 !
-    call appari(sdappa, 'APPARI_NBZONE', nb_cont_zone)
-    call appari(sdappa, 'APPARI_NTPT'  , nt_poin)
+    nt_poin      = cfdisi(sdcont_defi,'NTPT'  )
+    nb_cont_zone = cfdisi(sdcont_defi,'NZOCO' )
 !
 ! - Loop on contact zones
 !
@@ -70,7 +72,7 @@ implicit none
 !
 ! ----- Parameters on current zone
 !
-        call apzoni(sdappa, i_zone, 'NBPT', nb_poin)
+        nb_poin = mminfi(sdcont_defi, 'NBPT' , i_zone)
 !
 ! ----- Loop on points
 !
