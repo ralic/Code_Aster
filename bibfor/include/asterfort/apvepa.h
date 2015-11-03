@@ -17,6 +17,6 @@
 !
 interface
     subroutine apvepa(sdappa)
-        character(len=19) :: sdappa
+        character(len=19), intent(in) :: sdappa
     end subroutine apvepa
 end interface

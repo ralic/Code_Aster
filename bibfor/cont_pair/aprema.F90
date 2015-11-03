@@ -3,22 +3,19 @@ subroutine aprema(sdappa, mesh, sdcont_defi, newgeo)
 implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/apcopt.h"
 #include "asterfort/apinfi.h"
 #include "asterfort/aporth.h"
 #include "asterfort/appari.h"
 #include "asterfort/apparr.h"
 #include "asterfort/approj.h"
-#include "asterfort/apsauv.h"
 #include "asterfort/apzoni.h"
 #include "asterfort/apzonl.h"
 #include "asterfort/apzonr.h"
 #include "asterfort/apzonv.h"
 #include "asterfort/assert.h"
 #include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -59,121 +56,131 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    integer :: izone, ip, i, posnom
-    integer :: nbzone, ndimg, ntpt
-    integer :: nbpt, posmam, iprojm
-    real(kind=8) :: coorpt(3), tau1m(3), tau2m(3), distm, ksi1m, ksi2m
-    real(kind=8) :: dir(3), toleou, epsmax, vecpmm(3)
-    integer :: itemax
-    aster_logical :: dirapp, lmaesc, lsauve
-    integer :: typapp, entapp
-    integer :: vali(2)
-    real(kind=8) :: valr(12)
+    integer :: i_zone, i_poin, i, node_mast_indx
+    integer :: nb_cont_zone, model_ndim, nt_poin
+    integer :: nb_poin, proj_stat_mini, elem_mast_mini
+    real(kind=8) :: poin_coor(3), tau1_mini(3), tau2_mini(3), dist_mini, ksi1_mini, ksi2_mini
+    real(kind=8) :: pair_vect(3), tole_proj_ext, epsi_maxi, vect_pm_mini(3)
+    integer :: iter_maxi
+    aster_logical :: l_pair_dire, l_pair_masl, l_save
+    integer :: pair_type, pair_enti
+    character(len=24) :: sdappa_dist, sdappa_appa
+    integer, pointer :: v_sdappa_appa(:) => null()
+    real(kind=8), pointer :: v_sdappa_dist(:) => null()
+    character(len=24) :: sdappa_tau1, sdappa_tau2, sdappa_proj
+    real(kind=8), pointer :: v_sdappa_tau1(:) => null()
+    real(kind=8), pointer :: v_sdappa_tau2(:) => null()
+    real(kind=8), pointer :: v_sdappa_proj(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('APPARIEMENT', ifm, niv)
     if (niv .ge. 2) then
         write (ifm,*) '<APPARIEMENT> RECH. MAILLE PLUS PROCHE'
     endif
 !
-! --- PARAMETRES
+! - Acces to pairing datastructure
 !
-    call appari(sdappa, 'APPARI_NBZONE', nbzone)
-    call appari(sdappa, 'PROJ_NEWT_ITER', itemax)
-    call apparr(sdappa, 'PROJ_NEWT_RESI', epsmax)
-    call appari(sdappa, 'APPARI_NDIMG', ndimg)
-    call appari(sdappa, 'APPARI_NTPT', ntpt)
+    sdappa_appa = sdappa(1:19)//'.APPA'
+    sdappa_dist = sdappa(1:19)//'.DIST'
+    sdappa_tau1 = sdappa(1:19)//'.TAU1'
+    sdappa_tau2 = sdappa(1:19)//'.TAU2'
+    sdappa_proj = sdappa(1:19)//'.PROJ'
+    call jeveuo(sdappa_appa, 'E', vi = v_sdappa_appa)
+    call jeveuo(sdappa_dist, 'E', vr = v_sdappa_dist)
+    call jeveuo(sdappa_tau1, 'E', vr = v_sdappa_tau1)
+    call jeveuo(sdappa_tau2, 'E', vr = v_sdappa_tau2)
+    call jeveuo(sdappa_proj, 'E', vr = v_sdappa_proj)
 !
-! --- BOUCLE SUR LES ZONES
+! - Get parameters
 !
-    ip = 1
-    do izone = 1, nbzone
+    call appari(sdappa, 'APPARI_NBZONE' , nb_cont_zone)
+    call appari(sdappa, 'PROJ_NEWT_ITER', iter_maxi)
+    call apparr(sdappa, 'PROJ_NEWT_RESI', epsi_maxi)
+    call appari(sdappa, 'APPARI_NDIMG'  , model_ndim)
+    call appari(sdappa, 'APPARI_NTPT'   , nt_poin)
 !
-! ----- INFORMATION SUR LA ZONE
+! - Loop on contact zones
 !
-        call apzoni(sdappa, izone, 'NBPT', nbpt)
-        call apzonl(sdappa, izone, 'APPA_MAIT_ESCL', lmaesc)
-        call apzonl(sdappa, izone, 'DIRE_APPA_FIXE', dirapp)
-        if (dirapp) then
-            call apzonv(sdappa, izone, 'DIRE_APPA_VECT', dir)
+    i_poin = 1
+    do i_zone = 1, nb_cont_zone
+!
+! ----- Parameters on current zone
+!
+        call apzoni(sdappa, i_zone, 'NBPT'          , nb_poin)
+        call apzonl(sdappa, i_zone, 'APPA_MAIT_ESCL', l_pair_masl)
+        call apzonl(sdappa, i_zone, 'DIRE_APPA_FIXE', l_pair_dire)
+        if (l_pair_dire) then
+            call apzonv(sdappa, i_zone, 'DIRE_APPA_VECT', pair_vect)
         endif
-        call apzonr(sdappa, izone, 'TOLE_PROJ_EXT', toleou)
+        call apzonr(sdappa, i_zone, 'TOLE_PROJ_EXT', tole_proj_ext)
 !
-! ----- BOUCLE SUR LES POINTS
+! ----- Loop on points
 !
-        do i = 1, nbpt
+        do i = 1, nb_poin
 !
-! ------- LE POINT DOIT-IL ETRE APPARIE ?
+! --------- Point to paired ?
 !
-            call apinfi(sdappa, 'APPARI_TYPE', ip, typapp)
-            ASSERT(typapp.ne.0)
+            call apinfi(sdappa, 'APPARI_TYPE', i_poin, pair_type)
+            ASSERT(pair_type.ne.0)
+            if (l_pair_masl) then
 !
-! ------- POINT A APPARIER !
+! ------------- Coordinates of point
 !
-            if (lmaesc) then
+                call apcopt(sdappa, i_poin, poin_coor)
 !
-! --------- COORDONNEES DU POINT
+! ------------- Nearest master node
 !
-                call apcopt(sdappa, ip, coorpt)
+                call apinfi(sdappa, 'APPARI_ENTITE', i_poin, pair_enti)
+                node_mast_indx = pair_enti
 !
-! --------- NUMERO DU NOEUD MAITRE LE PLUS PROCHE
+! ------------- Projection of contact point on master element
 !
-                call apinfi(sdappa, 'APPARI_ENTITE', ip, entapp)
-                posnom = entapp
+            call approj(mesh          , newgeo        , sdcont_defi , node_mast_indx, l_pair_dire,&
+                        pair_vect     , iter_maxi     , epsi_maxi   , tole_proj_ext , poin_coor  ,&
+                        elem_mast_mini, proj_stat_mini, ksi1_mini   , ksi2_mini     , tau1_mini  ,&
+                        tau2_mini     , dist_mini     , vect_pm_mini)
 !
-! --------- PROJECTION SUR LA MAILLE MAITRE
+! ------------- Orthogonalization of local basis
 !
-                call approj(sdappa, mesh, newgeo, sdcont_defi, posnom,&
-                            dirapp, dir, itemax, epsmax, toleou,&
-                            coorpt, posmam, iprojm, ksi1m, ksi2m,&
-                            tau1m, tau2m, distm, vecpmm)
-!
-! --------- ORTHOGONALISATION VECTEURS TANGENTS
-!
-                call aporth(sdappa, mesh, sdcont_defi, ndimg, posmam,&
-                            coorpt, tau1m, tau2m)
-!
-                if (typapp .eq. 1) then
-                    if (iprojm .eq. 2) then
-                        typapp = -3
+                call aporth(mesh     , sdcont_defi, model_ndim, elem_mast_mini, poin_coor,&
+                            tau1_mini, tau2_mini)
+                if (pair_type .eq. 1) then
+                    if (proj_stat_mini .eq. 2) then
+                        pair_type = -3
                     else
-                        typapp = 2
+                        pair_type = 2
                     endif
                 endif
-                lsauve = .true.
+                l_save = .true.
             else
-                lsauve = .false.
+                l_save = .false.
             endif
 !
-! ------- STOCKAGE DE L'INFORMATION DANS SDAPPA
+! --------- Save
 !
-            if (lsauve) then
-                vali(1) = typapp
-                vali(2) = posmam
-                valr(1) = distm
-                valr(2) = ksi1m
-                valr(3) = ksi2m
-                valr(4) = tau1m(1)
-                valr(5) = tau1m(2)
-                valr(6) = tau1m(3)
-                valr(7) = tau2m(1)
-                valr(8) = tau2m(2)
-                valr(9) = tau2m(3)
-                valr(10) = vecpmm(1)
-                valr(11) = vecpmm(2)
-                valr(12) = vecpmm(3)
-                call apsauv('MA_PROCHE', sdappa, izone, ip, vali,&
-                            valr)
+            if (l_save) then
+                v_sdappa_appa(4*(i_poin-1)+1) = pair_type
+                v_sdappa_appa(4*(i_poin-1)+2) = elem_mast_mini
+                v_sdappa_appa(4*(i_poin-1)+3) = i_zone
+                v_sdappa_dist(4*(i_poin-1)+1) = dist_mini
+                v_sdappa_dist(4*(i_poin-1)+2) = vect_pm_mini(1)
+                v_sdappa_dist(4*(i_poin-1)+3) = vect_pm_mini(2)
+                v_sdappa_dist(4*(i_poin-1)+4) = vect_pm_mini(3)
+                v_sdappa_proj(2*(i_poin-1)+1) = ksi1_mini
+                v_sdappa_proj(2*(i_poin-1)+2) = ksi2_mini
+                v_sdappa_tau1(3*(i_poin-1)+1) = tau1_mini(1)
+                v_sdappa_tau1(3*(i_poin-1)+2) = tau1_mini(2)
+                v_sdappa_tau1(3*(i_poin-1)+3) = tau1_mini(3)
+                v_sdappa_tau2(3*(i_poin-1)+1) = tau2_mini(1)
+                v_sdappa_tau2(3*(i_poin-1)+2) = tau2_mini(2)
+                v_sdappa_tau2(3*(i_poin-1)+3) = tau2_mini(3)
             endif
 !
-! ------- POINT SUIVANT
+! --------- Next point
 !
-            ip = ip + 1
+            i_poin = i_poin + 1
         end do
     end do
-!
-    call jedema()
 !
 end subroutine

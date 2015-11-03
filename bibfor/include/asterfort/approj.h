@@ -18,28 +18,27 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine approj(sdappa, noma, newgeo, sdcont_defi, posnom,&
-                      dirapp, dir, itemax, epsmax, toleou,&
-                      coorpt, elem_mast_indx, iprojm, ksi1m, ksi2m,&
-                      tau1m, tau2m, distm, vecpmm)
-        character(len=19) :: sdappa
-        character(len=8) :: noma
-        character(len=19) :: newgeo
-        character(len=24) :: sdcont_defi
-        integer :: posnom
-        aster_logical :: dirapp
-        real(kind=8) :: dir(3)
-        integer :: itemax
-        real(kind=8) :: epsmax
-        real(kind=8) :: toleou
-        real(kind=8) :: coorpt(3)
-        integer :: elem_mast_indx
-        integer :: iprojm
-        real(kind=8) :: ksi1m
-        real(kind=8) :: ksi2m
-        real(kind=8) :: tau1m(3)
-        real(kind=8) :: tau2m(3)
-        real(kind=8) :: distm
-        real(kind=8) :: vecpmm(3)
+    subroutine approj(mesh          , newgeo        , sdcont_defi , node_mast_indx, l_pair_dire,&
+                      pair_vect     , iter_maxi     , epsi_maxi   , tole_proj_ext , poin_coor  ,&
+                      elem_mast_mini, proj_stat_mini, ksi1_mini   , ksi2_mini     , tau1_mini  ,&
+                      tau2_mini     , dist_mini     , vect_pm_mini)
+        character(len=8), intent(in) :: mesh
+        character(len=19), intent(in) :: newgeo
+        character(len=24), intent(in) :: sdcont_defi
+        integer, intent(in) :: node_mast_indx
+        aster_logical, intent(in) :: l_pair_dire
+        real(kind=8), intent(in) :: pair_vect(3)
+        integer, intent(in) :: iter_maxi
+        real(kind=8), intent(in) :: epsi_maxi
+        real(kind=8), intent(in) :: tole_proj_ext 
+        real(kind=8), intent(in) :: poin_coor(3)
+        real(kind=8), intent(out) :: tau1_mini(3)
+        real(kind=8), intent(out) :: tau2_mini(3)
+        real(kind=8), intent(out) :: vect_pm_mini(3)
+        real(kind=8), intent(out) :: ksi1_mini
+        real(kind=8), intent(out) :: ksi2_mini
+        real(kind=8), intent(out) :: dist_mini
+        integer, intent(out) :: proj_stat_mini
+        integer, intent(out) :: elem_mast_mini
     end subroutine approj
 end interface

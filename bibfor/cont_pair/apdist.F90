@@ -1,5 +1,9 @@
-subroutine apdist(elrefe, coorma, nbno, ksi1, ksi2,&
-                  coorpt, dist, vecpm)
+subroutine apdist(elem_type, elem_coor, elem_nbnode, ksi1, ksi2,&
+                  poin_coor, dist     , vect_pm)
+!
+implicit none
+!
+#include "asterfort/elrfvf.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,85 +23,68 @@ subroutine apdist(elrefe, coorma, nbno, ksi1, ksi2,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/elrfvf.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-    integer :: nbno
-    character(len=8) :: elrefe
-    real(kind=8) :: coorma(27), coorpt(3)
-    real(kind=8) :: ksi1, ksi2
-    real(kind=8) :: dist, vecpm(3)
+    character(len=8), intent(in) :: elem_type
+    real(kind=8), intent(in) :: elem_coor(27)
+    integer, intent(in) :: elem_nbnode
+    real(kind=8), intent(in) :: ksi1
+    real(kind=8), intent(in) :: ksi2
+    real(kind=8), intent(in) :: poin_coor(3)
+    real(kind=8), intent(out) :: dist
+    real(kind=8), intent(out) :: vect_pm(3)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE APPARIEMENT (UTILITAIRE)
+! Contact - Pairing
 !
-! DISTANCE POINT - PROJECTION SUR MAILLE
+! Compute point to orthogonal projection distance
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  elem_type        : type of element
+! In  elem_coor        : coordinates of nodes of the element
+! In  elem_nbnode      : number of nodes of element
+! In  ksi1             : first parametric coordinate of the projection of the point
+! In  ksi2             : second parametric coordinate of the projection of the point
+! In  poin_coor        : coordinates of (contact) point
+! Out dist             : distance between point and projection of the point
+! Out vect_pm          : vector between point and projection of the point
 !
-! IN  ELREFE : TYPE DE LA MAILLE
-! IN  COORMA : COORDONNEES DE LA MAILLE
-! IN  NBNO   : NOMBRE DE NOEUDS DE LA MAILLE
-! IN  KSI1   : COORD. PARAM. 1 DE LA PROJECTION SUR MAILLE
-! IN  KSI2   : COORD. PARAM. 2 DE LA PROJECTION SUR MAILLE
-! IN  COORPT : COORD. DU POINT A PROJETER
-! OUT VECPM  : VECTEUR POINT DE CONTACT -> SON PROJETE SUR MAILLE
-! OUT DIST   : DISTANCE POINT - PROJECTION (NORME DE VECPM)
+! --------------------------------------------------------------------------------------------------
 !
-!
-!
-!
-    integer :: ifm, niv
-    real(kind=8) :: coorpr(3)
-    integer :: idim, ino, ibid
-    real(kind=8) :: zero
-    parameter    (zero=0.d0)
+    real(kind=8) :: poin_proj_coor(3)
+    integer :: i_dime, i_node, ibid
+    real(kind=8), parameter :: zero = 0.d0
     real(kind=8) :: ksi(2), ff(9)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
-    call infdbg('APPARIEMENT', ifm, niv)
+    vect_pm(1:3)        = zero
+    poin_proj_coor(1:3) = zero
+    ksi(1)              = ksi1
+    ksi(2)              = ksi2
+    dist                = 0
 !
-! --- INITIALISATIONS
+! - Shape function
 !
-    vecpm(1) = zero
-    vecpm(2) = zero
-    vecpm(3) = zero
-    coorpr(1) = zero
-    coorpr(2) = zero
-    coorpr(3) = zero
-    ksi(1) = ksi1
-    ksi(2) = ksi2
-    dist = 0
+    call elrfvf(elem_type, ksi, elem_nbnode, ff, ibid)
 !
-! --- RECUP FONCTIONS DE FORME
+! - Coordinates of projection
 !
-    call elrfvf(elrefe, ksi, nbno, ff, ibid)
+    do i_dime = 1, 3
+        do i_node = 1, elem_nbnode
+            poin_proj_coor(i_dime) = ff(i_node)*elem_coor(3*(i_node-1)+i_dime) + &
+                                     poin_proj_coor(i_dime)
+        end do
+    end do
 !
-! --- COORDONNEES DE LA PROJECTION
+! - Vector Point-Projection
 !
-    do 40 idim = 1, 3
-        do 30 ino = 1, nbno
-            coorpr(idim) = ff(ino)*coorma(3*(ino-1)+idim) + coorpr( idim)
-30      continue
-40  end do
+    do i_dime = 1, 3
+        vect_pm(i_dime) = poin_proj_coor(i_dime) - poin_coor(i_dime)
+    end do
 !
-! --- VECTEUR POINT/PROJECTION
+! - Distance
 !
-    do 140 idim = 1, 3
-        vecpm(idim) = coorpr(idim) - coorpt(idim)
-140  end do
-!
-! --- CALCUL DE LA DISTANCE
-!
-    dist = sqrt(vecpm(1)**2+vecpm(2)**2+vecpm(3)**2)
-!
-    call jedema()
+    dist = sqrt(vect_pm(1)**2+vect_pm(2)**2+vect_pm(3)**2)
 !
 end subroutine

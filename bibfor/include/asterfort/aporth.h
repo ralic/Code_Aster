@@ -16,15 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine aporth(sdappa, noma , sdcont_defi, ndimg, elem_mast_indx,&
-                      coorpt, tau1m, tau2m)
-        character(len=19) :: sdappa
-        character(len=8) :: noma
-        character(len=24) :: sdcont_defi
-        integer :: ndimg
-        integer :: elem_mast_indx
-        real(kind=8) :: coorpt(3)
-        real(kind=8) :: tau1m(3)
-        real(kind=8) :: tau2m(3)
+    subroutine aporth(mesh, sdcont_defi, model_ndim, elem_mast_indx, poin_coor,&
+                      tau1, tau2)
+        character(len=8), intent(in) :: mesh
+        character(len=24), intent(in) :: sdcont_defi
+        integer, intent(in) :: model_ndim
+        integer, intent(in) :: elem_mast_indx
+        real(kind=8), intent(in) :: poin_coor(3)
+        real(kind=8), intent(inout) :: tau1(3)
+        real(kind=8), intent(inout) :: tau2(3)
     end subroutine aporth
 end interface

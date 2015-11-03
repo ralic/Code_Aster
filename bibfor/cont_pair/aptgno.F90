@@ -3,15 +3,12 @@ subroutine aptgno(sdappa, mesh, sdcont_defi)
 implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/appari.h"
 #include "asterfort/aptgnn.h"
 #include "asterfort/apzoni.h"
 #include "asterfort/apzonl.h"
 #include "asterfort/apzonv.h"
 #include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -50,60 +47,58 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    integer :: nbzone, ndimg
-    integer :: izone, itype
-    integer :: jdecnm, nbnom
-    integer :: jdecne, nbnoe
+    integer :: nb_cont_zone, model_ndim
+    integer :: i_zone, norm_type
+    integer :: jdecnm, nb_node_mast
+    integer :: jdecne, nb_node_slav
     aster_logical :: apcald
-    real(kind=8) :: vector(3)
+    real(kind=8) :: norm_vect(3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('APPARIEMENT', ifm, niv)
     if (niv .ge. 2) then
         write (ifm,*) '<APPARIEMENT> ...... TANGENTES SUR LES NOEUDS'
     endif
 !
-! --- INITIALISATIONS
+! - Get parameters
 !
-    call appari(sdappa, 'APPARI_NDIMG', ndimg)
-    call appari(sdappa, 'APPARI_NBZONE', nbzone)
+    call appari(sdappa, 'APPARI_NDIMG', model_ndim)
+    call appari(sdappa, 'APPARI_NBZONE', nb_cont_zone)
 !
-! --- BOUCLE SUR LES ZONES
+! - Loop on contact zones
 !
-    do izone = 1, nbzone
+    do i_zone = 1, nb_cont_zone
 !
-! ----- INFORMATION SUR LA ZONE MAITRE
+! ----- Parameters on current zone - Master
 !
-        call apzoni(sdappa, izone, 'NBNOM', nbnom)
-        call apzoni(sdappa, izone, 'JDECNM', jdecnm)
-        call apzoni(sdappa, izone, 'TYPE_NORM_MAIT', itype)
-        call apzonv(sdappa, izone, 'VECT_MAIT', vector)
+        call apzoni(sdappa, i_zone, 'NBNOM'         , nb_node_mast)
+        call apzoni(sdappa, i_zone, 'JDECNM'        , jdecnm)
+        call apzoni(sdappa, i_zone, 'TYPE_NORM_MAIT', norm_type)
+        call apzonv(sdappa, i_zone, 'VECT_MAIT'     , norm_vect)
 !
-! ----- CALCUL SUR LA ZONE MAITRE
+! ----- Compute tangents at each node by smoothing - On current zone/Master
 !
-        call apzonl(sdappa, izone, 'CALC_NORM_MAIT', apcald)
+        call apzonl(sdappa, i_zone, 'CALC_NORM_MAIT', apcald)
         if (apcald) then
-            call aptgnn(sdappa, mesh, sdcont_defi, ndimg, jdecnm,&
-                        nbnom, itype, vector)
+            call aptgnn(sdappa      , mesh     , sdcont_defi, model_ndim, jdecnm,&
+                        nb_node_mast, norm_type, norm_vect)
         endif
 !
-! ----- INFORMATION SUR LA ZONE ESCLAVE
+! ----- Parameters on current zone - Slave
 !
-        call apzoni(sdappa, izone, 'NBNOE', nbnoe)
-        call apzoni(sdappa, izone, 'JDECNE', jdecne)
-        call apzoni(sdappa, izone, 'TYPE_NORM_ESCL', itype)
-        call apzonv(sdappa, izone, 'VECT_ESCL', vector)
+        call apzoni(sdappa, i_zone, 'NBNOE'         , nb_node_slav)
+        call apzoni(sdappa, i_zone, 'JDECNE'        , jdecne)
+        call apzoni(sdappa, i_zone, 'TYPE_NORM_ESCL', norm_type)
+        call apzonv(sdappa, i_zone, 'VECT_ESCL'     , norm_vect)
 !
-! ----- CALCUL SUR LA ZONE ESCLAVE
+! ----- Compute tangents at each node by smoothing - On current zone/salve
 !
-        call apzonl(sdappa, izone, 'CALC_NORM_ESCL', apcald)
+        call apzonl(sdappa, i_zone, 'CALC_NORM_ESCL', apcald)
         if (apcald) then
-            call aptgnn(sdappa, mesh, sdcont_defi, ndimg, jdecne,&
-                        nbnoe, itype, vector)
+            call aptgnn(sdappa      , mesh     , sdcont_defi, model_ndim, jdecne,&
+                        nb_node_slav, norm_type, norm_vect)
         endif
     end do
 !
-    call jedema()
 end subroutine

@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine apcopt(sdappa, ip, coorpt)
-        character(len=19) :: sdappa
-        integer :: ip
-        real(kind=8) :: coorpt(3)
+    subroutine apcopt(sdappa, i_poin, poin_coor)
+        character(len=19), intent(in) :: sdappa
+        integer, intent(in) :: i_poin
+        real(kind=8), intent(out) :: poin_coor(3)
     end subroutine apcopt
 end interface

@@ -1,9 +1,8 @@
-subroutine aptgnn(sdappa, noma , sdcont_defi, ndimg, jdecno,&
-                  nbno  , itype, vector)
+subroutine aptgnn(sdappa , mesh     , sdcont_defi, model_ndim, jdecno,&
+                  nb_node, norm_type, norm_vect)
 !
 implicit none
 !
-#include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/cfinvm.h"
 #include "asterfort/cfnben.h"
@@ -41,184 +40,171 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=19) :: sdappa
-    character(len=8) :: noma
-    character(len=24) :: sdcont_defi
-    integer :: ndimg, jdecno, nbno, itype
-    real(kind=8) :: vector(3)
+    character(len=19), intent(in) :: sdappa
+    character(len=8), intent(in) :: mesh
+    character(len=24), intent(in) :: sdcont_defi
+    integer, intent(in) :: model_ndim
+    integer, intent(in) :: jdecno
+    integer, intent(in) :: nb_node
+    integer, intent(in) :: norm_type
+    real(kind=8), intent(in) :: norm_vect(3)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE APPARIEMENT - TANGENTES EN CHAQUE NOEUD
+! Contact - Pairing
 !
-! CALCUL SUR UNE ZONE
+! Compute tangents at each node by smoothing - On current zone
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sdappa           : name of pairing datastructure
+! In  mesh             : name of mesh
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  model_ndim       : dimension of model
+! In  jdecno           : shift in contact datastructure for the beginning of nodes in contact zone
+! In  nb_node          : number of nodes in contact zone
+! In  norm_type        : type of normal => 'AUTO'(0)/'FIXE'(1)/'VECT_Y'(2)
+! In  norm_vect        : vector if normal is 'FIXE' or 'VECT_Y'
 !
-! IN  SDAPPA : NOM DE LA SD APPARIEMENT
-! IN  NOMA   : SD MAILLAGE
-! IN  DEFICO : SD DEFINITION DU CONTACT
-! IN  NMDIMG : DIMENSION DE L'ESPACE
-! IN  JDECNO : DECALAGE POUR NUMERO DE NOEUD
-! IN  NBNO   : NOMBRE DE NOEUDS DE LA ZONE
-! IN  ITYPE  : NORMALE 'AUTO'(0)/'FIXE'(1)/'VECT_Y'(2)
-! IN  VECTOR : POUR ITYPE = 1 OU 2
-!
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: node_name, elem_name, valk(2)
-    integer :: elem_indx, elem_nume, posno(1), numno(1)
-    integer :: nmanom, nnosdm
-    integer :: jdeciv, jdec
-    integer :: ino, ima, inocou, inomai
+    integer :: elem_indx, elem_nume, node_indx(1), node_nume(1)
+    integer :: node_nbelem, elem_nbnode
+    integer :: jdeciv
+    integer :: i_node, i_elem, i_node_curr, i_elem_node
     integer :: niverr
     real(kind=8) :: tau1(3), tau2(3), normal(3), normn
-    real(kind=8) :: taund1(3), taund2(3)
+    real(kind=8) :: tau1_node(3), tau2_node(3)
     real(kind=8) :: vnorm(3), noor
-    character(len=24) :: aptgel, aptgno
-    integer :: jtgeln, jptgno
+    character(len=24) :: sdappa_tgel, sdappa_tgno
+    real(kind=8), pointer :: v_sdappa_tgel(:) => null()
+    real(kind=8), pointer :: v_sdappa_tgno(:) => null()
+    integer, pointer :: v_mesh_connex(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 !
-! --- ACCES SD
+! - Acces to pairing datastructure
 !
-    aptgel = sdappa(1:19)//'.TGEL'
-    aptgno = sdappa(1:19)//'.TGNO'
-    call jeveuo(aptgno, 'E', jptgno)
+    sdappa_tgel = sdappa(1:19)//'.TGEL'
+    sdappa_tgno = sdappa(1:19)//'.TGNO'
+    call jeveuo(sdappa_tgno, 'E', vr = v_sdappa_tgno)
 !
-! --- BOUCLE SUR LES NOEUDS
+! - Loop on nodes
 !
-    do ino = 1, nbno
+    do i_node = 1, nb_node
 !
-! ----- INITIALISATIONS
+        normal(1:3) = 0.d0
+        tau1_node(1:3) = 0.d0
+        tau2_node(1:3) = 0.d0
 !
-        normal(1) = 0.d0
-        normal(2) = 0.d0
-        normal(3) = 0.d0
-        taund1(1) = 0.d0
-        taund1(2) = 0.d0
-        taund1(3) = 0.d0
-        taund2(1) = 0.d0
-        taund2(2) = 0.d0
-        taund2(3) = 0.d0
+! ----- Current node
 !
-! ----- NOEUD COURANT
-!
-        posno(1) = ino+jdecno
-!
-! ----- NUMERO ABSOLU ET NOM DU NOEUD
-!
-        call cfnumn(sdcont_defi, 1, posno(1), numno(1))
-        call jenuno(jexnum(noma//'.NOMNOE', numno(1)), node_name)
+        node_indx(1) = i_node+jdecno
+        call cfnumn(sdcont_defi, 1, node_indx(1), node_nume(1))
+        call jenuno(jexnum(mesh//'.NOMNOE', node_nume(1)), node_name)
 !
 ! ----- Number of elements attached to node
 !
-        call cfnben(sdcont_defi, posno(1), 'CONINV', nmanom, jdeciv)
+        call cfnben(sdcont_defi, node_indx(1), 'CONINV', node_nbelem, jdeciv)
 !
-! ----- BOUCLE SUR LES MAILLES ATTACHEES
+! ----- Loop on elements attached to node
 !
-        do ima = 1, nmanom
+        do i_elem = 1, node_nbelem
 !
 ! --------- Get elements attached to current node
 !
-            call cfinvm(sdcont_defi, jdeciv, ima, elem_indx)
+            call cfinvm(sdcont_defi, jdeciv, i_elem, elem_indx)
 !
 ! --------- Index and name of element
 !
             call cfnumm(sdcont_defi, elem_indx, elem_nume)
-            call jenuno(jexnum(noma//'.NOMMAI', elem_nume), elem_name)
+            call jenuno(jexnum(mesh//'.NOMMAI', elem_nume), elem_name)
             valk(1) = elem_name
             valk(2) = node_name
 !
-! ------- ACCES CONNECTIVITE DE LA MAILLE ATTACHEE
+! --------- Access to connectivity
 !
-            call jeveuo(jexnum(noma//'.CONNEX', elem_nume), 'L', jdec)
+            call jeveuo(jexnum(mesh//'.CONNEX', elem_nume), 'L', vi = v_mesh_connex)
 !
 ! --------- Number of nodes
 !
-            call cfnben(sdcont_defi, elem_indx, 'CONNEX', nnosdm)
+            call cfnben(sdcont_defi, elem_indx, 'CONNEX', elem_nbnode)   
 !
-! ------- ACCES TANGENTES MAILLE COURANTE
+! --------- Get current index of node
 !
-            call jeveuo(jexnum(aptgel, elem_indx), 'L', jtgeln)
-!
-! ------- TRANSFERT NUMERO ABSOLU DU NOEUD -> NUMERO DANS LA CONNEC DE
-! ------- LA MAILLE
-!
-            inocou = 0
-            do inomai = 1, nnosdm
-                if (zi(jdec+inomai-1) .eq. numno(1)) then
-                    inocou = inomai
+            i_node_curr = 0
+            do i_elem_node = 1, elem_nbnode
+                if (v_mesh_connex(i_elem_node) .eq. node_nume(1)) then
+                    i_node_curr = i_elem_node
                 endif
             end do
-            ASSERT(inocou.ne.0)
+            ASSERT(i_node_curr.ne.0)
 !
-! ------- RECUPERATIONS DES TANGENTES EN CE NOEUD
+! --------- Access to current tangent
 !
-            tau1(1) = zr(jtgeln+6*(inocou-1)+1-1)
-            tau1(2) = zr(jtgeln+6*(inocou-1)+2-1)
-            tau1(3) = zr(jtgeln+6*(inocou-1)+3-1)
-            tau2(1) = zr(jtgeln+6*(inocou-1)+4-1)
-            tau2(2) = zr(jtgeln+6*(inocou-1)+5-1)
-            tau2(3) = zr(jtgeln+6*(inocou-1)+6-1)
+            call jeveuo(jexnum(sdappa_tgel, elem_indx), 'L', vr = v_sdappa_tgel)
+            tau1(1) = v_sdappa_tgel(6*(i_node_curr-1)+1)
+            tau1(2) = v_sdappa_tgel(6*(i_node_curr-1)+2)
+            tau1(3) = v_sdappa_tgel(6*(i_node_curr-1)+3)
+            tau2(1) = v_sdappa_tgel(6*(i_node_curr-1)+4)
+            tau2(2) = v_sdappa_tgel(6*(i_node_curr-1)+5)
+            tau2(3) = v_sdappa_tgel(6*(i_node_curr-1)+6)
 !
-! ------- CALCUL DE LA NORMALE _INTERIEURE_
+! --------- Compute normal
 !
-            call mmnorm(ndimg, tau1, tau2, vnorm, noor)
+            call mmnorm(model_ndim, tau1, tau2, vnorm, noor)
             if (noor .le. r8prem()) then
                 call utmess('F', 'APPARIEMENT_15', nk=2, valk=valk)
             endif
 !
-! ------- NORMALE RESULTANTE
+! --------- Add normal
 !
             normal(1) = normal(1) + vnorm(1)
             normal(2) = normal(2) + vnorm(2)
             normal(3) = normal(3) + vnorm(3)
         end do
 !
-! ----- MOYENNATION DE LA NORMALE SUR TOUTES LES MAILLES LIEES AU NOEUD
+! ----- Mean square
 !
-        normal(1) = normal(1) / nmanom
-        normal(2) = normal(2) / nmanom
-        normal(3) = normal(3) / nmanom
-!
-! ----- NORMALISATION NORMALE SUR TOUTES LES MAILLES LIEES AU NOEUD
-!
+        normal(1) = normal(1) / node_nbelem
+        normal(2) = normal(2) / node_nbelem
+        normal(3) = normal(3) / node_nbelem
         call normev(normal, normn)
         if (normn .le. r8prem()) then
             call utmess('F', 'APPARIEMENT_16', sk=node_name)
         endif
 !
-! ----- RE-CONSTRUCTION DES VECTEURS TANGENTS APRES LISSAGE
+! ----- New local basis after smoothing
 !
-        call mmmron(ndimg, normal, taund1, taund2)
+        call mmmron(model_ndim, normal, tau1_node, tau2_node)
 !
-! ----- CAS PARTICULIER VECT_Y : ON REDEFINIT TAUND2
+! ----- For VECT_Y
 !
-        if (itype .eq. 2) then
-            call dcopy(3, vector, 1, taund2, 1)
-            call provec(normal, taund2, taund1)
+        if (norm_type .eq. 2) then
+            call dcopy(3, norm_vect, 1, tau2_node, 1)
+            call provec(normal, tau2_node, tau1_node)
         endif
 !
-! ----- NORMALISATION DES TANGENTES
+! ----- New local basis after smoothing
 !
-        call mmtann(ndimg, taund1, taund2, niverr)
-        if (niverr .eq. 1) then
+        call mmtann(model_ndim, tau1_node, tau2_node, niverr)
+        if (niverr .ne. 0) then
             call utmess('F', 'APPARIEMENT_17', sk=node_name)
         endif
 !
-! ----- STOCKAGE DES VECTEURS TANGENTS EXTERIEURS SUR LE NOEUD
+! ----- Save tangents
 !
-        zr(jptgno+6*(posno(1)-1)+1-1) = taund1(1)
-        zr(jptgno+6*(posno(1)-1)+2-1) = taund1(2)
-        zr(jptgno+6*(posno(1)-1)+3-1) = taund1(3)
-        zr(jptgno+6*(posno(1)-1)+4-1) = taund2(1)
-        zr(jptgno+6*(posno(1)-1)+5-1) = taund2(2)
-        zr(jptgno+6*(posno(1)-1)+6-1) = taund2(3)
+        v_sdappa_tgno(6*(node_indx(1)-1)+1) = tau1_node(1)
+        v_sdappa_tgno(6*(node_indx(1)-1)+2) = tau1_node(2)
+        v_sdappa_tgno(6*(node_indx(1)-1)+3) = tau1_node(3)
+        v_sdappa_tgno(6*(node_indx(1)-1)+4) = tau2_node(1)
+        v_sdappa_tgno(6*(node_indx(1)-1)+5) = tau2_node(2)
+        v_sdappa_tgno(6*(node_indx(1)-1)+6) = tau2_node(3)
     end do
 !
     call jedema()
+!
 end subroutine

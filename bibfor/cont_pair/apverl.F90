@@ -3,7 +3,6 @@ subroutine apverl(sdappa, mesh, sdcont_defi)
 implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterc/r8rddg.h"
 #include "asterfort/cfinvm.h"
@@ -60,23 +59,27 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=8) :: nomnom, nommam, oldnom
-    integer :: nbzone, ndimg
-    integer :: izone
-    integer :: jdecnm, nbnom
-    integer :: inom, ima, inocou, inomai
-    integer :: jdec, jdeciv
-    integer :: elem_mast_indx, elem_mast_nume, posnom(1), numnom(1)
-    integer :: nmanom, nnosdm
+    character(len=8) :: node_mast_name, elem_mast_name, node_old
+    integer :: nb_cont_zone, model_ndim
+    integer :: i_zone
+    integer :: jdecnm, nb_node_mast
+    integer :: i_node_mast, i_elem, i_node_curr, i_elem_node
+    integer :: jdeciv
+    integer :: elem_mast_indx, elem_mast_nume, node_mast_indx(1), node_mast_nume(1)
+    integer :: node_nbelem, elem_nbnode
     real(kind=8) :: tau1(3), tau2(3), norm(3)
-    real(kind=8) :: taund1(3), taund2(3), normnd(3)
+    real(kind=8) :: tau1_node(3), tau2_node(3), normnd(3)
     real(kind=8) :: noor1, noor2
     real(kind=8) :: angmax
-    character(len=24) :: aptgel, aptgno
-    integer :: jtgeln, jptgno
-    character(len=24) :: apverk, apvera
-    integer :: jlistn, jlista
-    real(kind=8) :: prosca, angle, oldang, val
+    character(len=24) :: sdappa_tgel, sdappa_tgno
+    real(kind=8), pointer :: v_sdappa_tgel(:) => null()
+    real(kind=8), pointer :: v_sdappa_tgno(:) => null()
+    character(len=24) :: sdappa_verk
+    character(len=8), pointer :: v_sdappa_verk(:) => null()
+    character(len=24) :: sdappa_vera
+    real(kind=8), pointer :: v_sdappa_vera(:) => null()
+    integer, pointer :: v_mesh_connex(:) => null()
+    real(kind=8) :: prosca, angle, angl_old, val
     integer :: inoeu
     aster_logical :: apcald
 !
@@ -84,122 +87,136 @@ implicit none
 !
     call jemarq()
 !
-! --- SD VERIFICATION FACETTISATION
+! - Get contact datastructures
 !
-    apverk = sdappa(1:19)//'.VERK'
-    apvera = sdappa(1:19)//'.VERA'
-    call jeveuo(apverk, 'E', jlistn)
-    call jeveuo(apvera, 'E', jlista)
-    call jelira(apverk, 'LONUTI', inoeu)
+    sdappa_verk = sdappa(1:19)//'.VERK'
+    sdappa_vera = sdappa(1:19)//'.VERA'
+    call jeveuo(sdappa_verk, 'E', vk8 = v_sdappa_verk)
+    call jeveuo(sdappa_vera, 'E', vr  = v_sdappa_vera)
+    call jelira(sdappa_verk, 'LONUTI', inoeu)
     if (inoeu .ne. 0) goto 999
     angmax = 5.d0
 !
-! --- ACCES SD
+! - Acces to pairing datastructure
 !
-    aptgel = sdappa(1:19)//'.TGEL'
-    aptgno = sdappa(1:19)//'.TGNO'
-    call jeveuo(aptgno, 'L', jptgno)
+    sdappa_tgel = sdappa(1:19)//'.TGEL'
+    sdappa_tgno = sdappa(1:19)//'.TGNO'
+    call jeveuo(sdappa_tgno, 'L', vr = v_sdappa_tgno)
 !
-! --- INITIALISATIONS
+! - Get parameters
 !
-    call appari(sdappa, 'APPARI_NBZONE', nbzone)
-    call appari(sdappa, 'APPARI_NDIMG', ndimg)
+    call appari(sdappa, 'APPARI_NBZONE', nb_cont_zone)
+    call appari(sdappa, 'APPARI_NDIMG' , model_ndim)
 !
-! --- BOUCLE SUR LES ZONES
+! - Loop on contact zones
 !
     inoeu = 0
-    do izone = 1, nbzone
-        call apzoni(sdappa, izone, 'NBNOM', nbnom)
-        call apzoni(sdappa, izone, 'JDECNM', jdecnm)
-        call apzonl(sdappa, izone, 'CALC_NORM_MAIT', apcald)
-        if (.not.apcald) goto 27
+    do i_zone = 1, nb_cont_zone
 !
-! ----- BOUCLE SUR LES NOEUDS
+! ----- Parameters on current zone - Master
 !
-        do inom = 1, nbnom
+        call apzoni(sdappa, i_zone, 'NBNOM'         , nb_node_mast)
+        call apzoni(sdappa, i_zone, 'JDECNM'        , jdecnm)
+        call apzonl(sdappa, i_zone, 'CALC_NORM_MAIT', apcald)
+        if (apcald) then
 !
-            posnom(1) = inom+jdecnm 
-            call cfnumn(sdcont_defi, 1, posnom(1), numnom(1))
-            call jenuno(jexnum(mesh//'.NOMNOE', numnom(1)), nomnom)
+! --------- Loop on nodes
 !
-! ------- TANGENTES SUR CE NOEUD
+            do i_node_mast = 1, nb_node_mast
 !
-            taund1(1) = zr(jptgno+6*(posnom(1)-1)+1-1)
-            taund1(2) = zr(jptgno+6*(posnom(1)-1)+2-1)
-            taund1(3) = zr(jptgno+6*(posnom(1)-1)+3-1)
-            taund2(1) = zr(jptgno+6*(posnom(1)-1)+4-1)
-            taund2(2) = zr(jptgno+6*(posnom(1)-1)+5-1)
-            taund2(3) = zr(jptgno+6*(posnom(1)-1)+6-1)
+! ------------- Current node
 !
-! ------- CALCUL DE LA NORMALE _INTERIEURE_
+                node_mast_indx(1) = i_node_mast+jdecnm 
+                call cfnumn(sdcont_defi, 1, node_mast_indx(1), node_mast_nume(1))
+                call jenuno(jexnum(mesh//'.NOMNOE', node_mast_nume(1)), node_mast_name)
 !
-            call mmnorm(ndimg, taund1, taund2, normnd, noor2)
+! ------------- Get tangents
 !
-! --------- Number of elements attached to node
+                tau1_node(1) = v_sdappa_tgno(6*(node_mast_indx(1)-1)+1)
+                tau1_node(2) = v_sdappa_tgno(6*(node_mast_indx(1)-1)+2)
+                tau1_node(3) = v_sdappa_tgno(6*(node_mast_indx(1)-1)+3)
+                tau2_node(1) = v_sdappa_tgno(6*(node_mast_indx(1)-1)+4)
+                tau2_node(2) = v_sdappa_tgno(6*(node_mast_indx(1)-1)+5)
+                tau2_node(3) = v_sdappa_tgno(6*(node_mast_indx(1)-1)+6)
 !
-            call cfnben(sdcont_defi, posnom(1), 'CONINV', nmanom, jdeciv)
+! ------------- Compute normal
 !
-! ------- BOUCLE SUR LES MAILLES ATTACHEES
+                call mmnorm(model_ndim, tau1_node, tau2_node, normnd, noor2)
 !
-            do ima = 1, nmanom
-                call cfinvm(sdcont_defi, jdeciv, ima, elem_mast_indx)
-                call cfnumm(sdcont_defi, elem_mast_indx, elem_mast_nume)
-                call jenuno(jexnum(mesh//'.NOMMAI', elem_mast_nume), nommam)
-                call cfnben(sdcont_defi, elem_mast_indx, 'CONNEX', nnosdm)
-                call jeveuo(jexnum(mesh//'.CONNEX', elem_mast_nume), 'L', jdec)
-                call jeveuo(jexnum(aptgel, elem_mast_indx), 'L', jtgeln)
+! ------------- Number of elements attached to node
 !
-! --------- TRANSFERT NUMERO ABSOLU DU NOEUD -> NUMERO DANS LA CONNEC DE
-! --------- LA MAILLE
+                call cfnben(sdcont_defi, node_mast_indx(1), 'CONINV', node_nbelem, jdeciv)
 !
-                inocou = 0
-                do inomai = 1, nnosdm
-                    if (zi(jdec+inomai-1) .eq. numnom(1)) then
-                        inocou = inomai
-                    endif
-                end do
-                ASSERT(inocou.ne.0)
+! ------------- Loop on elements attached to node
 !
-! --------- RECUPERATIONS DES TANGENTES EN CE NOEUD
+                do i_elem = 1, node_nbelem
 !
-                tau1(1) = zr(jtgeln+6*(inocou-1)+1-1)
-                tau1(2) = zr(jtgeln+6*(inocou-1)+2-1)
-                tau1(3) = zr(jtgeln+6*(inocou-1)+3-1)
-                tau2(1) = zr(jtgeln+6*(inocou-1)+4-1)
-                tau2(2) = zr(jtgeln+6*(inocou-1)+5-1)
-                tau2(3) = zr(jtgeln+6*(inocou-1)+6-1)
+! ----------------- Current element
+!   
+                    call cfinvm(sdcont_defi, jdeciv, i_elem, elem_mast_indx)
+                    call cfnumm(sdcont_defi, elem_mast_indx, elem_mast_nume)
+                    call jenuno(jexnum(mesh//'.NOMMAI', elem_mast_nume), elem_mast_name)
+                    call cfnben(sdcont_defi, elem_mast_indx, 'CONNEX', elem_nbnode)
 !
-! --------- CALCUL DE LA NORMALE _INTERIEURE_
+! ----------------- Access to connectivity
 !
-                call mmnorm(ndimg, tau1, tau2, norm, noor1)
+                    call jeveuo(jexnum(mesh//'.CONNEX', elem_mast_nume), 'L', vi = v_mesh_connex) 
 !
-! --------- CALCUL DE L'ANGLE
+! ----------------- Get current index of node
 !
-                prosca = ddot(3,norm,1,normnd,1)
-                if (abs(noor1*noor2) .le. r8prem()) goto 31
-                val = prosca/(noor1*noor2)
-                if (val .gt. 1.d0) val = 1.d0
-                if (val .lt. -1.d0) val = -1.d0
-                angle = acos(val)
-                angle = angle*r8rddg()
-                oldang = zr(jlista+numnom(1)-1)
-                oldnom = zk8(jlistn+numnom(1)-1)
-                if (angle .gt. angmax) then
-                    if (oldnom .eq. ' ') then
-                        inoeu = inoeu+1
-                        if (oldang .lt. angle) then
-                            zk8(jlistn+numnom(1)-1) = nomnom
-                            zr(jlista+numnom(1)-1) = angle
+                    i_node_curr = 0
+                    do i_elem_node = 1, elem_nbnode
+                        if (v_mesh_connex(i_elem_node) .eq. node_mast_nume(1)) then
+                            i_node_curr = i_elem_node
+                        endif
+                    end do
+                    ASSERT(i_node_curr.ne.0)
+!
+! ----------------- Access to current tangent
+!
+                    call jeveuo(jexnum(sdappa_tgel, elem_mast_indx), 'L', vr = v_sdappa_tgel)
+                    tau1(1) = v_sdappa_tgel(6*(i_node_curr-1)+1)
+                    tau1(2) = v_sdappa_tgel(6*(i_node_curr-1)+2)
+                    tau1(3) = v_sdappa_tgel(6*(i_node_curr-1)+3)
+                    tau2(1) = v_sdappa_tgel(6*(i_node_curr-1)+4)
+                    tau2(2) = v_sdappa_tgel(6*(i_node_curr-1)+5)
+                    tau2(3) = v_sdappa_tgel(6*(i_node_curr-1)+6)
+!
+! ----------------- Compute normal
+!
+                    call mmnorm(model_ndim, tau1, tau2, norm, noor1)
+!
+! ----------------- Compute angle
+!
+                    prosca = ddot(3,norm,1,normnd,1)
+                    if (abs(noor1*noor2) .gt. r8prem()) then
+                        val = prosca/(noor1*noor2)
+                        if (val .gt. 1.d0) then
+                            val = 1.d0
+                        endif
+                        if (val .lt. -1.d0) then
+                            val = -1.d0
+                        endif
+                        angle = acos(val)
+                        angle = angle*r8rddg()
+                        angl_old = v_sdappa_vera(node_mast_nume(1))
+                        node_old = v_sdappa_verk(node_mast_nume(1))
+                        if (angle .gt. angmax) then
+                            if (node_old .eq. ' ') then
+                                inoeu = inoeu+1
+                                if (angl_old .lt. angle) then
+                                   v_sdappa_verk(node_mast_nume(1)) = node_mast_name
+                                   v_sdappa_vera(node_mast_nume(1)) = angle
+                                endif
+                            endif
                         endif
                     endif
-                endif
- 31             continue
+                end do
             end do
-        end do
- 27     continue
+        endif
     end do
 !
-    call jeecra(apverk, 'LONUTI', inoeu)
+    call jeecra(sdappa_verk, 'LONUTI', inoeu)
 !
 999 continue
 !

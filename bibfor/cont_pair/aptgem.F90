@@ -1,6 +1,27 @@
-subroutine aptgem(sdappa, noma  , newgeo, sdcont_defi, ndimg ,&
-                  izone , typzon, itemax, epsmax     , jdecma,&
-                  nbma)
+subroutine aptgem(sdappa , mesh     , newgeo   , sdcont_defi, model_ndim,&
+                  i_zone , zone_type, iter_maxi, epsi_maxi  , jdecma    ,&
+                  nb_elem)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterc/r8maem.h"
+#include "asterfort/apcoma.h"
+#include "asterfort/apcond.h"
+#include "asterfort/apcpoi.h"
+#include "asterfort/apcpou.h"
+#include "asterfort/cfnben.h"
+#include "asterfort/cfnumm.h"
+#include "asterfort/aptypm.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mmctan.h"
+#include "asterfort/mmtann.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,186 +41,148 @@ subroutine aptgem(sdappa, noma  , newgeo, sdcont_defi, ndimg ,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/r8maem.h"
-#include "asterfort/apcoma.h"
-#include "asterfort/apcond.h"
-#include "asterfort/apcpoi.h"
-#include "asterfort/apcpou.h"
-#include "asterfort/cfnben.h"
-#include "asterfort/cfnumm.h"
-#include "asterfort/aptypm.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/mmctan.h"
-#include "asterfort/mmtann.h"
-#include "asterfort/utmess.h"
+    character(len=19), intent(in) :: sdappa
+    character(len=8), intent(in) :: mesh
+    character(len=24), intent(in) :: sdcont_defi
+    character(len=19), intent(in) :: newgeo
+    integer, intent(in) :: model_ndim
+    integer, intent(in) :: i_zone   
+    integer, intent(in) :: jdecma    
+    integer, intent(in) :: nb_elem
+    character(len=4), intent(in) :: zone_type
+    integer, intent(in) :: iter_maxi
+    real(kind=8), intent(in) :: epsi_maxi
 !
-    character(len=24) :: sdcont_defi
-    character(len=19) :: sdappa, newgeo
-    character(len=8) :: noma
-    integer :: ndimg, izone, jdecma, nbma
-    character(len=4) :: typzon
-    integer :: itemax
-    real(kind=8) :: epsmax
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! Contact - Pairing
 !
-! ROUTINE APPARIEMENT - TANGENTES EN CHAQUE NOEUD D'UNE ELEMENT
+! Compute tangents at each node for each element - on current zone
 !
-! CALCUL SUR UNE ZONE
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! In  sdappa           : name of pairing datastructure
+! In  mesh             : name of mesh
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  newgeo           : name of field for geometry update from initial coordinates of nodes
+! In  model_ndim       : dimension of model
+! In  i_zone           : index of contact zone
+! In  jdecma           : shift in contact datastructure for the beginning of element in contact zone
+! In  nb_elem          : number of elements in contact zone
+! In  zone_type        : type of zone
+!                        'MAIT' for master
+!                        'ESCL' for slave
+! In  iter_maxi        : maximum number of Newton iterations
+! In  epsi_maxi        : maximum tolerance for Newton algorithm
 !
+! --------------------------------------------------------------------------------------------------
 !
-! IN  SDAPPA : NOM DE LA SD APPARIEMENT
-! IN  NOMA   : SD MAILLAGE
-! IN  NEWGEO : CHAMP DE GEOMETRIE ACTUALISE
-! IN  DEFICO : SD DEFINITION DU CONTACT
-! IN  NMDIMG : DIMENSION DE L'ESPACE
-! IN  IZONE  : NUMERO DE LA ZONE
-! IN  TYPZON : TYPE DE LA ZONE 'MAIT' OU 'ESCL'
-! IN  ITEMAX : NOMBRE MAXI D'ITERATIONS DE NEWTON POUR LA PROJECTION
-! IN  EPSMAX : RESIDU POUR CONVERGENCE DE NEWTON POUR LA PROJECTION
-! IN  JDECMA : DECALAGE POUR NUMERO DE MAILLE
-! IN  NBMA   : NOMBRE DE MAILLES DE LA ZONE
-!
-!
-!
-!
-    character(len=8) :: alias, elem_name, node_name, valk(2)
-    integer :: numno(9), longc
-    integer :: nnosdm, niverr
-    aster_logical :: lpoutr, lpoint
-    integer :: jtgeln, jdec
-    integer :: ino, ima, ndim
+    character(len=8) :: elem_type, elem_name, node_name, valk(2)
+    integer :: node_nume(9), longc
+    integer :: elem_nbnode, niverr
+    aster_logical :: l_beam, l_poi1
+    integer :: i_node, i_elem, elem_ndim
     integer :: elem_indx, elem_nume
     real(kind=8) :: tau1(3), tau2(3)
-    character(len=24) :: aptgel
-    real(kind=8) :: coorma(27), coorno(3)
+    character(len=24) :: sdappa_tgel
+    real(kind=8) :: elem_coor(27), node_coor(3)
+    real(kind=8), pointer :: v_sdappa_tgel(:) => null()
+    integer, pointer :: v_mesh_connex(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 !
-! --- ACCES SDAPPA
+! - Acces to pairing datastructure
 !
-    aptgel = sdappa(1:19)//'.TGEL'
+    sdappa_tgel = sdappa(1:19)//'.TGEL'
 !
-! --- BOUCLE SUR LES MAILLES
+! - Loop on elements
 !
-    do ima = 1, nbma
+    do i_elem = 1, nb_elem
 !
-        elem_indx = ima+jdecma
+! ----- Current element
 !
-! ----- Index of element
-!
+        elem_indx = i_elem+jdecma
         call cfnumm(sdcont_defi, elem_indx, elem_nume)
 !
 ! ----- Number of nodes
 !
-        call cfnben(sdcont_defi, elem_indx, 'CONNEX', nnosdm)
+        call cfnben(sdcont_defi, elem_indx, 'CONNEX', elem_nbnode)
 !
-! ----- CARACTERISTIQUES DE LA MAILLE MAITRE
+! ----- Parameters of current element
 !
-        call aptypm(sdappa, noma, elem_nume, ndim, nnosdm,&
-                    alias, elem_name)
+        call aptypm(mesh     , elem_nume, elem_ndim, elem_nbnode, elem_type, &
+                    elem_name)
 !
-! ----- COORDONNNEES DE LA MAILLE MAITRE
+! ----- Coordinates of current element
 !
-        call apcoma(sdappa, noma, newgeo, elem_nume, nnosdm,&
-                    coorma)
+        call apcoma(mesh, newgeo, elem_nume, elem_nbnode, elem_coor)
 !
-! ----- NUMEROS ABSOLUS DES NOEUDS DE LA MAILLE
+! ----- Get absolute index of nodes
 !
-        call jeveuo(jexnum(noma//'.CONNEX', elem_nume), 'L', jdec)
-        do ino = 1, nnosdm
-            numno(ino) = zi(jdec+ino-1)
+        call jeveuo(jexnum(mesh//'.CONNEX', elem_nume), 'L', vi = v_mesh_connex)
+        do i_node = 1, elem_nbnode
+            node_nume(i_node) = v_mesh_connex(i_node)
         end do
 !
-! ----- LONGUEUR EFFECTIVE
+! ----- Right length
 !
-        call jelira(jexnum(aptgel, elem_indx), 'LONMAX', longc)
+        call jelira(jexnum(sdappa_tgel, elem_indx), 'LONMAX', longc)
         longc = longc /6
 !
-! ----- TYPE DE MAILLE
+! ----- Special types of element
 !
-        lpoutr = (alias(1:2).eq.'SE').and.(ndimg.eq.3)
-        lpoint = alias.eq.'PO1'
+        l_beam = (elem_type(1:2).eq.'SE').and.(model_ndim.eq.3)
+        l_poi1 = elem_type.eq.'PO1'
 !
-! ----- ACCES MAILLE COURANTE
+! ----- Current element
 !
-        call jeveuo(jexnum(aptgel, elem_indx), 'E', jtgeln)
+        call jeveuo(jexnum(sdappa_tgel, elem_indx), 'E', vr = v_sdappa_tgel)
 !
-! ----- BOUCLE SUR LES NOEUDS DE LA MAILLE
+! ----- Loop on nodes
 !
-        do ino = 1, nnosdm
+        do i_node = 1, elem_nbnode
+            tau1(1:3) = r8maem()
+            tau2(1:3) = r8maem()
 !
-! ------- COORDONNNEES ET NOM DU NOEUD
+! --------- Current node
 !
-            call apcond(sdappa, newgeo, numno(ino), coorno)
-            call jenuno(jexnum(noma//'.NOMNOE', numno(ino)), node_name)
+            call apcond(newgeo, node_nume(i_node), node_coor)
+            call jenuno(jexnum(mesh//'.NOMNOE', node_nume(i_node)), node_name)
             valk(1) = elem_name
             valk(2) = node_name
 !
-! ------- INITIALISATIONS
+! --------- Compute local basis for these node
 !
-            tau1(1) = r8maem()
-            tau1(2) = r8maem()
-            tau1(3) = r8maem()
-            tau2(1) = r8maem()
-            tau2(2) = r8maem()
-            tau2(3) = r8maem()
-!
-! ------- CALCUL DES TANGENTES EN CE NOEUD
-!
-            if (lpoint) then
-!
-! --------- ELEMENT POINT
-!
-                call apcpoi(sdappa, ndimg, izone, elem_name, typzon,&
-                            tau1, tau2)
+            if (l_poi1) then
+                call apcpoi(sdappa, model_ndim, i_zone, elem_name, zone_type,&
+                            tau1  , tau2)
             else
-!
-! --------- AUTRES ELEMENTS
-!
-                call mmctan(elem_name, alias, nnosdm, ndim, coorma,&
-                            coorno, itemax, epsmax, tau1, tau2)
-!
-                if (lpoutr) then
-!
-! --------- CAS PARTICULIER : ELEMENT POUTRE
-!
-                    call apcpou(sdappa, izone, elem_name, typzon, tau1,&
+                call mmctan(elem_name, elem_type, elem_nbnode, elem_ndim, elem_coor,&
+                            node_coor, iter_maxi, epsi_maxi  , tau1, tau2)
+                if (l_beam) then
+                    call apcpou(sdappa, i_zone, elem_name, zone_type, tau1,&
                                 tau2)
                 endif
-!
             endif
 !
-! ------- NORMALISATION DES TANGENTES
+! --------- Norm
 !
-            call mmtann(ndimg, tau1, tau2, niverr)
-!
+            call mmtann(model_ndim, tau1, tau2, niverr)
             if (niverr .eq. 1) then
                 call utmess('F', 'APPARIEMENT_14', nk=2, valk=valk)
             endif
 !
-! ------- STOCKAGE DES TANGENTES
+! --------- Save tangents (careful: for QUAD8 only 4 nodes in contact datastructures!)
 !
-            if (ino .le. longc) then
-! --------- CE TEST PROTEGE CONTRE LES QUAD8 QUI N'ONT QUE 4 NOEUDS !
-                zr(jtgeln+6*(ino-1)+1 -1) = tau1(1)
-                zr(jtgeln+6*(ino-1)+2 -1) = tau1(2)
-                zr(jtgeln+6*(ino-1)+3 -1) = tau1(3)
-                zr(jtgeln+6*(ino-1)+4 -1) = tau2(1)
-                zr(jtgeln+6*(ino-1)+5 -1) = tau2(2)
-                zr(jtgeln+6*(ino-1)+6 -1) = tau2(3)
+            if (i_node .le. longc) then
+                v_sdappa_tgel(6*(i_node-1)+1) = tau1(1)
+                v_sdappa_tgel(6*(i_node-1)+2) = tau1(2)
+                v_sdappa_tgel(6*(i_node-1)+3) = tau1(3)
+                v_sdappa_tgel(6*(i_node-1)+4) = tau2(1)
+                v_sdappa_tgel(6*(i_node-1)+5) = tau2(2)
+                v_sdappa_tgel(6*(i_node-1)+6) = tau2(3)
             endif
         end do
     end do

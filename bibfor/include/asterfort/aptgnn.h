@@ -16,15 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine aptgnn(sdappa, noma , sdcont_defi, ndimg, jdecno,&
-                      nbno  , itype, vector)
-        character(len=19) :: sdappa
-        character(len=8) :: noma
-        character(len=24) :: sdcont_defi
-        integer :: ndimg
-        integer :: jdecno
-        integer :: nbno
-        integer :: itype
-        real(kind=8) :: vector(3)
+    subroutine aptgnn(sdappa , mesh     , sdcont_defi, model_ndim, jdecno,&
+                      nb_node, norm_type, norm_vect)
+        character(len=19), intent(in) :: sdappa
+        character(len=8), intent(in) :: mesh
+        character(len=24), intent(in) :: sdcont_defi
+        integer, intent(in) :: model_ndim
+        integer, intent(in) :: jdecno
+        integer, intent(in) :: nb_node
+        integer, intent(in) :: norm_type
+        real(kind=8), intent(in) :: norm_vect(3)
     end subroutine aptgnn
 end interface

@@ -1,5 +1,10 @@
-subroutine apcoma(sdappa, noma, newgeo, numma, nnosdm,&
-                  coorma)
+subroutine apcoma(mesh, newgeo, elem_nume, elem_nbnode, elem_coor)
+!
+implicit none
+!
+#include "asterfort/assert.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,78 +24,53 @@ subroutine apcoma(sdappa, noma, newgeo, numma, nnosdm,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
+    character(len=8), intent(in) :: mesh
+    character(len=19), intent(in) :: newgeo
+    integer, intent(in) :: elem_nume
+    integer, intent(in) :: elem_nbnode
+    real(kind=8), intent(out) :: elem_coor(27)
 !
-#include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
-    character(len=19) :: sdappa
-    character(len=8) :: noma
-    character(len=19) :: newgeo
-    integer :: numma, nnosdm
-    real(kind=8) :: coorma(27)
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! Contact - Pairing
 !
-! ROUTINE APPARIEMENT (UTILITAIRE)
+! Get coordinates of current element
 !
-! COORDONNEES D'UNE MAILLE
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! In  mesh             : name of mesh
+! In  newgeo           : name of field for geometry update from initial coordinates of nodes
+! In  elem_nume        : index of element in mesh datastructure
+! In  elem_nbnode      : number of nodes of element
+! Out elem_coor        : coordinates of nodes for current element
 !
+! --------------------------------------------------------------------------------------------------
 !
-! IN  SDAPPA : NOM DE LA SD APPARIEMENT
-! IN  NOMA   : SD MAILLAGE
-! IN  NEWGEO : CHAMP DE GEOMETRIE ACTUALISE
-! IN  NUMMA  : NUMERO ABSOLU DE LA MAILLE DANS LE MAILLAGE
-! IN  NNOSDM : NOMBRE DE NOEUDS DE LA MAILLE POUR LE CONTACT
-! OUT COORMA : COORDONNEES DE LA MAILLE
+    integer, parameter :: nbnmax = 9
+    integer :: node_nume(nbnmax), i_node
+    real(kind=8), pointer :: v_newgeo_vale(:) => null()
+    integer, pointer :: v_mesh_connex(:) => null()
 !
+! --------------------------------------------------------------------------------------------------
 !
+    elem_coor(1:27) = 0.d0
+    ASSERT(elem_nbnode.gt.0)
+    ASSERT(elem_nbnode.le.nbnmax)
 !
+! - Get absolute index of nodes
 !
+    call jeveuo(jexnum(mesh//'.CONNEX', elem_nume), 'L', vi = v_mesh_connex)
+    do i_node = 1, elem_nbnode
+        node_nume(i_node) = v_mesh_connex(i_node)
+    end do
 !
-    integer :: nbnmax
-    parameter   (nbnmax = 9)
+! - Coordinates of nodes
 !
-    integer :: no(nbnmax), ino
-    integer ::  i, jdec
-    real(kind=8), pointer :: vale(:) => null()
-!
-! ----------------------------------------------------------------------
-!
-    call jemarq()
-!
-! --- INITIALISATIONS
-!
-    do 10 i = 1, 27
-        coorma(i) = 0.d0
-10  end do
-!
-! --- NOMBRE DE NOEUDS DE LA MAILLE
-!
-    ASSERT(nnosdm.gt.0)
-    ASSERT(nnosdm.le.nbnmax)
-!
-! --- NUMEROS ABSOLUS DES NOEUDS DE LA MAILLE
-!
-    call jeveuo(jexnum(noma//'.CONNEX', numma ), 'L', jdec)
-    do 61 ino = 1, nnosdm
-        no(ino) = zi(jdec+ino-1)
-61  end do
-!
-! --- COORDONNEES DES NOEUDS DE LA MAILLE
-!
-    call jeveuo(newgeo(1:19)//'.VALE', 'L', vr=vale)
-    do 70 ino = 1, nnosdm
-        coorma(3*(ino-1)+1) = vale(1+3*(no(ino)-1))
-        coorma(3*(ino-1)+2) = vale(1+3*(no(ino)-1)+1)
-        coorma(3*(ino-1)+3) = vale(1+3*(no(ino)-1)+2)
-70  end do
-!
-    call jedema()
+    call jeveuo(newgeo(1:19)//'.VALE', 'L', vr=v_newgeo_vale)
+    do i_node = 1, elem_nbnode
+        elem_coor(3*(i_node-1)+1) = v_newgeo_vale(3*(node_nume(i_node)-1)+1)
+        elem_coor(3*(i_node-1)+2) = v_newgeo_vale(3*(node_nume(i_node)-1)+2)
+        elem_coor(3*(i_node-1)+3) = v_newgeo_vale(3*(node_nume(i_node)-1)+3)
+    end do
 !
 end subroutine

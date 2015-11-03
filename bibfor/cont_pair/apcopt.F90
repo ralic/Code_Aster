@@ -1,4 +1,8 @@
-subroutine apcopt(sdappa, ip, coorpt)
+subroutine apcopt(sdappa, i_poin, poin_coor)
+!
+implicit none
+!
+#include "asterfort/jeveuo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,49 +22,34 @@ subroutine apcopt(sdappa, ip, coorpt)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-    character(len=19) :: sdappa
-    integer :: ip
-    real(kind=8) :: coorpt(3)
+    character(len=19), intent(in) :: sdappa
+    integer, intent(in) :: i_poin
+    real(kind=8), intent(out) :: poin_coor(3)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE APPARIEMENT (UTILITAIRE)
+! Contact - Pairing
 !
-! COORDONNEES DU POINT
+! Get coordinate of point
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sdappa           : name of pairing datastructure
+! In  i_poin           : current index of point
+! Out poin_coor        : coordinates of point
 !
-! IN  SDAPPA : NOM DE LA SD APPARIEMENT
-! IN  IP     : NUMERO DU POINT
-! OUT COORPT : COORDONNEES DU POINT
+! --------------------------------------------------------------------------------------------------
 !
+    character(len=24) :: sdappa_poin
+    real(kind=8), pointer :: v_sdappa_poin(:) => null()
 !
+! --------------------------------------------------------------------------------------------------
 !
+    sdappa_poin = sdappa(1:19)//'.POIN'
+    call jeveuo(sdappa_poin, 'L', vr = v_sdappa_poin)
 !
-    character(len=24) :: appoin
-    integer :: jpoin
-!
-! ----------------------------------------------------------------------
-!
-    call jemarq()
-!
-! --- ACCES SDAPPA
-!
-    appoin = sdappa(1:19)//'.POIN'
-    call jeveuo(appoin, 'L', jpoin)
-!
-! --- COORDONNEES DU NOEUD
-!
-    coorpt(1) = zr(jpoin+3*(ip-1)+1-1)
-    coorpt(2) = zr(jpoin+3*(ip-1)+2-1)
-    coorpt(3) = zr(jpoin+3*(ip-1)+3-1)
-!
-    call jedema()
+    poin_coor(1) = v_sdappa_poin(3*(i_poin-1)+1)
+    poin_coor(2) = v_sdappa_poin(3*(i_poin-1)+2)
+    poin_coor(3) = v_sdappa_poin(3*(i_poin-1)+3)
 !
 end subroutine

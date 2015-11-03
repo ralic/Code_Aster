@@ -1,5 +1,15 @@
-subroutine apcpou(sdappa, izone, nommai, typzon, tau1,&
+subroutine apcpou(sdappa, i_zone, elem_name, zone_type, tau1,&
                   tau2)
+!
+implicit none
+!
+#include "asterfort/apzoni.h"
+#include "asterfort/apzonv.h"
+#include "asterfort/assert.h"
+#include "asterfort/normev.h"
+#include "asterfort/provec.h"
+#include "asterfort/utmess.h"
+#include "blas/dcopy.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,65 +29,54 @@ subroutine apcpou(sdappa, izone, nommai, typzon, tau1,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/apzoni.h"
-#include "asterfort/apzonv.h"
-#include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/normev.h"
-#include "asterfort/provec.h"
-#include "asterfort/utmess.h"
-#include "blas/dcopy.h"
-    character(len=19) :: sdappa
-    character(len=4) :: typzon
-    integer :: izone
-    real(kind=8) :: tau1(3), tau2(3)
+    character(len=19), intent(in) :: sdappa
+    integer, intent(in) :: i_zone
+    character(len=8), intent(in) :: elem_name
+    character(len=4), intent(in) :: zone_type
+    real(kind=8), intent(inout) :: tau1(3)
+    real(kind=8), intent(inout) :: tau2(3)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE APPARIEMENT (UTILITAIRE)
+! Contact - Pairing
 !
-! ORIENTATION DES TANGENTES DANS LE CAS DES POUTRES
+! Compute tangents at each node for beam element
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sdappa           : name of pairing datastructure
+! In  i_zone           : index of contact zone
+! In  elem_name        : name of element
+! In  zone_type        : type of zone
+!                        'MAIT' for master
+!                        'ESCL' for slave
+! IO  tau1             : first tangent of local basis
+! IO  tau2             : second tangent of local basis
 !
-! IN  SDAPPA : NOM DE LA SD APPARIEMENT
-! IN  IZONE  : NUMERO DE LA ZONE
-! IN  NOMMAI : NOM DE LA MAILLE
-! IN  TYPZON : TYPE DE LA ZONE 'MAIT' OU 'ESCL'
-! OUT TAU1   : PREMIERE TANGENTE (NON NORMALISEE)
-! OUT TAU2   : SECONDE TANGENTE (NON NORMALISEE)
-!
-!
-!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: itype
-    character(len=8) :: nommai
     real(kind=8) :: vector(3), norme
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
 !
-! --- TYPE DE NORMALE
+! - Type of normal
 !
-    if (typzon .eq. 'ESCL') then
-        call apzoni(sdappa, izone, 'TYPE_NORM_ESCL', itype)
-        call apzonv(sdappa, izone, 'VECT_ESCL', vector)
-    else if (typzon.eq.'MAIT') then
-        call apzoni(sdappa, izone, 'TYPE_NORM_MAIT', itype)
-        call apzonv(sdappa, izone, 'VECT_MAIT', vector)
+    if (zone_type .eq. 'ESCL') then
+        call apzoni(sdappa, i_zone, 'TYPE_NORM_ESCL', itype)
+        call apzonv(sdappa, i_zone, 'VECT_ESCL', vector)
+    else if (zone_type.eq.'MAIT') then
+        call apzoni(sdappa, i_zone, 'TYPE_NORM_MAIT', itype)
+        call apzonv(sdappa, i_zone, 'VECT_MAIT', vector)
     else
         ASSERT(.false.)
     endif
 !
-! --- REDEFINITION SI BASE LOCALE DANS LE CAS DES POUTRES
+! - Construct local basis
 !
     if (itype .eq. 0) then
-        call utmess('F', 'APPARIEMENT_61', sk=nommai)
+        call utmess('F', 'APPARIEMENT_61', sk=elem_name)
     else if (itype.eq.1) then
         call normev(vector, norme)
         call provec(vector, tau1, tau2)
@@ -88,5 +87,4 @@ subroutine apcpou(sdappa, izone, nommai, typzon, tau1,&
         ASSERT(.false.)
     endif
 !
-    call jedema()
 end subroutine

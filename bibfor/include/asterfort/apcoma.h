@@ -16,13 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine apcoma(sdappa, noma, newgeo, numma, nnosdm,&
-                      coorma)
-        character(len=19) :: sdappa
-        character(len=8) :: noma
-        character(len=19) :: newgeo
-        integer :: numma
-        integer :: nnosdm
-        real(kind=8) :: coorma(27)
+    subroutine apcoma(mesh, newgeo, elem_nume, elem_nbnode, elem_coor)
+        character(len=8), intent(in) :: mesh
+        character(len=19), intent(in) :: newgeo
+        integer, intent(in) :: elem_nume
+        integer, intent(in) :: elem_nbnode
+        real(kind=8), intent(out) :: elem_coor(27)
     end subroutine apcoma
 end interface

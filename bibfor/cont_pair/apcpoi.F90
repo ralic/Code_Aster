@@ -1,5 +1,15 @@
-subroutine apcpoi(sdappa, ndimg, izone, nommai, typzon,&
-                  tau1, tau2)
+subroutine apcpoi(sdappa, model_ndim, i_zone, elem_name, zone_type,&
+                  tau1  , tau2)
+!
+implicit none
+!
+#include "asterc/r8prem.h"
+#include "asterfort/apzoni.h"
+#include "asterfort/apzonv.h"
+#include "asterfort/assert.h"
+#include "asterfort/mmmron.h"
+#include "asterfort/normev.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,82 +29,68 @@ subroutine apcpoi(sdappa, ndimg, izone, nommai, typzon,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterc/r8prem.h"
-#include "asterfort/apzoni.h"
-#include "asterfort/apzonv.h"
-#include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/mmmron.h"
-#include "asterfort/normev.h"
-#include "asterfort/utmess.h"
-    character(len=19) :: sdappa
-    character(len=8) :: nommai
-    character(len=4) :: typzon
-    integer :: izone, ndimg
-    real(kind=8) :: tau1(3), tau2(3)
+    character(len=19), intent(in) :: sdappa
+    integer, intent(in) :: model_ndim
+    integer, intent(in) :: i_zone
+    character(len=8), intent(in) :: elem_name
+    character(len=4), intent(in) :: zone_type
+    real(kind=8), intent(out) :: tau1(3)
+    real(kind=8), intent(out) :: tau2(3)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE APPARIEMENT (UTILITAIRE)
+! Contact - Pairing
 !
-! ORIENTATION DES TANGENTES DANS LE CAS DES MAILLES POINT
+! Compute tangents at each node for POI1 element
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sdappa           : name of pairing datastructure
+! In  model_ndim       : dimension of model
+! In  i_zone           : index of contact zone
+! In  elem_name        : name of element
+! In  zone_type        : type of zone
+!                        'MAIT' for master
+!                        'ESCL' for slave
+! Out tau1             : first tangent of local basis
+! Out tau2             : second tangent of local basis
 !
-! IN  SDAPPA : NOM DE LA SD APPARIEMENT
-! IN  NDIMG  : DIMENSION DE L'ESPACE
-! IN  IZONE  : NUMERO DE LA ZONE
-! IN  NOMMAI : NOM DE LA MAILLE
-! IN  TYPZON : TYPE DE LA MAILLE 'MAIT' OU 'ESCL'
-! OUT TAU1   : PREMIERE TANGENTE (NON NORMALISEE)
-! OUT TAU2   : SECONDE TANGENTE (NON NORMALISEE)
-!
-!
-!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: itype
     real(kind=8) :: normal(3), norme
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
 !
-! --- MAILLE POI1 SEULEMENT ESCLAVE
+! - Check: POI1 is only master element
 !
-    if (typzon .eq. 'MAIT') then
+    if (zone_type .eq. 'MAIT') then
         call utmess('F', 'APPARIEMENT_75')
     endif
-!
-! --- CHOIX DE LA NORMALE SUIVANT UTILISATEUR
-!
-    call apzoni(sdappa, izone, 'TYPE_NORM_ESCL', itype)
+    call apzoni(sdappa, i_zone, 'TYPE_NORM_ESCL', itype)
     if (itype .ne. 0) then
-        call apzonv(sdappa, izone, 'VECT_ESCL', normal)
+        call apzonv(sdappa, i_zone, 'VECT_ESCL', normal)
         call normev(normal, norme)
     endif
 !
-! --- CONSTRUCTION BASE TANGENTE NULLE
+! - Construct local basis
 !
     if (itype .eq. 0) then
-        call utmess('F', 'APPARIEMENT_62', sk=nommai)
+        call utmess('F', 'APPARIEMENT_62', sk=elem_name)
     else if (itype.eq.1) then
         if (norme .le. r8prem()) then
-            call utmess('F', 'APPARIEMENT_63', sk=nommai)
+            call utmess('F', 'APPARIEMENT_63', sk=elem_name)
         else
             normal(1) = -normal(1)
             normal(2) = -normal(2)
             normal(3) = -normal(3)
-            call mmmron(ndimg, normal, tau1, tau2)
+            call mmmron(model_ndim, normal, tau1, tau2)
         endif
     else if (itype.eq.2) then
-        call utmess('F', 'APPARIEMENT_62', sk=nommai)
+        call utmess('F', 'APPARIEMENT_62', sk=elem_name)
     else
         ASSERT(.false.)
     endif
 !
-    call jedema()
 end subroutine

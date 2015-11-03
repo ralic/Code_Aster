@@ -63,11 +63,11 @@ implicit none
 !
     call apforc(sdappa, mesh, sdcont_defi, newgeo)
 !
-! --- VERIFICATIONS APPARIEMENT
+! - Check pairing
 !
     call apvepa(sdappa)
 !
-! --- AFFICHAGE
+! - Debug print
 !
     if (niv .ge. 2) then
         call apimpr(sdappa, ifm, mesh, sdcont_defi)

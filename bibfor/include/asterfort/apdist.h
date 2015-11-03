@@ -16,15 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine apdist(elrefe, coorma, nbno, ksi1, ksi2,&
-                      coorpt, dist, vecpm)
-        character(len=8) :: elrefe
-        real(kind=8) :: coorma(27)
-        integer :: nbno
-        real(kind=8) :: ksi1
-        real(kind=8) :: ksi2
-        real(kind=8) :: coorpt(3)
-        real(kind=8) :: dist
-        real(kind=8) :: vecpm(3)
+    subroutine apdist(elem_type, elem_coor, elem_nbnode, ksi1, ksi2,&
+                      poin_coor, dist     , vect_pm)
+        character(len=8), intent(in) :: elem_type
+        real(kind=8), intent(in) :: elem_coor(27)
+        integer, intent(in) :: elem_nbnode
+        real(kind=8), intent(in) :: ksi1
+        real(kind=8), intent(in) :: ksi2
+        real(kind=8), intent(in) :: poin_coor(3)
+        real(kind=8), intent(out) :: dist
+        real(kind=8), intent(out) :: vect_pm(3)
     end subroutine apdist
 end interface

@@ -1,4 +1,8 @@
-subroutine apcond(sdappa, newgeo, numno, coorno)
+subroutine apcond(newgeo, node_nume, node_coor)
+!
+implicit none
+!
+#include "asterfort/jeveuo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,45 +22,31 @@ subroutine apcond(sdappa, newgeo, numno, coorno)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-    character(len=19) :: sdappa, newgeo
-    integer :: numno
-    real(kind=8) :: coorno(3)
+    character(len=19), intent(in) :: newgeo
+    integer, intent(in) :: node_nume
+    real(kind=8), intent(out) :: node_coor(3)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE APPARIEMENT (UTILITAIRE)
+! Contact - Pairing
 !
-! COORDONNEES D'UN NOEUD
+! Get coordinates of current node
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  newgeo           : name of field for geometry update from initial coordinates of nodes
+! In  node_nume        : index of node in mesh datastructure
+! Out node_coor        : coordinates of node 
 !
-! IN  SDAPPA : NOM DE LA SD APPARIEMENT
-! IN  NEWGEO : CHAMP DE GEOMETRIE ACTUALISE
-! IN  NUMMA  : NUMERO ABSOLU DU NOEUD DANS LE MAILLAGE
-! OUT COORNO : COORDONNEES DU NOEUD
+! --------------------------------------------------------------------------------------------------
 !
+    real(kind=8), pointer :: v_newgeo_vale(:) => null()
 !
+! --------------------------------------------------------------------------------------------------
 !
-!
-    real(kind=8), pointer :: vale(:) => null()
-!
-! ----------------------------------------------------------------------
-!
-    call jemarq()
-!
-! --- COORDONNEES DU NOEUDS
-!
-    call jeveuo(newgeo(1:19)//'.VALE', 'L', vr=vale)
-    coorno(1) = vale(1+3*(numno -1)+1-1)
-    coorno(2) = vale(1+3*(numno -1)+2-1)
-    coorno(3) = vale(1+3*(numno -1)+3-1)
-!
-    call jedema()
+    call jeveuo(newgeo(1:19)//'.VALE', 'L', vr=v_newgeo_vale)
+    node_coor(1) = v_newgeo_vale(3*(node_nume -1)+1)
+    node_coor(2) = v_newgeo_vale(3*(node_nume -1)+2)
+    node_coor(3) = v_newgeo_vale(3*(node_nume -1)+3)
 !
 end subroutine

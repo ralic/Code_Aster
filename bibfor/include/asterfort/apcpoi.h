@@ -16,14 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine apcpoi(sdappa, ndimg, izone, nommai, typzon,&
-                      tau1, tau2)
-        character(len=19) :: sdappa
-        integer :: ndimg
-        integer :: izone
-        character(len=8) :: nommai
-        character(len=4) :: typzon
-        real(kind=8) :: tau1(3)
-        real(kind=8) :: tau2(3)
+    subroutine apcpoi(sdappa, model_ndim, i_zone, elem_name, zone_type,&
+                      tau1  , tau2)
+        character(len=19), intent(in) :: sdappa
+        integer, intent(in) :: model_ndim
+        integer, intent(in) :: i_zone
+        character(len=8), intent(in) :: elem_name
+        character(len=4), intent(in) :: zone_type
+        real(kind=8), intent(out) :: tau1(3)
+        real(kind=8), intent(out) :: tau2(3)
     end subroutine apcpoi
 end interface

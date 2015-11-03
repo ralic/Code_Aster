@@ -1,5 +1,14 @@
 subroutine apvepa(sdappa)
 !
+implicit none
+!
+#include "jeveux.h"
+#include "asterfort/apinfi.h"
+#include "asterfort/appari.h"
+#include "asterfort/apzoni.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/utmess.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,76 +27,66 @@ subroutine apvepa(sdappa)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/apinfi.h"
-#include "asterfort/appari.h"
-#include "asterfort/apzoni.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/utmess.h"
-    character(len=19) :: sdappa
+    character(len=19), intent(in) :: sdappa
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE APPARIEMENT
+! Contact - Pairing
 !
-! VERIFICATIONS DE L'APPARIEMENT
+! Check pairing
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! IN  SDAPPA : NOM DE LA SD APPARIEMENT
+! In  sdappa           : name of pairing datastructure
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    integer :: nbzone, ntpt, nbpt
-    integer :: typapp
-    integer :: izone, ip, i
-    integer :: nonapp
+    integer :: nb_cont_zone, nt_poin, nb_poin
+    integer :: pair_type
+    integer :: i_zone, i_poin, i_poin_zone
+    integer :: nb_poin_none
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('APPARIEMENT', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<APPARIEMENT> VERIFICATION DE L''APPARIEMENT'
     endif
 !
-! --- INITIALISATIONS
+! - Initializations
 !
-    ip = 1
-    nonapp = 1
-    call appari(sdappa, 'APPARI_NBZONE', nbzone)
-    call appari(sdappa, 'APPARI_NTPT', ntpt)
+    i_poin       = 1
+    nb_poin_none = 1
 !
-! --- BOUCLE SUR LES ZONES
+! - Get parameters
 !
-    do 10 izone = 1, nbzone
+    call appari(sdappa, 'APPARI_NBZONE', nb_cont_zone)
+    call appari(sdappa, 'APPARI_NTPT'  , nt_poin)
 !
-! ----- INFORMATION SUR LA ZONE
+! - Loop on contact zones
 !
-        call apzoni(sdappa, izone, 'NBPT', nbpt)
+    do i_zone = 1, nb_cont_zone
 !
-! ----- BOUCLE SUR LES POINTS
+! ----- Parameters on current zone
 !
-        do 20 i = 1, nbpt
-            call apinfi(sdappa, 'APPARI_TYPE', ip, typapp)
-            if (typapp .le. 0) then
-                nonapp = nonapp + 1
+        call apzoni(sdappa, i_zone, 'NBPT', nb_poin)
+!
+! ----- Loop on points
+!
+        do i_poin_zone = 1, nb_poin
+            call apinfi(sdappa, 'APPARI_TYPE', i_poin, pair_type)
+            if (pair_type .le. 0) then
+                nb_poin_none = nb_poin_none + 1
             endif
-            ip = ip + 1
-20      continue
-10  end do
+            i_poin = i_poin + 1
+        end do
+    end do
 !
-    if (nonapp .eq. ip) then
+! - If all points are not paired
+!
+    if (nb_poin_none .eq. i_poin) then
         call utmess('A', 'APPARIEMENT_1')
     endif
-!
-    call jedema()
 !
 end subroutine

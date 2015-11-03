@@ -16,25 +16,25 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine apchoi(dist, distm, posmai, posmam, tau1,&
-                      tau1m, tau2, tau2m, ksi1, ksi1m,&
-                      ksi2, ksi2m, iproj, iprojm, vect,&
-                      vectm)
-        real(kind=8) :: dist
-        real(kind=8) :: distm
-        integer :: posmai
-        integer :: posmam
-        real(kind=8) :: tau1(3)
-        real(kind=8) :: tau1m(3)
-        real(kind=8) :: tau2(3)
-        real(kind=8) :: tau2m(3)
-        real(kind=8) :: ksi1
-        real(kind=8) :: ksi1m
-        real(kind=8) :: ksi2
-        real(kind=8) :: ksi2m
-        integer :: iproj
-        integer :: iprojm
-        real(kind=8) :: vect(3)
-        real(kind=8) :: vectm(3)
+    subroutine apchoi(dist        , dist_mini, elem_indx, elem_indx_mini, tau1     ,&
+                      tau1_mini   , tau2     , tau2_mini, ksi1          , ksi1_mini,&
+                      ksi2        , ksi2_mini, proj_stat, proj_stat_mini, vect_pm  ,&
+                      vect_pm_mini)
+        integer, intent(in) :: proj_stat
+        integer, intent(inout) :: proj_stat_mini
+        real(kind=8), intent(in) :: dist
+        real(kind=8), intent(inout) :: dist_mini
+        integer, intent(in) :: elem_indx
+        integer, intent(inout) :: elem_indx_mini
+        real(kind=8), intent(in) :: tau1(3)
+        real(kind=8), intent(inout) :: tau1_mini(3)
+        real(kind=8), intent(in) :: tau2(3)
+        real(kind=8), intent(inout) :: tau2_mini(3)
+        real(kind=8), intent(in) :: vect_pm(3)
+        real(kind=8), intent(inout) :: vect_pm_mini(3)
+        real(kind=8), intent(in) :: ksi1
+        real(kind=8), intent(inout) :: ksi1_mini
+        real(kind=8), intent(in) :: ksi2
+        real(kind=8), intent(inout) :: ksi2_mini
     end subroutine apchoi
 end interface

@@ -1,5 +1,11 @@
-subroutine aptypm(sdappa, noma, numma, ndim, nnosd,&
-                  alias, nomma)
+subroutine aptypm(mesh     , elem_nume, elem_ndim, elem_nbnode, elem_type,&
+                  elem_name)
+!
+implicit none
+!
+#include "asterfort/jenuno.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mmtypm.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,52 +25,31 @@ subroutine aptypm(sdappa, noma, numma, ndim, nnosd,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
+    character(len=8), intent(in) :: mesh
+    integer, intent(in) :: elem_nume
+    integer, intent(out) :: elem_ndim
+    integer, intent(in) :: elem_nbnode
+    character(len=8), intent(out) :: elem_type
+    character(len=8), intent(out) :: elem_name
 !
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/mmtypm.h"
-    character(len=19) :: sdappa
-    character(len=8) :: noma
-    character(len=8) :: alias
-    character(len=8) :: nomma
-    integer :: numma
-    integer :: nnosd, ndim
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! Contact - Pairing
 !
-! ROUTINE APPARIEMENT (UTILITAIRE)
+! Get parameters for current element
 !
-! CARACTERISTIQUES DE LA MAILLE
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! In  mesh             : name of mesh
+! In  elem_nume        : index of element in mesh datastructure
+! Out elem_ndim        : dimension of element
+! In  elem_nbnode      : number of nodes of element
+! Out elem_type        : type of element
+! Out elem_name        : name of element
 !
+! --------------------------------------------------------------------------------------------------
 !
-! IN  SDAPPA : NOM DE LA SD APPARIEMENT
-! IN  NOMA   : SD MAILLAGE
-! IN  NUMMA  : NUMERO DE LA MAILLE
-! IN  NNOSD  : NOMBRE DE NOEUDS DE LA MAILLE SUIVANT LA SD
-! OUT NOMMA  : NOM DE LA MAILLE
-! OUT ALIAS  : TYPE GEOMETRIQUE DE LA MAILLE
-! OUT NDIM   : DIMENSION DE LA MAILLE
-!
-!
-!
-! ----------------------------------------------------------------------
-!
-    call jemarq()
-!
-! --- TYPE GEOMETRIQUE DE LA MAILLE
-!
-    call mmtypm(noma, numma, nnosd, alias, ndim)
-!
-! --- NOM DE LA MAILLE
-!
-    call jenuno(jexnum(noma//'.NOMMAI', numma ), nomma)
-!
-    call jedema()
+    call mmtypm(mesh, elem_nume, elem_nbnode, elem_type, elem_ndim)
+    call jenuno(jexnum(mesh//'.NOMMAI', elem_nume), elem_name)
 !
 end subroutine

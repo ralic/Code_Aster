@@ -1,7 +1,13 @@
-subroutine apchoi(dist, distm, posmai, posmam, tau1,&
-                  tau1m, tau2, tau2m, ksi1, ksi1m,&
-                  ksi2, ksi2m, iproj, iprojm, vect,&
-                  vectm)
+subroutine apchoi(dist        , dist_mini, elem_indx, elem_indx_mini, tau1     ,&
+                  tau1_mini   , tau2     , tau2_mini, ksi1          , ksi1_mini,&
+                  ksi2        , ksi2_mini, proj_stat, proj_stat_mini, vect_pm  ,&
+                  vect_pm_mini)
+!
+implicit none
+!
+#include "asterc/r8prem.h"
+#include "asterfort/infdbg.h"
+#include "blas/dcopy.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,121 +27,116 @@ subroutine apchoi(dist, distm, posmai, posmam, tau1,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "asterc/r8prem.h"
-#include "asterfort/infdbg.h"
-#include "blas/dcopy.h"
-    integer :: iproj, iprojm
-    real(kind=8) :: dist, distm
-    integer :: posmai, posmam
-    real(kind=8) :: tau1(3), tau1m(3)
-    real(kind=8) :: tau2(3), tau2m(3)
-    real(kind=8) :: vect(3), vectm(3)
-    real(kind=8) :: ksi1, ksi1m
-    real(kind=8) :: ksi2, ksi2m
+    integer, intent(in) :: proj_stat
+    integer, intent(inout) :: proj_stat_mini
+    real(kind=8), intent(in) :: dist
+    real(kind=8), intent(inout) :: dist_mini
+    integer, intent(in) :: elem_indx
+    integer, intent(inout) :: elem_indx_mini
+    real(kind=8), intent(in) :: tau1(3)
+    real(kind=8), intent(inout) :: tau1_mini(3)
+    real(kind=8), intent(in) :: tau2(3)
+    real(kind=8), intent(inout) :: tau2_mini(3)
+    real(kind=8), intent(in) :: vect_pm(3)
+    real(kind=8), intent(inout) :: vect_pm_mini(3)
+    real(kind=8), intent(in) :: ksi1
+    real(kind=8), intent(inout) :: ksi1_mini
+    real(kind=8), intent(in) :: ksi2
+    real(kind=8), intent(inout) :: ksi2_mini
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE APPARIEMENT (ALGO)
+! Contact - Pairing
 !
-! CHOIX DE LA MAILLE LA PLUS PROCHE
+! Select nearest element
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  dist             : distance between point and projection of the point
+! In  vect_pm          : vector between point and projection of the point
+! In  ksi1             : first parametric coordinate of the projection of the point
+! In  ksi2             : second parametric coordinate of the projection of the point
+! In  proj_stat        : status of projection
+!                            0 - Inside element
+!                            1 - Inside element + tole_proj_out
+!                            2 - Outside element
+! In  elem_indx        : index of element in contact datastructure
+! In  tau1             : first tangent vector for local basis
+! In  tau2             : second tangent vector for local basis
+! IO  dist_mini        : distance between point and projection of the point for selection
+! IO  vect_pm_mini     : vector between point and projection of the point for selection
+! IO  ksi1_mini        : first parametric coordinate of the projection of the point for selection
+! IO  ksi2_mini        : second parametric coordinate of the projection of the point for selection
+! IO  proj_stat_mini   : status of projection
+!                            0 - Inside element
+!                            1 - Inside element + tole_proj_out
+!                            2 - Outside element
+! IO  elem_indx_mini   : index of element in contact datastructure for selection
+! IO  tau1_mini        : first tangent vector for local basis for selection
+! IO  tau2_mini        : second tangent vector for local basis for selection
 !
-! IN  DIST   : DISTANCE COURANTE
-! I/O DISTM  : DISTANCE MINIMALE
-! IN  POSMAI : POSITION DE LA MAILLE MAITRE APPARIEE
-! I/O POSMAM : POSITION DE LA MAILLE MAITRE CORRESPONDANT A LA
-!               DISTANCE MINIMALE
-! IN  IPROJ  : VAUT 0 SI POINT PROJETE DANS L'ELEMENT
-!                   1 SI POINT PROJETE DANS LA ZONE DEFINIE PAR TOLEOU
-!                   2 SI POINT PROJETE EN DEHORS (EXCLUS)
-! I/O IPROJM : TYPE DE PROJECTION CORRESPONDANT AU DIST MINIMUM
-! IN  TAU1   : PREMIER VECTEUR TANGENT
-! IN  TAU2   : SECOND VECTEUR TANGENT
-! I/O TAU1M  : PREMIER VECTEUR TANGENT CORRESPONDANT A LA DISTANCE
-!              MINIMALE
-! I/O TAU2M  : SECOND VECTEUR TANGENT CORRESPONDANT A LA DISTANCE
-!              MINIMALE
-! IN  KSI1   : COORD. PARAM. 1 DE LA PROJECTION SUR MAILLE MAITRE
-! IN  KSI2   : COORD. PARAM. 2 DE LA PROJECTION SUR MAILLE MAITRE
-! I/O KSI1M  : COORD. PARAM. 1 DE LA PROJECTION SUR MAILLE MAITRE
-!               CORRESPONDANT A LA DISTANCE MINIMALE
-! I/O KSI2M  : COORD. PARAM. 2 DE LA PROJECTION SUR MAILLE MAITRE
-!               CORRESPONDANT A LA DISTANCE MINIMALE
-! IN  VECT   : VECTEUR E->M COURANT
-! OUT VECTM  : VECTEUR E->M (CORRESPONDANT AU JEU MINIMUM)
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
-!
-    integer :: ifm, niv
     real(kind=8) :: ecan
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call infdbg('APPARIEMENT', ifm, niv)
 !
-! --- ECART ANCIEN/NOUVEAU
+! - Difference old/new distance
 !
-    if ((distm.eq.0.d0) .or. (dist.eq.distm)) then
+    if ((dist_mini.eq.0.d0) .or. (dist.eq.dist_mini)) then
         ecan = 0.d0
     else
-        ecan = abs((dist - distm)/distm)
+        ecan = abs((dist - dist_mini)/dist_mini)
     endif
 !
-!
-!
-! PREMIERE PROJECTION
-    if (iprojm .eq. -1) then
-        distm = dist
-        posmam = posmai
-        iprojm = iproj
-        call dcopy(3, tau1, 1, tau1m, 1)
-        call dcopy(3, tau2, 1, tau2m, 1)
-        call dcopy(3, vect, 1, vectm, 1)
-        ksi1m = ksi1
-        ksi2m = ksi2
+    if (proj_stat_mini .eq. -1) then
+! ----- First projection
+        dist_mini      = dist
+        elem_indx_mini = elem_indx
+        proj_stat_mini = proj_stat
+        ksi1_mini      = ksi1
+        ksi2_mini      = ksi2
+        call dcopy(3, tau1, 1, tau1_mini, 1)
+        call dcopy(3, tau2, 1, tau2_mini, 1)
+        call dcopy(3, vect_pm, 1, vect_pm_mini, 1)
     else
-! PROJECTION SUIVANTES
-        if (iprojm .ne. 0) then
-! ON N'A PAS ENCORE PROJETE DANS UN ELEMENT
-            if (iproj .eq. 0) then
-! UN POINT SE PROJETE DANS UN ELEMENT
-                distm = dist
-                posmam = posmai
-                iprojm = iproj
-                call dcopy(3, tau1, 1, tau1m, 1)
-                call dcopy(3, tau2, 1, tau2m, 1)
-                call dcopy(3, vect, 1, vectm, 1)
-                ksi1m = ksi1
-                ksi2m = ksi2
+! ----- Next projections
+        if (proj_stat_mini .ne. 0) then
+! --------- Never projected inside element
+            if (proj_stat .eq. 0) then
+                dist_mini      = dist
+                elem_indx_mini = elem_indx
+                proj_stat_mini = proj_stat
+                ksi1_mini      = ksi1
+                ksi2_mini      = ksi2
+                call dcopy(3, tau1, 1, tau1_mini, 1)
+                call dcopy(3, tau2, 1, tau2_mini, 1)
+                call dcopy(3, vect_pm, 1, vect_pm_mini, 1)
             else
-                if (dist .lt. distm) then
-                    distm = dist
-                    posmam = posmai
-                    iprojm = iproj
-                    call dcopy(3, tau1, 1, tau1m, 1)
-                    call dcopy(3, tau2, 1, tau2m, 1)
-                    call dcopy(3, vect, 1, vectm, 1)
-                    ksi1m = ksi1
-                    ksi2m = ksi2
+                if (dist .lt. dist_mini) then
+                    dist_mini      = dist
+                    elem_indx_mini = elem_indx
+                    proj_stat_mini = proj_stat
+                    ksi1_mini      = ksi1
+                    ksi2_mini      = ksi2
+                    call dcopy(3, tau1, 1, tau1_mini, 1)
+                    call dcopy(3, tau2, 1, tau2_mini, 1)
+                    call dcopy(3, vect_pm, 1, vect_pm_mini, 1)  
                 endif
             endif
         else
-! ON A DEJA PROJETE DANS UN ELEMENT
-            if (iproj .eq. 0) then
-                if (dist .lt. distm .and. ecan .gt. r8prem()) then
-! ON SELECTIONNE LE PROJETE MINIMISANT LA DISTANCE
-                    distm = dist
-                    posmam = posmai
-                    iprojm = iproj
-                    call dcopy(3, tau1, 1, tau1m, 1)
-                    call dcopy(3, tau2, 1, tau2m, 1)
-                    call dcopy(3, vect, 1, vectm, 1)
-                    ksi1m = ksi1
-                    ksi2m = ksi2
-!
+! --------- Already projected inside element
+            if (proj_stat .eq. 0) then
+                if (dist .lt. dist_mini .and. ecan .gt. r8prem()) then
+                    dist_mini      = dist
+                    elem_indx_mini = elem_indx
+                    proj_stat_mini = proj_stat
+                    ksi1_mini      = ksi1
+                    ksi2_mini      = ksi2
+                    call dcopy(3, tau1, 1, tau1_mini, 1)
+                    call dcopy(3, tau2, 1, tau2_mini, 1)
+                    call dcopy(3, vect_pm, 1, vect_pm_mini, 1)
                 endif
             endif
         endif

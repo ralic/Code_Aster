@@ -16,14 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine aptypm(sdappa, noma, numma, ndim, nnosd,&
-                      alias, nomma)
-        character(len=19) :: sdappa
-        character(len=8) :: noma
-        integer :: numma
-        integer :: ndim
-        integer :: nnosd
-        character(len=8) :: alias
-        character(len=8) :: nomma
+    subroutine aptypm(mesh     , elem_nume, elem_ndim, elem_nbnode, elem_type,&
+                      elem_name)
+        character(len=8), intent(in) :: mesh
+        integer, intent(in) :: elem_nume
+        integer, intent(out) :: elem_ndim
+        integer, intent(in) :: elem_nbnode
+        character(len=8), intent(out) :: elem_type
+        character(len=8), intent(out) :: elem_name
     end subroutine aptypm
 end interface

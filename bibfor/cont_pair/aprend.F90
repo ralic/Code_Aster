@@ -3,19 +3,16 @@ subroutine aprend(sdappa, sdcont_defi, newgeo)
 implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterc/r8gaem.h"
+#include "asterc/r8prem.h"
 #include "asterfort/apcopt.h"
 #include "asterfort/appari.h"
-#include "asterfort/apsauv.h"
 #include "asterfort/apzoni.h"
 #include "asterfort/apzonl.h"
 #include "asterfort/apzonr.h"
 #include "asterfort/apzonv.h"
 #include "asterfort/assert.h"
 #include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "blas/dcopy.h"
 !
@@ -56,188 +53,179 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    character(len=24) :: apinfp, contno, coordo
-    integer :: jinfp, jnoco, jcoor
-    integer :: inom, izone, i, ip
-    integer :: nbzone, ntpt
-    integer :: nbnom, nbpt
-    real(kind=8) :: coornm(3), coorpt(3)
-    real(kind=8) :: distm, dist
-    real(kind=8) :: normd, normv, dir(3), toleap
-    real(kind=8) :: vecpml(3), vecpmm(3)
-    integer :: jdecnm, numnom, posnom
-    integer :: posmin, typapp
-    aster_logical :: dirapp, prtole, lexcl
-    integer :: vali(2)
-    real(kind=8) :: valr(4)
+    integer :: i_node_mast, i_zone, i, i_poin
+    integer :: nb_cont_zone, nt_poin
+    integer :: nb_node_mast, nb_poin
+    real(kind=8) :: node_mast_coor(3), poin_coor(3)
+    real(kind=8) :: dist_mini, dist
+    real(kind=8) :: normd, normv, pair_vect(3), pair_tole
+    real(kind=8) :: vect_pm(3), vect_pm_mini(3)
+    integer :: jdecnm, node_mast_nume, node_mast_indx
+    integer :: node_mini_indx, pair_type
+    aster_logical :: l_pair_dire, l_proj_tole, l_poin_excl
+    character(len=24) :: sdappa_infp, sdcont_noeuco, newgeo_vale
+    integer, pointer :: v_sdappa_infp(:) => null()
+    integer, pointer :: v_sdcont_noeuco(:) => null()
+    real(kind=8), pointer :: v_newgeo_vale(:) => null()
+    character(len=24) :: sdappa_dist, sdappa_appa
+    integer, pointer :: v_sdappa_appa(:) => null()
+    real(kind=8), pointer :: v_sdappa_dist(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('APPARIEMENT', ifm, niv)
     if (niv .ge. 2) then
         write (ifm,*) '<APPARIEMENT> RECH. NOEUD PLUS PROCHE'
     endif
 !
-! --- ACCES SDAPPA
+! - Acces to pairing datastructure
 !
-    apinfp = sdappa(1:19)//'.INFP'
-    call jeveuo(apinfp, 'L', jinfp)
-    contno = sdcont_defi(1:16)//'.NOEUCO'
-    call jeveuo(contno, 'L', jnoco)
-    coordo = newgeo(1:19)//'.VALE'
-    call jeveuo(coordo, 'L', jcoor)
+    sdappa_infp = sdappa(1:19)//'.INFP'
+    sdappa_appa = sdappa(1:19)//'.APPA'
+    sdappa_dist = sdappa(1:19)//'.DIST'
+    call jeveuo(sdappa_infp, 'L', vi = v_sdappa_infp)
+    call jeveuo(sdappa_appa, 'E', vi = v_sdappa_appa)
+    call jeveuo(sdappa_dist, 'E', vr = v_sdappa_dist)
 !
-! --- PARAMETRES
+! - Acces to contact datastructure
 !
-    call appari(sdappa, 'APPARI_NBZONE', nbzone)
-    call appari(sdappa, 'APPARI_NTPT', ntpt)
+    sdcont_noeuco = sdcont_defi(1:16)//'.NOEUCO'
+    call jeveuo(sdcont_noeuco, 'L', vi = v_sdcont_noeuco)
 !
-! --- BOUCLE SUR LES ZONES
+! - Acces to updated geometry
 !
-    ip = 1
-    do izone = 1, nbzone
+    newgeo_vale = newgeo(1:19)//'.VALE'
+    call jeveuo(newgeo_vale, 'L', vr = v_newgeo_vale)
 !
-! ----- INFORMATION SUR LA ZONE
+! - Get parameters
 !
-        call apzoni(sdappa, izone, 'NBPT', nbpt)
-        call apzoni(sdappa, izone, 'NBNOM', nbnom)
-        call apzonl(sdappa, izone, 'DIRE_APPA_FIXE', dirapp)
-        call apzoni(sdappa, izone, 'JDECNM', jdecnm)
-        if (dirapp) then
-            call apzonv(sdappa, izone, 'DIRE_APPA_VECT', dir)
+    call appari(sdappa, 'APPARI_NBZONE', nb_cont_zone)
+    call appari(sdappa, 'APPARI_NTPT'  , nt_poin)
+!
+! - Loop on contact zones
+!
+    i_poin = 1
+    do i_zone = 1, nb_cont_zone
+!
+! ----- Parameters on current zone
+!
+        call apzoni(sdappa, i_zone, 'NBPT'          , nb_poin)
+        call apzoni(sdappa, i_zone, 'NBNOM'         , nb_node_mast)
+        call apzonl(sdappa, i_zone, 'DIRE_APPA_FIXE', l_pair_dire)
+        call apzoni(sdappa, i_zone, 'JDECNM'        , jdecnm)
+        if (l_pair_dire) then
+            call apzonv(sdappa, i_zone, 'DIRE_APPA_VECT', pair_vect)
         endif
-        call apzonr(sdappa, izone, 'TOLE_APPA', toleap)
+        call apzonr(sdappa, i_zone, 'TOLE_APPA', pair_tole)
 !
-! ----- BOUCLE SUR LES POINTS
+! ----- Loop on points
 !
-        do i = 1, nbpt
+        do i = 1, nb_poin
 !
-! ------- INITIALISATIONS
+            dist_mini      = r8gaem()
+            l_proj_tole    = .false.
+            l_poin_excl    = .false.
+            node_mini_indx = 0
+            pair_type      = 0
 !
-            distm = r8gaem()
-            prtole = .false.
-            lexcl = .false.
-            posmin = 0
-            typapp = 0
+! --------- Coordinates of point
 !
-! ------- COORDONNEES DU POINT
+            call apcopt(sdappa, i_poin, poin_coor)
 !
-            call apcopt(sdappa, ip, coorpt)
+! --------- Excluded point ?
 !
-! ------- NOEUD EXCLU OU PAS ?
+            l_poin_excl = v_sdappa_infp(i_poin) .eq. 1
 !
-            if (zi(jinfp+ip-1) .eq. 1) then
-                lexcl = .true.
-            endif
+! --------- Loop on master nodes
 !
-! ------- BOUCLE SUR LES NOEUDS MAITRES DE LA ZONE
+            do i_node_mast = 1, nb_node_mast
 !
-            do inom = 1, nbnom
+! ------------- Current node
 !
-! --------- POSITION DU NOEUD
+                node_mast_indx = jdecnm + i_node_mast
+                node_mast_nume = v_sdcont_noeuco(node_mast_indx)
+                node_mast_coor(1) = v_newgeo_vale(3*(node_mast_nume-1)+1)
+                node_mast_coor(2) = v_newgeo_vale(3*(node_mast_nume-1)+2)
+                node_mast_coor(3) = v_newgeo_vale(3*(node_mast_nume-1)+3)
 !
-                posnom = jdecnm + inom
+! ------------- Compute distance
 !
-! --------- NUMERO ABSOLU DU NOEUD
-!
-                numnom = zi(jnoco-1+posnom)
-!
-! --------- COORDONNEES DU NOEUD MAITRE
-!
-                coornm(1) = zr(jcoor+3*(numnom-1))
-                coornm(2) = zr(jcoor+3*(numnom-1)+1)
-                coornm(3) = zr(jcoor+3*(numnom-1)+2)
-!
-! --------- DISTANCE
-!
-                if (dirapp) then
-                    normd = sqrt(dir(1)*dir(1)+ dir(2)*dir(2)+ dir(3)*dir(3))
-                    normv = sqrt(&
-                            (&
-                            coorpt(1)-coornm(1))**2+ (coorpt(2)- coornm(2))**2+ (coorpt(3)-coornm&
-                            &(3)&
-                            )**2&
-                            )
-                    if (normv .eq. 0.d0) then
+                if (l_pair_dire) then
+                    normd = sqrt(pair_vect(1)*pair_vect(1)+&
+                                 pair_vect(2)*pair_vect(2)+&
+                                 pair_vect(3)*pair_vect(3))
+                    normv = sqrt((poin_coor(1)-node_mast_coor(1))**2+&
+                                 (poin_coor(2)-node_mast_coor(2))**2+&
+                                 (poin_coor(3)-node_mast_coor(3))**2)
+                    if (normv .le. r8prem()) then
                         dist = 1.d0
                     else
-                        dist = abs(&
-                               (&
-                               coorpt(1)-coornm(1))*dir(1)+ (coorpt(2)-coornm(2))*dir(2)+ (coorpt&
-                               &(3)- coornm(3))*dir(3)&
-                               )/(normd*normv&
-                               )
+                        dist = abs((poin_coor(1)-node_mast_coor(1))*pair_vect(1)+&
+                                   (poin_coor(2)-node_mast_coor(2))*pair_vect(2)+&
+                                   (poin_coor(3)-node_mast_coor(3))*pair_vect(3))/&
+                                   (normd*normv)
                     endif
                 else
-                    dist = sqrt(&
-                           (&
-                           coorpt(1)-coornm(1))**2+ (coorpt(2)- coornm(2))**2+ (coorpt(3)-coornm(&
-                           &3)&
-                           )**2&
-                           )
+                    dist = sqrt((poin_coor(1)-node_mast_coor(1))**2+&
+                                (poin_coor(2)-node_mast_coor(2))**2+&
+                                (poin_coor(3)-node_mast_coor(3))**2)
                 endif
-                vecpml(1) = coornm(1) - coorpt(1)
-                vecpml(2) = coornm(2) - coorpt(2)
-                vecpml(3) = coornm(3) - coorpt(3)
+                vect_pm(1) = node_mast_coor(1) - poin_coor(1)
+                vect_pm(2) = node_mast_coor(2) - poin_coor(2)
+                vect_pm(3) = node_mast_coor(3) - poin_coor(3)
 !
-! --------- SELECTION
+! ------------- Select distance
 !
-                if (dist .lt. distm) then
-                    posmin = posnom
-                    distm = dist
-                    call dcopy(3, vecpml, 1, vecpmm, 1)
-                    if (toleap .gt. 0.d0) then
-                        if (dist .le. toleap) then
-                            prtole = .true.
+                if (dist .lt. dist_mini) then
+                    node_mini_indx = node_mast_indx
+                    dist_mini      = dist
+                    call dcopy(3, vect_pm, 1, vect_pm_mini, 1)
+                    if (pair_tole .gt. 0.d0) then
+                        if (dist .le. pair_tole) then
+                            l_proj_tole = .true.
                         endif
                     else
-                        prtole = .true.
+                        l_proj_tole = .true.
                     endif
                 endif
             end do
 !
-! ------- APPARIEMENT HORS TOLE_APPA ?
+! --------- Check TOLE_APPA
 !
-            if (prtole) then
-                typapp = 1
+            if (l_proj_tole) then
+                pair_type = 1
             else
-                typapp = -2
+                pair_type = -2
             endif
 !
-! ------- NOEUD EXCLU
+! --------- Excluded node
 !
-            if (lexcl) then
-                typapp = -1
+            if (l_poin_excl) then
+                pair_type = -1
             endif
 !
-! ------- QUELLQUES VERIFS
+! --------- Some checks
 !
-            ASSERT(typapp.ne.0)
-            ASSERT(posmin.ne.0)
+            ASSERT(pair_type.ne.0)
+            ASSERT(node_mini_indx.ne.0)
+            ASSERT((pair_type.eq.-2).or.(pair_type.eq.-1).or. (pair_type.eq.1))
 !
-! ------- PREPARATION STOCKAGE
+! --------- Save
 !
-            vali(1) = typapp
-            vali(2) = posmin
-            valr(1) = distm
-            valr(2) = vecpmm(1)
-            valr(3) = vecpmm(2)
-            valr(4) = vecpmm(3)
+            v_sdappa_appa(4*(i_poin-1)+1) = pair_type
+            v_sdappa_appa(4*(i_poin-1)+2) = node_mini_indx
+            v_sdappa_appa(4*(i_poin-1)+3) = i_zone
+            v_sdappa_dist(4*(i_poin-1)+1) = dist_mini
+            v_sdappa_dist(4*(i_poin-1)+2) = vect_pm_mini(1)
+            v_sdappa_dist(4*(i_poin-1)+3) = vect_pm_mini(2)
+            v_sdappa_dist(4*(i_poin-1)+4) = vect_pm_mini(3)
 !
-! ------- STOCKAGE DE L'INFORMATION DANS SDAPPA
+! --------- Next point
 !
-            call apsauv('ND_PROCHE', sdappa, izone, ip, vali,&
-                        valr)
-!
-! ------- POINT SUIVANT
-!
-            ip = ip + 1
+            i_poin = i_poin + 1
         end do
     end do
 !
-    ASSERT((ip-1).eq.ntpt)
-!
-    call jedema()
+    ASSERT((i_poin-1).eq.nt_poin)
 !
 end subroutine

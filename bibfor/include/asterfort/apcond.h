@@ -16,10 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine apcond(sdappa, newgeo, numno, coorno)
-        character(len=19) :: sdappa
-        character(len=19) :: newgeo
-        integer :: numno
-        real(kind=8) :: coorno(3)
+    subroutine apcond(newgeo, node_nume, node_coor)
+        character(len=19), intent(in) :: newgeo
+        integer, intent(in) :: node_nume
+        real(kind=8), intent(out) :: node_coor(3)
     end subroutine apcond
 end interface
