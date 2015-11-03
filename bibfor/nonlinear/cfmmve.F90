@@ -100,9 +100,9 @@ implicit none
 ! ----- RE-REMPLISSAGE DE LA SD APPARIEMENT - POINTS (COORD. ET NOMS)
 !
         if (lctcc) then
-            call mmpoin(noma, ds_contact%sdcont_defi, newgeo, sdappa)
+            call mmpoin(noma, ds_contact, newgeo, sdappa)
         else if (lctcd) then
-            call cfpoin(noma, ds_contact%sdcont_defi, newgeo, sdappa)
+            call cfpoin(noma, ds_contact, newgeo, sdappa)
         else
             ASSERT(.false.)
         endif

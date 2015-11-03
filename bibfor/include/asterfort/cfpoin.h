@@ -16,10 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfpoin(noma, defico, newgeo, sdappa)
-        character(len=8) :: noma
-        character(len=19) :: sdappa
-        character(len=24) :: defico
-        character(len=19) :: newgeo
+    subroutine cfpoin(mesh, ds_contact, newgeo, sdappa)
+        use NonLin_Datastructure_type
+        character(len=8), intent(in) :: mesh
+        type(NL_DS_Contact), intent(in) :: ds_contact
+        character(len=19), intent(in) :: newgeo
+        character(len=19), intent(in) :: sdappa
     end subroutine cfpoin
 end interface

@@ -67,7 +67,7 @@ implicit none
 !
 ! - Set pairing datastructure
 !
-    call mmpoin(mesh, ds_contact%sdcont_defi, newgeo, sdappa)
+    call mmpoin(mesh, ds_contact, newgeo, sdappa)
 !
 ! - Pairing
 !

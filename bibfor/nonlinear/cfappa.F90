@@ -61,7 +61,7 @@ implicit none
 !
 ! --- REMPLISSAGE DE LA SD APPARIEMENT - POINTS (COORD. ET NOMS)
 !
-    call cfpoin(mesh, ds_contact%sdcont_defi, newgeo, sdappa)
+    call cfpoin(mesh, ds_contact, newgeo, sdappa)
 !
 ! - Pairing
 !

@@ -1,5 +1,10 @@
-subroutine mmgaus(alias, typi, nord, xpg, ypg,&
-                  hpg)
+subroutine mmgaus(elem_type    , type_inte, gauss_indx, xpg, ypg,&
+                  gauss_weight_)
+!
+implicit none
+!
+#include "asterfort/assert.h"
+#include "asterfort/r8inir.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,80 +24,57 @@ subroutine mmgaus(alias, typi, nord, xpg, ypg,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterfort/assert.h"
-#include "asterfort/r8inir.h"
-    character(len=8) :: alias
-    integer :: typi, nord
-    real(kind=8) :: xpg, ypg, hpg
+    character(len=8), intent(in) :: elem_type
+    integer, intent(in) :: type_inte
+    integer, intent(in) :: gauss_indx
+    real(kind=8), intent(out) :: xpg
+    real(kind=8), intent(out) :: ypg
+    real(kind=8), optional, intent(out) :: gauss_weight_
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (UTILITAIRE)
+! Contact - Utility
 !
-! RETOURNE LES COORDONNEES ET LE POIDS DU POINT D'INTEGRATION
+! Continue method - Get integration points
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  elem_type        : type of element
+! In  type_inte        : type of integration scheme
+! In  gauss_indx       : index of integration point
+! Out xpg              : first parametric coordinates of integration point
+! Out ypg              : second parametric coordinates of integration point
+! Out gauss_weight     : weight of integration point
 !
-! IN  ALIAS  : NOM D'ALIAS DE L'ELEMENT
-! IN  TYPI   : TYPE D'INTEGRATION
-!     1 'AUTO'    (ON CHOISIT LE SCHEMA LE PLUS ADAPTE)
-!    X2 'GAUSS'   (X EST LE DEGRE DES POLYNOMES DE LEGENDRE)
-!    Y3 'SIMPSON' (Y EST LE NOMBRE DE SUBDIVISIONS)
-!    Z4 'NCOTES'  (Z EST LE DEGRE DU POLYNOME INTERPOLATEUR)
-! IN  NORD   : NUMERO DU POINT D'INTEGRATION
-! OUT XPG    : COORDONNEE X DU POINT D'INTEGRATION
-! OUT YPG    : COORDONNEE Y DU POINT D'INTEGRATION
-! OUT HPG    : POIDS DU POINT D'INTEGRATION
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
-!
-    integer :: zgauss
-    parameter   (zgauss=6)
-!
-    integer :: znpgse
-    parameter   (znpgse=6)
-    integer :: zseg
-    parameter   (zseg  =2)
-!
-    integer :: znpgtr
-    parameter   (znpgtr=12)
-    integer :: ztri
-    parameter   (ztri  =3)
-!
+    integer, parameter :: zgauss = 6
+    integer, parameter :: znpgse = 6
+    integer, parameter :: zseg   = 2
+    integer, parameter :: znpgtr = 12
+    integer, parameter :: ztri   = 3
+    integer, parameter :: zncots = 8
+    integer, parameter :: znpncs = 5
+    integer, parameter :: znpnct = 10
     real(kind=8) :: fpgseg(zgauss, znpgse, zseg)
     real(kind=8) :: fpgtri(zgauss, znpgtr, ztri)
-!
-    integer :: zncots
-    parameter   (zncots=8)
-!
-    integer :: znpncs
-    parameter   (znpncs=5)
-    integer :: znpnct
-    parameter   (znpnct=10)
-!
     real(kind=8) :: pncseg(zncots, znpncs)
     real(kind=8) :: pnctri(zncots, znpnct)
-!
     integer :: param
     integer :: i, j, h, n, incseg, jncseg
-    real(kind=8) :: a, b, c, d, p1, p2, p3
+    real(kind=8) :: a, b, c, d, p1, p2, p3, gauss_weight
 !
-! ----------------------------------------------------------------------
-!
-! --- INITIALISATIONS
+! --------------------------------------------------------------------------------------------------
 !
     call r8inir(zgauss*znpgse*zseg, 0.d0, fpgseg, 1)
     call r8inir(zgauss*znpgtr*ztri, 0.d0, fpgtri, 1)
     call r8inir(zncots*znpncs, 0.d0, pncseg, 1)
     call r8inir(zncots*znpnct, 0.d0, pnctri, 1)
 !
-! --- POINTS DE GAUSS (SEGMENT)
+! - Gauss points for segment
 !
     fpgseg(1,1,1) = 0.d0
     fpgseg(1,1,2) = 2.d0
-!
     fpgseg(2,1,1) = +0.577350269189626d0
     fpgseg(2,1,2) = 1.d0
     fpgseg(2,2,1) = -fpgseg(2,1,1)
@@ -138,7 +120,7 @@ subroutine mmgaus(alias, typi, nord, xpg, ypg,&
     fpgseg(6,6,1) = -fpgseg(6,5,1)
     fpgseg(6,6,2) = fpgseg(6,5,2)
 !
-! --- POINTS DE GAUSS (TRIANGLE)
+! - Gauss points for triangle
 !
     fpgtri(1,1,1) = 1.d0/3.d0
     fpgtri(1,1,2) = 1.d0/3.d0
@@ -263,7 +245,7 @@ subroutine mmgaus(alias, typi, nord, xpg, ypg,&
     fpgtri(6,12,2) = 1-c-d
     fpgtri(6,12,3) = p3
 !
-! --- POIDS NEWTON-COTES (SEGMENT)
+! - Newton-Cotes points for segment
 !
     pncseg(3,1) = 0.25d0
     pncseg(3,2) = 0.75d0
@@ -292,7 +274,7 @@ subroutine mmgaus(alias, typi, nord, xpg, ypg,&
     pncseg(8,4) = 0.740458553791887d0
     pncseg(8,5) = -0.320282186948854d0
 !
-! --- POIDS NEWTON-COTES (TRIANGLE)
+! - Newton-cotes points for triangle
 !
     pnctri(3,1) = 0.016666666666667d0
     pnctri(3,2) = 0.0375d0
@@ -343,113 +325,113 @@ subroutine mmgaus(alias, typi, nord, xpg, ypg,&
 !
 ! TOUS LES SCHEMAS SONT DE TYPE TRAPEZE SAUF TR6/TR7/QU8/QU9
 !
-    if (typi .eq. 1) then
-        if (alias(1:3) .eq. 'SE2') then
-            if (nord .eq. 1) then
+    if (type_inte .eq. 1) then
+        if (elem_type(1:3) .eq. 'SE2') then
+            if (gauss_indx .eq. 1) then
                 xpg = -1.d0
                 ypg = 0.d0
-                hpg = 1.d0
-            else if (nord .eq. 2) then
+                gauss_weight = 1.d0
+            else if (gauss_indx .eq. 2) then
                 xpg = 1.d0
                 ypg = 0.d0
-                hpg = 1.d0
+                gauss_weight = 1.d0
             else
                 ASSERT(.false.)
             endif
-        else if (alias(1:3) .eq. 'SE3') then
-            if (nord .eq. 1) then
+        else if (elem_type(1:3) .eq. 'SE3') then
+            if (gauss_indx .eq. 1) then
                 xpg = -1.d0
                 ypg = 0.d0
-                hpg = 1.d0 / 3.d0
-            else if (nord .eq. 2) then
+                gauss_weight = 1.d0 / 3.d0
+            else if (gauss_indx .eq. 2) then
                 xpg = 1.d0
                 ypg = 0.d0
-                hpg = 1.d0 / 3.d0
-            else if (nord .eq. 3) then
+                gauss_weight = 1.d0 / 3.d0
+            else if (gauss_indx .eq. 3) then
                 xpg = 0.d0
                 ypg = 0.d0
-                hpg = 4.d0 / 3.d0
+                gauss_weight = 4.d0 / 3.d0
             else
                 ASSERT(.false.)
             endif
-        else if (alias(1:3) .eq. 'TR3') then
-            if (nord .eq. 1) then
+        else if (elem_type(1:3) .eq. 'TR3') then
+            if (gauss_indx .eq. 1) then
                 xpg = 0.d0
                 ypg = 0.d0
-                hpg = 1.d0/6.d0
-            else if (nord .eq. 2) then
+                gauss_weight = 1.d0/6.d0
+            else if (gauss_indx .eq. 2) then
                 xpg = 1.d0
                 ypg = 0.d0
-                hpg = 1.d0/6.d0
-            else if (nord .eq. 3) then
+                gauss_weight = 1.d0/6.d0
+            else if (gauss_indx .eq. 3) then
                 xpg = 0.d0
                 ypg = 1.d0
-                hpg = 1.d0/6.d0
+                gauss_weight = 1.d0/6.d0
             else
                 ASSERT(.false.)
             endif
-        else if ((alias(1:3).eq.'TR6').or.(alias(1:3).eq.'TR7')) then
-            ASSERT((nord.ge.1).and.(nord.le.6))
-            xpg = fpgtri(4,nord,1)
-            ypg = fpgtri(4,nord,2)
-            hpg = fpgtri(4,nord,3)
-        else if ((alias(1:3) .eq. 'QU4')) then
-            if (nord .eq. 1) then
+        else if ((elem_type(1:3).eq.'TR6').or.(elem_type(1:3).eq.'TR7')) then
+            ASSERT((gauss_indx.ge.1).and.(gauss_indx.le.6))
+            xpg = fpgtri(4,gauss_indx,1)
+            ypg = fpgtri(4,gauss_indx,2)
+            gauss_weight = fpgtri(4,gauss_indx,3)
+        else if ((elem_type(1:3) .eq. 'QU4')) then
+            if (gauss_indx .eq. 1) then
                 xpg = -1.d0
                 ypg = -1.d0
-                hpg = 1.d0
-            else if (nord .eq. 2) then
+                gauss_weight = 1.d0
+            else if (gauss_indx .eq. 2) then
                 xpg = 1.d0
                 ypg = -1.d0
-                hpg = 1.d0
-            else if (nord .eq. 3) then
+                gauss_weight = 1.d0
+            else if (gauss_indx .eq. 3) then
                 xpg = 1.d0
                 ypg = 1.d0
-                hpg = 1.d0
-            else if (nord .eq. 4) then
+                gauss_weight = 1.d0
+            else if (gauss_indx .eq. 4) then
                 xpg = -1.d0
                 ypg = 1.d0
-                hpg = 1.d0
+                gauss_weight = 1.d0
             else
                 ASSERT(.false.)
             endif
-        else if ((alias(1:3).eq.'QU8').or.(alias(1:3).eq.'QU9')) then
-            if (nord .eq. 1) then
+        else if ((elem_type(1:3).eq.'QU8').or.(elem_type(1:3).eq.'QU9')) then
+            if (gauss_indx .eq. 1) then
                 xpg = -1.d0
                 ypg = -1.d0
-                hpg = 1.d0 / 9.d0
-            else if (nord .eq. 2) then
+                gauss_weight = 1.d0 / 9.d0
+            else if (gauss_indx .eq. 2) then
                 xpg = 1.d0
                 ypg = -1.d0
-                hpg = 1.d0 / 9.d0
-            else if (nord .eq. 3) then
+                gauss_weight = 1.d0 / 9.d0
+            else if (gauss_indx .eq. 3) then
                 xpg = 1.d0
                 ypg = 1.d0
-                hpg = 1.d0 / 9.d0
-            else if (nord .eq. 4) then
+                gauss_weight = 1.d0 / 9.d0
+            else if (gauss_indx .eq. 4) then
                 xpg = -1.d0
                 ypg = 1.d0
-                hpg = 1.d0 / 9.d0
-            else if (nord .eq. 5) then
+                gauss_weight = 1.d0 / 9.d0
+            else if (gauss_indx .eq. 5) then
                 xpg = 0.d0
                 ypg = -1.d0
-                hpg = 4.d0 / 9.d0
-            else if (nord .eq. 6) then
+                gauss_weight = 4.d0 / 9.d0
+            else if (gauss_indx .eq. 6) then
                 xpg = 1.d0
                 ypg = 0.d0
-                hpg = 4.d0 / 9.d0
-            else if (nord .eq. 7) then
+                gauss_weight = 4.d0 / 9.d0
+            else if (gauss_indx .eq. 7) then
                 xpg = 0.d0
                 ypg = 1.d0
-                hpg = 4.d0 / 9.d0
-            else if (nord .eq. 8) then
+                gauss_weight = 4.d0 / 9.d0
+            else if (gauss_indx .eq. 8) then
                 xpg = -1.d0
                 ypg = 0.d0
-                hpg = 4.d0 / 9.d0
-            else if (nord .eq. 9) then
+                gauss_weight = 4.d0 / 9.d0
+            else if (gauss_indx .eq. 9) then
                 xpg = 0.d0
                 ypg = 0.d0
-                hpg = 16.d0 / 9.d0
+                gauss_weight = 16.d0 / 9.d0
             else
                 ASSERT(.false.)
             endif
@@ -460,26 +442,26 @@ subroutine mmgaus(alias, typi, nord, xpg, ypg,&
 !
 ! 'GAUSS'
 !
-    else if (mod(typi,10) .eq. 2) then
-        param = typi/10
-        if (alias(1:2) .eq. 'SE') then
-            ASSERT((nord.ge.1).and.(nord.le.param))
-            xpg = fpgseg(param,nord,1)
+    else if (mod(type_inte,10) .eq. 2) then
+        param = type_inte/10
+        if (elem_type(1:2) .eq. 'SE') then
+            ASSERT((gauss_indx.ge.1).and.(gauss_indx.le.param))
+            xpg = fpgseg(param,gauss_indx,1)
             ypg = 0.d0
-            hpg = fpgseg(param,nord,2)
-        else if (alias(1:2) .eq. 'TR') then
-            ASSERT((nord.ge.1).and.(nord.le.znpgtr))
-            xpg = fpgtri(param,nord,1)
-            ypg = fpgtri(param,nord,2)
-            hpg = fpgtri(param,nord,3)
-        else if (alias(1:2) .eq. 'QU') then
+            gauss_weight = fpgseg(param,gauss_indx,2)
+        else if (elem_type(1:2) .eq. 'TR') then
+            ASSERT((gauss_indx.ge.1).and.(gauss_indx.le.znpgtr))
+            xpg = fpgtri(param,gauss_indx,1)
+            ypg = fpgtri(param,gauss_indx,2)
+            gauss_weight = fpgtri(param,gauss_indx,3)
+        else if (elem_type(1:2) .eq. 'QU') then
 !           POINTS DE GAUSS ARRANGES EN LIGNE EN PARTANT DU BAS GAUCHE
-            i = mod((nord-1),param)+1
-            j = ((nord-1)/param)+1
+            i = mod((gauss_indx-1),param)+1
+            j = ((gauss_indx-1)/param)+1
 !
             xpg = fpgseg(param,i,1)
             ypg = fpgseg(param,j,1)
-            hpg = fpgseg(param,i,2)*fpgseg(param,j,2)
+            gauss_weight = fpgseg(param,i,2)*fpgseg(param,j,2)
         else
             ASSERT(.false.)
         endif
@@ -487,8 +469,8 @@ subroutine mmgaus(alias, typi, nord, xpg, ypg,&
 !
 ! 'SIMPSON'
 !
-    else if (mod(typi,10) .eq. 3) then
-        param = typi/10
+    else if (mod(type_inte,10) .eq. 3) then
+        param = type_inte/10
 !
 ! SEGMENTS
 !
@@ -500,18 +482,18 @@ subroutine mmgaus(alias, typi, nord, xpg, ypg,&
 ! -----------------+---+---+---+---+
 ! NOMBRE DE POINTS | 3 | 5 | 7 | 9 |
 !
-        if (alias(1:2) .eq. 'SE') then
-            n = nord-1
+        if (elem_type(1:2) .eq. 'SE') then
+            n = gauss_indx-1
             xpg = -1.d0 + n*(1.d0/param)
             ypg = 0.d0
 !
             if ((n .eq. 0) .or. (n .eq. 2*param)) then
-                hpg = 1.d0/(param*3.d0)
+                gauss_weight = 1.d0/(param*3.d0)
             else
                 if (mod(n,2) .eq. 0) then
-                    hpg = 2.d0/(param*3.d0)
+                    gauss_weight = 2.d0/(param*3.d0)
                 else
-                    hpg = 4.d0/(param*3.d0)
+                    gauss_weight = 4.d0/(param*3.d0)
                 endif
             endif
 !
@@ -533,9 +515,9 @@ subroutine mmgaus(alias, typi, nord, xpg, ypg,&
 ! -----------------+---+---+---+---+
 ! NOMBRE DE POINTS | 6 | 15| 28| 45|
 !
-        else if (alias(1:2) .eq. 'TR') then
+        else if (elem_type(1:2) .eq. 'TR') then
             h=0
-            n=nord
+            n=gauss_indx
 50          continue
             if (n .gt. 0) then
                 h=h+1
@@ -553,39 +535,39 @@ subroutine mmgaus(alias, typi, nord, xpg, ypg,&
             if ((i .eq. 0) .or. (j .eq. 0) .or. (i+j .eq. h)) then
                 if (i .eq. 0) then
                     if ((j .eq. 0) .or. (j .eq. h)) then
-                        hpg = 1.d0
+                        gauss_weight = 1.d0
                     else
                         if (mod(j,2) .eq. 0) then
-                            hpg = 3.d0
+                            gauss_weight = 3.d0
                         else
-                            hpg = 4.d0
+                            gauss_weight = 4.d0
                         endif
                     endif
                 else if (j .eq. 0) then
                     if (i .eq. h) then
-                        hpg = 1.d0
+                        gauss_weight = 1.d0
                     else
                         if (mod(i,2) .eq. 0) then
-                            hpg = 3.d0
+                            gauss_weight = 3.d0
                         else
-                            hpg = 4.d0
+                            gauss_weight = 4.d0
                         endif
                     endif
                 else
                     if (mod(j,2) .eq. 0) then
-                        hpg = 3.d0
+                        gauss_weight = 3.d0
                     else
-                        hpg = 4.d0
+                        gauss_weight = 4.d0
                     endif
                 endif
             else
                 if ((mod(i,2) .eq. 0) .and. (mod(j,2) .eq. 0)) then
-                    hpg = 6.d0
+                    gauss_weight = 6.d0
                 else
-                    hpg = 8.d0
+                    gauss_weight = 8.d0
                 endif
             endif
-            hpg = hpg/((param**2)*30.d0)
+            gauss_weight = gauss_weight/((param**2)*30.d0)
 !
 ! QUADRANGLES
 !
@@ -605,10 +587,10 @@ subroutine mmgaus(alias, typi, nord, xpg, ypg,&
 ! -----------------+---+---+---+---+
 ! NOMBRE DE POINTS | 9 | 25| 49| 81|
 !
-        else if (alias(1:2) .eq. 'QU') then
+        else if (elem_type(1:2) .eq. 'QU') then
 !
-            i = mod((nord-1),(2*param+1))
-            j = (nord-1)/(2*param+1)
+            i = mod((gauss_indx-1),(2*param+1))
+            j = (gauss_indx-1)/(2*param+1)
 !
             xpg = -1.d0 +i*(1.d0/param)
             ypg = -1.d0 +j*(1.d0/param)
@@ -616,28 +598,28 @@ subroutine mmgaus(alias, typi, nord, xpg, ypg,&
             if ((i.eq.0) .or. (j.eq.0) .or. (i.eq.2*param) .or. (j.eq.2* param)) then
                 if ((i .eq. 0) .or. (i .eq. 2*param)) then
                     if ((j .eq. 0) .or. (j .eq. 2*param)) then
-                        hpg = 1.d0/((param**2)*9.d0)
+                        gauss_weight = 1.d0/((param**2)*9.d0)
                     else
                         if (mod(j,2) .eq. 0) then
-                            hpg = 2.d0/((param**2)*9.d0)
+                            gauss_weight = 2.d0/((param**2)*9.d0)
                         else
-                            hpg = 4.d0/((param**2)*9.d0)
+                            gauss_weight = 4.d0/((param**2)*9.d0)
                         endif
                     endif
                 else
                     if (mod(i,2) .eq. 0) then
-                        hpg = 2.d0/((param**2)*9.d0)
+                        gauss_weight = 2.d0/((param**2)*9.d0)
                     else
-                        hpg = 4.d0/((param**2)*9.d0)
+                        gauss_weight = 4.d0/((param**2)*9.d0)
                     endif
                 endif
             else
                 if ((mod(i,2) .eq. 0) .and. (mod(j,2) .eq. 0)) then
-                    hpg = 4.d0/((param**2)*9.d0)
+                    gauss_weight = 4.d0/((param**2)*9.d0)
                 else if ((mod(i,2).eq.1).and.(mod(j,2).eq.1)) then
-                    hpg = 16.d0/((param**2)*9.d0)
+                    gauss_weight = 16.d0/((param**2)*9.d0)
                 else
-                    hpg = 8.d0/((param**2)*9.d0)
+                    gauss_weight = 8.d0/((param**2)*9.d0)
                 endif
             endif
         else
@@ -649,8 +631,8 @@ subroutine mmgaus(alias, typi, nord, xpg, ypg,&
 !
 ! NCOTES
 !
-    else if (mod(typi,10) .eq. 4) then
-        param = typi/10
+    else if (mod(type_inte,10) .eq. 4) then
+        param = type_inte/10
 !
 ! SEGMENTS
 !
@@ -662,18 +644,18 @@ subroutine mmgaus(alias, typi, nord, xpg, ypg,&
 ! -----------------+---+---+---+---+---+---+
 ! NOMBRE DE POINTS | 4 | 5 | 6 | 7 | 8 | 9 |
 !
-        if (alias(1:2) .eq. 'SE') then
+        if (elem_type(1:2) .eq. 'SE') then
             h = (param/2)+1
 !
-            if (nord .le. h) then
-                incseg = nord
+            if (gauss_indx .le. h) then
+                incseg = gauss_indx
             else
-                incseg = (param+1)-(nord-1)
+                incseg = (param+1)-(gauss_indx-1)
             endif
 !
-            xpg = -1.d0 + (nord-1)*(2.d0/param)
+            xpg = -1.d0 + (gauss_indx-1)*(2.d0/param)
             ypg = 0.d0
-            hpg = pncseg(param,incseg)
+            gauss_weight = pncseg(param,incseg)
 !
 ! TRIANGLES
 !
@@ -693,9 +675,9 @@ subroutine mmgaus(alias, typi, nord, xpg, ypg,&
 ! -----------------+---+---+---+---+---+---+
 ! NOMBRE DE POINTS | 10| 15| 21| 28| 36| 45|
 !
-        else if (alias(1:2) .eq. 'TR') then
+        else if (elem_type(1:2) .eq. 'TR') then
             h=0
-            n=nord
+            n=gauss_indx
 60          continue
             if (n .gt. 0) then
                 h=h+1
@@ -713,9 +695,9 @@ subroutine mmgaus(alias, typi, nord, xpg, ypg,&
 !
             j = param/2
             if (i .le. j) then
-                hpg=pnctri(param,((i+1)/2)*(i/2+1)+1+h)
+                gauss_weight=pnctri(param,((i+1)/2)*(i/2+1)+1+h)
             else
-                hpg=pnctri(param,((i+1)/2)*(i/2+1)+1+h -(i-(param/2))*&
+                gauss_weight=pnctri(param,((i+1)/2)*(i/2+1)+1+h -(i-(param/2))*&
                 (i-((param-1)/2)))
             endif
 !
@@ -738,9 +720,9 @@ subroutine mmgaus(alias, typi, nord, xpg, ypg,&
 ! -----------------+---+---+---+---+---+---+
 ! NOMBRE DE POINTS | 16| 25| 36| 49| 64| 81|
 !
-        else if (alias(1:2) .eq. 'QU') then
-            i = mod((nord-1),(param+1))+1
-            j = (nord-1)/(param+1) +1
+        else if (elem_type(1:2) .eq. 'QU') then
+            i = mod((gauss_indx-1),(param+1))+1
+            j = (gauss_indx-1)/(param+1) +1
             h = (param/2)+1
 !
             if (i .le. h) then
@@ -757,12 +739,16 @@ subroutine mmgaus(alias, typi, nord, xpg, ypg,&
             endif
             ypg = -1.d0 + (j-1)*(2.d0/param)
 !
-            hpg = pncseg(param,incseg)*pncseg(param,jncseg)
+            gauss_weight = pncseg(param,incseg)*pncseg(param,jncseg)
         else
             ASSERT(.false.)
         endif
     else
         ASSERT(.false.)
+    endif
+!
+    if (present(gauss_weight_)) then
+        gauss_weight_ = gauss_weight
     endif
 !
 end subroutine
