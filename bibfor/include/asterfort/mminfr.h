@@ -16,10 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    function mminfr(defico, questz, izone)
-        character(len=24) :: defico
-        character(len=*) :: questz
-        integer :: izone
+    function mminfr(sdcont_defi_, question_, i_zone_)
+        character(len=*), intent(in) :: sdcont_defi_
+        character(len=*), intent(in) :: question_
+        integer, optional, intent(in) :: i_zone_
         real(kind=8) :: mminfr
     end function mminfr
 end interface

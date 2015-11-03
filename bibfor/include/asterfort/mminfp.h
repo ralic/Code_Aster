@@ -17,13 +17,13 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine mminfp(izone, defico, questz, irep, rrep,&
-                      lrep)
-        integer :: izone
-        character(len=24) :: defico
-        character(len=*) :: questz
-        integer :: irep(*)
-        real(kind=8) :: rrep(*)
-        aster_logical :: lrep(*)
+    subroutine mminfp(i_zone , sdcont_defi, question_, vale_i_, vale_r_,&
+                      vale_l_)
+        character(len=24), intent(in) :: sdcont_defi
+        character(len=*), intent(in) :: question_
+        integer, intent(in) :: i_zone
+        real(kind=8), optional, intent(out) :: vale_r_
+        integer, optional, intent(out) :: vale_i_
+        aster_logical, optional, intent(out) :: vale_l_
     end subroutine mminfp
 end interface

@@ -18,9 +18,9 @@
 #include "asterf_types.h"
 !
 interface
-    function cfdisl(deficz, questz)
-        character(len=*) :: deficz
-        character(len=*) :: questz
+    function cfdisl(sdcont_defi_, question_)
+        character(len=*), intent(in) :: sdcont_defi_
+        character(len=*), intent(in) :: question_
         aster_logical :: cfdisl
     end function cfdisl
 end interface

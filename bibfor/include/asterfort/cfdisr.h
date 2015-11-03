@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    function cfdisr(deficz, questz)
-        character(len=*) :: deficz
-        character(len=*) :: questz
+    function cfdisr(sdcont_defi_, question_)
+        character(len=*), intent(in) :: sdcont_defi_
+        character(len=*), intent(in) :: question_
         real(kind=8) :: cfdisr
     end function cfdisr
 end interface

@@ -18,10 +18,10 @@
 #include "asterf_types.h"
 !
 interface
-    function mminfl(defico, questz, izone)
-        character(len=24) :: defico
-        character(len=*) :: questz
-        integer :: izone
+    function mminfl(sdcont_defi_, question_, i_zone_)
+        character(len=*), intent(in) :: sdcont_defi_
+        character(len=*), intent(in) :: question_
+        integer, optional, intent(in) :: i_zone_
         aster_logical :: mminfl
     end function mminfl
 end interface
