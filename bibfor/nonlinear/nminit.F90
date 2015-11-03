@@ -149,7 +149,7 @@ implicit none
 !
 ! - Initializations for contact parameters
 !
-    call InitContact(mesh, ds_contact)
+    call InitContact(mesh, model(1:8), ds_contact)
 !
 ! - Prepare list of loads (and late elements) for contact
 !

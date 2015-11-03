@@ -86,8 +86,6 @@ implicit none
     real(kind=8), pointer :: v_sdcont_tabfin(:) => null()
     character(len=24) :: sdcont_crnudd
     aster_logical, pointer :: v_sdcont_crnudd(:) => null()
-    character(len=24) :: sdcont_nosdco
-    character(len=24), pointer :: v_sdcont_nosdco(:) => null()
     integer, pointer :: v_ligrcf_nbno(:) => null()
     integer, pointer :: v_ligrcf_nema(:) => null()
     integer, pointer :: v_ligrcf_liel(:) => null()
@@ -101,9 +99,7 @@ implicit none
 ! - Datastructure for contact solving
 !
     sdcont_crnudd = ds_contact%sdcont_solv(1:14)//'.NUDD'
-    sdcont_nosdco = ds_contact%sdcont_solv(1:14)//'.NOSDCO'
     call jeveuo(sdcont_crnudd, 'L', vl   = v_sdcont_crnudd)
-    call jeveuo(sdcont_nosdco, 'L', vk24 = v_sdcont_nosdco)
 !
 ! - Pairing or not ?
 !
@@ -140,9 +136,9 @@ implicit none
 !       call jeveuo(sdcont_aplist, 'L', vi = v_sdcont_aplist)
     endif
 !
-! - Get list of late elements for contact (LIGREL)
+! - <LIGREL> for contact elements
 !
-    ligrcf = v_sdcont_nosdco(2)(1:19)
+    ligrcf = ds_contact%ligrel_elem_cont
     call detrsd('LIGREL', ligrcf)
 !
 ! - Acces to mesh

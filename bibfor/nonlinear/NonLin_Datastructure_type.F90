@@ -250,6 +250,10 @@ implicit none
 ! ----- Relations between dof (QUAD8 in discrete methods or XFEM, create in DEFI_CONTACT)
         aster_logical     :: l_dof_rela
         character(len=8)  :: ligrel_dof_rela
+! ----- Name of <CHELEM> - Input field
+        character(len=19) :: field_input
+! ----- NUME_DOF for discrete friction methods 
+        character(len=14) :: nume_dof_frot
 ! ----- Loops
         integer           :: nb_loop
         integer           :: nb_loop_maxi = 3

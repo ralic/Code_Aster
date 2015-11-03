@@ -65,8 +65,8 @@ implicit none
     integer :: iptc, izone, ntpc
     character(len=24) :: jeusup
     integer :: jjsup
-    character(len=24) :: tabfin, nosdco
-    integer :: jtabf, jnosdc
+    character(len=24) :: tabfin
+    integer :: jtabf
     integer :: jvalv
     character(len=19) :: ligrcf, chmlcf, crnudd
     integer :: ifm, niv, jcrnud
@@ -92,20 +92,14 @@ implicit none
 !
     call jemarq()
     call infdbg('CONTACT', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> CREATION DU CHAM_ELEM POUR LES'//&
-        ' ELEMENTS DE CONTACT'
+        write (ifm,*) '<CONTACT> CREATION DU CHAM_ELEM POUR LES ELEMENTS DE CONTACT'
     endif
 !
 ! --- ACCES OBJETS
 !
     jeusup = ds_contact%sdcont_solv(1:14)//'.JSUPCO'
     tabfin = ds_contact%sdcont_solv(1:14)//'.TABFIN'
-    nosdco = ds_contact%sdcont_solv(1:14)//'.NOSDCO'
-    call jeveuo(nosdco, 'L', jnosdc)
     call jeveuo(jeusup, 'L', jjsup)
     call jeveuo(tabfin, 'L', jtabf)
     crnudd = ds_contact%sdcont_solv(1:14)//'.NUDD'
@@ -125,13 +119,13 @@ implicit none
     iresof = cfdisi(ds_contact%sdcont_defi,'ALGO_RESO_FROT')
     iresog = cfdisi(ds_contact%sdcont_defi,'ALGO_RESO_GEOM')
 !
-! --- LIGREL DES ELEMENTS TARDIFS DE CONTACT/FROTTEMENT
+! - <LIGREL> for contact elements
 !
-    ligrcf = zk24(jnosdc+2-1)(1:19)
+    ligrcf = ds_contact%ligrel_elem_cont
 !
-! --- CHAM_ELEM POUR ELEMENTS TARDIFS DE CONTACT/FROTTEMENT
+! - <CHELEM> for input field
 !
-    chmlcf = ds_contact%sdcont_solv(1:14)//'.CHML'
+    chmlcf = ds_contact%field_input
 !
 ! --- INITIALISATIONS
 !

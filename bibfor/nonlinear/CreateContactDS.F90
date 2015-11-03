@@ -77,6 +77,14 @@ implicit none
     ds_contact%ligrel_elem_cont = ' '
     ds_contact%l_elem_cont      = .false._1
 !
+! - Name of <CHELEM> - Input field
+!
+    ds_contact%field_input      = ' '
+!
+! - Name of NUME_DOF for discrete friction methods
+!
+    ds_contact%nume_dof_frot    = ' '
+!
 ! - Identity relations between dof
 !
     ds_contact%l_iden_rela = .false._1

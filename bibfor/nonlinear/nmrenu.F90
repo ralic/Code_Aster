@@ -60,8 +60,6 @@ implicit none
     character(len=24) :: sd_iden_rela
     character(len=24) :: crnudd
     aster_logical, pointer :: v_crnudd(:) => null()
-    character(len=24) :: nosdco
-    character(len=24), pointer :: v_nosdco(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -70,7 +68,6 @@ implicit none
 ! - Initializations
 !
     crnudd       = ds_contact%sdcont_solv(1:14)//'.NUDD'
-    nosdco       = ds_contact%sdcont_solv(1:14)//'.NOSDCO'
     l_renumber   = .false.
     l_cont       = isfonc(list_func_acti,'CONTACT')
     if (.not.l_cont) then
@@ -79,8 +76,7 @@ implicit none
 !
 ! - Get identity relation datastructure
 !
-    call jeveuo(nosdco, 'L', vk24 = v_nosdco)
-    sd_iden_rela = v_nosdco(4)
+    sd_iden_rela = ds_contact%iden_rela
 !
 ! - Contact method
 !

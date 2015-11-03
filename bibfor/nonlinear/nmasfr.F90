@@ -56,8 +56,6 @@ implicit none
 !
     integer :: ifm, niv
     character(len=14) :: numedf
-    character(len=24) :: nosdco
-    integer :: jnosdc
     integer :: nbliac
     character(len=19) :: matrcf
     character(len=24) :: limat(2)
@@ -86,15 +84,16 @@ implicit none
     endif
 !
     matrcf = ds_contact%sdcont_solv(1:14)//'.MATR'
-    nosdco = ds_contact%sdcont_solv(1:14)//'.NOSDCO'
-    call jeveuo(nosdco, 'L', jnosdc)
     limat(1) = matass
     limat(2) = matrcf
     coefmu(1) = 1.d0
     coefmu(2) = 1.d0
     typcst(1) = 'R'
     typcst(2) = 'R'
-    numedf = zk24(jnosdc+1-1)(1:14)
+!
+! - Get numbering object for discrete friction methods
+! 
+    numedf = ds_contact%nume_dof_frot
     call detrsd('NUME_DDL', numedf)
 !
     call infmue()

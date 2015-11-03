@@ -16,9 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine InitContact(mesh, ds_contact)
+    subroutine InitContact(mesh, model, ds_contact)
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
+        character(len=8), intent(in) :: model
         type(NL_DS_Contact), intent(inout) :: ds_contact
     end subroutine InitContact
 end interface

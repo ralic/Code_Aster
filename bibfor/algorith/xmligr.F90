@@ -71,9 +71,9 @@ implicit none
     integer :: jlgrf, jtymai, jmail,  ilcnx1
     integer :: nummam, nummae, jnbno, long, jad, ityte
     integer :: nndel, numtyp, compt(nbtyp), jtabf, ztabf
-    integer :: jnosdc, ifm, niv
+    integer :: ifm, niv
     integer :: imod, iatt(2), imail(2), nno(2), ndim
-    character(len=24) :: tabfin, nosdco
+    character(len=24) :: tabfin
     character(len=19) :: ligrxf
     character(len=16) :: nomte, nomtm, nomte2(nbtyp), mail3(2, 8)
     character(len=4) :: mode(3)
@@ -109,9 +109,7 @@ implicit none
 ! --- ACCES OBJETS
 !
     tabfin = ds_contact%sdcont_solv(1:14)//'.TABFIN'
-    nosdco = ds_contact%sdcont_solv(1:14)//'.NOSDCO'
     call jeveuo(tabfin, 'E', jtabf)
-    call jeveuo(nosdco, 'L', jnosdc)
     ztabf = cfmmvd('ZTABF')
     call jeveuo(mesh//'.TYPMAIL', 'L', jtymai)
     call jeveuo(model//'.MAILLE', 'L', jmail)
@@ -123,10 +121,10 @@ implicit none
         compt(k) = 0
     end do
     nbpc = nint(zr(jtabf-1+1))
-    ligrxf = zk24(jnosdc+3-1)(1:19)
 !
-! --- DESTRUCTION DU LIGREL S'IL EXISTE
+! - <LIGREL> for contact elements
 !
+    ligrxf = ds_contact%ligrel_elem_cont
     call detrsd('LIGREL', ligrxf)
 !
 ! --- CREATION DE .NOMA

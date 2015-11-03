@@ -91,18 +91,13 @@ implicit none
 ! 22 NFAES  : NUMEROS DE LA FACETTES ESCLAVE
 ! 23 NFAMA  : NUMEROS DE LA FACETTES MAITRE
 !
-!
-!
-!
-    integer :: nbch
-    parameter (nbch=8)
-!
+
+    integer, parameter :: nbch = 8
     integer :: ncmp(nbch)
-!
     integer :: nummae, nummam, nnoe, nnom, ifise, ifism, jfiss
     integer :: i, j, ipc, k, ntpc, ndim, izone, nface, npte
-    integer :: ztabf, jtabf, jnosdc, nfhe, nfhm, ncmpe, ncmpm
-    character(len=24) :: tabfin, nosdco
+    integer :: ztabf, jtabf, nfhe, nfhm, ncmpe, ncmpm
+    character(len=24) :: tabfin
     integer :: jvalv(nbch), jncmp(nbch), jcesl(nbch), jcesd(nbch), jcesv(nbch), iad
     character(len=3) :: ch3
     character(len=8) :: nomgd
@@ -148,8 +143,6 @@ implicit none
 !
     tabfin = ds_contact%sdcont_solv(1:14)//'.TABFIN'
     call jeveuo(tabfin, 'L', jtabf)
-    nosdco = ds_contact%sdcont_solv(1:14)//'.NOSDCO'
-    call jeveuo(nosdco, 'L', jnosdc)
     call jeveuo(jexatr(mesh//'.CONNEX', 'LONCUM'), 'L', jconx)
 !
 ! --- CHAMPS DES ELEMENTS XFEM
@@ -197,9 +190,9 @@ implicit none
     call jeveuo(chs(8)//'.CESV', 'L', jcesv(8))
     call jeveuo(chs(8)//'.CESL', 'L', jcesl(8))
 !
-! --- LIGREL DES ELEMENTS TARDIFS DE CONTACT/FROTTEMENT
+! - <LIGREL> for contact elements
 !
-    ligrxf = zk24(jnosdc+3-1)(1:19)
+    ligrxf = ds_contact%ligrel_elem_cont
 !
 ! --- INITIALISATION DES CARTES POUR ELEMENTS TARDIFS
 !

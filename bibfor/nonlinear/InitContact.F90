@@ -1,4 +1,4 @@
-subroutine InitContact(mesh, ds_contact)
+subroutine InitContact(mesh, model, ds_contact)
 !
 use NonLin_Datastructure_type
 !
@@ -32,6 +32,7 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
+    character(len=8), intent(in) :: model
     type(NL_DS_Contact), intent(inout) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
@@ -43,6 +44,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  mesh             : name of mesh
+! In  model            : name of model
 ! IO  ds_contact       : datastructure for contact management
 !
 ! --------------------------------------------------------------------------------------------------
@@ -104,6 +106,7 @@ implicit none
 ! ----- Special for discrete contact
 !
         if (l_form_disc) then
+            ds_contact%nume_dof_frot = '&&CFMXSD.NUMDF'
             call jeexin(sdcont(1:8)//'.CHME.LIGRE.LGRF', i_exist)
             ds_contact%l_dof_rela = i_exist .gt. 0
             if (i_exist .gt. 0) then
@@ -114,6 +117,7 @@ implicit none
 ! ----- Special for continue contact
 !
         if (l_form_cont) then
+            ds_contact%field_input      = ds_contact%sdcont_solv(1:14)//'.CHML'
             ds_contact%l_elem_slav      = .true.
             ds_contact%ligrel_elem_slav = sdcont
             ds_contact%l_elem_cont      = .true.
@@ -125,6 +129,7 @@ implicit none
 ! ----- Special for xfem contact
 !
         if (l_form_xfem) then
+            ds_contact%field_input = ds_contact%sdcont_solv(1:14)//'.CHML'
             if (l_edge_elim) then
                 call xrela_elim(mesh, sdcont_defi, iden_rela)
                 call jeexin(iden_rela(1:19)//'.INFO', i_exist)
@@ -139,6 +144,11 @@ implicit none
                     ds_contact%ligrel_dof_rela = sdcont
                 endif
             endif
+            if (l_cont_xfem_gg) then  
+                ds_contact%ligrel_elem_cont = model(1:8)//'.MODELE'
+            endif
+            ds_contact%l_elem_cont      = .false.
+            ds_contact%ligrel_elem_cont = model(1:8)//'.MODELE'
         endif
 !
 ! ----- Special for xfem contact (large sliding)

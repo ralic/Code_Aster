@@ -67,8 +67,6 @@ implicit none
     real(kind=8) :: group
     character(len=24) :: tabfin
     integer :: ztabf
-    character(len=24) :: nosdco
-    integer :: jnosdc
     character(len=19) :: ligrxf, cindco
     character(len=19) :: cpoint, cainte, heavno, hea_fa, hea_no
     character(len=19) :: oldgeo, depplu
@@ -91,11 +89,9 @@ implicit none
     oldgeo = mesh(1:8)//'.COORDO'
     cpoint = ds_contact%sdcont_solv(1:14)//'.XFPO'
     cainte = ds_contact%sdcont_solv(1:14)//'.XFAI'
-    nosdco = ds_contact%sdcont_solv(1:14)//'.NOSDCO'
     heavno = ds_contact%sdcont_solv(1:14)//'.XFPL'
     hea_fa = ds_contact%sdcont_solv(1:14)//'.XFHF'
     hea_no = ds_contact%sdcont_solv(1:14)//'.XFHN'
-    call jeveuo(nosdco, 'L', jnosdc)
     option = 'XCVBCA'
     if (nivdbg .ge. 2) then
         debug = .true.
@@ -103,9 +99,9 @@ implicit none
         debug = .false.
     endif
 !
-! --- LIGREL DES ELEMENTS TARDIFS DE CONTACT/FROTTEMENT
+! - <LIGREL> for contact elements
 !
-    ligrxf = zk24(jnosdc+3-1)(1:19)
+    ligrxf = ds_contact%ligrel_elem_cont
 !
 ! --- DECOMPACTION DES VARIABLES CHAPEAUX
 !

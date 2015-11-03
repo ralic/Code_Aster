@@ -67,11 +67,10 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
-    integer, parameter :: nbout = 1
-    integer, parameter :: nbin = 28
+    integer, parameter :: nbout = 3
+    integer, parameter :: nbin  = 28
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
-!
     character(len=19) :: chgeom
     character(len=1) :: base
     integer :: ifm, niv
@@ -85,8 +84,7 @@ implicit none
     character(len=19) :: pinter, ainter, cface, faclon, baseco
     character(len=19) :: xdonco, xindco, xseuco, xcohes
     aster_logical :: lctcc, lxfcm, ltfcm, lallv
-    character(len=24) :: nosdco
-    integer :: jnosdc, jxc
+    integer :: jxc
 !
 ! ----------------------------------------------------------------------
 !
@@ -147,21 +145,9 @@ implicit none
     call inical(nbin, lpain, lchin, nbout, lpaout,&
                 lchout)
 !
-! --- CHOIX DU LIGREL
+! - <LIGREL> for contact elements
 !
-    nosdco = ds_contact%sdcont_solv(1:14)//'.NOSDCO'
-    call jeveuo(nosdco, 'L', jnosdc)
-    if (lctcc) then
-        ligrel = zk24(jnosdc+2-1)(1:19)
-    else if (lxfcm) then
-        if (ltfcm) then
-            ligrel = zk24(jnosdc+3-1)(1:19)
-        else
-            ligrel = modele(1:8)//'.MODELE'
-        endif
-    else
-        ASSERT(.false.)
-    endif
+    ligrel = ds_contact%ligrel_elem_cont
 !
 ! --- INITIALISATIONS DES CHAMPS
 !
@@ -185,11 +171,10 @@ implicit none
     chmlcf = ' '
     xcohes = ' '
 !
-! --- CHAMPS METHODE CONTINUE
+! - <CHELEM> for input field
 !
     if (lctcc) then
-! ----- CHAM_ELEM POUR ELEMENTS TARDIFS DE CONTACT/FROTTEMENT
-        chmlcf = ds_contact%sdcont_solv(1:14)//'.CHML'
+        chmlcf = ds_contact%field_input
     endif
 !
 ! --- CHAMPS METHODE XFEM (PETITS GLISSEMENTS)

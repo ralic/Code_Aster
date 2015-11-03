@@ -63,13 +63,10 @@ implicit none
     character(len=8) :: model, mesh
     integer :: nb_cont_zone
     aster_logical :: l_cont_disc, l_cont_cont, l_cont_xfem, l_cont_allv
-    character(len=14) :: nume_dof_frot
     character(len=24) :: sdcont_crnudd
     aster_logical, pointer :: v_sdcont_crnudd(:) => null()
     character(len=24) :: sdcont_maxdep
     real(kind=8), pointer :: v_sdcont_maxdep(:) => null()
-    character(len=24) :: sdcont_nosdco
-    character(len=24), pointer :: v_sdcont_nosdco(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -80,7 +77,6 @@ implicit none
 !
 ! - Initializations
 !
-    nume_dof_frot = '&&CFMXSD.NUMDF'
     nb_cont_zone  = cfdisi(ds_contact%sdcont_defi,'NZOCO')
     model         = model_
     mesh          = mesh_
@@ -101,15 +97,6 @@ implicit none
     if (l_cont_cont.or.l_cont_disc) then
         call cfmmap(mesh, ds_contact)
     endif
-!
-! - Create datastructure for datastructure names
-!
-    sdcont_nosdco = ds_contact%sdcont_solv(1:14)//'.NOSDCO'
-    call wkvect(sdcont_nosdco, 'V V K24', 4, vk24 = v_sdcont_nosdco)
-    v_sdcont_nosdco(1) = nume_dof_frot
-    v_sdcont_nosdco(2) = ds_contact%ligrel_elem_cont
-    v_sdcont_nosdco(3) = ds_contact%ligrel_elem_cont
-    v_sdcont_nosdco(4) = ds_contact%iden_rela
 !
 ! - Create datastructure for renumbering flag
 !
