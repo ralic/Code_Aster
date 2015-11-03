@@ -77,3 +77,103 @@
  LIGNE            LIGNE               1            1 SIGM_ELNO              2  2.00000E+00  1.00000E+00  1.00000E+00  5.00000E-01  0.00000E+00  0.00000E+00  0.50000E+02  0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
  LIGNE            LIGNE               1            1 SIGM_ELNO              2  2.00000E+00  2.00000E+00  2.00000E+00  5.00000E-01  0.00000E+00  0.00000E+00  1.00000E+02  0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
 #FIN_TABLE
+#--------------------------------------------------------------------------------
+#
+#DEBUT_TABLE
+#TITRE  SITUATION 1 - CONTRAINTES THERMIQUES ENVIRONNEMENT
+#TITRE TABLE_SDASTER
+ INTITULE         CHEMIN   SEGMENT      CMP_CNX      NOM_CHAM         NUME_ORDRE   INST         ABSC_CURV    COOR_X       COOR_Y       COOR_Z       SIXX         SIYY         SIZZ         SIXY               SIXZ             SIYZ
+ K16              K8       I            I            K16              I            R            R            R            R            R            R            R            R            R                    R            R
+ LIGNE            LIGNE               1            1 SIGM_ELNO              1  1.00000E+00  0.00000E+00  0.00000E+00  5.00000E-01  0.00000E+00  0.00000E+00  0.90000E+02  0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
+ LIGNE            LIGNE               1            1 SIGM_ELNO              1  1.00000E+00  1.00000E+00  1.00000E+00  5.00000E-01  0.00000E+00  0.00000E+00  1.00000E+02  0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
+ LIGNE            LIGNE               1            1 SIGM_ELNO              1  1.00000E+00  2.00000E+00  2.00000E+00  5.00000E-01  0.00000E+00  0.00000E+00  1.10000E+02  0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
+ LIGNE            LIGNE               1            1 SIGM_ELNO              2  2.00000E+00  0.00000E+00  0.00000E+00  5.00000E-01  0.00000E+00  0.00000E+00  0.00000E+02  0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
+ LIGNE            LIGNE               1            1 SIGM_ELNO              2  2.00000E+00  1.00000E+00  1.00000E+00  5.00000E-01  0.00000E+00  0.00000E+00  1.00000E+02  0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
+ LIGNE            LIGNE               1            1 SIGM_ELNO              2  2.00000E+00  2.00000E+00  2.00000E+00  5.00000E-01  0.00000E+00  0.00000E+00  0.00000E+02  0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
+ LIGNE            LIGNE               1            1 SIGM_ELNO              3  3.00000E+00  0.00000E+00  0.00000E+00  5.00000E-01  0.00000E+00  0.00000E+00  1.00000E+02  0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
+ LIGNE            LIGNE               1            1 SIGM_ELNO              3  3.00000E+00  1.00000E+00  1.00000E+00  5.00000E-01  0.00000E+00  0.00000E+00  -0.5000E+02  0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
+ LIGNE            LIGNE               1            1 SIGM_ELNO              3  3.00000E+00  2.00000E+00  2.00000E+00  5.00000E-01  0.00000E+00  0.00000E+00  -1.0000E+02  0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
+ LIGNE            LIGNE               1            1 SIGM_ELNO              4  4.00000E+00  0.00000E+00  0.00000E+00  5.00000E-01  0.00000E+00  0.00000E+00  0.00000E+02  0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
+ LIGNE            LIGNE               1            1 SIGM_ELNO              4  4.00000E+00  1.00000E+00  1.00000E+00  5.00000E-01  0.00000E+00  0.00000E+00  0.00000E+02  0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
+ LIGNE            LIGNE               1            1 SIGM_ELNO              4  4.00000E+00  2.00000E+00  2.00000E+00  5.00000E-01  0.00000E+00  0.00000E+00  0.00000E+02  0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
+#FIN_TABLE
+#--------------------------------------------------------------------------------
+#
+#DEBUT_TABLE
+#TITRE  SITUATION 3 - CONTRAINTES THERMIQUES ENVIRONNEMENT
+#TITRE TABLE_SDASTER
+ INTITULE         CHEMIN   SEGMENT      CMP_CNX      NOM_CHAM         NUME_ORDRE   INST         ABSC_CURV    COOR_X       COOR_Y       COOR_Z       SIXX         SIYY         SIZZ         SIXY               SIXZ             SIYZ
+ K16              K8       I            I            K16              I            R            R            R            R            R            R            R            R            R                    R            R
+ LIGNE            LIGNE               1            1 SIGM_ELNO              1  1.00000E+00  0.00000E+00  0.00000E+00  5.00000E-01  0.00000E+00  0.00000E+00  0.90000E+02  0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
+ LIGNE            LIGNE               1            1 SIGM_ELNO              1  1.00000E+00  1.00000E+00  1.00000E+00  5.00000E-01  0.00000E+00  0.00000E+00  1.00000E+02  0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
+ LIGNE            LIGNE               1            1 SIGM_ELNO              1  1.00000E+00  2.00000E+00  2.00000E+00  5.00000E-01  0.00000E+00  0.00000E+00  0.90000E+02  0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
+ LIGNE            LIGNE               1            1 SIGM_ELNO              2  2.00000E+00  0.00000E+00  0.00000E+00  5.00000E-01  0.00000E+00  0.00000E+00  0.00000E+02  0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
+ LIGNE            LIGNE               1            1 SIGM_ELNO              2  2.00000E+00  1.00000E+00  1.00000E+00  5.00000E-01  0.00000E+00  0.00000E+00  1.00000E+02  0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
+ LIGNE            LIGNE               1            1 SIGM_ELNO              2  2.00000E+00  2.00000E+00  2.00000E+00  5.00000E-01  0.00000E+00  0.00000E+00  0.00000E+02  0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
+ LIGNE            LIGNE               1            1 SIGM_ELNO              3  3.00000E+00  0.00000E+00  0.00000E+00  5.00000E-01  0.00000E+00  0.00000E+00  1.00000E+02  0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
+ LIGNE            LIGNE               1            1 SIGM_ELNO              3  3.00000E+00  1.00000E+00  1.00000E+00  5.00000E-01  0.00000E+00  0.00000E+00  -0.5000E+02  0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
+ LIGNE            LIGNE               1            1 SIGM_ELNO              3  3.00000E+00  2.00000E+00  2.00000E+00  5.00000E-01  0.00000E+00  0.00000E+00  -1.0000E+02  0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
+ LIGNE            LIGNE               1            1 SIGM_ELNO              4  4.00000E+00  0.00000E+00  0.00000E+00  5.00000E-01  0.00000E+00  0.00000E+00  0.00000E+02  0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
+ LIGNE            LIGNE               1            1 SIGM_ELNO              4  4.00000E+00  1.00000E+00  1.00000E+00  5.00000E-01  0.00000E+00  0.00000E+00  0.00000E+02  0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
+ LIGNE            LIGNE               1            1 SIGM_ELNO              4  4.00000E+00  2.00000E+00  2.00000E+00  5.00000E-01  0.00000E+00  0.00000E+00  0.00000E+02  0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
+#FIN_TABLE
+#--------------------------------------------------------------------------------
+#
+#DEBUT_TABLE
+#TITRE  SITUATION 1 - TEMPERATURE
+#TITRE TABLE_SDASTER
+ INTITULE         CHEMIN   SEGMENT      CMP_CNX      NOM_CHAM         NUME_ORDRE   INST         ABSC_CURV    TEMP
+ K16              K8       I            I            K16              I            R            R            R
+ LIGNE            LIGNE               1            1 SIGM_ELNO              1  1.00000E+00  2.00000E+00  0.50000E+02
+ LIGNE            LIGNE               1            1 SIGM_ELNO              1  1.00000E+00  1.00000E+00  0.00000E+02
+ LIGNE            LIGNE               1            1 SIGM_ELNO              1  1.00000E+00  0.00000E+00  3.00000E+02
+ LIGNE            LIGNE               1            1 SIGM_ELNO              2  2.00000E+00  2.00000E+00  0.50000E+02
+ LIGNE            LIGNE               1            1 SIGM_ELNO              2  2.00000E+00  1.00000E+00  0.00000E+02
+ LIGNE            LIGNE               1            1 SIGM_ELNO              2  2.00000E+00  0.00000E+00  1.00000E+02
+ LIGNE            LIGNE               1            1 SIGM_ELNO              3  3.00000E+00  2.00000E+00  0.50000E+02
+ LIGNE            LIGNE               1            1 SIGM_ELNO              3  3.00000E+00  1.00000E+00  0.00000E+02
+ LIGNE            LIGNE               1            1 SIGM_ELNO              3  3.00000E+00  0.00000E+00  2.00000E+02
+ LIGNE            LIGNE               1            1 SIGM_ELNO              4  4.00000E+00  2.00000E+00  0.50000E+02
+ LIGNE            LIGNE               1            1 SIGM_ELNO              4  4.00000E+00  1.00000E+00  0.00000E+02
+ LIGNE            LIGNE               1            1 SIGM_ELNO              4  4.00000E+00  0.00000E+00  3.00000E+02
+#FIN_TABLE
+#--------------------------------------------------------------------------------
+#
+#DEBUT_TABLE
+#TITRE  SITUATION 3 - TEMPERATURE
+#TITRE TABLE_SDASTER
+ INTITULE         CHEMIN   SEGMENT      CMP_CNX      NOM_CHAM         NUME_ORDRE   INST         ABSC_CURV    TEMP
+ K16              K8       I            I            K16              I            R            R            R
+ LIGNE            LIGNE               1            1 SIGM_ELNO              1  1.00000E+00  2.00000E+00  1.00000E+02
+ LIGNE            LIGNE               1            1 SIGM_ELNO              1  1.00000E+00  1.00000E+00  0.00000E+02
+ LIGNE            LIGNE               1            1 SIGM_ELNO              1  1.00000E+00  0.00000E+00  2.50000E+02
+ LIGNE            LIGNE               1            1 SIGM_ELNO              2  2.00000E+00  2.00000E+00  2.00000E+02
+ LIGNE            LIGNE               1            1 SIGM_ELNO              2  2.00000E+00  1.00000E+00  0.00000E+02
+ LIGNE            LIGNE               1            1 SIGM_ELNO              2  2.00000E+00  0.00000E+00  0.20000E+02
+ LIGNE            LIGNE               1            1 SIGM_ELNO              3  3.00000E+00  2.00000E+00  3.00000E+02
+ LIGNE            LIGNE               1            1 SIGM_ELNO              3  3.00000E+00  1.00000E+00  0.00000E+02
+ LIGNE            LIGNE               1            1 SIGM_ELNO              3  3.00000E+00  0.00000E+00  1.00000E+02
+ LIGNE            LIGNE               1            1 SIGM_ELNO              4  4.00000E+00  2.00000E+00  4.00000E+02
+ LIGNE            LIGNE               1            1 SIGM_ELNO              4  4.00000E+00  1.00000E+00  0.00000E+02
+ LIGNE            LIGNE               1            1 SIGM_ELNO              4  4.00000E+00  0.00000E+00  0.50000E+02
+#FIN_TABLE
+#--------------------------------------------------------------------------------
+#
+#DEBUT_TABLE
+#TITRE  MODULE YOUNG EN FCT DE LA TEMPERATURE
+#TITRE TABLE_SDASTER
+ INTITULE         CHEMIN   SEGMENT      CMP_CNX      NOM_CHAM         NUME_ORDRE   INST         YOUNG         TEMP
+ K16              K8       I            I            K16              I            R            R            R
+ LIGNE            LIGNE               1            1 SIGM_ELNO              1  1.00000E+00  2.00000E+05  0.00000E+02
+ LIGNE            LIGNE               1            1 SIGM_ELNO              1  1.00000E+00  2.00000E+05  0.40000E+02
+ LIGNE            LIGNE               1            1 SIGM_ELNO              1  1.00000E+00  2.00000E+05  0.80000E+02
+ LIGNE            LIGNE               1            1 SIGM_ELNO              2  2.00000E+00  2.00000E+05  1.20000E+02
+ LIGNE            LIGNE               1            1 SIGM_ELNO              2  2.00000E+00  2.00000E+05  1.60000E+02
+ LIGNE            LIGNE               1            1 SIGM_ELNO              2  2.00000E+00  2.00000E+05  2.00000E+02
+ LIGNE            LIGNE               1            1 SIGM_ELNO              3  3.00000E+00  2.00000E+05  2.40000E+02
+ LIGNE            LIGNE               1            1 SIGM_ELNO              3  3.00000E+00  2.00000E+05  2.80000E+02
+ LIGNE            LIGNE               1            1 SIGM_ELNO              3  3.00000E+00  2.00000E+05  3.20000E+02
+ LIGNE            LIGNE               1            1 SIGM_ELNO              4  4.00000E+00  2.00000E+05  4.00000E+02
+ LIGNE            LIGNE               1            1 SIGM_ELNO              4  4.00000E+00  2.00000E+05  5.00000E+02
+ LIGNE            LIGNE               1            1 SIGM_ELNO              4  4.00000E+00  2.00000E+05  6.00000E+02
+#FIN_TABLE

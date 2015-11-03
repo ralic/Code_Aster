@@ -35,8 +35,8 @@ subroutine rcZ2in(transif)
 !     ------------------------------------------------------------------
 !
     character(len=16) :: motclf, motclf2, motclf3
-    integer :: n1, jvalin, ndim, iocc, nb1, nb2, ik1, jk1
-    integer :: ik2, jk2, ik3, jk3, ik4, jk4, nb3
+    integer :: n1, jvalin, ndim
+    integer :: ik3, ik4, nb3
     aster_logical :: transif
 !
 ! DEB ------------------------------------------------------------------
@@ -48,31 +48,17 @@ subroutine rcZ2in(transif)
     motclf3 = 'FACT_SIGM'
 !
     if (.not. transif) then
-
-! ---RECHERCHE DE LA DERNIERE OCCURENCE DES MOTS-CLES OBLIGATOIRES
-        call getfac(motclf, nb1)
-        call getfac(motclf2, nb2)
-!
-        do iocc = 1, nb1
-            call getvr8(motclf, 'K1', iocc=iocc, nbval=0, nbret=ik1)
-            if (ik1 .ne. 0) jk1 = iocc
-        end do
-!
-        do iocc = 1, nb2
-            call getvr8(motclf2, 'EP', iocc=iocc, nbval=0, nbret=ik2)
-            if (ik2 .ne. 0) jk2 = iocc
-        end do
 !       
-        call getvr8(motclf, 'K1', scal=zr(jvalin), iocc=jk1, nbret=n1)
-        call getvr8(motclf, 'C1', scal=zr(jvalin+1), iocc=jk1, nbret=n1)  
-        call getvr8(motclf, 'K2', scal=zr(jvalin+2), iocc=jk1, nbret=n1)  
-        call getvr8(motclf, 'C2', scal=zr(jvalin+3), iocc=jk1, nbret=n1)
-        call getvr8(motclf, 'K3', scal=zr(jvalin+4), iocc=jk1, nbret=n1)  
-        call getvr8(motclf, 'C3', scal=zr(jvalin+5), iocc=jk1, nbret=n1)
+        call getvr8(motclf, 'K1', scal=zr(jvalin), iocc=1, nbret=n1)
+        call getvr8(motclf, 'C1', scal=zr(jvalin+1), iocc=1, nbret=n1)  
+        call getvr8(motclf, 'K2', scal=zr(jvalin+2), iocc=1, nbret=n1)  
+        call getvr8(motclf, 'C2', scal=zr(jvalin+3), iocc=1, nbret=n1)
+        call getvr8(motclf, 'K3', scal=zr(jvalin+4), iocc=1, nbret=n1)  
+        call getvr8(motclf, 'C3', scal=zr(jvalin+5), iocc=1, nbret=n1)
 !
-        call getvr8(motclf2, 'R', scal=zr(jvalin+6),iocc=jk2, nbret=n1)
-        call getvr8(motclf2, 'EP', scal=zr(jvalin+7),iocc=jk2, nbret=n1)
-        call getvr8(motclf2, 'I', scal=zr(jvalin+8),iocc=jk2, nbret=n1)
+        call getvr8(motclf2, 'R', scal=zr(jvalin+6),iocc=1, nbret=n1)
+        call getvr8(motclf2, 'EP', scal=zr(jvalin+7),iocc=1, nbret=n1)
+        call getvr8(motclf2, 'I', scal=zr(jvalin+8),iocc=1, nbret=n1)
 !
         zr(jvalin+9) = 1
         zr(jvalin+10) = 1
@@ -92,23 +78,19 @@ subroutine rcZ2in(transif)
             zr(jvalin+9) = 1
             zr(jvalin+10) = 1
         else 
-            do iocc = 1, nb3
-                call getvr8(motclf3, 'KT_SN', iocc=iocc, nbval=0, nbret=ik3)
-                if (ik3 .ne. 0) then
-                    jk3 = iocc
-                    call getvr8(motclf3, 'KT_SN', scal=zr(jvalin+9), iocc=jk3, nbret=n1)
-                else
-                    zr(jvalin+9) = 1
-                endif
+            call getvr8(motclf3, 'KT_SN', iocc=1, nbval=0, nbret=ik3)
+            if (ik3 .ne. 0) then
+                call getvr8(motclf3, 'KT_SN', scal=zr(jvalin+9), iocc=1, nbret=n1)
+            else
+                zr(jvalin+9) = 1
+            endif
 !
-                call getvr8(motclf3, 'KT_SP', iocc=iocc, nbval=0, nbret=ik4)
-                if (ik4 .ne. 0) then
-                    jk4 = iocc
-                    call getvr8(motclf3, 'KT_SP', scal=zr(jvalin+10), iocc=jk4, nbret=n1)
-                else
-                    zr(jvalin+10) = 1
-                endif
-            end do
+            call getvr8(motclf3, 'KT_SP', iocc=1, nbval=0, nbret=ik4)
+            if (ik4 .ne. 0) then
+                call getvr8(motclf3, 'KT_SP', scal=zr(jvalin+10), iocc=1, nbret=n1)
+            else
+                zr(jvalin+10) = 1
+            endif
         endif
 !      
     endif              

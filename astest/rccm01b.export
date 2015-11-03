@@ -9,5 +9,6 @@ F comm rccm01b.comm D 1
 F comm rccm01b.com0 D 1
 F comm rccm01b.com1 D 1
 F comm rccm01b.com2 D 1
+F comm rccm01b.com3 D 1
 F mmed rccm01b.mmed D 20
 F libr rccm01b.35 D 35

@@ -31,7 +31,7 @@ subroutine rc32in()
 !     ------------------------------------------------------------------
 !
     character(len=16) :: motclf3    
-    integer :: jvalin, ndim, iocc, n1, ik3, jk3, ik4, jk4, nb3
+    integer :: jvalin, ndim, n1, ik3, ik4, nb3
 !
 ! DEB ------------------------------------------------------------------
     call jemarq()
@@ -54,23 +54,19 @@ subroutine rc32in()
         zr(jvalin+9) = 1
         zr(jvalin+10) = 1
     else 
-        do iocc = 1, nb3
-            call getvr8(motclf3, 'KT_SN', iocc=iocc, nbval=0, nbret=ik3)
-            if (ik3 .ne. 0) then
-                jk3 = iocc
-                call getvr8(motclf3, 'KT_SN', scal=zr(jvalin+9), iocc=jk3, nbret=n1)
-            else
-                zr(jvalin+9) = 1
-            endif
+        call getvr8(motclf3, 'KT_SN', iocc=1, nbval=0, nbret=ik3)
+        if (ik3 .ne. 0) then
+            call getvr8(motclf3, 'KT_SN', scal=zr(jvalin+9), iocc=1, nbret=n1)
+        else
+            zr(jvalin+9) = 1
+        endif
 !
-            call getvr8(motclf3, 'KT_SP', iocc=iocc, nbval=0, nbret=ik4)
-            if (ik4 .ne. 0) then
-                jk4 = iocc
-                call getvr8(motclf3, 'KT_SP', scal=zr(jvalin+10), iocc=jk4, nbret=n1)
-            else
-                zr(jvalin+10) = 1
-            endif
-        end do
+        call getvr8(motclf3, 'KT_SP', iocc=1, nbval=0, nbret=ik4)
+        if (ik4 .ne. 0) then
+            call getvr8(motclf3, 'KT_SP', scal=zr(jvalin+10), iocc=1, nbret=n1)
+        else
+            zr(jvalin+10) = 1
+        endif
     endif             
 !
     call jedema()    

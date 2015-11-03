@@ -54,11 +54,12 @@ subroutine rcZ2env(k,l, ke, lieu, fen)
 !
     character(len=16) :: motclf, motclf2, motclf3, motclf4, valek(2)
     character(len=16) :: motclf5, val
-    integer :: nb, nbther, nbpres, nbmeca, situ(2), ncmp
+    integer :: nb, nbther, nbpres, nbmeca, situ(2), ncmp, isearch
     integer :: n1, n2, n3, nume1, nume2, nume3, ither, ipres, imeca
     integer :: numether, numepres, numemeca, n4, nbinst, jinst, nbabsc, jabsc
-    integer :: i, j, m, ibid, iret, ndim, jcont, nbinst2, jdepsi
+    integer :: i, j, m, ibid, iret, ndim, jcont, nbinst2, jdepsi, itrouve
     integer :: jj, jfen, n5(14), jtemp, n6, n7, jtempy, nbtempy, ii
+    integer :: numesitu, n0
     parameter  ( ncmp = 6 )
     character(len=8) :: nocmp(ncmp), crit(2), table1, table2, table3
     character(len=8) :: tableok, k8b, table4, table5
@@ -147,12 +148,19 @@ subroutine rcZ2env(k,l, ke, lieu, fen)
         contraintespr = 0.d0
         contraintesmec = 0.d0
 !
-        call getvr8(motclf4, 'O_ETOILE', iocc=situ(i), scal=oet, nbret=n6)
-        call getvid(motclf4, 'TABL_TEMP', iocc=situ(i), scal=table4, nbret=n7)
+        do 50 isearch =1, nb, 1
+            call getvis(motclf4, 'NUME_SITU', iocc=isearch, scal=numesitu, nbret=n0)
+            if (numesitu .eq. situ(i)) then
+                itrouve=isearch
+            endif
+50      continue
 !
-        call getvis(motclf4, 'NUME_RESU_THER', iocc=situ(i), scal=nume1, nbret=n1)
-        call getvis(motclf4, 'NUME_RESU_PRES', iocc=situ(i), scal=nume2, nbret=n2)
-        call getvis(motclf4, 'NUME_RESU_MECA', iocc=situ(i), scal=nume3, nbret=n3)
+        call getvr8(motclf4, 'O_ETOILE', iocc=itrouve, scal=oet, nbret=n6)
+        call getvid(motclf4, 'TABL_TEMP', iocc=itrouve, scal=table4, nbret=n7)
+!
+        call getvis(motclf4, 'NUME_RESU_THER', iocc=itrouve, scal=nume1, nbret=n1)
+        call getvis(motclf4, 'NUME_RESU_PRES', iocc=itrouve, scal=nume2, nbret=n2)
+        call getvis(motclf4, 'NUME_RESU_MECA', iocc=itrouve, scal=nume3, nbret=n3)
 !
         if (n1 .ne. 0) then 
             do 20 ither =1, nbther, 1

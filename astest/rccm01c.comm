@@ -45,7 +45,7 @@ T_THER = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
 #  CONTRAINTES THERMIQUES (SITUATION 2)                 
 T_THER2 = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=2,)
-      
+     
 # VALIDATION DU CALCUL DE SN SANS CONTRAINTES THERMIQUES
 SN1 = POST_RCCM( MATER=MAT,
                  TYPE_RESU='DETAILS',
@@ -155,7 +155,134 @@ SN2 = POST_RCCM( MATER=MAT,
                      PRES_B=0,
                         ),),);
 
-IMPR_TABLE(    TABLE=SN2,)  
+IMPR_TABLE(    TABLE=SN2,)
+
+# VALIDATION DU CALCUL DE FATIGUE ZE200a
+FAT = POST_RCCM( MATER=MAT,
+                 TYPE_RESU='DETAILS',
+                 TYPE_RESU_MECA='ZE200a',
+                 OPTION='FATIGUE',
+                 INFO=2,
+                 TYPE_KE='KE_MECA',
+                 INDI_SIGM=(
+                   _F(C1=1.0,
+                      K1=1.0,
+                      K2=1.0,
+                      C2=2.0,
+                      C3=1.0,
+                      K3=1.0,),),
+                 TUYAU=(
+                   _F(R=0.5,
+                      EP=1.0,
+                      I=1.0,),),
+                 CHAR_MECA=(
+                  _F(NUME_CHAR=1,
+                     NOM_CHAR='ETAT A - SITU1',
+                     MX=21.0,  MY=0.0,  MZ=0.0,),
+                  _F(NUME_CHAR=2,
+                     NOM_CHAR='ETAT B - SITU1',
+                     MX=1.0,  MY=0.0,  MZ=0.0,),   
+                  _F(NUME_CHAR=3,
+                     NOM_CHAR='ETAT A - SITU2',
+                     MX=1.0,  MY=0.0,  MZ=0.0,),
+                  _F(NUME_CHAR=4,
+                     NOM_CHAR='ETAT B - SITU2',
+                     MX=61.0,  MY=0.0,  MZ=0.0,),),
+                 RESU_THER= (_F(NUME_RESU_THER=1,
+                            TABL_RESU_THER=T_THER, ), 
+                            _F(NUME_RESU_THER=2,
+                            TABL_RESU_THER=T_THER2, ), ),
+                 SITUATION=(
+                  _F(NB_OCCUR=1,
+                     NUME_SITU=1,
+                     NOM_SITU='Situation 1',
+                     NUME_GROUPE=1,
+                     NUME_RESU_THER = 1,
+                     CHAR_ETAT_A=1,
+                     CHAR_ETAT_B=2,
+                     PRES_A=201,
+                     PRES_B=1,
+                      ),
+                  _F(NB_OCCUR=1,
+                     NUME_SITU=2,
+                     NOM_SITU='Situation 2',
+                     NUME_GROUPE=1,
+                     NUME_RESU_THER = 2,
+                     CHAR_ETAT_A=3,
+                     CHAR_ETAT_B=4,
+                     PRES_A=0,
+                     PRES_B=0,
+                        ),),);
+
+IMPR_TABLE(    TABLE=FAT,)
+
+# VALIDATION DU CALCUL DE FATIGUE AVEC SEISME ZE200a
+FAT2 = POST_RCCM( MATER=MAT,
+                 TYPE_RESU='DETAILS',
+                 TYPE_RESU_MECA='ZE200a',
+                 OPTION='FATIGUE',
+                 INFO=2,
+                 TYPE_KE='KE_MECA',
+                 INDI_SIGM=(
+                   _F(C1=1.0,
+                      K1=1.0,
+                      K2=1.0,
+                      C2=2.0,
+                      C3=1.0,
+                      K3=1.0,),),
+                 TUYAU=(
+                   _F(R=0.5,
+                      EP=1.0,
+                      I=1.0,),),
+                 CHAR_MECA=(
+                  _F(NUME_CHAR=1,
+                     NOM_CHAR='ETAT A - SITU1',
+                     MX=21.0,  MY=0.0,  MZ=0.0,),
+                  _F(NUME_CHAR=2,
+                     NOM_CHAR='ETAT B - SITU1',
+                     MX=1.0,  MY=0.0,  MZ=0.0,),   
+                  _F(NUME_CHAR=3,
+                     NOM_CHAR='ETAT A - SITU2',
+                     MX=1.0,  MY=0.0,  MZ=0.0,),
+                  _F(NUME_CHAR=4,
+                     NOM_CHAR='ETAT B - SITU2',
+                     MX=61.0,  MY=0.0,  MZ=0.0,),
+                  _F(NUME_CHAR=5,
+                     NOM_CHAR='SEISME',
+                     MX=20.0,  MY=0.0,  MZ=0.0,),),
+                 RESU_THER= (_F(NUME_RESU_THER=1,
+                            TABL_RESU_THER=T_THER, ), 
+                            _F(NUME_RESU_THER=2,
+                            TABL_RESU_THER=T_THER2, ), ),
+                SEISME=( _F(NB_OCCUR=2,
+                     NB_CYCL_SEISME=10,
+                     NUME_SITU=3,
+                     NOM_SITU='Situation de seimse',
+                     NUME_GROUPE=1,
+                     CHAR_ETAT=5,),),
+                 SITUATION=(
+                  _F(NB_OCCUR=1,
+                     NUME_SITU=1,
+                     NOM_SITU='Situation 1',
+                     NUME_GROUPE=1,
+                     NUME_RESU_THER = 1,
+                     CHAR_ETAT_A=1,
+                     CHAR_ETAT_B=2,
+                     PRES_A=201,
+                     PRES_B=1,
+                      ),
+                  _F(NB_OCCUR=1,
+                     NUME_SITU=2,
+                     NOM_SITU='Situation 2',
+                     NUME_GROUPE=1,
+                     NUME_RESU_THER = 2,
+                     CHAR_ETAT_A=3,
+                     CHAR_ETAT_B=4,
+                     PRES_A=0,
+                     PRES_B=0,
+                        ),),);
+
+IMPR_TABLE(    TABLE=FAT2,) 
 
 #-------------------------------------------------------------------------------
 #   TEST (SOLUTION DE REFERENCE ANALYTIQUE)
@@ -180,7 +307,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='EXTR',),
            )
 
-# SN2 - SITUATION 1 ET 2
+# SN2 - SITUATIONS 1 ET 2
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=210.000000000,
            VALE_REFE=210.0,
@@ -195,6 +322,44 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_REFE=355.0,
            NOM_PARA='SN_MAX',
            TABLE=SN2,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
+
+# FAT - COMBINAISON DES SITUATIONS 1 ET 2
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=235.500000000,
+           VALE_REFE=235.5,
+           NOM_PARA='SN_MAX',
+           TABLE=FAT,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=375.500000000,
+           VALE_REFE=375.5,
+           NOM_PARA='SN_MAX',
+           TABLE=FAT,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
+
+# FAT2 - COMBINAISON DES SITUATIONS 1 ET 2 AVEC SEISME
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=355.500000000,
+           VALE_REFE=355.5,
+           NOM_PARA='SN_MAX',
+           TABLE=FAT2,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=495.500000000,
+           VALE_REFE=495.5,
+           NOM_PARA='SN_MAX',
+           TABLE=FAT2,
            FILTRE=_F(NOM_PARA='LIEU',
                      VALE_K='EXTR',),
            )

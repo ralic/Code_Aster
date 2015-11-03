@@ -113,8 +113,8 @@ SN1 = POST_RCCM( MATER=MAT,
 
 IMPR_TABLE(    TABLE=SN1,)
 
-# VALIDATION DU CALCUL DE SN AVEC EFFET D'ENVIRONNEMENT 
-SN2 = POST_RCCM( MATER=MAT,
+# VALIDATION DU CALCUL DE EFAT AVEC EFFET D'ENVIRONNEMENT 
+FAT = POST_RCCM( MATER=MAT,
                  TYPE_RESU='DETAILS',
                  TYPE_RESU_MECA='B3200_T',
                  OPTION='EFAT',
@@ -173,7 +173,7 @@ SN2 = POST_RCCM( MATER=MAT,
                      TABL_TEMP        =T_TEMP2,
                         ),),);
 
-IMPR_TABLE(    TABLE=SN2,)   
+IMPR_TABLE(    TABLE=FAT,)   
 
 #-------------------------------------------------------------------------------
 #   TEST (SOLUTION DE REFERENCE ANALYTIQUE)
@@ -198,23 +198,14 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='EXTR',),
            )
 
-# SN2 - SITUATIONS 1, 2
+# FAT - SITUATIONS 1, 2
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.108818820412,
            VALE_REFE=0.1088,
            NOM_PARA='FACT_ENV',
-           TABLE=SN2,
+           TABLE=FAT,
            FILTRE=_F(NOM_PARA='LIEU',
                      VALE_K='ORIG',),
-           )
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=4.4408920985E-16,
-           VALE_REFE=4.44E-16,
-           NOM_PARA='FACT_ENV',
-           TABLE=SN2,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='EXTR',),
            )
 
 FIN();

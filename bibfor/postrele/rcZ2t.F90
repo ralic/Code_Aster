@@ -377,8 +377,6 @@ subroutine rcZ2t()
  19         continue
 !
  12     continue
-        write(*,*)'TOTO',tmaxsn
-        write(*,*)'TITI',tminsn
 !
 ! --------- on remplit les vecteurs
 ! --------- pour tminsp a l'origine    

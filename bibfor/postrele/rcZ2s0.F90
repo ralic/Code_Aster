@@ -43,7 +43,7 @@ subroutine rcZ2s0(option, mm, pr, mse,&
     integer :: i11, i21, i31, fact
     real(kind=8) :: mtt(6), mtc(6), sij, snp1, tresca
     real(kind=8) :: factp, factm
-    real(kind=8) :: e1(2), e2(2), e3(2), e4(2), e5(2), e6(2), e7(2)
+    real(kind=8) :: e1(2), e2(2), e3(2)
 ! DEB ------------------------------------------------------------------
 !
     snp = 0.d0
@@ -67,10 +67,6 @@ subroutine rcZ2s0(option, mm, pr, mse,&
         e1(i) = i1 * fact
         e2(i) = i1 * fact
         e3(i) = i1 * fact
-        e4(i) = i1 * fact
-        e5(i) = i1 * fact
-        e6(i) = i1 * fact
-        e7(i) = i1
  2  end do
 !
 ! --- CALCUL MECANIQUE :
