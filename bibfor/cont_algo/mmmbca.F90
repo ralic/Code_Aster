@@ -59,7 +59,7 @@ implicit none
     character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: sddyna
     integer, intent(in) :: iter_newt
-    type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_Contact), intent(inout) :: ds_contact
     character(len=24), intent(in) :: sdstat
     character(len=19), intent(in) :: hval_incr(*)
     character(len=19), intent(in) :: hval_algo(*)
@@ -78,7 +78,7 @@ implicit none
 ! In  mesh             : name of mesh
 ! In  sddyna           : dynamic parameters datastructure
 ! In  iter_newt        : index of current Newton iteration
-! In  ds_contact       : datastructure for contact management
+! IO  ds_contact       : datastructure for contact management
 ! In  sdstat           : datastructure for statistics
 ! In  hval_incr        : hat-variable for incremental values fields
 ! In  hval_algo        : hat-variable for algorithms fields
@@ -400,9 +400,9 @@ implicit none
 !
 ! - Event management for impact
 !
-    call mmbouc(ds_contact, 'GEOM', 'READ', i_loop_geom)
-    call mmbouc(ds_contact, 'FROT', 'READ', i_loop_frot)
-    call mmbouc(ds_contact, 'CONT', 'READ', i_loop_cont)
+    call mmbouc(ds_contact, 'Geom', 'READ', i_loop_geom)
+    call mmbouc(ds_contact, 'Fric', 'READ', i_loop_frot)
+    call mmbouc(ds_contact, 'Cont', 'READ', i_loop_cont)
     if ((iter_newt.eq.0) .and.&
         (i_loop_geom.eq.1) .and. (i_loop_frot.eq.1) .and. (i_loop_cont.eq.1)) then
         call mmeven('INI', ds_contact)

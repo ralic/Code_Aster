@@ -41,7 +41,7 @@ implicit none
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: modele
     character(len=24), intent(in) :: mate
-    type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_Contact), intent(inout) :: ds_contact
     character(len=19), intent(in) :: sddyna
     character(len=24), intent(in) :: sderro
     character(len=24), intent(in) :: sdstat
@@ -63,7 +63,7 @@ implicit none
 ! IN  MATE   : SD MATERIAU
 ! IN  SDDYNA : SD POUR DYNAMIQUE
 ! IN  SDERRO : GESTION DES ERREURS
-! In  ds_contact       : datastructure for contact management
+! IO  ds_contact       : datastructure for contact management
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
 ! OUT MMCVCA : INDICATEUR DE CONVERGENCE POUR BOUCLE DES
@@ -97,7 +97,7 @@ implicit none
 !
 ! --- INFOS BOUCLE CONTACT
 !
-    call mmbouc(ds_contact, 'CONT', 'READ', mmitca)
+    call mmbouc(ds_contact, 'Cont', 'READ', mmitca)
     itemul = cfdisi(ds_contact%sdcont_defi,'ITER_CONT_MULT')
     if (itemul .eq. -1) then
         maxcon = cfdisi(ds_contact%sdcont_defi,'ITER_CONT_MAXI')

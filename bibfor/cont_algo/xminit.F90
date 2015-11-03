@@ -37,7 +37,7 @@ implicit none
 !
     character(len=8), intent(in) :: mesh
     character(len=8), intent(in) :: model
-    type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_Contact), intent(inout) :: ds_contact
     integer, intent(in) :: nume_inst
     character(len=24), intent(in) :: sdtime
     character(len=24), intent(in) :: sdstat
@@ -54,7 +54,7 @@ implicit none
 !
 ! In  mesh             : name of mesh
 ! In  model            : name of model
-! In  ds_contact       : datastructure for contact management
+! IO  ds_contact       : datastructure for contact management
 ! In  nume_inst        : index of current step time
 ! In  hat_valinc       : hat variable for algorithm fields
 ! In  sdtime           : datastructure for timers
@@ -116,11 +116,11 @@ implicit none
 !
 ! - Geometric loop counter initialization
 !
-    call mmbouc(ds_contact, 'GEOM', 'INIT')
+    call mmbouc(ds_contact, 'Geom', 'INIT')
 !
 ! - First geometric loop counter
 !
-    call mmbouc(ds_contact, 'GEOM', 'INCR')
+    call mmbouc(ds_contact, 'Geom', 'INCR')
 !
 ! - Initial pairing
 !

@@ -32,7 +32,7 @@ implicit none
     integer, intent(inout) :: cont_loop
     character(len=24), intent(in) :: model
     character(len=8), intent(in) :: mesh
-    type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_Contact), intent(inout) :: ds_contact
     integer, intent(in):: list_func_acti(*)
     character(len=24), intent(in) :: nume_dof
     character(len=24), intent(in) :: sdstat
@@ -54,7 +54,7 @@ implicit none
 !                        3 - Loop for geometry
 ! In  model            : name of model
 ! In  mesh             : name of mesh
-! In  ds_contact       : datastructure for contact management
+! IO  ds_contact       : datastructure for contact management
 ! In  list_func_acti   : list of active functionnalities
 ! In  nume_dof         : name of numbering object (NUME_DDL)
 ! In  sdstat           : datastructure for statistics
@@ -75,7 +75,7 @@ implicit none
 !
 ! - Print geometric loop iteration
 !
-    call mmbouc(ds_contact, 'GEOM', 'READ', i_loop_geom)
+    call mmbouc(ds_contact, 'Geom', 'READ', i_loop_geom)
     call nmimci(ds_print  , 'BOUC_GEOM', i_loop_geom, .true._1)
 !
 ! - No pairing at first iteration (see mminit/xminit)
@@ -98,9 +98,9 @@ implicit none
                             nume_dof)
             endif
         endif
-        call mmbouc(ds_contact, 'FROT', 'INIT')
-        call mmbouc(ds_contact, 'FROT', 'INCR')
-        call mmbouc(ds_contact, 'FROT', 'READ', i_loop_frot)
+        call mmbouc(ds_contact, 'Fric', 'INIT')
+        call mmbouc(ds_contact, 'Fric', 'INCR')
+        call mmbouc(ds_contact, 'Fric', 'READ', i_loop_frot)
         call nmimci(ds_print   , 'BOUC_FROT', i_loop_frot, .true._1)
     endif
 !
@@ -110,9 +110,9 @@ implicit none
         if (l_loop_frot) then
             cont_loop = 2
         endif
-        call mmbouc(ds_contact, 'CONT', 'INIT')
-        call mmbouc(ds_contact, 'CONT', 'INCR')
-        call mmbouc(ds_contact, 'CONT', 'READ', i_loop_cont)
+        call mmbouc(ds_contact, 'Cont', 'INIT')
+        call mmbouc(ds_contact, 'Cont', 'INCR')
+        call mmbouc(ds_contact, 'Cont', 'READ', i_loop_cont)
         call nmimci(ds_print   , 'BOUC_CONT', i_loop_cont, .true._1)
     endif
 !

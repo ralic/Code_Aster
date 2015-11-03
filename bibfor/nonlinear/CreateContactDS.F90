@@ -41,6 +41,9 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
+    integer :: i_loop
+    integer, parameter :: nb_loop_defi = 3
+    character(len=4), parameter :: loop_type(nb_loop_defi) = (/'Geom','Fric','Cont'/)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -83,5 +86,15 @@ implicit none
 !
     ds_contact%l_dof_rela       = .false._1
     ds_contact%ligrel_dof_rela  = ' '
+!
+! - Management of loops
+!
+    ds_contact%nb_loop = nb_loop_defi
+    ASSERT(ds_contact%nb_loop.le.ds_contact%nb_loop_maxi)
+    do i_loop = 1, nb_loop_defi
+        ds_contact%loop(i_loop)%type    = loop_type(i_loop)
+        ds_contact%loop(i_loop)%conv    = .false._1
+        ds_contact%loop(i_loop)%counter = 0
+    end do
 !
 end subroutine

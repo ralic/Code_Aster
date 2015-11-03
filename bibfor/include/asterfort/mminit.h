@@ -20,7 +20,7 @@ interface
                       sdstat, sdnume    , nume_dof, nume_inst)
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
-        type(NL_DS_Contact), intent(in) :: ds_contact
+        type(NL_DS_Contact), intent(inout) :: ds_contact
         character(len=19), intent(in) :: hat_valinc(*)
         character(len=24), intent(in) :: sdtime
         character(len=24), intent(in) :: sdstat

@@ -43,7 +43,7 @@ implicit none
     character(len=24), intent(in) :: model_
     type(NL_DS_Print), intent(inout) :: ds_print
     character(len=24), intent(in) :: sderro
-    type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_Contact), intent(inout) :: ds_contact
     character(len=19), intent(in) :: hval_incr(*)
     aster_logical, intent(out) :: loop_frot_conv
 !
@@ -59,7 +59,7 @@ implicit none
 ! In  model            : name of model
 ! IO  ds_print         : datastructure for printing parameters
 ! In  sderro           : datastructure for errors during algorithm
-! In  ds_contact       : datastructure for contact management
+! IO  ds_contact       : datastructure for contact management
 ! In  hval_incr        : hat-variable for incremental values fields
 ! Out loop_frot_conv
 !
@@ -97,7 +97,7 @@ implicit none
 !
 ! --- INFOS BOUCLE FROTTEMENT
 !
-    call mmbouc(ds_contact, 'FROT', 'READ', mmitfr)
+    call mmbouc(ds_contact, 'Fric', 'READ', mmitfr)
     maxfro = cfdisi(ds_contact%sdcont_defi,'ITER_FROT_MAXI')
     epsfro = cfdisr(ds_contact%sdcont_defi,'RESI_FROT' )
 !

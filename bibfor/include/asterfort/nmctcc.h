@@ -25,7 +25,7 @@ interface
         character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: modele
         character(len=24), intent(in) :: mate
-        type(NL_DS_Contact), intent(in) :: ds_contact
+        type(NL_DS_Contact), intent(inout) :: ds_contact
         character(len=19), intent(in) :: sddyna
         character(len=24), intent(in) :: sderro
         character(len=24), intent(in) :: sdstat

@@ -53,7 +53,7 @@ implicit none
     type(NL_DS_Print), intent(inout) :: ds_print
     character(len=24) :: sdstat, sdtime, sdsuiv
     character(len=24) :: numedd
-    type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_Contact), intent(inout) :: ds_contact
     character(len=19) :: solalg(*), valinc(*)
     type(NL_DS_Conv), intent(inout) :: ds_conv
     character(len=19), intent(in) :: lischa
@@ -79,7 +79,7 @@ implicit none
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IN  SDSUIV : SD SUIVI_DDL
 ! IN  SDNUME : NOM DE LA SD NUMEROTATION
-! In  ds_contact       : datastructure for contact management
+! IO  ds_contact       : datastructure for contact management
 ! IN  SDDYNA : SD DYNAMIQUE
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS

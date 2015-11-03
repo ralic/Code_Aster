@@ -44,7 +44,7 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8) :: mesh
-    type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_Contact), intent(inout) :: ds_contact
     aster_logical :: dvgeom, geoerr
     character(len=19) :: solalg(*)
     character(len=16) :: geonoe
@@ -58,16 +58,13 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
-! In  ds_contact       : datastructure for contact management
+! IO  ds_contact       : datastructure for contact management
 ! IN  NOMA   : NOM DU MAILLAGE
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
 ! OUT DVGEOM : .TRUE. SI BOUCLE GEOMETRIQUE NON CONVERGEE
 ! OUT GEOERR : .TRUE. SI ERREUR SUR LA BOUCLE DE GEOMETRIE
 ! OUT GEONOE : ENDROIT POUR MAX GEOMETRIE
 ! OUT GEOVAL : VALEUR DU MAX GEOMETRIE
-!
-!
-!
 !
     integer :: ii, numno1, numno2
     integer :: neq
@@ -120,7 +117,7 @@ implicit none
 !
 ! --- NOUVELLE ITERATION DE REACTUALISATION GEOMETRIQUE
 !
-    call mmbouc(ds_contact, 'GEOM', 'READ', mmitgo)
+    call mmbouc(ds_contact, 'Geom', 'READ', mmitgo)
 !
 ! --- CALCUL DU DEPLACEMENT
 !

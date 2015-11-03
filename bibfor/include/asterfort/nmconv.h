@@ -47,7 +47,7 @@ interface
         integer :: numins
         integer :: iterat
         real(kind=8) :: eta
-        type(NL_DS_Contact), intent(in) :: ds_contact
+        type(NL_DS_Contact), intent(inout) :: ds_contact
         character(len=19) :: valinc(*)
         character(len=19) :: solalg(*)
         character(len=19) :: measse(*)

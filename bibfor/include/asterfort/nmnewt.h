@@ -61,7 +61,7 @@ interface
         character(len=19) :: measse(*)
         character(len=19) :: veelem(*)
         character(len=19) :: veasse(*)
-        type(NL_DS_Contact), intent(in) :: ds_contact
+        type(NL_DS_Contact), intent(inout) :: ds_contact
         real(kind=8) :: eta
         integer :: nbiter
     end subroutine nmnewt

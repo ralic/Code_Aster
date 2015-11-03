@@ -42,7 +42,7 @@ implicit none
     character(len=19) :: sddisc, sddyna
     character(len=8) :: mesh
     character(len=24) :: numedd, modele
-    type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_Contact), intent(inout) :: ds_contact
     character(len=24) :: sderro, sdstat, sdtime
     character(len=19) :: solalg(*), valinc(*)
     real(kind=8) :: instan
@@ -68,7 +68,7 @@ implicit none
 ! IN  SDERRO : GESTION DES ERREURS
 ! IN  ITERAT : NUMERO D'ITERATION
 ! IN  NUMINS : NUMERO D'INSTANT
-! In  ds_contact       : datastructure for contact management
+! IO  ds_contact       : datastructure for contact management
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
 !

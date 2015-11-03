@@ -30,7 +30,7 @@ interface
         character(len=19), intent(in) :: sddisc
         character(len=19), intent(in) :: sddyna
         type(NL_DS_Print), intent(inout) :: ds_print
-        type(NL_DS_Contact), intent(in) :: ds_contact
+        type(NL_DS_Contact), intent(inout) :: ds_contact
         character(len=19), intent(in) :: valinc(*)
         character(len=19), intent(in) :: solalg(*)
         character(len=24), intent(in) :: sdtime

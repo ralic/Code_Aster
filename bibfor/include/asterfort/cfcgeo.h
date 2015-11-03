@@ -22,7 +22,7 @@ interface
                       geonoe, geoval)
         use NonLin_Datastructure_type
         character(len=8) :: mesh
-        type(NL_DS_Contact), intent(in) :: ds_contact
+        type(NL_DS_Contact), intent(inout) :: ds_contact
         character(len=19) :: solalg(*)
         aster_logical :: dvgeom
         aster_logical :: geoerr

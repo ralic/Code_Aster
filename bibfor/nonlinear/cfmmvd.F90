@@ -50,8 +50,8 @@ function cfmmvd(vect)
     parameter (zresu=30,zcmdf=6 ,zcmxf=16)
     integer :: zexcl, zparr, zpari
     parameter (zexcl=3 ,zparr=5 ,zpari=29)
-    integer :: zbouc, ztaco, zeven
-    parameter (zbouc=3 ,ztaco=8 ,zeven=5)
+    integer :: ztaco, zeven
+    parameter (ztaco=8 ,zeven=5)
     integer :: zcoco, ztacf, zetat
     parameter (zcoco=8 ,ztacf=4 ,zetat=3)
 !
@@ -96,8 +96,6 @@ function cfmmvd(vect)
         cfmmvd = zparr
     else if (vect.eq.'ZPARI') then
         cfmmvd = zpari
-    else if (vect.eq.'ZBOUC') then
-        cfmmvd = zbouc
     else if (vect.eq.'ZCOCO') then
         cfmmvd = zcoco
     else if (vect.eq.'ZDIME') then

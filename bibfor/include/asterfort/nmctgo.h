@@ -22,7 +22,7 @@ interface
                       mmcvgo)
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
-        type(NL_DS_Contact), intent(in) :: ds_contact
+        type(NL_DS_Contact), intent(inout) :: ds_contact
         character(len=24), intent(in) :: sderro
         type(NL_DS_Print), intent(inout) :: ds_print
         character(len=19), intent(in) :: hval_incr(*)

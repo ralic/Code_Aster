@@ -39,7 +39,7 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
-    type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_Contact), intent(inout) :: ds_contact
     character(len=24), intent(in) :: sderro
     character(len=24), intent(in) :: sdstat
     character(len=19), intent(in) :: solalg(*)
@@ -57,7 +57,7 @@ implicit none
 ! IO  ds_print         : datastructure for printing parameters
 ! IN  SDSTAT : SD STATISTIQUES
 ! IN  SDERRO : GESTION DES ERREURS
-! In  ds_contact       : datastructure for contact management
+! IO  ds_contact       : datastructure for contact management
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
 !
 ! ----------------------------------------------------------------------

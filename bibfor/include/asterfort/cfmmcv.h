@@ -33,7 +33,7 @@ interface
         character(len=24) :: sderro
         integer :: numins
         integer :: iterat
-        type(NL_DS_Contact), intent(in) :: ds_contact
+        type(NL_DS_Contact), intent(inout) :: ds_contact
         character(len=19) :: valinc(*)
         character(len=19) :: solalg(*)
         real(kind=8) :: instan

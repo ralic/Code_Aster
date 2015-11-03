@@ -24,7 +24,7 @@ interface
         character(len=8), intent(in) :: mesh
         character(len=19), intent(in) :: sddyna
         integer, intent(in) :: iter_newt
-        type(NL_DS_Contact), intent(in) :: ds_contact
+        type(NL_DS_Contact), intent(inout) :: ds_contact
         character(len=24), intent(in) :: sdstat
         character(len=19), intent(in) :: hval_incr(*)
         character(len=19), intent(in) :: hval_algo(*)

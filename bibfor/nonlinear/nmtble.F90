@@ -45,7 +45,7 @@ implicit none
     character(len=24), intent(in) :: model
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: mate
-    type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_Contact), intent(inout) :: ds_contact
     integer, intent(in) :: list_func_acti(*)
     type(NL_DS_Print), intent(inout) :: ds_print
     character(len=24), intent(in) :: sdstat
@@ -74,7 +74,7 @@ implicit none
 ! In  model            : name of model
 ! In  mesh             : name of mesh
 ! In  mate             : name of material characteristics (field)
-! In  ds_contact       : datastructure for contact management
+! IO  ds_contact       : datastructure for contact management
 ! In  list_func_acti   : list of active functionnalities
 ! IO  ds_print         : datastructure for printing parameters
 ! In  sdstat           : datastructure for statistics
@@ -191,20 +191,20 @@ implicit none
 ! - New iteration in loops
 !
     if (.not.loop_cont_conv .and. cont_loop .eq. 1) then
-        call mmbouc(ds_contact, 'CONT', 'INCR')
+        call mmbouc(ds_contact, 'Cont', 'INCR')
     endif
     if (.not.loop_frot_conv .and. cont_loop .eq. 2) then 
-        call mmbouc(ds_contact, 'FROT', 'INCR')
+        call mmbouc(ds_contact, 'Fric', 'INCR')
     endif
     if (.not.loop_geom_conv .and. cont_loop .eq. 3) then 
-        call mmbouc(ds_contact, 'GEOM', 'INCR')
+        call mmbouc(ds_contact, 'Geom', 'INCR')
     endif
 !
 ! - Update loops index
 !
-    call mmbouc(ds_contact, 'CONT', 'READ', i_loop_cont)
-    call mmbouc(ds_contact, 'FROT', 'READ', i_loop_frot)
-    call mmbouc(ds_contact, 'GEOM', 'READ', i_loop_geom)
+    call mmbouc(ds_contact, 'Cont', 'READ', i_loop_cont)
+    call mmbouc(ds_contact, 'Fric', 'READ', i_loop_frot)
+    call mmbouc(ds_contact, 'Geom', 'READ', i_loop_geom)
 !
 ! - Set values of loops index in convergence table
 !

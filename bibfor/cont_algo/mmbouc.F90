@@ -1,4 +1,4 @@
-subroutine mmbouc(ds_contact, loop_name, operation, loop_value)
+subroutine mmbouc(ds_contact, loop_type, operation, loop_value_)
 !
 use NonLin_Datastructure_type
 !
@@ -25,10 +25,10 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    type(NL_DS_Contact), intent(in) :: ds_contact
-    character(len=4), intent(in) :: loop_name
+    type(NL_DS_Contact), intent(inout) :: ds_contact
+    character(len=4), intent(in) :: loop_type
     character(len=4), intent(in) :: operation
-    integer, intent(out), optional :: loop_value
+    integer, intent(out), optional :: loop_value_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -39,10 +39,10 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  ds_contact       : datastructure for contact management
-! In  loop_name        : name of loop
-!                        'CONT' - Contact status
-!                        'FROT' - Friction trigger
-!                        'GEOM' - Geometric loop
+! In  loop_type        : name of loop
+!                        'Cont' - Contact status loop
+!                        'Fric' - Friction loop
+!                        'Goem' - Geometric loop
 ! In  operation        : type of operation on loop
 !                        'READ' - Read value of loop iteration
 !                        'INCR' - Add iteration to loop
@@ -51,55 +51,31 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: sdcont_mboucl
-    integer, pointer :: v_sdcont_mboucl(:) => null()
+    integer :: i_loop, nb_loop, loop_indx, loop_value
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    sdcont_mboucl = ds_contact%sdcont_solv(1:14)//'.MBOUCL'
-    call jeveuo(sdcont_mboucl, 'E', vi = v_sdcont_mboucl)
+    loop_indx = 0
+    nb_loop   = ds_contact%nb_loop
+    do i_loop = 1, nb_loop
+        if (ds_contact%loop(i_loop)%type .eq. loop_type) then
+            loop_indx = i_loop
+        endif
+    end do
+    ASSERT(loop_indx .ne. 0)
 !
-    if (loop_name .eq. 'CONT') then
-        if (operation .eq. 'INIT') then
-            v_sdcont_mboucl(1) = 0
-        else if (operation.eq.'INCR') then
-            v_sdcont_mboucl(1) = v_sdcont_mboucl(1) +1
-        else if (operation.eq.'READ') then
-            loop_value = v_sdcont_mboucl(1)
-        else
-            ASSERT(.false.)
-        endif
-        if (present(loop_value)) then
-            loop_value = v_sdcont_mboucl(1)
-        endif
-    else if (loop_name.eq.'FROT') then
-        if (operation .eq. 'INIT') then
-            v_sdcont_mboucl(2) = 0
-        else if (operation.eq.'INCR') then
-            v_sdcont_mboucl(2) = v_sdcont_mboucl(2) +1
-        else if (operation.eq.'READ') then
-            loop_value = v_sdcont_mboucl(2)
-        else
-            ASSERT(.false.)
-        endif
-        if (present(loop_value)) then
-            loop_value = v_sdcont_mboucl(2)
-        endif
-    else if (loop_name.eq.'GEOM') then
-        if (operation .eq. 'INIT') then
-            v_sdcont_mboucl(3) = 0
-        else if (operation.eq.'INCR') then
-            v_sdcont_mboucl(3) = v_sdcont_mboucl(3) +1
-        else if (operation.eq.'READ') then
-            loop_value = v_sdcont_mboucl(3)
-        else
-            ASSERT(.false.)
-        endif
-        if (present(loop_value)) then
-            loop_value = v_sdcont_mboucl(3)
-        endif
+    if (operation .eq. 'INIT') then
+        ds_contact%loop(loop_indx)%counter = 0
+    else if (operation.eq.'INCR') then
+        ds_contact%loop(loop_indx)%counter = ds_contact%loop(loop_indx)%counter +1
+    else if (operation.eq.'READ') then
+        loop_value = ds_contact%loop(loop_indx)%counter
     else
         ASSERT(.false.)
+    endif
+!
+    if (present(loop_value_)) then
+        loop_value_ = loop_value
     endif
 !
 end subroutine

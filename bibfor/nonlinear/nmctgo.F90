@@ -45,7 +45,7 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
-    type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_Contact), intent(inout) :: ds_contact
     character(len=24), intent(in) :: sderro
     type(NL_DS_Print), intent(inout) :: ds_print
     character(len=19), intent(in) :: hval_incr(*)
@@ -62,7 +62,7 @@ implicit none
 ! In  mesh             : name of mesh
 ! IO  ds_print         : datastructure for printing parameters
 ! IN  SDERRO : GESTION DES ERREURS
-! In  ds_contact       : datastructure for contact management
+! IO  ds_contact       : datastructure for contact management
 ! In  hval_incr        : hat-variable for incremental values fields
 ! OUT MMCVCA : INDICATEUR DE CONVERGENCE POUR BOUCLE DE GEOMETRIE
 !               .TRUE. SI LA BOUCLE A CONVERGE
@@ -104,7 +104,7 @@ implicit none
 !
 ! --- INFOS BOUCLE GEOMETRIQUE
 !
-    call mmbouc(ds_contact, 'GEOM', 'READ', mmitgo)
+    call mmbouc(ds_contact, 'Geom', 'READ', mmitgo)
     maxgeo = cfdisi(ds_contact%sdcont_defi,'ITER_GEOM_MAXI')
     nbreag = cfdisi(ds_contact%sdcont_defi,'NB_ITER_GEOM' )
     epsgeo = cfdisr(ds_contact%sdcont_defi,'RESI_GEOM' )

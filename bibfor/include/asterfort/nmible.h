@@ -22,7 +22,7 @@ interface
         integer, intent(inout) :: cont_loop
         character(len=24), intent(in) :: model
         character(len=8), intent(in) :: mesh
-        type(NL_DS_Contact), intent(in) :: ds_contact
+        type(NL_DS_Contact), intent(inout) :: ds_contact
         integer, intent(in):: list_func_acti(*)
         character(len=24), intent(in) :: nume_dof
         character(len=24), intent(in) :: sdstat

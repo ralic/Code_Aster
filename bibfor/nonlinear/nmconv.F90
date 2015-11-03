@@ -66,7 +66,7 @@ implicit none
     character(len=24) :: comref, mate
     character(len=8) :: noma
     character(len=24) :: numedd, modele
-    type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_Contact), intent(inout) :: ds_contact
     character(len=24) :: sderro, sdstat, sdtime
     type(NL_DS_InOut), intent(in) :: ds_inout
     type(NL_DS_Print), intent(inout) :: ds_print
@@ -82,7 +82,7 @@ implicit none
 !
 ! IN  NOMA   : NOM DU MAILLAGE
 ! IN  MODELE : NOM DU MODELE
-! In  ds_contact       : datastructure for contact management
+! IO  ds_contact       : datastructure for contact management
 ! IO  ds_conv          : datastructure for convergence management
 ! IN  SDTIME : SD TIMER
 ! In  ds_inout         : datastructure for input/output management

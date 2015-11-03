@@ -41,7 +41,7 @@ implicit none
     character(len=8), intent(in) :: model
     integer, intent(in) :: numins, iterat
     character(len=19), intent(in) :: sddisc, sddyna
-    type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_Contact), intent(inout) :: ds_contact
     character(len=24), intent(in) :: sdtime, sdstat, numedd
     type(NL_DS_Print), intent(inout) :: ds_print
     character(len=19), intent(in) :: valinc(*), solalg(*)
@@ -64,7 +64,7 @@ implicit none
 ! IN  SDDISC : SD DISCRETISATION
 ! IN  SDDYNA : SD DYNAMIQUE
 ! IO  ds_print         : datastructure for printing parameters
-! In  ds_contact       : datastructure for contact management
+! IO  ds_contact       : datastructure for contact management
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
 ! IN  SDTIME : SD TIMER

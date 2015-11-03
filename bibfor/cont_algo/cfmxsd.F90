@@ -11,7 +11,6 @@ implicit none
 #include "asterfort/cfdisl.h"
 #include "asterfort/cfmmap.h"
 #include "asterfort/cfmmma.h"
-#include "asterfort/cfmmvd.h"
 #include "asterfort/cfmxme.h"
 #include "asterfort/cfmxr0.h"
 #include "asterfort/infdbg.h"
@@ -62,7 +61,6 @@ implicit none
 !
     integer :: ifm, niv
     character(len=8) :: model, mesh
-    integer :: zbouc
     integer :: nb_cont_zone
     aster_logical :: l_cont_disc, l_cont_cont, l_cont_xfem, l_cont_allv
     character(len=14) :: nume_dof_frot
@@ -72,8 +70,6 @@ implicit none
     real(kind=8), pointer :: v_sdcont_maxdep(:) => null()
     character(len=24) :: sdcont_nosdco
     character(len=24), pointer :: v_sdcont_nosdco(:) => null()
-    character(len=24) :: sdcont_mboucl
-    integer, pointer :: v_sdcont_mboucl(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -105,12 +101,6 @@ implicit none
     if (l_cont_cont.or.l_cont_disc) then
         call cfmmap(mesh, ds_contact)
     endif
-!
-! - Create loop counters datastructure
-!
-    zbouc         = cfmmvd('ZBOUC')
-    sdcont_mboucl = ds_contact%sdcont_solv(1:14)//'.MBOUCL'
-    call wkvect(sdcont_mboucl, 'V V I', zbouc, vi = v_sdcont_mboucl)
 !
 ! - Create datastructure for datastructure names
 !

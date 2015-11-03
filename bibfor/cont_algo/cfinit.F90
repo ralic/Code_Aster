@@ -30,7 +30,7 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_Contact), intent(inout) :: ds_contact
     integer, intent(in) :: nume_inst
 !
 ! --------------------------------------------------------------------------------------------------
@@ -41,7 +41,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  ds_contact       : datastructure for contact management
+! IO  ds_contact       : datastructure for contact management
 ! In  nume_inst        : index of current step time
 !
 ! --------------------------------------------------------------------------------------------------
@@ -76,11 +76,11 @@ implicit none
 !
 ! - Geometric loop counter initialization
 !
-    call mmbouc(ds_contact, 'GEOM', 'INIT')
+    call mmbouc(ds_contact, 'Geom', 'INIT')
 !
 ! - First geometric loop counter
 !    
-    call mmbouc(ds_contact, 'GEOM', 'INCR')
+    call mmbouc(ds_contact, 'Geom', 'INCR')
 !
 ! - Vector initialization for REAC_GEOM
 !

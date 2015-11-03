@@ -38,7 +38,7 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
-    type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_Contact), intent(inout) :: ds_contact
     character(len=19), intent(in) :: hat_valinc(*)
     character(len=24), intent(in) :: sdtime
     character(len=24), intent(in) :: sdstat
@@ -56,7 +56,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  mesh             : name of mesh
-! In  ds_contact       : datastructure for contact management
+! IO  ds_contact       : datastructure for contact management
 ! In  hat_valinc       : hat variable for algorithm fields
 ! In  nume_dof         : name of numbering object (NUME_DDL)
 ! In  sdtime           : datastructure for timers
@@ -92,11 +92,11 @@ implicit none
 !
 ! - Geometric loop counter initialization
 !
-    call mmbouc(ds_contact, 'GEOM', 'INIT')
+    call mmbouc(ds_contact, 'Geom', 'INIT')
 !
 ! - First geometric loop counter
 !
-    call mmbouc(ds_contact, 'GEOM', 'INCR')
+    call mmbouc(ds_contact, 'Geom', 'INCR')
 !
 ! - Get field names in hat-variables
 !

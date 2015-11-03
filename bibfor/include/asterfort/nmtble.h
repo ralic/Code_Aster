@@ -25,7 +25,7 @@ interface
         character(len=24), intent(in) :: model
         character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: mate
-        type(NL_DS_Contact), intent(in) :: ds_contact
+        type(NL_DS_Contact), intent(inout) :: ds_contact
         integer, intent(in) :: list_func_acti(*)
         type(NL_DS_Print), intent(inout) :: ds_print
         character(len=24), intent(in) :: sdstat
