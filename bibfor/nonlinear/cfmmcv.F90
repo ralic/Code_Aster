@@ -1,7 +1,6 @@
 subroutine cfmmcv(mesh    , modele, numedd    , fonact, sddyna,&
                   ds_print, sdstat, sddisc    , sdtime, sderro,&
-                  numins  , iterat, ds_contact, valinc, solalg,&
-                  instan)
+                  numins  , iterat, ds_contact, valinc, solalg)
 !
 use NonLin_Datastructure_type
 !
@@ -16,6 +15,7 @@ implicit none
 #include "asterfort/mm_cycl_print.h"
 #include "asterfort/mmbclc.h"
 #include "asterfort/nmcrel.h"
+#include "asterfort/nmimci.h"
 #include "asterfort/nmimck.h"
 #include "asterfort/nmimcr.h"
 !
@@ -45,7 +45,6 @@ implicit none
     type(NL_DS_Contact), intent(inout) :: ds_contact
     character(len=24) :: sderro, sdstat, sdtime
     character(len=19) :: solalg(*), valinc(*)
-    real(kind=8) :: instan
     type(NL_DS_Print), intent(inout) :: ds_print
 !
 ! --------------------------------------------------------------------------------------------------
@@ -74,23 +73,22 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: lctcd=.false._1, lctcc=.false._1, lnewtc=.false._1
-    aster_logical :: mmcvca=.false._1
-    character(len=8) :: nomo=' '
+    aster_logical :: l_cont_disc=.false._1, l_cont_cont=.false._1, l_newt_cont=.false._1
+    aster_logical :: loop_cont_conv=.false._1
+    character(len=8) :: model=' '
     real(kind=8) :: r8bid=0.d0
-    integer :: ntpc=0
+    integer :: ntpc=0 , loop_cont_node
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    mmcvca = .false.
-    nomo = modele(1:8)
+    model = modele(1:8)
     ntpc = cfdisi(ds_contact%sdcont_defi,'NTPC' )
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
-    lctcd = isfonc(fonact,'CONT_DISCRET')
-    lctcc = isfonc(fonact,'CONT_CONTINU')
-    lnewtc = isfonc(fonact,'CONT_NEWTON')
+    l_cont_disc = isfonc(fonact,'CONT_DISCRET')
+    l_cont_cont = isfonc(fonact,'CONT_CONTINU')
+    l_newt_cont = isfonc(fonact,'CONT_NEWTON')
 !
 ! - Values in convergence table: not affected
 !
@@ -99,27 +97,28 @@ implicit none
 !
 ! --- CONVERGENCE ADAPTEE AU CONTACT DISCRET
 !
-    if (lctcd) then
+    if (l_cont_disc) then
         call cfconv(mesh  , sdstat, ds_print, sderro, ds_contact,&
                     solalg)
     endif
 !
 ! --- CONVERGENCE ADAPTEE AU CONTACT CONTINU
 !
-    if (lnewtc) then
-        call mmbclc(mesh  , nomo  , numedd  , iterat    , numins,&
-                    sddisc, sddyna, ds_print, ds_contact, valinc,&
-                    solalg, sdtime, sdstat  , mmcvca    , instan)
-        if (mmcvca) then
+    if (l_newt_cont) then
+        call mmbclc(mesh  , model     , numedd        , iterat        , numins,&
+                    sddisc, sddyna    , sdtime        , sdstat        , valinc,&
+                    solalg, ds_contact, loop_cont_conv, loop_cont_node)
+        if (loop_cont_conv) then
             call nmcrel(sderro, 'DIVE_CTCC', .false._1)
         else
             call nmcrel(sderro, 'DIVE_CTCC', .true._1)
         endif
+        call nmimci(ds_print, 'CONT_NEWT', loop_cont_node, .true._1)
     endif
 !
 ! - Cycling informations printing in convergence table
 !
-    if (lctcc) then
+    if (l_cont_cont) then
         call mm_cycl_print(ds_print, sdstat)
     endif
 !

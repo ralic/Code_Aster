@@ -18,20 +18,22 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmctcc(mesh  , modele    , mate  , sddyna, sderro,&
-                      sdstat, ds_contact, valinc, solalg, mmcvca,&
-                      instan)
+    subroutine nmctcc(mesh      , model_        , mate          , nume_inst, sddyna   ,&
+                      sderro    , sdstat        , sddisc        , hval_incr, hval_algo,&
+                      ds_contact, loop_cont_conv, loop_cont_node)
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
-        character(len=24), intent(in) :: modele
+        character(len=24), intent(in) :: model_
         character(len=24), intent(in) :: mate
-        type(NL_DS_Contact), intent(inout) :: ds_contact
+        integer, intent(in) :: nume_inst
         character(len=19), intent(in) :: sddyna
         character(len=24), intent(in) :: sderro
         character(len=24), intent(in) :: sdstat
-        character(len=19), intent(in) :: valinc(*)
-        character(len=19), intent(in) :: solalg(*)
-        real(kind=8), intent(in) :: instan
-        aster_logical, intent(out) :: mmcvca
+        character(len=19), intent(in) :: sddisc
+        character(len=19), intent(in) :: hval_incr(*)
+        character(len=19), intent(in) :: hval_algo(*)
+        type(NL_DS_Contact), intent(inout) :: ds_contact
+        aster_logical, intent(out) :: loop_cont_conv
+        integer, intent(out) :: loop_cont_node
     end subroutine nmctcc
 end interface

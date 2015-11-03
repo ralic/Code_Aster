@@ -18,23 +18,20 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine mmbclc(mesh     , model     , nume_dof      , iter_newt     , nume_inst,&
-                      sddisc   , sddyna    , sdtime        , sdstat        , hval_incr,&
-                      hval_algo, ds_contact, loop_cont_conv, loop_cont_node)
+    subroutine mmstat(mesh          , iter_newt, nume_inst, sddyna    , sdstat        ,&
+                      sddisc        , hval_incr, hval_algo, ds_contact, loop_cont_node,&
+                      loop_cont_conv)
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
-        character(len=8), intent(in) :: model
-        character(len=24), intent(in) :: nume_dof
         integer, intent(in) :: iter_newt
         integer, intent(in) :: nume_inst
-        character(len=19), intent(in) :: sddisc
         character(len=19), intent(in) :: sddyna
-        character(len=24), intent(in) :: sdtime
         character(len=24), intent(in) :: sdstat
+        character(len=19), intent(in) :: sddisc
         character(len=19), intent(in) :: hval_incr(*)
         character(len=19), intent(in) :: hval_algo(*)
         type(NL_DS_Contact), intent(inout) :: ds_contact
         aster_logical, intent(out) :: loop_cont_conv
         integer, intent(out) :: loop_cont_node
-    end subroutine mmbclc
+    end subroutine mmstat
 end interface

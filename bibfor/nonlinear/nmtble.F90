@@ -8,7 +8,6 @@ use NonLin_Datastructure_type
 implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/diinst.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/mmbouc.h"
 #include "asterfort/mm_cycl_erase.h"
@@ -91,9 +90,8 @@ implicit none
 !
     aster_logical :: loop_cont_conv, loop_frot_conv, loop_geom_conv
     aster_logical :: l_loop_frot, l_loop_geom, l_loop_cont
-    integer :: i_loop_geom, i_loop_frot, i_loop_cont
+    integer :: i_loop_geom, i_loop_frot, i_loop_cont,loop_cont_node
     character(len=4) :: state_newt
-    real(kind=8) :: time_curr
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -119,10 +117,10 @@ implicit none
 !
 ! - Initializations
 !
+    loop_cont_node = 0
     loop_cont_conv = .false.
     loop_frot_conv = .false.
     loop_geom_conv = .false.
-    time_curr      = diinst(sddisc,nume_inst)
 !
 ! - <1> - Contact loop
 !
@@ -131,9 +129,9 @@ implicit none
             cont_loop = 1
             call nmtime(sdtime, 'INI', 'CTCC_CONT')
             call nmtime(sdtime, 'RUN', 'CTCC_CONT')
-            call nmctcc(mesh     , model     , mate     , sddyna   , sderro        ,&
-                        sdstat   , ds_contact, hval_incr, hval_algo, loop_cont_conv,&
-                        time_curr)
+            call nmctcc(mesh      , model         , mate          , nume_inst, sddyna   ,&
+                        sderro    , sdstat        , sddisc        , hval_incr, hval_algo,&
+                        ds_contact, loop_cont_conv, loop_cont_node)
             call nmtime(sdtime, 'END', 'CTCC_CONT')
             call nmrinc(sdstat, 'CTCC_CONT')
             if (.not.loop_cont_conv) then
@@ -206,8 +204,9 @@ implicit none
     call mmbouc(ds_contact, 'Fric', 'READ', i_loop_frot)
     call mmbouc(ds_contact, 'Geom', 'READ', i_loop_geom)
 !
-! - Set values of loops index in convergence table
+! - Print management
 !
+    call nmimci(ds_print, 'CONT_NEWT', loop_cont_node, .true._1)
     call nmimci(ds_print, 'BOUC_CONT', i_loop_cont, .true._1)
     call nmimci(ds_print, 'BOUC_FROT', i_loop_frot, .true._1)
     call nmimci(ds_print, 'BOUC_GEOM', i_loop_geom, .true._1)

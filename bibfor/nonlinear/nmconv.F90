@@ -58,7 +58,7 @@ implicit none
     integer :: fonact(*)
     integer :: iterat, numins
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-    real(kind=8) :: eta, instan
+    real(kind=8) :: eta
     character(len=19) :: sdcrit, sddisc, sddyna, sdnume
     character(len=19) :: matass, solveu
     character(len=19) :: measse(*), veasse(*)
@@ -146,7 +146,6 @@ implicit none
 !
 ! --- INSTANTS
 !
-    instan = diinst(sddisc,numins)
     instam = diinst(sddisc,numins-1)
     instap = diinst(sddisc,numins )
 !
@@ -203,8 +202,7 @@ implicit none
     if (lcont) then
         call cfmmcv(noma    , modele, numedd    , fonact, sddyna,&
                     ds_print, sdstat, sddisc    , sdtime, sderro,&
-                    numins  , iterat, ds_contact, valinc, solalg,&
-                    instan)
+                    numins  , iterat, ds_contact, valinc, solalg)
     endif
 !
 ! - Set value of informations in convergence table (residuals are in nmimre)

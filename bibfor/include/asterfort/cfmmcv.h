@@ -18,8 +18,7 @@
 interface
     subroutine cfmmcv(mesh    , modele, numedd    , fonact, sddyna,&
                       ds_print, sdstat, sddisc    , sdtime, sderro,&
-                      numins  , iterat, ds_contact, valinc, solalg,&
-                      instan)
+                      numins  , iterat, ds_contact, valinc, solalg)
         use NonLin_Datastructure_type
         character(len=8) :: mesh
         character(len=24) :: modele
@@ -36,6 +35,5 @@ interface
         type(NL_DS_Contact), intent(inout) :: ds_contact
         character(len=19) :: valinc(*)
         character(len=19) :: solalg(*)
-        real(kind=8) :: instan
     end subroutine cfmmcv
 end interface

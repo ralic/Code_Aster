@@ -1,5 +1,6 @@
-subroutine mmmbca(mesh     , sddyna   , iter_newt, ds_contact    , sdstat        ,&
-                  hval_incr, hval_algo, time_curr, loop_cont_node, loop_cont_conv)
+subroutine mmmbca(mesh          , iter_newt, nume_inst, sddyna    , sdstat        ,&
+                  sddisc        , hval_incr, hval_algo, ds_contact, loop_cont_node,&
+                  loop_cont_conv)
 !
 use NonLin_Datastructure_type
 !
@@ -13,6 +14,7 @@ implicit none
 #include "asterfort/cfmmvd.h"
 #include "asterfort/cfnumm.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/diinst.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -57,13 +59,14 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
-    character(len=19), intent(in) :: sddyna
     integer, intent(in) :: iter_newt
-    type(NL_DS_Contact), intent(inout) :: ds_contact
+    integer, intent(in) :: nume_inst
+    character(len=19), intent(in) :: sddyna
     character(len=24), intent(in) :: sdstat
+    character(len=19), intent(in) :: sddisc
     character(len=19), intent(in) :: hval_incr(*)
     character(len=19), intent(in) :: hval_algo(*)
-    real(kind=8), intent(in) :: time_curr
+    type(NL_DS_Contact), intent(inout) :: ds_contact
     aster_logical, intent(out) :: loop_cont_conv
     integer, intent(out) :: loop_cont_node
 !
@@ -76,13 +79,14 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  mesh             : name of mesh
-! In  sddyna           : dynamic parameters datastructure
 ! In  iter_newt        : index of current Newton iteration
-! IO  ds_contact       : datastructure for contact management
+! In  nume_inst        : index of current time step
+! In  sddyna           : dynamic parameters datastructure
 ! In  sdstat           : datastructure for statistics
+! In  sddisc           : datastructure for time discretization
 ! In  hval_incr        : hat-variable for incremental values fields
 ! In  hval_algo        : hat-variable for algorithms fields
-! In  time_curr        : current time
+! IO  ds_contact       : datastructure for contact management
 ! Out loop_cont_conv   : .true. if contact loop converged
 ! Out loop_cont_node   : number of contact state changing
 !
@@ -101,7 +105,7 @@ implicit none
     real(kind=8) :: norm(3), tau1(3), tau2(3)
     real(kind=8) :: lagr_cont_node(9), lagr_fro1_node(9), lagr_fro2_node(9)
     real(kind=8) :: elem_slav_coor(27)
-    real(kind=8) :: lagr_cont_poin
+    real(kind=8) :: lagr_cont_poin, time_curr
     real(kind=8) :: gap, gap_speed, gap_user
     real(kind=8) :: pres_frot(3), gap_user_frot(3)
     real(kind=8) :: coef_cont, coef_frot
@@ -167,6 +171,10 @@ implicit none
     call nmchex(hval_incr, 'VALINC', 'DEPPLU', depplu)
     call nmchex(hval_incr, 'VALINC', 'VITPLU', vitplu)
     call nmchex(hval_algo, 'SOLALG', 'DEPDEL', depdel)
+!
+! - Get current time
+!
+    time_curr = diinst(sddisc, nume_inst)
 !
 ! - Get off indicator for speed schemes
 !

@@ -1,6 +1,6 @@
-subroutine nmctcc(mesh  , modele    , mate  , sddyna, sderro,&
-                  sdstat, ds_contact, valinc, solalg, mmcvca,&
-                  instan)
+subroutine nmctcc(mesh      , model_        , mate          , nume_inst, sddyna   ,&
+                  sderro    , sdstat        , sddisc        , hval_incr, hval_algo,&
+                  ds_contact, loop_cont_conv, loop_cont_node)
 !
 use NonLin_Datastructure_type
 !
@@ -13,7 +13,7 @@ implicit none
 #include "asterfort/infdbg.h"
 #include "asterfort/mmbouc.h"
 #include "asterfort/mm_cycl_flip.h"
-#include "asterfort/mmmbca.h"
+#include "asterfort/mmstat.h"
 #include "asterfort/nmcrel.h"
 #include "asterfort/nmimck.h"
 #include "asterfort/utmess.h"
@@ -39,115 +39,130 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
-    character(len=24), intent(in) :: modele
+    character(len=24), intent(in) :: model_
     character(len=24), intent(in) :: mate
-    type(NL_DS_Contact), intent(inout) :: ds_contact
+    integer, intent(in) :: nume_inst
     character(len=19), intent(in) :: sddyna
     character(len=24), intent(in) :: sderro
     character(len=24), intent(in) :: sdstat
-    character(len=19), intent(in) :: valinc(*)
-    character(len=19), intent(in) :: solalg(*)
-    real(kind=8), intent(in) :: instan
-    aster_logical, intent(out) :: mmcvca
+    character(len=19), intent(in) :: sddisc
+    character(len=19), intent(in) :: hval_incr(*)
+    character(len=19), intent(in) :: hval_algo(*)
+    type(NL_DS_Contact), intent(inout) :: ds_contact
+    aster_logical, intent(out) :: loop_cont_conv
+    integer, intent(out) :: loop_cont_node
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (ALGO - BOUCLE CONTACT)
+! Contact - Solve
 !
-! ALGO. DES CONTRAINTES ACTIVES
+! Continue methods - Evaluate convergence for contact loop
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  MODELE : NOM DU MODELE
-! IN  MATE   : SD MATERIAU
-! IN  SDDYNA : SD POUR DYNAMIQUE
-! IN  SDERRO : GESTION DES ERREURS
+! In  mesh             : name of mesh
+! In  model            : name of model
+! In  mate             : name of material characteristics (field)
+! In  nume_inst        : index of current time step
+! In  sddyna           : dynamic parameters datastructure
+! In  sderro           : datastructure for errors during algorithm
+! In  sdstat           : datastructure for statistics
+! In  sddisc           : datastructure for time discretization
+! In  hval_incr        : hat-variable for incremental values fields
+! In  hval_algo        : hat-variable for algorithms fields
 ! IO  ds_contact       : datastructure for contact management
-! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
-! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
-! OUT MMCVCA : INDICATEUR DE CONVERGENCE POUR BOUCLE DES
-!              CONTRAINTES ACTIVES
-!               .TRUE. SI LA BOUCLE DES CONTRAINTES ACTIVES A CONVERGE
+! Out loop_cont_conv   : .true. if contact loop converged
+! Out loop_cont_node   : number of contact state changing
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    aster_logical :: ltfcm, lctcc, lxfcm, lfrot, lerroc
-    integer :: ntpc, itemul, maxcon, ctcsta
-    integer :: mmitca
-    character(len=8) :: nomo
-    integer :: iterat
+    aster_logical :: l_cont_xfem_gg, l_cont_cont, l_cont_xfem, l_frot, l_erro_cont
+    integer :: nb_cont_poin, iter_cont_mult, iter_cont_maxi
+    integer :: loop_cont_count
+    character(len=8) :: model
+    integer :: iter_newt
     aster_logical :: cycl_flip
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> ALGORITHME DES CONTRAINTES ACTIVES'
     endif
 !
-! --- INITIALISATIONS
+! - Initializations
 !
-    nomo = modele(1:8)
-    ntpc = cfdisi(ds_contact%sdcont_defi,'NTPC')
-    mmcvca = .false.
-    lerroc = .false.
-    iterat = -1
+    model          = model_(1:8)
+    loop_cont_conv = .false.
+    loop_cont_node = 0
+    l_erro_cont    = .false.
+    iter_newt      = -1
 !
-! --- INFOS BOUCLE CONTACT
+! - State of contact loop
 !
-    call mmbouc(ds_contact, 'Cont', 'READ', mmitca)
-    itemul = cfdisi(ds_contact%sdcont_defi,'ITER_CONT_MULT')
-    if (itemul .eq. -1) then
-        maxcon = cfdisi(ds_contact%sdcont_defi,'ITER_CONT_MAXI')
+    call mmbouc(ds_contact, 'Cont', 'READ', loop_cont_count)
+!
+! - Get contact parameters
+!
+    l_cont_cont    = cfdisl(ds_contact%sdcont_defi, 'FORMUL_CONTINUE')
+    l_cont_xfem    = cfdisl(ds_contact%sdcont_defi, 'FORMUL_XFEM')
+    l_frot         = cfdisl(ds_contact%sdcont_defi, 'FROTTEMENT')
+    l_cont_xfem_gg = cfdisl(ds_contact%sdcont_defi, 'CONT_XFEM_GG')
+    nb_cont_poin   = cfdisi(ds_contact%sdcont_defi, 'NTPC')
+    iter_cont_mult = cfdisi(ds_contact%sdcont_defi, 'ITER_CONT_MULT')
+!
+! - Compute convergence criterion
+! 
+    if (iter_cont_mult .eq. -1) then
+        iter_cont_maxi = cfdisi(ds_contact%sdcont_defi, 'ITER_CONT_MAXI')
     else
-        maxcon = itemul*ntpc
+        iter_cont_maxi = iter_cont_mult*nb_cont_poin
     endif
 !
-! --- TYPE DE CONTACT
+! - Management of contact loop
 !
-    lctcc = cfdisl(ds_contact%sdcont_defi,'FORMUL_CONTINUE')
-    lxfcm = cfdisl(ds_contact%sdcont_defi,'FORMUL_XFEM')
-    lfrot = cfdisl(ds_contact%sdcont_defi,'FROTTEMENT')
-    ltfcm = cfdisl(ds_contact%sdcont_defi,'CONT_XFEM_GG')
-!
-! --- APPEL ALGO DES CONT. ACTIVES
-!
-    if (lxfcm) then
-        if (ltfcm) then
-            call xmtbca(mesh, ds_contact, valinc, mmcvca)
+    if (l_cont_xfem) then
+        if (l_cont_xfem_gg) then
+            call xmtbca(mesh, ds_contact, hval_incr, loop_cont_conv)
         else
-            call xmmbca(mesh, nomo, mate, ds_contact, valinc,&
-                        mmcvca)
+            call xmmbca(mesh          , model, mate, ds_contact, hval_incr,&
+                        loop_cont_conv)
         endif
-    else if (lctcc) then
-        call mmmbca(mesh  , sddyna, iterat, ds_contact, sdstat,&
-                    valinc, solalg, instan, ctcsta    , mmcvca)
-        call mm_cycl_flip(ds_contact, cycl_flip)
-! ----- FLIP-FLOP: ON FORCE LA CONVERGENCE
-        if (cycl_flip) mmcvca = .true.
+    else if (l_cont_cont) then
+        call mmstat(mesh          , iter_newt, nume_inst, sddyna    , sdstat        ,&
+                    sddisc        , hval_incr, hval_algo, ds_contact, loop_cont_node,&
+                    loop_cont_conv)
     else
         ASSERT(.false.)
     endif
 !
-! --- CONVERGENCE CONTRAINTES ACTIVES
+! - Flip-flop: forced convergence
 !
-    if ((.not.mmcvca) .and. (mmitca.eq.maxcon)) then
-        if (lfrot .and. lxfcm) then
-! ------- CONVERGENCE FORCEE
-            call utmess('A', 'CONTACT3_86')
-            mmcvca = .true.
-        else
-            lerroc = .true.
-            mmcvca = .false.
+    if (l_cont_cont) then
+        call mm_cycl_flip(ds_contact, cycl_flip)
+        if (cycl_flip) then
+            loop_cont_conv = .true.
         endif
     endif
 !
-! --- CONVERGENCE ET ERREUR
+! - Convergence of contact loop
 !
-    call nmcrel(sderro, 'ERRE_CTCC', lerroc)
-    if (mmcvca) then
+    if ((.not.loop_cont_conv) .and. (loop_cont_count .eq. iter_cont_maxi)) then
+        if (l_frot .and. l_cont_xfem) then
+! --------- XFEM+friction: forced convergence
+            call utmess('A', 'CONTACT3_86')
+            loop_cont_conv = .true.
+        else
+            l_erro_cont    = .true.
+            loop_cont_conv = .false.
+        endif
+    endif
+!
+! - Error management
+!
+    call nmcrel(sderro, 'ERRE_CTCC', l_erro_cont)
+    if (loop_cont_conv) then
         call nmcrel(sderro, 'DIVE_FIXC', .false._1)
     else
         call nmcrel(sderro, 'DIVE_FIXC', .true._1)
