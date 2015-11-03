@@ -31,74 +31,76 @@ from cataelem.Options.options import OP
 
 
 DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO', diff=True,
-    components=(
-    ('EN1',('DX','DY','PRE1',)),
-    ('EN2',('PRE1',)),))
+                             components=(
+                             ('EN1', ('DX', 'DY', 'PRE1',)),
+                             ('EN2', ('PRE1',)),))
 
 
-EFLUXE   = LocatedComponents(phys=PHY.FTHM_R, type='ELGA', location='RIGI',
-    components=('PFLU1',))
+EFLUXE = LocatedComponents(phys=PHY.FTHM_R, type='ELGA', location='RIGI',
+                           components=('PFLU1',))
 
 
-EGEOMER  = LocatedComponents(phys=PHY.GEOM_R, type='ELGA', location='RIGI',
-    components=('X','Y',))
+EGEOMER = LocatedComponents(phys=PHY.GEOM_R, type='ELGA', location='RIGI',
+                            components=('X', 'Y',))
 
 
-NGEOMER  = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
-    components=('X','Y',))
+NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
+                            components=('X', 'Y',))
 
 
-CTEMPSR  = LocatedComponents(phys=PHY.INST_R, type='ELEM',
-    components=('INST','DELTAT','THETA',))
+CTEMPSR = LocatedComponents(phys=PHY.INST_R, type='ELEM',
+                            components=('INST', 'DELTAT', 'THETA',))
 
 
-CPRESSF  = LocatedComponents(phys=PHY.PRES_F, type='ELEM',
-    components=('PRES','CISA',))
+CPRESSF = LocatedComponents(phys=PHY.PRES_F, type='ELEM',
+                            components=('PRES', 'CISA',))
 
 
-EPRESNO  = LocatedComponents(phys=PHY.PRES_R, type='ELNO',
-    components=('PRES','CISA',))
+EPRESNO = LocatedComponents(phys=PHY.PRES_R, type='ELNO',
+                            components=('PRES', 'CISA',))
 
 
-MVECTUR  = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=(DDL_MECA,))
+MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=(DDL_MECA,))
 
 
 #------------------------------------------------------------
 class HM_J_AXSE3(Element):
+
     """Please document this element"""
     meshType = MT.SEG3
     nodes = (
-            SetOfNodes('EN2', (3,)),
-            SetOfNodes('EN1', (1,2,)),
-        )
-    elrefe =(
-            ElrefeLoc(MT.SE3, gauss = ('RIGI=FPG1',),),
-            ElrefeLoc(MT.SE2, gauss = ('RIGI=FPG1',),),
-        )
+        SetOfNodes('EN2', (3,)),
+        SetOfNodes('EN1', (1, 2,)),
+    )
+    elrefe = (
+        ElrefeLoc(MT.SE3, gauss=('RIGI=FPG1',),),
+        ElrefeLoc(MT.SE2, gauss=('RIGI=FPG1',),),
+    )
     calculs = (
 
         OP.CHAR_MECA_FLUX_R(te=314,
-            para_in=((SP.PFLUXR, EFLUXE), (SP.PGEOMER, NGEOMER),
-                     (SP.PTEMPSR, CTEMPSR), ),
-            para_out=((SP.PVECTUR, MVECTUR), ),
-        ),
+                            para_in=(
+                                (SP.PFLUXR, EFLUXE), (SP.PGEOMER, NGEOMER),
+                            (SP.PTEMPSR, CTEMPSR), ),
+                            para_out=((SP.PVECTUR, MVECTUR), ),
+                            ),
 
         OP.CHAR_MECA_PRES_F(te=580,
-            para_in=((SP.PPRESSF, CPRESSF), ),
-            para_out=((SP.PVECTUR, MVECTUR), ),
-        ),
+                            para_in=((SP.PPRESSF, CPRESSF), ),
+                            para_out=((SP.PVECTUR, MVECTUR), ),
+                            ),
 
         OP.CHAR_MECA_PRES_R(te=580,
-            para_in=((SP.PPRESSR, EPRESNO), ),
-            para_out=((SP.PVECTUR, MVECTUR), ),
-        ),
+                            para_in=((SP.PPRESSR, EPRESNO), ),
+                            para_out=((SP.PVECTUR, MVECTUR), ),
+                            ),
 
         OP.TOU_INI_ELGA(te=99,
-            para_out=((OP.TOU_INI_ELGA.PGEOM_R, EGEOMER), ),
-        ),
+                        para_out=((OP.TOU_INI_ELGA.PGEOM_R, EGEOMER), ),
+                        ),
 
         OP.TOU_INI_ELNO(te=99,
-            para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), ),
-        ),
+                        para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), ),
+                        ),
 
     )

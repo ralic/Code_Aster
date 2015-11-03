@@ -24,8 +24,6 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-
-
 CHAR_MECA_EFSU_R = Option(
     para_in=(
         SP.PDEPLMR,
@@ -38,7 +36,7 @@ CHAR_MECA_EFSU_R = Option(
         SP.PVECTUR,
     ),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'-1'),)),
+        CondCalcul('+', ((AT.PHENO, 'ME'), (AT.BORD, '-1'),)),
     ),
     comment=""" SECOND MEMBRE POUR UN EFFE_FOND SUIVEUR CONSTANT """,
 )

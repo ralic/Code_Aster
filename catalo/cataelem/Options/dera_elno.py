@@ -24,22 +24,20 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-
-
-PDERAPG  = InputParameter(phys=PHY.DERA_R, container='RESU!DERA_ELGA!N',
-comment="""  PVDERAPG : INDICATEUR LOCAL DE DECHARGE ET
+PDERAPG = InputParameter(phys=PHY.DERA_R, container='RESU!DERA_ELGA!N',
+                         comment="""  PVDERAPG : INDICATEUR LOCAL DE DECHARGE ET
            DE PERTE DE RADIALITE  """)
 
 
 DERA_ELNO = Option(
     para_in=(
-           PDERAPG,
+        PDERAPG,
     ),
     para_out=(
         SP.PDERANO,
     ),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
+        CondCalcul('+', ((AT.PHENO, 'ME'), (AT.BORD, '0'),)),
     ),
     comment="""  DERA_ELNO :
            INDICATEUR LOCAL DE DECHARGE ET

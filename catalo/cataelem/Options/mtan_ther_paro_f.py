@@ -24,9 +24,7 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-
-
-PMATTTR  = OutputParameter(phys=PHY.MTEM_R, type='RESL')
+PMATTTR = OutputParameter(phys=PHY.MTEM_R, type='RESL')
 
 
 MTAN_THER_PARO_F = Option(
@@ -36,11 +34,14 @@ MTAN_THER_PARO_F = Option(
         SP.PTEMPSR,
     ),
     para_out=(
-           PMATTTR,
+        PMATTTR,
     ),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'TH'),(AT.BORD,'0'),(AT.MODELI,'CL1'),)),
-      CondCalcul('+', ((AT.PHENO,'TH'),(AT.BORD,'0'),(AT.MODELI,'CL2'),)),
-      CondCalcul('+', ((AT.PHENO,'TH'),(AT.BORD,'0'),(AT.LXFEM,'OUI'),)),
+        CondCalcul(
+            '+', ((AT.PHENO, 'TH'), (AT.BORD, '0'), (AT.MODELI, 'CL1'),)),
+        CondCalcul(
+            '+', ((AT.PHENO, 'TH'), (AT.BORD, '0'), (AT.MODELI, 'CL2'),)),
+        CondCalcul(
+            '+', ((AT.PHENO, 'TH'), (AT.BORD, '0'), (AT.LXFEM, 'OUI'),)),
     ),
 )

@@ -24,8 +24,6 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-
-
 CHAR_MECA_ONDE = Option(
     para_in=(
         SP.PGEOMER,
@@ -36,9 +34,12 @@ CHAR_MECA_ONDE = Option(
         SP.PVECTUR,
     ),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.MODELI,'3FL'),(AT.BORD,'-1'),)),
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.MODELI,'2FL'),(AT.BORD,'-1'),)),
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.MODELI,'AXF'),(AT.BORD,'-1'),)),
+        CondCalcul(
+            '+', ((AT.PHENO, 'ME'), (AT.MODELI, '3FL'), (AT.BORD, '-1'),)),
+        CondCalcul(
+            '+', ((AT.PHENO, 'ME'), (AT.MODELI, '2FL'), (AT.BORD, '-1'),)),
+        CondCalcul(
+            '+', ((AT.PHENO, 'ME'), (AT.MODELI, 'AXF'), (AT.BORD, '-1'),)),
     ),
     comment=""" CHAR_MECA_ONDE (MOT-CLE: ONDE_FLUI) : CALCUL DU SECOND MEMBRE
            CORRESPONDANT A UNE PRESSION D'ONDE INCIDENTE SINUSOIDALE ARRIVANT

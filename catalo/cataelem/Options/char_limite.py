@@ -24,9 +24,7 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-
-
-PVARCPR  = InputParameter(phys=PHY.VARI_R)
+PVARCPR = InputParameter(phys=PHY.VARI_R)
 
 
 CHAR_LIMITE = Option(
@@ -35,13 +33,13 @@ CHAR_LIMITE = Option(
         SP.PGEOMER,
         SP.PMATERC,
         SP.PTEMPSR,
-           PVARCPR,
+        PVARCPR,
     ),
     para_out=(
         SP.PECHLI,
     ),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.DISCRET,'OUI'),)),
+        CondCalcul('+', ((AT.PHENO, 'ME'), (AT.BORD, '0'),)),
+        CondCalcul('-', ((AT.PHENO, 'ME'), (AT.DISCRET, 'OUI'),)),
     ),
 )

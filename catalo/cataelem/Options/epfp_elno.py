@@ -24,21 +24,19 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-
-
-PDEFOPG  = InputParameter(phys=PHY.EPSI_R, container='RESU!EPFP_ELGA!N',
-comment="""  PDEFOPG : DEFORMATIONS DE FLUAGE PROPRE AUX POINTS DE GAUSS """)
+PDEFOPG = InputParameter(phys=PHY.EPSI_R, container='RESU!EPFP_ELGA!N',
+                         comment="""  PDEFOPG : DEFORMATIONS DE FLUAGE PROPRE AUX POINTS DE GAUSS """)
 
 
 EPFP_ELNO = Option(
     para_in=(
-           PDEFOPG,
+        PDEFOPG,
     ),
     para_out=(
         SP.PDEFONO,
     ),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
+        CondCalcul('+', ((AT.PHENO, 'ME'), (AT.BORD, '0'),)),
     ),
     comment="""  EPFP_ELNO : DEFORMATIONS DE FLUAGE PROPRE PAR ELEMENTS AUX NOEUDS
            DISPONIBLE POUR LES LOIS BETON_UMLV_FP ET GRANGER """,

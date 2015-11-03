@@ -24,35 +24,33 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PVARCPR = InputParameter(phys=PHY.VARI_R,
+                         comment="""  PVARCMR : VARIABLES DE COMMANDE  A L INSTANT - """)
 
 
-PVARCPR  = InputParameter(phys=PHY.VARI_R,
-comment="""  PVARCMR : VARIABLES DE COMMANDE  A L INSTANT - """)
+PCONTMR = InputParameter(phys=PHY.SIEF_R)
 
 
-PCONTMR  = InputParameter(phys=PHY.SIEF_R)
+PCOMPOR = InputParameter(phys=PHY.COMPOR)
 
 
-PCOMPOR  = InputParameter(phys=PHY.COMPOR)
-
-
-PVARIPR  = InputParameter(phys=PHY.VARI_R)
+PVARIPR = InputParameter(phys=PHY.VARI_R)
 
 
 CHAR_MECA_META_Z = Option(
     para_in=(
-           PCOMPOR,
-           PCONTMR,
+        PCOMPOR,
+        PCONTMR,
         SP.PGEOMER,
         SP.PMATERC,
         SP.PVARCMR,
-           PVARCPR,
-           PVARIPR,
+        PVARCPR,
+        PVARIPR,
     ),
     para_out=(
         SP.PVECTUR,
     ),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
+        CondCalcul('+', ((AT.PHENO, 'ME'), (AT.BORD, '0'),)),
     ),
 )

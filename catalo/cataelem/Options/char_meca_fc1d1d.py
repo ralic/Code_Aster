@@ -24,16 +24,14 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-
-
-PCAORIE  = InputParameter(phys=PHY.CAORIE,
-comment=""" Champ de caracteristiques d'orientation. Concept CARA_ELEM """)
+PCAORIE = InputParameter(phys=PHY.CAORIE,
+                         comment=""" Champ de caracteristiques d'orientation. Concept CARA_ELEM """)
 
 
 CHAR_MECA_FC1D1D = Option(
     para_in=(
         SP.PCAGNPO,
-           PCAORIE,
+        PCAORIE,
         SP.PFC1D1D,
         SP.PGEOMER,
     ),
@@ -41,7 +39,7 @@ CHAR_MECA_FC1D1D = Option(
         SP.PVECTUC,
     ),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.DIM_TOPO_MODELI,'1'),)),
+        CondCalcul('+', ((AT.PHENO, 'ME'), (AT.DIM_TOPO_MODELI, '1'),)),
     ),
     comment=""" CHAR_MECA_FC1D1D: (MOT-CLE : FORCE_POUTRE): CALCUL DU SECOND
            MEMBRE ELEMENTAIRE CORRESPONDANT A DES FORCES LINEIQUES DE

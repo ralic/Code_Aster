@@ -24,10 +24,8 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-
-
-PVARCPR  = InputParameter(phys=PHY.VARI_R,
-comment="""  PVARCPR : VARIABLES DE COMMANDE  """)
+PVARCPR = InputParameter(phys=PHY.VARI_R,
+                         comment="""  PVARCPR : VARIABLES DE COMMANDE  """)
 
 
 CHAR_THER_GRAI_F = Option(
@@ -36,12 +34,12 @@ CHAR_THER_GRAI_F = Option(
         SP.PGRAINF,
         SP.PMATERC,
         SP.PTEMPSR,
-           PVARCPR,
+        PVARCPR,
     ),
     para_out=(
         SP.PVECTTR,
     ),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'TH'),(AT.BORD,'0'),)),
+        CondCalcul('+', ((AT.PHENO, 'TH'), (AT.BORD, '0'),)),
     ),
 )

@@ -24,8 +24,6 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-
-
 CHAR_MECA_FF1D3D = Option(
     para_in=(
         SP.PFF1D3D,
@@ -36,8 +34,10 @@ CHAR_MECA_FF1D3D = Option(
         SP.PVECTUR,
     ),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'-2'),(AT.DIM_TOPO_MODELI,'3'),)),
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'-1'),(AT.DIM_TOPO_MODELI,'2'),)),
+        CondCalcul(
+            '+', ((AT.PHENO, 'ME'), (AT.BORD, '-2'), (AT.DIM_TOPO_MODELI, '3'),)),
+        CondCalcul(
+            '+', ((AT.PHENO, 'ME'), (AT.BORD, '-1'), (AT.DIM_TOPO_MODELI, '2'),)),
     ),
     comment=""" CHAR_MECA_FF1D3D (MOT-CLE : FORCE_ARETE): CALCUL DU SECOND MEMBRE
            ELEMENTAIRE CORRESPONDANT A DES FORCES LINEIQUES APPLIQUEES SUR

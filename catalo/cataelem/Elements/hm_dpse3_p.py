@@ -31,91 +31,96 @@ from cataelem.Options.options import OP
 
 
 DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO', diff=True,
-    components=(
-    ('EN1',('DX','DY','PRE1',)),
-    ('EN2',('DX','DY',)),))
+                             components=(
+                             ('EN1', ('DX', 'DY', 'PRE1',)),
+                             ('EN2', ('DX', 'DY',)),))
 
 
-CFLUXF   = LocatedComponents(phys=PHY.FTHM_F, type='ELEM',
-    components=('PFLU1',))
+CFLUXF = LocatedComponents(phys=PHY.FTHM_F, type='ELEM',
+                           components=('PFLU1',))
 
 
-EFLUXE   = LocatedComponents(phys=PHY.FTHM_R, type='ELGA', location='RIGI',
-    components=('PFLU1',))
+EFLUXE = LocatedComponents(phys=PHY.FTHM_R, type='ELGA', location='RIGI',
+                           components=('PFLU1',))
 
 
-NGEOMER  = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
-    components=('X','Y',))
+NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
+                            components=('X', 'Y',))
 
 
 EGGEOP_R = LocatedComponents(phys=PHY.GEOM_R, type='ELGA', location='RIGI',
-    components=('X','Y','W',))
+                             components=('X', 'Y', 'W',))
 
 
-CTEMPSR  = LocatedComponents(phys=PHY.INST_R, type='ELEM',
-    components=('INST','DELTAT','THETA',))
+CTEMPSR = LocatedComponents(phys=PHY.INST_R, type='ELEM',
+                            components=('INST', 'DELTAT', 'THETA',))
 
 
-CPRESSF  = LocatedComponents(phys=PHY.PRES_F, type='ELEM',
-    components=('PRES',))
+CPRESSF = LocatedComponents(phys=PHY.PRES_F, type='ELEM',
+                            components=('PRES',))
 
 
-EPRESNO  = LocatedComponents(phys=PHY.PRES_R, type='ELNO',
-    components=('PRES',))
+EPRESNO = LocatedComponents(phys=PHY.PRES_R, type='ELNO',
+                            components=('PRES',))
 
 
-MVECTUR  = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=(DDL_MECA,))
+MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=(DDL_MECA,))
 
 
 #------------------------------------------------------------
 class HM_DPSE3_P(Element):
+
     """Please document this element"""
     meshType = MT.SEG3
     nodes = (
-            SetOfNodes('EN2', (3,)),
-            SetOfNodes('EN1', (1,2,)),
-        )
-    elrefe =(
-            ElrefeLoc(MT.SE3, gauss = ('RIGI=FPG4',),),
-            ElrefeLoc(MT.SE2, gauss = ('RIGI=FPG4',),),
-        )
+        SetOfNodes('EN2', (3,)),
+        SetOfNodes('EN1', (1, 2,)),
+    )
+    elrefe = (
+        ElrefeLoc(MT.SE3, gauss=('RIGI=FPG4',),),
+        ElrefeLoc(MT.SE2, gauss=('RIGI=FPG4',),),
+    )
     calculs = (
 
         OP.CHAR_MECA_FLUX_F(te=472,
-            para_in=((SP.PFLUXF, CFLUXF), (SP.PGEOMER, NGEOMER),
-                     (SP.PTEMPSR, CTEMPSR), ),
-            para_out=((SP.PVECTUR, MVECTUR), ),
-        ),
+                            para_in=(
+                                (SP.PFLUXF, CFLUXF), (SP.PGEOMER, NGEOMER),
+                            (SP.PTEMPSR, CTEMPSR), ),
+                            para_out=((SP.PVECTUR, MVECTUR), ),
+                            ),
 
         OP.CHAR_MECA_FLUX_R(te=472,
-            para_in=((SP.PFLUXR, EFLUXE), (SP.PGEOMER, NGEOMER),
-                     (SP.PTEMPSR, CTEMPSR), ),
-            para_out=((SP.PVECTUR, MVECTUR), ),
-        ),
+                            para_in=(
+                                (SP.PFLUXR, EFLUXE), (SP.PGEOMER, NGEOMER),
+                            (SP.PTEMPSR, CTEMPSR), ),
+                            para_out=((SP.PVECTUR, MVECTUR), ),
+                            ),
 
         OP.CHAR_MECA_PRES_F(te=472,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PPRESSF, CPRESSF),
-                     (SP.PTEMPSR, CTEMPSR), ),
-            para_out=((SP.PVECTUR, MVECTUR), ),
-        ),
+                            para_in=(
+                                (SP.PGEOMER, NGEOMER), (SP.PPRESSF, CPRESSF),
+                            (SP.PTEMPSR, CTEMPSR), ),
+                            para_out=((SP.PVECTUR, MVECTUR), ),
+                            ),
 
         OP.CHAR_MECA_PRES_R(te=472,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PPRESSR, EPRESNO),
-                     ),
-            para_out=((SP.PVECTUR, MVECTUR), ),
-        ),
+                            para_in=(
+                                (SP.PGEOMER, NGEOMER), (SP.PPRESSR, EPRESNO),
+                            ),
+                            para_out=((SP.PVECTUR, MVECTUR), ),
+                            ),
 
         OP.COOR_ELGA(te=478,
-            para_in=((SP.PGEOMER, NGEOMER), ),
-            para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R), ),
-        ),
+                     para_in=((SP.PGEOMER, NGEOMER), ),
+                     para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R), ),
+                     ),
 
         OP.TOU_INI_ELGA(te=99,
-            para_out=((OP.TOU_INI_ELGA.PGEOM_R, EGGEOP_R), ),
-        ),
+                        para_out=((OP.TOU_INI_ELGA.PGEOM_R, EGGEOP_R), ),
+                        ),
 
         OP.TOU_INI_ELNO(te=99,
-            para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), ),
-        ),
+                        para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), ),
+                        ),
 
     )

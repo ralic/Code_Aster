@@ -24,9 +24,7 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-
-
-PMATTTR  = OutputParameter(phys=PHY.MTEM_R, type='RESL')
+PMATTTR = OutputParameter(phys=PHY.MTEM_R, type='RESL')
 
 
 RIGI_THER_COET_F = Option(
@@ -36,9 +34,9 @@ RIGI_THER_COET_F = Option(
         SP.PTEMPSR,
     ),
     para_out=(
-           PMATTTR,
+        PMATTTR,
     ),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'TH'),(AT.BORD,'-1'),)),
+        CondCalcul('+', ((AT.PHENO, 'TH'), (AT.BORD, '-1'),)),
     ),
 )

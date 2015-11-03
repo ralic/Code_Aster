@@ -32,50 +32,55 @@ import cataelem.Commons.attributes as AT
 #----------------
 
 
-MDDLMUC  = LocatedComponents(phys=PHY.DDLM_C, type='ELEM',
-    components=('A1',))
+MDDLMUC = LocatedComponents(phys=PHY.DDLM_C, type='ELEM',
+                            components=('A1',))
 
 
-MGEOMER  = LocatedComponents(phys=PHY.GEOM_R, type='ELNO', diff=True,
-    components=(
-    ('EN1',()),
-    ('EN2',('X','Y','Z',)),))
+MGEOMER = LocatedComponents(phys=PHY.GEOM_R, type='ELNO', diff=True,
+                            components=(
+                            ('EN1', ()),
+                            ('EN2', ('X', 'Y', 'Z',)),))
 
 
 DDL_ACOU = LocatedComponents(phys=PHY.PRES_C, type='ELNO', diff=True,
-    components=(
-    ('EN1',('LAGR',)),
-    ('EN2',('PRES',)),))
+                             components=(
+                             ('EN1', ('LAGR',)),
+                             ('EN2', ('PRES',)),))
 
 
-MVECTTC  = ArrayOfComponents(phys=PHY.VPRE_C, locatedComponents=(DDL_ACOU,))
+MVECTTC = ArrayOfComponents(phys=PHY.VPRE_C, locatedComponents=(DDL_ACOU,))
 
-MMATTTC  = ArrayOfComponents(phys=PHY.MPRE_C, locatedComponents=(DDL_ACOU,DDL_ACOU))
+MMATTTC = ArrayOfComponents(
+    phys=PHY.MPRE_C, locatedComponents=(DDL_ACOU, DDL_ACOU))
 
 #------------------------------------------------------------
+
+
 class D_PRES_C_PRES(Element):
+
     """Please document this element"""
     meshType = MT.SEG3
     nodes = (
-            SetOfNodes('EN1', (2,3,)),
-            SetOfNodes('EN2', (1,)),
-        )
-    attrs = ((AT.CL_DUAL,'OUI'),)
+        SetOfNodes('EN1', (2, 3,)),
+        SetOfNodes('EN2', (1,)),
+    )
+    attrs = ((AT.CL_DUAL, 'OUI'),)
 
     calculs = (
         OP.ACOU_DDLI_C(te=2,
-        para_in=((SP.PDDLIMC, LC.MDDLIMC), ),
-        para_out=((SP.PVECTTC, MVECTTC), ),
-        ),
+                       para_in=((SP.PDDLIMC, LC.MDDLIMC), ),
+                       para_out=((SP.PVECTTC, MVECTTC), ),
+                       ),
 
         OP.ACOU_DDLI_F(te=2,
-        para_in=((SP.PDDLIMF, LC.MDDLIMF), (SP.PGEOMER, MGEOMER),
-                 (SP.PTEMPSR, LC.MTEMPSR), ),
-        para_out=((SP.PVECTTC, MVECTTC), ),
-        ),
+                       para_in=(
+                           (SP.PDDLIMF, LC.MDDLIMF), (SP.PGEOMER, MGEOMER),
+                       (SP.PTEMPSR, LC.MTEMPSR), ),
+                       para_out=((SP.PVECTTC, MVECTTC), ),
+                       ),
 
         OP.ACOU_DDLM_C(te=2,
-        para_in=((SP.PDDLMUC, MDDLMUC), ),
-        para_out=((SP.PMATTTC, MMATTTC), ),
-        ),
+                       para_in=((SP.PDDLMUC, MDDLMUC), ),
+                       para_out=((SP.PMATTTC, MMATTTC), ),
+                       ),
     )

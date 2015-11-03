@@ -24,21 +24,19 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PVARCPR = InputParameter(phys=PHY.VARI_R)
 
 
-PVARCPR  = InputParameter(phys=PHY.VARI_R)
+PCAORIE = InputParameter(phys=PHY.CAORIE, container='CARA!.CARORIEN',
+                         comment="""  PCAORIE : ORIENTATION LOCALE D'UN ELEMENT DE POUTRE OU DE TUYAU  """)
 
 
-PCAORIE  = InputParameter(phys=PHY.CAORIE, container='CARA!.CARORIEN',
-comment="""  PCAORIE : ORIENTATION LOCALE D'UN ELEMENT DE POUTRE OU DE TUYAU  """)
+PNBSP_I = InputParameter(phys=PHY.NBSP_I, container='CARA!.CANBSP',
+                         comment="""  PNBSP_I :  NOMBRE DE SOUS_POINTS  """)
 
 
-PNBSP_I  = InputParameter(phys=PHY.NBSP_I, container='CARA!.CANBSP',
-comment="""  PNBSP_I :  NOMBRE DE SOUS_POINTS  """)
-
-
-PCOMPOR  = InputParameter(phys=PHY.COMPOR,
-comment=""" POUR LES PMF""")
+PCOMPOR = InputParameter(phys=PHY.COMPOR,
+                         comment=""" POUR LES PMF""")
 
 
 MASS_MECA_EXPLI = Option(
@@ -47,20 +45,20 @@ MASS_MECA_EXPLI = Option(
         SP.PCADISM,
         SP.PCAGNBA,
         SP.PCAGNPO,
-           PCAORIE,
+        PCAORIE,
         SP.PCINFDI,
-           PCOMPOR,
+        PCOMPOR,
         SP.PFIBRES,
         SP.PGEOMER,
         SP.PMATERC,
-           PNBSP_I,
-           PVARCPR,
+        PNBSP_I,
+        PVARCPR,
     ),
     para_out=(
         SP.PMATUUR,
     ),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
+        CondCalcul('+', ((AT.PHENO, 'ME'), (AT.BORD, '0'),)),
     ),
     comment=""" matrice de masse "diagonale" adaptee a la commande DYNA_TRAN_EXPLI.
 

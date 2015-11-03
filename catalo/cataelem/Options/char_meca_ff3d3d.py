@@ -24,8 +24,6 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-
-
 CHAR_MECA_FF3D3D = Option(
     para_in=(
         SP.PFF3D3D,
@@ -36,9 +34,10 @@ CHAR_MECA_FF3D3D = Option(
         SP.PVECTUR,
     ),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),(AT.DIM_TOPO_MODELI,'3'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.INTERFACE,'OUI'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'D3D'),)),
+        CondCalcul(
+            '+', ((AT.PHENO, 'ME'), (AT.BORD, '0'), (AT.DIM_TOPO_MODELI, '3'),)),
+        CondCalcul('-', ((AT.PHENO, 'ME'), (AT.INTERFACE, 'OUI'),)),
+        CondCalcul('-', ((AT.PHENO, 'ME'), (AT.MODELI, 'D3D'),)),
     ),
     comment=""" CHAR_MECA_FF3D3D (MOT-CLE : FORCE_INTERNE): CALCUL DU SECOND
            MEMBRE ELEMENTAIRE CORRESPONDANT A DES FORCES INTERNES APPLIQUEES

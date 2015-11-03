@@ -31,90 +31,101 @@ from cataelem.Options.options import OP
 
 
 DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO',
-    components=('DX','DY','DZ','PHI',))
+                             components=('DX', 'DY', 'DZ', 'PHI',))
 
 
-CGEOMER  = LocatedComponents(phys=PHY.GEOM_R, type='ELEM',
-    components=('X','Y','Z',))
+CGEOMER = LocatedComponents(phys=PHY.GEOM_R, type='ELEM',
+                            components=('X', 'Y', 'Z',))
 
 
-NGEOMER  = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
-    components=('X','Y','Z',))
+NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
+                            components=('X', 'Y', 'Z',))
 
 
 EGGEOP_R = LocatedComponents(phys=PHY.GEOM_R, type='ELGA', location='RIGI',
-    components=('X','Y','Z','W',))
+                             components=('X', 'Y', 'Z', 'W',))
 
 
-MMATUUR  = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=(DDL_MECA,DDL_MECA))
+MMATUUR = ArrayOfComponents(
+    phys=PHY.MDEP_R, locatedComponents=(DDL_MECA, DDL_MECA))
 
 
 #------------------------------------------------------------
 class MEFS_FACE3(Element):
+
     """Please document this element"""
     meshType = MT.TRIA3
-    elrefe =(
-            ElrefeLoc(MT.TR3, gauss = ('RIGI=COT3','FPG1=FPG1',), mater=('FPG1',),),
-        )
+    elrefe = (
+        ElrefeLoc(
+            MT.TR3, gauss=('RIGI=COT3', 'FPG1=FPG1',), mater=('FPG1',),),
+    )
     calculs = (
 
         OP.COOR_ELGA(te=488,
-            para_in=((SP.PGEOMER, NGEOMER), ),
-            para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R), ),
-        ),
+                     para_in=((SP.PGEOMER, NGEOMER), ),
+                     para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R), ),
+                     ),
 
         OP.MASS_MECA(te=172,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
+                     para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
+                              ),
+                     para_out=((SP.PMATUUR, MMATUUR), ),
                      ),
-            para_out=((SP.PMATUUR, MMATUUR), ),
-        ),
 
         OP.TOU_INI_ELEM(te=99,
-            para_out=((OP.TOU_INI_ELEM.PGEOM_R, CGEOMER), ),
-        ),
+                        para_out=((OP.TOU_INI_ELEM.PGEOM_R, CGEOMER), ),
+                        ),
 
         OP.TOU_INI_ELGA(te=99,
-            para_out=((OP.TOU_INI_ELGA.PGEOM_R, EGGEOP_R), ),
-        ),
+                        para_out=((OP.TOU_INI_ELGA.PGEOM_R, EGGEOP_R), ),
+                        ),
 
         OP.TOU_INI_ELNO(te=99,
-            para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), ),
-        ),
+                        para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), ),
+                        ),
 
     )
 
 
 #------------------------------------------------------------
 class MEFS_FACE4(MEFS_FACE3):
+
     """Please document this element"""
     meshType = MT.QUAD4
-    elrefe =(
-            ElrefeLoc(MT.QU4, gauss = ('RIGI=FPG4','FPG1=FPG1',), mater=('FPG1',),),
-        )
+    elrefe = (
+        ElrefeLoc(
+            MT.QU4, gauss=('RIGI=FPG4', 'FPG1=FPG1',), mater=('FPG1',),),
+    )
 
 
 #------------------------------------------------------------
 class MEFS_FACE6(MEFS_FACE3):
+
     """Please document this element"""
     meshType = MT.TRIA6
-    elrefe =(
-            ElrefeLoc(MT.TR6, gauss = ('RIGI=FPG4','FPG1=FPG1',), mater=('FPG1',),),
-        )
+    elrefe = (
+        ElrefeLoc(
+            MT.TR6, gauss=('RIGI=FPG4', 'FPG1=FPG1',), mater=('FPG1',),),
+    )
 
 
 #------------------------------------------------------------
 class MEFS_FACE8(MEFS_FACE3):
+
     """Please document this element"""
     meshType = MT.QUAD8
-    elrefe =(
-            ElrefeLoc(MT.QU8, gauss = ('RIGI=FPG9','FPG1=FPG1',), mater=('FPG1',),),
-        )
+    elrefe = (
+        ElrefeLoc(
+            MT.QU8, gauss=('RIGI=FPG9', 'FPG1=FPG1',), mater=('FPG1',),),
+    )
 
 
 #------------------------------------------------------------
 class MEFS_FACE9(MEFS_FACE3):
+
     """Please document this element"""
     meshType = MT.QUAD9
-    elrefe =(
-            ElrefeLoc(MT.QU9, gauss = ('RIGI=FPG9','FPG1=FPG1',), mater=('FPG1',),),
-        )
+    elrefe = (
+        ElrefeLoc(
+            MT.QU9, gauss=('RIGI=FPG9', 'FPG1=FPG1',), mater=('FPG1',),),
+    )

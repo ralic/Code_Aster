@@ -24,8 +24,6 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-
-
 CHAR_MECA_FFCO2D = Option(
     para_in=(
         SP.PFFCO2D,
@@ -36,7 +34,7 @@ CHAR_MECA_FFCO2D = Option(
         SP.PVECTUR,
     ),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.COQUE,'OUI'),)),
+        CondCalcul('+', ((AT.PHENO, 'ME'), (AT.COQUE, 'OUI'),)),
     ),
     comment=""" CHAR_MECA_FFCO2D (MOT-CLE : FORCE_COQUE): CALCUL DU SECOND MEMBRE
            ELEMENTAIRE CORRESPONDANT A DES FORCES SURFACIQUES APPLIQUEES SUR

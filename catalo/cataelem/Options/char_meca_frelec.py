@@ -24,8 +24,6 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-
-
 CHAR_MECA_FRELEC = Option(
     para_in=(
         SP.PFRELEC,
@@ -35,7 +33,8 @@ CHAR_MECA_FRELEC = Option(
         SP.PVECTUR,
     ),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),(AT.DIM_TOPO_MODELI,'1'),)),
+        CondCalcul(
+            '+', ((AT.PHENO, 'ME'), (AT.BORD, '0'), (AT.DIM_TOPO_MODELI, '1'),)),
     ),
     comment=""" CHAR_MECA_FRELEC (MOT-CLE FORCE_ELEC): CALCUL DU SECOND MEMBRE
            ELEMENTAIRE CORRESPONDANT AUX FORCES DE LAPLACE """,

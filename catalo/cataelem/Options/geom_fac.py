@@ -24,41 +24,39 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PPINTER = InputParameter(phys=PHY.N816_R)
 
 
-PPINTER  = InputParameter(phys=PHY.N816_R)
+PLONGCO = InputParameter(phys=PHY.N120_I, container='MODL!.TOPOSE.LON',
+                         comment="""  XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  """)
 
 
-PLONGCO  = InputParameter(phys=PHY.N120_I, container='MODL!.TOPOSE.LON',
-comment="""  XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  """)
+PGESCLO = InputParameter(phys=PHY.N816_R)
 
 
-PGESCLO  = InputParameter(phys=PHY.N816_R)
+PLST = InputParameter(phys=PHY.NEUT_R)
 
 
-PLST     = InputParameter(phys=PHY.NEUT_R)
+PFISNO = InputParameter(phys=PHY.NEUT_I)
 
 
-PFISNO   = InputParameter(phys=PHY.NEUT_I)
+PHEA_NO = InputParameter(phys=PHY.N120_I)
 
 
-PHEA_NO  = InputParameter(phys=PHY.N120_I)
-
-
-PHEA_FA  = InputParameter(phys=PHY.N240_I)
+PHEA_FA = InputParameter(phys=PHY.N240_I)
 
 
 GEOM_FAC = Option(
     para_in=(
         SP.NOMFIS,
         SP.PDEPLA,
-           PFISNO,
-           PGESCLO,
-           PHEA_FA,
-           PHEA_NO,
-           PLONGCO,
-           PLST,
-           PPINTER,
+        PFISNO,
+        PGESCLO,
+        PHEA_FA,
+        PHEA_NO,
+        PLONGCO,
+        PLST,
+        PPINTER,
     ),
     para_out=(
         SP.PBASESC,
@@ -67,6 +65,7 @@ GEOM_FAC = Option(
         SP.PNEWGES,
     ),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.LXFEM,'OUI'),(AT.CONTACT,'OUI'),)),
+        CondCalcul(
+            '+', ((AT.PHENO, 'ME'), (AT.LXFEM, 'OUI'), (AT.CONTACT, 'OUI'),)),
     ),
 )

@@ -24,10 +24,8 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-
-
-PVARCPR  = InputParameter(phys=PHY.VARI_R,
-comment="""  PVARCPR : VARIABLES DE COMMANDE  """)
+PVARCPR = InputParameter(phys=PHY.VARI_R,
+                         comment="""  PVARCPR : VARIABLES DE COMMANDE  """)
 
 
 CHAR_MECA_EPSA_R = Option(
@@ -35,14 +33,14 @@ CHAR_MECA_EPSA_R = Option(
         SP.PGEOMER,
         SP.PMATERC,
         SP.PTEMPSR,
-           PVARCPR,
+        PVARCPR,
         SP.PVARCRR,
     ),
     para_out=(
         SP.PVECTUR,
     ),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
+        CondCalcul('+', ((AT.PHENO, 'ME'), (AT.BORD, '0'),)),
     ),
     comment=""" CHAR_MECA_EPSA_R (MOT-CLE: EPSA_CALCULEE): CALCUL DU SECOND
            MEMBRE ELEMENTAIRE CORRESPONDANT A DES DEFORMATIONS ANELASTIQUES""",

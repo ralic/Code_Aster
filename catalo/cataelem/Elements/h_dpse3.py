@@ -31,87 +31,90 @@ from cataelem.Options.options import OP
 
 
 DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO', diff=True,
-    components=(
-    ('EN1',('PRE1',)),
-    ('EN2',()),))
+                             components=(
+                             ('EN1', ('PRE1',)),
+                             ('EN2', ()),))
 
 
-EFLHN    = LocatedComponents(phys=PHY.FLHN_R, type='ELGA', location='RIGI',
-    components=('FH11',))
+EFLHN = LocatedComponents(phys=PHY.FLHN_R, type='ELGA', location='RIGI',
+                          components=('FH11',))
 
 
-CFLUXF   = LocatedComponents(phys=PHY.FTHM_F, type='ELEM',
-    components=('PFLU1',))
+CFLUXF = LocatedComponents(phys=PHY.FTHM_F, type='ELEM',
+                           components=('PFLU1',))
 
 
-EFLUXE   = LocatedComponents(phys=PHY.FTHM_R, type='ELGA', location='RIGI',
-    components=('PFLU1',))
+EFLUXE = LocatedComponents(phys=PHY.FTHM_R, type='ELGA', location='RIGI',
+                           components=('PFLU1',))
 
 
-NGEOMER  = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
-    components=('X','Y',))
+NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
+                            components=('X', 'Y',))
 
 
 EGGEOP_R = LocatedComponents(phys=PHY.GEOM_R, type='ELGA', location='RIGI',
-    components=('X','Y','W',))
+                             components=('X', 'Y', 'W',))
 
 
-CTEMPSR  = LocatedComponents(phys=PHY.INST_R, type='ELEM',
-    components=('INST','DELTAT','THETA',))
+CTEMPSR = LocatedComponents(phys=PHY.INST_R, type='ELEM',
+                            components=('INST', 'DELTAT', 'THETA',))
 
 
-NSIEF_R  = LocatedComponents(phys=PHY.SIEF_R, type='ELNO', diff=True,
-    components=(
-    ('EN1',('FH11X','FH11Y',)),
-    ('EN2',()),))
+NSIEF_R = LocatedComponents(phys=PHY.SIEF_R, type='ELNO', diff=True,
+                            components=(
+                            ('EN1', ('FH11X', 'FH11Y',)),
+                            ('EN2', ()),))
 
 
-MVECTUR  = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=(DDL_MECA,))
+MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=(DDL_MECA,))
 
 
 #------------------------------------------------------------
 class H_DPSE3(Element):
+
     """Please document this element"""
     meshType = MT.SEG3
     nodes = (
-            SetOfNodes('EN2', (3,)),
-            SetOfNodes('EN1', (1,2,)),
-        )
-    elrefe =(
-            ElrefeLoc(MT.SE3, gauss = ('RIGI=FPG4',),),
-            ElrefeLoc(MT.SE2, gauss = ('RIGI=FPG4',),),
-        )
+        SetOfNodes('EN2', (3,)),
+        SetOfNodes('EN1', (1, 2,)),
+    )
+    elrefe = (
+        ElrefeLoc(MT.SE3, gauss=('RIGI=FPG4',),),
+        ElrefeLoc(MT.SE2, gauss=('RIGI=FPG4',),),
+    )
     calculs = (
 
         OP.CHAR_MECA_FLUX_F(te=472,
-            para_in=((SP.PFLUXF, CFLUXF), (SP.PGEOMER, NGEOMER),
-                     (SP.PTEMPSR, CTEMPSR), ),
-            para_out=((SP.PVECTUR, MVECTUR), ),
-        ),
+                            para_in=(
+                                (SP.PFLUXF, CFLUXF), (SP.PGEOMER, NGEOMER),
+                            (SP.PTEMPSR, CTEMPSR), ),
+                            para_out=((SP.PVECTUR, MVECTUR), ),
+                            ),
 
         OP.CHAR_MECA_FLUX_R(te=472,
-            para_in=((SP.PFLUXR, EFLUXE), (SP.PGEOMER, NGEOMER),
-                     (SP.PTEMPSR, CTEMPSR), ),
-            para_out=((SP.PVECTUR, MVECTUR), ),
-        ),
+                            para_in=(
+                                (SP.PFLUXR, EFLUXE), (SP.PGEOMER, NGEOMER),
+                            (SP.PTEMPSR, CTEMPSR), ),
+                            para_out=((SP.PVECTUR, MVECTUR), ),
+                            ),
 
         OP.COOR_ELGA(te=467,
-            para_in=((SP.PGEOMER, NGEOMER), ),
-            para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R), ),
-        ),
+                     para_in=((SP.PGEOMER, NGEOMER), ),
+                     para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R), ),
+                     ),
 
         OP.FLHN_ELGA(te=468,
-            para_in=((SP.PCONTR, NSIEF_R), (SP.PGEOMER, NGEOMER),
+                     para_in=((SP.PCONTR, NSIEF_R), (SP.PGEOMER, NGEOMER),
+                              ),
+                     para_out=((SP.PFLHN, EFLHN), ),
                      ),
-            para_out=((SP.PFLHN, EFLHN), ),
-        ),
 
         OP.TOU_INI_ELGA(te=99,
-            para_out=((OP.TOU_INI_ELGA.PGEOM_R, EGGEOP_R), ),
-        ),
+                        para_out=((OP.TOU_INI_ELGA.PGEOM_R, EGGEOP_R), ),
+                        ),
 
         OP.TOU_INI_ELNO(te=99,
-            para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), ),
-        ),
+                        para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), ),
+                        ),
 
     )

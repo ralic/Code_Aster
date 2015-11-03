@@ -24,8 +24,6 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-
-
 CARA_TORSION = Option(
     para_in=(
         SP.PGEOMER,
@@ -35,7 +33,9 @@ CARA_TORSION = Option(
         SP.PCASECT,
     ),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'TH'),(AT.BORD,'0'),(AT.DIM_TOPO_MODELI,'2'),)),
-      CondCalcul('-', ((AT.PHENO,'TH'),(AT.BORD,'0'),(AT.DIM_TOPO_MODELI,'2'),(AT.AXIS,'OUI'),)),
+        CondCalcul(
+            '+', ((AT.PHENO, 'TH'), (AT.BORD, '0'), (AT.DIM_TOPO_MODELI, '2'),)),
+        CondCalcul(
+            '-', ((AT.PHENO, 'TH'), (AT.BORD, '0'), (AT.DIM_TOPO_MODELI, '2'), (AT.AXIS, 'OUI'),)),
     ),
 )

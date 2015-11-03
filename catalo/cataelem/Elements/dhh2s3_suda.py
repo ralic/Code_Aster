@@ -31,65 +31,68 @@ from cataelem.Options.options import OP
 
 
 DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO', diff=True,
-    components=(
-    ('EN2',('PRE[2]',)),))
+                             components=(
+                             ('EN2', ('PRE[2]',)),))
 
 
-CFLUXF   = LocatedComponents(phys=PHY.FTHM_F, type='ELEM',
-    components=('PFLU[2]',))
+CFLUXF = LocatedComponents(phys=PHY.FTHM_F, type='ELEM',
+                           components=('PFLU[2]',))
 
 
-EFLUXE   = LocatedComponents(phys=PHY.FTHM_R, type='ELGA', location='RIGI',
-    components=('PFLU[2]',))
+EFLUXE = LocatedComponents(phys=PHY.FTHM_R, type='ELGA', location='RIGI',
+                           components=('PFLU[2]',))
 
 
-NGEOMER  = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
-    components=('X','Y',))
+NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
+                            components=('X', 'Y',))
 
 
-EGEOMER  = LocatedComponents(phys=PHY.GEOM_R, type='ELGA', location='RIGI',
-    components=('X','Y',))
+EGEOMER = LocatedComponents(phys=PHY.GEOM_R, type='ELGA', location='RIGI',
+                            components=('X', 'Y',))
 
 
-CTEMPSR  = LocatedComponents(phys=PHY.INST_R, type='ELEM',
-    components=('INST','DELTAT','THETA',))
+CTEMPSR = LocatedComponents(phys=PHY.INST_R, type='ELEM',
+                            components=('INST', 'DELTAT', 'THETA',))
 
 
-MVECTUR  = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=(DDL_MECA,))
+MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=(DDL_MECA,))
 
 
 #------------------------------------------------------------
 class DHH2S3_SUDA(Element):
+
     """Please document this element"""
     meshType = MT.SEG3
     nodes = (
-            SetOfNodes('EN2', (3,)),
-            SetOfNodes('EN1', (1,2,)),
-        )
-    elrefe =(
-            ElrefeLoc(MT.SE3, gauss = ('RIGI=FPG1',),),
-            ElrefeLoc(MT.SE2, gauss = ('RIGI=FPG1',),),
-        )
+        SetOfNodes('EN2', (3,)),
+        SetOfNodes('EN1', (1, 2,)),
+    )
+    elrefe = (
+        ElrefeLoc(MT.SE3, gauss=('RIGI=FPG1',),),
+        ElrefeLoc(MT.SE2, gauss=('RIGI=FPG1',),),
+    )
     calculs = (
 
         OP.CHAR_MECA_FLUX_F(te=472,
-            para_in=((SP.PFLUXF, CFLUXF), (SP.PGEOMER, NGEOMER),
-                     (SP.PTEMPSR, CTEMPSR), ),
-            para_out=((SP.PVECTUR, MVECTUR), ),
-        ),
+                            para_in=(
+                                (SP.PFLUXF, CFLUXF), (SP.PGEOMER, NGEOMER),
+                            (SP.PTEMPSR, CTEMPSR), ),
+                            para_out=((SP.PVECTUR, MVECTUR), ),
+                            ),
 
         OP.CHAR_MECA_FLUX_R(te=472,
-            para_in=((SP.PFLUXR, EFLUXE), (SP.PGEOMER, NGEOMER),
-                     (SP.PTEMPSR, CTEMPSR), ),
-            para_out=((SP.PVECTUR, MVECTUR), ),
-        ),
+                            para_in=(
+                                (SP.PFLUXR, EFLUXE), (SP.PGEOMER, NGEOMER),
+                            (SP.PTEMPSR, CTEMPSR), ),
+                            para_out=((SP.PVECTUR, MVECTUR), ),
+                            ),
 
         OP.TOU_INI_ELGA(te=99,
-            para_out=((OP.TOU_INI_ELGA.PGEOM_R, EGEOMER), ),
-        ),
+                        para_out=((OP.TOU_INI_ELGA.PGEOM_R, EGEOMER), ),
+                        ),
 
         OP.TOU_INI_ELNO(te=99,
-            para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), ),
-        ),
+                        para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), ),
+                        ),
 
     )

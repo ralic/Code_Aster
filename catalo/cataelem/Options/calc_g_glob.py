@@ -24,26 +24,24 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PVARCPR = InputParameter(phys=PHY.VARI_R)
 
 
-PVARCPR  = InputParameter(phys=PHY.VARI_R)
+PCOMPOR = InputParameter(phys=PHY.COMPOR)
 
 
-PCOMPOR  = InputParameter(phys=PHY.COMPOR)
+PCONTRR = InputParameter(phys=PHY.SIEF_R)
 
 
-PCONTRR  = InputParameter(phys=PHY.SIEF_R)
-
-
-PVARIPR  = InputParameter(phys=PHY.VARI_R)
+PVARIPR = InputParameter(phys=PHY.VARI_R)
 
 
 CALC_G_GLOB = Option(
     para_in=(
         SP.PACCELE,
-           PCOMPOR,
+        PCOMPOR,
         SP.PCONTGR,
-           PCONTRR,
+        PCONTRR,
         SP.PDEFOPL,
         SP.PDEPINR,
         SP.PDEPLAR,
@@ -57,18 +55,18 @@ CALC_G_GLOB = Option(
         SP.PROTATR,
         SP.PSIGINR,
         SP.PTHETAR,
-           PVARCPR,
+        PVARCPR,
         SP.PVARCRR,
-           PVARIPR,
+        PVARIPR,
         SP.PVITESS,
     ),
     para_out=(
         SP.PGTHETA,
     ),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'-1'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.ABSO,'OUI'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.DISCRET,'OUI'),)),
+        CondCalcul('+', ((AT.PHENO, 'ME'), (AT.BORD, '0'),)),
+        CondCalcul('+', ((AT.PHENO, 'ME'), (AT.BORD, '-1'),)),
+        CondCalcul('-', ((AT.PHENO, 'ME'), (AT.ABSO, 'OUI'),)),
+        CondCalcul('-', ((AT.PHENO, 'ME'), (AT.DISCRET, 'OUI'),)),
     ),
 )

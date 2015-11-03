@@ -24,51 +24,50 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PBASLOR = InputParameter(phys=PHY.NEUT_R)
 
 
-PBASLOR  = InputParameter(phys=PHY.NEUT_R)
+PPINTER = InputParameter(phys=PHY.N816_R)
 
 
-PPINTER  = InputParameter(phys=PHY.N816_R)
+PAINTER = InputParameter(phys=PHY.N1360R)
 
 
-PAINTER  = InputParameter(phys=PHY.N1360R)
+PCFACE = InputParameter(phys=PHY.N720_I)
 
 
-PCFACE   = InputParameter(phys=PHY.N720_I)
+PLONGCO = InputParameter(phys=PHY.N120_I)
 
 
-PLONGCO  = InputParameter(phys=PHY.N120_I)
+PBASECO = InputParameter(phys=PHY.N2448R)
 
 
-PBASECO  = InputParameter(phys=PHY.N2448R)
+PLST = InputParameter(phys=PHY.NEUT_R)
 
 
-PLST     = InputParameter(phys=PHY.NEUT_R)
-
-
-PHEA_NO  = InputParameter(phys=PHY.N120_I)
+PHEA_NO = InputParameter(phys=PHY.N120_I)
 
 
 CALC_K_G_COHE = Option(
     para_in=(
-           PAINTER,
-           PBASECO,
-           PBASLOR,
-           PCFACE,
+        PAINTER,
+        PBASECO,
+        PBASLOR,
+        PCFACE,
         SP.PDEPLAR,
         SP.PGEOMER,
-           PHEA_NO,
-           PLONGCO,
-           PLST,
+        PHEA_NO,
+        PLONGCO,
+        PLST,
         SP.PMATERC,
-           PPINTER,
+        PPINTER,
         SP.PTHETAR,
     ),
     para_out=(
         SP.PGTHETA,
     ),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.LXFEM,'OUI'),(AT.CONTACT,'OUI'),)),
+        CondCalcul(
+            '+', ((AT.PHENO, 'ME'), (AT.LXFEM, 'OUI'), (AT.CONTACT, 'OUI'),)),
     ),
 )

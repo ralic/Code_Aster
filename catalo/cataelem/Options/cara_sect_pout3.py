@@ -24,22 +24,21 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-
-
-PCAORIE  = InputParameter(phys=PHY.GEOM_R)
+PCAORIE = InputParameter(phys=PHY.GEOM_R)
 
 
 CARA_SECT_POUT3 = Option(
     para_in=(
         SP.PCACOQU,
-           PCAORIE,
+        PCAORIE,
         SP.PGEOMER,
     ),
     para_out=(
         SP.PCASECT,
     ),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'-1'),)),
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),(AT.COQUE,'OUI'),)),
+        CondCalcul('+', ((AT.PHENO, 'ME'), (AT.BORD, '-1'),)),
+        CondCalcul(
+            '+', ((AT.PHENO, 'ME'), (AT.BORD, '0'), (AT.COQUE, 'OUI'),)),
     ),
 )

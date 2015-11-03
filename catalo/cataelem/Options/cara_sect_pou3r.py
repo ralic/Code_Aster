@@ -24,8 +24,6 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-
-
 CARA_SECT_POU3R = Option(
     para_in=(
         SP.PGEOMER,
@@ -35,6 +33,6 @@ CARA_SECT_POU3R = Option(
         SP.PRAYONM,
     ),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'-1'),)),
+        CondCalcul('+', ((AT.PHENO, 'ME'), (AT.BORD, '-1'),)),
     ),
 )

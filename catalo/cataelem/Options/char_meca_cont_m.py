@@ -24,68 +24,66 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PLST = InputParameter(phys=PHY.NEUT_R,
+                      comment=""" XFEM """)
 
 
-PLST     = InputParameter(phys=PHY.NEUT_R,
-comment=""" XFEM """)
+PPINTER = InputParameter(phys=PHY.N816_R,
+                         comment=""" XFEM """)
 
 
-PPINTER  = InputParameter(phys=PHY.N816_R,
-comment=""" XFEM """)
+PAINTER = InputParameter(phys=PHY.N1360R,
+                         comment=""" XFEM """)
 
 
-PAINTER  = InputParameter(phys=PHY.N1360R,
-comment=""" XFEM """)
+PCFACE = InputParameter(phys=PHY.N720_I,
+                        comment=""" XFEM """)
 
 
-PCFACE   = InputParameter(phys=PHY.N720_I,
-comment=""" XFEM """)
+PLONGCO = InputParameter(phys=PHY.N120_I,
+                         comment=""" XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  """)
 
 
-PLONGCO  = InputParameter(phys=PHY.N120_I,
-comment=""" XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  """)
+PBASECO = InputParameter(phys=PHY.N2448R,
+                         comment=""" XFEM """)
 
 
-PBASECO  = InputParameter(phys=PHY.N2448R,
-comment=""" XFEM """)
+PSEUIL = InputParameter(phys=PHY.NEUT_R,
+                        comment=""" XFEM """)
 
 
-PSEUIL   = InputParameter(phys=PHY.NEUT_R,
-comment=""" XFEM """)
+PSTANO = InputParameter(phys=PHY.N120_I,
+                        comment=""" XFEM """)
 
 
-PSTANO   = InputParameter(phys=PHY.N120_I,
-comment=""" XFEM """)
-
-
-PHEA_NO  = InputParameter(phys=PHY.N120_I,
-comment=""" XFEM """)
+PHEA_NO = InputParameter(phys=PHY.N120_I,
+                         comment=""" XFEM """)
 
 
 CHAR_MECA_CONT_M = Option(
     para_in=(
-           PAINTER,
-           PBASECO,
-           PCFACE,
+        PAINTER,
+        PBASECO,
+        PCFACE,
         SP.PCOHES,
         SP.PDEPL_M,
         SP.PDEPL_P,
         SP.PDONCO,
         SP.PGEOMER,
-           PHEA_NO,
+        PHEA_NO,
         SP.PINDCOI,
-           PLONGCO,
-           PLST,
+        PLONGCO,
+        PLST,
         SP.PMATERC,
-           PPINTER,
-           PSEUIL,
-           PSTANO,
+        PPINTER,
+        PSEUIL,
+        PSTANO,
     ),
     para_out=(
         SP.PVECTUR,
     ),
     condition=(
-      CondCalcul('+', ((AT.CONTACT,'OUI'),)),
+        CondCalcul('+', ((AT.CONTACT, 'OUI'),)),
     ),
     comment=""" CHAR_MECA_CONT_M: CALCUL DU SECOND MEMBRE
            MORTAR DE CONTACT AVEC LA METHODE CONTINUE ET XFEM """,

@@ -24,8 +24,6 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-
-
 CALC_NOEU_BORD = Option(
     para_in=(
         SP.PGEOMER,
@@ -34,6 +32,7 @@ CALC_NOEU_BORD = Option(
         SP.PVECTUR,
     ),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),(AT.DIM_COOR_MODELI,'2'),)),
+        CondCalcul(
+            '+', ((AT.PHENO, 'ME'), (AT.BORD, '0'), (AT.DIM_COOR_MODELI, '2'),)),
     ),
 )

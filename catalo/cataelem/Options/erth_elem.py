@@ -24,14 +24,12 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PVOISIN = InputParameter(phys=PHY.VOISIN,
+                         comment="""  PVOISIN : VOISINS DE L ELEMENT  """)
 
 
-PVOISIN  = InputParameter(phys=PHY.VOISIN,
-comment="""  PVOISIN : VOISINS DE L ELEMENT  """)
-
-
-PERREUR  = OutputParameter(phys=PHY.ERRE_R, type='ELEM',
-comment="""  PERREUR : ESTIMATEUR D ERREUR  """)
+PERREUR = OutputParameter(phys=PHY.ERRE_R, type='ELEM',
+                          comment="""  PERREUR : ESTIMATEUR D ERREUR  """)
 
 
 ERTH_ELEM = Option(
@@ -45,13 +43,13 @@ ERTH_ELEM = Option(
         SP.PSOURCR,
         SP.PTEMP_M,
         SP.PTEMP_P,
-           PVOISIN,
+        PVOISIN,
     ),
     para_out=(
-           PERREUR,
+        PERREUR,
     ),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'TH'),(AT.BORD,'0'),)),
+        CondCalcul('+', ((AT.PHENO, 'TH'), (AT.BORD, '0'),)),
     ),
     comment="""  ERTH_ELEM :
     INDICATEUR D'ERREUR SPATIALE EN RESIDU PUR

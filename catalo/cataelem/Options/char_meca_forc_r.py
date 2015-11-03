@@ -24,8 +24,6 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-
-
 CHAR_MECA_FORC_R = Option(
     para_in=(
         SP.PFORNOR,
@@ -35,7 +33,8 @@ CHAR_MECA_FORC_R = Option(
         SP.PVECTUR,
     ),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),(AT.DIM_TOPO_MODELI,'0'),)),
+        CondCalcul(
+            '+', ((AT.PHENO, 'ME'), (AT.BORD, '0'), (AT.DIM_TOPO_MODELI, '0'),)),
     ),
     comment=""" CHAR_MECA_FORC_R (MOT-CLE FORCE_NODALE): CALCUL DU SECOND MEMBRE
            CORRESPONDANT A DES FORCES NODALES""",

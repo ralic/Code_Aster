@@ -24,66 +24,64 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PVARCPR = InputParameter(phys=PHY.VARI_R)
 
 
-PVARCPR  = InputParameter(phys=PHY.VARI_R)
+PCOMPOR = InputParameter(phys=PHY.COMPOR)
 
 
-PCOMPOR  = InputParameter(phys=PHY.COMPOR)
+PBASLOR = InputParameter(phys=PHY.NEUT_R)
 
 
-PBASLOR  = InputParameter(phys=PHY.NEUT_R)
+PPINTTO = InputParameter(phys=PHY.N132_R)
 
 
-PPINTTO  = InputParameter(phys=PHY.N132_R)
+PCNSETO = InputParameter(phys=PHY.N1280I, container='MODL!.TOPOSE.CNS',
+                         comment="""  XFEM - CONNECTIVITE DES SOUS-ELEMENTS  """)
 
 
-PCNSETO  = InputParameter(phys=PHY.N1280I, container='MODL!.TOPOSE.CNS',
-comment="""  XFEM - CONNECTIVITE DES SOUS-ELEMENTS  """)
+PHEAVTO = InputParameter(phys=PHY.N512_I)
 
 
-PHEAVTO  = InputParameter(phys=PHY.N512_I)
+PHEA_NO = InputParameter(phys=PHY.N120_I)
 
 
-PHEA_NO  = InputParameter(phys=PHY.N120_I)
+PLONCHA = InputParameter(phys=PHY.N120_I, container='MODL!.TOPOSE.LON',
+                         comment="""  XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  """)
 
 
-PLONCHA  = InputParameter(phys=PHY.N120_I, container='MODL!.TOPOSE.LON',
-comment="""  XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  """)
+PLSN = InputParameter(phys=PHY.NEUT_R)
 
 
-PLSN     = InputParameter(phys=PHY.NEUT_R)
+PLST = InputParameter(phys=PHY.NEUT_R)
 
 
-PLST     = InputParameter(phys=PHY.NEUT_R)
+PPINTER = InputParameter(phys=PHY.N816_R)
 
 
-PPINTER  = InputParameter(phys=PHY.N816_R)
+PAINTER = InputParameter(phys=PHY.N1360R)
 
 
-PAINTER  = InputParameter(phys=PHY.N1360R)
+PCFACE = InputParameter(phys=PHY.N720_I)
 
 
-PCFACE   = InputParameter(phys=PHY.N720_I)
+PLONGCO = InputParameter(phys=PHY.N120_I)
 
 
-PLONGCO  = InputParameter(phys=PHY.N120_I)
+PPMILTO = InputParameter(phys=PHY.N792_R)
 
 
-PPMILTO  = InputParameter(phys=PHY.N792_R)
-
-
-PBASECO  = InputParameter(phys=PHY.N2448R)
+PBASECO = InputParameter(phys=PHY.N2448R)
 
 
 CALC_K_G_F = Option(
     para_in=(
-           PAINTER,
-           PBASECO,
-           PBASLOR,
-           PCFACE,
-           PCNSETO,
-           PCOMPOR,
+        PAINTER,
+        PBASECO,
+        PBASLOR,
+        PCFACE,
+        PCNSETO,
+        PCOMPOR,
         SP.PCOURB,
         SP.PDEPINR,
         SP.PDEPLAR,
@@ -93,17 +91,17 @@ CALC_K_G_F = Option(
         SP.PFFVOLU,
         SP.PFISSR,
         SP.PGEOMER,
-           PHEAVTO,
-           PHEA_NO,
-           PLONCHA,
-           PLONGCO,
-           PLSN,
-           PLST,
+        PHEAVTO,
+        PHEA_NO,
+        PLONCHA,
+        PLONGCO,
+        PLSN,
+        PLST,
         SP.PMATERC,
         SP.PPESANR,
-           PPINTER,
-           PPINTTO,
-           PPMILTO,
+        PPINTER,
+        PPINTTO,
+        PPMILTO,
         SP.PPRESSF,
         SP.PPULPRO,
         SP.PROTATR,
@@ -111,15 +109,15 @@ CALC_K_G_F = Option(
         SP.PSIGISE,
         SP.PTEMPSR,
         SP.PTHETAR,
-           PVARCPR,
+        PVARCPR,
         SP.PVARCRR,
     ),
     para_out=(
         SP.PGTHETA,
     ),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'-1'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.DISCRET,'OUI'),)),
+        CondCalcul('+', ((AT.PHENO, 'ME'), (AT.BORD, '0'),)),
+        CondCalcul('+', ((AT.PHENO, 'ME'), (AT.BORD, '-1'),)),
+        CondCalcul('-', ((AT.PHENO, 'ME'), (AT.DISCRET, 'OUI'),)),
     ),
 )

@@ -24,8 +24,6 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-
-
 CARA_GEOM = Option(
     para_in=(
         SP.PGEOMER,
@@ -34,6 +32,7 @@ CARA_GEOM = Option(
         SP.PCARAGE,
     ),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),(AT.DIM_COOR_MODELI,'2'),)),
+        CondCalcul(
+            '+', ((AT.PHENO, 'ME'), (AT.BORD, '0'), (AT.DIM_COOR_MODELI, '2'),)),
     ),
 )

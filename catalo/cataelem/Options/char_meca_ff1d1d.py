@@ -24,31 +24,29 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PNBSP_I = InputParameter(phys=PHY.NBSP_I, container='CARA!.CANBSP',
+                         comment="""  PNBSP_I :  NOMBRE DE SOUS_POINTS  """)
 
 
-PNBSP_I  = InputParameter(phys=PHY.NBSP_I, container='CARA!.CANBSP',
-comment="""  PNBSP_I :  NOMBRE DE SOUS_POINTS  """)
-
-
-PCAORIE  = InputParameter(phys=PHY.CAORIE, container='CARA!.CARORIEN',
-comment="""  PCAORIE : ORIENTATION LOCALE D'UN ELEMENT DE POUTRE OU DE TUYAU  """)
+PCAORIE = InputParameter(phys=PHY.CAORIE, container='CARA!.CARORIEN',
+                         comment="""  PCAORIE : ORIENTATION LOCALE D'UN ELEMENT DE POUTRE OU DE TUYAU  """)
 
 
 CHAR_MECA_FF1D1D = Option(
     para_in=(
         SP.PCAGEPO,
         SP.PCAGNPO,
-           PCAORIE,
+        PCAORIE,
         SP.PFF1D1D,
         SP.PGEOMER,
-           PNBSP_I,
+        PNBSP_I,
         SP.PTEMPSR,
     ),
     para_out=(
         SP.PVECTUR,
     ),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.DIM_TOPO_MODELI,'1'),)),
+        CondCalcul('+', ((AT.PHENO, 'ME'), (AT.DIM_TOPO_MODELI, '1'),)),
     ),
     comment=""" CHAR_MECA_FF1D1D (MOT-CLE : FORCE_POUTRE): CALCUL DU SECOND
            MEMBRE ELEMENTAIRE CORRESPONDANT A DES FORCES LINEIQUES.

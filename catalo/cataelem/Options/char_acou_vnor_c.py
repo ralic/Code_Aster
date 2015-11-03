@@ -24,8 +24,6 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-
-
 CHAR_ACOU_VNOR_C = Option(
     para_in=(
         SP.PGEOMER,
@@ -36,6 +34,6 @@ CHAR_ACOU_VNOR_C = Option(
         SP.PVECTTC,
     ),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'AC'),(AT.BORD,'-1'),)),
+        CondCalcul('+', ((AT.PHENO, 'AC'), (AT.BORD, '-1'),)),
     ),
 )

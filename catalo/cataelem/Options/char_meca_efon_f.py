@@ -24,8 +24,6 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-
-
 CHAR_MECA_EFON_F = Option(
     para_in=(
         SP.PEFOND,
@@ -37,7 +35,7 @@ CHAR_MECA_EFON_F = Option(
         SP.PVECTUR,
     ),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'-1'),)),
+        CondCalcul('+', ((AT.PHENO, 'ME'), (AT.BORD, '-1'),)),
     ),
     comment=""" SECOND MEMBRE POUR UN EFFE_FOND FONCTION """,
 )

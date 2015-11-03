@@ -24,9 +24,7 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-
-
-PVARCPR  = InputParameter(phys=PHY.VARI_R)
+PVARCPR = InputParameter(phys=PHY.VARI_R)
 
 
 CHAR_MECA_EPSI_F = Option(
@@ -37,14 +35,14 @@ CHAR_MECA_EPSI_F = Option(
         SP.PHARMON,
         SP.PMATERC,
         SP.PTEMPSR,
-           PVARCPR,
+        PVARCPR,
     ),
     para_out=(
         SP.PVECTUR,
     ),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.INTERFACE,'OUI'),)),
+        CondCalcul('+', ((AT.PHENO, 'ME'), (AT.BORD, '0'),)),
+        CondCalcul('-', ((AT.PHENO, 'ME'), (AT.INTERFACE, 'OUI'),)),
     ),
     comment=""" CHAR_MECA_EPSI_F (MOT-CLE : EPSI_INIT): CALCUL DU SECOND
            MEMBRE ELEMENTAIRE CORRESPONDANT A DES DEFORMATIONS INITIALES.

@@ -24,58 +24,57 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PPINTTO = InputParameter(phys=PHY.N132_R)
 
 
-PPINTTO  = InputParameter(phys=PHY.N132_R)
+PCNSETO = InputParameter(phys=PHY.N1280I, container='MODL!.TOPOSE.CNS',
+                         comment="""  XFEM - CONNECTIVITE DES SOUS-ELEMENTS  """)
 
 
-PCNSETO  = InputParameter(phys=PHY.N1280I, container='MODL!.TOPOSE.CNS',
-comment="""  XFEM - CONNECTIVITE DES SOUS-ELEMENTS  """)
+PHEAVTO = InputParameter(phys=PHY.N512_I)
 
 
-PHEAVTO  = InputParameter(phys=PHY.N512_I)
+PHEA_NO = InputParameter(phys=PHY.N120_I)
 
 
-PHEA_NO  = InputParameter(phys=PHY.N120_I)
+PLONCHA = InputParameter(phys=PHY.N120_I, container='MODL!.TOPOSE.LON',
+                         comment="""  XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  """)
 
 
-PLONCHA  = InputParameter(phys=PHY.N120_I, container='MODL!.TOPOSE.LON',
-comment="""  XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  """)
+PLSN = InputParameter(phys=PHY.NEUT_R)
 
 
-PLSN     = InputParameter(phys=PHY.NEUT_R)
+PLST = InputParameter(phys=PHY.NEUT_R)
 
 
-PLST     = InputParameter(phys=PHY.NEUT_R)
+PSTANO = InputParameter(phys=PHY.N120_I)
 
 
-PSTANO   = InputParameter(phys=PHY.N120_I)
-
-
-PPMILTO  = InputParameter(phys=PHY.N792_R)
+PPMILTO = InputParameter(phys=PHY.N792_R)
 
 
 CHAR_MECA_FR3D3D = Option(
     para_in=(
-           PCNSETO,
+        PCNSETO,
         SP.PFR3D3D,
         SP.PGEOMER,
-           PHEAVTO,
-           PHEA_NO,
-           PLONCHA,
-           PLSN,
-           PLST,
-           PPINTTO,
-           PPMILTO,
-           PSTANO,
+        PHEAVTO,
+        PHEA_NO,
+        PLONCHA,
+        PLSN,
+        PLST,
+        PPINTTO,
+        PPMILTO,
+        PSTANO,
     ),
     para_out=(
         SP.PVECTUR,
     ),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),(AT.DIM_TOPO_MODELI,'3'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.INTERFACE,'OUI'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'D3D'),)),
+        CondCalcul(
+            '+', ((AT.PHENO, 'ME'), (AT.BORD, '0'), (AT.DIM_TOPO_MODELI, '3'),)),
+        CondCalcul('-', ((AT.PHENO, 'ME'), (AT.INTERFACE, 'OUI'),)),
+        CondCalcul('-', ((AT.PHENO, 'ME'), (AT.MODELI, 'D3D'),)),
     ),
     comment=""" CHAR_MECA_FR3D3D (MOT-CLE : FORCE_INTERNE): CALCUL DU SECOND
            MEMBRE ELEMENTAIRE CORRESPONDANT A DES FORCES INTERNES APPLIQUEES
