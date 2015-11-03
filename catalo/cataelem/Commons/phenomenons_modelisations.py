@@ -15,6 +15,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
+# person_in_charge: jacques.pellet@edf.fr
 
 from cataelem.Tools.base_objects import Phenomenon, Modelisation, objects_from_context
 import cataelem.Commons.mesh_types as MT
