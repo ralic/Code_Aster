@@ -80,7 +80,7 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
     integer :: nec, ibid, numfon, n1, n2, ndim, jgtl, estbf
     parameter     (ndim=2)
     real(kind=8) :: xm, ym, xi, yi, eps, d, norme, alpha, valx, valy
-    character(len=8) :: k8b, fiss
+    character(len=8) :: k8b, fiss, fonfis
     character(len=16) :: k16b, nomcmd
     character(len=19) :: grlt, chgrs
     character(len=24) :: chamno
@@ -92,6 +92,9 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
 !
     call jemarq()
     eps = 1.d-06
+    chgrs=''
+    fiss=''
+    fonfis=''
 !
     call getres(k8b, k16b, nomcmd)
     n1=1
@@ -99,7 +102,7 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
 !
     if (nomcmd .eq. 'CALC_G') then
 !       CAS CLASSIQUE (N1 NON NUL) OU CAS X-FEM (N2 NON NUL)
-        call getvid('THETA', 'FOND_FISS', iocc=1, scal=k8b, nbret=n1)
+        call getvid('THETA', 'FOND_FISS', iocc=1, scal=fonfis, nbret=n1)
         call getvid('THETA', 'FISSURE', iocc=1, scal=fiss, nbret=n2)
     endif
 
@@ -118,7 +121,7 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
 !     VAUT LE GRADIENT DE LA LEVEL SET TANGENTE
 
     ! On verifie l'existence de basefond
-    call jeexin(k8b//'.BASEFOND', estbf)
+    call jeexin(fonfis//'.BASEFOND', estbf)
 
     if (ldirec) then
 !     --- LA DIRECTION DE THETA EST DONNEE, ON LA NORME ---
@@ -144,7 +147,7 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
             call utmess('F', 'RUPTURE0_58')
         end if
 
-        call jeveuo(k8b//'.BASEFOND', 'L', vr=vbasfd)
+        call jeveuo(fonfis//'.BASEFOND', 'L', vr=vbasfd)
         if (size(vbasfd).gt.4) then
             ! le front ne doit contenir qu'un noeud, donc 4 composantes dans basefond
             call utmess('F', 'RUPTURE0_33')
@@ -252,7 +255,7 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
         endif
     end do
 !
-    if (.not.ldirec) call detrsd('CHAM_NO_S', chgrs)
+    call detrsd('CHAM_NO_S', chgrs)
 !
     call jedema()
 end subroutine
