@@ -278,31 +278,33 @@ subroutine dtmprep_noli(sd_dtm_)
 
         call dtmget(sd_dtm, _NB_MODES,iscal=nbmode)
 
-!       --- Explicit or implicit treatment of non-linearities
-        call getvtx(' ', 'TRAITEMENT_NONL', iocc=1, scal=nltreat_k)
-        if (nltreat_k(1:9).eq.'IMPLICITE') then
+!       --- Explicit or implicit treatment of choc non-linearities
+        if (nbchoc.gt.0) then
+            call getvtx(' ', 'TRAITEMENT_NONL', iocc=1, scal=nltreat_k)
+            if (nltreat_k(1:9).eq.'IMPLICITE') then
 
-            if (nbnli.gt.41) call utmess('F', 'DYNAMIQUE_28', si=41)
+                if (nbchoc.gt.41) call utmess('F', 'DYNAMIQUE_28', si=41)
 
-            call dtmsav(sd_dtm, _NL_TREAT, 1, iscal=1)
-            call dtminivec(sd_dtm, _F_NL_ADD, nbmode)
-            call dtminivec(sd_dtm, _IMP_DEPL, nbmode)
-            call dtminivec(sd_dtm, _IMP_VITE, nbmode)
-            call dtminivec(sd_dtm, _IMP_ACCE, nbmode)
-            call dtminivec(sd_dtm, _IMP_FEXT, nbmode)
+                call dtmsav(sd_dtm, _NL_TREAT, 1, iscal=1)
+                call dtminivec(sd_dtm, _F_NL_ADD, nbmode)
+                call dtminivec(sd_dtm, _IMP_DEPL, nbmode)
+                call dtminivec(sd_dtm, _IMP_VITE, nbmode)
+                call dtminivec(sd_dtm, _IMP_ACCE, nbmode)
+                call dtminivec(sd_dtm, _IMP_FEXT, nbmode)
 
-            nlcase = 0
-            call dtmcase_coder (nlcase, casek7)
-            call wkvect(sd_dtm // '.PRJ_BAS.'//casek7, 'V V R', nbmode*nbmode, vr=basev0)
-            do i = 1, nbmode
-                base0(i,i) = 1.d0
-                do j = i+1, nbmode
-                    base0(i,j) = 0.d0
+                nlcase = 0
+                call dtmcase_coder (nlcase, casek7)
+                call wkvect(sd_dtm // '.PRJ_BAS.'//casek7, 'V V R', nbmode*nbmode, vr=basev0)
+                do i = 1, nbmode
+                    base0(i,i) = 1.d0
+                    do j = i+1, nbmode
+                        base0(i,j) = 0.d0
+                    end do
                 end do
-            end do
 
-            nbschor = nbnli*(mdtr74grd('SCHOR')+mdtr74grd('MAXVINT'))
-            call dtminivec(sd_dtm, _NL_SAVE0, nbschor)
+                nbschor = nbnli*(mdtr74grd('SCHOR')+mdtr74grd('MAXVINT'))
+                call dtminivec(sd_dtm, _NL_SAVE0, nbschor)
+            end if
         end if
 
         call dtmget(sd_dtm, _NB_PHYEQ, iscal=neq)

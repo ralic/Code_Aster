@@ -725,6 +725,9 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase,&
         call dtmget(sd_dtm, _AMOR_DIA, lonvec=lvec)
         call intinivec(sd_int, AMOR_DIA, lvec, iocc=1, vr=agen)
         call dtmget(sd_dtm, _AMOR_DIA, rvect=agen)
+
+        call intget(sd_int, IND_ARCH, iscal=lev)
+        call intbuff(sd_int, buffint, level=lev)
     endif
 
 999 continue
