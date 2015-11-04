@@ -11,7 +11,7 @@ waf install -p
 
 import os
 ASTER_ROOT = os.environ['ASTER_ROOT']
-YAMMROOT = ASTER_ROOT + '/public/V7_6_0_201510'
+YAMMROOT = ASTER_ROOT + '/public/default'
 
 def configure(self):
     opts = self.options
@@ -23,7 +23,7 @@ def configure(self):
         YAMMROOT + '/tools/Medfichier-308/lib',
         YAMMROOT + '/prerequisites/Metis-40/lib',
         YAMMROOT + '/prerequisites/Mfront-TFEL203/lib',
-        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster3/lib',
+        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster3/SEQ/lib',
         YAMMROOT + '/prerequisites/Scotch_aster-604_aster/lib',
     ])
 
@@ -32,8 +32,8 @@ def configure(self):
         YAMMROOT + '/tools/Medfichier-308/include',
         YAMMROOT + '/prerequisites/Metis-40/Lib',
         YAMMROOT + '/prerequisites/Mfront-TFEL203/include',
-        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster3/include',
-        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster3/include_seq',
+        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster3/SEQ/include',
+        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster3/SEQ/include_seq',
         YAMMROOT + '/prerequisites/Scotch_aster-604_aster/include',
     ])
 

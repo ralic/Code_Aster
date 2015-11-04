@@ -11,7 +11,7 @@ waf_mpi install -p
 
 import athosdev
 ASTER_ROOT = athosdev.ASTER_ROOT
-YAMMROOT = athosdev.YAMMROOT + '_mpi'
+YAMMROOT = athosdev.YAMMROOT 
 
 def configure(self):
     opts = self.options
@@ -25,12 +25,12 @@ def configure(self):
         'module load intel_mpi/4.1.1.036'])
 
     self.env.prepend_value('LIBPATH', [
-        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster3/lib',
+        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster3/MPI/lib',
         YAMMROOT + '/prerequisites/Petsc_mpi-petsc_aster/lib',
     ])
 
     self.env.prepend_value('INCLUDES', [
-        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster3/include',
+        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster3/MPI/include',
         YAMMROOT + '/prerequisites/Petsc_mpi-petsc_aster/include',
     ])
 
