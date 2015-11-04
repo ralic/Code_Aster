@@ -273,6 +273,14 @@ Pas d'instant trouvé dans la table pour l'instant %(r1)f.
 Plusieurs instants trouvés dans la table pour l'instant %(r1)f.
 """),
 
+    40: _(u"""
+La dimension de la modélisation (%(i1)dD) est différente de celle des éléments en front de fissure (%(i2)dD).
+-> Risque :
+Il est possible que vous ayez utilisé des éléments de structure. Ces éléments ne sont pas compatibles avec les opérateurs de mécanique de la rupture.
+-> Conseil :
+Utilisez les modélisations compatibles : 3D, D_PLAN (2D), C_PLAN (2D) ou AXIS (2D).
+"""),
+
     41 : _(u"""
 Le groupe de mailles %(k1)s défini sous le mot-clé GROUP_MA n'existe pas.
 """),

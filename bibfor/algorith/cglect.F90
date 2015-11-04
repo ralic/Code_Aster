@@ -13,6 +13,7 @@ subroutine cglect(resu, modele, ndim, option, cas,&
 #include "asterfort/cgvemf.h"
 #include "asterfort/cgverc.h"
 #include "asterfort/cgveth.h"
+#include "asterfort/cgvcmo.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
@@ -64,7 +65,7 @@ subroutine cglect(resu, modele, ndim, option, cas,&
 !
 !     LNOFF  : NOMBRE DE NOEUDS (OU POINTS) DU FOND DE FISSURE
 !     LISS   : TYPE DE LISSAGE (NOM UNIQUE CONTRACTE)
-!     TYPDIS : TYPE DE DISCONTINUITE SI FISSURE XFEM 
+!     TYPDIS : TYPE DE DISCONTINUITE SI FISSURE XFEM
 !              'FISSURE' OU 'COHESIF'
 ! ======================================================================
 !
@@ -107,6 +108,10 @@ subroutine cglect(resu, modele, ndim, option, cas,&
 !     VERIFICATION DE LA COMPATIBILITE ENTRE LA SD ASSOCIEE AU FOND
 !     DE FISSURE ET LE MODELE
     call cgvemf(modele, typfis, nomfis, typdis)
+
+!     VERIFICATION DE LA COMPATIBILITE ENTRE LA DIMENSION DU MODELE
+!     ET DE CELLES DES ELEMENTS EN FOND DE FISSURE
+    call cgvcmo(modele, nomfis, typfis, ndim)
 !
 !     VERIFICATION DE LA COMPATIBILITE ENTRE OPTION ET TYPE DE FISSURE
     call cgvefo(option, typfis, nomfis, typdis)
