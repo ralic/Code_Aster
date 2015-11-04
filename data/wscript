@@ -11,7 +11,10 @@ import sys
 import os
 import os.path as osp
 from itertools import chain
-from waflib import Task, TaskGen, Utils
+from subprocess import Popen, PIPE
+
+from waflib import Configure, Utils
+
 
 def options(self):
     group = self.get_option_group("Code_Aster options")
@@ -26,6 +29,7 @@ def options(self):
 def configure(self):
     self.add_os_flags('ADDMEM')
     self.env.legacy = self.options.legacy
+    self.getAsrunTmp()
 
 def build(self):
     if not self.env.legacy:
@@ -35,14 +39,14 @@ def build(self):
     self(
         features = 'subst',
             name = 'data_files',
-          source = ('config.txt.tmpl', 'profile.sh.tmpl'),
-          target = ('config.txt', 'profile.sh'),
+          source = ('config.txt.tmpl', 'profile.sh.tmpl', 'CTestTestfile.cmake.tmpl'),
+          target = ('config.txt', 'profile.sh', 'CTestTestfile.cmake'),
     install_path = '${ASTERDATADIR}',
             vars = ['PREFIX', 'DEFINES', 'PYTHON', 'ADDMEM',
                     'FC', 'FCFLAGS',
                     'LIBPATH', 'LIBDIR', 'CFG_PYTHONPATH', 'astervers',
                     'ASTERDATADIR', 'ASTERLIBDIR', 'OPT_ENV', 'install_tests',
-                    'MFRONT_SPECIFIC'],
+                    'MFRONT_SPECIFIC', 'ASRUN_TMPDIR'],
      **dict_conv
     )
 
@@ -94,4 +98,17 @@ def _env2dict(self, src, env, install_tests):
             "export PATH=${TFELHOME}/bin:$PATH"
         ])
     dico['MFRONT_SPECIFIC'] = text
+    dico['ASRUN_TMPDIR'] = env.ASRUN_TMPDIR
     return dico
+
+@Configure.conf
+def getAsrunTmp(self):
+    """Ask as_run for tmpdir"""
+    self.start_msg('Asking asrun for its temporary directory')
+    # cmake syntax
+    tmpdir = "$ENV{ASTER_TMPDIR}"
+    if os.environ.get('ASTER_TMPDIR'):
+        tmpdir = os.environ['ASTER_TMPDIR']
+    self.end_msg(tmpdir)
+    self.env.ASRUN_TMPDIR = tmpdir
+    return tmpdir
