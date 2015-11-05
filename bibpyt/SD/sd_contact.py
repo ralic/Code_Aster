@@ -275,10 +275,6 @@ class sd_contact(AsBase):
 #   Objet spécifique grands glissements
     MAESCX = Facultatif(AsVI(SDNom(nomj='.CONTACT.MAESCX')))
 
-#   Glute objets spécifiques petits glissements (2 fissures max dans les tests)
-    PRCHNO = Facultatif(sd_prof_chno(SDNom(nomj='.PRCHN00000')))
-    PRCHN1 = Facultatif(sd_prof_chno(SDNom(nomj='.PRCHN00001')))
-
     def check_form_xfem(self, checker):
         if (self.formulation_xfem()):
             nzoco, nsuco, nmaco, nnoco, ntnoe, ntmae, ntpt, ntelno = self.dimeCO(

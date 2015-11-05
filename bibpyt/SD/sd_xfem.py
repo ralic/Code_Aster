@@ -82,7 +82,6 @@ class sd_fiss_xfem(AsBase):
 
     LISEQ = Facultatif(AsVI(SDNom(nomj='.LISEQ')))
     LISEQ_LAGR = Facultatif(AsVI(SDNom(nomj='.LISEQ_LAGR')))
-    CNCTE = Facultatif(AsVI(SDNom(nomj='.CNCTE')))
 
 # I.4) objets relatifs au contact
     # une sd_modele peut avoir une "sd_l_table" contenant des grandeurs

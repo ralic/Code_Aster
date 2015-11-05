@@ -81,7 +81,7 @@ implicit none
     real(kind=8) :: rrm
     character(len=8) :: elem_type
     character(len=19) :: chs(7)
-    character(len=24) :: xfimai, cncte
+    character(len=24) :: xfimai
     character(len=24) :: tabfin, maescx
     integer :: jtabf, jmaesx, ninter
     aster_logical :: projin
@@ -156,7 +156,6 @@ implicit none
 ! ----- Parameters
 !
         type_inte = mminfi(sdcont_defi,'INTEGRATION' ,i_zone )
-        cncte     = zk8(jfimai-1+i_zone)//'.CNCTE'
 !
 ! ----- Current slave element
 !

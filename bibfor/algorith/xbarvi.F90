@@ -49,14 +49,6 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter, tabai)
 !       1 SI L'ARETE INTERSECTÉE EST VITALE
 !       0 SINON
 !
-! ON CRÉE AUSSI LA SD FISS(1:8)//'.CONTACT.CNCTE QUI LISTE ET RENSEIGNE
-! LES ARETES APARTENANTES A UN GROUPE D'ARETES VITALES CONNECTÉES,
-! IL Y A 4 COMPOSANTES PAR ARETES :
-!      1 : NUMERO D'ARETE DANS LE GROUPE
-!      2 : NUMERO DE GROUPE
-!      3 : NUMERO DE MAILLE
-!      4 : NUMERO LOCAL DE L'ARETE DANS LA MAILLE
-!
 ! TRAVAIL EFFECTUE EN COLLABORATION AVEC L'I.F.P.
 !
 ! ----------------------------------------------------------------------
