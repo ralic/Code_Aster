@@ -77,8 +77,12 @@ TEST_RESU(RESU=(_F(GROUP_NO='C',
           )
 
 RESU11=STAT_NON_LINE(MODELE=MO,
-                   SOLVEUR=_F(METHODE='MUMPS',TYPE_RESOL='SYMGEN',
-                   RESI_RELA=1E-2,POSTTRAITEMENTS='SANS'),
+                   SOLVEUR=_F(METHODE='MUMPS',
+                              TYPE_RESOL='SYMGEN',
+                              RESI_RELA=1E-2,
+                            #   cf. issue24305 - Rétablir SANS après correction de Mumps
+                            #   POSTTRAITEMENTS='SANS',
+                              ),
                    CHAM_MATER=CH_MATER, INFO=1,
                    EXCIT=(  _F(CHARGE=SYMETRI2)),
                    COMPORTEMENT=_F(RELATION='ELAS'),
