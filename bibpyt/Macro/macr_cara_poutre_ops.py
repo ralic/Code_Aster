@@ -492,7 +492,7 @@ def macr_cara_poutre_ops(self, MAILLAGE, SYME_Y, SYME_Z, GROUP_MA_BORD,
             MODELE=__nomot2,
             CHAM_MATER=__chmat2,
             EXCIT=(_F(CHARGE=__chart5,), _F(CHARGE=__chart6,),),
-            SOLVEUR=_F(STOP_SINGULIER='NON',),)
+            SOLVEUR=_F(STOP_SINGULIER='NON', METHODE='LDLT',),)
 
         # CALCUL DE L INERTIE DE GAUCHISSEMENT :
         nomres = POST_ELEM(
