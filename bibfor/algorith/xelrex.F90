@@ -58,4 +58,14 @@ subroutine xelrex(elrefp, nno, xref)
             nno=8   
         endif
     endif
+!
+!   Cas particulier de la pyramide quadratique : le noeud au centre de
+!   la base doit être ajouté à la main, car la pyramide quadratique à
+!   14 noeuds n'existe pas en tant qu'élémént de référence dans Aster
+    if (elrefp.eq.'P13') then
+       xref(ndim*(14-1)+1)=0.
+       xref(ndim*(14-1)+2)=0.
+       xref(ndim*(14-1)+3)=0.
+    endif
+!
 end
