@@ -28,7 +28,7 @@ subroutine jecreo(nomlu, listat)
 #include "asterfort/jjanal.h"
 #include "asterfort/jjvern.h"
 #include "asterfort/utmess.h"
-    character(len=*) :: nomlu, listat
+    character(len=*), intent(in) :: nomlu, listat
 !     ==================================================================
 !-----------------------------------------------------------------------
     integer :: iv, jcara, jdate, jdocu, jgenr, jhcod, jiadd

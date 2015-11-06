@@ -17,7 +17,7 @@
 !
 interface
     subroutine getfac(motfac, iocc)
-        character(len=*) :: motfac
-        integer :: iocc
+        character(len=*), intent(in) :: motfac
+        integer, intent(out) :: iocc
     end subroutine getfac
 end interface

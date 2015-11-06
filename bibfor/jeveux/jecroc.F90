@@ -21,7 +21,7 @@ subroutine jecroc(nomlu)
 #include "asterfort/jjvern.h"
 #include "asterfort/jxveuo.h"
 #include "asterfort/utmess.h"
-    character(len=*) :: nomlu
+    character(len=*), intent(in) :: nomlu
 !     ------------------------------------------------------------------
     integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
     common /iatcje/  iclas ,iclaos , iclaco , idatos , idatco , idatoc

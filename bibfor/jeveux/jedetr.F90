@@ -26,7 +26,7 @@ subroutine jedetr(nomlu)
 #include "asterfort/jjvern.h"
 #include "asterfort/jxlibd.h"
 #include "asterfort/utmess.h"
-    character(len=*) :: nomlu
+    character(len=*), intent(in) :: nomlu
 ! ----------------------------------------------------------------------
 ! DESTRUCTION D'UN OBJET JEVEUX
 !

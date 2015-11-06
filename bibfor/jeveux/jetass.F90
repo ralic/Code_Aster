@@ -30,7 +30,7 @@ subroutine jetass(clas)
 #include "asterfort/jesvos.h"
 
 
-    character(len=1) :: clas
+    character(len=1), intent(in) :: clas
 ! ----------------------------------------------------------------------
 ! COMPRESSION D'UNE BASE DE DONNEES PAR RECUPERATION DES ENREGISTREMENTS
 ! LIBERES LORS D'UNE DESTRUCTION

@@ -15,10 +15,10 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine jeveut(nomlu, cel, jctab)
-        character(len=*) :: nomlu
-        character(len=*) :: cel
-        integer :: jctab
-    end subroutine jeveut
-end interface
+          interface 
+            subroutine jeveut(nomlu,cel,jctab)
+              character(len=*), intent(in) :: nomlu
+              character(len=*), intent(in) :: cel
+              integer, intent(out) :: jctab
+            end subroutine jeveut
+          end interface 

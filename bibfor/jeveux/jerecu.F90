@@ -23,7 +23,7 @@ subroutine jerecu(clas)
 #include "asterfort/jjlidy.h"
 #include "asterfort/jxecrb.h"
 #include "asterfort/jxliro.h"
-    character(len=1) :: clas
+    character(len=1), intent(in) :: clas
 ! ----------------------------------------------------------------------
 ! MARQUE LIBRES LES ENREGISTREMENTS ASSOCIÉS AUX PETITS OBJETS QUAND
 ! L'ENSEMBLE DES OBJETS ASSOCIÉS A ETE DETRUIT
@@ -87,8 +87,8 @@ subroutine jerecu(clas)
         ncla1 = index ( classe , kclas)
         ncla2 = ncla1
     endif
-    do 100 ic = ncla1, ncla2
-        if (nbpeti(ic) .lt. nblim(ic)) goto 100
+    do ic = ncla1, ncla2
+        if (nbpeti(ic) .lt. nblim(ic)) cycle
         lgbl = 1024*longbl(ic)*lois
         call jjalls(lgbl, 0, 'V', 'I', lois,&
                     'INIT', itp, jitp, iaditp, iadyn)
@@ -159,6 +159,6 @@ subroutine jerecu(clas)
         endif
         call jjlidy(iadyn, iaditp)
         nbpeti(ic) = 0
-100 end do
+    end do
 ! FIN ------------------------------------------------------------------
 end subroutine

@@ -15,9 +15,9 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine jecreo(nomlu, listat)
-        character(len=*) :: nomlu
-        character(len=*) :: listat
-    end subroutine jecreo
-end interface
+          interface 
+            subroutine jecreo(nomlu,listat)
+              character(len=*), intent(in) :: nomlu
+              character(len=*), intent(in) :: listat
+            end subroutine jecreo
+          end interface 

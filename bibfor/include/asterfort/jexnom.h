@@ -15,10 +15,10 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    function jexnom(nomc, nomo)
-        character(len=*) :: nomc
-        character(len=*) :: nomo
-        character(len=32) :: jexnom
-    end function jexnom
-end interface
+          interface 
+            function jexnom(nomc,nomo)
+              character(len=*), intent(in) :: nomc
+              character(len=*), intent(in) :: nomo
+              character(len=32) :: jexnom
+            end function jexnom
+          end interface 

@@ -22,7 +22,7 @@ function jexatr(nomc, noma)
 #include "asterfort/jjallc.h"
 #include "asterfort/jjvern.h"
 #include "asterfort/utmess.h"
-    character(len=*) :: nomc, noma
+    character(len=*),intent(in) :: nomc, noma
 ! ----------------------------------------------------------------------
     integer :: lk1zon, jk1zon, liszon, jiszon
     common /izonje/  lk1zon , jk1zon , liszon , jiszon

@@ -15,10 +15,10 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine jerazo(nomlu, ni, i1)
-        character(len=*) :: nomlu
-        integer :: ni
-        integer :: i1
-    end subroutine jerazo
-end interface
+          interface 
+            subroutine jerazo(nomlu,ni,i1)
+              character(len=*), intent(in) :: nomlu
+              integer, intent(in) :: ni
+              integer, intent(in) :: i1
+            end subroutine jerazo
+          end interface 

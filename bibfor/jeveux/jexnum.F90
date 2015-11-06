@@ -19,8 +19,8 @@ function jexnum(nomc, num)
 #include "jeveux.h"
 !
     character(len=32) :: jexnum
-    character(len=*) :: nomc
-    integer :: num
+    character(len=*),intent(in) :: nomc
+    integer,intent(in) :: num
 !
     character(len=24) :: ch24
     character(len=8) :: ch8
@@ -31,7 +31,6 @@ function jexnum(nomc, num)
     common /reelje/   reelc
     character(len=24) :: nomec
     common /knomje/   nomec
-!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     data              ch8      / '$$XNUM  ' /
 !

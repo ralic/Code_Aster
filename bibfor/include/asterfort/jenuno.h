@@ -15,9 +15,9 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine jenuno(nomlu, nomo)
-        character(len=*) :: nomlu
-        character(len=*) :: nomo
-    end subroutine jenuno
-end interface
+          interface 
+            subroutine jenuno(nomlu,nomo)
+              character(len=*), intent(in) :: nomlu
+              character(len=*), intent(out) :: nomo
+            end subroutine jenuno
+          end interface 

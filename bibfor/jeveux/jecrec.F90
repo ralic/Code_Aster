@@ -24,8 +24,8 @@ subroutine jecrec(nomlu, listat, accelu, stoclu, longlu,&
 #include "asterfort/jjvern.h"
 #include "asterfort/jxveuo.h"
 #include "asterfort/utmess.h"
-    character(len=*) :: nomlu, listat, accelu, stoclu, longlu
-    integer :: nmax
+    character(len=*), intent(in) :: nomlu, listat, accelu, stoclu, longlu
+    integer, intent(in) :: nmax
 !     ------------------------------------------------------------------
     integer :: lk1zon, jk1zon, liszon, jiszon
     common /izonje/  lk1zon , jk1zon , liszon , jiszon

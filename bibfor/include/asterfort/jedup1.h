@@ -15,10 +15,10 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine jedup1(o1z, base, o2z)
-        character(len=*) :: o1z
-        character(len=*) :: base
-        character(len=*) :: o2z
-    end subroutine jedup1
-end interface
+          interface 
+            subroutine jedup1(o1z,base,o2z)
+              character(len=*), intent(in) :: o1z
+              character(len=*), intent(in) :: base
+              character(len=*), intent(in) :: o2z
+            end subroutine jedup1
+          end interface 

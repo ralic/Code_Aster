@@ -26,8 +26,8 @@ subroutine jerazo(nomlu, ni, i1)
 #include "asterfort/jjvern.h"
 #include "asterfort/jxlocs.h"
 #include "asterfort/utmess.h"
-    character(len=*) :: nomlu
-    integer :: ni, i1
+    character(len=*), intent(in) :: nomlu
+    integer, intent(in) :: ni, i1
 ! ----------------------------------------------------------------------
 !     REMISE A "ZERO" DU SEGMENT DE VALEURS ASSOCIE A UN OBJET JEVEUX
 ! IN  NI    : NOMBRE DE VALEURS A REINITIALISER

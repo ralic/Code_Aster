@@ -15,15 +15,15 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine bmnodi(basmdz, intfz, nmintz, numint, nbdef,&
-                      ivcord, nbdif)
-        integer, intent(in) :: nbdef
-        character(len=*), intent(in) :: basmdz
-        character(len=*), intent(in) :: intfz
-        character(len=*), intent(in) :: nmintz
-        integer, intent(in) :: numint
-        integer, intent(out) :: ivcord(nbdef)
-        integer, intent(inout) :: nbdif
-    end subroutine bmnodi
-end interface
+          interface 
+            subroutine bmnodi(basmdz,intfz,nmintz,numint,nbdef,ivcord,  &
+     &nbdif)
+              integer, intent(in) :: nbdef
+              character(len=*), intent(in) :: basmdz
+              character(len=*), intent(in) :: intfz
+              character(len=*), intent(in) :: nmintz
+              integer, intent(inout) :: numint
+              integer, intent(out) :: ivcord(nbdef)
+              integer, intent(inout) :: nbdif
+            end subroutine bmnodi
+          end interface 

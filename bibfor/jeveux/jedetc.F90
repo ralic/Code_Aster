@@ -24,8 +24,8 @@ subroutine jedetc(clas, souch, ipos)
 #include "asterfort/jjmzat.h"
 #include "asterfort/jxlibd.h"
 #include "asterfort/utmess.h"
-    character(len=*) :: clas, souch
-    integer :: ipos
+    character(len=*), intent(in) :: clas, souch
+    integer, intent(in) :: ipos
 ! ----------------------------------------------------------------------
 ! DESTRUCTION D'UN ENSEMBLE D'OBJETS JEVEUX
 !

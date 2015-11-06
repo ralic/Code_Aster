@@ -57,7 +57,7 @@ subroutine imbint(nomres, ifm)
     character(len=11) :: dactif
     character(len=24) :: nomint, typint, noeint, desdef, ddact
     character(len=80) :: chaine
-    integer :: idec(nbcpmx), ifm
+    integer :: idec(nbcpmx), ifm,i1
 !
     integer :: ibid1
     integer, pointer :: idc_desc(:) => null()
@@ -199,8 +199,9 @@ subroutine imbint(nomres, ifm)
             endif
 !
         end do
-        write(ifm,*)'  '
-        call bmnodi('        ', nomres, '         ', i, 0,&
+        write(ifm,*)' '
+        i1=i
+        call bmnodi(' ', nomres, ' ', i1, 0,&
                     ibid(1), nbdef)
         write(ifm,*)'  '
         write(ifm,*)' NOMBRE DE DEFORMEES STATIQUES ASSOCIES: ',nbdef

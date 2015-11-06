@@ -21,8 +21,8 @@ subroutine jeexin(nomlu, iret)
 #include "asterfort/jjcroc.h"
 #include "asterfort/jjvern.h"
 #include "asterfort/jxveuo.h"
-    character(len=*) :: nomlu
-    integer :: iret
+    character(len=*), intent(in) :: nomlu
+    integer, intent(out) :: iret
 ! ----------------------------------------------------------------------
 ! ROUTINE UTILISATEUR : TESTE L'EXISTENCE DU DESCRIPTEUR CREE PAR
 !                       JECREO OU JECROC

@@ -35,8 +35,8 @@ subroutine jeagco(schin, schout, nbocnw, lontnw, claout)
 #include "asterfort/jxdeps.h"
 #include "asterfort/jxliro.h"
 #include "asterfort/utmess.h"
-    character(len=*) :: schin, schout, claout
-    integer :: nbocnw, lontnw
+    character(len=*), intent(in) :: schin, schout, claout
+    integer, intent(in) :: nbocnw, lontnw
 ! ----------------------------------------------------------------------
 !     AGRANDIT LA COLLECTION DE NOM SCHOUT A PARTIR DE SCHIN SUR LA BASE
 !     CLAOUT

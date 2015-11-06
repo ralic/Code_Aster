@@ -24,8 +24,8 @@ subroutine jeveut(nomlu, cel, jctab)
 ! ----------------------------------------------------------------------
     implicit none
 #include "asterfort/jeveuo.h"
-    integer :: jctab
-    character(len=*) :: nomlu, cel
+    integer,intent(out) :: jctab
+    character(len=*),intent(in) :: nomlu, cel
 !     ------------------------------------------------------------------
     integer :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
     common /iadmje/  ipgc,kdesma,   lgd,lgduti,kposma,   lgp,lgputi

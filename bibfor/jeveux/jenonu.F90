@@ -24,8 +24,8 @@ subroutine jenonu(nomlu, numo)
 #include "asterfort/jjvern.h"
 #include "asterfort/jxveuo.h"
 #include "asterfort/utmess.h"
-    character(len=*) :: nomlu
-    integer :: numo
+    character(len=*), intent(in) :: nomlu
+    integer, intent(out) :: numo
 !     ==================================================================
 !-----------------------------------------------------------------------
     integer :: iadmex, iadmi, ibacol, ipgcex, jcara, jctab, jdate

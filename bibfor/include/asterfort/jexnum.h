@@ -15,10 +15,10 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    function jexnum(nomc, num)
-        character(len=*) :: nomc
-        integer :: num
-        character(len=32) :: jexnum
-    end function jexnum
-end interface
+          interface 
+            function jexnum(nomc,num)
+              character(len=*), intent(in) :: nomc
+              integer, intent(in) :: num
+              character(len=32) :: jexnum
+            end function jexnum
+          end interface 

@@ -23,8 +23,8 @@ subroutine jereou(clas, pcent)
 #include "asterfort/jelibf.h"
 #include "asterfort/lxmins.h"
 #include "asterfort/utmess.h"
-    character(len=*) :: clas
-    real(kind=8) :: pcent
+    character(len=*), intent(in) :: clas
+    real(kind=8), intent(in) :: pcent
 ! ----------------------------------------------------------------------
 ! ROUTINE UTILISATEUR PERMETTANT DE FERMER UNE BASE, DE DETRUIRE LE OU
 !         LES FICHIERS ASSOCIES ET DE LA RE-OUVRIR

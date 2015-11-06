@@ -15,14 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine jecrec(nomlu, listat, accelu, stoclu, longlu,&
-                      nmax)
-        character(len=*) :: nomlu
-        character(len=*) :: listat
-        character(len=*) :: accelu
-        character(len=*) :: stoclu
-        character(len=*) :: longlu
-        integer :: nmax
-    end subroutine jecrec
-end interface
+          interface 
+            subroutine jecrec(nomlu,listat,accelu,stoclu,longlu,nmax)
+              character(len=*), intent(in) :: nomlu
+              character(len=*), intent(in) :: listat
+              character(len=*), intent(in) :: accelu
+              character(len=*), intent(in) :: stoclu
+              character(len=*), intent(in) :: longlu
+              integer, intent(in) :: nmax
+            end subroutine jecrec
+          end interface 

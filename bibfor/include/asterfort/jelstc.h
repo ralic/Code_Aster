@@ -15,14 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine jelstc(clas, souch, ipos, maxval, klst,&
-                      nbval)
-        character(len=*) :: clas
-        character(len=*) :: souch
-        integer :: ipos
-        integer :: maxval
-        character(len=*) :: klst(*)
-        integer :: nbval
-    end subroutine jelstc
-end interface
+          interface 
+            subroutine jelstc(clas,souch,ipos,maxval,klst,nbval)
+              character(len=*), intent(in) :: clas
+              character(len=*), intent(in) :: souch
+              integer, intent(in) :: ipos
+              integer, intent(in) :: maxval
+              character(len=*), intent(out) :: klst(*)
+              integer, intent(out) :: nbval
+            end subroutine jelstc
+          end interface 

@@ -19,7 +19,7 @@ subroutine jelibe(nomlu)
 #include "asterfort/jjlide.h"
 #include "asterfort/jjvern.h"
 #include "asterfort/utmess.h"
-    character(len=*) :: nomlu
+    character(len=*), intent(in) :: nomlu
 !     ==================================================================
     character(len=6) :: pgma
     common /kappje/  pgma

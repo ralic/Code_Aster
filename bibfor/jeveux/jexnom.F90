@@ -19,7 +19,7 @@ function jexnom(nomc, nomo)
 #include "jeveux.h"
 !
     character(len=32) :: jexnom
-    character(len=*) :: nomc, nomo
+    character(len=*),intent(in) :: nomc, nomo
 !     ------------------------------------------------------------------
     integer :: numec
     common /inumje/  numec

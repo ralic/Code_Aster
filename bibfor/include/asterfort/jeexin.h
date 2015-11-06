@@ -15,9 +15,9 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine jeexin(nomlu, iret)
-        character(len=*) :: nomlu
-        integer :: iret
-    end subroutine jeexin
-end interface
+          interface 
+            subroutine jeexin(nomlu,iret)
+              character(len=*), intent(in) :: nomlu
+              integer, intent(out) :: iret
+            end subroutine jeexin
+          end interface 

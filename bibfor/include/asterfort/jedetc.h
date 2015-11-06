@@ -15,10 +15,10 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine jedetc(clas, souch, ipos)
-        character(len=*) :: clas
-        character(len=*) :: souch
-        integer :: ipos
-    end subroutine jedetc
-end interface
+          interface 
+            subroutine jedetc(clas,souch,ipos)
+              character(len=*), intent(in) :: clas
+              character(len=*), intent(in) :: souch
+              integer, intent(in) :: ipos
+            end subroutine jedetc
+          end interface 

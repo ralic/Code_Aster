@@ -15,12 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine jeagco(schin, schout, nbocnw, lontnw, claout)
-        character(len=*) :: schin
-        character(len=*) :: schout
-        integer :: nbocnw
-        integer :: lontnw
-        character(len=*) :: claout
-    end subroutine jeagco
-end interface
+          interface 
+            subroutine jeagco(schin,schout,nbocnw,lontnw,claout)
+              character(len=*), intent(in) :: schin
+              character(len=*), intent(in) :: schout
+              integer, intent(in) :: nbocnw
+              integer, intent(in) :: lontnw
+              character(len=*), intent(in) :: claout
+            end subroutine jeagco
+          end interface 

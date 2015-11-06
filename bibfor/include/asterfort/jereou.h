@@ -15,9 +15,9 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine jereou(clas, pcent)
-        character(len=*) :: clas
-        real(kind=8) :: pcent
-    end subroutine jereou
-end interface
+          interface 
+            subroutine jereou(clas,pcent)
+              character(len=*), intent(in) :: clas
+              real(kind=8), intent(in) :: pcent
+            end subroutine jereou
+          end interface 

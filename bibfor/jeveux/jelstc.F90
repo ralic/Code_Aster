@@ -21,8 +21,10 @@ subroutine jelstc(clas, souch, ipos, maxval, klst,&
 #include "asterf_types.h"
 #include "jeveux_private.h"
 #include "asterfort/utmess.h"
-    character(len=*) :: clas, souch, klst(*)
-    integer :: ipos, maxval, nbval
+    character(len=*), intent(in) :: clas, souch
+    character(len=*), intent(out) :: klst(*)
+    integer, intent(in) :: ipos, maxval
+    integer, intent(out) :: nbval
 ! ----------------------------------------------------------------------
 !  BUT : RETROUVER LES NOMS DES OBJETS DONT LE NOM CONTIENT UNE CHAINE
 !        DE CARATERES DONNEE, PRESENTS SUR UNE BASE JEVEUX.

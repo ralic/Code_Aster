@@ -40,7 +40,7 @@ subroutine dc_monocristal(nboccm, sdcomp)
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
 !
-    integer, intent(in) :: nboccm
+    integer, intent(out) :: nboccm
     character(len=8), intent(in) :: sdcomp
 !
 ! --------------------------------------------------------------------------------------------------

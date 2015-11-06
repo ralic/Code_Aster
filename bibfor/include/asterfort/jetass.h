@@ -15,8 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine jetass(clas)
-        character(len=1) :: clas
-    end subroutine jetass
-end interface
+          interface 
+            subroutine jetass(clas)
+              character(len=1), intent(in) :: clas
+            end subroutine jetass
+          end interface 

@@ -18,7 +18,7 @@ subroutine jedup1(o1z, base, o2z)
 ! ======================================================================
 #include "asterfort/jedupo.h"
 #include "asterfort/jeexin.h"
-    character(len=*) :: o1z, base, o2z
+    character(len=*), intent(in) :: o1z, base, o2z
 ! ----------------------------------------------------------------------
 !     RECOPIE L'OBJET JEVEUX "O1" SUR LA BASE "BASE" SOUS LE NOM "O2"
 ! ----------------------------------------------------------------------

@@ -24,7 +24,8 @@ subroutine jenuno(nomlu, nomo)
 #include "asterfort/jjvern.h"
 #include "asterfort/jxveuo.h"
 #include "asterfort/utmess.h"
-    character(len=*) :: nomlu, nomo
+    character(len=*), intent(in) :: nomlu
+    character(len=*), intent(out) :: nomo
 ! ----------------------------------------------------------------------
 ! RENVOIE LE NOM ASSOCIE A UN IDENTIFICATEUR
 !

@@ -40,7 +40,7 @@ subroutine bmnodi(basmdz, intfz, nmintz, numint, nbdef,&
 ! BASMDZ   /I/: NOM UTILISATEUR DE LA BASE MODALE OU BLANC
 ! INTFZ    /I/: NOM UTILISATEUR DE L'INTERF_DYNA OU BLANC
 ! NMINTZ   /I/: NOM DE L'INTERFACE
-! NUMINT   /I/: NUMERO DE L'INTERFACE
+! NUMINT   /IO/: NUMERO DE L'INTERFACE
 ! NBDEF    /I/: NOMBRE DE NUMERO ORDRE ATTENDUS
 ! IVCORD   /O/: VECTEUR DES NUMEROS D'ORDRE A REMPLIR
 ! NBDIF    /0/: NOMBRE ATTENDU - NOMBRE TROUVE
@@ -62,7 +62,8 @@ subroutine bmnodi(basmdz, intfz, nmintz, numint, nbdef,&
 !
 !
     character(len=*), intent(in) :: basmdz, nmintz, intfz
-    integer, intent(in) :: numint, nbdef
+    integer, intent(in) :: nbdef
+    integer, intent(inout) :: numint
     integer, intent(out) :: ivcord(nbdef)
     integer, intent(inout) :: nbdif
 !
@@ -128,7 +129,7 @@ subroutine bmnodi(basmdz, intfz, nmintz, numint, nbdef,&
 !----------------RECUPERATION EVENTUELLE DU NUMERO INTERFACE------------
 !
     if (numint .lt. 1) then
-        if (nomint .eq. '          ') then
+        if (nomint .eq. ' ') then
             valk (1) = nomint
             vali = numint
             call utmess('F', 'ALGORITH12_29', sk=valk(1), si=vali)
