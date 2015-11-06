@@ -128,7 +128,9 @@ implicit none
 !
     do i_field = 1, ds_inout%nb_field
         init_keyw = ds_inout%field(i_field)%init_keyw
-        print *, "ReadInOut:", i_field, '>', init_keyw, '<'
+        if (niv .ge. 2) then
+            print *, "ReadInOut:", i_field, '>', init_keyw, '<'
+        endif
         if (getexm(keywf,init_keyw) .eq. 1 .and. ds_inout%field(i_field)%l_read_init) then
             call getvid(keywf, init_keyw, scal = field, iocc=1, nbret=nocc)
             if (nocc.eq.1) then
