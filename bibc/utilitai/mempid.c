@@ -86,6 +86,18 @@ INTEGER DEFP (MEMPID, mempid, INTEGER *val)
     /* VmStk */
     lmem = P2K((uintmax_t)kp->ki_ssize);
 
+# elif defined DARWIN
+
+/*
+OS X does not support retrieving memory consumptions through /proc or kvm library
+*/
+
+    val[0] = 0 ;
+    val[1] = 0 ;
+    val[2] = 0 ;
+    val[3] = 0 ;
+    lmem = 0 ;
+
 # else /* Linux */
 
     sprintf(filename, "/proc/%ld/status", (long)numpro);
