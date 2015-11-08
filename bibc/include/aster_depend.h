@@ -102,13 +102,18 @@
 #endif
 
 /* Comportement par défaut des FPE dans matfpe pour les blas/lapack */
-#ifndef _ENABLE_MATHLIB_FPE
-#   ifndef _DISABLE_MATHLIB_FPE
-#       define _DISABLE_MATHLIB_FPE
+/* On non GNU/Linux systems, FPE are always enabled */
+#ifdef GNU_LINUX
+#   ifndef _ENABLE_MATHLIB_FPE
+#       ifndef _DISABLE_MATHLIB_FPE
+#           define _DISABLE_MATHLIB_FPE
+#       endif
+#   else
+#       undef _DISABLE_MATHLIB_FPE
 #   endif
 #else
 #   undef _DISABLE_MATHLIB_FPE
-#endif
+#endif /* GNU_LINUX */
 
 /* Valeurs par défaut pour les répertoires */
 #ifndef REP_MAT
