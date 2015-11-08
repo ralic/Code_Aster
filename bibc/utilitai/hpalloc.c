@@ -17,21 +17,38 @@
 #include "aster.h"
 #include <errno.h>
 #include <sys/mman.h>
+// <malloc.h> is linux-specific
+// http://stackoverflow.com/questions/12973311/difference-between-stdlib-h-and-malloc-h
+// <stdlib.h> should now be used instead
+#ifdef GNU_LINUX
 #include <malloc.h>
+#endif /* GNU_LINUX */
+
+/*
+This function uses mmap() to prevent memory fragmentation with malloc() on Linux.
+mmap() is not available on other platforms but should not be needed at least on OS X (darwin).
+*/
 
 void DEFPPPP(HPALLOC, hpalloc, void **addr,INTEGER *length, INTEGER *errcode, INTEGER *abrt)
 {
     void abort();
+#ifdef GNU_LINUX
     int ir;
+#endif /* GNU_LINUX */
     if ( *length <= 0 ) {
         *errcode = -1;
     }
     else
     {
+#ifdef GNU_LINUX
         ir=mallopt(M_MMAP_THRESHOLD,0);
-        *addr = (void *)malloc(*length * sizeof(INTEGER)); 
+        *addr = (void *)malloc(*length * sizeof(INTEGER));
         ir=mallopt(M_MMAP_THRESHOLD,128*1024);
         if ( *addr == (void *)-1 )
+#else
+        *addr = (void *)malloc(*length * sizeof(INTEGER));
+        if ( *addr == (void *)0 )
+#endif /* GNU_LINUX */
         {
             *errcode = -2;
         }
