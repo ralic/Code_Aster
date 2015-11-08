@@ -49,7 +49,7 @@ INTEGER DEFP (MEMPID, mempid, INTEGER *val)
 
     numpro = getpid();
 
-# ifdef __FreeBSD__
+# if defined FREEBSD
 /*
 ** FreeBSD and some others without /proc ?
 */
