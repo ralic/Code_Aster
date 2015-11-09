@@ -225,9 +225,6 @@ Attention :
   futures résolutions de systèmes linéaires avec MUMPS dans cet opérateur.
 """),
 
-
-
-
     60: _(u"""
 Solveur MUMPS :
   Limite atteinte : le solveur MUMPS est utilisé par plus de 5 matrices simultanément.

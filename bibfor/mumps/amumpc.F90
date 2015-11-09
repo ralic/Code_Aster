@@ -504,7 +504,7 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol,&
 !          -- PAS GRAVE POUR ASTER.
         else
             iaux=cmpsk%infog(1)
-            if (.not.lpreco) then
+            if ((.not.lpreco).and.(iaux.ne.2)) then
                 call utmess('A', 'FACTOR_55', si=iaux)
             endif
         endif

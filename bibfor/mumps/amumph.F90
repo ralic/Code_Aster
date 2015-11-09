@@ -81,11 +81,13 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
 #include "asterfort/dismoi.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
+#include "mumps/dmumps.h"
     character(len=*) :: action, matasz, vcinez, solvez
     integer :: iret, nbsol
     real(kind=8) :: rsolu(*)
@@ -103,14 +105,14 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
     type(dmumps_struc), pointer :: dmpsk => null()
     type(zmumps_struc), pointer :: zmpsk => null()
     integer :: k, ibid, kxmps, jrefa, n, nsmdi, ifm, niv, ifmump, imd
-    integer :: nprec, iretz, pcentp(2)
-    aster_logical :: lbid, lpreco
+    integer :: nprec, iretz, pcentp(2), ipiv, iretp
+    aster_logical :: lbid, lpreco, limpr_matsing
     character(len=1) :: rouc, prec
     character(len=4) :: etam
     character(len=12) :: k12bid
     character(len=14) :: nonu, nu, impr
     character(len=19) :: matas, vcine, nomat, nosolv, solveu
-    character(len=24) :: kvers
+    character(len=24) :: kvers, kpiv
     character(len=24), pointer :: slvk(:) => null()
     integer, pointer :: slvi(:) => null()
 !----------------------------------------------------------------
@@ -429,6 +431,34 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
 ! --- GESTION DES CODES RETOUR EN CAS DE DETECTION DE SINGULARITES
     if (action(1:6) .eq. 'PRERES') then
         ASSERT((iretz.eq.0).or.(iretz.eq.1).or.(iretz.eq.2))
+! --- ATTENTION: PARAMETRE DEVELOPPEUR A DECOMMENTARISER POUR SORTIR LA MATRICE ET LE RHS
+! --- NON PAS SUR LE PREMIER SYSTEME RENCONTRE (CF. DEBUT DU FICHIER) MAIS SUR LE DERNIER
+! --- AVANT UN UTMESS_F DU FAIT D'UNE MATRICE SINGULIERE
+!        limpr_matsing=.true.
+        limpr_matsing=.false.
+        if (limpr_matsing) then
+            kpiv='&&AMUMP.PIVNUL'
+            iretp=0
+            call jeexin(kpiv, iretp)
+            if (iretp .ne. 0) then
+                call jeveuo(kpiv, 'L', ipiv)
+            else
+                ASSERT(.false.)
+            endif
+            if (zi(ipiv).gt.0) then
+                dmpsk=>dmps(kxmps)
+                deallocate(dmpsk%a,stat=ibid)
+                deallocate(dmpsk%irn,stat=ibid)
+                deallocate(dmpsk%jcn,stat=ibid)
+                dmpsk%job = -2
+                call dmumps(dmpsk)
+                call jedetr(kpiv)
+                impr='OUI_NOSOLVE'
+                call amumpd(action, kxmps, rsolu, vcine, nbsol,&
+                            iretz, impr, ifmump, prepos, pcentp)
+                call utmess('F', 'FACTOR_71', si=ifmump)
+            endif
+        endif
         if (iretz .eq. 2) then
             if (nprec .lt. 0) then
 ! --- FONCTIONNALITE DE DETECTION DE SINGULARITE NON ACTIVEE:
