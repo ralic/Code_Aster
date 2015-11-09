@@ -60,6 +60,10 @@ Risques et conseils :
    * Si le solveur utilisé est LDLT ou MULT_FRONT, vous pouvez utiliser le solveur MUMPS
      car celui-ci est le seul à pouvoir factoriser les matrices qui ne sont pas définies positives.
 
+   * Parfois, en parallèle, le critère de détection de singularité de MUMPS est trop pessimiste ! Il reste néanmoins souvent
+     possible de faire passer le calcul complet en relaxant ce critère (augmenter de 1 ou 2 la valeur du mot-clé NPREC) ou
+     en le débranchant (valeur du mot-clé NPREC=-1) ou en relançant le calcul sur moins de processeurs.
+
    * Il se peut aussi que ce phénomène soit tout à fait normal avec X-FEM si la fissure passe
      très près d'un noeud.
      Si le nombre de décimales perdues n'est pas trop grand (max 10 décimales),
@@ -89,6 +93,10 @@ Risques et conseils :
 
    * Si le solveur utilisé est LDLT ou MULT_FRONT, vous pouvez utiliser le solveur MUMPS
      car celui-ci est le seul à pouvoir factoriser les matrices qui ne sont pas définies positives.
+
+   * Parfois, en parallèle, le critère de détection de singularité de MUMPS est trop pessimiste ! Il reste néanmoins souvent
+     possible de faire passer le calcul complet en relaxant ce critère (augmenter de 1 ou 2 la valeur du mot-clé NPREC) ou
+     en le débranchant (valeur du mot-clé NPREC=-1) ou en relançant le calcul sur moins de processeurs.
 
    * Il se peut aussi que ce phénomène soit tout à fait normal avec X-FEM si la fissure passe
      très près d'un noeud.

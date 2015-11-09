@@ -56,6 +56,10 @@ cata_msg = {
       - Vérifiez vos conditions aux limites.
       - Vérifiez votre modèle, la cohérence des unités.
       - Si vous faites du contact, il ne faut pas que la structure ne "tienne" que par le contact.
+
+      - Parfois, en parallèle, le critère de détection de singularité de MUMPS est trop pessimiste ! Il reste néanmoins souvent
+        possible de faire passer le calcul complet en relaxant ce critère (augmenter de 1 ou 2 la valeur du mot-clé NPREC) ou
+        en le débranchant (valeur du mot-clé NPREC=-1) ou en relançant le calcul sur moins de processeurs.
 """),
 
     5 : _(u"""
