@@ -1,5 +1,5 @@
 subroutine barych(ch1z, ch2z, r1, r2, chz,&
-                  base)
+                  base, nomsdz)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,10 +28,10 @@ subroutine barych(ch1z, ch2z, r1, r2, chz,&
 #include "asterfort/utmess.h"
 #include "asterfort/vrrefe.h"
 #include "asterfort/vtcopy.h"
-    character(len=*) :: ch1z, ch2z, chz
-    character(len=19) :: ch1, ch2, ch
-    character(len=1) :: base
-    real(kind=8) :: r1, r2
+    character(len=*), intent(in) :: ch1z, ch2z, chz
+    character(len=1), intent(in) :: base
+    character(len=*), intent(in), optional :: nomsdz
+    real(kind=8), intent(in) :: r1, r2
 ! ----------------------------------------------------------------------
 !     BUT :   FAIRE LA COMBINAISON LINERAIRE DE 2 CHAMP :
 !             CH = R1*CH1+ R2*CH2 (CHAMP = CHAM_NO OU CHAM_ELEM)
@@ -44,12 +44,11 @@ subroutine barych(ch1z, ch2z, r1, r2, chz,&
 !
 ! OUT: CH EST REMPLI.
 ! ----------------------------------------------------------------------
-!
-!
-!
+    character(len=19) :: ch1, ch2, ch
     character(len=5) :: vale
     character(len=4) :: docu, scal
     character(len=24) :: valk(2)
+    character(len=8) :: nomsd
 !-----------------------------------------------------------------------
     integer :: i, iach, iach1, iach2, ibid, ier, jrefe
     integer :: lon1, lon2, long
@@ -58,19 +57,23 @@ subroutine barych(ch1z, ch2z, r1, r2, chz,&
     ch1=ch1z
     ch2=ch2z
     ch=chz
-!
+
+    nomsd='XXXX'
+    if (present(nomsdz)) nomsd=nomsdz
+
     call copisd('CHAMP_GD', base, ch1, ch)
-!
+
     call jeexin(ch//'.DESC', ibid)
     if (ibid .gt. 0) then
         call jelira(ch//'.DESC', 'DOCU', cval=docu)
     else
         call jelira(ch//'.CELD', 'DOCU', cval=docu)
     endif
-!
-!
-    if ((docu(1:4).ne.'CHNO') .and. (docu(1:4).ne.'CHML')) then
-        ASSERT(.false.)
+
+
+    if (docu(1:4).eq.'CART') then
+        valk(1)=nomsd
+        call utmess('F', 'CALCULEL_30',nk=1,valk=valk)
     else if (docu(1:4).eq.'CHNO') then
 !     -----------------------------------
         vale='.VALE'
@@ -78,7 +81,7 @@ subroutine barych(ch1z, ch2z, r1, r2, chz,&
         call jelira(ch1//vale, 'TYPE', cval=scal)
         call vrrefe(ch1, ch2, ier)
         if (ier .eq. 0) then
-!
+
 ! ----- RECOPIE BRUTALE DES .VALE
             call jeveuo(ch//vale, 'E', iach)
             call jeveuo(ch1//vale, 'L', iach1)
@@ -140,6 +143,8 @@ subroutine barych(ch1z, ch2z, r1, r2, chz,&
         else
             call utmess('F', 'CALCULEL_27')
         endif
+    else
+        ASSERT(.false.)
     endif
 !
 !

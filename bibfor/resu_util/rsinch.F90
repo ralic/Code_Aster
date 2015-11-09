@@ -209,8 +209,7 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr,&
 !     -- INTERPOLATION VRAIE:
 !     -----------------------
     if (iposit .eq. 0) then
-        call barych(ch1, ch2, r1, r2, chext2,&
-                    base2)
+        call barych(ch1, ch2, r1, r2, chext2, base2, nomsd)
         ier = 0
         goto 998
 !
@@ -219,8 +218,7 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr,&
     else if (iposit.eq.-1) then
         ier = 1
         if (prolg2(1:8) .eq. 'LINEAIRE') then
-            call barych(ch1, ch2, r1, r2, chext2,&
-                        base2)
+            call barych(ch1, ch2, r1, r2, chext2, base2, nomsd)
         else if (prolg2(1:8).eq.'CONSTANT') then
             call copisd('CHAMP_GD', base2, ch1(1:19), chext2(1:19))
         else
@@ -233,8 +231,7 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr,&
     else if (iposit.eq.1) then
         ier = 2
         if (prold2(1:8) .eq. 'LINEAIRE') then
-            call barych(ch1, ch2, r1, r2, chext2,&
-                        base2)
+            call barych(ch1, ch2, r1, r2, chext2, base2, nomsd)
         else if (prold2(1:8).eq.'CONSTANT') then
             call copisd('CHAMP_GD', base2, ch2(1:19), chext2(1:19))
         else

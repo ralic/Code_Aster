@@ -15,14 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine barych(ch1z, ch2z, r1, r2, chz,&
-                      base)
-        character(len=*) :: ch1z
-        character(len=*) :: ch2z
-        real(kind=8) :: r1
-        real(kind=8) :: r2
-        character(len=*) :: chz
-        character(len=1) :: base
-    end subroutine barych
-end interface
+          interface 
+            subroutine barych(ch1z,ch2z,r1,r2,chz,base,nomsdz)
+              character(len=*), intent(in) :: ch1z
+              character(len=*), intent(in) :: ch2z
+              real(kind=8), intent(in) :: r1
+              real(kind=8), intent(in) :: r2
+              character(len=*), intent(in) :: chz
+              character(len=1), intent(in) :: base
+              character(len=*) ,optional, intent(in) :: nomsdz
+            end subroutine barych
+          end interface 

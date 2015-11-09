@@ -177,6 +177,20 @@ Conseil :
  Vérifiez que la structure de données %(k1)s est bien celle qu'il faut utiliser.
 """),
 
+    30 : _(u"""
+Erreur utilisateur :
+  Le programme se sait pas interpoler entre deux champs de type "carte".
+
+Risques et conseils :
+  * Il faut faire en sorte que les champs soient des champs par éléments de type 'ELEM'.
+  * La commande CREA_CHAMP peut produire directement des champs par éléments.
+  * Si on imprime et on relit une sd_resultat sur un fichier au format MED,
+    les cartes de la sd_resultat sont transformées en champs par éléments de type 'ELEM'.
+  La structure de donnée "coupable" est : %(k1)s
+"""),
+
+
+
     32 : _(u"""
 Erreur utilisateur :
   -> L'utilisation de la commande %(k1)s avec l'option %(k5)s pour
