@@ -44,43 +44,54 @@ def perm_mac3coeur_ops(self, **args):
     datg = aster_core.get_option("repdex")
     coeur_factory = CoeurFactory(datg)
 
-    _typ_coeur = self['TYPE_COEUR']
+    _typ_coeur_N = self['TYPE_COEUR_N']
+    _typ_coeur_P = self['TYPE_COEUR_P']
     _TAB_N = self['TABLE_N']
-    _tabn1 = _TAB_N.EXTR_TABLE()
+    _l_tabn1 = []
+    for el in _TAB_N :
+        _l_tabn1.append(el.EXTR_TABLE())
 
-    RESUI = self['RESU_N']
-    last_i = RESUI.LIST_PARA()['INST'][-1]
+    l_RESUI = self['RESU_N']
+    assert (len(_TAB_N) == len(l_RESUI))
+    l_last_i = []
+    _l_MA_N = []
+    for RESUI in l_RESUI :
+        l_last_i.append(RESUI.LIST_PARA()['INST'][-1])
+        # on recupere le concept maillage
+        iret, ibid, nom_mo = aster.dismoi('MODELE', RESUI.nom, 'RESULTAT', 'F')
+        iret, ibid, nom_ma = aster.dismoi(
+            'NOM_MAILLA', nom_mo.strip(), 'MODELE', 'F')
 
+        _MA_N = self.get_concept_by_type(nom_ma, maillage_sdaster)
+        _l_MA_N.append(_MA_N)
+    
+    _l_coeur = []
+    for _tabn1 in _l_tabn1 :
     # on recupere le nom du coeur
-    name = _tabn1.para[0]
+        name = _tabn1.para[0]
 
     # et on renomme la colonne qui identifie les assemblages
-    _tabn1.Renomme(name, 'idAC')
-    _coeur = coeur_factory.get(_typ_coeur)(name, _typ_coeur, self, datg)
-    _coeur.init_from_table(_tabn1)
+        _tabn1.Renomme(name, 'idAC')
+        _coeur = coeur_factory.get(_typ_coeur_N)(name, _typ_coeur_N, self, datg)
+        _coeur.init_from_table(_tabn1)
+        _l_coeur.append(_coeur)
 
-    # on recupere le concept maillage
-    iret, ibid, nom_mo = aster.dismoi('MODELE', RESUI.nom, 'RESULTAT', 'F')
-    iret, ibid, nom_ma = aster.dismoi(
-        'NOM_MAILLA', nom_mo.strip(), 'MODELE', 'F')
-
-    _MA_N = self.get_concept_by_type(nom_ma, maillage_sdaster)
 
     _TAB_NP1 = self['TABLE_NP1']
     _tabp1 = _TAB_NP1.EXTR_TABLE()
 
-    # on recupere le nom du coeur
+    # on recupere le nom du coeurq
     namep1 = _tabp1.para[0]
 
     # et on renomme la colonne qui identifie les assemblages
     _tabp1.Renomme(namep1, 'idAC')
-    _coeurp1 = coeur_factory.get(_typ_coeur)(namep1, _typ_coeur, self, datg)
+    _coeurp1 = coeur_factory.get(_typ_coeur_P)(namep1, _typ_coeur_P, self, datg)
     _coeurp1.init_from_table(_tabp1)
 
     _MA1 = self['MAILLAGE_NP1']
     _MA_NP1 = _coeurp1.affectation_maillage(_MA1)
     _MO_NP1 = _coeurp1.affectation_modele(_MA_NP1)
-    _coeurp1.recuperation_donnees_geom(_MA_N)
+    _coeurp1.recuperation_donnees_geom(_MA_NP1)
     _GFF_NP1 = _coeurp1.definition_geom_fibre()
     _CARANP1 = _coeurp1.definition_cara_coeur(_MO_NP1, _GFF_NP1)
 
@@ -209,30 +220,32 @@ def perm_mac3coeur_ops(self, **args):
               AFFE=_F(CHAM_GD=__ASSVAR,
                       INST=0.0,
                       MODELE=_MO_NP1,))
-
+    assert (len(_l_coeur) == len(l_last_i))
     for nom in _coeurp1.nameAC.keys():
-        if nom in _coeur.nameAC:
-            #print 'index z : ',_coeurp1.get_index(_coeurp1.nameAC[nom][0]),_coeurp1.get_index(_coeur.nameAC[nom][0])
-            #print 'index y : ',_coeurp1.get_index(_coeurp1.nameAC[nom][2]),_coeurp1.get_index(_coeur.nameAC[nom][2])
-            tran_z = _coeurp1.pas_assemblage * \
-                (_coeurp1.get_index(_coeurp1.nameAC[nom][
-                 0]) - _coeurp1.get_index(_coeur.nameAC[nom][0]))
-            tran_y = _coeurp1.pas_assemblage * \
-                (_coeurp1.get_index(_coeurp1.nameAC[nom][
-                 2]) - _coeurp1.get_index(_coeur.nameAC[nom][2]))
-            #print 'tran_z, tran_y, tran_x = ',tran_z, tran_y, tran_x
-            #print 'AC init, AC_fin = ',_coeur.nameAC[nom],_coeurp1.nameAC[nom]
+        for (_coeur,last_i) in zip(_l_coeur,l_last_i) :
+            if nom in _coeur.nameAC:
+                #print 'index z : ',_coeurp1.get_index(_coeurp1.nameAC[nom][0]),_coeurp1.get_index(_coeur.nameAC[nom][0])
+                #print 'index y : ',_coeurp1.get_index(_coeurp1.nameAC[nom][2]),_coeurp1.get_index(_coeur.nameAC[nom][2])
+                tran_z = _coeurp1.pas_assemblage * \
+                    (_coeurp1.get_index(_coeurp1.nameAC[nom][
+                    0]) - _coeurp1.get_index(_coeur.nameAC[nom][0]))
+                tran_y = _coeurp1.pas_assemblage * \
+                    (_coeurp1.get_index(_coeurp1.nameAC[nom][
+                    2]) - _coeurp1.get_index(_coeur.nameAC[nom][2]))
+                #print 'tran_z, tran_y, tran_x = ',tran_z, tran_y, tran_x
+                #print 'AC init, AC_fin = ',_coeur.nameAC[nom],_coeurp1.nameAC[nom]
 
-            MACRO_AC_PERMUTE(
-                POS_INIT=_coeur.nameAC[nom],
-                POS_FIN=_coeurp1.nameAC[nom],
-                RESU_INI=RESUI,
-                RESU_FIN=BIDON,
-                MAILLAGE_INIT=_MA_N,
-                INSTANT=last_i,
-                MAILLAGE_FINAL=_MA_NP1,
-                MODELE_FINAL=_MO_NP1,
-                TRAN=(tran_x, tran_y, tran_z))
-            UTMESS('I', 'COEUR0_3', valk=(_coeur.position_todamac(
-                _coeur.nameAC[nom]), _coeurp1.position_todamac(_coeurp1.nameAC[nom])))
+                MACRO_AC_PERMUTE(
+                    POS_INIT=_coeur.nameAC[nom],
+                    POS_FIN=_coeurp1.nameAC[nom],
+                    RESU_INI=RESUI,
+                    RESU_FIN=BIDON,
+                    MAILLAGE_INIT=_MA_N,
+                    INSTANT=last_i,
+                    MAILLAGE_FINAL=_MA_NP1,
+                    MODELE_FINAL=_MO_NP1,
+                    TRAN=(tran_x, tran_y, tran_z))
+                UTMESS('I', 'COEUR0_3', valk=(_coeur.position_todamac(
+                    _coeur.nameAC[nom]), _coeurp1.position_todamac(_coeurp1.nameAC[nom])))
+                break
     UTMESS('I', 'COEUR0_2', vali=(indice))

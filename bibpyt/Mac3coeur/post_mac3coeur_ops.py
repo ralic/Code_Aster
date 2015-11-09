@@ -361,7 +361,7 @@ def post_mac3coeur_ops(self, **args):
     POST_LAME = self['LAME']
     POST_DEF = self['DEFORMATION']
     _inst = self['INST']
-    _format_standard = self['FORMAT_R'] == 'STANDARD'
+    
 
     datg = aster_core.get_option("repdex")
     coeur_factory = CoeurFactory(datg)
@@ -611,7 +611,7 @@ def post_mac3coeur_ops(self, **args):
                     makeXMGRACEdeforme(_unit, name, typeAC, _coeur, valdefac)
 
             elif (_typ_post == 'TABLE'):
-
+                _format_standard = attr['FORMAT_R'] == 'STANDARD'
                 _nom_site = attr['NOM_SITE']
 
                 l_nom_AC = []
