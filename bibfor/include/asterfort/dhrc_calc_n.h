@@ -16,13 +16,12 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface 
-    subroutine dhrc_calc_n(eps, vint, b, c, neta1,&
-                      neta2)
-        real(kind=8) :: eps(6)
-        real(kind=8) :: vint(*)
-        real(kind=8) :: b(6, 2, 2)
-        real(kind=8) :: c(2, 2, 2)
-        real(kind=8) :: neta1(2)
-        real(kind=8) :: neta2(2)
+    subroutine dhrc_calc_n(eps, vint, b, c, neta1, neta2)
+        real(kind=8), intent(in) :: eps(6)
+        real(kind=8), intent(in) :: vint(*)
+        real(kind=8), intent(in) :: b(6, 2, 2)
+        real(kind=8), intent(in) :: c(2, 2, 2)
+        real(kind=8), intent(out) :: neta1(2)
+        real(kind=8), intent(out) :: neta2(2)
     end subroutine dhrc_calc_n
 end interface 

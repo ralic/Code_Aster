@@ -20,16 +20,20 @@ subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, eps, vint, a, ap1, ap2, as1, 
 !
     implicit none
 !
+#include "asterfort/assert.h"
+#include "asterfort/dhrc_calc_a_term.h"
+#include "asterfort/diago2.h"
 #include "asterfort/matini.h"
+#include "asterc/r8prem.h"
+#include "blas/dcopy.h"
 !
-    real(kind=8) :: vint(*), eps(*)
-    real(kind=8) :: a0(6, 6)
-    real(kind=8) :: aa_t(6, 6, 2), ga_t(6, 6, 2), aa_c(6, 6, 2), ga_c(6, 6, 2)
-    real(kind=8) :: a(6, 6), ap1(6, 6), ap2(6, 6), as1(6, 6), as2(6, 6)
+    real(kind=8), intent(in) :: vint(*), eps(*)
+    real(kind=8), intent(in) :: a0(6, 6)
+    real(kind=8), intent(in) :: aa_t(6, 6, 2), ga_t(6, 6, 2), aa_c(6, 6, 2), ga_c(6, 6, 2)
+    real(kind=8), intent(out) :: a(6, 6), ap1(6, 6), ap2(6, 6), as1(6, 6), as2(6, 6)
 ! ----------------------------------------------------------------------
 !
 !      CALCUL DU TENSEUR DE RAIDEUR A ET DE SES DERIVEES PAR RAPPORT A D
-!      APPELE PAR "SEUGLC"
 !
 ! IN:
 !       EPS   : TENSEUR DE DEFORMATIONS
@@ -58,7 +62,9 @@ subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, eps, vint, a, ap1, ap2, as1, 
 ! ----------------------------------------------------------------------
 !
     integer :: i, j
-    real(kind=8) :: treps, trkap, deteps
+    real(kind=8) :: treps, trkap, deteps, detkap
+    real(kind=8) :: epsl(8), emp(2), efp(2), vmp(2, 2), vfp(2, 2)
+    real(kind=8) :: rvp
 
 ! -- POUR LES TERMES DE MF POSITION D EVALUATION DE LA DEFORMATION POUR DISTINGUER TRAC-COMP
 !
@@ -68,152 +74,288 @@ subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, eps, vint, a, ap1, ap2, as1, 
     call matini(6, 6, 0.d0, as1)
     call matini(6, 6, 0.d0, as2)
 !
-    treps=eps(1)+eps(2)
-    trkap=eps(4)+eps(5)
-    deteps=eps(1)*eps(2)-eps(3)**2.0d0
+    call dcopy(8, eps, 1, epsl, 1)
+!
+    epsl(3) = epsl(3)*0.5d0
+    epsl(6) = epsl(6)*0.5d0
+!
+    treps=epsl(1)+epsl(2)
+    trkap=epsl(4)+epsl(5)
+    deteps=epsl(1)*epsl(2)-epsl(3)**2.0d0
+    detkap=epsl(4)*epsl(5)-epsl(6)**2.0d0
+!
+! -- DIAGONALISATION
+!
+    call diago2(epsl(1), vmp, emp)
+    call diago2(epsl(4), vfp, efp)
 !
 ! -- TERMES DE MEMBRANE PURE
-    do i = 1, 3
-        if (eps(i) .ge. 0.d0) then
-            a(i,i)=0.5d0*a0(i,i)*((aa_t(i,i,1)+ga_t(i,i,1)*vint(1))/(aa_t(i,i,1)+vint(1)) &
-                                 +(aa_t(i,i,2)+ga_t(i,i,2)*vint(2))/(aa_t(i,i,2)+vint(2)))
+    if (deteps .ge. -r8prem()) then
+        if (treps .ge. -r8prem()) then
 !
-            ap1(i,i)=0.5d0*a0(i,i)*aa_t(i,i,1)*(ga_t(i,i,1)-1.d0)/(aa_t(i,i,1)+vint(1))**2.d0
-            ap2(i,i)=0.5d0*a0(i,i)*aa_t(i,i,2)*(ga_t(i,i,2)-1.d0)/(aa_t(i,i,2)+vint(2))**2.d0
+! -- ZONE 1
 !
-            as1(i,i)=-a0(i,i)*aa_t(i,i,1)*(ga_t(i,i,1)-1.d0)/(aa_t(i,i,1)+vint(1))**3.d0
-            as2(i,i)=-a0(i,i)*aa_t(i,i,2)*(ga_t(i,i,2)-1.d0)/(aa_t(i,i,2)+vint(2))**3.d0
-!
+            do i = 1, 2
+                do j = i, 2
+                    call dhrc_calc_a_term(i, j, 1, 1, a0, aa_t, ga_t, aa_c, ga_c, vint, a(i,j), &
+                                          ap1(i,j), ap2(i,j), as1(i,j), as2(i,j))
+                end do
+            end do
         else
-            a(i,i)=0.5d0*a0(i,i)*((aa_c(i,i,1)+ga_c(i,i,1)*vint(1))/(aa_c(i,i,1)+vint(1)) &
-                                 +(aa_c(i,i,2)+ga_c(i,i,2)*vint(2))/(aa_c(i,i,2)+vint(2)))
 !
-            ap1(i,i)=0.5d0*a0(i,i)*aa_c(i,i,1)*(ga_c(i,i,1)-1.d0)/(aa_c(i,i,1)+vint(1))**2.d0
-            ap2(i,i)=0.5d0*a0(i,i)*aa_c(i,i,2)*(ga_c(i,i,2)-1.d0)/(aa_c(i,i,2)+vint(2))**2.d0
+! -- ZONE 2
 !
-            as1(i,i)=-a0(i,i)*aa_c(i,i,1)*(ga_c(i,i,1)-1.d0)/(aa_c(i,i,1)+vint(1))**3.d0
-            as2(i,i)=-a0(i,i)*aa_c(i,i,2)*(ga_c(i,i,2)-1.d0)/(aa_c(i,i,2)+vint(2))**3.d0
-        endif
+            do i = 1, 2
+                do j = i, 2
+                    call dhrc_calc_a_term(i, j, 2, 2, a0, aa_t, ga_t, aa_c, ga_c, vint, a(i,j), &
+                                          ap1(i,j), ap2(i,j), as1(i,j), as2(i,j))
+                end do
+            end do
+        end if
+    else
+        if (treps .ge. 0.d0) then
+            if (emp(1) .gt. 0.d0) then
 !
-        do j = 1, 3
-            if (j .ne. i) then
-                if (deteps .ge. 0.d0 .and. treps .ge. 0.d0) then
-               a(i,j)=0.5d0*a0(i,j)*((aa_t(i,j,1)+ga_t(i,j,1)*vint(1))/(aa_t(i,j,1)+vint(1)) &
-                                    +(aa_t(i,j,2)+ga_t(i,j,2)*vint(2))/(aa_t(i,j,2)+vint(2)))
+! -- ZONE 3
 !
-               ap1(i,j)=0.5d0*a0(i,j)*aa_t(i,j,1)*(ga_t(i,j,1)-1.d0)/(aa_t(i,j,1)+vint(1))**2.d0
-               ap2(i,j)=0.5d0*a0(i,j)*aa_t(i,j,2)*(ga_t(i,j,2)-1.d0)/(aa_t(i,j,2)+vint(2))**2.d0
+                rvp = abs(emp(2))/abs(emp(1))
 !
-               as1(i,j)=-a0(i,j)*aa_t(i,j,1)*(ga_t(i,j,1)-1.d0)/(aa_t(i,j,1)+vint(1))**3.d0
-               as2(i,j)=-a0(i,j)*aa_t(i,j,2)*(ga_t(i,j,2)-1.d0)/(aa_t(i,j,2)+vint(2))**3.d0
-                else
-               a(i,j)=0.5d0*a0(i,j)*((aa_c(i,j,1)+ga_c(i,j,1)*vint(1))/(aa_c(i,j,1)+vint(1)) &
-                                    +(aa_c(i,j,2)+ga_c(i,j,2)*vint(2))/(aa_c(i,j,2)+vint(2)))
+                i = 1
+                do j = 1, 2
+                    call dhrc_calc_a_term(i, j, 1, 1, a0, aa_t, ga_t, aa_c, ga_c, vint, a(i,j), &
+                                          ap1(i,j), ap2(i,j), as1(i,j), as2(i,j))
+                end do
 !
-               ap1(i,j)=0.5d0*a0(i,j)*aa_c(i,j,1)*(ga_c(i,j,1)-1.d0)/(aa_c(i,j,1)+vint(1))**2.d0
-               ap2(i,j)=0.5d0*a0(i,j)*aa_c(i,j,2)*(ga_c(i,j,2)-1.d0)/(aa_c(i,j,2)+vint(2))**2.d0
+                i = 2
+                j = 2
+                call dhrc_calc_a_term(i, j, 1, 1, a0, aa_t, ga_t, aa_c, ga_c, vint, a(i,j), &
+                                      ap1(i,j), ap2(i,j), as1(i,j), as2(i,j), rvp, 2, 2)
 !
-               as1(i,j)=-a0(i,j)*aa_c(i,j,1)*(ga_c(i,j,1)-1.d0)/(aa_c(i,j,1)+vint(1))**3.d0
-               as2(i,j)=-a0(i,j)*aa_c(i,j,2)*(ga_c(i,j,2)-1.d0)/(aa_c(i,j,2)+vint(2))**3.d0
-                endif
-            endif
-        end do
-    end do
+            elseif(emp(2) .gt. 0.d0) then
+!
+! -- ZONE 4
+!
+                rvp = abs(emp(1))/abs(emp(2))
+!
+                j = 2
+                do i = 1, 2
+                    call dhrc_calc_a_term(i, j, 1, 1, a0, aa_t, ga_t, aa_c, ga_c, vint, a(i,j), &
+                                          ap1(i,j), ap2(i,j), as1(i,j), as2(i,j))
+                end do
+!
+                i = 1
+                j = 1
+                call dhrc_calc_a_term(i, j, 1, 1, a0, aa_t, ga_t, aa_c, ga_c, vint, a(i,j), &
+                                      ap1(i,j), ap2(i,j), as1(i,j), as2(i,j), rvp, 2, 2)
+!
+            else
+                write(6,*) 'deteps :', deteps
+                write(6,*) 'treps  :', treps
+                write(6,*) 'emp    :', emp
+                ASSERT(.FALSE.)
+            end if
+        else
+            if (emp(1) .ge. 0.d0) then
+!
+! -- ZONE 5
+!
+                rvp = abs(emp(1))/abs(emp(2))
+!
+                i = 2
+                j = 2
+                call dhrc_calc_a_term(i, j, 2, 2, a0, aa_t, ga_t, aa_c, ga_c, vint, a(i,j), &
+                                      ap1(i,j), ap2(i,j), as1(i,j), as2(i,j))
+!
+                i = 1
+                do j = 1, 2
+                    call dhrc_calc_a_term(i, j, 2, 2, a0, aa_t, ga_t, aa_c, ga_c, vint,a(i,j), &
+                                          ap1(i,j), ap2(i,j), as1(i,j), as2(i,j), rvp, 1, 1)
+                end do
+!
+            elseif(emp(2) .ge. 0.d0) then
+!
+! -- ZONE 6
+!
+                rvp = abs(emp(2))/abs(emp(1))
+!
+                i = 1
+                j = 1
+                call dhrc_calc_a_term(i, j, 2, 2, a0, aa_t, ga_t, aa_c, ga_c, vint, a(i,j), &
+                                      ap1(i,j), ap2(i,j), as1(i,j), as2(i,j))
+!
+                j = 2
+                do i = 1, 2
+                    call dhrc_calc_a_term(i, j, 2, 2, a0, aa_t, ga_t, aa_c, ga_c, vint,a(i,j), &
+                                          ap1(i,j), ap2(i,j), as1(i,j), as2(i,j), rvp, 1, 1)
+                end do
+            else
+                write(6,*) 'deteps :', deteps
+                write(6,*) 'treps  :', treps
+                write(6,*) 'emp    :', emp
+                ASSERT(.FALSE.)
+            end if
+        end if
+    end if
+!
+! -- Terme Amm_xyxy identique en traction et compression
+!
+    call dhrc_calc_a_term(3, 3, 1, 1, a0, aa_t, ga_t, aa_c, ga_c, vint, a(3,3), &
+                          ap1(3,3), ap2(3,3), as1(3,3), as2(3,3))
 !
 ! -- TERMES DE FLEXION PURE
 ! -- DANS LES DKTG LA COURBURE EST EGALE A - LA DERIVEE DE LA FLECHE
 ! -- C EST POURQUOI ON TESTE L OPPOSE DE LA COURBURE
-    do i = 4, 6
-        if (eps(i) .lt. 0.d0) then
-            a(i,i)=0.5d0*a0(i,i)*((aa_c(i,i,1)+ga_c(i,i,1)*vint(1))/(aa_c(i,i,1)+vint(1)) &
-                                 +(aa_t(i,i,2)+ga_t(i,i,2)*vint(2))/(aa_t(i,i,2)+vint(2)))
+    if (detkap .ge. -r8prem()) then
+        if (trkap .ge. -r8prem()) then
 !
-            ap1(i,i)=0.5d0*a0(i,i)*aa_c(i,i,1)*(ga_c(i,i,1)-1.d0)/(aa_c(i,i,1)+vint(1))**2.d0
-            ap2(i,i)=0.5d0*a0(i,i)*aa_t(i,i,2)*(ga_t(i,i,2)-1.d0)/(aa_t(i,i,2)+vint(2))**2.d0
+! -- ZONE 1
 !
-            as1(i,i)=-a0(i,i)*aa_c(i,i,1)*(ga_c(i,i,1)-1.d0)/(aa_c(i,i,1)+vint(1))**3.d0
-            as2(i,i)=-a0(i,i)*aa_t(i,i,2)*(ga_t(i,i,2)-1.d0)/(aa_t(i,i,2)+vint(2))**3.d0
+            do i = 4, 5
+                do j = i, 5
+                    call dhrc_calc_a_term(i, j, 1, 2, a0, aa_t, ga_t, aa_c, ga_c, vint, a(i,j), &
+                                          ap1(i,j), ap2(i,j), as1(i,j), as2(i,j))
+                end do
+            end do
 !
         else
-            a(i,i)=0.5d0*a0(i,i)*((aa_t(i,i,1)+ga_t(i,i,1)*vint(1))/(aa_t(i,i,1)+vint(1)) &
-                                 +(aa_c(i,i,2)+ga_c(i,i,2)*vint(2))/(aa_c(i,i,2)+vint(2)))
 !
-            ap1(i,i)=0.5d0*a0(i,i)*aa_t(i,i,1)*(ga_t(i,i,1)-1.d0)/(aa_t(i,i,1)+vint(1))**2.d0
-            ap2(i,i)=0.5d0*a0(i,i)*aa_c(i,i,2)*(ga_c(i,i,2)-1.d0)/(aa_c(i,i,2)+vint(2))**2.d0
+! -- ZONE 2
 !
-            as1(i,i)=-a0(i,i)*aa_t(i,i,1)*(ga_t(i,i,1)-1.d0)/(aa_t(i,i,1)+vint(1))**3.d0
-            as2(i,i)=-a0(i,i)*aa_c(i,i,2)*(ga_c(i,i,2)-1.d0)/(aa_c(i,i,2)+vint(2))**3.d0
-        endif
+            do i = 4, 5
+                do j = i, 5
+                    call dhrc_calc_a_term(i, j, 2, 1, a0, aa_t, ga_t, aa_c, ga_c, vint, a(i,j), &
+                                          ap1(i,j), ap2(i,j), as1(i,j), as2(i,j))
+                end do
+            end do
+        end if
+    else
+        if (trkap .ge. 0.d0) then
+            if (efp(1) .gt. 0.d0) then
 !
-        do j = 4, 6
-            if (j .ne. i) then
-                if (trkap .ge. 0.d0) then
-                a(i,j)=0.5d0*a0(i,j)*((aa_c(i,j,1)+ga_c(i,j,1)*vint(1))/(aa_c(i,j,1)+vint(1)) &
-                                     +(aa_t(i,j,2)+ga_t(i,j,2)*vint(2))/(aa_t(i,j,2)+vint(2)))
+! -- ZONE 3
 !
-                ap1(i,j)=0.5d0*a0(i,j)*aa_c(i,j,1)*(ga_c(i,j,1)-1.d0)/(aa_c(i,j,1)+vint(1))**2.d0
-                ap2(i,j)=0.5d0*a0(i,j)*aa_t(i,j,2)*(ga_t(i,j,2)-1.d0)/(aa_t(i,j,2)+vint(2))**2.d0
+                rvp = abs(efp(2))/abs(efp(1))
 !
-                as1(i,j)=-a0(i,j)*aa_c(i,j,1)*(ga_c(i,j,1)-1.d0)/(aa_c(i,j,1)+vint(1))**3.d0
-                as2(i,j)=-a0(i,j)*aa_t(i,j,2)*(ga_t(i,j,2)-1.d0)/(aa_t(i,j,2)+vint(2))**3.d0
+                i = 4
+                j = 4
+                call dhrc_calc_a_term(i, j, 1, 2, a0, aa_t, ga_t, aa_c, ga_c, vint, a(i,j), &
+                                      ap1(i,j), ap2(i,j), as1(i,j), as2(i,j))
 !
-                else
-                a(i,j)=0.5d0*a0(i,j)*((aa_t(i,j,1)+ga_t(i,j,1)*vint(1))/(aa_t(i,j,1)+vint(1)) &
-                                     +(aa_c(i,j,2)+ga_c(i,j,2)*vint(2))/(aa_c(i,j,2)+vint(2)))
+                i = 4
+                j = 5
+                call dhrc_calc_a_term(i, j, 1, 2, a0, aa_t, ga_t, aa_c, ga_c, vint, a(i,j), &
+                                      ap1(i,j), ap2(i,j), as1(i,j), as2(i,j), rvp, 2, 2)
 !
-                ap1(i,j)=0.5d0*a0(i,j)*aa_t(i,j,1)*(ga_t(i,j,1)-1.d0)/(aa_t(i,j,1)+vint(1))**2.d0
-                ap2(i,j)=0.5d0*a0(i,j)*aa_c(i,j,2)*(ga_c(i,j,2)-1.d0)/(aa_c(i,j,2)+vint(2))**2.d0
+                i = 5
+                j = 5
+                call dhrc_calc_a_term(i, j, 1, 2, a0, aa_t, ga_t, aa_c, ga_c, vint, a(i,j), &
+                                      ap1(i,j), ap2(i,j), as1(i,j), as2(i,j), rvp, 2, 1)
 !
-                as1(i,j)=-a0(i,j)*aa_t(i,j,1)*(ga_t(i,j,1)-1.d0)/(aa_t(i,j,1)+vint(1))**3.d0
-                as2(i,j)=-a0(i,j)*aa_c(i,j,2)*(ga_c(i,j,2)-1.d0)/(aa_c(i,j,2)+vint(2))**3.d0
-                endif
-            endif
-        end do
-    end do
+            elseif(efp(2) .gt. 0.d0) then
+!
+! -- ZONE 4
+!
+                rvp = abs(efp(1))/abs(efp(2))
+!
+                i = 4
+                j = 4
+                call dhrc_calc_a_term(i, j, 1, 2, a0, aa_t, ga_t, aa_c, ga_c, vint, a(i,j), &
+                                      ap1(i,j), ap2(i,j), as1(i,j), as2(i,j), rvp, 2, 1)
+!
+                i = 4
+                j = 5
+                call dhrc_calc_a_term(i, j, 1, 2, a0, aa_t, ga_t, aa_c, ga_c, vint, a(i,j), &
+                                      ap1(i,j), ap2(i,j), as1(i,j), as2(i,j), rvp, 2, 2)
+!
+                i = 5
+                j = 5
+                call dhrc_calc_a_term(i, j, 1, 2, a0, aa_t, ga_t, aa_c, ga_c, vint, a(i,j), &
+                                      ap1(i,j), ap2(i,j), as1(i,j), as2(i,j))
+!
+            else
+                write(6,*) 'detkap :', detkap
+                write(6,*) 'trkap  :', trkap
+                write(6,*) 'efp    :', efp
+                ASSERT(.FALSE.)
+            end if
+        else
+            if (efp(1) .ge. 0.d0) then
+!
+! -- ZONE 5
+!
+                rvp = abs(efp(1))/abs(efp(2))
+!
+                i = 4
+                j = 4
+                call dhrc_calc_a_term(i, j, 2, 1, a0, aa_t, ga_t, aa_c, ga_c, vint, a(i,j), &
+                                      ap1(i,j), ap2(i,j), as1(i,j), as2(i,j), rvp, 1, 2)
+!
+                i = 4
+                j = 5
+                call dhrc_calc_a_term(i, j, 2, 1, a0, aa_t, ga_t, aa_c, ga_c, vint, a(i,j), &
+                                      ap1(i,j), ap2(i,j), as1(i,j), as2(i,j), rvp, 2, 2)
+!
+                i = 5
+                j = 5
+                call dhrc_calc_a_term(i, j, 2, 1, a0, aa_t, ga_t, aa_c, ga_c, vint, a(i,j), &
+                                      ap1(i,j), ap2(i,j), as1(i,j), as2(i,j))
+!
+            elseif(efp(2) .ge. 0.d0) then
+!
+! -- ZONE 6
+!
+                rvp = abs(efp(2))/abs(efp(1))
+!
+                i = 4
+                j = 4
+                call dhrc_calc_a_term(i, j, 2, 1, a0, aa_t, ga_t, aa_c, ga_c, vint, a(i,j), &
+                                      ap1(i,j), ap2(i,j), as1(i,j), as2(i,j))
+!
+                i = 4
+                j = 5
+                call dhrc_calc_a_term(i, j, 2, 1, a0, aa_t, ga_t, aa_c, ga_c, vint, a(i,j), &
+                                      ap1(i,j), ap2(i,j), as1(i,j), as2(i,j), rvp, 2, 2)
+!
+                i = 5
+                j = 5
+                call dhrc_calc_a_term(i, j, 2, 1, a0, aa_t, ga_t, aa_c, ga_c, vint, a(i,j), &
+                                      ap1(i,j), ap2(i,j), as1(i,j), as2(i,j), rvp, 1, 2)
+!
+            else
+                write(6,*) 'detkap :', detkap
+                write(6,*) 'trkap  :', trkap
+                write(6,*) 'efp    :', efp
+                ASSERT(.FALSE.)
+            end if
+        end if
+    end if
+!
+! -- Terme Aff_xyxy identique en traction et compression
+!
+    call dhrc_calc_a_term(6, 6, 1, 1, a0, aa_t, ga_t, aa_c, ga_c, vint, a(6,6), &
+                          ap1(6,6), ap2(6,6), as1(6,6), as2(6,6))
 !
 ! -- TERMES DE MEMBRANE-FLEXION
-    do i = 1, 3
-        a(i,i+3)=-(a0(i,i+3)+0.25d0*(ga_t(i,i+3,1)*vint(1)/(aa_t(i,i+3,1)+vint(1))&
-                                    +ga_t(i,i+3,2)*vint(2)/(aa_t(i,i+3,2)+vint(2))&
-                                    +ga_c(i,i+3,1)*vint(1)/(aa_c(i,i+3,1)+vint(1))&
-                                    +ga_c(i,i+3,2)*vint(2)/(aa_c(i,i+3,2)+vint(2))))
+!    do i = 1, 3
+!        do j = 4, 6
+!            a(i,j)=-(a0(i,j)+0.5d0*(ga_c(i,j,1)*vint(1)/(aa_c(i,j,1)+vint(1))&
+!                                   +ga_c(i,j,2)*vint(2)/(aa_c(i,j,2)+vint(2))))
+
+!            ap1(i,j)=-0.5d0*aa_c(i,j,1)*ga_c(i,j,1)/(aa_c(i,j,1)+vint(1))**2.d0
+!            ap2(i,j)=-0.5d0*aa_c(i,j,2)*ga_c(i,j,2)/(aa_c(i,j,2)+vint(2))**2.d0
+
+!            as1(i,j)=aa_c(i,j,1)*ga_c(i,j,1)/(aa_c(i,j,1)+vint(1))**3.d0
+!            as2(i,j)=aa_c(i,j,2)*ga_c(i,j,2)/(aa_c(i,j,2)+vint(2))**3.d0
+!        end do
+!    end do
 !
-        ap1(i,i+3)=-0.25d0*(aa_t(i,i+3,1)*ga_t(i,i+3,1)/(aa_t(i,i+3,1)+vint(1))**2.d0&
-                           +aa_c(i,i+3,1)*ga_c(i,i+3,1)/(aa_c(i,i+3,1)+vint(1))**2.d0)
-        ap2(i,i+3)=-0.25d0*(aa_t(i,i+3,2)*ga_t(i,i+3,2)/(aa_t(i,i+3,2)+vint(2))**2.d0&
-                           +aa_c(i,i+3,2)*ga_c(i,i+3,2)/(aa_c(i,i+3,2)+vint(2))**2.d0)
-!
-        as1(i,i+3)=0.5*(aa_t(i,i+3,1)*ga_t(i,i+3,1)/(aa_t(i,i+3,1)+vint(1))**3.d0&
-                       +aa_c(i,i+3,1)*ga_c(i,i+3,1)/(aa_c(i,i+3,1)+vint(1))**3.d0)
-        as2(i,i+3)=0.5*(aa_t(i,i+3,2)*ga_t(i,i+3,2)/(aa_t(i,i+3,2)+vint(2))**3.d0&
-                       +aa_c(i,i+3,2)*ga_c(i,i+3,2)/(aa_c(i,i+3,2)+vint(2))**3.d0)
-        do j = 4, 6
-            if (j .ne. (i+3)) then
-                a(i,j)=-(a0(i,j)+0.25d0*(ga_t(i,j,1)*vint(1)/(aa_t(i,j,1)+vint(1))&
-                                        +ga_t(i,j,2)*vint(2)/(aa_t(i,j,2)+vint(2))&
-                                        +ga_c(i,j,1)*vint(1)/(aa_c(i,j,1)+vint(1))&
-                                        +ga_c(i,j,2)*vint(2)/(aa_c(i,j,2)+vint(2))))
-!
-                ap1(i,j)=-0.25d0*(aa_t(i,j,1)*ga_t(i,j,1)/(aa_t(i,j,1)+vint(1))**2.d0&
-                                 +aa_c(i,j,1)*ga_c(i,j,1)/(aa_c(i,j,1)+vint(1))**2.d0)
-                ap2(i,j)=-0.25d0*(aa_t(i,j,2)*ga_t(i,j,2)/(aa_t(i,j,2)+vint(2))**2.d0&
-                                 +aa_c(i,j,2)*ga_c(i,j,2)/(aa_c(i,j,2)+vint(2))**2.d0)
-!
-                as1(i,j)=0.5*(aa_t(i,j,1)*ga_t(i,j,1)/(aa_t(i,j,1)+vint(1))**3.d0&
-                             +aa_c(i,j,1)*ga_c(i,j,1)/(aa_c(i,j,1)+vint(1))**3.d0)
-                as2(i,j)=0.5*(aa_t(i,j,2)*ga_t(i,j,2)/(aa_t(i,j,2)+vint(2))**3.d0&
-                             +aa_c(i,j,2)*ga_c(i,j,2)/(aa_c(i,j,2)+vint(2))**3.d0)
-            end if
-        end do
-    end do
-!
-    do i = 1, 3
-        do j = 1, 3
-            a(j+3,i)  =a(i,j+3)
-            ap1(j+3,i)=ap1(i,j+3)
-            ap2(j+3,i)=ap2(i,j+3)
-            as1(j+3,i)=as1(i,j+3)
-            as2(j+3,i)=as2(i,j+3)
+    do i = 1, 6
+        do j = 1, 6
+            a(j,i)  =a(i,j)
+            ap1(j,i)=ap1(i,j)
+            ap2(j,i)=ap2(i,j)
+            as1(j,i)=as1(i,j)
+            as2(j,i)=as2(i,j)
         end do
     end do
 !

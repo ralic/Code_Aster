@@ -2,7 +2,7 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
                    sig, vip, a0, c0, aa_t,&
                    ga_t, ab, gb, ac, gc,&
                    aa_c, ga_c, cstseu, crit, codret,&
-                   dsidep)
+                   dsidep, debug)
 ! aslint: disable=W1504
 !
 ! ======================================================================
@@ -45,18 +45,18 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
 #include "asterfort/utmess.h"
 #include "blas/dgeev.h"
 !
-    integer :: codret
+    real(kind=8), intent(in) :: pgl(3, 3), epsm(6), deps(6), vim(*), crit(*), cstseu(6)
+    real(kind=8), intent(in) :: a0(6, 6), c0(2, 2, 2)
+    real(kind=8), intent(in) :: aa_t(6, 6, 2), ab(6, 2, 2), ac(2, 2, 2)
+    real(kind=8), intent(in) :: ga_t(6, 6, 2), gb(6, 2, 2), gc(2, 2, 2)
+    real(kind=8), intent(in) :: aa_c(6, 6, 2)
+    real(kind=8), intent(in) :: ga_c(6, 6, 2)
+    character(len=16), intent(in) :: option
+    aster_logical, intent(in) :: debug
 !
-    real(kind=8) :: epsm(6), deps(6), vim(*), crit(*), cstseu(6)
-    real(kind=8) :: a0(6, 6), c0(2, 2, 2)
-    real(kind=8) :: aa_t(6, 6, 2), ab(6, 2, 2), ac(2, 2, 2)
-    real(kind=8) :: ga_t(6, 6, 2), gb(6, 2, 2), gc(2, 2, 2)
-    real(kind=8) :: aa_c(6, 6, 2)
-    real(kind=8) :: ga_c(6, 6, 2)
-    real(kind=8) :: dsidep(6, 6)
-    real(kind=8) :: sig(8), vip(*)
-!
-    character(len=16) :: option
+    integer, intent(out) :: codret
+    real(kind=8), intent(out) :: sig(8), vip(*)
+    real(kind=8), intent(out) :: dsidep(6, 6)
 ! ----------------------------------------------------------------------
 !
 !      LOI GLOBALE POUR LES PLAQUES/COQUES DKTG - DHRC
@@ -101,7 +101,6 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
     aster_logical :: lelas
 !
     integer :: k, itmax, indi(6), nbact, l, i, iret, iter, iter2
-!
     integer :: jcara
     blas_int :: info
     real(kind=8) :: wr(6), wi(6), work(18), vl(1), vr(1)
@@ -118,7 +117,7 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
     real(kind=8) :: jacob(6, 6), bocaj(6, 6), det
 !
     real(kind=8) :: alpha, beta, cosi, sinu
-    real(kind=8) :: pgl(3, 3), t2ev2(2, 2), t2ve2(2, 2), epsg(8), sigg(8)
+    real(kind=8) :: t2ev2(2, 2), t2ve2(2, 2), epsg(8), sigg(8)
     real(kind=8) :: t1ve(3, 3), dsideg(6, 6)
     real(kind=8) :: dsidem(3, 3), dsidec(3, 3), dsidef(3, 3)
     real(kind=8) :: dsidmg(3, 3), dsidcg(3, 3), dsidfg(3, 3)
@@ -171,6 +170,12 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
     epsg(3)=epsg(3)*2.d0
     epsg(6)=epsg(6)*2.d0
 !
+    if (debug) then
+        write(6,*) 'pgl  :', pgl
+        write(6,*) 'eps  :', eps
+        write(6,*) 'epsg :', epsg
+    end if
+!
 ! ---------------------------------------------------------------------
 !
 ! --  INITIALISATION DE D1, D2, EPSP1 ET EPSP2
@@ -184,6 +189,10 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
             vint(k) = vim(k)
         end do
     endif
+!
+    if (debug) then
+        write(6,*) 'vint :', vint
+    end if
 !
     do k = 1, 6
         indi(k)=0
@@ -215,6 +224,8 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
 !
 !     SEUILS D'ENDOMMAGEMENT
 !
+        call r8inir(6, 0.0d0, seuils, 1)
+!
         seuils(1)=g1/cstseu(1)-1.0d0
         seuils(2)=g2/cstseu(2)-1.0d0
 !
@@ -225,12 +236,19 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
         seuils(5)= (neta2(1)/cstseu(5))**2.0d0-1.0d0
         seuils(6)= (neta2(2)/cstseu(6))**2.0d0-1.0d0
 !
+        if (debug) then
+            write(6,*) 'seuils :', seuils
+        end if
+!
 222     continue
 !
 ! --  COMPTEUR D'ITERATIONS
         iter=iter+1
 !
         if (iter .gt. itmax) then
+            if (debug) then
+                write(6,*) 'Non convergence iter1'
+            end if
             codret=1
             goto 999
         end if
@@ -245,6 +263,11 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
                 nbact=nbact+1
             endif
         end do
+!
+        if (debug) then
+            write(6,*) 'Iter 1 :', iter
+            write(6,*) 'indi :', indi
+        end if
 !
 ! --  SI PAS DE SEUILS ATTEINTS, ON PASSE DIRECTEMENT AU CALCUL DES
 !     CONTRAINTES
@@ -263,6 +286,10 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
                     seuact(nbact)=seuils(k)
                 endif
             end do
+!            
+            if (debug) then
+                write(6,*) 'seuact :', seuact
+            end if
 !
             iter2=0
 !-----------------------------------------------------------------------
@@ -273,7 +300,15 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
 ! --  COMPTEUR D'ITERATIONS
             iter2=iter2+1
 !
+            if (debug) then
+                write(6,*) 'Iter 2 :', iter2
+                write(6,*) 'seuils :', seuils
+            end if
+!
             if (iter2 .gt. itmax) then
+                if (debug) then
+                    write(6,*) 'Non convergence iter2'
+                end if
                 codret=1
                 goto 999
             endif
@@ -311,11 +346,25 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
             end do
 !
 ! --  VERIFICATION DE LA CROISSANCE DES D1 ET D2
-            if (vint(1) .lt. 0.0d0) then
+            if (vint(1) .lt. vim(1)) then
+                if (debug) then
+                    write(6,*) 'd1m>d1p :'
+                    write(6,*) 'd1m', vim(1)
+                    write(6,*) 'd1p', vint(1)
+                    write(6,*) 'ap1 :'
+                    write(6,*) ap1(:,:)
+                end if
                 vint(1)=vim(1)
             endif
 !
-            if (vint(2) .lt. 0.0d0) then
+            if (vint(2) .lt. vim(2)) then
+                if (debug) then
+                    write(6,*) 'd2m>d2p'
+                    write(6,*) 'd2m', vim(2)
+                    write(6,*) 'd2p', vint(2)
+                    write(6,*) 'ap2 :'
+                    write(6,*) ap2(:,:)
+                end if
                 vint(2)=vim(2)
             endif
 !
@@ -352,6 +401,10 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
             seuils(4)= (neta1(2)/cstseu(4))**2.0d0-1.0d0
             seuils(5)= (neta2(1)/cstseu(5))**2.0d0-1.0d0
             seuils(6)= (neta2(2)/cstseu(6))**2.0d0-1.0d0
+!
+            if (debug) then
+                write(6,*) 'vint :', vint(1:6)
+            end if
 !
             l=0
             do k = 1, 6
@@ -399,6 +452,11 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
 !
     do k = 1, 2
         if (vip(k) .lt. vim(k)) then
+            if (debug) then
+                write(6,*) 'Evolution non positive de l endommagement'
+                write(6,*) 'vim :', vim(1:9)
+                write(6,*) 'vip :', vip(1:9)
+            end if
             codret=1
             goto 999
         endif
@@ -467,12 +525,18 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
         end do
     end do
 !
+    if (debug) then
+        write(6,*) 'dsideg :', dsideg
+    end if
+!
     call dgeev('N', 'N', 6, ates, 6, wr, wi, vl, 1, vr, 1, work, 18, info)
 !
 !     ECRITURE DES VALEURS PROPRES
 !
     do k = 1, 6
-        if (wr(k) .lt. 0.0d0) call utmess('A', 'COMPOR4_71', si=k, sr=wr(k))
+        if (wr(k) .lt. 0.0d0) then 
+            call utmess('A', 'COMPOR4_71', si=k, sr=wr(k))
+        end if
     end do
 !
 ! ---  PASSAGE DES EFFORTS GENERALISES SIGG DU REPERE GLOBAL DE LA COQUE
@@ -529,4 +593,47 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
     vip(9)=vip(7)+vip(8)
 !
 999 continue
+!
+!A DECOMMENTER POUR DEBUG DE L INTEGRATION DE LA LOI
+!    if (codret .gt. 0) then
+!        if (debug .eq. .false._1) then
+!            write(6,*) 'Echec de l integration de la loi de comportement'
+!            write(6,*) 'rigi  =', rigi
+!            write(6,*) 'resi  =', resi
+!            write(6,*) 'lelas =', lelas
+!            write(6,*) 'pgl   =', pgl
+!            write(6,*) 'alpha =', alpha
+!            write(6,*) 'beta  =', beta
+!            write(6,*) 't2ev2 =', t2ev2
+!            write(6,*) 't2ve2 =', t2ve2
+!            write(6,*) 'cosi  =', cosi
+!            write(6,*) 'sinu  =', sinu
+!            write(6,*) 'Donnees d entree'
+!            write(6,*) 'epsm    = [',epsm   ,']'
+!            write(6,*) 'deps    = [',deps   ,']'
+!            write(6,*) 'epsg    = [',epsg   ,']'
+!            write(6,*) 'vim     = [',vim(1:9)    ,']'
+!            write(6,*) 'cstseu  = [',cstseu ,']'
+!            write(6,*) 'crit    = [',crit(1:6)   ,']'
+!            write(6,*) 'Matrice A'
+!            write(6,*) 'a0  = [',a0 ,']'
+!            write(6,*) 'aa_t  = [',aa_t ,']'
+!            write(6,*) 'ga_t  = [',ga_t ,']'
+!            write(6,*) 'aa_c  = [',aa_c ,']'
+!            write(6,*) 'ga_c  = [',ga_c ,']'
+!            write(6,*) 'Matrice B'
+!            write(6,*) 'ab  = [',ab ,']'
+!            write(6,*) 'gb  = [',gb ,']'
+!            write(6,*) 'Matrice C'
+!            write(6,*) 'c0  = [',c0 ,']'
+!            write(6,*) 'ac  = [',ac ,']'
+!            write(6,*) 'gc  = [',gc ,']'
+!            write(6,*) 'Donnees de sortie'
+!            write(6,*) 'vip  = [',vip(1:9) ,']'
+!            write(6,*) 'sig  = [',sig ,']'
+!            write(6,*) '-------------------------------------'
+!            write(6,*) 'On rejout l integration en mode debug'
+!        end if
+!    end if
+!
 end subroutine

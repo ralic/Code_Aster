@@ -21,9 +21,9 @@ subroutine dhrc_sig(eps, vint, a, b, sig)
     implicit none
 !
 #include "asterfort/r8inir.h"
-    real(kind=8) :: a(6, 6), b(6, 2, 2)
-    real(kind=8) :: vint(*), eps(8)
-    real(kind=8) :: sig(8)
+    real(kind=8), intent(in) :: vint(*), eps(8)
+    real(kind=8), intent(in) :: a(6, 6), b(6, 2, 2)
+    real(kind=8), intent(out) :: sig(8)
 !
 ! ----------------------------------------------------------------------
 !
@@ -31,17 +31,17 @@ subroutine dhrc_sig(eps, vint, a, b, sig)
 !      APPELE PAR "SEUGLC"
 !
 ! IN:
-!       EPS   : TENSEUR DE DEFORMATIONS
-!               (EXX EYY 2EXY KXX KYY 2KXY)
+!       EPS     : TENSEUR DE DEFORMATIONS
+!                 (EXX EYY 2EXY KXX KYY 2KXY)
+!       VINT    : VECTEUR DES VARIABLES INTERNES
+!                 VINT=(D1,D2,EPSP1X,EPSP1Y,EPSP2X,EPSP2Y)
 !       A       : TENSEUR DE RAIDEUR ELASTIQUE ENDOMMAGEE
 !       B       : TENSEUR ASSOCIE AUX DEFORMATIONS PLASTIQUES
 !       C       : TENSEUR DE RAIDEUR D'ÉCROUISSAGE PLASTIQUE
-!       VINT    : VECTEUR DES VARIABLES INTERNES
-!                VINT=(D1,D2,EPSP1X,EPSP1Y,EPSP2X,EPSP2Y)
 !
 ! OUT:
 !       SIG     : CONTRAINTES GENERALISEES ASSOCIEES AUX
-!       DEFORMATIONS MEMBRANAIRE, DE FLEXION ET DE GLISSEMENT
+!                 DEFORMATIONS MEMBRANAIRE, DE FLEXION ET DE GLISSEMENT
 !                 (NXX NYY NXY MXX MYY MXY)
 ! ----------------------------------------------------------------------
 !

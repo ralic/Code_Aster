@@ -33,7 +33,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'),)
 # PARAMETRES
 EP = 0.1;
 
-DEP0 = 0.001;
+DEP0 = 0.004;
 DR0 = 0.0;
 
 t1 = 4.0;
@@ -1058,6 +1058,10 @@ D_FX_1G=CALC_TABLE(TABLE=TFX_D1,
                    ACTION=(_F(OPERATION='COMB',
                               TABLE=TFX_G1,
                               NOM_PARA='INST',),
+                           _F(OPERATION='FILTRE',
+                              NOM_PARA='FXD',
+                              CRIT_COMP='NE',
+                              VALE=0.0,),
                            _F(OPERATION='OPER',
                               FORMULE=DREL_FXG,
                               NOM_PARA='FXG_FXD',),),);
@@ -1072,7 +1076,7 @@ D_DY_1G=CALC_TABLE(TABLE=TDY_D1,
 D_DY_1G=CALC_TABLE(reuse=D_DY_1G,
                    TABLE=D_DY_1G,
                    ACTION=_F(OPERATION='FILTRE',
-                             NOM_PARA='DY',
+                             NOM_PARA='DYD',
                              CRIT_COMP='NE',
                              VALE=0.0,),);
 
@@ -1093,7 +1097,7 @@ D_MY_1G=CALC_TABLE(TABLE=TMY_D1,
                               TABLE=TMY_G1,
                               NOM_PARA='INST',),
                            _F(OPERATION='FILTRE',
-                              NOM_PARA='MY',
+                              NOM_PARA='MYD',
                               CRIT_COMP='NE',
                               VALE=0.0,),
                            _F(OPERATION='OPER',
@@ -1105,7 +1109,7 @@ D_RX_1G=CALC_TABLE(TABLE=TRX_D1,
                               TABLE=TRX_G1,
                               NOM_PARA='INST',),
                            _F(OPERATION='FILTRE',
-                              NOM_PARA='RX',
+                              NOM_PARA='RXD',
                               CRIT_COMP='NE',
                               VALE=0.0,),
                            _F(OPERATION='OPER',
@@ -1120,14 +1124,14 @@ IMPR_TABLE(TABLE=D_RX_1G,);
 #----- TRACTION - PHASE ELASTIQUE -----
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=3.20213654148E-06,
+           VALE_CALC=0.264558228584,
            NOM_PARA='FXG_FX',
            TABLE=D_FX_1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.25,),);
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=-0.0144236721555,
+           VALE_CALC=0.570564606257,
            NOM_PARA='DYG_DY',
            TABLE=D_DY_1,
            FILTRE=_F(NOM_PARA='INST',
@@ -1136,7 +1140,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 #----- TRACTION - PHASE ENDOMMAGEMENT -----
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.264565046393,
+           VALE_CALC=0.814841812147,
            NOM_PARA='FXG_FX',
            TABLE=D_FX_1,
            FILTRE=_F(NOM_PARA='INST',
@@ -1145,7 +1149,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 #----- TRACTION - PHASE DECHARGEMENT -----
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.612549169105,
+           VALE_CALC=0.449830379618,
            NOM_PARA='FXG_FX',
            TABLE=D_FX_1,
            FILTRE=_F(NOM_PARA='INST',
@@ -1154,7 +1158,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 #----- COMPRESSION - PHASE CHARGEMENT(TOUJOURS ELASTIQUE) -----
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=1.47166359652,
+           VALE_CALC=0.157719735362,
            NOM_PARA='FXG_FX',
            TABLE=D_FX_1,
            FILTRE=_F(NOM_PARA='INST',
@@ -1163,7 +1167,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 #----- COMPRESSION - PHASE DECHARGEMENT -----
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.971336031971,
+           VALE_CALC=0.267593616432,
            NOM_PARA='FXG_FX',
            TABLE=D_FX_1,
            FILTRE=_F(NOM_PARA='INST',
@@ -1188,14 +1192,14 @@ TEST_TABLE(CRITERE='ABSOLU',
 #----- TRACTION - PHASE ENDOMMAGEMENT -----
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=-0.000162648596465,
+           VALE_CALC=-0.00865211769632,
            NOM_PARA='FXG_FXD',
            TABLE=D_FX_1G,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.25,),);
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=-0.0689911083655,
+           VALE_CALC=-0.248194738527,
            NOM_PARA='DYG_DYD',
            TABLE=D_DY_1G,
            FILTRE=_F(NOM_PARA='INST',
@@ -1204,14 +1208,14 @@ TEST_TABLE(CRITERE='ABSOLU',
 #----- TRACTION - PHASE GLISSEMENT -----
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.0636547331817,
+           VALE_CALC=-0.0801671373434,
            NOM_PARA='FXG_FXD',
            TABLE=D_FX_1G,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.8,),);
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=-0.340713077509,
+           VALE_CALC=-0.424308964125,
            NOM_PARA='DYG_DYD',
            TABLE=D_DY_1G,
            FILTRE=_F(NOM_PARA='INST',
@@ -1220,14 +1224,14 @@ TEST_TABLE(CRITERE='ABSOLU',
 #----- TRACTION - PHASE DECHARGEMENT -----
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.0841105961865,
+           VALE_CALC=-0.0592594113453,
            NOM_PARA='FXG_FXD',
            TABLE=D_FX_1G,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=1.5,),);
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=-0.552857526639,
+           VALE_CALC=-0.384608557992,
            NOM_PARA='DYG_DYD',
            TABLE=D_DY_1G,
            FILTRE=_F(NOM_PARA='INST',
@@ -1236,14 +1240,14 @@ TEST_TABLE(CRITERE='ABSOLU',
 #----- COMPRESSION - PHASE CHARGEMENT -----
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.101617415778,
+           VALE_CALC=-0.017174879209,
            NOM_PARA='FXG_FXD',
            TABLE=D_FX_1G,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=2.5,),);
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=-0.67423400385,
+           VALE_CALC=-0.188687153809,
            NOM_PARA='DYG_DYD',
            TABLE=D_DY_1G,
            FILTRE=_F(NOM_PARA='INST',
@@ -1252,14 +1256,14 @@ TEST_TABLE(CRITERE='ABSOLU',
 #----- COMPRESSION - PHASE DECHARGEMENT -----
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.111351593204,
+           VALE_CALC=0.0108712367383,
            NOM_PARA='FXG_FXD',
            TABLE=D_FX_1G,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=3.5,),);
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=-0.731899943051,
+           VALE_CALC=0.180971021919,
            NOM_PARA='DYG_DYD',
            TABLE=D_DY_1G,
            FILTRE=_F(NOM_PARA='INST',

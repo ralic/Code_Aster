@@ -18,15 +18,15 @@
 interface 
     subroutine dhrc_calc_g(eps, vint, ap1, bp1, cp1,&
                       ap2, bp2, cp2, g1, g2)
-        real(kind=8) :: eps(6)
-        real(kind=8) :: vint(*)
-        real(kind=8) :: ap1(6, 6)
-        real(kind=8) :: bp1(6, 2)
-        real(kind=8) :: cp1(2, 2)
-        real(kind=8) :: ap2(6, 6)
-        real(kind=8) :: bp2(6, 2)
-        real(kind=8) :: cp2(2, 2)
-        real(kind=8) :: g1
-        real(kind=8) :: g2
+        real(kind=8), intent(in) :: eps(6)
+        real(kind=8), intent(in) :: vint(*)
+        real(kind=8), intent(in) :: ap1(6, 6)
+        real(kind=8), intent(in) :: bp1(6, 2)
+        real(kind=8), intent(in) :: cp1(2, 2)
+        real(kind=8), intent(in) :: ap2(6, 6)
+        real(kind=8), intent(in) :: bp2(6, 2)
+        real(kind=8), intent(in) :: cp2(2, 2)
+        real(kind=8), intent(out) :: g1
+        real(kind=8), intent(out) :: g2
     end subroutine dhrc_calc_g
 end interface 

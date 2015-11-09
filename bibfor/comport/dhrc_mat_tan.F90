@@ -22,13 +22,13 @@ subroutine dhrc_mat_tan(a, ap1, ap2, b,&
 !
     implicit none
 #include "asterfort/matini.h"
-    integer :: indip(6)
-    real(kind=8) :: eps(8), vint(*)
-    real(kind=8) :: a(6, 6), ap1(6, 6), ap2(6, 6)
-    real(kind=8) :: b(6, 2, 2), bp1(6, 2), bp2(6, 2)
-    real(kind=8) :: neta1(2), neta2(2), cstseu(6)
-    real(kind=8) :: bocaj(6, 6)
-    real(kind=8) :: dsidep(6, 6)
+    integer, intent(in) :: indip(6)
+    real(kind=8), intent(in) :: eps(8), vint(*)
+    real(kind=8), intent(in) :: a(6, 6), ap1(6, 6), ap2(6, 6)
+    real(kind=8), intent(in) :: b(6, 2, 2), bp1(6, 2), bp2(6, 2)
+    real(kind=8), intent(in) :: neta1(2), neta2(2), cstseu(6)
+    real(kind=8), intent(in) :: bocaj(6, 6)
+    real(kind=8), intent(out) :: dsidep(6, 6)
 !
 ! ----------------------------------------------------------------------
 !
@@ -36,12 +36,31 @@ subroutine dhrc_mat_tan(a, ap1, ap2, b,&
 !      APPELE PAR "SEUGLC"
 !
 ! IN:
-!       EPS   : TENSEUR DE DEFORMATIONS
-!               (EXX EYY 2EXY KXX KYY 2KXY)
+!       EPS     : TENSEUR DE DEFORMATIONS
+!                 (EXX EYY 2EXY KXX KYY 2KXY)
+!       VINT    : VECTEUR DES VARIABLES INTERNES
+!                 VINT=(D1,D2,EPSP1X,EPSP1Y,EPSP2X,EPSP2Y)
 !       A       : TENSEUR DE RAIDEUR ELASTIQUE ENDOMMAGEE
+!       AP1     : DERIVEE PREMIERE DU TENSEUR DE RAIDEUR ELASTIQUE PAR
+!                 RAPPORT A D1
+!       AP2     : DERIVEE PREMIERE DU TENSEUR DE RAIDEUR ELASTIQUE PAR
+!                 RAPPORT A D2
+!       B       : TENSEUR DE RAIDEUR COUPLE ELAS-PLAS
+!       BP1     : DERIVEE PREMIERE DU TENSEUR DE RAIDEUR COUPLE PAR
+!                 RAPPORT A D1
+!       BP2     : DERIVEE PREMIERE DU TENSEUR DE RAIDEUR COUPLE PAR
+!                 RAPPORT A D2
+!       NETA1   : CONTRAINTE ASSOCIEE AU GLISSEMENT SUR LA PARTIE 1 DE
+!                 LA PLAQUE
+!       NETA2   : CONTRAINTE ASSOCIEE AU GLISSEMENT SUR LA PARTIE 2 DE
+!                 LA PLAQUE
+!       CSTSEU  : PARAMETRES DE SEUILS
+!            (1): POUR L'ENDOMMAGEMENT
+!            (2): POUR LE GLISSEMENT
+!       BOCAJ   : INVERSE DE LA MATRICE JACOBIENNE DES SEUILS ACTIVÉS
 !
 ! OUT:
-!       DSIDEP  : MATRICE DE RAIDEUR ELASTIQUE
+!       DSIDEP  : MATRICE DE RAIDEUR TANGENTE
 !
 ! ----------------------------------------------------------------------
 !

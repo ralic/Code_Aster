@@ -20,28 +20,29 @@ interface
                       sig, vip, a0, c0,&
                       aa_t, ga_t, ab, gb, ac,&
                       gc, aa_c, ga_c, cstseu, crit,&
-                      codret, dsidep)
+                      codret, dsidep, debug)
 ! aslint: disable=W1504
-        real(kind=8) :: epsm(6)
-        real(kind=8) :: deps(6)
-        real(kind=8) :: vim(*)
-        real(kind=8) :: pgl(3, 3)
-        character(len=16) :: option
-        real(kind=8) :: sig(8)
-        real(kind=8) :: vip(*)
-        real(kind=8) :: a0(6, 6)
-        real(kind=8) :: c0(2, 2, 2)
-        real(kind=8) :: aa_t(6, 6, 2)
-        real(kind=8) :: ga_t(6, 6, 2)
-        real(kind=8) :: ab(6, 2, 2)
-        real(kind=8) :: gb(6, 2, 2)
-        real(kind=8) :: ac(2, 2, 2)
-        real(kind=8) :: gc(2, 2, 2)
-        real(kind=8) :: aa_c(6, 6, 2)
-        real(kind=8) :: ga_c(6, 6, 2)
-        real(kind=8) :: cstseu(6)
-        real(kind=8) :: crit(*)
-        integer :: codret
-        real(kind=8) :: dsidep(6, 6)
+        real(kind=8), intent(in) :: epsm(6)
+        real(kind=8), intent(in) :: deps(6)
+        real(kind=8), intent(in) :: vim(*)
+        real(kind=8), intent(in) :: pgl(3, 3)
+        character(len=16), intent(in) :: option
+        real(kind=8), intent(out) :: sig(8)
+        real(kind=8), intent(out) :: vip(*)
+        real(kind=8), intent(in) :: a0(6, 6)
+        real(kind=8), intent(in) :: c0(2, 2, 2)
+        real(kind=8), intent(in) :: aa_t(6, 6, 2)
+        real(kind=8), intent(in) :: ga_t(6, 6, 2)
+        real(kind=8), intent(in) :: ab(6, 2, 2)
+        real(kind=8), intent(in) :: gb(6, 2, 2)
+        real(kind=8), intent(in) :: ac(2, 2, 2)
+        real(kind=8), intent(in) :: gc(2, 2, 2)
+        real(kind=8), intent(in) :: aa_c(6, 6, 2)
+        real(kind=8), intent(in) :: ga_c(6, 6, 2)
+        real(kind=8), intent(in) :: cstseu(6)
+        real(kind=8), intent(in) :: crit(*)
+        integer, intent(out) :: codret
+        real(kind=8), intent(out) :: dsidep(6, 6)
+        aster_logical, intent(in):: debug
     end subroutine dhrc_lc
 end interface 

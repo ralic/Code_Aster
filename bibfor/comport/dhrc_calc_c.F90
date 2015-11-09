@@ -21,11 +21,11 @@ subroutine dhrc_calc_c(c0, ac, gc, vint, c, cp1, cp2, cs1, cs2)
     implicit none
 !
 #include "asterfort/matini.h"
-    real(kind=8) :: vint(*)
-    real(kind=8) :: c0(2, 2, 2)
-    real(kind=8) :: ac(2, 2, 2), gc(2, 2, 2)
+    real(kind=8), intent(in) :: vint(*)
+    real(kind=8), intent(in) :: c0(2, 2, 2)
+    real(kind=8), intent(in) :: ac(2, 2, 2), gc(2, 2, 2)
 !
-    real(kind=8) :: c(2, 2, 2), cp1(2, 2), cp2(2, 2), cs1(2, 2), cs2(2, 2)
+    real(kind=8), intent(out) :: c(2, 2, 2), cp1(2, 2), cp2(2, 2), cs1(2, 2), cs2(2, 2)
 ! ----------------------------------------------------------------------
 !
 !      CALCUL DU TENSEUR DE RAIDEUR C ET DE SES DERIVVES PAR RAPPORT A D

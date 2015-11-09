@@ -1,4 +1,5 @@
 subroutine te0409(option, nomte)
+! aslint: disable=W1501
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -281,8 +282,6 @@ subroutine te0409(option, nomte)
         ep = zr(icacoq)
         ctor = zr(icacoq+3)
         excen = zr(icacoq+4)
- 
-        
 !
         if (resi) then
             call jevech('PCONTPR', 'E', icontp)
@@ -589,7 +588,17 @@ subroutine te0409(option, nomte)
                              sig, ecrp, a0, c0, aa_t,&
                              ga_t, ab_, gb_, ac_, gc_,&
                              aa_c, ga_c, cstseu, zr(icarcr), codret,&
-                             dsidep)
+                             dsidep, .false._1)
+!A DECOMMENTER POUR DEBUG DE L INTEGRATION DE LA LOI
+!                if (codret .eq. 1 ) then
+!                    codret = 0
+!                    call dhrc_lc(epsm, deps, ecr, pgl, option,&
+!                                 sig, ecrp, a0, c0, aa_t,&
+!                                 ga_t, ab_, gb_, ac_, gc_,&
+!                                 aa_c, ga_c, cstseu, zr(icarcr), codret,&
+!                                 dsidep, .true._1)
+!                    codret = 1
+!                end if
 !
             else if (compor(1:7).eq. 'KIT_DDI') then
 !
@@ -709,7 +718,6 @@ subroutine te0409(option, nomte)
                 endif
 !
 !               CALCUL DE LA MATRICE TANGENTE :
-!
 !               KTANG = KTANG + BFT*DF*BF + BMT*DM*BM + BMT*DMF*BF
 !                             + BCT*DC*BC
 !               -- MEMBRANE
@@ -730,8 +738,6 @@ subroutine te0409(option, nomte)
                 call utctab('CUMUL', 3, 3*nno, 2*nno, dmf,&
                             bf, bm, work, mefl)
             endif
-!
-!       -- fin boucle sur les points de gauss
         end do
 !
         if (.not.lrgm) then

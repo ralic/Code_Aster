@@ -33,7 +33,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'),)
 # PARAMETRES
 EP = 0.1;
 
-DEP0 = -0.001;
+DEP0 = -0.004;
 DR0 = 0.0;
 
 t1 = 4.0;
@@ -1058,6 +1058,10 @@ D_FX_1G=CALC_TABLE(TABLE=TFX_D1,
                    ACTION=(_F(OPERATION='COMB',
                               TABLE=TFX_G1,
                               NOM_PARA='INST',),
+                           _F(OPERATION='FILTRE',
+                              NOM_PARA='FXD',
+                              CRIT_COMP='NE',
+                              VALE=0.0,),
                            _F(OPERATION='OPER',
                               FORMULE=DREL_FXG,
                               NOM_PARA='FXG_FXD',),),);
@@ -1072,7 +1076,7 @@ D_DY_1G=CALC_TABLE(TABLE=TDY_D1,
 D_DY_1G=CALC_TABLE(reuse=D_DY_1G,
                    TABLE=D_DY_1G,
                    ACTION=_F(OPERATION='FILTRE',
-                             NOM_PARA='DY',
+                             NOM_PARA='DYD',
                              CRIT_COMP='NE',
                              VALE=0.0,),);
 
@@ -1088,46 +1092,46 @@ DREL_MYG=FORMULE(VALE='(MYG-MYD)/MYD',
 DREL_RXG=FORMULE(VALE='(RXG-RXD)/RXD',
                  NOM_PARA=('RXD','RXG',),);
 
-D_MY_1G=CALC_TABLE(TABLE=TMY_D1,
-                   ACTION=(_F(OPERATION='COMB',
-                              TABLE=TMY_G1,
-                              NOM_PARA='INST',),
-                           _F(OPERATION='FILTRE',
-                              NOM_PARA='MY',
-                              CRIT_COMP='NE',
-                              VALE=0.0,),
-                           _F(OPERATION='OPER',
-                              FORMULE=DREL_MYG,
-                              NOM_PARA='MYG_MYD',),),);
+#D_MY_1G=CALC_TABLE(TABLE=TMY_D1,
+                   #ACTION=(_F(OPERATION='COMB',
+                              #TABLE=TMY_G1,
+                              #NOM_PARA='INST',),
+                           #_F(OPERATION='FILTRE',
+                              #NOM_PARA='MYD',
+                              #CRIT_COMP='NE',
+                              #VALE=0.0,),
+                           #_F(OPERATION='OPER',
+                              #FORMULE=DREL_MYG,
+                              #NOM_PARA='MYG_MYD',),),);
 
-D_RX_1G=CALC_TABLE(TABLE=TRX_D1,
-                   ACTION=(_F(OPERATION='COMB',
-                              TABLE=TRX_G1,
-                              NOM_PARA='INST',),
-                           _F(OPERATION='FILTRE',
-                              NOM_PARA='RX',
-                              CRIT_COMP='NE',
-                              VALE=0.0,),
-                           _F(OPERATION='OPER',
-                              FORMULE=DREL_RXG,
-                              NOM_PARA='RXG_RXD',),),);
+#D_RX_1G=CALC_TABLE(TABLE=TRX_D1,
+                   #ACTION=(_F(OPERATION='COMB',
+                              #TABLE=TRX_G1,
+                              #NOM_PARA='INST',),
+                           #_F(OPERATION='FILTRE',
+                              #NOM_PARA='RXD',
+                              #CRIT_COMP='NE',
+                              #VALE=0.0,),
+                           #_F(OPERATION='OPER',
+                              #FORMULE=DREL_RXG,
+                              #NOM_PARA='RXG_RXD',),),);
 
 IMPR_TABLE(TABLE=D_FX_1G,);
 IMPR_TABLE(TABLE=D_DY_1G,);
-IMPR_TABLE(TABLE=D_MY_1G,);
-IMPR_TABLE(TABLE=D_RX_1G,);
+#IMPR_TABLE(TABLE=D_MY_1G,);
+#IMPR_TABLE(TABLE=D_RX_1G,);
 
 #----- TRACTION - PHASE ELASTIQUE -----
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=3.20213654135E-06,
+           VALE_CALC=-0.0355722869739,
            NOM_PARA='FXG_FX',
            TABLE=D_FX_1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.25,),);
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=-0.0144236721555,
+           VALE_CALC=0.104568419068,
            NOM_PARA='DYG_DY',
            TABLE=D_DY_1,
            FILTRE=_F(NOM_PARA='INST',
@@ -1136,7 +1140,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 #----- TRACTION - PHASE ENDOMMAGEMENT -----
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=-0.0356628026279,
+           VALE_CALC=-0.063986264408,
            NOM_PARA='FXG_FX',
            TABLE=D_FX_1,
            FILTRE=_F(NOM_PARA='INST',
@@ -1145,7 +1149,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 #----- TRACTION - PHASE DECHARGEMENT -----
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=-0.105518830689,
+           VALE_CALC=-0.0925749548871,
            NOM_PARA='FXG_FX',
            TABLE=D_FX_1,
            FILTRE=_F(NOM_PARA='INST',
@@ -1154,7 +1158,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 #----- COMPRESSION - PHASE CHARGEMENT(TOUJOURS ELASTIQUE) -----
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=-0.0910628787526,
+           VALE_CALC=-0.116367135127,
            NOM_PARA='FXG_FX',
            TABLE=D_FX_1,
            FILTRE=_F(NOM_PARA='INST',
@@ -1163,7 +1167,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 #----- COMPRESSION - PHASE DECHARGEMENT -----
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=-0.0521934304835,
+           VALE_CALC=-0.109186700845,
            NOM_PARA='FXG_FX',
            TABLE=D_FX_1,
            FILTRE=_F(NOM_PARA='INST',
@@ -1188,14 +1192,14 @@ TEST_TABLE(CRITERE='ABSOLU',
 #----- TRACTION - PHASE ENDOMMAGEMENT -----
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=-0.000162648596465,
+           VALE_CALC=-0.02343075016,
            NOM_PARA='FXG_FXD',
            TABLE=D_FX_1G,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.25,),);
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=-0.0689911083655,
+           VALE_CALC=0.0578999875395,
            NOM_PARA='DYG_DYD',
            TABLE=D_DY_1G,
            FILTRE=_F(NOM_PARA='INST',
@@ -1204,14 +1208,14 @@ TEST_TABLE(CRITERE='ABSOLU',
 #----- TRACTION - PHASE GLISSEMENT -----
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=-0.000162648596465,
+           VALE_CALC=-0.0679486862333,
            NOM_PARA='FXG_FXD',
            TABLE=D_FX_1G,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.8,),);
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=-0.0689911083655,
+           VALE_CALC=1.49754993559,
            NOM_PARA='DYG_DYD',
            TABLE=D_DY_1G,
            FILTRE=_F(NOM_PARA='INST',
@@ -1220,14 +1224,14 @@ TEST_TABLE(CRITERE='ABSOLU',
 #----- TRACTION - PHASE DECHARGEMENT -----
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=-0.105667180571,
+           VALE_CALC=0.0218801285617,
            NOM_PARA='FXG_FXD',
            TABLE=D_FX_1G,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=1.5,),);
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.376591754127,
+           VALE_CALC=2.4093839235,
            NOM_PARA='DYG_DYD',
            TABLE=D_DY_1G,
            FILTRE=_F(NOM_PARA='INST',
@@ -1236,14 +1240,14 @@ TEST_TABLE(CRITERE='ABSOLU',
 #----- COMPRESSION - PHASE CHARGEMENT -----
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=-0.0452442088565,
+           VALE_CALC=0.212784133998,
            NOM_PARA='FXG_FXD',
            TABLE=D_FX_1G,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=2.5,),);
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=-0.477858773506,
+           VALE_CALC=3.01466336752,
            NOM_PARA='DYG_DYD',
            TABLE=D_DY_1G,
            FILTRE=_F(NOM_PARA='INST',
@@ -1252,21 +1256,21 @@ TEST_TABLE(CRITERE='ABSOLU',
 #----- COMPRESSION - PHASE DECHARGEMENT -----
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.0499100162169,
+           VALE_CALC=0.328947820348,
            NOM_PARA='FXG_FXD',
            TABLE=D_FX_1G,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=3.5,),);
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=-0.596675384003,
+           VALE_CALC=3.32505583232,
            NOM_PARA='DYG_DYD',
            TABLE=D_DY_1G,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=3.5,),);
 
 #Tracer des figures de la documentation V6.05.106
-#test='ssns106p_'
+#test='ssns106q_'
 #DEFI_FICHIER(ACTION='ASSOCIER',
              #FICHIER='REPE_OUT/'+test+'FX.png',
              #ACCES='NEW',

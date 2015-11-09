@@ -19,14 +19,14 @@ interface
     subroutine dhrc_calc_c(c0, ac, gc,&
                       vint, c, cp1, cp2, cs1,&
                       cs2)
-        real(kind=8) :: c0(2, 2, 2)
-        real(kind=8) :: ac(2, 2, 2)
-        real(kind=8) :: gc(2, 2, 2)
-        real(kind=8) :: vint(*)
-        real(kind=8) :: c(2, 2, 2)
-        real(kind=8) :: cp1(2, 2)
-        real(kind=8) :: cp2(2, 2)
-        real(kind=8) :: cs1(2, 2)
-        real(kind=8) :: cs2(2, 2)
+        real(kind=8), intent(in) :: c0(2, 2, 2)
+        real(kind=8), intent(in) :: ac(2, 2, 2)
+        real(kind=8), intent(in) :: gc(2, 2, 2)
+        real(kind=8), intent(in) :: vint(*)
+        real(kind=8), intent(out) :: c(2, 2, 2)
+        real(kind=8), intent(out) :: cp1(2, 2)
+        real(kind=8), intent(out) :: cp2(2, 2)
+        real(kind=8), intent(out) :: cs1(2, 2)
+        real(kind=8), intent(out) :: cs2(2, 2)
     end subroutine dhrc_calc_c
 end interface 

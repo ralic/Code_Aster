@@ -17,10 +17,10 @@
 !
 interface 
     subroutine dhrc_sig(eps, vint, a, b, sig)
-        real(kind=8) :: eps(8)
-        real(kind=8) :: vint(*)
-        real(kind=8) :: a(6, 6)
-        real(kind=8) :: b(6, 2, 2)
-        real(kind=8) :: sig(8)
+        real(kind=8), intent(in) :: eps(8)
+        real(kind=8), intent(in) :: vint(*)
+        real(kind=8), intent(in) :: a(6, 6)
+        real(kind=8), intent(in) :: b(6, 2, 2)
+        real(kind=8), intent(out) :: sig(8)
     end subroutine dhrc_sig
 end interface 

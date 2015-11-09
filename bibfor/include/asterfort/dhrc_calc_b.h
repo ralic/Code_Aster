@@ -17,13 +17,13 @@
 !
 interface 
     subroutine dhrc_calc_b(ab, gb, vint, b, bp1, bp2, bs1, bs2)
-        real(kind=8) :: ab(6, 2, 2)
-        real(kind=8) :: gb(6, 2, 2)
-        real(kind=8) :: vint(*)
-        real(kind=8) :: b(6, 2, 2)
-        real(kind=8) :: bp1(6, 2)
-        real(kind=8) :: bp2(6, 2)
-        real(kind=8) :: bs1(6, 2)
-        real(kind=8) :: bs2(6, 2)
+        real(kind=8), intent(in) :: ab(6, 2, 2)
+        real(kind=8), intent(in) :: gb(6, 2, 2)
+        real(kind=8), intent(in) :: vint(*)
+        real(kind=8), intent(out) :: b(6, 2, 2)
+        real(kind=8), intent(out) :: bp1(6, 2)
+        real(kind=8), intent(out) :: bp2(6, 2)
+        real(kind=8), intent(out) :: bs1(6, 2)
+        real(kind=8), intent(out) :: bs2(6, 2)
     end subroutine dhrc_calc_b
 end interface 

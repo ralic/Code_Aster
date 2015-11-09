@@ -34,11 +34,9 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'),)
 EP = 0.1;
 
 DEP0 = 0.0;
-DR0 = 0.03;
+DR0 = 0.03*4;
 
-t1 = 1.0;
-t2 = (3.0 * t1);
-t3 = (4.0 * t1);
+t1 = 4.0;
 
 dt = 0.05;
 
@@ -260,14 +258,12 @@ COND_1G=AFFE_CHAR_MECA(MODELE=MO_G,
 
 chf1=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.,0.,
-                         t1,1.,
-                         t2,-1.,
-                         t3,0.,),
+                         t1,1.,),
                    PROL_DROITE='CONSTANT',
                    PROL_GAUCHE='CONSTANT',);
 
 INST=DEFI_LIST_REEL(DEBUT=0.0,
-                    INTERVALLE=_F(JUSQU_A=t3,
+                    INTERVALLE=_F(JUSQU_A=t1,
                                   PAS=(dt / 2.0),),);
 
 LINST=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
@@ -276,21 +272,6 @@ LINST=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
                               SUBD_METHODE='MANUEL',
                               SUBD_PAS=4,
                               SUBD_PAS_MINI=0.0001,),);
-
-INST2=DEFI_LIST_REEL(DEBUT=0.0,
-                     INTERVALLE=(_F(JUSQU_A=1.975,
-                                    PAS=(dt / 2.0),),
-                                 _F(JUSQU_A=2.025,
-                                    PAS=dt,),
-                                 _F(JUSQU_A=t3,
-                                    PAS=(dt / 2.0),),),);
-
-LINST2=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
-                                   LIST_INST=INST2,),
-                      ECHEC=_F(ACTION='DECOUPE',
-                               SUBD_METHODE='MANUEL',
-                               SUBD_PAS=4,
-                               SUBD_PAS_MINI=0.0001,),);
 
 #-----------------------------------------------
 # CALCUL DES RESULTATS POUR LE CHARGEMENT chf1
@@ -308,12 +289,11 @@ RESU_R1=STAT_NON_LINE(MODELE=MO,
                                        GROUP_MA='DALLE',),
                                  _F(RELATION='GRILLE_ISOT_LINE',
                                     GROUP_MA=('ACIER1L','ACIER2L','ACIER1T','ACIER2T',),),),
-                      INCREMENT=_F(LIST_INST=LINST2,
-                                   INST_FIN=3.975,
+                      INCREMENT=_F(LIST_INST=LINST,
                                    PRECISION=0.1,),
                       NEWTON=_F(REAC_ITER=1,),
                       CONVERGENCE=_F(ITER_GLOB_MAXI=25,),
-                      ARCHIVAGE=_F(LIST_INST=INST2,),);
+                      ARCHIVAGE=_F(LIST_INST=INST,),);
 
 
 RESU_R1=CALC_CHAMP(reuse=RESU_R1,
@@ -329,11 +309,11 @@ RESU_G1=STAT_NON_LINE(MODELE=MO_G,
                              _F(CHARGE=COND_1G,
                                 FONC_MULT=chf1,),),
                       COMPORTEMENT=_F(RELATION='GLRC_DM',),
-                      INCREMENT=_F(LIST_INST=LINST2,
+                      INCREMENT=_F(LIST_INST=LINST,
                                    PRECISION=0.1,),
                       NEWTON=_F(MATRICE='TANGENTE',
                                 REAC_ITER=1,),
-                      ARCHIVAGE=_F(LIST_INST=INST2,),);
+                      ARCHIVAGE=_F(LIST_INST=INST,),);
 
 RESU_G1=CALC_CHAMP(reuse=RESU_G1,
                    RESULTAT=RESU_G1,
@@ -349,11 +329,11 @@ RESU_D1=STAT_NON_LINE(MODELE=MO_G,
                              _F(CHARGE=COND_1G,
                                 FONC_MULT=chf1,),),
                       COMPORTEMENT=_F(RELATION='DHRC',),
-                      INCREMENT=_F(LIST_INST=LINST2,
+                      INCREMENT=_F(LIST_INST=LINST,
                                    PRECISION=0.1,),
                       NEWTON=_F(MATRICE='TANGENTE',
                                 REAC_ITER=1,),
-                      ARCHIVAGE=_F(LIST_INST=INST2,),);
+                      ARCHIVAGE=_F(LIST_INST=INST,),);
 
 RESU_D1=CALC_CHAMP(reuse=RESU_D1,
                    RESULTAT=RESU_D1,
@@ -1068,50 +1048,50 @@ IMPR_TABLE(TABLE=D_RX_1,);
 #################################################################
 # DIFFERENCE ENTRE GLRC_DM ET DHRC
 
-DREL_FXG = FORMULE(VALE='(FXG-FXD)/FXD',
-                   NOM_PARA=('FXD','FXG',),);
-
-DREL_DYG = FORMULE(VALE='(DYG-DYD)/DYD',
-                   NOM_PARA=('DYD','DYG',),);
-
-D_FX_1G=CALC_TABLE(TABLE=TFX_D1,
-                   ACTION=(_F(OPERATION='COMB',
-                              TABLE=TFX_G1,
-                              NOM_PARA='INST',),
-                           _F(OPERATION='FILTRE',
-                              NOM_PARA='FXD',
-                              CRIT_COMP='NE',
-                              VALE=0.0,),
-                           _F(OPERATION='OPER',
-                              FORMULE=DREL_FXG,
-                              NOM_PARA='FXG_FXD',),),);
-
-D_DY_1G=CALC_TABLE(TABLE=TDY_D1,
-                   ACTION=(_F(OPERATION='COMB',
-                              TABLE=TDY_G1,
-                              NOM_PARA='INST',),
-                           _F(OPERATION='EXTR',
-                              NOM_PARA=('INST','DYD','DYG',),),),);
-
-D_DY_1G=CALC_TABLE(reuse=D_DY_1G,
-                   TABLE=D_DY_1G,
-                   ACTION=_F(OPERATION='FILTRE',
-                             NOM_PARA='DYD',
-                             CRIT_COMP='NE',
-                             VALE=0.0,),);
-
-D_DY_1G=CALC_TABLE(reuse =D_DY_1G,
-                   TABLE=D_DY_1G,
-                   ACTION=_F(OPERATION='OPER',
-                             FORMULE=DREL_DYG,
-                             NOM_PARA='DYG_DYD',),);
-
+#DREL_FXG = FORMULE(VALE='(FXG-FXD)/FXD',
+                   #NOM_PARA=('FXD','FXG',),);
+#
+#DREL_DYG = FORMULE(VALE='(DYG-DYD)/DYD',
+                   #NOM_PARA=('DYD','DYG',),);
+#
+#D_FX_1G=CALC_TABLE(TABLE=TFX_D1,
+                   #ACTION=(_F(OPERATION='COMB',
+                              #TABLE=TFX_G1,
+                              #NOM_PARA='INST',),
+                           #_F(OPERATION='FILTRE',
+                              #NOM_PARA='FXD',
+                              #CRIT_COMP='NE',
+                              #VALE=0.0,),
+                           #_F(OPERATION='OPER',
+                              #FORMULE=DREL_FXG,
+                              #NOM_PARA='FXG_FXD',),),);
+#
+#D_DY_1G=CALC_TABLE(TABLE=TDY_D1,
+                   #ACTION=(_F(OPERATION='COMB',
+                              #TABLE=TDY_G1,
+                              #NOM_PARA='INST',),
+                           #_F(OPERATION='EXTR',
+                              #NOM_PARA=('INST','DYD','DYG',),),),);
+#
+#D_DY_1G=CALC_TABLE(reuse=D_DY_1G,
+                   #TABLE=D_DY_1G,
+                   #ACTION=_F(OPERATION='FILTRE',
+                             #NOM_PARA='DYD',
+                             #CRIT_COMP='NE',
+                             #VALE=0.0,),);
+#
+#D_DY_1G=CALC_TABLE(reuse =D_DY_1G,
+                   #TABLE=D_DY_1G,
+                   #ACTION=_F(OPERATION='OPER',
+                             #FORMULE=DREL_DYG,
+                             #NOM_PARA='DYG_DYD',),);
+#
 DREL_MYG=FORMULE(VALE='(MYG-MYD)/MYD',
                  NOM_PARA=('MYD','MYG',),);
-
+#
 DREL_RXG=FORMULE(VALE='(RXG-RXD)/RXD',
                  NOM_PARA=('RXD','RXG',),);
-
+#
 D_MY_1G=CALC_TABLE(TABLE=TMY_D1,
                    ACTION=(_F(OPERATION='COMB',
                               TABLE=TMY_G1,
@@ -1123,7 +1103,7 @@ D_MY_1G=CALC_TABLE(TABLE=TMY_D1,
                            _F(OPERATION='OPER',
                               FORMULE=DREL_MYG,
                               NOM_PARA='MYG_MYD',),),);
-
+#
 D_RX_1G=CALC_TABLE(TABLE=TRX_D1,
                    ACTION=(_F(OPERATION='COMB',
                               TABLE=TRX_G1,
@@ -1135,9 +1115,9 @@ D_RX_1G=CALC_TABLE(TABLE=TRX_D1,
                            _F(OPERATION='OPER',
                               FORMULE=DREL_RXG,
                               NOM_PARA='RXG_RXD',),),);
-
-IMPR_TABLE(TABLE=D_FX_1G,);
-IMPR_TABLE(TABLE=D_DY_1G,);
+#
+#IMPR_TABLE(TABLE=D_FX_1G,);
+#IMPR_TABLE(TABLE=D_DY_1G,);
 IMPR_TABLE(TABLE=D_MY_1G,);
 IMPR_TABLE(TABLE=D_RX_1G,);
 
@@ -1192,14 +1172,14 @@ TEST_TABLE(CRITERE='ABSOLU',
 ##----- FLEXION POSITIVE - PHASE DECHARGEMENT -----
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=-0.107592961025,
+           VALE_CALC=-0.0241848102118,
            NOM_PARA='MYG_MYD',
            TABLE=D_MY_1G,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=1.5,),);
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=-0.529493879078,
+           VALE_CALC=-0.485336173972,
            NOM_PARA='RXG_RXD',
            TABLE=D_RX_1G,
            FILTRE=_F(NOM_PARA='INST',
@@ -1208,14 +1188,14 @@ TEST_TABLE(CRITERE='ABSOLU',
 ##----- FLEXION NEGATIVE - PHASE ELASTIQUE -----
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.228038903627,
+           VALE_CALC=0.100421954354,
            NOM_PARA='MYG_MYD',
            TABLE=D_MY_1G,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=2.05,),);
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.430499415869,
+           VALE_CALC=-0.40466529699,
            NOM_PARA='RXG_RXD',
            TABLE=D_RX_1G,
            FILTRE=_F(NOM_PARA='INST',
@@ -1224,14 +1204,14 @@ TEST_TABLE(CRITERE='ABSOLU',
 ##----- FLEXION NEGATIVE - PHASE ENDOMMAGEMENT/GLISSEMENT -----
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=-0.0793547947461,
+           VALE_CALC=0.246380978833,
            NOM_PARA='MYG_MYD',
            TABLE=D_MY_1G,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=3.0,),);
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=-0.238967352122,
+           VALE_CALC=-0.320531817343,
            NOM_PARA='RXG_RXD',
            TABLE=D_RX_1G,
            FILTRE=_F(NOM_PARA='INST',
@@ -1240,14 +1220,14 @@ TEST_TABLE(CRITERE='ABSOLU',
 ##----- FLEXION NEGATIVE - PHASE DECHARGEMENT -----
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=-0.0773711646134,
+           VALE_CALC=0.300912769737,
            NOM_PARA='MYG_MYD',
            TABLE=D_MY_1G,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=3.5,),);
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=-0.237329483305,
+           VALE_CALC=-0.291266355277,
            NOM_PARA='RXG_RXD',
            TABLE=D_RX_1G,
            FILTRE=_F(NOM_PARA='INST',
@@ -1281,7 +1261,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 #----- FLEXION POSITIVE - PHASE DECHARGEMENT -----
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=-0.0135178115342,
+           VALE_CALC=-0.0405606643682,
            NOM_PARA='MYG_MY',
            TABLE=D_MY_1,
            FILTRE=_F(NOM_PARA='INST',
@@ -1290,7 +1270,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 #----- FLEXION NEGATIVE - PHASE ELASTIQUE -----
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.237253648326,
+           VALE_CALC=-0.0628256385881,
            NOM_PARA='MYG_MY',
            TABLE=D_MY_1,
            FILTRE=_F(NOM_PARA='INST',
@@ -1300,7 +1280,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 #----- FLEXION NEGATIVE - PHASE ENDOMMAGEMENT -----
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=-0.0187379738699,
+           VALE_CALC=-0.0104472608212,
            NOM_PARA='MYG_MY',
            TABLE=D_MY_1,
            FILTRE=_F(NOM_PARA='INST',
@@ -1309,14 +1289,14 @@ TEST_TABLE(CRITERE='ABSOLU',
 #----- FLEXION NEGATIVE - PHASE DECHARGEMENT -----
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=-0.0187379485595,
+           VALE_CALC=0.0225288389997,
            NOM_PARA='MYG_MY',
            TABLE=D_MY_1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=3.5,),);
 
 #Tracer des figures de la documentation V6.05.106
-#test='ssns106i_'
+#test='ssns106r_'
 #DEFI_FICHIER(ACTION='ASSOCIER',
              #FICHIER='REPE_OUT/'+test+'FX.png',
              #ACCES='NEW',

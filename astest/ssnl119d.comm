@@ -89,11 +89,19 @@ FOFO=DEFI_FONCTION(NOM_PARA='INST',
                    PROL_DROITE='EXCLU',
                    PROL_GAUCHE='EXCLU',);
 
-LINST=DEFI_LIST_REEL(DEBUT=0.0,
+LREEL=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(_F(JUSQU_A=0.1,NOMBRE=2,),
                                  _F(JUSQU_A=1.4,NOMBRE=13,),
                                  _F(JUSQU_A=3. ,NOMBRE=16,),
                                  _F(JUSQU_A=5. ,NOMBRE=10,),),);
+
+LINST=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
+                                  LIST_INST=LREEL,),
+                     ECHEC=_F(EVENEMENT='ERREUR',
+                              ACTION='DECOUPE',
+                              SUBD_METHODE='MANUEL',
+                              SUBD_NIVEAU=10,
+                              SUBD_PAS=10,),);
 
 #-----------------------------------------------
 # CALCUL DES RESULTATS POUR LE CHARGEMENT
@@ -144,7 +152,7 @@ TEST_TABLE(TABLE=POST,
                      CRIT_COMP='EQ',
                      PRECISION=1.E-3,),
            REFERENCE='SOURCE_EXTERNE',
-           VALE_CALC=(48867.6921749 ),
+           VALE_CALC=47479.8276447,
            VALE_REFE=(val_exp[3]*0.5 ),
            PRECISION=0.7,
            CRITERE='RELATIF',
@@ -158,9 +166,9 @@ TEST_TABLE(TABLE=POST,
                      CRIT_COMP='EQ',
                      PRECISION=1.E-3,),
            REFERENCE='SOURCE_EXTERNE',
-           VALE_CALC=( 67983.3362827   ),
+           VALE_CALC=70051.5971566,
            VALE_REFE=(val_exp[6]*0.5 ),
-           PRECISION=0.7,
+           PRECISION=0.8,
            CRITERE='RELATIF',
            VALE_ABS='NON',);
 
@@ -172,9 +180,9 @@ TEST_TABLE(TABLE=POST,
                      CRIT_COMP='EQ',
                      PRECISION=1.E-3,),
            REFERENCE='SOURCE_EXTERNE',
-           VALE_CALC=(84564.4262962 ),
+           VALE_CALC=90609.4886377,
            VALE_REFE=(val_exp[9]*0.5 ),
-           PRECISION=0.7,
+           PRECISION=0.9,
            CRITERE='RELATIF',
            VALE_ABS='NON',);
 
@@ -186,9 +194,9 @@ TEST_TABLE(TABLE=POST,
                      CRIT_COMP='EQ',
                      PRECISION=1.E-3,),
            REFERENCE='SOURCE_EXTERNE',
-           VALE_CALC=(115472.016082 ),
+           VALE_CALC=130038.631157,
            VALE_REFE=(val_exp[12]*0.5 ),
-           PRECISION=0.7,
+           PRECISION=0.9,
            CRITERE='RELATIF',
            VALE_ABS='NON',);
 
@@ -200,9 +208,9 @@ TEST_TABLE(TABLE=POST,
                      CRIT_COMP='EQ',
                      PRECISION=1.E-3,),
            REFERENCE='SOURCE_EXTERNE',
-           VALE_CALC=(152162.498692  ),
+           VALE_CALC=178474.569477,
            VALE_REFE=(val_exp[15]*0.5 ),
-           PRECISION=0.7,
+           PRECISION=1.0,
            CRITERE='RELATIF',
            VALE_ABS='NON',);
 
@@ -214,9 +222,9 @@ TEST_TABLE(TABLE=POST,
                      CRIT_COMP='EQ',
                      PRECISION=1.E-3,),
            REFERENCE='SOURCE_EXTERNE',
-           VALE_CALC=(173515.540736  ),
+           VALE_CALC=207418.561312,
            VALE_REFE=(val_exp[18]*0.5),
-           PRECISION=0.75,
+           PRECISION=1.1,
            CRITERE='RELATIF',
            VALE_ABS='NON',);
 
@@ -228,9 +236,9 @@ TEST_TABLE(TABLE=POST,
                      CRIT_COMP='EQ',
                      PRECISION=1.E-3,),
            REFERENCE='SOURCE_EXTERNE',
-           VALE_CALC=(371160.248829  ),
+           VALE_CALC=505265.474658,
            VALE_REFE=(val_exp[21]*0.5  ),
-           PRECISION=2.20,
+           PRECISION=3.30,
            CRITERE='RELATIF',
            VALE_ABS='NON',);
 

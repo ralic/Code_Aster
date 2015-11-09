@@ -21,10 +21,9 @@ subroutine dhrc_calc_n(eps, vint, b, c, neta1, neta2)
     implicit none
 !
 #include "asterfort/r8inir.h"
-    real(kind=8) :: b(6, 2, 2), c(2, 2, 2)
-    real(kind=8) :: vint(*), eps(6)
-!
-    real(kind=8) :: neta1(2), neta2(2)
+    real(kind=8), intent(in) :: vint(*), eps(6)
+    real(kind=8), intent(in) :: b(6, 2, 2), c(2, 2, 2)
+    real(kind=8), intent(out) :: neta1(2), neta2(2)
 !
 ! ----------------------------------------------------------------------
 !
@@ -32,12 +31,15 @@ subroutine dhrc_calc_n(eps, vint, b, c, neta1, neta2)
 !      APPELE PAR "SEUGLC"
 !
 ! IN:
-!       EPS   : TENSEUR DE DEFORMATIONS
-!               (EXX EYY 2EXY KXX KYY 2KXY)
+!       EPS     : TENSEUR DE DEFORMATIONS
+!                 (EXX EYY 2EXY KXX KYY 2KXY)
+!       VINT    : VECTEUR DES VARIABLES INTERNES
+!                 VINT=(D1,D2,EPSP1X,EPSP1Y,EPSP2X,EPSP2Y)
 !       B       : TENSEUR ASSOCIE AUX DEFORMATIONS PLASTIQUES
-!       C       : TENSEUR DE RAIDEUR D'ÉCROUISSAGE PLASTIQUE
-!       VINT   : VECTEUR DES VARIABLES INTERNES
-!                VINT=(D1,D2,EPSP1X,EPSP1Y,EPSP2X,EPSP2Y)
+!       C       : TENSEUR DE RAIDEUR D'ECROUISSAGE
+!                 LA PREMIERE COMPOSANTE DE C CORRESPOND AUX GLISSEMENTS
+!                 LA DEUXIEME COMPOSANTE DE C CORRESPOND AUX GLISSEMENTS
+!                 LA TROISIEME COMPOSANTE DE C CORRESPOND A LA DISTINCTION
 !
 ! OUT:
 !       NETA1   : CONTRAINTE ASSOCIEE AU GLISSEMENT SUR LA PARTIE 1 DE

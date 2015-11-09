@@ -21,11 +21,11 @@ subroutine dhrc_calc_b(ab, gb, vint, b, bp1, bp2, bs1, bs2)
     implicit none
 !
 #include "asterfort/matini.h"
-    real(kind=8) :: vint(*)
-    real(kind=8) :: ab(6, 2, 2), gb(6, 2, 2)
+    real(kind=8), intent(in) :: vint(*)
+    real(kind=8), intent(in) :: ab(6, 2, 2), gb(6, 2, 2)
 !
 !
-    real(kind=8) :: b(6, 2, 2), bp1(6, 2), bp2(6, 2), bs1(6, 2), bs2(6, 2)
+    real(kind=8), intent(out) :: b(6, 2, 2), bp1(6, 2), bp2(6, 2), bs1(6, 2), bs2(6, 2)
 ! ----------------------------------------------------------------------
 !
 !      CALCUL DU TENSEUR DE RAIDEUR B ET DE SES DERIVVES PAR RAPPORT A D
@@ -62,7 +62,26 @@ subroutine dhrc_calc_b(ab, gb, vint, b, bp1, bp2, bs1, bs2)
     call matini(6, 2, 0.0d0, bs1)
     call matini(6, 2, 0.0d0, bs2)
 !
-    do i = 1, 6
+! Termes Bm
+!
+    do i = 1, 3
+        do k = 1, 2
+!
+            b(i,k,1)=gb(i,k,1)*vint(1)/(ab(i,k,1)+vint(1))
+            b(i,k,2)=gb(i,k,2)*vint(2)/(ab(i,k,2)+vint(2))
+!
+            bp1(i,k)=ab(i,k,1)*gb(i,k,1)/(ab(i,k,1)+vint(1))**2
+            bp2(i,k)=ab(i,k,2)*gb(i,k,2)/(ab(i,k,2)+vint(2))**2
+!
+            bs1(i,k)=-2.d0*ab(i,k,1)*gb(i,k,1)/(ab(i,k,1)+vint(1))**3
+            bs2(i,k)=-2.d0*ab(i,k,2)*gb(i,k,2)/(ab(i,k,2)+vint(2))**3
+!
+        end do
+    end do
+!
+! Termes Bf de signe oppose suite a convetion Aster sur la flexion
+!
+    do i = 4, 6
         do k = 1, 2
 !
             b(i,k,1)=gb(i,k,1)*vint(1)/(ab(i,k,1)+vint(1))
