@@ -48,7 +48,7 @@ M[1]=LIRE_MAILLAGE(FORMAT='MED', )
 #
 # Attention : le test d'interpenetration peut etre long (voir la documentation).
 MACR_INFO_MAIL(
-              VERSION_HOMARD='V11_2',
+              VERSION_HOMARD='V11_4',
               MAILLAGE=M[1],
               QUALITE='OUI',
               INTERPENETRATION='OUI',
@@ -199,7 +199,7 @@ for k in range(1,10):
   M[k+1]=CO('M_%d' % (k+1))
 #
   MACR_ADAP_MAIL(
-              VERSION_HOMARD='V11_2',
+              VERSION_HOMARD='V11_4',
               ADAPTATION='RAFFINEMENT',
               MAILLAGE_N = M[k],
               MAILLAGE_NP1 = M[k+1],

@@ -797,8 +797,8 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 #
 # 16.3. Version de HOMARD
 #
-  VERSION_HOMARD = SIMP(statut='f',typ='TXM',defaut="V11_2",
-                        into=("V11_2", "V11_N", "V11_N_PERSO"),
+  VERSION_HOMARD = SIMP(statut='f',typ='TXM',defaut="V11_4",
+                        into=("V11_4", "V11_N", "V11_N_PERSO"),
                         fr=tr("Version de HOMARD"),
                         ),
 #

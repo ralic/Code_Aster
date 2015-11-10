@@ -6,4 +6,5 @@ P mpi_nbnoeud 1
 P testlist verification sequential
 
 F comm zzzz121e.comm D 1
+F com1 zzzz121e.com1 D 1
 F mmed zzzz121e.mmed D 20

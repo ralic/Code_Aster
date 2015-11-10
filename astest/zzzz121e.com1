@@ -1,0 +1,132 @@
+# TITRE COUPLAGE ASTER_HOMARD - CAS 3D EN HEXAEDRES
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# person_in_charge: gerald.nicolas at edf.fr
+#       Controle de POURSUITE en adaptation de maillage
+#       Ce cas est purement informatique
+POURSUITE(CODE='OUI',);
+#
+# 9. ADAPTATION DU MAILLAGE DE 02 VERS 03
+#    . RAFFINEMENT SELON DES BOITES PARALLELEPIPEDIQUES
+
+MACR_ADAP_MAIL(MAILLAGE_N=M02,
+               MAILLAGE_NP1=CO('M03'),
+               ADAPTATION='RAFF_DERA_ZONE',
+               ZONE=(_F(TYPE='BOITE',
+                       X_MINI=  0.99,
+                       X_MAXI=  1.01,
+                       Y_MINI= -0.01,
+                       Y_MAXI=  0.01,
+                       Z_MINI= -0.01,
+                       Z_MAXI=  1.01,),
+                     _F(TYPE='BOITE',
+                       X_MINI=  1.99,
+                       X_MAXI=  2.01,
+                       Y_MINI= -0.01,
+                       Y_MAXI=  0.01,
+                       Z_MINI= -0.01,
+                       Z_MAXI=  1.01,),
+                     _F(TYPE='BOITE',
+                       X_MINI= 3.99,
+                       X_MAXI= 6.01,
+                       Y_MINI= 3.99,
+                       Y_MAXI= 4.01,
+                       Z_MINI= 1.99,
+                       Z_MAXI= 2.01,),),
+               );
+#
+# 10. CALCUL SUR LE MAILLAGE 03
+# 10.1. MODELE MECANIQUE
+
+MODE03=AFFE_MODELE(MAILLAGE=M03,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='3D',),);
+
+#
+# 10.2. MISE EN PLACE DES MATERIAUX
+
+MATE03=AFFE_MATERIAU(MAILLAGE=M03,
+                     AFFE=_F(TOUT='OUI',
+                             MATER=MATER2,),);
+
+#
+# 10.3. CHARGEMENTS
+
+CHAR03=AFFE_CHAR_MECA(MODELE=MODE03,
+                      PESANTEUR=_F(GRAVITE=G,
+                                   DIRECTION=(4.,6.,-1.,),),
+                      FACE_IMPO=_F(GROUP_MA='X_0',
+                                   DX=0.,
+                                   DY=0.,
+                                   DZ=0.,),
+                      PRES_REP=(_F(GROUP_MA='X_MAX',
+                                   PRES=PRE,),
+                                _F(GROUP_MA=('Y_MI_MA','Z_MI_MA',),
+                                   PRES=PRES_0,),),);
+
+#
+# 10.4. RESOLUTION
+
+RESU03=MECA_STATIQUE(MODELE=MODE03,
+                     CHAM_MATER=MATE03,
+                     EXCIT=_F(CHARGE=CHAR03,),);
+
+
+# 10.5. IMPRESSION
+IMPR_RESU(FORMAT='MED',UNITE=83,RESU=_F(RESULTAT=RESU03,),);
+#IMPR_RESU(RESU=_F(RESULTAT=RESU03,),);
+
+# 11. TESTS DE NON-REGRESSION
+#    ON CREE DEUX GROUPES DE NOEUD CONTENANT CHACUN UN DES NOEUDS CREES AU CENTRE
+#    DES HEXAEDRES COUPES. CELA PERMET DE S'AFFRANCHIR D'EVENTUELS CHANGEMENTS DE
+#    NUMEROTATION DES NOEUDS DANS HOMARD ET DE PERENISER LES TESTS
+#    REMARQUE : LEUR NOM EST CELUI DU NOEUD POUR LA VERSION 13.00.06
+#
+M03=DEFI_GROUP( reuse =M03,
+                MAILLAGE=M03,
+                CREA_GROUP_NO=(_F(NOM='N77',
+                                  OPTION='ENV_SPHERE',
+                                  POINT=(1.5,0.5,0.5),
+                                  PRECISION=1/200.,
+                                  RAYON=1/200.),
+                              _F(NOM='N76',
+                                  OPTION='ENV_SPHERE',
+                                  POINT=(5.,5.,1.),
+                                  PRECISION=1/200.,
+                                  RAYON=1/200.),),
+                INFO=2 );
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='N76',
+                   RESULTAT=RESU03,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=3.70916104837,
+                   CRITERE='RELATIF',
+                   ),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='N77',
+                   RESULTAT=RESU03,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-1.62336824935,
+                   CRITERE='RELATIF',
+                   ),
+                ),)
+
+FIN();
