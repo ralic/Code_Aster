@@ -29,7 +29,7 @@ SIMU_POINT_MAT=MACRO(nom="SIMU_POINT_MAT",
    MATER           =SIMP(statut='o',typ=mater_sdaster,max=30),
 
 # --MASSIF : orientation du materiau (monocristal, orthotropie)
-   MASSIF          =FACT(statut='f',max='**',
+   MASSIF          =FACT(statut='f',
      regles=(UN_PARMI('ANGL_REP','ANGL_EULER'),),
      ANGL_REP        =SIMP(statut='f',typ='R',min=1,max=3),
      ANGL_EULER      =SIMP(statut='f',typ='R',min=1,max=3),

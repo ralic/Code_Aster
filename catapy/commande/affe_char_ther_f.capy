@@ -206,7 +206,7 @@ AFFE_CHAR_THER_F=OPER(nom="AFFE_CHAR_THER_F",op=34,sd_prod=char_ther,
                                  into=("TEMP","TEMP_MIL","TEMP_INF","TEMP_SUP") ),
          ),
 
-         CONVECTION      =FACT(statut='f',max='**',
+         CONVECTION      =FACT(statut='f',
            VITESSE         =SIMP(statut='o',typ=cham_no_sdaster ),
          ),
 

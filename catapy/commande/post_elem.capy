@@ -540,7 +540,7 @@ POST_ELEM=OPER(nom="POST_ELEM",op=107,sd_prod=table_sdaster,reentrant='n',
                        MODE_FOURIER   = SIMP(statut='f',typ='I',defaut=0),
          ),
 
-         CARA_POUTRE    = FACT(statut='f',max='**',
+         CARA_POUTRE    = FACT(statut='f',
                                regles=(UN_PARMI('TOUT','GROUP_MA'),
                                        ENSEMBLE('LONGUEUR','LIAISON','MATERIAU'),),
                                TOUT          = SIMP(statut='f',typ='TXM',into=("OUI",) ),

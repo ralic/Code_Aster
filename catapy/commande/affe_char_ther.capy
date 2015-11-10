@@ -214,7 +214,7 @@ AFFE_CHAR_THER=OPER(nom="AFFE_CHAR_THER",op=34,sd_prod=char_ther
            NUME_LAGR       =SIMP(statut='f',typ='TXM',defaut="NORMAL",into=("NORMAL","APRES") ),
          ),
 
-         CONVECTION      =FACT(statut='f',max='**',
+         CONVECTION      =FACT(statut='f',
            VITESSE         =SIMP(statut='o',typ=(cham_no_sdaster) ),
          ),
 
