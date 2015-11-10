@@ -90,6 +90,7 @@ implicit none
 !
     aster_logical :: loop_cont_conv, loop_frot_conv, loop_geom_conv
     aster_logical :: l_loop_frot, l_loop_geom, l_loop_cont
+    aster_logical :: l_cont_cont
     integer :: i_loop_geom, i_loop_frot, i_loop_cont,loop_cont_node
     character(len=4) :: state_newt
 !
@@ -111,6 +112,7 @@ implicit none
 !
 ! - Contact loops
 !
+    l_cont_cont = isfonc(list_func_acti,'CONT_CONTINU')
     l_loop_frot = isfonc(list_func_acti, 'BOUCLE_EXT_FROT')
     l_loop_geom = isfonc(list_func_acti, 'BOUCLE_EXT_GEOM')
     l_loop_cont = isfonc(list_func_acti, 'BOUCLE_EXT_CONT')
@@ -177,7 +179,7 @@ implicit none
 !
 ! - Initialization of data structures for cycling detection and treatment
 !
-    if (loop_cont_conv .or. loop_frot_conv .or. loop_geom_conv) then
+    if ((loop_cont_conv .or. loop_frot_conv .or. loop_geom_conv).and.l_cont_cont) then
         call mm_cycl_erase(ds_contact, 0, 0)
     endif
 !

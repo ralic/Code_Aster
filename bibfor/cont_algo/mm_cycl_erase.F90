@@ -7,7 +7,6 @@ implicit none
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
-#include "asterfort/cfdisl.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -56,17 +55,12 @@ implicit none
     integer, pointer :: p_sdcont_cycnbr(:) => null()
     character(len=24) :: sdcont_cyceta
     integer, pointer :: p_sdcont_cyceta(:) => null()
-    integer :: nb_cont_poin, i_cont_poin
+    integer :: nt_cont_poin, i_cont_poin
     integer :: cycl_index
-    aster_logical :: lctcc
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-    lctcc = cfdisl(ds_contact%sdcont_defi,'FORMUL_CONTINUE')
-    if (.not.lctcc) then
-        goto 99
-    endif
 !
 ! - Name of cycling objects
 !
@@ -80,23 +74,23 @@ implicit none
     call jeveuo(sdcont_cycnbr, 'E', vi = p_sdcont_cycnbr)
     call jeveuo(sdcont_cyceta, 'E', vi = p_sdcont_cyceta)
 !
-! - Initializations
+! - Get contact parameters
 !
-    nb_cont_poin = cfdisi(ds_contact%sdcont_defi,'NTPC' )
+    nt_cont_poin = cfdisi(ds_contact%sdcont_defi,'NTPC' )
 !
 ! - Erasing cycling information
 !
     if (cycl_type .eq. 0) then
         ASSERT(point_curr.eq.0)
         do cycl_index = 1, 4
-            do i_cont_poin = 1, nb_cont_poin
+            do i_cont_poin = 1, nt_cont_poin
                 p_sdcont_cyclis(4*(i_cont_poin-1)+cycl_index) = 0
                 p_sdcont_cycnbr(4*(i_cont_poin-1)+cycl_index) = 0
                 p_sdcont_cyceta(4*(i_cont_poin-1)+cycl_index) = 0
             enddo
         end do
     else if (cycl_type.gt.0) then
-        ASSERT(point_curr.le.nb_cont_poin)
+        ASSERT(point_curr.le.nt_cont_poin)
         ASSERT(point_curr.ge.1)
         ASSERT(cycl_type.ge.1)
         ASSERT(cycl_type.le.4)
@@ -108,8 +102,6 @@ implicit none
     else
         ASSERT(.false.)
     endif
-!
- 99 continue
 !
     call jedema()
 end subroutine

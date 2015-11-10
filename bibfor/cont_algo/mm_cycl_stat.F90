@@ -7,7 +7,6 @@ implicit none
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
-#include "asterfort/cfdisl.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nmrvai.h"
 #include "asterfort/mm_cycl_erase.h"
@@ -49,19 +48,16 @@ implicit none
     character(len=24) :: sdcont_cyceta
     integer, pointer :: p_sdcont_cyceta(:) => null()
     integer :: cycl_index, cycl_stat
-    integer :: i_cont_poin, nb_cont_poin
-    aster_logical :: cont_disc, cont_xfem
+    integer :: i_cont_poin, nt_cont_poin
     integer :: cycl_nb(4)
 !
 ! --------------------------------------------------------------------------------------------------
 !
     cycl_nb(1:4) = 0
 !
-! - Formulation of contact
+! - Get contact parameters
 !
-    cont_disc = cfdisl(ds_contact%sdcont_defi,'FORMUL_DISCRETE')
-    cont_xfem = cfdisl(ds_contact%sdcont_defi,'FORMUL_XFEM')
-    if (cont_disc .or. cont_xfem) goto 99
+    nt_cont_poin = cfdisi(ds_contact%sdcont_defi,'NTPC' )
 !
 ! - Acces to cycling objects
 !
@@ -70,8 +66,7 @@ implicit none
 !
 ! - Counting cycles
 !
-    nb_cont_poin = cfdisi(ds_contact%sdcont_defi,'NTPC' )
-    do i_cont_poin = 1, nb_cont_poin
+    do i_cont_poin = 1, nt_cont_poin
         do cycl_index = 1, 4
             cycl_stat = p_sdcont_cyceta(4*(i_cont_poin-1)+cycl_index)
             if (cycl_stat .ne. 0) then
@@ -89,7 +84,5 @@ implicit none
     call nmrvai(sdstat, 'CTCC_CYCL_2', 'E', cycl_nb(2))
     call nmrvai(sdstat, 'CTCC_CYCL_3', 'E', cycl_nb(3))
     call nmrvai(sdstat, 'CTCC_CYCL_4', 'E', cycl_nb(4))
-!
- 99 continue
 !
 end subroutine
