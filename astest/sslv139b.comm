@@ -1,4 +1,3 @@
-
 # TITRE : FLAMBEMENT D'UNE PLAQUE CIRCULAIRE SOUMISE A UNE
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,7 +23,9 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED')
+# Pour eviter les "TOLE MACHINE", on perturbe legerement la geometrie du maillage :
+MODI_MAILLAGE(reuse =MAIL, MAILLAGE=MAIL, DEFORME=_F(OPTION='TRAN', ALEA=1.e-8,),)
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
@@ -157,9 +158,8 @@ TEST_RESU(RESU=_F(PARA='CHAR_CRIT',
                   NUME_MODE=1,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=RES_NORM,
-# Le TOLE_MACHINE est justifié par le tres grand conditionnement de la matrice
 # de rigidité du problème elastique : la plaque est tres mince.
-                  VALE_CALC=8.48470464E+05,  TOLE_MACHINE=1.5e-6,
+                  VALE_CALC=848468.773446,
                   VALE_REFE=8.493509396E5,
                   PRECISION=2.E-3,),)
 
@@ -167,7 +167,7 @@ TEST_RESU(CHAM_NO=_F(NOEUD='N4',
                      REFERENCE='ANALYTIQUE',
                      NOM_CMP='DY',
                      CHAM_GD=MODE_1,
-                     VALE_CALC=0.999985449,
+                     VALE_CALC=0.999985449497,
                      VALE_REFE=1.0,),
           )
 
@@ -176,7 +176,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=EVOLELAS,
                    NOM_CHAM='ETOT_ELEM',
                    NOM_CMP='TOTALE',
-                   VALE_CALC=0.066948111485693004,
+                   VALE_CALC=0.0669481688318,
                    MAILLE='M20',
                    ),
                 _F(NUME_ORDRE=1,
@@ -184,7 +184,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=EVOLELAS,
                    NOM_CHAM='ETOT_ELGA',
                    NOM_CMP='TOTALE',
-                   VALE_CALC=6.7300645536777997E8,
+                   VALE_CALC=673007474.517,
                    MAILLE='M10',
                    ),
                 _F(NUME_ORDRE=1,
@@ -192,7 +192,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CHAM='ETOT_ELNO',
                    NOEUD='N10',
                    NOM_CMP='TOTALE',
-                   VALE_CALC=7.2802885013540006E8,
+                   VALE_CALC=728025449.383,
                    MAILLE='M3',
                    ),
                 ),
@@ -204,7 +204,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=MODE,
                    NOM_CHAM='ETOT_ELEM',
                    NOM_CMP='TOTALE',
-                   VALE_CALC=0.066948134,
+                   VALE_CALC=0.0669481688318,
                    VALE_REFE=0.066948111485693004,
                    MAILLE='M20',),
                 _F(NUME_ORDRE=1,
@@ -213,7 +213,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=MODE,
                    NOM_CHAM='ETOT_ELGA',
                    NOM_CMP='TOTALE',
-                   VALE_CALC= 6.73006699E+08,
+                   VALE_CALC=673007474.517,
                    VALE_REFE=6.7300645536777997E8,
                    MAILLE='M10',),
                 _F(NUME_ORDRE=1,
@@ -222,7 +222,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CHAM='ETOT_ELNO',
                    NOEUD='N10',
                    NOM_CMP='TOTALE',
-                   VALE_CALC= 7.28029113E+08,
+                   VALE_CALC=728025449.383,
                    VALE_REFE=7.2802885013540006E8,
                    MAILLE='M3',),
                 ),

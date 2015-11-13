@@ -1,4 +1,3 @@
-
 # TITRE IMPACT POUTRE AVEC ELEMENTS 3D SUR PLAN RIGIDE
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +21,9 @@
 
 DEBUT(CODE=_F(
 NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
-MAILL=LIRE_MAILLAGE(FORMAT='MED',);
+MAILL=LIRE_MAILLAGE(FORMAT='MED')
+# Pour eviter les "TOLE MACHINE", on perturbe legerement la geometrie du maillage :
+MODI_MAILLAGE(reuse =MAILL, MAILLAGE=MAILL, DEFORME=_F(OPTION='TRAN', ALEA=1.e-8,),)
 
 MAILL=DEFI_GROUP(reuse =MAILL,
                  MAILLAGE=MAILL,
@@ -30,7 +31,7 @@ MAILL=DEFI_GROUP(reuse =MAILL,
                                 _F(GROUP_MA='POUTRE',),),);
 
 MODE=AFFE_MODELE(MAILLAGE=MAILL,
-                 
+
                  AFFE=_F(TOUT='OUI',
                          PHENOMENE='MECANIQUE',
                          MODELISATION='3D',),);
@@ -207,7 +208,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=20,
                   NOM_CHAM='DEPL',
                   NOEUD='N5',
                   NOM_CMP='DZ',
-                  VALE_CALC=-2.0E-03,
+                  VALE_CALC=-0.00200000009594,
                   VALE_REFE=-2.E-3,
                   PRECISION=1.E-4,),
           )
@@ -218,7 +219,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=20,
                   NOM_CHAM='DEPL',
                   NOEUD='N100',
                   NOM_CMP='DZ',
-                  VALE_CALC=-3.99999988E-03,
+                  VALE_CALC=-0.00399999988096,
                   VALE_REFE=-4.0E-3,
                   PRECISION=1.E-4,),
           )
@@ -229,7 +230,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=40,
                   NOM_CHAM='DEPL',
                   NOEUD='N100',
                   NOM_CMP='DZ',
-                  VALE_CALC=-3.99828876E-03,
+                  VALE_CALC=-0.00399828851742,
                   VALE_REFE=-4.0E-3,
                   PRECISION=1.E-3,),
           )
@@ -240,9 +241,9 @@ TEST_RESU(RESU=_F(NUME_ORDRE=50,
                   NOM_CHAM='DEPL',
                   NOEUD='N5',
                   NOM_CMP='DZ',
-                  VALE_CALC=-2.0E-03,
+                  VALE_CALC=-0.00200000009594,
                   VALE_REFE=-2.E-3,
-                  TOLE_MACHINE=1.E-5,
+
                   PRECISION=1.E-4,),
           )
 
@@ -252,7 +253,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=60,
                   NOM_CHAM='DEPL',
                   NOEUD='N100',
                   NOM_CMP='DZ',
-                  VALE_CALC=-2.49558526E-07,
+                  VALE_CALC=-2.49329359767E-07,
                   VALE_REFE=0.0,
                   CRITERE='ABSOLU',
                   PRECISION=1.E-4,),

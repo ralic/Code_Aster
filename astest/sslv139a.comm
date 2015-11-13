@@ -23,7 +23,9 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED')
+# Pour eviter les "TOLE MACHINE", on perturbe legerement la geometrie du maillage :
+MODI_MAILLAGE(reuse =MAIL, MAILLAGE=MAIL, DEFORME=_F(OPTION='TRAN', ALEA=1.e-8,),)
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
@@ -129,8 +131,8 @@ TEST_RESU(RESU=_F(PARA='CHAR_CRIT',
                   NUME_MODE=1,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=RES_NORM,
-                  VALE_CALC=848469.558281,
-                  TOLE_MACHINE=2.5e-6,      # légère variation
+                  VALE_CALC=848469.18032,
+                        # légère variation
                   VALE_REFE=8.49350940E+05,
                   PRECISION=2.E-3,),)
 
@@ -138,7 +140,7 @@ TEST_RESU(CHAM_NO=_F(NOEUD='N4',
                      REFERENCE='ANALYTIQUE',
                      NOM_CMP='DY',
                      CHAM_GD=MODE_1,
-                     VALE_CALC=0.999985449348,
+                     VALE_CALC=0.999985449493,
                      VALE_REFE=1.0,),
           )
 

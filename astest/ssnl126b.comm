@@ -18,7 +18,9 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-mail=LIRE_MAILLAGE(FORMAT='MED',);
+mail=LIRE_MAILLAGE(FORMAT='MED')
+# Pour eviter les "TOLE MACHINE", on perturbe legerement la geometrie du maillage :
+MODI_MAILLAGE(reuse =mail, MAILLAGE=mail, DEFORME=_F(OPTION='TRAN', ALEA=1.e-8,),)
 
 modele=AFFE_MODELE(MAILLAGE=mail,
                    AFFE=_F(TOUT='OUI',
@@ -91,7 +93,7 @@ resuel=STAT_NON_LINE(reuse=resuel,
 TEST_RESU(RESU=_F(PARA='CHAR_CRIT',
                   INST=1.0,
                   RESULTAT=resuel,
-                  VALE_CALC=-19.0657146338,
+                  VALE_CALC=-19.0657141732,
                   ),
           )
 
@@ -135,13 +137,13 @@ resu=STAT_NON_LINE(reuse=resu,
 TEST_RESU(RESU=(_F(PARA='CHAR_CRIT',
                    INST=0.4,
                    RESULTAT=resu,
-                   VALE_CALC=4.99168894023,
+                   VALE_CALC=4.9916845383,
                    ),
                 _F(PARA='CHAR_CRIT',
                    INST=0.5,
                    RESULTAT=resu,
-                   VALE_CALC=-1.31860877526,
-                   TOLE_MACHINE=2.E-6,
+                   VALE_CALC=-1.31860681531,
+
                    ),
                 ),
           )
