@@ -102,6 +102,8 @@ def env2dict(self, src):
         ])
     dico['MFRONT_SPECIFIC'] = text
     dico['ASRUN_TMPDIR'] = env.ASRUN_TMPDIR
+    dico['ASTERDATADIR'] = env['ASTERDATADIR']
+    dico['ASTER_TAG'] = '.'.join([str(i) for i in env['ASTER_VERSION'][0]])
     self.end_msg("yes")
     return dico
 
