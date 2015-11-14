@@ -18,14 +18,14 @@
 interface
     subroutine utmess_core(typ, idmess, nk, valk, ni,&
                            vali, nr, valr, fname)
-        character(len=*) :: typ
-        character(len=*) :: idmess
-        integer :: nk
-        character(len=*) :: valk(*)
-        integer :: ni
-        integer :: vali(*)
-        integer :: nr
-        real(kind=8) :: valr(*)
-        character(len=*) :: fname
+        character(len=*), intent(in) :: typ
+        character(len=*), intent(in) :: idmess
+        integer, intent(in) :: nk
+        character(len=*), intent(in) :: valk(*)
+        integer, intent(in) :: ni
+        integer, intent(in) :: vali(*)
+        integer, intent(in) :: nr
+        real(kind=8), intent(in) :: valr(*)
+        character(len=*), intent(in) :: fname
     end subroutine utmess_core
 end interface

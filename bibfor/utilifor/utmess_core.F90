@@ -1,5 +1,6 @@
 subroutine utmess_core(typ, idmess, nk, valk, ni,&
                        vali, nr, valr, fname)
+use message_module
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,21 +38,21 @@ subroutine utmess_core(typ, idmess, nk, valk, ni,&
 #include "asterfort/onerrf.h"
 #include "asterfort/post_op.h"
 #include "asterfort/trabck.h"
-    character(len=*) :: typ
-    character(len=*) :: idmess
-    integer :: nk
-    character(len=*) :: valk(*)
-    integer :: ni
-    integer :: vali(*)
-    integer :: nr
-    real(kind=8) :: valr(*)
-    character(len=*) :: fname
+    character(len=*), intent(in) :: typ
+    character(len=*), intent(in) :: idmess
+    integer, intent(in) :: nk
+    character(len=*), intent(in) :: valk(*)
+    integer, intent(in) :: ni
+    integer, intent(in) :: vali(*)
+    integer, intent(in) :: nr
+    real(kind=8), intent(in) :: valr(*)
+    character(len=*), intent(in) :: fname
 !
     integer :: nexcep
     common /utexc /  nexcep
 !
     integer :: recurs
-    character(len=24) :: msgId, firstMsgId = "?"
+    character(len=24) :: msgId
     character(len=16) :: compex
     character(len=8) :: nomres, k8b
     character(len=2) :: typm
@@ -59,7 +60,10 @@ subroutine utmess_core(typ, idmess, nk, valk, ni,&
     integer :: lout, idf, i, lc, imaap
     integer :: numex
 !
-    save             recurs, firstMsgId
+    aster_logical :: isFirst=ASTER_TRUE
+    type(Message) :: firstMsg
+!
+    save             recurs, firstMsg, isFirst
 !
 !     TYPES DE MESSAGES :
 !     ERREURS :
@@ -105,14 +109,28 @@ subroutine utmess_core(typ, idmess, nk, valk, ni,&
 !     AFFICHIER LE TRACEBACK SI DISPONIBLE
     ltrb = labort .or. (lerror .and. msgId(1:4).eq.'DVP_') .or. idf.eq.8
 !
+    numex = nexcep
+    if (lerror .and. idf .ne. 7) then
+!     SI EXCEPTION, NEXCEP EST FIXE PAR COMMON VIA UTEXCP
+!     SINON ON LEVE L'EXCEPTION DE BASE ASTER.ERROR
+        numex = 21
+    endif
+!
     suite = .false.
     if (len(typm) .gt. 1) then
         if (typm(2:2) .eq. '+') suite=.true.
     endif
-    if ( firstMsgId .eq. "?" ) then
-        firstMsgId = msgId
-    endif
 !
+!   Keep the first message in memory because this is one that will be used
+!   to raise the exception
+    if ( isFirst ) then
+        call init_message(firstMsg, typ, msgId, &
+                          nk=nk, valk=valk, &
+                          ni=ni, vali=vali, &
+                          nr=nr, valr=valr, &
+                          num_except=numex)
+        isFirst = ASTER_FALSE
+    endif
 ! --- SE PROTEGER DES APPELS RECURSIFS POUR LES MESSAGES D'ERREUR
     if (lerror) then
         if (recurs .eq. 1234567891) then
@@ -134,13 +152,6 @@ subroutine utmess_core(typ, idmess, nk, valk, ni,&
     if (imaap .ge. 200) call jefini('ERREUR')
     if (isjvup() .eq. 1) then
         call jemarq()
-    endif
-!
-    numex = nexcep
-    if (lerror .and. idf .ne. 7) then
-!     SI EXCEPTION, NEXCEP EST FIXE PAR COMMON VIA UTEXCP
-!     SINON ON LEVE L'EXCEPTION DE BASE ASTER.ERROR
-        numex = 21
     endif
 !
     call utprin(typm, numex, msgId, nk, valk,&
@@ -216,15 +227,16 @@ subroutine utmess_core(typ, idmess, nk, valk, ni,&
             lstop = .true.
             if (.not. lerrm) then
 !               raise the exception with the first msg id & reinit id
-                msgId = firstMsgId
-                firstMsgId = "?"
+                isFirst = ASTER_TRUE
                 call ib1mai()
-                call uexcep(numex, msgId, nk, valk, ni,&
-                            vali, nr, valr)
+                call uexcep(numex, firstMsg%id, firstMsg%nk, firstMsg%valk, firstMsg%ni,&
+                            firstMsg%vali, firstMsg%nr, firstMsg%valr)
+                call free_message(firstMsg)
             endif
         else
 !           info/warning, reinit id
-            firstMsgId = "?"
+            isFirst = ASTER_TRUE
+            call free_message(firstMsg)
         endif
 !
     endif
