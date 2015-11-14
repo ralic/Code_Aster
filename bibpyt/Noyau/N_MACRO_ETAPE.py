@@ -171,6 +171,7 @@ class MACRO_ETAPE(N_ETAPE.ETAPE):
                 # les concepts produits dans self.sdprods, il faut le mettre à
                 # zéro avant de l'appeler
                 self.sdprods = []
+                d['__only_type__'] = True
                 sd_prod = apply(sd_prod, (self,), d)
             except (EOFError, self.UserError):
                 raise

@@ -17,9 +17,13 @@
 # person_in_charge: jean-luc.flejou at edf.fr
 
 
-def affe_cara_elem_prod(self,POUTRE,BARRE,COQUE,CABLE,DISCRET,DISCRET_2D,GRILLE,MASS_REP,**args):
+def affe_cara_elem_prod(self, POUTRE, BARRE, COQUE, CABLE, DISCRET, DISCRET_2D,
+                        GRILLE, MASS_REP, **args):
     """Fonction sdprod de AFFE_CARA_ELEM"""
     from Noyau.N_types import force_tuple
+    # phase de typage seul
+    if args.get('__only_type__'):
+        return cara_elem
     # fonctions locales pour le sdprod de AFFE_CARA_ELEM
     def valeurCara(cara, Lcara, Lvale, valdefaut=None):
         """Retourne la valeur de la caractéristiques 'cara' dans 'Lcara'."""
@@ -29,7 +33,7 @@ def affe_cara_elem_prod(self,POUTRE,BARRE,COQUE,CABLE,DISCRET,DISCRET_2D,GRILLE,
             if valdefaut != None :
                 return valdefaut
             else:
-                raise AsException("Erreur construction de la commande")
+                raise AsException("Erreur de syntaxe dans la commande")
 
     def check(cond, message, mcf, occ, prop=None):
         """Vérifie que la condition 'cond' est ok, sinon lève une exception"""

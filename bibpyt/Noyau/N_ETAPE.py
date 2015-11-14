@@ -177,6 +177,7 @@ class ETAPE(N_MCCOMPO.MCCOMPO):
         if type(self.definition.sd_prod) == types.FunctionType:
             d = self.cree_dict_valeurs(self.mc_liste)
             try:
+                d['__only_type__'] = True
                 sd_prod = apply(self.definition.sd_prod, (), d)
             except EOFError:
                 raise
