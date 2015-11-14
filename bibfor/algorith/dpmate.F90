@@ -20,6 +20,7 @@ subroutine dpmate(mod, imat, materf, ndt, ndi,&
 ! ======================================================================
     implicit none
 #include "asterc/r8vide.h"
+#include "asterfort/assert.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/utmess.h"
     integer :: ndt, ndi, nvi, imat, typedp
@@ -72,9 +73,9 @@ subroutine dpmate(mod, imat, materf, ndt, ndi,&
     typed = r8vide()
     call rcvala(imat, ' ', 'DRUCK_PRAGER', 0, ' ',&
                 [0.d0], 1, 'TYPE_DP', ltyped(1), icodre,&
-                0)
+                1)
     typed=ltyped(1)
-    if (typed .eq. 1.0d0) then
+    if (nint(typed) .eq. 1) then
 ! ======================================================================
 ! --- CAS LINEAIRE -----------------------------------------------------
 ! ======================================================================
@@ -96,7 +97,7 @@ subroutine dpmate(mod, imat, materf, ndt, ndi,&
         if (coe .le. 0.0d0) then
             call utmess('F', 'ALGORITH3_37')
         endif
-    else if (typed.eq.2.0d0) then
+    else if (nint(typed) .eq. 2) then
 ! ======================================================================
 ! --- CAS PARABOLIQUE --------------------------------------------------
 ! ======================================================================
@@ -126,6 +127,8 @@ subroutine dpmate(mod, imat, materf, ndt, ndi,&
                     1)
         psi=atan2((trois*dilat(1) / deux / sqrt(( deux*dilat(1) + 1.0d0 )*(1.0d0-dilat(1)))),1.0d0)
         materf(5,2) = psi
+    else
+        ASSERT( .false. )
     endif
 ! ======================================================================
 ! --- NOMBRE DE COMPOSANTES --------------------------------------------

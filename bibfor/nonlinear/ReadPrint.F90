@@ -62,6 +62,7 @@ implicit none
     unit_csv    = 0
     reac_print  = 1
     l_csv       = .false.
+    repk        = 'NON'
 !
 ! - Read parameters
 !
