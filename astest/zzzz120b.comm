@@ -76,7 +76,8 @@ def macr_gouj2e_mail(TYPE,VARIANTE,NB_FILET,H_CORP_BRID,R_EXT_BRID,
     textp = textp + "PDATG = CHAINE '" + "'\n'".join(tt) + "'" + ";\n"
     textp = textp + "OPTI DONN PDATG;\n"
 
-    seq = os.path.join(loc_datg, "gouj1.datg")
+    seq = os.path.join("..", "datg", "gouj1.datg")
+    assert len(seq) <= 72, "Gibi does not support paths longer than 72 characters\npath:%s" % seq
     tt = [seq[i:i+length] for i in range(0, len(seq), length)]
     texte = texte + "PDATG = CHAINE '" + "'\n'".join(tt) + "'" + ";\n"
     texte = texte + "OPTI DONN PDATG;\n"
