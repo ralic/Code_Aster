@@ -336,14 +336,14 @@ Ceci est dangereux car cela peut produire un maillage non conforme.
 
 
     89 : _(u"""
- mot clé WOHLER non trouve
+ mot clé WOHLER non trouvé
 """),
 
 
 
 
     91 : _(u"""
- mot clé MANSON_COFFIN non trouve
+ mot clé MANSON_COFFIN non trouvé
 """),
 
     92 : _(u"""

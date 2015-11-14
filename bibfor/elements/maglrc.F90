@@ -38,7 +38,7 @@ subroutine maglrc(zimat, matr, delas, ecr)
     call r8inir(6*6, 0.0d0, delas, 1)
     phenom = 'GLRC_DAMAGE'
     if (phenom .ne. 'GLRC_DAMAGE') then
-        call utmess('F', 'ELEMENTS2_32', sk=phenom)
+        call utmess('F', 'CALCUL_46', sk=phenom)
     endif
 !
 !     EPAISSEUR

@@ -349,11 +349,11 @@ Conseils :
 """),
 
     45 : _(u"""
- matériau : %(k1)s  non affecté par la commande AFFE_MATERIAU.
+ Matériau : %(k1)s non affecté par la commande AFFE_MATERIAU.
 """),
 
     46 : _(u"""
- comportement : %(k1)s non trouve
+ Comportement non trouvé : %(k1)s
 """),
 
     47 : _(u"""

@@ -97,15 +97,15 @@ cata_msg = {
 """),
 
     44 : _(u"""
- paramètre bêta non trouve
+ paramètre bêta non trouvé
 """),
 
     45 : _(u"""
- paramètre lambda non trouve
+ paramètre lambda non trouvé
 """),
 
     47 : _(u"""
- paramètre AFFINITE non trouve
+ paramètre AFFINITE non trouvé
 """),
 
 
@@ -261,7 +261,7 @@ La présence de la caractéristique %(k1)s est obligatoire.
 """),
 
     82 : _(u"""
- mot-clé <DEFI_CABLE>, occurrence no  %(i1)d : 
+ mot-clé <DEFI_CABLE>, occurrence no  %(i1)d :
     soit le noeud de câble  %(k1)s n'appartient pas au béton (modélisé en coque),
     soit les mailles de béton autour de ce noeud sont trop déformées.
 """),

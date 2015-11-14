@@ -42,10 +42,6 @@ cata_msg = {
   ELREFE non prévu
 """),
 
-    32 : _(u"""
- comportement non trouve: %(k1)s
-"""),
-
     33 : _(u"""
  pas de dilatation thermique orthotrope pour coque_3d
 """),
