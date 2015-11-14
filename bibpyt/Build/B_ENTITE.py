@@ -73,21 +73,21 @@ class ENTITE:
     def get_mc_simp(self, niv=1):
         """
             Cette methode retourne la liste des mots cles simple sous self
-            Ne franchit pas le niveau des MCFACTS
+            On descend sous les BLOC & MCFACT.
         """
         motcles = []
         for k, v in self.entites.items():
             if v.label == 'BLOC':
-                motcles = motcles + v.get_mc_simp(niv=niv)
+                motcles.extend(v.get_mc_simp(niv))
             elif v.label == 'SIMP':
                 motcles.append(k)
             elif v.label == 'FACT':
-# on ne veut conserver que les mcsimp de haut niveau
+                # on ne veut conserver que les mcsimp de haut niveau
                 if niv == 1:
                     pass
-# on veut "eliminer" les mcfacts pour avoir tous les mcsimp
+                    # on veut "eliminer" les mcfacts pour avoir tous les mcsimp
                 elif niv == 2:
-                    motcles = motcles + v.get_mc_simp()
+                    motcles.extend(v.get_mc_simp(niv))
         return motcles
 
     def get_mc_fact(self):
@@ -98,7 +98,7 @@ class ENTITE:
         motcles = []
         for k, v in self.entites.items():
             if v.label == 'BLOC':
-                motcles = motcles + v.get_mc_fact()
+                motcles.extend(v.get_mc_fact())
             elif v.label == 'SIMP':
                 pass
             elif v.label == 'FACT':
@@ -112,7 +112,7 @@ class ENTITE:
         motcles = []
         for k, v in self.entites.items():
             if v.label == 'BLOC':
-                motcles = motcles + v.get_li_mc_fact()
+                motcles.extend(v.get_li_mc_fact())
             elif v.label == 'SIMP':
                 pass
             elif v.label == 'FACT':
