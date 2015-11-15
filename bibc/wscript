@@ -1,6 +1,7 @@
 # coding=utf-8
 
 import os.path as osp
+import sys
 
 from waflib import TaskGen, Configure, Logs, Utils
 
@@ -21,7 +22,12 @@ def configure(self):
     self.load('compiler_c')
     opts = self.options
     # preserve symbols in the dyn table for stdcalls
-    self.env.append_unique('LINKFLAGS', ['-Wl,--export-dynamic'])
+    if sys.platform != 'darwin':
+        self.env.append_unique('LINKFLAGS', ['-Wl,--export-dynamic'])
+    else:
+        # '--export-dynamic' is '-export_dynamic' in OS X linker
+        # http://stackoverflow.com/questions/21279036/what-is-clangs-equivalent-to-rdynamic-gcc-flag
+        self.env.append_unique('LINKFLAGS', ['-Wl,-export_dynamic'])
 
     self.env.append_unique('INCLUDES', ['include/'])
     if opts.embed_all or opts.embed_aster:
