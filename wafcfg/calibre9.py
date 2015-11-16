@@ -16,7 +16,7 @@ YAMMROOT = ASTER_ROOT + '/public/default'
 def configure(self):
     opts = self.options
 
-    self.env['ADDMEM'] = 250 
+    self.env['ADDMEM'] = 350 
 
     self.env.append_value('LIBPATH', [
         YAMMROOT + '/prerequisites/Hdf5-1810/lib',
