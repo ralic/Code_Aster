@@ -258,8 +258,8 @@ subroutine crea_nume_erc(baseno, numnu,matprod,nom_nume_erc,nom_matr_erc,nom_vec
 !
 ! --- INFORMATIONS RELATIVES A LA DIMENSION DU PROBLEME D'ERC
     valei(3)=non_zero_impe
-    valei(6)=non_zero_matprod*2-neq
+    valei(6)=non_zero_matprod
     valei(7)=2*neq
-    valei(8)=nozero*2-2*neq 
+    valei(8)=nozero 
 !
 end subroutine

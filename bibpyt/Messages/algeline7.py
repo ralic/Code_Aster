@@ -118,10 +118,12 @@ numéro    itération      erreur              valeur propre
  
  Ordres de grandeur des matrices du problème:
  (informations combinant degrés de liberté physiques et de Lagrange)
+ (informations des termes non nuls selon un stockage de la partie
+  triangulaire supérieure des matrices)
  -------------------------------------------------------------------
 
  Dimension des matrices de masse (M) et raideur (K)  = %(i2)d x %(i2)d
- Termes non nuls des matrices de masse et raideur    = %(i3)d
+ Termes non nuls des matrices de masse et raideur    = %(i3)d 
  
  Dimension de la matrice d'observation (H)           = %(i4)d x %(i2)d
  Termes non nuls de la matrice d'observation         = %(i5)d
