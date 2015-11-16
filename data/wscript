@@ -12,8 +12,9 @@ import os
 import os.path as osp
 from itertools import chain
 from subprocess import Popen, PIPE
+import cPickle
 
-from waflib import Configure, Utils
+from waflib import Configure, Utils, Logs, Errors
 
 
 def options(self):
@@ -29,30 +30,36 @@ def options(self):
 def configure(self):
     self.add_os_flags('ADDMEM')
     self.env.legacy = self.options.legacy
+    dict_conv = self.env2dict(osp.dirname(self.path.abspath()))
+    self.env['ASTER_ENVIRON'] = cPickle.dumps(dict_conv)
     self.getAsrunTmp()
 
 def build(self):
     if not self.env.legacy:
         return
-    src = osp.dirname(self.path.abspath())
-    dict_conv = _env2dict(self, src, self.env, self.env.install_tests)
+    try:
+        dict_conv = cPickle.loads(self.env['ASTER_ENVIRON'])
+    except:
+        Logs.error("ASTER_ENVIRON not found. Please run 'waf configure...'")
+        raise Errors.BuildError
+    change_tests(dict_conv, self.env.install_tests)
     self(
         features = 'subst',
             name = 'data_files',
           source = ('config.txt.tmpl', 'profile.sh.tmpl', 'CTestTestfile.cmake.tmpl'),
           target = ('config.txt', 'profile.sh', 'CTestTestfile.cmake'),
     install_path = '${ASTERDATADIR}',
-            vars = ['PREFIX', 'DEFINES', 'PYTHON', 'ADDMEM',
-                    'FC', 'FCFLAGS',
-                    'LIBPATH', 'LIBDIR', 'CFG_PYTHONPATH', 'astervers',
-                    'ASTERDATADIR', 'ASTERLIBDIR', 'OPT_ENV', 'install_tests',
-                    'MFRONT_SPECIFIC', 'ASRUN_TMPDIR'],
+            vars = ['ASTER_ENVIRON', 'install_tests'],
      **dict_conv
     )
 
-def _env2dict(self, src, env, install_tests):
+SRCTEST_TMPL = """SRCTEST        | src     | -     | %s"""
+
+@Configure.conf
+def env2dict(self, src):
     """build dict informations"""
-    env = env.derive()
+    self.start_msg('Store execution environment')
+    env = self.env.derive()
     env['LD_LIBRARY_PATH'] = os.environ.get('LD_LIBRARY_PATH', '').split(os.pathsep)
     ld_path = self.remove_duplicates(chain(*[Utils.to_list(env[name])
                 for name in ('LIBPATH', 'LIBDIR', 'LD_LIBRARY_PATH',
@@ -82,13 +89,9 @@ def _env2dict(self, src, env, install_tests):
     except TypeError:
         env['ADDMEM'] = 250
     dico['ADDMEM'] = env['ADDMEM']
-    srctest_tmpl = """SRCTEST        | src     | -     | %s"""
-    if install_tests:
-        dico['srctest'] = srctest_tmpl % '$ASTER_VERSION_DIR/tests'
-    else:
-        dico['srctest'] = os.linesep.join([
-            srctest_tmpl % '%(SRC)s/astest' % dico,
-            srctest_tmpl % '%(SRC)s/../validation/astest' % dico])
+    dico['srctest'] = os.linesep.join([
+        SRCTEST_TMPL % '%(SRC)s/astest' % dico,
+        SRCTEST_TMPL % '%(SRC)s/../validation/astest' % dico])
     text = ""
     if env['MFRONT']:
         tfel = osp.dirname( osp.dirname(env['MFRONT']) )
@@ -99,12 +102,18 @@ def _env2dict(self, src, env, install_tests):
         ])
     dico['MFRONT_SPECIFIC'] = text
     dico['ASRUN_TMPDIR'] = env.ASRUN_TMPDIR
+    self.end_msg("yes")
     return dico
+
+def change_tests(dico, install_tests):
+    """Because install_tests can be added at build stage"""
+    if install_tests:
+        dico['srctest'] = SRCTEST_TMPL % '$ASTER_VERSION_DIR/tests'
 
 @Configure.conf
 def getAsrunTmp(self):
     """Ask as_run for tmpdir"""
-    self.start_msg('Asking asrun for its temporary directory')
+    self.start_msg('Set tmp directory for `salome test`')
     # cmake syntax
     tmpdir = "$ENV{ASTER_TMPDIR}"
     if os.environ.get('ASTER_TMPDIR'):
