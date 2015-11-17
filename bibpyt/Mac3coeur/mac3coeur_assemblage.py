@@ -133,10 +133,11 @@ class Assemblage(object):
         self._position_toaster = func_toaster
         self._position_todamac = func_todamac
 
-    def place(self, position, cycle):
+    def place(self, position, cycle,name ):
         """Place l'assemblage, définit ses propriétés."""
         self.idDAM = position
         self._cycle = cycle
+        self.name   = name
 
     def definition(self, **params):
         """Définition des paramètres.

@@ -134,7 +134,7 @@ class Coeur(object):
             nameAC = rows['Repere'].strip()
             ac = self.factory.get(typeAC)(self.typ_coeur)
             ac.register_position(self.position_toaster, self.position_todamac)
-            ac.place(idAC, rows['Cycle'])
+            ac.place(idAC, rows['Cycle'],nameAC)
             if self._mateAC.get(typeAC) is None:
                 self._mateAC[typeAC] = MateriauAC(typeAC, self.macro)
             ac_def = {}

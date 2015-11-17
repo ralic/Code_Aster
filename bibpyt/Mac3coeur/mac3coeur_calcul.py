@@ -591,7 +591,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
 
     def _run(self):
         """Run the main part of the calculation"""
-        from Cata.cata import STAT_NON_LINE,CALC_CHAMP,CREA_CHAMP,IMPR_RESU,CALC_VECT_ELEM,NUME_DDL,ASSE_VECTEUR
+        from Cata.cata import STAT_NON_LINE 
         
         coeur = self.coeur
         if self.keyw['TYPE_COEUR'] == "MONO":
@@ -638,57 +638,6 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
                                   ))
 
         else :
-	    #__CH1 = CALC_VECT_ELEM(
-	               #OPTION = 'CHAR_MECA',
-	               #CHAM_MATER = chmat_contact,
-	               #CARA_ELEM  = self.carael,
-	               #CHARGE = self.coeur.definition_pesanteur(self.model))
-	    #__CH2 = CALC_VECT_ELEM(
-	               #OPTION = 'CHAR_MECA',
-	               #CHAM_MATER = chmat_contact,
-	               #CARA_ELEM  = self.carael,
-	               #CHARGE = (self.coeur.definition_archimede_nodal(self.model),\
-	                         #self.coeur.definition_archimede_poutre(self.model))
-	               #)
-	    #__CH3 = CALC_VECT_ELEM(
-	               #OPTION = 'CHAR_MECA',
-	               #CHAM_MATER = chmat_contact,
-	               #CARA_ELEM  = self.carael,
-	               #CHARGE = self._thyc_ax)
-	    #__CH4 = CALC_VECT_ELEM(
-	               #OPTION = 'CHAR_MECA',
-	               #CHAM_MATER = chmat_contact,
-	               #CARA_ELEM  = self.carael,
-	               #CHARGE = self._thyc_tr)
-	               
-	    #__NUDDL = NUME_DDL(
-	               #MODELE = self.model,
-	               #CHARGE =  (self.gravity_load,self.archimede_load,self.thyc_load[0],self.thyc_load[1])
-	               #)
-	              
-	    #__ASS1 = ASSE_VECTEUR(
-	                 #VECT_ELEM = __CH1,
-	                 #NUME_DDL  = __NUDDL)
-	    #__ASS2 = ASSE_VECTEUR(
-	                 #VECT_ELEM = __CH2,
-	                 #NUME_DDL  = __NUDDL)
-	    #__ASS3 = ASSE_VECTEUR(
-	                 #VECT_ELEM = __CH3,
-	                 #NUME_DDL  = __NUDDL)
-	    #__ASS4 = ASSE_VECTEUR(
-	                 #VECT_ELEM = __CH4,
-	                 #NUME_DDL  = __NUDDL)
-	    #__FEXT1 = CREA_CHAMP(TYPE_CHAM = 'NOEU_DEPL_R',
-		#OPERATION = 'COMB',
-		#COMB = (
-		    #_F(CHAM_GD = __ASS1, COEF_R = 1.),
-		    #_F(CHAM_GD = __ASS2, COEF_R = 620.),
-		    #_F(CHAM_GD = __ASS3, COEF_R = 0.722),
-		    #_F(CHAM_GD = __ASS4, COEF_R = 1.),
-		    #),
-		#)
-	    #IMPR_RESU(
-		#RESU = _F(CHAM_GD=__FEXT1,NOM_CMP=('DY'),),)
 	                 
             constant_load += self.periodic_cond + self.rigid_load
             __RESULT = STAT_NON_LINE(**self.snl(
@@ -699,12 +648,6 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
                                       self.thyc_load[0] + self.thyc_load[1],
                                   ETAT_INIT=self.etat_init,
                                   ))
-	    __RESULT = CALC_CHAMP(reuse = __RESULT,
-                 RESULTAT  = __RESULT,
-                 CARA_ELEM  = self.carael,
-                 FORCE     = ('FORC_NODA','REAC_NODA'),
-                 #GROUP_MA=('CRAYON', 'T_GUIDE'),
-               )
 
             (LI2,F_EMB2)=self.dechargePSC(__RESULT)
             # T8 - Tf
@@ -722,29 +665,6 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
                                   EXCIT=constant_load,
                                   INCREMENT=_F(LIST_INST=self.times),
                                   ))
-        __FORC = CREA_CHAMP(TYPE_CHAM = 'NOEU_DEPL_R',
-               OPERATION = 'EXTR',
-               RESULTAT  = __RESULT,
-               NOM_CHAM  = 'FORC_NODA',
-               INST      = 14.524
-               )
-	__REAC = CREA_CHAMP(TYPE_CHAM = 'NOEU_DEPL_R',
-               OPERATION = 'EXTR',
-               RESULTAT  = __RESULT,
-               NOM_CHAM  = 'REAC_NODA',
-               INST      = 14.524
-               )
-	__FEXT = CREA_CHAMP(TYPE_CHAM = 'NOEU_DEPL_R',
-               OPERATION = 'COMB',
-               COMB = (
-                   _F(CHAM_GD = __FORC, COEF_R = 1.),
-                   _F(CHAM_GD = __REAC, COEF_R = -1.),
-                 ),
-               )
-	IMPR_RESU(
-            RESU = (_F(CHAM_GD=__FEXT,NOM_CMP=('DY'),),
-                   _F(CHAM_GD=__FORC,NOM_CMP=('DY'),),)
-       )
 
 class Mac3CoeurLame(Mac3CoeurCalcul):
 
@@ -892,7 +812,8 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
                                   ))
         _debug(_snl_lame, "result STAT_NON_LINE 1")
         # updated coeur
-        __resuf = PERM_MAC3COEUR(TYPE_COEUR=self.keyw['TYPE_COEUR'],
+        __resuf = PERM_MAC3COEUR(TYPE_COEUR_N=self.keyw['TYPE_COEUR'],
+                                 TYPE_COEUR_P=self.keyw['TYPE_COEUR'],
                                  RESU_N=_snl_lame,
                                  TABLE_N=self.keyw['TABLE_N'],
                                  TABLE_NP1=self.mcf['TABLE_NP1'],
