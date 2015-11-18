@@ -151,7 +151,13 @@ p_appr_F=CALC_PRESSION(MAILLAGE=MESH,
                                 GROUP_MA=('Bottom_C','Top_B',),
                             INST=1.0,
                     );
-
+                    
+p_appr_2 = CALC_PRESSION(GROUP_MA=('Bottom_C', 'Top_B'),
+                           MAILLAGE=MESH,
+                           INST=(1.0, ),
+                           RESULTAT=RESU,
+                           GEOMETRIE='DEFORMEE',
+                           INFO=1,)
 
 depl=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                 OPERATION='EXTR',
