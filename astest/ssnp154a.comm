@@ -266,4 +266,25 @@ TEST_RESU(RESU=(_F(GROUP_NO='B',
                 ),
           )
 
+
+TEST_RESU(CHAM_NO=(_F(CHAM_GD=p_appr_F,
+                      NOEUD='N5',
+                      NOM_CMP='LAGS_C',
+                      VALE_CALC=-3800.49495483,),))
+
+
+TEST_RESU(CHAM_NO=(_F(CHAM_GD=p_appr_2,
+                      NOEUD='N5',
+                      REFERENCE='AUTRE_ASTER',
+                      NOM_CMP='LAGS_C',
+                      VALE_CALC=-3.80566848100306E+03,
+                      VALE_REFE=-3800.49495483,
+                       PRECISION=1.E-2,
+                       ),))
+
+
+
+
+#IMPR_RESU( RESU=_F(CHAM_GD=p_appr_2,),)
+#IMPR_RESU( RESU=_F(CHAM_GD=p_appr_F,),)
 FIN();
