@@ -23,7 +23,7 @@ interface
                       lfovit,lpenac, jeusup, ffe, ffm, ffl,&
                       norm, tau1, tau2, mprojt, jacobi,&
                       wpg, dlagrc, dlagrf, jeu, djeu,&
-                      djeut,coefaf,coefac)
+                      djeut)
         character(len=8) :: typmae
         character(len=8) :: typmam
         integer :: iresog
@@ -48,7 +48,7 @@ interface
         real(kind=8) :: wpg
         real(kind=8) :: dlagrc
         real(kind=8) :: dlagrf(2)
-        real(kind=8) :: jeu, coefac,coefaf
+        real(kind=8) :: jeu
         real(kind=8) :: djeu(3)
         real(kind=8) :: djeut(3)
     end subroutine mmvppe

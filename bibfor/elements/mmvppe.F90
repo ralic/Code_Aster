@@ -3,7 +3,7 @@ subroutine mmvppe(typmae, typmam, iresog, ndim, nne,&
                   lfovit,lpenac, jeusup, ffe, ffm, ffl,&
                   norm, tau1, tau2, mprojt, jacobi,&
                   wpg, dlagrc, dlagrf, jeu, djeu,&
-                  djeut,coefaf,coefac)
+                  djeut)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,7 +21,7 @@ subroutine mmvppe(typmae, typmam, iresog, ndim, nne,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
+! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
 ! aslint: disable=W1504
     implicit none
@@ -48,7 +48,7 @@ subroutine mmvppe(typmae, typmam, iresog, ndim, nne,&
     real(kind=8) :: mprojt(3, 3)
     aster_logical :: laxis, ldyna, lfovit,lpenac
     real(kind=8) :: jacobi, wpg
-    real(kind=8) :: jeusup,coefaf,coefac
+    real(kind=8) :: jeusup
     real(kind=8) :: dlagrc, dlagrf(2)
     real(kind=8) :: jeu, djeu(3), djeut(3)
 !
