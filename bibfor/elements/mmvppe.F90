@@ -1,6 +1,6 @@
 subroutine mmvppe(typmae, typmam, iresog, ndim, nne,&
                   nnm, nnl, nbdm, laxis, ldyna,&
-                  lfovit, jeusup, ffe, ffm, ffl,&
+                  lfovit,lpenac, jeusup, ffe, ffm, ffl,&
                   norm, tau1, tau2, mprojt, jacobi,&
                   wpg, dlagrc, dlagrf, jeu, djeu,&
                   djeut,coefaf,coefac)
@@ -46,7 +46,7 @@ subroutine mmvppe(typmae, typmam, iresog, ndim, nne,&
     real(kind=8) :: tau1(3), tau2(3)
     real(kind=8) :: norm(3)
     real(kind=8) :: mprojt(3, 3)
-    aster_logical :: laxis, ldyna, lfovit
+    aster_logical :: laxis, ldyna, lfovit,lpenac
     real(kind=8) :: jacobi, wpg
     real(kind=8) :: jeusup,coefaf,coefac
     real(kind=8) :: dlagrc, dlagrf(2)
@@ -204,31 +204,30 @@ subroutine mmvppe(typmae, typmam, iresog, ndim, nne,&
     valmin =  sqrt(vec(1)+vec(2)+vec(3)) 
  
  ! Evaluation de la plus grande longueur de la maille
-    do  i = 3,9
-        vec(1) = (geomae(1,1) - geomae(i,1))**2 
-        vec(2) = (geomae(1,2) - geomae(i,2))**2
-        vec(3) = (geomae(1,3) - geomae(i,3))**2
-        tmp =  sqrt(vec(1)+vec(2)+vec(3))
-        
-        if (tmp .le. valmin)  then
-           valmin = tmp
-        elseif  (tmp .ge. valmin)  then
-           valmax = tmp 
-        endif
-    enddo
+     if (lpenac) then
+         do  i = 3,9
+             vec(1) = (geomae(1,1) - geomae(i,1))**2 
+             vec(2) = (geomae(1,2) - geomae(i,2))**2
+             vec(3) = (geomae(1,3) - geomae(i,3))**2
+             tmp =  sqrt(vec(1)+vec(2)+vec(3))
     
-
+             if (tmp .le. valmin)  then
+                 valmin = tmp
+             elseif  (tmp .ge. valmin)  then
+                 valmax = tmp 
+             endif
+         enddo
+         
+         if (valmin .lt. 1.d-10) then
+             tmp = jeu/valmax
+         else 
+             tmp = jeu/valmin
+         endif
     
-    if (valmin .lt. 1.d-10) then
-        tmp = jeu/valmax
-    else 
-        tmp = jeu/valmin
+         if ( (jeu .gt. valmin)  )  then 
+              call utmess('A', 'CONTACT_22',sr=tmp)
+         endif   
     endif
-                    
-    if ( (jeu .gt. valmin) )  then 
-       call utmess('A', 'CONTACT_22',sr=tmp)
-    endif   
-
 !
 ! --- CALCUL DU JEU EN VITESSE NORMALE
 !

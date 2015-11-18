@@ -122,11 +122,11 @@ subroutine te0365(option, nomte)
 ! ----- CALCUL DES QUANTITES
 !
         call mmvppe(typmae, typmam, iresog, ndim, nne,&
-                    nnm, nnl, nbdm, laxis, ldyna,&
-                    lfovit, jeusup, ffe, ffm, ffl,&
-                    norm, tau1, tau2, mprojt, jacobi,&
-                    wpg, dlagrc, dlagrf, jeu, djeu,&
-                    djeut,coefaf,coefac)
+                             nnm, nnl, nbdm, laxis, ldyna,&
+                             lfovit,lpenac, jeusup, ffe, ffm, ffl,&
+                             norm, tau1, tau2, mprojt, jacobi,&
+                             wpg, dlagrc, dlagrf, jeu, djeu,&
+                             djeut,coefaf,coefac)
 !
 ! ----- CHOIX DU LAGRANGIEN DE CONTACT
 !
