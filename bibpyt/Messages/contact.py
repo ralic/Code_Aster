@@ -88,8 +88,8 @@ Contact méthode continue.
     22 : _(u"""
 Contact méthode continue.
   Le jeu calculé dépasse de %(r1)f pour cent la plus petite longueur de la maille. On vous conseille d'augmenter la valeur de COEF_PENA_CONT et de COEF_PENA_FROT.
-  - On conseille que COEF_PENA_CONT soit être supérieure ou égal MODULE  et inférieure à 1.E16.
-  - On conseille que COEF_PENA_FROT soit supérieure ou égale à 1.E-6*COEF_PENA_CONT et inférieure à 1.E7. 
+  - On conseille que COEF_PENA_CONT soit  supérieure ou égal au module d'YOUNG du corps le plus mou.
+  - On conseille que COEF_PENA_FROT soit supérieure ou égale à 1.E-3*COEF_PENA_CONT. 
 """),
 
     60 : _(u"""
