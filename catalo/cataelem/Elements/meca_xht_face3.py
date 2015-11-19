@@ -46,7 +46,7 @@ CFORCEF  = LocatedComponents(phys=PHY.FORC_F, type='ELEM',
     components=('FX','FY','FZ',))
 
 
-EFORCNO  = LocatedComponents(phys=PHY.FORC_R, type='ELNO',
+NFORCER  = LocatedComponents(phys=PHY.FORC_R, type='ELNO',
     components=('FX','FY','FZ',))
 
 
@@ -54,12 +54,12 @@ EKTHETA  = LocatedComponents(phys=PHY.G, type='ELEM',
     components=('GTHETA','FIC[3]','K[3]','BETA',))
 
 
-NGEOMER  = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
-    components=('X','Y','Z',))
-
-
 EGGEOP_R = LocatedComponents(phys=PHY.GEOM_R, type='ELGA', location='RIGI',
     components=('X','Y','Z','W',))
+
+
+NGEOMER  = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
+    components=('X','Y','Z',))
 
 
 CTEMPSR  = LocatedComponents(phys=PHY.INST_R, type='ELEM',
@@ -104,7 +104,7 @@ class MECA_XHT_FACE3(Element):
 
         OP.CALC_G(te=118,
             para_in=((OP.CALC_G.PCNSETO, LC.E36NEUI), (SP.PDEPLAR, DDL_MECA),
-                     (SP.PFR2D3D, EFORCNO), (SP.PGEOMER, NGEOMER),
+                     (SP.PFR2D3D, NFORCER), (SP.PGEOMER, NGEOMER),
                      (OP.CALC_G.PHEAVTO, E6NEUTI), (OP.CALC_G.PHEA_NO, LC.N5NEUTI),
                      (OP.CALC_G.PLONCHA, LC.E10NEUTI), (OP.CALC_G.PLSN, LC.N1NEUT_R),
                      (OP.CALC_G.PLST, LC.N1NEUT_R), (OP.CALC_G.PPINTTO, LC.E12NEUTR),
@@ -121,7 +121,7 @@ class MECA_XHT_FACE3(Element):
         ),
 
         OP.CALC_K_G(te=580,
-            para_in=((SP.PFR2D3D, EFORCNO), (SP.PPRESSR, EPRESNO),
+            para_in=((SP.PFR2D3D, NFORCER), (SP.PPRESSR, EPRESNO),
                      (SP.PTHETAR, NTHETAR), ),
             para_out=((SP.PGTHETA, EKTHETA), ),
         ),
@@ -144,7 +144,7 @@ class MECA_XHT_FACE3(Element):
         ),
 
         OP.CHAR_MECA_FR2D3D(te=36,
-            para_in=((OP.CHAR_MECA_FR2D3D.PCNSETO, LC.E36NEUI), (SP.PFR2D3D, EFORCNO),
+            para_in=((OP.CHAR_MECA_FR2D3D.PCNSETO, LC.E36NEUI), (SP.PFR2D3D, NFORCER),
                      (SP.PGEOMER, NGEOMER), (OP.CHAR_MECA_FR2D3D.PHEAVTO, E6NEUTI),
                      (OP.CHAR_MECA_FR2D3D.PHEA_NO, LC.N5NEUTI), (OP.CHAR_MECA_FR2D3D.PHEA_SE, E6NEUTI),
                      (OP.CHAR_MECA_FR2D3D.PLONCHA, LC.E10NEUTI), (OP.CHAR_MECA_FR2D3D.PLSN, LC.N1NEUT_R),
