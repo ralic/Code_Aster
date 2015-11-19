@@ -183,15 +183,8 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
         if ((niv.ge.2) .and. (idbg.eq.1)) then
 !
-!           -- numero d'element seulement si on n'est pas dans calc_point_mat
-            noel=0
-            if (compor(17) .ne. 'POINT') then
-                call tecael(iadzi, iazk24)
-                noel=zi(iadzi)
-            endif
             write(ifm,*)' '
             write(ifm,*)'AVANT APPEL UMAT, INSTANT=',time(2)+dtime
-            write(ifm,*)'NUMERO ELEMENT=',noel
             write(ifm,*)'DEFORMATIONS INSTANT PRECEDENT STRAN='
             write(ifm,'(6(1X,E11.4))') (stran(i),i=1,ntens)
             write(ifm,*)'ACCROISSEMENT DE DEFORMATIONS DSTRAN='
