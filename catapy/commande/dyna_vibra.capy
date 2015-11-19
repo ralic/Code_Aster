@@ -155,7 +155,8 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
        # 3. Initial state
 
         b_init_gene     = BLOC(condition="BASE_CALCUL == 'GENE'",
-        ETAT_INIT       =     FACT(statut='f', regles=(EXCLUS('RESULTAT','DEPL'), EXCLUS('RESULTAT','VITE'),),
+        ETAT_INIT       =     FACT(statut='f', max = 1,
+                                               regles=(EXCLUS('RESULTAT','DEPL'), EXCLUS('RESULTAT','VITE'),),
 
             RESULTAT    =         SIMP(statut='f',typ=tran_gene),
 
@@ -173,7 +174,8 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
             VITE        =         SIMP(statut='f',typ=vect_asse_gene),),),
 
         b_init_phys     = BLOC(condition="BASE_CALCUL == 'PHYS'",
-        ETAT_INIT       =     FACT(statut='f', regles=(AU_MOINS_UN('RESULTAT', 'DEPL', 'VITE', 'ACCE'),
+        ETAT_INIT       =     FACT(statut='f', max = 1,
+                                               regles=(AU_MOINS_UN('RESULTAT', 'DEPL', 'VITE', 'ACCE'),
                                                        PRESENT_ABSENT('RESULTAT', 'DEPL', 'VITE', 'ACCE'),),
             RESULTAT    =         SIMP(statut='f',typ=dyna_trans),
 

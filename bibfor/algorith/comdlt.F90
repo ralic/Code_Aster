@@ -41,6 +41,7 @@ subroutine comdlt()
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/r8vide.h"
+#include "asterc/r8prem.h"
 #include "asterfort/cochre.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/dladap.h"
@@ -83,7 +84,9 @@ subroutine comdlt()
     integer :: nbord, jchar, jinst, pasar, nbar
     integer :: lresu, lcrre, iresu, nbexre, l
     integer :: nbchre, iocc, nfon, nbexcl, i, counter, lsize
-    real(kind=8) :: t0, time, rundf, alpha, tinit, tfin, dt, dtmin, dtmax, cdivi
+    real(kind=8) :: t0, time, rundf, alpha, tinit
+    real(kind=8) :: tfin, dt, dtmin, dtmax, cdivi
+    real(kind=8) :: nbpas_max_r, epsi
     character(len=1) :: base, typcoe
     character(len=2) :: codret
     character(len=8) :: k8b, masse, rigid, amort, baseno, result
@@ -110,7 +113,8 @@ subroutine comdlt()
     data allschemes /'NEWMARK', 'WILSON', 'DIFF_CENTRE', 'ADAPT_ORDRE2'/
 !
     call jemarq()
-    rundf=r8vide()
+    rundf = r8vide()
+    epsi  = 1000.d0*r8prem()
 !
 !====
 ! 1. LES DONNEES DU CALCUL
@@ -230,8 +234,13 @@ subroutine comdlt()
                                          nr=3, valr=[dt, dtmin, dtmax])
         call getvr8('SCHEMA_TEMPS', 'COEF_DIVI_PAS', iocc=1, scal=cdivi)
         call utmess('I', 'DYNAMIQUE_68', nr=1, valr=[cdivi])
+
         nbpas_min = nint((tfin-tinit)/dtmax)
-        nbpas_max = nint((tfin-tinit)/dtmin)
+        nbpas_max = 1000000000
+        if (dtmin.gt.epsi) then     
+            nbpas_max_r = min(1.d0*nbpas_max,(tfin-tinit-epsi)/dtmin)
+            nbpas_max   = int(nbpas_max_r) + 1
+        end if
         call utmess('I', 'DYNAMIQUE_69', ni=2, vali=[nbpas_min, nbpas_max])
     end if
 

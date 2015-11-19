@@ -24,6 +24,7 @@ subroutine dtminfo(sd_dtm_)
 !           preliminary verifications are carried out. 
 !
 #include "jeveux.h"
+#include "asterc/getfac.h"
 #include "asterc/r8depi.h"
 #include "asterc/r8prem.h"
 #include "asterfort/dtmget.h"
@@ -40,10 +41,10 @@ subroutine dtminfo(sd_dtm_)
     integer               :: substruct, fsicase, nbpheq, adapt, nltreat
     integer               :: nbmode, append, nbsav_forc, iparch
     integer               :: i, iret, iret1, iret2, nbfreq
-    integer               :: nbrfis, nbpal
+    integer               :: nbrfis, nbpal, etinit
     real(kind=8)          :: dt, dtmin, dtmax, deuxpi, epsi
     real(kind=8)          :: tinit, tfin, cdivi, toler, fsivgap
-    real(kind=8)          :: fmin, fmax, freq
+    real(kind=8)          :: fmin, fmax, freq, nbpas_max_r
     character(len=8)      :: sd_dtm, basemo, modgen, fsibase
     character(len=8)      :: dep0, vit0, contres, matmas, matrig
     character(len=8)      :: matamo   
@@ -150,7 +151,10 @@ subroutine dtminfo(sd_dtm_)
         end if
         nbpas_min = nint((tfin-tinit)/dtmax)
         nbpas_max = 1000000000
-        if (dtmin.gt.epsi) nbpas_max = nint((tfin-tinit)/dtmin)
+        if (dtmin.gt.epsi) then     
+            nbpas_max_r = min(1.d0*nbpas_max,(tfin-tinit-epsi)/dtmin)
+            nbpas_max   = int(nbpas_max_r) + 1
+        end if
 
         call utmess('I', 'DYNAMIQUE_69', ni=2, vali=[nbpas_min, nbpas_max])
     else
@@ -205,16 +209,24 @@ subroutine dtminfo(sd_dtm_)
         nomres(9:18) = ' (reprise)'
         call utmess('I', 'DYNAMIQUE_78', nk=1, valk=[nomres])
     else
-        call getvid('ETAT_INIT', 'RESULTAT', iocc=1, scal=contres, nbret=iret)
-        if (iret.ne.0) then
-            call utmess('I', 'DYNAMIQUE_78', nk=1, valk=[contres])
-        else
-            call getvid('ETAT_INIT', 'DEPL', iocc=1, scal=dep0, nbret=iret1)
-            call getvid('ETAT_INIT', 'VITE', iocc=1, scal=vit0, nbret=iret2)
-            if (iret1.eq.0) dep0 = 'nul'
-            if (iret2.eq.0) vit0 = 'nul'
+        call getfac('ETAT_INIT', etinit)
+        if (etinit.eq.0) then
+            dep0 = 'nul'
+            vit0 = 'nul'
             call utmess('I', 'DYNAMIQUE_79', nk=2, valk=[dep0, vit0])
             call utmess('I', 'DYNAMIQUE_84', nk=1, valk=['calculee'])
+        else 
+            call getvid('ETAT_INIT', 'RESULTAT', iocc=1, scal=contres, nbret=iret)
+            if (iret.ne.0) then
+                call utmess('I', 'DYNAMIQUE_78', nk=1, valk=[contres])
+            else
+                call getvid('ETAT_INIT', 'DEPL', iocc=1, scal=dep0, nbret=iret1)
+                call getvid('ETAT_INIT', 'VITE', iocc=1, scal=vit0, nbret=iret2)
+                if (iret1.eq.0) dep0 = 'nul'
+                if (iret2.eq.0) vit0 = 'nul'
+                call utmess('I', 'DYNAMIQUE_79', nk=2, valk=[dep0, vit0])
+                call utmess('I', 'DYNAMIQUE_84', nk=1, valk=['calculee'])
+            end if
         end if
     end if
 

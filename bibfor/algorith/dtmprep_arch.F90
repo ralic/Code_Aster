@@ -23,8 +23,9 @@ subroutine dtmprep_arch(sd_dtm_)
 !                user input under the keywords ARCHIVAGE=_F(...
 !
 #include "jeveux.h"
-#include "asterc/r8prem.h"
+#include "asterc/ismaem.h"
 #include "asterc/getfac.h"
+#include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/dtmget.h"
 #include "asterfort/dtmsav.h"
@@ -44,7 +45,7 @@ subroutine dtmprep_arch(sd_dtm_)
     aster_logical     :: checktfin
     integer           :: iret1, iret2, iparch, nbarch, nbsaves
     integer           :: nbinst, nbocc, i, j, sizearch
-    real(kind=8)      :: tinit, tfin, epsi, dt, residue
+    real(kind=8)      :: tinit, tfin, epsi, dt, residue, perarch
     character(len=8)  :: sd_dtm
     character(len=19) :: numarc
 !
@@ -83,6 +84,7 @@ subroutine dtmprep_arch(sd_dtm_)
         endif
         call getvis('ARCHIVAGE', 'PAS_ARCH', iocc=1, scal=iparch, nbret=iret1)
         if (iret1 .eq. 0) iparch = 1
+        if (iparch.lt.0) iparch = ismaem()
     endif
 !
     call dtmget(sd_dtm, _INST_INI, rscal=tinit)
@@ -92,8 +94,15 @@ subroutine dtmprep_arch(sd_dtm_)
     sizearch = nbinst+2
     AS_ALLOCATE(vr=archlst, size=sizearch)
     nbarch = 0
-    nbsaves = 1 + nint((tfin-tinit)/(iparch*dt))
-    nbsaves = 1 + int((tfin+epsi*nbsaves-tinit)/(iparch*dt))
+
+
+    perarch = real(iparch)*dt
+    if (perarch .gt. (tfin-tinit)) then 
+        nbsaves = 1
+    else 
+        nbsaves = 1 + nint((tfin-tinit)/perarch)
+        nbsaves = 1 + int((tfin+epsi*nbsaves-tinit)/perarch)
+    end if
 
     do i = 1, nbinst
         if (inst(i).lt.(tinit-epsi)) then
@@ -105,9 +114,9 @@ subroutine dtmprep_arch(sd_dtm_)
                 nbarch = nbarch + 1
                 archlst(nbarch) = inst(i)
                 j = int((inst(i)-tinit)/dt)
-                residue = mod(inst(i)-tinit,iparch*dt)
-                residue = min(residue,abs(inst(i)-iparch*dt))
-                if ((residue.gt.(j*epsi)).and.(abs(residue-iparch*dt).gt.(j*epsi))) then
+                residue = mod(inst(i)-tinit,perarch)
+                residue = min(residue,abs(inst(i)-perarch))
+                if ((residue.gt.(j*epsi)).and.(abs(residue-perarch).gt.(j*epsi))) then
                     nbsaves = nbsaves + 1
                 end if
             end if
@@ -123,9 +132,9 @@ subroutine dtmprep_arch(sd_dtm_)
         nbarch = nbarch + 1
         archlst(nbarch) = tfin
         j = int((tfin-tinit)/dt)
-        residue = mod(tfin-tinit,iparch*dt)
-        residue = min(residue,abs(tfin-iparch*dt))
-        if ((residue.gt.(j*epsi)).and.(abs(residue-iparch*dt).gt.(j*epsi))) then
+        residue = mod(tfin-tinit,perarch)
+        residue = min(residue,abs(tfin-perarch))
+        if ((residue.gt.(j*epsi)).and.(abs(residue-perarch).gt.(j*epsi))) then
             nbsaves = nbsaves + 1
         end if       
     end if
