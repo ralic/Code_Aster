@@ -165,19 +165,6 @@ cata_msg = {
  incompatibilité NOM_PARA et données mesurées
 """),
 
-    52 : _(u"""
- itérations cycliques :
- changement de configuration ou variation trop importante
- du déplacement physique à l'issue de la dernière itération
- Conseil: diminuez le pas de temps
-"""),
-
-    53 : _(u"""
- pas de convergence de l'algorithme de NEWTON :
- - en  %(k1)s  itérations
- - à l'instant  %(k2)s
- il faut réduire la rigidité normale, ou le jeu.
-"""),
 
     55 : _(u"""
  THETA = 1 ou 0.5

@@ -19,19 +19,6 @@
 
 cata_msg = {
 
-    1 : _(u"""
-La valeur supérieure de KMOD0 est nulle.
-On prend la valeur supérieure KMOD.
-"""),
-
-    2 : _(u"""
-La valeur supérieure de KMOD est nulle.
-"""),
-
-    3 : _(u"""
-La variable AMOR est nulle.
-"""),
-
     5 : _(u"""
 La force normale est nulle.
 """),

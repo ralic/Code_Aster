@@ -15,7 +15,6 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/mdallo.h"
 #include "asterfort/mdarch.h"
-#include "asterfort/mdarnl.h"
 #include "asterfort/refdcp.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rscrsd.h"

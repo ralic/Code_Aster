@@ -27,15 +27,6 @@ cata_msg = {
  type de matrice inconnu.
 """),
 
-    10 : _(u"""
- impossible de diagonaliser la matrice de raideur en choc
-"""),
-
-    11 : _(u"""
- PULS(I) = 0.
- initialisation à PULS0(I).
-"""),
-
     13 : _(u"""
  le VECT_ELEM n'existe pas :  %(k1)s
 """),
@@ -146,26 +137,6 @@ cata_msg = {
  possibilité d'instabilité de flottement
 """),
 
-    62 : _(u"""
- erreur dans le calcul des valeurs propres de la matrice de raideur
-"""),
-
-    63 : _(u"""
- valeurs propres de la matrice de raideur non réelles
-"""),
-
-    64 : _(u"""
- valeurs propres de la matrice de raideur réelles négatives
-"""),
-
-    65 : _(u"""
- erreur dans la sélection des valeurs propres de la matrice de raideur
-"""),
-
-    66 : _(u"""
- tailles des matrices incompatibles pour calcul matrice diagonale
-"""),
-
     67 : _(u"""
  option SECANTE non valide
 """),
@@ -182,18 +153,6 @@ cata_msg = {
 
     70 : _(u"""
  Le nombre de système de glissement est égal à 0
-"""),
-
-    71 : _(u"""
- tailles incompatibles pour le produit matrice * vecteur
-"""),
-
-    72 : _(u"""
- traitement non prévu pour le type d'obstacle demandé
-"""),
-
-    73 : _(u"""
- obstacle de type discret mal défini (un angle est supérieur à pi).
 """),
 
     74 : _(u"""

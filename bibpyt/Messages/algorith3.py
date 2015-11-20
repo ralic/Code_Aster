@@ -137,18 +137,6 @@ Nombre d'itérations     : %(i2)d
  ITER_INTE_MAXI insuffisant
 """),
 
-    56 : _(u"""
- la durée du transitoire est limitée par les possibilités de la transformée de Fourier rapide
-"""),
-
-    57 : _(u"""
- la durée de la simulation temporelle est insuffisante pour le passage du transitoire
-"""),
-
-    58 : _(u"""
- changement de signe de la vitesse --> on prend VITG0(I)
-"""),
-
     60 : _(u"""
  la matrice interspectrale possède un pivot nul.
 """),

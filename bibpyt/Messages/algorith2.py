@@ -227,14 +227,6 @@ Risques & conseils :
   (jacobien = 0.)
 """),
 
-
-
-
-
-
-
-
-
     63 : _(u"""
  on n'imprime que des champs réels
 """),
@@ -247,15 +239,9 @@ Risques & conseils :
  appel erroné a RSEXCH
 """),
 
-    66 : _(u"""
- calcul du transitoire : choc en phase transitoire - pas de solution trouvée.
- utiliser l'option ETAT_STAT = NON
-"""),
-
     79 : _(u"""
  pas de valeurs propres trouvées
 """),
-
 
     80 : _(u"""
  le champ %(k1)s associé à la grandeur de type %(k2)s ne peut pas être utilisé dans une

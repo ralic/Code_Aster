@@ -23,13 +23,6 @@ cata_msg = {
  la variable  %(k1)s  n'existe pas dans la loi  %(k2)s
 """),
 
-    2 : _(u"""
- tailles de matrices incompatibles
-"""),
-
-    10 : _(u"""
- taille produit matrice vecteur incompatible
-"""),
 
     11 : _(u"""
  le champ de déplacement n'a pas été calculé
@@ -138,10 +131,6 @@ cata_msg = {
  on ne sait pas post-traiter le champ de type:  %(k1)s
 """),
 
-    60 : _(u"""
- taille vecteurs incompatible
-"""),
-
     61 : _(u"""
  il faut définir une BANDE ou un NUME_ORDRE
 """),
@@ -218,15 +207,6 @@ cata_msg = {
 
     95 : _(u"""
  pour interpoler il faut fournir une liste de fréquences ou instants.
-"""),
-
-    96 : _(u"""
- calcul du transitoire: pas de solution trouvée
- utiliser l'option ETAT_STAT = NON
-"""),
-
-    97 : _(u"""
- durée de l'excitation trop courte pour le calcul du transitoire.
 """),
 
     98 : _(u"""

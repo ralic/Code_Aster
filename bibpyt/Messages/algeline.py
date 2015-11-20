@@ -75,31 +75,6 @@ cata_msg = {
   Renseignez le mot-clé AMOR.
 """),
 
-    9: _(u"""
- l'origine de l'obstacle est mal positionnée par rapport au noeud de choc
- de numéro  %(k1)s , de nom  %(k2)s , par rapport au jeu.
-"""),
-
-    10: _(u"""
- l'origine de l'obstacle est mal positionnée par rapport au noeud de choc
- de numéro  %(k1)s , de nom  %(k2)s , dans le plan normal au choc.
-"""),
-
-    11: _(u"""
- la normale à l'obstacle fait un angle nul avec le noeud de choc
- de numéro  %(k1)s , avec l'axe du tube.
-"""),
-
-    12: _(u"""
- la normale à l'obstacle fait un angle inférieur à 10 degrés au noeud de choc
- de numéro  %(k1)s , avec l'axe du tube.
-"""),
-
-    13: _(u"""
- la normale à l'obstacle fait un angle inférieur à 45 degrés au noeud de choc
- de numéro  %(k1)s , avec l'axe du tube.
-"""),
-
     14: _(u"""
  les mailles doivent être de type QUAD4 ou TRI3 et non de type  %(k1)s
 """),

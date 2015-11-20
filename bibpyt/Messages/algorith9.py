@@ -212,13 +212,6 @@ cata_msg = {
  Problème lors de la construction de la matrice d'observation. Le code s'arrête.
  Contactez l'assistance technique.
 """),
-    74 : _(u"""
- attention, mode sur amorti
-"""),
-
-    75 : _(u"""
- attention, mode instable
-"""),
 
     81 : _(u"""
  le vecteur directeur est nul.

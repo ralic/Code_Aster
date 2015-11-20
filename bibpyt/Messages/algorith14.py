@@ -161,11 +161,6 @@ cata_msg = {
  taille de bloc utilisée (kr8): %(r2)f
 """),
 
-    68 : _(u"""
-  Estimation de la durée du régime transitoire :
-  valeur minimale conseillée :  %(r1)f
-"""),
-
     69 : _(u"""
  non-linéarité incompatible avec la définition du modèle généralisé
  NOEUD_1      :  %(k1)s

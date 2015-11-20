@@ -60,32 +60,6 @@ cata_msg = {
  aucun axe de rotation défini
 """),
 
-    29 : _(u"""
- méthode non supportée en  sous-structuration
- méthode demandée   :  %(k1)s
- méthodes supportées:  %(k2)s
-"""),
-
-    30 : _(u"""
- conditions initiales non supportées en sous-structuration transitoire
-"""),
-
-    31 : _(u"""
- calcul non linéaire non supporté en sous-structuration transitoire
-"""),
-
-    32 : _(u"""
- RELA_EFFO_DEP non supporté en sous-structuration transitoire
-"""),
-
-    33 : _(u"""
- RELA_EFFO_VITE non supporté en sous-structuration transitoire
-"""),
-
-    34 : _(u"""
- la liste des amortissements modaux est définie au niveau de l'opérateur MACR_ELEM_DYNA
-"""),
-
     35 : _(u"""
  numéro de mode de votre liste inexistant dans les modes utilisés:
  numéro dans votre liste : %(i1)d
@@ -130,13 +104,9 @@ cata_msg = {
  numéro sous-structure demandée -->  %(i1)d
 """),
 
-
-
     69 : _(u"""
  le noeud: %(k1)s  ne peut pas être TYPL et TYPB
 """),
-
-
 
     75 : _(u"""
  détection d'une sous-structure non connectée
