@@ -16,21 +16,21 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmfocc(phase, modele, mate, numedd, fonact,&
-                      ds_contact, sdstat, sdtime, solalg,&
-                      valinc, veelem, veasse)
+    subroutine nmfocc(phase      , model      , mate       , nume_dof , list_func_acti,&
+                      ds_contact , sdstat     , sdtime     , hval_algo, hval_incr     ,&
+                      hval_veelem, hval_veasse)
         use NonLin_Datastructure_type
-        character(len=10) :: phase
-        character(len=24) :: modele
-        character(len=24) :: mate
-        character(len=24) :: numedd
-        integer :: fonact(*)
+        character(len=10), intent(in) :: phase
+        character(len=24), intent(in) :: model
+        character(len=24), intent(in) :: mate
+        character(len=24), intent(in) :: nume_dof
+        integer, intent(in) :: list_func_acti(*)
         type(NL_DS_Contact), intent(in) :: ds_contact
-        character(len=24) :: sdstat
-        character(len=24) :: sdtime
-        character(len=19) :: solalg(*)
-        character(len=19) :: valinc(*)
-        character(len=19) :: veelem(*)
-        character(len=19) :: veasse(*)
+        character(len=24), intent(in) :: sdstat
+        character(len=24), intent(in) :: sdtime
+        character(len=19), intent(in) :: hval_algo(*)
+        character(len=19), intent(in) :: hval_incr(*)
+        character(len=19), intent(in) :: hval_veelem(*)
+        character(len=19), intent(in) :: hval_veasse(*)
     end subroutine nmfocc
 end interface

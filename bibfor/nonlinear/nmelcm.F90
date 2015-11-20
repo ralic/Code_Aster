@@ -1,29 +1,25 @@
-subroutine nmelcm(phase , modele, ds_contact, mate  ,&
-                  depmoi, depdel, vitmoi    , vitplu, accmoi,&
-                  mectce)
+subroutine nmelcm(phase    , mesh     , model    , mate     , ds_contact    ,&
+                  disp_prev, vite_prev, acce_prev, vite_curr, disp_cumu_inst,&
+                  matr_elem)
 !
 use NonLin_Datastructure_type
 !
 implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/copisd.h"
-#include "asterfort/dbgcal.h"
 #include "asterfort/detrsd.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/inical.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/megeom.h"
 #include "asterfort/memare.h"
+#include "asterfort/nmelco_prep.h"
 #include "asterfort/reajre.h"
-#include "asterfort/xmchex.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -43,309 +39,136 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=4) :: phase
-    character(len=19) :: mectce, depdel
-    character(len=24) :: modele
+    character(len=4), intent(in) :: phase
+    character(len=8), intent(in) :: mesh
+    character(len=24), intent(in) :: model
+    character(len=24), intent(in) :: mate
     type(NL_DS_Contact), intent(in) :: ds_contact
-    character(len=19) :: depmoi, accmoi, vitmoi, vitplu
-    character(len=*) :: mate
+    character(len=19), intent(in) :: disp_prev
+    character(len=19), intent(in) :: vite_prev
+    character(len=19), intent(in) :: acce_prev
+    character(len=19), intent(in) :: vite_curr
+    character(len=19), intent(in) :: disp_cumu_inst
+    character(len=19), intent(out) :: matr_elem
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (CALCUL - MATRICES ELEMENTAIRES)
+! Contact - Solve
 !
-! CALCUL DES MATRICES ELEMENTAIRES DES ELEMENTS DE CONTACT
+! Continue/XFEM/LAC methods - Compute elementary matrix for contact
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! IN  PHASE  : CONTACT OU FROTTEMENT
+! In  phase            : phase (contact or friction)
+! In  mesh             : name of mesh
+! In  model            : name of model
+! In  mate             : name of material characteristics (field)
 ! In  ds_contact       : datastructure for contact management
-! IN  MATE   : CHAMP MATERIAU
-! IN  DEPMOI : CHAM_NO DES DEPLACEMENTS A L'INSTANT PRECEDENT
-! IN  MODELE : NOM DU MODELE
-! IN  DEPDEL : INCREMENT DE DEPLACEMENT CUMULE
-! IN  ACCMOI : CHAM_NO DES ACCELERATIONS A L'INSTANT PRECEDENT
-! IN  VITMOI : CHAM_NO DES VITESSES A L'INSTANT PRECEDENT
-! IN  VITPLU : CHAM_NO DES VITESSES A L'INSTANT SUIVANT
-! OUT VECTCE : MATR_ELEM DE CONTACT
+! In  disp_prev        : displacement at beginning of current time
+! In  vite_prev        : speed at beginning of current time
+! In  vite_curr        : speed at current time
+! In  acce_prev        : acceleration at beginning of current time
+! In  disp_cumu_inst   : displacement increment from beginning of current time
+! Out matr_elem        : elementary matrix
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+    integer :: ifm, niv
     integer, parameter :: nbout = 3
     integer, parameter :: nbin  = 28
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
-    character(len=19) :: chgeom
     character(len=1) :: base
-    integer :: ifm, niv
-    aster_logical :: debug
-    integer :: ifmdbg, nivdbg
-    integer :: nbma
-    character(len=8) :: noma
     character(len=19) :: ligrel
-    character(len=19) :: chmlcf
+    character(len=19) :: xcohes, ccohes
     character(len=16) :: option
-    character(len=19) :: cpoint, cpinte, cainte, ccface, ccohes
-    character(len=19) :: lnno, ltno, stano, fissno, heavno, hea_no, hea_fa
-    character(len=19) :: pinter, ainter, cface, faclon, baseco
-    character(len=19) :: xdonco, xindco, xseuco, xcohes
-    aster_logical :: lctcc, lxfcm, ltfcm, lexip, lallv, lxczm
-    integer :: jxc
+    aster_logical :: l_cont_cont, l_cont_xfem, l_cont_xfem_gg, l_cont_lac
+    aster_logical :: l_cont_pena, l_all_verif, l_xfem_czm
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     call infdbg('CONTACT', ifm, niv)
-    call infdbg('PRE_CALCUL', ifmdbg, nivdbg)
 !
-! --- TYPE DE CONTACT
+! - Initializations
 !
-    lallv = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF')
-    if (lallv) then
-        goto 99
-    endif
-!
-! --- AFFICHAGE
-!
-    if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> CALCUL MATRICES ELEMENTAIRES'
-    endif
-!
-! --- INITIALISATIONS
-!
-    if (nivdbg .ge. 2) then
-        debug = .true.
-    else
-        debug = .false.
-    endif
     base = 'V'
 !
-! --- TYPE DE CONTACT
+! - Get contact parameters
 !
-    lctcc = cfdisl(ds_contact%sdcont_defi,'FORMUL_CONTINUE')
-    lxfcm = cfdisl(ds_contact%sdcont_defi,'FORMUL_XFEM')
-    ltfcm = cfdisl(ds_contact%sdcont_defi,'CONT_XFEM_GG')
-    lexip = cfdisl(ds_contact%sdcont_defi,'EXIS_PENA')
-    lxczm = cfdisl(ds_contact%sdcont_defi,'EXIS_XFEM_CZM')
+    l_cont_cont    = cfdisl(ds_contact%sdcont_defi,'FORMUL_CONTINUE')
+    l_cont_xfem    = cfdisl(ds_contact%sdcont_defi,'FORMUL_XFEM')
+    !l_cont_lac     = cfdisl(ds_contact%sdcont_defi,'FORMUL_LAC')
+    l_cont_lac     = .false._1
+    l_cont_xfem_gg = cfdisl(ds_contact%sdcont_defi,'CONT_XFEM_GG')
+    l_cont_pena    = cfdisl(ds_contact%sdcont_defi,'EXIS_PENA')
+    l_xfem_czm     = cfdisl(ds_contact%sdcont_defi,'EXIS_XFEM_CZM')
+    l_all_verif    = cfdisl(ds_contact%sdcont_defi, 'ALL_VERIF')
+    
+    if (.not.l_all_verif) then
 !
-! --- OPTION A CALCULER
+! ----- Print
 !
-    if(lxfcm) call jeveuo(modele(1:8)//'.XFEM_CONT','L',jxc)
-!
-    if (phase .eq. 'CONT') then
-        if(lxfcm) then
-            if(zi(jxc).eq.2) option = 'RIGI_CONT_M'
-            if(zi(jxc).eq.1.or.zi(jxc).eq.3) option = 'RIGI_CONT'
-        else
-            option = 'RIGI_CONT'
+        if (niv .ge. 2) then
+            write (ifm,*) '<CONTACT> CALCUL MATRICES ELEMENTAIRES'
         endif
-    else if (phase.eq.'FROT') then
-        option = 'RIGI_FROT'
-    else
-        ASSERT(.false.)
-    endif
 !
-! --- RECUPERATION DE LA GEOMETRIE
+! ----- Init fields
 !
-    call megeom(modele, chgeom)
-! --- INITIALISATION DES CHAMPS POUR CALCUL
+        call inical(nbin, lpain, lchin, nbout, lpaout,&
+                    lchout)
 !
-    call inical(nbin, lpain, lchin, nbout, lpaout,&
-                lchout)
+! ----- Prepare input fields
 !
-! - <LIGREL> for contact elements
+        call nmelco_prep(phase    , 'MATR'   ,&
+                         mesh     , model    , mate     , ds_contact,&
+                         disp_prev, vite_prev, acce_prev, vite_curr , disp_cumu_inst,&
+                         nbin     , lpain    , lchin    ,&
+                         option   , ccohes   , xcohes)
 !
-    ligrel = ds_contact%ligrel_elem_cont
+! ----- <LIGREL> for contact elements
 !
-    if (lxczm) then
-        call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
-        call dismoi('NB_MA_MAILLA', modele, 'MODELE', repi=nbma)
-    endif
+        ligrel = ds_contact%ligrel_elem_cont
 !
-! --- INITIALISATIONS DES CHAMPS
+! ----- Preparation of elementary matrix
 !
-    cpoint = ' '
-    cpinte = ' '
-    cainte = ' '
-    ccface = ' '
-    ccohes = ' '
-    lnno = ' '
-    ltno = ' '
-    pinter = ' '
-    ainter = ' '
-    cface = ' '
-    faclon = ' '
-    baseco = ' '
-    stano = ' '
-    fissno = ' '
-    heavno = ' '
-    xindco = ' '
-    xdonco = ' '
-    xseuco = ' '
-    chmlcf = ' '
-    xcohes = ' '
-    hea_no = ' '
-    hea_fa = ' '
+        call detrsd('MATR_ELEM', matr_elem)
+        call memare('V', matr_elem, model, ' ', ' ',&
+                    'RIGI_MECA')
 !
-! - <CHELEM> for input field
+! ----- Prepare output fields
 !
-    if (lctcc) then
-        chmlcf = ds_contact%field_input
-    endif
-!
-! --- CHAMPS METHODE XFEM (PETITS GLISSEMENTS)
-!
-    if (lxfcm) then
-        xindco = ds_contact%sdcont_solv(1:14)//'.XFIN'
-        xdonco = ds_contact%sdcont_solv(1:14)//'.XFDO'
-        xseuco = ds_contact%sdcont_solv(1:14)//'.XFSE'
-        xcohes = ds_contact%sdcont_solv(1:14)//'.XCOH'
-        lnno = modele(1:8)//'.LNNO'
-        ltno = modele(1:8)//'.LTNO'
-        pinter = modele(1:8)//'.TOPOFAC.OE'
-        ainter = modele(1:8)//'.TOPOFAC.AI'
-        cface = modele(1:8)//'.TOPOFAC.CF'
-        faclon = modele(1:8)//'.TOPOFAC.LO'
-        baseco = modele(1:8)//'.TOPOFAC.BA'
-        stano = modele(1:8)//'.STNO'
-        fissno = modele(1:8)//'.FISSNO'
-        heavno = modele(1:8)//'.HEAVNO'
-        hea_no = modele(1:8)//'.TOPONO.HNO'
-        hea_fa = modele(1:8)//'.TOPONO.HFA'
-        if (lxczm) then
-            ccohes = '&&NMELCM.CCOHES'
-!
-!           SI COHESIF CLASSIQUE APPEL A XMCHEX
-!           POUR CREER LA STRUCTURE DU CHAMP
-!
-            if(zi(jxc).eq.1.or.zi(jxc).eq.3) then
-                call xmchex(noma, nbma, xcohes, ccohes)
+        if (l_cont_pena) then
+            lpaout(1) = 'PMATUNS'
+            lchout(1) = matr_elem(1:15)//'.M01'
+        else
+            lpaout(1) = 'PMATUUR'
+            lchout(1) = matr_elem(1:15)//'.M01'
+            if (phase .eq. 'FROT') then
+                lpaout(2) = 'PMATUNS'
+                lchout(2) = matr_elem(1:15)//'.M02'
+            else if (phase .eq. 'CONT' .and. l_xfem_czm) then
+                lpaout(3) = 'PCOHESO'
+                lchout(3) = ccohes
             endif
         endif
-    endif
 !
-! --- CHAMPS METHODE XFEM (GRANDS GLISSEMENTS)
+! ----- Computation
 !
-    if (ltfcm) then
-        cpoint = ds_contact%sdcont_solv(1:14)//'.XFPO'
-        stano = ds_contact%sdcont_solv(1:14)//'.XFST'
-        cpinte = ds_contact%sdcont_solv(1:14)//'.XFPI'
-        cainte = ds_contact%sdcont_solv(1:14)//'.XFAI'
-        ccface = ds_contact%sdcont_solv(1:14)//'.XFCF'
-        heavno = ds_contact%sdcont_solv(1:14)//'.XFPL'
-        hea_fa = ds_contact%sdcont_solv(1:14)//'.XFHF'
-        hea_no = ds_contact%sdcont_solv(1:14)//'.XFHN'
-    endif
+        call calcul('S', option, ligrel, nbin, lchin,&
+                    lpain, nbout, lchout, lpaout, base,&
+                    'OUI')
 !
-! --- CREATION DES LISTES DES CHAMPS IN ET OUT
-! --- GEOMETRIE ET DEPLACEMENTS
+! ----- Copy output fields
 !
-    lpain(1) = 'PGEOMER'
-    lchin(1) = chgeom(1:19)
-    lpain(2) = 'PDEPL_M'
-    lchin(2) = depmoi(1:19)
-    lpain(3) = 'PDEPL_P'
-    lchin(3) = depdel(1:19)
-    lpain(4) = 'PVITE_M'
-    lchin(4) = vitmoi(1:19)
-    lpain(5) = 'PACCE_M'
-    lchin(5) = accmoi(1:19)
-    lpain(6) = 'PVITE_P'
-    lchin(6) = vitplu(1:19)
-!
-! --- AUTRES CHAMPS IN ET OUT
-!
-    lpain(7) = 'PCONFR'
-    lchin(7) = chmlcf
-    lpain(8) = 'PCAR_PT'
-    lchin(8) = cpoint
-    lpain(9) = 'PCAR_PI'
-    lchin(9) = cpinte
-    lpain(10) = 'PCAR_AI'
-    lchin(10) = cainte
-    lpain(11) = 'PCAR_CF'
-    lchin(11) = ccface
-    lpain(12) = 'PINDCOI'
-    lchin(12) = xindco
-    lpain(13) = 'PDONCO'
-    lchin(13) = xdonco
-    lpain(14) = 'PLSN'
-    lchin(14) = lnno
-    lpain(15) = 'PLST'
-    lchin(15) = ltno
-    lpain(16) = 'PPINTER'
-    lchin(16) = pinter
-    lpain(17) = 'PAINTER'
-    lchin(17) = ainter
-    lpain(18) = 'PCFACE'
-    lchin(18) = cface
-    lpain(19) = 'PLONGCO'
-    lchin(19) = faclon
-    lpain(20) = 'PBASECO'
-    lchin(20) = baseco
-    lpain(21) = 'PSEUIL'
-    lchin(21) = xseuco
-    lpain(22) = 'PSTANO'
-    lchin(22) = stano
-    lpain(23) = 'PCOHES'
-    lchin(23) = xcohes
-    lpain(24) = 'PMATERC'
-    lchin(24) = mate
-    lpain(25) = 'PFISNO'
-    lchin(25) = fissno
-    lpain(26) = 'PHEAVNO'
-    lchin(26) = heavno
-    lpain(27) = 'PHEA_NO'
-    lchin(27) = hea_no
-    lpain(28) = 'PHEA_FA'
-    lchin(28) = hea_fa
-!
-! --- ON DETRUIT LES MATRICES ELEMENTAIRES S'ILS EXISTENT
-!
-    call detrsd('MATR_ELEM', mectce)
-!
-! --- PREPARATION DES MATRICES ELEMENTAIRES
-!
-    call memare('V', mectce, modele, ' ', ' ',&
-                'RIGI_MECA')
-!
-! --- CHAMPS DE SORTIE
-!
-    if (lexip) then
-        lpaout(1) = 'PMATUNS'
-        lchout(1) = mectce(1:15)//'.M01'
-    else
-        lpaout(1) = 'PMATUUR'
-        lchout(1) = mectce(1:15)//'.M01'
-        if (option .eq. 'RIGI_FROT') then
-            lpaout(2) = 'PMATUNS'
-            lchout(2) = mectce(1:15)//'.M02'
-        else if (option(1:9).eq.'RIGI_CONT'.and.lxczm) then
-            lpaout(3) = 'PCOHESO'
-            lchout(3) = ccohes
+        call reajre(matr_elem, lchout(1), base)
+        if ((phase .eq. 'FROT') .and. (l_xfem_czm.or.(.not.l_cont_pena))) then
+            call reajre(matr_elem, lchout(2), base)
+        endif
+        if (l_xfem_czm .and. phase .eq. 'CONT') then
+            call copisd('CHAMP_GD', 'V', lchout(3), xcohes)
         endif
     endif
-!
-! --- APPEL A CALCUL
-!
-    call calcul('S', option, ligrel, nbin, lchin,&
-                lpain, nbout, lchout, lpaout, base,&
-                'OUI')
-    call reajre(mectce, lchout(1), base)
-    if ((option.eq.'RIGI_FROT') .and. (lxczm.or.(.not.lexip))) then
-        call reajre(mectce, lchout(2), base)
-    endif
-!
-    if (lxczm .and. (option(1:9).eq.'RIGI_CONT')) then
-        call copisd('CHAMP_GD', 'V', lchout(3), xcohes)
-    endif
-!
-    if (debug) then
-        call dbgcal(option, ifmdbg, nbin, lpain, lchin,&
-                    nbout, lpaout, lchout)
-    endif
-!
- 99 continue
 !
     call jedema()
 !

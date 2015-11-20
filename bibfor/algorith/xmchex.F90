@@ -1,4 +1,17 @@
-subroutine xmchex(noma, nbma, chpmod, chelex)
+subroutine xmchex(mesh, chpmod, chelex)
+!
+implicit none
+!
+#include "jeveux.h"
+#include "asterfort/celces.h"
+#include "asterfort/cescre.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,19 +31,8 @@ subroutine xmchex(noma, nbma, chpmod, chelex)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/celces.h"
-#include "asterfort/cescre.h"
-#include "asterfort/cesexi.h"
-#include "asterfort/detrsd.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/utmess.h"
+    character(len=8), intent(in) :: mesh
     character(len=19) :: chelex, chpmod
-    integer :: nbma
-    character(len=8) :: noma
 !
 ! ----------------------------------------------------------------------
 !
@@ -51,26 +53,25 @@ subroutine xmchex(noma, nbma, chpmod, chelex)
 !
 !
 !
-    integer :: nbcmp
-    parameter     (nbcmp = 2)
-    character(len=8) :: licmp(nbcmp)
+    integer, parameter :: nbcmp  = 2
+    character(len=8), parameter :: licmp(nbcmp) = (/ 'NPG_DYN ', 'NCMP_DYN'/)
     character(len=19) :: valk(2), chelsi
     integer :: vali(1)
-!
-    integer :: iad, ima
+    integer :: iad, ima, nbma
     integer :: jcesl,  jcesd
     integer, pointer :: cesd2(:) => null()
-    integer, pointer :: cesv(:) => null()
-!
-    data licmp    / 'NPG_DYN', 'NCMP_DYN'/
+    integer, pointer :: cesv(:) => null()   
 !
 ! ----------------------------------------------------------------------
 !
     call jemarq()
+    
+    
+    call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nbma)
 !
 ! --- CREATION DU CHAM_ELEM_S VIERGE
 !
-    call cescre('V', chelex, 'ELEM', noma, 'DCEL_I',&
+    call cescre('V', chelex, 'ELEM', mesh, 'DCEL_I',&
                 nbcmp, licmp, [-1], [-1], [-nbcmp])
 !
 ! --- ACCES AU CHAM_ELEM_S
@@ -86,7 +87,7 @@ subroutine xmchex(noma, nbma, chpmod, chelex)
 !
 ! --- AFFECTATION DES COMPOSANTES DU CHAM_ELEM_S
 !
-    do 100 ima = 1, nbma
+    do ima = 1, nbma
         call cesexi('C', jcesd, jcesl, ima, 1,&
                     1, 1, iad)
         if (iad .ge. 0) then
@@ -107,7 +108,7 @@ subroutine xmchex(noma, nbma, chpmod, chelex)
         endif
         zl(jcesl-1-iad) = .true.
         cesv(1-1-iad) = cesd2(5+4*(ima-1)+3)
-100  end do
+    end do
 !
     call detrsd('CHAM_ELEM_S', chelsi)
 !

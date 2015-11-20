@@ -16,9 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xmchex(noma, nbma, chpmod, chelex)
-        character(len=8) :: noma
-        integer :: nbma
+    subroutine xmchex(mesh, chpmod, chelex)
+        character(len=8), intent(in) :: mesh
         character(len=19) :: chpmod
         character(len=19) :: chelex
     end subroutine xmchex

@@ -9,7 +9,6 @@ implicit none
 #include "asterfort/calcul.h"
 #include "asterfort/copisd.h"
 #include "asterfort/dbgcal.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/inical.h"
 #include "asterfort/jedema.h"
@@ -61,7 +60,6 @@ implicit none
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
-    integer :: nbma
     character(len=19) :: ligrmo, xdonco, xseuco, cseuil
     character(len=19) :: lnno, ltno
     character(len=16) :: option
@@ -89,7 +87,6 @@ implicit none
     else
         debug = .false.
     endif
-    call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nbma)
 !
 ! --- DECOMPACTION DES VARIABLES CHAPEAUX
 !
@@ -120,7 +117,7 @@ implicit none
 !
 ! --- CREATION DU CHAM_ELEM_S VIERGE
 !
-    call xmchex(mesh, nbma, xseuco, cseuil)
+    call xmchex(mesh, xseuco, cseuil)
 !
 ! --- RECUPERATION DES COORDONNEES DES NOEUDS
 !

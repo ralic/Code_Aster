@@ -16,11 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmelcm(phase    , mesh     , model    , mate     , ds_contact    , &
-                      disp_prev, vite_prev, acce_prev, vite_curr, disp_cumu_inst,&
-                      matr_elem)
+    subroutine nmelco_prep(phase    , calc_type,&
+                           mesh     , model    , mate     , ds_contact,&
+                           disp_prev, vite_prev, acce_prev, vite_curr , disp_cumu_inst,&
+                           nbin     , lpain    , lchin    ,&
+                           option   , ccohes_  , xcohes_)
         use NonLin_Datastructure_type
         character(len=4), intent(in) :: phase
+        character(len=4), intent(in) :: calc_type
         character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: model
         character(len=24), intent(in) :: mate
@@ -30,6 +33,11 @@ interface
         character(len=19), intent(in) :: acce_prev
         character(len=19), intent(in) :: vite_curr
         character(len=19), intent(in) :: disp_cumu_inst
-        character(len=19), intent(out) :: matr_elem
-    end subroutine nmelcm
+        integer, intent(in) :: nbin
+        character(len=8), intent(out) :: lpain(nbin)
+        character(len=19), intent(out) :: lchin(nbin)
+        character(len=16), intent(out) :: option
+        character(len=19), optional, intent(out) :: ccohes_
+        character(len=19), optional, intent(out) :: xcohes_
+    end subroutine nmelco_prep
 end interface

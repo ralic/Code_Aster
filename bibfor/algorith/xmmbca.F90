@@ -10,7 +10,6 @@ implicit none
 #include "asterfort/calcul.h"
 #include "asterfort/copisd.h"
 #include "asterfort/dbgcal.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/inical.h"
 #include "asterfort/jedema.h"
@@ -66,12 +65,12 @@ implicit none
 !
 !
 !
-    integer :: nbout, nbin
-    parameter    (nbout=4, nbin=20)
+    integer, parameter :: nbout = 4
+    integer, parameter :: nbin  = 20
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
-    integer :: sinco(1), nbma
+    integer :: sinco(1)
     integer :: jfiss
     character(len=19) :: xdonco, xindco, xmemco, xgliss, xcohes, ccohes
     character(len=16) :: option
@@ -81,7 +80,7 @@ implicit none
     aster_logical :: debug, lcontx
     integer :: ifm, niv, ifmdbg, nivdbg
     character(len=19) :: oldgeo, depmoi, depplu
-    integer, pointer :: xfem_cont(:) => null()
+    integer, pointer :: v_model_xfemcont(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -111,7 +110,6 @@ implicit none
     else
         debug = .false.
     endif
-    call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nbma)
 !
 ! --- DECOMPACTION DES VARIABLES CHAPEAUX
 !
@@ -120,8 +118,8 @@ implicit none
 !
 ! --- SI PAS DE CONTACT ALORS ON ZAPPE LA VÉRIFICATION
 !
-    call jeveuo(model(1:8)//'.XFEM_CONT', 'L', vi=xfem_cont)
-    lcontx = xfem_cont(1) .ge. 1
+    call jeveuo(model(1:8)//'.XFEM_CONT', 'L', vi=v_model_xfemcont)
+    lcontx = v_model_xfemcont(1) .ge. 1
     if (.not.lcontx) then
         mmcvca = .true.
         goto 999
@@ -129,8 +127,8 @@ implicit none
 !
 ! --- DETERMINATION DE L OPTION
 !
-    if(xfem_cont(1).eq.1.or.xfem_cont(1).eq.3) option='XCVBCA'
-    if(xfem_cont(1).eq.2) option='XCVBCA_MORTAR' 
+    if(v_model_xfemcont(1).eq.1.or.v_model_xfemcont(1).eq.3) option='XCVBCA'
+    if(v_model_xfemcont(1).eq.2) option='XCVBCA_MORTAR' 
 !
 ! --- INITIALISATION DES CHAMPS POUR CALCUL
 !
@@ -157,10 +155,11 @@ implicit none
 !
 ! --- CREATION DU CHAM_ELEM_S VIERGE  INDIC. CONTACT ET MEMOIRE CONTACT
 !
-    call xmchex(mesh, nbma, xindco, cindoo)
-    call xmchex(mesh, nbma, xmemco, cmemco)
-    if(xfem_cont(1).eq.1.or.xfem_cont(1).eq.3)&
-        call xmchex(mesh, nbma, xcohes, ccohes)
+    call xmchex(mesh, xindco, cindoo)
+    call xmchex(mesh, xmemco, cmemco)
+    if (v_model_xfemcont(1).eq.1.or.v_model_xfemcont(1).eq.3) then
+        call xmchex(mesh, xcohes, ccohes)
+    endif
 !
 ! --- CREATION DES LISTES DES CHAMPS IN
 !
