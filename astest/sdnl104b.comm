@@ -290,7 +290,7 @@ TRAN_GE1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                        NORM_OBST = (1.,  0., 0.,),
                                        JEU = 1.E-4,
                                        RIGI_NOR = 1.E+8),
-                                 ARCHIVAGE=_F(INST=ARCHLIST, PAS_ARCH=1.E10)
+                                 ARCHIVAGE=_F(INST=ARCHLIST, PAS_ARCH=10000000)
                              )
 #
 TRAN_GE2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
@@ -309,7 +309,7 @@ TRAN_GE2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                        NORM_OBST = (1., 0., 0.,),
                                        JEU = 1.E-4,
                                        RIGI_NOR = 1.E+8),
-                                 ARCHIVAGE=_F(INST=ARCHLIST, PAS_ARCH=1.E10)
+                                 ARCHIVAGE=_F(INST=ARCHLIST, PAS_ARCH=10000000)
                              )
 
 #
@@ -332,7 +332,7 @@ TRAN_GE3=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                        NORM_OBST = (1., 0., 0.,),
                                        JEU = 1.E-4,
                                        RIGI_NOR = 1.E+8),
-                            ARCHIVAGE=_F( PAS_ARCH = 1.E10, INST=ARCHLIST),
+                            ARCHIVAGE=_F( PAS_ARCH=10000000, INST=ARCHLIST),
                              )
 
 
