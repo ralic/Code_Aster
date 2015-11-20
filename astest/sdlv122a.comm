@@ -434,9 +434,7 @@ REPONS=CALC_CHAMP(RESULTAT=REPONSE,
 
 #
 REPON2=CALC_CHAMP(RESULTAT=REPONS,
-                  CARA_ELEM=CARAELEM,
                   MODELE=MODELE,
-                  CHAM_MATER=MATER,
                   LIST_INST=LTEMPS,
                   DEFORMATION='EPSI_NOEU',);
 
