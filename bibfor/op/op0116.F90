@@ -170,7 +170,7 @@ implicit none
             endif
 !
             tmpmod = '&&OP0116.MODxMOIN.1'
-            if (potentiel(1:5) .eq. 'PRESS') then
+            if (potentiel(1:4) .eq. 'PRES') then
                 constant = constant * 4.d0*pi*pi*freq*freq
             elseif (potentiel(1:4) .eq. 'VITE') then
                 constant = constant * 2.d0*pi*freq

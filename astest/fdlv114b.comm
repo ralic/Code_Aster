@@ -249,7 +249,7 @@ TEST_FONCTION(VALEUR=_F(FONCTION=f1,VALE_PARA=0.,REFERENCE='AUTRE_ASTER',VALE_RE
 # TEST DE L'OPTION PRESSION
 PRESS = CALC_CHAM_FLUI(RIGI_THER = RIGITH,
                        MODE_MECA = modes,
-                       POTENTIEL = 'PRESS',
+                       POTENTIEL = 'PRES',
                        EXCIT = _F(CHARGE=PRESIMPO,))
 
 
