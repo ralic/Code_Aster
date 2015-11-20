@@ -142,7 +142,8 @@ DYNAMOD4=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                RIGI_TAN = 0.,
                                AMOR_TAN = 0.,
                                FROTTEMENT='COULOMB',
-                               COULOMB = 0.)
+                               COULOMB = 0.),
+                      VERI_CHOC=_F(STOP_CRITERE='OUI')
                        )
 
 DEPLX4=RECU_FONCTION(   NOEUD='NO1', NOM_CMP='DX',
