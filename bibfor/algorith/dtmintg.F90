@@ -30,7 +30,6 @@ subroutine dtmintg(sd_dtm_, sd_int_, buffdtm, buffint)
 #include "asterfort/intadapt2.h"
 #include "asterfort/intdevo.h"
 #include "asterfort/inteuler.h"
-#include "asterfort/inteuler2.h"
 #include "asterfort/intitmi.h"
 #include "asterfort/intnewm.h"
 #include "asterfort/intruku32.h"
