@@ -7,7 +7,6 @@ implicit none
 #include "asterfort/elref2.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jni001.h"
 #include "asterfort/jni002.h"
 #include "asterfort/jni015.h"
 #include "asterfort/jni080.h"
@@ -77,9 +76,6 @@ implicit none
 !       -------------------
         if (nujni .eq. 2) then
             call jni002(elrefe, 10, liobj, nbobj)
-!
-        else if (nujni.eq.1) then
-            call jni001(elrefe, 10, liobj, nbobj)
 !
         else if (nujni.eq.15) then
             call jni015(elrefe, 10, liobj, nbobj)
