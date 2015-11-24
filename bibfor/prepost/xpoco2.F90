@@ -242,6 +242,7 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
 !
             npg2 = zi(jcesd2-1+5+4* (ima2-1)+1)
             ncmp2 = zi(jcesd2-1+5+4* (ima2-1)+3)
+            if (npg2.eq.0) cycle
             ASSERT(npg1.eq.npg2)
             ASSERT(ncmp1.eq.ncmp2)
 !
