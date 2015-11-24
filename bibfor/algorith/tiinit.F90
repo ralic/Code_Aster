@@ -1,4 +1,4 @@
-subroutine tiinit(ds_inout, sddisc, lostat, l_evol)
+subroutine tiinit(ds_inout, sddisc, lostat, l_nonline, l_evol)
 !
 use NonLin_Datastructure_type
 !
@@ -32,6 +32,7 @@ implicit none
     type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=19), intent(in) :: sddisc
     aster_logical, intent(in) :: lostat
+    aster_logical, intent(in) :: l_nonline
     aster_logical, intent(out) :: l_evol
 !
 ! --------------------------------------------------------------------------------------------------
@@ -45,6 +46,7 @@ implicit none
 ! In  ds_inout         : datastructure for input/output management
 ! In  sddisc           : datastructure for time discretization
 ! In  lostat           : .true. for initial stationnary computation
+! In  l_nonline        : .true. for nonlinear thermics
 ! Out l_evol           : .true. for transient computation
 !
 ! --------------------------------------------------------------------------------------------------
@@ -77,7 +79,7 @@ implicit none
 ! - Create time discretization datastructure and storing datastructure
 !
     if (l_evol) then
-        call ntcrli(init_time, list_inst, sddisc, lostat)
+        call ntcrli(init_time, list_inst, sddisc, lostat, l_nonline)
         call ntcrar(result, sddisc, l_reuse)
     else
         call ntcra0(sddisc)

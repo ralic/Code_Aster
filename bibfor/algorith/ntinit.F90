@@ -92,7 +92,7 @@ implicit none
 !
 ! - Time discretization and storing datastructures
 !
-    call tiinit(ds_inout, sddisc, lostat, l_evol)
+    call tiinit(ds_inout, sddisc, lostat, lnonl, l_evol)
 !
 ! - Prepare storing
 !

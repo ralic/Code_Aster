@@ -18,10 +18,11 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine ntcrli(inst_init, list_inst, sddisc, lostat)
+    subroutine ntcrli(inst_init, list_inst, sddisc, lostat, l_nonline)
         character(len=19), intent(in) :: sddisc
         character(len=19), intent(in) :: list_inst
         real(kind=8), intent(in) :: inst_init
         aster_logical, intent(in) :: lostat
+        aster_logical, intent(in) :: l_nonline
     end subroutine ntcrli
 end interface

@@ -1,4 +1,4 @@
-subroutine ntcrli(inst_init, list_inst, sddisc, lostat)
+subroutine ntcrli(inst_init, list_inst, sddisc, lostat, l_nonline)
 !
 implicit none
 !
@@ -46,6 +46,7 @@ implicit none
     character(len=19), intent(in) :: list_inst
     real(kind=8), intent(in) :: inst_init
     aster_logical, intent(in) :: lostat
+    aster_logical, intent(in) :: l_nonline
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,6 +60,7 @@ implicit none
 ! In  inst_init        : initial time if ETAT_INIT
 ! In  list_inst        : list of times from INCREMENT/LIST_INST
 ! In  lostat           : .true. for initial stationnary computation
+! In  l_nonline        : .true. for nonlinear thermics
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -110,7 +112,9 @@ implicit none
 !
     if (list_inst_type .eq. 'LISTR8_SDASTER') then
         call ntcrlm(list_inst, sddisc, list_inst_work)
-        call deprecated_command('LIST_INST')
+        if (l_nonline) then
+            call deprecated_command('LIST_INST')
+        endif
     else if (list_inst_type.eq.'LIST_INST') then
         sddisc_linf    = sddisc(1:19)//'.LINF'
         list_inst_info = list_inst(1:8)//'.LIST.INFOR'

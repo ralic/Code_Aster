@@ -18,11 +18,12 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine tiinit(ds_inout, sddisc, lostat, l_evol)
+    subroutine tiinit(ds_inout, sddisc, lostat, l_nonline, l_evol)
         use NonLin_Datastructure_type
         type(NL_DS_InOut), intent(in) :: ds_inout
         character(len=19), intent(in) :: sddisc
         aster_logical, intent(in) :: lostat
+        aster_logical, intent(in) :: l_nonline
         aster_logical, intent(out) :: l_evol
     end subroutine tiinit
 end interface
