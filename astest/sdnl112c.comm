@@ -444,7 +444,7 @@ OBST1=DEFI_OBSTACLE(  TYPE='PLAN_Y'   )
 
 TRANGENE=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                     BASE_ELAS_FLUI=MELFLUI, NUME_VITE_FLUI=1,
-                    SCHEMA_TEMPS=_F(SCHEMA='RUNGE_KUTTA_32'),
+                    SCHEMA_TEMPS=_F(SCHEMA='RUNGE_KUTTA_32',PAS_MINI=T_PAS,PAS_MAXI=T_PAS),
                     MATR_MASS=MASSPROJ,
                     MATR_RIGI=RIGIPROJ,
                   AMOR_MODAL=_F(AMOR_REDUIT=(
@@ -468,10 +468,10 @@ TRANGENE=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                 9.703448E-01,
                                 2.417252E-01,
                               ),
-                 RIGI_NOR = 5.582200E+06,
-                 AMOR_NOR = 2.655900E+02,
-                 RIGI_TAN = 5.582200E+07,
-                 AMOR_TAN = 1.185410E+04,
+                 RIGI_NOR = 5.582200E+03,
+                 AMOR_NOR = 2.655900E+01,
+                 RIGI_TAN = 5.582200E+03,
+                 AMOR_TAN = 1.185410E+02,
                  JEU = 1.200000E-02,
                  ANGL_VRIL = 0.000000E+00,
                  FROTTEMENT='COULOMB',
@@ -513,9 +513,7 @@ IMPR_TABLE(  TABLE=TABLE,
                        'T_REBON_MOYEN','%_T_CHOC','PUIS_USURE',)
  )
 #
-
-TEST_TABLE(VALE_CALC=0.0074259838065,
-           TOLE_MACHINE=5.E-3,                          # TODO TOLE_MACHINE
+TEST_TABLE(VALE_CALC=0.0140239567531,
            NOM_PARA='RMS',
            TABLE=TABLE,
            FILTRE=(_F(NOM_PARA='CALCUL',
@@ -525,8 +523,7 @@ TEST_TABLE(VALE_CALC=0.0074259838065,
                    ),
            )
 
-TEST_TABLE(VALE_CALC=0.0074259838065,
-           TOLE_MACHINE=5.E-3,                          # TODO TOLE_MACHINE
+TEST_TABLE(VALE_CALC=0.0140239567531,
            NOM_PARA='RMS',
            TABLE=TABLE,
            FILTRE=(_F(NOM_PARA='CALCUL',
@@ -536,8 +533,7 @@ TEST_TABLE(VALE_CALC=0.0074259838065,
                    ),
            )
 
-TEST_TABLE(VALE_CALC=127.778468069,
-           TOLE_MACHINE=5.E-3,                          # TODO TOLE_MACHINE
+TEST_TABLE(VALE_CALC=127.618721899,
            NOM_PARA='RMS',
            TABLE=TABLE,
            FILTRE=(_F(NOM_PARA='CALCUL',
@@ -547,8 +543,7 @@ TEST_TABLE(VALE_CALC=127.778468069,
                    ),
            )
 
-TEST_TABLE(VALE_CALC=0.0074259838065,
-           TOLE_MACHINE=5.E-3,                          # TODO TOLE_MACHINE
+TEST_TABLE(VALE_CALC=0.0140239567531,
            NOM_PARA='RMS',
            TABLE=TABLE,
            FILTRE=(_F(NOM_PARA='CALCUL',
@@ -558,8 +553,7 @@ TEST_TABLE(VALE_CALC=0.0074259838065,
                    ),
            )
 
-TEST_TABLE(VALE_CALC=0.0074259838065,
-           TOLE_MACHINE=5.E-3,                          # TODO TOLE_MACHINE
+TEST_TABLE(VALE_CALC=0.0140239567531,
            NOM_PARA='RMS',
            TABLE=TABLE,
            FILTRE=(_F(NOM_PARA='CALCUL',
@@ -569,8 +563,7 @@ TEST_TABLE(VALE_CALC=0.0074259838065,
                    ),
            )
 
-TEST_TABLE(VALE_CALC=127.778468069,
-           TOLE_MACHINE=5.E-3,                          # TODO TOLE_MACHINE
+TEST_TABLE(VALE_CALC=127.618721899,
            NOM_PARA='RMS',
            TABLE=TABLE,
            FILTRE=(_F(NOM_PARA='CALCUL',
