@@ -56,6 +56,7 @@ PCO =  5.E+4 ;
 #*******************************************************************
 MAILLAGE=LIRE_MAILLAGE(FORMAT='MED',);
 
+
 MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
                    AFFE=_F(TOUT         = 'OUI',
                            PHENOMENE    = 'MECANIQUE',
@@ -198,7 +199,7 @@ SIG0=CREA_CHAMP(INFO=2,
 #
 #                     SIMU_POINT_MAT (REFERENCE)
 #
-#***********************************************************************                       10.*end, 0.0001*end,));
+#***********************************************************************  
 COEF2=DEFI_FONCTION(NOM_PARA    = 'INST',
                     PROL_DROITE = 'CONSTANT',
                     VALE=( 0.0, -PCO,
@@ -281,6 +282,28 @@ SPM_VARI=CALC_TABLE(TABLE=SPM,
                          
 IMPR_TABLE(TABLE=SPM_SIG,);
 IMPR_TABLE(TABLE=SPM_VARI,);
+
+
+# Test des valeurs obtenues par SIMU_POINT_MAT (NON_REGRESSION) : SIXX_0D, SIP_0D, V1_0D et V2_0D :
+# Ces valeurs serviront de refernce pour le calcul STAT_NON_LINE.
+#---------------------------------------------------------------------------------------------------
+
+TEST_TABLE ( TABLE    =SPM_SIG,
+             FILTRE=_F(NOM_PARA ='EPZZ', VALE =-1.2E-04,),
+             NOM_PARA ='SIXX_0D', VALE_CALC=-30777.314632,    );
+
+TEST_TABLE ( TABLE    =SPM_SIG,
+             FILTRE=_F(NOM_PARA ='EPZZ', VALE =-1.2E-04,),
+             NOM_PARA ='SIP_0D', VALE_CALC=-19226.5841711,    );
+
+TEST_TABLE ( TABLE    =SPM_VARI,
+             FILTRE=_F(NOM_PARA ='EPZZ', VALE =-1.2E-04,),
+             NOM_PARA ='V1_0D', VALE_CALC=1.2623784436E-05,    );
+
+TEST_TABLE ( TABLE    =SPM_VARI,
+             FILTRE=_F(NOM_PARA ='EPZZ', VALE =-1.2E-04,),
+             NOM_PARA ='V2_0D', VALE_CALC=2.48944101698E-05,    );
+
 
 #***********************************************************************
 #
@@ -394,90 +417,32 @@ TAB_VARI=CALC_TABLE(TABLE=SNL_VARI,
                              FORMAT_R=fmt,
                              NOM_PARA=('EPZZ','EPZZ'),),);
 
-err_sigm = FORMULE(VALE='abs(SIXX-SIXX_0D)/PCO',
-                   NOM_PARA=('SIXX','SIXX_0D',),);
-
-err_pres= FORMULE(VALE='abs(SIPXX-SIP_0D)/PCO',
-                   NOM_PARA=('SIPXX','SIP_0D',),);
-
-err_v1= FORMULE(VALE='abs(V1-V1_0D)',
-                   NOM_PARA=('V1','V1_0D',),);
-
-err_v2= FORMULE(VALE='abs(V2-V2_0D)',
-                   NOM_PARA=('V2','V2_0D',),);
-                   
-TAB_SIG=CALC_TABLE(reuse=TAB_SIG,
-               TABLE=TAB_SIG,
-               ACTION=(_F(OPERATION='OPER',
-                         FORMULE=err_sigm,
-                         NOM_PARA='ERR_SIGMA',),
-                       _F(OPERATION='OPER',
-                         FORMULE=err_pres,
-                         NOM_PARA='ERR_PRESS',),),);
-
-TAB_VARI=CALC_TABLE(reuse=TAB_VARI,
-               TABLE=TAB_VARI,
-               ACTION=(_F(OPERATION='OPER',
-                         FORMULE=err_v1,
-                         NOM_PARA='ERR_V1',),
-                       _F(OPERATION='OPER',
-                         FORMULE=err_v2,
-                         NOM_PARA='ERR_V2',),),);
                          
 IMPR_TABLE(TABLE=TAB_SIG);
 IMPR_TABLE(TABLE=TAB_VARI);
 
 
-# Erreur sur SIGMA_XX effective
-TEST_TABLE(CRITERE  ='ABSOLU',
-           REFERENCE='SOURCE_EXTERNE',
-           PRECISION=1.3E-4,
-           VALE_CALC=9.46686463212E-05,
-           VALE_REFE=0.,
-           NOM_PARA ='ERR_SIGMA',
-           TABLE    =TAB_SIG,
-           FILTRE=_F(CRITERE  ='ABSOLU',
-                     PRECISION=1.E-06,
-                     NOM_PARA ='EPZZ',
-                     VALE     =-1.20000E-04,),);
+# Test des valeurs SIXX, SIPXX, V1 et V2 :
+#------------------------------------------
 
-# Erreur sur pression hydraulique               
-TEST_TABLE(CRITERE  ='ABSOLU',
-           REFERENCE='SOURCE_EXTERNE',
-           PRECISION=1.E-3,
-           VALE_CALC=1.34303758955E-05,
-           VALE_REFE=0.,
-           NOM_PARA ='ERR_PRESS',
-           TABLE    =TAB_SIG,
-           FILTRE=_F(CRITERE  ='ABSOLU',
-                     PRECISION=1.E-06,
-                     NOM_PARA ='EPZZ',
-                     VALE     =-1.20000E-04,),);
+TEST_TABLE ( TABLE    =TAB_SIG,
+             FILTRE=_F(NOM_PARA ='EPZZ', VALE =-1.2E-04,),
+             NOM_PARA ='SIXX', VALE_REFE=-30777.314632,  REFERENCE='AUTRE_ASTER', PRECISION=2.e-4,
+             VALE_CALC=-30772.5811997, TOLE_MACHINE=1.e-5 );
 
-# Erreur sur deformation volumique                 
-TEST_TABLE(CRITERE  ='ABSOLU',
-           REFERENCE='SOURCE_EXTERNE',
-           PRECISION=1.E-6,
-           VALE_CALC=3.34902305765E-08,
-           VALE_REFE=0.,
-           NOM_PARA ='ERR_V1',
-           TABLE    =TAB_VARI,
-           FILTRE=_F(CRITERE  ='ABSOLU',
-                     PRECISION=1.E-06,
-                     NOM_PARA ='EPZZ',
-                     VALE     =-1.20000E-04,),);
+TEST_TABLE ( TABLE    =TAB_SIG,
+             FILTRE=_F(NOM_PARA ='EPZZ', VALE =-1.2E-04,),
+             NOM_PARA ='SIPXX', VALE_REFE=-19226.5841711,  REFERENCE='AUTRE_ASTER', PRECISION=4.e-4,
+             VALE_CALC=-19227.2556899, TOLE_MACHINE=4.e-4  );
 
-# Erreur sur deviateur deformation plastique
-TEST_TABLE(CRITERE  ='ABSOLU',
-           REFERENCE='SOURCE_EXTERNE',
-           PRECISION=1.E-6,
-           VALE_CALC=6.60435498463E-08,
-           VALE_REFE=0.,
-           NOM_PARA ='ERR_V2',
-           TABLE    =TAB_VARI,
-           FILTRE=_F(CRITERE  ='ABSOLU',
-                     PRECISION=1.E-06,
-                     NOM_PARA ='EPZZ',
-                     VALE     =-1.20000E-04,),);
+TEST_TABLE ( TABLE    =TAB_VARI,
+             FILTRE=_F(NOM_PARA ='EPZZ', VALE =-1.2E-04,),
+             NOM_PARA ='V1', VALE_REFE=1.2623784436E-05,  REFERENCE='AUTRE_ASTER', PRECISION=3.e-3,
+             VALE_CALC=1.26572746666E-05, TOLE_MACHINE=4.e-5  );
+
+TEST_TABLE ( TABLE    =TAB_VARI,
+             FILTRE=_F(NOM_PARA ='EPZZ', VALE =-1.2E-04,),
+             NOM_PARA ='V2', VALE_REFE=2.48944101698E-05,  REFERENCE='AUTRE_ASTER', PRECISION=3.e-3,
+             VALE_CALC=2.49604537196E-05, TOLE_MACHINE=4.e-5  );
 
 FIN();
