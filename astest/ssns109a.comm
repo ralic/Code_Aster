@@ -293,23 +293,9 @@ ABSDIFFZ  = CALC_FONCTION( ABS=_F(  FONCTION = DIFFZ)    )
 MXDIFFZ   = INFO_FONCTION( MAX=_F(  FONCTION = ABSDIFFZ)    )
 IMPR_TABLE(TABLE=MXDIFFZ)
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=1.E-3,
-           VALE_CALC=1.000000000,
-           VALE_REFE=1.0,
-           NOM_PARA='TOUTRESU',
-           TABLE=MXREFEZ,
-           FILTRE=(_F(NOM_PARA='FONCTION',
-                      VALE_K='ABSREFEZ',),
-                   _F(NOM_PARA='TYPE',
-                      VALE_K='MAXI',),
-                   ),
-           )
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=1.E-3,
+TEST_TABLE(
            VALE_CALC=0.039336545,
-           VALE_REFE=0.039300000000000002,
            NOM_PARA='ETA_PILO',
            TABLE=MXDIFFZ,
            FILTRE=(_F(NOM_PARA='FONCTION',
@@ -537,23 +523,10 @@ ABSDIFFX  = CALC_FONCTION( ABS=_F(  FONCTION = DIFFX)    )
 MXDIFFX   = INFO_FONCTION( MAX=_F(  FONCTION = ABSDIFFX)    )
 IMPR_TABLE(TABLE=MXDIFFX)
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=1.E-3,
-           VALE_CALC=1.000000000,
-           VALE_REFE=1.0,
-           NOM_PARA='TOUTRESU',
-           TABLE=MXREFEX,
-           FILTRE=(_F(NOM_PARA='FONCTION',
-                      VALE_K='ABSREFEX',),
-                   _F(NOM_PARA='TYPE',
-                      VALE_K='MAXI',),
-                   ),
-           )
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=1.E-3,
+
+TEST_TABLE(
            VALE_CALC=0.725259633,
-           VALE_REFE=0.72499999999999998,
            NOM_PARA='ETA_PILO',
            TABLE=MXDIFFX,
            FILTRE=(_F(NOM_PARA='FONCTION',
