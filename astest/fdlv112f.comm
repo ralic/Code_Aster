@@ -582,8 +582,34 @@ DYNA=DYNA_NON_LINE(MODELE=MODELB,reuse=DYNA,
                  CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-8,
                                 ITER_GLOB_MAXI = 20,
                                 ARRET='OUI',),
-                 INCREMENT=_F(LIST_INST=L_INST,),         
+                 INCREMENT=_F(LIST_INST=L_INST,INST_FIN=1.0),         
                           );                          
+   
+   
+DYNA=DYNA_NON_LINE(MODELE=MODELB,reuse=DYNA,
+                 CHAM_MATER=CHMATB,
+                 CARA_ELEM=ELEMB,
+                                 ETAT_INIT=_F(EVOL_NOLI=DYNA),
+                 EXCIT=(
+                        _F(CHARGE=FSEISX,),
+                        _F(CHARGE=CHSOL),
+                        _F(CHARGE=COND_LIB),
+                        ),
+                 COMPORTEMENT=(_F(RELATION='ELAS',
+                                    TOUT='OUI',),
+                                ),
+                 NEWTON=_F(MATRICE='ELASTIQUE',
+                           REAC_INCR=0,REAC_ITER=0,
+                           ),
+                 SCHEMA_TEMPS = _F(SCHEMA='HHT', 
+                                   ALPHA=-0.01,
+                                   MODI_EQUI='OUI',
+                                   FORMULATION='DEPLACEMENT',),
+                 CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-8,
+                                ITER_GLOB_MAXI = 20,
+                                ARRET='OUI',),
+                 INCREMENT=_F(LIST_INST=L_INST,),         
+                          );    
                           
 ax253i = RECU_FONCTION ( RESULTAT = DYNA, NOM_CHAM = 'ACCE',
                         INTERPOL='LIN',
@@ -650,7 +676,7 @@ SACCEX0=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=acc_x, AMOR_REDUIT=0.05,
                                  
 
 TEST_FONCTION(VALEUR=(
-                      _F(VALE_CALC=3.471868248518,
+                      _F(VALE_CALC=3.468951422080,
                          VALE_REFE=3.75,
                          PRECISION=0.08,
                          TOLE_MACHINE=2.E-04,  # En attente issue24202 
@@ -658,7 +684,7 @@ TEST_FONCTION(VALEUR=(
                          VALE_PARA=1.00,
                          FONCTION=ax253i,
                          ),
-                      _F(VALE_CALC=12.19188359612,
+                      _F(VALE_CALC=12.18793153065,
                          VALE_REFE=13.72,
                          PRECISION=0.12,
                          TOLE_MACHINE=2.E-04,  # En attente issue24202 
