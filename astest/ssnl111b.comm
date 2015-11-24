@@ -793,7 +793,8 @@ U2=STAT_NON_LINE(
 CALC_CHAMP(reuse=U2,DEFORMATION=('EPME_ELGA', 'EPSP_ELGA'),RESULTAT=U2)
 
 
-TEST_RESU(RESU=(_F(INST=1.0,
+TEST_RESU(RESU=(
+                _F(INST=1.0,
                    RESULTAT=U2,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='N',
@@ -807,15 +808,11 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    VALE_CALC=-0.00124966265181,
                    POINT = 1,
                    MAILLE='BARR1',),
-                
                 _F(INST=1.0,
                    RESULTAT=U2,
                    NOM_CHAM='EPSP_ELGA',
                    NOM_CMP='EPXX',
                    VALE_CALC=-0.0007489879554233332,
-                   VALE_REFE=-0.0007489879554233332,
-                   REFERENCE = 'ANALYTIQUE',
-                   PRECISION=1.E-3,
                    POINT = 1,
                    MAILLE='BARR1',),
                 ),

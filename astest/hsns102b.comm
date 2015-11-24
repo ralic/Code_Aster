@@ -204,7 +204,8 @@ DEPB=CALC_CHAMP(reuse =DEPB,
 
 # TEST DE EPME_ELGA, EPVC_ELGA ET EPSP_ELGA SUR LES GRILLE_MEMBRANE
 
-TEST_RESU(RESU=(_F(MAILLE='M107',
+TEST_RESU(RESU=(
+                _F(MAILLE='M107',
                    POINT = 1,
                    INST=1.0,
                    RESULTAT=DEP,
@@ -225,12 +226,10 @@ TEST_RESU(RESU=(_F(MAILLE='M107',
                 _F(MAILLE='M107',
                    POINT = 1,
                    INST=1.0,
-                   REFERENCE='ANALYTIQUE',
                    RESULTAT=DEP,
                    NOM_CHAM='EPME_ELGA',
                    NOM_CMP='EXX',
                    VALE_CALC=-4.31932246172112E-04,
-                   VALE_REFE=-4.31932246172112E-04,
                    ),
                 _F(MAILLE='M107',
                    POINT = 1,
@@ -354,7 +353,8 @@ CALC_CHAMP(reuse=DEP2, RESULTAT=DEP2, DEFORMATION=('EPME_ELGA','EPSP_ELGA'),
            GROUP_MA='GEOA')
 
 
-TEST_RESU(RESU=(_F(MAILLE='M107',
+TEST_RESU(RESU=(
+                _F(MAILLE='M107',
                    POINT = 1,
                    INST=1.0,
                    RESULTAT=DEP2,
@@ -373,12 +373,10 @@ TEST_RESU(RESU=(_F(MAILLE='M107',
                 _F(MAILLE='M107',
                    POINT = 1,
                    INST=1.0,
-                   REFERENCE='ANALYTIQUE',
                    RESULTAT=DEP2,
                    NOM_CHAM='EPSP_ELGA',
                    NOM_CMP='EXX',
                    VALE_CALC=-0.000499084574616,
-                   VALE_REFE=-0.000499084574616,
                    ),
           ))
 
