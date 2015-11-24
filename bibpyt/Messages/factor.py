@@ -29,7 +29,7 @@ Le système linéaire à résoudre a %(i1)d degrés de liberté:
 
     2: _(u"""
 La matrice est de taille %(i1)d équations.
-Elle contient %(i2)d termes non nuls si elle est symétrique et %(i3)d termes non nuls si elle n'est pas symétrique (le nombre de termes non nuls est susceptible de varier si l'on utilise le contact en formulation continue ou la méthode XFEM avec contact).
+Elle contient %(i2)d termes non nuls si elle est symétrique et %(i3)d termes non nuls si elle n'est pas symétrique.
 Soit un taux de remplissage de  %(r1)6.3f %%.
 """),
 
