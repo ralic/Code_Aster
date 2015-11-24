@@ -10,14 +10,15 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
+#include "asterfort/crevec.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/jeveut.h"
 #include "asterfort/mdtr74grd.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/refdaj.h"
 #include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
 !   Obligatory arguments
     character(len=8), intent(in) :: nomres
     character(len=4), intent(in) :: typcal
@@ -278,7 +279,7 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
 !   to 1 if a static correction is considered.
     call jeexin(nomres//'           .DESC', iret)
     if (iret .eq. 0) then
-        call wkvect(nomres//'           .DESC', typsau//' I', 7, jdesc)
+        call crevec(nomres//'           .DESC', typsau//' I', 7, jdesc)
         do i = 1, 7
             zi(jdesc+i-1) = 0
         end do
@@ -313,8 +314,7 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
 !     -DANS LE CAS ITMI ET ADAPT (METHODES A PAS VARIABLE),
 !      ON MET LA VALEUR 3 QUI SERVIRA DE TEST
 !       A LA COMMANDE POST_DYNA_MODA_T
-        if (method2 .eq. 'ITMI' .or. method2(1:5) .eq. 'ADAPT' .or. method2(1:5) .eq.&
-            'RUNGE') then
+        if ((method2(1:4) .ne. 'DIFF') .and. (method2(1:7) .ne. 'NEWMARK')) then
             zi(jdesc) = 3
         endif
 !     DANS LE CAS TRANSITOIRE, ON REMPLIT TOUJOURS LES TROIS CHAMPS
@@ -338,7 +338,7 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
     if (nbsauv .ne. 0) then
 !       BOUCLE SUR LES CHAMPS A SAUVEGARDER (DEPL/VITE/ACCE)
         do inom = 1, nbsym2
-            call wkvect(nomres//bl11pt//nomsym2(inom), attrib, nbstoc, jchmp)
+            call crevec(nomres//bl11pt//nomsym2(inom), attrib, nbstoc, jchmp)
 !           INITIALISATION DES CHAMPS A ZERO
             if (typcal .eq. 'TRAN') then
                 call r8inir(nbstoc, 0.d0, zr(jchmp), 1)
@@ -353,10 +353,11 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
         enddo
 !
 !       OBJETS COMMUNS
-        call wkvect(nomres//'           .ORDR', typsau//' I', nbsauv, jordr)
-        call wkvect(nomres//'           .DISC', typsau//' R', nbsauv, jdisc)
+        call crevec(nomres//'           .ORDR', typsau//' I', nbsauv, jordr)
+        call jeveut(nomres//'           .ORDR', 'E', jordr)
+        call crevec(nomres//'           .DISC', typsau//' R', nbsauv, jdisc)
         if (typcal .eq. 'TRAN') then
-            call wkvect(nomres//'           .PTEM', typsau//' R', nbsauv, jptem)
+            call crevec(nomres//'           .PTEM', typsau//' R', nbsauv, jptem)
             zr(jptem) = dt
         endif
     endif
@@ -367,22 +368,22 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
         nbsto1 = nbchoc2 * nbsauv
         nbvint = nbchoc * nbsauv * mdtr74grd('MAXVINT')
         call jeexin(nomres//'           .NCHO', iret)
-        if (iret .eq. 0) call wkvect(nomres//'           .NCHO', typsau//' K8', 2*nbchoc2, jncho)
+        if (iret .eq. 0) call crevec(nomres//'           .NCHO', typsau//' K8', 2*nbchoc2, jncho)
         call jeexin(nomres//'           .SST', iret)
-        if (iret .eq. 0) call wkvect(nomres//'           .SST', typsau//' K8', 2*nbchoc2, jsst)
+        if (iret .eq. 0) call crevec(nomres//'           .SST', typsau//' K8', 2*nbchoc2, jsst)
         if (nbsauv .ne. 0) then
-            call wkvect(nomres//'           .FCHO', typsau//' R', nbstoc, jfcho)
-            call wkvect(nomres//'           .DLOC', typsau//' R', 2*nbstoc, jdcho)
-            call wkvect(nomres//'           .VCHO', typsau//' R', nbstoc, jvcho)
-            call wkvect(nomres//'           .ICHO', typsau//' I', nbsto1, jadcho)
+            call crevec(nomres//'           .FCHO', typsau//' R', nbstoc, jfcho)
+            call crevec(nomres//'           .DLOC', typsau//' R', 2*nbstoc, jdcho)
+            call crevec(nomres//'           .VCHO', typsau//' R', nbstoc, jvcho)
+            call crevec(nomres//'           .ICHO', typsau//' I', nbsto1, jadcho)
 !           objet variables internes
-            call wkvect(nomres//'           .VINT', typsau//' R', nbvint, jvint)
+            call crevec(nomres//'           .VINT', typsau//' R', nbvint, jvint)
 !           initialisation
             call r8inir(nbvint, 0.d0, zr(jvint), 1)
         endif
         call jeexin(nomres//'           .INTI', iret)
         if (iret .eq. 0) then
-            call wkvect(nomres//'           .INTI', typsau//' K8', nbchoc2, jinti)
+            call crevec(nomres//'           .INTI', typsau//' K8', nbchoc2, jinti)
             do ic = 1, nbchoc2
                 zk8(jinti+ic-1) = intitu(ic)
                 zk8(jncho+ic-1) = noechoc(ic,1)
@@ -397,12 +398,12 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
     if (nbrede2 .ne. 0) then
         nbstoc = nbrede2 * nbsauv
         if (nbsauv .ne. 0) then
-            call wkvect(nomres//'           .REDC', typsau//' I', nbstoc, jredc)
-            call wkvect(nomres//'           .REDD', typsau//' R', nbstoc, jredd)
+            call crevec(nomres//'           .REDC', typsau//' I', nbstoc, jredc)
+            call crevec(nomres//'           .REDD', typsau//' R', nbstoc, jredd)
         endif
         call jeexin(nomres//'           .REDN', iret)
         if (iret .eq. 0) then
-            call wkvect(nomres//'           .REDN', typsau//' K24', nbrede2, jredn)
+            call crevec(nomres//'           .REDN', typsau//' K24', nbrede2, jredn)
             do i = 1, nbrede2
                 zk24(jredn+i-1) = fonrede(i,1)//fonrede(i,2)//fonrede(i, 3)
             enddo
@@ -413,12 +414,12 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
     if (nbrevi2 .ne. 0) then
         nbstoc = nbrevi2 * nbsauv
         if (nbsauv .ne. 0) then
-            call wkvect(nomres//'           .REVC', typsau//' I', nbstoc, jrevc)
-            call wkvect(nomres//'           .REVV', typsau//' R', nbstoc, jrevv)
+            call crevec(nomres//'           .REVC', typsau//' I', nbstoc, jrevc)
+            call crevec(nomres//'           .REVV', typsau//' R', nbstoc, jrevv)
         endif
         call jeexin(nomres//'           .REVN', iret)
         if (iret .eq. 0) then
-            call wkvect(nomres//'           .REVN', typsau//' K24', nbrevi2, jrevn)
+            call crevec(nomres//'           .REVN', typsau//' K24', nbrevi2, jrevn)
             do i = 1, nbrevi2
                 zk24(jrevn+i-1) = fonrevi(i,1)//fonrevi(i,2)//fonrevi(i, 3)
             enddo

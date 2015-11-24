@@ -32,6 +32,8 @@ subroutine dtmallo(sd_dtm_)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/mdallo.h"
+#include "asterfort/mdlibe.h"
+
 !
 !   -0.1- Input/output arguments
     character(len=*)         , intent(in) :: sd_dtm_
@@ -133,6 +135,7 @@ subroutine dtmallo(sd_dtm_)
             nbsauv = nint(nbsauv * 1.5d0)
             call dtmsav(sd_dtm, _ARCH_NB , 1, iscal=nbsauv)
             call dtmsav(sd_dtm, _ARCH_STO, 4, ivect=[0,0,0,0])
+            call mdlibe('&&AD'//intk0, nbnli, nbrede, nbrevi)
         else
             nbsauv = nint(nbsauv * 0.25d0)
             call dtmsav(sd_dtm, _ARCH_NB , 1, iscal=nbsauv)

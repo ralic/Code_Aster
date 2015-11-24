@@ -114,28 +114,30 @@ subroutine dtmconc(sd_dtm_)
 !       --- Special care is needed for the last data structure
         copysize = sizres(i)
         if (i.eq.iarch_sd) copysize = nbsauv - decal(1)
-!
-        call jeveuo(nomres(i)//'           .DEPL', 'L', jdepl)
-        call jeveuo(nomres(i)//'           .VITE', 'L', jvite)
-        call jeveuo(nomres(i)//'           .ACCE', 'L', jacce)
-        call jeveuo(nomres(i)//'           .DISC', 'L', jdisc)
-        call jeveuo(nomres(i)//'           .ORDR', 'L', jordr)
-        call jeveuo(nomres(i)//'           .PTEM', 'L', jptem)
-!
         nbstoc=nbmode*copysize
 !
+        call jeveuo(nomres(i)//'           .ORDR', 'L', jordr)
         call jacopo(copysize, 'I', jordr, allocs(1)+decal(1))
-        call dcopy(copysize, zr(jdisc), 1, zr(allocs(2)+decal(1)), 1)
-        call dcopy(copysize, zr(jptem), 1, zr(allocs(3)+decal(1)), 1)
-        call dcopy(nbstoc, zr(jdepl), 1, zr(allocs(4)+decal(2)), 1)
-        call dcopy(nbstoc, zr(jvite), 1, zr(allocs(5)+decal(2)), 1)
-        call dcopy(nbstoc, zr(jacce), 1, zr(allocs(6)+decal(2)), 1)
-!
-        call jedetr(nomres(i)//'           .DEPL')
-        call jedetr(nomres(i)//'           .VITE')
-        call jedetr(nomres(i)//'           .ACCE')
-        call jedetr(nomres(i)//'           .DISC')
         call jedetr(nomres(i)//'           .ORDR')
+!
+        call jeveuo(nomres(i)//'           .DEPL', 'L', jdepl)
+        call dcopy(nbstoc, zr(jdepl), 1, zr(allocs(4)+decal(2)), 1)
+        call jedetr(nomres(i)//'           .DEPL')
+!
+        call jeveuo(nomres(i)//'           .VITE', 'L', jvite)
+        call dcopy(nbstoc, zr(jvite), 1, zr(allocs(5)+decal(2)), 1)
+        call jedetr(nomres(i)//'           .VITE')
+!
+        call jeveuo(nomres(i)//'           .ACCE', 'L', jacce)
+        call dcopy(nbstoc, zr(jacce), 1, zr(allocs(6)+decal(2)), 1)
+        call jedetr(nomres(i)//'           .ACCE')
+!
+        call jeveuo(nomres(i)//'           .DISC', 'L', jdisc)
+        call dcopy(copysize, zr(jdisc), 1, zr(allocs(2)+decal(1)), 1)
+        call jedetr(nomres(i)//'           .DISC')
+!
+        call jeveuo(nomres(i)//'           .PTEM', 'L', jptem)
+        call dcopy(copysize, zr(jptem), 1, zr(allocs(3)+decal(1)), 1)
         call jedetr(nomres(i)//'           .PTEM')
 !
 !       Nonlinearities
@@ -143,39 +145,40 @@ subroutine dtmconc(sd_dtm_)
             nbstoc = 3 * nbnoli * copysize
             nbsto1 = nbnoli * copysize
             nbvint = nbnoli * copysize * mdtr74grd('MAXVINT')
-
-            call jeveuo(nomres(i)//'           .FCHO', 'L', jfcho)
-            call jeveuo(nomres(i)//'           .DLOC', 'L', jdloc)
-            call jeveuo(nomres(i)//'           .VCHO', 'L', jvcho)
-            call jeveuo(nomres(i)//'           .ICHO', 'L', jicho)
-            call jeveuo(nomres(i)//'           .VINT', 'L', jvint)
 !
+            call jeveuo(nomres(i)//'           .FCHO', 'L', jfcho)
             call dcopy(nbstoc   , zr(jfcho), 1, zr(allocs(7)+decal(3)), 1)
+            call jedetr(nomres(i)//'           .FCHO')
+!
+            call jeveuo(nomres(i)//'           .DLOC', 'L', jdloc)
             call dcopy(nbstoc   , zr(jdloc), 1, zr(allocs(8)+decal(3)), 1)
             call dcopy(nbstoc   , zr(jdloc+3*nbnoli*sizres(i)), &
                       1, zr(allocs(8)+3*nbnoli*nbsauv+decal(3)), 1)
-!
-            call dcopy(nbstoc   , zr(jvcho), 1, zr(allocs(9)+decal(3)), 1)
-            call jacopo(nbsto1,'I', jicho, allocs(10)+decal(4))
-            call dcopy(nbvint   , zr(jvint), 1, zr(jvir+decal(7)), 1)
-!
-            call jedetr(nomres(i)//'           .FCHO')
             call jedetr(nomres(i)//'           .DLOC')
+!
+            call jeveuo(nomres(i)//'           .VCHO', 'L', jvcho)
+            call dcopy(nbstoc   , zr(jvcho), 1, zr(allocs(9)+decal(3)), 1)
             call jedetr(nomres(i)//'           .VCHO')
+!
+            call jeveuo(nomres(i)//'           .ICHO', 'L', jicho)
+            call jacopo(nbsto1,'I', jicho, allocs(10)+decal(4))
             call jedetr(nomres(i)//'           .ICHO')
-            call jedetr(nomres(i)//'           .VINT')
+!
+            call jeveuo(nomres(i)//'           .VINT', 'L', jvint)
+            call dcopy(nbvint   , zr(jvint), 1, zr(jvir+decal(7)), 1)
+            call jedetr(nomres(i)//'           .VINT')           
+!
         endif
 !
 !       RELA_EFFO_DEPL
         if (nbrede .ne. 0) then
             nbstoc = nbrede * copysize
             call jeveuo(nomres(i)//'           .REDC', 'L', jredc)
-            call jeveuo(nomres(i)//'           .REDD', 'L', jredd)
-!
             call jacopo(nbstoc, 'I', jredc, allocs(11)+decal(5))
-            call dcopy(nbstoc, zr(jredd), 1, zr(allocs(12)+decal(5)), 1)
-!
             call jedetr(nomres(i)//'           .REDC')
+!
+            call jeveuo(nomres(i)//'           .REDD', 'L', jredd)
+            call dcopy(nbstoc, zr(jredd), 1, zr(allocs(12)+decal(5)), 1)
             call jedetr(nomres(i)//'           .REDD')
         endif
 !
@@ -183,12 +186,11 @@ subroutine dtmconc(sd_dtm_)
         if (nbrevi .ne. 0) then
             nbstoc = nbrevi * copysize
             call jeveuo(nomres(i)//'           .REVC', 'L', jrevc)
-            call jeveuo(nomres(i)//'           .REVV', 'L', jrevv)
-!
             call jacopo(nbstoc, 'I', jrevc, allocs(13)+decal(6))
-            call dcopy(nbstoc, zr(jrevv), 1, zr(allocs(14)+decal(6)), 1)
-!
             call jedetr(nomres(i)//'           .REVC')
+!
+            call jeveuo(nomres(i)//'           .REVV', 'L', jrevv)
+            call dcopy(nbstoc, zr(jrevv), 1, zr(allocs(14)+decal(6)), 1)
             call jedetr(nomres(i)//'           .REVV')
         endif
 
