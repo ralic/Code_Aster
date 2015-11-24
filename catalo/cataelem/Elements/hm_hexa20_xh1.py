@@ -1,4 +1,6 @@
 # coding=utf-8
+# person_in_charge: daniele.colombo at ifpen.fr
+# CATALOGUE DES ELEMENTS 3D HM-X-FEM MULTI HEAVISIDE SANS CONTACT
 
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG

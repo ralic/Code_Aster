@@ -1,4 +1,5 @@
 # coding=utf-8
+# person_in_charge: jacques.pellet at edf.fr
 
 
 # ======================================================================
@@ -48,7 +49,10 @@ CHAR_MECA_HYDR_R = Option(
     ),
     condition=(
         CondCalcul('+', ((AT.PHENO, 'ME'), (AT.BORD, '0'),)),
+
+#       Les elements d'interface ne sont pas concernes (issue24099) :
         CondCalcul('-', ((AT.PHENO, 'ME'), (AT.INTERFACE, 'OUI'),)),
+
         CondCalcul('-', ((AT.PHENO, 'ME'), (AT.MODELI, '3FL'),)),
         CondCalcul('-', ((AT.PHENO, 'ME'), (AT.MODELI, '2FL'),)),
         CondCalcul('-', ((AT.PHENO, 'ME'), (AT.MODELI, 'AXF'),)),
@@ -56,6 +60,6 @@ CHAR_MECA_HYDR_R = Option(
         CondCalcul('-', ((AT.PHENO, 'ME'), (AT.MODELI, 'AFI'),)),
         CondCalcul('-', ((AT.PHENO, 'ME'), (AT.MODELI, 'PFI'),)),
     ),
-    comment=""" CHAR_MECA_HYDR_R (MOT-CLE: HYDR_CALCULEE) : CALCUL DU SECOND
-           MEMBRE CORRESPONDANT A UN CHAMP D HYDRATATION ET DE TEMPERATURE""",
+    comment=""" CHAR_MECA_HYDR_R (mot-cle: HYDR_CALCULEE) : calcul du second
+           membre correspondant a un champ d hydratation et de temperature""",
 )

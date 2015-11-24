@@ -1,4 +1,5 @@
 # coding=utf-8
+# person_in_charge: samuel.geniaut at edf.fr
 
 
 # ======================================================================
@@ -45,6 +46,8 @@ PLST     = InputParameter(phys=PHY.NEUT_R)
 PBASECO  = InputParameter(phys=PHY.N2448R)
 
 
+# Attention : le champ PSEUIL est un champ a sous-points
+# pour les elements de contact XFEM (xhc,xhtc,xtc)
 PSEUIL   = OutputParameter(phys=PHY.NEUT_R, type='ELEM')
 
 

@@ -1,4 +1,11 @@
 # coding=utf-8
+# Ce catalogue correspondant aux elements fluides massifs en 2D
+# pour le couplage fluide-structure n'ont que des DDL de :
+#  pression PRES et potentiel de deplacement PHI.
+# La contrainte n'existe pas, ni la deformation.
+# Les options FULL_MECA et RAPH_MECA sont disponibles mais correspondent
+# a un probleme lineaire : le CODRET sera toujours OK sur ces elements.
+# On le garde neanmoins pour des raisons de compatibilite.
 
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -1,4 +1,5 @@
 # coding=utf-8
+# person_in_charge: jacques.pellet at edf.fr
 
 
 # ======================================================================
@@ -24,6 +25,8 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+# Rque : cette option n'est pas realisee par des routines te00ij
+# mais par la commande POST_CHAMP / MIN_MAX_SP
 
 
 MINMAX_SP = Option(

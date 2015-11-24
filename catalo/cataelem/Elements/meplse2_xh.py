@@ -1,4 +1,5 @@
 # coding=utf-8
+# CATALOGUES DES ELEMENTS 2D X-FEM HEAVISIDE DE BORD SANS CONTACT (LINEAIRES ET QUADRATIQUES)
 
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -94,6 +95,7 @@ class MEPLSE2_XH(Element):
         )
     calculs = (
 
+#       -- te0580 : ne resout que les cas triviaux : 0.
         OP.CALC_G(te=580,
             para_in=((SP.PFR1D2D, NFORCER), (SP.PPRESSR, EPRESNO),
                      (SP.PTHETAR, NTHETAR), ),

@@ -1,4 +1,5 @@
 # coding=utf-8
+# person_in_charge: jacques.pellet at edf.fr
 
 
 # ======================================================================
@@ -55,6 +56,7 @@ CHAR_MECA_SECH_R = Option(
     ),
     condition=(
       CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
+#     Les elements d'interface ne sont pas concernes (issue24099) :
       CondCalcul('-', ((AT.PHENO,'ME'),(AT.INTERFACE,'OUI'),)),
       CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'3FL'),)),
       CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'2FL'),)),

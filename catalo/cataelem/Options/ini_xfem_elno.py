@@ -1,4 +1,5 @@
 # coding=utf-8
+# person_in_charge: jacques.pellet at edf.fr
 
 
 # ======================================================================
@@ -24,6 +25,7 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+# Pour que les elements XFEM puissent creer certains CHAM_ELEM :
 
 
 PSTANO   = OutputParameter(phys=PHY.N120_I, type='ELNO')

@@ -1,4 +1,5 @@
 # coding=utf-8
+# person_in_charge: jacques.pellet at edf.fr
 
 
 # ======================================================================
@@ -34,6 +35,7 @@ VERI_CARA_ELEM = Option(
         SP.PBIDON,
     ),
     condition=(
+#  C'est un peu le bazar, mais ce n'est qu'une option de verification :
       CondCalcul('+', ((AT.PHENO,'ME'),(AT.MODELI,'Q4G'),(AT.BORD,'0'),)),
       CondCalcul('+', ((AT.PHENO,'ME'),(AT.MODELI,'Q4S'),(AT.BORD,'0'),)),
       CondCalcul('+', ((AT.PHENO,'ME'),(AT.MODELI,'DST'),(AT.BORD,'0'),)),

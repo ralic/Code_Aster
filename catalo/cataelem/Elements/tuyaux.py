@@ -23,6 +23,10 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.mesh_types as MT
 from cataelem.Options.options import OP
 
+# les catalogues MET3SEG3, MET3SEG4 et MET6SEG3 sont identiques mise a part :
+# * l'entete de l'element
+# * le mode local CCAORIE  (pour MET3SEG4)
+# * les mode locaux NDEPLAC et DDL_MECA (pour MET6SEG3)
 
 #-------------------------------------
 # Modes locaux communs aux 3 elements:

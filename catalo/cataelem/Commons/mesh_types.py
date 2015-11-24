@@ -18,6 +18,16 @@
 
 from cataelem.Tools.base_objects import MeshType, Elrefe, objects_from_context
 
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#      ATTENTION   ATTENTION   ATTENTION   ATTENTION   ATTENTION       %
+#                                                                      %
+#   IL NE FAUT PAS MODIFIER LE NOMBRE OU L'ORDRE DES TYPE_MAILLE       %
+#   SANS METTRE A JOUR LES ROUTINES LRMTYP, CMLQLQ, IRMMMA, IRMMFA,    %
+#   OP0150, LRMMMA, LRMMFA, LRMMDI, LRMHDF, LRCAME, IRMHDF, IRCMPR,    %
+#   IRCMPE, IRCAME                                                     %
+#                                                                      %
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%   
+
 
 #------------------------------------------------------------
 POI1 = MeshType(nbno=1, dim=0, code='POI')

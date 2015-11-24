@@ -1,4 +1,5 @@
 # coding=utf-8
+# person_in_charge: mickael.abbas at edf.fr
 
 
 # ======================================================================
@@ -118,14 +119,22 @@ CHAR_MECA_PRES_R = Option(
         SP.PVECTUR,
     ),
     condition=(
+#     Ce chargement concerne le bord des elements "massifs" :
       CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'-1'),)),
+
+#     Ce chargement concerne les elements de coque et tuyau :
       CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),(AT.COQUE,'OUI'),)),
       CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),(AT.TUYAU,'OUI'),)),
       CondCalcul('-', ((AT.PHENO,'ME'),(AT.BORD,'-1'),(AT.COQUE,'OUI'),)),
+
+#     Les 3 modelisations suivantes (grilles et membranes) sont affectees sur des mailles
+#     duppliquees. Il ne faut pas que le chargement soit pris en compte plusieurs fois :
       CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'GRM'),)),
       CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'GRC'),)),
       CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'MMB'),)),
+
+#     Ce chargement concerne les elements XFEM "massifs" :
       CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),(AT.LXFEM,'OUI'),)),
     ),
-    comment=""" SECOND MEMBRE POUR UNE PRESSION CONSTANTE """,
+    comment=""" Second membre pour une pression """,
 )

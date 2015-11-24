@@ -1,4 +1,5 @@
 # coding=utf-8
+# CATALOGUES DES ELEMENTS X-FEM HEAVISIDE AVEC CONTACT GRANDS GLISSEMENTS
 
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -331,6 +332,9 @@ class ME3DT4T_XH(ME3DH8HH8H_XH):
 
 
 #------------------------------------------------------------
+# debut des modifs ajout des elements quadratiques
+# on ne garde que H-H C:heav+ctip T:ctip (el du fond)
+
 class ME3DHVHHVH_XH(ME3DH8HH8H_XH):
     """Please document this element"""
     meshType = MT.H20H20

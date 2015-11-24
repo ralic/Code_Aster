@@ -1,4 +1,6 @@
 # coding=utf-8
+# person_in_charge: daniele.colombo at ifpen.fr
+# CATALOGUE DES ELEMNTS 3D HM-X-FEM DE BORD
 
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -1,4 +1,5 @@
 # coding=utf-8
+# CATALOGUES DES ELEMENTS DE BORD 2D HM-XFEM MULTI HEAVISIDE
 
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG

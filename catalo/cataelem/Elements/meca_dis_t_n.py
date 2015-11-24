@@ -167,6 +167,7 @@ class MECA_DIS_T_N(Element):
             para_out=((SP.PVECTUR, MVECTUR), ),
         ),
 
+#       -- les elements discrets ne peuvent pas calculer de dilatation thermique => te0099
         OP.CHAR_MECA_TEMP_R(te=99,
             para_in=((SP.PGEOMER, NGEOMER), (OP.CHAR_MECA_TEMP_R.PVARCPR, LC.ZVARCPG),
                      ),
@@ -368,6 +369,8 @@ class MECA_DIS_T_N(Element):
                      (OP.RIGI_MECA_ELAS.PVARIMR, ZVARIPG), ),
             para_out=((SP.PMATUUR, MMATUUR), ),
         ),
+
+#       OP.RIGI_MECA_RO      issue19398
 
         OP.RIGI_MECA_HYST(te=41,
             para_in=((SP.PCINFDI, LC.CCINFDI), (SP.PRIGIEL, MMATUUR),

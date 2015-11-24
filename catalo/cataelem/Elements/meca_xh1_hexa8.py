@@ -1,4 +1,5 @@
 # coding=utf-8
+# CATALOGUES DES ELEMENTS 3D X-FEM MULTI HEAVISIDE SANS CONTACT
 
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -1,4 +1,5 @@
 # coding=utf-8
+# person_in_charge: sam.cuvilliez at edf.fr
 
 
 # ======================================================================
@@ -25,6 +26,7 @@ import cataelem.Commons.attributes as AT
 
 
 
+# parametres specifiques X-FEM
 
 PPINTTO  = InputParameter(phys=PHY.N132_R)
 

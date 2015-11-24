@@ -858,6 +858,7 @@ class MEDKQU4(Element):
                           para_out=((SP.PMATUUC, MMATUUC), ),
                           ),
 
+#       -- te0580 : ne resout que les cas triviaux : 0.
         OP.RIGI_MECA_PRSU_F(te=580,
                             para_in=((SP.PPRESSF, CPRESSF), ),
                             para_out=((SP.PMATUNS, MMATUNS), ),

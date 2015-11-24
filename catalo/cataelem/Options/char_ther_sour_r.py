@@ -1,4 +1,5 @@
 # coding=utf-8
+# person_in_charge: jessica.haelewyn at edf.fr
 
 
 # ======================================================================
@@ -23,7 +24,7 @@ import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
-
+# Sources reparties + sources nodales
 
 
 CHAR_THER_SOUR_R = Option(

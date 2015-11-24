@@ -1,4 +1,5 @@
 # coding=utf-8
+# CATALOGUES DES ELEMENTS 2D X-FEM HEAVISIDE-CRACKTIP DE BORD SANS CONTACT (LINEAIRES ET QUADRATIQUES)
 
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG

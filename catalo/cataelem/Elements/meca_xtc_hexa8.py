@@ -1,4 +1,5 @@
 # coding=utf-8
+# CATALOGUES DES ELEMENTS X-FEM CRACKTIP AVEC CONTACT (QUE LINEAIRES)
 
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -656,6 +657,10 @@ class MECA_XTC_TETRA4(MECA_XTC_HEXA8):
 
 
 #------------------------------------------------------------
+# ajout des elements quadratiques
+# sur les lignes volumiques on met les caracteristiques pour la rigidite
+# sur les lignes surfaciques celles pour le contact
+
 class MECA_XTC_HEXA20(MECA_XTC_HEXA8):
     """Please document this element"""
     meshType = MT.HEXA20

@@ -1,4 +1,5 @@
 # coding=utf-8
+# person_in_charge: nicolas.greffet at edf.fr
 
 
 # ======================================================================
@@ -59,6 +60,8 @@ MECA_GYRO = Option(
     ),
     condition=(
       CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
+#     Pour les elements discrets (voir u2.06.31), le calcul n'est possible que pour
+#     les elements nodaux ayant des ddls de rotation :
       CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'DIT'),)),
       CondCalcul('-', ((AT.ALIAS8,'MEDTRSE2'),)),
     ),

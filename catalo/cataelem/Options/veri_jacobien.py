@@ -1,4 +1,5 @@
 # coding=utf-8
+# person_in_charge: jacques.pellet at edf.fr
 
 
 # ======================================================================
@@ -34,6 +35,7 @@ VERI_JACOBIEN = Option(
         SP.PCODRET,
     ),
     condition=(
+#  C'est un peu le bazar, mais ce n'est qu'une option de verification :
       CondCalcul('+', ((AT.DIM_COOR_MODELI,'3'),(AT.DIM_TOPO_MODELI,'3'),(AT.BORD,'0'),)),
       CondCalcul('+', ((AT.DIM_COOR_MODELI,'2'),(AT.DIM_TOPO_MODELI,'2'),(AT.BORD,'0'),)),
       CondCalcul('-', ((AT.INTERFACE,'OUI'),)),

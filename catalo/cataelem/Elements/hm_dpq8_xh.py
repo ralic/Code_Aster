@@ -1,4 +1,6 @@
 # coding=utf-8
+# person_in_charge: daniele.colombo at ifpen.fr
+# CATALOGUE DES ELEMENTS 2D HM-X-FEM
 
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG

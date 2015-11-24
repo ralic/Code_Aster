@@ -1,4 +1,5 @@
 # coding=utf-8
+# person_in_charge: samuel.geniaut at edf.fr
 
 
 # ======================================================================
@@ -47,6 +48,9 @@ PBASECO  = InputParameter(phys=PHY.N2448R)
 
 PCOHESO  = OutputParameter(phys=PHY.NEUT_R, type='ELNO')
 
+# Attention : les champs PINDCOO, PINDMEM, PINDCOT et PCOHESO
+# sont des champs a sous-points
+# pour les elements de contact XFEM (xhc,xhtc,xtc)
 
 XCVBCA_MORTAR = Option(
     para_in=(

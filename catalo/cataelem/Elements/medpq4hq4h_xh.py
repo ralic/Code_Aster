@@ -1,4 +1,5 @@
 # coding=utf-8
+# CATALOGUES DES ELEMENTS TARDIF DP X-FEM GRAND GLISSEMENT (HEAVISIDE ET CRACK TIP)
 
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -280,6 +281,7 @@ class MEDPT3T_XH(MEDPQ4HQ4H_XH):
 
 
 #------------------------------------------------------------
+# appariement croises pour P1P1
 class MEDPQ4HT3H_XH(MEDPQ4HQ4H_XH):
 
     """Please document this element"""

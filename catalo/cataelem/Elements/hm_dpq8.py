@@ -1,4 +1,5 @@
 # coding=utf-8
+# person_in_charge: sylvie.granet at edf.fr
 
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -231,6 +232,7 @@ class HM_DPQ8(Element):
                     para_out=((SP.PEPCON3, ECONTPG), ),
                     ),
 
+#       -- te0580 : ne resout que les cas triviaux : 0.
         OP.AMOR_MECA(te=580,
                      para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
                               ),

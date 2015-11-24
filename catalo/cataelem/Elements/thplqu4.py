@@ -129,6 +129,8 @@ class THPLQU4(Element):
         )
     calculs = (
 
+#       Les elements axisymetriques ne devraient jamais etre utilises pour CARA_XXXX
+
         OP.CARA_CISA(te=509,
             para_in=((SP.PGEOMER, NGEOMER), (SP.PTEMPE1, DDL_THER),
                      (SP.PTEMPE2, DDL_THER), ),

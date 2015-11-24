@@ -1,4 +1,6 @@
 # coding=utf-8
+# person_in_charge: sam.cuvilliez at edf.fr
+# CATALOGUES DES ELEMENTS THERMIQUES 3D X-FEM HEAVISIDE-CRACKTIP (LINEAIRES)
 
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG

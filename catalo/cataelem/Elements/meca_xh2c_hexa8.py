@@ -1,4 +1,5 @@
 # coding=utf-8
+# CATALOGUES DES ELEMENTS 3D X-FEM MULTI HEAVISIDE AVEC CONTACT
 
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -337,6 +338,7 @@ class MECA_XH2C_HEXA8(Element):
             para_out=((SP.PVECTUR, MVECTUR), ),
         ),
 
+#       -- te0580 : ne resout que les cas triviaux : 0.
         OP.CHAR_MECA_PRES_F(te=580,
             para_in=((SP.PPRESSF, CPRESSF), ),
             para_out=((SP.PVECTUR, MVECTUR), ),

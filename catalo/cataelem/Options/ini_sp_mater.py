@@ -1,4 +1,5 @@
 # coding=utf-8
+# person_in_charge: jean-luc.flejou at edf.fr
 
 
 # ======================================================================
@@ -24,6 +25,10 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+# Cette option initialise un champ de NEUT_R sur la famille MATER
+# Elle est utilisee par PROJ_CHAMP/METHODE = 'SOUS_POINT'
+# On ne peut pas utiliser TOU_INI_ELGA car il y aurait conflit
+# entre les deux champs NEUT_R
 
 
 INI_SP_MATER = Option(

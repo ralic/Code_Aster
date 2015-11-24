@@ -1818,6 +1818,10 @@ phen.add('CABLE_POULIE', Modelisation(dim=(1,3), code='CAP',
         (MT.SEG3      , EL.MEPOULI),
     )))
 
+#------------------------------------------------------------------------------------
+# Modelisations sous-terraines pour le contact/frottement en methode "continue" :
+#------------------------------------------------------------------------------------
+
 phen.add('CF_CONT1', Modelisation(dim=(2,3), code='CC1',
     attrs=(
         (AT.CONTACT,'OUI'),
@@ -1968,6 +1972,11 @@ phen.add('CF_CONT8', Modelisation(dim=(1,2), code='CC8',
         (MT.SEG22     , EL.CFP2P2),
     )))
 
+#------------------------------------------------------------------------------------
+# Modelisations sous-terraines pour :
+#  * Forces nodales
+#------------------------------------------------------------------------------------
+
 phen.add('CL_FNOD2', Modelisation(dim=(0,2), code='CL3',
     elements=(
         (MT.POI1      , EL.FORCE_NOD_2DDL),
@@ -1987,6 +1996,7 @@ phen.add('CL_FNODCQ2', Modelisation(dim=(0,2), code='CL6',
     elements=(
         (MT.POI1      , EL.FORCE_NOD_COQ2D),
     )))
+#------------------------------------------------------------------------------------
 
 phen.add('CONT_2D', Modelisation(dim=(1,2), code='CT2',
     elements=(
@@ -2003,6 +2013,7 @@ phen.add('CONT_3D', Modelisation(dim=(2,3), code='CT3',
         (MT.QUAD9     , EL.COQ9E3D),
         (MT.SEG2      , EL.COP2E3D),
     )))
+#------------------------------------------------------------------------------------
 
 phen.add('COQUE_3D', Modelisation(dim=(2,3), code='CQ3',
     attrs=(
@@ -4575,6 +4586,10 @@ phen.add('AXIS_XT', Modelisation(dim=(2,2), code='AX2',
         (MT.SEG2      , EL.THAXSE2_XT),
     )))
 
+#-------------------------------------------------------------------
+# Modelisations sous-terraines pour :
+#  * conditions d'echange thermique entre deux parois
+
 phen.add('CL_ECHANGE1', Modelisation(dim=(2,3), code='CL1',
     elements=(
         (MT.TRIA33    , EL.THER_FACE33),
@@ -4591,6 +4606,7 @@ phen.add('CL_ECHANGE2', Modelisation(dim=(1,2), code='CL2',
         (MT.SEG22     , EL.THPLSE22),
         (MT.SEG33     , EL.THPLSE33),
     )))
+#-------------------------------------------------------------------
 
 phen.add('COQUE', Modelisation(dim=(2,3), code='CQ_',
     attrs=(
@@ -4721,6 +4737,9 @@ phen.add('PLAN', Modelisation(dim=(2,2), code='PLA',
 PRESENTATION = Phenomenon(code='PR')
 phen = PRESENTATION
 
+# Les deux modelisations suivantes servent pour des calculs purement
+# geometriques lies a XFEM
+
 phen.add('2D_GEOM', Modelisation(dim=(2,2), code='G2D',
     elements=(
         (MT.QUAD8     , EL.PR_G_QUAD8),
@@ -4741,6 +4760,7 @@ phen.add('3D_GEOM', Modelisation(dim=(3,3), code='G3D',
         (MT.PYRAM5    , EL.PR_G_PYRAM5),
     )))
 
+# La modelisation 'TOUT' sert dans IMPR_RESU
 phen.add('TOUT', Modelisation(dim=(3,3), code='TOU',
     elements=(
         (MT.HEXA27    , EL.PR_HEXA27),

@@ -1,4 +1,5 @@
 # coding=utf-8
+# person_in_charge: jean-luc.flejou at edf.fr
 
 
 # ======================================================================
@@ -24,6 +25,8 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+# Cette option initialise un champ elga aux sous_points
+# Elle est utilisee par PROJ_CHAMP/METHODE = 'SOUS_POINT'
 
 
 PCONTPR  = OutputParameter(phys=PHY.SIEF_R, type='ELGA')

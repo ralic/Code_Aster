@@ -1,4 +1,5 @@
 # coding=utf-8
+# person_in_charge: kyrylo.kazymyrenko at edf.fr
 
 
 # ======================================================================
@@ -75,6 +76,8 @@ PILO_PRED_ELAS_M = Option(
            PCOPILO,
     ),
     condition=(
+#     Cette option est une variante de PILO_PRED_ELAS dediee a certains elements XFEM
+#     Cette option ne concerne que les elements 'XHC3':
       CondCalcul('+', ((AT.PHENO,'ME'),(AT.XFEM,'XHC3'),)),
     ),
 )

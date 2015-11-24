@@ -1,4 +1,5 @@
 # coding=utf-8
+# person_in_charge: romeo.fernandes at edf.fr
 
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -1,4 +1,5 @@
 # coding=utf-8
+# person_in_charge: kyrylo.kazymyrenko at edf.fr
 
 
 # ======================================================================
@@ -91,6 +92,9 @@ PILO_PRED_ELAS = Option(
     ),
     condition=(
       CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
+#  -- Pour les elements XFEM, cette option ne concerne que les elements 'XHC':
+#     Mais il est difficile pour l'utilisateur de ne designer QUE les elements XHC,
+#     c'est pour cela que l'on retire les autres elements XFEM qui les bordent :
       CondCalcul('-', ((AT.PHENO,'ME'),(AT.LXFEM,'OUI'),)),
       CondCalcul('+', ((AT.PHENO,'ME'),(AT.XFEM,'XHC'),)),
     ),

@@ -1,4 +1,5 @@
 # coding=utf-8
+# CATALOGUES DES ELEMENTS 3D X-FEM CRACKTIP DE BORD SANS CONTACT (LINEAIRES ET QUADRATIQUES)
 
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -110,6 +111,7 @@ class MECA_XT_FACE3(Element):
             para_out=((SP.PGTHETA, LC.EGTHETA), ),
         ),
 
+#       -- te0580 : ne resout que les cas triviaux : 0.
         OP.CALC_G_F(te=580,
             para_in=((SP.PFF2D3D, CFORCEF), (SP.PPRESSF, CPRESSF),
                      (SP.PTHETAR, NTHETAR), ),

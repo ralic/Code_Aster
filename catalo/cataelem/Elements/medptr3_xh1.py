@@ -1,4 +1,5 @@
 # coding=utf-8
+# CATALOGUES DES ELEMENTS 2D_DP X-FEM MULTI HEAVISIDE SANS CONTACT
 
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -295,6 +296,7 @@ class MEDPTR3_XH1(Element):
             para_out=((SP.PVECTUR, MVECTUR), ),
         ),
 
+#       -- te0580 : ne resout que les cas triviaux : 0.
         OP.CHAR_MECA_PRES_F(te=580,
             para_in=((SP.PPRESSF, CPRESSF), ),
             para_out=((SP.PVECTUR, MVECTUR), ),

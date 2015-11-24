@@ -1,4 +1,5 @@
 # coding=utf-8
+# person_in_charge: jacques.pellet at edf.fr
 
 
 # ======================================================================
@@ -122,7 +123,7 @@ RIGI_MECA = Option(
       CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
       CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'FS2'),)),
       CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'FSA'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'3FA'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'2FA'),)),
+      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'3FA'),)),  #G. Devesa
+      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'2FA'),)),  #G. Devesa
     ),
 )

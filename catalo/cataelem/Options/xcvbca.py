@@ -1,4 +1,5 @@
 # coding=utf-8
+# person_in_charge: samuel.geniaut at edf.fr
 
 
 # ======================================================================
@@ -56,6 +57,9 @@ PHEA_FA  = InputParameter(phys=PHY.N240_I)
 
 PCOHESO  = OutputParameter(phys=PHY.NEUT_R, type='ELEM')
 
+# Attention : les champs PINDCOO, PINDMEM, PINDCOT et PCOHESO
+# sont des champs a sous-points
+# pour les elements de contact XFEM (xhc,xhtc,xtc)
 
 XCVBCA = Option(
     para_in=(

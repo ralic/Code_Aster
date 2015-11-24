@@ -1,4 +1,5 @@
 # coding=utf-8
+# person_in_charge: xavier.desroches at edf.fr
 
 
 # ======================================================================
@@ -71,6 +72,10 @@ CHAR_MECA_FR3D3D = Option(
         SP.PVECTUR,
     ),
     condition=(
+# L'attribut INTERFACE='OUI' designe les elements "ecrases".
+# Ils n'ont pas de "volume" et ne peuvent pas calculer ce chargement.
+# La modelisation 3D_DIL ('D3D') se "superpose" a une autre modelisation.
+# Ce n'est pas a elle de calculer les chargements repartis :
         CondCalcul(
             '+', ((AT.PHENO, 'ME'), (AT.BORD, '0'), (AT.DIM_TOPO_MODELI, '3'),)),
         CondCalcul('-', ((AT.PHENO, 'ME'), (AT.INTERFACE, 'OUI'),)),

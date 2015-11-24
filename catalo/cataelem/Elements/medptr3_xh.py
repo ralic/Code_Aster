@@ -1,4 +1,5 @@
 # coding=utf-8
+# CATALOGUES DES ELEMENTS 2D_DP X-FEM HEAVISIDE SANS CONTACT (QUE LINEAIRES ET QUADRATIQUES)
 
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG

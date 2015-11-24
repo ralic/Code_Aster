@@ -1,4 +1,5 @@
 # coding=utf-8
+# CATALOGUE DES ELEMENTS THERMIQUES PLAN ET AXIS DE BORD X-FEM HEAVISIDE LINEAIRES
 
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG

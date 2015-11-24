@@ -1,4 +1,5 @@
 # coding=utf-8
+# person_in_charge: jean-luc.flejou at edf.fr
 
 
 # ======================================================================
@@ -24,6 +25,9 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+# Cette option a 4 parametres in (et 4 out)
+# Mais un seul sert a chaque appel
+# Il s'agit de la combinatoire : gauss/noeu + reel/complexe
 
 
 EFGE_EXCENT = Option(

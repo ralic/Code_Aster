@@ -1,4 +1,5 @@
 # coding=utf-8
+# person_in_charge: josselin.delmas at edf.fr
 
 
 # ======================================================================
@@ -25,6 +26,9 @@ import cataelem.Commons.attributes as AT
 
 
 
+#       le parametre suivant XXXXXX n'est pas utilise par les elements.
+#       Il ne sert qu'a ecrire une dependance entre SIRO_ELEM et SIGM_ELNO pour
+#       automatiser CALC_CHAMP.
 
 SIRO_ELEM = Option(
     para_in=(

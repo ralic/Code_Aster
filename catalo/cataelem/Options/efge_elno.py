@@ -1,4 +1,5 @@
 # coding=utf-8
+# person_in_charge: jean-luc.flejou at edf.fr
 
 
 # ======================================================================
@@ -23,8 +24,15 @@ import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
+# Attention :
+# On utilise certains parametres si on part de SIEF_ELGA (cas non lineaire).
+# On utilise d'autres parametres si on part de DEPL (cas lineaire) :
 
 
+# Probleme pour PCOMPOR :
+#   1) En non lineaire, il faut prendre 'RESU!COMPORTEMENT'
+#   2) En lineaire (pour POU_D_EM), il faut prendre 'CHMA!.COMPOR'
+#   On privilegie le 1er cas et on corrige si necessaire dans ccaccl.F90
 
 PCOMPOR  = InputParameter(phys=PHY.COMPOR, container='RESU!COMPORTEMENT!N',
 comment="""  PCOMPOR :  COMPORTEMENT STOCKE DANS LA SD_RESULTAT  """)

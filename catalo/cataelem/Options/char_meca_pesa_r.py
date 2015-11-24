@@ -1,4 +1,5 @@
 # coding=utf-8
+# person_in_charge: xavier.desroches at edf.fr
 
 
 # ======================================================================
@@ -111,6 +112,8 @@ CHAR_MECA_PESA_R = Option(
       CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
       CondCalcul('-', ((AT.PHENO,'ME'),(AT.INTERFACE,'OUI'),)),
       CondCalcul('-', ((AT.PHENO,'ME'),(AT.ABSO,'OUI'),)),
+
+#     les 5 modelisations suivantes n'ont pas de masse :
       CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'3FL'),)),
       CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'2FL'),)),
       CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'2FP'),)),

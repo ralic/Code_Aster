@@ -189,6 +189,7 @@ class MECA_BARRE(Element):
             para_out=((SP.PMATUUR, MMATUUR), ),
         ),
 
+#       -- te0580 : ne resout que le cas trivial : EPXX=0.
         OP.CHAR_MECA_EPSI_R(te=580,
             para_in=((SP.PEPSINR, CEPSINR), ),
             para_out=((SP.PVECTUR, MVECTUR), ),

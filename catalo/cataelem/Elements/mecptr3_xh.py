@@ -1,4 +1,5 @@
 # coding=utf-8
+# CATALOGUES DES ELEMENTS 2D_CP X-FEM HEAVISIDE SANS CONTACT (QUE LINEAIRES ET QUADRATIQUES)
 
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -190,6 +191,7 @@ class MECPTR3_XH(Element):
         )
     calculs = (
 
+#       -- te0580 : ne resout que les cas triviaux : 0.
         OP.AMOR_MECA(te=580,
             para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
                      ),
