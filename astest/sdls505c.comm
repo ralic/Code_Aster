@@ -17,7 +17,6 @@
 # DATE   : 11/04/2013
 # AUTEUR : F. LEBOUVIER
 # TITRE  : FLAMBEMENT D'UNE ENVELOPPE CYLINDRIQUE SOUS PRESSION
-#          EXTERNE
 #---------------------------------------------------------------------
 #  - CALCUL DE STABILITE D'UNE ENVELOPPE CYLINDRIQUE MINCE
 #    CALCUL DES CHARGES CRITIQUES CONDUISANT AU FLAMBEMENT ELASTIQUE
@@ -26,20 +25,11 @@
 
 DEBUT(CODE=_F(
 NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
-#
-MA=LIRE_MAILLAGE(FORMAT='MED',);
 
-#
+MA=LIRE_MAILLAGE(FORMAT='MED',);
 
 MAIL=CREA_MAILLAGE(MAILLAGE=MA,
                      QUAD_LINE=_F(TOUT='OUI',),);
-
-MAIL=DEFI_GROUP(reuse =MAIL,
-                MAILLAGE=MAIL,
-                CREA_GROUP_NO=_F(NOEUD='NO7',
-                                 NOM='A',),);
-
-#
 
 MOEL=AFFE_MODELE(MAILLAGE=MAIL,
                  AFFE=(_F(GROUP_MA='TOUT_ELT',
@@ -49,7 +39,7 @@ MOEL=AFFE_MODELE(MAILLAGE=MAIL,
                           PHENOMENE='MECANIQUE',
                           MODELISATION='3D',),),);
 
-#
+
 #---------------------------------------------------------------------
 #                     CARACTERISTIQUES ELEMENTAIRES
 #---------------------------------------------------------------------
@@ -60,21 +50,16 @@ CAEL=AFFE_CARA_ELEM(MODELE=MOEL,
                              ANGL_REP=(90.,0.,),
                              A_CIS=9000.,),);
 
-#
+
 #---------------------------------------------------------------------
 #                     CARACTERISTIQUES MATERIAUX
 #---------------------------------------------------------------------
 
-MATERIAU=DEFI_MATERIAU(ELAS=_F(E=2.E+11,
-                               NU=0.3,),);
+MATERIAU=DEFI_MATERIAU(ELAS=_F(E=2.E+11, NU=0.3,),);
 
-#
+CHAM_MAT=AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT='OUI', MATER=MATERIAU,),);
 
-CHAM_MAT=AFFE_MATERIAU(MAILLAGE=MAIL,
-                       AFFE=_F(TOUT='OUI',
-                               MATER=MATERIAU,),);
 
-#
 #---------------------------------------------------------------------
 #                     CHARGEMENTS
 #---------------------------------------------------------------------
@@ -88,64 +73,82 @@ CON_LI=AFFE_CHAR_MECA(MODELE=MOEL,
                                 _F(GROUP_NO='CONTOUR',
                                    DZ=0.,),),);
 
-#
-
 CHARGE=AFFE_CHAR_MECA(MODELE=MOEL,
                       FORCE_ARETE=_F(GROUP_MA='ARETE',
                                      FZ=-0.025,),
                       FORCE_COQUE=_F(GROUP_MA='CYLINDRE',
                                      PRES=-1.,),);
 
-#
 #---------------------------------------------------------------------
 #                        RESOLUTION
 #---------------------------------------------------------------------
+ 
+RES=MECA_STATIQUE(    MODELE=MOEL,
+                      CHAM_MATER=CHAM_MAT,
+                      CARA_ELEM=CAEL,EXCIT=(
+                           _F( CHARGE = CON_LI,  ),
+                           _F( CHARGE = CHARGE,  )),
+                    )
 
-RES=MECA_STATIQUE(MODELE=MOEL,
-                  CHAM_MATER=CHAM_MAT,
-                  CARA_ELEM=CAEL,
-                  EXCIT=(_F(CHARGE=CON_LI,),
-                         _F(CHARGE=CHARGE,),),);
-
-#
-
-SIG=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
-               OPERATION='EXTR',
-               RESULTAT=RES,
-               NOM_CHAM='SIEF_ELGA',
-               TYPE_MAXI='MINI',
-               TYPE_RESU='VALE',);
-
-#
+SIG=CREA_CHAMP(   RESULTAT=RES, OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R', NOM_CHAM='SIEF_ELGA')
 
 ASSEMBLAGE ( MODELE=MOEL,
              CHAM_MATER=CHAM_MAT,
              CARA_ELEM=CAEL,
              CHARGE = (CON_LI,),
-             NUME_DDL = CO('MEL_RI_M'),
+             NUME_DDL = CO('NU'),
              MATR_ASSE=(
               _F( MATRICE= CO('MAS_RI_M'), OPTION= 'RIGI_MECA'),
               _F( MATRICE= CO('MAS_RI_G'), OPTION= 'RIGI_GEOM',SIEF_ELGA=SIG),),);
 
-#
-
-RESULT=CALC_MODES(MATR_RIGI=MAS_RI_M,
-                  VERI_MODE=_F(SEUIL=1.E-5,
-                               ),
+RESULT=CALC_MODES(MATR_RIGI_GEOM=MAS_RI_G,
+                  VERI_MODE=_F(SEUIL=5.E-5,),
                   OPTION='PLUS_PETITE',
-                  MATR_RIGI_GEOM=MAS_RI_G,
-                  SOLVEUR_MODAL=_F(METHODE='SORENSEN',
-                                   ),
+                  MATR_RIGI=MAS_RI_M,
+                  SOLVEUR_MODAL=_F(METHODE='SORENSEN',),
                   TYPE_RESU='MODE_FLAMB',
+                  CALC_CHAR_CRIT=_F(NMAX_CHAR_CRIT=6, ),
                   )
 
+#IMPR_RESU(RESU=_F(RESULTAT=RESULT), UNITE=80, FORMAT='MED')
+
+RES_NORM=NORM_MODE( MODE=RESULT, NORME='TRAN')
+
+
+#
+#---------------------------------------------------------------------
+#                        VERIFICATION DES RESULTATS
+#---------------------------------------------------------------------
+# C'est le dernier mode qui correspond a la charge de flambement la plus petite :
+numode=6
+
+# Test de la charge limite :
 TEST_RESU(RESU=_F(PARA='CHAR_CRIT',
-                  NUME_MODE=10,
+                  NUME_MODE=numode,
                   RESULTAT=RESULT,
-                  VALE_CALC=-1.7055716778149E+06,
-                  VALE_REFE=-1.523000E6,
+                  VALE_CALC=-1705571.67781,
+                  VALE_REFE=-1.523E6,
                   REFERENCE='ANALYTIQUE',
                   CRITERE='RELATIF',
-                  PRECISION=0.125,))
+                  PRECISION=0.13,),)
 
-FIN();
+
+# Test du mode de flambement associe a la charge limite :
+# C'est un mode a 8 lobes.
+# Il s'agit d'un mode double. La forme du mode est donc indeterminee.
+# On visualise le mode pour verifier qu'il a bien 8 lobes,
+# puis on teste (non-regression) que l'on trouve toujours le meme deplacement
+# sur un noeud choisi au hasard.
+
+MODE_1=CREA_CHAMP(RESULTAT=RES_NORM, OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+                  NOM_CHAM='DEPL', NUME_MODE=numode)
+
+TEST_RESU(CHAM_NO=(
+                   _F(NOEUD='NO467', NOM_CMP='DX', CHAM_GD=MODE_1,
+                      VALE_CALC=0.707117346139                      ),
+                   _F(NOEUD='NO467', NOM_CMP='DY', CHAM_GD=MODE_1,
+                      VALE_CALC=-0.28827055787                      ),
+                   ),
+          )
+
+FIN()
