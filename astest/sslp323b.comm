@@ -203,8 +203,6 @@ TEST_RESU(RESU=(_F(RESULTAT=ResX[2],
                    NOM_CMP='NUEST',
                    MAILLE='M1',
                    VALE_CALC=6.37858941558E-05,
-                   VALE_REFE=6.37858941558E-05,
-                   REFERENCE='NON_DEFINI',
                    CRITERE='ABSOLU',
                    ),),)
 FIN();
