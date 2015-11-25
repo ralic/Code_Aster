@@ -244,7 +244,7 @@ class Attribute(BaseCataEntity):
         self._auto = auto
 
     def __getValue(self):
-        """Return the dimension of the elementary quantity"""
+        """Return the list of authorized values"""
         return self._value
     value = property(__getValue)
 
@@ -558,12 +558,6 @@ class Elrefe(BaseCataEntity):
         super(Elrefe, self).__init__()
         a_creer_seulement_dans(self, ['mesh_types', ])
         self._locations = OrderedDict()
-        # self._meshType = None
-
-    # def setSupportMeshType(self, meshType):
-    #     """Register the type of mesh that supports this element"""
-    #     assert not self._meshType, 'a reference element can not have several mesh supports'
-    #     self._meshType = meshType
 
     def addLocation(self, location, nbpg):
         """Define a location with its size of storage"""
@@ -575,11 +569,6 @@ class Elrefe(BaseCataEntity):
         """Return all locations"""
         return self._locations
     locations = property(__getLocations)
-
-    # def __getMeshType(self):
-    #     """Return the underlying mesh type"""
-    #     return self._meshType
-    # meshType = property(__getMeshType)
 
 
 class ElrefeLoc(object):
@@ -879,22 +868,25 @@ class AbstractEntityStore(object):
     entityType = None
     subTypes = None
 
-    def __init__(self, package, ignore_names=[]):
+    def __init__(self, package, ignore_names=[], only_mods=[]):
         """Initialisation: import all entities (of type `entityType`) available
-        in the `package` under `cataelem`, objects of `subTypes` are named."""
+        in the `package` under `cataelem`, objects of `subTypes` are named.
+        `only_mods` is useful for the unittests."""
         assert self.entityType, "must be subclassed!"
         types = force_tuple(self.entityType)
-        pkgdir = osp.dirname(package)
-        pkg = osp.basename(pkgdir)
+        cataelemdir = osp.dirname(osp.dirname(__file__))
         l_mod = [osp.splitext(osp.basename(modname))[0]
-                 for modname in glob(osp.join(pkgdir, '*.py'))]
-        l_mod = [modname for modname in l_mod if modname not in ('__init__',)]
+                 for modname in glob(osp.join(cataelemdir, package, '*.py'))]
+        l_mod = [modname for modname in l_mod \
+                 if modname not in ('__init__', 'options', 'elements')]
         l_mod.sort()
         self._entities = OrderedDict()
         for modname in l_mod:
+            if only_mods and modname not in only_mods:
+                continue
             try:
                 mod = __import__('cataelem.%s.%s' %
-                                 (pkg, modname), globals(), locals(), [modname])
+                                 (package, modname), globals(), locals(), [modname])
             except:
                 print("ERROR during import of {0}".format(modname))
                 raise
@@ -1007,7 +999,7 @@ def a_creer_seulement_dans(obj, l_autorises):
 
     OK = False
     for autor in l_autorises:
-        if l1[-2] == "Tools":
+        if l1[-2] in ("cataelem", "Tools"):
             OK = True
             break
         if autor == 'physical_quantities':

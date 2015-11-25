@@ -27,4 +27,4 @@ class ElementStore(AbstractEntityStore):
     subTypes = (LocatedComponents, ArrayOfComponents)
 
 
-EL = ElementStore(__file__, ignore_names=['ele', ])
+EL = ElementStore("Elements", ignore_names=['ele', ])
