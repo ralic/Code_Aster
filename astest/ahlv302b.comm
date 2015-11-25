@@ -15,7 +15,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# MODELISATION 'MECANIQUE' 3D_FLUIDE AVEC HEXA20 ET FACE8
+# MODELISATION 'MECANIQUE' 2D_FLUIDE AVEC QUAD8 ET SEG3
 #
 # VALIDATION INDEPENDANTE PAR LMS_NT (J.P.ROSSION)
 #
@@ -30,7 +30,7 @@ MO=AFFE_MODELE(
          MAILLAGE=MA,
          AFFE=_F( TOUT = 'OUI',
               PHENOMENE = 'MECANIQUE',
-              MODELISATION = '3D_FLUIDE')
+              MODELISATION = '2D_FLUIDE')
          )
 
 #
@@ -118,38 +118,49 @@ HARMO=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
          MATR_RIGI=MATK,
          MATR_IMPE_PHI=MATA,
          FREQ=500.0,
-         EXCIT=_F( VECT_ASSE = VECAS,
+          EXCIT=_F( VECT_ASSE = VECAS,
                COEF_MULT = 1.0,
                PHAS_DEG = 90.0,
                PUIS_PULS = 1)
          )
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   VALE_CALC_C=-289.77126857898+7.761767307327E-03j,
+                   VALE_CALC_C=-289.77126888785+7.7618801172221E-03j,
+                   VALE_REFE_C=-289.77+0.j,
+                   REFERENCE = 'ANALYTIQUE',
                    RESULTAT=HARMO,
                    NOM_CHAM='DEPL',
-                   NOEUD='N50',
+                   NOEUD='N33',
                    NOM_CMP='PRES',),
                 _F(NUME_ORDRE=1,
-                   VALE_CALC_C=-289.77126857898+7.7617673070941E-03j,
+                   VALE_CALC_C=-289.77126944227+7.7618654468389E-03j,
+                   VALE_REFE_C=-289.77+0.j,
+                   REFERENCE = 'ANALYTIQUE',
+                   RESULTAT=HARMO,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N3',
+                   NOM_CMP='PRES',),
+                _F(NUME_ORDRE=1,
+                   VALE_CALC_C=284.78961779319-53.505696059775j,
+                   VALE_REFE_C=284.14-53.246j,
+                   REFERENCE = 'ANALYTIQUE',
+                   PRECISION = 3.E-3,
+                   RESULTAT=HARMO,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N4',
+                   NOM_CMP='PRES',),
+                _F(NUME_ORDRE=1,
+                   VALE_CALC_C=284.78962351866-53.505698422958j,
+                   VALE_REFE_C=284.14-53.246j,
+                   REFERENCE = 'ANALYTIQUE',
+                   PRECISION = 3.E-3,
                    RESULTAT=HARMO,
                    NOM_CHAM='DEPL',
                    NOEUD='N34',
                    NOM_CMP='PRES',),
-                _F(NUME_ORDRE=1,
-                   VALE_CALC_C=284.78961364274-53.505692917338j,
-                   RESULTAT=HARMO,
-                   NOM_CHAM='DEPL',
-                   NOEUD='N27',
-                   NOM_CMP='PRES',),
-                _F(NUME_ORDRE=1,
-                   VALE_CALC_C=284.78961364274-53.505692917338j,
-                   RESULTAT=HARMO,
-                   NOM_CHAM='DEPL',
-                   NOEUD='N716',
-                   NOM_CMP='PRES',),
                 ),
           )
+
 
 FIN()
 #

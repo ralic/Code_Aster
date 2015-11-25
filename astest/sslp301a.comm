@@ -93,8 +93,9 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOEUD='N11',
                   NOM_CMP='SIXY',
                   VALE_CALC=-1.9906928374271E5,
+                  VALE_REFE=-1.99E5,
+                  REFERENCE='ANALYTIQUE',
                   MAILLE='M19',),
           )
-
 FIN( )
 #
