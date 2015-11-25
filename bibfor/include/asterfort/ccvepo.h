@@ -18,17 +18,19 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine ccvepo(modele, resuin, lischa, nbchar, typesd,&
+    subroutine ccvepo(modele, resuin, typesd, lisord, nbordr,&
+                      option,&
                       nbchre, ioccur, suropt, ligrel, exipou)
         character(len=8) :: modele
         character(len=8) :: resuin
-        character(len=19) :: lischa
-        integer :: nbchar
+        integer :: nbordr
+        character(len=19) :: lisord
         character(len=16) :: typesd
-        integer :: nbchre
+        character(len=16) :: option
         integer :: ioccur
         character(len=24) :: suropt
         character(len=24) :: ligrel
         aster_logical :: exipou
+        integer :: nbchre
     end subroutine ccvepo
 end interface

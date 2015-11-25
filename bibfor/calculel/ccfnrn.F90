@@ -1,5 +1,5 @@
 subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
-                  lischa, ncharg, chtype, typesd)
+                  chtype, typesd)
     implicit none
 !     --- ARGUMENTS ---
 #include "asterf_types.h"
@@ -38,12 +38,13 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
 #include "asterfort/vrcins.h"
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/medome_once.h"
 #include "asterfort/verif_bord.h"
-    integer :: nbordr, ncharg
+    integer :: nbordr
     character(len=4) :: chtype
     character(len=8) :: resuin, resuou
     character(len=16) :: option, typesd
-    character(len=19) :: lischa, lisord
+    character(len=19) :: lisord
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,7 +77,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
     character(len=6) :: nompro
     character(len=8) :: k8bid, kiord, ctyp, nomcmp(3)
     character(len=16) :: typmo, optio2
-    character(len=19) :: ligrel, chdep2, infcha
+    character(len=19) :: ligrel, chdep2, infcha, list_load
     character(len=24) :: numref, fomult, charge, infoch, vechmp, vachmp, cnchmp
     character(len=24) :: vecgmp, vacgmp, cncgmp, vefpip, vafpip, cnfpip, vfono
     character(len=24) :: carac
@@ -93,6 +94,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
     real(kind=8), pointer :: noch(:) => null()
     real(kind=8), pointer :: reno(:) => null()
     real(kind=8), pointer :: nldepl(:) => null()
+    integer, pointer :: v_list_store(:) => null()
     parameter(nompro='CCFNRN')
     data chvarc/'&&CCFNRN.CHVARC'/
     data infcha/'&&INFCHA.INFCHA'/
@@ -101,6 +103,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
 !
     call jemarq()
     bidon='&&'//nompro//'.BIDON'
+    list_load = '&&CCFNRN.LIST_LOAD'
 !
     call jeveuo(lisord, 'L', jordr)
 !
@@ -112,6 +115,16 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
     else
         typmo=' '
     endif
+    
+!
+! - Only one list of loads for REAC_NODA
+!
+    if (option .eq. 'REAC_NODA') then
+        call jeveuo(lisord, 'L', vi = v_list_store)
+        call medome_once(resuin, v_list_store, nbordr,&
+                         list_load_ = list_load)
+    endif
+    
 !
 ! TRI DES OPTIONS SUIVANT TYPESD
     lmat=0
@@ -211,7 +224,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
         nh=0
         if (typesd(1:8) .eq. 'FOURIER_') then
             call rsadpa(resuin, 'L', 1, 'NUME_MODE', iordr,&
-                        0, sjv=jnmo, styp=k8bid)
+                        0, sjv=jnmo)
             nh=zi(jnmo)
         endif
 ! ICI
@@ -220,8 +233,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
         if (iret .ne. 0) then
             optio2 = 'SIEF_ELGA'
             call calcop(optio2, ' ', resuin, resuou, lisord,&
-                        nbordr, lischa, ncharg, chtype, typesd,&
-                        cret)
+                        nbordr, chtype, typesd, cret)
         endif
         if (lstr) then
             call rsexch(' ', resuin, 'STRX_ELGA', iordr, strx,&
@@ -229,8 +241,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
             if (iret .ne. 0 .and. lstr2) then
                 optio2 = 'STRX_ELGA'
                 call calcop(optio2, ' ', resuin, resuou, lisord,&
-                            nbordr, lischa, ncharg, chtype, typesd,&
-                            cret)
+                            nbordr, chtype, typesd, cret)
             endif
         endif
 !

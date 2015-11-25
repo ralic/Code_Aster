@@ -171,7 +171,7 @@ subroutine ccbcop(resuin, resuou, lisord, nbordr, lisopt,&
 !
         if ((option.eq.'FORC_NODA') .or. (option.eq.'REAC_NODA')) then
             call ccfnrn(option, resuin, resuou, lisord, nbordr,&
-                        lischa, nbchar, typcha, typesd)
+                        typcha, typesd)
             if((option.eq.'REAC_NODA') .and. &
                   ((typesd.eq.'DYNA_TRANS') .or. &
                    (typesd.eq.'DYNA_HARMO'))) then
@@ -179,8 +179,7 @@ subroutine ccbcop(resuin, resuou, lisord, nbordr, lisopt,&
             endif
         else
             call calcop(option, lisopt, resuin, resuou, lisord,&
-                        nbordr, lischa, nbchar, typcha, typesd,&
-                        iret)
+                        nbordr, typcha, typesd, iret)
 !
             if (iret .ne. 0) then
                 ASSERT(.false.)

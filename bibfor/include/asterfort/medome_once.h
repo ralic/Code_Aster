@@ -16,14 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
-                      chtype, typesd)
-        character(len=16) :: option
-        character(len=8) :: resuin
-        character(len=8) :: resuou
-        character(len=19) :: lisord
-        integer :: nbordr
-        character(len=4) :: chtype
-        character(len=16) :: typesd
-    end subroutine ccfnrn
+    subroutine medome_once(result, v_list_store, nb_store, nume_user_,&
+                           model_, cara_elem_  , chmate_ , list_load_)
+        character(len=8), intent(in) :: result
+        integer, pointer, intent(in) :: v_list_store(:)
+        integer, intent(in) :: nb_store
+        integer, optional, intent(in) :: nume_user_
+        character(len=8), optional, intent(out) :: model_
+        character(len=8), optional, intent(out) :: cara_elem_
+        character(len=24), optional, intent(out) :: chmate_
+        character(len=19), optional, intent(out) :: list_load_
+    end subroutine medome_once
 end interface

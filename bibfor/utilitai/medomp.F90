@@ -1,6 +1,6 @@
 subroutine medomp(result, modele, mate, carele, nh)
 !
-    implicit none
+implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -15,6 +15,7 @@ subroutine medomp(result, modele, mate, carele, nh)
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/medome_once.h"
 #include "asterfort/rcmfmc.h"
 #include "asterfort/rslesd.h"
 #include "asterfort/rsutnu.h"
@@ -58,16 +59,17 @@ subroutine medomp(result, modele, mate, carele, nh)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: iexcit, iret
-    integer :: nbordr, iordr, jordr, numord, inuord, numlu
+    integer :: iret
+    integer :: nbordr, numord, inuord, numlu
     integer :: n1, n2, n3
     real(kind=8) :: prec
-    character(len=8) :: materi, modnew
+    character(len=8) :: materi
     character(len=16) :: repons
     character(len=19) :: knum, k19bid
     character(len=8) :: crit
     aster_logical :: lrdm, lmater
     integer :: lfour
+    integer, pointer :: v_list_store(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -123,29 +125,25 @@ subroutine medomp(result, modele, mate, carele, nh)
             call getvtx(' ', 'CRITERE', scal=crit, nbret=n2)
             call rsutnu(result, ' ', 0, knum, nbordr,&
                         prec, crit, iret)
-            call jeveuo(knum, 'L', jordr)
-            numlu = zi(jordr)
+            call jeveuo(knum, 'L', vi = v_list_store)
+            numlu = v_list_store(1)
         endif
 !
 ! ----- VERIFICATION DE L'UNICITE DU MODELE DANS LE RESULTAT
 !
-        numord = numlu
-        call rslesd(result, numord, modele, materi, carele,&
-                    k19bid, iexcit)
-        do iordr = 2, nbordr
-            numord = zi(jordr+iordr-1)
-            call rslesd(result, numord, modnew, materi, carele,&
-                        k19bid, iexcit)
-            if (modnew .ne. modele) then
-                call utmess('F', 'POSTELEM_23')
-            endif
-        end do
-        call jedetr(knum)
+        if (inuord .eq. 0) then
+            call medome_once(result, v_list_store, nbordr,&
+                             model_ = modele)
+            call jedetr(knum)
+        else
+            call medome_once(result, v_list_store, nbordr, numlu ,&
+                             model_ = modele)
+        endif
 !
 ! ----- RECUPERATION MODELE, MATERIAU ET CARA_ELEM DANS LA SD RESULTAT
 !
         call rslesd(result, numlu, modele, materi, carele,&
-                    k19bid, iexcit)
+                    k19bid)
 !
     endif
 !

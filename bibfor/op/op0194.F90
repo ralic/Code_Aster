@@ -147,8 +147,7 @@ subroutine op0194()
         else
 !         PASSAGE CALC_CHAMP
             call calcop(option, lesopt, temper, temper, kordre,&
-                        nbordr, kcha, nchar, ctyp, tysd,&
-                        iret)
+                        nbordr, ctyp, tysd, iret)
             if (iret .eq. 0) goto 100
 !
         endif

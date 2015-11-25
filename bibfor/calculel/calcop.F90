@@ -1,6 +1,5 @@
 subroutine calcop(option, lisopt, resuin, resuou, lisord,&
-                  nbordr, lischa, ncharg, chtype, typesd,&
-                  codret)
+                  nbordr, chtype, typesd, codret)
     implicit none
 !     --- ARGUMENTS ---
 #include "asterf_types.h"
@@ -38,11 +37,11 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nbordr, ncharg, codret, tbid(1)
+    integer :: nbordr, codret, tbid(1)
     character(len=4) :: chtype
     character(len=8) :: resuin, resuou
     character(len=16) :: option, typesd
-    character(len=19) :: lischa, lisord
+    character(len=19) :: lisord
     character(len=*) :: lisopt
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -73,8 +72,6 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
 !   RESUOU  K8   NOM DE LA STRUCTURE DE DONNEES RESULTAT OUT
 !   NBORDR  I    NOMBRE DE NUMEROS D'ORDRE
 !   LISORD  K19  LISTE DE NUMEROS D'ORDRE
-!   LISCHA  K19  NOM DE L'OBJET JEVEUX CONTENANT LES CHARGES
-!   NCHARG  I    NOMBRE DE CHARGES
 !   CHTYPE  K4   TYPE DES CHARGES
 !   TYPESD  K16  TYPE DE LA STRUCTURE DE DONNEES RESULTAT
 !
@@ -91,8 +88,8 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
 !
     integer :: nopout, jlisop, iop, ibid, nbord2, lres, n0, n1, n2, n3, posopt
     integer :: nbtrou, minord, maxord, jlinst, iordr, nbordl, lcompo
-    integer :: numord, iexcit, iret, npass, nbma, codre2, jliopg, nbopt
-    integer :: jacalc, nordm1, jpara, nbchre, ioccur, icompo
+    integer :: numord, iret, npass, nbma, codre2, jliopg, nbopt
+    integer :: jacalc, nordm1, jpara, nbchre, ioccur, icompo, ncharg
 !
     real(kind=8) :: r8b
 !
@@ -104,7 +101,7 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
     character(len=8) :: nomail, nobase, modeli
     character(len=11) :: nobaop
     character(len=16) :: optio2, typmcl(4), motcle(4),valk(2)
-    character(len=19) :: excit, nonbor, compor
+    character(len=19) :: excit, nonbor, compor, lischa
     character(len=24) :: chaout, ligrel, mateco, ligres
     character(len=24) :: noliop, lisins, mesmai, lacalc, suropt
 !
@@ -114,6 +111,8 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
     codret = 1
     npass = 0
     nobase = '&&CALCOP'
+    lischa = '&&CALCOP.LISCHA'
+    ncharg = 0
 !
 !     ON CONSERVE CES OPTIONS POUR PERMETTRE LE CALCUL DANS STANLEY
     if ((option.eq.'ERTH_ELEM') .or. (option.eq.'ERTH_ELNO')) goto 999
@@ -129,6 +128,8 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
 !
     call ccliop('OPTION', option, nobase, noliop, nopout)
     if (nopout .eq. 0) goto 999
+    
+
 !
 !
     if (option(1:4).eq.'EPSI')then
@@ -177,9 +178,9 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
     maxord = zi(lres+nbord2-1)
 !
     call rslesd(resuin, minord, modele, mateco(1:8), carael,&
-                excit, iexcit)
+                excit)
     call rsadpa(resuin, 'L', 1, 'MODELE', minord,&
-                0, sjv=jpara, styp=k8b)
+                0, sjv=jpara)
     if (zk8(jpara) .ne. modele) then
         call utmess('A', 'CALCULEL_24')
     endif
@@ -195,8 +196,10 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
             call utmess('A', 'ELEMENTS3_11')
         endif
     endif
-!
-    call ccvepo(modele, resuin, lischa, ncharg, typesd,&
+!  ROUTINE PERMETTANT DE SAVOIR SI DES POUTRES SONT DANS LE LIGREL
+!   REDUIT ET DE VERIFIER LES CHARGES REPARTIES
+    call ccvepo(modele, resuin, typesd, lisord, nbordr,&
+                option,&
                 nbchre, ioccur, suropt, ligrel, exipou)
 !
     if (option(6:9) .eq. 'NOEU') then

@@ -1,5 +1,5 @@
 subroutine rslesd(result, nuord, modele, materi, carele,&
-                  excit, iexcit)
+                  excit, iexcit_)
     implicit none
 #include "jeveux.h"
 #include "asterc/getexm.h"
@@ -13,9 +13,10 @@ subroutine rslesd(result, nuord, modele, materi, carele,&
 #include "asterfort/rsadpa.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: nuord, iexcit
+    integer :: nuord
     character(len=8) :: result, modele, carele, materi
     character(len=19) :: excit
+    integer, optional, intent(out) :: iexcit_
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -64,6 +65,7 @@ subroutine rslesd(result, nuord, modele, materi, carele,&
 !
     integer :: jpara, n1, n2, n3, n4, iex,    ncha
     integer :: ilu, isd, nchalu, nchasd, lchalu, fchalu, vali(2)
+    integer :: iexcit
 !
     character(len=6) :: nompro
     character(len=8) :: nomsd, nomlu, fonclu, k8b, foncsd
@@ -334,6 +336,10 @@ subroutine rslesd(result, nuord, modele, materi, carele,&
 !
     call jedetr(kcha)
     call jedetr(kfon)
+!
+    if (present(iexcit_)) then
+        iexcit_ = iexcit
+    endif
 !
     call jedema()
 end subroutine

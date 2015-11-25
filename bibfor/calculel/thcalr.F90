@@ -166,8 +166,7 @@ subroutine thcalr(newcal, tysd, knum, lload_name, resuco,&
         call jeveuo(knum, 'L', jordr)
 !
         call calcop(option, lesopt, resuco, resuc1, knum,&
-                    nbordr, lload_name, nb_load, ctyp, tysd,&
-                    iret)
+                    nbordr, ctyp, tysd, iret)
         if (iret .eq. 0) goto 120
 !
 !

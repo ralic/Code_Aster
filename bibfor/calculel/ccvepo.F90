@@ -1,4 +1,5 @@
-subroutine ccvepo(modele, resuin, lischa, nbchar, typesd,&
+subroutine ccvepo(modele, resuin, typesd, lisord, nbordr,&
+                  option,&
                   nbchre, ioccur, suropt, ligrel, exipou)
     implicit none
 !     --- ARGUMENTS ---
@@ -18,14 +19,18 @@ subroutine ccvepo(modele, resuin, lischa, nbchar, typesd,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
+#include "asterfort/medom1.h"
 #include "asterfort/utmamo.h"
+#include "asterfort/lisnch.h"
+#include "asterfort/medome_once.h"
 #include "asterfort/utmess.h"
     aster_logical :: exipou
-    integer :: nbchre, ioccur, nbchar
+    integer :: nbchre, ioccur
     character(len=8) :: modele, resuin
-    character(len=16) :: typesd
-    character(len=19) :: lischa
+    character(len=16) :: typesd, option
     character(len=24) :: suropt, ligrel
+    integer :: nbordr
+    character(len=19) :: lisord
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,8 +58,6 @@ subroutine ccvepo(modele, resuin, lischa, nbchar, typesd,&
 ! IN  :
 !   MODELE  K8   NOM DU MODELE
 !   RESUIN  K8   NOM DE LA STRUCTURE DE DONNEES RESULTAT IN
-!   LISCHA  K19  NOM DE L'OBJET JEVEUX CONTENANT LES CHARGES
-!   NCHARG  I    NOMBRE DE CHARGES
 !   TYPESD  K16  TYPE DE LA STRUCTURE DE DONNEES RESULTAT
 !
 ! OUT :
@@ -67,21 +70,30 @@ subroutine ccvepo(modele, resuin, lischa, nbchar, typesd,&
 ! person_in_charge: nicolas.sellenet at edf.fr
     integer :: ierd, ltymo, nbmaal
     integer :: n1, n2
+    character(len=4) :: typcha
 !
-    character(len=8) :: k8b
+    character(len=8) :: k8b, model, cara_elem
+    character(len=24) :: chmate
     character(len=16) :: typemo
     character(len=19) :: refe, masse, chdynr, chdepl
     character(len=24) :: noojb
+    integer :: nbchar
+    character(len=19) :: lischa
     integer, pointer :: liste_mailles(:) => null()
+    integer, pointer :: v_list_store(:) => null()
     character(len=8), pointer :: lcha(:) => null()
 !
     call jemarq()
 !
     typemo = ' '
     suropt = ' '
+    nbchar = 0
+    ioccur = 0
+    nbchre = 0
+    lischa = '&&CCVEPO.LISCHA'
     if (typesd .eq. 'MODE_MECA') then
         call rsadpa(resuin, 'L', 1, 'TYPE_MODE', 1,&
-                    0, sjv=ltymo, styp=k8b)
+                    0, sjv=ltymo)
         typemo=zk16(ltymo)
     endif
 !
@@ -122,12 +134,23 @@ subroutine ccvepo(modele, resuin, lischa, nbchar, typesd,&
             chdynr='&&MECALM.M.GAMMA'
             call copich('V', chdepl(1:19), chdynr)
         endif
-        call jeveuo(lischa//'.LCHA', 'L', vk8=lcha)
+        call jeveuo(lisord, 'L', vi = v_list_store)
+        if (option.eq.'REAC_NODA') then
+            call medome_once(resuin, v_list_store, nbordr,&
+                             list_load_ = lischa)
+            call lisnch(lischa, nbchar)
+        else
+            call medom1(model, chmate, cara_elem, lischa, nbchar,&
+                        typcha, resuin, v_list_store(1))
+        endif
 !       VERIFIE L'UNICITE DE LA CHARGE REPARTIE
-        ioccur=0
-        call cochre(lcha, nbchar, nbchre, ioccur)
-        if (nbchre .gt. 1) then
-            call utmess('F', 'CALCULEL2_92')
+        if (nbchar .ne. 0) then
+            call jeveuo(lischa//'.LCHA', 'L', vk8=lcha)
+            ioccur=0
+            call cochre(lcha, nbchar, nbchre, ioccur)
+            if (nbchre .gt. 1) then
+                call utmess('F', 'CALCULEL2_92')
+            endif
         endif
     endif
 !

@@ -66,4 +66,12 @@ le résultat %(k1)s n'est actuellement pas possible.
 
 Conseil : Il faut renseigner le mot clef EXCIT de la commande CALC_CHAMP,
 """),
+
+
+23: _(u"""Le modèle doit être le même sur tous les pas de temps pour ce post-traitement.
+      Conseil : il faut séparer le post-traitement en le découpant pour garder le même modèle"""),
+
+24: _(u"""Le chargement doit être le même sur tous les pas de temps pour ce post-traitement.
+      Conseil : il faut séparer le post-traitement en le découpant pour garder le même chargement"""),
+
 }

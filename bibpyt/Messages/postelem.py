@@ -52,6 +52,6 @@ Erreur utilisateur :
 
     20: _(u"""Il faut renseigner le MODELE"""),
 
-    23: _(u"""Les chargements reposent Le modèle n'est pas le même sur les chargements"""),
+
 
 }
