@@ -719,6 +719,12 @@ class Element(BaseCataEntity):
                         self.addCalcul(calc)
                     else:
                         self.modifyCalcul(calc)
+        self.postInit()
+
+    def postInit(self):
+        """Elements can define a post-initialization function to change its
+        definition from its parent elements for example."""
+        # use cataelem/Tools/modifier.py for this changes
 
     def getAttrs(self):
         """Return the attributes"""
