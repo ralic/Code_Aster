@@ -56,6 +56,7 @@ from glob import glob
 from collections import OrderedDict
 
 # TODO do not return list/dict internal storage, should be treat before
+from cataelem.Tools.modifier import ChangeComponentsVisitor
 
 
 class BaseCataEntity(object):
@@ -336,6 +337,15 @@ class LocatedComponents(BaseCataEntity):
         return self._location
     location = property(__getLocation)
 
+    def copy(self, components=None):
+        """Return a new LocatedComponents object, allow to change the list of
+        components"""
+        new = LocatedComponents(self._phys, self._type,
+                                components or self._components[:],
+                                self._diff, self._location)
+        new.setName(self.name)
+        return new
+
     def accept(self, visitor):
         """Implements the visitor pattern"""
         return visitor.visitLocatedComponents(self)
@@ -376,6 +386,14 @@ class ArrayOfComponents(BaseCataEntity):
         """Return the type of the physical quantity"""
         return self._type
     type = property(__getType)
+
+    def copy(self, locatedComponents=None):
+        """Return a new ArrayOfComponents object, allow to change the list of
+        the located components"""
+        new = ArrayOfComponents(self._phys,
+                                locatedComponents or self._locCmp[:])
+        new.setName(self.name)
+        return new
 
     def accept(self, visitor):
         """Implements the visitor pattern"""
@@ -650,6 +668,14 @@ class Calcul(object):
         return self._para_out
     para_out = property(__getParaOut)
 
+    def setParaIn(self, para):
+        """Set the input parameters, couples (param, locCmp))"""
+        self._para_in = para
+
+    def setParaOut(self, para):
+        """Set the output parameters, couples (param, locCmp))"""
+        self._para_out = para
+
     def accept(self, visitor):
         """Implements the visitor pattern"""
         return visitor.visitCalcul(self)
@@ -750,6 +776,11 @@ class Element(BaseCataEntity):
                 if type(loc_i) is ArrayOfComponents:
                     loco.update(loc_i.locatedComponents)
         return list(loco)
+
+    def changeComponents(self, locCmpName, components):
+        """Modify the components of a LocatedComponents used in the element.
+        A new LocatedComponents object is created and replaces the existing one."""
+        self.accept( ChangeComponentsVisitor(locCmpName, components) )
 
     def accept(self, visitor):
         """Implements the visitor pattern"""

@@ -78,3 +78,61 @@ class CataElemVisitor(object):
 
     def visitPhysicalQuantity(self, phys):
         """Visit a PhysicalQuantity object"""
+
+
+class ChangeComponentsVisitor(CataElemVisitor):
+
+    """A visitor that can change the components of a LocatedComponents used in
+    an element. A new LocatedComponents object is created and replaces the
+    existing one.
+    This visitor uses the returned value."""
+    # starts at the Element level
+
+    def __init__(self, locCmpName, components):
+        """Initialization with the name of the LocatedComponents to change and
+        the new list of components"""
+        self._locCmpName = locCmpName
+        self._newCmp = components
+        self._newObjects = {}
+
+    def visitCalcul(self, calcul):
+        """Visit a Calcul object"""
+        para = []
+        for param, locCmp in calcul.para_in:
+            new = locCmp.accept(self)
+            para.append( (param, new) )
+        calcul.setParaIn(para)
+        para = []
+        for param, locCmp in calcul.para_out:
+            new = locCmp.accept(self)
+            para.append( (param, new) )
+        calcul.setParaOut(para)
+
+    def visitArrayOfComponents(self, array):
+        """Visit an ArrayOfComponents object"""
+        # already created?
+        created = self._newObjects.get(array.name)
+        if created:
+            array = created
+        else:
+            new = []
+            changed = False
+            for locCmp in array.locatedComponents:
+                new.append( locCmp.accept(self) )
+                changed = changed or new[-1] != locCmp
+            if changed:
+                array = array.copy(new)
+                self._newObjects[array.name] = array
+        return array
+
+    def visitLocatedComponents(self, locCmp):
+        """Visit a LocatedComponents object"""
+        if locCmp.name == self._locCmpName:
+            # already created?
+            created = self._newObjects.get(locCmp.name)
+            if created:
+                locCmp = created
+            else:
+                locCmp = locCmp.copy(self._newCmp)
+                self._newObjects[locCmp.name] = locCmp
+        return locCmp
