@@ -190,6 +190,10 @@ class PhysicalQuantity(BaseCataEntity):
         """Tell if the quantity knows this component"""
         return cmp in self._components
 
+    def accept(self, visitor):
+        """Implements the visitor pattern"""
+        return visitor.visitPhysicalQuantity(self)
+
 
 class ArrayOfQuantities(BaseCataEntity):
 
@@ -217,6 +221,10 @@ class ArrayOfQuantities(BaseCataEntity):
         """Return the dimension of the elementary quantity"""
         return self._elem
     dim = property(__getDim)
+
+    def accept(self, visitor):
+        """Implements the visitor pattern"""
+        return visitor.visitArrayOfQuantities(self)
 
 
 class Attribute(BaseCataEntity):
@@ -256,11 +264,6 @@ class SetOfNodes(BaseCataEntity):
         self._nodes = check_type(force_tuple(nodes), int)
         for node in nodes:
             assert node > 0 and node <= 54, node
-
-    def __getName(self):
-        """Return the object name"""
-        return self._name
-    name = property(__getName)
 
     def __getNodes(self):
         """Return the list of nodes"""
@@ -333,6 +336,10 @@ class LocatedComponents(BaseCataEntity):
         return self._location
     location = property(__getLocation)
 
+    def accept(self, visitor):
+        """Implements the visitor pattern"""
+        return visitor.visitLocatedComponents(self)
+
 
 class ArrayOfComponents(BaseCataEntity):
 
@@ -349,7 +356,7 @@ class ArrayOfComponents(BaseCataEntity):
         check_type(locatedComponents, LocatedComponents)
         size = len(locatedComponents)
         assert size in (1, 2), locatedComponents
-        self._locmod = locatedComponents
+        self._locCmp = locatedComponents
         if size == 1:
             self._type = 'VEC'
         else:
@@ -362,13 +369,17 @@ class ArrayOfComponents(BaseCataEntity):
 
     def __getLocatedComponents(self):
         """Return the underlying local mode"""
-        return self._locmod
+        return self._locCmp
     locatedComponents = property(__getLocatedComponents)
 
     def __getType(self):
         """Return the type of the physical quantity"""
         return self._type
     type = property(__getType)
+
+    def accept(self, visitor):
+        """Implements the visitor pattern"""
+        return visitor.visitArrayOfComponents(self)
 
 
 class InputParameter(BaseCataEntity):
@@ -396,6 +407,10 @@ class InputParameter(BaseCataEntity):
         return self._container
     container = property(__getLocalisation)
 
+    def accept(self, visitor):
+        """Implements the visitor pattern"""
+        return visitor.visitInputParameter(self)
+
 
 class OutputParameter(BaseCataEntity):
 
@@ -422,6 +437,10 @@ class OutputParameter(BaseCataEntity):
         """Return the type of the output"""
         return self._type
     type = property(__getType)
+
+    def accept(self, visitor):
+        """Implements the visitor pattern"""
+        return visitor.visitOutputParameter(self)
 
 
 class Option(BaseCataEntity):
@@ -479,6 +498,10 @@ class Option(BaseCataEntity):
     def __call__(self, te, para_in=None, para_out=None):
         """Define how to commpute this option for an element"""
         return Calcul(self, te, para_in, para_out)
+
+    def accept(self, visitor):
+        """Implements the visitor pattern"""
+        return visitor.visitOption(self)
 
 
 class CondCalcul(object):
@@ -593,15 +616,15 @@ class Calcul(object):
         check_type([te], int)
         assert (te > 0 and te <= 602) or te in (-1, -2), te
         if para_in is not None:
-            for param, moloc in para_in:
-                assert param.physicalQuantity.name == moloc.physicalQuantity.name
+            for param, locCmp in para_in:
+                assert param.physicalQuantity.name == locCmp.physicalQuantity.name
                 check_type([param], InputParameter)
-                check_type([moloc], (LocatedComponents, ArrayOfComponents))
+                check_type([locCmp], (LocatedComponents, ArrayOfComponents))
         if para_out is not None:
-            for param, moloc in para_out:
-                assert param.physicalQuantity.name == moloc.physicalQuantity.name
+            for param, locCmp in para_out:
+                assert param.physicalQuantity.name == locCmp.physicalQuantity.name
                 check_type([param], OutputParameter)
-                check_type([moloc], (LocatedComponents, ArrayOfComponents))
+                check_type([locCmp], (LocatedComponents, ArrayOfComponents))
         self._option = option
         self._te = te
         self._para_in = para_in or []
@@ -626,6 +649,10 @@ class Calcul(object):
         """Return the list of the couples output parameters, components"""
         return self._para_out
     para_out = property(__getParaOut)
+
+    def accept(self, visitor):
+        """Implements the visitor pattern"""
+        return visitor.visitCalcul(self)
 
 
 class Element(BaseCataEntity):
@@ -724,6 +751,10 @@ class Element(BaseCataEntity):
                     loco.update(loc_i.locatedComponents)
         return list(loco)
 
+    def accept(self, visitor):
+        """Implements the visitor pattern"""
+        return visitor.visitElement(self)
+
 
 class Modelisation(object):
 
@@ -770,6 +801,10 @@ class Modelisation(object):
         """Return the couples (MeshType, Element)"""
         return self._elements
     elements = property(__getElements)
+
+    def accept(self, visitor):
+        """Implements the visitor pattern"""
+        return visitor.visitModelisation(self)
 
 
 class Phenomenon(BaseCataEntity):
@@ -941,27 +976,37 @@ def a_creer_seulement_dans(obj, l_autorises):
 
     OK = False
     for autor in l_autorises:
+        if l1[-2] == "Tools":
+            OK = True
+            break
         if autor == 'physical_quantities':
             if l1[-1] == "physical_quantities.py":
                 OK = True
+                break
         elif autor == 'attributes':
             if l1[-1] == "attributes.py":
                 OK = True
+                break
         elif autor == 'mesh_types':
             if l1[-1] == "mesh_types.py":
                 OK = True
+                break
         elif autor == 'parameters':
             if l1[-1] == "parameters.py":
                 OK = True
+                break
         elif autor == 'located_components':
             if l1[-1] == "located_components.py":
                 OK = True
+                break
         elif autor == 'Options':
             if l1[-2] == "Options":
                 OK = True
+                break
         elif autor == 'Elements':
             if l1[-2] == "Elements":
                 OK = True
+                break
         else:
             assert 0, ("non autorise : ", autor)
 

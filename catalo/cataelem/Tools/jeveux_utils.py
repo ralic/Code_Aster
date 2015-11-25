@@ -59,7 +59,7 @@ class ERREUR:
                 for c in self.contxt:
                     print "         " + c
         if ucode == 'F':
-            raise StandardError
+            raise StandardError(convert(message))
 
     def veri_appartient_liste(self, code, element, liste):
         try:
