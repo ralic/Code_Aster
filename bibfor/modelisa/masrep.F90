@@ -52,7 +52,6 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
     character(len=24) :: manono, magrma, manoma, matyma
     real(kind=8) :: zero, x(9), y(9), z(9), rigi(6)
     real(kind=8) :: a(3), b(3), c(3), u(3)
-    aster_logical :: lfonc
     integer :: appui
 !
 !-----------------------------------------------------------------------
@@ -86,7 +85,6 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
 !-----------------------------------------------------------------------
     call jemarq()
     zero = 0.d0
-    lfonc = .false.
     iunite = 6
 !
 !
@@ -111,13 +109,11 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
 !
 !      CALL GETVR8('MASS_AJOU','Z0',IOC,IARG,1,Z0,NCG)
     z0 = zero
-    call getvid('MASS_AJOU', 'FONC_GROUP', iocc=ioc, nbval=0, nbret=nfg)
-    if (nfg .ne. 0) then
-        AS_ALLOCATE(vk8=fongro, size=nbgr)
-        lfonc = .true.
-        call getvid('MASS_AJOU', 'FONC_GROUP', iocc=ioc, nbval=nbgr, vect=fongro,&
-                    nbret=nfg)
-    endif
+!    call getvid('MASS_AJOU', 'FONC_GROUP', iocc=ioc, nbval=0, nbret=nfg)
+    nbgr = 1
+    AS_ALLOCATE(vk8=fongro, size=nbgr)
+    call getvid('MASS_AJOU', 'FONC_GROUP', iocc=ioc, nbval=nbgr, vect=fongro,&
+                nbret=nfg)
 !
 !
 !
@@ -240,19 +236,15 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
                 ASSERT(.false.)
             endif
             if (.not.lvale) surtot = surtot + surmai(im)
-            if (lfonc) then
-                u(1) = xc
-                u(2) = yc
-                u(3) = hc
-                nompar(1) = 'X'
-                nompar(2) = 'Y'
-                nompar(3) = 'Z'
-                call fointe('F ', fongro(i), 3, nompar, u,&
-                            coef, iret)
-                surmai(im) = surmai(im)*coef
-            else
-                surmai(im) = surmai(im)*1.0d3*(z0-hc)
-            endif
+            u(1) = xc
+            u(2) = yc
+            u(3) = hc
+            nompar(1) = 'X'
+            nompar(2) = 'Y'
+            nompar(3) = 'Z'
+            call fointe('F ', fongro(i), 3, nompar, u,&
+                        coef, iret)
+            surmai(im) = surmai(im)*coef
             if (lvale) then
                 surtot = surtot + surmai(im)
                 surmai(im) = surmai(im)/nm
