@@ -118,7 +118,7 @@ def check_mfront(self):
     self.find_program('mfront')
     self.find_program('tfel-config')
     self.check_cfg(path='tfel-config',
-                   args='--cppflags --includes --oflags ' \
+                   args='--cppflags --includes --oflags0 ' \
                         '--libs --material --utilities --system',
                    package='', uselib_store='MFRONT', mandatory=True)
     if self.get_define('_USE_64_BITS'):
@@ -127,15 +127,11 @@ def check_mfront(self):
         arch = 'ASTER_ARCH=32'
     self.env.append_value('DEFINES_MFRONT', arch)
     # remove options usually used by MFront but in conflict with our code
-    for flag in ('-fvisibility=hidden', '-fvisibility-inlines-hidden',
-                 '-ftree-vectorize'):
+    for flag in ('-fvisibility=hidden', '-fvisibility-inlines-hidden'):
         self.safe_remove('CFLAGS_MFRONT', flag)
         self.safe_remove('CXXFLAGS_MFRONT', flag)
         # these options are not relevant for C
         self.env.append_value('CXXFLAGS_MFRONT_ONLY', flag)
-    # remove some g++ options if icpc is used
-    if 'icc' in self.env.CXX_NAME.lower():
-        self.safe_remove('CXXFLAGS_MFRONT_ONLY', '-ftree-vectorize')
     self.check_mfront_version( (2, 0, 3) )
     self.check_mfront_libs()
     self.check_mfront_obsolete_source()
