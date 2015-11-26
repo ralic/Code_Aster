@@ -1237,7 +1237,7 @@ class PostMissChar(PostMiss):
 
         __fTC = DEFI_CONSTANTE(VALE=__fTT(0))
 
-        __fT1 = CALC_FONCTION(COMB=(
+        _fT1 = CALC_FONCTION(COMB=(
                                     _F(FONCTION=__fTT, COEF=1.0,),
                                     _F(FONCTION=__fTC, COEF=-1.0,)
                                     ),
@@ -1246,7 +1246,7 @@ class PostMissChar(PostMiss):
                          )
 
         DETRUIRE(CONCEPT=_F(NOM=(__fHr, __fHi, __fH, __fT0, __fTT, __fTC, __lfreq)))
-        return __fT1
+        return _fT1
 
     def calc_forc_vari_temps(self, FSIST, linst, fdepl, indice):
         """???"""
@@ -1290,7 +1290,7 @@ class PostMissChar(PostMiss):
 
         __fTC = DEFI_CONSTANTE(VALE=__fTT(0))
 
-        __fT1 = CALC_FONCTION(COMB=(
+        _fT1 = CALC_FONCTION(COMB=(
                                     _F(FONCTION=__fTT, COEF=1.0,),
                                     _F(FONCTION=__fTC, COEF=-1.0,)
                                     ),
@@ -1299,7 +1299,7 @@ class PostMissChar(PostMiss):
                          )
 
         DETRUIRE(CONCEPT=_F(NOM=(__fH, __fT0, __fTT, __fTC, __lfreq)))
-        return __fT1
+        return _fT1
 
 class ListPost(list):
     """Définit une liste de post-traitement à enchainer"""
