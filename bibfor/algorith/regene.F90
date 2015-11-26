@@ -68,7 +68,7 @@ subroutine regene(nomres, resgen, profno)
 !
     integer :: i, j, iarefe, ibid, idbase, ier, iord, iret, iret1, itresu
     integer :: jbid, ldnew, llchol, llinsk, nbmod, nbnot, neq
-    integer :: nno, iadpar(13), iadpas(13), nbmo2, tmod(1)
+    integer :: nno, iadpar(13), iadpas(13), nbmo1, nbmo2, tmod(1)
     real(kind=8) :: rbid
     complex(kind=8) :: cbid
     character(len=1) :: typsca
@@ -278,6 +278,12 @@ subroutine regene(nomres, resgen, profno)
 !
             call dcapno(resgen, depl, iord, chamol)
             call jeveuo(chamol, 'L', llchol)
+            if (i .eq. 1) then
+                call jelira(chamol, 'LONMAX', nbmo1)
+                if (nbmo1 .ne. nbmo2) then
+                    call utmess('F', 'ALGORITH9_9')
+                endif
+            endif
 !
 ! --------- REQUETE NOM ET ADRESSE NOUVEAU CHAMNO
 !

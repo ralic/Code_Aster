@@ -33,6 +33,15 @@ cata_msg = {
  valeur de THETA illicite
 """),
 
+    8 : _(u"""
+ nombre de vecteurs demandé inférieur au nombre de modes du concept MODE_MECA
+ on tronque la base modale
+"""),
+
+    9 : _(u"""
+ nombre de coordonnées généralisées différent du nombre de modes de base de projection
+"""),
+
     10 : _(u"""
  nombre de vecteurs demandé trop grand
  on prend tous les modes du concept MODE_MECA

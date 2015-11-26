@@ -61,8 +61,9 @@ subroutine nummod(nugene, modmec)
 !
     if (nbvect .le. nbmode) then
         nbmode = nbvect
+        call utmess('A', 'ALGORITH9_8')
     else
-        call utmess('I', 'ALGORITH9_10')
+        call utmess('A', 'ALGORITH9_10')
     endif
 !
     call nummo1(nugene, modmec, nbmode, typrof)
