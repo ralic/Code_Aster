@@ -134,11 +134,8 @@ TEST_RESU(RESU=_F(PARA='CHAR_CRIT',
 # On visualise le mode pour verifier qu'il a bien 8 lobes,
 # puis on teste (non-regression) que l'on trouve toujours le meme deplacement
 # sur un noeud choisi au hasard.
-
-# Concernant les "TOLE MACHINE" :
-# Pour eviter l'indetermination liee au mode double on a perturbe (1.e-8) la geometrie
+# Pour eviter l'indetermination liee au mode double on a perturbe la geometrie
 # du maillage pour "casser" ses symétries.
-# Cela suffit pour supprimer les "TOLE MACHINE".
 
 MODE_1=CREA_CHAMP(RESULTAT=RES_NORM, OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
                   NOM_CHAM='DEPL', NUME_MODE=numode)

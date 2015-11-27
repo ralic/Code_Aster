@@ -256,10 +256,8 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                            REAC_ITER=1,),
                  RECH_LINEAIRE=_F(RESI_LINE_RELA=0.1,
                                   ITER_LINE_MAXI=3,),
-                 CONVERGENCE=_F(
-                                RESI_GLOB_RELA=1.E-6,
-                                ITER_GLOB_MAXI=80,
-                                ),
+                 # on diminue la valeur de RESI_GLOB_RELA pour eviter les "TOLE MACHINE" (issue24538) :
+                 CONVERGENCE=_F( RESI_GLOB_RELA=1.E-10, ITER_GLOB_MAXI=80, ),
                  SOLVEUR=_F(METHODE='MULT_FRONT',
                             STOP_SINGULIER='NON',),
                  );
@@ -274,10 +272,9 @@ TEST_RESU(RESU=_F(NUME_ORDRE=60,
                   NOM_CHAM='DEPL',
                   NOEUD='N12',
                   NOM_CMP='PRE2',
-                  VALE_CALC= 1.12814470E+04,
+                  VALE_CALC=11281.6371197,
                   VALE_REFE=1.1200E4,
                   CRITERE='RELATIF',
-                  TOLE_MACHINE=1.E-4,       #TODO variabilite
                   PRECISION=0.050000000000000003,),
           )
 
@@ -287,10 +284,9 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                   NOM_CHAM='DEPL',
                   NOEUD='N12',
                   NOM_CMP='PRE2',
-                  VALE_CALC= 1.22692283E+04,
+                  VALE_CALC=12269.3444313,
                   VALE_REFE=1.2240E4,
                   CRITERE='RELATIF',
-                  TOLE_MACHINE=1.E-4,       #TODO variabilite
                   PRECISION=0.050000000000000003,),
           )
 
