@@ -80,14 +80,14 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres,&
     integer :: nbpari, nbparr, nbpark, nbpara
     parameter    ( nbpari=1 , nbparr=15 , nbpark=1, nbpara=17 )
     real(kind=8) :: frequ, amort, omeg2, masg, rigg
-    real(kind=8) :: factx, facty, factz, depi, xmastr
+    real(kind=8) :: factx, facty, factz, depi, xmastr(3)
     character(len=1) :: typmod
     character(len=19) :: prchno
     character(len=16) :: norm
     character(len=19) :: nomcha
     character(len=24) :: chamfl, kvec, nopara(nbpara)
     character(len=24) :: kvali, kvalr, kvalk
-    aster_logical :: lmasin, lnorm
+    aster_logical :: lnorm
     real(kind=8), pointer :: coef_mode(:) => null()
     real(kind=8), pointer :: fact(:) => null()
     integer, pointer :: deeq(:) => null()
@@ -111,9 +111,9 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres,&
     depi = r8depi()
     lmat(1) = 0
     lmat(2) = 0
-    lmasin = .false.
     lnorm = .false.
-    xmastr = 1.d0
+!   --- xmastr = [0,0,0] pour forcer les masses unitaires nulles sur les 3 directions
+    xmastr = [0.d0, 0.d0, 0.d0]
 !
 !     --- CREATION DU CONCEPT MODE_MECA DE SORTIE LE CAS ECHEANT ---
 !
@@ -229,8 +229,8 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres,&
         AS_ALLOCATE(vr=coef_mode, size=nbmode)
 !        --- ON NORMALISE LES DEFORMEES
         call vpnorm(norm, 'OUI', lmat(1), neq, nbmode,&
-                    zi(lddl), zr(lmod), zr(lvalr), lmasin, xmastr,&
-                    0, 0, coef_mode)
+                    zi(lddl), zr(lmod), zr(lvalr), xmastr,0,&
+                    0, coef_mode)
 !        --- ON STOCKE LES DEFORMEES
         call vpstor(-1, typmod, nomres, nbnuor, neq,&
                     zr(lmod), zc(1), nbnuor, nbpari, nbparr,&

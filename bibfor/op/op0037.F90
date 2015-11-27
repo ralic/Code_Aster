@@ -42,6 +42,7 @@ subroutine op0037()
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/lxlgut.h"
+#include "asterfort/massdir.h"
 #include "asterfort/mtdscr.h"
 #include "asterfort/posddl.h"
 #include "asterfort/pteddl.h"
@@ -75,7 +76,7 @@ subroutine op0037()
     integer :: nbpaft, nbpami, nbpamk, nbpamr, nbpamt, nbpara, nbpari
     integer :: nbpark, nbparr, nbtrou, ncmp, ncmpac, neq, npari
     integer :: npark, nparr, numddl, numnoe, tmod(1)
-    real(kind=8) :: xmastr
+    real(kind=8) :: dir(3), xmastr(3), maxmas, dmass
 !-----------------------------------------------------------------------
     parameter   ( nbpami=1 , nbpamr=15 , nbpamk=1, nbpamt=17 )
 !     PARAMETRES "MODE_FLAMB"
@@ -84,7 +85,7 @@ subroutine op0037()
     integer :: l1, l2, l3, lmasse, lraide, lamor, lddl
     real(kind=8) :: r8b
     complex(kind=8) :: c16b
-    aster_logical :: lmasin, lrefe, lbasm, lamo, lcmplx, lparam
+    aster_logical :: lrefe, lbasm, lamo, lcmplx, lparam
     character(len=1) :: typmod
     character(len=24) :: valk(4)
     character(len=8) :: modeou, modein, nomcmp(7), k8b, cmp, noma, mat1, mat2, mat3, noeud
@@ -120,6 +121,10 @@ subroutine op0037()
     lamo = .false.
     lcmplx= .false.
     lparam= .false.
+!
+    xmastr(1) = 0.d0
+    xmastr(2) = 0.d0
+    xmastr(3) = 0.d0
 !
     call getvid('  ', 'MODE', iocc=1, scal=modein, nbret=l)
 !
@@ -238,7 +243,6 @@ subroutine op0037()
     lmat(1) = 0
     lmat(2) = 0
     lddl = 1
-    lmasin = .true.
 !
 !     --- MATRICES DE REFERENCE DES MODES ---
     lrefe = .true.
@@ -295,7 +299,7 @@ subroutine op0037()
             call jeveuo(refe, 'L', lmode)
             noma = zk24(lmode )(1:8)
             nume = zk24(lmode+1)(1:14)
-            lmasin=.false.
+!           --- Ne pas calculer de masses unitaires pour ce cas
             goto 100
         endif
     endif
@@ -320,16 +324,23 @@ subroutine op0037()
 !
 !
 !     --- POUR LES MODES DE FLAMBAGE PAS DE MASSE UNITAIRE ---
-    if (typcon(1:10) .eq. 'MODE_FLAMB') then
-        xmastr=1.d0
-        lmasin=.false.
+    if (typcon(1:10) .eq. 'MODE_FLAMB') then 
         goto 100
-    endif
-    call vpmain(modele, mate, cara, xmastr)
-    if (xmastr .le. r8prem()) then
-        lmasin = .false.
+    end if
+    
+    maxmas = 0.d0
+    do i = 1, 3
+        dir(1) = 0.d0
+        dir(2) = 0.d0
+        dir(3) = 0.d0
+        dir(i) = 1.d0
+        call massdir(masse, dir, dmass)
+        xmastr(i) = dmass
+        maxmas = max(maxmas, dmass)
+    end do
+
+    if (maxmas .le. r8prem()) then
         call utmess('I', 'ALGELINE5_58')
-        xmastr = 1.d0
     endif
 !
 100 continue
@@ -680,12 +691,12 @@ subroutine op0037()
         else
             if (lparam) then
                 call vpnorm(norm, 'OUI', lmat(1), neq, nbmode,&
-                            zi(lddl), zr(lmod), zr(lvalr), lmasin, xmastr,&
-                            isign, numddl, zr(lcoef))
+                            zi(lddl), zr(lmod), zr(lvalr), xmastr, isign,&
+                            numddl, zr(lcoef))
             else
                 call vpnorm(norm, 'NON', lmat(1), neq, nbmode,&
-                            zi(lddl), zr(lmod), zr(lvalr), lmasin, xmastr,&
-                            isign, numddl, zr(lcoef))
+                            zi(lddl), zr(lmod), zr(lvalr), xmastr, isign,&
+                            numddl, zr(lcoef))
             endif
         endif
         call vpstor(-1, typmod, modeou, nbmode, neq,&

@@ -292,7 +292,7 @@ subroutine dtmeigen(sd_dtm_, sd_int_, oldcase, buffdtm, buffint)
         call jeveuo(base_jv , 'E', jbase)
         call jeveuo(kvalr   , 'E', vr=valr)
         call vpnorm('MASS_GENE', 'NON', lmatm, nbmode, nbmode,&
-                    zi(1), zr(jbase), valr, .false._1, 1.0d0,&
+                    zi(1), zr(jbase), valr, [0.d0,0.d0,0.d0],&
                     0, 0, coefr)
 !
 !       3 - Project the stiffness and damping matrices onto this basis

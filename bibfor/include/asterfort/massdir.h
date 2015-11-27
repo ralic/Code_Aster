@@ -15,23 +15,10 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-#include "asterf_types.h"
-!
 interface
-    subroutine vpnorm(norm, para, lmatr, neq, nbmode,&
-                      ddlexc, vecpro, resufr, xmastr, isign,&
-                      numddl, coef)
-        integer :: nbmode
-        integer :: neq
-        character(len=*) :: norm
-        character(len=*) :: para
-        integer :: lmatr
-        integer :: ddlexc(*)
-        real(kind=8) :: vecpro(neq, *)
-        real(kind=8) :: resufr(nbmode, *)
-        real(kind=8) :: xmastr(3)
-        integer :: isign
-        integer :: numddl
-        real(kind=8) :: coef(*)
-    end subroutine vpnorm
+    subroutine massdir(massmat, dir, dmass)
+        character(len=*), intent(in)   :: massmat
+        real(kind=8)    , intent(in)   :: dir(3)
+        real(kind=8)    , intent(out)  :: dmass
+    end subroutine massdir
 end interface

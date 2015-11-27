@@ -1,9 +1,10 @@
 subroutine vpnorm(norm, para, lmatr, neq, nbmode,&
-                  ddlexc, vecpro, resufr, lmasin, xmastr,&
-                  isign, numddl, coef)
+                  ddlexc, vecpro, resufr, xmastr,isign,&
+                  numddl, coef)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterc/r8prem.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -15,8 +16,7 @@ subroutine vpnorm(norm, para, lmatr, neq, nbmode,&
 !
     character(len=*) :: norm, para
     integer :: nbmode, neq, lmatr, ddlexc(*)
-    real(kind=8) :: vecpro(neq, *), resufr(nbmode, *), xmastr, coef(*)
-    aster_logical :: lmasin
+    real(kind=8) :: vecpro(neq, *), resufr(nbmode, *), xmastr(3), coef(*)
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -57,14 +57,13 @@ subroutine vpnorm(norm, para, lmatr, neq, nbmode,&
 !        'MASS_EFFE_DX'    , 'MASS_EFFE_DY'    , 'MASS_EFFE_DZ'    ,
 !        'FACT_PARTICI_DX' , 'FACT_PARTICI_DY' , 'FACT_PARTICI_DZ' ,
 !        'MASS_EFFE_UN_DX' , 'MASS_EFFE_UN_DY' , 'MASS_EFFE_UN_DZ'
-! IN  LMASIN : CALCUL DES MASSES MODALES UNITAIRES
 ! IN  XMASTR : MASSE DE LA STRUCTURE
 ! OUT COEF   : COEFFICIENTS
 !     ------------------------------------------------------------------
 !
     character(len=24) :: valk
 !
-    real(kind=8) :: xmn, xx1, xx2, xx3, xnorm
+    real(kind=8) :: xmn, xx1, xx2, xx3, xnorm, epsi
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
@@ -74,6 +73,7 @@ subroutine vpnorm(norm, para, lmatr, neq, nbmode,&
 !
 !-----------------------------------------------------------------------
     call jemarq()
+    epsi = r8prem()
     if (norm .eq. 'AVEC_CMP' .or. norm(1:4) .eq. 'EUCL') then
 !
 !     --- NORMALISATION SUR LES DDL NON EXCLUS
@@ -166,13 +166,15 @@ subroutine vpnorm(norm, para, lmatr, neq, nbmode,&
         call utmess('F', 'ALGELINE4_77', sk=valk)
 !
     endif
-    if (lmasin) then
-        do 30 im = 1, nbmode
-            resufr(im,13) = resufr(im,7) / xmastr
-            resufr(im,14) = resufr(im,8) / xmastr
-            resufr(im,15) = resufr(im,9) / xmastr
- 30     continue
-    endif
+!
+    do im = 1, nbmode
+        resufr(im,13) = 0.d0
+        resufr(im,14) = 0.d0
+        resufr(im,15) = 0.d0
+        if (xmastr(1).gt.epsi) resufr(im,13) = resufr(im,7) / xmastr(1)
+        if (xmastr(2).gt.epsi) resufr(im,14) = resufr(im,8) / xmastr(2)
+        if (xmastr(3).gt.epsi) resufr(im,15) = resufr(im,9) / xmastr(3)
+    end do
 !
     if (isign .eq. 0) then
     else if (isign .eq. 1) then
