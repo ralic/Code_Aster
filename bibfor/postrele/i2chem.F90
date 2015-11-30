@@ -337,6 +337,8 @@ subroutine i2chem(nomail, nbparm)
                 zi(kmail2+sgcour-debchm) = 0
             endif
         end do
+        zi(kmail1-1+n1)=0
+        zi(kmail2-1+n1)=0
     end do
     call jedetr('&INTSTRUCT')
     call jedetr('&INTMAIL1')
@@ -387,7 +389,6 @@ subroutine i2chem(nomail, nbparm)
     1010 format (3x,'COURBE DEFINIE PAR ',i2,' CHEMIN(S)')
     1020 format (5x,'CHEMIN NUMERO ',i2,' DE TYPE "ARC OUVERT"')
     1030 format (5x,'CHEMIN NUMERO ',i2,' DE TYPE "CYCLE"')
-! 1040 FORMAT(9X,'MAILLE  ENCADREE PAR MAILLE_1  MAILLE_2')
     1040 format (9x,'MAILLES DEFINISSANT LE CHEMIN:')
     1050 format (10x,a8)
     1052 format (10x,a8,14x,a8)

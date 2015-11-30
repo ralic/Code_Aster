@@ -13,7 +13,6 @@ subroutine tbajpa(nomta, nbpar, nompar, typpar)
 #include "asterfort/utmess.h"
     integer :: nbpar
     character(len=*) :: nomta, nompar(*), typpar(*)
-! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,8 +36,7 @@ subroutine tbajpa(nomta, nbpar, nompar, typpar)
 ! IN  : NOMPAR : NOMS DES PARAMETRES.
 ! IN  : TYPPAR : TYPES DES PARAMETRES.
 ! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-    integer :: iret, nbpara, nblign,   nbpm, nbpu
+    integer :: iret, nbpara, nblign,   nbpm, nbpu, nbligu
     integer :: ndim, jtblp, i, j, k, ideb, jnjv, nbpar1
     character(len=1) :: base
     character(len=3) :: type
@@ -66,7 +64,8 @@ subroutine tbajpa(nomta, nbpar, nompar, typpar)
 !
     call jeveuo(nomtab//'.TBNP', 'E', vi=tbnp)
     nbpara = tbnp(1)
-    nblign = max ( tbnp(2) , 10 )
+    nbligu = tbnp(2)
+    nblign = max (nbligu , 10 )
 !
 ! ----------------------------------------------------------------------
 !
@@ -97,6 +96,7 @@ subroutine tbajpa(nomta, nbpar, nompar, typpar)
             nomjv = nomtab(1:17)//'LG.'//knume
             call jecreo(nomjv, base//' V I')
             call jeecra(nomjv, 'LONMAX', nblign)
+            call jeecra(nomjv, 'LONUTI', 0)
             call jeveuo(nomjv, 'E', jnjv)
             do 12 j = 1, nblign
                 zi(jnjv+j-1) = 0
@@ -123,7 +123,7 @@ subroutine tbajpa(nomta, nbpar, nompar, typpar)
         nomjv = nomtab(1:17)//'LG.'//knume
         call jelira(nomjv, 'LONMAX', nblign)
 !
-!        --- ON VERIFIE QUE LES PARAMETRES N'EXISTENT PAS ---
+!       -- on n'ajoute que les parametres qui n'existent pas :
         nbpar1 = 0
         do 20 i = 1, nbpar
             inpar = nompar(i)
@@ -161,12 +161,13 @@ subroutine tbajpa(nomta, nbpar, nompar, typpar)
             type = typpar(i)
             call jecreo(nomjv, base//' V '//type)
             call jeecra(nomjv, 'LONMAX', nblign)
-            call jeecra(nomjv, 'LONUTI', 0)
+            call jeecra(nomjv, 'LONUTI', nbligu)
             call jeveuo(nomjv, 'E', iret)
             zk24(jtblp+4*(j-1)+2) = nomjv
             nomjv = nomtab(1:17)//'LG.'//knume
             call jecreo(nomjv, base//' V I')
             call jeecra(nomjv, 'LONMAX', nblign)
+            call jeecra(nomjv, 'LONUTI', nbligu)
             call jeveuo(nomjv, 'E', jnjv)
             do 34 k = 1, nblign
                 zi(jnjv+k-1) = 0
