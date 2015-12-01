@@ -262,19 +262,6 @@ Conseils :
    %(k1)s
 """),
 
-    73: _(u"""
-  Le jacobien est négatif.
-"""),
-
-    74: _(u"""
- élément  :  %(i1)d
- jacobien :  %(r1)f
- Attention, le calcul d'erreur est faux si la maille n'est pas correctement orientée.
-"""),
-
-
-
-
     77: _(u"""
 Problème lors de la création du champ par éléments (%(k1)s).
   Ce champ est associé au paramètre %(k3)s de l'option: '%(k2)s'
@@ -371,7 +358,7 @@ Risques et conseils :
   Type de la valeur de référence incompatible avec le type des valeurs du champ.
 """),
 
-   
+
 
     97: _(u"""
   Mot-clé POINT interdit pour le champ au noeud issu de %(k1)s à l'ordre %(i1)d:

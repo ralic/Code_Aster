@@ -45,15 +45,12 @@ subroutine utjac(l2d, geom, ipg, idfde, niv,&
 #include "asterfort/matini.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
-    integer :: ipg, idfde, niv, ifm, nno, ia1, ia2
+    integer :: ipg, idfde, niv, ifm, nno
     real(kind=8) :: jacob, geom(*)
     aster_logical :: l2d
 !
-    real(kind=8) :: valr
-!
 ! DECLARATION VARIABLES LOCALES
     integer :: i, i1, j, kp, idfdk, idfdn
-    integer :: vali
     real(kind=8) :: dxde, dxdk, dyde, dydk, xp, yp, dfrde, dfrdk, dfrdn, g(3, 3)
     real(kind=8) :: j11, j21, j31
 !
@@ -107,15 +104,6 @@ subroutine utjac(l2d, geom, ipg, idfde, niv,&
         j31 = g(2,1) * g(3,2) - g(3,1) * g(2,2)
         jacob = g(1,1)*j11 + g(1,2)*j21 + g(1,3)*j31
 !
-    endif
-!
-! EN 2D ON NE TESTE PAS LE SIGNE DU JACOBIEN
-    if (.not.l2d .and. (jacob.lt.0.d0)) then
-        call utmess('A+', 'CALCULEL6_73')
-        call tecael(ia1, ia2, noms=0)
-        vali = zi(ia1)
-        valr = jacob
-        call utmess('A', 'CALCULEL6_74', si=vali, sr=valr)
     endif
 !
 ! CALCUL DU SIGNE DU JACOBIEN + AFFICHAGE SI NECESSAIRE
