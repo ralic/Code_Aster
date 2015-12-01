@@ -100,6 +100,10 @@ RESU2=CALC_CHAMP(reuse =RESU2,
                  CONTRAINTE=('SIGM_ELNO','SIGM_NOEU',),
                  CRITERES=('SIEQ_ELNO','SIEQ_ELGA','SIEQ_NOEU',),);
 
+RESU3=CALC_ERREUR(
+                  RESULTAT=RESU2,
+                  OPTION='ERME_ELEM',);
+
 IMPR_RESU(FORMAT='MED',
           UNITE=81,
           RESU=_F(MAILLAGE=MAIL2,

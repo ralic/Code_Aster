@@ -103,6 +103,9 @@ RESUTRQ2=CALC_CHAMP(reuse=RESUTRQ2,
                     CONTRAINTE='SIGM_ELNO',
                     DEFORMATION='EPSI_ELNO',);
 
+RESU2=CALC_ERREUR(RESULTAT=RESUTRQ2,
+                  OPTION='ERME_ELEM',);
+
 RESUTRQ2=CALC_ERREUR(reuse=RESUTRQ2,
                      RESULTAT=RESUTRQ2,
                      OPTION='ERME_ELEM',);

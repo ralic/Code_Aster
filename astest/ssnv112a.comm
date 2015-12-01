@@ -97,14 +97,16 @@ EVOL=STAT_NON_LINE(MODELE=MO,INFO=2,
 #            IL FAUDRA COMPLETER LE MAILLAGE UN JOUR. G. NICOLAS.
 EVOL=CALC_CHAMP(reuse=EVOL,RESULTAT=EVOL,CRITERES=('SIEQ_ELNO'),CONTRAINTE=('SIGM_ELNO'))
 
-
-EVOL=CALC_ERREUR(reuse =EVOL,
-                 RESULTAT=EVOL,
-                 OPTION=('ERME_ELEM','ERME_ELNO'));
-
 EVOL=CALC_CHAMP(reuse =EVOL,
              RESULTAT=EVOL,
              CONTRAINTE='SIGM_NOEU',CRITERES='SIEQ_NOEU');
+
+EVOL2=CALC_ERREUR(RESULTAT=EVOL,
+                  OPTION='ERME_ELEM',);
+
+EVOL=CALC_ERREUR(reuse=EVOL,
+                 RESULTAT=EVOL,
+                 OPTION=('ERME_ELEM','ERME_ELNO',),);
 
 #--------------------------------------------------------------
 #       COMPARAISON DES RESULTATS A LA SOLUTION ANALYTIQUE
@@ -312,6 +314,17 @@ TEST_RESU(RESU=(_F(GROUP_NO='A',
 TEST_RESU(RESU=_F(INST=1.0,
                   POINT=1,
                   RESULTAT=EVOL,
+                  NOM_CHAM='ERME_ELEM',
+                  NOM_CMP='NUEST',
+                  VALE_CALC=0.14875374567466,
+                  CRITERE='RELATIF',
+                  MAILLE='M1',
+                  ),
+          )
+
+TEST_RESU(RESU=_F(INST=1.0,
+                  POINT=1,
+                  RESULTAT=EVOL2,
                   NOM_CHAM='ERME_ELEM',
                   NOM_CMP='NUEST',
                   VALE_CALC=0.14875374567466,
