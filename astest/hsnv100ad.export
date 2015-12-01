@@ -1,9 +1,0 @@
-P time_limit 60
-P memory_limit 512
-P ncpus 1
-P mpi_nbcpu 1
-P mpi_nbnoeud 1
-P testlist verification sequential
-
-F comm hsnv100ad.comm D 1
-F mmed hsnv100l.mmed D 20
