@@ -263,13 +263,6 @@ class MEMBTR3(Element):
             para_out=((SP.PMATUUR, MMATUUR), ),
         ),
 
-        OP.MASS_MECA_DIAG(te=439,
-            para_in=((SP.PCACOQU, CCACOQU), (SP.PGEOMER, NGEOMER),
-                     (SP.PMATERC, LC.CMATERC), (OP.MASS_MECA_DIAG.PVARCPR, LC.ZVARCPG),
-                     ),
-            para_out=((SP.PMATUUR, MMATUUR), ),
-        ),
-
         OP.MASS_MECA_EXPLI(te=439,
             para_in=((SP.PCACOQU, CCACOQU), (SP.PGEOMER, NGEOMER),
                      (SP.PMATERC, LC.CMATERC), (OP.MASS_MECA_EXPLI.PVARCPR, LC.ZVARCPG),
