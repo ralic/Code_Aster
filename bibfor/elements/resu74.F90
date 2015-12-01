@@ -235,7 +235,6 @@ subroutine resu74(tran, nomres)
         call dcopy(6*nbchoc*(nbsau2-1), zr(jdch2+6*nbchoc), 1, zr(jdcho+ 6*nbchoc*nbinst), 1)
         call jedetr(nomres//'           .DLOC')
 
-        call jedetr(nomres//'           .DESC')
         call jedetr(nomres//'           .INTI')
         call jedetr(nomres//'           .NCHO')
         call jedetr(nomres//'           .SST')       
@@ -261,6 +260,9 @@ subroutine resu74(tran, nomres)
         call copvis(nbchoc*(nbsau2-1), zi(jicho2+nbchoc), zi(jicho+ nbchoc*nbinst))
         call jedetr(nomres//'           .ICHO')
     endif
+
+    call jedetr(nomres//'           .DESC')
+
 !
 !     --- DUPLICATION ---
 !
