@@ -3,6 +3,8 @@ subroutine mdrede(numddl, nbrede, nbmode, bmodal, neq,&
     implicit none
 #include "jeveux.h"
 #include "asterc/gettco.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/getvem.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
@@ -17,6 +19,7 @@ subroutine mdrede(numddl, nbrede, nbmode, bmodal, neq,&
 #include "asterfort/posddl.h"
 #include "asterfort/resmod.h"
 #include "asterfort/utmess.h"
+#include "asterfort/utnono.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
@@ -25,6 +28,7 @@ subroutine mdrede(numddl, nbrede, nbmode, bmodal, neq,&
     real(kind=8) :: dplred(nbrede, nbmode, *), bmodal(neq, *)
     character(len=8) :: fonred(nbrede, *)
     character(len=14) :: numddl
+    character(len=24) :: nomgr1
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -58,7 +62,8 @@ subroutine mdrede(numddl, nbrede, nbmode, bmodal, neq,&
 !
 !
     integer :: i, nunoe, nuddl, icomp
-    character(len=8) :: noeu, comp, fonc, sst, noecho(3)
+    character(len=8) :: noeu, comp, fonc, sst, noecho(3), grno
+    character(len=8) :: maillage
     character(len=14) :: nume
     character(len=16) :: typnum
     character(len=24) :: mdgene, mdssno, numero
@@ -68,7 +73,7 @@ subroutine mdrede(numddl, nbrede, nbmode, bmodal, neq,&
 !
 !-----------------------------------------------------------------------
     integer :: ibid, iret, j
-    integer :: nc, nf, nn, ns
+    integer :: ns, gno
     real(kind=8), pointer :: dplcho(:) => null()
     character(len=24), pointer :: refe(:) => null()
 !-----------------------------------------------------------------------
@@ -85,10 +90,21 @@ subroutine mdrede(numddl, nbrede, nbmode, bmodal, neq,&
 !
     do 10 i = 1, nbrede
 !
-        call getvtx('RELA_EFFO_DEPL', 'NOEUD', iocc=i, scal=noeu, nbret=nn)
-        call getvtx('RELA_EFFO_DEPL', 'NOM_CMP', iocc=i, scal=comp, nbret=nc)
-        call getvid('RELA_EFFO_DEPL', 'RELATION', iocc=i, scal=fonc, nbret=nf)
+        call getvtx('RELA_EFFO_DEPL', 'NOEUD', iocc=i, scal=noeu)
+        call getvtx('RELA_EFFO_DEPL', 'GROUP_NO', iocc=i, scal=grno, nbret=gno)
+        call getvtx('RELA_EFFO_DEPL', 'NOM_CMP', iocc=i, scal=comp)
+        call getvid('RELA_EFFO_DEPL', 'RELATION', iocc=i, scal=fonc)
         call getvtx('RELA_EFFO_DEPL', 'SOUS_STRUC', iocc=i, scal=sst, nbret=ns)
+!
+        if (gno .ne. 0) then
+            call dismoi('NOM_MAILLA', numddl, 'NUME_DDL', repk=maillage)
+            call getvem(maillage, 'GROUP_NO', 'RELA_EFFO_DEPL', 'GROUP_NO', i,&
+                        1, 1, nomgr1, ibid)
+            call utnono(' ', maillage, 'NOEUD', nomgr1, noeu, iret)
+!             # Si le GROUP_NO contient plus d'un noeud
+            if (iret .eq. 1)  call utmess('F','ALGORITH5_57', sk=nomgr1)
+        end if
+!
 !
         if (comp(1:2) .eq. 'DX') icomp = 1
         if (comp(1:2) .eq. 'DY') icomp = 2
@@ -130,20 +146,20 @@ subroutine mdrede(numddl, nbrede, nbmode, bmodal, neq,&
             goto 10
         endif
 !
-        do 11 j = 1, nbmode
+        do j = 1, nbmode
             dplred(i,j,1) = 0.d0
             dplred(i,j,2) = 0.d0
             dplred(i,j,3) = 0.d0
             dplred(i,j,4) = 0.d0
             dplred(i,j,5) = 0.d0
             dplred(i,j,6) = 0.d0
-11      continue
+        end do
 !
 ! ----- CALCUL DIRECT
         if (typnum .eq. 'NUME_DDL_SDASTER') then
-            do 13 j = 1, nbmode
+            do j = 1, nbmode
                 dplred(i,j,icomp) = bmodal(nuddl,j)
-13          continue
+            end do
 !
 ! ----- CALCUL PAR SOUS-STRUCTURATION
         else if (typnum(1:13).eq.'NUME_DDL_GENE') then
@@ -153,9 +169,9 @@ subroutine mdrede(numddl, nbrede, nbmode, bmodal, neq,&
             noecho(3) = nume
             call resmod(bmodal, nbmode, neq, numero, mdgene,&
                         noecho,dplcho)
-            do 12 j = 1, nbmode
+            do j = 1, nbmode
                 dplred(i,j,icomp) = dplcho(j+(icomp-1)*nbmode)
-12          continue
+            end do
             AS_DEALLOCATE(vr=dplcho)
         endif
 !
@@ -163,7 +179,7 @@ subroutine mdrede(numddl, nbrede, nbmode, bmodal, neq,&
         fonred(i,2) = comp
         fonred(i,3) = fonc
 !
-10  end do
+10  continue
 !
     call jedema()
 end subroutine

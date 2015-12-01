@@ -187,6 +187,10 @@ On n'a pas trouvé le ddl DZ pour le noeud  %(k1)s .
  le couplage fluide-structure n'a pas été pris en compte en amont.
 """),
 
+    57 : _(u"""
+Le GROUP_NO %(k1)s ne doit pas contenir plus d'un noeud.
+"""),
+
     63 : _(u"""
  RELA_EFFO_DEPL par sous-structuration, le mot-clé SOUS_STRUC est obligatoire
 """),
@@ -208,8 +212,8 @@ On n'a pas trouvé le ddl DZ pour le noeud  %(k1)s .
 """),
 
     81 : _(u"""
-  L'utilisation de %(k1)s avec DYNA_VIBRA n'est pas validée pour le schéma 
-  d'intégration %(k2)s. 
+  L'utilisation de %(k1)s avec DYNA_VIBRA n'est pas validée pour le schéma
+  d'intégration %(k2)s.
 """),
 
     82 : _(u"""
