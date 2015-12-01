@@ -408,19 +408,19 @@ subroutine rcstoc(nommat, nomrc, noobrc, nbobj, valr, valc,&
         endif
         nbmax = 0
         do 149 ii = 1, nbk
-            do 150 i = 1, nbk
-                if ((valk(nbr+nbc+i)(1:6) .eq. 'SIGM  ') .or.&
-                    (valk(nbr+nbc+i)(1:7) .eq. 'SIGM_F1') .or.&
-                    (valk(nbr+nbc+i)(1:7) .eq. 'SIGM_F2') .or.&
-                    (valk(nbr+nbc+i)(1:7) .eq. 'SIGM_F3') .or.&
-                    (valk(nbr+nbc+i)(1:7) .eq. 'SIGM_F4') .or.&
-                    (valk(nbr+nbc+i)(1:7) .eq. 'SIGM_C ')) then
-                    nomfct = valk(nbr+nbc+nbk+i)
+            do i = 1, nbk
+                if ((valk(nbr+nbc+ii)(1:6) .eq. 'SIGM  ') .or.&
+                    (valk(nbr+nbc+ii)(1:7) .eq. 'SIGM_F1') .or.&
+                    (valk(nbr+nbc+ii)(1:7) .eq. 'SIGM_F2') .or.&
+                    (valk(nbr+nbc+ii)(1:7) .eq. 'SIGM_F3') .or.&
+                    (valk(nbr+nbc+ii)(1:7) .eq. 'SIGM_F4') .or.&
+                    (valk(nbr+nbc+ii)(1:7) .eq. 'SIGM_C ')) then
                     goto 151
                 endif
-150          continue
+            enddo
             call utmess('F', 'MODELISA6_70', sk=nomcle(ii))
-151          continue
+151         continue
+            nomfct = valk(nbr+nbc+nbk+ii)
 !
             call jeveuo(nomfct//'.PROL', 'L', vk24=prol)
             if (prol(1)(1:1) .eq. 'F') then
