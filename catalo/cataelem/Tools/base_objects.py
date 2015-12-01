@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -879,7 +879,7 @@ class AbstractEntityStore(object):
         in the `package` under `cataelem`, objects of `subTypes` are named.
         `only_mods` is useful for the unittests."""
         assert self.entityType, "must be subclassed!"
-        types = force_tuple(self.entityType)
+        self.entityType = force_tuple(self.entityType)
         cataelemdir = osp.dirname(osp.dirname(__file__))
         l_mod = [osp.splitext(osp.basename(modname))[0]
                  for modname in glob(osp.join(cataelemdir, package, '*.py'))]
@@ -901,12 +901,22 @@ class AbstractEntityStore(object):
                 if name in ignore_names:
                     continue
                 obj = getattr(mod, name)
-                if type(obj) in types:
-                    self._entities[name] = obj
-                elif (type(obj) is type and obj not in types and issubclass(obj, types)):
-                    self._entities[name] = obj()
-                elif type(obj) in self.subTypes:
-                    obj.setName(name)
+                self._register(name, obj)
+
+    def _register(self, name, obj):
+        """Register the object if its type is supported"""
+        if type(obj) in self.entityType:
+            self._entities[name] = obj
+        elif (type(obj) is type and obj not in self.entityType
+              and issubclass(obj, self.entityType)):
+            self._entities[name] = obj()
+        elif type(obj) in self.subTypes:
+            obj.setName(name)
+        elif type(obj) is dict:
+            if name == '__builtins__':
+                return
+            for key, val in obj.items():
+                self._register(key, val)
 
     def getDict(self):
         """Return the elements dict"""
