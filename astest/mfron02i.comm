@@ -24,7 +24,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 import os
 
-os.system("mfront --obuild DruckPragEcroLin.mfront --interface=aster")
+os.system("mfront --obuild mfron02i.mfront --interface=aster")
 os.system("cp src/libAsterBehaviour.so druckprag.so")
 assert os.path.isfile("druckprag.so")
 

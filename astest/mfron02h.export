@@ -7,4 +7,4 @@ P testlist verification sequential
 
 F comm mfron02h.comm D 1
 F libr mfron02h.22 D 22
-F nom  BurgerAgeing.mfront   D 0
+F nom  mfron02c.mfront   D 0

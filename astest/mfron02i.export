@@ -8,4 +8,4 @@ P testlist verification sequential
 F comm mfron02i.comm D 1
 F datg wtnp114a.datg D 16
 F mmed wtnp114a.mmed D 20
-F nom DruckPragEcroLin.mfront D 0
+F nom mfron02i.mfront D 0

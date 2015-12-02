@@ -17,7 +17,7 @@ POURSUITE(CODE='OUI',
           LANG='EN')
 
 
-MAT3=INCLUDE_MATERIAU(FICHIER='materiau_test.data',
+MAT3=INCLUDE_MATERIAU(FICHIER='efica01a.data',
                       INFO=2)
 
 CHMAT3=AFFE_MATERIAU(  MAILLAGE=MAILLA3,
