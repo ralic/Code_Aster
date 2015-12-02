@@ -90,17 +90,17 @@ subroutine vp2ini(ldynam, lmasse, ldynfa, neq, nbvect,&
     character(len=19) :: k19bid, matass, chcine, criter
     integer :: iret
 !     -----------------------------------------------------------------
-    character(len=24) :: work(4)
-    cbid = dcmplx(0.d0, 0.d0)
-    data work(1)/'&&VP2INI.VECTEUR_INITIAL'/
-    data work(2)/'&&VP2INI.VECTEUR_MX     '/
-    data work(3)/'&&VP2INI.VECTEURS_KX    '/
-    data work(4)/'&&VP2INI.RDIAK          '/
-    data vale   /'                   .VALM'/
+    character(len=24), parameter :: work(4) = (&
+        &/'&&VP2INI.VECTEUR_INITIAL', &
+        & '&&VP2INI.VECTEUR_MX     ', &
+        & '&&VP2INI.VECTEURS_KX    ', &
+        & '&&VP2INI.RDIAK          '/)
 !     -----------------------------------------------------------------
+    vale = '                   .VALM'
+    cbid = dcmplx(0.d0, 0.d0)
 !
 ! INIT. OBJETS ASTER
-    matass=zk24(zi(ldynfa+1))
+    matass=zk24(zi(ldynfa+1))(1:19)
     chcine=' '
     criter=' '
     k19bid=' '
@@ -119,7 +119,7 @@ subroutine vp2ini(ldynam, lmasse, ldynfa, neq, nbvect,&
     ivecd = 1
 !
     ivecd = ivecd + nstoc
- 
+
     rmin = 100.d0*r8miem()
 
 ! TEST DU SHIFT EN CAS DE PRE-DETECTION DE MODES RIGIDES
