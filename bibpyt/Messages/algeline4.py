@@ -23,7 +23,18 @@ cata_msg = {
  Seules les méthodes de résolution LDLT, MUMPS et MULT_FRONT sont autorisées.
 """),
 
-
+ 2 : _(u"""
+ Solveur modal TRI_DIAG + option de filtrage des modes rigides:
+ Le shift utilisé pour poursuivre le calcul modal est quasi-nul: shift=%(r1)g.
+ Cela va perturber le calcul modal. Ce problème aurait dû être détecté automatiquement
+ et le shift aurait dû être décalé.
+ 
+ Conseils :
+   * Vérifier votre mise  en données concernant les paramètres de décalage (PREC_SHIFT, NMAX_ITER_SHIFT) ou concernant la
+      détection de singularité (SOLVEUR/NPREC).
+   * Vous pouvez aussi décaler manuellement le shift via les valeurs 'CENTRE' ou 'BANDE' du mot-clé OPTION.
+   * Vous pouvez aussi relancer le même calcul en changeant de solveur modal (par exemple avec METHODE='SORENSEN').
+"""),
 
     3 : _(u"""
  Solveur GCPC :

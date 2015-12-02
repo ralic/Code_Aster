@@ -4,6 +4,7 @@ subroutine vp2ini(ldynam, lmasse, ldynfa, neq, nbvect,&
                   omeshi, solveu)
     implicit none
 #include "jeveux.h"
+#include "asterc/r8miem.h"
 #include "asterfort/ggubs.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -77,7 +78,7 @@ subroutine vp2ini(ldynam, lmasse, ldynfa, neq, nbvect,&
 !
 !
 !     -----------------------------------------------------------------
-    real(kind=8) :: ai, coef, bi, xikxi, xjkxi
+    real(kind=8) :: ai, coef, bi, xikxi, xjkxi, invome, rmin
     real(kind=8) :: valr(2)
     real(kind=8) :: dseed
     complex(kind=8) :: cbid
@@ -118,8 +119,20 @@ subroutine vp2ini(ldynam, lmasse, ldynfa, neq, nbvect,&
     ivecd = 1
 !
     ivecd = ivecd + nstoc
+ 
+    rmin = 100.d0*r8miem()
+
+! TEST DU SHIFT EN CAS DE PRE-DETECTION DE MODES RIGIDES
+    if (nstoc.ge.1) then
+        if (abs(omeshi).lt.rmin) then
+            valr(1)=omeshi
+            call utmess('F', 'ALGELINE4_2', nr=1, valr=valr)
+        else
+            invome=1.d0/omeshi
+        endif
+    endif
     do isto = 1, nstoc
-        alpha(isto) = 1.d0/omeshi
+        alpha(isto) = invome
         alpha(isto) = -alpha(isto)
         beta(isto) = 0.d0
         lkxsto = lkx + (isto-1)*neq
