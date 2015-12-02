@@ -457,7 +457,7 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm,&
         agrel = zi(jceld-1+zi(jceld-1+4+grel)+8)
         mod = zi(jceld-1+zi(jceld-1+4+grel)+2)
 !
-        if (mod .ne. 0) then
+        if ((mod .ne. 0) .and. (grel .ne. 0)) then
 !
             call jeveuo(jexnum('&CATA.TE.MODELOC', mod), 'L', amodlo)
 !
