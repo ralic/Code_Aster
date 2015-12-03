@@ -252,10 +252,10 @@ MODSTA=MODE_STATIQUE(  MATR_RIGI=MATRRIGI,
                      AVEC_CMP = ('DX','DY','DZ','DRX','DRY','DRZ'),
                                  ));
 
-BAMO=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODE,
-                                NMAX_MODE=0,),
-                             _F(MODE_INTF=MODSTA,
+BAMO=DEFI_BASE_MODALE(RITZ=(_F(MODE_INTF=MODSTA,
                                 NMAX_MODE=1999,),
+                             _F(MODE_MECA=MODE,
+                                NMAX_MODE=0,),
                              ),
                        INTERF_DYNA=INTERDYN,
                        NUME_REF=NUMEROTA,);

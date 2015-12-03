@@ -30,7 +30,7 @@
 #
 #123678901234567890123456789012345678901234567890123456789012345678901
 #
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), 
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
       DEBUG=_F(SDVERI='OUI'))
 
 #
@@ -188,9 +188,9 @@ MODESTA2=MODE_STATIQUE(  MATR_RIGI=RAID_2,
 #  CALCUL DE LA BASE MODALE DES SOUS-STRUCTURES
 
 
-BAMO1_CL=DEFI_BASE_MODALE( RITZ=( _F( MODE_MECA = MODES_1),
-                          _F( MODE_INTF = MODESTA1,
-                                    NMAX_MODE = 999)),
+BAMO1_CL=DEFI_BASE_MODALE( RITZ=(_F( MODE_INTF = MODESTA1,
+                                      NMAX_MODE = 999), 
+                                 _F( MODE_MECA = MODES_1),),
                            INTERF_DYNA=LINT1_CL,
                         NUME_REF=NUMDDL_1,
                         SOLVEUR=_F(METHODE='MUMPS'),)
@@ -346,7 +346,7 @@ MODGLO2=REST_SOUS_STRUC(   RESU_GENE=RESGEN,
 MOGLOEL=REST_SOUS_STRUC(   RESU_GENE=RESGEL,
                            SOUS_STRUC='CARRE2',
                            TOUT_ORDRE='OUI',
-                            TOUT_CHAM='OUI')                            
+                            TOUT_CHAM='OUI')
 #
 #
 SQUELBIS=DEFI_SQUELETTE(  MODELE_GENE=MODEGE,
@@ -734,7 +734,7 @@ TEST_RESU(RESU=(_F(NUME_MODE=99,
                    NOEUD='N22',
                    NOM_CMP='DZ',
                    VALE_CALC=1.1640440451176,
-                   
+
                    CRITERE='RELATIF',
                    ),
                 _F(NUME_MODE=99,
@@ -743,7 +743,7 @@ TEST_RESU(RESU=(_F(NUME_MODE=99,
                    NOEUD='N22',
                    NOM_CMP='DZ',
                    VALE_CALC=-2.4977605189562002E-4,
-                   
+
                    CRITERE='RELATIF',
                    ),
                 ),

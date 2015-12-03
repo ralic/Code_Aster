@@ -3,6 +3,7 @@ subroutine refe99(nomres)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
+#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
@@ -57,6 +58,7 @@ subroutine refe99(nomres)
     integer :: i, ioc1, ioc3, ioc4, ioc5, ier, ibid, ibmo, imint, inmax
     integer :: ltmome, nbg, nbmome, ltnbmo, ltnbmax, nbli, nbmax, vali(2)
     integer :: nbtot, nbold(1), nbmod1, nbmod2, nbmout, nbmodo(1)
+    integer :: nbmm, nbbm, nbmi, ioccmi, ioccbase
 !
     real(kind=8) :: rbid
     complex(kind=8) :: cbid
@@ -169,10 +171,24 @@ subroutine refe99(nomres)
 !
     if (ioc3 .gt. 0) then
 !
+    ASSERT(ioc3.le.2)
+    do i = 1, ioc3
+        call getvid('RITZ', 'MODE_MECA'  , iocc=i, nbval=0, nbret=nbmm)
+        call getvid('RITZ', 'BASE_MODALE', iocc=i, nbval=0, nbret=nbbm)
+        call getvid('RITZ', 'MODE_INTF'  , iocc=i, nbval=0, nbret=nbmi)
+        write(6,*)'nbmm=',nbmm
+        write(6,*)'nbbm=',nbbm
+        write(6,*)'nbmi=',nbmi
+        if (nbmi .ne. 0) ioccmi=i
+        if ((nbmm .ne. 0) .or. (nbbm .eq. -1)) ioccbase=i
+    end do
+    write(6,*)'ioccmi=',ioccmi
+    write(6,*)'ioccbase=',ioccbase
+!
         noseul=.false.
-        call getvid('RITZ', 'MODE_MECA', iocc=1, nbval=0, nbret=nbg)
+        call getvid('RITZ', 'MODE_MECA', iocc=ioccbase, nbval=0, nbret=nbg)
         nbg = -nbg
-        call getvid('RITZ', 'MODE_INTF', iocc=2, nbval=0, nbret=ier)
+        call getvid('RITZ', 'MODE_INTF', iocc=ioccmi, nbval=0, nbret=ier)
         if ((ier.gt.0) .or. (nbg.gt.1)) noseul=.true.
 !
 !       Reference numbering is required in case more than one modal base is given
@@ -187,8 +203,8 @@ subroutine refe99(nomres)
             call getvid('  ', 'INTERF_DYNA', iocc=1, scal=intf, nbret=ier)
         endif
 !
-        call getvid('RITZ', 'BASE_MODALE', iocc=1, scal=resul1, nbret=ibmo)
-        call getvid('RITZ', 'MODE_INTF', iocc=2, scal=resul2, nbret=imint)
+        call getvid('RITZ', 'BASE_MODALE', iocc=ioccbase, scal=resul1, nbret=ibmo)
+        call getvid('RITZ', 'MODE_INTF', iocc=ioccmi, scal=resul2, nbret=imint)
 !
 !       BASE_MODALE kw treatment (with INTERF_DYNA and MODE_INTF on the 2nd occurence)
         if (ibmo .ne. 0) then
@@ -196,17 +212,17 @@ subroutine refe99(nomres)
             call dismoi('NB_MODES_TOT', resul1, 'RESULTAT', repi=nbmod1)
         else
 !           MODE_MECA kw treatment, similar to what is done for the "classique" case
-            call getvid('RITZ', 'MODE_MECA', iocc=1, nbval=0, nbret=nbmome)
+            call getvid('RITZ', 'MODE_MECA', iocc=ioccbase, nbval=0, nbret=nbmome)
             nbmome = -nbmome
 !
             call wkvect('&&REFE99.LIST.MODE_MECA', 'V V K8', nbmome, ltmome)
             call wkvect('&&REFE99.LIST.NBMOD', 'V V I', nbmome, ltnbmo)
             call wkvect('&&REFE99.LIST.NBMODMAX', 'V V I', nbmome, ltnbmax)
 !
-            call getvid('RITZ', 'MODE_MECA', iocc=1, nbval=nbmome, vect=zk8(ltmome),&
+            call getvid('RITZ', 'MODE_MECA', iocc=ioccbase, nbval=nbmome, vect=zk8(ltmome),&
                         nbret=ibid)
 !
-            call getvis('RITZ', 'NMAX_MODE', iocc=1, nbval=0, nbret=nbli)
+            call getvis('RITZ', 'NMAX_MODE', iocc=ioccbase, nbval=0, nbret=nbli)
             nbli = -nbli
             if (nbli .eq. 0) then
 !               Select all modes from each modal base
@@ -215,13 +231,13 @@ subroutine refe99(nomres)
                 end do
             else if (nbli .eq. 1) then
 !               Apply the single NMAX_MODE criterion to all of the modal base
-                call getvis('RITZ', 'NMAX_MODE', iocc=1, scal=nbmax, nbret=ibid)
+                call getvis('RITZ', 'NMAX_MODE', iocc=ioccbase, scal=nbmax, nbret=ibid)
                 do i = 1, nbmome
                     zi(ltnbmax+i-1) = nbmax
                 end do
             else if (nbli .eq. nbmome) then
 !               Use the NMAX_MODE criteria, defined for each modal base separately
-                call getvis('RITZ', 'NMAX_MODE', iocc=1, nbval=nbmome, vect=zi(ltnbmax),&
+                call getvis('RITZ', 'NMAX_MODE', iocc=ioccbase, nbval=nbmome, vect=zi(ltnbmax),&
                             nbret=ibid)
             else
 !               Incoherence in the input data
@@ -264,7 +280,7 @@ subroutine refe99(nomres)
         if (imint .gt. 0) then
 !           Treating the MODE_INTF kw (2nd RITZ entry) for the static modes
 !           Maximum number of static modes to extract : nbmod2
-            call getvis('RITZ', 'NMAX_MODE', iocc=2, scal=nbmod2, nbret=inmax)
+            call getvis('RITZ', 'NMAX_MODE', iocc=ioccmi, scal=nbmod2, nbret=inmax)
 !           Number of modes that actually exist in the static base : nbold
             call rsorac(resul2, 'LONUTI', 0, rbid, k8b,&
                         cbid, rbid, 'ABSOLU', nbold, 1,&

@@ -432,10 +432,9 @@ MODESTAB = CREA_RESU (
 
 L_AMOR = DEFI_LIST_REEL(VALE=(0.02, 0.05, 0.07, 0.10, 0.1, 0.1),);
 
-BAMODA=DEFI_BASE_MODALE( RITZ=( _F( MODE_MECA = MODES_1),
-#                                _F( MODE_MECA = MODES_2,
-                                _F( MODE_INTF = MODES_2,
-                                     NMAX_MODE = 999)),
+BAMODA=DEFI_BASE_MODALE(RITZ=(_F(MODE_INTF = MODES_2,
+                                 NMAX_MODE = 999),
+                              _F(MODE_MECA = MODES_1),),
                          LIST_AMOR=L_AMOR,
                          NUME_REF=NUMDDL)
 
