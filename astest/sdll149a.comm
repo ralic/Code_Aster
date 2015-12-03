@@ -95,8 +95,8 @@ CARA_ELE=AFFE_CARA_ELEM(MODELE=MODELE,
         _F(GROUP_MA='SEC2', SECTION='CERCLE', CARA=('R','EP',), VALE=(R2,e2,),),
         _F(GROUP_MA='SEC3', SECTION='CERCLE', CARA=('R','EP',), VALE=(R3,e3,),),
         # Poutres coudées
-        _F(GROUP_MA=('E2','E5','E7','E13','E16','E19'), SECTION='COUDE', COEF_FLEX=cflex1,),
-        _F(GROUP_MA=('E23','E26','E29'), SECTION='COUDE', COEF_FLEX=cflex2,),
+        _F(GROUP_MA=('E2','E5','E7','E13','E16','E19'), SECTION='COUDE', COEF_FLEX=cflex1, INDI_SIGM=1.0),
+        _F(GROUP_MA=('E23','E26','E29'), SECTION='COUDE', COEF_FLEX=cflex2, INDI_SIGM_XY=1.0, INDI_SIGM_XZ=1.0,),
         _F(GROUP_MA='E35', SECTION='COUDE', COEF_FLEX=cflex3,),
     ),
     DISCRET=(
