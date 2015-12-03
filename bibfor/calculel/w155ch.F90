@@ -232,7 +232,7 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
 !   ---------------------------------------------
 !   -- une difficulte : ligrel peut etre different de ligre1
     call jeveuo(chextr//'.CELD', 'L', vi=celd2)
-    call jeveuo(chextr//'.CELV', 'L', jcelv2)
+    call jeveuo(chextr//'.CELV', 'E', jcelv2)
     nbgr2=celd2(2)
     ASSERT(nbgr2.eq.nbgr)
 !

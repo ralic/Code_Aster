@@ -128,7 +128,7 @@ subroutine w155m2(chin, carele, ligrel, chextr, nomsym,&
     ces4='&&W155M2.CES4'
     call celces(chextr, 'V', ces4)
     call jeveuo(ces4//'.CESD', 'L', jce4d)
-    call jeveuo(ces4//'.CESV', 'L', vr=ce4v)
+    call jeveuo(ces4//'.CESV', 'E', vr=ce4v)
     call jeveuo(ces4//'.CESL', 'L', jce4l)
     call jeveuo(ces4//'.CESC', 'L', vk8=ce4c)
     do kcmp = 1, ncmp
