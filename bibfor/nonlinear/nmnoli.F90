@@ -13,7 +13,6 @@ implicit none
 #include "asterfort/isfonc.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nmarch.h"
-#include "asterfort/nmetpl.h"
 #include "asterfort/rscrsd.h"
 #include "asterfort/rsrusd.h"
 #include "asterfort/utmess.h"
@@ -128,9 +127,5 @@ implicit none
                     sdtime  , sderro  , sddyna, sdpilo, sdener,&
                     ds_inout, sdcriq  )
     endif
-!
-! --- AU PROCHAIN ARCHIVAGE, SAUVEGARDE DES CHAMPS AU TEMPS T+
-!
-    call nmetpl(ds_inout)
 !
 end subroutine

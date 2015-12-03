@@ -41,6 +41,7 @@ implicit none
 #include "asterfort/nmdoet.h"
 #include "asterfort/nmdopi.h"
 #include "asterfort/nmetcr.h"
+#include "asterfort/nmetpl.h"
 #include "asterfort/nmexso.h"
 #include "asterfort/nmfonc.h"
 #include "asterfort/nmihht.h"
@@ -355,6 +356,10 @@ implicit none
     call nmobsv(mesh    , model, sddisc, sd_obsv  , numins,&
                 carele  , mate , compor, varc_refe, valinc,&
                 ds_inout)
+!
+! - Update name of fields
+!
+    call nmetpl(ds_inout, sd_suiv, sd_obsv)
 !
 ! --- CREATION DE LA TABLE DES GRANDEURS
 !
