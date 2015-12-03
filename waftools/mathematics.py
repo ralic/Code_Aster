@@ -68,7 +68,7 @@ def check_libm_after_files(self):
                 flags.remove('-lm')
             except ValueError:
                 break
-        self.end_msg('ok ("-lm" removed from LINKFLAGS_CLIB)')
+        self.end_msg('yes ("-lm" removed from LINKFLAGS_CLIB)')
         self.env.LINKFLAGS_CLIB = flags
     else:
         self.end_msg('nothing done')
@@ -87,20 +87,24 @@ def detect_mkl(self):
     totest = ['']
     # http://software.intel.com/en-us/articles/intel-mkl-link-line-advisor/
     if self.get_define('HAVE_MPI'):
-        totest.append('-mkl=cluster')
-        scalapack = ['-lmkl_scalapack' + suffix or '_core']   # ia32: mkl_scalapack_core
-        blacs = ['-lblacs_intelmpi' + suffix]
+        totest.append('-mkl=parallel')
+        scalapack = ['-lmkl_scalapack' + suffix or '_core', '-lmkl_intel' + suffix]   # ia32: mkl_scalapack_core
+        blacs = ['-lmkl_intel_thread', '-lmkl_blacs_intelmpi' + suffix] + ['-lmkl_lapack95' + suffix]
     else:
         scalapack = []
         blacs = []
     interf = 'mkl_intel' + suffix
-    for typ in ('sequential', 'parallel'):
+    for typ in ('parallel', 'sequential'):
         totest.append('-mkl=' + typ)
         thread = 'mkl_sequential' if typ == 'sequential' else 'mkl_intel_thread'
         core = 'mkl_core'
-        libs = ['-l%s' % name for name in (interf, thread, core)]
-        totest.append(scalapack + libs + blacs)
-        libs = ['-Wl,--start-group'] + libs + ['-Wl,--end-group']
+        optional = []
+        if typ == 'parallel':
+            optional.append('iomp5')
+        libs = ['-l%s' % name for name in [interf, thread, core] + optional]
+        libs = ['-Wl,--start-group'] + scalapack + libs + blacs + ['-Wl,--end-group']
+        totest.append(libs)
+        libs = ['-mkl=' + typ ] +  libs
         totest.append(libs)
     Logs.debug("\ntest: %r" % totest)
     while totest:
@@ -242,17 +246,45 @@ def check_math_libs_call(self):
     """Compile and run a small blas/lapack program"""
     self.start_msg('Checking for a program using blas/lapack')
     try:
-        ret = self.check_fc(fragment=blas_lapack_fragment, use='MATH MPI',
+        ret = self.check_fc(fragment=blas_lapack_fragment, use='MATH OPENMP MPI',
                             mandatory=False, execute=True, define_ret=True)
         values = map(float, ret and ret.split() or [])
         ref = [10.0, 5.0]
         if list(values) != ref:
             raise Errors.ConfigurationError('invalid result: %r (expecting %r)' % (values, ref))
-    except:
-        self.end_msg('no', 'YELLOW')
-        raise
+    except Exception, exc:
+        # the message must be closed
+        self.end_msg('no', color='RED')
+        raise Errors.ConfigurationError(str(exc))
     else:
-        self.end_msg('ok')
+        self.end_msg('yes')
+
+    if self.get_define('HAVE_MPI'):
+        self.start_msg('Checking for a program using blacs')
+        try:
+            ret = self.check_fc(fragment=blacs_fragment, use='MATH OPENMP MPI',
+                                mandatory=True)
+        except Exception, exc:
+            # the message must be closed
+            self.end_msg('no', color='RED')
+            raise Errors.ConfigurationError(str(exc))
+        else:
+            self.end_msg('yes')
+
+    self.start_msg('Checking for a program using omp thread')
+    try:
+        ret = self.check_fc(fragment=omp_thread_fragment, use='MATH OPENMP MPI',
+                            mandatory=True, execute=True, define_ret=True)
+        nbThreads = int((ret and ret.split() or [])[-1])
+        refe = 2 if self.env.BUILD_OPENMP else 1
+        if nbThreads < refe:
+            raise ValueError("expected at least {0} thread(s)".format(nbThreads))
+    except Exception, exc:
+        # the message must be closed
+        self.end_msg('no', color='RED')
+        raise Errors.ConfigurationError(str(exc))
+    else:
+        self.end_msg('yes (on {0} threads)'.format(nbThreads))
 
 # program testing a blas and a lapack call, output is 10.0 and 5.0
 blas_lapack_fragment = r"""
@@ -278,4 +310,30 @@ program main
     print *, a
     print *, b
 end program main
+"""
+
+# program testing a blacs call, output is 0 and 1
+blacs_fragment = r"""
+program test_blacs
+    integer iam, nprocs
+    call blacs_pinfo (iam, nprocs)
+    print *,iam
+    print *,nprocs
+end program test_blacs
+"""
+
+# program testing openmp theads
+omp_thread_fragment = r"""
+program hello
+!$ use omp_lib
+    integer total, thid
+    total = 1
+    thid = 0
+!$omp parallel private(thid) shared(total)
+!$ total = omp_get_num_threads()
+!$ thid = omp_get_thread_num()
+    print *, "Thread ", thid, "of ", total, "childs"
+!$omp end parallel
+    print *, total
+end program hello
 """
