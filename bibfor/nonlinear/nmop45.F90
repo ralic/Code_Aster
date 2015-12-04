@@ -465,7 +465,7 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
 !
     mfreq = nconv
     if (option .eq. 'BANDE') then
-        do ifreq = mfreq - 1, 0
+        do ifreq = mfreq - 1, 0, -1
             if (zr(lresur+mxresf+ifreq) .gt. omemax .or. zr(lresur+ mxresf+ifreq) .lt.&
                 omemin) then
                 nconv = nconv - 1

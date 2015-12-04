@@ -384,7 +384,7 @@ subroutine vpcals(eigsol, vecrer, vecrei, vecrek, vecvp,&
         if (lc .or. lns .or. .not.lkr) then
             ASSERT(.false.)
         endif
-        do ifreq = mfreq - 1, 0
+        do ifreq = mfreq - 1, 0, -1
             if ((zr(lresur+mxresf+ifreq).gt.omemax) .or. (zr(lresur+ mxresf+ifreq).lt.omemin)) &
             nconv = nconv - 1
         enddo
