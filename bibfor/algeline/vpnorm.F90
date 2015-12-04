@@ -167,14 +167,16 @@ subroutine vpnorm(norm, para, lmatr, neq, nbmode,&
 !
     endif
 !
-    do im = 1, nbmode
-        resufr(im,13) = 0.d0
-        resufr(im,14) = 0.d0
-        resufr(im,15) = 0.d0
-        if (xmastr(1).gt.epsi) resufr(im,13) = resufr(im,7) / xmastr(1)
-        if (xmastr(2).gt.epsi) resufr(im,14) = resufr(im,8) / xmastr(2)
-        if (xmastr(3).gt.epsi) resufr(im,15) = resufr(im,9) / xmastr(3)
-    end do
+    if (para .eq. 'OUI') then
+        do im = 1, nbmode
+            resufr(im,13) = 0.d0
+            resufr(im,14) = 0.d0
+            resufr(im,15) = 0.d0
+            if (xmastr(1).gt.epsi) resufr(im,13) = resufr(im,7) / xmastr(1)
+            if (xmastr(2).gt.epsi) resufr(im,14) = resufr(im,8) / xmastr(2)
+            if (xmastr(3).gt.epsi) resufr(im,15) = resufr(im,9) / xmastr(3)
+        end do
+    endif
 !
     if (isign .eq. 0) then
     else if (isign .eq. 1) then
