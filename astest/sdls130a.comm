@@ -100,20 +100,20 @@ COMPO=DEFI_COMPOSITE(COUCHE=(
 
                              _F(EPAIS=epcou,
                                MATER=GRAP_EPO,
-                               ORIENTATION=90.0,),
+                               ORIENTATION=0.0,),
                                
                              _F(EPAIS=epcou,
                                MATER=GRAP_EPO,
-                               ORIENTATION=0.0,),           
+                               ORIENTATION=90.0,),           
                                
                              _F(EPAIS=epcou,
                                MATER=GRAP_EPO,
-                               ORIENTATION=90.0,),                           
+                               ORIENTATION=0.0,),                           
                                      
                                
                              _F(EPAIS=epcou,
                                MATER=GRAP_EPO,
-                               ORIENTATION=0.0,), 
+                               ORIENTATION=90.0,), 
                                
                                ),
                                
@@ -186,7 +186,7 @@ FREQ1 = CALC_MODES(INFO=1,
                  
 
 TEST_RESU(RESU=_F(RESULTAT=FREQ1,REFERENCE='SOURCE_EXTERNE',VALE_REFE=79.81,
-                  PRECISION = 0.15, NUME_MODE=1, PARA='FREQ', VALE_CALC= 70.2166208424, ))
+                  PRECISION = 0.15, NUME_MODE=1, PARA='FREQ', VALE_CALC= 82.1355860467, ))
 
 
 FIN();
