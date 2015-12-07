@@ -38,7 +38,7 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
     integer :: ig, iocs, npass
     real(kind=8) :: snmax, snemax, spmax, kemax, samax, utot, sm, sigpm, utotenv
     real(kind=8) :: resuas(*), resuss(*), resuca(*), resucs(*), factus(*)
-    real(kind=8) :: pmmax, pbmax, pmbmax
+    real(kind=8) :: pmmax, pbmax, pmbmax, snpq, snpqs
     aster_logical :: lpmpb, lsn, lsnet, lfatig, lrocht, seisme, lbid
     aster_logical :: fatiguenv
     character(len=4) :: lieu
@@ -217,7 +217,7 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
             if (lfatig) write (ifm,*) '  SEISME,   SP = ',sp(1)
             if (typeke .gt. 0.d0 .and. lfatig) then
                 write (ifm,*) '            SPMECA = ',spmeca(1)
-                spthep(1)=sp(1)-spmeca(1)
+                spthep(1)=max(0.0,sp(1)-spmeca(1))
                 write (ifm,*) '            SPTHER = ',spthep(1)
                 write (ifm,*) '            KEMECA = ',kemeca
                 write (ifm,*) '            KETHER = ',kether
@@ -393,12 +393,12 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
 !
         spmax = max(spmax,sps(1),sp(1))
         spmecm = max(spmecm,spmecs(1),spmeca(1))
-        spthem = spmax-spmecm
+        spthem = max(0.0,spmax-spmecm)
         if (niv .ge. 2) then
             write (ifm,1018) nsitup, sp(1)
             if (seisme) write (ifm,1019) nsitup, sps(1)
             if (typeke .gt. 0.d0) then
-                spthep(1)=sp(1)-spmeca(1)
+                spthep(1)=max(0.0,sp(1)-spmeca(1))
                 write (ifm,1050) nsitup,spmeca(1),spthep(1),kemeca,&
                 kether
                 if (seisme) write (ifm,1051) nsitup,spmecs(1),kemecs
@@ -458,46 +458,54 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
             endif
 !
 ! ------- CALCUL DU SN(P,Q), ON A 4 COMBINAISONS + SN(P,P) et SN(Q,Q)
+            snpq = 0.d0
+            call rc32sn('SN_SITU', lieu, nsitup, ppi, mpi,&
+                        nsitup, ppj, mpj, .false._1, mse,&
+                        snpq)
             call rc32sn('SN_COMB', lieu, nsitup, ppi, mpi,&
                         nsituq, pqi, mqi, .false._1, mse,&
-                        sn)
+                        snpq)
             call rc32sn('SN_COMB', lieu, nsitup, ppi, mpi,&
                         nsituq, pqj, mqj, .false._1, mse,&
-                        sn)
+                        snpq)
             call rc32sn('SN_COMB', lieu, nsitup, ppj, mpj,&
                         nsituq, pqj, mqj, .false._1, mse,&
-                        sn)
+                        snpq)
             call rc32sn('SN_COMB', lieu, nsitup, ppj, mpj,&
                         nsituq, pqi, mqi, .false._1, mse,&
-                        sn)
+                        snpq)
             call rc32sn('SN_SITU', lieu, nsituq, pqi, mqi,&
                         nsituq, pqj, mqj, .false._1, mse,&
-                        sn)
+                        snpq)
             icss = icss + 1
-            resucs(icss) = sn
-            snmax = max(snmax,sn)
+            resucs(icss) = snpq
+            snmax = max(snmax,snpq)
             if (seisme) then
+                snpqs = 0.d0
+                call rc32sn('SN_SITU', lieu, nsitup, ppi, mpi,&
+                            nsitup, ppj, mpj, seisme, mse,&
+                            snpqs)
                 call rc32sn('SN_COMB', lieu, nsitup, ppi, mpi,&
                             nsituq, pqi, mqi, seisme, mse,&
-                            sns)
+                            snpqs)
                 call rc32sn('SN_COMB', lieu, nsitup, ppi, mpi,&
                             nsituq, pqj, mqj, seisme, mse,&
-                            sns)
+                            snpqs)
                 call rc32sn('SN_COMB', lieu, nsitup, ppj, mpj,&
                             nsituq, pqj, mqj, seisme, mse,&
-                            sns)
+                            snpqs)
                 call rc32sn('SN_COMB', lieu, nsitup, ppj, mpj,&
                             nsituq, pqi, mqi, seisme, mse,&
-                            sns)
+                            snpqs)
                 call rc32sn('SN_SITU', lieu, nsituq, pqi, mqi,&
                             nsituq, pqj, mqj, seisme, mse,&
-                            sns)
+                            snpqs)
                 icas = icas + 1
-                resuca(icas) = sns
-                snmax = max(snmax,sns)
+                resuca(icas) = snpqs
+                snmax = max(snmax,snpqs)
             endif
-            if (niv .ge. 2) write (ifm,1110) nsitup,nsituq,sn
-            if ((niv.ge.2) .and. seisme) write (ifm,1111) sns
+            if (niv .ge. 2) write (ifm,1110) nsitup,nsituq,snpq
+            if ((niv.ge.2) .and. seisme) write (ifm,1111) snpqs
             inds = nbsig2*(i1-1) + (i2-1)
             indi = nbsig2*(i2-1) + (i1-1)
 !
@@ -687,7 +695,7 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
 !
 !
 ! - CALCUL DE SALT ASSOCIE A SP1 ET SP2
-            call rc32sa('COMB', mater, mat1, mat2, sn,&
+            call rc32sa('COMB', mater, mat1, mat2, snpq,&
                         sp12ma, typeke, spmeca, kemeca,&
                         kether, saltij, smm, fuij)
             icss = icss + 1
@@ -719,7 +727,7 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
                 matrice_fu_b(inds+1) = fuij(1)+fuij(2)
                 matrice_fu_b(indi+1) = fuij(1)+fuij(2)
 ! ON PREND SPTHES = SPTHER
-                call rc32sa('COMB', mater, mat1, mat2, sns,&
+                call rc32sa('COMB', mater, mat1, mat2, snpqs,&
                             sps, typeke, spmecs, kemecs,&
                             kethes, salijs, smm, fuij)
                 icas = icas + 1
@@ -736,14 +744,14 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
             endif
             spmax = max(spmax,sps(1),sp12ma(1),sps(2),sp12ma(2))
             spmecm = max(spmecm,spmecs(1),spmeca(1))
-            spthem = spmax-spmecm
+            spthem = max(0.0,spmax-spmecm)
             if (niv .ge. 2) then
                 write (ifm,1121) sp12ma(1), sp12ma(2)
                 if (seisme) write (ifm,1122) sps(1), sps(2)
                 if (typeke .gt. 0.d0) then
                     write (ifm,1131) spmeca(1),spmeca(2),kemeca
-                    spther(1)=sp12ma(1)-spmeca(1)
-                    spther(2)=sp12ma(2)-spmeca(2)
+                    spther(1)=max(0.0,sp12ma(1)-spmeca(1))
+                    spther(2)=max(0.0,sp12ma(2)-spmeca(2))
                     write (ifm,1132) spther(1),spther(2),kether
                     if (seisme) write (ifm,1133) spmecs(1),spmecs(2), kemecs
                 endif

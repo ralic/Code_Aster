@@ -392,7 +392,7 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
                             nsituq, ppj, mpj, seisme, mse,&
                             sp, typeke, spmeca)
                 spmax = max ( spmax , sp(1) )
-                spthem = spmax-spmeca(1)
+                spthem = max(0.0,spmax-spmeca(1))
                 if (niv .ge. 2) write (ifm,2040) nsitup, sp(1)
                 zr(jress-1+10*(is1-1)+6) = sp(1)
 !

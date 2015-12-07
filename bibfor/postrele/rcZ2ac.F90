@@ -366,7 +366,7 @@ subroutine rcZ2ac(lsn, lsnet, lfatig, lrocht,&
                             nsituq, ppj, mpj, seisme, mse, sn,&
                             sp, typeke, spmeca, transip, transif)
                 spmax = max ( spmax , sp(1) )
-                spthem = spmax-spmeca(1)
+                spthem = max(0.0,spmax-spmeca(1))
                 if (niv .ge. 2) write (ifm,2040) nsitup, sp(1)
                 zr(jress-1+7*(is1-1)+3) = sp(1)
 !
