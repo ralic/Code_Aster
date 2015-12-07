@@ -256,11 +256,10 @@ subroutine rvechm(ssch19, sdlieu, sdeval)
         adrnd = zi(aipadr + nd-1)
         adrnl = zi(aopadr + inl-1)
 !
-        do 110, j = 1, nbcmp, 1
-!
-        zr(aovale + adrnl-1 + j-1) = zr(aivale + adrnd-1 + j- 1)
-!
-110      continue
+        do j = 1, nbcmp, 1
+            if (zr(aivale+adrnd-1+j-1) .eq. r8vide()) cycle
+            zr(aovale + adrnl-1 + j-1) = zr(aivale + adrnd-1 + j- 1)
+        enddo
 !
 100      continue
 !
@@ -302,13 +301,11 @@ subroutine rvechm(ssch19, sdlieu, sdeval)
                 call rvchlm(ssch19, m2d2, zi(anumnd + ml-1), 2, nbcmp,&
                             nbco, nbsp, zr(atab1))
 !
-                do 310, j = 1, 2*long, 1
-!
-                if (zr(atab1 + j-1) .eq. r8vide()) goto 310
-                zr(aovale+adrm-1+j-1) = 0.5d0*( zr(aovale+adrm-1+j- 1)+ zr(atab1 + j-1) )
-!
-!
-310              continue
+                do j = 1, 2*long, 1
+                    if (zr(atab1 + j-1) .eq. r8vide()) cycle
+                    if (zr(aovale+adrm-1+j-1) .eq. r8vide()) cycle
+                    zr(aovale+adrm-1+j-1) = 0.5d0*(zr(aovale+adrm-1+j- 1)+ zr(atab1 + j-1) )
+                enddo
 !
 !
             endif
@@ -318,11 +315,9 @@ subroutine rvechm(ssch19, sdlieu, sdeval)
 !
             if ((typmai .eq. 'TRIA6') .or. (typmai .eq. 'QUAD8') .or. (typmai .eq. 'QUAD9')) then
 !
-                do 311, j = 1, long, 1
-!
-                zr(aovale+adrm-1+j-1) = zr(aovale+adrm-1-long +j- 1)
-!
-311              continue
+                do j = 1, long, 1
+                    zr(aovale+adrm-1+j-1) = zr(aovale+adrm-1-long +j- 1)
+                enddo
 !
 !
                 call rvchlm(ssch19, m2d1, zi(anumnd + ml+1-1), 1, nbcmp,&
@@ -335,14 +330,12 @@ subroutine rvechm(ssch19, sdlieu, sdeval)
                                 nbco, nbsp, zr(atab1))
 !
 !
-                    do 320, j = 1, long, 1
-!
-                    if (zr(atab1 + j-1) .eq. r8vide()) goto 320
-                    zr(aovale+adrm+long-1+j-1) = 0.5d0* (&
-                                                 zr( aovale+adrm+long-1+j-1)+ zr(atab1 + j-1))
-!
-!
-320                  continue
+                    do j = 1, long, 1
+                        if (zr(atab1 + j-1) .eq. r8vide()) cycle
+                        if (zr(aovale+adrm+long-1+j-1) .eq. r8vide()) cycle
+                        zr(aovale+adrm+long-1+j-1) = &
+                                   0.5d0*(zr(aovale+adrm+long-1+j-1)+ zr(atab1 + j-1))
+                    enddo
 !
 !
                 endif
