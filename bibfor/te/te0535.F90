@@ -45,9 +45,6 @@ subroutine te0535(option, nomte)
 #include "asterfort/matela.h"
 #include "asterfort/matrot.h"
 #include "asterfort/pmfasseinfo.h"
-#include "asterfort/pmfbkb.h"
-#include "asterfort/pmfbts.h"
-#include "asterfort/pmfdef.h"
 #include "asterfort/pmfdge.h"
 #include "asterfort/pmfdgedef.h"
 #include "asterfort/pmffft.h"
@@ -92,7 +89,7 @@ subroutine te0535(option, nomte)
     real(kind=8) :: deplm(12), deplp(12), matsec(6)
     real(kind=8) :: xi, wi, b(4), gg, vs(3), ve(12)
     real(kind=8) :: defam(6), defap(6)
-    real(kind=8) :: alicom, dalico, ss1, hv, he, minus
+    real(kind=8) :: alicom, dalico, ss1, hv, he
     real(kind=8) :: vv(12), fv(12), sv(78)
     real(kind=8) :: gamma, angp(3), sigma(nd), cars1(6)
     real(kind=8) :: a, xiy, xiz, ey, ez
@@ -103,7 +100,7 @@ subroutine te0535(option, nomte)
     real(kind=8), pointer :: defmfib(:) => null()
     real(kind=8), pointer :: defpfib(:) => null()
     real(kind=8), pointer :: gxjxpou(:) => null()
-    real(kind=8), pointer :: yj(:) => null(), zj(:) => null() 
+    real(kind=8), pointer :: yj(:) => null(), zj(:) => null()
     real(kind=8), pointer :: deffibasse(:) => null(), vsigv(:) => null()
     real(kind=8), pointer :: vev(:) => null()
 !
@@ -275,12 +272,18 @@ subroutine te0535(option, nomte)
     call r8inir(12, 0.0d+0, fv, 1)
 !
 !   Boucle pour calculer le alpha mode incompatible : alico
-    icomax=100
-    minus=1.d-6
     ss1=0.0d+0
     dalico=0.0d+0
-
-    do ico = 1, icomax
+!
+    icomax=100; ico = 0
+    cico: do
+        ico = ico + 1
+        if (ico .gt. icomax) then
+!           Non convergence sur le mode incompatible, sortie immédiate
+            codret = 1
+            goto 999
+        endif
+!
         he=0.0d+0
         hv=0.0d+0
 !       Boucle sur les points de gauss
@@ -294,7 +297,6 @@ subroutine te0535(option, nomte)
             call pmfdgedef(tygrfi, b, gg, deplp, dalico, nbfibr, nbcarm, &
                            zr(jacf), nbassepou, maxfipoutre, nbfipoutre, yj, zj, &
                            deffibasse, vfv, defpfib)
-
 !
             iposig=jsigfb + nbfibr*(ip-1)
             ipomod=jmodfb + nbfibr*(ip-1)
@@ -318,25 +320,24 @@ subroutine te0535(option, nomte)
             hv = hv+wi*gg*gg*matsec(1)
             he = he+wi*gg*vs(1)
         enddo
-!       Fin boucle points de gauss
-!       Encore un peu de mode incompatible
+!       Fin boucle points de gauss.
         if (abs(hv) .le. r8prem()) then
             call utmess('F', 'ELEMENTS_8')
         endif
+!       Correction de la position du noeud bulle
         dalico = dalico-he/hv
         if (ico .eq. 1) then
-            if (abs(vs(1)) .le. minus) then
-                goto 710
+            if (abs(vs(1)) .le. 1.0D-06) then
+                exit cico
             else
                 ss1 = abs(vs(1))
             endif
         endif
-        if (abs(he) .le. (ss1*minus)) then
-            goto 710
+        if ((abs(he) .le. (ss1*1.0D-06)).or.(abs(he) .le. 1.0D-09)) then
+            exit cico
         endif
-    enddo
+    enddo cico
 !   Fin boucle calcul alico
-710 continue
 !
 !   Quand on a convergé sur alico, on peut intégrer sur l'élément
     do ip = 1, npg
@@ -351,11 +352,9 @@ subroutine te0535(option, nomte)
             do i = 1, nk
                 klv(i) = klv(i)+sk(i)
             enddo
-
             do i = 1, 12
                 fv(i) = fv(i)+vv(i)
             enddo
-
         endif
 !       si pas RIGI_MECA_TANG, on calcule les forces internes
         if (option .ne. 'RIGI_MECA_TANG') then
@@ -377,7 +376,6 @@ subroutine te0535(option, nomte)
 !
 !   Torsion a part pour les forces interne
     call pmftorcor(tygrfi, nbassepou, gxjx, gxjxpou, deplm, deplp, xl, fl)
-
 !   Stockage des efforts généralisés et passage des forces en repère local
     if (vecteu) then
 !       on sort les contraintes sur chaque fibre
