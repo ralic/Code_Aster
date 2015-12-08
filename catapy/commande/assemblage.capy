@@ -69,6 +69,10 @@ ASSEMBLAGE=MACRO(nom="ASSEMBLAGE",
                                          "RIGI_THER","RIGI_ACOU","MASS_ACOU","AMOR_ACOU",)
                                    ),
 
+             b_gyro = BLOC( condition = "OPTION in ('RIGI_GYRO', 'MECA_GYRO')",
+               GROUP_MA       =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+             ),
+
              b_rigi_meca = BLOC( condition = "OPTION=='RIGI_MECA'",
                MODE_FOURIER    =SIMP(statut='f',typ='I',defaut= 0),
              ),

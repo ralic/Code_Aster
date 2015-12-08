@@ -22,6 +22,7 @@ subroutine merigy(modele, mate, cara, compor, matel,&
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
+#include "asterfort/exlima.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -54,7 +55,7 @@ subroutine merigy(modele, mate, cara, compor, matel,&
     character(len=16) :: option
     character(len=19) :: chvarc
     character(len=24) :: chgeom, chcara(18), lchin(12), lchout(1)
-    character(len=24) :: ligrmo, chrota
+    character(len=24) :: ligrel, chrota
     data chvarc /'&&MERIGY.CHVARC'/
     integer :: icha, iret, nbro
 !
@@ -113,11 +114,11 @@ subroutine merigy(modele, mate, cara, compor, matel,&
     lchin(11) = chrota
     lpain(12) = 'PVARCPR'
     lchin(12) = chvarc
-    ligrmo = modele//'.MODELE'
+    call exlima(' ', 1, 'G', modele, ligrel)
     option = 'RIGI_GYRO'
 !
 !
-    call calcul('S', option, ligrmo, 12, lchin,&
+    call calcul('S', option, ligrel, 12, lchin,&
                 lpain, 1, lchout, lpaout, 'G',&
                 'OUI')
 !

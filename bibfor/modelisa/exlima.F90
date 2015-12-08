@@ -73,8 +73,10 @@ subroutine exlima(motfaz, iocc, base, modelz, ligrel)
             if (n1 .ne. 0) goto 9998
         endif
     else
-        call getvtx(' ', 'TOUT', nbval=0, nbret=n1)
-        if (n1 .ne. 0) goto 9998
+        if (getexm(' ','TOUT') .eq. 1) then
+            call getvtx(' ', 'TOUT', nbval=0, nbret=n1)
+            if (n1 .ne. 0) goto 9998
+        endif
     endif
 !
 !

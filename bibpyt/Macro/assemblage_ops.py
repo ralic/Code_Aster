@@ -118,6 +118,11 @@ def assemblage_ops(
             except IndexError:
                 pass
 
+            try:
+                motscles['GROUP_MA'] = m['GROUP_MA']
+            except IndexError:
+                pass
+
             _a = CALC_MATR_ELEM(MODELE=MODELE, **motscles)
 
             if option == 'RIGI_MECA':

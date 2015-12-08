@@ -30,6 +30,7 @@ subroutine meamgy(modele, mate, cara, compor, matel,&
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
 #include "asterfort/utmess.h"
+#include "asterfort/exlima.h"
 #include "asterfort/exisd.h"
     character(len=8) :: modele, cara, lchar(*)
     character(len=19) :: matel
@@ -54,7 +55,7 @@ subroutine meamgy(modele, mate, cara, compor, matel,&
     character(len=16) :: option
     character(len=19) :: chvarc
     character(len=24) :: chgeom, chcara(18), lchin(12), lchout(1)
-    character(len=24) :: ligrmo, chrota
+    character(len=24) :: chrota, ligrel
     data chvarc /'&&MEAMGY.CHVARC'/
     integer :: icha, iret, nbro
 !
@@ -113,10 +114,11 @@ subroutine meamgy(modele, mate, cara, compor, matel,&
     lchin(11) = chrota
     lpain(12) = 'PVARCPR'
     lchin(12) = chvarc
-    ligrmo = modele//'.MODELE'
+
+    call exlima(' ', 1, 'G', modele, ligrel)
     option = 'MECA_GYRO'
 !
-    call calcul('S', option, ligrmo, 12, lchin,&
+    call calcul('S', option, ligrel, 12, lchin,&
                 lpain, 1, lchout, lpaout, 'G',&
                 'OUI')
 !
