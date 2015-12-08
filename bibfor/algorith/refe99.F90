@@ -172,18 +172,15 @@ subroutine refe99(nomres)
     if (ioc3 .gt. 0) then
 !
     ASSERT(ioc3.le.2)
+    ioccbase=1
+    ioccmi=2
     do i = 1, ioc3
         call getvid('RITZ', 'MODE_MECA'  , iocc=i, nbval=0, nbret=nbmm)
         call getvid('RITZ', 'BASE_MODALE', iocc=i, nbval=0, nbret=nbbm)
         call getvid('RITZ', 'MODE_INTF'  , iocc=i, nbval=0, nbret=nbmi)
-        write(6,*)'nbmm=',nbmm
-        write(6,*)'nbbm=',nbbm
-        write(6,*)'nbmi=',nbmi
         if (nbmi .ne. 0) ioccmi=i
-        if ((nbmm .ne. 0) .or. (nbbm .eq. -1)) ioccbase=i
+        if ((nbmm .ne. 0) .or. (nbbm .ne. 0)) ioccbase=i
     end do
-    write(6,*)'ioccmi=',ioccmi
-    write(6,*)'ioccbase=',ioccbase
 !
         noseul=.false.
         call getvid('RITZ', 'MODE_MECA', iocc=ioccbase, nbval=0, nbret=nbg)

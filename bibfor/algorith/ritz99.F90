@@ -101,7 +101,7 @@ subroutine ritz99(nomres)
         call getvid('RITZ', 'BASE_MODALE', iocc=i, nbval=0, nbret=nbbm)
         call getvid('RITZ', 'MODE_INTF'  , iocc=i, nbval=0, nbret=nbmi)
         if (nbmi .ne. 0) ioccmi=i
-        if ((nbmm .ne. 0) .or. (nbbm .eq. -1)) ioccbase=i
+        if ((nbmm .ne. 0) .or. (nbbm .ne. 0)) ioccbase=i
     end do
 !
 !

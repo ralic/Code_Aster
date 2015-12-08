@@ -102,7 +102,7 @@ subroutine fgvdmg(nomsym, nomsd, nommat, nomnap, nomfon,&
     nomitv = '&&OP0151.ITRAV'
     nomrtv = '&&OP0151.RTRAV'
     call wkvect(nompic, 'V V R', nbord+2, ivpic)
-    call wkvect(nomitv, 'V V I', nbord+2, ivitv)
+    call wkvect(nomitv, 'V V I', nbord*2, ivitv)
     call wkvect(nomrtv, 'V V R', nbord+2, ivrtv)
     call wkvect(nomdmg, 'V V R', nbord, ivpt)
     call wkvect('&&OP0151.SIGMAX', 'V V R', nbord+2, ivmax)
