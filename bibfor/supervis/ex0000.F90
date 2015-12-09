@@ -1,6 +1,5 @@
 subroutine ex0000(nuoper)
     implicit none
-#include "asterc/gtopti.h"
 #include "asterfort/op0000.h"
 #include "asterfort/op0001.h"
 #include "asterfort/op0002.h"
@@ -220,13 +219,7 @@ subroutine ex0000(nuoper)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !     EXECUTION DES OPERATEURS (NUMEROTES DE 0 A 199)
-!     ------------------------------------------------------------------
-!     EXECUTION OU VERIFICATION DE SYNTAXE
-    integer :: iveri, iret
     integer :: vali
-!
-    call gtopti('verif', iveri, iret)
-    if (iveri .ne. 0) goto 999
 !
     select case (nuoper)
     case (0)
@@ -633,7 +626,5 @@ subroutine ex0000(nuoper)
         vali = nuoper
         call utmess('E', 'SUPERVIS_50', si=vali)
     end select
-!
-999 continue
 !
 end subroutine

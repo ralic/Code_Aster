@@ -24,10 +24,10 @@ subroutine entete()
 #include "asterf_types.h"
 #include "asterf.h"
 #include "asterc/asmpi_comm.h"
+#include "asterc/gtopti.h"
 #include "asterc/lihdfv.h"
 #include "asterc/limedv.h"
 #include "asterc/liscov.h"
-#include "asterc/mlnbpr.h"
 #include "asterc/prhead.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/utmess.h"
@@ -35,7 +35,7 @@ subroutine entete()
     integer :: vali(3)
 !
 #ifdef _USE_OPENMP
-    integer :: nbth
+    integer :: maxThreads, iret
 #endif
 ! ----------------------------------------------------------------------
 ! --- INFORMATIONS GLOBALES
@@ -51,8 +51,8 @@ subroutine entete()
 #endif
 ! --- CONFIGURATION OPENMP
 #ifdef _USE_OPENMP
-    nbth = mlnbpr()
-    call utmess('I', 'SUPERVIS2_13', si=nbth)
+    call gtopti('numthreads', maxThreads, iret)
+    call utmess('I', 'SUPERVIS2_13', si=maxThreads)
 #endif
 ! --- LIBRARIES HDF5 ET MED
 #ifndef _DISABLE_HDF5

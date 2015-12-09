@@ -19,9 +19,10 @@ subroutine mlnfmj(nb, n, p, frontl, frontu,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
+use superv_module
     implicit none
 !
-#include "asterc/mlnump.h"
+! aslint: disable=C1513
 #include "blas/dgemm.h"
     integer :: n, p, adper(*), restm, decal
     real(kind=8) :: frontl(*), frontu(*), frnl(*), frnu(*)
@@ -45,7 +46,7 @@ subroutine mlnfmj(nb, n, p, frontl, frontu,&
     !$OMP SHARED(T1,T2,CL,CU,TRA,TRB,ALPHA,BETA) &
     !$OMP SCHEDULE(STATIC,1)
     do 1000 kb = 1, nmb
-        numprc=mlnump()
+        numprc = asthread_getnum() + 1
 !     K : INDICE DE COLONNE DANS LA MATRICE FRONTALE (ABSOLU DE 1 A N)
         k = nb*(kb-1) + 1 +p
         do 100 i = 1, p

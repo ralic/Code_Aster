@@ -41,7 +41,7 @@ from Execution.strfunc import convert
 
 def check_value(option, opt, value, parser):
     """Callback to check some values."""
-    if opt == '--commandes':
+    if opt == '--command':
         if not osp.isfile(value):
             parser.error("option '%s' expects an existing file" % opt)
     setattr(parser.values, option.dest, value)
@@ -56,10 +56,7 @@ class CoreOptions(object):
     de la machine, la plate-forme, etc.
 
     """
-    doc = """usage: ./%%prog %s [-h|--help] [options]
-
-The ASTERDATADIR environment variable changes the data directory.
-""" % sys.argv[0]
+    doc = """usage: ./%%prog %s [-h|--help] [options]""" % sys.argv[0]
 
     def __init__(self):
         """Initialisation."""
@@ -70,12 +67,13 @@ The ASTERDATADIR environment variable changes the data directory.
         self.parser = parser = OptionParser(usage=self.doc,
                                             prog=osp.basename(sys.executable))
         parser.add_option(
-            '--commandes', dest='fort1', type='str', metavar='FILE',
+            '--command', dest='fort1', type='str', metavar='FILE',
             action='callback', callback=check_value,
             help="Code_Aster command file")
         parser.add_option(
             '--memjeveux', dest='memjeveux', type='float', action='store',
-            help="maximum size of the memory taken by the execution (in Mw)")
+            help="maximum size of the memory taken by the execution "
+                 "(in Mw, prefer use --memory option)")
         parser.add_option(
             '--memory', dest='memory', type='float', action='store',
             help="maximum size of the memory taken by the execution (in MB)")
@@ -98,6 +96,9 @@ The ASTERDATADIR environment variable changes the data directory.
                           action='store_true', default=False,
                           help="as 'python -i' works, it allows to enter commands after the "
                           "execution of the command file.")
+        parser.add_option('--numthreads', dest='numthreads', action='store',
+                          default=1,
+                          help="maximum number of threads")
 
         parser.add_option(
             '--rep_outils', dest='repout', type='str', metavar='DIR',
@@ -222,7 +223,7 @@ def _bwc_arguments(argv):
     # DeprecationWarning are ignored in python2.7 by default
     simplefilter('default')
 
-    inew = max([a.startswith('--commandes') for a in argv])
+    inew = max([a.startswith('--command=') for a in argv])
     if inew:
         return argv
     long_opts = (
@@ -239,7 +240,10 @@ def _bwc_arguments(argv):
                     'type_alloc', 'taille', 'partition',
                     'origine', 'ORBInitRef', 'eficas_path')
     # renamed options
-    long_opts_mv = {'verif': 'syntax'}
+    long_opts_mv = {
+        'verif': 'syntax',
+        'commandes': 'command',
+    }
     orig = argv[:]
     new = []
     buffer = ''

@@ -24,8 +24,9 @@ subroutine mlncmj(nb, n, p, frontl, frontu,&
 !     DGEMV EST APPEL A T1ERS LA FONCTION C DGEMW POUR CAR DGEMV
 !     NECESSITE  DES ARGUMENTS ENTIER INTEGER*4 REFUSES PAR ASTER
 !
+use superv_module
     implicit none
-#include "asterc/mlnump.h"
+! aslint: disable=C1513
 #include "blas/zgemm.h"
     integer :: n, p, adper(*), restm, decal
     complex(kind=8) :: frontl(*), frontu(*), frnl(*), frnu(*)
@@ -49,7 +50,7 @@ subroutine mlncmj(nb, n, p, frontl, frontu,&
     !$OMP SHARED(T1,T2,CL,CU,TRA,TRB,ALPHA,BETA) &
     !$OMP SCHEDULE(STATIC,1)
     do 1000 kb = 1, nmb
-        numprc=mlnump()
+        numprc = asthread_getnum() + 1
 !     K : INDICE DE COLONNE DANS LA MATRICE FRONTALE (ABSOLU DE 1 A N)
         k = nb*(kb-1) + 1 +p
         do 100 i = 1, p

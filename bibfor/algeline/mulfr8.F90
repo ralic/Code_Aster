@@ -1,35 +1,5 @@
 subroutine mulfr8(nommat, npivot, neq, typsym, eps,&
                   renumz)
-    implicit none
-#include "jeveux.h"
-#include "asterc/ismaem.h"
-#include "asterc/llbloc.h"
-#include "asterc/loisem.h"
-#include "asterc/lor8em.h"
-#include "asterc/mlnbpr.h"
-#include "asterfort/assert.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/infniv.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jedisp.h"
-#include "asterfort/jelibe.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/mlnmin.h"
-#include "asterfort/mltasa.h"
-#include "asterfort/mltfc1.h"
-#include "asterfort/mltpre.h"
-#include "asterfort/utmess.h"
-#include "asterfort/uttcpr.h"
-#include "asterfort/uttcpu.h"
-#include "asterfort/wkvect.h"
-    character(len=*) :: nommat, renumz
-    integer :: npivot, neq
-    real(kind=8) :: eps
-    integer :: typsym
-!
-!     ------------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -47,6 +17,36 @@ subroutine mulfr8(nommat, npivot, neq, typsym, eps,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+use superv_module
+    implicit none
+#include "jeveux.h"
+#include "asterc/ismaem.h"
+#include "asterc/llbloc.h"
+#include "asterc/loisem.h"
+#include "asterc/lor8em.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jedisp.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mlnmin.h"
+#include "asterfort/mltasa.h"
+#include "asterfort/mltfc1.h"
+#include "asterfort/mltpre.h"
+#include "asterfort/utmess.h"
+#include "asterfort/uttcpr.h"
+#include "asterfort/uttcpu.h"
+#include "asterfort/wkvect.h"
+!
+    character(len=*) :: nommat, renumz
+    integer :: npivot, neq
+    real(kind=8) :: eps
+    integer :: typsym
+!
 !     FACTORISATION DE GAUSS PAR LA MULTIFRONTALE
 !     D'UNE MATRICE SYMETRIQUE A COEFFICIENTS REELS
 !     DEVELOPPEMENT MAJEUR DU 14/02/00
@@ -175,7 +175,7 @@ subroutine mulfr8(nommat, npivot, neq, typsym, eps,&
     call jedetr(nomadj)
 !
 !     RECUPERATION DU NOMBRE DE PROCESSEURS
-    nproc = mlnbpr()
+    nproc = asthread_getmax()
     call jedisp(2, it)
 !
 !    -- SUR LES MACHINES I4, ON MODIFIE IT() POUR PARLER EN R8 :

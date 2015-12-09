@@ -18,9 +18,9 @@ subroutine mltflj(nb, n, ll, m, it,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+use superv_module
     implicit none
-#include "asterc/mlnbpr.h"
-#include "asterc/mlnump.h"
+! aslint: disable=C1513
 #include "blas/dgemm.h"
     integer :: n, p, adper(*)
     real(kind=8) :: front(*), frn(*)
@@ -40,7 +40,7 @@ subroutine mltflj(nb, n, ll, m, it,&
     restm = m -(nb*nmb)
     restl = ll-(nb*nlb)
     decal = adper(p+1) -1
-    nproc = mlnbpr()
+    nproc = asthread_getmax()
     if (nmb .ge. nproc) then
         !$OMP PARALLEL DO DEFAULT(PRIVATE) &
     !$OMP SHARED(N,M,P,NMB,NBL,NLB,NB,RESTM,RESTL) &
@@ -48,7 +48,7 @@ subroutine mltflj(nb, n, ll, m, it,&
     !$OMP SHARED(TRA,TRB,ALPHA,BETA) &
     !$OMP SCHEDULE(STATIC,1)
         do 1000 kb = 1, nmb
-            numpro=mlnump()
+            numpro = asthread_getnum() + 1
 !     K : INDICE DE COLONNE DANS LA MATRICE FRONTALE (ABSOLU DE 1 A N)
             k = nb*(kb-1) + 1 +p
             do 100 i = it, p

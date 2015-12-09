@@ -1,0 +1,96 @@
+module superv_module
+!
+! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Manage the global values stored during the execution
+!
+! --------------------------------------------------------------------------------------------------
+! person_in_charge: mathieu.courtois@edf.fr
+! aslint: disable=W1003
+
+    implicit none
+    private :: maxThreads
+#include "asterc/gtopti.h"
+
+    integer :: initMaxThreads = 0
+    integer :: maxThreads
+
+contains
+
+!   Initialize the values or reinitialize them between two operators
+    subroutine superv_init()
+        integer :: iret
+
+        if ( initMaxThreads .eq. 0 ) then
+            call gtopti('numthreads', maxThreads, iret)
+            initMaxThreads = maxThreads
+        endif
+        call asthread_setnum( initMaxThreads )
+        call asthread_blas_set( initMaxThreads )
+    end subroutine superv_init
+
+
+!   Return the current maximum number of available threads
+    function asthread_getmax()
+        implicit none
+        integer :: asthread_getmax
+#ifdef _USE_OPENMP
+        asthread_getmax = omp_get_max_threads()
+#else
+        asthread_getmax = 1
+#endif
+    end function asthread_getmax
+
+
+!   Set the maximum number of threads for OpenMP and Blas
+    subroutine asthread_setnum( nbThreads )
+        implicit none
+        integer, intent(in) :: nbThreads
+#ifdef _USE_OPENMP
+        call omp_set_num_threads( nbThreads )
+#endif
+    end subroutine asthread_setnum
+
+
+!   Set the maximum number of threads for OpenMP and Blas
+    subroutine asthread_blas_set( nbThreads )
+        implicit none
+        integer, intent(in) :: nbThreads
+#ifdef _USE_OPENMP
+# ifdef _USE_OPENBLAS
+        call openblas_set_num_threads( nbThreads )
+# endif
+# ifdef _USE_MKL
+        call mkl_set_num_threads( nbThreads )
+# endif
+#endif
+    end subroutine asthread_blas_set
+
+
+!   Return the current thread id
+    function asthread_getnum()
+        implicit none
+        integer :: asthread_getnum
+#ifdef _USE_OPENMP
+        asthread_getnum = omp_get_thread_num()
+#else
+        asthread_getnum = 0
+#endif
+    end function asthread_getnum
+
+end module superv_module
