@@ -21,12 +21,9 @@ use calcul_module, only : ca_iactif_
 !     EXECUTION DE LA COMMANDE
 !     ------------------------------------------------------------------
 !     COMMON POUR LE NIVEAU D'"INFO"
-#include "asterf_types.h"
-#include "asterc/asmpi_comm.h"
 #include "asterc/etausr.h"
 #include "asterc/gcecdu.h"
 #include "asterc/uttrst.h"
-#include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/ex0000.h"
 #include "asterfort/foint0.h"
@@ -42,7 +39,6 @@ use calcul_module, only : ca_iactif_
 #include "asterfort/utptme.h"
 #include "asterfort/uttcpg.h"
 #include "asterfort/check_aster_allocate.h"
-    mpi_int :: mpicow, mpicou
     integer :: nivuti, nivpgm, unite
     common /inf001/ nivuti,nivpgm,unite
 !
@@ -112,13 +108,6 @@ use calcul_module, only : ca_iactif_
         endif
     endif
 !
-! --- COMMUNICATEUR MPI_COMM_WORLD ET COMMUNICATEUR COURANT
-! --- ON VERIFIE QU'ILS SONT IDENTIQUES (SINON ERREUR PROGRAMMEUR)
-! --- AVANT ET APRES L'APPEL A L'OPERATEUR
-    call asmpi_comm('GET_WORLD', mpicow)
-    call asmpi_comm('GET', mpicou)
-    ASSERT(mpicow == mpicou)
-!
     if (nuoper .lt. 0) then
         nuop2 = abs(nuoper)
         call opsexe(nuop2)
@@ -127,10 +116,6 @@ use calcul_module, only : ca_iactif_
     else if (nuoper.ne.9999) then
         call utmess('E', 'SUPERVIS_61', si=nuoper)
     endif
-!
-    call asmpi_comm('GET_WORLD', mpicow)
-    call asmpi_comm('GET', mpicou)
-    ASSERT(mpicow == mpicou)
 !
 ! --- VERIFICATION SI INTERRUPTION DEMANDEE PAR SIGNAL USR1
 !
