@@ -96,6 +96,8 @@ subroutine ritz99(nomres)
 ! --- DETERMINATION DU NOMBRE D'OCCURRENCE DE RITZ
     call getfac('RITZ', nboc)
     ASSERT(nboc.le.2)
+    ioccmi=2
+    ioccbase=1
     do i = 1, nboc
         call getvid('RITZ', 'MODE_MECA'  , iocc=i, nbval=0, nbret=nbmm)
         call getvid('RITZ', 'BASE_MODALE', iocc=i, nbval=0, nbret=nbbm)
