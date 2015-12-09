@@ -147,6 +147,11 @@ ModesCalc={
 1: (8.85701E+01, 8.88995E+01, 8.90065E+01, 8.90541E+01, 8.90541E+01, 8.90541E+01,),
 }
 
+# Tester le calcul de la masse des elements MECABL2
+MASSE=POST_ELEM(MODELE=affect, CHAM_MATER=CTM,
+                CARA_ELEM=calbar, MASS_INER=_F( TOUT = 'OUI'),)
+TEST_TABLE(TABLE=MASSE, NOM_PARA='MASSE', VALE_CALC=3.7742851573,)
+
 for ii in range(len(Instant)):
     itemps = Instant[ii]
     print "Instant   %d " % itemps
