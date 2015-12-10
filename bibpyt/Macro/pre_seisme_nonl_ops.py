@@ -137,12 +137,8 @@ class PreCalcMiss(PreSeismeNonL):
     def calc_base_modale(self):
         """Execute the eigenmodes calculation"""
         if self.type_calcul == 'ISFS':
-            #nbmodes1 = self.param['PARAMETRE'][
-            nbmodes1 = self.param[
-                'PRE_CALC_MISS']['NMAX_MODE_ISS']
-            #nbmodes2 = self.param['PARAMETRE'][
-            nbmodes2 = self.param[
-                'PRE_CALC_MISS']['NMAX_MODE_IFS']
+            nbmodes1 = self.param['PRE_CALC_MISS']['NMAX_MODE_ISS']
+            nbmodes2 = self.param['PRE_CALC_MISS']['NMAX_MODE_IFS']
             bamoISS = BaseModale(
                 self, self.param, self.model, nbmodes1, self.typ_ISS)
             bamoISFS = BaseModale(
@@ -151,9 +147,7 @@ class PreCalcMiss(PreSeismeNonL):
             bamoISFS.combine_base_modale(bamoISS)
             self.bamo = bamoISFS
         else:
-            #nbmodes1 = self.param['PARAMETRE'][
-            nbmodes1 = self.param[
-                'PRE_CALC_MISS']['NMAX_MODE_ISS']
+            nbmodes1 = self.param['PRE_CALC_MISS']['NMAX_MODE_ISS']
             bamoISS = BaseModale(
                 self, self.param, self.model, nbmodes1, self.typ_ISS)
             bamoISS.defi_base_modale()
@@ -161,15 +155,11 @@ class PreCalcMiss(PreSeismeNonL):
 
     def set_type(self):
         """Set the type of MISS calculation"""
-        #self.type_calcul = self.param['PARAMETRE'][
-        self.type_calcul = self.param[
-            'PRE_CALC_MISS']['CALC_MISS_OPTION']
-        #if self.param['PARAMETRE']['PRE_CALC_MISS']['REDUC_DYNA_ISS'] == 'OUI':
+        self.type_calcul = self.param['PRE_CALC_MISS']['CALC_MISS_OPTION']
         if self.param['PRE_CALC_MISS']['REDUC_DYNA_ISS'] == 'OUI':
             self.typ_ISS = 'DYNA'
         else:
             self.typ_ISS = 'STAT'
-        #if self.param['PARAMETRE']['PRE_CALC_MISS']['REDUC_DYNA_IFS'] == 'OUI':
         if self.param['PRE_CALC_MISS']['REDUC_DYNA_IFS'] == 'OUI':
             self.typ_IFS = 'DYNA'
         else:
@@ -259,10 +249,6 @@ class BaseModale(object):
         charge = self.param['AFFE_CHAR_MECA']
         for key in charge:
             if key == 'LIAISON_SOLIDE':
-                #if not self.param['PARAMETRE']['PRE_CALC_MISS']['GROUP_NO_CENT']:
-                #if not self.param['PRE_CALC_MISS'].has_key('GROUP_NO_CENT'):
-                #   raise AsException(
-                #        "Le mot-clé GROUP_NO_CENT est obligatoire lorsqu'une LIAISON_SOLIDE est définie")
                 msg_error = "\n\nLe mot-clé GROUP_NO_CENT est obligatoire lorsqu'une LIAISON_SOLIDE est définie"
                 assert self.param['PRE_CALC_MISS'].has_key('GROUP_NO_CENT') == True, msg_error
                 return True
@@ -270,20 +256,14 @@ class BaseModale(object):
 
     def defi_interf_dyna(self):
         """Build the dynamic interface where the substructuring approach is applied"""
-        #if (self.param['PARAMETRE']['PRE_CALC_MISS']['REDUC_DYNA_ISS'] == 'OUI' or
-        #        self.param['PARAMETRE']['PRE_CALC_MISS']['REDUC_DYNA_IFS'] == 'OUI'):
         if (self.param['PRE_CALC_MISS']['REDUC_DYNA_ISS'] == 'OUI' or
                 self.param['PRE_CALC_MISS']['REDUC_DYNA_IFS'] == 'OUI'):
-            #grno = self.param['PARAMETRE']['PRE_CALC_MISS']['GROUP_NO_INTERF']
-            grno = self.get_grno_interf() #self.param['PRE_CALC_MISS']['GROUP_NO_INTERF']
+            grno = self.get_grno_interf() 
         else:
             if self.check_radier_rigide():
-               #grno = self.param['PARAMETRE'][
-                grno = self.param[
-                    'PRE_CALC_MISS']['GROUP_NO_CENT']
+                grno = self.param['PRE_CALC_MISS']['GROUP_NO_CENT']
             else:
-               #grno = self.param['PARAMETRE'][
-                grno =  self.get_grno_interf() #self.param['PRE_CALC_MISS']['GROUP_NO_INTERF']
+                grno =  self.get_grno_interf() 
         _C_LIM0 = AFFE_CHAR_MECA(
             MODELE=self.model.get_model(), DDL_IMPO=_F(GROUP_NO=grno,
                                                        DX=0.0, DY=0.0, DZ=0.0,),)
@@ -325,11 +305,9 @@ class BaseModale(object):
     def modes_statiques(self):
         """Calculate static/interface modes"""
         if self.check_radier_rigide():
-            #grno = self.param['PARAMETRE']['PRE_CALC_MISS']['GROUP_NO_CENT']
             grno = self.param['PRE_CALC_MISS']['GROUP_NO_CENT']
         else:
-            #grno = self.param['PARAMETRE']['PRE_CALC_MISS']['GROUP_NO_INTERF']
-            grno = self.get_grno_interf() #self.param['PRE_CALC_MISS']['GROUP_NO_INTERF']
+            grno = self.get_grno_interf() 
         _modsta = MODE_STATIQUE(MATR_RIGI=self.matr_rigi,
                                 MODE_STAT=_F(GROUP_NO=grno, TOUT_CMP='OUI',))
         self.modes = _modsta
@@ -363,8 +341,7 @@ class BaseModale(object):
     def DefineOut(self):
         """Define output depending on user choices"""
         if self.param['RESULTAT'].has_key('BASE_MODALE'):
-            self.parent.DeclareOut(
-                '_BAMO', self.param['RESULTAT']['BASE_MODALE'])
+            self.parent.DeclareOut('_BAMO', self.param['RESULTAT']['BASE_MODALE'])
         _BAMO = DEFI_BASE_MODALE(**self.cmd_bamo)
         self.bamo = _BAMO
 
@@ -384,14 +361,11 @@ class MacroElement(object):
     def check_reduc_dyna(self):
         """Check if dynamic reduction is used within the super-element"""
         reduc_dyna = False
-        #if self.param['PARAMETRE'].has_key('PRE_CALC_MISS'):
-        #    if (self.param['PARAMETRE']['PRE_CALC_MISS']['REDUC_DYNA_ISS'] == 'OUI' or
-        #            self.param['PARAMETRE']['PRE_CALC_MISS']['REDUC_DYNA_IFS'] == 'OUI'):
+
         if self.param['PRE_CALC_MISS']:
             if (self.param['PRE_CALC_MISS']['REDUC_DYNA_ISS'] == 'OUI' or
                     self.param['PRE_CALC_MISS']['REDUC_DYNA_IFS'] == 'OUI'):
                 reduc_dyna = True
-        #if self.param['PARAMETRE'].has_key('POST_CALC_MISS'):
         if self.param['POST_CALC_MISS']:
             bamo_nom_long = aster.getvectjev(
                 self.mael.nom + (8 - len(self.mael.nom)) * ' ' + '.MAEL_REFE')
@@ -404,11 +378,8 @@ class MacroElement(object):
 
     def set_mael(self):
         """Build the super-element"""
-        #if self.param['PARAMETRE'].has_key('POST_CALC_MISS'):
         if self.param['POST_CALC_MISS']:
-            #self.mael = self.param['PARAMETRE'][
-            self.mael = self.param[
-                'POST_CALC_MISS']['MACR_ELEM_DYNA']
+            self.mael = self.param['POST_CALC_MISS']['MACR_ELEM_DYNA']
         else:
             self.mael = None
 
@@ -423,8 +394,7 @@ class MacroElement(object):
             '_Mael', self.param['RESULTAT']['MACR_ELEM_DYNA'])
         _Mael = MACR_ELEM_DYNA(
             BASE_MODALE=Bamo, MATR_RIGI=self.bamo.get_rigi(),
-            #MATR_MASS=self.bamo.get_mass(), SANS_GROUP_NO=self.param['PARAMETRE']['PRE_CALC_MISS']['GROUP_NO_INTERF'],)
-            MATR_MASS=self.bamo.get_mass(), SANS_GROUP_NO=self.bamo.get_grno_interf(),) #SANS_GROUP_NO=self.param['PRE_CALC_MISS']['GROUP_NO_INTERF'],)
+            MATR_MASS=self.bamo.get_mass(), SANS_GROUP_NO=self.bamo.get_grno_interf(),) 
 
 
 class Properties(object):
@@ -485,7 +455,6 @@ class Model(object):
     @staticmethod
     def factory(parent, mail, properties):
         """Factory that returns the Model object"""
-        #if properties['PARAMETRE'].has_key('PRE_CALC_MISS'):
         if properties['PRE_CALC_MISS']:
             if mail.check_ficti_nodes():
                 return ModelBaMoReduc(parent, mail, properties)
@@ -800,7 +769,6 @@ class StatDyna(object):
         _impeF = LIRE_IMPE_MISS( BASE = self.base_modale,
                                  UNITE_RESU_IMPE = self.UL_impe_freq,
                                  NUME_DDL_GENE = _NUMGEN,
-                                 #ISSF='OUI',
                                  SYME='OUI', TYPE='ASCII', FREQ_EXTR = 0.1,);
 
         _Ks = COMB_MATR_ASSE(COMB_C=( _F(MATR_ASSE = _impeF,
@@ -962,23 +930,14 @@ class ModelMacrElem(Model):
         for mm in mcfact:
             if mm['OPTION'] == 'LAPL_TEMPS':
                 cmd_charge = {'SUPER_MAILLE': 'STAT1'}
-                #if self.args['PARAMETRE']['POST_CALC_MISS']['UNITE_RESU_RIGI']:
-                #    UL_rigi = self.args['PARAMETRE'][
                 if self.args['POST_CALC_MISS'].has_key('UNITE_RESU_RIGI'):
-                    UL_rigi = self.args[
-                        'POST_CALC_MISS']['UNITE_RESU_RIGI']
+                    UL_rigi = self.args['POST_CALC_MISS']['UNITE_RESU_RIGI']
                     cmd_charge['UNITE_RESU_RIGI'] = UL_rigi
-                #if self.args['PARAMETRE']['POST_CALC_MISS']['UNITE_RESU_MASS']:
-                #    UL_mass = self.args['PARAMETRE'][
                 if self.args['POST_CALC_MISS'].has_key('UNITE_RESU_MASS'):
-                    UL_mass = self.args[
-                        'POST_CALC_MISS']['UNITE_RESU_MASS']
+                    UL_mass = self.args['POST_CALC_MISS']['UNITE_RESU_MASS']
                     cmd_charge['UNITE_RESU_MASS'] = UL_mass
-                #if self.args['PARAMETRE']['POST_CALC_MISS']['UNITE_RESU_AMOR']:
-                #    UL_amor = self.args['PARAMETRE'][
                 if self.args['POST_CALC_MISS'].has_key('UNITE_RESU_AMOR'):
-                    UL_amor = self.args[
-                        'POST_CALC_MISS']['UNITE_RESU_AMOR']
+                    UL_amor = self.args['POST_CALC_MISS']['UNITE_RESU_AMOR']
                     cmd_charge['UNITE_RESU_AMOR'] = UL_amor
                 charge_sol = _F(**cmd_charge)
                 self.args.set_key(('LAPL_TEMPS', 'MODELE'), self.modele)
@@ -1038,9 +997,7 @@ class ModelDynaReduc(ModelMacrElem):
 
     def other_loads(self):
         """Define the relation between the physical and generalized DoF's"""
-        liaison_interf = _F(MACR_ELEM_DYNA=self.args[
-                            #'PARAMETRE']['POST_CALC_MISS']['MACR_ELEM_DYNA'])
-                            'POST_CALC_MISS']['MACR_ELEM_DYNA'])
+        liaison_interf = _F(MACR_ELEM_DYNA=self.args['POST_CALC_MISS']['MACR_ELEM_DYNA'])
         self.args.add_MCFACT(
             ('AFFE_CHAR_MECA', 'LIAISON_INTERF'), liaison_interf)
 
@@ -1143,7 +1100,6 @@ class Mesh(object):
     def add_group_no(self, nom):
         lgrno = self.old_mesh.LIST_GROUP_NO()
         nomma = nom[0]
-        print "IFLUSTR2=", self.old_mesh.nom, nom
         check = 0
         for grp in lgrno:
            if grp[0] == nomma:
@@ -1170,24 +1126,17 @@ class Mesh(object):
             mael = self.macro_elem.get_mael()
             Nb_no = len(mael._get_sdj().LINO.get())
         else:
-            #if self.param['PARAMETRE']['PRE_CALC_MISS']['NMAX_MODE_IFS']:
-            #    nb_modes_IFS = self.param['PARAMETRE'][
             if self.param['PRE_CALC_MISS']['NMAX_MODE_IFS']:
-                nb_modes_IFS = self.param[
-                    'PRE_CALC_MISS']['NMAX_MODE_IFS']
+                nb_modes_IFS = self.param['PRE_CALC_MISS']['NMAX_MODE_IFS']
             else:
                 nb_modes_IFS = 0
-            #Nb_no = self.param['PARAMETRE'][
-            Nb_no = self.param[
-                'PRE_CALC_MISS']['NMAX_MODE_ISS'] + nb_modes_IFS
+            Nb_no = self.param['PRE_CALC_MISS']['NMAX_MODE_ISS'] + nb_modes_IFS
         return Nb_no
 
     def check_ficti_nodes(self):
         """Check if fictitious cells and nodes should be added to the mesh"""
         if self.macro_elem:
             return self.macro_elem.check_reduc_dyna()
-        #elif (self.param['PARAMETRE']['PRE_CALC_MISS']['REDUC_DYNA_ISS'] == 'OUI' or
-        #      self.param['PARAMETRE']['PRE_CALC_MISS']['REDUC_DYNA_IFS'] == 'OUI'):
         elif (self.param['PRE_CALC_MISS']['REDUC_DYNA_ISS'] == 'OUI' or
               self.param['PRE_CALC_MISS']['REDUC_DYNA_IFS'] == 'OUI'):
             return True
