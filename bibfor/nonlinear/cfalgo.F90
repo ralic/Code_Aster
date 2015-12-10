@@ -1,26 +1,11 @@
-subroutine cfalgo(noma, sdstat, resigr, iterat, defico,&
-                  resoco, solveu, numedd, matass, ddepla,&
+subroutine cfalgo(noma, sdstat, resigr, iterat, ds_contact,&
+                  solveu, numedd, matass, ddepla,&
                   depdel, ctccvg, ctcfix)
 !
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
+use NonLin_Datastructure_type
 !
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+implicit none
 !
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
-!
-    implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/algocg.h"
@@ -41,12 +26,31 @@ subroutine cfalgo(noma, sdstat, resigr, iterat, defico,&
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
+!
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: mickael.abbas at edf.fr
+!
     aster_logical :: ctcfix
     character(len=8) :: noma
     real(kind=8) :: resigr
     integer :: iterat
     character(len=24) :: sdstat
-    character(len=24) :: defico, resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19) :: ddepla, depdel
     character(len=19) :: solveu, matass
     character(len=14) :: numedd
@@ -60,13 +64,11 @@ subroutine cfalgo(noma, sdstat, resigr, iterat, defico,&
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  SDSTAT : SD STATISTIQUES
 ! IN  NOMA   : NOM DU MAILLAGE
 ! IN  RESIGR : RESI_GLOB_RELA
 ! IN  ITERAT : ITERATION DE NEWTON
-! IN  DEFICO : SD DE DEFINITION DU CONTACT
-! IN  RESOCO : SD DE RESOLUTION DU CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  SOLVEU : SD SOLVEUR
 ! IN  NUMEDD : NUME_DDL
 ! IN  MATASS : NOM DE LA MATRICE DU PREMIER MEMBRE ASSEMBLEE
@@ -94,16 +96,15 @@ subroutine cfalgo(noma, sdstat, resigr, iterat, defico,&
 ! --- AFFICHAGE
 !
     if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> ... DEBUT DE LA RESOLUTION DU '//&
-        'CONTACT'
+        write (ifm,*) '<CONTACT> ... DEBUT DE LA RESOLUTION DU CONTACT'
     endif
 !
 ! --- METHODE DE CONTACT ET DE FROTTEMENT
 !
-    icont = cfdisi(defico,'ALGO_CONT')
-    ifrot = cfdisi(defico,'ALGO_FROT')
-    lgliss = cfdisl(defico,'CONT_DISC_GLIS')
-    ndimg = cfdisi(defico,'NDIM' )
+    icont = cfdisi(ds_contact%sdcont_defi,'ALGO_CONT')
+    ifrot = cfdisi(ds_contact%sdcont_defi,'ALGO_FROT')
+    lgliss = cfdisl(ds_contact%sdcont_defi,'CONT_DISC_GLIS')
+    ndimg = cfdisi(ds_contact%sdcont_defi,'NDIM' )
 !
 ! --- INITIALISATIONS
 !
@@ -112,8 +113,7 @@ subroutine cfalgo(noma, sdstat, resigr, iterat, defico,&
 !
 ! --- PREPARATION DES CALCULS
 !
-    call cfprep(noma, defico, resoco, matass, ddepla,&
-                depdel)
+    call cfprep(noma, ds_contact, matass, ddepla, depdel)
 !
 ! --- AFFICHAGE
 !
@@ -125,24 +125,24 @@ subroutine cfalgo(noma, sdstat, resigr, iterat, defico,&
 !
     if (icont .eq. 4) then
         if (ifrot .eq. 0) then
-            call algocp(sdstat, resoco, numedd, matass)
+            call algocp(sdstat, ds_contact%sdcont_solv, numedd, matass)
         else if (ifrot.eq.1) then
-            call frogdp(sdstat, resoco, numedd, matass, resigr)
+            call frogdp(sdstat, ds_contact%sdcont_solv, numedd, matass, resigr)
 !
         else
             ASSERT(.false.)
         endif
     else if (icont.eq.1) then
         if (lgliss) then
-            call algogl(sdstat, defico, resoco, solveu, matass,&
+            call algogl(sdstat, ds_contact%sdcont_defi, ds_contact%sdcont_solv, solveu, matass,&
                         noma, ctccvg)
         else
-            call algoco(sdstat, defico, resoco, solveu, matass,&
+            call algoco(sdstat, ds_contact%sdcont_defi, ds_contact%sdcont_solv, solveu, matass,&
                         noma, ctccvg)
         endif
     else if (icont.eq.2) then
         if (ifrot .eq. 0) then
-            call algocg(sdstat, defico, resoco, solveu, matass,&
+            call algocg(sdstat, ds_contact%sdcont_defi, ds_contact%sdcont_solv, solveu, matass,&
                         ctccvg)
         else
             ASSERT(.false.)
@@ -150,18 +150,18 @@ subroutine cfalgo(noma, sdstat, resigr, iterat, defico,&
 !
     else if (icont.eq.5) then
         if (ifrot .eq. 0) then
-            call algocl(sdstat, defico, resoco, solveu, matass,&
+            call algocl(sdstat, ds_contact%sdcont_defi, ds_contact%sdcont_solv, solveu, matass,&
                         noma, ctccvg, ctcfix)
         else if (ifrot.eq.1) then
-            call fropgd(sdstat, defico, resoco, solveu, numedd,&
+            call fropgd(sdstat, ds_contact%sdcont_defi, ds_contact%sdcont_solv, solveu, numedd,&
                         matass, noma, resigr, depdel, ctccvg,&
                         ctcfix)
         else if (ifrot.eq.2) then
             if (ndimg .eq. 2) then
-                call fro2gd(sdstat, defico, resoco, solveu, matass,&
+                call fro2gd(sdstat, ds_contact%sdcont_defi, ds_contact%sdcont_solv, solveu, matass,&
                             noma, ctccvg)
             else if (ndimg.eq.3) then
-                call frolgd(sdstat, defico, resoco, solveu, numedd,&
+                call frolgd(sdstat, ds_contact%sdcont_defi, ds_contact%sdcont_solv, solveu, numedd,&
                             matass, noma, resigr, depdel, ctccvg)
             else
                 ASSERT(.false.)
@@ -181,18 +181,19 @@ subroutine cfalgo(noma, sdstat, resigr, iterat, defico,&
 !
 ! --- POST-TRAITEMENTS DES CALCULS
 !
-    call cfpost(noma, defico, resoco, ddepla, ctccvg)
+    call cfpost(noma, ds_contact, ddepla, ctccvg)
 !
 ! --- ETAT POUR EVENT-DRIVEN
 !
-    if (iterat .eq. 0) call cfeven('INI', defico, resoco)
-    call cfeven('FIN', defico, resoco)
+    if (iterat .eq. 0) then
+        call cfeven('INI', ds_contact)
+    endif
+    call cfeven('FIN', ds_contact)
 !
 ! --- AFFICHAGE
 !
     if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> ... FIN DE LA RESOLUTION DU '//&
-        'CONTACT'
+        write (ifm,*) '<CONTACT> ... FIN DE LA RESOLUTION DU CONTACT'
     endif
 !
 ! --- LE CALCUL DE CONTACT A FORCEMENT ETE REALISE

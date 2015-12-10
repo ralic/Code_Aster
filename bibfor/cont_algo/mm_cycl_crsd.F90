@@ -1,4 +1,6 @@
-subroutine mm_cycl_crsd(sdcont_defi, sdcont_solv)
+subroutine mm_cycl_crsd(ds_contact)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -25,8 +27,7 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=24), intent(in) :: sdcont_defi
-    character(len=24), intent(in) :: sdcont_solv
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -36,8 +37,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
-! In  sdcont_solv      : name of contact solving datastructure
+! In  ds_contact       : datastructure for contact management
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,28 +59,28 @@ implicit none
 !
 ! - Initializations
 !
-    nb_cont_poin = cfdisi(sdcont_defi,'NTPC' )
-    nb_cont_zone  = cfdisi(sdcont_defi,'NZOCO' )
+    nb_cont_poin = cfdisi(ds_contact%sdcont_defi,'NTPC' )
+    nb_cont_zone  = cfdisi(ds_contact%sdcont_defi,'NZOCO' )
 !
 ! - Status saving (coded integer)
 !
-    sdcont_cyclis = sdcont_solv(1:14)//'.CYCLIS'
+    sdcont_cyclis = ds_contact%sdcont_solv(1:14)//'.CYCLIS'
 !
 ! - Cycling length
 !
-    sdcont_cycnbr = sdcont_solv(1:14)//'.CYCNBR'
+    sdcont_cycnbr = ds_contact%sdcont_solv(1:14)//'.CYCNBR'
 !
 ! - Cycling state
 !
-    sdcont_cyceta = sdcont_solv(1:14)//'.CYCETA'
+    sdcont_cyceta = ds_contact%sdcont_solv(1:14)//'.CYCETA'
 !
 ! - Cycling history
 !
-    sdcont_cychis = sdcont_solv(1:14)//'.CYCHIS'
+    sdcont_cychis = ds_contact%sdcont_solv(1:14)//'.CYCHIS'
 !
 ! - Informations about ratios
 !
-    sdcont_cyccoe = sdcont_solv(1:14)//'.CYCCOE'
+    sdcont_cyccoe = ds_contact%sdcont_solv(1:14)//'.CYCCOE'
 !
 ! - Creating cycling objects
 !

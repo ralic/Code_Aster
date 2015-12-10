@@ -1,6 +1,8 @@
-subroutine cont_init(mesh     , model         , sdcont_defi, sdcont_solv, nume_inst,&
-                     sdtime   , sdstat        , sddyna     , hat_valinc , sdnume   ,&
-                     nume_dof , list_func_acti)
+subroutine cont_init(mesh          , model , ds_contact, nume_inst, sdtime  ,&
+                     sdstat        , sddyna, hat_valinc, sdnume   , nume_dof,&
+                     list_func_acti)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -30,8 +32,7 @@ implicit none
 !
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: model
-    character(len=24), intent(in) :: sdcont_defi
-    character(len=24), intent(in) :: sdcont_solv
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=24), intent(in) :: sdtime
     character(len=24), intent(in) :: sdstat  
     integer, intent(in) :: nume_inst
@@ -51,8 +52,7 @@ implicit none
 !
 ! In  mesh             : name of mesh
 ! In  model            : name of model
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
-! In  sdcont_solv      : name of contact solving datastructure
+! In  ds_contact       : datastructure for contact management
 ! In  nume_inst        : index of current step time
 ! In  hat_valinc       : hat variable for algorithm fields
 ! In  nume_dof         : name of numbering object (NUME_DDL)
@@ -71,28 +71,28 @@ implicit none
     l_cont_disc = isfonc(list_func_acti,'CONT_DISCRET')
     l_cont_cont = isfonc(list_func_acti,'CONT_CONTINU')
     l_cont_xfem = isfonc(list_func_acti,'CONT_XFEM')
-    l_cont_allv = cfdisl(sdcont_defi,'ALL_VERIF')
+    l_cont_allv = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF')
 !    
     if (.not.l_cont_allv) then
 !
 ! ----- For discrete contact
 !
         if (l_cont_disc) then
-            call cfinit(sdcont_defi, sdcont_solv, nume_inst)
+            call cfinit(ds_contact, nume_inst)
         endif
 !
 ! ----- For continue contact
 !
         if (l_cont_cont) then
-            call mminit(mesh  , sdcont_defi, sdcont_solv, sddyna  , hat_valinc,&
-                        sdtime, sdstat     , sdnume     , nume_dof, nume_inst)
+            call mminit(mesh  , ds_contact, sddyna  , hat_valinc, sdtime,&
+                        sdstat, sdnume    , nume_dof, nume_inst)
         endif
 !
 ! ----- For XFEM contact
 !
         if (l_cont_xfem) then
-            call xminit(mesh  , model , sdcont_defi, sdcont_solv, nume_inst,&
-                        sdtime, sdstat, sddyna     , hat_valinc )
+            call xminit(mesh  , model , ds_contact, nume_inst,sdtime,&
+                        sdstat, sddyna, hat_valinc)
         endif   
     endif
 !

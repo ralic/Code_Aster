@@ -1,4 +1,24 @@
-subroutine mmmcpt(noma, sdstat, defico, resoco, cnsinr)
+subroutine mmmcpt(noma, sdstat, ds_contact, cnsinr)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mminfi.h"
+#include "asterfort/mminfl.h"
+#include "asterfort/mminfm.h"
+#include "asterfort/nmrvai.h"
+#include "asterfort/wkvect.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,25 +38,10 @@ subroutine mmmcpt(noma, sdstat, defico, resoco, cnsinr)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/cfmmvd.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/mminfi.h"
-#include "asterfort/mminfl.h"
-#include "asterfort/mminfm.h"
-#include "asterfort/nmrvai.h"
-#include "asterfort/wkvect.h"
     character(len=8) :: noma
     character(len=19) :: cnsinr
-    character(len=24) :: defico, resoco, sdstat
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=24) :: sdstat
 !
 ! ----------------------------------------------------------------------
 !
@@ -46,14 +51,10 @@ subroutine mmmcpt(noma, sdstat, defico, resoco, cnsinr)
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  NOMA   : NOM DU MAILLAGE
 ! IN  SDSTAT : SD STATISTIQUES
-! IN  DEFICO : SD DE DEFINITION DU CONTACT
-! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  CNSINR : CHAM_NO_S POUR L'ARCHIVAGE DU CONTACT
-!
-!
 !
 !
     integer :: iptc, izone, imae, iptm
@@ -78,7 +79,7 @@ subroutine mmmcpt(noma, sdstat, defico, resoco, cnsinr)
 !
 ! --- INITIALISATIONS
 !
-    nzoco = cfdisi(defico,'NZOCO' )
+    nzoco = cfdisi(ds_contact%sdcont_defi,'NZOCO' )
     nbliac = 0
     nbliaf = 0
 !
@@ -90,7 +91,7 @@ subroutine mmmcpt(noma, sdstat, defico, resoco, cnsinr)
 !
 ! --- TOUTES LES ZONES EN INTEGRATION AUX NOEUDS ?
 !
-    lnoeu = cfdisl(defico,'ALL_INTEG_NOEUD')
+    lnoeu = cfdisl(ds_contact%sdcont_defi,'ALL_INTEG_NOEUD')
     if (.not.lnoeu) then
         nbliac = 0
         nbliaf = 0
@@ -99,7 +100,7 @@ subroutine mmmcpt(noma, sdstat, defico, resoco, cnsinr)
 !
 ! --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
 !
-    tabfin = resoco(1:14)//'.TABFIN'
+    tabfin = ds_contact%sdcont_solv(1:14)//'.TABFIN'
     call jeveuo(tabfin, 'L', jtabf)
 !
     ztabf = cfmmvd('ZTABF')
@@ -117,9 +118,9 @@ subroutine mmmcpt(noma, sdstat, defico, resoco, cnsinr)
 !
 ! --- OPTIONS SUR LA ZONE DE CONTACT
 !
-        lveri = mminfl(defico,'VERIF' ,izone )
-        nbmae = mminfi(defico,'NBMAE' ,izone )
-        jdecme = mminfi(defico,'JDECME',izone )
+        lveri = mminfl(ds_contact%sdcont_defi,'VERIF' ,izone )
+        nbmae = mminfi(ds_contact%sdcont_defi,'NBMAE' ,izone )
+        jdecme = mminfi(ds_contact%sdcont_defi,'JDECME',izone )
 !
 ! ----- MODE VERIF: ON SAUTE LES POINTS
 !
@@ -137,7 +138,7 @@ subroutine mmmcpt(noma, sdstat, defico, resoco, cnsinr)
 !
 ! ------- NOMBRE DE POINTS SUR LA MAILLE ESCLAVE
 !
-            call mminfm(posmae, defico, 'NPTM', nptm)
+            call mminfm(posmae, ds_contact%sdcont_defi, 'NPTM', nptm)
 !
 ! ------- BOUCLE SUR LES POINTS
 !

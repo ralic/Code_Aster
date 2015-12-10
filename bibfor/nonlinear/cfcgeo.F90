@@ -1,25 +1,10 @@
-subroutine cfcgeo(noma, defico, resoco, solalg, dvgeom,&
+subroutine cfcgeo(mesh, ds_contact, solalg, dvgeom,&
                   geoerr, geonoe, geoval)
 !
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
+use NonLin_Datastructure_type
 !
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+implicit none
 !
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
-!
-    implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
@@ -40,8 +25,26 @@ subroutine cfcgeo(noma, defico, resoco, solalg, dvgeom,&
 #include "asterfort/nmchex.h"
 #include "asterfort/utmess.h"
 !
-    character(len=8) :: noma
-    character(len=24) :: defico, resoco
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: mickael.abbas at edf.fr
+!
+    character(len=8) :: mesh
+    type(NL_DS_Contact), intent(in) :: ds_contact
     aster_logical :: dvgeom, geoerr
     character(len=19) :: solalg(*)
     character(len=16) :: geonoe
@@ -55,9 +58,7 @@ subroutine cfcgeo(noma, defico, resoco, solalg, dvgeom,&
 !
 ! ----------------------------------------------------------------------
 !
-!
-! IN  DEFICO : SD POUR LA DEFINITION DU CONTACT
-! IN  RESOCO : SD POUR LA RESOLUTION DU CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  NOMA   : NOM DU MAILLAGE
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
 ! OUT DVGEOM : .TRUE. SI BOUCLE GEOMETRIQUE NON CONVERGEE
@@ -92,9 +93,9 @@ subroutine cfcgeo(noma, defico, resoco, solalg, dvgeom,&
 !
 ! --- ACCES OBJETS
 !
-    autoc1 = resoco(1:14)//'.REA1'
-    autoc2 = resoco(1:14)//'.REA2'
-    maxdep = resoco(1:14)//'.MAXD'
+    autoc1 = ds_contact%sdcont_solv(1:14)//'.REA1'
+    autoc2 = ds_contact%sdcont_solv(1:14)//'.REA2'
+    maxdep = ds_contact%sdcont_solv(1:14)//'.MAXD'
     call jeveuo(depdel(1:19)//'.VALE', 'L', vr=depde)
     call jeveuo(autoc1(1:19)//'.VALE', 'E', vr=auto1)
     call jeveuo(autoc2(1:19)//'.VALE', 'E', vr=auto2)
@@ -103,10 +104,10 @@ subroutine cfcgeo(noma, defico, resoco, solalg, dvgeom,&
 ! --- TOLERANCE POUR REACTUALISATION GEOMETRIQUE AUTOMATIQUE
 ! --- NOMBRE MAXI D'ITERATIONS DE REACTUALISATION GEOMETRIQUE EN AUTO
 !
-    epsgeo = cfdisr(defico,'RESI_GEOM' )
-    nbreag = cfdisi(defico,'NB_ITER_GEOM' )
-    maxgeo = cfdisi(defico,'ITER_GEOM_MAXI')
-    neq = cfdisd(resoco,'NEQ' )
+    epsgeo = cfdisr(ds_contact%sdcont_defi,'RESI_GEOM' )
+    nbreag = cfdisi(ds_contact%sdcont_defi,'NB_ITER_GEOM' )
+    maxgeo = cfdisi(ds_contact%sdcont_defi,'ITER_GEOM_MAXI')
+    neq = cfdisd(ds_contact%sdcont_solv,'NEQ' )
     geoala = .false.
     geoerr = .false.
     dvgeom = .true.
@@ -119,7 +120,7 @@ subroutine cfcgeo(noma, defico, resoco, solalg, dvgeom,&
 !
 ! --- NOUVELLE ITERATION DE REACTUALISATION GEOMETRIQUE
 !
-    call mmbouc(resoco, 'GEOM', 'READ', mmitgo)
+    call mmbouc(ds_contact, 'GEOM', 'READ', mmitgo)
 !
 ! --- CALCUL DU DEPLACEMENT
 !
@@ -165,33 +166,33 @@ subroutine cfcgeo(noma, defico, resoco, solalg, dvgeom,&
     if (numno2 .eq. 0) then
         nomnoe = ' '
     else
-        call jenuno(jexnum(noma//'.NOMNOE', numno2), nomnoe)
+        call jenuno(jexnum(mesh//'.NOMNOE', numno2), nomnoe)
     endif
     geonoe = nomnoe//'        '
     geoval = autono
 !
 ! --- CORRESPOND A REAC_GEOM = AUTOMATIQUE
 !
-    if (cfdisl(defico,'REAC_GEOM_AUTO')) then
+    if (cfdisl(ds_contact%sdcont_defi,'REAC_GEOM_AUTO')) then
 !
         if (autono .lt. epsgeo) then
             dvgeom = .false.
         else
             dvgeom = .true.
             if (mmitgo .eq. maxgeo) then
-                call cfverl(defico, resoco)
+                call cfverl(ds_contact)
                 geoerr = .true.
             endif
         endif
 !
 ! --- CORRESPOND A REAC_GEOM = SANS
 !
-    else if (cfdisl(defico,'REAC_GEOM_SANS')) then
+    else if (cfdisl(ds_contact%sdcont_defi,'REAC_GEOM_SANS')) then
         if (autono .ge. epsgeo) then
             alarme = .true.
         endif
         dvgeom = .false.
-    else if (cfdisl(defico,'REAC_GEOM_MANU')) then
+    else if (cfdisl(ds_contact%sdcont_defi,'REAC_GEOM_MANU')) then
 !
 ! --- CORRESPOND A REAC_GEOM = CONTROLE
 !

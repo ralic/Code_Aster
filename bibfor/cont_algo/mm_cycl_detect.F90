@@ -1,7 +1,11 @@
-subroutine mm_cycl_detect(sdcont_defi, sdcont_solv, l_loop_cont, l_frot_zone, i_cont_poin,&
-                          coef_cont, pres_cont_prev, dist_cont_prev, indi_frot_prev,&
-                          dist_frot_prev, indi_cont_eval, indi_frot_eval, dist_cont_curr,&
-                          pres_cont_curr, dist_frot_curr)
+subroutine mm_cycl_detect(ds_contact    , l_loop_cont   ,&
+                          l_frot_zone   , i_cont_poin   , coef_cont,&
+                          pres_cont_prev, dist_cont_prev,&
+                          indi_frot_prev, dist_frot_prev,&
+                          indi_cont_eval, indi_frot_eval,&
+                          dist_cont_curr, pres_cont_curr, dist_frot_curr)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -29,8 +33,7 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=24), intent(in) :: sdcont_defi
-    character(len=24), intent(in) :: sdcont_solv
+    type(NL_DS_Contact), intent(in) :: ds_contact
     aster_logical, intent(in) :: l_loop_cont
     aster_logical, intent(in) :: l_frot_zone
     integer, intent(in) :: i_cont_poin
@@ -53,8 +56,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sdcont_solv      : name of contact solving datastructure
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  ds_contact       : datastructure for contact management
 ! In  l_frot_zone      : .true. if friction on zone
 ! In  l_loop_cont      : .true. if fixed point on contact loop
 ! In  i_cont_poin      : contact point index
@@ -73,26 +75,26 @@ implicit none
 !
 ! - Detection of cycling: contact/no contact
 !
-    call mm_cycl_d1(sdcont_solv, i_cont_poin, pres_cont_prev, dist_cont_prev, coef_cont,&
+    call mm_cycl_d1(ds_contact, i_cont_poin, pres_cont_prev, dist_cont_prev, coef_cont,&
                     indi_cont_eval, dist_cont_curr, pres_cont_curr)
 !
 ! - Detection of cycling: sliding/sticking
 !
     if (l_frot_zone) then
-        call mm_cycl_d2(sdcont_defi, sdcont_solv, i_cont_poin, indi_cont_eval, indi_frot_eval)
+        call mm_cycl_d2(ds_contact, i_cont_poin, indi_cont_eval, indi_frot_eval)
     endif
 !
 ! - Detection of cycling: sliding forward/backward
 !
     if (l_frot_zone) then
-        call mm_cycl_d3(sdcont_defi, sdcont_solv, i_cont_poin, indi_frot_prev, dist_frot_prev,&
+        call mm_cycl_d3(ds_contact, i_cont_poin, indi_frot_prev, dist_frot_prev,&
                         indi_cont_eval, indi_frot_eval, dist_frot_curr)
     endif
 !
 ! - Detection of cycling: old flip/flop
 !
     if (l_loop_cont) then
-        call mm_cycl_d4(sdcont_solv, i_cont_poin, indi_cont_eval)
+        call mm_cycl_d4(ds_contact, i_cont_poin, indi_cont_eval)
     endif
 !
 end subroutine

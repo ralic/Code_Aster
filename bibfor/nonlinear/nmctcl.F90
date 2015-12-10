@@ -1,4 +1,6 @@
-subroutine nmctcl(model, mesh, sdcont_defi, sdcont_solv)
+subroutine nmctcl(model, mesh, ds_contact)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -30,8 +32,7 @@ implicit none
 !
     character(len=8), intent(in) :: model
     character(len=8), intent(in) :: mesh
-    character(len=24), intent(in) :: sdcont_defi 
-    character(len=24), intent(in) :: sdcont_solv
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -43,15 +44,13 @@ implicit none
 !
 ! In  model            : name of model
 ! In  mesh             : name of mesh
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
-! In  sdcont_solv      : name of contact solving datastructure
+! In  ds_contact       : datastructure for contact management
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: cont_form
     integer :: ifm, niv
     aster_logical :: l_cont_xfem_gg
-    character(len=8) :: nomo
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -62,17 +61,16 @@ implicit none
 !
 ! - Parameters
 !
-    cont_form      = cfdisi(sdcont_defi,'FORMULATION')
-    l_cont_xfem_gg = cfdisl(sdcont_defi,'CONT_XFEM_GG')
-    nomo           = model(1:8)
+    cont_form      = cfdisi(ds_contact%sdcont_defi,'FORMULATION')
+    l_cont_xfem_gg = cfdisl(ds_contact%sdcont_defi,'CONT_XFEM_GG')
 !
 ! - Create elements for contact
 !
     if (cont_form .eq. 2) then
-        call mmligr(mesh, nomo, sdcont_defi, sdcont_solv)
+        call mmligr(mesh, model, ds_contact)
     elseif  (cont_form .eq. 3) then
         if (l_cont_xfem_gg) then
-            call xmligr(mesh, nomo, sdcont_solv)
+            call xmligr(mesh, model, ds_contact)
         endif
     else
         ASSERT(.false.)

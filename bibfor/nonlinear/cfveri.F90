@@ -1,8 +1,9 @@
-subroutine cfveri(noma, defico, resoco, newgeo, sdappa,&
-                  npt, jeux, loca, enti, zone,&
-                  instan)
+subroutine cfveri(mesh, ds_contact, newgeo, sdappa, npt   , &
+                  jeux, loca      , enti  , zone  , instan)
 !
-    implicit none
+use NonLin_Datastructure_type
+!
+implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -21,7 +22,6 @@ subroutine cfveri(noma, defico, resoco, newgeo, sdappa,&
 #include "asterfort/cfnumm.h"
 #include "asterfort/cfnumn.h"
 #include "asterfort/cftanr.h"
-#include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
@@ -51,9 +51,8 @@ subroutine cfveri(noma, defico, resoco, newgeo, sdappa,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=8), intent(in) :: noma
-    character(len=24), intent(in) :: defico
-    character(len=24), intent(in) :: resoco
+    character(len=8), intent(in) :: mesh
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19), intent(in) :: newgeo
     character(len=19), intent(in) :: sdappa
     character(len=24), intent(in) :: jeux
@@ -71,10 +70,8 @@ subroutine cfveri(noma, defico, resoco, newgeo, sdappa,&
 !
 ! ----------------------------------------------------------------------
 !
-!
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
-! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
+! In  mesh             : name of mesh
+! In  ds_contact       : datastructure for contact management
 ! IN  NEWGEO : GEOMETRIE ACTUALISEE
 ! IN  SDAPPA : NOM DE LA SD APPARIEMENT
 ! IN  JEUX   : NOM DE LA SD STOCKANT LE JEU
@@ -88,7 +85,6 @@ subroutine cfveri(noma, defico, resoco, newgeo, sdappa,&
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ifm, niv
     integer :: typapp, entapp
     integer :: jdecne
     integer :: posmae, nummam, posnoe(1), posmam, numnoe(1)
@@ -111,7 +107,6 @@ subroutine cfveri(noma, defico, resoco, newgeo, sdappa,&
 ! ----------------------------------------------------------------------
 !
     call jemarq()
-    call infdbg('CONTACT', ifm, niv)
 !
 ! --- INITIALISATIONS
 !
@@ -121,8 +116,8 @@ subroutine cfveri(noma, defico, resoco, newgeo, sdappa,&
 !
 ! --- QUELQUES DIMENSIONS
 !
-    nzoco = cfdisi(defico,'NZOCO' )
-    ndimg = cfdisi(defico,'NDIM' )
+    nzoco = cfdisi(ds_contact%sdcont_defi,'NZOCO' )
+    ndimg = cfdisi(ds_contact%sdcont_defi,'NDIM' )
 !
 ! --- ACCES SD PROVISOIRES
 !
@@ -139,14 +134,14 @@ subroutine cfveri(noma, defico, resoco, newgeo, sdappa,&
 !
 ! ----- OPTIONS SUR LA ZONE DE CONTACT
 !
-        nbpt = mminfi(defico,'NBPT' ,izone )
-        jdecne = mminfi(defico,'JDECNE',izone )
+        nbpt = mminfi(ds_contact%sdcont_defi,'NBPT' ,izone )
+        jdecne = mminfi(ds_contact%sdcont_defi,'JDECNE',izone )
 !
 ! ----- MODE NON-VERIF: ON SAUTE LES POINTS
 !
-        lveri = mminfl(defico,'VERIF' ,izone )
+        lveri = mminfl(ds_contact%sdcont_defi,'VERIF' ,izone )
         if (.not.lveri) then
-            nbpc = mminfi(defico,'NBPC' ,izone )
+            nbpc = mminfi(ds_contact%sdcont_defi,'NBPC' ,izone )
             ip = ip + nbpc
             goto 25
         endif
@@ -162,11 +157,11 @@ subroutine cfveri(noma, defico, resoco, newgeo, sdappa,&
 !
 ! ------- INDICE ABSOLU DANS LE MAILLAGE DU NOEUD
 !
-            call cfnumn(defico, 1, posnoe(1), numnoe(1))
+            call cfnumn(ds_contact%sdcont_defi, 1, posnoe(1), numnoe(1))
 !
 ! ------- NOM DU NOEUD ESCLAVE
 !
-            call jenuno(jexnum(noma//'.NOMNOE', numnoe(1)), nomnoe)
+            call jenuno(jexnum(mesh//'.NOMNOE', numnoe(1)), nomnoe)
 !
 ! ------- INFOS APPARIEMENT
 !
@@ -183,7 +178,7 @@ subroutine cfveri(noma, defico, resoco, newgeo, sdappa,&
 !
 ! ------- NOM DU POINT DE CONTACT
 !
-            call mmnpoi(noma, k8bla, numnoe(1), iptm, nompt)
+            call mmnpoi(mesh, k8bla, numnoe(1), iptm, nompt)
 !
 ! ------- TRAITEMENT DE L'APPARIEMENT
 !
@@ -192,21 +187,21 @@ subroutine cfveri(noma, defico, resoco, newgeo, sdappa,&
 ! --------- MAILLE MAITRE
 !
                 posmam = entapp
-                call cfnumm(defico, posmam, nummam)
+                call cfnumm(ds_contact%sdcont_defi, posmam, nummam)
 !
 ! --------- NOM DE LA MAILLE MAITRE
 !
-                call jenuno(jexnum(noma//'.NOMMAI', nummam), nommam)
+                call jenuno(jexnum(mesh//'.NOMMAI', nummam), nommam)
                 noment = nommam
 !
 ! --------- COORDONNEES PROJECTION DU NOEUD ESCLAVE SUR LA MAILLE MAITRE
 !
-                call cfcoor(noma, defico, newgeo, posmam, ksipr1,&
+                call cfcoor(mesh, ds_contact%sdcont_defi, newgeo, posmam, ksipr1,&
                             ksipr2, geomp)
 !
 ! --------- RE-DEFINITION BASE TANGENTE SUIVANT OPTIONS
 !
-                call cftanr(noma, ndimg, defico, resoco, izone,&
+                call cftanr(mesh, ndimg, ds_contact, izone,&
                             posnoe(1), 'MAIL', posmam, nummam, ksipr1,&
                             ksipr2, tau1m, tau2m, tau1, tau2)
 !
@@ -223,7 +218,7 @@ subroutine cfveri(noma, defico, resoco, newgeo, sdappa,&
 !
 ! --------- CALCUL DU JEU FICTIF DE LA ZONE
 !
-                call cfdist(defico, izone, posmae, coorpc, instan,&
+                call cfdist(ds_contact, izone, posmae, coorpc, instan,&
                             gap_user, node_slav_indx_ = posnoe(1))
 !
 ! --------- JEU TOTAL
@@ -234,11 +229,11 @@ subroutine cfveri(noma, defico, resoco, newgeo, sdappa,&
 ! --------- NOEUD MAITRE
 !
                 posnom(1) = entapp
-                call cfnumn(defico, 1, posnom(1), numnom(1))
+                call cfnumn(ds_contact%sdcont_defi, 1, posnom(1), numnom(1))
 !
 ! --------- NOM DU NOEUD MAITRE
 !
-                call jenuno(jexnum(noma//'.NOMNOE', numnom(1)), nomnom)
+                call jenuno(jexnum(mesh//'.NOMNOE', numnom(1)), nomnom)
                 noment = nomnom
 !
 ! --------- COORDONNNEES DU NOEUD MAITRE
@@ -247,7 +242,7 @@ subroutine cfveri(noma, defico, resoco, newgeo, sdappa,&
 !
 ! --------- RE-DEFINITION BASE TANGENTE SUIVANT OPTIONS
 !
-                call cftanr(noma, ndimg, defico, resoco, izone,&
+                call cftanr(mesh, ndimg, ds_contact, izone,&
                             posnoe(1), 'NOEU', posnom(1), numnom(1), r8bid,&
                             r8bid, tau1m, tau2m, tau1, tau2)
 !
@@ -264,7 +259,7 @@ subroutine cfveri(noma, defico, resoco, newgeo, sdappa,&
 !
 ! --------- CALCUL DU JEU FICTIF DE LA ZONE
 !
-                call cfdist(defico, izone, posmae, coorpc, instan,&
+                call cfdist(ds_contact, izone, posmae, coorpc, instan,&
                             gap_user, node_slav_indx_ = posnoe(1))
 !
 ! --------- JEU TOTAL

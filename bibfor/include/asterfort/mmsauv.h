@@ -16,10 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mmsauv(resoco, izone, iptc, nummam, ksipr1,&
+    subroutine mmsauv(ds_contact, izone, iptc, nummam, ksipr1,&
                       ksipr2, tau1, tau2, nummae, numnoe,&
                       ksipc1, ksipc2, wpc)
-        character(len=24) :: resoco
+        use NonLin_Datastructure_type
+        type(NL_DS_Contact), intent(in) :: ds_contact
         integer :: izone
         integer :: iptc
         integer :: nummam

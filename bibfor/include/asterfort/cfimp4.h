@@ -16,10 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfimp4(defico, resoco, noma, ifm)
-        character(len=24) :: defico
-        character(len=24) :: resoco
-        character(len=8) :: noma
-        integer :: ifm
+    subroutine cfimp4(ds_contact, mesh, ifm)
+        use NonLin_Datastructure_type
+        type(NL_DS_Contact), intent(in) :: ds_contact
+        integer, intent(in) :: ifm
+        character(len=8), intent(in) :: mesh
     end subroutine cfimp4
 end interface

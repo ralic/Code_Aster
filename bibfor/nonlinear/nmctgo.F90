@@ -1,5 +1,5 @@
-subroutine nmctgo(noma  , ds_print, sderro, defico, resoco,&
-                  valinc, mmcvgo)
+subroutine nmctgo(mesh  , ds_print, sderro, ds_contact, hval_incr,&
+                  mmcvgo)
 !
 use NonLin_Datastructure_type
 !
@@ -44,12 +44,12 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=8) :: noma
-    character(len=24) :: defico, resoco
-    character(len=24) :: sderro
+    character(len=8), intent(in) :: mesh
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=24), intent(in) :: sderro
     type(NL_DS_Print), intent(inout) :: ds_print
-    character(len=19) :: valinc(*)
-    aster_logical :: mmcvgo
+    character(len=19), intent(in) :: hval_incr(*)
+    aster_logical, intent(out) :: mmcvgo
 !
 ! ----------------------------------------------------------------------
 !
@@ -59,14 +59,12 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
-! IN  NOMA   : NOM DU MAILLAGE
+! In  mesh             : name of mesh
 ! IO  ds_print         : datastructure for printing parameters
 ! IN  SDERRO : GESTION DES ERREURS
-! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
-! IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
-! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
-! OUT MMCVCA : INDICATEUR DE CONVERGENCE POUR BOUCLE DE
-!              GEOMETRIE
+! In  ds_contact       : datastructure for contact management
+! In  hval_incr        : hat-variable for incremental values fields
+! OUT MMCVCA : INDICATEUR DE CONVERGENCE POUR BOUCLE DE GEOMETRIE
 !               .TRUE. SI LA BOUCLE A CONVERGE
 !
 ! ----------------------------------------------------------------------
@@ -96,30 +94,30 @@ implicit none
     cvgnoe = ' '
     cvgval = r8vide()
     mmcvgo = .false.
-    depgeo = resoco(1:14)//'.DEPG'
+    depgeo = ds_contact%sdcont_solv(1:14)//'.DEPG'
     lerrog = .false.
 !
 ! --- DECOMPACTION DES VARIABLES CHAPEAUX
 !
-    call nmchex(valinc, 'VALINC', 'DEPMOI', depmoi)
-    call nmchex(valinc, 'VALINC', 'DEPPLU', depplu)
+    call nmchex(hval_incr, 'VALINC', 'DEPMOI', depmoi)
+    call nmchex(hval_incr, 'VALINC', 'DEPPLU', depplu)
 !
 ! --- INFOS BOUCLE GEOMETRIQUE
 !
-    call mmbouc(resoco, 'GEOM', 'READ', mmitgo)
-    maxgeo = cfdisi(defico,'ITER_GEOM_MAXI')
-    nbreag = cfdisi(defico,'NB_ITER_GEOM' )
-    epsgeo = cfdisr(defico,'RESI_GEOM' )
+    call mmbouc(ds_contact, 'GEOM', 'READ', mmitgo)
+    maxgeo = cfdisi(ds_contact%sdcont_defi,'ITER_GEOM_MAXI')
+    nbreag = cfdisi(ds_contact%sdcont_defi,'NB_ITER_GEOM' )
+    epsgeo = cfdisr(ds_contact%sdcont_defi,'RESI_GEOM' )
 !
 ! --- TYPE DE CONTACT
 !
-    lctcc = cfdisl(defico,'FORMUL_CONTINUE')
-    lctcd = cfdisl(defico,'FORMUL_DISCRETE')
-    lxfcm = cfdisl(defico,'FORMUL_XFEM')
+    lctcc = cfdisl(ds_contact%sdcont_defi,'FORMUL_CONTINUE')
+    lctcd = cfdisl(ds_contact%sdcont_defi,'FORMUL_DISCRETE')
+    lxfcm = cfdisl(ds_contact%sdcont_defi,'FORMUL_XFEM')
 !
-    lmanu = cfdisl(defico,'REAC_GEOM_MANU')
-    lsans = cfdisl(defico,'REAC_GEOM_SANS')
-    lauto = cfdisl(defico,'REAC_GEOM_AUTO')
+    lmanu = cfdisl(ds_contact%sdcont_defi,'REAC_GEOM_MANU')
+    lsans = cfdisl(ds_contact%sdcont_defi,'REAC_GEOM_SANS')
+    lauto = cfdisl(ds_contact%sdcont_defi,'REAC_GEOM_AUTO')
 !
 ! --- MISE A JOUR DES SEUILS
 !
@@ -127,8 +125,8 @@ implicit none
 !
 ! ----- CALCUL DU CRITERE
 !
-        call mmmcri('GEOM', noma, depmoi, depgeo, depplu,&
-                    resoco, epsgeo, cvgnoe, cvgval, mmcvgo)
+        call mmmcri('GEOM', mesh, depmoi, depgeo, depplu,&
+                    ds_contact, epsgeo, cvgnoe, cvgval, mmcvgo)
 !
 ! ----- CAS MANUEL
 !
@@ -155,7 +153,7 @@ implicit none
             if ((.not.mmcvgo) .and. (mmitgo.eq.maxgeo)) then
 !           LA VERIFICATION DE LA FACETTISATION N'A PAS DE SENS EN X-FEM
                 if (.not.lxfcm) then
-                    call cfverl(defico, resoco)
+                    call cfverl(ds_contact)
                 endif
                 lerrog = .true.
             endif
@@ -166,7 +164,7 @@ implicit none
         endif
     else if (lctcd) then
 !
-        clreac = resoco(1:14)//'.REAL'
+        clreac = ds_contact%sdcont_solv(1:14)//'.REAL'
         call jeveuo(clreac, 'L', jclrea)
 !
 ! ----- CTCGEO : TRUE. SI BOUCLE GEOMETRIQUE CONVERGEE

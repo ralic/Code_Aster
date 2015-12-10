@@ -1,26 +1,11 @@
-subroutine mmveri(noma, defico, resoco, newgeo, sdappa,&
+subroutine mmveri(noma, ds_contact, newgeo, sdappa,&
                   npt, jeux, loca, enti, zone,&
                   instan)
 !
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
+use NonLin_Datastructure_type
 !
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+implicit none
 !
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
-!
-    implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
@@ -51,8 +36,27 @@ subroutine mmveri(noma, defico, resoco, newgeo, sdappa,&
 #include "asterfort/mmpnoe.h"
 #include "asterfort/mmtanr.h"
 #include "asterfort/utmess.h"
+!
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: mickael.abbas at edf.fr
+!
     character(len=8) :: noma
-    character(len=24) :: defico, resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19) :: newgeo
     character(len=19) :: sdappa
     character(len=24) :: jeux, loca, enti, zone
@@ -69,8 +73,7 @@ subroutine mmveri(noma, defico, resoco, newgeo, sdappa,&
 !
 !
 ! IN  NOMA   : NOM DU MAILLAGE
-! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
-! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  NEWGEO : GEOMETRIE ACTUALISEE
 ! IN  SDAPPA : NOM DE LA SD APPARIEMENT
 ! IN  JEUX   : NOM DE LA SD STOCKANT LE JEU
@@ -115,8 +118,8 @@ subroutine mmveri(noma, defico, resoco, newgeo, sdappa,&
 !
 ! --- QUELQUES DIMENSIONS
 !
-    nzoco = cfdisi(defico,'NZOCO' )
-    ndimg = cfdisi(defico,'NDIM' )
+    nzoco = cfdisi(ds_contact%sdcont_defi,'NZOCO' )
+    ndimg = cfdisi(ds_contact%sdcont_defi,'NDIM' )
 !
 ! --- ACCES SD PROVISOIRES
 !
@@ -133,15 +136,15 @@ subroutine mmveri(noma, defico, resoco, newgeo, sdappa,&
 !
 ! ----- OPTIONS SUR LA ZONE DE CONTACT
 !
-        typint = mminfi(defico,'INTEGRATION',izone )
-        lveri = mminfl(defico,'VERIF' ,izone )
-        nbmae = mminfi(defico,'NBMAE' ,izone )
-        jdecme = mminfi(defico,'JDECME',izone )
+        typint = mminfi(ds_contact%sdcont_defi,'INTEGRATION',izone )
+        lveri = mminfl(ds_contact%sdcont_defi,'VERIF' ,izone )
+        nbmae = mminfi(ds_contact%sdcont_defi,'NBMAE' ,izone )
+        jdecme = mminfi(ds_contact%sdcont_defi,'JDECME',izone )
 !
 ! ----- MODE NON-VERIF: ON SAUTE LES POINTS
 !
         if (.not.lveri) then
-            nbpc = mminfi(defico,'NBPC' ,izone )
+            nbpc = mminfi(ds_contact%sdcont_defi,'NBPC' ,izone )
             ip = ip + nbpc
             goto 25
         endif
@@ -153,17 +156,17 @@ subroutine mmveri(noma, defico, resoco, newgeo, sdappa,&
 ! ------- NUMERO ABSOLU DE LA MAILLE ESCLAVE
 !
             posmae = jdecme + imae
-            call cfnumm(defico, posmae, nummae)
+            call cfnumm(ds_contact%sdcont_defi, posmae, nummae)
 !
 ! ------- NOMBRE DE POINTS SUR LA MAILLE ESCLAVE
 !
-            call mminfm(posmae, defico, 'NPTM', nptm)
+            call mminfm(posmae, ds_contact%sdcont_defi, 'NPTM', nptm)
 !
 ! ------- INFOS SUR LA MAILLE ESCLAVE
 !
             call mmelty(noma, nummae, aliase, nnomae)
             call jenuno(jexnum(noma//'.NOMMAI', nummae), nommae)
-            call mminfm(posmae, defico, 'NDEXFR', ndexfr)
+            call mminfm(posmae, ds_contact%sdcont_defi, 'NDEXFR', ndexfr)
             lexfro = (ndexfr.ne.0)
 !
 ! ------- BOUCLE SUR LES POINTS
@@ -192,12 +195,12 @@ subroutine mmveri(noma, defico, resoco, newgeo, sdappa,&
 ! --------- INFO SUR LA MAILLE MAITRE
 !
                 posmam = entapp
-                call cfnumm(defico, posmam, nummam)
+                call cfnumm(ds_contact%sdcont_defi, posmam, nummam)
                 call jenuno(jexnum(noma//'.NOMMAI', nummam), nommam)
 !
 ! --------- POSITION DU NOEUD ESCLAVE SI INTEGRATION AUX NOEUDS
 !
-                call mmpnoe(defico, posmae, aliase, typint, iptm,&
+                call mmpnoe(ds_contact%sdcont_defi, posmae, aliase, typint, iptm,&
                             posnoe)
 !
 ! --------- NUMERO ABSOLU DU POINT DE CONTACT
@@ -212,7 +215,7 @@ subroutine mmveri(noma, defico, resoco, newgeo, sdappa,&
 !
 ! --------- RE-DEFINITION BASE TANGENTE SUIVANT OPTIONS
 !
-                call mmtanr(noma, ndimg, defico, resoco, izone,&
+                call mmtanr(noma, ndimg, ds_contact, izone,&
                             lexfro, posnoe, ksipr1, ksipr2, posmam,&
                             nummam, tau1m, tau2m, tau1, tau2)
 !
@@ -230,7 +233,7 @@ subroutine mmveri(noma, defico, resoco, newgeo, sdappa,&
 !
 ! --------- CALCUL DU JEU FICTIF AU POINT DE CONTACT
 !
-                call cfdist(defico, izone, posmae, coorpc, instan, &
+                call cfdist(ds_contact, izone, posmae, coorpc, instan, &
                             gap_user)
 !
 ! --------- NOM DU POINT DE CONTACT

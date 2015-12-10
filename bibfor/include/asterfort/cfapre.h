@@ -16,10 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfapre(noma, defico, resoco, newgeo, sdappa, instan)
+    subroutine cfapre(noma, ds_contact, newgeo, sdappa, instan)
+        use NonLin_Datastructure_type
         character(len=8) :: noma
-        character(len=24) :: defico
-        character(len=24) :: resoco
+        type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19) :: newgeo
         character(len=19) :: sdappa
         real(kind=8) :: instan

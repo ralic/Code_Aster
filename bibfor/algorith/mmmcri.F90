@@ -1,5 +1,24 @@
-subroutine mmmcri(criter, noma, depmoi, depgeo, depplu,&
-                  resoco, epsmax, cvgnoe, cvgval, mmconv)
+subroutine mmmcri(criter    , noma  , depmoi, depgeo, depplu,&
+                  ds_contact, epsmax, cvgnoe, cvgval, mmconv)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterc/r8vide.h"
+#include "asterfort/assert.h"
+#include "asterfort/cnomax.h"
+#include "asterfort/copisd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/vtaxpy.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,28 +37,12 @@ subroutine mmmcri(criter, noma, depmoi, depgeo, depplu,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-!
-#include "asterc/r8prem.h"
-#include "asterc/r8vide.h"
-#include "asterfort/assert.h"
-#include "asterfort/cnomax.h"
-#include "asterfort/copisd.h"
-#include "asterfort/detrsd.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/vtaxpy.h"
     character(len=4) :: criter
     character(len=8) :: noma
     character(len=19) :: depmoi
     character(len=19) :: depgeo
     character(len=19) :: depplu
-    character(len=24) :: resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
     real(kind=8) :: epsmax
     aster_logical :: mmconv
     character(len=16) :: cvgnoe
@@ -53,9 +56,9 @@ subroutine mmmcri(criter, noma, depmoi, depgeo, depplu,&
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  CRITER : 'GEOM' OU 'FROT'
 ! IN  NOMA   : NOM DU MAILLAGE
+! In  ds_contact       : datastructure for contact management
 ! IN  DEPMOI : CHAMP GEOMETRIQUE A L'ITERATION GEOM. N-2
 ! IN  DEPGEO : CHAMP GEOMETRIQUE A L'ITERATION GEOM. N-1
 ! IN  DEPPLU : CHAMP GEOMETRIQUE A L'ITERATION GEOM. N
@@ -125,7 +128,7 @@ subroutine mmmcri(criter, noma, depmoi, depgeo, depplu,&
 !
 ! --- STOCKAGE DU MAX DE LA NORME DU DEPLACEMENT
 !
-        maxdep = resoco(1:14)//'.MAXD'
+        maxdep = ds_contact%sdcont_solv(1:14)//'.MAXD'
         call jeveuo(maxdep, 'E', jmaxde)
         if (zr(jmaxde) .lt. 0.d0) then
             zr(jmaxde-1+1) = vmax2

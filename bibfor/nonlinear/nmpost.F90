@@ -123,8 +123,8 @@ implicit none
     if (lcont) then
         call nmtime(sdtime, 'INI', 'POST_TRAITEMENT')
         call nmtime(sdtime, 'RUN', 'POST_TRAITEMENT')
-        call cfmxpo(mesh  , modele, ds_contact%sdcont_defi, ds_contact%sdcont_solv, numins,&
-                    sddisc, sdstat, solalg, valinc, veasse)
+        call cfmxpo(mesh  , modele, ds_contact, numins, sddisc,&
+                    sdstat, solalg, valinc    , veasse)
         call nmtime(sdtime, 'END', 'POST_TRAITEMENT')
     endif
 !

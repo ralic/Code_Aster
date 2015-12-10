@@ -1,5 +1,27 @@
-subroutine cfmxre(noma, nomo, sdstat, defico, resoco,&
-                  numins, sddisc, solalg, valinc, veasse)
+subroutine cfmxre(mesh  , model    , sdstat   , ds_contact , nume_inst,&
+                  sddisc, hval_algo, hval_incr, hval_veasse)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfmmve.h"
+#include "asterfort/cfresu.h"
+#include "asterfort/cnscno.h"
+#include "asterfort/diinst.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mmmcpt.h"
+#include "asterfort/mmmres.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/xmmres.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,30 +41,15 @@ subroutine cfmxre(noma, nomo, sdstat, defico, resoco,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/cfmmve.h"
-#include "asterfort/cfresu.h"
-#include "asterfort/cnscno.h"
-#include "asterfort/diinst.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/infniv.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/mmmcpt.h"
-#include "asterfort/mmmres.h"
-#include "asterfort/nmchex.h"
-#include "asterfort/xmmres.h"
-    character(len=24) :: resoco, defico, sdstat
-    character(len=8) :: noma, nomo
-    character(len=19) :: sddisc
-    character(len=19) :: solalg(*), veasse(*), valinc(*)
-    integer :: numins
-    real(kind=8) :: instan
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=24), intent(in) :: sdstat
+    character(len=8), intent(in) :: mesh
+    character(len=19), intent(in) :: sddisc
+    character(len=19), intent(in) :: hval_algo(*)
+    character(len=19), intent(in) :: hval_veasse(*) 
+    character(len=19), intent(in) :: hval_incr(*)
+    character(len=8), intent(in) :: model
+    integer, intent(in) :: nume_inst
 !
 ! ----------------------------------------------------------------------
 !
@@ -52,25 +59,21 @@ subroutine cfmxre(noma, nomo, sdstat, defico, resoco,&
 !
 ! ----------------------------------------------------------------------
 !
-!
-! IN  SDSTAT : SD STATISTIQUES
-! IN  DEFICO : SD DE DEFINITION DU CONTACT
-! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
-! IN  NOMO   : NOM DU MODELE
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  NUMINS : NUMERO DU PAS DE CHARGE
-! IN  SDDISC : SD DISCRETISATION TEMPORELLE
-! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
-! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
-! IN  VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE
-!
-!
+! In  ds_contact       : datastructure for contact management
+! In  model            : name of model
+! In  mesh             : name of mesh
+! In  nume_inst        : index of current step time
+! In  sddisc           : datastructure for time discretization
+! In  sdstat           : datastructure for statistics
+! In  hval_incr        : hat-variable for incremental values fields
+! In  hval_algo        : hat-variable for algorithms fields
+! In  hval_veasse      : hat-variable for vectors (node fields)
 !
 !
     integer :: ifm, niv
     aster_logical :: lctcc, lctcd, lxfcm, lexiv, lallv
     character(len=19) :: ddepla, depdel, depplu
-    real(kind=8) :: inst(2)
+    real(kind=8) :: inst(2), instan
     character(len=19) :: prno
     character(len=24) :: nochco
     integer :: jnochc
@@ -84,15 +87,15 @@ subroutine cfmxre(noma, nomo, sdstat, defico, resoco,&
 !
 ! --- TYPE DE CONTACT
 !
-    lctcc = cfdisl(defico,'FORMUL_CONTINUE')
-    lctcd = cfdisl(defico,'FORMUL_DISCRETE')
-    lxfcm = cfdisl(defico,'FORMUL_XFEM')
-    lexiv = cfdisl(defico,'EXIS_VERIF')
-    lallv = cfdisl(defico,'ALL_VERIF')
+    lctcc = cfdisl(ds_contact%sdcont_defi,'FORMUL_CONTINUE')
+    lctcd = cfdisl(ds_contact%sdcont_defi,'FORMUL_DISCRETE')
+    lxfcm = cfdisl(ds_contact%sdcont_defi,'FORMUL_XFEM')
+    lexiv = cfdisl(ds_contact%sdcont_defi,'EXIS_VERIF')
+    lallv = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF')
 !
 ! --- NOM DES CHAM_NO
 !
-    nochco = resoco(1:14)//'.NOCHCO'
+    nochco = ds_contact%sdcont_solv(1:14)//'.NOCHCO'
     call jeveuo(nochco, 'L', jnochc)
     cnsinr = zk24(jnochc+1-1)(1:19)
     cnoinr = zk24(jnochc+2-1)(1:19)
@@ -106,26 +109,26 @@ subroutine cfmxre(noma, nomo, sdstat, defico, resoco,&
 !
 ! --- INSTANT
 !
-    instan = diinst(sddisc,numins)
-    inst(1) = diinst(sddisc,numins)
-    inst(2) = inst(1) - diinst(sddisc,numins-1)
+    instan = diinst(sddisc,nume_inst)
+    inst(1) = diinst(sddisc,nume_inst)
+    inst(2) = inst(1) - diinst(sddisc,nume_inst-1)
 !
 ! --- DECOMPACTION DES VARIABLES CHAPEAUX
 !
-    call nmchex(solalg, 'SOLALG', 'DDEPLA', ddepla)
-    call nmchex(solalg, 'SOLALG', 'DEPDEL', depdel)
-    call nmchex(valinc, 'VALINC', 'DEPPLU', depplu)
+    call nmchex(hval_algo, 'SOLALG', 'DDEPLA', ddepla)
+    call nmchex(hval_algo, 'SOLALG', 'DEPDEL', depdel)
+    call nmchex(hval_incr, 'VALINC', 'DEPPLU', depplu)
 !
 ! --- POST-TRAITEMENT
 !
     if (lxfcm) then
-        call xmmres(depdel, nomo, veasse, cnsinr)
+        call xmmres(depdel, model, hval_veasse, cnsinr)
     else if (lctcc) then
-        call mmmres(noma, inst, defico, resoco, depplu,&
-                    depdel, sddisc, veasse, cnsinr, cnsper)
+        call mmmres(mesh, inst, ds_contact, depplu,&
+                    depdel, sddisc, hval_veasse, cnsinr, cnsper)
     else if (lctcd) then
-        call cfresu(noma, numins, inst, sddisc, defico,&
-                    resoco, depplu, depdel, ddepla, cnsinr,&
+        call cfresu(mesh, nume_inst, inst, sddisc, ds_contact,&
+                    depplu, depdel, ddepla, cnsinr,&
                     cnsper)
     else
         ASSERT(.false.)
@@ -134,7 +137,7 @@ subroutine cfmxre(noma, nomo, sdstat, defico, resoco,&
 ! --- DECOMPTE NOMBRE DE LIAISONS
 !
     if (lctcc) then
-        call mmmcpt(noma, sdstat, defico, resoco, cnsinr)
+        call mmmcpt(mesh, sdstat, ds_contact, cnsinr)
     endif
 !
 ! --- METHODE VERIF
@@ -142,7 +145,7 @@ subroutine cfmxre(noma, nomo, sdstat, defico, resoco,&
  50 continue
 !
     if (lexiv) then
-        call cfmmve(noma, defico, resoco, valinc, instan)
+        call cfmmve(mesh, ds_contact, hval_incr, instan)
     endif
 !
 ! --- TRANSFO DU CHAM_NO_S EN CHAM_NO (AVEC UN PROF_CHNO CONSTANT !)

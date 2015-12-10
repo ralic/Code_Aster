@@ -18,16 +18,15 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmctcf(noma  , modele, ds_print, sderro, defico,&
-                      resoco, valinc, mmcvfr  )
+    subroutine nmctcf(mesh     , model_        , ds_print, sderro, ds_contact,&
+                      hval_incr, loop_frot_conv)
         use NonLin_Datastructure_type
-        character(len=8) :: noma
-        character(len=24) :: modele
+        character(len=8), intent(in) :: mesh
+        type(NL_DS_Contact), intent(in) :: ds_contact
+        character(len=24), intent(in) :: model_
+        character(len=24), intent(in) :: sderro
         type(NL_DS_Print), intent(inout) :: ds_print
-        character(len=24) :: sderro
-        character(len=24) :: defico
-        character(len=24) :: resoco
-        character(len=19) :: valinc(*)
-        aster_logical :: mmcvfr
+        character(len=19), intent(in) :: hval_incr(*)
+        aster_logical, intent(out) :: loop_frot_conv
     end subroutine nmctcf
 end interface

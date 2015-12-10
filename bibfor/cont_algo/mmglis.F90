@@ -1,4 +1,20 @@
-subroutine mmglis(defico, resoco)
+subroutine mmglis(ds_contact)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mminfi.h"
+#include "asterfort/mminfl.h"
+#include "asterfort/mminfm.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,19 +34,7 @@ subroutine mmglis(defico, resoco)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/cfmmvd.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/mminfi.h"
-#include "asterfort/mminfl.h"
-#include "asterfort/mminfm.h"
-    character(len=24) :: defico, resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! ----------------------------------------------------------------------
 !
@@ -42,12 +46,7 @@ subroutine mmglis(defico, resoco)
 !
 !     ON MET LE POINT EN GLISSIERE SI LGLISS=.TRUE. ET
 !     SI LA CONVERGENCE EN CONTRAINTE ACTIVE EST ATTEINTE
-!
-! IN  DEFICO : SD DE DEFINITION DU CONTACT
-! IN  RESOCO : SD DE RESOLUTION DU CONTACT
-!
-!
-!
+! In  ds_contact       : datastructure for contact management
 !
     integer :: ifm, niv
     integer :: ztabf
@@ -63,45 +62,42 @@ subroutine mmglis(defico, resoco)
 !
     call jemarq()
     call infdbg('CONTACT', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<CONTACT> ... GESTION GLISSIERE'
     endif
 !
 ! --- ACCES SD CONTACT
 !
-    tabfin = resoco(1:14)//'.TABFIN'
+    tabfin = ds_contact%sdcont_solv(1:14)//'.TABFIN'
     call jeveuo(tabfin, 'L', jtabf)
     ztabf = cfmmvd('ZTABF')
 !
 ! --- INITIALISATIONS
 !
-    nzoco = cfdisi(defico,'NZOCO')
+    nzoco = cfdisi(ds_contact%sdcont_defi,'NZOCO')
     iptc = 1
 !
 ! --- BOUCLE SUR LES ZONES
 !
-    do 10 izone = 1, nzoco
+    do izone = 1, nzoco
 !
 ! ----- MODE VERIF: ON SAUTE LES POINTS
 !
-        lveri = mminfl(defico,'VERIF' ,izone )
+        lveri = mminfl(ds_contact%sdcont_defi,'VERIF' ,izone )
         if (lveri) then
             goto 25
         endif
 !
 ! --- OPTIONS SUR LA ZONE DE CONTACT
 !
-        lveri = mminfl(defico,'VERIF' ,izone )
-        nbmae = mminfi(defico,'NBMAE' ,izone )
-        jdecme = mminfi(defico,'JDECME' ,izone )
-        lgliss = mminfl(defico,'GLISSIERE_ZONE' ,izone )
+        lveri = mminfl(ds_contact%sdcont_defi,'VERIF' ,izone )
+        nbmae = mminfi(ds_contact%sdcont_defi,'NBMAE' ,izone )
+        jdecme = mminfi(ds_contact%sdcont_defi,'JDECME' ,izone )
+        lgliss = mminfl(ds_contact%sdcont_defi,'GLISSIERE_ZONE' ,izone )
 !
 ! ----- BOUCLE SUR LES MAILLES ESCLAVES
 !
-        do 20 imae = 1, nbmae
+        do imae = 1, nbmae
 !
 ! ------- NUMERO ABSOLU DE LA MAILLE ESCLAVE
 !
@@ -109,27 +105,24 @@ subroutine mmglis(defico, resoco)
 !
 ! ------- NOMBRE DE POINTS SUR LA MAILLE ESCLAVE
 !
-            call mminfm(posmae, defico, 'NPTM', nptm)
+            call mminfm(posmae, ds_contact%sdcont_defi, 'NPTM', nptm)
 !
 ! ------- BOUCLE SUR LES POINTS
 !
             if (lgliss) then
-                do 30 iptm = 1, nptm
+                do iptm = 1, nptm
                     xs = nint(zr(jtabf+ztabf*(iptc-1)+22))
                     if (xs .eq. 1) then
                         zr(jtabf+ztabf*(iptc-1)+17) = 1.d0
                     endif
-!
-! --------- LIAISON DE CONTACT SUIVANTE
-!
                     iptc = iptc + 1
- 30             continue
+                end do
             else
                 iptc = iptc + nptm
             endif
- 20     continue
+        end do
  25     continue
- 10 end do
+    end do
 !
     call jedema()
 end subroutine

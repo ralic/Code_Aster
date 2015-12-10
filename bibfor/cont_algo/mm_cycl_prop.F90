@@ -1,12 +1,12 @@
-subroutine mm_cycl_prop(sdcont_defi, sdcont_solv)
+subroutine mm_cycl_prop(ds_contact)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mminfl.h"
 #include "asterfort/mm_cycl_laugf.h"
@@ -30,8 +30,7 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=24), intent(in) :: sdcont_defi
-    character(len=24), intent(in) :: sdcont_solv
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -41,8 +40,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
-! In  sdcont_solv      : name of contact solving datastructure
+! In  ds_contact       : datastructure for contact management
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -62,19 +60,15 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
-!
-! - Initializations
-!
-    nb_cont_poin = cfdisi(sdcont_defi,'NTPC' )
+    nb_cont_poin = cfdisi(ds_contact%sdcont_defi,'NTPC' )
     tole_stick   = 0.95
     tole_slide   = 1.05
 !
 ! - Acces to cycling objects
 !
-    sdcont_cyceta = sdcont_solv(1:14)//'.CYCETA'
-    sdcont_cychis = sdcont_solv(1:14)//'.CYCHIS'
-    sdcont_cyccoe = sdcont_solv(1:14)//'.CYCCOE'
+    sdcont_cyceta = ds_contact%sdcont_solv(1:14)//'.CYCETA'
+    sdcont_cychis = ds_contact%sdcont_solv(1:14)//'.CYCHIS'
+    sdcont_cyccoe = ds_contact%sdcont_solv(1:14)//'.CYCCOE'
     call jeveuo(sdcont_cyceta, 'E', vi = v_sdcont_cyceta)
     call jeveuo(sdcont_cychis, 'E', vr = v_sdcont_cychis)
     call jeveuo(sdcont_cyccoe, 'E', vr = v_sdcont_cyccoe)
@@ -83,7 +77,7 @@ implicit none
 !
     do i_cont_poin = 1, nb_cont_poin
         i_zone      = nint(v_sdcont_cychis(25*(i_cont_poin-1)+25))
-        l_frot_zone = mminfl(sdcont_defi,'FROTTEMENT_ZONE',i_zone)
+        l_frot_zone = mminfl(ds_contact%sdcont_defi,'FROTTEMENT_ZONE',i_zone)
         if (l_frot_zone) then
             cycl_stat      = v_sdcont_cyceta(4*(i_cont_poin-1)+2)
             coef_frot_mini = v_sdcont_cyccoe(6*(i_zone-1)+5)
@@ -155,5 +149,4 @@ implicit none
         endif
     enddo
 !
-    call jedema()
 end subroutine

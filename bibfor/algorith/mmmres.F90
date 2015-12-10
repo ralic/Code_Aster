@@ -1,5 +1,10 @@
-subroutine mmmres(noma, inst, defico, resoco, depplu,&
+subroutine mmmres(noma, inst, ds_contact, depplu,&
                   depdel, sddisc, veasse, cnsinr, cnsper)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +24,6 @@ subroutine mmmres(noma, inst, defico, resoco, depplu,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -47,7 +51,7 @@ subroutine mmmres(noma, inst, defico, resoco, depplu,&
     real(kind=8) :: inst(*)
     character(len=19) :: cnsinr, cnsper, sddisc
     character(len=19) :: veasse(*)
-    character(len=24) :: defico, resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19) :: depdel, depplu
 !
 ! ----------------------------------------------------------------------
@@ -58,9 +62,7 @@ subroutine mmmres(noma, inst, defico, resoco, depplu,&
 !
 ! ----------------------------------------------------------------------
 !
-!
-! IN  DEFICO : SD DE DEFINITION DU CONTACT
-! IN  RESOCO : SD DE RESOLUTION DU CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IN  DEPDEL : INCREMENT DE DEPLACEMENT CUMULE
 ! IN  DEPPLU : DEPLACEMENT COURANT
@@ -121,17 +123,17 @@ subroutine mmmres(noma, inst, defico, resoco, depplu,&
 !
 ! --- TYPE DE CONTACT
 !
-    lfrot = cfdisl(defico,'FROTTEMENT')
+    lfrot = cfdisl(ds_contact%sdcont_defi,'FROTTEMENT')
 !
 ! --- INITIALISATIONS
 !
-    nzoco = cfdisi(defico,'NZOCO' )
-    ndimg = cfdisi(defico,'NDIM' )
+    nzoco = cfdisi(ds_contact%sdcont_defi,'NZOCO' )
+    ndimg = cfdisi(ds_contact%sdcont_defi,'NDIM' )
     deltat = inst(2)
 !
 ! --- TOUTES LES ZONES EN INTEGRATION AUX NOEUDS ?
 !
-    lnoeu = cfdisl(defico,'ALL_INTEG_NOEUD')
+    lnoeu = cfdisl(ds_contact%sdcont_defi,'ALL_INTEG_NOEUD')
     if (.not.lnoeu) then
         goto 999
     endif
@@ -144,8 +146,8 @@ subroutine mmmres(noma, inst, defico, resoco, depplu,&
 !
 ! --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
 !
-    tabfin = resoco(1:14)//'.TABFIN'
-    apjeu = resoco(1:14)//'.APJEU '
+    tabfin = ds_contact%sdcont_solv(1:14)//'.TABFIN'
+    apjeu = ds_contact%sdcont_solv(1:14)//'.APJEU '
     call jeveuo(tabfin, 'L', jtabf)
     call jeveuo(apjeu, 'L', japjeu)
 !
@@ -166,7 +168,7 @@ subroutine mmmres(noma, inst, defico, resoco, depplu,&
 !
 ! --- GEOMETRIE ACTUALISEE
 !
-    newgeo = resoco(1:14)//'.NEWG'
+    newgeo = ds_contact%sdcont_solv(1:14)//'.NEWG'
 !
 ! --- ACCES AU MAILLAGE
 !
@@ -180,7 +182,7 @@ subroutine mmmres(noma, inst, defico, resoco, depplu,&
 !
 ! --- CALCULER LES GLISSEMENTS
 !
-    call mmmreg(noma, defico, resoco, depcn, ndd1,&
+    call mmmreg(noma, ds_contact%sdcont_defi, ds_contact%sdcont_solv, depcn, ndd1,&
                 glie, glim)
     call jeveuo(glie, 'L', jglie)
     call jeveuo(glim, 'L', jglim)
@@ -224,10 +226,10 @@ subroutine mmmres(noma, inst, defico, resoco, depplu,&
 !
 ! --- OPTIONS SUR LA ZONE DE CONTACT
 !
-        lveri = mminfl(defico,'VERIF' ,izone )
-        nbmae = mminfi(defico,'NBMAE' ,izone )
-        jdecme = mminfi(defico,'JDECME',izone )
-        lfrot = mminfl(defico,'FROTTEMENT_ZONE',izone)
+        lveri = mminfl(ds_contact%sdcont_defi,'VERIF' ,izone )
+        nbmae = mminfi(ds_contact%sdcont_defi,'NBMAE' ,izone )
+        jdecme = mminfi(ds_contact%sdcont_defi,'JDECME',izone )
+        lfrot = mminfl(ds_contact%sdcont_defi,'FROTTEMENT_ZONE',izone)
 !
 ! ----- MODE VERIF: ON SAUTE LES POINTS
 !
@@ -245,7 +247,7 @@ subroutine mmmres(noma, inst, defico, resoco, depplu,&
 !
 ! ------- NOMBRE DE POINTS SUR LA MAILLE ESCLAVE
 !
-            call mminfm(posmae, defico, 'NPTM', nptm)
+            call mminfm(posmae, ds_contact%sdcont_defi, 'NPTM', nptm)
 !
 ! ------- BOUCLE SUR LES POINTS
 !

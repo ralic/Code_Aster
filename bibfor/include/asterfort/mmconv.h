@@ -16,11 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mmconv(noma, defico, resoco, valinc, solalg,&
-                      vfrot, nfrot, vgeom, ngeom)
+    subroutine mmconv(noma , ds_contact, valinc, solalg, vfrot,&
+                      nfrot, vgeom     , ngeom)
+        use NonLin_Datastructure_type
         character(len=8), intent(in) :: noma
-        character(len=24), intent(in) :: defico
-        character(len=24), intent(in) :: resoco
+        type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19), intent(in) :: valinc(*)
         character(len=19), intent(in) :: solalg(*)
         real(kind=8), intent(out) :: vfrot

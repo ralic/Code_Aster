@@ -16,10 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xmelem(noma, modele, defico, resoco)
-        character(len=8) :: noma
-        character(len=8) :: modele
-        character(len=24) :: defico
-        character(len=24) :: resoco
+    subroutine xmelem(mesh, model, ds_contact)
+        use NonLin_Datastructure_type
+        character(len=8), intent(in) :: mesh
+        character(len=8), intent(in) :: model
+        type(NL_DS_Contact), intent(in) :: ds_contact
     end subroutine xmelem
 end interface

@@ -1,6 +1,11 @@
-subroutine cfresu(noma, numins, inst, sddisc, defico,&
-                  resoco, depplu, depdel, ddepla, cnsinr,&
+subroutine cfresu(noma, numins, inst, sddisc, ds_contact,&
+                  depplu, depdel, ddepla, cnsinr,&
                   cnsper)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +25,6 @@ subroutine cfresu(noma, numins, inst, sddisc, defico,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8miem.h"
@@ -44,7 +48,7 @@ subroutine cfresu(noma, numins, inst, sddisc, defico,&
     character(len=8) :: noma
     character(len=19) :: sddisc
     character(len=19) :: cnsinr, cnsper
-    character(len=24) :: defico, resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19) :: depplu, depdel, ddepla
 !
 ! ----------------------------------------------------------------------
@@ -61,8 +65,7 @@ subroutine cfresu(noma, numins, inst, sddisc, defico,&
 ! IN  INST   : INST(1) = INSTANT COURANT DE CALCUL
 !              INST(2) = INCREMENT TEMPOREL
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
-! IN  DEFICO : SD DE DEFINITION DU CONTACT
-! IN  RESOCO : SD DE RESOLUTION DU CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  DEPPLU : DEPLACEMENT COURANT
 ! IN  DEPDEL : INCREMENT DE DEPLACEMENT CUMULE
 ! IN  DDEPLA : INCREMENT DE DEPLACEMENTS CALCULE EN IGNORANT LE CONTACT
@@ -129,26 +132,26 @@ subroutine cfresu(noma, numins, inst, sddisc, defico,&
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
-    lctfd = cfdisl(defico,'FROT_DISCRET')
-    lpenac = cfdisl(defico,'CONT_PENA' )
-    lpenaf = cfdisl(defico,'FROT_PENA' )
-    lag2d = cfdisl(defico,'FROT_LAGR_2D')
+    lctfd = cfdisl(ds_contact%sdcont_defi,'FROT_DISCRET')
+    lpenac = cfdisl(ds_contact%sdcont_defi,'CONT_PENA' )
+    lpenaf = cfdisl(ds_contact%sdcont_defi,'FROT_PENA' )
+    lag2d = cfdisl(ds_contact%sdcont_defi,'FROT_LAGR_2D')
 !
 ! --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
 !
-    afmu = resoco(1:14)//'.AFMU'
-    apcofr = resoco(1:14)//'.APCOFR'
-    apddl = resoco(1:14)//'.APDDL'
-    appoin = resoco(1:14)//'.APPOIN'
-    numlia = resoco(1:14)//'.NUMLIA'
-    atmu = resoco(1:14)//'.ATMU'
-    typl = resoco(1:14)//'.TYPL'
-    liac = resoco(1:14)//'.LIAC'
-    mu = resoco(1:14)//'.MU'
-    tangco = resoco(1:14)//'.TANGCO'
-    tacfin = resoco(1:14)//'.TACFIN'
-    jeuite = resoco(1:14)//'.JEUITE'
-    approj = resoco(1:14)//'.APPROJ'
+    afmu = ds_contact%sdcont_solv(1:14)//'.AFMU'
+    apcofr = ds_contact%sdcont_solv(1:14)//'.APCOFR'
+    apddl = ds_contact%sdcont_solv(1:14)//'.APDDL'
+    appoin = ds_contact%sdcont_solv(1:14)//'.APPOIN'
+    numlia = ds_contact%sdcont_solv(1:14)//'.NUMLIA'
+    atmu = ds_contact%sdcont_solv(1:14)//'.ATMU'
+    typl = ds_contact%sdcont_solv(1:14)//'.TYPL'
+    liac = ds_contact%sdcont_solv(1:14)//'.LIAC'
+    mu = ds_contact%sdcont_solv(1:14)//'.MU'
+    tangco = ds_contact%sdcont_solv(1:14)//'.TANGCO'
+    tacfin = ds_contact%sdcont_solv(1:14)//'.TACFIN'
+    jeuite = ds_contact%sdcont_solv(1:14)//'.JEUITE'
+    approj = ds_contact%sdcont_solv(1:14)//'.APPROJ'
 !
     call jeveuo(appoin, 'L', japptr)
     call jeveuo(tacfin, 'L', jtacf)
@@ -176,14 +179,14 @@ subroutine cfresu(noma, numins, inst, sddisc, defico,&
 !
 ! --- CARACTERISTIQUES DU CONTACT
 !
-    nbliai = cfdisd(resoco,'NBLIAI')
-    nbliac = cfdisd(resoco,'NBLIAC')
-    llf = cfdisd(resoco,'LLF' )
-    llf1 = cfdisd(resoco,'LLF1' )
-    llf2 = cfdisd(resoco,'LLF2' )
-    ndimg = cfdisd(resoco,'NDIM' )
-    neq = cfdisd(resoco,'NEQ' )
-    nesmax = cfdisd(resoco,'NESMAX')
+    nbliai = cfdisd(ds_contact%sdcont_solv,'NBLIAI')
+    nbliac = cfdisd(ds_contact%sdcont_solv,'NBLIAC')
+    llf = cfdisd(ds_contact%sdcont_solv,'LLF' )
+    llf1 = cfdisd(ds_contact%sdcont_solv,'LLF1' )
+    llf2 = cfdisd(ds_contact%sdcont_solv,'LLF2' )
+    ndimg = cfdisd(ds_contact%sdcont_solv,'NDIM' )
+    neq = cfdisd(ds_contact%sdcont_solv,'NEQ' )
+    nesmax = cfdisd(ds_contact%sdcont_solv,'NESMAX')
     btotal = nbliac+llf+llf1+llf2
 !
 ! --- ACCES AUX CHAM_NO POUR LES DEPLACEMENTS
@@ -479,7 +482,7 @@ subroutine cfresu(noma, numins, inst, sddisc, defico,&
 ! --- ECRITURE DES RELATIONS DE CONTACT A LA FIN DU PAS DE TEMPS
 !
     if (niv .ge. 2) then
-        call cfimp3(defico, resoco, noma, ifm, numins,&
+        call cfimp3(ds_contact%sdcont_defi, ds_contact%sdcont_solv, noma, ifm, numins,&
                     instap, nbliai, nbliac, jcnsvr)
     endif
 !

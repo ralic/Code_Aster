@@ -1,4 +1,15 @@
-subroutine mmdeco(defico, resoco)
+subroutine mmdeco(ds_contact)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "jeveux.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,14 +29,7 @@ subroutine mmdeco(defico, resoco)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/cfmmvd.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-    character(len=24) :: defico, resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! ----------------------------------------------------------------------
 !
@@ -35,12 +39,7 @@ subroutine mmdeco(defico, resoco)
 !
 ! ----------------------------------------------------------------------
 !
-!
-! IN  DEFICO : SD DE DEFINITION DU CONTACT
-! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
-!
-!
-!
+! In  ds_contact       : datastructure for contact management
 !
     character(len=24) :: tabfin, etatct
     integer :: jtabf, jetat
@@ -53,8 +52,8 @@ subroutine mmdeco(defico, resoco)
 !
 ! --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
 !
-    etatct = resoco(1:14)//'.ETATCT'
-    tabfin = resoco(1:14)//'.TABFIN'
+    etatct = ds_contact%sdcont_solv(1:14)//'.ETATCT'
+    tabfin = ds_contact%sdcont_solv(1:14)//'.TABFIN'
     call jeveuo(tabfin, 'L', jtabf)
     call jeveuo(etatct, 'E', jetat)
     ztabf = cfmmvd('ZTABF')
@@ -62,18 +61,18 @@ subroutine mmdeco(defico, resoco)
 !
 ! --- INITIALISATION
 !
-    ntpc = cfdisi(defico,'NTPC')
+    ntpc = cfdisi(ds_contact%sdcont_defi,'NTPC')
 !
 ! --- SAUVEGARDE DE L ETAT DE CONTACT EN CAS DE REDECOUPAGE
 !
-    do 1000 ipc = 1, ntpc
+    do ipc = 1, ntpc
 !       STATUT DE CONTACT
         zr(jetat-1+zetat*(ipc-1)+1) = zr(jtabf+ztabf*(ipc-1)+22)
 !       SEUIL DE FROTTEMENT
         zr(jetat-1+zetat*(ipc-1)+2) = zr(jtabf+ztabf*(ipc-1)+16)
 !       MEMOIRE DE GLISSIERE
         zr(jetat-1+zetat*(ipc-1)+3) = zr(jtabf+ztabf*(ipc-1)+17)
-1000  end do
+    end do
 !
     call jedema()
 !

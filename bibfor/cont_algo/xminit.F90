@@ -1,5 +1,7 @@
-subroutine xminit(mesh  , model , sdcont_defi, sdcont_solv, nume_inst,&
-                  sdtime, sdstat, sddyna     , hat_valinc )
+subroutine xminit(mesh  , model , ds_contact, nume_inst, sdtime,&
+                  sdstat, sddyna, hat_valinc)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -34,9 +36,8 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
-    character(len=24), intent(in) :: model
-    character(len=24), intent(in) :: sdcont_defi
-    character(len=24), intent(in) :: sdcont_solv
+    character(len=8), intent(in) :: model
+    type(NL_DS_Contact), intent(in) :: ds_contact
     integer, intent(in) :: nume_inst
     character(len=24), intent(in) :: sdtime
     character(len=24), intent(in) :: sdstat
@@ -53,8 +54,7 @@ implicit none
 !
 ! In  mesh             : name of mesh
 ! In  model            : name of model
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
-! In  sdcont_solv      : name of contact solving datastructure
+! In  ds_contact       : datastructure for contact management
 ! In  nume_inst        : index of current step time
 ! In  hat_valinc       : hat variable for algorithm fields
 ! In  sdtime           : datastructure for timers
@@ -72,7 +72,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     l_dyna         = ndynlo(sddyna,'DYNAMIQUE')
-    l_cont_xfem_gg = cfdisl(sdcont_defi,'CONT_XFEM_GG')
+    l_cont_xfem_gg = cfdisl(ds_contact%sdcont_defi,'CONT_XFEM_GG')
     ASSERT(.not.l_dyna)
 !
 ! - Using *_INIT options (like SEUIL_INIT)
@@ -86,19 +86,19 @@ implicit none
 ! - Lagrangians initialized (LAMBDA TOTAUX)
 !
     if (l_cont_xfem_gg) then
-        call xmiszl(disp_prev, sdcont_defi, mesh)
+        call xmiszl(disp_prev, ds_contact, mesh)
     endif
 !
 ! - Management of status for time cut
 !
-    xindco = sdcont_solv(1:14)//'.XFIN'
-    xmemco = sdcont_solv(1:14)//'.XMEM'
-    xindcp = sdcont_solv(1:14)//'.XFIP'
-    xmemcp = sdcont_solv(1:14)//'.XMEP'
-    xseuco = sdcont_solv(1:14)//'.XFSE'
-    xseucp = sdcont_solv(1:14)//'.XFSP'
-    xcohes = sdcont_solv(1:14)//'.XCOH'
-    xcohep = sdcont_solv(1:14)//'.XCOP'
+    xindco = ds_contact%sdcont_solv(1:14)//'.XFIN'
+    xmemco = ds_contact%sdcont_solv(1:14)//'.XMEM'
+    xindcp = ds_contact%sdcont_solv(1:14)//'.XFIP'
+    xmemcp = ds_contact%sdcont_solv(1:14)//'.XMEP'
+    xseuco = ds_contact%sdcont_solv(1:14)//'.XFSE'
+    xseucp = ds_contact%sdcont_solv(1:14)//'.XFSP'
+    xcohes = ds_contact%sdcont_solv(1:14)//'.XCOH'
+    xcohep = ds_contact%sdcont_solv(1:14)//'.XCOP'
     call copisd('CHAMP_GD', 'V', xindcp, xindco)
     call copisd('CHAMP_GD', 'V', xmemcp, xmemco)
     call copisd('CHAMP_GD', 'V', xseucp, xseuco)
@@ -106,37 +106,36 @@ implicit none
 !
 ! - Save displacements for geometric loop
 !
-    sdcont_depgeo = sdcont_solv(1:14)//'.DEPG'
+    sdcont_depgeo = ds_contact%sdcont_solv(1:14)//'.DEPG'
     call copisd('CHAMP_GD', 'V', disp_prev, sdcont_depgeo)
 !
 ! - Save displacements for friction loop
 !
-    sdcont_deplam = sdcont_solv(1:14)//'.DEPF'
+    sdcont_deplam = ds_contact%sdcont_solv(1:14)//'.DEPF'
     call copisd('CHAMP_GD', 'V', disp_prev, sdcont_deplam)
 !
 ! - Geometric loop counter initialization
 !
-    call mmbouc(sdcont_solv, 'GEOM', 'INIT')
+    call mmbouc(ds_contact, 'GEOM', 'INIT')
 !
 ! - First geometric loop counter
 !
-    call mmbouc(sdcont_solv, 'GEOM', 'INCR')
+    call mmbouc(ds_contact, 'GEOM', 'INCR')
 !
 ! - Initial pairing
 !
     if (l_cont_xfem_gg) then
-        call xmapin(mesh  , model , sdcont_defi, sdcont_solv, sdtime,&
-                    sdstat)
+        call xmapin(mesh, model, ds_contact, sdtime, sdstat)
     endif
 !
 ! - Initial options
 !
     if (l_cont_xfem_gg.and.l_step_first) then
-        call xoptin(mesh, model, sdcont_defi, sdcont_solv)
+        call xoptin(mesh, model, ds_contact)
     endif
 !
 ! - Create fields
 !
-    call xmelem(mesh, model, sdcont_defi, sdcont_solv)
+    call xmelem(mesh, model, ds_contact)
 !
 end subroutine

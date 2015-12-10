@@ -1,6 +1,26 @@
-subroutine cftanr(noma, ndimg, defico, resoco, izone,&
+subroutine cftanr(noma, ndimg, ds_contact, izone,&
                   posnoe, typenm, posenm, numenm, ksipr1,&
                   ksipr2, tau1m, tau2m, tau1, tau2)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/apvect.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfchno.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfinvm.h"
+#include "asterfort/cfnben.h"
+#include "asterfort/cfnomm.h"
+#include "asterfort/cfnors.h"
+#include "asterfort/cfnumm.h"
+#include "asterfort/mmelty.h"
+#include "asterfort/mminfi.h"
+#include "asterfort/mminfl.h"
+#include "asterfort/mminfr.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,32 +40,13 @@ subroutine cftanr(noma, ndimg, defico, resoco, izone,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/apvect.h"
-#include "asterfort/assert.h"
-#include "asterfort/cfchno.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/cfinvm.h"
-#include "asterfort/cfnben.h"
-#include "asterfort/cfnomm.h"
-#include "asterfort/cfnors.h"
-#include "asterfort/cfnumm.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/mmelty.h"
-#include "asterfort/mminfi.h"
-#include "asterfort/mminfl.h"
-#include "asterfort/mminfr.h"
-#include "asterfort/utmess.h"
     character(len=8) :: noma
     integer :: posenm, posnoe, numenm
     integer :: izone
     integer :: ndimg
     real(kind=8) :: ksipr1, ksipr2
     character(len=4) :: typenm
-    character(len=24) :: defico, resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
     real(kind=8) :: tau1(3), tau2(3)
     real(kind=8) :: tau1m(3), tau2m(3)
 !
@@ -62,8 +63,7 @@ subroutine cftanr(noma, ndimg, defico, resoco, izone,&
 !
 ! IN  NOMA   : NOM DU MAILLAGE
 ! IN  NDIMG  : DIMENSION DU MODELE
-! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
-! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  IZONE  : ZONE DE CONTACT ACTIVE
 ! IN  TYPENM : TYPE DE L'ENTITE MAITRE RECEVANT LA PROJECTION
 !               'MAIL' UNE MAILLE
@@ -98,11 +98,10 @@ subroutine cftanr(noma, ndimg, defico, resoco, izone,&
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
 !
 ! --- LECTURE APPARIEMENT
 !
-    sdappa = resoco(1:14)//'.APPA'
+    sdappa = ds_contact%sdcont_solv(1:14)//'.APPA'
 !
 ! --- INITIALISATIONS
 !
@@ -116,17 +115,17 @@ subroutine cftanr(noma, ndimg, defico, resoco, izone,&
 !
 ! --- LISSAGE OU PAS ?
 !
-    lliss = cfdisl(defico,'LISSAGE')
+    lliss = cfdisl(ds_contact%sdcont_defi,'LISSAGE')
 !
 ! --- NORMALES A MODIFIER
 !
-    if (mminfl(defico,'MAIT',izone)) then
+    if (mminfl(ds_contact%sdcont_defi,'MAIT',izone)) then
         lmait = .true.
         lescl = .false.
-    else if (mminfl(defico,'MAIT_ESCL',izone)) then
+    else if (mminfl(ds_contact%sdcont_defi,'MAIT_ESCL',izone)) then
         lmait = .true.
         lescl = .true.
-    else if (mminfl(defico,'ESCL',izone)) then
+    else if (mminfl(ds_contact%sdcont_defi,'ESCL',izone)) then
         lmait = .false.
         lescl = .true.
     else
@@ -147,11 +146,11 @@ subroutine cftanr(noma, ndimg, defico, resoco, izone,&
 ! --- AU NOEUD ESCLAVE
 !
     if (lescl) then
-        call cfnben(defico, posnoe, 'CONINV', nbma, jdeciv)
+        call cfnben(ds_contact%sdcont_defi, posnoe, 'CONINV', nbma, jdeciv)
         ima = 1
-        call cfinvm(defico, jdeciv, ima, posmae)
-        call cfnumm(defico, posmae, nummae)
-        call cfnomm(noma, defico, 'MAIL', posmae, nommae)
+        call cfinvm(ds_contact%sdcont_defi, jdeciv, ima, posmae)
+        call cfnumm(ds_contact%sdcont_defi, posmae, nummae)
+        call cfnomm(noma, ds_contact%sdcont_defi, 'MAIL', posmae, nommae)
         call mmelty(noma, nummae, aliase)
     endif
 !
@@ -162,14 +161,14 @@ subroutine cftanr(noma, ndimg, defico, resoco, izone,&
 ! --- RECUP. MAILLE SI APPARIEMENT NODAL
 !
         if (typenm .eq. 'NOEU') then
-            call cfnben(defico, posenm, 'CONINV', nbma, jdeciv)
+            call cfnben(ds_contact%sdcont_defi, posenm, 'CONINV', nbma, jdeciv)
             ima = 1
-            call cfinvm(defico, jdeciv, ima, posmam)
+            call cfinvm(ds_contact%sdcont_defi, jdeciv, ima, posmam)
         else
             posmam = posenm
         endif
-        call cfnumm(defico, posmam, nummam)
-        call cfnomm(noma, defico, 'MAIL', posmam, nommam)
+        call cfnumm(ds_contact%sdcont_defi, posmam, nummam)
+        call cfnomm(noma, ds_contact%sdcont_defi, 'MAIL', posmam, nommam)
         call mmelty(noma, nummam, aliasm)
     endif
 !
@@ -183,11 +182,11 @@ subroutine cftanr(noma, ndimg, defico, resoco, izone,&
 ! --- MODIFICATIONS DES NORMALES MAITRES
 !
     if (lmait) then
-        itypem = mminfi(defico,'VECT_MAIT',izone)
+        itypem = mminfi(ds_contact%sdcont_defi,'VECT_MAIT',izone)
         if (itypem .ne. 0) then
-            vector(1) = mminfr(defico,'VECT_MAIT_DIRX',izone)
-            vector(2) = mminfr(defico,'VECT_MAIT_DIRY',izone)
-            vector(3) = mminfr(defico,'VECT_MAIT_DIRZ',izone)
+            vector(1) = mminfr(ds_contact%sdcont_defi,'VECT_MAIT_DIRX',izone)
+            vector(2) = mminfr(ds_contact%sdcont_defi,'VECT_MAIT_DIRY',izone)
+            vector(3) = mminfr(ds_contact%sdcont_defi,'VECT_MAIT_DIRZ',izone)
         endif
         if ((ndimg.eq.2) .and. (itypem.eq.2)) then
             call utmess('F', 'CONTACT3_43', sk=nommam)
@@ -197,7 +196,7 @@ subroutine cftanr(noma, ndimg, defico, resoco, izone,&
         if (lpoint) then
             call utmess('F', 'CONTACT3_75', sk=nommam)
         endif
-        call cfnors(noma, defico, resoco, posmam, typenm,&
+        call cfnors(noma, ds_contact, posmam, typenm,&
                     numenm, lpoutr, lpoint, ksipr1, ksipr2,&
                     lliss, itypem, vector, tau1m, tau2m,&
                     lmfixe)
@@ -206,18 +205,18 @@ subroutine cftanr(noma, ndimg, defico, resoco, izone,&
 ! --- MODIFICATIONS DES NORMALES ESCLAVES
 !
     if (lescl) then
-        itypee = mminfi(defico,'VECT_ESCL',izone)
+        itypee = mminfi(ds_contact%sdcont_defi,'VECT_ESCL',izone)
         if (itypee .ne. 0) then
-            vector(1) = mminfr(defico,'VECT_ESCL_DIRX',izone)
-            vector(2) = mminfr(defico,'VECT_ESCL_DIRY',izone)
-            vector(3) = mminfr(defico,'VECT_ESCL_DIRZ',izone)
+            vector(1) = mminfr(ds_contact%sdcont_defi,'VECT_ESCL_DIRX',izone)
+            vector(2) = mminfr(ds_contact%sdcont_defi,'VECT_ESCL_DIRY',izone)
+            vector(3) = mminfr(ds_contact%sdcont_defi,'VECT_ESCL_DIRZ',izone)
         endif
         if ((ndimg.eq.2) .and. (itypee.eq.2)) then
             call utmess('F', 'CONTACT3_43', sk=nommae)
         endif
         lpoutr = (ndimg.eq.3).and.(aliase(1:2).eq.'SE')
         lpoint = aliase.eq.'POI1'
-        call cfnors(noma, defico, resoco, posmae, typenm,&
+        call cfnors(noma, ds_contact, posmae, typenm,&
                     numenm, lpoutr, lpoint, r8bid, r8bid,&
                     .false._1, itypee, vector, tau1e, tau2e,&
                     lefixe)
@@ -225,11 +224,9 @@ subroutine cftanr(noma, ndimg, defico, resoco, izone,&
 !
 ! --- CHOIX DE LA NORMALE -> CALCUL DES TANGENTES
 !
-    call cfchno(noma, defico, ndimg, posnoe, typenm,&
+    call cfchno(noma, ds_contact, ndimg, posnoe, typenm,&
                 numenm, lmait, lescl, lmfixe, lefixe,&
                 tau1m, tau2m, tau1e, tau2e, tau1,&
                 tau2)
-!
-    call jedema()
 !
 end subroutine

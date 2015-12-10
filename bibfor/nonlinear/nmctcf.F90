@@ -1,5 +1,5 @@
-subroutine nmctcf(noma  , modele, ds_print, sderro, defico,&
-                  resoco, valinc, mmcvfr  )
+subroutine nmctcf(mesh     , model_, ds_print, sderro, ds_contact,&
+                  hval_incr, loop_frot_conv)
 !
 use NonLin_Datastructure_type
 !
@@ -39,13 +39,13 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=8) :: noma
-    character(len=24) :: modele
-    character(len=24) :: defico, resoco
-    character(len=24) :: sderro
+    character(len=8), intent(in) :: mesh
+    character(len=24), intent(in) :: model_
     type(NL_DS_Print), intent(inout) :: ds_print
-    character(len=19) :: valinc(*)
-    aster_logical :: mmcvfr
+    character(len=24), intent(in) :: sderro
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=19), intent(in) :: hval_incr(*)
+    aster_logical, intent(out) :: loop_frot_conv
 !
 ! ----------------------------------------------------------------------
 !
@@ -55,16 +55,13 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  MODELE : NOM DU MODELE
+! In  mesh             : name of mesh
+! In  model            : name of model
 ! IO  ds_print         : datastructure for printing parameters
-! IN  SDERRO : GESTION DES ERREURS
-! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
-! IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
-! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
-! OUT MMCVCA : INDICATEUR DE CONVERGENCE POUR BOUCLE DU
-!              FROTTEMENT
-!               .TRUE. SI LA BOUCLE A CONVERGE
+! In  sderro           : datastructure for errors during algorithm
+! In  ds_contact       : datastructure for contact management
+! In  hval_incr        : hat-variable for incremental values fields
+! Out loop_frot_conv
 !
 ! ----------------------------------------------------------------------
 !
@@ -75,7 +72,7 @@ implicit none
     real(kind=8) :: epsfro
     integer :: mmitfr
     character(len=19) :: depplu, deplam, depmoi
-    character(len=8) :: nomo
+    character(len=8) :: model
     character(len=16) :: cvgnoe
     real(kind=8) :: cvgval
 !
@@ -88,53 +85,53 @@ implicit none
 !
 ! --- INITIALISATIONS
 !
-    nomo   = modele(1:8)
-    mmcvfr = .false.
-    deplam = resoco(1:14)//'.DEPF'
+    model  = model_(1:8)
+    loop_frot_conv = .false.
+    deplam = ds_contact%sdcont_solv(1:14)//'.DEPF'
     lerrof = .false.
 !
 ! --- DECOMPACTION DES VARIABLES CHAPEAUX
 !
-    call nmchex(valinc, 'VALINC', 'DEPMOI', depmoi)
-    call nmchex(valinc, 'VALINC', 'DEPPLU', depplu)
+    call nmchex(hval_incr, 'VALINC', 'DEPMOI', depmoi)
+    call nmchex(hval_incr, 'VALINC', 'DEPPLU', depplu)
 !
 ! --- INFOS BOUCLE FROTTEMENT
 !
-    call mmbouc(resoco, 'FROT', 'READ', mmitfr)
-    maxfro = cfdisi(defico,'ITER_FROT_MAXI')
-    epsfro = cfdisr(defico,'RESI_FROT' )
+    call mmbouc(ds_contact, 'FROT', 'READ', mmitfr)
+    maxfro = cfdisi(ds_contact%sdcont_defi,'ITER_FROT_MAXI')
+    epsfro = cfdisr(ds_contact%sdcont_defi,'RESI_FROT' )
 !
 ! --- TYPE DE CONTACT
 !
-    lctcc = cfdisl(defico,'FORMUL_CONTINUE')
-    lxfcm = cfdisl(defico,'FORMUL_XFEM')
-    ltfcm = cfdisl(defico,'CONT_XFEM_GG')
+    lctcc = cfdisl(ds_contact%sdcont_defi,'FORMUL_CONTINUE')
+    lxfcm = cfdisl(ds_contact%sdcont_defi,'FORMUL_XFEM')
+    ltfcm = cfdisl(ds_contact%sdcont_defi,'CONT_XFEM_GG')
 !
 ! --- MISE A JOUR DES SEUILS
 !
     if (lxfcm) then
         if (.not.ltfcm) then
-            call xreacl(noma, nomo, valinc, resoco)
+            call xreacl(mesh, model, hval_incr, ds_contact)
         endif
     else if (lctcc) then
-        call mmreas(noma, defico, resoco, valinc)
+        call mmreas(mesh, ds_contact, hval_incr)
     else
         ASSERT(.false.)
     endif
 !
 ! --- CONVERGENCE SEUIL FROTTEMENT
 !
-    call mmmcri('FROT', noma, depmoi, deplam, depplu,&
-                resoco, epsfro, cvgnoe, cvgval, mmcvfr)
+    call mmmcri('FROT', mesh, depmoi, deplam, depplu,&
+                ds_contact, epsfro, cvgnoe, cvgval, loop_frot_conv)
 !
-    if ((.not.mmcvfr) .and. (mmitfr.eq.maxfro)) then
+    if ((.not.loop_frot_conv) .and. (mmitfr.eq.maxfro)) then
         lerrof = .true.
     endif
 !
 ! --- CONVERGENCE ET ERREUR
 !
     call nmcrel(sderro, 'ERRE_CTCF', lerrof)
-    if (mmcvfr) then
+    if (loop_frot_conv) then
         call nmcrel(sderro, 'DIVE_FIXF', .false._1)
     else
         call nmcrel(sderro, 'DIVE_FIXF', .true._1)
@@ -147,7 +144,7 @@ implicit none
 !
 ! --- MISE A JOUR DU SEUIL DE REFERENCE
 !
-    if (.not.mmcvfr) then
+    if (.not.loop_frot_conv) then
         call copisd('CHAMP_GD', 'V', depplu, deplam)
     endif
 !

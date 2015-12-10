@@ -18,12 +18,12 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine cfapno(noma, newgeo, defico, resoco, lctfd,&
+    subroutine cfapno(noma, newgeo, ds_contact, lctfd,&
                       lctf3d, ndimg, izone, posnoe, numnoe,&
                       coorne, posnom, tau1m, tau2m, iliai)
+        use NonLin_Datastructure_type
         character(len=8), intent(in) :: noma
-        character(len=24), intent(in) :: defico
-        character(len=24), intent(in) :: resoco
+        type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19), intent(in) :: newgeo
         real(kind=8), intent(in) :: coorne(3)
         real(kind=8), intent(out) :: tau1m(3)

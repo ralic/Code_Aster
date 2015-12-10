@@ -1,4 +1,19 @@
-subroutine cfliin(noma, defico, resoco)
+subroutine cfliin(noma, ds_contact)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/cfecrd.h"
+#include "asterfort/cfimp1.h"
+#include "asterfort/cfinal.h"
+#include "asterfort/cfinnl.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,19 +33,8 @@ subroutine cfliin(noma, defico, resoco)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/cfecrd.h"
-#include "asterfort/cfimp1.h"
-#include "asterfort/cfinal.h"
-#include "asterfort/cfinnl.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-    character(len=8) :: noma
-    character(len=24) :: defico, resoco
+    character(len=8), intent(in) :: noma
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! ----------------------------------------------------------------------
 !
@@ -40,13 +44,8 @@ subroutine cfliin(noma, defico, resoco)
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  NOMA   : NOM DU MAILLAGE
-! IN  DEFICO : SD DE DEFINITION DU CONTACT
-! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
-!
-!
-!
+! In  ds_contact       : datastructure for contact management
 !
     integer :: ifm, niv
     character(len=24) :: clreac
@@ -58,17 +57,13 @@ subroutine cfliin(noma, defico, resoco)
 !
     call jemarq()
     call infdbg('CONTACT', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> ......... DETECTION DES '//&
-     &                'LIAISONS INITIALES'
+        write (ifm,*) '<CONTACT> ......... DETECTION DES LIAISONS INITIALES'
     endif
 !
 ! --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
 !
-    clreac = resoco(1:14)//'.REAL'
+    clreac = ds_contact%sdcont_solv(1:14)//'.REAL'
     call jeveuo(clreac, 'L', jclrea)
 !
 ! --- PARAMETRES DE REACTUALISATION
@@ -78,25 +73,25 @@ subroutine cfliin(noma, defico, resoco)
 !
 ! --- NOMBRE DE LIAISONS INITIALES
 !
-    call cfinnl(defico, resoco, reageo, nbliac, llf,&
+    call cfinnl(ds_contact, reageo, nbliac, llf,&
                 llf1, llf2)
 !
 ! --- ACTIVATION DES LIAISONS INITIALES
 !
-    call cfinal(defico, resoco, reapre, reageo, nbliac,&
+    call cfinal(ds_contact, reapre, reageo, nbliac,&
                 llf, llf1, llf2)
 !
 ! --- STOCKAGE DES VARIABLES DE CONTROLE DU CONTACT
 !
-    call cfecrd(resoco, 'NBLIAC', nbliac)
-    call cfecrd(resoco, 'LLF', llf)
-    call cfecrd(resoco, 'LLF1', llf1)
-    call cfecrd(resoco, 'LLF2', llf2)
+    call cfecrd(ds_contact%sdcont_solv, 'NBLIAC', nbliac)
+    call cfecrd(ds_contact%sdcont_solv, 'LLF', llf)
+    call cfecrd(ds_contact%sdcont_solv, 'LLF1', llf1)
+    call cfecrd(ds_contact%sdcont_solv, 'LLF2', llf2)
 !
 ! --- AFFICHAGES
 !
     if (niv .ge. 2) then
-        call cfimp1('INI', noma, defico, resoco, ifm)
+        call cfimp1('INI', noma, ds_contact%sdcont_defi, ds_contact%sdcont_solv, ifm)
     endif
 !
     call jedema()

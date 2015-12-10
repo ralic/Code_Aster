@@ -19,18 +19,19 @@
 !
 interface
     subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
-                      ifise, defico, izone, alias, mmait,&
+                      ifise, ds_contact, izone, alias, mmait,&
                       amait, nmait, statue, geom, nummin,&
                       nummae, ifamin, ifacee, jeumin, t1min,&
                       t2min, ximin, yimin, projin, stamin,&
                       ifism)
+        use NonLin_Datastructure_type
         integer :: jcesd(10)
         integer :: jcesv(10)
         integer :: jcesl(10)
         character(len=8) :: noma
         integer :: ndim
         integer :: ifise
-        character(len=24) :: defico
+        type(NL_DS_Contact), intent(in) :: ds_contact
         integer :: izone
         character(len=8) :: alias
         integer :: mmait

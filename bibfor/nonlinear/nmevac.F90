@@ -1,5 +1,5 @@
 subroutine nmevac(sddisc, sderro   , i_echec_acti, nume_inst   , iterat,&
-                  retact, ds_print_, sdcont_defi_, sdcont_solv_)
+                  retact, ds_print_, ds_contact_)
 !
 use NonLin_Datastructure_type
 !
@@ -42,8 +42,7 @@ implicit none
     integer, intent(in) :: iterat
     integer, intent(out) :: retact
     type(NL_DS_Print), optional, intent(in) :: ds_print_
-    character(len=24), optional, intent(in) :: sdcont_defi_
-    character(len=24), optional, intent(in) :: sdcont_solv_
+    type(NL_DS_Contact), optional, intent(in) :: ds_contact_
 !
 ! ----------------------------------------------------------------------
 !
@@ -56,8 +55,7 @@ implicit none
 ! In  ds_print         : datastructure for printing parameters
 ! In  sddisc           : datastructure for time discretization
 ! IN  SDERRO : SD ERREUR
-! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
-! IN  RESOCO : SD POUR LA RESOLUTION DE CONTACTreac
+! In  ds_contact       : datastructure for contact management
 ! IN  IEVDAC : INDICE DE L'EVENEMENT ACTIF
 ! IN  NUMINS : NUMERO D'INSTANT
 ! IN  ITERAT : NUMERO D'ITERATION DE NEWTON
@@ -133,7 +131,7 @@ implicit none
         endif
     else if (action.eq.'ADAPT_COEF_PENA') then
         call utmess('I', 'MECANONLINE10_35')
-        call nmadcp(sddisc, sdcont_defi_, sdcont_solv_, i_echec_acti, retpen)
+        call nmadcp(sddisc, ds_contact_, i_echec_acti, retpen)
         trydec = .false.
         if (retpen .eq. 0) then
             retact = 3

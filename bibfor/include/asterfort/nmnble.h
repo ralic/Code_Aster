@@ -17,8 +17,9 @@
 !
 interface
     subroutine nmnble(numins, modele, noma, numedd, sdstat,&
-                      sdtime, sddyna, sddisc, fonact, defico,&
-                      resoco, valinc, solalg)
+                      sdtime, sddyna, sddisc, fonact, ds_contact,&
+                      valinc, solalg)
+        use NonLin_Datastructure_type
         integer :: numins
         character(len=24) :: modele
         character(len=8) :: noma
@@ -28,8 +29,7 @@ interface
         character(len=19) :: sddyna
         character(len=19) :: sddisc
         integer :: fonact(*)
-        character(len=24) :: defico
-        character(len=24) :: resoco
+        type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19) :: valinc(*)
         character(len=19) :: solalg(*)
     end subroutine nmnble

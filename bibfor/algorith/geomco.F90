@@ -1,4 +1,11 @@
-subroutine geomco(noma, resoco, depplu)
+subroutine geomco(noma, ds_contact, depplu)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterfort/infdbg.h"
+#include "asterfort/vtgpld.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,14 +25,8 @@ subroutine geomco(noma, resoco, depplu)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/vtgpld.h"
     character(len=8) :: noma
-    character(len=24) :: resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19) :: depplu
 !
 ! ----------------------------------------------------------------------
@@ -36,35 +37,23 @@ subroutine geomco(noma, resoco, depplu)
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  NOMA   : NOM DU MAILLAGE
-! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  DEPPLU : CHAMP DE DEPLACEMENTS A L'ITERATION DE NEWTON PRECEDENTE
-!
-!
-!
 !
     character(len=19) :: oldgeo, newgeo
     integer :: ifm, niv
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('CONTACT', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> ...... REACTUALISATION DE '//&
-        'LA GEOMETRIE'
+        write (ifm,*) '<CONTACT> ...... REACTUALISATION DE LA GEOMETRIE'
     endif
 !
-! --- INITIALISATIONS
-!
     oldgeo = noma(1:8)//'.COORDO'
-    newgeo = resoco(1:14)//'.NEWG'
+    newgeo = ds_contact%sdcont_solv(1:14)//'.NEWG'
     call vtgpld('CUMU', oldgeo, 1.d0, depplu, 'V',&
                 newgeo)
 !
-    call jedema()
 end subroutine

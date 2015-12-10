@@ -1,5 +1,7 @@
-subroutine nmctcg(model , mesh    , sdcont_defi , sdcont_solv, sdstat,&
-                  sdtime, nume_dof)
+subroutine nmctcg(model   , mesh, ds_contact, sdstat, sdtime,&
+                  nume_dof)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -29,8 +31,7 @@ implicit none
 !
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: model
-    character(len=24), intent(in) :: sdcont_defi 
-    character(len=24), intent(in) :: sdcont_solv
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=24), intent(in) :: nume_dof
     character(len=24), intent(in) :: sdtime
     character(len=24), intent(in) :: sdstat
@@ -45,8 +46,7 @@ implicit none
 !
 ! In  mesh             : name of mesh
 ! In  model            : name of model
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
-! In  sdcont_solv      : name of contact solving datastructure
+! In  ds_contact       : datastructure for contact management
 ! In  nume_dof         : name of numbering object (NUME_DDL)
 ! In  sdtime           : datastructure for timers
 ! In  sdstat           : datastructure for statistics
@@ -58,18 +58,16 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    cont_form   = cfdisi(sdcont_defi,'FORMULATION')
-    l_cont_allv = cfdisl(sdcont_defi,'ALL_VERIF')
+    cont_form   = cfdisi(ds_contact%sdcont_defi,'FORMULATION')
+    l_cont_allv = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF')
 !
 ! - Geometric loop: geometric actualisation and pairing
 !
     if (.not.l_cont_allv) then
         if (cont_form .eq. 2) then
-            call mmctcg(mesh  , sdcont_defi, sdcont_solv, nume_dof, sdstat,&
-                        sdtime)
+            call mmctcg(mesh , ds_contact, nume_dof, sdstat, sdtime)
         elseif (cont_form .eq. 3) then
-            call xmctcg(model , mesh, sdcont_defi, sdcont_solv, sdstat,&
-                        sdtime)
+            call xmctcg(model, mesh, ds_contact, sdstat, sdtime)
         endif
     endif
 !

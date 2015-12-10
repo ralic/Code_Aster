@@ -16,8 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xreacg(nomo, resoco)
-        character(len=8) :: nomo
-        character(len=24) :: resoco
+    subroutine xreacg(model, ds_contact)
+        use NonLin_Datastructure_type
+        character(len=8), intent(in) :: model
+        type(NL_DS_Contact), intent(in) :: ds_contact
     end subroutine xreacg
 end interface

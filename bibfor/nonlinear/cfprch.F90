@@ -1,4 +1,20 @@
-subroutine cfprch(defico, resoco, ddepla, depdel)
+subroutine cfprch(ds_contact, ddepla, depdel)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/cfdisd.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/copisd.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/r8inir.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,19 +34,7 @@ subroutine cfprch(defico, resoco, ddepla, depdel)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/cfdisd.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/copisd.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/r8inir.h"
-    character(len=24) :: defico, resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19) :: ddepla, depdel
 !
 ! ----------------------------------------------------------------------
@@ -41,9 +45,7 @@ subroutine cfprch(defico, resoco, ddepla, depdel)
 !
 ! ----------------------------------------------------------------------
 !
-!
-! IN  DEFICO : SD DE DEFINITION DU CONTACT
-! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  DDEPLA : INCREMENT DE SOLUTION SANS CORRECTION DU CONTACT
 ! IN  DEPDEL : INCREMENT DE DEPLACEMENT CUMULE DEPUIS DEBUT DU PAS
 !
@@ -68,32 +70,29 @@ subroutine cfprch(defico, resoco, ddepla, depdel)
 !
     call jemarq()
     call infdbg('CONTACT', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<CONTACT> ......... CREATION DES CHAMPS INITIAUX'
     endif
 !
 ! --- PARAMETRES
 !
-    neq = cfdisd(resoco,'NEQ' )
-    lgcp = cfdisl(defico,'CONT_GCP')
-    lctfd = cfdisl(defico,'FROT_DISCRET')
+    neq = cfdisd(ds_contact%sdcont_solv,'NEQ' )
+    lgcp = cfdisl(ds_contact%sdcont_defi,'CONT_GCP')
+    lctfd = cfdisl(ds_contact%sdcont_defi,'FROT_DISCRET')
 !
 ! --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
 !
-    atmu = resoco(1:14)//'.ATMU'
-    afmu = resoco(1:14)//'.AFMU'
+    atmu = ds_contact%sdcont_solv(1:14)//'.ATMU'
+    afmu = ds_contact%sdcont_solv(1:14)//'.AFMU'
 !
 ! --- ACCES VECTEURS DEPLACEMENTS
 ! --- DDEPL0: INCREMENT DE SOLUTION SANS CORRECTION DU CONTACT
 ! --- DDEPLC: INCREMENT DE SOLUTION APRES CORRECTION DU CONTACT
 ! --- DDELT : INCREMENT DE SOLUTION ITERATION DE CONTACT
 !
-    ddepl0 = resoco(1:14)//'.DEL0'
-    ddeplc = resoco(1:14)//'.DELC'
-    ddelt = resoco(1:14)//'.DDEL'
+    ddepl0 = ds_contact%sdcont_solv(1:14)//'.DEL0'
+    ddeplc = ds_contact%sdcont_solv(1:14)//'.DELC'
+    ddelt = ds_contact%sdcont_solv(1:14)//'.DDEL'
     call jeveuo(ddeplc(1:19)//'.VALE', 'E', vr=ddepc)
     call jeveuo(ddelt (1:19)//'.VALE', 'E', vr=vddelt)
 !
@@ -119,14 +118,14 @@ subroutine cfprch(defico, resoco, ddepla, depdel)
 ! --- DU PAS DE TEMPS SANS CORRECTION DU CONTACT -> DEPL0
 !
     if (lctfd) then
-        depl0 = resoco(1:14)//'.DEP0'
-        ddepl0 = resoco(1:14)//'.DEL0'
+        depl0 = ds_contact%sdcont_solv(1:14)//'.DEP0'
+        ddepl0 = ds_contact%sdcont_solv(1:14)//'.DEL0'
         call jeveuo(depl0 (1:19)//'.VALE', 'E', vr=vdepl0)
         call jeveuo(ddepl0(1:19)//'.VALE', 'L', vr=ddep0)
         call jeveuo(depdel(1:19)//'.VALE', 'L', vr=depde)
-        do 10 ieq = 1, neq
+        do ieq = 1, neq
             vdepl0(ieq) = ddep0(ieq)+depde(ieq)
- 10     continue
+        end do
     endif
 !
 ! --- INTIALISATIONS DES FORCES

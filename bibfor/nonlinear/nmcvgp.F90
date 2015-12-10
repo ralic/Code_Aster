@@ -1,5 +1,16 @@
-subroutine nmcvgp(sddisc, numins, sderro, valinc, fonact,&
-                  defico, resoco)
+subroutine nmcvgp(sddisc    , nume_inst, sderro, valinc, fonact,&
+                  ds_contact)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterfort/assert.h"
+#include "asterfort/nmacto.h"
+#include "asterfort/nmeceb.h"
+#include "asterfort/nmevcv.h"
+#include "asterfort/nmevev.h"
+#include "asterfort/nmleeb.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,21 +30,12 @@ subroutine nmcvgp(sddisc, numins, sderro, valinc, fonact,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/nmacto.h"
-#include "asterfort/nmeceb.h"
-#include "asterfort/nmevcv.h"
-#include "asterfort/nmevev.h"
-#include "asterfort/nmleeb.h"
-    integer :: fonact(*)
-    character(len=19) :: sddisc, valinc(*)
-    integer :: numins
-    character(len=24) :: sderro
-    character(len=24) :: defico, resoco
+    integer, intent(in) :: fonact(*)
+    character(len=19), intent(in) :: sddisc
+    character(len=19), intent(in) :: valinc(*)
+    integer, intent(in) :: nume_inst
+    character(len=24), intent(in) :: sderro
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! ----------------------------------------------------------------------
 !
@@ -43,26 +45,17 @@ subroutine nmcvgp(sddisc, numins, sderro, valinc, fonact,&
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IN  NUMINS : NUMERO D'INSTANT
 ! IN  SDERRO : SD GESTION DES ERREURS
 ! IN  VALINC : VARIABLE CHAPEAU INCREMENTS DES VARIABLES
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
-! IN  DEFICO : SD DE DEFINITION DU CONTACT
-! IN  RESOCO : SD DE RESOLUTION DU CONTACT
-!
-!
-!
+! In  ds_contact       : datastructure for contact management
 !
     integer :: ievdac
     character(len=4) :: etfixe
 !
 ! ----------------------------------------------------------------------
-!
-    call jemarq()
-!
-! --- ETAT DE LA BOUCLE DE POINT FIXE
 !
     call nmleeb(sderro, 'FIXE', etfixe)
 !
@@ -85,15 +78,16 @@ subroutine nmcvgp(sddisc, numins, sderro, valinc, fonact,&
 !
 ! --- DETECTION DU PREMIER EVENEMENT DECLENCHE
 !
-    call nmevev(sddisc, numins, valinc, sderro, defico,&
-                resoco, 'INST')
+    call nmevev(sddisc, nume_inst, valinc, sderro, ds_contact,&
+                'INST')
 !
 ! --- UN EVENEMENT SE DECLENCHE
 !
     call nmacto(sddisc, ievdac)
-    if (ievdac .gt. 0) call nmeceb(sderro, 'INST', 'EVEN')
+    if (ievdac .gt. 0) then
+        call nmeceb(sderro, 'INST', 'EVEN')
+    endif
 !
 99  continue
 !
-    call jedema()
 end subroutine

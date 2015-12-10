@@ -1,4 +1,4 @@
-subroutine nmactp(ds_print, sddisc, sderro, defico, resoco,&
+subroutine nmactp(ds_print, sddisc, sderro, ds_contact,&
                   ds_conv , nbiter, numins)
 !
 use NonLin_Datastructure_type
@@ -35,8 +35,7 @@ implicit none
 !
     type(NL_DS_Print), intent(in) :: ds_print
     character(len=24), intent(in) :: sderro
-    character(len=24), intent(in) :: defico
-    character(len=24), intent(in) :: resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19), intent(in) :: sddisc
     type(NL_DS_Conv), intent(in) :: ds_conv
     integer, intent(in) :: nbiter
@@ -53,8 +52,7 @@ implicit none
 ! In  ds_print         : datastructure for printing parameters
 ! In  sddisc           : datastructure for time discretization
 ! IN  SDERRO : SD GESTION DES ERREURS
-! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
-! IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
+! In  ds_contact       : datastructure for contact management
 ! In  ds_conv          : datastructure for convergence management
 ! IN  NBITER : NOMBRE D'ITERATIONS DE NEWTON
 ! IN  NUMINS : NUMERO D'INSTANT
@@ -83,7 +81,7 @@ implicit none
     else if (etinst.eq.'EVEN') then
         call nmacto(sddisc, i_echec_acti)
         call nmevac(sddisc, sderro  , i_echec_acti  , numins, iterat, &
-                    retact, ds_print, defico, resoco)
+                    retact, ds_print, ds_contact)
     else if (etinst.eq.'ERRE') then
         retact = 1
     else if (etinst.eq.'STOP') then

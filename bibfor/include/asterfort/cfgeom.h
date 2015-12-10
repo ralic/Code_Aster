@@ -18,15 +18,15 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine cfgeom(reageo, iterat, noma, sdtime, sdstat,&
-                      defico, resoco, depplu, instan)
+    subroutine cfgeom(reageo    , iterat, noma, sdtime, sdstat,&
+                      ds_contact, depplu, instan)
+        use NonLin_Datastructure_type
         aster_logical :: reageo
         integer :: iterat
         character(len=8) :: noma
         character(len=24) :: sdtime
         character(len=24) :: sdstat
-        character(len=24) :: defico
-        character(len=24) :: resoco
+        type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19) :: depplu
         real(kind=8) :: instan
     end subroutine cfgeom

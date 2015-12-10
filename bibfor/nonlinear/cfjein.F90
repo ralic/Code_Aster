@@ -1,4 +1,21 @@
-subroutine cfjein(noma, defico, resoco, depdel)
+subroutine cfjein(noma, ds_contact, depdel)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/caladu.h"
+#include "asterfort/cfdisd.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfdisr.h"
+#include "asterfort/cfimp2.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,22 +35,9 @@ subroutine cfjein(noma, defico, resoco, depdel)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/caladu.h"
-#include "asterfort/cfdisd.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/cfdisr.h"
-#include "asterfort/cfimp2.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/utmess.h"
-    character(len=8) :: noma
-    character(len=24) :: defico, resoco
-    character(len=19) :: depdel
+    character(len=8), intent(in) :: noma
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=19), intent(in) :: depdel
 !
 ! ----------------------------------------------------------------------
 !
@@ -43,14 +47,9 @@ subroutine cfjein(noma, defico, resoco, depdel)
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  NOMA   : NOM DU MAILLAGE
-! IN  DEFICO : SD DE DEFINITION DU CONTACT
-! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  DEPDEL : INCREMENT DE DEPLACEMENT CUMULE DEPUIS DEBUT DU PAS
-!
-!
-!
 !
     integer :: ifm, niv
     integer :: nbddl, jdecal
@@ -77,23 +76,20 @@ subroutine cfjein(noma, defico, resoco, depdel)
 !
     call jemarq()
     call infdbg('CONTACT', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<CONTACT> ......... CALCUL DES JEUX INITIAUX'
     endif
 !
 ! --- PARAMETRES
 !
-    ndimg = cfdisd(resoco,'NDIM' )
-    nbliai = cfdisd(resoco,'NBLIAI')
-    neq = cfdisd(resoco,'NEQ' )
-    nesmax = cfdisd(resoco,'NESMAX')
-    lctfd = cfdisl(defico,'FROT_DISCRET')
-    llagrf = cfdisl(defico,'FROT_LAGR' )
-    lgliss = cfdisl(defico,'CONT_DISC_GLIS')
-    aljeu = cfdisr(defico,'ALARME_JEU' )
+    ndimg = cfdisd(ds_contact%sdcont_solv,'NDIM' )
+    nbliai = cfdisd(ds_contact%sdcont_solv,'NBLIAI')
+    neq = cfdisd(ds_contact%sdcont_solv,'NEQ' )
+    nesmax = cfdisd(ds_contact%sdcont_solv,'NESMAX')
+    lctfd = cfdisl(ds_contact%sdcont_defi,'FROT_DISCRET')
+    llagrf = cfdisl(ds_contact%sdcont_defi,'FROT_LAGR' )
+    lgliss = cfdisl(ds_contact%sdcont_defi,'CONT_DISC_GLIS')
+    aljeu = cfdisr(ds_contact%sdcont_defi,'ALARME_JEU' )
 !
 ! --- INITIALISATIONS
 !
@@ -101,24 +97,24 @@ subroutine cfjein(noma, defico, resoco, depdel)
 !
 ! --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
 !
-    appoin = resoco(1:14)//'.APPOIN'
-    apddl = resoco(1:14)//'.APDDL'
-    apcoef = resoco(1:14)//'.APCOEF'
+    appoin = ds_contact%sdcont_solv(1:14)//'.APPOIN'
+    apddl = ds_contact%sdcont_solv(1:14)//'.APDDL'
+    apcoef = ds_contact%sdcont_solv(1:14)//'.APCOEF'
     call jeveuo(appoin, 'L', japptr)
     call jeveuo(apddl, 'L', japddl)
     call jeveuo(apcoef, 'L', japcoe)
 !
-    jeuite = resoco(1:14)//'.JEUITE'
-    jeux = resoco(1:14)//'.JEUX'
+    jeuite = ds_contact%sdcont_solv(1:14)//'.JEUITE'
+    jeux = ds_contact%sdcont_solv(1:14)//'.JEUX'
     call jeveuo(jeuite, 'E', jjeuit)
     call jeveuo(jeux, 'E', jjeux)
 !
     if (lctfd) then
-        apcofr = resoco(1:14)//'.APCOFR'
+        apcofr = ds_contact%sdcont_solv(1:14)//'.APCOFR'
         call jeveuo(apcofr, 'L', japcof)
     endif
 !
-    clreac = resoco(1:14)//'.REAL'
+    clreac = ds_contact%sdcont_solv(1:14)//'.REAL'
     call jeveuo(clreac, 'L', jclrea)
 !
 ! --- PARAMETRES DE REACTUALISATION
@@ -128,7 +124,7 @@ subroutine cfjein(noma, defico, resoco, depdel)
 ! --- ACCES AUX CHAMPS DE TRAVAIL
 ! --- DDEPL0: INCREMENT DE SOLUTION SANS CORRECTION DU CONTACT
 !
-    ddepl0 = resoco(1:14)//'.DEL0'
+    ddepl0 = ds_contact%sdcont_solv(1:14)//'.DEL0'
     call jeveuo(ddepl0(1:19)//'.VALE', 'L', vr=ddep0)
 !
 ! --- INCREMENT DE DEPLACEMENT DEPUIS LE DEBUT DU PAS DE TEMPS
@@ -137,7 +133,7 @@ subroutine cfjein(noma, defico, resoco, depdel)
 !
 ! --- ON CALCULE LE NOUVEAU JEU : AJEU+ = AJEU/I/N - A.DDEPLA
 !
-    do 10 iliai = 1, nbliai
+    do iliai = 1, nbliai
 !
 ! ----- ACCES TABLEAU LIAISONS
 !
@@ -204,11 +200,11 @@ subroutine cfjein(noma, defico, resoco, depdel)
             endif
         endif
 !
- 10 end do
+    end do
 !
 ! --- ALARME SI DECOLLEMENT ALORS QUE GLISSIERE
 !
-    do 15 iliai = 1, nbliai
+    do iliai = 1, nbliai
         if (lgliss) then
             jeuini = zr(jjeux+3*(iliai-1)+1-1)
             if (jeuini .gt. aljeu) then
@@ -216,11 +212,11 @@ subroutine cfjein(noma, defico, resoco, depdel)
                 if (ialarm .eq. 1) then
                     call utmess('A', 'CONTACT_9')
                 endif
-                call cfimp2(defico, resoco, noma, iliai, 'C0',&
+                call cfimp2(ds_contact%sdcont_defi, ds_contact%sdcont_solv, noma, iliai, 'C0',&
                             'ALJ')
             endif
         endif
- 15 end do
+    end do
 !
     call jedema()
 !

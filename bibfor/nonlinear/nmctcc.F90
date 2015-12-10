@@ -1,6 +1,6 @@
-subroutine nmctcc(noma, modele, mate, sddyna, sderro,&
-                  sdstat, defico, resoco, valinc, solalg,&
-                  mmcvca, instan)
+subroutine nmctcc(mesh  , modele    , mate  , sddyna, sderro,&
+                  sdstat, ds_contact, valinc, solalg, mmcvca,&
+                  instan)
 !
 use NonLin_Datastructure_type
 !
@@ -38,11 +38,10 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=8), intent(in) :: noma
+    character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: modele
     character(len=24), intent(in) :: mate
-    character(len=24), intent(in) :: defico
-    character(len=24), intent(in) :: resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19), intent(in) :: sddyna
     character(len=24), intent(in) :: sderro
     character(len=24), intent(in) :: sdstat
@@ -59,14 +58,12 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  NOMA   : NOM DU MAILLAGE
 ! IN  MODELE : NOM DU MODELE
 ! IN  MATE   : SD MATERIAU
 ! IN  SDDYNA : SD POUR DYNAMIQUE
 ! IN  SDERRO : GESTION DES ERREURS
-! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
-! IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
 ! OUT MMCVCA : INDICATEUR DE CONVERGENCE POUR BOUCLE DES
@@ -86,9 +83,6 @@ implicit none
 ! ----------------------------------------------------------------------
 !
     call infdbg('MECANONLINE', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> ALGORITHME DES CONTRAINTES ACTIVES'
     endif
@@ -96,42 +90,41 @@ implicit none
 ! --- INITIALISATIONS
 !
     nomo = modele(1:8)
-    ntpc = cfdisi(defico,'NTPC')
+    ntpc = cfdisi(ds_contact%sdcont_defi,'NTPC')
     mmcvca = .false.
     lerroc = .false.
     iterat = -1
 !
 ! --- INFOS BOUCLE CONTACT
 !
-    call mmbouc(resoco, 'CONT', 'READ', mmitca)
-    itemul = cfdisi(defico,'ITER_CONT_MULT')
+    call mmbouc(ds_contact, 'CONT', 'READ', mmitca)
+    itemul = cfdisi(ds_contact%sdcont_defi,'ITER_CONT_MULT')
     if (itemul .eq. -1) then
-        maxcon = cfdisi(defico,'ITER_CONT_MAXI')
+        maxcon = cfdisi(ds_contact%sdcont_defi,'ITER_CONT_MAXI')
     else
         maxcon = itemul*ntpc
     endif
 !
 ! --- TYPE DE CONTACT
 !
-    lctcc = cfdisl(defico,'FORMUL_CONTINUE')
-    lxfcm = cfdisl(defico,'FORMUL_XFEM')
-    lfrot = cfdisl(defico,'FROTTEMENT')
-    ltfcm = cfdisl(defico,'CONT_XFEM_GG')
+    lctcc = cfdisl(ds_contact%sdcont_defi,'FORMUL_CONTINUE')
+    lxfcm = cfdisl(ds_contact%sdcont_defi,'FORMUL_XFEM')
+    lfrot = cfdisl(ds_contact%sdcont_defi,'FROTTEMENT')
+    ltfcm = cfdisl(ds_contact%sdcont_defi,'CONT_XFEM_GG')
 !
 ! --- APPEL ALGO DES CONT. ACTIVES
 !
     if (lxfcm) then
         if (ltfcm) then
-            call xmtbca(noma, defico, resoco, valinc, mmcvca)
+            call xmtbca(mesh, ds_contact, valinc, mmcvca)
         else
-            call xmmbca(noma, nomo, mate, resoco, valinc,&
+            call xmmbca(mesh, nomo, mate, ds_contact, valinc,&
                         mmcvca)
         endif
     else if (lctcc) then
-        call mmmbca(noma  , sddyna, iterat, defico, resoco,&
-                    sdstat, valinc, solalg, instan, ctcsta,&
-                    mmcvca)
-        call mm_cycl_flip(defico, resoco, cycl_flip)
+        call mmmbca(mesh  , sddyna, iterat, ds_contact, sdstat,&
+                    valinc, solalg, instan, ctcsta    , mmcvca)
+        call mm_cycl_flip(ds_contact, cycl_flip)
 ! ----- FLIP-FLOP: ON FORCE LA CONVERGENCE
         if (cycl_flip) mmcvca = .true.
     else

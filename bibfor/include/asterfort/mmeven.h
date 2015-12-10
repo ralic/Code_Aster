@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mmeven(phase, defico, resoco)
-        character(len=3) :: phase
-        character(len=24) :: defico
-        character(len=24) :: resoco
+    subroutine mmeven(phase, ds_contact)
+        use NonLin_Datastructure_type
+        character(len=3), intent(in) :: phase
+        type(NL_DS_Contact), intent(in) :: ds_contact
     end subroutine mmeven
 end interface

@@ -18,11 +18,10 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine mmctcg(mesh  , sdcont_defi, sdcont_solv, nume_dof, sdstat,&
-                      sdtime)
+    subroutine mmctcg(mesh, ds_contact, nume_dof, sdstat, sdtime)
+        use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
-        character(len=24), intent(in) :: sdcont_defi 
-        character(len=24), intent(in) :: sdcont_solv
+        type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=24), intent(in) :: nume_dof
         character(len=24), intent(in) :: sdtime
         character(len=24), intent(in) :: sdstat

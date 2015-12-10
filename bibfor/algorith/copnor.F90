@@ -1,5 +1,23 @@
-subroutine copnor(noma, defico, resoco, posmai, ksi1,&
+subroutine copnor(noma, ds_contact, posmai, ksi1,&
                   ksi2, tau1, tau2)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/apvect.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfnben.h"
+#include "asterfort/cfnumm.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mmcoor.h"
+#include "asterfort/mmmron.h"
+#include "asterfort/mmnorm.h"
+#include "asterfort/mmtann.h"
+#include "asterfort/mmtypm.h"
+#include "asterfort/normev.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,26 +37,10 @@ subroutine copnor(noma, defico, resoco, posmai, ksi1,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterc/r8prem.h"
-#include "asterfort/apvect.h"
-#include "asterfort/assert.h"
-#include "asterfort/cfnben.h"
-#include "asterfort/cfnumm.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/mmcoor.h"
-#include "asterfort/mmmron.h"
-#include "asterfort/mmnorm.h"
-#include "asterfort/mmtann.h"
-#include "asterfort/mmtypm.h"
-#include "asterfort/normev.h"
     integer :: posmai
     real(kind=8) :: tau1(3), tau2(3)
     character(len=8) :: noma
-    character(len=24) :: defico, resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
     real(kind=8) :: ksi1, ksi2
 !
 ! ----------------------------------------------------------------------
@@ -58,16 +60,14 @@ subroutine copnor(noma, defico, resoco, posmai, ksi1,&
 ! IN  POSMAI : MAILLE QUI RECOIT LA PROJECTION
 ! IN  KSI1   : COORDONNEE X DU POINT PROJETE
 ! IN  KSI2   : COORDONNEE Y DU POINT PROJETE
-! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
-! IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
+! In  ds_contact       : datastructure for contact management
 ! OUT TAU1   : PREMIERE TANGENTE LOCALE AU POINT PROJETE
 ! OUT TAU2   : SECONDE TANGENTE LOCALE AU POINT ROJETE
 !
 !
 !
 !
-    real(kind=8) :: zero
-    parameter  ( zero   =  0.0d0  )
+    real(kind=8), parameter :: zero =  0.d0 
     character(len=24) :: nomaco
     integer :: jnoma
     character(len=19) :: sdappa
@@ -80,29 +80,26 @@ subroutine copnor(noma, defico, resoco, posmai, ksi1,&
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
 !
 ! --- RECUPERATION DE QUELQUES DONNEES
 !
-    nomaco = defico(1:16)//'.NOMACO'
+    nomaco = ds_contact%sdcont_defi(1:16)//'.NOMACO'
     call jeveuo(nomaco, 'L', jnoma)
 !
 ! --- LECTURE APPARIEMENT
 !
-    sdappa = resoco(1:14)//'.APPA'
+    sdappa = ds_contact%sdcont_solv(1:14)//'.APPA'
 !
 ! --- INITIALISATIONS
 !
-    do idim = 1, 3
-        tau1(idim) = zero
-        tau2(idim) = zero
-        norm(idim) = zero
-    end do
+    tau1(1:3) = zero
+    tau2(1:3) = zero
+    norm(1:3) = zero
 !
 ! --- MAILLE COURANTE
 !
-    call cfnumm(defico, posmai, nummai)
-    call cfnben(defico, posmai, 'CONNEX', nno, jdecno)
+    call cfnumm(ds_contact%sdcont_defi, posmai, nummai)
+    call cfnben(ds_contact%sdcont_defi, posmai, 'CONNEX', nno, jdecno)
     call mmtypm(noma, nummai, nno, alias, ndim)
 !
 ! --- RECUPERATIONS DES TANGENTES AU NOEUD
@@ -146,5 +143,4 @@ subroutine copnor(noma, defico, resoco, posmai, ksi1,&
         ASSERT(.false.)
     endif
 !
-    call jedema()
 end subroutine

@@ -1,5 +1,6 @@
-subroutine mmapin(mesh  , sdcont_defi, sdcont_solv, nume_dof, sdtime,&
-                  sdstat)
+subroutine mmapin(mesh, ds_contact, nume_dof, sdtime, sdstat)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -26,8 +27,7 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
-    character(len=24), intent(in) :: sdcont_defi
-    character(len=24), intent(in) :: sdcont_solv
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=24), intent(in) :: sdtime
     character(len=24), intent(in) :: sdstat    
     character(len=24), intent(in) :: nume_dof
@@ -41,8 +41,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  mesh             : name of mesh
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
-! In  sdcont_solv      : name of contact solving datastructure
+! In  ds_contact       : datastructure for contact management
 ! In  nume_dof         : name of numbering object (NUME_DDL)
 ! In  sdtime           : datastructure for timers
 ! In  sdstat           : datastructure for statistics
@@ -53,13 +52,12 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_cont_allv  = cfdisl(sdcont_defi,'ALL_VERIF')
+    l_cont_allv  = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF')
 !
 ! - Geometric actualisation and pairing 
 !
     if (.not.l_cont_allv) then
-        call mmctcg(mesh  , sdcont_defi, sdcont_solv, nume_dof, sdstat,&
-                    sdtime)
+        call mmctcg(mesh, ds_contact, nume_dof, sdstat, sdtime)
     endif
 !
 end subroutine

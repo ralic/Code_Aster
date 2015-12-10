@@ -1,12 +1,11 @@
-subroutine nminit(result     , model      , numedd    , numfix     , mate       ,&
-                  compor     , carele     , list_load , ds_algopara, maprec     ,&
-                  solveu     , carcri     , numins    , sdstat     , sddisc     ,&
-                  sdnume     , sdcont_defi, sdcrit    , varc_refe  , fonact     ,&
-                  mesh       , sdpilo     , sddyna    , ds_print   , sd_suiv    ,&
-                  sd_obsv    , sdtime     , sderro    , sdpost     , ds_inout   ,&
-                  sdener     , ds_conv    , sdcriq    , sdunil_defi, sdunil_solv,&
-                  sdcont_solv, valinc     , solalg    , measse     , veelem     ,&
-                  meelem     , veasse     , codere    , ds_contact)
+subroutine nminit(result , model , numedd   , numfix     , mate      ,&
+                  compor , carele, list_load, ds_algopara, maprec    ,&
+                  solveu , carcri, numins   , sdstat     , sddisc    ,&
+                  sdnume , sdcrit, varc_refe, fonact     , mesh      ,&
+                  sdpilo , sddyna, ds_print , sd_suiv    , sd_obsv   ,&
+                  sdtime , sderro, sdpost   , ds_inout   , sdener    ,&
+                  ds_conv, sdcriq, valinc   , solalg     , measse    ,&
+                  veelem , meelem, veasse   , codere     , ds_contact)
 !
 use NonLin_Datastructure_type
 !
@@ -97,10 +96,6 @@ implicit none
     character(len=24) :: sdtime, sderro, sdstat
     character(len=24) :: sdcriq
     character(len=24) :: varc_refe
-    character(len=24), intent(out) :: sdcont_solv
-    character(len=24), intent(out) :: sdunil_solv
-    character(len=24), intent(out) :: sdcont_defi
-    character(len=24), intent(out) :: sdunil_defi
     type(NL_DS_InOut), intent(inout) :: ds_inout
     character(len=19), intent(out) :: sd_obsv
     character(len=24), intent(out) :: sd_suiv
@@ -127,10 +122,6 @@ implicit none
 ! IO  ds_inout         : datastructure for input/output management
 ! Out sd_obsv          : datastructure for observation parameters
 ! Out sd_suiv          : datastructure for dof monitoring parameters
-! Out sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
-! Out sdunil_defi      : name of unilateral condition datastructure (from DEFI_CONTACT)
-! Out sdcont_solv      : name of contact solving datastructure
-! Out sdunil_solv      : name of unilateral condition solving datastructure
 ! IO  ds_print         : datastructure for printing parameters
 ! IO  ds_conv          : datastructure for convergence management
 ! IO  ds_algopara      : datastructure for algorithm parameters
@@ -159,10 +150,6 @@ implicit none
 ! - Initializations for contact parameters
 !
     call InitContact(mesh, ds_contact)
-    sdcont_defi = ds_contact%sdcont_defi
-    sdunil_defi = ds_contact%sdunil_defi
-    sdcont_solv = ds_contact%sdcont_solv
-    sdunil_solv = ds_contact%sdunil_solv
 !
 ! - Prepare list of loads (and late elements) for contact
 !

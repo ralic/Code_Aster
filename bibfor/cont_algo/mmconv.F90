@@ -1,15 +1,14 @@
-subroutine mmconv(noma, defico, resoco, valinc, solalg,&
-                  vfrot, nfrot, vgeom, ngeom)
+subroutine mmconv(noma , ds_contact, valinc, solalg, vfrot,&
+                  nfrot, vgeom     , ngeom)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/mmmcrf.h"
 #include "asterfort/mmmcrg.h"
 #include "asterfort/mmreas.h"
@@ -35,8 +34,7 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: noma
-    character(len=24), intent(in) :: defico
-    character(len=24), intent(in) :: resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19), intent(in) :: valinc(*)
     character(len=19), intent(in) :: solalg(*)
     real(kind=8), intent(out) :: vfrot
@@ -52,10 +50,8 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  NOMA   : NOM DU MAILLAGE
-! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
-! IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
 ! OUT VFROT  : VALEUR NORME_MAX POUR RESI_FROT
@@ -71,7 +67,6 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('CONTACT', ifm, niv)
 !
 ! --- INITIALISATIONS
@@ -89,14 +84,13 @@ implicit none
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
-    lnewtf = cfdisl(defico,'FROT_NEWTON')
-    lnewtg = cfdisl(defico,'GEOM_NEWTON')
+    lnewtf = cfdisl(ds_contact%sdcont_defi,'FROT_NEWTON')
+    lnewtg = cfdisl(ds_contact%sdcont_defi,'GEOM_NEWTON')
 !
-! --- AFFICHAGE
+! - Print
 !
     if ((niv.ge.2) .and. (lnewtg.or.lnewtf)) then
-        write (ifm,*) '<CONTACT> ... CALCUL DES RESIDUS POUR NEWTON '//&
-     &                'GENERALISE'
+        write (ifm,*) '<CONTACT> ... CALCUL DES RESIDUS POUR NEWTON GENERALISE'
     endif
 !
 ! --- EVALUATION RESIDU SEUIL FROTTEMENT
@@ -105,7 +99,7 @@ implicit none
 !
 ! ----- MISE A JOUR DES SEUILS
 !
-        call mmreas(noma, defico, resoco, valinc)
+        call mmreas(noma, ds_contact, valinc)
 !
 ! ----- CALCUL RESIDU DE FROTTEMENT
 !
@@ -118,12 +112,11 @@ implicit none
 !
 ! ----- MISE A JOUR DE LA GEOMETRIE
 !
-        call mreacg(noma, resoco)
+        call mreacg(noma, ds_contact)
 !
 ! ----- CALCUL RESIDU DE GEOMETRIE
 !
         call mmmcrg(noma, ddepla, depplu, ngeom, vgeom)
     endif
 !
-    call jedema()
 end subroutine

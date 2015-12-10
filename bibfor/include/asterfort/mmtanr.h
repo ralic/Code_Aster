@@ -18,23 +18,18 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine mmtanr(noma, ndimg, defico, resoco, izone,&
-                      lexfro, posnoe, ksi1, ksi2, posmam,&
-                      nummam, tau1m, tau2m, tau1, tau2)
-        character(len=8) :: noma
-        integer :: ndimg
-        character(len=24) :: defico
-        character(len=24) :: resoco
-        integer :: izone
+    subroutine mmtanr(mesh, model_ndim, ds_contact, i_zone,&
+                      lexfro, node_slav_indx, ksi1, ksi2, elem_mast_indx,&
+                      elem_mast_nume, tau1m, tau2m, tau1, tau2)
+        use NonLin_Datastructure_type
+        character(len=8) :: mesh
+        integer :: i_zone
+        integer :: model_ndim
+        integer :: node_slav_indx, elem_mast_indx, elem_mast_nume
+        real(kind=8) :: ksi1, ksi2
+        type(NL_DS_Contact), intent(in) :: ds_contact
+        real(kind=8) :: tau1m(3), tau2m(3)
+        real(kind=8) :: tau1(3), tau2(3)
         aster_logical :: lexfro
-        integer :: posnoe
-        real(kind=8) :: ksi1
-        real(kind=8) :: ksi2
-        integer :: posmam
-        integer :: nummam
-        real(kind=8) :: tau1m(3)
-        real(kind=8) :: tau2m(3)
-        real(kind=8) :: tau1(3)
-        real(kind=8) :: tau2(3)
     end subroutine mmtanr
 end interface

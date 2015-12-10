@@ -18,10 +18,10 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine cfinnl(defico, resoco, reageo, nbliac, llf,&
+    subroutine cfinnl(ds_contact, reageo, nbliac, llf,&
                       llf1, llf2)
-        character(len=24) :: defico
-        character(len=24) :: resoco
+        use NonLin_Datastructure_type
+        type(NL_DS_Contact), intent(in) :: ds_contact
         aster_logical :: reageo
         integer :: nbliac
         integer :: llf

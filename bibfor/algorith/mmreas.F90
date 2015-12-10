@@ -1,4 +1,27 @@
-subroutine mmreas(noma, defico, resoco, valinc)
+subroutine mmreas(mesh, ds_contact, hval_incr)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/cfnumm.h"
+#include "asterfort/mmfield_prep.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mmelty.h"
+#include "asterfort/mmextm.h"
+#include "asterfort/mminfi.h"
+#include "asterfort/mminfl.h"
+#include "asterfort/mminfm.h"
+#include "asterfort/mmvalp_scal.h"
+#include "asterfort/nmchex.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,45 +41,23 @@ subroutine mmreas(noma, defico, resoco, valinc)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/cfmmvd.h"
-#include "asterfort/cfnumm.h"
-#include "asterfort/mmfield_prep.h"
-#include "asterfort/detrsd.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/mmelty.h"
-#include "asterfort/mmextm.h"
-#include "asterfort/mminfi.h"
-#include "asterfort/mminfl.h"
-#include "asterfort/mminfm.h"
-#include "asterfort/mmvalp_scal.h"
-#include "asterfort/nmchex.h"
-    character(len=8) :: noma
-    character(len=24) :: defico, resoco
-    character(len=19) :: valinc(*)
+    character(len=8), intent(in) :: mesh
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=19), intent(in) :: hval_incr(*)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (METHODE CONTINUE - FROTTEMENT)
+! Contact - Solve
 !
-! REACTUALISATION DES SEUILS DE FROTTEMENT PAR LES MULTIPLICATEURS
-! DE CONTACT
+! Continue method - Update triggers for friction
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  mesh             : name of mesh
+! In  ds_contact       : datastructure for contact management
+! In  hval_incr        : hat-variable for incremental values fields
 !
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  DEFICO : SD DE DEFINITION DU CONTACT
-! IN  RESOCO : SD DE RESOLUTION DU CONTACT
-! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
-!
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
     integer :: ztabf
@@ -74,7 +75,7 @@ subroutine mmreas(noma, defico, resoco, valinc)
     character(len=24) :: tabfin
     integer :: jtabf
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     call infdbg('CONTACT', ifm, niv)
@@ -84,19 +85,19 @@ subroutine mmreas(noma, defico, resoco, valinc)
 !
 ! --- INITIALISATIONS
 !
-    ndimg = cfdisi(defico,'NDIM' )
-    nzoco = cfdisi(defico,'NZOCO')
+    ndimg = cfdisi(ds_contact%sdcont_defi,'NDIM' )
+    nzoco = cfdisi(ds_contact%sdcont_defi,'NZOCO')
     ibid = 0
 !
 ! --- RECUPERATION DES QCQS DONNEES
 !
-    tabfin = resoco(1:14)//'.TABFIN'
+    tabfin = ds_contact%sdcont_solv(1:14)//'.TABFIN'
     call jeveuo(tabfin, 'E', jtabf)
     ztabf = cfmmvd('ZTABF')
 !
 ! --- DECOMPACTION DES VARIABLES CHAPEAUX
 !
-    call nmchex(valinc, 'VALINC', 'DEPPLU', depplu)
+    call nmchex(hval_incr, 'VALINC', 'DEPPLU', depplu)
 !
 ! --- TRANSFORMATION DEPPLU EN CHAM_NO_S ET REDUCTION SUR LES LAGRANGES
 !
@@ -111,41 +112,41 @@ subroutine mmreas(noma, defico, resoco, valinc)
 !
 ! --- OPTIONS SUR LA ZONE DE CONTACT
 !
-        lveri = mminfl(defico,'VERIF' ,izone )
-        nbmae = mminfi(defico,'NBMAE' ,izone )
-        jdecme = mminfi(defico,'JDECME',izone )
+        lveri = mminfl(ds_contact%sdcont_defi,'VERIF' ,izone )
+        nbmae = mminfi(ds_contact%sdcont_defi,'NBMAE' ,izone )
+        jdecme = mminfi(ds_contact%sdcont_defi,'JDECME',izone )
 !
 ! ----- MODE VERIF: ON SAUTE LES POINTS
 !
-        lveri = mminfl(defico,'VERIF' ,izone )
+        lveri = mminfl(ds_contact%sdcont_defi,'VERIF' ,izone )
         if (lveri) then
             goto 25
         endif
 !
 ! ----- BOUCLE SUR LES MAILLES ESCLAVES
 !
-        do 20 imae = 1, nbmae
+        do imae = 1, nbmae
 !
 ! ------- NUMERO ABSOLU DE LA MAILLE ESCLAVE
 !
             posmae = jdecme + imae
-            call cfnumm(defico, posmae, nummae)
+            call cfnumm(ds_contact%sdcont_defi, posmae, nummae)
 !
 ! ------- INFOS SUR LA MAILLE
 !
-            call mmelty(noma, nummae, aliase, nne)
+            call mmelty(mesh, nummae, aliase, nne)
 !
 ! ------- MULTIPLICATEURS DE CONTACT SUR LES NOEUDS DE LA MAILLE ESCLAVE
 !
-            call mmextm(defico, cnslbd, posmae, mlagc)
+            call mmextm(ds_contact%sdcont_defi, cnslbd, posmae, mlagc)
 !
 ! ------- NOMBRE DE POINTS SUR LA MAILLE ESCLAVE
 !
-            call mminfm(posmae, defico, 'NPTM', nptm)
+            call mminfm(posmae, ds_contact%sdcont_defi, 'NPTM', nptm)
 !
 ! ------- BOUCLE SUR LES POINTS
 !
-            do 30 iptm = 1, nptm
+            do iptm = 1, nptm
 !
 ! --------- COORDONNEES ACTUALISEES DU POINT DE CONTACT
 !
@@ -164,8 +165,8 @@ subroutine mmreas(noma, defico, resoco, valinc)
 ! --------- LIAISON DE CONTACT SUIVANTE
 !
                 iptc = iptc + 1
- 30         continue
- 20     continue
+            end do
+        end do
  25     continue
     end do
 !

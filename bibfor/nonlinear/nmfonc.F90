@@ -96,7 +96,7 @@ implicit none
     character(len=8) :: k8bid, repk
     character(len=16) :: command, k16bid, matdis
     character(len=19) :: compor
-    character(len=24) :: solv_type, solv_precond, sdcriq_errt, sdcont_defi
+    character(len=24) :: solv_type, solv_precond, sdcriq_errt
     aster_logical :: l_stat, l_dyna
     aster_logical :: l_newt_cont, l_newt_frot, l_newt_geom
     aster_logical :: l_dyna_expl, l_cont, l_unil
@@ -109,7 +109,6 @@ implicit none
     compor      = compor_
     l_cont      = ds_contact%l_meca_cont
     l_unil      = ds_contact%l_meca_unil
-    sdcont_defi = ds_contact%sdcont_defi
 !
 ! - Print
 !
@@ -197,12 +196,12 @@ implicit none
 ! - Contact_friction
 !
     if (l_cont) then
-        i_cont_form = cfdisi(sdcont_defi,'FORMULATION')
+        i_cont_form = cfdisi(ds_contact%sdcont_defi,'FORMULATION')
         if (i_cont_form .eq. 2) then
             list_func_acti(5)  = 1
-            list_func_acti(17) = cfdisi(sdcont_defi,'ALL_INTERPENETRE')
+            list_func_acti(17) = cfdisi(ds_contact%sdcont_defi,'ALL_INTERPENETRE')
             list_func_acti(26) = 1
-            l_frot = cfdisl(sdcont_defi,'FROTTEMENT')
+            l_frot = cfdisl(ds_contact%sdcont_defi,'FROTTEMENT')
             if (l_frot) then
                 list_func_acti(10) = 1
                 list_func_acti(27) = 1
@@ -210,7 +209,7 @@ implicit none
         else if (i_cont_form.eq.3) then
             list_func_acti(9) = 1
             list_func_acti(26) = 1
-            l_frot = cfdisl(sdcont_defi,'FROTTEMENT')
+            l_frot = cfdisl(ds_contact%sdcont_defi,'FROTTEMENT')
             if (l_frot) then
                 list_func_acti(25) = 1
                 list_func_acti(27) = 1
@@ -218,7 +217,7 @@ implicit none
             list_func_acti(27) = 1
         else if (i_cont_form.eq.1) then
             list_func_acti(4) = 1
-            l_frot = cfdisl(sdcont_defi,'FROTTEMENT')
+            l_frot = cfdisl(ds_contact%sdcont_defi,'FROTTEMENT')
             if (l_frot) then
                 list_func_acti(3) = 1
             endif
@@ -230,7 +229,7 @@ implicit none
 ! - Contact: no computation
 !
     if (l_cont) then
-        l_all_verif = cfdisl(sdcont_defi,'ALL_VERIF')
+        l_all_verif = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF')
         if (l_all_verif) list_func_acti(38) = 1
     endif
 !
@@ -240,9 +239,9 @@ implicit none
         l_loop_geom = .false.
         l_loop_frot = .false.
         l_loop_cont = .false.
-        l_loop_geom = cfdisl(sdcont_defi,'GEOM_BOUCLE')
-        if (l_frot) l_loop_frot = cfdisl(sdcont_defi,'FROT_BOUCLE')
-        l_loop_cont = cfdisl(sdcont_defi,'CONT_BOUCLE')
+        l_loop_geom = cfdisl(ds_contact%sdcont_defi,'GEOM_BOUCLE')
+        if (l_frot) l_loop_frot = cfdisl(ds_contact%sdcont_defi,'FROT_BOUCLE')
+        l_loop_cont = cfdisl(ds_contact%sdcont_defi,'CONT_BOUCLE')
         if (l_all_verif) then
             l_loop_cont = .false.
             l_loop_geom = .false.
@@ -262,9 +261,9 @@ implicit none
 !
     if (l_cont) then
         if (i_cont_form .eq. 2) then
-            l_newt_geom = cfdisl(sdcont_defi,'GEOM_NEWTON')
-            l_newt_frot = cfdisl(sdcont_defi,'FROT_NEWTON')
-            l_newt_cont = cfdisl(sdcont_defi,'CONT_NEWTON')
+            l_newt_geom = cfdisl(ds_contact%sdcont_defi,'GEOM_NEWTON')
+            l_newt_frot = cfdisl(ds_contact%sdcont_defi,'FROT_NEWTON')
+            l_newt_cont = cfdisl(ds_contact%sdcont_defi,'CONT_NEWTON')
             if (l_newt_frot) list_func_acti(47) = 1
             if (l_newt_cont) list_func_acti(53) = 1
             if (l_newt_geom) list_func_acti(55) = 1

@@ -1,5 +1,7 @@
-subroutine cfmmar(sdcont_defi , sdcont_solv , nb_cont_zone, model_ndim, nt_poin,&
-                  nb_cont_elem, nb_cont_node, nt_elem_node)
+subroutine cfmmar(ds_contact  , nb_cont_zone, model_ndim, nt_poin, nb_cont_elem,&
+                  nb_cont_node, nt_elem_node)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -35,8 +37,7 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=24), intent(in) :: sdcont_defi
-    character(len=24), intent(in) :: sdcont_solv
+    type(NL_DS_Contact), intent(in) :: ds_contact
     integer, intent(in) :: model_ndim
     integer, intent(in) :: nb_cont_zone
     integer, intent(in) :: nt_poin
@@ -54,8 +55,7 @@ implicit none
 !
 ! /!\ Except point coordinates (see mmpoin/cfpoin)
 !
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
-! In  sdcont_solv      : name of contact solving datastructure
+! In  ds_contact       : datastructure for contact management
 ! In  model_ndim       : size of model
 ! In  nb_cont_zone     : number of contact zones
 ! In  nt_poin          : total number of points (contact and non-contact)
@@ -92,7 +92,7 @@ implicit none
 !
 ! - Pairing datastructure
 !
-    sdappa = sdcont_solv(1:14)//'.APPA'
+    sdappa = ds_contact%sdcont_solv(1:14)//'.APPA'
 !
 ! - Create datastructure for general parameters
 !
@@ -105,10 +105,10 @@ implicit none
     v_sdappa_infi(1) = nb_cont_zone
     v_sdappa_infi(2) = nt_poin
     v_sdappa_infi(3) = nb_cont_elem
-    v_sdappa_infi(4) = cfdisi(sdcont_defi,'PROJ_NEWT_ITER')
+    v_sdappa_infi(4) = cfdisi(ds_contact%sdcont_defi,'PROJ_NEWT_ITER')
     v_sdappa_infi(5) = model_ndim
     v_sdappa_infi(6) = nb_cont_node
-    v_sdappa_infr(1) = cfdisr(sdcont_defi,'PROJ_NEWT_RESI')
+    v_sdappa_infr(1) = cfdisr(ds_contact%sdcont_defi,'PROJ_NEWT_RESI')
 !
 ! - Create datastructure for each contact zone
 !
@@ -120,15 +120,15 @@ implicit none
 !
 ! ----- Set parameters
 !
-        nb_poin      = mminfi(sdcont_defi, 'NBPT' , i_zone)
-        nb_node_mast = mminfi(sdcont_defi, 'NBNOM', i_zone)
-        nb_node_slav = mminfi(sdcont_defi, 'NBNOE', i_zone)
-        nb_elem_mast = mminfi(sdcont_defi, 'NBMAM', i_zone)
-        nb_elem_slav = mminfi(sdcont_defi, 'NBMAE', i_zone)
-        jdecnm       = mminfi(sdcont_defi, 'JDECNM', i_zone)
-        jdecmm       = mminfi(sdcont_defi, 'JDECMM', i_zone)
-        jdecne       = mminfi(sdcont_defi, 'JDECNE', i_zone)
-        jdecme       = mminfi(sdcont_defi, 'JDECME', i_zone)
+        nb_poin      = mminfi(ds_contact%sdcont_defi, 'NBPT' , i_zone)
+        nb_node_mast = mminfi(ds_contact%sdcont_defi, 'NBNOM', i_zone)
+        nb_node_slav = mminfi(ds_contact%sdcont_defi, 'NBNOE', i_zone)
+        nb_elem_mast = mminfi(ds_contact%sdcont_defi, 'NBMAM', i_zone)
+        nb_elem_slav = mminfi(ds_contact%sdcont_defi, 'NBMAE', i_zone)
+        jdecnm       = mminfi(ds_contact%sdcont_defi, 'JDECNM', i_zone)
+        jdecmm       = mminfi(ds_contact%sdcont_defi, 'JDECMM', i_zone)
+        jdecne       = mminfi(ds_contact%sdcont_defi, 'JDECNE', i_zone)
+        jdecme       = mminfi(ds_contact%sdcont_defi, 'JDECME', i_zone)
         v_sdappa_inzi(zinzi*(i_zone-1)+1) = nb_poin
         v_sdappa_inzi(zinzi*(i_zone-1)+2) = nb_node_mast
         v_sdappa_inzi(zinzi*(i_zone-1)+3) = nb_node_slav
@@ -141,44 +141,55 @@ implicit none
 !
 ! ----- Pairing options
 !
-        type_pair = mminfi(sdcont_defi, 'TYPE_APPA'  , i_zone)
-        i_pair    = mminfi(sdcont_defi, 'APPARIEMENT', i_zone)
+        type_pair = mminfi(ds_contact%sdcont_defi, 'TYPE_APPA'  , i_zone)
+        i_pair    = mminfi(ds_contact%sdcont_defi, 'APPARIEMENT', i_zone)
         v_sdappa_inzi(zinzi*(i_zone-1)+10) = type_pair
         v_sdappa_inzi(zinzi*(i_zone-1)+11) = i_pair
-        v_sdappa_inzr(zinzr*(i_zone-1)+4)  = mminfr(sdcont_defi, 'TOLE_APPA'    , i_zone)
-        v_sdappa_inzr(zinzr*(i_zone-1)+5)  = mminfr(sdcont_defi, 'TOLE_PROJ_EXT', i_zone)
+        v_sdappa_inzr(zinzr*(i_zone-1)+4)  = mminfr(ds_contact%sdcont_defi, 'TOLE_APPA'    ,&
+                                             i_zone)
+        v_sdappa_inzr(zinzr*(i_zone-1)+5)  = mminfr(ds_contact%sdcont_defi, 'TOLE_PROJ_EXT',&
+                                             i_zone)
         if (type_pair .eq. 1) then
-            v_sdappa_inzr(zinzr*(i_zone-1)+1) = mminfr(sdcont_defi, 'TYPE_APPA_DIRX', i_zone)
-            v_sdappa_inzr(zinzr*(i_zone-1)+2) = mminfr(sdcont_defi, 'TYPE_APPA_DIRY', i_zone)
-            v_sdappa_inzr(zinzr*(i_zone-1)+3) = mminfr(sdcont_defi, 'TYPE_APPA_DIRZ', i_zone)
+            v_sdappa_inzr(zinzr*(i_zone-1)+1) = mminfr(ds_contact%sdcont_defi, 'TYPE_APPA_DIRX',&
+            i_zone)
+            v_sdappa_inzr(zinzr*(i_zone-1)+2) = mminfr(ds_contact%sdcont_defi, 'TYPE_APPA_DIRY',&
+            i_zone)
+            v_sdappa_inzr(zinzr*(i_zone-1)+3) = mminfr(ds_contact%sdcont_defi, 'TYPE_APPA_DIRZ',&
+            i_zone)
         endif
 !
 ! ----- Local basis for master side
 !
-        vect_mast_type = mminfi(sdcont_defi, 'VECT_MAIT', i_zone)
+        vect_mast_type = mminfi(ds_contact%sdcont_defi, 'VECT_MAIT', i_zone)
         v_sdappa_inzi(zinzi*(i_zone-1)+12) = vect_mast_type
         if (vect_mast_type .ne. 0) then
-            v_sdappa_inzr(zinzr*(i_zone-1)+6) = mminfr(sdcont_defi, 'VECT_MAIT_DIRX', i_zone)
-            v_sdappa_inzr(zinzr*(i_zone-1)+7) = mminfr(sdcont_defi, 'VECT_MAIT_DIRY', i_zone)
-            v_sdappa_inzr(zinzr*(i_zone-1)+8) = mminfr(sdcont_defi, 'VECT_MAIT_DIRZ', i_zone)
+            v_sdappa_inzr(zinzr*(i_zone-1)+6) = mminfr(ds_contact%sdcont_defi, 'VECT_MAIT_DIRX',&
+            i_zone)
+            v_sdappa_inzr(zinzr*(i_zone-1)+7) = mminfr(ds_contact%sdcont_defi, 'VECT_MAIT_DIRY',&
+            i_zone)
+            v_sdappa_inzr(zinzr*(i_zone-1)+8) = mminfr(ds_contact%sdcont_defi, 'VECT_MAIT_DIRZ',&
+            i_zone)
         endif
 !
 ! ----- Local basis for slave side
 !
-        vect_slav_type = mminfi(sdcont_defi, 'VECT_ESCL', i_zone)
+        vect_slav_type = mminfi(ds_contact%sdcont_defi, 'VECT_ESCL', i_zone)
         v_sdappa_inzi(zinzi*(i_zone-1)+13) = vect_slav_type
         if (vect_slav_type .ne. 0) then
-            v_sdappa_inzr(zinzr*(i_zone-1)+9 ) = mminfr(sdcont_defi, 'VECT_ESCL_DIRX', i_zone)
-            v_sdappa_inzr(zinzr*(i_zone-1)+10) = mminfr(sdcont_defi, 'VECT_ESCL_DIRY', i_zone)
-            v_sdappa_inzr(zinzr*(i_zone-1)+11) = mminfr(sdcont_defi, 'VECT_ESCL_DIRZ', i_zone)
+            v_sdappa_inzr(zinzr*(i_zone-1)+9 ) = mminfr(ds_contact%sdcont_defi, 'VECT_ESCL_DIRX',&
+            i_zone)
+            v_sdappa_inzr(zinzr*(i_zone-1)+10) = mminfr(ds_contact%sdcont_defi, 'VECT_ESCL_DIRY',&
+            i_zone)
+            v_sdappa_inzr(zinzr*(i_zone-1)+11) = mminfr(ds_contact%sdcont_defi, 'VECT_ESCL_DIRZ',&
+            i_zone)
         endif
 !
 ! ----- Compute which side ?
 !
-        if (cfcald(sdcont_defi,i_zone,'ESCL')) then
+        if (cfcald(ds_contact%sdcont_defi,i_zone,'ESCL')) then
             v_sdappa_inzi(zinzi*(i_zone-1)+14) = 1
         endif
-        if (cfcald(sdcont_defi,i_zone,'MAIT')) then
+        if (cfcald(ds_contact%sdcont_defi,i_zone,'MAIT')) then
             v_sdappa_inzi(zinzi*(i_zone-1)+15) = 1
         endif
     end do
@@ -189,7 +200,7 @@ implicit none
     longt       = 0
     do i_cont_elem = 1, nb_cont_elem
         elem_indx = i_cont_elem
-        call cfnben(sdcont_defi, elem_indx, 'CONNEX', nnosd)
+        call cfnben(ds_contact%sdcont_defi, elem_indx, 'CONNEX', nnosd)
         longc = 6*nnosd
         call jeecra(jexnum(sdappa_tgel, i_cont_elem), 'LONMAX', ival=longc)
         call jecroc(jexnum(sdappa_tgel, i_cont_elem))

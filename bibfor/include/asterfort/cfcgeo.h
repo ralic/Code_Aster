@@ -18,11 +18,11 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine cfcgeo(noma, defico, resoco, solalg, dvgeom,&
-                      geoerr, geonoe, geoval)
-        character(len=8) :: noma
-        character(len=24) :: defico
-        character(len=24) :: resoco
+    subroutine cfcgeo(mesh  , ds_contact, solalg, dvgeom, geoerr, &
+                      geonoe, geoval)
+        use NonLin_Datastructure_type
+        character(len=8) :: mesh
+        type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19) :: solalg(*)
         aster_logical :: dvgeom
         aster_logical :: geoerr

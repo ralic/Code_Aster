@@ -1,5 +1,5 @@
 subroutine nmresi(noma  , mate   , numedd  , sdnume  , fonact,&
-                  sddyna, ds_conv, ds_print, defico  , resoco,&
+                  sddyna, ds_conv, ds_print, ds_contact,&
                   matass, numins , eta     , comref  , valinc,&
                   solalg, veasse , measse  , ds_inout, vresi ,&
                   vchar)
@@ -48,11 +48,10 @@ implicit none
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
-! aslint: disable=W1504
 !
     character(len=8) :: noma
     character(len=24) :: numedd
-    character(len=24) :: defico, resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
     type(NL_DS_Conv), intent(inout) :: ds_conv
     type(NL_DS_Print), intent(inout) :: ds_print
     character(len=24) :: mate
@@ -85,8 +84,7 @@ implicit none
 ! IN  COMREF : VARI_COM REFE
 ! IN  MATASS : MATRICE DU PREMIER MEMBRE ASSEMBLEE
 ! IN  NUMINS : NUMERO D'INSTANT
-! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
-! IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
 ! IN  VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE
@@ -335,8 +333,8 @@ implicit none
 ! --- RESIDUS SPECIFIQUES POUR NEWTON GENERALISE
 !
     if (lctcc) then
-        call mmconv(noma, defico, resoco, valinc, solalg,&
-                    vfrot, nfrot, vgeom, ngeom)
+        call mmconv(noma , ds_contact, valinc, solalg, vfrot,&
+                    nfrot, vgeom     , ngeom)
     endif
 !
 ! - Save informations about residuals into convergence datastructure

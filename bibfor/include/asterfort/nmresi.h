@@ -15,19 +15,17 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-! aslint: disable=W1504
 !
 interface
     subroutine nmresi(noma  , mate   , numedd  , sdnume  , fonact,&
-                      sddyna, ds_conv, ds_print, defico  , resoco,&
+                      sddyna, ds_conv, ds_print, ds_contact,&
                       matass, numins , eta     , comref  , valinc,&
                       solalg, veasse , measse  , ds_inout, vresi ,&
                       vchar)
         use NonLin_Datastructure_type
         character(len=8) :: noma
         character(len=24) :: numedd
-        character(len=24) :: defico
-        character(len=24) :: resoco
+        type(NL_DS_Contact), intent(in) :: ds_contact
         type(NL_DS_Conv), intent(inout) :: ds_conv
         character(len=24) :: mate
         character(len=19) :: sdnume

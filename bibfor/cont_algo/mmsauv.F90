@@ -1,6 +1,17 @@
-subroutine mmsauv(resoco, izone, iptc, nummam, ksipr1,&
+subroutine mmsauv(ds_contact, izone, iptc, nummam, ksipr1,&
                   ksipr2, tau1, tau2, nummae, numnoe,&
                   ksipc1, ksipc2, wpc)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,14 +31,7 @@ subroutine mmsauv(resoco, izone, iptc, nummam, ksipr1,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/cfmmvd.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-    character(len=24) :: resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
     integer :: iptc, izone
     integer :: nummam, nummae, numnoe
     real(kind=8) :: ksipr1, ksipr2
@@ -43,8 +47,7 @@ subroutine mmsauv(resoco, izone, iptc, nummam, ksipr1,&
 !
 ! ----------------------------------------------------------------------
 !
-!
-! IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  IPTC   : NUMERO DE LA LIAISON DE CONTACT
 ! IN  IZONE  : NUMERO DE LA ZONE
 ! IN  NUMMAM : NUMERO ABSOLU MAILLE MAITRE QUI RECOIT LA PROJECTION
@@ -74,7 +77,7 @@ subroutine mmsauv(resoco, izone, iptc, nummam, ksipr1,&
 !
 ! --- ACCES SD CONTACT
 !
-    tabfin = resoco(1:14)//'.TABFIN'
+    tabfin = ds_contact%sdcont_solv(1:14)//'.TABFIN'
     call jeveuo(tabfin, 'E', jtabf)
     ztabf = cfmmvd('ZTABF')
     ASSERT(izone.gt.0)

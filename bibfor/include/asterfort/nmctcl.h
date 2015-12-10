@@ -18,10 +18,10 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmctcl(model, mesh, sdcont_defi, sdcont_solv)
+    subroutine nmctcl(model, mesh, ds_contact)
+        use NonLin_Datastructure_type
         character(len=8), intent(in) :: model
         character(len=8), intent(in) :: mesh
-        character(len=24), intent(in) :: sdcont_defi 
-        character(len=24), intent(in) :: sdcont_solv
+        type(NL_DS_Contact), intent(in) :: ds_contact
     end subroutine nmctcl
 end interface

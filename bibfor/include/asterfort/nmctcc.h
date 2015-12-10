@@ -18,14 +18,14 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmctcc(noma, modele, mate, sddyna, sderro,&
-                      sdstat, defico, resoco, valinc, solalg, &
-                      mmcvca, instan)
-        character(len=8), intent(in) :: noma
+    subroutine nmctcc(mesh  , modele    , mate  , sddyna, sderro,&
+                      sdstat, ds_contact, valinc, solalg, mmcvca,&
+                      instan)
+        use NonLin_Datastructure_type
+        character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: modele
         character(len=24), intent(in) :: mate
-        character(len=24), intent(in) :: defico
-        character(len=24), intent(in) :: resoco
+        type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19), intent(in) :: sddyna
         character(len=24), intent(in) :: sderro
         character(len=24), intent(in) :: sdstat

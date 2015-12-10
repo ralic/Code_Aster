@@ -18,15 +18,15 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine cfalgo(noma, sdstat, resigr, iterat, defico,&
-                      resoco, solveu, numedd, matass, ddepla,&
+    subroutine cfalgo(noma, sdstat, resigr, iterat, ds_contact,&
+                      solveu, numedd, matass, ddepla,&
                       depdel, ctccvg, ctcfix)
+        use NonLin_Datastructure_type
         character(len=8) :: noma
         character(len=24) :: sdstat
         real(kind=8) :: resigr
         integer :: iterat
-        character(len=24) :: defico
-        character(len=24) :: resoco
+        type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19) :: solveu
         character(len=14) :: numedd
         character(len=19) :: matass

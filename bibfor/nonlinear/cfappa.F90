@@ -1,4 +1,13 @@
-subroutine cfappa(noma, defico, resoco, instan)
+subroutine cfappa(mesh, ds_contact, instan)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterfort/apcalc.h"
+#include "asterfort/cfapre.h"
+#include "asterfort/cfpoin.h"
+#include "asterfort/infdbg.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,17 +27,9 @@ subroutine cfappa(noma, defico, resoco, instan)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/apcalc.h"
-#include "asterfort/cfapre.h"
-#include "asterfort/cfpoin.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-    character(len=8) :: noma
-    character(len=24) :: defico, resoco
-    real(kind=8) :: instan
+    character(len=8), intent(in) :: mesh
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    real(kind=8), intent(in) :: instan
 !
 ! ----------------------------------------------------------------------
 !
@@ -39,13 +40,8 @@ subroutine cfappa(noma, defico, resoco, instan)
 !
 ! ----------------------------------------------------------------------
 !
-!
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
-! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
-!
-!
-!
+! In  mesh             : name of mesh
+! In  ds_contact       : datastructure for contact management
 !
     integer :: ifm, niv
     character(len=19) :: sdappa
@@ -53,37 +49,32 @@ subroutine cfappa(noma, defico, resoco, instan)
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('CONTACT', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<CONTACT> ...... DEBUT DE L''APPARIEMENT'
     endif
 !
 ! --- INITIALISATIONS
 !
-    sdappa = resoco(1:14)//'.APPA'
-    newgeo = resoco(1:14)//'.NEWG'
+    sdappa = ds_contact%sdcont_solv(1:14)//'.APPA'
+    newgeo = ds_contact%sdcont_solv(1:14)//'.NEWG'
 !
 ! --- REMPLISSAGE DE LA SD APPARIEMENT - POINTS (COORD. ET NOMS)
 !
-    call cfpoin(noma, defico, newgeo, sdappa)
+    call cfpoin(mesh, ds_contact%sdcont_defi, newgeo, sdappa)
 !
 ! - Pairing
 !
     if (niv .ge. 2) then
         write (ifm,*) '<CONTACT> ......... REALISATION DE L''APPARIEMENT'
     endif
-    call apcalc(sdappa, noma, defico, newgeo)
+    call apcalc(sdappa, mesh, ds_contact%sdcont_defi, newgeo)
 !
 ! --- RECOPIE APPARIEMENT POUR CONTACT
 !
-    call cfapre(noma, defico, resoco, newgeo, sdappa, instan)
+    call cfapre(mesh, ds_contact, newgeo, sdappa, instan)
     if (niv .ge. 2) then
         write (ifm,*) '<CONTACT> ...... FIN DE L''APPARIEMENT'
     endif
 !
-    call jedema()
 end subroutine

@@ -1,4 +1,10 @@
-subroutine reajeu(resoco)
+subroutine reajeu(ds_contact)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterfort/jedupo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,9 +24,7 @@ subroutine reajeu(resoco)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "asterfort/jedupo.h"
-    character(len=24) :: resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! ----------------------------------------------------------------------
 !
@@ -31,8 +35,7 @@ subroutine reajeu(resoco)
 ! ----------------------------------------------------------------------
 !
 ! SAUVEGARDE DANS CFDECO
-!
-! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
+! In  ds_contact       : datastructure for contact management
 !
 ! ----------------------------------------------------------------------
 !
@@ -40,8 +43,8 @@ subroutine reajeu(resoco)
 !
 ! ----------------------------------------------------------------------
 !
-    jeuite = resoco(1:14)//'.JEUITE'
-    jeusav = resoco(1:14)//'.JEUSAV'
+    jeuite = ds_contact%sdcont_solv(1:14)//'.JEUITE'
+    jeusav = ds_contact%sdcont_solv(1:14)//'.JEUSAV'
     call jedupo(jeusav, 'V', jeuite, .false._1)
 !
 end subroutine

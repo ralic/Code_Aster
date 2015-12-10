@@ -1,6 +1,25 @@
 subroutine nmnble(numins, modele, noma, numedd, sdstat,&
-                  sdtime, sddyna, sddisc, fonact, defico,&
-                  resoco, valinc, solalg)
+                  sdtime, sddyna, sddisc, fonact, ds_contact,&
+                  valinc, solalg)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/copisd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mmbouc.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmctce.h"
+#include "asterfort/nmctcl.h"
+#include "asterfort/nmrinc.h"
+#include "asterfort/nmtime.h"
+#include "asterfort/r8inir.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,29 +39,11 @@ subroutine nmnble(numins, modele, noma, numedd, sdstat,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/copisd.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/mmbouc.h"
-#include "asterfort/ndynlo.h"
-#include "asterfort/nmchex.h"
-#include "asterfort/nmctce.h"
-#include "asterfort/nmctcl.h"
-#include "asterfort/nmrinc.h"
-#include "asterfort/nmtime.h"
-#include "asterfort/r8inir.h"
     integer :: fonact(*)
     character(len=8) :: noma
     character(len=24) :: modele
     character(len=24) :: numedd
-    character(len=24) :: defico, resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=24) :: sdtime, sdstat
     character(len=19) :: sddyna, sddisc
     character(len=19) :: solalg(*), valinc(*)
@@ -56,15 +57,13 @@ subroutine nmnble(numins, modele, noma, numedd, sdstat,&
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  MODELE : NOM DU MODELE
 ! IN  NOMA   : NOM DU MAILLAGE
 ! IN  NUMINS : NUMERO D'INSTANT
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! IN  SDTIME : SD TIMER
 ! IN  SDSTAT : SD STATISTIQUES
-! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
-! IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  SDDYNA : SD DEDIEE A LA DYNAMIQUE
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IN  NUMEDD : NOM DU NUME_DDL
@@ -83,10 +82,6 @@ subroutine nmnble(numins, modele, noma, numedd, sdstat,&
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
-!
-! --- FONCTIONNALITES ACTIVEES
-!
     leltc = isfonc(fonact,'ELT_CONTACT')
     ldyna = ndynlo(sddyna,'DYNAMIQUE')
     if (.not.leltc) goto 999
@@ -95,7 +90,7 @@ subroutine nmnble(numins, modele, noma, numedd, sdstat,&
 !
     call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
 !
-    lallv = cfdisl(defico,'ALL_VERIF')
+    lallv = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF')
     if (lallv) goto 999
 !
 ! --- DECOMPACTION DES VARIABLES CHAPEAUX
@@ -120,8 +115,8 @@ subroutine nmnble(numins, modele, noma, numedd, sdstat,&
 ! --- ON LE DUPLIQUE ET ON UTILISE CETTE COPIE FIXE (VITINI,ACCINI)
 !
     if (ldyna) then
-        vitini = resoco(1:14)//'.VITI'
-        accini = resoco(1:14)//'.ACCI'
+        vitini = ds_contact%sdcont_solv(1:14)//'.VITI'
+        accini = ds_contact%sdcont_solv(1:14)//'.ACCI'
         call copisd('CHAMP_GD', 'V', vitini, vitplu)
         call copisd('CHAMP_GD', 'V', accini, accplu)
     endif
@@ -130,17 +125,15 @@ subroutine nmnble(numins, modele, noma, numedd, sdstat,&
 !
     call nmtime(sdtime, 'INI', 'CTCC_PREP')
     call nmtime(sdtime, 'RUN', 'CTCC_PREP')
-    call nmctcl(modele, noma, defico, resoco)
+    call nmctcl(modele, noma, ds_contact)
 !
 ! - Create input fields for contact
 !
-    call nmctce(modele, noma  , defico, resoco, sddyna,&
-                sddisc, numins)
+    call nmctce(modele, noma, ds_contact, sddyna, sddisc,&
+                numins)
     call nmtime(sdtime, 'END', 'CTCC_PREP')
     call nmrinc(sdstat, 'CTCC_PREP')
 !
 999 continue
-!
-    call jedema()
 !
 end subroutine

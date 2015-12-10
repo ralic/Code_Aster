@@ -1,8 +1,10 @@
-subroutine mmalgo(sdcont_defi, sdcont_solv, l_loop_cont, l_frot_zone, l_vite,&
+subroutine mmalgo(ds_contact, l_loop_cont, l_frot_zone, l_vite,&
                   l_glis_init, l_coef_adap, zone_index, i_cont_poin, indi_cont_init,&
                   indi_cont_eval, indi_frot_eval, dist_cont_curr, vite_cont_curr, pres_cont_curr,&
                   dist_frot_curr, pres_frot_curr, v_sdcont_cychis, v_sdcont_cyccoe, indi_cont_curr,&
                   indi_frot_curr, ctcsta, mmcvca, scotch)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -30,8 +32,7 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-    character(len=24), intent(in) :: sdcont_defi
-    character(len=24), intent(in) :: sdcont_solv
+    type(NL_DS_Contact), intent(in) :: ds_contact
     aster_logical, intent(in) :: l_loop_cont
     aster_logical, intent(in) :: l_frot_zone
     aster_logical, intent(in) :: l_vite
@@ -63,8 +64,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sdcont_solv     : data structure for contact solving
-! In  sdcont_defi     : data structure from contact definition
+! In  ds_contact       : datastructure for contact management
 ! In  l_frot_zone      : .true. if friction on zone
 ! In  l_loop_cont      : .true. if fixed poitn on contact loop
 ! In  l_coef_adap      : .true. if automatic lagrangian adaptation
@@ -142,7 +142,7 @@ implicit none
 !
 ! - Cycling detection
 !
-    call mm_cycl_detect(sdcont_defi, sdcont_solv, l_loop_cont, l_frot_zone, i_cont_poin,&
+    call mm_cycl_detect(ds_contact, l_loop_cont, l_frot_zone, i_cont_poin,&
                         coef_cont_prev, pres_cont_prev, dist_cont_prev, indi_frot_prev,&
                         dist_frot_prev, indi_cont_eval, indi_frot_eval, dist_cont_curr,&
                         pres_cont_curr, dist_frot_curr)
@@ -150,7 +150,7 @@ implicit none
 ! - Cycling treatment: automatic adaptation of augmented lagrangian ratio
 !
     if (l_coef_adap) then
-        call mm_cycl_trait(sdcont_solv, i_cont_poin, coef_cont_prev, coef_frot_prev,&
+        call mm_cycl_trait(ds_contact, i_cont_poin, coef_cont_prev, coef_frot_prev,&
                            pres_frot_prev, dist_frot_prev, pres_frot_curr, dist_frot_curr,&
                            indi_cont_eval, indi_frot_eval, indi_cont_curr, coef_cont_curr,&
                            indi_frot_curr, coef_frot_curr)

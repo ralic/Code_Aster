@@ -1,4 +1,6 @@
-subroutine mm_cycl_erase(sdcont_defi, sdcont_solv, cycl_type, point_curr)
+subroutine mm_cycl_erase(ds_contact, cycl_type, point_curr)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -28,8 +30,7 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=24), intent(in) :: sdcont_defi
-    character(len=24), intent(in) :: sdcont_solv
+    type(NL_DS_Contact), intent(in) :: ds_contact
     integer, intent(in) :: cycl_type
     integer, intent(in) :: point_curr
 !
@@ -41,8 +42,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sdcont_solv      : name of contact solving datastructure
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  ds_contact       : datastructure for contact management
 ! In  cycl_type        : type of cycling to erase
 !                     0 - for erasing for all cycles
 ! In  point_curr       : contact point to erasing
@@ -63,16 +63,16 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-    lctcc = cfdisl(sdcont_defi,'FORMUL_CONTINUE')
+    lctcc = cfdisl(ds_contact%sdcont_defi,'FORMUL_CONTINUE')
     if (.not.lctcc) then
         goto 99
     endif
 !
 ! - Name of cycling objects
 !
-    sdcont_cyclis = sdcont_solv(1:14)//'.CYCLIS'
-    sdcont_cycnbr = sdcont_solv(1:14)//'.CYCNBR'
-    sdcont_cyceta = sdcont_solv(1:14)//'.CYCETA'
+    sdcont_cyclis = ds_contact%sdcont_solv(1:14)//'.CYCLIS'
+    sdcont_cycnbr = ds_contact%sdcont_solv(1:14)//'.CYCNBR'
+    sdcont_cyceta = ds_contact%sdcont_solv(1:14)//'.CYCETA'
 !
 ! - Access to cycling objects
 !
@@ -82,7 +82,7 @@ implicit none
 !
 ! - Initializations
 !
-    nb_cont_poin = cfdisi(sdcont_defi,'NTPC' )
+    nb_cont_poin = cfdisi(ds_contact%sdcont_defi,'NTPC' )
 !
 ! - Erasing cycling information
 !

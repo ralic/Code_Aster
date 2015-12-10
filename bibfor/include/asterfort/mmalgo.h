@@ -19,13 +19,13 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine mmalgo(sdcont_defi  , sdcont_solv  , l_loop_cont   , l_frot_zone   , l_vite    , &
+    subroutine mmalgo(ds_contact, l_loop_cont   , l_frot_zone   , l_vite    , &
                   l_glis_init   , l_coef_adap   , zone_index    , i_cont_poin   , indi_cont_init, &
                   indi_cont_eval, indi_frot_eval, dist_cont_curr, vite_cont_curr, pres_cont_curr, &
                   dist_frot_curr, pres_frot_curr, v_sdcont_cychis, v_sdcont_cyccoe, indi_cont_curr,&
                   indi_frot_curr, ctcsta        , mmcvca        , scotch        )
-        character(len=24), intent(in) :: sdcont_defi
-        character(len=24), intent(in) :: sdcont_solv
+        use NonLin_Datastructure_type
+        type(NL_DS_Contact), intent(in) :: ds_contact
         aster_logical, intent(in) :: l_loop_cont
         aster_logical, intent(in) :: l_frot_zone
         aster_logical, intent(in) :: l_vite

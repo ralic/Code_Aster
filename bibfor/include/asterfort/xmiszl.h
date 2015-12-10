@@ -16,9 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xmiszl(vecinc, defico, noma)
-        character(len=19) :: vecinc
-        character(len=24) :: defico
-        character(len=8) :: noma
+    subroutine xmiszl(vecinc, ds_contact, mesh)
+        use NonLin_Datastructure_type
+        character(len=19), intent(in) :: vecinc
+        character(len=8), intent(in) :: mesh
+        type(NL_DS_Contact), intent(in) :: ds_contact
     end subroutine xmiszl
 end interface

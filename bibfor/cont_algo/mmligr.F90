@@ -1,4 +1,6 @@
-subroutine mmligr(mesh, model, sdcont_defi, sdcont_solv)
+subroutine mmligr(mesh, model, ds_contact)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -14,7 +16,6 @@ implicit none
 #include "asterfort/initel.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
-!#include "asterfort/jedetr.h"
 #include "asterfort/jedupo.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/jenonu.h"
@@ -48,8 +49,7 @@ implicit none
 !
     character(len=8), intent(in) :: mesh
     character(len=8), intent(in) :: model
-    character(len=24), intent(in) :: sdcont_defi 
-    character(len=24), intent(in) :: sdcont_solv
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,18 +61,18 @@ implicit none
 !
 ! In  mesh             : name of mesh
 ! In  model            : name of model
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
-! In  sdcont_solv      : name of contact solving datastructure
+! In  ds_contact       : datastructure for contact management
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_cont_type
-    integer :: ico, jco, i_cont_poin, i_cont_type, i_node, i_zone, jtabf
-    integer :: elem_mast_nume, elem_slav_nume, cont_indx
-    integer :: ligrcf_liel_lont, cont_elem_nume, cont_geom_nume
-    integer :: nb_node_elem, nb_cont_poin, nb_node_mast, nb_node_slav, nb_grel, nt_node
     integer :: ifm, niv
-    character(len=8) :: cont_geom_name, cont_elem_name
+    integer :: nb_cont_type, nb_cont_elem
+    integer :: ico, jco, i_cont_poin, i_cont_type, i_node, i_zone, jtabf, i_cont_elem
+    integer :: elem_mast_nume, elem_slav_nume, cont_indx
+    integer :: ligrcf_liel_lont, cont_elem_nume, cont_geom_nume, frot_elem_nume
+    integer :: nb_node_elem, nb_node_mast, nb_node_slav, nb_grel, nt_node
+    aster_logical :: l_cont_cont
+    character(len=8) :: cont_geom_name, cont_elem_name, frot_elem_name
     character(len=19) :: ligrcf
     integer, pointer :: v_list_elem(:) => null()
     integer, pointer :: v_cnt_cont(:) => null()
@@ -97,17 +97,19 @@ implicit none
 !
 ! - Datastructure for contact solving
 !
-    sdcont_tabfin = sdcont_solv(1:14)//'.TABFIN'
-    sdcont_crnudd = sdcont_solv(1:14)//'.NUDD'
-    sdcont_nosdco = sdcont_solv(1:14)//'.NOSDCO'
-    call jeveuo(sdcont_tabfin, 'L', vr   = v_sdcont_tabfin)
+    sdcont_crnudd = ds_contact%sdcont_solv(1:14)//'.NUDD'
+    sdcont_nosdco = ds_contact%sdcont_solv(1:14)//'.NOSDCO'
     call jeveuo(sdcont_crnudd, 'L', vl   = v_sdcont_crnudd)
     call jeveuo(sdcont_nosdco, 'L', vk24 = v_sdcont_nosdco)
-    ztabf = cfmmvd('ZTABF')
 !
 ! - Pairing or not ?
 !
     l_pair = v_sdcont_crnudd(1)
+!
+! - Get parameters
+!
+    l_axi        = cfdisl(ds_contact%sdcont_defi, 'AXISYMETRIQUE')
+    l_cont_cont  = cfdisl(ds_contact%sdcont_defi, 'FORMUL_CONTINUE')
 !
 ! - Print
 !
@@ -122,10 +124,11 @@ implicit none
         goto 999
     endif
 !
-! - Get parameters
+! - Access to contact elements
 !
-    nb_cont_poin = cfdisi(sdcont_defi,'NTPC')
-    l_axi        = cfdisl(sdcont_defi,'AXISYMETRIQUE')
+    sdcont_tabfin = ds_contact%sdcont_solv(1:14)//'.TABFIN'
+    call jeveuo(sdcont_tabfin, 'L', vr   = v_sdcont_tabfin)
+    ztabf = cfmmvd('ZTABF')
 !
 ! - Get list of late elements for contact (LIGREL)
 !
@@ -139,8 +142,8 @@ implicit none
 !
 ! - Create list of late elements for contact
 !
-    call mmlige(mesh      , sdcont_defi, sdcont_solv, v_list_elem, nb_cont_type,&
-                v_cnt_cont, v_cnt_frot , nt_node    , nb_grel)
+    call mmlige(mesh      , ds_contact, v_list_elem, nb_cont_type, v_cnt_cont,&
+                v_cnt_frot, nt_node   , nb_grel    , nb_cont_elem)
 !
 ! - No late nodes
 !
@@ -150,36 +153,40 @@ implicit none
 ! - Create object NEMA
 !
     call jecrec(ligrcf//'.NEMA', 'V V I', 'NU', 'CONTIG', 'VARIABLE',&
-                nb_cont_poin)
+                nb_cont_elem)
     call jeecra(ligrcf//'.NEMA', 'LONT', nt_node)
-    do i_cont_poin = 1, nb_cont_poin
+    do i_cont_elem = 1, nb_cont_elem
+!
+! ----- Get parameters
+!
+        i_cont_poin    = i_cont_elem
+        elem_slav_nume = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+2))
+        elem_mast_nume = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+3))
 !
 ! ----- Check number of nodes
 !
-        nb_node_elem   = v_list_elem(2*(i_cont_poin-1)+2)
-        elem_slav_nume = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+2))
-        elem_mast_nume = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+3))
+        nb_node_elem   = v_list_elem(2*(i_cont_elem-1)+2)
         nb_node_slav   = v_connex_lcum(elem_slav_nume+1) - v_connex_lcum(elem_slav_nume)
         nb_node_mast   = v_connex_lcum(elem_mast_nume+1) - v_connex_lcum(elem_mast_nume)
         ASSERT(nb_node_elem .eq. (nb_node_mast+nb_node_slav))
 !
 ! ----- Create contact element in LIGREL
 !
-        call jecroc(jexnum(ligrcf//'.NEMA', i_cont_poin))
-        call jeecra(jexnum(ligrcf//'.NEMA', i_cont_poin), 'LONMAX', nb_node_elem+1)
-        call jeveuo(jexnum(ligrcf//'.NEMA', i_cont_poin), 'E', vi = v_ligrcf_nema)
-        v_ligrcf_nema(nb_node_elem+1) = v_list_elem(2*(i_cont_poin-1)+1)
+        call jecroc(jexnum(ligrcf//'.NEMA', i_cont_elem))
+        call jeecra(jexnum(ligrcf//'.NEMA', i_cont_elem), 'LONMAX', nb_node_elem+1)
+        call jeveuo(jexnum(ligrcf//'.NEMA', i_cont_elem), 'E', vi = v_ligrcf_nema)
+        v_ligrcf_nema(nb_node_elem+1) = v_list_elem(2*(i_cont_elem-1)+1)
 !
 ! ----- Copy slave nodes
 !
         do i_node = 1, nb_node_slav
-            v_ligrcf_nema(i_node) = v_connex(1+v_connex_lcum(elem_slav_nume)-2+i_node)
+            v_ligrcf_nema(i_node) = v_connex(v_connex_lcum(elem_slav_nume)-1+i_node)
         end do
 !
 ! ----- Copy master nodes
 !
         do i_node = 1, nb_node_mast
-            v_ligrcf_nema(nb_node_slav+i_node) = v_connex(1+v_connex_lcum(elem_mast_nume)-2+i_node)
+            v_ligrcf_nema(nb_node_slav+i_node) = v_connex(v_connex_lcum(elem_mast_nume)-1+i_node)
         end do
     end do
 !
@@ -209,18 +216,9 @@ implicit none
 !
 ! --------- Current contact element
 !
-            call mmelem_data(cont_indx      , &
-                             cont_geom_name_ = cont_geom_name, cont_elem_name_ = cont_elem_name)
-!
-! --------- Change name for axisymetric
-!
-            if (l_axi) then
-                if (cont_geom_name(1:3) .eq. 'SEG') then
-                    cont_elem_name(7:7) = 'A'
-                else
-                    ASSERT(.false.)
-                endif
-            endif
+            call mmelem_data(cont_indx, l_axi_ = l_axi,&
+                             cont_geom_name_ = cont_geom_name,&
+                             cont_elem_name_ = cont_elem_name)
 !
 ! --------- Index of contact element in catalog
 !
@@ -231,13 +229,14 @@ implicit none
 !
             v_ligrcf_liel(v_cnt_cont(i_cont_type)+1) = cont_elem_nume
             jco = 0
-            do i_cont_poin = 1, nb_cont_poin
-                if (v_list_elem(2*(i_cont_poin-1)+1) .eq. cont_geom_nume) then
-                    i_zone = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+14))
-                    l_frot = mminfl(sdcont_defi,'FROTTEMENT_ZONE',i_zone)
+            do i_cont_elem = 1, nb_cont_elem
+                if (v_list_elem(2*(i_cont_elem-1)+1) .eq. cont_geom_nume) then
+                    i_cont_poin    = i_cont_elem
+                    i_zone         = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+14))
+                    l_frot         = mminfl(ds_contact%sdcont_defi,'FROTTEMENT_ZONE', i_zone )
                     if (.not.l_frot) then
                         jco = jco + 1
-                        v_ligrcf_liel(jco) = -i_cont_poin
+                        v_ligrcf_liel(jco) = -i_cont_elem
                     endif
                 endif
             end do
@@ -254,35 +253,27 @@ implicit none
 !
 ! --------- Current friction element
 !
-            call mmelem_data(cont_indx      , &
-                             cont_geom_name_ = cont_geom_name, frot_elem_name_ = cont_elem_name)
-!
-! --------- Change name for axisymetric
-!
-            if (l_axi) then
-                if (cont_geom_name(1:3) .eq. 'SEG') then
-                    cont_elem_name(7:7) = 'A'
-                else
-                    ASSERT(.false.)
-                endif
-            endif
+            call mmelem_data(cont_indx, l_axi_ = l_axi,&
+                             cont_geom_name_ = cont_geom_name,&
+                             frot_elem_name_ = frot_elem_name)
 !
 ! --------- Index of friction element in catalog
 !
-            call jenonu(jexnom('&CATA.TE.NOMTE', cont_elem_name), cont_elem_nume)
+            call jenonu(jexnom('&CATA.TE.NOMTE', frot_elem_name), frot_elem_nume)
             call jenonu(jexnom('&CATA.TM.NOMTM', cont_geom_name), cont_geom_nume)
 !
 ! --------- Add contact element
 !
-            v_ligrcf_liel(v_cnt_frot(i_cont_type)+1) = cont_elem_nume
+            v_ligrcf_liel(v_cnt_frot(i_cont_type)+1) = frot_elem_nume
             jco = 0
-            do i_cont_poin = 1, nb_cont_poin
-                if (v_list_elem(2*(i_cont_poin-1)+1) .eq. cont_geom_nume) then
-                    i_zone = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+14))
-                    l_frot = mminfl(sdcont_defi,'FROTTEMENT_ZONE',i_zone)
+            do i_cont_elem = 1, nb_cont_elem
+                if (v_list_elem(2*(i_cont_elem-1)+1) .eq. cont_geom_nume) then
+                    i_cont_poin    = i_cont_elem
+                    i_zone         = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+14))
+                    l_frot         = mminfl(ds_contact%sdcont_defi,'FROTTEMENT_ZONE', i_zone )
                     if (l_frot) then
                         jco = jco + 1
-                        v_ligrcf_liel(jco) = -i_cont_poin
+                        v_ligrcf_liel(jco) = -i_cont_elem
                     endif
                 endif
             end do

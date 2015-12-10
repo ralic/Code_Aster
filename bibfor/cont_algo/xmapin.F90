@@ -1,8 +1,9 @@
-subroutine xmapin(mesh  , model , sdcont_defi, sdcont_solv, sdtime,&
-                  sdstat)
+subroutine xmapin(mesh, model, ds_contact, sdtime, sdstat)
+!
+use NonLin_Datastructure_type
 !
 implicit none
-!          
+!      
 #include "asterf_types.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/xmctcg.h"                 
@@ -26,9 +27,8 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
-    character(len=24), intent(in) :: model    
-    character(len=24), intent(in) :: sdcont_defi
-    character(len=24), intent(in) :: sdcont_solv
+    character(len=8), intent(in) :: model
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=24), intent(in) :: sdtime
     character(len=24), intent(in) :: sdstat
 !
@@ -42,8 +42,7 @@ implicit none
 !
 ! In  mesh             : name of mesh
 ! In  model            : name of model
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
-! In  sdcont_solv      : name of contact solving datastructure
+! In  ds_contact       : datastructure for contact management
 ! In  sdtime           : datastructure for timers
 ! In  sdstat           : datastructure for statistics
 !
@@ -53,13 +52,12 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_cont_allv  = cfdisl(sdcont_defi,'ALL_VERIF')
+    l_cont_allv  = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF')
 !
 ! - Pairing and initial options
 !
     if (.not.l_cont_allv) then
-        call xmctcg(model , mesh  , sdcont_defi, sdcont_solv, sdstat,&
-                    sdtime)
+        call xmctcg(model, mesh, ds_contact, sdstat, sdtime)
     endif
 !
 end subroutine

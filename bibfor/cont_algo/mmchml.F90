@@ -1,24 +1,9 @@
-subroutine mmchml(noma, defico, resoco, sddisc, sddyna,&
-                  numins)
+subroutine mmchml(mesh, ds_contact, sddisc, sddyna, nume_inst)
 !
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
+use NonLin_Datastructure_type
 !
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+implicit none
 !
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-!
-    implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/alchml.h"
@@ -38,10 +23,29 @@ subroutine mmchml(noma, defico, resoco, sddisc, sddyna,&
 #include "asterfort/mminfr.h"
 #include "asterfort/ndynlo.h"
 #include "asterfort/ndynre.h"
-    character(len=8) :: noma
-    character(len=24) :: defico, resoco
-    character(len=19) :: sddisc, sddyna
-    integer :: numins
+!
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+!
+    character(len=8), intent(in) :: mesh
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=19), intent(in) :: sddisc
+    character(len=19), intent(in) :: sddyna
+    integer, intent(in) :: nume_inst
 !
 ! ----------------------------------------------------------------------
 !
@@ -51,16 +55,12 @@ subroutine mmchml(noma, defico, resoco, sddisc, sddyna,&
 !
 ! ----------------------------------------------------------------------
 !
-!
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
-! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
-! IN  INST   : PARAMETRES D'INSTANT POUR LA DYNAMIQUE
+! In  mesh             : name of mesh
+! In  ds_contact       : datastructure for contact management
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ncmp
-    parameter   (ncmp=28)
+    integer, parameter :: ncmp = 28
     integer :: ztabf
     integer :: iptc, izone, ntpc
     character(len=24) :: jeusup
@@ -102,28 +102,28 @@ subroutine mmchml(noma, defico, resoco, sddisc, sddyna,&
 !
 ! --- ACCES OBJETS
 !
-    jeusup = resoco(1:14)//'.JSUPCO'
-    tabfin = resoco(1:14)//'.TABFIN'
-    nosdco = resoco(1:14)//'.NOSDCO'
+    jeusup = ds_contact%sdcont_solv(1:14)//'.JSUPCO'
+    tabfin = ds_contact%sdcont_solv(1:14)//'.TABFIN'
+    nosdco = ds_contact%sdcont_solv(1:14)//'.NOSDCO'
     call jeveuo(nosdco, 'L', jnosdc)
     call jeveuo(jeusup, 'L', jjsup)
     call jeveuo(tabfin, 'L', jtabf)
-    crnudd = resoco(1:14)//'.NUDD'
+    crnudd = ds_contact%sdcont_solv(1:14)//'.NUDD'
     call jeveuo(crnudd, 'L', jcrnud)
 !
     ztabf = cfmmvd('ZTABF')
 !
 ! - Acces to cycling objects
 !
-    sd_cycl_his = resoco(1:14)//'.CYCHIS'
+    sd_cycl_his = ds_contact%sdcont_solv(1:14)//'.CYCHIS'
     call jeveuo(sd_cycl_his, 'L', jcyhis)
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
     ldyna = ndynlo(sddyna,'DYNAMIQUE')
     ltheta = ndynlo(sddyna,'THETA_METHODE')
-    iresof = cfdisi(defico,'ALGO_RESO_FROT')
-    iresog = cfdisi(defico,'ALGO_RESO_GEOM')
+    iresof = cfdisi(ds_contact%sdcont_defi,'ALGO_RESO_FROT')
+    iresog = cfdisi(ds_contact%sdcont_defi,'ALGO_RESO_GEOM')
 !
 ! --- LIGREL DES ELEMENTS TARDIFS DE CONTACT/FROTTEMENT
 !
@@ -131,13 +131,13 @@ subroutine mmchml(noma, defico, resoco, sddisc, sddyna,&
 !
 ! --- CHAM_ELEM POUR ELEMENTS TARDIFS DE CONTACT/FROTTEMENT
 !
-    chmlcf = resoco(1:14)//'.CHML'
+    chmlcf = ds_contact%sdcont_solv(1:14)//'.CHML'
 !
 ! --- INITIALISATIONS
 !
     ntpc = nint(zr(jtabf-1+1))
-    instam = diinst(sddisc,numins-1)
-    instap = diinst(sddisc,numins)
+    instam = diinst(sddisc,nume_inst-1)
+    instap = diinst(sddisc,nume_inst)
     deltat = instap-instam
     theta = 0.d0
     iform = 0
@@ -187,13 +187,11 @@ subroutine mmchml(noma, defico, resoco, sddisc, sddyna,&
 !         MAILLE TARDIVE ZI(JLIEL-1+IEL) < 0
             iptc = -zi(jliel-1+iel)
             izone = nint(zr(jtabf+ztabf*(iptc-1)+13))
-            coefff = mminfr(defico,'COEF_COULOMB' ,izone )
-            ialgoc = mminfi(defico,'ALGO_CONT' ,izone )
-            ialgof = mminfi(defico,'ALGO_FROT' ,izone )
-            call cfmmco(defico, resoco, izone, 'COEF_AUGM_CONT', 'L',&
-                        coefac)
-            call cfmmco(defico, resoco, izone, 'COEF_AUGM_FROT', 'L',&
-                        coefaf)
+            coefff = mminfr(ds_contact%sdcont_defi,'COEF_COULOMB' ,izone )
+            ialgoc = mminfi(ds_contact%sdcont_defi,'ALGO_CONT' ,izone )
+            ialgof = mminfi(ds_contact%sdcont_defi,'ALGO_FROT' ,izone )
+            call cfmmco(ds_contact, izone, 'COEF_AUGM_CONT', 'L', coefac)
+            call cfmmco(ds_contact, izone, 'COEF_AUGM_FROT', 'L', coefaf)
 !         ADRESSE DANS CELV DE L'ELEMENT IEL DU GREL IGR
             jvalv = jcelv-1+zi(jceld-1+decal+nceld2+nceld3*(iel-1)+4)
 ! ------- DONNNES DE PROJECTION
@@ -230,7 +228,9 @@ subroutine mmchml(noma, defico, resoco, sddisc, sddyna,&
             zr(jvalv-1+23) = deltat
             zr(jvalv-1+24) = theta
 !
-            if (niv .ge. 2) call mmimp3(ifm, noma, iptc, jvalv, jtabf)
+            if (niv .ge. 2) then
+                call mmimp3(ifm, mesh, iptc, jvalv, jtabf)
+            endif
         enddo
         ntliel = ntliel + nbliel
     enddo

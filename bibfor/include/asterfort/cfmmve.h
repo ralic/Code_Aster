@@ -16,11 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfmmve(noma, defico, resoco, valinc,instan)
-        character(len=8) :: noma
-        character(len=24) :: defico
-        character(len=24) :: resoco
-        character(len=19) :: valinc(*)
-        real(kind=8) :: instan
+    subroutine cfmmve(noma, ds_contact, valinc,instan)
+        use NonLin_Datastructure_type
+        character(len=8), intent(in) :: noma
+        type(NL_DS_Contact), intent(in) :: ds_contact
+        character(len=19), intent(in) :: valinc(*)
+        real(kind=8), intent(in) :: instan
     end subroutine cfmmve
 end interface

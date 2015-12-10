@@ -1,4 +1,24 @@
-subroutine mmimp1(ifm, noma, defico, resoco)
+subroutine mmimp1(ifm, mesh, ds_contact)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mminfi.h"
+#include "asterfort/mminfl.h"
+#include "asterfort/mminfm.h"
+#include "asterfort/mmnorm.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,26 +38,9 @@ subroutine mmimp1(ifm, noma, defico, resoco)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-!
-#include "asterfort/assert.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/cfmmvd.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexatr.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/mminfi.h"
-#include "asterfort/mminfl.h"
-#include "asterfort/mminfm.h"
-#include "asterfort/mmnorm.h"
-    integer :: ifm
-    character(len=8) :: noma
-    character(len=24) :: defico, resoco
+    integer, intent(in) :: ifm
+    character(len=8), intent(in) :: mesh
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! ----------------------------------------------------------------------
 !
@@ -47,14 +50,8 @@ subroutine mmimp1(ifm, noma, defico, resoco)
 !
 ! ----------------------------------------------------------------------
 !
-!
-! IN  IFM    : UNITE D'IMPRESSION DU MESSAGE
-! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
-! IN  RESOCO : SD POUR LA RESOLUTION DU CONTACT
-! IN  NOMA   : NOM DU MAILLAGE
-!
-!
-!
+! In  mesh             : name of mesh
+! In  ds_contact       : datastructure for contact management
 !
     integer :: ztabf
     integer :: posmae, nummae, nummam, numnoe, jdecme
@@ -64,8 +61,8 @@ subroutine mmimp1(ifm, noma, defico, resoco)
     real(kind=8) :: tau1(3), tau2(3), norm(3)
     character(len=24) :: tabfin
     integer :: jtabf
-    integer :: iptm, izone, imae, inoe, iptc
-    integer :: ndimg, nzoco, nnoe, nptm, nbmae
+    integer :: iptm, i_zone, imae, inoe, iptc
+    integer :: model_ndim, nb_cont_zone, nnoe, nptm, nbmae
     integer :: ilcnx1
     aster_logical :: lveri
     integer, pointer :: connex(:) => null()
@@ -75,87 +72,80 @@ subroutine mmimp1(ifm, noma, defico, resoco)
     call jemarq()
     write (ifm,*) '<CONTACT> ... RESULTAT DE L''APPARIEMENT'
 !
-! --- INITIALISATIONS
+! - Get contact parameters
 !
-    ndimg = cfdisi(defico,'NDIM' )
-    nzoco = cfdisi(defico,'NZOCO')
+    model_ndim = cfdisi(ds_contact%sdcont_defi,'NDIM' )
+    nb_cont_zone = cfdisi(ds_contact%sdcont_defi,'NZOCO')
 !
 ! --- RECUPERATION DE QUELQUES DONNEES
 !
-    tabfin = resoco(1:14)//'.TABFIN'
+    tabfin = ds_contact%sdcont_solv(1:14)//'.TABFIN'
     call jeveuo(tabfin, 'L', jtabf)
     ztabf = cfmmvd('ZTABF')
 !
 ! --- ACCES MAILLAGE
 !
-    call jeveuo(noma//'.CONNEX', 'L', vi=connex)
-    call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
+    call jeveuo(mesh//'.CONNEX', 'L', vi=connex)
+    call jeveuo(jexatr(mesh//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
 !
 ! --- BOUCLE SUR LES ZONES
 !
     iptc = 1
-    do 10 izone = 1, nzoco
+    do i_zone = 1, nb_cont_zone
 !
 ! ----- MODE VERIF: ON SAUTE LES POINTS
 !
-        lveri = mminfl(defico,'VERIF' ,izone )
+        lveri = mminfl(ds_contact%sdcont_defi,'VERIF' ,i_zone )
         if (lveri) then
             goto 25
         endif
 !
 ! ----- INFORMATION SUR LA ZONE
 !
-        jdecme = mminfi(defico,'JDECME',izone )
-        nbmae = mminfi(defico,'NBMAE' ,izone )
+        jdecme = mminfi(ds_contact%sdcont_defi,'JDECME',i_zone )
+        nbmae = mminfi(ds_contact%sdcont_defi,'NBMAE' ,i_zone )
 !
 ! ----- BOUCLE SUR LES MAILLES ESCLAVES
 !
-        do 20 imae = 1, nbmae
+        do imae = 1, nbmae
             posmae = jdecme + imae
 !
 ! ------- NOMBRE DE POINTS DE CONTACT
 !
-            call mminfm(posmae, defico, 'NPTM', nptm)
+            call mminfm(posmae, ds_contact%sdcont_defi, 'NPTM', nptm)
 !
 ! ------- REPERAGE MAILLE ESCLAVE
 !
             nummae = nint(zr(jtabf+ztabf*(iptc-1)+1))
-            call jenuno(jexnum(noma//'.NOMMAI', nummae), nommae)
+            call jenuno(jexnum(mesh//'.NOMMAI', nummae), nommae)
             nnoe = zi(ilcnx1+nummae) - zi(ilcnx1-1+nummae)
 !
 ! ------- INFOS SUR MAILLE ESCLAVE
 !
-            write (ifm,1000) nommae,izone,nnoe,nptm
-            1000    format (' <CONTACT>     * MAILLE ESCLAVE ',a8,' ( ZONE ',&
-     &           i5,') - (',&
-     &           i5,' NOEUDS ) - (',&
-     &           i5,' POINTS DE CONTACT )' )
-            do 21 inoe = 1, nnoe
+            write (ifm,100) nommae,i_zone,nnoe,nptm
+            do inoe = 1, nnoe
                 numnoe = connex(1+zi(ilcnx1-1+nummae)-2+inoe)
-                call jenuno(jexnum(noma//'.NOMNOE', numnoe), nomnoe)
-                write (ifm,1001) nomnoe
- 21         continue
-            1001    format (' <CONTACT>        NOEUD :',a8)
+                call jenuno(jexnum(mesh//'.NOMNOE', numnoe), nomnoe)
+                write (ifm,101) nomnoe
+            end do
 !
 ! ------- BOUCLE SUR LES POINTS
 !
-            do 30 iptm = 1, nptm
+            do iptm = 1, nptm
 !
 ! --------- POINT DE CONTACT EN COURS
 !
-                write(ifm,2000) iptm
+                write(ifm,200) iptm
                 ksipc1 = zr(jtabf+ztabf*(iptc-1)+3)
                 ksipc2 = zr(jtabf+ztabf*(iptc-1)+4)
                 wpc = zr(jtabf+ztabf*(iptc-1)+14)
-                write(ifm,3000) ksipc1,ksipc2,wpc
-                2000 format (' <CONTACT>     ** POINT DE CONTACT ',i3)
-                3000 format (' <CONTACT>        SITUE EN  : <',&
-     &         e10.3,',',e10.3,'> - POIDS INTEGRATION: ',e10.3)
+                write(ifm,300) ksipc1,ksipc2,wpc
+
 !
 ! --------- REPERAGE MAILLE MAITRE
 !
                 nummam = nint(zr(jtabf+ztabf*(iptc-1)+2))
-                call jenuno(jexnum(noma//'.NOMMAI', nummam), nommam)
+                call jenuno(jexnum(mesh//'.NOMMAI', nummam), nommam)
 !
 ! --------- ETAT DU NOEUD
 !
@@ -163,13 +153,11 @@ subroutine mmimp1(ifm, noma, defico, resoco)
                 ksipr2 = zr(jtabf+ztabf*(iptc-1)+6)
                 if (zr(jtabf+ztabf*(iptc-1)+18) .eq. 1.d0) then
                     write(ifm,*) '<CONTACT>        EXCLUS CONTACT    '
-                else if (zr(jtabf+ztabf*(iptc-1)+19).ge.1.d0) then
+                else if (zr(jtabf+ztabf*(iptc-1)+19) .ge. 1.d0) then
                     write(ifm,*) '<CONTACT>        EXCLUS FROTTEMENT '
                 else
-                    write(ifm,2003) nommam,ksipr1,ksipr2
+                    write(ifm,203) nommam,ksipr1,ksipr2
                 endif
-                2003 format (' <CONTACT>        SE PROJETTE SUR LA MAILLE MAITRE ',&
-     &        a8,' EN  <',e10.3,',',e10.3,'>')
 !
 ! --------- REPERE LOCAL
 !
@@ -179,46 +167,50 @@ subroutine mmimp1(ifm, noma, defico, resoco)
                 tau2(1) = zr(jtabf+ztabf*(iptc-1)+10)
                 tau2(2) = zr(jtabf+ztabf*(iptc-1)+11)
                 tau2(3) = zr(jtabf+ztabf*(iptc-1)+12)
-                write(ifm,2002) tau1(1),tau1(2),tau1(3), tau2(1),tau2(&
-                2),tau2(3)
-                2002 format (' <CONTACT>        TANGENTES : <',&
-     &         e10.3,',',e10.3,',',e10.3,'> <',&
-     &         e10.3,',',e10.3,',',e10.3,'>')
-!
-                call mmnorm(ndimg, tau1, tau2, norm, r8bid)
-                write(ifm,2001) norm(1),norm(2),norm(3)
-!
-                2001 format (' <CONTACT>        NORMALE   : <',&
-     &         e10.3,',',e10.3,',',e10.3,'>')
+                write(ifm,202) tau1(1),tau1(2),tau1(3), tau2(1),tau2( 2),tau2(3)
+                call mmnorm(model_ndim, tau1, tau2, norm, r8bid)
+                write(ifm,201) norm(1),norm(2),norm(3)
 !
 ! --------- ETAT DE CONTACT
 !
                 xs = nint(zr(jtabf+ztabf*(iptc-1)+22))
 !
                 if (xs .eq. 0) then
-                    write(ifm,7001)
+                    write(ifm,701)
                 else if (xs.eq.1) then
-                    write(ifm,7000)
+                    write(ifm,700)
                 else
                     ASSERT(.false.)
                 endif
-                7000 format (' <CONTACT>        ETAT : EN CONTACT')
-                7001 format (' <CONTACT>        ETAT : PAS EN CONTACT')
 !
 ! --------- AUTRES INFOS
 !
                 seuili = zr(jtabf+ztabf*(iptc-1)+16)
-                write(ifm,4002) seuili
-                4002 format (' <CONTACT>        SEUIL_INIT : <',e10.3,'>')
+                write(ifm,402) seuili
+
 !
 ! --------- LIAISON SUIVANTE
 !
                 iptc = iptc + 1
 !
- 30         continue
- 20     continue
+            end do
+        end do
  25     continue
- 10 end do
+    end do
+    
+!
+101 format (' <CONTACT>        NOEUD :',a8)
+100 format (' <CONTACT>     * MAILLE ESCLAVE ',a8,' ( ZONE ',i5,') - (',i5,' NOEUDS ) - (',&
+             i5,' POINTS DE CONTACT )' )
+200 format (' <CONTACT>     ** POINT DE CONTACT ',i3)
+300 format (' <CONTACT>        SITUE EN  : <', e10.3,',',e10.3,'> - POIDS INTEGRATION: ',e10.3)
+201 format (' <CONTACT>        NORMALE   : <', e10.3,',',e10.3,',',e10.3,'>')
+202 format (' <CONTACT>        TANGENTES : <', e10.3,',',e10.3,',',e10.3,'> <',&
+                                        e10.3,',',e10.3,',',e10.3,'>')
+203 format (' <CONTACT>        SE PROJETTE SUR LA MAILLE MAITRE ', a8,' EN  <',e10.3,',',e10.3,'>')
+402 format (' <CONTACT>        SEUIL_INIT : <',e10.3,'>')
+700 format (' <CONTACT>        ETAT : EN CONTACT')
+701 format (' <CONTACT>        ETAT : PAS EN CONTACT')
 !
     call jedema()
 !

@@ -66,7 +66,7 @@ implicit none
     aster_logical :: lgcpc, lpetsc, lamg, limpex, l_matr_rigi_syme
     aster_logical :: londe, l_dyna, l_grot_gdep, ltheta, l_newt_krylov, l_mumps
     aster_logical :: l_energy, lproj, lmatdi, lldsp, lctgcp, l_comp_rela
-    character(len=24) :: typilo, metres, sdcont_defi
+    character(len=24) :: typilo, metres
     character(len=16) :: reli_meth, matrix_pred
     character(len=3) :: mfdet
     character(len=24), pointer :: slvk(:) => null()
@@ -124,11 +124,10 @@ implicit none
 ! - Contact (DISCRETE)
 !
     if (l_cont_disc) then
-        sdcont_defi = ds_contact%sdcont_defi
-        lmodim = cfdisl(sdcont_defi,'MODI_MATR_GLOB')
-        lallv = cfdisl(sdcont_defi,'ALL_VERIF')
-        lpena = cfdisl(sdcont_defi,'CONT_PENA')
-        lctgcp = cfdisl(sdcont_defi,'CONT_GCP')
+        lmodim = cfdisl(ds_contact%sdcont_defi,'MODI_MATR_GLOB')
+        lallv = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF')
+        lpena = cfdisl(ds_contact%sdcont_defi,'CONT_PENA')
+        lctgcp = cfdisl(ds_contact%sdcont_defi,'CONT_GCP')
         if (l_pilo) then
             call utmess('F', 'MECANONLINE_43')
         endif

@@ -17,10 +17,10 @@
 !
 !
 interface
-    subroutine xoptin(mesh, model, sdcont_defi, sdcont_solv)
+    subroutine xoptin(mesh, model, ds_contact)
+        use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
         character(len=8), intent(in) :: model
-        character(len=24), intent(in) :: sdcont_defi
-        character(len=24), intent(in) :: sdcont_solv
+        type(NL_DS_Contact), intent(in) :: ds_contact
     end subroutine xoptin
 end interface

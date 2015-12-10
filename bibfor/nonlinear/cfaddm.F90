@@ -1,6 +1,18 @@
-subroutine cfaddm(resoco, lctfd, lctf3d, posnoe, iliai,&
+subroutine cfaddm(ds_contact, lctfd, lctf3d, posnoe, iliai,&
                   ndimg, nbnom, posnsm, coefno, tau1,&
                   tau2, norm, jeu, coornp)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/cfcoef.h"
+#include "asterfort/cfcoem.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,15 +32,7 @@ subroutine cfaddm(resoco, lctfd, lctf3d, posnoe, iliai,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/cfcoef.h"
-#include "asterfort/cfcoem.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-    character(len=24) :: resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
     integer :: posnoe, iliai
     integer :: nbnom, ndimg
     integer :: posnsm(*)
@@ -45,8 +49,7 @@ subroutine cfaddm(resoco, lctfd, lctf3d, posnoe, iliai,&
 !
 ! ----------------------------------------------------------------------
 !
-!
-! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  LCTFD  : FROTTEMENT
 ! IN  LCTF3D : FROTTEMENT EN 3D
 ! IN  POSNOE : INDICE DANS CONTNO DU NOEUD ESCLAVE
@@ -79,16 +82,16 @@ subroutine cfaddm(resoco, lctfd, lctf3d, posnoe, iliai,&
 !
 ! --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
 !
-    tangco = resoco(1:14)//'.TANGCO'
-    jeuite = resoco(1:14)//'.JEUITE'
-    approj = resoco(1:14)//'.APPROJ'
+    tangco = ds_contact%sdcont_solv(1:14)//'.TANGCO'
+    jeuite = ds_contact%sdcont_solv(1:14)//'.JEUITE'
+    approj = ds_contact%sdcont_solv(1:14)//'.APPROJ'
     call jeveuo(tangco, 'E', jtango)
     call jeveuo(jeuite, 'E', jjeuit)
     call jeveuo(approj, 'E', jappro)
 !
 ! --- CALCUL DES COEFFICIENTS DES RELATIONS LINEAIRES
 !
-    call cfcoef(ndimg, resoco, nbnom, posnsm, coefno,&
+    call cfcoef(ndimg, ds_contact%sdcont_solv, nbnom, posnsm, coefno,&
                 posnoe, norm, tau1, tau2, coef,&
                 cofx, cofy, nbddlt, ddl)
 !
@@ -120,7 +123,7 @@ subroutine cfaddm(resoco, lctfd, lctf3d, posnoe, iliai,&
 !
 ! --- COEFFICIENTS RELATIONS LINEAIRES APPARIEMENT
 !
-    call cfcoem(resoco, lctfd, lctf3d, posnoe, iliai,&
+    call cfcoem(ds_contact%sdcont_solv, lctfd, lctf3d, posnoe, iliai,&
                 nbddlt, nbnom, posnsm, ddl, coef,&
                 cofx, cofy)
 !

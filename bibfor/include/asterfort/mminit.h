@@ -16,11 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mminit(mesh  , sdcont_defi, sdcont_solv, sddyna  , hat_valinc,&
-                      sdtime, sdstat     , sdnume     , nume_dof, nume_inst)
+    subroutine mminit(mesh  , ds_contact, sddyna  , hat_valinc, sdtime,&
+                      sdstat, sdnume    , nume_dof, nume_inst)
+        use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
-        character(len=24), intent(in) :: sdcont_defi
-        character(len=24), intent(in) :: sdcont_solv
+        type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19), intent(in) :: hat_valinc(*)
         character(len=24), intent(in) :: sdtime
         character(len=24), intent(in) :: sdstat

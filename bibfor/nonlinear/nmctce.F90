@@ -1,5 +1,7 @@
-subroutine nmctce(model , mesh     , sdcont_defi, sdcont_solv, sddyna,&
-                  sddisc, nume_inst)
+subroutine nmctce(model    , mesh, ds_contact, sddyna, sddisc,&
+                  nume_inst)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -31,8 +33,7 @@ implicit none
 !
     character(len=8), intent(in) :: model
     character(len=8), intent(in) :: mesh
-    character(len=24), intent(in) :: sdcont_defi 
-    character(len=24), intent(in) :: sdcont_solv
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19), intent(in)  :: sddyna
     character(len=19), intent(in)  :: sddisc
     integer, intent(in) :: nume_inst
@@ -47,18 +48,16 @@ implicit none
 !
 ! In  model            : name of model
 ! In  mesh             : name of mesh
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
-! In  sdcont_solv      : name of contact solving datastructure
+! In  ds_contact       : datastructure for contact management
 ! In  sddyna           : dynamic parameters datastructure
 ! In  sddisc           : datastructure for time discretization
 ! In  nume_inst        : index of current step time
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: cont_form
     integer :: ifm, niv
+    integer :: cont_form
     aster_logical :: l_cont_xfem_gg
-    character(len=8) :: nomo
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -69,18 +68,16 @@ implicit none
 !
 ! - Parameters
 !
-    cont_form      = cfdisi(sdcont_defi,'FORMULATION')
-    l_cont_xfem_gg = cfdisl(sdcont_defi,'CONT_XFEM_GG')
-    nomo           = model(1:8)
+    cont_form      = cfdisi(ds_contact%sdcont_defi,'FORMULATION')
+    l_cont_xfem_gg = cfdisl(ds_contact%sdcont_defi,'CONT_XFEM_GG')
 !
 ! - Create input fields for contact
 !
     if (cont_form .eq. 2) then
-        call mmchml(mesh, sdcont_defi, sdcont_solv, sddisc, sddyna,&
-                    nume_inst)
+        call mmchml(mesh, ds_contact, sddisc, sddyna, nume_inst)
     elseif  (cont_form .eq. 3) then
         if (l_cont_xfem_gg) then
-            call xmcart(mesh, sdcont_defi, nomo, sdcont_solv)
+            call xmcart(mesh, model, ds_contact)
         endif
     else
         ASSERT(.false.)

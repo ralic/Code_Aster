@@ -16,10 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfmmco(defico, resoco, izone, nomcoz, action,&
-                      valr)
-        character(len=24) :: defico
-        character(len=24) :: resoco
+    subroutine cfmmco(ds_contact, izone, nomcoz, action, valr)
+        use NonLin_Datastructure_type
+        type(NL_DS_Contact), intent(in) :: ds_contact
         integer :: izone
         character(len=*) :: nomcoz
         character(len=1) :: action

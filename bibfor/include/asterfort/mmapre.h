@@ -18,11 +18,11 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine mmapre(noma, numedd, defico, resoco, sdappa)
-        character(len=8) :: noma
-        character(len=24) :: numedd
-        character(len=24) :: defico
-        character(len=24) :: resoco
-        character(len=19) :: sdappa
+    subroutine mmapre(mesh, nume_dof, ds_contact, sdappa)
+        use NonLin_Datastructure_type
+        character(len=8), intent(in) :: mesh
+        character(len=24), intent(in) :: nume_dof
+        type(NL_DS_Contact), intent(in) :: ds_contact
+        character(len=19), intent(in) :: sdappa
     end subroutine mmapre
 end interface

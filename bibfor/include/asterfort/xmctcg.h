@@ -18,12 +18,11 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine xmctcg(model , mesh, sdcont_defi, sdcont_solv, sdstat,&
-                      sdtime)
+    subroutine xmctcg(model, mesh, ds_contact, sdstat, sdtime)
+        use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
-        character(len=24), intent(in) :: model
-        character(len=24), intent(in) :: sdcont_defi
-        character(len=24), intent(in) :: sdcont_solv
+        character(len=8), intent(in) :: model
+        type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=24), intent(in) :: sdtime
         character(len=24), intent(in) :: sdstat
     end subroutine xmctcg

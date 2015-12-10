@@ -1,7 +1,24 @@
-subroutine cfchno(noma, defico, ndimg, posnoe, typenm,&
+subroutine cfchno(noma, ds_contact, ndimg, posnoe, typenm,&
                   numenm, lmait, lescl, lmfixe, lefixe,&
                   tau1m, tau2m, tau1e, tau2e, tau1,&
                   tau2)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfnomm.h"
+#include "asterfort/cfnorm.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mmmron.h"
+#include "asterfort/mmnorm.h"
+#include "asterfort/mmtann.h"
+#include "asterfort/utmess.h"
+#include "blas/dcopy.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,28 +38,11 @@ subroutine cfchno(noma, defico, ndimg, posnoe, typenm,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/r8prem.h"
-#include "asterfort/assert.h"
-#include "asterfort/cfnomm.h"
-#include "asterfort/cfnorm.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/mmmron.h"
-#include "asterfort/mmnorm.h"
-#include "asterfort/mmtann.h"
-#include "asterfort/utmess.h"
-#include "blas/dcopy.h"
-!
     character(len=8) :: noma
     character(len=4) :: typenm
     integer :: ndimg
     integer :: posnoe, numenm
-    character(len=24) :: defico
+    type(NL_DS_Contact), intent(in) :: ds_contact
     real(kind=8) :: tau1m(3), tau2m(3)
     real(kind=8) :: tau1e(3), tau2e(3)
     real(kind=8) :: tau1(3), tau2(3)
@@ -57,10 +57,9 @@ subroutine cfchno(noma, defico, ndimg, posnoe, typenm,&
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  NOMA   : NOM DU MAILLAGE
 ! IN  NDIMG  : DIMENSION DU MODELE
-! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  LMFIXE : .TRUE. SI LA NORMALE MAITRE EST FIXE OU VECT_Y
 ! IN  LEFIXE : .TRUE. SI LA NORMALE ESCLAVE EST FIXE OU VECT_Y
 ! IN  LMAIT  : .TRUE. SI LA NORMALE = MAITRE  / MAIT_ESCL
@@ -90,7 +89,6 @@ subroutine cfchno(noma, defico, ndimg, posnoe, typenm,&
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
 !
 ! --- NOM DE L'ENTITE (NOEUD OU MAILLE)
 !
@@ -107,7 +105,7 @@ subroutine cfchno(noma, defico, ndimg, posnoe, typenm,&
     if (posnoe .le. 0) then
         nomnoe = 'PT CONT.'
     else
-        call cfnomm(noma, defico, 'NOEU', posnoe, nomnoe)
+        call cfnomm(noma, ds_contact%sdcont_defi, 'NOEU', posnoe, nomnoe)
     endif
     valk(1) = nomnoe
     valk(2) = nomenm
@@ -141,9 +139,9 @@ subroutine cfchno(noma, defico, ndimg, posnoe, typenm,&
     if (lmait .and. (.not.lescl)) then
         call dcopy(3, mnorm, 1, norm, 1)
     else if (lmait.and.lescl) then
-        do 20 i = 1, 3
+        do i = 1, 3
             norm(i) = (enorm(i) + mnorm(i))/2.d0
- 20     continue
+        end do
     else if (lescl) then
         call dcopy(3, enorm, 1, norm, 1)
     else
@@ -187,7 +185,5 @@ subroutine cfchno(noma, defico, ndimg, posnoe, typenm,&
             ASSERT(.false.)
         endif
     endif
-!
-    call jedema()
 !
 end subroutine

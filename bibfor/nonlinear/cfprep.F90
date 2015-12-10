@@ -1,5 +1,23 @@
-subroutine cfprep(noma, defico, resoco, matass, ddepla,&
-                  depdel)
+subroutine cfprep(noma, ds_contact, matass, ddepla, depdel)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/cfdiag.h"
+#include "asterfort/cfdisd.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfjein.h"
+#include "asterfort/cfliin.h"
+#include "asterfort/cfprch.h"
+#include "asterfort/cfrsmu.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,25 +37,11 @@ subroutine cfprep(noma, defico, resoco, matass, ddepla,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/cfdiag.h"
-#include "asterfort/cfdisd.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/cfjein.h"
-#include "asterfort/cfliin.h"
-#include "asterfort/cfprch.h"
-#include "asterfort/cfrsmu.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-    character(len=8) :: noma
-    character(len=24) :: defico, resoco
-    character(len=19) :: matass
-    character(len=19) :: ddepla, depdel
+    character(len=8), intent(in) :: noma
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=19), intent(in) :: matass
+    character(len=19), intent(in) :: ddepla
+    character(len=19), intent(in) :: depdel
 !
 ! ----------------------------------------------------------------------
 !
@@ -49,9 +53,8 @@ subroutine cfprep(noma, defico, resoco, matass, ddepla,&
 !
 !
 ! IN  NOMA   : NOM DU MAILLAGE
-! IN  DEFICO : SD DE DEFINITION DU CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  MATASS : NOM DE LA MATRICE DU PREMIER MEMBRE ASSEMBLEE
-! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
 ! IN  DDEPLA : INCREMENT DE DEPLACEMENT DEPUIS L'ITERATION
 !              DE NEWTON PRECEDENTE
 ! IN  DEPDEL : INCREMENT DE DEPLACEMENT CUMULE DEPUIS DEBUT DU PAS
@@ -86,22 +89,22 @@ subroutine cfprep(noma, defico, resoco, matass, ddepla,&
 !
 ! --- PARAMETRES
 !
-    nbliai = cfdisd(resoco,'NBLIAI' )
-    ndim = cfdisd(resoco,'NDIM' )
-    ntpc = cfdisi(defico,'NTPC' )
-    lpenac = cfdisl(defico,'CONT_PENA' )
-    lpenaf = cfdisl(defico,'FROT_PENA' )
-    llagrc = cfdisl(defico,'CONT_LAGR' )
-    llagrf = cfdisl(defico,'FROT_LAGR' )
-    lctfd = cfdisl(defico,'FROT_DISCRET')
+    nbliai = cfdisd(ds_contact%sdcont_solv,'NBLIAI' )
+    ndim = cfdisd(ds_contact%sdcont_solv,'NDIM' )
+    ntpc = cfdisi(ds_contact%sdcont_defi,'NTPC' )
+    lpenac = cfdisl(ds_contact%sdcont_defi,'CONT_PENA' )
+    lpenaf = cfdisl(ds_contact%sdcont_defi,'FROT_PENA' )
+    llagrc = cfdisl(ds_contact%sdcont_defi,'CONT_LAGR' )
+    llagrf = cfdisl(ds_contact%sdcont_defi,'FROT_LAGR' )
+    lctfd = cfdisl(ds_contact%sdcont_defi,'FROT_DISCRET')
 !
 ! --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
 !
-    liot = resoco(1:14)//'.LIOT'
-    liac = resoco(1:14)//'.LIAC'
-    mu = resoco(1:14)//'.MU'
-    clreac = resoco(1:14)//'.REAL'
-    copo = resoco(1:14)//'.COPO'
+    liot = ds_contact%sdcont_solv(1:14)//'.LIOT'
+    liac = ds_contact%sdcont_solv(1:14)//'.LIAC'
+    mu = ds_contact%sdcont_solv(1:14)//'.MU'
+    clreac = ds_contact%sdcont_solv(1:14)//'.REAL'
+    copo = ds_contact%sdcont_solv(1:14)//'.COPO'
     call jeveuo(liot, 'E', jliot)
     call jeveuo(liac, 'E', jliac)
     call jeveuo(mu, 'E', jmu)
@@ -121,12 +124,12 @@ subroutine cfprep(noma, defico, resoco, matass, ddepla,&
 !
     if (llagrc) then
         if (reageo) then
-            do 100 iliai = 1, ntpc
+            do iliai = 1, ntpc
                 zi(jliot+0*ntpc-1+iliai) = 0
                 zi(jliot+1*ntpc-1+iliai) = 0
                 zi(jliot+2*ntpc-1+iliai) = 0
                 zi(jliot+3*ntpc-1+iliai) = 0
-100         continue
+            end do
             zi(jliot+4*ntpc ) = 0
             zi(jliot+4*ntpc+1) = 0
             zi(jliot+4*ntpc+2) = 0
@@ -142,39 +145,39 @@ subroutine cfprep(noma, defico, resoco, matass, ddepla,&
 ! --- INITIALISATIONS DES LAGRANGES
 !
     if (llagrc .and. lctfd .and. reageo) then
-        do 331 iliai = 1, ntpc
+        do iliai = 1, ntpc
             zr(jmu+3*ntpc+iliai-1) = 0.d0
             zr(jmu+2*ntpc+iliai-1) = 0.d0
             zr(jmu+ ntpc+iliai-1) = 0.d0
             zr(jmu+ iliai-1) = 0.d0
-331     continue
+        end do
     endif
     if (lpenac .and. lpenaf .and. reapre) then
-        do 332 iliai = 1, ntpc
+        do iliai = 1, ntpc
             zr(jmu+2*ntpc+iliai-1) = 0.d0
             zr(jmu+ ntpc+iliai-1) = 0.d0
-332     continue
+        end do
     endif
 !
     if (lpenac) then
-        do 40 iliai = 1, ntpc
+        do iliai = 1, ntpc
             zr(jmu+ iliai-1) = 0.d0
             if (lpenaf) then
                 zr(jmu+3*ntpc+iliai-1) = 0.d0
             endif
- 40     continue
+        end do
     endif
 !
 ! --- RESTAURATION DU LAGRANGE DE CONTACT
 ! --- APRES UN APPARIEMENT
 !
     if (reageo) then
-        call cfrsmu(defico, resoco, reapre)
+        call cfrsmu(ds_contact, reapre)
     endif
 !
 ! --- PREPARATION DES CHAMPS
 !
-    call cfprch(defico, resoco, ddepla, depdel)
+    call cfprch(ds_contact, ddepla, depdel)
 !
 ! --- SAUVEGARDE DE LA VALEUR MAXI SUR LA DIAGONALE DE LA
 ! --- MATR_ASSE DU SYSTEME
@@ -187,11 +190,11 @@ subroutine cfprep(noma, defico, resoco, matass, ddepla,&
 !
 ! --- CALCUL DES JEUX INITIAUX
 !
-    call cfjein(noma, defico, resoco, depdel)
+    call cfjein(noma, ds_contact, depdel)
 !
 ! --- LIAISONS INITIALES
 !
-    call cfliin(noma, defico, resoco)
+    call cfliin(noma, ds_contact)
 !
     call jedema()
 !

@@ -1,4 +1,12 @@
-subroutine cfdeco(defico, resoco)
+subroutine cfdeco(ds_contact)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterfort/cfsvfr.h"
+#include "asterfort/cfsvmu.h"
+#include "asterfort/jedupo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,11 +26,7 @@ subroutine cfdeco(defico, resoco)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "asterfort/cfsvfr.h"
-#include "asterfort/cfsvmu.h"
-#include "asterfort/jedupo.h"
-    character(len=24) :: defico, resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! ----------------------------------------------------------------------
 !
@@ -47,8 +51,7 @@ subroutine cfdeco(defico, resoco)
 !
 ! RECUPERATION ULTERIEURE DANS CFINAL
 !
-! IN  DEFICO : SD DE DEFINITION DU CONTACT
-! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
+! In  ds_contact       : datastructure for contact management
 !
 ! ----------------------------------------------------------------------
 !
@@ -58,16 +61,16 @@ subroutine cfdeco(defico, resoco)
 !
 ! --- SAUVEGARDE DU JEU POUR REAC_GEOM='SANS'
 !
-    jeuite = resoco(1:14)//'.JEUITE'
-    jeusav = resoco(1:14)//'.JEUSAV'
+    jeuite = ds_contact%sdcont_solv(1:14)//'.JEUITE'
+    jeusav = ds_contact%sdcont_solv(1:14)//'.JEUSAV'
     call jedupo(jeuite, 'V', jeusav, .false._1)
 !
 ! --- SAUVEGARDE DU LAGRANGE DE CONTACT POUR ALGO_CONT='GCP'
 !
-    call cfsvmu(defico, resoco, .true._1)
+    call cfsvmu(ds_contact, .true._1)
 !
 ! --- SAUVEGARDE DU STATUT DE FROTTEMENT POUR ALGO_FROT='LAGRANGIEN'
 !
-    call cfsvfr(defico, resoco, .true._1)
+    call cfsvfr(ds_contact, .true._1)
 !
 end subroutine

@@ -16,16 +16,17 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mmlige(mesh      , sdcont_defi, sdcont_solv, v_list_elem, nb_cont_type,&
-                      v_cnt_cont, v_cnt_frot , nt_node    , nb_grel)
+    subroutine mmlige(mesh      , ds_contact, v_list_elem, nb_cont_type, v_cnt_cont,&
+                      v_cnt_frot, nt_node   , nb_grel    , nb_cont_elem)
+        use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
-        character(len=24), intent(in) :: sdcont_defi
-        character(len=24), intent(in) :: sdcont_solv
+        type(NL_DS_Contact), intent(in) :: ds_contact
         integer, intent(out), pointer :: v_list_elem(:)
         integer, intent(out) :: nb_cont_type
         integer, intent(out), pointer :: v_cnt_cont(:)
         integer, intent(out), pointer :: v_cnt_frot(:)
         integer, intent(out) :: nt_node
         integer, intent(out) :: nb_grel
+        integer, intent(out) :: nb_cont_elem
     end subroutine mmlige
 end interface

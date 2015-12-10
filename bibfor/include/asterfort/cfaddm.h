@@ -18,10 +18,11 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine cfaddm(resoco, lctfd, lctf3d, posnoe, iliai,&
+    subroutine cfaddm(ds_contact, lctfd, lctf3d, posnoe, iliai,&
                       ndimg, nbnom, posnsm, coefno, tau1,&
                       tau2, norm, jeu, coornp)
-        character(len=24) :: resoco
+        use NonLin_Datastructure_type
+        type(NL_DS_Contact), intent(in) :: ds_contact
         aster_logical :: lctfd
         aster_logical :: lctf3d
         integer :: posnoe

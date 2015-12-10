@@ -1,4 +1,6 @@
-subroutine mmbouc(sdcont_solv, loop_name, operation, loop_value)
+subroutine mmbouc(ds_contact, loop_name, operation, loop_value)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -23,7 +25,7 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=24), intent(in) :: sdcont_solv
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=4), intent(in) :: loop_name
     character(len=4), intent(in) :: operation
     integer, intent(out), optional :: loop_value
@@ -36,7 +38,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sdcont_solv      : name of contact solving datastructure
+! In  ds_contact       : datastructure for contact management
 ! In  loop_name        : name of loop
 !                        'CONT' - Contact status
 !                        'FROT' - Friction trigger
@@ -54,7 +56,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    sdcont_mboucl = sdcont_solv(1:14)//'.MBOUCL'
+    sdcont_mboucl = ds_contact%sdcont_solv(1:14)//'.MBOUCL'
     call jeveuo(sdcont_mboucl, 'E', vi = v_sdcont_mboucl)
 !
     if (loop_name .eq. 'CONT') then

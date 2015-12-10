@@ -1,4 +1,19 @@
-subroutine xmelem(noma, modele, defico, resoco)
+subroutine xmelem(mesh, model, ds_contact)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/utmess.h"
+#include "asterfort/xmele1.h"
+#include "asterfort/xmele2.h"
+#include "asterfort/xmele3.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,19 +33,9 @@ subroutine xmelem(noma, modele, defico, resoco)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/utmess.h"
-#include "asterfort/xmele1.h"
-#include "asterfort/xmele2.h"
-#include "asterfort/xmele3.h"
-    character(len=8) :: modele, noma
-    character(len=24) :: resoco, defico
+    character(len=8), intent(in) :: mesh
+    character(len=8), intent(in) :: model
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! ----------------------------------------------------------------------
 !
@@ -40,42 +45,33 @@ subroutine xmelem(noma, modele, defico, resoco)
 !
 ! ----------------------------------------------------------------------
 !
+! In  mesh             : name of mesh
+! In  model            : name of model
+! In  ds_contact       : datastructure for contact management
 !
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  MODELE : NOM DU MODELE
-! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
-! IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
-!
-!
-!
-!
-!
-    integer :: ifm, niv, nfiss,  nfismx, jxc, contac
+    integer :: ifm, niv, contac, nfiss
     character(len=19) :: ligrel
     character(len=19) :: xdonco, xindco, xseuco, xmemco, xgliss, xcohes
     character(len=19) :: xindcp, xmemcp, xseucp, xcohep
     integer, pointer :: nfis(:) => null()
     integer, pointer :: xfem_cont(:) => null()
-    parameter    (nfismx=100)
+    integer, parameter :: nfismx = 100
 !
 ! ----------------------------------------------------------------------
 !
     call jemarq()
     call infdbg('XFEM', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<XFEM  > CREATION DES CHAM_ELEM'
     endif
 !
 ! --- INITIALISATIONS
 !
-    ligrel = modele//'.MODELE'
+    ligrel = model//'.MODELE'
 !
 ! --- NOMBRE DE FISSURES
 !
-    call jeveuo(modele//'.NFIS', 'L', vi=nfis)
+    call jeveuo(model//'.NFIS', 'L', vi=nfis)
     nfiss = nfis(1)
     if (nfiss .gt. nfismx) then
         call utmess('F', 'XFEM_2', si=nfismx)
@@ -86,70 +82,67 @@ subroutine xmelem(noma, modele, defico, resoco)
 !
 ! --- ON VA CHERCHER LE TYPE DE CONTACT: STANDARD OU MORTAR?
 !
-    call jeveuo(modele//'.XFEM_CONT','L',vi=xfem_cont)
+    call jeveuo(model//'.XFEM_CONT','L',vi=xfem_cont)
     contac = xfem_cont(1)
-!
-!
-!
-    xindco = resoco(1:14)//'.XFIN'
-    xmemco = resoco(1:14)//'.XMEM'
-    xindcp = resoco(1:14)//'.XFIP'
-    xmemcp = resoco(1:14)//'.XMEP'
-    xdonco = resoco(1:14)//'.XFDO'
-    xseuco = resoco(1:14)//'.XFSE'
-    xseucp = resoco(1:14)//'.XFSP'
-    xgliss = resoco(1:14)//'.XFGL'
-    xcohes = resoco(1:14)//'.XCOH'
-    xcohep = resoco(1:14)//'.XCOP'
+    xindco = ds_contact%sdcont_solv(1:14)//'.XFIN'
+    xmemco = ds_contact%sdcont_solv(1:14)//'.XMEM'
+    xindcp = ds_contact%sdcont_solv(1:14)//'.XFIP'
+    xmemcp = ds_contact%sdcont_solv(1:14)//'.XMEP'
+    xdonco = ds_contact%sdcont_solv(1:14)//'.XFDO'
+    xseuco = ds_contact%sdcont_solv(1:14)//'.XFSE'
+    xseucp = ds_contact%sdcont_solv(1:14)//'.XFSP'
+    xgliss = ds_contact%sdcont_solv(1:14)//'.XFGL'
+    xcohes = ds_contact%sdcont_solv(1:14)//'.XCOH'
+    xcohep = ds_contact%sdcont_solv(1:14)//'.XCOP'
 !
 ! ---
 !
     if(contac.eq.1.or.contac.eq.3) then
-        call xmele1(noma, modele, defico, ligrel, nfiss,&
+        call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
                     xindco, 'PINDCOI', 'RIGI_CONT')
-        call xmele1(noma, modele, defico, ligrel, nfiss,&
+        call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
                     xmemco, 'PMEMCON', 'XCVBCA')
-        call xmele1(noma, modele, defico, ligrel, nfiss,&
+        call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
                     xindcp, 'PINDCOI', 'RIGI_CONT')
-        call xmele1(noma, modele, defico, ligrel, nfiss,&
+        call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
                     xmemcp, 'PMEMCON', 'XCVBCA')
-        call xmele1(noma, modele, defico, ligrel, nfiss,&
+        call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
                     xseuco, 'PSEUIL', 'RIGI_CONT')
-        call xmele1(noma, modele, defico, ligrel, nfiss,&
+        call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
                     xseucp, 'PSEUIL', 'XREACL')
-        call xmele1(noma, modele, defico, ligrel, nfiss,&
+        call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
                     xgliss, 'PGLISS', 'XCVBCA')
     else if(contac.eq.2) then
-        call xmele1(noma, modele, defico, ligrel, nfiss,&
+        call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
                     xindco, 'PINDCOI', 'RIGI_CONT_M')
-        call xmele1(noma, modele, defico, ligrel, nfiss,&
+        call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
                     xmemco, 'PMEMCON', 'XCVBCA_MORTAR')
-        call xmele1(noma, modele, defico, ligrel, nfiss,&
+        call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
                     xindcp, 'PINDCOI', 'RIGI_CONT_M')
-        call xmele1(noma, modele, defico, ligrel, nfiss,&
+        call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
                     xmemcp, 'PMEMCON', 'XCVBCA_MORTAR')
-        call xmele1(noma, modele, defico, ligrel, nfiss,&
+        call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
                     xseuco, 'PSEUIL', 'RIGI_CONT_M')
-        call xmele1(noma, modele, defico, ligrel, nfiss,&
+        call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
                     xseucp, 'PSEUIL', 'RIGI_CONT_M')
-        call xmele1(noma, modele, defico, ligrel, nfiss,&
+        call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
                     xgliss, 'PGLISS', 'XCVBCA_MORTAR')
     endif
 !
 ! --- SI CONTACT CLASSIQUE, CHAMPS COHESIFS COLLOCATION PTS GAUSS
 !
     if(contac.eq.1.or.contac.eq.3) then
-        call xmele1(noma, modele, defico, ligrel, nfiss,&
+        call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
                     xcohes, 'PCOHES', 'RIGI_CONT')
-        call xmele1(noma, modele, defico, ligrel, nfiss,&
+        call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
                     xcohep, 'PCOHES', 'XCVBCA')
 !
 ! --- SI CONTACT MORTAR, CHAMPS ELNO
 !
     else if (contac.eq.2) then
-        call xmele3(noma, modele, ligrel, nfiss,&
+        call xmele3(mesh, model, ligrel, nfiss,&
                     xcohes, 'PCOHES', 'RIGI_CONT_M')
-        call xmele3(noma, modele, ligrel, nfiss,&
+        call xmele3(mesh, model, ligrel, nfiss,&
                     xcohep, 'PCOHES', 'XCVBCA_MORTAR')
     else
         ASSERT(.false.)
@@ -157,7 +150,7 @@ subroutine xmelem(noma, modele, defico, resoco)
 !
 ! ---
 !
-    call xmele2(noma, modele, defico, ligrel, nfiss,&
+    call xmele2(mesh, model, ds_contact, ligrel, nfiss,&
                 xdonco)
 !
     call jedema()

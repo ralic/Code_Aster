@@ -16,14 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mm_cycl_trait(sdcont_solv  , i_cont_poin, &
+    subroutine mm_cycl_trait(ds_contact    , i_cont_poin, &
                              coef_cont_prev, &
                              coef_frot_prev, pres_frot_prev, dist_frot_prev, &
                              pres_frot_curr, dist_frot_curr, &
                              indi_cont_eval, indi_frot_eval, &
                              indi_cont_curr, coef_cont_curr, &
                              indi_frot_curr, coef_frot_curr)
-        character(len=24), intent(in) :: sdcont_solv
+        use NonLin_Datastructure_type
+        type(NL_DS_Contact), intent(in) :: ds_contact
         integer, intent(in) :: i_cont_poin
         real(kind=8), intent(in) :: coef_cont_prev
         real(kind=8), intent(in) :: coef_frot_prev

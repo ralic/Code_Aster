@@ -1,5 +1,20 @@
-subroutine cfinal(defico, resoco, reapre, reageo, nbliac,&
+subroutine cfinal(ds_contact, reapre, reageo, nbliac,&
                   llf, llf1, llf2)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisd.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cftabl.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,18 +34,7 @@ subroutine cfinal(defico, resoco, reapre, reageo, nbliac,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/r8prem.h"
-#include "asterfort/assert.h"
-#include "asterfort/cfdisd.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/cftabl.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-    character(len=24) :: defico, resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
     integer :: nbliac, llf, llf1, llf2
     aster_logical :: reapre, reageo
 !
@@ -42,8 +46,7 @@ subroutine cfinal(defico, resoco, reapre, reageo, nbliac,&
 !
 ! ----------------------------------------------------------------------
 !
-! IN  DEFICO : SD DE DEFINITION DU CONTACT
-! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  REAPRE : .TRUE. SI PREMIERE ACTUALISATION
 ! IN  REAGEO : .TRUE. SI ON VIENT DE FAIRE UN NOUVEL APPARIEMENT
 ! I/O NBLIAC : NOMBRE DE LIAISONS ACTIVES
@@ -79,22 +82,22 @@ subroutine cfinal(defico, resoco, reapre, reageo, nbliac,&
 !
 ! --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
 !
-    liac = resoco(1:14)//'.LIAC'
-    typl = resoco(1:14)//'.TYPL'
+    liac = ds_contact%sdcont_solv(1:14)//'.LIAC'
+    typl = ds_contact%sdcont_solv(1:14)//'.TYPL'
     call jeveuo(liac, 'L', jliac)
     call jeveuo(typl, 'L', jtypl)
-    jeuite = resoco(1:14)//'.JEUITE'
-    jeux = resoco(1:14)//'.JEUX'
+    jeuite = ds_contact%sdcont_solv(1:14)//'.JEUITE'
+    jeux = ds_contact%sdcont_solv(1:14)//'.JEUX'
     call jeveuo(jeuite, 'L', jjeuit)
     call jeveuo(jeux, 'L', jjeux)
 !
-    numlia = resoco(1:14)//'.NUMLIA'
+    numlia = ds_contact%sdcont_solv(1:14)//'.NUMLIA'
     call jeveuo(numlia, 'L', jnumli)
 !
     if (reapre) then
-        statfr = resoco(1:14)//'.STF0'
+        statfr = ds_contact%sdcont_solv(1:14)//'.STF0'
     else
-        statfr = resoco(1:14)//'.STFR'
+        statfr = ds_contact%sdcont_solv(1:14)//'.STFR'
     endif
 !
 ! --- INITIALISATIONS
@@ -109,15 +112,15 @@ subroutine cfinal(defico, resoco, reapre, reageo, nbliac,&
 !
 ! --- PARAMETRES
 !
-    nbliai = cfdisd(resoco,'NBLIAI' )
-    lgcp = cfdisl(defico,'CONT_GCP')
-    llagrc = cfdisl(defico,'CONT_LAGR')
-    llagrf = cfdisl(defico,'FROT_LAGR')
-    lgliss = cfdisl(defico,'CONT_DISC_GLIS')
+    nbliai = cfdisd(ds_contact%sdcont_solv,'NBLIAI' )
+    lgcp = cfdisl(ds_contact%sdcont_defi,'CONT_GCP')
+    llagrc = cfdisl(ds_contact%sdcont_defi,'CONT_LAGR')
+    llagrf = cfdisl(ds_contact%sdcont_defi,'FROT_LAGR')
+    lgliss = cfdisl(ds_contact%sdcont_defi,'CONT_DISC_GLIS')
 !
 ! --- DETECTION DES COUPLES DE NOEUDS INTERPENETRES
 !
-    do 10 iliai = 1, nbliai
+    do iliai = 1, nbliai
 !
 ! ----- JEU SANS CORRECTION DU CONTACT
 !
@@ -155,12 +158,12 @@ subroutine cfinal(defico, resoco, reapre, reageo, nbliac,&
 ! ----- LA LIAISON EXISTE-T-ELLE DEJA ?
 !
         liaexi = .false.
-        do 20 iliac = 1, btotin
+        do iliac = 1, btotin
             if (zi(jliac-1+iliac) .eq. iliai) then
                 typeli = zk8(jtypl-1+iliac)(1:2)
                 if (typeli .eq. typec0) liaexi = .true.
             endif
- 20     continue
+        end do
 !
 ! ----- SI LAGRANGIEN: ON ACTIVE UNE LIAISON QUE SI ON EST APRES
 ! ----- UN NOUVEL APPARIEMENT
@@ -190,11 +193,11 @@ subroutine cfinal(defico, resoco, reapre, reageo, nbliac,&
 !
         if (liaact) then
             call cftabl(indic, nbliac, ajliai, spliai, llf,&
-                        llf1, llf2, resoco, typeaj, posit,&
+                        llf1, llf2, ds_contact%sdcont_solv, typeaj, posit,&
                         iliai, typec0)
         endif
 !
- 10 end do
+    end do
 !
 ! --- EN LAGRANGIEN
 ! --- L'ETAT DES LIAISONS DE FROTTEMENT EST CONSERVE
@@ -205,7 +208,7 @@ subroutine cfinal(defico, resoco, reapre, reageo, nbliac,&
     if (llagrf) then
         call jeveuo(statfr, 'E', jstfr)
         if (reageo) then
-            do 30 iliac = 1, nbliac
+            do iliac = 1, nbliac
                 ASSERT(zk8(jtypl-1+iliac).eq.'C0')
                 iliai = zi(jliac -1+iliac)
                 posnoe = zi(jnumli-1+4*(iliai-1)+2)
@@ -214,10 +217,10 @@ subroutine cfinal(defico, resoco, reapre, reageo, nbliac,&
                     ASSERT(typlia .eq. 'F0' .or. typlia .eq. 'F1' .or. typlia .eq. 'F2')
                     posit = nbliac + llf + llf1 + llf2 + 1
                     call cftabl(indic, nbliac, ajliai, spliai, llf,&
-                                llf1, llf2, resoco, typeaj, posit,&
+                                llf1, llf2, ds_contact%sdcont_solv, typeaj, posit,&
                                 iliai, typlia)
                 endif
- 30         continue
+            end do
         endif
     endif
 !

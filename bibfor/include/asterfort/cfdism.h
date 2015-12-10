@@ -18,11 +18,12 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine cfdism(defico, ldpou, ldcoq, posnoe, distst)
-        character(len=24) :: defico
-        aster_logical :: ldpou
-        aster_logical :: ldcoq
-        integer :: posnoe
-        real(kind=8) :: distst
+    subroutine cfdism(ds_contact, l_dist_beam, l_dist_shell, node_slav_indx, gap_structural)
+        use NonLin_Datastructure_type
+        type(NL_DS_Contact), intent(in) :: ds_contact
+        aster_logical, intent(in) :: l_dist_beam
+        aster_logical, intent(in) :: l_dist_shell
+        integer, intent(in) :: node_slav_indx
+        real(kind=8), intent(out) :: gap_structural
     end subroutine cfdism
 end interface

@@ -16,11 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine copnor(noma, defico, resoco, posmai, ksi1,&
+    subroutine copnor(noma, ds_contact, posmai, ksi1,&
                       ksi2, tau1, tau2)
+        use NonLin_Datastructure_type
         character(len=8) :: noma
-        character(len=24) :: defico
-        character(len=24) :: resoco
+        type(NL_DS_Contact), intent(in) :: ds_contact
         integer :: posmai
         real(kind=8) :: ksi1
         real(kind=8) :: ksi2

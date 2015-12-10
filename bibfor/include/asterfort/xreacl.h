@@ -16,10 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xreacl(noma, nomo, valinc, resoco)
-        character(len=8) :: noma
-        character(len=8) :: nomo
-        character(len=19) :: valinc(*)
-        character(len=24) :: resoco
+    subroutine xreacl(mesh, model, hval_incr, ds_contact)
+        use NonLin_Datastructure_type
+        character(len=8), intent(in) :: mesh
+        character(len=8), intent(in) :: model
+        character(len=19), intent(in) :: hval_incr(*)
+        type(NL_DS_Contact), intent(in) :: ds_contact
     end subroutine xreacl
 end interface

@@ -1,4 +1,27 @@
-subroutine cfcrsd(noma, numedd, defico, resoco)
+subroutine cfcrsd(mesh, nume_dof, ds_contact)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterc/r8vide.h"
+#include "asterfort/cfcrje.h"
+#include "asterfort/cfcrli.h"
+#include "asterfort/cfcrma.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/vtcreb.h"
+#include "asterfort/wkvect.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,47 +41,23 @@ subroutine cfcrsd(noma, numedd, defico, resoco)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
+    character(len=8), intent(in) :: mesh
+    character(len=24), intent(in) :: nume_dof
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
-#include "asterc/r8vide.h"
-#include "asterfort/cfcrje.h"
-#include "asterfort/cfcrli.h"
-#include "asterfort/cfcrma.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/cfmmvd.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jecrec.h"
-#include "asterfort/jecroc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jeecra.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/vtcreb.h"
-#include "asterfort/wkvect.h"
-    character(len=8) :: noma
-    character(len=24) :: numedd
-    character(len=24) :: defico, resoco
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! Contact - Solve
 !
-! ROUTINE CONTACT (METHODES DISCRETES)
+! Discrete methods - Create datastructures for DISCRETE methods
 !
-! CREATION DES STRUCTURES DE DONNEES NECESSAIRES AU TRAITEMENT
-! DU CONTACT/FROTTEMENT
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! In  mesh             : name of mesh
+! In  nume_dof         : name of numbering object (NUME_DDL)
+! In  ds_contact       : datastructure for contact management
 !
-!
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  NUMEDD : NOM DU NUME_DDL
-! IN  DEFICO : SD DE DEFINITION DU CONTACT (ISSUE D'AFFE_CHAR_MECA)
-! OUT RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
-!
-!
-!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
     integer :: ztacf
@@ -79,27 +78,23 @@ subroutine cfcrsd(noma, numedd, defico, resoco)
     integer :: jclrea, jtacf, jtango
     aster_logical :: lctfd, lpenac, lpenaf, lmatrc, lgcp, lctf3d, ldiric
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     call infdbg('MECA_NON_LINE', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> ... CREATION DE LA SD RESULTAT'//&
-        ' CONTACT DISCRET'
+        write (ifm,*) '<MECANONLINE> ... CREATION DE LA SD RESULTAT CONTACT DISCRET'
     endif
 !
 ! --- INFOS SUR LA CHARGE DE CONTACT
 !
-    lctfd = cfdisl(defico,'FROT_DISCRET' )
-    lpenac = cfdisl(defico,'CONT_PENA' )
-    lpenaf = cfdisl(defico,'FROT_PENA' )
-    lmatrc = cfdisl(defico,'MATR_CONT' )
-    lgcp = cfdisl(defico,'CONT_GCP' )
-    lctf3d = cfdisl(defico,'FROT_3D' )
-    ldiric = cfdisl(defico,'PRE_COND_DIRICHLET')
+    lctfd = cfdisl(ds_contact%sdcont_defi,'FROT_DISCRET' )
+    lpenac = cfdisl(ds_contact%sdcont_defi,'CONT_PENA' )
+    lpenaf = cfdisl(ds_contact%sdcont_defi,'FROT_PENA' )
+    lmatrc = cfdisl(ds_contact%sdcont_defi,'MATR_CONT' )
+    lgcp = cfdisl(ds_contact%sdcont_defi,'CONT_GCP' )
+    lctf3d = cfdisl(ds_contact%sdcont_defi,'FROT_3D' )
+    ldiric = cfdisl(ds_contact%sdcont_defi,'PRE_COND_DIRICHLET')
 !
 ! --- SD POUR APPARIEMENT
 !
@@ -107,23 +102,23 @@ subroutine cfcrsd(noma, numedd, defico, resoco)
 !
 ! --- INFORMATIONS
 !
-    ndimg = cfdisi(defico,'NDIM' )
-    ntpc = cfdisi(defico,'NTPC' )
-    nnoco = cfdisi(defico,'NNOCO')
+    ndimg = cfdisi(ds_contact%sdcont_defi,'NDIM' )
+    ntpc = cfdisi(ds_contact%sdcont_defi,'NTPC' )
+    nnoco = cfdisi(ds_contact%sdcont_defi,'NNOCO')
 !
 ! --- PARAMETRES DE REACTUALISATION GEOMETRIQUE
 ! CLREAC(1) = TRUE  SI REACTUALISATION A FAIRE
 ! CLREAC(2) = TRUE  SI ATTENTE POINT FIXE CONTACT
 ! CLREAC(3) = TRUE  SI PREMIERE REACTUALISATION DU PAS DE TEMPS
 !
-    autoc1 = resoco(1:14)//'.REA1'
-    autoc2 = resoco(1:14)//'.REA2'
+    autoc1 = ds_contact%sdcont_solv(1:14)//'.REA1'
+    autoc2 = ds_contact%sdcont_solv(1:14)//'.REA2'
     call vtcreb(autoc1, 'V', 'R',&
-                nume_ddlz = numedd,&
+                nume_ddlz = nume_dof,&
                 nb_equa_outz = neq)
     call vtcreb(autoc2, 'V', 'R',&
-                nume_ddlz = numedd)
-    clreac = resoco(1:14)//'.REAL'
+                nume_ddlz = nume_dof)
+    clreac = ds_contact%sdcont_solv(1:14)//'.REAL'
     call wkvect(clreac, 'V V L', 4, jclrea)
     zl(jclrea+1-1) = .false.
     zl(jclrea+2-1) = .false.
@@ -132,42 +127,42 @@ subroutine cfcrsd(noma, numedd, defico, resoco)
 !
 ! --- INFORMATIONS POUR METHODES "PENALISATION" ET "LAGRANGIEN"
 !
-    tacfin = resoco(1:14)//'.TACFIN'
+    tacfin = ds_contact%sdcont_solv(1:14)//'.TACFIN'
     call wkvect(tacfin, 'V V R', ntpc*ztacf, jtacf)
 !
 ! --- TANGENTES RESULTANTES
 !
-    tangco = resoco(1:14)//'.TANGCO'
+    tangco = ds_contact%sdcont_solv(1:14)//'.TANGCO'
     call wkvect(tangco, 'V V R', 6*ntpc, jtango)
 !
 ! --- SD POUR LES JEUX
 !
-    call cfcrje(defico, resoco)
+    call cfcrje(ds_contact%sdcont_defi, ds_contact%sdcont_solv)
 !
 ! --- SD POUR LES LIAISONS LINEAIRES
 !
-    call cfcrli(noma, numedd, defico, resoco)
+    call cfcrli(mesh, nume_dof, ds_contact%sdcont_defi, ds_contact%sdcont_solv)
 !
 ! --- LAGRANGES DE CONTACT/FROTTEMENT
 !
-    mu = resoco(1:14)//'.MU'
+    mu = ds_contact%sdcont_solv(1:14)//'.MU'
     call wkvect(mu, 'V V R', 4*ntpc, jmu)
 !
 ! --- VALEUR DE LA PSEUDO-PENALISATION EN FROT. LAGR.
 !
-    copo = resoco(1:14)//'.COPO'
+    copo = ds_contact%sdcont_solv(1:14)//'.COPO'
     call wkvect(copo, 'V V R', 1, jcopo)
     zr(jcopo) = r8vide()
 !
 ! --- FORCES NODALES DE CONTACT
 !
-    atmu = resoco(1:14)//'.ATMU'
+    atmu = ds_contact%sdcont_solv(1:14)//'.ATMU'
     call wkvect(atmu, 'V V R', neq, jatmu)
 !
 ! --- FORCES NODALES DE FROTTEMENT
 !
     if (lctfd) then
-        afmu = resoco(1:14)//'.AFMU'
+        afmu = ds_contact%sdcont_solv(1:14)//'.AFMU'
         call wkvect(afmu, 'V V R', neq, jafmu)
     endif
 !
@@ -175,64 +170,64 @@ subroutine cfcrsd(noma, numedd, defico, resoco)
 ! --- ON UTILISE AFMU
 !
     if (lpenac .and. (.not.lctfd)) then
-        afmu = resoco(1:14)//'.AFMU'
+        afmu = ds_contact%sdcont_solv(1:14)//'.AFMU'
         call wkvect(afmu, 'V V R', neq, jafmu)
     endif
 !
 ! --- INCREMENT DE SOLUTION SANS CORRECTION DU CONTACT
 !
-    ddepl0 = resoco(1:14)//'.DEL0'
+    ddepl0 = ds_contact%sdcont_solv(1:14)//'.DEL0'
     call vtcreb(ddepl0, 'V', 'R',&
-                nume_ddlz = numedd)
+                nume_ddlz = nume_dof)
 !
 ! --- INCREMENT DE SOLUTION ITERATION DE CONTACT
 !
-    ddelt = resoco(1:14)//'.DDEL'
+    ddelt = ds_contact%sdcont_solv(1:14)//'.DDEL'
     call vtcreb(ddelt, 'V', 'R',&
-                nume_ddlz = numedd)
+                nume_ddlz = nume_dof)
 !
 ! --- INCREMENT DE SOLUTION APRES CORRECTION DU CONTACT
 !
-    ddeplc = resoco(1:14)//'.DELC'
+    ddeplc = ds_contact%sdcont_solv(1:14)//'.DELC'
     call vtcreb(ddeplc, 'V', 'R',&
-                nume_ddlz = numedd)
+                nume_ddlz = nume_dof)
 !
 ! --- INCREMENT DE DEPLACEMENT CUMULE DEPUIS DEBUT DU PAS DE TEMPS
 ! --- SANS CORRECTION DU CONTACT
 !
     if (lctfd) then
-        depl0 = resoco(1:14)//'.DEP0'
+        depl0 = ds_contact%sdcont_solv(1:14)//'.DEP0'
         call vtcreb(depl0, 'V', 'R',&
-                    nume_ddlz = numedd)
+                    nume_ddlz = nume_dof)
     endif
 !
 ! --- INCREMENT DE DEPLACEMENT CUMULE DEPUIS DEBUT DU PAS DE TEMPS
 ! --- AVEC CORRECTION DU CONTACT
 !
     if (lctfd) then
-        deplc = resoco(1:14)//'.DEPC'
+        deplc = ds_contact%sdcont_solv(1:14)//'.DEPC'
         call vtcreb(deplc, 'V', 'R',&
-                    nume_ddlz = numedd)
+                    nume_ddlz = nume_dof)
     endif
 !
 ! --- CHARGEMENT CINEMATIQUE NUL
 !
-    cncin0 = resoco(1:14)//'.CIN0'
+    cncin0 = ds_contact%sdcont_solv(1:14)//'.CIN0'
     call vtcreb(cncin0, 'V', 'R',&
-                nume_ddlz = numedd)
+                nume_ddlz = nume_dof)
 !
 ! --- CHAMPS POUR GCP
 !
     if (lgcp) then
-        sgradm = resoco(1:14)//'.SGDM'
-        sgradp = resoco(1:14)//'.SGDP'
-        direct = resoco(1:14)//'.DIRE'
-        sgrprm = resoco(1:14)//'.SGPM'
-        sgrprp = resoco(1:14)//'.SGPP'
-        mum = resoco(1:14)//'.MUM'
-        secmbr = resoco(1:14)//'.SECM'
+        sgradm = ds_contact%sdcont_solv(1:14)//'.SGDM'
+        sgradp = ds_contact%sdcont_solv(1:14)//'.SGDP'
+        direct = ds_contact%sdcont_solv(1:14)//'.DIRE'
+        sgrprm = ds_contact%sdcont_solv(1:14)//'.SGPM'
+        sgrprp = ds_contact%sdcont_solv(1:14)//'.SGPP'
+        mum = ds_contact%sdcont_solv(1:14)//'.MUM'
+        secmbr = ds_contact%sdcont_solv(1:14)//'.SECM'
         call vtcreb(secmbr, 'V', 'R',&
-                    nume_ddlz = numedd)
+                    nume_ddlz = nume_dof)
         call wkvect(sgradm, 'V V R', ntpc, jsgram)
         call wkvect(sgradp, 'V V R', ntpc, jsgrap)
         call wkvect(sgrprm, 'V V R', ntpc, jsgprm)
@@ -240,11 +235,11 @@ subroutine cfcrsd(noma, numedd, defico, resoco)
         call wkvect(direct, 'V V R', ntpc, jdirec)
         call wkvect(mum, 'V V R', ntpc, jmum)
         if (ldiric) then
-            pcresi = resoco(1:14)//'.PCRS'
+            pcresi = ds_contact%sdcont_solv(1:14)//'.PCRS'
             call wkvect(pcresi, 'V V R', ntpc, jpcres)
-            pcdire = resoco(1:14)//'.PCDR'
+            pcdire = ds_contact%sdcont_solv(1:14)//'.PCDR'
             call wkvect(pcdire, 'V V R', ntpc, jpcdir)
-            pcdepl = resoco(1:14)//'.PCUU'
+            pcdepl = ds_contact%sdcont_solv(1:14)//'.PCUU'
             call wkvect(pcdepl, 'V V R', neq, jpcdep)
         endif
     endif
@@ -253,10 +248,10 @@ subroutine cfcrsd(noma, numedd, defico, resoco)
 !
     if (lgcp) then
 !       ETAT CONVERGE
-        svmu = resoco(1:14)//'.SVM0'
+        svmu = ds_contact%sdcont_solv(1:14)//'.SVM0'
         call wkvect(svmu, 'V V R', nnoco, jsvmu)
 !       ETAT COURANT AVANT APPARIEMENT
-        svmu = resoco(1:14)//'.SVMU'
+        svmu = ds_contact%sdcont_solv(1:14)//'.SVMU'
         call wkvect(svmu, 'V V R', nnoco, jsvmu)
     endif
 !
@@ -299,7 +294,7 @@ subroutine cfcrsd(noma, numedd, defico, resoco)
 ! ---   MATRICE STOCKEE CREUSE E_N*AT (POUR CONTACT PENALISE)
 ! ---   TAILLE : NBENAT*30
 !
-            enat = resoco(1:14)//'.ENAT'
+            enat = ds_contact%sdcont_solv(1:14)//'.ENAT'
             call jecrec(enat, 'V V R', 'NU', 'DISPERSE', 'CONSTANT',&
                         nbenat)
             call jeecra(enat, 'LONMAX', ival=30)
@@ -311,7 +306,7 @@ subroutine cfcrsd(noma, numedd, defico, resoco)
 ! ---   MATRICE PRINCIPALE C-1*AT (POUR CONTACT DUALISE)
 ! ---   TAILLE : NBCM1A*NEQ
 !
-            cm1a = resoco(1:14)//'.CM1A'
+            cm1a = ds_contact%sdcont_solv(1:14)//'.CM1A'
             call jecrec(cm1a, 'V V R', 'NU', 'DISPERSE', 'CONSTANT',&
                         nbcm1a)
             call jeecra(cm1a, 'LONMAX', ival=neq)
@@ -326,8 +321,8 @@ subroutine cfcrsd(noma, numedd, defico, resoco)
 ! ---   TAILLE : NBFRO1*30 ET NBFRO2*30
 !
         if (lctf3d) then
-            fro1 = resoco(1:14)//'.FRO1'
-            fro2 = resoco(1:14)//'.FRO2'
+            fro1 = ds_contact%sdcont_solv(1:14)//'.FRO1'
+            fro2 = ds_contact%sdcont_solv(1:14)//'.FRO2'
             call jecrec(fro1, 'V V R', 'NU', 'DISPERSE', 'CONSTANT',&
                         nbfro1)
             call jecrec(fro2, 'V V R', 'NU', 'DISPERSE', 'CONSTANT',&
@@ -346,7 +341,7 @@ subroutine cfcrsd(noma, numedd, defico, resoco)
 ! --- MATRICE DE CONTACT ACM1AT
 !
     if (lmatrc) then
-        call cfcrma(nbcm1a, noma, resoco)
+        call cfcrma(nbcm1a, mesh, ds_contact%sdcont_solv)
     endif
 !
     call jedema()

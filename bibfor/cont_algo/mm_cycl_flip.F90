@@ -1,11 +1,11 @@
-subroutine mm_cycl_flip(sdcont_defi, sdcont_solv, cycl_flip)
+subroutine mm_cycl_flip(ds_contact, cycl_flip)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/cfdisi.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 !
 ! ======================================================================
@@ -26,8 +26,7 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=24), intent(in) :: sdcont_defi
-    character(len=24), intent(in) :: sdcont_solv
+    type(NL_DS_Contact), intent(in) :: ds_contact
     aster_logical, intent(out) :: cycl_flip
 !
 ! --------------------------------------------------------------------------------------------------
@@ -38,8 +37,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sdcont_solv      : name of contact solving datastructure
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  ds_contact       : datastructure for contact management
 ! Out cycl_flip        : .true. if flip-flop cycling activated
 !
 ! --------------------------------------------------------------------------------------------------
@@ -51,25 +49,20 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
-!
-! - Initializations
-!
     cycl_flip = .false.
     cycl_index = 4
 !
 ! - Cycling objects
 !
-    sdcont_cyceta = sdcont_solv(1:14)//'.CYCETA'
+    sdcont_cyceta = ds_contact%sdcont_solv(1:14)//'.CYCETA'
     call jeveuo(sdcont_cyceta, 'L', vi = p_sdcont_cyceta)
 !
 ! - Flip-flop dectected ?
 !
-    nb_cont_poin = cfdisi(sdcont_defi,'NTPC' )
+    nb_cont_poin = cfdisi(ds_contact%sdcont_defi,'NTPC' )
     do i_cont_poin = 1, nb_cont_poin
         cycl_stat = p_sdcont_cyceta(4*(i_cont_poin-1)+cycl_index)
         if (cycl_stat .gt. 0) cycl_flip = .true.
     end do
 !
-    call jedema()
 end subroutine

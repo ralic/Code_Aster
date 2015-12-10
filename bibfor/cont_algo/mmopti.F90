@@ -1,4 +1,6 @@
-subroutine mmopti(mesh, sdcont_defi, sdcont_solv)
+subroutine mmopti(mesh, ds_contact)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -44,8 +46,7 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
-    character(len=24), intent(in) :: sdcont_defi
-    character(len=24), intent(in) :: sdcont_solv
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,8 +57,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  mesh             : name of mesh
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
-! In  sdcont_solv      : name of contact solving datastructure
+! In  ds_contact       : datastructure for contact management
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -95,18 +95,18 @@ implicit none
 !
 ! - Parameters
 !
-    nb_cont_zone = cfdisi(sdcont_defi,'NZOCO')
-    model_ndim   = cfdisi(sdcont_defi,'NDIM') 
+    nb_cont_zone = cfdisi(ds_contact%sdcont_defi,'NZOCO')
+    model_ndim   = cfdisi(ds_contact%sdcont_defi,'NDIM') 
 !
 ! - Datastructure for contact solving
 !
-    sdcont_tabfin = sdcont_solv(1:14)//'.TABFIN'
+    sdcont_tabfin = ds_contact%sdcont_solv(1:14)//'.TABFIN'
     call jeveuo(sdcont_tabfin, 'E', vr = v_sdcont_tabfin)
     ztabf = cfmmvd('ZTABF')
 !
 ! - Pairing datastructure
 !
-    sdappa = sdcont_solv(1:14)//'.APPA'
+    sdappa = ds_contact%sdcont_solv(1:14)//'.APPA'
 !
 ! - Tolerance for CONTACT_INIT
 !
@@ -116,9 +116,9 @@ implicit none
 ! - Preparation for SEUIL_INIT
 !
     do i_zone = 1, nb_cont_zone
-        l_auto_seuil = mminfl(sdcont_defi,'SEUIL_AUTO', i_zone)
+        l_auto_seuil = mminfl(ds_contact%sdcont_defi,'SEUIL_AUTO', i_zone)
         if (l_auto_seuil) then
-            disp_init =  sdcont_solv(1:14)//'.INIT'
+            disp_init =  ds_contact%sdcont_solv(1:14)//'.INIT'
             call mmfield_prep(disp_init, cnscon,&
                               l_sort_ = .true._1, nb_cmp_ = 1, list_cmp_ = ['LAGS_C  '])
             goto 30
@@ -132,20 +132,20 @@ implicit none
 !
 ! ----- Parameters of zone
 !
-        jdecme       = mminfi(sdcont_defi,'JDECME'        , i_zone)
-        nb_elem_slav = mminfi(sdcont_defi,'NBMAE'         , i_zone)
-        type_inte    = mminfi(sdcont_defi,'INTEGRATION'   , i_zone)
-        l_gliss      = mminfl(sdcont_defi,'GLISSIERE_ZONE', i_zone)
-        l_auto_seuil = mminfl(sdcont_defi,'SEUIL_AUTO'    , i_zone)
-        seuil_init   = mminfr(sdcont_defi,'SEUIL_INIT'    , i_zone)
+        jdecme       = mminfi(ds_contact%sdcont_defi,'JDECME'        , i_zone)
+        nb_elem_slav = mminfi(ds_contact%sdcont_defi,'NBMAE'         , i_zone)
+        type_inte    = mminfi(ds_contact%sdcont_defi,'INTEGRATION'   , i_zone)
+        l_gliss      = mminfl(ds_contact%sdcont_defi,'GLISSIERE_ZONE', i_zone)
+        l_auto_seuil = mminfl(ds_contact%sdcont_defi,'SEUIL_AUTO'    , i_zone)
+        seuil_init   = mminfr(ds_contact%sdcont_defi,'SEUIL_INIT'    , i_zone)
         seuil_init   = -abs(seuil_init)
-        cont_init    = mminfi(sdcont_defi,'CONTACT_INIT'  , i_zone)
+        cont_init    = mminfi(ds_contact%sdcont_defi,'CONTACT_INIT'  , i_zone)
 !
 ! ----- No computation: no contact point
 !
-        l_veri = mminfl(sdcont_defi,'VERIF', i_zone)
+        l_veri = mminfl(ds_contact%sdcont_defi,'VERIF', i_zone)
         if (l_veri) then
-            nb_poin_elem = mminfi(sdcont_defi, 'NBPT', i_zone)
+            nb_poin_elem = mminfi(ds_contact%sdcont_defi, 'NBPT', i_zone)
             i_poin_appa  = i_poin_appa + nb_poin_elem
             goto 25
         endif
@@ -160,16 +160,16 @@ implicit none
 !
 ! --------- Informations about slave element
 !
-            call cfnumm(sdcont_defi, elem_slav_indx, elem_slav_nume)
+            call cfnumm(ds_contact%sdcont_defi, elem_slav_indx, elem_slav_nume)
             call mmelty(mesh, elem_slav_nume, elem_slav_type, elem_slav_nbno)
 !
 ! --------- Number of integration points on element
 !
-            call mminfm(elem_slav_indx, sdcont_defi, 'NPTM'  , nb_poin_elem)
+            call mminfm(elem_slav_indx, ds_contact%sdcont_defi, 'NPTM'  , nb_poin_elem)
 !
 ! --------- SANS_GROUP_NO_FR or SANS_NOEUD_FR ?
 !
-            call mminfm(elem_slav_indx, sdcont_defi, 'NDEXFR', ndexfr)
+            call mminfm(elem_slav_indx, ds_contact%sdcont_defi, 'NDEXFR', ndexfr)
 !
 ! --------- Loop on integration points
 !
@@ -207,7 +207,7 @@ implicit none
 ! ------------- Option: SEUIL_INIT
 !
                 if (l_auto_seuil) then
-                    call mmextm(sdcont_defi, cnscon, elem_slav_indx, mlagc)
+                    call mmextm(ds_contact%sdcont_defi, cnscon, elem_slav_indx, mlagc)
                     call mmvalp_scal(model_ndim, elem_slav_type, elem_slav_nbno, ksipr1,&
                                      ksipr2    , mlagc         , pres_cont)
                     v_sdcont_tabfin(ztabf*(i_cont_poin-1)+17) = pres_cont

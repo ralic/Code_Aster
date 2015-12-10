@@ -1,7 +1,7 @@
-subroutine nmtble(cont_loop  , model         , mesh    , mate  , sdcont_defi,&
-                  sdcont_solv, list_func_acti, ds_print, sdstat, sdtime     ,&
-                  sddyna     , sderro        , ds_conv , sddisc, nume_inst  ,&
-                  hval_incr  , hval_algo)
+subroutine nmtble(cont_loop     , model   , mesh  , mate     , ds_contact,&
+                  list_func_acti, ds_print, sdstat, sdtime   , sddyna    ,&
+                  sderro        , ds_conv , sddisc, nume_inst, hval_incr ,&
+                  hval_algo)
 !
 use NonLin_Datastructure_type
 !
@@ -45,8 +45,7 @@ implicit none
     character(len=24), intent(in) :: model
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: mate
-    character(len=24), intent(in) :: sdcont_defi
-    character(len=24), intent(in) :: sdcont_solv
+    type(NL_DS_Contact), intent(in) :: ds_contact
     integer, intent(in) :: list_func_acti(*)
     type(NL_DS_Print), intent(inout) :: ds_print
     character(len=24), intent(in) :: sdstat
@@ -75,8 +74,7 @@ implicit none
 ! In  model            : name of model
 ! In  mesh             : name of mesh
 ! In  mate             : name of material characteristics (field)
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
-! In  sdcont_solv      : name of contact solving datastructure
+! In  ds_contact       : datastructure for contact management
 ! In  list_func_acti   : list of active functionnalities
 ! IO  ds_print         : datastructure for printing parameters
 ! In  sdstat           : datastructure for statistics
@@ -133,9 +131,9 @@ implicit none
             cont_loop = 1
             call nmtime(sdtime, 'INI', 'CTCC_CONT')
             call nmtime(sdtime, 'RUN', 'CTCC_CONT')
-            call nmctcc(mesh          , model      , mate       , sddyna   , sderro   ,&
-                        sdstat        , sdcont_defi, sdcont_solv, hval_incr, hval_algo,&
-                        loop_cont_conv, time_curr)
+            call nmctcc(mesh     , model     , mate     , sddyna   , sderro        ,&
+                        sdstat   , ds_contact, hval_incr, hval_algo, loop_cont_conv,&
+                        time_curr)
             call nmtime(sdtime, 'END', 'CTCC_CONT')
             call nmrinc(sdstat, 'CTCC_CONT')
             if (.not.loop_cont_conv) then
@@ -152,8 +150,8 @@ implicit none
             cont_loop = 2
             call nmtime(sdtime, 'INI', 'CTCC_FROT')
             call nmtime(sdtime, 'RUN', 'CTCC_FROT')
-            call nmctcf(mesh       , model    , ds_print      , sderro, sdcont_defi,&
-                        sdcont_solv, hval_incr, loop_frot_conv)
+            call nmctcf(mesh     , model         , ds_print, sderro, ds_contact,&
+                        hval_incr, loop_frot_conv)
             call nmtime(sdtime, 'END', 'CTCC_FROT')
             call nmrinc(sdstat, 'CTCC_FROT')
             if (.not.loop_frot_conv) then
@@ -168,8 +166,8 @@ implicit none
     if (cont_loop .le. 3) then
         if (l_loop_geom) then
             cont_loop = 3
-            call nmctgo(mesh     , ds_print      , sderro, sdcont_defi, sdcont_solv,&
-                        hval_incr, loop_geom_conv)
+            call nmctgo(mesh          , ds_print, sderro, ds_contact, hval_incr,&
+                        loop_geom_conv)
             if (.not.loop_geom_conv) then
                 cont_loop = 3
                 goto 500
@@ -182,7 +180,7 @@ implicit none
 ! - Initialization of data structures for cycling detection and treatment
 !
     if (loop_cont_conv .or. loop_frot_conv .or. loop_geom_conv) then
-        call mm_cycl_erase(sdcont_defi, sdcont_solv, 0, 0)
+        call mm_cycl_erase(ds_contact, 0, 0)
     endif
 !
 ! - Print line
@@ -193,20 +191,20 @@ implicit none
 ! - New iteration in loops
 !
     if (.not.loop_cont_conv .and. cont_loop .eq. 1) then
-        call mmbouc(sdcont_solv, 'CONT', 'INCR')
+        call mmbouc(ds_contact, 'CONT', 'INCR')
     endif
     if (.not.loop_frot_conv .and. cont_loop .eq. 2) then 
-        call mmbouc(sdcont_solv, 'FROT', 'INCR')
+        call mmbouc(ds_contact, 'FROT', 'INCR')
     endif
     if (.not.loop_geom_conv .and. cont_loop .eq. 3) then 
-        call mmbouc(sdcont_solv, 'GEOM', 'INCR')
+        call mmbouc(ds_contact, 'GEOM', 'INCR')
     endif
 !
 ! - Update loops index
 !
-    call mmbouc(sdcont_solv, 'CONT', 'READ', i_loop_cont)
-    call mmbouc(sdcont_solv, 'FROT', 'READ', i_loop_frot)
-    call mmbouc(sdcont_solv, 'GEOM', 'READ', i_loop_geom)
+    call mmbouc(ds_contact, 'CONT', 'READ', i_loop_cont)
+    call mmbouc(ds_contact, 'FROT', 'READ', i_loop_frot)
+    call mmbouc(ds_contact, 'GEOM', 'READ', i_loop_geom)
 !
 ! - Set values of loops index in convergence table
 !

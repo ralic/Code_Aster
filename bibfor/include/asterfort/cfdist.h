@@ -16,9 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfdist(sdcont_defi, i_zone         , elem_slav_indx, poin_coor, time_curr,&
-                      gap_user   , node_slav_indx_)
-        character(len=24), intent(in) :: sdcont_defi
+    subroutine cfdist(ds_contact, i_zone         , elem_slav_indx, poin_coor, time_curr,&
+                      gap_user  , node_slav_indx_)
+        use NonLin_Datastructure_type
+        type(NL_DS_Contact), intent(in) :: ds_contact
         integer, intent(in) :: i_zone
         integer, intent(in) :: elem_slav_indx
         real(kind=8), intent(in) :: poin_coor(3)

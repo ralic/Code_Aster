@@ -18,9 +18,9 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine cfsvfr(defico, resoco, lconv)
-        character(len=24) :: defico
-        character(len=24) :: resoco
-        aster_logical :: lconv
+    subroutine cfsvfr(ds_contact, lconv)
+        use NonLin_Datastructure_type
+        type(NL_DS_Contact), intent(in) :: ds_contact
+        aster_logical, intent(in) :: lconv
     end subroutine cfsvfr
 end interface

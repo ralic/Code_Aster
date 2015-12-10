@@ -1,8 +1,24 @@
-subroutine mmapma(noma, defico, resoco, ndimg, izone,&
-                  lexfro, typint, aliase, posmae, nummae,&
-                  nnomae, posmam, nummam, ksipr1, ksipr2,&
+subroutine mmapma(mesh, ds_contact, model_ndim, i_zone,&
+                  lexfro, typint, aliase, posmae, node_mast_nume,&
+                  nnomae, elem_mast_indx, elem_mast_nume, ksipr1, ksipr2,&
                   tau1m, tau2m, iptm, iptc, norm,&
                   nommam)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterc/r8prem.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mmgaus.h"
+#include "asterfort/mmnorm.h"
+#include "asterfort/mmnumn.h"
+#include "asterfort/mmpnoe.h"
+#include "asterfort/mmsauv.h"
+#include "asterfort/mmtanr.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,31 +38,14 @@ subroutine mmapma(noma, defico, resoco, ndimg, izone,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-! aslint: disable=W1504
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/r8prem.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/mmgaus.h"
-#include "asterfort/mmnorm.h"
-#include "asterfort/mmnumn.h"
-#include "asterfort/mmpnoe.h"
-#include "asterfort/mmsauv.h"
-#include "asterfort/mmtanr.h"
-#include "asterfort/utmess.h"
-!
-    character(len=8) :: noma
+    character(len=8) :: mesh
     character(len=8) :: aliase
-    character(len=24) :: defico, resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
     real(kind=8) :: ksipr1, ksipr2
-    integer :: ndimg
-    integer :: posmae, nummae
-    integer :: posmam, nummam, nnomae
-    integer :: izone, iptm, iptc
+    integer :: model_ndim
+    integer :: posmae, node_mast_nume
+    integer :: elem_mast_indx, elem_mast_nume, nnomae
+    integer :: i_zone, iptm, iptc
     integer :: typint
     real(kind=8) :: tau1m(3), tau2m(3), norm(3)
     character(len=8) :: nommam
@@ -60,12 +59,10 @@ subroutine mmapma(noma, defico, resoco, ndimg, izone,&
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  LSSFRO : IL Y A DES NOEUDS DANS SANS_GROUP_NO_FR
 ! IN  NOMA   : NOM DU MAILLAGE
 ! IN  ALIASE : NOM D'ALIAS DE L'ELEMENT ESCLAVE
-! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
-! IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  NDIMG  : DIMENSION DE L'ESPACE
 ! IN  IZONE  : ZONE DE CONTACT ACTIVE
 ! IN  LEXFRO : LE POINT D'INTEGRATION DOIT-IL ETRE EXCLUS DU FROTTEMENT?
@@ -92,33 +89,32 @@ subroutine mmapma(noma, defico, resoco, ndimg, izone,&
     real(kind=8) :: noor
     real(kind=8) :: ksipc1, ksipc2, wpc
     real(kind=8) :: tau1(3), tau2(3)
-    integer :: posnoe, numnoe
+    integer :: node_slav_indx, node_slav_nume
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
 !
 ! --- POSITION DU NOEUD ESCLAVE SI INTEGRATION AUX NOEUDS
 !
-    call mmpnoe(defico, posmae, aliase, typint, iptm,&
-                posnoe)
+    call mmpnoe(ds_contact%sdcont_defi, posmae, aliase, typint, iptm,&
+                node_slav_indx)
 !
 ! --- NUMERO ABSOLU DU POINT DE CONTACT
 !
-    call mmnumn(noma, typint, nummae, nnomae, iptm,&
-                numnoe)
+    call mmnumn(mesh, typint, node_mast_nume, nnomae, iptm,&
+                node_slav_nume)
 !
 ! --- RE-DEFINITION BASE TANGENTE SUIVANT OPTIONS
 !
-    call mmtanr(noma, ndimg, defico, resoco, izone,&
-                lexfro, posnoe, ksipr1, ksipr2, posmam,&
-                nummam, tau1m, tau2m, tau1, tau2)
+    call mmtanr(mesh, model_ndim, ds_contact, i_zone,&
+                lexfro, node_slav_indx, ksipr1, ksipr2, elem_mast_indx,&
+                elem_mast_nume, tau1m, tau2m, tau1, tau2)
 !
 ! --- CALCUL DE LA NORMALE
 !
-    call mmnorm(ndimg, tau1, tau2, norm, noor)
+    call mmnorm(model_ndim, tau1, tau2, norm, noor)
     if (noor .le. r8prem()) then
-        call jenuno(jexnum(noma//'.NOMMAI', nummam), nommam)
+        call jenuno(jexnum(mesh//'.NOMMAI', elem_mast_nume), nommam)
         call utmess('F', 'CONTACT3_24', sk=nommam)
     endif
 !
@@ -129,9 +125,8 @@ subroutine mmapma(noma, defico, resoco, ndimg, izone,&
 !
 ! --- SAUVEGARDE APPARIEMENT
 !
-    call mmsauv(resoco, izone, iptc, nummam, ksipr1,&
-                ksipr2, tau1, tau2, nummae, numnoe,&
+    call mmsauv(ds_contact, i_zone, iptc, elem_mast_nume, ksipr1,&
+                ksipr2, tau1, tau2, node_mast_nume, node_slav_nume,&
                 ksipc1, ksipc2, wpc)
 !
-    call jedema()
 end subroutine

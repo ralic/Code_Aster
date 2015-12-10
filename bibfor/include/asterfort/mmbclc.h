@@ -18,21 +18,19 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine mmbclc(noma  , nomo  , numedd  , iterat, numins,&
-                      sddisc, sddyna, ds_print, defico, resoco,&
-                      valinc, solalg, sdtime  , sdstat, mmcvca,&
-                      instan)
+    subroutine mmbclc(mesh  , model , numedd  , iterat    , numins,&
+                      sddisc, sddyna, ds_print, ds_contact, valinc,&
+                      solalg, sdtime, sdstat  , mmcvca    , instan)
         use NonLin_Datastructure_type
-        character(len=8), intent(in) :: noma
-        character(len=8), intent(in) :: nomo
+        character(len=8), intent(in) :: mesh
+        character(len=8), intent(in) :: model
         character(len=24), intent(in) :: numedd
         integer, intent(in) :: iterat
         integer, intent(in) :: numins
         character(len=19), intent(in) :: sddisc
         character(len=19), intent(in) :: sddyna
         type(NL_DS_Print), intent(inout) :: ds_print
-        character(len=24), intent(in) :: defico
-        character(len=24), intent(in) :: resoco
+        type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19), intent(in) :: valinc(*)
         character(len=19), intent(in) :: solalg(*)
         character(len=24), intent(in) :: sdtime

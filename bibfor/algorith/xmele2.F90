@@ -1,25 +1,10 @@
-subroutine xmele2(noma, modele, defico, ligrel, nfiss,&
+subroutine xmele2(mesh  , model, ds_contact, ligrel, nfiss,&
                   chelem)
 !
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
+use NonLin_Datastructure_type
 !
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+implicit none
 !
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
-!
-    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
@@ -42,12 +27,30 @@ subroutine xmele2(noma, modele, defico, ligrel, nfiss,&
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    character(len=8) :: noma
-    character(len=8) :: modele
-    integer :: nfiss
-    character(len=19) :: chelem
-    character(len=19) :: ligrel
-    character(len=24) :: defico
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: mickael.abbas at edf.fr
+!
+    character(len=8), intent(in) :: mesh
+    character(len=8), intent(in) :: model
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    integer, intent(in) :: nfiss
+    character(len=19), intent(in) :: chelem
+    character(len=19), intent(in) :: ligrel
 !
 ! ----------------------------------------------------------------------
 !
@@ -57,22 +60,17 @@ subroutine xmele2(noma, modele, defico, ligrel, nfiss,&
 !
 ! ----------------------------------------------------------------------
 !
-!
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  MODELE : NOM DU MODELE
+! In  mesh             : name of mesh
+! In  model            : name of model
+! In  ds_contact       : datastructure for contact management
 ! IN  NFISS  : NOMBRE TOTAL DE FISSURES
 ! IN  LIGREL : NOM DU LIGREL DES MAILLES TARDIVES
 ! IN  CHELEM : NOM DU CHAM_ELEM CREEE
-! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
 !
-!
-!
-!
-!
-    integer :: nbcmp
-    parameter     (nbcmp = 10)
-    character(len=8) :: licmp(nbcmp)
-!
+    integer, parameter :: nbcmp = 10
+    character(len=8), parameter :: licmp(nbcmp) = (/ 'RHON  ','MU    ','RHOTK ','INTEG ',&
+                                                     'COECH ','COSTCO','COSTFR','COPECO',&
+                                                     'COPEFR','RELA  '/)
     integer :: ifm, niv, iret
     integer :: ibid, iad, i, ima, ifis, izone
     integer :: nmaenr, nbma,  ispt, icmp
@@ -87,17 +85,12 @@ subroutine xmele2(noma, modele, defico, ligrel, nfiss,&
     real(kind=8), pointer :: cesv(:) => null()
     character(len=8), pointer :: fiss(:) => null()
     integer, pointer :: xfem_cont(:) => null()
-!
-    data licmp    /'RHON','MU','RHOTK','INTEG','COECH',&
-     &    'COSTCO','COSTFR','COPECO','COPEFR','RELA'/
+
 !
 ! ----------------------------------------------------------------------
 !
     call jemarq()
     call infdbg('XFEM', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<XFEM  > CREATION DU CHAM_ELEM PDONCO'
     endif
@@ -105,24 +98,22 @@ subroutine xmele2(noma, modele, defico, ligrel, nfiss,&
 ! --- INITIALISATIONS
 !
     chelsi = '&&XMELE2.CES'
-    call jeveuo(modele//'.XFEM_CONT','L',vi=xfem_cont)
+    call jeveuo(model//'.XFEM_CONT','L',vi=xfem_cont)
     contac = xfem_cont(1)
 !
 ! --- RECOPIE DU NOMBRE DE SOUS POINTS DE TOPOSE.HEA DANS LE CHAMP NBSP
 !
-    call celces(modele//'.TOPOSE.HEA', 'V', '&&XMELE2.HEAV')
+    call celces(model//'.TOPOSE.HEA', 'V', '&&XMELE2.HEAV')
     call jeveuo('&&XMELE2.HEAV      .CESD', 'L', jcesd)
-    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
+    call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nbma)
     AS_ALLOCATE(vi=nbsp, size=nbma)
     do ima = 1, nbma
         nbsp(ima) = zi(jcesd-1+5+4*(ima-1)+2)
     end do
 !
-!
-!
 ! --- CREATION DU CHAM_ELEM_S
 !
-    call cescre('V', chelsi, 'ELEM', noma, 'XCONTAC',&
+    call cescre('V', chelsi, 'ELEM', mesh, 'XCONTAC',&
                 nbcmp, licmp, [-1], nbsp, [-nbcmp])
 !
 ! --- ACCES AU CHAM_ELEM_S
@@ -133,10 +124,10 @@ subroutine xmele2(noma, modele, defico, ligrel, nfiss,&
 !
 ! --- ACCES AUX FISSURES
 !
-    call jeveuo(modele//'.FISS', 'L', vk8=fiss)
+    call jeveuo(model//'.FISS', 'L', vk8=fiss)
 !
 ! --- RECUPERATION DES MAILLES DU MODELE
-    call jeveuo(modele//'.MAILLE', 'L', jmail)
+    call jeveuo(model//'.MAILLE', 'L', jmail)
 !
 ! --- ENRICHISSEMENT DU CHAM_ELEM POUR LA MULTIFISSURATION
 !
@@ -152,19 +143,19 @@ subroutine xmele2(noma, modele, defico, ligrel, nfiss,&
 !
 ! --- ZONE DE CONTACT IZONE CORRESPONDANTE
 !
-        izone = xxconi(defico,nomfis,'MAIT')
+        izone = xxconi(ds_contact%sdcont_defi,nomfis,'MAIT')
 !
 ! --- CARACTERISTIQUES DU CONTACT POUR LA FISSURE EN COURS
 !
-        coef(1) = mminfr(defico,'COEF_AUGM_CONT',izone )
-        coef(2) = mminfr(defico,'COEF_COULOMB' ,izone )
-        coef(3) = mminfr(defico,'COEF_AUGM_FROT',izone )
-        coef(4) = mminfi(defico,'INTEGRATION' ,izone )
-        coef(6) = mminfr(defico,'ALGO_CONT' ,izone )
-        coef(7) = mminfr(defico,'ALGO_FROT' ,izone )
-        coef(8) = mminfr(defico,'COEF_PENA_CONT',izone )
-        coef(9) = mminfr(defico,'COEF_PENA_FROT',izone )
-        coef(10)= mminfr(defico,'RELATION' ,izone )
+        coef(1) = mminfr(ds_contact%sdcont_defi,'COEF_AUGM_CONT',izone )
+        coef(2) = mminfr(ds_contact%sdcont_defi,'COEF_COULOMB' ,izone )
+        coef(3) = mminfr(ds_contact%sdcont_defi,'COEF_AUGM_FROT',izone )
+        coef(4) = mminfi(ds_contact%sdcont_defi,'INTEGRATION' ,izone )
+        coef(6) = mminfr(ds_contact%sdcont_defi,'ALGO_CONT' ,izone )
+        coef(7) = mminfr(ds_contact%sdcont_defi,'ALGO_FROT' ,izone )
+        coef(8) = mminfr(ds_contact%sdcont_defi,'COEF_PENA_CONT',izone )
+        coef(9) = mminfr(ds_contact%sdcont_defi,'COEF_PENA_FROT',izone )
+        coef(10)= mminfr(ds_contact%sdcont_defi,'RELATION' ,izone )
 !
 ! --- ON COPIE LES CHAMPS CORRESP. AUX ELEM. HEAV, CTIP ET HECT
 !

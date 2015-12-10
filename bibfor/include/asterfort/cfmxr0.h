@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfmxr0(sdcont_defi, sdcont_solv, mesh)
-        character(len=24), intent(in) :: sdcont_defi
-        character(len=24), intent(in) :: sdcont_solv
+    subroutine cfmxr0(ds_contact, mesh)
+        use NonLin_Datastructure_type
+        type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=8), intent(in) :: mesh
     end subroutine cfmxr0
 end interface

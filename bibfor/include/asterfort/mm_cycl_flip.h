@@ -18,9 +18,9 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine mm_cycl_flip(sdcont_defi, sdcont_solv, cycl_flip)
-        character(len=24), intent(in) :: sdcont_defi
-        character(len=24), intent(in) :: sdcont_solv
+    subroutine mm_cycl_flip(ds_contact, cycl_flip)
+        use NonLin_Datastructure_type
+        type(NL_DS_Contact), intent(in) :: ds_contact
         aster_logical, intent(out) :: cycl_flip
     end subroutine mm_cycl_flip
 end interface

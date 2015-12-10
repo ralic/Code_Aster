@@ -1,23 +1,9 @@
-subroutine xmiszl(vecinc, defico, noma)
+subroutine xmiszl(vecinc, ds_contact, mesh)
 !
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
+use NonLin_Datastructure_type
 !
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+implicit none
 !
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-!
-    implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cfdisi.h"
@@ -40,9 +26,26 @@ subroutine xmiszl(vecinc, defico, noma)
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    character(len=19) :: vecinc
-    character(len=24) :: defico
-    character(len=8) :: noma
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+!
+    character(len=19), intent(in) :: vecinc
+    character(len=8), intent(in) :: mesh
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! ----------------------------------------------------------------------
 !
@@ -55,10 +58,9 @@ subroutine xmiszl(vecinc, defico, noma)
 ! ROUTINE SPECIFIQUE A L'APPROCHE <<GRANDS GLISSEMENTS AVEC XFEM>>,
 ! TRAVAIL EFFECTUE EN COLLABORATION AVEC I.F.P.
 !
-! IN  DEFICO : SD DE DEFINITION DU CONTACT
-! IN  NOMA   : NOM DU MAILLAGE
 ! I/O VECINC : VECTEUR DES INCONNUES
-!
+! In  mesh             : name of mesh
+! In  ds_contact       : datastructure for contact management
 !
 !
 !
@@ -87,15 +89,15 @@ subroutine xmiszl(vecinc, defico, noma)
 !
 ! --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
 !
-    maescx = defico(1:16)// '.MAESCX'
+    maescx = ds_contact%sdcont_defi(1:16)// '.MAESCX'
     call jeveuo(maescx, 'L', jmaesx)
     zmesx = cfmmvd('ZMESX')
 !
 ! --- INITIALISATIONS
 !
-    call jeveuo(noma//'.CONNEX', 'L', vi=connex)
-    call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
-    ntmae = cfdisi(defico,'NTMAE')
+    call jeveuo(mesh//'.CONNEX', 'L', vi=connex)
+    call jeveuo(jexatr(mesh//'.CONNEX', 'LONCUM'), 'L', jconx2)
+    ntmae = cfdisi(ds_contact%sdcont_defi,'NTMAE')
     nbno = 0
 !
 ! --- TABLEAU TEMPORAIRE POUR STOCKER NUMERO NOEUDS ESCLAVES
@@ -105,8 +107,8 @@ subroutine xmiszl(vecinc, defico, noma)
     do imae = 1, ntmae
         posmae = imae
         nummae = zi(jmaesx+zmesx*(posmae-1)+1-1)
-        call jenuno(jexnum(noma//'.NOMMAI', nummae), nommae)
-        call jelira(jexnum(noma//'.CONNEX', nummae), 'LONMAX', nno)
+        call jenuno(jexnum(mesh//'.NOMMAI', nummae), nommae)
+        call jelira(jexnum(mesh//'.CONNEX', nummae), 'LONMAX', nno)
         do ino = 1, nno
             numno = connex(zi(jconx2+nummae-1)+ino-1)
             do i = 1, nbno

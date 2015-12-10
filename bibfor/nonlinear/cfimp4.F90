@@ -1,24 +1,9 @@
-subroutine cfimp4(defico, resoco, noma, ifm)
+subroutine cfimp4(ds_contact, mesh, ifm)
 !
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
+use NonLin_Datastructure_type
 !
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+implicit none
 !
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
-!
-    implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/apinfi.h"
@@ -40,10 +25,28 @@ subroutine cfimp4(defico, resoco, noma, ifm)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mmnorm.h"
-    character(len=24) :: defico
-    character(len=24) :: resoco
-    integer :: ifm
-    character(len=8) :: noma
+!
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: mickael.abbas at edf.fr
+!
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    integer, intent(in) :: ifm
+    character(len=8), intent(in) :: mesh
 !
 ! ----------------------------------------------------------------------
 !
@@ -54,12 +57,8 @@ subroutine cfimp4(defico, resoco, noma, ifm)
 ! ----------------------------------------------------------------------
 !
 ! IN  IFM    : UNITE D'IMPRESSION DU MESSAGE
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  DEFICO : SD DE DEFINITION DU CONTACT (ISSUE D'AFFE_CHAR_MECA)
-! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
-!
-!
-!
+! In  mesh             : name of mesh
+! In  ds_contact       : datastructure for contact management
 !
     integer :: ztacf
     character(len=24) :: tacfin
@@ -96,22 +95,22 @@ subroutine cfimp4(defico, resoco, noma, ifm)
 !
 ! --- INFOS SUR LA CHARGE DE CONTACT
 !
-    lctfd = cfdisl(defico,'FROT_DISCRET')
-    lfrot = cfdisl(defico,'FROTTEMENT')
+    lctfd = cfdisl(ds_contact%sdcont_defi,'FROT_DISCRET')
+    lfrot = cfdisl(ds_contact%sdcont_defi,'FROTTEMENT')
 !
-    apcoef = resoco(1:14)//'.APCOEF'
-    jeusup = resoco(1:14)//'.JSUPCO'
-    tacfin = resoco(1:14)//'.TACFIN'
-    tangco = resoco(1:14)//'.TANGCO'
-    numlia = resoco(1:14)//'.NUMLIA'
-    appoin = resoco(1:14)//'.APPOIN'
-    nbddl = resoco(1:14)//'.NBDDL'
-    apddl = resoco(1:14)//'.APDDL'
-    jeuite = resoco(1:14)//'.JEUITE'
+    apcoef = ds_contact%sdcont_solv(1:14)//'.APCOEF'
+    jeusup = ds_contact%sdcont_solv(1:14)//'.JSUPCO'
+    tacfin = ds_contact%sdcont_solv(1:14)//'.TACFIN'
+    tangco = ds_contact%sdcont_solv(1:14)//'.TANGCO'
+    numlia = ds_contact%sdcont_solv(1:14)//'.NUMLIA'
+    appoin = ds_contact%sdcont_solv(1:14)//'.APPOIN'
+    nbddl = ds_contact%sdcont_solv(1:14)//'.NBDDL'
+    apddl = ds_contact%sdcont_solv(1:14)//'.APDDL'
+    jeuite = ds_contact%sdcont_solv(1:14)//'.JEUITE'
 !
     call jeveuo(apcoef, 'L', japcoe)
     if (lctfd) then
-        apcofr = resoco(1:14)//'.APCOFR'
+        apcofr = ds_contact%sdcont_solv(1:14)//'.APCOFR'
         call jeveuo(apcofr, 'L', japcof)
     endif
     call jeveuo(jeusup, 'L', jjeusu)
@@ -127,15 +126,15 @@ subroutine cfimp4(defico, resoco, noma, ifm)
 !
 ! --- SD APPARIEMENT
 !
-    sdappa = resoco(1:14)//'.APPA'
+    sdappa = ds_contact%sdcont_solv(1:14)//'.APPA'
 !
 ! --- INITIALISATIONS
 !
-    ndimg = cfdisi(defico,'NDIM')
-    nzoco = cfdisi(defico,'NZOCO')
-    ntnoe = cfdisi(defico,'NTNOE')
-    nbliai = cfdisd(resoco,'NBLIAI')
-    nnoco = cfdisi(defico,'NNOCO')
+    ndimg = cfdisi(ds_contact%sdcont_defi,'NDIM')
+    nzoco = cfdisi(ds_contact%sdcont_defi,'NZOCO')
+    ntnoe = cfdisi(ds_contact%sdcont_defi,'NTNOE')
+    nbliai = cfdisd(ds_contact%sdcont_solv,'NBLIAI')
+    nnoco = cfdisi(ds_contact%sdcont_defi,'NNOCO')
 !
     write(ifm,*) '<CONTACT><APPA> RESULTATS DE L''APPARIEMENT'
 !
@@ -168,17 +167,17 @@ subroutine cfimp4(defico, resoco, noma, ifm)
 ! ----- TYPE DU NOEUD
 !
         posno = ino
-        call cftypn(defico, posno, typno)
+        call cftypn(ds_contact%sdcont_defi, posno, typno)
 !
 ! ----- NOM DU NOEUD
 !
-        call cfnomm(noma, defico, 'NOEU', posno, nomno)
+        call cfnomm(mesh, ds_contact%sdcont_defi, 'NOEU', posno, nomno)
 !
         write(ifm,3000) ino,nomno,typno
 !
 ! ----- ZONE
 !
-        call cfzonn(defico, posno, izone)
+        call cfzonn(ds_contact%sdcont_defi, posno, izone)
 !
 ! ----- RECUPERATIONS DES TANGENTES AU NOEUD
 !
@@ -188,7 +187,7 @@ subroutine cfimp4(defico, resoco, noma, ifm)
 ! ----- NORMALE
 !
         if (typno .eq. 'MAIT') then
-            if (cfcald(defico,izone ,'MAIT')) then
+            if (cfcald(ds_contact%sdcont_defi,izone ,'MAIT')) then
                 write(ifm,3003) (tau1(k),k=1,3)
                 if (ndimg .eq. 3) then
                     write(ifm,3005) (tau2(k),k=1,3)
@@ -199,7 +198,7 @@ subroutine cfimp4(defico, resoco, noma, ifm)
                 write(ifm,3007)
             endif
         else
-            if (cfcald(defico,izone ,'ESCL')) then
+            if (cfcald(ds_contact%sdcont_defi,izone ,'ESCL')) then
                 write(ifm,3003) (tau1(k),k=1,3)
                 if (ndimg .eq. 3) then
                     write(ifm,3005) (tau2(k),k=1,3)
@@ -252,7 +251,7 @@ subroutine cfimp4(defico, resoco, noma, ifm)
 !
 ! ----- NOM ET TYPE DU MAITRE
 !
-        call cfnoap(noma, defico, typapp, entapp, nomapp,&
+        call cfnoap(mesh, ds_contact%sdcont_defi, typapp, entapp, nomapp,&
                     type2)
         if (typapp .lt. 0) then
             write(ifm,4003)
@@ -384,12 +383,12 @@ subroutine cfimp4(defico, resoco, noma, ifm)
 !
         else
             posmam = entapp
-            call cfnben(defico, posmam, 'CONNEX', nbnom, jdecno)
+            call cfnben(ds_contact%sdcont_defi, posmam, 'CONNEX', nbnom, jdecno)
             do 50 inom = 1, nbnom
-                call cfconn(defico, jdecno, inom, posno2)
+                call cfconn(ds_contact%sdcont_defi, jdecno, inom, posno2)
                 nbddlm = zi(jnbddl+posno2) - zi(jnbddl+posno2-1)
 !
-                call cfnomm(noma, defico, 'NOEU', posno2, nomno2)
+                call cfnomm(mesh, ds_contact%sdcont_defi, 'NOEU', posno2, nomno2)
 !
 ! --- COEFFICIENTS POUR CONTACT
 !

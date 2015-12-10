@@ -16,14 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmevev(sddisc, numins, valinc, sderro, defico,&
-                      resoco, nombcl)
-        character(len=19) :: sddisc
-        integer :: numins
-        character(len=19) :: valinc(*)
-        character(len=24) :: sderro
-        character(len=24) :: defico
-        character(len=24) :: resoco
-        character(len=4) :: nombcl
+    subroutine nmevev(sddisc   , nume_inst, valinc, sderro, ds_contact,&
+                  loop_name)
+        use NonLin_Datastructure_type
+        character(len=24), intent(in) :: sderro
+        character(len=19), intent(in) :: sddisc
+        character(len=4), intent(in) :: loop_name
+        type(NL_DS_Contact), intent(in) :: ds_contact
+        integer, intent(in) :: nume_inst
+        character(len=19), intent(in) :: valinc(*)
     end subroutine nmevev
 end interface

@@ -1,4 +1,19 @@
-subroutine cfjefi(noma, defico, resoco, ddepla)
+subroutine cfjefi(noma, ds_contact, ddepla)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/caladu.h"
+#include "asterfort/cfdisd.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfimp1.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,21 +33,9 @@ subroutine cfjefi(noma, defico, resoco, ddepla)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-!
-#include "asterfort/caladu.h"
-#include "asterfort/cfdisd.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/cfimp1.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-    character(len=8) :: noma
-    character(len=24) :: defico, resoco
-    character(len=19) :: ddepla
+    character(len=8), intent(in) :: noma
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=19), intent(in) :: ddepla
 !
 ! ----------------------------------------------------------------------
 !
@@ -42,15 +45,10 @@ subroutine cfjefi(noma, defico, resoco, ddepla)
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  NOMA   : NOM DU MAILLAGE
-! IN  DEFICO : SD DE DEFINITION DU CONTACT
-! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  DDEPLA : INCREMENT DE DEPLACEMENT DEPUIS L'ITERATION
 !              DE NEWTON PRECEDENTE CORRIGEE PAR LE CONTACT
-!
-!
-!
 !
     integer :: ifm, niv
     integer :: iliai, jdecal, nbddl
@@ -70,38 +68,35 @@ subroutine cfjefi(noma, defico, resoco, ddepla)
 !
     call jemarq()
     call infdbg('CONTACT', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<CONTACT> ...... CALCUL DES JEUX FINAUX'
     endif
 !
 ! --- PARAMETRES
 !
-    nbliai = cfdisd(resoco,'NBLIAI' )
-    neq = cfdisd(resoco,'NEQ' )
-    ndimg = cfdisd(resoco,'NDIM' )
-    lpenac = cfdisl(defico,'CONT_PENA' )
-    llagrf = cfdisl(defico,'FROT_LAGR' )
-    lctfd = cfdisl(defico,'FROT_DISCRET')
+    nbliai = cfdisd(ds_contact%sdcont_solv,'NBLIAI' )
+    neq = cfdisd(ds_contact%sdcont_solv,'NEQ' )
+    ndimg = cfdisd(ds_contact%sdcont_solv,'NDIM' )
+    lpenac = cfdisl(ds_contact%sdcont_defi,'CONT_PENA' )
+    llagrf = cfdisl(ds_contact%sdcont_defi,'FROT_LAGR' )
+    lctfd = cfdisl(ds_contact%sdcont_defi,'FROT_DISCRET')
 !
 ! --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
 !
-    appoin = resoco(1:14)//'.APPOIN'
-    apddl = resoco(1:14)//'.APDDL'
-    apcoef = resoco(1:14)//'.APCOEF'
+    appoin = ds_contact%sdcont_solv(1:14)//'.APPOIN'
+    apddl = ds_contact%sdcont_solv(1:14)//'.APDDL'
+    apcoef = ds_contact%sdcont_solv(1:14)//'.APCOEF'
     call jeveuo(appoin, 'L', japptr)
     call jeveuo(apddl, 'L', japddl)
     call jeveuo(apcoef, 'L', japcoe)
 !
     if (lctfd) then
-        apcofr = resoco(1:14)//'.APCOFR'
+        apcofr = ds_contact%sdcont_solv(1:14)//'.APCOFR'
         call jeveuo(apcofr, 'L', japcof)
     endif
 !
-    jeuite = resoco(1:14)//'.JEUITE'
-    jeux = resoco(1:14)//'.JEUX'
+    jeuite = ds_contact%sdcont_solv(1:14)//'.JEUITE'
+    jeux = ds_contact%sdcont_solv(1:14)//'.JEUX'
     call jeveuo(jeux, 'L', jjeux)
     call jeveuo(jeuite, 'E', jjeuit)
 !
@@ -111,7 +106,7 @@ subroutine cfjefi(noma, defico, resoco, ddepla)
 !
 ! --- MISE A JOUR DES JEUX
 !
-    do 15 iliai = 1, nbliai
+    do iliai = 1, nbliai
         jeuini = zr(jjeux+3*(iliai-1)+1-1)
         if (lpenac) then
             zr(jjeuit+3*(iliai-1)+1-1) = jeuini
@@ -130,12 +125,12 @@ subroutine cfjefi(noma, defico, resoco, ddepla)
                 zr(jjeuit+3*(iliai-1)+2-1) = jexnew
             endif
         endif
- 15 end do
+    end do
 !
 ! --- AFFICHAGE
 !
     if (niv .ge. 2) then
-        call cfimp1('FIN', noma, defico, resoco, ifm)
+        call cfimp1('FIN', noma, ds_contact%sdcont_defi, ds_contact%sdcont_solv, ifm)
     endif
 !
     call jedema()

@@ -18,10 +18,10 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine mmappa(mesh, nume_dof, sdcont_defi, sdcont_solv)
+    subroutine mmappa(mesh, nume_dof, ds_contact)
+        use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: nume_dof
-        character(len=24), intent(in) :: sdcont_defi 
-        character(len=24), intent(in) :: sdcont_solv
+        type(NL_DS_Contact), intent(in) :: ds_contact
     end subroutine mmappa
 end interface

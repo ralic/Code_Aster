@@ -1,11 +1,12 @@
-subroutine cfapno(noma, newgeo, defico, resoco, lctfd,&
+subroutine cfapno(noma, newgeo, ds_contact, lctfd,&
                   lctf3d, ndimg, izone, posnoe, numnoe,&
                   coorne, posnom, tau1m, tau2m, iliai)
 !
-    implicit none
+use NonLin_Datastructure_type
+!
+implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/apvect.h"
 #include "asterfort/cfaddm.h"
@@ -13,9 +14,6 @@ subroutine cfapno(noma, newgeo, defico, resoco, lctfd,&
 #include "asterfort/cfnewj.h"
 #include "asterfort/cfnumn.h"
 #include "asterfort/cftanr.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/mmnorm.h"
@@ -40,8 +38,7 @@ subroutine cfapno(noma, newgeo, defico, resoco, lctfd,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: noma
-    character(len=24), intent(in) :: defico
-    character(len=24), intent(in) :: resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19), intent(in) :: newgeo
     real(kind=8), intent(in) :: coorne(3)
     real(kind=8), intent(out) :: tau1m(3)
@@ -63,11 +60,9 @@ subroutine cfapno(noma, newgeo, defico, resoco, lctfd,&
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  NOMA   : NOM DU MAILLAGE
 ! IN  NEWGEO : NOUVELLE GEOMETRIE (AVEC DEPLACEMENT GEOMETRIQUE)
-! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
-! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  LCTFD  : FROTTEMENT
 ! IN  LCTF3D : FROTTEMENT EN 3D
 ! IN  NDIMG  : DIMENSION DE L'ESPACE
@@ -82,7 +77,6 @@ subroutine cfapno(noma, newgeo, defico, resoco, lctfd,&
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ifm, niv
     character(len=19) :: sdappa
     real(kind=8) :: tau1(3), tau2(3)
     real(kind=8) :: norm(3), noor
@@ -94,16 +88,14 @@ subroutine cfapno(noma, newgeo, defico, resoco, lctfd,&
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
-    call infdbg('CONTACT', ifm, niv)
 !
 ! --- NUMERO DU NOEUD MAITRE
 !
-    call cfnumn(defico, 1, posnom(1), numnom(1))
+    call cfnumn(ds_contact%sdcont_defi, 1, posnom(1), numnom(1))
 !
 ! --- LECTURE APPARIEMENT
 !
-    sdappa = resoco(1:14)//'.APPA'
+    sdappa = ds_contact%sdcont_solv(1:14)//'.APPA'
 !
 ! --- RECUPERATIONS DES TANGENTES AU NOEUD MAITRE
 !
@@ -116,7 +108,7 @@ subroutine cfapno(noma, newgeo, defico, resoco, lctfd,&
 !
 ! --- RE-DEFINITION BASE TANGENTE SUIVANT OPTIONS
 !
-    call cftanr(noma, ndimg, defico, resoco, izone,&
+    call cftanr(noma, ndimg, ds_contact, izone,&
                 posnoe, 'NOEU', posnom(1), numnom(1), r8bid,&
                 r8bid, tau1m, tau2m, tau1, tau2)
 !
@@ -138,9 +130,8 @@ subroutine cfapno(noma, newgeo, defico, resoco, lctfd,&
 !
 ! --- AJOUT DE LA LIAISON NODALE
 !
-    call cfaddm(resoco, lctfd, lctf3d, posnoe, iliai,&
+    call cfaddm(ds_contact, lctfd, lctf3d, posnoe, iliai,&
                 ndimg, 1, [posnom], coefno, tau1,&
                 tau2, norm, jeu, coornm)
 !
-    call jedema()
 end subroutine

@@ -1,4 +1,4 @@
-subroutine mmeval_prep(mesh   , time_curr  , model_ndim     , sdcont_defi , sdcont_solv,&
+subroutine mmeval_prep(mesh   , time_curr  , model_ndim     , ds_contact,&
                        l_speed, speed_field, i_zone         ,&
                        ksipc1 , ksipc2     , ksipr1         , ksipr2     ,&
                        tau1   , tau2       ,&
@@ -8,7 +8,8 @@ subroutine mmeval_prep(mesh   , time_curr  , model_ndim     , sdcont_defi , sdco
                        lagr_cont_node,&
                        norm   , &
                        gap    , gap_user, gap_speed  , lagr_cont_poin)
-
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -50,8 +51,7 @@ implicit none
     character(len=8), intent(in) :: mesh
     real(kind=8), intent(in) :: time_curr
     integer, intent(in) :: model_ndim
-    character(len=24), intent(in) :: sdcont_defi
-    character(len=24), intent(in) :: sdcont_solv
+    type(NL_DS_Contact), intent(in) :: ds_contact
     aster_logical, intent(in) :: l_speed
     character(len=19), intent(in) :: speed_field
     integer, intent(in) :: i_zone
@@ -85,8 +85,7 @@ implicit none
 ! In  mesh             : name of mesh
 ! In  time_curr        : current time
 ! In  model_ndim       : size of model
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
-! In  sdcont_solv      : name of contact solving datastructure
+! In  ds_contact       : datastructure for contact management
 ! In  l_speed          : .true. if speed scheme
 ! In  speed_field      : name of field for speed
 ! In  i_zone           : index of contact zone
@@ -119,7 +118,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    newgeo = sdcont_solv(1:14)//'.NEWG'
+    newgeo = ds_contact%sdcont_solv(1:14)//'.NEWG'
 !
 ! - Coordinates of the contact point 
 !
@@ -145,7 +144,7 @@ implicit none
 !
 ! - Get user gap
 !
-    call cfdist(sdcont_defi, i_zone, elem_slav_indx, poin_slav_coor, time_curr,&
+    call cfdist(ds_contact, i_zone, elem_slav_indx, poin_slav_coor, time_curr,&
                 gap_user   )
 !
 ! - Interpolate contact pressure (Lagrange) at point

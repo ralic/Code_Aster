@@ -18,13 +18,13 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine cfnors(noma, defico, resoco, posmai, typent,&
+    subroutine cfnors(noma, ds_contact, posmai, typent,&
                       nument, lpoutr, lpoint, ksi1, ksi2,&
                       lliss, itype, vector, tau1, tau2,&
                       lnfixe)
+        use NonLin_Datastructure_type
         character(len=8) :: noma
-        character(len=24) :: defico
-        character(len=24) :: resoco
+        type(NL_DS_Contact), intent(in) :: ds_contact
         integer :: posmai
         character(len=4) :: typent
         integer :: nument

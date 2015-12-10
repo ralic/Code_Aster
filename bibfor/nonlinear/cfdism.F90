@@ -1,4 +1,13 @@
-subroutine cfdism(defico, ldpou, ldcoq, posnoe, distst)
+subroutine cfdism(ds_contact, l_dist_beam, l_dist_shell, node_slav_indx, gap_structural)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/cfinvm.h"
+#include "asterfort/cfnben.h"
+#include "asterfort/jeveuo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,80 +27,62 @@ subroutine cfdism(defico, ldpou, ldcoq, posnoe, distst)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/cfinvm.h"
-#include "asterfort/cfnben.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-    character(len=24) :: defico
-    integer :: posnoe
-    real(kind=8) :: distst
-    aster_logical :: ldpou, ldcoq
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    aster_logical, intent(in) :: l_dist_beam
+    aster_logical, intent(in) :: l_dist_shell
+    integer, intent(in) :: node_slav_indx
+    real(kind=8), intent(out) :: gap_structural
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (METHODES MAILLEES - APPARIEMENT)
+! Contact - Solve
 !
-! CALCUL DU JEU SUPPLEMENTAIRE POUR POUTRE/COQUE
-! SUR UN NOEUD ESCLAVE DONNE
+! Continue/Discrete method - Compute structural gap
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  ds_contact       : datastructure for contact management
+! In  l_dist_beam      : .true. if gap for beams
+! In  l_dist_chell     : .true. if gap for shells
+! In  node_slav_indx   : index of slave node (in contact datastructure)
+! Out gap_structural   : gap from structural elements
 !
-! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
-! IN  POSNOE : INDICE DU NOEUD ESCLAVE DANS CONTNO
-! IN  LDPOU  : SI DIST_POUTRE
-! IN  LDCOQ  : SI DIST_COQUE
-! OUT DISTST : JEU SUPPLEMENTAIRE DU AUX POUTRES/COQUES
+! --------------------------------------------------------------------------------------------------
 !
+    character(len=24) :: sdcont_jeupou, sdcont_jeucoq
+    integer :: nt_elem_slav, jdeciv, i_elem_slav, elem_slav_indx
+    real(kind=8) :: gap_elem
+    real(kind=8), pointer :: v_sdcont_jeupou(:) => null()
+    real(kind=8), pointer :: v_sdcont_jeucoq(:) => null()
 !
+! --------------------------------------------------------------------------------------------------
 !
+    gap_structural = 0.d0
+    gap_elem       = 0.d0
 !
+! - Access to contact datastructures
 !
-    character(len=24) :: jeupou, jeucoq
-    integer :: jjpou, jjcoq
-    integer :: ntmae, jdeciv, imae, posmae
-    real(kind=8) :: distma
+    sdcont_jeucoq = ds_contact%sdcont_defi(1:16)//'.JEUCOQ'
+    sdcont_jeupou = ds_contact%sdcont_defi(1:16)//'.JEUPOU'
+    call jeveuo(sdcont_jeupou, 'L', vr = v_sdcont_jeupou)
+    call jeveuo(sdcont_jeucoq, 'L', vr = v_sdcont_jeucoq)
 !
-! ----------------------------------------------------------------------
+    call cfnben(ds_contact%sdcont_defi, node_slav_indx, 'CONINV', nt_elem_slav, jdeciv)
 !
-    call jemarq()
+! - Loop on slave elements
 !
-! --- LECTURE DES SD POUR LE CONTACT POTENTIEL
-!
-    jeucoq = defico(1:16)//'.JEUCOQ'
-    jeupou = defico(1:16)//'.JEUPOU'
-!
-    call jeveuo(jeupou, 'L', jjpou)
-    call jeveuo(jeucoq, 'L', jjcoq)
-!
-! --- INITIALISATIONS
-!
-    distma = 0.d0
-!
-! --- NOMBRE DE MAILLES ATTACHEES AU NOEUD
-! --- DECALAGE POUR ACCES AU TABLEAU
-!
-    call cfnben(defico, posnoe, 'CONINV', ntmae, jdeciv)
-!
-! --- BOUCLE SUR LES MAILLES MAITRES
-!
-    do 50 imae = 1, ntmae
-        call cfinvm(defico, jdeciv, imae, posmae)
-        if (ldpou) then
-            distma = distma+zr(jjpou-1+posmae)
+    do i_elem_slav = 1, nt_elem_slav
+        call cfinvm(ds_contact%sdcont_defi, jdeciv, i_elem_slav, elem_slav_indx)
+        if (l_dist_beam) then
+            gap_elem = gap_elem+v_sdcont_jeupou(elem_slav_indx)
         endif
-        if (ldcoq) then
-            distma = distma+zr(jjcoq-1+posmae)
+        if (l_dist_shell) then
+            gap_elem = gap_elem+v_sdcont_jeucoq(elem_slav_indx)
         endif
- 50 end do
+    end do
 !
-! --- MOYENNE SIMPLE
+! - Mean value
 !
-    distst = distma/ntmae
+    gap_structural = gap_elem/nt_elem_slav
 !
-    call jedema()
 end subroutine

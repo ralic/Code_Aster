@@ -1,5 +1,8 @@
-subroutine mm_cycl_d1(sdcont_solv   , i_cont_poin, coef_cont, pres_cont_prev, dist_cont_prev,&
-                      indi_cont_eval, dist_cont  , pres_cont)
+subroutine mm_cycl_d1(ds_contact    , i_cont_poin   ,&
+                      coef_cont     , pres_cont_prev, dist_cont_prev,&
+                      indi_cont_eval, dist_cont     , pres_cont)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -31,7 +34,7 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=24), intent(in) :: sdcont_solv
+    type(NL_DS_Contact), intent(in) :: ds_contact
     integer, intent(in) :: i_cont_poin
     real(kind=8), intent(in) :: coef_cont
     real(kind=8), intent(in) :: pres_cont_prev
@@ -48,7 +51,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sdcont_solv      : name of contact solving datastructure
+! In  ds_contact       : datastructure for contact management
 ! In  i_cont_poin      : contact point index
 ! In  coef_cont        : augmented ratio for contact
 ! In  pres_cont_prev   : previous pressure contact in cycle
@@ -85,9 +88,9 @@ implicit none
 !
 ! - Access to cycling objects
 !
-    sdcont_cyclis = sdcont_solv(1:14)//'.CYCLIS'
-    sdcont_cycnbr = sdcont_solv(1:14)//'.CYCNBR'
-    sdcont_cyceta = sdcont_solv(1:14)//'.CYCETA'
+    sdcont_cyclis = ds_contact%sdcont_solv(1:14)//'.CYCLIS'
+    sdcont_cycnbr = ds_contact%sdcont_solv(1:14)//'.CYCNBR'
+    sdcont_cyceta = ds_contact%sdcont_solv(1:14)//'.CYCETA'
     call jeveuo(sdcont_cyclis, 'E', vi = p_sdcont_cyclis)
     call jeveuo(sdcont_cycnbr, 'E', vi = p_sdcont_cycnbr)
     call jeveuo(sdcont_cyceta, 'E', vi = p_sdcont_cyceta)

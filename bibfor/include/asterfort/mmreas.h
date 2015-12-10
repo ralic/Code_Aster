@@ -16,10 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mmreas(noma, defico, resoco, valinc)
-        character(len=8) :: noma
-        character(len=24) :: defico
-        character(len=24) :: resoco
-        character(len=19) :: valinc(*)
+    subroutine mmreas(mesh, ds_contact, hval_incr)
+        use NonLin_Datastructure_type
+        character(len=8), intent(in) :: mesh
+        type(NL_DS_Contact), intent(in) :: ds_contact
+        character(len=19), intent(in) :: hval_incr(*)
     end subroutine mmreas
 end interface

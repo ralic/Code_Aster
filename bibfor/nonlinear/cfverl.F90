@@ -1,4 +1,18 @@
-subroutine cfverl(defico, resoco)
+subroutine cfverl(ds_contact)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,17 +32,7 @@ subroutine cfverl(defico, resoco)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/utmess.h"
-    character(len=24) :: resoco, defico
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! ----------------------------------------------------------------------
 !
@@ -38,12 +42,9 @@ subroutine cfverl(defico, resoco)
 !
 ! ----------------------------------------------------------------------
 !
+! In  ds_contact       : datastructure for contact management
 !
-! IN  DEFICO : SD DE DEFINITION DU CONTACT
-! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
-!
-!
-!
+! ----------------------------------------------------------------------
 !
     character(len=8) :: nomnoe
     integer :: nnoeu, ier
@@ -60,9 +61,9 @@ subroutine cfverl(defico, resoco)
 !
 ! --- INITIALISATIONS
 !
-    sdappa = resoco(1:14)//'.APPA'
+    sdappa = ds_contact%sdcont_solv(1:14)//'.APPA'
     call jeexin(sdappa(1:19)//'.VERK', ier)
-    lliss = cfdisl(defico,'LISSAGE')
+    lliss = cfdisl(ds_contact%sdcont_defi,'LISSAGE')
 !
 ! --- SD VERIFICATION FACETTISATION
 !
@@ -76,15 +77,15 @@ subroutine cfverl(defico, resoco)
 !
     call utmess('I', 'CONTACT3_19', si=nnoeu)
 !
-    do 10 ino = 1, nbno
+    do ino = 1, nbno
         nomnoe = zk8(jlistn+ino-1)
         angle = zr(jlista+ino-1)
         if (nomnoe .ne. ' ') then
-            write(6,1000) nomnoe,angle
+            write(6,100) nomnoe,angle
         endif
- 10 end do
+    end do
 !
-    1000 format (a8,3x,f8.2)
+100 format (a8,3x,f8.2)
 !
 999 continue
 !

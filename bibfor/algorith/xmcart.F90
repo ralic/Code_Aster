@@ -1,23 +1,9 @@
-subroutine xmcart(noma, defico, modele, resoco)
+subroutine xmcart(mesh, model, ds_contact)
 !
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
+use NonLin_Datastructure_type
 !
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+implicit none
 !
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-!
-    implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/alcart.h"
@@ -42,8 +28,26 @@ subroutine xmcart(noma, defico, modele, resoco)
 #include "asterfort/xxmmvd.h"
 #include "asterfort/xcalc_code.h"
 !
-    character(len=8) :: noma, modele
-    character(len=24) :: defico, resoco
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+!
+    character(len=8), intent(in) :: model
+    character(len=8), intent(in) :: mesh
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! ----------------------------------------------------------------------
 !
@@ -58,10 +62,9 @@ subroutine xmcart(noma, defico, modele, resoco)
 ! TRAVAIL EFFECTUE EN COLLABORATION AVEC I.F.P.
 ! ----------------------------------------------------------------------
 !
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  DEFICO : SD DE DEFINITION DU CONTACT
-! IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
-! IN  MODELE   : NOM DU MODELE
+! In  model            : name of model
+! In  mesh             : name of mesh
+! In  ds_contact       : datastructure for contact management
 !
 ! CONTENU DE LA CARTE
 !
@@ -111,18 +114,14 @@ subroutine xmcart(noma, defico, modele, resoco)
 !
     call jemarq()
     call infdbg('CONTACT', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> CREATION DE LA CARTE POUR LES'//&
-        ' ELEMENTS DE CONTACT X-FEM'
+        write (ifm,*) '<CONTACT> CREATION DE LA CARTE POUR LES ELEMENTS DE CONTACT X-FEM'
     endif
 !
 ! --- INITIALISATIONS
 !
-    ndim = cfdisi(defico,'NDIM')
-    ntpc = cfdisi(defico,'NTPC')
+    ndim = cfdisi(ds_contact%sdcont_defi,'NDIM')
+    ntpc = cfdisi(ds_contact%sdcont_defi,'NTPC')
     ncmp(1) = 34
     if (ndim .eq. 2) then
         ncmp(2) = 32
@@ -147,11 +146,11 @@ subroutine xmcart(noma, defico, modele, resoco)
 !
 ! --- ACCES OBJETS
 !
-    tabfin = resoco(1:14)//'.TABFIN'
+    tabfin = ds_contact%sdcont_solv(1:14)//'.TABFIN'
     call jeveuo(tabfin, 'L', jtabf)
-    nosdco = resoco(1:14)//'.NOSDCO'
+    nosdco = ds_contact%sdcont_solv(1:14)//'.NOSDCO'
     call jeveuo(nosdco, 'L', jnosdc)
-    call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx)
+    call jeveuo(jexatr(mesh//'.CONNEX', 'LONCUM'), 'L', jconx)
 !
 ! --- CHAMPS DES ELEMENTS XFEM
 !
@@ -164,36 +163,36 @@ subroutine xmcart(noma, defico, modele, resoco)
     chs(7) = '&&XMCART.CHS7'
     chs(8) = '&&XMCART.CHS8'
 !
-    call celces(modele//'.STNO', 'V', chs(1))
-    call celces(modele//'.TOPOFAC.OE', 'V', chs(2))
-    call celces(modele//'.TOPOFAC.AI', 'V', chs(3))
-    call celces(modele//'.TOPOFAC.CF', 'V', chs(4))
+    call celces(model//'.STNO', 'V', chs(1))
+    call celces(model//'.TOPOFAC.OE', 'V', chs(2))
+    call celces(model//'.TOPOFAC.AI', 'V', chs(3))
+    call celces(model//'.TOPOFAC.CF', 'V', chs(4))
 !
-    do 100 i = 1, 4
+    do i = 1, 4
         call jeveuo(chs(i)//'.CESD', 'L', jcesd(i))
         call jeveuo(chs(i)//'.CESV', 'L', jcesv(i))
         call jeveuo(chs(i)//'.CESL', 'L', jcesl(i))
-100 continue
+    end do
 !
 ! --- CHAMPS ELEM XFEM MULTI-HEAVISIDE
 !
     lmulti = .false.
-    call jeexin(modele//'.FISSNO    .CELD', ier)
+    call jeexin(model//'.FISSNO    .CELD', ier)
     if (ier .ne. 0) then
         lmulti = .true.
-        call celces(modele//'.FISSNO', 'V', chs(5))
-        call celces(modele//'.HEAVNO', 'V', chs(6))
-        call celces(modele//'.TOPONO.HFA', 'V', chs(7))
-        do 110 i = 5, 7
+        call celces(model//'.FISSNO', 'V', chs(5))
+        call celces(model//'.HEAVNO', 'V', chs(6))
+        call celces(model//'.TOPONO.HFA', 'V', chs(7))
+        do i = 5, 7
             call jeveuo(chs(i)//'.CESD', 'L', jcesd(i))
             call jeveuo(chs(i)//'.CESV', 'L', jcesv(i))
             call jeveuo(chs(i)//'.CESL', 'L', jcesl(i))
-110     continue
+        end do
     endif
 !
 ! --- CHAMPS ELEM XFEM TOPOLOGIE DES FONCTIONS HEAVISIDE
 !
-    call celces(modele//'.TOPONO.HNO', 'V', chs(8))
+    call celces(model//'.TOPONO.HNO', 'V', chs(8))
     call jeveuo(chs(8)//'.CESD', 'L', jcesd(8))
     call jeveuo(chs(8)//'.CESV', 'L', jcesv(8))
     call jeveuo(chs(8)//'.CESL', 'L', jcesl(8))
@@ -204,16 +203,16 @@ subroutine xmcart(noma, defico, modele, resoco)
 !
 ! --- INITIALISATION DES CARTES POUR ELEMENTS TARDIFS
 !
-    carte(1) = resoco(1:14)//'.XFPO'
-    carte(2) = resoco(1:14)//'.XFST'
-    carte(3) = resoco(1:14)//'.XFPI'
-    carte(4) = resoco(1:14)//'.XFAI'
-    carte(5) = resoco(1:14)//'.XFCF'
-    carte(6) = resoco(1:14)//'.XFHF'
-    carte(7) = resoco(1:14)//'.XFPL'
-    carte(8) = resoco(1:14)//'.XFHN'
+    carte(1) = ds_contact%sdcont_solv(1:14)//'.XFPO'
+    carte(2) = ds_contact%sdcont_solv(1:14)//'.XFST'
+    carte(3) = ds_contact%sdcont_solv(1:14)//'.XFPI'
+    carte(4) = ds_contact%sdcont_solv(1:14)//'.XFAI'
+    carte(5) = ds_contact%sdcont_solv(1:14)//'.XFCF'
+    carte(6) = ds_contact%sdcont_solv(1:14)//'.XFHF'
+    carte(7) = ds_contact%sdcont_solv(1:14)//'.XFPL'
+    carte(8) = ds_contact%sdcont_solv(1:14)//'.XFHN'
 !
-    do 120 i = 1, nbch
+    do i = 1, nbch
         call detrsd('CARTE', carte(i))
         if (i .eq. 1 .or. i .eq. 3) then
             nomgd = 'N120_R'
@@ -228,14 +227,14 @@ subroutine xmcart(noma, defico, modele, resoco)
         else
             nomgd = 'NEUT_I'
         endif
-        call alcart('V', carte(i), noma, nomgd)
+        call alcart('V', carte(i), mesh, nomgd)
         call jeveuo(carte(i)//'.NCMP', 'E', jncmp(i))
         call jeveuo(carte(i)//'.VALV', 'E', jvalv(i))
-        do 130,k = 1,ncmp(i)
-        call codent(k, 'G', ch3)
-        zk8(jncmp(i)-1+k) = 'X'//ch3
-130      continue
-120  continue
+        do k = 1,ncmp(i)
+            call codent(k, 'G', ch3)
+            zk8(jncmp(i)-1+k) = 'X'//ch3
+        end do
+    end do
 !
 ! --- REMPLISSAGE DES CARTES
 !
@@ -281,10 +280,10 @@ subroutine xmcart(noma, defico, modele, resoco)
         zr(jvalv(1)-1+10) = zr(jtabf+ztabf*(ipc-1)+12)
         zr(jvalv(1)-1+11) = zr(jtabf+ztabf*(ipc-1)+13)
         zr(jvalv(1)-1+12) = npte
-        zr(jvalv(1)-1+13) = mminfr(defico,'COEF_AUGM_CONT' ,izone )
-        zr(jvalv(1)-1+14) = mminfr(defico,'COEF_AUGM_FROT' ,izone )
-        zr(jvalv(1)-1+15) = mminfr(defico,'COEF_COULOMB' ,izone )
-        zr(jvalv(1)-1+16) = mminfi(defico,'FROTTEMENT_ZONE',izone )
+        zr(jvalv(1)-1+13) = mminfr(ds_contact%sdcont_defi,'COEF_AUGM_CONT' ,izone )
+        zr(jvalv(1)-1+14) = mminfr(ds_contact%sdcont_defi,'COEF_AUGM_FROT' ,izone )
+        zr(jvalv(1)-1+15) = mminfr(ds_contact%sdcont_defi,'COEF_COULOMB' ,izone )
+        zr(jvalv(1)-1+16) = mminfi(ds_contact%sdcont_defi,'FROTTEMENT_ZONE',izone )
         zr(jvalv(1)-1+17) = zr(jtabf+ztabf*(ipc-1)+22)
         zr(jvalv(1)-1+18) = zr(jtabf+ztabf*(ipc-1)+30)
         zr(jvalv(1)-1+19) = zr(jtabf+ztabf*(ipc-1)+16)
@@ -300,16 +299,16 @@ subroutine xmcart(noma, defico, modele, resoco)
         zr(jvalv(1)-1+29) = zr(jtabf+ztabf*(ipc-1)+23)
         zr(jvalv(1)-1+30) = zr(jtabf+ztabf*(ipc-1)+27)
         zr(jvalv(1)-1+31) = ninter
-        zr(jvalv(1)-1+33) = mminfr(defico,'COEF_PENA_CONT' ,izone )
-        zr(jvalv(1)-1+34) = mminfr(defico,'COEF_PENA_FROT' ,izone )
+        zr(jvalv(1)-1+33) = mminfr(ds_contact%sdcont_defi,'COEF_PENA_CONT' ,izone )
+        zr(jvalv(1)-1+34) = mminfr(ds_contact%sdcont_defi,'COEF_PENA_FROT' ,izone )
 !
         call nocart(carte(1), -3, ncmp(1), ligrel=ligrxf, nma=1,&
                     limanu=[-ipc])
 !
 ! ----- REMPLISSAGE DE LA CARTE CARTCF.STANO
 !
-        do 210 i = 1, nnoe
-            do 220 j = 1, nfhe
+        do i = 1, nnoe
+            do j = 1, nfhe
                 jfiss = 1
                 if (lmulti) then
                     call cesexi('C', jcesd(5), jcesl(5), nummae, i,&
@@ -320,10 +319,10 @@ subroutine xmcart(noma, defico, modele, resoco)
                             jfiss, 1, iad)
                 ASSERT(iad.gt.0)
                 zi(jvalv(2)-1+nfhe*(i-1)+j)=zi(jcesv(1)-1+iad)
-220         continue
-210     continue
-        do 230 i = 1, nnom
-            do 240 j = 1, nfhm
+            end do
+        end do
+        do i = 1, nnom
+            do j = 1, nfhm
                 jfiss = 1
                 if (lmulti) then
                     call cesexi('C', jcesd(5), jcesl(5), nummam, i,&
@@ -335,47 +334,47 @@ subroutine xmcart(noma, defico, modele, resoco)
                 ASSERT(iad.gt.0)
                 zi(jvalv(2)-1+nfhe*nnoe+nfhm*(i-1)+j)=zi(jcesv(1)-1+&
                 iad)
-240         continue
-230     continue
+            end do
+        end do
         call nocart(carte(2), -3, ncmp(2), ligrel=ligrxf, nma=1,&
                     limanu=[-ipc])
 !
 ! ----- REMPLISSAGE DE LA CARTE CARTCF.PINTER
 !
-        do 10 i = 1, ndim
-            do 20 j = 1, nbpi
+        do i = 1, ndim
+            do j = 1, nbpi
                 call cesexi('S', jcesd(2), jcesl(2), nummae, 1,&
                             ifise, ndim*(j-1)+i, iad)
                 ASSERT(iad.gt.0)
                 zr(jvalv(3)-1+ndim*(j-1)+i)=zr(jcesv(2)-1+iad)
- 20         continue
- 10     continue
+            end do
+        end do
         call nocart(carte(3), -3, ncmp(3), ligrel=ligrxf, nma=1,&
                     limanu=[-ipc])
 !
 ! ----- REMPLISSAGE DE LA CARTE CARTCF.AINTER
 !
-        do 40 i = 1, zxain
-            do 50 j = 1, ninter
+        do i = 1, zxain
+            do j = 1, ninter
                 call cesexi('S', jcesd(3), jcesl(3), nummae, 1,&
                             ifise, zxain*(j-1)+i, iad)
                 ASSERT(iad.gt.0)
                 zr(jvalv(4)-1+zxain*(j-1)+i)=zr(jcesv(3)-1+iad)
- 50         continue
- 40     continue
+            end do
+        end do
         call nocart(carte(4), -3, ncmp(4), ligrel=ligrxf, nma=1,&
                     limanu=[-ipc])
 !
 ! ----- REMPLISSAGE DE LA CARTE CARTCF.CCFACE
 !
-        do 70 i = 1, npte
-            do 80 j = 1, nface
+        do i = 1, npte
+            do j = 1, nface
                 call cesexi('S', jcesd(4), jcesl(4), nummae, 1,&
                             ifise, npte*(j-1)+i, iad)
                 ASSERT(iad.gt.0)
                 zi(jvalv(5)-1+npte*(j-1)+i)=zi(jcesv(4)-1+iad)
- 80         continue
- 70     continue
+            end do
+        end do
         call nocart(carte(5), -3, ncmp(5), ligrel=ligrxf, nma=1,&
                     limanu=[-ipc])
 !
@@ -407,7 +406,7 @@ subroutine xmcart(noma, defico, modele, resoco)
 !
 ! ----- REMPLISSAGE DE LA CARTE CARTCF.PLALA
 !
-                do 290 i = 1, nnoe
+                do i = 1, nnoe
                     call cesexi('C', jcesd(6), jcesl(6), nummae, i,&
                                 ifise, 1, iad)
                     if (iad .gt. 0) then
@@ -415,7 +414,7 @@ subroutine xmcart(noma, defico, modele, resoco)
                     else
                         zi(jvalv(7)-1+i)=1
                     endif
-290             continue
+                end do
                 call nocart(carte(7), -3, ncmp(7), ligrel=ligrxf, nma=1,&
                             limanu=[-ipc])
             endif
@@ -461,7 +460,7 @@ subroutine xmcart(noma, defico, modele, resoco)
                     limanu=[-ipc])
 !
         if (niv .ge. 2) then
-            call xmimp3(ifm, noma, ipc, jvalv(1), jtabf)
+            call xmimp3(ifm, mesh, ipc, jvalv(1), jtabf)
         endif
 !
     end do
@@ -469,11 +468,7 @@ subroutine xmcart(noma, defico, modele, resoco)
 ! --- MENAGE
 !
     do i = 1, nbch
-        call jeexin(chs(i)//'.CESD', ier)
-        if (ier .ne. 0) call detrsd('CHAM_ELEM_S', chs(i))
-   end do
-!
-    do i = 1, nbch
+        call detrsd('CHAM_ELEM_S', chs(i))
         call jedetr(carte(i)//'.NCMP')
         call jedetr(carte(i)//'.VALV')
     end do

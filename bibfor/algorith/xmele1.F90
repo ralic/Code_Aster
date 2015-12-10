@@ -1,25 +1,10 @@
-subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
+subroutine xmele1(mesh  , model, ds_contact, ligrel, nfiss,&
                   chelem, param, option)
 !
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
+use NonLin_Datastructure_type
 !
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+implicit none
 !
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
-!
-    implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -44,12 +29,32 @@ subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
 #include "asterfort/xmelin.h"
 #include "asterfort/xxconi.h"
 !
-    character(len=8) :: noma, modele
-    character(len=*) :: param, option
-    integer :: nfiss
-    character(len=19) :: chelem
-    character(len=19) :: ligrel
-    character(len=24) :: defico
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: mickael.abbas at edf.fr
+!
+    character(len=8), intent(in) :: mesh
+    character(len=8), intent(in) :: model
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    integer, intent(in) :: nfiss
+    character(len=19), intent(in) :: chelem
+    character(len=19), intent(in) :: ligrel
+    character(len=*), intent(in) :: param
+    character(len=*), intent(in) :: option
 !
 ! ----------------------------------------------------------------------
 !
@@ -59,23 +64,22 @@ subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
 !
 ! ----------------------------------------------------------------------
 !
-!
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  MODELE : NOM DU MODELE
+! In  mesh             : name of mesh
+! In  model            : name of model
+! In  ds_contact       : datastructure for contact management
 ! IN  NFISS  : NOMBRE TOTAL DE FISSURES
 ! IN  LIGREL : NOM DU LIGREL DES MAILLES TARDIVES
 ! IN  CHELEM : NOM DU CHAM_ELEM A CREER
 ! IN  PARAM  : NOM DE PARAMETRE
 !
-!
-!
+! ----------------------------------------------------------------------
 !
     integer :: ifm, niv
     integer :: ibid, iad, ispt, i, ima, ifis, izone
     integer :: ifima, jcesd1, jcesl1
     integer :: ndim, nface, nfisc, nnint, npg, typint, nfisc2
     integer :: nbma, nmaenr, jcesd2, jcesl2
-    character(len=8) :: nomfis, nomgd, elc, nomfi2, licmp3(3)
+    character(len=8) :: nomfis, nomgd, elc, nomfi2
     integer :: jcesl, jcesv, jcesd, ncmp, icmp
     character(len=24) :: grp
     integer :: jgrp, iret, jnbsp, ifiss
@@ -86,16 +90,12 @@ subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
     character(len=8), pointer :: cesv1(:) => null()
     integer, pointer :: cesv2(:) => null()
     integer, pointer :: xfem_cont(:) => null()
-!
-    data licmp3    / 'X1', 'X2', 'X3'/
+    character(len=8), parameter :: licmp3(3) = (/ 'X1', 'X2', 'X3'/)
 !
 ! ----------------------------------------------------------------------
 !
     call jemarq()
     call infdbg('XFEM', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<XFEM  > CREATION DU CHAM_ELEM PINDCOI '
     endif
@@ -109,10 +109,10 @@ subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
 !
 ! --- RECUPERATION DES INFOS SUR LE MAILLAGE ET LE MODELE
 !
-    call jeveuo(modele//'.FISS', 'L', vk8=fiss)
-    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
-    call dismoi('DIM_GEOM', modele, 'MODELE', repi=ndim)
-    call jeveuo(modele//'.XFEM_CONT', 'L', vi=xfem_cont)
+    call jeveuo(model//'.FISS', 'L', vk8=fiss)
+    call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nbma)
+    call dismoi('DIM_GEOM', model, 'MODELE', repi=ndim)
+    call jeveuo(model//'.XFEM_CONT', 'L', vi=xfem_cont)
 !
 ! --- ELEMENT DE REFERENCE ASSOCIE A UNE FACETTE DE CONTACT
 !
@@ -143,11 +143,11 @@ subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
 !
 ! --- CREATION DES OBJETS DE TRAVAIL
 !
-    call celces(modele//'.TOPOFAC.LO', 'V', faclon)
+    call celces(model//'.TOPOFAC.LO', 'V', faclon)
     call jeveuo(faclon(1:19)//'.CESD', 'L', jcesd2)
     call jeveuo(faclon(1:19)//'.CESL', 'L', jcesl2)
     call jeveuo(faclon(1:19)//'.CESV', 'L', vi=cesv2)
-    call celces(modele//'.XMAFIS', 'V', cmafis)
+    call celces(model//'.XMAFIS', 'V', cmafis)
     call jeveuo(cmafis(1:19)//'.CESD', 'L', jcesd1)
     call jeveuo(cmafis(1:19)//'.CESL', 'L', jcesl1)
     call jeveuo(cmafis(1:19)//'.CESV', 'L', vk8=cesv1)
@@ -166,8 +166,8 @@ subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
 ! --- RECUPERATION NOMBRE DE POINTS DE GAUSS PAR FACETTE
 !
             nomfis = fiss(ifiss)
-            izone = xxconi(defico,nomfis,'MAIT')
-            typint = mminfi(defico,'INTEGRATION',izone )
+            izone = xxconi(ds_contact%sdcont_defi,nomfis,'MAIT')
+            typint = mminfi(ds_contact%sdcont_defi,'INTEGRATION',izone )
             call xmelin(elc, typint, nnint)
 !
 ! --- RECUP LISTE DES MAILLES DE CONTACT POUR LA FISSURE
@@ -213,10 +213,10 @@ subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
         end do
 !
         if (param .eq. 'PCOHES') then
-            call cescre('V', chelsi, 'ELEM', noma, nomgd,&
+            call cescre('V', chelsi, 'ELEM', mesh, nomgd,&
                         ncmp, licmp3, [-1], zi( jnbsp), [-ncmp])
         else
-            call cescre('V', chelsi, 'ELEM', noma, nomgd,&
+            call cescre('V', chelsi, 'ELEM', mesh, nomgd,&
                         1, 'X1', [-1], zi( jnbsp), [-ncmp])
         endif
 !
@@ -244,23 +244,23 @@ subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
 !
 ! --- ZONE DE CONTACT IZONE CORRESPONDANTE
 !
-        izone = xxconi(defico,nomfis,'MAIT')
-        typint = mminfi(defico,'INTEGRATION',izone )
+        izone = xxconi(ds_contact%sdcont_defi,nomfis,'MAIT')
+        typint = mminfi(ds_contact%sdcont_defi,'INTEGRATION',izone )
         call xmelin(elc, typint, nnint)
 !
 ! --- CONTACT INIT
 !
         if (isint) then
             if (param .eq. 'PINDCOI' .or. param .eq. 'PMEMCON') then
-                vall = mminfi(defico,'CONTACT_INIT',izone ).eq.1
+                vall = mminfi(ds_contact%sdcont_defi,'CONTACT_INIT',izone ).eq.1
             else if (param.eq.'PGLISS') then
-                vall = mminfl(defico,'GLISSIERE_ZONE',izone )
+                vall = mminfl(ds_contact%sdcont_defi,'GLISSIERE_ZONE',izone )
             else
                 ASSERT(.false.)
             endif
         else
             if (param .eq. 'PSEUIL') then
-                valr = mminfr(defico,'SEUIL_INIT',izone )
+                valr = mminfr(ds_contact%sdcont_defi,'SEUIL_INIT',izone )
             else if (param(1:5).eq.'PCOHE') then
                 valr = 0.d0
             else

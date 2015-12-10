@@ -18,31 +18,23 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine mmapma(noma, defico, resoco, ndimg, izone,&
-                      lexfro, typint, aliase, posmae, nummae,&
-                      nnomae, posmam, nummam, ksipr1, ksipr2,&
+    subroutine mmapma(mesh, ds_contact, model_ndim, i_zone,&
+                      lexfro, typint, aliase, posmae, node_mast_nume,&
+                      nnomae, elem_mast_indx, elem_mast_nume, ksipr1, ksipr2,&
                       tau1m, tau2m, iptm, iptc, norm,&
                       nommam)
-        character(len=8) :: noma
-        character(len=24) :: defico
-        character(len=24) :: resoco
-        integer :: ndimg
-        integer :: izone
-        aster_logical :: lexfro
-        integer :: typint
+        use NonLin_Datastructure_type
+        character(len=8) :: mesh
         character(len=8) :: aliase
-        integer :: posmae
-        integer :: nummae
-        integer :: nnomae
-        integer :: posmam
-        integer :: nummam
-        real(kind=8) :: ksipr1
-        real(kind=8) :: ksipr2
-        real(kind=8) :: tau1m(3)
-        real(kind=8) :: tau2m(3)
-        integer :: iptm
-        integer :: iptc
-        real(kind=8) :: norm(3)
+        type(NL_DS_Contact), intent(in) :: ds_contact
+        real(kind=8) :: ksipr1, ksipr2
+        integer :: model_ndim
+        integer :: posmae, node_mast_nume
+        integer :: elem_mast_indx, elem_mast_nume, nnomae
+        integer :: i_zone, iptm, iptc
+        integer :: typint
+        real(kind=8) :: tau1m(3), tau2m(3), norm(3)
         character(len=8) :: nommam
+        aster_logical :: lexfro
     end subroutine mmapma
 end interface

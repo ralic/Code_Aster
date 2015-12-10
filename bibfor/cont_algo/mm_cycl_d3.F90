@@ -1,7 +1,9 @@
-subroutine mm_cycl_d3(sdcont_defi  , sdcont_solv  , i_cont_poin, &
-                      indi_frot_prev, dist_frot_prev, &
-                      indi_cont_eval, indi_frot_eval, &
+subroutine mm_cycl_d3(ds_contact    , i_cont_poin   ,&
+                      indi_frot_prev, dist_frot_prev,&
+                      indi_cont_eval, indi_frot_eval,&
                       dist_frot_curr)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -34,8 +36,7 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=24), intent(in) :: sdcont_defi
-    character(len=24), intent(in) :: sdcont_solv
+    type(NL_DS_Contact), intent(in) :: ds_contact
     integer, intent(in) :: i_cont_poin
     integer, intent(in) :: indi_frot_prev
     real(kind=8), intent(in) :: dist_frot_prev(3)
@@ -51,8 +52,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sdcont_solv      : name of contact solving datastructure
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  ds_contact       : datastructure for contact management
 ! In  i_cont_poin      : contact point index
 ! In  indi_frot_prev   : previous friction indicator
 ! In  dist_frot_prev   : previous friction distance
@@ -86,9 +86,9 @@ implicit none
 !
 ! - Access to cycling objects
 !
-    sdcont_cyclis = sdcont_solv(1:14)//'.CYCLIS'
-    sdcont_cycnbr = sdcont_solv(1:14)//'.CYCNBR'
-    sdcont_cyceta = sdcont_solv(1:14)//'.CYCETA'
+    sdcont_cyclis = ds_contact%sdcont_solv(1:14)//'.CYCLIS'
+    sdcont_cycnbr = ds_contact%sdcont_solv(1:14)//'.CYCNBR'
+    sdcont_cyceta = ds_contact%sdcont_solv(1:14)//'.CYCETA'
     call jeveuo(sdcont_cyclis, 'E', vi = p_sdcont_cyclis)
     call jeveuo(sdcont_cycnbr, 'E', vi = p_sdcont_cycnbr)
     call jeveuo(sdcont_cyceta, 'E', vi = p_sdcont_cyceta)
@@ -98,7 +98,7 @@ implicit none
     if ((indi_cont_eval .eq. 0).or.&
         (indi_frot_eval .eq. 1).or.&
         (indi_frot_prev .eq. 1)) then
-        call mm_cycl_erase(sdcont_defi, sdcont_solv, cycl_type, i_cont_poin)
+        call mm_cycl_erase(ds_contact, cycl_type, i_cont_poin)
         goto 99
     endif
 !

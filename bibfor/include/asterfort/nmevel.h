@@ -18,20 +18,20 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmevel(sddisc, nume_inst, defico, resoco, vale,&
-                      nombcl, lsvimx   , ldvres, linsta, lerrcv,&
-                      lerror, conver)
-        character(len=19) :: sddisc
-        integer :: nume_inst
-        character(len=24) :: defico
-        character(len=24) :: resoco
-        character(len=19) :: vale(*)
-        character(len=4) :: nombcl
-        aster_logical :: lsvimx
-        aster_logical :: ldvres
-        aster_logical :: linsta
-        aster_logical :: lerrcv
-        aster_logical :: lerror
-        aster_logical :: conver
+    subroutine nmevel(sddisc     , nume_inst, vale  , loop_name, lsvimx,&
+                      ldvres     , linsta   , lerrcv, lerror   , conver,&
+                      ds_contact_)
+        use NonLin_Datastructure_type
+        character(len=19), intent(in) :: vale(*)
+        character(len=19), intent(in) :: sddisc
+        character(len=4), intent(in) :: loop_name
+        integer, intent(in) :: nume_inst
+        aster_logical, intent(in) :: lsvimx
+        aster_logical, intent(in) :: ldvres
+        aster_logical, intent(in) :: linsta
+        aster_logical, intent(in) :: lerrcv
+        aster_logical, intent(in) :: lerror
+        aster_logical, intent(in) :: conver
+        type(NL_DS_Contact), optional, intent(in) :: ds_contact_
     end subroutine nmevel
 end interface

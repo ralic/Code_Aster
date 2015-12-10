@@ -1,33 +1,16 @@
 subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
-                  ifise, defico, izone, alias, mmait,&
+                  ifise, ds_contact, izone, alias, mmait,&
                   amait, nmait, statue, geom, nummin,&
                   nummae, ifamin, ifacee, jeumin, t1min,&
                   t2min, ximin, yimin, projin, stamin,&
                   ifism)
 !
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
+use NonLin_Datastructure_type
 !
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+implicit none
 !
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
-!
-! aslint: disable=W1504
-    implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterc/r8gaem.h"
 #include "asterfort/assert.h"
 #include "asterfort/cesexi.h"
@@ -46,9 +29,29 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
 #include "asterfort/mmproj.h"
 #include "asterfort/normev.h"
 #include "asterfort/panbno.h"
+!
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: mickael.abbas at edf.fr
+! aslint: disable=W1504
+!
     character(len=8) :: alias, noma
     integer :: ndim, mmait, nmait, amait, statue, stamin
-    character(len=24) :: defico
+    type(NL_DS_Contact), intent(in) :: ds_contact
     integer :: jcesd(10), jcesv(10), jcesl(10), ifise
     integer :: izone
     real(kind=8) :: geom(3)
@@ -75,7 +78,7 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
 !  JCES*(4)  : POINTEURS DE LA SD SIMPLE DE CONNECTIVITÉ DES FACETTES
 !  JCES*(6)  : POINTEURS DE LA SD SIMPLE DES COOR DES PT D'INTER MAITRE
 ! IN  NOMA   : NOM DU MAILLAGE
-! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  ALIAS  : TYPE DE MAILLE DE CONTACT
 ! IN  NDIM   : DIMENSION DU PROBLEME
 ! IN  IFISE  : NUMEROS DE FISSURE LOCALE DE LA MAILLE ESCLAVE
@@ -149,38 +152,38 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
         coorma(i)=0.d0
  10 continue
     dirapp = .false.
-    ntmae = cfdisi(defico,'NTMAE')
+    ntmae = cfdisi(ds_contact%sdcont_defi,'NTMAE')
 !
 ! --- RECUPERATION DE QUELQUES DONNEES
 !
-    maescx = defico(1:16)//'.MAESCX'
+    maescx = ds_contact%sdcont_defi(1:16)//'.MAESCX'
     call jeveuo(maescx, 'L', jmaesx)
     zmesx = cfmmvd('ZMESX')
 !
 ! --- INFOS GENERIQUES POUR L'ALGORITHME D'APPARIEMENT
 !
-    toleou = mminfr(defico,'TOLE_PROJ_EXT' ,izone)
-    epsmax = cfdisr(defico,'PROJ_NEWT_RESI')
-    itemax = cfdisi(defico,'PROJ_NEWT_ITER')
+    toleou = mminfr(ds_contact%sdcont_defi,'TOLE_PROJ_EXT' ,izone)
+    epsmax = cfdisr(ds_contact%sdcont_defi,'PROJ_NEWT_RESI')
+    itemax = cfdisi(ds_contact%sdcont_defi,'PROJ_NEWT_ITER')
 !
     if (statue .eq. 2 .or. statue .lt. 0) then
 !
 ! --- ELEMENT EXCLUSIVEMENT CRACK-TIP, ON PROJETTE SUR LUI-MEME
 !
-        do 240 i = 1, ndim
+        do i = 1, ndim
             call cesexi('S', jcesd(4), jcesl(4), nummae, 1,&
                         ifise, ( ifacee-1)*ndim+i, iad)
             ASSERT(iad.gt.0)
             numpi(i) = zi(jcesv(4)-1+iad)
-240     continue
-        do 250 i = 1, ndim
-            do 260 j = 1, ndim
+        end do
+        do i = 1, ndim
+            do j = 1, ndim
                 call cesexi('S', jcesd(6), jcesl(6), nummae, 1,&
                             ifise, ndim*(numpi(i)-1)+j, iad)
                 ASSERT(iad.gt.0)
                 coorma(3*(i-1)+j)=zr(jcesv(6)-1+iad)
-260         continue
-250     continue
+            end do
+        end do
         call mmproj(alias, ndim, ndim, coorma, geom,&
                     itemax, epsmax, toleou, dirapp, r3bid,&
                     ximin, yimin, t1min, t2min, iprojm,&
@@ -251,29 +254,28 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
 ! ----- ON BOUCLE SUR LES ARETES DE LA MAILLE COURANTE
 ! ----- ON REGARDE SI L'ARETE APPARTIENT A CETTE MAILLE
 !
-            do 110 ia = 1, nbar
+            do ia = 1, nbar
                 n1 = ar(ia,1)
                 n2 = ar(ia,2)
                 nugla = connex(zi(jconx2+nummai-1)+n1-1)
                 nuglb = connex(zi(jconx2+nummai-1)+n2-1)
-!
                 if (((nugla.eq.nunoa).and.(nuglb.eq.nunob)) .or.&
                     ((nugla.eq.nunob).and.(nuglb.eq.nunoa))) then
                     noapar=.false.
                 endif
-110         continue
+            end do
         else
 !
 ! ----- SI LE POINT DE CONTACT EST UN NOEUD
 ! ----- ON BOUCLE SUR LES NOEUDS DE LA MAILLE COURANTE
 ! ----- ON REGARDE SI LE NOEUD APPARTIENT A CETTE MAILLE
 !
-            do 120 ino = 1, nbnos
+            do ino = 1, nbnos
                 nunoin=connex(zi(jconx2+nummai-1)+ino-1)
                 if (nunoin .eq. nunog) then
                     noapar=.false.
                 endif
-120         continue
+            end do
         endif
 !
         if (noapar) goto 100
@@ -291,29 +293,29 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
 !
 ! ----- BOUCLE SUR LES FACETTES DE CONTACT DE LA MAILLE COURANTE
 !
-        do 130 ifacem = 1, nfacem
+        do ifacem = 1, nfacem
 !
 ! ----- RECUPERATION DES NUMEROS LOCAUX DES POINTS D'INTERSECTIONS
 ! ----- DE LA FACETTE DANS LA MAILLE
 !
-            do 140 i = 1, nptm
+            do i = 1, nptm
                 call cesexi('S', jcesd(4), jcesl(4), nummai, 1,&
                             ifiss, (ifacem-1)*nptm+i, iad)
                 ASSERT(iad.gt.0)
                 numpi(i) = zi(jcesv(4)-1+iad)
-140         continue
+            end do
 !
 ! ----- RECUPERATION DES COORDONNES REELLES DES POINTS D'INTERSECTION
 ! ----- DE LA FACETTE MAITRE
 !
-            do 150 i = 1, nptm
-                do 160 j = 1, ndim
+            do i = 1, nptm
+                do j = 1, ndim
                     call cesexi('S', jcesd(6), jcesl(6), nummai, 1,&
                                 ifiss, ndim*(numpi(i)-1)+j, iad)
                     ASSERT(iad.gt.0)
                     coorma(3*(i-1)+j)=zr(jcesv(6)-1+iad)
-160             continue
-150         continue
+                end do
+            end do
 !
 ! --- PROJECTION SUR LA FACETTE MAITRE
 !
@@ -351,16 +353,15 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
                     iprojm = iproj
                     stamin = statum
                     ifism = ifiss
-                    do 40 k = 1, 3
+                    do k = 1, 3
                         t1min(k) = tau1(k)
                         t2min(k) = tau2(k)
- 40                 continue
+                    end do
                     ximin = xi
                     yimin = yi
                 endif
             endif
-!
-130     continue
+        end do
 100 continue
 !
     if (nummin .eq. 0 .and. (.not.lappar)) then

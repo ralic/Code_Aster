@@ -16,14 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xmele3(noma, modele, ligrel, nfiss,&
-                      chelem, param, option)
-        character(len=8) :: noma
-        character(len=8) :: modele
-        character(len=19) :: ligrel
-        integer :: nfiss
-        character(len=19) :: chelem
-        character(len=*) :: param
-        character(len=*) :: option
+    subroutine xmele3(mesh , model , ligrel, nfiss, chelem,&
+                      param, option)
+        character(len=8), intent(in) :: mesh
+        character(len=8), intent(in) :: model
+        character(len=*), intent(in) :: param
+        character(len=*), intent(in) :: option
+        integer, intent(in) :: nfiss
+        character(len=19), intent(in) :: chelem
+        character(len=19), intent(in) :: ligrel
     end subroutine xmele3
 end interface

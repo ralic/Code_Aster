@@ -1,4 +1,19 @@
-subroutine cfeven(phase, defico, resoco)
+subroutine cfeven(phase, ds_contact)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisd.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,19 +33,8 @@ subroutine cfeven(phase, defico, resoco)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/cfdisd.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/cfmmvd.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-    character(len=3) :: phase
-    character(len=24) :: defico, resoco
+    character(len=3), intent(in) :: phase
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! ----------------------------------------------------------------------
 !
@@ -40,15 +44,10 @@ subroutine cfeven(phase, defico, resoco)
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  PHASE  : PHASE DE DETECTION
 !              'INI' - AU DEBUT DU PAS DE TEMPS
 !              'FIN' - A LA FIN DU PAS DE TEMPS
-! IN  DEFICO : SD DE DEFINITION DU CONTACT
-! IN  RESOCO : SD DE RESOLUTION DU CONTACT
-!
-!
-!
+! In  ds_contact       : datastructure for contact management
 !
     integer :: ifm, niv
     integer :: nbliai, nbliac, llf, llf1, llf2, btotal, ip
@@ -66,41 +65,37 @@ subroutine cfeven(phase, defico, resoco)
 !
     call jemarq()
     call infdbg('CONTACT', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> ...... GESTION DES JEUX POUR'//&
-        ' EVENT-DRIVEN'
+        write (ifm,*) '<CONTACT> ...... GESTION DES JEUX POUR EVENT-DRIVEN'
     endif
 !
 ! --- PARAMETRES
 !
-    nbliai = cfdisd(resoco,'NBLIAI')
-    nbliac = cfdisd(resoco,'NBLIAC')
-    llf = cfdisd(resoco,'LLF' )
-    llf1 = cfdisd(resoco,'LLF1' )
-    llf2 = cfdisd(resoco,'LLF2' )
+    nbliai = cfdisd(ds_contact%sdcont_solv,'NBLIAI')
+    nbliac = cfdisd(ds_contact%sdcont_solv,'NBLIAC')
+    llf = cfdisd(ds_contact%sdcont_solv,'LLF' )
+    llf1 = cfdisd(ds_contact%sdcont_solv,'LLF1' )
+    llf2 = cfdisd(ds_contact%sdcont_solv,'LLF2' )
     btotal = nbliac+llf+llf1+llf2
     zeven = cfmmvd('ZEVEN')
 !
 ! --- UNE ZONE EN MODE SANS CALCUL: ON NE PEUT RIEN FAIRE
 !
-    lexiv = cfdisl(defico,'EXIS_VERIF')
+    lexiv = cfdisl(ds_contact%sdcont_defi,'EXIS_VERIF')
     if (lexiv) goto 999
 !
 ! --- ACCES OBJETS DU CONTACT
 !
-    liac = resoco(1:14)//'.LIAC'
-    numlia = resoco(1:14)//'.NUMLIA'
-    ctevco = resoco(1:14)//'.EVENCO'
+    liac = ds_contact%sdcont_solv(1:14)//'.LIAC'
+    numlia = ds_contact%sdcont_solv(1:14)//'.NUMLIA'
+    ctevco = ds_contact%sdcont_solv(1:14)//'.EVENCO'
     call jeveuo(liac, 'L', jliac)
     call jeveuo(numlia, 'L', jnumli)
     call jeveuo(ctevco, 'E', jctevc)
 !
 ! --- DETECTION
 !
-    do 20 iliai = 1, nbliai
+    do iliai = 1, nbliai
         ip = zi(jnumli+4*(iliai-1)+1-1)
         etacin = zr(jctevc+zeven*(ip-1)+1-1)
         etacfi = zr(jctevc+zeven*(ip-1)+2-1)
@@ -108,9 +103,9 @@ subroutine cfeven(phase, defico, resoco)
 !
 ! ----- LA LIAISON EST-ELLE ACTIVE ?
 !
-        do 30 iliac = 1, btotal
+        do iliac = 1, btotal
             if (zi(jliac-1+iliac) .eq. iliai) lactif = .true.
- 30     continue
+        end do
 !
 ! ----- CHANGEMENT STATUT
 !
@@ -133,7 +128,7 @@ subroutine cfeven(phase, defico, resoco)
         endif
         zr(jctevc+zeven*(ip-1)+1-1) = etacin
         zr(jctevc+zeven*(ip-1)+2-1) = etacfi
- 20 end do
+    end do
 !
 999 continue
 !

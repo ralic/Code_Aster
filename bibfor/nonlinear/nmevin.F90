@@ -1,4 +1,17 @@
-subroutine nmevin(sddisc, resoco, i_echec, i_echec_acti)
+subroutine nmevin(sddisc, ds_contact, i_echec, i_echec_acti)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/cfdisd.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/utdidt.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,18 +31,10 @@ subroutine nmevin(sddisc, resoco, i_echec, i_echec_acti)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/cfdisd.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/utdidt.h"
-    character(len=24) :: resoco
-    integer :: i_echec, i_echec_acti
-    character(len=19) :: sddisc
+    character(len=19), intent(in) :: sddisc
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    integer, intent(in) :: i_echec
+    integer, intent(out) :: i_echec_acti
 !
 ! ----------------------------------------------------------------------
 !
@@ -39,15 +44,13 @@ subroutine nmevin(sddisc, resoco, i_echec, i_echec_acti)
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! In  sddisc           : datastructure for time discretization TEMPORELLE
-! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  IECHEC : OCCURRENCE DE L'ECHEC
 ! OUT IEVDAC : VAUT IECHEC SI EVENEMENT DECLENCHE
 !                   0 SINON
 !
-!
-!
+! ----------------------------------------------------------------------
 !
     integer :: ifm, niv
     integer :: nbliai
@@ -62,9 +65,6 @@ subroutine nmevin(sddisc, resoco, i_echec, i_echec_acti)
 !
     call jemarq()
     call infdbg('MECA_NON_LINE', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> ... INTERPENETRATION'
     endif
@@ -77,13 +77,13 @@ subroutine nmevin(sddisc, resoco, i_echec, i_echec_acti)
     levent = .false.
     pnmaxi = 0.d0
 !
-! --- PARAMETRES
+! - Get parameters of contact
 !
-    nbliai = cfdisd(resoco,'NBLIAI')
+    nbliai = cfdisd(ds_contact%sdcont_solv,'NBLIAI')
 !
-! --- ACCES OBJETS DU CONTACT
+! - Access to contact datastructures
 !
-    jeuite = resoco(1:14)//'.JEUITE'
+    jeuite = ds_contact%sdcont_solv(1:14)//'.JEUITE'
     call jeveuo(jeuite, 'L', jjeuit)
 !
 ! --- DETECTION PENETRATION
@@ -92,7 +92,9 @@ subroutine nmevin(sddisc, resoco, i_echec, i_echec_acti)
         jeufin = zr(jjeuit+3*(iliai-1)+1-1)
         if (jeufin .le. 0.d0) then
             if (abs(jeufin) .gt. pene_maxi) then
-                if (abs(jeufin) .gt. pnmaxi) pnmaxi = abs(jeufin)
+                if (abs(jeufin) .gt. pnmaxi) then
+                    pnmaxi = abs(jeufin)
+                endif
                 levent = .true.
             endif
         endif

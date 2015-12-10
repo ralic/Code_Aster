@@ -18,12 +18,13 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine cfchno(noma, defico, ndimg, posnoe, typenm,&
+    subroutine cfchno(noma, ds_contact, ndimg, posnoe, typenm,&
                       numenm, lmait, lescl, lmfixe, lefixe,&
                       tau1m, tau2m, tau1e, tau2e, tau1,&
                       tau2)
+        use NonLin_Datastructure_type
         character(len=8) :: noma
-        character(len=24) :: defico
+        type(NL_DS_Contact), intent(in) :: ds_contact
         integer :: ndimg
         integer :: posnoe
         character(len=4) :: typenm

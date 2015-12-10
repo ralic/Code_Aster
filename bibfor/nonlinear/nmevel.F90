@@ -1,6 +1,18 @@
-subroutine nmevel(sddisc, nume_inst, defico, resoco, vale,&
-                  nombcl, lsvimx, ldvres, linsta, lerrcv,&
-                  lerror, conver)
+subroutine nmevel(sddisc     , nume_inst, vale  , loop_name, lsvimx,&
+                  ldvres     , linsta   , lerrcv, lerror   , conver,&
+                  ds_contact_)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/eneven.h"
+#include "asterfort/nmevcx.h"
+#include "asterfort/nmevdg.h"
+#include "asterfort/nmevin.h"
+#include "asterfort/utdidt.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,19 +32,17 @@ subroutine nmevel(sddisc, nume_inst, defico, resoco, vale,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "asterfort/assert.h"
-#include "asterfort/eneven.h"
-#include "asterfort/nmevcx.h"
-#include "asterfort/nmevdg.h"
-#include "asterfort/nmevin.h"
-#include "asterfort/utdidt.h"
-    character(len=19) :: sddisc, vale(*)
-    character(len=4) :: nombcl
-    character(len=24) :: defico, resoco
-    integer :: nume_inst
-    aster_logical :: lsvimx, ldvres, linsta, lerrcv, lerror, conver
+    character(len=19), intent(in) :: vale(*)
+    character(len=19), intent(in) :: sddisc
+    character(len=4), intent(in) :: loop_name
+    integer, intent(in) :: nume_inst
+    aster_logical, intent(in) :: lsvimx
+    aster_logical, intent(in) :: ldvres
+    aster_logical, intent(in) :: linsta
+    aster_logical, intent(in) :: lerrcv
+    aster_logical, intent(in) :: lerror
+    aster_logical, intent(in) :: conver
+    type(NL_DS_Contact), optional, intent(in) :: ds_contact_
 !
 ! ----------------------------------------------------------------------
 !
@@ -46,9 +56,8 @@ subroutine nmevel(sddisc, nume_inst, defico, resoco, vale,&
 ! ON NE CHERCHE PAS A VERIFIER LES AUTRES EVENEMENTS
 !
 ! In  sddisc           : datastructure for time discretization TEMPORELLE
+! In  ds_contact       : datastructure for contact management
 ! IN  NUMINS : NUMERO D'INSTANT
-! IN  DEFICO : SD DE DEFINITION DU CONTACT
-! IN  RESOCO : SD DE RESOLUTION DU CONTACT
 ! IN  VALE   : INCREMENTS DES VARIABLES
 !               OP0070: VARIABLE CHAPEAU
 !               OP0033: TABLE
@@ -101,27 +110,38 @@ subroutine nmevel(sddisc, nume_inst, defico, resoco, vale,&
         else if (event_name.eq.'DIVE_RESI') then
             if (ldvres) then
                 i_echec_acti = i_echec
-                if (i_echec_acti .ne. 0) goto 99
+                if (i_echec_acti .ne. 0) then
+                    goto 99
+                endif
             endif
         else if (event_name.eq.'DELTA_GRANDEUR') then
             if (conver) then
                 call nmevdg(sddisc, vale, i_echec, i_echec_acti)
-                if (i_echec_acti .ne. 0) goto 99
+                if (i_echec_acti .ne. 0) then
+                    goto 99
+                endif
             endif
         else if (event_name.eq.'COLLISION') then
-            if (nombcl .eq. 'INST') then
-                call nmevcx(sddisc, nume_inst, defico, resoco, i_echec,&
-                            i_echec_acti)
-                if (i_echec_acti .ne. 0) goto 99
+            if (loop_name .eq. 'INST') then
+                call nmevcx(sddisc, nume_inst, ds_contact_, i_echec, i_echec_acti)
+                if (i_echec_acti .ne. 0) then
+                    goto 99
+                endif
             endif
         else if (event_name.eq.'INTERPENETRATION') then
-            if (nombcl .eq. 'INST') then
-                call nmevin(sddisc, resoco, i_echec, i_echec_acti)
-                if (i_echec_acti .ne. 0) goto 99
+            if (loop_name .eq. 'INST') then
+                call nmevin(sddisc, ds_contact_, i_echec, i_echec_acti)
+                if (i_echec_acti .ne. 0) then
+                    goto 99
+                endif
             endif
         else if (event_name.eq.'INSTABILITE') then
-            if (linsta) i_echec_acti = i_echec
-            if (i_echec_acti .ne. 0) goto 99
+            if (linsta) then
+                i_echec_acti = i_echec
+            endif
+            if (i_echec_acti .ne. 0) then
+                goto 99
+            endif
         else
             write(6,*) 'NOMEVD: ',event_name
             ASSERT(.false.)

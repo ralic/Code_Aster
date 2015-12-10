@@ -1,4 +1,24 @@
-subroutine cfmmve(noma, defico, resoco, valinc, instan)
+subroutine cfmmve(noma, ds_contact, valinc, instan)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/apcalc.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfmmvc.h"
+#include "asterfort/cfmmvs.h"
+#include "asterfort/cfpoin.h"
+#include "asterfort/cfsans.h"
+#include "asterfort/cfveri.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/mmpoin.h"
+#include "asterfort/mmveri.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/mreacg.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,29 +38,10 @@ subroutine cfmmve(noma, defico, resoco, valinc, instan)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/apcalc.h"
-#include "asterfort/assert.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/cfmmvc.h"
-#include "asterfort/cfmmvs.h"
-#include "asterfort/cfpoin.h"
-#include "asterfort/cfsans.h"
-#include "asterfort/cfveri.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/mmpoin.h"
-#include "asterfort/mmveri.h"
-#include "asterfort/nmchex.h"
-#include "asterfort/mreacg.h"
-    character(len=8) :: noma
-    character(len=24) :: defico, resoco
-    character(len=19) :: valinc(*)
-    real(kind=8) :: instan
+    character(len=8), intent(in) :: noma
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=19), intent(in) :: valinc(*)
+    real(kind=8), intent(in) :: instan
 !
 ! ----------------------------------------------------------------------
 !
@@ -50,9 +51,7 @@ subroutine cfmmve(noma, defico, resoco, valinc, instan)
 !
 ! ----------------------------------------------------------------------
 !
-!
-! IN  DEFICO : SD DE DEFINITION DU CONTACT
-! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  NOMA   : NOM DU MAILLAGE
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  INSTAN : INST VALUE
@@ -68,20 +67,16 @@ subroutine cfmmve(noma, defico, resoco, valinc, instan)
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('CONTACT', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<CONTACT> MODE VERIF'
     endif
 !
 ! --- TYPE DE CONTACT
 !
-    lctcc = cfdisl(defico,'FORMUL_CONTINUE')
-    lctcd = cfdisl(defico,'FORMUL_DISCRETE')
-    lallv = cfdisl(defico,'ALL_VERIF')
+    lctcc = cfdisl(ds_contact%sdcont_defi,'FORMUL_CONTINUE')
+    lctcd = cfdisl(ds_contact%sdcont_defi,'FORMUL_DISCRETE')
+    lallv = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF')
 !
 ! --- DECOMPACTION VARIABLES CHAPEAUX
 !
@@ -89,13 +84,13 @@ subroutine cfmmve(noma, defico, resoco, valinc, instan)
 !
 ! --- NOM DES SDs
 !
-    sdappa = resoco(1:14)//'.APPA'
-    newgeo = resoco(1:14)//'.NEWG'
+    sdappa = ds_contact%sdcont_solv(1:14)//'.APPA'
+    newgeo = ds_contact%sdcont_solv(1:14)//'.NEWG'
 !
 ! - Geometry update
 !
     if (lallv) then
-        call mreacg(noma, resoco, field_update_ = depplu)
+        call mreacg(noma, ds_contact, field_update_ = depplu)
     endif
 !
 ! --- CREATION SD APPARIEMENT EN MODE ALL VERIF
@@ -105,32 +100,32 @@ subroutine cfmmve(noma, defico, resoco, valinc, instan)
 ! ----- RE-REMPLISSAGE DE LA SD APPARIEMENT - POINTS (COORD. ET NOMS)
 !
         if (lctcc) then
-            call mmpoin(noma, defico, newgeo, sdappa)
+            call mmpoin(noma, ds_contact%sdcont_defi, newgeo, sdappa)
         else if (lctcd) then
-            call cfpoin(noma, defico, newgeo, sdappa)
+            call cfpoin(noma, ds_contact%sdcont_defi, newgeo, sdappa)
         else
             ASSERT(.false.)
         endif
 !
 ! ----- Pairing
 !
-        call apcalc(sdappa, noma, defico, newgeo)
+        call apcalc(sdappa, noma, ds_contact%sdcont_defi, newgeo)
 !
     endif
 !
 ! --- CREATION SD PROVISOIRES POUR VERIF
 !
-    call cfmmvc(defico, jeux, loca, enti, zone,&
+    call cfmmvc(ds_contact%sdcont_defi, jeux, loca, enti, zone,&
                 npt)
 !
 ! --- EVALUATION DES POINTS EN MODE VERIF
 !
     if (lctcc) then
-        call mmveri(noma, defico, resoco, newgeo, sdappa,&
+        call mmveri(noma, ds_contact, newgeo, sdappa,&
                     npt, jeux, loca, enti, zone,&
                     instan)
     else if (lctcd) then
-        call cfveri(noma, defico, resoco, newgeo, sdappa,&
+        call cfveri(noma, ds_contact, newgeo, sdappa,&
                     npt, jeux, loca, enti, zone,&
                     instan)
     else
@@ -139,11 +134,11 @@ subroutine cfmmve(noma, defico, resoco, valinc, instan)
 !
 ! --- AFFICHAGE DES INTERPENETRATIONS EVENTUELLES
 !
-    call cfsans(defico, npt, jeux, enti, zone)
+    call cfsans(ds_contact%sdcont_defi, npt, jeux, enti, zone)
 !
 ! --- SAUVEGARDE DANS LA SD RESULTAT
 !
-    call cfmmvs(defico, resoco, npt, jeux, loca,&
+    call cfmmvs(ds_contact%sdcont_defi, ds_contact%sdcont_solv, npt, jeux, loca,&
                 zone)
 !
 ! --- NETTOYAGE
@@ -152,7 +147,5 @@ subroutine cfmmve(noma, defico, resoco, valinc, instan)
     call jedetr(loca)
     call jedetr(enti)
     call jedetr(zone)
-!
-    call jedema()
 !
 end subroutine

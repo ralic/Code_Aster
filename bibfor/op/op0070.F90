@@ -101,7 +101,6 @@ implicit none
     character(len=24) :: sdstat, sd_suiv, sdcriq
     character(len=19) :: sdpilo, sdnume, sddyna, sddisc, sdcrit
     character(len=19) :: sd_obsv, sdpost, sdener
-    character(len=24) :: defico, resoco, deficu, resocu
     type(NL_DS_Print)    :: ds_print
     type(NL_DS_Conv)     :: ds_conv
     type(NL_DS_AlgoPara) :: ds_algopara
@@ -172,11 +171,11 @@ implicit none
     call nminit(result , modele , numedd, numfix     , mate    ,&
                 compor , carele , lischa, ds_algopara, maprec  ,&
                 solveu , carcri , numins, sdstat     , sddisc  ,&
-                sdnume , defico , sdcrit, comref     , fonact  ,&
+                sdnume , sdcrit, comref     , fonact  ,&
                 mesh   , sdpilo , sddyna, ds_print   , sd_suiv ,&
                 sd_obsv, sdtime , sderro, sdpost     , ds_inout,&
-                sdener , ds_conv, sdcriq, deficu     , resocu  ,&
-                resoco , valinc , solalg, measse     , veelem  ,&
+                sdener , ds_conv, sdcriq, &
+                valinc , solalg, measse     , veelem  ,&
                 meelem , veasse , codere, ds_contact)
 !
 ! --- PREMIER INSTANT
@@ -255,7 +254,7 @@ implicit none
 ! --- ETAT DE LA CONVERGENCE DU PAS DE TEMPS
 !
     call nmcvgp(sddisc, numins, sderro, valinc, fonact,&
-                defico, resoco)
+                ds_contact)
 !
 ! --- AFFICHAGES PENDANT LA BOUCLE DES PAS DE TEMPS
 !
@@ -266,12 +265,12 @@ implicit none
 !
     if (.not.lexpl) then
         call nmstat('P', fonact, sdstat, sdtime, ds_print,&
-                    defico)
+                    ds_contact)
     endif
 !
 ! --- GESTION DES ACTIONS A LA FIN D'UN PAS DE TEMPS
 !
-    call nmactp(ds_print, sddisc, sderro, defico, resoco,&
+    call nmactp(ds_print, sddisc, sderro, ds_contact,&
                 ds_conv , nbiter, numins)
 !
 ! --- INSTANT SUIVANT
@@ -347,7 +346,7 @@ implicit none
 !
     if (.not.lexpl) then
         call nmstat('T', fonact, sdstat, sdtime, ds_print,&
-                    defico)
+                    ds_contact)
     endif
 !
 ! --- ON REMET LE MECANISME D'EXCEPTION A SA VALEUR INITIALE

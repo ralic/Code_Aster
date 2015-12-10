@@ -1,5 +1,7 @@
-subroutine cfdist(sdcont_defi, i_zone         , elem_slav_indx, poin_coor, time_curr,&
-                  gap_user   , node_slav_indx_)
+subroutine cfdist(ds_contact, i_zone         , elem_slav_indx, poin_coor, time_curr,&
+                  gap_user  , node_slav_indx_)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -28,7 +30,7 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=24), intent(in) :: sdcont_defi
+    type(NL_DS_Contact), intent(in) :: ds_contact
     integer, intent(in) :: i_zone
     integer, intent(in) :: elem_slav_indx
     real(kind=8), intent(in) :: poin_coor(3)
@@ -44,7 +46,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  ds_contact       : datastructure for contact management
 ! In  i_zone           : index of contact zone
 ! In  elem_slav_indx   : index of slave element (in contact datastructure)
 ! In  time_curr        : current time
@@ -78,10 +80,10 @@ implicit none
 !
 ! - Acces to contact objects
 !
-    sdcont_jeucoq = sdcont_defi(1:16)//'.JEUCOQ'
-    sdcont_jeupou = sdcont_defi(1:16)//'.JEUPOU'
-    sdcont_jeufo1 = sdcont_defi(1:16)//'.JFO1CO'
-    sdcont_jeufo2 = sdcont_defi(1:16)//'.JFO2CO'
+    sdcont_jeucoq = ds_contact%sdcont_defi(1:16)//'.JEUCOQ'
+    sdcont_jeupou = ds_contact%sdcont_defi(1:16)//'.JEUPOU'
+    sdcont_jeufo1 = ds_contact%sdcont_defi(1:16)//'.JFO1CO'
+    sdcont_jeufo2 = ds_contact%sdcont_defi(1:16)//'.JFO2CO'
     call jeveuo(sdcont_jeucoq, 'L', vr  = v_sdcont_jeucoq)
     call jeveuo(sdcont_jeupou, 'L', vr  = v_sdcont_jeupou)
     call jeveuo(sdcont_jeufo1, 'L', vk8 = v_sdcont_jeufo1)
@@ -100,10 +102,10 @@ implicit none
 !
 ! - Supplementary gaps
 !
-    l_dist_beam  = mminfl(sdcont_defi, 'DIST_POUTRE', i_zone)
-    l_dist_shell = mminfl(sdcont_defi, 'DIST_COQUE' , i_zone)
-    l_dist_mast  = mminfl(sdcont_defi, 'DIST_MAIT'  , i_zone)
-    l_dist_slav  = mminfl(sdcont_defi, 'DIST_ESCL'  , i_zone)
+    l_dist_beam  = mminfl(ds_contact%sdcont_defi, 'DIST_POUTRE', i_zone)
+    l_dist_shell = mminfl(ds_contact%sdcont_defi, 'DIST_COQUE' , i_zone)
+    l_dist_mast  = mminfl(ds_contact%sdcont_defi, 'DIST_MAIT'  , i_zone)
+    l_dist_slav  = mminfl(ds_contact%sdcont_defi, 'DIST_ESCL'  , i_zone)
 !
 ! - Evaluate DIST_MAIT
 !
@@ -125,7 +127,8 @@ implicit none
 !
     if (l_dist_shell .or. l_dist_beam) then
         if (present(node_slav_indx_)) then
-            call cfdism(sdcont_defi, l_dist_beam, l_dist_shell, node_slav_indx_, gap_structural)
+            call cfdism(ds_contact    , l_dist_beam, l_dist_shell, node_slav_indx_,&
+                        gap_structural)
         else
             if (l_dist_beam) then
                 gap_structural = gap_structural+v_sdcont_jeupou(elem_slav_indx)

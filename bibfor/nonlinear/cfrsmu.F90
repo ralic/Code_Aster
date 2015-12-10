@@ -1,4 +1,18 @@
-subroutine cfrsmu(defico, resoco, reapre)
+subroutine cfrsmu(ds_contact, reapre)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/cfdisd.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,16 +30,8 @@ subroutine cfrsmu(defico, resoco, reapre)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/cfdisd.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-    character(len=24) :: defico, resoco
+!
+    type(NL_DS_Contact), intent(in) :: ds_contact
     aster_logical :: reapre
 !
 ! ----------------------------------------------------------------------
@@ -36,12 +42,10 @@ subroutine cfrsmu(defico, resoco, reapre)
 !
 ! ----------------------------------------------------------------------
 !
-! IN  DEFICO : SD DE DEFINITION DU CONTACT
-! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  REAPRE : S'AGIT-IL DU PREMIER APPARIEMENT DU PAS DE TEMPS ?
 !
-!
-!
+! ----------------------------------------------------------------------
 !
     integer :: ifm, niv
     integer :: iliai, posnoe
@@ -59,7 +63,7 @@ subroutine cfrsmu(defico, resoco, reapre)
 !
 ! --- LE LAGRANGE DE CONTACT N'EST RESTAURE QU'EN GCP
 !
-    lgcp = cfdisl(defico,'CONT_GCP')
+    lgcp = cfdisl(ds_contact%sdcont_defi,'CONT_GCP')
 !
     if (.not.lgcp) then
         goto 999
@@ -68,26 +72,26 @@ subroutine cfrsmu(defico, resoco, reapre)
 ! --- ACCES OBJETS
 !
     if (reapre) then
-        svmu = resoco(1:14)//'.SVM0'
+        svmu = ds_contact%sdcont_solv(1:14)//'.SVM0'
     else
-        svmu = resoco(1:14)//'.SVMU'
+        svmu = ds_contact%sdcont_solv(1:14)//'.SVMU'
     endif
     call jeveuo(svmu, 'L', jsvmu)
-    mu = resoco(1:14)//'.MU'
+    mu = ds_contact%sdcont_solv(1:14)//'.MU'
     call jeveuo(mu, 'E', jmu)
-    numlia = resoco(1:14)//'.NUMLIA'
+    numlia = ds_contact%sdcont_solv(1:14)//'.NUMLIA'
     call jeveuo(numlia, 'L', jnumli)
 !
 ! --- INFORMATIONS
 !
-    nbliai = cfdisd(resoco,'NBLIAI')
+    nbliai = cfdisd(ds_contact%sdcont_solv,'NBLIAI')
 !
 ! --- SAUVEGARDE DU STATUT DE FROTTEMENT
 !
-    do 10 iliai = 1, nbliai
+    do iliai = 1, nbliai
         posnoe = zi(jnumli-1+4*(iliai-1)+2)
         zr(jmu-1+iliai) = zr(jsvmu-1+posnoe)
- 10 end do
+    end do
 !
 999 continue
 !

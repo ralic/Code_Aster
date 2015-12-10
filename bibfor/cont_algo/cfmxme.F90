@@ -1,4 +1,6 @@
-subroutine cfmxme(nume_dof, sddyna, sdcont_defi, sdcont_solv)
+subroutine cfmxme(nume_dof, sddyna, ds_contact)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -35,8 +37,7 @@ implicit none
 !
     character(len=24), intent(in) :: nume_dof
     character(len=19), intent(in) :: sddyna
-    character(len=24), intent(in) :: sdcont_defi
-    character(len=24), intent(in) :: sdcont_solv
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,8 +49,7 @@ implicit none
 !
 ! In  nume_dof         : name of numbering object (NUME_DDL)
 ! In  sddyna           : name of dynamic solving datastructure
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
-! In  sdcont_solv      : name of contact solving datastructure
+! In  ds_contact       : datastructure for contact management
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -76,27 +76,27 @@ implicit none
 !
 ! - Get parameters
 !
-    nt_cont_poin = cfdisi(sdcont_defi,'NTPC')
+    nt_cont_poin = cfdisi(ds_contact%sdcont_defi,'NTPC')
     l_dyna       = ndynlo(sddyna,'DYNAMIQUE')
 !
 ! - Create datastructure for general informations about contact
 !
-    sdcont_tabfin = sdcont_solv(1:14)//'.TABFIN'
+    sdcont_tabfin = ds_contact%sdcont_solv(1:14)//'.TABFIN'
     ztabf = cfmmvd('ZTABF')
     call wkvect(sdcont_tabfin, 'V V R', ztabf*nt_cont_poin+1, vr = v_sdcont_tabfin)
     v_sdcont_tabfin(1) = nt_cont_poin
 !
 ! - Create datastructure for get-off indicator
 !
-    sdcont_mdecol = sdcont_solv(1:14)//'.MDECOL'
+    sdcont_mdecol = ds_contact%sdcont_solv(1:14)//'.MDECOL'
     call wkvect(sdcont_mdecol, 'V V L', 1, vl = v_sdcont_mdecol)
     v_sdcont_mdecol(1) = .false.
 !
 ! - Create fields for dynamic management
 !
     if (l_dyna) then
-        sdcont_vitini = sdcont_solv(1:14)//'.VITI'
-        sdcont_accini = sdcont_solv(1:14)//'.ACCI'
+        sdcont_vitini = ds_contact%sdcont_solv(1:14)//'.VITI'
+        sdcont_accini = ds_contact%sdcont_solv(1:14)//'.ACCI'
         call vtcreb(sdcont_vitini, 'V', 'R', nume_ddlz = nume_dof)
         call vtcreb(sdcont_accini, 'V', 'R', nume_ddlz = nume_dof)
     endif
@@ -104,22 +104,22 @@ implicit none
 ! - Create datastructure to save contact states (step cutting management)
 !
     zetat         = cfmmvd('ZETAT')
-    sdcont_etatct = sdcont_solv(1:14)//'.ETATCT'
+    sdcont_etatct = ds_contact%sdcont_solv(1:14)//'.ETATCT'
     call wkvect(sdcont_etatct, 'V V R', zetat*nt_cont_poin, vr = v_sdcont_etatct)
 !
 ! - Create datastructure for cycling detection and treatment
 !
-    call mm_cycl_crsd(sdcont_defi, sdcont_solv)
-    call mm_cycl_init(sdcont_defi, sdcont_solv)
+    call mm_cycl_crsd(ds_contact)
+    call mm_cycl_init(ds_contact)
 !
 ! - Create datastructure to save gaps
 !
-    sdcont_apjeu = sdcont_solv(1:14)//'.APJEU'
+    sdcont_apjeu = ds_contact%sdcont_solv(1:14)//'.APJEU'
     call wkvect(sdcont_apjeu, 'V V R', nt_cont_poin, vr = v_sdcont_apjeu)
 !
 ! - Warning if not node integration (=> no CONT_NOEU)
 !
-    l_inte_node = cfdisl(sdcont_defi,'ALL_INTEG_NOEUD')
+    l_inte_node = cfdisl(ds_contact%sdcont_defi,'ALL_INTEG_NOEUD')
     if (.not.l_inte_node) then
         call utmess('A', 'CONTACT3_16')
     endif

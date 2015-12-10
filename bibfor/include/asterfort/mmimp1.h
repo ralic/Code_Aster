@@ -16,10 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mmimp1(ifm, noma, defico, resoco)
-        integer :: ifm
-        character(len=8) :: noma
-        character(len=24) :: defico
-        character(len=24) :: resoco
+    subroutine mmimp1(ifm, mesh, ds_contact)
+        use NonLin_Datastructure_type
+        integer, intent(in) :: ifm
+        character(len=8), intent(in) :: mesh
+        type(NL_DS_Contact), intent(in) :: ds_contact
     end subroutine mmimp1
 end interface

@@ -1,4 +1,6 @@
-subroutine cfmmma(sdcont_defi, sdcont_solv)
+subroutine cfmmma(ds_contact)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -27,8 +29,7 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=24), intent(in) :: sdcont_defi
-    character(len=24), intent(in) :: sdcont_solv
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -38,8 +39,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
-! In  sdcont_solv      : name of contact solving datastructure
+! In  ds_contact       : datastructure for contact management
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -64,22 +64,22 @@ implicit none
 !
 ! - Get parameters
 !
-    nb_cont_poin   = cfdisi(sdcont_defi,'NTPC' )
-    nb_cont_node_c = cfdisi(sdcont_defi,'NTNOEC')
-    nb_cont_zone   = cfdisi(sdcont_defi,'NZOCO' )
+    nb_cont_poin   = cfdisi(ds_contact%sdcont_defi,'NTPC' )
+    nb_cont_node_c = cfdisi(ds_contact%sdcont_defi,'NTNOEC')
+    nb_cont_zone   = cfdisi(ds_contact%sdcont_defi,'NZOCO' )
     zeven          = cfmmvd('ZEVEN')
     ztaco          = cfmmvd('ZTACO')
 !
 ! - Create datastructure for user's gaps
 !
-    sdcont_jsupco = sdcont_solv(1:14)//'.JSUPCO'
+    sdcont_jsupco = ds_contact%sdcont_solv(1:14)//'.JSUPCO'
     call wkvect(sdcont_jsupco, 'V V R', nb_cont_poin, vr = v_sdcont_jsupco)
 !
 ! - Create datastructure for event-driven management
 !
-    sdcont_evenco = sdcont_solv(1:14)//'.EVENCO'
+    sdcont_evenco = ds_contact%sdcont_solv(1:14)//'.EVENCO'
     call wkvect(sdcont_evenco, 'V V R', zeven*nb_cont_poin, vr = v_sdcont_evenco)
-    sdcont_evenpe = sdcont_solv(1:14)//'.EVENPE'
+    sdcont_evenpe = ds_contact%sdcont_solv(1:14)//'.EVENPE'
     call wkvect(sdcont_evenpe, 'V V R', 3*nb_cont_zone    , vr = v_sdcont_evenpe)
 !
 ! - Print
@@ -88,11 +88,11 @@ implicit none
 !
 ! - Create datastructure for coefficients
 ! 
-    sdcont_tabcof = sdcont_solv(1:14)//'.TABL.COEF'
+    sdcont_tabcof = ds_contact%sdcont_solv(1:14)//'.TABL.COEF'
     call wkvect(sdcont_tabcof, 'V V R', nb_cont_zone*ztaco, vr = v_sdcont_tabcof)
 !
 ! - Init coefficients
 !
-    call cfmmci(sdcont_defi, sdcont_solv)
+    call cfmmci(ds_contact)
 !
 end subroutine

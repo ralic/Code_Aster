@@ -1,4 +1,18 @@
-subroutine cfpost(noma, defico, resoco, ddepla, ctccvg)
+subroutine cfpost(noma, ds_contact, ddepla, ctccvg)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfjefi.h"
+#include "asterfort/copisd.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,20 +32,10 @@ subroutine cfpost(noma, defico, resoco, ddepla, ctccvg)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/cfjefi.h"
-#include "asterfort/copisd.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-    character(len=8) :: noma
-    character(len=24) :: defico, resoco
-    character(len=19) :: ddepla
-    integer :: ctccvg
+    character(len=8), intent(in) :: noma
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=19), intent(in) :: ddepla
+    integer, intent(in) :: ctccvg
 !
 ! ----------------------------------------------------------------------
 !
@@ -41,10 +45,8 @@ subroutine cfpost(noma, defico, resoco, ddepla, ctccvg)
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  NOMA   : NOM DU MAILLAGE
-! IN  DEFICO : SD DE DEFINITION DU CONTACT
-! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  DDEPLA : INCREMENT DE DEPLACEMENT
 ! OUT CTCCVG : CODE RETOUR CONTACT DISCRET
 !                -1 : PAS DE CALCUL DU CONTACT DISCRET
@@ -52,8 +54,7 @@ subroutine cfpost(noma, defico, resoco, ddepla, ctccvg)
 !                 1 : NOMBRE MAXI D'ITERATIONS
 !                 2 : MATRICE SINGULIERE
 !
-!
-!
+! ----------------------------------------------------------------------
 !
     integer :: ifm, niv
     character(len=19) :: ddeplc
@@ -64,17 +65,14 @@ subroutine cfpost(noma, defico, resoco, ddepla, ctccvg)
 !
     call jemarq()
     call infdbg('CONTACT', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<CONTACT> ...... POST-TRAITEMENT DU CALCUL'
     endif
 !
 ! --- PARAMETRES
 !
-    lpenac = cfdisl(defico,'CONT_PENA')
-    lgcp = cfdisl(defico,'CONT_GCP' )
+    lpenac = cfdisl(ds_contact%sdcont_defi,'CONT_PENA')
+    lgcp = cfdisl(ds_contact%sdcont_defi,'CONT_GCP' )
 !
 ! --- SORTIE EN ERREUR
 !
@@ -90,7 +88,7 @@ subroutine cfpost(noma, defico, resoco, ddepla, ctccvg)
 ! --- ACCES AUX CHAMPS DE TRAVAIL
 ! --- DDEPLC: INCREMENT DE SOLUTION APRES CORRECTION DU CONTACT
 !
-    ddeplc = resoco(1:14)//'.DELC'
+    ddeplc = ds_contact%sdcont_solv(1:14)//'.DELC'
     call jeveuo(ddeplc(1:19)//'.VALE', 'L', jddepc)
 !
 ! --- RECOPIE CHAMP DE DEPLACEMENT SOLUTION
@@ -101,7 +99,7 @@ subroutine cfpost(noma, defico, resoco, ddepla, ctccvg)
 !
 ! --- CALCUL DES JEUX FINAUX
 !
-    call cfjefi(noma, defico, resoco, ddepla)
+    call cfjefi(noma, ds_contact, ddepla)
 !
 999 continue
 !

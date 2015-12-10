@@ -1,24 +1,9 @@
-subroutine mmapre(noma, numedd, defico, resoco, sdappa)
+subroutine mmapre(mesh, nume_dof, ds_contact, sdappa)
 !
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
+use NonLin_Datastructure_type
 !
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+implicit none
 !
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
-!
-    implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/apinfi.h"
@@ -49,9 +34,29 @@ subroutine mmapre(noma, numedd, defico, resoco, sdappa)
 #include "asterfort/nmchex.h"
 #include "asterfort/mmvalp.h"
 #include "blas/ddot.h"
-    character(len=8) :: noma
-    character(len=24) :: numedd, defico, resoco
-    character(len=19) :: sdappa
+!
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: mickael.abbas at edf.fr
+!
+    character(len=8), intent(in) :: mesh
+    character(len=24), intent(in) :: nume_dof
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=19), intent(in) :: sdappa
 !
 ! ----------------------------------------------------------------------
 !
@@ -61,11 +66,10 @@ subroutine mmapre(noma, numedd, defico, resoco, sdappa)
 !
 ! ----------------------------------------------------------------------
 !
-!
-! IN  NOMA   : NOM DU MAILLAGE
+! In  mesh             : name of mesh
+! In  nume_dof         : name of numbering object (NUME_DDL)
+! In  ds_contact       : datastructure for contact management
 ! IN  SDAPPA : NOM DE LA SD APPARIEMENT
-! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
-! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
 !
 ! ----------------------------------------------------------------------
 !
@@ -90,9 +94,6 @@ subroutine mmapre(noma, numedd, defico, resoco, sdappa)
 !
     call jemarq()
     call infdbg('CONTACT', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<CONTACT> ...... RECOPIE DE L''APPARIEMENT'
     endif
@@ -101,7 +102,7 @@ subroutine mmapre(noma, numedd, defico, resoco, sdappa)
 !
     iptc = 1
     ntpc = 0
-    call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
+    call dismoi('NB_EQUA', nume_dof, 'NUME_DDL', repi=neq)
 !
 ! --- NOUVEL APPARIEMENT
 !
@@ -109,13 +110,13 @@ subroutine mmapre(noma, numedd, defico, resoco, sdappa)
 !
 ! --- PARAMETRES
 !
-    nzoco = cfdisi(defico,'NZOCO' )
-    ndimg = cfdisi(defico,'NDIM' )
+    nzoco = cfdisi(ds_contact%sdcont_defi,'NZOCO' )
+    ndimg = cfdisi(ds_contact%sdcont_defi,'NDIM' )
 !
 ! --- ACCES SD CONTACT
 !
-    tabfin = resoco(1:14)//'.TABFIN'
-    crnudd = resoco(1:14)//'.NUDD'
+    tabfin = ds_contact%sdcont_solv(1:14)//'.TABFIN'
+    crnudd = ds_contact%sdcont_solv(1:14)//'.NUDD'
     call jeveuo(tabfin, 'E', jtabf)
     call jeveuo(crnudd, 'E', jcrnud)
     ztabf = cfmmvd('ZTABF')
@@ -127,15 +128,15 @@ subroutine mmapre(noma, numedd, defico, resoco, sdappa)
 !
 ! ----- INFORMATION SUR LA ZONE
 !
-        jdecme = mminfi(defico,'JDECME',izone )
-        nbmae  = mminfi(defico,'NBMAE' ,izone )
-        typint = mminfi(defico,'INTEGRATION' ,izone )
+        jdecme = mminfi(ds_contact%sdcont_defi,'JDECME',izone )
+        nbmae  = mminfi(ds_contact%sdcont_defi,'NBMAE' ,izone )
+        typint = mminfi(ds_contact%sdcont_defi,'INTEGRATION' ,izone )
 !
 ! ----- MODE VERIF: ON SAUTE LES POINTS
 !
-        lveri = mminfl(defico,'VERIF' ,izone )
+        lveri = mminfl(ds_contact%sdcont_defi,'VERIF' ,izone )
         if (lveri) then
-            nbpt = mminfi(defico,'NBPT' ,izone )
+            nbpt = mminfi(ds_contact%sdcont_defi,'NBPT' ,izone )
             ip = ip + nbpt
             goto 25
         endif
@@ -147,19 +148,19 @@ subroutine mmapre(noma, numedd, defico, resoco, sdappa)
 ! ------- NUMERO ABSOLU DE LA MAILLE ESCLAVE
 !
             posmae = jdecme + imae
-            call cfnumm(defico, posmae, nummae)
+            call cfnumm(ds_contact%sdcont_defi, posmae, nummae)
 !
 ! ------- NOMBRE DE POINTS SUR LA MAILLE ESCLAVE
 !
-            call mminfm(posmae, defico, 'NPTM', nptm)
+            call mminfm(posmae, ds_contact%sdcont_defi, 'NPTM', nptm)
 !
 ! ------- INFOS SUR LA MAILLE ESCLAVE
 !
-            call mmelty(noma, nummae, aliase, nnomae)
+            call mmelty(mesh, nummae, aliase, nnomae)
 !
 ! ------- NOEUDS EXCLUS PAR SANS_GROUP_NO_FR OU SANS_NOEUD_FR
 !
-            call mminfm(posmae, defico, 'NDEXFR', ndexfr)
+            call mminfm(posmae, ds_contact%sdcont_defi, 'NDEXFR', ndexfr)
 !
 ! ------- BOUCLE SUR LES POINTS
 !
@@ -202,11 +203,11 @@ subroutine mmapre(noma, numedd, defico, resoco, sdappa)
 ! --------- NUMEROS DE LA MAILLE MAITRE
 !
                 posmam = entapp
-                call cfnumm(defico, posmam, nummam)
+                call cfnumm(ds_contact%sdcont_defi, posmam, nummam)
 !
 ! --------- SAUVEGARDE APPARIEMENT
 !
-                call mmapma(noma, defico, resoco, ndimg, izone,&
+                call mmapma(mesh, ds_contact, ndimg, izone,&
                             l_excl_frot, typint, aliase, posmae, nummae,&
                             nnomae, posmam, nummam, ksipr1, ksipr2,&
                             tau1m, tau2m, iptm, iptc, norm,&
@@ -229,7 +230,7 @@ subroutine mmapre(noma, numedd, defico, resoco, sdappa)
 ! --- NOMBRE TOTAL DE NOEUDS EN CONTACT
 !
     zr(jtabf-1+1) = ntpc
-    ASSERT(ntpc.eq.cfdisi(defico, 'NTPC'))
+    ASSERT(ntpc.eq.cfdisi(ds_contact%sdcont_defi, 'NTPC'))
 !
 ! --- INDICATEUR DE REAPPARIEMENT
 !
@@ -238,7 +239,7 @@ subroutine mmapre(noma, numedd, defico, resoco, sdappa)
 ! --- AFFICHAGE
 !
     if (niv .ge. 2) then
-        call mmimp1(ifm, noma, defico, resoco)
+        call mmimp1(ifm, mesh, ds_contact)
     endif
 !
     call jedema()

@@ -1,5 +1,7 @@
-subroutine mminit(mesh  , sdcont_defi, sdcont_solv, sddyna  , hat_valinc,&
-                  sdtime, sdstat     , sdnume     , nume_dof, nume_inst)
+subroutine mminit(mesh  , ds_contact, sddyna  , hat_valinc, sdtime,&
+                  sdstat, sdnume    , nume_dof, nume_inst)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -36,8 +38,7 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
-    character(len=24), intent(in) :: sdcont_defi
-    character(len=24), intent(in) :: sdcont_solv
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19), intent(in) :: hat_valinc(*)
     character(len=24), intent(in) :: sdtime
     character(len=24), intent(in) :: sdstat
@@ -55,8 +56,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  mesh             : name of mesh
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
-! In  sdcont_solv      : name of contact solving datastructure
+! In  ds_contact       : datastructure for contact management
 ! In  hat_valinc       : hat variable for algorithm fields
 ! In  nume_dof         : name of numbering object (NUME_DDL)
 ! In  sdtime           : datastructure for timers
@@ -80,11 +80,11 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_cont_allv  = cfdisl(sdcont_defi,'ALL_VERIF')
+    l_cont_allv  = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF')
     l_dyna       = ndynlo(sddyna,'DYNAMIQUE')
     ztabf        = cfmmvd('ZTABF')
     zetat        = cfmmvd('ZETAT')
-    nb_inte_poin = cfdisi(sdcont_defi,'NTPC' )
+    nb_inte_poin = cfdisi(ds_contact%sdcont_defi,'NTPC' )
 !
 ! - Using *_INIT options (like SEUIL_INIT)
 !
@@ -92,11 +92,11 @@ implicit none
 !
 ! - Geometric loop counter initialization
 !
-    call mmbouc(sdcont_solv, 'GEOM', 'INIT')
+    call mmbouc(ds_contact, 'GEOM', 'INIT')
 !
 ! - First geometric loop counter
 !
-    call mmbouc(sdcont_solv, 'GEOM', 'INCR')
+    call mmbouc(ds_contact, 'GEOM', 'INCR')
 !
 ! - Get field names in hat-variables
 !
@@ -106,7 +106,7 @@ implicit none
 !
 ! - Lagrangians initialized (LAMBDA TOTAUX)
 !
-    sdcont_depini = sdcont_solv(1:14)//'.INIT'
+    sdcont_depini = ds_contact%sdcont_solv(1:14)//'.INIT'
     call copisd('CHAMP_GD', 'V', disp_prev, sdcont_depini)
     call misazl(sdnume, disp_prev)
     if (l_dyna) then
@@ -116,8 +116,8 @@ implicit none
 !
 ! - Management of status for time cut
 !
-    sdcont_tabfin = sdcont_solv(1:14)//'.TABFIN'
-    sdcont_etatct = sdcont_solv(1:14)//'.ETATCT'
+    sdcont_tabfin = ds_contact%sdcont_solv(1:14)//'.TABFIN'
+    sdcont_etatct = ds_contact%sdcont_solv(1:14)//'.ETATCT'
     call jeveuo(sdcont_tabfin, 'E', vr = v_sdcont_tabfin)
     call jeveuo(sdcont_etatct, 'L', vr = v_sdcont_etatct)
     do ipc = 1, nb_inte_poin
@@ -128,8 +128,8 @@ implicit none
 !
 ! - Save speed and acceleration
 !
-    sdcont_vitini = sdcont_solv(1:14)//'.VITI'
-    sdcont_accini = sdcont_solv(1:14)//'.ACCI'
+    sdcont_vitini = ds_contact%sdcont_solv(1:14)//'.VITI'
+    sdcont_accini = ds_contact%sdcont_solv(1:14)//'.ACCI'
     if (l_dyna) then
         call copisd('CHAMP_GD', 'V', vite_curr, sdcont_vitini)
         call copisd('CHAMP_GD', 'V', acce_curr, sdcont_accini)
@@ -137,23 +137,22 @@ implicit none
 !
 ! - Save displacements for geometric loop
 !
-    sdcont_depgeo = sdcont_solv(1:14)//'.DEPG'
+    sdcont_depgeo = ds_contact%sdcont_solv(1:14)//'.DEPG'
     call copisd('CHAMP_GD', 'V', disp_prev, sdcont_depgeo)
 !
 ! - Save displacements for friction loop
 !
-    sdcont_deplam = sdcont_solv(1:14)//'.DEPF'
+    sdcont_deplam = ds_contact%sdcont_solv(1:14)//'.DEPF'
     call copisd('CHAMP_GD', 'V', disp_prev, sdcont_deplam)
 !
 ! - Initial pairing
 !
-    call mmapin(mesh  , sdcont_defi, sdcont_solv, nume_dof, sdtime,&
-                sdstat)
+    call mmapin(mesh, ds_contact, nume_dof, sdtime, sdstat)
 !
 ! - Initial options
 !
     if (.not.l_cont_allv.and.l_step_first) then
-        call mmopti(mesh, sdcont_defi, sdcont_solv)
+        call mmopti(mesh, ds_contact)
     endif
 !
 end subroutine

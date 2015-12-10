@@ -1,5 +1,6 @@
-subroutine xmctcg(model , mesh, sdcont_defi, sdcont_solv, sdstat,&
-                  sdtime)
+subroutine xmctcg(model, mesh, ds_contact, sdstat, sdtime)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -29,9 +30,8 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
-    character(len=24), intent(in) :: model
-    character(len=24), intent(in) :: sdcont_defi
-    character(len=24), intent(in) :: sdcont_solv
+    character(len=8), intent(in) :: model
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=24), intent(in) :: sdtime
     character(len=24), intent(in) :: sdstat
 !
@@ -45,8 +45,7 @@ implicit none
 !
 ! In  mesh             : name of mesh
 ! In  model            : name of model
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
-! In  sdcont_solv      : name of contact solving datastructure
+! In  ds_contact       : datastructure for contact management
 ! In  sdtime           : datastructure for timers
 ! In  sdstat           : datastructure for statistics
 !
@@ -72,11 +71,11 @@ implicit none
 !
 ! - Geometric actualisation
 !
-    call xreacg(model, sdcont_solv)
+    call xreacg(model, ds_contact)
 !
 ! - Pairing
 !
-    call xappar(mesh, model, sdcont_defi, sdcont_solv)
+    call xappar(mesh, model, ds_contact)
 !
 ! - Geometric loop: end timer
 !

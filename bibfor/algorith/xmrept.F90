@@ -1,6 +1,21 @@
 subroutine xmrept(jcesd, jcesv, jcesl, izone, ndim,&
-                  defico, geom, statue, mmait, amait,&
+                  ds_contact, geom, statue, mmait, amait,&
                   nmait)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "jeveux.h"
+#include "asterc/r8gaem.h"
+#include "asterfort/assert.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/xxmmvd.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,19 +34,7 @@ subroutine xmrept(jcesd, jcesv, jcesl, izone, ndim,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit none
-#include "jeveux.h"
-!
-#include "asterc/r8gaem.h"
-#include "asterfort/assert.h"
-#include "asterfort/cesexi.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/cfmmvd.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/xxmmvd.h"
-    character(len=24) :: defico
+    type(NL_DS_Contact), intent(in) :: ds_contact
     real(kind=8) :: geom(3)
     integer :: ndim, mmait, amait, nmait, statue, izone
     integer :: jcesd(10), jcesv(10), jcesl(10)
@@ -47,12 +50,11 @@ subroutine xmrept(jcesd, jcesv, jcesl, izone, ndim,&
 !
 ! ----------------------------------------------------------------------
 !
-!
 !  JCES*(1)  : POINTEURS DE LA SD SIMPLE NB DE FACETTES ET DE PT D'INTER
 !  JCES*(2)  : POINTEURS DE LA SD SIMPLE DES INFOS SUR ARETES COUPEES
 !  JCES*(6)  : POINTEURS DE LA SD SIMPLE DES COOR DES PT D'INTER MAITRE
 ! IN  IZONE  : NUMÉRO DE ZONE DE LA MAILLE ESCLAVE
-! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  NDIM   : DIMENSION DU MODELE
 ! IN  STATUE : STATUT DE LA MAILLE ESCLAVE
 ! IN  GEOM   : COORDONNEES DU POINT DE CONTACT ESCLAVE
@@ -63,13 +65,11 @@ subroutine xmrept(jcesd, jcesv, jcesl, izone, ndim,&
 ! OUT NMAIT  : LE NUMÉRO LOCAL DU NOEUD CONTENANT LE POINT
 !              D'INTERSECTION DE PLUS PROCHE
 !
-!
-!
-!
+! ----------------------------------------------------------------------
 !
     integer :: nummai, ntmae, ima, iad, nbpt
     integer :: zmesx
-    integer :: ini, j, i, ifiss
+    integer :: ini, j, ifiss
     real(kind=8) :: coord(3), dmin, dist
     character(len=24) :: maescx
     integer :: jmaesx
@@ -91,14 +91,12 @@ subroutine xmrept(jcesd, jcesv, jcesl, izone, ndim,&
 ! --- INITIALISATIONS
 !
     dmin = r8gaem()
-    do 10 i = 1, 3
-        coord(i)=0.d0
-10  continue
-    ntmae = cfdisi(defico,'NTMAE')
+    coord(1:3)=0.d0
+    ntmae = cfdisi(ds_contact%sdcont_defi,'NTMAE')
 !
 ! --- RECUPERATION DE QUELQUES DONNEES
 !
-    maescx = defico(1:16)//'.MAESCX'
+    maescx = ds_contact%sdcont_defi(1:16)//'.MAESCX'
     call jeveuo(maescx, 'L', jmaesx)
     zmesx = cfmmvd('ZMESX')
     zxain = xxmmvd('ZXAIN')
@@ -125,21 +123,21 @@ subroutine xmrept(jcesd, jcesv, jcesl, izone, ndim,&
         nbpt = zi(jcesv(1)-1+iad)
 ! ----- BOUCLE SUR LES POINTS D'INTERSECTION
 !
-        do 110 ini = 1, nbpt
+        do ini = 1, nbpt
 ! ------- COORDONNEES GEOMETRIQUES DU POINT D'INTERSECTION
 !
-           do 120 j = 1, ndim
-               call cesexi('S', jcesd(6), jcesl(6), nummai, 1,&
+            do j = 1, ndim
+                call cesexi('S', jcesd(6), jcesl(6), nummai, 1,&
                            ifiss, ndim*( ini-1)+j, iad)
-               ASSERT(iad.gt.0)
-               coord(j)=zr(jcesv(6)-1+iad)
-120         continue
+                ASSERT(iad.gt.0)
+                coord(j)=zr(jcesv(6)-1+iad)
+            end do
 !
 ! ------- CALCUL DE LA DISTANCE
             dist = sqrt( ( coord(1)-geom(1))**2+ (coord(2)-geom(2))**2+ (coord(3)-geom(3) )**2 )
             call cesexi('S', jcesd(2), jcesl(2), nummai, 1,&
                         ifiss, zxain*( ini-1)+2, iad)
-            if (nint(zr(jcesv(2)-1+iad)) .eq. 0 .and. ini .eq. 3 .and. ndim .eq. 2) goto 110
+            if (nint(zr(jcesv(2)-1+iad)) .eq. 0 .and. ini .eq. 3 .and. ndim .eq. 2) cycle
 
 !           dist est-elle egale a dmin ?
             near = abs(dist-dmin) .le. (atol + dmin*rtol)
@@ -165,7 +163,7 @@ subroutine xmrept(jcesd, jcesv, jcesl, izone, ndim,&
                     endif
                 endif
             endif
-110      continue
+        end do
 100  continue
 !
 999  continue

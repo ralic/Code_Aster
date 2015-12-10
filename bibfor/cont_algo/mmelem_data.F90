@@ -1,9 +1,11 @@
-subroutine mmelem_data(cont_indx      , model_ndim_    , elem_1_        , elem_2_, nb_node_elem_,&
-                       cont_geom_nume_, nb_cont_type_  ,&
+subroutine mmelem_data(cont_indx      , model_ndim_    , l_axi_       ,&
+                       elem_1_        , elem_2_        , nb_node_elem_,&
+                       cont_geom_nume_, nb_cont_type_  , &
                        cont_geom_name_, cont_elem_name_, frot_elem_name_)
 !
 implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
@@ -28,6 +30,7 @@ implicit none
 !
     integer, intent(inout) :: cont_indx
     integer, intent(in), optional :: model_ndim_
+    aster_logical, intent(in), optional :: l_axi_
     character(len=8), intent(in), optional :: elem_1_
     character(len=8), intent(in), optional :: elem_2_
     integer, intent(out), optional :: nb_node_elem_
@@ -47,6 +50,7 @@ implicit none
 !
 ! IO  cont_indx        : index of late element for contact
 ! In  model_ndim       : size of model
+! In  l_axi            : .true. if axi-symetric model
 ! In  elem_1           : first geometric element to identify contact element
 ! In  elem_2           : second geometric element to identify contact element
 ! Out nb_node_elem     : number of nodes for late element contact
@@ -199,12 +203,18 @@ implicit none
 !
     if (present(cont_elem_name_)) then
         cont_elem_name_ = list_cont_elem(cont_indx)
+        if (l_axi_) then
+            cont_elem_name_(7:7) = 'A'
+        endif
     endif
 !
 ! - Type of friction element (finite element)
 !
     if (present(frot_elem_name_)) then
         frot_elem_name_ = list_frot_elem(cont_indx)
+        if (l_axi_) then
+            frot_elem_name_(7:7) = 'A'
+        endif
     endif
 !
 ! - Name in element catalog for late element contact

@@ -177,11 +177,10 @@ implicit none
 !
 ! --- INITIALISATIONS POUR LE NOUVEAU PAS DE TEMPS
 !
-    call nmnpas(modele  , noma  , mate  , carele, fonact ,&
-                ds_print, sddisc, sdsuiv, sddyna, sdnume ,&
-                sdstat  , sdtime, numedd, numins, ds_contact%sdcont_defi,&
-                ds_contact%sdcont_solv  , valinc, solalg, solveu, ds_conv,&
-                lischa  )
+    call nmnpas(modele  , noma  , mate  , carele , fonact    ,&
+                ds_print, sddisc, sdsuiv, sddyna , sdnume    ,&
+                sdstat  , sdtime, numedd, numins , ds_contact,&
+                valinc  , solalg, solveu, ds_conv, lischa  )
 !
 ! --- CALCUL DES CHARGEMENTS CONSTANTS AU COURS DU PAS DE TEMPS
 !
@@ -202,14 +201,14 @@ implicit none
 !
 ! --- GESTION DEBUT DE BOUCLE POINTS FIXES
 !
-    call nmible(niveau, modele, noma  , ds_contact%sdcont_defi, ds_contact%sdcont_solv  ,&
+    call nmible(niveau, modele, noma  , ds_contact,&
                 fonact, numedd, sdstat, sdtime, ds_print)
 !
 ! --- CREATION OBJETS POUR CONTACT CONTINU
 !
     call nmnble(numins, modele, noma  , numedd, sdstat,&
-                sdtime, sddyna, sddisc, fonact, ds_contact%sdcont_defi,&
-                ds_contact%sdcont_solv, valinc, solalg)
+                sdtime, sddyna, sddisc, fonact, ds_contact,&
+                valinc, solalg)
 !
 ! ======================================================================
 !     PREDICTION
@@ -273,7 +272,7 @@ implicit none
                 fonact  , sddyna, ds_conv, ds_print, sdstat     ,&
                 sddisc  , sdtime, sdcrit , sderro  , ds_algopara,&
                 ds_inout, comref, matass , solveu  , numins     ,&
-                iterat  , eta   , ds_contact%sdcont_defi , ds_contact%sdcont_solv  , valinc     ,&
+                iterat  , eta   , ds_contact, valinc     ,&
                 solalg  , measse, veasse )
 !
 ! --- MISE A JOUR DES EFFORTS DE CONTACT
@@ -284,7 +283,7 @@ implicit none
 !
 ! --- ETAT DE LA CONVERGENCE DE NEWTON
 !
-    call nmcvgn(sddisc, sderro, valinc, ds_contact%sdcont_defi, ds_contact%sdcont_solv)
+    call nmcvgn(sddisc, sderro, valinc, ds_contact)
     call nmleeb(sderro, 'NEWT', etnewt)
 !
 ! - Set iteration number in convergence table
@@ -347,8 +346,8 @@ implicit none
 !
 ! - Print statistics during Newton iteration
 !
-    call nmstat('N'   , fonact, sdstat, sdtime, ds_print,&
-                ds_contact%sdcont_defi)
+    call nmstat('N'       , fonact, sdstat, sdtime, ds_print,&
+                ds_contact)
 !
 ! --- ON CONTINUE NEWTON ?
 !
@@ -363,7 +362,7 @@ implicit none
 !
 ! --- GESTION DES ACTIONS A LA FIN DE LA BOUCLE DE NEWTON
 !
-    call nmactn(ds_print, sddisc, sderro, ds_contact%sdcont_defi, ds_contact%sdcont_solv,&
+    call nmactn(ds_print, sddisc, sderro, ds_contact,&
                 ds_conv , iterat, numins)
 !
 ! --- ON FAIT DES ITERATIONS SUPPLEMENTAIRES ?
@@ -377,18 +376,18 @@ implicit none
 !
 ! --- GESTION FIN DE BOUCLE POINTS FIXES
 !
-    call nmtble(niveau, modele, noma    , mate  , ds_contact%sdcont_defi, &
-                ds_contact%sdcont_solv, fonact, ds_print, sdstat, sdtime,&
-                sddyna, sderro, ds_conv , sddisc, numins,&
-                valinc, solalg)
+    call nmtble(niveau, modele, noma    , mate  , ds_contact, &
+                fonact, ds_print, sdstat, sdtime, sddyna,&
+                sderro, ds_conv , sddisc, numins, valinc,&
+                solalg)
 !
 ! --- ETAT DE LA CONVERGENCE POINT FIXE
 !
-    call nmcvgf(sddisc, sderro, valinc, ds_contact%sdcont_defi, ds_contact%sdcont_solv)
+    call nmcvgf(sddisc, sderro, valinc, ds_contact)
 !
 ! --- GESTION DES ACTIONS A LA FIN D'UNE BOUCLE DE POINT FIXE
 !
-    call nmactf(ds_print, sddisc, sderro, ds_contact%sdcont_defi, ds_contact%sdcont_solv,&
+    call nmactf(ds_print, sddisc, sderro, ds_contact,&
                 ds_conv , iterat, numins)
 !
 ! --- POUR LA CONTINUATION DU POINT FIXE: GLUTE DUE AU CONTACT DISCRET

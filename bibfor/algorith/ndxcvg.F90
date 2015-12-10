@@ -1,5 +1,14 @@
 subroutine ndxcvg(sddisc, sderro, valinc)
 !
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/nmacto.h"
+#include "asterfort/nmeceb.h"
+#include "asterfort/nmevel.h"
+#include "asterfort/nmltev.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,16 +27,6 @@ subroutine ndxcvg(sddisc, sderro, valinc)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/nmacto.h"
-#include "asterfort/nmeceb.h"
-#include "asterfort/nmevel.h"
-#include "asterfort/nmltev.h"
     character(len=19) :: sddisc, valinc(*)
     character(len=24) :: sderro
 !
@@ -49,17 +48,12 @@ subroutine ndxcvg(sddisc, sderro, valinc)
 !
     integer :: ifm, niv
     integer :: ievdac, numins
-    character(len=24) :: k24bla
     aster_logical :: lerrne, lerrst
     aster_logical :: lsvimx, ldvres, linsta, lcritl, conver
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('MECA_NON_LINE', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> EVALUATION DE LA CONVERGENCE'
     endif
@@ -71,7 +65,6 @@ subroutine ndxcvg(sddisc, sderro, valinc)
 !
 ! --- INITIALISATIONS
 !
-    k24bla = ' '
     lsvimx = .false.
     ldvres = .false.
     linsta = .false.
@@ -95,7 +88,7 @@ subroutine ndxcvg(sddisc, sderro, valinc)
 !
 ! --- VERIFICATION DU DECLENCHEMENT DES EVENT-DRIVEN
 !
-    call nmevel(sddisc, numins, k24bla, k24bla, valinc,&
+    call nmevel(sddisc, numins, valinc,&
                 'NEWT', lsvimx, ldvres, linsta, lcritl,&
                 lerrne, conver)
 !
@@ -104,5 +97,4 @@ subroutine ndxcvg(sddisc, sderro, valinc)
     call nmacto(sddisc, ievdac)
     if (ievdac .gt. 0) call nmeceb(sderro, 'NEWT', 'EVEN')
 !
-    call jedema()
 end subroutine

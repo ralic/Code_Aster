@@ -1,6 +1,13 @@
 subroutine pmevdr(sddisc, tabinc, liccvg, itemax, conver,&
                   actite)
 !
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/infniv.h"
+#include "asterfort/nmacto.h"
+#include "asterfort/nmevel.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,14 +26,6 @@ subroutine pmevdr(sddisc, tabinc, liccvg, itemax, conver,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/infniv.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/nmacto.h"
-#include "asterfort/nmevel.h"
     aster_logical :: itemax, conver
     character(len=19) :: sddisc, tabinc(*)
     integer :: liccvg(*), actite
@@ -71,8 +70,10 @@ subroutine pmevdr(sddisc, tabinc, liccvg, itemax, conver,&
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
     call infniv(ifm, niv)
+    if (niv .ge. 2) then
+        write (ifm,*) '<SIMUPOINTMAT> EVALUATION DES EVENT-DRIVEN'
+    endif
 !
 ! --- INITIALISATIONS
 !
@@ -95,17 +96,10 @@ subroutine pmevdr(sddisc, tabinc, liccvg, itemax, conver,&
         actite = 2
     endif
 !
-! --- AFFICHAGE
-!
-    if (niv .ge. 2) then
-        write (ifm,*) '<SIMUPOINTMAT> EVALUATION DES EVENT-DRIVEN'
-    endif
-!
 ! --- DETECTION DU PREMIER EVENEMENT DECLENCHE
 !
-    call nmevel(sddisc, numins, k24bla, k24bla, tabinc,&
-                'NEWT', lsvimx, ldvres, linsta, lcritl,&
-                lerror, conver)
+    call nmevel(sddisc, numins, tabinc, 'NEWT', lsvimx,&
+                ldvres, linsta, lcritl, lerror, conver)
 !
 ! --- UN EVENEMENT SE DECLENCHE
 !
@@ -114,5 +108,4 @@ subroutine pmevdr(sddisc, tabinc, liccvg, itemax, conver,&
         actite = 1
     endif
 !
-    call jedema()
 end subroutine

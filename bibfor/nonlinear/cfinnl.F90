@@ -1,5 +1,13 @@
-subroutine cfinnl(defico, resoco, reageo, nbliac, llf,&
+subroutine cfinnl(ds_contact, reageo, nbliac, llf,&
                   llf1, llf2)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/cfdisd.h"
+#include "asterfort/cfdisl.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,14 +27,7 @@ subroutine cfinnl(defico, resoco, reageo, nbliac, llf,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/cfdisd.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-    character(len=24) :: defico, resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
     integer :: nbliac, llf, llf1, llf2
     aster_logical :: reageo
 !
@@ -38,9 +39,7 @@ subroutine cfinnl(defico, resoco, reageo, nbliac, llf,&
 !
 ! ----------------------------------------------------------------------
 !
-!
-! IN  DEFICO : SD DE DEFINITION DU CONTACT
-! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  REAGEO : .TRUE. SI ON VIENT DE FAIRE UN NOUVEL APPARIEMENT
 ! OUT NBLIAC : NOMBRE DE LIAISONS ACTIVES
 ! OUT LLF    : NOMBRE DE LIAISON DE FROTTEMENT (DEUX DIRECTIONS)
@@ -54,12 +53,8 @@ subroutine cfinnl(defico, resoco, reageo, nbliac, llf,&
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
-!
-! --- PARAMETRES
-!
-    lpenaf = cfdisl(defico,'FROT_PENA')
-    llagrc = cfdisl(defico,'CONT_LAGR')
+    lpenaf = cfdisl(ds_contact%sdcont_defi,'FROT_PENA')
+    llagrc = cfdisl(ds_contact%sdcont_defi,'CONT_LAGR')
 !
 ! --- NOMBRE DE LIAISONS INITIALES
 ! --- POUR LES METHODES PUREMENT LAGRANGIENNES, ON GARDE
@@ -72,15 +67,15 @@ subroutine cfinnl(defico, resoco, reageo, nbliac, llf,&
             llf1 = 0
             llf2 = 0
         else
-            nbliac = cfdisd(resoco,'NBLIAC' )
+            nbliac = cfdisd(ds_contact%sdcont_solv,'NBLIAC' )
             if (lpenaf) then
                 llf = 0
                 llf1 = 0
                 llf2 = 0
             else
-                llf = cfdisd(resoco,'LLF' )
-                llf1 = cfdisd(resoco,'LLF1' )
-                llf2 = cfdisd(resoco,'LLF2' )
+                llf = cfdisd(ds_contact%sdcont_solv,'LLF' )
+                llf1 = cfdisd(ds_contact%sdcont_solv,'LLF1' )
+                llf2 = cfdisd(ds_contact%sdcont_solv,'LLF2' )
             endif
         endif
     else
@@ -89,7 +84,5 @@ subroutine cfinnl(defico, resoco, reageo, nbliac, llf,&
         llf1 = 0
         llf2 = 0
     endif
-!
-    call jedema()
 !
 end subroutine

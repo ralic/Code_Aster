@@ -1,7 +1,6 @@
-subroutine mmbclc(noma  , nomo  , numedd  , iterat, numins,&
-                  sddisc, sddyna, ds_print, defico, resoco,&
-                  valinc, solalg, sdtime  , sdstat, mmcvca,&
-                  instan)
+subroutine mmbclc(mesh  , model , numedd  , iterat    , numins,&
+                  sddisc, sddyna, ds_print, ds_contact, valinc,&
+                  solalg, sdtime, sdstat  , mmcvca    , instan)
 !
 use NonLin_Datastructure_type
 !
@@ -38,10 +37,12 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=8), intent(in) :: noma, nomo
+    character(len=8), intent(in) :: mesh
+    character(len=8), intent(in) :: model
     integer, intent(in) :: numins, iterat
     character(len=19), intent(in) :: sddisc, sddyna
-    character(len=24), intent(in) :: defico, resoco, sdtime, sdstat, numedd
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=24), intent(in) :: sdtime, sdstat, numedd
     type(NL_DS_Print), intent(inout) :: ds_print
     character(len=19), intent(in) :: valinc(*), solalg(*)
     aster_logical, intent(out) :: mmcvca
@@ -55,16 +56,15 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  NOMO   : NOM DU MODELE
+! In  mesh             : name of mesh
+! In  model            : name of model
 ! IN  ITERAT : NUMERO D'ITERATION DE NEWTON
 ! IN  NUMEDD : NUMEROTATION NUME_DDL
 ! IN  NUMINS : NUMERO D'INSTANT
 ! IN  SDDISC : SD DISCRETISATION
 ! IN  SDDYNA : SD DYNAMIQUE
 ! IO  ds_print         : datastructure for printing parameters
-! IN  DEFICO : SD DEFINITION CONTACT
-! IN  RESOCO : SD RESOLUTION CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
 ! IN  SDTIME : SD TIMER
@@ -81,9 +81,9 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
-    lallv = cfdisl(defico,'ALL_VERIF')
-    lnewtc = cfdisl(defico,'CONT_NEWTON')
-    lnewtg = cfdisl(defico,'GEOM_NEWTON')
+    lallv = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF')
+    lnewtc = cfdisl(ds_contact%sdcont_defi,'CONT_NEWTON')
+    lnewtg = cfdisl(ds_contact%sdcont_defi,'GEOM_NEWTON')
     ctcsta = 0
     if (lallv) then
         mmcvca = .true.
@@ -93,14 +93,13 @@ implicit none
 ! --- DECOMPACTION VARIABLES CHAPEAUX
 !
     call nmchex(valinc, 'VALINC', 'DEPPLU', depplu)
-    depgeo = resoco(1:14)//'.DEPG'
+    depgeo = ds_contact%sdcont_solv(1:14)//'.DEPG'
 !
 ! --- NOUVEL APPARIEMENT
 !
     if (lnewtg) then
         call copisd('CHAMP_GD', 'V', depplu, depgeo)
-        call mmctcg(noma  , defico, resoco, numedd, sdstat,&
-                    sdtime)
+        call mmctcg(mesh, ds_contact, numedd, sdstat, sdtime)
     endif
 !
 ! --- NOUVELLE NUMEROTATION (ELEMENTS TARDIFS DE CONTACT)
@@ -108,7 +107,7 @@ implicit none
     if (lnewtg) then
         call nmtime(sdtime, 'INI', 'CTCC_PREP')
         call nmtime(sdtime, 'RUN', 'CTCC_PREP')
-        call mmligr(noma, nomo, defico, resoco)
+        call mmligr(mesh, model, ds_contact)
         call nmtime(sdtime, 'END', 'CTCC_PREP')
     endif
 !
@@ -117,9 +116,8 @@ implicit none
     if (lnewtc .or. lnewtg) then
         call nmtime(sdtime, 'INI', 'CTCC_CONT')
         call nmtime(sdtime, 'RUN', 'CTCC_CONT')
-        call mmmbca(noma  , sddyna, iterat, defico, resoco,&
-                    sdstat, valinc, solalg, instan, ctcsta,&
-                    mmcvca)
+        call mmmbca(mesh  , sddyna, iterat, ds_contact, sdstat,&
+                    valinc, solalg, instan, ctcsta    , mmcvca)
         call nmtime(sdtime, 'END', 'CTCC_CONT')
         call nmrinc(sdstat, 'CTCC_CONT')
     endif
@@ -129,8 +127,7 @@ implicit none
     if (lnewtc .or. lnewtg) then
         call nmtime(sdtime, 'INI', 'CTCC_PREP')
         call nmtime(sdtime, 'RUN', 'CTCC_PREP')
-        call mmchml(noma, defico, resoco, sddisc, sddyna,&
-                    numins)
+        call mmchml(mesh, ds_contact, sddisc, sddyna, numins)
         call nmtime(sdtime, 'END', 'CTCC_PREP')
         call nmrinc(sdstat, 'CTCC_PREP')
     endif

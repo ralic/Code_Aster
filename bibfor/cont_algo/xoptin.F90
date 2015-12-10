@@ -1,4 +1,6 @@
-subroutine xoptin(mesh, model, sdcont_defi, sdcont_solv)
+subroutine xoptin(mesh, model, ds_contact)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -41,8 +43,7 @@ implicit none
 !
     character(len=8), intent(in) :: mesh
     character(len=8), intent(in) :: model
-    character(len=24), intent(in) :: sdcont_defi
-    character(len=24), intent(in) :: sdcont_solv
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,8 +57,7 @@ implicit none
 !
 ! In  mesh             : name of mesh
 ! In  model            : name of model
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
-! In  sdcont_solv      : name of contact solving datastructure
+! In  ds_contact       : datastructure for contact management
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -101,14 +101,14 @@ implicit none
 !
 ! - Parameters
 !
-    model_ndim   = cfdisi(sdcont_defi,'NDIM' )
-    nt_elem_slav = cfdisi(sdcont_defi,'NTMAE')
+    model_ndim   = cfdisi(ds_contact%sdcont_defi,'NDIM' )
+    nt_elem_slav = cfdisi(ds_contact%sdcont_defi,'NTMAE')
 !
 ! - Datastructure for contact solving
 !
-    tabfin = sdcont_solv(1:14)//'.TABFIN'
-    maescx = sdcont_defi(1:16)//'.MAESCX'
-    xfimai = sdcont_defi(1:16)//'.XFIMAI'
+    tabfin = ds_contact%sdcont_solv(1:14)//'.TABFIN'
+    maescx = ds_contact%sdcont_defi(1:16)//'.MAESCX'
+    xfimai = ds_contact%sdcont_defi(1:16)//'.XFIMAI'
     call jeveuo(tabfin, 'E', jtabf)
     call jeveuo(maescx, 'L', jmaesx)
     call jeveuo(xfimai, 'L', jfimai)
@@ -144,9 +144,9 @@ implicit none
 !
 ! ----- Parameters
 !
-        type_inte   =  mminfi(sdcont_defi, 'INTEGRATION'   , i_zone)
-        l_gliss     =  mminfl(sdcont_defi, 'GLISSIERE_ZONE', i_zone)
-        l_cont_init = (mminfi(sdcont_defi, 'CONTACT_INIT'  , i_zone).eq.1)
+        type_inte   =  mminfi(ds_contact%sdcont_defi, 'INTEGRATION'   , i_zone)
+        l_gliss     =  mminfl(ds_contact%sdcont_defi, 'GLISSIERE_ZONE', i_zone)
+        l_cont_init = (mminfi(ds_contact%sdcont_defi, 'CONTACT_INIT'  , i_zone).eq.1)
 !
 ! ----- Current slave element
 !

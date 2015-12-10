@@ -1,7 +1,7 @@
-subroutine cfmmcv(noma    , modele, numedd, fonact, sddyna,&
-                  ds_print, sdstat, sddisc, sdtime, sderro,&
-                  numins  , iterat, defico, resoco, valinc,&
-                  solalg  , instan)
+subroutine cfmmcv(mesh    , modele, numedd    , fonact, sddyna,&
+                  ds_print, sdstat, sddisc    , sdtime, sderro,&
+                  numins  , iterat, ds_contact, valinc, solalg,&
+                  instan)
 !
 use NonLin_Datastructure_type
 !
@@ -40,9 +40,9 @@ implicit none
     integer :: fonact(*)
     integer :: iterat, numins
     character(len=19) :: sddisc, sddyna
-    character(len=8) :: noma
+    character(len=8) :: mesh
     character(len=24) :: numedd, modele
-    character(len=24) :: defico, resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=24) :: sderro, sdstat, sdtime
     character(len=19) :: solalg(*), valinc(*)
     real(kind=8) :: instan
@@ -68,8 +68,7 @@ implicit none
 ! IN  SDERRO : GESTION DES ERREURS
 ! IN  ITERAT : NUMERO D'ITERATION
 ! IN  NUMINS : NUMERO D'INSTANT
-! IN  DEFICO : SD POUR LA DEFINITION DU CONTACT
-! IN  RESOCO : SD POUR LA RESOLUTION DU CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
 !
@@ -85,7 +84,7 @@ implicit none
 !
     mmcvca = .false.
     nomo = modele(1:8)
-    ntpc = cfdisi(defico,'NTPC' )
+    ntpc = cfdisi(ds_contact%sdcont_defi,'NTPC' )
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
@@ -101,17 +100,16 @@ implicit none
 ! --- CONVERGENCE ADAPTEE AU CONTACT DISCRET
 !
     if (lctcd) then
-        call cfconv(noma  , sdstat, ds_print, sderro, defico,&
-                    resoco, solalg)
+        call cfconv(mesh  , sdstat, ds_print, sderro, ds_contact,&
+                    solalg)
     endif
 !
 ! --- CONVERGENCE ADAPTEE AU CONTACT CONTINU
 !
     if (lnewtc) then
-        call mmbclc(noma  , nomo  , numedd  , iterat, numins,&
-                    sddisc, sddyna, ds_print, defico, resoco,&
-                    valinc, solalg, sdtime  , sdstat, mmcvca,&
-                    instan)
+        call mmbclc(mesh  , nomo  , numedd  , iterat    , numins,&
+                    sddisc, sddyna, ds_print, ds_contact, valinc,&
+                    solalg, sdtime, sdstat  , mmcvca    , instan)
         if (mmcvca) then
             call nmcrel(sderro, 'DIVE_CTCC', .false._1)
         else

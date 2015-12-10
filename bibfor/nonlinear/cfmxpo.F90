@@ -1,5 +1,21 @@
-subroutine cfmxpo(noma, modelz, defico, resoco, numins,&
-                  sddisc, sdstat, solalg, valinc, veasse)
+subroutine cfmxpo(mesh  , model_   , ds_contact, nume_inst  , sddisc, &
+                  sdstat, hval_algo, hval_incr , hval_veasse)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/cfdeco.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfmxre.h"
+#include "asterfort/cfverl.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mmdeco.h"
+#include "asterfort/xmdeco.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,24 +35,15 @@ subroutine cfmxpo(noma, modelz, defico, resoco, numins,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/cfdeco.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/cfmxre.h"
-#include "asterfort/cfverl.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/mmdeco.h"
-#include "asterfort/xmdeco.h"
-    character(len=24) :: resoco, defico, sdstat
-    character(len=8) :: noma
-    character(len=19) :: sddisc
-    character(len=19) :: solalg(*), veasse(*), valinc(*)
-    character(len=*) :: modelz
-    integer :: numins
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=24), intent(in) :: sdstat
+    character(len=8), intent(in) :: mesh
+    character(len=19), intent(in) :: sddisc
+    character(len=19), intent(in) :: hval_algo(*)
+    character(len=19), intent(in) :: hval_veasse(*) 
+    character(len=19), intent(in) :: hval_incr(*)
+    character(len=*), intent(in) :: model_
+    integer, intent(in) :: nume_inst
 !
 ! ----------------------------------------------------------------------
 !
@@ -46,62 +53,53 @@ subroutine cfmxpo(noma, modelz, defico, resoco, numins,&
 !
 ! ----------------------------------------------------------------------
 !
-!
-! IN  DEFICO : SD DE DEFINITION DU CONTACT
-! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
-! IN  MODELE : SD MODELE
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  NUMINS : NUMERO DU PAS DE CHARGE
-! IN  SDDISC : SD DISCRETISATION TEMPORELLE
-! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
-! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
-! IN  VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE
-!
-!
-!
-!
-    integer :: ifm, niv
-    aster_logical :: lctcd, lctcc, lallv, lxfcm
-    character(len=8) :: nomo
+! In  ds_contact       : datastructure for contact management
+! In  model            : name of model
+! In  mesh             : name of mesh
+! In  nume_inst        : index of current step time
+! In  sddisc           : datastructure for time discretization
+! In  sdstat           : datastructure for statistics
+! In  hval_incr        : hat-variable for incremental values fields
+! In  hval_algo        : hat-variable for algorithms fields
+! In  hval_veasse      : hat-variable for vectors (node fields)
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
-    call infdbg('CONTACT', ifm, niv)
+    aster_logical :: l_cont_disc, l_cont_cont, l_all_verif, l_cont_xfem
+    character(len=8) :: model
 !
-! --- INITIALISATIONS
+! ----------------------------------------------------------------------
 !
-    nomo = modelz
+    model = model_
 !
 ! --- TYPE DE CONTACT
 !
-    lctcc = cfdisl(defico,'FORMUL_CONTINUE')
-    lctcd = cfdisl(defico,'FORMUL_DISCRETE')
-    lallv = cfdisl(defico,'ALL_VERIF')
-    lxfcm = cfdisl(defico,'FORMUL_XFEM')
+    l_cont_cont = cfdisl(ds_contact%sdcont_defi,'FORMUL_CONTINUE')
+    l_cont_disc = cfdisl(ds_contact%sdcont_defi,'FORMUL_DISCRETE')
+    l_all_verif = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF')
+    l_cont_xfem = cfdisl(ds_contact%sdcont_defi,'FORMUL_XFEM')
 !
 ! --- GESTION DE LA  DECOUPE
 !
-    if (.not.lallv) then
-        if (lctcd) then
-            call cfdeco(defico, resoco)
-        else if (lctcc) then
-            call mmdeco(defico, resoco)
-        else if (lxfcm) then
-            call xmdeco(resoco)
+    if (.not.l_all_verif) then
+        if (l_cont_disc) then
+            call cfdeco(ds_contact)
+        else if (l_cont_cont) then
+            call mmdeco(ds_contact)
+        else if (l_cont_xfem) then
+            call xmdeco(ds_contact)
         endif
     endif
 !
 ! --- VERIFICATION FACETTISATION
 !
-    if (lctcd .or. lctcc) then
-        call cfverl(defico, resoco)
+    if (l_cont_disc .or. l_cont_cont) then
+        call cfverl(ds_contact)
     endif
 !
 ! --- REMPLISSAGE DU CHAM_NO CONT_NOEU ET PERCUSSION
 !
-    call cfmxre(noma, nomo, sdstat, defico, resoco,&
-                numins, sddisc, solalg, valinc, veasse)
+    call cfmxre(mesh, model, sdstat, ds_contact,nume_inst,&
+                sddisc, hval_algo, hval_incr, hval_veasse)
 !
-    call jedema()
 end subroutine

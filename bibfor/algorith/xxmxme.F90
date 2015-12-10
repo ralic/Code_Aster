@@ -1,4 +1,24 @@
-subroutine xxmxme(noma, nomo, fonact, defico, resoco)
+subroutine xxmxme(mesh, model, list_func_acti, ds_contact)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/utmess.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/xmele1.h"
+#include "asterfort/xmele3.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,25 +38,10 @@ subroutine xxmxme(noma, nomo, fonact, defico, resoco)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/cfmmvd.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
-#include "asterfort/xmele1.h"
-#include "asterfort/xmele3.h"
-    integer :: fonact(*)
-    character(len=24) :: defico, resoco
-    character(len=8) :: noma, nomo
+    character(len=8), intent(in) :: mesh
+    character(len=8), intent(in) :: model
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    integer, intent(in) :: list_func_acti(*)
 !
 ! ----------------------------------------------------------------------
 !
@@ -46,22 +51,20 @@ subroutine xxmxme(noma, nomo, fonact, defico, resoco)
 !
 ! ----------------------------------------------------------------------
 !
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  NOMO   : NOM DU MODELE
-! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
-! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
-! IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
+! In  mesh             : name of mesh
+! In  model            : name of model
+! In  ds_contact       : datastructure for contact management
+! In  list_func_acti   : list of active functionnalities
 !
 !
-!
-!
-    integer :: nfiss, nfismx
-    parameter    (nfismx=100)
+
     integer :: ifm, niv
+    integer :: nfiss
+    integer, parameter :: nfismx =100
     character(len=24) :: tabfin
     integer :: jtabf
     integer :: ntpc
-    integer :: ztabf, jxc, contac
+    integer :: ztabf, contac
     character(len=19) :: ligrel
     character(len=19) :: xindc0, xseuc0, xcohe0
     aster_logical :: lxffm, lxczm, lxfcm
@@ -75,19 +78,19 @@ subroutine xxmxme(noma, nomo, fonact, defico, resoco)
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
-    ntpc = cfdisi(defico,'NTPC' )
-    lxfcm = isfonc(fonact,'CONT_XFEM')
-    lxffm = isfonc(fonact,'FROT_XFEM')
-    lxczm = cfdisl(defico,'EXIS_XFEM_CZM')
+    ntpc = cfdisi(ds_contact%sdcont_defi,'NTPC' )
+    lxfcm = isfonc(list_func_acti,'CONT_XFEM')
+    lxffm = isfonc(list_func_acti,'FROT_XFEM')
+    lxczm = cfdisl(ds_contact%sdcont_defi,'EXIS_XFEM_CZM')
     ASSERT(lxfcm)
 !
 ! --- INITIALISATIONS
 !
-    ligrel = nomo//'.MODELE'
+    ligrel = model//'.MODELE'
 !
 ! --- NOMBRE DE FISSURES
 !
-    call jeveuo(nomo//'.NFIS', 'L', vi=nfis)
+    call jeveuo(model//'.NFIS', 'L', vi=nfis)
     nfiss = nfis(1)
     if (nfiss .gt. nfismx) then
         call utmess('F', 'XFEM_2', si=nfismx)
@@ -98,36 +101,36 @@ subroutine xxmxme(noma, nomo, fonact, defico, resoco)
 !
 ! --- TYPE DE CONTACT : CLASSIQUE OU MORTAR?
 !
-    call jeveuo(nomo//'.XFEM_CONT','L',vi=xfem_cont)
+    call jeveuo(model//'.XFEM_CONT','L',vi=xfem_cont)
     contac = xfem_cont(1)
 !
 ! --- NOM DES CHAMPS
 !
-    xindc0 = resoco(1:14)//'.XFI0'
-    xseuc0 = resoco(1:14)//'.XFS0'
-    xcohe0 = resoco(1:14)//'.XCO0'
+    xindc0 = ds_contact%sdcont_solv(1:14)//'.XFI0'
+    xseuc0 = ds_contact%sdcont_solv(1:14)//'.XFS0'
+    xcohe0 = ds_contact%sdcont_solv(1:14)//'.XCO0'
     ztabf = cfmmvd('ZTABF')
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
-    ntpc = cfdisi(defico,'NTPC' )
-    lxfcm = isfonc(fonact,'CONT_XFEM')
-    lxffm = isfonc(fonact,'FROT_XFEM')
-    lxczm = cfdisl(defico,'EXIS_XFEM_CZM')
+    ntpc = cfdisi(ds_contact%sdcont_defi,'NTPC' )
+    lxfcm = isfonc(list_func_acti,'CONT_XFEM')
+    lxffm = isfonc(list_func_acti,'FROT_XFEM')
+    lxczm = cfdisl(ds_contact%sdcont_defi,'EXIS_XFEM_CZM')
 !
 ! --- TABLEAU CONTENANT LES INFORMATIONS DIVERSES
 !
-    tabfin = resoco(1:14)//'.TABFIN'
+    tabfin = ds_contact%sdcont_solv(1:14)//'.TABFIN'
     call wkvect(tabfin, 'V V R', ztabf*ntpc+1, jtabf)
     zr(jtabf) = ntpc
 !
 ! --- PREPARATION CHAM_ELEM VIERGES
 !
     if(contac.eq.1.or.contac.eq.3) then
-        call xmele1(noma, nomo, defico, ligrel, nfiss,&
+        call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
                     xindc0, 'PINDCOI', 'RIGI_CONT')
     else if(contac.eq.2) then
-        call xmele1(noma, nomo, defico, ligrel, nfiss,&
+        call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
                     xindc0, 'PINDCOI', 'RIGI_CONT_M')
     endif
 !
@@ -136,20 +139,20 @@ subroutine xxmxme(noma, nomo, fonact, defico, resoco)
 !       SI CONTACT CLASSIQUE, CHAMP AUX PTS GAUSS
 !
         if(contac.eq.1.or.contac.eq.3) then
-            call xmele1(noma, nomo, defico, ligrel, nfiss,&
+            call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
                         xcohe0, 'PCOHES', 'RIGI_CONT')
 !
 !       SI CONTACT MORTAR, CHAMP ELNO
 !
         else if(contac.eq.2) then
-            call xmele3(noma, nomo, ligrel, nfiss,&
+            call xmele3(mesh, model, ligrel, nfiss,&
                         xcohe0, 'PCOHES', 'RIGI_CONT_M')
         else
             ASSERT(.false.)
         endif
     endif
     if (lxffm) then
-        call xmele1(noma, nomo, defico, ligrel, nfiss,&
+        call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
                     xseuc0, 'PSEUIL', 'RIGI_CONT')
     endif
 !

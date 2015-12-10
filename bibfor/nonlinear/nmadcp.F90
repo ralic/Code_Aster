@@ -1,4 +1,19 @@
-subroutine nmadcp(sddisc, defico, resoco, i_event_acti, retpen)
+subroutine nmadcp(sddisc, ds_contact, i_event_acti, retpen)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisd.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfmmco.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/utdidt.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,21 +33,10 @@ subroutine nmadcp(sddisc, defico, resoco, i_event_acti, retpen)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/cfdisd.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/cfmmco.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/utdidt.h"
-#include "asterfort/utmess.h"
-    integer :: i_event_acti
-    character(len=24) :: defico, resoco
-    character(len=19) :: sddisc
-    integer :: retpen
+    integer, intent(in) :: i_event_acti
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=19), intent(in) :: sddisc
+    integer, intent(out) :: retpen
 !
 ! ----------------------------------------------------------------------
 !
@@ -42,9 +46,7 @@ subroutine nmadcp(sddisc, defico, resoco, i_event_acti, retpen)
 !
 ! ----------------------------------------------------------------------
 !
-!
-! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
-! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
+! In  ds_contact       : datastructure for contact management
 ! In  sddisc           : datastructure for time discretization
 ! IN  i_event_acti     : INDICE DE L'EVENEMENT ACTIF
 ! OUT RETPEN : CODE RETOUR ADAPTATION PENALISATION
@@ -56,8 +58,8 @@ subroutine nmadcp(sddisc, defico, resoco, i_event_acti, retpen)
     real(kind=8) :: pene_maxi, coefpn, newcoe
     real(kind=8) :: coef_maxi
     real(kind=8) :: jeumin, jeumax, jeufin
-    integer :: nbliai, nzoco
-    integer :: iliai, izone
+    integer :: nbliai, nb_cont_zone
+    integer :: iliai, i_zone
     character(len=24) :: jeuite, numlia
     integer :: jjeuit, jnumli
     character(len=24) :: ctevpe
@@ -75,54 +77,52 @@ subroutine nmadcp(sddisc, defico, resoco, i_event_acti, retpen)
     call utdidt('L', sddisc, 'ECHE', 'COEF_MAXI', index_ = i_event_acti,&
                 valr_ = coef_maxi)
 !
-! --- PARAMETRES
+! - Get contact parameters
 !
-    nbliai = cfdisd(resoco,'NBLIAI')
-    nzoco = cfdisi(defico,'NZOCO' )
+    nbliai       = cfdisd(ds_contact%sdcont_solv,'NBLIAI')
+    nb_cont_zone = cfdisi(ds_contact%sdcont_defi,'NZOCO' )
 !
 ! --- ACCES OBJETS DU CONTACT
 !
-    jeuite = resoco(1:14)//'.JEUITE'
-    numlia = resoco(1:14)//'.NUMLIA'
+    jeuite = ds_contact%sdcont_solv(1:14)//'.JEUITE'
+    numlia = ds_contact%sdcont_solv(1:14)//'.NUMLIA'
     call jeveuo(jeuite, 'L', jjeuit)
     call jeveuo(numlia, 'L', jnumli)
-    ctevpe = resoco(1:14)//'.EVENPE'
+    ctevpe = ds_contact%sdcont_solv(1:14)//'.EVENPE'
     call jeveuo(ctevpe, 'E', jctevp)
 !
 ! --- DETECTION PENETRATION MAXIMUM/MINIMUM
 !
     do iliai = 1, nbliai
         jeufin = zr(jjeuit+3*(iliai-1)+1-1)
-        izone = zi(jnumli+4*(iliai-1)+4-1)
-        jeumin = zr(jctevp+3*(izone-1)+1-1)
-        jeumax = zr(jctevp+3*(izone-1)+2-1)
+        i_zone = zi(jnumli+4*(iliai-1)+4-1)
+        jeumin = zr(jctevp+3*(i_zone-1)+1-1)
+        jeumax = zr(jctevp+3*(i_zone-1)+2-1)
         if (jeufin .le. 0.d0) then
             jeufin = abs(jeufin)
             jeumax = max(jeumax,jeufin)
         else
             jeumin = max(jeumin,jeufin)
         endif
-        zr(jctevp+3*(izone-1)+1-1) = jeumin
-        zr(jctevp+3*(izone-1)+2-1) = jeumax
-        zr(jctevp+3*(izone-1)+3-1) = jeufin
+        zr(jctevp+3*(i_zone-1)+1-1) = jeumin
+        zr(jctevp+3*(i_zone-1)+2-1) = jeumax
+        zr(jctevp+3*(i_zone-1)+3-1) = jeufin
     end do
 !
 ! --- DETECTION PENETRATION MAXIMUM
 !
-    do izone = 1, nzoco
-        call cfmmco(defico, resoco, izone, 'E_N', 'L',&
-                    coefpn)
+    do i_zone = 1, nb_cont_zone
+        call cfmmco(ds_contact, i_zone, 'E_N', 'L', coefpn)
         if (jeumax .gt. pene_maxi) then
             newcoe = coefpn*2.d0
             if (newcoe .gt. coef_maxi) then
                 newcoe = coef_maxi
                 retpen = 0
             endif
-            call cfmmco(defico, resoco, izone, 'E_N', 'E',&
-                        newcoe)
+            call cfmmco(ds_contact, i_zone, 'E_N', 'E', newcoe)
         endif
         if (retpen .eq. 1) then
-            call utmess('I', 'MECANONLINE10_46', si=izone, sr=newcoe)
+            call utmess('I', 'MECANONLINE10_46', si=i_zone, sr=newcoe)
         endif
     end do
 !

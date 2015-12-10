@@ -1,4 +1,20 @@
-subroutine cfsvfr(defico, resoco, lconv)
+subroutine cfsvfr(ds_contact, lconv)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisd.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jerazo.h"
+#include "asterfort/jeveuo.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,20 +32,9 @@ subroutine cfsvfr(defico, resoco, lconv)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/cfdisd.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jerazo.h"
-#include "asterfort/jeveuo.h"
-    character(len=24) :: defico, resoco
-    aster_logical :: lconv
+!
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    aster_logical, intent(in) :: lconv
 !
 ! ----------------------------------------------------------------------
 !
@@ -40,15 +45,10 @@ subroutine cfsvfr(defico, resoco, lconv)
 !
 ! ----------------------------------------------------------------------
 !
-! IN  DEFICO : SD DE DEFINITION DU CONTACT
-! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  LCONV  : SAUVEGARDE T-ON UN ETAT CONVERGE ?
 !
-!
-!
-!
-    integer :: ifm, niv
-    aster_logical :: llagrf
+    aster_logical :: l_lagr_frot
     integer :: nnoco
     integer :: iliac, iliai, posnoe
     integer :: nbliac, llf, llf1, llf2, btotal
@@ -61,58 +61,56 @@ subroutine cfsvfr(defico, resoco, lconv)
 ! ----------------------------------------------------------------------
 !
     call jemarq()
-    call infdbg('CONTACT', ifm, niv)
 !
 ! --- LE STATUT DE FROTTEMENT N'EST SAUVEGARDE QU'EN LAGRANGIEN
 !
-    llagrf = cfdisl(defico,'FROT_LAGR' )
+    l_lagr_frot = cfdisl(ds_contact%sdcont_defi,'FROT_LAGR' )
 !
-    if (.not.llagrf) then
-        goto 999
-    endif
+    if (l_lagr_frot) then
 !
 ! --- ACCES OBJETS
 !
-    if (lconv) then
-        statfr = resoco(1:14)//'.STF0'
-    else
-        statfr = resoco(1:14)//'.STFR'
-    endif
-    call jeveuo(statfr, 'E', jstfr)
-    typl = resoco(1:14)//'.TYPL'
-    call jeveuo(typl, 'L', jtypl)
-    liac = resoco(1:14)//'.LIAC'
-    call jeveuo(liac, 'L', jliac)
-    numlia = resoco(1:14)//'.NUMLIA'
-    call jeveuo(numlia, 'L', jnumli)
+        if (lconv) then
+            statfr = ds_contact%sdcont_solv(1:14)//'.STF0'
+        else
+            statfr = ds_contact%sdcont_solv(1:14)//'.STFR'
+        endif
+        call jeveuo(statfr, 'E', jstfr)
+        typl = ds_contact%sdcont_solv(1:14)//'.TYPL'
+        call jeveuo(typl, 'L', jtypl)
+        liac = ds_contact%sdcont_solv(1:14)//'.LIAC'
+        call jeveuo(liac, 'L', jliac)
+        numlia = ds_contact%sdcont_solv(1:14)//'.NUMLIA'
+        call jeveuo(numlia, 'L', jnumli)
 !
 ! --- INITIALISATIONS
 !
-    nnoco = cfdisi(defico,'NNOCO')
-    call jerazo(statfr, nnoco, 1)
+        nnoco = cfdisi(ds_contact%sdcont_defi,'NNOCO')
+        call jerazo(statfr, nnoco, 1)
 !
 ! --- INFORMATIONS
 !
-    nbliac = cfdisd(resoco,'NBLIAC')
-    llf = cfdisd(resoco,'LLF' )
-    llf1 = cfdisd(resoco,'LLF1' )
-    llf2 = cfdisd(resoco,'LLF2' )
-!
-    btotal = nbliac + llf + llf1 + llf2
+        nbliac = cfdisd(ds_contact%sdcont_solv,'NBLIAC')
+        llf    = cfdisd(ds_contact%sdcont_solv,'LLF' )
+        llf1   = cfdisd(ds_contact%sdcont_solv,'LLF1' )
+        llf2   = cfdisd(ds_contact%sdcont_solv,'LLF2' )
+        btotal = nbliac + llf + llf1 + llf2
 !
 ! --- SAUVEGARDE DU STATUT DE FROTTEMENT
 !
-    do 10 iliac = 1, btotal
-        typlia = zk8(jtypl -1+iliac)
-        if (typlia(1:1) .ne. 'F') goto 10
-        iliai = zi(jliac -1+iliac)
-        posnoe = zi(jnumli-1+4*(iliai-1)+2)
-        ASSERT(posnoe.le.nnoco)
-        ASSERT(zk8(jstfr-1+posnoe).eq.' ')
-        zk8(jstfr-1+posnoe) = typlia
- 10 end do
-!
-999 continue
+        do iliac = 1, btotal
+            typlia = zk8(jtypl -1+iliac)
+            if (typlia(1:1) .ne. 'F') then
+                cycle
+            endif
+            iliai = zi(jliac -1+iliac)
+            posnoe = zi(jnumli-1+4*(iliai-1)+2)
+            ASSERT(posnoe.le.nnoco)
+            ASSERT(zk8(jstfr-1+posnoe).eq.' ')
+            zk8(jstfr-1+posnoe) = typlia
+        end do
+    endif
 !
     call jedema()
+!
 end subroutine

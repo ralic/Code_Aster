@@ -1,4 +1,11 @@
-subroutine xreacg(nomo, resoco)
+subroutine xreacg(model, ds_contact)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterfort/infdbg.h"
+#include "asterfort/xgecfi.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,14 +24,8 @@ subroutine xreacg(nomo, resoco)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit   none
-#include "jeveux.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/xgecfi.h"
-    character(len=8) :: nomo
-    character(len=24) :: resoco
+    character(len=8), intent(in) :: model
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! ----------------------------------------------------------------------
 !
@@ -39,12 +40,8 @@ subroutine xreacg(nomo, resoco)
 ! TRAVAIL EFFECTUE EN COLLABORATION AVEC I.F.P.
 ! ----------------------------------------------------------------------
 !
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  NOMO   : NOM DU MODELE
-! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
-! IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
-!
-!
+! In  model            : name of model
+! In  ds_contact       : datastructure for contact management
 !
 !
     character(len=19) :: depla
@@ -52,18 +49,12 @@ subroutine xreacg(nomo, resoco)
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('XFEM', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
-        write (ifm,*) '<XFEM> ... REACTUALISATION DES FACETTES DE '//&
-        'CONTACT'
+        write (ifm,*) '<XFEM> ... REACTUALISATION DES FACETTES DE CONTACT'
     endif
 !
-    depla = resoco(1:14)//'.DEPG'
-    call xgecfi(nomo, depla)
+    depla = ds_contact%sdcont_solv(1:14)//'.DEPG'
+    call xgecfi(model, depla)
 !
-    call jedema()
 end subroutine

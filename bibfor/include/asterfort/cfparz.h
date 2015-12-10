@@ -16,10 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfparz(resoco, iliai, coefff, coefpn, coefpt,&
+    subroutine cfparz(ds_contact, iliai, coefff, coefpn, coefpt,&
                       coefte, dissup, izone, ip, numnoe,&
                       posnoe)
-        character(len=24) :: resoco
+        use NonLin_Datastructure_type
+        type(NL_DS_Contact), intent(in) :: ds_contact
         integer :: iliai
         real(kind=8) :: coefff
         real(kind=8) :: coefpn

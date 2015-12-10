@@ -1,5 +1,18 @@
-subroutine cfgeom(reageo, iterat, noma, sdtime, sdstat,&
-                  defico, resoco, depplu, instan)
+subroutine cfgeom(reageo    , iterat, noma, sdtime, sdstat,&
+                  ds_contact, depplu, instan)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/cfappa.h"
+#include "asterfort/cfimp4.h"
+#include "asterfort/geomco.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/nmrinc.h"
+#include "asterfort/nmtime.h"
+#include "asterfort/reajeu.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,22 +32,11 @@ subroutine cfgeom(reageo, iterat, noma, sdtime, sdstat,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/cfappa.h"
-#include "asterfort/cfimp4.h"
-#include "asterfort/geomco.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/nmrinc.h"
-#include "asterfort/nmtime.h"
-#include "asterfort/reajeu.h"
     integer :: iterat
     aster_logical :: reageo
     character(len=8) :: noma
-    character(len=24) :: defico, resoco, sdtime, sdstat
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=24) :: sdtime, sdstat
     character(len=19) :: depplu
     real(kind=8) :: instan
 !
@@ -47,35 +49,26 @@ subroutine cfgeom(reageo, iterat, noma, sdtime, sdstat,&
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  REAGEO : VAUT .TRUE. SI REACTUALISATION GEOMETRIQUE
 ! IN  ITERAT : NUMERO DE L'ITERATION DE NEWTON COURANTE
 ! IN  NOMA   : NOM DU MAILLAGE
 ! IN  SDTIME : SD TIMER
 ! IN  SDSTAT : SD STATISTIQUES
-! IN  DEFICO : SD DE DEFINITION DU CONTACT
-! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  DEPPLU : CHAMP DE DEPLACEMENTS DEPUIS L'INSTANT INITIAL
 !
-!
-!
+! ----------------------------------------------------------------------
 !
     integer :: ifm, niv
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('CONTACT', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         if (reageo) then
-            write (ifm,*) '<CONTACT> ... REACTUALISATION DE '//&
-            'L''APPARIEMENT'
+            write (ifm,*) '<CONTACT> ... REACTUALISATION DE L''APPARIEMENT'
         else
-            write (ifm,*) '<CONTACT> ... PAS DE REACTUALISATION DE '//&
-            'L''APPARIEMENT'
+            write (ifm,*) '<CONTACT> ... PAS DE REACTUALISATION DE L''APPARIEMENT'
         endif
     endif
 !
@@ -87,11 +80,11 @@ subroutine cfgeom(reageo, iterat, noma, sdtime, sdstat,&
 !
 ! ----- REACTUALISATION DE LA GEOMETRIE
 !
-        call geomco(noma, resoco, depplu)
+        call geomco(noma, ds_contact, depplu)
 !
 ! ----- APPARIEMENT
 !
-        call cfappa(noma, defico, resoco, instan)
+        call cfappa(noma, ds_contact, instan)
         call nmtime(sdtime, 'END', 'CONT_GEOM')
         call nmrinc(sdstat, 'CONT_GEOM')
 !
@@ -101,24 +94,22 @@ subroutine cfgeom(reageo, iterat, noma, sdtime, sdstat,&
 ! --- DE TEMPS AU CAS OU IL Y AURAIT EU REDECOUPAGE
 !
         if (iterat .eq. 0) then
-            call reajeu(resoco)
+            call reajeu(ds_contact)
         endif
     endif
 !
 ! --- IMPRESSIONS POUR LES DEVELOPPEURS
 !
     if (niv .ge. 2) then
-        call cfimp4(defico, resoco, noma, ifm)
+        call cfimp4(ds_contact, noma, ifm)
     endif
 !
 ! --- AFFICHAGE
 !
     if (niv .ge. 2) then
         if (reageo) then
-            write (ifm,*) '<CONTACT> ... FIN DE REACTUALISATION DE '//&
-            'L''APPARIEMENT'
+            write (ifm,*) '<CONTACT> ... FIN DE REACTUALISATION DE L''APPARIEMENT'
         endif
     endif
 !
-    call jedema()
 end subroutine

@@ -1,5 +1,24 @@
-subroutine xmele3(noma, modele, ligrel, nfiss, chelem,&
+subroutine xmele3(mesh , model , ligrel, nfiss, chelem,&
                   param, option)
+!
+implicit none
+!
+#include "asterfort/assert.h"
+#include "asterfort/cescel.h"
+#include "asterfort/cescre.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "jeveux.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,29 +38,13 @@ subroutine xmele3(noma, modele, ligrel, nfiss, chelem,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterfort/assert.h"
-#include "asterfort/cescel.h"
-#include "asterfort/cescre.h"
-#include "asterfort/cesexi.h"
-#include "asterfort/detrsd.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/exisd.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
-#include "jeveux.h"
-!
-    character(len=8) :: noma, modele
-    character(len=*) :: param, option
-    integer :: nfiss
-    character(len=19) :: chelem
-    character(len=19) :: ligrel
+    character(len=8), intent(in) :: mesh
+    character(len=8), intent(in) :: model
+    character(len=*), intent(in) :: param
+    character(len=*), intent(in) :: option
+    integer, intent(in) :: nfiss
+    character(len=19), intent(in) :: chelem
+    character(len=19), intent(in) :: ligrel
 !
 ! ----------------------------------------------------------------------
 !
@@ -51,9 +54,8 @@ subroutine xmele3(noma, modele, ligrel, nfiss, chelem,&
 !
 ! ----------------------------------------------------------------------
 !
-!
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  MODELE : NOM DU MODELE
+! In  mesh             : name of mesh
+! In  model            : name of model
 ! IN  NFISS  : NOMBRE TOTAL DE FISSURES
 ! IN  LIGREL : NOM DU LIGREL DES MAILLES TARDIVES
 ! IN  CHELEM : NOM DU CHAM_ELEM A CREER
@@ -84,9 +86,6 @@ subroutine xmele3(noma, modele, ligrel, nfiss, chelem,&
 !
     call jemarq()
     call infdbg('XFEM', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<XFEM  > CREATION DU CHAM_ELEM PINDCOI '
     endif
@@ -97,10 +96,10 @@ subroutine xmele3(noma, modele, ligrel, nfiss, chelem,&
 !
 ! --- RECUPERATION DES INFOS SUR LE MAILLAGE ET LE MODELE
 !
-    call jeveuo(modele//'.FISS', 'L', vk8=fiss)
-    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
-    call dismoi('DIM_GEOM', modele, 'MODELE', repi=ndim)
-    call jeveuo(noma//'.TYPMAIL', 'L', vi=typmail)
+    call jeveuo(model//'.FISS', 'L', vk8=fiss)
+    call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nbma)
+    call dismoi('DIM_GEOM', model, 'MODELE', repi=ndim)
+    call jeveuo(mesh//'.TYPMAIL', 'L', vi=typmail)
 !
     ASSERT(param.eq.'PCOHES')
     nomgd = 'NEUT_R'
@@ -111,12 +110,8 @@ subroutine xmele3(noma, modele, ligrel, nfiss, chelem,&
 !
     call exisd('CHAM_ELEM', chelem, iret)
     if (iret .eq. 0) then
-        call cescre('V', chelsi, 'ELNO', noma, nomgd,&
+        call cescre('V', chelsi, 'ELNO', mesh, nomgd,&
                     ncmp, licmp3, [-1], [-1], [-ncmp])
-!
-! --- RAZ VECTEUR DE DIMENSIONNEMENT
-!
-!      ENDIF
 !
 ! --- ACCES AU CHAM_ELEM_S
 !
@@ -126,7 +121,7 @@ subroutine xmele3(noma, modele, ligrel, nfiss, chelem,&
 !
 ! --- ENRICHISSEMENT DU CHAM_ELEM_S POUR LA MULTIFISSURATION
 !
-        do 110 ifis = 1, nfiss
+        do ifis = 1, nfiss
 !
 ! --- ACCES FISSURE COURANTE
 !
@@ -140,7 +135,7 @@ subroutine xmele3(noma, modele, ligrel, nfiss, chelem,&
             if (iret .ne. 0) then
                 call jeveuo(grp, 'L', jgrp)
                 call jelira(grp, 'LONMAX', nmaenr, k8bid)
-                do 120 i = 1, nmaenr
+                do i = 1, nmaenr
                     ima = zi(jgrp-1+i)
                     itypma = typmail(ima)
                     call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
@@ -148,18 +143,17 @@ subroutine xmele3(noma, modele, ligrel, nfiss, chelem,&
 !
 ! --- RECOPIE EFFECTIVE DES CHAMPS
 !
-                    do 150 ino = 1, nno
-                        do 160 icmp = 1, ncmp
+                    do ino = 1, nno
+                        do icmp = 1, ncmp
                             call cesexi('S', jcesd, jcesl, ima, ino,&
                                         1, icmp, iad)
                             zl(jcesl-1+abs(iad)) = .true.
                             cesv(abs(iad)) = valr
-160                      continue
-150                  continue
-!
-120              continue
+                        end do
+                    end do
+                end do
             endif
-110      end do
+        end do
 !
 ! --- CONVERSION CHAM_ELEM_S -> CHAM_ELEM
 !

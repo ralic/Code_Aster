@@ -1,5 +1,18 @@
-subroutine nmevev(sddisc, numins, valinc, sderro, defico,&
-                  resoco, nombcl)
+subroutine nmevev(sddisc   , nume_inst, valinc, sderro, ds_contact,&
+                  loop_name)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmerge.h"
+#include "asterfort/nmevel.h"
+#include "asterfort/nmlecv.h"
+#include "asterfort/nmltev.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,19 +32,12 @@ subroutine nmevev(sddisc, numins, valinc, sderro, defico,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/nmerge.h"
-#include "asterfort/nmevel.h"
-#include "asterfort/nmlecv.h"
-#include "asterfort/nmltev.h"
-    character(len=24) :: sderro, defico, resoco
-    integer :: numins
-    character(len=19) :: sddisc, valinc(*)
-    character(len=4) :: nombcl
+    character(len=24), intent(in) :: sderro
+    character(len=19), intent(in) :: sddisc
+    character(len=4), intent(in) :: loop_name
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    integer, intent(in) :: nume_inst
+    character(len=19), intent(in) :: valinc(*)
 !
 ! ----------------------------------------------------------------------
 !
@@ -44,27 +50,21 @@ subroutine nmevev(sddisc, numins, valinc, sderro, defico,&
 ! NB: DES QU'UN EVENT-DRIVEN EST SATISFAIT, ON SORT
 ! ON NE CHERCHE PAS A VERIFIER LES AUTRES EVENEMENTS
 !
-! IN  SDDISC : SD DISCRETISATION TEMPORELLE
+! In  sddisc           : datastructure for time discretization TEMPORELLE
+! In  ds_contact       : datastructure for contact management
 ! IN  NUMINS : NUMERO D'INSTANT
 ! IN  SDERRO : SD GESTION DES ERREURS
 ! IN  NOMBCL : NOM DE LA BOUCLE
 !               'NEWT' - BOUCLE DE NEWTON
 !               'FIXE' - BOUCLE DE POINT FIXE
 ! IN  VALINC : VARIABLE CHAPEAU INCREMENTS DES VARIABLES
-! IN  DEFICO : SD DE DEFINITION DU CONTACT
-! IN  RESOCO : SD DE RESOLUTION DU CONTACT
 !
-!
-!
+! ----------------------------------------------------------------------
 !
     aster_logical :: lsvimx, ldvres, linsta
     aster_logical :: conver, lerror, lerrcv
 !
 ! ----------------------------------------------------------------------
-!
-    call jemarq()
-!
-! --- EVENEMENTS DE L'ALGORITHME
 !
     call nmerge(sderro, 'SOLV_ITMX', lsvimx)
     call nmerge(sderro, 'DIVE_RESI', ldvres)
@@ -72,11 +72,11 @@ subroutine nmevev(sddisc, numins, valinc, sderro, defico,&
 !
 ! --- LA BOUCLE COURANTE A-T-ELLE CONVERGE ?
 !
-    call nmlecv(sderro, nombcl, conver)
+    call nmlecv(sderro, loop_name, conver)
 !
 ! --- DECLENCHEMENT DE L'ERREUR A CONVERGENCE
 !
-    call nmltev(sderro, 'ERRC', nombcl, lerror)
+    call nmltev(sderro, 'ERRC', loop_name, lerror)
     if (conver .and. lerror) then
         lerrcv = .true.
     else
@@ -85,13 +85,12 @@ subroutine nmevev(sddisc, numins, valinc, sderro, defico,&
 !
 ! --- ERREUR IMMEDIATE AU NIVEAU DE LA BOUCLE COURANTE ?
 !
-    call nmltev(sderro, 'ERRI', nombcl, lerror)
+    call nmltev(sderro, 'ERRI', loop_name, lerror)
 !
 ! --- PREMIER EVENT DECLENCHE
 !
-    call nmevel(sddisc, numins, defico, resoco, valinc,&
-                nombcl, lsvimx, ldvres, linsta, lerrcv,&
-                lerror, conver)
+    call nmevel(sddisc    , nume_inst, valinc, loop_name, lsvimx,&
+                ldvres    , linsta   , lerrcv, lerror   , conver,&
+                ds_contact)
 !
-    call jedema()
 end subroutine

@@ -1,4 +1,6 @@
-subroutine cfmxr0(sdcont_defi, sdcont_solv, mesh)
+subroutine cfmxr0(ds_contact, mesh)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -37,8 +39,7 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=24), intent(in) :: sdcont_defi
-    character(len=24), intent(in) :: sdcont_solv
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=8), intent(in) :: mesh
 !
 ! --------------------------------------------------------------------------------------------------
@@ -49,8 +50,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
-! In  sdcont_solv      : name of contact solving datastructure
+! In  ds_contact       : datastructure for contact management
 ! In  mesh             : name of mesh
 !
 ! --------------------------------------------------------------------------------------------------
@@ -97,9 +97,9 @@ implicit none
 !
 ! - Parameters
 !
-    l_cont_cont  = cfdisl(sdcont_defi,'FORMUL_CONTINUE')
-    l_cont_disc  = cfdisl(sdcont_defi,'FORMUL_DISCRETE')
-    nb_cont_zone = cfdisi(sdcont_defi,'NZOCO' )
+    l_cont_cont  = cfdisl(ds_contact%sdcont_defi,'FORMUL_CONTINUE')
+    l_cont_disc  = cfdisl(ds_contact%sdcont_defi,'FORMUL_DISCRETE')
+    nb_cont_zone = cfdisi(ds_contact%sdcont_defi,'NZOCO' )
     call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi=nb_node_mesh)
 !
 ! - Initializations
@@ -110,7 +110,7 @@ implicit none
 !
 ! - Save fields name
 !
-    sdcont_nochco = sdcont_solv(1:14)//'.NOCHCO'
+    sdcont_nochco = ds_contact%sdcont_solv(1:14)//'.NOCHCO'
     call wkvect(sdcont_nochco, 'V V K24', 3, vk24 = v_sdcont_nochco)
     v_sdcont_nochco(1) = cnsinr
     v_sdcont_nochco(2) = cnoinr
@@ -125,8 +125,7 @@ implicit none
 !
 ! - Create CONT_NOEU
 !
-    call cnscre(mesh, 'INFC_R', zresu, list_cmp, 'V',&
-                cnsinr)
+    call cnscre(mesh, 'INFC_R', zresu, list_cmp, 'V', cnsinr)
     call jeveuo(cnsinr(1:19)//'.CNSV', 'E', vr=cnsvr)
     call jeveuo(cnsinr(1:19)//'.CNSL', 'E', jcnslr)
 !
@@ -134,11 +133,11 @@ implicit none
 !
     if (l_cont_cont.or.l_cont_disc) then
         do i_zone = 1, nb_cont_zone
-            jdecne       = mminfi(sdcont_defi, 'JDECNE', i_zone)
-            nb_node_slav = mminfi(sdcont_defi, 'NBNOE' , i_zone)
+            jdecne       = mminfi(ds_contact%sdcont_defi, 'JDECNE', i_zone)
+            nb_node_slav = mminfi(ds_contact%sdcont_defi, 'NBNOE' , i_zone)
             do i_node_slav = 1, nb_node_slav
                 node_slav_indx(1) = i_node_slav + jdecne
-                call cfnumn(sdcont_defi, 1, node_slav_indx(1), node_slav_nume(1))
+                call cfnumn(ds_contact%sdcont_defi, 1, node_slav_indx(1), node_slav_nume(1))
                 do i_cmp = 1, zresu
                     cnsvr(zresu*(node_slav_nume(1)-1)+i_cmp)       = 0.d0
                     zl(jcnslr-1+zresu*(node_slav_nume(1)-1)+i_cmp) = .true.
@@ -158,8 +157,7 @@ implicit none
 ! - Create CONT_NOEU_PERC
 !
     if (l_cont_cont.or.l_cont_disc) then
-        call cnscre(mesh, 'VARI_R', zperc, list_cmp_per, 'V',&
-                    cnsper)
+        call cnscre(mesh, 'VARI_R', zperc, list_cmp_per, 'V', cnsper)
         call jeveuo(cnsper(1:19)//'.CNSV', 'E', vr=cnsvp)
         call jeveuo(cnsper(1:19)//'.CNSL', 'E', jcnslp)
     endif
@@ -168,11 +166,11 @@ implicit none
 !
     if (l_cont_cont.or.l_cont_disc) then
         do i_zone = 1, nb_cont_zone
-            jdecne       = mminfi(sdcont_defi, 'JDECNE', i_zone)
-            nb_node_slav = mminfi(sdcont_defi, 'NBNOE' , i_zone)
+            jdecne       = mminfi(ds_contact%sdcont_defi, 'JDECNE', i_zone)
+            nb_node_slav = mminfi(ds_contact%sdcont_defi, 'NBNOE' , i_zone)
             do i_node_slav = 1, nb_node_slav
                 node_slav_indx(1) = i_node_slav + jdecne
-                call cfnumn(sdcont_defi, 1, node_slav_indx(1), node_slav_nume(1))
+                call cfnumn(ds_contact%sdcont_defi, 1, node_slav_indx(1), node_slav_nume(1))
                 do i_cmp = 1, zperc
                     cnsvp(zperc*(node_slav_nume(1)-1)+i_cmp)       = 0.d0
                     zl(jcnslp-1+zperc*(node_slav_nume(1)-1)+i_cmp) = .false.
@@ -183,8 +181,7 @@ implicit none
 !
 ! - Transform CONT_NOEU in CHAM_NO
 !
-    call cnscno(cnsinr, ' ', 'NON', 'V', cnoinr,&
-                'F', ibid)
+    call cnscno(cnsinr, ' ', 'NON', 'V', cnoinr, 'F', ibid)
 !
     call jedema()
 end subroutine

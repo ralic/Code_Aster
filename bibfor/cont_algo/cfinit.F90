@@ -1,4 +1,6 @@
-subroutine cfinit(sdcont_defi, sdcont_solv, nume_inst)
+subroutine cfinit(ds_contact, nume_inst)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -28,8 +30,7 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=24), intent(in) :: sdcont_defi
-    character(len=24), intent(in) :: sdcont_solv
+    type(NL_DS_Contact), intent(in) :: ds_contact
     integer, intent(in) :: nume_inst
 !
 ! --------------------------------------------------------------------------------------------------
@@ -40,8 +41,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
-! In  sdcont_solv      : name of contact solving datastructure
+! In  ds_contact       : datastructure for contact management
 ! In  nume_inst        : index of current step time
 !
 ! --------------------------------------------------------------------------------------------------
@@ -57,17 +57,17 @@ implicit none
 !
 ! - Datastructure for contact solving
 !
-    sdcont_clreac = sdcont_solv(1:14)//'.REAL'
+    sdcont_clreac = ds_contact%sdcont_solv(1:14)//'.REAL'
     call jeveuo(sdcont_clreac, 'E', vl = v_sdcont_clreac)
-    sdcont_autoc1 = sdcont_solv(1:14)//'.REA1'
-    sdcont_autoc2 = sdcont_solv(1:14)//'.REA2'
+    sdcont_autoc1 = ds_contact%sdcont_solv(1:14)//'.REA1'
+    sdcont_autoc2 = ds_contact%sdcont_solv(1:14)//'.REA2'
 !
 ! - Geometric parameters
 !
     l_reac_geom(1) = .true.
     l_reac_geom(2) = .false.
     l_reac_geom(3) = .true.
-    if (cfdisl(sdcont_defi,'REAC_GEOM_SANS')) then
+    if (cfdisl(ds_contact%sdcont_defi,'REAC_GEOM_SANS')) then
         if (nume_inst .ne. 1) then
             l_reac_geom(1) = .false.
             l_reac_geom(3) = .false.
@@ -76,11 +76,11 @@ implicit none
 !
 ! - Geometric loop counter initialization
 !
-    call mmbouc(sdcont_solv, 'GEOM', 'INIT')
+    call mmbouc(ds_contact, 'GEOM', 'INIT')
 !
 ! - First geometric loop counter
 !    
-    call mmbouc(sdcont_solv, 'GEOM', 'INCR')
+    call mmbouc(ds_contact, 'GEOM', 'INCR')
 !
 ! - Vector initialization for REAC_GEOM
 !

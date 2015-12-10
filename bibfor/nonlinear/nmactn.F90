@@ -1,4 +1,4 @@
-subroutine nmactn(ds_print, sddisc, sderro, defico, resoco,&
+subroutine nmactn(ds_print, sddisc, sderro, ds_contact,&
                   ds_conv , iterat, numins)
 !
 use NonLin_Datastructure_type
@@ -34,8 +34,7 @@ implicit none
 !
     type(NL_DS_Print), intent(in) :: ds_print
     character(len=24), intent(in) :: sderro
-    character(len=24), intent(in) :: defico
-    character(len=24), intent(in) :: resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19), intent(in) :: sddisc
     type(NL_DS_Conv), intent(in) :: ds_conv
     integer, intent(in) :: iterat
@@ -54,8 +53,7 @@ implicit none
 ! In  ds_print         : datastructure for printing parameters
 ! In  sddisc           : datastructure for time discretization
 ! IN  SDERRO : SD GESTION DES ERREURS
-! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
-! IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
+! In  ds_contact       : datastructure for contact management
 ! In  ds_conv          : datastructure for convergence management
 ! IN  ITERAT : NUMERO D'ITERATION DE NEWTON
 ! IN  NUMINS : NUMERO D'INSTANT
@@ -81,7 +79,7 @@ implicit none
     else if (etnewt.eq.'EVEN') then
         call nmacto(sddisc, ievdac)
         call nmevac(sddisc, sderro  , ievdac, numins, iterat, &
-                    retact, ds_print, defico, resoco)
+                    retact, ds_print, ds_contact)
     else if (etnewt.eq.'CONT') then
 ! ----- TROP TARD POUR CONTINUE NEWTON -> IMPOSSIBLE
         ASSERT(.false.)

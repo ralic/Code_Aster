@@ -1,10 +1,10 @@
-subroutine cfapre(noma, defico, resoco, newgeo, sdappa,&
-                  instan)
+subroutine cfapre(noma, ds_contact, newgeo, sdappa, instan)
 !
-    implicit none
+use NonLin_Datastructure_type
+!
+implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/apinfi.h"
 #include "asterfort/apinfr.h"
 #include "asterfort/apvect.h"
@@ -22,8 +22,6 @@ subroutine cfapre(noma, defico, resoco, newgeo, sdappa,&
 #include "asterfort/cfnumn.h"
 #include "asterfort/cfparz.h"
 #include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/mminfi.h"
@@ -50,7 +48,7 @@ subroutine cfapre(noma, defico, resoco, newgeo, sdappa,&
 !
     character(len=8) :: noma
     character(len=19) :: sdappa
-    character(len=24) :: defico, resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19) :: newgeo
     real(kind=8) :: instan
 !
@@ -62,17 +60,14 @@ subroutine cfapre(noma, defico, resoco, newgeo, sdappa,&
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  NOMA   : NOM DU MAILLAGE
 ! IN  SDAPPA : NOM DE LA SD APPARIEMENT
 ! IN  NEWGEO : NOUVELLE GEOMETRIE (AVEC DEPLACEMENT GEOMETRIQUE)
-! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
-! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
+! In  ds_contact       : datastructure for contact management
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: izone, i, iliai, ip
+    integer :: izone, i, iliai, ip, ifm, niv
     integer :: jdecne
     integer :: inoe
     integer :: posmae, posnoe(1), posmam, posnom(1)
@@ -89,24 +84,20 @@ subroutine cfapre(noma, defico, resoco, newgeo, sdappa,&
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('CONTACT', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<CONTACT> ......... RECOPIE DE L''APPARIEMENT'
     endif
 !
 ! --- INFOS SUR LA CHARGE DE CONTACT
 !
-    lctfd = cfdisl(defico,'FROT_DISCRET')
-    lctf3d = cfdisl(defico,'FROT_3D' )
+    lctfd = cfdisl(ds_contact%sdcont_defi,'FROT_DISCRET')
+    lctf3d = cfdisl(ds_contact%sdcont_defi,'FROT_3D' )
 !
 ! --- NOMBRE TOTAL DE NOEUDS ESCLAVES ET DIMENSION DU PROBLEME
 !
-    nzoco = cfdisi(defico,'NZOCO' )
-    ndimg = cfdisi(defico,'NDIM' )
+    nzoco = cfdisi(ds_contact%sdcont_defi,'NZOCO' )
+    ndimg = cfdisi(ds_contact%sdcont_defi,'NDIM' )
 !
 ! --- INITIALISATIONS
 !
@@ -120,12 +111,12 @@ subroutine cfapre(noma, defico, resoco, newgeo, sdappa,&
 !
 ! ----- INFORMATION SUR LA ZONE
 !
-        nbpt = mminfi(defico,'NBPT' ,izone )
-        jdecne = mminfi(defico,'JDECNE',izone )
+        nbpt = mminfi(ds_contact%sdcont_defi,'NBPT' ,izone )
+        jdecne = mminfi(ds_contact%sdcont_defi,'JDECNE',izone )
 !
 ! ----- MODE VERIF: ON SAUTE LES POINTS
 !
-        lveri = mminfl(defico,'VERIF',izone )
+        lveri = mminfl(ds_contact%sdcont_defi,'VERIF',izone )
         if (lveri) then
             ip = ip + nbpt
             goto 25
@@ -133,12 +124,10 @@ subroutine cfapre(noma, defico, resoco, newgeo, sdappa,&
 !
 ! ----- COEFFICIENTS
 !
-        call cfmmco(defico, resoco, izone, 'E_N', 'L',&
-                    coefpn)
-        call cfmmco(defico, resoco, izone, 'E_T', 'L',&
-                    coefpt)
-        coefff = mminfr(defico,'COEF_COULOMB' ,izone )
-        coefte = mminfr(defico,'COEF_MATR_FROT' ,izone )
+        call cfmmco(ds_contact, izone, 'E_N', 'L', coefpn)
+        call cfmmco(ds_contact, izone, 'E_T', 'L', coefpt)
+        coefff = mminfr(ds_contact%sdcont_defi,'COEF_COULOMB' ,izone )
+        coefte = mminfr(ds_contact%sdcont_defi,'COEF_MATR_FROT' ,izone )
 !
 ! ----- BOUCLE SUR LES NOEUDS DE CONTACT
 !
@@ -151,7 +140,7 @@ subroutine cfapre(noma, defico, resoco, newgeo, sdappa,&
 !
 ! ------- INDICE ABSOLU DANS LE MAILLAGE DU NOEUD
 !
-            call cfnumn(defico, 1, posnoe(1), numnoe(1))
+            call cfnumn(ds_contact%sdcont_defi, 1, posnoe(1), numnoe(1))
 !
 ! ------- COORDONNEES DU NOEUD
 !
@@ -174,7 +163,7 @@ subroutine cfapre(noma, defico, resoco, newgeo, sdappa,&
 !
             if (typapp .lt. 0) then
                 if (niv .ge. 2) then
-                    call cfappi(noma, defico, nomnoe, typapp, entapp)
+                    call cfappi(noma, ds_contact%sdcont_defi, nomnoe, typapp, entapp)
                 endif
                 goto 35
             else if (typapp.eq.1) then
@@ -183,7 +172,7 @@ subroutine cfapre(noma, defico, resoco, newgeo, sdappa,&
 ! --------- LIAISON DE CONTACT EFFECTIVE
                 iliai = iliai + 1
 ! --------- CALCUL LIAISON
-                call cfapno(noma, newgeo, defico, resoco, lctfd,&
+                call cfapno(noma, newgeo, ds_contact, lctfd,&
                             lctf3d, ndimg, izone, posnoe(1), numnoe(1),&
                             coorne, posnom(1), tau1m, tau2m, iliai)
 !
@@ -193,7 +182,7 @@ subroutine cfapre(noma, defico, resoco, newgeo, sdappa,&
 ! --------- LIAISON DE CONTACT EFFECTIVE
                 iliai = iliai + 1
 ! --------- CALCUL LIAISON
-                call cfapma(noma, newgeo, defico, resoco, lctfd,&
+                call cfapma(noma, newgeo, ds_contact, lctfd,&
                             lctf3d, ndimg, izone, posnoe(1), numnoe(1),&
                             coorne, posmam, ksipr1, ksipr2, tau1m,&
                             tau2m, iliai)
@@ -203,12 +192,12 @@ subroutine cfapre(noma, defico, resoco, newgeo, sdappa,&
 !
 ! ------- CALCUL DU JEU FICTIF DE LA ZONE
 !
-            call cfdist(defico, izone, posmae, coorne, instan, &
+            call cfdist(ds_contact, izone, posmae, coorne, instan, &
                         gap_user, node_slav_indx_ = posnoe(1))
 !
 ! ------- CARACTERISTIQUES DE LA LIAISON POUR LA ZONE
 !
-            call cfparz(resoco, iliai, coefff, coefpn, coefpt,&
+            call cfparz(ds_contact, iliai, coefff, coefpn, coefpt,&
                         coefte, gap_user, izone, ip, numnoe(1),&
                         posnoe(1))
 !
@@ -226,9 +215,8 @@ subroutine cfapre(noma, defico, resoco, newgeo, sdappa,&
 ! --- NOMBRE DE LIAISONS EFFECTIVES
 !
     nbliai = iliai
-    call cfecrd(resoco, 'NBLIAI', nbliai)
-    nesmax = cfdisd(resoco,'NESMAX')
+    call cfecrd(ds_contact%sdcont_solv, 'NBLIAI', nbliai)
+    nesmax = cfdisd(ds_contact%sdcont_solv,'NESMAX')
     ASSERT(nbliai.le.nesmax)
 !
-    call jedema()
 end subroutine

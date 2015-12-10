@@ -1,7 +1,16 @@
-subroutine mmtanr(noma, ndimg, defico, resoco, izone,&
-                  lexfro, posnoe, ksi1, ksi2, posmam,&
-                  nummam, tau1m, tau2m, tau1, tau2)
-! ----------------------------------------------------------------------
+subroutine mmtanr(mesh, model_ndim, ds_contact, i_zone,&
+                  lexfro, node_slav_indx, ksi1, ksi2, elem_mast_indx,&
+                  elem_mast_nume, tau1m, tau2m, tau1, tau2)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/cftanr.h"
+#include "asterfort/mmexfr.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,17 +29,12 @@ subroutine mmtanr(noma, ndimg, defico, resoco, izone,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "asterfort/assert.h"
-#include "asterfort/cftanr.h"
-#include "asterfort/mmexfr.h"
-    character(len=8) :: noma
-    integer :: izone
-    integer :: ndimg
-    integer :: posnoe, posmam, nummam
+    character(len=8) :: mesh
+    integer :: i_zone
+    integer :: model_ndim
+    integer :: node_slav_indx, elem_mast_indx, elem_mast_nume
     real(kind=8) :: ksi1, ksi2
-    character(len=24) :: defico, resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
     real(kind=8) :: tau1m(3), tau2m(3)
     real(kind=8) :: tau1(3), tau2(3)
     aster_logical :: lexfro
@@ -43,10 +47,8 @@ subroutine mmtanr(noma, ndimg, defico, resoco, izone,&
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  NOMA   : NOM DU MAILLAGE
-! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
-! IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  NDIMG  : DIMENSION DE L'ESPACE
 ! IN  IZONE  : ZONE DE CONTACT ACTIVE
 ! IN  LEXFRO : LE POINT D'INTEGRATION DOIT-IL ETRE EXCLUS DU FROTTEMENT?
@@ -66,22 +68,18 @@ subroutine mmtanr(noma, ndimg, defico, resoco, izone,&
 !
 ! ----------------------------------------------------------------------
 !
-! --- INITIALISATIONS
-!
-    if (nummam .le. 0) then
-        ASSERT(.false.)
-    endif
+    ASSERT(elem_mast_nume.gt.0)
 !
 ! --- CHOIX DE LA NORMALE
 !
-    call cftanr(noma, ndimg, defico, resoco, izone,&
-                posnoe, 'MAIL', posmam, nummam, ksi1,&
+    call cftanr(mesh, model_ndim, ds_contact, i_zone,&
+                node_slav_indx, 'MAIL', elem_mast_indx, elem_mast_nume, ksi1,&
                 ksi2, tau1m, tau2m, tau1, tau2)
 !
 ! --- REPERE LOCAL TANGENT AVEC SANS_GROUP_NO_FR -> FIXE
 !
     if (lexfro) then
-        call mmexfr(noma, defico, izone, posmam, tau1,&
+        call mmexfr(mesh, ds_contact, i_zone, elem_mast_indx, tau1,&
                     tau2)
     endif
 !

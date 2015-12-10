@@ -1,5 +1,5 @@
-subroutine cfconv(noma  , sdstat, ds_print, sderro, defico,&
-                  resoco, solalg)
+subroutine cfconv(mesh  , sdstat, ds_print, sderro, ds_contact,&
+                  solalg)
 !
 use NonLin_Datastructure_type
 !
@@ -38,9 +38,8 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=8), intent(in) :: noma
-    character(len=24), intent(in) :: defico
-    character(len=24), intent(in) :: resoco
+    character(len=8), intent(in) :: mesh
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=24), intent(in) :: sderro
     character(len=24), intent(in) :: sdstat
     character(len=19), intent(in) :: solalg(*)
@@ -58,8 +57,7 @@ implicit none
 ! IO  ds_print         : datastructure for printing parameters
 ! IN  SDSTAT : SD STATISTIQUES
 ! IN  SDERRO : GESTION DES ERREURS
-! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
-! IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
 !
 ! ----------------------------------------------------------------------
@@ -98,11 +96,11 @@ implicit none
 !
 ! --- ACCES SD CONTACT
 !
-    clreac = resoco(1:14)//'.REAL'
+    clreac = ds_contact%sdcont_solv(1:14)//'.REAL'
 !
 ! --- FONCTIONNALISTES ACTIVEES
 !
-    lallv = cfdisl(defico,'ALL_VERIF')
+    lallv = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF')
 !
 ! --- CONVERGENCE
 !
@@ -119,7 +117,7 @@ implicit none
 !
         if (cvresi) then
             if (.not.dvpfix) then
-                call cfcgeo(noma  , defico, resoco, solalg, dvfixg,&
+                call cfcgeo(mesh  , ds_contact, solalg, dvfixg,&
                             ctderg, geonoe, geoval)
                 zl(jclrea+1-1) = dvfixg
                 zl(jclrea+4-1) = ctderg

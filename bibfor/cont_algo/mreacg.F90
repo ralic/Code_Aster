@@ -1,4 +1,6 @@
-subroutine mreacg(mesh, sdcont_solv, field_update_)
+subroutine mreacg(mesh, ds_contact, field_update_)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -24,7 +26,7 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
-    character(len=24), intent(in) :: sdcont_solv
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=*), optional, intent(in) :: field_update_
 !
 ! --------------------------------------------------------------------------------------------------
@@ -36,7 +38,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  mesh             : name of mesh
-! In  sdcont_solv      : name of contact solving datastructure
+! In  ds_contact       : datastructure for contact management
 ! In  field_update     : displacement field to use for update. If not present, using DEPGEO
 !
 ! --------------------------------------------------------------------------------------------------
@@ -55,8 +57,8 @@ implicit none
 ! - Name of objects
 !
     oldgeo = mesh(1:8)//'.COORDO'
-    depgeo = sdcont_solv(1:14)//'.DEPG'
-    newgeo = sdcont_solv(1:14)//'.NEWG'
+    depgeo = ds_contact%sdcont_solv(1:14)//'.DEPG'
+    newgeo = ds_contact%sdcont_solv(1:14)//'.NEWG'
     if (present(field_update_)) then
         field_update = field_update_
     else

@@ -1,4 +1,11 @@
-subroutine xmdeco(resoco)
+subroutine xmdeco(ds_contact)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterfort/copisd.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,10 +22,8 @@ subroutine xmdeco(resoco)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/copisd.h"
-    character(len=24) :: resoco
+!
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! ----------------------------------------------------------------------
 !
@@ -28,29 +33,21 @@ subroutine xmdeco(resoco)
 !
 ! ----------------------------------------------------------------------
 !
-!
-! IN  DEFICO : SD DE DEFINITION DU CONTACT
-! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
-!
-!
-!
+! In  ds_contact       : datastructure for contact management
 !
     character(len=19) :: xindco, xmemco, xindcp, xmemcp
     character(len=19) :: xseuco, xseucp, xcohes, xcohep
 !
 ! ----------------------------------------------------------------------
 !
-!
-! --- REACTUALISATION DES STRUCTURES DE DONNEES DE CONTACT
-!
-    xindco = resoco(1:14)//'.XFIN'
-    xmemco = resoco(1:14)//'.XMEM'
-    xindcp = resoco(1:14)//'.XFIP'
-    xmemcp = resoco(1:14)//'.XMEP'
-    xseuco = resoco(1:14)//'.XFSE'
-    xseucp = resoco(1:14)//'.XFSP'
-    xcohes = resoco(1:14)//'.XCOH'
-    xcohep = resoco(1:14)//'.XCOP'
+    xindco = ds_contact%sdcont_solv(1:14)//'.XFIN'
+    xmemco = ds_contact%sdcont_solv(1:14)//'.XMEM'
+    xindcp = ds_contact%sdcont_solv(1:14)//'.XFIP'
+    xmemcp = ds_contact%sdcont_solv(1:14)//'.XMEP'
+    xseuco = ds_contact%sdcont_solv(1:14)//'.XFSE'
+    xseucp = ds_contact%sdcont_solv(1:14)//'.XFSP'
+    xcohes = ds_contact%sdcont_solv(1:14)//'.XCOH'
+    xcohep = ds_contact%sdcont_solv(1:14)//'.XCOP'
     call copisd('CHAMP_GD', 'V', xindco, xindcp)
     call copisd('CHAMP_GD', 'V', xmemco, xmemcp)
     call copisd('CHAMP_GD', 'V', xseuco, xseucp)

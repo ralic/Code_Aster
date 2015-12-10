@@ -1,10 +1,12 @@
-subroutine mm_cycl_trait(sdcont_solv   , i_cont_poin, &
+subroutine mm_cycl_trait(ds_contact    , i_cont_poin, &
                          coef_cont_prev, &
                          coef_frot_prev, pres_frot_prev, dist_frot_prev, &
                          pres_frot_curr, dist_frot_curr, &
                          indi_cont_eval, indi_frot_eval, &
                          indi_cont_curr, coef_cont_curr, &
                          indi_frot_curr, coef_frot_curr)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -37,7 +39,7 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=24), intent(in) :: sdcont_solv
+    type(NL_DS_Contact), intent(in) :: ds_contact
     integer, intent(in) :: i_cont_poin
     real(kind=8), intent(in) :: coef_cont_prev
     real(kind=8), intent(in) :: coef_frot_prev
@@ -60,7 +62,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sdcont_solv      : name of contact solving datastructure
+! In  ds_contact       : datastructure for contact management
 ! In  i_cont_poin      : contact point index
 ! In  coef_cont_prev   : previous augmented ratio for contact
 ! In  coef_frot_prev   : previous augmented ratio for friction
@@ -87,7 +89,7 @@ implicit none
 !
 ! - Access to cycling objects
 !
-    sdcont_cyceta = sdcont_solv(1:14)//'.CYCETA'
+    sdcont_cyceta = ds_contact%sdcont_solv(1:14)//'.CYCETA'
     call jeveuo(sdcont_cyceta, 'E' , vi = p_sdcont_cyceta)
 !
 ! - No specific treatment

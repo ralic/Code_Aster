@@ -1,7 +1,19 @@
-subroutine cfnors(noma, defico, resoco, posmai, typent,&
+subroutine cfnors(noma, ds_contact, posmai, typent,&
                   nument, lpoutr, lpoint, ksi1, ksi2,&
                   lliss, itype, vector, tau1, tau2,&
                   lnfixe)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfnord.h"
+#include "asterfort/copnor.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,20 +33,8 @@ subroutine cfnors(noma, defico, resoco, posmai, typent,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/cfnord.h"
-#include "asterfort/copnor.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/utmess.h"
-!
     integer :: posmai
-    character(len=24) :: defico, resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
     real(kind=8) :: ksi1, ksi2
     character(len=8) :: noma
     character(len=4) :: typent
@@ -72,8 +72,7 @@ subroutine cfnors(noma, defico, resoco, posmai, typent,&
 ! IN  VECTOR : VALEUR DE LA NORMALE FIXE OU VECT_Y
 ! IN  KSI1   : COORDONNEE X DU POINT PROJETE
 ! IN  KSI2   : COORDONNEE Y DU POINT PROJETE
-! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
-! IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
+! In  ds_contact       : datastructure for contact management
 ! I/O TAU1   : PREMIERE TANGENTE LOCALE AU POINT PROJETE
 ! I/O TAU2   : SECONDE TANGENTE LOCALE AU POINT PROJETE
 ! OUT LNFIXE : VAUT .TRUE. SI NORMALE='FIXE' OU 'VECT_Y'
@@ -86,7 +85,6 @@ subroutine cfnors(noma, defico, resoco, posmai, typent,&
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
 !
 ! --- NOM DE L'ENTITE (NOEUD OU MAILLE)
 !
@@ -132,13 +130,11 @@ subroutine cfnors(noma, defico, resoco, posmai, typent,&
             ASSERT(.false.)
         endif
         if (typent .eq. 'MAIL') then
-            call copnor(noma, defico, resoco, posmai, ksi1,&
+            call copnor(noma, ds_contact, posmai, ksi1,&
                         ksi2, tau1, tau2)
         else
             ASSERT(.false.)
         endif
     endif
-!
-    call jedema()
 !
 end subroutine

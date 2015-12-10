@@ -16,15 +16,16 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
+    subroutine xmele1(mesh  , model, ds_contact, ligrel, nfiss,&
                       chelem, param, option)
-        character(len=8) :: noma
-        character(len=8) :: modele
-        character(len=24) :: defico
-        character(len=19) :: ligrel
-        integer :: nfiss
-        character(len=19) :: chelem
-        character(len=*) :: param
-        character(len=*) :: option
+        use NonLin_Datastructure_type
+        character(len=8), intent(in) :: mesh
+        character(len=8), intent(in) :: model
+        type(NL_DS_Contact), intent(in) :: ds_contact
+        integer, intent(in) :: nfiss
+        character(len=19), intent(in) :: chelem
+        character(len=19), intent(in) :: ligrel
+        character(len=*), intent(in) :: param
+        character(len=*), intent(in) :: option
     end subroutine xmele1
 end interface

@@ -16,9 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xmligr(noma, nomo, resoco)
-        character(len=8) :: noma
-        character(len=8) :: nomo
-        character(len=24) :: resoco
+    subroutine xmligr(mesh, model, ds_contact)
+        use NonLin_Datastructure_type
+        character(len=8), intent(in) :: model
+        character(len=8), intent(in) :: mesh
+        type(NL_DS_Contact), intent(in) :: ds_contact
     end subroutine xmligr
 end interface

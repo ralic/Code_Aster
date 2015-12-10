@@ -60,7 +60,6 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: sdcont_defi, sdcont_solv
     integer :: ifm, niv
     character(len=8) :: model, mesh
     integer :: zbouc
@@ -85,39 +84,37 @@ implicit none
 !
 ! - Initializations
 !
-    sdcont_defi   = ds_contact%sdcont_defi
-    sdcont_solv   = ds_contact%sdcont_solv
     nume_dof_frot = '&&CFMXSD.NUMDF'
-    nb_cont_zone  = cfdisi(sdcont_defi,'NZOCO')
+    nb_cont_zone  = cfdisi(ds_contact%sdcont_defi,'NZOCO')
     model         = model_
     mesh          = mesh_
 !
 ! - Contact method
 !
-    l_cont_xfem = cfdisl(sdcont_defi,'FORMUL_XFEM')
-    l_cont_cont = cfdisl(sdcont_defi,'FORMUL_CONTINUE')
-    l_cont_disc = cfdisl(sdcont_defi,'FORMUL_DISCRETE')
-    l_cont_allv = cfdisl(sdcont_defi,'ALL_VERIF')
+    l_cont_xfem = cfdisl(ds_contact%sdcont_defi,'FORMUL_XFEM')
+    l_cont_cont = cfdisl(ds_contact%sdcont_defi,'FORMUL_CONTINUE')
+    l_cont_disc = cfdisl(ds_contact%sdcont_defi,'FORMUL_DISCRETE')
+    l_cont_allv = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF')
 !
 ! - Create CONT_NOEU datastructure
 !
-    call cfmxr0(sdcont_defi, sdcont_solv, mesh)
+    call cfmxr0(ds_contact, mesh)
 !
 ! - Create pairing datastructure
 !
     if (l_cont_cont.or.l_cont_disc) then
-        call cfmmap(mesh, sdcont_defi, sdcont_solv)
+        call cfmmap(mesh, ds_contact)
     endif
 !
 ! - Create loop counters datastructure
 !
     zbouc         = cfmmvd('ZBOUC')
-    sdcont_mboucl = sdcont_solv(1:14)//'.MBOUCL'
+    sdcont_mboucl = ds_contact%sdcont_solv(1:14)//'.MBOUCL'
     call wkvect(sdcont_mboucl, 'V V I', zbouc, vi = v_sdcont_mboucl)
 !
 ! - Create datastructure for datastructure names
 !
-    sdcont_nosdco = sdcont_solv(1:14)//'.NOSDCO'
+    sdcont_nosdco = ds_contact%sdcont_solv(1:14)//'.NOSDCO'
     call wkvect(sdcont_nosdco, 'V V K24', 4, vk24 = v_sdcont_nosdco)
     v_sdcont_nosdco(1) = nume_dof_frot
     v_sdcont_nosdco(2) = ds_contact%ligrel_elem_cont
@@ -127,7 +124,7 @@ implicit none
 ! - Create datastructure for renumbering flag
 !
     if (l_cont_cont) then
-        sdcont_crnudd = sdcont_solv(1:14)//'.NUDD'
+        sdcont_crnudd = ds_contact%sdcont_solv(1:14)//'.NUDD'
         call wkvect(sdcont_crnudd, 'V V L', 1, vl = v_sdcont_crnudd)
         if (l_cont_allv) then
             v_sdcont_crnudd(1) = .false.
@@ -138,7 +135,7 @@ implicit none
 !
 ! - Create datastructure for geometric loop parameter
 !
-    sdcont_maxdep = sdcont_solv(1:14)//'.MAXD'
+    sdcont_maxdep = ds_contact%sdcont_solv(1:14)//'.MAXD'
     call wkvect(sdcont_maxdep, 'V V R', 1, vr = v_sdcont_maxdep)
     v_sdcont_maxdep(1) = -1.d0
 !
@@ -149,25 +146,25 @@ implicit none
 ! ----- Create datastructures for DISCRETE/CONTINUE methods
 !
         if (l_cont_cont.or.l_cont_disc) then
-            call cfmmma(sdcont_defi, sdcont_solv)
+            call cfmmma(ds_contact)
         endif
 !
 ! ----- Create datastructures for DISCRETE method
 !
         if (l_cont_disc) then
-            call cfcrsd(mesh, nume_dof, sdcont_defi, sdcont_solv)
+            call cfcrsd(mesh, nume_dof, ds_contact)
         endif
 !
 ! ----- Create datastructures for CONTINUE method
 !
         if (l_cont_cont) then
-            call cfmxme(nume_dof, sddyna, sdcont_defi, sdcont_solv)
+            call cfmxme(nume_dof, sddyna, ds_contact)
         endif
 !
 ! ----- Create datastructures for XFEM method
 !
         if (l_cont_xfem) then
-            call xxmxme(mesh, model, list_func_acti, sdcont_defi, sdcont_solv)
+            call xxmxme(mesh, model, list_func_acti, ds_contact)
         endif
     endif
 !

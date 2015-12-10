@@ -1,5 +1,5 @@
-subroutine nmstat(phase      , list_func_acti, sdstat, sdtime, ds_print,&
-                  sdcont_defi)
+subroutine nmstat(phase     , list_func_acti, sdstat, sdtime, ds_print,&
+                  ds_contact)
 !
 use NonLin_Datastructure_type
 !
@@ -37,7 +37,7 @@ implicit none
     character(len=1), intent(in) :: phase
     character(len=24), intent(in) :: sdstat
     character(len=24), intent(in) :: sdtime
-    character(len=24), intent(in) :: sdcont_defi
+    type(NL_DS_Contact), intent(in) :: ds_contact
     integer, intent(in) :: list_func_acti(*)
     type(NL_DS_Print), intent(in) :: ds_print
 !
@@ -56,7 +56,7 @@ implicit none
 !                          'T' on all transient
 ! In  sdtime           : datastructure for timers management
 ! In  sdstat           : datastructure for statistics
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  ds_contact       : datastructure for contact management
 ! In  list_func_acti   : list of active functionnalities
 !
 ! --------------------------------------------------------------------------------------------------
@@ -123,8 +123,8 @@ implicit none
     lnewtg = isfonc(list_func_acti,'GEOM_NEWTON')
     lpost = lmvib.or.lflam.or.lcont
     if (lcont) then
-        lallv = cfdisl(sdcont_defi,'ALL_VERIF')    
-        lfrot = cfdisl(sdcont_defi,'FROTTEMENT')
+        lallv = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF')    
+        lfrot = cfdisl(ds_contact%sdcont_defi,'FROTTEMENT')
     else
         lallv = .false.
         lfrot = .false.

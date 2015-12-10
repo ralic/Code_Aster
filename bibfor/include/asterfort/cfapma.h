@@ -18,14 +18,14 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine cfapma(noma, newgeo, defico, resoco, lctfd,&
+    subroutine cfapma(noma, newgeo, ds_contact, lctfd,&
                       lctf3d, ndimg, izone, posnoe, numnoe,&
                       coorne, posmam, ksipr1, ksipr2, tau1m,&
                       tau2m, iliai)
+        use NonLin_Datastructure_type
         character(len=8) :: noma
         character(len=19) :: newgeo
-        character(len=24) :: defico
-        character(len=24) :: resoco
+        type(NL_DS_Contact), intent(in) :: ds_contact
         aster_logical :: lctfd
         aster_logical :: lctf3d
         integer :: ndimg

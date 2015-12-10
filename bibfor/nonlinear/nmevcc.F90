@@ -1,5 +1,20 @@
-subroutine nmevcc(sddisc      , nume_inst, sdcont_defi, sdcont_solv, i_echec,&
-                  i_echec_acti)
+subroutine nmevcc(sddisc, nume_inst, ds_contact, i_echec, i_echec_acti)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/diinst.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/utdidt.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,21 +34,11 @@ subroutine nmevcc(sddisc      , nume_inst, sdcont_defi, sdcont_solv, i_echec,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/cfmmvd.h"
-#include "asterfort/diinst.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/utdidt.h"
-    character(len=24) :: sdcont_defi, sdcont_solv
-    integer :: i_echec, i_echec_acti, nume_inst
-    character(len=19) :: sddisc
+    character(len=19), intent(in) :: sddisc
+    integer, intent(in) :: nume_inst
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    integer, intent(in) :: i_echec
+    integer, intent(out) :: i_echec_acti
 !
 ! ----------------------------------------------------------------------
 !
@@ -43,11 +48,9 @@ subroutine nmevcc(sddisc      , nume_inst, sdcont_defi, sdcont_solv, i_echec,&
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! In  sddisc           : datastructure for time discretization TEMPORELLE
+! In  ds_contact       : datastructure for contact management
 ! IN  NUMINS : NUMERO D'INSTANT
-! IN  DEFICO : SD DE DEFINITION DU CONTACT
-! IN  RESOCO : SD DE RESOLUTION DU CONTACT
 ! IN  IECHEC : OCCURRENCE DE L'ECHEC
 ! OUT IEVDAC : VAUT IECHEC SI EVENEMENT DECLENCHE
 !                   0 SINON
@@ -68,30 +71,33 @@ subroutine nmevcc(sddisc      , nume_inst, sdcont_defi, sdcont_solv, i_echec,&
 !
     call jemarq()
     call infdbg('MECA_NON_LINE', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> ... COLLISION'
     endif
 !
-! --- INITIALISATIONS
+! - Initializations
 !
     i_echec_acti = 0
-    levent = .false.
+    levent       = .false.
+!
+! - Get contact parameters
+!
+    ntpc = cfdisi(ds_contact%sdcont_defi,'NTPC')
+!
+! - Get time dicretization parameters
+!
     ASSERT(nume_inst.gt.0)
-!
-! --- PARAMETRES
-!
-    ntpc = cfdisi(sdcont_defi,'NTPC')
     instap = diinst(sddisc,nume_inst)
     instam = diinst(sddisc,nume_inst-1)
+!
+! - Get event parameters
+!
     call utdidt('L', sddisc, 'ECHE', 'SUBD_DUREE', index_ = i_echec,&
                 valr_ = subdur)
 !
-! --- ACCES OBJETS DU CONTACT
+! - Access to contact datastructures
 !
-    ctevco = sdcont_solv(1:14)//'.EVENCO'
+    ctevco = ds_contact%sdcont_solv(1:14)//'.EVENCO'
     call jeveuo(ctevco, 'E', jctevc)
     zeven = cfmmvd('ZEVEN')
 !

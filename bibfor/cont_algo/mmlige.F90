@@ -1,14 +1,17 @@
-subroutine mmlige(mesh      , sdcont_defi, sdcont_solv, v_list_elem, nb_cont_type,&
-                  v_cnt_cont, v_cnt_frot , nt_node    , nb_grel)
+subroutine mmlige(mesh      , ds_contact, v_list_elem, nb_cont_type, v_cnt_cont,&
+                  v_cnt_frot, nt_node   , nb_grel    , nb_cont_elem)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/cfdisi.h"
+#include "asterfort/cfdisl.h"
 #include "asterfort/cfmmvd.h"
 #include "asterfort/infdbg.h"
+#include "asterfort/jelira.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
@@ -34,14 +37,14 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
-    character(len=24), intent(in) :: sdcont_defi
-    character(len=24), intent(in) :: sdcont_solv
+    type(NL_DS_Contact), intent(in) :: ds_contact
     integer, intent(out), pointer :: v_list_elem(:)
     integer, intent(out) :: nb_cont_type
     integer, intent(out), pointer :: v_cnt_cont(:)
     integer, intent(out), pointer :: v_cnt_frot(:)
     integer, intent(out) :: nt_node
     integer, intent(out) :: nb_grel
+    integer, intent(out) :: nb_cont_elem
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,27 +55,28 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  mesh             : name of mesh
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
-! In  sdcont_solv      : name of contact solving datastructure
+! In  ds_contact       : datastructure for contact management
 ! Out v_list_elem      : pointer for list of late elements
-!      for v[1:nb_cont_poin,1] : index in element catalog for late element contact
-!      for v[1:nb_cont_poin,2] : number of nodes for late element contact
+!      for v[1:nb_cont_elem,1] : index in element catalog for late element contact
+!      for v[1:nb_cont_elem,2] : number of nodes for late element contact
 ! Out nb_cont_type     : total number of contact elements defined
 ! Out v_cnt_cont       : flag for contact element for each type  [1:nb_cont_type]
 ! Out v_cnt_frot       : flag for friction element for each type [1:nb_cont_type]
 ! Out nt_node          : total number of nodes
 ! Out nb_grel          : number of groups of elements (GREL)
+! Out nb_cont_elem     : number of contact elements
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_cont_poin, nb_cont_poin, i_cont_type
+    integer :: i_cont_elem, i_cont_type, i_cont_poin
+    integer :: nb_node_elem, nb_cont_poin
     integer :: elem_mast_nume, elem_slav_nume, i_zone
     integer :: model_ndim
-    integer :: nb_node_elem, cont_geom_nume, cont_indx
+    integer :: cont_geom_nume, cont_indx
     character(len=8) :: slav_type_name, mast_type_name
     integer :: slav_type_nume, mast_type_nume
     integer :: ifm, niv
-    aster_logical :: l_frot
+    aster_logical :: l_frot, l_cont_cont
     integer, pointer :: v_mesh_typmail(:) => null()
     integer :: ztabf
     character(len=24) :: sdcont_tabfin
@@ -84,12 +88,19 @@ implicit none
 !
 ! - Initializations
 !
-    nt_node = 0
-    nb_grel = 0
+    nt_node      = 0
+    nb_grel      = 0
+    nb_cont_elem = 0
+!
+! - Get contact parameters
+!
+    nb_cont_poin = cfdisi(ds_contact%sdcont_defi, 'NTPC')
+    model_ndim   = cfdisi(ds_contact%sdcont_defi, 'NDIM')
+    l_cont_cont  = cfdisl(ds_contact%sdcont_defi, 'FORMUL_CONTINUE')
 !
 ! - Datastructure for contact solving
 !
-    sdcont_tabfin = sdcont_solv(1:14)//'.TABFIN'
+    sdcont_tabfin = ds_contact%sdcont_solv(1:14)//'.TABFIN'
     call jeveuo(sdcont_tabfin, 'L', vr = v_sdcont_tabfin)
     ztabf = cfmmvd('ZTABF')
 !
@@ -97,15 +108,14 @@ implicit none
 !
     call jeveuo(mesh//'.TYPMAIL', 'L', vi = v_mesh_typmail)
 !
-! - Parameters
+! - Get number of contact elements
 !
-    nb_cont_poin = cfdisi(sdcont_defi,'NTPC')
-    model_ndim   = cfdisi(sdcont_defi,'NDIM')
+    nb_cont_elem = nb_cont_poin
 !
 ! - Print
 !
     if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> ... Total number of contact elements :', nb_cont_poin
+        write (ifm,*) '<CONTACT> ... Total number of contact elements :', nb_cont_elem
     endif
 !
 ! - Total number of late elements defined
@@ -116,21 +126,22 @@ implicit none
 !
 ! - List of contact elements
 !
-    AS_ALLOCATE(vi = v_list_elem, size = 2*nb_cont_poin)
+    AS_ALLOCATE(vi = v_list_elem, size = 2*nb_cont_elem)
 !
 ! - Loop on contact points (=contact elements)
 !
-    do i_cont_poin = 1, nb_cont_poin
+    do i_cont_elem = 1, nb_cont_elem
 !
-! ----- Parameters
+! ----- Get parameters
 !
-        i_zone = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+14))
-        l_frot = mminfl(sdcont_defi,'FROTTEMENT_ZONE', i_zone )
-!
-! ----- Current slave/master element
-!
+        i_cont_poin    = i_cont_elem
+        i_zone         = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+14))
+        l_frot         = mminfl(ds_contact%sdcont_defi,'FROTTEMENT_ZONE', i_zone )
         elem_slav_nume = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+2))
         elem_mast_nume = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+3))
+!
+! ----- Type of slave/master element
+!  
         slav_type_nume = v_mesh_typmail(elem_slav_nume)
         mast_type_nume = v_mesh_typmail(elem_mast_nume)
         call jenuno(jexnum('&CATA.TM.NOMTM', slav_type_nume), slav_type_name)
@@ -138,10 +149,13 @@ implicit none
 !
 ! ----- Contact element
 !
-        call mmelem_data(cont_indx     , model_ndim , slav_type_name, mast_type_name, nb_node_elem,&
-                         cont_geom_nume)
-        v_list_elem(2*(i_cont_poin-1)+1) = cont_geom_nume
-        v_list_elem(2*(i_cont_poin-1)+2) = nb_node_elem
+        call mmelem_data(cont_indx       = cont_indx     ,&
+                         model_ndim_     = model_ndim    ,&
+                         elem_1_         = slav_type_name, elem_2_ = mast_type_name,&
+                         nb_node_elem_   = nb_node_elem  ,&
+                         cont_geom_nume_ = cont_geom_nume)
+        v_list_elem(2*(i_cont_elem-1)+1) = cont_geom_nume
+        v_list_elem(2*(i_cont_elem-1)+2) = nb_node_elem
 !
 ! ----- Friction/contact count
 !

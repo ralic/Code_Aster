@@ -16,11 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmcofr(noma, depplu, depdel, ddepla, solveu,&
+    subroutine nmcofr(mesh, depplu, depdel, ddepla, solveu,&
                       numedd, matass, ds_contact, iterat,&
                       resigr, sdstat, sdtime, ctccvg,instan)
         use NonLin_Datastructure_type
-        character(len=8) :: noma
+        character(len=8) :: mesh
         character(len=19) :: depplu
         character(len=19) :: depdel
         character(len=19) :: ddepla

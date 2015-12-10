@@ -1,7 +1,25 @@
-subroutine cfapma(noma, newgeo, defico, resoco, lctfd,&
+subroutine cfapma(noma, newgeo, ds_contact, lctfd,&
                   lctf3d, ndimg, izone, posnoe, numnoe,&
                   coorne, posmam, ksipr1, ksipr2, tau1m,&
                   tau2m, iliai)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterc/r8prem.h"
+#include "asterfort/cfaddm.h"
+#include "asterfort/cfcoor.h"
+#include "asterfort/cfnewj.h"
+#include "asterfort/cfnumm.h"
+#include "asterfort/cfposn.h"
+#include "asterfort/cfreli.h"
+#include "asterfort/cftanr.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mmnorm.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,27 +39,8 @@ subroutine cfapma(noma, newgeo, defico, resoco, lctfd,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/r8prem.h"
-#include "asterfort/cfaddm.h"
-#include "asterfort/cfcoor.h"
-#include "asterfort/cfnewj.h"
-#include "asterfort/cfnumm.h"
-#include "asterfort/cfposn.h"
-#include "asterfort/cfreli.h"
-#include "asterfort/cftanr.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/mmnorm.h"
-#include "asterfort/utmess.h"
-!
     character(len=8) :: noma
-    character(len=24) :: defico, resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19) :: newgeo
     real(kind=8) :: coorne(3), ksipr1, ksipr2
     real(kind=8) :: tau1m(3), tau2m(3)
@@ -62,8 +61,7 @@ subroutine cfapma(noma, newgeo, defico, resoco, lctfd,&
 !
 ! IN  NOMA   : NOM DU MAILLAGE
 ! IN  NEWGEO : NOUVELLE GEOMETRIE (AVEC DEPLACEMENT GEOMETRIQUE)
-! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
-! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  LCTFD  : FROTTEMENT
 ! IN  LCTF3D : FROTTEMENT EN 3D
 ! IN  NDIMG  : DIMENSION DE L'ESPACE
@@ -82,9 +80,7 @@ subroutine cfapma(noma, newgeo, defico, resoco, lctfd,&
 ! IN  ILIAI  : INDICE DE LA LIAISON COURANTE
 !
 !
-!
-!
-    integer :: ifm, niv
+
     real(kind=8) :: tau1(3), tau2(3)
     real(kind=8) :: norm(3), noor
     real(kind=8) :: jeu
@@ -95,26 +91,24 @@ subroutine cfapma(noma, newgeo, defico, resoco, lctfd,&
     real(kind=8) :: coefno(9)
 !
 ! ----------------------------------------------------------------------
-!
-    call jemarq()
-    call infdbg('CONTACT', ifm, niv)
+
 !
 ! --- NUMERO DE LA MAILLE MAITRE
 !
-    call cfnumm(defico, posmam, nummam)
+    call cfnumm(ds_contact%sdcont_defi, posmam, nummam)
 !
 ! --- CARACTERISTIQUES DE LA MAILLE MAITRE
 !
-    call cfposn(defico, posmam, posnsm, nbnom)
+    call cfposn(ds_contact%sdcont_defi, posmam, posnsm, nbnom)
 !
 ! --- COORDONNEES PROJECTION DU NOEUD ESCLAVE SUR LA MAILLE MAITRE
 !
-    call cfcoor(noma, defico, newgeo, posmam, ksipr1,&
+    call cfcoor(noma, ds_contact%sdcont_defi, newgeo, posmam, ksipr1,&
                 ksipr2, coornp)
 !
 ! --- RE-DEFINITION BASE TANGENTE SUIVANT OPTIONS
 !
-    call cftanr(noma, ndimg, defico, resoco, izone,&
+    call cftanr(noma, ndimg, ds_contact, izone,&
                 posnoe, 'MAIL', posmam, nummam, ksipr1,&
                 ksipr2, tau1m, tau2m, tau1, tau2)
 !
@@ -137,9 +131,8 @@ subroutine cfapma(noma, newgeo, defico, resoco, lctfd,&
 !
 ! --- AJOUT DE LA LIAISON NODALE
 !
-    call cfaddm(resoco, lctfd, lctf3d, posnoe, iliai,&
+    call cfaddm(ds_contact, lctfd, lctf3d, posnoe, iliai,&
                 ndimg, nbnom, posnsm, coefno, tau1,&
                 tau2, norm, jeu, coornp)
 !
-    call jedema()
 end subroutine

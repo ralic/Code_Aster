@@ -1,6 +1,17 @@
-subroutine cfparz(resoco, iliai, coefff, coefpn, coefpt,&
+subroutine cfparz(ds_contact, iliai, coefff, coefpn, coefpt,&
                   coefte, dissup, izone, ip, numnoe,&
                   posnoe)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "jeveux.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,14 +31,7 @@ subroutine cfparz(resoco, iliai, coefff, coefpn, coefpt,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/cfmmvd.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-    character(len=24) :: resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
     real(kind=8) :: coefff, coefpn, coefpt, coefte, dissup
     integer :: iliai, ip, izone, numnoe, posnoe
 !
@@ -39,9 +43,8 @@ subroutine cfparz(resoco, iliai, coefff, coefpn, coefpt,&
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  ILIAI  : INDICE DE LA LIAISON COURANTE
-! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  DISSUP : JEU FICTIF DE LA ZONE
 ! IN  COEFPN : COEFFICIENT DE PENALISATION DE CONTACT
 ! IN  COEFPT : COEFFICIENT DE PENALISATION DE FROTTEMENT
@@ -51,9 +54,6 @@ subroutine cfparz(resoco, iliai, coefff, coefpn, coefpt,&
 ! IN  NUMNOE : NUMERO ABSOLU DU NOEUD ESCLAVE
 ! IN  IP     : INDICE DU POINT DANS LA SD APPARIEMENT
 ! IN  IZONE  : NUMERO DE LA ZONE DE CONTACT
-!
-!
-!
 !
     integer :: ifm, niv
     integer :: ztacf
@@ -69,10 +69,10 @@ subroutine cfparz(resoco, iliai, coefff, coefpn, coefpt,&
 !
 ! --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
 !
-    jeuite = resoco(1:14)//'.JEUITE'
-    tacfin = resoco(1:14)//'.TACFIN'
-    jeusup = resoco(1:14)//'.JSUPCO'
-    numlia = resoco(1:14)//'.NUMLIA'
+    jeuite = ds_contact%sdcont_solv(1:14)//'.JEUITE'
+    tacfin = ds_contact%sdcont_solv(1:14)//'.TACFIN'
+    jeusup = ds_contact%sdcont_solv(1:14)//'.JSUPCO'
+    numlia = ds_contact%sdcont_solv(1:14)//'.NUMLIA'
 !
     call jeveuo(jeuite, 'E', jjeuit)
     call jeveuo(tacfin, 'E', jtacf)
@@ -102,7 +102,6 @@ subroutine cfparz(resoco, iliai, coefff, coefpn, coefpt,&
     zi(jnumli+4*(iliai-1)+2-1) = posnoe
     zi(jnumli+4*(iliai-1)+3-1) = numnoe
     zi(jnumli+4*(iliai-1)+4-1) = izone
-!
 !
     call jedema()
 end subroutine

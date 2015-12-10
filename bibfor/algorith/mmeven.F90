@@ -1,4 +1,19 @@
-subroutine mmeven(phase, defico, resoco)
+subroutine mmeven(phase, ds_contact)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,19 +33,8 @@ subroutine mmeven(phase, defico, resoco)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/cfmmvd.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-    character(len=3) :: phase
-    character(len=24) :: defico, resoco
+    character(len=3), intent(in) :: phase
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! ----------------------------------------------------------------------
 !
@@ -44,8 +48,7 @@ subroutine mmeven(phase, defico, resoco)
 ! IN  PHASE  : PHASE DE DETECTION
 !              'INI' - AU DEBUT DU PAS DE TEMPS
 !              'FIN' - A LA FIN DU PAS DE TEMPS
-! IN  DEFICO : SD DE DEFINITION DU CONTACT
-! IN  RESOCO : SD DE RESOLUTION DU CONTACT
+! In  ds_contact       : datastructure for contact management
 !
 !
 !
@@ -67,23 +70,22 @@ subroutine mmeven(phase, defico, resoco)
 ! --- AFFICHAGE
 !
     if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> ...... GESTION DES JEUX POUR'//&
-        ' EVENT-DRIVEN'
+        write (ifm,*) '<CONTACT> ...... GESTION DES JEUX POUR EVENT-DRIVEN'
     endif
 !
 ! --- PARAMETRES
 !
-    ntpc = cfdisi(defico,'NTPC')
+    ntpc = cfdisi(ds_contact%sdcont_defi,'NTPC')
 !
 ! --- UNE ZONE EN MODE SANS CALCUL: ON NE PEUT RIEN FAIRE
 !
-    lexiv = cfdisl(defico,'EXIS_VERIF')
+    lexiv = cfdisl(ds_contact%sdcont_defi,'EXIS_VERIF')
     if (lexiv) goto 999
 !
 ! --- ACCES OBJETS DU CONTACT
 !
-    tabfin = resoco(1:14)//'.TABFIN'
-    ctevco = resoco(1:14)//'.EVENCO'
+    tabfin = ds_contact%sdcont_solv(1:14)//'.TABFIN'
+    ctevco = ds_contact%sdcont_solv(1:14)//'.EVENCO'
     call jeveuo(tabfin, 'L', jtabf)
     call jeveuo(ctevco, 'E', jctevc)
     ztabf = cfmmvd('ZTABF')
@@ -91,7 +93,7 @@ subroutine mmeven(phase, defico, resoco)
 !
 ! --- DETECTION
 !
-    do 20 iptc = 1, ntpc
+    do iptc = 1, ntpc
         etacin = zr(jctevc+zeven*(iptc-1)+1-1)
         etacfi = zr(jctevc+zeven*(iptc-1)+2-1)
         lactif = .false.
@@ -121,7 +123,7 @@ subroutine mmeven(phase, defico, resoco)
         endif
         zr(jctevc+zeven*(iptc-1)+1-1) = etacin
         zr(jctevc+zeven*(iptc-1)+2-1) = etacfi
- 20 end do
+    end do
 !
 999 continue
 !

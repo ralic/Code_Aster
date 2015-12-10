@@ -1,4 +1,4 @@
-subroutine nmcofr(noma  , depplu, depdel    , ddepla, solveu,&
+subroutine nmcofr(mesh  , depplu, depdel    , ddepla, solveu,&
                   numedd, matass, ds_contact, iterat, resigr,&
                   sdstat, sdtime, ctccvg    , instan)
 !
@@ -37,7 +37,7 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=8) :: noma
+    character(len=8) :: mesh
     character(len=19) :: depplu
     character(len=19) :: depdel, ddepla
     character(len=14) :: numedd
@@ -107,21 +107,21 @@ implicit none
 ! --- SAUVEGARDE AVANT APPARIEMENT
 !
     if (reageo) then
-        call cfsvmu(ds_contact%sdcont_defi, ds_contact%sdcont_solv, .false._1)
-        call cfsvfr(ds_contact%sdcont_defi, ds_contact%sdcont_solv, .false._1)
+        call cfsvmu(ds_contact, .false._1)
+        call cfsvfr(ds_contact, .false._1)
     endif
 !
 ! --- APPARIEMENT
 !
-    call cfgeom(reageo, iterat, noma, sdtime, sdstat,&
-                ds_contact%sdcont_defi, ds_contact%sdcont_solv, depplu, instan)
+    call cfgeom(reageo, iterat, mesh, sdtime, sdstat,&
+                ds_contact, depplu, instan)
 !
 ! --- ALGORITHMES DE CONTACT
 !
     call nmtime(sdtime, 'INI', 'CTCD_ALGO')
     call nmtime(sdtime, 'RUN', 'CTCD_ALGO')
-    call cfalgo(noma, sdstat, resigr, iterat, ds_contact%sdcont_defi,&
-                ds_contact%sdcont_solv, solveu, numedd, matass, ddepla,&
+    call cfalgo(mesh, sdstat, resigr, iterat, ds_contact,&
+                solveu, numedd, matass, ddepla,&
                 depdel, ctccvg, ctcfix)
     call nmtime(sdtime, 'END', 'CTCD_ALGO')
 !

@@ -16,11 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmcvgf(sddisc, sderro, valinc, defico, resoco)
-        character(len=19) :: sddisc
-        character(len=24) :: sderro
-        character(len=19) :: valinc(*)
-        character(len=24) :: defico
-        character(len=24) :: resoco
+    subroutine nmcvgf(sddisc, sderro, valinc, ds_contact)
+        use NonLin_Datastructure_type
+        character(len=19), intent(in) :: sddisc
+        character(len=19), intent(in) :: valinc(*)
+        character(len=24), intent(in) :: sderro
+        type(NL_DS_Contact), intent(in) :: ds_contact
     end subroutine nmcvgf
 end interface

@@ -1,4 +1,6 @@
-subroutine xappar(mesh, model, sdcont_defi, sdcont_solv)
+subroutine xappar(mesh, model, ds_contact)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -46,8 +48,7 @@ implicit none
 !
     character(len=8), intent(in) :: mesh
     character(len=8), intent(in) :: model
-    character(len=24), intent(in) :: sdcont_defi
-    character(len=24), intent(in) :: sdcont_solv
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,8 +62,7 @@ implicit none
 !
 ! In  mesh             : name of mesh
 ! In  model            : name of model
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
-! In  sdcont_solv      : name of contact solving datastructure
+! In  ds_contact       : datastructure for contact management
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -112,14 +112,14 @@ implicit none
 !
 ! - Parameters
 !
-    model_ndim   = cfdisi(sdcont_defi,'NDIM' )
-    nt_elem_slav = cfdisi(sdcont_defi,'NTMAE')
+    model_ndim   = cfdisi(ds_contact%sdcont_defi,'NDIM' )
+    nt_elem_slav = cfdisi(ds_contact%sdcont_defi,'NTMAE')
 !
 ! - Datastructure for contact solving
 !
-    tabfin = sdcont_solv(1:14)//'.TABFIN'
-    maescx = sdcont_defi(1:16)//'.MAESCX'
-    xfimai = sdcont_defi(1:16)//'.XFIMAI'
+    tabfin = ds_contact%sdcont_solv(1:14)//'.TABFIN'
+    maescx = ds_contact%sdcont_defi(1:16)//'.MAESCX'
+    xfimai = ds_contact%sdcont_defi(1:16)//'.XFIMAI'
     call jeveuo(tabfin, 'E', jtabf)
     call jeveuo(maescx, 'L', jmaesx)
     call jeveuo(xfimai, 'L', jfimai)
@@ -155,7 +155,7 @@ implicit none
 !
 ! ----- Parameters
 !
-        type_inte = mminfi(sdcont_defi,'INTEGRATION' ,i_zone )
+        type_inte = mminfi(ds_contact%sdcont_defi,'INTEGRATION' ,i_zone )
 !
 ! ----- Current slave element
 !
@@ -240,15 +240,15 @@ implicit none
 ! ------------ Get nearest integration point on master side nearest contact point
 !
                 if (state_slave .gt. 0 .and. state_slave .ne. 2) then
-                    call xmrept(jcesd      , jcesv, jcesl      , i_zone, model_ndim,&
-                                sdcont_defi, geom , state_slave, mmait , amait     ,&
+                    call xmrept(jcesd     , jcesv, jcesl      , i_zone, model_ndim,&
+                                ds_contact, geom , state_slave, mmait , amait     ,&
                                 nmait)
                 endif
 !
 ! ------------- Projection of contact point on nearest master element
 !
                 call xmrema(jcesd         , jcesv      , jcesl      , mesh     , model_ndim    ,&
-                            i_crack       , sdcont_defi, i_zone     , elem_type, mmait         ,&
+                            i_crack       , ds_contact , i_zone     , elem_type, mmait         ,&
                             amait         , nmait      , state_slave, geom     , elem_mast_nume,&
                             elem_slav_nume, ifamin     , i_facet    , jeumin   , t1min         ,&
                             t2min         , ximin      , yimin      , projin   , stamin        ,&
@@ -346,7 +346,7 @@ implicit none
 100     continue
     end do
     zr(jtabf) =  nt_cont_poin
-    ASSERT( nt_cont_poin.eq.cfdisi(sdcont_defi, 'NTPC'))
+    ASSERT( nt_cont_poin.eq.cfdisi(ds_contact%sdcont_defi, 'NTPC'))
 !
 ! - Clean
 !

@@ -16,11 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mmveri(noma, defico, resoco, newgeo, sdappa,&
+    subroutine mmveri(noma, ds_contact, newgeo, sdappa,&
                       npt, jeux, loca, enti, zone,instan)
+        use NonLin_Datastructure_type
         character(len=8) :: noma
-        character(len=24) :: defico
-        character(len=24) :: resoco
+        type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19) :: newgeo
         character(len=19) :: sdappa
         integer :: npt

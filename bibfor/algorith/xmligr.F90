@@ -1,23 +1,9 @@
-subroutine xmligr(noma, nomo, resoco)
+subroutine xmligr(mesh, model, ds_contact)
 !
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
+use NonLin_Datastructure_type
 !
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+implicit none
 !
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-!
-    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfmmvd.h"
@@ -42,8 +28,26 @@ subroutine xmligr(noma, nomo, resoco)
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    character(len=8) :: noma, nomo
-    character(len=24) :: resoco
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+!
+    character(len=8), intent(in) :: model
+    character(len=8), intent(in) :: mesh
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! ----------------------------------------------------------------------
 !
@@ -58,15 +62,11 @@ subroutine xmligr(noma, nomo, resoco)
 ! TRAVAIL EFFECTUE EN COLLABORATION AVEC I.F.P.
 ! ----------------------------------------------------------------------
 !
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  NOMO   : NOM DU MODELE
-! IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
+! In  model            : name of model
+! In  mesh             : name of mesh
+! In  ds_contact       : datastructure for contact management
 !
-!
-!
-!
-    integer :: nbtyp
-    parameter (nbtyp=30)
+    integer, parameter :: nbtyp = 30
     integer :: ico, jco, nbgrel, ipc, nbpc, k, ino
     integer :: jlgrf, jtymai, jmail,  ilcnx1
     integer :: nummam, nummae, jnbno, long, jad, ityte
@@ -102,27 +102,23 @@ subroutine xmligr(noma, nomo, resoco)
 !
     call jemarq()
     call infdbg('CONTACT', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> CREATION DU LIGREL DES'//&
-     &        ' ELEMENTS DE CONTACT'
+        write (ifm,*) '<CONTACT> CREATION DU LIGREL DES ELEMENTS DE CONTACT'
     endif
 !
 ! --- ACCES OBJETS
 !
-    tabfin = resoco(1:14)//'.TABFIN'
-    nosdco = resoco(1:14)//'.NOSDCO'
+    tabfin = ds_contact%sdcont_solv(1:14)//'.TABFIN'
+    nosdco = ds_contact%sdcont_solv(1:14)//'.NOSDCO'
     call jeveuo(tabfin, 'E', jtabf)
     call jeveuo(nosdco, 'L', jnosdc)
     ztabf = cfmmvd('ZTABF')
-    call jeveuo(noma//'.TYPMAIL', 'L', jtymai)
-    call jeveuo(nomo//'.MAILLE', 'L', jmail)
+    call jeveuo(mesh//'.TYPMAIL', 'L', jtymai)
+    call jeveuo(model//'.MAILLE', 'L', jmail)
 !
 ! --- INITIALISATIONS
 !
-    call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
+    call dismoi('DIM_GEOM', mesh, 'MAILLAGE', repi=ndim)
     do k = 1, nbtyp
         compt(k) = 0
     end do
@@ -136,10 +132,10 @@ subroutine xmligr(noma, nomo, resoco)
 ! --- CREATION DE .NOMA
 !
     call wkvect(ligrxf//'.LGRF', 'V V K8', 2, jlgrf)
-    zk8(jlgrf-1+1) = noma
-    zk8(jlgrf-1+2) = nomo
-    call jeveuo(noma//'.CONNEX', 'L', vi=connex)
-    call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
+    zk8(jlgrf-1+1) = mesh
+    zk8(jlgrf-1+2) = model
+    call jeveuo(mesh//'.CONNEX', 'L', vi=connex)
+    call jeveuo(jexatr(mesh//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
 !
 ! --- ON COMPTE LE NOMBRE DE NOEUDS A STOCKER AU TOTAL
 !
@@ -252,7 +248,7 @@ subroutine xmligr(noma, nomo, resoco)
 ! --- IMPRESSIONS
 !
     if (niv .ge. 2) then
-        call mmimp2(ifm, noma, ligrxf, jtabf)
+        call mmimp2(ifm, mesh, ligrxf, jtabf)
     endif
 !
 ! --- INITIALISATION DU LIGREL

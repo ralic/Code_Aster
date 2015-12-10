@@ -18,12 +18,12 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmctce(model , mesh     , sdcont_defi, sdcont_solv, sddyna,&
-                      sddisc, nume_inst)
-        character(len=8), intent(in) :: mesh
+    subroutine nmctce(model    , mesh, ds_contact, sddyna, sddisc,&
+                      nume_inst)
+        use NonLin_Datastructure_type
         character(len=8), intent(in) :: model
-        character(len=24), intent(in) :: sdcont_defi 
-        character(len=24), intent(in) :: sdcont_solv
+        character(len=8), intent(in) :: mesh
+        type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19), intent(in)  :: sddyna
         character(len=19), intent(in)  :: sddisc
         integer, intent(in) :: nume_inst

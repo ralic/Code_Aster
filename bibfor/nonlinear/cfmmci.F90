@@ -1,4 +1,15 @@
-subroutine cfmmci(defico, resoco)
+subroutine cfmmci(ds_contact)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfmmco.h"
+#include "asterfort/mminfr.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,17 +29,7 @@ subroutine cfmmci(defico, resoco)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/cfmmco.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/mminfr.h"
-    character(len=24) :: defico, resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! ----------------------------------------------------------------------
 !
@@ -38,67 +39,52 @@ subroutine cfmmci(defico, resoco)
 !
 ! ----------------------------------------------------------------------
 !
-! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
-! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
+! In  ds_contact       : datastructure for contact management
 !
 !
 !
 !
-    integer :: nzoco, izone
-    aster_logical :: lctcd, lctcc, lxfcm
+    integer :: nb_cont_zone, i_zone
+    aster_logical :: l_cont_disc, l_cont_cont, l_cont_xfem
     real(kind=8) :: coefac, coefaf
     real(kind=8) :: coefpn, coefpt
     real(kind=8) :: coefcr, coeffr, coefcp, coeffp
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
-!
-! --- FONCTIONNALITES ACTIVEES
-!
-    lxfcm = cfdisl(defico,'FORMUL_XFEM')
-    lctcc = cfdisl(defico,'FORMUL_CONTINUE')
-    lctcd = cfdisl(defico,'FORMUL_DISCRETE')
+    l_cont_xfem = cfdisl(ds_contact%sdcont_defi,'FORMUL_XFEM')
+    l_cont_cont = cfdisl(ds_contact%sdcont_defi,'FORMUL_CONTINUE')
+    l_cont_disc = cfdisl(ds_contact%sdcont_defi,'FORMUL_DISCRETE')
 !
 ! --- INITIALISATIONS
 !
-    nzoco = cfdisi(defico,'NZOCO')
+    nb_cont_zone = cfdisi(ds_contact%sdcont_defi,'NZOCO')
 !
 ! --- REMPLISSAGE INITIAL
 !
-    do 10 izone = 1, nzoco
-        if (lxfcm) then
-            coefcr = mminfr(defico,'COEF_AUGM_CONT' ,izone )
-            coeffr = mminfr(defico,'COEF_AUGM_FROT' ,izone )
-            coefcp = mminfr(defico,'COEF_PENA_CONT' ,izone )
-            coeffp = mminfr(defico,'COEF_PENA_FROT' ,izone )
-            call cfmmco(defico, resoco, izone, 'COEF_AUGM_CONT', 'E',&
-                        coefcr)
-            call cfmmco(defico, resoco, izone, 'COEF_AUGM_FROT', 'E',&
-                        coeffr)
-            call cfmmco(defico, resoco, izone, 'COEF_PENA_CONT', 'E',&
-                        coefcp)
-            call cfmmco(defico, resoco, izone, 'COEF_PENA_FROT', 'E',&
-                        coeffp)
-!
-        else if (lctcc) then
-            coefac = mminfr(defico,'COEF_AUGM_CONT' ,izone )
-            coefaf = mminfr(defico,'COEF_AUGM_FROT' ,izone )
-            call cfmmco(defico, resoco, izone, 'COEF_AUGM_CONT', 'E',&
-                        coefac)
-            call cfmmco(defico, resoco, izone, 'COEF_AUGM_FROT', 'E',&
-                        coefaf)
-        else if (lctcd) then
-            coefpn = mminfr(defico,'E_N' ,izone )
-            coefpt = mminfr(defico,'E_T' ,izone )
-            call cfmmco(defico, resoco, izone, 'E_N', 'E',&
-                        coefpn)
-            call cfmmco(defico, resoco, izone, 'E_T', 'E',&
-                        coefpt)
+    do i_zone = 1, nb_cont_zone
+        if (l_cont_xfem) then
+            coefcr = mminfr(ds_contact%sdcont_defi, 'COEF_AUGM_CONT', i_zone)
+            coeffr = mminfr(ds_contact%sdcont_defi, 'COEF_AUGM_FROT', i_zone)
+            coefcp = mminfr(ds_contact%sdcont_defi, 'COEF_PENA_CONT', i_zone)
+            coeffp = mminfr(ds_contact%sdcont_defi, 'COEF_PENA_FROT', i_zone)
+            call cfmmco(ds_contact, i_zone, 'COEF_AUGM_CONT', 'E', coefcr)
+            call cfmmco(ds_contact, i_zone, 'COEF_AUGM_FROT', 'E', coeffr)
+            call cfmmco(ds_contact, i_zone, 'COEF_PENA_CONT', 'E', coefcp)
+            call cfmmco(ds_contact, i_zone, 'COEF_PENA_FROT', 'E', coeffp)
+        else if (l_cont_cont) then
+            coefac = mminfr(ds_contact%sdcont_defi, 'COEF_AUGM_CONT', i_zone)
+            coefaf = mminfr(ds_contact%sdcont_defi, 'COEF_AUGM_FROT', i_zone)
+            call cfmmco(ds_contact, i_zone, 'COEF_AUGM_CONT', 'E', coefac)
+            call cfmmco(ds_contact, i_zone, 'COEF_AUGM_FROT', 'E', coefaf)
+        else if (l_cont_disc) then
+            coefpn = mminfr(ds_contact%sdcont_defi, 'E_N', i_zone)
+            coefpt = mminfr(ds_contact%sdcont_defi, 'E_T', i_zone)
+            call cfmmco(ds_contact, i_zone, 'E_N', 'E', coefpn)
+            call cfmmco(ds_contact, i_zone, 'E_T', 'E', coefpt)
         else
             ASSERT(.false.)
         endif
- 10 end do
+    end do
 !
-    call jedema()
 end subroutine

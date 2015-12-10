@@ -1,5 +1,16 @@
-subroutine cfmmco(defico, resoco, izone, nomcoz, action,&
-                  valr)
+subroutine cfmmco(ds_contact, izone, nomcoz, action, valr)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,15 +30,7 @@ subroutine cfmmco(defico, resoco, izone, nomcoz, action,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/cfmmvd.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-    character(len=24) :: defico, resoco
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=*) :: nomcoz
     character(len=1) :: action
     integer :: izone
@@ -41,9 +44,7 @@ subroutine cfmmco(defico, resoco, izone, nomcoz, action,&
 !
 ! ----------------------------------------------------------------------
 !
-!
-! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
-! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  IZONE  : NUMERO DE LA ZONE
 ! IN  ACTION : 'E' ECRIT DANS LA SD
 !              'L' LIT DANS LA SD
@@ -66,14 +67,14 @@ subroutine cfmmco(defico, resoco, izone, nomcoz, action,&
 ! --- INITIALISATIONS
 !
     nomcoe = nomcoz
-    nzoco = cfdisi(defico,'NZOCO')
+    nzoco = cfdisi(ds_contact%sdcont_defi,'NZOCO')
     ASSERT(izone.le.nzoco)
     ASSERT(izone.ge.1)
 !
 ! --- ACCES SD
 !
     ztaco = cfmmvd('ZTACO')
-    tabcof = resoco(1:14)//'.TABL.COEF'
+    tabcof = ds_contact%sdcont_solv(1:14)//'.TABL.COEF'
     call jeveuo(tabcof, 'E', jtabco)
 !
     if (action .eq. 'E') then

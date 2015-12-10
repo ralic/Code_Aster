@@ -1,4 +1,13 @@
-subroutine nmcvgn(sddisc, sderro, valinc, defico, resoco)
+subroutine nmcvgn(sddisc, sderro, valinc, ds_contact)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterfort/nmacto.h"
+#include "asterfort/nmeceb.h"
+#include "asterfort/nmevev.h"
+#include "asterfort/nmleeb.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,17 +27,10 @@ subroutine nmcvgn(sddisc, sderro, valinc, defico, resoco)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/nmacto.h"
-#include "asterfort/nmeceb.h"
-#include "asterfort/nmevev.h"
-#include "asterfort/nmleeb.h"
-    character(len=19) :: sddisc, valinc(*)
-    character(len=24) :: sderro
-    character(len=24) :: defico, resoco
+    character(len=19), intent(in) :: sddisc
+    character(len=19), intent(in) :: valinc(*)
+    character(len=24), intent(in) :: sderro
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! ----------------------------------------------------------------------
 !
@@ -38,26 +40,17 @@ subroutine nmcvgn(sddisc, sderro, valinc, defico, resoco)
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IN  SDERRO : SD GESTION DES ERREURS
 ! IN  VALINC : VARIABLE CHAPEAU INCREMENTS DES VARIABLES
-! IN  DEFICO : SD DE DEFINITION DU CONTACT
-! IN  RESOCO : SD DE RESOLUTION DU CONTACT
+! In  ds_contact       : datastructure for contact management
 !
-!
-!
-!
-    integer :: ievdac, numins
+    integer :: ievdac, nume_inst
     character(len=4) :: etnewt
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
-!
-! --- INITIALISATIONS
-!
-    numins = -1
+    nume_inst = -1
 !
 ! --- ETAT DE LA BOUCLE DE NEWTON
 !
@@ -65,19 +58,22 @@ subroutine nmcvgn(sddisc, sderro, valinc, defico, resoco)
 !
 ! --- ERREUR FATALE -> ON NE PEUT RIEN FAIRE
 !
-    if (etnewt .eq. 'STOP') goto 99
+    if (etnewt .eq. 'STOP') then
+        goto 99
+    endif
 !
 ! --- DETECTION DU PREMIER EVENEMENT DECLENCHE
 !
-    call nmevev(sddisc, numins, valinc, sderro, defico,&
-                resoco, 'NEWT')
+    call nmevev(sddisc, nume_inst, valinc, sderro, ds_contact,&
+                'NEWT')
 !
 ! --- UN EVENEMENT SE DECLENCHE
 !
     call nmacto(sddisc, ievdac)
-    if (ievdac .gt. 0) call nmeceb(sderro, 'NEWT', 'EVEN')
+    if (ievdac .gt. 0) then
+        call nmeceb(sderro, 'NEWT', 'EVEN')
+    endif
 !
 99  continue
 !
-    call jedema()
 end subroutine

@@ -1,4 +1,6 @@
-subroutine mm_cycl_init(sdcont_defi, sdcont_solv)
+subroutine mm_cycl_init(ds_contact)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -31,8 +33,7 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=24), intent(in) :: sdcont_defi
-    character(len=24), intent(in) :: sdcont_solv
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -42,8 +43,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sdcont_solv      : name of contact solving datastructure
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  ds_contact       : datastructure for contact management
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -64,12 +64,12 @@ implicit none
 !
 ! - Initializations
 !
-    nb_cont_zone = cfdisi(sdcont_defi,'NZOCO' )
+    nb_cont_zone = cfdisi(ds_contact%sdcont_defi,'NZOCO' )
 !
 ! - Access to cycling objects
 !
-    sdcont_cychis = sdcont_solv(1:14)//'.CYCHIS'
-    sdcont_cyccoe = sdcont_solv(1:14)//'.CYCCOE'
+    sdcont_cychis = ds_contact%sdcont_solv(1:14)//'.CYCHIS'
+    sdcont_cyccoe = ds_contact%sdcont_solv(1:14)//'.CYCCOE'
     call jeveuo(sdcont_cychis, 'E', vr = p_sdcont_cychis)
     call jeveuo(sdcont_cyccoe, 'E', vr = p_sdcont_cyccoe)
 !
@@ -77,11 +77,11 @@ implicit none
 !
     i_cont_poin = 1
     do zone_index = 1, nb_cont_zone
-        lveri = mminfl(sdcont_defi,'VERIF' ,zone_index)
-        slave_elt_nb = mminfi(sdcont_defi,'NBMAE' ,zone_index)
-        slave_elt_shift = mminfi(sdcont_defi,'JDECME',zone_index)
-        coef_cont = mminfr(sdcont_defi,'COEF_AUGM_CONT',zone_index)
-        coef_frot = mminfr(sdcont_defi,'COEF_AUGM_FROT',zone_index)
+        lveri = mminfl(ds_contact%sdcont_defi,'VERIF' ,zone_index)
+        slave_elt_nb = mminfi(ds_contact%sdcont_defi,'NBMAE' ,zone_index)
+        slave_elt_shift = mminfi(ds_contact%sdcont_defi,'JDECME',zone_index)
+        coef_cont = mminfr(ds_contact%sdcont_defi,'COEF_AUGM_CONT',zone_index)
+        coef_frot = mminfr(ds_contact%sdcont_defi,'COEF_AUGM_FROT',zone_index)
         p_sdcont_cyccoe(6*(zone_index-1)+1) = coef_cont
         p_sdcont_cyccoe(6*(zone_index-1)+2) = coef_frot
         p_sdcont_cyccoe(6*(zone_index-1)+3) = +1.d99
@@ -100,7 +100,7 @@ implicit none
 !
 ! --------- Number of points on slave element
 !
-            call mminfm(slave_elt_num, sdcont_defi, 'NPTM', slave_pt_nb)
+            call mminfm(slave_elt_num, ds_contact%sdcont_defi, 'NPTM', slave_pt_nb)
 !
 ! --------- Loop on points
 !

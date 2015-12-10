@@ -18,9 +18,9 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine cfrsmu(defico, resoco, reapre)
-        character(len=24) :: defico
-        character(len=24) :: resoco
+    subroutine cfrsmu(ds_contact, reapre)
+        use NonLin_Datastructure_type
+        type(NL_DS_Contact), intent(in) :: ds_contact
         aster_logical :: reapre
     end subroutine cfrsmu
 end interface

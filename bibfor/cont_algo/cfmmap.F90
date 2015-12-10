@@ -1,4 +1,6 @@
-subroutine cfmmap(mesh, sdcont_defi, sdcont_solv)
+subroutine cfmmap(mesh, ds_contact)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -27,8 +29,7 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
-    character(len=24), intent(in) :: sdcont_defi
-    character(len=24), intent(in) :: sdcont_solv
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -39,8 +40,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  mesh             : name of mesh
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
-! In  sdcont_solv      : name of contact solving datastructure
+! In  ds_contact       : datastructure for contact management
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,17 +58,17 @@ implicit none
 !
 ! - Parameters
 !
-    nb_cont_zone = cfdisi(sdcont_defi,'NZOCO' )
-    nb_cont_node = cfdisi(sdcont_defi,'NNOCO' )
-    nt_poin      = cfdisi(sdcont_defi,'NTPT'  )
-    model_ndim   = cfdisi(sdcont_defi,'NDIM'  )
-    nb_cont_elem = cfdisi(sdcont_defi,'NMACO' )
-    nt_elem_node = cfdisi(sdcont_defi,'NTMANO')
+    nb_cont_zone = cfdisi(ds_contact%sdcont_defi,'NZOCO' )
+    nb_cont_node = cfdisi(ds_contact%sdcont_defi,'NNOCO' )
+    nt_poin      = cfdisi(ds_contact%sdcont_defi,'NTPT'  )
+    model_ndim   = cfdisi(ds_contact%sdcont_defi,'NDIM'  )
+    nb_cont_elem = cfdisi(ds_contact%sdcont_defi,'NMACO' )
+    nt_elem_node = cfdisi(ds_contact%sdcont_defi,'NTMANO')
     call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi=nb_node_mesh)
 !
 ! - Pairing datastructure
 !
-    sdappa = sdcont_solv(1:14)//'.APPA'
+    sdappa = ds_contact%sdcont_solv(1:14)//'.APPA'
 !
 ! - Create pairing datastructure
 !
@@ -77,7 +77,7 @@ implicit none
 !
 ! - Fill pairing datastructure
 !
-    call cfmmar(sdcont_defi , sdcont_solv , nb_cont_zone, model_ndim, nt_poin,&
+    call cfmmar(ds_contact , nb_cont_zone, model_ndim, nt_poin,&
                 nb_cont_elem, nb_cont_node, nt_elem_node)
 !
 end subroutine

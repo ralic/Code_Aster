@@ -16,13 +16,12 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mmchml(noma, defico, resoco, sddisc, sddyna,&
-                      numins)
-        character(len=8) :: noma
-        character(len=24) :: defico
-        character(len=24) :: resoco
-        character(len=19) :: sddisc
-        character(len=19) :: sddyna
-        integer :: numins
+    subroutine mmchml(mesh, ds_contact, sddisc, sddyna, nume_inst)
+        use NonLin_Datastructure_type
+        character(len=8), intent(in) :: mesh
+        type(NL_DS_Contact), intent(in) :: ds_contact
+        character(len=19), intent(in) :: sddisc
+        character(len=19), intent(in) :: sddyna
+        integer, intent(in) :: nume_inst
     end subroutine mmchml
 end interface

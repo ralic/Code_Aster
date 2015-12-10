@@ -18,14 +18,15 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine mmmcri(criter, noma, depmoi, depgeo, depplu,&
-                      resoco, epsmax, cvgnoe, cvgval, mmconv)
+    subroutine mmmcri(criter    , noma  , depmoi, depgeo, depplu,&
+                     ds_contact, epsmax, cvgnoe, cvgval, mmconv)
+        use NonLin_Datastructure_type
         character(len=4) :: criter
         character(len=8) :: noma
         character(len=19) :: depmoi
         character(len=19) :: depgeo
         character(len=19) :: depplu
-        character(len=24) :: resoco
+        type(NL_DS_Contact), intent(in) :: ds_contact
         real(kind=8) :: epsmax
         character(len=16) :: cvgnoe
         real(kind=8) :: cvgval

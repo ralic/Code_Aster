@@ -1,5 +1,14 @@
-subroutine nmevcx(sddisc      , nume_inst, sdcont_defi, sdcont_solv, i_echec,&
-                  i_echec_acti)
+subroutine nmevcx(sddisc, nume_inst, ds_contact, i_echec, i_echec_acti)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/nmevcc.h"
+#include "asterfort/nmevco.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,15 +28,11 @@ subroutine nmevcx(sddisc      , nume_inst, sdcont_defi, sdcont_solv, i_echec,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "asterfort/assert.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/nmevcc.h"
-#include "asterfort/nmevco.h"
-    character(len=24) :: sdcont_defi, sdcont_solv
-    integer :: i_echec, i_echec_acti, nume_inst
-    character(len=19) :: sddisc
+    character(len=19), intent(in) :: sddisc
+    integer, intent(in) :: nume_inst
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    integer, intent(in) :: i_echec
+    integer, intent(out) :: i_echec_acti
 !
 ! ----------------------------------------------------------------------
 !
@@ -37,10 +42,9 @@ subroutine nmevcx(sddisc      , nume_inst, sdcont_defi, sdcont_solv, i_echec,&
 !
 ! ----------------------------------------------------------------------
 !
-! In  sddisc           : datastructure for time discretization
+! In  sddisc           : datastructure for time discretization TEMPORELLE
+! In  ds_contact       : datastructure for contact management
 ! IN  NUMINS : NUMERO D'INSTANT
-! IN  DEFICO : SD DE DEFINITION DU CONTACT
-! IN  RESOCO : SD DE RESOLUTION DU CONTACT
 ! IN  IECHEC : OCCURRENCE DE L'ECHEC
 ! OUT IEVDAC : VAUT IECHEC SI EVENEMENT DECLENCHE
 !                   0 SINON
@@ -51,15 +55,14 @@ subroutine nmevcx(sddisc      , nume_inst, sdcont_defi, sdcont_solv, i_echec,&
 !
 ! ----------------------------------------------------------------------
 !
-    l_cont_cont  = cfdisl(sdcont_defi,'FORMUL_CONTINUE')
-    l_cont_disc  = cfdisl(sdcont_defi,'FORMUL_DISCRETE')
+    l_cont_cont  = cfdisl(ds_contact%sdcont_defi,'FORMUL_CONTINUE')
+    l_cont_disc  = cfdisl(ds_contact%sdcont_defi,'FORMUL_DISCRETE')
     i_echec_acti = 0
 !
     if (l_cont_disc) then
-        call nmevco(sddisc, nume_inst, sdcont_solv, i_echec    , i_echec_acti)
+        call nmevco(sddisc, nume_inst, ds_contact, i_echec, i_echec_acti)
     else if (l_cont_cont) then
-        call nmevcc(sddisc, nume_inst, sdcont_defi, sdcont_solv, i_echec,&
-                    i_echec_acti)
+        call nmevcc(sddisc, nume_inst, ds_contact, i_echec, i_echec_acti)
     else
         ASSERT(.false.)
     endif

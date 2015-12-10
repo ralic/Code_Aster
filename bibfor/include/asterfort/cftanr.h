@@ -16,13 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cftanr(noma, ndimg, defico, resoco, izone,&
+    subroutine cftanr(noma, ndimg, ds_contact, izone,&
                       posnoe, typenm, posenm, numenm, ksipr1,&
                       ksipr2, tau1m, tau2m, tau1, tau2)
+        use NonLin_Datastructure_type
         character(len=8) :: noma
         integer :: ndimg
-        character(len=24) :: defico
-        character(len=24) :: resoco
+        type(NL_DS_Contact), intent(in) :: ds_contact
         integer :: izone
         integer :: posnoe
         character(len=4) :: typenm

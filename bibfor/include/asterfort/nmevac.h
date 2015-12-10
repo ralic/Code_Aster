@@ -17,7 +17,7 @@
 !
 interface
     subroutine nmevac(sddisc, sderro   , i_echec_acti, nume_inst   , iterat,&
-                      retact, ds_print_, sdcont_defi_, sdcont_solv_)
+                      retact, ds_print_, ds_contact_)
         use NonLin_Datastructure_type
         character(len=19), intent(in) :: sddisc
         character(len=24), intent(in) :: sderro
@@ -26,7 +26,6 @@ interface
         integer, intent(in) :: iterat
         integer, intent(out) :: retact
         type(NL_DS_Print), optional, intent(in) :: ds_print_
-        character(len=24), optional, intent(in) :: sdcont_defi_
-        character(len=24), optional, intent(in) :: sdcont_solv_
+        type(NL_DS_Contact), optional, intent(in) :: ds_contact_
     end subroutine nmevac
 end interface

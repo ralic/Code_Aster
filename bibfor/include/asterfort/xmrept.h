@@ -17,14 +17,15 @@
 !
 interface
     subroutine xmrept(jcesd, jcesv, jcesl, izone, ndim,&
-                      defico, geom, statue, mmait, amait,&
+                      ds_contact, geom, statue, mmait, amait,&
                       nmait)
+        use NonLin_Datastructure_type
         integer :: jcesd(10)
         integer :: jcesv(10)
         integer :: jcesl(10)
         integer :: izone
         integer :: ndim
-        character(len=24) :: defico
+        type(NL_DS_Contact), intent(in) :: ds_contact
         real(kind=8) :: geom(3)
         integer :: statue
         integer :: mmait

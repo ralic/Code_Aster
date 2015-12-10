@@ -1,4 +1,6 @@
-subroutine mmappa(mesh, nume_dof, sdcont_defi, sdcont_solv)
+subroutine mmappa(mesh, nume_dof, ds_contact)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -28,8 +30,7 @@ implicit none
 !
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: nume_dof
-    character(len=24), intent(in) :: sdcont_defi 
-    character(len=24), intent(in) :: sdcont_solv
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -41,8 +42,7 @@ implicit none
 !
 ! In  mesh             : name of mesh
 ! In  nume_dof         : name of numbering object (NUME_DDL)
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
-! In  sdcont_solv      : name of contact solving datastructure
+! In  ds_contact       : datastructure for contact management
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,22 +59,22 @@ implicit none
 !
 ! - Pairing datastructure
 !
-    sdappa = sdcont_solv(1:14)//'.APPA'
+    sdappa = ds_contact%sdcont_solv(1:14)//'.APPA'
 !
 ! - New geometry name
 !
-    newgeo = sdcont_solv(1:14)//'.NEWG'
+    newgeo = ds_contact%sdcont_solv(1:14)//'.NEWG'
 !
 ! - Set pairing datastructure
 !
-    call mmpoin(mesh, sdcont_defi, newgeo, sdappa)
+    call mmpoin(mesh, ds_contact%sdcont_defi, newgeo, sdappa)
 !
 ! - Pairing
 !
-    call apcalc(sdappa, mesh, sdcont_defi, newgeo)
+    call apcalc(sdappa, mesh, ds_contact%sdcont_defi, newgeo)
 !
 ! - Save pairing in contact datastructures
 !
-    call mmapre(mesh, nume_dof, sdcont_defi, sdcont_solv, sdappa)
+    call mmapre(mesh, nume_dof, ds_contact, sdappa)
 !
 end subroutine

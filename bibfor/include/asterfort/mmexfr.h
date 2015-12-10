@@ -16,13 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mmexfr(noma, defico, izone, posmam, tau1,&
+    subroutine mmexfr(mesh, ds_contact, i_zone, elem_mast_indx, tau1,&
                       tau2)
-        character(len=8) :: noma
-        character(len=24) :: defico
-        integer :: izone
-        integer :: posmam
-        real(kind=8) :: tau1(3)
-        real(kind=8) :: tau2(3)
+        use NonLin_Datastructure_type
+        character(len=8), intent(in) :: mesh
+        type(NL_DS_Contact), intent(in) :: ds_contact
+        integer, intent(in) :: i_zone
+        integer, intent(in) :: elem_mast_indx
+        real(kind=8), intent(out) :: tau1(3)
+        real(kind=8), intent(out) :: tau2(3)
     end subroutine mmexfr
 end interface

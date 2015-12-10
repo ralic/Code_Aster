@@ -1,8 +1,7 @@
-subroutine nmnpas(modele  , noma  , mate  , carele, fonact ,&
-                  ds_print, sddisc, sdsuiv, sddyna, sdnume ,&
-                  sdstat  , sdtime, numedd, numins, defico ,&
-                  resoco  , valinc, solalg, solveu, ds_conv,&
-                  lischa)
+subroutine nmnpas(modele  , noma  , mate  , carele , fonact    ,&
+                  ds_print, sddisc, sdsuiv, sddyna , sdnume    ,&
+                  sdstat  , sdtime, numedd, numins , ds_contact,&
+                  valinc  , solalg, solveu, ds_conv, lischa)
 !
 use NonLin_Datastructure_type
 !
@@ -45,7 +44,6 @@ implicit none
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
-! aslint: disable=W1504
 !
     integer :: fonact(*)
     character(len=8) :: noma
@@ -54,7 +52,8 @@ implicit none
     integer :: numins
     type(NL_DS_Print), intent(inout) :: ds_print
     character(len=24) :: sdstat, sdtime, sdsuiv
-    character(len=24) :: defico, resoco, numedd
+    character(len=24) :: numedd
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19) :: solalg(*), valinc(*)
     type(NL_DS_Conv), intent(inout) :: ds_conv
     character(len=19), intent(in) :: lischa
@@ -80,8 +79,7 @@ implicit none
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IN  SDSUIV : SD SUIVI_DDL
 ! IN  SDNUME : NOM DE LA SD NUMEROTATION
-! IN  DEFICO : SD DEFINITION DU CONTACT
-! IN  RESOCO : SD RESOLUTION DU CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  SDDYNA : SD DYNAMIQUE
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
@@ -90,7 +88,7 @@ implicit none
 ! ----------------------------------------------------------------------
 !
     aster_logical :: lgrot, ldyna, lnkry
-    aster_logical :: lcont, leltc, lctcc, l_diri_undead
+    aster_logical :: l_cont, l_cont_cont, l_diri_undead
     integer :: neq
     character(len=19) :: depmoi, varmoi
     character(len=19) :: depplu, varplu
@@ -112,11 +110,10 @@ implicit none
 ! - Active functionnalites
 !
     ldyna         = ndynlo(sddyna,'DYNAMIQUE')
-    lcont         = isfonc(fonact,'CONTACT')
+    l_cont        = isfonc(fonact,'CONTACT')
     lgrot         = isfonc(fonact,'GD_ROTA')
     lnkry         = isfonc(fonact,'NEWTON_KRYLOV')
-    leltc         = isfonc(fonact,'ELT_CONTACT')
-    lctcc         = isfonc(fonact,'CONT_CONTINU')
+    l_cont_cont   = isfonc(fonact,'CONT_CONTINU')
     l_diri_undead = isfonc(fonact,'DIRI_UNDEAD')
 !
 ! --- INSTANT COURANT
@@ -175,8 +172,8 @@ implicit none
 ! --- INITIALISATIONS EN DYNAMIQUE
 !
     if (ldyna) then
-        if (lctcc) then
-            mdecol = resoco(1:14)//'.MDECOL'
+        if (l_cont_cont) then
+            mdecol = ds_contact%sdcont_solv(1:14)//'.MDECOL'
             call jeveuo(mdecol, 'L', jmdeco)
             scotch = zl(jmdeco+1-1)
         else
@@ -195,10 +192,10 @@ implicit none
 !
 ! - Initializations of contact for current time step
 !
-    if (lcont) then
-        call cont_init(noma  , modele, defico, resoco, numins,&
-                       sdtime, sdstat, sddyna, valinc, sdnume,&
-                       numedd, fonact)
+    if (l_cont) then
+        call cont_init(noma  , modele, ds_contact, numins, sdtime,&
+                       sdstat, sddyna, valinc    , sdnume, numedd,&
+                       fonact)
     endif
 !
 end subroutine

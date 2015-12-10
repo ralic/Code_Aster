@@ -16,10 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfjefi(noma, defico, resoco, ddepla)
-        character(len=8) :: noma
-        character(len=24) :: defico
-        character(len=24) :: resoco
-        character(len=19) :: ddepla
+    subroutine cfjefi(noma, ds_contact, ddepla)
+        use NonLin_Datastructure_type
+        character(len=8), intent(in) :: noma
+        type(NL_DS_Contact), intent(in) :: ds_contact
+        character(len=19), intent(in) :: ddepla
     end subroutine cfjefi
 end interface
