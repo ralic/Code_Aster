@@ -18,11 +18,11 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmetac(list_func_acti, sddyna, sdcont_defi, ds_inout)
+    subroutine nmetac(list_func_acti, sddyna, ds_contact, ds_inout)
         use NonLin_Datastructure_type
         integer, intent(in) :: list_func_acti(*)
         character(len=19), intent(in) :: sddyna
-        character(len=24), intent(in) :: sdcont_defi
+        type(NL_DS_Contact), intent(in) :: ds_contact
         type(NL_DS_InOut), intent(inout) :: ds_inout
     end subroutine nmetac
 end interface

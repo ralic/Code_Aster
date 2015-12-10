@@ -1,5 +1,5 @@
-subroutine nmetcr(ds_inout, model      , compor     , list_func_acti, sddyna   ,&
-                  sdpost  , sdcont_defi, sdcont_algo, cara_elem     , list_load)
+subroutine nmetcr(ds_inout, model     , compor   , list_func_acti, sddyna   ,&
+                  sdpost  , ds_contact, cara_elem, list_load)
 !
 use NonLin_Datastructure_type
 !
@@ -42,8 +42,7 @@ implicit none
     type(NL_DS_InOut), intent(inout) :: ds_inout
     character(len=24), intent(in) :: model
     integer, intent(in) :: list_func_acti(*)
-    character(len=24), intent(in) :: sdcont_defi
-    character(len=24), intent(in) :: sdcont_algo
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19), intent(in) :: compor
     character(len=19), intent(in) :: sddyna
     character(len=19), intent(in) :: sdpost
@@ -62,8 +61,7 @@ implicit none
 ! In  model            : name of model
 ! In  cara_elem        : name of datastructure for elementary parameters (CARTE)
 ! In  compor           : name of <CARTE> COMPOR
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
-! In  sdcont_algo      : name of contact algorithm datastructure
+! In  ds_contact       : datastructure for contact management
 ! In  list_func_acti   : list of active functionnalities
 ! In  sddyna           : name of dynamic parameters datastructure
 ! In  sdpost           : name of post-treatment for stability analysis parameters datastructure
@@ -90,7 +88,7 @@ implicit none
 !
 ! - Select fields depending on active functionnalities
 !
-    call nmetac(list_func_acti, sddyna, sdcont_defi, ds_inout)
+    call nmetac(list_func_acti, sddyna, ds_contact, ds_inout)
 !
 ! - Set localization for cohesive XFEM fields
 !
@@ -110,7 +108,7 @@ implicit none
     do i_field = 1, nb_field
         field_type = ds_inout%field(i_field)%type
         call nmetcc(field_type, algo_name, init_name, &
-                    compor    , sddyna   , sdpost   , sdcont_algo)
+                    compor    , sddyna   , sdpost   , ds_contact)
         if (algo_name.ne.'XXXXXXXXXXXXXXXX') then
             ds_inout%field(i_field)%algo_name = algo_name
         endif

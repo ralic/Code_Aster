@@ -16,14 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmetcr(ds_inout, model      , compor     , list_func_acti, sddyna   ,&
-                      sdpost  , sdcont_defi, sdcont_algo, cara_elem     , list_load)
+    subroutine nmetcr(ds_inout, model     , compor   , list_func_acti, sddyna   ,&
+                      sdpost  , ds_contact, cara_elem, list_load)
         use NonLin_Datastructure_type
         type(NL_DS_InOut), intent(inout) :: ds_inout
         character(len=24), intent(in) :: model
         integer, intent(in) :: list_func_acti(*)
-        character(len=24), intent(in) :: sdcont_defi
-        character(len=24), intent(in) :: sdcont_algo
+        type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19), intent(in) :: compor
         character(len=19), intent(in) :: sddyna
         character(len=19), intent(in) :: sdpost

@@ -18,7 +18,7 @@
 interface
     subroutine diinit(mesh_         , model_     , ds_inout, mate       , cara_elem,&
                       list_func_acti, sddyna     , ds_conv , ds_algopara, solver   ,&
-                      sdcont_defi   , sddisc)
+                      ds_contact    , sddisc)
         use NonLin_Datastructure_type
         character(len=*), intent(in) :: mesh_
         character(len=*), intent(in) :: model_
@@ -30,7 +30,7 @@ interface
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         type(NL_DS_InOut), intent(in) :: ds_inout
         character(len=19), intent(in) :: solver
-        character(len=24), intent(in) :: sdcont_defi
+        type(NL_DS_Contact), intent(in) :: ds_contact
         integer, intent(in) :: list_func_acti(*)
     end subroutine diinit
 end interface

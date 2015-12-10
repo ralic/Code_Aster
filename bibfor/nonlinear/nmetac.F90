@@ -1,4 +1,4 @@
-subroutine nmetac(list_func_acti, sddyna, sdcont_defi, ds_inout)
+subroutine nmetac(list_func_acti, sddyna, ds_contact, ds_inout)
 !
 use NonLin_Datastructure_type
 !
@@ -33,30 +33,32 @@ implicit none
 !
     integer, intent(in) :: list_func_acti(*)
     character(len=19), intent(in) :: sddyna
-    character(len=24), intent(in) :: sdcont_defi
+    type(NL_DS_Contact), intent(in) :: ds_contact
     type(NL_DS_InOut), intent(inout) :: ds_inout
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! *_NON_LINE - Input/output datastructure
+! MECA_NON_LINE - Input/output datastructure
 !
 ! Select fields depending on active functionnalities
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
 ! In  list_func_acti   : list of active functionnalities
 ! In  sddyna           : name of dynamic parameters datastructure
+! In  ds_contact       : datastructure for contact management
 ! IO  ds_inout         : datastructure for input/output management
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    character(len=24) :: sdcont_defi
     aster_logical :: l_cont_xfem, l_frot_xfem, l_xfem_czm, l_cont
     aster_logical :: l_dyna, l_inte_node, l_muap, l_strx
     aster_logical :: l_vibr_mode, l_crit_stab, l_dof_stab, l_ener
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    sdcont_defi = ds_contact%sdcont_defi
 !
 ! - Active functionnalities
 !

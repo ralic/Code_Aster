@@ -106,6 +106,7 @@ implicit none
     type(NL_DS_Conv)     :: ds_conv
     type(NL_DS_AlgoPara) :: ds_algopara
     type(NL_DS_InOut)    :: ds_inout
+    type(NL_DS_Contact)  :: ds_contact
 !
 ! --- VARIABLES CHAPEAUX
 !
@@ -128,8 +129,6 @@ implicit none
     data lischa            /'&&OP0070.LISCHA'/
     data carcri            /'&&OP0070.PARA_LDC'/
     data solveu            /'&&OP0070.SOLVEUR'/
-    data resoco            /'&&OP0070.RESOC'/
-    data resocu            /'&&OP0070.RESUC'/
     data comref            /'&&OP0070.COREF'/
     data maprec            /'&&OP0070.MAPREC'/
     data codere            /'&&OP0070.CODERE'/
@@ -157,16 +156,16 @@ implicit none
 !
 ! - Creation of datastructures
 !
-    call nmini0(fonact  , eta    , numins     , matass  , zmeelm,&
-                zmeass  , zveelm , zveass     , zsolal  , zvalin,&
-                ds_print, ds_conv, ds_algopara, ds_inout)
+    call nmini0(fonact  , eta    , numins     , matass  , zmeelm    ,&
+                zmeass  , zveelm , zveass     , zsolal  , zvalin    ,&
+                ds_print, ds_conv, ds_algopara, ds_inout, ds_contact)
 !
 ! - Read parameters
 !
-    call nmdata(modele     , mesh  , mate   , carele, compor  ,&
-                lischa     , solveu, ds_conv, carcri, sddyna  ,&
-                sdpost     , sderro, sdener , sdcriq, ds_print,&
-                ds_algopara, ds_inout)
+    call nmdata(modele     , mesh    , mate      , carele, compor  ,&
+                lischa     , solveu  , ds_conv   , carcri, sddyna  ,&
+                sdpost     , sderro  , sdener    , sdcriq, ds_print,&
+                ds_algopara, ds_inout, ds_contact)
 !
 ! - Initializations of datastructures
 !
@@ -178,7 +177,7 @@ implicit none
                 sd_obsv, sdtime , sderro, sdpost     , ds_inout,&
                 sdener , ds_conv, sdcriq, deficu     , resocu  ,&
                 resoco , valinc , solalg, measse     , veelem  ,&
-                meelem , veasse , codere)
+                meelem , veasse , codere, ds_contact)
 !
 ! --- PREMIER INSTANT
 !

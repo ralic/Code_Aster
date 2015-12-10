@@ -1,6 +1,8 @@
 subroutine nmetcc(field_type, algo_name, init_name,&
-                  compor    , sddyna   , sdpost   , sdcont_algo,&
+                  compor    , sddyna   , sdpost   , ds_contact,&
                   hydr      , temp_init, hydr_init)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -31,7 +33,7 @@ implicit none
     character(len=24), intent(in) :: field_type
     character(len=24), intent(out) :: algo_name
     character(len=24), intent(out) :: init_name
-    character(len=24), optional, intent(in) :: sdcont_algo
+    type(NL_DS_Contact), optional, intent(in) :: ds_contact
     character(len=19), optional, intent(in) :: compor
     character(len=19), optional, intent(in) :: sddyna
     character(len=19), optional, intent(in) :: sdpost
@@ -53,7 +55,7 @@ implicit none
 ! Out init_name        : name of field for initial state
 !                       If 'XXXXXXXXXXXXXXXX' => already defined during DS creation
 ! In  compor           : name of <CARTE> COMPOR
-! In  sdcont_algo      : name of contact algorithm datastructure
+! In  ds_contact       : datastructure for contact management
 ! In  sddyna           : name of dynamic parameters datastructure
 ! In  sdpost           : name of post-treatment for stability analysis parameters datastructure
 ! In  hydr             : name of field for hydratation (HYDR_ELNO)
@@ -66,7 +68,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=19) :: xindco, xcohes, xseuco
-    character(len=24) :: nochco
+    character(len=24) :: nochco, sdcont_solv
     character(len=24), pointer :: cont_sdname(:) => null()
     character(len=19) :: vecfla, vecvib, vecsta
     character(len=19) :: depabs, vitabs, accabs
@@ -75,13 +77,17 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    sdcont_solv = ' '
+    if (present(ds_contact)) then
+        sdcont_solv = ds_contact%sdcont_solv
+    endif
 !
 ! - Special fields
 !
-    if (present(sdcont_algo)) then
-        xindco = sdcont_algo(1:14)//'.XFIN'
-        xcohes = sdcont_algo(1:14)//'.XCOP'
-        xseuco = sdcont_algo(1:14)//'.XFSE'
+    if (present(ds_contact)) then
+        xindco = sdcont_solv(1:14)//'.XFIN'
+        xcohes = sdcont_solv(1:14)//'.XCOP'
+        xseuco = sdcont_solv(1:14)//'.XFSE'
     endif
     if (present(sdpost)) then
         call nmlesd('POST_TRAITEMENT', sdpost, 'SOLU_MODE_FLAM', ibid, r8bid,&
@@ -103,7 +109,7 @@ implicit none
         algo_name = compor
         init_name = ' '
     else if (field_type.eq.'CONT_NOEU') then
-        nochco = sdcont_algo(1:14)//'.NOCHCO'
+        nochco = sdcont_solv(1:14)//'.NOCHCO'
         call jeexin(nochco, iret)
         if (iret.ne.0) then
             call jeveuo(nochco, 'L', vk24 = cont_sdname)
@@ -112,13 +118,13 @@ implicit none
         init_name = ' '
     else if (field_type.eq.'INDC_ELEM') then
         algo_name = xindco
-        init_name = sdcont_algo(1:14)//'.XFI0'
+        init_name = sdcont_solv(1:14)//'.XFI0'
     else if (field_type.eq.'SECO_ELEM') then
         algo_name = xseuco
-        init_name = sdcont_algo(1:14)//'.XFS0'
+        init_name = sdcont_solv(1:14)//'.XFS0'
     else if (field_type.eq.'COHE_ELEM') then
         algo_name = xcohes
-        init_name = sdcont_algo(1:14)//'.XCO0'
+        init_name = sdcont_solv(1:14)//'.XCO0'
     else if (field_type.eq.'MODE_FLAMB') then
         algo_name = vecfla
         init_name = ' '

@@ -16,10 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cucrsd(noma, numedd, deficu, resocu)
-        character(len=8) :: noma
-        character(len=24) :: numedd
-        character(len=24) :: deficu
-        character(len=24) :: resocu
+    subroutine cucrsd(mesh, nume_dof, ds_contact)
+        use NonLin_Datastructure_type
+        character(len=8), intent(in) :: mesh
+        character(len=24), intent(in) :: nume_dof
+        type(NL_DS_Contact), intent(in) :: ds_contact
     end subroutine cucrsd
 end interface

@@ -1,5 +1,5 @@
-subroutine nmcrsu(sddisc     , lisins, ds_conv     , ds_algopara, l_implex,&
-                  l_cont_disc, solveu, sdcont_defi_)
+subroutine nmcrsu(sddisc, lisins     , ds_conv, ds_algopara, l_implex,&
+                  solveu, ds_contact_)
 !
 use NonLin_Datastructure_type
 !
@@ -43,27 +43,26 @@ implicit none
     character(len=19) :: sddisc, lisins, solveu
     type(NL_DS_Conv), intent(in) :: ds_conv
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-    aster_logical :: l_implex, l_cont_disc
-    character(len=24), optional, intent(in) :: sdcont_defi_
+    aster_logical :: l_implex
+    type(NL_DS_Contact), optional, intent(in) :: ds_contact_
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE *_NON_LINE (STRUCTURES DE DONNES)
 !
 ! CREATION SD DISCRETISATION - SUBDIVISION AUTO
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! In  ds_conv          : datastructure for convergence management
 ! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  LISINS : SD_LIST_INST OU SD_LISTR8
 ! In  sddisc           : datastructure for time discretization
-! IN  LCTCD  : .TRUE. SI CONTACT DISCRET
 ! IN  LIMPEX : .TRUE. SI IMPLEX
 ! IN  SOLVEU : SD SOLVEUR
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  ds_contact       : datastructure for contact management
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     character(len=16) :: metlis, modetp
     integer :: iret
@@ -72,7 +71,6 @@ implicit none
     integer :: iter_glob_maxi, iter_glob_elas
     integer :: ifm, niv, itmx, vali
     aster_logical :: ldeco
-    character(len=24) :: sdcont_defi
     real(kind=8) :: resi_glob_maxi, resi_glob_rela, inikry
     character(len=19) :: event_name
     character(len=16) :: typeco, nopara, decoup
@@ -83,7 +81,7 @@ implicit none
     character(len=24) :: tpsext
     integer :: jtpsex
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     call infdbg('MECA_NON_LINE', ifm, niv)
@@ -100,11 +98,6 @@ implicit none
 !
 ! - Initializations
 !
-    if (present(sdcont_defi_)) then
-        sdcont_defi = sdcont_defi_
-    else
-        sdcont_defi = ' '
-    endif
     inikry = 0.9d0
     pas_mini_elas = 0.d0
     call utdidt('L', sddisc, 'LIST', 'NADAPT',&
@@ -222,8 +215,13 @@ implicit none
 !
 ! --- CREATION SD STOCKAGE DES INFOS EN COURS DE CALCUL
 !
-    call nmcerr(sddisc, iter_glob_maxi, iter_glob_elas, pas_mini_elas, resi_glob_maxi,&
-                resi_glob_rela, inikry, l_cont_disc   , sdcont_defi)
+    if (present(ds_contact_)) then
+        call nmcerr(sddisc, iter_glob_maxi, iter_glob_elas, pas_mini_elas, resi_glob_maxi,&
+                    resi_glob_rela, inikry, ds_contact_)
+    else
+        call nmcerr(sddisc, iter_glob_maxi, iter_glob_elas, pas_mini_elas, resi_glob_maxi,&
+                    resi_glob_rela, inikry) 
+    endif
 !
 ! --- OBJET POUR PROLONGEMENT DECOUPE
 !

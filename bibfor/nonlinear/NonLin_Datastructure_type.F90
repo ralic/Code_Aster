@@ -209,4 +209,39 @@ implicit none
         real(kind=8)      :: temp_init
     end type NL_DS_InOut
 !
+! - Type: pairing management
+! 
+    type NL_DS_Pairing
+
+    end type NL_DS_Pairing
+!
+! - Type: contact management
+! 
+    type NL_DS_Contact
+        aster_logical     :: l_contact
+        aster_logical     :: l_meca_cont
+        aster_logical     :: l_meca_unil
+        character(len=8)  :: sdcont
+        character(len=24) :: sdcont_defi
+        character(len=24) :: sdcont_solv
+        character(len=24) :: sdunil_defi
+        character(len=24) :: sdunil_solv
+        aster_logical     :: l_form_cont
+        aster_logical     :: l_form_disc
+        aster_logical     :: l_form_xfem
+        aster_logical     :: l_form_lac
+! ----- Name of <LIGREL> for slave elements (create in DEFI_CONTACT)
+        character(len=8)  :: ligrel_elem_slav
+        aster_logical     :: l_elem_slav
+! ----- Name of <LIGREL> for contact elements (create in MECA_NON_LINE)
+        character(len=19) :: ligrel_elem_cont
+        aster_logical     :: l_elem_cont
+! ----- Identity relations between dof (XFEM with ELIM_ARETE or LAC method)
+        aster_logical     :: l_iden_rela
+        character(len=24) :: iden_rela
+! ----- Relations between dof (QUAD8 in discrete methods or XFEM, create in DEFI_CONTACT)
+        aster_logical     :: l_dof_rela
+        character(len=8)  :: ligrel_dof_rela
+    end type NL_DS_Contact
+!
 end module

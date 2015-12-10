@@ -1,12 +1,12 @@
-subroutine nminit(result  , model      , numedd    , numfix     , mate    ,&
-                  compor  , carele     , list_load , ds_algopara, maprec  ,&
-                  solveu  , carcri     , numins    , sdstat     , sddisc  ,&
-                  sdnume  , sdcont_defi, sdcrit    , varc_refe  , fonact  ,&
-                  mesh    , sdpilo     , sddyna    , ds_print   , sd_suiv ,&
-                  sd_obsv , sdtime     , sderro    , sdpost     , ds_inout,&
-                  sdener  , ds_conv    , sdcriq    , sdunil_defi, resocu  ,&
-                  resoco  , valinc     , solalg    , measse     , veelem  ,&
-                  meelem  , veasse     , codere)
+subroutine nminit(result     , model      , numedd    , numfix     , mate       ,&
+                  compor     , carele     , list_load , ds_algopara, maprec     ,&
+                  solveu     , carcri     , numins    , sdstat     , sddisc     ,&
+                  sdnume     , sdcont_defi, sdcrit    , varc_refe  , fonact     ,&
+                  mesh       , sdpilo     , sddyna    , ds_print   , sd_suiv    ,&
+                  sd_obsv    , sdtime     , sderro    , sdpost     , ds_inout   ,&
+                  sdener     , ds_conv    , sdcriq    , sdunil_defi, sdunil_solv,&
+                  sdcont_solv, valinc     , solalg    , measse     , veelem     ,&
+                  meelem     , veasse     , codere    , ds_contact)
 !
 use NonLin_Datastructure_type
 !
@@ -46,6 +46,7 @@ implicit none
 #include "asterfort/nmfonc.h"
 #include "asterfort/nmihht.h"
 #include "asterfort/InitAlgoPara.h"
+#include "asterfort/InitContact.h"
 #include "asterfort/InitConv.h"
 #include "asterfort/InitPrint.h"
 #include "asterfort/nmrefe.h"
@@ -88,15 +89,16 @@ implicit none
     character(len=19) :: list_load, sddyna
     character(len=19) :: maprec
     character(len=24) :: model, compor, numedd, numfix
-    character(len=24) :: resoco
     character(len=24) :: carcri
     character(len=24) :: mate, carele, codere
     character(len=19) :: veelem(*), meelem(*)
     character(len=19) :: veasse(*), measse(*)
     character(len=19) :: solalg(*), valinc(*)
     character(len=24) :: sdtime, sderro, sdstat
-    character(len=24) :: resocu, sdcriq
+    character(len=24) :: sdcriq
     character(len=24) :: varc_refe
+    character(len=24), intent(out) :: sdcont_solv
+    character(len=24), intent(out) :: sdunil_solv
     character(len=24), intent(out) :: sdcont_defi
     character(len=24), intent(out) :: sdunil_defi
     type(NL_DS_InOut), intent(inout) :: ds_inout
@@ -105,6 +107,7 @@ implicit none
     type(NL_DS_Print), intent(inout) :: ds_print
     type(NL_DS_Conv), intent(inout) :: ds_conv
     type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
+    type(NL_DS_Contact), intent(inout) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -126,9 +129,12 @@ implicit none
 ! Out sd_suiv          : datastructure for dof monitoring parameters
 ! Out sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
 ! Out sdunil_defi      : name of unilateral condition datastructure (from DEFI_CONTACT)
+! Out sdcont_solv      : name of contact solving datastructure
+! Out sdunil_solv      : name of unilateral condition solving datastructure
 ! IO  ds_print         : datastructure for printing parameters
 ! IO  ds_conv          : datastructure for convergence management
 ! IO  ds_algopara      : datastructure for algorithm parameters
+! IO  ds_contact       : datastructure for contact management
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -137,15 +143,10 @@ implicit none
     real(kind=8) :: instin
     character(len=19) :: varc_prev, disp_prev, strx_prev
     aster_logical :: lacc0, lpilo, lmpas, lsstf, lerrt, lviss, lrefe, ldidi
-    aster_logical :: lcont, lunil
-    character(len=19) :: ligrcf, ligrxf
-    character(len=24) :: sd_iden_rela
 !
 ! --------------------------------------------------------------------------------------------------
 !
     lacc0 = .false.
-    lunil = .false.
-    lcont = .false.
 !
 ! --- CREATION DE LA STRUCTURE DE DONNEE GESTION DU TEMPS
 !
@@ -155,15 +156,22 @@ implicit none
 !
     call nmcrst(sdstat)
 !
-! --- SAISIE ET VERIFICATION DE LA COHERENCE DU CHARGEMENT CONTACT
+! - Initializations for contact parameters
 !
-    call nmdoct(mesh  , list_load, sdcont_defi, sdunil_defi , lcont, &
-                lunil , ligrcf   , ligrxf     , sd_iden_rela)
+    call InitContact(mesh, ds_contact)
+    sdcont_defi = ds_contact%sdcont_defi
+    sdunil_defi = ds_contact%sdunil_defi
+    sdcont_solv = ds_contact%sdcont_solv
+    sdunil_solv = ds_contact%sdunil_solv
 !
-! --- CREATION DE LA NUMEROTATION ET PROFIL DE LA MATRICE
+! - Prepare list of loads (and late elements) for contact
 !
-    call nmnume(model , result, list_load, lcont , sdcont_defi,&
-                compor, numedd   , sdnume, sd_iden_rela)
+    call nmdoct(list_load, ds_contact)
+!
+! - Create information about numbering
+!
+    call nmnume(model , result, compor, list_load, ds_contact,&
+                numedd, sdnume)
 !
 ! --- CREATION DE VARIABLES "CHAPEAU" POUR STOCKER LES NOMS
 !
@@ -172,14 +180,13 @@ implicit none
 !
 ! - Prepare active functionnalities information
 !
-    call nmfonc(ds_conv  , ds_algopara, solveu, model   , sdcont_defi,&
-                list_load, lcont      , lunil , sdnume  , sddyna     ,&
-                sdcriq   , mate       , compor, ds_inout, carcri     ,&
-                fonact)
+    call nmfonc(ds_conv  , ds_algopara, solveu, model , ds_contact,&
+                list_load, sdnume     , sddyna, sdcriq, mate      ,&
+                compor   , ds_inout   , carcri, fonact)
 !
 ! - Check compatibility of some functionnalities
 !
-    call exfonc(fonact, ds_algopara, solveu, sdcont_defi, sddyna,&
+    call exfonc(fonact, ds_algopara, solveu, ds_contact, sddyna,&
                 mate)
     lpilo = isfonc(fonact,'PILOTAGE' )
     lmpas = ndynlo(sddyna,'MULTI_PAS' )
@@ -189,17 +196,17 @@ implicit none
     lrefe = isfonc(fonact,'RESI_REFE')
     ldidi = isfonc(fonact,'DIDI')
 !
-! --- CREATION DE LA STRUCTURE DE DONNEE RESULTAT DU CONTACT
+! - Prepare contact solving datastructure
 !
-    if (lcont) then
-        call cfmxsd(mesh       , model , numedd, fonact, sddyna      ,&
-                    sdcont_defi, resoco, ligrcf, ligrxf, sd_iden_rela)
+    if (ds_contact%l_meca_cont) then
+        call cfmxsd(mesh      , model, numedd, fonact, sddyna,&
+                    ds_contact)
     endif
 !
 ! --- CREATION DE LA STRUCTURE DE LIAISON_UNILATERALE
 !
-    if (lunil) then
-        call cucrsd(mesh, numedd, sdunil_defi, resocu)
+    if (ds_contact%l_meca_unil) then
+        call cucrsd(mesh, numedd, ds_contact)
     endif
 !
 ! - Initializations for algorithm parameters
@@ -208,11 +215,11 @@ implicit none
 !
 ! - Initializations for convergence management
 !
-    call InitConv(ds_conv, fonact, sdcont_defi)
+    call InitConv(ds_conv, fonact, ds_contact)
 !
 ! --- CREATION DES VECTEURS D'INCONNUS
 !
-    call nmcrch(numedd, fonact, sddyna, sdcont_defi, valinc,&
+    call nmcrch(numedd, fonact, sddyna, ds_contact, valinc,&
                 solalg, veasse)
 !
 ! --- CONSTRUCTION DU CHAM_NO ASSOCIE AU PILOTAGE
@@ -231,8 +238,8 @@ implicit none
 !
 ! - Create input/output datastructure
 !
-    call nmetcr(ds_inout, model      , compor, fonact, sddyna   ,&
-                sdpost  , sdcont_defi, resoco, carele, list_load)
+    call nmetcr(ds_inout, model     , compor, fonact   , sddyna   ,&
+                sdpost  , ds_contact, carele, list_load)
 !
 ! - Read initial state
 !
@@ -241,9 +248,9 @@ implicit none
 !
 ! - Create time discretization and storing datastructures
 !
-    call diinit(mesh       , model , ds_inout, mate       , carele,&
-                fonact     , sddyna, ds_conv , ds_algopara, solveu,&
-                sdcont_defi, sddisc)
+    call diinit(mesh      , model , ds_inout, mate       , carele,&
+                fonact    , sddyna, ds_conv , ds_algopara, solveu,&
+                ds_contact, sddisc)
 !
 ! --- CREATION DU CHAMP DES VARIABLES DE COMMANDE DE REFERENCE
 !
@@ -252,7 +259,7 @@ implicit none
 ! --- PRE-CALCUL DES MATR_ELEM CONSTANTES AU COURS DU CALCUL
 !
     call nminmc(fonact, list_load, sddyna, model, compor,&
-                numedd, numfix, sdcont_defi, resoco, ds_algopara,&
+                numedd, numfix, sdcont_defi, sdcont_solv, ds_algopara,&
                 carcri, solalg, valinc, mate, carele,&
                 sddisc, sdstat, sdtime, varc_refe, meelem,&
                 measse, veelem, codere)
@@ -271,7 +278,7 @@ implicit none
 !
     call nminvc(model    , mate  , carele, compor, sdtime   ,&
                 sddisc   , sddyna, valinc, solalg, list_load,&
-                varc_refe, resoco, resocu, numedd, ds_inout ,&
+                varc_refe, sdcont_solv, sdunil_solv, numedd, ds_inout ,&
                 veelem   , veasse, measse)
 !
 ! - Compute reference vector for RESI_REFE_RELA
@@ -309,11 +316,11 @@ implicit none
     if (lacc0) then
         call nmchar('ACCI'  , ' '   , model    , numedd, mate     ,&
                     carele  , compor, list_load, numins, sdtime   ,&
-                    sddisc  , fonact, resoco   , resocu, varc_refe,&
+                    sddisc  , fonact, sdcont_solv   , sdunil_solv, varc_refe,&
                     ds_inout, valinc, solalg   , veelem, measse   ,&
                     veasse  , sddyna)
         call accel0(model      , numedd, numfix, fonact     , list_load,&
-                    sdcont_defi, resoco, maprec, solveu     , valinc,&
+                    sdcont_defi, sdcont_solv, maprec, solveu     , valinc,&
                     sddyna     , sdstat, sdtime, ds_algopara, meelem,&
                     measse     , veelem, veasse, solalg)
     endif
@@ -372,8 +379,8 @@ implicit none
     if (lmpas) then
         call nmihht(model , numedd   , mate     , compor     , carcri,&
                     carele, list_load, varc_refe, fonact     , sdstat,&
-                    sddyna, sdtime   , sdnume   , sdcont_defi, resoco,&
-                    resocu, valinc   , sddisc   , solalg     , veasse,&
+                    sddyna, sdtime   , sdnume   , sdcont_defi, sdcont_solv,&
+                    sdunil_solv, valinc   , sddisc   , solalg     , veasse,&
                     measse, ds_inout)
     endif
 !

@@ -17,12 +17,13 @@
 !
 interface
     subroutine nmetcc(field_type, algo_name, init_name,&
-                      compor    , sddyna   , sdpost   , sdcont_algo,&
+                      compor    , sddyna   , sdpost   , ds_contact,&
                       hydr      , temp_init, hydr_init)
+        use NonLin_Datastructure_type 
         character(len=24), intent(in) :: field_type
         character(len=24), intent(out) :: algo_name
         character(len=24), intent(out) :: init_name
-        character(len=24), optional, intent(in) :: sdcont_algo
+        type(NL_DS_Contact), optional, intent(in) :: ds_contact
         character(len=19), optional, intent(in) :: compor
         character(len=19), optional, intent(in) :: sddyna
         character(len=19), optional, intent(in) :: sdpost

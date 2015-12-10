@@ -1,6 +1,6 @@
-subroutine nmini0(list_func_acti, eta    , nume_inst  , matass  , zmeelm,&
-                  zmeass        , zveelm , zveass     , zsolal  , zvalin,&
-                  ds_print      , ds_conv, ds_algopara, ds_inout)
+subroutine nmini0(list_func_acti, eta    , nume_inst  , matass  , zmeelm    ,&
+                  zmeass        , zveelm , zveass     , zsolal  , zvalin    ,&
+                  ds_print      , ds_conv, ds_algopara, ds_inout, ds_contact)
 !
 use NonLin_Datastructure_type
 !
@@ -14,6 +14,7 @@ implicit none
 #include "asterfort/CreatePrintDS.h"
 #include "asterfort/CreateAlgoParaDS.h"
 #include "asterfort/CreateInOutDS.h"
+#include "asterfort/CreateContactDS.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -47,6 +48,7 @@ implicit none
     type(NL_DS_Conv), intent(out) :: ds_conv
     type(NL_DS_AlgoPara), intent(out) :: ds_algopara
     type(NL_DS_InOut), intent(out) :: ds_inout
+    type(NL_DS_Contact), intent(out) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -62,6 +64,7 @@ implicit none
 ! Out ds_conv          : datastructure for convergence management
 ! Out ds_algopara      : datastructure for algorithm parameters
 ! Out ds_inout         : datastructure for input/output management
+! Out ds_contact       : datastructure for contact management
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -91,6 +94,10 @@ implicit none
 ! - Create input/output management datastructure
 !
     call CreateInOutDS('MECA', ds_inout)
+!
+! - Create contact management datastructure
+!
+    call CreateContactDS(ds_contact)
 !
 ! --- FONCTIONNALITES ACTIVEES               (NMFONC/ISFONC)
 !

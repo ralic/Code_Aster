@@ -16,14 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmcrch(numedd, fonact, sddyna, defico, valinc,&
+    subroutine nmcrch(numedd, fonact, sddyna, ds_contact, valinc,&
                       solalg, veasse)
-        character(len=24) :: numedd
-        integer :: fonact(*)
-        character(len=19) :: sddyna
-        character(len=24) :: defico
-        character(len=19) :: valinc(*)
-        character(len=19) :: solalg(*)
-        character(len=19) :: veasse(*)
+        use NonLin_Datastructure_type
+        character(len=24), intent(in) :: numedd
+        integer, intent(in) :: fonact(*)
+        character(len=19), intent(in) :: sddyna
+        type(NL_DS_Contact), intent(in) :: ds_contact
+        character(len=19), intent(in) :: valinc(*)
+        character(len=19), intent(in) :: solalg(*)
+        character(len=19), intent(in) :: veasse(*)
     end subroutine nmcrch
 end interface

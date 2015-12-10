@@ -1,7 +1,7 @@
-subroutine nmdata(model      , mesh    , mate   , carele, compor  ,&
-                  lischa     , solveu  , ds_conv, carcri, sddyna  ,&
-                  sdpost     , sderro  , sdener , sdcriq, ds_print,&
-                  ds_algopara, ds_inout)
+subroutine nmdata(model      , mesh    , mate      , carele, compor  ,&
+                  lischa     , solveu  , ds_conv   , carcri, sddyna  ,&
+                  sdpost     , sderro  , sdener    , sdcriq, ds_print,&
+                  ds_algopara, ds_inout, ds_contact)
 !
 use NonLin_Datastructure_type
 !
@@ -18,6 +18,7 @@ implicit none
 #include "asterfort/nmcrer.h"
 #include "asterfort/nmcrga.h"
 #include "asterfort/nmdocn.h"
+#include "asterfort/ReadContact.h"
 #include "asterfort/ReadPrint.h"
 #include "asterfort/ReadInOut.h"
 #include "asterfort/GetIOField.h"
@@ -55,6 +56,7 @@ implicit none
     type(NL_DS_Conv), intent(inout) :: ds_conv
     type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
     type(NL_DS_InOut), intent(inout) :: ds_inout
+    type(NL_DS_Contact), intent(inout) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -83,6 +85,7 @@ implicit none
 ! IO  ds_conv          : datastructure for convergence management
 ! IO  ds_algopara      : datastructure for algorithm parameters
 ! IO  ds_inout         : datastructure for input/output management
+! IO  ds_contact       : datastructure for contact management
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -147,6 +150,10 @@ implicit none
 ! - Read parameters for post-treatment management (CRIT_STAB and MODE_VIBR)
 !
     call nmdopo(sddyna, ds_algopara, sdpost)
+!
+! - Read parameters for contact management
+!
+    call ReadContact(ds_contact)
 !
 ! --- LECTURE INFOS ENERGIE
 !

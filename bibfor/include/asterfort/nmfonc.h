@@ -18,19 +18,16 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmfonc(ds_conv       , ds_algopara, solver , model   , sdcont_defi,&
-                      list_load     , l_cont     , l_unil , sdnume  , sddyna     ,&
-                      sdcriq        , mate       , compor_, ds_inout, comp_para  ,&
-                      list_func_acti)
+    subroutine nmfonc(ds_conv  , ds_algopara, solver   , model         , ds_contact,&
+                      list_load, sdnume     , sddyna   , sdcriq        , mate      ,&
+                      compor_  , ds_inout   , comp_para, list_func_acti)
         use NonLin_Datastructure_type
         type(NL_DS_Conv), intent(in) :: ds_conv
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         character(len=19), intent(in) :: solver
         character(len=24), intent(in) :: model
-        character(len=24), intent(in) :: sdcont_defi
+        type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19), intent(in) :: list_load
-        aster_logical, intent(in) :: l_cont
-        aster_logical, intent(in) :: l_unil
         character(len=19), intent(in) :: sdnume
         character(len=19), intent(in) :: sddyna
         character(len=24), intent(in) :: sdcriq

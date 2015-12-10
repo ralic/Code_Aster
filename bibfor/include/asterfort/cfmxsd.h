@@ -16,17 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfmxsd(mesh_      , model_     , nume_dof        , list_func_acti  , sddyna,&
-                      sdcont_defi, sdcont_solv, ligrel_link_cont, ligrel_link_xfem, sd_iden_rela)
+    subroutine cfmxsd(mesh_     , model_, nume_dof, list_func_acti, sddyna,&
+                      ds_contact)
+        use NonLin_Datastructure_type
         character(len=*), intent(in) :: mesh_
         character(len=*), intent(in) :: model_
         character(len=24), intent(in) :: nume_dof
         integer, intent(in) :: list_func_acti(*)
         character(len=19), intent(in) :: sddyna
-        character(len=24), intent(in) :: sdcont_defi
-        character(len=24), intent(in) :: sdcont_solv
-        character(len=19), intent(in) :: ligrel_link_cont
-        character(len=19), intent(in) :: ligrel_link_xfem
-        character(len=24), intent(in) :: sd_iden_rela
+        type(NL_DS_Contact), intent(in) :: ds_contact
     end subroutine cfmxsd
 end interface

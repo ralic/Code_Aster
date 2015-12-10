@@ -88,6 +88,7 @@ implicit none
     nb_iden_term = 0
     nb_iden_dof  = 0
     nb_dim       = cfdisi(sdcont_defi,'NDIM' )
+    sd_iden_rela = '&&IDENRELA'
 !
 ! - Get datastructure for linear relations from DEFI_CONTACT
 !
@@ -253,7 +254,6 @@ implicit none
 !
 ! - Create object for identity relations - Informations
 !
-    sd_iden_rela = '&&IDENRELA'
     call wkvect(sd_iden_rela(1:19)//'.INFO', 'V V I', 4, vi = v_sdiden_info)
     call wkvect(sd_iden_rela(1:19)//'.DIME', 'V V I', nb_iden_rela, vi = v_sdiden_dime)
 !

@@ -1,5 +1,21 @@
-subroutine nmcrch(numedd, fonact, sddyna, defico, valinc,&
+subroutine nmcrch(numedd, fonact, sddyna, ds_contact, valinc,&
                   solalg, veasse)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/ndynkk.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/vtcreb.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,23 +35,13 @@ subroutine nmcrch(numedd, fonact, sddyna, defico, valinc,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/ndynkk.h"
-#include "asterfort/ndynlo.h"
-#include "asterfort/nmchex.h"
-#include "asterfort/vtcreb.h"
-    integer :: fonact(*)
-    character(len=19) :: sddyna
-    character(len=24) :: numedd, defico
-    character(len=19) :: solalg(*), veasse(*)
-    character(len=19) :: valinc(*)
+    character(len=24), intent(in) :: numedd
+    integer, intent(in) :: fonact(*)
+    character(len=19), intent(in) :: sddyna
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=19), intent(in) :: valinc(*)
+    character(len=19), intent(in) :: solalg(*)
+    character(len=19), intent(in) :: veasse(*)
 !
 ! ----------------------------------------------------------------------
 !
@@ -45,9 +51,8 @@ subroutine nmcrch(numedd, fonact, sddyna, defico, valinc,&
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  SDDYNA : SD DYNAMIQUE
-! IN  DEFICO : DEFINITION CONTACT
+! In  ds_contact       : datastructure for contact management
 ! IN  NUMEDD : NUME_DDL
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
@@ -56,6 +61,7 @@ subroutine nmcrch(numedd, fonact, sddyna, defico, valinc,&
 ! ----------------------------------------------------------------------
 !
     integer :: ifm, niv
+    character(len=24) :: sdcont_defi
     aster_logical :: ldyna, lammo, lmpas, lrefe, lmacr, lmuap, lviss
     aster_logical :: leltc, leltf
     aster_logical :: lunil, lctcd, lctfd, lpenac, lallv
@@ -87,14 +93,15 @@ subroutine nmcrch(numedd, fonact, sddyna, defico, valinc,&
 !
     call jemarq()
     call infdbg('MECA_NON_LINE', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> ... CREATION VECTEURS INCONNUES'
     endif
 !
-! --- FONCTIONNALITES ACTIVEES
+! - Initializations
+!
+    sdcont_defi = ds_contact%sdcont_defi
+!
+! - Active functionnalities
 !
     lmacr = isfonc(fonact,'MACR_ELEM_STAT')
     ldyna = ndynlo(sddyna,'DYNAMIQUE')
@@ -113,7 +120,7 @@ subroutine nmcrch(numedd, fonact, sddyna, defico, valinc,&
     lener = isfonc(fonact,'ENERGIE')
     lmuap = ndynlo(sddyna,'MULTI_APPUI')
     if (lctcd) then
-        lpenac = cfdisl(defico,'CONT_PENA' )
+        lpenac = cfdisl(sdcont_defi,'CONT_PENA' )
     else
         lpenac = .false.
     endif

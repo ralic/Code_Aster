@@ -1,5 +1,7 @@
 subroutine nmcerr(sddisc        , iter_glob_maxi, iter_glob_elas, pas_mini_elas, resi_glob_maxi,&
-                  resi_glob_rela, inikry        , l_cont_disc   , sdcont_defi)
+                  resi_glob_rela, inikry        , ds_contact_)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -33,22 +35,21 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=19), intent(in) :: sddisc
-    aster_logical, intent(in) :: l_cont_disc
     integer, intent(in) :: iter_glob_maxi
     integer, intent(in) :: iter_glob_elas
     real(kind=8), intent(in) :: pas_mini_elas 
     real(kind=8), intent(in) :: inikry
     real(kind=8), intent(in) :: resi_glob_maxi
     real(kind=8), intent(in) :: resi_glob_rela
-    character(len=24), optional, intent(in) :: sdcont_defi
+    type(NL_DS_Contact), optional, intent(in) :: ds_contact_
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE *_NON_LINE (STRUCTURES DE DONNES - SD DISCRETISATION)
 !
 ! CREATION SD STOCKAGE DES INFOS EN COURS DE CALCUL
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! In  sddisc           : datastructure for time discretization
 ! IN  iter_glob_maxi   : ITER_GLOB_MAXI
@@ -57,10 +58,9 @@ implicit none
 ! IN  INIKRY           : PRECISION INITIALE POUR NEWTON-KRYLOV
 ! IN  resi_glob_maxi   : RESI_GLOB_MAXI
 ! IN  resi_glob_rela   : RESI_GLOB_RELA
-! IN  l_cont_disc      : .TRUE. SI CONTACT DISCRET
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  ds_contact       : datastructure for contact management
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: r8bid
     real(kind=8) :: pcplus
@@ -71,7 +71,7 @@ implicit none
     character(len=24) :: infocv, infore
     integer :: jifcv, jifre
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 !
@@ -81,7 +81,6 @@ implicit none
     iter_mini = min(iter_glob_maxi,iter_glob_elas)
     itesup = 0
     nmax = 0
-    nbitct = 0
     call utdidt('L', sddisc, 'LIST', 'NECHEC',&
                 vali_ = nb_echec)
 !
@@ -143,12 +142,15 @@ implicit none
 !
     call nmlerr(sddisc, 'E', 'ITER_NEWTON_KRYLOV', inikry, ibid)
 !
-! --- RECUPERATION NOMBRE DE REAC_GEOM EN COTNACT DISCRET
+! --- RECUPERATION NOMBRE DE REAC_GEOM EN CONTACT DISCRET
 !
-    if (l_cont_disc) then
-        maxgeo = cfdisi(sdcont_defi,'ITER_GEOM_MAXI')
-        nbreag = cfdisi(sdcont_defi,'NB_ITER_GEOM' )
-        nbitct = max(maxgeo,nbreag)
+    nbitct = 0
+    if (present(ds_contact_)) then
+        if (ds_contact_%l_meca_cont) then
+            maxgeo = cfdisi(ds_contact_%sdcont_defi,'ITER_GEOM_MAXI')
+            nbreag = cfdisi(ds_contact_%sdcont_defi,'NB_ITER_GEOM' )
+            nbitct = max(maxgeo,nbreag)
+        endif
     endif
     nbiter = nbiter+nbitct
 !

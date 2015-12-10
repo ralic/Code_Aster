@@ -1,5 +1,7 @@
-subroutine cfmxsd(mesh_      , model_     , nume_dof        , list_func_acti  , sddyna,&
-                  sdcont_defi, sdcont_solv, ligrel_link_cont, ligrel_link_xfem, sd_iden_rela)
+subroutine cfmxsd(mesh_     , model_, nume_dof, list_func_acti, sddyna,&
+                  ds_contact)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -39,11 +41,7 @@ implicit none
     character(len=24), intent(in) :: nume_dof
     integer, intent(in) :: list_func_acti(*)
     character(len=19), intent(in) :: sddyna
-    character(len=24), intent(in) :: sdcont_defi
-    character(len=24), intent(in) :: sdcont_solv
-    character(len=19), intent(in) :: ligrel_link_cont
-    character(len=19), intent(in) :: ligrel_link_xfem
-    character(len=24), intent(in) :: sd_iden_rela
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,19 +51,16 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  nume_dof         : name of numbering object (NUME_DDL)
 ! In  mesh             : name of mesh
 ! In  model            : name of model
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
-! In  sdcont_solv      : name of contact solving datastructure
+! In  nume_dof         : name of numbering object (NUME_DDL)
 ! In  list_func_acti   : list of active functionnalities
-! In  ligrel_link_cont : name of LIGREL for contact
-! In  ligrel_link_xfem : name of LIGREL for contact with xfem
-! In  sd_iden_rela     : name of object for identity relations between dof
 ! In  sddyna           : name of dynamic solving datastructure
+! In  ds_contact       : datastructure for contact management
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    character(len=24) :: sdcont_defi, sdcont_solv
     integer :: ifm, niv
     character(len=8) :: model, mesh
     integer :: zbouc
@@ -90,6 +85,8 @@ implicit none
 !
 ! - Initializations
 !
+    sdcont_defi   = ds_contact%sdcont_defi
+    sdcont_solv   = ds_contact%sdcont_solv
     nume_dof_frot = '&&CFMXSD.NUMDF'
     nb_cont_zone  = cfdisi(sdcont_defi,'NZOCO')
     model         = model_
@@ -123,9 +120,9 @@ implicit none
     sdcont_nosdco = sdcont_solv(1:14)//'.NOSDCO'
     call wkvect(sdcont_nosdco, 'V V K24', 4, vk24 = v_sdcont_nosdco)
     v_sdcont_nosdco(1) = nume_dof_frot
-    v_sdcont_nosdco(2) = ligrel_link_cont
-    v_sdcont_nosdco(3) = ligrel_link_xfem
-    v_sdcont_nosdco(4) = sd_iden_rela
+    v_sdcont_nosdco(2) = ds_contact%ligrel_elem_cont
+    v_sdcont_nosdco(3) = ds_contact%ligrel_elem_cont
+    v_sdcont_nosdco(4) = ds_contact%iden_rela
 !
 ! - Create datastructure for renumbering flag
 !

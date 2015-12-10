@@ -16,10 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmdata(model      , mesh    , mate   , carele, compor  ,&
-                      lischa     , solveu  , ds_conv, carcri, sddyna  ,&
-                      sdpost     , sderro  , sdener , sdcriq, ds_print,&
-                      ds_algopara, ds_inout)
+    subroutine nmdata(model      , mesh    , mate      , carele, compor  ,&
+                      lischa     , solveu  , ds_conv   , carcri, sddyna  ,&
+                      sdpost     , sderro  , sdener    , sdcriq, ds_print,&
+                      ds_algopara, ds_inout, ds_contact)
         use NonLin_Datastructure_type
         character(len=*), intent(out) :: model
         character(len=*), intent(out) :: mesh
@@ -38,5 +38,6 @@ interface
         type(NL_DS_Conv), intent(inout)  :: ds_conv
         type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
         type(NL_DS_InOut), intent(inout) :: ds_inout
+        type(NL_DS_Contact), intent(inout) :: ds_contact
     end subroutine nmdata
 end interface

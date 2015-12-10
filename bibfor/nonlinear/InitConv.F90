@@ -1,4 +1,4 @@
-subroutine InitConv(ds_conv, list_func_acti, sdcont_defi)
+subroutine InitConv(ds_conv, list_func_acti, ds_contact)
 !
 use NonLin_Datastructure_type
 !
@@ -35,7 +35,7 @@ implicit none
 !
     type(NL_DS_Conv), intent(inout) :: ds_conv
     integer, optional, intent(in) :: list_func_acti(*)
-    character(len=24), optional, intent(in) :: sdcont_defi
+    type(NL_DS_Contact), optional, intent(in) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -47,11 +47,12 @@ implicit none
 !
 ! IO  ds_conv          : datastructure for convergence management
 ! In  list_func_acti   : list of active functionnalities
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  ds_contact       : datastructure for contact management
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
+    character(len=24) :: sdcont_defi
     real (kind=8) :: resi_glob_rela, resi_frot, resi_geom
     integer :: iret
     aster_logical :: l_newt_frot, l_newt_geom, l_resi_user, l_rela, l_maxi, l_refe, l_comp
@@ -104,6 +105,8 @@ implicit none
 ! - Set contact residuals (not for SIMU_POINT_MAT)
 !
     if (present(list_func_acti)) then
+!
+        sdcont_defi   = ds_contact%sdcont_defi
 !
 ! ----- Active functionnalites
 !

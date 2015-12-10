@@ -1,6 +1,6 @@
 subroutine diinit(mesh_         , model_     , ds_inout, mate       , cara_elem,&
                   list_func_acti, sddyna     , ds_conv , ds_algopara, solver   ,&
-                  sdcont_defi   , sddisc)
+                  ds_contact    , sddisc)
 !
 use NonLin_Datastructure_type
 !
@@ -46,7 +46,7 @@ implicit none
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=19), intent(in) :: solver
-    character(len=24), intent(in) :: sdcont_defi
+    type(NL_DS_Contact), intent(in) :: ds_contact
     integer, intent(in) :: list_func_acti(*)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -65,14 +65,14 @@ implicit none
 ! In  ds_conv          : datastructure for convergence management
 ! In  ds_algo          : datastructure for algorithm management
 ! In  list_func_acti   : active functionnalities vector (see nmfonc)
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  ds_contact       : datastructure for contact management
 ! In  solver           : name of solver parameters
 ! In  sddisc           : datastructure for time discretization
 ! In  ds_inout         : datastructure for input/output management
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: l_expl, l_implex, l_cont_disc
+    aster_logical :: l_expl, l_implex
     character(len=19) :: list_inst
     character(len=8) :: model, mesh, result
     real(kind=8) :: init_time
@@ -85,14 +85,13 @@ implicit none
 !
 ! - Get parameters
 !
-    init_time = ds_inout%init_time
-    result    = ds_inout%result
+    init_time   = ds_inout%init_time
+    result      = ds_inout%result
 !
 ! - Active functionnalities
 !
     l_expl       = ndynlo(sddyna,'EXPLICITE')
     l_implex     = isfonc(list_func_acti,'IMPLEX')
-    l_cont_disc  = isfonc(list_func_acti,'CONT_DISCRET')
 !
 ! - Create time discretization datastructure
 !
@@ -110,8 +109,8 @@ implicit none
 !
 ! - Automatic management of time stepping
 !
-    call nmcrsu(sddisc     , list_inst, ds_conv    , ds_algopara, l_implex,&
-                l_cont_disc, solver   , sdcont_defi)
+    call nmcrsu(sddisc, list_inst , ds_conv, ds_algopara, l_implex,&
+                solver, ds_contact)
 !
 ! - Table for parameters
 !

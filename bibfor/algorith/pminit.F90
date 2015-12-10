@@ -63,9 +63,11 @@ implicit none
     type(NL_DS_Conv), intent(inout) :: ds_conv
     type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
 !
-!-----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
 !     OPERATEUR    CALC_POINT_MAT : INITIALISATIONS
-!-----------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
 !
 ! IN   IMATE  : ADRESSE MATERIAU CODE
 ! IN   NBVARI : NOMBRE DE VARIABLES INTERNES
@@ -94,6 +96,7 @@ implicit none
 ! OUT  MATREL : MATRICE TANGENTE = 1 SI ELASTIQUE
 ! OUT  OPTION : FULL_MECA OU RAPH_MECA
 !
+! --------------------------------------------------------------------------------------------------
 !
     complex(kind=8) :: cbid
     character(len=24) :: k24bid
@@ -101,7 +104,15 @@ implicit none
     integer :: iepsi, icont, igrad, irota, defimp, indimp(9), ncmp
     integer :: pred, matrel, ic1c2, iforta, imptgt, nbvita, imes(2)
     integer :: iligne, icolon, nbcol, nbvrcm, numins
-    character(len=4) :: nomeps(6), nomsig(6), nomgrd(9), optgt
+    character(len=4), parameter :: nomeps(6) = (/'EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ'/)
+    character(len=4), parameter :: nomsig(6) = (/'SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ'/)
+    character(len=4), parameter :: nomgrd(9) = (/'F11','F12','F13',&
+                                                 'F21','F22','F23',&
+                                                 'F31','F32','F33'/)
+    real(kind=8), parameter :: id(9) = (/1.d0, 0.d0, 0.d0,&
+                                         0.d0, 1.d0, 0.d0,&
+                                         0.d0, 0.d0, 1.d0/)
+    character(len=4) :: optgt
     character(len=8) :: typmod(2), k8b, table, fonimp(9), fongrd(9), f0, vk8(2)
     character(len=8) :: foneps(6), fonsig(6), typpar(*), valef, nomvi(*)
     character(len=16) :: option, nompar(*), predic, matric, fortab
@@ -111,16 +122,12 @@ implicit none
     real(kind=8) :: vim(nbvari), vip(nbvari), vr(*)
     real(kind=8) :: sigi, rep(7), kel(6, 6), cimpo(6, 12)
     real(kind=8) :: angd(3), ang1(1), pgl(3, 3), xyzgau(3), coef, instin
-    real(kind=8) :: angeul(3), id(9), dsidep(36)
+    real(kind=8) :: angeul(3), dsidep(36)
     real(kind=8) :: sigini(6), epsini(6)
-    aster_logical :: lctcd, limpex
+    aster_logical :: limpex
 !
-    data nomeps/'EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ'/
-    data nomsig/'SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ'/
-    data nomgrd/'F11','F12','F13','F21','F22','F23','F31','F32','F33'/
-    data id/1.d0,0.d0,0.d0, 0.d0,1.d0,0.d0, 0.d0,0.d0,1.d0/
-! ----------------------------------------------------------------------
-!     INITIALISATIONS
+! --------------------------------------------------------------------------------------------------
+!
     cbid=(0.d0,0.d0)
     ndim=3
     typmod(1)='3D'
@@ -484,9 +491,8 @@ implicit none
     endif
 !     SUBDIVISION AUTOMATIQUE DU PAS DE TEMPS
     limpex = .false.
-    lctcd = .false.
     call nmcrsu(sddisc, lisins, ds_conv, ds_algopara, limpex,&
-                lctcd , solveu)
+                solveu)
 !     INSTANT INITIAL
     numins=0
     instam = diinst(sddisc, numins)

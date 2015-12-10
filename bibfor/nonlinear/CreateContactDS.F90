@@ -1,0 +1,87 @@
+subroutine CreateContactDS(ds_contact)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/infdbg.h"
+!
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: mickael.abbas at edf.fr
+!
+    type(NL_DS_Contact), intent(out) :: ds_contact
+!
+! --------------------------------------------------------------------------------------------------
+!
+! MECA_NON_LINE - Contact management
+!
+! Create contact management datastructure
+!
+! --------------------------------------------------------------------------------------------------
+!
+! Out ds_contact       : datastructure for contact management
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: ifm, niv
+!
+! --------------------------------------------------------------------------------------------------
+!
+    call infdbg('MECANONLINE', ifm, niv)
+    if (niv .ge. 2) then
+        write (ifm,*) '<MECANONLINE> . Create contact management datastructure'
+    endif
+!
+! - Main parameters
+!
+    ds_contact%l_contact   = .false._1
+    ds_contact%l_meca_cont = .false._1
+    ds_contact%l_meca_unil = .false._1
+    ds_contact%sdcont      = ' '
+    ds_contact%l_form_cont = .false._1
+    ds_contact%l_form_disc = .false._1
+    ds_contact%l_form_xfem = .false._1
+    ds_contact%l_form_lac  = .false._1
+!
+! - Name of datastructures
+!
+    ds_contact%sdcont_defi = '&&OP0070.DEFIC'
+    ds_contact%sdunil_defi = '&&OP0070.DEFIU'
+    ds_contact%sdcont_solv = '&&OP0070.RESOC'
+    ds_contact%sdunil_solv = '&&OP0070.RESUC'
+!
+! - Name of <LIGREL> - Slave and contact elements
+!
+    ds_contact%ligrel_elem_slav = ' '
+    ds_contact%l_elem_slav      = .false._1
+    ds_contact%ligrel_elem_cont = ' '
+    ds_contact%l_elem_cont      = .false._1
+!
+! - Identity relations between dof
+!
+    ds_contact%l_iden_rela = .false._1
+    ds_contact%iden_rela   = ' '
+!
+! - Relations between dof (QUAD8 in discrete methods or XFEM)
+!
+    ds_contact%l_dof_rela       = .false._1
+    ds_contact%ligrel_dof_rela  = ' '
+!
+end subroutine

@@ -18,16 +18,16 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmcerr(sddisc      , iter_glob_maxi, iter_glob_elas, pas_mini_elas, resi_glob_maxi,&
-                      resi_glob_rela, inikry        , l_cont_disc   , sdcont_defi)
+    subroutine nmcerr(sddisc       , iter_glob_maxi, iter_glob_elas, pas_mini_elas, resi_glob_maxi,&
+                      resi_glob_rela, inikry       , ds_contact_)
+        use NonLin_Datastructure_type
         character(len=19), intent(in) :: sddisc
-        aster_logical, intent(in) :: l_cont_disc
         integer, intent(in) :: iter_glob_maxi
         integer, intent(in) :: iter_glob_elas
         real(kind=8), intent(in) :: pas_mini_elas 
         real(kind=8), intent(in) :: inikry
         real(kind=8), intent(in) :: resi_glob_maxi
         real(kind=8), intent(in) :: resi_glob_rela
-        character(len=24), optional, intent(in) :: sdcont_defi
+        type(NL_DS_Contact), optional, intent(in) :: ds_contact_
     end subroutine nmcerr
 end interface

@@ -1,4 +1,4 @@
-subroutine exfonc(list_func_acti, ds_algopara, solver, sdcont_defi, sddyna,&
+subroutine exfonc(list_func_acti, ds_algopara, solver, ds_contact, sddyna,&
                   mate)
 !
 use NonLin_Datastructure_type
@@ -38,7 +38,7 @@ implicit none
     integer, intent(in) :: list_func_acti(*)
     character(len=19), intent(in) :: solver
     character(len=19), intent(in) :: sddyna
-    character(len=24), intent(in) :: sdcont_defi
+    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=24), intent(in) :: mate
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
 !
@@ -53,7 +53,7 @@ implicit none
 ! In  list_func_acti   : list of active functionnalities
 ! In  ds_algopara      : datastructure for algorithm parameters
 ! In  solver           : datastructure for solver parameters 
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  ds_contact       : datastructure for contact management
 ! In  sddyna           : dynamic parameters datastructure
 ! In  mate             : name of material characteristics (field)
 !
@@ -66,7 +66,7 @@ implicit none
     aster_logical :: lgcpc, lpetsc, lamg, limpex, l_matr_rigi_syme
     aster_logical :: londe, l_dyna, l_grot_gdep, ltheta, l_newt_krylov, l_mumps
     aster_logical :: l_energy, lproj, lmatdi, lldsp, lctgcp, l_comp_rela
-    character(len=24) :: typilo, metres
+    character(len=24) :: typilo, metres, sdcont_defi
     character(len=16) :: reli_meth, matrix_pred
     character(len=3) :: mfdet
     character(len=24), pointer :: slvk(:) => null()
@@ -124,6 +124,7 @@ implicit none
 ! - Contact (DISCRETE)
 !
     if (l_cont_disc) then
+        sdcont_defi = ds_contact%sdcont_defi
         lmodim = cfdisl(sdcont_defi,'MODI_MATR_GLOB')
         lallv = cfdisl(sdcont_defi,'ALL_VERIF')
         lpena = cfdisl(sdcont_defi,'CONT_PENA')
