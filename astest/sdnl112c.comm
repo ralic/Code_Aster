@@ -514,6 +514,7 @@ IMPR_TABLE(  TABLE=TABLE,
  )
 #
 TEST_TABLE(VALE_CALC=0.0140239567531,
+           TOLE_MACHINE=5.E-3, ## tole machine pour clap0f0q (cf.issue24595)
            NOM_PARA='RMS',
            TABLE=TABLE,
            FILTRE=(_F(NOM_PARA='CALCUL',
@@ -524,6 +525,7 @@ TEST_TABLE(VALE_CALC=0.0140239567531,
            )
 
 TEST_TABLE(VALE_CALC=0.0140239567531,
+           TOLE_MACHINE=5.E-3, ## tole machine pour clap0f0q (cf.issue24595)
            NOM_PARA='RMS',
            TABLE=TABLE,
            FILTRE=(_F(NOM_PARA='CALCUL',
@@ -534,6 +536,7 @@ TEST_TABLE(VALE_CALC=0.0140239567531,
            )
 
 TEST_TABLE(VALE_CALC=127.618721899,
+           TOLE_MACHINE=5.E-3,  ## tole machine pour clap0f0q (cf.issue24595)
            NOM_PARA='RMS',
            TABLE=TABLE,
            FILTRE=(_F(NOM_PARA='CALCUL',
@@ -544,6 +547,7 @@ TEST_TABLE(VALE_CALC=127.618721899,
            )
 
 TEST_TABLE(VALE_CALC=0.0140239567531,
+           TOLE_MACHINE=5.E-3, ## tole machine pour clap0f0q (cf.issue24595)
            NOM_PARA='RMS',
            TABLE=TABLE,
            FILTRE=(_F(NOM_PARA='CALCUL',
@@ -554,6 +558,7 @@ TEST_TABLE(VALE_CALC=0.0140239567531,
            )
 
 TEST_TABLE(VALE_CALC=0.0140239567531,
+           TOLE_MACHINE=5.E-3, ## tole machine pour clap0f0q (cf.issue24595)
            NOM_PARA='RMS',
            TABLE=TABLE,
            FILTRE=(_F(NOM_PARA='CALCUL',
@@ -564,6 +569,7 @@ TEST_TABLE(VALE_CALC=0.0140239567531,
            )
 
 TEST_TABLE(VALE_CALC=127.618721899,
+           TOLE_MACHINE=5.E-3, ## tole machine pour clap0f0q (cf.issue24595)
            NOM_PARA='RMS',
            TABLE=TABLE,
            FILTRE=(_F(NOM_PARA='CALCUL',
@@ -657,3 +663,4 @@ TEST_TABLE(  TABLE=USURE,
                   VALE = 1.62075E-09     )
 
 #
+
