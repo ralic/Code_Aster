@@ -1,4 +1,5 @@
 subroutine ib0mai()
+    use superv_module, only: superv_before
     implicit none
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -77,6 +78,7 @@ subroutine ib0mai()
     nomf = 'VOLATILE'
     call jeinif('DEBUT', 'DETRUIT', nomf, 'V', 250,&
                 100, 1)
+    call superv_before()
 ! --- IMPRESSION DE L'ENTETE
     call entete()
     k8tab(1) = 'LIMIT_JV'

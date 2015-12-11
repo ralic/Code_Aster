@@ -17,6 +17,7 @@ subroutine entete()
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+    use superv_module, only: asthread_getmax
     implicit none
 ! ----------------------------------------------------------------------
 !     ECRITURE DE L'ENTETE
@@ -35,7 +36,7 @@ subroutine entete()
     integer :: vali(3)
 !
 #ifdef _USE_OPENMP
-    integer :: maxThreads, iret
+    integer :: maxThreads
 #endif
 ! ----------------------------------------------------------------------
 ! --- INFORMATIONS GLOBALES
@@ -51,7 +52,7 @@ subroutine entete()
 #endif
 ! --- CONFIGURATION OPENMP
 #ifdef _USE_OPENMP
-    call gtopti('numthreads', maxThreads, iret)
+    maxThreads = asthread_getmax()
     call utmess('I', 'SUPERVIS2_13', si=maxThreads)
 #endif
 ! --- LIBRARIES HDF5 ET MED
