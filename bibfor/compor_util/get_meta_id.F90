@@ -1,6 +1,6 @@
 subroutine get_meta_id(meta_id, nb_phasis)
 !
-use calcul_module, only : ca_iactif_
+use calcul_module, only : calcul_status
 !
 implicit none
 !
@@ -59,7 +59,7 @@ implicit none
 !
 ! - Choice of integration scheme: for CALC_POINT_MAT is PMAT !
 !
-    if (ca_iactif_ .eq. 2) then
+    if (calcul_status() .eq. 2) then
         fami = 'PMAT'
     else
         fami = 'RIGI'

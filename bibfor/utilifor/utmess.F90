@@ -1,7 +1,7 @@
 subroutine utmess(typ, idmess, nk, valk, sk,&
                   ni, vali, si, nr, valr,&
                   sr, num_except, fname)
-use calcul_module, only : ca_iactif_
+use calcul_module, only : calcul_status
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -135,7 +135,7 @@ use calcul_module, only : ca_iactif_
 !  1. Faut-il completer le message (si on est dans un calcul elementaire) ?
 !  ------------------------------------------------------------------------
     typ2=typ
-    if (ca_iactif_.eq.1 .and. (typ2(1:1).eq.'F' .or. typ2(1:1).eq.'E')) then
+    if (calcul_status().ne.0 .and. (typ2(1:1).eq.'F' .or. typ2(1:1).eq.'E')) then
         under_te0000=.true.
         if (typ2(2:2).eq.'+') under_te0000=.false.
     else

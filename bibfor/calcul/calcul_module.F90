@@ -289,5 +289,11 @@ contains
     subroutine calcul_init()
         ca_iactif_ = 0
     end subroutine
-!
+
+!>  Dit si on se trouve sous *calcul*
+    function calcul_status()
+        integer :: calcul_status
+        calcul_status = ca_iactif_
+    end function calcul_status
+
 end module

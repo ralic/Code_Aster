@@ -6,7 +6,7 @@ subroutine lc0000(fami, kpg, ksp, ndim, typmod,&
                   sigp, vip, ndsde, dsidep, icomp,&
                   nvi, nwkout, wkout, codret)
 ! aslint: disable=W1501,W1504
-use calcul_module, only : ca_iactif_
+use calcul_module, only : calcul_status
 implicit none
 !       ================================================================
 ! ======================================================================
@@ -244,7 +244,7 @@ implicit none
 !
 !     NUMLC doit etre compris entre 1 et 100
 !
-    if (ca_iactif_ .ne. 2) then
+    if (calcul_status() .ne. 2) then
         if (option(1:9) .ne. 'RIGI_MECA') then
 !           DEFORMATION MECANIQUE ASSOCIEE A LA VARIABLE DE
 !           COMMANDE PTOT. CE CALCUL N'EST POSSIBLE QUE :
