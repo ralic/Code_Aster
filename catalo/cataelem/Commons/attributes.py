@@ -22,7 +22,7 @@ from cataelem.Tools.base_objects import Attribute, objects_from_context
 #--------------------------------------------------------------------------------------
 # Remarques importantes :
 #------------------------
-# Les 9 attributs suivants (qui ont "auto=True") sont "automatiques".
+# Les 10 attributs suivants (qui ont "auto=True") sont "automatiques".
 # Ils se déduisent d'informations donnees dans le catalogue phenomenons_modelisations.py
 # et dans le catalogue mesh_types.py
 # Il NE FAUT PAS les redefinir dans les catalogues.
@@ -71,10 +71,21 @@ MODELI = Attribute(auto=True, value=(
                    'FS2',
                    'FSA',
                    'PFI',
+                  # ...
                    ),
                    comment="""
   MODELI :  'code' de la modelisaton
   Si un element appartient a plusieurs modelisations : MODELI='###'
+""")
+
+TYPMA = Attribute(auto=True,value=(
+                  'POI',
+                  'SE2',
+                  'TE4',
+                # ...
+                  ),
+                  comment="""
+TYPMA  =  'code' du type_maille
 """)
 
 ALIAS8 = Attribute(auto=True, value=( 'MEDTRSE2',),

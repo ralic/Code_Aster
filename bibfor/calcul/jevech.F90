@@ -1,28 +1,29 @@
 subroutine jevech(nmparz, louez, itab)
+
 use calcul_module, only : ca_caindz_, ca_capoiz_, ca_iachoi_,&
      ca_iachok_, ca_iaoppa_, ca_iawlo2_, ca_iawloc_,&
      ca_iel_, ca_igr_, ca_nbgr_, ca_nomte_, ca_nparin_, ca_npario_, ca_option_
+     
 implicit none
-!
+
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
 ! (AT YOUR OPTION) ANY LATER VERSION.
-!
+
 ! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
 ! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
 ! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
 ! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-!
+
 ! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
-!     ARGUMENTS:
-!     ----------
+
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
@@ -35,39 +36,34 @@ implicit none
 #include "asterfort/jexnum.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
-!
+
     character(len=*) :: nmparz, louez
     character(len=8) :: nompar, nommai
     character(len=1) :: loue
     integer :: itab
-!     -----------------------------------------------------------------
-!     ENTREES:
-!     NOMPAR  : NOM DU PARAMETRE DE L'OPTION
-!     LOUEZ   : 'L' OU 'E'  ( LECTURE/ECRITURE )
+!-----------------------------------------------------------------
+!  entrees:
+!     nompar  : nom du parametre de l'option
+!     louez   : 'L' ou 'E'  ( lecture/ecriture )
 !
-!     SORTIES:
-!     ITAB     : ADRESSE DU CHAMP LOCAL CORRESPONDANT A NOMPAR
-!     -----------------------------------------------------------------
-!
+!  sorties:
+!     itab     : adresse du champ local correspondant a nompar
+!-----------------------------------------------------------------
     integer :: iachlo
     integer :: ilchlo, k, kk, debugr
     integer ::  iparg,  lgcata
     integer ::    jceld, adiel
     integer :: debgr2, lonchl, decael, iadzi, iazk24
     integer :: opt, iaopd2, iaoplo, iapara, ipara, npari2
-!
-!
     aster_logical :: etendu
     character(len=24) :: valk(5)
-!
-!
-! DEB -----------------------------------------------------------------
+! ------------------------------------------------------------------
     nompar = nmparz
     loue = louez
-!
+
     ASSERT(loue.eq.'L' .or. loue.eq.'E')
-!
-!     -- RECHERCHE DE LA CHAINE NOMPAR AVEC MEMOIRE SUR TOUT 'CALCUL'
+
+!   -- recherche de la chaine nompar avec memoire sur tout 'calcul'
     ca_capoiz_ = ca_capoiz_ + 1
     if (ca_capoiz_ .gt. 512) then
         iparg = indik8(zk8(ca_iaoppa_),nompar,1,ca_npario_)
@@ -79,17 +75,17 @@ implicit none
             ca_caindz_(ca_capoiz_) = iparg
         endif
     endif
-!
-!
+
+
     if (iparg .eq. 0) then
         valk(1) = nompar
         valk(2) = ca_option_
         call utmess('E', 'CALCUL_15', nk=2, valk=valk)
         call contex_param(ca_option_, ' ')
     endif
-!
-! --- ON VERIFIE QUE LES PARAMETRE IN SONT EN LECTURE
-!     ET QUE LES PARAMETRES OUT SONT EN ECRITURE
+
+!   -- on verifie que les parametre in sont en lecture
+!      et que les parametres out sont en ecriture
     if (iparg .gt. ca_nparin_ .and. loue .eq. 'L') then
         write(6,*)'PARAMETRE OUT EN LECTURE : ',nompar
         ASSERT(.false.)
@@ -97,12 +93,12 @@ implicit none
         write(6,*)'PARAMETRE IN EN ECRITURE : ',nompar
         ASSERT(.false.)
     endif
-!
+
     iachlo=zi(ca_iawloc_-1+3*(iparg-1)+1)
     ilchlo=zi(ca_iawloc_-1+3*(iparg-1)+2)
     lgcata=zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+2)
     debugr=zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+5)
-!
+
     if (lgcata .eq. -1) then
         valk(1) = nompar
         valk(2) = ca_option_
@@ -110,11 +106,11 @@ implicit none
         call utmess('E', 'CALCUL_16', nk=3, valk=valk)
         call contex_param(ca_option_, nompar)
     endif
-!
-!
+
+
     if (iachlo .eq. -1) then
-!        ON AJOUTE CELA POUR EMETTRE UN MESSAGE PLUS CLAIR DANS
-!        LE CAS OU IL MANQUE UN CHAMP LIE A UN PARAMETRE
+!        on ajoute cela pour emettre un message plus clair dans
+!        le cas ou il manque un champ lie a un parametre
         call jenonu(jexnom('&CATA.OP.NOMOPT', ca_option_), opt)
         call jeveuo(jexnum('&CATA.OP.DESCOPT', opt), 'L', iaopd2)
         call jeveuo(jexnum('&CATA.OP.LOCALIS', opt), 'L', iaoplo)
@@ -126,7 +122,7 @@ implicit none
         goto 40
  30     continue
         valk(1) = ca_option_
-!        ON PEUT TROUVER D'OU VIENT LE PROBLEME DANS 3 CAS
+!        on peut trouver d'ou vient le probleme dans 3 cas
         if (zk24(iaoplo+3*ipara-3) .eq. 'CARA') then
             call utmess('E', 'CALCUL_10', sk=valk(1))
         else if (zk24(iaoplo+3*ipara-3).eq.'CHMA') then
@@ -140,13 +136,13 @@ implicit none
         valk(3) = ca_nomte_
         call utmess('E', 'CALCUL_17', nk=3, valk=valk)
         call contex_param(ca_option_, nompar)
-!
+
     endif
     ASSERT(iachlo.ne.-2)
-!
-!
-!     -- CALCUL DE ITAB,LONCHL,DECAEL :
-!     ---------------------------------
+
+
+!   -- calcul de itab, lonchl, decael :
+!   -----------------------------------
     call chloet(iparg, etendu, jceld)
     if (etendu) then
         adiel = zi(jceld-1+zi(jceld-1+4+ca_igr_)+4+4* (ca_iel_-1)+4)
@@ -159,11 +155,11 @@ implicit none
         lonchl = lgcata
     endif
     itab = iachlo+debugr-1+decael
-!
-!
-!     -- POUR LES CHAMPS "IN" ON VERIFIE QUE L'EXTRACTION EST
-!        COMPLETE SUR L'ELEMENT:
-!     ----------------------------------------------------------
+
+
+!   -- pour les champs "in" on verifie que l'extraction est
+!      complete sur l'element:
+!   ----------------------------------------------------------
     if (ilchlo .ne. -1) then
         do 10 k = 1, lonchl
             if (.not.zl(ilchlo+debugr-1+decael-1+k)) then
@@ -173,9 +169,9 @@ implicit none
                 valk(2) = ca_option_
                 valk(3) = ca_nomte_
                 valk(4) = nommai
-!
-!           -- POUR CERTAINS PARAMETRES "COURANTS" ON EMET
-!              UN MESSAGE PLUS CLAIR :
+
+!               -- pour certains parametres "courants" on emet
+!                  un message plus clair :
                 if (nompar .eq. 'PMATERC') then
                     call utmess('F', 'CALCUL_20', nk=4, valk=valk)
                 else if (nompar.eq.'PCACOQU') then
@@ -184,9 +180,9 @@ implicit none
                     call utmess('F', 'CALCUL_22', nk=4, valk=valk)
                 else if (nompar.eq.'PCAORIE') then
                     call utmess('F', 'CALCUL_23', nk=4, valk=valk)
-!
+
                 else
-!
+
                     write (6,*) 'ERREUR JEVECH ZL :',nompar, (zl(&
                     ilchlo+debugr-1+decael-1+kk),kk=1,lonchl)
                     write (6,*) 'MAILLE: ',zk24(iazk24-1+3)
@@ -196,5 +192,5 @@ implicit none
             endif
  10     continue
     endif
-!
+
 end subroutine

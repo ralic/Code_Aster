@@ -1,6 +1,11 @@
 subroutine debcal(nomop, ligrel, nin, lchin, lpain,&
                   nout, lchout)
-!
+
+use calcul_module, only : ca_iachii_, ca_iachik_, ca_iachix_, &
+    ca_iactif_, ca_iaobtr_, ca_iaopds_, ca_iaoppa_, ca_nbobtr_
+
+implicit none
+
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,13 +22,9 @@ subroutine debcal(nomop, ligrel, nin, lchin, lpain,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!
+
 ! person_in_charge: jacques.pellet at edf.fr
-use calcul_module, only : ca_iachii_, ca_iachik_, ca_iachix_, &
-    ca_iactif_, ca_iaobtr_, ca_iaopds_, ca_iaoppa_, ca_nbobtr_
-implicit none
-!     ARGUMENTS:
-!     ----------
+
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterc/isnnem.h"
@@ -45,32 +46,32 @@ implicit none
 #include "asterfort/scalai.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-!
+
     character(len=16) :: nomop
     character(len=19) :: ligrel
     integer :: nin, nout
     character(len=19) :: lchin(nin), lchout(nout)
     character(len=8) :: lpain(nin)
-! ----------------------------------------------------------------------
+!----------------------------------------------------------------------
 !
-!     BUT :
-!      1. VERIFIER LES "ENTREES" DE CALCUL.
-!      2. INITIALISER CERTAINS OBJETS POUR LE CALCUL AINSI QUE LES
-!       COMMUNS CONTENANT LES ADRESSES DES OBJETS DES CATALOGUES.
+!  but :
+!   1. verifier les "entrees" de calcul.
+!   2. initialiser certains objets pour le calcul ainsi que les
+!    communs contenant les adresses des objets des catalogues.
 !
-!     ENTREES:
-!        NOMOP  :  NOM D'1 OPTION
-!        LIGREL :  NOM DU LIGREL SUR LEQUEL ON DOIT FAIRE LE DEBCAL
-!        NIN    :  NOMBRE DE CHAMPS PARAMETRES "IN"
-!        NOUT   :  NOMBRE DE CHAMPS PARAMETRES "OUT"
-!        LCHIN  :  LISTE DES NOMS DES CHAMPS "IN"
-!        LCHOUT :  LISTE DES NOMS DES CHAMPS "OUT"
-!        LPAIN  :  LISTE DES NOMS DES PARAMETRES "IN"
+!  entrees:
+!     nomop  :  nom d'1 option
+!     ligrel :  nom du ligrel sur lequel on doit faire le debcal
+!     nin    :  nombre de champs parametres "in"
+!     nout   :  nombre de champs parametres "out"
+!     lchin  :  liste des noms des champs "in"
+!     lchout :  liste des noms des champs "out"
+!     lpain  :  liste des noms des parametres "in"
 !
-!     SORTIES:
-!       ALLOCATION D'OBJETS DE TRAVAIL
+!  sorties:
+!    allocation d'objets de travail
 !
-! ----------------------------------------------------------------------
+!----------------------------------------------------------------------
     integer :: desc
     integer :: i
     integer :: ibid, nbpara, iret, j
@@ -82,17 +83,14 @@ implicit none
     character(len=8) :: nompar, ma, ma2, k8bi1, k8bi2
     character(len=19) :: chin, chou, ligre2
     character(len=24) :: noprno, objdes, valk(5)
-!---------------- COMMUNS POUR CALCUL ----------------------------------
-!
-!
     character(len=24), pointer :: refe(:) => null()
     integer, pointer :: nbno(:) => null()
 !-----------------------------------------------------------------------
     call dismoi('NOM_MAILLA', ligrel, 'LIGREL', repk=ma)
-!
-!
-!     -- VERIFICATION QUE LES CHAMPS "IN" ONT DES NOMS LICITES:
-!     ---------------------------------------------------------
+
+
+!   -- verification que les champs "in" ont des noms licites:
+!   ---------------------------------------------------------
     do i = 1, nin
         nompar=lpain(i)
         call chlici(nompar, 8)
@@ -100,10 +98,10 @@ implicit none
             call chlici(lchin(i), 19)
         endif
     end do
-!
-!
-!     -- VERIFICATION DE L'EXISTENCE DES CHAMPS "IN"
-!     ---------------------------------------------------
+
+
+!   -- verification de l'existence des champs "in"
+!   ---------------------------------------------------
     call wkvect('&&CALCUL.LCHIN_EXI', 'V V L', max(1, nin), ca_iachix_)
     ca_nbobtr_=ca_nbobtr_+1
     zk24(ca_iaobtr_-1+ca_nbobtr_)='&&CALCUL.LCHIN_EXI'
@@ -120,14 +118,14 @@ implicit none
             if ((iret1+iret2) .eq. 0) zl(ca_iachix_-1+i)=.false.
         endif
     end do
-!
-!
-!     -- ON VERIFIE QUE LES CHAMPS "IN" ONT UN MAILLAGE SOUS-JACENT
-!        IDENTIQUE AU MAILLAGE ASSOCIE AU LIGREL :
-!     -------------------------------------------------------------
+
+
+!   -- on verifie que les champs "in" ont un maillage sous-jacent
+!      identique au maillage associe au ligrel :
+!   -------------------------------------------------------------
     do i = 1, nin
         chin=lchin(i)
-        if (.not.(zl(ca_iachix_-1+i))) goto 30
+        if (.not.(zl(ca_iachix_-1+i))) cycle
         call dismoi('NOM_MAILLA', chin, 'CHAMP', repk=ma2)
         if (ma2 .ne. ma) then
             valk(1)=chin
@@ -136,27 +134,24 @@ implicit none
             valk(4)=ma
             call utmess('F', 'CALCUL_3', nk=4, valk=valk)
         endif
- 30     continue
     end do
-!
-!
-!     -- VERIFICATION QUE LES CHAMPS "OUT" SONT DIFFERENTS
-!        DES CHAMPS "IN"
-!     ---------------------------------------------------
+
+
+!   -- verification que les champs "out" sont differents
+!      des champs "in"
+!   ---------------------------------------------------
     do i = 1, nout
         chou=lchout(i)
         do j = 1, nin
             chin=lchin(j)
-            if (.not.zl(ca_iachix_-1+j)) goto 40
+            if (.not.zl(ca_iachix_-1+j)) cycle
             if (chin .eq. chou) then
                 call utmess('F', 'CALCUL_4', sk=chou)
             endif
- 40         continue
         end do
     end do
-!
-!
-!     ---------------------------------
+
+
     call wkvect('&&CALCUL.LCHIN_I', 'V V I', max(1, 11*nin), ca_iachii_)
     ca_nbobtr_=ca_nbobtr_+1
     zk24(ca_iaobtr_-1+ca_nbobtr_)='&&CALCUL.LCHIN_I'
@@ -166,28 +161,28 @@ implicit none
     nbpara = zi(ca_iaopds_-1+2) + zi(ca_iaopds_-1+3)
     do i = 1, nin
         chin=lchin(i)
-!
-!        -- SI LE CHAMP EST BLANC OU S'IL N'EXISTE PAS
-!           , ON NE FAIT RIEN :
-        if (chin(1:1) .eq. ' ') goto 60
+
+!        -- si le champ est blanc ou s'il n'existe pa,s
+!           on ne fait rien :
+        if (chin(1:1) .eq. ' ') cycle
         call jeexin(chin//'.DESC', iret1)
         if (iret1 .gt. 0) objdes=chin//'.DESC'
         call jeexin(chin//'.CELD', iret2)
         if (iret2 .gt. 0) objdes=chin//'.CELD'
-        if ((iret1+iret2) .eq. 0) goto 60
+        if ((iret1+iret2) .eq. 0) cycle
         nompar=lpain(i)
-!
-!        -- SI LE PARAMETRE EST INCONNU POUR L'OPTION CALCULEE, ON NE
-!        -- FAIT RIEN:
+
+!        -- si le parametre est inconnu pour l'option calculee, on ne
+!        -- fait rien:
         jpar=indik8(zk8(ca_iaoppa_),nompar,1,nbpara)
-        if (jpar .eq. 0) goto 60
-!
+        if (jpar .eq. 0) cycle
+
         call dismoi('TYPE_CHAMP', chin, 'CHAMP', repk=tych)
-!
-!        -- SI LE CHAMP EST UN CHAM_ELEM( OU UN RESUELEM)
-!           ET QU'IL N'A PAS ETE CALCULE AVEC LE LIGREL DE CALCUL,
-!           ON LE TRANSPORTE SUR CE LIGREL
-!           (ET ON MODIFIE SON NOM DANS LCHIN)
+
+!        -- si le champ est un cham_elem( ou un resuelem)
+!           et qu'il n'a pas ete calcule avec le ligrel de calcul,
+!           on le transporte sur ce ligrel
+!           (et on modifie son nom dans lchin)
         if ((tych(1:2).eq.'EL') .or. (tych.eq.'RESL')) then
             call dismoi('NOM_LIGREL', chin, 'CHAMP', repk=ligre2)
             if (ligre2 .ne. ligrel) then
@@ -196,7 +191,7 @@ implicit none
                 ASSERT(ca_iactif_.eq.0)
                 call chligr(chin, ligrel, nomop, nompar, 'V',&
                             lchin(i))
-!
+
                 call jeexin(lchin(i)(1:19)//'.CELD', ibid)
                 chin=lchin(i)
                 objdes(1:19)=chin
@@ -212,28 +207,28 @@ implicit none
                 zk24(ca_iaobtr_-1+ca_nbobtr_)=lchin(i)//'.CELV'
             endif
         endif
-!
-!
+
+
         igd=grdeur(nompar)
         zi(ca_iachii_-1+11*(i-1)+1)=igd
-!
+
         nec=nbec(igd)
         zi(ca_iachii_-1+11*(i-1)+2)=nec
-!
+
         typsca=scalai(igd)
         zk8(ca_iachik_-1+2*(i-1)+2)=typsca
-!
+
         call jelira(jexnum('&CATA.GD.NOMCMP', igd), 'LONMAX', ncmpmx)
         zi(ca_iachii_-1+11*(i-1)+3)=ncmpmx
-!
+
         call jelira(objdes, 'DOCU', cval=k8bi)
         zk8(ca_iachik_-1+2*(i-1)+1)=k8bi
-!
+
         call jeveuo(objdes, 'L', desc)
         zi(ca_iachii_-1+11*(i-1)+4)=desc
-!
-!         -- SI LA GRANDEUR ASSOCIEE AU CHAMP N'EST PAS CELLE ASSOCIEE
-!            AU PARAMETRE, ON ARRETE TOUT :
+
+!         -- si la grandeur associee au champ n'est pas celle associee
+!            au parametre, on arrete tout :
         if (igd .ne. zi(desc)) then
             call jenuno(jexnum('&CATA.GD.NOMGD', igd), k8bi1)
             call jenuno(jexnum('&CATA.GD.NOMGD', zi(desc)), k8bi2)
@@ -244,26 +239,26 @@ implicit none
             valk(5)=nomop
             call utmess('F', 'CALCUL_5', nk=5, valk=valk)
         endif
-!
+
         call jeexin(chin//'.VALE', iret)
         if (iret .gt. 0) then
             call jeveuo(chin//'.VALE', 'L', iii)
             zi(ca_iachii_-1+11*(i-1)+5)=iii
         endif
-!
+
         call jeexin(chin//'.CELV', iret)
         if (iret .gt. 0) then
             call jeveuo(chin//'.CELV', 'L', iii)
             zi(ca_iachii_-1+11*(i-1)+5)=iii
         endif
-!
-!        -- POUR LES CARTES :
+
+!        -- pour les cartes :
         if (zk8(ca_iachik_-1+2*(i-1)+1)(1:4) .eq. 'CART') then
-!
-!           -- SI LA CARTE N'EST PAS CONSTANTE, ON L'ETEND:
+
+!           -- si la carte n'est pas constante, on l'etend:
             if (.not.(zi(desc-1+2).eq.1.and.zi(desc-1+4).eq.1)) then
                 call etenca(chin, ligrel, iret)
-                if (iret .gt. 0) goto 70
+                if (iret .gt. 0) goto 998
                 call jeexin(chin//'.PTMA', iret)
                 if (iret .gt. 0) then
                     call jeveuo(chin//'.PTMA', 'L', iii)
@@ -280,8 +275,8 @@ implicit none
                 endif
             endif
         endif
-!
-!        -- POUR LES CHAM_NO A PROFIL_NOEUD:
+
+!        -- pour les cham_no a profil_noeud:
         if (zk8(ca_iachik_-1+2*(i-1)+1)(1:4) .eq. 'CHNO') then
             num=zi(desc-1+2)
             if (num .gt. 0) then
@@ -304,17 +299,16 @@ implicit none
                 zi(ca_iachii_-1+11*(i-1)+11)=1
             endif
         endif
- 60     continue
-    end do
-!
-    goto 80
-!
-!     -- SORTIE ERREUR:
- 70 continue
+    enddo
+
+    goto 999
+
+!     -- sortie erreur:
+998 continue
     chin=lchin(i)
     call utmess('F', 'CALCUL_6', sk=chin)
-!
-!     -- SORTIE NORMALE:
- 80 continue
-!
+
+!     -- sortie normale:
+999 continue
+
 end subroutine

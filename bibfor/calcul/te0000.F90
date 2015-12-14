@@ -1,27 +1,28 @@
 subroutine te0000(numc, opt, te)
 ! aslint: disable=W1501
+
 use calcul_module, only : ca_capoiz_, ca_ianoop_, ca_ianote_, ca_iel_, ca_nbelgr_
+
 implicit none
-!
+
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
 ! (AT YOUR OPTION) ANY LATER VERSION.
-!
+
 ! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
 ! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
 ! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
 ! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-!
+
 ! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
-!     ARGUMENTS:
-!     ----------
+
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/codent.h"
@@ -630,34 +631,31 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/assert.h"
+
     integer :: numc, opt, te
+!-----------------------------------------------------------------------
+!     entrees:
+!      numc  :  numero du calcul a lancer
+!      opt   :  option_simple
+!      te    :  type_element
+!
+!     sorties:
+!      on lance le bon ca_numc(opt,te)
 ! ----------------------------------------------------------------------
-!     ENTREES:
-!      NUMC  :  NUMERO DU CALCUL A LANCER
-!      OPT   :  OPTION_SIMPLE
-!      TE    :  TYPE_ELEMENT
-!
-!     SORTIES:
-!      ON LANCE LE BON CA_NUMC(OPT,TE)
-!
-! ----------------------------------------------------------------------
-!
-!     VARIABLES LOCALES:
-!     ------------------
     integer :: iret, jparal
     aster_logical :: lparal
     character(len=16) :: nomte, nomopt
     character(len=8) :: k8bid
-! DEB-------------------------------------------------------------------
+!-------------------------------------------------------------------
     call uttcpu('CPU.CALC.3', 'DEBUT', ' ')
 
 !   -- avant d'augmenter la plage des numeros (au dela de 600),
 !      il faut utiliser les numeros "vides" (les routines de 25 lignes)
     ASSERT(numc.gt.0)
     ASSERT(numc.le.600)
-!
-!     PARALLELE OR NOT ?
-!     --------------------
+
+!   Parallele or not ?
+!   --------------------
     call jeexin('&CALCUL.PARALLELE', iret)
     if (iret .ne. 0) then
         lparal =.true.
@@ -665,10 +663,10 @@ implicit none
     else
         lparal =.false.
     endif
-!
+
     nomte = zk16(ca_ianote_-1+te)
     nomopt = zk16(ca_ianoop_-1+opt)
-!
+
     do ca_iel_ = 1, ca_nbelgr_
         if (lparal) then
             if (.not.zl(jparal-1+ca_iel_)) goto 999
@@ -1881,7 +1879,7 @@ implicit none
         end select
 999     continue
     end do
-!
+
     call uttcpu('CPU.CALC.3', 'FIN', ' ')
-!
+
 end subroutine

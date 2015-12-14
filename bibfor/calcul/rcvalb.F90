@@ -1,11 +1,32 @@
 subroutine rcvalb(fami, kpg, ksp, poum, jmat, nomat,&
                   phenom, nbpar, nompar, valpar,&
                   nbres, nomres, valres, codret, iarret,nan)
+
 use calcul_module, only : ca_jvcnom_, ca_nbcvrc_
+
 implicit none
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: jacques.pellet at edf.fr
+
 #include "jeveux.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/rcvarc.h"
+
     integer, intent(in) :: nbres
     integer, intent(in) :: nbpar
     character(len=*), intent(in) :: fami
@@ -22,24 +43,8 @@ implicit none
     integer, intent(out) :: codret(nbres)
     integer, intent(in) :: iarret
     character(len=3), intent(in), optional :: nan
-! person_in_charge: jacques.pellet at edf.fr
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
-!
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-!
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-!
+
+! ----------------------------------------------------------------------
 ! But : Recuperation des valeurs d'une liste de coefficients d'une relation de
 !       comportement pour un materiau donne.
 !       C'est une routine "chapeau" de rcvala.F90 pour ajouter les variables de commande
@@ -66,10 +71,8 @@ implicit none
 !     arguments de sortie:
 !        valres(*) : valeurs des resultats apres recuperation et interpolation
 !        icodre(*) : pour chaque resultat, 0 si on a trouve, 1 sinon
-
-
 ! ----------------------------------------------------------------------
-!
+
     integer :: nbpamx, nbpar2, ipar, nbpart, ier
     parameter (nbpamx=10)
     real(kind=8) :: valpa2(nbpamx), valvrc

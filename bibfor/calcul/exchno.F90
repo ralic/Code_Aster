@@ -1,10 +1,12 @@
 subroutine exchno(imodat, iparg)
+
 use calcul_module, only : ca_iachii_, ca_iachlo_, ca_ialiel_, ca_iamaco_,&
      ca_iamloc_, ca_iamsco_, ca_iawlo2_, ca_igr_,&
      ca_iichin_, ca_illiel_, ca_ilmaco_, ca_ilmloc_, ca_ilmsco_, &
      ca_nbelgr_, ca_nbgr_, ca_nec_, ca_typegd_
+
 implicit none
-!
+
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,8 +24,7 @@ implicit none
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
-!     ARGUMENTS:
-!     ----------
+
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -31,41 +32,35 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/trigd.h"
 #include "asterfort/utmess.h"
+
     integer :: imodat, iparg
-! ----------------------------------------------------------------------
-!     ENTREES:
-!        IMODAT  : INDICE DANS LA COLLECTION MODELOC
-!        IGR    : NUMERO DU GREL A TRAITER.
-!     SORTIES:
-!       ECRITURE DANS LE CHAMP LOCAL
-! ----------------------------------------------------------------------
-!
-!     FONCTIONS EXTERNES:
-!     -------------------
-!
-!     VARIABLES LOCALES:
-!     ------------------
+!----------------------------------------------------------------------
+!     entrees:
+!        imodat  : indice dans la collection modeloc
+!        igr    : numero du grel a traiter.
+!     sorties:
+!        ecriture dans le champ local
+!----------------------------------------------------------------------
     integer :: ima, ino, nno, long, nugl, num, jparal, iret, iel
     integer :: desc, prno1, prno2, modloc, ityplo
     integer :: deb1, deb2, idg1, idg2, nbpt, nbpt2, lgcata, ncmp
     integer :: iaux1, k, iec, debugr
     aster_logical :: lparal
-!
     aster_logical :: diff, moyenn
-!
-!     -- FONCTIONS FORMULES :
-!     NUMAIL(IGR,IEL)=NUMERO DE LA MAILLE ASSOCIEE A L'ELEMENT IEL
+
+!     -- fonctions formules :
+!     numail(igr,iel)=numero de la maille associee a l'element iel
 #define numail(ca_igr_,iel) zi(ca_ialiel_-1+zi(ca_illiel_+ca_igr_-1)+iel-1)
-!     NUMGLM(IMA,INO)=NUMERO GLOBAL DU NOEUD INO DE LA MAILLE IMA
-!                     IMA ETANT UNE MAILLE DU MAILLAGE.
+!     numglm(ima,ino)=numero global du noeud ino de la maille ima
+!                     ima etant une maille du maillage.
 #define numglm(ima,ino) zi(ca_iamaco_-1+zi(ca_ilmaco_+ima-1)+ino-1)
-!     NUMGLS(IMA,INO)=NUMERO GLOBAL DU NOEUD INO DE LA MAILLE IMA
-!                     IMA ETANT UNE MAILLE SUPPLEMENTAIRE DU LIGREL
+!     numgls(ima,ino)=numero global du noeud ino de la maille ima
+!                     ima etant une maille supplementaire du ligrel
 #define numgls(ima,ino) zi(ca_iamsco_-1+zi(ca_ilmsco_+ima-1)+ino-1)
-! DEB-------------------------------------------------------------------
-!
-!     PARALLELE OR NOT ?
-!     -------------------------
+!-------------------------------------------------------------------
+
+!   parallele or not ?
+!   -------------------
     call jeexin('&CALCUL.PARALLELE', iret)
     if (iret .ne. 0) then
         lparal=.true.
@@ -73,33 +68,35 @@ implicit none
     else
         lparal=.false.
     endif
-!
+
     desc=zi(ca_iachii_-1+11*(ca_iichin_-1)+4)
     num=zi(desc-1+2)
     modloc=ca_iamloc_-1+zi(ca_ilmloc_-1+imodat)
     ityplo=zi(modloc-1+1)
     debugr=zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+5)
     lgcata=zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+2)
-!
+
     ASSERT(ityplo.lt.4)
-!
-!     1-  CAS: CHNO -> ELGA :
-!     -----------------------
-!     LE CAS ITYPLO=3 N EST PAS PREVU : DEVELOPPEMENT A FAIRE ...
+
+
+!   1-  cas: chno -> elga :
+!   -----------------------
+!   le cas ityplo=3 n est pas prevu : developpement a faire ...
     ASSERT(ityplo.ne.3)
-!
-!     2-  CAS: CHNO -> ELNO :
-!         CAS: CHNO -> ELEM (MOYENNE)
-!     --------------------------------
+
+
+!   2-  cas: chno -> elno :
+!       cas: chno -> elem (moyenne)
+!   --------------------------------
     if ((ityplo.eq.2) .or. (ityplo.eq.1)) then
         if (ityplo .eq. 2) then
             moyenn=.false.
         else
             moyenn=.true.
         endif
-!
-!
-!       2.1 ON CHERCHE NNO SUR LE 1ER ELEMENT :
+
+
+!       2.1 on cherche nno sur le 1er element :
 !       ---------------------------------------
         ima=numail(ca_igr_,1)
         ASSERT(ima.ne.0)
@@ -108,9 +105,9 @@ implicit none
         else
             nno=zi(ca_ilmsco_-1-ima+1)-zi(ca_ilmsco_-1-ima)-1
         endif
-!
-!
-!       2.2 ON RECUPERE LE DEBUT DU DESCRIPTEUR GRANDEUR :
+
+
+!       2.2 on recupere le debut du descripteur grandeur :
 !       --------------------------------------------------
         nbpt=zi(modloc-1+4)
         nbpt2=mod(nbpt,10000)
@@ -120,16 +117,16 @@ implicit none
             diff=.false.
             idg2=5
         endif
-!
-!       MOYENN => (NBPT2=1)
+
+!       moyenn => (nbpt2=1)
         ASSERT((.not.moyenn) .or. (nbpt2.eq.1))
-!
-!       .NOT.MOYENN => (NBPT2=NNO)
+
+!       .not.moyenn => (nbpt2=nno)
         ASSERT(moyenn .or. (nbpt2.eq.nno))
-!
-!
-!       2.3 SI MOYENN, IL FAUT METTRE A ZERO LE CHAMP LOCAL
-!           (POUR POUVOIR CUMULER)
+
+
+!       2.3 si moyenn, il faut mettre a zero le champ local
+!           (pour pouvoir cumuler)
 !       --------------------------------------------------
         if (moyenn) then
             ncmp=lgcata
@@ -167,11 +164,11 @@ implicit none
                 ASSERT(.false.)
             endif
         endif
-!
-!
-!
-!        ---SI C'EST 1 CHAMP A REPRESENTATION CONSTANTE (NUM<0):
-!        -------------------------------------------------------
+
+
+
+!       -- si c'est 1 champ a representation constante (num<0):
+!       -------------------------------------------------------
         if (num .lt. 0) then
             long=-num
             deb2=debugr
@@ -192,12 +189,12 @@ implicit none
                         nugl=numgls((-ima),ino)
                     endif
                     deb1=(nugl-1)*long+1
-!
+
                     if (nugl .gt. 0) then
                         call trigd(zi(desc-1+3), deb1, zi(modloc-1+idg2), deb2, moyenn,&
                                    ino, nno)
                     else
-!                 ON VERIFIE QUE LE MODLOC AFFIRME NCMP=0:
+!                 on verifie que le modloc affirme ncmp=0:
                         do 70 iec = 1, ca_nec_
                             if (zi(modloc-1+idg2-1+iec) .ne. 0) then
                                 call utmess('F', 'CALCUL_9')
@@ -207,9 +204,9 @@ implicit none
  80             continue
  90         continue
         else
-!
-!        --- C'EST 1 CHAMP AVEC PROFIL_NOEUD:
-!        ------------------------------------
+
+!           -- c'est 1 champ avec profil_noeud:
+!           ------------------------------------
             prno1=zi(ca_iachii_-1+11*(ca_iichin_-1)+8)
             prno2=zi(ca_iachii_-1+11*(ca_iichin_-1)+9)
             deb2=debugr
@@ -231,7 +228,7 @@ implicit none
                     endif
                     deb1=(abs(nugl)-1)*(ca_nec_+2)+1
                     idg1=(abs(nugl)-1)*(ca_nec_+2)+3
-!
+
                     if (nugl .gt. 0) then
                         call trigd(zi(prno1-1+idg1), zi(prno1-1+deb1), zi(modloc-1+idg2), deb2,&
                                    moyenn, ino, nno)
@@ -240,11 +237,11 @@ implicit none
                                    moyenn, ino, nno)
                     endif
 100             continue
-!
+
 110         continue
         endif
-!
-!
+
+
         if (moyenn) then
             ncmp=lgcata
             if (ca_typegd_ .eq. 'R') then
@@ -283,8 +280,8 @@ implicit none
                 ASSERT(.false.)
             endif
         endif
-!
+
     endif
-!
-!
+
+
 end subroutine

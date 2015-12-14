@@ -1,8 +1,26 @@
 subroutine elrefe_info(elrefe, fami, ndim, nno,&
                   nnos, npg, jpoids, jcoopg, jvf,&
                   jdfde, jdfd2, jgano)
+
 use calcul_module, only : ca_iactif_, ca_jnolfp_, ca_jpnlfp_, ca_nblfpg_, ca_nbsav_, ca_nomte_
+
 implicit none
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
@@ -26,22 +44,7 @@ implicit none
         integer, intent(out), optional  :: jdfde
         integer, intent(out), optional  :: jdfd2
         integer, intent(out), optional  :: jgano
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
-!
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-!
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
+! ----------------------------------------------------------------------
 ! but: recuperer des informations sur l'element de reference :
 !      - dimension de l'espace, nombre de noeuds, de points de Gauss, ...
 !      - poids des points de gauss  : jpoids
@@ -53,7 +56,7 @@ implicit none
 ! ----------------------------------------------------------------------
 !   in   elrefe : nom de l'elrefe (k8) (par defaut l'elrefe principal).
 !        fami   : nom de la famille de points de gauss :
-!                 'RIGI','MASS',...
+!                 'rigi','mass',...
 !   out  ndim   : dimension de l'espace (=nb coordonnees)
 !        nno    : nombre de noeuds du type_maille
 !        nnos   : nombre de noeuds sommets du type_maille
@@ -67,11 +70,7 @@ implicit none
 !                 gauss -> noeuds (dim= 2+nno*npg)
 !                 remarque importante : les 2 1ers termes sont les
 !                             dimensions de la matrice: nno et npg
-
-!   -------------------------------------------------------------------
-
-
-
+!----------------------------------------------------------------------
     integer :: nbnomx, nbfamx
     parameter    ( nbnomx=27, nbfamx=20)
     character(len=8) :: elrf, famil, fapg(nbfamx)
@@ -89,7 +88,7 @@ implicit none
     character(len=32) :: nomsav(maxsav)
     save nomsav,addsav
 
-! DEB ------------------------------------------------------------------
+! ------------------------------------------------------------------
 
 !   -- pour etre sur que elrefe est appele "sous" te0000
     ASSERT(ca_iactif_.eq.1)

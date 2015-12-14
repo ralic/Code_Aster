@@ -1,9 +1,11 @@
 subroutine tecael(iadzi, iazk24, noms)
+
 use calcul_module, only : ca_ialiel_, ca_iamaco_, ca_iamsco_, ca_icaeli_,&
      ca_icaelk_, ca_iel_, ca_igr_, ca_illiel_,&
      ca_ilmaco_, ca_ilmsco_, ca_nomte_, ca_nomtm_, ca_option_
+
 implicit none
-!
+
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,24 +23,23 @@ implicit none
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
-!     ARGUMENTS:
-!     ----------
+
 #include "jeveux.h"
-!
 #include "asterfort/jenuno.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/assert.h"
+
     integer, intent(out) :: iadzi
     integer, intent(out) :: iazk24
     integer, intent(in), optional :: noms
 !----------------------------------------------------------------------
-! entree:
+! Entree:
 !     noms=1/0
 !        /1  (defaut) : On remplit v(3),...,v(3+nbno)
 !        /0           : On ne remplit pas v(3),...,v(3+nbno) : noms de la maille et de ses noeuds
 !                       => C'est moins couteux en CPU.
 !
-! sorties:
+! Sorties:
 !     iadzi est l'adresse d'un vecteur d'entiers  contenant :
 !     dim(v)=4+nbno
 !        v(1) : numero de la maille
@@ -61,13 +62,13 @@ implicit none
 !        v(3+nbno+2): ca_option_ que l'on calcule (k16)
 !        v(3+nbno+3): type_maille associe au type_element(k8)
 !
-!    remarque :
-!   si la maille est tardive son nom est conventionellement : ' '
-!   si un noeud est tardif   son nom est conventionellement : ' '
+!   Remarques :
+!     si la maille est tardive son nom est conventionellement : ' '
+!     si un noeud est tardif   son nom est conventionellement : ' '
 !----------------------------------------------------------------------
-!
+
     integer ::  ima, ino, nno, nuno, noms2
-!
+
     character(len=8) :: ma, nomma, nomno
 !----------------------------------------------------------------------
 
@@ -82,7 +83,7 @@ implicit none
 !   -- recuperation du numero de la maille et du nombre de noeuds :
 !   ---------------------------------------------------------------
     ma = zk24(ca_icaelk_-1+1)(1:8)
-!
+
     ima = zi(ca_ialiel_-1+zi(ca_illiel_+ca_igr_-1)+ca_iel_-1)
     if (ima .gt. 0) then
         nno = zi(ca_ilmaco_-1+ima+1) - zi(ca_ilmaco_-1+ima)
@@ -100,7 +101,7 @@ implicit none
         zi(ca_icaeli_-1+2) = nno
         zk24(ca_icaelk_-1+3) = ' '
     endif
-!
+
     zk24(ca_icaelk_-1+3+nno+1) = ca_nomte_
     zk24(ca_icaelk_-1+3+nno+2) = ca_option_
     zk24(ca_icaelk_-1+3+nno+3) = ca_nomtm_
@@ -115,7 +116,7 @@ implicit none
         nuno = zi(ca_iamsco_-1+zi(ca_ilmsco_-ima-1)+ino-1)
     endif
     zi(ca_icaeli_-1+2+ino) = nuno
-!
+
     if ((noms2.eq.1) .and. (nuno .gt. 0)) then
         call jenuno(jexnum(ma//'.NOMNOE', nuno), nomno)
         zk24(ca_icaelk_-1+3+ino) = nomno
@@ -123,12 +124,12 @@ implicit none
         zk24(ca_icaelk_-1+3+ino) = ' '
     endif
     10 end do
-!
+
     zi(ca_icaeli_-1+2+nno+1) = ca_igr_
     zi(ca_icaeli_-1+2+nno+2) = ca_iel_
-!
+
     iadzi = ca_icaeli_
     iazk24 = ca_icaelk_
-!
-!
+
+
 end subroutine

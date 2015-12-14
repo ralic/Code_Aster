@@ -8,18 +8,18 @@ use calcul_module, only : ca_option_, ca_nomte_, ca_icaelk_, ca_ialiel_,&
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
 ! (AT YOUR OPTION) ANY LATER VERSION.
-!
+
 ! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
 ! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
 ! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
 ! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-!
+
 ! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
-!
+
 ! But : Cette routine complete le message d'erreur emis par utmess
 !       pendant un calcul elementaire :
 !         * nom de l'option calculee
@@ -30,6 +30,7 @@ use calcul_module, only : ca_option_, ca_nomte_, ca_icaelk_, ca_ialiel_,&
 !         ...
 !-----------------------------------------------------------------------------------
     implicit none
+    
 #include "jeveux.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -41,9 +42,8 @@ use calcul_module, only : ca_option_, ca_nomte_, ca_icaelk_, ca_ialiel_,&
 #include "asterfort/jenuno.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jedema.h"
-!
+
     character(len=1), intent(in) :: typ
-!
     integer :: ima,iexi,k,n1,k1,jgrma,nbgrma,nbgrmt
     integer :: nno,ino,nuno,jcoor
     character(len=24) :: valkc(9), ligrma(4),nomgrm,grpmav

@@ -69,14 +69,14 @@ subroutine typthm(axi, perman, vf, typvf, typmod,&
 ! --- BUT : LA PARTIE HM EST-ELLE TRANSITOIRE OU PERMANENTE EN TEMPS ?
 ! =====================================================================
 !
-    if (lteatt('CODMOD','DHB')) then
+    if (lteatt('MODELI','DHB')) then
         perman = .true.
     else
         perman = .false.
     endif
 !
 !   -- MODELISATIONS SUSHI VOLUMES FINIS
-    if (lteatt('CODMOD','3AD').or.lteatt('CODMOD','2DA')) then
+    if (lteatt('MODELI','3AD').or.lteatt('MODELI','2DA')) then
         vf = .true.
         typvf=3
     else

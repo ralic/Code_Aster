@@ -287,7 +287,7 @@ subroutine te0472(option, nomte)
 ! ======================================================================
 ! --- SI MODELISATION = H ---------------------------------------------
 ! ======================================================================
-            if (lteatt('CODMOD','DHA')) then
+            if (lteatt('MODELI','DHA')) then
                 napre1 = 0
                 if (iopt .eq. 1) then
                     flu1 = zr(iflux+ (kp-1)+napre1)

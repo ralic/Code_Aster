@@ -59,7 +59,7 @@ subroutine te0430(option, nomte)
 !
 ! - BOOLEEN POUR LES GRILLES EXCENTREES
 !
-    lexc = (lteatt('CODMOD','GRC'))
+    lexc = (lteatt('MODELI','GRC'))
 !
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
 !

@@ -8,19 +8,18 @@ implicit none
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
 ! (AT YOUR OPTION) ANY LATER VERSION.
-!
+
 ! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
 ! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
 ! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
 ! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-!
+
 ! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
-!     ARGUMENTS:
-!     ----------
+
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
@@ -32,16 +31,16 @@ implicit none
 #include "asterfort/nbpara.h"
 #include "asterfort/nopara.h"
 #include "asterfort/utmess.h"
-!
+
     integer :: opt, te
     character(len=5) :: code
-! ----------------------------------------------------------------------
-!     ENTREES:
-!      CODE :  / 'ECRIT' : ON ECRIT UNE VALEUR UNDEF AU BOUT DES CHLOC
-!              / 'VERIF' : ON VERIFIE LA VALEUR UNDEF AU BOUT DES CHLOC
-!      OPT : OPTION
-!      TE  : TYPE_ELEMENT
-! ----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!     entrees:
+!        code :  / 'ECRIT' : on ecrit une valeur undef au bout des chloc
+!                / 'VERIF' : on verifie la valeur undef au bout des chloc
+!        opt  : option
+!        te   : type_element
+!-----------------------------------------------------------------------
     integer :: innem
     integer :: np, ipar
     integer ::  iparg, lggrel, iachlo
@@ -53,30 +52,29 @@ implicit none
     real(kind=8) :: rnnem
     character(len=8) :: knnem
     character(len=24) :: valk(3)
-!
-! DEB-------------------------------------------------------------------
-!
+!-------------------------------------------------------------------
+
     innem = isnnem()
     rnnem = r8nnem()
     knnem='????????'
-!
+
     ASSERT((code.eq.'ECRIT').or.(code.eq.'VERIF'))
-!
-!
+
+
     if (code .eq. 'ECRIT') then
-!     ------------------------------------------------
-!
-!        -- CHAMPS "IN" ET "OUT" :
-        do 10 iparg = 1, ca_npario_
+!   ---------------------------
+
+!        -- champs "in" et "out" :
+        do iparg = 1, ca_npario_
             lgcata=zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+2)
-            if (lgcata .le. 0) goto 10
+            if (lgcata .le. 0) cycle
             iachlo=zi(ca_iawloc_-1+3*(iparg-1)+1)
-            if ((iachlo.eq.-1) .or. (iachlo.eq.-2)) goto 10
-!
+            if ((iachlo.eq.-1) .or. (iachlo.eq.-2)) cycle
+
             typsca = zk8(ca_iawtyp_-1+iparg)(1:3)
             lggrel=zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+4)
             debugr=zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+5)
-!
+
             if (typsca .eq. 'R') then
                 zr(iachlo-1+debugr-1+lggrel+1) = rnnem
             else if (typsca.eq.'C') then
@@ -92,32 +90,32 @@ implicit none
             else
                 ASSERT(.false.)
             endif
- 10     continue
-!
-!
-!
+        enddo
+
+
+
     else if (code.eq.'VERIF') then
-!     ------------------------------------------------
-!
-!        -- CHAMPS "OUT" :
+!   ------------------------------
+
+!        -- champs "out" :
         arret = .false.
         np = nbpara(opt,te,'OUT')
-        do 30 ipar = 1, np
+        do ipar = 1, np
             ecras=.false.
             nompar = nopara(opt,te,'OUT',ipar)
             iparg = indik8(zk8(ca_iaoppa_),nompar,1,ca_npario_)
             lgcata=zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+2)
-            if (lgcata .le. 0) goto 30
+            if (lgcata .le. 0) cycle
             ich=zi(ca_iawloc_-1+3*(iparg-1)+3)
-            if (ich .eq. 0) goto 30
+            if (ich .eq. 0) cycle
             iachlo=zi(ca_iawloc_-1+3*(iparg-1)+1)
-            if ((iachlo.eq.-1) .or. (iachlo.eq.-2)) goto 30
-!
+            if ((iachlo.eq.-1) .or. (iachlo.eq.-2)) cycle
+
             typsca = zk8(ca_iawtyp_-1+iparg)(1:3)
             lggrel=zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+4)
             debugr=zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+5)
-!
-!
+
+
             if (typsca .eq. 'R') then
                 if (.not.isnan(zr(iachlo-1+debugr-1+lggrel+1))) ecras=.true.
             else if (typsca.eq.'C') then
@@ -128,7 +126,7 @@ implicit none
             else
                 ASSERT(.false.)
             endif
-!
+
             if (ecras) then
                 arret = .true.
                 call jenuno(jexnum('&CATA.TE.NOMTE', te), nomte)
@@ -138,12 +136,12 @@ implicit none
                 valk(3) = nompar
                 call utmess('E', 'CALCUL_40', nk=3, valk=valk)
             endif
-!
- 30     continue
-!
+
+        enddo
+
         ASSERT(.not.arret)
-!
+
     endif
-!
-!
+
+
 end subroutine

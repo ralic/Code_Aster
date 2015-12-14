@@ -1,8 +1,7 @@
 function digde2(modelo)
 use calcul_module, only : ca_iamloc_, ca_ilmloc_
 implicit none
-    integer :: digde2
-!
+
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,11 +19,11 @@ implicit none
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
-!     ARGUMENTS:
-!     ----------
+
 #include "jeveux.h"
     integer :: modelo
-! ----------------------------------------------------------------------
+    integer :: digde2
+!-----------------------------------------------------------------------
 ! routine identique a digdel mais qui utilise des variables de calcul_module
 ! pour etre plus rapide.
 !
@@ -35,9 +34,9 @@ implicit none
 !        digde2 : nombre de scalaires representant la grandeur pour le
 !                 mode_local
 !
-! ----------------------------------------------------------------------
+!-----------------------------------------------------------------------
     integer :: modloc
-! ----------------------------------------------------------------------
+!-----------------------------------------------------------------------
     modloc = ca_iamloc_ - 1 + zi(ca_ilmloc_-1+modelo)
     digde2 = zi(modloc-1+3)
 end function

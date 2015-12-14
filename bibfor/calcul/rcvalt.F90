@@ -1,31 +1,10 @@
 subroutine rcvalt(fami, kpg, ksp, poum, jmat, nomat, mfact,&
                   nbpar, nompar, valpar, &
                   nbres, valres, icodre, iarret)
+                  
 use calcul_module, only : ca_jvcnom_, ca_nbcvrc_
-implicit none
-! person_in_charge: jacques.pellet at edf.fr
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/rcvarc.h"
-#include "asterfort/tecael.h"
-#include "asterfort/utmess.h"
-#include "asterfort/fointa.h"
-#include "asterc/r8nnem.h"
-! ------------------------------------------------------------------------
-    character(len=*), intent(in) :: fami
-    integer, intent(in)          :: kpg
-    integer, intent(in)          :: ksp
-    character(len=1), intent(in) :: poum
-    integer, intent(in)          :: jmat
-    character(len=*), intent(in) :: nomat, mfact
-    integer, intent(in)          :: nbpar
-    character(len=*), intent(in) :: nompar(nbpar)
-    real(kind=8), intent(in)     :: valpar(nbpar)
-    integer, intent(in)          :: nbres
-    integer, intent(out)         :: icodre(*)
-    real(kind=8), intent(out)    :: valres(*)
-    integer, intent(in)          :: iarret
 
+implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,6 +21,31 @@ implicit none
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! person_in_charge: jacques.pellet at edf.fr
+
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/tecael.h"
+#include "asterfort/utmess.h"
+#include "asterfort/fointa.h"
+#include "asterc/r8nnem.h"
+
+    character(len=*), intent(in) :: fami
+    integer, intent(in)          :: kpg
+    integer, intent(in)          :: ksp
+    character(len=1), intent(in) :: poum
+    integer, intent(in)          :: jmat
+    character(len=*), intent(in) :: nomat, mfact
+    integer, intent(in)          :: nbpar
+    character(len=*), intent(in) :: nompar(nbpar)
+    real(kind=8), intent(in)     :: valpar(nbpar)
+    integer, intent(in)          :: nbres
+    integer, intent(out)         :: icodre(*)
+    real(kind=8), intent(out)    :: valres(*)
+    integer, intent(in)          :: iarret
+
+! ------------------------------------------------------------------------
 !
 !  But : Recuperation de l'ENSEMBLE des parametres materiaux sous un mot cle facteur
 !        La liste des parametres retournes (et la liste des code_retour) est
@@ -50,7 +54,7 @@ implicit none
 !        Si un parametre n'est pas renseigne dans DEFI_MATERIAU, on retourne :
 !          * icodre(i)=1
 !          * valres(i)= NaN
-!
+
 !     arguments d'entree:
 !       in   fami    : famille de point de gauss (rigi,mass,...)
 !       in   kpg,ksp : numero du (sous)point de gauss
@@ -67,12 +71,11 @@ implicit none
 !                = 0 : on remplit icodre(*)=1 et on sort sans message.
 !                = 1 : on arrete <F> en indiquant le nom de la maille.
 !                = 2 : idem que 1 mais on n'indique pas la maille.
-!
+
 !     arguments de sortie:
 !       out  valres(*)  : valeur reelle du parametre (ou NaN)
 !       out  icodre(*)  : 0 si on a trouve, 1 sinon
 ! ----------------------------------------------------------------------
-
     integer :: lmat, icomp, ipi, ipif, iadzi, iazk24, nbk, ivalk, nbr, nbc
     integer :: lfct, imat, nbmat, n1, k, posi, nmcs
     integer :: ier, jordr, jkord, ivalr, kr, kc, kf, ivalc
@@ -247,5 +250,5 @@ implicit none
     enddo
 
  999 continue
-!
+
 end subroutine

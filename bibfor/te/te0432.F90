@@ -62,7 +62,7 @@ subroutine te0432(option, nomte)
     aster_logical :: lexc, ldiag
 !
 !
-    lexc = (lteatt('CODMOD','GRC'))
+    lexc = (lteatt('MODELI','GRC'))
     ldiag = (option(1:10).eq.'MASS_MECA_')
 !
 !

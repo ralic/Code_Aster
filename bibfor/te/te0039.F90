@@ -1,5 +1,4 @@
 subroutine te0039(option, nomte)
-! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -94,7 +93,7 @@ subroutine te0039(option, nomte)
 ! --- ------------------------------------------------------------------
     if (option(1:14) .eq. 'REFE_FORC_NODA') then
         call jevech('PVECTUR', 'E', ivectu)
-        if (lteatt('CODMOD','DTR')) then
+        if (lteatt('MODELI','DTR')) then
             call terefe('EFFORT_REFE', 'MECA_DISCRET', forref)
             call terefe('MOMENT_REFE', 'MECA_DISCRET', momref)
             do  in = 1, nno
@@ -105,13 +104,13 @@ subroutine te0039(option, nomte)
                     zr(ivectu+(in-1)*nc+i-1)=momref
                 enddo
             enddo
-        else if (lteatt('CODMOD','2DT')) then
+        else if (lteatt('MODELI','2DT')) then
             call terefe('EFFORT_REFE', 'MECA_DISCRET', forref)
             do  in = 1, nno
                 zr(ivectu+(in-1)*nc)=forref
                 zr(ivectu+(in-1)*nc+1)=forref
             enddo
-        else if (lteatt('CODMOD','2TR')) then
+        else if (lteatt('MODELI','2TR')) then
             call terefe('EFFORT_REFE', 'MECA_DISCRET', forref)
             call terefe('MOMENT_REFE', 'MECA_DISCRET', momref)
             do in = 1, nno
@@ -119,7 +118,7 @@ subroutine te0039(option, nomte)
                 zr(ivectu+(in-1)*nc+1)=forref
                 zr(ivectu+(in-1)*nc+2)=momref
             enddo
-        else if (lteatt('CODMOD','DIT')) then
+        else if (lteatt('MODELI','DIT')) then
             call terefe('EFFORT_REFE', 'MECA_DISCRET', forref)
             do in = 1, nno
                 zr(ivectu+(in-1)*nc)=forref
@@ -139,7 +138,7 @@ subroutine te0039(option, nomte)
         call jevech('PDEPLPR', 'L', ideplp)
         call jevech('PCOMPOR', 'L', icompo)
         call jevech('PMATERC', 'L', lmater)
-        if (lteatt('CODMOD','DTR') .or. lteatt('CODMOD','DIT')) then
+        if (lteatt('MODELI','DTR') .or. lteatt('MODELI','DIT')) then
 !           PARAMETRES EN ENTREE
             call jevech('PCAORIE', 'L', lorien)
             call matrot(zr(lorien), pgl)

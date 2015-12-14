@@ -1,10 +1,13 @@
 subroutine rcvarc(arret, novrc, poum, fami, kpg,&
                   ksp, valvrc, iret)
+
 use calcul_module, only : ca_decala_, ca_iactif_, ca_iel_, ca_iredec_, &
      ca_jfpgl_, ca_jvcnom_, ca_km_, ca_kp_,&
      ca_kr_, ca_nbcvrc_, ca_nfpg_, ca_nomte_, ca_option_, &
      ca_td1_, ca_tf1_, ca_timed1_, ca_timef1_
+
 implicit none
+
 ! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -37,31 +40,25 @@ implicit none
     integer, intent(in) :: kpg, ksp
     real(kind=8), intent(out) :: valvrc
 !-----------------------------------------------------------------------
-! BUT: RECUPERER LA VALEUR D'UNE VARIABLE DE COMMANDE SUR UN SOUS-POINT
-!      DE GAUSS (KPG,KSP) ET POUR UNE VALEUR D'INSTANT ('+','-','REF')
-
-! ARGUMENTS :
-!  IN   ARRET (K1)  : CE QU'IL FAUT FAIRE EN CAS DE PROBLEME
-!              = ' ' : ON REMPLIT CODRET ET ON SORT SANS MESSAGE.
-!              = 'F' : SI LA VARIABLE N'EST PAS TROUVEE, ON ARRETE
-!                       EN FATAL.
-!  IN   NOVRC  (K8) : NOM DE LA VARIABLE DE COMMANDE SOUHAITEE
-!  IN   POUM   (K*) : /'+', /'-', /'REF'
-!  IN   FAMI   (K8) : NOM DE LA FAMILLE DE POINTS DE GAUSS ('RIGI',...)
-!  IN   KPG    (I)  : NUMERO DU POINT DE GAUSS
-!  IN   KSP    (I)  : NUMERO DU SOUS-POINT DE GAUSS (1 SINON)
-!  OUT  VALVRC (R)  : VALEUR DE LA VARIABLE DE COMMANDE
-!  OUT  IRET   (I)  : CODE RETOUR : 0 -> OK
-!                                   1 -> VARIABLE NON TROUVEE
-
+! But: recuperer la valeur d'une variable de commande sur un sous-point
+!      de gauss (kpg,ksp) et pour une valeur d'instant ('+','-','REF')
+!
+! Arguments :
+!  in   arret (k1)  : ce qu'il faut faire en cas de probleme
+!              = ' ' : on remplit codret et on sort sans message.
+!              = 'F' : si la variable n'est pas trouvee, on arrete
+!                       en fatal.
+!  in   novrc  (k8) : nom de la variable de commande souhaitee
+!  in   poum   (k*) : /'+', /'-', /'REF'
+!  in   fami   (k8) : nom de la famille de points de gauss ('rigi',...)
+!  in   kpg    (i)  : numero du point de gauss
+!  in   ksp    (i)  : numero du sous-point de gauss (1 sinon)
+!  out  valvrc (r)  : valeur de la variable de commande
+!  out  iret   (i)  : code retour : 0 -> ok
+!                                   1 -> variable non trouvee
+!-----------------------------------------------------------------------
     character(len=8) :: novr8
-
-
-
-
-
     integer :: nb2vrc
-
     integer :: kcvrc, ibid, nbsp, kpgvrc
     integer :: iadzi, iazk24, kpgmat, vali(3), iprem
     integer :: k, itabm(7), itabp(7), itabr(7)
@@ -76,19 +73,19 @@ implicit none
         iprem=1
     endif
 
-!   0)  s'il n'y a pas de varc, on ne peut pas les trouver !
+!   0. s'il n'y a pas de varc, on ne peut pas les trouver !
 !   -----------------------------------------------------------
     if (ca_nbcvrc_ .eq. 0) goto 998
 
     if (ca_iactif_ .eq. 2) then
-!       -- on vient de calc_point_mat
+!       -- on vient de CALC_POINT_MAT
         ASSERT(fami.eq.'PMAT')
         call rcvarp(arret, novrc, poum, valvrc, iret)
         goto 999
     endif
 
 
-!   1) calcul de kpgmat (fami,kpg) : numero du pg dans la
+!   1. calcul de kpgmat (fami,kpg) : numero du pg dans la
 !      famille "mater" (associee a pvarcmr et pvarcpr) :
 !   -----------------------------------------------------------
     k=indik8(zk8(ca_jfpgl_),fami,1,ca_nfpg_)
@@ -102,12 +99,12 @@ implicit none
     kpgmat=ca_decala_(k)+kpg
 
 
-!   2) calcul de kcvcrc :
+!   2. calcul de kcvcrc :
 !   ----------------------
     novr8=novrc
     kcvrc=indik8(zk8(ca_jvcnom_),novr8,1,ca_nbcvrc_)
 
-!     -- si la cvrc n'est pas fournie, on rend "r8nnem"
+!   -- si la cvrc n'est pas fournie, on rend "r8nnem"
     if (kcvrc .eq. 0) then
         iret=1
         if (arret .eq. ' ') then
@@ -125,7 +122,7 @@ implicit none
 
 
 
-!   3) calcul de itabx : on cherche a economiser l'appel a tecach
+!   3. calcul de itabx : on cherche a economiser l'appel a tecach
 !   ------------------------------------------------------------
     if (poum .eq. '-' .or. (poum.eq.'+' .and. ca_iredec_.eq.1)) then
         if (ca_iel_ .ne. ca_km_) then
@@ -170,7 +167,7 @@ implicit none
     endif
 
 
-!   4) calcul de valvrc :
+!   4. calcul de valvrc :
 !   ----------------------
 
     if (poum .eq. 'REF') then
@@ -229,7 +226,7 @@ implicit none
     if (isnan(valvrc)) iret=1
 
 
-!   5) traitement si iret=1
+!   5. traitement si iret=1
 !   ---------------------------
     if (iret .eq. 1) then
         if (arret .eq. ' ') then
@@ -243,8 +240,6 @@ implicit none
         endif
     endif
     goto 999
-
-
 
 
 998  continue
@@ -261,6 +256,5 @@ implicit none
 
 
 999  continue
-
 
 end subroutine

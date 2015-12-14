@@ -1,8 +1,10 @@
 subroutine extrai(nin, lchin, lpain, opt, nute,&
                   ligrel, init)
+
 use calcul_module, only : ca_calvoi_, ca_igr_, ca_nbelgr_, ca_nbgr_
+
 implicit none
-!
+
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,32 +22,28 @@ implicit none
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
-!     ARGUMENTS:
-!     ----------
+
 #include "asterfort/assert.h"
 #include "asterfort/extra1.h"
 #include "asterfort/nbelem.h"
 #include "asterfort/typele.h"
+
     integer :: nin, opt, nute
     character(len=*) :: lchin(*), init
     character(len=8) :: lpain(*)
     character(len=19) :: ligrel
-! ----------------------------------------------------------------------
-!     BUT: PREPARER LES CHAMPS LOCAUX "IN"
-!
-! ----------------------------------------------------------------------
-!
-!
-! DEB-------------------------------------------------------------------
-!
+!-----------------------------------------------------------------------
+!     but: preparer les champs locaux "in"
+!-----------------------------------------------------------------------
+
     ASSERT(init.eq.' '.or.init.eq.'INIT')
-!
+
     if (ca_calvoi_ .eq. 0) then
         if (init .ne. 'INIT') then
             call extra1(nin, lchin, lpain, opt, nute)
         endif
     else
-!       -- ON PREPARE TOUT LA 1ERE FOIS :
+!       -- on prepare tout la 1ere fois :
         if (init .eq. 'INIT') then
             do ca_igr_=1,ca_nbgr_
                 ca_nbelgr_=nbelem(ligrel,ca_igr_)
@@ -56,6 +54,6 @@ implicit none
             enddo
         endif
     endif
-!
-!
+
+
 end subroutine

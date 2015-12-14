@@ -56,8 +56,8 @@ subroutine te0488(option, nomte)
     data poidc / 0.16666666666666666d0,0.66666666666666663d0,&
      &             0.16666666666666666d0/
 ! DEB ------------------------------------------------------------------
-    coq3d= lteatt('CODMOD','CQ3')
-    grille= lteatt('CODMOD','GRC')
+    coq3d= lteatt('MODELI','CQ3')
+    grille= lteatt('MODELI','GRC')
     if (coq3d) then
         call elrefe_info(fami='MASS', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
                          jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)

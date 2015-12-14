@@ -853,7 +853,7 @@ def get_liattr(cel, cata):
     # affecte la valeur "###" (qui veut dire plusieurs) ou (-999 si c'est un entier)
     #    Si c'est embetant, il faut redefinir l'attribut au niveau du type_elem
 
-    lattr_AUTO = [AT.ALIAS8, AT.PHENO, AT.MODELI, AT.DIM_TOPO_MODELI,
+    lattr_AUTO = [AT.ALIAS8, AT.PHENO, AT.MODELI, AT.TYPMA, AT.DIM_TOPO_MODELI,
                   AT.DIM_COOR_MODELI, AT.DIM_TOPO_MAILLE, AT.BORD, AT.DISCRET]
 
     for pheno, modeli in cel.getElemModel(cata.name):
@@ -878,6 +878,7 @@ def get_liattr(cel, cata):
                 dicattr[AT.ALIAS8] = str(codph)[0:2] + str(codmod)[0:3] + str(codtma)[0:3]
                 dicattr[AT.PHENO] = str(codph)[0:2]
                 dicattr[AT.MODELI] = str(codmod)[0:3]
+                dicattr[AT.TYPMA] = str(codtma)[0:3]
 
             else:
                 if dicattr[AT.DIM_TOPO_MAILLE] != str(dimtma):

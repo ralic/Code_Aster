@@ -11,7 +11,6 @@ subroutine te0466(option, nomte)
 #include "asterfort/teattr.h"
     character(len=16) :: option, nomte
 ! =====================================================================
-! =====================================================================
 ! person_in_charge: sylvie.granet at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -184,7 +183,7 @@ subroutine te0466(option, nomte)
 ! ======================================================================
 ! --- SI MODELISATION = SUSHI HH2 AVEC OU SANS VOISINAGE
 !
-            if ((mthm.eq.'SUSHI').and.lteatt('CODTMA','QU9')) then
+            if ((mthm.eq.'SUSHI').and.lteatt('TYPMA','QU9')) then
 !
 !
 ! --- NAPRE1,NAPRE2,NATEMP SONT MIS EN PLACE

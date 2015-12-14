@@ -16,14 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine alchml(ligrez, optioz, nompaz, basz, celz,&
-                      iret, dcelz)
-        character(len=*) :: ligrez
-        character(len=*) :: optioz
-        character(len=*) :: nompaz
-        character(len=*) :: basz
-        character(len=*) :: celz
+    subroutine alchml(ligrel_, option_, nompar_, base_, cel_,&
+                      iret, dcel_)
+        character(len=*) :: ligrel_
+        character(len=*) :: option_
+        character(len=*) :: nompar_
+        character(len=*) :: base_
+        character(len=*) :: cel_
         integer :: iret
-        character(len=*) :: dcelz
+        character(len=*) :: dcel_
     end subroutine alchml
 end interface
