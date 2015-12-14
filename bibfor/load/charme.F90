@@ -299,7 +299,7 @@ implicit none
 !
         call calirc(load, 'MECA')
 !
-! --- LIAISON_PROJ ---
+! ----- LIAISON_PROJ
 !
         call calipj(load)
 !
@@ -380,10 +380,6 @@ implicit none
 ! ----- LIAISON_UNIF
 !
         call cagrou(load, mesh, vale_type, 'MECA')
-!
-! ----- LIAISON_SOLIDE
-!
-        call caliso(load, mesh, ligrmo, vale_type)
 !
 ! ----- LIAISON_COQUE
 !

@@ -117,8 +117,8 @@ MOD2=AFFE_MODELE(  MAILLAGE=MA_3D,AFFE=(
 
 VAL = DEFI_CONSTANTE (VALE =  1.997)
 
-CH2=AFFE_CHAR_MECA_F(    MODELE=MOD2,
-           DDL_IMPO=_F(  NOEUD = ('I',), DX = VAL),
+CH2=AFFE_CHAR_MECA(    MODELE=MOD2,
+           DDL_IMPO=_F(  NOEUD = ('I',), DX = 1.997),
            LIAISON_SOLIDE=(
 #         -- CAS GENERAL :
           _F( MAILLE = ('FGHIJKLM',)),
@@ -133,7 +133,6 @@ CH2B=AFFE_CHAR_MECA(    MODELE=MOD2,
            _F(  NOEUD = ('F','N','Q1',), DX = 2., DY = 3., DZ = 4.),
            _F(  NOEUD = ('J','O',),    DX = 2.002),
            _F(  NOEUD = ('J','O',),    DY = 2.999),
-#           _F(  NOEUD = ('I',),      DX = 1.997),
            _F(  NOEUD = ('N',),      DRZ = 0.003),
            _F(  NOEUD = ('Q1',),     DRX = 0.001),
            _F(  NOEUD = ('Q1',),     DRY = 0.002),
