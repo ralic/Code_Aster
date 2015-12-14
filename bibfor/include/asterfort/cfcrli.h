@@ -16,10 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfcrli(noma, numedd, defico, resoco)
-        character(len=8) :: noma
-        character(len=24) :: numedd
-        character(len=24) :: defico
-        character(len=24) :: resoco
+    subroutine cfcrli(mesh, nume_dof, ds_contact)
+        use NonLin_Datastructure_type
+        character(len=8), intent(in) :: mesh
+        character(len=24), intent(in) :: nume_dof
+        type(NL_DS_Contact), intent(in) :: ds_contact
     end subroutine cfcrli
 end interface

@@ -16,11 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfpost(noma, ds_contact, ddepla, ctccvg)
+    subroutine cfpost(mesh, disp_iter, ds_contact, ctccvg)
         use NonLin_Datastructure_type
-        character(len=8), intent(in) :: noma
+        character(len=8), intent(in) :: mesh
+        character(len=19), intent(in) :: disp_iter
         type(NL_DS_Contact), intent(in) :: ds_contact
-        character(len=19), intent(in) :: ddepla
         integer, intent(in) :: ctccvg
     end subroutine cfpost
 end interface

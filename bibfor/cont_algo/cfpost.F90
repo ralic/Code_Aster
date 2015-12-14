@@ -1,17 +1,14 @@
-subroutine cfpost(noma, ds_contact, ddepla, ctccvg)
+subroutine cfpost(mesh, disp_iter, ds_contact, ctccvg)
 !
 use NonLin_Datastructure_type
 !
 implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/cfjefi.h"
 #include "asterfort/copisd.h"
 #include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 !
 ! ======================================================================
@@ -32,52 +29,50 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=8), intent(in) :: noma
+    character(len=8), intent(in) :: mesh
+    character(len=19), intent(in) :: disp_iter
     type(NL_DS_Contact), intent(in) :: ds_contact
-    character(len=19), intent(in) :: ddepla
     integer, intent(in) :: ctccvg
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (METHODE DISCRETE - ALGORITHME)
+! Contact - Solve
 !
-! POST-TRAITEMENT ALGORITHMES
+! Discrete methods - Post-treatment of contact solving
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! IN  NOMA   : NOM DU MAILLAGE
+! In  mesh             : name of mesh
+! In  disp_iter        : displacement iteration
 ! In  ds_contact       : datastructure for contact management
-! IN  DDEPLA : INCREMENT DE DEPLACEMENT
-! OUT CTCCVG : CODE RETOUR CONTACT DISCRET
-!                -1 : PAS DE CALCUL DU CONTACT DISCRET
-!                 0 : CAS DU FONCTIONNEMENT NORMAL
-!                 1 : NOMBRE MAXI D'ITERATIONS
-!                 2 : MATRICE SINGULIERE
+! In  ctccvg           : output code for contact algorithm
+!                        -1 - No solving
+!                         0 - OK
+!                        +1 - Maximum contact iteration
+!                        +2 - Singular contact matrix
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    character(len=19) :: ddeplc
-    integer :: jddepc
-    aster_logical :: lpenac, lgcp
+    character(len=19) :: sdcont_delc
+    aster_logical :: l_pena_cont, l_gcp
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('CONTACT', ifm, niv)
     if (niv .ge. 2) then
         write (ifm,*) '<CONTACT> ...... POST-TRAITEMENT DU CALCUL'
     endif
 !
-! --- PARAMETRES
+! - Get contact parameters
 !
-    lpenac = cfdisl(ds_contact%sdcont_defi,'CONT_PENA')
-    lgcp = cfdisl(ds_contact%sdcont_defi,'CONT_GCP' )
+    l_pena_cont = cfdisl(ds_contact%sdcont_defi,'CONT_PENA')
+    l_gcp       = cfdisl(ds_contact%sdcont_defi,'CONT_GCP' )
 !
-! --- SORTIE EN ERREUR
+! - Error management
 !
     if (ctccvg .ne. 0) then
-        if (.not.lgcp) then
+        if (.not.l_gcp) then
             if (niv .ge. 2) then
                 write (ifm,*) '<CONTACT> ...... SORTIE DIRECTE CAR ERREUR'
             endif
@@ -85,24 +80,17 @@ implicit none
         endif
     endif
 !
-! --- ACCES AUX CHAMPS DE TRAVAIL
-! --- DDEPLC: INCREMENT DE SOLUTION APRES CORRECTION DU CONTACT
+! - Copy contact solution
 !
-    ddeplc = ds_contact%sdcont_solv(1:14)//'.DELC'
-    call jeveuo(ddeplc(1:19)//'.VALE', 'L', jddepc)
-!
-! --- RECOPIE CHAMP DE DEPLACEMENT SOLUTION
-!
-    if ((.not.lpenac) .and. (ctccvg.eq.0)) then
-        call copisd('CHAMP_GD', 'V', ddeplc, ddepla)
+    sdcont_delc = ds_contact%sdcont_solv(1:14)//'.DELC'
+    if ((.not.l_pena_cont) .and. (ctccvg.eq.0)) then
+        call copisd('CHAMP_GD', 'V', sdcont_delc, disp_iter)
     endif
 !
-! --- CALCUL DES JEUX FINAUX
+! - Compute final gaps
 !
-    call cfjefi(noma, ds_contact, ddepla)
+    call cfjefi(mesh, disp_iter, ds_contact)
 !
 999 continue
-!
-    call jedema()
 !
 end subroutine

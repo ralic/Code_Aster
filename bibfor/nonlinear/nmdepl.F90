@@ -60,7 +60,7 @@ implicit none
     character(len=24) :: carcri, sdtime, sderro, sdstat
     character(len=19) :: veelem(*), veasse(*)
     character(len=19) :: solalg(*), valinc(*)
-    type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_Contact), intent(inout) :: ds_contact
     aster_logical :: lerrit
 !
 ! --------------------------------------------------------------------------------------------------
@@ -95,7 +95,7 @@ implicit none
 ! IN  SDDYNA : SD DYNAMIQUE
 ! IN  SDPILO : SD PILOTAGE
 ! IN  SDERRO : SD GESTION DES ERREURS
-! In  ds_contact       : datastructure for contact management
+! IO  ds_contact       : datastructure for contact management
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
 ! IN  VEELEM : VARIABLE CHAPEAU POUR NOM DES VECT_ELEM
@@ -205,9 +205,9 @@ implicit none
 ! --- MODIFICATIONS DEPLACEMENTS SI CONTACT DISCRET OU LIAISON_UNILA
 !
     if (lunil .or. lctcd) then
-        call nmcoun(noma      , fonact        , solveu, numedd, matass,&
-                    ds_contact, iterat        , valinc, solalg, veasse,&
-                    instap    , resi_glob_rela, sdtime, sdstat, ctccvg)
+        call nmcoun(noma          , fonact, solveu, numedd    , matass,&
+                    iterat        , instap, valinc, solalg    , veasse,&
+                    resi_glob_rela, sdtime, sdstat, ds_contact, ctccvg)
         if (ctccvg .eq. 0) then
             call nmsolm(sddyna, solalg)
         else

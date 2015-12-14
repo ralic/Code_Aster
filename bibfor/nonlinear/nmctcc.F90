@@ -1,6 +1,6 @@
-subroutine nmctcc(mesh      , model_        , mate          , nume_inst, sddyna   ,&
-                  sderro    , sdstat        , sddisc        , hval_incr, hval_algo,&
-                  ds_contact, loop_cont_conv, loop_cont_node)
+subroutine nmctcc(mesh      , model_, mate  , nume_inst, sddyna   ,&
+                  sderro    , sdstat, sddisc, hval_incr, hval_algo,&
+                  ds_contact)
 !
 use NonLin_Datastructure_type
 !
@@ -49,8 +49,6 @@ implicit none
     character(len=19), intent(in) :: hval_incr(*)
     character(len=19), intent(in) :: hval_algo(*)
     type(NL_DS_Contact), intent(inout) :: ds_contact
-    aster_logical, intent(out) :: loop_cont_conv
-    integer, intent(out) :: loop_cont_node
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -82,7 +80,7 @@ implicit none
     integer :: loop_cont_count
     character(len=8) :: model
     integer :: iter_newt
-    aster_logical :: cycl_flip
+    aster_logical :: cycl_flip, loop_cont_conv
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -95,13 +93,8 @@ implicit none
 !
     model          = model_(1:8)
     loop_cont_conv = .false.
-    loop_cont_node = 0
     l_erro_cont    = .false.
     iter_newt      = -1
-!
-! - State of contact loop
-!
-    call mmbouc(ds_contact, 'Cont', 'READ', loop_cont_count)
 !
 ! - Get contact parameters
 !
@@ -124,15 +117,13 @@ implicit none
 !
     if (l_cont_xfem) then
         if (l_cont_xfem_gg) then
-            call xmtbca(mesh, ds_contact, hval_incr, loop_cont_conv)
+            call xmtbca(mesh, hval_incr, ds_contact)
         else
-            call xmmbca(mesh          , model, mate, ds_contact, hval_incr,&
-                        loop_cont_conv)
+            call xmmbca(mesh, model, mate, hval_incr, ds_contact)
         endif
     else if (l_cont_cont) then
-        call mmstat(mesh          , iter_newt, nume_inst, sddyna    , sdstat        ,&
-                    sddisc        , hval_incr, hval_algo, ds_contact, loop_cont_node,&
-                    loop_cont_conv)
+        call mmstat(mesh  , iter_newt, nume_inst, sddyna    , sdstat,&
+                    sddisc, hval_incr, hval_algo, ds_contact)
     else
         ASSERT(.false.)
     endif
@@ -142,9 +133,14 @@ implicit none
     if (l_cont_cont) then
         call mm_cycl_flip(ds_contact, cycl_flip)
         if (cycl_flip) then
-            loop_cont_conv = .true.
+            call mmbouc(ds_contact, 'Cont', 'Set_Convergence')
         endif
     endif
+!
+! - State of contact loop
+!
+    call mmbouc(ds_contact, 'Cont', 'Read_Counter'  , loop_cont_count)
+    call mmbouc(ds_contact, 'Cont', 'Is_Convergence', loop_state_ = loop_cont_conv)
 !
 ! - Convergence of contact loop
 !
@@ -152,7 +148,7 @@ implicit none
         if (l_frot .and. l_cont_xfem) then
 ! --------- XFEM+friction: forced convergence
             call utmess('A', 'CONTACT3_86')
-            loop_cont_conv = .true.
+            call mmbouc(ds_contact, 'Cont', 'Set_Convergence')
         else
             l_erro_cont    = .true.
             loop_cont_conv = .false.

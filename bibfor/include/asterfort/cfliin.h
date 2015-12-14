@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfliin(noma, ds_contact)
+    subroutine cfliin(mesh, ds_contact)
         use NonLin_Datastructure_type
-        character(len=8), intent(in) :: noma
-        type(NL_DS_Contact), intent(in) :: ds_contact
+        character(len=8), intent(in) :: mesh
+        type(NL_DS_Contact), intent(inout) :: ds_contact
     end subroutine cfliin
 end interface

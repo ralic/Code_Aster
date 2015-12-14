@@ -1,6 +1,5 @@
-subroutine mmstat(mesh          , iter_newt, nume_inst, sddyna    , sdstat        ,&
-                  sddisc        , hval_incr, hval_algo, ds_contact, loop_cont_node,&
-                  loop_cont_conv)
+subroutine mmstat(mesh  , iter_newt, nume_inst, sddyna    , sdstat,&
+                  sddisc, hval_incr, hval_algo, ds_contact)
 !
 use NonLin_Datastructure_type
 !
@@ -38,8 +37,6 @@ implicit none
     character(len=19), intent(in) :: hval_incr(*)
     character(len=19), intent(in) :: hval_algo(*)
     type(NL_DS_Contact), intent(inout) :: ds_contact
-    aster_logical, intent(out) :: loop_cont_conv
-    integer, intent(out) :: loop_cont_node
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,8 +55,6 @@ implicit none
 ! In  hval_incr        : hat-variable for incremental values fields
 ! In  hval_algo        : hat-variable for algorithms fields
 ! IO  ds_contact       : datastructure for contact management
-! Out loop_cont_conv   : .true. if contact loop converged
-! Out loop_cont_node   : number of contact state changing
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -75,9 +70,8 @@ implicit none
 !   l_cont_lac   = cfdisl(ds_contact%sdcont_defi, 'FORMUL_LAC')
 !
     if (l_cont_cont) then
-        call mmmbca(mesh          , iter_newt, nume_inst, sddyna    , sdstat        ,&
-                    sddisc        , hval_incr, hval_algo, ds_contact, loop_cont_node,&
-                    loop_cont_conv)
+        call mmmbca(mesh  , iter_newt, nume_inst, sddyna    , sdstat,&
+                    sddisc, hval_incr, hval_algo, ds_contact)
     elseif (l_cont_lac) then
     
     else

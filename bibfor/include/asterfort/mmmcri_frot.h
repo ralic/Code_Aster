@@ -18,15 +18,11 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine cfinal(ds_contact, l_first_geom, l_pair, nbliac,&
-                      llf, llf1, llf2)
+    subroutine mmmcri_frot(mesh, loop_fric_disp, disp_curr, ds_contact)
         use NonLin_Datastructure_type
-        type(NL_DS_Contact), intent(in) :: ds_contact
-        aster_logical, intent(in) :: l_first_geom
-        aster_logical, intent(in) :: l_pair
-        integer :: nbliac
-        integer :: llf
-        integer :: llf1
-        integer :: llf2
-    end subroutine cfinal
+        character(len=8), intent(in) :: mesh
+        character(len=19), intent(in) :: loop_fric_disp
+        character(len=19), intent(in) :: disp_curr
+        type(NL_DS_Contact), intent(inout) :: ds_contact
+    end subroutine mmmcri_frot
 end interface

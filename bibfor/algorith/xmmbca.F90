@@ -1,5 +1,4 @@
-subroutine xmmbca(mesh  , model, mate, ds_contact, valinc,&
-                  mmcvca)
+subroutine xmmbca(mesh, model, mate, hval_incr, ds_contact)
 !
 use NonLin_Datastructure_type
 !
@@ -16,6 +15,7 @@ implicit none
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mesomm.h"
+#include "asterfort/mmbouc.h"
 #include "asterfort/nmchex.h"
 #include "asterfort/xmchex.h"
 !
@@ -40,30 +40,24 @@ implicit none
     character(len=8), intent(in) :: mesh
     character(len=8), intent(in) :: model
     character(len=24), intent(in) :: mate
-    type(NL_DS_Contact), intent(in) :: ds_contact
-    character(len=19), intent(in) :: valinc(*)
-    aster_logical, intent(out) :: mmcvca
+    character(len=19), intent(in) :: hval_incr(*)
+    type(NL_DS_Contact), intent(inout) :: ds_contact
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE XFEM (METHODE XFEM - ALGORITHME)
+! Contact - Solve
 !
-! MISE À JOUR DU STATUT DES POINTS DE CONTACT
-! RENVOIE MMCVCA (INDICE DE CONVERGENCE DE LA BOUCLE
-!                         SUR LES CONTRAINTES ACTIVES)
+! XFEM - Management of contact loop
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  mesh             : name of mesh
+! In  model            : name of model
+! In  mate             : name of material characteristics (field)
+! In  hval_incr        : hat-variable for incremental values fields
+! IO  ds_contact       : datastructure for contact management
 !
-! IN  NOMO   : NOM DE L'OBJET MODÈLE
-! IN  NOMA   : NOM DE L'OBJET MAILLAGE
-! IN  MATE   : SD MATERIAU
-! In  ds_contact       : datastructure for contact management
-! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
-! OUT MMCVCA : INDICE DE CONVERGENCE DE LA BOUCLE SUR LES C.A.
-!
-!
-!
+! --------------------------------------------------------------------------------------------------
 !
     integer, parameter :: nbout = 4
     integer, parameter :: nbin  = 20
@@ -80,9 +74,10 @@ implicit none
     aster_logical :: debug, lcontx
     integer :: ifm, niv, ifmdbg, nivdbg
     character(len=19) :: oldgeo, depmoi, depplu
-    integer, pointer :: v_model_xfemcont(:) => null()
+    aster_logical :: loop_cont_conv
+    integer, pointer :: xfem_cont(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     call infdbg('XFEM', ifm, niv)
@@ -104,7 +99,7 @@ implicit none
     xcohes = ds_contact%sdcont_solv(1:14)//'.XCOH'
     xcoheo = ds_contact%sdcont_solv(1:14)//'.XCOP'
 !
-    mmcvca = .false.
+    loop_cont_conv = .false.
     if (nivdbg .ge. 2) then
         debug = .true.
     else
@@ -113,22 +108,22 @@ implicit none
 !
 ! --- DECOMPACTION DES VARIABLES CHAPEAUX
 !
-    call nmchex(valinc, 'VALINC', 'DEPMOI', depmoi)
-    call nmchex(valinc, 'VALINC', 'DEPPLU', depplu)
+    call nmchex(hval_incr, 'VALINC', 'DEPMOI', depmoi)
+    call nmchex(hval_incr, 'VALINC', 'DEPPLU', depplu)
 !
 ! --- SI PAS DE CONTACT ALORS ON ZAPPE LA VÉRIFICATION
 !
-    call jeveuo(model(1:8)//'.XFEM_CONT', 'L', vi=v_model_xfemcont)
-    lcontx = v_model_xfemcont(1) .ge. 1
+    call jeveuo(model(1:8)//'.XFEM_CONT', 'L', vi=xfem_cont)
+    lcontx = xfem_cont(1) .ge. 1
     if (.not.lcontx) then
-        mmcvca = .true.
+        loop_cont_conv = .true.
         goto 999
     endif
 !
 ! --- DETERMINATION DE L OPTION
 !
-    if(v_model_xfemcont(1).eq.1.or.v_model_xfemcont(1).eq.3) option='XCVBCA'
-    if(v_model_xfemcont(1).eq.2) option='XCVBCA_MORTAR' 
+    if(xfem_cont(1).eq.1.or.xfem_cont(1).eq.3) option='XCVBCA'
+    if(xfem_cont(1).eq.2) option='XCVBCA_MORTAR' 
 !
 ! --- INITIALISATION DES CHAMPS POUR CALCUL
 !
@@ -157,7 +152,7 @@ implicit none
 !
     call xmchex(mesh, xindco, cindoo)
     call xmchex(mesh, xmemco, cmemco)
-    if (v_model_xfemcont(1).eq.1.or.v_model_xfemcont(1).eq.3) then
+    if (xfem_cont(1).eq.1.or.xfem_cont(1).eq.3) then
         call xmchex(mesh, xcohes, ccohes)
     endif
 !
@@ -234,9 +229,9 @@ implicit none
 ! --- SUPERIEUR A ZERO SUR UN ELEMENT ET DONC ON A PAS CONVERGÉ
 !
     if (sinco(1) .gt. 0) then
-        mmcvca = .false.
+        loop_cont_conv = .false.
     else
-        mmcvca = .true.
+        loop_cont_conv = .true.
     endif
 !
 ! --- ON COPIE CINDO DANS RESOCO.XFIN
@@ -249,6 +244,14 @@ implicit none
     call copisd('CHAMP_GD', 'V', lchout(4), xcohes)
 !
 999 continue
+!
+! - Set loop values
+!
+    if (loop_cont_conv) then
+        call mmbouc(ds_contact, 'Cont', 'Set_Convergence')
+    else
+        call mmbouc(ds_contact, 'Cont', 'Set_Divergence')
+    endif
 !
     call jedema()
 end subroutine

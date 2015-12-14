@@ -1,11 +1,11 @@
-subroutine nmctcf(mesh     , model_, ds_print, sderro, ds_contact,&
-                  hval_incr, loop_frot_conv)
+subroutine nmctcf(mesh, model, sderro, hval_incr, ds_print, ds_contact)
 !
 use NonLin_Datastructure_type
 !
 implicit none
 !
 #include "asterf_types.h"
+#include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfdisl.h"
@@ -13,7 +13,7 @@ implicit none
 #include "asterfort/copisd.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/mmbouc.h"
-#include "asterfort/mmmcri.h"
+#include "asterfort/mmmcri_frot.h"
 #include "asterfort/mmreas.h"
 #include "asterfort/nmchex.h"
 #include "asterfort/nmcrel.h"
@@ -40,98 +40,102 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
-    character(len=24), intent(in) :: model_
-    type(NL_DS_Print), intent(inout) :: ds_print
+    character(len=8), intent(in) :: model
     character(len=24), intent(in) :: sderro
-    type(NL_DS_Contact), intent(inout) :: ds_contact
     character(len=19), intent(in) :: hval_incr(*)
-    aster_logical, intent(out) :: loop_frot_conv
+    type(NL_DS_Print), intent(inout) :: ds_print
+    type(NL_DS_Contact), intent(inout) :: ds_contact
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (ALGO - BOUCLE CONTACT)
+! MECA_NON_LINE - Algo
 !
-! SEUIL DE FROTTEMENT
+! Friction loop management - Management
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! In  mesh             : name of mesh
 ! In  model            : name of model
-! IO  ds_print         : datastructure for printing parameters
 ! In  sderro           : datastructure for errors during algorithm
-! IO  ds_contact       : datastructure for contact management
 ! In  hval_incr        : hat-variable for incremental values fields
-! Out loop_frot_conv
+! IO  ds_print         : datastructure for printing parameters
+! IO  ds_contact       : datastructure for contact management
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    aster_logical :: ltfcm, lctcc, lxfcm
-    aster_logical :: lerrof
-    integer :: maxfro
-    real(kind=8) :: epsfro
-    integer :: mmitfr
-    character(len=19) :: depplu, deplam, depmoi
-    character(len=8) :: model
-    character(len=16) :: cvgnoe
-    real(kind=8) :: cvgval
+    aster_logical :: l_cont_cont, l_cont_xfem, l_cont_xfem_gg
+    aster_logical :: loop_fric_error
+    integer :: iter_fric_maxi
+    integer :: loop_fric_count
+    character(len=19) :: disp_curr, loop_fric_disp
+    character(len=16) :: loop_fric_node
+    real(kind=8) :: loop_fric_vale
+    aster_logical :: loop_fric_conv
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> MISE A JOUR DU SEUIL DE TRESCA'
     endif
 !
-! --- INITIALISATIONS
+! - Initializations
 !
-    model  = model_(1:8)
-    loop_frot_conv = .false.
-    deplam = ds_contact%sdcont_solv(1:14)//'.DEPF'
-    lerrof = .false.
+    loop_fric_conv  = .false.
+    loop_fric_node  = ' '
+    loop_fric_vale  = r8vide()
+    call mmbouc(ds_contact, 'Fric', 'Set_NoError')
 !
-! --- DECOMPACTION DES VARIABLES CHAPEAUX
+! - Get fields
 !
-    call nmchex(hval_incr, 'VALINC', 'DEPMOI', depmoi)
-    call nmchex(hval_incr, 'VALINC', 'DEPPLU', depplu)
+    call nmchex(hval_incr, 'VALINC', 'DEPPLU', disp_curr)
 !
-! --- INFOS BOUCLE FROTTEMENT
+! - Get contact parameters
 !
-    call mmbouc(ds_contact, 'Fric', 'READ', mmitfr)
-    maxfro = cfdisi(ds_contact%sdcont_defi,'ITER_FROT_MAXI')
-    epsfro = cfdisr(ds_contact%sdcont_defi,'RESI_FROT' )
+    l_cont_cont    = cfdisl(ds_contact%sdcont_defi,'FORMUL_CONTINUE')
+    l_cont_xfem_gg = cfdisl(ds_contact%sdcont_defi,'CONT_XFEM_GG')
+    l_cont_xfem    = cfdisl(ds_contact%sdcont_defi,'FORMUL_XFEM')
 !
-! --- TYPE DE CONTACT
+! - Get friction loop parameters
 !
-    lctcc = cfdisl(ds_contact%sdcont_defi,'FORMUL_CONTINUE')
-    lxfcm = cfdisl(ds_contact%sdcont_defi,'FORMUL_XFEM')
-    ltfcm = cfdisl(ds_contact%sdcont_defi,'CONT_XFEM_GG')
+    loop_fric_disp = ds_contact%sdcont_solv(1:14)//'.DEPF'
+    iter_fric_maxi = cfdisi(ds_contact%sdcont_defi,'ITER_FROT_MAXI')
 !
-! --- MISE A JOUR DES SEUILS
+! - Update triggers
 !
-    if (lxfcm) then
-        if (.not.ltfcm) then
+    if (l_cont_xfem) then
+        if (.not.l_cont_xfem_gg) then
             call xreacl(mesh, model, hval_incr, ds_contact)
         endif
-    else if (lctcc) then
+    else if (l_cont_cont) then
         call mmreas(mesh, ds_contact, hval_incr)
     else
         ASSERT(.false.)
     endif
 !
-! --- CONVERGENCE SEUIL FROTTEMENT
+! - Compute friction criterion
 !
-    call mmmcri('FROT', mesh, depmoi, deplam, depplu,&
-                ds_contact, epsfro, cvgnoe, cvgval, loop_frot_conv)
+    call mmmcri_frot(mesh, loop_fric_disp, disp_curr, ds_contact)
 !
-    if ((.not.loop_frot_conv) .and. (mmitfr.eq.maxfro)) then
-        lerrof = .true.
+! - Get final loop state
+!
+    call mmbouc(ds_contact, 'Fric', 'Is_Convergence', loop_state_ = loop_fric_conv)
+    call mmbouc(ds_contact, 'Fric', 'Get_Locus'     , loop_locus_ = loop_fric_node)
+    call mmbouc(ds_contact, 'Fric', 'Get_Vale'      , loop_vale_  = loop_fric_vale)
+    call mmbouc(ds_contact, 'Fric', 'Read_Counter'  , loop_fric_count) 
+!
+! - Too many iterations ?
+!
+    if ((.not.loop_fric_conv) .and. (loop_fric_count .eq. iter_fric_maxi)) then
+        call mmbouc(ds_contact, 'Fric', 'Set_Error')
     endif
+    call mmbouc(ds_contact, 'Fric', 'Is_Error', loop_state_ = loop_fric_error)
 !
-! --- CONVERGENCE ET ERREUR
+! - Save events
 !
-    call nmcrel(sderro, 'ERRE_CTCF', lerrof)
-    if (loop_frot_conv) then
+    call nmcrel(sderro, 'ERRE_CTCF', loop_fric_error)
+    if (loop_fric_conv) then
         call nmcrel(sderro, 'DIVE_FIXF', .false._1)
     else
         call nmcrel(sderro, 'DIVE_FIXF', .true._1)
@@ -139,13 +143,13 @@ implicit none
 !
 ! - Set values in convergence table for contact geoemtry informations
 !
-    call nmimck(ds_print, 'BOUC_NOEU', cvgnoe, .true._1)
-    call nmimcr(ds_print, 'BOUC_VALE', cvgval, .true._1)
+    call nmimck(ds_print, 'BOUC_NOEU', loop_fric_node, .true._1)
+    call nmimcr(ds_print, 'BOUC_VALE', loop_fric_vale, .true._1)
 !
-! --- MISE A JOUR DU SEUIL DE REFERENCE
+! - Update reference displacement for friction loop
 !
-    if (.not.loop_frot_conv) then
-        call copisd('CHAMP_GD', 'V', depplu, deplam)
+    if (.not.loop_fric_conv) then
+        call copisd('CHAMP_GD', 'V', disp_curr, loop_fric_disp)
     endif
 !
 end subroutine

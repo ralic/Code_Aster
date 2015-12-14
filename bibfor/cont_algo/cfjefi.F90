@@ -1,4 +1,4 @@
-subroutine cfjefi(noma, ds_contact, ddepla)
+subroutine cfjefi(mesh, disp_iter, ds_contact)
 !
 use NonLin_Datastructure_type
 !
@@ -33,35 +33,36 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=8), intent(in) :: noma
+    character(len=8), intent(in) :: mesh
+    character(len=19), intent(in) :: disp_iter
     type(NL_DS_Contact), intent(in) :: ds_contact
-    character(len=19), intent(in) :: ddepla
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (METHODE DISCRETE - ALGORITHME)
+! Contact - Solve
 !
-! CALCUL DES JEUX FINAUX
+! Discrete methods - Compute final gaps
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! IN  NOMA   : NOM DU MAILLAGE
+! In  mesh             : name of mesh
+! In  disp_iter        : displacement iteration
 ! In  ds_contact       : datastructure for contact management
-! IN  DDEPLA : INCREMENT DE DEPLACEMENT DEPUIS L'ITERATION
-!              DE NEWTON PRECEDENTE CORRIGEE PAR LE CONTACT
+!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
     integer :: iliai, jdecal, nbddl
     real(kind=8) :: jeuini, jeuold, jeuinc
     real(kind=8) :: jexnew, jexold, jexinc
-    aster_logical :: lpenac, llagrf, lctfd
-    character(len=24) :: apcoef, apddl, appoin
+    aster_logical :: l_pena_cont, l_lagr_frot, l_frot
+    character(len=24) :: sdcont_apcoef, sdcont_apddl, sdcont_appoin
     integer :: japcoe, japddl, japptr
-    character(len=24) :: apcofr
+    character(len=24) :: sdcont_apcofr
     integer :: japcof
-    character(len=24) :: jeuite, jeux
+    character(len=24) :: sdcont_jeuite, sdcont_jeux
     integer :: jjeuit, jjeux
-    integer :: nbliai, neq, ndimg
+    integer :: nbliai, nb_equa, model_ndim
     real(kind=8), pointer :: vale(:) => null()
 !
 ! ----------------------------------------------------------------------
@@ -72,54 +73,52 @@ implicit none
         write (ifm,*) '<CONTACT> ...... CALCUL DES JEUX FINAUX'
     endif
 !
-! --- PARAMETRES
+! - Get contact parameters
 !
-    nbliai = cfdisd(ds_contact%sdcont_solv,'NBLIAI' )
-    neq = cfdisd(ds_contact%sdcont_solv,'NEQ' )
-    ndimg = cfdisd(ds_contact%sdcont_solv,'NDIM' )
-    lpenac = cfdisl(ds_contact%sdcont_defi,'CONT_PENA' )
-    llagrf = cfdisl(ds_contact%sdcont_defi,'FROT_LAGR' )
-    lctfd = cfdisl(ds_contact%sdcont_defi,'FROT_DISCRET')
+    nbliai      = cfdisd(ds_contact%sdcont_solv,'NBLIAI' )
+    nb_equa     = cfdisd(ds_contact%sdcont_solv,'NEQ' )
+    model_ndim  = cfdisd(ds_contact%sdcont_solv,'NDIM' )
+    l_pena_cont = cfdisl(ds_contact%sdcont_defi,'CONT_PENA' )
+    l_lagr_frot = cfdisl(ds_contact%sdcont_defi,'FROT_LAGR' )
+    l_frot      = cfdisl(ds_contact%sdcont_defi,'FROT_DISCRET')
 !
-! --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
+! - Access to contact datastructures
 !
-    appoin = ds_contact%sdcont_solv(1:14)//'.APPOIN'
-    apddl = ds_contact%sdcont_solv(1:14)//'.APDDL'
-    apcoef = ds_contact%sdcont_solv(1:14)//'.APCOEF'
-    call jeveuo(appoin, 'L', japptr)
-    call jeveuo(apddl, 'L', japddl)
-    call jeveuo(apcoef, 'L', japcoe)
-!
-    if (lctfd) then
-        apcofr = ds_contact%sdcont_solv(1:14)//'.APCOFR'
-        call jeveuo(apcofr, 'L', japcof)
+    sdcont_appoin = ds_contact%sdcont_solv(1:14)//'.APPOIN'
+    sdcont_apddl  = ds_contact%sdcont_solv(1:14)//'.APDDL'
+    sdcont_apcoef = ds_contact%sdcont_solv(1:14)//'.APCOEF'
+    call jeveuo(sdcont_appoin, 'L', japptr)
+    call jeveuo(sdcont_apddl , 'L', japddl)
+    call jeveuo(sdcont_apcoef, 'L', japcoe)
+    if (l_frot) then
+        sdcont_apcofr = ds_contact%sdcont_solv(1:14)//'.APCOFR'
+        call jeveuo(sdcont_apcofr, 'L', japcof)
     endif
+    sdcont_jeuite = ds_contact%sdcont_solv(1:14)//'.JEUITE'
+    sdcont_jeux   = ds_contact%sdcont_solv(1:14)//'.JEUX'
+    call jeveuo(sdcont_jeux  , 'L', jjeux)
+    call jeveuo(sdcont_jeuite, 'E', jjeuit)
 !
-    jeuite = ds_contact%sdcont_solv(1:14)//'.JEUITE'
-    jeux = ds_contact%sdcont_solv(1:14)//'.JEUX'
-    call jeveuo(jeux, 'L', jjeux)
-    call jeveuo(jeuite, 'E', jjeuit)
+! - Access to displacements
 !
-! --- ACCES VECTEUR DEPLACEMENTS
+    call jeveuo(disp_iter(1:19)//'.VALE', 'L', vr=vale)
 !
-    call jeveuo(ddepla(1:19)//'.VALE', 'L', vr=vale)
-!
-! --- MISE A JOUR DES JEUX
+! - Gap update
 !
     do iliai = 1, nbliai
         jeuini = zr(jjeux+3*(iliai-1)+1-1)
-        if (lpenac) then
+        if (l_pena_cont) then
             zr(jjeuit+3*(iliai-1)+1-1) = jeuini
         else
             jdecal = zi(japptr+iliai-1)
             nbddl = zi(japptr+iliai) - zi(japptr+iliai-1)
-            call caladu(neq, nbddl, zr(japcoe+jdecal), zi(japddl+jdecal), vale,&
+            call caladu(nb_equa, nbddl, zr(japcoe+jdecal), zi(japddl+jdecal), vale,&
                         jeuinc)
             jeuold = zr(jjeuit+3*(iliai-1)+1-1)
             zr(jjeuit+3*(iliai-1)+1-1) = jeuold - jeuinc
-            if (llagrf .and. ndimg .eq. 2) then
+            if (l_lagr_frot .and. model_ndim .eq. 2) then
                 jexold = zr(jjeuit+3*(iliai-1)+2-1)
-                call caladu(neq, nbddl, zr(japcof+jdecal), zi(japddl+ jdecal), vale,&
+                call caladu(nb_equa, nbddl, zr(japcof+jdecal), zi(japddl+ jdecal), vale,&
                             jexinc)
                 jexnew = jexold + jexinc
                 zr(jjeuit+3*(iliai-1)+2-1) = jexnew
@@ -127,10 +126,10 @@ implicit none
         endif
     end do
 !
-! --- AFFICHAGE
+! - Print
 !
     if (niv .ge. 2) then
-        call cfimp1('FIN', noma, ds_contact%sdcont_defi, ds_contact%sdcont_solv, ifm)
+        call cfimp1('FIN', mesh, ds_contact%sdcont_defi, ds_contact%sdcont_solv, ifm)
     endif
 !
     call jedema()

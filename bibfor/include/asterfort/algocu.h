@@ -16,15 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine algocu(deficu, resocu, solveu, lmat, ldscon,&
-                      cncine, resu, ctccvg)
-        character(len=24) :: deficu
-        character(len=24) :: resocu
-        character(len=19) :: solveu
-        integer :: lmat
-        integer :: ldscon
-        character(len=19) :: cncine
-        character(len=19) :: resu
-        integer :: ctccvg
+    subroutine algocu(ds_contact, solver, lmat, ldscon, cncine,&
+                      disp_iter , ctccvg)
+        use NonLin_Datastructure_type
+        type(NL_DS_Contact), intent(in) :: ds_contact
+        character(len=19), intent(in) :: solver
+        integer, intent(in) :: lmat
+        integer, intent(in) :: ldscon
+        character(len=19), intent(in) :: cncine
+        character(len=19), intent(in) :: disp_iter
+        integer, intent(out) :: ctccvg
     end subroutine algocu
 end interface

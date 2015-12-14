@@ -63,7 +63,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_loop_geom, i_loop_cont, i_loop_frot
+    integer :: loop_geom_count, loop_cont_count, loop_fric_count
     aster_logical :: l_loop_frot, l_loop_geom, l_loop_cont
     aster_logical :: l_pair
 !
@@ -75,12 +75,12 @@ implicit none
 !
 ! - Print geometric loop iteration
 !
-    call mmbouc(ds_contact, 'Geom', 'READ', i_loop_geom)
-    call nmimci(ds_print  , 'BOUC_GEOM', i_loop_geom, .true._1)
+    call mmbouc(ds_contact, 'Geom', 'Read_Counter', loop_geom_count)
+    call nmimci(ds_print  , 'BOUC_GEOM', loop_geom_count, .true._1)
 !
 ! - No pairing at first iteration (see mminit/xminit)
 !
-    l_pair = (i_loop_geom .gt. 1)
+    l_pair = (loop_geom_count .gt. 1)
 !
 ! - Contact loops
 !
@@ -98,10 +98,10 @@ implicit none
                             nume_dof)
             endif
         endif
-        call mmbouc(ds_contact, 'Fric', 'INIT')
-        call mmbouc(ds_contact, 'Fric', 'INCR')
-        call mmbouc(ds_contact, 'Fric', 'READ', i_loop_frot)
-        call nmimci(ds_print   , 'BOUC_FROT', i_loop_frot, .true._1)
+        call mmbouc(ds_contact, 'Fric', 'Init_Counter')
+        call mmbouc(ds_contact, 'Fric', 'Incr_Counter')
+        call mmbouc(ds_contact, 'Fric', 'Read_Counter', loop_fric_count)
+        call nmimci(ds_print  , 'BOUC_FROT', loop_fric_count, .true._1)
     endif
 !
 ! - <2> - Friction loop
@@ -110,10 +110,10 @@ implicit none
         if (l_loop_frot) then
             cont_loop = 2
         endif
-        call mmbouc(ds_contact, 'Cont', 'INIT')
-        call mmbouc(ds_contact, 'Cont', 'INCR')
-        call mmbouc(ds_contact, 'Cont', 'READ', i_loop_cont)
-        call nmimci(ds_print   , 'BOUC_CONT', i_loop_cont, .true._1)
+        call mmbouc(ds_contact, 'Cont', 'Init_Counter')
+        call mmbouc(ds_contact, 'Cont', 'Incr_Counter')
+        call mmbouc(ds_contact, 'Cont', 'Read_Counter', loop_cont_count)
+        call nmimci(ds_print  , 'BOUC_CONT', loop_cont_count, .true._1)
     endif
 !
 ! - <1> - Contact loop

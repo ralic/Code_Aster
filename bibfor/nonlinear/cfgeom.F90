@@ -1,5 +1,5 @@
-subroutine cfgeom(reageo    , iterat, noma, sdtime, sdstat,&
-                  ds_contact, depplu, instan)
+subroutine cfgeom(iter_newt, mesh     , sdtime, sdstat, ds_contact,&
+                  disp_curr, time_curr)
 !
 use NonLin_Datastructure_type
 !
@@ -8,6 +8,8 @@ implicit none
 #include "asterf_types.h"
 #include "asterfort/cfappa.h"
 #include "asterfort/cfimp4.h"
+#include "asterfort/cfsvfr.h"
+#include "asterfort/cfsvmu.h"
 #include "asterfort/geomco.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/nmrinc.h"
@@ -32,82 +34,95 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    integer :: iterat
-    aster_logical :: reageo
-    character(len=8) :: noma
+    integer, intent(in) :: iter_newt
+    character(len=8), intent(in) :: mesh
+    character(len=24), intent(in) :: sdtime
+    character(len=24), intent(in) :: sdstat
     type(NL_DS_Contact), intent(in) :: ds_contact
-    character(len=24) :: sdtime, sdstat
-    character(len=19) :: depplu
-    real(kind=8) :: instan
+    character(len=19), intent(in) :: disp_curr
+    real(kind=8), intent(in) :: time_curr
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (METHODES DISCRETES - APPARIEMENT)
+! Contact - Solve
 !
-! ROUTINE D'AIGUILLAGE POUR L'ACTUALISATION GEOMETRIQUE DU CONTACT:
-!  APPARIEMENT, PROJECTION, JEUX
+! Discrete methods - Pairing
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! IN  REAGEO : VAUT .TRUE. SI REACTUALISATION GEOMETRIQUE
-! IN  ITERAT : NUMERO DE L'ITERATION DE NEWTON COURANTE
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  SDTIME : SD TIMER
-! IN  SDSTAT : SD STATISTIQUES
+! In  iter_newt        : index of current Newton iteration
+! In  mesh             : name of mesh
+! In  sdtime           : datastructure for timers management
+! In  sdstat           : datastructure for statistics
 ! In  ds_contact       : datastructure for contact management
-! IN  DEPPLU : CHAMP DE DEPLACEMENTS DEPUIS L'INSTANT INITIAL
+! In  disp_curr        : current displacements
+! In  time_curr        : current time
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
+    aster_logical :: l_pair
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call infdbg('CONTACT', ifm, niv)
+!
+! - Is pairing ?
+!
+    l_pair      = ds_contact%l_pair
+!
+! - Save before pairing
+!
+    if (l_pair) then
+        call cfsvmu(ds_contact, .false._1)
+        call cfsvfr(ds_contact, .false._1)
+    endif
+!
+! - Print
+!
     if (niv .ge. 2) then
-        if (reageo) then
+        if (l_pair) then
             write (ifm,*) '<CONTACT> ... REACTUALISATION DE L''APPARIEMENT'
         else
             write (ifm,*) '<CONTACT> ... PAS DE REACTUALISATION DE L''APPARIEMENT'
         endif
     endif
 !
-! --- APPARIEMENT (OU PAS)
+! - Pairing or not pairing ?
 !
-    if (reageo) then
+    if (l_pair) then
         call nmtime(sdtime, 'INI', 'CONT_GEOM')
         call nmtime(sdtime, 'RUN', 'CONT_GEOM')
 !
-! ----- REACTUALISATION DE LA GEOMETRIE
+! ----- Update geometry
 !
-        call geomco(noma, ds_contact, depplu)
+        call geomco(mesh, ds_contact, disp_curr)
 !
-! ----- APPARIEMENT
+! ----- Pairing
 !
-        call cfappa(noma, ds_contact, instan)
+        call cfappa(mesh, ds_contact, time_curr)
         call nmtime(sdtime, 'END', 'CONT_GEOM')
         call nmrinc(sdstat, 'CONT_GEOM')
 !
     else
 !
-! --- REACTUALISATION DU JEU NECESSAIRE EN DEBUT DE PAS
-! --- DE TEMPS AU CAS OU IL Y AURAIT EU REDECOUPAGE
+! ----- Update gaps (for step cut)
 !
-        if (iterat .eq. 0) then
+        if (iter_newt .eq. 0) then
             call reajeu(ds_contact)
         endif
     endif
 !
-! --- IMPRESSIONS POUR LES DEVELOPPEURS
+! - Debug print
 !
     if (niv .ge. 2) then
-        call cfimp4(ds_contact, noma, ifm)
+        call cfimp4(ds_contact, mesh, ifm)
     endif
 !
-! --- AFFICHAGE
+! - Print
 !
     if (niv .ge. 2) then
-        if (reageo) then
+        if (l_pair) then
             write (ifm,*) '<CONTACT> ... FIN DE REACTUALISATION DE L''APPARIEMENT'
         endif
     endif

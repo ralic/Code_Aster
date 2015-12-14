@@ -16,13 +16,12 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cuprep(mailla, neq, deficu, resocu, deptot,&
-                      inst)
-        character(len=8) :: mailla
-        integer :: neq
-        character(len=24) :: deficu
-        character(len=24) :: resocu
-        character(len=19) :: deptot
-        real(kind=8) :: inst
+    subroutine cuprep(mesh, nb_equa, ds_contact, disp_iter, time_curr)
+        use NonLin_Datastructure_type
+        character(len=8), intent(in) :: mesh
+        integer, intent(in) :: nb_equa
+        type(NL_DS_Contact), intent(in) :: ds_contact
+        character(len=19), intent(in) :: disp_iter
+        real(kind=8), intent(in) :: time_curr
     end subroutine cuprep
 end interface

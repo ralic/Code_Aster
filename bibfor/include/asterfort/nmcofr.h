@@ -16,23 +16,23 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmcofr(mesh, depplu, depdel, ddepla, solveu,&
-                      numedd, matass, ds_contact, iterat,&
-                      resigr, sdstat, sdtime, ctccvg,instan)
+    subroutine nmcofr(mesh    , disp_curr, disp_cumu_inst, disp_iter, solver        ,&
+                      nume_dof, matr_asse, iter_newt     , time_curr, resi_glob_rela,&
+                      sdstat  , sdtime   , ds_contact    , ctccvg)
         use NonLin_Datastructure_type
-        character(len=8) :: mesh
-        character(len=19) :: depplu
-        character(len=19) :: depdel
-        character(len=19) :: ddepla
-        character(len=19) :: solveu
-        character(len=14) :: numedd
-        character(len=19) :: matass
-        type(NL_DS_Contact), intent(in) :: ds_contact
-        integer :: iterat
-        real(kind=8) :: resigr
-        character(len=24) :: sdstat
-        character(len=24) :: sdtime
-        integer :: ctccvg
-        real(kind=8) :: instan
+        character(len=8), intent(in) :: mesh
+        character(len=19), intent(in) :: disp_curr
+        character(len=19), intent(in) :: disp_cumu_inst
+        character(len=19), intent(in) :: disp_iter
+        character(len=19), intent(in) :: solver
+        character(len=14), intent(in) :: nume_dof
+        character(len=19), intent(in) :: matr_asse
+        integer, intent(in) :: iter_newt
+        real(kind=8), intent(in) :: time_curr
+        real(kind=8), intent(in) :: resi_glob_rela
+        character(len=24), intent(in) :: sdstat
+        character(len=24), intent(in) :: sdtime 
+        type(NL_DS_Contact), intent(inout) :: ds_contact 
+        integer, intent(out) :: ctccvg
     end subroutine nmcofr
 end interface

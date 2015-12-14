@@ -49,7 +49,7 @@ interface
         character(len=19) :: sdpilo
         character(len=24) :: sdtime
         character(len=24) :: sderro
-        type(NL_DS_Contact), intent(in) :: ds_contact
+        type(NL_DS_Contact), intent(inout) :: ds_contact
         character(len=19) :: valinc(*)
         character(len=19) :: solalg(*)
         character(len=19) :: veelem(*)

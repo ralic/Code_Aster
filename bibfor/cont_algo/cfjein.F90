@@ -1,4 +1,4 @@
-subroutine cfjein(noma, ds_contact, depdel)
+subroutine cfjein(mesh, ds_contact, disp_cumu_inst)
 !
 use NonLin_Datastructure_type
 !
@@ -35,21 +35,23 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=8), intent(in) :: noma
+    character(len=8), intent(in) :: mesh
     type(NL_DS_Contact), intent(in) :: ds_contact
-    character(len=19), intent(in) :: depdel
+    character(len=19), intent(in) :: disp_cumu_inst
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (METHODE DISCRETE - ALGORITHME)
+! Contact - Solve
 !
-! CALCUL DES JEUX INITIAUX AJEU+ = AJEU/I/N - A.DDEPLA
+! Discrete methods - Compute initial gaps
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! IN  NOMA   : NOM DU MAILLAGE
+! In  mesh             : name of mesh
 ! In  ds_contact       : datastructure for contact management
-! IN  DEPDEL : INCREMENT DE DEPLACEMENT CUMULE DEPUIS DEBUT DU PAS
+! In  disp_cumu_inst   : displacement increment from beginning of current time
+!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
     integer :: nbddl, jdecal
@@ -61,18 +63,15 @@ implicit none
     integer :: japddl, japcoe, japptr
     character(len=24) :: apcofr
     integer :: japcof
-    character(len=24) :: clreac
-    integer :: jclrea
-    aster_logical :: reapre
     integer :: nbliai, neq, ndimg, nesmax
-    aster_logical :: lgliss, lctfd, llagrf
+    aster_logical :: lgliss, lctfd, llagrf, l_first_geom
     real(kind=8) :: aljeu
     real(kind=8) :: jeuold, jeuini, jexini, jeyini
     real(kind=8) :: val1, val2, val
     real(kind=8), pointer :: ddep0(:) => null()
     real(kind=8), pointer :: depde(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     call infdbg('CONTACT', ifm, niv)
@@ -80,7 +79,7 @@ implicit none
         write (ifm,*) '<CONTACT> ......... CALCUL DES JEUX INITIAUX'
     endif
 !
-! --- PARAMETRES
+! - Get contact parameters
 !
     ndimg = cfdisd(ds_contact%sdcont_solv,'NDIM' )
     nbliai = cfdisd(ds_contact%sdcont_solv,'NBLIAI')
@@ -114,12 +113,9 @@ implicit none
         call jeveuo(apcofr, 'L', japcof)
     endif
 !
-    clreac = ds_contact%sdcont_solv(1:14)//'.REAL'
-    call jeveuo(clreac, 'L', jclrea)
+! - Get geometric loop state
 !
-! --- PARAMETRES DE REACTUALISATION
-!
-    reapre = zl(jclrea+3-1)
+    l_first_geom = ds_contact%l_first_geom
 !
 ! --- ACCES AUX CHAMPS DE TRAVAIL
 ! --- DDEPL0: INCREMENT DE SOLUTION SANS CORRECTION DU CONTACT
@@ -129,7 +125,7 @@ implicit none
 !
 ! --- INCREMENT DE DEPLACEMENT DEPUIS LE DEBUT DU PAS DE TEMPS
 !
-    call jeveuo(depdel(1:19)//'.VALE', 'L', vr=depde)
+    call jeveuo(disp_cumu_inst(1:19)//'.VALE', 'L', vr=depde)
 !
 ! --- ON CALCULE LE NOUVEAU JEU : AJEU+ = AJEU/I/N - A.DDEPLA
 !
@@ -175,7 +171,7 @@ implicit none
 !
             jexini = val1 + val2
 !
-            if ((ndimg.eq.2) .and. llagrf .and. reapre) then
+            if ((ndimg.eq.2) .and. llagrf .and. l_first_geom) then
                 zr(jjeuit+3*(iliai-1)+2-1) = 0.d0
             endif
 !
@@ -212,7 +208,7 @@ implicit none
                 if (ialarm .eq. 1) then
                     call utmess('A', 'CONTACT_9')
                 endif
-                call cfimp2(ds_contact%sdcont_defi, ds_contact%sdcont_solv, noma, iliai, 'C0',&
+                call cfimp2(ds_contact%sdcont_defi, ds_contact%sdcont_solv, mesh, iliai, 'C0',&
                             'ALJ')
             endif
         endif

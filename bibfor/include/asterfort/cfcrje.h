@@ -16,8 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfcrje(defico, resoco)
-        character(len=24) :: defico
-        character(len=24) :: resoco
+    subroutine cfcrje(ds_contact)
+        use NonLin_Datastructure_type
+        type(NL_DS_Contact), intent(in) :: ds_contact
     end subroutine cfcrje
 end interface

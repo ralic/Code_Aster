@@ -16,24 +16,24 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfmmcv(mesh    , modele, numedd    , fonact, sddyna,&
-                      ds_print, sdstat, sddisc    , sdtime, sderro,&
-                      numins  , iterat, ds_contact, valinc, solalg)
+    subroutine cfmmcv(mesh     , model_   , nume_dof , list_func_acti, iter_newt ,&
+                      nume_inst, sddyna   , sdstat   , sddisc        , sdtime    ,&
+                      sderro   , hval_incr, hval_algo, ds_print      , ds_contact)
         use NonLin_Datastructure_type
-        character(len=8) :: mesh
-        character(len=24) :: modele
-        character(len=24) :: numedd
-        integer :: fonact(*)
-        character(len=19) :: sddyna
+        character(len=8), intent(in) :: mesh
+        character(len=24), intent(in) :: model_
+        character(len=24), intent(in) :: nume_dof
+        integer, intent(in) :: list_func_acti(*)
+        integer, intent(in) :: iter_newt
+        integer, intent(in) :: nume_inst 
+        character(len=19), intent(in) :: sddisc
+        character(len=19), intent(in) :: sddyna
+        character(len=24), intent(in) :: sdtime
+        character(len=24), intent(in) :: sdstat
+        character(len=24), intent(in) :: sderro
+        character(len=19), intent(in) :: hval_incr(*)
+        character(len=19), intent(in) :: hval_algo(*)
         type(NL_DS_Print), intent(inout) :: ds_print
-        character(len=24) :: sdstat
-        character(len=19) :: sddisc
-        character(len=24) :: sdtime
-        character(len=24) :: sderro
-        integer :: numins
-        integer :: iterat
         type(NL_DS_Contact), intent(inout) :: ds_contact
-        character(len=19) :: valinc(*)
-        character(len=19) :: solalg(*)
     end subroutine cfmmcv
 end interface

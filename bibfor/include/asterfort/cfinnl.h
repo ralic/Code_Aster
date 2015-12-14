@@ -18,14 +18,14 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine cfinnl(ds_contact, reageo, nbliac, llf,&
-                      llf1, llf2)
+    subroutine cfinnl(ds_contact, l_pair, nbliac, llf,&
+                      llf1      , llf2)
         use NonLin_Datastructure_type
         type(NL_DS_Contact), intent(in) :: ds_contact
-        aster_logical :: reageo
-        integer :: nbliac
-        integer :: llf
-        integer :: llf1
-        integer :: llf2
+        aster_logical, intent(in) :: l_pair
+        integer, intent(out) :: nbliac
+        integer, intent(out) :: llf
+        integer, intent(out) :: llf1
+        integer, intent(out) :: llf2
     end subroutine cfinnl
 end interface

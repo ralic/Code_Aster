@@ -192,6 +192,13 @@ implicit none
             endif
         endif
 !
+! ----- Flag for pairing
+!
+        if (l_form_disc) then
+            ds_contact%l_pair       = .true._1
+            ds_contact%l_first_geom = .true._1
+        endif
+!
 ! ----- Save parameters
 !
         ds_contact%sdcont_defi = sdcont(1:8)//'.CONTACT'

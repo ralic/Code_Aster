@@ -102,6 +102,7 @@ implicit none
     do i_loop = 1, nb_loop_defi
         ds_contact%loop(i_loop)%type    = loop_type(i_loop)
         ds_contact%loop(i_loop)%conv    = .false._1
+        ds_contact%loop(i_loop)%error   = .false._1
         ds_contact%loop(i_loop)%counter = 0
     end do
 !
@@ -113,14 +114,26 @@ implicit none
 !
 ! - Flag for (re) numbering
 !
-    ds_contact%l_renumber = .false._1
+    ds_contact%l_renumber   = .false._1
 !
 ! - Geometric loop control
 !
-    ds_contact%geom_maxi = -1.d0
+    ds_contact%geom_maxi    = -1.d0
 !
 ! - Get-off indicator
 !
-    ds_contact%l_getoff  = .false._1
+    ds_contact%l_getoff     = .false._1
+!
+! - First geometric loop
+!
+    ds_contact%l_first_geom = .false._1
+!
+! - Flag for pairing
+!
+    ds_contact%l_pair       = .false._1
+!
+! - Wait for contact sub-iterations convergence
+!
+    ds_contact%l_wait_conv  = .false._1
 !
 end subroutine

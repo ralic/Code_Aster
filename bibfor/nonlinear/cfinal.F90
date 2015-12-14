@@ -1,4 +1,4 @@
-subroutine cfinal(ds_contact, reapre, reageo, nbliac,&
+subroutine cfinal(ds_contact, l_first_geom, l_pair, nbliac,&
                   llf, llf1, llf2)
 !
 use NonLin_Datastructure_type
@@ -36,7 +36,7 @@ implicit none
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
     integer :: nbliac, llf, llf1, llf2
-    aster_logical :: reapre, reageo
+    aster_logical, intent(in) :: l_first_geom, l_pair
 !
 ! ----------------------------------------------------------------------
 !
@@ -94,7 +94,7 @@ implicit none
     numlia = ds_contact%sdcont_solv(1:14)//'.NUMLIA'
     call jeveuo(numlia, 'L', jnumli)
 !
-    if (reapre) then
+    if (l_first_geom) then
         statfr = ds_contact%sdcont_solv(1:14)//'.STF0'
     else
         statfr = ds_contact%sdcont_solv(1:14)//'.STFR'
@@ -169,7 +169,7 @@ implicit none
 ! ----- UN NOUVEL APPARIEMENT
 !
         if (llagrc .and. liaact) then
-            if (reageo) then
+            if (l_pair) then
 ! --------- LA LIAISON N'EXISTE PAS ENCORE, FORCEMENT
                 if (liaexi) then
                     ASSERT(.false.)
@@ -207,7 +207,7 @@ implicit none
 !
     if (llagrf) then
         call jeveuo(statfr, 'E', jstfr)
-        if (reageo) then
+        if (l_pair) then
             do iliac = 1, nbliac
                 ASSERT(zk8(jtypl-1+iliac).eq.'C0')
                 iliai = zi(jliac -1+iliac)

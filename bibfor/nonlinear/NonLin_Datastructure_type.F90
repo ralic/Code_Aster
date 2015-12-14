@@ -215,13 +215,10 @@ implicit none
         character(len=4)  :: type
         integer           :: counter
         aster_logical     :: conv
-    end type NL_DS_Loop 
-!
-! - Type: pairing management
-! 
-    type NL_DS_Pairing
-
-    end type NL_DS_Pairing
+        aster_logical     :: error
+        real(kind=8)      :: vale_calc
+        character(len=16) :: locus_calc
+    end type NL_DS_Loop
 !
 ! - Type: contact management
 ! 
@@ -257,7 +254,7 @@ implicit none
 ! ----- Field for CONT_NODE 
         character(len=19) :: field_cont_node
         character(len=19) :: fields_cont_node
-        character(len=19) :: field_cont_perc    
+        character(len=19) :: field_cont_perc
 ! ----- Loops
         integer           :: nb_loop
         integer           :: nb_loop_maxi = 3
@@ -268,6 +265,12 @@ implicit none
         real(kind=8)      :: geom_maxi
 ! ----- Get-off indicator
         aster_logical     :: l_getoff
+! ----- First geometric loop
+        aster_logical     :: l_first_geom
+! ----- Flag for pairing
+        aster_logical     :: l_pair
+! ----- Wait for contact sub-iterations convergence
+        aster_logical     :: l_wait_conv
     end type NL_DS_Contact
 !
 end module

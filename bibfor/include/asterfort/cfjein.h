@@ -16,10 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfjein(noma, ds_contact, depdel)
+    subroutine cfjein(mesh, ds_contact, disp_cumu_inst)
         use NonLin_Datastructure_type
-        character(len=8), intent(in) :: noma
+        character(len=8), intent(in) :: mesh
         type(NL_DS_Contact), intent(in) :: ds_contact
-        character(len=19), intent(in) :: depdel
+        character(len=19), intent(in) :: disp_cumu_inst
     end subroutine cfjein
 end interface

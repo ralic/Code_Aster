@@ -1,6 +1,6 @@
 subroutine mmbclc(mesh     , model     , nume_dof      , iter_newt     , nume_inst,&
                   sddisc   , sddyna    , sdtime        , sdstat        , hval_incr,&
-                  hval_algo, ds_contact, loop_cont_conv, loop_cont_node)
+                  hval_algo, ds_contact)
 !
 use NonLin_Datastructure_type
 !
@@ -9,6 +9,7 @@ implicit none
 #include "asterf_types.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/copisd.h"
+#include "asterfort/mmbouc.h"
 #include "asterfort/mmchml.h"
 #include "asterfort/mmligr.h"
 #include "asterfort/mmstat.h"
@@ -47,8 +48,6 @@ implicit none
     character(len=19), intent(in) :: hval_incr(*)
     character(len=19), intent(in) :: hval_algo(*)
     type(NL_DS_Contact), intent(inout) :: ds_contact
-    aster_logical, intent(out) :: loop_cont_conv
-    integer, intent(out) :: loop_cont_node
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -70,8 +69,6 @@ implicit none
 ! In  hval_incr        : hat-variable for incremental values fields
 ! In  hval_algo        : hat-variable for algorithms fields
 ! IO  ds_contact       : datastructure for contact management
-! Out loop_cont_conv   : .true. if contact loop converged
-! Out loop_cont_node   : number of contact state changing
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -80,8 +77,6 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    loop_cont_node = 0
-    loop_cont_conv = .true.
 !
 ! - Get fields' name
 !
@@ -94,7 +89,13 @@ implicit none
     l_newt_cont = cfdisl(ds_contact%sdcont_defi,'CONT_NEWTON')
     l_newt_geom = cfdisl(ds_contact%sdcont_defi,'GEOM_NEWTON')
 !
-! - For generalized NEwton method
+! - No computation
+!
+    if (l_all_verif) then
+        call mmbouc(ds_contact, 'Cont', 'Set_Convergence')
+    endif
+!
+! - For generalized Newton method
 !
     if (.not. l_all_verif) then
 !
@@ -119,9 +120,8 @@ implicit none
         if (l_newt_cont .or. l_newt_geom) then
             call nmtime(sdtime, 'INI', 'CTCC_CONT')
             call nmtime(sdtime, 'RUN', 'CTCC_CONT')
-            call mmstat(mesh          , iter_newt, nume_inst, sddyna    , sdstat        ,&
-                        sddisc        , hval_incr, hval_algo, ds_contact, loop_cont_node,&
-                        loop_cont_conv)
+            call mmstat(mesh  , iter_newt, nume_inst, sddyna    , sdstat,&
+                        sddisc, hval_incr, hval_algo, ds_contact)
             call nmtime(sdtime, 'END', 'CTCC_CONT')
             call nmrinc(sdstat, 'CTCC_CONT')
         endif

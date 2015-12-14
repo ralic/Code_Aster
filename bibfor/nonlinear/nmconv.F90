@@ -156,101 +156,105 @@ implicit none
 ! --- EVENEMENT ERREUR ACTIVE ?
 !
     call nmltev(sderro, 'ERRI', 'NEWT', lerror)
-    if (lerror) goto 999
+    if (.not.lerror) then
 !
-! --- EXAMEN DU NOMBRE D'ITERATIONS
+! ----- EXAMEN DU NOMBRE D'ITERATIONS
 !
-    call nmlerr(sddisc, 'L', 'ITERSUP', r8bid, itesup)
-    if (itesup .eq. 0) then
-        if (abs(instap-instam) .lt. pasmin) then
-            nbiter = ds_conv%iter_glob_elas
+        call nmlerr(sddisc, 'L', 'ITERSUP', r8bid, itesup)
+        if (itesup .eq. 0) then
+            if (abs(instap-instam) .lt. pasmin) then
+                nbiter = ds_conv%iter_glob_elas
+            else
+                nbiter = ds_conv%iter_glob_maxi
+            endif
         else
-            nbiter = ds_conv%iter_glob_maxi
+            call nmlerr(sddisc, 'L', 'NBITER', r8bid, nbiter)
         endif
-    else
-        call nmlerr(sddisc, 'L', 'NBITER', r8bid, nbiter)
+        itemax = (iterat+1) .ge. nbiter
+!
+! ----- STATISTIQUES POUR RECHERCHE LINEAIRE
+!
+        if (lreli) then
+            line_sear_coef = ds_conv%line_sear_coef
+            line_sear_iter = ds_conv%line_sear_iter
+        endif
+        call nmrvai(sdstat, 'RECH_LINE_ITER', 'E', line_sear_iter)
+!
+! ----- Compute residuals
+!
+        call nmresi(noma  , mate   , numedd  , sdnume  , fonact,&
+                    sddyna, ds_conv, ds_print, ds_contact,&
+                    matass, numins , eta     , comref  , valinc,&
+                    solalg, veasse , measse  , ds_inout, vresi ,&
+                    vchar)
+!
+! ----- Evaluate convergence of residuals
+!
+        call nmcore(sdcrit        , sderro, fonact, numins, iterat ,&
+                    line_sear_iter, eta   , vresi , vchar , ds_conv)
+!
+! ----- METHODE IMPLEX: CONVERGENCE FORCEE
+!
+        if (limpex) then
+            call nmeceb(sderro, 'RESI', 'CONV')
+        endif
+!
+! ----- Evaluate convergence of contact
+!
+        if (lcont) then
+            call cfmmcv(noma  , modele, numedd, fonact  , iterat    ,&
+                        numins, sddyna, sdstat, sddisc  , sdtime    ,&
+                        sderro, valinc, solalg, ds_print, ds_contact)
+        endif
+!
+! ----- Set value of informations in convergence table (residuals are in nmimre)
+!
+        call nmimrv(ds_print, fonact, iterat, line_sear_coef, line_sear_iter,&
+                    eta)
+!
+! ----- CAPTURE ERREUR EVENTUELLE
+!
+        call nmltev(sderro, 'ERRI', 'NEWT', lerror)
+        if (.not.lerror) then
+!
+! --------- INFORMATION POUR DEBORST
+!
+            call nmlecv(sderro, 'RESI', cvresi)
+            call nmerge(sderro, 'DIVE_DEBO', dvdebo)
+            if (cvresi .and. dvdebo) then
+                call utmess('I', 'MECANONLINE2_3')
+            endif
+!
+! --------- EVALUATION DE LA CONVERGENCE DE L'ITERATION DE NEWTON
+!
+            call nmevcv(sderro, fonact, 'NEWT')
+            call nmlecv(sderro, 'NEWT', cvnewt)
+!
+! --------- ENREGISTRE LES RESIDUS A CETTE ITERATION
+!
+            call dierre(sddisc, sdcrit, iterat)
+!
+! --------- EVALUATION DE LA DIVERGENCE DU RESIDU
+!
+            call nmdivr(sddisc, sderro, iterat)
+!
+! --------- SI ON A CONVERGE: ON A PAS ATTEINT LE NB D'ITERATIONS MAXIMUM
+!
+            if (cvnewt) then
+                itemax = .false.
+            endif
+!
+! --------- ENREGISTREMENT EVENEMENT MAX ITERATION DE NEWTON
+!
+            call nmcrel(sderro, 'ITER_MAXI', itemax)
+!
+! --------- CALCUL CRITERE DE CONVERGENCE POUR NEWTON-KRYLOV (FORCING-TERM)
+!
+            if (lnkry) then
+                call nmnkft(solveu, sddisc, iterat)
+            endif
+        endif
     endif
-    itemax = (iterat+1) .ge. nbiter
-!
-! --- STATISTIQUES POUR RECHERCHE LINEAIRE
-!
-    if (lreli) then
-        line_sear_coef = ds_conv%line_sear_coef
-        line_sear_iter = ds_conv%line_sear_iter
-    endif
-    call nmrvai(sdstat, 'RECH_LINE_ITER', 'E', line_sear_iter)
-!
-! - Compute residuals
-!
-    call nmresi(noma  , mate   , numedd  , sdnume  , fonact,&
-                sddyna, ds_conv, ds_print, ds_contact,&
-                matass, numins , eta     , comref  , valinc,&
-                solalg, veasse , measse  , ds_inout, vresi ,&
-                vchar)
-!
-! - Evaluate convergence of residuals
-!
-    call nmcore(sdcrit        , sderro, fonact, numins, iterat ,&
-                line_sear_iter, eta   , vresi , vchar , ds_conv)
-!
-! --- METHODE IMPLEX: CONVERGENCE FORCEE
-!
-    if (limpex) call nmeceb(sderro, 'RESI', 'CONV')
-!
-! --- CONVERGENCE ADAPTEE AU CONTACT
-!
-    if (lcont) then
-        call cfmmcv(noma    , modele, numedd    , fonact, sddyna,&
-                    ds_print, sdstat, sddisc    , sdtime, sderro,&
-                    numins  , iterat, ds_contact, valinc, solalg)
-    endif
-!
-! - Set value of informations in convergence table (residuals are in nmimre)
-!
-    call nmimrv(ds_print, fonact, iterat, line_sear_coef, line_sear_iter,&
-                eta)
-!
-! --- CAPTURE ERREUR EVENTUELLE
-!
-    call nmltev(sderro, 'ERRI', 'NEWT', lerror)
-    if (lerror) goto 999
-!
-! --- INFORMATION POUR DEBORST
-!
-    call nmlecv(sderro, 'RESI', cvresi)
-    call nmerge(sderro, 'DIVE_DEBO', dvdebo)
-    if (cvresi .and. dvdebo) then
-        call utmess('I', 'MECANONLINE2_3')
-    endif
-!
-! --- EVALUATION DE LA CONVERGENCE DE L'ITERATION DE NEWTON
-!
-    call nmevcv(sderro, fonact, 'NEWT')
-    call nmlecv(sderro, 'NEWT', cvnewt)
-!
-! --- ENREGISTRE LES RESIDUS A CETTE ITERATION
-!
-    call dierre(sddisc, sdcrit, iterat)
-!
-! --- EVALUATION DE LA DIVERGENCE DU RESIDU
-!
-    call nmdivr(sddisc, sderro, iterat)
-!
-! --- SI ON A CONVERGE: ON A PAS ATTEINT LE NB D'ITERATIONS MAXIMUM
-!
-    if (cvnewt) itemax = .false.
-!
-! --- ENREGISTREMENT EVENEMENT MAX ITERATION DE NEWTON
-!
-    call nmcrel(sderro, 'ITER_MAXI', itemax)
-!
-! --- CALCUL CRITERE DE CONVERGENCE POUR NEWTON-KRYLOV (FORCING-TERM)
-!
-    if (lnkry) then
-        call nmnkft(solveu, sddisc, iterat)
-    endif
-!
-999 continue
 !
 ! --- MISE A JOUR DE L'INDICATEUR DE SUCCES SUR LES ITERATIONS DE NEWTON
 !

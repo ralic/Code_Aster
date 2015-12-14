@@ -1,5 +1,5 @@
 subroutine frolgd(sdstat, defico, resoco, solveu, numedd,&
-                  matass, noma, resigr, depdel, ctccvg)
+                  matass, noma, resigr, depdel, l_first_geom, ctccvg)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -60,6 +60,7 @@ subroutine frolgd(sdstat, defico, resoco, solveu, numedd,&
     character(len=14) :: numedd
     integer :: ctccvg
     real(kind=8) :: resigr
+    aster_logical, intent(in) :: l_first_geom
 !
 ! ----------------------------------------------------------------------
 !
@@ -130,9 +131,6 @@ subroutine frolgd(sdstat, defico, resoco, solveu, numedd,&
     integer :: jmu
     character(len=19) :: ddeplc, ddepl0, ddelt
     integer :: itemax, isto, itemul
-    character(len=24) :: clreac
-    integer :: jclrea
-    aster_logical :: reapre
     integer :: incr
     real(kind=8) :: xmul
     integer :: nmult
@@ -154,13 +152,9 @@ subroutine frolgd(sdstat, defico, resoco, solveu, numedd,&
 !
     call jemarq()
     call infdbg('CONTACT', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write(ifm,*) '<CONTACT><CALC> ALGO_CONTACT   : DUALISATION'
-        write(ifm,*) '<CONTACT><CALC> ALGO_FROTTEMENT: '//&
-     &                'DUALISATION (3D)'
+        write(ifm,*) '<CONTACT><CALC> ALGO_FROTTEMENT: DUALISATION (3D)'
     endif
 !
 ! --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
@@ -173,10 +167,6 @@ subroutine frolgd(sdstat, defico, resoco, solveu, numedd,&
     call jeveuo(copo, 'E', jcopo)
     call jeveuo(atmu, 'E', jatmu)
     call jeveuo(afmu, 'E', jafmu)
-!
-    clreac = resoco(1:14)//'.REAL'
-    call jeveuo(clreac, 'L', jclrea)
-    reapre = zl(jclrea+3-1)
 !
 ! --- MATRICES DE FROTTEMENT
 !
@@ -250,7 +240,7 @@ subroutine frolgd(sdstat, defico, resoco, solveu, numedd,&
     xmul = zr(jcopo)
 !
     if (niv .ge. 2) then
-        write(ifm,1001) itemax
+        write(ifm,101) itemax
     endif
 !
 ! ======================================================================
@@ -261,9 +251,9 @@ subroutine frolgd(sdstat, defico, resoco, solveu, numedd,&
 !
 ! --- MISE A JOUR DE LA SOLUTION ITERATION DE CONTACT
 !
-    do 50 ieq = 1, neq
+    do ieq = 1, neq
         vddelt(ieq) = ddep0(ieq) - ddepc(ieq)
- 50 end do
+    end do
 !
 ! --- RESOLUTION MATRICIELLE POUR DES LIAISONS ACTIVES
 !
@@ -337,7 +327,7 @@ subroutine frolgd(sdstat, defico, resoco, solveu, numedd,&
 !
 ! ----- AJOUT D'UNE LIAISON DE FROTTEMENT
 !
-        if (reapre) then
+        if (l_first_geom) then
             call cfllaf(noma, defico, resoco, llliai, nbliai,&
                         nbliac, llf, llf1, llf2, indic,&
                         ajliai, spliai)
@@ -391,9 +381,9 @@ subroutine frolgd(sdstat, defico, resoco, solveu, numedd,&
 !
 ! --- CALCUL DE DEPLC = DEPDEL + DDELT
 !
-    do 240 ieq = 1, neq
+    do ieq = 1, neq
         depc(ieq) = depde(ieq) + ddepc(ieq)
-240 end do
+    end do
 !
 ! --- LES LIAISONS CONSIDEREES GLISSANTES LE SONT-ELLES VRAIMENT ?
 !
@@ -464,7 +454,7 @@ subroutine frolgd(sdstat, defico, resoco, solveu, numedd,&
     call cfecrd(resoco, 'LLF2', llf2)
 !
     if (niv .ge. 2) then
-        write(ifm,1002) iter
+        write(ifm,102) iter
     endif
 !
 ! --- SAUVEGARDE DES INFOS DE DIAGNOSTIC
@@ -476,7 +466,7 @@ subroutine frolgd(sdstat, defico, resoco, solveu, numedd,&
 !
     call jedema()
 !
-    1001 format (' <CONTACT><CALC> DEBUT DES ITERATIONS (MAX: ',i6,')')
-    1002 format (' <CONTACT><CALC> FIN DES ITERATIONS (NBR: ',i6,')')
+101 format (' <CONTACT><CALC> DEBUT DES ITERATIONS (MAX: ',i6,')')
+102 format (' <CONTACT><CALC> FIN DES ITERATIONS (NBR: ',i6,')')
 !
 end subroutine

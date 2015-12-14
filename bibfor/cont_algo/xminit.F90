@@ -116,11 +116,11 @@ implicit none
 !
 ! - Geometric loop counter initialization
 !
-    call mmbouc(ds_contact, 'Geom', 'INIT')
+    call mmbouc(ds_contact, 'Geom', 'Init_Counter')
 !
 ! - First geometric loop counter
-!
-    call mmbouc(ds_contact, 'Geom', 'INCR')
+!    
+    call mmbouc(ds_contact, 'Geom', 'Incr_Counter')
 !
 ! - Initial pairing
 !

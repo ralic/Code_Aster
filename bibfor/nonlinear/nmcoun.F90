@@ -1,6 +1,6 @@
-subroutine nmcoun(noma      , fonact, solveu, numedz, matass,&
-                  ds_contact, iterat, valinc, solalg, veasse,&
-                  instan    , resigr, sdtime, sdstat, ctccvg)
+subroutine nmcoun(mesh          , list_func_acti, solver   , nume_dof_ , matr_asse  ,&
+                  iter_newt     , time_curr     , hval_incr, hval_algo , hval_veasse,&
+                  resi_glob_rela, sdtime        , sdstat   , ds_contact, ctccvg)
 !
 use NonLin_Datastructure_type
 !
@@ -32,96 +32,96 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=8) :: noma
-    type(NL_DS_Contact), intent(in) :: ds_contact
-    character(len=24) :: sdtime, sdstat
-    character(len=19) :: valinc(*)
-    character(len=19) :: solalg(*), veasse(*)
-    character(len=19) :: solveu, matass
-    character(len=*) :: numedz
-    integer :: iterat
-    real(kind=8) :: instan
-    real(kind=8) :: resigr
-    integer :: ctccvg
-    integer :: fonact(*)
+    character(len=8), intent(in) :: mesh
+    integer, intent(in) :: list_func_acti(*)
+    character(len=19), intent(in) :: solver
+    character(len=*), intent(in) :: nume_dof_
+    character(len=19), intent(in) :: matr_asse
+    integer, intent(in) :: iter_newt
+    real(kind=8), intent(in) :: time_curr
+    character(len=19), intent(in) :: hval_incr(*)
+    character(len=19), intent(in) :: hval_algo(*)
+    character(len=19), intent(in) :: hval_veasse(*)
+    real(kind=8), intent(in) :: resi_glob_rela
+    character(len=24), intent(in) :: sdtime 
+    character(len=24), intent(in) :: sdstat
+    type(NL_DS_Contact), intent(inout) :: ds_contact
+    integer, intent(out) :: ctccvg
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (ALGORITHME)
+! Contact - Solve
 !
-! MISE A JOUR DE L'INCREMENT DE DEPLACEMENT SI CONTACT OU
-! LIAISON_UNILATER
+! Discrete methods - Update displacement (solve contact/unilateral conditions)
 !
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! In  mesh             : name of mesh
+! In  list_func_acti   : list of active functionnalities
+! In  solver           : datastructure for solver parameters
+! In  nume_dof         : name of numbering object (NUME_DDL)
+! In  matr_asse        : matrix
+! In  iter_newt        : index of current Newton iteration
+! In  time_curr        : current time
+! In  hval_incr        : hat-variable for incremental values fields
+! In  hval_algo        : hat-variable for algorithms fields
+! In  hval_veasse      : hat-variable for vectors (node fields)
+! In  resi_glob_rela   : current value of RESI_GLOB_RELA
+! In  sdtime           : datastructure for timers management
+! In  sdstat           : datastructure for statistics
+! IO  ds_contact       : datastructure for contact management
+! Out ctccvg           : output code for contact algorithm
+!                        -1 - No solving
+!                         0 - OK
+!                        +1 - Maximum contact iteration
+!                        +2 - Singular contact matrix
 !
-! IN  MAILLA : NOM DU MAILLAGE
-! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
-! IN  SOLVEU : SD SOLVEUR
-! IN  NUMEDD : NUME_DDL
-! IN  MATASS : NOM DE LA MATRICE DU PREMIER MEMBRE ASSEMBLEE
-! In  ds_contact       : datastructure for contact management
-! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
-! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
-!               OUT: DDEPLA
-! IN  SDTIME : SD TIMER
-! IN  SDSTAT : SD STATISTIQUES
-! IN  VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE
-! IN  RESIGR : RESI_GLOB_RELA
-! IN  ITERAT : ITERATION DE NEWTON
-! IN  INSTAN : VALEUR DE L'INSTANT DE CALCUL
-! OUT CTCCVG : CODE RETOUR CONTACT DISCRET
-!                -1 : PAS DE CALCUL DU CONTACT DISCRET
-!                 0 : CAS DU FONCTIONNEMENT NORMAL
-!                 1 : NOMBRE MAXI D'ITERATIONS
-!                 2 : MATRICE SINGULIERE
+! --------------------------------------------------------------------------------------------------
 !
+    aster_logical :: l_unil, l_cont_disc
+    aster_logical :: l_all_verif
+    character(len=19) :: disp_cumu_inst, disp_iter, cncine
+    character(len=19) :: disp_curr
+    character(len=14) :: nume_dof
 !
+! --------------------------------------------------------------------------------------------------
 !
+    ctccvg   = -1
+    nume_dof = nume_dof_(1:14)
 !
-    aster_logical :: lunil, lctcd
-    aster_logical :: lallv
-    character(len=19) :: depdel, ddepla, cncine
-    character(len=19) :: depplu
-    character(len=14) :: numedd
+! - Active functionnalities
 !
-! ----------------------------------------------------------------------
+    l_unil      = isfonc(list_func_acti,'LIAISON_UNILATER')
+    l_cont_disc = isfonc(list_func_acti,'CONT_DISCRET')
 !
+! - Get fields
 !
-! --- FONCTIONNALITES ACTIVEES
+    call nmchex(hval_incr  , 'VALINC', 'DEPPLU', disp_curr)
+    call nmchex(hval_algo  , 'SOLALG', 'DDEPLA', disp_iter)
+    call nmchex(hval_algo  , 'SOLALG', 'DEPDEL', disp_cumu_inst)
+    call nmchex(hval_veasse, 'VEASSE', 'CNCINE', cncine)
 !
-    lunil = isfonc(fonact,'LIAISON_UNILATER')
-    lctcd = isfonc(fonact,'CONT_DISCRET')
-    ctccvg = -1
-    numedd = numedz(1:14)
+! - Discrete contact
 !
-! --- DECOMPACTION VARIABLES CHAPEAUX
-!
-    call nmchex(valinc, 'VALINC', 'DEPPLU', depplu)
-    call nmchex(solalg, 'SOLALG', 'DDEPLA', ddepla)
-    call nmchex(solalg, 'SOLALG', 'DEPDEL', depdel)
-    call nmchex(veasse, 'VEASSE', 'CNCINE', cncine)
-!
-! --- TRAITEMENT DU CONTACT ET/OU DU FROTTEMENT DISCRET
-!
-    if (lctcd) then
-        lallv = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF')
-        if (.not.lallv) then
-            call nmcofr(noma  , depplu, depdel    , ddepla, solveu,&
-                        numedd, matass, ds_contact, iterat, resigr,&
-                        sdstat, sdtime, ctccvg    , instan)
+    if (l_cont_disc) then
+        l_all_verif = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF')
+        if (.not.l_all_verif) then
+            call nmcofr(mesh    , disp_curr, disp_cumu_inst, disp_iter, solver        ,&
+                        nume_dof, matr_asse, iter_newt     , time_curr, resi_glob_rela,&
+                        sdstat  , sdtime   , ds_contact    , ctccvg)
+        else
+            ctccvg = 0
         endif
-        ctccvg = 0
     endif
 !
-! --- TRAITEMENT DE LIAISON_UNILATER
+! - Unilateral condition
 !
-    if (lunil) then
-        call nmunil(noma      , depplu, ddepla, solveu, matass,&
-                    ds_contact, cncine, iterat, instan, ctccvg)
+    if (l_unil) then
+        call nmunil(mesh  , disp_curr, disp_iter, solver    , matr_asse,&
+                    cncine, iter_newt, time_curr, ds_contact, ctccvg)
     endif
 !
-! --- LE CALCUL DE CONTACT A FORCEMENT ETE REALISE
+! - Yes for computation
 !
     ASSERT(ctccvg.ge.0)
 !

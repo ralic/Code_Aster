@@ -1,21 +1,17 @@
-subroutine nmcofr(mesh  , depplu, depdel    , ddepla, solveu,&
-                  numedd, matass, ds_contact, iterat, resigr,&
-                  sdstat, sdtime, ctccvg    , instan)
+subroutine nmcofr(mesh    , disp_curr, disp_cumu_inst, disp_iter, solver        ,&
+                  nume_dof, matr_asse, iter_newt     , time_curr, resi_glob_rela,&
+                  sdstat  , sdtime   , ds_contact    , ctccvg)
 !
 use NonLin_Datastructure_type
 !
 implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfalgo.h"
 #include "asterfort/cfgeom.h"
-#include "asterfort/cfsvfr.h"
-#include "asterfort/cfsvmu.h"
 #include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
+#include "asterfort/mmbouc.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nmtime.h"
 !
@@ -37,112 +33,84 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=8) :: mesh
-    character(len=19) :: depplu
-    character(len=19) :: depdel, ddepla
-    character(len=14) :: numedd
-    character(len=24) :: sdtime, sdstat
-    type(NL_DS_Contact), intent(in) :: ds_contact
-    character(len=19) :: solveu, matass
-    real(kind=8) :: resigr
-    integer :: iterat, ctccvg
-    real(kind=8) :: instan
+    character(len=8), intent(in) :: mesh
+    character(len=19), intent(in) :: disp_curr
+    character(len=19), intent(in) :: disp_cumu_inst
+    character(len=19), intent(in) :: disp_iter
+    character(len=19), intent(in) :: solver
+    character(len=14), intent(in) :: nume_dof
+    character(len=19), intent(in) :: matr_asse
+    integer, intent(in) :: iter_newt
+    real(kind=8), intent(in) :: time_curr
+    real(kind=8), intent(in) :: resi_glob_rela
+    character(len=24), intent(in) :: sdstat
+    character(len=24), intent(in) :: sdtime 
+    type(NL_DS_Contact), intent(inout) :: ds_contact 
+    integer, intent(out) :: ctccvg
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (METHODES DISCRETES)
+! Contact - Solve
 !
-! TRAITEMENT DU CONTACT AVEC OU SANS FROTTEMENT DANS STAT_NON_LINE.
-! BRANCHEMENT SUR LES ROUTINES DE RESOLUTION
+! Discrete methods - Solve contact (pairing and algorithm)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  DEPPLU : CHAMP DE DEPLACEMENTS A L'ITERATION DE NEWTON PRECEDENTE
-! IN  DEPDEL : INCREMENT DE DEPLACEMENT CUMULE
-! IN  DEPPLA : INCREMENT DE DEPLACEMENTS CALCULE EN IGNORANT LE CONTACT
-! IN  SOLVEU : SD SOLVEUR
-! IN  NUMEDD : NUME_DDL
-! IN  MATASS : NOM DE LA MATRICE DU PREMIER MEMBRE ASSEMBLEE
-! In  ds_contact       : datastructure for contact management
-! IN  SDTIME : SD TIMER
-! IN  SDSTAT : SD STATISTIQUES
-! IN  RESIGR : RESI_GLOB_RELA
-! OUT CTCCVG : CODE RETOUR CONTACT DISCRET
-!                -1 : PAS DE CALCUL DU CONTACT DISCRET
-!                 0 : CAS DU FONCTIONNEMENT NORMAL
-!                 1 : NOMBRE MAXI D'ITERATIONS
-!                 2 : MATRICE SINGULIERE
+! In  mesh             : name of mesh
+! In  disp_curr        : current displacements
+! In  disp_iter        : displacement iteration
+! In  disp_cumu_inst   : displacement increment from beginning of current time
+! In  solver           : datastructure for solver parameters
+! In  nume_dof         : name of numbering object (NUME_DDL)
+! In  matr_asse        : matrix
+! In  iter_newt        : index of current Newton iteration
+! In  time_curr        : current time
+! In  resi_glob_rela   : current value of RESI_GLOB_RELA
+! In  sdstat           : datastructure for statistics
+! In  sdtime           : datastructure for timers management
+! IO  ds_contact       : datastructure for contact management
+! Out ctccvg           : output code for contact algorithm
+!                        -1 - No solving
+!                         0 - OK
+!                        +1 - Maximum contact iteration
+!                        +2 - Singular contact matrix
 !
-!
-!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    character(len=24) :: clreac
-    integer :: jclrea
-    aster_logical :: reageo, ctcfix, reapre
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('CONTACT', ifm, niv)
     if (niv .ge. 2) then
         write (ifm,*) '<CONTACT> DEBUT DU TRAITEMENT DES CONDITIONS DE CONTACT'
     endif
 !
-! --- INITIALISATIONS
+! - Initializations
 !
     ctccvg = -1
 !
-! --- ACCES OBJETS
+! - Pairing
 !
-    clreac = ds_contact%sdcont_solv(1:14)//'.REAL'
-    call jeveuo(clreac, 'E', jclrea)
+    call cfgeom(iter_newt, mesh     , sdtime, sdstat, ds_contact,&
+                disp_curr, time_curr)
 !
-! --- PARAMETRES POUR BOUCLES GEOMETRIQUE/PT FIXE
-!
-    reageo = zl(jclrea+1-1)
-    ctcfix = zl(jclrea+2-1)
-!
-! --- SAUVEGARDE AVANT APPARIEMENT
-!
-    if (reageo) then
-        call cfsvmu(ds_contact, .false._1)
-        call cfsvfr(ds_contact, .false._1)
-    endif
-!
-! --- APPARIEMENT
-!
-    call cfgeom(reageo, iterat, mesh, sdtime, sdstat,&
-                ds_contact, depplu, instan)
-!
-! --- ALGORITHMES DE CONTACT
+! - Contact solving
 !
     call nmtime(sdtime, 'INI', 'CTCD_ALGO')
     call nmtime(sdtime, 'RUN', 'CTCD_ALGO')
-    call cfalgo(mesh, sdstat, resigr, iterat, ds_contact,&
-                solveu, numedd, matass, ddepla,&
-                depdel, ctccvg, ctcfix)
+    call cfalgo(mesh          , sdstat    , resi_glob_rela, iter_newt,&
+                solver        , nume_dof  , matr_asse     , disp_iter,&
+                disp_cumu_inst, ds_contact, ctccvg        )
     call nmtime(sdtime, 'END', 'CTCD_ALGO')
 !
-    if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> FIN DU TRAITEMENT DES CONDITIONS DE CONTACT'
-    endif
+! - Pairing ended
 !
-! --- DESACTIVATION REAC_GEOM
+    ds_contact%l_pair       = .false._1
+    ds_contact%l_first_geom = .false._1
 !
-    reageo = .false.
-    reapre = .false.
-!
-! --- SAUVEGARDE
-!
-    zl(jclrea+1-1) = reageo
-    zl(jclrea+2-1) = ctcfix
-    zl(jclrea+3-1) = reapre
-!
-! --- LE CALCUL DE CONTACT A FORCEMENT ETE REALISE
+! - Yes for computation
 !
     ASSERT(ctccvg.ge.0)
 !
-    call jedema()
 end subroutine

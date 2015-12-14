@@ -1,5 +1,5 @@
-subroutine cfinnl(ds_contact, reageo, nbliac, llf,&
-                  llf1, llf2)
+subroutine cfinnl(ds_contact, l_pair, nbliac, llf,&
+                  llf1      , llf2)
 !
 use NonLin_Datastructure_type
 !
@@ -28,47 +28,54 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
-    integer :: nbliac, llf, llf1, llf2
-    aster_logical :: reageo
+    aster_logical, intent(in) :: l_pair
+    integer, intent(out) :: nbliac
+    integer, intent(out) :: llf
+    integer, intent(out) :: llf1
+    integer, intent(out) :: llf2
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (METHODE DISCRETE - ALGORITHME)
+! Contact - Solve
 !
-! NOMBRE DE LIAISONS INITIALES
+! Discrete methods - Get total number of initial links
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! In  ds_contact       : datastructure for contact management
-! IN  REAGEO : .TRUE. SI ON VIENT DE FAIRE UN NOUVEL APPARIEMENT
-! OUT NBLIAC : NOMBRE DE LIAISONS ACTIVES
-! OUT LLF    : NOMBRE DE LIAISON DE FROTTEMENT (DEUX DIRECTIONS)
-! OUT LLF1   : NOMBRE DE LIAISON DE FROTTEMENT (1ERE DIRECTION )
-! OUT LLF2   : NOMBRE DE LIAISON DE FROTTEMENT (2EME DIRECTION )
+! In  l_pair           : .true. if new pairing occurred
+! OUT NBLIAC           : NOMBRE DE LIAISONS ACTIVES
+! OUT LLF              : NOMBRE DE LIAISON DE FROTTEMENT (DEUX DIRECTIONS)
+! OUT LLF1             : NOMBRE DE LIAISON DE FROTTEMENT (1ERE DIRECTION )
+! OUT LLF2             : NOMBRE DE LIAISON DE FROTTEMENT (2EME DIRECTION )
 !
+! --------------------------------------------------------------------------------------------------
 !
+    aster_logical :: l_pena_frot, l_lagr_cont
 !
+! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: lpenaf, llagrc
+    nbliac = 0
+    llf    = 0
+    llf1   = 0
+    llf2   = 0
 !
-! ----------------------------------------------------------------------
+! - Get contact parameters
 !
-    lpenaf = cfdisl(ds_contact%sdcont_defi,'FROT_PENA')
-    llagrc = cfdisl(ds_contact%sdcont_defi,'CONT_LAGR')
+    l_pena_frot = cfdisl(ds_contact%sdcont_defi,'FROT_PENA')
+    l_lagr_cont = cfdisl(ds_contact%sdcont_defi,'CONT_LAGR')
 !
-! --- NOMBRE DE LIAISONS INITIALES
-! --- POUR LES METHODES PUREMENT LAGRANGIENNES, ON GARDE
-! --- LA MEMOIRE DES LIAISONS PRECEDEMMENT ACTIVES
+! - Keep old links if possible (no new pairing)
 !
-    if (llagrc) then
-        if (reageo) then
+    if (l_lagr_cont) then
+        if (l_pair) then
             nbliac = 0
-            llf = 0
-            llf1 = 0
-            llf2 = 0
+            llf    = 0
+            llf1   = 0
+            llf2   = 0
         else
             nbliac = cfdisd(ds_contact%sdcont_solv,'NBLIAC' )
-            if (lpenaf) then
+            if (l_pena_frot) then
                 llf = 0
                 llf1 = 0
                 llf2 = 0
@@ -80,9 +87,9 @@ implicit none
         endif
     else
         nbliac = 0
-        llf = 0
-        llf1 = 0
-        llf2 = 0
+        llf    = 0
+        llf1   = 0
+        llf2   = 0
     endif
 !
 end subroutine

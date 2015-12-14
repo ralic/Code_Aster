@@ -1,4 +1,4 @@
-subroutine xmtbca(mesh, ds_contact, valinc, mmcvca)
+subroutine xmtbca(mesh, hval_incr, ds_contact)
 !
 use NonLin_Datastructure_type
 !
@@ -16,6 +16,7 @@ implicit none
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/mmbouc.h"
 #include "asterfort/nmchex.h"
 !
 ! ======================================================================
@@ -36,26 +37,22 @@ implicit none
 ! ======================================================================
 !
     character(len=8), intent(in) :: mesh
-    type(NL_DS_Contact), intent(in) :: ds_contact
-    character(len=19), intent(in) :: valinc(*)
-    aster_logical , intent(out):: mmcvca
+    character(len=19), intent(in) :: hval_incr(*)
+    type(NL_DS_Contact), intent(inout) :: ds_contact
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE XFEM (CONTACT - GRANDS GLISSEMENTS)
+! Contact - Solve
 !
-! MISE À JOUR DU STATUT DES POINTS DE CONTACT
-! ET RENVOIE MMCVCA (INDICE DE CONVERGENCE DE LA BOUCLE
-! SUR LES CONTRAINTES ACTIVES)
+! XFEM large sliding - Management of contact loop
 !
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! In  mesh             : name of mesh
+! In  hval_incr        : hat-variable for incremental values fields
+! IO  ds_contact       : datastructure for contact management
 !
-! IN  NOMA   : NOM DE L'OBJET MAILLAGE
-! In  ds_contact       : datastructure for contact management
-! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
-! OUT MMCVCA : INDICE DE CONVERGENCE DE LA BOUCLE SUR LES C.A.
-!
+! --------------------------------------------------------------------------------------------------
 !
     integer, parameter :: nbout = 1
     integer, parameter :: nbin  = 7
@@ -77,8 +74,9 @@ implicit none
     integer :: adiel, adiel2, jad, jad2, debgr, debgr2
     integer, pointer :: celd(:) => null()
     integer, pointer :: celv(:) => null()
+    aster_logical :: loop_cont_conv
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     call infdbg('XFEM', ifm, niv)
@@ -105,7 +103,7 @@ implicit none
 !
 ! --- DECOMPACTION DES VARIABLES CHAPEAUX
 !
-    call nmchex(valinc, 'VALINC', 'DEPPLU', depplu)
+    call nmchex(hval_incr, 'VALINC', 'DEPPLU', depplu)
 !
 !----RECUPERATION DE TABFIN -
 !
@@ -121,7 +119,7 @@ implicit none
 ! --- SUR LES CONTRAINTES ACTIVES (CONVERGENCE <=> INCOCA =1)
 !
     sinco = 0
-    mmcvca = .true.
+    loop_cont_conv = .true.
 !
 ! --- INITIALISATION DES CHAMPS POUR CALCUL
 !
@@ -240,7 +238,17 @@ implicit none
 !
 ! --- SI SINCO EST STRICTEMENT POSITIF, ON A PAS CONVERGÉ
 !
-    if (sinco .gt. 0) mmcvca = .false.
+    if (sinco .gt. 0) then
+        loop_cont_conv = .false.
+    endif
+!
+! - Set loop values
+!
+    if (loop_cont_conv) then
+        call mmbouc(ds_contact, 'Cont', 'Set_Convergence')
+    else
+        call mmbouc(ds_contact, 'Cont', 'Set_Divergence')
+    endif
 !
     call jedema()
 end subroutine

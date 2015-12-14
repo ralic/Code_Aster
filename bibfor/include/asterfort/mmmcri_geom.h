@@ -18,18 +18,13 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine mmmcri(criter    , noma  , depmoi, depgeo, depplu,&
-                     ds_contact, epsmax, cvgnoe, cvgval, mmconv)
+    subroutine mmmcri_geom(mesh      , disp_prev, loop_geom_disp, disp_curr,&
+                           ds_contact)
         use NonLin_Datastructure_type
-        character(len=4) :: criter
-        character(len=8) :: noma
-        character(len=19) :: depmoi
-        character(len=19) :: depgeo
-        character(len=19) :: depplu
+        character(len=8), intent(in) :: mesh
+        character(len=19), intent(in) :: disp_prev
+        character(len=19), intent(in) :: loop_geom_disp
+        character(len=19), intent(in) :: disp_curr
         type(NL_DS_Contact), intent(inout) :: ds_contact
-        real(kind=8) :: epsmax
-        character(len=16) :: cvgnoe
-        real(kind=8) :: cvgval
-        aster_logical :: mmconv
-    end subroutine mmmcri
+    end subroutine mmmcri_geom
 end interface

@@ -18,14 +18,12 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine xmmbca(mesh  , model, mate, ds_contact, valinc,&
-                      mmcvca)
+    subroutine xmmbca(mesh, model, mate, hval_incr, ds_contact)
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
         character(len=8), intent(in) :: model
         character(len=24), intent(in) :: mate
-        type(NL_DS_Contact), intent(in) :: ds_contact
-        character(len=19), intent(in) :: valinc(*)
-        aster_logical, intent(out) :: mmcvca
+        character(len=19), intent(in) :: hval_incr(*)
+        type(NL_DS_Contact), intent(inout) :: ds_contact
     end subroutine xmmbca
 end interface

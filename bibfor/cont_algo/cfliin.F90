@@ -1,19 +1,16 @@
-subroutine cfliin(noma, ds_contact)
+subroutine cfliin(mesh, ds_contact)
 !
 use NonLin_Datastructure_type
 !
 implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/cfecrd.h"
 #include "asterfort/cfimp1.h"
 #include "asterfort/cfinal.h"
 #include "asterfort/cfinnl.h"
 #include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
+#include "asterfort/mmbouc.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,67 +30,59 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=8), intent(in) :: noma
-    type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=8), intent(in) :: mesh
+    type(NL_DS_Contact), intent(inout) :: ds_contact
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (METHODE DISCRETE - ALGORITHME)
+! Contact - Solve
 !
-! LIAISONS INITIALES
+! Discrete methods - Set initial links
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! IN  NOMA   : NOM DU MAILLAGE
-! In  ds_contact       : datastructure for contact management
+! In  mesh             : name of mesh
+! IO  ds_contact       : datastructure for contact management
+!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    character(len=24) :: clreac
-    integer :: jclrea
-    aster_logical :: reageo, reapre
+    aster_logical :: l_pair, l_first_geom
     integer :: nbliac, llf, llf1, llf2
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('CONTACT', ifm, niv)
     if (niv .ge. 2) then
         write (ifm,*) '<CONTACT> ......... DETECTION DES LIAISONS INITIALES'
     endif
 !
-! --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
+! - Get geometric loop state
 !
-    clreac = ds_contact%sdcont_solv(1:14)//'.REAL'
-    call jeveuo(clreac, 'L', jclrea)
+    l_pair       = ds_contact%l_pair
+    l_first_geom = ds_contact%l_first_geom
 !
-! --- PARAMETRES DE REACTUALISATION
+! - Get total number of initial links
 !
-    reageo = zl(jclrea-1+1)
-    reapre = zl(jclrea-1+3)
-!
-! --- NOMBRE DE LIAISONS INITIALES
-!
-    call cfinnl(ds_contact, reageo, nbliac, llf,&
+    call cfinnl(ds_contact, l_pair, nbliac, llf,&
                 llf1, llf2)
 !
-! --- ACTIVATION DES LIAISONS INITIALES
+! - Set initial links
 !
-    call cfinal(ds_contact, reapre, reageo, nbliac,&
+    call cfinal(ds_contact, l_first_geom, l_pair, nbliac,&
                 llf, llf1, llf2)
 !
-! --- STOCKAGE DES VARIABLES DE CONTROLE DU CONTACT
+! - Save initial links
 !
     call cfecrd(ds_contact%sdcont_solv, 'NBLIAC', nbliac)
     call cfecrd(ds_contact%sdcont_solv, 'LLF', llf)
     call cfecrd(ds_contact%sdcont_solv, 'LLF1', llf1)
     call cfecrd(ds_contact%sdcont_solv, 'LLF2', llf2)
 !
-! --- AFFICHAGES
+! - Print
 !
     if (niv .ge. 2) then
-        call cfimp1('INI', noma, ds_contact%sdcont_defi, ds_contact%sdcont_solv, ifm)
+        call cfimp1('INI', mesh, ds_contact%sdcont_defi, ds_contact%sdcont_solv, ifm)
     endif
-!
-    call jedema()
 !
 end subroutine

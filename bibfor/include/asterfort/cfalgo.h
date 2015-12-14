@@ -18,21 +18,20 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine cfalgo(noma, sdstat, resigr, iterat, ds_contact,&
-                      solveu, numedd, matass, ddepla,&
-                      depdel, ctccvg, ctcfix)
+    subroutine cfalgo(mesh          , sdstat    , resi_glob_rela, iter_newt,&
+                      solver        , nume_dof  , matr_asse     , disp_iter,&
+                      disp_cumu_inst, ds_contact, ctccvg        )
         use NonLin_Datastructure_type
-        character(len=8) :: noma
-        character(len=24) :: sdstat
-        real(kind=8) :: resigr
-        integer :: iterat
-        type(NL_DS_Contact), intent(in) :: ds_contact
-        character(len=19) :: solveu
-        character(len=14) :: numedd
-        character(len=19) :: matass
-        character(len=19) :: ddepla
-        character(len=19) :: depdel
-        integer :: ctccvg
-        aster_logical :: ctcfix
+        character(len=8), intent(in) :: mesh
+        character(len=24), intent(in) :: sdstat
+        real(kind=8), intent(in) :: resi_glob_rela
+        integer, intent(in) :: iter_newt
+        character(len=19), intent(in) :: solver
+        character(len=14), intent(in) :: nume_dof
+        character(len=19), intent(in) :: matr_asse
+        character(len=19), intent(in) :: disp_iter
+        character(len=19), intent(in) :: disp_cumu_inst
+        type(NL_DS_Contact), intent(inout) :: ds_contact 
+        integer, intent(out) :: ctccvg
     end subroutine cfalgo
 end interface

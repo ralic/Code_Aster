@@ -15,9 +15,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine frolgd(sdstat, defico, resoco, solveu, numedd,&
-                      matass, noma, resigr, depdel, ctccvg)
+                      matass, noma, resigr, depdel, l_first_geom, ctccvg)
         character(len=24) :: sdstat
         character(len=24) :: defico
         character(len=24) :: resoco
@@ -27,6 +29,7 @@ interface
         character(len=8) :: noma
         real(kind=8) :: resigr
         character(len=19) :: depdel
+        aster_logical, intent(in) :: l_first_geom
         integer :: ctccvg
     end subroutine frolgd
 end interface

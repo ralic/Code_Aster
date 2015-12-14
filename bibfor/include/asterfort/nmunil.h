@@ -16,18 +16,18 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmunil(mailla    , depplu, ddepla, solveu, matass,&
-                      ds_contact, cncine, iterat, inst  , ctccvg)
+    subroutine nmunil(mesh  , disp_curr, disp_iter, solver    , matr_asse,&
+                      cncine, iter_newt, time_curr, ds_contact, ctccvg)
         use NonLin_Datastructure_type
-        character(len=8) :: mailla
-        character(len=19) :: depplu
-        character(len=19) :: ddepla
-        character(len=19) :: solveu
-        character(len=19) :: matass
+        character(len=8), intent(in) :: mesh
+        character(len=19), intent(in) :: disp_curr
+        character(len=19), intent(in) :: disp_iter
+        character(len=19), intent(in) :: solver
+        character(len=19), intent(in) :: matr_asse
+        character(len=19), intent(in) :: cncine
+        integer, intent(in) :: iter_newt
+        real(kind=8), intent(in) :: time_curr
         type(NL_DS_Contact), intent(in) :: ds_contact
-        character(len=19) :: cncine
-        integer :: iterat
-        real(kind=8) :: inst
-        integer :: ctccvg
+        integer, intent(out) :: ctccvg
     end subroutine nmunil
 end interface

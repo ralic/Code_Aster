@@ -1,28 +1,12 @@
-subroutine algocu(deficu, resocu, solveu, lmat, ldscon,&
-                  cncine, resu, ctccvg)
+subroutine algocu(ds_contact, solver, lmat, ldscon, cncine,&
+                  disp_iter , ctccvg)
 !
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
+use NonLin_Datastructure_type
 !
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+implicit none
 !
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
-!
-    implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterc/r8maem.h"
 #include "asterc/r8prem.h"
 #include "asterfort/caladu.h"
@@ -45,39 +29,54 @@ subroutine algocu(deficu, resocu, solveu, lmat, ldscon,&
 #include "asterfort/rldlg3.h"
 #include "asterfort/tldlg3.h"
 #include "blas/daxpy.h"
-    character(len=24) :: deficu
-    character(len=24) :: resocu
-    character(len=19) :: solveu, cncine, resu
-character(len=24), pointer :: slvk(:) => null()
-    integer :: lmat
-    integer :: ldscon
-    integer :: ctccvg
 !
-! ----------------------------------------------------------------------
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
 !
-! ROUTINE LIAISON_UNILATER (RESOLUTION)
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 !
-! ALGO. DES CONTRAINTES ACTIVES POUR LES LIAISONS UNILATERALES
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: mickael.abbas at edf.fr
 !
-! ----------------------------------------------------------------------
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=19), intent(in) :: solver
+    integer, intent(in) :: lmat
+    integer, intent(in) :: ldscon
+    character(len=19), intent(in) :: cncine
+    character(len=19), intent(in) :: disp_iter
+    integer, intent(out) :: ctccvg
 !
+! --------------------------------------------------------------------------------------------------
 !
-! IN  DEFICU  : SD DE DEFINITION (ISSUE D'AFFE_CHAR_MECA)
-! IN  RESOCU  : SD DE TRAITEMENT NUMERIQUE
-! IN  SOLVEU  : SD SOLVEUR
-! IN  LMAT    : DESCRIPTEUR DE LA MATR_ASSE DU SYSTEME MECANIQUE
-! IN  LDSCON  : DESCRIPTEUR DE LA MATRICE -A.C-1.AT
-! VAR RESU    : INCREMENT "DDEPLA" DE DEPLACEMENT DEPUIS DEPTOT
-!                 EN ENTREE : SOLUTION OBTENUE SANS TRAITER LE CONTACT
-!                 EN SORTIE : SOLUTION CORRIGEE PAR LE CONTACT
-! OUT CTCCVG : CODE RETOUR CONTACT DISCRET
-!                -1 : PAS DE CALCUL DU CONTACT DISCRET
-!                 0 : CAS DU FONCTIONNEMENT NORMAL
-!                 1 : NOMBRE MAXI D'ITERATIONS
-!                 2 : MATRICE SINGULIERE
+! Unilateral constraint - Solve
 !
+! Solve unilateral constraints
 !
+! --------------------------------------------------------------------------------------------------
 !
+! In  ds_contact       : datastructure for contact management
+! In  solver           : datastructure for solver parameters
+! In  lmat             : pointer to matrix descriptor
+! In  ldscon           : pointer to "contact" matrix descriptor
+! In  cncine           : void load for kinematic loads
+! In  disp_iter        : displacement iteration
+! Out ctccvg           : output code for contact algorithm
+!                        -1 - No solving
+!                         0 - OK
+!                        +1 - Maximum contact iteration
+!                        +2 - Singular contact matrix
+!
+! --------------------------------------------------------------------------------------------------
 !
     complex(kind=8) :: cbid
     aster_logical :: trouac, delpos, lelpiv
@@ -100,7 +99,7 @@ character(len=24), pointer :: slvk(:) => null()
     integer :: itemax, compts
     real(kind=8), pointer :: vale(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 ! ----------------------------------------------------------------------
@@ -110,24 +109,23 @@ character(len=24), pointer :: slvk(:) => null()
 !
 !
     call infdbg('CONTACT', ifm, niv)
-!
     if (niv .ge. 2) then
         write (ifm,*) '<LIA_UNIL> <> ALGORITHME   : CONT. ACTIVES'
     endif
 !
 ! --- LECTURE DES STRUCTURES DE DONNEES
 !
-    poinoe = deficu(1:16)//'.POINOE'
-    apcoef = resocu(1:14)//'.APCOEF'
-    apjeu = resocu(1:14)//'.APJEU'
-    apddl = resocu(1:14)//'.APDDL'
-    liac = resocu(1:14)//'.LIAC'
-    mu = resocu(1:14)//'.MU'
-    delt0 = resocu(1:14)//'.DEL0'
-    delta = resocu(1:14)//'.DELT'
-    cm1a = resocu(1:14)//'.CM1A'
-    atmu = resocu(1:14)//'.ATMU'
-    coco = resocu(1:14)//'.COCO'
+    poinoe = ds_contact%sdunil_defi(1:16)//'.POINOE'
+    apcoef = ds_contact%sdunil_solv(1:14)//'.APCOEF'
+    apjeu = ds_contact%sdunil_solv(1:14)//'.APJEU'
+    apddl = ds_contact%sdunil_solv(1:14)//'.APDDL'
+    liac = ds_contact%sdunil_solv(1:14)//'.LIAC'
+    mu = ds_contact%sdunil_solv(1:14)//'.MU'
+    delt0 = ds_contact%sdunil_solv(1:14)//'.DEL0'
+    delta = ds_contact%sdunil_solv(1:14)//'.DELT'
+    cm1a = ds_contact%sdunil_solv(1:14)//'.CM1A'
+    atmu = ds_contact%sdunil_solv(1:14)//'.ATMU'
+    coco = ds_contact%sdunil_solv(1:14)//'.COCO'
 ! ======================================================================
     call jeveuo(poinoe, 'L', jpoi)
     call jeveuo(apcoef, 'L', japcoe)
@@ -139,7 +137,7 @@ character(len=24), pointer :: slvk(:) => null()
     call jeveuo(delt0, 'E', jdelt0)
     call jeveuo(delta, 'E', jdelta)
     call jeveuo(coco, 'E', jcoco)
-    call jeveuo(resu(1:19)//'.VALE', 'E', vr=vale)
+    call jeveuo(disp_iter(1:19)//'.VALE', 'E', vr=vale)
 ! ======================================================================
 ! --- INITIALISATION DE VARIABLES
 ! --- NBLIAI : NOMBRE DE LIAISONS
@@ -156,7 +154,7 @@ character(len=24), pointer :: slvk(:) => null()
 !              LIAISON CORRECTE DU CALCUL
 !              DE LA MATRICE  ACM1AT
 ! ======================================================================
-    nnocu = cudisi(deficu,'NNOCU')
+    nnocu = cudisi(ds_contact%sdunil_defi,'NNOCU')
     nbliai = nnocu
     neq = zi(lmat+2)
     itemax = 2*nbliai
@@ -178,10 +176,10 @@ character(len=24), pointer :: slvk(:) => null()
 ! --- TRAITER LES CONDITIONS UNILATERALES
 ! --- CREATION DE DELTA0 = C-1B
 !
-    do 10 kk = 1, neq
+    do kk = 1, neq
         zr(jdelt0-1+kk) = vale(kk)
         vale(kk) = 0.0d0
- 10 end do
+    end do
 ! ======================================================================
 ! --- DETECTION DES COUPLES DE NOEUDS ACTIVES
 ! --- ON CALCULE LE NOUVEAU JEU : AJEU+ = AJEU/I/N - A.DDEPLA
@@ -191,30 +189,28 @@ character(len=24), pointer :: slvk(:) => null()
         write(ifm,*)'<LIA_UNIL> <> LIAISONS INITIALES '
     endif
     if (nbliac .eq. 0) then
-        do 30 ii = 1, nbliai
+        do ii = 1, nbliai
             jdecal = zi(jpoi+ii-1)
             nbddl = zi(jpoi+ii) - zi(jpoi+ii-1)
             call caladu(neq, nbddl, zr(japcoe+jdecal), zi(japddl+jdecal), zr(jdelt0),&
                         val)
             ajeu = zr(japjeu+ii-1) - val
-!
             if (ajeu .lt. 0.0d0) then
                 indic = 0
                 posit = nbliac + 1
-                call cutabl(indic, nbliac, ajliai, spliai, resocu,&
+                call cutabl(indic, nbliac, ajliai, spliai, ds_contact%sdunil_solv,&
                             typeaj, posit, ii)
                 if (niv .ge. 2) then
-                    call cuimp2(ifm, ii, typeaj, 'ALG', resocu)
+                    call cuimp2(ifm, ii, typeaj, 'ALG', ds_contact%sdunil_solv)
                 endif
             endif
-!
- 30     continue
+        end do
     endif
 !
     if (niv .ge. 2) then
-        write(ifm,1000) nbliai
-        write(ifm,1005) nbliac
-        write(ifm,1001) itemax
+        write(ifm,100) nbliai
+        write(ifm,104) nbliac
+        write(ifm,101) itemax
     endif
 !
 ! ======================================================================
@@ -236,9 +232,9 @@ character(len=24), pointer :: slvk(:) => null()
 ! ======================================================================
 !
     if (nbliac .eq. 0) then
-        do 50 kk = 1, neq
+        do kk = 1, neq
             zr(jdelta+kk-1) = zr(jdelt0+kk-1) - vale(kk)
- 50     continue
+        end do
     endif
 !
 ! ======================================================================
@@ -259,13 +255,13 @@ character(len=24), pointer :: slvk(:) => null()
 ! --- CALCUL DE -A.C-1.AT COLONNE PAR COLONNE (A PARTIR DE INDFAC)
 !
         call cuacat(indic, nbliac, ajliai, spliai, lmat,&
-                    indfac, deficu, resocu, solveu, cncine,&
+                    indfac, ds_contact%sdunil_defi, ds_contact%sdunil_solv, solver, cncine,&
                     xjvmax)
 !
 ! --- ELIMINATION DES PIVOTS NULS
 !
         call cupivo(xjvmax, indic, nbliac, ajliai, spliai,&
-                    spavan, deficu, resocu)
+                    spavan, ds_contact%sdunil_defi, ds_contact%sdunil_solv)
 !
 ! --- ON A SUPPRIME UNE LIAISON
 !
@@ -281,7 +277,6 @@ character(len=24), pointer :: slvk(:) => null()
                 write(ifm,*)'<LIA_UNIL> <> FACTORISATION MATRICE'
             endif
 !
-call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
             call tldlg3('LDLT', ' ', 2, ldscon, indfac, nbliac, 0,&
                         ndeci, isingu, npvneg, ier, ' ')
 !
@@ -297,7 +292,7 @@ call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
 !
 ! --- SECOND MEMBRE : ON MET JEU(DEPTOT) - A.DELT0 DANS MU
 !
-        call cuadu(deficu, resocu, neq, nbliac)
+        call cuadu(ds_contact%sdunil_defi, ds_contact%sdunil_solv, neq, nbliac)
 !
 ! --- RESOLUTION POUR OBTENIR MU : -A.C-1.AT.MU = JEU(DEPTOT) - A.DELT0
 ! --- ON TRUANDE LA SD MATR_ASSE POUR NE RESOUDRE LE SYSTEME QUE
@@ -310,22 +305,21 @@ call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
 !
 ! --- CALCUL DE DELTA = DELT0 - C-1.AT.MU
 !
-        do 70 kk = 1, neq
+        do kk = 1, neq
             zr(jdelta-1+kk) = zr(jdelt0-1+kk) - vale(kk)
- 70     continue
+        end do
 !
 ! --- MISE A JOUR DU VECTEUR DEPLACEMENT <DU> CORRIGE
 !
         posnbl = 0
-        do 71 iliac = 1, nbliac
+        do iliac = 1, nbliac
             lliac = zi(jliac-1+iliac)
             posnbl = posnbl + 1
             call jeveuo(jexnum(cm1a, lliac), 'L', jcm1a)
             call daxpy(neq, -zr(jmu-1+posnbl), zr(jcm1a), 1, zr(jdelta),&
                        1)
             call jelibe(jexnum(cm1a, lliac))
- 71     continue
-!
+        end do
     endif
 !
 !
@@ -350,9 +344,9 @@ call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
 ! ======================================================================
 ! -- LA LIAISON II EST-ELLE ACTIVE ? (-> TROUAC)
 ! ======================================================================
-            do 90 iliac = 1, nbliac
+            do iliac = 1, nbliac
                 if (zi(jliac-1+iliac) .eq. ii) trouac = .true.
- 90         continue
+            end do
 ! ======================================================================
 ! -- CALCUL DE A.DELTA SI LA LIAISON II N'EST PAS ACTIVE
 ! ======================================================================
@@ -372,7 +366,7 @@ call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
 ! ======================================================================
 ! -- ON NE PREND PAS EN COMPTE UNE LIAISON A PIVOT NUL
 ! ======================================================================
-                    call cuelpv(ii, resocu, nbliai, lelpiv)
+                    call cuelpv(ii, ds_contact%sdunil_solv, nbliai, lelpiv)
                     if (lelpiv) then
                         goto 112
                     endif
@@ -402,19 +396,19 @@ call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
     x1 = 1.d0
     rhorho = min(rho,x1)
 !
-    do 120 kk = 1, neq
+    do kk = 1, neq
         vale(kk) = vale(kk) + rhorho*zr(jdelta-1+kk)
-120 end do
+    end do
 !
 ! -- SI RHO < 1 (AU MOINS UNE LIAISON SUPPOSEE NON ACTIVE EST VIOLEE) :
 ! -- ON AJOUTE A L'ENSEMBLE DES LIAISONS ACTIVES LA PLUS VIOLEE (LLMIN)
 !
     if (rho .lt. 1.0d0) then
         posit = nbliac + 1
-        call cutabl(indic, nbliac, ajliai, spliai, resocu,&
+        call cutabl(indic, nbliac, ajliai, spliai, ds_contact%sdunil_solv,&
                     typeaj, posit, llmin)
         if (niv .ge. 2) then
-            call cuimp2(ifm, llmin, typeaj, 'ALG', resocu)
+            call cuimp2(ifm, llmin, typeaj, 'ALG', ds_contact%sdunil_solv)
         endif
     else
 !
@@ -427,12 +421,12 @@ call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
         endif
 !
         rminmu = r8maem()
-        do 130 iliac = 1, nbliac
+        do iliac = 1, nbliac
             if (rminmu .gt. zr(jmu-1+iliac)) then
                 rminmu = zr(jmu-1+iliac)
                 kkmin = iliac
             endif
-130     continue
+        end do
 !
 !
 ! - SI TOUS LES MU SONT > 0 -> ON A CONVERGE
@@ -447,11 +441,11 @@ call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
 ! - ET NON DANS LA LISTE DE TOUTES LES LIAISONS POSSIBLES
 ! ======================================================================
         lliac = zi(jliac-1+kkmin)
-        call cutabl(indic, nbliac, ajliai, spliai, resocu,&
+        call cutabl(indic, nbliac, ajliai, spliai, ds_contact%sdunil_solv,&
                     typesp, kkmin, lliac)
 !
         if (niv .ge. 2) then
-            call cuimp2(ifm, lliac, typesp, 'ALG', resocu)
+            call cuimp2(ifm, lliac, typesp, 'ALG', ds_contact%sdunil_solv)
         endif
 !
     endif
@@ -487,35 +481,33 @@ call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
     ctccvg = 0
 !
     compts = 0
-    do 161 iliac = 1, nbliac
+    do iliac = 1, nbliac
         lliac = zi(jliac+iliac-1)
         jdecal = zi(jpoi+lliac-1)
         nbddl = zi(jpoi+lliac) - zi(jpoi+lliac-1)
         compts = compts + 1
         call calatm(neq, nbddl, zr(jmu-1+compts), zr(japcoe+jdecal), zi( japddl+jdecal),&
                     zr(jatmu))
-161 end do
-!
+    end do
 !
 ! --- MAJ DU JEU (IL N'EST RECALCULE QU'EN DEBUT DE PAS DE TPS)
 !
-!
-    do 162 iliac = 1, nbliai
+    do iliac = 1, nbliai
         jdecal = zi(jpoi+iliac-1)
         nbddl = zi(jpoi+iliac) - zi(jpoi+iliac-1)
         call caladu(neq, nbddl, zr(japcoe+jdecal), zi(japddl+jdecal), vale,&
                     val)
         zr(japjeu+iliac-1) = zr(japjeu+iliac-1) - val
-162 end do
+    end do
 !
     zi(jcoco+2) = nbliac
 !
 ! --- AFFICHAGE FINAL
 !
     if (niv .ge. 2) then
-        write(ifm,1002) iter
-        write(ifm,1003) nbliac
-        call cuimp1(deficu, resocu, ifm)
+        write(ifm,102) iter
+        write(ifm,103) nbliac
+        call cuimp1(ds_contact%sdunil_defi, ds_contact%sdunil_solv, ifm)
     endif
 !
 999 continue
@@ -525,13 +517,11 @@ call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
 !
     call jedema()
 !
-    1000 format (' <LIA_UNIL> <> NOMBRE DE LIAISONS POSSIBLES: ',i6)
-    1001 format (' <LIA_UNIL> <> DEBUT DES ITERATIONS (MAX: ',i6,')')
-    1002 format (' <LIA_UNIL> <> FIN DES ITERATIONS (NBR: ',i6,')')
-    1003 format (' <LIA_UNIL> <> NOMBRE DE LIAISONS FINALES:',&
-     &       i6,')')
-    1005 format (' <LIA_UNIL> <> NOMBRE DE LIAISONS INITIALES:',&
-     &       i6,')')
+100 format (' <LIA_UNIL> <> NOMBRE DE LIAISONS POSSIBLES: ',i6)
+101 format (' <LIA_UNIL> <> DEBUT DES ITERATIONS (MAX: ',i6,')')
+102 format (' <LIA_UNIL> <> FIN DES ITERATIONS (NBR: ',i6,')')
+103 format (' <LIA_UNIL> <> NOMBRE DE LIAISONS FINALES:', i6,')')
+104 format (' <LIA_UNIL> <> NOMBRE DE LIAISONS INITIALES:', i6,')')
 ! ======================================================================
 !
 end subroutine

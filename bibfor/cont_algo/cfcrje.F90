@@ -1,16 +1,12 @@
-subroutine cfinit(ds_contact, nume_inst)
+subroutine cfcrje(ds_contact)
 !
 use NonLin_Datastructure_type
 !
 implicit none
 !
-#include "asterf_types.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/isfonc.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/mmbouc.h"
-#include "asterfort/mminit.h"
-#include "asterfort/vtzero.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/wkvect.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,52 +26,49 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    type(NL_DS_Contact), intent(inout) :: ds_contact
-    integer, intent(in) :: nume_inst
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Contact - Solve
 !
-! Discrete methods - Initializations for current time step
+! Discrete methods - Create datastructures for gaps
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! IO  ds_contact       : datastructure for contact management
-! In  nume_inst        : index of current step time
+! In  ds_contact       : datastructure for contact management
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: sdcont_autoc1, sdcont_autoc2
+    integer :: ifm, niv
+    integer :: nt_cont_poin
+    character(len=24) :: sdcont_jeuite, sdcont_jeusav, sdcont_jeux
+    integer :: jv_sdcont_jeuite, jv_sdcont_jeusav, jv_sdcont_jeux
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    sdcont_autoc1 = ds_contact%sdcont_solv(1:14)//'.REA1'
-    sdcont_autoc2 = ds_contact%sdcont_solv(1:14)//'.REA2'
-!
-! - Geometric parameters
-!
-    call mmbouc(ds_contact, 'Geom', 'Set_Divergence')
-    ds_contact%l_wait_conv  = .false._1
-    ds_contact%l_first_geom = .true._1
-    if (cfdisl(ds_contact%sdcont_defi,'REAC_GEOM_SANS')) then
-        if (nume_inst .ne. 1) then
-            call mmbouc(ds_contact, 'Geom', 'Set_Convergence')
-            ds_contact%l_first_geom = .false._1
-        endif
+    call infdbg('CONTACT', ifm, niv)
+    if (niv .ge. 2) then
+        write (ifm,*) '<CONTACT> ...... CREATION DES SD POUR LES JEUX'
     endif
 !
-! - Geometric loop counter initialization
+! - Get contact parameters
 !
-    call mmbouc(ds_contact, 'Geom', 'Init_Counter')
+    nt_cont_poin = cfdisi(ds_contact%sdcont_defi,'NTPC')
 !
-! - First geometric loop counter
-!    
-    call mmbouc(ds_contact, 'Geom', 'Incr_Counter')
+! - Updated gaps
 !
-! - Vector initialization for REAC_GEOM
+    sdcont_jeuite = ds_contact%sdcont_solv(1:14)//'.JEUITE'
+    call wkvect(sdcont_jeuite, 'V V R', 3*nt_cont_poin, jv_sdcont_jeuite)
 !
-    call vtzero(sdcont_autoc1)
-    call vtzero(sdcont_autoc2)
+! - Gaps at beginning of step time (for cut management)
+!
+    sdcont_jeusav = ds_contact%sdcont_solv(1:14)//'.JEUSAV'
+    call wkvect(sdcont_jeusav, 'V V R', 3*nt_cont_poin, jv_sdcont_jeusav)
+!
+! - Gaps
+!
+    sdcont_jeux = ds_contact%sdcont_solv(1:14)//'.JEUX'
+    call wkvect(sdcont_jeux, 'V V R', 3*nt_cont_poin, jv_sdcont_jeux)
 !
 end subroutine

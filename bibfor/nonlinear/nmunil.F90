@@ -1,5 +1,5 @@
-subroutine nmunil(mailla    , depplu, ddepla, solveu, matass,&
-                  ds_contact, cncine, iterat, inst  , ctccvg)
+subroutine nmunil(mesh  , disp_curr, disp_iter, solver    , matr_asse,&
+                  cncine, iter_newt, time_curr, ds_contact, ctccvg)
 !
 use NonLin_Datastructure_type
 !
@@ -10,8 +10,6 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/cuprep.h"
 #include "asterfort/infniv.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mtdsc3.h"
 !
@@ -33,76 +31,81 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=8) :: mailla
-    character(len=19) :: depplu, ddepla, solveu, matass, cncine
+    character(len=8), intent(in) :: mesh
+    character(len=19), intent(in) :: disp_curr
+    character(len=19), intent(in) :: disp_iter
+    character(len=19), intent(in) :: solver
+    character(len=19), intent(in) :: matr_asse
+    character(len=19), intent(in) :: cncine
+    integer, intent(in) :: iter_newt
+    real(kind=8), intent(in) :: time_curr
     type(NL_DS_Contact), intent(in) :: ds_contact
-    integer :: iterat
-    real(kind=8) :: inst
-    integer :: ctccvg
+    integer, intent(out) :: ctccvg
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE LIAISON_UNILATER
+! Unilateral constraint - Solve
 !
-! TRAITEMENT DES CONDITIONS UNILATERALES (SAUF CONTACT MECANIQUE)
+! Solve
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! IN  DEPPLU : CHAMP DE DEPLACEMENTS A L'ITERATION DE NEWTON PRECEDENTE
-! IN  DEPPLA : INCREMENT DE DEPLACEMENTS CALCULE EN IGNORANT LE CONTACT
-! IN  SOLVEU : SD SOLVEUR
-! In  ds_contact       : datastructure for contact management
-! IN  CNCINE : CHAM_NO CINEMATIQUE
-! IN  ITERAT : ITERATION DE NEWTON
-! IN  INST   : VALEUR DE L'INSTANT DE CALCUL
-! OUT CTCCVG : CODE RETOUR CONTACT DISCRET
-!                -1 : PAS DE CALCUL DU CONTACT DISCRET
-!                 0 : CAS DU FONCTIONNEMENT NORMAL
-!                 1 : NOMBRE MAXI D'ITERATIONS
-!                 2 : MATRICE SINGULIERE
+! In  mesh             : name of mesh
+! In  disp_curr        : current displacements
+! In  disp_iter        : displacement iteration
+! In  solver           : datastructure for solver parameters
+! In  matr_asse        : matrix
+! In  cncine           : void load for kinematic loads
+! In  iter_newt        : index of current Newton iteration
+! In  time_curr        : current time
+! IO  ds_contact       : datastructure for contact management
+! Out ctccvg           : output code for contact algorithm
+!                        -1 - No solving
+!                         0 - OK
+!                        +1 - Maximum contact iteration
+!                        +2 - Singular contact matrix
 !
+! --------------------------------------------------------------------------------------------------
 !
-!
-!
-    character(len=19) :: matr
+    character(len=19) :: sdcond_matr
     integer :: ldscon, lmat
-    integer :: ifm, niv, neq
+    integer :: ifm, niv, nb_equa
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
     call infniv(ifm, niv)
-!
-! --- RECUPERATION DU DESCRIPTEUR DE LA MATRICE DE LIAISON UNIL
-!
-    matr = ds_contact%sdunil_solv(1:14)//'.MATC'
-    call mtdsc3(matr)
-    call jeveuo(matr(1:19)//'.&INT', 'E', ldscon)
-!
-! --- INITIALISATIONS
-!
-    ctccvg = 0
-!
-! --- RECUPERATION DU DESCRIPTEUR DE LA MATRICE MECANIQUE
-!
-    call jeveuo(matass//'.&INT', 'E', lmat)
-!
-! --- PRE-TRAITEMENT DES CONDITIONS UNILATERALES
-!
-    if (iterat .eq. 0) then
-        neq = zi(lmat+2)
-        call cuprep(mailla, neq, ds_contact%sdunil_defi, ds_contact%sdunil_solv, depplu,&
-                    inst)
+    if (niv .ge. 2) then
+        write (ifm,*) '<CONTACT> DEBUT DU TRAITEMENT DES CONDITIONS UNILATERALes'
     endif
 !
-! --- CHOIX DE L'ALGO DE RESOLUTION
+! - Get "contact" matrix
 !
-    call algocu(ds_contact%sdunil_defi, ds_contact%sdunil_solv, solveu, lmat, ldscon,&
-                cncine, ddepla, ctccvg)
+    sdcond_matr = ds_contact%sdunil_solv(1:14)//'.MATC'
+    call mtdsc3(sdcond_matr)
+    call jeveuo(sdcond_matr(1:19)//'.&INT', 'E', ldscon)
 !
-! --- LE CALCUL DE CONTACT A FORCEMENT ETE REALISE
+! - Initializations
+!
+    ctccvg = -1
+!
+! - Get matrix descripor
+!
+    call jeveuo(matr_asse//'.&INT', 'E', lmat)
+!
+! - Prepare unilateral constraints
+!
+    if (iter_newt .eq. 0) then
+        nb_equa = zi(lmat+2)
+        call cuprep(mesh, nb_equa, ds_contact, disp_curr, time_curr)
+    endif
+!
+! - Solve
+!
+    call algocu(ds_contact, solver, lmat, ldscon, cncine,&
+                disp_iter , ctccvg)
+!
+! - Yes for computation
 !
     ASSERT(ctccvg.ge.0)
 !
-    call jedema()
 end subroutine

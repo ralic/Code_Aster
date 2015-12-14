@@ -1,6 +1,5 @@
-subroutine mmmbca(mesh          , iter_newt, nume_inst, sddyna    , sdstat        ,&
-                  sddisc        , hval_incr, hval_algo, ds_contact, loop_cont_node,&
-                  loop_cont_conv)
+subroutine mmmbca(mesh  , iter_newt, nume_inst, sddyna    , sdstat,&
+                  sddisc, hval_incr, hval_algo, ds_contact)
 !
 use NonLin_Datastructure_type
 !
@@ -67,8 +66,6 @@ implicit none
     character(len=19), intent(in) :: hval_incr(*)
     character(len=19), intent(in) :: hval_algo(*)
     type(NL_DS_Contact), intent(inout) :: ds_contact
-    aster_logical, intent(out) :: loop_cont_conv
-    integer, intent(out) :: loop_cont_node
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -87,8 +84,6 @@ implicit none
 ! In  hval_incr        : hat-variable for incremental values fields
 ! In  hval_algo        : hat-variable for algorithms fields
 ! IO  ds_contact       : datastructure for contact management
-! Out loop_cont_conv   : .true. if contact loop converged
-! Out loop_cont_node   : number of contact state changing
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -97,7 +92,7 @@ implicit none
     integer :: jdecme, elem_slav_indx, elem_slav_nume, elem_mast_nume
     integer :: indi_cont_curr, indi_cont_prev, indi_frot_prev, indi_frot_curr
     integer :: i_zone, i_elem_slav, i_cont_poin, i_poin_elem
-    integer :: model_ndim, nb_cont_zone
+    integer :: model_ndim, nb_cont_zone, loop_cont_vali
     integer :: elem_slav_nbno, nb_poin_elem, nb_elem_slav
     integer :: indi_cont_eval, indi_frot_eval
     integer :: indi_cont_init, indi_frot_init
@@ -108,16 +103,16 @@ implicit none
     real(kind=8) :: lagr_cont_poin, time_curr
     real(kind=8) :: gap, gap_speed, gap_user
     real(kind=8) :: pres_frot(3), gap_user_frot(3)
-    real(kind=8) :: coef_cont, coef_frot
+    real(kind=8) :: coef_cont, coef_frot, loop_cont_vale
     character(len=8) :: elem_slav_type
     character(len=19) :: cnscon, cnsfr1, cnsfr2
     character(len=19) :: oldgeo, newgeo
     character(len=19) :: speed_field, chdepd
     character(len=19) :: depdel, depplu, vitplu
     aster_logical :: l_glis, l_speed, scotch
-    aster_logical :: l_glis_init, l_veri, l_exis_glis, l_loop_cont, l_coef_adap
+    aster_logical :: l_glis_init, l_veri, l_exis_glis, loop_cont_conv, l_coef_adap, l_loop_cont
     aster_logical :: l_frot_zone, l_pena_frot, l_frot
-    integer :: i_loop_geom, i_loop_frot, i_loop_cont
+    integer :: loop_geom_count, loop_fric_count, loop_cont_count
     character(len=24) :: sdcont_cychis, sdcont_cyccoe
     real(kind=8), pointer :: v_sdcont_cychis(:) => null()
     real(kind=8), pointer :: v_sdcont_cyccoe(:) => null()
@@ -137,7 +132,7 @@ implicit none
 ! - Initializations
 !
     loop_cont_conv = .true.
-    loop_cont_node = 0
+    loop_cont_vali = 0
 !
 ! - Parameters
 !
@@ -359,7 +354,7 @@ implicit none
                             l_glis_init, l_coef_adap, i_zone, i_cont_poin, indi_cont_init,&
                             indi_cont_eval, indi_frot_eval, gap, gap_speed, lagr_cont_poin,&
                        gap_user_frot, pres_frot, v_sdcont_cychis, v_sdcont_cyccoe, indi_cont_curr,&
-                            indi_frot_curr, loop_cont_node, loop_cont_conv, scotch)
+                            indi_frot_curr, loop_cont_vali, loop_cont_conv, scotch)
 !
  19             continue
 !
@@ -404,11 +399,11 @@ implicit none
 !
 ! - Event management for impact
 !
-    call mmbouc(ds_contact, 'Geom', 'READ', i_loop_geom)
-    call mmbouc(ds_contact, 'Fric', 'READ', i_loop_frot)
-    call mmbouc(ds_contact, 'Cont', 'READ', i_loop_cont)
+    call mmbouc(ds_contact, 'Geom', 'Read_Counter', loop_geom_count)
+    call mmbouc(ds_contact, 'Fric', 'Read_Counter', loop_fric_count)
+    call mmbouc(ds_contact, 'Cont', 'Read_Counter', loop_cont_count)
     if ((iter_newt.eq.0) .and.&
-        (i_loop_geom.eq.1) .and. (i_loop_frot.eq.1) .and. (i_loop_cont.eq.1)) then
+        (loop_geom_count.eq.1) .and. (loop_fric_count.eq.1) .and. (loop_cont_count.eq.1)) then
         call mmeven('INI', ds_contact)
     else
         call mmeven('FIN', ds_contact)
@@ -417,6 +412,16 @@ implicit none
 ! - Get off indicator for speed schemes
 !
     ds_contact%l_getoff = scotch
+!
+! - Set loop values
+!
+    if (loop_cont_conv) then
+        call mmbouc(ds_contact, 'Cont', 'Set_Convergence')
+    else
+        call mmbouc(ds_contact, 'Cont', 'Set_Divergence')
+    endif
+    loop_cont_vale = real(loop_cont_vali, kind=8)
+    call mmbouc(ds_contact, 'Cont', 'Set_Vale' , loop_vale_ = loop_cont_vale)
 !
 ! - Cleaning
 !
