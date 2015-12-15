@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -17,7 +17,7 @@
 !
 interface
     subroutine rctrac(jmat, ktrac, nomcl, temp, jprol,&
-                      jvale, nbvale, e)
+                      jvale, nbvale, e, materi)
         integer :: jmat
         integer :: ktrac
         character(len=*) :: nomcl
@@ -26,5 +26,6 @@ interface
         integer :: jvale
         integer :: nbvale
         real(kind=8) :: e
+        character(len=*), optional, intent(in) :: materi
     end subroutine rctrac
 end interface

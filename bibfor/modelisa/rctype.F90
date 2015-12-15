@@ -1,5 +1,5 @@
 subroutine rctype(jmat     , nb_para_list, para_list_name, para_list_vale, para_vale,&
-                  para_type, keyw_factz  , keywz)
+                  para_type, keyw_factz  , keywz, materi)
 !
     implicit none
 !
@@ -8,7 +8,7 @@ subroutine rctype(jmat     , nb_para_list, para_list_name, para_list_vale, para_
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -27,11 +27,12 @@ subroutine rctype(jmat     , nb_para_list, para_list_name, para_list_vale, para_
     integer, intent(in) :: jmat
     integer, intent(in) :: nb_para_list
     character(len=*), intent(in) :: para_list_name(*)
-    real(kind=8), intent(in) :: para_list_vale(*) 
+    real(kind=8), intent(in) :: para_list_vale(*)
     real(kind=8), intent(out) :: para_vale
     character(len=*), intent(out) :: para_type
     character(len=*), optional, intent(in) :: keyw_factz
     character(len=*), optional, intent(in) :: keywz
+    character(len=*), optional, intent(in) :: materi
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,11 +59,11 @@ subroutine rctype(jmat     , nb_para_list, para_list_name, para_list_vale, para_
     integer :: lfct, lmat, lsup
     parameter  ( lmat = 9 , lfct = 10, lsup=2)
 !
-    integer :: icomp, ipi, idf, nbf, ivalk, ik, ipif, jpro
+    integer :: icomp, ipi, idf, nbf, ivalk, ik, ipif, jpro, kmat, inom
     integer :: imate, nbmat
     character(len=24) :: para_name(2)
     character(len=16) :: keyw_fact
-    character(len=8) :: keyw
+    character(len=8) :: keyw, nomi
     integer :: ipara, nb_para, i_para_list
 !
 ! --------------------------------------------------------------------------------------------------
@@ -70,40 +71,49 @@ subroutine rctype(jmat     , nb_para_list, para_list_name, para_list_vale, para_
     para_type = ' '
     para_vale = 0.d0
 !
-! - Number of materials data for current element (only one by element)
+    ipi= 0; ipif= 0; imate= 0
 !
+!   Number of materials data for current element
     nbmat = zi(jmat)
-    ASSERT(nbmat.eq.1)
+    if ( nbmat.ne.1 ) then
+        ASSERT( present(materi) )
+        do kmat = 1, nbmat
+            inom=zi(jmat+kmat)
+            nomi=zk8(inom)
+            if (nomi .eq. materi) then
+!               Coded material
+                imate = jmat+zi(jmat+nbmat+kmat)
+                goto 5
+            endif
+        enddo
+        call utmess('F', 'CALCUL_45', sk=materi)
+    else
+!       Coded material
+        imate = jmat+zi(jmat+nbmat+1)
+    endif
+5   continue
 !
-! - Coded material
-!
-    imate = jmat+zi(jmat+nbmat+1)
-!
-! - Simple keyword for traction curve
-!
+!   Simple keyword for traction curve
     if (present(keywz)) then
         keyw  = keywz
     else
         keyw = 'SIGM'
     endif
 !
-! - Factor keyword for traction curve
-!
+!   Factor keyword for traction curve
     if (present(keyw_factz)) then
         keyw_fact = keyw_factz
     else
         keyw_fact = 'TRACTION'
     endif
-    
 !
-! - Get index for factor keyword
-!
+!   Get index for factor keyword
     do icomp = 1, zi(imate+1)
         if (keyw_fact .eq. zk32(zi(imate)+icomp-1)) then
             ipi = zi(imate+2+icomp-1)
             goto 11
         endif
-    end do
+    enddo
     call utmess('F', 'COMPOR5_1', sk = keyw_fact)
 11  continue
 !
@@ -116,18 +126,18 @@ subroutine rctype(jmat     , nb_para_list, para_list_name, para_list_vale, para_
         if (keyw .eq. zk16(ivalk+idf+ik-1)) then
             if (keyw.eq.'SIGM') then
                 ipif = ipi+lmat-1+lfct*(ik-1)
-            elseif ((keyw.eq.'SIGM_F1').or.&
-                    (keyw.eq.'SIGM_F2').or.&
-                    (keyw.eq.'SIGM_F3').or.&
-                    (keyw.eq.'SIGM_F4').or.&
-                    (keyw.eq.'SIGM_C')) then
+            else if ((keyw.eq.'SIGM_F1').or.&
+                     (keyw.eq.'SIGM_F2').or.&
+                     (keyw.eq.'SIGM_F3').or.&
+                     (keyw.eq.'SIGM_F4').or.&
+                     (keyw.eq.'SIGM_C')) then
                 ipif = ipi+lmat-1+lfct*(ik-1)+lsup*(ik-1)
             else
                 ASSERT(.false.)
             endif
             goto 21
         endif
-    end do
+    enddo
     ASSERT(.false.)
 21  continue
 !
@@ -160,9 +170,9 @@ subroutine rctype(jmat     , nb_para_list, para_list_name, para_list_vale, para_
                     para_type = para_list_name(i_para_list)
                     goto 999
                 endif
-            end do
+            enddo
         endif
-    end do
+    enddo
 !
     call utmess('F', 'COMPOR5_4')
 !

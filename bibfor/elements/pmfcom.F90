@@ -5,7 +5,7 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
                   varip, codret)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -106,8 +106,8 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
     codrep = 0
     fami = 'RIGI'
     materi = compor(1)(1:8)
-    compo = compor(2)(1:16)
-    algo = compor(3)(1:16)
+    compo  = compor(2)(1:16)
+    algo   = compor(3)(1:16)
 !
 !   calcul de la température
     call rcvarc(' ', 'TEMP', 'REF', fami, 1,&
@@ -118,8 +118,7 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
     if (.not.ltemp) then
         nomres(1) = 'E'
         nomres(2) = 'NU'
-        call rcvalb(fami, 1, 1, '+', icdmat,&
-                    materi, 'ELAS', 0, '', [0.d0],&
+        call rcvalb(fami, 1, 1, '+', icdmat, materi, 'ELAS', 0, '', [0.d0],&
                     2, nomres, valres, icodre, 1)
         ep = valres(1)
         nu = valres(2)
@@ -136,8 +135,7 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
         do i = 1, nf
             if (ltemp) then
                 ksp=debsp-1+i
-                call paeldt(kpg, ksp, fami, 'T', icdmat,&
-                            materi, em, ep, nu, depsth)
+                call paeldt(kpg, ksp, fami, 'T', icdmat, materi, em, ep, nu, depsth)
             endif
             modf(i) = ep
             sigf(i) = ep*(contm(i)/em + ddefp(i) - depsth)
@@ -164,8 +162,7 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
             ivari = nbvalc*(i-1) + 1
             if (ltemp) then
                 ksp=debsp-1+i
-                call paeldt(kpg, ksp, fami, '+', icdmat,&
-                            materi, em, ep, nu, epsth)
+                call paeldt(kpg, ksp, fami, '+', icdmat, materi, em, ep, nu, epsth)
                 valres(9) = nu
             endif
             epsm = defm(i) - epsth
@@ -180,8 +177,7 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
             ivari = nbvalc*(i-1) + 1
             if (ltemp) then
                 ksp=debsp-1+i
-                call paeldt(kpg, ksp, fami, 'T', icdmat,&
-                            materi, em, ep, nu, depsth)
+                call paeldt(kpg, ksp, fami, 'T', icdmat, materi, em, ep, nu, depsth)
             endif
             depsm = ddefp(i)-depsth
             call vmci1d('RIGI', kpg, i, icdmat, em,&
@@ -205,8 +201,7 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
             ivari = nbvalc*(i-1) + 1
             if (ltemp) then
                 ksp=debsp-1+i
-                call paeldt(kpg, ksp, fami, 'T', icdmat,&
-                            materi, em, ep, nu, depsth)
+                call paeldt(kpg, ksp, fami, 'T', icdmat, materi, em, ep, nu, depsth)
                 cstpm(1) = ep
             endif
             depsm = ddefp(i)-depsth
@@ -221,8 +216,7 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
             ivari = nbvalc* (i-1) + 1
             if (ltemp) then
                 ksp=debsp-1+i
-                call paeldt(kpg, ksp, fami, 'T', icdmat,&
-                            materi, em, ep, nu, depsth)
+                call paeldt(kpg, ksp, fami, 'T', icdmat, materi, em, ep, nu, depsth)
             endif
             depsm = ddefp(i)-depsth
             call nm1dci('RIGI', kpg, i, icdmat, em,&
@@ -236,8 +230,7 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
             ivari = nbvalc* (i-1) + 1
             if (ltemp) then
                 ksp=debsp-1+i
-                call paeldt(kpg, ksp, fami, 'T', icdmat,&
-                            materi, em, ep, nu, depsth)
+                call paeldt(kpg, ksp, fami, 'T', icdmat, materi, em, ep, nu, depsth)
             endif
             depsm = ddefp(i)-depsth
             call nm1dis('RIGI', kpg, i, icdmat, em,&
@@ -251,8 +244,7 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
             ivari = nbvalc* (i-1) + 1
             if (ltemp) then
                 ksp=debsp-1+i
-                call paeldt(kpg, ksp, fami, 'T', icdmat,&
-                            materi, em, ep, nu, depsth)
+                call paeldt(kpg, ksp, fami, 'T', icdmat, materi, em, ep, nu, depsth)
             endif
             call nm1dco('RIGI', kpg, i, option, icdmat,&
                         materi, ep, contm(i), epsm, ddefp(i),&
@@ -271,8 +263,7 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
                 ivari = nbvalc* (i-1) + 1
                 if (ltemp) then
                     ksp=debsp-1+i
-                    call paeldt(kpg, ksp, fami, 'T', icdmat,&
-                                materi, em, ep, nu, depsth,&
+                    call paeldt(kpg, ksp, fami, 'T', icdmat, materi, em, ep, nu, depsth,&
                                 tmoins=tempm, tplus=tempp, trefer=tref)
                 endif
                 depsm = ddefp(i)-depsth
