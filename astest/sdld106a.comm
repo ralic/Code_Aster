@@ -177,6 +177,11 @@ DYHAN=DYNA_VIBRA(TYPE_CALCUL='HARM',
 
 ),);
 
+
+# Tester le calcul de la masse des elements 2D_DIS_TR
+MASSE=POST_ELEM(MODELE=MODELE, CARA_ELEM=CHAMPCAR, MASS_INER=_F( TOUT = 'OUI'),)
+TEST_TABLE(TABLE=MASSE, NOM_PARA='MASSE', VALE_CALC=100.0,)
+
 omega2 = k1/m1
 omega = sqrt(omega2)
 omega2ext = 1.
