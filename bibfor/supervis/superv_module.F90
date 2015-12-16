@@ -70,8 +70,7 @@ contains
             call gtopti('numthreads', maxThreads, iret)
             initMaxThreads = maxThreads
         endif
-        call asthread_setnum( initMaxThreads )
-        call asthread_blasset( initMaxThreads )
+        call asthread_setnum( initMaxThreads, blas_max=1 )
 !   Memory allocation
 !       Adjust Jeveux parameters
         k8tab(1) = 'LIMIT_JV'
@@ -156,12 +155,18 @@ contains
 !>  Set the maximum number of threads for OpenMP and Blas
 !
 !>  @param[in] nbThreads new maximum number of threads
-    subroutine asthread_setnum( nbThreads )
+    subroutine asthread_setnum( nbThreads, blas_max )
         implicit none
         integer, intent(in) :: nbThreads
+        integer, intent(in), optional :: blas_max
 #ifdef _USE_OPENMP
         call omp_set_num_threads( nbThreads )
 #endif
+        if (present(blas_max)) then
+            if (blas_max .eq. 1) then
+                call asthread_blasset( initMaxThreads )
+            endif
+        endif
     end subroutine asthread_setnum
 
 
