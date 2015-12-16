@@ -119,6 +119,7 @@ def detect_mkl(self):
             continue
         else:
             self.end_msg(self.env[var])
+            self.define('_USE_MKL', 1)
             return True
     self.end_msg('no', color='YELLOW')
     return False
@@ -181,6 +182,8 @@ def detect_math_lib(self):
               "    Remove the option --embed-maths in case of link error.\n"\
               "    See http://www.open-mpi.org/faq/?category=mpi-apps#static-mpi-apps"
         Logs.warn(msg)
+    if 'openblas' in self.env[varlib]:
+        self.define('_USE_OPENBLAS', 1)
 
 @Configure.conf
 def check_math_libs(self, name, libs, embed, optional=False):
