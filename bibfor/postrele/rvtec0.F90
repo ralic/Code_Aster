@@ -1,7 +1,7 @@
 subroutine rvtec0(t, co, sp, absc, x,&
                   cmp, nd, sdm, nbpoin, docu,&
-                  nbcmp, padr, nomtab, ioc, iocc,&
-                  xnovar, ncheff, i1, isd)
+                  nbcmp, padr, nomtab, iocc,&
+                  xnovar, ncheff, i1)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -26,7 +26,7 @@ subroutine rvtec0(t, co, sp, absc, x,&
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    integer :: co(*), sp(*), nbpoin, nbcmp, padr(*), ioc, iocc, i1, isd
+    integer :: co(*), sp(*), nbpoin, nbcmp, padr(*), iocc, i1
     real(kind=8) :: t(*), absc(*), x(*)
     character(len=4) :: docu
     character(len=8) :: cmp(*), nd(*)
@@ -67,14 +67,14 @@ subroutine rvtec0(t, co, sp, absc, x,&
 ! IN  NBCMP : I  : NOMBRE TOTAL DE CMP
 !     ------------------------------------------------------------------
     integer :: nbpar, ilign, nbsp, i, ikk, l, jam, nbco, lc, is, ic, valei(1052), n1, adrval
-    integer :: nbmail, j, adracc, jacc, ik, ir, ii, ivari(1000), nbcmp2, jvari, ico, lm, im, nc
+    integer :: nbmail, j, adracc, jacc, ik, ir, ii, ivari(1000), nbcmp2, jvari, ico, lm, im
     integer :: nbvari, nbacc, nbpr, jaces, iac, iadr, iord(1)
     real(kind=8) :: prec, valer(1050)
     complex(kind=8) :: c16b
     aster_logical :: exist, erreur
     character(len=3) :: typpar
     character(len=7) :: kii
-    character(len=8) :: k8b, acces, nomres, ctype, courbe, crit
+    character(len=8) :: k8b, acces, nomres, ctype, crit
     character(len=16) :: intitu
     character(len=24) :: nomval, nomacc, nnores, nopara(1053), nomjv
     character(len=80) :: valek(1051)
@@ -86,8 +86,7 @@ subroutine rvtec0(t, co, sp, absc, x,&
 !
     if (nbcmp .le. 0) goto 9999
 !
-    if (docu .ne. 'LSTN' .and. docu .ne. 'CHMM' .and. docu .ne. 'SGTD' .and. docu .ne. 'ARCC'&
-        .and. docu .ne. 'SGT3') goto 9999
+    if (docu .ne. 'LSTN') goto 9999
 !
     call jelira(jexnum(xnovar, iocc), 'LONUTI', nbvari)
     if (nbvari .ne. 0) then
@@ -109,7 +108,6 @@ subroutine rvtec0(t, co, sp, absc, x,&
     endif
 !
     call getvtx('ACTION', 'INTITULE', iocc=iocc, scal=intitu, nbret=n1)
-    call getvid('ACTION', 'CHEMIN', iocc=iocc, scal=courbe, nbret=nc)
 !
     call getvr8('ACTION', 'PRECISION', iocc=iocc, scal=prec, nbret=n1)
     call getvtx('ACTION', 'CRITERE', iocc=iocc, scal=crit, nbret=n1)
@@ -126,20 +124,6 @@ subroutine rvtec0(t, co, sp, absc, x,&
     valek(ik) = intitu
     nopara(nbpar) = 'INTITULE'
 !
-    if (nc .ne. 0) then
-        nbpar = nbpar + 1
-        nopara(nbpar) = 'CHEMIN'
-        ik = ik + 1
-        valek(ik) = courbe
-        nbpar = nbpar + 1
-        nopara(nbpar) = 'SEGMENT'
-        ii = ii + 1
-        valei(ii) = isd
-        nbpar = nbpar + 1
-        nopara(nbpar) = 'CMP_CNX'
-        ii = ii + 1
-        valei(ii) = ioc
-    endif
 !
     if (zk8(jacc) .eq. 'DIRECT  ') then
         call jeveuo(jexnum(ncheff//'.LSCHEFF', 1), 'L', jacc)
@@ -235,7 +219,7 @@ subroutine rvtec0(t, co, sp, absc, x,&
             valer(ir) = zr(adrval + i1-1)
         endif
     endif
-    if (docu .eq. 'LSTN' .or. docu .eq. 'CHMM') then
+    if (docu .eq. 'LSTN') then
         call tbexip(nomtab, 'NOEUD', exist, typpar)
         if (.not. exist) then
             call tbajpa(nomtab, 1, 'NOEUD', 'K8')
@@ -330,7 +314,7 @@ subroutine rvtec0(t, co, sp, absc, x,&
         valer(ir+4) = x(3+(i-1)*3)
 !
         ikk = 0
-        if (docu .eq. 'LSTN' .or. docu .eq. 'CHMM') then
+        if (docu .eq. 'LSTN') then
             ikk = ikk + 1
             valek(ik+ikk) = nd(i)
         endif

@@ -1,4 +1,4 @@
-subroutine rvchgr(mailla, courbe, nlsnac, repere, sdnewr,&
+subroutine rvchgr(mailla, nlsnac, repere, sdnewr,&
                   iret)
     implicit none
 #include "asterf_types.h"
@@ -10,13 +10,11 @@ subroutine rvchgr(mailla, courbe, nlsnac, repere, sdnewr,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/rvegal.h"
-#include "asterfort/rvrepc.h"
-#include "asterfort/rvrepm.h"
 #include "asterfort/rvrepn.h"
 #include "asterfort/utmess.h"
     character(len=24) :: nlsnac
     character(len=19) :: sdnewr
-    character(len=8) :: courbe, mailla, repere
+    character(len=8) :: mailla, repere
     integer :: iret
 !
 !***********************************************************************
@@ -45,7 +43,6 @@ subroutine rvchgr(mailla, courbe, nlsnac, repere, sdnewr,&
 !  ARGUMENTS EN ENTREE
 !  -------------------
 !
-!     COURBE : NOM DU CONCEPT COURBE LIEU DU POST-TRAITEMENT
 !     MAILLA : NOM DU CONCEPT MAILLAGE
 !     NLSNAC : NOM DU VECTEUR DES NOEUDS LIEU DE POST-TRAITEMENT
 !     REPERE : VAUT 'LOCAL' OU 'POLAIRE'
@@ -79,7 +76,6 @@ subroutine rvchgr(mailla, courbe, nlsnac, repere, sdnewr,&
     aster_logical :: egal
     real(kind=8) :: znd, zref, aux
     character(len=8) :: k8b
-    character(len=24) :: valk(2)
     real(kind=8), pointer :: vale(:) => null()
 !
 !====================== CORPS DE LA ROUTINE ===========================
@@ -98,71 +94,44 @@ subroutine rvchgr(mailla, courbe, nlsnac, repere, sdnewr,&
         endif
     endif
 !
-    if (courbe(1:1) .ne. '&') then
+    ind = 1
 !
-        call jeexin(courbe//'.TYPCOURBE', ierd)
-        if (ierd .eq. 0) then
+    call jelira(nlsnac, 'LONMAX', nbnac)
+    call jeveuo(nlsnac, 'L', alsnac)
+    call jeveuo(mailla//'.COORDO    .VALE', 'L', vr=vale)
+!
+    nd = zi(alsnac + 1-1)
+!
+    zref = vale(3)
+!
+ 10 continue
+    if ((iret .ne. 0) .and. (ind .le. nbnac)) then
+!
+        nd = zi(alsnac + ind-1)
+        znd = vale(1+ 3*nd-1)
+!
+        call rvegal(1.0d-3, 'R', zref, znd, egal,&
+                    aux)
+!
+        if (.not. egal) then
+!
             iret = 0
-            valk (1) = courbe
-            valk (2) = repere
-            call utmess('A', 'POSTRELE_29', nk=2, valk=valk)
-            goto 999
-        endif
-!
-        call jeveuo(courbe//'.TYPCOURBE', 'L', i)
-!
-        if (zk8(i) .eq. 'LISTMAIL') then
-!
-            call rvrepm(mailla, courbe, repere, sdnewr)
-!
-        else
-!
-            call rvrepc(courbe, repere, sdnewr)
 !
         endif
+!
+        ind = ind + 1
+!
+        goto 10
+!
+    endif
+!
+    if (iret .ne. 0) then
+!
+        call rvrepn(mailla, nlsnac, repere, sdnewr)
 !
     else
 !
-        ind = 1
-!
-        call jelira(nlsnac, 'LONMAX', nbnac)
-        call jeveuo(nlsnac, 'L', alsnac)
-        call jeveuo(mailla//'.COORDO    .VALE', 'L', vr=vale)
-!
-        nd = zi(alsnac + 1-1)
-!
-        zref = vale(3)
-!
- 10     continue
-        if ((iret .ne. 0) .and. (ind .le. nbnac)) then
-!
-            nd = zi(alsnac + ind-1)
-            znd = vale(1+ 3*nd-1)
-!
-            call rvegal(1.0d-3, 'R', zref, znd, egal,&
-                        aux)
-!
-            if (.not. egal) then
-!
-                iret = 0
-!
-            endif
-!
-            ind = ind + 1
-!
-            goto 10
-!
-        endif
-!
-        if (iret .ne. 0) then
-!
-            call rvrepn(mailla, nlsnac, repere, sdnewr)
-!
-        else
-!
-            call utmess('A', 'POSTRELE_28')
-!
-        endif
+        call utmess('A', 'POSTRELE_28')
 !
     endif
 !

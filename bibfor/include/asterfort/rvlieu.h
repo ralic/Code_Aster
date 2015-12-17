@@ -16,10 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine rvlieu(mailla, typco, courbe, nlsnac, sdlieu)
+    subroutine rvlieu(mailla, typco, nlsnac, sdlieu)
         character(len=8) :: mailla
         character(len=8) :: typco
-        character(len=8) :: courbe
         character(len=24) :: nlsnac
         character(len=24) :: sdlieu
     end subroutine rvlieu

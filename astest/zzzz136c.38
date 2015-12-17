@@ -1,51 +1,51 @@
     -1
-   151   %TITRE 
- VALIDATION DE INTE_MAIL_3D ET POST_RELELEVE_T                                  
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
+   151   %TITRE
+ VALIDATION DE MACR_LIGN_COUPE ET POST_RELEVE_T
+
+
+
+
+
+
     -1
-    -1                                                                          
-    55   %VALEURS AUX NOEUDS                                                    
-CHAMP AUX NOEUDS DE NOM SYMBOLIQUE                                              
-CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL - DX DY DZ DRX DRY DRZ                 
-CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL                                        
-CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL                                        
-NUMERO D'ORDRE: 1 INST:  0.00000E+00                                            
-         1         4         3         8         2         6                    
-         2         1         1         1                                        
-  0.00000E+00                                                                   
-         1     % NOEUD NO1     
+    -1
+    55   %VALEURS AUX NOEUDS
+CHAMP AUX NOEUDS DE NOM SYMBOLIQUE
+CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL - DX DY DZ DRX DRY DRZ
+CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL
+CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL
+NUMERO D'ORDRE: 1 INST:  0.00000E+00
+         1         4         3         8         2         6
+         2         1         1         1
+  0.00000E+00
+         1     % NOEUD NO1
   0.00000E+00  1.00000E+01  2.00000E+01  3.00000E+01  4.00000E+01  5.00000E+01
-         2     % NOEUD NO2     
+         2     % NOEUD NO2
   3.00000E+00  1.30000E+01  2.30000E+01  3.30000E+01  4.30000E+01  5.30000E+01
-         3     % NOEUD NO3     
+         3     % NOEUD NO3
   5.00000E+00  1.50000E+01  2.50000E+01  3.50000E+01  4.50000E+01  5.50000E+01
-         4     % NOEUD NO4     
+         4     % NOEUD NO4
   7.00000E+00  1.70000E+01  2.70000E+01  3.70000E+01  4.70000E+01  5.70000E+01
-         5     % NOEUD NO5     
+         5     % NOEUD NO5
   1.00000E+00  1.10000E+01  2.10000E+01  3.10000E+01  4.10000E+01  5.10000E+01
-         6     % NOEUD NO6     
+         6     % NOEUD NO6
   9.00000E+00  1.90000E+01  2.90000E+01  3.90000E+01  4.90000E+01  5.90000E+01
-         7     % NOEUD NO7     
+         7     % NOEUD NO7
   2.00000E+00  1.20000E+01  2.20000E+01  3.20000E+01  4.20000E+01  5.20000E+01
-         8     % NOEUD NO8     
+         8     % NOEUD NO8
   6.00000E+00  1.60000E+01  2.60000E+01  3.60000E+01  4.60000E+01  5.60000E+01
     -1
-    -1                                                                          
-    57   %VALEURS AUX NOEUDS DES ELEMENTS                                       
-CHAMP PAR ELEMENT AUX NOEUDS DE NOM SYMBOLIQUE  SIEF_ELNO                       
+    -1
+    57   %VALEURS AUX NOEUDS DES ELEMENTS
+CHAMP PAR ELEMENT AUX NOEUDS DE NOM SYMBOLIQUE  SIEF_ELNO
 CHAMP PAR ELEMENT AUX NOEUDS DE NOM SYMB - SIXX SIXY SIYY SIXZ SIYZ SIZZ  (ELNO)
-CHAMP PAR ELEMENT AUX NOEUDS DE NOM SYMBOLIQUE  SIEF_ELNO                       
-CHAMP PAR ELEMENT AUX NOEUDS DE NOM SYMBOLIQUE  SIEF_ELNO                       
-NUMERO D'ORDRE: 1 INST:  0.00000E+00                                            
-         1         4         4         2         2         6                    
-         2         1         1         1                                        
-  0.00000E+00                                                                   
-         1         1         8         6     % MAILLE MA1     
+CHAMP PAR ELEMENT AUX NOEUDS DE NOM SYMBOLIQUE  SIEF_ELNO
+CHAMP PAR ELEMENT AUX NOEUDS DE NOM SYMBOLIQUE  SIEF_ELNO
+NUMERO D'ORDRE: 1 INST:  0.00000E+00
+         1         4         4         2         2         6
+         2         1         1         1
+  0.00000E+00
+         1         1         8         6     % MAILLE MA1
   0.00000E+00  1.00000E+01  2.00000E+01  3.00000E+01  4.00000E+01  5.00000E+01
   3.00000E+00  1.30000E+01  2.30000E+01  3.30000E+01  4.30000E+01  5.30000E+01
   5.00000E+00  1.50000E+01  2.50000E+01  3.50000E+01  4.50000E+01  5.50000E+01

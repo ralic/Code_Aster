@@ -46,7 +46,7 @@ subroutine rvaffm(mcf, iocc, sdlieu, sdeval, sdmoy,&
 !     ------------------------------------------------------------------
     integer :: anocp, nbcp, ioc, aabsc, nbpt, nboc, asdmo
     integer :: i, ifm, anomnd, nbco, nbsp, k, niv
-    real(kind=8) :: xa, xb, ya, yb, ax, s1, s2, za, zb
+    real(kind=8) ::  s1, s2
     character(len=4) :: docul
     character(len=24) :: nabsc, nnocp
 !======================================================================
@@ -66,70 +66,28 @@ subroutine rvaffm(mcf, iocc, sdlieu, sdeval, sdmoy,&
     nbco = zi(i)
     call jeveuo(sdeval//'.PNSP', 'L', i)
     nbsp = zi(i)
-    do 100, ioc = 1, nboc, 1
-    call jelira(jexnum(nabsc , ioc), 'LONMAX', nbpt)
-    call jeveuo(jexnum(nabsc , ioc), 'L', aabsc)
-    call jeveuo(jexnum(sdmoy , ioc), 'L', asdmo)
-    s1 = zr(aabsc + 1-1)
-    s2 = zr(aabsc + nbpt-1)
-    if (niv .gt. 1) then
-        if ((docul .eq. 'LSTN') .or. (docul .eq. 'CHMM')) then
-            write(ifm,*)'CHEMIN RELIANT LES NOEUDS :'
-            do 200, i = 1,nbpt/8, 1
-            write(ifm,'(8(1X,A8))')(zk8(anomnd+(i-1)*8+k-1),k=&
-                    1,8,1)
-200          continue
-            write(ifm,*)'   '
-            write(ifm,*)(zk8(anomnd+k-1)//' ',k=8*(nbpt/8)+1,nbpt,&
-                1)
-        else if (docul .eq. 'SGTD') then
-            xa = zr(anomnd + 1-1)
-            ya = zr(anomnd + 2-1)
-            xb = zr(anomnd + 3-1)
-            yb = zr(anomnd + 4-1)
-            ax = sqrt((xa-xb)*(xa-xb) + (ya-yb)*(ya-yb))
-            write(ifm,*)'SEGMENT DE DROITE'
-            write(ifm,'(A26,1PD14.6,A1,1PD14.6,A1)')&
-     &                   ' ORIGINE               : (',xa,',',ya,')'
-            write(ifm,'(A26,1PD14.6,A1,1PD14.6,A1)')&
-     &                   ' EXTREMITE             : (',xb,',',yb,')'
-            write(ifm,'(A26,1PD14.6,A1,1PD14.6,A1)')&
-     &                   ' ABSCISSES CURVILIGNES : (',s1,',',s2,')'
-        else if (docul .eq. 'ARCC') then
-            xa = zr(anomnd + 1-1)
-            ya = zr(anomnd + 2-1)
-            xb = zr(anomnd + 3-1)
-            ax = 57.29577951d0/xb
-            write(ifm,*)'ARC DE CERCLE'
-            write(ifm,'(A26,1PD14.6,A1,1PD14.6,A1)')&
-     &                   ' CENTRE                : (',xa,',',ya,')'
-            write(ifm,'(A26,1PD14.6,A1,1PD14.6,A1)')&
-     &                   ' RAYON                 :  ',xb
-            write(ifm,'(A26,1PD14.6,A1,1PD14.6,A1)')&
-     &                 ' SECTEUR ANGULAIRE     : (',ax*s1,',',ax*s2,')'
-        else if (docul .eq. 'SGT3') then
-            xa = zr(anomnd + 1-1)
-            ya = zr(anomnd + 2-1)
-            za = zr(anomnd + 3-1)
-            xb = zr(anomnd + 4-1)
-            yb = zr(anomnd + 5-1)
-            zb = zr(anomnd + 6-1)
-            ax = sqrt((xa-xb)*(xa-xb)+(ya-yb)*(ya-yb)+(za-zb)*(za- zb))
-            write(ifm,*)'SEGMENT DE DROITE'
-            write(ifm,'(A26,1PD14.6,A1,1PD14.6,A1,1PD14.6,A1)')&
-     &                ' ORIGINE               : (',xa,',',ya,',',za,')'
-            write(ifm,'(A26,1PD14.6,A1,1PD14.6,A1,1PD14.6,A1)')&
-     &                ' EXTREMITE             : (',xb,',',yb,',',zb,')'
-            write(ifm,'(A26,1PD14.6,A1,1PD14.6,A1)')&
-     &                ' ABSCISSES CURVILIGNES : (',s1,',',s2,')'
-        else
+    do ioc = 1, nboc, 1
+        call jelira(jexnum(nabsc , ioc), 'LONMAX', nbpt)
+        call jeveuo(jexnum(nabsc , ioc), 'L', aabsc)
+        call jeveuo(jexnum(sdmoy , ioc), 'L', asdmo)
+        s1 = zr(aabsc + 1-1)
+        s2 = zr(aabsc + nbpt-1)
+        if (niv .gt. 1) then
+            if (docul .eq. 'LSTN') then
+                write(ifm,*)'CHEMIN RELIANT LES NOEUDS :'
+                do i = 1,nbpt/8, 1
+                    write(ifm,'(8(1X,A8))')(zk8(anomnd+(i-1)*8+k-1),k=&
+                        1,8,1)
+                enddo
+                write(ifm,*)'   '
+                write(ifm,*)(zk8(anomnd+k-1)//' ',k=8*(nbpt/8)+1,nbpt,&
+                    1)
+            endif
+            write(ifm,*)' '
         endif
-        write(ifm,*)' '
-    endif
-    call rvtamo(zr(asdmo), zk8(anocp), nbcp, nbco, nbsp,&
-                nomtab, iocc, xnovar, ncheff, i1,&
-                ioc, isd)
-    100 end do
+        call rvtamo(zr(asdmo), zk8(anocp), nbcp, nbco, nbsp,&
+                    nomtab, iocc, xnovar, ncheff, i1)
+    enddo
 !
     call jedema()
 end subroutine

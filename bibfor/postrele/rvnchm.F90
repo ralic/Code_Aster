@@ -10,6 +10,7 @@ subroutine rvnchm(mailla, tm, nbm, numnd, nomnd)
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/assert.h"
 !
     character(len=24) :: numnd, nomnd
     character(len=8) :: mailla
@@ -90,7 +91,7 @@ subroutine rvnchm(mailla, tm, nbm, numnd, nomnd)
         else if ((n2.eq.zi(aconec)).or.(n2.eq.zi(aconec+1))) then
             nder = n1
         else
-            call utmess('F', 'POSTRELE_25')
+            ASSERT(.false.)
         endif
     endif
     zi(anumnd + pt-1) = nder

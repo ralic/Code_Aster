@@ -143,21 +143,6 @@ cata_msg = {
  -> Risque & Conseil : générez un fichier MED directement depuis GMSH.
 """),
 
-    44 : _(u"""
- Attention, l'origine de votre chemin est située à l'intérieur d'un élément.
- Le premier segment élémentaire (origine - intersection avec la première face)
- ne fera pas partie du chemin.
- Conseil : prolonger votre chemin à l'origine (mettre l'origine en dehors du
-  maillage) si vous voulez que votre chemin ne soit pas tronqué.
-"""),
-
-    45 : _(u"""
- Attention, l'extrémité de votre chemin est située à l'intérieur d'un élément.
- Le dernier segment élémentaire (intersection avec la dernière face - extrémité)
- ne fera pas partie du chemin.
- Conseil : prolonger votre chemin à l'extrémité (mettre l'extrémité en dehors du
- maillage) si vous voulez que votre chemin ne soit pas tronqué.
-"""),
 
     46 : _(u"""
  Le modèle %(k1)s ne contient aucun élément de joint ou d'interface.

@@ -38,86 +38,6 @@ POURSUITE(CODE='OUI')
 #######################################################################
 
 # ---------------------------------------------------------------------
-# 'S1_G: CHEMIN P1 P2, REPERE GLOBAL'
-
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    -0.23587599292759,
-           VALE_REFE=-0.235876,
-           NOM_PARA='SIXX',
-           TABLE=S1_G,
-           FILTRE=_F(CRITERE='ABSOLU',
-                     NOM_PARA='ABSC_CURV',
-                     VALE=0.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    1.8329810271484,
-           VALE_REFE=1.8329800000000001,
-           NOM_PARA='SIYY',
-           TABLE=S1_G,
-           FILTRE=_F(CRITERE='ABSOLU',
-                     NOM_PARA='ABSC_CURV',
-                     VALE=0.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.47913151026625,
-           VALE_REFE=0.479132,
-           NOM_PARA='SIZZ',
-           TABLE=S1_G,
-           FILTRE=_F(CRITERE='ABSOLU',
-                     NOM_PARA='ABSC_CURV',
-                     VALE=0.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    -0.081411280555806,
-           VALE_REFE=-0.081411300000000006,
-           NOM_PARA='SIXY',
-           TABLE=S1_G,
-           FILTRE=_F(CRITERE='ABSOLU',
-                     NOM_PARA='ABSC_CURV',
-                     VALE=0.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    -0.37749419007716,
-           VALE_REFE=-0.377494,
-           NOM_PARA='SIXX',
-           TABLE=S1_G,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.5,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.80470981928907,
-           VALE_REFE=0.80471000000000004,
-           NOM_PARA='SIYY',
-           TABLE=S1_G,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.5,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.12816468876357,
-           VALE_REFE=0.128165,
-           NOM_PARA='SIZZ',
-           TABLE=S1_G,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.5,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    -0.046520736746692,
-           VALE_REFE=-0.046520699999999998,
-           NOM_PARA='SIXY',
-           TABLE=S1_G,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.5,),
-           )
-
-# ---------------------------------------------------------------------
 # S1L_G: LISTE DE NOEUDS P1 P2, REPERE GLOBAL
 
 
@@ -197,85 +117,6 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
                      VALE=0.5,),
            )
 
-# ---------------------------------------------------------------------
-#  S1_L: CHEMIN P1 P2, REPERE LOCAL
-
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    -0.23587599292759,
-           VALE_REFE=-0.235876,
-           NOM_PARA='SIXX',
-           TABLE=S1_L,
-           FILTRE=_F(CRITERE='ABSOLU',
-                     NOM_PARA='ABSC_CURV',
-                     VALE=0.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    1.8329810271484,
-           VALE_REFE=1.8329800000000001,
-           NOM_PARA='SIYY',
-           TABLE=S1_L,
-           FILTRE=_F(CRITERE='ABSOLU',
-                     NOM_PARA='ABSC_CURV',
-                     VALE=0.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.47913151026625,
-           VALE_REFE=0.479132,
-           NOM_PARA='SIZZ',
-           TABLE=S1_L,
-           FILTRE=_F(CRITERE='ABSOLU',
-                     NOM_PARA='ABSC_CURV',
-                     VALE=0.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    -0.081411280555806,
-           VALE_REFE=-0.081411300000000006,
-           NOM_PARA='SIXY',
-           TABLE=S1_L,
-           FILTRE=_F(CRITERE='ABSOLU',
-                     NOM_PARA='ABSC_CURV',
-                     VALE=0.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    -0.37749419007716,
-           VALE_REFE=-0.377494,
-           NOM_PARA='SIXX',
-           TABLE=S1_L,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.5,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.80470981928907,
-           VALE_REFE=0.80471000000000004,
-           NOM_PARA='SIYY',
-           TABLE=S1_L,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.5,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.12816468876357,
-           VALE_REFE=0.128165,
-           NOM_PARA='SIZZ',
-           TABLE=S1_L,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.5,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    -0.046520736746692,
-           VALE_REFE=-0.046520699999999998,
-           NOM_PARA='SIXY',
-           TABLE=S1_L,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.5,),
-           )
 
 # ---------------------------------------------------------------------
 # S1L_L: LISTE DE NOEUDS P1 P2, REPERE LOCAL
@@ -357,85 +198,6 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
                      VALE=0.5,),
            )
 
-# ---------------------------------------------------------------------
-#  S1_U: CHEMIN P1 P2, REPERE UTILISATEUR, ANGL_NAUT: ( 0. 0. 0. )
-
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    -0.23587599292759,
-           VALE_REFE=-0.235876,
-           NOM_PARA='SIXX',
-           TABLE=S1_U,
-           FILTRE=_F(CRITERE='ABSOLU',
-                     NOM_PARA='ABSC_CURV',
-                     VALE=0.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    1.8329810271484,
-           VALE_REFE=1.8329800000000001,
-           NOM_PARA='SIYY',
-           TABLE=S1_U,
-           FILTRE=_F(CRITERE='ABSOLU',
-                     NOM_PARA='ABSC_CURV',
-                     VALE=0.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.47913151026625,
-           VALE_REFE=0.479132,
-           NOM_PARA='SIZZ',
-           TABLE=S1_U,
-           FILTRE=_F(CRITERE='ABSOLU',
-                     NOM_PARA='ABSC_CURV',
-                     VALE=0.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    -0.081411280555806,
-           VALE_REFE=-0.081411300000000006,
-           NOM_PARA='SIXY',
-           TABLE=S1_U,
-           FILTRE=_F(CRITERE='ABSOLU',
-                     NOM_PARA='ABSC_CURV',
-                     VALE=0.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    -0.37749419007716,
-           VALE_REFE=-0.377494,
-           NOM_PARA='SIXX',
-           TABLE=S1_U,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.5,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.80470981928907,
-           VALE_REFE=0.80471000000000004,
-           NOM_PARA='SIYY',
-           TABLE=S1_U,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.5,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.12816468876357,
-           VALE_REFE=0.128165,
-           NOM_PARA='SIZZ',
-           TABLE=S1_U,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.5,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    -0.046520736746692,
-           VALE_REFE=-0.046520699999999998,
-           NOM_PARA='SIXY',
-           TABLE=S1_U,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.5,),
-           )
 
 # ---------------------------------------------------------------------
 # S1L_U: LISTE DE NOEUDS P1 P2, REPERE UTILISAT, ANGL_NAUT: (0. 0. 0.)
@@ -515,247 +277,6 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
            TABLE=S1L_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
                      VALE=0.5,),
-           )
-
-# ---------------------------------------------------------------------
-#  S2_G: CHEMIN P4 P3, REPERE GLOBAL
-
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    -0.18661750467650,
-           VALE_REFE=-0.18661800000000001,
-           NOM_PARA='SIXX',
-           TABLE=S2_G,
-           FILTRE=_F(CRITERE='ABSOLU',
-                     NOM_PARA='ABSC_CURV',
-                     VALE=0.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.55226000405745,
-           VALE_REFE=0.55225999999999997,
-           NOM_PARA='SIYY',
-           TABLE=S2_G,
-           FILTRE=_F(CRITERE='ABSOLU',
-                     NOM_PARA='ABSC_CURV',
-                     VALE=0.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.10969274981428,
-           VALE_REFE=0.109693,
-           NOM_PARA='SIZZ',
-           TABLE=S2_G,
-           FILTRE=_F(CRITERE='ABSOLU',
-                     NOM_PARA='ABSC_CURV',
-                     VALE=0.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    -0.029075461370907,
-           VALE_REFE=-0.029075500000000001,
-           NOM_PARA='SIXY',
-           TABLE=S2_G,
-           FILTRE=_F(CRITERE='ABSOLU',
-                     NOM_PARA='ABSC_CURV',
-                     VALE=0.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    -0.034329401227899,
-           VALE_REFE=-0.034329400000000003,
-           NOM_PARA='SIXX',
-           TABLE=S2_G,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.94150900000000004,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.39997189664886,
-           VALE_REFE=0.39997199999999999,
-           NOM_PARA='SIYY',
-           TABLE=S2_G,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.94150900000000004,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.10969274862629,
-           VALE_REFE=0.109693,
-           NOM_PARA='SIZZ',
-           TABLE=S2_G,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.94150900000000004,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    -0.29888223364533,
-           VALE_REFE=-0.29888199999999998,
-           NOM_PARA='SIXY',
-           TABLE=S2_G,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.94150900000000004,),
-           )
-
-# ---------------------------------------------------------------------
-# S2L_G: LISTE DE NOEUDS P2 P3, REPERE GLOBAL
-
-
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    -0.18661750467650,
-           VALE_REFE=-0.18661800000000001,
-           NOM_PARA='SIXX',
-           TABLE=S2L_G,
-           FILTRE=_F(CRITERE='ABSOLU',
-                     NOM_PARA='ABSC_CURV',
-                     VALE=0.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.55226000405745,
-           VALE_REFE=0.55225999999999997,
-           NOM_PARA='SIYY',
-           TABLE=S2L_G,
-           FILTRE=_F(CRITERE='ABSOLU',
-                     NOM_PARA='ABSC_CURV',
-                     VALE=0.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.10969274981428,
-           VALE_REFE=0.109693,
-           NOM_PARA='SIZZ',
-           TABLE=S2L_G,
-           FILTRE=_F(CRITERE='ABSOLU',
-                     NOM_PARA='ABSC_CURV',
-                     VALE=0.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    -0.029075461370907,
-           VALE_REFE=-0.029075500000000001,
-           NOM_PARA='SIXY',
-           TABLE=S2L_G,
-           FILTRE=_F(CRITERE='ABSOLU',
-                     NOM_PARA='ABSC_CURV',
-                     VALE=0.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    -0.034329401227899,
-           VALE_REFE=-0.034329400000000003,
-           NOM_PARA='SIXX',
-           TABLE=S2L_G,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.94150900000000004,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.39997189664886,
-           VALE_REFE=0.39997199999999999,
-           NOM_PARA='SIYY',
-           TABLE=S2L_G,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.94150900000000004,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.10969274862629,
-           VALE_REFE=0.109693,
-           NOM_PARA='SIZZ',
-           TABLE=S2L_G,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.94150900000000004,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    -0.29888223364533,
-           VALE_REFE=-0.29888199999999998,
-           NOM_PARA='SIXY',
-           TABLE=S2L_G,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.94150900000000004,),
-           )
-
-# ---------------------------------------------------------------------
-#  S2_L: CHEMIN P2 P3, REPERE LOCAL
-
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.55226000412002,
-           VALE_REFE=0.55225999999999997,
-           NOM_PARA='SIXX',
-           TABLE=S2_L,
-           FILTRE=_F(CRITERE='ABSOLU',
-                     NOM_PARA='ABSC_CURV',
-                     VALE=0.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    -0.18661750473908,
-           VALE_REFE=-0.18661800000000001,
-           NOM_PARA='SIYY',
-           TABLE=S2_L,
-           FILTRE=_F(CRITERE='ABSOLU',
-                     NOM_PARA='ABSC_CURV',
-                     VALE=0.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.10969274981428,
-           VALE_REFE=0.109693,
-           NOM_PARA='SIZZ',
-           TABLE=S2_L,
-           FILTRE=_F(CRITERE='ABSOLU',
-                     NOM_PARA='ABSC_CURV',
-                     VALE=0.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    -0.029075460575798,
-           VALE_REFE=-0.029075500000000001,
-           NOM_PARA='SIXY',
-           TABLE=S2_L,
-           FILTRE=_F(CRITERE='ABSOLU',
-                     NOM_PARA='ABSC_CURV',
-                     VALE=0.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.54886038438686,
-           VALE_REFE=0.54886000000000001,
-           NOM_PARA='SIXX',
-           TABLE=S2_L,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.94150900000000004,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    -0.18546872196663,
-           VALE_REFE=-0.18546899999999999,
-           NOM_PARA='SIYY',
-           TABLE=S2_L,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.94150900000000004,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.10969274862629,
-           VALE_REFE=0.109693,
-           NOM_PARA='SIZZ',
-           TABLE=S2_L,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.94150900000000004,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    -1.401461294237E-09,
-           VALE_REFE=-1.40146E-09,
-           NOM_PARA='SIXY',
-           TABLE=S2_L,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.94150900000000004,),
            )
 
 # ---------------------------------------------------------------------
@@ -839,68 +360,6 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
            )
 
 # ---------------------------------------------------------------------
-#  S2_C: CHEMIN P2 P3, REPERE CYLINDRIQUE, ORIGINE: (0. 0. 0.),
-#                                          AXE_Z: (0. 0. 1.)
-
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    -0.18661750467650,
-           VALE_REFE=-0.18661800000000001,
-           NOM_PARA='SIXX',
-           TABLE=S2_C,
-           FILTRE=_F(CRITERE='ABSOLU',
-                     NOM_PARA='ABSC_CURV',
-                     VALE=0.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.10969274981428,
-           VALE_REFE=0.109693,
-           NOM_PARA='SIYY',
-           TABLE=S2_C,
-           FILTRE=_F(CRITERE='ABSOLU',
-                     NOM_PARA='ABSC_CURV',
-                     VALE=0.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.55226000405745,
-           VALE_REFE=0.55225999999999997,
-           NOM_PARA='SIZZ',
-           TABLE=S2_C,
-           FILTRE=_F(CRITERE='ABSOLU',
-                     NOM_PARA='ABSC_CURV',
-                     VALE=0.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    -0.18661750759705,
-           VALE_REFE=-0.18661800000000001,
-           NOM_PARA='SIXX',
-           TABLE=S2_C,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.94150900000000004,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.10969274862629,
-           VALE_REFE=0.109693,
-           NOM_PARA='SIYY',
-           TABLE=S2_C,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.94150900000000004,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.55226000301801,
-           VALE_REFE=0.55225999999999997,
-           NOM_PARA='SIZZ',
-           TABLE=S2_C,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.94150900000000004,),
-           )
-
-# ---------------------------------------------------------------------
 # S2L_C: CHEMIN P2 P3, REPERE CYLINDRIQUE, ORIGINE: (0. 0. 0.),
 #                                          AXE_Z: (0. 0. 1.)
 
@@ -958,86 +417,6 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
            VALE_REFE=0.55225999999999997,
            NOM_PARA='SIZZ',
            TABLE=S2L_C,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.94150900000000004,),
-           )
-
-# ---------------------------------------------------------------------
-#  S2_P: CHEMIN P2 P3, REPERE POLAIRE
-
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    -0.18661750467650,
-           VALE_REFE=-0.18661800000000001,
-           NOM_PARA='SIXX',
-           TABLE=S2_P,
-           FILTRE=_F(CRITERE='ABSOLU',
-                     NOM_PARA='ABSC_CURV',
-                     VALE=0.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.55226000405745,
-           VALE_REFE=0.55225999999999997,
-           NOM_PARA='SIYY',
-           TABLE=S2_P,
-           FILTRE=_F(CRITERE='ABSOLU',
-                     NOM_PARA='ABSC_CURV',
-                     VALE=0.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.10969274981428,
-           VALE_REFE=0.109693,
-           NOM_PARA='SIZZ',
-           TABLE=S2_P,
-           FILTRE=_F(CRITERE='ABSOLU',
-                     NOM_PARA='ABSC_CURV',
-                     VALE=0.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.029075461370907,
-           VALE_REFE=0.029075500000000001,
-           NOM_PARA='SIXY',
-           TABLE=S2_P,
-           FILTRE=_F(CRITERE='ABSOLU',
-                     NOM_PARA='ABSC_CURV',
-                     VALE=0.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    -0.18661750759705,
-           VALE_REFE=-0.18661800000000001,
-           NOM_PARA='SIXX',
-           TABLE=S2_P,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.94150900000000004,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.55226000301801,
-           VALE_REFE=0.55225999999999997,
-           NOM_PARA='SIYY',
-           TABLE=S2_P,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.94150900000000004,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.10969274862629,
-           VALE_REFE=0.109693,
-           NOM_PARA='SIZZ',
-           TABLE=S2_P,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.94150900000000004,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    -1.4101412537659E-09,
-           VALE_REFE=-1.4101400000000001E-09,
-           NOM_PARA='SIXY',
-           TABLE=S2_P,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
                      VALE=0.94150900000000004,),
            )
@@ -1123,82 +502,6 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
            )
 
 # ---------------------------------------------------------------------
-#  S3_G: CHEMIN P4 P3, REPERE GLOBAL
-
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.16708707221489,
-           VALE_REFE=0.16708700000000001,
-           NOM_PARA='SIXX',
-           TABLE=S3_G,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.5,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.26012854196525,
-           VALE_REFE=0.260129,
-           NOM_PARA='SIYY',
-           TABLE=S3_G,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.5,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.12816468425404,
-           VALE_REFE=0.128165,
-           NOM_PARA='SIZZ',
-           TABLE=S3_G,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.5,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    -0.59110201102411,
-           VALE_REFE=-0.59110200000000002,
-           NOM_PARA='SIXY',
-           TABLE=S3_G,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.5,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.15374578750129,
-           VALE_REFE=0.15374599999999999,
-           NOM_PARA='SIXX',
-           TABLE=S3_G,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=1.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.21189670438860,
-           VALE_REFE=0.211897,
-           NOM_PARA='SIYY',
-           TABLE=S3_G,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=1.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.10969274756697,
-           VALE_REFE=0.109693,
-           NOM_PARA='SIZZ',
-           TABLE=S3_G,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=1.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    -0.36943875519299,
-           VALE_REFE=-0.36943900000000002,
-           NOM_PARA='SIXY',
-           TABLE=S3_G,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=1.0,),
-           )
-
-# ---------------------------------------------------------------------
 # S3L_G: LISTE DE NOEUDS P4 P3, REPERE GLOBAL
 
 
@@ -1270,82 +573,6 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
            VALE_REFE=-0.36943900000000002,
            NOM_PARA='SIXY',
            TABLE=S3L_G,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=1.0,),
-           )
-
-# ---------------------------------------------------------------------
-#  S3_L: CHEMIN P4 P3, REPERE LOCAL
-
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    -0.37749420393404,
-           VALE_REFE=-0.377494,
-           NOM_PARA='SIXX',
-           TABLE=S3_L,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.5,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.80470981811419,
-           VALE_REFE=0.80471000000000004,
-           NOM_PARA='SIYY',
-           TABLE=S3_L,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.5,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.12816468425404,
-           VALE_REFE=0.128165,
-           NOM_PARA='SIZZ',
-           TABLE=S3_L,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.5,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.046520734875179,
-           VALE_REFE=0.046520699999999998,
-           NOM_PARA='SIXY',
-           TABLE=S3_L,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.5,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    -0.18661750924805,
-           VALE_REFE=-0.18661800000000001,
-           NOM_PARA='SIXX',
-           TABLE=S3_L,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=1.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.55226000113793,
-           VALE_REFE=0.55225999999999997,
-           NOM_PARA='SIYY',
-           TABLE=S3_L,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=1.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.10969274756697,
-           VALE_REFE=0.109693,
-           NOM_PARA='SIZZ',
-           TABLE=S3_L,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=1.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.029075458443655,
-           VALE_REFE=0.029075500000000001,
-           NOM_PARA='SIXY',
-           TABLE=S3_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
                      VALE=1.0,),
            )
@@ -1427,82 +654,6 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
            )
 
 # ---------------------------------------------------------------------
-#  S3_U: CHEMIN P4 P3, REPERE UTILISATEUR, ANGL_NAUT: (90. 0. 0.)
-
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    -0.37749420393404,
-           VALE_REFE=-0.377494,
-           NOM_PARA='SIXX',
-           TABLE=S3_U,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.5,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.80470981811419,
-           VALE_REFE=0.80471000000000004,
-           NOM_PARA='SIYY',
-           TABLE=S3_U,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.5,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.12816468425404,
-           VALE_REFE=0.128165,
-           NOM_PARA='SIZZ',
-           TABLE=S3_U,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.5,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.046520734875179,
-           VALE_REFE=0.046520699999999998,
-           NOM_PARA='SIXY',
-           TABLE=S3_U,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.5,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    -0.18661750924805,
-           VALE_REFE=-0.18661800000000001,
-           NOM_PARA='SIXX',
-           TABLE=S3_U,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=1.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.55226000113793,
-           VALE_REFE=0.55225999999999997,
-           NOM_PARA='SIYY',
-           TABLE=S3_U,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=1.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.10969274756697,
-           VALE_REFE=0.109693,
-           NOM_PARA='SIZZ',
-           TABLE=S3_U,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=1.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.029075458443655,
-           VALE_REFE=0.029075500000000001,
-           NOM_PARA='SIXY',
-           TABLE=S3_U,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=1.0,),
-           )
-
-# ---------------------------------------------------------------------
 # S3L_U: LISTE DE NOEUDS P4 P3, REPERE UTILISAT, ANGL_NAUT: (90. 0. 0.)
 
 
@@ -1579,50 +730,6 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
            )
 
 # ---------------------------------------------------------------------
-#  D1_G: CHEMIN P1 P2, REPERE GLOBAL
-
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    1.3699582143031E-07,
-           VALE_REFE=1.3699599999999999E-07,
-           NOM_PARA='DX',
-           TABLE=D1_G,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.5,),
-           )
-
-TEST_TABLE(CRITERE='ABSOLU',
-           REFERENCE='AUTRE_ASTER',
-           PRECISION=1.E-10,
-           VALE_CALC=    3.295797753141E-24,
-           VALE_REFE=0.0,
-           NOM_PARA='DY',
-           TABLE=D1_G,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.5,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    1.177356548885E-07,
-           VALE_REFE=1.17736E-07,
-           NOM_PARA='DX',
-           TABLE=D1_G,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=1.0,),
-           )
-
-TEST_TABLE(CRITERE='ABSOLU',
-           REFERENCE='AUTRE_ASTER',
-           PRECISION=1.E-10,
-           VALE_CALC=    8.2718061255303E-25,
-           VALE_REFE=0.0,
-           NOM_PARA='DY',
-           TABLE=D1_G,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=1.0,),
-           )
-
-# ---------------------------------------------------------------------
 # D1L_G: LISTE DE NOEUDS P1 P2, REPERE GLOBAL
 
 
@@ -1662,50 +769,6 @@ TEST_TABLE(CRITERE='ABSOLU',
            VALE_REFE=0.0,
            NOM_PARA='DY',
            TABLE=D1L_G,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=1.0,),
-           )
-
-# ---------------------------------------------------------------------
-#  D1_L: CHEMIN P1 P2, REPERE LOCAL
-
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    1.3699582143031E-07,
-           VALE_REFE=1.3699599999999999E-07,
-           NOM_PARA='DX',
-           TABLE=D1_L,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.5,),
-           )
-
-TEST_TABLE(CRITERE='ABSOLU',
-           REFERENCE='AUTRE_ASTER',
-           PRECISION=1.E-10,
-           VALE_CALC=    3.295797753141E-24,
-           VALE_REFE=0.0,
-           NOM_PARA='DY',
-           TABLE=D1_L,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.5,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    1.177356548885E-07,
-           VALE_REFE=1.17736E-07,
-           NOM_PARA='DX',
-           TABLE=D1_L,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=1.0,),
-           )
-
-TEST_TABLE(CRITERE='ABSOLU',
-           REFERENCE='AUTRE_ASTER',
-           PRECISION=1.E-10,
-           VALE_CALC=    8.2718061255303E-25,
-           VALE_REFE=0.0,
-           NOM_PARA='DY',
-           TABLE=D1_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
                      VALE=1.0,),
            )
@@ -1755,50 +818,6 @@ TEST_TABLE(CRITERE='ABSOLU',
            )
 
 # ---------------------------------------------------------------------
-#  D1_U: CHEMIN P1 P2, REPERE UTILISATEUR, ANGL_NAUT: ( 0. 0. 0. )
-
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    1.3699582143031E-07,
-           VALE_REFE=1.3699599999999999E-07,
-           NOM_PARA='DX',
-           TABLE=D1_U,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.5,),
-           )
-
-TEST_TABLE(CRITERE='ABSOLU',
-           REFERENCE='AUTRE_ASTER',
-           PRECISION=1.E-10,
-           VALE_CALC=    3.295797753141E-24,
-           VALE_REFE=0.0,
-           NOM_PARA='DY',
-           TABLE=D1_U,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.5,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    1.177356548885E-07,
-           VALE_REFE=1.17736E-07,
-           NOM_PARA='DX',
-           TABLE=D1_U,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=1.0,),
-           )
-
-TEST_TABLE(CRITERE='ABSOLU',
-           REFERENCE='AUTRE_ASTER',
-           PRECISION=1.E-10,
-           VALE_CALC=    8.2718061255303E-25,
-           VALE_REFE=0.0,
-           NOM_PARA='DY',
-           TABLE=D1_U,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=1.0,),
-           )
-
-# ---------------------------------------------------------------------
 # D1L_U: LISTE DE NOEUDS P1 P2, REPERE UTILISAT, ANGL_NAUT: (0. 0. 0.)
 
 
@@ -1842,28 +861,7 @@ TEST_TABLE(CRITERE='ABSOLU',
                      VALE=1.0,),
            )
 
-# ---------------------------------------------------------------------
-#  D2_G: CHEMIN P2 P3, REPERE GLOBAL
-
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    1.177356548885E-07,
-           VALE_REFE=1.17736E-07,
-           NOM_PARA='DX',
-           TABLE=D2_G,
-           FILTRE=_F(CRITERE='ABSOLU',
-                     NOM_PARA='ABSC_CURV',
-                     VALE=0.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    1.0490323622728E-07,
-           VALE_REFE=1.04903E-07,
-           NOM_PARA='DX',
-           TABLE=D2_G,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.94150900000000004,),
-           )
+           
 
 # ---------------------------------------------------------------------
 # D2L_G: LISTE DE NOEUDS P2 P3, REPERE GLOBAL
@@ -1885,29 +883,6 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
            VALE_REFE=1.04903E-07,
            NOM_PARA='DX',
            TABLE=D2L_G,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.94150900000000004,),
-           )
-
-# ---------------------------------------------------------------------
-#  D2_L: CHEMIN P2 P3, REPERE LOCAL
-
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    -1.1737271514596E-07,
-           VALE_REFE=-1.17373E-07,
-           NOM_PARA='DY',
-           TABLE=D2_L,
-           FILTRE=_F(CRITERE='ABSOLU',
-                     NOM_PARA='ABSC_CURV',
-                     VALE=0.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    -1.1737271512619E-07,
-           VALE_REFE=-1.17373E-07,
-           NOM_PARA='DY',
-           TABLE=D2_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
                      VALE=0.94150900000000004,),
            )
@@ -1935,29 +910,6 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
                      VALE=0.94150900000000004,),
            )
 
-# ---------------------------------------------------------------------
-#  D2_C: CHEMIN P2 P3, REPERE CYLINDRIQUE, ORIGINE: (0. 0. 0.),
-#                                          AXE_Z: (0. 0. 1.)
-
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    1.177356548885E-07,
-           VALE_REFE=1.17736E-07,
-           NOM_PARA='DX',
-           TABLE=D2_C,
-           FILTRE=_F(CRITERE='ABSOLU',
-                     NOM_PARA='ABSC_CURV',
-                     VALE=0.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    1.1773565486867E-07,
-           VALE_REFE=1.17736E-07,
-           NOM_PARA='DX',
-           TABLE=D2_C,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.94150900000000004,),
-           )
 
 # ---------------------------------------------------------------------
 #  D2L_C: LISTE DE NOEUDS, REPERE CYLINDRIQUE, ORIGINE: (0. 0. 0.),
@@ -1983,28 +935,6 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
                      VALE=0.94150900000000004,),
            )
 
-# ---------------------------------------------------------------------
-#  D2_P: CHEMIN P2 P3, REPERE POLAIRE
-
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    1.177356548885E-07,
-           VALE_REFE=1.17736E-07,
-           NOM_PARA='DX',
-           TABLE=D2_P,
-           FILTRE=_F(CRITERE='ABSOLU',
-                     NOM_PARA='ABSC_CURV',
-                     VALE=0.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    1.1773565486867E-07,
-           VALE_REFE=1.17736E-07,
-           NOM_PARA='DX',
-           TABLE=D2_P,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.94150900000000004,),
-           )
 
 # ---------------------------------------------------------------------
 # D2L_P: LISTE DE NOEUDS P2 P3, REPERE POLAIRE
@@ -2030,45 +960,6 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
                      VALE=0.94150900000000004,),
            )
 
-# ---------------------------------------------------------------------
-#  D3_G: CHEMIN P4 P3, REPERE GLOBAL
-
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    9.6870674388759E-08,
-           VALE_REFE=9.6870700000000005E-08,
-           NOM_PARA='DX',
-           TABLE=D3_G,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.5,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    9.6870674388759E-08,
-           VALE_REFE=9.6870700000000005E-08,
-           NOM_PARA='DY',
-           TABLE=D3_G,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.5,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    8.325167991331E-08,
-           VALE_REFE=8.3251699999999994E-08,
-           NOM_PARA='DX',
-           TABLE=D3_G,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=1.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    8.325167991331E-08,
-           VALE_REFE=8.3251699999999994E-08,
-           NOM_PARA='DY',
-           TABLE=D3_G,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=1.0,),
-           )
 
 # ---------------------------------------------------------------------
 # D3L_G: LISTE DE NOEUDS P4 P3, REPERE GLOBAL
@@ -2110,37 +1001,6 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
                      VALE=1.0,),
            )
 
-# ---------------------------------------------------------------------
-# D3_L: CHEMIN P4 P3, REPERE LOCAL
-
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    1.8347131028857E-07,
-           VALE_REFE=1.8347099999999999E-07,
-           NOM_PARA='DX',
-           TABLE=D3_L,
-           FILTRE=_F(CRITERE='ABSOLU',
-                     NOM_PARA='ABSC_CURV',
-                     VALE=0.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    1.3699582151681E-07,
-           VALE_REFE=1.3699599999999999E-07,
-           NOM_PARA='DX',
-           TABLE=D3_L,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.5,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    1.1773565482375E-07,
-           VALE_REFE=1.17736E-07,
-           NOM_PARA='DX',
-           TABLE=D3_L,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=1.0,),
-           )
 
 # ---------------------------------------------------------------------
 # D3L_L: LISTE DE NOEUDS P4 P3, REPERE LOCAL
@@ -2174,37 +1034,6 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
                      VALE=1.0,),
            )
 
-# ---------------------------------------------------------------------
-#  D3_U: CHEMIN P4 P3, REPERE UTILISATEUR, ANGL_NAUT: ( 45. 0. 0. )
-
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    1.8347131028857E-07,
-           VALE_REFE=1.8347099999999999E-07,
-           NOM_PARA='DX',
-           TABLE=D3_U,
-           FILTRE=_F(CRITERE='ABSOLU',
-                     NOM_PARA='ABSC_CURV',
-                     VALE=0.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    1.3699582151681E-07,
-           VALE_REFE=1.3699599999999999E-07,
-           NOM_PARA='DX',
-           TABLE=D3_U,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.5,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    1.1773565482375E-07,
-           VALE_REFE=1.17736E-07,
-           NOM_PARA='DX',
-           TABLE=D3_U,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=1.0,),
-           )
 
 # ---------------------------------------------------------------------
 # D3L_U: LISTE DE NOEUDS P4 P3, REPERE UTILISAT, ANGL_NAUT: (45. 0. 0.)
@@ -2239,30 +1068,6 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
            )
 
 # ---------------------------------------------------------------------
-# S1_TN: CHEMIN P1 P2, TRAC_NOR
-
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    -0.081411280555806,
-           VALE_REFE=-0.081411300000000006,
-           NOM_PARA='TR_NOR_1',
-           TABLE=S1_TN,
-           FILTRE=_F(CRITERE='ABSOLU',
-                     NOM_PARA='ABSC_CURV',
-                     VALE=0.0,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    1.8329810271484,
-           VALE_REFE=1.8329800000000001,
-           NOM_PARA='TR_NOR_2',
-           TABLE=S1_TN,
-           FILTRE=_F(CRITERE='ABSOLU',
-                     NOM_PARA='ABSC_CURV',
-                     VALE=0.0,),
-           )
-
-# ---------------------------------------------------------------------
 # S1L_TN: LISTE DE NOEUDS P1 P2, TRAC_NOR
 
 
@@ -2287,28 +1092,6 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
            )
 
 # ---------------------------------------------------------------------
-# S1_TDX: CHEMIN  P1 P2, TRAC_DIR, DIRECTION: (1. 0. 0.)
-
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    -0.37749419007716,
-           VALE_REFE=-0.377494,
-           NOM_PARA='TR_DIR_1',
-           TABLE=S1_TDX,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.5,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    -0.046520736746692,
-           VALE_REFE=-0.046520699999999998,
-           NOM_PARA='TR_DIR_2',
-           TABLE=S1_TDX,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.5,),
-           )
-
-# ---------------------------------------------------------------------
 # S1L_TDX: LISTE DE NOEUDS P1 P2, TRAC_DIR, DIRECTION: (1. 0. 0.)
 
 
@@ -2330,27 +1113,6 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
                      VALE=0.5,),
            )
 
-# ---------------------------------------------------------------------
-# S1_TDY: CHEMIN P1 P2, TRAC_DIR, DIRECTION: (0. 1. 0.)
-
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    -0.046520736746692,
-           VALE_REFE=-0.046520699999999998,
-           NOM_PARA='TR_DIR_1',
-           TABLE=S1_TDY,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.5,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.80470981928907,
-           VALE_REFE=0.80471000000000004,
-           NOM_PARA='TR_DIR_2',
-           TABLE=S1_TDY,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.5,),
-           )
 
 # ---------------------------------------------------------------------
 # S1L_TDY: LISTE DE NOEUDS P1 P2, TRAC_DIR, DIRECTION: (0. 1. 0.)
@@ -2375,28 +1137,6 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
            )
 
 # ---------------------------------------------------------------------
-# S1_TDXY: CHEMIN P1 P2, TRAC_DIR, DIRECTION: (1. 1. 0.)
-
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    -0.42401492682385,
-           VALE_REFE=-0.42401499999999998,
-           NOM_PARA='TR_DIR_1',
-           TABLE=S1_TDXY,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.5,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    0.75818908254238,
-           VALE_REFE=0.758189,
-           NOM_PARA='TR_DIR_2',
-           TABLE=S1_TDXY,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.5,),
-           )
-
-# ---------------------------------------------------------------------
 # S1L_TDXY: LISTE DE NOEUDS P1 P2, TRAC_DIR, DIRECTION: (1. 1. 0.)
 
 
@@ -2414,31 +1154,6 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
            VALE_REFE=0.758189,
            NOM_PARA='TR_DIR_2',
            TABLE=S1L_TDXY,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.5,),
-           )
-
-# ---------------------------------------------------------------------
-# D1_TDX: CHEMIN P1 P2, TRAC_DIR, DIRECTION: (1. 0. 0.)
-
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    1.3699582143031E-07,
-           VALE_REFE=1.3699599999999999E-07,
-           NOM_PARA='TRAC_DIR',
-           TABLE=D1_TDX,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.5,),
-           )
-
-# ---------------------------------------------------------------------
-# D1L_TDX: LISTE DE NOEUDS P1 P2, TRAC_DIR, DIRECTION: (1. 0. 0.)
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    1.3699582143031E-07,
-           VALE_REFE=1.3699599999999999E-07,
-           NOM_PARA='TRAC_DIR',
-           TABLE=D1L_TDX,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
                      VALE=0.5,),
            )
@@ -3392,50 +2107,6 @@ TEST_TABLE(CRITERE='ABSOLU',
            VALE_REFE=0.0,
            NOM_PARA='DY',
            TABLE=N1_G,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=1.0,),
-           )
-
-# ---------------------------------------------------------------------
-#  N1_L: LISTE DE NOEUDS P1 P2, REPERE LOCAL
-
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    1.3699582143031E-07,
-           VALE_REFE=1.3699599999999999E-07,
-           NOM_PARA='DX',
-           TABLE=D1_L,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.5,),
-           )
-
-TEST_TABLE(CRITERE='ABSOLU',
-           REFERENCE='AUTRE_ASTER',
-           PRECISION=1.E-10,
-           VALE_CALC=    3.295797753141E-24,
-           VALE_REFE=0.0,
-           NOM_PARA='DY',
-           TABLE=D1_L,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.5,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=    1.177356548885E-07,
-           VALE_REFE=1.17736E-07,
-           NOM_PARA='DX',
-           TABLE=D1_L,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=1.0,),
-           )
-
-TEST_TABLE(CRITERE='ABSOLU',
-           REFERENCE='AUTRE_ASTER',
-           PRECISION=1.E-10,
-           VALE_CALC=    8.2718061255303E-25,
-           VALE_REFE=0.0,
-           NOM_PARA='DY',
-           TABLE=D1_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
                      VALE=1.0,),
            )

@@ -10,7 +10,6 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/i2fnoe.h"
 #include "asterfort/i2trgi.h"
 #include "asterfort/jecreo.h"
 #include "asterfort/jedema.h"
@@ -23,7 +22,6 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/reliem.h"
-#include "asterfort/rvfmai.h"
 #include "asterfort/rvgnoe.h"
 #include "asterfort/utmach.h"
 #include "asterfort/utmess.h"
@@ -79,12 +77,12 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
 !  VARIABLES LOCALES
 !  -----------------
     integer :: adr,  acncin, alsmac, alsnac, acmp, adrvlc, arepe
-    integer :: nbtma, nbm, nbmac, nbnac, nbcrb, nbmalu
+    integer :: nbtma, nbm, nbmac, nbnac, nbmalu
     integer :: i, in, n, m, libre, n1, ibid, igrel, jnuma, j
     integer :: ibib, imolo,  n2, kk, ier, nbvari, nbr
     integer :: ii, jmmail, nbtrou, nbcmp, nbcmp1, nc, jcmp, jcmp1, ntc
     character(len=4) :: docu
-    character(len=8) :: nmaila, courbe, nomgd, resuco, nomvar, num
+    character(len=8) :: nmaila, nomgd, resuco, nomvar, num
     character(len=15) :: nconec
     character(len=16) :: motcle(2), typmcl(2), nchsym
     character(len=19) :: nchp19
@@ -99,12 +97,6 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
     call jeveuo(jexnum(lstcmp, iocc), 'L', acmp)
     malist = '&&RVOUEX_MALIST'
 !
-    call getvid(mcf, 'CHEMIN', iocc=iocc, nbval=0, nbret=nbcrb)
-    nbcrb = -nbcrb
-    if (nbcrb .ne. 0) then
-        call getvid(mcf, 'CHEMIN', iocc=iocc, nbval=nbcrb, vect=courbe,&
-                    nbret=ibib)
-    endif
 !
     nchp19 = nchpt
     iret = 1
@@ -140,7 +132,7 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
         jmmail = 1
 !
         call getvtx(mcf, 'NOM_CMP', iocc=iocc, nbval=0, nbret=nc)
-        if (nc .lt. 0 .and. nbcrb .eq. 0) then
+        if (nc .lt. 0) then
             nbcmp = -nc
             call wkvect('&&RVOUEX.NOM_CMP', 'V V K8', nbcmp, jcmp)
             call getvtx(mcf, 'NOM_CMP', iocc=iocc, nbval=nbcmp, vect=zk8(jcmp),&
@@ -184,7 +176,7 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
         endif
 !
         call getvtx(mcf, 'TOUT_CMP', iocc=iocc, nbval=0, nbret=ntc)
-        if (ntc .lt. 0 .and. nbcrb .eq. 0) then
+        if (ntc .lt. 0) then
             nomobj = '&&RVOUEX.NOMCMP.USER'
             call utncmp(nchp19, nbcmp, nomobj)
             call jeveuo(nomobj, 'L', jcmp)
@@ -200,100 +192,93 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
             nrepe = zk24(adr)(1:19)//'.REPE'
             call jeveuo(nrepe, 'L', arepe)
 !
-            if (nbcrb .ne. 0) then
+            call rvgnoe(mcf, iocc, nmaila, lstnac, 0,&
+                        [ibid])
 !
-                call rvfmai(courbe, lstmac)
+            call getvtx(mcf, 'GROUP_MA', iocc=iocc, nbval=0, nbret=n1)
+            call getvtx(mcf, 'MAILLE', iocc=iocc, nbval=0, nbret=n2)
+            if ((n1+n2) .eq. 0) then
+                nbmalu = 0
+            else
+                lismai = '&&RVOUEX.NUME_MAIL'
+                motcle(1) = 'GROUP_MA'
+                motcle(2) = 'MAILLE'
+                typmcl(1) = 'GROUP_MA'
+                typmcl(2) = 'MAILLE'
+                call reliem(' ', nmaila, 'NU_MAILLE', mcf, iocc,&
+                            2, motcle, typmcl, lismai, nbmalu)
+                call jeveuo(lismai, 'L', jnuma)
+            endif
+!
+            call jeexin(ncncin, n2)
+            if (n2 .eq. 0) call cncinv(nmaila, [ibid], 0, 'V', ncncin)
+!
+            call jelira(lstnac, 'LONMAX', nbnac)
+            call jeveuo(lstnac, 'L', alsnac)
+!
+            call jecreo('&&RVOUEX.LISTE.ENTIER', 'V V I')
+            call jeecra('&&RVOUEX.LISTE.ENTIER', 'LONMAX', nbtma)
+            call jeveuo('&&RVOUEX.LISTE.ENTIER', 'E', vi=entier)
+!
+            libre = 1
+            call jeveuo(jexatr(ncncin, 'LONCUM'), 'L', adrvlc)
+            call jeveuo(jexnum(ncncin, 1), 'L', acncin)
+!
+            do in = 1, nbnac, 1
+                n = zi(alsnac + in-1)
+                nbm = zi(adrvlc + n+1-1) - zi(adrvlc + n-1)
+                adr = zi(adrvlc + n-1)
+!
+                call i2trgi(entier, zi(acncin + adr-1), nbm, libre)
+!
+            end do
+!
+            nbmac = libre - 1
+            libre = 1
+!
+            call jeveuo(nchp19//'.CELD', 'L', vi=celd)
+!
+            do i = 1, nbmac, 1
+                m = entier(i)
+                if (nbtrou .ne. 0) then
+                    do ii = 1, nbtrou
+                        if (m .eq. zi(jmmail+ii-1)) goto 114
+                    end do
+                    goto 110
+114                 continue
+                endif
+                if (m .ne. 0) then
+                    if (nbmalu .ne. 0) then
+                        do j = 1, nbmalu, 1
+                            if (m .eq. zi(jnuma+j-1)) goto 404
+                        end do
+                        goto 110
+404                     continue
+                    endif
+                    igrel = zi(arepe + 2*(m-1))
+                    imolo=celd(celd(4+igrel) +2)
+                    if (igrel .ne. 0 .and. imolo .gt. 0) then
+                        entier(libre) = entier(i)
+                        libre = libre + 1
+                    endif
+                endif
+110             continue
+            end do
+!
+            nbmac = libre - 1
+!
+            if (nbmac .gt. 0) then
+!
+                call wkvect(lstmac, 'V V I', nbmac, alsmac)
+!
+                do i = 1, nbmac, 1
+                    zi(alsmac + i-1) = entier(i)
+                end do
 !
             else
 !
-                call rvgnoe(mcf, iocc, nmaila, lstnac, 0,&
-                            [ibid])
+                iret = 0
 !
-                call getvtx(mcf, 'GROUP_MA', iocc=iocc, nbval=0, nbret=n1)
-                call getvtx(mcf, 'MAILLE', iocc=iocc, nbval=0, nbret=n2)
-                if ((n1+n2) .eq. 0) then
-                    nbmalu = 0
-                else
-                    lismai = '&&RVOUEX.NUME_MAIL'
-                    motcle(1) = 'GROUP_MA'
-                    motcle(2) = 'MAILLE'
-                    typmcl(1) = 'GROUP_MA'
-                    typmcl(2) = 'MAILLE'
-                    call reliem(' ', nmaila, 'NU_MAILLE', mcf, iocc,&
-                                2, motcle, typmcl, lismai, nbmalu)
-                    call jeveuo(lismai, 'L', jnuma)
-                endif
-!
-                call jeexin(ncncin, n2)
-                if (n2 .eq. 0) call cncinv(nmaila, [ibid], 0, 'V', ncncin)
-!
-                call jelira(lstnac, 'LONMAX', nbnac)
-                call jeveuo(lstnac, 'L', alsnac)
-!
-                call jecreo('&&RVOUEX.LISTE.ENTIER', 'V V I')
-                call jeecra('&&RVOUEX.LISTE.ENTIER', 'LONMAX', nbtma)
-                call jeveuo('&&RVOUEX.LISTE.ENTIER', 'E', vi=entier)
-!
-                libre = 1
-                call jeveuo(jexatr(ncncin, 'LONCUM'), 'L', adrvlc)
-                call jeveuo(jexnum(ncncin, 1), 'L', acncin)
-!
-                do in = 1, nbnac, 1
-                    n = zi(alsnac + in-1)
-                    nbm = zi(adrvlc + n+1-1) - zi(adrvlc + n-1)
-                    adr = zi(adrvlc + n-1)
-!
-                    call i2trgi(entier, zi(acncin + adr-1), nbm, libre)
-!
-                end do
-!
-                nbmac = libre - 1
-                libre = 1
-!
-                call jeveuo(nchp19//'.CELD', 'L', vi=celd)
-!
-                do i = 1, nbmac, 1
-                    m = entier(i)
-                    if (nbtrou .ne. 0) then
-                        do ii = 1, nbtrou
-                            if (m .eq. zi(jmmail+ii-1)) goto 114
-                        end do
-                        goto 110
-114                     continue
-                    endif
-                    if (m .ne. 0) then
-                        if (nbmalu .ne. 0) then
-                            do j = 1, nbmalu, 1
-                                if (m .eq. zi(jnuma+j-1)) goto 404
-                            end do
-                            goto 110
-404                         continue
-                        endif
-                        igrel = zi(arepe + 2*(m-1))
-                        imolo=celd(celd(4+igrel) +2)
-                        if (igrel .ne. 0 .and. imolo .gt. 0) then
-                            entier(libre) = entier(i)
-                            libre = libre + 1
-                        endif
-                    endif
-110                 continue
-                end do
-!
-                nbmac = libre - 1
-!
-                if (nbmac .gt. 0) then
-!
-                    call wkvect(lstmac, 'V V I', nbmac, alsmac)
-!
-                    do i = 1, nbmac, 1
-                        zi(alsmac + i-1) = entier(i)
-                    end do
-!
-                else
-!
-                    iret = 0
-!
-                endif
             endif
 !
             call jedetr('&&RVOUEX.LISTE.ENTIER')
@@ -302,16 +287,9 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
         else
 !             ----------------
 !
-            if (nbcrb .ne. 0) then
 !
-                call i2fnoe(courbe, lstnac)
-!
-            else
-!
-                call rvgnoe(mcf, iocc, nmaila, lstnac, nbtrou,&
+            call rvgnoe(mcf, iocc, nmaila, lstnac, nbtrou,&
                             zi(jmmail))
-!
-            endif
 !
         endif
 !

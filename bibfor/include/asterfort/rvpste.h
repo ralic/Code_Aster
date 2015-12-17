@@ -15,12 +15,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine rvpste(dim, lieu, ssch19, nomsd, typaff)
-        character(len=2) :: dim
-        character(len=24) :: lieu
-        character(len=19) :: ssch19
-        character(len=24) :: nomsd
-        character(len=1) :: typaff
-    end subroutine rvpste
-end interface
+          interface 
+            subroutine rvpste(lieu,ssch19,nomsd,typaff)
+              character(len=24) :: lieu
+              character(len=19) :: ssch19
+              character(len=24) :: nomsd
+              character(len=1) :: typaff
+            end subroutine rvpste
+          end interface 

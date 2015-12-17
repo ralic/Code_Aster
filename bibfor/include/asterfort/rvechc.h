@@ -15,14 +15,10 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine rvechc(dim, ssch19, sdlieu, sdeval, nbndf,&
-                      clocf)
-        character(len=2) :: dim
-        character(len=19) :: ssch19
-        character(len=19) :: sdlieu
-        character(len=19) :: sdeval
-        integer :: nbndf(6, *)
-        integer :: clocf(6, 4, *)
-    end subroutine rvechc
-end interface
+          interface 
+            subroutine rvechc(ssch19,sdlieu,sdeval)
+              character(len=19) :: ssch19
+              character(len=19) :: sdlieu
+              character(len=19) :: sdeval
+            end subroutine rvechc
+          end interface 

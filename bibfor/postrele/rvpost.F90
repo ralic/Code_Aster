@@ -71,7 +71,7 @@ subroutine rvpost(mcf, iocc, dim, i1, i2,&
 !
     integer :: gd, i, idir, niv, iret, isd, jcmpcd, jcmpnc, jdir, jlsmac
     integer :: jlsnac, jnomcp, jsdev, jsdli, jvec1, jvec2, n, n0, n1, n2, n3
-    integer :: nbcac, nbcpn, nbcrb, nbmac, nbnac, nboper, nbsd, nr, ifm, ibid
+    integer :: nbcac, nbcpn, nbmac, nbnac, nboper, nbsd, nr, ifm, ibid
     integer :: ny
     real(kind=8) :: vecty(3)
     aster_logical :: tridim
@@ -159,16 +159,8 @@ subroutine rvpost(mcf, iocc, dim, i1, i2,&
 !
             if (chok) then
                 call dismoi('NOM_MAILLA', nch19, 'CHAMP', repk=mailla)
-                call getvid(mcf, 'CHEMIN', iocc=iocc, nbval=0, nbret=nbcrb)
-                nbcrb = -nbcrb
-                if (nbcrb .ne. 0) then
-                    call getvid(mcf, 'CHEMIN', iocc=iocc, nbval=nbcrb, vect=courbe,&
-                                nbret=n1)
-                    typco = 'CHEMIN'
-                else
-                    typco = 'AUTRE'
-                    courbe = '&&YAPAS'
-                endif
+                typco = 'AUTRE'
+                courbe = '&&YAPAS'
                 sdlieu = '&&RVPOST.NOM.VECT.LIEU'
                 sdeval = '&&RVPOST.NOM.VECT.EVAL'
 !
@@ -179,15 +171,15 @@ subroutine rvpost(mcf, iocc, dim, i1, i2,&
                     ca = 'E'
                 endif
 !
-                call rvlieu(mailla, typco, courbe, nlsnac, sdlieu)
-                call rvpste(dim, sdlieu, ssch19, sdeval, ca)
+                call rvlieu(mailla, typco, nlsnac, sdlieu)
+                call rvpste(sdlieu, ssch19, sdeval, ca)
                 call jelira(sdlieu, 'LONMAX', nbsd)
                 call jeveuo(sdlieu, 'L', jsdli)
                 call jeveuo(sdeval, 'L', jsdev)
                 call getvtx(mcf, 'RESULTANTE', iocc=iocc, nbval=0, nbret=nr)
                 sdnewr = '&&RVPOST.NEW.REPERE'
                 if (repere(1:1) .ne. 'G' .and. .not.tridim) then
-                    call rvchgr(mailla, courbe, nlsnac, repere, sdnewr,&
+                    call rvchgr(mailla, nlsnac, repere, sdnewr,&
                                 iret)
                 else
                     iret = 1

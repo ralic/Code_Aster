@@ -54,7 +54,7 @@ subroutine rvaffe(mcf, iocc, sdlieu, sdeval, sdmail,&
     integer :: i, deb, fin, adr1, ifm, anomnd, j, k, adri, deci, nbni, avaux
     integer :: l, lci, ln, lni, nbsi, niv
     integer :: lll, indic, indi1, indi2
-    real(kind=8) :: xa, xb, ya, yb, za, zb, ax, s1, s2
+    real(kind=8) ::  ax, s1, s2
     character(len=4) :: docul, docu
     character(len=16) :: oper
     character(len=24) :: nvale, npnbn, npadr, nabsc, nnocp
@@ -94,49 +94,8 @@ subroutine rvaffe(mcf, iocc, sdlieu, sdeval, sdmail,&
     s1 = zr(aabsc + 1-1)
     s2 = zr(aabsc + nbpt-1)
     if (niv .gt. 1) then
-        if ((docul .eq. 'LSTN') .or. (docul .eq. 'CHMM')) then
+        if (docul .eq. 'LSTN') then
             write(ifm,*)'CHEMIN DE NOEUDS'
-        else if (docul .eq. 'SGTD') then
-            xa = zr(anomnd + 1-1)
-            ya = zr(anomnd + 2-1)
-            xb = zr(anomnd + 3-1)
-            yb = zr(anomnd + 4-1)
-            ax = sqrt((xa-xb)*(xa-xb) + (ya-yb)*(ya-yb))
-            write(ifm,*)'SEGMENT DE DROITE'
-            write(ifm,'(A26,1PD14.6,A1,1PD14.6,A1)')&
-     &                   ' ORIGINE               : (',xa,',',ya,')'
-            write(ifm,'(A26,1PD14.6,A1,1PD14.6,A1)')&
-     &                   ' EXTREMITE             : (',xb,',',yb,')'
-            write(ifm,'(A26,1PD14.6,A1,1PD14.6,A1)')&
-     &                   ' ABSCISSES CURVILIGNES : (',s1,',',s2,')'
-        else if (docul .eq. 'ARCC') then
-            xa = zr(anomnd + 1-1)
-            ya = zr(anomnd + 2-1)
-            xb = zr(anomnd + 3-1)
-            ax = 57.29577951d0/xb
-            write(ifm,*)'ARC DE CERCLE'
-            write(ifm,'(A26,1PD14.6,A1,1PD14.6,A1)')&
-     &                   ' CENTRE                : (',xa,',',ya,')'
-            write(ifm,'(A26,1PD14.6,A1,1PD14.6,A1)')&
-     &                   ' RAYON                 :  ',xb
-            write(ifm,'(A26,1PD14.6,A1,1PD14.6,A1)')&
-     &                 ' SECTEUR ANGULAIRE     : (',ax*s1,',',ax*s2,')'
-        else if (docul .eq. 'SGT3') then
-            xa = zr(anomnd + 1-1)
-            ya = zr(anomnd + 2-1)
-            za = zr(anomnd + 3-1)
-            xb = zr(anomnd + 4-1)
-            yb = zr(anomnd + 5-1)
-            zb = zr(anomnd + 6-1)
-            ax = sqrt((xa-xb)*(xa-xb)+(ya-yb)*(ya-yb)+(za-zb)*(za- zb))
-            write(ifm,*)'SEGMENT DE DROITE'
-            write(ifm,'(A26,1PD14.6,A1,1PD14.6,A1,1PD14.6,A1)')&
-     &                ' ORIGINE               : (',xa,',',ya,',',za,')'
-            write(ifm,'(A26,1PD14.6,A1,1PD14.6,A1,1PD14.6,A1)')&
-     &                ' EXTREMITE             : (',xb,',',yb,',',zb,')'
-            write(ifm,'(A26,1PD14.6,A1,1PD14.6,A1)')&
-     &                   ' ABSCISSES CURVILIGNES : (',s1,',',s2,')'
-        else
         endif
     endif
     deb = fin + 1
@@ -158,8 +117,8 @@ subroutine rvaffe(mcf, iocc, sdlieu, sdeval, sdmail,&
         if (typaff .eq. 'E') then
             call rvtec0(zr(avale + adr1-1), zi(apnco+deb-1), zi(apnsp+deb-1), zr(aabsc),&
                         zr(acoor), zk8(anocp), zk8(anomnd), sdmail, nbpt,&
-                        docul, nbcp, zi(apadr), nomtab, ioc,&
-                        iocc, xnovar, ncheff, i1, isd)
+                        docul, nbcp, zi(apadr), nomtab,&
+                        iocc, xnovar, ncheff, i1)
         else
             call wkvect(nvaux, 'V V R', nbco*nbsp*nbpt*nbcp, avaux)
             call wkvect(npnca, 'V V I', nbpt, apnca)

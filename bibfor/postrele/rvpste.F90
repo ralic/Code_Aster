@@ -1,4 +1,4 @@
-subroutine rvpste(dim, lieu, ssch19, nomsd, typaff)
+subroutine rvpste(lieu, ssch19, nomsd, typaff)
     implicit none
 !
 #include "jeveux.h"
@@ -11,12 +11,10 @@ subroutine rvpste(dim, lieu, ssch19, nomsd, typaff)
 #include "asterfort/jeveuo.h"
 #include "asterfort/rvechc.h"
 #include "asterfort/rveche.h"
-#include "asterfort/rvechm.h"
 #include "asterfort/rvechn.h"
 #include "asterfort/wkvect.h"
     character(len=24) :: nomsd, lieu
     character(len=19) :: ssch19
-    character(len=2) :: dim
     character(len=1) :: typaff
 !
 !     ------------------------------------------------------------------
@@ -39,7 +37,6 @@ subroutine rvpste(dim, lieu, ssch19, nomsd, typaff)
 !     ------------------------------------------------------------------
 !     OPERATION EXTRACTION DU POST-TRAITEMENT DE L' OCCURENCE COURANTE
 !     ------------------------------------------------------------------
-! IN  DIM    : K : '1D' OU '2D' OU '3D'(RELIQUAR --> MESSAGE)
 ! IN  LIEU   : K : OJB S V K24 NOMS DE LIEU DE POST-TRAITEMENT
 ! IN  SSCH19 : K : SS_CHAM_19 DE L' EXTRACTION DES CMP NECESSAIRES
 ! OUT NOMSD  : K : OJB S V K24  NOM DE SD D' EVALUATION SUR LES LIEUX
@@ -49,10 +46,6 @@ subroutine rvpste(dim, lieu, ssch19, nomsd, typaff)
 !        .REFE : S E K8
 !         CHOIX DOCU(.REFE) PARMI
 !         -----             -----
-!          'SGTD' : DESC = (XA,YA,XB,YB)       REFE =  NOM_COURBE
-!          'SGT3' : DESC = (XA,YA,ZA,XB,YB,ZB) REFE =  NOM_COURBE
-!          'ARCC' : DESC = (XC,YC,R,A1,A2)     REFE =  NOM_COURBE
-!          'CHMM' : DESC = L_NOMS_NOEUDS       REFE =  NOM_COURBE
 !          'LSTN' : DESC = L_NOMS_NOEUDS       REFE =  NOM_MAILLAGE
 !         FIN_CHOIX
 !         ---------
@@ -62,8 +55,7 @@ subroutine rvpste(dim, lieu, ssch19, nomsd, typaff)
 !        . TYPE : SOUS_CHAM_GD
 !        . LE LIEU JOUE LE ROLE D' UN MAILLAGE
 !             NOEUD  : POINT DE POST
-!             MAILLE : TYPE SEG2 DANS LES CAS 'SGTD','ARCC',CHMM'
-!                      TYPE POI1 DANS LES CAS 'LSTN'
+!             MAILLE :  TYPE POI1 
 !
 !    REPRESENTATION SOUS_CHAM_GD :
 !        'CHNO' : STANDARD
@@ -108,18 +100,7 @@ subroutine rvpste(dim, lieu, ssch19, nomsd, typaff)
     zk24(anomsd + l-1) = sdeval//'     '
     nrefe = sdlieu//'.REFE'
     call jelira(nrefe, 'DOCU', cval=docu)
-    if (docu .eq. 'SGTD') then
-        call rvechc(dim, ssch19, sdlieu, sdeval, zi(anbndf),&
-                    zi(aclocf))
-    else if (docu .eq. 'ARCC') then
-        call rvechc(dim, ssch19, sdlieu, sdeval, zi(anbndf),&
-                    zi(aclocf))
-    else if (docu .eq. 'SGT3') then
-        call rvechc(dim, ssch19, sdlieu, sdeval, zi(anbndf),&
-                    zi(aclocf))
-    else if (docu .eq. 'CHMM') then
-        call rvechm(ssch19, sdlieu, sdeval)
-    else if (docu .eq. 'LSTN') then
+    if (docu .eq. 'LSTN') then
         if (typaff .eq. 'N') then
             call rvechn(ssch19, sdlieu, sdeval)
         else

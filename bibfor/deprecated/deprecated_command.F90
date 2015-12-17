@@ -41,15 +41,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if (command .eq. 'INTE_MAIL_2D') then
-        vali = 13
-        valk    = "La commande 'INTE_MAIL_2D'"
-!
-    else if (command .eq. 'INTE_MAIL_3D') then
-        vali = 13
-        valk    = "La commande 'INTE_MAIL_3D'"
-!
-    else if (command .eq. 'LIST_INST') then
+    if (command .eq. 'LIST_INST') then
         vali = 13
         valk    = "Utiliser un LIST_R8 dans INCREMENT des opérateurs non-linéaires"
 !

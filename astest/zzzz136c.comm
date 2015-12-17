@@ -1,4 +1,4 @@
-# TITRE TEST DE LA COMMANDE INTE_MAIL_3D ET POST_RELEVE_T
+# TITRE TEST DES COMMANDES MACR_LIGN_COUPE ET POST_RELEVE_T
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,7 +16,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(  CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(  CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'), IMPR_MACRO='OUI')
 
 PRE_IDEAS( ) ;
 
@@ -65,21 +65,13 @@ CHEL = CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
 #
 
 #----------------------------------------------------------------------
-C1=INTE_MAIL_3D(  MAILLAGE=MA,
-                     INFO=2,
-               DEFI_SEGMENT=_F( ORIGINE  =(  1., 0.5, 0.5, ),
-                                EXTREMITE=(  0., 0.5, 0.5, ), ),
-               ) ;
-
-TS1=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'TS1',
-                                CHEMIN = C1,
-                                CHAM_GD = CHEL,
-                                NOM_CMP = 'SIXX',
-                                OPERATION = 'EXTRACTION'),
-                  ) ;
+TS1 = MACR_LIGN_COUPE( CHAM_GD = CHEL, MODELE=MO,
+          LIGN_COUPE = _F(TYPE='SEGMENT', COOR_ORIG=(  1., 0.5, 0.5, ), COOR_EXTR=(  0., 0.5, 0.5, ),
+                          NB_POINTS=10,
+                          NOM_CMP  ='SIXX', OPERATION='EXTRACTION', INTITULE='TS1', ))
 
 IMPR_TABLE( TABLE=TS1,
-            NOM_PARA =('CHEMIN','CHAM_GD','ABSC_CURV','SIXX'),
+            NOM_PARA =('CHAM_GD','ABSC_CURV','SIXX'),
           ) ;
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -102,15 +94,13 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE=1.0,),
            )
 
-TN1=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'TN1',
-                                CHEMIN = C1,
-                                CHAM_GD = CHNO,
-                                NOM_CMP = 'DX',
-                                OPERATION = 'EXTRACTION'),
-                  ) ;
+TN1 = MACR_LIGN_COUPE( CHAM_GD = CHNO, MODELE=MO,
+             LIGN_COUPE = _F(TYPE='SEGMENT', COOR_ORIG=(  1., 0.5, 0.5, ), COOR_EXTR=(  0., 0.5, 0.5, ),
+                             NB_POINTS=10,
+                             NOM_CMP  ='DX', OPERATION='EXTRACTION', INTITULE='TN1', ))
 
 IMPR_TABLE( TABLE=TN1,
-            NOM_PARA =('CHEMIN','CHAM_GD','ABSC_CURV','DX'),
+            NOM_PARA =('CHAM_GD','ABSC_CURV','DX'),
           ) ;
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -131,24 +121,17 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            TABLE=TN1,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
                      VALE=1.0,),
-           )
+           );
 
 #----------------------------------------------------------------------
-C2=INTE_MAIL_3D(  MAILLAGE=MA,
-                     INFO=2,
-               DEFI_SEGMENT=_F( ORIGINE  =(  0.25, 0., 0.25, ),
-                                EXTREMITE=(  0.25, 1., 0.25, ), ),
-               ) ;
 
-TS2=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'TS2',
-                                CHEMIN = C2,
-                                CHAM_GD = CHEL,
-                                NOM_CMP = 'SIXX',
-                                OPERATION = 'EXTRACTION'),
-                  ) ;
+TS2 = MACR_LIGN_COUPE( CHAM_GD = CHEL, MODELE=MO,
+             LIGN_COUPE = _F(TYPE='SEGMENT', COOR_ORIG=(  0.25, 0., 0.25, ), COOR_EXTR=(0.25, 1., 0.25, ),
+                             NB_POINTS=10,
+                             NOM_CMP  ='SIXX', OPERATION='EXTRACTION', INTITULE='TS2', ))
 
 IMPR_TABLE( TABLE=TS2,
-            NOM_PARA =('CHEMIN','CHAM_GD','ABSC_CURV','SIXX'),
+            NOM_PARA =('CHAM_GD','ABSC_CURV','SIXX'),
           ) ;
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -169,17 +152,15 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            TABLE=TS2,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
                      VALE=1.0,),
-           )
+           ) ;
 
-TN2=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'TN2',
-                                CHEMIN = C2,
-                                CHAM_GD = CHNO,
-                                NOM_CMP = 'DX',
-                                OPERATION = 'EXTRACTION'),
-                  ) ;
+TN2 = MACR_LIGN_COUPE( CHAM_GD = CHNO, MODELE=MO,
+             LIGN_COUPE = _F(TYPE='SEGMENT', COOR_ORIG=(  0.25, 0., 0.25, ), COOR_EXTR=(0.25, 1., 0.25, ),
+                             NB_POINTS=10,
+                             NOM_CMP  ='DX', OPERATION='EXTRACTION', INTITULE='TN2', ))
 
 IMPR_TABLE( TABLE=TN2,
-            NOM_PARA =('CHEMIN','CHAM_GD','ABSC_CURV','DX'),
+            NOM_PARA =('CHAM_GD','ABSC_CURV','DX'),
           ) ;
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -202,91 +183,16 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE=1.0,),
            )
 
-#----------------------------------------------------------------------
-C3=INTE_MAIL_3D(  MAILLAGE=MA,
-                     INFO=2,
-               DEFI_SEGMENT=_F( NOEUD_ORIG = 'N2',
-                                NOEUD_EXTR = 'N8', ),
-               ) ;
-
-TS3=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'TS3',
-                                CHEMIN = C3,
-                                CHAM_GD = CHEL,
-                                NOM_CMP = 'SIXX',
-                                OPERATION = 'EXTRACTION'),
-                  ) ;
-
-IMPR_TABLE( TABLE=TS3,
-            NOM_PARA =('CHEMIN','CHAM_GD','ABSC_CURV','SIXX'),
-          ) ;
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=1.E-08,
-           VALE_CALC=3.000000000,
-           VALE_REFE=3.0,
-           NOM_PARA='SIXX',
-           TABLE=TS3,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.0,),
-           )
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=1.E-08,
-           VALE_CALC=6.000000000,
-           VALE_REFE=6.0,
-           NOM_PARA='SIXX',
-           TABLE=TS3,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=1.7320500000000001,),
-           )
-
-TN3=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'TN3',
-                                CHEMIN = C3,
-                                CHAM_GD = CHNO,
-                                NOM_CMP = 'DX',
-                                OPERATION = 'EXTRACTION'),
-                  ) ;
-
-IMPR_TABLE( TABLE=TN3,
-            NOM_PARA =('CHEMIN','CHAM_GD','ABSC_CURV','DX'),
-          ) ;
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=1.E-08,
-           VALE_CALC=3.000000000,
-           VALE_REFE=3.0,
-           NOM_PARA='DX',
-           TABLE=TN3,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.0,),
-           )
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=1.E-08,
-           VALE_CALC=6.000000000,
-           VALE_REFE=6.0,
-           NOM_PARA='DX',
-           TABLE=TN3,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=1.7320500000000001,),
-           )
 
 #----------------------------------------------------------------------
-C4=INTE_MAIL_3D(  MAILLAGE=MA,
-                     INFO=2,
-               DEFI_SEGMENT=_F( ORIGINE  =(  0.5, 0., 1., ),
-                                EXTREMITE=(  0.5, 1., 1., ), ),
-               ) ;
 
-TS4=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'TS4',
-                                CHEMIN = C4,
-                                CHAM_GD = CHEL,
-                                NOM_CMP = 'SIXX',
-                                OPERATION = 'EXTRACTION'),
-                  ) ;
+TS4 = MACR_LIGN_COUPE( CHAM_GD = CHEL, MODELE=MO,
+             LIGN_COUPE = _F(TYPE='SEGMENT', COOR_ORIG=( 0.5, 0., 1., ), COOR_EXTR=(0.5, 1., 1., ),
+                             NB_POINTS=10,
+                             NOM_CMP  ='SIXX', OPERATION='EXTRACTION', INTITULE='TS4', ))
 
 IMPR_TABLE( TABLE=TS4,
-            NOM_PARA =('CHEMIN','CHAM_GD','ABSC_CURV','SIXX'),
+            NOM_PARA =('CHAM_GD','ABSC_CURV','SIXX'),
           ) ;
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -309,15 +215,13 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE=1.0,),
            )
 
-TN4=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'TN4',
-                                CHEMIN = C4,
-                                CHAM_GD = CHNO,
-                                NOM_CMP = 'DX',
-                                OPERATION = 'EXTRACTION'),
-                  ) ;
+TN4 = MACR_LIGN_COUPE( CHAM_GD = CHNO, MODELE=MO,
+             LIGN_COUPE = _F(TYPE='SEGMENT', COOR_ORIG=( 0.5, 0., 1., ), COOR_EXTR=(0.5, 1., 1., ),
+                             NB_POINTS=10,
+                             NOM_CMP  ='DX', OPERATION='EXTRACTION', INTITULE='TN4', ))
 
 IMPR_TABLE( TABLE=TN4,
-            NOM_PARA =('CHEMIN','CHAM_GD','ABSC_CURV','DX'),
+            NOM_PARA =('CHAM_GD','ABSC_CURV','DX'),
           ) ;
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -341,21 +245,14 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 #----------------------------------------------------------------------
-C5=INTE_MAIL_3D(  MAILLAGE=MA,
-                     INFO=2,
-               DEFI_SEGMENT=_F( ORIGINE  =(  1.  , 0.25, 0., ),
-                                EXTREMITE=(  0.75, 1.  , 0., ), ),
-               ) ;
 
-TS5=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'TS5',
-                                CHEMIN = C5,
-                                CHAM_GD = CHEL,
-                                NOM_CMP = 'SIXX',
-                                OPERATION = 'EXTRACTION'),
-                  ) ;
+TS5 = MACR_LIGN_COUPE( CHAM_GD = CHEL, MODELE=MO,
+             LIGN_COUPE = _F(TYPE='SEGMENT', COOR_ORIG=(  1.  , 0.25, 0.,), COOR_EXTR=( 0.75, 1.  , 0.,),
+                             NB_POINTS=10,
+                             NOM_CMP  ='SIXX', OPERATION='EXTRACTION', INTITULE='TS5', ))
 
 IMPR_TABLE( TABLE=TS5,
-            NOM_PARA =('CHEMIN','CHAM_GD','ABSC_CURV','SIXX'),
+            NOM_PARA =('CHAM_GD','ABSC_CURV','SIXX'),
           ) ;
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -378,15 +275,13 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE=0.79056899999999997,),
            )
 
-TN5=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'TN5',
-                                CHEMIN = C5,
-                                CHAM_GD = CHNO,
-                                NOM_CMP = 'DX',
-                                OPERATION = 'EXTRACTION'),
-                  ) ;
+TN5 = MACR_LIGN_COUPE( CHAM_GD = CHNO, MODELE=MO,
+             LIGN_COUPE = _F(TYPE='SEGMENT', COOR_ORIG=(  1.  , 0.25, 0.,), COOR_EXTR=(0.75, 1.  , 0., ),
+                             NB_POINTS=10,
+                             NOM_CMP  ='DX', OPERATION='EXTRACTION', INTITULE='TN5', ))
 
 IMPR_TABLE( TABLE=TN5,
-            NOM_PARA =('CHEMIN','CHAM_GD','ABSC_CURV','DX'),
+            NOM_PARA =('CHAM_GD','ABSC_CURV','DX'),
           ) ;
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -410,73 +305,6 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 #----------------------------------------------------------------------
-C6=INTE_MAIL_3D(  MAILLAGE=MA,
-                     INFO=2,
-               DEFI_SEGMENT=_F( NOEUD_ORIG = 'N7',
-                                NOEUD_EXTR = 'N6', ),
-               ) ;
-
-TS6=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'TS6',
-                                CHEMIN = C6,
-                                CHAM_GD = CHEL,
-                                NOM_CMP = 'SIXX',
-                                OPERATION = 'EXTRACTION'),
-                  ) ;
-
-IMPR_TABLE( TABLE=TS6,
-            NOM_PARA =('CHEMIN','CHAM_GD','ABSC_CURV','SIXX'),
-          ) ;
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=1.E-08,
-           VALE_CALC=2.000000000,
-           VALE_REFE=2.0,
-           NOM_PARA='SIXX',
-           TABLE=TS6,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.0,),
-           )
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=1.E-08,
-           VALE_CALC=9.000000000,
-           VALE_REFE=9.0,
-           NOM_PARA='SIXX',
-           TABLE=TS6,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=1.0,),
-           )
-
-TN6=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'TN6',
-                                CHEMIN = C6,
-                                CHAM_GD = CHNO,
-                                NOM_CMP = 'DX',
-                                OPERATION = 'EXTRACTION'),
-                  ) ;
-
-IMPR_TABLE( TABLE=TN6,
-            NOM_PARA =('CHEMIN','CHAM_GD','ABSC_CURV','DX'),
-          ) ;
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=1.E-08,
-           VALE_CALC=2.000000000,
-           VALE_REFE=2.0,
-           NOM_PARA='DX',
-           TABLE=TN6,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.0,),
-           )
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=1.E-08,
-           VALE_CALC=9.000000000,
-           VALE_REFE=9.0,
-           NOM_PARA='DX',
-           TABLE=TN6,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=1.0,),
-           )
 
 FIN( )
 #

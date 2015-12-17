@@ -198,7 +198,7 @@ for i in range(1,nbcalc) :
 #   CALCUL DE LA POSITION CORRECTE
     y=y+da*cos(i*beta)
     z=z+da*sin(i*beta)
-    
+
 
 #   EXTRACTION DES LEVEL SETS POUR LES POINTS D'INTERSECTION
 #   ENTRE L'ARETE DONNANT LA POSITION CORRECTE DU FOND ET
@@ -213,23 +213,15 @@ for i in range(1,nbcalc) :
                      NOM_CHAM='LTNO',
                      FISSURE=FISS[i],);
 
-    FOND[i]=INTE_MAIL_3D(MAILLAGE=MAILLAG1,
-                         DEFI_SEGMENT=_F(
-                         ORIGINE=(0,y,z),
-                         EXTREMITE=(1,y,z),
-                                         ),
-                         );
+    TABLSN[i] = MACR_LIGN_COUPE( CHAM_GD=CHLN[i], MODELE=MODELE,
+                 LIGN_COUPE = _F(TYPE='SEGMENT', COOR_ORIG=(0,y,z), COOR_EXTR=(1,y,z),
+                                 NB_POINTS=15,
+                                 OPERATION='EXTRACTION', INTITULE='Test LSN', ))
 
-    TABLSN[i]= POST_RELEVE_T(ACTION=_F(INTITULE='Test LSN',
-                                       CHEMIN=FOND[i],
-                                       CHAM_GD=CHLN[i],
-                                       TOUT_CMP='OUI',
-                                       OPERATION='EXTRACTION',),);
-    TABLST[i]= POST_RELEVE_T(ACTION=_F(INTITULE='Test LST',
-                                       CHEMIN=FOND[i],
-                                       CHAM_GD=CHLT[i],
-                                       TOUT_CMP='OUI',
-                                       OPERATION='EXTRACTION',),); 
+    TABLST[i] = MACR_LIGN_COUPE( CHAM_GD=CHLT[i], MODELE=MODELE,
+                 LIGN_COUPE = _F(TYPE='SEGMENT', COOR_ORIG=(0,y,z), COOR_EXTR=(1,y,z),
+                                 NB_POINTS=15,
+                                 OPERATION='EXTRACTION', INTITULE='Test LST', ))
 
 
 #   VERIFICATION DES VALEURS DES LEVEL SETS. POUR LES POINTS
@@ -362,7 +354,7 @@ MAXFEM=POST_MAIL_XFEM(MODELE=MODELX[i],
 MOVISU=AFFE_MODELE(MAILLAGE=MAXFEM,
                       AFFE=_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),) 
+                              MODELISATION='3D',),)
 
 DEPL=POST_CHAM_XFEM(
                        MODELE_VISU   = MOVISU,

@@ -59,10 +59,10 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
     character(len=19) :: nchp19
     character(len=16) :: nchsym, tresu
     character(len=15) :: nrepnd
-    character(len=8) :: nresu, nomcmp, nmaich, nmaili, nomcrb, nomnd
+    character(len=8) :: nresu, nomcmp, nmaich, nomnd
     character(len=4) :: docu
-    integer :: acheff, amaicb, alneud, anumcp, anomcp, nbcmp
-    integer :: nbgrpn, nbneud, nbcrb, grel, nbgrel, jceld, amod, mod
+    integer :: acheff, alneud, anumcp, anomcp, nbcmp
+    integer :: nbgrpn, nbneud, grel, nbgrel, jceld, amod, mod
     integer :: j, k, n1, ibid
     aster_logical :: chelok
     character(len=24), pointer :: grpn(:) => null()
@@ -137,59 +137,40 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
 !
 !        --- VERIFICATION DE CONCORDANCE DES MAILLAGES ---
         call dismoi('NOM_MAILLA', ncheff, 'CHAMP', repk=nmaich)
-        call getvid('ACTION', 'CHEMIN', iocc=i, nbval=0, nbret=nbcrb)
-        nbcrb = -nbcrb
-        if (nbcrb .ne. 0) then
-!           /* LE LIEU DU POST TRAITEMENT EST UNE COURBE */
-            call getvid('ACTION', 'CHEMIN', iocc=i, scal=nomcrb, nbret=n1)
-            call jeexin(nomcrb//'.NOMMAIL', n1)
-            if (n1 .ne. 0) then
-                call jeveuo(nomcrb//'.NOMMAIL', 'L', amaicb)
-            else
-                call jeveuo(nomcrb//'.NOMA', 'L', amaicb)
-            endif
-            nmaili = zk8(amaicb)
-            if (nmaich .ne. nmaili) then
-                valk(1) = nmaili
-                valk(2) = nmaich
-                call utmess('F', 'POSTRELE_49', nk=2, valk=valk, si=i)
-            endif
-        else
-!           /* LE LIEU DU POST TRAITEMENT EST UN ENSMBLE DE NOEUDS */
-!           VERIFICATION D' EXISTENCE DES NOEUDS DANS LE MAILLAGE DU CHP
-            call getvtx('ACTION', 'GROUP_NO', iocc=i, nbval=0, nbret=nbgrpn)
-            call getvtx('ACTION', 'NOEUD', iocc=i, nbval=0, nbret=nbneud)
-            nbgrpn = -nbgrpn
-            nbneud = -nbneud
-            if (nbgrpn .ne. 0) then
-                call jecreo('&&OP0051.NOM.GRPN', 'V V K24')
-                call jeecra('&&OP0051.NOM.GRPN', 'LONMAX', nbgrpn)
-                call jeveuo('&&OP0051.NOM.GRPN', 'E', vk24=grpn)
-                call getvtx('ACTION', 'GROUP_NO', iocc=i, nbval=nbgrpn, vect=grpn,&
-                            nbret=n1)
-                do k = 1, nbgrpn, 1
-                    nomgrn = grpn(k)
-                    call jenonu(jexnom(nmaich//'.GROUPENO', nomgrn), n1)
-                    if (n1 .eq. 0) then
-                        call utmess('F', 'POSTRELE_50', sk=nomgrn, si=i)
-                    endif
-                end do
-                call jedetr('&&OP0051.NOM.GRPN')
-            endif
-            if (nbneud .ne. 0) then
-                call wkvect('&&OP0051.NOM.NEUD', 'V V K8', nbneud, alneud)
-                call getvtx('ACTION', 'NOEUD', iocc=i, nbval=nbneud, vect=zk8( alneud),&
-                            nbret=n1)
-                nrepnd = nmaich//'.NOMNOE'
-                do k = 1, nbneud, 1
-                    nomnd = zk8(alneud + k-1)
-                    call jenonu(jexnom(nrepnd, nomnd), n1)
-                    if (n1 .eq. 0) then
-                        call utmess('F', 'POSTRELE_51', sk=nomnd, si=i)
-                    endif
-                end do
-                call jedetr('&&OP0051.NOM.NEUD')
-            endif
+!       /* LE LIEU DU POST TRAITEMENT EST UN ENSEMBLE DE NOEUDS */
+!       VERIFICATION D' EXISTENCE DES NOEUDS DANS LE MAILLAGE DU CHP
+        call getvtx('ACTION', 'GROUP_NO', iocc=i, nbval=0, nbret=nbgrpn)
+        call getvtx('ACTION', 'NOEUD', iocc=i, nbval=0, nbret=nbneud)
+        nbgrpn = -nbgrpn
+        nbneud = -nbneud
+        if (nbgrpn .ne. 0) then
+            call jecreo('&&OP0051.NOM.GRPN', 'V V K24')
+            call jeecra('&&OP0051.NOM.GRPN', 'LONMAX', nbgrpn)
+            call jeveuo('&&OP0051.NOM.GRPN', 'E', vk24=grpn)
+            call getvtx('ACTION', 'GROUP_NO', iocc=i, nbval=nbgrpn, vect=grpn,&
+                        nbret=n1)
+            do k = 1, nbgrpn, 1
+                nomgrn = grpn(k)
+                call jenonu(jexnom(nmaich//'.GROUPENO', nomgrn), n1)
+                if (n1 .eq. 0) then
+                    call utmess('F', 'POSTRELE_50', sk=nomgrn, si=i)
+                endif
+            end do
+            call jedetr('&&OP0051.NOM.GRPN')
+        endif
+        if (nbneud .ne. 0) then
+            call wkvect('&&OP0051.NOM.NEUD', 'V V K8', nbneud, alneud)
+            call getvtx('ACTION', 'NOEUD', iocc=i, nbval=nbneud, vect=zk8( alneud),&
+                        nbret=n1)
+            nrepnd = nmaich//'.NOMNOE'
+            do k = 1, nbneud, 1
+                nomnd = zk8(alneud + k-1)
+                call jenonu(jexnom(nrepnd, nomnd), n1)
+                if (n1 .eq. 0) then
+                    call utmess('F', 'POSTRELE_51', sk=nomnd, si=i)
+                endif
+            end do
+            call jedetr('&&OP0051.NOM.NEUD')
         endif
     endif
     call jedema()

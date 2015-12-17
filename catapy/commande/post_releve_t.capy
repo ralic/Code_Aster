@@ -79,10 +79,7 @@ POST_RELEVE_T=OPER(nom="POST_RELEVE_T",op=51,sd_prod=table_sdaster,reentrant='f'
 
            b_autre   =BLOC(condition="aucun(OPERATION, ('EXTREMA', 'MOYENNE_ARITH'))",
                            fr=tr("extraction et moyenne"),
-                           regles=(AU_MOINS_UN('CHEMIN','GROUP_NO','NOEUD'),
-                                   EXCLUS('CHEMIN','GROUP_NO'),
-                                   EXCLUS('CHEMIN','NOEUD'),
-                                   PRESENT_ABSENT('CHEMIN','GROUP_MA','MAILLE'),
+                           regles=(AU_MOINS_UN('GROUP_NO','NOEUD'),
                                    UN_PARMI('TOUT_CMP','NOM_CMP','INVARIANT','ELEM_PRINCIPAUX','RESULTANTE'),
                                    PRESENT_PRESENT('TRAC_DIR','DIRECTION'),
                                    ENSEMBLE('MOMENT','POINT'),
@@ -91,7 +88,6 @@ POST_RELEVE_T=OPER(nom="POST_RELEVE_T",op=51,sd_prod=table_sdaster,reentrant='f'
                                    EXCLUS('TRAC_DIR','TRAC_NOR'),
                                    PRESENT_PRESENT('ORIGINE','AXE_Z'),),
 
-              CHEMIN          =SIMP(statut='f',typ=(courbe_sdaster,surface_sdaster) ),
               TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
               GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
               MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),

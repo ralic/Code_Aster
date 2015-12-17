@@ -1,7 +1,6 @@
 subroutine rvtec2(releve, absc, itcopt, itsppt, coor,&
                   nomnoe, nbcmp, nbpoin, docu, nomtab,&
-                  iocc, xnovar, ncheff, i1, ioc,&
-                  isd)
+                  iocc, xnovar, ncheff, i1)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -27,7 +26,7 @@ subroutine rvtec2(releve, absc, itcopt, itsppt, coor,&
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    integer :: itcopt(*), itsppt(*), nbcmp, nbpoin, iocc, i1, ioc, isd
+    integer :: itcopt(*), itsppt(*), nbcmp, nbpoin, iocc, i1
     real(kind=8) :: releve(*), absc(*), coor(*)
     character(len=4) :: docu
     character(len=8) :: nomnoe(*)
@@ -62,16 +61,16 @@ subroutine rvtec2(releve, absc, itcopt, itsppt, coor,&
 ! IN  : NOMNOE : TABLE DES EVENTUELS NOMS DE NOEUDS
 ! IN  : NBCMP  : NOMBRE DE CMP
 ! IN  : NBPOIN : NOMBRE DE POINT D'EVALUATION
-! IN  : DOCU   : 'LSTN'/'CHMM'/'SGTD'/'ARCC'
+! IN  : DOCU   : 'LSTN'
 !     ------------------------------------------------------------------
     integer :: nbvari, nbpar, ilign, ipt, nbsp, i, nbco, lc, ln, ic, i2, valei(12)
     integer :: n1, adrval, ind, lck, adracc, jacc, ik, ir, ii, ivari(3000), nbcmp2, jvari
-    integer :: nbacc, nbpr, jaces, iac, iadr, lcr, nc, iord(1)
+    integer :: nbacc, nbpr, jaces, iac, iadr, lcr, iord(1)
     real(kind=8) :: prec
     aster_logical :: exist
     character(len=3) :: typpar
     character(len=7) :: kii
-    character(len=8) :: k8b, acces, nomres, ctype, courbe, crit
+    character(len=8) :: k8b, acces, nomres, ctype, crit
     character(len=16) :: intitu
     character(len=24) :: nomval, nomacc, nnores, nomjv
     complex(kind=8) :: c16b
@@ -96,7 +95,6 @@ subroutine rvtec2(releve, absc, itcopt, itsppt, coor,&
     endif
 !
     call getvtx('ACTION', 'INTITULE', iocc=iocc, scal=intitu, nbret=n1)
-    call getvid('ACTION', 'CHEMIN', iocc=iocc, scal=courbe, nbret=nc)
 !
     call getvr8('ACTION', 'PRECISION', iocc=iocc, scal=prec, nbret=n1)
     call getvtx('ACTION', 'CRITERE', iocc=iocc, scal=crit, nbret=n1)
@@ -120,20 +118,6 @@ subroutine rvtec2(releve, absc, itcopt, itsppt, coor,&
     valek(ik) = intitu
     para(nbpar) = 'INTITULE'
 !
-    if (nc .ne. 0) then
-        nbpar = nbpar + 1
-        para(nbpar) = 'CHEMIN'
-        ik = ik + 1
-        valek(ik) = courbe
-        nbpar = nbpar + 1
-        para(nbpar) = 'SEGMENT'
-        ii = ii + 1
-        valei(ii) = isd
-        nbpar = nbpar + 1
-        para(nbpar) = 'CMP_CNX'
-        ii = ii + 1
-        valei(ii) = ioc
-    endif
 !
     if (zk8(jacc) .eq. 'DIRECT  ') then
         call jeveuo(jexnum(ncheff//'.LSCHEFF', 1), 'L', jacc)
@@ -229,7 +213,7 @@ subroutine rvtec2(releve, absc, itcopt, itsppt, coor,&
             vale_r(ir) = zr(adrval + i1-1)
         endif
     endif
-    if (docu .eq. 'LSTN' .or. docu .eq. 'CHMM') then
+    if (docu .eq. 'LSTN') then
         call tbexip(nomtab, 'NOEUD', exist, typpar)
         if (.not. exist) then
             call tbajpa(nomtab, 1, 'NOEUD', 'K8')
@@ -295,7 +279,7 @@ subroutine rvtec2(releve, absc, itcopt, itsppt, coor,&
         lc = nbcmp*nbsp
         ln = lc*nbco
 !
-        if (docu .eq. 'LSTN' .or. docu .eq. 'CHMM') then
+        if (docu .eq. 'LSTN') then
             valek(ik) = nomnoe(ipt)
         endif
 !

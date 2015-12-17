@@ -1,6 +1,5 @@
 subroutine rvtaso(releve, nomcmp, nbcmp, nbco, nbsp,&
-                  nomtab, iocc, ncheff, i1, ioc,&
-                  isd)
+                  nomtab, iocc, ncheff, i1)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -20,7 +19,7 @@ subroutine rvtaso(releve, nomcmp, nbcmp, nbco, nbsp,&
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbexip.h"
 !
-    integer :: iocc, i1, nbcmp, nbco, nbsp, ioc, isd
+    integer :: iocc, i1, nbcmp, nbco, nbsp
     real(kind=8) :: releve(*)
     character(len=8) :: nomcmp(*)
     character(len=16) :: ncheff
@@ -52,13 +51,13 @@ subroutine rvtaso(releve, nomcmp, nbcmp, nbco, nbsp,&
 ! IN  : NBSP   : NOMBRE DE SOUS-PT PAR POINT
 ! IN  : NOMTAB : INTITULE DE LA TABLE
 !     ------------------------------------------------------------------
-    integer :: nbpar, ilign, ls, lc, isp, icp, ico, n1, nc, adrval, adracc, jacc, ik, ir, ii
+    integer :: nbpar, ilign, ls, lc, isp, icp, ico, n1, adrval, adracc, jacc, ik, ir, ii
     integer :: valei(12), nbacc, nbpr, jaces, iac, iadr, iord(1)
     real(kind=8) :: prec, valer(10)
     complex(kind=8) :: c16b
     aster_logical :: exist
     character(len=3) :: typpar
-    character(len=8) :: acces, nomres, ctype, courbe, crit, k8b
+    character(len=8) :: acces, nomres, ctype, crit, k8b
     character(len=16) :: intitu
     character(len=24) :: nomval, nomacc, nnores, nopara(18), nomjv
     character(len=80) :: valek(11)
@@ -67,7 +66,6 @@ subroutine rvtaso(releve, nomcmp, nbcmp, nbco, nbsp,&
     call jemarq()
 !
     call getvtx('ACTION', 'INTITULE', iocc=iocc, scal=intitu, nbret=n1)
-    call getvid('ACTION', 'CHEMIN', iocc=iocc, scal=courbe, nbret=nc)
 !
     call getvr8('ACTION', 'PRECISION', iocc=iocc, scal=prec, nbret=n1)
     call getvtx('ACTION', 'CRITERE', iocc=iocc, scal=crit, nbret=n1)
@@ -83,21 +81,6 @@ subroutine rvtaso(releve, nomcmp, nbcmp, nbco, nbsp,&
     nbpar = 1
     nopara(nbpar) = 'INTITULE'
     valek(ik) = intitu
-!
-    if (nc .ne. 0) then
-        nbpar = nbpar + 1
-        nopara(nbpar) = 'CHEMIN'
-        ik = ik + 1
-        valek(ik) = courbe
-        nbpar = nbpar + 1
-        nopara(nbpar) = 'SEGMENT'
-        ii = ii + 1
-        valei(ii) = isd
-        nbpar = nbpar + 1
-        nopara(nbpar) = 'CMP_CNX'
-        ii = ii + 1
-        valei(ii) = ioc
-    endif
 !
     if (zk8(jacc) .eq. 'DIRECT  ') then
         call jeveuo(jexnum(ncheff//'.LSCHEFF', 1), 'L', jacc)

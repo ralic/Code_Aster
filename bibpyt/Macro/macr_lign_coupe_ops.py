@@ -773,7 +773,10 @@ def macr_lign_coupe_ops(self, RESULTAT, CHAM_GD, UNITE_MAILLAGE, LIGN_COUPE,
         elif nomgd[:6] == 'VARI_R':
             TYPE_RESU = 'EVOL_NOLI'
         elif nomgd[:6] == 'SIEF_R':
-            if NOM_CHAM[:4] == 'SIGM':
+            if not NOM_CHAM:
+                TYPE_RESU = 'EVOL_ELAS'
+                NOM_CHAM = 'DEPL'
+            elif NOM_CHAM[:4] == 'SIGM':
                 TYPE_RESU = 'EVOL_ELAS'
             elif NOM_CHAM[:4] == 'SIEF':
                 TYPE_RESU = 'EVOL_NOLI'

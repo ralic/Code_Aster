@@ -64,7 +64,7 @@ subroutine rvpara(nomtab, mcf, nbpost)
 !
     integer :: ifm, niv
     integer :: iocc, ibid, tord(1)
-    integer :: jchem, jcham, jresu, jncmp, ncmp, i
+    integer :: jcham, jresu, jncmp, ncmp, i
     integer :: jinva, jprin, jmome, jmail, jmoye, j, jtrad
     integer :: jtran, n1, n2, n3, jcmp1, jcmp2, jcmp3, nbc, nume
     integer :: iret, nbp, jinst, jordr, jmode, jabsc, jfreq
@@ -101,7 +101,6 @@ subroutine rvpara(nomtab, mcf, nbpost)
     call wkvect(nocmp, 'V V K8', ncmpmx, jnocmp)
 !
     jabsc = 0
-    jchem = 0
     jcham = 0
     jresu = 0
     jordr = 0
@@ -130,8 +129,6 @@ subroutine rvpara(nomtab, mcf, nbpost)
 !
 ! 2.1. ==> ON CHERCHE SI C'EST LA BONNE TABLE
 !
-        call getvid(mcf, 'CHEMIN', iocc=iocc, nbval=0, nbret=n1)
-        if (n1 .ne. 0) jchem = jchem + 1
 !
         call getvid(mcf, 'CHAM_GD', iocc=iocc, nbval=0, nbret=n2)
         if (n2 .ne. 0) jcham = jcham + 1
@@ -378,17 +375,6 @@ subroutine rvpara(nomtab, mcf, nbpost)
     nbp = 1
     nopara(nbp) = 'INTITULE'
     typara(nbp) = 'K16'
-    if (jchem .ne. 0) then
-        nbp = nbp + 1
-        nopara(nbp) = 'CHEMIN'
-        typara(nbp) = 'K8'
-        nbp = nbp + 1
-        nopara(nbp) = 'SEGMENT'
-        typara(nbp) = 'I'
-        nbp = nbp + 1
-        nopara(nbp) = 'CMP_CNX'
-        typara(nbp) = 'I'
-    endif
     if ((lextr .or. lmoye) .and. jnoeu .ne. 0) then
         nbp = nbp + 1
         nopara(nbp) = 'NOEUD'

@@ -15,21 +15,18 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine rvtamo(t, nomcmp, nbcp, nbco, nbsp,&
-                      nomtab, iocc, xnovar, ncheff, i1,&
-                      ioc, isd)
-        real(kind=8) :: t(*)
-        character(len=*) :: nomcmp(*)
-        integer :: nbcp
-        integer :: nbco
-        integer :: nbsp
-        character(len=*) :: nomtab
-        integer :: iocc
-        character(len=24) :: xnovar
-        character(len=16) :: ncheff
-        integer :: i1
-        integer :: ioc
-        integer :: isd
-    end subroutine rvtamo
-end interface
+          interface 
+            subroutine rvtamo(t,nomcmp,nbcp,nbco,nbsp,nomtab,iocc,xnovar&
+     &,ncheff,i1)
+              real(kind=8) :: t(*)
+              character(len=*) :: nomcmp(*)
+              integer :: nbcp
+              integer :: nbco
+              integer :: nbsp
+              character(len=*) :: nomtab
+              integer :: iocc
+              character(len=24) :: xnovar
+              character(len=16) :: ncheff
+              integer :: i1
+            end subroutine rvtamo
+          end interface 
