@@ -14,6 +14,10 @@ def options(self):
     group = self.get_option_group("Code_Aster options")
     group.add_option('--enable-mpi', dest='parallel', action='store_true',
                      help='Build a parallel version with mpi')
+    group.add_option('--enable-openmp', dest='openmp', action='store_true',
+                     help='Build a parallel version supporting OpenMP')
+    group.add_option('--disable-openmp', dest='openmp', action='store_false',
+                     help='Disable OpenMP')
 
 def configure(self):
     if self.options.parallel:
@@ -71,12 +75,19 @@ def check_mpi(self):
 
 @Configure.conf
 def check_openmp(self):
+    opts = self.options
+    if opts.openmp is False:
+        self.msg('Checking for OpenMP flag', 'no', color='YELLOW')
+        return
     try:
         self.detect_openmp()
     except (Errors.ConfigurationError, Errors.BuildError):
+        if opts.openmp is True:
+            raise
         self.env.append_value('FCFLAGS_OPENMP', ['-fopenmp'])
         self.env.append_value('FCLINKFLAGS_OPENMP', ['-fopenmp'])
     if self.env.FCFLAGS_OPENMP:
+        self.env.BUILD_OPENMP = 1
         self.define('_USE_OPENMP', 1)
 
 @Configure.conf
