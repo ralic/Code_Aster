@@ -207,15 +207,18 @@ DEFI_GROUP=OPER(nom="DEFI_GROUP",op= 104,sd_prod=defi_group_prod,
                      EXCLUS('NOEUD_EXTR','GROUP_NO_EXTR'),),
              NOM             =SIMP(statut='o',typ=grno),
              GROUP_MA        =SIMP(statut='o',typ=grma,validators=NoRepeat(),max='**'),
-             # si le groupe de mailles forme une ligne ouverte, on peut choisir le sens de parcours en choissant l'origine:
-             # si le groupe de mailles forme une ligne fermée, il FAUT choisir l'origine et l'extrémité (= origine):
+             # si le groupe de mailles forme une ligne ouverte, on peut choisir le sens de parcours en choissant l'origine.
+             # sinon, le code choisit une origine parmi les deux.
+             # si le groupe de mailles forme une ligne fermée, on peut choisir l'origine et l'extrémité (= origine).
              NOEUD_ORIG      =SIMP(statut='f',typ=no),
              GROUP_NO_ORIG   =SIMP(statut='f',typ=grno),
              NOEUD_EXTR      =SIMP(statut='f',typ=no),
              GROUP_NO_EXTR   =SIMP(statut='f',typ=grno),
              # si le groupe de mailles forme une ligne fermée, on peut choisir le sens de parcours :
              VECT_ORIE       =SIMP(statut='f',typ='R',max=3),  # utilisé seulement si NOEUD_ORIG=NOEUD_EXTR
-
+             # si la ligne est fermee et que l'on ne donne pas xxx_ORIG, on peut demander au code de choisir
+             # un noeud origine quelconque.
+             ORIGINE         =SIMP(statut='f',typ='TXM',into=("SANS",) ),
            ),
            b_tunnel    =BLOC(condition = "OPTION == 'TUNNEL'",
              regles=(AU_MOINS_UN ('TOUT','GROUP_MA','MAILLE'),

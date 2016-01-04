@@ -49,7 +49,7 @@ def macr_cara_poutre_ops(self, MAILLAGE, SYME_Y, SYME_Z, GROUP_MA_BORD,
     ASSE_VECTEUR = self.get_cmd('ASSE_VECTEUR')
     POST_ELEM = self.get_cmd('POST_ELEM')
     CALC_CHAMP = self.get_cmd('CALC_CHAMP')
-    INTE_MAIL_2D = self.get_cmd('INTE_MAIL_2D')
+    MACR_LIGN_COUPE = self.get_cmd('MACR_LIGN_COUPE')
     POST_RELEVE_T = self.get_cmd('POST_RELEVE_T')
     IMPR_TABLE = self.get_cmd('IMPR_TABLE')
     CREA_TABLE = self.get_cmd('CREA_TABLE')
@@ -308,20 +308,20 @@ def macr_cara_poutre_ops(self, MAILLAGE, SYME_Y, SYME_Z, GROUP_MA_BORD,
             THERMIQUE='FLUX_ELNO',
         )
 
-        __chem = INTE_MAIL_2D(
-            MAILLAGE=__nomapi,
-            DEFI_CHEMIN=_F(GROUP_MA=GROUP_MA_BORD), INFO=2,
-        )
+        __flun = MACR_LIGN_COUPE(
+                      RESULTAT=__tempe1,
+                      NOM_CHAM='FLUX_ELNO',
+                      LIGN_COUPE = _F(TYPE='GROUP_MA',
+                                      MAILLAGE=__nomapi,
+                                      TRAC_NOR='OUI',
+                                      NOM_CMP=('FLUX', 'FLUY'),
+                                      OPERATION='MOYENNE',
+                                      INTITULE='FLUX_NORM',
+                                      GROUP_MA=GROUP_MA_BORD,
+                      ))
+        __nomapi = DEFI_GROUP(reuse=__nomapi, MAILLAGE=__nomapi,
+                          DETR_GROUP_NO=_F(NOM=GROUP_MA_BORD,))
 
-        __flun = POST_RELEVE_T(
-            ACTION=_F(INTITULE='FLUX_NORM',
-                              CHEMIN=__chem,
-                              RESULTAT=__tempe1,
-                              NOM_CHAM='FLUX_ELNO',
-                              TRAC_NOR='OUI',
-                              NOM_CMP=('FLUX', 'FLUY'),
-                              OPERATION='MOYENNE'),
-        )
 
         __m1 = abs(__flun['TRAC_NOR', 3])
         __m2 = abs(__flun['TRAC_NOR', 4])
@@ -336,16 +336,20 @@ def macr_cara_poutre_ops(self, MAILLAGE, SYME_Y, SYME_Z, GROUP_MA_BORD,
                 else:
                     l_group_ma_inte = args['GROUP_MA_INTE']
                 for i in range(0, len(l_group_ma_inte)):
-                    __chem = INTE_MAIL_2D(
-                        MAILLAGE=__nomapi,
-                        DEFI_CHEMIN=_F(GROUP_MA=l_group_ma_inte[i]), INFO=2,)
-                    #
-                    __flun = POST_RELEVE_T(
-                        ACTION=_F(INTITULE='FLUX_NORM',
-                                  CHEMIN=__chem,
+                    __flun = MACR_LIGN_COUPE(
                                   RESULTAT=__tempe1,
-                                  NOM_CHAM='FLUX_ELNO', TRAC_NOR='OUI', NOM_CMP=('FLUX', 'FLUY'), OPERATION='MOYENNE'))
-                    #
+                                  NOM_CHAM='FLUX_ELNO',
+                                  LIGN_COUPE = _F(TYPE='GROUP_MA',
+                                                  MAILLAGE=__nomapi,
+                                                  TRAC_NOR='OUI',
+                                                  NOM_CMP=('FLUX', 'FLUY'),
+                                                  OPERATION='MOYENNE',
+                                                  INTITULE='FLUX_NORM',
+                                                  GROUP_MA=l_group_ma_inte[i],
+                                  ))
+                    __nomapi = DEFI_GROUP(reuse=__nomapi, MAILLAGE=__nomapi,
+                                      DETR_GROUP_NO=_F(NOM=l_group_ma_inte[i],))
+
                     __m1 = (
                         abs(__flun['TRAC_NOR', 3]) + abs(__flun['TRAC_NOR', 4])) / 2.
                     if __m1 > __rtext:
@@ -535,8 +539,8 @@ def macr_cara_poutre_ops(self, MAILLAGE, SYME_Y, SYME_Z, GROUP_MA_BORD,
         for i in range(0, len(l_group_ma_bord)):
             # TRANSFORMATION DES GROUP_MA EN GROUP_NO SUR-LESQUELS
             # ON POURRA APPLIQUER DES CONDITIONS DE TEMPERATURE IMPOSEE :
-            __nomlma = DEFI_GROUP(reuse=__nomlma,
-                                  MAILLAGE=__nomlma,
+            __nomlma = DEFI_GROUP(reuse=__nomlma, MAILLAGE=__nomlma,
+                                  DETR_GROUP_NO=_F(NOM=l_group_ma_bord[i],),
                                   CREA_GROUP_NO=_F(GROUP_MA=l_group_ma_bord[i],))
 
             # CREATION D UN MAILLAGE IDENTIQUE AU PREMIER A CECI PRES
@@ -645,17 +649,19 @@ def macr_cara_poutre_ops(self, MAILLAGE, SYME_Y, SYME_Z, GROUP_MA_BORD,
                 THERMIQUE='FLUX_ELNO',
             )
 
-            __chem = INTE_MAIL_2D(
-                MAILLAGE=__nomapi,
-                DEFI_CHEMIN=_F(GROUP_MA=l_group_ma_bord[i]),
-                INFO=2,)
-
-            __flun = POST_RELEVE_T(
-                ACTION=_F(INTITULE='FLUX_NORM',
-                          CHEMIN=__chem,
+            __flun = MACR_LIGN_COUPE(
                           RESULTAT=__tempe1,
-                          NOM_CHAM='FLUX_ELNO', TRAC_NOR='OUI',
-                          NOM_CMP=('FLUX', 'FLUY'), OPERATION='MOYENNE',),)
+                          NOM_CHAM='FLUX_ELNO',
+                          LIGN_COUPE = _F(TYPE='GROUP_MA',
+                                          MAILLAGE=__nomapi,
+                                          TRAC_NOR='OUI',
+                                          NOM_CMP=('FLUX', 'FLUY'),
+                                          OPERATION='MOYENNE',
+                                          INTITULE='FLUX_NORM',
+                                          GROUP_MA=l_group_ma_bord[i],
+                          ))
+            __nomapi = DEFI_GROUP(reuse=__nomapi, MAILLAGE=__nomapi,
+                              DETR_GROUP_NO=_F(NOM=l_group_ma_bord[i],))
 
             __m1 = abs(__flun['TRAC_NOR', 3])
             __m2 = abs(__flun['TRAC_NOR', 4])
@@ -669,26 +675,24 @@ def macr_cara_poutre_ops(self, MAILLAGE, SYME_Y, SYME_Z, GROUP_MA_BORD,
                         l_group_ma_inte = [args['GROUP_MA_INTE'], ]
                     else:
                         l_group_ma_inte = args['GROUP_MA_INTE']
-                    #
+
                     for j in range(0, len(l_group_ma_inte)):
-                        __chem = INTE_MAIL_2D(
-                            MAILLAGE=__nomapi,
-                            DEFI_CHEMIN=_F(GROUP_MA=l_group_ma_inte[j]), INFO=2,
-                        )
-                        __flun = POST_RELEVE_T(
-                            ACTION=_F(INTITULE='FLUX_NORM',
-                                      CHEMIN=__chem,
+                        __flun = MACR_LIGN_COUPE(
                                       RESULTAT=__tempe1,
-                                      NOM_CHAM='FLUX_ELNO', TRAC_NOR='OUI',
-                                      NOM_CMP=(
-                                      'FLUX', 'FLUY'), OPERATION='MOYENNE'),
-                        )
-                        __m1 = (
-                            abs(__flun['TRAC_NOR', 3]) + abs(__flun['TRAC_NOR', 4])) / 2.0
-                        if __m1 > __rtext:
-                            __rtext = __m1
-                    #
-            #
+                                      NOM_CHAM='FLUX_ELNO',
+                                      LIGN_COUPE = _F(TYPE='GROUP_MA',
+                                                      MAILLAGE=__nomapi,
+                                                      TRAC_NOR='OUI',
+                                                      NOM_CMP=('FLUX', 'FLUY'),
+                                                      OPERATION='MOYENNE',
+                                                      INTITULE='FLUX_NORM',
+                                                      GROUP_MA=l_group_ma_inte[i],
+                                      ))
+                        __nomapi = DEFI_GROUP(reuse=__nomapi, MAILLAGE=__nomapi,
+                                          DETR_GROUP_NO=_F(NOM=l_group_ma_inte[i],))
+                        __m1 = (abs(__flun['TRAC_NOR', 3]) + abs(__flun['TRAC_NOR', 4])) / 2.0
+                        if __m1 > __rtext:  __rtext = __m1
+
             __rt = __rtext
 
             # CALCUL DE LA CONSTANTE DE TORSION :

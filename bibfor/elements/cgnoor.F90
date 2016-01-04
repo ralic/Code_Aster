@@ -8,6 +8,7 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
 #include "asterfort/dismoi.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
+#include "asterc/getexm.h"
 #include "asterfort/i2extf.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -24,6 +25,7 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/assert.h"
 !
     integer :: iocc, nbmc, nbma
     character(len=*) :: typlig
@@ -89,16 +91,17 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
 !
 !
     integer :: jmail, jtypm, iatyma
-    integer :: ier, im, n1, n2, nid, nig, nbnot
+    integer :: ier, im, n1, n2, n3, nid, nig, nbnot
     integer :: nunori, trouv, ibid, in, nd
     integer :: existe, iret, ima
     integer :: jcour2
     character(len=8) :: k8b, nomma, typmp
-    character(len=16) :: k16bid, nomcmd
+    character(len=16) :: k16bid, nomcmd, orig
     character(len=24) :: conec, typp, nommai, nomnoe, mesmai, valk(2), nogrp
-    aster_logical :: bug
+    aster_logical :: bug, erreur
     integer, pointer :: noeud_apparies(:) => null()
     integer, pointer :: noeuds_extrem(:) => null()
+    integer, pointer :: compteur(:) => null()
     integer, pointer :: type_noeud(:) => null()
 ! DEB-------------------------------------------------------------------
     call jemarq()
@@ -274,9 +277,9 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
 !
 !
 !
-!     ------------------------------------------------------------------
-!     --- VERIFICATION DU NOEUD EXTREMITE :
-!     ------------------------------------------------------------------
+!   ------------------------------------------------------------------
+!   --- verification du noeud extremite :
+!   ------------------------------------------------------------------
     if (ndextr .ne. ' ') then
         call jenonu(jexnom(nomnoe, ndextr), nunori)
 !
@@ -305,9 +308,9 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
 !
 !
 !
-!     ------------------------------------------------------------------
-!     --- VERIFICATION DU NOEUD ORIGINE :
-!     ------------------------------------------------------------------
+!   ------------------------------------------------------------------
+!   --- Verification du noeud origine :
+!   ------------------------------------------------------------------
     if (ndorig .ne. ' ') then
         call jenonu(jexnom(nomnoe, ndorig), nunori)
 !
@@ -335,47 +338,64 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
 !
     else
 !
-!     ------------------------------------------------------------------
-!     --- SI L'ORIGINE EST DONNEE
-!     --- CONSTRUCTION D'UN VECTEUR DE TRAVAIL LOCAL POUR TROUVER
-!     --- L'ORIGINE
-!     ------------------------------------------------------------------
+!       ------------------------------------------------------------------
+!       --- Si l'origine n'est pas donnee, on en cherche une :
+!       ------------------------------------------------------------------
         AS_ALLOCATE(vi=noeud_apparies, size=2*nbma)
-!       LISTE DES NOEUDS DEJA APPARIES
-        do in = 1, nbma*2
-            noeud_apparies(in)=0
-        end do
-!
-!       PARCOURS DE L'ENSEMBLE DES NOEUDS
+        noeud_apparies(:)=0
+
+!       -- parcours de l'ensemble des noeuds
         do in = 1, nbma*2
             if (noeud_apparies(in) .ne. 0) goto 80
             nunori=noeuds_extrem(in)
-!
+
             do nd = in+1, nbma*2
                 if (noeuds_extrem(nd) .eq. nunori) then
                     noeud_apparies(nd)=1
                     goto 80
-!
                 endif
             end do
-!
-!         NUNORI N'APPARAIT QU'UNE FOIS : C'EST L'ORIGINE
+
+!           -- nunori n'apparait qu'une fois : c'est l'origine
             goto 100
 !
  80         continue
         end do
-        call utmess('F', 'ELEMENTS_71')
-!
+
+!       La ligne est peut etre fermee. On peut s'en sortir si ORIGINE='SANS' :
+        erreur=.true.
+        if (getexm(motfac,'ORIGINE') .eq. 1) then
+            call getvtx(motfac, 'ORIGINE', iocc=iocc, scal=orig, nbret=n3)
+            if (n3.eq.1) then
+                ASSERT(orig.eq.'SANS')
+                erreur=.false.
+                nunori=noeuds_extrem(1)
+!               -- On va verifier (grossierement) que la ligne est fermee.
+!                  (on verifie seulement que chaque noeud est utilise 2 fois) :
+                AS_ALLOCATE(vi=compteur, size=nbnot)
+                compteur(:)=0
+                do im = 1, nbma
+                    compteur(noeuds_extrem(im))=compteur(noeuds_extrem(im))+1
+                    compteur(noeuds_extrem(nbma+im))=compteur(noeuds_extrem(nbma+im))+1
+                enddo
+                do in = 1, nbnot
+                    if (compteur(in).eq.0 .or. compteur(in).eq.2) cycle
+                    erreur=.true.
+                enddo
+                AS_DEALLOCATE(vi=compteur)
+            endif
+        endif
+        if (erreur) call utmess('F', 'ELEMENTS_71')
+
 100     continue
         call jenuno(jexnum(nomnoe, nunori), ndorig)
         call utmess('I', 'ELEMENTS_72', sk=ndorig)
         AS_DEALLOCATE(vi=noeud_apparies)
-!
     endif
-!
+
     AS_DEALLOCATE(vi=noeuds_extrem)
     AS_DEALLOCATE(vi=type_noeud)
     call jedetr('&&CGNOOR.MES_MAILLES')
-!
+
     call jedema()
 end subroutine

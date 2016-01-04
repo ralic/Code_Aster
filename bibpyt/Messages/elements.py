@@ -341,7 +341,7 @@ Erreur utilisateur :
 
  Conseil :
    La ligne est peut-être une ligne fermée (sans extrémités).
-   Il faut alors utiliser les mots clés GROUP_NO_ORIG et GROUP_NO_EXTR
+   On peut alors utiliser les mots clés GROUP_NO_ORIG et GROUP_NO_EXTR
    (ou NOEUD_ORIG et NOEUD_EXTR).
 
 """),

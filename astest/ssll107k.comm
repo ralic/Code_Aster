@@ -26,12 +26,14 @@ TAB_PL=MACR_CARA_POUTRE(UNITE=20,
 
 TAB_EP=MACR_CARA_POUTRE(UNITE=21,
                         FORMAT='MED',
-                        GROUP_MA_BORD=('int','ext',),
+                        GROUP_MA_BORD='ext',
+                        GROUP_MA_INTE='int',
                         NOEUD='N1',);
 
 TAB_FIN=MACR_CARA_POUTRE(UNITE=22,
                          FORMAT='MED',
-                         GROUP_MA_BORD=('int','ext',),
+                         GROUP_MA_BORD='ext',
+                         GROUP_MA_INTE='int',
                          NOEUD='N1',);
 
 TEST_TABLE(CRITERE='ABSOLU',
