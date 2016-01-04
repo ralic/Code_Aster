@@ -1,6 +1,6 @@
 subroutine te0432(option, nomte)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -108,10 +108,6 @@ subroutine te0432(option, nomte)
     endif
 !
 !
-! - INITIALISATION CODES RETOURS
-!       DO 1955 KPG=1,NPG
-!          COD(KPG)=0
-! 1955  CONTINUE
 !
 !
 ! - LECTURE DES CARACTERISTIQUES DE GRILLE ET
@@ -130,9 +126,9 @@ subroutine te0432(option, nomte)
             call dxqpgl(zr(igeom), pgl, 'S', iret)
         endif
 !
-        do 8 i = 1, 3
+        do i = 1, 3
             vecn(i)=distn*pgl(3,i)
-  8     continue
+        enddo
 !
         nddl=6
 !
@@ -147,16 +143,16 @@ subroutine te0432(option, nomte)
 !      ON JOUE AVEC B
 !
     wgt = 0.d0
-    do 800 kpg = 1, npg
+    do  kpg = 1, npg
 !
 ! - MISE SOUS FORME DE TABLEAU DES VALEURS DES FONCTIONS DE FORME
 !   ET DES DERIVEES DE FONCTION DE FORME
 !
-        do 11 n = 1, nno
+        do n = 1, nno
             vff(n) =zr(ivf+(kpg-1)*nno+n-1)
             dff(1,n)=zr(idfde+(kpg-1)*nno*2+(n-1)*2)
             dff(2,n)=zr(idfde+(kpg-1)*nno*2+(n-1)*2+1)
- 11     continue
+        enddo
 !
 ! - MASS_MECA
 !
@@ -171,32 +167,40 @@ subroutine te0432(option, nomte)
                     vecn, b, jac, p)
         wgt = wgt + rho(1)*zr(ipoids+kpg-1)*jac*densit
 !
-        do 130 n = 1, nno
-            do 130 i = 1, n
+        do n = 1, nno
+            do i = 1, n
                 coef = rho(1)*zr(ipoids+kpg-1)*jac*densit*vff(n)*vff(i)
                 a(1,1,n,i) = a(1,1,n,i) + coef
                 a(2,2,n,i) = a(2,2,n,i) + coef
                 a(3,3,n,i) = a(3,3,n,i) + coef
-130         continue
+            enddo
+        enddo
 !
         if (lexc) then
-            do 135 i = 1, 3
-                do 135 j = 1, 3
-                    do 135 n = 1, nno
-                        do 135 m = 1, n
+            do  i = 1, 3
+                do  j = 1, 3
+                    do  n = 1, nno
+                        do  m = 1, n
                             aexc(i,j,n,m) = a(i,j,n,m)
-135                     continue
+                        enddo
+                    enddo
+                enddo
+            enddo
             call r8inir(8*8*6*6, 0.d0, a, 1)
-            do 140 i = 1, 6
-                do 140 j = 1, 6
-                    do 140 n = 1, nno
-                        do 140 m = 1, n
-                            do 140 k = 1, 3
+            do  i = 1, 6
+                do  j = 1, 6
+                    do  n = 1, nno
+                        do  m = 1, n
+                            do  k = 1, 3
                                 a(i,j,n,m) = a(i,j,n,m)+p(k,i)*p(k,j) *aexc(k,k,n,m)
-140                         continue
+                            enddo
+                        enddo
+                    enddo
+                enddo
+            enddo
         endif
 !
-800 end do
+     enddo
 !
 ! - RANGEMENT DES RESULTATS
 ! -------------------------
@@ -206,12 +210,12 @@ subroutine te0432(option, nomte)
 !
         call r8inir(3*8, 0.d0, diag, 1)
         call r8inir(3, 0.d0, somme, 1)
-        do 180 i = 1, 3
-            do 181 j = 1, nno
+        do  i = 1, 3
+            do  j = 1, nno
                 somme(i) = somme(i) + a(i,i,j,j)
-181         continue
+            enddo
             alfam(i) = wgt/somme(i)
-180     continue
+        enddo
 !
 !-- CALCUL DU FACTEUR DE DIAGONALISATION
 !
@@ -219,54 +223,65 @@ subroutine te0432(option, nomte)
 !
 ! PASSAGE DU STOCKAGE RECTANGULAIRE (A) AU STOCKAGE TRIANGULAIRE (ZR)
 !
-        do 190 j = 1, nno
-            do 190 i = 1, 3
+        do j = 1, nno
+            do i = 1, 3
                 diag(i,j) = a(i,i,j,j)*alfam(i)
-190         continue
+            enddo
+        enddo
 !
-        do 195 k = 1, nddl
-            do 195 l = 1, nddl
-                do 195 i = 1, nno
-                    do 195 j = 1, nno
+        do  k = 1, nddl
+            do  l = 1, nddl
+                do  i = 1, nno
+                    do  j = 1, nno
                         a(k,l,i,j) = 0.d0
-195                 continue
-        do 196 k = 1, 3
-            do 196 i = 1, nno
+                    enddo
+                enddo
+            enddo
+        enddo
+        do k = 1, 3
+            do i = 1, nno
                 a(k,k,i,i) = diag(k,i)
-196         continue
+            enddo
+        enddo
         if (nddl .eq. 6) then
-            do 197 i = 1, nno
+            do  i = 1, nno
                 a(4,4,i,i) = a(4,4,i,i) * alfam(1)
                 a(5,5,i,i) = a(4,4,i,i) * alfam(2)
                 a(6,6,i,i) = a(4,4,i,i) * alfam(3)
-197         continue
+            enddo
         endif
     endif
 !
 !
     if (option(1:9) .eq. 'MASS_MECA') then
-        do 200 k = 1, nddl
-            do 200 l = 1, nddl
-                do 200 i = 1, nno
+        do  k = 1, nddl
+            do  l = 1, nddl
+                do  i = 1, nno
                     kkd = ((nddl*(i-1)+k-1)* (nddl*(i-1)+k))/2
-                    do 200 j = 1, i
+                    do  j = 1, i
                         kk = kkd + nddl * (j-1) + l
                         zr(imatuu+kk-1) = a(k,l,i,j)
-200                 continue
+                    enddo
+                enddo
+            enddo
+        enddo
 !
     else if (option.eq.'M_GAMMA'.or. option.eq.'ECIN_ELEM') then
         nvec = nddl*nno*(nddl*nno+1)/2
-        do 210 k = 1, nvec
+        do k = 1, nvec
             matv(k) = 0.0d0
-210     continue
-        do 220 k = 1, nddl
-            do 220 l = 1, nddl
-                do 220 i = 1, nno
+        enddo
+        do  k = 1, nddl
+            do  l = 1, nddl
+                do  i = 1, nno
                     kkd = ((nddl*(i-1)+k-1)* (nddl*(i-1)+k))/2
-                    do 220 j = 1, i
+                    do  j = 1, i
                         kk = kkd + nddl* (j-1) + l
                         matv(kk) = a(k,l,i,j)
-220                 continue
+                    enddo
+                enddo
+            enddo
+        enddo
         call vecma(matv, nvec, matp, nddl*nno)
         if (option .eq. 'M_GAMMA') then
             call pmavec('ZERO', nddl*nno, matp, zr(iacce), zr(ivect))
