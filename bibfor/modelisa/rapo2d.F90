@@ -78,7 +78,7 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
     character(len=9) :: nomte
     character(len=16) :: motfac, motcle(2), typmcl(2), option
     character(len=19) :: ligrmo, ligrel
-    character(len=24) :: lchin(2), lchout(2), nolili, lismai
+    character(len=24) :: lchin(2), lchout(2), nolili, lismai, valk(2)
     character(len=24) :: lisnoe, noeuma, vale1, vale2, grnoma, nogrno
     character(len=8) :: charge
     character(len=14) :: numddl
@@ -92,7 +92,7 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
     integer :: iocc, iarg
     real(kind=8) :: igzz, coorig(3), beta, eps, un
     real(kind=8) :: xpou, ypou, s, s1, xg, yg, dnorme
-    real(kind=8) :: ax, ay, axx, ayy
+    real(kind=8) :: ax, ay, axx, ayy, valr(9) 
     complex(kind=8) :: betac, ccmp(3)
     complex(kind=8), pointer :: coec(:) => null()
     real(kind=8), pointer :: coer(:) => null()
@@ -329,7 +329,7 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
     axx = inertie_raccord(4)
     ayy = inertie_raccord(5)
 !
-    if (abs(s) .lt. r8prem()) then
+    if (abs(s) .eq. 0.d0) then
         call utmess('F', 'MODELISA6_46')
     endif
     s1 = 1.0d0/s
@@ -343,9 +343,21 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
 ! --- -----------------------------------------------------------------
 !     VERIFICATION DE L'IDENTITE GEOMETRIQUE DE G AVEC LE
 !     NOEUD POUTRE A RACCORDER :
-    dnorme = sqrt((xpou-xg)*(xpou-xg)+ (ypou-yg)*(ypou-yg))
+    dnorme = sqrt((xpou-xg)*(xpou-xg)+ (ypou-yg)*(ypou-yg))/(s/2.)
     if (dnorme .gt. eps) then
-        ASSERT(.false.)
+        valr(1) = xg
+        valr(2) = yg
+        valr(3) = 0.
+        valr(4) = xpou
+        valr(5) = ypou
+        valr(6) = 0.
+        valr(7) = eps*100.0d0
+        valr(8) = s
+        valr(9) = dnorme
+        valk(1) = option
+        vali(1) = iocc
+        call utmess('A', 'CALCULEL3_80', sk=valk(1), si=vali(1), nr=9,&
+                        valr=valr)
     endif
 !
 !
