@@ -51,13 +51,15 @@ cata_msg = {
 """),
 
     93 : _(u"""
-  -> Risque et conseils : dans le cas d'une résolution incrémentale, on ne considère que la variation des variables de commande entre l'instant précédent et l'instant actuel.
-     On ne prend donc pas en compte d'éventuelles contraintes incompatibles dues à ces variables de commande initiales.
+  -> Risque et conseils : dans le cas d'une résolution incrémentale, on ne prend pas en compte
+     les éventuelles contraintes incompatibles dues à ces variables de commande initiales.
      Pour tenir compte de ces contraintes vous pouvez :
-     - partir d'un instant fictif antérieur où toutes les variables de commande sont nulles ou égales aux valeurs de référence
+     - partir d'un instant fictif antérieur où toutes les variables de commande sont nulles 
+       (ou égales aux valeurs de référence)
      - choisir des valeurs de référence adaptées
 
-     Pour plus d'informations, consultez la documentation de STAT_NON_LINE (U4.51.03) mot-clé EXCIT et le test FORMA30 (V7.20.101).
+     Pour plus d'informations, consultez la documentation de AFFE_MATERIAU  
+     (mot-clé AFFE_VARC).
 """),
 
     94 : _(u"""
@@ -80,11 +82,11 @@ cata_msg = {
 """),
 
     97 : _(u"""
-  -> Les variables de commandes initiales induisent des contraintes
-     incompatibles :
-     l'état initial (avant le premier instant de calcul) est tel que
-     les variables de commande (température, hydratation, séchage...)
-     conduisent à des contraintes non équilibrées.
+  -> A l'état initial (avant le premier instant de calcul) les variables 
+     de commande (température, hydratation, séchage...) entraînent une 
+     déformation anélastique non nulle.
+     Cette déformation non nulle est incohérente avec l'état initial "vierge" qui est
+     utilisé.
 """),
 
     98 : _(u"""

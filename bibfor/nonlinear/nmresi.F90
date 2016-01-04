@@ -163,7 +163,7 @@ implicit none
     lpilo = isfonc(fonact,'PILOTAGE')
     lcine = isfonc(fonact,'DIRI_CINE')
     lctcc = isfonc(fonact,'CONT_CONTINU')
-    linit = (numins.eq.1).and.(ds_inout%l_state_init)
+    linit = (numins.eq.1).and.(.not.ds_inout%l_state_init)
 !
 ! --- DECOMPACTION DES VARIABLES CHAPEAUX
 !

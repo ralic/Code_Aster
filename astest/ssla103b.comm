@@ -18,9 +18,14 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# -----------------------------------------------------------------
+from Utilitai.Utmess import MessageLog
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F( NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'),
+      ERREUR=_F(ERREUR_F='EXCEPTION',), DEBUG=_F(SDVERI='OUI'),
+      IGNORE_ALARM='SUPERVIS_1',
+      PAR_LOT='NON')
+# ALARME 'SUPERVIS_1' : PAR_LOT='NON' necessaire pour verifier l'emission
+# d'une alarme
 
 M=LIRE_MAILLAGE();
 
@@ -33,11 +38,13 @@ E=DEFI_CONSTANTE(VALE=3.E10,);
 
 NU=DEFI_CONSTANTE(VALE=0.2,);
 
-ALPHA=DEFI_CONSTANTE(VALE= 1.E-5)
+alpha=1.e-5
+ALPHA=DEFI_CONSTANTE(VALE= alpha)
 
+kdessic=1.66e-5
 BETON=DEFI_MATERIAU(ELAS_FO=_F(E=E,
                                NU=NU,
-                               K_DESSIC=1.66e-05,
+                               K_DESSIC=kdessic,
                                B_ENDOGE = 1.5E-5,
                                ALPHA = ALPHA,
                                TEMP_DEF_ALPHA =20),);
@@ -342,5 +349,83 @@ TEST_RESU(RESU=(_F(INST=3600.0,
                    PRECISION=9.9999999999999995E-07,),
                 ),
           )
+          
+#------------------------------------------------------------------------------
+# 2. Validation de l'emission de l'alarme MECANONLINE2_97 (voir issue24621):
+#-------------------------------------------------------------------------------
+infos = MessageLog.get_info_alarm()
+emit = [alr[0] for alr in infos if alr[0] == 'MECANONLINE2_97']
+n1=len(emit)
+
+# 2.1 : on verifie que l'alarme est emise si T != Tref :
+#-------------------------------------------------------
+CM2_1=AFFE_MATERIAU(MAILLAGE=M,
+                 AFFE=_F(TOUT='OUI', MATER=BETON,),
+                 AFFE_VARC=(_F(TOUT='OUI',EVOL=HYDR1,NOM_VARC='HYDR',NOM_CHAM='HYDR_NOEU'),
+                            _F(TOUT='OUI',EVOL=SECH1,NOM_VARC='SECH',NOM_CHAM='TEMP',VALE_REF=100),
+                            _F(TOUT='OUI',EVOL=TEMP1,NOM_VARC='TEMP',NOM_CHAM='TEMP',VALE_REF=21),),);
+
+W2_1=STAT_NON_LINE(MODELE=MO, CHAM_MATER=CM2_1,
+                EXCIT=_F(CHARGE=CH1,),
+                COMPORTEMENT=_F(RELATION='ELAS',),
+                INCREMENT=_F(LIST_INST=L_INST,),
+                NEWTON=_F(MATRICE='TANGENTE',  REAC_ITER=1,),
+                CONVERGENCE=_F(RESI_GLOB_MAXI=1e-06, ITER_GLOB_MAXI=25,),);
+
+# on souhaite verifier que l'alarme MECANONLINE2_97 a ete emise
+infos = MessageLog.get_info_alarm()
+emit = [alr[0] for alr in infos if alr[0] == 'MECANONLINE2_97']
+n2=len(emit)
+is_ok = n1==0 and n2==1
+
+# TEST_RESU
+TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  '),
+                       _F(PARA='BOOLEEN',LISTE_I=int(is_ok))))
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=1,
+           VALE_REFE_I=1,
+           NOM_PARA='BOOLEEN',
+           TABLE=TAB1,
+           FILTRE=_F(NOM_PARA='TEST',
+                     VALE_K='VALEUR  ',),
+           )
+
+# 2.2 : on verifie que l'alarme n'est pas emise si la somme de la deformation thermique
+#       et de la deformation de sechage est nulle :
+#------------------------------------------------------
+CM2_2=AFFE_MATERIAU(MAILLAGE=M,
+                 AFFE=_F(TOUT='OUI', MATER=BETON,),
+                 AFFE_VARC=(_F(TOUT='OUI',EVOL=HYDR1,NOM_VARC='HYDR',NOM_CHAM='HYDR_NOEU'),
+                            _F(TOUT='OUI',EVOL=SECH1,NOM_VARC='SECH',NOM_CHAM='TEMP',
+                               VALE_REF=100. - (1.e4/kdessic)),
+                            _F(TOUT='OUI',EVOL=TEMP1,NOM_VARC='TEMP',NOM_CHAM='TEMP',
+                               VALE_REF=20. + (1.e4/alpha)),));
+
+W2_2=STAT_NON_LINE(MODELE=MO, CHAM_MATER=CM2_2,
+                EXCIT=_F(CHARGE=CH1,),
+                COMPORTEMENT=_F(RELATION='ELAS',),
+                INCREMENT=_F(LIST_INST=L_INST,),
+                NEWTON=_F(MATRICE='TANGENTE',  REAC_ITER=1,),
+                CONVERGENCE=_F(RESI_GLOB_MAXI=1e-06, ITER_GLOB_MAXI=25,),);
+                
+# on souhaite verifier que l'alarme MECANONLINE2_97 N'a PAS ete emise
+infos = MessageLog.get_info_alarm()
+emit = [alr[0] for alr in infos if alr[0] == 'MECANONLINE2_97']
+n3=len(emit)
+is_ok = n3==n2
+
+# TEST_RESU
+TAB2=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  '),
+                       _F(PARA='BOOLEEN',LISTE_I=int(is_ok))))
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=1,
+           VALE_REFE_I=1,
+           NOM_PARA='BOOLEEN',
+           TABLE=TAB2,
+           FILTRE=_F(NOM_PARA='TEST',
+                     VALE_K='VALEUR  ',),
+           )
 
 FIN();
