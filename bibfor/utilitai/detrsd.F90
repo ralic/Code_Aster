@@ -6,7 +6,6 @@ subroutine detrsd(typesd, nomsd)
 #include "asterfort/apetsc.h"
 #include "asterfort/assde1.h"
 #include "asterfort/assert.h"
-!#include "asterfort/xfem_pc_detr.h"
 #include "asterfort/detrs2.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/elg_gest_common.h"
@@ -17,7 +16,10 @@ subroutine detrsd(typesd, nomsd)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/codent.h"
 #include "asterfort/utmess.h"
+#include "asterfort/asmpi_info.h"
+
     character(len=*) :: typesd, nomsd
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -53,10 +55,8 @@ subroutine detrsd(typesd, nomsd)
 !          'CHAMP' (CHAPEAU AUX CHAM_NO/CHAM_ELEM/CARTE/RESUELEM)
 !          'CHAMP_GD' (CHAPEAU DESUET AUX CHAM_NO/CHAM_ELEM/...)
 !          'RESULTAT'  'LIGREL'  'NUAGE'  'MAILLAGE' 'CRITERE'
-!          'LISTR8'    'LISTIS'
+!          'LISTR8'    'LISTIS'  'LISTE_CHARGE'   'NUML_EQUA'
 !          (OU ' ' QUAND ON NE CONNAIT PAS LE TYPE).
-!          'LISTE_CHARGE'
-!          'NUML_DDL'
 !       NOMSD   : NOM DE LA STRUCTURE DE DONNEES A DETRUIRE
 !          NUME_DDL(K14),MATR_ASSE(K19),VECT_ASSE(K19)
 !          CHAMP(K19), MATR_ELEM(K8), VECT_ELEM(K8), VARI_COM(K14)
@@ -69,16 +69,17 @@ subroutine detrsd(typesd, nomsd)
 ! ----------------------------------------------------------------------
     complex(kind=8) :: cbid
 !
-    integer :: iret, iad, long, i, nbch, ibid
+    mpi_int :: mrank, msize
+    integer :: iret, iad, long, i, nbch, ibid, nbproc, num
     integer :: ityobj, inomsd, nblg, nbpa, nblp, n1
     integer :: iexi
-    character(len=8) :: metres, k8
+    character(len=8) :: metres, k8, chnbjo
     character(len=12) :: vge
     character(len=14) :: nu, com
     character(len=16) :: typ2sd, corres
     character(len=19) :: champ, matas, table, solveu, fnc, resu
     character(len=19) :: ligrel, nuage, ligret, mltf, stock, k19, matel, liste
-    character(len=24) :: typobj, knomsd
+    character(len=24) :: typobj, knomsd, nojoin
     aster_logical :: lbid
     character(len=24), pointer :: ltns(:) => null()
     character(len=24), pointer :: relr(:) => null()
@@ -89,6 +90,9 @@ subroutine detrsd(typesd, nomsd)
 !
     call jemarq()
     typ2sd = typesd
+
+    call asmpi_info(rank=mrank, size=msize)
+    nbproc = to_aster_int(msize)
 !
 !     ------------------------------------------------------------------
     if (typ2sd .eq. ' ') then
@@ -453,7 +457,7 @@ subroutine detrsd(typesd, nomsd)
         call jedetr(k19//'.DELG')
 
     else if (typ2sd.eq.'NUML_EQUA') then
-!     ------------------------------------
+!  --------------------------------------
         k19 = nomsd
         call jedetr(k19//'.PRNO')
         call jedetr(k19//'.NEQU')
@@ -461,6 +465,14 @@ subroutine detrsd(typesd, nomsd)
         call jedetr(k19//'.NUEQ')
         call jedetr(k19//'.NULG')
         call jedetr(k19//'.NUGL')
+        call jedetr(k19//'.JOIN')
+        call jedetr(k19//'.NLGP')
+        call jedetr(k19//'.PDDL')
+        do num=1,nbproc
+            call codent(num, 'G', chnbjo)
+            nojoin=k19//'.'//chnbjo
+            call jedetr(nojoin)
+        enddo
 !
 !     ------------------------------------------------------------------
     else if (typ2sd.eq.'CHAM_ELEM') then
@@ -565,21 +577,6 @@ subroutine detrsd(typesd, nomsd)
         call jedetr(nu//'.VSUIVE')
         call jedetr(nu//'.OLDN')
         call jedetr(nu//'.NEWN')
-!
-!     ------------------------------------------------------------------
-    else if (typ2sd.eq.'NUML_DDL') then
-!     -----------------------------------
-!
-        nu = nomsd
-        call detrs2('NUML_EQUA', nu//'.NUML')
-
-        call jedetr(nu//'.NUML.PRNO')
-        call jedetr(nu//'.NUML.NOPR')
-        call jedetr(nu//'.NUML.DELG')
-        call jedetr(nu//'.NUML.NEQU')
-        call jedetr(nu//'.NUML.NULG')
-        call jedetr(nu//'.NUML.NUGL')
-        call jedetr(nu//'.NUML.NUEQ')
 !
 !     ------------------------------------------------------------------
     else if (typ2sd.eq.'VARI_COM') then

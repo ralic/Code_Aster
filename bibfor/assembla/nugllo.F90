@@ -137,7 +137,7 @@ subroutine nugllo(nu, base)
     call jemarq()
 !
 !---- SUPPRESSION DU .NUML
-    call detrsd('NUML_DDL', nu)
+    call detrsd('NUML_EQUA', nu//'.NUML')
 !
 !---- RECHERCHE DU MAILLAGE ET DU NOMBRE DE MAILLES ET DE NOEUDS
     call dismoi('NOM_MAILLA', nu, 'NUME_DDL', repk=noma)
