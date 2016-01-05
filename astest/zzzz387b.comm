@@ -1,0 +1,122 @@
+# -*- coding: utf-8 -*-
+# TITRE Validation de la vérification des bornes dans mfront
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+os.system("mfront --obuild zzzz387b.mfront --interface=aster")
+os.system("cp src/libAsterBehaviour.so Chaboche.so")
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+
+C1_I=187.*341.
+C2_I=29.*17184.
+young=145200.
+k=0.43
+w=6.09
+g1=341.
+g2=17184.
+
+# LE C_I DU MODELE VISC_CIN1_CHAB EST DETERMINE PAR C_I = C1*A1
+
+MATF=DEFI_MATERIAU(ELAS=_F(E=young,
+                           NU=0.3),
+                   MFRONT=_F(LISTE_COEF=(young, 0.3, 151., 87., 2.3, k, w, C1_I, C2_I, g1, g2, 1.,),),)
+
+
+
+LINST=DEFI_LIST_REEL(              DEBUT=0.,INTERVALLE=(
+                              _F( JUSQU_A = 0.4, NOMBRE = 1),
+                              _F( JUSQU_A = 1.435, NOMBRE = 12)))
+
+LSUB=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LINST),
+                        ECHEC=_F(SUBD_NIVEAU=2,
+                                 SUBD_PAS=2,),
+                                 )
+
+S1=DEFI_FONCTION( NOM_PARA='INST',
+                            PROL_DROITE='LINEAIRE',
+                           PROL_GAUCHE='LINEAIRE',
+                          VALE=( 0.0,  0.0,
+                                 1.435,  143.5,
+                                 ))
+
+S3=DEFI_FONCTION( NOM_PARA='INST',
+                            PROL_DROITE='LINEAIRE',
+                           PROL_GAUCHE='LINEAIRE',
+                          VALE=( 0.0,  0.0,
+                                 1.435,  143.5,
+                                 ))
+
+
+# MFRONT
+
+SOLMF=SIMU_POINT_MAT( MATER=MATF,
+                COMPORTEMENT=_F(RELATION='MFRONT',
+                                NOM_ROUTINE='asterchaboche',
+                                LIBRAIRIE='Chaboche.so',
+                                VERI_BORNE='MESSAGE',),
+                INCREMENT=_F(  LIST_INST = LSUB),
+                NEWTON=_F(REAC_ITER = 1, ),
+                SIGM_IMPOSE=_F(SIXX=S1,SIXY=S3,),
+                     )
+
+SOLMF2=SIMU_POINT_MAT( MATER=MATF,
+                 COMPORTEMENT=_F(RELATION='MFRONT',
+                                 NOM_ROUTINE='asterchaboche',
+                                 LIBRAIRIE='Chaboche.so',
+                                 VERI_BORNE='SANS',),
+                 INCREMENT=_F(  LIST_INST = LSUB),
+                 NEWTON=_F(REAC_ITER = 1, ),
+                 SIGM_IMPOSE=_F(SIXX=S1,SIXY=S3,),
+                      )
+
+# IMPR_TABLE(TABLE=SOLMF,UNITE=38)
+
+
+TEST_TABLE(FILTRE=_F(NOM_PARA='INST',VALE=1.435),
+                   TABLE=SOLMF,
+                   NOM_PARA='SIXX',
+                   VALE_CALC=143.499976126,
+                   VALE_REFE=143.5,
+                   REFERENCE='AUTRE_ASTER',
+)
+TEST_TABLE(FILTRE=_F(NOM_PARA='INST',VALE=1.435),
+                   TABLE=SOLMF,
+                   NOM_PARA='EPXX',
+                   VALE_CALC=0.0960649380127,
+                   VALE_REFE=0.0960649289423,
+                   REFERENCE='AUTRE_ASTER',
+)
+TEST_TABLE(FILTRE=_F(NOM_PARA='INST',VALE=1.435),
+                   TABLE=SOLMF,
+                   NOM_PARA='EPXY',
+                   VALE_CALC=0.143899753911,
+                   VALE_REFE=0.143899735011,
+                   REFERENCE='AUTRE_ASTER',
+)
+TEST_TABLE(FILTRE=_F(NOM_PARA='INST',VALE=1.435),
+                   TABLE=SOLMF,
+                   NOM_PARA='V7',
+                   VALE_CALC=0.190153297295,
+                   VALE_REFE=0.190153273882,
+                   REFERENCE='AUTRE_ASTER',
+)
+
+
+
+FIN()
