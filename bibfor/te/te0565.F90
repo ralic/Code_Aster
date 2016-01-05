@@ -182,7 +182,7 @@ subroutine te0565(nomopt, nomte)
         end do
     end do
 !
-    call ortrep(zi(imate), ndim, xyz, repere)
+    call ortrep(ndim, xyz, repere)
 !
 ! ---- RECUPERATION DU CHAMP DE DEPLACEMENTS AUX NOEUDS  :
 !

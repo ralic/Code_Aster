@@ -82,7 +82,7 @@ subroutine te0529(option, nomte)
             xyz(idim) = xyz(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
 310      continue
 300  end do
-    call ortrep(zi(imate), ndim, xyz, repere)
+    call ortrep(ndim, xyz, repere)
 !
 ! ---- RECUPERATION DE L'INSTANT DE CALCUL :
 !      -----------------------------------

@@ -82,7 +82,7 @@ subroutine te0022(option, nomte)
             bary(idim) = bary(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
 20      continue
 30  end do
-    call ortrep(zi(imate), ndim, bary, repere)
+    call ortrep(ndim, bary, repere)
 !
 ! ---- RECUPERATION DU CHAMP DE DEPLACEMENT SUR L'ELEMENT
 !      --------------------------------------------------

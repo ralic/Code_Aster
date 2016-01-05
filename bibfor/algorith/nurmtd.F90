@@ -121,7 +121,7 @@ subroutine nurmtd(ndim, nno1, nno2, npg, iw,&
             bary(idim) = bary(idim)+zr(igeom+idim+ndim*(ia-1)-1)/nno1
         end do
     end do
-    call ortrep(mate, ndim, bary, repere)
+    call ortrep(ndim, bary, repere)
 !
 ! - CALCUL POUR CHAQUE POINT DE GAUSS
     do g = 1, npg

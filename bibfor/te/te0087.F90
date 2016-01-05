@@ -42,7 +42,7 @@ subroutine te0087(option, nomte)
     integer :: nbsig, nbsig1, nbsig2, ndim, nno, i
     integer :: nnos, npg, ipoids, ivf, idfde, idim
     integer :: igau, isig, igeom, idepl, iret
-    integer :: itemps, idefo, imate
+    integer :: itemps, idefo
     integer :: jgano
 !
     real(kind=8) :: epsm(54), repere(7), bary(3)
@@ -78,10 +78,6 @@ subroutine te0087(option, nomte)
 !      ----------------------------------------------
     call jevech('PGEOMER', 'L', igeom)
 !
-! ---- RECUPERATION DU MATERIAU :
-!      ------------------------
-    call jevech('PMATERC', 'L', imate)
-!
 ! ---- RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE :
 !      ------------------------------------------------------------
 !     COORDONNEES DU BARYCENTRE ( POUR LE REPRE CYLINDRIQUE )
@@ -94,7 +90,7 @@ subroutine te0087(option, nomte)
             bary(idim) = bary(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
 140      continue
 150  end do
-    call ortrep(zi(imate), ndim, bary, repere)
+    call ortrep(ndim, bary, repere)
 !
 ! ---- RECUPERATION DU CHAMP DE DEPLACEMENT SUR L'ELEMENT :
 !      --------------------------------------------------
@@ -119,8 +115,7 @@ subroutine te0087(option, nomte)
 !      ---------------------------------------
     call epsvmc(fami, nno, ndim, nbsig1, npg,&
                 ipoids, ivf, idfde, zr(igeom), zr(idepl),&
-                instan, zi(imate), repere, nharm, option,&
-                epsm)
+                instan, repere, nharm, option, epsm)
 !
 !      --------------------
 ! ---- AFFECTATION DU VECTEUR EN SORTIE AVEC LES DEFORMATIONS AUX

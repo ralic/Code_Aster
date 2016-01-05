@@ -1,7 +1,6 @@
 subroutine epsvmc(fami   , nno    , ndim  , nbsig, npg   ,&
                   j_poids, j_vf   , j_dfde, xyz  , disp  ,&
-                  time   , j_mater, repere, nharm, option,&
-                  epsi   )
+                  time   , repere, nharm, option,  epsi   )
 !
 implicit none
 !
@@ -44,7 +43,6 @@ implicit none
     real(kind=8), intent(in) :: xyz(1)
     real(kind=8), intent(in) :: disp(1)
     real(kind=8), intent(in) :: time
-    integer, intent(in) :: j_mater
     real(kind=8), intent(in) :: repere(7)
     real(kind=8), intent(in) :: nharm
     character(len=16), intent(in) :: option
@@ -80,7 +78,7 @@ implicit none
     real(kind=8) :: epsi_varc(162), epsi_tota_g(162), epsi_tota(162)
     real(kind=8) :: xyzgau(3), d(4, 4)
     real(kind=8) :: zero, un, deux
-    integer :: i, kpg
+    integer :: i, kpg, imate
     aster_logical :: l_modi_cp
 !
 ! --------------------------------------------------------------------------------------------------
@@ -116,8 +114,9 @@ implicit none
 ! - Compute variable commands strains (thermics, drying, etc.)
 !
     if (option(1:4).eq.'EPME'.or.option(1:4).eq.'EPMG'.or.lteatt('C_PLAN','OUI')) then
+        call jevech('PMATERC', 'L', imate)
         call epthmc(fami, nno, ndim, nbsig, npg,&
-                    zr(j_vf), xyz, repere, time, j_mater,&
+                    zr(j_vf), xyz, repere, time, zi(imate),&
                     option, epsi_varc)
     endif
 !
@@ -155,7 +154,7 @@ implicit none
 !
 ! --------- Hooke matrix for iso-parametric elements
 !
-            call dmatmc(fami, j_mater, time, '+', kpg,&
+            call dmatmc(fami, zi(imate), time, '+', kpg,&
                         1, repere, xyzgau, nbsig, d,&
                         l_modi_cp)
 !

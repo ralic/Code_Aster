@@ -110,7 +110,7 @@ subroutine te0392(option, nomte)
             bary(idim) = bary(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
         end do
     end do
-    call ortrep(zi(imate), ndim, bary, repere)
+    call ortrep(ndim, bary, repere)
 !
     call jevech('PMATUUR', 'E', imatuu)
     do i = 1, 300

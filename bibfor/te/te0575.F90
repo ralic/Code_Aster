@@ -121,7 +121,7 @@ subroutine te0575(option, nomte)
             end do
         end do
 !
-        call ortrep(zi(imate), ndim, bary, repere)
+        call ortrep(ndim, bary, repere)
 !
 ! ---    RECUPERATION DU CHAMP DE DEPLACEMENT A L'INSTANT COURANT :
 !        --------------------------------------------------------

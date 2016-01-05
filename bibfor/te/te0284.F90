@@ -119,7 +119,7 @@ subroutine te0284(option, nomte)
             bary(idim) = bary(idim)+zr(igeom+idim+dimcoo*(i-1)-1)/nno
 140      continue
 150  end do
-    call ortrep(zi(imate), dimcoo, bary, repere)
+    call ortrep(dimcoo, bary, repere)
 !
 !
 ! ---- RECUPERATION DE L'INSTANT

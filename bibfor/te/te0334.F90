@@ -139,8 +139,7 @@ implicit none
     optio2 = 'EPME_ELGA'
     call epsvmc('RIGI', nno, ndim, nbsig, npg,&
                 ipoids, ivf, idfde, zr(igeom), zr(idepl),&
-                zr(itemps), zi(imate), repere, nharm, optio2,&
-                epsi_meca)
+                zr(itemps), repere, nharm, optio2, epsi_meca)
 !
 ! - Creep strains: epsi_creep
 !

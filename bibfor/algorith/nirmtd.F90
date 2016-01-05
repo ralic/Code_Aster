@@ -103,7 +103,7 @@ subroutine nirmtd(ndim, nno1, nno2, nno3, npg,iw, vff2, vff3, ivf1, idff1,&
             bary(idim) = bary(idim)+zr(igeom+idim+ndim*(ia-1)-1)/nno1
         end do
     end do
-    call ortrep(mate, ndim, bary, repere)
+    call ortrep(ndim, bary, repere)
 !
 ! - CALCUL POUR CHAQUE POINT DE GAUSS
     do g = 1, npg

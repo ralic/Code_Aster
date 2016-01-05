@@ -1,4 +1,4 @@
-subroutine ortrep(mater, ndim, coor, repere)
+subroutine ortrep(ndim, coor, repere)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,10 +50,10 @@ subroutine ortrep(mater, ndim, coor, repere)
 #include "asterfort/utmess.h"
 #include "asterfort/utrcyl.h"
     real(kind=8) :: repere(7), coor(3)
-    integer :: mater, ndim
+    integer :: ndim
 !
 ! -----  VARIABLES LOCALES
-    integer :: nbres, i, iret, icamas
+    integer :: nbres, i, iret, icamas, imate
     parameter         ( nbres=9 )
     integer :: icodre(nbres)
     character(len=16) :: phenom
@@ -78,13 +78,14 @@ subroutine ortrep(mater, ndim, coor, repere)
     else
 !     ----
 !
+        call jevech('PMATERC', 'L', imate)
 ! ---- TRAITEMENT DU CAS 3D :
 !      ====================
         if (ndim .eq. 3) then
 !
 ! ----   RECUPERATION DE LA NATURE DU MATERIAU DANS PHENOM
 !        -------------------------------------------------
-            call rccoma(mater, 'ELAS', 1, phenom, icodre(1))
+            call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
 !
             if (phenom .eq. 'ELAS_ORTH' .or. phenom .eq. 'ELAS_ISTR') then
 !
@@ -131,7 +132,7 @@ subroutine ortrep(mater, ndim, coor, repere)
 !
 ! ----   RECUPERATION DE LA NATURE DU MATERIAU DANS PHENOM
 !        -------------------------------------------------
-            call rccoma(mater, 'ELAS', 1, phenom, icodre(1))
+            call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
 !
             if (phenom .eq. 'ELAS_ORTH' .or. phenom .eq. 'ELAS_ISTR') then
 !

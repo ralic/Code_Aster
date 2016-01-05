@@ -208,7 +208,7 @@ subroutine te0491(option, nomte)
         end do
     end do
 !
-    call ortrep(zi(imate), ndim, xyz, repere)
+    call ortrep(ndim, xyz, repere)
 !
 ! ---- RECUPERATION DU CHAMP DE DEPLACEMENTS AUX NOEUDS  :
 !
@@ -309,8 +309,7 @@ subroutine te0491(option, nomte)
     optio2 = 'EPME_ELGA'
     call epsvmc(fami, nno, ndim, nbsig, npg1,&
                 ipoids, ivf, idfde, zr(igeom), zr(idepl),&
-                instan, zi(imate), repere, nharm, optio2,&
-                epsm)
+                instan, repere, nharm, optio2, epsm)
 !
 !                      ===========================
 !                      =                         =

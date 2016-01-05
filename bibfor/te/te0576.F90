@@ -113,7 +113,7 @@ subroutine te0576(option, nomte)
                 xyz(idim) = xyz(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
             end do
         end do
-        call ortrep(zi(imate), ndim, xyz, repere)
+        call ortrep(ndim, xyz, repere)
 !
 ! ---    RECUPERATION DU CHAMP DE DEPLACEMENT A L'INSTANT COURANT :
 !        --------------------------------------------------------
