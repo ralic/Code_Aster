@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -30,7 +30,7 @@ import os
 from SD.sd_maillage import sd_maillage
 from Utilitai.signal_correlation_utils import (get_group_nom_coord, calc_dist2)
 from Cata.cata import ( _F, DETRUIRE, LIRE_IMPE_MISS, LIRE_FORC_MISS, 
-                        COMB_MATR_ASSE, DYNA_LINE_HARM)
+                        COMB_MATR_ASSE, DYNA_VIBRA)
 
 def dyna_iss_vari_ops(self, **kwargs):
     """Corps de la macro DYNA_ISS_VARI"""
@@ -291,7 +291,8 @@ class GeneratorTRANS(Generator):
                        UNITE_RESU_FORC = self.calc_params['UNITE_RESU_FORC'],
                        FREQ_EXTR = self.FREQ_PAS,)
                                 
-        __dyge0 = DYNA_LINE_HARM(
+        __dyge0 = DYNA_VIBRA(
+                  TYPE_CALCUL = 'HARM', BASE_CALCUL = 'GENE',
                   MATR_MASS = self.mat_gene_params['MATR_MASS'],
                   MATR_RIGI = __rito,
                   FREQ = self.liste_freq_sig, 
@@ -358,7 +359,8 @@ class GeneratorTRANS(Generator):
         __fosi.RECU_VECT_GENE_C(FSISM)      
         # CALCUL ISS 
         if self.mat_gene_params['MATR_AMOR'] is not None :
-            __dyge = DYNA_LINE_HARM(
+            __dyge = DYNA_VIBRA(
+                  TYPE_CALCUL = 'HARM', BASE_CALCUL = 'GENE',
                   MATR_MASS = self.mat_gene_params['MATR_MASS'],
                   MATR_RIGI = __rito,
                   FREQ = freqk,
@@ -366,7 +368,8 @@ class GeneratorTRANS(Generator):
                   EXCIT = _F(VECT_ASSE_GENE = __fosi,
                               COEF_MULT = 1.0,), )
         else :
-            __dyge = DYNA_LINE_HARM(
+            __dyge = DYNA_VIBRA(
+                  TYPE_CALCUL = 'HARM', BASE_CALCUL = 'GENE',
                   MATR_MASS = self.mat_gene_params['MATR_MASS'],
                   MATR_RIGI = __rito,
                   FREQ = freqk,
@@ -445,7 +448,8 @@ class GeneratorSPEC(Generator):
             #  Calcul harmonique
             __fosi.RECU_VECT_GENE_C(FSISM)
             if self.mat_gene_params['MATR_AMOR'] is not None :
-                __dyge = DYNA_LINE_HARM(
+                __dyge = DYNA_VIBRA(
+                  TYPE_CALCUL = 'HARM', BASE_CALCUL = 'GENE',
                   MATR_MASS = self.mat_gene_params['MATR_MASS'],
                   MATR_RIGI = __rito,
                   FREQ = freqk,
@@ -453,7 +457,8 @@ class GeneratorSPEC(Generator):
                   EXCIT = _F(VECT_ASSE_GENE = __fosi,
                              COEF_MULT = 1.0,),)
             else :
-                __dyge = DYNA_LINE_HARM(
+                __dyge = DYNA_VIBRA(
+                  TYPE_CALCUL = 'HARM', BASE_CALCUL = 'GENE',
                   MATR_MASS = self.mat_gene_params['MATR_MASS'],
                   MATR_RIGI = __rito,
                   FREQ = freqk,

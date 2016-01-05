@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -63,15 +63,6 @@ def CALC_COHE(freq, **kwargs):
        # PARAMETRES fonction de coherence
         VITE_ONDE = kwargs['VITE_ONDE']
         alpha = kwargs['PARA_ALPHA']
-#        XN=NP.repeat(XX, nbno)
-#        YN=NP.repeat(YY, nbno)
-#        XR=NP.reshape(XN, (nbno, nbno))
- #       YR=NP.reshape(YN, (nbno, nbno))
- #       XRT = NP.transpose(XR)
- #       YRT = NP.transpose(YR)
- #       DX = XR - XRT
- #       DY = YR - YRT
- #       DIST = DX**2 + DY**2
         COHE = NP.exp(- (DIST2 * (alpha * freq / VITE_ONDE)**2.))
      #----ABRAHAMSON ROCK (EPRI)      
     elif model == 'ABRAHAMSON' :
@@ -290,13 +281,6 @@ def gene_traj_gauss_evol_ND(self, data_cohe, rv=None, **kwargs):
         for vdim in range(dim):
              vale_x.append( sum(NP.sqrt(vale_dsp) * vecc1[vdim] * (vcos+vsin) + \
                      NP.sqrt(vale_dsp) * vecc2[vdim] * (vcos-vsin)))
-
-##        if data_cohe['TYPE'] != 'COEF_CORR': 
-#            cohec = CALC_COHE(lw2[iifr], **data_cohe)
-#            aster_core.matfpe(-1)
-#            Mat_cohe = NP.linalg.cholesky(cohec)
-#            aster_core.matfpe(1)
-
         vale_Xt = NP.dot(cohec,vale_x)
         Xt[:, nii] = NP.real(vale_Xt) * sqrt(DW)
     return Xt.tolist()
@@ -462,8 +446,6 @@ def erre_spectre(Freq, valesro, vale_sro_ref):
 
 
 def itersimcortir_SRO(self, FONC_DSP, data_cohe, NB_TIR, **SRO_args):
-#(f_dsp, f_sro,nb_iter,f_modul, SRO_args ,dico_err,NB_TIRAGE=1 )
-# FONC_SPEC, AMORT, FMIN,  PAS=None, LIST_FREQ=None
     # ---------------------------------------------
     # IN  : FONC_DSP: DSP [rad/s], FONC_SPEC: spectre cible [Hz],
     #    amort: amortissement sro,  meme disretisation

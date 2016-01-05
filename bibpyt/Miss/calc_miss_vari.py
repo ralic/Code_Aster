@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -24,7 +24,7 @@ from math import pi, sqrt
 import os
 from Utilitai.Utmess import  UTMESS
 from Cata.cata import ( _F, DETRUIRE, LIRE_IMPE_MISS, LIRE_FORC_MISS, 
-                        CREA_CHAMP, COMB_MATR_ASSE, DYNA_LINE_HARM)
+                        CREA_CHAMP, COMB_MATR_ASSE, DYNA_VIBRA)
 
 def calc_miss_vari(self):
     """Compute SSI analysis with spatial variability"""
@@ -249,7 +249,8 @@ def compute_freqk_quelconque(self, k, RESU, VEC, dict_modes):
     FSISM[nbmodd:nbmodt][:] = FS
     __fosi.RECU_VECT_GENE_C(FSISM)      
     if self.mat_gene_params['MATR_AMOR'] is not None :
-        __dyge = DYNA_LINE_HARM(
+        __dyge = DYNA_VIBRA(
+                 TYPE_CALCUL = 'HARM', BASE_CALCUL = 'GENE',
                  MATR_MASS = self.mat_gene_params['MATR_MASS'],
                  MATR_RIGI = __rito,
                  FREQ = freqk,
@@ -257,7 +258,8 @@ def compute_freqk_quelconque(self, k, RESU, VEC, dict_modes):
                  EXCIT = _F(VECT_ASSE_GENE = __fosi,
                             COEF_MULT = 1.0,), )
     else :
-        __dyge = DYNA_LINE_HARM(
+        __dyge = DYNA_VIBRA(
+                 TYPE_CALCUL = 'HARM', BASE_CALCUL = 'GENE',
                  MATR_MASS = self.mat_gene_params['MATR_MASS'],
                  MATR_RIGI = __rito,
                  FREQ = freqk,

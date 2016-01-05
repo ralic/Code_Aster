@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,7 +32,7 @@ def force_iss_vari(self,imod,MATR_GENE,NOM_CMP,ISSF,INFO,UNITE_RESU_FORC,
                               get_group_nom_coord, calc_dist2)
     from Cata.cata import (
      _F, DETRUIRE, LIRE_IMPE_MISS, LIRE_FORC_MISS, CREA_CHAMP, COMB_MATR_ASSE,
-     DYNA_LINE_HARM
+     DYNA_VIBRA
     )
     #--------------------------------------------------------------------------------
     NB_FREQ = 1+int((fmax-fini)/PAS)
@@ -44,7 +44,7 @@ def force_iss_vari(self,imod,MATR_GENE,NOM_CMP,ISSF,INFO,UNITE_RESU_FORC,
     from SD.sd_resultat import sd_resultat
     from SD.sd_cham_gene import sd_cham_gene
 
-    GROUP_NO_INTER=INTERF['GROUP_NO_INTERF']
+    GROUP_NO_INTER = INTERF['GROUP_NO_INTERF']
     # MAILLAGE NUME_DDL
     nom_bamo = MATR_GENE['BASE']
     resultat = MATR_GENE['BASE']
@@ -63,7 +63,7 @@ def force_iss_vari(self,imod,MATR_GENE,NOM_CMP,ISSF,INFO,UNITE_RESU_FORC,
  #    t_coordo.shape = nbnot, 3
 
     l_nom, noe_interf = get_group_nom_coord(
-                     GROUP_NO_INTERF, nom_mail)
+                     GROUP_NO_INTER, nom_mail)
 
  #   del nume_ddl, nom_mail, nom_modele
        # MODES
@@ -80,11 +80,6 @@ def force_iss_vari(self,imod,MATR_GENE,NOM_CMP,ISSF,INFO,UNITE_RESU_FORC,
        aster.affiche('MESSAGE','COMPOSANTE '+NOM_CMP)
        aster.affiche('MESSAGE','NBNO INTERFACE : '+str(nbno))
 
-
-
-     
-    #  POUR TRANS, on sort le champ en déplacement: c'est équivalent du champ en deplacement si on applique un signal en ACCE
-
     # ----- boucle sur les modes statiques
     for mods in range(0,nbmods):
        nmo = nbmodd+mods+1
@@ -100,11 +95,8 @@ def force_iss_vari(self,imod,MATR_GENE,NOM_CMP,ISSF,INFO,UNITE_RESU_FORC,
            nddi = len(MCMP2)
            PHI = NP.zeros((nddi,nbmods))
        PHI[:,mods]=MCMP2
-
     PHIT=NP.transpose(PHI)
     PPHI=NP.dot(PHIT, PHI)
-     
-
 
      # MODEL fonction de cohérence
     MODEL = MATR_COHE['TYPE']
@@ -112,7 +104,8 @@ def force_iss_vari(self,imod,MATR_GENE,NOM_CMP,ISSF,INFO,UNITE_RESU_FORC,
     Data_Cohe = {}
     Data_Cohe['TYPE'] = MODEL
     Data_Cohe['MAILLAGE'] = nom_mail
-    Data_Cohe['GROUP_NO_INTERF'] = noe_interf
+    Data_Cohe['GROUP_NO_INTERF'] = GROUP_NO_INTER
+    Data_Cohe['NOEUDS_INTERF'] = noe_interf
     Data_Cohe['DIST'] = calc_dist2(noe_interf)
     if MODEL == 'MITA_LUCO':
         Data_Cohe['VITE_ONDE'] = MATR_COHE['VITE_ONDE']
@@ -152,11 +145,9 @@ def force_iss_vari(self,imod,MATR_GENE,NOM_CMP,ISSF,INFO,UNITE_RESU_FORC,
             aster.affiche('MESSAGE','VALEUR PROPRE  '+str(nbme)+' : '+str(eig[nbme-1]))
          if prec > PRECISION :
             break
-
       if INFO==2:
          aster.affiche('MESSAGE','NOMBRE DE MODES POD RETENUS : '+str(nbme))
          aster.affiche('MESSAGE','PRECISION (ENERGIE RETENUE) : '+str(prec))
-
       PVEC=NP.zeros((nbme,nbno))
       for k1 in range(0,nbme):
          PVEC[k1, 0:nbno] = NP.sqrt(eig[k1])*vec[k1]
@@ -166,8 +157,6 @@ def force_iss_vari(self,imod,MATR_GENE,NOM_CMP,ISSF,INFO,UNITE_RESU_FORC,
         #----Impedances + force sismique.-----------------------------------------------------------------
       if k>0:
          DETRUIRE(CONCEPT=_F(NOM=(__impe,__fosi)),INFO=1)
-         if imod>1 :
-            DETRUIRE(CONCEPT=_F(NOM=(__rito)),INFO=1)
 
       __impe = LIRE_IMPE_MISS(BASE=resultat,
                                 TYPE=TYPE,
@@ -186,15 +175,6 @@ def force_iss_vari(self,imod,MATR_GENE,NOM_CMP,ISSF,INFO,UNITE_RESU_FORC,
                                 ISSF=ISSF,
                                 FREQ_EXTR=freqk,);
                                 
-      if imod>1 :
-        __rito = COMB_MATR_ASSE(COMB_C=(
-                                _F(MATR_ASSE=__impe,
-                                   COEF_C=1.0 + 0.j,),
-                                _F(MATR_ASSE=MATR_GENE['MATR_RIGI'],
-                                   COEF_C=1.0 + 0.j,),
-                                ),
-                                SANS_CMP='LAGR',
-                                )
 
       # -------------- impedance--------------------------------
       MIMPE=__impe.EXTR_MATR_GENE()
@@ -209,78 +189,21 @@ def force_iss_vari(self,imod,MATR_GENE,NOM_CMP,ISSF,INFO,UNITE_RESU_FORC,
       XI = NP.dot(PHI, U0)   
       XPI = XI
 #      # facteur de correction pour tous les modes (on somme) >> c'est faux
-#      SI0 = 0.0
-#      for k1 in range(0, nbme):
-#          XOe = abs(NP.sum(PVEC[k1])) / nbno 
-#          SI0 = SI0 + XOe**2   
-#      SI = sqrt(SI0)
-#      for idd in range(0,nddi):#nddi: nombre de ddl interface
-#          if NCMP2[idd][0:2] == NOM_CMP:
-#              XPI[idd] = SI * XI[idd]
-#      # retour en base modale
-#      QPI = NP.dot(PHIT, XPI)    
-#      U0 = NP.dot(linalg.inv(PPHI), QPI)            
-#      FS = NP.dot(KRS, U0)
-
-#      # retour en base modale
-#      QPI = NP.dot(PHIT, XI) 
-
-# # TEST
-#      XSI=[]
-#      for k1 in range(0, nbme):
-#          XPI = XI
-#          for idd in range(0,nddi):    #nddi: nombre de ddl interface
-#              if NCMP2[idd][0:2] == NOM_CMP:
-#                  XPI[idd] = PVEC[k1][idd]
-#          XSI.append(XPI)
-#          
-#      # retour en base modale
-#      QPI = NP.dot(PHIT, NP.sum(XSI,axis=0)) #      QPI = NP.dot(PHIT, XI)    
-#      U0 = NP.dot(linalg.inv(PPHI), QPI)            
-#      FS = NP.dot(KRS, U0)
-#      FS = FS + FSK
-
-#  TEST
+      SI0 = 0.0
+      for k1 in range(0, nbme):
+          XOe = abs(NP.sum(PVEC[k1])) / nbno 
+          SI0 = SI0 + XOe**2   
+      SI = sqrt(SI0)
+      for idd in range(0,nddi):#nddi: nombre de ddl interface
+          if NCMP2[idd][0:2] == NOM_CMP:
+              XPI[idd] = SI * XI[idd]
+      # retour en base modale
+      QPI = NP.dot(PHIT, XPI)    
+      U0 = NP.dot(linalg.inv(PPHI), QPI)            
+      FS = NP.dot(KRS, U0)
       FSISM[nbmodd:nbmodt][:] =FS
-      if imod==3 :
-         SP = NP.zeros((nbmodt, nbmodt))
-      if imod>1 :
-            #  Calcul harmonique
-          __fosi.RECU_VECT_GENE_C(FSISM)
-          if MATR_GENE['MATR_AMOR'] is not None :
-            __dyge = DYNA_LINE_HARM(
-                MATR_MASS=MATR_GENE['MATR_MASS'],
-                MATR_RIGI=__rito,
-                FREQ=freqk,
-                MATR_AMOR=MATR_GENE['MATR_AMOR'],
-                EXCIT=_F(VECT_ASSE_GENE=__fosi,
-                         COEF_MULT=1.0,), 
-                  )
-          else :
-            __dyge = DYNA_LINE_HARM(
-                MATR_MASS=MATR_GENE['MATR_MASS'],
-                MATR_RIGI=__rito,
-                FREQ=freqk,
-                EXCIT=_F(VECT_ASSE_GENE=__fosi,
-                         COEF_MULT=1.0,), 
-                  )
-         #  recuperer le vecteur modal depl calcule par dyge
-          RS = NP.array(__dyge.sdj.DEPL.get())
-          DETRUIRE(CONCEPT=_F(NOM=(__dyge)), INFO=1)
-          if imod==2 :
-            VEC[k] = RS
-          elif imod==3 :
-            SP = RS * NP.conj(RS[:, NP.newaxis])
-            SPEC[k] = SP
-
       FSIST[k,nbmods:nbmodt] = FSISM[0:nbmodd][:]
       FSIST[k,0:nbmods] = FS
 
-# k : frequences
+    return FSIST
 
-    if imod==1 :           
-      return FSIST
-    if imod==2 :           
-      return VEC
-    if imod==3 :           
-      return SPEC
