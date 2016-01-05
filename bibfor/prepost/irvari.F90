@@ -135,6 +135,7 @@ subroutine irvari(ifi, nochmd, chanom, typech, modele,&
         mxnbva=max(mxnbva,nbvari)
 10  end do
 !
+    if ( ntvari.eq.0 ) goto 9999
     call wkvect(chnova, 'V V K16', ntvari, jnovar)
     call wkvect(chmano, 'V V K16', mxnbva, jmnova)
 !
