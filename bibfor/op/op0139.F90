@@ -146,8 +146,9 @@ subroutine op0139()
 !   IL S AGIT DU CHAMP CNSDET
 !
     cnsdet = '&&OP0049.CNSDET'
-    call xdetfo(cnsdet, cnsln, cnslt, jmafon, ndim,&
+    call xdetfo(cnsdet, cnsln, cnslt, ndim,&
                 nmafon, noma, nomfis, resuco)
+    call jeveuo('&&XDETFO.MAFOND', 'L',jmafon)
 !
 ! --- PREPARATION DETERMINATION DES POINTS DU FRONT
 !

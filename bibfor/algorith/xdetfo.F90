@@ -1,4 +1,4 @@
-subroutine xdetfo(cnsdet, cnsln, cnslt, jmafon, ndim,&
+subroutine xdetfo(cnsdet, cnsln, cnslt, ndim,&
                   nmafon, noma, nomfis, resuco)
 !
 ! ======================================================================
@@ -56,7 +56,7 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, jmafon, ndim,&
 ! In/out cnsdet => cham_no_s pour fonction de détection
 ! In cnsln => cham_no_s level-set normale
 ! In cnslt => cham_no_s level-set tangente
-! In/out jmafon => mailles intersectées par l'iso-zéro
+! Out '&&XDETFO.MAFOND' => mailles intersectées par l'iso-zéro
 ! In ndim => dimension
 ! Out nmafon => nombre de mailles intersectées
 ! In noma => nom du maillage

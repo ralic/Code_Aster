@@ -16,12 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xdetfo(cnsdet, cnsln, cnslt, jmafon, ndim,&
+    subroutine xdetfo(cnsdet, cnsln, cnslt, ndim,&
                       nmafon, noma, nomfis, resuco)
         character(len=19) :: cnsdet
         character(len=19) :: cnsln
         character(len=19) :: cnslt
-        integer :: jmafon
         integer :: ndim
         integer :: nmafon
         character(len=8) :: noma
