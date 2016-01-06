@@ -1,7 +1,7 @@
-subroutine ace_masse_repartie(nbocc, infdonn, grplmax, lmax, infcarte)
+subroutine ace_masse_repartie(nbocc, infdonn, grplmax, lmax, infcarte, nbdisc)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,6 +34,7 @@ subroutine ace_masse_repartie(nbocc, infdonn, grplmax, lmax, infcarte)
     character(len=24) :: grplmax(*)
     integer :: lmax
     type (cara_elem_carte) :: infcarte(*)
+    integer :: nbdisc
 !
 #include "jeveux.h"
 #include "asterfort/as_allocate.h"
@@ -60,7 +61,7 @@ subroutine ace_masse_repartie(nbocc, infdonn, grplmax, lmax, infcarte)
 ! --------------------------------------------------------------------------------------------------
     integer :: iocc, ii, jj, kk, iret, nbgrp, nb, ldgm, nm, nb_mail_grp, nb_noeu_grp, ifm, irep
     integer :: ndim, appui, ltypmail, imail, ntopo, isym, iv
-    integer :: nfct, compte_maille, nb_noeud_uniq, ll, ncmp
+    integer :: nfct, compte_maille, nb_noeud_uniq, ll, ncmp, nbsurchpoi1
     integer :: ivr(4)
     real(kind=8) :: lamasse, valfongro, surfacetotale, zero(6)
     real(kind=8) :: eta, maillesurf(2), maillecdg(3)
@@ -79,10 +80,10 @@ subroutine ace_masse_repartie(nbocc, infdonn, grplmax, lmax, infcarte)
     integer     ,pointer :: noeuds(:)       => null()
     real(kind=8),pointer :: coord(:)        => null()
 !
-    integer     ,pointer :: nummaisur(:)    => null()
-    integer     ,pointer :: lstnumnoe(:)    => null()
-    integer     ,pointer :: lstnummai(:)    => null()
-    real(kind=8),pointer :: lstcoenoe(:)    => null()
+    integer     ,pointer :: nummaisur(:)        => null()
+    integer     ,pointer :: lstnumnoe(:)        => null()
+    integer     ,pointer :: lstnummaipoi1(:)    => null()
+    real(kind=8),pointer :: lstcoenoe(:)        => null()
 ! --------------------------------------------------------------------------------------------------
     integer           :: vmessi(3)
     character(len=24) :: vmessk(5)
@@ -132,6 +133,51 @@ subroutine ace_masse_repartie(nbocc, infdonn, grplmax, lmax, infcarte)
     connex = noma//'.CONNEX'
     call jeveuo(noma//'.TYPMAIL', 'L', ltypmail)
     call jeveuo(noma//'.COORDO    .VALE', 'L', vr=coord)
+!
+!   Comptage des mailles POI1 communes entre les différentes occurences
+    if ( nbocc .ge. 2 ) then
+        AS_ALLOCATE(vi=lstnummaipoi1, size=nbdisc)
+        compte_maille = 0
+!       Les mailles de la 1ère occurence
+        call getvtx('MASS_REP','GROUP_MA_POI1', iocc=1, nbval=lmax, vect=grplmax, nbret=nbgrp)
+!       on éclate les GROUP_MA en mailles
+        do ii = 1, nbgrp
+            call jelira(jexnom(magrma, grplmax(ii)), 'LONUTI', nb)
+            call jeveuo(jexnom(magrma, grplmax(ii)), 'L', ldgm)
+            ASSERT( nbdisc.ge.nb )
+            do jj = ldgm, ldgm+nb-1
+                compte_maille = compte_maille + 1
+                lstnummaipoi1(compte_maille) = zi(jj)
+            enddo
+        enddo
+!       Les mailles des autres occurences
+        nbsurchpoi1 = 0
+        do iocc = 2, nbocc
+            call getvtx('MASS_REP','GROUP_MA_POI1',iocc=iocc,nbval=lmax,vect=grplmax,nbret=nbgrp)
+!           on éclate les GROUP_MA en mailles
+            do ii = 1, nbgrp
+                call jelira(jexnom(magrma, grplmax(ii)), 'LONUTI', nb)
+                call jeveuo(jexnom(magrma, grplmax(ii)), 'L', ldgm)
+                do jj = ldgm, ldgm+nb-1
+                    imail = zi(jj)
+                    if ( in_liste_entier(imail, lstnummaipoi1(1:compte_maille)) ) then
+                        nbsurchpoi1 = nbsurchpoi1 + 1
+                    else
+                        compte_maille = compte_maille + 1
+                        ASSERT( nbdisc.ge.compte_maille )
+                        lstnummaipoi1(compte_maille) = imail
+                    endif
+                enddo
+            enddo
+        enddo
+        if ( nbsurchpoi1 .ne. 0 ) then
+            vmessk(1) = 'MASS_REP'
+            vmessi(1) = nbocc
+            vmessi(2) = nbsurchpoi1
+            call utmess('I', 'AFFECARAELEM_20',nk=1,valk=vmessk,ni=2,vali=vmessi)
+        endif
+        AS_DEALLOCATE(vi=lstnummaipoi1)
+    endif
 !
     do iocc = 1, nbocc
 !       Pour les messages
@@ -209,16 +255,16 @@ subroutine ace_masse_repartie(nbocc, infdonn, grplmax, lmax, infcarte)
 !       Numéro des mailles de surface, pour vérifier qu'il n'y a pas de doublon
         AS_ALLOCATE(vi=nummaisur, size=nb_mail_grp)
 !       Numéro des noeuds de la surface, maille POI1, la masse pondérée
-        AS_ALLOCATE(vi=lstnumnoe, size=nb_noeu_grp)
-        AS_ALLOCATE(vi=lstnummai, size=nb_noeu_grp)
-        AS_ALLOCATE(vr=lstcoenoe, size=nb_noeu_grp)
+        AS_ALLOCATE(vi=lstnumnoe,     size=nb_noeu_grp)
+        AS_ALLOCATE(vi=lstnummaipoi1, size=nb_noeu_grp)
+        AS_ALLOCATE(vr=lstcoenoe,     size=nb_noeu_grp)
 !
         lstnumnoe(:) = 0
         lstcoenoe(:) = 0.0
         nummaisur(:) = 0
 !       Va permmettre de vérifier la bijectivité entre les noeuds de la surface et les POI1
 !           Valeur négative pour ne pas être égale à un numéro de maille
-        lstnummai(:) = -2
+        lstnummaipoi1(:) = -2
 !
         nb_noeud_uniq = 0
         compte_maille = 0
@@ -286,20 +332,20 @@ subroutine ace_masse_repartie(nbocc, infdonn, grplmax, lmax, infcarte)
                     call utmess('F', 'AFFECARAELEM_14',nk=3,valk=vmessk,ni=1,vali=vmessi)
                 endif
 !               Si on déjà mis une maille POI1 en face du noeud  ==> Pas bien
-                if ( lstnummai(kk) .ne. -2 ) then
+                if ( lstnummaipoi1(kk) .ne. -2 ) then
                     vmessk(2) = grplmax(ii)
                     call jenuno(jexnum(noma//'.NOMMAI', zi(jj) ), vmessk(3) )
-                    call jenuno(jexnum(noma//'.NOMMAI', lstnummai(kk) ), vmessk(4) )
+                    call jenuno(jexnum(noma//'.NOMMAI', lstnummaipoi1(kk) ), vmessk(4) )
                     call jenuno(jexnum(noma//'.NOMNOE', noeuds(1) ), vmessk(5) )
                     call utmess('F', 'AFFECARAELEM_19',nk=5,valk=vmessk,ni=1,vali=vmessi)
                 endif
-                lstnummai(kk) = zi(jj)
+                lstnummaipoi1(kk) = zi(jj)
             enddo
         enddo
-!       La relation doit être bijective ==> on ne doit plus avoir lstnummai = -2.
+!       La relation doit être bijective ==> on ne doit plus avoir lstnummaipoi1 = -2.
 !           Tous les noeuds doivent avoir une maille POI1 en face
         do ll = 1 , nb_noeud_uniq
-            if ( lstnummai(ll) .eq. -2 ) then
+            if ( lstnummaipoi1(ll) .eq. -2 ) then
                 call jenuno(jexnum(noma//'.NOMNOE', lstnumnoe(ll) ), vmessk(2) )
                 call utmess('F', 'AFFECARAELEM_15',nk=2,valk=vmessk,ni=1,vali=vmessi)
             endif
@@ -317,7 +363,7 @@ subroutine ace_masse_repartie(nbocc, infdonn, grplmax, lmax, infcarte)
         do ii = 1 , nb_noeud_uniq
             iv = 1
             if ( ivr(3).eq.2 ) then
-                call jenuno(jexnum(noma//'.NOMMAI', lstnummai(ii) ), vmessk(1) )
+                call jenuno(jexnum(noma//'.NOMMAI', lstnummaipoi1(ii) ), vmessk(1) )
                 call jenuno(jexnum(noma//'.NOMNOE', lstnumnoe(ii) ), vmessk(2) )
                 write(ifm,110) vmessk(1), vmessk(2) ,lstcoenoe(ii)
             endif
@@ -325,15 +371,15 @@ subroutine ace_masse_repartie(nbocc, infdonn, grplmax, lmax, infcarte)
             call affdis(ndim, irep, eta, discretm, lstcoenoe(ii:), &
                         jdc, jdv, ivr, iv, ['K','M','A'], &
                         ncmp, ll, jdcinf, jdvinf, isym )
-            call nocart(cart(ll), 3, ncmp,   mode='NUM', nma=1, limanu=[lstnummai(ii)])
-            call nocart(cartdi,   3, dimcar, mode='NUM', nma=1, limanu=[lstnummai(ii)])
+            call nocart(cart(ll), 3, ncmp,   mode='NUM', nma=1, limanu=[lstnummaipoi1(ii)])
+            call nocart(cartdi,   3, dimcar, mode='NUM', nma=1, limanu=[lstnummaipoi1(ii)])
 !           On met 0 sur les raideurs
             iv = 1
             call affdis(ndim, irep, eta, discretk, zero, &
                         jdc, jdv, ivr, iv, ['K','M','A'], &
                         ncmp, ll, jdcinf, jdvinf, isym )
-            call nocart(cart(ll), 3, ncmp,   mode='NUM', nma=1, limanu=[lstnummai(ii)])
-            call nocart(cartdi,   3, dimcar, mode='NUM', nma=1, limanu=[lstnummai(ii)])
+            call nocart(cart(ll), 3, ncmp,   mode='NUM', nma=1, limanu=[lstnummaipoi1(ii)])
+            call nocart(cartdi,   3, dimcar, mode='NUM', nma=1, limanu=[lstnummaipoi1(ii)])
         enddo
         if ( ivr(3).eq.2 ) then
             write(ifm,120) lamasse
@@ -341,7 +387,7 @@ subroutine ace_masse_repartie(nbocc, infdonn, grplmax, lmax, infcarte)
 !
         AS_DEALLOCATE(vi=lstnumnoe)
         AS_DEALLOCATE(vr=lstcoenoe)
-        AS_DEALLOCATE(vi=lstnummai)
+        AS_DEALLOCATE(vi=lstnummaipoi1)
     enddo
 !
 !   Pour l'impression des valeurs affectées : Maille , Noeud , valeur

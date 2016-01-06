@@ -1,7 +1,7 @@
 subroutine op0019()
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -113,7 +113,7 @@ subroutine op0019()
     integer :: lxb, lxm, lxpf, lxgb, lxmb, lmax, ifm, niv, lxp, nbvm
     integer :: lxd, nboccd, lxrp, noemaf, lxrm, noemf2, nbmail, nbnoeu
     integer :: lxmr, noemf3
-    integer :: npoutr, ncable, nbarre
+    integer :: npoutr, ncable, nbarre, nbdisc
     integer :: iclf, ioc, icle, ng
     integer :: depart, jdnm, ixnw
     aster_logical :: locaco, locagb, locamb
@@ -422,6 +422,7 @@ subroutine op0019()
     npoutr = nb_type_elem(ACE_NU_POUTRE)
     ncable = nb_type_elem(ACE_NU_CABLE)
     nbarre = nb_type_elem(ACE_NU_BARRE)
+    nbdisc = nb_type_elem(ACE_NU_DISCRET)
 !
     if (iret .ne. 0) then
         call utmess('F', 'MODELISA5_57')
@@ -460,7 +461,7 @@ subroutine op0019()
 !
 ! --------------------------------------------------------------------------------------------------
 !   Traitement des masses réparties
-    call ace_masse_repartie(nbocc(ACE_MASS_REP), info_concept, grp_lmax, lmax, info_carte )
+    call ace_masse_repartie(nbocc(ACE_MASS_REP), info_concept, grp_lmax, lmax, info_carte, nbdisc)
 !
 ! --------------------------------------------------------------------------------------------------
 !   AFFECTATION DES ORIENTATIONS AUX ELEMENTS POUTRES ET DISCRETS  ET
