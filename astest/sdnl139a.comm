@@ -404,9 +404,10 @@ for i in range(nbpas):
    PUp=[]
    ddotPUp=[]
 
+   eps=1.e-8
    for i in range(len(COORD_3D)):
       ind=OrdreSect(int((COORD_3D[i][2]+0.0001)*1000)/float(1000))
-      if (COORD_3D[i][2]<0 or COORD_3D[i][2]>0.05):
+      if (COORD_3D[i][2]<0-eps or COORD_3D[i][2]>0.05+eps):
          PUpx=Upx[ind]
          PUpy=Upy[ind]
          PUpz=Upz[ind]
@@ -423,7 +424,7 @@ for i in range(nbpas):
          ddotPUp.append([ddotPUpx, ddotPUpy, ddotPUpz, ddotPUprx, ddotPUpry, ddotPUprz])
          i=i+1
       
-      elif (COORD_3D[i][2]>0 and COORD_3D[i][2]<0.05): 
+      elif (COORD_3D[i][2]>0+eps and COORD_3D[i][2]<0.05-eps): 
          PUpx=Upx[ind]-Uprz[ind]*COORD_3D[i][1]
          PUpy=Upy[ind]+Uprz[ind]*COORD_3D[i][0]
          PUpz=Upz[ind]-Upry[ind]*COORD_3D[i][0]+Uprx[ind]*COORD_3D[i][1]
@@ -434,7 +435,7 @@ for i in range(nbpas):
          ddotPUp.append([ddotPUpx, ddotPUpy, ddotPUpz])
          i=i+1
       
-      elif (COORD_3D[i][2]==0 or COORD_3D[i][2]==0.05):
+      else:
          if (iPouAllNode[i]==iPouRP1 or iPouAllNode[i]==iPouRP2):
             PUpx=Upx[ind]
             PUpy=Upy[ind]
