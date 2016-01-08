@@ -132,7 +132,8 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
         irese=0
     endif
 !    
-    typmod(2) = ' '
+    typmod = ' '
+    sigl=0.d0
     cp = .false.
     oprupt = 'RUPTURE'
     rac2 = sqrt(2.d0)

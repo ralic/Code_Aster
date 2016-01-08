@@ -101,9 +101,9 @@ subroutine pjefco(moa1, moa2, corres, base)
 !   Determination de dmax et l_dmax:
 !   --------------------------------------------------------
     dmax=0.d0
-    call getvr8(' ', 'DISTANCE_MAX', iocc=iocc, scal=dmax, nbret=n1)
+    call getvr8(' ', 'DISTANCE_MAX', scal=dmax, nbret=n1)
     l_dmax=n1.eq.1
-    call getvr8(' ', 'DISTANCE_ALARME', iocc=iocc, scal=dala, nbret=n1)
+    call getvr8(' ', 'DISTANCE_ALARME', scal=dala, nbret=n1)
     if (n1.eq.0) dala=-1.d0
 !
 !
