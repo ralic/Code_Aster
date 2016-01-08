@@ -217,7 +217,7 @@ subroutine model_print(model)
                         call utmess('I', 'MODELE1_38', nk = 8, valk = tabmai)
                         jc         = 0
                     endif
-                    if (k .eq. nb_elem_grel) then
+                    if (k .eq. nb_elem_grel .and. jc.gt.0) then
                         valk(1:8) = ' '
                         if (jc.le.7) then
                             valk(1:jc) = tabmai(1:jc)
