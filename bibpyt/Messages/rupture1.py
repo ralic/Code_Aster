@@ -103,16 +103,6 @@ En FEM (fissure représentée dans le maillage), il doit être de type ELNO, NOE
 En X-FEM (fissure non représentée dans le maillage), il doit être de type ELGA.
 """),
 
-    13: _(u"""
-%(k1)s : prise en compte d'un état initial impossible avec cette option.
-"""),
-
-    14: _(u"""
-Nombre de bornes erroné.
--> Risque et Conseil :
-On doit en avoir autant que de numéros d'ordre.
-"""),
-
     15: _(u"""
 Le résultat n'est pas un EVOL_NOLI.
 """),

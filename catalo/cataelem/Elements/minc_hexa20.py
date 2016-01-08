@@ -2,7 +2,7 @@
 # person_in_charge: sebastien.fayolle at edf.fr
 
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -471,33 +471,6 @@ class MINC_HEXA20(Element):
             para_in=((SP.PGEOMER, NGEOMER), (SP.PNEUTER, LC.N9NEUT_R),
                      ),
             para_out=((OP.GRAD_NEUT9_R.PGNEUTR, LC.G27NEUTR), ),
-        ),
-
-        OP.G_BILI(te=95,
-            para_in=((SP.PDEPLAU, NDEPLAR), (SP.PDEPLAV, NDEPLAR),
-                     (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
-                     (SP.PTHETAR, NDEPLAR), (SP.PVARCMR, LC.ZVARCPG),
-                     (OP.G_BILI.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),
-                     (SP.UEPSINR, CEPSINR), (SP.UPESANR, LC.CPESANR),
-                     (SP.UPFRVOL, NFORCER), (SP.UROTATR, LC.CROTATR),
-                     (SP.VEPSINR, CEPSINR), (SP.VPESANR, LC.CPESANR),
-                     (SP.VPFRVOL, NFORCER), (SP.VROTATR, LC.CROTATR),
-                     ),
-            para_out=((SP.PGTHETA, LC.EGTHETA), ),
-        ),
-
-        OP.G_BILI_F(te=95,
-            para_in=((SP.PDEPLAU, NDEPLAR), (SP.PDEPLAV, NDEPLAR),
-                     (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
-                     (SP.PTHETAR, NDEPLAR), (SP.PVARCMR, LC.ZVARCPG),
-                     (OP.G_BILI_F.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),
-                     (SP.UEPSINF, CEPSINF), (SP.UPESANR, LC.CPESANR),
-                     (SP.UPFFVOL, CFORCEF), (SP.UROTATR, LC.CROTATR),
-                     (SP.UTEMPSR, CTEMPSR), (SP.VEPSINF, CEPSINF),
-                     (SP.VPESANR, LC.CPESANR), (SP.VPFFVOL, CFORCEF),
-                     (SP.VROTATR, LC.CROTATR), (SP.VTEMPSR, CTEMPSR),
-                     ),
-            para_out=((SP.PGTHETA, LC.EGTHETA), ),
         ),
 
         OP.INIT_MAIL_VOIS(te=99,

@@ -305,11 +305,6 @@ au fond de fissure. Le calcul est impossible. On extrapole les valeurs du point 
 Noeud %(k1)s
 """),
 
-    48: _(u"""
-Le mot-clé 'FOND_FISS' est obligatoire avec l'option  %(k1)s.
-Veuillez le renseigner.
-"""),
-
     49: _(u"""
 Le maillage ne permet pas de déterminer la taille des mailles en fond de fissure, et donc
 R_INF/R_SUP ou ABSC_CURV_MAXI seront obligatoires en post-traitement.
@@ -490,13 +485,6 @@ La tangente à l'extrémité est nécessairement dans le plan de la fissure,
 donc orthogonale à la normale fournie. Vérifier les données.
 """),
 
-    83: _(u"""
-Cette combinaison de lissage n'est pas programmée pour l'option : %(k1)s.
--> Risque et Conseil :
-Veuillez consulter la documentation U4.82.03 pour déterminer une combinaison de lissage
-licite avec l'option désirée.
-"""),
-
     84: _(u"""
 Le degré des polynômes de Legendre doit être inférieur au nombre de noeuds
 du fond de fissure (ici égal à %(i1)i) lorsque le lissage de G est de type
@@ -539,10 +527,6 @@ calculée à partir de la normale au fond de fissure (donnée dans DEFI_FOND_FIS
     Cette solution n'est applicable que si le fond de fissure est rectiligne.
   - La solution la plus générale (donc préférable) est de définir le fond de
     fissure à partir des mailles de lèvres (DEFI_FOND_FISS/LEVRE_SUP et LEVRE_INF).
-"""),
-
-    92: _(u"""
-Le mot-clef BORNES est obligatoire avec l'option  %(k1)s  !
 """),
 
     93: _(u"""

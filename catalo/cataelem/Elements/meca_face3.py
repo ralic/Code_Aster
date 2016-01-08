@@ -2,7 +2,7 @@
 
 
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -331,31 +331,6 @@ class MECA_FACE3(Element):
         OP.COOR_ELGA(te=488,
             para_in=((SP.PGEOMER, NGEOMER), ),
             para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R), ),
-        ),
-
-        OP.G_BILI(te=298,
-            para_in=((SP.PDEPLAU, DDL_MECA), (SP.PDEPLAV, DDL_MECA),
-                     (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
-                     (SP.PTHETAR, DDL_MECA), (SP.PVARCMR, LC.ZVARCPG),
-                     (OP.G_BILI.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),
-                     (SP.UEPSINR, CEPSINR), (SP.UPFR23D, NFORCER),
-                     (SP.UPRESSR, EPRESNO), (SP.VEPSINR, CEPSINR),
-                     (SP.VPFR23D, NFORCER), (SP.VPRESSR, EPRESNO),
-                     ),
-            para_out=((SP.PGTHETA, LC.EGTHETA), ),
-        ),
-
-        OP.G_BILI_F(te=298,
-            para_in=((SP.PDEPLAU, DDL_MECA), (SP.PDEPLAV, DDL_MECA),
-                     (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
-                     (SP.PTHETAR, DDL_MECA), (SP.PVARCMR, LC.ZVARCPG),
-                     (OP.G_BILI_F.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),
-                     (SP.UEPSINF, CEPSINF), (SP.UPFF23D, CFORCEF),
-                     (SP.UPRESSF, CPRESSF), (SP.UTEMPSR, CTEMPSR),
-                     (SP.VEPSINF, CEPSINF), (SP.VPFF23D, CFORCEF),
-                     (SP.VPRESSF, CPRESSF), (SP.VTEMPSR, CTEMPSR),
-                     ),
-            para_out=((SP.PGTHETA, LC.EGTHETA), ),
         ),
 
         OP.INIT_VARC(te=99,

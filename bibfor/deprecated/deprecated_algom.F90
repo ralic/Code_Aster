@@ -53,26 +53,6 @@ implicit none
         vali = 13
         valk    = "ALGO_CONT/ALGO_FROT='LAGRANGIEN'"
 !
-    else if (algo .eq. 'G_BILI') then
-        vali = 13
-        valk    = "CALC_G/OPTION='G_BILI'"
-!
-    else if (algo .eq. 'G_BILI_GLOB') then
-        vali = 13
-        valk    = "CALC_G/OPTION='G_BILI_GLOB'"
-!
-    else if (algo .eq. 'G_MAX') then
-        vali = 13
-        valk    = "CALC_G/OPTION='G_MAX'"
-!
-    else if (algo .eq. 'G_MAX_GLOB') then
-        vali = 13
-        valk    = "CALC_G/OPTION='G_MAX_GLOB'"
-!
-    else if (algo .eq. 'CALC_K_MAX') then
-        vali = 13
-        valk    = "CALC_G/OPTION='CALC_K_MAX'"
-!
     else if (algo .eq. 'CASTEM') then
         vali = 13
         valk    = "IMPR_RESU/FORMAT='CASTEM'"

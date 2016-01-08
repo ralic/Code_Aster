@@ -11,7 +11,7 @@ subroutine cgvefo(option, typfis, nomfis, typdis)
     character(len=16) :: option, typdis
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -65,10 +65,7 @@ subroutine cgvefo(option, typfis, nomfis, typdis)
 !
         call dismoi('CONFIG_INIT', nomfis, 'FOND_FISS', repk=conf)
 !
-        if ((&
-            option .eq. 'CALC_K_G' .or. option .eq. 'K_G_MODA' .or. option .eq.&
-            'CALC_K_MAX'&
-            )&
+        if ((option .eq. 'CALC_K_G' .or. option .eq. 'K_G_MODA')&
             .and. (conf.eq.'DECOLLEE')) then
             call utmess('F', 'RUPTURE0_29', sk=option)
         endif
@@ -78,13 +75,6 @@ subroutine cgvefo(option, typfis, nomfis, typdis)
 !   SI FISSURE TYPE 'COHESIF', LA SEULE OPTION EST CALC_K_G
     if(typdis.eq.'COHESIF'.and.option.ne.'CALC_K_G') then
         call utmess('F','RUPTURE2_5')
-    endif
-!
-!     CERTAINES OPTIONS NE SONT PAS ENCORE PROGRAMMEES POUR X-FEM
-    if (option .eq. 'G_MAX' .or. option .eq. 'G_BILI') then
-        if (typfis .eq. 'FISSURE') then
-            call utmess('F', 'RUPTURE0_48', sk=option)
-        endif
     endif
 !
 !

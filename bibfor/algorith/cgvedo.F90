@@ -8,7 +8,7 @@ subroutine cgvedo(ndim, option)
     character(len=16) :: option
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -35,11 +35,10 @@ subroutine cgvedo(ndim, option)
 ! ======================================================================
 !
     integer :: nbop3d, i
-    parameter   (nbop3d=4)
+    parameter   (nbop3d=1)
     aster_logical :: bool
     character(len=16) :: liop3d(nbop3d)
-    data         liop3d / 'CALC_G_GLOB','G_MAX_GLOB','G_BILI_GLOB',&
-     &                      'CALC_K_MAX' /
+    data         liop3d / 'CALC_G_GLOB'/
 !
 !     VERIFICATION DE NDIM VAUT 2 OU 3
     if (.not.(ndim.eq.2.or.ndim.eq.3)) then
@@ -48,18 +47,16 @@ subroutine cgvedo(ndim, option)
 !
 !     VERIFICATION DE L'OPTION (NORMALEMENT, C'EST FAIT DANS LE CAPY)
     bool = option .eq. 'CALC_G' .or. option .eq. 'CALC_G_GLOB' .or. option .eq. 'CALC_K_G' .or.&
-           option .eq. 'K_G_MODA' .or. option .eq. 'G_BILI' .or. option .eq. 'G_BILI_GLOB' .or.&
-           option .eq. 'G_MAX' .or. option .eq. 'G_MAX_GLOB' .or. option .eq. 'CALC_K_MAX' .or.&
-           option .eq. 'CALC_GTP'
+           option .eq. 'K_G_MODA' .or. option .eq. 'CALC_GTP'
     ASSERT(bool)
 !
 !     CERTAINES OPTIONS NE S'UTILISENT (OU NE SONT PROGRAMMEES) QU'EN 3D
     if (ndim .eq. 2) then
-        do 10 i = 1, nbop3d
+        do i = 1, nbop3d
             if (option .eq. liop3d(i)) then
                 call utmess('F', 'RUPTURE0_3', sk=option)
             endif
-10      continue
+        enddo
     endif
 !
 end subroutine

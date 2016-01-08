@@ -5,7 +5,7 @@ subroutine cgveca(ndim, option, cas)
     character(len=16) :: option, cas
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -36,8 +36,7 @@ subroutine cgveca(ndim, option, cas)
 !     DETERMINATION DU CAS : 2D, 3D LOCAL OU 3D GLOBAL
     if (ndim .eq. 3) then
 !
-        if (option .eq. 'CALC_G_GLOB' .or. option .eq. 'G_MAX_GLOB' .or. option .eq.&
-            'G_BILI_GLOB') then
+        if (option .eq. 'CALC_G_GLOB') then
             cas = '3D_GLOBAL'
         else
             cas = '3D_LOCAL'

@@ -26,7 +26,7 @@ subroutine cglect(resu, modele, ndim, option, cas,&
     character(len=24) :: fonoeu, chfond, basfon, taillr, liss
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -126,7 +126,7 @@ subroutine cglect(resu, modele, ndim, option, cas,&
 !
 !     VERIFICATION DES DONNEES RELATIVES AU LISSAGE
 !     ET DETERMINATION DU LISSAGE (NOM UNIQUE CONTRACTE) : LISS ET NDEG
-    call cgveli(typfis, typdis, cas, option, lnoff, liss,&
+    call cgveli(typfis, typdis, cas, lnoff, liss,&
                 ndeg)
 !
     call jedema()

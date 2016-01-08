@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,12 +47,6 @@ cata_msg = {
   -> Risque & Conseil :
      Si le comportement est effectivement non linéaire, il ne faut pas utiliser
      la valeur de EPZZ calculée par cette option.
-"""),
-
-    12 : _(u"""
- Calcul de G bilinéaire
- E, NU, ALPHA dépendent de la température
- Les champs de température (TGU et TGV) sont différents
 """),
 
     13 : _(u"""

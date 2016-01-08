@@ -1,4 +1,4 @@
-subroutine cgveli(typfis, typdis, cas, option, lnoff, liss,&
+subroutine cgveli(typfis, typdis, cas, lnoff, liss,&
                   ndeg)
     implicit none
 !
@@ -8,10 +8,10 @@ subroutine cgveli(typfis, typdis, cas, option, lnoff, liss,&
 #include "asterfort/utmess.h"
     integer :: lnoff, ndeg
     character(len=8) :: typfis
-    character(len=16) :: option, cas, typdis
+    character(len=16) :: cas, typdis
     character(len=24) :: liss
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,7 +34,7 @@ subroutine cgveli(typfis, typdis, cas, option, lnoff, liss,&
 !
 !  IN :
 !     TYPFIS : TYPE DE LA SD DECRIVANT LE FOND DE FISSURE
-!             ('THETA' OU 'FONDIFSS' OU 'FISSURE')
+!             ('FONDIFSS' OU 'FISSURE')
 !     CAS    : '2D', '3D LOCAL' OU '3D GLOBAL'
 !     LNOFF  : NOMBRE DE NOEUDS (OU POINTS) DU FOND DE FISSURE
 !     TYPDIS : TYPE DE DISCONTINUITE SI FISSURE XFEM 
@@ -109,11 +109,6 @@ subroutine cgveli(typfis, typdis, cas, option, lnoff, liss,&
         endif
 !
 !       COMPATIBILITE ENTRE LISSAGE ET OPTION
-        if (liss .eq. 'MIXTE') then
-            if (option .eq. 'G_MAX' .or. option .eq. 'G_BILI') then
-                call utmess('F', 'RUPTURE0_83', sk=option)
-            endif
-        endif
         if(liss.eq.'MIXTE'.or.liss.eq.'LEGENDRE'&
            .or.liss.eq.'LAGRANGE_REGU') then
             if(typdis.eq.'COHESIF') then
