@@ -4,7 +4,7 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
                   chacce, lmelas, nomcas, kcalc, coor, iadnoe)
 !-----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -427,12 +427,12 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
 !- IMPRESSION DE G ET ECRITURE DANS LA TABLE RESULT
 !
     call getvis('THETA', 'NUME_FOND', iocc=1, scal=numfon, nbret=ibid)
-    if ((.not.ltheta).and.(option.ne.'CALC_G_GLOB')) then
+    if ((.not.ltheta).and.(option(1:11).ne.'CALC_G_GLOB')) then
         call tbajvi(result, nbprup, 'NUME_FOND', numfon, livi)
     endif
     
 ! NOM DES NOEUDS DU FOND
-    if ((.not.lxfem).and.(.not.ltheta).and.(option.ne.'CALC_G_GLOB')) then
+    if ((.not.lxfem).and.(.not.ltheta).and.(option(1:11).ne.'CALC_G_GLOB')) then
         call tbajvk(result, nbprup, 'NOEUD', zk8(iadnoe), livk)
     endif
 !
@@ -444,7 +444,7 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
         call tbajvr(result, nbprup, 'INST', time, livr)
     endif
 !
-    if ((.not.ltheta).and.(option.ne.'CALC_G_GLOB')) then
+    if ((.not.ltheta).and.(option(1:11).ne.'CALC_G_GLOB')) then
         call tbajvr(result, nbprup, 'COOR_X', zr(coor), livr)
         call tbajvr(result, nbprup, 'COOR_Y', zr(coor+1), livr)
     endif
