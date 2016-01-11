@@ -1,4 +1,5 @@
 subroutine cresol(solveu)
+    use superv_module, only: asthread_setnum
     implicit none
 #include "jeveux.h"
 #include "asterc/getexm.h"
@@ -140,6 +141,8 @@ subroutine cresol(solveu)
 !
     if (method .eq. 'MUMPS') then
 !     -----------------------------
+!       use all available threads for Blas
+        call asthread_setnum(1, blas_max=1)
         call crsvmu(nomsol, solveu, istop, nprec,&
                     epsmat, mixpre, kellag, kxfem)
 !
