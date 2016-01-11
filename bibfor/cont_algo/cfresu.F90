@@ -9,6 +9,8 @@ implicit none
 #include "jeveux.h"
 #include "asterc/r8miem.h"
 #include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/apinfi.h"
 #include "asterfort/caladu.h"
 #include "asterfort/cfdisd.h"
 #include "asterfort/cfdisl.h"
@@ -72,7 +74,7 @@ implicit none
     integer :: model_ndim, nbliai, nb_dof, nb_equa
     integer :: btotal, nbliac, llf, llf1, llf2
     integer :: jdecal, lliac
-    integer :: nesmax
+    integer :: nesmax, pair_type
     real(kind=8) :: glix, gliy, glit
     real(kind=8) :: testmu, testcf, coefpt
     real(kind=8) :: val1, val2, node_status
@@ -81,6 +83,7 @@ implicit none
     real(kind=8) :: rtax, rtay, rtaz, rtgx, rtgy, rtgz
     real(kind=8) :: tau1(3), tau2(3), norm(3), proj(3)
     character(len=2) :: typec0, typlia
+    character(len=19) :: sdappa
     character(len=19) :: sdcont_liac, sdcont_atmu, sdcont_afmu, sdcont_mu, sdcont_typl
     integer :: jatmu, jafmu
     character(len=24) :: sdcont_apddl, sdcont_apcofr
@@ -174,6 +177,7 @@ implicit none
     call jeveuo(sdcont_tangco, 'L', vr  = v_sdcont_tangco)
     call jeveuo(sdcont_jeuite, 'L', vr  = v_sdcont_jeuite)
     call jeveuo(sdcont_approj, 'L', vr  = v_sdcont_approj)
+    sdappa = ds_contact%sdcont_solv(1:14)//'.APPA'
 !
 ! - Access to fields
 !
@@ -236,6 +240,16 @@ implicit none
         tau2(1) = v_sdcont_tangco(6*(lliac-1)+4)
         tau2(2) = v_sdcont_tangco(6*(lliac-1)+5)
         tau2(3) = v_sdcont_tangco(6*(lliac-1)+6)
+!
+! ----- Get pairing
+!
+        call apinfi(sdappa, 'APPARI_TYPE', node_slav_nume, pair_type)
+        if (pair_type.lt.0) then
+            node_status = -1.d0
+        endif
+!
+! ----- Compute normal
+!
         call mmnorm(model_ndim, tau1, tau2, norm)
 !
 ! ----- Compute normal reactions for contact

@@ -187,7 +187,7 @@ implicit none
                 call cfdist(ds_contact, i_zone, posmae, poin_coor, time_curr,&
                             gap_user, node_slav_indx_ = node_slav_indx(1))
                 gap = gap+gap_user
-            else if (pair_type.eq.1) then
+            else if (pair_type .eq. 1) then
 !
 ! ------------- Master node
 !

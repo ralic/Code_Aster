@@ -87,7 +87,9 @@ implicit none
 ! ----- Contact status
 !
         node_status = 0.d0
-        if (gap .ne. r8vide()) then
+        if (gap .eq. r8vide()) then
+            node_status = -1.d0
+        else
             if (gap .gt. r8prem()) then
                 node_status = 0.d0
             else
@@ -103,9 +105,6 @@ implicit none
 !
         l_save = .true.
         if (node_slav_nume .eq. -1) then
-            l_save = .false.
-        endif
-        if (gap .eq. r8vide()) then
             l_save = .false.
         endif
 !

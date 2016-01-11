@@ -131,6 +131,8 @@ RESU=CALC_CHAMP(reuse =RESU,
              FORCE='REAC_NODA',
              RESULTAT=RESU,);
 
+
+
 TAB_FORC=POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',
                             GROUP_NO='GM12',
                             RESULTAT=RESU,
@@ -190,6 +192,7 @@ TEST_RESU(RESU=(_F(GROUP_NO='GM16',
                    ),
                 ),
           )
+
 
 FY=RECU_FONCTION(TABLE=TAB_FORC,
                  PARA_X='INST',

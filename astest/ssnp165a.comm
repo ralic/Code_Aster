@@ -342,4 +342,13 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    GROUP_NO='PB',
                    VALE_CALC=-89.156511065351,),),);
 
+# Validation for not-paired node
+TEST_RESU(RESU=(_F(NOEUD='N9',
+                   INST=0.1,
+                   RESULTAT=RESU,
+                   NOM_CHAM='CONT_NOEU',
+                   NOM_CMP='CONT',
+                   VALE_CALC=-1,
+                   ),),)
+
 FIN();

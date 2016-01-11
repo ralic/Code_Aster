@@ -262,8 +262,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-U2=STAT_NON_LINE(SOLVEUR=_F(),
-                 MODELE=MO,
+U2=STAT_NON_LINE(MODELE=MO,
                 CHAM_MATER=CM,
                 EXCIT=(_F(CHARGE=CH0,
                           FONC_MULT=DPLY,),
@@ -277,6 +276,8 @@ U2=STAT_NON_LINE(SOLVEUR=_F(),
                           REAC_ITER=1,),
                 CONVERGENCE=_F(RESI_GLOB_MAXI=9.9999999999999995E-07,),);
 
+
+
 TAB_VC=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='JEU METHODE VERIF',
                                RESULTAT=U2,
@@ -286,6 +287,15 @@ TAB_VC=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                NOM_CMP=('CONT','JEU',),),);
 
 IMPR_TABLE(TABLE=TAB_VC);
+
+# Validation for not-paired node
+TEST_RESU(RESU=(_F(NOEUD='N1',
+                   INST=5.0,
+                   RESULTAT=U2,
+                   NOM_CHAM='CONT_NOEU',
+                   NOM_CMP='CONT',
+                   VALE_CALC=-1,
+                   ),),)
 
 TEST_RESU(RESU=_F(REFERENCE='ANALYTIQUE',
                   NUME_ORDRE=31,

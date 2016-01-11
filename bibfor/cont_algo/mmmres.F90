@@ -7,6 +7,7 @@ implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/apinfi.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfdisl.h"
@@ -81,7 +82,7 @@ implicit none
     integer :: nb_dof, nb_poin_elem, nb_elem_slav, nb_cont_zone, model_ndim, nt_cont_poin
     integer :: ztabf, zresu, zperc
     integer :: node_slav_nume, elem_mast_nume, elem_slav_indx
-    integer :: jdecme, indi_cont
+    integer :: jdecme, indi_cont, pair_type
     real(kind=8) :: gli, gli1, gli2
     real(kind=8) :: rn, rnx, rny, rnz
     real(kind=8) :: rtax, rtay, rtaz
@@ -93,7 +94,7 @@ implicit none
     character(len=19) :: disp_cumu_s
     character(len=19) :: cneltc_s, cneltf_s
     character(len=19) :: cneltc, cneltf
-    character(len=19) :: newgeo
+    character(len=19) :: newgeo, sdappa
     character(len=24) :: sdcont_tabfin, sdcont_apjeu
     real(kind=8), pointer :: v_sdcont_tabfin(:) => null()
     real(kind=8), pointer :: v_sdcont_apjeu(:) => null()
@@ -143,6 +144,7 @@ implicit none
     sdcont_apjeu  = ds_contact%sdcont_solv(1:14)//'.APJEU'
     call jeveuo(sdcont_tabfin, 'E', vr = v_sdcont_tabfin)
     call jeveuo(sdcont_apjeu , 'E', vr = v_sdcont_apjeu)
+    sdappa = ds_contact%sdcont_solv(1:14)//'.APPA'
 !
 ! - Geometric update
 !
@@ -232,6 +234,13 @@ implicit none
                 rny  = 0.d0
                 rnz  = 0.d0
                 node_status = 0.d0
+!
+! ------------- Get pairing
+!
+                call apinfi(sdappa, 'APPARI_TYPE', i_poin_elem, pair_type)
+                if (pair_type .lt. 0) then
+                    node_status = -1.d0
+                endif
 !
 ! ------------- Get slave node index
 !
