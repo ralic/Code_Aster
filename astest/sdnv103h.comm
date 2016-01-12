@@ -1,6 +1,6 @@
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -269,7 +269,7 @@ TEST_TABLE(CRITERE='ABSOLU',
            )
 
 TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=289.964718992,
+           VALE_CALC=289.965049244,
            TOLE_MACHINE=5.E-5,                  # TODO TOLE_MACHINE
            NOM_PARA='R',
            TABLE=CONTB1_1,
@@ -410,7 +410,7 @@ TEST_RESU(RESU=(_F(GROUP_NO='B1',
                    RESULTAT=RESU2,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC=0.759617910969,
+                   VALE_CALC=0.759618772528,
                    TOLE_MACHINE=5.E-5,                  # TODO TOLE_MACHINE
                    ),
                 _F(GROUP_NO='A2',

@@ -27,7 +27,7 @@ def configure(self):
     self.env['ADDMEM'] = 250
     self.env.append_value('OPT_ENV', [
         '. /etc/profile.d/003_modules.sh',
-        'module load intel_compilers/14.0.0.144'])
+        'module load intel_compilers/16.0.0.109 '])
 
     self.env.append_value('LIBPATH', [
         '/usr/lib/atlas-base/atlas',                       # for NumPy, see issue18751

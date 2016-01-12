@@ -407,7 +407,7 @@ TEST_RESU(RESU=(_F(GROUP_NO='P04',
                    RESULTAT=RESU1,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC=-0.435975195571,
+                   VALE_CALC=-0.435993438918,
                    VALE_REFE=-0.44933,
                    TOLE_MACHINE=1.E-4,               # VARIABILITE
                                                      # EXPLIQUEE PAR FICHE 23982
@@ -418,9 +418,9 @@ TEST_RESU(RESU=(_F(GROUP_NO='P04',
                    RESULTAT=RESU1,
                    NOM_CHAM='VITE',
                    NOM_CMP='DZ',
-                   VALE_CALC=-754.698482684,
+                   VALE_CALC=-754.662328188,
                    VALE_REFE=-824.761,
-                   TOLE_MACHINE=3.E-4,               # VARIABILITE
+                   TOLE_MACHINE=2.E-4,               # VARIABILITE
                                                      # EXPLIQUEE PAR FICHE 23982
                    PRECISION=0.1, ),
                 ),
