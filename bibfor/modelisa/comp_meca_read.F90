@@ -7,7 +7,6 @@ implicit none
 #include "asterc/getexm.h"
 #include "asterc/getfac.h"
 #include "asterc/mfront_get_nbvari.h"
-#include "asterfort/deprecated_algom.h"
 #include "asterfort/deprecated_behavior.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
@@ -100,7 +99,6 @@ implicit none
 ! ----- Get DEFORMATION from command file
 !
         call getvtx(keywordfact, 'DEFORMATION', iocc = iocc, scal = defo_comp)
-        call deprecated_algom(defo_comp)
 !
 ! ----- Modified matrix
 !

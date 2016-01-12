@@ -1,6 +1,6 @@
 subroutine te0100(option, nomte)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -29,7 +29,6 @@ subroutine te0100(option, nomte)
 #include "asterfort/nmgpfi.h"
 #include "asterfort/nmgr2d.h"
 #include "asterfort/nmpl2d.h"
-#include "asterfort/nmsh1.h"
 #include "asterfort/nmtstm.h"
 #include "asterfort/rcangm.h"
 #include "asterfort/tecach.h"
@@ -232,9 +231,9 @@ subroutine te0100(option, nomte)
 ! 7.3 - GRANDES ROTATIONS ET PETITES DEFORMATIONS
         else if (zk16(icompo+2) .eq.'GROT_GDEP') then
 !
-            do 45 li = 1, 2*nno
+            do li = 1, 2*nno
                 zr(ideplp+li-1) = zr(ideplm+li-1) + zr(ideplp+li-1)
- 45         continue
+            end do
 !
             call nmgr2d(fami, nno, npg1, ipoids, ivf,&
                         zr(ivf), idfde, zr(igeom), typmod, option,&
@@ -242,15 +241,6 @@ subroutine te0100(option, nomte)
                         zr(iinstp), zr(ideplm), zr(ideplp), angmas, zr(icontm),&
                         zr(ivarim), matsym, vect1, vect2, vect3,&
                         zr(icontp), zr(ivarip), zr(imatuu), zr(ivectu), codret)
-!
-        else if (zk16(icompo+2).eq.'GDEF_HYPO_ELAS') then
-!
-            call nmsh1(fami, option, typmod, zk16(icompo+2), ndim,&
-                       nno, npg1, ipoids, ivf, zr(ivf),&
-                       idfde, zr(igeom), dfdi, zk16(icompo), zi(imate),&
-                       lgpg, zr(icarcr), angmas, zr(iinstm), zr(iinstp),&
-                       zr(ideplm), zr(ideplp), zr(icontm), zr(ivarim), zr(icontp),&
-                       zr(ivarip), zr(ivectu), zr(imatuu), codret)
         else if (zk16(icompo+2).eq.'GDEF_LOG') then
 !
             call nmdlog(fami, option, typmod, ndim, nno,&

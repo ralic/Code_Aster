@@ -44,7 +44,7 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
     character(len=19) :: lisord
     character(len=*) :: lisopt
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -140,8 +140,7 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
             call jeveuo(compor//'.VALE','L',icompo)
 ! ------Coherence verification for large deformation
             if ((zk16(icompo+43-1)(1:8) .eq. 'GDEF_LOG').or. &
-                (zk16(icompo+43-1)(1:10) .eq. 'SIMO_MIEHE').or. &
-                (zk16(icompo+43-1)(1:14) .eq. 'GDEF_HYPO_ELAS'))then
+                (zk16(icompo+43-1)(1:10) .eq. 'SIMO_MIEHE'))then
                 valk(1) = zk16(icompo+43-1)
                 valk(2) = option(6:10)
                 call utmess('A','CALCCHAMP_3',nk=2,valk=valk)

@@ -3,7 +3,7 @@ subroutine nmflal(option, compor, sdpost, mod45, defo,&
                   nddle, ddlexc, nsta, ddlsta, modrig)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -107,7 +107,6 @@ subroutine nmflal(option, compor, sdpost, mod45, defo,&
 !     RIGIDITE GEOMETRIQUE INTEGREE A LA MATRICE TANGENTE
     do 10 i = 1, nbv
         if ((vale(1+2+20*(i-1)).eq.'GROT_GDEP') .or.&
-            (vale(1+2+20*(i-1)).eq.'GDEF_HYPO_ELAS') .or.&
             (vale(1+2+20*(i-1)).eq.'SIMO_MIEHE') .or.&
             (vale(1+2+20*(i-1)).eq.'GDEF_LOG')) then
             defo = 1

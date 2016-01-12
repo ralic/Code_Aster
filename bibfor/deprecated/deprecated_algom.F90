@@ -45,14 +45,6 @@ implicit none
         vali = 13
         valk    = "PREDICTION='DEPL_CALCULE'"
 !
-    else if (algo .eq. 'GDEF_HYPO_ELAS') then
-        vali = 13
-        valk    = "DEFORMATION='GDEF_HYPO_ELAS'"
-!
-    else if (algo .eq. 'GDEF_HYPO_ELAS') then
-        vali = 13
-        valk    = "DEFORMATION='GDEF_HYPO_ELAS'"
-!
     else if (algo .eq. 'LAGR_CONT') then
         vali = 13
         valk    = "ALGO_CONT='LAGRANGIEN'"

@@ -1,6 +1,6 @@
 subroutine te0139(option, nomte)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -27,7 +27,6 @@ subroutine te0139(option, nomte)
 #include "asterfort/nmgpfi.h"
 #include "asterfort/nmgr3d.h"
 #include "asterfort/nmpl3d.h"
-#include "asterfort/nmsh1.h"
 #include "asterfort/nmtstm.h"
 #include "asterfort/rcangm.h"
 #include "asterfort/tecach.h"
@@ -217,18 +216,6 @@ subroutine te0139(option, nomte)
                         zr(ideplp), angmas, zr(icontm), zr( ivarim), matsym,&
                         dfdi, pff, def, zr(icontp), zr(ivarip),&
                         zr(imatuu), zr(ivectu), codret)
-!
-! 7.3 - GRANDES DEFORMATIONS FORMULATION GDEF_HYPO_ELAS
-!       ou SIMO_HUGHES1 (A DEBUGGER)
-!
-        else if (zk16(icompo+2).eq.'GDEF_HYPO_ELAS') then
-!
-            call nmsh1(fami, option, typmod, zk16(icompo+2), ndim,&
-                       nno, npg, ipoids, ivf, zr(ivf),&
-                       idfde, zr(igeom), dfdi, zk16(icompo), zi(imate),&
-                       lgpg, zr(icarcr), angmas, zr(iinstm), zr(iinstp),&
-                       zr(ideplm), zr(ideplp), zr(icontm), zr(ivarim), zr(icontp),&
-                       zr(ivarip), zr(ivectu), zr(imatuu), codret)
 !
 ! 7.3 - GRANDES DEFORMATIONS FORMULATION MIEHE-APEL-LAMBRECHT
 !

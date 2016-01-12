@@ -1,7 +1,7 @@
 # person_in_charge: jean-michel.proix at edf.fr
 # TITRE EPROUVETTE ENTAILLEE ELASTOPLASTIQUE EN GRANDES DEFORMATIONS
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -90,32 +90,10 @@ UR=CALC_CHAMP(reuse =UR,
            RESULTAT=UR,
            FORCE='REAC_NODA',);
 
-# DEUXIEME CALCUL : GDEF_HYPO_ELAS
-# ------------------------------------------------------------
 
-UL=STAT_NON_LINE(MODELE=MO,
-                 CHAM_MATER=CM,
-                 EXCIT=(_F(CHARGE=CH,),
-                        _F(CHARGE=CHT,
-                           FONC_MULT=FCT_R,),),
-                 COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',
-                              DEFORMATION = 'GDEF_HYPO_ELAS',),
-                 INCREMENT=_F(LIST_INST=L_INST_R,),
-                 NEWTON=_F(REAC_INCR=1,
-                           MATRICE='TANGENTE',
-                           REAC_ITER=1,),
-                 CONVERGENCE=_F(ITER_GLOB_MAXI=25,),
-                 ARCHIVAGE=_F(LIST_INST=L_ARCH_R,),);
-
-UL=CALC_CHAMP(reuse=UL,RESULTAT=UL,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'))
-
-
-UL=CALC_CHAMP(reuse =UL,
-           RESULTAT=UL,
-           FORCE='REAC_NODA',);
 
 IMPR_RESU(FORMAT='MED',
-          RESU=(_F(RESULTAT=UL,),
+          RESU=(
                 _F(RESULTAT=UR,),),);
 
 #-----------------------------------------------------------
@@ -196,78 +174,5 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
                      VALE_I=50,),
            )
 
-CONTR_L=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                                INTITULE='Contraction diametrale',
-                                RESULTAT=UL,
-                                NOM_CHAM='DEPL',
-                                GROUP_NO='NO_ENT',
-                                NOM_CMP='DX',),);
-
-EFFORT_L=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                                 INTITULE='force',
-                                 RESULTAT=UL,
-                                 NOM_CHAM='REAC_NODA',
-                                 GROUP_NO='EFFO',
-                                 RESULTANTE='DY',),);
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           PRECISION=1.E-2,
-           VALE_CALC= 6.60064891E+03,
-           VALE_REFE=6616.5900000000001,
-           NOM_PARA='DY',
-           TABLE=EFFORT_L,
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=5,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           PRECISION=1.E-2,
-           VALE_CALC=-0.084801424,
-           VALE_REFE=-0.084500000000000006,
-           NOM_PARA='DX',
-           TABLE=CONTR_L,
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=5,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           PRECISION=1.E-2,
-           VALE_CALC= 2.14314675E+04,
-           VALE_REFE=2.154157E4,
-           NOM_PARA='DY',
-           TABLE=EFFORT_L,
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=25,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           PRECISION=1.E-2,
-           VALE_CALC=-0.377323519,
-           VALE_REFE=-0.37659999999999999,
-           NOM_PARA='DX',
-           TABLE=CONTR_L,
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=25,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           PRECISION=1.E-2,
-           VALE_CALC= 3.35476373E+04,
-           VALE_REFE=3.3821E4,
-           NOM_PARA='DY',
-           TABLE=EFFORT_L,
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=50,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           PRECISION=1.E-2,
-           VALE_CALC=-0.829005090,
-           VALE_REFE=-0.82599999999999996,
-           NOM_PARA='DX',
-           TABLE=CONTR_L,
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=50,),
-           )
 
 FIN();
