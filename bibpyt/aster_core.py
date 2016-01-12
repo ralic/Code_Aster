@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -113,13 +113,12 @@ def _print_alarm():
     changes = aster_pkginfo.version_info.changes
     uncommitted = aster_pkginfo.version_info.uncommitted
     if changes:
-        UTMESS('A+', 'SUPERVIS_41',
+        UTMESS('I', 'SUPERVIS_41',
                valk=__version__, vali=changes)
     if uncommitted and type(uncommitted) is list:
         fnames = ', '.join(uncommitted)
-        UTMESS('A+', 'SUPERVIS_42',
+        UTMESS('A', 'SUPERVIS_42',
                valk=(aster_pkginfo.version_info.parentid, fnames),)
-    UTMESS('I', 'VIDE_1')
 
 
 def _print_header():

@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -148,8 +148,9 @@ Fermeture des bases jeveux afin de permettre la POURSUITE ultérieure du calcul.
    %(ktout)s
 """),
 
-    41: _(u"""La version %(k1)s a été modifiée par %(i1)d révisions.
-"""),
+    41: { 'message' : _(u"""La version %(k1)s a été modifiée par %(i1)d révisions.
+"""), 'flags' : 'DECORATED',
+       },
 
     42: _(u"""Les fichiers suivants ont été modifiés par rapport à la dernière révision %(k1)s :
 
