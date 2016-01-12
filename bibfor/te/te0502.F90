@@ -2,7 +2,7 @@ subroutine te0502(option, nomte)
     implicit none
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -133,6 +133,7 @@ subroutine te0502(option, nomte)
 90          continue
             ij = ij+1
             zr(ij) = zr(ij)+s
+
 80      end do
 70  end do
 !
@@ -148,40 +149,37 @@ subroutine te0502(option, nomte)
 !
         xma = sqrt(aire)
 !
-        do 100 i = 2, nno
+        do i = 2, nno
             xm = 0.d0
-            xm =xm+(zr(igeom)-zr(igeom+2*i-2))*(zr(igeom)-zr(igeom+2*&
-            i-2)) +(zr(igeom+1)-zr(igeom+2*i-1))*(zr(igeom+1)-zr(&
-            igeom+2*i-1))
+            xm =xm+(zr(igeom)-zr(igeom+2*i-2))*(zr(igeom)-zr(igeom+2*i-2))&
+                  +(zr(igeom+1)-zr(igeom+2*i-1))*(zr(igeom+1)-zr(igeom+2*i-1))
             xm = sqrt(xm)
             if (xm .gt. xma) xma = xm
-100      end do
+        end do
 !
         ij = imattt - 1
 !
-        do 110 i = 1, nno
-            do 110 j = 1, nno
-                s=0.d0
-                do 120 kp = 1, npg
-                    do 120 idim = 1, 2
-                        do 120 jdim = 1, 2
-!
-                            coef = rr
-                            cmin = 1.d0
-                            alfa = um*xma/cmin*coef
-                            aksi = alfa/3.d0
-                            if (alfa .gt. 3.d0) aksi = 1.d0
-                            cc = aksi*um*xma
-!
-                            s = s+(&
-                                dni(idim,i,kp)*dni(jdim,j,kp)*ul( idim,kp)*ul(jdim,kp) *jacob(kp)&
-                                &/(um*um)&
-                                )* coef*cc
-!
-120                      continue
-                ij = ij+1
-                zr(ij) = zr(ij) + s
-110          continue
+        coef = rr
+        cmin = 1.d0
+        alfa = um*xma/cmin*coef
+        aksi = alfa/3.d0
+        if (alfa .gt. 3.d0) aksi = 1.d0
+        cc = aksi*um*xma
+        do i = 1, nno
+            do j = 1, nno
+              s=0.d0
+              do kp = 1, npg
+                 do idim = 1, 2
+                    do jdim = 1, 2
+                       s = s+(dni(idim,i,kp)*dni(jdim,j,kp)&
+                             *ul( idim,kp)*ul(jdim,kp) *jacob(kp)/(um*um))* coef*cc
+                    end do
+                 end do
+              end do
+              ij = ij+1
+              zr(ij) = zr(ij) + s
+            end do
+        end do
     endif
 !
 9999  continue
