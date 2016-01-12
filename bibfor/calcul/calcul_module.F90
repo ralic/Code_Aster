@@ -283,6 +283,11 @@ implicit none
 !      * ca_jrepe_   : adresse jeveux de ligrel.repe
 !      * ca_jptvoi_  : adresse jeveux de maillage.vge.ptvois
 !      * ca_jelvoi_  : adresse jeveux de maillage.vge.elvois
+contains
 
-
+!>  Initialise iactif (appel nécessaire en cas de sortie prématurée de calcul)
+    subroutine calcul_init()
+        ca_iactif_ = 0
+    end subroutine
+!
 end module

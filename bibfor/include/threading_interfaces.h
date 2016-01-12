@@ -18,6 +18,7 @@
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
+#ifdef _USE_OPENMP
     subroutine omp_set_num_threads(a)
         integer, intent(in) :: a
     end subroutine
@@ -29,13 +30,19 @@ interface
     function omp_get_thread_num()
         integer :: omp_get_thread_num
     end function
+#endif
 
+#ifdef _USE_OPENBLAS
     subroutine openblas_set_num_threads(a)
         integer, intent(in) :: a
     end subroutine
+#endif
 
+#ifdef _USE_MKL
     subroutine mkl_set_num_threads(a)
         integer, intent(in) :: a
     end subroutine
+#endif
+
 end interface
 #endif

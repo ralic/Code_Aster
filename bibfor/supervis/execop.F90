@@ -1,5 +1,5 @@
 subroutine execop()
-use calcul_module, only : ca_iactif_
+use superv_module, only: superv_before, superv_after
     implicit none
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -24,35 +24,23 @@ use calcul_module, only : ca_iactif_
 #include "asterc/etausr.h"
 #include "asterc/gcecdu.h"
 #include "asterc/uttrst.h"
-#include "asterfort/codent.h"
 #include "asterfort/ex0000.h"
-#include "asterfort/foint0.h"
 #include "asterfort/iunifi.h"
-#include "asterfort/jermxd.h"
 #include "asterfort/jevema.h"
 #include "asterfort/op9999.h"
 #include "asterfort/opsexe.h"
 #include "asterfort/post_op.h"
 #include "asterfort/sigusr.h"
-#include "asterfort/utgtme.h"
 #include "asterfort/utmess.h"
-#include "asterfort/utptme.h"
 #include "asterfort/uttcpg.h"
-#include "asterfort/check_aster_allocate.h"
     integer :: nivuti, nivpgm, unite
     common /inf001/ nivuti,nivpgm,unite
 !
     integer :: nuoper, nuop2, imaav, imaap
-    real(kind=8) :: tpres, rval(12), v0
-    character(len=6) :: nommar
-    character(len=8) :: k8tab(7)
-    integer :: iret, iret2
+    real(kind=8) :: tpres
 !     ------------------------------------------------------------------
 !
     call gcecdu(nuoper)
-!
-    nommar = 'OP'
-    call codent(nuoper, 'D0', nommar)
 !
     if (nuoper .eq. 9999) then
         call op9999()
@@ -61,11 +49,7 @@ use calcul_module, only : ca_iactif_
 !     -- ON NOTE LA MARQUE AVANT D'APPELER LA PROCHAINE COMMANDE :
     call jevema(imaav)
 !
-!     -- ON REMET A "ZERO" LES COMMONS UTILISES PAR FOINTE :
-    call foint0()
-!
-!     -- on remet a "zero" le compteur pour les routines as_[de]allocate :
-    call check_aster_allocate(init=0)
+    call superv_before()
 !
 !     -- ON INITIALISATION DES COMPTEURS DE TEMPS :
     call uttcpg('INIT', ' ')
@@ -74,39 +58,6 @@ use calcul_module, only : ca_iactif_
     nivuti = 1
     nivpgm = 1
     unite = iunifi('MESSAGE')
-!
-!   -- on initialise la variable ca_iactif de calcul_module
-!      (pour le cas ou on serait sorti brutalement de la routine calcul (exception))
-    ca_iactif_ = 0
-!
-    k8tab(1) = 'LIMIT_JV'
-    k8tab(2) = 'MEM_TOTA'
-    k8tab(3) = 'VMSIZE'
-    k8tab(4) = 'CMAX_JV'
-    k8tab(5) = 'RLQ_MEM'
-    k8tab(6) = 'COUR_JV'
-    k8tab(7) = 'VMPEAK'
-    call utgtme(7, k8tab, rval, iret)
-    v0=rval(1)
-    if (rval(5)+rval(6) .gt. rval(3)) then
-!
-! --- ON AJUSTE LE RELIQUAT CAR IL A DIMINUE
-!
-        call utptme('RLQ_MEM ', rval(3) - rval(6), iret)
-    endif
-    if (rval(2)-rval(5) .ge. 0) then
-        if ((rval(2)-rval(5)) .gt. rval(1)) then
-            call jermxd((rval(2)-rval(5))*1024*1024, iret)
-            if (iret .eq. 0) then
-                k8tab(1) = 'RLQ_MEM'
-                k8tab(2) = 'LIMIT_JV'
-                call utgtme(2, k8tab, rval, iret2)
-                if (abs(rval(2)-v0) .gt. v0*0.1d0) then
-                   call utmess('I', 'JEVEUX1_73', nr=2, valr=rval)
-                endif
-            endif
-        endif
-    endif
 !
     if (nuoper .lt. 0) then
         nuop2 = abs(nuoper)
@@ -134,8 +85,7 @@ use calcul_module, only : ca_iactif_
         call utmess('F', 'SUPERVIS_3', sk='JEMARQ/JEDEMA')
     endif
 !
-!     -- controle du compteur pour les routines as_[de]allocate :
-    call check_aster_allocate()
+    call superv_after()
 !
 !     -- ON IMPRIME LES COMPTEURS DE TEMPS :
 !        (IL FAUT LE FAIRE AVANT LA DESTRUCTION DES OBJETS VOLATILES)
