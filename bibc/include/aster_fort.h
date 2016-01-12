@@ -66,9 +66,6 @@ extern void DEFP(EXPASS,expass, INTEGER*);
 #define CALL_OPSEXE(a)  CALLP(OPSEXE,opsexe,a)
 extern void DEFP(OPSEXE,opsexe, INTEGER*) ;
 
-#define CALL_POST_OP() CALL0(POST_OP,post_op)
-extern void DEF0(POST_OP,post_op);
-
 #define CALL_IMPERS() CALL0(IMPERS,impers)
 extern void DEF0(IMPERS,impers);
 

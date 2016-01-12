@@ -27,11 +27,11 @@
 
 /*
  * Emulate the behavior of exceptions using the system functions 'setjmp/longjmp'.
- * 
+ *
  * The fortran subroutines can raise an exception by calling interruptTry via XFINI
  * or UEXCEP (usually UEXCEP if called through UTEXCP or U2MESS subroutines).
  * XFINI is called at the end of a normal execution and raise the EOFError exception.
- * 
+ *
  * try {                                            if ((gExcNumb = setjmp(env)) == 0) { <--
  *      ...                                                 ...                     |
  *      interruptTry( code );                               longjmp(env, code);   ---
@@ -44,19 +44,19 @@
  *      ...                                                 ...
  * }                                                }
  * endTry();
- * 
+ *
  * NB: there are two differences with the Python behavior/syntax.
  *     1. There is no finally clause.
  *     2. An additional statement endTry() to decrement the counter level.
  *        Do not forget endTry() if there is a return statement in a block.
- * 
+ *
  * except( code ) : will probably be not very usefull in C.
- * 
+ *
  * Global variables:
  *  gExcNumb: code of the exception to raise
  *  gExcEnv : array to store the stack environment
  *  gExcArgs: arguments passed to the exception raised
- * 
+ *
  */
 int gExcLvl = 0;
 int gExcNumb = -1;
@@ -67,7 +67,7 @@ static PyObject *exc_module = NULL;
 
 /*
  *   PUBLIC FUNCTIONS
- * 
+ *
  */
 void initExceptions(PyObject *dict)
 {
@@ -94,7 +94,7 @@ void initExceptions(PyObject *dict)
 
 /*
  *   PRIVATE FUNCTIONS
- * 
+ *
  */
 void _new_try()
 {
@@ -119,7 +119,7 @@ void _raiseException( _IN int val )
     /* Raise the exception of code `val`.
      * Called through raiseException by aster_oper, aster_opsexe, aster_debut,
      * aster_poursu.
-     * 
+     *
      * WARNING: The error indicator will be reset by a PyObject_CallMethod or similar.
      * All C-Python methods must take care of that indicator (ex. UTPRIN).
      */
@@ -146,8 +146,6 @@ void DEFPSPSPPPP(UEXCEP,uexcep, _IN INTEGER *exc_type,
     PyObject *tup_valk, *tup_vali, *tup_valr;
     char *kvar;
     int i;
-    /* call clean-up subroutine as after each operator */
-    CALL_POST_OP();
 
     tup_valk = PyTuple_New( *nbk ) ;
     for(i=0;i<*nbk;i++){

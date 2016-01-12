@@ -1,6 +1,5 @@
 subroutine utmess_core(typ, idmess, nk, valk, ni,&
                        vali, nr, valr, fname)
-use message_module
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +18,8 @@ use message_module
 ! ======================================================================
 ! person_in_charge: mathieu.courtois at edf.fr
 !
+    use message_module, only: Message, init_message, free_message
+    use superv_module, only: superv_after
     implicit none
 #include "asterf_types.h"
 #include "asterc/getres.h"
@@ -36,7 +37,6 @@ use message_module
 #include "asterfort/jevema.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/onerrf.h"
-#include "asterfort/post_op.h"
 #include "asterfort/trabck.h"
     character(len=*), intent(in) :: typ
     character(len=*), intent(in) :: idmess
@@ -183,13 +183,12 @@ use message_module
                 numex = 21
             endif
 !
+            if (isjvup() .eq. 1) then
+                call superv_after(exception=.true.)
+            endif
+
 !           NOM DU CONCEPT COURANT
             call getres(nomres, k8b, k8b)
-!
-            if (isjvup() .eq. 1) then
-                call post_op()
-            endif
-!
             if (nomres .ne. ' ') then
 !             LE CONCEPT EST REPUTE VALIDE :
 !               - SI ERREUR <S> OU EXCEPTION
@@ -229,6 +228,7 @@ use message_module
 !               raise the exception with the first msg id & reinit id
                 isFirst = ASTER_TRUE
                 call ib1mai()
+                call superv_after(exception=.true.)
                 call uexcep(numex, firstMsg%id, firstMsg%nk, firstMsg%valk, firstMsg%ni,&
                             firstMsg%vali, firstMsg%nr, firstMsg%valr)
                 call free_message(firstMsg)

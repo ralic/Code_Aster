@@ -29,7 +29,6 @@ use superv_module, only: superv_before, superv_after
 #include "asterfort/jevema.h"
 #include "asterfort/op9999.h"
 #include "asterfort/opsexe.h"
-#include "asterfort/post_op.h"
 #include "asterfort/sigusr.h"
 #include "asterfort/utmess.h"
 #include "asterfort/uttcpg.h"
@@ -85,12 +84,10 @@ use superv_module, only: superv_before, superv_after
         call utmess('F', 'SUPERVIS_3', sk='JEMARQ/JEDEMA')
     endif
 !
-    call superv_after()
-!
 !     -- ON IMPRIME LES COMPTEURS DE TEMPS :
 !        (IL FAUT LE FAIRE AVANT LA DESTRUCTION DES OBJETS VOLATILES)
     call uttcpg('IMPR', 'CUMU')
 !
-    call post_op()
+    call superv_after()
 !
 end subroutine

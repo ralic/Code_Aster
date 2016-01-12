@@ -32,7 +32,12 @@ module superv_module
 #include "asterc/asmpi_comm.h"
 #include "asterfort/assert.h"
 #include "asterfort/check_aster_allocate.h"
+#include "asterfort/detmat.h"
 #include "asterfort/foint0.h"
+#include "asterfort/jedetv.h"
+#include "asterfort/jelibz.h"
+#include "asterfort/jerecu.h"
+#include "asterfort/jereou.h"
 #include "asterfort/jermxd.h"
 #include "asterfort/utgtme.h"
 #include "asterfort/utmess.h"
@@ -106,11 +111,32 @@ contains
 
 
 !>  Initialize the values or reinitialize them between before executing an operator
-    subroutine superv_after()
-
+!
+!>  This subroutine is called after the execution of each operator to clean
+!>  the memory of temporary objects (volatile), matrix...
+!
+!>  @param[in] exception tell if an exception/error will be raised
+    subroutine superv_after(exception)
+        logical, optional :: exception
+        logical :: exc
+        exc = .false.
+        if ( present(exception) ) then
+            exc = exception
+        endif
 !   Memory allocation
 !       Check for not deallocated vectors
-        call check_aster_allocate()
+!       Do not add another error message if an error has been raised
+        if (.not. exc) then
+            call check_aster_allocate()
+        endif
+!       Delete matrix and their mumps/petsc associated instances
+        call detmat()
+!       Free objects kept in memory using jeveut
+        call jelibz('G')
+!       Delete objects on the volatile database
+        call jedetv()
+        call jereou('V', 0.01d0)
+        call jerecu('G')
     end subroutine superv_after
 
 !>  Return the current maximum number of available threads
