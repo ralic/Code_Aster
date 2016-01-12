@@ -64,7 +64,7 @@ subroutine op0195()
     character(len=3) :: prol0
     character(len=4) :: tychr, tych
     character(len=8) :: kbid, mo, ma, chou, nomgd, nomgd2, carel
-    character(len=8) :: tsca, nogd, nomgd1, nompar, ma2, ta
+    character(len=8) :: tsca, nogd, nomgd1, nompar, ma2, ta, ma3
     character(len=16) :: tychr1, opera, optio2, typco, option
     character(len=19) :: ligrel, chatmp, celmod, prchn1, cns1, ch1, prchn2, chin, chou2
     character(len=8) :: nu1
@@ -301,6 +301,17 @@ subroutine op0195()
     if (tychr .eq. 'NOEU') then
         call getvid(' ', 'CHAM_NO', scal=ch1, nbret=i11)
         call getvid(' ', 'NUME_DDL', scal=nu1, nbret=i12)
+        if (i12 .eq. 1) then
+            call dismoi('NOM_MAILLA', nu1, 'NUME_DDL', repk=ma3)
+            if (ma .ne. ' ') then
+                if (ma3.ne.ma) then
+                    valk(1)=nu1
+                    valk(2)=ma3
+                    valk(3)=ma
+                    call utmess('F','CALCULEL4_69', nk=3, valk=valk)
+                endif
+            endif
+        endif
         if ((i11+i12) .gt. 0) then
             call dismoi('NOM_GD', chou, 'CHAMP', repk=nogd)
             prchn1 = ' '

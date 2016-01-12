@@ -257,6 +257,11 @@ Erreur utilisateur :
  erreur dans etenca pour le problème dual
 """),
 
+    69 : _(u"""
+Erreur utilisateur dans la commande CREA_CHAMP :
+ Le mot clé NUME_DDL (%(k1)s) est associé au maillage (%(k2)s).
+ Il est incompatible avec le mot clé MAILLAGE (%(k3)s).
+"""),
 
     70 : _(u"""
 Erreur utilisateur dans CREA_CHAMP :
