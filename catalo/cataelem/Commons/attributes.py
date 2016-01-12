@@ -23,13 +23,16 @@ from cataelem.Tools.base_objects import Attribute, objects_from_context
 # Remarques importantes :
 #------------------------
 # Les 10 attributs suivants (qui ont "auto=True") sont "automatiques".
-# Ils se déduisent d'informations donnees dans le catalogue phenomenons_modelisations.py
+# Ils se déduisent d'informations données dans le catalogue phenomenons_modelisations.py
 # et dans le catalogue mesh_types.py
-# Il NE FAUT PAS les redefinir dans les catalogues.
+# Il NE FAUT PAS les redéfinir dans les catalogues.
 
 # Pour certains de ces attributs : ALIAS8, MODELI,
-# la liste des valeurs autorisees (donnée ci-dessous) n'est pas complete car cette liste serait
-# trop fastidieuse a maintenir.
+# la liste des valeurs autorisées (donnée ci-dessous) n'est pas complète car cette liste serait
+# trop fastidieuse à maintenir.
+#
+# Les commentaires (comment=...) sont très importants. Ce sont eux qui "définissent" les attributs.
+# Pour l'instant, ces commentaires ne sont pas stockés dans les objets jeveux '&CATA....'
 #
 #--------------------------------------------------------------------------------------
 
