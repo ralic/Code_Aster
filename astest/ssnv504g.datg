@@ -1,0 +1,143 @@
+*
+*Maillage Modlisation H (3D):
+*Extrusion d'un lopin
+*Elements solide (HEXA20)
+*Element pour le contact (QUAD8)
+*
+opti dime 3;
+opti nive 10;
+opti elem CU20;
+*
+*constantes
+*
+BETA = 90. ;
+NBVOL = 10 ;
+*
+* Parametrisation
+*
+l1 = 50. ;
+l2 = 65. ;
+l3 = 70. ;
+l4 = 15. ;
+l5 = 30. ;
+l6 = 20. ;
+l7 = 70. ;
+l8 = 15. ;
+l9 = 10. ;
+l10= 45. ;
+l11= 48. ;
+l12= 60. ;
+*
+* coordonnes des points
+*
+A = l1                0.                      0.  ;
+B = l1                l3                      0.  ; 
+C = l10               (l3+l4)                 0.  ;
+D = l10               (l3+l4+l5)              0.  ;
+E = l11               (l3+l4+l5+l6)           0.  ;
+F = l11               (l3+l4+l5+l6+l7)        0.  ;
+G = 0.                (l3+l4+l5+l6+l7+l8)     0.  ;
+H = 0.                (l3+l4+l5+l6+l7+l8+l9)  0.  ;
+I = l12               (l3+l4+l5+l6+l7+l8+l9)  0.  ;
+J = l12               0.                      0.  ;
+K = 0.                l2                      0.  ;
+L = l1                l2                      0.  ;
+M = l1                 0.                     0.  ;
+N = 0.                 0.                     0.  ;
+*
+*Cration de la filire
+*
+lAB = droit 14 A B ;
+lBC = droit 6 B C ;
+lCD = droit 8 C D ;
+lDE = droit 6 D E ;
+lEF = droit 10 E F ;
+lFG = droit 10 F G ;
+lGH = droit 2 G H ;
+lHI = droit 12 H I ;
+lIJ = droit 46 I J ;
+lJA = droit 2 J A ;
+*
+lcont = lAB et lBC et lCD et lDE 
+        et lEF et lFG et lGH et lHI 
+        et lIJ et lJA ;
+FIL = SURFACE lcont plane ;
+elim 0.0001 fil ;
+v1= fil volu ROTA nbvol beta N K ;
+v1 = elim .1 v1;
+FILIERE= regenere v1 ;
+*
+* Cration des surfaces de la filiere pour les conditions de symtrie
+*
+FIL_SYM1 = FIL;
+FIL_SYM2 = FACE 2 v1;
+*
+* Cration de la surface extrieure la filiere
+*
+LEXT = (LJA et LIJ et LHI);
+FIL_EXT = LEXT ROTA nbvol beta N K;
+FIL_EXT = elim .1   FIL_EXT;
+FIL_EXT = regenerer FIL_EXT;
+*
+* Cration des surfaces maitres (Filiaire)
+*
+LAF = (LAB et LBC et LCD et LDE et LEF);
+FIL_MAI1 = LAF ROTA nbvol beta N K;
+FIL_MAI2 = LFG ROTA nbvol beta N K;
+FIL_MAI2 = elim .1  FIL_MAI2;
+FIL_MAI2 = regener FIL_MAI2;
+*
+FILIERE = elim 0.0001 (FILIERE et FIL_SYM1 et FIL_SYM2 et
+          FIL_EXT et FIL_MAI1 et FIL_MAI2);
+*
+*-------------------------------------------
+*Cration du LOPIN
+*-------------------------------------------
+*
+lLM = droit 10 L M ;
+lMN = droit 8 M N ; 
+lNK = droit 10 N K ;
+lKL = droit 8 K L ;
+*
+LOP = daller lLM lMN lNK lKL plan ;
+elim 0.0001 lop ;
+v2= lop volu ROTA nbvol beta N K ;
+V2 = ELIM .1 V2;
+LOPIN= regenere v2 ;
+*
+* Cration des surfaces du lopin pour les conditions de symtrie
+*
+LOP_SYM1 = LOP;
+LOP_SYM2 = FACE 2 v2;
+*
+* Cration de la surface pour imposer un dplacement
+*
+LOP_DDL = LMN ROTA nbvol beta K G;
+LOP_DDL = ELIM .1 LOP_DDL;
+LOP_DDL = regener LOP_DDL;
+*
+* Cration de la surface esclave pour le lopin
+*
+LOP_ESC1 = LLM ROTA nbvol beta N K;
+LOP_ESC2 = LKL ROTA nbvol beta N G;
+LOP_ESC2 = ELIM .1 LOP_ESC2;
+LOP_ESC2 = regener LOP_ESC2;
+*
+LOPIN = elim 0.0001 (LOPIN et LOP_SYM1 et LOP_SYM2 et
+          LOP_ESC1 et LOP_ESC2 et LOP_DDL);
+*
+OUBLIER V1 ;
+OUBLIER V2 ;
+OUBLIER FIL;
+OUBLIER LOP;
+OUBLIER LCONT;
+OUBLIER LEXT;
+OUBLIER LAF;
+*
+*trac(LOPIN coul bleu et FILIERE coul rouge);
+*trac(FIL_MAI1);
+*trac(LOP_ESC1);
+*trac(FIL_MAI1 coul bleu et LOP_ESC1 coul rouge);
+OPTI SAUV FORM '/home/massin/MKHAM/TEST/ssnv504g.mgib';
+sauv form (FILIERE et LOPIN) ;
+fin;         

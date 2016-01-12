@@ -1,0 +1,10 @@
+P time_limit 200
+P memory_limit 768
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist verification sequential
+
+F comm fdnv100a.comm D 1
+F datg fdnv100a.datg D 16
+F mgib fdnv100a.mmed D 20

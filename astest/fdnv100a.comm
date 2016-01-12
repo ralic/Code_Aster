@@ -1,0 +1,503 @@
+# TITRE  BALLOTTEMENT D UNE CUVE REMPLIE D EAU AVEC PAROI FLEXIBLE
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+DEBUT( CODE = _F(NIV_PUB_WEB = 'INTERNET' ,
+                  VISU_EFICAS='OUI',) ,DEBUG=_F(SDVERI='OUI'));
+#
+#  Modelisation de la plaque flexible par COQUE_3D
+#  Maillage_interface :  ASTER pour IFLUSTRU
+#  DYNA_NON_LINE
+#  Modele :              2D_FLUI_PESA, 3D_FLUIDE, FLUI_STRU, COQUE_3D
+#  Materiau :            FLUIDE, SOLIDE
+#  CL :                  DDL_IMPO, VITE_FACE
+#
+#
+#
+#-----------------------------------------------------------------------------------
+#
+#  CONVERSION DU MAILLAGE GIBI AU FORMAT ASTER
+#
+#-----------------------------------------------------------------------------------
+#
+#PRE_GIBI();
+#
+MAILLA1=LIRE_MAILLAGE(  FORMAT='MED',UNITE=20, );
+#
+MAILLA2=CREA_MAILLAGE(MAILLAGE=MAILLA1,
+                      CREA_POI1=_F(NOM_GROUP_MA='POI1',
+                                   GROUP_NO='Q',),);
+#
+#-----------------------------------------------------------------------------------
+#
+#  COMPLETION DU MAILLAGE
+#
+#-----------------------------------------------------------------------------------
+#
+MAILLA2=DEFI_GROUP(reuse =MAILLA2,
+                   MAILLAGE=MAILLA2,
+                   CREA_GROUP_NO=(_F(OPTION='PLAN',
+                                     NOM='PLANBAS',
+                                     POINT=(0.0,0.0,0.0,),
+                                     VECT_NORMALE=(0.0,0.0,1.0,),
+                                     PRECISION=0.001,),
+                                  _F(GROUP_MA='PLAQUE',),
+                                  _F(GROUP_MA='FOND',),
+                                  _F(INTERSEC=('PLAQUE','PLANBAS',),
+                                     NOM='FONDP',),
+                                  _F(GROUP_MA='FONDS',),),
+                   INFO=1,);
+#
+#-----------------------------------------------------------------------------------
+#
+#  AFFECTATION DES DIFFERENTS MODELES
+#
+#-----------------------------------------------------------------------------------
+#
+MODELE=AFFE_MODELE(MAILLAGE=MAILLA2,
+                   AFFE=(_F(GROUP_MA='POI1',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='DIS_T',),
+                           _F(GROUP_MA=('SURFLIBR',),
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION='2D_FLUI_PESA',),
+                         _F(GROUP_MA=('FLUID1','FLUID2','FACELATE',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='3D_FLUIDE',),
+                         _F(GROUP_MA=('IFLUSTRU',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='FLUI_STRU',),
+                         _F(GROUP_MA=('PLAQUE',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='3D',),
+                         _F(GROUP_MA=('FONDS',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='DKT',),),);
+#
+#  MODELE STRUCTURE SEUL (POUR CRIT_STAB)
+#
+MODELEST=AFFE_MODELE(MAILLAGE=MAILLA2,
+                   AFFE=(_F(GROUP_MA='POI1',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='DIS_T',),
+                         _F(GROUP_MA=('PLAQUE',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='3D',),
+                         _F(GROUP_MA=('FONDS',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='DKT',),),);
+#
+#-----------------------------------------------------------------------------------
+#
+#  DONNEES MATERIAUX ET CARACTERISTIQUES GEOMETRIQUES
+#
+#-----------------------------------------------------------------------------------
+#
+DURALU=DEFI_MATERIAU(ELAS=_F(E=62430000000.0,
+                             NU=0.35,
+                             RHO=2787.0,),);
+#
+DURALU2=DEFI_MATERIAU(ELAS=_F(E=62430000000000.0,
+                             NU=0.35,
+                             RHO=2.0,),);
+#
+EAU=DEFI_MATERIAU(FLUIDE=_F(RHO=1000.0,
+                             PESA_Z=9.81,
+                            CELE_R=1500.0,),);
+#
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAILLA2,
+                    AFFE=(_F(GROUP_MA=('FLUID1','FLUID2',
+                    'FACELATE','SURFLIBR','IFLUSTRU',),
+                             MATER=EAU,),
+                          _F(GROUP_MA=('PLAQUE','POI1',),
+                             MATER=DURALU,),
+                          _F(GROUP_MA=('FONDS',),
+                             MATER=DURALU2,),),);
+#
+#  MATERIAU POUR MODELE STRUCTURE SEULE
+#
+CHMATST=AFFE_MATERIAU(MAILLAGE=MAILLA2,
+                          AFFE=(
+                          _F(GROUP_MA=('PLAQUE','POI1',),
+                             MATER=DURALU,),
+                          _F(GROUP_MA=('FONDS',),
+                             MATER=DURALU2,),),);
+#
+CARAELEM=AFFE_CARA_ELEM(MODELE=MODELE,
+                        DISCRET=(
+                                _F(GROUP_MA='POI1',
+                                   CARA='M_T_D_N',
+                                   VALE=(0.05896,),),
+                                _F(GROUP_MA='POI1',
+                                   CARA='K_T_D_N',
+                                   VALE=(0.0,0.0,0.0,),),
+),
+                        COQUE=_F( GROUP_MA = 'FONDS',
+                        EPAIS = 0.00001 ),);
+#
+TABL_MAS=POST_ELEM(MASS_INER= _F(GROUP_MA=('FLUID1','FLUID2','FACELATE','IFLUSTRU','PLAQUE','FONDS',)),
+                   MODELE=MODELE, CHAM_MATER=CHMAT, CARA_ELEM=CARAELEM,);
+#
+#-----------------------------------------------------------------------------------
+#
+#  CONDITIONS LIMITES CHARGEMENT
+#
+#-----------------------------------------------------------------------------------
+#
+CONDLIM=AFFE_CHAR_MECA(MODELE=MODELE,
+                       VITE_FACE=_F(GROUP_MA='FACELATE',
+                                    VNOR=0.0,),);
+#
+CONDLC=AFFE_CHAR_CINE(MODELE=MODELE,
+                      MECA_IMPO=(_F(GROUP_NO=('FONDS','FONDP',),
+                                    DY=0.0,
+                                    DZ=0.0,
+                                    DRX=0.,DRY=0.,DRZ=0.,),),);
+#
+CONDLCST=AFFE_CHAR_CINE(MODELE=MODELEST,
+                        MECA_IMPO=(_F(GROUP_NO=('FONDS','FONDP',),
+                                      DY=0.0,
+                                      DZ=0.0,
+                                      DRX=0.,DRY=0.,DRZ=0.,),),);
+#
+PESA=AFFE_CHAR_MECA(MODELE=MODELE,
+                    PESANTEUR=_F(GRAVITE=9.81,
+                                 DIRECTION=(0.,0.,-1.,),),);
+#
+PESAST=AFFE_CHAR_MECA(MODELE=MODELEST,
+                      PESANTEUR=_F(GRAVITE=9.81,
+                                   DIRECTION=(0.,0.,-1.,),),);
+#
+FREQ = 1.7704;
+#
+LFONC=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=_F(JUSQU_A=10.0,
+                                   PAS=0.01,),);
+#
+FONC = FORMULE(NOM_PARA='INST',VALE='(0.001)*sin(2*pi*FREQ*INST)');
+#
+DEPLX=CALC_FONC_INTERP(FONCTION=FONC,
+                       NOM_PARA='INST',
+                       LIST_PARA=LFONC,);
+#
+CHARG_SE=AFFE_CHAR_MECA_F(MODELE=MODELE,
+                          DDL_IMPO=_F(GROUP_NO=('FONDS','FONDP',),
+                                      DX=DEPLX,),);
+#
+CHARG_ST=AFFE_CHAR_MECA_F(MODELE=MODELEST,
+                          DDL_IMPO=_F(GROUP_NO=('FONDS','FONDP',),
+                                      DX=DEPLX,),);
+#
+#-----------------------------------------------------------------------------------
+#
+#  INSTANTS DE CALCUL
+#
+#-----------------------------------------------------------------------------------
+#
+TPSFIN = 2.
+#
+LINST=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=(_F(JUSQU_A=TPSFIN,
+                                    PAS=0.1,),),
+                     INFO=1,);
+#
+LINST2=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST),
+                        ECHEC=_F(EVENEMENT='INSTABILITE',ACTION='ARRET',),);
+#
+LARCH=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=(_F(JUSQU_A=TPSFIN,
+                                    PAS=0.2,),),);
+#
+LCAST=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=(_F(JUSQU_A=TPSFIN,
+                                    PAS=0.2,),),);
+#
+L_OBS=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=(_F(JUSQU_A=TPSFIN,
+                                    PAS=0.2,),),);
+#
+#-----------------------------------------------------------------------------------
+#
+#  CALCUL DES CONDITIONS INITIALES
+#
+#-----------------------------------------------------------------------------------
+#
+CONDSTA=AFFE_CHAR_MECA(MODELE=MODELE,
+                       VITE_FACE=_F(GROUP_MA='FACELATE',
+                                    VNOR=0.0,),);
+#
+CONDSTC=AFFE_CHAR_CINE(MODELE=MODELE,
+                       MECA_IMPO=(_F(GROUP_NO=('FONDS','FONDP',),
+                                    DX=0.0,
+                                    DY=0.0,
+                                    DZ=0.0,
+                                    DRX=0.,DRY=0.,DRZ=0.,),),);
+#
+CONDSTCS=AFFE_CHAR_CINE(MODELE=MODELEST,
+                        MECA_IMPO=(_F(GROUP_NO=('FONDS','FONDP',),
+                                      DX=0.0,
+                                      DY=0.0,
+                                      DZ=0.0,
+                                      DRX=0.,DRY=0.,DRZ=0.,),),);
+#
+ASSEMBLAGE (MODELE = MODELE,
+                  CHAM_MATER=CHMAT,
+                  CARA_ELEM=CARAELEM,
+                  CHARGE     = (CONDSTA, PESA,),
+                  CHAR_CINE = CONDSTC,
+                  NUME_DDL   = CO('NUMSTA'),
+                  MATR_ASSE=(
+                   _F( MATRICE= CO('RIGSTA'), OPTION= 'RIGI_MECA'),
+                   _F( MATRICE= CO('MASSTA'), OPTION= 'MASS_MECA'),
+                            ),
+                  VECT_ASSE=(_F(VECTEUR=CO("F_0"),OPTION='CHAR_MECA')),
+                             );
+#
+ASSEMBLAGE (MODELE = MODELEST,
+                  CHAM_MATER=CHMATST,
+                  CARA_ELEM=CARAELEM,
+                  CHARGE     = (PESAST,),
+                  CHAR_CINE = CONDSTCS,
+                  NUME_DDL   = CO('NUMSTAST'),
+                  MATR_ASSE=(
+                   _F( MATRICE= CO('RIGSTAST'), OPTION= 'RIGI_MECA'),
+                   _F( MATRICE= CO('MASSTAST'), OPTION= 'MASS_MECA'),
+                            ),
+                  VECT_ASSE=(_F(VECTEUR=CO("F_0ST"),OPTION='CHAR_MECA')),
+                             );
+#
+RIGICOMB = COMB_MATR_ASSE(
+         COMB_R=(
+               _F( MATR_ASSE= RIGSTA, COEF_R= 1.),
+               _F( MATR_ASSE= MASSTA, COEF_R= -0.001),
+                ),
+                         );
+#
+#-----------------------------------------------------------------------------------
+#
+#  ON RESOUT LE CAS DE CHARGE
+#
+#-----------------------------------------------------------------------------------
+#
+RIGICOMB = FACTORISER(reuse=RIGICOMB, MATR_ASSE= RIGICOMB, STOP_SINGULIER= 'NON');
+#
+RIGSTAST = FACTORISER(reuse=RIGSTAST, MATR_ASSE= RIGSTAST);
+#
+VCINE   = CALC_CHAR_CINE(   NUME_DDL=NUMSTA,  CHAR_CINE=CONDSTC)
+#
+VCINEST = CALC_CHAR_CINE(   NUME_DDL=NUMSTAST,  CHAR_CINE=CONDSTCS)
+#
+DEP0    = RESOUDRE(MATR= RIGICOMB, CHAM_NO=F_0,CHAM_CINE=VCINE,);
+#
+DEP0ST  = RESOUDRE(MATR= RIGSTAST, CHAM_NO=F_0ST,CHAM_CINE=VCINEST,);
+#
+VIT0    = CREA_CHAMP(   OPERATION='AFFE',
+                        TYPE_CHAM='NOEU_DEPL_R',
+
+                        MODELE=MODELE,
+                        AFFE=( _F( TOUT='OUI',
+                                   NOM_CMP = ('DX', 'DY', 'DZ', 'DRX', 'DRY', 'DRZ', 'PRES', 'PHI', 'DH',),
+                                   VALE = (  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,)),
+                    ));
+#
+VIT0ST    = CREA_CHAMP(   OPERATION='AFFE',
+                        TYPE_CHAM='NOEU_DEPL_R',
+
+                        MODELE=MODELEST,
+                        AFFE=( _F( TOUT='OUI',
+                                   NOM_CMP = ('DX', 'DY', 'DZ',),
+                                   VALE = (  0.0,  0.0,  0.0,)),
+                    ));
+#
+ACCE0 = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',OPERATION='AFFE',MODELE=MODELE,
+                   AFFE=_F(TOUT='OUI',NOM_CMP=('DX', 'DY', 'DZ', 'DRX', 'DRY', 'DRZ', 'PRES', 'PHI', 'DH',),
+                   VALE = (0., 0., 0., 0., 0., 0., 0., 0., 0.,),),);
+#
+ACCE0ST = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',OPERATION='AFFE',MODELE=MODELEST,
+                   AFFE=_F(TOUT='OUI',NOM_CMP=('DX', 'DY', 'DZ',),VALE = (0., 0., 0.,),),);
+#
+#-----------------------------------------------------------------------------------
+#
+#  CALCUL DYNAMIQUE NON LINEAIRE
+#
+#-----------------------------------------------------------------------------------
+#
+RESU=DYNA_NON_LINE(MODELE=MODELE,
+                   CHAM_MATER=CHMAT,
+                   CARA_ELEM=CARAELEM,
+                   EXCIT=(_F(CHARGE=CONDLIM,),
+                          _F(CHARGE=CONDLC,),
+                          _F(CHARGE=PESA,),
+                          _F(CHARGE=CHARG_SE,),),
+                   COMPORTEMENT=_F(RELATION='ELAS',
+                                DEFORMATION='PETIT',
+                                TOUT='OUI',),
+#  On impose explicitement une acceleration initiale nulle car la matrice de masse etant singuliere
+#  a cause du modele (u,p,phi), on ne peut calculer une acceleration non nulle :
+                   ETAT_INIT=_F(INST_ETAT_INIT=0.0, DEPL=DEP0, VITE=VIT0, ACCE=ACCE0, ),
+                   INCREMENT=_F(LIST_INST=LINST2,),
+                   SCHEMA_TEMPS=_F(SCHEMA='HHT',ALPHA=-0.3,
+                                FORMULATION='DEPLACEMENT',),
+                   NEWTON=_F(REAC_INCR=1,
+                             MATRICE='TANGENTE',
+                             REAC_ITER=1,),
+                   SOLVEUR=_F(STOP_SINGULIER='NON',),
+                   CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
+                                  ITER_GLOB_MAXI=10,
+                                  ARRET='OUI',),
+                   ARCHIVAGE=_F(LIST_INST=LARCH,),
+                   OBSERVATION=(_F(NOM_CHAM='ACCE',
+                                   NOM_CMP=('DX','DY','DZ',),
+                                   LIST_INST=L_OBS,
+                                   PRECISION=1e-06,
+                                   GROUP_NO=('P6','P12',)),),
+                   RECH_LINEAIRE=_F(),
+                   CRIT_STAB=_F(RIGI_GEOM='NON',
+                                DDL_EXCLUS=('PHI','PRES','DH',),
+                                MODI_RIGI='OUI',NB_FREQ = 1,),
+                   );
+#
+RESUST=DYNA_NON_LINE(MODELE=MODELEST,
+                   CHAM_MATER=CHMATST,
+                   CARA_ELEM=CARAELEM,
+                   EXCIT=(
+                          _F(CHARGE=CONDLCST,),
+                          _F(CHARGE=PESAST,),
+                          _F(CHARGE=CHARG_ST,),),
+                   COMPORTEMENT=_F(RELATION='ELAS',
+                                DEFORMATION='PETIT',
+                                TOUT='OUI',),
+#  On impose explicitement une acceleration initiale nulle car la matrice de masse etant singuliere
+#  a cause du modele (u,p,phi), on ne peut calculer une acceleration non nulle :
+                   ETAT_INIT=_F(INST_ETAT_INIT=0.0, DEPL=DEP0, VITE=VIT0, ACCE=ACCE0, ),
+                   INCREMENT=_F(LIST_INST=LINST2,INST_FIN=0.4,),
+                   SCHEMA_TEMPS=_F(SCHEMA='HHT',ALPHA=-0.3,
+                                FORMULATION='DEPLACEMENT',),
+                   NEWTON=_F(REAC_INCR=1,
+                             MATRICE='TANGENTE',
+                             REAC_ITER=1,),
+                   SOLVEUR=_F(STOP_SINGULIER='NON',),
+                   CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
+                                  ITER_GLOB_MAXI=10,
+                                  ARRET='OUI',),
+                   ARCHIVAGE=_F(LIST_INST=LARCH,),
+                   OBSERVATION=(_F(NOM_CHAM='ACCE',
+                                   NOM_CMP=('DX','DY','DZ',),
+                                   LIST_INST=L_OBS,
+                                   PRECISION=1e-06,
+                                   GROUP_NO=('P6','P12',)),),
+                   RECH_LINEAIRE=_F(),
+                   CRIT_STAB=_F(RIGI_GEOM='NON',),
+                   );
+#
+#-----------------------------------------------------------------------------------
+#
+#  RESULTATS : TEST DE NON REGRESSION
+#
+#-----------------------------------------------------------------------------------
+#
+#   VALEURS DE REFERENCE : ATER 7.03.06 AlphaServer
+#
+TEST_RESU(RESU=_F(INST=0.80000000000000004,
+                  RESULTAT=RESU,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N145',
+                  NOM_CMP='DX',
+                  VALE_CALC=0.000516241323309,
+                  TOLE_MACHINE=5.0000000000000004E-06,
+                  ),
+          )
+
+#
+TEST_RESU(RESU=_F(INST=1.3999999999999999,
+                  RESULTAT=RESU,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N145',
+                  NOM_CMP='DX',
+                  VALE_CALC=0.000149700465041,
+                  TOLE_MACHINE=6.9999999999999999E-06,
+                  ),
+          )
+
+#
+TEST_RESU(RESU=_F(INST=2.0,
+                  RESULTAT=RESU,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N145',
+                  NOM_CMP='DX',
+                  VALE_CALC=-0.000239274939144,
+                  TOLE_MACHINE=5.0000000000000004E-06,
+                  ),
+          )
+
+#
+TEST_RESU(RESU=_F(INST=1.0,
+                  RESULTAT=RESU,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N3119',
+                  NOM_CMP='DX',
+                  VALE_CALC=-0.000997363269041,
+                  TOLE_MACHINE=5.0000000000000004E-06,
+                  ),
+          )
+
+#
+TEST_RESU(RESU=_F(INST=1.6000000000000001,
+                  RESULTAT=RESU,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N3119',
+                  NOM_CMP='DX',
+                  VALE_CALC=-0.00087855064325,
+                  TOLE_MACHINE=5.0000000000000004E-06,
+                  ),
+          )
+
+#
+TEST_RESU(RESU=_F(INST=2.0,
+                  RESULTAT=RESU,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N3119',
+                  NOM_CMP='DX',
+                  VALE_CALC=-0.000239292474941,
+                  TOLE_MACHINE=5.0000000000000004E-06,
+                  ),
+          )
+
+#
+#  La charge critique avec et sans fluide doit rester la meme :
+#
+valstab = 2.477264942149
+#
+TEST_RESU(RESU=(_F(PARA='CHAR_CRIT',
+                   INST=0.40000000000000002,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESU,
+                   VALE_CALC=2.47726505977,
+                   VALE_REFE=2.4772649421490001,
+                   PRECISION=9.9999999999999995E-07,),
+                _F(PARA='CHAR_CRIT',
+                   INST=0.40000000000000002,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESUST,
+                   VALE_CALC=2.47726520279,
+                   VALE_REFE=2.4772649421490001,
+                   PRECISION=9.9999999999999995E-07,),
+                ),
+          )
+
+#
+FIN();

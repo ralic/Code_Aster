@@ -1,0 +1,373 @@
+TITRE ' MAILLAGE CAS TEST 2D_FLUI_PESA POUR DYNA_NON_LINE' ;
+OPTI DIME 3 ELEM TET4 ECHO 1 COUL BLAN  ;
+*
+*---------------------------------------------------------------------------
+*        Parametres
+*---------------------------------------------------------------------------
+*
+x   = 0.191   ;
+xr  = 0.231   ;
+y   = 0.1     ;
+z   = 0.182   ;
+zp  = 0.129   ;
+e   = 0.001   ;
+n   = 4       ;
+eldns = 1.E-6 ;
+*
+*---------------------------------------------------------------------------
+*        Donnees
+*---------------------------------------------------------------------------
+*
+xt     = x + xr  ;
+ys2    = y/2.    ;
+zt     = z + zp  ;
+zp1    = (1.83*zp)/2.18;
+zp2    = zp - zp1;
+zp8    = z + zp1 ;
+es2    = e/2.    ;
+xmes2  = x - es2 ;
+xpes2  = x + es2 ;
+xrmes2 = xr - es2;
+zs4n   = z/(4.*n);
+zp1s3n = zp1/(3.*n);
+zp2sn  = zp2/n   ;
+dens1  = n       ;
+dens2  = 2*n     ;
+dens3  = 3*n     ;
+dens4  = 4*n     ;
+dens5  = 10       ;
+esdens5= e/dens5 ;
+*
+*---------------------------------------------------------------------------
+*         Points
+*---------------------------------------------------------------------------
+*
+oo   =   0.    0.   0.    ;
+p1   =   0.    y    0.    ;
+p2   = xmes2   0.   0.    ;
+p3   = xmes2   y    0.    ;
+p4   = xpes2   0.   0.    ;
+p5   = xpes2   y    0.    ;
+p6   = xmes2   0.   z     ;
+p7   = xmes2   y    z     ;
+p8   = xmes2   0.  zp8    ;
+p9   = xmes2   y   zp8    ;
+p10  =   0.   ys2   z     ;
+p11  = xmes2  ys2   z     ;
+p12  = xpes2  ys2   z     ;
+p13  =   xt    0.   0.    ;
+p14  =   xt    y    0.    ;
+p15  =   xt   ys2   z     ;
+p16  =   xt    0.   z     ;
+p17  =   xt    y    z     ;
+p18  =   0.    0.   z     ;
+p19  =   0.    y    z     ;
+p20  = xpes2   0.   z     ;
+p21  = xpes2   y    z     ;
+q    =   x    ys2   zt    ;
+no0  =   0.    0.   0.    ;
+no1  = xmes2   0.   0.    ;
+no2  =   0.    0.   z     ;
+no3  =   0.    y    0.    ;
+no4  = xrmes2  0.   0.    ;
+no5  =   0.    0.  zp1    ;
+no6  =   0.    0.  zp2    ;
+no7  =   e     0.   0.    ;
+noi  =   0.    0.  zs4n   ;
+nopi = esdens5 0.   0.    ;
+nop2i=   0.    0.  zp1s3n ;
+nop3i=   0.    0.  zp2sn  ;
+*
+*---------------------------------------------------------------------------
+*         Volume 1
+*---------------------------------------------------------------------------
+*
+loop1    =  DROI  dens2  oo  p1        ;
+loop1    =  ELIM eldns loop1           ;
+*
+fond1    =  loop1 TRAN 1 ((xmes2/dens4)   0.   0. )   ;
+fond1    =  ELIM eldns fond1           ;
+fond1    =  fond1 COUL TURQ            ;
+*
+cote11i  =  loop1 TRAN 1 noi           ;
+cote11i  =  ELIM eldns cote11i         ;
+cote11i  =  cote11i COUL TURQ          ;
+*
+cote12i  =  cote11i  PLUS  ((xmes2/dens4)   0.   0. )  ;
+cote12i  =  ELIM eldns cote12i         ;
+cote12i  =  cote12i COUL TURQ          ;
+*
+lface11i =  COTE  4  fond1             ;
+lface11i =  ELIM eldns lface11i        ;
+*
+face11i  =  lface11i TRAN 1 noi        ;
+face11i  =  ELIM eldns face11i         ;
+face11i  =  face11i COUL TURQ          ;
+*
+face12i  =  face11i  PLUS  no3         ;
+face12i  =  ELIM eldns face12i         ;
+face12i  =  face12i COUL TURQ          ;
+*
+haut1i   =  fond1  PLUS  noi           ;
+haut1i   =  ELIM eldns haut1i          ;
+haut1i   =  haut1i COUL TURQ           ;
+*
+enve1    =  fond1 ET haut1i 
+            ET cote11i ET cote12i 
+            ET face11i ET face12i      ;
+enve1    =  ELIM eldns enve1           ;
+enve1    =  enve1 COUL TURQ            ;
+*
+volu1    =  enve1 VOLU                 ;
+volu1    =  ELIM eldns volu1           ;
+volu1    =  volu1 COUL TURQ            ;
+*
+volu01 = volu1 ;
+*
+repeter bcl0 (dens4-1)                  ;
+   volu01  =  volu01 PLUS  ((xmes2/dens4)   0.   0. ) ;   
+   volu1   =  volu1 ET volu01           ;
+   volu1   =  ELIM eldns volu1          ;
+   volu1   =  volu1 COUL TURQ           ;
+fin bcl0                                ;
+*
+fluid1   =  volu1                      ;
+repeter bcl1 (dens4-1)                    ;
+   volu1    =  volu1 PLUS noi             ;   
+   fluid1   =  fluid1 ET volu1            ;
+   fluid1   =  ELIM eldns fluid1          ;
+   fluid1   =  fluid1 COUL TURQ           ;
+fin bcl1                                  ;
+*
+cote10  =  fluid1 POIN 'PLAN' oo p1 p10  eldns              ;
+cote1   =  (ENVE fluid1) ELEM APPUYE 'STRICTEMENT' cote10   ;
+cote1   =  ELIM eldns cote1              ;
+cote1   =  cote1 COUL TURQ               ;
+*
+cote20  =  fluid1 POIN 'PLAN' p2 p3 p11  eldns              ;
+cote2   =  (ENVE fluid1) ELEM APPUYE 'STRICTEMENT' cote20   ;
+cote2   =  ELIM eldns cote2              ;
+cote2   =  cote2 COUL TURQ               ;
+*
+face10  =  fluid1 POIN 'PLAN' oo p2 p6  eldns               ;
+face1   =  (ENVE fluid1) ELEM APPUYE 'STRICTEMENT' face10   ;
+face1   =  ELIM eldns face1              ;
+face1   =  face1 COUL TURQ               ;
+*
+face20  =  fluid1 POIN 'PLAN' p1 p3 p7  eldns               ;
+face2   =  (ENVE fluid1) ELEM APPUYE 'STRICTEMENT' face20   ;
+face2   =  ELIM eldns face2              ;
+face2   =  face2 COUL TURQ               ;
+*
+surfli10  =  fluid1 POIN 'PLAN' p10 p6 p7  eldns              ;
+surflib1  =  (ENVE fluid1) ELEM APPUYE 'STRICTEMENT' surfli10 ;
+surflib1  =  ELIM eldns surflib1              ;
+surflib1  =  surflib1 COUL TURQ               ;
+*
+*
+*---------------------------------------------------------------------------
+*         Plaque
+*---------------------------------------------------------------------------
+*
+lp6p7   =  DROI  dens2  p6  p7       ;
+lp6p7   =  ELIM eldns lp6p7          ;
+*
+plaq1   =  lp6p7 TRAN dens3 no5      ;
+plaq1   =  ELIM eldns plaq1          ;
+plaq1   =  plaq1 COUL BLEU           ;
+*
+lplaq2  =  COTE 3 plaq1              ;
+lplaq2  =  ELIM eldns lplaq2         ;
+*
+plaq2   =  lplaq2 TRAN dens1 no6     ;
+plaq2   =  ELIM eldns plaq2          ;
+plaq2   =  plaq2 COUL BLEU           ;
+*
+plaque0  =  cote2 ET plaq1 ET plaq2  ;
+plaque0  =  ELIM eldns plaque0       ;
+*
+plaque  =  plaque0  VOLU  dens5 'TRANS'  no7 ;
+plaque  =  ELIM eldns plaque                 ;
+plaque  =  plaque COUL BLEU                  ;
+*
+*---------------------------------------------------------------------------
+*          Volume 2
+*---------------------------------------------------------------------------
+*
+lp4p5    =  DROI  dens2  p4  p5        ;
+lp4p5    =  ELIM eldns lp4p5           ;
+*
+fond2    =  lp4p5 TRAN 1 ((xrmes2/dens4)   0.   0. )   ;
+fond2    =  ELIM eldns fond2           ;
+fond2    =  fond2 COUL TURQ            ;
+*
+cote21i  =  lp4p5 TRAN 1 noi           ;
+cote21i  =  ELIM eldns cote21i         ;
+cote21i  =  cote21i COUL TURQ          ;
+*
+cote22i  =  cote21i  PLUS  ((xrmes2/dens4)   0.   0. )  ;
+cote22i  =  ELIM eldns cote22i         ;
+cote22i  =  cote22i COUL TURQ          ;
+*
+lface21i =  COTE  4  fond2             ;
+lface21i =  ELIM eldns lface21i        ;
+*
+face21i  =  lface21i TRAN 1 noi        ;
+face21i  =  ELIM eldns face21i         ;
+face21i  =  face21i COUL TURQ          ;
+*
+face22i  =  face21i  PLUS  no3         ;
+face22i  =  ELIM eldns face22i         ;
+face22i  =  face22i COUL TURQ          ;
+*
+haut2i   =  fond2  PLUS  noi           ;
+haut2i   =  ELIM eldns haut2i          ;
+haut2i   =  haut2i COUL TURQ           ;
+*
+enve2    =  fond2 ET haut2i 
+            ET cote21i ET cote22i 
+            ET face21i ET face22i      ;
+enve2    =  ELIM eldns enve2           ;
+enve2    =  enve2 COUL TURQ            ;
+*
+volu2    =  enve2 VOLU                 ;
+volu2    =  ELIM eldns volu2           ;
+volu2    =  volu2 COUL TURQ            ;
+*
+volu02 = volu2 ;
+*
+repeter bcl00 (dens4-1)                    ;
+   volu02  =  volu02 PLUS  ((xrmes2/dens4)   0.   0. ) ;   
+   volu2   =  volu2 ET volu02           ;
+   volu2   =  ELIM eldns volu2          ;
+   volu2   =  volu2 COUL TURQ           ;
+fin bcl00                                  ;
+*
+fluid2   =  volu2                      ;
+repeter bcl2 (dens4-1)                 ;
+   volu2    =  volu2 PLUS noi             ;   
+   fluid2   =  fluid2 ET volu2            ;
+   fluid2   =  ELIM eldns fluid2          ;
+   fluid2   =  fluid2 COUL TURQ           ;
+fin bcl2                                  ;
+*
+cote30  =  fluid2 POIN 'PLAN' p4 p5 p12  eldns              ;
+cote3   =  (ENVE fluid2) ELEM APPUYE 'STRICTEMENT' cote30   ;
+cote3   =  ELIM eldns cote3              ;
+cote3   =  cote3 COUL TURQ               ;
+*
+cote40  =  fluid2 POIN 'PLAN' p13 p14 p15  eldns            ;
+cote4   =  (ENVE fluid2) ELEM APPUYE 'STRICTEMENT' cote40   ;
+cote4   =  ELIM eldns cote4              ;
+cote4   =  cote4 COUL TURQ               ;
+*
+face30  =  fluid2 POIN 'PLAN' p4 p13 p16  eldns             ;
+face3   =  (ENVE fluid2) ELEM APPUYE 'STRICTEMENT' face30   ;
+face3   =  ELIM eldns face3              ;
+face3   =  face3 COUL TURQ               ;
+*
+face40  =  fluid2 POIN 'PLAN' p5 p14 p17  eldns             ;
+face4   =  (ENVE fluid2) ELEM APPUYE 'STRICTEMENT' face40   ;
+face4   =  ELIM eldns face4              ;
+face4   =  face4 COUL TURQ               ;
+*
+surfli20  =  fluid2 POIN 'PLAN' p12 p16 p17  eldns              ;
+surflib2  =  (ENVE fluid2) ELEM APPUYE 'STRICTEMENT' surfli20   ;
+surflib2  =  ELIM eldns surflib2              ;
+surflib2  =  surflib2 COUL TURQ               ;
+* 
+fond10  =  fluid1 POIN 'PLAN' oo  p1 p2  eldns              ;
+fond1   =  (ENVE fluid1) ELEM APPUYE 'STRICTEMENT' fond10   ;
+fond1   =  ELIM eldns fond1              ;
+fond1   =  fond1 COUL TURQ               ;
+*
+fond20  =  fluid2 POIN 'PLAN' oo  p1 p2  eldns              ;
+fond2   =  (ENVE fluid2) ELEM APPUYE 'STRICTEMENT' fond20   ;
+fond2   =  ELIM eldns fond2              ;
+fond2   =  fond2 COUL TURQ               ;
+*---------------------------------------------------------------------------
+*         Interface fluide-structure
+*---------------------------------------------------------------------------
+*
+iflustru  =  cote2 ET cote3               ;
+iflustru  =  ELIM eldns iflustru          ;
+iflustru  =  iflustru COUL BLEU           ;
+*
+*---------------------------------------------------------------------------
+*         Surface libre
+*---------------------------------------------------------------------------
+*
+surflibr  =  surflib1 ET surflib2         ;
+surflibr  =  ELIM eldns surflibr          ;
+surflibr  =  surflibr COUL TURQ           ;
+*
+*---------------------------------------------------------------------------
+*         Surface laterale et fond du fluide
+*---------------------------------------------------------------------------
+*
+facelate  =  cote1 ET cote4 ET face1 ET face2 ET face3 ET face4 ;
+facelate  =  ELIM eldns facelate          ;
+facelate  =  facelate COUL TURQ           ;
+*
+fond      =  fond1 ET fond2               ;
+fond      =  ELIM eldns fond              ;
+fond      =  fond COUL TURQ               ;
+*
+*  Modif creation plaque fond
+*
+fonds     = fond PLUS ( 0. 0. 0. ) ;
+iflustru  = iflustru ET fond ;
+ELIM eldns ( fonds ET iflustru ) ;
+*
+ELIM eldns ( fonds ET iflustru ET fond ) ;
+*
+*---------------------------------------------------------------------------
+*         Tout
+*---------------------------------------------------------------------------
+*
+ELIM eldns ( fluid1 ET fluid2 ET cote1 ET cote2 ET cote3 ET cote4 
+             ET plaque ET face1 ET face2 ET face3 ET face4  
+             ET fond1 ET fond2 ET surflib1 ET surflib2 ET q ET p6 
+             ET p7 ET p16 ET p17 ET p18 ET p19 ET p20 ET p21 ET p12 
+             ET p15 ET fonds ) ;
+*
+ELIM eldns ( fluid1 ET fluid2 ET iflustru ET surflibr ET facelate 
+             ET plaque ET fond ET q ET fonds ) ;
+ELIM eldns (plaque ET fluid1 ET fluid2 ET facelate ET fond ET 
+surflibr ET iflustru ET fonds ) ;
+*
+*---------------------------------------------------------------------------
+*          Traces
+*---------------------------------------------------------------------------
+*
+OEIL  = 1E5 1E5 1E5    ;
+*trac fluid1;
+*trac cach fluid1;
+*trac fluid2;
+*trac cach fluid2;
+*trac (iflustru ET facelate);
+*trac cach (facelate ET fond ET iflustru ET surflibr);
+*trac cach (fluid1 ET fluid2);
+*trac (fluid1 ET fluid2);
+*trac (fluid1 ET fluid2) ( 0. 100. 0. ) ;
+*trac (fluid1 ET fluid2) ( 100. 0. 0. ) ;
+*trac (fluid1 ET fluid2) ( 0. 0. 100. ) ;
+*trac cach (fluid1 ET fluid2) ( 100. 100. 100. ) ;
+*trac cach plaque ( 100. 100. 100. ) ;
+*trac cach (fluid1 ET fluid2 ET plaque ET iflustru 
+*           ET facelate ET fond ET surflibr) ( 100. 100. 100. ) ;
+*TRAC (fluid1 ET fluid2) (0. 1000. 0.);
+*          
+
+OPTI SAUV FORMAT 'fdnv100a.mgib';
+SAUV FORMAT (plaque ET fluid1 ET fluid2 ET facelate 
+             ET fonds ET surflibr ET iflustru ET fond);
+
+LIST (NBNO plaque) ;
+LIST (NBNO fluid1) ;
+LIST (NBNO fluid2) ;
+LIST (NBNO facelate) ;
+LIST (NBNO fond) ;
+LIST (NBNO surflibr) ;
+LIST (NBNO iflustru) ;
+FIN ;

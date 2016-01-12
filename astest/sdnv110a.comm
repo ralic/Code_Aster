@@ -1,0 +1,181 @@
+# ROTOR 3D SUPPORTE PAR DEUX PALIERS AUTOUR DE SON AXE
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
+      DEBUG=_F(SDVERI='OUI'),);
+
+MBI=LIRE_MAILLAGE(FORMAT='MED',UNITE=20,);
+
+MOD=AFFE_MODELE(MAILLAGE=MBI,
+                   AFFE=(_F(GROUP_MA=('EL1_RO','EL2_RO','EL3_RO','EL4_RO','EL5_RO',
+                                      'EL6_RO','EL7_RO','EL8_RO','EL9_RO','EL10_RO',
+                                      'EL11_RO','EL12_RO','EL13_RO','EL14_RO','EL15_RO',
+                                      'EL16_RO','EL17_RO','EL18_RO'),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='3D',),
+                         _F(GROUP_MA=('PALIER1','PALIER2'),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='DIS_T',),),);
+
+ELAS=DEFI_MATERIAU(ELAS=_F(E=2.078E+11,
+                           NU=0.3,
+                           RHO=7806,),);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MBI,
+                    AFFE=(_F(GROUP_MA=('EL1_RO','EL2_RO','EL3_RO','EL4_RO','EL5_RO',
+                                       'EL6_RO','EL7_RO','EL8_RO','EL9_RO','EL10_RO',
+                                       'EL11_RO','EL12_RO','EL13_RO','EL14_RO','EL15_RO',
+                                       'EL16_RO','EL17_RO','EL18_RO','PALIER1','PALIER2'),
+                           MATER=ELAS,),),);
+
+CLDG=AFFE_CHAR_MECA(MODELE=MOD,
+                  DDL_IMPO=(
+                            _F(NOEUD='N5822',DX=0,),
+                            ),);
+
+# --------------------------------
+# DEFINITION DES SECTIONS ET DES RAIDEURS
+# --------------------------------
+cara=AFFE_CARA_ELEM(MODELE=MOD,
+                    DISCRET=(_F(GROUP_MA='PALIER1',
+                                CARA='K_T_N',
+                                VALE=(0.,0.,4.378000E+07,0.,0.,4.378000E+07,) ),
+                             _F(GROUP_MA='PALIER1',
+                                CARA='A_T_N',
+                                VALE=(0.,0.0,0.0,0.,0.0,0.0,),),
+                             _F(GROUP_MA='PALIER2',
+                                CARA='K_T_N',
+                                VALE=(0.,0.,4.378000E+07,0.,0.,4.378000E+07,) ),
+                             _F(GROUP_MA='PALIER2',
+                                CARA='A_T_N',
+                                VALE=(0.,0.0,0.0,0.,0.0,0.0,),),
+                           )
+                        );
+
+# VECTEUR DIRECTEUR AXE DE ROTATION : nx,ny,nz
+nx=1;ny=0;nz=0;
+CL1=AFFE_CHAR_MECA(MODELE=MOD,
+                   ROTATION=_F(VITESSE= 1,
+                   AXE = (nx,ny,nz,),),);
+
+ASSEMBLAGE(MODELE=MOD,
+           CHAM_MATER=CHMAT,
+           NUME_DDL=CO('NUMEDDL'),
+           CHARGE=(CL1,CLDG),
+           CARA_ELEM=cara,
+           MATR_ASSE=(_F(MATRICE=CO('RIGID'),
+                              OPTION='RIGI_MECA',),
+                           _F(MATRICE=CO('MASSE'),
+                              OPTION='MASS_MECA',),
+                           _F(MATRICE=CO('AMOR'),
+                              OPTION='AMOR_MECA',),
+                              ),);
+
+GYELEM=CALC_MATR_ELEM(OPTION='MECA_GYRO',
+                      MODELE=MOD,
+                      CARA_ELEM=cara,
+                      CHARGE=(CL1,CLDG),
+                      CHAM_MATER=CHMAT,
+                      );
+
+GYASS=ASSE_MATRICE(MATR_ELEM=GYELEM,
+                   NUME_DDL=NUMEDDL,);
+
+OM=100000*pi/30.
+GYASSi=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=AMOR,COEF_R=1.0,),
+                              _F(MATR_ASSE=GYASS,COEF_R=OM,),),),
+
+# CALCUL DES MODES AVEC GYROSCOPIE ET SANS RAIDEUR CENTRIFUGE
+#
+# LA DEUXIEME MATRICE DE CALC_MODES EST SINGULIERE. ON GARDE VOLON
+# TAIREMENT CE CAS DE FIGURE POUR TESTER LE COMPORTEMENT DU CODE ET DE
+# MUMPS.
+MODES=CALC_MODES(INFO=1,
+                 MATR_RIGI=RIGID,
+                 VERI_MODE=_F(SEUIL=1.E-04,
+                              ),
+                 TYPE_RESU='DYNAMIQUE',
+                 CALC_FREQ=_F(NMAX_FREQ=15,
+                              FREQ=(500.,),
+                              ),
+                 SOLVEUR=_F(RENUM='PORD',
+                            METHODE='MUMPS',
+                            GESTION_MEMOIRE='OUT_OF_CORE',
+                            ),
+                 MATR_AMOR=GYASSi,
+                 MATR_MASS=MASSE,
+                 SOLVEUR_MODAL=_F(METHODE='SORENSEN',
+                                  ),
+                 OPTION='CENTRE',
+                 )
+
+# VITESSE DE ROTATION OMEGA=100000 TR/MIN
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   PARA='FREQ',
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=MODES,
+                   VALE_CALC=55.95132468,
+                   VALE_REFE=52.2300000000001,
+                   CRITERE='RELATIF',
+                   PRECISION=7.5E-2,),
+                _F(NUME_ORDRE=2,
+                   PARA='FREQ',
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=MODES,
+                   VALE_CALC=176.32073306,
+                   VALE_REFE=175.5100000000001,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=3,
+                   PARA='FREQ',
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=MODES,
+                   VALE_CALC=501.42597981,
+                   VALE_REFE=496.09000000000001,
+                   CRITERE='RELATIF',
+                   PRECISION=2.E-2,),
+                _F(NUME_ORDRE=4,
+                   PARA='FREQ',
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=MODES,
+                   VALE_CALC=1038.26073351,
+                   VALE_REFE=1032.40000000000001,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=5,
+                   PARA='FREQ',
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=MODES,
+                   VALE_CALC=1941.68126884,
+                   VALE_REFE=1824.8000000000001,
+                   CRITERE='RELATIF',
+                   PRECISION=6.5E-2,
+                   ),
+                _F(NUME_ORDRE=6,
+                   PARA='FREQ',
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=MODES,
+                   VALE_CALC=2373.65750080,
+                   VALE_REFE=2438.5000000000001,
+                   CRITERE='RELATIF',
+                   PRECISION=3.E-2,
+                   ),
+                ),
+          )
+
+FIN()
