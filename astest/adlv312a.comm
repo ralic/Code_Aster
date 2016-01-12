@@ -187,5 +187,34 @@ TEST_RESU(RESU=(_F(PARA='FREQ',
                 ),
           )
 
+#----------------------------------------------------------------------------------
+# Pour valider le fait que l'on peut calculer la rigidite geometrique
+# sur un modele contenant du 3D_FLUIDE :
+
+MO2=AFFE_MODELE(    MAILLAGE=MAYA,AFFE=(
+                                  _F(  GROUP_MA = 'FLUIDE',
+                                    PHENOMENE = 'MECANIQUE',
+                                    MODELISATION = '3D_FLUIDE'),
+                                  _F(  GROUP_MA = 'COQUE',
+                                    PHENOMENE = 'MECANIQUE',
+                                    MODELISATION = 'DKT')))
+CARA2=AFFE_CARA_ELEM( MODELE=MO2,
+                      COQUE=_F(  GROUP_MA = 'COQUE', EPAIS = 0.254E-3))
+
+
+CHSIEF=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='ELGA_SIEF_R', MODELE=MO2,
+                   PROL_ZERO='OUI', INFO=1,
+                   AFFE_SP=_F(CARA_ELEM=CARA2,),
+                   AFFE=  _F(  TOUT = 'OUI',  NOM_CMP = ('SIXX',),  VALE = (  1.E+07, ),
+                  ))
+
+RIGEELEM=CALC_MATR_ELEM(   MODELE=MO2,
+                           OPTION='RIGI_GEOM',
+                           CHAM_MATER=CH_MATER, CARA_ELEM=CARA2,
+                           SIEF_ELGA=CHSIEF,
+                             )
+
+
+
 FIN()
 #

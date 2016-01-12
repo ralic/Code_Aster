@@ -140,6 +140,10 @@ class MEFL_HEXA20(Element):
             para_out=((SP.PMATUUR, MMATUUR), ),
         ),
 
+        OP.RIGI_MECA_GE(te=99,
+            para_out=((SP.PMATUUR, MMATUUR), ),
+        ),
+
         OP.RIGI_MECA_HYST(te=170,
             para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
                      ),
