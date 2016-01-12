@@ -235,7 +235,7 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames,&
                 call utpvlg(1, 3, pgl, vl, vg2)
 !
 !           SAUVEGARDE DE LA VALEUR TROUVEE SAUF POUR LES COQUES 3D
-                if (modeli .ne. 'COQUE_3D') then
+                if (modeli .ne. 'CQ3') then
                     do 40 idir = 1, 3
                         zr(jvect+6*(numma-1)+idir-1) = vg1(idir)
  40                 continue

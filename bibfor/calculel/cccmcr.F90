@@ -28,6 +28,7 @@ subroutine cccmcr(jcesdd, numma, jrepe, jconx2, jconx1,&
 #include "asterfort/jexnum.h"
 #include "asterfort/matrot.h"
 #include "asterfort/mpglcp.h"
+#include "asterfort/teattr.h"
 #include "asterfort/typele.h"
 !
     integer :: jcesdd, numma, jrepe, jconx2, jconx1, jcoord
@@ -59,11 +60,12 @@ subroutine cccmcr(jcesdd, numma, jrepe, jconx2, jconx1,&
 ! person_in_charge: nicolas.sellenet at edf.fr
     integer :: nbpt1, igrel, te, nbnol, posin, ino1, ino2, idir
     integer :: iad, inos, nuno, jcesd, jcesl, jcesv, jcesdc, jceslc
-    integer :: jcesvc
+    integer :: jcesvc, iret
+    logical :: l1,l2,l3
 !
     real(kind=8) :: coordc(3, 10), alpha, beta, gamma, epais, ang1(3)
 !
-    character(len=16) :: nomte
+    character(len=16) :: nomte, atpou, atcoq, atmod
 !
     codret = 3
 !
@@ -84,15 +86,17 @@ subroutine cccmcr(jcesdd, numma, jrepe, jconx2, jconx1,&
     igrel = zi(jrepe-1+2*(numma-1)+1)
     te = typele(ligrmo,igrel)
     call jenuno(jexnum('&CATA.TE.NOMTE', te), nomte)
-    call dismoi('MODELISATION', nomte, 'TYPE_ELEM', repk=modeli)
+    call teattr('C', 'POUTRE', atpou, iret, typel=nomte)
+    call teattr('C', 'COQUE', atcoq, iret, typel=nomte)
+    call teattr('C', 'MODELI', atmod, iret, typel=nomte)
+    modeli=atmod
 !
     nbnol = zi(jconx2+numma)-zi(jconx2+numma-1)
     posin = zi(jconx2+numma-1)
 !
 !     SUIVANT LE TYPE DE MODELISATION, LE CHANGEMENT DE REPERE
 !     N'EST PAS LE MEME BARRE, CABLE, TUYAU
-    if ((modeli(1:3).eq.'POU') .or. (modeli(1:7).eq.'2D_DIS_') .or. (modeli.eq.'BARRE')&
-        .or. (modeli.eq.'CABLE') .or. (modeli.eq.'TUYAU')) then
+    if (atpou.eq.'OUI'.and.atmod.ne.'TU3'.and.atmod.ne.'TU6') then
 !
         ino1 = zi(jconx1+posin-1)
         ino2 = zi(jconx1+posin)
@@ -115,7 +119,7 @@ subroutine cccmcr(jcesdd, numma, jrepe, jconx2, jconx1,&
         call mpglcp('P', nbnol, coordc, alpha, beta,&
                     gamma, pgl, codret)
 !
-    else if ((modeli.eq.'COQUE_3D')) then
+    else if (atmod.eq.'CQ3') then
 !
         if (nbnol .lt. 7) then
             codret = 1
@@ -145,9 +149,8 @@ subroutine cccmcr(jcesdd, numma, jrepe, jconx2, jconx1,&
         call c3drep(nomte, epais, alpha, beta, coordc,&
                     inos, pgl)
 !
-        elseif ( (modeli(1:3).eq.'DKT') .or.(modeli(1:3).eq.'DST')&
-    .or.(modeli(1:4).eq.'DKTG') .or.(modeli(1:3).eq.'Q4G') .or.(&
-    modeli.eq.'COQUE') .or.(modeli.eq.'GRILLE') ) then
+    elseif (atcoq.eq.'OUI'.and.atmod.ne.'CQ3'.and.atmod.ne.'GRM'.and.&
+            atmod.ne.'GRC'.and.atmod.ne.'CQA'.and.atmod.ne.'MMB') then
 !
         do ino2 = 1, nbnol
             nuno = zi(jconx1+posin+ino2-2)
@@ -168,26 +171,7 @@ subroutine cccmcr(jcesdd, numma, jrepe, jconx2, jconx1,&
                     gamma, pgl, codret)
 !
     else
-!
-!       SI ON EST NI DANS LE CAS D'UNE POUTRE OU D'UNE COQUE
-!       C'EST LE CAS GENERAL : CARORIEN
-        if (jcesd .ne. 0) then
-            call cesexi('S', jcesd, jcesl, numma, 1,&
-                        1, jalpha, iad)
-            ang1(1) = zr(jcesv-1+iad)
-            call cesexi('S', jcesd, jcesl, numma, 1,&
-                        1, jbeta, iad)
-            ang1(2) = zr(jcesv-1+iad)
-            call cesexi('S', jcesd, jcesl, numma, 1,&
-                        1, jgamma, iad)
-            ang1(3) = zr(jcesv-1+iad)
-        else
-            ang1(1) = 0.d0
-            ang1(2) = 0.d0
-            ang1(3) = 0.d0
-        endif
-        call matrot(ang1, pgl)
-!
+        codret = 3
     endif
 !
 999 continue
