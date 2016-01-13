@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # TITRE VALIDATION POLYCRISTAL LOI DD_CC THERMIQUE + A-THERMIQUE
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -16,7 +16,11 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-#
+# Comparaison entre la loi PolyCrystalDDCC (MFront) et la loi POLYCRISTAL
+# (ECOULEMENT='MONO_DD_CC') (Code_Aster) sur un point materiel avec 30 grains
+# Validation basée sur EPZZ, SIZZ en testant le maximum de la différence 
+# entre Code_Aster et MFront
+
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='NON'),);
 
 
@@ -60,6 +64,44 @@ a_coli=0.7
 a_ncol=0.1
 a_self=0.1
 rho_ini= 6.E5*b*b    # en m**-2
+rho_inia= 6.E5*coef*coef
+
+ACIERDA=DEFI_MATERIAU(ELAS=_F(E=E,
+                            NU=Nu,
+                            ALPHA=0.),
+                      MONO_DD_CC=_F(
+                                    B       =b,
+                                    GH       =GH,
+                                    DELTAG0 =DeltaG0,
+                                    TAU_0   =tau_0,
+                                    TAU_F   =tau_f,
+                                    GAMMA0  =gamma0,
+                                    N       =N,
+                                    RHO_MOB =rho_inia,
+                                    D       =D,
+                                    D_LAT   =d_lat,
+                                    Y_AT    =y_at,
+                                    K_F     =K_f,
+                                    K_SELF  =K_self,
+                                    K_BOLTZ =k,
+                                    H1      =a_self,
+                                    H2      =a_coli,
+                                    H3      =a_ncol,
+                                    H4      =a_ncol,
+                                    H5      =a_ncol,
+                                    H6      =a_ncol,
+                                    DEPDT=epsi_1,
+                                     ),
+                    );
+
+# DD_CC
+COMPORT=DEFI_COMPOR(MONOCRISTAL=_F(MATER=ACIERDA,
+                                    ECOULEMENT='MONO_DD_CC',
+                                    ELAS='ELAS',
+                                    FAMI_SYST_GLIS='CUBIQUE1',
+                                    ),);
+
+INCLUDE(UNITE=91)
 
 ACIERDD=DEFI_MATERIAU(ELAS=_F(E=E,
                             NU=Nu,
@@ -100,27 +142,66 @@ ACIERDD=DEFI_MATERIAU(ELAS=_F(E=E,
 
                     );
 
-
+TIMP=DEFI_CONSTANTE(VALE=TEMP)
 
 ##chargement
 EpsMax=0.04
 viteps=4.e-4
 tmax=EpsMax/viteps
 
-EPSZZ=DEFI_FONCTION(
-                      NOM_PARA='INST',  NOM_RESU='EPSI',
-                       VALE=(  0. , 0., tmax , EpsMax),
-                       PROL_DROITE='LINEAIRE',
-                        )
-
-
+EPSZZ=DEFI_FONCTION(NOM_PARA='INST',NOM_RESU='EPSI',
+                    VALE=(0. , 0., tmax , EpsMax),
+                    PROL_DROITE='LINEAIRE',)
 
 LINST=DEFI_LIST_REEL(DEBUT=0.0,
-                     INTERVALLE=(_F(JUSQU_A=tmax,NOMBRE=500,),
-                                    ),);
+                     INTERVALLE=_F(JUSQU_A=tmax,NOMBRE=500,),);
 
 DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST),)
 
+##CODE_ASTER
+##chargement
+nbgra=100
+nb_systa=12
+nvarita=7+nbgra*(6+3*nb_systa+6)+1
+
+nvarpargra=3*nb_systa
+
+# densites de dislocation initiales : variables internes de 0 a 44
+avaria = zeros(nvarita)
+for igr in range(nbgra):
+   for isy in range(12):
+       avaria[7+6*nbgra+igr*nvarpargra+isy*3]=rho_inia
+
+lvaria=list(avaria)
+
+SOLNLA=SIMU_POINT_MAT(INFO=2,
+                      COMPORTEMENT=_F(RELATION='POLYCRISTAL',
+                                   COMPOR=COMPORP,
+                                   ALGO_INTE='RUNGE_KUTTA',
+                                   RESI_INTE_RELA=1.E-4,),
+                      NEWTON=_F(MATRICE='ELASTIQUE',
+                                PREDICTION='EXTRAPOLE',
+                                REAC_ITER=0),
+                      CONVERGENCE=_F(ITER_GLOB_MAXI=50,RESI_GLOB_RELA=1.E-5,),
+                      MATER=ACIERDA,
+                      NB_VARI_TABLE=6,
+                      VARI_INIT=_F(VALE=lvaria,),
+                      INCREMENT=_F(LIST_INST=DEFLIST1),
+                      ARCHIVAGE=_F(LIST_INST=LINST),
+                      EPSI_IMPOSE=_F(EPZZ=EPSZZ),
+                      AFFE_VARC=_F(NOM_VARC='TEMP',
+                                   VALE_FONC=TIMP,
+                                   VALE_REF=TEMP),);
+
+F_SIA=RECU_FONCTION(TABLE=SOLNLA,
+                    PARA_X='INST',
+                    PARA_Y='SIZZ',);
+
+F_EPA=RECU_FONCTION(TABLE=SOLNLA,
+                    PARA_X='INST',
+                    PARA_Y='EPZZ',);
+
+##MFRONT
 nbgr=30
 nb_syst=12
 nvarit=7+nbgr*(6+nb_syst)+6
@@ -131,73 +212,79 @@ for i in range(12*nbgr):
   avari[7+nbgr*6+i]=rho_ini
 lvari=list(avari)
 
-
-
-TIMP=DEFI_CONSTANTE(VALE=TEMP)
-
 SOLNL=SIMU_POINT_MAT(INFO=1,
-                      COMPORTEMENT=_F(RELATION='PolyCrystalDDCC',
-                      RESI_INTE_RELA=1.E-8,
-                      ITER_INTE_MAXI=100,
-                        ),
-                   NEWTON=_F(
-                             MATRICE='ELASTIQUE',
-                             PREDICTION='EXTRAPOLE',
-                             REAC_ITER=0
-                             ),
-                   CONVERGENCE=_F(ITER_GLOB_MAXI=50,
-                                 # RESI_GLOB_RELA=1.E-5,
-                                     ),
-                   MATER      = ACIERDD,
+                     COMPORTEMENT=_F(RELATION='PolyCrystalDDCC',
+                                     RESI_INTE_RELA=1.E-8,
+                                     ITER_INTE_MAXI=100,),
+                     NEWTON=_F(MATRICE='ELASTIQUE',
+                               PREDICTION='EXTRAPOLE',
+                               REAC_ITER=0),
+                     CONVERGENCE=_F(ITER_GLOB_MAXI=50,),
+                     MATER=ACIERDD,
+                     NB_VARI_TABLE=7,
+                     VARI_INIT=_F(VALE=lvari,),
+                     INCREMENT=_F(LIST_INST=DEFLIST1),
+                     ARCHIVAGE=_F(LIST_INST=LINST),
+                     EPSI_IMPOSE=_F(EPZZ=EPSZZ),
+                     AFFE_VARC=_F(NOM_VARC='TEMP',
+                                  VALE_FONC=TIMP,
+                                  VALE_REF=TEMP),);
 
-                   NB_VARI_TABLE=7,
+F_SIM=RECU_FONCTION(TABLE=SOLNL,
+                    PARA_X='INST',
+                    PARA_Y='SIZZ',);
 
-                   VARI_INIT=_F(VALE=lvari,
-                                  ),
+F_EPM=RECU_FONCTION(TABLE=SOLNL,
+                    PARA_X='INST',
+                    PARA_Y='EPZZ',);
 
-                   INCREMENT=_F(LIST_INST=DEFLIST1),
-                   ARCHIVAGE=_F(LIST_INST=LINST),
-                   EPSI_IMPOSE=_F(EPZZ=EPSZZ),
-                      AFFE_VARC=_F(  NOM_VARC='TEMP',
-                                     VALE_FONC=TIMP,
-                                     VALE_REF=TEMP),
-                        );
+##COMPARAISON
+IMPR_FONCTION(FORMAT ='XMGRACE',UNITE=38,COURBE=(_F(FONC_X=F_EPM, FONC_Y=F_SIM),
+                                                 _F(FONC_X=F_EPA, FONC_Y=F_SIA),))
 
+# DIFF DES COURBES OBTENUES AVEC LES DEUX METHODES
+DIF1=CALC_FONCTION(COMB=(_F(FONCTION = F_EPA, COEF =  1.),
+                         _F(FONCTION = F_EPM, COEF = -1.),),);
 
-F_SI=RECU_FONCTION(TABLE=SOLNL,
-                           PARA_X='INST',
-                           PARA_Y='SIZZ',);
+TDIF1=CREA_TABLE(FONCTION= _F(FONCTION = DIF1,PARA = ('INST','NEUT1')),);
 
-F_EP=RECU_FONCTION(TABLE=SOLNL,
-                           PARA_X='INST',
-                           PARA_Y='EPZZ',);
+TEP=CREA_TABLE(FONCTION= _F(FONCTION = F_EPA,PARA = ('INST','EPZZ')),);
 
+DIF2=CALC_FONCTION(COMB=(_F( FONCTION = F_SIA, COEF =  1.),
+                         _F( FONCTION = F_SIM, COEF = -1.),),);
 
-IMPR_FONCTION(
-FORMAT ='XMGRACE',
-UNITE=38,
-COURBE=(
-_F(FONC_X=F_EP, FONC_Y=F_SI),
-))
+TDIF2=CREA_TABLE(FONCTION= _F(FONCTION = DIF2,PARA = ('INST','NEUT1')),);
 
+TSI=CREA_TABLE(FONCTION= _F(FONCTION = F_SIA,PARA = ('INST','SIZZ')),);
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.04,
-                        VALE_PARA=tmax,
-                        NOM_PARA='INST',
-                        FONCTION=F_EP,
-                        ),
-              )
+def ecart_relatif(diff, ref):
+    if abs(ref) == 0 :
+       err=diff
+    else :
+       err=diff/ref
+    return err
 
-# reference SSNV194D
+TEST1=CALC_TABLE(TABLE=TDIF1,ACTION= _F(OPERATION='COMB',TABLE= TEP, NOM_PARA ='INST'))
+TEST2=CALC_TABLE(TABLE=TDIF2,ACTION= _F(OPERATION='COMB',TABLE= TSI, NOM_PARA ='INST'))
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=792.9033677809,
-                        VALE_REFE=790.51268,REFERENCE='AUTRE_ASTER',
-                        VALE_PARA=tmax,
-                        NOM_PARA='INST',
-                        FONCTION=F_SI,
-                        PRECISION=0.004,
-                        ),
-              )
+ecarela1=FORMULE(NOM_PARA=('NEUT1','EPZZ'),VALE=("""ecart_relatif(NEUT1,EPZZ)"""))
+ecarela2=FORMULE(NOM_PARA=('NEUT1','SIZZ'),VALE=("""ecart_relatif(NEUT1,SIZZ)"""))
+
+TEST1=CALC_TABLE(TABLE=TEST1,reuse=TEST1,ACTION= _F(OPERATION='OPER',FORMULE=ecarela1, NOM_PARA ='ECART'))
+TEST2=CALC_TABLE(TABLE=TEST2,reuse=TEST2,ACTION= _F(OPERATION='OPER',FORMULE=ecarela2, NOM_PARA ='ECART'))
+
+IMPR_TABLE(TABLE=TEST1)
+IMPR_TABLE(TABLE=TEST2)
+
+TEST_TABLE(TABLE=TEST1,NOM_PARA='ECART',
+           FILTRE=_F(NOM_PARA='ECART',CRIT_COMP='MAXI_ABS'),
+           CRITERE='ABSOLU',REFERENCE='AUTRE_ASTER',
+           VALE_REFE=0.,PRECISION=1E-6,VALE_CALC=4.81602629413E-07)
+
+TEST_TABLE(TABLE=TEST2,NOM_PARA='ECART',
+           FILTRE=_F(NOM_PARA='ECART',CRIT_COMP='MAXI_ABS'),
+           CRITERE='ABSOLU',REFERENCE='AUTRE_ASTER',
+           VALE_REFE=0.,PRECISION=3E-2,VALE_CALC=0.0239645263551)
 
 
 

@@ -1,5 +1,7 @@
-
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+# -*- coding: utf-8 -*-
+# TITRE VALIDATION MONOCRISTAL LOI DD_CFC_IRRA MFRONT
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 #
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -14,7 +16,11 @@
 # YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 # 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-# TITRE VALIDATION MONOCRISTAL LOI DD_CFC_IRRA MFRONT
+# ======================================================================
+# Comparaison entre la loi MonoDDCFC_Irra (MFront) et la loi MONOCRISTAL
+# (ECOULEMENT='MONO_DD_CFC_IRRA') (Code_Aster) sur un point materiel
+# Validation basée sur SIZZ et V7 (variables internes MFront) en testant 
+# le maximum de la différence relative entre Code_Aster et MFront
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'));
 
