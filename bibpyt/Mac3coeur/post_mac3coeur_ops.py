@@ -18,6 +18,9 @@
 # person_in_charge: samuel.geniaut at edf.fr
 import aster_core
 from mac3coeur_coeur import CoeurFactory
+from Utilitai.UniteAster import UniteAster
+
+UL=UniteAster()
 
 def NodePos(coeur,k):
     
@@ -88,7 +91,8 @@ def makeXMGRACEjeu(unit, post, coeur, valjeuac, valjeucu):
 
     POSITION = coeur.get_geom_coeur()
     
-    filename = './fort.%d' % (unit)
+    #filename = './fort.%d' % (unit)
+    filename = UL.Nom(unit)
 
     xmgrfile = open(filename, 'w')
     
@@ -174,7 +178,8 @@ def makeXMGRACEdef_amp(unit, post, coeur, valdefac):
 
         return (redF, greenF, blueF, size)
 
-    filename = './fort.%d' % (unit)
+    #filename = './fort.%d' % (unit)
+    filename = UL.Nom(unit)
 
     xmgrfile = open(filename, 'w')
     makeXMGRACE_entete(coeur,xmgrfile)
@@ -213,7 +218,8 @@ def makeXMGRACEdef_mod(unit, post, coeur, valdefac):
 
         return (redF, greenF, blueF, value)
 
-    filename = './fort.%d' % (unit)
+    filename = UL.Nom(unit)
+    #filename = './fort.%d' % (unit)
 
     xmgrfile = open(filename, 'w')
     makeXMGRACE_entete(coeur,xmgrfile)
@@ -263,7 +269,8 @@ def makeXMGRACEdef_vec(unit, post, coeur, valdefac, valdirYac, valdirZac):
 
         return (Xvec, Yvec, Rvec)
 
-    filename = './fort.%d' % (unit)
+    #filename = './fort.%d' % (unit)
+    filename = UL.Nom(unit)
 
     xmgrfile = open(filename, 'w')
     makeXMGRACE_entete(coeur,xmgrfile)
@@ -302,7 +309,8 @@ def makeXMGRACEdef_vec(unit, post, coeur, valdefac, valdirYac, valdirZac):
 
 def makeXMGRACEdeforme(unit, name, typeAC, coeur, valdefac):
     ac = coeur.factory.get(typeAC)(coeur.typ_coeur)
-    filename = './fort.%d' % (unit)
+    filename = UL.Nom(unit)
+    #filename = './fort.%d' % (unit)
 
     xmgrfile = open(filename, 'w')
     xmgrfile.write('@focus off\n@g0 on\n@with g0\n@kill s0\n@s0 symbol 9\n'
@@ -469,7 +477,7 @@ def post_mac3coeur_ops(self, **args):
             _unit = attr['UNITE']
             _typ_post = attr['FORMAT']
 
-            DEFI_FICHIER(ACTION='LIBERER', UNITE=_unit)
+            #DEFI_FICHIER(ACTION='LIBERER', UNITE=_unit)
 
             if (_typ_post == 'GRACE'):
 
@@ -592,7 +600,7 @@ def post_mac3coeur_ops(self, **args):
             _unit = attr['UNITE']
             _typ_post = attr['FORMAT']
 
-            DEFI_FICHIER(ACTION='LIBERER', UNITE=_unit)
+            #DEFI_FICHIER(ACTION='LIBERER', UNITE=_unit)
 
             if (_typ_post == 'GRACE'):
 

@@ -220,9 +220,17 @@ def perm_mac3coeur_ops(self, **args):
               AFFE=_F(CHAM_GD=__ASSVAR,
                       INST=0.0,
                       MODELE=_MO_NP1,))
-    assert (len(_l_coeur) == len(l_last_i))
+    nbresu = len(l_RESUI) 
+    assert (len(_l_coeur) == nbresu)
+    assert (len(l_last_i) == nbresu)
+    assert (len(_l_MA_N) == nbresu)
+    
     for nom in _coeurp1.nameAC.keys():
-        for (_coeur,last_i) in zip(_l_coeur,l_last_i) :
+        for i in xrange(len(_l_coeur)) :
+            _coeur = _l_coeur[i]
+            last_i = l_last_i[i]
+            RESUI  = l_RESUI[i]
+            _MA_N  = _l_MA_N[i]
             if nom in _coeur.nameAC:
                 #print 'index z : ',_coeurp1.get_index(_coeurp1.nameAC[nom][0]),_coeurp1.get_index(_coeur.nameAC[nom][0])
                 #print 'index y : ',_coeurp1.get_index(_coeurp1.nameAC[nom][2]),_coeurp1.get_index(_coeur.nameAC[nom][2])
