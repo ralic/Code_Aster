@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,8 +26,8 @@ Contact méthodes discrètes.
     de convergence dans le processus de Newton mais en aucun cas il ne produit des résultats faux.
 
     Si la matrice de rigidité de votre structure est symétrique, vous pouvez ignorer ce qui précède.
-    Enfin, il est possible de supprimer l'affichage de cette alarme en renseignant SYME='OUI'
-    sous le mot-clé facteur SOLVEUR.
+    Enfin, il est possible de supprimer l'affichage de cette alarme en renseignant 
+    MATR_RIGI_SYME  ='OUI' sous le mot-clé facteur NEWTON.
 """),
 
     3 : _(u"""

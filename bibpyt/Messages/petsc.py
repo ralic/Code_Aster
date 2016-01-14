@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -75,7 +75,8 @@ Solveur PETSc :
 Solveur PETSc :
   La matrice du système est non symétrique, or l'algorithme que vous utilisez requiert
   la symétrie.
-  Changez d'algorithme ou bien utilisez le mot-clé SYME='OUI' pour symétriser la matrice.
+  Changez d'algorithme ou bien utilisez le mot-clé MATR_RIGI_SYME  ='OUI' sous le mot-clé 
+  facteur NEWTON  pour symétriser la matrice.
 """),
 
 10 : _(u"""
