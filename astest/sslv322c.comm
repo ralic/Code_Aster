@@ -1,6 +1,6 @@
 # TITRE FISSURE LONGITUDINALE SEMI-ELLIPTIQUE DEBOUCHANT EN PEAU INTERNE D'UN TUBE SOUS PRESSION 
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -241,8 +241,8 @@ RE_VISU=CALC_CHAMP(RESULTAT=RE_VISU,reuse=RE_VISU,
 #-----------------------------------------------------------------------
 #-----------------------------------------------------------------------
 
-# rq : tant que issue23504 n'est pas defiinitivement corrigee
-#      on ne peut pas tester l'option 'CALC_K_G'
+# rq : lorsque issue24582 sera corrigee, les valeurs des FICs produites
+#      par l'option 'CALC_K_G' seront modifiees (pour un mieux)
 
 rinf = 2.*h
 rsup = 4.*h
@@ -267,6 +267,26 @@ CGleg2=CALC_G(RESULTAT=RESU,
                          R_SUP=5.*h,
                          FISSURE=l_fiss,),)
 
+# 'CALC_K_G' LISSAGE LEGENDRE
+CGKleg=CALC_G(RESULTAT=RESU,
+              OPTION='CALC_K_G',
+              LISSAGE = _F(LISSAGE_THETA='LEGENDRE',
+                           DEGRE = 5,
+                           LISSAGE_G='LEGENDRE',),
+              THETA = _F(R_INF=rinf,
+                         R_SUP=rsup,
+                         FISSURE=l_fiss,),)
+
+# 'CALC_K_G' LISSAGE LEGENDRE : INDEPENDANCE AU CHOIX DES COURONNES
+CGKleg2=CALC_G(RESULTAT=RESU,
+               OPTION='CALC_K_G',
+               LISSAGE = _F(LISSAGE_THETA='LEGENDRE',
+                            DEGRE = 5,
+                            LISSAGE_G='LEGENDRE',),
+               THETA = _F(R_INF=1.*h,
+                          R_SUP=5.*h,
+                          FISSURE=l_fiss,),)
+
 # LISSAGE LAGRANGE + REPARTITION UNIFORME DE 15 POINTS
 CGla15=CALC_G(RESULTAT=RESU,
               OPTION='CALC_G',
@@ -289,6 +309,26 @@ CGregu=CALC_G(RESULTAT=RESU,
                          NB_POINT_FOND = 15,),);
 
 #----------------------------------------------------------------------
+#               passage des FICs en MPa rac(m)
+#----------------------------------------------------------------------
+
+FK1MPA = FORMULE(NOM_PARA='K1', VALE="1.e-6*K1" )
+
+CGKleg=CALC_TABLE(reuse=CGKleg,
+                  TABLE=CGKleg,
+                  ACTION=(
+                          _F(OPERATION='OPER', NOM_PARA='K1_MPA', FORMULE=FK1MPA,),
+                         ),
+                 )
+
+CGKleg2=CALC_TABLE(reuse=CGKleg2,
+                   TABLE=CGKleg2,
+                   ACTION=(
+                           _F(OPERATION='OPER', NOM_PARA='K1_MPA', FORMULE=FK1MPA,),
+                          ),
+                  )
+
+#----------------------------------------------------------------------
 #               TRACE DES COURBES G EN FONCTION DE ABS_CURV
 #----------------------------------------------------------------------
 
@@ -302,8 +342,12 @@ CGregu=CALC_G(RESULTAT=RESU,
 
 FCGleg  = RECU_FONCTION(TABLE=CGleg , PARA_X='ABSC_CURV', PARA_Y='G',)
 FCGleg2 = RECU_FONCTION(TABLE=CGleg2, PARA_X='ABSC_CURV', PARA_Y='G',)
+FCGKleg = RECU_FONCTION(TABLE=CGKleg, PARA_X='ABSC_CURV', PARA_Y='G',)
 FCGla15 = RECU_FONCTION(TABLE=CGla15, PARA_X='ABSC_CURV', PARA_Y='G',)
 FCGregu = RECU_FONCTION(TABLE=CGregu, PARA_X='ABSC_CURV', PARA_Y='G',)
+
+FK1leg  = RECU_FONCTION(TABLE=CGKleg , PARA_X='ABSC_CURV', PARA_Y='K1_MPA',)
+FK1leg2 = RECU_FONCTION(TABLE=CGKleg2, PARA_X='ABSC_CURV', PARA_Y='K1_MPA',)
 
 # interpollation polynomiale (MS Excel) de la reference Murakami : G(s)
 def G_Murakami(x):
@@ -330,23 +374,44 @@ IMPR_FONCTION(FORMAT='XMGRACE',
                          LEGENDE='LEGENDRE 5 / couronne 2',
                          MARQUEUR=2,
                          COULEUR=2),
-                      _F(FONCTION=FCGla15,
-                         LEGENDE='LAGRANGE / nb_pt_fond = 15 / couronne 1',
+                      _F(FONCTION=FCGKleg,
+                         LEGENDE='CALC_K_G / LEGENDRE 5 / couronne 1',
                          MARQUEUR=3,
                          COULEUR=3),
-                      _F(FONCTION=FCGregu,
-                         LEGENDE='LAGRANGE_REGU / nb_pt_fond = 15 / couronne 1',
+                      _F(FONCTION=FCGla15,
+                         LEGENDE='LAGRANGE / nb_pt_fond = 15 / couronne 1',
                          MARQUEUR=4,
                          COULEUR=4),
+                      _F(FONCTION=FCGregu,
+                         LEGENDE='LAGRANGE_REGU / nb_pt_fond = 15 / couronne 1',
+                         MARQUEUR=5,
+                         COULEUR=5),
                       _F(ABSCISSE=s_Mur,
                          ORDONNEE=G_Mur,
                          LEGENDE='Reference Murakami',
                          MARQUEUR=0,
-                         COULEUR=5),
+                         COULEUR=6),
                        ),
               TITRE='sslv322c / taux de restitution d energie',
               LEGENDE_X='s',
               LEGENDE_Y='G',
+              );
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=32,
+              COURBE=(
+                      _F(FONCTION=FK1leg,
+                         LEGENDE='CALC_K_G / LEGENDRE 5 / couronne 1',
+                         MARQUEUR=1,
+                         COULEUR=1),
+                      _F(FONCTION=FK1leg2,
+                         LEGENDE='CALC_K_G / LEGENDRE 5 / couronne 2',
+                         MARQUEUR=2,
+                         COULEUR=2),
+                       ),
+              TITRE='sslv322c / FICs (K1)',
+              LEGENDE_X='s',
+              LEGENDE_Y='K1',
               );
 
 #----------------------------------------------------------------------
@@ -363,13 +428,16 @@ IMPR_FONCTION(FORMAT='XMGRACE',
 # 1. LEGENDRE 5 avec la couronne 1
 #----------------------------------------------------------------------
 
+# attention : les valeurs de non regression sur G doivent etre identiques avec
+#             les options 'CALC_G' et 'CALC_K_G'
+
 TEST_TABLE(TABLE=CGleg,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
                      CRITERE='ABSOLU',
                      PRECISION=1.E-11,
                      VALE=0.0,),
            NOM_PARA='G',
-           PRECISION=5.E-2,
+           PRECISION=3.E-2,
            REFERENCE='AUTRE_ASTER',
            VALE_REFE=9.21683395221,
            VALE_CALC=8.94089410419,
@@ -378,10 +446,52 @@ TEST_TABLE(TABLE=CGleg,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
                      VALE=0.35451327605,),
            NOM_PARA='G',
-           PRECISION=5.E-2,
+           PRECISION=4.E-2,
            REFERENCE='AUTRE_ASTER',
            VALE_REFE=7.61774576541,
            VALE_CALC=7.37308080243,
+           )
+
+TEST_TABLE(TABLE=CGKleg,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     CRITERE='ABSOLU',
+                     PRECISION=1.E-11,
+                     VALE=0.0,),
+           NOM_PARA='G',
+           PRECISION=3.E-2,
+           REFERENCE='AUTRE_ASTER',
+           VALE_REFE=9.21683395221,
+           VALE_CALC=8.94089410419,
+           )
+TEST_TABLE(TABLE=CGKleg,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.35451327605,),
+           NOM_PARA='G',
+           PRECISION=4.E-2,
+           REFERENCE='AUTRE_ASTER',
+           VALE_REFE=7.61774576541,
+           VALE_CALC=7.37308080243,
+           )
+
+TEST_TABLE(TABLE=CGKleg,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     CRITERE='ABSOLU',
+                     PRECISION=1.E-11,
+                     VALE=0.0,),
+           NOM_PARA='K1_MPA',
+           PRECISION=9.E-2,
+           REFERENCE='AUTRE_ASTER',
+           VALE_REFE=1.09075614797,
+           VALE_CALC=1.18746541229,
+           )
+TEST_TABLE(TABLE=CGKleg,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.35451327605,),
+           NOM_PARA='K1_MPA',
+           PRECISION=5.E-2,
+           REFERENCE='AUTRE_ASTER',
+           VALE_REFE=1.42890497938,
+           VALE_CALC=1.37147414634,
            )
 
 #----------------------------------------------------------------------
@@ -394,7 +504,7 @@ TEST_TABLE(TABLE=CGleg2,
                      PRECISION=1.E-11,
                      VALE=0.0,),
            NOM_PARA='G',
-           PRECISION=5.E-2,
+           PRECISION=3.E-2,
            REFERENCE='AUTRE_ASTER',
            VALE_REFE=9.21683395221,
            VALE_CALC=8.94281399737,
@@ -403,10 +513,31 @@ TEST_TABLE(TABLE=CGleg2,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
                      VALE=0.35451327605,),
            NOM_PARA='G',
-           PRECISION=5.E-2,
+           PRECISION=3.E-2,
            REFERENCE='AUTRE_ASTER',
            VALE_REFE=7.61774576541,
            VALE_CALC=7.40687271313,
+           )
+
+TEST_TABLE(TABLE=CGKleg2,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     CRITERE='ABSOLU',
+                     PRECISION=1.E-11,
+                     VALE=0.0,),
+           NOM_PARA='K1_MPA',
+           PRECISION=9.E-2,
+           REFERENCE='AUTRE_ASTER',
+           VALE_REFE=1.09075614797,
+           VALE_CALC=1.18334097482,
+           )
+TEST_TABLE(TABLE=CGKleg2,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.35451327605,),
+           NOM_PARA='K1_MPA',
+           PRECISION=4.E-2,
+           REFERENCE='AUTRE_ASTER',
+           VALE_REFE=1.42890497938,
+           VALE_CALC=1.3747473318,
            )
 
 #----------------------------------------------------------------------
@@ -419,7 +550,7 @@ TEST_TABLE(TABLE=CGla15,
                      PRECISION=1.E-11,
                      VALE=0.0,),
            NOM_PARA='G',
-           PRECISION=5.E-2,
+           PRECISION=4.E-2,
            REFERENCE='AUTRE_ASTER',
            VALE_REFE=9.21683395221,
            VALE_CALC=8.8723869142,
@@ -444,7 +575,7 @@ TEST_TABLE(TABLE=CGregu,
                      PRECISION=1.E-11,
                      VALE=0.0,),
            NOM_PARA='G',
-           PRECISION=5.E-2,
+           PRECISION=4.E-2,
            REFERENCE='AUTRE_ASTER',
            VALE_REFE=9.21683395221,
            VALE_CALC=8.85720482668,
@@ -453,7 +584,7 @@ TEST_TABLE(TABLE=CGregu,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
                      VALE=0.35451327605,),
            NOM_PARA='G',
-           PRECISION=5.E-2,
+           PRECISION=4.E-2,
            REFERENCE='AUTRE_ASTER',
            VALE_REFE=7.61774576541,
            VALE_CALC=7.36455100415,

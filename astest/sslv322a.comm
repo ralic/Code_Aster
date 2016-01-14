@@ -1,6 +1,6 @@
 # TITRE FISSURE LONGITUDINALE SEMI-ELLIPTIQUE DEBOUCHANT EN PEAU INTERNE D'UN TUBE SOUS PRESSION 
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -120,9 +120,14 @@ RESU=MECA_STATIQUE(MODELE=MOD,
                   
 #IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=RESU))
 
-#----------------------------------------------------------------------
+#-----------------------------------------------------------------------
+#-----------------------------------------------------------------------
 #                       POST-TRAITEMENT RUPTURE
-#----------------------------------------------------------------------
+#-----------------------------------------------------------------------
+#-----------------------------------------------------------------------
+
+# rq : lorsque issue24582 sera corrigee, les valeurs des FICs produites
+#      par l'option 'CALC_K_G' seront modifiees (pour un mieux)
 
 # TAILLE DE MAILLE DANS LE TORE = RAYON DU TORE / NOMBRE DE COUCHES
 h=8e-3
@@ -172,6 +177,16 @@ CGKleg=CALC_G(RESULTAT=RESU,
                          R_SUP=rsup,
                          FOND_FISS=Fiss_01,),)
 
+# 'CALC_K_G' LISSAGE LEGENDRE : INDEPENDANCE AU CHOIX DES COURONNES
+CGKleg2=CALC_G(RESULTAT=RESU,
+               OPTION='CALC_K_G',
+               LISSAGE = _F(LISSAGE_THETA='LEGENDRE',
+                            DEGRE = 5,
+                            LISSAGE_G='LEGENDRE',),
+               THETA = _F(R_INF=1.*h,
+                          R_SUP=5.*h,
+                          FOND_FISS=Fiss_01,),)
+
 # 'CALC_G' LISSAGE LAGRANGE_NO_NO 
 CGlagno=CALC_G(RESULTAT=RESU,
                OPTION='CALC_G',
@@ -213,6 +228,50 @@ CGKlag=CALC_G(RESULTAT=RESU,
                          ),);
 
 #----------------------------------------------------------------------
+#               passage des FICs en MPa rac(m)
+#----------------------------------------------------------------------
+
+FK1MPA = FORMULE(NOM_PARA='K1', VALE="1.e-6*K1" )
+FK2MPA = FORMULE(NOM_PARA='K2', VALE="1.e-6*K2" )
+FK3MPA = FORMULE(NOM_PARA='K3', VALE="1.e-6*K3" )
+
+CGKleg=CALC_TABLE(reuse=CGKleg,
+                  TABLE=CGKleg,
+                  ACTION=(
+                          _F(OPERATION='OPER', NOM_PARA='K1_MPA', FORMULE=FK1MPA,),
+                          _F(OPERATION='OPER', NOM_PARA='K2_MPA', FORMULE=FK2MPA,),
+                          _F(OPERATION='OPER', NOM_PARA='K3_MPA', FORMULE=FK3MPA,),
+                         ),
+                 )
+
+CGKleg2=CALC_TABLE(reuse=CGKleg2,
+                   TABLE=CGKleg2,
+                   ACTION=(
+                           _F(OPERATION='OPER', NOM_PARA='K1_MPA', FORMULE=FK1MPA,),
+                           _F(OPERATION='OPER', NOM_PARA='K2_MPA', FORMULE=FK2MPA,),
+                           _F(OPERATION='OPER', NOM_PARA='K3_MPA', FORMULE=FK3MPA,),
+                          ),
+                  )
+
+CGKlano=CALC_TABLE(reuse=CGKlano,
+                   TABLE=CGKlano,
+                   ACTION=(
+                           _F(OPERATION='OPER', NOM_PARA='K1_MPA', FORMULE=FK1MPA,),
+                           _F(OPERATION='OPER', NOM_PARA='K2_MPA', FORMULE=FK2MPA,),
+                           _F(OPERATION='OPER', NOM_PARA='K3_MPA', FORMULE=FK3MPA,),
+                          ),
+                  )
+
+CGKlag=CALC_TABLE(reuse=CGKlag,
+                  TABLE=CGKlag,
+                  ACTION=(
+                          _F(OPERATION='OPER', NOM_PARA='K1_MPA', FORMULE=FK1MPA,),
+                          _F(OPERATION='OPER', NOM_PARA='K2_MPA', FORMULE=FK2MPA,),
+                          _F(OPERATION='OPER', NOM_PARA='K3_MPA', FORMULE=FK3MPA,),
+                         ),
+                 )
+
+#----------------------------------------------------------------------
 #               TRACE DES COURBES G EN FONCTION DE ABS_CURV
 #----------------------------------------------------------------------
 
@@ -231,6 +290,17 @@ FCGlagno = RECU_FONCTION(TABLE=CGlagno, PARA_X='ABSC_CURV', PARA_Y='G',)
 FCGKlano = RECU_FONCTION(TABLE=CGKlano, PARA_X='ABSC_CURV', PARA_Y='G',)
 FCGlag   = RECU_FONCTION(TABLE=CGlag  , PARA_X='ABSC_CURV', PARA_Y='G',)
 FCGKlag  = RECU_FONCTION(TABLE=CGKlag , PARA_X='ABSC_CURV', PARA_Y='G',)
+
+FK1leg  = RECU_FONCTION(TABLE=CGKleg , PARA_X='ABSC_CURV', PARA_Y='K1_MPA',)
+FK1leg2 = RECU_FONCTION(TABLE=CGKleg2, PARA_X='ABSC_CURV', PARA_Y='K1_MPA',)
+FK1lano = RECU_FONCTION(TABLE=CGKlano, PARA_X='ABSC_CURV', PARA_Y='K1_MPA',)
+FK1lag  = RECU_FONCTION(TABLE=CGKlag , PARA_X='ABSC_CURV', PARA_Y='K1_MPA',)
+FK2leg  = RECU_FONCTION(TABLE=CGKleg , PARA_X='ABSC_CURV', PARA_Y='K2_MPA',)
+FK2lano = RECU_FONCTION(TABLE=CGKlano, PARA_X='ABSC_CURV', PARA_Y='K2_MPA',)
+FK2lag  = RECU_FONCTION(TABLE=CGKlag , PARA_X='ABSC_CURV', PARA_Y='K2_MPA',)
+FK3leg  = RECU_FONCTION(TABLE=CGKleg , PARA_X='ABSC_CURV', PARA_Y='K3_MPA',)
+FK3lano = RECU_FONCTION(TABLE=CGKlano, PARA_X='ABSC_CURV', PARA_Y='K3_MPA',)
+FK3lag  = RECU_FONCTION(TABLE=CGKlag , PARA_X='ABSC_CURV', PARA_Y='K3_MPA',)
 
 # interpollation polynomiale (MS Excel) de la reference Murakami : G(s)
 def G_Murakami(x):
@@ -288,6 +358,72 @@ IMPR_FONCTION(FORMAT='XMGRACE',
               LEGENDE_Y='G',
               );
 
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=32,
+              COURBE=(
+                      _F(FONCTION=FK1leg,
+                         LEGENDE='CALC_K_G / LEGENDRE 5 / couronne 1',
+                         MARQUEUR=1,
+                         COULEUR=1),
+                      _F(FONCTION=FK1leg2,
+                         LEGENDE='CALC_K_G / LEGENDRE 5 / couronne 2',
+                         MARQUEUR=2,
+                         COULEUR=2),
+                      _F(FONCTION=FK1lano,
+                         LEGENDE='CALC_K_G / LAGRANGE_NO_NO / couronne 1',
+                         MARQUEUR=3,
+                         COULEUR=3),
+                      _F(FONCTION=FK1lag,
+                         LEGENDE='CALC_K_G / LAGRANGE / couronne 1',
+                         MARQUEUR=4,
+                         COULEUR=4),
+                       ),
+              TITRE='sslv322a / FICs (K1)',
+              LEGENDE_X='s',
+              LEGENDE_Y='K1',
+              );
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=33,
+              COURBE=(
+                      _F(FONCTION=FK2leg,
+                         LEGENDE='CALC_K_G / LEGENDRE 5 / couronne 1',
+                         MARQUEUR=1,
+                         COULEUR=1),
+                      _F(FONCTION=FK2lano,
+                         LEGENDE='CALC_K_G / LAGRANGE_NO_NO / couronne 1',
+                         MARQUEUR=2,
+                         COULEUR=2),
+                      _F(FONCTION=FK2lag,
+                         LEGENDE='CALC_K_G / LAGRANGE / couronne 1',
+                         MARQUEUR=3,
+                         COULEUR=3),
+                       ),
+              TITRE='sslv322a / FICs (K2)',
+              LEGENDE_X='s',
+              LEGENDE_Y='K2',
+              );
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=34,
+              COURBE=(
+                      _F(FONCTION=FK3leg,
+                         LEGENDE='CALC_K_G / LEGENDRE 5 / couronne 1',
+                         MARQUEUR=1,
+                         COULEUR=1),
+                      _F(FONCTION=FK3lano,
+                         LEGENDE='CALC_K_G / LAGRANGE_NO_NO / couronne 1',
+                         MARQUEUR=2,
+                         COULEUR=2),
+                      _F(FONCTION=FK3lag,
+                         LEGENDE='CALC_K_G / LAGRANGE / couronne 1',
+                         MARQUEUR=3,
+                         COULEUR=3),
+                       ),
+              TITRE='sslv322a / FICs (K3)',
+              LEGENDE_X='s',
+              LEGENDE_Y='K3',
+              );
 
 #----------------------------------------------------------------------
 #                       GRANDEURS TESTEES
@@ -304,6 +440,9 @@ IMPR_FONCTION(FORMAT='XMGRACE',
 #    autres modelisations de ce cas-test
 #----------------------------------------------------------------------
 
+# attention : les valeurs de non regression sur G doivent etre identiques avec
+#             les options 'CALC_G' et 'CALC_K_G'
+
 TEST_TABLE(TABLE=CGleg,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
                      CRITERE='ABSOLU',
@@ -332,6 +471,21 @@ TEST_TABLE(TABLE=CGKleg,
                      VALE=0.354497665,),
            NOM_PARA='G',
            VALE_CALC=7.61774576541,
+           )
+
+TEST_TABLE(TABLE=CGKleg,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     CRITERE='ABSOLU',
+                     PRECISION=1.E-11,
+                     VALE=0.0,),
+           NOM_PARA='K1_MPA',
+           VALE_CALC=1.09075614797,
+           )
+TEST_TABLE(TABLE=CGKleg,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.354497665,),
+           NOM_PARA='K1_MPA',
+           VALE_CALC=1.42890497938,
            )
 
 #----------------------------------------------------------------------
@@ -358,6 +512,28 @@ TEST_TABLE(TABLE=CGleg2,
            VALE_REFE=7.61774576541,
            VALE_CALC=7.61657902756,
            )
+
+TEST_TABLE(TABLE=CGKleg2,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     CRITERE='ABSOLU',
+                     PRECISION=1.E-11,
+                     VALE=0.0,),
+           NOM_PARA='K1_MPA',
+           PRECISION=8.E-3,
+           REFERENCE='AUTRE_ASTER',
+           VALE_REFE=1.09075614797,
+           VALE_CALC=1.08214839823,
+           )
+TEST_TABLE(TABLE=CGKleg2,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.354497665,),
+           NOM_PARA='K1_MPA',
+           PRECISION=1.E-3,
+           REFERENCE='AUTRE_ASTER',
+           VALE_REFE=1.42890497938,
+           VALE_CALC=1.43026782246,
+           )
+
 
 #----------------------------------------------------------------------
 # 3. LAGRANGE_NO_NO avec la couronne 1

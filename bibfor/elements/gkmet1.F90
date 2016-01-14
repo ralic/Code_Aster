@@ -37,7 +37,7 @@ implicit none
 !
 ! ......................................................................
 !      METHODE THETA-LEGENDRE ET G-LEGENDRE POUR LE CALCUL DE G(S)
-!      K1(S) K2(S) et K3(S) DANS LE CADRE X-FEM
+!      K1(S) K2(S) et K3(S)
 !
 ! ENTREE
 !

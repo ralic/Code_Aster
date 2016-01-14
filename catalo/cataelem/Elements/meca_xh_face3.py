@@ -2,7 +2,7 @@
 # CATALOGUES DES ELEMENTS 3D X-FEM HEAVISIDE DE BORD SANS CONTACT (LINEAIRES ET QUADRATIQUES)
 
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -118,9 +118,15 @@ class MECA_XH_FACE3(Element):
             para_out=((SP.PGTHETA, LC.EGTHETA), ),
         ),
 
-        OP.CALC_K_G(te=580,
-            para_in=((SP.PFR2D3D, NFORCER), (SP.PPRESSR, EPRESNO),
-                     (SP.PTHETAR, NTHETAR), ),
+        OP.CALC_K_G(te=48,
+            para_in=((OP.CALC_G.PCNSETO, LC.E36NEUI), (SP.PDEPLAR, DDL_MECA),
+                     (SP.PFR2D3D, NFORCER), (SP.PGEOMER, NGEOMER),
+                     (OP.CALC_G.PHEAVTO, E6NEUTI), (OP.CALC_G.PHEA_NO, LC.N5NEUTI),
+                     (OP.CALC_G.PLONCHA, LC.E10NEUTI), (OP.CALC_G.PLSN, LC.N1NEUT_R),
+                     (OP.CALC_G.PLST, LC.N1NEUT_R), (OP.CALC_G.PPINTTO, LC.E12NEUTR),
+                     (SP.PPRESSR, EPRESNO), (SP.PTHETAR, NTHETAR),
+                     (OP.CALC_K_G.PBASLOR, LC.N9NEUT_R), (SP.PMATERC, LC.CMATERC),
+                     ),
             para_out=((SP.PGTHETA, EKTHETA), ),
         ),
 
