@@ -1,6 +1,6 @@
 # TITRE : CONDITIONS DE DIRCIHLET SUR DES ELEMENTS XFEM
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -258,9 +258,9 @@ DEP1M = CALC_TABLE(TABLE = DEP1,
                             ),
                   );
 
-#IMPR_TABLE(TABLE=DEP1P,);
+IMPR_TABLE(TABLE=DEP1P,);
 
-#IMPR_TABLE(TABLE=DEP1M,);
+IMPR_TABLE(TABLE=DEP1M,);
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
@@ -299,7 +299,7 @@ TEST_TABLE(CRITERE='RELATIF',
 DEP3 = CALC_TABLE(TABLE = DEP1,
                    ACTION = (_F(OPERATION = 'FILTRE',
                                 NOM_PARA  = 'NOEUD',
-                                VALE_K    = 'NM13',
+                                VALE_K    = 'NMD',
                                ),
                             ),
                   );

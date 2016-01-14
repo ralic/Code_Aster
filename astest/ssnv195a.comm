@@ -1,6 +1,6 @@
 # TITRE BARREAU FISSURE AVEC X-FEM
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -240,7 +240,7 @@ DEP1P = CALC_TABLE(TABLE = DEP,
                   ACTION = (_F(OPERATION = 'FILTRE',
                                NOM_PARA  = 'NOEUD',
                                CRIT_COMP = 'REGEXP',
-                               VALE_K    = 'N[^P]'),
+                               VALE_K    = '^N[M]'),
                             _F(OPERATION = 'FILTRE',
                                NOM_PARA  = 'COOR_Z',
                                CRIT_COMP = 'LT',
@@ -268,7 +268,7 @@ DEP1M = CALC_TABLE(TABLE = DEP,
                   ACTION = (_F(OPERATION = 'FILTRE',
                                NOM_PARA  = 'NOEUD',
                                CRIT_COMP = 'REGEXP',
-                               VALE_K    = 'N[^M]'),
+                               VALE_K    = '^N[P]'),
                             _F(OPERATION = 'FILTRE',
                                NOM_PARA  = 'COOR_Z',
                                CRIT_COMP = 'LT',
@@ -298,7 +298,7 @@ DEP2P = CALC_TABLE(TABLE = DEP,
                   ACTION = (_F(OPERATION = 'FILTRE',
                                NOM_PARA  = 'NOEUD',
                                CRIT_COMP = 'REGEXP',
-                               VALE_K    = 'N[^P]'),
+                               VALE_K    = '^N[M]'),
                             _F(OPERATION = 'FILTRE',
                                NOM_PARA  = 'COOR_Z',
                                CRIT_COMP = 'GT',
@@ -326,7 +326,7 @@ DEP2M = CALC_TABLE(TABLE = DEP,
                   ACTION = (_F(OPERATION = 'FILTRE',
                                NOM_PARA  = 'NOEUD',
                                CRIT_COMP = 'REGEXP',
-                               VALE_K    = 'N[^M]'),
+                               VALE_K    = '^N[P]'),
                             _F(OPERATION = 'FILTRE',
                                NOM_PARA  = 'COOR_Z',
                                CRIT_COMP = 'GT',

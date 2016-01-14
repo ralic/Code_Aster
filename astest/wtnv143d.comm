@@ -2,7 +2,7 @@
 #         QUADRATIQUES PENTA15
 # ssnv203c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -219,7 +219,7 @@ DEP1P = CALC_TABLE(TABLE = DEP1,
                    ACTION = (_F(OPERATION = 'FILTRE',
                                 NOM_PARA  = 'NOEUD',
                                 CRIT_COMP = 'REGEXP',
-                                VALE_K    = 'N[^P]',
+                                VALE_K    = '^N[M]',
                                ),
                             ),
                   );
@@ -229,7 +229,7 @@ DEP1M = CALC_TABLE(TABLE = DEP1,
                    ACTION = (_F(OPERATION = 'FILTRE',
                                 NOM_PARA  = 'NOEUD',
                                 CRIT_COMP = 'REGEXP',
-                                VALE_K    = 'N[^M]',
+                                VALE_K    = '^N[P]',
                                ),
                             ),
                   );

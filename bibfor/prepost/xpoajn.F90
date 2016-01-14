@@ -3,7 +3,7 @@ subroutine xpoajn(maxfem, ino, lsn, jdirno, prefno,&
                   nbnoc, nbnofi, inofi, co, iacoo2)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,7 +26,7 @@ subroutine xpoajn(maxfem, ino, lsn, jdirno, prefno,&
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterfort/assert.h"
-#include "asterfort/codent.h"
+#include "asterfort/codlet.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -119,7 +119,7 @@ subroutine xpoajn(maxfem, ino, lsn, jdirno, prefno,&
     endif
 !
 !     COMPTEUR DES NOMS DES NOEUDS
-    if (inntot .ge. 999999) then
+    if (inntot .ge. 1291467968) then
         call utmess('F', 'XFEM_8', sk=valk(1))
     endif
     inn = inn + 1
@@ -131,7 +131,7 @@ subroutine xpoajn(maxfem, ino, lsn, jdirno, prefno,&
     do 30 ifiss = 1, nfiss
         zi(jdirno-1+(2+nfiss)*(inn-1)+2+ifiss) = he(ifiss)
  30 end do
-    call codent(inntot, 'G', chn)
+    call codlet(inntot, 'G', chn)
 !
     call jecroc(jexnom(maxfem//'.NOMNOE', nm//chn))
     do 40 j = 1, 3

@@ -1,6 +1,6 @@
 # TITRE BLOC DECOUPE PAR TROIS INTERFACES SE BRANCHANT SEQUENTIELLEMENT AVEC X-FEM
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -209,7 +209,7 @@ IMPR_TABLE(TABLE=DEP,);
 DEP1 = CALC_TABLE(TABLE = DEP,
                    ACTION = (_F(OPERATION = 'FILTRE',
                                 NOM_PARA  = 'NOEUD',
-                                VALE_K    = 'NM1039',
+                                VALE_K    = 'NMSV',
                               ),
                             ),
                   );
@@ -225,7 +225,7 @@ TEST_TABLE(CRITERE='RELATIF',
 DEP2 = CALC_TABLE(TABLE = DEP,
                    ACTION = (_F(OPERATION = 'FILTRE',
                                 NOM_PARA  = 'NOEUD',
-                                VALE_K    = 'NP983',
+                                VALE_K    = 'NPRB',
                                ),
                             ),
                   );
@@ -241,7 +241,7 @@ TEST_TABLE(CRITERE='RELATIF',
 DEP3 = CALC_TABLE(TABLE = DEP,
                    ACTION = (_F(OPERATION = 'FILTRE',
                                 NOM_PARA  = 'NOEUD',
-                                VALE_K    = 'NM1301',
+                                VALE_K    = 'NM105',
                                ),
                             ),
                   );
@@ -257,7 +257,7 @@ TEST_TABLE(CRITERE='RELATIF',
 DEP4 = CALC_TABLE(TABLE = DEP,
                    ACTION = (_F(OPERATION = 'FILTRE',
                                 NOM_PARA  = 'NOEUD',
-                                VALE_K    = 'NP1193',
+                                VALE_K    = 'NPX5',
                                ),
                             ),
                   );
@@ -273,7 +273,7 @@ TEST_TABLE(CRITERE='RELATIF',
 DEP5 = CALC_TABLE(TABLE = DEP,
                    ACTION = (_F(OPERATION = 'FILTRE',
                                 NOM_PARA  = 'NOEUD',
-                                VALE_K    = 'NM300',
+                                VALE_K    = 'NM8C',
                                ),
                             ),
                   );
@@ -289,7 +289,7 @@ TEST_TABLE(CRITERE='RELATIF',
 DEP6 = CALC_TABLE(TABLE = DEP,
                    ACTION = (_F(OPERATION = 'FILTRE',
                                 NOM_PARA  = 'NOEUD',
-                                VALE_K    = 'NP234',
+                                VALE_K    = 'NP6I',
                                ),
                             ),
                   );

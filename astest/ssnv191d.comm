@@ -1,6 +1,6 @@
 # TITRE : VALIDATION DES CONDITIONS DE NEUMANN AVEC X-FEM EN 3D MAILLAGE
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -240,14 +240,14 @@ DEP1P = CALC_TABLE(TABLE = DEP1,
                   ACTION = (_F(OPERATION = 'FILTRE',
                                NOM_PARA  = 'NOEUD',
                                CRIT_COMP = 'REGEXP',
-                               VALE_K    = 'N[^P]')));
+                               VALE_K    = '^N[M]')));
 
 
 DEP1M = CALC_TABLE(TABLE = DEP1,
                   ACTION = (_F(OPERATION = 'FILTRE',
                                NOM_PARA  = 'NOEUD',
                                CRIT_COMP = 'REGEXP',
-                               VALE_K    = 'N[^M]')));
+                               VALE_K    = '^N[P]')));
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
@@ -362,14 +362,14 @@ DEP2P = CALC_TABLE(TABLE = DEP2,
                   ACTION = (_F(OPERATION = 'FILTRE',
                                NOM_PARA  = 'NOEUD',
                                CRIT_COMP = 'REGEXP',
-                               VALE_K    = 'N[^P]')));
+                               VALE_K    = '^N[M]')));
 
 
 DEP2M = CALC_TABLE(TABLE = DEP2,
                   ACTION = (_F(OPERATION = 'FILTRE',
                                NOM_PARA  = 'NOEUD',
                                CRIT_COMP = 'REGEXP',
-                               VALE_K    = 'N[^M]')));
+                               VALE_K    = '^N[P]')));
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
@@ -484,7 +484,7 @@ DEP3P = CALC_TABLE(TABLE = DEP3,
                   ACTION = (_F(OPERATION = 'FILTRE',
                                NOM_PARA  = 'NOEUD',
                                CRIT_COMP = 'REGEXP',
-                               VALE_K    = 'N[^P]')));
+                               VALE_K    = '^N[M]')));
 IMPR_TABLE(TABLE=DEP3P);
 
 
@@ -492,7 +492,7 @@ DEP3M = CALC_TABLE(TABLE = DEP3,
                   ACTION = (_F(OPERATION = 'FILTRE',
                                NOM_PARA  = 'NOEUD',
                                CRIT_COMP = 'REGEXP',
-                               VALE_K    = 'N[^M]')));
+                               VALE_K    = '^N[P]')));
 IMPR_TABLE(TABLE=DEP3M);
 
 TEST_TABLE(CRITERE='RELATIF',
@@ -608,14 +608,14 @@ DEP4P = CALC_TABLE(TABLE = DEP4,
                   ACTION = (_F(OPERATION = 'FILTRE',
                                NOM_PARA  = 'NOEUD',
                                CRIT_COMP = 'REGEXP',
-                               VALE_K    = 'N[^P]')));
+                               VALE_K    = '^N[M]')));
 
 
 DEP4M = CALC_TABLE(TABLE = DEP4,
                   ACTION = (_F(OPERATION = 'FILTRE',
                                NOM_PARA  = 'NOEUD',
                                CRIT_COMP = 'REGEXP',
-                               VALE_K    = 'N[^M]')));
+                               VALE_K    = '^N[P]')));
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
