@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -418,10 +418,29 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
             TABLE_VIT[numfis] = table_vit
 #     on recupere la table pour BETA
             __SIF = Fiss['TABLE']
-            tab_sif = __SIF.EXTR_TABLE()
-            table_beta = tab_sif.BETA.values()
+            # ATTENTION : POST_RUPTURE sort un resultat en DEGRES! 
+            __SIF2 = POST_RUPTURE(TABLE=__SIF,
+                                  reuse=__SIF,
+                                  OPERATION='ANGLE_BIFURCATION',
+                                  CRITERE=CRITERE_ANGLE,
+                                  NOM_PARA='BETA',)
+            # il est necessaire d avoir MATER mais on ne l a pas on s en passe
+            tab_sif = __SIF2.EXTR_TABLE()
+            # On convertit en radians pour beta
+            table_temp = tab_sif.BETA.values()
+            table_beta = [table_temp[i]*pi/180. for i in range(len(table_temp))]
+            # si seulement deux points, alors cas test extrude
+            # donc on considere l angle uniforme
+            # (temporaire car cas 2d non implemente pour X-FEM cohesif)
+            if len(table_beta) == 2:
+                angle_moyen = (table_beta[0] + table_beta[1])/2.
+                table_beta[0] = angle_moyen
+                table_beta[1] = angle_moyen
+            # fin de l etape de lissage
+            # On convertit en radians egalement pour gamma
             if 'GAMMA' in tab_sif.para :
-                table_gamma = tab_sif.GAMMA.values()
+                table_temp = tab_sif.GAMMA.values()
+                table_gamma = [table_temp[i]*pi/180. for i in range(len(table_temp))]
             n = len(table_beta)
 #
 #     debut bloc de conversion de la table

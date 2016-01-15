@@ -5,7 +5,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
                   extim, time, nbprup, noprup, fiss,&
                   lmelas, nomcas, lmoda, puls, milieu,&
                   connex, coor, iadnoe, typdis)
-! aslint: disable=W1504
+
     implicit none
 !
 #include "asterf_types.h"
@@ -57,7 +57,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
     aster_logical :: extim, pair, lmelas, lmoda, milieu, connex
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -476,7 +476,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 !     3) CALCUL DE G(S), K1(S), K2(S) ET K3(S) LE LONG DU FOND
 !     ------------------------------------------------------------------
 !
-    call wkvect('&&CAKG3D.VALGK_S', 'V V R8', nnoff*6, iadgks)
+    call wkvect('&&CAKG3D.VALGK_S', 'V V R8', nnoff*5, iadgks)
 !
     if ((liss.eq.'LAGRANGE').or.(liss.eq.'LAGRANGE_NO_NO').or.(liss.eq.'LAGRANGE_REGU')) then
         if ((liss.eq.'LAGRANGE').or.(liss.eq.'LAGRANGE_NO_NO')) then
@@ -520,7 +520,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 !
 !     IMPRESSION DE G(S), K1(S), K2(S) ET K3(S)
     if (niv .ge. 2) then
-        call gksimp(result, nnoff, zr(iadabs), iadrgk, num,&
+        call gksimp(result, nnoff, zr(iadabs), num,&
                     iadgks, ndeg, ndimte, iadgki, extim,&
                     time, iord, ifm)
     endif
@@ -554,16 +554,15 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
         call tbajvr(result, nbprup, 'COOR_X', zr(coor-1+4*(i-1)+1), livr)
         call tbajvr(result, nbprup, 'COOR_Y', zr(coor-1+4*(i-1)+2), livr)
         call tbajvr(result, nbprup, 'COOR_Z', zr(coor-1+4*(i-1)+3), livr)
-        call tbajvr(result, nbprup, 'K1', zr(iadgks-1+6*(i-1)+2), livr)
-        call tbajvr(result, nbprup, 'K2', zr(iadgks-1+6*(i-1)+3), livr)
-        call tbajvr(result, nbprup, 'K3', zr(iadgks-1+6*(i-1)+4), livr)
-        call tbajvr(result, nbprup, 'G', zr(iadgks-1+6*(i-1)+1), livr)
-        call tbajvr(result, nbprup, 'BETA', zr(iadgks-1+6*(i-1)+6), livr)
-        call tbajvr(result, nbprup, 'G_IRWIN', zr(iadgks-1+6*(i-1)+5), livr)
+        call tbajvr(result, nbprup, 'K1', zr(iadgks-1+5*(i-1)+2), livr)
+        call tbajvr(result, nbprup, 'K2', zr(iadgks-1+5*(i-1)+3), livr)
+        call tbajvr(result, nbprup, 'K3', zr(iadgks-1+5*(i-1)+4), livr)
+        call tbajvr(result, nbprup, 'G', zr(iadgks-1+5*(i-1)+1), livr)
+        call tbajvr(result, nbprup, 'G_IRWIN', zr(iadgks-1+5*(i-1)+5), livr)
         call tbajli(result, nbprup, noprup, livi, livr,&
                     livc, livk, 0)
-        if ((codret .eq. 'OK') .and. ( abs( zr(iadgks-1+6*(i-1)+1) ) .ge. 1.e-12 ) ) then
-            difrel= abs((zr(iadgks-1+6*(i-1)+1)- zr(iadgks-1+6*(i-1)+5))/zr(iadgks-1+6*(i-1)+1))
+        if ((codret .eq. 'OK') .and. ( abs( zr(iadgks-1+5*(i-1)+1) ) .ge. 1.e-12 ) ) then
+            difrel= abs((zr(iadgks-1+5*(i-1)+1)- zr(iadgks-1+5*(i-1)+5))/zr(iadgks-1+5*(i-1)+1))
             diff2g = diff2g + difrel
         endif
 !

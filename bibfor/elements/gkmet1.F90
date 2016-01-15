@@ -19,7 +19,7 @@ implicit none
     character(len=24) :: chfond, abscur 
 
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -51,7 +51,7 @@ implicit none
 ! SORTIE
 !
 !   IADGKS      --> ADRESSE DE VALEURS DE GKS
-!                   (VALEUR DE G(S), K1(S), K2(S), K3(S), BETA(S), G_IRWIN(S))
+!                   (VALEUR DE G(S), K1(S), K2(S), K3(S), G_IRWIN(S))
 !   IADGKI      --> ADRESSE DE VALEURS DE GKTHI
 !                   (G, K1, K2, K3 POUR LES CHAMPS THETAI)
 ! ......................................................................
@@ -142,15 +142,15 @@ implicit none
         gis(i) = som(5)
 
         do k = 1, 5
-            zr(iadgks-1+(i-1)*6+k) = som(k)
+            zr(iadgks-1+(i-1)*5+k) = som(k)
         enddo
 
-!       CALCUL DES ANGLES DE PROPAGATION DE FISSURE LOCAUX BETA
-        if (abs(zr(iadgks-1+(i-1)*6+3)) .ge. 1.e-12 ) &
-            zr(iadgks-1+(i-1)*6+6)= 2.0d0*atan2(0.25d0*(zr(iadgks-1+(i-1)*6+2)/zr(iadgks-1+ &
-                                    (i-1) *6+3) - sign(1.0d0, zr(iadgks-1+(i-1)*6+3))* &
-                                    sqrt((zr(iadgks-1+ (i-1)*6+2)/ zr(iadgks-1+(i-1)*6+3))**2.0d0 &
-                                    +8.0d0)), 1.0d0)
+!!       CALCUL DES ANGLES DE PROPAGATION DE FISSURE LOCAUX BETA
+!        if (abs(zr(iadgks-1+(i-1)*6+3)) .ge. 1.e-12 ) &
+!            zr(iadgks-1+(i-1)*6+6)= 2.0d0*atan2(0.25d0*(zr(iadgks-1+(i-1)*6+2)/zr(iadgks-1+ &
+!                                    (i-1) *6+3) - sign(1.0d0, zr(iadgks-1+(i-1)*6+3))* &
+!                                    sqrt((zr(iadgks-1+ (i-1)*6+2)/ zr(iadgks-1+(i-1)*6+3))**2.0d0 &
+!                                    +8.0d0)), 1.0d0)
 
     end do
 

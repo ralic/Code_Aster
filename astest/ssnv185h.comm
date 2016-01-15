@@ -1,6 +1,6 @@
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC XFEM
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -17,6 +17,8 @@
 # ======================================================================
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
+
+import numpy, math
 
 # MODELISATION H : X-FEM INCLINEE - TRACTION (FACE SUP)
 
@@ -213,6 +215,9 @@ nbc=len(RI)
 
 SIF = [None]*(nbc+1)
 
+# Conversion degre radian pour beta
+BETA_RAD=FORMULE(NOM_PARA='BETA',VALE = 'BETA*pi/180'),
+
 for i in range(0,nbc) :
 
    RI[i]=RI[i]*A*cos(ALPHA)
@@ -229,6 +234,19 @@ for i in range(0,nbc) :
 
    IMPR_TABLE(TABLE=SIF[i]);
 
+   SIF[i]=POST_RUPTURE(reuse=SIF[i],
+                       TABLE=SIF[i],
+                       OPERATION='ANGLE_BIFURCATION',
+                       NOM_PARA='BETA',);
+
+   SIF[i]=CALC_TABLE(reuse=SIF[i],
+                     TABLE=SIF[i],
+                     ACTION=_F(OPERATION='OPER',
+                               FORMULE=BETA_RAD,
+                               NOM_PARA='BETA_RAD',));
+                    
+   IMPR_TABLE(TABLE=SIF[i]);
+   
 # SOLUTION ANALYTIQUE (Fracture Mechanics T.L. ANDERS0N p.63,91)
 
 K1_K2 = cos(ALPHA)/sin(ALPHA);
@@ -249,7 +267,7 @@ VAL_CALC = [ -0.98215929873791  ,
              
 for i in range(0,nbc) :
    TEST_TABLE(TABLE=SIF[i],
-              NOM_PARA='BETA',
+              NOM_PARA='BETA_RAD',
               TYPE_TEST='MAX',
               VALE_CALC=VAL_CALC[2*i+0], VALE_REFE=BETAREF,
               CRITERE='RELATIF',
@@ -257,7 +275,7 @@ for i in range(0,nbc) :
               REFERENCE='ANALYTIQUE');
 
    TEST_TABLE(TABLE=SIF[i],
-              NOM_PARA='BETA',
+              NOM_PARA='BETA_RAD',
               TYPE_TEST='MIN',
               VALE_CALC=VAL_CALC[2*i+1], VALE_REFE=BETAREF,
               CRITERE='RELATIF',

@@ -20,7 +20,7 @@ implicit none
     aster_logical     :: connex
 
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -54,7 +54,7 @@ implicit none
 !  SORTIE
 !
 !   IADGKS     --> ADRESSE DE VALEURS DE GKS
-!                   (VALEUR DE G(S), K1(S), K2(S), K3(S))
+!                   (VALEUR DE G(S), K1(S), K2(S), K3(S), G_IRWIN(S))
 !   IADGKI     --> ADRESSE DE VALEURS DE GKTHI
 !                  (G, K1, K2, K3 POUR LES CHAMPS THETAI)
 !   ABSCUR     --> VALEURS DES ABSCISSES CURVILIGNES S
@@ -66,7 +66,7 @@ implicit none
     real(kind=8)                   :: s1, s2, s3
     real(kind=8), dimension(nnoff) :: gthi, k1th, k2th, k3th
     real(kind=8), dimension(ndimte):: gs, k1s, k2s, k3s
-    real(kind=8), dimension(nnoff) :: betas, gis
+    real(kind=8), dimension(nnoff) :: gis
     real(kind=8), dimension(nnoff) :: g1th, g2th, g3th
     real(kind=8), dimension(nnoff) :: g1s, g2s, g3s
     character(len=24)              :: matr
@@ -121,13 +121,13 @@ implicit none
         gis(i)=g1s(i)*g1s(i) + g2s(i)*g2s(i) +g3s(i)*g3s(i)
     end do
 !
-!   CALCUL DES ANGLES DE PROPAGATION DE FISSURE LOCAUX BETA
-    do i = 1, ndimte
-        betas(i) = 0.0d0
-        if ( abs(k2s(i)) .ge. 1.e-12) betas(i) = 2.0d0*atan2(0.25d0*(k1s(i)/k2s(i) - &
-                                                 &sign(1.0d0, k2s(i))*sqrt((k1s(i)/k2s(i))&
-                                                 &**2.0d0+8.0d0)),1.0d0)
-    enddo
+!!   CALCUL DES ANGLES DE PROPAGATION DE FISSURE LOCAUX BETA
+!    do i = 1, ndimte
+!        betas(i) = 0.0d0
+!        if ( abs(k2s(i)) .ge. 1.e-12) betas(i) = 2.0d0*atan2(0.25d0*(k1s(i)/k2s(i) - &
+!                                                 &sign(1.0d0, k2s(i))*sqrt((k1s(i)/k2s(i))&
+!                                                 &**2.0d0+8.0d0)),1.0d0)
+!    enddo
 !
     if (nnoff .eq. 2) then
         zr(iadgks-1+1) = gs(1)
@@ -135,86 +135,74 @@ implicit none
         zr(iadgks-1+3) = k2s(1)
         zr(iadgks-1+4) = k3s(1)
         zr(iadgks-1+5) = gis(1)
-        zr(iadgks-1+6) = betas(1)
-        zr(iadgks-1+(nnoff-1)*6+1) = gs(ndimte)
-        zr(iadgks-1+(nnoff-1)*6+2) = k1s(ndimte)
-        zr(iadgks-1+(nnoff-1)*6+3) = k2s(ndimte)
-        zr(iadgks-1+(nnoff-1)*6+4) = k3s(ndimte)
-        zr(iadgks-1+(nnoff-1)*6+5) = gis(ndimte)
-        zr(iadgks-1+(nnoff-1)*6+6) = betas(ndimte)
+        zr(iadgks-1+(nnoff-1)*5+1) = gs(ndimte)
+        zr(iadgks-1+(nnoff-1)*5+2) = k1s(ndimte)
+        zr(iadgks-1+(nnoff-1)*5+3) = k2s(ndimte)
+        zr(iadgks-1+(nnoff-1)*5+4) = k3s(ndimte)
+        zr(iadgks-1+(nnoff-1)*5+5) = gis(ndimte)
     else
         do i = 1, ndimte-1
             if (milieu) then
                 nn = 4*i-3
-                zr(iadgks-1+(nn-1)*6+1) = gs(i)
-                zr(iadgks-1+(nn-1)*6+2) = k1s(i)
-                zr(iadgks-1+(nn-1)*6+3) = k2s(i)
-                zr(iadgks-1+(nn-1)*6+4) = k3s(i)
-                zr(iadgks-1+(nn-1)*6+5) = gis(i)
-                zr(iadgks-1+(nn-1)*6+6) = betas(i)
+                zr(iadgks-1+(nn-1)*5+1) = gs(i)
+                zr(iadgks-1+(nn-1)*5+2) = k1s(i)
+                zr(iadgks-1+(nn-1)*5+3) = k2s(i)
+                zr(iadgks-1+(nn-1)*5+4) = k3s(i)
+                zr(iadgks-1+(nn-1)*5+5) = gis(i)
                 s1 = zr(iadabs+nn-1)
                 s3 = zr(iadabs+nn+4-1)
                 
-                zr(iadgks-1+(nn-1+1)*6+1) = gs(i)+(zr(iadabs+nn+1-1)-s1)* &
+                zr(iadgks-1+(nn-1+1)*5+1) = gs(i)+(zr(iadabs+nn+1-1)-s1)* &
                                             (gs(i+1)-gs(i))/(s3-s1)
-                zr(iadgks-1+(nn-1+2)*6+1) = gs(i)+(zr(iadabs+nn+2-1)-s1)* &
+                zr(iadgks-1+(nn-1+2)*5+1) = gs(i)+(zr(iadabs+nn+2-1)-s1)* &
                                             (gs(i+1)-gs(i))/(s3-s1)
-                zr(iadgks-1+(nn-1+3)*6+1) = gs(i)+(zr(iadabs+nn+3-1)-s1)* &
+                zr(iadgks-1+(nn-1+3)*5+1) = gs(i)+(zr(iadabs+nn+3-1)-s1)* &
                                             (gs(i+1)-gs(i))/(s3-s1)
-                zr(iadgks-1+(nn-1+1)*6+2) = k1s(i)+(zr(iadabs+nn+1-1)-s1)* &
+                zr(iadgks-1+(nn-1+1)*5+2) = k1s(i)+(zr(iadabs+nn+1-1)-s1)* &
                                             (k1s(i+1)-k1s(i))/(s3-s1)
-                zr(iadgks-1+(nn-1+2)*6+2) = k1s(i)+(zr(iadabs+nn+2-1)-s1)* & 
+                zr(iadgks-1+(nn-1+2)*5+2) = k1s(i)+(zr(iadabs+nn+2-1)-s1)* & 
                                             (k1s(i+1)-k1s(i))/(s3-s1)
-                zr(iadgks-1+(nn-1+3)*6+2) = k1s(i)+(zr(iadabs+nn+3-1)-s1)* &
+                zr(iadgks-1+(nn-1+3)*5+2) = k1s(i)+(zr(iadabs+nn+3-1)-s1)* &
                                             (k1s(i+1)-k1s(i))/(s3-s1)           
-                zr(iadgks-1+(nn-1+1)*6+3) = k2s(i)+(zr(iadabs+nn+1-1)-s1)* &
+                zr(iadgks-1+(nn-1+1)*5+3) = k2s(i)+(zr(iadabs+nn+1-1)-s1)* &
                                             (k2s(i+1)-k2s(i))/(s3-s1)
-                zr(iadgks-1+(nn-1+2)*6+3) = k2s(i)+(zr(iadabs+nn+2-1)-s1)* &
+                zr(iadgks-1+(nn-1+2)*5+3) = k2s(i)+(zr(iadabs+nn+2-1)-s1)* &
                                             (k2s(i+1)-k2s(i))/(s3-s1)
-                zr(iadgks-1+(nn-1+3)*6+3) = k2s(i)+(zr(iadabs+nn+3-1)-s1)* &
+                zr(iadgks-1+(nn-1+3)*5+3) = k2s(i)+(zr(iadabs+nn+3-1)-s1)* &
                                             (k2s(i+1)-k2s(i))/(s3-s1)               
-                zr(iadgks-1+(nn-1+1)*6+4) = k3s(i)+(zr(iadabs+nn+1-1)-s1)* &
+                zr(iadgks-1+(nn-1+1)*5+4) = k3s(i)+(zr(iadabs+nn+1-1)-s1)* &
                                             (k3s(i+1)-k3s(i))/(s3-s1)
-                zr(iadgks-1+(nn-1+2)*6+4) = k3s(i)+(zr(iadabs+nn+2-1)-s1)* &
+                zr(iadgks-1+(nn-1+2)*5+4) = k3s(i)+(zr(iadabs+nn+2-1)-s1)* &
                                             (k3s(i+1)-k3s(i))/(s3-s1)
-                zr(iadgks-1+(nn-1+3)*6+4) = k3s(i)+(zr(iadabs+nn+3-1)-s1)* &
+                zr(iadgks-1+(nn-1+3)*5+4) = k3s(i)+(zr(iadabs+nn+3-1)-s1)* &
                                             (k3s(i+1)-k3s(i))/(s3-s1)               
-                zr(iadgks-1+(nn-1+1)*6+5) = gis(i)+(zr(iadabs+nn+1-1)-s1)* &
+                zr(iadgks-1+(nn-1+1)*5+5) = gis(i)+(zr(iadabs+nn+1-1)-s1)* &
                                             (gis(i+1)-gis(i))/(s3-s1)
-                zr(iadgks-1+(nn-1+2)*6+5) = gis(i)+(zr(iadabs+nn+2-1)-s1)* &
+                zr(iadgks-1+(nn-1+2)*5+5) = gis(i)+(zr(iadabs+nn+2-1)-s1)* &
                                             (gis(i+1)-gis(i))/(s3-s1)
-                zr(iadgks-1+(nn-1+3)*6+5) = gis(i)+(zr(iadabs+nn+3-1)-s1)* &
-                                            (gis(i+1)-gis(i))/(s3-s1)         
-                zr(iadgks-1+(nn-1+1)*6+6) = betas(i)+(zr(iadabs+nn+1-1)-s1)* &
-                                           (betas(i+1)-betas(i))/(s3-s1)
-                zr(iadgks-1+(nn-1+2)*6+6) = betas(i)+(zr(iadabs+nn+2-1)-s1)* &
-                                           (betas(i+1)-betas(i))/(s3-s1)
-                zr(iadgks-1+(nn-1+3)*6+6) = betas(i)+(zr(iadabs+nn+3-1)-s1)* &
-                                           (betas(i+1)-betas(i))/(s3-s1)
+                zr(iadgks-1+(nn-1+3)*5+5) = gis(i)+(zr(iadabs+nn+3-1)-s1)* &
+                                            (gis(i+1)-gis(i))/(s3-s1)
             else
                 nn = 2*i-1
-                zr(iadgks-1+(nn-1)*6+1) = gs(i)
-                zr(iadgks-1+(nn-1)*6+2) = k1s(i)
-                zr(iadgks-1+(nn-1)*6+3) = k2s(i)
-                zr(iadgks-1+(nn-1)*6+4) = k3s(i)
-                zr(iadgks-1+(nn-1)*6+5) = gis(i)
-                zr(iadgks-1+(nn-1)*6+6) = betas(i)
+                zr(iadgks-1+(nn-1)*5+1) = gs(i)
+                zr(iadgks-1+(nn-1)*5+2) = k1s(i)
+                zr(iadgks-1+(nn-1)*5+3) = k2s(i)
+                zr(iadgks-1+(nn-1)*5+4) = k3s(i)
+                zr(iadgks-1+(nn-1)*5+5) = gis(i)
                 s1 = zr(iadabs+nn-1)
                 s2 = zr(iadabs+nn-1+1)
                 s3 = zr(iadabs+nn-1+2)
                 
-                zr(iadgks-1+(nn-1+1)*6+1) = gs(i)+(s2-s1)* (gs(i+1)- &
+                zr(iadgks-1+(nn-1+1)*5+1) = gs(i)+(s2-s1)* (gs(i+1)- &
                                             gs(i))/(s3-s1)
-                zr(iadgks-1+(nn-1+1)*6+2) = k1s(i)+(s2-s1)* (k1s(i+1)-&
+                zr(iadgks-1+(nn-1+1)*5+2) = k1s(i)+(s2-s1)* (k1s(i+1)-&
                                             k1s(i))/(s3-s1)
-                zr(iadgks-1+(nn-1+1)*6+3) = k2s(i)+(s2-s1)* (k2s(i+1)-&
+                zr(iadgks-1+(nn-1+1)*5+3) = k2s(i)+(s2-s1)* (k2s(i+1)-&
                                             k2s(i))/(s3-s1)
-                zr(iadgks-1+(nn-1+1)*6+4) = k3s(i)+(s2-s1)* (k3s(i+1)-&
+                zr(iadgks-1+(nn-1+1)*5+4) = k3s(i)+(s2-s1)* (k3s(i+1)-&
                                             k3s(i))/(s3-s1)
-                zr(iadgks-1+(nn-1+1)*6+5) = gis(i)+(s2-s1)* (gis(i+1)-&
+                zr(iadgks-1+(nn-1+1)*5+5) = gis(i)+(s2-s1)* (gis(i+1)-&
                                             gis(i))/(s3-s1)
-                zr(iadgks-1+(nn-1+1)*6+6) = betas(i)+(s2-s1)* (betas(i+1)- & 
-                                            betas(i))/(s3-s1)
             endif
         enddo
 !
@@ -223,36 +211,32 @@ implicit none
             s1 = zr(iadabs+nn-1)
             s2 = zr(iadabs+nn-1+1)
             s3 = zr(iadabs+nn-1+2)
-            zr(iadgks-1+(nnoff-1)*6+1) = zr(iadgks-1+(nnoff-2)*6+1)+ &
-                                         (s3-s2)* (zr(iadgks-1+(nnoff-3)*6+1)- & 
-                                         zr(iadgks-1+(nnoff-2)*6+1))/(s1-s2)
+            zr(iadgks-1+(nnoff-1)*5+1) = zr(iadgks-1+(nnoff-2)*5+1)+ &
+                                         (s3-s2)* (zr(iadgks-1+(nnoff-3)*5+1)- & 
+                                         zr(iadgks-1+(nnoff-2)*5+1))/(s1-s2)
 
-            zr(iadgks-1+(nnoff-1)*6+2) = zr(iadgks-1+(nnoff-2)*6+2)+ &
-                                         (s3-s2)* (zr(iadgks-1+(nnoff-3)*6+2)- &
-                                         zr(iadgks-1+(nnoff-2)*6+2))/(s1-s2)
+            zr(iadgks-1+(nnoff-1)*5+2) = zr(iadgks-1+(nnoff-2)*5+2)+ &
+                                         (s3-s2)* (zr(iadgks-1+(nnoff-3)*5+2)- &
+                                         zr(iadgks-1+(nnoff-2)*5+2))/(s1-s2)
 
-            zr(iadgks-1+(nnoff-1)*6+3) = zr(iadgks-1+(nnoff-2)*6+3)+ &
-                                         (s3-s2)* (zr(iadgks-1+(nnoff-3)*6+3)- &
-                                         zr(iadgks-1+(nnoff-2)*6+3))/(s1-s2)
+            zr(iadgks-1+(nnoff-1)*5+3) = zr(iadgks-1+(nnoff-2)*5+3)+ &
+                                         (s3-s2)* (zr(iadgks-1+(nnoff-3)*5+3)- &
+                                         zr(iadgks-1+(nnoff-2)*5+3))/(s1-s2)
 
-            zr(iadgks-1+(nnoff-1)*6+4) = zr(iadgks-1+(nnoff-2)*6+4)+ &
-                                         (s3-s2)* (zr(iadgks-1+(nnoff-3)*6+4)- &
-                                         zr(iadgks-1+(nnoff-2)*6+4))/(s1-s2)
+            zr(iadgks-1+(nnoff-1)*5+4) = zr(iadgks-1+(nnoff-2)*5+4)+ &
+                                         (s3-s2)* (zr(iadgks-1+(nnoff-3)*5+4)- &
+                                         zr(iadgks-1+(nnoff-2)*5+4))/(s1-s2)
 
-            zr(iadgks-1+(nnoff-1)*6+5) = zr(iadgks-1+(nnoff-2)*6+5)+ &
-                                         (s3-s2)* (zr(iadgks-1+(nnoff-3)*6+5)- &
-                                         zr(iadgks-1+(nnoff-2)*6+5))/(s1-s2)
+            zr(iadgks-1+(nnoff-1)*5+5) = zr(iadgks-1+(nnoff-2)*5+5)+ &
+                                         (s3-s2)* (zr(iadgks-1+(nnoff-3)*5+5)- &
+                                         zr(iadgks-1+(nnoff-2)*5+5))/(s1-s2)
 
-            zr(iadgks-1+(nnoff-1)*6+6) = zr(iadgks-1+(nnoff-2)*6+6)+ &
-                                         (s3-s2)* (zr(iadgks-1+(nnoff-3)*6+6)- &
-                                         zr(iadgks-1+(nnoff-2)*6+6))/(s1-s2)
         else
-            zr(iadgks-1+(nnoff-1)*6+1) = gs(ndimte)
-            zr(iadgks-1+(nnoff-1)*6+2) = k1s(ndimte)
-            zr(iadgks-1+(nnoff-1)*6+3) = k2s(ndimte)
-            zr(iadgks-1+(nnoff-1)*6+4) = k3s(ndimte)
-            zr(iadgks-1+(nnoff-1)*6+5) = gis(ndimte)
-            zr(iadgks-1+(nnoff-1)*6+6) = betas(ndimte)
+            zr(iadgks-1+(nnoff-1)*5+1) = gs(ndimte)
+            zr(iadgks-1+(nnoff-1)*5+2) = k1s(ndimte)
+            zr(iadgks-1+(nnoff-1)*5+3) = k2s(ndimte)
+            zr(iadgks-1+(nnoff-1)*5+4) = k3s(ndimte)
+            zr(iadgks-1+(nnoff-1)*5+5) = gis(ndimte)
         endif
     endif
 !

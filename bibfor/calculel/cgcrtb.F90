@@ -15,7 +15,7 @@ subroutine cgcrtb(table, option, lmelas, cas, typfis, nxpara,&
     character(len=16) :: option, cas
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -124,7 +124,6 @@ subroutine cgcrtb(table, option, lmelas, cas, typfis, nxpara,&
             call cgajpa('G_IRWIN', 'R', nbpara, linopa, litypa, nxpara)
             if (cas.eq.'3D_LOCAL') then
                 call cgajpa('K3', 'R', nbpara, linopa, litypa, nxpara)
-                call cgajpa('BETA', 'R', nbpara, linopa, litypa, nxpara)
             endif
         endif
 !-------------------------------------------------------------------------
@@ -132,7 +131,7 @@ subroutine cgcrtb(table, option, lmelas, cas, typfis, nxpara,&
 !   2.3 OPTIONS A SUPPRIMER (G_BILI(_GLOB) et G_MAX(_GLOB) et CALC_K_MAX)
 !   ---------------------
     elseif (option.eq.'CALC_K_MAX') then
-        nbpara = 15
+        nbpara = 14
         linopa(1) = 'NUME_FOND'
         litypa(1) = 'I'
         if (lmelas) then
@@ -168,10 +167,8 @@ subroutine cgcrtb(table, option, lmelas, cas, typfis, nxpara,&
         litypa(12) = 'R'
         linopa(13) = 'G'
         litypa(13) = 'R'
-        linopa(14) = 'BETA'
+        linopa(14) = 'G_IRWIN'
         litypa(14) = 'R'
-        linopa(15) = 'G_IRWIN'
-        litypa(15) = 'R'
     elseif ((option.eq.'G_BILI').or.(option.eq.'G_MAX')) then
         nbpara = 6
         if (lmelas) then

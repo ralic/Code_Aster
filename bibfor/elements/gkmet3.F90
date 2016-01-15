@@ -20,7 +20,7 @@ implicit none
     aster_logical     :: milieu, connex
 
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -53,7 +53,7 @@ implicit none
 !  SORTIE
 !
 !   IADGKS     --> ADRESSE DE VALEURS DE GKS
-!                   (VALEUR DE G(S), K1(S), K2(S), K3(S), BETA(S)
+!                   (VALEUR DE G(S), K1(S), K2(S), K3(S), G_IRWIN(S))
 !   IADGKI     --> ADRESSE DE VALEURS DE GKTHI
 !                  (G, K1, K2, K3 POUR LES CHAMPS THETAI)
 !   ABSCUR     --> VALEURS DES ABSCISSES CURVILIGNES S
@@ -63,10 +63,10 @@ implicit none
 
     integer                            :: ifon, iadabs, ivect
     integer                            :: i, ibid
-    real(kind=8)                       :: s1, s2, s3, sn2, sn1, sn, beta
+    real(kind=8)                       :: s1, s2, s3, sn2, sn1, sn
     real(kind=8), dimension(nnoff)     :: gthi, k1th, k2th, k3th
     real(kind=8), dimension(nnoff)     :: gs, k1s, k2s, k3s
-    real(kind=8), dimension(nnoff)     :: betas, gith, gis
+    real(kind=8), dimension(nnoff)     :: gith, gis
     real(kind=8), dimension(nnoff)     :: g1th, g2th, g3th
     real(kind=8), dimension(nnoff)     :: g1s, g2s, g3s
     character(len=24)                  :: lissg, vect, matr
@@ -217,24 +217,24 @@ implicit none
 !   ----------------------------------------------------------------
     if(typdis.ne.'COHESIF') then
         do i = 1, nnoff
-            zr(iadgks-1+(i-1)*6+1)=gs(i)
-            zr(iadgks-1+(i-1)*6+2)=k1s(i)
-            zr(iadgks-1+(i-1)*6+3)=k2s(i)
-            zr(iadgks-1+(i-1)*6+4)=k3s(i)
-            zr(iadgks-1+(i-1)*6+5)=gis(i)
+            zr(iadgks-1+(i-1)*5+1)=gs(i)
+            zr(iadgks-1+(i-1)*5+2)=k1s(i)
+            zr(iadgks-1+(i-1)*5+3)=k2s(i)
+            zr(iadgks-1+(i-1)*5+4)=k3s(i)
+            zr(iadgks-1+(i-1)*5+5)=gis(i)
         end do
     else if(typdis.eq.'COHESIF') then
         do i = 1, nnoff
-            zr(iadgks-1+(i-1)*6+1)=gs(i)
+            zr(iadgks-1+(i-1)*5+1)=gs(i)
             k1s(i)=sqrt(k1s(i))
-            zr(iadgks-1+(i-1)*6+2)=k1s(i)
+            zr(iadgks-1+(i-1)*5+2)=k1s(i)
             if(g2th(i).ge.0.d0) k2s(i)= sqrt(abs(k2s(i)))
             if(g2th(i).lt.0.d0) k2s(i)=-sqrt(abs(k2s(i)))
-            zr(iadgks-1+(i-1)*6+3)=k2s(i)
+            zr(iadgks-1+(i-1)*5+3)=k2s(i)
             if(g3th(i).ge.0.d0) k3s(i)=sqrt(abs(k3s(i)))
             if(g3th(i).lt.0.d0) k3s(i)=-sqrt(abs(k3s(i)))
-            zr(iadgks-1+(i-1)*6+4)=k3s(i)
-            zr(iadgks-1+(i-1)*6+5)=gs(i)
+            zr(iadgks-1+(i-1)*5+4)=k3s(i)
+            zr(iadgks-1+(i-1)*5+5)=gs(i)
         end do
     endif
         
@@ -245,29 +245,29 @@ implicit none
         zr(iadgki-1+(i-1)*5+4) = zr(iadrgk-1+(i-1)*8+7)
     enddo
 
-!   CALCUL DES ANGLES DE PROPAGATION DE FISSURE LOCAUX BETA
-    do i = 1, nnoff
-        betas(i) = 0.0d0
-        if ( abs(k2s(i)) .ge. 1.e-12 ) betas(i) = 2.0d0*atan2(0.25d0*(k1s(i)/k2s(i) - &
-                                                  sign(1.0d0, k2s(i))*sqrt((k1s(i)/k2s(i)) &
-                                                  **2.0d0+8.0d0)), 1.0d0)
-        zr(iadgks-1+(i-1)*6+6) = betas(i)
-    enddo
+!!   CALCUL DES ANGLES DE PROPAGATION DE FISSURE LOCAUX BETA
+!    do i = 1, nnoff
+!        betas(i) = 0.0d0
+!        if ( abs(k2s(i)) .ge. 1.e-12 ) betas(i) = 2.0d0*atan2(0.25d0*(k1s(i)/k2s(i) - &
+!                                                  sign(1.0d0, k2s(i))*sqrt((k1s(i)/k2s(i)) &
+!                                                  **2.0d0+8.0d0)), 1.0d0)
+!        zr(iadgks-1+(i-1)*6+6) = betas(i)
+!    enddo
 
-!    LISSAGE PAR MOYENNE GLISSANTE SI METHODE COHESIVE
-     if(typdis.eq.'COHESIF') then
-         if(nnoff.gt.2) then
-             zr(iadgks-1+6) = (betas(1)+betas(2)+betas(3))/3.d0
-             zr(iadgks-1+(nnoff-1)*6+6)=(betas(nnoff-2)+betas(nnoff-1)+betas(nnoff))/3.d0
-             do i= 2,nnoff-1
-                 beta = (betas(i-1)+betas(i)+betas(i+1))/3.d0
-                 zr(iadgks-1+(i-1)*6+6)=beta
-             end do
-         else if(nnoff.eq.2) then
-             zr(iadgks-1+6) = (betas(1)+betas(2))/2.d0
-             zr(iadgks-1+6+6) = (betas(1)+betas(2))/2.d0
-        endif
-     endif
+!!    LISSAGE PAR MOYENNE GLISSANTE SI METHODE COHESIVE
+!     if(typdis.eq.'COHESIF') then
+!         if(nnoff.gt.2) then
+!             zr(iadgks-1+6) = (betas(1)+betas(2)+betas(3))/3.d0
+!             zr(iadgks-1+(nnoff-1)*6+6)=(betas(nnoff-2)+betas(nnoff-1)+betas(nnoff))/3.d0
+!             do i= 2,nnoff-1
+!                 beta = (betas(i-1)+betas(i)+betas(i+1))/3.d0
+!                 zr(iadgks-1+(i-1)*6+6)=beta
+!             end do
+!         else if(nnoff.eq.2) then
+!             zr(iadgks-1+6) = (betas(1)+betas(2))/2.d0
+!             zr(iadgks-1+6+6) = (betas(1)+betas(2))/2.d0
+!        endif
+!     endif
 
     call jedetr('&&METHO3.MATRI')
     call jedetr('&&METHO3.VECT')

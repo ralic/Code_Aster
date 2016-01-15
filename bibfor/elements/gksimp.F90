@@ -1,10 +1,10 @@
-subroutine gksimp(result, nnoff, absc, iadrgk, numero,&
+subroutine gksimp(result, nnoff, absc, numero,&
                   iadgks, ndeg, ndimte, iadgki, extim,&
                   time, iordr, unit)
     implicit none
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -29,14 +29,12 @@ subroutine gksimp(result, nnoff, absc, iadrgk, numero,&
 !    RESULT       --> NOM UTILISATEUR DU RESULTAT ET TABLE
 !    NNOFF        --> NOMBRE DE POINTS DU FOND DE FISSURE
 !    ABSC         --> ABSCISSES CURVILIGNES
-!    IADRGK       --> ADRESSE DE VALEURS DE GKTHI
-!                 (G, K1, K2, K3, BETA POUR LES CHAMPS THETAI)
 !
 !    NUMERO       --> NUMERO DE LA METHODE   1 : THETA-LEGENDRE
 !                                            2 : THETA-LAGRANGE
 !                                            3 ou 4 : LAGRANGE-LAGRANGE
 !    IADGKS       --> ADRESSE DE VALEURS DE GKS
-!                      (VALEUR DE G(S), K1(S), K2(S), K3(S), BETA(S))
+!                      (VALEUR DE G(S), K1(S), K2(S), K3(S), G_IRWIN(S))
 !    NDEG         --> DEGRE DU POLYNOME DE LEGENDRE
 !    IADGKI       --> ADRESSE DES VALEURS ELEMENTAIRES AVANT LISSAGE
 !                      (VALEUR DE G(S), K1(S), K2(S), K3(S))
@@ -50,7 +48,7 @@ subroutine gksimp(result, nnoff, absc, iadrgk, numero,&
 #include "jeveux.h"
 !
     integer :: nnoff, unit, numero, ndeg, iordr, i, i1, imod
-    integer :: iadrgk, iadgks, iadgki, ndimte
+    integer :: iadgks, iadgki, ndimte
     real(kind=8) :: time, absc(*)
     aster_logical :: extim
     character(len=8) :: result
@@ -121,7 +119,7 @@ subroutine gksimp(result, nnoff, absc, iadrgk, numero,&
     write(unit,*)  ' ABSC_CURV       G(S)'
     write(unit,*)
     do 30 i = 1, nnoff
-        write(unit,111) absc(i), zr(iadgks-1+(i-1)*6+1)
+        write(unit,111) absc(i), zr(iadgks-1+(i-1)*5+1)
  30 end do
     write(unit,*)
 !
@@ -162,23 +160,23 @@ subroutine gksimp(result, nnoff, absc, iadrgk, numero,&
         write(unit,753) imod
         write(unit,*)
         do 42 i = 1, nnoff
-            write(unit,111) absc(i), zr(iadgks-1+(i-1)*6+imod+1)
+            write(unit,111) absc(i), zr(iadgks-1+(i-1)*5+imod+1)
  42     continue
         write(unit,*)
  40 end do
-!
-!- IMPRESSION DE L'ANGLE DE PROPAGATION DE FISSURE BETA
-!
-    write(unit,*) 'ANGLE DE PROPAGATION DE FISSURE BETA'
-    write(unit,667)
-!
-    write(unit,*) 'VALEUR DE BETA AUX POINTS DE FOND DE FISSURE'
-    write(unit,*)  ' ABSC_CURV       BETA(S)'
-    write(unit,*)
-    do 50 i = 1, nnoff
-        write(unit,111) absc(i), zr(iadgks-1+(i-1)*6+6)
- 50 end do
-    write(unit,*)
+!!
+!!- IMPRESSION DE L'ANGLE DE PROPAGATION DE FISSURE BETA
+!!
+!    write(unit,*) 'ANGLE DE PROPAGATION DE FISSURE BETA'
+!    write(unit,667)
+!!
+!    write(unit,*) 'VALEUR DE BETA AUX POINTS DE FOND DE FISSURE'
+!    write(unit,*)  ' ABSC_CURV       BETA(S)'
+!    write(unit,*)
+!    do 50 i = 1, nnoff
+!        write(unit,111) absc(i), zr(iadgks-1+(i-1)*6+6)
+! 50 end do
+!    write(unit,*)
 !
 !- IMPRESSION DE G_IRWIN
 !
@@ -189,7 +187,7 @@ subroutine gksimp(result, nnoff, absc, iadrgk, numero,&
     write(unit,*)  ' ABSC_CURV       G_IRWIN(S)'
     write(unit,*)
     do 60 i = 1, nnoff
-        write(unit,111) absc(i), zr(iadgks-1+(i-1)*6+5)
+        write(unit,111) absc(i), zr(iadgks-1+(i-1)*5+5)
  60 end do
     write(unit,*)
 !

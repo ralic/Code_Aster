@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,13 +18,12 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine gksimp(result, nnoff, absc, iadrgk, numero,&
+    subroutine gksimp(result, nnoff, absc, numero,&
                       iadgks, ndeg, ndimte, iadgki, extim,&
                       time, iordr, unit)
         character(len=8) :: result
         integer :: nnoff
         real(kind=8) :: absc(*)
-        integer :: iadrgk
         integer :: numero
         integer :: iadgks
         integer :: ndeg
