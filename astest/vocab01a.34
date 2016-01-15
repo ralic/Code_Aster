@@ -1000,6 +1000,11 @@ ETA_RD
 ETA_RS
 ETCC_ACIER
 ETCC_BETON
+ETT_0
+ETT_1
+ETT_2
+ETT_3
+ETT_4
 ET_AX
 ET_ROT
 EUROPLEXUS
@@ -1147,6 +1152,10 @@ FISS_ACTUELLE
 FISS_GRILLE
 FISS_MAIT
 FISS_PROPAGEE
+FK_0
+FK_1
+FK_2
+FK_3
 FLAMBAGE
 FLEX_G_LT
 FLEX_L
@@ -2096,6 +2105,8 @@ M_ULT
 MaxOpeningDispl
 Mazars
 Mazars_FO
+MetaAcierEPIL_PT
+MetaAcierEPIL_PT_FO
 MonoCrystalDDCC
 MonoCrystalDDCC_FO
 MonoCrystalDDCFC
@@ -3036,6 +3047,11 @@ SYME_X
 SYME_Y
 SYME_Z
 SYT
+SYY_0
+SYY_1
+SYY_2
+SYY_3
+SYY_4
 SY_02
 SY_C
 SY_MAX
@@ -3649,6 +3665,11 @@ m
 m_0
 m_1
 m_2
+metaF1
+metaFDF_0
+metaFDF_1
+metaFDF_2
+metaFDF_3
 omega_mob
 p_ult
 pn

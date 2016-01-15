@@ -16,7 +16,7 @@ implicit none
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -93,7 +93,8 @@ implicit none
 !
 ! - Cannot evaluate command variables effect for Mfront behaviors
 !
-    if ((rela_comp.eq.'MFRONT').or.(rela_comp.eq.'AnisoLemaitre')) then
+    if ((rela_comp.eq.'MFRONT').or.(rela_comp.eq.'AnisoLemaitre')&
+        .or.(rela_comp(1:4).eq.'Meta')) then
         goto 99
     endif
 !

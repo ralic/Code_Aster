@@ -1,5 +1,5 @@
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -17,7 +17,7 @@
     subroutine mfront_varc(fami, kpg, ksp, imate, ifm, niv, idbg, &
                            lvarc, nbvarc, nwkin, wkin, temp, dtemp, predef, dpred, &
                            neps, epsth, depsth)
-!     but: variables de commande pour interface umat
+!     but: variables de commande et deformation thermique pour interface MFront
 !       in   fami    famille de point de gauss (rigi,mass,...)
 !            kpg,ksp numero du (sous)point de gauss
 !            imate   adresse du materiau code
@@ -27,6 +27,7 @@
 ! person_in_charge: nicolas.sellenet at edf.fr
     implicit none
 #include "asterc/r8nnem.h"
+#include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
@@ -44,7 +45,10 @@
     character(len=*)  :: fami
     character(len=16) :: nomres(3)
     character(len=32) :: mcmate
+    real(kind=8)      :: epsthp, epsthm
+!
     materi = ' '
+
 
     call r8inir(neps, 0.d0, depsth, 1)
     call r8inir(neps, 0.d0, epsth, 1)
@@ -65,7 +69,7 @@
     call rcvarc(' ', 'TEMP', '+', fami, kpg,  ksp, tp, iret)
     if (iret .ne. 0) tp=0.d0
     endif
-
+!
     call rccoma(imate, 'ELAS', 1, mcmate, iret2)
     ASSERT(iret2.eq.0)
 !
@@ -79,29 +83,33 @@
         nomres(2) = 'ALPHA_T'
         nomres(3) = 'ALPHA_N'
         ndimloc=3
-    else if (mcmate.eq.'ELAS_META') then
-        nomres(1) = 'C_ALPHA'
-!         nomres(2) = 'F_ALPHA' inutilise par META_LEMA_ANI
-        nomres(2) = 'C_ALPHA'
-        nomres(3) = 'C_ALPHA'
-        ndimloc=3
     endif
-    call rcvalb(fami, kpg, ksp, '-', imate,materi, mcmate, 0, ' ', [0.d0],&
-                ndimloc, nomres, valrem, codret, 0)
-    call rcvalb(fami, kpg, ksp, '+', imate,materi, mcmate, 0, ' ', [0.d0],&
-                ndimloc, nomres, valres, codret, 0)
 
-    do i = 1, ndimloc
-        if ( codret(i).eq.0 ) then
-            depsth(i) = valres(i)*(tp-tref)-valrem(i)*(tm- tref)
-            epsth(i)  = valrem(i)*(tm-tref)
-        else
-            depsth(i) = 0
-            epsth(i) = 0
-        endif
-    enddo
-!    
+    if (mcmate.eq.'ELAS_META') then
+        ndimloc=3
+        call verift(fami, kpg, ksp, '-', imate,epsth_meta_= epsthm)
+        call verift(fami, kpg, ksp, '+', imate,epsth_meta_= epsthp)
+        do i = 1, ndimloc
+            depsth(i) = epsthp - epsthm
+            epsth(i)  = epsthm
+        enddo
+    else
+        call rcvalb(fami, kpg, ksp, '-', imate,materi, mcmate, 0, ' ', [0.d0],&
+                    ndimloc, nomres, valrem, codret, 0)
+        call rcvalb(fami, kpg, ksp, '+', imate,materi, mcmate, 0, ' ', [0.d0],&
+                    ndimloc, nomres, valres, codret, 0)
 
+        do i = 1, ndimloc
+            if ( codret(i).eq.0 ) then
+                depsth(i) = valres(i)*(tp-tref)-valrem(i)*(tm- tref)
+                epsth(i)  = valrem(i)*(tm-tref)
+            else
+                depsth(i) = 0
+                epsth(i) = 0
+            endif
+        enddo
+    endif
+!
     do 30 i = 1, nbvarc
         if ( lvarc(i).eq.'SECH' ) then
 !           APPEL DE RCVARC POUR EXTRAIRE TOUTES LES VARIABLES DE COMMANDE
@@ -174,6 +182,6 @@
         do i = 1, nbvarc
             write(ifm,'(A8,2(1X,E11.4))') lvarc(i),predef(i),dpred(i)
         enddo
-    endif
+   endif
 
     end
