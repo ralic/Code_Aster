@@ -50,9 +50,9 @@ subroutine pj3dfb(boite, maillz, geom1, geom2)
     real(kind=8) :: dz, ddz, zmin, zmax, zzmin, zzmax
     character(len=24) :: maille
     integer :: p1, q1, r1, p2, q2, r2, p, q, r, nx, ny, nz, ndec, nno
-    integer :: iatr3, ntr3, nno1, nno2, i, iposi, ifm, niv
+    integer :: iatr3, ntr3, nno1, nno2, i, iposi, ifm, niv, vali(2)
     integer :: iabtdi, iabtvr, iabtnb, iabtlc, k, ino, ib, lont, iabtco
-    integer :: nbtot, nbmax, nbmin, nbtet
+    integer :: nbtot, nbmax, nbmin, nbtet, nbmoy
     aster_logical :: dbg=.false.
     integer, pointer :: lino1(:) => null()
     integer, pointer :: lino2(:) => null()
@@ -214,33 +214,41 @@ subroutine pj3dfb(boite, maillz, geom1, geom2)
 !
  70 end do
 !
-!     3.2: IMPRESSION DU NOMBRE DE TETRAEDRES PAR BOITE :
+!   3.2: calcul du nombre de tetraedres par boite :
+!   -----------------------------------------------
+    nbtot=0
+    nbmax=0
+    nbmin=ismaem()
+    do 61 p = 1, nx
+        do 51 q = 1, ny
+            do 41 r = 1, nz
+                nbtet= zi(iabtnb-1+ (r-1)*nx*ny+ (q-1)*nx+p)
+                if (dbg) write (ifm,*)'P,Q,R,NBTET=',p,q,r,nbtet
+                nbtot=nbtot+ nbtet
+                nbmin=min(nbmin,nbtet)
+                nbmax=max(nbmax,nbtet)
+ 41         continue
+ 51     continue
+ 61 continue
+    nbmoy=nbtot/(nx*ny*nz)
     if (dbg) then
-        nbtot=0
-        nbmax=0
-        nbmin=ismaem()
-        do 61 p = 1, nx
-            do 51 q = 1, ny
-                do 41 r = 1, nz
-                    nbtet= zi(iabtnb-1+ (r-1)*nx*ny+ (q-1)*nx+p)
-                    write (ifm,*)'P,Q,R,NBTET=',p,q,r,nbtet
-                    nbtot=nbtot+ nbtet
-                    nbmin=min(nbmin,nbtet)
-                    nbmax=max(nbmax,nbtet)
- 41             continue
- 51         continue
- 61     continue
         write (ifm,*)
         write (ifm,*)'NOMBRE DE TETRAEDRES PAR BOITE:'
-        write (ifm,*)'   EN MOYENNE :',nbtot/(nx*ny*nz)
+        write (ifm,*)'   EN MOYENNE :',nbmoy
         write (ifm,*)'   MIN        :',nbmin
         write (ifm,*)'   MAX        :',nbmax
+    endif
+
+    if (nbmax.gt.20*nbmoy) then
+        vali(1)=nbmoy
+        vali(2)=nbmax
+        call utmess('I', 'CALCULEL5_79', ni=2, vali=vali)
     endif
 !
 !
 !
-!     4. : ON REMPLIT .BT3DCO  ET .BT3DLC :
-!     -------------------------------------------------------
+!   4. : ON REMPLIT .BT3DCO  ET .BT3DLC :
+!   -------------------------------------------------------
     zi(iabtlc-1+1) = 0
     do 80 ib = 1, nx*ny*nz
         zi(iabtlc-1+ib+1) = zi(iabtlc-1+ib) + zi(iabtnb-1+ib)

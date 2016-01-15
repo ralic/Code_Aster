@@ -326,6 +326,21 @@ Erreur utilisateur dans la commande PROJ_CHAMP :
  Faites une demande d'évolution.
 """),
 
+    79 : _(u"""
+Vous utilisez la commande PROJ_CHAMP (ou une fonctionnalité utilisant la 
+projection d'un maillage sur un autre).
+Pour des raisons de performance, les mailles du maillage à projeter sont
+placées dans une grille cartésienne régulière.
+
+Le maillage est tel que certaines cellules de la grille contiennent beaucoup
+plus de mailles que d'autres. 
+Dans ces conditions, les performances CPU de la projection sont dégradées.
+
+Nombre moyen de mailles dans une cellule   : %(i1)d
+Nombre maximal de mailles dans une cellule : %(i2)d
+
+"""),
+
 
 
 

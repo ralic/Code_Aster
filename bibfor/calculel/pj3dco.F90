@@ -80,7 +80,7 @@ subroutine pj3dco(mocle, moa1, moa2, nbma1, lima1,&
     integer :: ima, ino2, ico
     integer :: iatr3, iacoo1, iacoo2
     integer :: iabtco, jxxk1, iaconu, iacocf, iacotr
-    integer :: ialim1, ialin1, ilcnx1, ialin2
+    integer :: ialim1, ialin1, ilcnx1, ialin2, nbpt0, ino2_0, idecal_0
     integer :: iaconb, itypm, idecal, itr3, nbtrou
 
     aster_logical :: dbg=.false., l_dmax, loin
@@ -130,7 +130,7 @@ subroutine pj3dco(mocle, moa1, moa2, nbma1, lima1,&
     call jeveuo(m1//'.TYPMAIL', 'L', vi=typmail)
     ico=0
     do ima = 1, nma1
-        if (zi(ialim1-1+ima) .eq. 0) goto 51
+        if (zi(ialim1-1+ima) .eq. 0) cycle
         itypm=typmail(ima)
 !       -- TETRA :
         if ((itypm.eq.nutm(1)) .or. (itypm.eq.nutm(2))) then
@@ -149,7 +149,6 @@ subroutine pj3dco(mocle, moa1, moa2, nbma1, lima1,&
         else
             ASSERT(.false.)
         endif
- 51     continue
     end do
 
     call wkvect('&&PJXXCO.TETR4', 'V V I', 1+6*ico, iatr3)
@@ -162,7 +161,7 @@ subroutine pj3dco(mocle, moa1, moa2, nbma1, lima1,&
     call jeveuo(jexatr(m1//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
     ico=0
     do ima = 1, nma1
-        if (zi(ialim1-1+ima) .eq. 0) goto 52
+        if (zi(ialim1-1+ima) .eq. 0) cycle
         itypm=typmail(ima)
 
 !       -- TETRA :
@@ -264,7 +263,6 @@ subroutine pj3dco(mocle, moa1, moa2, nbma1, lima1,&
             zi(iatr3+(ico-1)*6+3)=connex(1+ zi(ilcnx1-1+ima)-2+4)
             zi(iatr3+(ico-1)*6+4)=connex(1+ zi(ilcnx1-1+ima)-2+5)
         endif
- 52     continue
     end do
 
 
@@ -353,16 +351,43 @@ subroutine pj3dco(mocle, moa1, moa2, nbma1, lima1,&
 !   ------------------------------------------------
     idecal=0
     nbnod = 0
+    nbpt0=0
     do ino2 = 1, nno2
-        if (zi(ialin2-1+ino2) .eq. 0) goto 6
+        if (zi(ialin2-1+ino2) .eq. 0) cycle
+
+!       -- un petit bloc pour resoudre le probleme des points de Gauss
+!       fictifs des modeles XFEM (issue23983). Ils sont places en (0,0,0) :
+        if (zr(iacoo2-1+3*(ino2-1)+1).eq.0.d0 &
+            .and. zr(iacoo2-1+3*(ino2-1)+2).eq.0.d0 &
+            .and. zr(iacoo2-1+3*(ino2-1)+3).eq.0.d0 ) then
+            nbpt0=nbpt0+1
+            if (nbpt0.eq.1) then
+                ino2_0=ino2
+                idecal_0=idecal
+            else
+!               -- on a deja trouve l'element le plus proche de (0,0,0) :
+                zi(iaconb-1+ino2)=4
+                itr3=zi(iacotr-1+ino2_0)
+                zi(iacotr-1+ino2)=itr3
+                if (itr3.eq.0) cycle
+                do k = 1, 4
+                    zi(iaconu-1+idecal+k)= zi(iaconu-1+idecal_0+k)
+                    zr(iacocf-1+idecal+k)= zr(iacocf-1+idecal_0+k)
+                end do
+                idecal=idecal+zi(iaconb-1+ino2)
+                cycle
+            endif
+        endif
+
         call pj3dap(ino2, zr(iacoo2), zr(iacoo1), zi(iatr3),&
                     cobary, itr3, nbtrou, bt3ddi, bt3dvr,&
                     bt3dnb, bt3dlc, zi( iabtco),&
                     l_dmax, dmax, dala, loin, dmin)
+
         if (l_dmax .and. (nbtrou.eq.0)) then
             zi(iaconb-1+ino2)=4
             zi(iacotr-1+ino2)=0
-            goto 6
+            cycle
         endif
         if (nbtrou .eq. 0) then
             call jenuno(jexnum(m2//'.NOMNOE', ino2), nono2)
@@ -376,7 +401,6 @@ subroutine pj3dco(mocle, moa1, moa2, nbma1, lima1,&
             zr(iacocf-1+idecal+k)= cobary(k)
         end do
         idecal=idecal+zi(iaconb-1+ino2)
-  6     continue
     end do
 
 !   -- emission d'un eventuel message d'alarme:
