@@ -1,6 +1,6 @@
 # TITRE CALCUL DE G POUR UN PB ELASTOPLASTIQUE : APPROCHE GTP
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -154,64 +154,52 @@ UP=CALC_CHAMP(reuse=UP,RESULTAT=UP,DEFORMATION=('EPSP_ELNO','EPSI_ELGA'))
 # ****************************************************************
 #
 
-THET1=CALC_THETA(       MODELE=MO,
-                  FOND_FISS=FISS,
-                        THETA_3D=_F(  GROUP_NO = 'DG',
-                                   MODULE = 1.0,
-                                   R_INF = 0.55,
-                                   R_SUP = 1.0),
-                       DIRECTION=(1.,0.,0.,)
-                   )
 
-THET2=CALC_THETA(       MODELE=MO,
-                  FOND_FISS=FISS,
-                        THETA_3D=_F(  GROUP_NO = 'DG',
-                                   MODULE = 1.0,
-                                   R_INF = 1.0,
-                                   R_SUP = 1.5),
-                       DIRECTION=(1.,0.,0.,)
-                   )
 
-THET3=CALC_THETA(       MODELE=MO,
-                  FOND_FISS=FISS,
-                        THETA_3D=_F(  GROUP_NO = 'DG',
-                                   MODULE = 1.0,
-                                   R_INF = 1.5,
-                                   R_SUP = 2.0),
-                       DIRECTION=(1.,0.,0.,)
-                    )
 
-THET4=CALC_THETA(       MODELE=MO,
-                  FOND_FISS=FISS,
-                        THETA_3D=_F(  GROUP_NO = 'DG',
-                                   MODULE = 1.0,
-                                   R_INF = 2.0,
-                                   R_SUP = 3.0),
-                       DIRECTION=(1.,0.,0.,)
-                   )
 
 G1=CALC_G(
             RESULTAT=UP,
-            THETA=_F(THETA=THET1,SYME='OUI'),
+            THETA=_F(
+                     R_INF=0.55,
+                     FOND_FISS=FISS,
+                     MODULE=1.0,
+                     R_SUP=1.0,
+                     DIRECTION=(1.,0.,0.,)),
             OPTION='CALC_G_GLOB'
              );
 
 
 G2=CALC_G(
             RESULTAT=UP,
-            THETA=_F(THETA=THET2,SYME='OUI'),
+            THETA=_F(
+                     R_INF=1.0,
+                     FOND_FISS=FISS,
+                     MODULE=1.0,
+                     R_SUP=1.5,
+                     DIRECTION=(1.,0.,0.,)),
             OPTION='CALC_G_GLOB'
              );
 
 G3=CALC_G(
             RESULTAT=UP,
-            THETA=_F(THETA=THET3,SYME='OUI'),
+            THETA=_F(
+                     R_INF=1.5,
+                     FOND_FISS=FISS,
+                     MODULE=1.0,
+                     R_SUP=2.0,
+                     DIRECTION=(1.,0.,0.,)),
             OPTION='CALC_G_GLOB'
              );
 
 G4=CALC_G(
             RESULTAT=UP,
-            THETA=_F(THETA=THET4,SYME='OUI'),
+            THETA=_F(
+                     R_INF=2.0,
+                     FOND_FISS=FISS,
+                     MODULE=1.0,
+                     R_SUP=3.0,
+                     DIRECTION=(1.,0.,0.,)),
             OPTION='CALC_G_GLOB'
              );
 

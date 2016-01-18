@@ -1,6 +1,6 @@
 # TITRE  FISSURE SEMI-ELLIPTIQUE AVEC MILIEU INFINI
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -169,22 +169,22 @@ _F( NOEUD = 'NO1259',    NOM_CMP = ('DX', 'DY', 'DZ',),
 #                           COURONNE 1
 #----------------------------------------------------------------------
 
-THETA0=CALC_THETA(   MODELE=MO,  FOND_FISS=FISS1,
-                        THETA_3D=_F(  TOUT = 'OUI',  MODULE_FO = MODUF,
-                                   R_INF_FO = RINF0,  R_SUP_FO = RSUP0)
-                                 )
-
 G0=CALC_G(  RESULTAT=CHAMDEPL,
                        OPTION='CALC_G_GLOB',
-                        THETA=_F(THETA=THETA0,SYME='OUI'), )
-
+                        THETA=_F(
+                                 FOND_FISS=FISS1,
+                                 MODULE_FO=MODUF,
+                                 R_SUP_FO=RSUP0,
+                                 R_INF_FO=RINF0),
+    )
+                                 
 G0BIS=CALC_G(  RESULTAT=CHAMDEPL,
                        OPTION='CALC_G_GLOB',
                         THETA=_F(FOND_FISS=FISS1,
                                  MODULE_FO = MODUF,
                                  R_INF_FO = RINF0,
                                  R_SUP_FO = RSUP0),
-                         )
+             )
 
 
 GLOC0=CALC_G(   RESULTAT=CHAMDEPL,
@@ -193,17 +193,18 @@ GLOC0=CALC_G(   RESULTAT=CHAMDEPL,
                                 R_INF_FO = RINF0,
                                 R_SUP_FO = RSUP0),
                        LISSAGE=_F(DEGRE=7),
-                       )
+             )
 
-THETA0M=CALC_THETA(   MODELE=MO,  FOND_FISS=FISS1,
-                        THETA_3D=_F(  TOUT = 'OUI',  MODULE_FO = MODUF,
-                                   R_INF_FO = RINF0,  R_SUP_FO = RSUP0),
-                                     DIRE_THETA=DIRTHE  )
 
 G0M=CALC_G(            RESULTAT=CHAMDEPL,
                        OPTION='CALC_G_GLOB',
-                       THETA=_F(THETA=THETA0M,SYME='OUI'),  )
-
+                       THETA=_F(
+                                FOND_FISS=FISS1,
+                                MODULE_FO=MODUF,
+                                R_SUP_FO=RSUP0,
+                                R_INF_FO=RINF0),
+        )
+                                
 GLOC0M=CALC_G(         RESULTAT=CHAMDEPL,
                        THETA=_F(FOND_FISS=FISS1,
                                R_SUP_FO=RSUP0,
@@ -218,22 +219,24 @@ GLOC0M1=CALC_G(       RESULTAT=CHAMDEPL,
                                R_INF_FO=RINF0,),
                       LISSAGE=_F(LISSAGE_THETA='LAGRANGE_REGU',
                                  LISSAGE_G='LAGRANGE_REGU',),
-                       )
+                )
 
 
 #----------------------------------------------------------------------
 #                           COURONNE 2
 #----------------------------------------------------------------------
 
-THETA1=CALC_THETA(   MODELE=MO,  FOND_FISS=FISS1,
-                        THETA_3D=_F(  TOUT = 'OUI',  MODULE_FO = MODUF,
-                                   R_INF_FO = RINF1,  R_SUP_FO = RSUP1)
-                                 )
 
 G1=CALC_G(     RESULTAT=CHAMDEPL,
                        OPTION='CALC_G_GLOB',
-                     THETA=_F(THETA=THETA1,SYME='OUI'),  )
-
+                     THETA=_F(
+                              FOND_FISS=FISS1,
+                              MODULE_FO=MODUF,
+                              R_SUP_FO=RSUP1,
+                              R_INF_FO=RINF1),
+        )
+            
+                              
 GLOC1=CALC_G(  RESULTAT=CHAMDEPL,
                         THETA=_F(FOND_FISS=FISS1,
                                  R_SUP_FO=RSUP1,
@@ -241,15 +244,16 @@ GLOC1=CALC_G(  RESULTAT=CHAMDEPL,
                         LISSAGE=_F(DEGRE=7),
                        )
 
-THETA1M=CALC_THETA(   MODELE=MO,  FOND_FISS=FISS1,
-                        THETA_3D=_F(  TOUT = 'OUI',  MODULE_FO = MODUF,
-                                   R_INF_FO = RINF1,  R_SUP_FO = RSUP1),
-                                     DIRE_THETA=DIRTHE )
 
 G1M=CALC_G(  RESULTAT=CHAMDEPL,
-                       OPTION='CALC_G_GLOB',
-                     THETA=_F(THETA=THETA1M,SYME='OUI'),)
-
+                     OPTION='CALC_G_GLOB',
+                     THETA=_F(
+                              FOND_FISS=FISS1,
+                              MODULE_FO=MODUF,
+                              R_SUP_FO=RSUP1,
+                              R_INF_FO=RINF1),
+        )
+                              
 GLOC1M=CALC_G(    RESULTAT=CHAMDEPL,
                         THETA=_F(FOND_FISS=FISS1,
                                  R_SUP_FO=RSUP1,
@@ -271,14 +275,14 @@ GLOC1M1=CALC_G(    RESULTAT=CHAMDEPL,
 #                           COURONNE 3
 #----------------------------------------------------------------------
 
-THETA2=CALC_THETA(   MODELE=MO,  FOND_FISS=FISS1,
-                        THETA_3D=_F(  TOUT = 'OUI',  MODULE_FO = MODUF,
-                                   R_INF_FO = RINF2,  R_SUP_FO = RSUP2)
-                                 )
 
 
 G2=CALC_G(     RESULTAT=CHAMDEPL,
-                      THETA=_F(THETA=THETA2,SYME='OUI'),
+                      THETA=_F(
+                               FOND_FISS=FISS1,
+                               MODULE_FO=MODUF,
+                               R_SUP_FO=RSUP2,
+                               R_INF_FO=RINF2),
                        OPTION='CALC_G_GLOB',
                      )
 
@@ -286,13 +290,13 @@ GLOC2=CALC_G(  RESULTAT=CHAMDEPL,
                        THETA=_F(FOND_FISS=FISS1,R_SUP_FO=RSUP2,  R_INF_FO=RINF2),
                        LISSAGE=_F(DEGRE=7))
 
-THETA2M=CALC_THETA(   MODELE=MO,  FOND_FISS=FISS1,
-                        THETA_3D=_F(  TOUT = 'OUI',  MODULE_FO = MODUF,
-                                   R_INF_FO = RINF2,  R_SUP_FO = RSUP2),
-                                     DIRE_THETA=DIRTHE)
 
 G2M=CALC_G(  RESULTAT=CHAMDEPL,
-                      THETA=_F(THETA=THETA2M,SYME='OUI'),
+                      THETA=_F(
+                               FOND_FISS=FISS1,
+                               MODULE_FO=MODUF,
+                               R_SUP_FO=RSUP2,
+                               R_INF_FO=RINF2),
                        OPTION='CALC_G_GLOB',
                      )
 

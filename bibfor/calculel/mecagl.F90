@@ -60,7 +60,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
     aster_logical :: extim, milieu, pair, lmelas, lincr, connex
 ! ......................................................................
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -110,13 +110,13 @@ subroutine mecagl(option, result, modele, depla, thetai,&
     integer :: nbmxpa
     parameter (nbmxpa = 20)
 !
-    integer :: i, ibid, iadrg, iret, jresu, nchin, ibid2
+    integer :: i, ibid, iadrg, iret, jresu, nchin
     integer :: nnoff, num, incr, nres, nsig, ino1, ino2, inga
     integer :: ndeg, livi(nbmxpa), numfon
     integer :: iadrno, iadgi, iadabs, ifm, niv, ifon
     real(kind=8) :: gthi(1), livr(nbmxpa), xl
     complex(kind=8) :: livc(nbmxpa)
-    aster_logical :: fonc, lxfem, ltheta
+    aster_logical :: fonc, lxfem
     character(len=2) :: codret
     character(len=8) :: resu, fiss
     character(len=8) :: lpain(31), lpaout(1)
@@ -149,11 +149,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
 !
     call getvid('THETA', 'FISSURE', iocc=1, scal=fiss, nbret=ibid)
     lxfem = .false.
-    if (ibid .ne. 0) lxfem = .true.
-!   cas THETA
-    call getvid('THETA', 'THETA', iocc=1, scal=fiss, nbret=ibid2)
-    ltheta = .false.
-    if (ibid2 .ne. 0) ltheta = .true.    
+    if (ibid .ne. 0) lxfem = .true.  
 !
 !- RECUPERATION DU COMPORTEMENT
 !
@@ -461,9 +457,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
 !
     call getvis('THETA', 'NUME_FOND', iocc=1, scal=numfon, nbret=ibid)
 !
-    if (.not.ltheta) then
-        call tbajvi(result, nbprup, 'NUME_FOND', numfon, livi)
-    endif
+    call tbajvi(result, nbprup, 'NUME_FOND', numfon, livi)
 !
     if (lmelas) then
         call tbajvi(result, nbprup, 'NUME_CAS', iord, livi)
@@ -474,16 +468,14 @@ subroutine mecagl(option, result, modele, depla, thetai,&
     endif
 !
     do i = 1, nnoff
-        if (.not.ltheta) then
-            if (.not.lxfem) then
-                call tbajvk(result, nbprup, 'NOEUD', zk8(iadrno+i-1), livk)
-            endif
-            call tbajvi(result, nbprup, 'NUM_PT', i, livi)
-            call tbajvr(result, nbprup, 'ABSC_CURV', zr(coor-1+4*(i-1)+4), livr)
-            call tbajvr(result, nbprup, 'COOR_X', zr(coor-1+4*(i-1)+1), livr)
-            call tbajvr(result, nbprup, 'COOR_Y', zr(coor-1+4*(i-1)+2), livr)
-            call tbajvr(result, nbprup, 'COOR_Z', zr(coor-1+4*(i-1)+3), livr)
+        if (.not.lxfem) then
+            call tbajvk(result, nbprup, 'NOEUD', zk8(iadrno+i-1), livk)
         endif
+        call tbajvi(result, nbprup, 'NUM_PT', i, livi)
+        call tbajvr(result, nbprup, 'ABSC_CURV', zr(coor-1+4*(i-1)+4), livr)
+        call tbajvr(result, nbprup, 'COOR_X', zr(coor-1+4*(i-1)+1), livr)
+        call tbajvr(result, nbprup, 'COOR_Y', zr(coor-1+4*(i-1)+2), livr)
+        call tbajvr(result, nbprup, 'COOR_Z', zr(coor-1+4*(i-1)+3), livr)
         call tbajvr(result, nbprup, 'G', valg_s(i), livr)
         call tbajli(result, nbprup, noprup, livi, livr,&
                     livc, livk, 0)

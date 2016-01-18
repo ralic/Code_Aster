@@ -1,10 +1,10 @@
-subroutine gverig(noma, nocc, chfond, taillr, config,&
+subroutine gverig(nocc, chfond, taillr, config,&
                   lobj2, nomno, coorn, trav1, trav2,&
                   trav3, trav4)
     implicit none
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -57,7 +57,6 @@ subroutine gverig(noma, nocc, chfond, taillr, config,&
 !     ------------------------------------------------------------------
 !
 #include "jeveux.h"
-#include "asterc/getres.h"
 #include "asterfort/fointe.h"
 #include "asterfort/gabscu.h"
 #include "asterfort/getvem.h"
@@ -78,23 +77,20 @@ subroutine gverig(noma, nocc, chfond, taillr, config,&
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    character(len=24) :: chfond, grpno, nomno, coorn, taillr
+    character(len=24) :: chfond, nomno, coorn, taillr
     character(len=24) :: trav, trav0, trav1, trav2, trav3, trav4, trav5
-    character(len=8) :: config, noma, noeud, noeud1, k8b
+    character(len=8) :: config, noeud
     character(len=8) :: nompar(1), rinff, rsupf, thetf
-    character(len=16) :: motfac, nomcmd, k16b
+    character(len=16) :: motfac
 !
-    integer :: jjj, ngro, nent, nsom, iocc, nocc, ndim, lobj2, nbmof
-    integer :: igr, ngr, nno, iret, nbpar, ito, nto, noui, jjj2, l2, l, n1
+    integer :: jjj, iocc, nocc, ndim, lobj2, nbmof
+    integer :: nbpar, ito, nto, jjj2, l2, l
     integer :: nbm, nbmf, iadrno, iatmno, iadrco, iadrt0, iadrt1
-    integer :: canoeu, nbre, iadrt2, iadrt3, iadabs, i, iadr, ier, j, num
+    integer :: nbre, iadrt2, iadrt3, iadabs, i, ier, j, num
 !
     real(kind=8) :: maxtai, mintai, rinf, rsup, thet, xl, valpar(1), valres
 !
-    character(len=24) :: valk(2)
-    character(len=8) :: k8bid
     real(kind=8) :: valr(2)
-    integer :: iarg
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -103,19 +99,11 @@ subroutine gverig(noma, nocc, chfond, taillr, config,&
     call jeveuo(chfond, 'L', iadrno)
     call jeveuo(coorn, 'L', iadrco)
 !
-    call getres(k8b, k16b, nomcmd)
-    if (nomcmd .eq. 'CALC_G') then
-        motfac = 'THETA'
-    else
-        motfac = 'THETA_3D'
-    endif
+    motfac = 'THETA'
+    
     l = len(motfac)
     l2 = lxlgut(motfac)
     nbre = 0
-!
-! OBJET DEFINISSANT LES GROUP_NO DU MAILLAGE
-!
-    grpno = noma//'.GROUPENO'
 !
 ! ALLOCATION DE 3 OBJETS DE TRAVAIL
 !
@@ -128,31 +116,7 @@ subroutine gverig(noma, nocc, chfond, taillr, config,&
     call wkvect(trav2, 'V V R', lobj2, iadrt2)
     call wkvect(trav3, 'V V R', (nbre+1)*lobj2, iadrt3)
 !
-!
-    if (nomcmd .ne. 'CALC_G') then
-        do 1 iocc = 1, nocc
-!
-            call getvtx(motfac(1:l), 'TOUT', iocc=iocc, nbval=0, nbret=noui)
-            call getvem(noma, 'GROUP_NO', motfac(1:l), 'GROUP_NO', iocc,&
-                        iarg, 0, k8bid, ngro)
-            call getvem(noma, 'NOEUD', motfac(1:l), 'NOEUD', iocc,&
-                        iarg, 0, k8bid, nent)
-            nsom = ngro + nent + noui
-            if (nsom .eq. ngro) then
-                ngro = -ngro
-            else if (nsom.eq.nent) then
-                nent = -nent
-            else if (nsom.eq.noui) then
-                noui = -noui
-            endif
-!
- 1      continue
-!
-        ndim = max(ngro,nent)
-        ndim = max(ndim,noui)
-    else
-        ndim=1
-    endif
+    ndim=1
 !
 ! ALLOCATION D'UN AUTRE OBJET DE TRAVAIL
 !
@@ -170,10 +134,10 @@ subroutine gverig(noma, nocc, chfond, taillr, config,&
                 trav4)
     call jeveuo(trav4, 'L', iadabs)
 !
-    do 2 iocc = 1, nocc
+    do iocc = 1, nocc
 !
         call getvr8(motfac(1:l), 'MODULE', iocc=iocc, scal=thet, nbret=nbm)
-        if (nomcmd .eq. 'CALC_G' .and. nbm .ne. 1) then
+        if (nbm .ne. 1) then
             thet = 1.d0
         endif
         call getvr8(motfac(1:l), 'R_INF', iocc=iocc, scal=rinf, nbret=nbm)
@@ -194,10 +158,10 @@ subroutine gverig(noma, nocc, chfond, taillr, config,&
             call jeveuo(taillr, 'L', iatmno)
             maxtai = 0.d0
             mintai = zr(iatmno)
-            do 11 j = 1, lobj2
+            do j = 1, lobj2
                 maxtai = max(maxtai,zr(iatmno-1+j))
                 mintai = min(mintai,zr(iatmno-1+j))
-11          continue
+            enddo
             rinf = 2*maxtai
             rsup = 4*maxtai
             valr(1) = rinf
@@ -209,19 +173,10 @@ subroutine gverig(noma, nocc, chfond, taillr, config,&
                 call utmess('A', 'RUPTURE1_16', nr=2, valr=valr)
             endif
         endif
+        nto=1
 !
-!
-! MOT CLE TOUT OU COMMANDE 'CALC_G'
-!
-        if (nomcmd .eq. 'CALC_G') then
-            nto=1
-        else
-            call getvtx(motfac(1:l), 'TOUT', iocc=iocc, nbval=ndim, vect=zk8(jjj),&
-                        nbret=nto)
-        endif
-!
-        do 100 ito = 1, nto
-            do 150 j = 1, lobj2
+        do ito = 1, nto
+            do j = 1, lobj2
                 zk8(iadrt0 + j - 1) = zk8(iadrno + j - 1)
                 noeud = zk8(iadrno + j - 1)
                 if (nbmf .ne. 0) then
@@ -248,125 +203,17 @@ subroutine gverig(noma, nocc, chfond, taillr, config,&
                     zr(iadrt2 + j - 1) = rsup
                     zr(iadrt3 + j - 1) = thet
                 endif
-150          continue
-100      continue
-        if (nomcmd .eq. 'CALC_G') goto 2
-!
-!
-!
-! MOT CLE GROUP_NO
-!
-! LE GROUP_NO DOIT APPARTENIR AU MAILLAGE
-!
-        call getvem(noma, 'GROUP_NO', motfac(1:l), 'GROUP_NO', iocc,&
-                    iarg, ndim, zk24(jjj2), ngr)
-!
-        do 3 igr = 1, ngr
-!
-            call jeexin(jexnom(grpno, zk24(jjj2+igr-1)), iret)
-            if (iret .eq. 0) then
-                valk(1) = zk24(jjj2+igr-1)
-                valk(2) = noma
-                call utmess('F', 'RUPTURE1_8', nk=2, valk=valk)
-            else
-! LES NOEUDS DE CE GROUP_NO DOIVENT APPARTENIR A GAMMO
-!
-                call jelira(jexnom(grpno, zk24(jjj2+igr-1)), 'LONUTI', n1)
-                call jeveuo(jexnom(grpno, zk24(jjj2+igr-1)), 'L', iadr)
-                do 4 j = 1, n1
-                    call jenuno(jexnum(nomno, zi(iadr+j-1)), noeud1)
-                    canoeu = 0
-                    do 5 i = 1, lobj2
-                        noeud = zk8(iadrno + i - 1)
-                        if (noeud .eq. noeud1) then
-                            canoeu = canoeu + 1
-                            zk8(iadrt0 + i - 1) = noeud1
-                            if (nbmf .ne. 0) then
-                                call jenonu(jexnom(nomno, zk8(iadrno+i- 1)), num)
-                                valpar(1) = zr(iadabs + j - 1)
-                                call fointe('FM', rinff, nbpar, nompar, valpar,&
-                                            valres, ier)
-                                zr(iadrt1 + i - 1) = valres
-                                call fointe('FM', rsupf, nbpar, nompar, valpar,&
-                                            valres, ier)
-                                zr(iadrt2 + i - 1) = valres
-                                if (zr(iadrt2 + j - 1) .le. zr(iadrt1 + j - 1)) then
-                                    call utmess('F', 'RUPTURE1_6')
-                                endif
-                                call fointe('FM', thetf, nbpar, nompar, valpar,&
-                                            valres, ier)
-                                zr(iadrt3 + i - 1) = valres
-                            else
-                                zr(iadrt1 + j - 1) = rinf
-                                zr(iadrt2 + j - 1) = rsup
-                                zr(iadrt3 + j - 1) = thet
-                            endif
-                        endif
- 5                  continue
-                    if (canoeu .eq. 0) then
-                        call utmess('F', 'RUPTURE0_15', sk=noeud1)
-                    endif
- 4              continue
-            endif
- 3      continue
-!
-! MOT CLE NOEUD
-        call getvem(noma, 'NOEUD', motfac(1:l), 'NOEUD', iocc,&
-                    iarg, ndim, zk8(jjj), nno)
-!
-        do 6 i = 1, nno
-!
-            call jenonu(jexnom(nomno, zk8(jjj+i-1)), iret)
-            if (iret .eq. 0) then
-                valk(1) = zk8(jjj+i-1)
-                valk(2) = noma
-                call utmess('F', 'RUPTURE0_14', nk=2, valk=valk)
-            else
-! LES NOEUDS DOIVENT APPARTENIR A GAMMO
-                call jenuno(jexnum(nomno, iret), noeud1)
-                canoeu = 0
-                do 7 j = 1, lobj2
-                    noeud = zk8(iadrno+j-1)
-                    if (noeud1 .eq. noeud) then
-                        canoeu = canoeu + 1
-                        zk8(iadrt0 + j - 1) = noeud1
-                        if (nbmf .ne. 0) then
-                            call jenonu(jexnom(nomno, zk8(iadrno+j-1)), num)
-                            valpar(1) = zr(iadabs + j - 1)
-                            call fointe('FM', rinff, nbpar, nompar, valpar,&
-                                        valres, ier)
-                            zr(iadrt1 + j - 1) = valres
-                            call fointe('FM', rsupf, nbpar, nompar, valpar,&
-                                        valres, ier)
-                            zr(iadrt2 + j - 1) = valres
-                            if (zr(iadrt2 + j - 1) .le. zr(iadrt1 + j - 1)) then
-                                call utmess('F', 'RUPTURE1_6')
-                            endif
-                            call fointe('FM', thetf, nbpar, nompar, valpar,&
-                                        valres, ier)
-                            zr(iadrt3 + j - 1) = valres
-                        else
-                            zr(iadrt1 + j - 1) = rinf
-                            zr(iadrt2 + j - 1) = rsup
-                            zr(iadrt3 + j - 1) = thet
-                        endif
-                    endif
- 7              continue
-                if (canoeu .eq. 0) then
-                    call utmess('F', 'RUPTURE0_15', sk=zk8(iadrno+j-1))
-                endif
-            endif
- 6      continue
- 2  end do
-!
+            enddo
+        enddo
+    enddo
 !
 ! VERIFICATION QUE GAMM0 EST COMPLET
 !
-    do 8 i = 1, lobj2
+    do i = 1, lobj2
         if (zk8(iadrno+ i -1) .ne. zk8(iadrt0+i-1)) then
             call utmess('F', 'RUPTURE1_9')
         endif
- 8  end do
+    end do
 !
 ! DESTRUCTION D'OBJETS DE TRAVAIL
 !

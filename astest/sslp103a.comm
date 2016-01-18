@@ -1,6 +1,6 @@
 # TITRE CALCUL DE K1, K2 EN DP ET CP SUR UNE PLAQUE CIRCULAIRE
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -121,15 +121,15 @@ ELASCP=MECA_STATIQUE( MODELE=MOCP,
                        EXCIT=_F( CHARGE = CHCP))
 
 
-THETACP=CALC_THETA(MODELE=MOCP,
-                   THETA_2D=_F(NOEUD = 'N1',
-                               MODULE = 1.,
-                               R_INF = 10.,
-                               R_SUP = 20.),
-                   DIRECTION=( 8.6602540379E-01, 0.5, 0.,)  )
 
 GCP=CALC_G(RESULTAT=ELASCP,
-           THETA=_F(THETA=THETACP),)
+           THETA=_F(
+                    R_INF=10.,
+                    R_SUP=20.,
+                    FOND_FISS=FOND,
+                    MODULE=1.,
+                    DIRECTION=( 8.6602540379E-01, 0.5, 0.,)),
+           )
 
 K1K2CP=CALC_G(RESULTAT=ELASCP,
               THETA=_F(FOND_FISS=FOND,
@@ -157,15 +157,15 @@ ELASDP=MECA_STATIQUE( MODELE=MODP,
                        EXCIT=_F( CHARGE = CHDP))
 
 
-THETADP=CALC_THETA(MODELE=MODP,
-                   THETA_2D=_F(NOEUD = 'N1',
-                               MODULE = 1.,
-                               R_INF = 10.,
-                               R_SUP = 20.),
-                   DIRECTION=( 8.6602540379E-01, 0.5, 0.,)  )
 
 GDP=CALC_G(RESULTAT=ELASDP,
-           THETA=_F(THETA=THETADP))
+           THETA=_F(
+                    R_INF=10.,
+                    R_SUP=20.,
+                    FOND_FISS=FOND,
+                    MODULE=1.,
+                    DIRECTION=( 8.6602540379E-01, 0.5, 0.,)),
+            )
 
 K1K2DP=CALC_G(RESULTAT=ELASDP,
               THETA=_F(FOND_FISS=FOND,

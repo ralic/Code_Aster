@@ -1,6 +1,6 @@
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -214,17 +214,14 @@ RAY_SUP1=DEFI_CONSTANTE(VALE=RSUP)
 
 MOD_T1=DEFI_CONSTANTE(   VALE=1.    )
 
-THETA1=CALC_THETA(  MODELE=MO,
-                    FOND_FISS=FISS,
-                    THETA_3D=_F(TOUT = 'OUI',
-                                MODULE_FO = MOD_T1,
-                                R_INF_FO = RAY_INF1,
-                                R_SUP_FO = RAY_SUP1)
-                    )
 
 G0=CALC_G (  OPTION='CALC_G_GLOB',
              RESULTAT=CHAMDEPL,
-             THETA=_F(THETA=THETA1),
+             THETA=_F(
+                      FOND_FISS=FISS,
+                      MODULE_FO=MOD_T1,
+                      R_SUP_FO=RAY_SUP1,
+                      R_INF_FO=RAY_INF1),
                        )
 
 # VALEUR DE REFERENCE MILIEU INFINI : G=145.6

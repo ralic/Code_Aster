@@ -1,6 +1,6 @@
 # TITRE CALCUL 3D_INCO_ DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -108,15 +108,13 @@ for i in range(2) :
                   ),
                         NEWTON     =_F ( REAC_INCR    = 1 ))
 
-   THET1[i]=CALC_THETA(MODELE=MO[i],
-                 FOND_FISS=FF1,
-                 THETA_3D=_F(  TOUT = 'OUI',
-                               MODULE = 1.0,      )
-                  )
    G01[i]=CALC_G(        RESULTAT=RESU[i],
                    OPTION='CALC_G_GLOB',
                    INST = 1,
-                   THETA=_F(THETA=THET1[i],SYME='OUI'),)
+                   THETA=_F(
+                            FOND_FISS=FF1,
+                            MODULE=1.0),
+                  )
 
    TEST_TABLE(TABLE=G01[i],
               NOM_PARA='G',
@@ -126,28 +124,13 @@ for i in range(2) :
               PRECISION=0.02)
 
 
-   THET[i]=CALC_THETA(MODELE=MO[i],
-                FOND_FISS=FF,
-                IMPRESSION=_F(UNITE=62),
-                THETA_3D=_F(  TOUT = 'OUI',
-                     MODULE = 1.0,      )
-                  )
-
-#    DEFI_FICHIER(ACTION='LIBERER',
-#              UNITE=62,);
-#    TEST_FICHIER(
-#       FICHIER='fort.62',
-#       VALE_K='2e40f4e4ca3ade6f42606fe6d933eeb4',
-#       VALE=1.0942429303000e+05  ,
-#       NB_VALE=520,
-#       REFERENCE='NON_REGRESSION',
-#       VERSION='9.1.21',
-#    )
-
    G0[i]=CALC_G(        RESULTAT=RESU[i],
                   OPTION='CALC_G_GLOB',
                   INST = 1,
-                  THETA=_F(THETA=THET[i],SYME='OUI'),)
+                  THETA=_F(
+                           FOND_FISS=FF,
+                           MODULE=1.0),
+                )
 
 #IMPR_TABLE(       TABLE=G0,);
 

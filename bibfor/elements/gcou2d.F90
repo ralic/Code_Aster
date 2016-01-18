@@ -5,7 +5,6 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "jeveux.h"
-#include "asterc/getres.h"
 #include "asterc/r8prem.h"
 #include "asterfort/cnocns.h"
 #include "asterfort/detrsd.h"
@@ -32,7 +31,7 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
 !
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -81,7 +80,6 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
     parameter     (ndim=2)
     real(kind=8) :: xm, ym, xi, yi, eps, d, norme, alpha, valx, valy
     character(len=8) :: k8b, fiss, fonfis
-    character(len=16) :: k16b, nomcmd
     character(len=19) :: grlt, chgrs
     character(len=24) :: chamno
     real(kind=8), pointer :: fondfiss(:) => null()
@@ -96,15 +94,12 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
     fiss=''
     fonfis=''
 !
-    call getres(k8b, k16b, nomcmd)
     n1=1
     n2=0
 !
-    if (nomcmd .eq. 'CALC_G') then
-!       CAS CLASSIQUE (N1 NON NUL) OU CAS X-FEM (N2 NON NUL)
-        call getvid('THETA', 'FOND_FISS', iocc=1, scal=fonfis, nbret=n1)
-        call getvid('THETA', 'FISSURE', iocc=1, scal=fiss, nbret=n2)
-    endif
+!   CAS CLASSIQUE (N1 NON NUL) OU CAS X-FEM (N2 NON NUL)
+    call getvid('THETA', 'FOND_FISS', iocc=1, scal=fonfis, nbret=n1)
+    call getvid('THETA', 'FISSURE', iocc=1, scal=fiss, nbret=n2)
 
 !   TEST DU TYPE DE FISSURE ET RECUPERATION DU NUMERO DE NOEUD DU FOND DE FISSURE FEM
     estfem=.true.

@@ -4,7 +4,7 @@ subroutine gcouro(base, resu, noma, nomno, coorn,&
     implicit none
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -60,7 +60,6 @@ subroutine gcouro(base, resu, noma, nomno, coorn,&
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/getres.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/chpver.h"
@@ -86,8 +85,8 @@ subroutine gcouro(base, resu, noma, nomno, coorn,&
     character(len=24) :: obj3, numgam, chamno
     character(len=24) :: trav1, trav2, trav3, objor, objex, dirth
     character(len=24) :: norm, stok4, dire4, coorn, nomno, dire5, indicg, resu
-    character(len=8) :: fond, noma, nomnoe(*), k8b
-    character(len=16) :: nomcmd, motfac, k16b
+    character(len=8) :: fond, noma, nomnoe(*)
+    character(len=16) :: motfac
     character(len=1) :: base
 !
     integer :: lobj2, iadrt1, iadrt2, iadrt3, itheta, jvect
@@ -112,14 +111,8 @@ subroutine gcouro(base, resu, noma, nomno, coorn,&
 !-----------------------------------------------------------------------
     call jemarq()
 !
-    call getres(k8b, k16b, nomcmd)
-    if (nomcmd .eq. 'CALC_G') then
-        motfac='THETA'
-        iocc=1
-    else
-        motfac=' '
-        iocc=0
-    endif
+    motfac='THETA'
+    iocc=1
 !
     call jeveuo(coorn, 'L', iadrco)
     call jeveuo(trav1, 'L', iadrt1)

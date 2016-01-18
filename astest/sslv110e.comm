@@ -1,6 +1,6 @@
 # TITRE  FISSURE SEMI-ELLIPTIQUE AVEC MILIEU INFINI
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -95,34 +95,37 @@ MODUF=DEFI_FONCTION(  NOM_PARA='ABSC',  VALE=( 0., 1.,     26.69, 1., ))
 RINF=DEFI_FONCTION(  NOM_PARA='ABSC',  VALE=( 0., 0.1875, 26.69, 0.7812,))
 RSUP=DEFI_FONCTION(  NOM_PARA='ABSC',  VALE=( 0., 0.375,  26.69, 1.5625,))
 
-THETA=CALC_THETA(MODELE=MO,
-                 FOND_FISS=FONDFISS,
-                 THETA_3D=_F(TOUT = 'OUI',
-                             MODULE_FO = MODUF,
-                             R_INF_FO = RINF,
-                             R_SUP_FO = RSUP,)
-                  )
 
 # post-traitement avec la charge du calcul (pression constante)
 Gglob1=CALC_G(OPTION='CALC_G_GLOB',
               RESULTAT=CHAMDEPL,
-              THETA=_F(THETA=THETA,
-                       SYME='OUI',))
+              THETA=_F(
+                       FOND_FISS=FONDFISS,
+                       MODULE_FO=MODUF,
+                       R_SUP_FO=RSUP,
+                       R_INF_FO=RINF), 
+               )
 
 Gloc1=CALC_G(RESULTAT=CHAMDEPL,
-             THETA=_F(FOND_FISS=FONDFISS,
+             THETA=_F(
+                      FOND_FISS=FONDFISS,
                       R_SUP_FO=RSUP,
-                      R_INF_FO=RINF))
+                      R_INF_FO=RINF), 
+             )
 
 # post-traitement avec une charge en force face constante
 Gglob2=CALC_G(OPTION='CALC_G_GLOB',
               RESULTAT=CHAMDEPL,
-              THETA=_F(THETA=THETA,
-                       SYME='OUI'),
-              EXCIT=_F(CHARGE=CHFACER))
+              THETA=_F(
+                       FOND_FISS=FONDFISS,
+                       MODULE_FO=MODUF,
+                       R_SUP_FO=RSUP,
+                       R_INF_FO=RINF),
+                       EXCIT=_F(CHARGE=CHFACER))
 
 Gloc2=CALC_G(RESULTAT=CHAMDEPL,
-             THETA=_F(FOND_FISS=FONDFISS,
+             THETA=_F(
+                      FOND_FISS=FONDFISS,
                       R_SUP_FO=RSUP,
                       R_INF_FO=RINF),
              EXCIT=_F(CHARGE=CHFACER))
@@ -130,12 +133,16 @@ Gloc2=CALC_G(RESULTAT=CHAMDEPL,
 # post-traitement avec une charge en force face 'fonction'
 Gglob3=CALC_G(OPTION='CALC_G_GLOB',
               RESULTAT=CHAMDEPL,
-              THETA=_F(THETA=THETA,
-                       SYME='OUI'),
-              EXCIT=_F(CHARGE=CHFACEF))
+              THETA=_F(
+                       FOND_FISS=FONDFISS,
+                       MODULE_FO=MODUF,
+                       R_SUP_FO=RSUP,
+                       R_INF_FO=RINF),
+                       EXCIT=_F(CHARGE=CHFACEF))
 
 Gloc3=CALC_G(RESULTAT=CHAMDEPL,
-             THETA=_F(FOND_FISS=FONDFISS,
+             THETA=_F(
+                      FOND_FISS=FONDFISS,
                       R_SUP_FO=RSUP,
                       R_INF_FO=RINF),
              EXCIT=_F(CHARGE=CHFACEF))

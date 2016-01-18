@@ -1,6 +1,6 @@
 # TITRE  MURAKAMI 9.70 FISSURE CIRCULAIRE PERPENDICULAIRE A L'INTERFACE
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -96,14 +96,13 @@ MOD_T1=DEFI_CONSTANTE(    VALE=1.   )
 
 # -------------------------------------
 
-THETA1=CALC_THETA(   MODELE=MO,  FOND_FISS=FISS1,
-                        THETA_3D=_F(  TOUT = 'OUI', MODULE_FO = MOD_T1,
-                                   R_INF_FO = RAY_INF1,
-                                   R_SUP_FO = RAY_SUP1)
-                    )
 
 G0_C1=CALC_G(  RESULTAT=CHAMDEPL,
-              OPTION='CALC_G_GLOB',THETA=_F(THETA=THETA1),  
+              OPTION='CALC_G_GLOB',THETA=_F(
+                                            FOND_FISS=FISS1,
+                                            MODULE_FO=MOD_T1,
+                                            R_SUP_FO=RAY_SUP1,
+                                            R_INF_FO=RAY_INF1),
               )
 
 #
@@ -131,14 +130,13 @@ MOD_T2=DEFI_CONSTANTE(   VALE=1.)
 
 # -------------------------------------
 
-THETA2=CALC_THETA(   MODELE=MO,  FOND_FISS=FISS1,
-                        THETA_3D=_F(  TOUT = 'OUI', MODULE_FO = MOD_T2,
-                                   R_INF_FO = RAY_INF2,
-                                   R_SUP_FO = RAY_SUP2)
-                    )
 
 G0_C2=CALC_G(  RESULTAT=CHAMDEPL,
-               OPTION='CALC_G_GLOB',THETA=_F(THETA=THETA2),
+               OPTION='CALC_G_GLOB',THETA=_F(
+                                             FOND_FISS=FISS1,
+                                             MODULE_FO=MOD_T2,
+                                             R_SUP_FO=RAY_SUP2,
+                                             R_INF_FO=RAY_INF2),
                )
 
 #
@@ -156,16 +154,16 @@ GLO2_LE5=CALC_G(  RESULTAT=CHAMDEPL,
 
 TEST_TABLE(
            PRECISION=1.E-2,
-           VALE_CALC=1.1020081947644E-05,
-           VALE_REFE=1.0934999999999999E-05,
+           VALE_CALC=2.2040163895288e-05,
+           VALE_REFE=2.187e-05,
            REFERENCE='NON_DEFINI',
            NOM_PARA='G',
            TABLE=G0_C1,)
 
 TEST_TABLE(
            PRECISION=1.E-2,
-           VALE_CALC=1.1023046439459E-05,
-           VALE_REFE=1.0934999999999999E-05,
+           VALE_CALC=2.20460928789E-05,
+           VALE_REFE=2.187e-05,
            REFERENCE='NON_DEFINI',
            NOM_PARA='G',
            TABLE=G0_C2,)

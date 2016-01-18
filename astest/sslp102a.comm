@@ -1,6 +1,6 @@
 # TITRE TAUX DE RESTITUTION D ENERGIE AVEC PREDEFORMATION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -97,62 +97,61 @@ NOM_CHAM='DEPL', RESULTAT=RESU,
 
 #--------------------------------------------------------------------
 
-THETA1=CALC_THETA(       MODELE=MO,
-                         THETA_2D=_F(  NOEUD = 'N3',
-                                    MODULE = 1.0,
-                                    R_INF = 1.,
-                                    R_SUP = 5.),
-                        DIRECTION=(1.,0.,0.,)
-                    )
 
-THETA2=CALC_THETA(       MODELE=MO,
-                         THETA_2D=_F(  NOEUD = 'N3',
-                                    MODULE = 1.0,
-                                    R_INF = 5.,
-                                    R_SUP = 10.),
-                       DIRECTION=(1.,0.,0.,)
-                    )
 
-THETA3=CALC_THETA(       MODELE=MO,
-                         THETA_2D=_F(  NOEUD = 'N3',
-                                    MODULE = 1.0,
-                                    R_INF = 10.,
-                                    R_SUP = 20.),
-                        DIRECTION=(1.,0.,0.,) )
 
-THETA4=CALC_THETA(       MODELE=MO,
-                         THETA_2D=_F(  NOEUD = 'N3',
-                                    MODULE = 1.0,
-                                    R_INF = 20.,
-                                    R_SUP = 30.),
-                       DIRECTION=(1.,0.,0.,) )
 
 #--------------------------------------------------------------------
 #  CALCUL DE G AVEC DEFORMATIONS INITIALES
 #--------------------------------------------------------------------
 
+FOND=DEFI_FOND_FISS( MAILLAGE=MA,
+                     FOND_FISS=_F( NOEUD = 'N3'),
+                     SYME='OUI',
+                     LEVRE_SUP=_F(MAILLE='M388'))
+
 G1=CALC_G(        RESULTAT=RESU,
                   NUME_ORDRE=1,
-                  THETA=_F(THETA=THETA1 ),
+                  THETA=_F(
+                           DIRECTION=(1.,0.,0.,),
+                           FOND_FISS=FOND,
+                           MODULE=1.0,
+                           R_INF=1.,
+                           R_SUP=5.),
                   COMPORTEMENT=_F(
                            RELATION = 'ELAS'),
                            );
 
 G2=CALC_G(        RESULTAT=RESU,
                   NUME_ORDRE=1,
-                  THETA=_F(THETA=THETA2 ),
+                  THETA=_F(
+                           DIRECTION=(1.,0.,0.,),
+                           FOND_FISS=FOND,
+                           MODULE=1.0,
+                           R_INF=5.,
+                           R_SUP=10.),
                   COMPORTEMENT=_F(
                            RELATION = 'ELAS'),);
 
 G3=CALC_G(        RESULTAT=RESU,
                   NUME_ORDRE=1,
-                  THETA=_F(THETA=THETA3 ),
+                  THETA=_F(
+                           DIRECTION=(1.,0.,0.,),
+                           FOND_FISS=FOND,
+                           MODULE=1.0,
+                           R_INF=10.,
+                           R_SUP=20.),
                   COMPORTEMENT=_F(
                            RELATION = 'ELAS'),);
 
 G4=CALC_G(        RESULTAT=RESU,
                   NUME_ORDRE=1,
-                  THETA=_F(THETA=THETA4 ),
+                  THETA=_F(
+                           DIRECTION=(1.,0.,0.,),
+                           FOND_FISS=FOND,
+                           MODULE=1.0,
+                           R_INF=20.,
+                           R_SUP=30.),
                   COMPORTEMENT=_F(
                            RELATION = 'ELAS'),);
 
@@ -162,7 +161,7 @@ G4=CALC_G(        RESULTAT=RESU,
 
 
 TEST_TABLE(
-           VALE_CALC=0.18015297371831,
+           VALE_CALC=0.36030594743662,
 
            NOM_PARA='G',
            TABLE=G1,
@@ -171,7 +170,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.18012031028967,
+           VALE_CALC=0.36024062057934,
 
            NOM_PARA='G',
            TABLE=G2,
@@ -180,7 +179,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.18011043699373,
+           VALE_CALC=0.36022087398746,
 
            NOM_PARA='G',
            TABLE=G3,
@@ -189,7 +188,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.18010917971263,
+           VALE_CALC=0.36021835942526,
 
            NOM_PARA='G',
            TABLE=G4,

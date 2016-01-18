@@ -1,6 +1,6 @@
 # TITRE PLAQUE FISSUREE AVEC PRESSION VARIABLE SUR LES LEVRES
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -60,41 +60,11 @@ RESU2=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT,
 
 # ---------------------------------------------------------------------
 
-THETA1=CALC_THETA(      MODELE=MO,
-                        THETA_2D=_F(  NOEUD = 'N668', MODULE = 1.,
-                                 R_INF = 22.04078,
-                                 R_SUP = 30.),
-                       DIRECTION=( 1., 0., 0.,) )
 
-THETA2=CALC_THETA(     MODELE=MO,
-                       THETA_2D=_F(  NOEUD = 'N668', MODULE = 1.,
-                                  R_SUP = 22.04078,
-                                  R_INF = 15.3061094),
-                       DIRECTION=( 1., 0., 0.,) )
 
-THETA3=CALC_THETA(     MODELE=MO,
-                       THETA_2D=_F(  NOEUD = 'N668', MODULE = 1.,
-                                  R_INF = 9.79591846,
-                                  R_SUP = 15.3061094),
-                       DIRECTION=( 1., 0., 0.,) )
 
-THETA4=CALC_THETA(     MODELE=MO,
-                       THETA_2D=_F(  NOEUD = 'N668', MODULE = 1.,
-                                  R_SUP = 9.79591846,
-                                  R_INF = 5.510197639),
-                       DIRECTION=( 1., 0., 0.,) )
 
-THETA5=CALC_THETA(     MODELE=MO,
-                       THETA_2D=_F(  NOEUD = 'N668', MODULE = 1.,
-                                  R_INF = 2.448979377,
-                                  R_SUP = 5.510197639),
-                       DIRECTION=( 1., 0., 0.,) )
 
-THETA6=CALC_THETA(     MODELE=MO,
-                       THETA_2D=_F(  NOEUD = 'N668', MODULE = 1.,
-                                  R_SUP = 2.448979377,
-                                  R_INF = 0.61225116),
-                       DIRECTION=( 1., 0., 0.,) )
 
 FOND=DEFI_FOND_FISS( MAILLAGE=MA,
                        FOND_FISS=_F( NOEUD = 'N668'),
@@ -105,8 +75,15 @@ FOND=DEFI_FOND_FISS( MAILLAGE=MA,
 # ---- G, K1 ET K2 AVEC CHARGEMENT PRES_REP  ----------------------
 
 GPRES1=CALC_G(      RESULTAT=RESU1,
-                    THETA=_F(THETA=THETA1,SYME='OUI'),)
+                    THETA=_F(
+                             R_INF=22.04078,
+                             FOND_FISS=FOND,
+                             MODULE=1.,
+                             R_SUP=30.,
+                             DIRECTION=( 1., 0., 0.,)),
 
+              )
+              
 GKPRES1=CALC_G(     RESULTAT=RESU1,
                     THETA=_F(  R_INF = 22.04078,
                                R_SUP = 30.,
@@ -114,8 +91,14 @@ GKPRES1=CALC_G(     RESULTAT=RESU1,
                     OPTION='CALC_K_G')
 
 GPRES2=CALC_G(      RESULTAT=RESU1,
-                    THETA=_F(THETA=THETA2,SYME='OUI'),)
-
+                    THETA=_F(
+                             R_INF=15.3061094,
+                             FOND_FISS=FOND,
+                             MODULE=1.,
+                             R_SUP=22.04078,
+                             DIRECTION=( 1., 0., 0.,)),
+    )
+                             
 GKPRES2=CALC_G(     RESULTAT=RESU1,
                     THETA=_F( R_SUP = 22.04078,
                               R_INF = 15.3061094,
@@ -123,7 +106,14 @@ GKPRES2=CALC_G(     RESULTAT=RESU1,
                     OPTION='CALC_K_G')
 
 GPRES3=CALC_G(      RESULTAT=RESU1,
-                    THETA=_F(THETA=THETA3,SYME='OUI'),)
+                    THETA=_F(
+                             R_INF=9.79591846,
+                             FOND_FISS=FOND,
+                             MODULE=1.,
+                             R_SUP=15.3061094,
+                             DIRECTION=( 1., 0., 0.,)),
+              )
+                             
 
 GKPRES3=CALC_G(     RESULTAT=RESU1,
                     THETA=_F( R_INF = 9.79591846,
@@ -132,8 +122,14 @@ GKPRES3=CALC_G(     RESULTAT=RESU1,
                     OPTION='CALC_K_G')
 
 GPRES4=CALC_G(      RESULTAT=RESU1,
-                    THETA=_F(THETA=THETA4,SYME='OUI'),)
-
+                    THETA=_F(
+                             R_INF=5.510197639,
+                             FOND_FISS=FOND,
+                             MODULE=1.,
+                             R_SUP=9.79591846,
+                             DIRECTION=( 1., 0., 0.,)),
+    )
+                             
 GKPRES4=CALC_G(     RESULTAT=RESU1,
                     THETA=_F( R_SUP = 9.79591846,
                               R_INF = 5.510197639,
@@ -141,7 +137,13 @@ GKPRES4=CALC_G(     RESULTAT=RESU1,
                     OPTION='CALC_K_G')
 
 GPRES5=CALC_G(      RESULTAT=RESU1,
-                    THETA=_F(THETA=THETA5,SYME='OUI'),)
+                    THETA=_F(
+                             R_INF=2.448979377,
+                             FOND_FISS=FOND,
+                             MODULE=1.,
+                             R_SUP=5.510197639,
+                             DIRECTION=( 1., 0., 0.,)),
+               )
 
 GKPRES5=CALC_G(     RESULTAT=RESU1,
                     THETA=_F( R_INF = 2.448979377,
@@ -150,7 +152,13 @@ GKPRES5=CALC_G(     RESULTAT=RESU1,
                     OPTION='CALC_K_G')
 
 GPRES6=CALC_G(      RESULTAT=RESU1,
-                    THETA=_F(THETA=THETA6,SYME='OUI'),)
+                    THETA=_F(
+                             R_INF=0.61225116,
+                             FOND_FISS=FOND,
+                             MODULE=1.,
+                             R_SUP=2.448979377,
+                             DIRECTION=( 1., 0., 0.,)),
+              )
 
 GKPRES6=CALC_G(     RESULTAT=RESU1,
                     THETA=_F(R_SUP = 2.448979377,
@@ -161,7 +169,13 @@ GKPRES6=CALC_G(     RESULTAT=RESU1,
 # ---- G, K1 ET K2 AVEC CHARGEMENT FORCE_CONTOUR --------------------
 
 GFCON1=CALC_G(      RESULTAT=RESU2,
-                    THETA=_F(THETA=THETA1,SYME='OUI'),)
+                    THETA=_F(
+                             R_INF=22.04078,
+                             FOND_FISS=FOND,
+                             MODULE=1.,
+                             R_SUP=30.,
+                             DIRECTION=( 1., 0., 0.,)),
+              )
 
 GKFCON1=CALC_G(     RESULTAT=RESU2,
                     THETA=_F(  R_INF = 22.04078,
@@ -170,7 +184,13 @@ GKFCON1=CALC_G(     RESULTAT=RESU2,
                     OPTION='CALC_K_G')
 
 GFCON2=CALC_G(      RESULTAT=RESU2,
-                    THETA=_F(THETA=THETA1,SYME='OUI'),)
+                    THETA=_F(
+                             R_INF=22.04078,
+                             FOND_FISS=FOND,
+                             MODULE=1.,
+                             R_SUP=30.,
+                             DIRECTION=( 1., 0., 0.,)),
+              )
 
 GKFCON2=CALC_G(     RESULTAT=RESU2,
                     THETA=_F( R_SUP = 22.04078,
@@ -179,7 +199,13 @@ GKFCON2=CALC_G(     RESULTAT=RESU2,
                     OPTION='CALC_K_G')
 
 GFCON3=CALC_G(      RESULTAT=RESU2,
-                    THETA=_F(THETA=THETA3,SYME='OUI'),)
+                    THETA=_F(
+                             R_INF=9.79591846,
+                             FOND_FISS=FOND,
+                             MODULE=1.,
+                             R_SUP=15.3061094,
+                             DIRECTION=( 1., 0., 0.,)),
+              )
 
 GKFCON3=CALC_G(     RESULTAT=RESU2,
                     THETA=_F( R_INF = 9.79591846,
@@ -188,7 +214,13 @@ GKFCON3=CALC_G(     RESULTAT=RESU2,
                     OPTION='CALC_K_G')
 
 GFCON4=CALC_G(      RESULTAT=RESU2,
-                    THETA=_F(THETA=THETA4,SYME='OUI'),)
+                    THETA=_F(
+                             R_INF=5.510197639,
+                             FOND_FISS=FOND,
+                             MODULE=1.,
+                             R_SUP=9.79591846,
+                             DIRECTION=( 1., 0., 0.,)),
+              )
 
 GKFCON4=CALC_G(     RESULTAT=RESU2,
                     THETA=_F( R_SUP = 9.79591846,
@@ -197,7 +229,13 @@ GKFCON4=CALC_G(     RESULTAT=RESU2,
                     OPTION='CALC_K_G')
 
 GFCON5=CALC_G(      RESULTAT=RESU2,
-                    THETA=_F(THETA=THETA5,SYME='OUI'),)
+                    THETA=_F(
+                             R_INF=2.448979377,
+                             FOND_FISS=FOND,
+                             MODULE=1.,
+                             R_SUP=5.510197639,
+                             DIRECTION=( 1., 0., 0.,)),
+              )
 
 GKFCON5=CALC_G(     RESULTAT=RESU2,
                     THETA=_F( R_INF = 2.448979377,
@@ -206,7 +244,13 @@ GKFCON5=CALC_G(     RESULTAT=RESU2,
                     OPTION='CALC_K_G')
 
 GFCON6=CALC_G(      RESULTAT=RESU2,
-                    THETA=_F(THETA=THETA6,SYME='OUI'),)
+                    THETA=_F(
+                             R_INF=0.61225116,
+                             FOND_FISS=FOND,
+                             MODULE=1.,
+                             R_SUP=2.448979377,
+                             DIRECTION=( 1., 0., 0.,)),
+              )
 
 GKFCON6=CALC_G(     RESULTAT=RESU2,
                     THETA=_F( R_SUP = 2.448979377,

@@ -1,6 +1,6 @@
 # TITRE MURAKAMI 9.12 FISSURE CIRCULAIRE SOUMISE A UNE CHARGE ANNULAIRE
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -51,17 +51,19 @@ CHAMDEPL=MECA_STATIQUE(        MODELE=MO,
                               EXCIT=_F( CHARGE = CH)
                            )
 
-
-THETA0=CALC_THETA(    MODELE=MO,
-                        THETA_2D=_F(  GROUP_NO = ('P0',),
-                                   MODULE = 1.,
-                                   R_INF = 0.001,
-                                   R_SUP = 0.003),
-                         DIRECTION=(1., 0., 0.,)
-                     )
+FOND=DEFI_FOND_FISS(    MAILLAGE=MA,
+                        FOND_FISS=_F( GROUP_NO = ('P0',)),
+                        SYME='OUI',
+                        LEVRE_SUP=_F(MAILLE='M5309'),
+                      )
 
 G0=CALC_G(              RESULTAT=CHAMDEPL,
-                        THETA=_F(THETA=THETA0,SYME='OUI'),
+                        THETA=_F(
+                                 DIRECTION=(1., 0., 0.,),
+                                 FOND_FISS=FOND,
+                                 MODULE=1.,
+                                 R_INF=0.001,
+                                 R_SUP=0.003),
                     )
 
 #

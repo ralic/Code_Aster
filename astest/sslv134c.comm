@@ -1,6 +1,6 @@
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -73,23 +73,23 @@ FISS2=DEFI_FOND_FISS(MAILLAGE=MA,
 RSUP=0.25
 RINF=0.05
 
-THETA=CALC_THETA(MODELE=MO,
-                 THETA_2D=_F(GROUP_NO = ('P0',),
-                             MODULE = 1.,
-                             R_INF = RINF,
-                             R_SUP = RSUP),
-                 DIRECTION=(1., 0., 0.,)
-                 )
 
 G0=CALC_G(RESULTAT=CHAMDEPL,
-          THETA=_F(THETA=THETA),
+          THETA=_F(R_INF=RINF,
+                   FOND_FISS=FISS2,
+                   MODULE=1.,
+                   R_SUP=RSUP,
+                   DIRECTION=(1., 0., 0.,)
+                   ),
           INFO=2)
 
 
 GK0=CALC_G(RESULTAT=CHAMDEPL,
-           THETA=_F(FOND_FISS=FISS,
-                    R_INF = RINF,
-                    R_SUP = RSUP,
+           THETA=_F(R_INF=RINF,
+                    FOND_FISS=FISS,
+                    MODULE=1.,
+                    R_SUP=RSUP,
+                    DIRECTION=(1., 0., 0.,)
                     ),
            OPTION='CALC_K_G')
 
@@ -187,13 +187,19 @@ DEPL_ROT=MECA_STATIQUE(MODELE=MO,
 IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=DEPL_ROT));
 
 G1=CALC_G(RESULTAT=DEPL_ROT,
-          THETA=_F(THETA=THETA,
-                   SYME='OUI'),
+          THETA=_F(R_INF=RINF,
+                   FOND_FISS=FISS2,
+                   MODULE=1.,
+                   R_SUP=RSUP,
+                   DIRECTION=(1., 0., 0.,)
+                   ),
           )
 
-GK1=CALC_G(THETA=_F(FOND_FISS=FISS,
-                    R_INF = RINF,
-                    R_SUP = RSUP,
+GK1=CALC_G(THETA=_F(R_INF=RINF,
+                    FOND_FISS=FISS,
+                    MODULE=1.,
+                    R_SUP=RSUP,
+                    DIRECTION=(1., 0., 0.,)
                     ),
           RESULTAT=DEPL_ROT,
           OPTION='CALC_K_G')

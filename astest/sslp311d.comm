@@ -1,6 +1,6 @@
 # TITRE BIBLIO_65 FISSURE CENTRALE DANS UN BIMATERIAU
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -75,17 +75,13 @@ FOND1=DEFI_FOND_FISS(    MAILLAGE=MA,
                       )
 
 #
-THETA01A=CALC_THETA(    MODELE=MO,
-                          THETA_2D=_F(  GROUP_NO = ('P0',),
-                                     MODULE = 1.,
-                                     R_INF = 0.,
-                                     R_SUP = 0.001875E-2),
-                          DIRECTION=(0.5, 0.866025404, 0.,)
-                      )
-
-#
 G01A=CALC_G(    RESULTAT=CHAMDEPL,
-                THETA=_F(THETA=THETA01A),
+                THETA=_F(
+                         R_INF=0.,
+                         FOND_FISS=FOND1,
+                         MODULE=1.,
+                         R_SUP=0.001875E-2,
+                         DIRECTION=(0.5, 0.866025404, 0.,)),
                       )
 
 #
@@ -98,17 +94,13 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            TABLE=G01A,)
 
 #
-THETA01B=CALC_THETA(    MODELE=MO,
-                          THETA_2D=_F(  GROUP_NO = ('P0',),
-                                     MODULE = 1.,
-                                     R_INF = 0.001875E-2,
-                                     R_SUP = 0.003750E-2),
-                          DIRECTION=(0.5, 0.866025404, 0.,)
-                      )
-
-#
 G01B=CALC_G(    RESULTAT=CHAMDEPL,
-                THETA=_F(THETA=THETA01B),
+                THETA=_F(
+                         R_INF=0.001875E-2,
+                         FOND_FISS=FOND1,
+                         MODULE=1.,
+                         R_SUP=0.003750E-2,
+                         DIRECTION=(0.5, 0.866025404, 0.,)),
                       )
 
 #
@@ -121,18 +113,13 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            TABLE=G01B,)
 
 #
-
-THETA01C=CALC_THETA(    MODELE=MO,
-                          THETA_2D=_F(  GROUP_NO = ('P0',),
-                                     MODULE = 1.,
-                                     R_INF = 0.003750E-2,
-                                     R_SUP = 0.005625E-2),
-                          DIRECTION=(0.5, 0.866025404, 0.,)
-                      )
-
-#
 G01C=CALC_G(    RESULTAT=CHAMDEPL,
-                THETA=_F(THETA=THETA01C),
+                THETA=_F(
+                         R_INF=0.003750E-2,
+                         FOND_FISS=FOND1,
+                         MODULE=1.,
+                         R_SUP=0.005625E-2,
+                         DIRECTION=(0.5, 0.866025404, 0.,)),
                       )
 
 #
@@ -145,17 +132,13 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            TABLE=G01C,)
 
 #
-THETA01D=CALC_THETA(    MODELE=MO,
-                          THETA_2D=_F(  GROUP_NO = ('P0',),
-                                     MODULE = 1.,
-                                     R_INF = 0.005625E-2,
-                                     R_SUP = 0.007500E-2),
-                          DIRECTION=(0.5, 0.866025404, 0.,)
-                      )
-
-#
 G01D=CALC_G(    RESULTAT=CHAMDEPL,
-                THETA=_F(THETA=THETA01D),
+                THETA=_F(
+                         R_INF=0.005625E-2,
+                         FOND_FISS=FOND1,
+                         MODULE=1.,
+                         R_SUP=0.007500E-2,
+                         DIRECTION=(0.5, 0.866025404, 0.,)),
                       )
 
 #
@@ -175,17 +158,13 @@ FOND2=DEFI_FOND_FISS(    MAILLAGE=MA,
                        )
 
 #
-THETA02A=CALC_THETA(    MODELE=MO,
-                          THETA_2D=_F(  GROUP_NO = ('P0G',),
-                                     MODULE = 1.,
-                                     R_INF = 0.,
-                                     R_SUP = 0.001875E-2),
-                          DIRECTION=(-0.5, -0.866025404, 0.,)
-                      )
-
-#
 G02A=CALC_G(    RESULTAT=CHAMDEPL,
-                THETA=_F(THETA=THETA02A),
+                THETA=_F(
+                         R_INF=0.,
+                         FOND_FISS=FOND2,
+                         MODULE=1.,
+                         R_SUP=0.001875E-2,
+                         DIRECTION=(-0.5, -0.866025404, 0.,)),
                       )
 
 #
@@ -198,17 +177,13 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            TABLE=G02A,)
 
 #
-THETA02B=CALC_THETA(    MODELE=MO,
-                          THETA_2D=_F(  GROUP_NO = ('P0G',),
-                                     MODULE = 1.,
-                                     R_INF = 0.001875E-2,
-                                     R_SUP = 0.003750E-2),
-                          DIRECTION=(-0.5, -0.866025404, 0.,)
-                      )
-
-#
 G02B=CALC_G(    RESULTAT=CHAMDEPL,
-                THETA=_F(THETA=THETA02B),
+                THETA=_F(
+                         R_INF=0.001875E-2,
+                         FOND_FISS=FOND2,
+                         MODULE=1.,
+                         R_SUP=0.003750E-2,
+                         DIRECTION=(-0.5, -0.866025404, 0.,)),
                      )
 
 #
@@ -221,18 +196,15 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            TABLE=G02B,)
 
 #
-#
-THETA02C=CALC_THETA(    MODELE=MO,
-                          THETA_2D=_F(  GROUP_NO = ('P0G',),
-                                     MODULE = 1.,
-                                     R_INF = 0.003750E-2,
-                                     R_SUP = 0.005625E-2),
-                          DIRECTION=(-0.5, -0.866025404, 0.,)
-                      )
 
 #
 G02C=CALC_G(    RESULTAT=CHAMDEPL,
-                THETA=_F(THETA=THETA02C),
+                THETA=_F(
+                         R_INF=0.003750E-2,
+                         FOND_FISS=FOND2,
+                         MODULE=1.,
+                         R_SUP=0.005625E-2,
+                         DIRECTION=(-0.5, -0.866025404, 0.,)),
                       )
 
 #
@@ -245,18 +217,15 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            TABLE=G02C,)
 
 #
-#
-THETA02D=CALC_THETA(    MODELE=MO,
-                          THETA_2D=_F(  GROUP_NO = ('P0G',),
-                                     MODULE = 1.,
-                                     R_INF = 0.005625E-2,
-                                     R_SUP = 0.007500E-2),
-                          DIRECTION=(-0.5, -0.866025404, 0.,)
-                      )
 
 #
 G02D=CALC_G(    RESULTAT=CHAMDEPL,
-                THETA=_F(THETA=THETA02D),
+                THETA=_F(
+                         R_INF=0.005625E-2,
+                         FOND_FISS=FOND2,
+                         MODULE=1.,
+                         R_SUP=0.007500E-2,
+                         DIRECTION=(-0.5, -0.866025404, 0.,)),
                       )
 
 #

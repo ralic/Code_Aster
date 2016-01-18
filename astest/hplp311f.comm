@@ -1,6 +1,6 @@
 # TITRE MURA 11.17 FISSURE SOUS FLUX DE CHALEUR UNIFORME
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -180,17 +180,13 @@ FOND=DEFI_FOND_FISS(    MAILLAGE=MA,
                       )
 
 #
-THETA0=CALC_THETA(       MODELE=MO,
-                         THETA_2D=_F(  GROUP_NO = ('P0',),
-                                    MODULE = 1.,
-                                    R_INF = 5.00E-3,
-                                    R_SUP = 1.00E-2),
-                        DIRECTION=(1., 0., 0.,)
-                     )
-
-#
 G00=CALC_G(        RESULTAT=RESU,
-                   THETA=_F(THETA=THETA0),
+                   THETA=_F(
+                            R_INF=5.00E-3,
+                            R_SUP=1.00E-2,
+                            FOND_FISS=FOND,
+                            MODULE=1.,
+                            DIRECTION=(1., 0., 0.,)),
                    EXCIT=_F(CHARGE=CH,),
                      )
 
@@ -223,18 +219,15 @@ TEST_TABLE(PRECISION=0.050000000000000003,
            NOM_PARA='K2',
            TABLE=GK00,)
 
-#
-THETA01=CALC_THETA(       MODELE=MO,
-                          THETA_2D=_F(  GROUP_NO = ('P0',),
-                                     MODULE = 1.,
-                                     R_INF = 1.00E-2,
-                                     R_SUP = 1.50E-2),
-                         DIRECTION=(1., 0., 0.,)
-                     )
 
 #
 G01=CALC_G(        RESULTAT=RESU,
-                   THETA=_F(THETA=THETA01),
+                   THETA=_F(
+                            R_INF=1.00E-2,
+                            R_SUP=1.50E-2,
+                            FOND_FISS=FOND,
+                            MODULE=1.,
+                            DIRECTION=(1., 0., 0.,)),
                    EXCIT=_F(CHARGE=CH,),
                      )
 
@@ -268,17 +261,15 @@ TEST_TABLE(PRECISION=0.050000000000000003,
            TABLE=GK01,)
 
 #
-THETA02=CALC_THETA(       MODELE=MO,
-                          THETA_2D=_F(  GROUP_NO = ('P0',),
-                                     MODULE = 1.,
-                                     R_INF = 1.50E-2,
-                                     R_SUP = 2.00E-2),
-                         DIRECTION=(1., 0., 0.,)
-                     )
 
 #
 G02=CALC_G(        RESULTAT=RESU,
-                   THETA=_F(THETA=THETA02),
+                   THETA=_F(
+                            R_INF=1.50E-2,
+                            FOND_FISS=FOND,
+                            MODULE=1.,
+                            R_SUP=2.00E-2,
+                            DIRECTION=(1., 0., 0.,)),
                    EXCIT=_F(CHARGE=CH,),
                      )
 

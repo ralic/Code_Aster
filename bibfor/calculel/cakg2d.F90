@@ -52,7 +52,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
     aster_logical :: lmelas, lmoda
 ! ......................................................................
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -102,14 +102,14 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
     parameter   (nbinmx=50,nboumx=1)
     character(len=8) :: lpain(nbinmx), lpaout(nboumx)
     character(len=24) :: lchin(nbinmx), lchout(nboumx)
-    integer :: i, ibid,  inorma, nsig, ifm, niv, jnor, jbasfo, ibid2
+    integer :: i, ibid,  inorma, nsig, ifm, niv, jnor, jbasfo
     integer :: iadrma, iadrff, icoode, iadrco, iadrno, ino1, ino2, inga
     integer :: lobj2, ndimte, nunoff, ndim, nchin, jfond, numfon
     integer :: iret, livi(nbmxpa), nbchar, pbtype
     real(kind=8) :: fic(5), rcmp(4), livr(nbmxpa), girwin
     integer :: mxstac
     complex(kind=8) :: livc(nbmxpa)
-    aster_logical :: lfonc, lxfem, ltheta
+    aster_logical :: lfonc, lxfem
     parameter   (mxstac=1000)
     character(len=2) :: codret
     character(len=8) :: noma, fond, licmp(4), typmo, fiss, mosain
@@ -147,11 +147,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
 !   cas FEM ou X-FEM
     call getvid('THETA', 'FISSURE', iocc=1, scal=fiss, nbret=ibid)
     lxfem = .false.
-    if (ibid .ne. 0) lxfem = .true.
-!   cas THETA
-    call getvid('THETA', 'THETA', iocc=1, scal=fiss, nbret=ibid2)
-    ltheta = .false.
-    if (ibid2 .ne. 0) ltheta = .true.   
+    if (ibid .ne. 0) lxfem = .true.   
 
 !   RECUPERATION DU CHAMP GEOMETRIQUE
     call megeom(modele, chgeom)
@@ -503,9 +499,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
 !     call tbajvi(result, nbprup, 'NUME_FOND', numfon, livi)
 !    endif
 !
-    if (.not.ltheta) then
-        call tbajvi(result, nbprup, 'NUME_FOND', numfon, livi)
-    endif
+    call tbajvi(result, nbprup, 'NUME_FOND', numfon, livi)
 
     if (.not.lxfem) then
         call tbajvk(result, nbprup, 'NOEUD', zk8(iadrno), livk)

@@ -1,6 +1,6 @@
 # TITRE CALCUL DE K1, K2 EN D_PLAN_INCO_ SUR UNE PLAQUE CIRCULAIRE
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -122,17 +122,14 @@ for i in range(2):
                   ),
                         NEWTON     =_F ( REAC_INCR    = 1 ))
 
-
-   THETA[i]=CALC_THETA(MODELE=MODP[i],
-                       THETA_2D=_F(NOEUD = 'N1',
-                                   MODULE = 1.,
-                                   R_INF = 10.,
-                                   R_SUP = 20.),
-                       DIRECTION=( 8.6602540379E-01, 0.5, 0.,)  )
-
    GDP[i]=CALC_G(RESULTAT=ELADP[i],
                  INST = 1,
-                 THETA=_F(THETA=THETA[i]))
+                 THETA=_F(
+                          R_INF=10.,
+                          FOND_FISS=FOND,
+                          MODULE=1.,
+                          R_SUP=20.,
+                          DIRECTION=( 8.6602540379E-01, 0.5, 0.,)))
 
    K1K2[i]=CALC_G(RESULTAT=ELADP[i],
                   INST = 1,

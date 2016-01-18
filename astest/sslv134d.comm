@@ -1,6 +1,6 @@
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -74,12 +74,6 @@ RAY_SUP1=DEFI_CONSTANTE(VALE=RSUP,);
 
 MOD_T1=DEFI_CONSTANTE(VALE=1.,);
 
-THETA1=CALC_THETA(MODELE=MO,
-                  THETA_3D=_F(TOUT='OUI',
-                              MODULE_FO=MOD_T1,
-                              R_INF_FO=RAY_INF1,
-                              R_SUP_FO=RAY_SUP1,),
-                  FOND_FISS=FISS,);
 
 # CAS DE CHARGE : TRACTION => MODE 1
 
@@ -167,7 +161,11 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='N77',),
            )
 
-GGLOB1=CALC_G(THETA=_F(THETA=THETA1,),
+GGLOB1=CALC_G(THETA=_F(
+                       FOND_FISS=FISS,
+                       MODULE_FO=MOD_T1,
+                       R_SUP_FO=RAY_SUP1,
+                       R_INF_FO=RAY_INF1),
               RESULTAT=RESU1,
               OPTION='CALC_G_GLOB',);
 
@@ -342,7 +340,11 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='N77',),
            )
 
-GGLOB3=CALC_G(THETA=_F(THETA=THETA1,),
+GGLOB3=CALC_G(THETA=_F(
+                       FOND_FISS=FISS,
+                       MODULE_FO=MOD_T1,
+                       R_SUP_FO=RAY_SUP1,
+                       R_INF_FO=RAY_INF1),
               RESULTAT=RESU3,
               OPTION='CALC_G_GLOB',);
 
@@ -493,7 +495,11 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='N77',),
            )
 
-GGLOB13=CALC_G(THETA=_F(THETA=THETA1,),
+GGLOB13=CALC_G(THETA=_F(
+                        FOND_FISS=FISS,
+                        MODULE_FO=MOD_T1,
+                        R_SUP_FO=RAY_SUP1,
+                        R_INF_FO=RAY_INF1),
                RESULTAT=RESU13,
                EXCIT=_F(CHARGE=TORSION,),
                OPTION='CALC_G_GLOB',);

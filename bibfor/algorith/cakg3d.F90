@@ -113,7 +113,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
     character(len=8) :: lpain(nbinmx), lpaout(nboumx)
     character(len=24) :: lchin(nbinmx), lchout(nboumx)
 !
-    integer :: i, j, ibid, iadrgk, iadgks, iret, jresu, nchin, ibid2
+    integer :: i, j, ibid, iadrgk, iadgks, iret, jresu, nchin
     integer :: nnoff, num, ino1, ino2, inga
 !     integer :: incr, nres
     integer :: ndeg, nsig, livi(nbmxpa),pbtype
@@ -121,7 +121,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
     real(kind=8) :: gkthi(8), time, livr(nbmxpa), diff2g, difrel
 !    real(kind=8) :: xi(nnoff-1), yi(nnoff-1), zi(nnoff-1)
     complex(kind=8) :: livc(nbmxpa)
-    aster_logical :: lfonc, lxfem, ltheta
+    aster_logical :: lfonc, lxfem
     character(len=2) :: codret
 !    character(len=8) :: resu
 !    character(len=24) :: chsig, chepsp, chvari, type
@@ -156,11 +156,6 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
     call getvid('THETA', 'FISSURE', iocc=1, scal=fiss, nbret=ibid)
     lxfem = .false.
     if (ibid .ne. 0) lxfem = .true.
-!   cas THETA
-    call getvid('THETA', 'THETA', iocc=1, scal=fiss, nbret=ibid2)
-    ltheta = .false.
-    if (ibid2 .ne. 0) ltheta = .true. 
-
 !
 !   RECUPERATION DU CHAMP GEOMETRIQUE
     call megeom(modele, chgeom)
@@ -528,9 +523,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 !     ECRITURE DE LA TABLE DE G(S), K1(S), K2(S) ET K3(S)
     call getvis('THETA', 'NUME_FOND', iocc=1, scal=numfon, nbret=ibid)
 !
-    if (.not.ltheta) then
-        call tbajvi(result, nbprup, 'NUME_FOND', numfon, livi)
-    endif
+    call tbajvi(result, nbprup, 'NUME_FOND', numfon, livi)
     
     if (lmelas) then
         call tbajvi(result, nbprup, 'NUME_CAS', iord, livi)

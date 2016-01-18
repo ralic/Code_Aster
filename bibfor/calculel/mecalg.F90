@@ -96,11 +96,11 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
     integer :: nbmxpa
     parameter (nbmxpa = 20)
 !
-    integer :: ibid, iret, nres, numfon, livi(nbmxpa), coor, ibid2
+    integer :: ibid, iret, nres, numfon, livi(nbmxpa), coor
     integer :: nchin, nsig, ino1, ino2, inga, pbtype
     real(kind=8) :: g(1), livr(nbmxpa)
     complex(kind=8) :: livc(nbmxpa)
-    aster_logical :: lfonc, lxfem, ltheta
+    aster_logical :: lfonc, lxfem
     character(len=8) :: resu, lpain(50), lpaout(2), k8b, resuco
     character(len=8) :: fiss
     character(len=16) :: option
@@ -141,11 +141,7 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
 !   cas FEM ou X-FEM
     call getvid('THETA', 'FISSURE', iocc=1, scal=fiss, nbret=ibid)
     lxfem = .false.
-    if (ibid .ne. 0) lxfem = .true.
-!   cas THETA
-    call getvid('THETA', 'THETA', iocc=1, scal=fiss, nbret=ibid2)
-    ltheta = .false.
-    if (ibid2 .ne. 0) ltheta = .true.    
+    if (ibid .ne. 0) lxfem = .true.   
 !
 !   RECUPERATION DU CHAMP GEOMETRIQUE
     call megeom(modele, chgeom)
@@ -427,12 +423,12 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
 !- IMPRESSION DE G ET ECRITURE DANS LA TABLE RESULT
 !
     call getvis('THETA', 'NUME_FOND', iocc=1, scal=numfon, nbret=ibid)
-    if ((.not.ltheta).and.(option(1:11).ne.'CALC_G_GLOB')) then
+    if (option(1:11).ne.'CALC_G_GLOB') then
         call tbajvi(result, nbprup, 'NUME_FOND', numfon, livi)
     endif
     
 ! NOM DES NOEUDS DU FOND
-    if ((.not.lxfem).and.(.not.ltheta).and.(option(1:11).ne.'CALC_G_GLOB')) then
+    if ((.not.lxfem).and.(option(1:11).ne.'CALC_G_GLOB')) then
         call tbajvk(result, nbprup, 'NOEUD', zk8(iadnoe), livk)
     endif
 !
@@ -444,7 +440,7 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
         call tbajvr(result, nbprup, 'INST', time, livr)
     endif
 !
-    if ((.not.ltheta).and.(option(1:11).ne.'CALC_G_GLOB')) then
+    if (option(1:11).ne.'CALC_G_GLOB') then
         call tbajvr(result, nbprup, 'COOR_X', zr(coor), livr)
         call tbajvr(result, nbprup, 'COOR_Y', zr(coor+1), livr)
     endif

@@ -1,6 +1,6 @@
 # TITRE PLAQUE FISSUREE EN TRACTION (CALCUL DE G, K1 ET K2)
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -44,41 +44,11 @@ CH=AFFE_CHAR_MECA(  MODELE=MO,DDL_IMPO=(
 CHAMDEPL=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT,
                               EXCIT=_F( CHARGE = CH))
 
-THETA1=CALC_THETA(      MODELE=MO,
-                        THETA_2D=_F(  NOEUD = 'N668', MODULE = 1.,
-                                            R_INF = 22.04078,
-                                            R_SUP = 30.),
-                       DIRECTION=( 1., 0., 0.,))
 
-THETA2=CALC_THETA(    MODELE=MO,
-                      THETA_2D=_F(  NOEUD = 'N668', MODULE = 1.,
-                                 R_SUP = 22.04078,
-                                 R_INF = 15.3061094),
-                       DIRECTION=( 1., 0., 0.,))
 
-THETA3=CALC_THETA(    MODELE=MO,
-                      THETA_2D=_F(  NOEUD = 'N668', MODULE = 1.,
-                                 R_INF = 9.79591846,
-                                 R_SUP = 15.3061094),
-                       DIRECTION=( 1., 0., 0.,))
 
-THETA4=CALC_THETA(    MODELE=MO,
-                      THETA_2D=_F(  NOEUD = 'N668', MODULE = 1.,
-                                 R_SUP = 9.79591846,
-                                 R_INF = 5.510197639),
-                       DIRECTION=( 1., 0., 0.,))
 
-THETA5=CALC_THETA(    MODELE=MO,
-                      THETA_2D=_F(  NOEUD = 'N668', MODULE = 1.,
-                                 R_INF = 2.448979377,
-                                 R_SUP = 5.510197639),
-                       DIRECTION=( 1., 0., 0.,))
 
-THETA6=CALC_THETA(   MODELE=MO,
-                     THETA_2D=_F(  NOEUD = 'N668', MODULE = 1.,
-                                R_SUP = 2.448979377,
-                                R_INF = 0.61225116),
-                       DIRECTION=( 1., 0., 0.,))
 
 FOND=DEFI_FOND_FISS( MAILLAGE=MA,
                      FOND_FISS=_F( NOEUD = 'N668'),
@@ -86,7 +56,13 @@ FOND=DEFI_FOND_FISS( MAILLAGE=MA,
                      LEVRE_SUP=_F(MAILLE='M306'),
                    )
 G1=CALC_G(              RESULTAT=CHAMDEPL,
-                        THETA=_F(THETA=THETA1,SYME='OUI'),)
+                        THETA=_F(
+                                 R_INF=22.04078,
+                                 R_SUP=30.,
+                                 FOND_FISS=FOND,
+                                 MODULE=1.,
+                                 DIRECTION=( 1., 0., 0.,)),
+          )
 
 GK1=CALC_G(             RESULTAT=CHAMDEPL,
                         THETA=_F(R_INF = 22.04078,
@@ -97,7 +73,13 @@ GK1=CALC_G(             RESULTAT=CHAMDEPL,
 IMPR_TABLE(TABLE=GK1)
 
 G2=CALC_G(              RESULTAT=CHAMDEPL,
-                        THETA=_F(THETA=THETA2,SYME='OUI'),)
+                        THETA=_F(
+                                 R_INF=15.3061094,
+                                 R_SUP=22.04078,
+                                 FOND_FISS=FOND,
+                                 MODULE=1.,
+                                 DIRECTION=( 1., 0., 0.,)),
+          )
 
 GK2=CALC_G(             RESULTAT=CHAMDEPL,
                         THETA=_F(
@@ -107,7 +89,13 @@ GK2=CALC_G(             RESULTAT=CHAMDEPL,
                         OPTION='CALC_K_G')
 
 G3=CALC_G(              RESULTAT=CHAMDEPL,
-                        THETA=_F(THETA=THETA3,SYME='OUI'),)
+                        THETA=_F(
+                                 R_INF=9.79591846,
+                                 R_SUP=15.3061094,
+                                 FOND_FISS=FOND,
+                                 MODULE=1.,
+                                 DIRECTION=( 1., 0., 0.,)),
+          )
 
 GK3=CALC_G(             RESULTAT=CHAMDEPL,
                         THETA=_F(
@@ -117,7 +105,13 @@ GK3=CALC_G(             RESULTAT=CHAMDEPL,
                         OPTION='CALC_K_G')
 
 G4=CALC_G(              RESULTAT=CHAMDEPL,
-                        THETA=_F(THETA=THETA4,SYME='OUI'),)
+                        THETA=_F(
+                                 R_INF=5.510197639,
+                                 R_SUP=9.79591846,
+                                 FOND_FISS=FOND,
+                                 MODULE=1.,
+                                 DIRECTION=( 1., 0., 0.,)),
+          )
 
 GK4=CALC_G(              RESULTAT=CHAMDEPL,
                          THETA=_F(
@@ -127,7 +121,13 @@ GK4=CALC_G(              RESULTAT=CHAMDEPL,
                          OPTION='CALC_K_G')
 
 G5=CALC_G(               RESULTAT=CHAMDEPL,
-                         THETA=_F(THETA=THETA5,SYME='OUI'),)
+                         THETA=_F(
+                                  R_INF=2.448979377,
+                                  R_SUP=5.510197639,
+                                  FOND_FISS=FOND,
+                                  MODULE=1.,
+                                  DIRECTION=( 1., 0., 0.,)),
+          )
 
 GK5=CALC_G(              RESULTAT=CHAMDEPL,
                          THETA=_F(
@@ -137,7 +137,13 @@ GK5=CALC_G(              RESULTAT=CHAMDEPL,
                          OPTION='CALC_K_G')
 
 G6=CALC_G(               RESULTAT=CHAMDEPL,
-                         THETA=_F(THETA=THETA6,SYME='OUI'),)
+                         THETA=_F(
+                                  R_INF=0.61225116,
+                                  R_SUP=2.448979377,
+                                  FOND_FISS=FOND,
+                                  MODULE=1.,
+                                  DIRECTION=( 1., 0., 0.,)),
+          )
 
 GK6=CALC_G(              RESULTAT=CHAMDEPL,
                             THETA=_F(

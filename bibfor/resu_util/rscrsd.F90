@@ -18,7 +18,7 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
     integer :: nbordr
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -45,7 +45,7 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
     integer :: i, k, iret, jordr
     integer :: nbcham, nbnova
     integer :: ncmec1, ncmec2, ncmec3, ncmuti, ncmeca
-    integer :: ncthe1, ncther, ncthet, ncvarc, ncacou
+    integer :: ncthe1, ncther, ncvarc, ncacou
     character(len=1) :: bas1
     character(len=16) :: types2
     character(len=19) :: noms2
@@ -79,12 +79,6 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
 !     ------------------------------------------------------------------
     parameter (ncacou=5)
     character(len=16) :: chacou(ncacou)
-!     ------------------------------------------------------------------
-!                      C H A M P _ T H E T A
-!     ------------------------------------------------------------------
-    parameter (ncthet=1)
-    character(len=16) :: chthet(ncthet)
-!     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
 !                      C H A M P _ M E C A N I Q U E
 !     ------------------------------------------------------------------
@@ -183,12 +177,6 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
     data chacou/&
      & 'PRES',            'PRAC_ELNO',       'PRAC_NOEU',&
      & 'INTE_ELNO',       'INTE_NOEU'/
-!     ------------------------------------------------------------------
-!                      C H A M P _ T H E T A _ R U P T
-!     ------------------------------------------------------------------
-!      '1234567890123456','1234567890123456','1234567890123456',
-    data chthet/&
-     & 'THETA'/
 !     ------------------------------------------------------------------
 !
     noms2=nomsd
@@ -436,18 +424,7 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
             call jecroc(jexnom(noms2//'.DESC', chthe1(i)))
         enddo
         goto 99
-!
-!     ------------------------------------------------------------------
-    else if (types2.eq.'THETA_GEOM') then
-!
-        nbcham=ncthet
-        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham)
-        call jeecra(noms2//'.DESC', 'DOCU', cval='THET')
-        do i = 1, nbcham
-            call jecroc(jexnom(noms2//'.DESC', chthet(i)))
-        enddo
-        goto 99
-!
+
     else
         call utmess('F', 'UTILITAI4_31', sk=types2)
     endif

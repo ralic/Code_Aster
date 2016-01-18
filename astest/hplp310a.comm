@@ -1,5 +1,5 @@
 # TITRE BIBLIO_35  FISSURE RADIALE INTERNE DANS UN CYLINDRE EPAIS
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 #
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -202,44 +202,16 @@ FOND=DEFI_FOND_FISS(    MAILLAGE=MA,
 
 # PREMIERE COURONNE DE QUADRANGLES
 # --------------------------------
-THETA0=CALC_THETA(    MODELE=MO,
-                        THETA_2D=_F(  GROUP_NO = ('P0',),
-                                   MODULE = 1.,
-                                   R_INF = 0.0025,
-                                   R_SUP = 0.005),
-                        DIRECTION=(1., 0., 0.,)
-                     )
 
 #
 # DEUXIEME COURONNE DE QUADRANGLES
 # --------------------------------
-THETA1=CALC_THETA(    MODELE=MO,
-                        THETA_2D=_F(  GROUP_NO = ('P0',),
-                                   MODULE = 1.,
-                                   R_INF = 0.005,
-                                   R_SUP = 0.0075),
-                        DIRECTION=(1., 0., 0.,)
-                     )
 
 # TROISIEME COURONNE DE QUADRANGLES
 # --------------------------------
-THETA2=CALC_THETA(    MODELE=MO,
-                        THETA_2D=_F(  GROUP_NO = ('P0',),
-                                   MODULE = 1.,
-                                   R_INF = 0.0075,
-                                   R_SUP = 0.01),
-                        DIRECTION=(1., 0., 0.,)
-                     )
 
 # COURONNE QUELCONQUE
 # -------------------
-THETA3=CALC_THETA(    MODELE=MO,
-                        THETA_2D=_F(  GROUP_NO = ('P0',),
-                                   MODULE = 1.,
-                                   R_INF = 0.005,
-                                   R_SUP = 0.03),
-                        DIRECTION=(1., 0., 0.,)
-                     )
 
 # ------------------------------------------------
 # CALCUL DE G AVEC CHARGEMENT 1 DE LA FICHE
@@ -249,7 +221,12 @@ THETA3=CALC_THETA(    MODELE=MO,
 # ----------
 
 G0_P=CALC_G(    RESULTAT=CHAMDEPP,
-                        THETA=_F(THETA=THETA0,SYME='OUI'),
+                        THETA=_F(
+                                 R_INF=0.0025,
+                                 FOND_FISS=FOND,
+                                 MODULE=1.,
+                                 R_SUP=0.005,
+                                 DIRECTION=(1., 0., 0.,)),
                     )
 
 GK0_P=CALC_G(    RESULTAT=CHAMDEPP,
@@ -264,7 +241,12 @@ GK0_P=CALC_G(    RESULTAT=CHAMDEPP,
 # ----------
 
 G1_P=CALC_G(    RESULTAT=CHAMDEPP,
-                        THETA=_F(THETA=THETA1,SYME='OUI'),
+                        THETA=_F(
+                                 R_INF=0.005,
+                                 FOND_FISS=FOND,
+                                 MODULE=1.,
+                                 R_SUP=0.0075,
+                                 DIRECTION=(1., 0., 0.,)),
                     )
 
 GK1_P=CALC_G(    RESULTAT=CHAMDEPP,
@@ -279,7 +261,12 @@ GK1_P=CALC_G(    RESULTAT=CHAMDEPP,
 # ----------
 
 G2_P=CALC_G(    RESULTAT=CHAMDEPP,
-                        THETA=_F(THETA=THETA2,SYME='OUI'),
+                        THETA=_F(
+                                 R_INF=0.0075,
+                                 FOND_FISS=FOND,
+                                 MODULE=1.,
+                                 R_SUP=0.01,
+                                 DIRECTION=(1., 0., 0.,)),
                     )
 
 GK2_P=CALC_G(    RESULTAT=CHAMDEPP,
@@ -294,7 +281,12 @@ GK2_P=CALC_G(    RESULTAT=CHAMDEPP,
 # ----------
 
 G3_P=CALC_G(    RESULTAT=CHAMDEPP,
-                        THETA=_F(THETA=THETA3,SYME='OUI'),
+                        THETA=_F(
+                                 R_INF=0.005,
+                                 FOND_FISS=FOND,
+                                 MODULE=1.,
+                                 R_SUP=0.03,
+                                 DIRECTION=(1., 0., 0.,)),
                     )
 
 GK3_P=CALC_G(    RESULTAT=CHAMDEPP,
@@ -322,7 +314,12 @@ GK4_P=CALC_G(    RESULTAT=CHAMDEPP,
 # ----------
 
 G0_T=CALC_G(    RESULTAT=CHAMDEPT,
-                        THETA=_F(THETA=THETA0,SYME='OUI'),
+                        THETA=_F(
+                                 R_INF=0.0025,
+                                 FOND_FISS=FOND,
+                                 MODULE=1.,
+                                 R_SUP=0.005,
+                                 DIRECTION=(1., 0., 0.,)),
                     )
 
 GK0_T=CALC_G(    RESULTAT=CHAMDEPT,
@@ -337,7 +334,12 @@ GK0_T=CALC_G(    RESULTAT=CHAMDEPT,
 # ----------
 
 G1_T=CALC_G(    RESULTAT=CHAMDEPT,
-                        THETA=_F(THETA=THETA1,SYME='OUI'),
+                        THETA=_F(
+                                 R_INF=0.005,
+                                 FOND_FISS=FOND,
+                                 MODULE=1.,
+                                 R_SUP=0.0075,
+                                 DIRECTION=(1., 0., 0.,)),
                     )
 
 GK1_T=CALC_G(    RESULTAT=CHAMDEPT,
@@ -352,7 +354,12 @@ GK1_T=CALC_G(    RESULTAT=CHAMDEPT,
 # ----------
 
 G2_T=CALC_G(    RESULTAT=CHAMDEPT,
-                        THETA=_F(THETA=THETA2,SYME='OUI'),
+                        THETA=_F(
+                                 R_INF=0.0075,
+                                 FOND_FISS=FOND,
+                                 MODULE=1.,
+                                 R_SUP=0.01,
+                                 DIRECTION=(1., 0., 0.,)),
                     )
 
 GK2_T=CALC_G(    RESULTAT=CHAMDEPT,
@@ -367,7 +374,12 @@ GK2_T=CALC_G(    RESULTAT=CHAMDEPT,
 # ----------
 
 G3_T=CALC_G(    RESULTAT=CHAMDEPT,
-                        THETA=_F(THETA=THETA3,SYME='OUI'),
+                        THETA=_F(
+                                 R_INF=0.005,
+                                 FOND_FISS=FOND,
+                                 MODULE=1.,
+                                 R_SUP=0.03,
+                                 DIRECTION=(1., 0., 0.,)),
                     )
 
 GK3_T=CALC_G(    RESULTAT=CHAMDEPT,
@@ -395,7 +407,12 @@ GK4_T=CALC_G(    RESULTAT=CHAMDEPT,
 # ----------
 
 G0_C=CALC_G(   RESULTAT=CHAMDEP0,
-                        THETA=_F(THETA=THETA0,SYME='OUI'),
+                        THETA=_F(
+                                 R_INF=0.0025,
+                                 FOND_FISS=FOND,
+                                 MODULE=1.,
+                                 R_SUP=0.005,
+                                 DIRECTION=(1., 0., 0.,)),
                     )
 
 GK0_C=CALC_G(   RESULTAT=CHAMDEP0,
@@ -410,7 +427,12 @@ GK0_C=CALC_G(   RESULTAT=CHAMDEP0,
 # ----------
 
 G1_C=CALC_G(   RESULTAT=CHAMDEP0,
-                        THETA=_F(THETA=THETA1,SYME='OUI'),
+                        THETA=_F(
+                                 R_INF=0.005,
+                                 FOND_FISS=FOND,
+                                 MODULE=1.,
+                                 R_SUP=0.0075,
+                                 DIRECTION=(1., 0., 0.,)),
                     )
 
 GK1_C=CALC_G(   RESULTAT=CHAMDEP0,
@@ -425,7 +447,12 @@ GK1_C=CALC_G(   RESULTAT=CHAMDEP0,
 # ----------
 
 G2_C=CALC_G(   RESULTAT=CHAMDEP0,
-                        THETA=_F(THETA=THETA2,SYME='OUI'),
+                        THETA=_F(
+                                 R_INF=0.0075,
+                                 FOND_FISS=FOND,
+                                 MODULE=1.,
+                                 R_SUP=0.01,
+                                 DIRECTION=(1., 0., 0.,)),
                     )
 
 GK2_C=CALC_G(   RESULTAT=CHAMDEP0,
@@ -440,7 +467,12 @@ GK2_C=CALC_G(   RESULTAT=CHAMDEP0,
 # ----------
 
 G3_C=CALC_G(   RESULTAT=CHAMDEP0,
-                        THETA=_F(THETA=THETA3,SYME='OUI'),
+                        THETA=_F(
+                                 R_INF=0.005,
+                                 FOND_FISS=FOND,
+                                 MODULE=1.,
+                                 R_SUP=0.03,
+                                 DIRECTION=(1., 0., 0.,)),
                     )
 
 GK3_C=CALC_G(   RESULTAT=CHAMDEP0,

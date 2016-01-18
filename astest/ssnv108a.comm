@@ -1,7 +1,7 @@
 
 # TITRE  EPROUVETTE  CT  ROUND   ROBIN  EUROPEEN  1985 EN  NON  LINEAIRE
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -157,56 +157,37 @@ FISS2=DEFI_FOND_FISS(MAILLAGE=MA,
                                          'NO3205','NO3206',),
                                   DTAN_ORIG=(1.0,0.0,0.0,),),
                     );
-#
-# COURONNE 1
 
-TET1=CALC_THETA(MODELE=MO,
-                THETA_3D=_F(TOUT='OUI',
-                            MODULE=1.0,
-                            R_INF=0.4,
-                            R_SUP=1.2,),
-                FOND_FISS=FISS1,);
-
-#
-# COURONNE 2
-
-TET2=CALC_THETA(MODELE=MO,
-                THETA_3D=_F(TOUT='OUI',
-                            MODULE=1.0,
-                            R_INF=1.2,
-                            R_SUP=2.857,),
-                FOND_FISS=FISS2,);
-
-IMPR_RESU(RESU=_F(RESULTAT=TET2,NOM_CHAM='THETA'),)
-IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=TET2,NOM_CHAM='THETA'),)
-
-#
-# COURONNE 3
-
-TET3=CALC_THETA(MODELE=MO,
-                THETA_3D=_F(TOUT='OUI',
-                            MODULE=1.0,
-                            R_INF=2.857,
-                            R_SUP=5.2,),
-                FOND_FISS=FISS1,);
 #
 
 G1=CALC_G(        OPTION='CALC_G_GLOB',
-                  THETA=_F(THETA=TET1, SYME='OUI'),
+                  THETA=_F(
+                           FOND_FISS=FISS1,
+                           MODULE=1.0,
+                           R_INF=0.4,
+                           R_SUP=1.2),
                   RESULTAT=U,
                   NUME_ORDRE=1,
                    );
 #
 
 G2=CALC_G(        OPTION='CALC_G_GLOB',
-                  THETA=_F(THETA=TET2, SYME='OUI'),
+                  THETA=_F(
+                           FOND_FISS=FISS2,
+                           MODULE=1.0,
+                           R_INF=1.2,
+                           R_SUP=2.857),
                   RESULTAT=U,
                   NUME_ORDRE=1,
                    );
 #
 
 G3=CALC_G(        OPTION='CALC_G_GLOB',
-                  THETA=_F(THETA=TET3, SYME='OUI'),
+                  THETA=_F(
+                           FOND_FISS=FISS1,
+                           MODULE=1.0,
+                           R_INF=2.857,
+                           R_SUP=5.2),
                   RESULTAT=U,
                   NUME_ORDRE=1,
                    );

@@ -1,6 +1,6 @@
 # TITRE DISQUE FISSURE EN PRESENCE DE CONTRAINTES INITIALES
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -211,31 +211,18 @@ Rsup2 = 4.228
 Rinf3 = 4.228
 Rsup3 = 9.0
 
-THETA1=CALC_THETA(MODELE=MO,
-                  DIRECTION=(-1,0,0,),
-                  THETA_2D=_F(GROUP_NO='G',
-                              MODULE=1,
-                              R_INF=Rinf1,
-                              R_SUP=Rsup1,),);
 
-THETA2=CALC_THETA(MODELE=MO,
-                  DIRECTION=(-1,0,0,),
-                  THETA_2D=_F(GROUP_NO='G',
-                              MODULE=1,
-                              R_INF=Rinf2,
-                              R_SUP=Rsup2,),);
 
-THETA3=CALC_THETA(MODELE=MO,
-                  DIRECTION=(-1,0,0,),
-                  THETA_2D=_F(GROUP_NO='G',
-                              MODULE=1,
-                              R_INF=Rinf3,
-                              R_SUP=Rsup3,),);
 
 # Calcul de G pour les 3 couronnes, a partir de SIEF_ELGA
 #--------------------------------------------------------
 
-GINGA1=CALC_G(THETA=_F(THETA=THETA1),
+GINGA1=CALC_G(THETA=_F(
+                       R_INF=Rinf1,
+                       FOND_FISS=FISS1,
+                       MODULE=1,
+                       R_SUP=Rsup1,
+                       DIRECTION=(-1,0,0,)),
               RESULTAT=RESUINI,
               INST=3,
 #              COMPORTEMENT=_F(RELATION='ELAS'),
@@ -243,7 +230,12 @@ GINGA1=CALC_G(THETA=_F(THETA=THETA1),
 #              CALCUL_CONTRAINTE='NON',
               OPTION='CALC_G')
 
-GINGA2=CALC_G(THETA=_F(THETA=THETA2),
+GINGA2=CALC_G(THETA=_F(
+                       R_INF=Rinf2,
+                       FOND_FISS=FISS1,
+                       MODULE=1,
+                       R_SUP=Rsup2,
+                       DIRECTION=(-1,0,0,)),
               RESULTAT=RESUINI,
               INST=3,
 #              COMPORTEMENT=_F(RELATION='ELAS'),
@@ -251,7 +243,12 @@ GINGA2=CALC_G(THETA=_F(THETA=THETA2),
 #              CALCUL_CONTRAINTE='NON',
               OPTION='CALC_G')
 
-GINGA3=CALC_G(THETA=_F(THETA=THETA3),
+GINGA3=CALC_G(THETA=_F(
+                       R_INF=Rinf3,
+                       FOND_FISS=FISS1,
+                       MODULE=1,
+                       R_SUP=Rsup3,
+                       DIRECTION=(-1,0,0,)),
               RESULTAT=RESUINI,
               INST=3,
 #              COMPORTEMENT=_F(RELATION='ELAS'),
@@ -262,19 +259,34 @@ GINGA3=CALC_G(THETA=_F(THETA=THETA3),
 # Calcul de G pour les 3 couronnes, a partir de SIEF_NOEU
 #--------------------------------------------------------
 
-GINNO1=CALC_G(THETA=_F(THETA=THETA1),
+GINNO1=CALC_G(THETA=_F(
+                       R_INF=Rinf1,
+                       FOND_FISS=FISS1,
+                       MODULE=1,
+                       R_SUP=Rsup1,
+                       DIRECTION=(-1,0,0,)),
              RESULTAT=RESUINI,
              INST=3,
              ETAT_INIT =_F(SIGM=SIEFNOEU),
              OPTION='CALC_G')
 
-GINNO2=CALC_G(THETA=_F(THETA=THETA2),
+GINNO2=CALC_G(THETA=_F(
+                       R_INF=Rinf2,
+                       FOND_FISS=FISS1,
+                       MODULE=1,
+                       R_SUP=Rsup2,
+                       DIRECTION=(-1,0,0,)),
              RESULTAT=RESUINI,
              INST=3,
              ETAT_INIT =_F(SIGM=SIEFNOEU),
              OPTION='CALC_G')
 
-GINNO3=CALC_G(THETA=_F(THETA=THETA3),
+GINNO3=CALC_G(THETA=_F(
+                       R_INF=Rinf3,
+                       FOND_FISS=FISS1,
+                       MODULE=1,
+                       R_SUP=Rsup3,
+                       DIRECTION=(-1,0,0,)),
               RESULTAT=RESUINI,
               INST=3,
               ETAT_INIT =_F(SIGM=SIEFNOEU),
@@ -283,19 +295,34 @@ GINNO3=CALC_G(THETA=_F(THETA=THETA3),
 # Calcul de G pour les 3 couronnes, a partir de SIEF_ELNO
 #--------------------------------------------------------
 
-GINELNO1=CALC_G(THETA=_F(THETA=THETA1),
+GINELNO1=CALC_G(THETA=_F(
+                         R_INF=Rinf1,
+                         FOND_FISS=FISS1,
+                         MODULE=1,
+                         R_SUP=Rsup1,
+                         DIRECTION=(-1,0,0,)),
                 RESULTAT=RESUINI,
                 INST=3,
                 ETAT_INIT=_F(SIGM=SIEFELNO),
                 OPTION='CALC_G')
 
-GINELNO2=CALC_G(THETA=_F(THETA=THETA2),
+GINELNO2=CALC_G(THETA=_F(
+                         R_INF=Rinf2,
+                         FOND_FISS=FISS1,
+                         MODULE=1,
+                         R_SUP=Rsup2,
+                         DIRECTION=(-1,0,0,)),
                 RESULTAT=RESUINI,
                 INST=3,
                 ETAT_INIT=_F(SIGM=SIEFELNO),
                 OPTION='CALC_G')
 
-GINELNO3=CALC_G(THETA=_F(THETA=THETA3),
+GINELNO3=CALC_G(THETA=_F(
+                         R_INF=Rinf3,
+                         FOND_FISS=FISS1,
+                         MODULE=1,
+                         R_SUP=Rsup3,
+                         DIRECTION=(-1,0,0,)),
                 RESULTAT=RESUINI,
                 INST=3,
                 ETAT_INIT=_F(SIGM=SIEFELNO),
@@ -357,7 +384,12 @@ GINGAK3=CALC_G(THETA=_F(FOND_FISS=FISS1,
 # Calcul de G a partir du RESOUVFI
 #---------------------------------
 
-GTHER3=CALC_G(THETA=_F(THETA=THETA3),
+GTHER3=CALC_G(THETA=_F(
+                       R_INF=Rinf3,
+                       FOND_FISS=FISS1,
+                       MODULE=1,
+                       R_SUP=Rsup3,
+                       DIRECTION=(-1,0,0,)),
               RESULTAT=RESOUVFI,
               INST=1,
               OPTION='CALC_G')

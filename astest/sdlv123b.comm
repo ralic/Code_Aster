@@ -3,7 +3,7 @@ DEBUT(CODE=_F(
 NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 # TITRE DYNAMIQUE D'UNE FISSURE FINIE STATIONNAIRE DANS UN MILIEU
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -116,37 +116,18 @@ FF=DEFI_FOND_FISS( MAILLAGE=MAIL,
                    LEVRE_SUP=_F(GROUP_MA='SP1P2',),
                   )
 
-THETA1=CALC_THETA( MODELE=MODELE,
-                   FOND_FISS=FF,
-                   DIRECTION=(1.,0.,0.,),
-                   THETA_3D=_F (GROUP_NO='LP2P7',
-                                MODULE = 1. ,
-                                R_INF = 3.,
-                                R_SUP = 10.)
-                               )
 
-THETA2=CALC_THETA( MODELE=MODELE,
-                   FOND_FISS=FF,
-                   DIRECTION=(1.,0.,0.,),
-                   THETA_3D=_F (GROUP_NO='LP2P7',
-                                MODULE = 1. ,
-                                R_INF = 5.,
-                                R_SUP = 15.)
-                               )
 
-THETA3=CALC_THETA( MODELE=MODELE,
-                   FOND_FISS=FF,
-                   DIRECTION=(1.,0.,0.,),
-                   THETA_3D=_F (GROUP_NO='LP2P7',
-                                MODULE = 1. ,
-                                R_INF = 5.,
-                                R_SUP = 18.)
-                               )
 
 G1=CALC_G(          OPTION='CALC_G_GLOB',
                     RESULTAT=evol,
                     TOUT_ORDRE='OUI',
-                    THETA=_F(THETA=THETA1,SYME='OUI'),
+                    THETA=_F(
+                             R_INF=3.,
+                             FOND_FISS=FF,
+                             MODULE=1.,
+                             R_SUP=10.,
+                             DIRECTION=(1.,0.,0.,)),
                     EXCIT=_F(CHARGE=CH_P,),
                   )
 
@@ -176,14 +157,24 @@ GL11=CALC_G(         THETA=_F( DIRECTION=(1.,0.,0.,),
 G2=CALC_G(          OPTION='CALC_G_GLOB',
                     RESULTAT=evol,
                     TOUT_ORDRE='OUI',
-                    THETA=_F(THETA=THETA2,SYME='OUI'),
+                    THETA=_F(
+                             R_INF=5.,
+                             FOND_FISS=FF,
+                             MODULE=1.,
+                             R_SUP=15.,
+                             DIRECTION=(1.,0.,0.,)),
                     EXCIT=_F(CHARGE=CH_P,),
                   )
 
 G3=CALC_G(          RESULTAT=evol,
                     OPTION='CALC_G_GLOB',
                     TOUT_ORDRE='OUI',
-                    THETA=_F(THETA=THETA3,SYME='OUI'),
+                    THETA=_F(
+                             R_INF=5.,
+                             FOND_FISS=FF,
+                             MODULE=1.,
+                             R_SUP=18.,
+                             DIRECTION=(1.,0.,0.,)),
                     EXCIT=_F(CHARGE=CH_P,),
                   )
 

@@ -1,5 +1,5 @@
 # TITRE BIBLIO_49 FISSURE RADIALE EXTERNE SOUMIS A UN CHOC THERMIQUE
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 #
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -674,40 +674,12 @@ FOND=DEFI_FOND_FISS(    MAILLAGE=MA,
                       )
 
 #
-THETA0=CALC_THETA(    MODELE=MO,
-                        THETA_2D=_F(  GROUP_NO = ('P0',),
-                                   MODULE = 1.,
-                                   R_INF = 0.0025,
-                                   R_SUP = 0.125),
-                       DIRECTION=(-1., 0., 0.,)
-                     )
 
 #
-THETA1=CALC_THETA(    MODELE=MO,
-                        THETA_2D=_F(  GROUP_NO = ('P0',),
-                                   MODULE = 1.,
-                                   R_INF = 0.0025,
-                                   R_SUP = 0.425),
-                       DIRECTION=(-1., 0., 0.,)
-                     )
 
 #
-THETA2=CALC_THETA(    MODELE=MO,
-                        THETA_2D=_F(  GROUP_NO = ('P0',),
-                                   MODULE = 1.,
-                                   R_INF = 0.0025,
-                                   R_SUP = 0.625),
-                       DIRECTION=(-1., 0., 0.,)
-                     )
 
 #
-THETA3=CALC_THETA(    MODELE=MO,
-                        THETA_2D=_F(  GROUP_NO = ('P0',),
-                                   MODULE = 1.,
-                                   R_INF = 0.0025,
-                                   R_SUP = 0.825),
-                       DIRECTION=(-1., 0., 0.,)
-                     )
 
 #
 # POUR FO = 0.001
@@ -715,25 +687,45 @@ THETA3=CALC_THETA(    MODELE=MO,
 G01B=CALC_G(
                            RESULTAT=CHDEP1B,
                            NUME_ORDRE=1,
-                           THETA=_F(THETA=THETA0,SYME='OUI'),
+                           THETA=_F(
+                                    R_INF=0.0025,
+                                    FOND_FISS=FOND,
+                                    MODULE=1.,
+                                    R_SUP=0.125,
+                                    DIRECTION=(-1., 0., 0.,)),
                       )
 
 #
 G01B1=CALC_G(              RESULTAT=CHDEP1B,
                            NUME_ORDRE=1,
-                           THETA=_F(THETA=THETA1,SYME='OUI'),
+                           THETA=_F(
+                                    R_INF=0.0025,
+                                    FOND_FISS=FOND,
+                                    MODULE=1.,
+                                    R_SUP=0.425,
+                                    DIRECTION=(-1., 0., 0.,)),
                        )
 
 #
 G01B2=CALC_G(              RESULTAT=CHDEP1B,
                            NUME_ORDRE=1,
-                           THETA=_F(THETA=THETA2,SYME='OUI'),
+                           THETA=_F(
+                                    R_INF=0.0025,
+                                    FOND_FISS=FOND,
+                                    MODULE=1.,
+                                    R_SUP=0.625,
+                                    DIRECTION=(-1., 0., 0.,)),
                        )
 
 #
 G01B3=CALC_G(              RESULTAT=CHDEP1B,
                            NUME_ORDRE=1,
-                           THETA=_F(THETA=THETA3,SYME='OUI'),
+                           THETA=_F(
+                                    R_INF=0.0025,
+                                    FOND_FISS=FOND,
+                                    MODULE=1.,
+                                    R_SUP=0.825,
+                                    DIRECTION=(-1., 0., 0.,)),
                        )
 
 #
@@ -777,25 +769,45 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 #
 G02B=CALC_G(        RESULTAT=CHDEP2B,
                     NUME_ORDRE=1,
-                    THETA=_F(THETA=THETA0,SYME='OUI'),
+                    THETA=_F(
+                             R_INF=0.0025,
+                             FOND_FISS=FOND,
+                             MODULE=1.,
+                             R_SUP=0.125,
+                             DIRECTION=(-1., 0., 0.,)),
                       )
 
 #
 G02B1=CALC_G(        RESULTAT=CHDEP2B,
                      NUME_ORDRE=1,
-                     THETA=_F(THETA=THETA1,SYME='OUI'),
+                     THETA=_F(
+                              R_INF=0.0025,
+                              FOND_FISS=FOND,
+                              MODULE=1.,
+                              R_SUP=0.425,
+                              DIRECTION=(-1., 0., 0.,)),
                        )
 
 #
 G02B2=CALC_G(        RESULTAT=CHDEP2B,
                      NUME_ORDRE=1,
-                     THETA=_F(THETA=THETA2,SYME='OUI'),
+                     THETA=_F(
+                              R_INF=0.0025,
+                              FOND_FISS=FOND,
+                              MODULE=1.,
+                              R_SUP=0.625,
+                              DIRECTION=(-1., 0., 0.,)),
                        )
 
 #
 G02B3=CALC_G(        RESULTAT=CHDEP2B,
                      NUME_ORDRE=1,
-                     THETA=_F(THETA=THETA3,SYME='OUI'),
+                     THETA=_F(
+                              R_INF=0.0025,
+                              FOND_FISS=FOND,
+                              MODULE=1.,
+                              R_SUP=0.825,
+                              DIRECTION=(-1., 0., 0.,)),
                        )
 
 #
@@ -839,25 +851,45 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 #
 G03B=CALC_G(        RESULTAT=CHDEP3B,
                     NUME_ORDRE=1,
-                    THETA=_F(THETA=THETA0,SYME='OUI'),
+                    THETA=_F(
+                             R_INF=0.0025,
+                             FOND_FISS=FOND,
+                             MODULE=1.,
+                             R_SUP=0.125,
+                             DIRECTION=(-1., 0., 0.,)),
                       )
 
 #
 G03B1=CALC_G(       RESULTAT=CHDEP3B,
                     NUME_ORDRE=1,
-                    THETA=_F(THETA=THETA1,SYME='OUI'),
+                    THETA=_F(
+                             R_INF=0.0025,
+                             FOND_FISS=FOND,
+                             MODULE=1.,
+                             R_SUP=0.425,
+                             DIRECTION=(-1., 0., 0.,)),
                        )
 
 #
 G03B2=CALC_G(       RESULTAT=CHDEP3B,
                     NUME_ORDRE=1,
-                    THETA=_F(THETA=THETA2,SYME='OUI'),
+                    THETA=_F(
+                             R_INF=0.0025,
+                             FOND_FISS=FOND,
+                             MODULE=1.,
+                             R_SUP=0.625,
+                             DIRECTION=(-1., 0., 0.,)),
                        )
 
 #
 G03B3=CALC_G(        RESULTAT=CHDEP3B,
                      NUME_ORDRE=1,
-                     THETA=_F(THETA=THETA3,SYME='OUI'),
+                     THETA=_F(
+                              R_INF=0.0025,
+                              FOND_FISS=FOND,
+                              MODULE=1.,
+                              R_SUP=0.825,
+                              DIRECTION=(-1., 0., 0.,)),
                        )
 
 #

@@ -1,6 +1,6 @@
 # TITRE CALCUL DE G THERMO-ELASTIQUE EN MILIEU INFINI
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -130,50 +130,51 @@ RESU=CREA_RESU(  OPERATION='AFFE',
 #               CALCUL DE G SUR 4 COURONNES                         #
 #--------------------------------------------------------------------
 
-THETA1=CALC_THETA(MODELE=MO,
-                  DIRECTION=(1.0,0.0,0.0,),
-                  THETA_2D=_F(NOEUD='N3',
-                              MODULE=1.0,
-                              R_INF=1.0,
-                              R_SUP=4.0,),);
 
-CHAM1=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',  OPERATION='EXTR',
-                 RESULTAT=THETA1, NOM_CHAM='THETA',NUME_ORDRE=0,);
+FOND=DEFI_FOND_FISS(MAILLAGE=M,
+                    FOND_FISS=(_F( NOEUD='N3'),
+                              ),
+                    SYME='OUI',
+                    LEVRE_SUP=_F(GROUP_MA='GRMA5',),
+                    
+                    )
 
-G1=CALC_G(        THETA=_F(THETA=CHAM1),
+
+G1=CALC_G(        THETA=_F(R_INF=1.0,
+                           FOND_FISS=FOND,
+                           MODULE=1.0,
+                           DIRECTION=(1.0,0.0,0.0,),
+                           R_SUP=4.0),
                   RESULTAT=RESU,
                   EXCIT=_F(CHARGE=CH,),);
 
-THETA2=CALC_THETA(MODELE=MO,
-                  DIRECTION=(1.0,0.0,0.0,),
-                  THETA_2D=_F(NOEUD='N3',
-                              MODULE=1.0,
-                              R_INF=0.5,
-                              R_SUP=4.5,),);
 
-G2=CALC_G(        THETA=_F(THETA=THETA2),
+G2=CALC_G(        THETA=_F(
+                           R_INF=0.5,
+                           FOND_FISS=FOND,
+                           MODULE=1.0,
+                           DIRECTION=(1.0,0.0,0.0,),
+                           R_SUP=4.5),
                   RESULTAT=RESU,
                   EXCIT=_F(CHARGE=CH,),);
 
-THETA3=CALC_THETA(MODELE=MO,
-                  DIRECTION=(1.0,0.0,0.0,),
-                  THETA_2D=_F(NOEUD='N3',
-                              MODULE=1.0,
-                              R_INF=1.5,
-                              R_SUP=3.5,),);
 
-G3=CALC_G(        THETA=_F(THETA=THETA3),
+G3=CALC_G(        THETA=_F(
+                           R_INF=1.5,
+                           FOND_FISS=FOND,
+                           MODULE=1.0,
+                           DIRECTION=(1.0,0.0,0.0,),
+                           R_SUP=3.5),
                   RESULTAT=RESU,
                   EXCIT=_F(CHARGE=CH,),);
 
-THETA4=CALC_THETA(MODELE=MO,
-                  DIRECTION=(1.0,0.0,0.0,),
-                  THETA_2D=_F(NOEUD='N3',
-                              MODULE=1.0,
-                              R_INF=1.0,
-                              R_SUP=4.5,),);
 
-G4=CALC_G(        THETA=_F(THETA=THETA4),
+G4=CALC_G(        THETA=_F(
+                           R_INF=1.0,
+                           FOND_FISS=FOND,
+                           MODULE=1.0,
+                           DIRECTION=(1.0,0.0,0.0,),
+                           R_SUP=4.5),
                   RESULTAT=RESU,
                   EXCIT=_F(CHARGE=CH,),);
 #--------------------------------------------------------------------
@@ -182,59 +183,31 @@ G4=CALC_G(        THETA=_F(THETA=THETA4),
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
-           VALE_CALC=1.45939827939E-06,
-           VALE_REFE=1.4778000000000001E-06,
+           VALE_CALC=2.91879655878e-06,
+           VALE_REFE=2.9556e-06,
            NOM_PARA='G',
            TABLE=G1,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
-           VALE_CALC=1.45934811663E-06,
-           VALE_REFE=1.4778000000000001E-06,
+           VALE_CALC=2.91869623326e-06,
+           VALE_REFE=2.9556e-06,
            NOM_PARA='G',
            TABLE=G2,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
-           VALE_CALC=1.45928176145E-06,
-           VALE_REFE=1.4778000000000001E-06,
+           VALE_CALC=2.9185635229e-06,
+           VALE_REFE=2.9556e-06,
            NOM_PARA='G',
            TABLE=G3,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
-           VALE_CALC=1.45936164643E-06,
-           VALE_REFE=1.4778000000000001E-06,
+           VALE_CALC=2.91872329286e-06,
+           VALE_REFE=2.9556e-06,
            NOM_PARA='G',
            TABLE=G4,)
-
-#--------------------------------------------------------------------
-#            TEST DES RESULTATS DE G NON REGRESSION                 #
-#--------------------------------------------------------------------
-
-TEST_TABLE(
-           VALE_CALC=1.45939827939E-06,
-           NOM_PARA='G',
-           TABLE=G1,
-           )
-
-TEST_TABLE(
-           VALE_CALC=1.45934811663E-06,
-           NOM_PARA='G',
-           TABLE=G2,
-           )
-
-TEST_TABLE(
-           VALE_CALC=1.45928176145E-06,
-           NOM_PARA='G',
-           TABLE=G3,
-           )
-
-TEST_TABLE(
-           VALE_CALC=1.45936164643E-06,
-           NOM_PARA='G',
-           TABLE=G4,
-           )
 
 FIN();
 #

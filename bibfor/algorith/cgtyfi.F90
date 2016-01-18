@@ -10,7 +10,7 @@ subroutine cgtyfi(typfis, nomfis, typdis)
     character(len=16) :: typdis
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,34 +34,28 @@ subroutine cgtyfi(typfis, nomfis, typdis)
 !
 ! OUT :
 !   TYPFIS : TYPE DE LA SD DECRIVANT LE FOND DE FISSURE
-!            ('THETA' OU 'FONDIFSS' OU 'FISSURE')
+!            ('FONDIFSS' OU 'FISSURE')
 !   NOMFIS : NOM DE LA SD DECRIVANT LE FOND DE FISSURE
 !   TYPDIS : TYPE DE DISCONTINUITE SI FISSURE XFEM 
 !            'FISSURE' OU 'COHESIF'
 ! ======================================================================
 !
-    integer ::  ithet, ifond, ifiss
+    integer ::  ifond, ifiss
 !
     call jemarq()
 !
-    call getvid('THETA', 'THETA', iocc=1, scal=nomfis, nbret=ithet)
     call getvid('THETA', 'FOND_FISS', iocc=1, scal=nomfis, nbret=ifond)
     call getvid('THETA', 'FISSURE', iocc=1, scal=nomfis, nbret=ifiss)
 !
-    ASSERT(ithet.eq.0.or.ithet.eq.1)
     ASSERT(ifond.eq.0.or.ifond.eq.1)
     ASSERT(ifiss.eq.0.or.ifiss.eq.1)
 !
 !     NORMALEMENT, CETTE REGLE D'EXCLUSION EST VERIFIEE DANS LE CAPY
-    ASSERT(ithet+ifond+ifiss.eq.1)
+    ASSERT(ifond+ifiss.eq.1)
 !
     typdis = ' '
 !
-    if (ithet .eq. 1) then
-!
-        typfis='THETA'
-!
-    else if (ifond.eq.1) then
+    if (ifond.eq.1) then
 !
         typfis='FONDFISS'
 !

@@ -1,6 +1,6 @@
 subroutine op0100()
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -78,7 +78,7 @@ subroutine op0100()
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xcourb.h"
-    integer :: nbord, iord, ibid, i, iad, jnord, ivec, iret, nbpara
+    integer :: nbord, iord, i, iad, jnord, ivec, iret, nbpara
     integer :: lnoff, jinst, ndeg, nbropt, iadrco, iadrno, j, ipuls, iord0
     integer :: iord1, iord2, nborn, nbco, ibor, ig, nbval, iadfis, iadnoe
     integer :: ndimte, ier, ndim, jopt
@@ -91,7 +91,7 @@ subroutine op0100()
     character(len=8) :: modele, resu, k8bid, calsig, resuc2
     character(len=8) :: nomfis, litypa(nxpara), symech, config
     character(len=8) :: table, noma, thetai, noeud, typfis, typfon
-    character(len=16) :: option, typsd, linopa(nxpara), cas, typco
+    character(len=16) :: option, typsd, linopa(nxpara), cas
     character(len=16) :: optio2, nomcas, k16bid, typdis
     character(len=19) :: lischa, lisopt, vecord, grlt
     character(len=24) :: depla, mate, compor, chvite, chacce
@@ -206,26 +206,12 @@ subroutine op0100()
 !
 !     ON RECHERCHE LA PRESENCE DE SYMETRIE
     symech='NON'
-    call getvtx('THETA', 'SYME', iocc=1, scal=symech, nbret=ibid)
     if (typfis .eq. 'FONDFISS') then
         call dismoi('SYME', nomfis, 'FOND_FISS', repk=symech)
     endif
 !
-!     LE MOT-CLE THETA EST RENSEIGNE : ON CREE L'OBJET THETA (K24)
-    if (typfis .eq. 'THETA') then
-        call gettco(nomfis, typco)
-        ASSERT(typco.eq.'THETA_GEOM'.or.typco.eq.'CHAM_NO_SDASTER')
-        if (typco .eq. 'THETA_GEOM') then
-            call rsexch('F', nomfis, 'THETA', 0, theta,&
-                        ier)
-        else if (typco.eq.'CHAM_NO_SDASTER') then
-            theta=nomfis
-        endif
-    endif
-!
-!     LE MOT-CLE THETA N'EST PAS RENSEIGNE :
-!     IL VA FALLOIR CALCULER UN SEUL CHAMP THETA (2D OU 3D_GLOBAL)
-    if (typfis .ne. 'THETA' .and. cas .ne. '3D_LOCAL') then
+!     CALCUL DU CHAMP THETA (2D OU 3D_GLOBAL)
+    if (cas .ne. '3D_LOCAL') then
 !
         theta = table//'_CHAM_THETA'
 !
@@ -243,7 +229,7 @@ subroutine op0100()
 !
 !       THETA 2D (COURONNE)
         if (ndim .eq. 2) then
-            call gver2d(noma, 1, 'THETA', nomno, noeud,&
+            call gver2d(1, noeud,&
                         rinf, rsup, module)
             call gcou2d('V', theta, noma, nomno, noeud,&
                         zr(iadrco), rinf, rsup, module, direc,&
@@ -251,7 +237,7 @@ subroutine op0100()
 !       THETA 3D
         else if (ndim.eq.3) then
             call jeveuo(fonoeu, 'L', iadrno)
-            call gverig(noma, 1, fonoeu, taillr, config,&
+            call gverig(1, fonoeu, taillr, config,&
                         lnoff, nomno, coorn, trav1, trav2,&
                         trav3, trav4)
             call gcouro('V', theta, noma, nomno, coorn,&

@@ -1,6 +1,6 @@
 # TITRE  FISSURE DE BORD EN ELASTOPLASTICITE DANS UNE PLAQUE RECTANGULAIRE FINIE SOUMISE A FLEXION CISAILLANTE - EX SSNP310
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -84,13 +84,6 @@ FOND=DEFI_FOND_FISS(    MAILLAGE=MA,
                         LEVRE_SUP=_F(MAILLE='M458'),
                       )
 
-THETA0=CALC_THETA(    MODELE=MO,
-                        THETA_2D=_F(  GROUP_NO = ('P0',),
-                                   MODULE = 1.,
-                                   R_INF = 0.15,
-                                   R_SUP = 0.6),
-                                     DIRECTION=(1., 0., 0.,)
-                     )
 
 
 # CALCUL SERVANT DE REFERENCE
@@ -109,9 +102,14 @@ CHAMDEP=STAT_NON_LINE( MODELE=MO,
 
                      );
 
-G_0=CALC_G( THETA=_F(THETA=THETA0,SYME='OUI'),
-            RESULTAT=CHAMDEP,
-            TOUT_ORDRE='OUI',
+G_0=CALC_G( THETA=_F(
+                     R_INF=0.15,
+                     FOND_FISS=FOND,
+                     MODULE=1.,
+                     R_SUP=0.6,
+                     DIRECTION=(1., 0., 0.,)),
+                     RESULTAT=CHAMDEP,
+                     TOUT_ORDRE='OUI',
             );
 
 
@@ -242,9 +240,14 @@ CHAMDEP2=STAT_NON_LINE( MODELE=MO,
 
                      );
 
-G_0_2=CALC_G( THETA=_F(THETA=THETA0,SYME='OUI'),
-            RESULTAT=CHAMDEP2,
-            TOUT_ORDRE='OUI',
+G_0_2=CALC_G( THETA=_F(
+                       R_INF=0.15,
+                       FOND_FISS=FOND,
+                       MODULE=1.,
+                       R_SUP=0.6,
+                       DIRECTION=(1., 0., 0.,)),
+                       RESULTAT=CHAMDEP2,
+                       TOUT_ORDRE='OUI',
             );
 
 # TEST DE LA LOI DE COMPORTEMENT ELAS_VMIS_PUIS DANS CALC_G
@@ -379,10 +382,15 @@ CHAMDEP3=STAT_NON_LINE( MODELE=MO,
 #################"
 
 
-G_0_3=CALC_G( THETA=_F(THETA=THETA0,SYME='OUI'),
-            RESULTAT=CHAMDEP3,
-            TOUT_ORDRE='OUI',
-            );
+G_0_3=CALC_G( THETA=_F(
+                       R_INF=0.15,
+                       FOND_FISS=FOND,
+                       MODULE=1.,
+                       R_SUP=0.6,
+                       DIRECTION=(1., 0., 0.,)),
+                       RESULTAT=CHAMDEP3,
+                       TOUT_ORDRE='OUI',
+             );
 
 # TEST DE LA LOI DE COMPORTEMENT ELAS_VMIS_PUIS DANS CALC_G
 
@@ -542,9 +550,14 @@ CHAMDEP4=STAT_NON_LINE( MODELE=MO,
 #################"
 
 
-G_0_4=CALC_G( THETA=_F(THETA=THETA0,SYME='OUI'),
-            RESULTAT=CHAMDEP4,
-            TOUT_ORDRE='OUI',
+G_0_4=CALC_G( THETA=_F(
+                       R_INF=0.15,
+                       FOND_FISS=FOND,
+                       MODULE=1.,
+                       R_SUP=0.6,
+                       DIRECTION=(1., 0., 0.,)),
+                       RESULTAT=CHAMDEP4,
+                       TOUT_ORDRE='OUI',
             );
 
 # TEST DE LA LOI DE COMPORTEMENT ELAS_VMIS_PUIS DANS CALC_G
@@ -671,8 +684,13 @@ CHAMDEP5=STAT_NON_LINE( MODELE=MO,
 #################"
 
 
-G_0_5=CALC_G(THETA=_F(THETA=THETA0,SYME='OUI'),
-             RESULTAT=CHAMDEP5,
+G_0_5=CALC_G(THETA=_F(
+                      R_INF=0.15,
+                      FOND_FISS=FOND,
+                      MODULE=1.,
+                      R_SUP=0.6,
+                      DIRECTION=(1., 0., 0.,)),
+                      RESULTAT=CHAMDEP5,
             )
 
 IMPR_TABLE(TABLE=G_0_5)
@@ -798,18 +816,26 @@ RESUINCR=STAT_NON_LINE(MODELE=MO,
 
 # calcul Incr, post-traitement ELAS -> Genl
 G_I_E=CALC_G(RESULTAT=RESUINCR,
-             THETA=_F(THETA = THETA0,
-                      SYME='OUI'),
-             COMPORTEMENT=_F(RELATION='ELAS_VMIS_PUIS'))
+             THETA=_F(
+                      R_INF=0.15,
+                      FOND_FISS=FOND,
+                      MODULE=1.,
+                      R_SUP=0.6,
+                      DIRECTION=(1., 0., 0.,)),
+                      COMPORTEMENT=_F(RELATION='ELAS_VMIS_PUIS'))
 
 IMPR_TABLE(TABLE=G_I_E)
 
 # calcul Incr, post-traitement ELAS, sans re-calcul des contraintes
 G_I_E2=CALC_G(RESULTAT=RESUINCR,
-              THETA=_F(THETA = THETA0,
-                       SYME='OUI'),
-              COMPORTEMENT=_F(RELATION='ELAS_VMIS_PUIS'),
-              CALCUL_CONTRAINTE='NON',)
+              THETA=_F(
+                       R_INF=0.15,
+                       FOND_FISS=FOND,
+                       MODULE=1.,
+                       R_SUP=0.6,
+                       DIRECTION=(1., 0., 0.,)),
+                       COMPORTEMENT=_F(RELATION='ELAS_VMIS_PUIS'),
+                       CALCUL_CONTRAINTE='NON',)
 
 IMPR_TABLE(TABLE=G_I_E2)
 
