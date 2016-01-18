@@ -22,11 +22,13 @@ DEBUT(CODE=_F(
 
 MAILLE=LIRE_MAILLAGE(FORMAT='MED',INFO=1,);
 
+
 MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAILLE,
                        CREA_POI1=(_F(NOM_GROUP_MA='NOBLOC',
                                      GROUP_NO='NOBLOC',),
                                   _F(NOM_GROUP_MA='NOTORS',
                                      GROUP_NO='NOTORS',),),);
+#IMPR_RESU(RESU=_F(MAILLAGE=MAILLAGE), UNITE=6)
 
 MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                     MAILLAGE=MAILLAGE,
@@ -113,12 +115,15 @@ CHARBLO=AFFE_CHAR_MECA(MODELE=MODELE,
                                    DRX=0.0,
                                    DRY=0.0,
                                    DRZ=0.0,),
+                       # On veut tester les mots cles MAILLE_2 et GROUP_MA_2.
+                       # La maille N13629 correspond a NOBLOC
                        LIAISON_ELEM=(_F(OPTION='3D_POU',
                                         GROUP_MA_1='SLAT_NEG',
-                                        GROUP_NO_2='NOBLOC',),
+                                     #  GROUP_NO_2='NOBLOC',),
+                                        MAILLE_2='N13629',),
                                      _F(OPTION='3D_POU',
                                         GROUP_MA_1='SLAT_POS',
-                                        GROUP_NO_2='NOTORS',),),
+                                        GROUP_MA_2='NOTORS',),),
                        INFO=1,);
 
 

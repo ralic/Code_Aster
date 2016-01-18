@@ -71,25 +71,25 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
     parameter (nmocl=300)
     character(len=2) :: typlag
     character(len=4) :: typval, typcoe
-    character(len=8) :: betaf, mod, nomg, k8bid, poslag
+    character(len=8) :: betaf, mod, nomg, poslag
     character(len=8) :: noma, nomcmp(nmocl)
     character(len=8) :: noepou, nocmp(3), kcmp(3)
     character(len=8) :: lpain(2), lpaout(2)
     character(len=9) :: nomte
-    character(len=16) :: motfac, motcle(2), typmcl(2), option
+    character(len=16) :: motfac, motcle(4), typmcl(4), option
     character(len=19) :: ligrmo, ligrel
     character(len=24) :: lchin(2), lchout(2), nolili, lismai, valk(2)
-    character(len=24) :: lisnoe, noeuma, vale1, vale2, grnoma, nogrno
+    character(len=24) :: lisnoe, noeuma, vale1, vale2, grnoma
     character(len=8) :: charge
     character(len=14) :: numddl
     character(len=19) :: lisrel
     integer :: ntypel(nmocl), icmp(6), niv, ifm, vali(2)
     integer :: iop, nliai, i, narl, nrl,   inom
     integer :: nbcmp, nddla, nbec, jprnm, nlili, k, iaprno, lonlis, ilisno
-    integer :: jlisma, nbma, nbno, nbgno, nno, n1, jgro, in, numnop
-    integer :: ino,  idch1, idch2, nbterm
+    integer :: jlisma, nbma, nbno, numnop
+    integer :: ino,  idch1, idch2, nbterm, jno2
     integer ::       ival
-    integer :: iocc, iarg
+    integer :: iocc
     real(kind=8) :: igzz, coorig(3), beta, eps, un
     real(kind=8) :: xpou, ypou, s, s1, xg, yg, dnorme
     real(kind=8) :: ax, ay, axx, ayy, valr(9) 
@@ -252,49 +252,25 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
     call exlim1(zi(jlisma), nbma, mod, 'V', ligrel)
 !
 ! --- -----------------------------------------------------------------
-! --- ACQUISITION DES MOTS-CLES NOEUD_2 OU GROUP_NO_2
-    nbno = 0
-    nbgno = 0
-!
-    call getvem(noma, 'NOEUD', motfac, 'NOEUD_2', iocc,&
-                iarg, 0, k8bid, nbno)
-!
-    if (nbno .eq. 0) then
-        call getvem(noma, 'GROUP_NO', motfac, 'GROUP_NO_2', iocc,&
-                    iarg, 0, k8bid, nbgno)
-        if (nbgno .eq. 0) then
-            call utmess('F', 'MODELISA6_40', sk=motfac)
-        endif
+! --- Recuperation du noeud "poutre" (_2) :
+    motcle(1)='GROUP_NO_2'
+    motcle(2)='NOEUD_2'
+    motcle(3)='GROUP_MA_2'
+    motcle(4)='MAILLE_2'
+    typmcl(1)='GROUP_NO'
+    typmcl(2)='NOEUD'
+    typmcl(3)='GROUP_MA'
+    typmcl(4)='MAILLE'
+    call reliem(' ', noma, 'NO_NOEUD', motfac, iocc,&
+                  4, motcle, typmcl, '&&RAPO2D.NO2', nbno)
+
+    if (nbno .ne. 1) then
+        call utmess('F', 'MODELISA6_40', si=nbno)
     endif
-!
-    if (nbno .ne. 0) then
-        nbno = -nbno
-        if (nbno .ne. 1) then
-            call utmess('F', 'MODELISA6_41')
-        endif
-        call getvem(noma, 'NOEUD', motfac, 'NOEUD_2', iocc,&
-                    iarg, nbno, noepou, nno)
-    endif
-!
-    if (nbgno .ne. 0) then
-        nbgno = -nbgno
-        if (nbgno .ne. 1) then
-            call utmess('F', 'MODELISA6_42')
-        endif
-        call getvem(noma, 'GROUP_NO', motfac, 'GROUP_NO_2', iocc,&
-                    iarg, nbgno, nogrno, nno)
-        call jelira(jexnom(grnoma, nogrno), 'LONUTI', n1)
-        if (n1 .ne. 1) then
-            call utmess('F', 'MODELISA6_43', sk=nogrno)
-        else
-            call jeveuo(jexnom(grnoma, nogrno), 'L', jgro)
-            in = zi(jgro+1-1)
-            call jenuno(jexnum(noeuma, in), noepou)
-        endif
-    endif
-!
-! --- -----------------------------------------------------------------
-! --- NUMERO DU NOEUD POUTRE A LIER
+    call jeveuo('&&RAPO2D.NO2','L',jno2)
+    noepou=zk8(jno2)
+    call jenonu(jexnom(noeuma, noepou), numnop)
+    call jedetr('&&RAPO2D.NO2')
     call jenonu(jexnom(noeuma, noepou), numnop)
 ! --- COORDONNEES DU NOEUD POUTRE
     xpou = vale(3*(numnop-1)+1)

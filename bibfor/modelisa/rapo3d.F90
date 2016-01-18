@@ -29,7 +29,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
 #include "asterfort/exlim1.h"
-#include "asterfort/getvem.h"
+#include "asterfort/reliem.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
@@ -50,7 +50,6 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 #include "asterfort/mesomm.h"
 #include "asterfort/ratu3d.h"
 #include "asterfort/reajre.h"
-#include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
 #include "asterfort/veripl.h"
 #include "asterfort/wkvect.h"
@@ -88,22 +87,21 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     character(len=8) :: noepou, nocmp(3), kcmp(3), cmp(6)
     character(len=8) :: lpain(2), lpaout(2)
     character(len=9) :: nomte
-    character(len=16) :: motfac, motcle(2), typmcl(2), option
+    character(len=16) :: motfac, motcle(4), typmcl(4), option
     character(len=19) :: ligrmo, ligrel
     character(len=24) :: lchin(2), lchout(2), nolili, lismai, valk(2)
-    character(len=24) :: lisnoe, noeuma, vale1, vale2, grnoma, nogrno
+    character(len=24) :: lisnoe, noeuma, vale1, vale2, grnoma
     integer :: ntypel(nmocl), dg, icmp(6), niv, ifm, vali(2)
     integer :: iop, nliai, i, narl, nrl, ibid, inom
     integer :: nbcmp, nddla, nbec, nlili, k, iaprno, lonlis, ilisno
-    integer :: jlisma, nbma, nbno, nbgno, nno, n1, jgro, in, numnop
-    integer :: ino, j, idch1, idch2, nbterm
+    integer :: jlisma, nbma, nbno, numnop
+    integer :: ino, j, idch1, idch2, nbterm,jno2
     integer :: ival
     integer :: ncara, iocc
     real(kind=8) :: ig(6), coorig(3), angt, beta, eps, un, vtang(6)
     real(kind=8) :: xpou, ypou, zpou, s, s1, xg, yg, zg, dnorme
     real(kind=8) :: ax, ay, az, axx, ayy, azz, axy, axz, ayz, valr(9)
     complex(kind=8) :: betac, ccmp(3)
-    integer :: iarg
     complex(kind=8), pointer :: coec(:) => null()
     real(kind=8), pointer :: coer(:) => null()
     integer, pointer :: dime(:) => null()
@@ -287,51 +285,26 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     endif
 !
 ! --- -----------------------------------------------------------------
-! --- ACQUISITION DES MOTS-CLES NOEUD_2 OU GROUP_NO_2
-    nbno = 0
-    nbgno = 0
-!
-    call getvem(noma, 'NOEUD', motfac, 'NOEUD_2', iocc,&
-                iarg, 0, k8bid, nbno)
-!
-    if (nbno .eq. 0) then
-        call getvem(noma, 'GROUP_NO', motfac, 'GROUP_NO_2', iocc,&
-                    iarg, 0, k8bid, nbgno)
-        if (nbgno .eq. 0) then
-            call utmess('F', 'MODELISA6_40', sk=motfac)
-        endif
+! --- Recuperation du noeud "poutre" (_2) :
+    motcle(1)='GROUP_NO_2'
+    motcle(2)='NOEUD_2'
+    motcle(3)='GROUP_MA_2'
+    motcle(4)='MAILLE_2'
+    typmcl(1)='GROUP_NO'
+    typmcl(2)='NOEUD'
+    typmcl(3)='GROUP_MA'
+    typmcl(4)='MAILLE'
+    call reliem(' ', noma, 'NO_NOEUD', motfac, iocc,&
+                  4, motcle, typmcl, '&&RAPO3D.NO2', nbno)
+
+    if (nbno .ne. 1) then
+        call utmess('F', 'MODELISA6_40', si=nbno)
     endif
-!
-    if (nbno .ne. 0) then
-        nbno = -nbno
-        if (nbno .ne. 1) then
-            call utmess('F', 'MODELISA6_41')
-        endif
-        call getvem(noma, 'NOEUD', motfac, 'NOEUD_2', iocc,&
-                    iarg, nbno, noepou, nno)
-    endif
-!
-    if (nbgno .ne. 0) then
-        nbgno = -nbgno
-        if (nbgno .ne. 1) then
-            call utmess('F', 'MODELISA6_42')
-        endif
-        call getvem(noma, 'GROUP_NO', motfac, 'GROUP_NO_2', iocc,&
-                    iarg, nbgno, nogrno, nno)
-        call jelira(jexnom(grnoma, nogrno), 'LONUTI', n1)
-        if (n1 .ne. 1) then
-            call utmess('F', 'MODELISA6_43', sk=nogrno)
-        else
-            call jeveuo(jexnom(grnoma, nogrno), 'L', jgro)
-            in = zi(jgro+1-1)
-            call jenuno(jexnum(noeuma, in), noepou)
-        endif
-    endif
-!
-! --- -----------------------------------------------------------------
-! --- NUMERO DU NOEUD POUTRE A LIER
+    call jeveuo('&&RAPO3D.NO2','L',jno2)
+    noepou=zk8(jno2)
     call jenonu(jexnom(noeuma, noepou), numnop)
-! --- COORDONNEES DU NOEUD POUTRE
+    call jedetr('&&RAPO3D.NO2')
+!   --- coordonnees du noeud poutre
     xpou = vale(3*(numnop-1)+1)
     ypou = vale(3*(numnop-1)+2)
     zpou = vale(3*(numnop-1)+3)

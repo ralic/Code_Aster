@@ -181,16 +181,13 @@ Solution : Il faut dédoubler le noeud.
 """),
 
     40 : _(u"""
- il faut indiquer le mot-clé 'NOEUD_2' ou 'GROUP_NO_2' après le mot-clé facteur  %(k1)s  pour l'option '3D_POU'.
+Erreur utilisateur pour LIAISON_ELEM / OPTION='3D_POU' (ou OPTION='2D_POU').
+Il faut que les mots clés GROUP_NO_2, NOEUD_2, GROUP_MA_2 ou MAILLE_2 ne
+désignent qu'un seul noeud.
+On trouve %(i1)d noeuds.
 """),
 
-    41 : _(u"""
- il ne faut donner qu'un seul noeud de poutre à raccorder au massif.
-"""),
 
-    42 : _(u"""
- il ne faut donner qu'un un seul GROUP_NO à un noeud à raccorder au massif.
-"""),
 
     43 : _(u"""
  il ne faut donner qu'un seul noeud dans le GROUP_NO :  %(k1)s
