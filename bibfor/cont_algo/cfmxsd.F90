@@ -14,6 +14,7 @@ implicit none
 #include "asterfort/cfmxme.h"
 #include "asterfort/cfmxr0.h"
 #include "asterfort/infdbg.h"
+#include "asterfort/lac_crsd.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xxmxme.h"
 !
@@ -62,7 +63,7 @@ implicit none
     integer :: ifm, niv
     character(len=8) :: model, mesh
     integer :: nb_cont_zone
-    aster_logical :: l_cont_disc, l_cont_cont, l_cont_xfem, l_cont_allv
+    aster_logical :: l_cont_disc, l_cont_cont, l_cont_xfem, l_cont_allv, l_cont_lac
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -82,6 +83,7 @@ implicit none
     l_cont_xfem = cfdisl(ds_contact%sdcont_defi,'FORMUL_XFEM')
     l_cont_cont = cfdisl(ds_contact%sdcont_defi,'FORMUL_CONTINUE')
     l_cont_disc = cfdisl(ds_contact%sdcont_defi,'FORMUL_DISCRETE')
+    l_cont_lac  = cfdisl(ds_contact%sdcont_defi,'FORMUL_LAC')
     l_cont_allv = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF')
 !
 ! - Create CONT_NOEU datastructure
@@ -116,6 +118,12 @@ implicit none
 !
         if (l_cont_cont) then
             call cfmxme(nume_dof, sddyna, ds_contact)
+        endif
+!
+! ----- Create datastructures for LAC method
+!
+        if (l_cont_lac) then
+            call lac_crsd(mesh, ds_contact)
         endif
 !
 ! ----- Create datastructures for XFEM method
