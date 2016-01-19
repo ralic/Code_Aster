@@ -1,9 +1,9 @@
-subroutine nmelru(fami, kpg, ksp, idecpg, poum,&
+subroutine nmelru(fami, kpg, ksp, poum,&
                   imate, compor, epseq, p, divu,&
                   nonlin, ener)
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -27,8 +27,6 @@ subroutine nmelru(fami, kpg, ksp, idecpg, poum,&
 !     ET DE SA DERIVEE PAR RAPPORT A UNE VARIATION DE DOMAINE (EN DP
 !     ELASTIQUE ISOTROPE LINEAIRE).
 !
-! IN  IDECPG  : POSITION DANS LA FAMILLE 'XFEM' DU 1ER POINT DE GAUSS
-!               DU SOUS ELEMENT COURRANT (EN FAIT 1ER POINT : IDECPG+1)
 ! IN  IMATE   : NATURE DU MATERIAU
 ! IN  COMPOR  : COMPORTEMENT
 ! IN  EPSEQ   : DEFORMATION EQUIVALENTE
@@ -53,7 +51,7 @@ subroutine nmelru(fami, kpg, ksp, idecpg, poum,&
 #include "asterfort/rcvarc.h"
 #include "asterfort/utmess.h"
 !
-    integer :: kpg, ksp, imate, idecpg
+    integer :: kpg, ksp, imate
     real(kind=8) :: epseq, p, divu, ener(2)
     character(len=*) :: fami, poum
     character(len=16) :: compor(*)
@@ -92,14 +90,12 @@ subroutine nmelru(fami, kpg, ksp, idecpg, poum,&
 !
     if (iret2 .ne. 0) tref=0.d0
 !
-    if (fami(1:4) .eq. 'XFEM') then
-!
-        call rcvarc(' ', 'TEMP', poum, fami, kpg + idecpg,&
+    if (fami(1:4).eq.'XFEM')then
+        call rcvarc(' ', 'TEMP', poum, fami, kpg,&
                     1, temp, iret1)
     else
         call rcvarc(' ', 'TEMP', poum, 'RIGI', kpg,&
-                    1, temp, iret1)
-!
+                1, temp, iret1)
     endif
 !
     if (iret1 .ne. 0) temp=0.d0

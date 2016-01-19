@@ -1,7 +1,7 @@
 subroutine te0096(option, nomte)
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -60,7 +60,7 @@ subroutine te0096(option, nomte)
 !
 ! DECLARATION VARIABLES LOCALES
 !
-    integer :: icodre(1), kpg, spt, ibid
+    integer :: icodre(1), kpg, spt
     character(len=4) :: fami
     character(len=8) :: nompar(3), typmod(2), famil, poum
     character(len=16) :: compor(4), oprupt, phenom
@@ -481,7 +481,7 @@ subroutine te0096(option, nomte)
             crit(3) = 1.d-3
             crit(9) = 300
             crit(8) = 1.d-3
-            call nmelnl(fami, kp, 1, ibid, '+',&
+            call nmelnl(fami, kp, 1, '+',&
                         ndim, typmod, matcod, compor, crit,&
                         oprupt, eps, sigl, rbid, dsidep,&
                         energi)

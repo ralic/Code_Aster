@@ -1,10 +1,10 @@
-subroutine nmelnl(fami, kpg, ksp, idecpg, poum,&
+subroutine nmelnl(fami, kpg, ksp, poum,&
                   ndim, typmod, imate, compor, crit,&
                   option, eps, sig, vi, dsidep,&
                   energi)
 !-----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,9 +22,6 @@ subroutine nmelnl(fami, kpg, ksp, idecpg, poum,&
 !-----------------------------------------------------------------------
 !
 !     REALISE LA LOI DE HENCKY POUR LES ELEMENTS ISOPARAMETRIQUES
-!
-! IN  IDECPG  : POSITION DANS LA FAMILLE 'XFEM' DU 1ER POINT DE GAUSS
-!               DU SOUS ELEMENT COURRANT (EN FAIT 1ER POINT : IDECPG+1)
 !
 ! IN  NDIM    : DIMENSION DE L'ESPACE
 ! IN  TYPMOD  : TYPE DE MODELISATION
@@ -63,7 +60,7 @@ subroutine nmelnl(fami, kpg, ksp, idecpg, poum,&
 #include "asterfort/utmess.h"
 #include "asterfort/verift.h"
 #include "asterfort/zerofr.h"
-    integer :: kpg, ksp, ndim, imate, iret, isec, ihyd, idecpg
+    integer :: kpg, ksp, ndim, imate, iret, isec, ihyd
     character(len=*) :: fami, poum
     character(len=8) :: typmod(*)
     character(len=16) :: compor(*), option
@@ -125,16 +122,8 @@ subroutine nmelnl(fami, kpg, ksp, idecpg, poum,&
     call verift(fami, kpg, ksp, poum, imate,&
                 epsth_=epsthe)
 !
-    if (fami(1:4) .eq. 'XFEM') then
-!
-        call verift(fami, kpg + idecpg, ksp, poum, imate,&
-                    epsth_=epsthe)
-    else
-!
-        call verift(fami, kpg, ksp, poum, imate,&
-                    epsth_=epsthe)
-!
-    endif
+    call verift(fami, kpg, ksp, poum, imate,&
+                epsth_=epsthe)
 !
 !
     call rcvarc(' ', 'TEMP', poum, fami, kpg,&
@@ -443,7 +432,7 @@ subroutine nmelnl(fami, kpg, ksp, idecpg, poum,&
 ! CALCUL DE L'ENERGIE LIBRE ENERGI(1) ET DE SA DERIVEE / T ENERGI(2)
     if (option(1:7) .eq. 'RUPTURE') then
         divu = 3.d0*epsmo
-        call nmelru(fami, kpg, ksp, idecpg, poum,&
+        call nmelru(fami, kpg, ksp, poum,&
                     imate, compor, epseq, p, divu,&
                     nonlin, energi)
     endif

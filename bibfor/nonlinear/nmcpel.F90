@@ -15,7 +15,7 @@ subroutine nmcpel(fami, kpg, ksp, poum, ndim,&
     character(len=16) :: compor(*), option
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -93,7 +93,7 @@ subroutine nmcpel(fami, kpg, ksp, poum, ndim,&
         crit_loca(3) = crit(3)
         crit_loca(8) = crit(3)
         crit_loca(9) = 10
-        call nmelnl(fami, kpg, ksp, 0, poum, ndim,&
+        call nmelnl(fami, kpg, ksp, poum, ndim,&
                     typmod, imate, compor, crit_loca, option,&
                     eps, sig, vi(1), dsidep, energi)
 !

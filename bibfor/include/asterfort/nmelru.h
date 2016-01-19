@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,13 +18,12 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmelru(fami, kpg, ksp, idecpg, poum, imate,&
+    subroutine nmelru(fami, kpg, ksp, poum, imate,&
                       compor, epseq, p, divu, nonlin,&
                       ener)
         character(len=*) :: fami
         integer :: kpg
         integer :: ksp
-        integer :: idecpg
         character(len=*) :: poum
         integer :: imate
         character(len=16) :: compor(*)
