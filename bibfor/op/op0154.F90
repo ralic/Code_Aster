@@ -2,7 +2,7 @@ subroutine op0154()
     implicit none
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -27,10 +27,6 @@ subroutine op0154()
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
 #include "asterfort/abscur.h"
-#include "asterfort/asccou.h"
-#include "asterfort/asceli.h"
-#include "asterfort/ascrep.h"
-#include "asterfort/asctub.h"
 #include "asterfort/cargeo.h"
 #include "asterfort/chgref.h"
 #include "asterfort/chpver.h"
@@ -46,8 +42,6 @@ subroutine op0154()
 #include "asterfort/momaba.h"
 #include "asterfort/orilgm.h"
 #include "asterfort/orishb.h"
-#include "asterfort/piqeli.h"
-#include "asterfort/piqini.h"
 #include "asterfort/rotama.h"
 #include "asterfort/symema.h"
 #include "asterfort/tranma.h"
@@ -57,9 +51,9 @@ subroutine op0154()
 #include "asterfort/vtgpld.h"
 #include "asterfort/assert.h"
 #include "asterfort/modi_alea.h"
-    integer :: n1, n2, nbocc, nboc1, nboc2, i, dim, ier
+    integer :: n1, n2, nbocc, i, dim, ier
     aster_logical :: bidim
-    character(len=8) :: ma, ma2, depla, coutur, mab
+    character(len=8) :: ma, ma2, depla, mab
     character(len=16) :: kbi1, kbi2, option
     character(len=19) :: geomi, geomf
     character(len=24) :: valk(3)
@@ -266,15 +260,6 @@ subroutine op0154()
     endif
 !
 !
-!     --- TRAITEMENT DU MOT CLEF  "EQUE_PIQUA" :
-!     ------------------------------------------
-    call getfac('EQUE_PIQUA', nbocc)
-    if (nbocc .ne. 0) then
-        call piqini(ma)
-        call piqeli(ma)
-    endif
-!
-!
 !     --- TRAITEMENT DES MOTS CLES  "ORIE_PEAU_2D" , "ORIE_PEAU_3D"
 !                               ET  "ORIE_NORM_COQUE" :
 !     ---------------------------------------------------------------
@@ -285,25 +270,6 @@ subroutine op0154()
     call getfac('ORIE_SHB', nbocc)
     if (nbocc .ne. 0) then
         call orishb(ma)
-    endif
-!
-!     --- TRAITEMENT DES MOT CLEF  "PLAQ_TUBE" ET "TUBE_COUDE":
-!     --------------------------------------------------------
-    call getfac('PLAQ_TUBE', nboc1)
-    if (nboc1 .ne. 0) then
-        call getvr8('PLAQ_TUBE', 'L_TUBE_P1', iocc=1, scal=ltchar, nbret=n1)
-        call getvtx('PLAQ_TUBE', 'COUTURE', iocc=1, scal=coutur, nbret=n1)
-        if (coutur .eq. 'OUI') call asceli(ma)
-        call asctub(ma)
-    endif
-!
-    call getfac('TUBE_COUDE', nboc2)
-    if (nboc2 .ne. 0) then
-        call getvr8('TUBE_COUDE', 'L_TUBE_P1', iocc=1, scal=ltchar, nbret=n1)
-        call asccou(ma)
-    endif
-    if (nboc1 .ne. 0 .or. nboc2 .ne. 0) then
-        call ascrep(ma, ltchar)
     endif
 !
 !

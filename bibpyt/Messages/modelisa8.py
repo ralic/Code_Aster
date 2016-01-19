@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -208,19 +208,6 @@ La maille %(k1)s est mal orientée. Utilisez la commande MODI_MAILLAGE pour orie
  Conseils :
    - Si la distance entre les deux surfaces à apparier est grande devant leurs dimensions, précisez l'isométrie qui permet de les superposer par l'intermédiaire des mots-clés CENTRE, ANGL_NAUT et TRAN.
    - Si les maillages sont incompatibles, utilisez plutôt le chargement LIAISON_MAIL.
-"""),
-
-    79 : _(u"""
- conflit dans les vis-à-vis  générés successivement le noeud  %(k1)s
-  a pour vis-à-vis le noeud %(k2)s
-  et le noeud %(k3)s
-"""),
-
-    80 : _(u"""
- conflit dans les vis-à-vis  générés successivement
- le noeud de la première liste %(k1)s
-  n"est l"image d"aucun  %(k2)s
- noeud par la correspondance inverse %(k3)s
 """),
 
     87 : _(u"""
