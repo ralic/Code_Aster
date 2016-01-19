@@ -96,7 +96,7 @@ subroutine op0010()
 !     MESSAGES
 !
 !     CRACK ADVANCEMENT
-    real(kind=8) :: damax, dttot, vmax, rayon, dafiss, bmax
+    real(kind=8) :: damax=0.d0, dttot=0.d0, vmax=0.d0, rayon=0.d0, dafiss=0.d0, bmax=0.d0
     character(len=24) :: vvit, vbeta, vgamma
     character(len=19) :: cnsbet, listp
     integer :: crack, jbeta, jgamma, jvit, nbval, nfiss
@@ -114,18 +114,18 @@ subroutine op0010()
     character(len=19) :: dcnslt, dcnsln, dgrlt, dgrln, dcnxin
 !
 !     FIELD PROJECTION
-    real(kind=8) :: radtor
+    real(kind=8) :: radtor=0.d0
     character(len=16) :: corres
     character(len=19) :: ndomp, edomg
 !
 !     TEST_MAIL
-    real(kind=8) :: dist, distol
+    real(kind=8) :: dist=0.d0, distol=0.d0
 !
 !     DOMAINE LOCALISATION
     integer :: nbno, jgltl, jglnl
     character(len=19) :: grltc, grlnc
     aster_logical :: ldpre
-    real(kind=8) :: radimp, radlim
+    real(kind=8) :: radimp=0.d0, radlim=0.d0
 !
 !     FRONT SUR LA GRILLE
     aster_logical :: goinop
