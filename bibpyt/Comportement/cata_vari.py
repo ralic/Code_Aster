@@ -293,7 +293,6 @@ DICT_NOM_VARI = {
     "FH_X": _(u"flux hydraulique dans le repère global ( xxx_JOINT_HYME) composante 1"),
     "FH_Y": _(u"flux hydraulique dans le repère global ( xxx_JOINT_HYME) composante 2"),
     "FH_Z": _(u"flux hydraulique dans le repère global ( xxx_JOINT_HYME) composante 3"),
-    "FVOLPORO": _(u"fraction volumique de porosité"),
     "GAMMAECR": _(u"le paramètre d'écrouissage correspondant à la déformation irréversible majeure."),
     "GAMMAP": _(u"LETK : déformation déviatorique plastique"),
     "GAMMAVP": _(u"LETK : déformation déviatorique viscoplastique"),

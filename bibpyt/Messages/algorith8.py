@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -77,12 +77,6 @@ Arrêt suite à l'échec de l'intégration de la loi de comportement.
 
     67 : _(u"""
   endommagement maximal atteint au cours des résolutions internes
-"""),
-
-
-
-    86 : _(u"""
- porosité strictement nulle( cas non traité)
 """),
 
     87 : _(u"""

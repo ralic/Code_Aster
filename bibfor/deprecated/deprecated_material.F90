@@ -45,10 +45,6 @@ implicit none
         vali = 13
         valk    = "Le matériau 'DRUCK_PRAGER_FO'"
 !
-    else if (mater .eq. 'GATT_MONERIE') then
-        vali = 13
-        valk    = "Le matériau 'GATT_MONERIE'"
-!
     else
         goto 999
 !

@@ -4,7 +4,7 @@ subroutine lc0027(fami, kpg, ksp, ndim, imate,&
                   sigp, vip, tampon, typmod, icomp,&
                   nvi, dsidep, codret)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,7 +21,6 @@ subroutine lc0027(fami, kpg, ksp, ndim, imate,&
 ! ======================================================================
 ! aslint: disable=W1504
     implicit none
-#include "asterfort/nmvpgm.h"
     integer :: imate, ndim, kpg, ksp, codret, icomp, nvi
     real(kind=8) :: crit(*)
     real(kind=8) :: instam, instap, tampon(*)
@@ -33,8 +32,4 @@ subroutine lc0027(fami, kpg, ksp, ndim, imate,&
     character(len=8) :: typmod(*)
     character(len=*) :: fami
 !
-    call nmvpgm(fami, kpg, ksp, ndim, imate,&
-                compor, crit, typmod, instam, instap,&
-                deps, sigm, vim, option, sigp,&
-                vip, dsidep, codret)
 end subroutine
