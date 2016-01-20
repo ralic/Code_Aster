@@ -82,6 +82,38 @@ def CALC_COHE(freq, **kwargs):
                 term1 = 1. + (freqk * tanh(p_a3 * dist_xi) / (p_a1 * pfc))**p_n1
                 term2 = 1. + (freqk * tanh(p_a3 * dist_xi) / (p_a2 * pfc))**p_n2
                 COHE[no1,no2] = 1. / sqrt(term1 * term2)
+    elif model == 'ABRA_ROCHER' :
+        p_a1 = 1.0
+        p_a2 = 40.
+        p_a3 = 0.4
+        p_n2 = 16.4
+        nbno =len(noe_interf)
+        freqk = freq / (2.*pi)
+        COHE = NP.zeros((nbno, nbno))
+        for no1 in range(nbno):
+            for no2 in range(nbno):
+                dist_xi = sqrt(DIST2[no1,no2])
+                p_n1 = 3.8 - 0.04 * log(dist_xi + 1.) + 0.0105 * (log(dist_xi + 1.) - 3.6)**2
+                pfc = 27.9 - 4.82 * log(dist_xi + 1.) + 1.24 * (log(dist_xi + 1.) - 3.6)**2
+                term1 = 1. + (freqk * tanh(p_a3 * dist_xi) / (p_a1 * pfc))**p_n1
+                term2 = 1. + (freqk * tanh(p_a3 * dist_xi) / (p_a2))**p_n2
+                COHE[no1,no2] = 1. / sqrt(term1 * term2)
+    elif model == 'ABRA_SOLMOYEN' :
+        p_a1 = 1.0
+        p_a3 = 0.4
+        p_n1 = 3.0
+        p_n2 = 15.
+        nbno =len(noe_interf)
+        freqk = freq / (2.*pi)
+        COHE = NP.zeros((nbno, nbno))
+        for no1 in range(nbno):
+            for no2 in range(nbno):
+                dist_xi = sqrt(DIST2[no1,no2])
+                p_a2 = 15.8-0.044*dist_xi
+                pfc = 14.3 - 2.35 * log(dist_xi + 1.)
+                term1 = 1. + (freqk * tanh(p_a3 * dist_xi) / (p_a1 * pfc))**p_n1
+                term2 = 1. + (freqk * tanh(p_a3 * dist_xi) / (p_a2))**p_n2
+                COHE[no1,no2] = 1. / sqrt(term1 * term2)
     return COHE
 
 def get_group_nom_coord(group_inter, nom_mail):
