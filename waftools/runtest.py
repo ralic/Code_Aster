@@ -78,7 +78,8 @@ def runtest(self):
             cmd.extend(['-g', '--nodebug_stderr'])
         cmd.extend(toolargs)
         Logs.info("running %s in '%s'" % (test, self.variant))
-        fname = osp.join(dtmp, osp.basename(test) + '.output')
+        ext = '.' + osp.basename(self.env['PREFIX']) + '.' + self.variant + '.output'
+        fname = osp.join(dtmp, osp.basename(test) + ext)
         fobj = open(fname, 'wb')
         Logs.info("`- output in %s" % fname)
         nook = False
