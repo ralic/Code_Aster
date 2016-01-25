@@ -4,7 +4,7 @@
 !
 ! person_in_charge: natacha.bereux at edf.fr
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -320,7 +320,12 @@
       call MatGetSubMatrix(mat_z, is_elim, is_elim, MAT_INITIAL_MATRIX, z_elim_elim,&
                       ierr)
 ! Calcul de cz_elim = c_elim * z_elim_elim
+#ifdef ASTER_PETSC_VERSION_LEQ_35
       call MatGetVecs(z_elim_elim, PETSC_NULL_OBJECT, cz_elim, ierr)
+#else
+      call MatCreateVecs( z_elim_elim, PETSC_NULL_OBJECT, cz_elim, ierr)
+#endif
+      ASSERT( ierr == 0 ) 
       call MatMultTranspose(z_elim_elim, c_elim, cz_elim, ierr)
       call MatDestroy(z_elim_elim, ierr)
       call VecDestroy(c_elim, ierr)

@@ -1,6 +1,6 @@
 subroutine appcpr(kptsc)
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -169,7 +169,8 @@ subroutine appcpr(kptsc)
 !           
 !       dimgeo = 3 signifie que le maillage est 3D et que les noeuds ne sont pas
 !       tous dans le plan z=0
-        ASSERT(dimgeo == 3)
+!       c'est une condition nécessaire au pré-calcul des modes de corps rigides
+        if ( dimgeo == 3 ) then 
         call jeveuo(nonu//'.NUME.NEQU', 'L', jnequ)
         neqg=zi(jnequ)
         call jeveuo(nonu//'.NUME.DEEQ', 'L', vi=deeq)
@@ -256,6 +257,8 @@ subroutine appcpr(kptsc)
         call VecDestroy(coords, ierr)
         ASSERT(ierr.eq.0)
         endif
+! Si dimgeo /= 3 on ne pré-calcule pas les modes de corps rigides 
+        endif 
 #endif    
 
 !

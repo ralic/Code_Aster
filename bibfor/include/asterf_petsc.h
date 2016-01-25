@@ -2,7 +2,7 @@
 #define ASTERF_PETSC_H
 # ifdef _HAVE_PETSC
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,7 +20,7 @@
 !    include necessaire a la gestion des instances PETSC
 !----------------------------------------------------------------
 
-# include "finclude/petsc.h"
+# include "petsc/finclude/petsc.h"
 !
 ! Gestion des versions de PETSc
 #if PETSC_VERSION_MAJOR == 3 && PETSC_VERSION_MINOR <= 2
@@ -28,6 +28,9 @@
 #endif
 #if PETSC_VERSION_MAJOR == 3 && PETSC_VERSION_MINOR <= 4
 #   define ASTER_PETSC_VERSION_LEQ_34
+#endif
+#if PETSC_VERSION_MAJOR == 3 && PETSC_VERSION_MINOR <= 5
+#   define ASTER_PETSC_VERSION_LEQ_35
 #endif
 !
 # include "petsc_interfaces.h"

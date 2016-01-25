@@ -4,7 +4,7 @@ implicit none
 !
 ! person_in_charge: natacha.bereux at edf.fr
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,6 +21,7 @@ implicit none
 ! ======================================================================
 #include "asterf_types.h"
 #include "asterfort/infniv.h"
+#include "asterfort/assert.h"
 !
 !----------------------------------------------------------------
 !
@@ -52,7 +53,12 @@ implicit none
      tol_loc = tolmax
   endif
 ! Allocation d'un vecteur de travail pour calculer le produit vec_c * mat_z
+#ifdef ASTER_PETSC_VERSION_LEQ_35
   call MatGetVecs(mat_z, vec_cz, PETSC_NULL_OBJECT, ierr)
+#else
+  call MatCreateVecs( mat_z, vec_cz, PETSC_NULL_OBJECT, ierr)
+#endif
+  ASSERT(ierr == 0)
   call MatMultTranspose(mat_z, vec_c, vec_cz, ierr)
   call VecNorm(vec_cz, norm_2, norm, ierr)
 !
