@@ -309,7 +309,7 @@ IMPR_TABLE(TABLE=DIFF_MAT)
 
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
-           PRECISION=1.E-4,
+           PRECISION=2.0E-4,
            VALE_CALC=0.,
            VALE_REFE=0.0,
            NOM_PARA='MAT_DIFF',
