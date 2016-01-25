@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,7 +34,7 @@ class sd_contact(AsBase):
     zpari = 29
     zparr = 5
     zdime = 18
-    zmeth = 22
+    zmeth = 23
     zdirn = 6
     ztole = 3
     ztypn = 2
@@ -59,14 +59,14 @@ class sd_contact(AsBase):
 #   Méthodes pour connaître la formulation
     def type_form(self):
         iform = self.PARACI.get()[-1 + 4]
-        assert iform in (1, 2, 3, 4,)
+        assert iform in (1, 2, 3, 4, 5)
         return iform
 
     def formulation_disc(self):
         return self.type_form() == 1
 
     def formulation_cont(self):
-        return self.type_form() == 2
+        return self.type_form() == 2 or  self.type_form() == 5 
 
     def formulation_xfem(self):
         return self.type_form() == 3
@@ -189,8 +189,10 @@ class sd_contact(AsBase):
             assert self.JEUFO2.lonmax == nzoco
             assert self.TOLECO.lonmax == self.ztole * nzoco
 
-            assert self.JEUCOQ.lonmax == nmaco
-            assert self.JEUPOU.lonmax == nmaco
+            if (self.type_form() != 5):
+                 assert self.JEUCOQ.lonmax == nmaco
+                 assert self.JEUPOU.lonmax == nmaco
+            return
 
             assert self.PZONE.lonmax == nzoco + 1
             assert self.PSURMA.lonmax == nsuco + 1
@@ -252,9 +254,11 @@ class sd_contact(AsBase):
             )
             assert self.CARACF.lonmax == self.zcmcf * nzoco
 
-            assert self.PFROT.lonmax == nzoco + 1
-            assert self.FROTNO.lonmax >= 1
-            assert self.EXCLFR.lonmax == self.zexcl * nzoco
+            if (self.type_form() != 5):
+                  assert self.PFROT.lonmax == nzoco + 1
+                  assert self.FROTNO.lonmax >= 1
+                  assert self.EXCLFR.lonmax == self.zexcl * nzoco
+            return
 
             if self.contact_resolu():
                 # ne pas oublier les () car sd_ligrel.exists est une méthode
