@@ -10,6 +10,7 @@ implicit none
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
 #include "asterfort/xrela_elim.h"
 #include "asterfort/wkvect.h"
 !
@@ -57,6 +58,7 @@ implicit none
     aster_logical :: l_cont, l_unil
     aster_logical :: l_form_disc, l_form_cont, l_form_xfem, l_form_lac
     aster_logical :: l_cont_xfem_gg, l_edge_elim, l_all_verif
+    integer :: nt_patch
     integer :: i_exist
     character(len=8), pointer :: v_load_type(:) => null()
 !
@@ -179,7 +181,16 @@ implicit none
 ! ----- Special for LAC contact
 !
         if (l_form_lac) then
-            ASSERT(.false.)
+            ds_contact%field_input      = ds_contact%sdcont_solv(1:14)//'.CHML'
+            ds_contact%l_elem_slav      = .true.
+            ds_contact%ligrel_elem_slav = sdcont
+            ds_contact%l_elem_cont      = .true.
+            ds_contact%ligrel_elem_cont = '&&LIGRCF.CHME.LIGRE'
+            call wkvect(ds_contact%ligrel_elem_cont(1:8)//'.TYPE', 'V V K8', 1, vk8 = v_load_type)
+            v_load_type(1) = 'ME'
+            call jelira(mesh//'.PATCH', 'NUTIOC', nt_patch)
+            nt_patch = nt_patch-1
+            ds_contact%nt_patch = nt_patch
         endif
 !
 ! ----- Flag for (re) numbering
@@ -190,6 +201,9 @@ implicit none
             else
                 ds_contact%l_renumber = .true._1
             endif
+        endif
+        if (l_form_lac) then
+            ds_contact%l_renumber = .true._1
         endif
 !
 ! ----- Flag for pairing

@@ -132,4 +132,8 @@ implicit none
 !
     ds_contact%l_pair       = .false._1
 !
+! - Total number of patches (for LAC method)
+!
+    ds_contact%nt_patch     = 0
+!
 end subroutine

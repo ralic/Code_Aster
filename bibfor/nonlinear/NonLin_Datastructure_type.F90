@@ -294,6 +294,8 @@ implicit none
         aster_logical     :: l_first_geom
 ! ----- Flag for pairing
         aster_logical     :: l_pair
+! ----- Total number of patches (for LAC method)
+        integer           :: nt_patch
     end type NL_DS_Contact
 !
 ! - Type: timer management
