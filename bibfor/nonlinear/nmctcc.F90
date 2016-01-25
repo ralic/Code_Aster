@@ -21,7 +21,7 @@ implicit none
 #include "asterfort/xmtbca.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -79,6 +79,7 @@ implicit none
     integer :: nb_cont_poin, iter_cont_mult, iter_cont_maxi
     integer :: loop_cont_count
     character(len=8) :: model
+    real(kind=8) :: loop_cont_vale
     integer :: iter_newt
     aster_logical :: cycl_flip, loop_cont_conv
 !
@@ -93,6 +94,7 @@ implicit none
 !
     model          = model_(1:8)
     loop_cont_conv = .false.
+    loop_cont_vale = 0.d0
     l_erro_cont    = .false.
     iter_newt      = -1
 !
@@ -115,6 +117,7 @@ implicit none
 !
 ! - Management of contact loop
 !
+    call mmbouc(ds_contact, 'Cont', 'Set_Vale' , loop_vale_ = loop_cont_vale)
     if (l_cont_xfem) then
         if (l_cont_xfem_gg) then
             call xmtbca(mesh, hval_incr, ds_contact)
