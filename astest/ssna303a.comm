@@ -1,5 +1,5 @@
-# person_in_charge: jean-michel.proix at edf.fr
-# TITRE EPROUVETTE ENTAILLEE ELASTOPLASTIQUE EN GRANDES DEFORMATIONS
+# person_in_charge: david.haboussa at edf.fr
+# TITRE EPROUVETTE ENTAILLEE EN GRANDES DEFORMATIONS GDEF_LOG
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,6 +66,32 @@ L_ARCH_R=DEFI_LIST_REEL(DEBUT=0.0,
                         INTERVALLE=_F(JUSQU_A=IFIN,
                                       NOMBRE=50,),);
 
+
+# DEUXIEME CALCUL : GDEF_LOG
+# ------------------------------------------------------------
+
+UL=STAT_NON_LINE(MODELE=MO,
+                 CHAM_MATER=CM,
+                 EXCIT=(_F(CHARGE=CH,),
+                        _F(CHARGE=CHT,
+                           FONC_MULT=FCT_R,),),
+                 COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',
+                              DEFORMATION = 'GDEF_LOG',),
+                 INCREMENT=_F(LIST_INST=L_INST_R,),
+                 NEWTON=_F(REAC_INCR=1,
+                           MATRICE='TANGENTE',
+                           REAC_ITER=1,),
+                 CONVERGENCE=_F(ITER_GLOB_MAXI=20,),
+                 ARCHIVAGE=_F(LIST_INST=L_ARCH_R,),);
+
+UL=CALC_CHAMP(reuse=UL,RESULTAT=UL,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'))
+
+
+UL=CALC_CHAMP(reuse =UL,
+           RESULTAT=UL,
+           FORCE='REAC_NODA',);
+
+
 # PREMIER CALCUL : SIMO_MIEHE
 # ------------------------------------------------------------
 
@@ -80,7 +106,7 @@ UR=STAT_NON_LINE(MODELE=MO,
                  NEWTON=_F(REAC_INCR=1,
                            MATRICE='TANGENTE',
                            REAC_ITER=1,),
-                 CONVERGENCE=_F(ITER_GLOB_MAXI=25,),
+                 CONVERGENCE=_F(ITER_GLOB_MAXI=20,),
                  ARCHIVAGE=_F(LIST_INST=L_ARCH_R,),);
 
 UR=CALC_CHAMP(reuse=UR,RESULTAT=UR,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'))
@@ -89,13 +115,6 @@ UR=CALC_CHAMP(reuse=UR,RESULTAT=UR,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_
 UR=CALC_CHAMP(reuse =UR,
            RESULTAT=UR,
            FORCE='REAC_NODA',);
-
-
-
-IMPR_RESU(FORMAT='MED',
-          RESU=(
-                _F(RESULTAT=UR,),),);
-
 #-----------------------------------------------------------
 # DEPOUILLEMENT DES RESULTATS
 # ----------------------------------------------------------
@@ -174,5 +193,82 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
                      VALE_I=50,),
            )
 
+CONTR_L=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                                INTITULE='Contraction diametrale',
+                                RESULTAT=UL,
+                                NOM_CHAM='DEPL',
+                                GROUP_NO='NO_ENT',
+                                NOM_CMP='DX',),);
+
+EFFORT_L=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                                 INTITULE='force',
+                                 RESULTAT=UL,
+                                 NOM_CHAM='REAC_NODA',
+                                 GROUP_NO='EFFO',
+                                 RESULTANTE='DY',),);
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-2,
+           VALE_CALC= 6.59686480E+03,
+           VALE_REFE=6616.5900000000001,
+           NOM_PARA='DY',
+           TABLE=EFFORT_L,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=5,),
+           )
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-2,
+           VALE_CALC=-0.085041571,
+           VALE_REFE=-0.084500000000000006,
+           NOM_PARA='DX',
+           TABLE=CONTR_L,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=5,),
+           )
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-2,
+           VALE_CALC= 2.13629549E+04,
+           VALE_REFE=2.154157E4,
+           NOM_PARA='DY',
+           TABLE=EFFORT_L,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=25,),
+           )
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=0.02,
+           VALE_CALC=-0.381447104,
+           VALE_REFE=-0.37659999999999999,
+           NOM_PARA='DX',
+           TABLE=CONTR_L,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=25,),
+           )
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=0.029999999999999999,
+           VALE_CALC= 3.31088713E+04,
+           VALE_REFE=3.3821E4,
+           NOM_PARA='DY',
+           TABLE=EFFORT_L,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=50,),
+           )
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=0.040000000000000001,
+           VALE_CALC=-0.857560748,
+           VALE_REFE=-0.82599999999999996,
+           NOM_PARA='DX',
+           TABLE=CONTR_L,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=50,),
+           )
+
+IMPR_RESU(FORMAT='MED',
+          RESU=(_F(RESULTAT=UL,),
+                _F(RESULTAT=UR,),),);
 
 FIN();
