@@ -13,6 +13,7 @@ implicit none
 #include "asterfort/apcinv.h"
 #include "asterfort/gtlima.h"
 #include "asterfort/infdbg.h"
+#include "asterfort/wkvect.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -49,9 +50,12 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
+    integer :: nt_patch, j_dummy
     integer :: i_zone, nb_cont_zone
     character(len=19) :: sdappa
     character(len=24) :: pair_method
+    character(len=24) :: sdappa_gapi, sdappa_coef, sdappa_poid
+    character(len=24) :: sdcont_stat, sdcont_lagc
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,8 +70,25 @@ implicit none
 !
 ! - Get parameters
 !
+    nt_patch     = ds_contact%nt_patch
     nb_cont_zone = cfdisi(ds_contact%sdcont_defi, 'NZOCO')
     pair_method  = 'PANG_ROBUSTE'
+!
+! - Create objects 
+!
+    sdcont_stat = ds_contact%sdcont_solv(1:14)//'.STAT'
+    sdcont_lagc = ds_contact%sdcont_solv(1:14)//'.LAGC'
+    call wkvect(sdcont_stat, 'V V I', nt_patch, j_dummy)
+    call wkvect(sdcont_lagc, 'V V R', nt_patch, j_dummy)
+!
+! - Create objects for pairing informations
+!
+    sdappa_gapi = sdappa(1:19)//'.GAPI'
+    sdappa_coef = sdappa(1:19)//'.COEF'
+    sdappa_poid = sdappa(1:19)//'.POID'
+    call wkvect(sdappa_gapi, 'V V R', nt_patch, j_dummy)
+    call wkvect(sdappa_poid, 'V V R', nt_patch, j_dummy)
+    call wkvect(sdappa_coef, 'V V R', nt_patch, j_dummy)
 !
 ! - Loop on contact zones
 !

@@ -94,7 +94,7 @@ implicit none
 !
 ! - Create pairing datastructure
 !
-    if (l_cont_cont .or. l_cont_disc) then
+    if (l_cont_cont .or. l_cont_disc .or. l_cont_lac) then
         call cfmmap(mesh, ds_contact)
     endif
 !
