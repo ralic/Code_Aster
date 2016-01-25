@@ -2,13 +2,14 @@ subroutine confac(typma, ft, nbft, f, nbf, quad)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/utmess.h"
     integer :: ft(12, 3), nbft, f(6, 8), nbf
     character(len=8) :: typma
-    aster_logical, intent(in), optional :: quad
+    character(len=*), optional, intent(in) :: quad
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -58,7 +59,10 @@ subroutine confac(typma, ft, nbft, f, nbf, quad)
         end do
     end do
     milieu = .false.
-    if (present(quad)) milieu = .true.
+    if (present(quad)) then 
+      ASSERT(quad .eq. 'OUI')
+      milieu = .true.
+    endif
 !
     if (typma(1:4) .eq. 'HEXA') then
         nbft=12
@@ -377,14 +381,14 @@ subroutine confac(typma, ft, nbft, f, nbf, quad)
         nbft=1
 !     CONNECTIVITE DES TRIANGLES POUR UNE MAILLE TRIA3 OU TRIA6
         ft(1,1)=1
-        ft(1,2)=3
-        ft(1,3)=2
+        ft(1,2)=2
+        ft(1,3)=3
 !
         nbf=1
 !       CONNECTIVITE DES FACES POUR UNE MAILLE TRIA3 OU TRIA6
         f(1,1)=1
-        f(1,2)=3
-        f(1,3)=2
+        f(1,2)=2
+        f(1,3)=3
         f(1,4)=0
         if (milieu) then
            f(1,4)=4

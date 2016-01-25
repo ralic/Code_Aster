@@ -6,7 +6,7 @@ subroutine xsifle(ndim, ifa, jptint, cface,&
                   contac)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,13 +26,10 @@ subroutine xsifle(ndim, ifa, jptint, cface,&
 ! aslint: disable=W1306,W1504
     implicit none
 #include "asterfort/assert.h"
-#include "asterfort/conare.h"
-#include "asterfort/confac.h"
 #include "asterfort/elelin.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
 #include "asterc/r8pi.h"
-#include "asterfort/tecael.h"
 #include "asterfort/tecach.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xjacf2.h"
@@ -84,8 +81,7 @@ subroutine xsifle(ndim, ifa, jptint, cface,&
 ! IN CONTAC : TYPE DE CONTACT P1P1 ou P2P1
 !
 !
-    integer :: iadzi, iazk24, ibid2(12, 3), ibid, fac(6, 8), nbf
-    integer :: ar(12, 3), nbar, nnof, npgf, ipoidf, ivff, idfdef
+    integer :: nnof, npgf, ipoidf, ivff, idfdef
     integer :: ipgf, zxain, heavn(nnop,5)
     integer :: ddld, ddls, ncompn, ino, ig, iret, jtab(7)
     real(kind=8) :: xg(3), jac, ff(27), nd(3)
@@ -95,7 +91,7 @@ subroutine xsifle(ndim, ifa, jptint, cface,&
     real(kind=8) :: he(2)
 !
     integer :: nnos, nno
-    character(len=8) :: elref, typma, fpg, elc, elrefc
+    character(len=8) :: elref, fpg, elc, elrefc
     real(kind=8) :: tau1(3), tau2(3)
     data     he / -1.d0 , 1.d0/
 !
@@ -127,16 +123,12 @@ subroutine xsifle(ndim, ifa, jptint, cface,&
     ddls=ddld+ddlc
 !
     call elref1(elref)
-    call tecael(iadzi, iazk24, noms=0)
-    typma=zk24(iazk24-1+3+zi(iadzi-1+2)+3)
 !
     if (ndim .eq. 3) then
-        call confac(typma, ibid2, ibid, fac, nbf)
         elc='TR3'
         if(option.eq.'CALC_K_G_COHE') fpg='FPG4'
         if(option.ne.'CALC_K_G_COHE') fpg='XCON'
     else if (ndim.eq.2) then
-        call conare(typma, ar, nbar)
         elc='SE2'
         fpg='MASS'
     endif

@@ -3,7 +3,7 @@ subroutine xvechp(ndim, elrefp, nnop, igeom, itemp,&
                   jlonch, jlst, jbasec, nfh, nfe,&
                   fonree, ivectt, heavn)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -56,12 +56,9 @@ subroutine xvechp(ndim, elrefp, nnop, igeom, itemp,&
 !-----------------------------------------------------------------------
 !
 #include "asterfort/assert.h"
-#include "asterfort/conare.h"
-#include "asterfort/confac.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/lteatt.h"
-#include "asterfort/tecael.h"
 #include "asterfort/xjacf2.h"
 #include "asterfort/xjacff.h"
 #include "asterfort/xxmmvd.h"
@@ -74,10 +71,10 @@ subroutine xvechp(ndim, elrefp, nnop, igeom, itemp,&
 !
 !-----------------------------------------------------------------------
 !
-    character(len=8) :: typma, fpg, elc, elrefc, nompar(4)
+    character(len=8) :: fpg, elc, elrefc, nompar(4)
     aster_logical :: axi
-    integer :: nbddl, zxain, iadzi, iazk24, ibid, ibid2(12, 3), nbf
-    integer :: fac(6, 8), nbar, ar(12, 3), cface(30, 6), ninter, nface, nptf
+    integer :: nbddl, zxain
+    integer :: cface(30, 6), ninter, nface, nptf
     integer :: i, j, ifa, nnof, npgf, ipoidf, ivff, idfdef
     integer :: ipgf, ilev, inp, jnp, kddl, lddl, ier
     integer :: mxstac, ipos, hea_fa(2)
@@ -122,14 +119,10 @@ subroutine xvechp(ndim, elrefp, nnop, igeom, itemp,&
     zxain = xxmmvd('ZXAIN')
 !
 !     ELREFE ET FPG POUR LES FACETTES
-    call tecael(iadzi, iazk24, noms=0)
-    typma=zk24(iazk24-1+3+zi(iadzi-1+2)+3)(1:8)
     if (ndim .eq. 3) then
-        call confac(typma, ibid2, ibid, fac, nbf)
         elc='TR3'
         fpg='XCON'
     else if (ndim.eq.2) then
-        call conare(typma, ar, nbar)
         elc='SE2'
         fpg='MASS'
     endif
