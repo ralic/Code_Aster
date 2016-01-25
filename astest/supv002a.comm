@@ -69,7 +69,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'))
 # du message incriminé ou bien mettre un ASSERT(condition) si cela concerne
 # uniquement le développeur.
 previous_errors = [
-    'ALCHML', 'AMDBAR', 'AMUMPS', 'ASCSEP',
+    'ALCHML', 'AMDBAR', 'AMUMPS',
     'CHARACTER', 'CHNO', 'CHPVER',
     'CINX', 'CLO', 'COMBU', 'CVRC', 'DEEQ', 'DELG',
     'DEPSI', 'DEPSIMAX', 'DEUXMU', 'DISMOI', 'DLAHQR', 'DOMM', 'DPMAT',
