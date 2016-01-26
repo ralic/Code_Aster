@@ -100,11 +100,11 @@ subroutine op0018()
     integer, pointer :: p_model_maille(:) => null()
     character(len=8), pointer :: p_model_lgrf(:) => null()
     integer, pointer :: p_model_nbno(:) => null()
-    integer :: lont_liel, lont_nema, nb_grel, nb_elem_affe, nb_mesh_elem
+    integer :: lont_liel, nb_grel, nb_elem_affe, nb_mesh_elem
     integer :: nb_elem_naffe
     integer :: nb_affe, nb_affe_ss, nbocc
     integer :: long_grel, nb_modelisa, nume_type_poi1, nume_grel
-    integer :: nume_elem, numsup, idx_in_grel, nume_type_model, nume_type_geom
+    integer :: nume_elem, idx_in_grel, nume_type_model, nume_type_geom
 !
 ! --------------------------------------------------------------------------------------------------
 !

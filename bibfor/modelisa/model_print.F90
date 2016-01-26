@@ -47,7 +47,7 @@ subroutine model_print(model)
 ! --------------------------------------------------------------------------------------------------
 !
     integer ifm, niv
-    integer :: numvec, nbgrel, igrel, long_grel, nume_elem, nume_node
+    integer :: numvec, nbgrel, igrel, long_grel, nume_elem
     integer :: nume_type_poi1, jc, j,k, ibegin
     integer :: nume_type_elem, nume_type_geom
     integer :: iexi, nb_type_elem

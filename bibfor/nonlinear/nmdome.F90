@@ -56,7 +56,7 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: iexcit, n1, iret
+    integer :: iexcit, n1
     character(len=8) :: k8bid, k8bla
     character(len=8) :: cara, nomo, materi, repons
     character(len=16) :: nomcmd, typesd
