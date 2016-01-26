@@ -11,6 +11,7 @@ implicit none
 #include "asterfort/dismoi.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/isfonc.h"
+#include "asterfort/lccsst.h"
 #include "asterfort/nmchex.h"
 #include "asterfort/nmdebg.h"
 #include "asterfort/nmelcv.h"
@@ -74,7 +75,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    aster_logical :: l_elem_cont, l_elem_frot, l_all_verif, l_newt_cont, l_newt_geom
+    aster_logical :: l_elem_cont, l_elem_frot, l_all_verif, l_newt_cont, l_newt_geom, l_cont_lac
     character(len=8) :: mesh
     character(len=19) :: vect_elem_cont, vect_elem_frot
     character(len=19) :: vect_asse_frot, vect_asse_cont, vect_asse_fint
@@ -95,6 +96,7 @@ implicit none
     l_all_verif = isfonc(list_func_acti,'CONT_ALL_VERIF')
     l_newt_cont = isfonc(list_func_acti,'CONT_NEWTON')
     l_newt_geom = isfonc(list_func_acti,'GEOM_NEWTON')
+    l_cont_lac  = isfonc(list_func_acti,'CONT_LAC')
 !
 ! - Get fields
 !
@@ -170,6 +172,12 @@ implicit none
             call vtaxpy(+1.d0, vect_asse_frot, vect_asse_fint)
         endif
     endif
+!
+! - Special post-treatment for LAC contact method
+!
+    if (l_cont_lac) then
+        call lccsst(ds_contact, vect_asse_cont)
+    end if
 !
 999 continue
 !

@@ -16,9 +16,10 @@ implicit none
 #include "asterfort/ndynre.h"
 #include "asterfort/nmasfr.h"
 #include "asterfort/nmchex.h"
+#include "asterfort/lccmst.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -69,7 +70,7 @@ implicit none
 ! ----------------------------------------------------------------------
 !
     integer :: ifm, niv
-    aster_logical :: ldyna, lctcd, lexpl, lamor, l_neum_undead, lshima, lprem
+    aster_logical :: ldyna, lctcd, lexpl, lamor, l_neum_undead, lshima, lprem, l_cont_lac
     real(kind=8) :: coerig, coeamo, coemas, coeshi
     character(len=8) :: nomddl
     real(kind=8) :: coemat(3)
@@ -104,6 +105,7 @@ implicit none
 !
     lctcd         = isfonc(fonact,'CONT_DISCRET')
     l_neum_undead = isfonc(fonact,'NEUM_UNDEAD')
+    l_cont_laC    = isfonc(fonact,'CONT_LAC')
     lamor         = ndynlo(sddyna,'MAT_AMORT')
     ldyna         = ndynlo(sddyna,'DYNAMIQUE')
     lexpl         = ndynlo(sddyna,'EXPLICITE')
@@ -215,6 +217,12 @@ implicit none
 !
     if (lctcd .and. (phase.eq.'CORRECTION')) then
         call nmasfr(ds_contact, matass)
+    endif
+!
+! - Special post-treatment for LAC contact method
+!
+    if (l_cont_lac) then
+        call lccmst(ds_contact, matass)
     endif
 !
 999 continue
