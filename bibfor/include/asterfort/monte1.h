@@ -16,9 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine monte1(opt, te2, nout, lchout, lpaout,&
-                      igr2)
-        integer :: opt
+    subroutine monte1(te2, nout, lchout, lpaout, igr2)
         integer :: te2
         integer :: nout
         character(len=*) :: lchout(*)

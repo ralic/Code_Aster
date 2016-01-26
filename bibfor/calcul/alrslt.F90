@@ -1,6 +1,6 @@
-subroutine alrslt(iopt, ligrel, nout, lchout, lpaout,&
-                  base, ldist)
-use calcul_module, only : ca_iachoi_, ca_iachok_, ca_iaobtr_, ca_nbobtr_
+subroutine alrslt(nout, lchout, lpaout, base)
+use calcul_module, only : ca_iachoi_, ca_iachok_, ca_iaobtr_, ca_nbobtr_,&
+    ca_ligrel_, ca_option_, ca_ldist_, ca_nuop_
 implicit none
 
 ! ======================================================================
@@ -37,20 +37,15 @@ implicit none
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
 
-    integer :: iopt, nout
-    character(len=19) :: ligrel
+    integer :: nout
     character(len=*) :: base, lchout(*)
     character(len=8) :: lpaout(*)
-    aster_logical :: ldist
 ! ----------------------------------------------------------------------
 !     entrees:
-!       iopt   : option
-!       ligrel : nom de ligrel
 !       lchout : liste des noms des champs de sortie
 !       lpaout : liste des parametres associes aux champs de sortie
 !       nout   : nombre de champs de sortie
 !       base   : 'G', 'V'
-!       ldist  : calcul distribue
 !     sorties:
 !       creation des champs globaux resultats
 ! ----------------------------------------------------------------------
@@ -58,11 +53,9 @@ implicit none
     character(len=19) :: nochou, dcel
     character(len=8) :: nompar
     character(len=8) :: nomgd, tsca, tych
-    character(len=16) :: nomopt
     character(len=24), pointer :: noli(:) => null()
     character(len=24), pointer :: celk(:) => null()
 ! ----------------------------------------------------------------------
-    call jenuno(jexnum('&CATA.OP.NOMOPT', iopt), nomopt)
 
 !   -- Allocation des champs resultats :
     do i = 1, nout
@@ -81,10 +74,10 @@ implicit none
             else
                 dcel = ' '
             endif
-            call alchml(ligrel, nomopt, nompar, base, nochou,&
+            call alchml(ca_ligrel_, ca_option_, nompar, base, nochou,&
                         iret, dcel)
-!           -- les cham_elems sont incomplets si ldist
-            if (ldist) then
+!           -- les cham_elems sont incomplets si ca_ldist_
+            if (ca_ldist_) then
                 call jeveuo(nochou//'.CELK', 'E', vk24=celk)
                 celk(7)='MPI_INCOMPLET'
             endif
@@ -93,9 +86,9 @@ implicit none
 !           -- sinon --> resuelem
             call detrsd('RESUELEM', nochou)
             ASSERT((code.ge.3).and.(code.le.5))
-            call alresl(iopt, ligrel, nochou, nompar, base)
-!           -- les resu_elems sont incomplets en ldist
-            if (ldist) then
+            call alresl(ca_nuop_, ca_ligrel_, nochou, nompar, base)
+!           -- les resu_elems sont incomplets en ca_ldist_
+            if (ca_ldist_) then
                 call jeveuo(nochou//'.NOLI', 'E', vk24=noli)
                 noli(3)='MPI_INCOMPLET'
             endif
@@ -103,7 +96,7 @@ implicit none
     end do
 
 
-    call wkvect('&&CALCUL.LCHOU_I', 'V V I', max(3*nout, 3), ca_iachoi_)
+    call wkvect('&&CALCUL.LCHOU_I', 'V V I', max(2*nout, 2), ca_iachoi_)
     ca_nbobtr_ = ca_nbobtr_ + 1
     zk24(ca_iaobtr_-1+ca_nbobtr_) = '&&CALCUL.LCHOU_I'
     call wkvect('&&CALCUL.LCHOU_K8', 'V V K8', max(2*nout, 2), ca_iachok_)
@@ -125,11 +118,11 @@ implicit none
         zk8(ca_iachok_-1+2* (i-1)+2) = tsca
         call dismoi('TYPE_CHAMP', nochou, 'CHAMP', repk=tych)
         if (tych(1:2) .eq. 'EL') then
-            call jeveuo(nochou//'.CELD', 'E', zi(ca_iachoi_-1+3* (i-1)+1))
-            call jeveuo(nochou//'.CELV', 'E', zi(ca_iachoi_-1+3* (i-1)+2))
+            call jeveuo(nochou//'.CELD', 'E', zi(ca_iachoi_-1+2* (i-1)+1))
+            call jeveuo(nochou//'.CELV', 'E', zi(ca_iachoi_-1+2* (i-1)+2))
             zk8(ca_iachok_-1+2* (i-1)+1) = 'CHML'
         else
-            call jeveuo(nochou//'.DESC', 'E', zi(ca_iachoi_-1+3* (i-1)+1))
+            call jeveuo(nochou//'.DESC', 'E', zi(ca_iachoi_-1+2* (i-1)+1))
             zk8(ca_iachok_-1+2* (i-1)+1) = 'RESL'
         endif
  30     continue

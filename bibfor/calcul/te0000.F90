@@ -1,7 +1,8 @@
 subroutine te0000(numc, opt, te)
 ! aslint: disable=W1501
 
-use calcul_module, only : ca_capoiz_, ca_ianoop_, ca_ianote_, ca_iel_, ca_nbelgr_
+use calcul_module, only : ca_capoiz_, ca_ianoop_, ca_ianote_, ca_iel_, ca_nbelgr_,&
+    ca_lparal_, ca_paral_
 
 implicit none
 
@@ -642,8 +643,6 @@ implicit none
 !     sorties:
 !      on lance le bon ca_numc(opt,te)
 ! ----------------------------------------------------------------------
-    integer :: iret, jparal
-    aster_logical :: lparal
     character(len=16) :: nomte, nomopt
     character(len=8) :: k8bid
 !-------------------------------------------------------------------
@@ -654,22 +653,12 @@ implicit none
     ASSERT(numc.gt.0)
     ASSERT(numc.le.600)
 
-!   Parallele or not ?
-!   --------------------
-    call jeexin('&CALCUL.PARALLELE', iret)
-    if (iret .ne. 0) then
-        lparal =.true.
-        call jeveuo('&CALCUL.PARALLELE', 'L', jparal)
-    else
-        lparal =.false.
-    endif
-
     nomte = zk16(ca_ianote_-1+te)
     nomopt = zk16(ca_ianoop_-1+opt)
 
     do ca_iel_ = 1, ca_nbelgr_
-        if (lparal) then
-            if (.not.zl(jparal-1+ca_iel_)) goto 999
+        if (ca_lparal_) then
+            if (.not.ca_paral_(ca_iel_)) cycle
         endif
         ca_capoiz_=0
         select case (numc)
@@ -1877,7 +1866,6 @@ implicit none
             call codent(numc, 'D', k8bid)
             call utmess('F', 'CALCUL_27', 1, k8bid)
         end select
-999     continue
     end do
 
     call uttcpu('CPU.CALC.3', 'FIN', ' ')

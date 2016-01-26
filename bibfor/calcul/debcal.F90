@@ -1,8 +1,8 @@
-subroutine debcal(nomop, ligrel, nin, lchin, lpain,&
-                  nout, lchout)
+subroutine debcal(nin, lchin, lpain, nout, lchout)
 
 use calcul_module, only : ca_iachii_, ca_iachik_, ca_iachix_, &
-    ca_iactif_, ca_iaobtr_, ca_iaopds_, ca_iaoppa_, ca_nbobtr_
+    ca_iactif_, ca_iaobtr_, ca_iaopds_, ca_iaoppa_, ca_nbobtr_,&
+    ca_ligrel_, ca_option_
 
 implicit none
 
@@ -47,8 +47,6 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 
-    character(len=16) :: nomop
-    character(len=19) :: ligrel
     integer :: nin, nout
     character(len=19) :: lchin(nin), lchout(nout)
     character(len=8) :: lpain(nin)
@@ -56,12 +54,10 @@ implicit none
 !
 !  but :
 !   1. verifier les "entrees" de calcul.
-!   2. initialiser certains objets pour le calcul ainsi que les
-!    communs contenant les adresses des objets des catalogues.
+!   2. initialiser certains objets pour le calcul.
+!   3. calculer certaines variables de calcul_module
 !
 !  entrees:
-!     nomop  :  nom d'1 option
-!     ligrel :  nom du ligrel sur lequel on doit faire le debcal
 !     nin    :  nombre de champs parametres "in"
 !     nout   :  nombre de champs parametres "out"
 !     lchin  :  liste des noms des champs "in"
@@ -86,7 +82,11 @@ implicit none
     character(len=24), pointer :: refe(:) => null()
     integer, pointer :: nbno(:) => null()
 !-----------------------------------------------------------------------
-    call dismoi('NOM_MAILLA', ligrel, 'LIGREL', repk=ma)
+
+!   -- Remarque : cette routine ne fait pas appel a jemarq / jedema
+!      car elle stocke des adresses jeveux.
+
+    call dismoi('NOM_MAILLA', ca_ligrel_, 'LIGREL', repk=ma)
 
 
 !   -- verification que les champs "in" ont des noms licites:
@@ -121,7 +121,7 @@ implicit none
 
 
 !   -- on verifie que les champs "in" ont un maillage sous-jacent
-!      identique au maillage associe au ligrel :
+!      identique au maillage associe a ca_ligrel_ :
 !   -------------------------------------------------------------
     do i = 1, nin
         chin=lchin(i)
@@ -129,7 +129,7 @@ implicit none
         call dismoi('NOM_MAILLA', chin, 'CHAMP', repk=ma2)
         if (ma2 .ne. ma) then
             valk(1)=chin
-            valk(2)=ligrel
+            valk(2)=ca_ligrel_
             valk(3)=ma2
             valk(4)=ma
             call utmess('F', 'CALCUL_3', nk=4, valk=valk)
@@ -161,21 +161,15 @@ implicit none
     nbpara = zi(ca_iaopds_-1+2) + zi(ca_iaopds_-1+3)
     do i = 1, nin
         chin=lchin(i)
-
-!        -- si le champ est blanc ou s'il n'existe pa,s
-!           on ne fait rien :
-        if (chin(1:1) .eq. ' ') cycle
+        ASSERT(chin.ne.' ')
         call jeexin(chin//'.DESC', iret1)
         if (iret1 .gt. 0) objdes=chin//'.DESC'
         call jeexin(chin//'.CELD', iret2)
         if (iret2 .gt. 0) objdes=chin//'.CELD'
-        if ((iret1+iret2) .eq. 0) cycle
+        ASSERT((iret1+iret2).gt.0)
         nompar=lpain(i)
-
-!        -- si le parametre est inconnu pour l'option calculee, on ne
-!        -- fait rien:
         jpar=indik8(zk8(ca_iaoppa_),nompar,1,nbpara)
-        if (jpar .eq. 0) cycle
+        ASSERT(jpar.ne.0)
 
         call dismoi('TYPE_CHAMP', chin, 'CHAMP', repk=tych)
 
@@ -185,11 +179,11 @@ implicit none
 !           (et on modifie son nom dans lchin)
         if ((tych(1:2).eq.'EL') .or. (tych.eq.'RESL')) then
             call dismoi('NOM_LIGREL', chin, 'CHAMP', repk=ligre2)
-            if (ligre2 .ne. ligrel) then
+            if (ligre2 .ne. ca_ligrel_) then
                 call codent(i, 'G', knum)
                 lchin(i)='&&CALCUL.CHML.'//knum
                 ASSERT(ca_iactif_.eq.0)
-                call chligr(chin, ligrel, nomop, nompar, 'V',&
+                call chligr(chin, ca_ligrel_, ca_option_, nompar, 'V',&
                             lchin(i))
 
                 call jeexin(lchin(i)(1:19)//'.CELD', ibid)
@@ -236,7 +230,7 @@ implicit none
             valk(2)=k8bi2
             valk(3)=nompar
             valk(4)=k8bi1
-            valk(5)=nomop
+            valk(5)=ca_option_
             call utmess('F', 'CALCUL_5', nk=5, valk=valk)
         endif
 
@@ -257,7 +251,7 @@ implicit none
 
 !           -- si la carte n'est pas constante, on l'etend:
             if (.not.(zi(desc-1+2).eq.1.and.zi(desc-1+4).eq.1)) then
-                call etenca(chin, ligrel, iret)
+                call etenca(chin, ca_ligrel_, iret)
                 if (iret .gt. 0) goto 998
                 call jeexin(chin//'.PTMA', iret)
                 if (iret .gt. 0) then
@@ -284,9 +278,9 @@ implicit none
                 noprno=refe(2)(1:19)//'.PRNO'
                 call jeveuo(jexnum(noprno, 1), 'L', iii)
                 zi(ca_iachii_-1+11*(i-1)+8)=iii
-                call jeveuo(ligrel//'.NBNO', 'L', vi=nbno)
+                call jeveuo(ca_ligrel_//'.NBNO', 'L', vi=nbno)
                 if (nbno(1) .gt. 0) then
-                    call jenonu(jexnom(noprno(1:19)//'.LILI', ligrel//'      '), jproli)
+                    call jenonu(jexnom(noprno(1:19)//'.LILI', ca_ligrel_//'      '), jproli)
                     if (jproli .eq. 0) then
                         zi(ca_iachii_-1+11*(i-1)+9)=isnnem()
                     else

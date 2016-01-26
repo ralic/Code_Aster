@@ -16,9 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine debca1(nomop, ligrel, nin)
-        character(len=16) :: nomop
-        character(len=19) :: ligrel
+    subroutine debca1(nin)
         integer :: nin
     end subroutine debca1
 end interface

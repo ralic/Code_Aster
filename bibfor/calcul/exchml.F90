@@ -2,7 +2,8 @@ subroutine exchml(imodat, iparg)
 
 use calcul_module, only : ca_iachii_, ca_iachik_, ca_iachin_, ca_iachlo_,&
      ca_iamloc_, ca_iawlo2_, ca_igr_, ca_iichin_,&
-     ca_ilchlo_, ca_ilmloc_, ca_nbelgr_, ca_nbgr_, ca_ncmpmx_, ca_nec_, ca_typegd_
+     ca_ilchlo_, ca_ilmloc_, ca_nbelgr_, ca_nbgr_, ca_ncmpmx_, ca_nec_, ca_typegd_,&
+     ca_lparal_, ca_paral_, ca_iel_
 
 implicit none
 
@@ -43,24 +44,13 @@ implicit none
     integer :: jceld, mode, debgr2, lggre2, iaux1
     integer :: itypl1, modlo1, nbpoi1, lgcata
     integer :: itypl2, modlo2, nbpoi2
-    integer ::  iel
     integer :: ncmp1, ncmp2
-    integer ::  iret, debugr, lggrel
-    integer :: jec, ncmp, jad1, jad2, jel, ipt2, k, ipt1, jparal
+    integer ::  debugr, lggrel
+    integer :: jec, ncmp, jad1, jad2, ipt2, k, ipt1
     integer :: nbpoi, icmp1, icmp2, kcmp, ipt
-    aster_logical :: etendu, lparal, lverec
+    aster_logical :: etendu, lverec
     character(len=8) :: tych, cas
 !-------------------------------------------------------------------
-
-!   parallele or not ?
-!   -------------------------
-    call jeexin('&CALCUL.PARALLELE', iret)
-    if (iret .ne. 0) then
-        lparal=.true.
-        call jeveuo('&CALCUL.PARALLELE', 'L', jparal)
-    else
-        lparal=.false.
-    endif
 
     tych=zk8(ca_iachik_-1+2*(ca_iichin_-1)+1)
     ASSERT(tych(1:4).eq.'CHML')
@@ -164,20 +154,20 @@ implicit none
 !   -- cas "expand" ou "copie":
 !   ---------------------------
     if (cas .eq. 'EXPAND' .or. cas .eq. 'COPIE') then
-        do jel = 1, ca_nbelgr_
-            if (lparal) then
-                if (.not.zl(jparal-1+jel)) cycle
+        do ca_iel_ = 1, ca_nbelgr_
+            if (ca_lparal_) then
+                if (.not.ca_paral_(ca_iel_)) cycle
             endif
             if (cas .eq. 'EXPAND') then
-                jad1=ca_iachin_-1+debgr2+(jel-1)*ncmp
+                jad1=ca_iachin_-1+debgr2+(ca_iel_-1)*ncmp
                 do ipt2 = 1, nbpoi2
-                    jad2=ca_iachlo_+debugr-1+((jel-1)*nbpoi2+ipt2-1)*ncmp
+                    jad2=ca_iachlo_+debugr-1+((ca_iel_-1)*nbpoi2+ipt2-1)*ncmp
                     call jacopo(ncmp, ca_typegd_, jad1, jad2)
                 enddo
             else if (cas.eq.'COPIE') then
                 ASSERT(nbpoi1.eq.nbpoi2)
-                jad1=ca_iachin_-1+debgr2+(jel-1)*ncmp*nbpoi1
-                jad2=ca_iachlo_-1+debugr+(jel-1)*ncmp*nbpoi1
+                jad1=ca_iachin_-1+debgr2+(ca_iel_-1)*ncmp*nbpoi1
+                jad2=ca_iachlo_-1+debugr+(ca_iel_-1)*ncmp*nbpoi1
                 call jacopo(ncmp*nbpoi1, ca_typegd_, jad1, jad2)
             endif
         enddo
@@ -203,14 +193,14 @@ implicit none
             endif
             ASSERT(icmp1.ge.1 .and. icmp1.le.ncmp1)
             ASSERT(icmp2.ge.1 .and. icmp2.le.ncmp2)
-            do jel = 1, ca_nbelgr_
-                if (lparal) then
-                    if (.not.zl(jparal-1+jel)) cycle
+            do ca_iel_ = 1, ca_nbelgr_
+                if (ca_lparal_) then
+                    if (.not.ca_paral_(ca_iel_)) cycle
                 endif
 
                 do ipt = 1, nbpoi
-                    jad1=ca_iachin_+debgr2-1+((jel-1)*nbpoi+ipt-1)*ncmp1
-                    jad2=ca_iachlo_+debugr-1+((jel-1)*nbpoi+ipt-1)*ncmp2
+                    jad1=ca_iachin_+debgr2-1+((ca_iel_-1)*nbpoi+ipt-1)*ncmp1
+                    jad2=ca_iachlo_+debugr-1+((ca_iel_-1)*nbpoi+ipt-1)*ncmp2
                     jad1=jad1-1+icmp1
                     jad2=jad2-1+icmp2
                     call jacopo(1, ca_typegd_, jad1, jad2)
@@ -224,10 +214,10 @@ implicit none
     else if (nbpoi2.eq.1) then
 
         if (ca_typegd_ .eq. 'R') then
-            if (lparal) then
-                do iel = 1, ca_nbelgr_
-                    if (zl(jparal-1+iel)) then
-                        iaux1=ca_iachlo_+debugr-1+(iel-1)*ncmp
+            if (ca_lparal_) then
+                do ca_iel_ = 1, ca_nbelgr_
+                    if (ca_paral_(ca_iel_)) then
+                        iaux1=ca_iachlo_+debugr-1+(ca_iel_-1)*ncmp
                         do k = 1, ncmp
                             zr(iaux1-1+k)=0.d0
                         enddo
@@ -239,10 +229,10 @@ implicit none
                 enddo
             endif
         else if (ca_typegd_.eq.'C') then
-            if (lparal) then
-                do iel = 1, ca_nbelgr_
-                    if (zl(jparal-1+iel)) then
-                        iaux1=ca_iachlo_+debugr-1+(iel-1)*ncmp
+            if (ca_lparal_) then
+                do ca_iel_ = 1, ca_nbelgr_
+                    if (ca_paral_(ca_iel_)) then
+                        iaux1=ca_iachlo_+debugr-1+(ca_iel_-1)*ncmp
                         do k = 1, ncmp
                             zc(iaux1-1+k)=(0.d0,0.d0)
                         enddo
@@ -257,13 +247,13 @@ implicit none
             ASSERT(.false.)
         endif
 
-        do jel = 1, ca_nbelgr_
-            if (lparal) then
-                if (.not.zl(jparal-1+jel)) cycle
+        do ca_iel_ = 1, ca_nbelgr_
+            if (ca_lparal_) then
+                if (.not.ca_paral_(ca_iel_)) cycle
             endif
-            jad2=ca_iachlo_+debugr-1+(jel-1)*ncmp
+            jad2=ca_iachlo_+debugr-1+(ca_iel_-1)*ncmp
             do ipt1 = 1, nbpoi1
-                jad1=ca_iachin_-1+debgr2+((jel-1)*nbpoi1+ipt1-1)*ncmp
+                jad1=ca_iachin_-1+debgr2+((ca_iel_-1)*nbpoi1+ipt1-1)*ncmp
                 do k = 0, ncmp-1
                     if (ca_typegd_ .eq. 'R') then
                         zr(jad2+k)=zr(jad2+k)+zr(jad1+k)/dble(nbpoi1)

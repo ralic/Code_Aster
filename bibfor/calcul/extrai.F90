@@ -1,7 +1,7 @@
-subroutine extrai(nin, lchin, lpain, opt, nute,&
-                  ligrel, init)
+subroutine extrai(nin, lchin, lpain, init)
 
-use calcul_module, only : ca_calvoi_, ca_igr_, ca_nbelgr_, ca_nbgr_
+use calcul_module, only : ca_calvoi_, ca_igr_, ca_nbelgr_, ca_nbgr_,&
+    ca_ligrel_, ca_nute_
 
 implicit none
 
@@ -28,10 +28,9 @@ implicit none
 #include "asterfort/nbelem.h"
 #include "asterfort/typele.h"
 
-    integer :: nin, opt, nute
+    integer :: nin
     character(len=*) :: lchin(*), init
     character(len=8) :: lpain(*)
-    character(len=19) :: ligrel
 !-----------------------------------------------------------------------
 !     but: preparer les champs locaux "in"
 !-----------------------------------------------------------------------
@@ -40,16 +39,17 @@ implicit none
 
     if (ca_calvoi_ .eq. 0) then
         if (init .ne. 'INIT') then
-            call extra1(nin, lchin, lpain, opt, nute)
+            ca_nute_=typele(ca_ligrel_,ca_igr_)
+            call extra1(nin, lchin, lpain)
         endif
     else
 !       -- on prepare tout la 1ere fois :
         if (init .eq. 'INIT') then
             do ca_igr_=1,ca_nbgr_
-                ca_nbelgr_=nbelem(ligrel,ca_igr_)
+                ca_nbelgr_=nbelem(ca_ligrel_,ca_igr_)
                 if (ca_nbelgr_.gt.0) then
-                    nute=typele(ligrel,ca_igr_)
-                    call extra1(nin, lchin, lpain, opt, nute)
+                    ca_nute_=typele(ca_ligrel_,ca_igr_)
+                    call extra1(nin, lchin, lpain)
                 endif
             enddo
         endif

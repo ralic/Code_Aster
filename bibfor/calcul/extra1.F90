@@ -1,9 +1,10 @@
-subroutine extra1(nin, lchin, lpain, opt, nute)
+subroutine extra1(nin, lchin, lpain)
 
 use calcul_module, only : ca_iachii_, ca_iachik_, ca_iachin_, ca_iachix_,&
      ca_iachlo_, ca_ianueq_, ca_iaoppa_, ca_iawlo2_,&
      ca_iawloc_, ca_igd_, ca_igr_, ca_iichin_, ca_ilchlo_, ca_itypgd_,&
-     ca_lprno_, ca_nbgr_, ca_ncmpmx_, ca_nec_, ca_npario_, ca_typegd_
+     ca_lprno_, ca_nbgr_, ca_ncmpmx_, ca_nec_, ca_npario_, ca_typegd_,&
+     ca_nute_, ca_nuop_
 
 implicit none
 
@@ -37,7 +38,7 @@ implicit none
 #include "asterfort/nopara.h"
 #include "asterfort/utmess.h"
 
-    integer :: nin, opt, nute
+    integer :: nin
     character(len=*) :: lchin(*)
     character(len=8) :: lpain(*)
 !-----------------------------------------------------------------------
@@ -52,9 +53,9 @@ implicit none
     aster_logical :: exich
 !-------------------------------------------------------------------
 
-    npin=nbpara(opt,nute,'IN ')
+    npin=nbpara(ca_nuop_,ca_nute_,'IN ')
     do ipar = 1, npin
-        nompar=nopara(opt,nute,'IN ',ipar)
+        nompar=nopara(ca_nuop_,ca_nute_,'IN ',ipar)
         iparg=indik8(zk8(ca_iaoppa_),nompar,1,ca_npario_)
         iparin=indik8(lpain,nompar,1,nin)
         exich=((iparin.gt.0) .and. zl(ca_iachix_-1+iparin))
@@ -112,7 +113,7 @@ implicit none
  30     continue
 
 
-!       2- on lance l'extraction:
+!       2- on fait l'extraction:
 !       -------------------------------------------
         if (type .eq. 'CART') call excart(imodat, iparg)
         if (type .eq. 'CHML') call exchml(imodat, iparg)

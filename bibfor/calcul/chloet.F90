@@ -59,7 +59,7 @@ implicit none
     else
         tych = zk8(ca_iachok_-1+2* (ich-1)+1)
         if (tych .ne. 'CHML') goto 20
-        jceld = zi(ca_iachoi_-1+3* (ich-1)+1)
+        jceld = zi(ca_iachoi_-1+2* (ich-1)+1)
     endif
     if ((zi(jceld-1+4).eq.0) .and. (zi(jceld-1+3).le.1)) then
         goto 20

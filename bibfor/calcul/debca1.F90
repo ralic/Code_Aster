@@ -1,4 +1,4 @@
-subroutine debca1(nomop, ligrel, nin)
+subroutine debca1(nin)
 
 use calcul_module, only : ca_caindz_, ca_calvoi_, ca_iadsgd_,&
      ca_iainel_, ca_ialiel_, ca_iamaco_, ca_iamloc_,&
@@ -9,8 +9,11 @@ use calcul_module, only : ca_caindz_, ca_calvoi_, ca_iadsgd_,&
      ca_jelvoi_, ca_jnbelr_, ca_jnoelr_, ca_jnolfp_, ca_jpnlfp_, ca_jptvoi_,&
      ca_jrepe_, ca_lgco_, ca_nblfpg_,&
      ca_nbobj_, ca_nbobmx_, ca_nbobtr_, ca_nbsav_, ca_nparin_, ca_npario_,&
-     ca_td1_, ca_tf1_, ca_timed1_, ca_timef1_
-     
+     ca_td1_, ca_tf1_, ca_timed1_, ca_timef1_,&
+     ca_ldist_, ca_ldgrel_, ca_rang_, ca_nbproc_, ca_numsd_, ca_nbelmx_,&
+     ca_option_, ca_ligrel_, ca_lparal_, ca_paral_, ca_nbelgr_, ca_nbgr_
+
+
 implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -42,42 +45,54 @@ implicit none
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/nbgrel.h"
+#include "asterfort/nbelem.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/asmpi_info.h"
 
-    character(len=16) :: nomop
-    character(len=19) :: ligrel
     integer :: nin
 !----------------------------------------------------------------------
 !     but : initialiser certaines variables de calcul_module
 !
 !     entrees:
-!        nomop  :  nom d'1 option
-!        ligrel :  nom du ligrel sur lequel on doit faire le calcul
 !        nin    :  majorant du nombre de champs "in"
 !     sorties:
 !        allocation de certains objets de travail
 !
 !----------------------------------------------------------------------
+    mpi_int :: mrank, msize
     character(len=8) :: ma
     integer :: iret, ier, opt,  nbscmx, nbpara
-    integer :: nnomx, nbopt, nbte, i
+    integer :: nnomx, nbopt, nbte, i,j, vali(2)
     character(len=16) :: nomop2, nomte
     character(len=3) :: bevois, exiele
     character(len=12) :: vge
+    character(len=19) :: partit
     real(kind=8) :: rundef
     integer, pointer :: nbligcol(:) => null()
     character(len=16), pointer :: nvge(:) => null()
+    integer, pointer :: prti(:) => null()
+    character(len=24), pointer :: prtk(:) => null()
+
 ! -------------------------------------------------------------------
 
-    call dismoi('EXI_ELEM', ligrel, 'LIGREL', repk=exiele)
-    if (exiele .ne. 'OUI') then
-        call utmess('F', 'CALCUL_1', sk=ligrel)
-    endif
+!   -- Remarque : cette routine ne fait pas appel a jemarq / jedema
+!      car elle stocke des adresses jeveux.
 
-    call jenonu(jexnom('&CATA.OP.NOMOPT', nomop), opt)
+    call dismoi('EXI_ELEM', ca_ligrel_, 'LIGREL', repk=exiele)
+    if (exiele .ne. 'OUI') then
+        call utmess('F', 'CALCUL_1', sk=ca_ligrel_)
+    endif
+    ca_nbgr_=nbgrel(ca_ligrel_)
+    ca_nbelmx_=0
+    do j = 1, ca_nbgr_
+        ca_nbelmx_=max(nbelem(ca_ligrel_,j,1),ca_nbelmx_)
+    enddo
+
+    call jenonu(jexnom('&CATA.OP.NOMOPT', ca_option_), opt)
     if (opt .eq. 0) then
-        call utmess('F', 'CALCUL_2', sk=nomop)
+        call utmess('F', 'CALCUL_2', sk=ca_option_)
     endif
 
 
@@ -105,23 +120,23 @@ implicit none
 !     nbscmx = nb de types scalaires max : I,R,C,L,K8,K16,K24,K32,K80
     ca_nbobtr_=0
     nbpara=zi(ca_iaopds_-1+2)+zi(ca_iaopds_-1+3)
-    ca_nbobmx_=2*nbscmx+nin*3+nbpara+35
+    ca_nbobmx_=2*nbscmx+nin*3+nbpara+36
     call wkvect('&&CALCUL.OBJETS_TRAV', 'V V K24', ca_nbobmx_, ca_iaobtr_)
 
 
-    call dismoi('NOM_MAILLA', ligrel, 'LIGREL', repk=ma)
+    call dismoi('NOM_MAILLA', ca_ligrel_, 'LIGREL', repk=ma)
     call jeexin(ma//'.CONNEX', iret)
     if (iret .gt. 0) then
         call jeveuo(ma//'.CONNEX', 'L', ca_iamaco_)
         call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', ca_ilmaco_)
     endif
-    call jeexin(ligrel//'.NEMA', iret)
+    call jeexin(ca_ligrel_//'.NEMA', iret)
     if (iret .gt. 0) then
-        call jeveuo(ligrel//'.NEMA', 'L', ca_iamsco_)
-        call jeveuo(jexatr(ligrel//'.NEMA', 'LONCUM'), 'L', ca_ilmsco_)
+        call jeveuo(ca_ligrel_//'.NEMA', 'L', ca_iamsco_)
+        call jeveuo(jexatr(ca_ligrel_//'.NEMA', 'LONCUM'), 'L', ca_ilmsco_)
     endif
-    call jeveuo(ligrel//'.LIEL', 'L', ca_ialiel_)
-    call jeveuo(jexatr(ligrel//'.LIEL', 'LONCUM'), 'L', ca_illiel_)
+    call jeveuo(ca_ligrel_//'.LIEL', 'L', ca_ialiel_)
+    call jeveuo(jexatr(ca_ligrel_//'.LIEL', 'LONCUM'), 'L', ca_illiel_)
 
 
     call jeveuo('&CATA.TE.NBELREFE', 'L', ca_jnbelr_)
@@ -131,19 +146,19 @@ implicit none
     call jelira('&CATA.TE.NOLOCFPG', 'LONMAX', ca_nblfpg_)
 
 
-    call dismoi('BESOIN_VOISIN', ligrel, 'LIGREL', repk=bevois)
+    call dismoi('BESOIN_VOISIN', ca_ligrel_, 'LIGREL', repk=bevois)
     if (bevois .eq. 'OUI') then
         ca_calvoi_=1
     else
         ca_calvoi_=0
     endif
     if (ca_calvoi_ .eq. 1) then
-        call jeexin(ligrel//'.REPE', ier)
-        if (ier .eq. 0) call cormgi('V', ligrel)
-        call jeveuo(ligrel//'.REPE', 'L', ca_jrepe_)
-        call jeexin(ligrel//'.NVGE', ier)
+        call jeexin(ca_ligrel_//'.REPE', ier)
+        if (ier .eq. 0) call cormgi('V', ca_ligrel_)
+        call jeveuo(ca_ligrel_//'.REPE', 'L', ca_jrepe_)
+        call jeexin(ca_ligrel_//'.NVGE', ier)
         if (ier .ne. 0) then
-            call jeveuo(ligrel//'.NVGE', 'L', vk16=nvge)
+            call jeveuo(ca_ligrel_//'.NVGE', 'L', vk16=nvge)
             vge=nvge(1)(1:12)
             call jeveuo(vge//'.PTVOIS', 'L', ca_jptvoi_)
             call jeveuo(vge//'.ELVOIS', 'L', ca_jelvoi_)
@@ -160,7 +175,7 @@ implicit none
     ca_nbobtr_=ca_nbobtr_+1
     zk24(ca_iaobtr_-1+ca_nbobtr_)='&&CALCUL.TECAEL_K24'
     zk24(ca_icaelk_-1+1)=ma
-    zk24(ca_icaelk_-1+2)=ligrel
+    zk24(ca_icaelk_-1+2)=ca_ligrel_
     call wkvect('&&CALCUL.TECAEL_I', 'V V I', 4+nnomx, ca_icaeli_)
     ca_nbobtr_=ca_nbobtr_+1
     zk24(ca_iaobtr_-1+ca_nbobtr_)='&&CALCUL.TECAEL_I'
@@ -209,6 +224,38 @@ implicit none
         call jeveuo('&&CALCUL.NOMOP', 'L', ca_ianoop_)
         call jeveuo('&&CALCUL.NOMTE', 'L', ca_ianote_)
     endif
+
+
+!   -- Paralelisme :
+!   =================
+    ca_ldist_=.false.
+    ca_ldgrel_=.false.
+    ca_lparal_=.false.
+    call dismoi('PARTITION', ca_ligrel_, 'LIGREL', repk=partit)
+    call jeexin(partit//'.PRTK', iret)
+    if (iret .ne. 0) then
+        ca_ldist_=.true.
+        call asmpi_info(rank=mrank, size=msize)
+        ca_rang_ = to_aster_int(mrank)
+        ca_nbproc_ = to_aster_int(msize)
+
+        call jeveuo(partit//'.PRTK', 'L', vk24=prtk)
+        ca_ldgrel_=prtk(1).eq.'GROUP_ELEM'
+        if (.not.ca_ldgrel_) then
+        call jeveuo(partit//'.PRTI', 'L', vi=prti)
+            if (prti(1) .ne. ca_nbproc_) then
+                vali(1)=prti(1)
+                vali(2)=ca_nbproc_
+                call utmess('F', 'CALCUL_35', ni=2, vali=vali)
+            endif
+            ca_lparal_=.true.
+            call jeveuo(partit//'.NUPROC.MAILLE', 'L', vi=ca_numsd_)
+            call wkvect('&&CALCUL.PARALLELE', 'V V L', ca_nbelmx_, vl=ca_paral_)
+            ca_nbobtr_=ca_nbobtr_+1
+            zk24(ca_iaobtr_-1+ca_nbobtr_)='&&CALCUL.PARALLELE'
+        endif
+    endif
+
 
 
 end subroutine

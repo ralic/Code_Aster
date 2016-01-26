@@ -2,7 +2,7 @@ subroutine excart(imodat, iparg)
 
 use calcul_module, only : ca_iachii_, ca_iachlo_, ca_iamloc_, ca_iawlo2_,&
     ca_iel_, ca_igr_, ca_iichin_, ca_ilchlo_,&
-    ca_ilmloc_, ca_nbelgr_, ca_nbgr_, ca_typegd_
+    ca_ilmloc_, ca_nbelgr_, ca_nbgr_, ca_typegd_, ca_paral_, ca_lparal_
 
 implicit none
 
@@ -37,21 +37,10 @@ implicit none
 !     entrees:
 !       imodat : indice dans la collection modeloc
 !----------------------------------------------------------------------
-    integer :: desc, modloc, dec1, dec2, lgcata, iret
-    integer :: ipt, ityplo, jparal
+    integer :: desc, modloc, dec1, dec2, lgcata
+    integer :: ipt, ityplo
     integer :: nbpoin, ncmp, ngrmx, debugr
-    aster_logical :: lparal
 !-------------------------------------------------------------------
-
-!   parallele or not ?
-!   -------------------------
-    call jeexin('&CALCUL.PARALLELE', iret)
-    if (iret .ne. 0) then
-        lparal=.true.
-        call jeveuo('&CALCUL.PARALLELE', 'L', jparal)
-    else
-        lparal=.false.
-    endif
 
 !   recuperation de la carte:
 !   -------------------------
@@ -67,15 +56,14 @@ implicit none
 !   1-  cas: cart -> elno (ou elga) : "expand"
 !   -------------------------------------------
     if ((ityplo.eq.2) .or. (ityplo.eq.3)) then
-
         ASSERT((ityplo.ne.2) .or. (nbpoin.le.10000))
         ncmp=lgcata/nbpoin
         call excar2(ngrmx, desc, zi(modloc-1+5), ncmp, debugr)
-!       on dupplique les valeurs par la fin pour ne pas
+!       on dupplique les valeurs en commencant par la fin pour ne pas
 !       les ecraser :
         do ca_iel_ = ca_nbelgr_, 1, -1
-            if (lparal) then
-                if (.not.zl(jparal-1+ca_iel_)) cycle
+            if (ca_lparal_) then
+                if (.not.ca_paral_(ca_iel_)) cycle
             endif
             do ipt = nbpoin, 1, -1
                 dec1=debugr-1+(ca_iel_-1)*ncmp
@@ -85,18 +73,16 @@ implicit none
             enddo
         enddo
 
-!   2-  cas: cart -> asse :
-!   -----------------------
-    else if (ityplo.ge.4) then
-        ASSERT(.false.)
 
-
-!   3-  cas: cart -> elem :
+!   2-  cas: cart -> elem :
 !   -----------------------
     else if (ityplo.eq.1) then
         ASSERT(nbpoin.eq.1)
         ncmp=lgcata
         call excar2(ngrmx, desc, zi(modloc-1+5), ncmp, debugr)
+
+    else
+        ASSERT(.false.)
     endif
 
 end subroutine

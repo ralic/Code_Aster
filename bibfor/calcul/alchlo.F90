@@ -1,7 +1,7 @@
-subroutine alchlo(opt, ligrel, nin, lpain, nout, lpaout)
+subroutine alchlo(nin, lpain, nout, lpaout)
 use calcul_module, only : ca_iaobtr_, ca_iaoppa_, ca_iawlo2_, ca_iawloc_,&
                           ca_iawtyp_, ca_igr_, ca_nbgr_, ca_nbobtr_,&
-                          ca_npario_
+                          ca_npario_, ca_ligrel_, ca_nuop_
 implicit none
 
 ! ======================================================================
@@ -32,16 +32,13 @@ implicit none
 #include "asterfort/scalai.h"
 #include "asterfort/typele.h"
 #include "asterfort/wkvect.h"
-    integer :: opt, nin, nout
+    integer :: nin, nout
     character(len=8) :: lpain(nin), lpaout(nout)
-    character(len=19) :: ligrel
 ! ----------------------------------------------------------------------
 !     entrees:
-!      opt : option
-!     ligrel : nom de ligrel
 
 !     sorties:
-!     creation des champs locaux de noms &&calcul.nompar(opt)
+!     creation des champs locaux de noms &&CALCUL.NOMPAR(OPT)
 !     le champ local est une zone memoire temporaire a la routine calcul
 !     qui contiendra les  valeurs des champs "bien rangees"
 !     (pour les te00ij) de tous les elements d'un grel.
@@ -66,8 +63,8 @@ implicit none
 
 !   -- initialisation de '&&CALCUL.IA_CHLO2':
     do ca_igr_ = 1, ca_nbgr_
-        nute=typele(ligrel,ca_igr_,1)
-        call mecoe1(opt, nute)
+        nute=typele(ca_ligrel_,ca_igr_,1)
+        call mecoe1(ca_nuop_, nute)
     enddo
 
 
@@ -88,8 +85,7 @@ implicit none
         gd = grdeur(nompar)
         scal = scalai(gd)
         zk8(ca_iawtyp_-1+iparg) = scal
-        call dchlmx(opt, ligrel, iparg, nin, lpain,&
-                    nout, lpaout, taille)
+        call dchlmx(iparg, nin, lpain, nout, lpaout, taille)
         if (taille .ne. 0) then
             call wkvect(nochl, 'V V '//scal(1:4), taille, zi(ca_iawloc_-1+3* (iparg-1)+1))
             ca_nbobtr_ = ca_nbobtr_ + 1

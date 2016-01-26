@@ -17,14 +17,10 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine alrslt(iopt, ligrel, nout, lchout, lpaout,&
-                      base, ldist)
-        integer :: iopt
-        character(len=19) :: ligrel
+    subroutine alrslt(nout, lchout, lpaout, base)
         integer :: nout
         character(len=*) :: lchout(*)
         character(len=8) :: lpaout(*)
         character(len=*) :: base
-        aster_logical :: ldist
     end subroutine alrslt
 end interface

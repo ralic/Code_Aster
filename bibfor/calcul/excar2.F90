@@ -1,7 +1,7 @@
 subroutine excar2(ngrmx, desc, dg, ncmp, debugr)
 
 use calcul_module, only : ca_iachii_, ca_ialiel_, ca_igr_, ca_iichin_, &
-    ca_illiel_, ca_nbelgr_, ca_ncmpmx_, ca_nec_
+    ca_illiel_, ca_nbelgr_, ca_ncmpmx_, ca_nec_, ca_iel_, ca_paral_, ca_lparal_
 
 implicit none
 
@@ -32,27 +32,14 @@ implicit none
     integer :: ngrmx, desc, dg(*), ncmp
 !-------------------------------------------------------------------------
 ! but : recopier dans le champ local, les cmps de la carte correspondant
-!       au descripteur-grandeur dg
+!       au descripteur_grandeur dg
 !-------------------------------------------------------------------------
     integer :: ptma, ptms, ient, ima, deb2
     integer :: debgd, indval, debugr
-    integer :: iel
-    integer :: jparal, iexi
-    aster_logical :: lparal
 !    -- fonctions formules :
 !    numail(igr,iel)=numero de la maille associee a l'element iel
-#define numail(ca_igr_,iel) zi(ca_ialiel_-1+zi(ca_illiel_-1+ca_igr_)-1+iel)
+#define numail(ca_igr_,ca_iel_) zi(ca_ialiel_-1+zi(ca_illiel_-1+ca_igr_)-1+ca_iel_)
 !--------------------------------------------------------------------------
-
-!   parallele or not ?
-!   -------------------------
-    call jeexin('&CALCUL.PARALLELE', iexi)
-    if (iexi .ne. 0) then
-        lparal=.true.
-        call jeveuo('&CALCUL.PARALLELE', 'L', jparal)
-    else
-        lparal=.false.
-    endif
 
 
 !   Si la carte est constante:
@@ -60,15 +47,14 @@ implicit none
     if (ngrmx .eq. 1 .and. zi(desc-1+4) .eq. 1) then
         debgd = 3 + 2*ngrmx + 1
         deb2 = debugr
-        do iel = 1, ca_nbelgr_
-            if (lparal) then
-                if (.not.zl(jparal-1+iel)) then
+        do ca_iel_ = 1, ca_nbelgr_
+            if (ca_lparal_) then
+                if (.not.ca_paral_(ca_iel_)) then
                     deb2=deb2+ncmp
                     cycle
                 endif
             endif
-            call trigd(zi(desc-1+debgd), 1, dg, deb2, .false._1,&
-                       0, 0)
+            call trigd(zi(desc-1+debgd), 1, dg, deb2, .false._1, 0, 0)
         enddo
         goto 999
     endif
@@ -80,15 +66,15 @@ implicit none
     ptms = zi(ca_iachii_-1+11* (ca_iichin_-1)+7)
 
     deb2 = debugr
-    do iel = 1, ca_nbelgr_
-        if (lparal) then
-            if (.not.zl(jparal-1+iel)) then
+    do ca_iel_ = 1, ca_nbelgr_
+        if (ca_lparal_) then
+            if (.not.ca_paral_(ca_iel_)) then
                 deb2=deb2+ncmp
                 cycle
             endif
         endif
 !       recherche du numero de l'entite correspondant a la maille ima:
-        ima = numail(ca_igr_,iel)
+        ima = numail(ca_igr_,ca_iel_)
         if (ima .lt. 0) then
             ient = zi(ptms-1-ima)
         else

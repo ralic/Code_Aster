@@ -3,7 +3,7 @@ subroutine exchno(imodat, iparg)
 use calcul_module, only : ca_iachii_, ca_iachlo_, ca_ialiel_, ca_iamaco_,&
      ca_iamloc_, ca_iamsco_, ca_iawlo2_, ca_igr_,&
      ca_iichin_, ca_illiel_, ca_ilmaco_, ca_ilmloc_, ca_ilmsco_, &
-     ca_nbelgr_, ca_nbgr_, ca_nec_, ca_typegd_
+     ca_nbelgr_, ca_nbgr_, ca_nec_, ca_typegd_, ca_lparal_, ca_paral_, ca_iel_
 
 implicit none
 
@@ -41,16 +41,15 @@ implicit none
 !     sorties:
 !        ecriture dans le champ local
 !----------------------------------------------------------------------
-    integer :: ima, ino, nno, long, nugl, num, jparal, iret, iel
+    integer :: ima, ino, nno, long, nugl, num
     integer :: desc, prno1, prno2, modloc, ityplo
     integer :: deb1, deb2, idg1, idg2, nbpt, nbpt2, lgcata, ncmp
     integer :: iaux1, k, iec, debugr
-    aster_logical :: lparal
     aster_logical :: diff, moyenn
 
 !     -- fonctions formules :
 !     numail(igr,iel)=numero de la maille associee a l'element iel
-#define numail(ca_igr_,iel) zi(ca_ialiel_-1+zi(ca_illiel_+ca_igr_-1)+iel-1)
+#define numail(ca_igr_,ca_iel_) zi(ca_ialiel_-1+zi(ca_illiel_+ca_igr_-1)+ca_iel_-1)
 !     numglm(ima,ino)=numero global du noeud ino de la maille ima
 !                     ima etant une maille du maillage.
 #define numglm(ima,ino) zi(ca_iamaco_-1+zi(ca_ilmaco_+ima-1)+ino-1)
@@ -58,16 +57,6 @@ implicit none
 !                     ima etant une maille supplementaire du ligrel
 #define numgls(ima,ino) zi(ca_iamsco_-1+zi(ca_ilmsco_+ima-1)+ino-1)
 !-------------------------------------------------------------------
-
-!   parallele or not ?
-!   -------------------
-    call jeexin('&CALCUL.PARALLELE', iret)
-    if (iret .ne. 0) then
-        lparal=.true.
-        call jeveuo('&CALCUL.PARALLELE', 'L', jparal)
-    else
-        lparal=.false.
-    endif
 
     desc=zi(ca_iachii_-1+11*(ca_iichin_-1)+4)
     num=zi(desc-1+2)
@@ -131,10 +120,10 @@ implicit none
         if (moyenn) then
             ncmp=lgcata
             if (ca_typegd_ .eq. 'R') then
-                if (lparal) then
-                    do 20 iel = 1, ca_nbelgr_
-                        if (zl(jparal-1+iel)) then
-                            iaux1=ca_iachlo_+debugr-1+(iel-1)*ncmp
+                if (ca_lparal_) then
+                    do 20 ca_iel_ = 1, ca_nbelgr_
+                        if (ca_paral_(ca_iel_)) then
+                            iaux1=ca_iachlo_+debugr-1+(ca_iel_-1)*ncmp
                             do 10 k = 1, ncmp
                                 zr(iaux1-1+k)=0.d0
  10                         continue
@@ -146,10 +135,10 @@ implicit none
  30                 continue
                 endif
             else if (ca_typegd_.eq.'C') then
-                if (lparal) then
-                    do 50 iel = 1, ca_nbelgr_
-                        if (zl(jparal-1+iel)) then
-                            iaux1=ca_iachlo_+debugr-1+(iel-1)*ncmp
+                if (ca_lparal_) then
+                    do 50 ca_iel_ = 1, ca_nbelgr_
+                        if (ca_paral_(ca_iel_)) then
+                            iaux1=ca_iachlo_+debugr-1+(ca_iel_-1)*ncmp
                             do 40 k = 1, ncmp
                                 zc(iaux1-1+k)=(0.d0,0.d0)
  40                         continue
@@ -172,14 +161,14 @@ implicit none
         if (num .lt. 0) then
             long=-num
             deb2=debugr
-            do 90 iel = 1, ca_nbelgr_
-                if (lparal) then
-                    if (.not.zl(jparal-1+iel)) then
+            do 90 ca_iel_ = 1, ca_nbelgr_
+                if (ca_lparal_) then
+                    if (.not.ca_paral_(ca_iel_)) then
                         deb2=deb2+lgcata
                         goto 90
                     endif
                 endif
-                ima=numail(ca_igr_,iel)
+                ima=numail(ca_igr_,ca_iel_)
                 ASSERT(ima.ne.0)
                 do 80 ino = 1, nno
                     if (diff) idg2=5+ca_nec_*(ino-1)
@@ -210,14 +199,14 @@ implicit none
             prno1=zi(ca_iachii_-1+11*(ca_iichin_-1)+8)
             prno2=zi(ca_iachii_-1+11*(ca_iichin_-1)+9)
             deb2=debugr
-            do 110 iel = 1, ca_nbelgr_
-                if (lparal) then
-                    if (.not.zl(jparal-1+iel)) then
+            do 110 ca_iel_ = 1, ca_nbelgr_
+                if (ca_lparal_) then
+                    if (.not.ca_paral_(ca_iel_)) then
                         deb2=deb2+lgcata
                         goto 110
                     endif
                 endif
-                ima=numail(ca_igr_,iel)
+                ima=numail(ca_igr_,ca_iel_)
                 ASSERT(ima.ne.0)
                 do 100 ino = 1, nno
                     if (diff) idg2=5+ca_nec_*(ino-1)
@@ -245,10 +234,10 @@ implicit none
         if (moyenn) then
             ncmp=lgcata
             if (ca_typegd_ .eq. 'R') then
-                if (lparal) then
-                    do 130 iel = 1, ca_nbelgr_
-                        if (zl(jparal-1+iel)) then
-                            iaux1=ca_iachlo_+debugr-1+(iel-1)*ncmp
+                if (ca_lparal_) then
+                    do 130 ca_iel_ = 1, ca_nbelgr_
+                        if (ca_paral_(ca_iel_)) then
+                            iaux1=ca_iachlo_+debugr-1+(ca_iel_-1)*ncmp
                             do 120 k = 1, ncmp
                                 zr(iaux1-1+k)=zr(iaux1-1+k)/dble(nno)
 120                         continue
@@ -261,10 +250,10 @@ implicit none
 140                 continue
                 endif
             else if (ca_typegd_.eq.'C') then
-                if (lparal) then
-                    do 160 iel = 1, ca_nbelgr_
-                        if (zl(jparal-1+iel)) then
-                            iaux1=ca_iachlo_+debugr-1+(iel-1)*ncmp
+                if (ca_lparal_) then
+                    do 160 ca_iel_ = 1, ca_nbelgr_
+                        if (ca_paral_(ca_iel_)) then
+                            iaux1=ca_iachlo_+debugr-1+(ca_iel_-1)*ncmp
                             do 150 k = 1, ncmp
                                 zc(iaux1-1+k)=zc(iaux1-1+k)/dble(nno)
 150                         continue

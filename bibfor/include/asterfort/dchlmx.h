@@ -16,10 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine dchlmx(opt, ligrel, iparg, nin, lpain,&
-                      nout, lpaout, taille)
-        integer :: opt
-        character(len=19) :: ligrel
+    subroutine dchlmx(iparg, nin, lpain, nout, lpaout, taille)
         integer :: iparg
         integer :: nin
         character(len=8) :: lpain(*)

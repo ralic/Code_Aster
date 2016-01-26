@@ -6,7 +6,9 @@ use calcul_module, only : ca_iainel_, ca_ialiel_, ca_iaobtr_, ca_iaopds_,&
      ca_iaoppa_, ca_igr_, ca_illiel_, ca_ininel_,&
      ca_jcteat_, ca_lcteat_, ca_nbelgr_, ca_nbgr_, &
      ca_nbobj_, ca_nbobtr_, ca_nomte_, ca_nomtm_, ca_nute_,&
-     ca_nuop_, ca_ligrel_, ca_option_, ca_iactif_
+     ca_nuop_, ca_ligrel_, ca_option_, ca_iactif_,&
+     ca_ldist_, ca_ldgrel_, ca_rang_, ca_nbproc_, ca_numsd_,&
+     ca_lparal_, ca_paral_, ca_iel_
 implicit none
 
 ! ======================================================================
@@ -112,34 +114,27 @@ implicit none
 !     sorties:
 !       allocation et calcul des objets correspondant aux champs "out"
 !-----------------------------------------------------------------------
-    aster_logical :: ldist, dbg, ldgrel
+    aster_logical :: dbg
     character(len=8) :: lpain2(nin), lpaou2(nou)
     character(len=19) :: lchin2(nin), lchou2(nou)
     character(len=24) :: valk(2)
-    integer ::  nbproc
-    integer ::   ima, rang, ifm
+    integer ::   ima, ifm
     integer :: niv
     integer :: ier
     integer ::  iret, iuncod, j
-    integer :: vali(4)
     integer ::  nval
     integer :: afaire
-    integer :: iel, numc
-    integer :: i, ipar, nin2, nin3, nou2, nou3
-    character(len=8) :: nompar, exiele, k8bid, partit, tych
+    integer :: numc
+    integer :: i, ipar, jpar, nin2, nin3, nou2, nou3
+    character(len=8) :: nompar, exiele, k8bid, tych
     character(len=10) :: k10b
     character(len=16) :: k16bid, cmde
     character(len=20) :: k20b1, k20b2, k20b3, k20b4
-    mpi_int :: mrank, msize
-    integer, pointer :: prti(:) => null()
     character(len=8), pointer :: typma(:) => null()
-    integer, pointer :: numsd(:) => null()
-    character(len=24), pointer :: prtk(:) => null()
-    aster_logical, pointer :: paral(:) => null()
 !----------------------------------------------------------------------
 !   -- fonctions formules :
 !   numail(igr,iel) = numero de la maille associee a l'element (igr,iel)
-# define numail(ca_igr_,iel) zi(ca_ialiel_-1+zi(ca_illiel_-1+ca_igr_)-1+iel)
+# define numail(ca_igr_,ca_iel_) zi(ca_ialiel_-1+zi(ca_illiel_-1+ca_igr_)-1+ca_iel_)
 
 !-------------------------------------------------------------------
 
@@ -176,9 +171,9 @@ implicit none
     endif
 
 
-!   -- debca1 met certains objets en memoire
+!   -- debca1 : preparartion du calcul (hors listes de champs)
 !   -----------------------------------------------------------------
-    call debca1(ca_option_, ca_ligrel_, nin)
+    call debca1(nin)
 
     call jeveuo('&CATA.TE.TYPEMA', 'L', vk8=typma)
     call jenonu(jexnom('&CATA.OP.NOMOPT', ca_option_), ca_nuop_)
@@ -186,40 +181,6 @@ implicit none
 !   -- pour savoir l'unite logique ou ecrire le fichier ".code" :
     iuncod = iunifi('CODE')
     if (iuncod .gt. 0) call getres(k8bid, k16bid, cmde)
-
-
-
-!   -- cas d'un calcul "distribue" :
-!   -- calcul de ldist :
-!        .true.  : les calculs elementaires sont distribues
-!        .false. : sinon
-!   -- calcul de ldgrel :
-!        .true.  : les calculs elementaires sont distribues par grel
-!                  igrel -> rang=mod(ca_ligrel_,nbproc)
-!   -- si ldist  == .true. : calcul de  rang, nbproc, [jnumsd]
-!   -------------------------------------------------------------
-    ldist=.false.
-    ldgrel=.false.
-    call dismoi('PARTITION', ca_ligrel_, 'LIGREL', repk=partit)
-    call jeexin(partit//'.PRTK', iret)
-    if (iret .ne. 0) then
-        ldist=.true.
-        call asmpi_info(rank=mrank, size=msize)
-        rang = to_aster_int(mrank)
-        nbproc = to_aster_int(msize)
-
-        call jeveuo(partit//'.PRTK', 'L', vk24=prtk)
-        ldgrel=prtk(1).eq.'GROUP_ELEM'
-        if (.not.ldgrel) then
-            call jeveuo(partit//'.PRTI', 'L', vi=prti)
-            if (prti(1) .gt. nbproc) then
-                vali(1)=prti(1)
-                vali(2)=nbproc
-                call utmess('F', 'CALCUL_35', ni=2, vali=vali)
-            endif
-            call jeveuo(partit//'.NUPROC.MAILLE', 'L', vi=numsd)
-        endif
-    endif
 
 
 
@@ -264,25 +225,25 @@ implicit none
 
 !   2. On rend propres les listes : lpain,lchin,lpaou,lchou :
 !      en ne gardant que les parametres du catalogue de l'option
-!      qui servent a au moins un type_element
+!      qui servent a au moins un type_element.
+!      On supprime egalement les champs "in" qui n'existent pas.
 !   ---------------------------------------------------------
     ASSERT(nin.le.80)
     nin3=zi(ca_iaopds_-1+2)
     nou3=zi(ca_iaopds_-1+3)
 
     nin2=0
-loop_nin : &
+    loop_nin : &
     do i = 1, nin
         nompar=lpain(i)
         ipar=indik8(zk8(ca_iaoppa_),nompar,1,nin3)
         if (ipar .gt. 0) then
             do j = 1, ca_nbgr_
                 ca_nute_=typele(ca_ligrel_,j,1)
-                ipar=inpara(ca_nuop_,ca_nute_,'IN ',nompar)
-
-                if (ipar .eq. 0) cycle
+                jpar=inpara(ca_nuop_,ca_nute_,'IN ',nompar)
+                if (jpar .eq. 0) cycle
                 call exisd('CHAMP_GD', lchin(i), iret)
-                if (iret .eq. 0) cycle
+                if (iret .eq. 0) cycle loop_nin
                 nin2=nin2+1
                 lpain2(nin2)=lpain(i)
                 lchin2(nin2)=lchin(i)
@@ -296,7 +257,7 @@ loop_nin : &
     ASSERT(iret.eq.0)
 
     nou2=0
-loop_nou : &
+    loop_nou : &
     do i = 1, nou
         nompar=lpaou(i)
         ipar=indik8(zk8(ca_iaoppa_+nin3),nompar,1,nou3)
@@ -321,38 +282,36 @@ loop_nou : &
 
 
 !   3. debcal fait des initialisations et met les objets en memoire :
+!      (s'occupe des champs des listes lchin2 et lchou2)
 !   -----------------------------------------------------------------
-    call debcal(ca_option_, ca_ligrel_, nin2, lchin2, lpain2,&
-                nou2, lchou2)
+    call debcal(nin2, lchin2, lpain2, nou2, lchou2)
     if (dbg) call caldbg('IN', nin2, lchin2, lpain2)
 
 
 !   4. Allocation des resultats et des champs locaux:
 !   -------------------------------------------------
-    call alrslt(ca_nuop_, ca_ligrel_, nou2, lchou2, lpaou2,&
-                base, ldist)
-    call alchlo(ca_nuop_, ca_ligrel_, nin2, lpain2, nou2,&
-                lpaou2)
+    call alrslt(nou2, lchou2, lpaou2, base)
+    call alchlo(nin2, lpain2, nou2, lpaou2)
 
 
 !   5. Avant boucle sur les grel :
 !      Quelques actions hors boucle grel dues a calvoi==1 :
 !   -----------------------------------------------------
-    call extrai(nin2, lchin2, lpain2, ca_nuop_, ca_nute_,&
-                ca_ligrel_, 'INIT')
+    call extrai(nin2, lchin2, lpain2, 'INIT')
 
 
 !   6. boucle sur les grel :
 !   ------------------------
     ca_iactif_=1
+    loop_grel : &
     do ca_igr_ = 1, ca_nbgr_
 
 !       -- si parallelisme='group_elem' : on peut parfois tout "sauter"
-        if (ldgrel .and. mod(ca_igr_,nbproc) .ne. rang) cycle
+        if (ca_ldgrel_ .and. mod(ca_igr_,ca_nbproc_) .ne. ca_rang_) cycle loop_grel
 
 !       -- si le grel est vide, il faut "sauter" :
         ca_nbelgr_=nbelem(ca_ligrel_,ca_igr_,1)
-        if (ca_nbelgr_ .eq. 0) cycle
+        if (ca_nbelgr_ .eq. 0) cycle loop_grel
 
         ca_nute_=typele(ca_ligrel_,ca_igr_,1)
         call jenuno(jexnum('&CATA.TE.NOMTE', ca_nute_), ca_nomte_)
@@ -370,26 +329,17 @@ loop_nou : &
 
         if (numc .gt. 0) then
 
-!           -- Si calcul distribue , on va remplir
-!              le vecteur auxiliaire '&CALCUL.PARALLELE'
-            if (ldist) then
-                call wkvect('&CALCUL.PARALLELE', 'V V L', ca_nbelgr_, vl=paral)
-                do iel = 1, ca_nbelgr_
-                    ima=numail(ca_igr_,iel)
-                    if (ldist) then
-                        if (.not.ldgrel) then
-                            if (ima .lt. 0) then
-                                if (rang .eq. 0) then
-                                    paral(iel)=.true.
-                                endif
-                            else if (ima.gt.0) then
-                                if (numsd(ima) .eq. rang) then
-                                    paral(iel)=.true.
-                                endif
-                            endif
-                        else
-!                           -- si ldgrel, on est sur le bon proc :
-                            paral(iel)=.true.
+!           -- Si calcul distribue par element on renseigne ca_paral_ :
+            if (ca_lparal_) then
+                do ca_iel_ = 1, ca_nbelgr_
+                    ima=numail(ca_igr_,ca_iel_)
+                    if (ima .lt. 0) then
+                        if (ca_rang_ .eq. 0) then
+                            ca_paral_(ca_iel_)=.true.
+                        endif
+                    else if (ima.gt.0) then
+                        if (ca_numsd_(ima) .eq. ca_rang_) then
+                            ca_paral_(ca_iel_)=.true.
                         endif
                     endif
                 enddo
@@ -410,8 +360,7 @@ loop_nou : &
             endif
 
 !           6.3 Preparation des champs "in"
-            call extrai(nin2, lchin2, lpain2, ca_nuop_, ca_nute_,&
-                        ca_ligrel_, ' ')
+            call extrai(nin2, lchin2, lpain2, ' ')
 
 !           6.4 Mise a zero des champs "out"
             call zechlo(ca_nuop_, ca_nute_)
@@ -429,25 +378,23 @@ loop_nou : &
             call caundf('VERIF', ca_nuop_, ca_nute_)
 
 !           6.8 On recopie des champs locaux dans les champs globaux:
-            call montee(ca_nuop_, ca_ligrel_, nou2, lchou2, lpaou2, ' ')
+            call montee(nou2, lchou2, lpaou2, ' ')
 
             if (dbg) call caldbg('OUTG', nou2, lchou2, lpaou2)
 
-            call jedetr('&CALCUL.PARALLELE')
         endif
-    enddo
+    enddo loop_grel
 
 
 !   7- Apres boucle sur les grel :
 !      Quelques actions hors boucle grel dues a calvoi==1 :
 !   -------------------------------------------------------
-    call montee(ca_nuop_, ca_ligrel_, nou2, lchou2, lpaou2,&
-                'FIN')
+    call montee(nou2, lchou2, lpaou2, 'FIN')
 
 
 !   8- On "complete" les cham_elem "out" si necessaire :
 !   ----------------------------------------------------
-    if (mpic .eq. 'OUI' .and. ldist) then
+    if (mpic .eq. 'OUI' .and. ca_ldist_) then
         do i = 1, nou2
             call dismoi('TYPE_CHAMP', lchou2(i), 'CHAMP', repk=tych)
             if (tych(1:2) .eq. 'EL') call sdmpic('CHAM_ELEM', lchou2(i))

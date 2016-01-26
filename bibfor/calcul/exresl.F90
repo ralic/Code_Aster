@@ -1,7 +1,8 @@
 subroutine exresl(modatt, iparg, chin)
 
 use calcul_module, only : ca_iachii_, ca_iachlo_, ca_iawlo2_, ca_igr_,&
-     ca_iichin_, ca_ilchlo_, ca_nbelgr_, ca_nbgr_, ca_typegd_
+     ca_iichin_, ca_ilchlo_, ca_nbelgr_, ca_nbgr_, ca_typegd_,&
+     ca_lparal_, ca_paral_, ca_iel_
 
 implicit none
 
@@ -42,23 +43,12 @@ implicit none
 !        iparg  : numero du parametre dans l'option
 !        chin   : nom du champ global sur lequel on fait l'extraction
 !----------------------------------------------------------------------
-    integer :: desc, mode, ncmpel, iret, jparal, iel, iaux1, iaux2, iaux0, k
+    integer :: desc, mode, ncmpel, iaux1, iaux2, iaux0, k
     integer :: jresl, debugr, lggrel
-    aster_logical :: lparal
 !----------------------------------------------------------------------
 
 
     call jemarq()
-
-!   parallele or not ?
-!   -------------------------
-    call jeexin('&CALCUL.PARALLELE', iret)
-    if (iret .ne. 0) then
-        lparal=.true.
-        call jeveuo('&CALCUL.PARALLELE', 'L', jparal)
-    else
-        lparal=.false.
-    endif
 
     lggrel=zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+4)
     debugr=zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+5)
@@ -79,10 +69,10 @@ implicit none
     ncmpel=digde2(mode)
     ASSERT(lggrel.eq.ncmpel*ca_nbelgr_)
     call jeveuo(jexnum(chin//'.RESL', ca_igr_), 'L', jresl)
-    if (lparal) then
-        do iel = 1, ca_nbelgr_
-            if (zl(jparal-1+iel)) then
-                iaux0=(iel-1)*ncmpel
+    if (ca_lparal_) then
+        do ca_iel_ = 1, ca_nbelgr_
+            if (ca_paral_(ca_iel_)) then
+                iaux0=(ca_iel_-1)*ncmpel
                 iaux1=jresl+iaux0
                 iaux2=ca_iachlo_+debugr-1+iaux0
                 call jacopo(ncmpel, ca_typegd_, iaux1, iaux2)
@@ -93,10 +83,10 @@ implicit none
     endif
 
 
-    if (lparal) then
-        do iel = 1, ca_nbelgr_
-            if (zl(jparal-1+iel)) then
-                iaux1=ca_ilchlo_+debugr-1+(iel-1)*ncmpel
+    if (ca_lparal_) then
+        do ca_iel_ = 1, ca_nbelgr_
+            if (ca_paral_(ca_iel_)) then
+                iaux1=ca_ilchlo_+debugr-1+(ca_iel_-1)*ncmpel
                 do k = 1, ncmpel
                     zl(iaux1-1+k)=.true.
                 enddo

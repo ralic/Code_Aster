@@ -1,6 +1,6 @@
-subroutine montee(opt, ligrel, nout, lchout, lpaout, fin)
+subroutine montee(nout, lchout, lpaout, fin)
 
-use calcul_module, only : ca_calvoi_, ca_igr_, ca_nbgr_
+use calcul_module, only : ca_calvoi_, ca_igr_, ca_nbgr_, ca_ligrel_
 
 implicit none
 ! ======================================================================
@@ -24,17 +24,15 @@ implicit none
 #include "asterfort/monte1.h"
 #include "asterfort/typele.h"
 
-    integer :: opt, nout
+    integer :: nout
     character(len=*) :: lchout(*), fin
     character(len=8) :: lpaout(*)
-    character(len=19) :: ligrel
 !-----------------------------------------------------------------------
 ! Entrees:
-!     opt    : option de calcul
 !     fin    : ' ' / 'FIN' : necessaire a cause de calvoi=1
 !
 ! Sorties:
-!     met a jour les champs globaux de sortie de l option opt
+!     met a jour les champs globaux de sortie de l option ca_nuop_
 !-----------------------------------------------------------------------
     integer :: igr2, te2
 !-----------------------------------------------------------------------
@@ -42,16 +40,16 @@ implicit none
     if (ca_calvoi_ .eq. 0) then
         if (fin .eq. ' ') then
             igr2=ca_igr_
-            te2=typele(ligrel,igr2,1)
-            call monte1(opt, te2, nout, lchout, lpaout,&
+            te2=typele(ca_ligrel_,igr2,1)
+            call monte1(te2, nout, lchout, lpaout,&
                         igr2)
         endif
     else
 !       -- on recopie tout a la fin :
         if (fin .eq. 'FIN') then
             do 1, igr2=1,ca_nbgr_
-            te2=typele(ligrel,igr2,1)
-            call monte1(opt, te2, nout, lchout, lpaout,&
+            te2=typele(ca_ligrel_,igr2,1)
+            call monte1(te2, nout, lchout, lpaout,&
                         igr2)
  1          continue
         endif

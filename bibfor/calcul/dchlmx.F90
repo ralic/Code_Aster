@@ -1,9 +1,9 @@
-subroutine dchlmx(opt, ligrel, iparg, nin, lpain,&
+subroutine dchlmx(iparg, nin, lpain,&
                   nout, lpaout, taille)
 
 use calcul_module, only : ca_calvoi_, ca_iachii_, ca_iachik_, &
      ca_iachoi_, ca_iachok_, ca_iaoppa_, ca_iawlo2_,&
-     ca_igr_, ca_nbelgr_, ca_nbgr_
+     ca_igr_, ca_nbelgr_, ca_nbgr_, ca_ligrel_, ca_nuop_
 
 implicit none
 
@@ -34,8 +34,7 @@ implicit none
 #include "asterfort/nopara.h"
 #include "asterfort/typele.h"
 
-    integer :: opt, nin, nout, taille, iparg
-    character(len=19) :: ligrel
+    integer :: nin, nout, taille, iparg
     character(len=8) :: lpain(*), lpaout(*)
 !-----------------------------------------------------------------------
 !     sorties:
@@ -55,18 +54,18 @@ implicit none
     taille = 0
     debugr=1
     do 30 ca_igr_ = 1, ca_nbgr_
-        te = typele(ligrel,ca_igr_,1)
-        ca_nbelgr_ = nbelem(ligrel,ca_igr_,1)
-        npin = nbpara(opt,te,'IN ')
-        npou = nbpara(opt,te,'OUT')
+        te = typele(ca_ligrel_,ca_igr_,1)
+        ca_nbelgr_ = nbelem(ca_ligrel_,ca_igr_,1)
+        npin = nbpara(ca_nuop_,te,'IN ')
+        npou = nbpara(ca_nuop_,te,'OUT')
 
 !       ---in:
 !       ------
         do 10 ipar = 1, npin
-            nopare = nopara(opt,te,'IN ',ipar)
+            nopare = nopara(ca_nuop_,te,'IN ',ipar)
             if (nopare .eq. nompar) then
                 iparin = indik8(lpain,nompar,1,nin)
-                mode = modatt(opt,te,'IN ',ipar)
+                mode = modatt(ca_nuop_,te,'IN ',ipar)
                 nval = digde2(mode)
                 tych = zk8(ca_iachik_-1+2* (iparin-1)+1)
 
@@ -99,16 +98,16 @@ implicit none
 !       ---out:
 !       ------
         do 20 ipar = 1, npou
-            nopare = nopara(opt,te,'OUT',ipar)
+            nopare = nopara(ca_nuop_,te,'OUT',ipar)
             if (nopare .eq. nompar) then
                 iparou = indik8(lpaout,nompar,1,nout)
-                mode = modatt(opt,te,'OUT',ipar)
+                mode = modatt(ca_nuop_,te,'OUT',ipar)
                 nval = digde2(mode)
                 tych = zk8(ca_iachok_-1+2* (iparou-1)+1)
 
                 if (tych(1:4) .eq. 'CHML') then
 !                   -- cas des cham_elem :
-                    jceld = zi(ca_iachoi_-1+3*(iparou-1)+1)
+                    jceld = zi(ca_iachoi_-1+2*(iparou-1)+1)
                     taill1 = zi(jceld-1+zi(jceld-1+4+ca_igr_)+4)
                 else
 !                   -- cas des resuelem :

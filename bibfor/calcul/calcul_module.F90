@@ -17,6 +17,7 @@ implicit none
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
+#include "asterf_types.h"
 
 !    Ce module contient quelques variables "globales" utilisees
 !    par la routine calcul.F90 ou pour les variables de commande
@@ -36,9 +37,9 @@ implicit none
 !     ca_igd_ : numero de la grandeur associee au champ a extraire
 !     ca_nec_ : nombre d'entiers codes de ca_igd_
 !     ca_ncmpmx_: nombre max de cmps pour ca_igd_
-!     ca_iachin_: adresse jeveux de chin.vale
-!     ca_iachlo_: adresse jeveux de chloc//".vale"  (&&calcul.nompar)
-!     ca_ilchlo_: adresse jeveux de chloc//".exis"  (&&calcul.nompar)
+!     ca_iachin_: adresse jeveux de chin//'.VALE'
+!     ca_iachlo_: adresse jeveux de chloc//'.VALE'
+!     ca_ilchlo_: adresse jeveux de chloc//'.EXIS'
 !     ca_iichin_: numero du champ chin dans la liste lchin.
 !     ca_ianueq_: adresse de l'objet .nueq du prof_chno associe eventuelle
 !            -ment au champ chin. (si ca_lprno_=1).
@@ -83,18 +84,18 @@ implicit none
 
 !======================================================================
     integer :: ca_iachii_, ca_iachik_, ca_iachix_
-!     ca_iachii_ : adresse de '&&calcul.lchin_i'
-!     ca_iachik_ : adresse de '&&calcul.lchin_k8'
-!     ca_iachix_ : adresse de '&&calcul.lchin_exi'
+!     ca_iachii_ : adresse de '&&CALCUL.LCHIN_I'
+!     ca_iachik_ : adresse de '&&CALCUL.LCHIN_K8'
+!     ca_iachix_ : adresse de '&&CALCUL.LCHIN_EXI'
 
-!     '&&calcul.lchin_exi' ::= v(l)    (dim = nin)
+!     '&&CALCUL.LCHIN_EXI' ::= v(l)    (dim = nin)
 !             v(1) :  .false.    : le champ parametre n'existe pas.
 
-!     '&&calcul.lchin_k8'  ::= v(k8)    (dim = nin*2)
+!     '&&CALCUL.LCHIN_K8'  ::= v(k8)    (dim = 2*nin)
 !             v(1) :  type_champ : 'chno','cart','chml' ou 'resl'.
 !             v(2) :  type_gd    : 'c', 'r', 'i', 'k8', ...
 
-!     '&&calcul.lchin_i'  ::= v(i)     (dim = nin*11)
+!     '&&CALCUL.LCHIN_I'  ::= v(i)     (dim = 11*nin)
 !             v(1) :  ca_igd_   grandeur associee a lchin(i)
 !             v(2) :  ca_nec_   nombre d'entiers codes
 !             v(3) :  ca_ncmpmx_ nombre max de cmp pour ca_igd_
@@ -111,32 +112,33 @@ implicit none
 
 !======================================================================
     integer :: ca_ianoop_, ca_ianote_, ca_nbobtr_, ca_iaobtr_, ca_nbobmx_
-!     ianoop : adresse dans zk16 de '&&calcul.nomop' v(k16)
+!     ca_ianoop_ : adresse dans zk16 de '&&CALCUL.NOMOP' v(k16)
 !          v(iop) --> nom de l'option iop
-!     ianote : adresse dans zk16 de '&&calcul.nomte' v(k16)
+!     ca_ianote_ : adresse dans zk16 de '&&CALCUL.NOMTE' v(k16)
 !          v(ite) --> nom du type_element ite
-!          nbobtr : nombre d'objets de travail '&&calcul....' qui
+!          ca_nbobtr_ : nombre d'objets de travail '&&CALCUL....' qui
 !                   devront etre detruits a la fin de calcul.
-!          iaobtr : adresse dans zk24 de l'objet '&&calcul.objets_trav'
-!          nbobmx : longueur de l'objet '&&calcul.objets_trav'
+!          ca_iaobtr_ : adresse dans zk24 de l'objet '&&CALCUL.OBJETS_TRAV'
+!          ca_nbobmx_ : longueur de l'objet '&&CALCUL.OBJETS_TRAV'
 
 !======================================================================
-    integer :: ca_nbgr_, ca_igr_, ca_nbelgr_, ca_jcteat_
+    integer :: ca_nbgr_, ca_igr_, ca_nbelgr_, ca_nbelmx_, ca_jcteat_
     integer :: ca_lcteat_, ca_iawloc_, ca_iawlo2_, ca_iawtyp_
 
 
 !     ca_nbgr_   : nombre de grel du ligrel
 !     ca_igr_    : numero du grel courant
 !     ca_nbelgr_ : nombre d'elements dans le grel ca_igr_
+!     ca_nbelmx_ : nombre maximum d'elements dans un grel du ligrel
 
 !     ca_jcteat_ : adresse dans zk16 de l'objet '&CATA.TE.CTE_ATTR(CA_NOMTE_)'
 !     ca_lcteat_ : longueur de l'objet '&CATA.TE.CTE_ATTR(CA_NOMTE_)'
 !       remarque : si ca_nomte_ n'a pas d'attribut : ca_jcteat_=ca_lcteat_=0
 
-!  ca_iawloc_ : adresse dans zi de '&&calcul.ia_chloc' v(i)
+!  ca_iawloc_ : adresse dans zi de '&&CALCUL.IA_CHLOC' v(i)
 !           cet objet contient des informations sur les champs locaux
 !   v(3*(ipar-1)+1) : ca_iachlo_
-!      adresse du champ_local '&&calcul.//nompar(ipar)
+!      adresse du champ_local '&&CALCUL.//NOMPAR(ipar)
 !      =-1 <=> / le champ "in" n'existe pas :
 !                 / nompar n'appartient pas a lpain
 !                 / chin//'.desc' (ou .celd) n'existe pas
@@ -145,7 +147,7 @@ implicit none
 
 !   v(3*(ipar-1)+2) : ca_ilchlo_ :
 !      adresse d'un vecteur de booleens ( // champ_local)
-!      de nom : '&&calcul.//nompar(ipar)//'.exis'
+!      de nom : '&&CALCUL.//NOMPAR(ipar)//'.EXIS'
 !      si ca_ilchlo_ = -1 :
 !          =>  le champ local est "out"
 !              et/ou le champ global n'existe pas
@@ -155,7 +157,7 @@ implicit none
 !      ich = 0 s'il n'y a pas de champ associe a ipar
 
 
-!  ca_iawlo2_ : adresse dans zi de '&&calcul.ia_chlo2' v(i)
+!  ca_iawlo2_ : adresse dans zi de '&&CALCUL.IA_CHLO2' v(i)
 !           cet objet contient des informations sur les champs locaux
 !   v(5*(ca_nbgr_*(ipar-1)+ca_igr_-1)+1):
 !      mode local pour (ipar,ca_igr_)
@@ -171,19 +173,19 @@ implicit none
 !   v(5*(ca_nbgr_*(ipar-1)+ca_igr_-1)+5):
 !      adresse du debut du grel dans le champ_local (= 1 si ca_calvoi_=0)
 
-!   ca_iawtyp_ : adresse dans zk8 de '&&calcul.type_sca' v(k8)
+!   ca_iawtyp_ : adresse dans zk8 de '&&CALCUL.TYPE_SCA' v(k8)
 !          v(ipar) --> type_scalaire du champ_local
 
 !======================================================================
     integer :: ca_iachoi_, ca_iachok_
-!     ca_iachoi_ : adresse de '&&calcul.lchou_i'
-!     ca_iachok_ : adresse de '&&calcul.lchou_k8'
+!     ca_iachoi_ : adresse de '&&CALCUL.LCHOU_I'
+!     ca_iachok_ : adresse de '&&CALCUL.LCHOU_K8'
 
-!     '&&calcul.lchou_k8'  ::= v(k8)    (dim = nin*2)
+!     '&&CALCUL.LCHOU_K8'  ::= v(k8)    (dim = 2*nin)
 !             v(1) :  type_champ : 'chml' ou 'resl'.
 !             v(2) :  type_gd    : 'c', 'r'
 
-!     '&&calcul.lchou_i'  ::= v(i)     (dim = nout*3)
+!     '&&CALCUL.LCHOU_I'  ::= v(i)     (dim = 2*nout)
 !         -- si chml :
 !             v(1) :  adresse de l_chout(i).celd
 !             v(2) :  adresse de l_chout(i).celv
@@ -199,9 +201,9 @@ implicit none
     integer :: ca_nbobj_, ca_iainel_, ca_ininel_
 !     ca_nbobj_  : nombre d'objets '&inel.xxxx' cree par l'initialisation
 !              du type_elem
-!     ca_ininel_ : adresse dans zk24 de l'objet '&&calcul.nom_&inel'
+!     ca_ininel_ : adresse dans zk24 de l'objet '&&CALCUL.NOM_&INEL'
 !              qui contient les noms des objets '&inel.xxxx'
-!     ca_iainel_ : adresse dans zi de l'objet '&&calcul.iad_&inel'
+!     ca_iainel_ : adresse dans zi de l'objet '&&CALCUL.IAD_&INEL'
 !              qui contient les adresses des objets '&inel.xxxx'
 
 !======================================================================
@@ -283,6 +285,34 @@ implicit none
 !      * ca_jrepe_   : adresse jeveux de ligrel.repe
 !      * ca_jptvoi_  : adresse jeveux de maillage.vge.ptvois
 !      * ca_jelvoi_  : adresse jeveux de maillage.vge.elvois
+!======================================================================
+!   Gestion du parallelisme :
+!   =========================
+    aster_logical :: ca_ldist_, ca_ldgrel_, ca_lparal_
+    integer :: ca_nbproc_, ca_rang_
+    integer, pointer :: ca_numsd_(:) => null()
+    aster_logical, pointer :: ca_paral_(:) => null()
+
+!      * ca_nbproc_  : nombre de processeurs
+!      * ca_rang_    : numero du processeur (0:nbproc-1)
+!      * ca_ldist_   : .true. => le calcul est "distribue" :
+!          Un element n'est calcule que par un processeur.
+!      * ca_ldgrel_   : .true.  => le calcul est "distribue par grel"
+!          Tous les elements d'un grel sont traites par le meme processeur.
+!          Le processeur "rang" calcule le grel de numero igrel si :
+!          mod(igrel,nbproc) .eq. rang
+!      * ca_lparal_   : .true.  => le calcul est "distribue par element"
+!      * ca_paral_    : pointeur sur l'objet '&&CALCUL.PARALLELE'
+!          Le processeur "rang" calcule l'element iel si :
+!          ca_paral_(iel)=.true.
+!      * ca_numsd_   : ca_numsd_(ima) -> rang
+!          rang est le numero du processeur qui doit traiter l'element porte
+!          par la maille ima.
+
+!      Toutes ces variables sont calculees dans la routine debca1.F90
+!      Puis, calcul.F90 modifie ca_paral_(:) entre 2 grels.
+
+!======================================================================
 contains
 
 !>  Initialise iactif (appel nécessaire en cas de sortie prématurée de calcul)

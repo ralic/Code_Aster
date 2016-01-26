@@ -1,7 +1,7 @@
 subroutine tecach(stopz, nmparz, louez, iret, nval,&
                   itab, iad, numa)
 
-use calcul_module, only : ca_iachoi_, ca_iachok_, ca_iaoppa_,&
+use calcul_module, only : ca_iaoppa_,&
      ca_iawlo2_, ca_iawloc_, ca_iawtyp_, ca_iel_,&
      ca_igr_, ca_jrepe_, ca_nbgr_, ca_nomte_, ca_nparin_, ca_npario_, ca_option_
 
@@ -104,8 +104,8 @@ implicit none
 ! itab(6)   : ncdyn : nombre de cmp pour la grandeur vari_r
 ! itab(7)   : nbspt : nombre de sous-points
 ! itab(8)   : adresse (dans zl) d'un vecteur de booleens
-!             parallele au champ local permettant de savoir quelles
-!             sont les cmps presentes et absentes
+!             de meme longueur que le champ local permettant de savoir
+!             quelles sont les cmps presentes et absentes
 !
 !---------------------------------------------------------------------
     character(len=8) :: nompar, stop8

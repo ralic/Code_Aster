@@ -1,8 +1,9 @@
-subroutine monte1(opt, te2, nout, lchout, lpaout, igr2)
+subroutine monte1(te2, nout, lchout, lpaout, igr2)
 
 use calcul_module, only : ca_iachoi_, ca_iadsgd_, ca_iaoppa_, &
-     ca_iawlo2_, ca_iawloc_, ca_iawtyp_, ca_nbelgr_, ca_nbgr_, ca_npario_
-     
+     ca_iawlo2_, ca_iawloc_, ca_iawtyp_, ca_nbelgr_, ca_nbgr_, ca_npario_,&
+     ca_paral_, ca_lparal_, ca_nuop_, ca_iel_
+
 implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -39,7 +40,7 @@ implicit none
 #include "asterfort/nbpara.h"
 #include "asterfort/nopara.h"
 
-    integer :: opt, nout, te2, igr2
+    integer :: nout, te2, igr2
     character(len=19) :: ch19
     character(len=*) :: lchout(*)
     character(len=8) :: lpaout(*)
@@ -48,30 +49,20 @@ implicit none
 !     igr2   : numero du grel dont on sauve les champs locaux
 !
 !     sorties:
-!     met a jour les champs globaux de sortie de l option opt
+!     met a jour les champs globaux de sortie de l ca_nuop_ion ca_nuop_
 !-----------------------------------------------------------------------
-    integer :: ipar, np, mod1, jpar, gd, jparal, iret, iel, iaux1, iaux2, iaux0
+    integer :: ipar, np, mod1, jpar, gd, iaux1, iaux2, iaux0
     integer :: iparg, iachlo, lggrel, jcelv, jresl
     integer :: descgd, jceld, code, debugr, ncmpel, debgr2
     character(len=8) :: nompar, typsca
-    aster_logical :: lparal
 !-----------------------------------------------------------------------
 
     call jemarq()
 
 
-!   -- Parallele or not ?
-    lparal=.false.
-    call jeexin('&CALCUL.PARALLELE', iret)
-    if (iret .ne. 0) then
-        lparal=.true.
-        call jeveuo('&CALCUL.PARALLELE', 'L', jparal)
-    endif
-
-
-    np=nbpara(opt,te2,'OUT')
+    np=nbpara(ca_nuop_,te2,'OUT')
     do ipar = 1, np
-        nompar=nopara(opt,te2,'OUT',ipar)
+        nompar=nopara(ca_nuop_,te2,'OUT',ipar)
         iparg=indik8(zk8(ca_iaoppa_),nompar,1,ca_npario_)
         iachlo=zi(ca_iawloc_-1+3*(iparg-1)+1)
         if (iachlo .eq. -1) cycle
@@ -80,7 +71,7 @@ implicit none
         descgd=ca_iadsgd_+7*(gd-1)
         code=zi(descgd-1+1)
 
-        mod1=modatt(opt,te2,'OUT',ipar)
+        mod1=modatt(ca_nuop_,te2,'OUT',ipar)
         jpar=indik8(lpaout,nompar,1,nout)
         ch19=lchout(jpar)
 
@@ -93,9 +84,9 @@ implicit none
 
         if (code .eq. 1) then
 !           -- cas : cham_elem
-            jceld=zi(ca_iachoi_-1+3*(jpar-1)+1)
+            jceld=zi(ca_iachoi_-1+2*(jpar-1)+1)
             debgr2=zi(jceld-1+zi(jceld-1+4+igr2)+8)
-            jcelv=zi(ca_iachoi_-1+3*(jpar-1)+2)
+            jcelv=zi(ca_iachoi_-1+2*(jpar-1)+2)
             call jacopo(lggrel, typsca, iachlo+debugr-1, jcelv-1+debgr2)
 
 
@@ -103,11 +94,11 @@ implicit none
 !           -- cas : resuelem
             call jeveuo(jexnum(ch19//'.RESL', igr2), 'E', jresl)
 
-            if (lparal) then
+            if (ca_lparal_) then
                 ncmpel=digde2(mod1)
-                do 10 iel = 1, ca_nbelgr_
-                    if (zl(jparal-1+iel)) then
-                        iaux0=(iel-1)*ncmpel
+                do 10 ca_iel_ = 1, ca_nbelgr_
+                    if (ca_paral_(ca_iel_)) then
+                        iaux0=(ca_iel_-1)*ncmpel
                         iaux1=iachlo+debugr-1+iaux0
                         iaux2=jresl+iaux0
                         call jacopo(ncmpel, typsca, iaux1, iaux2)
