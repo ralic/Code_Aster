@@ -53,6 +53,7 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 CUBE=LIRE_MAILLAGE(  )
+#MODI_MAILLAGE(reuse =CUBE, MAILLAGE=CUBE, DEFORME=_F(OPTION='TRAN', ALEA=1.e-11,),)
 
 TROISD=AFFE_MODELE( MAILLAGE=CUBE,
                     AFFE=_F( PHENOMENE = 'MECANIQUE',
@@ -98,10 +99,11 @@ MAT1=AFFE_MATERIAU(           MAILLAGE=CUBE,
                                            MATER = ACIER1,
                                            ))
 
-LINST=DEFI_LIST_REEL(             DEBUT=0.,INTERVALLE=(
+LINST=DEFI_LIST_REEL(  DEBUT=0.,INTERVALLE=(
                               _F( JUSQU_A = .35, NOMBRE = 1),
-                                         _F( JUSQU_A = 1.,  NOMBRE = 5))
-                                         )
+                              _F( JUSQU_A = 1.,  NOMBRE = 5),
+                              _F( JUSQU_A = 2.,  NOMBRE = 5),
+                     ))
 
 TR_CS=AFFE_CHAR_MECA(
                     MODELE=TROISD,DDL_IMPO=(
@@ -149,7 +151,7 @@ SOLNL1=STAT_NON_LINE(
                      RECH_LINEAIRE=_F(
                 ITER_LINE_MAXI = 4,
                 RESI_LINE_RELA = 1.E-3),
-                INFO=2
+                INFO=1
               )
 
 SOLNL1=CALC_CHAMP(reuse=SOLNL1,RESULTAT=SOLNL1,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('EPSI_ELNO','EPSP_ELGA','EPSP_ELNO'))
@@ -158,21 +160,22 @@ SOLNL1=CALC_CHAMP(reuse=SOLNL1,RESULTAT=SOLNL1,CONTRAINTE=('SIGM_ELNO'),VARI_INT
 #
 ENGENDRE_TEST (  CO = SOLNL1, )
 
-TEST_RESU(RESU=(_F(NUME_ORDRE=6,
+# test des resultats pour t=1 :
+TEST_RESU(RESU=(_F(INST=1.,
                    RESULTAT=SOLNL1,
                    NOM_CHAM='EPSI_ELNO',
                    NOEUD='NO1',
                    NOM_CMP='EPXX',
                    VALE_CALC=2E-05,
                    MAILLE='MA1',),
-                _F(NUME_ORDRE=6,
+                _F(INST=1.,
                    RESULTAT=SOLNL1,
                    NOM_CHAM='EPSI_ELNO',
                    NOEUD='NO1',
                    NOM_CMP='EPXY',
                    VALE_CALC=2.6E-05,
                    MAILLE='MA1',),
-                _F(NUME_ORDRE=6,
+                _F(INST=1.,
                    POINT=1,
                    RESULTAT=SOLNL1,
                    NOM_CHAM='EPSP_ELGA',
@@ -180,7 +183,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=6,
                    VALE_CALC=0.,
                    CRITERE='ABSOLU',
                    MAILLE='MA1',),
-                _F(NUME_ORDRE=6,
+                _F(INST=1.,
                    POINT=1,
                    RESULTAT=SOLNL1,
                    NOM_CHAM='EPSP_ELGA',
@@ -188,7 +191,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=6,
                    VALE_CALC=0.,
                    CRITERE='ABSOLU',
                    MAILLE='MA1',),
-                _F(NUME_ORDRE=6,
+                _F(INST=1.,
                    RESULTAT=SOLNL1,
                    NOM_CHAM='EPSP_ELNO',
                    NOEUD='NO1',
@@ -196,7 +199,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=6,
                    VALE_CALC=0.,
                    CRITERE='ABSOLU',
                    MAILLE='MA1',),
-                _F(NUME_ORDRE=6,
+                _F(INST=1.,
                    RESULTAT=SOLNL1,
                    NOM_CHAM='EPSP_ELNO',
                    NOEUD='NO1',
@@ -204,7 +207,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=6,
                    VALE_CALC=0.,
                    CRITERE='ABSOLU',
                    MAILLE='MA1',),
-                _F(NUME_ORDRE=6,
+                _F(INST=1.,
                    RESULTAT=SOLNL1,
                    NOM_CHAM='VARI_ELNO',
                    NOEUD='NO1',
@@ -212,12 +215,82 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=6,
                    VALE_CALC=0.,
                    CRITERE='ABSOLU',
                    MAILLE='MA1',),
-                _F(NUME_ORDRE=6,
+                _F(INST=1.,
                    RESULTAT=SOLNL1,
                    NOM_CHAM='VARI_ELNO',
                    NOEUD='NO1',
                    NOM_CMP='V2',
-                   VALE_CALC=64.8002908057,
+#                  -- La valeur suivante est un peu imprecise a cause de la formule:
+#                     q = mat(4) + mat(7) * meq**mat(5) (routine nmtacr.F90)
+#                     Ici mat(5)=0.3 et meq est presque nul (1.e-20).
+#                     La "courbe" q=f(meq) a une tangente verticale pour meq=0+
+#                     Une toute petite imprecision sur meq entraine une erreur significative
+#                     sur q, puis sur la variable interne V2.
+#                     Ce probleme disparait des que meq >> 0. Ce qui explique que le meme
+#                     TEST_RESU a l'instant t=2 est tres precis (=> pas besoin de TOLE_MACHINE)
+#                     Pour plus de details, voir la reponse a issue24687.
+                   TOLE_MACHINE=2.e-6,
+                   VALE_CALC=64.8002445651,
+                   MAILLE='MA1',),
+                ),
+          )
+
+# test des resultats pour t=2 :
+TEST_RESU(RESU=(_F(INST=2.,
+                   RESULTAT=SOLNL1,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=0.00044106044253,
+                   MAILLE='MA1',),
+                _F(INST=2.,
+                   RESULTAT=SOLNL1,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='EPXY',
+                   VALE_CALC=0.000573590663795,
+                   MAILLE='MA1',),
+                _F(INST=2.,
+                   POINT=1,
+                   RESULTAT=SOLNL1,
+                   NOM_CHAM='EPSP_ELGA',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=1.06044313508E-06,
+                   MAILLE='MA1',),
+                _F(INST=2.,
+                   POINT=1,
+                   RESULTAT=SOLNL1,
+                   NOM_CHAM='EPSP_ELGA',
+                   NOM_CMP='EPXY',
+                   VALE_CALC=1.59066470262E-06,
+                   MAILLE='MA1',),
+                _F(INST=2.,
+                   RESULTAT=SOLNL1,
+                   NOM_CHAM='EPSP_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=1.06044313508E-06,
+                   MAILLE='MA1',),
+                _F(INST=2.,
+                   RESULTAT=SOLNL1,
+                   NOM_CHAM='EPSP_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='EPXY',
+                   VALE_CALC=1.59066470262E-06,
+                   MAILLE='MA1',),
+                _F(INST=2.,
+                   RESULTAT=SOLNL1,
+                   NOM_CHAM='VARI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='V1',
+                   VALE_CALC=2.12088627016E-06,
+                   MAILLE='MA1',),
+                _F(INST=2.,
+                   RESULTAT=SOLNL1,
+                   NOM_CHAM='VARI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='V2',
+                   VALE_CALC=70.3768750324,
                    MAILLE='MA1',),
                 ),
           )
