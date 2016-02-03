@@ -25,13 +25,13 @@ def configure(self):
         'module load intel_mpi/5.1.1.109'])
 
     self.env.prepend_value('LIBPATH', [
-        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster3/MPI/lib',
-        YAMMROOT + '/prerequisites/Petsc_mpi-petsc_aster/lib',
+        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster3-1/MPI/lib',
+        YAMMROOT + '/prerequisites/Petsc_mpi-petsc_aster-1/lib',
     ])
 
     self.env.prepend_value('INCLUDES', [
-        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster3/MPI/include',
-        YAMMROOT + '/prerequisites/Petsc_mpi-petsc_aster/include',
+        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster3-1/MPI/include',
+        YAMMROOT + '/prerequisites/Petsc_mpi-petsc_aster-1/include',
     ])
 
     opts.enable_petsc = True
