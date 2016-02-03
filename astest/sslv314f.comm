@@ -1,0 +1,278 @@
+# TITRE PROPAGATION DE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# person_in_charge: daniele.colombo at ifpen.fr
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),)
+
+#---------------------------------------------
+#                 PARAMETRES
+#---------------------------------------------
+
+#propagation
+nbcalc = 3
+#raffinement
+nb_raff = 2
+h=1/3.
+r_raff=2*(h)
+#materiau
+E=205000.0E6
+nu=0.3
+rho=7800.
+
+#----------------------------------------------
+#                   CHARGEMENTS
+#----------------------------------------------
+
+PRES=-1.E6
+
+#--------------------------------------------------------------------
+#                 RAFFINEMENT INITIAL
+#--------------------------------------------------------------------
+
+print '_'*3+'INFO'+3*'_'+' raffinement initial'
+
+
+# initialisation des concepts pour le raffinement
+#MAIT1 = [None]*((nb_raff+1)*(nb_pas+1))
+MAIT = [None]*((nb_raff+1)*(nbcalc+1))
+
+FISS = [None]*(nbcalc+1)
+
+i_raff = 0
+i_tot = 0
+
+MAIT[i_tot]=LIRE_MAILLAGE(FORMAT='MED')
+
+MAIT[i_tot]=DEFI_GROUP(reuse =MAIT[i_tot],
+                  MAILLAGE=MAIT[i_tot],
+                  CREA_GROUP_NO=_F(GROUP_MA=('VOL','SURFINF','LIG1','LIG5'),),);
+
+
+# boucle de raffinements +une iteration en plus pour la definition de la fissure sur le maillage le plus fin
+for i_raff in range(nb_raff+1) :
+
+   MO=AFFE_MODELE(MAILLAGE=MAIT[i_tot],
+                      AFFE=(_F(GROUP_MA=('VOL',),
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION='3D',),
+                            _F(GROUP_MA=('SURFINF','SURFSUP',),
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION='3D',),),);
+
+   MAIT[i_tot]=MODI_MAILLAGE(reuse =MAIT[i_tot],
+                          MAILLAGE=MAIT[i_tot],
+                          ORIE_PEAU_3D=_F(GROUP_MA=('SURFSUP','SURFINF',),),
+                         );
+
+
+   # definition de la fissure semi elliptique ou par un demi plan
+   FISS[0]=DEFI_FISS_XFEM(MAILLAGE=MAIT[i_tot],
+                                DEFI_FISS=_F(
+                                           FORM_FISS='DEMI_PLAN',
+                                           PFON      =(0. , 2. ,9.),
+                                           NORMALE   =(0. , 0 , 1.),
+                                           DTAN      =(0. , 1. , 0.)),
+                                          )
+
+   # pas de raffinement a la derniere iteration
+   if i_raff != nb_raff :
+
+      # evaluation de l'erreur
+      CHERR=RAFF_XFEM(FISSURE=FISS[0])
+
+      # definition du type du maillage total n+1
+      MAIT[i_tot+1]=CO('MAIT_%d' %(i_tot+1))
+
+
+      MACR_ADAP_MAIL(ADAPTATION         = 'RAFFINEMENT',
+                     GROUP_MA           = 'VOL',
+                     VERSION_HOMARD     = 'V11_4',
+                     NIVE_MAX           = nb_raff,
+                     CHAM_GD            = CHERR,
+                     CRIT_RAFF_ABS      = -2*h,
+                     USAGE_CMP          = 'RELATIF',
+                     MAILLAGE_N         = MAIT[i_tot],
+                     MAILLAGE_NP1       = MAIT[i_tot+1],
+                     )
+
+      DETRUIRE(CONCEPT=_F(NOM=(MO,FISS[0],CHERR,MAIT[i_tot])),INFO=1)
+
+      i_tot = i_tot +1
+
+#----------------------------------------------
+#                   MATERIAU
+#----------------------------------------------
+
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho,),);
+
+CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAIT[i_tot],
+                       MODELE=MO,
+                       AFFE=_F(TOUT = 'OUI',
+                                MATER=ACIER,
+                                ),
+                             );
+
+#----------------------------------------------
+#         PROPAGATION SUR 3 PAS DE TEMPS
+#----------------------------------------------
+
+MODELX = [None]*nbcalc
+CHXFEM = [None]*nbcalc
+CH = [None]*nbcalc
+RESU = [None]*nbcalc
+SIF = [None]*nbcalc
+LSN = [None]*nbcalc
+LST = [None]*nbcalc
+
+L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),);
+RI = 0.2
+RS = 0.8
+
+for i in range(nbcalc) :
+
+   MODELX[i]=MODI_MODELE_XFEM(MODELE_IN=MO,FISSURE=FISS[i],INFO=1,);
+
+   CH[i]=AFFE_CHAR_MECA(MODELE=MODELX[i],
+                        PRES_REP=_F(GROUP_MA=('SURFSUP',),PRES=PRES,),
+                        DDL_IMPO=(_F(GROUP_NO='SURFINF',DZ=0.0,),
+                                  _F(GROUP_NO=('LIG1','LIG5'),DX=0.0,),
+                                  _F(GROUP_NO='P4',DY=0.0,),),);
+
+   RESU[i]=MECA_STATIQUE(MODELE=MODELX[i],
+                         CHAM_MATER=CHAMPMA1,
+                         EXCIT=(
+                                _F(CHARGE=CH[i],),),
+                         INST=1.0,
+                         INFO=1,);
+
+   SIF[i]=CALC_G        (RESULTAT=RESU[i],
+                         OPTION='CALC_K_G',
+                         THETA=_F( FISSURE=FISS[i],),
+                         LISSAGE=_F( DEGRE=0,),);
+
+   IMPR_TABLE(TABLE=SIF[i],);
+
+   if ( i != (nbcalc-1) ) :
+      FISS[i+1] = CO('FISS_%d'%(i+1))
+      PROPA_FISS(MODELE=MODELX[i],
+                 FISSURE=_F(FISS_ACTUELLE=FISS[i],
+                            FISS_PROPAGEE=FISS[i+1],
+                            TABLE=SIF[i],),
+                 METHODE_PROPA='SIMPLEXE',            
+                 DA_MAX=0.3,               
+                 LOI_PROPA=_F(LOI='PARIS',
+                              C=1.,
+                              M=1.,
+                              MATER=ACIER),
+                 RAYON=RS,
+                 COMP_LINE=_F(COEF_MULT_MINI=0.,
+                              COEF_MULT_MAXI=1.,),
+                 INFO=1,);
+
+#     LEVEL SET AU PAS DE PROPAGATION COURANT
+      LSN[i+1]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                          OPERATION='EXTR',
+                          FISSURE=FISS[i+1],
+                          NOM_CHAM='LNNO',);
+      LST[i+1]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                          OPERATION='EXTR',
+                          FISSURE=FISS[i+1],
+                          NOM_CHAM='LTNO',);
+                            
+#----------------------------------------------
+#         POST TRAITEMENT
+#----------------------------------------------
+i=nbcalc-1
+
+# *********************************************
+# VERIFICATION DE LA POSITION DU FOND DE FISSURE
+# *********************************************
+
+# LES COORDONNES DU FOND DE FISSURE ONT ETE CALCULEES
+# PAR LA METHODE PAR PROJECTION (SSLV314B):
+
+
+# ON PEUT DONC CALCULER LA VALEUR DES LEVEL SETS POUR CES NOEUDS:
+
+TABLSN= POST_RELEVE_T(ACTION=_F(INTITULE='Test LSN',
+                                NOEUD=('N1130','N1028','N926',),                                
+                                CHAM_GD=LSN[i],
+                                TOUT_CMP='OUI',
+                                OPERATION='EXTRACTION',),);
+
+TABLST= POST_RELEVE_T(ACTION=_F(INTITULE='Test LST',
+                                NOEUD=('N1130','N1028','N926',),
+                                CHAM_GD=LST[i],
+                                TOUT_CMP='OUI',
+                                OPERATION='EXTRACTION',),);
+
+IMPR_TABLE(TABLE=TABLSN,);
+IMPR_TABLE(TABLE=TABLST,);
+
+# ON PEUT ENFIN VERIFIER QUE LE FOND DE FISSURE CALCULE PAR PROPA_FISS
+# EST DANS L'ELEMENT EN VERIFIENT QUE LA VALEUR DES LEVEL SETS EST
+# INFERIEURE A LA DISTANCE MAXIMALE ENTRE LES QUATRE NOEUDS (EGAL A 1/3)
+
+DISTMAX=1./3.
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='NON_DEFINI',
+           PRECISION=0.33333333333333331,
+           VALE_CALC=0.20000000298,
+           VALE_REFE=0.0,
+           NOM_PARA='X1',
+           TYPE_TEST='MAX',
+           VALE_ABS='OUI',
+           TABLE=TABLSN,
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='NON_DEFINI',
+           PRECISION=0.33333333333333331,
+           VALE_CALC=0.20000000298, 
+           VALE_REFE=0.0,
+           NOM_PARA='X1',
+           TYPE_TEST='MIN',
+           VALE_ABS='OUI',
+           TABLE=TABLSN,
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='NON_DEFINI',
+           PRECISION=0.33333333333333331,
+           VALE_CALC=0.266618803355,
+           VALE_REFE=0.0,
+           NOM_PARA='X1',
+           TYPE_TEST='MAX',
+           VALE_ABS='OUI',
+           TABLE=TABLST,
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='NON_DEFINI',
+           PRECISION=0.33333333333333331,
+           VALE_CALC=0.266714512132,
+           VALE_REFE=0.0,
+           NOM_PARA='X1',
+           TYPE_TEST='MIN',
+           VALE_ABS='OUI',
+           TABLE=TABLST,
+           )
+
+FIN();

@@ -34,7 +34,7 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
     character(len=19) :: cnsln, cnslt, isozro, noesom, nodtor, eletor
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -465,11 +465,11 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
         itypma=zi(jmai-1+nmaabs)
         call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
 !  On verifie prealablement qu'une face ne contient pas
-! plus de 2 aretes coupees par LSN0
+!  plus de 2 aretes coupees par LSN0
 !
-        nbsom = 0400
+!  Nombre maximal de sommets pour une face
+        nbsom = 4
 !
-        if ((typma(1:4).eq.'HEXA') .or. (typma(1:4).eq.'QUAD')) nbsom = 4
         if ((typma(1:5).eq.'TETRA') .or. (typma(1:4).eq.'TRIA')) nbsom = 3
 !
         if (ndim .eq. 3) call confac(typma, ibid2, ibid, fa, nbf)
@@ -486,7 +486,12 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
             nunoa=connex(zi(jconx2+nmaabs-1)+na-1)
             lsna=zr(jlsno-1+(nunoa-1)+1)
             do i = 2, nbsom
-                nunob=connex(zi(jconx2+nmaabs-1)+fa(ifq,i)-1)
+                nb=fa(ifq,i)
+                ! si on travaille avec une face triangle, dont la connectivité
+                ! est stockée sur quatre entiers, le fait de trouver 0 comme
+                ! numéro de sommet indique qu'on a terminé 
+                if (nb.eq.0) exit
+                nunob=connex(zi(jconx2+nmaabs-1)+nb-1)
                 lsnb=zr(jlsno-1+(nunob-1)+1)
                 if ((lsna*lsnb.lt.0.d0) .and. (abs(lsna) .gt.r8prem()) .and.&
                     (abs(lsnb).gt.r8prem())) then
