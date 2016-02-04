@@ -120,6 +120,8 @@ F_DIST_E=DEFI_CONSTANTE(VALE=31.75);
 CHLAG= DEFI_CONTACT(MODELE         = MODE,
                     FORMULATION    = 'DISCRETE',
                     FROTTEMENT     = 'COULOMB',
+                    ALGO_RESO_GEOM='POINT_FIXE',
+                    REAC_GEOM='CONTROLE',
                     ZONE =(
                            _F(
                               GROUP_MA_MAIT  = 'POU1',
@@ -214,7 +216,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=1208.78195787,
+           VALE_CALC=1208.97331437,
            NOM_PARA='DY',
            TABLE=T_REA_LA,
            FILTRE=_F(NOM_PARA='INST',
@@ -222,21 +224,21 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=2414.53179586,
+           VALE_CALC=2428.93515796,
            NOM_PARA='DY',
            TABLE=T_REA_LA,
            FILTRE=_F(NOM_PARA='INST', VALE=0.6,),
            )
 
 TEST_TABLE(
-           VALE_CALC=2095.62805629,
+           VALE_CALC=2132.83607768,
            NOM_PARA='DY',
            TABLE=T_REA_LA,
            FILTRE=_F(NOM_PARA='INST', VALE=0.8,),
            )
 
 TEST_TABLE(
-           VALE_CALC=2352.57092441,
+           VALE_CALC=2374.45366133,
            NOM_PARA='DY',
            TABLE=T_REA_LA,
            FILTRE=_F(NOM_PARA='INST', VALE=1.0,),
@@ -337,7 +339,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=2085.16553486,
+           VALE_CALC=2085.16553235,
            NOM_PARA='DY',
            TABLE=T_REA_CO,
            FILTRE=_F(NOM_PARA='INST',
@@ -345,7 +347,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=2341.90644072,
+           VALE_CALC=2341.90643596,
            NOM_PARA='DY',
            TABLE=T_REA_CO,
            FILTRE=_F(NOM_PARA='INST',
