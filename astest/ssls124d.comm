@@ -272,8 +272,9 @@ RESU33=MECA_STATIQUE(MODELE=MODMEC33,
 Iy=b*h*h*h/12
 Uz=F*L*L*L/3/YG/Iy
 
-# LA SOLUTION OBTENUE PRESENTE UNE FAIBLE VARIABILITE ENTRE MACHINES QUI DECOULE
-# DU MAUVAIS CONDITIONNEMENT
+# La solution obtenue presente une certaine variabilite entre machines qui decoule
+# du mauvais conditionnement du probleme quand l'epaisseur est trop petite.
+# => l'usage du mot cle TOLE_MACHINE.
 calc_aster5_p7=0.00198338285691
 calc_aster5_p8=0.0019833846718
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
@@ -284,7 +285,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CMP='DZ',
                    VALE_CALC=calc_aster5_p7,
                    VALE_REFE=Uz,
-                   TOLE_MACHINE=1.E-2, #TODO TOLE_MACHINE
+                   TOLE_MACHINE=1.e-2, # Voir commentaire plus haut
                    PRECISION=1.E-2,
 ),
                 _F(NUME_ORDRE=1,
@@ -295,7 +296,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CMP='DZ',
                    VALE_CALC=calc_aster5_p8,
                    VALE_REFE=Uz,
-                   TOLE_MACHINE=1.E-2, #TODO TOLE_MACHINE
+                   TOLE_MACHINE=1.e-2, # Voir commentaire plus haut
                    PRECISION=1.E-2,),
                 ),
           )

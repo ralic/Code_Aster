@@ -589,8 +589,9 @@ Iy = b * h**3 / 12.
 
 Uz = F * L**3 / (3.0 * YG * Iy)
 
-# La solution obtenue présente une petite variabilité entre machines qui découle
-# du mauvais conditionnement
+# La solution obtenue presente une certaine variabilite entre machines qui decoule
+# du mauvais conditionnement du probleme quand l'epaisseur est trop petite.
+# => l'usage du mot cle TOLE_MACHINE.
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    GROUP_NO='P7',
                    REFERENCE='ANALYTIQUE',
@@ -598,7 +599,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
                    VALE_CALC=0.249975815454,
-                   TOLE_MACHINE=1.E-4, #TODO TOLE_MACHINE
+                   TOLE_MACHINE=1.e-4, # Voir commentaire plus haut
                    VALE_REFE=Uz,),
                 _F(NUME_ORDRE=1,
                    GROUP_NO='P8',
@@ -607,7 +608,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
                    VALE_CALC=0.249975815549,
-                   TOLE_MACHINE=1.E-4, #TODO TOLE_MACHINE
+                   TOLE_MACHINE=1.e-4, # Voir commentaire plus haut
                    VALE_REFE=Uz,),
                 ),
           )
