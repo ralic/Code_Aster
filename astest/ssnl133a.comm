@@ -20,6 +20,12 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),)
 
 MA=LIRE_MAILLAGE(UNITE=17,FORMAT='MED',)
 
+# Pour que le calcul converge sur calibre9, il faut modifier la geometrie : ALEA=1.e-11 (issue24684).
+# Mais le calcul ne converge alors plus sur athosdev !
+# ALEA=1.e-10 permet de passer sur les machines actuelles : athosdev, clap0f0q, calibre7 et calibre9
+MODI_MAILLAGE(reuse =MA, MAILLAGE=MA, DEFORME=_F(OPTION='TRAN', ALEA=1.e-10,),)
+
+
 MA=DEFI_GROUP(reuse =MA,
    MAILLAGE=MA,
    CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),)
@@ -133,27 +139,25 @@ IMPR_FONCTION(
 
 # TESTS DE NON REGRESSION SUR DEPX et DEPZ
 ResuRefe = [
-# PARA   DX                     DZ                     TOLEMAx    TOLEMAz
-[ 1.0 ,  1.9557493476051e-01 ,  8.1849504447187e-01 ,  1.0e-06 ,  1.0e-06],
-[ 1.2 ,  2.2002897190547e+01 ,  4.5085481299695e+01 ,  1.6e-05 ,  1.2e-05],
-[ 1.4 ,  5.1370576657920e+01 ,  5.9127404636640e+01 ,  3.7e-06 ,  5.3e-06],
-[ 1.6 ,  7.2308205991507e+01 ,  6.1009065262385e+01 ,  5.9e-06 ,  9.7e-06],
-[ 2.0 ,  9.9971410898183e+01 ,  5.5985793815570e+01 ,  2.6e-06 ,  7.8e-06],
-[ 3.0 ,  1.3415732610325e+02 ,  3.9186782348842e+01 ,  1.0e-06 ,  7.0e-06],
-[ 4.0 ,  1.5070726838590e+02 ,  2.7660150436455e+01 ,  1.0e-06 ,  6.5e-06],
-[ 5.0 ,  1.6092764983263e+02 ,  2.0199366888417e+01 ,  1.0e-06 ,  6.2e-06],
+# PARA    DX                  DZ
+[ 1.0 ,   0.19557493473656  , 0.81849504339471  ],
+[ 1.2 ,   22.00300654158    , 45.08540123091    ],
+[ 1.4 ,   51.37065472674    , 59.12736478348    ],
+[ 1.6 ,   72.30845418011    , 61.00946861489    ],
+[ 2.0 ,   99.97155818651    , 55.98609222739    ],
+[ 3.0 ,   134.1573371202    , 39.18694695082    ],
+[ 4.0 ,   150.7072641696    , 27.66026029415    ],
+[ 5.0 ,   160.9276433402    , 20.19944462264    ],
 ]
-# Par defaut TOLE_MACHINE=1.0E-06
-# Les TOLE_MACHINE sont ajustes pour passer sur toutes les machines car la solution est
+# TOLE_MACHINE=4.e-6 pour passer sur toutes les machines car la solution est
 # numeriquement sensible (instabilite)
 motclef = {}
 motclef['VALEUR']= []
-for vpara, vdx,vdz, tolemax, tolemaz in ResuRefe:
+for vpara, vdx,vdz in ResuRefe:
    motclef['VALEUR'].append( _F(VALE_PARA=vpara, FONCTION=DEPX, VALE_CALC=vdx,
-                                TOLE_MACHINE=tolemax, CRITERE='RELATIF',) )
+                                TOLE_MACHINE=4.e-6, CRITERE='RELATIF',) )
    motclef['VALEUR'].append( _F(VALE_PARA=vpara, FONCTION=DEPZ, VALE_CALC=vdz,
-                                TOLE_MACHINE=tolemaz, CRITERE='RELATIF',) )
-
+                                TOLE_MACHINE=4.e-6, CRITERE='RELATIF',) )
 TEST_FONCTION(**motclef)
 
 FIN()
