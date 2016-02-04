@@ -23,7 +23,6 @@ subroutine i2tgrm(voisn1, voisn2, nbm, stchm, ptchm,&
 #include "jeveux.h"
 #include "asterfort/i2fccl.h"
 #include "asterfort/i2fspl.h"
-#include "asterfort/i2gccl.h"
 #include "asterfort/i2gspl.h"
 #include "asterfort/jecreo.h"
 #include "asterfort/jedema.h"
@@ -31,16 +30,12 @@ subroutine i2tgrm(voisn1, voisn2, nbm, stchm, ptchm,&
 #include "asterfort/jeecra.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/assert.h"
     integer :: nbm, voisn1(*), voisn2(*)
     integer :: nbchm, stchm(*), ptchm(*)
 !
     aster_logical :: simple, cycle
     integer :: i, apt, ast, mdpt, aplace
-!
-!
-!
-!
-!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     call jemarq()
     apt = 1
@@ -81,20 +76,9 @@ subroutine i2tgrm(voisn1, voisn2, nbm, stchm, ptchm,&
 !
     mdpt = 0
 !
- 30 continue
     if (cycle) then
-!
         call i2fccl(zl(aplace), nbm, cycle, mdpt)
-!
-        if (cycle) then
-!
-            call i2gccl(mdpt, voisn1, voisn2, zl(aplace), stchm,&
-                        ptchm, ast, apt)
-!
-        endif
-!
-        goto 30
-!
+        ASSERT(.not.cycle)
     endif
 !
     ptchm(apt) = ast

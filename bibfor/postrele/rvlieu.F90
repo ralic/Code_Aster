@@ -15,7 +15,6 @@ subroutine rvlieu(mailla, typco, nlsnac, sdlieu)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/rvabsc.h"
-#include "asterfort/rvnchm.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/assert.h"

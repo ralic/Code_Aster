@@ -9,7 +9,6 @@ subroutine rvpste(lieu, ssch19, nomsd, typaff)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/rvechc.h"
 #include "asterfort/rveche.h"
 #include "asterfort/rvechn.h"
 #include "asterfort/wkvect.h"
