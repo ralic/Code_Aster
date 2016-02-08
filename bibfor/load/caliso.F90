@@ -11,13 +11,11 @@ implicit none
 #include "asterfort/armin.h"
 #include "asterfort/assert.h"
 #include "asterfort/char_excl_keyw.h"
-#include "asterfort/char_read_tran.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/solide_tran.h"
 #include "asterfort/drz12d.h"
 #include "asterfort/drz13d.h"
-#include "asterfort/drzrot.h"
 #include "asterfort/exisdg.h"
 #include "asterfort/getnode.h"
 #include "asterfort/getvr8.h"
@@ -88,7 +86,7 @@ implicit none
     integer :: nb_node
     character(len=2) :: type_lagr
     character(len=8) :: nomg, poslag, model
-    real(kind=8) :: dist_mini, dist, tran(3)
+    real(kind=8) :: dist_mini, dist
     integer :: dim, k
     character(len=1) :: kdim
     character(len=8) :: cmp_name, type_rela, nom_noeuds_tmp(4)
@@ -102,7 +100,7 @@ implicit none
     integer :: n_keyexcl, nuti
     integer :: cmp_index_dx, cmp_index_dy, cmp_index_dz
     integer :: cmp_index_drx, cmp_index_dry, cmp_index_drz
-    aster_logical :: l_rota_2d, l_rota_3d, l_tran
+    aster_logical :: l_rota_2d, l_rota_3d
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -209,19 +207,6 @@ implicit none
             cycle
         endif
 !
-! ----- Read transformation
-!
-        call char_read_tran(keywordfact, iocc, ndim, l_tran, tran)
-!
-! ----- Apply translation
-!
-        if (l_tran) then
-            call drzrot(mesh, ligrmo, nb_node, list_node, type_lagr,&
-                        tran, list_rela)
-            type_rela = "LIN"
-            goto 998
-        endif
-!
 ! ----- Model: 2D
 !
         if (ndim .eq. 2) then
@@ -293,8 +278,6 @@ implicit none
                 endif
             endif
         endif
-!
-998     continue
 !
 !       - Final linear relation affectation
 !
