@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,8 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine calirc(chargz, phenom)
-        character(len=*), intent(in) :: chargz
-        character(len=4), intent(in) :: phenom
+    subroutine calirc(phenom_, load, mesh)
+        character(len=*), intent(in) :: phenom_
+        character(len=8), intent(in) :: load
+        character(len=8), intent(in) :: mesh
     end subroutine calirc
 end interface

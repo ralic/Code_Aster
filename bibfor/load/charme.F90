@@ -297,7 +297,7 @@ implicit none
 !
 ! ----- LIAISON_MAIL
 !
-        call calirc(load, 'MECA')
+        call calirc('MECANIQUE', load, mesh)
 !
 ! ----- LIAISON_PROJ
 !
@@ -305,7 +305,7 @@ implicit none
 !
 ! ----- LIAISON_CYCL
 !
-        call calyrc(load)
+        call calyrc(load, mesh)
 !
 ! ----- LIAISON_ELEM
 !

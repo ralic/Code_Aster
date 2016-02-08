@@ -1,20 +1,19 @@
-subroutine char_read_tran(keywordfact, iocc, ndim, l_tran, tran,&
-                          l_cent, cent, l_angl_naut, angl_naut)
+subroutine char_read_tran(keywordfact , iocc      , ndim,&
+                          l_tran_     , tran_     ,&
+                          l_cent_     , cent_     ,&
+                          l_angl_naut_, angl_naut_)
 !
-    implicit none
+implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterc/getexm.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/assert.h"
 #include "asterfort/getvr8.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -33,12 +32,12 @@ subroutine char_read_tran(keywordfact, iocc, ndim, l_tran, tran,&
     character(len=16), intent(in) :: keywordfact
     integer, intent(in) :: iocc
     integer, intent(in) :: ndim
-    aster_logical, intent(out) :: l_tran
-    real(kind=8), intent(out) :: tran(3)
-    aster_logical, intent(out) :: l_cent
-    real(kind=8), intent(out) :: cent(3)
-    aster_logical, intent(out) :: l_angl_naut
-    real(kind=8), intent(out) :: angl_naut(3)
+    aster_logical, optional, intent(out) :: l_tran_
+    real(kind=8), optional, intent(out) :: tran_(3)
+    aster_logical, optional, intent(out) :: l_cent_
+    real(kind=8), optional, intent(out) :: cent_(3)
+    aster_logical, optional, intent(out) :: l_angl_naut_
+    real(kind=8), optional, intent(out) :: angl_naut_(3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,35 +47,31 @@ subroutine char_read_tran(keywordfact, iocc, ndim, l_tran, tran,&
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  keywordfact  : factor keyword to read
-! In  iocc         : factor keyword index in AFFE_CHAR_MECA
-! In  ndim         : space dimension
-! Out l_tran       : .true. if TRAN defined (translation)
-! Out tran         : vector defining translation
-! Out l_cent       : .true. if center defined (rotation)
-! Out cent         : vector defining center
-! Out l_angl_naut  : .true. if angl defined (rotation)
-! Out angl_naut    : angle defining rotation
+! In  keywordfact      : factor keyword to read
+! In  iocc             : factor keyword index in AFFE_CHAR_MECA
+! In  ndim             : space dimension
+! Out l_tran           : .true. if TRAN defined (translation)
+! Out tran             : vector defining translation
+! Out l_cent           : .true. if center defined (rotation)
+! Out cent             : vector defining center
+! Out l_angl_naut      : .true. if angl defined (rotation)
+! Out angl_naut        : angle defining rotation
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ibid, nangmx, i
+    integer :: nangmx, i
     integer :: ntran, ncent, nangl, vali(2)
+    aster_logical :: l_tran, l_cent, l_angl_naut
+    real(kind=8) :: tran(3), cent(3), angl_naut(3) 
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
-!
-! - Initializations
-!
-    l_tran = .false.
-    l_angl_naut = .false.
-    l_cent = .false.
-    do i = 1, 3
-        tran(i) = 0.d0
-        cent(i) = 0.d0
-        angl_naut(i) = 0.d0
-    enddo
+    l_tran         = .false.
+    l_angl_naut    = .false.
+    l_cent         = .false.
+    tran(1:3)      = 0.d0
+    cent(1:3)      = 0.d0
+    angl_naut(1:3) = 0.d0
     if (ndim .eq. 3) then
         nangmx = 3
     else
@@ -95,8 +90,7 @@ subroutine char_read_tran(keywordfact, iocc, ndim, l_tran, tran,&
                 vali(2) = ndim
                 call utmess('F', 'CHARGES2_42', sk='TRAN', ni=2, vali=vali)
             endif
-            call getvr8(keywordfact, 'TRAN', iocc=iocc, nbval=ntran, vect=tran,&
-                        nbret=ibid)
+            call getvr8(keywordfact, 'TRAN', iocc=iocc, nbval=ntran, vect=tran)
         endif
     endif
 !
@@ -112,8 +106,7 @@ subroutine char_read_tran(keywordfact, iocc, ndim, l_tran, tran,&
                 vali(2) = ndim
                 call utmess('F', 'CHARGES2_42', sk='CENTRE', ni=2, vali=vali)
             endif
-            call getvr8(keywordfact, 'CENTRE', iocc=iocc, nbval=ncent, vect=cent,&
-                        nbret=ibid)
+            call getvr8(keywordfact, 'CENTRE', iocc=iocc, nbval=ncent, vect=cent)
         endif
     endif
 !
@@ -127,13 +120,26 @@ subroutine char_read_tran(keywordfact, iocc, ndim, l_tran, tran,&
                 vali(2) = ndim
                 call utmess('F', 'CHARGES2_42', sk='ANGL_NAUT', ni=2, vali=vali)
             endif
-            call getvr8(keywordfact, 'ANGL_NAUT', iocc=iocc, nbval=nangmx, vect=angl_naut,&
-                        nbret=ibid)
+            call getvr8(keywordfact, 'ANGL_NAUT', iocc=iocc, nbval=nangmx, vect=angl_naut)
             do i = 1, 3
                 angl_naut(i) = angl_naut(i)*r8dgrd()
             end do
         endif
     endif
 !
-    call jedema()
+! - Copy output
+!
+    if (present(l_tran_)) then
+        l_tran_    = l_tran
+        tran_(1:3) = tran(1:3)
+    endif
+    if (present(l_cent_)) then
+        l_cent_    = l_cent
+        cent_(1:3) = cent(1:3)
+    endif
+    if (present(l_angl_naut_)) then
+        l_angl_naut_    = l_angl_naut
+        angl_naut_(1:3) = angl_naut(1:3)
+    endif
+!
 end subroutine

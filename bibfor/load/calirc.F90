@@ -1,11 +1,10 @@
-subroutine calirc(chargz, phenom)
+subroutine calirc(phenom_, load, mesh)
 !
 implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getres.h"
 #include "asterfort/aflrch.h"
 #include "asterfort/afrela.h"
 #include "asterfort/assert.h"
@@ -39,7 +38,7 @@ implicit none
 #include "asterfort/as_allocate.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -55,17 +54,25 @@ implicit none
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! aslint: disable=W1501
-! person_in_charge: jacques.pellet at edf.fr
+! Person in charge: mickael.abbas at edf.fr
 !
-    character(len=*), intent(in) :: chargz
-    character(len=4), intent(in) :: phenom
+    character(len=*), intent(in) :: phenom_
+    character(len=8), intent(in) :: load
+    character(len=8), intent(in) :: mesh
 !
-!     CREER LES CARTES CHAR.CHXX.CMULT ET CHAR.CHXX.CIMPO
-!          ET REMPLIR LIGRCH, POUR LE MOT-CLE LIAISON_MAIL
-!     (COMMANDES AFFE_CHAR_MECA ET AFFE_CHAR_THER)
+! --------------------------------------------------------------------------------------------------
 !
-! IN  : CHARGE : NOM UTILISATEUR DU RESULTAT DE CHARGE
-!-----------------------------------------------------------------------
+! Loads affectation
+!
+! Keyword = 'LIAISON_MAIL'
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  phenom       : phenomenon (MECANIQUE/THERMIQUE/ACOUSTIQUE)
+! In  load         : name of load
+! In  mesh         : name of mesh
+!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: k, kk, nuno1, nuno2, ino1, ino2, ndim, nocc, iocc
     integer :: ibid, nnomx, idmax, igeom
@@ -83,14 +90,13 @@ implicit none
     character(len=2) :: typlag
     character(len=4) :: fonree
     character(len=4) :: typcoe, typlia
-    character(len=8) :: noma, mo, m8blan, kelim
-    character(len=8) :: kbeta, nono1, nono2, charge, cmp, ddl2, listyp(8)
-    character(len=16) :: motfac, tymocl(4), motcle(4), nomcmd
+    character(len=8) :: model, m8blan, kelim
+    character(len=8) :: kbeta, nono1, nono2, cmp, ddl2, listyp(8)
+    character(len=16) :: motfac, tymocl(4), motcle(4)
     character(len=16) :: corres, corre1, corre2, typrac
-    character(len=19) :: ligrmo, lisrel
+    character(len=19) :: lisrel
     character(len=24) :: geom2
     character(len=24) :: valk(2)
-    character(len=1) :: kb
     aster_logical :: l_tran
     real(kind=8) :: tran(3)
     aster_logical :: l_cent
@@ -99,7 +105,6 @@ implicit none
     real(kind=8) :: angl_naut(3)
     character(len=24) :: list_node
     integer, pointer :: limanu1(:) => null()
-    character(len=8), pointer :: lgrf(:) => null()
     integer, pointer :: ln(:) => null()
     integer, pointer :: limanu2(:) => null()
     integer, pointer :: com1(:) => null()
@@ -112,19 +117,17 @@ implicit none
     character(len=8), pointer :: nomddl(:) => null()
     character(len=8), pointer :: nomnoe(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
-! ----------------------------------------------------------------------
 !
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     motfac='LIAISON_MAIL'
     call getfac(motfac, nocc)
     if (nocc .eq. 0) goto 320
 !
-!
-    call getres(kb, kb, nomcmd)
-    if (nomcmd .eq. 'AFFE_CHAR_MECA') then
+    if (phenom_ .eq. 'MECANIQUE') then
         typlia='DEPL'
-    else if (nomcmd.eq.'AFFE_CHAR_THER') then
+    else if (phenom_ .eq.'THERMIQUE') then
         typlia='TEMP'
     else
         ASSERT(.false.)
@@ -132,7 +135,6 @@ implicit none
 !
     fonree='REEL'
     typcoe='REEL'
-    charge=chargz
 !
     lisrel='&&CALIRC.RLLISTE'
     zero=0.0d0
@@ -143,12 +145,8 @@ implicit none
     m8blan='        '
     ndim1=3
 !
-    call dismoi('NOM_MODELE', charge(1:8), 'CHARGE', repk=mo)
-    ligrmo=mo//'.MODELE'
-    call jeveuo(ligrmo//'.LGRF', 'L', vk8=lgrf)
-    noma=lgrf(1)
-!
-    call dismoi('DIM_GEOM', mo, 'MODELE', repi=igeom)
+    call dismoi('NOM_MODELE', load, 'CHARGE', repk=model)
+    call dismoi('DIM_GEOM', model, 'MODELE', repi=igeom)
     if (.not.(igeom.eq.2.or.igeom.eq.3)) then
         call utmess('F', 'MODELISA2_6')
     endif
@@ -175,7 +173,7 @@ implicit none
         listyp(8)='SEG4'
     endif
 !
-    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nnomx)
+    call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi=nnomx)
 !     -- IDMAX : NOMBRE MAX DE TERMES D'UNE RELATION LINEAIRE
 !              = 2*27 + 3 = 57
     idmax=57
@@ -227,7 +225,7 @@ implicit none
         tymocl(1)='MAILLE'
         motcle(2)='GROUP_MA_MAIT'
         tymocl(2)='GROUP_MA'
-        call reliem(mo, noma, 'NU_MAILLE', motfac, iocc,&
+        call reliem(model, mesh, 'NU_MAILLE', motfac, iocc,&
                     2, motcle, tymocl, '&&CALIRC.LIMANU1', nbma1)
         call jeveuo('&&CALIRC.LIMANU1', 'L', vi=limanu1)
 !
@@ -246,7 +244,7 @@ implicit none
             tymocl(3)='MAILLE'
             motcle(4)='GROUP_MA_ESCL'
             tymocl(4)='GROUP_MA'
-            call reliem(' ', noma, 'NU_NOEUD', motfac, iocc,&
+            call reliem(' ', mesh, 'NU_NOEUD', motfac, iocc,&
                         4, motcle, tymocl, '&&CALIRC.LINONU2', nbno2)
             call jeveuo('&&CALIRC.LINONU2', 'L', iagno2)
 !
@@ -258,7 +256,7 @@ implicit none
             tymocl(1)='MAILLE'
             motcle(2)='GROUP_MA_ESCL'
             tymocl(2)='GROUP_MA'
-            call reliem(mo, noma, 'NU_MAILLE', motfac, iocc,&
+            call reliem(model, mesh, 'NU_MAILLE', motfac, iocc,&
                         2, motcle, tymocl, '&&CALIRC.LIMANU2', nbma2)
             if (nbma2 .eq. 0) then
                 valk(1)=motcle(1)
@@ -271,7 +269,7 @@ implicit none
 ! ---        ET DES NOMBRES D'OCCURENCES DE CES NOEUDS '&&NBNLMA.NBN'
 ! ---        DES MAILLES DE PEAU MAILLE_ESCL :
 !            -------------------------------
-            call nbnlma(noma, nbma2, limanu2, nbtyp, listyp,&
+            call nbnlma(mesh, nbma2, limanu2, nbtyp, listyp,&
                         nbno2)
 !
 ! ---        CALCUL DES NORMALES EN CHAQUE NOEUD :
@@ -289,7 +287,7 @@ implicit none
                 vindire(1+ln(i)-1)=i
             end do
 !
-            call canort(noma, nbma2, limanu2, ndim, nbno2,&
+            call canort(mesh, nbma2, limanu2, ndim, nbno2,&
                         ln, 1)
             call jeveuo('&&CANORT.NORMALE', 'L', jnorm)
             call jedupo('&&NBNLMA.LN', 'V', '&&CALIRC.LINONU2', .false._1)
@@ -337,7 +335,7 @@ implicit none
 !
         geom2='&&CALIRC.GEOM_TRANSF'
         list_node = '&&CALIRC.LINONU2'
-        call calirg(noma, nbno2, list_node, tran, cent,&
+        call calirg(mesh, nbno2, list_node, tran, cent,&
                     l_angl_naut, angl_naut, geom2, lrota, mrota)
 !
 !       -- LROTA = .TRUE. : ON A UTILISE LE MOT CLE ANGL_NAUT
@@ -365,25 +363,25 @@ implicit none
 !       --------------------------------------------------------
         if (ndim .eq. 2) then
             ASSERT((typrac.eq.' ') .or. (typrac.eq.'MASSIF'))
-            call pj2dco('PARTIE', mo, mo, nbma1, limanu1,&
+            call pj2dco('PARTIE', model, model, nbma1, limanu1,&
                         nbno2, zi( iagno2), ' ', geom2, corres,&
                         l_dmax, dmax, dala)
         else if (ndim.eq.3) then
             if ((typrac.eq.' ') .or. (typrac.eq.'MASSIF')) then
-                call pj3dco('PARTIE', mo, mo, nbma1, limanu1,&
+                call pj3dco('PARTIE', model, model, nbma1, limanu1,&
                             nbno2, zi(iagno2), ' ', geom2, corres,&
                             l_dmax, dmax, dala)
                 elseif (typrac.eq.'COQUE' .or. typrac.eq.'MASSIF_COQUE')&
             then
-                call pj4dco('PARTIE', mo, mo, nbma1, limanu1,&
+                call pj4dco('PARTIE', model, model, nbma1, limanu1,&
                             nbno2, zi(iagno2), ' ', geom2, corres,&
                             l_dmax, dmax, dala)
             else if (typrac.eq.'COQUE_MASSIF') then
-                call pj3dco('PARTIE', mo, mo, nbma1, limanu1,&
+                call pj3dco('PARTIE', model, model, nbma1, limanu1,&
                             nbno2, zi(iagno2), ' ', geom2, corres,&
                             l_dmax, dmax, dala)
                 call wkvect('&&CALIRC.LISV1', 'V V R', 3*nnomx, jlisv1)
-                call calir3(mo, nbma1, limanu1, nbno2, zi(iagno2),&
+                call calir3(model, nbma1, limanu1, nbno2, zi(iagno2),&
                             geom2, corre1, corre2, jlisv1, iocc)
             else
                 ASSERT(.false.)
@@ -438,7 +436,7 @@ implicit none
                     nno1=zi(jconb-1+ino2)
 !
                     nuno2=ino2
-                    call jenuno(jexnum(noma//'.NOMNOE', nuno2), nono2)
+                    call jenuno(jexnum(mesh//'.NOMNOE', nuno2), nono2)
 !
                     nomnoe(1)=nono2
                     coef(1)=-1.d0
@@ -446,7 +444,7 @@ implicit none
                     do ino1 = 1, nno1
                         nuno1=zi(jconu+idecal-1+ino1)
                         coef1=zr(jcocf+idecal-1+ino1)
-                        call jenuno(jexnum(noma//'.NOMNOE', nuno1), nono1)
+                        call jenuno(jexnum(mesh//'.NOMNOE', nuno1), nono1)
                         nomnoe(ino1+1)=nono1
                         coef(ino1+1)=coef1
 !               SI LA RELATION EST UNE TAUTOLOGIE, ON NE L'ECRIT PAS :
@@ -494,8 +492,8 @@ implicit none
                             end do
 !
                         else if (typrac.eq.'MASSIF_COQUE') then
-                            call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
-                            call calir5(noma, lisrel, nono2, nuno2, jcoor,&
+                            call jeveuo(mesh//'.COORDO    .VALE', 'L', jcoor)
+                            call calir5(mesh, lisrel, nono2, nuno2, jcoor,&
                                         idecal, jconb, jcocf, jconu)
                         endif
 !
@@ -518,7 +516,7 @@ implicit none
                             end do
 !
                         else if (typrac.eq.'COQUE_MASSIF') then
-                            call calir4(noma, lisrel, nono2, ino2, zr(jlisv1+3*(ino2-1)),&
+                            call calir4(mesh, lisrel, nono2, ino2, zr(jlisv1+3*(ino2-1)),&
                                         jconb1, jcocf1, jconu1, ideca1, jconb2,&
                                         jcocf2, jconu2, ideca2)
                         endif
@@ -559,7 +557,7 @@ implicit none
                     normal(3)=zero
 !
                     nuno2=ino2
-                    call jenuno(jexnum(noma//'.NOMNOE', nuno2), nono2)
+                    call jenuno(jexnum(mesh//'.NOMNOE', nuno2), nono2)
 !
                     if (dnor) then
                         ij=1
@@ -570,7 +568,7 @@ implicit none
                     do ino1 = 1, nno1
                         nuno1=zi(jconu+idecal-1+ino1)
                         coef1=zr(jcocf+idecal-1+ino1)
-                        call jenuno(jexnum(noma//'.NOMNOE', nuno1), nono1)
+                        call jenuno(jexnum(mesh//'.NOMNOE', nuno1), nono1)
                         nomnoe(1+ij+ino1-1)=nono1
                         coef(1+ij+ino1-1)=coef1
                     end do
@@ -644,7 +642,7 @@ implicit none
                 if (nno1 .eq. 0) goto 300
 !
                 nuno2=ino2
-                call jenuno(jexnum(noma//'.NOMNOE', nuno2), nono2)
+                call jenuno(jexnum(mesh//'.NOMNOE', nuno2), nono2)
 !
                 nomnoe(1)=nono2
                 coef(1)=-1.d0
@@ -652,7 +650,7 @@ implicit none
                 do ino1 = 1, nno1
                     nuno1=zi(jconu+idecal-1+ino1)
                     coef1=zr(jcocf+idecal-1+ino1)
-                    call jenuno(jexnum(noma//'.NOMNOE', nuno1), nono1)
+                    call jenuno(jexnum(mesh//'.NOMNOE', nuno1), nono1)
                     nomnoe(ino1+1)=nono1
                     coef(ino1+1)=coef1
 !             SI LA RELATION EST UNE TAUTOLOGIE, ON NE L'ECRIT PAS :
@@ -710,9 +708,8 @@ implicit none
 !
 ! --- AFFECTATION DE LA LISTE DE RELATIONS A LA CHARGE :
 !     ------------------------------------------------
-    if (phenom.eq.'MECA') then
-    endif
-    call aflrch(lisrel, charge, 'LIN')
+
+    call aflrch(lisrel, load, 'LIN')
 !
 320 continue
     call jedema()

@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,12 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine char_pair_node(mesh, cent, angl_naut, tran, nb_node, &
+    subroutine char_pair_node(mesh, nb_node, &
                               list_node_i1, list_node_i2, list_node_o1, list_node_o2, i_error)
         character(len=8), intent(in) :: mesh
-        real(kind=8), intent(in) :: cent(3)
-        real(kind=8), intent(in) :: angl_naut(3)
-        real(kind=8), intent(in) :: tran(3)
         integer, intent(in) :: nb_node
         character(len=24), intent(in) :: list_node_i1
         character(len=24), intent(in) :: list_node_i2

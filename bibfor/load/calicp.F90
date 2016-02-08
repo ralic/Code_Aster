@@ -9,7 +9,6 @@ implicit none
 #include "asterfort/aflrch.h"
 #include "asterfort/assert.h"
 #include "asterfort/char_pair_node.h"
-#include "asterfort/char_read_tran.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/drz12d.h"
 #include "asterfort/drz13d.h"
@@ -25,7 +24,7 @@ implicit none
 #include "asterfort/wkvect.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -58,7 +57,7 @@ implicit none
 !
 ! In  mesh        : name of mesh
 ! In  load        : name of load
-! In  ligrmo      : list of elements nume_node model
+! In  ligrmo      : list of elements in model
 ! In  vale_type   : affected value type (real, complex or function)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -73,8 +72,6 @@ implicit none
     integer :: jnom, jprnm, nb_cmp
     integer :: cmp_index_dx, cmp_index_dy, cmp_index_dz
     integer :: cmp_index_drx, cmp_index_dry, cmp_index_drz
-    real(kind=8) :: tran(3), cent(3), angl_naut(3)
-    aster_logical :: l_tran, l_cent, l_angl_naut
     character(len=8) :: suffix
     character(len=24) :: list_node_o1, list_node_o2, list_node_i1, list_node_i2
     integer :: nb_node, nb_node_1, nb_node_2
@@ -185,14 +182,9 @@ implicit none
         call wkvect(list_node_o1, 'V V I', nb_node, j_node_o1)
         call wkvect(list_node_o2, 'V V I', nb_node, j_node_o2)
 !
-! ----- Read transformation
-!
-        call char_read_tran(keywordfact, iocc, ndim, l_tran, tran,&
-                            l_cent, cent, l_angl_naut, angl_naut)
-!
 ! ----- Pairing the two lists with transformation
 !
-        call char_pair_node(mesh, cent, angl_naut, tran, nb_node,&
+        call char_pair_node(mesh, nb_node,&
                             list_node_i1, list_node_i2, list_node_o1, list_node_o2, i_error)
         if (i_error .ne. 0) then
             call utmess('F', 'CHARGES2_9')

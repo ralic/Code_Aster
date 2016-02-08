@@ -1,6 +1,6 @@
 subroutine caliso(load, mesh, ligrmo, vale_type)
 !
-    implicit none
+implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -88,7 +88,7 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
     integer :: nb_node
     character(len=2) :: type_lagr
     character(len=8) :: nomg, poslag, model
-    real(kind=8) :: dist_mini, dist
+    real(kind=8) :: dist_mini, dist, tran(3)
     integer :: dim, k
     character(len=1) :: kdim
     character(len=8) :: cmp_name, type_rela, nom_noeuds_tmp(4)
@@ -102,13 +102,7 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
     integer :: n_keyexcl, nuti
     integer :: cmp_index_dx, cmp_index_dy, cmp_index_dz
     integer :: cmp_index_drx, cmp_index_dry, cmp_index_drz
-    aster_logical :: l_rota_2d, l_rota_3d
-    aster_logical :: l_tran
-    real(kind=8) :: tran(3)
-    aster_logical :: l_cent
-    real(kind=8) :: cent(3)
-    aster_logical :: l_angl_naut
-    real(kind=8) :: angl_naut(3)
+    aster_logical :: l_rota_2d, l_rota_3d, l_tran
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -217,15 +211,11 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
 !
 ! ----- Read transformation
 !
-        call char_read_tran(keywordfact, iocc, ndim, l_tran, tran,&
-                            l_cent, cent, l_angl_naut, angl_naut)
-        ASSERT(.not.l_cent)
-        ASSERT(.not.l_angl_naut)
+        call char_read_tran(keywordfact, iocc, ndim, l_tran, tran)
 !
 ! ----- Apply translation
 !
         if (l_tran) then
-!           -- a resorber ? (issue24272)
             call drzrot(mesh, ligrmo, nb_node, list_node, type_lagr,&
                         tran, list_rela)
             type_rela = "LIN"
@@ -303,7 +293,6 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
                 endif
             endif
         endif
-!
 !
 998     continue
 !

@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,16 +18,18 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine char_read_tran(keywordfact, iocc , ndim, l_tran, tran, &
-                              l_cent, cent, l_angl_naut, angl_naut)
+    subroutine char_read_tran(keywordfact , iocc      , ndim,&
+                              l_tran_     , tran_     ,&
+                              l_cent_     , cent_     ,&
+                              l_angl_naut_, angl_naut_)
         character(len=16), intent(in) :: keywordfact
         integer, intent(in) :: iocc
         integer, intent(in) :: ndim
-        aster_logical, intent(out) :: l_tran
-        real(kind=8), intent(out) :: tran(3)
-        aster_logical, intent(out) :: l_cent
-        real(kind=8), intent(out) :: cent(3)  
-        aster_logical, intent(out) :: l_angl_naut
-        real(kind=8), intent(out) :: angl_naut(3) 
+        aster_logical, optional, intent(out) :: l_tran_
+        real(kind=8), optional, intent(out) :: tran_(3)
+        aster_logical, optional, intent(out) :: l_cent_
+        real(kind=8), optional, intent(out) :: cent_(3)
+        aster_logical, optional, intent(out) :: l_angl_naut_
+        real(kind=8), optional, intent(out) :: angl_naut_(3)
     end subroutine char_read_tran
 end interface

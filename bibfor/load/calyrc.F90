@@ -1,9 +1,10 @@
-subroutine calyrc(chargz)
+subroutine calyrc(load, mesh)
+!
 implicit none
+!
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getres.h"
 #include "asterfort/aflrch.h"
 #include "asterfort/afrela.h"
 #include "asterfort/assert.h"
@@ -33,11 +34,8 @@ implicit none
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-!
-    character(len=*) :: chargz
-! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -52,14 +50,23 @@ implicit none
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! Person in charge: mickael.abbas at edf.fr
 !
+    character(len=8), intent(in) :: load
+    character(len=8), intent(in) :: mesh
 !
-!     CREER LES CARTES CHAR.CHXX.CMULT ET CHAR.CHXX.CIMPO
-!          ET REMPLIR LIGRCH, POUR LE MOT-CLE LIAISON_CYCL
-!     (COMMANDES AFFE_CHAR_MECA ET AFFE_CHAR_THER)
+! --------------------------------------------------------------------------------------------------
 !
-! IN  : CHARGE : NOM UTILISATEUR DU RESULTAT DE CHARGE
-!-----------------------------------------------------------------------
+! Loads affectation
+!
+! Keyword = 'LIAISON_CYCL'
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  load         : name of load
+! In  mesh         : name of mesh
+!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: k, kk, nuno1, nuno2, ino1, ino2, ndim, nocc, iocc
     integer :: nnomx, idmax
@@ -74,14 +81,12 @@ implicit none
     real(kind=8) :: r8b
     real(kind=8) :: coef11, coef12, coef3
     complex(kind=8) :: betac
-    character(len=1) :: kb
     character(len=2) :: typlag
     character(len=4) :: fonree
     character(len=4) :: typcoe, typlia
-    character(len=8) :: noma, mo, m8blan
-    character(len=8) :: kbeta, nono1, nono2, charge, cmp, ddl2, listyp(10)
-    character(len=16) :: motfac, cores1, cores2, tymocl(4), motcle(4), nomcmd
-    character(len=19) :: ligrmo
+    character(len=8) :: model, m8blan
+    character(len=8) :: kbeta, nono1, nono2, cmp, ddl2, listyp(10)
+    character(len=16) :: motfac, cores1, cores2, tymocl(4), motcle(4)
     character(len=19) :: lisrel
     character(len=24) :: geom3
     character(len=24) :: valk(2)
@@ -106,11 +111,11 @@ implicit none
     real(kind=8), pointer :: cocf1(:) => null()
     real(kind=8), pointer :: cocf2(:) => null()
     real(kind=8), pointer :: normale(:) => null()
-    character(len=8), pointer :: lgrf(:) => null()
     integer, pointer :: conb1(:) => null()
     integer, pointer :: conb2(:) => null()
     integer, pointer :: limanu1(:) => null()
-! ----------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     nul=0
@@ -118,19 +123,11 @@ implicit none
     call getfac(motfac, nocc)
     if (nocc .eq. 0) goto 310
 !
-    call getres(kb, kb, nomcmd)
-    if (nomcmd .eq. 'AFFE_CHAR_MECA') then
-        typlia = 'DEPL'
-    else if (nomcmd.eq.'AFFE_CHAR_THER') then
-        typlia = 'TEMP'
-    else
-        ASSERT(.false.)
-    endif
+    typlia = 'DEPL'
 !
 !
     fonree = 'REEL'
     typcoe = 'REEL'
-    charge = chargz
 !
     lisrel = '&&CALYRC.RLLISTE'
     zero = 0.0d0
@@ -142,12 +139,8 @@ implicit none
     ndim1 = 3
     lreori = .false.
 !
-    call dismoi('NOM_MODELE', charge(1:8), 'CHARGE', repk=mo)
-    ligrmo = mo//'.MODELE'
-    call jeveuo(ligrmo//'.LGRF', 'L', vk8=lgrf)
-    noma = lgrf(1)
-!
-    call dismoi('DIM_GEOM', mo, 'MODELE', repi=ndim)
+    call dismoi('NOM_MODELE', load, 'CHARGE', repk=model)
+    call dismoi('DIM_GEOM', model, 'MODELE', repi=ndim)
     if (.not.(ndim.eq.2.or.ndim.eq.3)) then
         call utmess('F', 'MODELISA2_6')
     endif
@@ -171,7 +164,7 @@ implicit none
         listyp(10) = 'SEG4'
     endif
 !
-    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nnomx)
+    call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi=nnomx)
     idmax = nnomx + 3
     AS_ALLOCATE(vk8=nomnoe, size=idmax)
     AS_ALLOCATE(vk8=nomddl, size=idmax)
@@ -198,7 +191,7 @@ implicit none
         tymocl(1) = 'MAILLE'
         motcle(2) = 'GROUP_MA_MAIT1'
         tymocl(2) = 'GROUP_MA'
-        call reliem(mo, noma, 'NU_MAILLE', motfac, iocc,&
+        call reliem(model, mesh, 'NU_MAILLE', motfac, iocc,&
                     2, motcle, tymocl, '&&CALYRC.LIMANU1', nbma1)
         call jeveuo('&&CALYRC.LIMANU1', 'L', vi=limanu1)
 !        -- 2eme groupe maitre --
@@ -206,7 +199,7 @@ implicit none
         tymocl(1) = 'MAILLE'
         motcle(2) = 'GROUP_MA_MAIT2'
         tymocl(2) = 'GROUP_MA'
-        call reliem(mo, noma, 'NU_MAILLE', motfac, iocc,&
+        call reliem(model, mesh, 'NU_MAILLE', motfac, iocc,&
                     2, motcle, tymocl, '&&CALYRC.LIMANU2', nbma2)
         if (nbma2 .gt. 0) then
             call jeveuo('&&CALYRC.LIMANU2', 'L', vi=limanu2)
@@ -226,7 +219,7 @@ implicit none
             tymocl(3) = 'MAILLE'
             motcle(4) = 'GROUP_MA_ESCL'
             tymocl(4) = 'GROUP_MA'
-            call reliem(' ', noma, 'NU_NOEUD', motfac, iocc,&
+            call reliem(' ', mesh, 'NU_NOEUD', motfac, iocc,&
                         4, motcle, tymocl, '&&CALYRC.LINONU', nbno3)
             call jeveuo('&&CALYRC.LINONU', 'L', iagno3)
 !
@@ -238,7 +231,7 @@ implicit none
             tymocl(1) = 'MAILLE'
             motcle(2) = 'GROUP_MA_ESCL'
             tymocl(2) = 'GROUP_MA'
-            call reliem(mo, noma, 'NU_MAILLE', motfac, iocc,&
+            call reliem(model, mesh, 'NU_MAILLE', motfac, iocc,&
                         2, motcle, tymocl, '&&CALYRC.LIMANU3', nbma3)
             if (nbma3 .eq. 0) then
                 valk(1) = motcle(1)
@@ -248,7 +241,7 @@ implicit none
             call jeveuo('&&CALYRC.LIMANU3', 'L', vi=limanu3)
 !
             norien = 0
-            call orilma(noma, ndim, limanu3, nbma3, norien,&
+            call orilma(mesh, ndim, limanu3, nbma3, norien,&
                         ntrait, lreori, 0, [0])
             if (norien .ne. 0) then
                 call utmess('F', 'MODELISA3_19')
@@ -258,7 +251,7 @@ implicit none
 ! ---        ET DES NOMBRES D'OCCURENCES DE CES NOEUDS '&&NBNLMA.NBN'
 ! ---        DES MAILLES DE PEAU MAILLE_ESCL :
 !            -------------------------------
-            call nbnlma(noma, nbma3, limanu3, nbtyp, listyp,&
+            call nbnlma(mesh, nbma3, limanu3, nbtyp, listyp,&
                         nbno3)
 !
 ! ---        CALCUL DES NORMALES EN CHAQUE NOEUD :
@@ -276,7 +269,7 @@ implicit none
                 zi(indire+ln(i)-1) = i
             end do
 !
-            call canort(noma, nbma3, limanu3, ndim, nbno3,&
+            call canort(mesh, nbma3, limanu3, ndim, nbno3,&
                         ln, 1)
             call jeveuo('&&CANORT.NORMALE', 'L', vr=normale)
             call jedupo('&&NBNLMA.LN3', 'V', '&&CALYRC.LINONU', .false._1)
@@ -291,7 +284,7 @@ implicit none
 !
         geom3 = '&&CALYRC.GEOM_TRANSF'
         list_node = '&&CALYRC.LINONU'
-        call calirg(noma, nbno3, list_node, tran, cent,&
+        call calirg(mesh, nbno3, list_node, tran, cent,&
                     l_angl_naut, angl_naut, geom3, lrota, mrota)
 !
 !
@@ -299,23 +292,23 @@ implicit none
 !       -------------------
         if (ndim .eq. 2) then
 !        -- 1er groupe esclave / 1er groupe maitre --
-            call pj2dco('PARTIE', mo, mo, nbma1, limanu1,&
+            call pj2dco('PARTIE', model, model, nbma1, limanu1,&
                         nbno3, zi( iagno3), ' ', geom3, cores1,&
                         .false._1, r8b, 0.d0)
             if (nbma2 .gt. 0) then
 !        -- 1er groupe esclave  / 2eme groupe maitre --
-                call pj2dco('PARTIE', mo, mo, nbma2, limanu2,&
+                call pj2dco('PARTIE', model, model, nbma2, limanu2,&
                             nbno3, zi( iagno3), ' ', geom3, cores2,&
                             .false._1, r8b, 0.d0)
             endif
         else if (ndim.eq.3) then
 !        -- 1er groupe esclave / 1er groupe maitre --
-            call pj3dco('PARTIE', mo, mo, nbma1, limanu1,&
+            call pj3dco('PARTIE', model, model, nbma1, limanu1,&
                         nbno3, zi( iagno3), ' ', geom3, cores1,&
                         .false._1, r8b, 0.d0)
             if (nbma2 .gt. 0) then
 !        -- 1er groupe esclave  / 2eme groupe maitre --
-                call pj3dco('PARTIE', mo, mo, nbma2, limanu2,&
+                call pj3dco('PARTIE', model, model, nbma2, limanu2,&
                             nbno3, zi( iagno3), ' ', geom3, cores2,&
                             .false._1, r8b, 0.d0)
             endif
@@ -380,7 +373,7 @@ implicit none
                     if ((nno11.eq.0) .and. (nno12.eq.0)) goto 90
 !
                     nuno2 = ino2
-                    call jenuno(jexnum(noma//'.NOMNOE', nuno2), nono2)
+                    call jenuno(jexnum(mesh//'.NOMNOE', nuno2), nono2)
 !
                     nomnoe(1) = nono2
                     coef(1) = -1.d0*coef3
@@ -388,14 +381,14 @@ implicit none
                     do ino1 = 1, nno11
                         nuno1 = conu1(1+idcal1-1+ino1)
                         coef1 = cocf1(1+idcal1-1+ino1)
-                        call jenuno(jexnum(noma//'.NOMNOE', nuno1), nono1)
+                        call jenuno(jexnum(mesh//'.NOMNOE', nuno1), nono1)
                         nomnoe(ino1+1) = nono1
                         coef(ino1+1) = coef1*coef11
                     end do
                     do ino1 = 1, nno12
                         nuno1 = conu2(1+idcal2-1+ino1)
                         coef1 = cocf2(1+idcal2-1+ino1)
-                        call jenuno(jexnum(noma//'.NOMNOE', nuno1), nono1)
+                        call jenuno(jexnum(mesh//'.NOMNOE', nuno1), nono1)
                         nomnoe(1+nno11+ino1) = nono1
                         coef(1+nno11+ino1) = coef1*coef12
                     end do
@@ -467,7 +460,7 @@ implicit none
                     normal(3) = zero
 !
                     nuno2 = ino2
-                    call jenuno(jexnum(noma//'.NOMNOE', nuno2), nono2)
+                    call jenuno(jexnum(mesh//'.NOMNOE', nuno2), nono2)
 !
                     if (dnor) then
                         ij = 1
@@ -478,14 +471,14 @@ implicit none
                     do ino1 = 1, nno11
                         nuno1 = conu1(1+idcal1-1+ino1)
                         coef1 = cocf1(1+idcal1-1+ino1)
-                        call jenuno(jexnum(noma//'.NOMNOE', nuno1), nono1)
+                        call jenuno(jexnum(mesh//'.NOMNOE', nuno1), nono1)
                         nomnoe(1+ij+ino1-1) = nono1
                         coef(1+ij+ino1-1) = coef1*coef11
                     end do
                     do ino1 = 1, nno12
                         nuno1 = conu2(1+idcal2-1+ino1)
                         coef1 = cocf2(1+idcal2-1+ino1)
-                        call jenuno(jexnum(noma//'.NOMNOE', nuno1), nono1)
+                        call jenuno(jexnum(mesh//'.NOMNOE', nuno1), nono1)
                         nomnoe(1+nno11+ij+ino1-1) = nono1
                         coef(1+nno11+ij+ino1-1) = coef1*coef12
                     end do
@@ -570,7 +563,7 @@ implicit none
                 if ((nno11.eq.0) .and. (nno12.eq.0)) goto 290
 !
                 nuno2 = ino2
-                call jenuno(jexnum(noma//'.NOMNOE', nuno2), nono2)
+                call jenuno(jexnum(mesh//'.NOMNOE', nuno2), nono2)
 !
                 nomnoe(1) = nono2
                 coef(1) = -1.d0*coef3
@@ -578,14 +571,14 @@ implicit none
                 do ino1 = 1, nno11
                     nuno1 = conu1(1+idcal1-1+ino1)
                     coef1 = cocf1(1+idcal1-1+ino1)
-                    call jenuno(jexnum(noma//'.NOMNOE', nuno1), nono1)
+                    call jenuno(jexnum(mesh//'.NOMNOE', nuno1), nono1)
                     nomnoe(ino1+1) = nono1
                     coef(ino1+1) = coef1*coef11
                 end do
                 do ino1 = 1, nno12
                     nuno1 = conu2(1+idcal2-1+ino1)
                     coef1 = cocf2(1+idcal2-1+ino1)
-                    call jenuno(jexnum(noma//'.NOMNOE', nuno1), nono1)
+                    call jenuno(jexnum(mesh//'.NOMNOE', nuno1), nono1)
                     nomnoe(1+nno11+ino1) = nono1
                     coef(1+nno11+ino1) = coef1*coef12
                 end do
@@ -631,9 +624,9 @@ implicit none
     AS_DEALLOCATE(vr=direct)
     AS_DEALLOCATE(vi=dim)
 !
-! --- AFFECTATION DE LA LISTE DE RELATIONS A LA CHARGE :
+! --- AFFECTATION DE LA LISTE DE RELATIONS A LA load :
 !     ------------------------------------------------
-    call aflrch(lisrel, charge, 'LIN')
+    call aflrch(lisrel, load, 'LIN')
 !
 310 continue
     call jedema()

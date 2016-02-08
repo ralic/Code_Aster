@@ -1,7 +1,7 @@
-subroutine char_pair_node(mesh, cent, angl_naut, tran, nb_node,&
+subroutine char_pair_node(mesh, nb_node,&
                           list_node_i1, list_node_i2, list_node_o1, list_node_o2, i_error)
 !
-    implicit none
+implicit none
 !
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
@@ -19,7 +19,7 @@ subroutine char_pair_node(mesh, cent, angl_naut, tran, nb_node,&
 #include "asterfort/wkvect.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -37,9 +37,6 @@ subroutine char_pair_node(mesh, cent, angl_naut, tran, nb_node,&
 ! Person in charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
-    real(kind=8), intent(in) :: cent(3)
-    real(kind=8), intent(in) :: angl_naut(3)
-    real(kind=8), intent(in) :: tran(3)
     integer, intent(in) :: nb_node
     character(len=24), intent(in) :: list_node_i1
     character(len=24), intent(in) :: list_node_i2
@@ -55,11 +52,7 @@ subroutine char_pair_node(mesh, cent, angl_naut, tran, nb_node,&
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!
 ! In  mesh          : name of mesh
-! In  tran          : vector defining translation
-! In  cent          : vector defining center
-! In  angl_naut     : angle defining rotation
 ! In  nb_node       : number of nodes read
 ! In  list_node_i1  : first list of nodes to pair
 ! In  list_node_i2  : second list of nodes to pair
@@ -78,7 +71,7 @@ subroutine char_pair_node(mesh, cent, angl_naut, tran, nb_node,&
     integer :: nume_node_1, nume_node_2, nume_node_3, nume_node_4, nume_node_a
     character(len=8) :: name_node_1, name_node_2, name_node_3, name_node_4, name_node_a
     integer :: ino_mini
-    real(kind=8) :: dist, dist_mini
+    real(kind=8) :: dist, dist_mini, cent(3), tran(3)
     real(kind=8) :: matr_rota(3, 3), x1(3), x2(3)
     character(len=24) :: valk(3)
     real(kind=8) :: angl_naut_d(3)
@@ -89,12 +82,12 @@ subroutine char_pair_node(mesh, cent, angl_naut, tran, nb_node,&
 !
 ! - Initializations
 !
-    ier = 0
-    i_error = 0
+    ier       = 0
+    i_error   = 0
+    cent(1:3) = 0.d0
+    tran(1:3) = 0.d0
     call jeveuo(mesh//'.COORDO    .VALE', 'L', jgeom_init)
-    angl_naut_d(1) = angl_naut(1)*r8dgrd()
-    angl_naut_d(2) = angl_naut(2)*r8dgrd()
-    angl_naut_d(3) = angl_naut(3)*r8dgrd()
+    angl_naut_d(1:3) = 0.d0
 !
 ! - Rotation matrix
 !
