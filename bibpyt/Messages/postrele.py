@@ -83,18 +83,13 @@ cata_msg = {
  Contactez le support
 """),
 
-    16 : _(u"""
- problème maillage
- Contactez le support
-"""),
+ 
 
     17 : _(u"""
  on ne traite que des champs de type "DEPL_R" pour un changement de repère
 """),
 
-    18 : _(u"""
- le type de maille %(k1)s n'est pas traité
-"""),
+ 
 
 
 
@@ -116,11 +111,6 @@ cata_msg = {
    - soit plusieurs noeuds
 """),
 
-
-
-    24 : _(u"""
- chemin de maille vide
-"""),
 
  
 
@@ -388,10 +378,9 @@ Dans le cas d'un champ de type ELEM, l'utilisation des mots clés NOEUD, GROUP_N
 n'a pas de sens, seul le mot clé MAILLE ou GROUP_MA est autorisé.
 """),
 
-    67 : _(u"""
-Erreur de programmation dans la commande POST_RELEVE_T : Une incohérence a été détectée.
-Il faut émettre une fiche d'anomalie.
-"""),
+ 
+
+
 
     68 : _(u"""
 Erreur utilisateur dans la commande POST_RELEVE_T :
