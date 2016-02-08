@@ -243,7 +243,7 @@ implicit none
 !
 ! ----- Get pairing
 !
-        call apinfi(sdappa, 'APPARI_TYPE', node_slav_nume, pair_type)
+        call apinfi(sdappa, 'APPARI_TYPE', lliac, pair_type)
         if (pair_type.lt.0) then
             node_status = -1.d0
         endif
