@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -27,7 +27,7 @@ from Tkinter import StringVar, IntVar
 
 
 from Calc_essai.outils_ihm import ModeFreqList, SelectionNoeuds, DispFRFDialogue
-from Calc_essai.outils_ihm import ParamModeIterSimult, ParamModeIterInv, ParamProjMesuModal
+from Calc_essai.outils_ihm import ParamModelCouple, ParamProjMesuModal, ParamModeLMME
 from Calc_essai.outils_ihm import MacWindowFrame, MyMenu
 
 from Calc_essai.ce_calcul_modifstruct import CalcEssaiModifStruct
@@ -276,8 +276,8 @@ class InterfaceExpansion(Frame):
         w.withdraw()  # cache la fenetre
         w.rowconfigure(0, weight=1)
         w.columnconfigure(0, weight=1)
-        prm = ParamModeIterSimult(
-            w, "Parametre de MODE_ITER_SIMULT pour la methode LMME",
+        prm = ParamModeLMME(
+            w, "Paramètres du calcul modal pour la méthode LMME",
             relief='sunken', borderwidth=2)
         prm.grid(row=0, column=0)
         self.param_mode_iter_simult_lmme = prm
@@ -562,29 +562,18 @@ class InterfaceCouplage(Frame):
         Label(f2, text="Calcul modal sur le modele couple",
               bg='#f0f0f0').grid(row=0, column=0, sticky='nw')
 
-        Label(f2, text="Mode de calcul ").grid(row=1, column=0, sticky='w')
-        self.var_meth_modes_couple = StringVar()
-        self.menu_meth_modes_couple = MyMenu(
-            f2, ['MODE_ITER_SIMULT', 'MODE_ITER_INV'],
-            self.var_meth_modes_couple,
-            self.choix_methode_modes_couple)
-        self.menu_meth_modes_couple.grid(row=1, column=1, sticky='e')
-        self.var_meth_modes_couple.set("MODE_ITER_SIMULT")
+        Label(f2, text="Critère de recherche des modes ").grid(row=1, column=0, sticky='w')
         self.var_couplage_param_frame_visible = IntVar()
         Checkbutton(f2, text="Reglages",
                     command=self.display_couplage_param_frame,
                     variable=self.var_couplage_param_frame_visible,
-                    indicatoron=0).grid(row=2, column=1, sticky='e')
+                    indicatoron=0).grid(row=1, column=1, sticky='e')
 
         self.couplage_param_frame = frm2 = Toplevel()
         frm2.rowconfigure(0, weight=1)
         frm2.columnconfigure(0, weight=1)
-        self.param_inv_modes_couple = ParamModeIterInv(frm2, "Modele couple")
-        self.param_inv_modes_couple.grid(row=0, column=0, sticky='nsew')
-        self.param_inv_modes_couple.grid_remove()
 
-        self.param_simult_modes_couple = ParamModeIterSimult(
-            frm2, "Modele couple")
+        self.param_simult_modes_couple = ParamModelCouple(frm2, "Modele couple")
         self.param_simult_modes_couple.grid(row=0, column=0, sticky='nsew')
 
         frm2.protocol("WM_DELETE_WINDOW", self.hide_couplage_param_frame)
@@ -677,15 +666,6 @@ class InterfaceCouplage(Frame):
         self.var_expans_param_frame_visible.set(0)
         self.expans_param_frame.withdraw()
 
-    def choix_methode_modes_couple(self):
-        choix = self.var_meth_modes_couple.get()
-        if choix == 'MODE_ITER_SIMULT':
-            self.param_inv_modes_couple.grid_remove()
-            self.param_simult_modes_couple.grid()
-        else:
-            self.param_simult_modes_couple.grid_remove()
-            self.param_inv_modes_couple.grid()
-
     def notify_expans_ok(self):
         mdo = self.root.objects
         mstruct = self.root.modifstruct
@@ -736,7 +716,7 @@ class InterfaceCouplage(Frame):
         else:
             self.modif_struct.set_modes_expansion(modes_expansion)
 
-        choix = self.var_meth_modes_couple.get()
+        choix = self.param_simult_modes_couple.var_meth_modes_couple.get()
         self.modif_struct.set_resolution_calc_modal(choix)
 
         if not self.modif_struct._can_get_nume_support_model():
@@ -772,7 +752,7 @@ class InterfaceCouplage(Frame):
             calc_freq = self.param_simult_modes_couple.get_calc_freq()
             calc_freq['SEUIL_FREQ'] = 1e-4
         else:
-            calc_freq = self.param_inv_modes_couple.get_calc_freq()
+            calc_freq = self.param_simult_modes_couple.get_calc_freq()
             mode_simult = 0
         self.modif_struct.calc_modes_modele_couple(mode_simult, calc_freq)
 

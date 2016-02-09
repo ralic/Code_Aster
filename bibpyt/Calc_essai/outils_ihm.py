@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -555,10 +555,10 @@ class OptionFrame(Frame):
             r += 1
 
 
-class ParamModeIterSimult(Frame):
+class ParamModelCouple(Frame):
 
-    """Un panneau pour spécifier les paramètres de résolution
-    de MODE_ITER_SIMULT
+    """Un panneau pour spécifier les paramètres de résolution pour
+       les modèles couplés
     """
     # Note: réutiliser la partie générique d'Eficas est plutot
     # compliqué et donne des interfaces peu 'intuitives'...
@@ -575,17 +575,201 @@ class ParamModeIterSimult(Frame):
         self.precision.set(0.0)
         self.iter.set(20)
         self.para_ortho.set(0.717)
-        self.sorensen = OptionFrame(self, "Methode SORENSEN",
-                                    [("Precision (SORENSEN)", Entry,
-                                      {'textvariable': self.precision}),
-                                        ("Nbmax iterations", Entry,
-                                         {'textvariable': self.iter}),
-                                        ("Coef d'orthogonalisation", Entry,
-                                         {'textvariable': self.para_ortho}),
-                                     ])
+        
+        Label(self, text="Critère de recherche des modes").grid(row=1, column=0)
+        #
+        self.opt_option = StringVar()
+        # variables for the different panels
+        # self.opt_centre_amor_reduit = DoubleVar() # utile?
+        self.opt_nmax_freq = IntVar()  # PLUS_PETITE, BANDE
+        self.opt_nmax_freq.set(10)
+        self.opt_freq1 = DoubleVar()  # CENTRE, BANDE, SEPARE, AJUSTE
+        self.opt_freq2 = DoubleVar()  # BANDE
+        
+        self.frequences = []
+        self.nmax_freq = IntVar()
+        self.nmax_freq.set(0)
+        self.freq = StringVar()
+        self.nmax_iter_separe = IntVar()    # SEPARE ou AJUSTE
+        self.nmax_iter_separe.set(30)
+        self.prec_separe = DoubleVar()
+        self.prec_separe.set(1e-4)
+        self.nmax_iter_ajuste = IntVar()    # AJUSTE
+        self.nmax_iter_ajuste.set(15)
+        self.prec_ajuste = DoubleVar()
+        self.prec_ajuste.set(1e-4)
 
-        self.sorensen.grid(row=1, column=0, sticky="WE", columnspan=2)
-        Label(self, text="Option").grid(row=2, column=0)
+        self.option = MyMenu(self, ("sur une bande frequentielle",
+                                    "N plus petites frequences",
+                                    "autour d'une frequence cible",
+                                    "proche de frequences donnees",
+                                    "separation sur un intervalle",
+                                    "ajustement sur un intervalle"),
+                             self.opt_option, self.select_option)
+        self.option.grid(row=1, column=1)
+        self.opt_option.set("N plus petites frequences")
+        #
+        self.opt_param = StringVar()
+        self.param = MyMenu(self, ("Parametres simples", "Parametres avances"),
+                             self.opt_param, self.select_option)
+        self.param.grid(row=2, column=1)
+        self.opt_param.set("Parametres simples")
+        self.opt_panel = None
+        self.sorensen = None
+        self.select_option()
+        
+        # Post traitement
+        self.opt_seuil_freq = DoubleVar()
+        self.opt_seuil_freq.set(1e-4)
+        self.post = OptionFrame(self, "Post traitement",
+                                [("Seuil freq.", Entry,
+                                  {'textvariable': self.opt_seuil_freq}),
+                                 ])
+
+    def select_option(self, *args):
+        opt = self.opt_option.get()
+        param = self.opt_param.get()
+        param_av_ok = False
+        self.var_meth_modes_couple = StringVar()
+        if self.opt_panel:
+            self.opt_panel.destroy()
+        if self.sorensen:
+            self.sorensen.destroy()
+        if opt == "autour d'une frequence cible":
+            panel = OptionFrame(self, None, [
+                (u"Fréquence cible", Entry, {'textvariable': self.opt_freq1}),
+                ("Nombre de fréquences (renseigner -1 pour calculer tout le spectre)", Entry,
+                 {'textvariable': self.opt_nmax_freq}),
+            ])
+            param_av_ok = True
+            self.var_meth_modes_couple.set("MODE_ITER_SIMULT")
+        elif opt == "sur une bande frequentielle":
+            panel = OptionFrame(self, None, [
+                (u"Fréquence minimale", Entry, {'textvariable': self.opt_freq1}),
+                (u"Fréquence maximale", Entry, {'textvariable': self.opt_freq2}),
+            ])
+            param_av_ok = True
+            self.var_meth_modes_couple.set("MODE_ITER_SIMULT")
+        elif opt == "N plus petites frequences":
+            panel = OptionFrame(self, None, [
+                ("Nombre de fréquences", Entry, {'textvariable': self.opt_nmax_freq}),
+            ])
+            param_av_ok = True
+            self.var_meth_modes_couple.set("MODE_ITER_SIMULT")
+        elif opt == "proche de frequences donnees":
+            panel = ModeList(self, u"Fréquences proches")
+            panel.set_values([(f, "% 6.2f Hz" % f) for f in self.frequences])
+            self.var_meth_modes_couple.set("MODE_ITER_INV")
+        elif opt == "separation sur un intervalle":
+            self.var_meth_modes_couple.set("MODE_ITER_INV")
+            if param == "Parametres simples":
+                panel = OptionFrame(self, None, [
+                    (u"Fréquence minimale", Entry, {'textvariable': self.opt_freq1}),
+                    (u"Fréquence maximale", Entry, {'textvariable': self.opt_freq2}),
+                ])
+            else:
+                panel = OptionFrame(self, None, [
+                    (u"Fréquence minimale", Entry, {'textvariable': self.opt_freq1}),
+                    (u"Fréquence maximale", Entry, {'textvariable': self.opt_freq2}),
+                    ("NMAX iter separe", Entry,
+                     {'textvariable': self.nmax_iter_separe}),
+                    ("Precision separe", Entry,
+                     {'textvariable': self.prec_separe}),
+                ])
+        elif opt == "ajustement sur un intervalle":
+            self.var_meth_modes_couple.set("MODE_ITER_INV")
+            if param == "Parametres simples":
+                panel = OptionFrame(self, None, [
+                    (u"Fréquence minimale", Entry, {'textvariable': self.opt_freq1}),
+                    (u"Fréquence maximale", Entry, {'textvariable': self.opt_freq2}),
+                ])
+            else:
+                panel = OptionFrame(self, None, [
+                    (u"Fréquence minimale", Entry, {'textvariable': self.opt_freq1}),
+                    (u"Fréquence maximale", Entry, {'textvariable': self.opt_freq2}),
+                    ("NMAX iter separe", Entry,
+                     {'textvariable': self.nmax_iter_separe}),
+                    ("Precision separe", Entry,
+                     {'textvariable': self.prec_separe}),
+                    ("NMAX iter ajuste", Entry,
+                     {'textvariable': self.nmax_iter_ajuste}),
+                    ("Precision ajuste", Entry,
+                     {'textvariable': self.prec_ajuste}),
+                ])
+        else:
+            raise RuntimeError("Unknown option '%s'" % opt)
+        self.opt_panel = panel
+        panel.grid(row=3, column=0, columnspan=2, sticky="WE")
+        #
+        if param == "Parametres avances" and param_av_ok :
+            self.sorensen = OptionFrame(self, "Methode SORENSEN",
+                                        [("Precision (SORENSEN)", Entry,
+                                          {'textvariable': self.precision}),
+                                            ("Nombre maximal d'itérations", Entry,
+                                             {'textvariable': self.iter}),
+                                            ("Coef d'orthogonalisation", Entry,
+                                             {'textvariable': self.para_ortho}),
+                                         ])
+
+            self.sorensen.grid(row=4, column=0, sticky="WE", columnspan=2)
+
+    def get_calc_freq(self):
+        opt = self.opt_option.get()
+        
+        if opt == "N plus petites frequences":
+            mc = _F(OPTION="PLUS_PETITE")
+            mc['SEUIL_FREQ'] = self.opt_seuil_freq.get()
+            mc['NMAX_FREQ'] = self.opt_nmax_freq.get()
+        elif opt == "sur une bande frequentielle":
+            mc = _F(OPTION="BANDE")
+            mc['SEUIL_FREQ'] = self.opt_seuil_freq.get()
+            mc['FREQ'] = (self.opt_freq1.get(), self.opt_freq2.get())
+        elif opt == "autour d'une frequence cible":
+            mc = _F(OPTION="CENTRE")
+            mc['SEUIL_FREQ'] = self.opt_seuil_freq.get()
+            mc['FREQ'] = self.opt_freq1.get()
+            mc['NMAX_FREQ'] = self.opt_nmax_freq.get()
+        elif opt == "proche de frequences donnees":
+            mc = _F(OPTION="PROCHE")
+            mc['FREQ'] = self.panel.selection()
+        elif opt == "separation sur un intervalle":
+            mc = _F(OPTION="SEPARE")
+            mc['FREQ'] = (self.opt_freq1.get(), self.opt_freq2.get())
+            mc['NMAX_ITER_SEPARE'] = self.nmax_iter_separe.get()
+            mc['PREC_SEPARE'] = self.prec_separe.get()
+        elif opt == "ajustement sur un intervalle":
+            mc = _F(OPTION="AJUSTE")
+            mc['FREQ'] = (self.opt_freq1.get(), self.opt_freq2.get())
+            mc['NMAX_ITER_SEPARE'] = self.nmax_iter_separe.get()
+            mc['PREC_SEPARE'] = self.prec_separe.get()
+            mc['NMAX_ITER_AJUSTE'] = self.nmax_iter_ajuste.get()
+            mc['PREC_AJUSTE'] = self.prec_ajuste.get()
+
+        return mc
+
+class ParamModeLMME(Frame):
+
+    """Un panneau pour spécifier les paramètres de résolution pour
+       la méthode LMME
+    """
+    # Note: réutiliser la partie générique d'Eficas est plutot
+    # compliqué et donne des interfaces peu 'intuitives'...
+
+    # On ne traite que SORENSEN pour l'instant
+    # (JACOBI et TRI_DIAG ont peu d'avantages d'après U4.52.02
+    def __init__(self, root, title, **kwargs):
+        Frame.__init__(self, root, **kwargs)
+        Label(self, text=title).grid(row=0, column=0, columnspan=1)
+
+        self.precision = DoubleVar()
+        self.iter = IntVar()
+        self.para_ortho = DoubleVar()
+        self.precision.set(0.0)
+        self.iter.set(20)
+        self.para_ortho.set(0.717)
+        
+        Label(self, text="Critère de recherche des modes").grid(row=1, column=0)
+        #
         self.opt_option = StringVar()
         # variables for the different panels
         # self.opt_centre_amor_reduit = DoubleVar() # utile?
@@ -594,12 +778,24 @@ class ParamModeIterSimult(Frame):
         self.opt_freq1 = DoubleVar()  # CENTRE, BANDE
         self.opt_freq2 = DoubleVar()  # BANDE
 
-        self.option = MyMenu(self, ("CENTRE", "BANDE", "PLUS_PETITE"),
+        self.option = MyMenu(self, ("sur une bande frequentielle",
+                                    "N plus petites frequences",
+                                    "autour d'une frequence cible",
+                                    ),
                              self.opt_option, self.select_option)
-        self.option.grid(row=2, column=1)
-        self.opt_option.set("PLUS_PETITE")
+        self.option.grid(row=1, column=1)
+        self.opt_option.set("N plus petites frequences")
         self.opt_panel = None
         self.select_option()
+        #
+        self.opt_param = StringVar()
+        self.param = MyMenu(self, ("Parametres simples", "Parametres avances"),
+                             self.opt_param, self.select_param)
+        self.param.grid(row=2, column=1)
+        self.opt_param.set("Parametres simples")
+        self.sorensen = None
+        self.select_param()
+        
         # Post traitement
         self.opt_seuil_freq = DoubleVar()
         self.opt_seuil_freq.set(1e-4)
@@ -612,130 +808,61 @@ class ParamModeIterSimult(Frame):
         opt = self.opt_option.get()
         if self.opt_panel:
             self.opt_panel.destroy()
-        if opt == "CENTRE":
+        
+        if opt == "autour d'une frequence cible":
             panel = OptionFrame(self, None, [
-                (u"Fréquence", Entry, {'textvariable': self.opt_freq1}),
-                ("NMax (-1 pour tout)", Entry,
+                (u"Fréquence cible", Entry, {'textvariable': self.opt_freq1}),
+                ("Nombre de fréquences (renseigner -1 pour calculer tout le spectre)", Entry,
                  {'textvariable': self.opt_nmax_freq}),
             ])
-        elif opt == "BANDE":
+        elif opt == "sur une bande frequentielle":
             panel = OptionFrame(self, None, [
-                (u"Fréquence min", Entry, {'textvariable': self.opt_freq1}),
-                (u"Fréquence max", Entry, {'textvariable': self.opt_freq2}),
+                (u"Fréquence minimale", Entry, {'textvariable': self.opt_freq1}),
+                (u"Fréquence maximale", Entry, {'textvariable': self.opt_freq2}),
             ])
-        elif opt == "PLUS_PETITE":
+        elif opt == "N plus petites frequences":
             panel = OptionFrame(self, None, [
-                ("Nmax", Entry, {'textvariable': self.opt_nmax_freq}),
+                ("Nombre de fréquences", Entry, {'textvariable': self.opt_nmax_freq}),
             ])
         else:
             raise RuntimeError("Unknown option '%s'" % opt)
         self.opt_panel = panel
         panel.grid(row=3, column=0, columnspan=2, sticky="WE")
 
+    def select_param(self, *args):
+        param = self.opt_param.get()
+        if self.sorensen:
+            self.sorensen.destroy()
+        if param == "Parametres avances":
+            self.sorensen = OptionFrame(self, "Methode SORENSEN",
+                                        [("Precision (SORENSEN)", Entry,
+                                          {'textvariable': self.precision}),
+                                            ("Nombre maximal d'itérations", Entry,
+                                             {'textvariable': self.iter}),
+                                            ("Coef d'orthogonalisation", Entry,
+                                             {'textvariable': self.para_ortho}),
+                                         ])
+
+            self.sorensen.grid(row=4, column=0, sticky="WE", columnspan=2)
+
     def get_calc_freq(self):
         opt = self.opt_option.get()
-        mc = _F(OPTION=opt)
-        mc['SEUIL_FREQ'] = self.opt_seuil_freq.get()
-        if opt == "PLUS_PETITE":
+        
+        if opt == "N plus petites frequences":
+            mc = _F(OPTION="PLUS_PETITE")
+            mc['SEUIL_FREQ'] = self.opt_seuil_freq.get()
             mc['NMAX_FREQ'] = self.opt_nmax_freq.get()
-        elif opt == "BANDE":
+        elif opt == "sur une bande frequentielle":
+            mc = _F(OPTION="BANDE")
+            mc['SEUIL_FREQ'] = self.opt_seuil_freq.get()
             mc['FREQ'] = (self.opt_freq1.get(), self.opt_freq2.get())
-        elif opt == "CENTRE":
+        elif opt == "autour d'une frequence cible":
+            mc = _F(OPTION="CENTRE")
+            mc['SEUIL_FREQ'] = self.opt_seuil_freq.get()
             mc['FREQ'] = self.opt_freq1.get()
             mc['NMAX_FREQ'] = self.opt_nmax_freq.get()
 
         return mc
-
-
-class ParamModeIterInv(Frame):
-
-    """Un panneau pour spécifier les paramètres de résolution
-    de MODE_ITER_INV (type_resu='dynamique')
-    """
-
-    def __init__(self, root, title, **kwargs):
-        Frame.__init__(self, root, **kwargs)
-        Label(self, text=title).grid(row=0, column=0, columnspan=1)
-
-        self.frequences = []
-        self.opt_option = StringVar()
-        self.nmax_freq = IntVar()
-        self.nmax_freq.set(0)
-        self.freq = StringVar()
-        self.nmax_iter_separe = IntVar()    # SEPARE ou AJUSTE
-        self.nmax_iter_separe.set(30)
-        self.prec_separe = DoubleVar()
-        self.prec_separe.set(1e-4)
-        self.nmax_iter_ajuste = IntVar()    # AJUSTE
-        self.nmax_iter_ajuste.set(15)
-        self.prec_ajuste = DoubleVar()
-        self.prec_ajuste.set(1e-4)
-        self.opt_freq1 = DoubleVar()  # SEPARE, AJUSTE
-        self.opt_freq2 = DoubleVar()
-
-        Label(self, text="Option").grid(row=2, column=0)
-        self.option = MyMenu(self, ("PROCHE", "SEPARE", "AJUSTE"),
-                             self.opt_option, self.select_option)
-        self.opt_option.set("AJUSTE")
-        self.option.grid(row=2, column=1)
-        Label(self, text="NMAX_FREQ").grid(row=3, column=0)
-        Entry(self, textvariable=self.nmax_freq).grid(row=3, column=1)
-
-        self.opt_panel = None
-        self.select_option()
-
-    def select_option(self, *args):
-        opt = self.opt_option.get()
-        if self.opt_panel:
-            self.opt_panel.destroy()
-        if opt == "PROCHE":
-            panel = ModeList(self, u"Fréquences proches")
-            panel.set_values([(f, "% 6.2f Hz" % f) for f in self.frequences])
-        elif opt == "SEPARE":
-            panel = OptionFrame(self, None, [
-                (u"Fréquence min", Entry, {'textvariable': self.opt_freq1}),
-                (u"Fréquence max", Entry, {'textvariable': self.opt_freq2}),
-                ("NMAX iter separe", Entry,
-                 {'textvariable': self.nmax_iter_separe}),
-                ("Precision separe", Entry,
-                 {'textvariable': self.prec_separe}),
-            ])
-        elif opt == "AJUSTE":
-            panel = OptionFrame(self, None, [
-                (u"Fréquence min", Entry, {'textvariable': self.opt_freq1}),
-                (u"Fréquence max", Entry, {'textvariable': self.opt_freq2}),
-                ("NMAX iter separe", Entry,
-                 {'textvariable': self.nmax_iter_separe}),
-                ("Precision separe", Entry,
-                 {'textvariable': self.prec_separe}),
-                ("NMAX iter ajuste", Entry,
-                 {'textvariable': self.nmax_iter_ajuste}),
-                ("Precision ajuste", Entry,
-                 {'textvariable': self.prec_ajuste}),
-            ])
-        else:
-            raise RuntimeError("Unknown option '%s'" % opt)
-        self.opt_panel = panel
-        panel.grid(row=4, column=0, columnspan=2, sticky="WE")
-
-    def get_calc_freq(self):
-        opt = self.opt_option.get()
-        mc = _F(OPTION=opt)
-        mc['NMAX_FREQ'] = self.nmax_freq.get()
-        if opt == "PROCHE":
-            mc['FREQ'] = self.panel.selection()
-        elif opt == "SEPARE":
-            mc['FREQ'] = (self.opt_freq1.get(), self.opt_freq2.get())
-            mc['NMAX_ITER_SEPARE'] = self.nmax_iter_separe.get()
-            mc['PREC_SEPARE'] = self.prec_separe.get()
-        elif opt == "AJUSTE":
-            mc['FREQ'] = (self.opt_freq1.get(), self.opt_freq2.get())
-            mc['NMAX_ITER_SEPARE'] = self.nmax_iter_separe.get()
-            mc['PREC_SEPARE'] = self.prec_separe.get()
-            mc['NMAX_ITER_AJUSTE'] = self.nmax_iter_ajuste.get()
-            mc['PREC_AJUSTE'] = self.prec_ajuste.get()
-        return mc
-
 
 class ParamProjMesuModal(Frame):
 
