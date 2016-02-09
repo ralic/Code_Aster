@@ -1,6 +1,6 @@
 # TITRE   TEST HM, 2D , MODELISATION THMC=LIQU_SATU
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -169,12 +169,29 @@ CM=AFFE_MATERIAU(MAILLAGE=MA,
 ## DEFINITION DES CHARGEMENTS
 ####################################
 
+#FORCE=AFFE_CHAR_MECA(
+#  MODELE=MO,
+#  FORCE_NODALE= (
+#    _F(GROUP_NO='AG',FX=-3.73,FY=-1.,),
+#    _F(GROUP_NO='AD',FX=3.73,FY=-1.,),
+#    ),
+#  );
+
+# To test VECT_ASSE with "PILOTAGE"
+CHAMNOF=CREA_CHAMP(MAILLAGE=MA,
+                    OPERATION='AFFE',
+                    TYPE_CHAM='NOEU_DEPL_R',
+                    AFFE=(
+                           _F(GROUP_NO='AG',
+                              NOM_CMP=('DX','DY'),
+                              VALE=(-3.73,-1,),),
+                           _F(GROUP_NO='AD',
+                              NOM_CMP=('DX','DY'),
+                              VALE=(3.73,-1,),),
+                           ),)
 FORCE=AFFE_CHAR_MECA(
   MODELE=MO,
-  FORCE_NODALE= (
-    _F(GROUP_NO='AG',FX=-3.73,FY=-1.,),
-    _F(GROUP_NO='AD',FX=3.73,FY=-1.,),
-    ),
+  VECT_ASSE= CHAMNOF,
   );
 
 LIAISON=AFFE_CHAR_MECA(
@@ -226,6 +243,7 @@ CHAMNO=CREA_CHAMP(MAILLAGE=MA,
                              NOM_CMP='PRE1',
                              VALE=0.,), ),
                            );
+
 
 CH_VARI=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='ELGA_VARI_R', MODELE=MO, PROL_ZERO='OUI',
          AFFE=(

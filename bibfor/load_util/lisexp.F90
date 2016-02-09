@@ -1,18 +1,15 @@
-subroutine lisexp(list_char)
+subroutine lisexp(list_load)
 !
-    implicit none
+implicit none
 !
-#include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/lisnch.h"
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -29,63 +26,57 @@ subroutine lisexp(list_char)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=19), intent(in) :: list_char
+    character(len=19), intent(in) :: list_load
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! LISTE_CHARGES
+! List of loads - Utility
 !
 ! Exclude some loads with PILOTAGE
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!
-! In  list_char : name of <LISTE_CHARGES> datastructure
+! In  list_load      : name of datastructure for list of loads
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_excl_char
-    parameter    (nb_excl_char=6)
-    character(len=6) :: ligr_excl_char(nb_excl_char)
-!
-    character(len=24) :: lich_char, lich_info
-    integer :: j_lich_char, j_lich_info
-    integer :: ichar, iexcl, nb_char, iret
+    integer, parameter :: nb_excl_load = 6
+    character(len=6), parameter :: ligr_excl_char(nb_excl_load) = (/&
+         '.ROTAT', '.FL1  ',&
+         '.FELEC', '.EPSIN',&
+         '.ONDPL', '.SIINT'/)
+    character(len=24) :: lload_name, lload_info
+    integer, pointer :: v_load_info(:) => null()
+    character(len=24), pointer :: v_load_name(:) => null()
+    integer :: i_load, i_excl_load, nb_load, iret, load_nume
     character(len=19) :: lchin
-    character(len=8) :: char_name
-!
-    data ligr_excl_char  /'.ROTAT', '.FL1', '.FELEC', '.EPSIN',&
-     &                    '.ONDPL', '.SIINT'/
+    character(len=8) :: load_name
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
-!
-! - Access
-!
-    lich_char = list_char(1:19)//'.LCHA'
-    lich_info = list_char(1:19)//'.INFC'
-    call jeveuo(lich_char, 'L', j_lich_char)
-    call jeveuo(lich_info, 'L', j_lich_info)
+    lload_name = list_load(1:19)//'.LCHA'
+    lload_info = list_load(1:19)//'.INFC'
+    call jeveuo(lload_name, 'L', vk24 = v_load_name)
+    call jeveuo(lload_info, 'L', vi   = v_load_info)
 !
 ! - Number of loads
 !
-    call lisnch(list_char, nb_char)
+    call lisnch(list_load, nb_load)
 !
 ! - Loop on loads
 !
-    do ichar = 1, nb_char
-        char_name = zk24(j_lich_char-1+ichar)(1:8)
-        if (zi(j_lich_info+nb_char+ichar) .eq. 5) then
-            do iexcl = 1, nb_excl_char
-                lchin = char_name(1:8)//'.CHME.LIGRE'//ligr_excl_char(iexcl)
+    do i_load = 1, nb_load
+        load_name = v_load_name(i_load)(1:8)
+        load_nume = v_load_info(nb_load+i_load+1)
+        if (load_nume .eq. 5) then
+            do i_excl_load = 1, nb_excl_load
+                lchin = load_name(1:8)//'.CHME.LIGRE'//ligr_excl_char(i_excl_load)
                 call jeexin(lchin, iret)
                 if (iret .ne. 0) then
-                    call utmess('F', 'CHARGES_26', sk=char_name)
+                    call utmess('F', 'CHARGES_26', sk=load_name)
                 endif
             enddo
         endif
     end do
 !
-    call jedema()
 end subroutine

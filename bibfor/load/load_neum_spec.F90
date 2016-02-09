@@ -12,7 +12,7 @@ subroutine load_neum_spec(load_name    , load_nume  , load_type  , ligrel_calc, 
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -325,7 +325,7 @@ subroutine load_neum_spec(load_name    , load_nume  , load_type  , ligrel_calc, 
             load_ligrel = ligrel_calc
         endif
         if (load_option .eq. 'Copy_Load') then
-            ASSERT(load_nume.ge.1.and.load_nume.le.3)
+            ASSERT((load_nume.ge.1.and.load_nume.le.3).or.load_nume.eq.5)
             call jeveuo(lchin(i_field_in), 'L', vk8 = p_vect_asse)
             load_ligrel = p_vect_asse(1)
         endif
