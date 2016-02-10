@@ -123,7 +123,7 @@ MECASTN2=POST_CHAMP(RESULTAT=MECASTAN,INST=1.0,
                                    NIVE_COUCHE='MOY',),);
 
 IMPR_RESU(FORMAT='RESULTAT',RESU=_F(RESULTAT=MECASTN2,NOM_CHAM=('SIGM_ELGA',)))
-
+# TEST OF SIXZ,SIYZ BETWEEN STAT_NON_LINE VS MECA_STATIQUE
 TEST_RESU(RESU=(
                _F(NUME_ORDRE=1,
                   MAILLE='M1533',
@@ -170,6 +170,54 @@ TEST_RESU(RESU=(
                   
                   ),
           )
+          
+          
+# TEST OF QX,QY BETWEEN STAT_NON_LINE VS MECA_STATIQUE
 
+IMPR_RESU(FORMAT='RESULTAT',RESU=_F(RESULTAT=MECASTAT,NOM_CHAM=('EFGE_ELNO',)))
+IMPR_RESU(FORMAT='RESULTAT',RESU=_F(RESULTAT=MECASTAN,INST=1.0,NOM_CHAM=('EFGE_ELNO',)))
 
+TEST_RESU(RESU=(
+               _F(NUME_ORDRE=1,
+                  MAILLE='M1533',
+                  NOEUD='N2168',
+                  RESULTAT=MECASTAT,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOM_CMP='QX',
+                  VALE_CALC= 5.31630925120490E+01,),
+                 
+               _F(NUME_ORDRE=1,
+                  MAILLE='M1533',
+                  NOEUD='N2168',
+                  RESULTAT=MECASTAT,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOM_CMP='QY',
+                  VALE_CALC= 9.58473027659211E+00,),
+                  
+                  
+               _F(NUME_ORDRE=1,
+                  MAILLE='M1533',
+                  NOEUD='N2168',
+                  RESULTAT=MECASTAN,
+                  NOM_CHAM='EFGE_ELNO',
+                  REFERENCE='AUTRE_ASTER',
+                  NOM_CMP='QX',
+                  VALE_CALC= 5.31630925120490E+01,
+                  VALE_REFE= 5.31630925120490E+01,
+                  ),
+                  
+               _F(NUME_ORDRE=1,
+                  MAILLE='M1533',
+                  POINT=1,
+                  SOUS_POINT=1,
+                  RESULTAT=MECASTAN,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOM_CMP='QY',
+                  REFERENCE='AUTRE_ASTER',
+                  VALE_CALC= 9.58473027659211E+00,
+                  VALE_REFE= 9.58473027659211E+00,
+                  ),                    
+                  
+                  ),
+          )
 FIN();
