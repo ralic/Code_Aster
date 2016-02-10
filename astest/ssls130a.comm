@@ -56,13 +56,17 @@ MECASTAT=MECA_STATIQUE(MODELE=MODELE,
                               _F(CHARGE=FORCE,),),
                        OPTION='SIEF_ELGA',);
 
-MECASTAT=CALC_CHAMP(reuse=MECASTAT,RESULTAT=MECASTAT,CONTRAINTE=('EFGE_ELNO','SIGM_ELNO'))
+                       
+MECASTAT=CALC_CHAMP(reuse=MECASTAT,RESULTAT=MECASTAT,CONTRAINTE=('EFGE_ELNO','SIGM_ELNO','SIGM_ELGA'))
 
 
 MECASTA2=POST_CHAMP(RESULTAT=MECASTAT,
-                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELGA',
                                    NUME_COUCHE=1,
                                    NIVE_COUCHE='MOY',),);
+
+IMPR_RESU(FORMAT='RESULTAT',RESU=_F(RESULTAT=MECASTA2,NOM_CHAM=('SIGM_ELGA',)))
+                                   
 MECASTA2=CALC_CHAMP(reuse =MECASTA2,
                  RESULTAT=MECASTA2,
                  CONTRAINTE='SIGM_NOEU',);
@@ -95,5 +99,77 @@ TEST_RESU(CHAM_NO=(_F(
                       VALE_CALC=-2.0725694963476E6,),
                    ),
           )
+
+listinst = DEFI_LIST_REEL(DEBUT=0.0,
+             INTERVALLE=_F(JUSQU_A=1.0, PAS=1.0),
+                          );
+
+MECASTAN=STAT_NON_LINE(MODELE=MODELE,
+                       CHAM_MATER=CHMAT,
+                       CARA_ELEM=CHCAR,
+                       INCREMENT = _F(  LIST_INST = listinst, ),
+                       EXCIT=(_F(CHARGE=ENCAS,),
+                              _F(CHARGE=FORCE,),),
+                       
+                       );
+
+                       
+MECASTAN=CALC_CHAMP(reuse=MECASTAN,RESULTAT=MECASTAN,CONTRAINTE=('EFGE_ELNO','SIGM_ELNO','SIGM_ELGA'))
+
+
+MECASTN2=POST_CHAMP(RESULTAT=MECASTAN,INST=1.0,
+                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELGA',
+                                   NUME_COUCHE=1,
+                                   NIVE_COUCHE='MOY',),);
+
+IMPR_RESU(FORMAT='RESULTAT',RESU=_F(RESULTAT=MECASTN2,NOM_CHAM=('SIGM_ELGA',)))
+
+TEST_RESU(RESU=(
+               _F(NUME_ORDRE=1,
+                  MAILLE='M1533',
+                  POINT=1,
+                  SOUS_POINT=1,
+                  RESULTAT=MECASTA2,
+                  NOM_CHAM='SIGM_ELGA',
+                  NOM_CMP='SIXZ',
+                  VALE_CALC= 7.97446387680735E+04 ,),
+                  
+               _F(NUME_ORDRE=1,
+                  MAILLE='M1533',
+                  POINT=1,
+                  SOUS_POINT=1,
+                  RESULTAT=MECASTA2,
+                  NOM_CHAM='SIGM_ELGA',
+                  NOM_CMP='SIYZ',
+                  VALE_CALC= 14377.0954149 ,), 
+                  
+                  
+               _F(NUME_ORDRE=1,
+                  MAILLE='M1533',
+                  POINT=1,
+                  SOUS_POINT=1,
+                  RESULTAT=MECASTN2,
+                  NOM_CHAM='SIGM_ELGA',
+                  REFERENCE='AUTRE_ASTER',
+                  NOM_CMP='SIXZ',
+                  VALE_CALC= 7.97446387680735E+04 ,
+                  VALE_REFE= 7.97446387680735E+04 ,
+                  ),
+                  
+               _F(NUME_ORDRE=1,
+                  MAILLE='M1533',
+                  POINT=1,
+                  SOUS_POINT=1,
+                  RESULTAT=MECASTN2,
+                  NOM_CHAM='SIGM_ELGA',
+                  NOM_CMP='SIYZ',
+                  REFERENCE='AUTRE_ASTER',
+                  VALE_CALC= 14377.0954149 ,
+                  VALE_REFE= 14377.0954149 ,
+                  ),                    
+                  
+                  ),
+          )
+
 
 FIN();

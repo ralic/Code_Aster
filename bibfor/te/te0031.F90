@@ -336,10 +336,10 @@ subroutine te0031(option, nomte)
         call utpvgl(nno, 6, pgl, zr(jdepr), dul)
 !
         if (nomte .eq. 'MEDKTR3') then
-            call dktnli(nomte, option, xyzl, uml, dul,&
+            call dktnli(nomte, option, xyzl,pgl, uml, dul,&
                         vecloc, matloc, codret(1))
         else if (nomte.eq.'MEDKQU4 ') then
-            call dktnli(nomte, option, xyzl, uml, dul,&
+            call dktnli(nomte, option, xyzl,pgl, uml, dul,&
                         vecloc, matloc, codret(1))
         else
             call utmess('F', 'ELEMENTS2_74', sk=nomte)
