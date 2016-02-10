@@ -25,7 +25,8 @@ PRE_IDEAS();
 MAYA=LIRE_MAILLAGE();
 
 MATELAS=DEFI_MATERIAU(ELAS=_F(E=71000000000.0,
-                              NU=0.3,),);
+                              NU=0.3,
+                              RHO=1.E-9,),);
 
 MODELE=AFFE_MODELE(MAILLAGE=MAYA,
                    AFFE=_F(GROUP_MA='ALL_EL',
@@ -110,7 +111,6 @@ MECASTAN=STAT_NON_LINE(MODELE=MODELE,
                        INCREMENT = _F(  LIST_INST = listinst, ),
                        EXCIT=(_F(CHARGE=ENCAS,),
                               _F(CHARGE=FORCE,),),
-                       
                        );
 
                        
@@ -220,4 +220,63 @@ TEST_RESU(RESU=(
                   
                   ),
           )
+
+#DYNA_NON_LINE
+
+
+listins2 = DEFI_LIST_REEL(DEBUT=0.0,
+             INTERVALLE=_F(JUSQU_A=1.0, PAS=1.0),
+                          );
+                          
+DYNASTAN=DYNA_NON_LINE(MODELE=MODELE,
+                       CHAM_MATER=CHMAT,
+                       CARA_ELEM=CHCAR,
+                       INCREMENT = _F(  LIST_INST = listins2, ),                 
+                       SCHEMA_TEMPS=_F( SCHEMA='NEWMARK',
+                                 FORMULATION='DEPLACEMENT',
+                                 #ALPHA=-0.1,
+                                 BETA=0.25,
+                                 GAMMA=0.5,
+                                 ),
+                       EXCIT=(_F(CHARGE=ENCAS,),
+                              _F(CHARGE=FORCE,),),
+                       );
+
+                       
+DYNASTAN=CALC_CHAMP(reuse=DYNASTAN,RESULTAT=DYNASTAN,CONTRAINTE=('EFGE_ELNO','SIGM_ELNO','SIGM_ELGA'))
+
+
+DYNASTN2=POST_CHAMP(RESULTAT=DYNASTAN,INST=1.0,
+                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELGA',
+                                   NUME_COUCHE=1,
+                                   NIVE_COUCHE='MOY',),);
+                                   
+# TEST OF SIXZ,SIYZ BETWEEN DYNA_NON_LINE VS MECA_STATIQUE
+TEST_RESU(RESU=(
+               
+                  
+               _F(INST=1.0,
+                  MAILLE='M1533',
+                  POINT=1,
+                  SOUS_POINT=1,
+                  RESULTAT=DYNASTN2,
+                  NOM_CHAM='SIGM_ELGA',
+                  NOM_CMP='SIXZ',
+                  VALE_CALC= 40863.4062521,
+                  ),
+                  
+               _F(INST=1.0,
+                  MAILLE='M1533',
+                  POINT=1,
+                  SOUS_POINT=1,
+                  RESULTAT=DYNASTN2,
+                  NOM_CHAM='SIGM_ELGA',
+                  NOM_CMP='SIYZ',
+                  VALE_CALC= 10404.5681121 ,
+                  ),                    
+                  
+                  ),
+          )
+          
+
 FIN();

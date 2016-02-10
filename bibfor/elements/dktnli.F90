@@ -433,8 +433,6 @@ subroutine dktnli(nomte, opt, xyzl, pgl, ul, dul,&
                 d1iel(2,1) = 0.d0
                 zr(icontp+icpg+4) = d1iel(1,1)*vt(1) + d1iel(1,2)*vt(2)
                 zr(icontp+icpg+5) = d1iel(2,1)*vt(1) + d1iel(2,2)*vt(2)
-            write (6,*) "zr(icontp+icpg+4)  ", zr(icontp+icpg+4) 
-            write (6,*) "zr(icontp+icpg+5)  ", zr(icontp+icpg+5) 
                 
 !
 !           COD=1 : ECHEC INTEGRATION LOI DE COMPORTEMENT
