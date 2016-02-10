@@ -41,7 +41,7 @@ subroutine te0031(option, nomte)
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -176,7 +176,7 @@ subroutine te0031(option, nomte)
                 eptot=eptot+epi(1)
                 goto 10
             endif
-            if (eptot .ne. 0.d0) then
+            if (nint(eptot) .ne. 0) then
                 if ((icou-1) .ne. nbcou) then
                     vali(1)=icou-1
                     vali(2)=nbcou

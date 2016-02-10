@@ -1,7 +1,7 @@
 
 # TITRE FLEXION D'UNE PLAQUE RECTANULAIRE TROUEE
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -58,7 +58,10 @@ MECASTAT=MECA_STATIQUE(MODELE=MODELE,
                        OPTION='SIEF_ELGA',);
 
                        
-MECASTAT=CALC_CHAMP(reuse=MECASTAT,RESULTAT=MECASTAT,CONTRAINTE=('EFGE_ELNO','SIGM_ELNO','SIGM_ELGA'))
+MECASTAT=CALC_CHAMP(reuse=MECASTAT,RESULTAT=MECASTAT,
+                    CONTRAINTE=('EFGE_ELNO','SIGM_ELNO','SIGM_ELGA'),
+                    DEFORMATION=('EPSI_ELGA'),                    
+                    )
 
 
 MECASTA2=POST_CHAMP(RESULTAT=MECASTAT,
@@ -66,7 +69,7 @@ MECASTA2=POST_CHAMP(RESULTAT=MECASTAT,
                                    NUME_COUCHE=1,
                                    NIVE_COUCHE='MOY',),);
 
-IMPR_RESU(FORMAT='RESULTAT',RESU=_F(RESULTAT=MECASTA2,NOM_CHAM=('SIGM_ELGA',)))
+#IMPR_RESU(FORMAT='RESULTAT',RESU=_F(RESULTAT=MECASTA2,NOM_CHAM=('SIGM_ELGA',)))
                                    
 MECASTA2=CALC_CHAMP(reuse =MECASTA2,
                  RESULTAT=MECASTA2,
@@ -114,7 +117,10 @@ MECASTAN=STAT_NON_LINE(MODELE=MODELE,
                        );
 
                        
-MECASTAN=CALC_CHAMP(reuse=MECASTAN,RESULTAT=MECASTAN,CONTRAINTE=('EFGE_ELNO','SIGM_ELNO','SIGM_ELGA'))
+MECASTAN=CALC_CHAMP(reuse=MECASTAN,RESULTAT=MECASTAN,
+                  CONTRAINTE=('EFGE_ELNO','SIGM_ELNO','SIGM_ELGA'),
+                  DEFORMATION=('EPSI_ELGA'),
+                  )
 
 
 MECASTN2=POST_CHAMP(RESULTAT=MECASTAN,INST=1.0,
@@ -122,8 +128,21 @@ MECASTN2=POST_CHAMP(RESULTAT=MECASTAN,INST=1.0,
                                    NUME_COUCHE=1,
                                    NIVE_COUCHE='MOY',),);
 
-IMPR_RESU(FORMAT='RESULTAT',RESU=_F(RESULTAT=MECASTN2,NOM_CHAM=('SIGM_ELGA',)))
-# TEST OF SIXZ,SIYZ BETWEEN STAT_NON_LINE VS MECA_STATIQUE
+EPSISTN2=POST_CHAMP(RESULTAT=MECASTAN,INST=1.0,
+                     EXTR_COQUE=_F(NOM_CHAM='EPSI_ELGA',
+                                   NUME_COUCHE=1,
+                                   NIVE_COUCHE='MOY',),);
+
+
+EPSISTA2=POST_CHAMP(RESULTAT=MECASTAT,
+                     EXTR_COQUE=_F(NOM_CHAM='EPSI_ELGA',
+                                   NUME_COUCHE=1,
+                                   NIVE_COUCHE='MOY',),);
+
+#IMPR_RESU(FORMAT='RESULTAT',RESU=_F(RESULTAT=MECASTN2,NOM_CHAM=('SIGM_ELGA',)))
+#IMPR_RESU(FORMAT='RESULTAT',RESU=_F(RESULTAT=EPSISTN2,NOM_CHAM=('EPSI_ELGA',)))
+#IMPR_RESU(FORMAT='RESULTAT',RESU=_F(RESULTAT=EPSISTA2,NOM_CHAM=('EPSI_ELGA',)))
+# TEST OF SIXZ,SIYZ BETWEEN STAT_NON_LINE VS MECA_STATIQUE       
 TEST_RESU(RESU=(
                _F(NUME_ORDRE=1,
                   MAILLE='M1533',
@@ -142,6 +161,24 @@ TEST_RESU(RESU=(
                   NOM_CHAM='SIGM_ELGA',
                   NOM_CMP='SIYZ',
                   VALE_CALC= 14377.0954149 ,), 
+                  
+               _F(NUME_ORDRE=1,
+                  MAILLE='M1533',
+                  POINT=1,
+                  SOUS_POINT=1,
+                  RESULTAT=EPSISTA2,
+                  NOM_CHAM='EPSI_ELGA',
+                  NOM_CMP='EPXZ',
+                  VALE_CALC= 1.16809048336333E-06 ,),
+                  
+               _F(NUME_ORDRE=1,
+                  MAILLE='M1533',
+                  POINT=1,
+                  SOUS_POINT=1,
+                  RESULTAT=EPSISTA2,
+                  NOM_CHAM='EPSI_ELGA',
+                  NOM_CMP='EPYZ',
+                  VALE_CALC= 2.10594073682869E-07 ,), 
                   
                   
                _F(NUME_ORDRE=1,
@@ -168,14 +205,38 @@ TEST_RESU(RESU=(
                   VALE_REFE= 14377.0954149 ,
                   ),                    
                   
+               _F(NUME_ORDRE=1,
+                  MAILLE='M1533',
+                  POINT=1,
+                  SOUS_POINT=1,
+                  RESULTAT=EPSISTN2,
+                  NOM_CHAM='EPSI_ELGA',
+                  REFERENCE='AUTRE_ASTER',
+                  NOM_CMP='EPXZ',
+                  VALE_CALC= 1.16809048336333E-06 ,
+                  VALE_REFE= 1.16809048336333E-06 ,
+                  ),
+                  
+               _F(NUME_ORDRE=1,
+                  MAILLE='M1533',
+                  POINT=1,
+                  SOUS_POINT=1,
+                  RESULTAT=EPSISTN2,
+                  NOM_CHAM='EPSI_ELGA',
+                  NOM_CMP='EPYZ',
+                  REFERENCE='AUTRE_ASTER',
+                  VALE_CALC= 2.10594073682869E-07  ,
+                  VALE_REFE= 2.10594073682869E-07 ,
+                  ),                    
+                  
                   ),
           )
           
           
 # TEST OF QX,QY BETWEEN STAT_NON_LINE VS MECA_STATIQUE
 
-IMPR_RESU(FORMAT='RESULTAT',RESU=_F(RESULTAT=MECASTAT,NOM_CHAM=('EFGE_ELNO',)))
-IMPR_RESU(FORMAT='RESULTAT',RESU=_F(RESULTAT=MECASTAN,INST=1.0,NOM_CHAM=('EFGE_ELNO',)))
+#IMPR_RESU(FORMAT='RESULTAT',RESU=_F(RESULTAT=MECASTAT,NOM_CHAM=('EFGE_ELNO',)))
+#IMPR_RESU(FORMAT='RESULTAT',RESU=_F(RESULTAT=MECASTAN,INST=1.0,NOM_CHAM=('EFGE_ELNO',)))
 
 TEST_RESU(RESU=(
                _F(NUME_ORDRE=1,

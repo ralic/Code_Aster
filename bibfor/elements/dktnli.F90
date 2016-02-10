@@ -9,11 +9,15 @@ subroutine dktnli(nomte, opt, xyzl, pgl, ul, dul,&
 #include "asterfort/dktbf.h"
 #include "asterfort/dxqbm.h"
 #include "asterfort/dxqloc.h"
+#include "asterfort/dxdmul.h"
 #include "asterfort/dxtbm.h"
 #include "asterfort/dxtloc.h"
 #include "asterfort/dsxhft.h"
 #include "asterfort/dkttxy.h"
 #include "asterfort/dkqtxy.h"
+#include "asterfort/dkqlxy.h"
+#include "asterfort/dktlxy.h"
+#include "asterfort/dsxhlt.h"
 #include "asterfort/dxmate.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/gquad4.h"
@@ -36,7 +40,7 @@ subroutine dktnli(nomte, opt, xyzl, pgl, ul, dul,&
     real(kind=8) :: pgl(3, 3)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -125,7 +129,7 @@ subroutine dktnli(nomte, opt, xyzl, pgl, ul, dul,&
 !            SIG2D:  CONTRAINTE DANS UNE COUCHE (2D C_PLAN)
 !           DSIDEP:  MATRICE D(SIG2D)/D(EPS2D)
     real(kind=8) :: eps(3), khi(3), deps(3), dkhi(3), n(3), m(3), sigm(4)
-    real(kind=8) :: q(2)
+!    real(kind=8) :: q(2)
 !            EPS:    DEFORMATION DE MEMBRANE "-"
 !            DEPS:   INCREMENT DE DEFORMATION DE MEMBRANE
 !            KHI:    DEFORMATION DE FLEXION  "-"
@@ -159,18 +163,31 @@ subroutine dktnli(nomte, opt, xyzl, pgl, ul, dul,&
     real(kind=8) :: deux, rac2, qsi, eta, cara(25), jacob(5)
     real(kind=8) :: ctor, coehsd
     aster_logical :: vecteu, matric, dkt, dkq, leul
-    real(kind=8) :: dvt(2),vt(2), lambda(4)
+    real(kind=8) :: dvt(2),vt(2)
+!    real(kind=8) ::  lambda(4)
     real(kind=8) :: dfel(3, 3), dmel(3, 3), dmfel(3, 3), dcel(2, 2), dciel(2, 2)
     real(kind=8) :: dmcel(3, 2), dfcel(3, 2)
-    real(kind=8) :: hel(3, 3), d1iel(2, 2), d2iel(2, 4)
-    real(kind=8) :: depfel(3*nno), ddepfel(3*nno), depmel(3*nno)
-    real(kind=8) :: smel(3), sfel(3), hft2el(2, 6), hlt2el(4, 6)
-    real(kind=8) :: t2iuel(4), t2uiel(4), t1veel(9)
+!    real(kind=8) :: hel(3, 3)
+    real(kind=8) :: d1iel(2, 2)
+!    real(kind=8) ::  d2iel(2, 4)
+    real(kind=8) :: depfel(3*nno)
+!    real(kind=8) ::  depmel(3*nno)
+!    real(kind=8) :: ddepfel(3*nno)
+!    real(kind=8) :: smel(3), sfel(3), hlt2el(4, 6)
+    real(kind=8) :: hft2el(2, 6)
+    real(kind=8) ::   t2iuel(4), t2uiel(4), t1veel(9)
+!    real(kind=8) ::   cist(2)
+!    integer :: t1i,t1j,t2i,t2j
+!    real(kind=8) :: t1veelm(3,3),t2veelm(3,3)
     aster_logical :: coupmfel
-    integer :: multicel
+!    aster_logical ::  lmulti
+!    integer :: iniv,
+    integer :: multicel,pcontr
     character(len=4) :: fami = 'RIGI'
 !     ------------------------------------------------------------------
 !
+
+
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nnoel, nnos=nnos, npg=npg,&
                      jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2,&
                      jgano=jgano)
@@ -298,6 +315,17 @@ subroutine dktnli(nomte, opt, xyzl, pgl, ul, dul,&
 !
 !     -- BOUCLE SUR LES POINTS DE GAUSS DE LA SURFACE:
 !     -------------------------------------------------
+!     ----- MATRICES ELASTIQUES POUR CALCULER L'EFFORT TRANCHANT--------
+       call dxmate(fami, dfel, dmel, dmfel, dcel,&
+                   dciel, dmcel, dfcel, nnoel, pgl,&
+                   multicel, coupmfel, t2iuel, t2uiel, t1veel)
+!
+!     -------- CALCUL DE LA MATRICE DE HOOKE EN MEMBRANE ---------------
+!    if (multicel .eq. 0) then
+!        do 10 k = 1, 9
+!            hel(k,1) = dmel(k,1)/h
+! 10     continue
+!    endif
    do  ino = 1, nnoel
        depfel(1+3*(ino-1)) = uf(1,ino)+duf(1,ino)
        depfel(2+3*(ino-1)) = uf(2,ino)+duf(2,ino)
@@ -313,10 +341,8 @@ subroutine dktnli(nomte, opt, xyzl, pgl, ul, dul,&
         call r8inir(2, 0.d0, vt, 1)
         qsi = zr(icoopg-1+ndim*(ipg-1)+1)
         eta = zr(icoopg-1+ndim*(ipg-1)+2)
-!     ----- MATRICES ELASTIQUES POUR CALCULER L'EFFORT TRANCHANT--------
-       call dxmate(fami, dfel, dmel, dmfel, dcel,&
-                   dciel, dmcel, dfcel, nnoel, pgl,&
-                   multicel, coupmfel, t2iuel, t2uiel, t1veel)
+
+    
         if (dkq) then
             call jquad4(xyzl, qsi, eta, jacob)
             poids = zr(ipoids+ipg-1)*jacob(1)
@@ -415,6 +441,9 @@ subroutine dktnli(nomte, opt, xyzl, pgl, ul, dul,&
 ! --- ANGLE DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
 ! --- INITIALISE A R8VIDE (ON NE S'EN SERT PAS)
                 call r8inir(3, r8vide(), angmas, 1)
+                do pcontr =1,5
+                    zr(icontp+icpg+pcontr)=0.0
+                enddo    
                 call nmcomp('RIGI', ipg, ksp, 2, typmod,&
                             zi(imate), zk16(icompo), zr(icarcr), instm, instp,&
                             4, eps2d, deps2d, 4, sigm,&
@@ -427,12 +456,44 @@ subroutine dktnli(nomte, opt, xyzl, pgl, ul, dul,&
 !
                 zr(icontp+icpg+3)=zr(icontp+icpg+3)/rac2
 !           ---- CIST = D1I.VT  -----
-                d1iel(1,1) = 3.d0/ (2.d0*hic) - zic*zic*6.d0/ ( hic*hic*hic)
-                d1iel(2,2) = d1iel(1,1)
-                d1iel(1,2) = 0.d0
-                d1iel(2,1) = 0.d0
-                zr(icontp+icpg+4) = d1iel(1,1)*vt(1) + d1iel(1,2)*vt(2)
-                zr(icontp+icpg+5) = d1iel(2,1)*vt(1) + d1iel(2,2)*vt(2)
+!                if (multicel .eq. 0) then
+!                  -- MONOCOUCHE
+!                  -- COTE DES POINTS D'INTEGRATION
+!                  --------------------------------
+                     d1iel(1,1) = 3.d0/ (2.d0*h) - zic*zic*6.d0/ ( h*h*h)
+                     d1iel(2,2) = d1iel(1,1)
+                     d1iel(1,2) = 0.d0
+                     d1iel(2,1) = 0.d0
+                     zr(icontp+icpg+4) = d1iel(1,1)*vt(1) + d1iel(1,2)*vt(2)
+                     zr(icontp+icpg+5) = d1iel(2,1)*vt(1) + d1iel(2,2)*vt(2)
+!                else
+!                  -- EN MULTICOUCHES
+!                  -- ON CALCULE TOUT D'UN COUP
+!                      iniv = igauh - 2
+!                      lmulti = .true.                      
+!                      call dxdmul(lmulti, icou, iniv, t1veel, t2uiel,&
+!                                     hel, d1iel, d2iel, zic, hic)
+!                      if (dkt) then               
+!!                           ------- CALCUL DU PRODUIT HL.T2 ---------------------------
+!                            call dsxhlt(dfel, cara(9), hlt2el)
+!!                           ------ LAMBDA = HLT2.TKT.DEPF -----------------------------
+!                            call dktlxy(cara(16), cara(13), hlt2el, depfel, lambda)
+!                      elseif (dkq) then        
+!!                          ------- CALCUL DU PRODUIT HL.T2 -----------------------
+!                                     call dsxhlt(dfel, jacob(2), hlt2el)
+!!                          ------ LAMBDA = HLT2.TKT.DEPF -------------------------
+!                                     call dkqlxy(qsi, eta, hlt2el, depfel, cara(13),&
+!                                                 cara(9), lambda)
+!                      endif 
+!                      cist(1) = d1iel(1,1)*vt(1) + d1iel(1,2)*vt(2)
+!                      cist(2) = d1iel(2,1)*vt(1) + d1iel(2,2)*vt(2)
+!                      do  j = 1, 4
+!                          cist(1) = cist(1) + d2iel(1,j)*lambda(j)
+!                          cist(2) = cist(2) + d2iel(2,j)*lambda(j)
+!                      enddo   
+!                     zr(icontp+icpg+4) = cist(1)
+!                     zr(icontp+icpg+5) = cist(2)
+!                endif
                 
 !
 !           COD=1 : ECHEC INTEGRATION LOI DE COMPORTEMENT

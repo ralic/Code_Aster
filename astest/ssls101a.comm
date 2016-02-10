@@ -1,6 +1,6 @@
 # TITRE PLAQUE CIRCULAIRE POSEE     SOUS PRESSION DKT    50 N - 76 TRIA3
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -69,6 +69,7 @@ RESU=MECA_STATIQUE(     MODELE=MODEL,
                      CARA_ELEM=CARELEM,
                        SOLVEUR=_F( STOP_SINGULIER = 'NON'),
                          EXCIT=_F(  CHARGE = CHARGE),
+                       OPTION='SIEF_ELGA',                         
                              )
 
 RESU=CALC_CHAMP(reuse=RESU,
@@ -793,7 +794,8 @@ U3=STAT_NON_LINE(           MODELE=MODEL,
                            SOLVEUR=_F(STOP_SINGULIER = 'NON'),
                          CARA_ELEM=CARELEM,
                              EXCIT=_F(CHARGE = CHARGE,
-                                      FONC_MULT = RAMPE),
+                                      #FONC_MULT = RAMPE
+                                      ),
                          COMPORTEMENT=_F(RELATION = 'ELAS'),
                          INCREMENT=_F(LIST_INST = LINST0,
                                       NUME_INST_FIN = 3),
@@ -842,7 +844,6 @@ U3=CALC_CHAMP(reuse=U3,
 
 U3=CALC_CHAMP(reuse=U3,
               RESULTAT=U3,
-              NUME_ORDRE=4,
               CONTRAINTE='SIGM_ELNO',
               CRITERES='SIEQ_ELNO',)
 
@@ -860,8 +861,66 @@ SVMP=POST_RELEVE_T(    ACTION=_F(  NOEUD = ( 'O',  'A',  'B',  'C',  'D',  'E', 
                                   NOM_CMP = 'VMIS',
                                   OPERATION = 'EXTRACTION')      )
 #
+                             
+LINST1=DEFI_LIST_REEL( VALE=( 0., 1.,)  )
+                             
+                             
+U4=STAT_NON_LINE(       MODELE=MODEL,
+                        CHAM_MATER=CHMAT,
+                           SOLVEUR=_F(STOP_SINGULIER = 'NON'),
+                         CARA_ELEM=CARELEM,
+                             EXCIT=_F(CHARGE = CHARGE,
+                                      #FONC_MULT = RAMPE
+                                      ),
+                         COMPORTEMENT=_F(RELATION = 'ELAS'),
+                         INCREMENT=_F(LIST_INST = LINST1,
+                                      ),
+                          
+                       CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6)
+              )
+
+#
+#--------------------------------------------------------
+#
+# TEST DE L'OPTION SIEQ_ELNO EN ELASTICITE
+#
+
+U4=CALC_CHAMP(reuse=U4,
+                RESULTAT=U4,
+                CONTRAINTE=('EFGE_ELNO',),);
+
+U4=CALC_CHAMP(reuse=U4,
+              RESULTAT=U4,
+                 INST = 1.0,
+              CONTRAINTE='SIGM_ELNO',
+              CRITERES='SIEQ_ELNO',)
+              
+U4POS=POST_CHAMP(RESULTAT=U4,
+                 INST = 1.0,
+                 EXTR_COQUE=_F(NOM_CHAM=('SIEF_ELGA','SIGM_ELNO','SIEQ_ELNO',),
+                               NUME_COUCHE=1,
+                               NIVE_COUCHE='INF',),);
+
+#
+SVMPM=POST_RELEVE_T(    ACTION=_F(  NOEUD = ( 'O',  'A',  'B',  'C',  'D',  'E',  'F', ),
+                                  INTITULE = 'SIG_VM_P',
+                                  RESULTAT = U4POS,
+                                  NOM_CHAM = 'SIEQ_ELNO',
+                                  NOM_CMP = 'VMIS',
+                                  OPERATION = 'EXTRACTION')      )
+
 TEST_TABLE(REFERENCE='NON_DEFINI',
-           PRECISION=0.014999999999999999,
+           PRECISION=0.015,
+           VALE_CALC=124.284582030,
+           VALE_REFE=123.75,
+           NOM_PARA='VMIS',
+           TABLE=SVMPM,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='O',),
+           )
+           
+TEST_TABLE(REFERENCE='NON_DEFINI',
+           PRECISION=0.015,
            VALE_CALC=124.284582030,
            VALE_REFE=123.75,
            NOM_PARA='VMIS',
@@ -869,6 +928,10 @@ TEST_TABLE(REFERENCE='NON_DEFINI',
            FILTRE=_F(NOM_PARA='NOEUD',
                      VALE_K='O',),
            )
+ 
+IMPR_RESU(FORMAT='RESULTAT',RESU=_F(RESULTAT=U4POS,NOM_CHAM=('SIEF_ELGA',)))   
+IMPR_RESU(FORMAT='RESULTAT',RESU=_F(RESULTAT=RESU2,NOM_CHAM=('SIEF_ELGA',)))    
+IMPR_TABLE(TABLE=SVMPM)
 
 #
 #--------------------------------------------------------
