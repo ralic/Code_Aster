@@ -34,9 +34,26 @@ PRE_GIBI()
 MA=LIRE_MAILLAGE()
 
 
-for partit in ('CENTRALISE','MAIL_DISPERSE','MAIL_CONTIGU','GROUP_ELEM') :
-    MO=AFFE_MODELE(  MAILLAGE=MA,
-                      PARTITION=_F(PARALLELISME=partit),
+for nopartit in ('SOUS_DOMAINE', 'CENTRALISE', 'MAIL_DISPERSE', 'MAIL_CONTIGU', 'GROUP_ELEM', 'GROUP_ELEM+PARTITION') :
+    if nopartit == 'SOUS_DOMAINE' :
+        MO=AFFE_MODELE(  MAILLAGE=MA,
+                      AFFE=_F(  TOUT = 'OUI', PHENOMENE = 'MECANIQUE', MODELISATION = 'DKT') )
+        SDPART=DEFI_PARTITION(MODELE=MO, NB_PART=6,);
+        MODI_MODELE(  reuse=MO, MODELE=MO,
+                      PARTITION=_F(PARALLELISME='SOUS_DOMAINE', PARTITION=SDPART))
+    elif nopartit == 'GROUP_ELEM+PARTITION' :
+        MO_0=AFFE_MODELE(MAILLAGE=MA,
+                         AFFE=_F(TOUT='OUI',  PHENOMENE='MECANIQUE', MODELISATION='DKT',))
+        DETRUIRE(CONCEPT=_F(NOM=(SDPART)))
+        # a cause d'un effet de bord de DEFI_PARTTION, il faut detruire certains groupes :
+        DEFI_GROUP(reuse=MA, MAILLAGE = MA, DETR_GROUP_MA =_F( NOM=('SD0','SD1','SD2','SD3','SD4','SD5',)))
+        SDPART=DEFI_PARTITION(MODELE=MO_0, NB_PART=6,);
+        MO=AFFE_MODELE(  MAILLAGE=MA,
+                      PARTITION=_F(PARALLELISME='GROUP_ELEM', PARTITION=SDPART),
+                      AFFE=_F(  TOUT = 'OUI', PHENOMENE = 'MECANIQUE', MODELISATION = 'DKT') )
+    else :
+        MO=AFFE_MODELE(  MAILLAGE=MA,
+                      PARTITION=_F(PARALLELISME=nopartit),
                       AFFE=_F(  TOUT = 'OUI', PHENOMENE = 'MECANIQUE', MODELISATION = 'DKT') )
 
     CARELEM=AFFE_CARA_ELEM(  MODELE=MO, COQUE=_F(  GROUP_MA = 'CARRE', EPAIS = 1.) )
@@ -77,13 +94,13 @@ for partit in ('CENTRALISE','MAIL_DISPERSE','MAIL_CONTIGU','GROUP_ELEM') :
 
               if typ_CL=="dualise" :
                   TEST_RESU(OBJET=_F(NOM='RESU1   .001.000000.VALE',
-                             VALE_CALC=47.492727537032, ))
+                             VALE_CALC=115.957868591, ))
               elif typ_CL=="elimine":
                   TEST_RESU(OBJET=_F(NOM='RESU1   .001.000000.VALE',
-                             VALE_CALC=43.992727537032, ))
+                             VALE_CALC=112.457868591, ))
               elif typ_CL=="transverse":
                   TEST_RESU(OBJET=_F(NOM='RESU1   .001.000000.VALE',
-                             VALE_CALC=194.49272753703, ))
+                             VALE_CALC=478.957868591, ))
 
               DETRUIRE(CONCEPT=_F(NOM=(RESU1)))
         DETRUIRE(CONCEPT=_F(NOM=(CL1)))

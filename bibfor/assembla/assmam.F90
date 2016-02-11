@@ -291,15 +291,15 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
         call asmpi_info(rank=mrank, size=msize)
         rang = to_aster_int(mrank)
         nbproc = to_aster_int(msize)
-        call jeveuo(partit//'.PRTI', 'L', vi=prti)
-        if (prti(1) .ne. nbproc) then
-            vali(1)=prti(1)
-            vali(2)=nbproc
-            call utmess('F', 'CALCUL_35', ni=2, vali=vali)
-        endif
         call jeveuo(partit//'.PRTK', 'L', vk24=prtk)
         ldgrel=prtk(1).eq.'GROUP_ELEM'
         if (.not.ldgrel) then
+            call jeveuo(partit//'.PRTI', 'L', vi=prti)
+            if (prti(1) .gt. nbproc) then
+                vali(1)=prti(1)
+                vali(2)=nbproc
+                call utmess('F', 'CALCUL_35', ni=2, vali=vali)
+            endif
             call jeveuo(partit//'.NUPROC.MAILLE', 'L', jnumsd)
         endif
     endif

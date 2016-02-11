@@ -57,7 +57,7 @@ subroutine crsvmu(motfac, solveu, istop, nprec,&
 ! ----------------------------------------------------------
 !
     integer :: ibid, ifm, niv, i, pcpiv, nbproc, rang, iaux
-    integer :: monit(12), n1, vali(2), compt
+    integer :: monit(12), vali(2), compt
     integer :: nbma
     real(kind=8) :: eps, blreps, blrfront
     character(len=5) :: klag2
@@ -138,20 +138,18 @@ subroutine crsvmu(motfac, solveu, istop, nprec,&
 !
         if (partit .ne. ' ') then
 !         -- CALCUL DISTRIBUE :
-            call jeveuo(partit//'.PRTI', 'L', vi=prti)
-            if (prti(1) .ne. nbproc) then
-                vali(1)=prti(1)
-                vali(2)=nbproc
-                call utmess('F', 'CALCUL_35', ni=2, vali=vali)
-            endif
 !
             call jeveuo(partit//'.PRTK', 'L', vk24=prtk)
             ldgrel=prtk(1).eq.'GROUP_ELEM'
             if (.not.ldgrel) then
+                call jeveuo(partit//'.PRTI', 'L', vi=prti)
+                if (prti(1) .gt. nbproc) then
+                    vali(1)=prti(1)
+                    vali(2)=nbproc
+                    call utmess('F', 'CALCUL_35', ni=2, vali=vali)
+                endif
                 call jeveuo(partit//'.NUPROC.MAILLE', 'L', vi=numsd)
-                call jelira(partit//'.NUPROC.MAILLE', 'LONMAX', n1)
-                ASSERT(numsd(n1).eq.nbproc)
-                nbma=n1-1
+                nbma=size(numsd)-1
                 compt=0
                 do i = 1, nbma
                     if (numsd(i) .eq. rang) compt=compt+1

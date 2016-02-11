@@ -7,13 +7,18 @@ opti dime 2 elem qua4 ;
 
 a  = 0.   0.;
 b  = 1.   0.;
-n1=6;
+n1=10;
 
 bord1 = droi n1 a b ;
 
-carre= bord1 tran n1 (0. 1.);
+carr1= bord1 tran 5 (0. 0.5);
+bord3= cote 3 carr1;
 
-bord2= cote 3 carre;
+opti dime 2 elem tri3 ;
+carr2= bord3 tran 5 (0. 0.5);
+
+bord2= cote 3 carr2;
+carre=carr1 et carr2;
 
 c=carre poin proc (1.  1.);
 d=carre poin proc (0.  1.);

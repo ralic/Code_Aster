@@ -73,7 +73,7 @@ subroutine op0018()
 !
     integer :: dim_topo_curr, dim_topo_init
     integer :: ifm, niv
-    character(len=8) :: mesh, model
+    character(len=8) :: mesh, model, sdpart
     character(len=8) :: name_elem
     character(len=16) :: k16dummy, name_type_geom, repk, valk(2)
     character(len=16) :: phenom, modeli, list_modelisa(10), keywordfact
@@ -102,7 +102,7 @@ subroutine op0018()
     integer, pointer :: p_model_nbno(:) => null()
     integer :: lont_liel, nb_grel, nb_elem_affe, nb_mesh_elem
     integer :: nb_elem_naffe
-    integer :: nb_affe, nb_affe_ss, nbocc
+    integer :: nb_affe, nb_affe_ss, nbocc, n1
     integer :: long_grel, nb_modelisa, nume_type_poi1, nume_grel
     integer :: nume_elem, idx_in_grel, nume_type_model, nume_type_geom
 !
@@ -124,7 +124,7 @@ subroutine op0018()
 !
 ! - Get mesh
 !
-    call getvid(' ', 'MAILLAGE', scal=mesh, nbret=nbocc)
+    call getvid(' ', 'MAILLAGE', scal=mesh)
 !
 ! - Check jacobians
 !
@@ -394,7 +394,12 @@ subroutine op0018()
 !
 ! - Automatic GREL size adaptation
 !
-    call adalig(ligrel)
+    call getvid('PARTITION', 'PARTITION',iocc=1, scal=sdpart, nbret=n1)
+    if (n1.eq.0) then
+        call adalig(ligrel)
+    else
+        call adalig(ligrel,sdpart)
+    endif
 !
 ! - Set element/(IGREL,IM) object
 !

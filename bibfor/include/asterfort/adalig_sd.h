@@ -16,8 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
           interface 
-            subroutine adalig(ligrz,sdpart)
-              character(len=*), intent(in) :: ligrz
-              character(len=8) ,optional, intent(in) :: sdpart
-            end subroutine adalig
+            subroutine adalig_sd(ligr,part8,ntliel,nbtype,clas,teut,    &
+     &nteut)
+              character(len=19), intent(in) :: ligr
+              character(len=8), intent(in) :: part8
+              character(len=24), intent(in) :: ntliel
+              integer, intent(in) :: nbtype
+              character(len=1), intent(in) :: clas
+              integer ,pointer, intent(in) :: teut(:)
+              integer ,pointer, intent(in) :: nteut(:)
+            end subroutine adalig_sd
           end interface 

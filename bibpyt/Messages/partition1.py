@@ -44,17 +44,6 @@ cata_msg = {
    - diminuez le nombre de processeurs du calcul
 """),
 
-    97 : _(u"""
-Erreur d'utilisation pour le parallélisme :
- Le mode de répartition des éléments entre les différents processeurs (PARTITION / PARALLELISME='GROUP_ELEM')
- ne peut pas être utilisé ici car il y a moins de groupes d'éléments (%(i1)d) que de processeurs (%(i2)d).
- En d'autres termes, il n'y a pas assez d'éléments à répartir (le modèle est trop petit).
-
- Conseils :
-   - diminuez le nombre de processeurs du calcul
-   - changez le mode de distribution des mailles avec le mot-clé PARTITION / PARALLELISME de l'opérateur
-     AFFE_MODELE (ou MODI_MODELE)
-"""),
 
     98: _(u"""
   La maille de numéro:  %(i1)d appartient à plusieurs sous-domaines !

@@ -123,7 +123,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
     integer, pointer :: conx(:) => null()
     character(len=24), pointer :: lres(:) => null()
     character(len=24), pointer :: relr(:) => null()
-    integer, pointer :: maille(:) => null()
+    integer, pointer :: numsd(:) => null()
     integer, pointer :: desc(:) => null()
     real(kind=8), pointer :: vale(:) => null()
     integer, pointer :: adne(:) => null()
@@ -223,17 +223,16 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
         call asmpi_info(rank=mrank, size=msize)
         rang = to_aster_int(mrank)
         nbproc = to_aster_int(msize)
-        call jeveuo(partit//'.PRTI', 'L', vi=prti)
-        if (prti(1) .ne. nbproc) then
-            vali(1)=prti(1)
-            vali(2)=nbproc
-            call utmess('F', 'CALCUL_35', ni=2, vali=vali)
-        endif
-
         call jeveuo(partit//'.PRTK', 'L', vk24=prtk)
         ldgrel=prtk(1) .eq. 'GROUP_ELEM'
         if (.not.ldgrel) then
-            call jeveuo(partit//'.NUPROC.MAILLE', 'L', vi=maille)
+            call jeveuo(partit//'.PRTI', 'L', vi=prti)
+            if (prti(1) .gt. nbproc) then
+                vali(1)=prti(1)
+                vali(2)=nbproc
+                call utmess('F', 'CALCUL_35', ni=2, vali=vali)
+            endif
+            call jeveuo(partit//'.NUPROC.MAILLE', 'L', vi=numsd)
         endif
     endif
 !
@@ -488,7 +487,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
 !
                             if (ldist .and. .not.ldgrel) then
                                 if (numa .gt. 0) then
-                                    if (maille(numa) .ne. rang) goto 210
+                                    if (numsd(numa) .ne. rang) goto 210
                                 else
                                     if (rang .ne. 0) goto 210
                                 endif

@@ -204,12 +204,7 @@ subroutine ajlipa(modelz, base)
             call utmess('F', 'PARTITION1_93', ni=2, vali=vali)
         endif
     else if (kdis.eq.'GROUP_ELEM') then
-!       IL FAUT AU MOINS UN GREL PAR PROC
-        if (nbgrel .lt. nbproc) then
-            vali(1) = nbgrel
-            vali(2) = nbproc
-            call utmess('F', 'PARTITION1_97', ni=2, vali=vali)
-        endif
+!       pas de contrainte particuliere ...
     else
         ASSERT(.false.)
     endif
