@@ -158,8 +158,8 @@ implicit none
 !
 ! - Create information about numbering
 !
-    call nmnume(model , result, compor, list_load, ds_contact,&
-                numedd, sdnume)
+    call nmnume(model     , mesh  , result, compor, list_load, &
+                ds_contact, numedd, sdnume)
 !
 ! --- CREATION DE VARIABLES "CHAPEAU" POUR STOCKER LES NOMS
 !

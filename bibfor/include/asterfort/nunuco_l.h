@@ -15,19 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-#include "asterf_types.h"
-!
 interface
-    subroutine nmnume(model     , mesh    , result, compor, list_load, &
-                      ds_contact, nume_dof, sdnume)
+    subroutine nunuco_l(mesh, ds_contact, nume_dof, sdnume)
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
-        character(len=24), intent(in) :: model
-        character(len=8), intent(in) :: result
-        character(len=24), intent(in) :: compor
-        character(len=19), intent(in) :: list_load
         type(NL_DS_Contact), intent(in) :: ds_contact
-        character(len=24), intent(out) :: nume_dof
+        character(len=24), intent(in) :: nume_dof
         character(len=19), intent(in) :: sdnume
-    end subroutine nmnume
+    end subroutine nunuco_l
 end interface

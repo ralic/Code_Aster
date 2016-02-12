@@ -1,16 +1,15 @@
-subroutine nmnume(model     , mesh    , result, compor, list_load, &
-                  ds_contact, nume_dof, sdnume)
+subroutine nunuco_l(mesh, ds_contact, nume_dof, sdnume)
 !
 use NonLin_Datastructure_type
 !
 implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/nmprof.h"
-#include "asterfort/nuendo.h"
-#include "asterfort/nunuco.h"
-#include "asterfort/nunuco_l.h"
-#include "asterfort/nurota.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/get_equa_info.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/wkvect.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,67 +30,65 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
-    character(len=24), intent(in) :: model
-    character(len=8), intent(in) :: result
-    character(len=24), intent(in) :: compor
-    character(len=19), intent(in) :: list_load
     type(NL_DS_Contact), intent(in) :: ds_contact
-    character(len=24), intent(out) :: nume_dof
+    character(len=24), intent(in) :: nume_dof
     character(len=19), intent(in) :: sdnume
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Non-linear algorithm - Initializations
 !
-! Create information about numbering
+! Get position of contact dof for patch (LAC)
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  mesh             : name of mesh
-! In  model            : name of model datastructure
-! In  result           : name of result datastructure (EVOL_NOLI)
-! In  compor           : name of <CARTE> COMPOR
-! In  list_load        : list of loads
 ! In  ds_contact       : datastructure for contact management
-! Out nume_dof         : name of numbering object (NUME_DDL)
+! In  nume_dof         : name of numbering object (NUME_DDL)
 ! In  sdnume           : name of dof positions datastructure
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: sdnuro, sdnuen, sdnuco
+    integer :: nt_patch, nb_equa, i_equa, i_patch, nume_node
+    character(len=8) :: type_equa
+    character(len=24) :: sdcont_ddlc
+    integer, pointer :: v_sdcont_ddlc(:) => null()
+    character(len=24) :: sdnume_nuco
+    integer, pointer :: v_sdnume_nuco(:) => null()
+    integer, pointer :: v_mesh_conopa(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-
 !
-! - Create numbering 
+! - Get parameters
 !
-    call nmprof(model               , result, list_load, nume_dof,&
-                ds_contact%iden_rela)
+    nt_patch = ds_contact%nt_patch
+    call dismoi('NB_EQUA', nume_dof, 'NUME_DDL', repi=nb_equa)
 !
-! - Get position of large rotation dof
+! - Access to mesh
 !
-    sdnuro = sdnume(1:19)//'.NDRO'
-    call nurota(model, nume_dof, compor, sdnuro)
+    call jeveuo(mesh//'.CONOPA','L', vi = v_mesh_conopa)
 !
-! - Get position of damaged dof 
+! - Access to unknowns
 !
-    sdnuen = sdnume(1:19)//'.ENDO'
-    call nuendo(model, nume_dof, sdnuen)
+    sdnume_nuco = sdnume(1:19)//'.NUCO'
+    call jeveuo(sdnume_nuco, 'L', vi = v_sdnume_nuco)
 !
-! - Get position of contact dof 
+! - Create object
 !
-    sdnuco = sdnume(1:19)//'.NUCO'
-    if (ds_contact%l_form_cont) then
-        call nunuco(nume_dof, sdnuco)
-    endif
+    sdcont_ddlc = ds_contact%sdcont_solv(1:14)//'.DDLC'
+    call wkvect(sdcont_ddlc, 'V V I', nt_patch, vi = v_sdcont_ddlc)
 !
-! - Get position of contact dof 
+! - Set equation number for each patch
 !
-    sdnuco = sdnume(1:19)//'.NUCO'
-    if (ds_contact%l_form_lac) then
-        call nunuco(nume_dof, sdnuco)
-        call nunuco_l(mesh, ds_contact, nume_dof, sdnume)
-    endif  
+    do i_equa = 1,nb_equa
+        if (v_sdnume_nuco(i_equa) .eq. 1) then
+            call get_equa_info(nume_dof, i_equa, type_equa, nume_nodez = nume_node)
+            ASSERT(type_equa .eq. 'A')
+            i_patch = v_mesh_conopa(nume_node)
+            ASSERT(i_patch.gt.0 .and. i_patch.le.nt_patch)
+            v_sdcont_ddlc(i_patch) = i_equa
+        endif
+    end do 
 !
 end subroutine
