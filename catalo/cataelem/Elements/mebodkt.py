@@ -70,7 +70,7 @@ MVECTUR  = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=(DDL_MECA,))
 
 #------------------------------------------------------------
 class MEBODKT(Element):
-    """Please document this element"""
+    """Boundary element for DKT model : SEG2"""
     meshType = MT.SEG2
     elrefe =(
             ElrefeLoc(MT.SE2, gauss = ('RIGI=FPG2',),),
@@ -123,5 +123,39 @@ class MEBODKT(Element):
         OP.TOU_INI_ELNO(te=99,
             para_out=((OP.TOU_INI_ELNO.PGEOM_R, MGEOMER), ),
         ),
+
+    )
+
+
+
+
+#------------------------------------------------------------
+class MEBODST(MEBODKT):
+    """Boundary element for DST model : SEG2"""
+    meshType = MT.SEG2
+    elrefe =(
+            ElrefeLoc(MT.SE2, gauss = ('RIGI=FPG2',),),
+        )
+    calculs = (
+        OP.CARA_SECT_POUT5(te=-1,),
+        OP.TOU_INI_ELGA(te=-1,    ),
+
+        OP.TOU_INI_ELNO(te=-1,    ),
+
+    )
+
+
+
+#------------------------------------------------------------
+class MEBOQ4G(MEBODKT):
+    """Boundary element for Q4G model : SEG2"""
+    meshType = MT.SEG2
+    elrefe =(
+            ElrefeLoc(MT.SE2, gauss = ('RIGI=FPG2',),),
+        )
+    calculs = (
+        OP.CARA_SECT_POUT5(te=-1,),
+
+        OP.TOU_INI_ELNO(te=-1,    ),
 
     )
