@@ -4,14 +4,17 @@ use NonLin_Datastructure_type
 !
 implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/apcrsd.h"
+#include "asterfort/apcrsd_lac.h"
+#include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
-#include "asterfort/cfmmar.h"
+#include "asterfort/cfdisl.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infdbg.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -35,7 +38,7 @@ implicit none
 !
 ! Contact - Solve
 !
-! Continue/Discrete method - Prepare pairing datastructures
+! Continue/Discrete/LAC method - Prepare pairing datastructures
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,15 +51,22 @@ implicit none
     integer :: ifm, niv
     integer :: nb_cont_zone, nt_poin, model_ndim, nt_elem_node, nb_cont_elem, nb_cont_node
     integer :: nb_node_mesh
+    aster_logical :: l_cont_disc, l_cont_cont, l_cont_lac
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call infdbg('CONTACT', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> . Prepare pairing datastructures for DISCRETE/CONTINUE methods'
+        write (ifm,*) '<CONTACT> . Prepare pairing datastructures'
     endif
 !
-! - Parameters
+! - Contact method
+!
+    l_cont_cont  = cfdisl(ds_contact%sdcont_defi,'FORMUL_CONTINUE')
+    l_cont_disc  = cfdisl(ds_contact%sdcont_defi,'FORMUL_DISCRETE')
+    l_cont_lac   = cfdisl(ds_contact%sdcont_defi,'FORMUL_LAC')
+!
+! - Get parameters
 !
     nb_cont_zone = cfdisi(ds_contact%sdcont_defi,'NZOCO' )
     nb_cont_node = cfdisi(ds_contact%sdcont_defi,'NNOCO' )
@@ -72,11 +82,16 @@ implicit none
 !
 ! - Create pairing datastructure
 !
-    call apcrsd(sdappa      , nt_poin     , nb_cont_elem, nb_cont_node,&
-                nt_elem_node, nb_node_mesh)
-!
-! - Fill pairing datastructure
-!
-    call cfmmar(ds_contact , nb_cont_elem, nt_elem_node)
+    if (l_cont_cont .or. l_cont_disc) then
+        call apcrsd(ds_contact  ,sdappa       ,&
+                    nt_poin     , nb_cont_elem, nb_cont_node,&
+                    nt_elem_node, nb_node_mesh)
+    elseif (l_cont_lac) then
+        call apcrsd_lac(ds_contact  , sdappa      , mesh,&
+                        nt_poin     , nb_cont_elem, nb_cont_node,&
+                        nt_elem_node, nb_node_mesh)
+    else
+        ASSERT(.false.)
+    endif
 !
 end subroutine

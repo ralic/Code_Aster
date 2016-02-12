@@ -1,16 +1,20 @@
-subroutine apcrsd(ds_contact  , sdappa      ,&
-                  nt_poin     , nb_cont_elem, nb_cont_node,&
-                  nt_elem_node, nb_node_mesh)
+subroutine apcrsd_lac(ds_contact  , sdappa      , mesh        ,&
+                      nt_poin     , nb_cont_elem, nb_cont_node,&
+                      nt_elem_node, nb_node_mesh)
 !
 use NonLin_Datastructure_type
 !
 implicit none
 !
 #include "asterfort/assert.h"
+#include "asterfort/apcinv.h"
+#include "asterfort/gtlima.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
+#include "asterfort/crcnct.h"
+#include "asterfort/cfdisi.h"
 #include "asterfort/cfnben.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jemarq.h"
@@ -37,6 +41,7 @@ implicit none
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19), intent(in) :: sdappa
+    character(len=8), intent(in) :: mesh
     integer, intent(in) :: nt_poin
     integer, intent(in) :: nb_cont_elem
     integer, intent(in) :: nb_cont_node
@@ -51,6 +56,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
+! In  mesh             : name of mesh
 ! In  ds_contact       : datastructure for contact management
 ! In  sdappa           : name of pairing datastructure
 ! In  nt_poin          : total number of points (contact and non-contact)
@@ -62,6 +68,8 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
+    integer :: nt_patch, i_zone, nb_cont_zone
+    character(len=24) :: pair_method
     integer :: i_cont_elem, longt, elem_indx, longc, elem_nbnode
     character(len=24) :: sdappa_poin
     real(kind=8), pointer :: v_sdappa_poin(:) => null()
@@ -85,6 +93,15 @@ implicit none
     character(len=8), pointer :: v_sdappa_verk(:) => null()
     character(len=24) :: sdappa_vera
     real(kind=8), pointer :: v_sdappa_vera(:) => null()
+    character(len=24) :: sdappa_gapi
+    real(kind=8), pointer :: v_sdappa_gapi(:) => null()
+    character(len=24) :: sdappa_coef
+    real(kind=8), pointer :: v_sdappa_coef(:) => null()
+    character(len=24) :: sdappa_poid
+    real(kind=8), pointer :: v_sdappa_poid(:) => null()
+    character(len=24) :: sdappa_psno
+    character(len=24) :: sdappa_norl
+    real(kind=8), pointer :: v_sdappa_norl(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -93,6 +110,12 @@ implicit none
     if (niv .ge. 2) then
         write (ifm,*) '<PAIRING> Create datastructure'
     endif
+!
+! - Get parameters
+!
+    nt_patch     = ds_contact%nt_patch
+    nb_cont_zone = cfdisi(ds_contact%sdcont_defi, 'NZOCO')
+    pair_method  = 'PANG_ROBUSTE'
 !
 ! - Datastructure for pairing results
 !
@@ -157,6 +180,44 @@ implicit none
     call wkvect(sdappa_verk, 'V V K8', nb_node_mesh, vk8 = v_sdappa_verk)
     call wkvect(sdappa_vera, 'V V R' , nb_node_mesh, vr  = v_sdappa_vera)
     call jeecra(sdappa_verk, 'LONUTI', 0)
+!
+! - Datastructure for gap
+!
+    sdappa_gapi = sdappa(1:19)//'.GAPI'
+    call wkvect(sdappa_gapi, 'V V R', nt_patch, vr = v_sdappa_gapi)
+!
+! - Datastructures for intersection parameters
+!
+    sdappa_coef = sdappa(1:19)//'.COEF'
+    sdappa_poid = sdappa(1:19)//'.POID'
+    call wkvect(sdappa_poid, 'V V R', nt_patch, vr = v_sdappa_coef)
+    call wkvect(sdappa_coef, 'V V R', nt_patch, vr = v_sdappa_poid)
+!
+! - Loop on contact zones
+!
+    do i_zone = 1, nb_cont_zone
+!
+! ----- Create list of elements for current contact zone
+!
+        call gtlima(sdappa, ds_contact%sdcont_defi, i_zone)
+!
+! ----- Create objects for inverse connectivity
+!
+        if (pair_method(1:4).eq.'PANG') then
+            call apcinv(mesh, sdappa, i_zone)
+        endif
+    end do
+!
+! - Datastructure for Smoothed NOrmals: CHAM_NO on complete mesh
+!
+    sdappa_psno = sdappa(1:14)//'.PSNO'
+    call crcnct('V', sdappa_psno, mesh, 'GEOM_R', 3,&
+                ['X','Y','Z'], [0.d0,0.d0,0.d0])
+!
+! - Datastructure for normals: only on contact zone (not a CHAM_NO ! )
+!
+    sdappa_norl = sdappa(1:19)//'.NORL'
+    call wkvect(sdappa_norl, 'V V R', 3*nb_cont_node, vr = v_sdappa_norl)
 !
     call jedema()
 !

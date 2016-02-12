@@ -93,12 +93,6 @@ implicit none
         call cfmxr0(mesh, ds_contact)
     endif
 !
-! - Create CONT_ELEM datastructure
-!
-    if (l_cont_lac) then
-        call cfmxr0_lac(mesh, ds_contact)
-    endif
-!
 ! - Create pairing datastructure
 !
     if (l_cont_cont .or. l_cont_disc .or. l_cont_lac) then
@@ -130,7 +124,7 @@ implicit none
 ! ----- Create datastructures for LAC method
 !
         if (l_cont_lac) then
-            call lac_crsd(mesh, ds_contact)
+            call lac_crsd(ds_contact)
         endif
 !
 ! ----- Create datastructures for XFEM method
@@ -138,6 +132,12 @@ implicit none
         if (l_cont_xfem) then
             call xxmxme(mesh, model, list_func_acti, ds_contact)
         endif
+    endif
+!
+! - Create CONT_ELEM datastructure
+!
+    if (l_cont_lac) then
+        call cfmxr0_lac(mesh, ds_contact)
     endif
 !
 end subroutine

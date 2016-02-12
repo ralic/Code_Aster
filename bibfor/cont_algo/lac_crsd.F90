@@ -1,4 +1,4 @@
-subroutine lac_crsd(mesh, ds_contact)
+subroutine lac_crsd(ds_contact)
 !
 use NonLin_Datastructure_type
 !
@@ -10,8 +10,6 @@ implicit none
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/assert.h"
-#include "asterfort/apcinv.h"
-#include "asterfort/gtlima.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/wkvect.h"
 !
@@ -33,7 +31,6 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=8), intent(in) :: mesh
     type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
@@ -44,17 +41,12 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  mesh             : name of mesh
 ! In  ds_contact       : datastructure for contact management
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    integer :: nt_patch, j_dummy
-    integer :: i_zone, nb_cont_zone
-    character(len=19) :: sdappa
-    character(len=24) :: pair_method
-    character(len=24) :: sdappa_gapi, sdappa_coef, sdappa_poid
+    integer :: nt_patch, jv_dummy
     character(len=24) :: sdcont_stat, sdcont_lagc
 !
 ! --------------------------------------------------------------------------------------------------
@@ -64,45 +56,15 @@ implicit none
         write (ifm,*) '<CONTACT> . Create contact datastructures for LAC method'
     endif
 !
-! - Get pairing datastructure
-!
-    sdappa = ds_contact%sdcont_solv(1:14)//'.APPA'
-!
 ! - Get parameters
 !
     nt_patch     = ds_contact%nt_patch
-    nb_cont_zone = cfdisi(ds_contact%sdcont_defi, 'NZOCO')
-    pair_method  = 'PANG_ROBUSTE'
 !
 ! - Create objects 
 !
     sdcont_stat = ds_contact%sdcont_solv(1:14)//'.STAT'
     sdcont_lagc = ds_contact%sdcont_solv(1:14)//'.LAGC'
-    call wkvect(sdcont_stat, 'V V I', nt_patch, j_dummy)
-    call wkvect(sdcont_lagc, 'V V R', nt_patch, j_dummy)
-!
-! - Create objects for pairing informations
-!
-    sdappa_gapi = sdappa(1:19)//'.GAPI'
-    sdappa_coef = sdappa(1:19)//'.COEF'
-    sdappa_poid = sdappa(1:19)//'.POID'
-    call wkvect(sdappa_gapi, 'V V R', nt_patch, j_dummy)
-    call wkvect(sdappa_poid, 'V V R', nt_patch, j_dummy)
-    call wkvect(sdappa_coef, 'V V R', nt_patch, j_dummy)
-!
-! - Loop on contact zones
-!
-    do i_zone = 1, nb_cont_zone
-!
-! ----- Create list of elements for current contact zone
-!
-        call gtlima(sdappa, ds_contact%sdcont_defi, i_zone)
-!
-! ----- Create objects for inverse connectivity
-!
-        if (pair_method(1:4).eq.'PANG') then
-            call apcinv(mesh, sdappa, i_zone)
-        endif
-    end do
+    call wkvect(sdcont_stat, 'V V I', nt_patch, jv_dummy)
+    call wkvect(sdcont_lagc, 'V V R', nt_patch, jv_dummy)
 !
 end subroutine

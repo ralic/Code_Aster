@@ -53,15 +53,11 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: model_ndim
-    integer :: nt_node_slav, nt_node_mast, nt_node, nt_elem_slav, nt_elem_mast, nt_elem
-    integer :: nb_cont_zone, nb_elem_slav, nb_elem_mast, nb_node_slav, nb_node_mast
+    integer :: model_ndim, nb_cont_zone, nt_node, nt_node_slav, nt_node_mast
+    integer :: nb_node_mast, nb_node_slav, nb_elem_mast, nb_elem_slav
     integer :: iter_maxi
-    integer :: i_zone, i_elem
+    integer :: i_zone
     integer :: jdecnm, jdecmm, jdecne, jdecme
-    character(len=24) :: sdappa_tgno, sdappa_tgel, sdappa_norl
-    real(kind=8), pointer :: v_sdappa_tgno(:) => null()
-    real(kind=8), pointer :: v_sdappa_norl(:) => null()
     character(len=4) :: zone_type 
     real(kind=8) :: norm_vect(3), epsi_maxi
     integer :: norm_type
@@ -78,27 +74,6 @@ implicit none
     nt_node_slav = cfdisi(sdcont_defi, 'NTNOE')
     nt_node_mast = cfdisi(sdcont_defi, 'NTNOM')
     nt_node      = nt_node_slav+nt_node_mast
-    nt_elem_slav = cfdisi(sdcont_defi, 'NTMAE')
-    nt_elem_mast = cfdisi(sdcont_defi, 'NTMAM')  
-    nt_elem      = nt_elem_slav+nt_elem_mast
-!
-! - Access to pairing datastructures
-!
-    sdappa_tgno = sdappa(1:19)//'.TGNO'
-    sdappa_tgel = sdappa(1:19)//'.TGEL'
-    sdappa_norl = sdappa(1:19)//'.NORL'
-    call jedetr(sdappa_tgno)
-    call jedetr(sdappa_tgel)
-    call jedetr(sdappa_norl)       
-    call wkvect(sdappa_tgno, 'V V R', 6*nt_node, vr = v_sdappa_tgno)
-    call wkvect(sdappa_norl, 'V V R', 3*nt_node, vr = v_sdappa_norl)
-    call jecrec(sdappa_tgel, 'V V R', 'NU', 'CONTIG', 'CONSTANT',&
-                nt_elem)
-    call jeecra(sdappa_tgel, 'LONT', nt_elem*6*9)
-    do i_elem = 1, nt_elem
-        call jecroc(jexnum(sdappa_tgel, i_elem))
-        call jeecra(jexnum(sdappa_tgel, i_elem), 'LONUTI', ival=6*9)
-    end do
 !
 ! - Loop on contact zones
 !

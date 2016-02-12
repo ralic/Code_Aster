@@ -43,18 +43,18 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: sdappa_normli, sdappa_norl
-    real(kind=8), pointer :: v_sdappa_normli(:) => null()
+    character(len=24) :: sdappa_psno, sdappa_norl
+    real(kind=8), pointer :: v_sdappa_psno(:) => null()
     real(kind=8), pointer :: v_sdappa_norl(:) => null()
     integer :: i_node, i_dime, node_curr
     integer :: node_indx(nt_node), node_nume(nt_node)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    sdappa_normli = sdappa(1:19)//'.NORMLI'
-    sdappa_norl   = sdappa(1:19)//'.NORL'
-    call jeveuo(sdappa_normli, 'E', vr = v_sdappa_normli)
-    call jeveuo(sdappa_norl  , 'L', vr = v_sdappa_norl)
+    sdappa_psno = sdappa(1:14)//'.PSNO'
+    sdappa_norl = sdappa(1:19)//'.NORL'
+    call jeveuo(sdappa_psno//'.VALE', 'E', vr = v_sdappa_psno)
+    call jeveuo(sdappa_norl         , 'L', vr = v_sdappa_norl)
 !
     do i_node = 1,nt_node
         node_indx(i_node) = i_node
@@ -65,7 +65,7 @@ implicit none
     do i_node = 1, nt_node
         node_curr = node_nume(i_node)
         do i_dime=1,model_ndim
-            v_sdappa_normli(3*(node_curr-1)+i_dime) = &
+            v_sdappa_psno(3*(node_curr-1)+i_dime) = &
                 v_sdappa_norl(3*(i_node-1)+i_dime)
         end do
     end do

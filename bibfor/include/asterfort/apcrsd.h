@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,8 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine apcrsd(sdappa      , nt_poin     , nb_cont_elem, nb_cont_node,&
+    subroutine apcrsd(ds_contact  , sdappa      ,&
+                      nt_poin     , nb_cont_elem, nb_cont_node,&
                       nt_elem_node, nb_node_mesh)
+        use NonLin_Datastructure_type
+        type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19), intent(in) :: sdappa
         integer, intent(in) :: nt_poin
         integer, intent(in) :: nb_cont_elem

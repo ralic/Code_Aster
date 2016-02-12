@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,10 +16,17 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfmmar(ds_contact, nb_cont_elem, nt_elem_node)
+    subroutine apcrsd_lac(ds_contact  , sdappa      , mesh,&
+                          nt_poin     , nb_cont_elem, nb_cont_node,&
+                          nt_elem_node, nb_node_mesh)
         use NonLin_Datastructure_type
-        type(NL_DS_Contact), intent(in) :: ds_contact 
+        type(NL_DS_Contact), intent(in) :: ds_contact
+        character(len=19), intent(in) :: sdappa
+        character(len=8), intent(in) :: mesh
+        integer, intent(in) :: nt_poin
         integer, intent(in) :: nb_cont_elem
+        integer, intent(in) :: nb_cont_node
         integer, intent(in) :: nt_elem_node
-    end subroutine cfmmar
+        integer, intent(in) :: nb_node_mesh
+    end subroutine apcrsd_lac
 end interface

@@ -17,9 +17,8 @@
 !
 !
 interface
-    subroutine lac_crsd(mesh, ds_contact)
+    subroutine lac_crsd(ds_contact)
         use NonLin_Datastructure_type
-        character(len=8), intent(in) :: mesh
         type(NL_DS_Contact), intent(in) :: ds_contact
     end subroutine lac_crsd
 end interface
