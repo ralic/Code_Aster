@@ -1,4 +1,6 @@
-# TITRE POUR TESTER L'EMISSION DE MESSAGES D'ERREUR LIES A UN MAUVAIS USAGE DES VARIABLES DE COMMANDE
+# TITRE Pour tester l'emission de messages d'erreur lies a :
+#     * un mauvais usage des variables de commande
+#     * l'affectation d'un chargement sur une maille ne faisant pas partie du maillage.
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +31,7 @@ fmt_raison='-'*80+"""
 
 MAIL=LIRE_MAILLAGE()
 
-MO=AFFE_MODELE(MAILLAGE=MAIL, AFFE=_F(  TOUT = 'OUI',  PHENOMENE = 'MECANIQUE',
+MO=AFFE_MODELE(MAILLAGE=MAIL, AFFE=_F(  GROUP_MA = 'CARRE',  PHENOMENE = 'MECANIQUE',
                          MODELISATION = 'D_PLAN')  )
 
 if 0 :
@@ -131,6 +133,29 @@ TAB4=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
 
 TEST_TABLE(REFERENCE='ANALYTIQUE', VALE_CALC_I=1, VALE_REFE_I=1,
            NOM_PARA='BOOLEEN', TABLE=TAB4,
+           FILTRE=_F(NOM_PARA='TEST', VALE_K='VALEUR  ',))
+
+
+
+# 5. Chargement de Neuman sur des mailles ne faisant pas partie du modele :
+#---------------------------------------------------------------------------
+is_ok = 0
+try :
+
+    CHAR_FI=AFFE_CHAR_MECA(MODELE=MO,
+                       FORCE_INTERNE=_F(GROUP_MA=('CARRE','BORD1'), FX=4.0,),);
+except aster.error,err:
+   print fmt_raison % str(err)
+   # on verifie que l'erreur fatale est bien celle que l'on attendait :
+   if err.id_message == "MODELISA6_96":
+      is_ok = 1
+
+# TEST_RESU
+TAB5=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
+                       _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE', VALE_CALC_I=1, VALE_REFE_I=1,
+           NOM_PARA='BOOLEEN', TABLE=TAB5,
            FILTRE=_F(NOM_PARA='TEST', VALE_K='VALEUR  ',))
 
 
