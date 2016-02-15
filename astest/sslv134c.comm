@@ -96,12 +96,10 @@ GK0=CALC_G(RESULTAT=CHAMDEPL,
 IMPR_TABLE(TABLE=GK0)
 
 # POST_K1_K2_K3
-TABL_K1=POST_K1_K2_K3(MODELISATION='AXIS',
-                      RESULTAT=CHAMDEPL,
+TABL_K1=POST_K1_K2_K3(RESULTAT=CHAMDEPL,
                       FOND_FISS=FISS2,
                       INFO=2,
-                      MATER=MAT,
-                     )
+                      )
 
 IMPR_TABLE(TABLE=TABL_K1)
 
@@ -207,11 +205,9 @@ GK1=CALC_G(THETA=_F(R_INF=RINF,
 IMPR_TABLE(TABLE=GK1)
 
 # POST_K1_K2_K3
-TABL_K2=POST_K1_K2_K3(MODELISATION='AXIS',
-                      RESULTAT=DEPL_ROT,
+TABL_K2=POST_K1_K2_K3(RESULTAT=DEPL_ROT,
                       FOND_FISS=FISS2,
-                      MATER=MAT,
-                     )
+                      )
 
 IMPR_TABLE(TABLE=TABL_K2)
 

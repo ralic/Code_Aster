@@ -1,6 +1,6 @@
 # TITRE  FISSURE CIRCULAIRE EN MODE MIXTE
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -118,9 +118,7 @@ CG=CALC_G(THETA=_F(FOND_FISS=FISS,
           OPTION='CALC_K_G')
 
 # Extrapolation des sauts de deplacements
-PK=POST_K1_K2_K3(MODELISATION='3D',
-                 FOND_FISS=FISS,
-                 MATER=MAT,
+PK=POST_K1_K2_K3(FOND_FISS=FISS,
                  RESULTAT=RESU,
                  )
                 

@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,17 +14,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine xtmafi(ndim, fiss, nfiss, lismai,&
-                      mesmai, nbma, mesh, model, typ_enr)
-        integer :: nfiss
-        integer :: ndim
-        character(len=8) :: fiss(nfiss)
-        character(len=24) :: lismai
-        character(len=24) :: mesmai
-        integer :: nbma
-        character(len=8), optional, intent(in) :: mesh
-        character(len=8), optional, intent(in) :: model
-        character(len=*), optional, intent(in) :: typ_enr
-    end subroutine xtmafi
-end interface
+interface 
+    subroutine postkutil(nomres, nomfis, repmat, repmod)
+        character(len=*), intent(in) :: nomres
+        character(len=*), intent(in) :: nomfis
+        character(len=*), intent(out) :: repmat
+        character(len=*), intent(out) :: repmod
+    end subroutine postkutil
+end interface 

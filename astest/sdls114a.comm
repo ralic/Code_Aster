@@ -166,9 +166,7 @@ FISS=DEFI_FOND_FISS(MAILLAGE=M,
                   );
 
 
-T1_K = POST_K1_K2_K3(MODELISATION='C_PLAN',
-                           MATER=MA,
-                           INFO = 2,
+T1_K = POST_K1_K2_K3(INFO = 2,
                            RESULTAT=MODE,
                            FOND_FISS=FISS,
                            NUME_ORDRE=(1,2,3,4,5),);

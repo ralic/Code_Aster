@@ -110,9 +110,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 # ------------------------------------------------------------------
 
-TABL_K=POST_K1_K2_K3(  MODELISATION='C_PLAN',
-                       MATER=MAT,
-                       RESULTAT = CHAMDEPL,
+TABL_K=POST_K1_K2_K3(  RESULTAT = CHAMDEPL,
                        FOND_FISS = FOND1,
                        )
 

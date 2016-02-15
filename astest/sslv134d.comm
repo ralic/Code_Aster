@@ -179,9 +179,7 @@ TEST_TABLE(PRECISION=0.012,
            NOM_PARA='G',
            TABLE=GGLOB1,)
 
-TABK1A=POST_K1_K2_K3(MODELISATION='3D',
-                      MATER=MAT,
-                      RESULTAT=RESU1,
+TABK1A=POST_K1_K2_K3(RESULTAT=RESU1,
                       FOND_FISS=FISS,);
 
 
@@ -360,9 +358,7 @@ TEST_TABLE(PRECISION=0.012,
 
 # POST_K1_K2_K3
 
-TABK3A=POST_K1_K2_K3(MODELISATION='3D',
-                      MATER=MAT,
-                      RESULTAT=RESU3,
+TABK3A=POST_K1_K2_K3(RESULTAT=RESU3,
                       FOND_FISS=FISS,);
 
 # ---------------
@@ -515,9 +511,7 @@ TEST_TABLE(PRECISION=0.012,
 
 # POST_K1_K2_K3
 
-TABK13A=POST_K1_K2_K3(MODELISATION='3D',
-                       MATER=MAT,
-                       RESULTAT=RESU13,
+TABK13A=POST_K1_K2_K3(RESULTAT=RESU13,
                        FOND_FISS=FISS,);
 
 # TEST DE K1

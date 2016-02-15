@@ -2011,6 +2011,45 @@ PyObject *args;
 }
 
 /* ---------------------------------------------------------------------- */
+static char postkutil_doc[] =
+"Interface d'appel a la routine fortran postkutil.\n"
+"   usage: materiau, modelisa = aster.postkutil(resu, fiss) \n\n"
+"     resu : nom d'une sd_resultat\n"
+"     fiss : nom d'une sd_fond_fiss ou d'une sd_fiss_xfem\n"
+"   Retourne :\n"
+"     materiau : nom d'une sd_mater\n"
+"     modelisa : une chaine parmi 3D, AXIS, D_PLAN_C_PLAN \n"
+"Voir la description de la routine fortran postkutil pour plus de detail\n";
+
+static PyObject * aster_postkutil(self, args)
+PyObject *self; /* Not used */
+PyObject *args;
+{
+    char *nomres, *nomfis, *repmod, *nommat;
+    char *Fres, *Ffis, *Fmod, *Fmat;
+    PyObject *res;
+
+    repmod = MakeBlankFStr(8);
+    nommat = MakeBlankFStr(8);
+    if (!PyArg_ParseTuple(args, "ss", &nomres, &nomfis))
+        return NULL;
+
+    Fres = MakeFStrFromCStr(nomres, 8);
+    Ffis = MakeFStrFromCStr(nomfis, 8);
+    CALL_POSTKUTIL(Fres, Ffis, nommat, repmod);
+    Fmat = MakeCStrFromFStr(nommat, 8);
+    Fmod = MakeCStrFromFStr(repmod, 8);
+
+    res = Py_BuildValue("ss", Fmat, Fmod);
+
+    FreeStr(Fres);
+    FreeStr(Ffis);
+    FreeStr(Fmod);
+    FreeStr(Fmat);
+    return res;
+}
+
+/* ---------------------------------------------------------------------- */
 static char getoptdep_doc[] =
 "Interface d'appel a la routine fortran CCLIOP.\n"
 "   usage: parent_options = aster.get_option_dependency(option) \n\n"
@@ -2517,6 +2556,7 @@ static PyMethodDef aster_methods[] = {
                 {"mdnoch",       aster_mdnoch,       METH_VARARGS},
                 {"rcvale",       aster_rcvale,       METH_VARARGS, rcvale_doc},
                 {"dismoi",       aster_dismoi,       METH_VARARGS, dismoi_doc},
+                {"postkutil",    aster_postkutil,    METH_VARARGS, postkutil_doc},
                 {"get_option_dependency", aster_getoptdep, METH_VARARGS, getoptdep_doc},
                 {"argv",         aster_argv,         METH_VARARGS},
                 {"prepcompcham", aster_prepcompcham, METH_VARARGS},

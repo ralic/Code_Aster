@@ -1,6 +1,6 @@
 # TITRE  FISSURE CIRCULAIRE EN MILIEU 3D AVEC ETAT_INITIAL
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -423,9 +423,7 @@ GIRREF=CALC_G(THETA=_F(FOND_FISS=FISS,
           INST=1,
           OPTION='CALC_K_G')
 # Extrapolation des sauts de deplacements
-KREF=POST_K1_K2_K3(MODELISATION='3D',
-                 FOND_FISS=FISS,
-                 MATER=MAT,
+KREF=POST_K1_K2_K3(FOND_FISS=FISS,
                  RESULTAT=RESOUVFI,
                  INST=1,
                 )
@@ -518,9 +516,7 @@ GIRINI6=CALC_G(THETA=_F(FOND_FISS=FISS,
           OPTION='CALC_K_G')
           
 # Extrapolation des sauts de deplacements
-KINI=POST_K1_K2_K3(MODELISATION='3D',
-                 FOND_FISS=FISS,
-                 MATER=MAT,
+KINI=POST_K1_K2_K3(FOND_FISS=FISS,
                  RESULTAT=RESUINI,
                  INST=3,
                  )                

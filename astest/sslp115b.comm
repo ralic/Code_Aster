@@ -1,6 +1,6 @@
 # TITRE Calcul du taux de restitution d'énergie d'un disque fissuré en présence de contraintes initiales
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -187,9 +187,7 @@ GTHER3=CALC_G(THETA=_F(FISSURE=FISS,
 
 IMPR_TABLE(TABLE = GTHER3, UNITE=9)
 
-PKTHER=POST_K1_K2_K3(MODELISATION='D_PLAN',
-                     NUME_FOND = 2,
-                     MATER = MAMEC,
+PKTHER=POST_K1_K2_K3(NUME_FOND = 2,
                      FISSURE=FISS,
                      RESULTAT=RESOUVFI)
 
@@ -293,10 +291,8 @@ IMPR_TABLE(TABLE=GINGAK1,UNITE=11)
 IMPR_TABLE(TABLE=GINGAK2,UNITE=11)
 IMPR_TABLE(TABLE=GINGAK3,UNITE=11)
 
-PKMECA=POST_K1_K2_K3(MODELISATION='D_PLAN',
-                     INST=3,
+PKMECA=POST_K1_K2_K3(INST=3,
                      NUME_FOND = 2,
-                     MATER = MAMEC,
                      FISSURE=FISS,
                      RESULTAT=RESUINI)
 

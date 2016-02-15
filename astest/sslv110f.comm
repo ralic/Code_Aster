@@ -1,6 +1,6 @@
 # TITRE  FISSURE SEMI-ELLIPTIQUE AVEC MILIEU INFINI
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -198,9 +198,7 @@ CG=CALC_G(RESULTAT=RESU,
 IMPR_TABLE(TABLE=CG)
 
 # on ne post-traite que un nombre limite de points pour gagner en temps de calcul
-PK=POST_K1_K2_K3(MODELISATION='3D',
-                 FISSURE=FISS,
-                 MATER=MAT,
+PK=POST_K1_K2_K3(FISSURE=FISS,
                  RESULTAT=RESU,
                  NB_POINT_FOND=20,)
                       

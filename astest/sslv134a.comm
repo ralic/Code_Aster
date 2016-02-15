@@ -331,10 +331,8 @@ TEST_TABLE(
 #
 #Calcul de K avec POST_K1_K2_K3
 #
-TABL_K=POST_K1_K2_K3(MODELISATION='3D',
-                     TOUT = 'OUI',
+TABL_K=POST_K1_K2_K3(TOUT = 'OUI',
                      INFO = 1,
-                     MATER=MA,
                      FOND_FISS = FF1,
                      RESULTAT  = RESU,
                      PREC_VIS_A_VIS = 0.05,

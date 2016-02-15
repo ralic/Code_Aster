@@ -1,6 +1,6 @@
 # TITRE : FISSURE X-FEM EN THERMO-ELASTICITE 2D 
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -95,7 +95,7 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=205000000000.0,
                             RHO=7800.0,
                             ALPHA=1.282E-05,),);
 
-CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
+CHAMMA=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                        MODELE=MODELEK,
                        AFFE=_F(GROUP_MA='SURF',MATER=ACIER,),
                        AFFE_VARC=_F( GROUP_MA='SURF',
@@ -120,7 +120,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                                     NOMBRE=3,),);
 
 UTOT=MECA_STATIQUE(MODELE=MODELEK,
-                   CHAM_MATER=CHAMPMAT,
+                   CHAM_MATER=CHAMMA,
                    EXCIT=_F(CHARGE=CHARBLO,),
                    INST=1,)
 
@@ -176,9 +176,7 @@ TEST_TABLE(CRITERE='RELATIF',
            )
 
 # CALCUL AVEC POST_K1_K2_K3
-PK=POST_K1_K2_K3(MODELISATION='D_PLAN',
-                 MATER=ACIER,
-                 FISSURE = FISS,
+PK=POST_K1_K2_K3(FISSURE = FISS,
                  ABSC_CURV_MAXI = 0.05,
                  RESULTAT = UTOT,
                 )

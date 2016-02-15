@@ -1,6 +1,6 @@
 # TITRE : VALIDATION INFORMATIQUE DE POST_K1_K2_K3
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -18,7 +18,7 @@
 
 # MODELISATION B : FISSURE X-FEM, RESOLUTION MECANIQUE
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM=('POST0_24','RUPTURE0_46','RUPTURE0_6',),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM=('POST0_24','RUPTURE0_46',),);
 
 #----------------------------------------------
 #                   MAILLAGE
@@ -66,13 +66,6 @@ MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
 E=205000.E6
 nu=0.
 
-FONC1=DEFI_FONCTION(    NOM_PARA='TEMP',
-                           VALE=(  -1000.,          0.3,
-                                   +1000.,           0.3, ))
-FONC2=DEFI_CONSTANTE(VALE=205000.E6)                                                             
-                                                    
-MAT=DEFI_MATERIAU(ELAS_FO=_F( E = FONC2, NU = FONC1, TEMP_DEF_ALPHA=20.),);
-
 ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
                             NU=nu,),);
 
@@ -109,9 +102,7 @@ UTOT1x=MECA_STATIQUE(MODELE=MODELEK,
 #                   POST-TRAITEMENT
 #----------------------------------------------
 
-TABK = POST_K1_K2_K3(MODELISATION='3D',
-                     FISSURE=FISS,
-                     MATER=MAT,
+TABK = POST_K1_K2_K3(FISSURE=FISS,
                      RESULTAT=UTOT1x,
                      ABSC_CURV_MAXI = 0.066,)
 
@@ -121,11 +112,8 @@ IMPR_TABLE(TABLE=TABK)
 #                   TEST
 #----------------------------------------------
 
-k1_deb = 9.35585e5
-k1_fin = 1.45592e6
-
 TEST_TABLE(
-           VALE_CALC=9.35585E5,
+           VALE_CALC=851382.586304,
            NOM_PARA='K1',
            TABLE=TABK,
            FILTRE=_F(NOM_PARA='NUM_PT',
@@ -133,7 +121,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=9.35585E5,
+           VALE_CALC=851382.586304,
            NOM_PARA='K1',
            TABLE=TABK,
            FILTRE=_F(NOM_PARA='NUM_PT',
@@ -141,7 +129,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=9.35585E5,
+           VALE_CALC=851382.586304,
            NOM_PARA='K1',
            TABLE=TABK,
            FILTRE=_F(NOM_PARA='NUM_PT',
@@ -149,7 +137,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=1.4559178114059E6,
+           VALE_CALC=1324885.20838,
            NOM_PARA='K1',
            TABLE=TABK,
            FILTRE=_F(NOM_PARA='NUM_PT',

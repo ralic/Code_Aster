@@ -1,6 +1,6 @@
 # TITRE : VALIDATION INFORMATIQUE DE POST_K1_K2_K3
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -151,9 +151,7 @@ K1_reg = [-1.9038714866638E+10, -1.1555795319447E+11, 7.9672432337416E+10,
 # validation du mot-cle NUME_ORDRE
 #-----------------------------------------
 
-PK1 = POST_K1_K2_K3(MODELISATION='C_PLAN',
-                    MATER=MA,
-                    RESULTAT=MODE,
+PK1 = POST_K1_K2_K3(RESULTAT=MODE,
                     FOND_FISS=FISS,
                     NUME_ORDRE=(1,2,3,4,5),);
 
@@ -173,9 +171,7 @@ for i in range(5) :
 # validation du mot-cle TOUT_MODE = 'OUI'
 #-----------------------------------------
 
-PK2 = POST_K1_K2_K3(MODELISATION='C_PLAN',
-                    MATER=MA,
-                    RESULTAT=MODE,
+PK2 = POST_K1_K2_K3(RESULTAT=MODE,
                     FOND_FISS=FISS,
                     TOUT_MODE = 'OUI')
 
@@ -195,9 +191,7 @@ for i in range(5) :
 # validation du mot-cle NUME_MODE
 #-----------------------------------------
 
-PK3 = POST_K1_K2_K3(MODELISATION='C_PLAN',
-                    MATER=MA,
-                    RESULTAT=MODE,
+PK3 = POST_K1_K2_K3(RESULTAT=MODE,
                     FOND_FISS=FISS,
                     NUME_MODE = 1)
 
@@ -219,9 +213,7 @@ for i in range(1) :
 
 L_MODE = DEFI_LIST_ENTI(VALE = (1,2,3));
 
-PK4 = POST_K1_K2_K3(MODELISATION='C_PLAN',
-                    MATER=MA,
-                    RESULTAT=MODE,
+PK4 = POST_K1_K2_K3(RESULTAT=MODE,
                     FOND_FISS=FISS,
                     LIST_MODE = L_MODE)
 
@@ -241,9 +233,7 @@ for i in range(3) :
 # validation du mot-cle FREQ
 #-----------------------------------------
 
-PK5 = POST_K1_K2_K3(MODELISATION='C_PLAN',
-                    MATER=MA,
-                    RESULTAT=MODE,
+PK5 = POST_K1_K2_K3(RESULTAT=MODE,
                     FOND_FISS=FISS,
                     FREQ = 3469.13,
                     CRITERE='ABSOLU',
@@ -268,9 +258,7 @@ for i in range(1) :
 # liste avec plusieurs frequences
 L_FREQ6 = DEFI_LIST_REEL(VALE=(3469.13, 12480.6, 13052.9 ))
 
-PK6 = POST_K1_K2_K3(MODELISATION='C_PLAN',
-                    MATER=MA,
-                    RESULTAT=MODE,
+PK6 = POST_K1_K2_K3(RESULTAT=MODE,
                     FOND_FISS=FISS,
                     LIST_FREQ = L_FREQ6,
                     CRITERE='ABSOLU',
@@ -291,9 +279,7 @@ for i in range(3) :
 # liste avec une seule frequence
 L_FREQ7 = DEFI_LIST_REEL(VALE=(3469.13, ))
 
-PK7 = POST_K1_K2_K3(MODELISATION='C_PLAN',
-                    MATER=MA,
-                    RESULTAT=MODE,
+PK7 = POST_K1_K2_K3(RESULTAT=MODE,
                     FOND_FISS=FISS,
                     LIST_FREQ = L_FREQ7,
                     CRITERE='ABSOLU',

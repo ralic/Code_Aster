@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -1644,7 +1644,7 @@ def get_tabout(
 #---------------------------------------------------------------------------------------------------------------
 #                 CORPS DE LA MACRO POST_K1_K2_K3
 #-------------------------------------------------------------------------
-def post_k1_k2_k3_ops(self, MODELISATION, FOND_FISS, FISSURE, MATER, RESULTAT,
+def post_k1_k2_k3_ops(self, FOND_FISS, FISSURE, RESULTAT,
                       ABSC_CURV_MAXI, PREC_VIS_A_VIS, INFO, TITRE, **args):
     """
     Macro POST_K1_K2_K3
@@ -1680,6 +1680,16 @@ def post_k1_k2_k3_ops(self, MODELISATION, FOND_FISS, FISSURE, MATER, RESULTAT,
     CALC_TABLE = self.get_cmd('CALC_TABLE')
     POST_RELEVE_T = self.get_cmd('POST_RELEVE_T')
     DETRUIRE = self.get_cmd('DETRUIRE')
+
+    # On recupere "le" materiau et le "nom" de la modelisation
+    nom_fiss = ''
+    if FOND_FISS != None:
+        nom_fiss = FOND_FISS.nom
+    if FISSURE != None:
+        nom_fiss = FISSURE.nom
+    assert nom_fiss != ''
+    MATER, MODELISATION = aster.postkutil(RESULTAT.nom, nom_fiss)
+    MATER = self.get_concept(MATER)
 
     EVOL_THER = None
 
@@ -1824,6 +1834,11 @@ def post_k1_k2_k3_ops(self, MODELISATION, FOND_FISS, FISSURE, MATER, RESULTAT,
     try:
         TYPE_MAILLAGE = args['TYPE_MAILLAGE']
     except KeyError:
+        TYPE_MAILLAGE = []
+
+#   TYPE_MAILLAGE n'a de sens qu'en 3D, meme si ce MC existe qd meme pour
+#   les modelisations 2D
+    if (TYPE_MAILLAGE != []) and (MODELISATION != '3D') : 
         TYPE_MAILLAGE = []
 
 #  ------------------------------------------------------------------

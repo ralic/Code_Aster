@@ -1,5 +1,5 @@
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 #
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -26,10 +26,8 @@ Gref1 = 11.58648
 
 # --------------------------------------------------------------------
 
-TABK1K3=POST_K1_K2_K3(  MODELISATION='3D',
-                        FOND_FISS=FISS,
+TABK1K3=POST_K1_K2_K3(  FOND_FISS=FISS,
                         SANS_NOEUD =  ( 'N84', 'N91' , 'N98',),
-                        MATER=MAT,
                         RESULTAT=RESU1,
                         ABSC_CURV_MAXI=0.539,
                       )
@@ -56,10 +54,8 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 # --------------------------------------------------------------------
 
-K_N49=POST_K1_K2_K3(  MODELISATION='3D',
-                        FOND_FISS=FISS,
+K_N49=POST_K1_K2_K3(  FOND_FISS=FISS,
                         NOEUD =  ( 'N49',),
-                        MATER=MAT,
                         RESULTAT=RESU1,
                         ABSC_CURV_MAXI=0.539,
                       )
@@ -87,9 +83,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 #
 # --------------------------------------------------------------------
 
-T_K1K3=POST_K1_K2_K3(  MODELISATION='3D',
-                        MATER=MAT,
-                        RESULTAT = RESU1,
+T_K1K3=POST_K1_K2_K3(  RESULTAT = RESU1,
                         FOND_FISS=FISS,
                         SANS_NOEUD =  ( 'N84', 'N91' , 'N98',),
                         ABSC_CURV_MAXI=0.539,
@@ -121,9 +115,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 #            (noeuds extremités + noeuds milieux)
 # --------------------------------------------------------------------
 
-K_TOUT=POST_K1_K2_K3(  MODELISATION='3D',
-                       MATER=MAT,
-                       RESULTAT = RESU1,
+K_TOUT=POST_K1_K2_K3(  RESULTAT = RESU1,
                        FOND_FISS=FISS,
                        TOUT =  'OUI',
                        ABSC_CURV_MAXI=0.539,
@@ -150,9 +142,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='N1346',),
            )
 
-K_TOU2=POST_K1_K2_K3(  MODELISATION='3D',
-                       MATER=MAT,
-                       RESULTAT = RESU1,
+K_TOU2=POST_K1_K2_K3(  RESULTAT = RESU1,
                        FOND_FISS=FISS,
                        TOUT =  'OUI',
                        SANS_NOEUD = 'N1346',

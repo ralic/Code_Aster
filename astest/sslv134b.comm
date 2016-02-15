@@ -238,18 +238,14 @@ TEST_TABLE(PRECISION=0.012,
 # POST_K1_K2_K3
 
 
-TABL_K1=POST_K1_K2_K3(  MODELISATION='3D',
-                        MATER=MAT,
-                        FOND_FISS = FISS,
+TABL_K1=POST_K1_K2_K3(  FOND_FISS = FISS,
                         RESULTAT = CHAMDEPL,
                       )
 
 IMPR_TABLE(TABLE=TABL_K1)
 
 
-TABL_KTO=POST_K1_K2_K3(  MODELISATION='3D',
-              MATER=MAT,
-              FOND_FISS = FISS,
+TABL_KTO=POST_K1_K2_K3(  FOND_FISS = FISS,
               RESULTAT=CHAMDEPL,
               PREC_VIS_A_VIS = 0.05,
            )
@@ -341,9 +337,7 @@ FISSM=DEFI_FOND_FISS(MAILLAGE=MA,
                      LEVRE_INF=_F(  GROUP_MA = 'LEVINF1'),
                     )
 
-TABL_KTM=POST_K1_K2_K3(MODELISATION='3D',
-                       MATER=MAT,
-                       FOND_FISS = FISSM,
+TABL_KTM=POST_K1_K2_K3(FOND_FISS = FISSM,
                        RESULTAT=CHAMDEPL,
                        PREC_VIS_A_VIS = 0.05,
            )
@@ -378,9 +372,7 @@ FISSN=DEFI_FOND_FISS(MAILLAGE=MA,
                      LEVRE_SUP=_F(GROUP_MA = 'LEVINFS'),
                      LEVRE_INF=_F(GROUP_MA = 'LEVINF1'),
                     )
-TABL_KTN=POST_K1_K2_K3(MODELISATION='3D',
-                       MATER=MAT,
-                       FOND_FISS = FISSN,
+TABL_KTN=POST_K1_K2_K3(FOND_FISS = FISSN,
                        RESULTAT=CHAMDEPL,
                        PREC_VIS_A_VIS = 0.05,
            )
@@ -404,9 +396,7 @@ MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
                               _F( NOEUD = ('N1388','N1346'),
                                  NOM = 'NOFF2'),),);
 
-TABL_K4=POST_K1_K2_K3(MODELISATION='3D',
-                      MATER=MAT,
-                      FOND_FISS = FISSN,
+TABL_K4=POST_K1_K2_K3(FOND_FISS = FISSN,
                       RESULTAT = CHAMDEPL,
                       GROUP_NO = ('NOFF1','NOFF2',),
                       PREC_VIS_A_VIS = 0.05,
@@ -425,9 +415,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 # POST_K1_K2_K3 : VALIDATION TYPE_MA = LIBRE
-TABL_K5=POST_K1_K2_K3(MODELISATION='3D',
-                      MATER=MAT,
-                      FOND_FISS = FISSN,
+TABL_K5=POST_K1_K2_K3(FOND_FISS = FISSN,
                       RESULTAT = CHAMDEPL,
                       TYPE_MAILLAGE = 'LIBRE',
                       NB_NOEUD_COUPE = 4,
@@ -447,9 +435,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 # POST_K1_K2_K3/LIBRE : VALIDATION INFORMATIQUE (SENS PROPA.)
-TABL_K6=POST_K1_K2_K3(MODELISATION='3D',
-                      MATER=MAT,
-                      FOND_FISS = FISSN,
+TABL_K6=POST_K1_K2_K3(FOND_FISS = FISSN,
                       RESULTAT = CHAMDEPL,
                       TYPE_MAILLAGE = 'LIBRE',
                       NB_NOEUD_COUPE = 4,

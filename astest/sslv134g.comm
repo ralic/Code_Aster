@@ -1,6 +1,6 @@
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -122,9 +122,7 @@ DEPL0=MECA_STATIQUE( MODELE=MO0,
                               _F( CHARGE = PRESS0),
                               _F( CHARGE = SYM0),),);
 
-TABL_K0=POST_K1_K2_K3(  MODELISATION='3D',
-                        FOND_FISS=FISS0,
-                        MATER=MAT,
+TABL_K0=POST_K1_K2_K3(  FOND_FISS=FISS0,
                         RESULTAT=DEPL0,
                         ABSC_CURV_MAXI=0.3,
                       )
@@ -217,9 +215,7 @@ DEPL1=MECA_STATIQUE( MODELE=MO1,
                               _F( CHARGE = RCOL12),
                               _F( CHARGE = RCOL11),),)
 
-TABL_K1=POST_K1_K2_K3(  MODELISATION='3D',
-                        FOND_FISS=FISS1,INFO=2,
-                        MATER=MAT,
+TABL_K1=POST_K1_K2_K3(  FOND_FISS=FISS1,INFO=2,
                         RESULTAT=DEPL1,
                         ABSC_CURV_MAXI=0.3,
                       )
@@ -353,9 +349,7 @@ DEPL2=MECA_STATIQUE( MODELE=MO2,
                               ),);
 
 
-TABL_K2=POST_K1_K2_K3(  MODELISATION='3D',
-                        FOND_FISS=FISS2,INFO=2,
-                        MATER=MAT,
+TABL_K2=POST_K1_K2_K3(  FOND_FISS=FISS2,INFO=2,
                         RESULTAT=DEPL2,
                         ABSC_CURV_MAXI=0.3,
                       )
@@ -523,9 +517,7 @@ DEPL8=MECA_STATIQUE( MODELE=MO0,
                               _F( CHARGE = PRESS0),
                               _F( CHARGE = SYM0),),);
 
-TABL_K8=POST_K1_K2_K3(  MODELISATION='3D',
-                        FOND_FISS=FISS0,INFO=2,
-                        MATER=MAT8,
+TABL_K8=POST_K1_K2_K3(  FOND_FISS=FISS0,INFO=2,
                         RESULTAT=DEPL8,
                         ABSC_CURV_MAXI=0.3,
                       )
@@ -584,11 +576,9 @@ DEPL9=MECA_STATIQUE( MODELE=MO0,
                      EXCIT=( _F( CHARGE = PRESS0),
                               _F( CHARGE = SYM0),),);
 
-TABL_K9=POST_K1_K2_K3(  MODELISATION='3D',
-                        FOND_FISS=FISS0,
+TABL_K9=POST_K1_K2_K3(  FOND_FISS=FISS0,
                         INST=(0.0,0.5),
                         EVOL_THER=RESTH,
-                        MATER=MAT9,
                         RESULTAT=DEPL9,
                         ABSC_CURV_MAXI=0.3,
                       )

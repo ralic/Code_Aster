@@ -109,6 +109,8 @@
 #define CALLSSPS(UN,LN,a,b,c,d)                       F_FUNC(UN,LN)(a,b,c,d,strlen(a),strlen(b),strlen(d))
 #define DEFSSSP(UN,LN,a,la,b,lb,c,lc,d)               STDCALL(UN,LN)(a,b,c,d,la,lb,lc)
 #define CALLSSSP(UN,LN,a,b,c,d)                       F_FUNC(UN,LN)(a,b,c,d,strlen(a),strlen(b),strlen(c))
+#define DEFSSSS(UN,LN,a,la,b,lb,c,lc,d,ld)               STDCALL(UN,LN)(a,b,c,d,la,lb,lc,ld)
+#define CALLSSSS(UN,LN,a,b,c,d)                       F_FUNC(UN,LN)(a,b,c,d,strlen(a),strlen(b),strlen(c),strlen(d))
 #define DEFPPPSP(UN,LN,a,b,c,d,ld,e)               STDCALL(UN,LN)(a,b,c,d,e,ld)
 #define CALLPPPSP(UN,LN,a,b,c,d,e)                 F_FUNC(UN,LN)(a,b,c,d,e,strlen(d))
 #define DEFPSSSP(UN,LN,a,b,lb,c,lc,d,ld,e)               STDCALL(UN,LN)(a,b,c,d,e,lb,lc,ld)
