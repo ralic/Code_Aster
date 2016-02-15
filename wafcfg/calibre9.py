@@ -11,12 +11,12 @@ waf install -p
 
 import os
 ASTER_ROOT = os.environ['ASTER_ROOT']
-YAMMROOT = ASTER_ROOT + '/public/default'
+YAMMROOT = os.environ['ROOT_SALOME']
 
 def configure(self):
     opts = self.options
 
-    self.env['ADDMEM'] = 350 
+    self.env['ADDMEM'] = 350
 
     self.env.append_value('LIBPATH', [
         YAMMROOT + '/prerequisites/Hdf5-1810/lib',
