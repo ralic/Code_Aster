@@ -36,7 +36,7 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
     integer :: ifichi, nbnoec, linoec(*), nbmaec, limaec(*)
     aster_logical :: lresu, lvarie
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -136,7 +136,11 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
             endif
         endif
         sdcarm = '&&IREMED'
-        call celces(carael//'.CANBSP', 'V', cesnsp)
+
+        call exisd('CARTE', carael//'.CANBSP', iret)
+        if (iret .ne. 0) then
+            call celces(carael//'.CANBSP', 'V', cesnsp)
+        endif
         call exisd('CARTE', carael//'.CARORIEN', iret)
         if (iret .ne. 0) then
             call carces(carael//'.CARORIEN', 'ELEM', ' ', 'V', cesori,&
