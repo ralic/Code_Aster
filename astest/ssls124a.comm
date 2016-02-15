@@ -601,7 +601,6 @@ CHARG35=AFFE_CHAR_MECA(MODELE=MODMEC35,
                    #NOM_CHAM='DEPL',
                    #NOM_CMP='DZ',
                    #VALE_CALC=0.249975815454,
-                   #TOLE_MACHINE=1.e-4, # Voir commentaire plus haut
                    #VALE_REFE=Uz,),
                 #_F(NUME_ORDRE=1,
                    #GROUP_NO='P8',
@@ -610,7 +609,6 @@ CHARG35=AFFE_CHAR_MECA(MODELE=MODMEC35,
                    #NOM_CHAM='DEPL',
                    #NOM_CMP='DZ',
                    #VALE_CALC=0.249975815549,
-                   #TOLE_MACHINE=1.e-4, # Voir commentaire plus haut
                    #VALE_REFE=Uz,),
                 #),
           #)
