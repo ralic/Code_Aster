@@ -1,6 +1,6 @@
 # TITRE GENERATION DE SIGNAUX SISMIQUES  OPTION SPEC_MOYENNE
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -40,9 +40,8 @@ SRO_NGA=DEFI_FONCTION(  NOM_PARA='FREQ',  INTERPOL='LOG',PROL_DROITE='CONSTANT',
 
 
 L_FREQ = DEFI_LIST_REEL(DEBUT=0.05,
-              INTERVALLE=(  _F(JUSQU_A=5.0, PAS=0.1,), _F(JUSQU_A=10., PAS=0.1,),
-                           _F(JUSQU_A=20.0, PAS=0.2,), _F(JUSQU_A=50.0, PAS=1.0,),
-                           _F(JUSQU_A=60.0, PAS=1.0,),
+              INTERVALLE=(  _F(JUSQU_A=1.0, PAS=0.1,), _F(JUSQU_A=10., PAS=1.,),
+                           _F(JUSQU_A=30.0, PAS=5.0,), _F(JUSQU_A=60.0, PAS=10.,),
                         ) );
 
 L_FREQ2 = DEFI_LIST_REEL(DEBUT=0.05, INTERVALLE=(_F(JUSQU_A=0.1, PAS=0.01,),_F(JUSQU_A=60.0, PAS=0.01,),) );
@@ -70,6 +69,7 @@ ACCE1a=GENE_ACCE_SEISME( INFO =2,
               SPEC_MOYENNE  = _F(SPEC_OSCI  =SRO_NGA, AMOR_REDUIT=amor, METHODE='NIGAM',
                                        LIST_FREQ = L_FREQ2, NB_ITER = 23),
                MODULATION      = _F(TYPE="GAMMA",INST_INI=tini, ),)
+
 
 ACCE1b=GENE_ACCE_SEISME( INFO =2,
               INIT_ALEA=100000,
@@ -199,10 +199,34 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.17101427,
                          FONCTION=SRO2,),
                          ),)
 
+#### TEST informatique de HARMO avec SPEC_MOYENNE
 
+L_FREQ3 = DEFI_LIST_REEL(DEBUT=1., INTERVALLE=(_F(JUSQU_A=10., PAS=1.,),_F(JUSQU_A=30.0, PAS=10.,),) );
 
+ACCE1c=GENE_ACCE_SEISME( INFO =2,
+              INIT_ALEA=200000,
+              PAS_INST = 0.01, PESANTEUR =9.81, DUREE_PHASE_FORTE =5., NB_TIRAGE = 2,
+              NB_POIN = 2**10, FREQ_FILTRE = fc, FREQ_CORNER = fc,
+              SPEC_MOYENNE  = _F(SPEC_OSCI  = SRO_NGA, AMOR_REDUIT=amor, METHODE='HARMO',
+                                       LIST_FREQ = L_FREQ, NB_ITER = 2),
+               MODULATION      = _F(TYPE="GAMMA", INST_INI=tini, ),)
 
+FONC1c = RECU_FONCTION( TABLE = ACCE1c,
+                        FILTRE =  (_F(  NOM_PARA = 'NUME_ORDRE',  VALE_I = 1), ),
+                        NOM_PARA_TABL='FONCTION',)
 
+SRO1c=CALC_FONCTION(SPEC_OSCI=_F(FONCTION = FONC1c, LIST_FREQ = L_FREQ3, METHODE='NIGAM',
+                      NORME = 9.81, AMOR_REDUIT=(amo_sro,),),);  
 
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.22198952965851,                   
+                         NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 20.0),
+                         FONCTION=SRO1c,),
+                        _F(VALE_CALC= 0.35266209711274  ,                       
+                         NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 10.0),
+                         FONCTION=SRO1c,),
+                        _F(VALE_CALC=0.16620490973161     ,                       
+                         NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 1.),
+                         FONCTION=SRO1c,),
+                         ),)
 
 FIN( )
