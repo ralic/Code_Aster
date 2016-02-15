@@ -29,6 +29,9 @@ from cataelem.Options.options import OP
 # Modes locaux :
 #----------------
 
+CCAORIE  = LocatedComponents(phys=PHY.CAORIE, type='ELEM',
+    components=('ALPHA','BETA','GAMMA',))
+
 
 CCOMPOR  = LocatedComponents(phys=PHY.COMPOR, type='ELEM',
     components=('RELCOM','DEFORM','INCELA',))
@@ -51,10 +54,11 @@ CFORCER  = LocatedComponents(phys=PHY.FORC_R, type='ELEM',
     components=('FX','FY','FZ','MX','MY',
           'MZ','REP',))
 
+CGEOMER  = LocatedComponents(phys=PHY.GEOM_R, type='ELEM',
+    components=('X','Y','Z',))
 
 NGEOMER  = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
     components=('X','Y','Z',))
-
 
 EGGEOM_R = LocatedComponents(phys=PHY.GEOM_R, type='ELGA', location='RIGI',
     components=('X','Y','Z',))
@@ -248,6 +252,12 @@ class MECABL2(Element):
         OP.REFE_FORC_NODA(te=164,
             para_in=((SP.PREFCO, EREFCO), ),
             para_out=((SP.PVECTUR, MVECTUR), ),
+        ),
+
+        OP.REPERE_LOCAL(te=135,
+            para_in=((OP.REPERE_LOCAL.PCAORIE, CCAORIE), ),
+            para_out=((SP.PREPLO1, CGEOMER), (SP.PREPLO2, CGEOMER),
+                     (SP.PREPLO3, CGEOMER), ),
         ),
 
         OP.RIGI_MECA(te=98,
