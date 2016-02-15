@@ -1,7 +1,7 @@
 subroutine ef0154(nomte)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,7 +47,7 @@ subroutine ef0154(nomte)
     character(len=16) :: ch16
     aster_logical :: lteimp
     real(kind=8) :: a, epsth, e, r8bid, xfl1, xfl4, xl, xrig, val(1)
-    integer :: i, j, jdepl, jeffo
+    integer :: i, jdepl, jeffo
     integer :: lmater, lorien, lsect, nc, nno
 !     ------------------------------------------------------------------
 !
@@ -56,12 +56,14 @@ subroutine ef0154(nomte)
     nc=3
     fami='RIGI'
 !
-    if ((nomte.ne.'MECA_BARRE') .and. (nomte.ne.'MECA_2D_BARRE')) then
+    if ( (nomte.ne.'MECA_BARRE') .and. &
+         (nomte.ne.'MECA_2D_BARRE') .and. &
+         (nomte.ne.'MECABL2')) then
         ch16=nomte
         call utmess('F', 'ELEMENTS2_42', sk=ch16)
     endif
 !
-!     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
+!   RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
     call jevech('PMATERC', 'L', lmater)
 !
     call verift(fami, 1, 1, '+', zi(lmater), epsth_=epsth)
@@ -73,34 +75,33 @@ subroutine ef0154(nomte)
     if (epsth .ne. 0.d0) lteimp= ASTER_TRUE
 !
 !   Longueur de l'élément
-    if (nomte .eq. 'MECA_BARRE') then
+!   Caracteristiques de la section
+    if      (nomte.eq.'MECA_BARRE') then
         xl = lonele()
+        call jevech('PCAGNBA', 'L', lsect)
     else if (nomte.eq.'MECA_2D_BARRE') then
         xl = lonele(dime=2)
+        call jevech('PCAGNBA', 'L', lsect)
+    else if (nomte.eq.'MECABL2') then
+        xl = lonele()
+        call jevech('PCACABL', 'L', lsect)
     else
         xl = 0.0d0
         ASSERT( ASTER_FALSE )
     endif
-!
-!     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
-    call jevech('PCAGNBA', 'L', lsect)
     a=zr(lsect)
 !
-!     --- RECUPERATION DES ORIENTATIONS ALPHA,BETA,GAMMA ---
+!   RECUPERATION DES ORIENTATIONS ALPHA,BETA,GAMMA ---
     call jevech('PCAORIE', 'L', lorien)
-!     --- MATRICE DE ROTATION PGL
+!   MATRICE DE ROTATION PGL
     call matrot(zr(lorien), pgl)
 !
-!     --- RECUPERATION DES DEPLACEMENTS OU DES VITESSES ----
-    do i = 1, 6
-        ugr(i)=0.d0
-    enddo
+!   RECUPERATION DES DEPLACEMENTS OU DES VITESSES
+    ugr(:)=0.d0
 !
-!
-! ON RECUPERE DES DEPLACEMENTS
-!
+!   ON RECUPERE DES DEPLACEMENTS
     call jevech('PDEPLAR', 'L', jdepl)
-    if (nomte .eq. 'MECA_BARRE') then
+    if ((nomte.eq.'MECA_BARRE').or.(nomte.eq.'MECABL2')) then
         do i = 1, 6
             ugr(i)=zr(jdepl+i-1)
         enddo
@@ -111,17 +112,11 @@ subroutine ef0154(nomte)
         ugr(5)=zr(jdepl+4-1)
     endif
 !
-!
-!     --- VECTEUR DANS REPERE LOCAL  ULR = PGL * UGR
-!
+!   VECTEUR DANS REPERE LOCAL  ULR = PGL * UGR
     call utpvgl(nno, nc, pgl, ugr, ulr)
 !
-!     --- RIGIDITE ELEMENTAIRE ---
-    do i = 1, 6
-        do j = 1, 6
-            klc(i,j)=0.d0
-        enddo
-    enddo
+!   RIGIDITE ELEMENTAIRE
+    klc(:,:)= 0.0d0
 !
     xrig=e*a/xl
     klc(1,1)=xrig
@@ -129,12 +124,12 @@ subroutine ef0154(nomte)
     klc(4,1)=-xrig
     klc(4,4)=xrig
 !
-!        --- VECTEUR EFFORT LOCAL  FLR = KLC * ULR
+!   VECTEUR EFFORT LOCAL  FLR = KLC * ULR
     call pmavec('ZERO', 6, klc, ulr, flr)
 !
-!        --- TENIR COMPTE DES EFFORTS DUS A LA DILATATION ---
+!   TENIR COMPTE DES EFFORTS DUS A LA DILATATION ---
     if (lteimp) then
-!              --- CALCUL DES FORCES INDUITES ---
+!       CALCUL DES FORCES INDUITES ---
         xfl1=-epsth*e*a
         xfl4=-xfl1
         flr(1)=flr(1)-xfl1

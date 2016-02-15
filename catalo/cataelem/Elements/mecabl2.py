@@ -183,6 +183,16 @@ class MECABL2(Element):
             para_out=((SP.PEFGER, EEFGEGA), ),
         ),
 
+        OP.EFGE_ELNO(te=185,
+            para_in=((SP.PCACABL, LC.CCACABL), (OP.EFGE_ELNO.PCAORIE, CCAORIE),
+                     (OP.EFGE_ELNO.PCONTRR, EEFGEGA), (SP.PDEPLAR, DDL_MECA),
+                     (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
+                     (SP.PNONLIN, LC.ENONLIN), (OP.EFGE_ELNO.PVARCPR, LC.ZVARCPG),
+                     (SP.PVARCRR, LC.ZVARCPG), ),
+            para_out=((SP.PEFFORC, EEFGENC), (OP.EFGE_ELNO.PEFFORR, EEFGENO),
+                     ),
+        ),
+
         OP.FORC_NODA(te=164,
             para_in=((OP.FORC_NODA.PCONTMR, EEFGEGA), (SP.PDEPLMR, DDL_MECA),
                      (SP.PDEPLPR, DDL_MECA), (SP.PGEOMER, NGEOMER),
