@@ -16,7 +16,7 @@ subroutine asmpi_comm_jev(optmpi, nomjev)
 !----------------------------------------------------------------------
 ! person_in_charge: jacques.pellet at edf.fr
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -106,7 +106,11 @@ subroutine asmpi_comm_jev(optmpi, nomjev)
         if (unseul) then
             ASSERT (nbobj.eq.1)
             call jeveuo(nomjev, 'E', jnomjv)
-            call jelira(nomjev, 'LONMAX', nlong, kbid)
+            if (xous .eq. 'X') then
+                call jelira(nomjev, 'LONT', nlong, kbid)
+            else
+                call jelira(nomjev, 'LONMAX', nlong, kbid)
+            endif
         else
             call jeexin(jexnum(nomjev, iobj), iexi)
             if (iexi .eq. 0) goto 10
@@ -128,7 +132,7 @@ subroutine asmpi_comm_jev(optmpi, nomjev)
             ASSERT(.false.)
         endif
 !
-        if (xous .eq. 'X') call jelibe(jexnum(nomjev, iobj))
+        if (xous .eq. 'X' .and. stock .ne. 'CONTIG') call jelibe(jexnum(nomjev, iobj))
  10 continue
 !
 !
