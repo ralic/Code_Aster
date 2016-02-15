@@ -307,7 +307,7 @@ TB_D_TGD = RECU_TABLE(CO=RE_D_TGD,NOM_PARA=('ITER_GLOB'),)
 
 IMPR_TABLE(TABLE=TB_D_TGD)
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC_I=6,
+           VALE_CALC_I=4,
            NOM_PARA='ITER_GLOB',
            TABLE=TB_D_TGD,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -319,7 +319,7 @@ TEST_RESU(RESU=_F(GROUP_NO='B',
                   RESULTAT=RE_D_TGD,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  VALE_CALC=7.5875579405392001E-4,
+                  VALE_CALC=0.000758752370968,
                   ),
           )
 

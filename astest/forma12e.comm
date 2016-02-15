@@ -297,7 +297,7 @@ IMPR_FONCTION(FORMAT='XMGRACE',
 TEST_FONCTION(VALEUR=(_F(
                          FONCTION=DEPLPDZn,
                          VALE_PARA=0.05,
-                         VALE_CALC=0.14511664
+                         VALE_CALC=0.14511192651534,
                       )))
 
 

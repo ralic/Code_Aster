@@ -215,60 +215,30 @@ DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST,),
 ########################################################################
 
 RESU=STAT_NON_LINE(MODELE=MODE,
-                     CHAM_MATER=CHMATE,
+                   CHAM_MATER=CHMATE,
                    CARA_ELEM=EP,
-                     EXCIT=(_F(CHARGE=CHSYME,),
+                   EXCIT=(_F(CHARGE=CHSYME,),
                             _F(CHARGE=CHFORC,
                                FONC_MULT=RAMPE,
                                ),),
-                     COMPORTEMENT=_F(RELATION='GLRC_DAMAGE',),
-                     CONVERGENCE=_F(RESI_GLOB_RELA=5.E-3,ITER_GLOB_MAXI=100,),
-                     INCREMENT=_F(LIST_INST=DEFLIST,
+                   NEWTON=_F(REAC_ITER=0),
+                   COMPORTEMENT=_F(RELATION='GLRC_DAMAGE',),
+                   CONVERGENCE=_F(RESI_GLOB_RELA=5.E-3,ITER_GLOB_MAXI=100,),
+                   INCREMENT=_F(LIST_INST=DEFLIST,
                                   INST_FIN=TFIN,),);
 RESU1=STAT_NON_LINE(MODELE=MODE1,
-                     CHAM_MATER=CHMATE1,
-                   CARA_ELEM=EP1,
-                     EXCIT=(_F(CHARGE=CHSYME1,),
+                    CHAM_MATER=CHMATE1,
+                    CARA_ELEM=EP1,
+                    EXCIT=(_F(CHARGE=CHSYME1,),
                             _F(CHARGE=CHFORC1,
                                FONC_MULT=RAMPE,
                                ),),
-                     COMPORTEMENT=_F(RELATION='GLRC_DAMAGE',),
-                     CONVERGENCE=_F(RESI_GLOB_RELA=5.E-3,ITER_GLOB_MAXI=100,),
-                     INCREMENT=_F(LIST_INST=DEFLIST,
+                    NEWTON=_F(REAC_ITER=0),
+                    COMPORTEMENT=_F(RELATION='GLRC_DAMAGE',),
+                    CONVERGENCE=_F(RESI_GLOB_RELA=5.E-3,ITER_GLOB_MAXI=100,),
+                    INCREMENT=_F(LIST_INST=DEFLIST,
                                   INST_FIN=TFIN,),);
 
-
-
-#RESU=DYNA_NON_LINE(MODELE=MODE,
-                    #CHAM_MATER=CHMATE,
-                    #CARA_ELEM=EP,
-                    #COMPORTEMENT=_F(RELATION='GLRC_DAMAGE',
-                                    #),
-                    #INCREMENT=_F(LIST_INST=DEFLIST,
-                                 #PRECISION=1.E-1),
-                    #EXCIT=(_F(CHARGE=CHSYME,),
-                           #_F(CHARGE=CHFORC,
-                              #FONC_MULT=RAMPE,),),
-                    #SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENT',
-                                    #FORMULATION='ACCELERATION',),
-                    #ARCHIVAGE=_F(LIST_INST=L_INST,),
-                    #MASS_DIAG='OUI',);
-
-
-#RESU1=DYNA_NON_LINE(MODELE=MODE1,
-                    #CHAM_MATER=CHMATE1,
-                    #CARA_ELEM=EP1,
-                    #COMPORTEMENT=_F(RELATION='GLRC_DAMAGE',
-                                    #),
-                    #INCREMENT=_F(LIST_INST=DEFLIST,
-                                 #PRECISION=1.E-1),
-                    #EXCIT=(_F(CHARGE=CHSYME1,),
-                           #_F(CHARGE=CHFORC1,
-                              #FONC_MULT=RAMPE,),),
-                    #SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENT',
-                                    #FORMULATION='ACCELERATION',),
-                    #ARCHIVAGE=_F(LIST_INST=L_INST,),
-                    #MASS_DIAG='OUI',);
 
 
 ########################################################################
