@@ -1632,6 +1632,15 @@ AUTOSPC1=LIRE_INTE_SPEC(
                         INTERPOL='LIN'
                              )
 
+
+AUTOSPC2=LIRE_INTE_SPEC(
+                        UNITE=19,
+                        FORMAT_C='REEL_IMAG',
+                        PROL_DROITE='LINEAIRE',
+                        PROL_GAUCHE='LINEAIRE',
+                        INTERPOL='LIN'
+                             )
+
 #
 # GENERATION DES EFFORTS ALEATOIRES
 
