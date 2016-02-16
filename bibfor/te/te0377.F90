@@ -1,7 +1,7 @@
 subroutine te0377(option, nomte)
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -77,7 +77,7 @@ subroutine te0377(option, nomte)
     integer :: ndim
     integer :: nno, nnos, npg, ipoids, ivf, idfde, jgano
     integer :: nnof, npgf
-    integer :: nbcmp
+    integer :: nbcmp, nbpar
     integer :: ipg
     integer :: ipgf
     integer :: nbf
@@ -98,7 +98,7 @@ subroutine te0377(option, nomte)
     real(kind=8) :: sig11(3), sig22(3), sig12(3)
     real(kind=8) :: e, nu, rho, valres(3)
 !
-    integer :: icodre(2)
+    integer :: icodre(3)
     character(len=3) :: typnor
     character(len=8) :: typmav, elrefe
     character(len=8) :: elreff, elrefb
@@ -197,28 +197,28 @@ subroutine te0377(option, nomte)
 !
         call jevech('PMATERC', 'L', imate)
         call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
-        ibid = 0
+        nbpar = 0
         if (typnor .eq. 'NRJ') then
-            ibid = ibid +1
-            nompar(ibid) = 'E'
-            ibid = ibid +1
-            nompar(ibid) = 'NU'
+            nbpar = nbpar + 1
+            nompar(nbpar) = 'E'
+            nbpar = nbpar + 1
+            nompar(nbpar) = 'NU'
         endif
         if (yapr .or. yaro) then
-            ibid = ibid +1
-            nompar(ibid) = 'RHO'
+            nbpar = nbpar + 1
+            nompar(nbpar) = 'RHO'
         endif
 !
         call rcvalb('FPG1', 1, 1, '+', zi(imate),&
                     ' ', phenom, 0, ' ', [0.d0],&
-                    ibid, nompar, valres, icodre, 1)
+                    nbpar, nompar, valres, icodre, 1)
 !
         if (typnor .eq. 'NRJ') then
             e = valres(1)
             nu = valres(2)
         endif
         if (yapr .or. yaro) then
-            rho = valres(ibid)
+            rho = valres(nbpar)
         endif
 !GN        WRITE(IFM,1000) 'RHO, E, NU', RHO, E, NU
 !
@@ -249,10 +249,10 @@ subroutine te0377(option, nomte)
         call resrot(zr(irot), zr(igeom), zr(ivf), rho, nno,&
                     npg, frx, fry)
     else
-        do 23 , ipg = 1 , npg
+        do ipg = 1 , npg
         frx(ipg) = 0.d0
         fry(ipg) = 0.d0
- 23     continue
+        end do
     endif
 !GN      WRITE(IFM,1000) 'R X',(FRX(IPG),IPG = 1 , NPG)
 !GN      WRITE(IFM,1000) 'R Y',(FRY(IPG),IPG = 1 , NPG)
@@ -269,14 +269,14 @@ subroutine te0377(option, nomte)
 !       SI UNE COMPOSANTE N'A PAS ETE DECRITE, ASTER AURA MIS PAR
 !       DEFAUT LA FONCTION NULLE &FOZERO. ON LE REPERE POUR
 !       IMPOSER LA VALEUR 0 SANS FAIRE DE CALCULS INUTILES
-        do 24 , ibid = 1 , ndim
+        do ibid = 1 , ndim
         if (zk8(ifovf+ibid-1)(1:7) .eq. '&FOZERO') then
             fovo(ibid) = 0.d0
         else
             call fointe('FM', zk8(ifovf+ibid-1), 1, nompar, r8bid3,&
                         fovo(ibid), iret)
         endif
- 24     continue
+        end do
 !GN        WRITE(IFM,*) 'F X : ',ZK8(IFOVF),FOVO(1)
 !GN        WRITE(IFM,*) 'F Y : ',ZK8(IFOVF+1),FOVO(2)
     endif
@@ -286,7 +286,7 @@ subroutine te0377(option, nomte)
     ter1 = 0.d0
     norsig = 0.d0
 !
-    do 25 , ipg = 1 , npg
+    do ipg = 1 , npg
 !
 ! ------- CALCUL DES DERIVEES DES FONCTIONS DE FORMES /X ET /Y ---------
 !
@@ -335,7 +335,7 @@ subroutine te0377(option, nomte)
 !
     norsig = norsig + nor*poids
 !
-    25 end do
+    end do
 !
     if (typnor(1:2) .eq. 'H1') then
 !       NORME H1
@@ -386,7 +386,7 @@ subroutine te0377(option, nomte)
 !
     ter2 = 0.d0
     ter3 = 0.d0
-    do 320 , ifa = 1 , nbf
+    do ifa = 1 , nbf
 !
 ! ------TEST DU TYPE DE VOISIN -----------------------------------------
 !
@@ -428,10 +428,10 @@ subroutine te0377(option, nomte)
 ! ------- ATTENTION : CELA MARCHE CAR ON A CHOISI LA FAMILLE -----------
 ! ------- AVEC LES POINTS DE GAUSS SUR LES NOEUDS ----------------------
 !
-            do 321 , ipgf = 1 , npgf
+            do ipgf = 1 , npgf
             chx(ipgf) = 0.d0
             chy(ipgf) = 0.d0
-321         continue
+            end do
 !
             call intenc(nnof, jaco, chx, chy, sg11,&
                         sg22, sg12, nx, ny, inte)
@@ -507,7 +507,7 @@ subroutine te0377(option, nomte)
 !
     endif
 !
-    320 end do
+    end do
 !
 ! ----------------------------------------------------------------------
 ! ------- FIN DU CALCUL DU DEUXIEME ET TROISIEME TERME DE L'ERREUR -----
