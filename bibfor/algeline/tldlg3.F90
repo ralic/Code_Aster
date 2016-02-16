@@ -4,7 +4,7 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
     implicit none
 ! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -29,7 +29,7 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
 !                  /1 -> SI IRET=1 : ALARME <A>
 !                        SI IRET=2 : ERREUR <F>
 !                  /2 -> LE PROGRAMME NE S'ARRETE PAS
-!                        ET N'IMPRIME AUCUN MESSAGE.
+!                        SI IRET>0 : INFO <I> 
 !     IN  LMAT  : DESCRIPTEUR DE LA MATRICE A FACTORISER
 !     IN  ILDEB : NUMERO DE LA LIGNE DE DEPART DE FACTORISATION
 !     IN  ILFIN : NUMERO DE LA LIGNE DE FIN    DE FACTORISITION
@@ -236,10 +236,10 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
         iretp=0
         kpiv='&&AMUMP.PIVNUL'
         if (iretz .eq. 2) then
-!     -- LA FACTORISATION S'EST PAS BIEN PASSEE. PEUT IMPORTE LA VALEUR
+!     -- LA FACTORISATION NE S'EST PAS BIEN PASSEE. PEUT IMPORTE LA VALEUR
 !        NPREC ET L'ACTIVATION OU NON DE LA RECHERCHE DE SINGULARITE.
 !        MATRICE SINGULIERE NUMERIQUEMENT OU EN STRUCTURE (DETECTE EN
-!        AMONT DS AMUMPH. ON NE SAIT PAS PRECISER ISINGUCONTRAIREMENT A
+!        AMONT DS AMUMPH. ON NE SAIT PAS PRECISER ISINGU CONTRAIREMENT A
 !        MF/LDLT. ON MET ISINGU=-999 ARBITRAIREMENT)
             isingu=-999
             npivot=-999
@@ -357,12 +357,11 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
 !   -- Emission eventuelle d'un message d'erreur :
 !   ----------------------------------------------
     if ((ndigi2.lt.0) .and. (metres.eq.'MUMPS')) goto 30
-    if (istop .eq. 2) then
+    
+    if (iretz.eq.0) then
         goto 20
-
-    else if (iretz.eq.0) then
-        goto 20
-
+    else if (istop .eq. 2) then
+        codmes='I'
     else if (istop.eq.1) then
         if (iretz .eq. 1) then
             codmes='A'
