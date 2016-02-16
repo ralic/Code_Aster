@@ -1,7 +1,7 @@
 # coding=utf-8
 
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -64,8 +64,26 @@ CEPSINR  = LocatedComponents(phys=PHY.EPSI_R, type='ELEM',
     components=('EPXX','EPYY','EPZZ','EPXY',))
 
 
+EDEFOPC  = LocatedComponents(phys=PHY.EPSI_C, type='ELGA', location='RIGI',
+    components=('EPXX','EPYY','EPZZ','EPXY',))
+
+
+EDEFONC  = LocatedComponents(phys=PHY.EPSI_C, type='ELNO',
+    components=('EPXX','EPYY','EPZZ','EPXY',))
+
+
+EDEFOPG  = LocatedComponents(phys=PHY.EPSI_R, type='ELGA', location='RIGI',
+    components=('EPXX','EPYY','EPZZ','EPXY',))
+
+
 EDEFONO  = LocatedComponents(phys=PHY.EPSI_R, type='ELNO',
     components=('EPXX','EPYY','EPZZ','EPXY',))
+
+
+EDFEQPG  = LocatedComponents(phys=PHY.EPSI_R, type='ELGA', location='RIGI',
+    components=('INVA_2','PRIN_[3]','INVA_2SG','VECT_1_X','VECT_1_Y',
+          'VECT_1_Z','VECT_2_X','VECT_2_Y','VECT_2_Z','VECT_3_X',
+          'VECT_3_Y','VECT_3_Z',))
 
 
 CFORCEF  = LocatedComponents(phys=PHY.FORC_F, type='ELEM',
@@ -273,6 +291,44 @@ class MVDPTR6(Element):
                      (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
                      (OP.FORC_NODA.PVARCPR, LC.ZVARCPG), ),
             para_out=((SP.PVECTUR, MVECTUR), ),
+        ),
+
+        OP.EPEQ_ELGA(te=335,
+            para_in=((OP.EPEQ_ELGA.PDEFORR, EDEFOPG), ),
+            para_out=((OP.EPEQ_ELGA.PDEFOEQ, EDFEQPG), ),
+        ),
+
+        OP.EPEQ_ELNO(te=335,
+            para_in=((OP.EPEQ_ELNO.PDEFORR, EDEFONO), ),
+            para_out=((OP.EPEQ_ELNO.PDEFOEQ, LC.EDFEQNO), ),
+        ),
+
+        OP.EPSG_ELGA(te=87,
+            para_in=((SP.PDEPLAR, NDEPLAR), (SP.PGEOMER, NGEOMER),
+                     (SP.PMATERC, LC.CMATERC), (SP.PTEMPSR, CTEMPSR),
+                     (OP.EPSG_ELGA.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),
+                     ),
+            para_out=((OP.EPSG_ELGA.PDEFOPG, EDEFOPG), ),
+        ),
+
+        OP.EPSG_ELNO(te=4,
+            para_in=((OP.EPSG_ELNO.PDEFOPG, EDEFOPG), ),
+            para_out=((SP.PDEFONO, EDEFONO), ),
+        ),
+
+        OP.EPSI_ELGA(te=87,
+            para_in=((OP.EPSI_ELGA.PCOMPOR, CCOMPOR), (SP.PDEPLAR, NDEPLAR),
+                     (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
+                     (SP.PTEMPSR, CTEMPSR), (OP.EPSI_ELGA.PVARCPR, LC.ZVARCPG),
+                     (SP.PVARCRR, LC.ZVARCPG), ),
+            para_out=((SP.PDEFOPC, EDEFOPC), (OP.EPSI_ELGA.PDEFOPG, EDEFOPG),
+                     ),
+        ),
+
+        OP.EPSI_ELNO(te=4,
+            para_in=((OP.EPSI_ELNO.PDEFOPG, EDEFOPG), ),
+            para_out=((SP.PDEFONC, EDEFONC), (SP.PDEFONO, EDEFONO),
+                     ),
         ),
 
         OP.FULL_MECA(te=545,
