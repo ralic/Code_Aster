@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+!
 interface
-    subroutine w039c3(carele, modele, ifi, form, titre)
+    subroutine w039c3(carele, modele, ifi, form, titre, aunoeud)
         character(len=8) :: carele
         character(len=8) :: modele
         integer :: ifi
         character(len=*) :: form
         character(len=80) :: titre
+        logical :: aunoeud
     end subroutine w039c3
 end interface

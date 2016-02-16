@@ -17,7 +17,7 @@ subroutine w039ca(ifi, form)
     character(len=*) :: form
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -38,11 +38,8 @@ subroutine w039ca(ifi, form)
 !       IMPRIMER LES "CARTES" DE DONNEES DES CHAM_MATER, CARA_ELE, ...
 ! ----------------------------------------------------------------------
 !
-!
-!
-!
     integer :: nocc, iocc, n1, ibid
-    character(len=3) :: rplo
+    character(len=4) :: rplo
     character(len=8) :: chmat, carele, mailla, charge, modele
     character(len=80) :: titre
     character(len=19) :: ligrel
@@ -85,53 +82,59 @@ subroutine w039ca(ifi, form)
                 lexi=.true.
             endif
 !
-            titre='Caracteristiques generales des barres'
-            call w039c1(carele//'.CARGENBA', ifi, form, ligrel, titre)
-!
-            titre='Caracteristiques generales des poutres'
-            call w039c1(carele//'.CARGENPO', ifi, form, ligrel, titre)
-            titre='Caracteristiques geom. des poutres'
-            call w039c1(carele//'.CARGEOPO', ifi, form, ligrel, titre)
-!
-            titre='Caracteristiques des cables'
-            call w039c1(carele//'.CARCABLE', ifi, form, ligrel, titre)
-!
-            titre='Caracteristiques des poutres courbes'
-            call w039c1(carele//'.CARARCPO', ifi, form, ligrel, titre)
-!
-            titre='Caracteristiques des poutres "fluides"'
-            call w039c1(carele//'.CARPOUFL', ifi, form, ligrel, titre)
-!
-            titre='Caracteristiques des elements discrets K_*'
-            call w039c1(carele//'.CARDISCK', ifi, form, ligrel, titre)
-!
-            titre='Caracteristiques des elements discrets M_*'
-            call w039c1(carele//'.CARDISCM', ifi, form, ligrel, titre)
-!
-            titre='Caracteristiques des elements discrets A_*'
-            call w039c1(carele//'.CARDISCA', ifi, form, ligrel, titre)
-!
-            titre='Caracteristiques geom. des coques'
-            call w039c1(carele//'.CARCOQUE', ifi, form, ligrel, titre)
-!
-            titre='Orientation des elements 2D et 3D'
-            call w039c1(carele//'.CARMASSI', ifi, form, ligrel, titre)
-!
-            titre='Orientation des coques et des poutres'
-            call w039c1(carele//'.CARORIEN', ifi, form, ligrel, titre)
-!
             call getvtx('CONCEPT', 'REPERE_LOCAL', iocc=iocc, scal=rplo, nbret=ibid)
             ASSERT(ibid.eq.1)
-            if (rplo .eq. 'OUI') then
+!
+            if (rplo .eq. 'ELNO') then
                 call getvid('CONCEPT', 'MODELE', iocc=iocc, scal=modele, nbret=ibid)
                 ASSERT(ibid.eq.1)
 !
-                titre = 'vecteur du repere local'
-                call w039c3(carele, modele, ifi, form, titre)
+                titre = 'vecteur des reperes locaux, pour la visualisation des efforts aux noeuds'
+                call w039c3(carele, modele, ifi, form, titre, .true.)
+            else
+                titre='Caracteristiques generales des barres'
+                call w039c1(carele//'.CARGENBA', ifi, form, ligrel, titre)
 !
+                titre='Caracteristiques generales des poutres'
+                call w039c1(carele//'.CARGENPO', ifi, form, ligrel, titre)
+                titre='Caracteristiques geom. des poutres'
+                call w039c1(carele//'.CARGEOPO', ifi, form, ligrel, titre)
 !
+                titre='Caracteristiques des cables'
+                call w039c1(carele//'.CARCABLE', ifi, form, ligrel, titre)
+!
+                titre='Caracteristiques des poutres courbes'
+                call w039c1(carele//'.CARARCPO', ifi, form, ligrel, titre)
+!
+                titre='Caracteristiques des poutres "fluides"'
+                call w039c1(carele//'.CARPOUFL', ifi, form, ligrel, titre)
+!
+                titre='Caracteristiques des elements discrets K_*'
+                call w039c1(carele//'.CARDISCK', ifi, form, ligrel, titre)
+!
+                titre='Caracteristiques des elements discrets M_*'
+                call w039c1(carele//'.CARDISCM', ifi, form, ligrel, titre)
+!
+                titre='Caracteristiques des elements discrets A_*'
+                call w039c1(carele//'.CARDISCA', ifi, form, ligrel, titre)
+!
+                titre='Caracteristiques geom. des coques'
+                call w039c1(carele//'.CARCOQUE', ifi, form, ligrel, titre)
+!
+                titre='Orientation des elements 2D et 3D'
+                call w039c1(carele//'.CARMASSI', ifi, form, ligrel, titre)
+!
+                titre='Orientation des coques, poutres, barres, cables'
+                call w039c1(carele//'.CARORIEN', ifi, form, ligrel, titre)
+!
+                if (rplo(1:4) .eq. 'ELEM') then
+                    call getvid('CONCEPT', 'MODELE', iocc=iocc, scal=modele, nbret=ibid)
+                    ASSERT(ibid.eq.1)
+!
+                    titre = 'vecteur des reperes locaux'
+                    call w039c3(carele, modele, ifi, form, titre, .false.)
+                endif
             endif
-!
         endif
 !
 !       -- CHARGE :
@@ -192,9 +195,7 @@ subroutine w039ca(ifi, form)
             call w039c1(charge//'.CHME.ONDE', ifi, form, ligrel, titre)
 !
         endif
-    end do
-!
-!
+    enddo
 !
  20 continue
     call detrsd('LIGREL', ligrel)
