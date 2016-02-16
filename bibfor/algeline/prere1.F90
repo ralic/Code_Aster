@@ -81,7 +81,7 @@ subroutine prere1(solvez, base, iret, matpre, matass,&
     integer :: istopz, iretgc, n1
     character(len=24) :: metres, precon
     character(len=19) :: matas, maprec, matas1, solveu
-    character(len=8) :: renum, kmpic, kmatd
+    character(len=8) :: renum, kmpic, kmatd, ksym
     character(len=24), pointer :: refa(:) => null()
     aster_logical :: dbg
 !
@@ -120,7 +120,17 @@ subroutine prere1(solvez, base, iret, matpre, matass,&
 
     call dismoi('MPI_COMPLET', matas, 'MATR_ASSE', repk=kmpic)
     call dismoi('MATR_DISTR', matas, 'MATR_ASSE', repk=kmatd)
-
+    if ( niv == 2 ) then
+        call dismoi('TYPE_MATRICE', matas, 'MATR_ASSE', repk=ksym)
+        select case( ksym(1:7) ) 
+        case( 'SYMETRI' )
+            call utmess( 'I', 'ALGELINE5_2' )
+        case( 'NON_SYM' )
+            call utmess( 'I', 'ALGELINE5_3' )
+        case default
+        ASSERT(.false.)
+        end select
+    endif
     if (kmpic .eq. 'NON') then
         if (metres .eq. 'MUMPS' .or. ( metres.eq.'PETSC'.and.kmatd.eq.'OUI')) then
         else

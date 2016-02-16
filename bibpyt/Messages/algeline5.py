@@ -24,14 +24,18 @@ cata_msg = {
  La somme de matrices distribuées n'ayant pas le même profil est impossible
 """),
 
+    2: _(u"""
+ La matrice est symétrique.
+"""),
+    3: _(u"""
+ La matrice n'est pas symétrique.
+"""),
+
     4: _(u"""
  erreur LAPACK (ou BLAS) au niveau de la routine  %(k1)s
   le paramètre numéro  %(i1)d
   n'a pas une valeur cohérente %(i2)d
 """),
-
-
-
 
 
 
