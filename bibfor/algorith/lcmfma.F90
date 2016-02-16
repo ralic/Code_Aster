@@ -1,6 +1,6 @@
 subroutine lcmfma(mat, fami, kpg, ksp, poum)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -30,15 +30,15 @@ subroutine lcmfma(mat, fami, kpg, ksp, poum)
 ! IN  KSP    NUMERO DU SOUS-POINT
 ! IN  POUM   LECTURE DES PARAMETRES EN DEBUT '-' OU FIN '+' DU PAS
 ! --------------------------------------------------------------------------------------------------
-    integer,parameter :: nber=8
+    integer,parameter :: nber=9
 ! --------------------------------------------------------------------------------------------------
     integer :: iok(nber)
     real(kind=8) :: valer(nber),rdum(1)
     character(len=8):: nomdum(1)
     character(len=16):: nomer(nber)
 ! --------------------------------------------------------------------------------------------------
-    real(kind=8) :: lambda, deuxmu, troisk, rigmin, pc, pr, epsth
-    common /lcee/ lambda,deuxmu,troisk,rigmin,pc,pr,epsth
+    real(kind=8) :: lambda, deuxmu, troisk, gamma, rigmin, pc, pr, epsth
+    common /lcee/ lambda,deuxmu,troisk,gamma,rigmin,pc,pr,epsth
 ! --------------------------------------------------------------------------------------------------
     real(kind=8) :: pk, pm, pp, pq
     common /lces/ pk,pm,pp,pq
@@ -46,7 +46,7 @@ subroutine lcmfma(mat, fami, kpg, ksp, poum)
     real(kind=8) :: tau, sig0, beta
     common /lcmmf/ tau,sig0,beta
 ! --------------------------------------------------------------------------------------------------
-    data nomer /'K','M','P','Q','COEF_RIGI_MINI','TAU','SIG0','BETA'/
+    data nomer /'K','M','P','Q','COEF_RIGI_MINI','TAU','SIG0','BETA','REST_RIGIDITE'/
 ! --------------------------------------------------------------------------------------------------
 !
     call rcvalb(fami, kpg, ksp, poum, mat, ' ', 'ENDO_FISS_EXP', 0, nomdum(1), rdum(1),&
@@ -59,5 +59,6 @@ subroutine lcmfma(mat, fami, kpg, ksp, poum)
     tau = valer(6)
     sig0 = valer(7)
     beta = valer(8)
+    gamma = valer(9)
 !
 end subroutine

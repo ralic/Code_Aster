@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -407,11 +407,6 @@ Conseils: modifiez sa valeur dans CIN1_CHAB / CIN2_CHAB.
 Aucun groupe de fibres n'a de comportement.
 """),
 
-    85 : _(u"""
-La largeur de bande est trop grande par rapport à la longueur de la zone cohésive si bien que
-m=%(r1)f et p=%(r2)f ne respectent pas la contrainte m>p+2.
-"""),
-
     86 : _(u"""
 Le ratio FC/FT (%(r1)E) est inférieur à 5.83 (valeur limite pour le modèle ENDO_FISS_BETON).
 """),
@@ -444,6 +439,15 @@ Vérifiez les valeurs de la fonction.
 
     92 : _(u"""
 Seule la modélisation 3D est disponible avec la loi d'endommagement de KIT_RGI. 
+"""),
+
+    93 : _(u"""
+La donnée de l'énergie de fissuration initiale G_INIT est trop élevée. Elle doit être inférieure à 0.453*GF.
+"""),
+
+    94 : _(u"""
+La largeur de bande est trop grande par rapport à la longueur de la zone cohésive si bien que
+m=%(r1)f et p=%(r2)f ne respectent pas la contrainte m>p+2.
 """),
 
 }

@@ -6,7 +6,7 @@ subroutine lc0057(fami, kpg, ksp, ndim, imate,&
                   dsidep, nwkout, wkout, codret)
 
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -61,8 +61,8 @@ subroutine lc0057(fami, kpg, ksp, ndim, imate,&
     if (typmod(2) .eq. 'GRADVARI') then
 !
         call lcesgv(fami, kpg, ksp, neps, typmod, option, imate, lcmfma, lcmfga, &
-                    epsm, deps, vim, .false._1, nint(crit(1)), crit(3), &
-                    sigp, vip, dsidep,codret)
+                    epsm, deps, vim, nint(crit(1)), crit(3), sigp, &
+                    vip, dsidep,codret)
 !
 !   ENDO_SCALAIRE N'EST PAS DISOPNIBLE POUR D'AUTRE FORMULATIONS
     else

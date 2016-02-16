@@ -1,6 +1,6 @@
 subroutine lcesma(mat, fami, kpg, ksp, poum, lccrma)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -49,8 +49,8 @@ subroutine lcesma(mat, fami, kpg, ksp, poum, lccrma)
     character(len=16),parameter,dimension(nbnl) :: nomnl=(/'C_GRAD_VARI     ','PENA_LAGR       '/)
     character(len=8) :: nomdum(1)
 ! ----------------------------------------------------------------------
-    real(kind=8) :: lambda, deuxmu, troisk, rigmin, pc, pr, epsth
-    common /lcee/ lambda,deuxmu,troisk,rigmin,pc,pr,epsth
+    real(kind=8) :: lambda, deuxmu, troisk, gamma, rigmin, pc, pr, epsth
+    common /lcee/ lambda,deuxmu,troisk,gamma,rigmin,pc,pr,epsth
 ! ----------------------------------------------------------------------
 !
 ! - LECTURE DES PARAMETRES MECANIQUES
@@ -63,6 +63,7 @@ subroutine lcesma(mat, fami, kpg, ksp, poum, lccrma)
     lambda = e*nu / (1-2*nu) / (1+nu)
     deuxmu = e / (1+nu)
     troisk = e / (1-2*nu)
+    gamma  = 0.d0
     pc     = valnl(1)
     pr     = valnl(2)
 

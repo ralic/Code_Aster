@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,6 +19,7 @@
 
 from Accas import _F
 import aster
+import numpy
 import numpy as NP
 from Utilitai.Utmess import UTMESS
 
@@ -300,100 +301,142 @@ def Acier_Cine_Line(DMATER, args):
     return mclef
 
 
-def Ident_Endo_Fiss_Exp(ft, fc, beta=0.1, prec=1E-10, itemax=100):
+def Ident_Endo_Fiss_Exp(ft,fc,beta,prec=1E-10,itemax=100):
+
     # Estimation initiale
-    A = (2.0 / 3.0 + 3 * beta ** 2) ** 0.5
-    r = fc / ft
-    C = 3 ** 0.5
-    L = A * (r - 1)
-    p0 = 2 * (1 - C)
-    pp = (1 - L)
-    delta = pp ** 2 - p0
-    x = -pp + delta ** 0.5
+    A = (2.0/3.0 + 3*beta**2)**0.5
+    r = fc/ft
+    C = 3**0.5
+    L = A*(r-1)
+    p0 = 2*(1-C)
+    pp = (1-L)
+    delta = pp**2-p0
+    x = -pp+delta**0.5
+
     # Resolution de l'equation par methode de Newton
     for i in range(itemax):
-        f  = L * x + \
-            (2 + NP.exp(-2 * r * x)) ** 0.5 - (2 + NP.exp(2 * x)) ** 0.5
-        if abs(f) < prec:
-            break
-        df = L - r * \
-            NP.exp(-2 * r * x) / (2 + NP.exp(-2 * r * x)) ** 0.5 - \
-            NP.exp(2 * x) / (2 + NP.exp(2 * x)) ** 0.5
-        x = x - f / df
+        f  = L*x + (2+numpy.exp(-2*r*x))**0.5 - (2+numpy.exp(2*x))**0.5
+        if abs(f) < prec: break
+        df = L - r*numpy.exp(-2*r*x)/(2+numpy.exp(-2*r*x))**0.5 - numpy.exp(2*x)/(2+numpy.exp(2*x))**0.5
+        x  = x - f/df
     else:
-        UTMESS('F', 'COMPOR1_87')
-    #
-    tau = A * x + (2 + NP.exp(2 * x)) ** 0.5
-    sig0 = ft / x
-    return (sig0, tau)
+        UTMESS('F', 'COMPOR1_87' )
+
+    tau  = A*x + (2+numpy.exp(2*x))**0.5
+    sig0 = ft/x
+
+    return (sig0,tau)
 
 
-def Endo_Fiss_Exp(DMATER, args):
+
+def ConfinedTension(nu,sig0,tau,beta,prec=1E-10,itemax=100):
+
+    # Initialisation
+    s = numpy.array((1-nu,nu,nu))
+    L  = (2.0/3.0*(1-2*nu)**2 + 3*beta**2*(1+nu)**2)**0.5
+
+    # Estimation initiale
+    xe = numpy.log(tau**2-2)/(2*s[0])
+    xl = tau/L
+    x  = min(xe,xl)
+
+    # Resolution de l'equation par methode de Newton
+    for i in range(itemax):
+        ep  = numpy.exp(x*s)
+        epr = numpy.dot(ep,ep)**0.5
+        f  = L*x + epr - tau
+        if abs(f) < prec: break
+        df = L + numpy.add.reduce(ep*ep*s)/epr
+        x  = x - f/df
+    else:
+        UTMESS('F', 'COMPOR1_87' )
+
+    sig1 = x*sig0*(1-nu)
+    return sig1
+
+
+
+def Endo_Fiss_Exp(DMATER,args):
     """
     ENDO_FISS_EXP = Paramètes utilisateurs de la loi ENDO_FISS_EXP
-        E              = Module de Young
-        NU             = Coefficient de Poisson
-        FT             = Limite en traction simple
-        FT_FENDAGE     = Limite en traction obtenue via un essai bresilien
-        FC             = Limite en compression simple
-        GF             = Energie de fissuration
-        P              = Parametre dominant de la loi cohésive asymptotique
-        DSIG_DU        = Pente initiale (au signe pres) de la loi cohesive asymptotique
-        Q              = Parametre secondaire de la loi cohesive asymptotique
-        Q_REL          = Parametre Q exprime de maniere relative par rapport a Qmax(P)
-        LARG_BANDE     = Largeur de bande d'endommagement (2*D)
+      E              = Module de Young
+      NU             = Coefficient de Poisson
+      FT             = Limite en traction simple
+      FC             = Limite en compression simple
+      GF             = Energie de fissuration
+      P              = Parametre dominant de la loi cohésive asymptotique
+      G_INIT         = Energie de fissuration initiale (via la pente initiale de la loi cohésive)
+      Q              = Parametre secondaire de la loi cohesive asymptotique
+      Q_REL          = Parametre Q exprime de maniere relative par rapport a Qmax(P)
+      LARG_BANDE     = Largeur de bande d'endommagement (2*D)
+      REST_RIGI_FC   = Restauration de rigidité pour eps=fc/E (0=sans)
     """
-    #
+
     MATER = DMATER.cree_dict_valeurs(DMATER.mc_liste)
+
     # Lecture et interpretation des parametres utilisateurs
-    E = MATER['E']
-    NU = MATER['NU']
-    GF = MATER['GF']
-    FC = MATER['FC']
-    CRM = MATER['COEF_RIGI_MINI']
-    D = MATER['LARG_BANDE'] / 2.0
-    #
-    if MATER['FT'] <> None:
-        FT = MATER['FT']
-    else:
-        FT = MATER['FT_FENDAGE'] * \
-            1.10   # L'essai de fendage sous-estime de 10% Ft
-    #
+    E   = float(MATER['E'])
+    NU  = float(MATER['NU'])
+    GF  = float(MATER['GF'])
+    FT  = float(MATER['FT'])
+    FC  = float(MATER['FC'])
+    CRM = float(MATER['COEF_RIGI_MINI'])
+    D   = float(MATER['LARG_BANDE']/2.0)
+    rrc = float(MATER['REST_RIGI_FC'])
+
+    # Valeur par défaut
+    beta = 0.1
+
+    # Parametres de la fonction seuil
+    if FC/FT < 5.83 :
+        UTMESS('F', 'COMPOR1_86', valr=(float(FC)/float(FT),) )
+    (sig0,tau) = Ident_Endo_Fiss_Exp(FT,FC,beta)
+    sigc = ConfinedTension(NU,sig0,tau,beta)
+
+
+    # Parametres de la fonction d'adoucissement
     if MATER['P'] <> None:
-        P = MATER['P']
+        P = float(MATER['P'])
     else:
-        dsdu = MATER['DSIG_DU']
-        sref = FT
-        uref = GF / SY
-        dsdubar = uref / sref * dsdu
-        P = (1.5 * NP.pi) ** (2.0 / 3.0) - 2
-    #
+        G1 = float(MATER['G_INIT'])
+        P  = ((3*numpy.pi*GF)/(4*G1))**(2.0/3.0) - 2
+        if P<1: UTMESS('F','COMPOR1_93')      
+
+
     if MATER['Q'] <> None:
-        Q = MATER['Q']
+        Q = float(MATER['Q'])
     elif MATER['Q_REL'] <> None:
-        qmax = (1.11375 + 0.565239 * P - 0.003322 * P ** 2) * \
-            (1 - NP.exp(-1.98935 * P)) - 0.01
-        Q = qmax * MATER['Q_REL']
+        qmax = (1.11375+0.565239*P-0.003322*P**2)*(1-numpy.exp(-1.98935*P)) - 0.01
+        Q = qmax * float(MATER['Q_REL'])
     else:
         Q = 0.0
-    # Parametres de la fonction d'ecrouissage
-    K = 0.75 * GF / D
-    C = 0.375 * GF * D
-    M = 1.5 * E * GF / (D * FT ** 2)
-    #
-    if M < P + 2:
-        UTMESS('F', 'COMPOR1_85', valr=(float(M), float(P)))
-    # Parametres de la fonction seuil
-    if FC / FT < 5.83:
-        UTMESS('F', 'COMPOR1_86', valr=(float(FC) / float(FT),))
-    #
-    (sig0, tau) = Ident_Endo_Fiss_Exp(FT, FC)
-    # Parametres pour DEFI_MATERIAU
+
+
+    # Parametres internes au modele
+    rig = E*(1-NU)/((1+NU)*(1-2*NU))
+    K = 0.75*GF/D
+    C = 0.375*GF*D
+    M = 1.5*rig*GF/(D*sigc**2)
+
+    if M < P+2 :
+        UTMESS('F','COMPOR1_94',valr=(float(M),float(P)))
+
+
+    # restauration de rigidite
+    if rrc == 0.0:
+        gamma = 0
+    else:
+        gamma = -1.0/(FC/E*numpy.log(rrc))
+
+
+    # Parametres pour DEFI_MATERIAU    
     mclef = {
-        'ELAS':            {'E': E, 'NU': NU},
-        'ENDO_FISS_EXP':   {'M': M, 'P': P, 'Q': Q, 'K': K, 'TAU': tau, 'SIG0': sig0, 'COEF_RIGI_MINI': CRM},
-        'NON_LOCAL':       {'C_GRAD_VARI': C, 'PENA_LAGR': 1.E3 * K},
-    }
+     'ELAS':            {'E':E, 'NU':NU},
+     'ENDO_FISS_EXP':   {'M':M,'P':P,'Q':Q,'K':K,'TAU':tau,'SIG0':sig0, 'BETA':beta,
+                         'COEF_RIGI_MINI':CRM, 'REST_RIGIDITE':gamma},
+     'NON_LOCAL':       {'C_GRAD_VARI':C, 'PENA_LAGR':1.E3*K},
+     }
+
     mclef['INFO'] = 1
     if 'INFO' in args:
         mclef['INFO'] = args['INFO']

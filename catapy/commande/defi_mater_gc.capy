@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -71,22 +71,21 @@ DEFI_MATER_GC=MACRO(nom="DEFI_MATER_GC",
     ENDO_FISS_EXP       =FACT(statut= 'f',max= 1,
         fr=tr("Définir les paramètres matériaux du béton pour la loi ENDO_FISS_EXP"),
         regles = (
-            UN_PARMI('FT','FT_FENDAGE'),
-            UN_PARMI('P','DSIG_DU'),
+            UN_PARMI('P','G_INIT'),
             EXCLUS('Q','Q_REL'),
             ),
-        E              =SIMP(statut='o',typ='R',  val_min=0.0E+0,                     fr=tr("Module d'Young")),
-        NU             =SIMP(statut='o',typ='R',  val_min=0.0E+0, val_max=0.5E+0,     fr=tr("Coefficient de poisson")),
-        FT             =SIMP(statut='f',typ='R',  val_min=0.0E+0                ,     fr=tr("Limite en traction simple")),
-        FT_FENDAGE     =SIMP(statut='f',typ='R',  val_min=0.0E+0                ,     fr=tr("Limite en traction obtenue via un essai brésilien")),
-        FC             =SIMP(statut='o',typ='R',  val_min=0.0E+0                ,     fr=tr("Limite en compression simple")),
-        GF             =SIMP(statut='o',typ='R',  val_min=0.0E+0                ,     fr=tr("Energie de fissuration")),
-        P              =SIMP(statut='f',typ='R',  val_min=1.0E+0                ,     fr=tr("Parametre dominant de la loi cohésive asymptotique")),
-        DSIG_DU        =SIMP(statut='f',typ='R',  val_min=1.102658              ,     fr=tr("Pente initiale (au signe pres) de la loi cohesive asymptotique")),
-        Q              =SIMP(statut='f',typ='R',  val_min=0.0E+0                ,     fr=tr("Parametre secondaire de la loi cohesive asymptotique")),
-        Q_REL          =SIMP(statut='f',typ='R',  val_min=0.0E+0, val_max=1.0   ,     fr=tr("Parametre Q exprime de maniere relative par rapport a Qmax(P)")),
-        LARG_BANDE     =SIMP(statut='o',typ='R',  val_min=0.0E+0                ,     fr=tr("Largeur de bande d'endommagement (2*D)")),
-        COEF_RIGI_MINI =SIMP(statut='f',typ='R',  val_min=0.0, defaut = 0.0     ,     fr=tr("Rigidite minimale dans la matrice tangente")),
+        E              =SIMP(statut='o',typ='R',  val_min=0.0E+0,                       fr=tr("Module d'Young")),
+        NU             =SIMP(statut='o',typ='R',  val_min=0.0E+0, val_max=0.5E+0,       fr=tr("Coefficient de poisson")),
+        FT             =SIMP(statut='o',typ='R',  val_min=0.0E+0                ,       fr=tr("Limite en traction simple")),
+        FC             =SIMP(statut='o',typ='R',  val_min=0.0E+0                ,       fr=tr("Limite en compression simple")),
+        GF             =SIMP(statut='o',typ='R',  val_min=0.0E+0                ,       fr=tr("Energie de fissuration")),
+        P              =SIMP(statut='f',typ='R',  val_min=1.0E+0                ,       fr=tr("Parametre dominant de la loi cohésive asymptotique")),
+        G_INIT         =SIMP(statut='f',typ='R',  val_min=0.0                   ,       fr=tr("Energie de fissuration initiale de la loi cohesive asymptotique")),
+        Q              =SIMP(statut='f',typ='R',  val_min=0.0E+0                ,       fr=tr("Parametre secondaire de la loi cohesive asymptotique")),
+        Q_REL          =SIMP(statut='f',typ='R',  val_min=0.0E+0, val_max=1.0   ,       fr=tr("Parametre Q exprime de maniere relative par rapport a Qmax(P)")),
+        LARG_BANDE     =SIMP(statut='o',typ='R',  val_min=0.0E+0                ,       fr=tr("Largeur de bande d'endommagement (2*D)")),
+        REST_RIGI_FC   =SIMP(statut='f',typ='R',  val_min=0.0, val_max=0.99,defaut=0.9, fr=tr("Restauration de rigidité pour eps=fc/E (0=sans)")),
+        COEF_RIGI_MINI =SIMP(statut='f',typ='R',  val_min=0.0, defaut = 0.0     ,       fr=tr("Rigidite minimale dans la matrice tangente")),
     ),
     # ============================================================================
     INFO        =SIMP(statut='f',typ='I',     into=(1,2,),     defaut=1),

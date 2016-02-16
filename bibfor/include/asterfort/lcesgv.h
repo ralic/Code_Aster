@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -20,8 +20,8 @@
 !
 interface 
     subroutine lcesgv(fami, kpg, ksp, neps, typmod, option, mat, lccrma, lcesga, epsm,&
-                      deps, vim, fige, itemax, precvg,&
-                      sig, vip, dsidep, iret)
+                      deps, vim, itemax, precvg, sig, &
+                      vip, dsidep, iret)
         interface
         subroutine lccrma(mat, fami, kpg, ksp, poum)
             integer,intent(in) :: mat, kpg, ksp
@@ -37,7 +37,6 @@ interface
         end subroutine lcesga
         end interface
 
-        aster_logical :: fige
         character(len=8) :: typmod(*)
         character(len=16) :: option
         character(len=*) :: fami

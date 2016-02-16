@@ -1,7 +1,7 @@
 subroutine lcmfbo(ep0, ep1, l0, l1, etamin,&
                   etamax, vide, etam, etap)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -49,8 +49,8 @@ subroutine lcmfbo(ep0, ep1, l0, l1, etamin,&
     real(kind=8), parameter :: zero=0.d0
     real(kind=8), parameter, dimension(6) :: kr=(/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/)
 ! --------------------------------------------------------------------------------------------------
-    real(kind=8) :: lambda, deuxmu, troisk, rigmin, pc, pr, epsth
-    common /lcee/ lambda,deuxmu,troisk,rigmin,pc,pr,epsth
+    real(kind=8) :: lambda, deuxmu, troisk, gamma, rigmin, pc, pr, epsth
+    common /lcee/ lambda,deuxmu,troisk,gamma,rigmin,pc,pr,epsth
 ! --------------------------------------------------------------------------------------------------
     real(kind=8) :: tau, sig0, beta
     common /lcmmf/ tau,sig0,beta

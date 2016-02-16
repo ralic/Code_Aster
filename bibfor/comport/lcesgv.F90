@@ -1,9 +1,9 @@
 subroutine lcesgv(fami, kpg, ksp, neps, typmod,&
                   option, mat, lccrma, lcesga, epsm,&
-                  deps, vim, fige, itemax, precvg,&
-                  sig, vip, dsidep, iret)
+                  deps, vim, itemax, precvg, sig,&
+                  vip, dsidep, iret)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,6 +22,8 @@ subroutine lcesgv(fami, kpg, ksp, neps, typmod,&
 #include "asterf_types.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
+#include "asterfort/assert.h"
+#include "asterfort/lcesel.h"
 #include "asterfort/lcesma.h"
 #include "asterfort/lcesrf.h"
 #include "asterfort/lcesvf.h"
@@ -44,7 +46,6 @@ subroutine lcesgv(fami, kpg, ksp, neps, typmod,&
         end subroutine lcesga
     end interface
 !
-    aster_logical :: fige
     character(len=8) :: typmod(*)
     character(len=16) :: option
     character(len=*) :: fami
@@ -67,7 +68,6 @@ subroutine lcesgv(fami, kpg, ksp, neps, typmod,&
 ! IN  EPSM    CHAMP DE DEFORMATION EN T- ET PHIM=EPSM(7)
 ! IN  DEPS    INCREMENT DU CHAMP DE DEFORMATION ET DPHI=DEPS(7)
 ! IN  VIM     VARIABLES INTERNES EN T-
-! IN  FIGE    .TRUE. SSI ON FIGE L'ENDOMMAGEMENT (ENDO_FISS_FIGE)
 ! IN  NONLOC  INUTILISE
 ! IN  ITEMAX  NBR MAXI D'ITERATIONS POUR RESOLUTION EQUATION SCALAIRE
 ! IN  PRECVG  CRITERE DE CVG : 10 A 100 FOIS PLUS FIN QUE RESI_REFE_RELA
@@ -84,11 +84,12 @@ subroutine lcesgv(fami, kpg, ksp, neps, typmod,&
     real(kind=8) :: coplan, cor33, vplan(6), eps(6), sigel(6), treps
     real(kind=8) :: sigma(6), a, drda, drdae, drdas, gel, gsat, ktg(6, 6, 4)
     real(kind=8) :: ra, fd, d2rda2, dgda, gameps, dgamde(6), coefg
-    real(kind=8) :: yng, nrmela, sigref, a0, d1a0, preca, precga
+    real(kind=8) :: yng, nrmela, sigref, a0, d1a0, prece, preca, precga
+    real(kind=8) :: sigela(6),sigelu(6),dsade(6,6),dsude(6,6)
     character(len=1) :: poum
 ! --------------------------------------------------------------------------------------------------
-    real(kind=8) :: lambda, deuxmu, troisk, rigmin, pc, pr, epsth
-    common /lcee/ lambda,deuxmu,troisk,rigmin,pc,pr,epsth
+    real(kind=8) :: lambda, deuxmu, troisk, gamma, rigmin, pc, pr, epsth
+    common /lcee/ lambda,deuxmu,troisk,gamma,rigmin,pc,pr,epsth
 ! --------------------------------------------------------------------------------------------------
     real(kind=8) :: pk, pm, pp, pq
     common /lces/ pk,pm,pp,pq
@@ -118,6 +119,7 @@ subroutine lcesgv(fami, kpg, ksp, neps, typmod,&
 !
     call lcesma(mat, fami, kpg, ksp, poum,&
                 lccrma)
+    ASSERT(gamma.eq.0.d0 .or. .not.cplan)
 !
 !
 ! -- DEFORMATIONS COURANTES
@@ -162,10 +164,10 @@ subroutine lcesgv(fami, kpg, ksp, neps, typmod,&
     nrmela = sqrt(dot_product(sigel,sigel))
     a0 = vim(1)
     d1a0 = abs(lcesvf(1,a0))
+    prece = precvg * sigref / yng
     preca = precvg*minval((/1.d0, pk/pr, sigref/max(r8prem(),d1a0*nrmela)/))
     precga = pr*preca/max(r8prem(),d1a0)
-!     write (6,*) 'preca = ',preca
-!
+
 !
 !
 ! -- PSEUDO-ENERGIE DE DEFORMATION ET CONTRAINTE ELASTIQUE
@@ -174,6 +176,11 @@ subroutine lcesgv(fami, kpg, ksp, neps, typmod,&
     call lcesga(0, eps, gameps, dgamde, itemax,&
                 precga, iret)
     if (iret .ne. 0) goto 999
+    if (resi) then
+      call lcesel(eps,rigi,elas,prece,sigela,sigelu,dsade,dsude)
+    else
+      call lcesel(vim(4:9),rigi,elas,prece,sigela,sigelu,dsade,dsude)
+    end if
 !
 !
 !
@@ -189,10 +196,6 @@ subroutine lcesgv(fami, kpg, ksp, neps, typmod,&
 !
 !    PAS DE CALCUL D'ENDOMMAGEMENT POUR UN POINT SATURE
     if (etat .eq. 2) goto 200
-!
-!
-!    PAS DE CALCUL D'ENDOMMAGEMENT AVEC ENDO_FISS_FIGE
-    if (fige) goto 200
 !
 !
 !    ESTIMATION DU CRITERE
@@ -238,11 +241,12 @@ subroutine lcesgv(fami, kpg, ksp, neps, typmod,&
 200 continue
 !
     ra = lcesvf(0,a)
-    sigma = ra*sigel
+    sigma = ra*sigela+sigelu
 !
     vip(1) = a
     vip(2) = etat
     vip(3) = 1.d0-ra
+    vip(4:9) = eps
 !
 500 continue
 !
@@ -260,18 +264,12 @@ subroutine lcesgv(fami, kpg, ksp, neps, typmod,&
 !
     ra = lcesvf(0,a)
     fd = max(ra, rigmin)
-    do ij = 1, 3
-        do kl = 1, 3
-            ktg(ij,kl,1) = fd*lambda
-        end do
-    end do
-    do ij = 1, ndimsi
-        ktg(ij,ij,1) = ktg(ij,ij,1) + fd*deuxmu
-    end do
+    ktg(:,:,1) = fd*dsade + dsude
+
 !
 !
 ! -- CORRECTION DISSIPATIVE
-    if (etat .eq. 1 .and. .not.elas .and. .not.fige) then
+    if (etat .eq. 1 .and. .not.elas) then
 !
         call lcesga(1, eps, gameps, dgamde, itemax,&
                     precga, iret)
@@ -282,9 +280,9 @@ subroutine lcesgv(fami, kpg, ksp, neps, typmod,&
 !
         do ij = 1, ndimsi
             do kl = 1, ndimsi
-                ktg(ij,kl,1) = ktg(ij,kl,1) - coefg*sigel(ij)*dgamde( kl)
+                ktg(ij,kl,1) = ktg(ij,kl,1) - coefg*sigela(ij)*dgamde(kl)
             end do
-            ktg(ij,1,2) = drda/dgda * sigel(ij)
+            ktg(ij,1,2) = drda/dgda * sigela(ij)
             ktg(ij,1,3) = -drda/dgda * dgamde(ij)
         end do
         ktg(1,1,4) = 1/dgda

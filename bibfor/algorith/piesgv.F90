@@ -2,7 +2,7 @@ subroutine piesgv(neps, tau, mat, lccrma, vim,&
                   epsm, epsp, epsd, typmod, lcesga,&
                   etamin, etamax, lcesbo, copilo)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -79,8 +79,8 @@ subroutine piesgv(neps, tau, mat, lccrma, vim,&
     real(kind=8) :: etam, etap, etal, precvg, l0, l1, etm, etp
     real(kind=8) :: gm, dgm, gp, dgp, gl, dgl
 ! ----------------------------------------------------------------------
-    real(kind=8) :: lambda, deuxmu, troisk, rigmin, pc, pr, epsth
-    common /lcee/ lambda,deuxmu,troisk,rigmin,pc,pr,epsth
+    real(kind=8) :: lambda, deuxmu, troisk, gamma, rigmin, pc, pr, epsth
+    common /lcee/ lambda,deuxmu,troisk,gamma,rigmin,pc,pr,epsth
 ! ----------------------------------------------------------------------
     real(kind=8) :: pk, pm, pp, pq
     common /lces/ pk,pm,pp,pq
@@ -113,7 +113,7 @@ subroutine piesgv(neps, tau, mat, lccrma, vim,&
 !
 !
 !  NON PILOTABLE CAR TROP PRES DE L'ENDOMMAGEMENT ULTIME
-    if (a+tau .ge. 0.99) goto 999
+    if (a .ge. 0.99) goto 999
     drda = lcesvf(1,a)
 !
 !
@@ -166,7 +166,7 @@ subroutine piesgv(neps, tau, mat, lccrma, vim,&
 !
     if (gm .le. 0 .and. gp .le. 0) then
         goto 999
-        end if
+    end if
 !
 !
 ! 2. BORNES SUPERIEURES AU SEUIL : DOUBLE NEWTON
@@ -192,6 +192,12 @@ subroutine piesgv(neps, tau, mat, lccrma, vim,&
 !              METHODE DE NEWTON A GAUCHE ET A DROITE
                 if (.not.gauche) etam = etam - gm/dgm
                 if (.not.droite) etap = etap - gp/dgp
+
+!              ABSENCE DE SOLUTION SI FONCTION AU-DESSUS DE ZERO
+                if (etap.lt.etam) then
+                    copilo(1,3) = 0
+                    goto 999
+                end if
 !
 !              CALCUL DE LA FONCTION ET DERIVEE
                 if (.not.gauche) call piesfg(lcesga, etam, gm, dgm)
@@ -248,5 +254,5 @@ subroutine piesgv(neps, tau, mat, lccrma, vim,&
             copilo(2,1) = -1
         endif
 !
-999     continue
+999 continue
     end subroutine

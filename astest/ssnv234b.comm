@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-# TITRE VALIDATION DE LA LOI ENDO_SCALAIRE ET DU PILOTAGE PRED_ELAS POUR LA MODELISATION 3D_GRAD_VARI 
+# TITRE VALIDATION DE LA LOI ENDO_FISS_EXP ET DU PILOTAGE PRED_ELAS POUR LA MODELISATION 3D_GRAD_VARI 
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -22,25 +22,49 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
 
 E       = 30000.
 NU      = 0.2
-ft      = 3.
+sc      = 3.
 Gf      = 0.1
 D       = 50.
 p       = 5.
-fc      = 30.
+
+# For a ratio fc/ft=10
+sig0_ft = 0.3076969929996482
+gamma0  = 28.540432560041864
+
+# For the given gamma0 in confined tension:
+x = 3.2647646494492157
+
+ft = sc/x/sig0_ft
+fc = 10*ft
 
 
-# solution analytique pour a = 0.6
-# ---------------------------------------------------
+# Closed-form solution for a = 0.2 in confined tension
+# ----------------------------------------------------
 
-wy  = 0.5*ft**2/E
-k   = 0.75*Gf/D
-m   = k/wy
+lbd = E*NU/(1+NU)/(1-2*NU)
+mu  = 0.5*E/(1+NU)
+Ec = lbd + 2*mu
 
-chi0 = 0.36868978447184991 
+wy  = 0.5*sc**2/Ec
+m   = 0.75*Gf/D/wy
+k   = wy*m
 
-a   = 0.6
+a   = 0.2
+Aa  = (1-a)**2/((1-a)**2+m*a*(1+p*a))
 Da  = m*(a-1)*(a+1+2*p*a)/( (1-a)**2 + m*a*(1+p*a) )**2
-eps = (-m/Da)**0.5 /(E*chi0)
+
+eps = (-2*k/Ec/Da)**0.5
+sig = Ec*Aa*eps
+
+
+
+# Stiffness recovery in compression
+# ----------------------------------------------------
+
+eps_comp = - 2*sc/Ec
+gam = -E/fc/log(0.9) 
+Sprim    = (2*eps_comp-1/gam)*exp(1/(gam*eps_comp))
+sig_comp = Ec*(Aa*eps_comp+0.5*(1-Aa)*Sprim)
 
 
 # Orientation en biais de la sollicitation
@@ -170,7 +194,7 @@ EVOL = STAT_NON_LINE(
     ),
   ) 
 
-tfin = 6.
+tfin = 2.
 
 # -----------------------------------------------------
 #    EXTRAPOLATION DES VARIABLES INTERNES AUX NOEUDS
@@ -205,8 +229,8 @@ IMPR_TABLE(TABLE=RESU)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=1.E-3,
-           VALE_CALC=0.59999973201228,
-           VALE_REFE=0.59999999999999998,
+           VALE_CALC=0.199999999922,
+           VALE_REFE=0.2,
            NOM_PARA='V1',
            TABLE=RESU,
            FILTRE=(_F(NOM_PARA='INST',
@@ -218,8 +242,8 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=1.E-3,
-           VALE_CALC=0.59999973201228,
-           VALE_REFE=0.59999999999999998,
+           VALE_CALC=0.199999999922,
+           VALE_REFE=0.2,
            NOM_PARA='V1',
            TABLE=RESU,
            FILTRE=(_F(NOM_PARA='INST',
@@ -231,8 +255,8 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=1.E-3,
-           VALE_CALC=0.59999973201228,
-           VALE_REFE=0.59999999999999998,
+           VALE_CALC=0.199999999922,
+           VALE_REFE=0.2,
            NOM_PARA='V1',
            TABLE=RESU,
            FILTRE=(_F(NOM_PARA='INST',
@@ -242,6 +266,74 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                    ),
            )
 
+
+# -----------------------------------------------------------------
+# Compression phase
+# -----------------------------------------------------------------
+
+
+RAMPE = DEFI_FONCTION(
+  NOM_PARA = 'INST',
+  VALE     = (0,1, 1,eps_comp/eps),
+  )
+
+  
+INSTANT2 = DEFI_LIST_REEL(  
+  DEBUT = 0,                
+  INTERVALLE = (            
+    _F(JUSQU_A = 1, NOMBRE = 5)
+    )                       
+  )                         
+
+                            
+EVOL2 = STAT_NON_LINE(
+  ETAT_INIT  = _F(EVOL_NOLI=EVOL, INST=tfin),
+  MODELE     = MO,
+  CHAM_MATER = CHMAT,
+  EXCIT      = _F(CHARGE = TRACTION, FONC_MULT=RAMPE),
+  COMPORTEMENT = _F(RELATION  = 'ENDO_FISS_EXP'),
+  INCREMENT = _F(LIST_INST = INSTANT2, INST_INIT=0),
+  NEWTON    = _F(MATRICE='TANGENTE', REAC_ITER = 1),
+  CONVERGENCE = _F(
+    SIGM_REFE      = ft,
+    VARI_REFE      = 1.,
+    LAGR_REFE      = Gf/D,
+    RESI_REFE_RELA = 1.E-5,
+    ITER_GLOB_MAXI = 15,
+    ),
+  SOLVEUR   = _F(
+    METHODE     = 'MUMPS',
+   
+    ),
+  ) 
+
+CALC_CHAMP(reuse = EVOL2,
+  RESULTAT = EVOL2,
+  FORCE    = 'FORC_NODA',
+  )
+
+ENER = POST_ELEM(
+  RESULTAT = EVOL2,
+  TRAV_EXT = _F(),
+  )
+  
+
+# -----------------------------------------------------
+#      COMPARAISON AVEC LES VALEURS DE REFERENCE
+# -----------------------------------------------------
+
+volu = 8.0  # element volume
+wref = 0.5*sig_comp*eps_comp*volu
+
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-3,
+           VALE_CALC=0.0032667506819,
+           VALE_REFE=wref,
+           NOM_PARA='TRAV_ELAS',
+           TABLE=ENER,
+           FILTRE =_F(NOM_PARA='INST', VALE=1),
+           )
 
 
 FIN()

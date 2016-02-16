@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # TITRE MODELISATION AXIS_GRAD_VARI + LOI ENDO_FISS_EXP
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -52,7 +52,6 @@ MO=AFFE_MODELE(MAILLAGE=MA_QU,
                        PHENOMENE='MECANIQUE',
                        MODELISATION='AXIS_GRAD_VARI'));
 
-
 # DEFINITION DU BETON 
 BETON = DEFI_MATER_GC(
   ENDO_FISS_EXP = _F(
@@ -65,7 +64,6 @@ BETON = DEFI_MATER_GC(
     LARG_BANDE = 2*DD,
     ),
   )
-    
 
 
 # ATTRIBUTION DES PROPRIETES DU BETON AU MATERIAU
@@ -256,7 +254,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   TYPE_TEST='SOMM_ABS',
                   RESULTAT=EVOL,
                   NOM_CHAM='SIEF_ELGA',
-                  VALE_CALC=8.4291295720209E+06,
+                  VALE_CALC= 12080030.6223 ,
                   ),
           )
           
@@ -266,7 +264,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=EVOL,
                   NOM_CHAM='FORC_NODA',
                   NOM_CMP='DY',
-                  VALE_CALC= 2828.6797049854,
+                  VALE_CALC= 3741.38934361,
                   ),
           )
 

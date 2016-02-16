@@ -1,7 +1,7 @@
 # coding=utf-8
 
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -24,8 +24,8 @@ loi = LoiComportement(
     doc="""Comportement elastique-fragile, a endommagement scalaire, seuil elliptique et
    ecrouissage isotrope lineaire negatif - R5.03.18""",
     num_lc=46,
-    nb_vari=3,
-    nom_vari=('ENDO', 'INDIENDO', 'ENDORIGI'),
+    nb_vari=9,
+    nom_vari = ('ENDO', 'INDIENDO', 'ENDORIGI','EPSEXX','EPSEYY','EPSEZZ','EPSEXY','EPSEXZ','EPSEYZ'),
     mc_mater = ('ELAS', 'ENDO_SCALAIRE', 'NON_LOCAL'),
     modelisation = ('3D', 'AXIS', 'D_PLAN', 'GRADVARI'),
     deformation = ('PETIT',),
