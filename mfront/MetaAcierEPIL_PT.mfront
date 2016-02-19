@@ -7,9 +7,6 @@
 @Date 04/05/15;
 
 @Theta 1. ;
-@Epsilon 1.e-12;
-@Parameter numerical_jacobian_epsilon = 1.e-11;
-
 
 // --------- Material Property ----------------
 @MaterialProperty stress young; 
