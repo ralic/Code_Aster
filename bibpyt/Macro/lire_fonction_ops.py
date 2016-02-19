@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,16 +25,16 @@ import numpy
 class LectureBlocError(Exception):
     pass
 
-# ------------------------------------------------------------------------
 
-
-def lire_blocs(nomfich, SEPAR):
+def lire_blocs(nomfich, SEPAR, INFO=1):
     """Retourne la liste des blocs
     """
     def info(ib, nlig, ncol):
         """Affiche les infos d'un bloc"""
+        if INFO < 2:
+            return
         print "   . Bloc %2d : %6d lignes, %6d colonnes" % (ib, nlig, ncol)
-    print "  Lecture des blocs du fichier '%s'" % nomfich
+    print "  Lecture des blocs du fichier '%s'..." % nomfich
     fich = open(nomfich, 'r')
     if SEPAR == 'None':
         SEPAR = None
@@ -68,10 +68,8 @@ def lire_blocs(nomfich, SEPAR):
         info(len(blocs), len(lignes), llen)
     return blocs
 
-# ------------------------------------------------------------------------
 
-
-def liste_double(nomfich, INDIC_PARA, INDIC_RESU, SEPAR):
+def liste_double(nomfich, INDIC_PARA, INDIC_RESU, SEPAR, INFO=1):
     """Méthode de construction du VALE pour le format libre
     format LIBRE
     Les lignes contenant autre chose que des séquences de nombres
@@ -82,7 +80,7 @@ def liste_double(nomfich, INDIC_PARA, INDIC_RESU, SEPAR):
     fonction voulue, au sens de ce découpage.
     """
     from Utilitai.transpose import transpose
-    blocs = lire_blocs(nomfich, SEPAR)
+    blocs = lire_blocs(nomfich, SEPAR, INFO)
 
     # vérifications de cohérences lignes et colonnes
     nb_blocs = len(blocs)
@@ -122,13 +120,11 @@ def liste_double(nomfich, INDIC_PARA, INDIC_RESU, SEPAR):
         liste_vale.extend(v)
     return liste_vale
 
-# ------------------------------------------------------------------------
 
-
-def liste_simple(nomfich, INDIC_PARA, SEPAR):
+def liste_simple(nomfich, INDIC_PARA, SEPAR, INFO=1):
     """recherche d'une liste simple
     """
-    blocs = lire_blocs(nomfich, SEPAR)
+    blocs = lire_blocs(nomfich, SEPAR, INFO)
 
     # vérifications de cohérences lignes et colonnes
     nb_blocs = len(blocs)
@@ -145,8 +141,6 @@ def liste_simple(nomfich, INDIC_PARA, SEPAR):
     # de colonnes et de fonctions dans le tableau l_fonc
     vale_1 = blocs[bloc_para - 1][:, col_para - 1]
     return vale_1.tolist()
-
-# ------------------------------------------------------------------------
 
 
 def lire_fonction_ops(self, FORMAT, TYPE, SEPAR, INDIC_PARA, UNITE,
@@ -184,8 +178,8 @@ def lire_fonction_ops(self, FORMAT, TYPE, SEPAR, INDIC_PARA, UNITE,
     if TYPE == 'FONCTION':
         # mise en forme de la liste de valeurs suivant le format choisi :
         try:
-            liste_vale = liste_double(
-                nomfich, INDIC_PARA, args['INDIC_RESU'], SEPAR)
+            liste_vale = liste_double(nomfich, INDIC_PARA, args['INDIC_RESU'],
+                                      SEPAR, INFO)
         except LectureBlocError, message:
             UTMESS('F', 'FONCT0_42', valk=message)
 
@@ -209,12 +203,12 @@ def lire_fonction_ops(self, FORMAT, TYPE, SEPAR, INDIC_PARA, UNITE,
             indic1 = args['INDIC_MODU']
             indic2 = args['INDIC_PHAS']
         try:
-            liste_vale_r = liste_double(nomfich, INDIC_PARA, indic1, SEPAR)
+            liste_vale_r = liste_double(nomfich, INDIC_PARA, indic1, SEPAR, INFO)
         except LectureBlocError, message:
             UTMESS('F', 'FONCT0_42', valk=message)
 
         try:
-            liste_vale_i = liste_double(nomfich, INDIC_PARA, indic2, SEPAR)
+            liste_vale_i = liste_double(nomfich, INDIC_PARA, indic2, SEPAR, INFO)
         except LectureBlocError, message:
             UTMESS('F', 'FONCT0_42', valk=message)
 
@@ -248,8 +242,8 @@ def lire_fonction_ops(self, FORMAT, TYPE, SEPAR, INDIC_PARA, UNITE,
         motscles['DEFI_FONCTION'] = []
         for elem in mc_DEFI_FONCTION:
             try:
-                liste_vale = liste_double(
-                    nomfich, args['INDIC_ABSCISSE'], elem['INDIC_RESU'], SEPAR)
+                liste_vale = liste_double(nomfich, args['INDIC_ABSCISSE'],
+                                          elem['INDIC_RESU'], SEPAR, INFO)
             except LectureBlocError, message:
                 UTMESS('F', 'FONCT0_42', valk=message)
 
@@ -260,7 +254,7 @@ def lire_fonction_ops(self, FORMAT, TYPE, SEPAR, INDIC_PARA, UNITE,
                                                 'PROL_DROITE_FONC'],
                                                 PROL_GAUCHE=args['PROL_GAUCHE_FONC']))
         try:
-            liste_para = liste_simple(nomfich, INDIC_PARA, SEPAR)
+            liste_para = liste_simple(nomfich, INDIC_PARA, SEPAR, INFO)
         except LectureBlocError, message:
             UTMESS('F', 'FONCT0_42', valk=message)
 
