@@ -2,7 +2,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
     implicit none
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -467,9 +467,16 @@ subroutine tran75(nomres, typres, nomin, basemo)
                             alpha, ier)
 !               --- ACCELERATION ABSOLUE = RELATIVE + ENTRAINEMENT
                 call wkvect('&&TRAN75.VECTEUR', 'V V R', neq, jvec)
-                AS_ALLOCATE(vi=ddl, size=neq*nbdir)
-                call pteddl('NUME_DDL', numddl, nbdir, nomcmp, neq,&
+                if (i .eq. 0) then
+                    AS_ALLOCATE(vi=ddl, size=neq*nbdir)
+                    if (tousno) then
+                        call pteddl('NUME_DDL', numddl, nbdir, nomcmp, neq,&
                             tabl_equa = ddl)
+                    else
+                        call pteddl('CHAM_NO', chamno, nbdir, nomcmp, neq,&
+                            tabl_equa = ddl)
+                    endif
+                endif
                 do id = 1, nbdir
                     do ie = 0, neq-1
                         zr(jvec+ie) = zr(jvec+ie) + ddl(1+neq*(id-1) +ie)*alpha*depl(id)
@@ -479,7 +486,9 @@ subroutine tran75(nomres, typres, nomin, basemo)
                     zr(lvale+ie) = zr(lvale+ie) + zr(jvec+ie)
                 end do
                 call jedetr('&&TRAN75.VECTEUR')
-                AS_DEALLOCATE(vi=ddl)
+                if (i .eq. nbinst-1) then
+                    AS_DEALLOCATE(vi=ddl)
+                endif
             endif
             call rsnoch(nomres, type(ich), iarchi)
             call rsadpa(nomres, 'E', 1, 'INST', iarchi,&
