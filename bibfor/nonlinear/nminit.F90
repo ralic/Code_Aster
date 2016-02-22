@@ -136,7 +136,7 @@ implicit none
 !
     integer :: iret, ibid
     real(kind=8) :: r8bid3(3)
-    real(kind=8) :: instin, time
+    real(kind=8) :: instin
     character(len=19) :: varc_prev, disp_prev, strx_prev
     aster_logical :: lacc0, lpilo, lmpas, lsstf, lerrt, lviss, lrefe, ldidi, l_obsv
 !
@@ -195,7 +195,7 @@ implicit none
 !
 ! - Initializations for measure and statistic management
 !
-    call nmcrti(fonact, ds_contact, ds_measure)
+    call nmcrti(fonact, result, ds_contact, ds_measure)
 !
 ! - Initializations for algorithm parameters
 !

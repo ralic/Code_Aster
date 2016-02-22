@@ -1,14 +1,17 @@
-subroutine nmcrti(list_func_acti, ds_contact, ds_measure)
+subroutine nmcrti(list_func_acti, result, ds_contact, ds_measure)
 !
 use NonLin_Datastructure_type
 !
 implicit none
 !
+#include "asterfort/assert.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/ActivateDevice.h"
+#include "asterfort/CreateTable.h"
+#include "asterfort/SetTablePara.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,6 +32,7 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     integer, intent(in) :: list_func_acti(*)
+    character(len=8), intent(in) :: result
     type(NL_DS_Contact), intent(in) :: ds_contact
     type(NL_DS_Measure), intent(inout) :: ds_measure
 !
@@ -41,18 +45,20 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  list_func_acti   : list of active functionnalities
+! In  result           : name of results datastructure
 ! In  ds_contact       : datastructure for contact management
 ! IO  ds_measure       : datastructure for measure and statistics management
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    integer :: i_timer, nb_timer
+    integer :: i_timer, nb_timer, i_device, i_col
     character(len=24) :: cpu_name
     aster_logical :: l_line_search
     aster_logical :: l_cont, l_fric, l_cont_disc, l_cont_cont
     aster_logical :: l_loop_cont, l_loop_fric, l_loop_geom, l_newt_geom
-    aster_logical :: l_all_verif
+    aster_logical :: l_all_verif, l_device_acti
+    type(NL_DS_Table) :: table
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -92,6 +98,7 @@ implicit none
     call ActivateDevice(ds_measure, 'Post')
     call ActivateDevice(ds_measure, 'Lost_Time')
     call ActivateDevice(ds_measure, 'Other')
+    
     if (l_line_search) then
         call ActivateDevice(ds_measure, 'Line_Search')
     endif
@@ -127,5 +134,55 @@ implicit none
         call uttcpu(cpu_name, 'INIT', ' ')
         ds_measure%timer(i_timer)%time_init = 0.d0
     end do
+!
+! - Create table
+!
+    if (ds_measure%l_table) then
+!
+! ----- Get table
+!
+        table = ds_measure%table
+!
+! ----- First column: time
+!
+        i_col = 1
+        table%l_cols_acti(i_col) = .true._1
+        ASSERT(table%cols(i_col)%name(1:4) .eq. 'INST')
+!
+! ----- Loop on active devices to activate columns
+!
+        do i_device = 1, ds_measure%nb_device
+            l_device_acti = ds_measure%l_device_acti(i_device)
+            if (l_device_acti) then
+                i_col = ds_measure%indx_cols(2*(i_device-1)+1)
+                if (i_col .ne. 0) then
+                    table%l_cols_acti(i_col) = .true._1
+                    ASSERT(table%cols(i_col)%name(1:5) .eq. 'Time_')
+                endif
+                i_col = ds_measure%indx_cols(2*(i_device-1)+2)
+                if (i_col .ne. 0) then
+                    table%l_cols_acti(i_col) = .true._1
+                    ASSERT(table%cols(i_col)%name(1:6) .eq. 'Count_')
+                endif
+            endif
+            
+        end do
+!
+! ----- Set table
+!
+        ds_measure%table  = table
+!
+! ----- Create list of parameters
+!
+        call SetTablePara(table)
+!
+! ----- Create table in results datastructure
+!
+        call CreateTable(result, table)
+!
+! ----- Set table
+!
+        ds_measure%table  = table
+    endif
 !
 end subroutine

@@ -55,6 +55,7 @@ implicit none
 ! - Activation
 !
     ds_measure%l_device_acti(device_indx) = .true._1
+    ds_measure%nb_device_acti             = ds_measure%nb_device_acti + 1
 !
 ! - Save device
 !

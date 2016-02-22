@@ -162,10 +162,10 @@ implicit none
 !
 ! - Read parameters
 !
-    call nmdata(modele     , mesh    , mate      , carele, compor  ,&
-                lischa     , solveu  , ds_conv   , carcri, sddyna  ,&
-                sdpost     , sderro  , ds_energy , sdcriq, ds_print,&
-                ds_algopara, ds_inout, ds_contact)
+    call nmdata(modele     , mesh    , mate      , carele    , compor  ,&
+                lischa     , solveu  , ds_conv   , carcri    , sddyna  ,&
+                sdpost     , sderro  , ds_energy , sdcriq    , ds_print,&
+                ds_algopara, ds_inout, ds_contact, ds_measure)
 !
 ! - Initializations of datastructures
 !
@@ -273,7 +273,7 @@ implicit none
 ! --- STATISTIQUES SUR PAS DE TEMPS
 !
     if (.not.lexpl) then
-        call nmstat('P', ds_measure, ds_print)
+        call nmstat('P', ds_measure, ds_print, sddisc, numins)
     endif
 !
 ! --- GESTION DES ACTIONS A LA FIN D'UN PAS DE TEMPS
@@ -357,7 +357,7 @@ implicit none
 ! --- IMPRESSION STATISTIQUES FINALES
 !
     if (.not.lexpl) then
-        call nmstat('T', ds_measure, ds_print)
+        call nmstat('T', ds_measure, ds_print, sddisc, numins)
     endif
 !
 ! --- ON REMET LE MECANISME D'EXCEPTION A SA VALEUR INITIALE

@@ -104,6 +104,7 @@ L_INST=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
 
 U2M=STAT_NON_LINE(MODELE     = MO,
                   CHAM_MATER = CHMAT,
+                  MESURE     = _F(TABLE='OUI'),
                   EXCIT=_F(CHARGE=CHA1,
                            FONC_MULT=RAMPE,),
                   CONTACT=CHA2,
@@ -116,6 +117,25 @@ U2M=STAT_NON_LINE(MODELE     = MO,
                                  RESI_GLOB_RELA = 1.0E-4),
 #                  INFO=2,
                );
+
+STATIS=RECU_TABLE(CO=U2M,NOM_TABLE='STAT',);
+IMPR_TABLE(TABLE=STATIS)
+
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC_I=58,
+           NOM_PARA='Count_Contact_NumbCont',
+           TABLE=STATIS,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC_I=15,
+           NOM_PARA='Count_Contact_NumbFric',
+           TABLE=STATIS,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.0,),
+           )
 
 TEST_RESU(RESU=(_F(GROUP_NO='PPA',
                    INST=1.0,

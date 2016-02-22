@@ -335,6 +335,11 @@ implicit none
 ! - Type: measure and statistics management
 ! 
     type NL_DS_Measure
+! ----- Output in table
+        aster_logical      :: l_table
+! ----- Table in results datastructures
+        type(NL_DS_Table)  :: table
+        integer            :: indx_cols(2*23)
 ! ----- List of timers
         integer            :: nb_timer
         integer            :: nb_timer_maxi = 7
@@ -343,6 +348,7 @@ implicit none
         integer            :: nb_device
         integer            :: nb_device_maxi = 23
         type(NL_DS_Device) :: device(23)
+        integer            :: nb_device_acti
         aster_logical      :: l_device_acti(23)
 ! ----- Some special times
         real(kind=8)       :: store_mean_time

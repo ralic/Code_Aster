@@ -5,6 +5,8 @@ use NonLin_Datastructure_type
 implicit none
 !
 #include "asterf_types.h"
+#include "asterfort/CreateVoidColumn.h"
+#include "asterfort/CreateVoidTable.h"
 #include "asterfort/assert.h"
 #include "asterfort/infdbg.h"
 !
@@ -43,7 +45,11 @@ implicit none
     integer :: ifm, niv
     integer, parameter :: nb_device_defi = 23
     integer, parameter :: nb_timer_defi = 7
-    integer :: i_device, i_timer
+    integer :: i_device, i_timer, i_col
+    aster_logical :: l_time, l_count
+    type(NL_DS_Table) :: table
+    type(NL_DS_Column) :: column
+    type(NL_DS_Device) :: device
 !
 ! - Name of timer
 !
@@ -128,6 +134,7 @@ implicit none
 !
 ! - Main parameters
 !
+    ds_measure%l_table          = .false._1
     ds_measure%nb_timer         = nb_timer_defi
     ds_measure%nb_device        = nb_device_defi
     ds_measure%store_mean_time  = 0.d0
@@ -135,6 +142,7 @@ implicit none
     ds_measure%step_mean_time   = 0.d0
     ds_measure%iter_remain_time = 0.d0
     ds_measure%step_remain_time = 0.d0
+    ds_measure%nb_device_acti   = 0
     ds_measure%l_device_acti(1:ds_measure%nb_device_maxi) = .false._1
 !
 ! - For timers
@@ -162,6 +170,51 @@ implicit none
         ds_measure%device(i_device)%count_step      = 0
         ds_measure%device(i_device)%count_comp      = 0
     end do
+!
+! - Create table
+!
+    call CreateVoidTable(table)
+    table%table_type = 'STAT'
+!
+! - First column: time
+!
+    i_col = 1
+    call CreateVoidColumn(column)
+    column%name        = 'INST'
+    column%l_vale_real = .true._1
+    table%cols(i_col)  = column
+!
+! - List of columns for step
+!
+    do i_device = 1, nb_device_defi
+        device      = ds_measure%device(i_device)
+        l_time      = device%time_indi_step .ne. 0
+        l_count     = device%count_indi_step .ne. 0
+        call CreateVoidColumn(column)
+        ds_measure%indx_cols(2*(i_device-1)+1) = 0
+        ds_measure%indx_cols(2*(i_device-1)+2) = 0
+        if (l_time) then
+            i_col = i_col+1
+            column%name        = 'Time_'//device%type
+            column%l_vale_real = .true._1
+            column%l_vale_inte = .false._1
+            ds_measure%indx_cols(2*(i_device-1)+1) = i_col
+            table%cols(i_col)  = column
+            table%indx_vale(i_col) = i_device
+        endif
+        if (l_count) then
+            i_col = i_col+1
+            column%name        = 'Count_'//device%type
+            column%l_vale_real = .false._1
+            column%l_vale_inte = .true._1
+            ds_measure%indx_cols(2*(i_device-1)+2) = i_col
+            table%cols(i_col)  = column
+            table%indx_vale(i_col) = i_device
+        endif
+        ASSERT(i_col .le. table%nb_cols_maxi)
+        table%nb_cols          = i_col
+    end do 
+    ds_measure%table = table  
 !
 ! - Checks
 !

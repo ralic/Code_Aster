@@ -1,4 +1,4 @@
-subroutine ReadContact(ds_contact)
+subroutine ReadMeasure(ds_measure)
 !
 use NonLin_Datastructure_type
 !
@@ -6,7 +6,7 @@ implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/infniv.h"
-#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,42 +26,38 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    type(NL_DS_Contact), intent(inout) :: ds_contact
+    type(NL_DS_Measure), intent(inout) :: ds_measure
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! MECA_NON_LINE - Contact management
 !
-! Read parameters for contact management
+! Read parameters for measure and statistics management
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! IO  ds_contact       : datastructure for contact management
+! IO  ds_measure       : datastructure for measure and statistics management
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    integer :: nocc
-    character(len=8) :: sdcont
-    character(len=16) :: keyw
+    character(len=16) :: keyw, keywfact, answer
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call infniv(ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> . Read parameters contact management'
+        write (ifm,*) '<MECANONLINE> . Read parameters for measure and statistics management'
     endif
 !
 ! - Initializations
 !
-    keyw = 'CONTACT'
+    keywfact = 'MESURE'
+    keyw     = 'TABLE'
 !
 ! - Get name of datastructure from DEFI_CONTACT
 !
-    call getvid(' ', keyw, scal=sdcont, nbret=nocc)
-    ds_contact%l_contact = nocc .gt. 0
-    if (nocc .ne. 0) then   
-        ds_contact%sdcont = sdcont
-    endif
+    call getvtx(keywfact, keyw, iocc=1, scal=answer)
+    ds_measure%l_table = answer.eq.'OUI'
 !
 end subroutine

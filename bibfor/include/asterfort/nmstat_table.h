@@ -16,11 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmcrti(list_func_acti, result, ds_contact, ds_measure)
-        use NonLin_Datastructure_type
-        integer, intent(in) :: list_func_acti(*)
-        character(len=8), intent(in) :: result
-        type(NL_DS_Contact), intent(in) :: ds_contact
+    subroutine nmstat_table(ds_measure, time_curr)
+        use NonLin_Datastructure_type        
         type(NL_DS_Measure), intent(inout) :: ds_measure
-    end subroutine nmcrti
+        real(kind=8), intent(in) :: time_curr
+    end subroutine nmstat_table
 end interface

@@ -1,4 +1,4 @@
-subroutine nmstat(phasis, ds_measure, ds_print)
+subroutine nmstat(phasis, ds_measure, ds_print, sddisc, nume_inst)
 !
 use NonLin_Datastructure_type
 !
@@ -7,6 +7,7 @@ implicit none
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
+#include "asterfort/diinst.h"
 #include "asterfort/impfot.h"
 #include "asterfort/impmem.h"
 #include "asterfort/GetDevice.h"
@@ -16,6 +17,7 @@ implicit none
 #include "asterfort/nmtimr.h"
 #include "asterfort/utmess.h"
 #include "asterfort/nmstat_mess.h"
+#include "asterfort/nmstat_table.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -38,12 +40,14 @@ implicit none
     character(len=1), intent(in) :: phasis
     type(NL_DS_Measure), intent(inout) :: ds_measure
     type(NL_DS_Print), intent(in) :: ds_print
+    character(len=19), intent(in) :: sddisc
+    integer, intent(in) :: nume_inst
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! MECA_NON_LINE - Print management
+! MECA_NON_LINE - Measure and statistics management
 !
-! Print statistics
+! Update statistics
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,11 +56,13 @@ implicit none
 !                          'T' on all transient
 ! IO  ds_measure       : datastructure for measure and statistics management
 ! In  ds_print         : datastructure for printing parameters
+! In  sddisc           : datastructure for time discretization
+! In  nume_inst        : index of current step time
 !
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: l_print = .false._1
-    real(kind=8) :: time_other = 0.d0
+    real(kind=8) :: time_other = 0.d0, time_curr
     real(kind=8) :: time_time_step = 0.d0
     real(kind=8) :: time_sub = 0.d0, time = 0.d0
     integer :: i_device, nb_device
@@ -66,9 +72,13 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 !
+! - Current time
+!
+    time_curr = diinst(sddisc, nume_inst)
+!
 ! - Print for this step time ?
 !
-    l_print = ds_print%l_print
+    l_print   = ds_print%l_print
 !
 ! - Time for other operations (not measured)
 !
@@ -97,6 +107,12 @@ implicit none
     if ((phasis.eq.'P') .and. l_print) then
         call nmstat_mess(ds_measure, phasis)
         call impmem()
+    endif
+!
+! - Save in table
+!
+    if ((phasis.eq.'P') .and. ds_measure%l_table) then
+        call nmstat_table(ds_measure, time_curr)
     endif
 !
 ! - Print at end of computation

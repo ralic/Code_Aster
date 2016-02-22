@@ -16,10 +16,12 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmstat(phasis, ds_measure, ds_print)
+    subroutine nmstat(phasis, ds_measure, ds_print, sddisc, nume_inst)
         use NonLin_Datastructure_type
         character(len=1), intent(in) :: phasis
         type(NL_DS_Measure), intent(inout) :: ds_measure
         type(NL_DS_Print), intent(in) :: ds_print
+        character(len=19), intent(in) :: sddisc
+        integer, intent(in) :: nume_inst
     end subroutine nmstat
 end interface
