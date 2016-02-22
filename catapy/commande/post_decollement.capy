@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -23,7 +23,7 @@ POST_DECOLLEMENT=MACRO(nom="POST_DECOLLEMENT",
                        fr=tr("calcul du rapport de surfaces de contact radier/sol"),
                        reentrant='n',
                        UIinfo={"groupes":("Post-traitements",)},
-         RESULTAT   =SIMP(statut='o',typ=(evol_noli) ),
+         RESULTAT   =SIMP(statut='o',typ=(evol_noli,dyna_trans) ),
          NOM_CHAM   =SIMP(statut='f',typ='TXM',validators=NoRepeat(),defaut='DEPL',into=C_NOM_CHAM_INTO(),max=1),
          NOM_CMP    =SIMP(statut='f',typ='TXM',defaut='DZ',max=1),
          GROUP_MA   =SIMP(statut='o',typ=grma,max=1),

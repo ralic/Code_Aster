@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -62,8 +62,11 @@ def post_decollement_ops(self, RESULTAT, NOM_CHAM, NOM_CMP, GROUP_MA, INFO, **ar
 
     # on recupere le concept maillage
     iret, ibid, nom_mo = aster.dismoi('MODELE', RESULTAT.nom, 'RESULTAT', 'F')
-    iret, ibid, nom_ma = aster.dismoi(
-        'NOM_MAILLA', nom_mo.strip(), 'MODELE', 'F')
+    if nom_mo == '#AUCUN' :
+      iret, ibid, numddl = aster.dismoi('NUME_DDL', RESULTAT.nom, 'RESU_DYNA', 'F')
+      iret, ibid, nom_ma = aster.dismoi('NOM_MAILLA', numddl, 'NUME_DDL', 'F')
+    else :
+      iret, ibid, nom_ma = aster.dismoi('NOM_MAILLA', nom_mo.strip(), 'MODELE', 'F')
     MAILLAGE = self.get_concept(nom_ma.strip())
 
     # Creation du groupe de noeuds 'PDECOL'
