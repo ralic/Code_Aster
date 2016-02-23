@@ -3,7 +3,6 @@ subroutine reerel(elrefp, nnop, ndim, tabar, xe,&
 ! aslint: disable=W1306
     implicit none
 !
-#include "jeveux.h"
 #include "asterfort/elrfvf.h"
 #include "asterfort/vecini.h"
     integer :: ndim, nnop
@@ -12,7 +11,7 @@ subroutine reerel(elrefp, nnop, ndim, tabar, xe,&
 !
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -46,7 +45,6 @@ subroutine reerel(elrefp, nnop, ndim, tabar, xe,&
 !
 !......................................................................
 !
-!
     call vecini(ndim, 0.d0, xg)
 !
 ! --- VALEURS DES FONCTIONS DE FORME EN XE: FF
@@ -57,13 +55,12 @@ subroutine reerel(elrefp, nnop, ndim, tabar, xe,&
         call elrfvf(elrefp, xe, nbnomx, ff, nno)
     endif
 !
-!
 ! --- COORDONNES DU POINT DANS L'ELEMENT REEL
 !
-    do 100 j = 1, ndim
-        do 200 i = 1, nnop
+    do j = 1, ndim
+        do i = 1, nnop
             xg(j) = xg(j) + tabar(ndim*(i-1)+j)*ff(i)
-200      continue
-100  end do
+        end do
+    end do
 !
 end subroutine
