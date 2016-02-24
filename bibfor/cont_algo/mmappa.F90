@@ -59,8 +59,7 @@ implicit none
 ! - Get parameters
 !
     l_cont_cont  = cfdisl(ds_contact%sdcont_defi,'FORMUL_CONTINUE')
-!    l_cont_lac   = cfdisl(ds_contact%sdcont_defi,'FORMUL_LAC')
-    l_cont_lac   = .false._1
+    l_cont_lac   = cfdisl(ds_contact%sdcont_defi,'FORMUL_LAC')
 !
 ! - Pairing
 !
@@ -81,7 +80,11 @@ implicit none
 !
 ! ----- Pairing
 !
-!       call apcalc('S_To_S', mesh, ds_contact)
+        call apcalc('S_To_S', mesh, ds_contact)
+!
+! ----- Need new contact elements
+!
+        ds_contact%l_renumber = .true.
     else
         ASSERT(.false.)
     endif
