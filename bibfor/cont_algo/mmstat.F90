@@ -9,6 +9,7 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/mmmbca.h"
+#include "asterfort/mmmbca_lac.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -66,14 +67,13 @@ implicit none
 ! - Get parameters
 !
     l_cont_cont  = cfdisl(ds_contact%sdcont_defi, 'FORMUL_CONTINUE')
-    l_cont_lac   = .false._1
-!   l_cont_lac   = cfdisl(ds_contact%sdcont_defi, 'FORMUL_LAC')
+    l_cont_lac   = cfdisl(ds_contact%sdcont_defi, 'FORMUL_LAC')
 !
     if (l_cont_cont) then
         call mmmbca(mesh  , iter_newt, nume_inst, sddyna    , ds_measure,&
                     sddisc, hval_incr, hval_algo, ds_contact)
     elseif (l_cont_lac) then
-    
+        call mmmbca_lac(mesh, hval_incr, ds_contact)
     else
         ASSERT(.false.)
     endif
