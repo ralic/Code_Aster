@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -17,9 +17,10 @@
 !
 interface
     subroutine nmassx(modele, numedd, mate, carele, comref,&
-                      compor, lischa, carcri, fonact, sdstat,&
+                      compor, lischa, carcri, fonact, ds_measure,&
                       sddyna, valinc, solalg, veelem, veasse,&
-                      sdtime, ldccvg, codere, cndonn)
+                      ldccvg, codere, cndonn)
+        use NonLin_Datastructure_type        
         character(len=24) :: modele
         character(len=24) :: numedd
         character(len=24) :: mate
@@ -29,13 +30,12 @@ interface
         character(len=19) :: lischa
         character(len=24) :: carcri
         integer :: fonact(*)
-        character(len=24) :: sdstat
+        type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=19) :: sddyna
         character(len=19) :: valinc(*)
         character(len=19) :: solalg(*)
         character(len=19) :: veelem(*)
         character(len=19) :: veasse(*)
-        character(len=24) :: sdtime
         integer :: ldccvg
         character(len=24) :: codere
         character(len=19) :: cndonn

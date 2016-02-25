@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -22,7 +22,7 @@ interface
                       mate  , carele, sddisc, sddyna     , fonact,&
                       numins, valinc, solalg, lischa     , comref,&
                       ds_contact, numedd, numfix,&
-                      compor, carcri, sdstat, sdtime     , meelem,&
+                      compor, carcri, ds_measure, meelem,&
                       measse, veelem, nddle , ddlexc     , modrig,&
                       ldccvg, matass, matgeo)
         use NonLin_Datastructure_type
@@ -46,8 +46,7 @@ interface
         character(len=24) :: numfix
         character(len=24) :: compor
         character(len=24) :: carcri
-        character(len=24) :: sdstat
-        character(len=24) :: sdtime
+        type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=19) :: meelem(*)
         character(len=19) :: measse(*)
         character(len=19) :: veelem(*)

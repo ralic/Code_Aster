@@ -8,7 +8,7 @@ implicit none
 #include "asterfort/SetCol.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,7 +47,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: i_col, nb_cols
-    character(len=9) :: col_name
+    character(len=24) :: col_name
     type(NL_DS_Table) :: table_cvg
 !
 ! --------------------------------------------------------------------------------------------------

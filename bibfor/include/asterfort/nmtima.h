@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,9 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmtima(sdtime, timer, vali)
-        character(len=24), intent(in) :: sdtime
-        character(len=3), intent(in) :: timer
+    subroutine nmtima(ds_measure, timer_type_, vali)
+        use NonLin_Datastructure_type
+        type(NL_DS_Measure), intent(in) :: ds_measure
+        character(len=*), intent(in) :: timer_type_
         integer, intent(out) :: vali
     end subroutine nmtima
 end interface

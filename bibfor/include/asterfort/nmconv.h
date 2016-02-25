@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -19,8 +19,8 @@
 !
 interface
     subroutine nmconv(noma    , modele, mate   , numedd  , sdnume     ,&
-                      fonact  , sddyna, ds_conv, ds_print, sdstat     ,&
-                      sddisc  , sdtime, sdcrit , sderro  , ds_algopara,&
+                      fonact  , sddyna, ds_conv, ds_print, ds_measure,&
+                      sddisc  , sdcrit , sderro  , ds_algopara,&
                       ds_inout, comref, matass , solveu  , numins     ,&
                       iterat  , eta   , ds_contact, valinc  , solalg     ,&
                       measse  , veasse)
@@ -34,9 +34,8 @@ interface
         character(len=19) :: sddyna
         type(NL_DS_Conv), intent(inout) :: ds_conv
         type(NL_DS_Print), intent(inout) :: ds_print
-        character(len=24) :: sdstat
+        type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=19) :: sddisc
-        character(len=24) :: sdtime
         character(len=19) :: sdcrit
         character(len=24) :: sderro
         type(NL_DS_InOut), intent(in) :: ds_inout

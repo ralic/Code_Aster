@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -20,7 +20,8 @@
 interface
     subroutine dltini(lcrea, nume, result, depini, vitini,&
                       accini, fexini, famini, fliini, neq,&
-                      numedd, inchac, baseno)
+                      numedd, inchac, baseno, ds_energy)
+        use NonLin_Datastructure_type
         aster_logical :: lcrea
         integer :: nume
         character(len=8) :: result
@@ -34,5 +35,6 @@ interface
         character(len=24) :: numedd
         integer :: inchac
         character(len=8) :: baseno
+        type(NL_DS_Energy), intent(in) :: ds_energy
     end subroutine dltini
 end interface

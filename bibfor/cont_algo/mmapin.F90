@@ -1,4 +1,4 @@
-subroutine mmapin(mesh, ds_contact, nume_dof, sdtime, sdstat)
+subroutine mmapin(mesh, ds_contact, nume_dof, ds_measure)
 !
 use NonLin_Datastructure_type
 !
@@ -9,7 +9,7 @@ implicit none
 #include "asterfort/mmctcg.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -28,8 +28,7 @@ implicit none
 !
     character(len=8), intent(in) :: mesh
     type(NL_DS_Contact), intent(inout) :: ds_contact
-    character(len=24), intent(in) :: sdtime
-    character(len=24), intent(in) :: sdstat    
+    type(NL_DS_Measure), intent(inout) :: ds_measure  
     character(len=24), intent(in) :: nume_dof
 !
 ! --------------------------------------------------------------------------------------------------
@@ -43,8 +42,7 @@ implicit none
 ! In  mesh             : name of mesh
 ! IO  ds_contact       : datastructure for contact management
 ! In  nume_dof         : name of numbering object (NUME_DDL)
-! In  sdtime           : datastructure for timers
-! In  sdstat           : datastructure for statistics
+! IO  ds_measure       : datastructure for measure and statistics management
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -57,7 +55,7 @@ implicit none
 ! - Geometric actualisation and pairing 
 !
     if (.not.l_cont_allv) then
-        call mmctcg(mesh, ds_contact, nume_dof, sdstat, sdtime)
+        call mmctcg(mesh, ds_contact, nume_dof, ds_measure)
     endif
 !
 end subroutine

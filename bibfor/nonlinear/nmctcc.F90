@@ -1,5 +1,5 @@
-subroutine nmctcc(mesh      , model_, mate  , nume_inst, sddyna   ,&
-                  sderro    , sdstat, sddisc, hval_incr, hval_algo,&
+subroutine nmctcc(mesh      , model_    , mate  , nume_inst, sddyna   ,&
+                  sderro    , ds_measure, sddisc, hval_incr, hval_algo,&
                   ds_contact)
 !
 use NonLin_Datastructure_type
@@ -44,7 +44,7 @@ implicit none
     integer, intent(in) :: nume_inst
     character(len=19), intent(in) :: sddyna
     character(len=24), intent(in) :: sderro
-    character(len=24), intent(in) :: sdstat
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19), intent(in) :: sddisc
     character(len=19), intent(in) :: hval_incr(*)
     character(len=19), intent(in) :: hval_algo(*)
@@ -64,7 +64,7 @@ implicit none
 ! In  nume_inst        : index of current time step
 ! In  sddyna           : dynamic parameters datastructure
 ! In  sderro           : datastructure for errors during algorithm
-! In  sdstat           : datastructure for statistics
+! IO  ds_measure       : datastructure for measure and statistics management
 ! In  sddisc           : datastructure for time discretization
 ! In  hval_incr        : hat-variable for incremental values fields
 ! In  hval_algo        : hat-variable for algorithms fields
@@ -125,7 +125,7 @@ implicit none
             call xmmbca(mesh, model, mate, hval_incr, ds_contact)
         endif
     else if (l_cont_cont) then
-        call mmstat(mesh  , iter_newt, nume_inst, sddyna    , sdstat,&
+        call mmstat(mesh  , iter_newt, nume_inst, sddyna    , ds_measure,&
                     sddisc, hval_incr, hval_algo, ds_contact)
     else
         ASSERT(.false.)

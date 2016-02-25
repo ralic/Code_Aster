@@ -1,9 +1,22 @@
-subroutine nmresd(fonact, sddyna, sdstat, sdtime, solveu,&
-                  numedd, instan, maprec, matass, cndonn,&
-                  cnpilo, cncine, solalg, rescvg)
+subroutine nmresd(fonact, sddyna, ds_measure, solveu, numedd,&
+                  instan, maprec, matass    , cndonn, cnpilo,&
+                  cncine, solalg, rescvg)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmresg.h"
+#include "asterfort/nmreso.h"
+#include "asterfort/nmrinc.h"
+#include "asterfort/nmtime.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,22 +33,10 @@ subroutine nmresd(fonact, sddyna, sdstat, sdtime, solveu,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/ndynlo.h"
-#include "asterfort/nmchex.h"
-#include "asterfort/nmresg.h"
-#include "asterfort/nmreso.h"
-#include "asterfort/nmrinc.h"
-#include "asterfort/nmtime.h"
     integer :: fonact(*)
     character(len=19) :: solalg(*)
     character(len=19) :: maprec, matass
-    character(len=24) :: sdtime, sdstat
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19) :: solveu, sddyna
     character(len=19) :: cncine, cndonn, cnpilo
     character(len=24) :: numedd
@@ -50,11 +51,9 @@ subroutine nmresd(fonact, sddyna, sdstat, sdtime, solveu,&
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
 ! IN  SDDYNA : SD DYNAMIQUE
-! IN  SDTIME : SD TIMER
-! IN  SDSTAT : SD STATISTIQUES
+! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  SOLVEU : SOLVEUR
 ! IN  NUMEDD : NUME_DDL
 ! IN  INSTAN : INSTANT COURANT
@@ -78,11 +77,7 @@ subroutine nmresd(fonact, sddyna, sdstat, sdtime, solveu,&
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('MECA_NON_LINE', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> ... RESOLUTION'
     endif
@@ -98,8 +93,8 @@ subroutine nmresd(fonact, sddyna, sdstat, sdtime, solveu,&
 !
 ! --- RESOLUTION GENERALISEE OU PHYSIQUE
 !
-    call nmtime(sdtime, 'INI', 'SOLVE')
-    call nmtime(sdtime, 'RUN', 'SOLVE')
+    call nmtime(ds_measure, 'Init', 'Solve')
+    call nmtime(ds_measure, 'Launch', 'Solve')
 !
     if (lprmo) then
         call nmresg(numedd, sddyna, instan, cndonn, depso1)
@@ -108,8 +103,7 @@ subroutine nmresd(fonact, sddyna, sdstat, sdtime, solveu,&
                     maprec, matass, depso1, depso2, rescvg)
     endif
 !
-    call nmtime(sdtime, 'END', 'SOLVE')
-    call nmrinc(sdstat, 'SOLVE')
+    call nmtime(ds_measure, 'Stop', 'Solve')
+    call nmrinc(ds_measure, 'Solve')
 !
-    call jedema()
 end subroutine

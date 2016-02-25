@@ -23,7 +23,6 @@ implicit none
 #include "asterfort/nmcomp.h"
 #include "asterfort/nmcpel.h"
 #include "asterfort/nmcrcv.h"
-#include "asterfort/nmdcin.h"
 #include "asterfort/nmfinp.h"
 #include "asterfort/pmactn.h"
 #include "asterfort/pmat.h"
@@ -203,7 +202,6 @@ implicit none
 !        RECUPERATION DU NUMERO D'ORDRE ET DE L'INSTANT COURANTS
 !        DECOUPE INITIALE DU PAS DE TEMPS
 !
-    call nmdcin(sddisc, numins)
     instam = diinst(sddisc, numins-1)
     instap = diinst(sddisc, numins )
 !        CALCUL DES VARIABLES DE COMMANDE

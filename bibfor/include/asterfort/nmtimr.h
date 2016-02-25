@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,10 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmtimr(sdtime, timerz, phase, valr)
-        character(len=24) :: sdtime
-        character(len=*) :: timerz
-        character(len=1) :: phase
-        real(kind=8) :: valr
+    subroutine nmtimr(ds_measure, device_type_, phasis, time)
+        use NonLin_Datastructure_type
+        type(NL_DS_Measure), intent(in) :: ds_measure
+        character(len=*), intent(in) :: device_type_
+        character(len=1), intent(in) :: phasis
+        real(kind=8), intent(out) :: time
     end subroutine nmtimr
 end interface

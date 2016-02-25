@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmfocc(phase      , model      , mate       , nume_dof , list_func_acti,&
-                      ds_contact , sdstat     , sdtime     , hval_algo, hval_incr     ,&
-                      hval_veelem, hval_veasse)
+    subroutine nmfocc(phase      , model     , mate     , nume_dof , list_func_acti,&
+                      ds_contact , ds_measure, hval_algo, hval_incr, hval_veelem   ,&
+                      hval_veasse)
         use NonLin_Datastructure_type
         character(len=10), intent(in) :: phase
         character(len=24), intent(in) :: model
@@ -26,8 +26,7 @@ interface
         character(len=24), intent(in) :: nume_dof
         integer, intent(in) :: list_func_acti(*)
         type(NL_DS_Contact), intent(in) :: ds_contact
-        character(len=24), intent(in) :: sdstat
-        character(len=24), intent(in) :: sdtime
+        type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=19), intent(in) :: hval_algo(*)
         character(len=19), intent(in) :: hval_incr(*)
         character(len=19), intent(in) :: hval_veelem(*)

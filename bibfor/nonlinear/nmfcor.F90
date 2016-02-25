@@ -1,6 +1,6 @@
 subroutine nmfcor(modele, numedd  , mate  , carele     , comref,&
                   compor, lischa  , fonact, ds_algopara, carcri,&
-                  numins, iterat  , sdstat, sdtime     , sddisc,&
+                  numins, iterat  , ds_measure, sddisc,&
                   sddyna, sdnume  , sderro, ds_contact,&
                   ds_inout, valinc, solalg     , veelem,&
                   veasse, meelem  , measse, matass     , lerrit)
@@ -28,7 +28,7 @@ implicit none
 #include "asterfort/nmtime.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -49,7 +49,7 @@ implicit none
     integer :: fonact(*)
     integer :: iterat, numins
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-    character(len=24) :: sdstat, sdtime
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19) :: sddisc, sddyna, sdnume
     character(len=19) :: lischa, matass
     character(len=24) :: modele, numedd, mate, carele, comref, compor
@@ -76,10 +76,8 @@ implicit none
 ! IN  COMREF : VARI_COM DE REFERENCE
 ! IN  COMPOR : COMPORTEMENTC IN  LISCHA : LISTE DES CHARGES
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
-! IN  SDTIME : SD TIMER
-! IN  SDSTAT : SD STATISTIQUES
+! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
-! IN  SDTIME : SD TIMER
 ! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
 ! IN  ITERAT : NUMERO D'ITERATION DE NEWTON
@@ -140,7 +138,7 @@ implicit none
 ! --- CALCUL DES CHARGEMENTS VARIABLES AU COURS DU PAS DE TEMPS
 !
     call nmchar('VARI'  , 'CORRECTION', modele, numedd, mate,&
-                carele  , compor, lischa, numins, sdtime,&
+                carele  , compor, lischa, numins, ds_measure,&
                 sddisc  , fonact, comref,&
                 ds_inout, valinc, solalg, veelem, measse,&
                 veasse  , sddyna)
@@ -148,9 +146,9 @@ implicit none
 ! --- CALCUL DU SECOND MEMBRE POUR CONTACT/XFEM
 !
     if (leltc) then
-        call nmfocc('CONVERGENC', modele, mate, numedd, fonact,&
-                    ds_contact, sdstat, sdtime, solalg,&
-                    valinc, veelem, veasse)
+        call nmfocc('CONVERGENC', modele    , mate  , numedd, fonact,&
+                    ds_contact  , ds_measure, solalg, valinc, veelem,&
+                    veasse)
     endif
 !
 ! --- OPTION POUR MERIMO
@@ -164,14 +162,13 @@ implicit none
     if (lcfint) then
         if (lcrigi) then
             call nmrigi(modele, mate, carele, compor, carcri,&
-                        sddyna, sdstat, sdtime, fonact, iterat,&
+                        sddyna, ds_measure, fonact, iterat,&
                         valinc, solalg, comref, meelem, veelem,&
                         option, ldccvg, codere)
         else
-            call nmfint(modele, mate, carele, comref, compor,&
-                        carcri, fonact, iterat, sddyna, sdstat,&
-                        sdtime, valinc, solalg, ldccvg, codere,&
-                        vefint)
+            call nmfint(modele, mate  , carele, comref, compor,&
+                        carcri, fonact, iterat, sddyna, ds_measure,&
+                        valinc, solalg, ldccvg, codere, vefint)
         endif
     endif
 !
@@ -187,8 +184,8 @@ implicit none
 !
 ! --- ASSEMBLAGE DES FORCES INTERIEURES
 !
-    call nmtime(sdtime, 'INI', 'SECO_MEMB')
-    call nmtime(sdtime, 'RUN', 'SECO_MEMB')
+    call nmtime(ds_measure, 'Init', 'Second_Member')
+    call nmtime(ds_measure, 'Launch', 'Second_Member')
     if (lcfint) then
         call nmaint(numedd, fonact, ds_contact, veasse, vefint,&
                     cnfint, sdnume)
@@ -208,7 +205,7 @@ implicit none
     call nmbudi(modele, numedd, lischa, depplu, vebudi,&
                 cnbudi, matass)
 !
-    call nmtime(sdtime, 'END', 'SECO_MEMB')
+    call nmtime(ds_measure, 'Stop', 'Second_Member')
 !
 999 continue
 !

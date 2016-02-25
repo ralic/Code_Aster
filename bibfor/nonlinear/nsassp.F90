@@ -1,6 +1,6 @@
-subroutine nsassp(modele, numedd, lischa, fonact    , sddyna,&
-                  sdtime, valinc, veelem, veasse    , cnpilo,&
-                  cndonn, mate  , carele, ds_contact, matass)
+subroutine nsassp(modele    , numedd, lischa, fonact    , sddyna,&
+                  ds_measure, valinc, veelem, veasse    , cnpilo,&
+                  cndonn    , mate  , carele, ds_contact, matass)
 !
 use NonLin_Datastructure_type
 !
@@ -21,7 +21,7 @@ implicit none
 #include "asterfort/vtzero.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -40,7 +40,8 @@ implicit none
 !
     integer :: fonact(*)
     character(len=19) :: lischa, sddyna, matass
-    character(len=24) :: modele, numedd, mate, carele, sdtime
+    character(len=24) :: modele, numedd, mate, carele
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19) :: veasse(*), veelem(*), valinc(*)
     character(len=19) :: cnpilo, cndonn
@@ -59,7 +60,7 @@ implicit none
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! IN  SDDYNA : SD DYNAMIQUE
 ! In  ds_contact       : datastructure for contact management
-! IN  SDTIME : SD TIMER
+! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  VEELEM : VARIABLE CHAPEAU POUR NOM DES VECT_ELEM
 ! IN  VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE
@@ -99,10 +100,10 @@ implicit none
     leltf = isfonc(fonact,'ELT_FROTTEMENT')
     lallv = isfonc(fonact,'CONT_ALL_VERIF' )
 !
-! --- MESURES
+! - Launch timer
 !
-    call nmtime(sdtime, 'INI', 'SECO_MEMB')
-    call nmtime(sdtime, 'RUN', 'SECO_MEMB')
+    call nmtime(ds_measure, 'Init'  , 'Second_Member')
+    call nmtime(ds_measure, 'Launch', 'Second_Member')
 !
 ! --- DECOMPACTION DES VARIABLES CHAPEAUX
 !
@@ -209,6 +210,8 @@ implicit none
         call vtaxpy(coef(i), vect(i), cnpilo)
     end do
 !
-    call nmtime(sdtime, 'END', 'SECO_MEMB')
+! - End timer
+!
+    call nmtime(ds_measure, 'Stop', 'Second_Member')
 !
 end subroutine

@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -20,7 +20,7 @@
 ! aslint: disable=W1504
 !
 interface
-    subroutine nmxvec(modelz  , mate  , carele, compor, sdtime,&
+    subroutine nmxvec(modelz  , mate  , carele, compor, ds_measure,&
                       sddisc  , sddyna, numins, valinc, solalg,&
                       lischa  , comref, numedd,&
                       ds_inout, veelem, veasse, measse, nbvect,&
@@ -30,7 +30,7 @@ interface
         character(len=24) :: mate
         character(len=24) :: carele
         character(len=24) :: compor
-        character(len=24) :: sdtime
+        type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=19) :: sddisc
         character(len=19) :: sddyna
         integer :: numins

@@ -1,7 +1,14 @@
-subroutine nmtima(sdtime, timer, vali)
+subroutine nmtima(ds_measure, timer_type_, vali)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,73 +25,69 @@ subroutine nmtima(sdtime, timer, vali)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-    character(len=24), intent(in) :: sdtime
-    character(len=3), intent(in) :: timer
+    type(NL_DS_Measure), intent(in) :: ds_measure
+    character(len=*), intent(in) :: timer_type_
     integer, intent(out) :: vali
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (UTILITAIRE)
+! MECA_NON_LINE - Measure and statistic management
 !
-! GESTION DES TIMERS - MESURE DU TEMPS RESTANT
+! Evaluate remaining type
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  ds_measure       : datastructure for measure and statistics management
+! In  timer_type       : type of current timer
+! Out vali             : 0 - enough time
+!                        1 - not enough time
 !
-! IN  TIMER  : NOM DU TIMER
-!                'PAS'   TIMER POUR UN PAS DE TEMPS
-!                'ITE'   TIMER POUR UNE ITERATION DE NEWTON
-! IN  SDTIME : SD TIMER
-! OUT VALI   : RESULTAT DE L'ACTION
-!               0 ON CONTINUE
-!               1 ON S'ARRETE
+! --------------------------------------------------------------------------------------------------
 !
+    character(len=9) :: timer_type
+    integer :: i_timer, timer_indx, nb_timer
+    type(NL_DS_Timer) :: timer
+    real(kind=8) :: remaining_time, store_mean_time, iter_mean_time, step_mean_time
 !
-    character(len=24) :: timpas, timite, timarc
-    integer :: jtpas, jtite, jtarc
-    real(kind=8) :: tpsrst, moyarc, moyite, moypas
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+    nb_timer   = ds_measure%nb_timer
+    timer_indx = 0
+    vali       = 0
+    timer_type = timer_type_
 !
-    call jemarq()
+! - Find timer
 !
-! --- INITIALISATIONS
+    do i_timer = 1, nb_timer
+        if (ds_measure%timer(i_timer)%type .eq. timer_type) then
+            ASSERT(timer_indx.eq.0)
+            timer_indx = i_timer
+        endif
+    end do
 !
-    vali = 0
+! - Get current timer
 !
-! --- ACCES SD TIMER
+    ASSERT(timer_indx.ne.0)
+    timer     = ds_measure%timer(timer_indx)
 !
-    timpas = sdtime(1:19)//'.TPAS'
-    timite = sdtime(1:19)//'.TITE'
-    timarc = sdtime(1:19)//'.TARC'
-    call jeveuo(timpas, 'E', jtpas)
-    call jeveuo(timite, 'E', jtite)
-    call jeveuo(timarc, 'E', jtarc)
+! - Get mean times
 !
-! --- TEMPS MOYENS
+    store_mean_time = ds_measure%store_mean_time
+    iter_mean_time  = ds_measure%iter_mean_time
+    step_mean_time  = ds_measure%step_mean_time
 !
-    moyarc = zr(jtarc+4-1)
-    moyite = zr(jtite+4-1)
-    moypas = zr(jtpas+4-1)
+! - Enough time ?
 !
-! --- MESURE DES TEMPS RESTANTS
-!
-    if (timer .eq. 'ITE') then
-        tpsrst = zr(jtite+1-1)
-        if ((2.d0*moyite) .le. (0.95d0*tpsrst-moyarc)) then
+    if (timer_type .eq. 'Newt_Iter') then
+        remaining_time = ds_measure%iter_remain_time
+        if ((2.d0*iter_mean_time) .le. (0.95d0*remaining_time-store_mean_time)) then
             vali = 0
         else
             vali = 1
         endif
-    else if (timer.eq.'PAS') then
-        tpsrst = zr(jtpas+1-1)
-        if (moypas .le. 0.90d0*tpsrst) then
+    else if (timer_type .eq. 'Time_Step') then
+        remaining_time = ds_measure%step_remain_time
+        if (step_mean_time .le. 0.90d0*remaining_time) then
             vali = 0
         else
             vali = 1
@@ -93,5 +96,4 @@ subroutine nmtima(sdtime, timer, vali)
         ASSERT(.false.)
     endif
 !
-    call jedema()
 end subroutine

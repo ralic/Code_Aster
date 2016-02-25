@@ -4,10 +4,10 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
                   famor, fliai, t0, nchar, nveca,&
                   liad, lifo, modele, mate, carele,&
                   charge, infoch, fomult, numedd, nume,&
-                  solveu, criter, chondp, nondp, numrep)
+                  solveu, criter, chondp, nondp, numrep, ds_energy)
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -66,7 +66,11 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
 !
 ! CORPS DU PROGRAMME
 ! aslint: disable=W1504
-    implicit none
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
 !
 ! DECLARATION PARAMETRES D'APPELS
 #include "asterf_types.h"
@@ -121,6 +125,7 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
     real(kind=8) :: dep0(*), vit0(*), acc0(*), t0, fexte(*), famor(*), fliai(*)
 !
     aster_logical :: lcrea, lamort, limped, lmodst
+    type(NL_DS_Energy), intent(inout) :: ds_energy
 !
     character(len=6) :: nompro
     parameter (nompro = 'DLNEWI')
@@ -345,11 +350,7 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
     endif
     iarchi = nume
     lisins = ' '
-    ener=.false.
-    call getfac('ENERGIE', n1)
-    if (n1 .ne. 0) then
-        ener=.true.
-    endif
+    ener   = ds_energy%l_comp
 !
 ! 1.10. ==> --- PARAMETRES D'INTEGRATION ---
 !
@@ -537,10 +538,10 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
                         a8, c0, c1, c2, c3,&
                         c4, c5, zk8(jnodep), zk8(jnovit), zk8(jnoacc),&
                         matres, maprec, solveu, criter, chondp,&
-                        ener, vitini, vitent, valmod, basmod,&
+                        vitini, vitent, valmod, basmod,&
                         veanec, vaanec, vaonde, veonde, dt,&
                         theta, tempm, temps, iforc2, zr(iwk1),&
-                        zr(iwk2), archiv, nbtyar, typear, numrep)
+                        zr(iwk2), archiv, nbtyar, typear, numrep, ds_energy)
 !
             if (archiv .eq. 1) lastarch = temps
             perc = int(100.d0*(real(ipas)/real(npatot)))

@@ -1,7 +1,15 @@
-subroutine nmarpc(result, sdener, numrep, instan)
+subroutine nmarpc(ds_energy, nume_reuse, time_curr)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterfort/assert.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/GetEnergy.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -17,77 +25,65 @@ subroutine nmarpc(result, sdener, numrep, instan)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
+! 
+    type(NL_DS_Energy), intent(in) :: ds_energy
+    integer, intent(in) :: nume_reuse
+    real(kind=8), intent(in) :: time_curr
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/ltnotb.h"
-#include "asterfort/tbajli.h"
-    real(kind=8) :: instan
-    character(len=8) :: result
-    character(len=19) :: sdener
-    integer :: numrep
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! MECA_NON_LINE - Storing results
 !
-! ROUTINE *_NON_LINE (STRUCTURES DE DONNES)
+! Save energy parameters in output table
 !
-! ARCHIVAGE DES PARAMETRES DANS LA TABLE DES PARAMETRES CALCULES
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! In  ds_energy        : datastructure for energy management
+! In  nume_reuse       : index for reuse rsults datastructure
+! In  time_curr        : current time
 !
-! IN  RESULT : NOM SD RESULTAT
-! IN  SDENER : NOM SD ENERGIE
-! IN  INSTAN : VALEUR DE L'INSTANT DE CALCUL
-! IN  NUMREP : NUMERO DE REUSE POUR LA TABLE PARA_CALC
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+    integer :: nb_cols, i_col, i_para_real
+    integer :: vali(1)
+    character(len=8) :: k8bid = ' '
+    complex(kind=8), parameter :: c16bid =(0.d0,0.d0)
+    real(kind=8) :: valr(7), vale_r
+    type(NL_DS_Table) :: table
+    type(NL_DS_Column) :: column
+    aster_logical :: l_acti
 !
-    integer :: nbpar
-    parameter   (nbpar=8)
-    character(len=10) :: nompar(nbpar)
-! ----------------------------------------------------------------------
-    integer :: ifm, niv
-    integer ::  iparar
-    character(len=19) :: tablpc
-    integer :: vali
-    character(len=8) :: k8bid
-    complex(kind=8) :: c16bid
-    real(kind=8) :: valr(7)
-    real(kind=8), pointer :: vale(:) => null()
+! --------------------------------------------------------------------------------------------------
 !
-    data         nompar / 'NUME_REUSE','INST'      ,'TRAV_EXT  ',&
-     &                      'ENER_CIN'  ,'ENER_TOT'  ,'TRAV_AMOR ',&
-     &                      'TRAV_LIAI' ,'DISS_SCH'/
+    table    = ds_energy%table
 !
-! ----------------------------------------------------------------------
+! - Get table parameters
 !
-    call jemarq()
-    c16bid=(0.d0,0.d0)
-    call infdbg('MECA_NON_LINE', ifm, niv)
+    nb_cols  = table%nb_cols
 !
-! --- RECUPERATION DU NOM DE LA TABLE CORRESPONDANT
-!     AUX PARAMETRE CALCULES
+! - Set values
 !
-    call ltnotb(result, 'PARA_CALC', tablpc)
+    i_para_real = 0
+    do i_col = 1, nb_cols
+        column = table%cols(i_col)
+        l_acti = table%l_cols_acti(i_col)
+        if (l_acti) then
+            if (column%name .eq. 'NUME_REUSE') then
+                vali(1)           = nume_reuse
+            elseif (column%name .eq. 'INST') then
+                i_para_real       = i_para_real + 1
+                valr(i_para_real) = time_curr
+            else
+                vale_r            = table%cols(i_col)%vale_real
+                i_para_real       = i_para_real + 1
+                valr(i_para_real) = vale_r
+            endif
+        endif
+    end do
 !
-! --- CONSTRUCTION DES LISTES DES PARAMETRES
+! - Add line in table
 !
-    call jeveuo(sdener//'.VALE', 'L', vr=vale)
-    valr(1) = instan
-    do 10 iparar = 1, 6
-        valr(1+iparar) = vale(iparar)
-10  end do
-    vali = numrep
-!
-! --- CONSTRUCTION DES LISTES DE PARAMETRES A SAUVEGARDER PAR TYPE
-!
-    call tbajli(tablpc, nbpar, nompar, [vali], valr,&
-                [c16bid], k8bid, 0)
-!
-    call jedema()
+    call tbajli(table%table_name, table%nb_para, table%list_para,&
+                vali, valr, [c16bid], k8bid, 0)
 !
 end subroutine

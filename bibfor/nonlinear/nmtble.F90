@@ -1,5 +1,5 @@
 subroutine nmtble(cont_loop     , model   , mesh  , mate     , ds_contact,&
-                  list_func_acti, ds_print, sdstat, sdtime   , sddyna    ,&
+                  list_func_acti, ds_print, ds_measure, sddyna    ,&
                   sderro        , ds_conv , sddisc, nume_inst, hval_incr ,&
                   hval_algo)
 !
@@ -47,8 +47,7 @@ implicit none
     type(NL_DS_Contact), intent(inout) :: ds_contact
     integer, intent(in) :: list_func_acti(*)
     type(NL_DS_Print), intent(inout) :: ds_print
-    character(len=24), intent(in) :: sdstat
-    character(len=24), intent(in) :: sdtime
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19), intent(in) :: sddyna
     character(len=24), intent(in) :: sderro
     type(NL_DS_Conv), intent(in) :: ds_conv
@@ -76,8 +75,7 @@ implicit none
 ! IO  ds_contact       : datastructure for contact management
 ! In  list_func_acti   : list of active functionnalities
 ! IO  ds_print         : datastructure for printing parameters
-! In  sdstat           : datastructure for statistics
-! In  sdtime           : datastructure for timers
+! IO  ds_measure       : datastructure for measure and statistics management
 ! In  sddyna           : dynamic parameters datastructure
 ! In  sderro           : datastructure for errors during algorithm
 ! In  ds_conv          : datastructure for convergence management
@@ -129,16 +127,12 @@ implicit none
     if (cont_loop .le. 1) then
         if (l_loop_cont) then
             cont_loop = 1
-            call nmtime(sdtime, 'INI', 'CTCC_CONT')
-            call nmtime(sdtime, 'RUN', 'CTCC_CONT')
-            call nmctcc(mesh      , model , mate  , nume_inst, sddyna   ,&
-                        sderro    , sdstat, sddisc, hval_incr, hval_algo,&
+            call nmctcc(mesh      , model     , mate  , nume_inst, sddyna   ,&
+                        sderro    , ds_measure, sddisc, hval_incr, hval_algo,&
                         ds_contact)
             call mmbouc(ds_contact, 'Cont', 'Is_Convergence', loop_state_ = loop_cont_conv)
             call mmbouc(ds_contact, 'Cont', 'Get_Vale'      , loop_vale_  = loop_cont_vale)
             loop_cont_vali = nint(loop_cont_vale)
-            call nmtime(sdtime, 'END', 'CTCC_CONT')
-            call nmrinc(sdstat, 'CTCC_CONT')
             if (.not.loop_cont_conv) then
                 cont_loop = 1
                 goto 500
@@ -151,12 +145,8 @@ implicit none
     if (cont_loop .le. 2) then
         if (l_loop_frot) then
             cont_loop = 2
-            call nmtime(sdtime, 'INI', 'CTCC_FROT')
-            call nmtime(sdtime, 'RUN', 'CTCC_FROT')
             call nmctcf(mesh, model, sderro, hval_incr, ds_print, ds_contact)
             call mmbouc(ds_contact, 'Fric', 'Is_Convergence', loop_state_ = loop_fric_conv)
-            call nmtime(sdtime, 'END', 'CTCC_FROT')
-            call nmrinc(sdstat, 'CTCC_FROT')
             if (.not.loop_fric_conv) then
                 cont_loop = 2
                 goto 500

@@ -1,10 +1,28 @@
 subroutine nmassx(modele, numedd, mate, carele, comref,&
-                  compor, lischa, carcri, fonact, sdstat,&
+                  compor, lischa, carcri, fonact, ds_measure,&
                   sddyna, valinc, solalg, veelem, veasse,&
-                  sdtime, ldccvg, codere, cndonn)
+                  ldccvg, codere, cndonn)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterfort/assert.h"
+#include "asterfort/assvec.h"
+#include "asterfort/ndasva.h"
+#include "asterfort/ndynre.h"
+#include "asterfort/nmasdi.h"
+#include "asterfort/nmasfi.h"
+#include "asterfort/nmasva.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmdiri.h"
+#include "asterfort/nmfint.h"
+#include "asterfort/nmtime.h"
+#include "asterfort/vtaxpy.h"
+#include "asterfort/vtzero.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,28 +39,11 @@ subroutine nmassx(modele, numedd, mate, carele, comref,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/assvec.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/ndasva.h"
-#include "asterfort/ndynre.h"
-#include "asterfort/nmasdi.h"
-#include "asterfort/nmasfi.h"
-#include "asterfort/nmasva.h"
-#include "asterfort/nmchex.h"
-#include "asterfort/nmdiri.h"
-#include "asterfort/nmfint.h"
-#include "asterfort/nmtime.h"
-#include "asterfort/vtaxpy.h"
-#include "asterfort/vtzero.h"
     integer :: ldccvg
     integer :: fonact(*)
     character(len=19) :: lischa, sddyna
     character(len=24) :: modele, numedd, mate, codere
-    character(len=24) :: sdstat, sdtime
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=24) :: carele, compor, comref, carcri
     character(len=19) :: solalg(*), valinc(*)
     character(len=19) :: veasse(*), veelem(*)
@@ -56,7 +57,6 @@ subroutine nmassx(modele, numedd, mate, carele, comref,&
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  MODELE : NOM DU MODELE
 ! IN  NUMEDD : NOM DE LA NUMEROTATION
 ! IN  MATE   : NOM DU CHAMP DE MATERIAU
@@ -65,12 +65,11 @@ subroutine nmassx(modele, numedd, mate, carele, comref,&
 ! IN  COMPOR : CARTE DECRIVANT LE TYPE DE COMPORTEMENT
 ! IN  LISCHA : SD LISTE DES CHARGES
 ! IN  CARCRI : CARTE DES CRITERES DE CONVERGENCE LOCAUX
-! IN  SDSTAT : SD STATISTIQUES
+! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! IN  SDDYNA : SD DYNAMIQUE
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
-! IN  SDTIME : SD TIMER
 ! IN  VEELEM : VARIABLE CHAPEAU POUR NOM DES VECT_ELEM
 ! IN  VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE
 ! OUT CNDONN : VECTEUR ASSEMBLE DES FORCES DONNEES
@@ -98,10 +97,6 @@ subroutine nmassx(modele, numedd, mate, carele, comref,&
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
-!
-! --- INITIALISATIONS
-!
     iterat = 0
     call vtzero(cndonn)
     cndumm = '&&CNCHAR.DUMM'
@@ -124,10 +119,10 @@ subroutine nmassx(modele, numedd, mate, carele, comref,&
 !
     coeequ = ndynre(sddyna,'COEF_MPAS_EQUI_COUR')
 !
-! --- MESURES
+! - Launch timer
 !
-    call nmtime(sdtime, 'INI', 'SECO_MEMB')
-    call nmtime(sdtime, 'RUN', 'SECO_MEMB')
+    call nmtime(ds_measure, 'Init'  , 'Second_Member')
+    call nmtime(ds_measure, 'Launch', 'Second_Member')
 !
 ! --- CALCUL DU VECTEUR DES CHARGEMENTS FIXES        (NEUMANN)
 !
@@ -159,13 +154,15 @@ subroutine nmassx(modele, numedd, mate, carele, comref,&
     call assvec('V', cndiri, 1, vediri, [1.d0],&
                 numedd, ' ', 'ZERO', 1)
 !
-    call nmtime(sdtime, 'END', 'SECO_MEMB')
+! - End timer
+!
+    call nmtime(ds_measure, 'Stop', 'Second_Member')
 !
 ! --- CALCUL DES FORCES INTERIEURES
 !
     call nmfint(modele, mate, carele, comref, compor,&
-                carcri, fonact, iterat, sddyna, sdstat,&
-                sdtime, valinc, solalg, ldccvg, codere,&
+                carcri, fonact, iterat, sddyna, ds_measure,&
+                valinc, solalg, ldccvg, codere,&
                 vefint)
 !
 ! --- ASSEMBLAGE DES FORCES INTERIEURES
@@ -200,5 +197,4 @@ subroutine nmassx(modele, numedd, mate, carele, comref,&
         call vtaxpy(coef(i), vect(i), cndonn)
     end do
 !
-    call jedema()
 end subroutine

@@ -1,8 +1,8 @@
 subroutine nmxmat(modelz, mate, carele, compor, carcri,&
                   sddisc, sddyna, fonact, numins, iterat,&
                   valinc, solalg, lischa, comref,&
-                  numedd, numfix, sdstat, ds_algopara,&
-                  sdtime, nbmatr, ltypma, loptme, loptma,&
+                  numedd, numfix, ds_measure, ds_algopara,&
+                  nbmatr, ltypma, loptme, loptma,&
                   lcalme, lassme, lcfint, meelem, measse,&
                   veelem, ldccvg, codere, ds_contact_)
 !
@@ -21,7 +21,7 @@ implicit none
 #include "asterfort/nmtime.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -39,14 +39,13 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-!
     integer :: nbmatr
     character(len=6) :: ltypma(20)
     character(len=16) :: loptme(20), loptma(20)
     aster_logical :: lcalme(20), lassme(20)
     character(len=*) :: modelz
     character(len=*) :: mate
-    character(len=24) :: sdtime, sdstat
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=24) :: compor, carcri, carele
     integer :: numins, iterat, ldccvg
     character(len=19) :: sddisc, sddyna, lischa
@@ -75,8 +74,7 @@ implicit none
 ! IN  COMREF : VARI_COM DE REFERENCE
 ! IN  COMPOR : COMPORTEMENT
 ! IN  LISCHA : LISTE DES CHARGES
-! IN  SDTIME : SD TIMER
-! IN  SDSTAT : SD STATISTIQUES
+! IO  ds_measure       : datastructure for measure and statistics management
 ! In  ds_contact       : datastructure for contact management
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
 ! IN  METHOD : INFORMATIONS SUR LES METHODES DE RESOLUTION (VOIR NMLECT)
@@ -144,20 +142,20 @@ implicit none
             call nmchex(meelem, 'MEELEM', typmat, matele)
             if (typmat .eq. 'MERIGI') then
                 call nmrigi(modelz, mate, carele, compor, carcri,&
-                            sddyna, sdstat, sdtime, fonact, iterat,&
+                            sddyna, ds_measure, fonact, iterat,&
                             valinc, solalg, comref, meelem, veelem,&
                             optcal, ldccvg, codere)
             else
                 if ((typmat.eq.'MEELTC') .or. (typmat.eq.'MEELTF')) then
-                    call nmtime(sdtime, 'INI', 'CTCC_MATR')
-                    call nmtime(sdtime, 'RUN', 'CTCC_MATR')
+                    call nmtime(ds_measure, 'Init', 'Contact_Elem')
+                    call nmtime(ds_measure, 'Launch', 'Contact_Elem')
                 endif
                 call nmcalm(typmat, modelz, lischa, mate       , carele,&
                             compor, instam, instap, valinc     , solalg,&
                             optcal, base  , meelem, ds_contact_, matele)
                 if ((typmat.eq.'MEELTC') .or. (typmat.eq.'MEELTF')) then
-                    call nmtime(sdtime, 'END', 'CTCC_MATR')
-                    call nmrinc(sdstat, 'CTCC_MATR')
+                    call nmtime(ds_measure, 'Stop', 'Contact_Elem')
+                    call nmrinc(ds_measure, 'Contact_Elem')
                 endif
             endif
         endif
@@ -165,12 +163,12 @@ implicit none
 ! --- ASSEMBLER MATR_ELEM
 !
         if (lasse) then
-            call nmtime(sdtime, 'INI', 'ASSE_MATR')
-            call nmtime(sdtime, 'RUN', 'ASSE_MATR')
+            call nmtime(ds_measure, 'Init', 'Matrix_Assembly')
+            call nmtime(ds_measure, 'Launch', 'Matrix_Assembly')
             call nmchex(measse, 'MEASSE', typmat, matass)
             call nmassm(fonact, lischa, numedd, numfix, ds_algopara,&
                         typmat, optass, meelem, matass)
-            call nmtime(sdtime, 'END', 'ASSE_MATR')
+            call nmtime(ds_measure, 'Stop', 'Matrix_Assembly')
         endif
     end do
 !

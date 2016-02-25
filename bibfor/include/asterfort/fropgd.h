@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,10 +18,11 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine fropgd(sdstat, defico, resoco, solveu, numedd,&
+    subroutine fropgd(ds_measure, defico, resoco, solveu, numedd,&
                       matass, noma, resigr, depdel, ctccvg,&
                       ctcfix)
-        character(len=24) :: sdstat
+        use NonLin_Datastructure_type        
+        type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=24) :: defico
         character(len=24) :: resoco
         character(len=19) :: solveu

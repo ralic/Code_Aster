@@ -12,13 +12,13 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
                   a8, c0, c1, c2, c3,&
                   c4, c5, nodepl, novite, noacce,&
                   matres, maprec, solveu, criter, chondp,&
-                  ener, vitini, vitent, valmod, basmod,&
+                  vitini, vitent, valmod, basmod,&
                   veanec, vaanec, vaonde, veonde, dt,&
                   theta, tempm, temps, iforc2, tabwk1,&
-                  tabwk2, archiv, nbtyar, typear, numrep)
+                  tabwk2, archiv, nbtyar, typear, numrep, ds_energy)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -75,7 +75,11 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
 !
 ! CORPS DU PROGRAMME
 ! aslint: disable=W1504
-    implicit none
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
 ! DECLARATION PARAMETRES D'APPELS
 !
 #include "asterf_types.h"
@@ -122,7 +126,8 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
     real(kind=8) :: a4, a5, a6, a7, a8, c0, c1, c2, c3, c4, c5, tabwk1(neq)
     real(kind=8) :: tabwk2(neq), dt, theta, tempm, temps
 !
-    aster_logical :: lamort, limped, lmodst, ener
+    aster_logical :: lamort, limped, lmodst
+    type(NL_DS_Energy), intent(inout) :: ds_energy
 !
     character(len=8) :: nodepl(nbexci), novite(nbexci), noacce(nbexci)
     character(len=8) :: masse, rigid, amort
@@ -154,7 +159,7 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
     integer :: numrep
     character(len=8) :: k8bid
     character(len=16) :: typa(6)
-    character(len=19) :: chsol, cham19, chamno, chamn2, sdener, k19bid
+    character(len=19) :: chsol, cham19, chamno, chamn2, k19bid
     character(len=19) :: masse1, amort1, rigid1
     character(len=24) :: cine, veccor, vecond
     complex(kind=8) :: cbid
@@ -263,7 +268,7 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
         zr(iforc1+ieq-1) = zr(iforc1+ieq-1) - fonde(ieq)
  43     continue
     endif
-    if (ener) then
+    if (ds_energy%l_comp) then
         do ieq = 1, neq
             fexte(ieq)=fexte(ieq+neq)
             fexte(ieq+neq)=zr(iforc1+ieq-1)
@@ -274,7 +279,7 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
         do 41 , ieq = 1,neq
         zr(iforc1+ieq-1) = zr(iforc1+ieq-1) - fimpe(ieq)
  41     continue
-        if (ener) then
+        if (ds_energy%l_comp) then
             do ieq = 1, neq
                 fliai(ieq)=fliai(ieq+neq)
                 fliai(ieq+neq)=fimpe(ieq)
@@ -286,7 +291,7 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
         do 42 , ieq = 1,neq
         zr(iforc1+ieq-1) = zr(iforc1+ieq-1) - fammo(ieq)
  42     continue
-        if (ener) then
+        if (ds_energy%l_comp) then
             do ieq = 1, neq
                 famor(ieq)=famor(ieq+neq)
                 famor(ieq+neq)=fammo(ieq)
@@ -374,7 +379,7 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
                 call jedetr('&&DLNEW0.XTRAC')
             endif
         end do
-        if (ener) then
+        if (ds_energy%l_comp) then
             do ieq = 1, neq
                 fexte(ieq+neq)=fexte(ieq+neq)+ zr(iforc2+ieq-1)
             end do
@@ -431,8 +436,7 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
 ! 8. CALCUL DES ENERGIES
 !====
 !
-    sdener=solveu(1:8)//'.ENER      '
-    if (ener) then
+    if (ds_energy%l_comp) then
         masse1=masse//'           '
         amort1=amort//'           '
         rigid1=rigid//'           '
@@ -441,7 +445,7 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
         call enerca(k19bid, dep0, vit0, depl1, vite1,&
                     masse1, amort1, rigid1, fexte, famor,&
                     fliai, zr(ifnobi), zr(ifcibi), lamort, .true._1,&
-                    .false._1, sdener, '&&DLNEWI')
+                    .false._1, ds_energy, '&&DLNEWI')
         call jedetr('FNODABID')
         call jedetr('FCINEBID')
     endif
@@ -496,6 +500,6 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
 !
     endif
 !
-    call nmarpc(result, sdener, numrep, temps)
+    call nmarpc(ds_energy, numrep, temps)
 !
 end subroutine

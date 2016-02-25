@@ -1,5 +1,5 @@
-subroutine mmbclc(mesh     , model     , nume_dof      , iter_newt     , nume_inst,&
-                  sddisc   , sddyna    , sdtime        , sdstat        , hval_incr,&
+subroutine mmbclc(mesh     , model     , nume_dof  , iter_newt, nume_inst,&
+                  sddisc   , sddyna    , ds_measure, hval_incr,&
                   hval_algo, ds_contact)
 !
 use NonLin_Datastructure_type
@@ -19,7 +19,7 @@ implicit none
 #include "asterfort/nmtime.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -43,8 +43,7 @@ implicit none
     integer, intent(in) :: nume_inst
     character(len=19), intent(in) :: sddisc
     character(len=19), intent(in) :: sddyna
-    character(len=24), intent(in) :: sdtime
-    character(len=24), intent(in) :: sdstat
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19), intent(in) :: hval_incr(*)
     character(len=19), intent(in) :: hval_algo(*)
     type(NL_DS_Contact), intent(inout) :: ds_contact
@@ -64,8 +63,7 @@ implicit none
 ! In  nume_inst        : index of current time step
 ! In  sddisc           : datastructure for time discretization
 ! In  sddyna           : dynamic parameters datastructure
-! In  sdtime           : datastructure for timers management
-! In  sdstat           : datastructure for statistics
+! IO  ds_measure       : datastructure for measure and statistics management
 ! In  hval_incr        : hat-variable for incremental values fields
 ! In  hval_algo        : hat-variable for algorithms fields
 ! IO  ds_contact       : datastructure for contact management
@@ -103,37 +101,39 @@ implicit none
 !
         if (l_newt_geom) then
             call copisd('CHAMP_GD', 'V', disp_curr, sdcont_depgeo)
-            call mmctcg(mesh, ds_contact, nume_dof, sdstat, sdtime)
+            call mmctcg(mesh, ds_contact, nume_dof, ds_measure)
+        endif
+!
+! ----- Start timer for preparation of contact
+!
+        if (l_newt_cont .or. l_newt_geom) then
+            call nmtime(ds_measure, 'Launch', 'Contact_Prepare ')
         endif
 !
 ! ----- Create contact elements
 !
         if (l_newt_geom) then
-            call nmtime(sdtime, 'INI', 'CTCC_PREP')
-            call nmtime(sdtime, 'RUN', 'CTCC_PREP')
             call mmligr(mesh, model, ds_contact)
-            call nmtime(sdtime, 'END', 'CTCC_PREP')
         endif
 !
 ! ----- Management of contact loop
 !
         if (l_newt_cont .or. l_newt_geom) then
-            call nmtime(sdtime, 'INI', 'CTCC_CONT')
-            call nmtime(sdtime, 'RUN', 'CTCC_CONT')
-            call mmstat(mesh  , iter_newt, nume_inst, sddyna    , sdstat,&
+            call mmstat(mesh  , iter_newt, nume_inst, sddyna    , ds_measure,&
                         sddisc, hval_incr, hval_algo, ds_contact)
-            call nmtime(sdtime, 'END', 'CTCC_CONT')
-            call nmrinc(sdstat, 'CTCC_CONT')
         endif
 !
 ! ----- Update input field
 !
         if (l_newt_cont .or. l_newt_geom) then
-            call nmtime(sdtime, 'INI', 'CTCC_PREP')
-            call nmtime(sdtime, 'RUN', 'CTCC_PREP')
             call mmchml(ds_contact, sddisc, sddyna, nume_inst)
-            call nmtime(sdtime, 'END', 'CTCC_PREP')
-            call nmrinc(sdstat, 'CTCC_PREP')
+        endif
+!
+! ----- Stop timer for preparation of contact
+!
+        if (l_newt_cont .or. l_newt_geom) then
+            call nmtime(ds_measure, 'Stop', 'Contact_Prepare ')
+            call nmrinc(ds_measure, 'Contact_Prepare ')
         endif
     endif
 !

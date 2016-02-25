@@ -3,10 +3,10 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
                   vit0, acc0, fexte, famor, fliai,&
                   t0, nchar, nveca, liad, lifo,&
                   modele, mate, carele, charge, infoch,&
-                  fomult, numedd, nume, solveu, numrep)
+                  fomult, numedd, nume, numrep, ds_energy)
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -59,7 +59,11 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
 ! IN  NUMREP : NUMERO DE REUSE POUR LA TABLE PARA_CALC
 ! CORPS DU PROGRAMME
 ! aslint: disable=W1504
-    implicit none
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
 !
 ! DECLARATION PARAMETRES D'APPELS
 #include "asterf_types.h"
@@ -91,7 +95,6 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
     character(len=8) :: masse, rigid, amort
     character(len=24) :: modele, carele, charge, fomult, mate, numedd
     character(len=24) :: infoch, lifo(*)
-    character(len=19) :: solveu
     character(len=8) :: result
     character(len=19) :: force1
 !
@@ -99,12 +102,13 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
     real(kind=8) :: fexte(*), famor(*), fliai(*)
 !
     aster_logical :: lamort, lcrea
+    type(NL_DS_Energy), intent(inout) :: ds_energy
 !
 !
     integer :: nbtyar
     parameter ( nbtyar = 6 )
     integer :: iwk0, iwk1, iwk2
-    integer :: ifm, niv, ne
+    integer :: ifm, niv
     integer :: ieq, iexcl, perc, freqpr, last_prperc
     integer :: ivite1, ivite2, iacce1, iarchi
     integer :: ibid
@@ -158,11 +162,7 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
 !
     deuxpi = r8depi()
     iarchi = nume
-    ener=.false.
-    call getfac('ENERGIE', ne)
-    if (ne .ne. 0) then
-        ener=.true.
-    endif
+    ener   = ds_energy%l_comp
 !
 ! 1.4. ==> PARAMETRES D'INTEGRATION
 !
@@ -305,10 +305,10 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
                         dep0, vit0, acc0, vale, zr(ivite1),&
                         zr(iacce1), zr(ivite2), fexte(1), famor(1), fliai(1),&
                         nchar, nveca, liad, lifo, modele,&
-                        ener, solveu, mate, carele, charge,&
+                        ener, mate, carele, charge,&
                         infoch, fomult, numedd, dt, temps,&
                         zr(iwk0), zr(iwk1), archiv, nbtyar, typear,&
-                        numrep)
+                        numrep, ds_energy)
 !
             if (archiv .eq. 1) lastarch = temps
             perc = int(100.d0*(real(ipas)/real(npatot)))

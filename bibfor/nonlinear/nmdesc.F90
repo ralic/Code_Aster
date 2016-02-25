@@ -1,7 +1,7 @@
 subroutine nmdesc(modele, numedd  , numfix, mate  , carele     ,&
                   comref, compor  , lischa, ds_contact, ds_algopara,&
                   solveu, carcri  , fonact, numins, iterat     ,&
-                  sddisc, ds_print, sdstat, sdtime, sddyna     ,&
+                  sddisc, ds_print, ds_measure, sddyna     ,&
                   sdnume, sderro  , matass, maprec, &
                   valinc, solalg  , meelem, measse, veasse     ,&
                   veelem, lerrit  )
@@ -23,7 +23,7 @@ implicit none
 #include "asterfort/vtzero.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -44,7 +44,7 @@ implicit none
     integer :: numins, iterat
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=19) :: matass, maprec
-    character(len=24) :: sdtime, sdstat
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19) :: lischa, solveu, sddisc, sddyna, sdnume
     character(len=24) :: numedd, numfix
     character(len=24) :: modele, mate, carele, comref, compor, carcri
@@ -75,8 +75,7 @@ implicit none
 ! IN  LISCHA : L_CHARGES
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IO  ds_print         : datastructure for printing parameters
-! IN  SDTIME : SD TIMER
-! IN  SDSTAT : SD STATISTIQUES
+! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  SDERRO : SD GESTION DES ERREURS
 ! IN  SDNUME : SD NUMEROTATION
 ! IN  ITERAT : NUMERO D'ITERATION DE NEWTON
@@ -131,8 +130,8 @@ implicit none
 !
     call nmcoma(modele     , mate  , carele, compor  , carcri,&
                 ds_algopara, lischa, numedd, numfix  , solveu,&
-                comref     , sddisc, sddyna, ds_print, sdstat,&
-                sdtime     , numins, iterat, fonact  , ds_contact,&
+                comref     , sddisc, sddyna, ds_print, ds_measure,&
+                numins, iterat, fonact  , ds_contact,&
                 valinc     , solalg, veelem  , meelem,&
                 measse     , veasse, maprec, matass  , codere,&
                 faccvg     , ldccvg, sdnume)
@@ -144,7 +143,7 @@ implicit none
 !
 ! --- PREPARATION DU SECOND MEMBRE
 !
-    call nmassc(fonact, sddyna, sdtime, veasse, cnpilo,&
+    call nmassc(fonact, sddyna, ds_measure, veasse, cnpilo,&
                 cndonn)
 !
 ! --- ACTUALISATION DES CL CINEMATIQUES
@@ -154,9 +153,9 @@ implicit none
 !
 ! --- RESOLUTION
 !
-    call nmresd(fonact, sddyna, sdstat, sdtime, solveu,&
-                numedd, r8bid, maprec, matass, cndonn,&
-                cnpilo, cncind, solalg, rescvg)
+    call nmresd(fonact, sddyna, ds_measure, solveu, numedd,&
+                r8bid , maprec, matass    , cndonn, cnpilo,&
+                cncind, solalg, rescvg)
 !
 999 continue
 !

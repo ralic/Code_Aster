@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,10 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmarpc(result, sdener, numrep, instan)
-        character(len=8) :: result
-        character(len=19) :: sdener
-        integer :: numrep
-        real(kind=8) :: instan
+    subroutine nmarpc(ds_energy, nume_reuse, time_curr)
+        use NonLin_Datastructure_type
+        type(NL_DS_Energy), intent(in) :: ds_energy
+        integer, intent(in) :: nume_reuse
+        real(kind=8), intent(in) :: time_curr
     end subroutine nmarpc
 end interface

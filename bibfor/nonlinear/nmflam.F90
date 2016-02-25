@@ -1,7 +1,7 @@
 subroutine nmflam(option, modele, numedd, numfix     , carele,&
                   compor, numins, mate       , comref,&
                   lischa, ds_contact, ds_algopara, fonact,&
-                  carcri, sdstat, sddisc, sdtime     , sddyna,&
+                  carcri, ds_measure, sddisc, sddyna,&
                   sdpost, valinc, solalg, meelem     , measse,&
                   veelem, sderro)
 !
@@ -31,7 +31,7 @@ implicit none
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -54,7 +54,8 @@ implicit none
     character(len=16) :: option
     character(len=19) :: meelem(*)
     type(NL_DS_Contact), intent(in) :: ds_contact
-    character(len=24) :: sdstat, sdtime, sderro
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    character(len=24) :: sderro
     character(len=19) :: lischa, sddisc, sddyna, sdpost
     character(len=24) :: modele, numedd, numfix, carele, compor
     character(len=19) :: veelem(*), measse(*)
@@ -84,8 +85,7 @@ implicit none
 ! IN  COMPOR : COMPORTEMENT
 ! IN  LISCHA : LISTE DES CHARGES
 ! In  ds_contact       : datastructure for contact management
-! IN  SDTIME : SD TIMER
-! IN  SDSTAT : SD STATISTIQUES
+! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
 ! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  SDPOST : SD POUR POST-TRAITEMENTS (CRIT_STAB ET MODE_VIBR)
@@ -143,7 +143,7 @@ implicit none
                 mate  , carele, sddisc, sddyna     , fonact,&
                 numins, valinc, solalg, lischa     , comref,&
                 ds_contact, numedd     , numfix,&
-                compor, carcri, sdstat, sdtime     , meelem,&
+                compor, carcri, ds_measure, meelem,&
                 measse, veelem, nddle , ddlexc     , modrig,&
                 ldccvg, matas2, matgeo)
     ASSERT(ldccvg.eq.0)

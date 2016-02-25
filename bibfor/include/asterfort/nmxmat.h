@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -23,8 +23,8 @@ interface
     subroutine nmxmat(modelz, mate  , carele, compor     , carcri,&
                       sddisc, sddyna, fonact, numins     , iterat,&
                       valinc, solalg, lischa, comref     , &
-                      numedd, numfix, sdstat, ds_algopara,&
-                      sdtime, nbmatr, ltypma, loptme     , loptma,&
+                      numedd, numfix, ds_measure, ds_algopara,&
+                      nbmatr, ltypma, loptme     , loptma,&
                       lcalme, lassme, lcfint, meelem     , measse,&
                       veelem, ldccvg, codere, ds_contact_)
         use NonLin_Datastructure_type        
@@ -44,8 +44,7 @@ interface
         character(len=24) :: comref
         character(len=24) :: numedd
         character(len=24) :: numfix
-        character(len=24) :: sdstat
-        character(len=24) :: sdtime
+        type(NL_DS_Measure), intent(inout) :: ds_measure
         integer :: nbmatr
         character(len=6) :: ltypma(20)
         character(len=16) :: loptme(20)

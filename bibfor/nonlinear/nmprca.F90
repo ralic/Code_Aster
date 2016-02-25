@@ -1,7 +1,7 @@
 subroutine nmprca(modele, numedd, numfix  , mate       , carele,&
                   comref, compor, lischa  , ds_algopara, solveu,&
-                  fonact, carcri, ds_print, sdstat     , sddisc,&
-                  sdtime, numins, valinc  , solalg     , matass,&
+                  fonact, carcri, ds_print, ds_measure , sddisc,&
+                  numins, valinc  , solalg     , matass,&
                   maprec, ds_contact, sddyna     , meelem,&
                   measse, veelem, veasse  , depest     , ldccvg,&
                   faccvg, rescvg, codere  )
@@ -23,7 +23,7 @@ implicit none
 #include "asterfort/vtzero.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -45,7 +45,7 @@ implicit none
     integer :: numins, ldccvg, faccvg, rescvg
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=19) :: maprec, matass
-    character(len=24) :: sdtime, sdstat
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19) :: lischa, solveu, sddisc, sddyna
     character(len=24) :: modele, mate, carele, comref, compor
     character(len=24) :: numedd, numfix
@@ -67,7 +67,6 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  MODELE : MODELE
 ! IN  NUMEDD : NUME_DDL (VARIABLE AU COURS DU CALCUL)
 ! IN  NUMFIX : NUME_DDL (FIXE AU COURS DU CALCUL)
@@ -81,9 +80,8 @@ implicit none
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
 ! IO  ds_print         : datastructure for printing parameters
-! IN  SDSTAT : SD STATISTIQUES
+! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
-! IN  SDTIME : SD TIMER
 ! IN  NUMINS : NUMERO D'INSTANT
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
@@ -152,7 +150,7 @@ implicit none
 !
     call nmprma(modele     , mate    , carele, compor, carcri,&
                 ds_algopara, lischa  , numedd, numfix, solveu,&
-                comref     , ds_print, sdstat, sdtime, sddisc,&
+                comref     , ds_print, ds_measure, sddisc,&
                 sddyna     , numins  , fonact, ds_contact,&
                 valinc     , solalg  , veelem, meelem, measse,&
                 maprec     , matass  , codere, faccvg, ldccvg)

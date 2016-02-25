@@ -1,6 +1,6 @@
 subroutine nmprma(modelz     , mate    , carele, compor, carcri,&
                   ds_algopara, lischa  , numedd, numfix, solveu,&
-                  comref     , ds_print, sdstat, sdtime, sddisc,&
+                  comref     , ds_print, ds_measure, sddisc,&
                   sddyna     , numins  , fonact, ds_contact,&
                   valinc     , solalg  , veelem, meelem, measse,&
                   maprec     , matass  , codere, faccvg, ldccvg)
@@ -28,7 +28,7 @@ implicit none
 #include "asterfort/preres.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -50,7 +50,7 @@ implicit none
     integer :: fonact(*)
     character(len=*) :: modelz
     character(len=24) :: mate, carele
-    character(len=24) :: sdtime, sdstat
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     type(NL_DS_Print), intent(inout) :: ds_print
     character(len=24) :: compor, carcri, numedd, numfix
     character(len=19) :: sddisc, sddyna, lischa, solveu
@@ -81,8 +81,7 @@ implicit none
 ! IO  ds_contact       : datastructure for contact management
 ! IO  ds_print         : datastructure for printing parameters
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
-! IN  SDTIME : SD TIMER
-! IN  SDSTAT : SD STATISTIQUES
+! IO  ds_measure       : datastructure for measure and statistics management
 ! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  SOLVEU : SOLVEUR
 ! IN  CARCRI : PARAMETRES METHODES D'INTEGRATION LOCALES (VOIR NMLECT)
@@ -231,8 +230,8 @@ implicit none
         call nmxmat(modelz, mate, carele, compor, carcri,&
                     sddisc, sddyna, fonact, numins, iterat,&
                     valinc, solalg, lischa, comref,&
-                    numedd, numfix, sdstat, ds_algopara,&
-                    sdtime, nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
+                    numedd, numfix, ds_measure, ds_algopara,&
+                    nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
                     list_l_calc, list_l_asse, lcfint, meelem, measse,&
                     veelem, ldccvg, codere, ds_contact)
     endif
@@ -254,12 +253,12 @@ implicit none
 ! --- FACTORISATION DE LA MATRICE ASSEMBLEE GLOBALE
 !
     if (reasma) then
-        call nmtime(sdtime, 'INI', 'FACTOR')
-        call nmtime(sdtime, 'RUN', 'FACTOR')
+        call nmtime(ds_measure, 'Init', 'Factor')
+        call nmtime(ds_measure, 'Launch', 'Factor')
         call preres(solveu, 'V', faccvg, maprec, matass,&
                     ibid, -9999)
-        call nmtime(sdtime, 'END', 'FACTOR')
-        call nmrinc(sdstat, 'FACTOR')
+        call nmtime(ds_measure, 'Stop', 'Factor')
+        call nmrinc(ds_measure, 'Factor')
     endif
 !
 999 continue

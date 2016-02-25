@@ -1,4 +1,4 @@
-subroutine xmctcg(model, mesh, ds_contact, sdstat, sdtime)
+subroutine xmctcg(model, mesh, ds_contact, ds_measure)
 !
 use NonLin_Datastructure_type
 !
@@ -12,7 +12,7 @@ implicit none
 #include "asterfort/nmtime.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,8 +32,7 @@ implicit none
     character(len=8), intent(in) :: mesh
     character(len=8), intent(in) :: model
     type(NL_DS_Contact), intent(in) :: ds_contact
-    character(len=24), intent(in) :: sdtime
-    character(len=24), intent(in) :: sdstat
+    type(NL_DS_Measure), intent(inout) :: ds_measure
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,8 +45,7 @@ implicit none
 ! In  mesh             : name of mesh
 ! In  model            : name of model
 ! In  ds_contact       : datastructure for contact management
-! In  sdtime           : datastructure for timers
-! In  sdstat           : datastructure for statistics
+! IO  ds_measure       : datastructure for measure and statistics management
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -62,12 +60,12 @@ implicit none
 !
 ! - Geometric loop: new geometric iteration for statistics
 !
-    call nmrinc(sdstat, 'CONT_GEOM')
+    call nmrinc(ds_measure, 'Contact_Geometry')
 !
 ! - Geometric loop: begin timer
 !
-    call nmtime(sdtime, 'INI', 'CONT_GEOM')
-    call nmtime(sdtime, 'RUN', 'CONT_GEOM')
+    call nmtime(ds_measure, 'Init'  , 'Contact_Geometry')
+    call nmtime(ds_measure, 'Launch', 'Contact_Geometry')
 !
 ! - Geometric actualisation
 !
@@ -79,6 +77,6 @@ implicit none
 !
 ! - Geometric loop: end timer
 !
-    call nmtime(sdtime, 'END', 'CONT_GEOM')
+    call nmtime(ds_measure, 'Stop', 'Contact_Geometry')
 !
 end subroutine

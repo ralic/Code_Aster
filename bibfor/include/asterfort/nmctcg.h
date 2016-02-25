@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,14 +18,12 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmctcg(model   , mesh, ds_contact, sdstat, sdtime,&
-                      nume_dof)
+    subroutine nmctcg(model, mesh, ds_contact, ds_measure, nume_dof)
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: model
         type(NL_DS_Contact), intent(inout) :: ds_contact
         character(len=24), intent(in) :: nume_dof
-        character(len=24), intent(in) :: sdtime
-        character(len=24), intent(in) :: sdstat
+        type(NL_DS_Measure), intent(inout) :: ds_measure
     end subroutine nmctcg
 end interface

@@ -1,7 +1,18 @@
-subroutine nmtime(sdtime, phasez, timerz)
+subroutine nmtime(ds_measure, operation_, device_type_)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/nmrtim.h"
+#include "asterfort/uttcpr.h"
+#include "asterfort/uttcpu.h"
+#include "asterfort/GetDevice.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,201 +29,90 @@ subroutine nmtime(sdtime, phasez, timerz)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/nmrtim.h"
-#include "asterfort/uttcpr.h"
-#include "asterfort/uttcpu.h"
-    character(len=24) :: sdtime
-    character(len=*) :: phasez
-    character(len=*) :: timerz
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    character(len=*), intent(in) :: operation_
+    character(len=*), intent(in) :: device_type_
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (UTILITAIRE)
+! MECA_NON_LINE - Measure and statistic management
 !
-! GESTION DES TIMERS
+! Timer management for device
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! IO  ds_measure       : datastructure for measure and statistics management
+! In  operation        : operation to do Init, Launch or stop timer for current device
+! In  device_type      : type of current device
 !
-! IN  SDTIME : SD TIMER
-! IN  PHASE  : TYPE D'ACTION
-!              'INI'               INITIALISATION DU TIMER
-!              'RUN'               LANCEMENT DU TIMER
-!              'END'               ARRET DU TIMER
-! IN  TIMER  : NOM DU TIMER
-!              'PAS'               TIMER PAS DE TEMPS
-!              'ITE'               TIMER ITERATION DE NEWTON
-!              'ARC'               TIMER ARCHIVAGE
-!              'POST_TRAITEMENT'   TIMER POST_PROCESSING
-!              'FACTOR'            TIMER FACTORISATION
-!              'SOLVE'             TIMER RESOLUTION
-!              'INTEGRATION'       TIMER INTEG. LDC
-!              'ASSE_MATR'         TIMER ASSEMBLAGE MATRICES
-!              'CONT_GEOM'         TIMER APPARIEMENT CONTACT
-!              'CTCD_ALGO'         TIMER RESOLUTION CONTACT DISCRET
-!              'CTCC_CONT'         TIMER RESOLUTION CONTACT CONTINU
-!              'CTCC_FROT'         TIMER RESOLUTION FROTTEMENT CONTINU
-!              'CTCC_MATR'         TIMER CALCUL MATRICE CONTINU
-!              'SECO_MEMB'         TIMER CALCUL SECOND MEMBRE
+! --------------------------------------------------------------------------------------------------
 !
+    type(NL_DS_Device) :: device
+    character(len=9) :: timer_type
+    character(len=16) :: device_type
+    integer :: i_timer, timer_indx, nb_timer
+    type(NL_DS_Timer) :: timer
+    character(len=24) :: operation, cpu_name
+    real(kind=8) :: time, list_time(4)
 !
+! --------------------------------------------------------------------------------------------------
 !
+    operation      = operation_
+    list_time(1:4) = 0.d0
 !
-    character(len=24) :: timpas, timite, timarc, timpst
-    integer :: jtpas, jtite, jtarc, jtpst
-    character(len=24) :: timdeb
-    integer :: jtdeb
-    character(len=24) :: timtm1, timtm2
-    integer :: jtmp1, jtmp2
-    character(len=24) :: phase, timer
-    real(kind=8) :: time
+! - Get current device
 !
-! ----------------------------------------------------------------------
+    call GetDevice(ds_measure, device_type_, device)
+    timer_type  = device%timer_name
+    device_type = device%type
 !
-    call jemarq()
+! - Find timer
 !
-! --- INITIALISATIONS
-!
-    phase = phasez
-    timer = timerz
-!
-! --- ACCES SD TIMER
-!
-    timtm1 = sdtime(1:19)//'.TMP1'
-    timtm2 = sdtime(1:19)//'.TMP2'
-    timpas = sdtime(1:19)//'.TPAS'
-    timite = sdtime(1:19)//'.TITE'
-    timpst = sdtime(1:19)//'.TPST'
-    timarc = sdtime(1:19)//'.TARC'
-    call jeveuo(timtm1, 'E', jtmp1)
-    call jeveuo(timtm2, 'E', jtmp2)
-    call jeveuo(timpas, 'E', jtpas)
-    call jeveuo(timite, 'E', jtite)
-    call jeveuo(timpst, 'E', jtpst)
-    call jeveuo(timarc, 'E', jtarc)
-!
-    timdeb = sdtime(1:19)//'.TDEB'
-    call jeveuo(timdeb, 'E', jtdeb)
-!
-! --- INTERROGATION SD
-!
-    if (phase .eq. 'INI') then
-!
-! ----- INITIALISATIONS DES TIMERS
-!
-        if (timer .eq. 'ALL') then
-            call uttcpu('CPU.NMTIME.PAS', 'INIT', ' ')
-            call uttcpu('CPU.NMTIME.ITE', 'INIT', ' ')
-            call uttcpu('CPU.NMTIME.ARC', 'INIT', ' ')
-            call uttcpu('CPU.NMTIME.PST', 'INIT', ' ')
-            call uttcpu('CPU.NMTIME.TM1', 'INIT', ' ')
-            call uttcpu('CPU.NMTIME.TM2', 'INIT', ' ')
-            zr(jtdeb+1-1) = 0.d0
-            zr(jtdeb+2-1) = 0.d0
-            zr(jtdeb+3-1) = 0.d0
-            zr(jtdeb+4-1) = 0.d0
-            zr(jtdeb+5-1) = 0.d0
-            zr(jtdeb+6-1) = 0.d0
-        else if (timer.eq.'POST_TRAITEMENT') then
-            call uttcpu('CPU.NMTIME.PST', 'INIT', ' ')
-            zr(jtdeb+4-1) = 0.d0
-            elseif ((timer.eq.'INTEGRATION').or. (timer.eq.'FACTOR').or.&
-        (timer.eq.'SECO_MEMB').or. (timer.eq.'SOLVE').or. (&
-        timer.eq.'CONT_GEOM').or. (timer.eq.'CTCD_ALGO').or. (&
-        timer.eq.'CTCC_PREP').or. (timer.eq.'CTCC_MATR').or. (&
-        timer.eq.'CTCC_VECT').or. (timer.eq.'CTCC_CONT').or. (&
-        timer.eq.'CTCC_FROT')) then
-            call uttcpu('CPU.NMTIME.TM1', 'INIT', ' ')
-            zr(jtdeb+5-1) = 0.d0
-        else if (timer.eq.'ASSE_MATR') then
-            call uttcpu('CPU.NMTIME.TM2', 'INIT', ' ')
-            zr(jtdeb+6-1) = 0.d0
-        else
-            ASSERT(.false.)
+    nb_timer   = ds_measure%nb_timer
+    timer_indx = 0
+    do i_timer = 1, nb_timer
+        if (ds_measure%timer(i_timer)%type .eq. timer_type) then
+            ASSERT(timer_indx.eq.0)
+            timer_indx = i_timer
         endif
+    end do
 !
-    else if (phase.eq.'RUN') then
+! - Get current timer
 !
-! ----- LANCEMENT DES TIMERS
+    ASSERT(timer_indx.ne.0)
+    timer     = ds_measure%timer(timer_indx)
+    cpu_name  = timer%cpu_name
 !
-        if (timer .eq. 'PAS') then
-            call uttcpu('CPU.NMTIME.PAS', 'DEBUT', ' ')
-        else if (timer.eq.'ITE') then
-            call uttcpu('CPU.NMTIME.ITE', 'DEBUT', ' ')
-        else if (timer.eq.'ARC') then
-            call uttcpu('CPU.NMTIME.ARC', 'DEBUT', ' ')
-        else if (timer.eq.'POST_TRAITEMENT') then
-            call uttcpu('CPU.NMTIME.PST', 'DEBUT', ' ')
-            elseif ((timer.eq.'INTEGRATION').or. (timer.eq.'FACTOR').or.&
-        (timer.eq.'SECO_MEMB').or. (timer.eq.'SOLVE').or. (&
-        timer.eq.'CONT_GEOM').or. (timer.eq.'CTCD_ALGO').or. (&
-        timer.eq.'CTCC_PREP').or. (timer.eq.'CTCC_MATR').or. (&
-        timer.eq.'CTCC_VECT').or. (timer.eq.'CTCC_CONT').or. (&
-        timer.eq.'CTCC_FROT')) then
-            call uttcpu('CPU.NMTIME.TM1', 'DEBUT', ' ')
-        else if (timer.eq.'ASSE_MATR') then
-            call uttcpu('CPU.NMTIME.TM2', 'DEBUT', ' ')
-        else
-            ASSERT(.false.)
+! - Operations
+!
+    if (operation .eq. 'Init') then
+        call uttcpu(cpu_name, 'INIT', ' ')
+        timer%time_init = 0.d0
+    elseif (operation .eq. 'Launch') then
+        call uttcpu(cpu_name, 'DEBUT', ' ')
+    elseif (operation .eq. 'Stop') then
+        call uttcpu(cpu_name, 'FIN', ' ')
+        call uttcpr(cpu_name, 4, list_time)
+        time = list_time(3) - timer%time_init
+        timer%time_init = list_time(3)
+        if (timer_type.eq.'Store') then
+            ds_measure%store_mean_time = list_time(4)
         endif
-!
-    else if (phase.eq.'END') then
-!
-! ----- ARRET DES TIMERS
-!
-        if (timer .eq. 'PAS') then
-            call uttcpu('CPU.NMTIME.PAS', 'FIN', ' ')
-            call uttcpr('CPU.NMTIME.PAS', 4, zr(jtpas))
-            time = zr(jtpas+3-1) - zr(jtdeb+1-1)
-            zr(jtdeb+1-1) = zr(jtpas+3-1)
-            call nmrtim(sdtime, timer, time)
-        else if (timer.eq.'ITE') then
-            call uttcpu('CPU.NMTIME.ITE', 'FIN', ' ')
-            call uttcpr('CPU.NMTIME.ITE', 4, zr(jtite))
-            time = zr(jtite+3-1) - zr(jtdeb+2-1)
-            zr(jtdeb+2-1) = zr(jtite+3-1)
-            call nmrtim(sdtime, timer, time)
-        else if (timer.eq.'ARC') then
-            call uttcpu('CPU.NMTIME.ARC', 'FIN', ' ')
-            call uttcpr('CPU.NMTIME.ARC', 4, zr(jtarc))
-            time = zr(jtarc+3-1) - zr(jtdeb+3-1)
-            zr(jtdeb+3-1) = zr(jtarc+3-1)
-            call nmrtim(sdtime, timer, time)
-        else if (timer.eq.'POST_TRAITEMENT') then
-            call uttcpu('CPU.NMTIME.PST', 'FIN', ' ')
-            call uttcpr('CPU.NMTIME.PST', 4, zr(jtpst))
-            time = zr(jtpst+3-1) - zr(jtdeb+4-1)
-            zr(jtdeb+4-1) = zr(jtpst+3-1)
-            call nmrtim(sdtime, timer, time)
-            elseif ((timer.eq.'INTEGRATION').or. (timer.eq.'FACTOR').or.&
-        (timer.eq.'SECO_MEMB').or. (timer.eq.'SOLVE').or. (&
-        timer.eq.'CONT_GEOM').or. (timer.eq.'CTCD_ALGO').or. (&
-        timer.eq.'CTCC_PREP').or. (timer.eq.'CTCC_MATR').or. (&
-        timer.eq.'CTCC_VECT').or. (timer.eq.'CTCC_CONT').or. (&
-        timer.eq.'CTCC_FROT')) then
-            call uttcpu('CPU.NMTIME.TM1', 'FIN', ' ')
-            call uttcpr('CPU.NMTIME.TM1', 4, zr(jtmp1))
-            time = zr(jtmp1+3-1) - zr(jtdeb+5-1)
-            zr(jtdeb+5-1) = 0.d0
-            call nmrtim(sdtime, timer, time)
-        else if (timer.eq.'ASSE_MATR') then
-            call uttcpu('CPU.NMTIME.TM2', 'FIN', ' ')
-            call uttcpr('CPU.NMTIME.TM2', 4, zr(jtmp2))
-            time = zr(jtmp2+3-1) - zr(jtdeb+6-1)
-            zr(jtdeb+6-1) = 0.d0
-            call nmrtim(sdtime, timer, time)
-        else
-            ASSERT(.false.)
+        if (timer_type.eq.'Time_Step') then
+            ds_measure%step_mean_time   = list_time(4)
+            ds_measure%step_remain_time = list_time(1)
         endif
+        if (timer_type.eq.'Newt_Iter') then
+            ds_measure%iter_mean_time   = list_time(4)
+            ds_measure%iter_remain_time = list_time(1)
+        endif
+        call nmrtim(ds_measure, device_type, time)
     else
         ASSERT(.false.)
     endif
 !
-    call jedema()
+! - Save timer
+!
+    ds_measure%timer(timer_indx)   = timer
+!
 end subroutine

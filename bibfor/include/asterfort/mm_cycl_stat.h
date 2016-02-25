@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mm_cycl_stat(sdstat, ds_contact)
+    subroutine mm_cycl_stat(ds_measure, ds_contact)
         use NonLin_Datastructure_type
-        character(len=24), intent(in) :: sdstat
+        type(NL_DS_Measure), intent(inout) :: ds_measure
         type(NL_DS_Contact), intent(in) :: ds_contact
     end subroutine mm_cycl_stat
 end interface

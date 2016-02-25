@@ -32,7 +32,7 @@ implicit none
     character(len=19), intent(in) :: tabl_name
     character(len=4), intent(in) :: field_disc
     character(len=24), intent(in) :: field_type
-    character(len=80), intent(in) :: title
+    character(len=16), intent(in) :: title
     character(len=8), intent(in) :: type_extr
     character(len=8), intent(in) :: type_extr_cmp
     character(len=8), intent(in) :: type_extr_elem
@@ -71,7 +71,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nb_para
-    parameter   (nb_para=16)
+    parameter   (nb_para=15)
     character(len=16) :: para_name(nb_para)
     real(kind=8) :: tabl_vale_r(nb_para)
     integer :: tabl_vale_i(nb_para)
@@ -81,7 +81,6 @@ implicit none
     integer :: nume_reuse, nume_obsv
     complex(kind=8) :: c16bid
     character(len=16) :: obje_type
-    character(len=24) :: nomsd
     integer :: i_para_add, nb_vale_k, nb_vale_i, nb_vale_r
     character(len=14) :: sdextr_obsv
     character(len=24) :: extr_info
@@ -89,7 +88,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    data para_name /'NOM_OBSERVATION','TYPE_OBJET'  ,'NOM_SD' ,&
+    data para_name /'NOM_OBSERVATION','TYPE_OBJET'  ,&
                     'NUME_REUSE'     ,'NUME_OBSE'   ,'INST'   ,&
                     'NOM_CHAM'       ,'EVAL_CHAM'   ,'NOM_CMP',&
                     'EVAL_CMP'       ,'NOEUD'       ,'MAILLE' ,&
@@ -104,7 +103,7 @@ implicit none
     nb_vale_i = 1
     nb_vale_r = 1
     obje_type = 'R'
-    nomsd = ' '
+
 !
 ! - Access to extraction datastructure
 !
@@ -121,7 +120,7 @@ implicit none
 !
     para_name_add(i_para_add) = para_name(1)
     i_para_add = i_para_add + 1
-    tabl_vale_k(nb_vale_k) = title(1:24)
+    tabl_vale_k(nb_vale_k) = title
     nb_vale_k = nb_vale_k + 1
 !
     para_name_add(i_para_add) = para_name(2)
@@ -131,32 +130,27 @@ implicit none
 !
     para_name_add(i_para_add) = para_name(3)
     i_para_add = i_para_add + 1
-    tabl_vale_k(nb_vale_k) = nomsd
-    nb_vale_k = nb_vale_k + 1
-!
-    para_name_add(i_para_add) = para_name(4)
-    i_para_add = i_para_add + 1
     tabl_vale_i(nb_vale_i) = nume_reuse
     nb_vale_i = nb_vale_i + 1
 !
-    para_name_add(i_para_add) = para_name(5)
+    para_name_add(i_para_add) = para_name(4)
     i_para_add = i_para_add + 1
     tabl_vale_i(nb_vale_i) = nume_obsv
     nb_vale_i = nb_vale_i + 1
 !
-    para_name_add(i_para_add) = para_name(6)
+    para_name_add(i_para_add) = para_name(5)
     i_para_add = i_para_add + 1
     tabl_vale_r(nb_vale_r) = time
     nb_vale_r = nb_vale_r + 1
 !
-    para_name_add(i_para_add) = para_name(7)
+    para_name_add(i_para_add) = para_name(6)
     i_para_add = i_para_add + 1
     tabl_vale_k(nb_vale_k) = field_type
     nb_vale_k = nb_vale_k + 1
 !
 ! - Type of extraction for field
 !
-    para_name_add(i_para_add) = para_name(8)
+    para_name_add(i_para_add) = para_name(7)
     i_para_add = i_para_add + 1
     tabl_vale_k(nb_vale_k) = type_extr
     nb_vale_k = nb_vale_k + 1
@@ -164,12 +158,12 @@ implicit none
 ! - Type of extraction for components
 !
     if (type_extr_cmp .eq. ' ') then
-        para_name_add(i_para_add) = para_name(9)
+        para_name_add(i_para_add) = para_name(8)
         i_para_add = i_para_add + 1
         tabl_vale_k(nb_vale_k) = cmp_name
         nb_vale_k = nb_vale_k + 1
     else
-        para_name_add(i_para_add) = para_name(10)
+        para_name_add(i_para_add) = para_name(9)
         i_para_add = i_para_add + 1
         tabl_vale_k(nb_vale_k) = type_extr_cmp
         nb_vale_k = nb_vale_k + 1
@@ -179,51 +173,51 @@ implicit none
 !
     if (field_disc .eq. 'NOEU') then
         if (type_extr .eq. 'VALE') then
-            para_name_add(i_para_add) = para_name(11)
+            para_name_add(i_para_add) = para_name(10)
             i_para_add = i_para_add + 1
             tabl_vale_k(nb_vale_k) = node_namez
             nb_vale_k = nb_vale_k + 1
         else
-            para_name_add(i_para_add) = para_name(8)
+            para_name_add(i_para_add) = para_name(7)
             i_para_add = i_para_add + 1
             tabl_vale_k(nb_vale_k) = type_extr
             nb_vale_k = nb_vale_k + 1
         endif
-        para_name_add(i_para_add) = para_name(16)
+        para_name_add(i_para_add) = para_name(15)
         i_para_add = i_para_add + 1
         tabl_vale_r(nb_vale_r) = valr
         nb_vale_r = nb_vale_r + 1
     else if (field_disc.eq.'ELGA') then
         if (type_extr .eq. 'VALE') then
-            para_name_add(i_para_add) = para_name(12)
+            para_name_add(i_para_add) = para_name(11)
             i_para_add = i_para_add + 1
             tabl_vale_k(nb_vale_k) = elem_namez
             nb_vale_k = nb_vale_k + 1
         else
-            para_name_add(i_para_add) = para_name(8)
+            para_name_add(i_para_add) = para_name(7)
             i_para_add = i_para_add + 1
             tabl_vale_k(nb_vale_k) = type_extr
             nb_vale_k = nb_vale_k + 1
         endif
         if (type_extr_elem .eq. 'VALE') then
-            para_name_add(i_para_add) = para_name(14)
+            para_name_add(i_para_add) = para_name(13)
             i_para_add = i_para_add + 1
             tabl_vale_i(nb_vale_i) = poin_numez
             nb_vale_i = nb_vale_i + 1
-            para_name_add(i_para_add) = para_name(15)
+            para_name_add(i_para_add) = para_name(14)
             i_para_add = i_para_add + 1
             tabl_vale_i(nb_vale_i) = spoi_numez
             nb_vale_i = nb_vale_i + 1
-            para_name_add(i_para_add) = para_name(16)
+            para_name_add(i_para_add) = para_name(15)
             i_para_add = i_para_add + 1
             tabl_vale_r(nb_vale_r) = valr
             nb_vale_r = nb_vale_r + 1
         else
-            para_name_add(i_para_add) = para_name(13)
+            para_name_add(i_para_add) = para_name(12)
             i_para_add = i_para_add + 1
             tabl_vale_k(nb_vale_k) = type_extr_elem
             nb_vale_k = nb_vale_k + 1
-            para_name_add(i_para_add) = para_name(16)
+            para_name_add(i_para_add) = para_name(15)
             i_para_add = i_para_add + 1
             tabl_vale_r(nb_vale_r) = valr
             nb_vale_r = nb_vale_r + 1

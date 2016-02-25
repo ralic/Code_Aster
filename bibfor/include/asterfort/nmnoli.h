@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmnoli(sddisc, sderro, carcri, ds_print, sdcrit  ,&
-                      fonact, sddyna, sdpost, modele  , mate    ,&
-                      carele, sdpilo, sdtime, sdener  , ds_inout,&
+    subroutine nmnoli(sddisc, sderro, carcri    , ds_print , sdcrit  ,&
+                      fonact, sddyna, sdpost    , modele   , mate    ,&
+                      carele, sdpilo, ds_measure, ds_energy, ds_inout,&
                       sdcriq)
         use NonLin_Datastructure_type
         character(len=19) :: sddisc
@@ -33,8 +33,8 @@ interface
         character(len=24) :: mate
         character(len=24) :: carele
         character(len=19) :: sdpilo
-        character(len=24) :: sdtime
-        character(len=19) :: sdener
+        type(NL_DS_Measure), intent(inout) :: ds_measure
+        type(NL_DS_Energy), intent(in) :: ds_energy
         type(NL_DS_InOut), intent(inout) :: ds_inout
         character(len=24) :: sdcriq
     end subroutine nmnoli

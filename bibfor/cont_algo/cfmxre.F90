@@ -1,5 +1,5 @@
-subroutine cfmxre(mesh  , model_   , sdstat   , ds_contact , nume_inst,&
-                  sddisc, hval_algo, hval_incr, hval_veasse)
+subroutine cfmxre(mesh  , model_   , ds_measure, ds_contact , nume_inst,&
+                  sddisc, hval_algo, hval_incr , hval_veasse)
 !
 use NonLin_Datastructure_type
 !
@@ -20,7 +20,7 @@ implicit none
 #include "asterfort/xmmres.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -39,7 +39,7 @@ implicit none
 !
     character(len=8), intent(in) :: mesh
     character(len=*), intent(in) :: model_
-    character(len=24), intent(in) :: sdstat
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     type(NL_DS_Contact), intent(in) :: ds_contact
     integer, intent(in) :: nume_inst
     character(len=19), intent(in) :: sddisc
@@ -57,7 +57,7 @@ implicit none
 !
 ! In  mesh             : name of mesh
 ! In  model            : name of model
-! In  sdstat           : datastructure for statistics
+! IO  ds_measure       : datastructure for measure and statistics management
 ! In  ds_contact       : datastructure for contact management
 ! In  nume_inst        : index of current time step
 ! In  sddisc           : datastructure for discretization
@@ -134,7 +134,7 @@ implicit none
 ! ----- Number of contact links
 !
         if (l_cont_cont) then
-            call mmmcpt(mesh, sdstat, ds_contact, cnsinr)
+            call mmmcpt(mesh, ds_measure, ds_contact, cnsinr)
         endif
     endif
 !

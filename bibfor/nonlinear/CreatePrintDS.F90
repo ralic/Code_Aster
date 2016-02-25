@@ -8,9 +8,10 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/impfoi.h"
 #include "asterfort/infdbg.h"
+#include "asterfort/CreateVoidColumn.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,9 +48,9 @@ implicit none
     integer :: i_col, i_cols_dof
     character(len=1) :: indsui
     type(NL_DS_Table) :: table_cvg
-    type(NL_DS_col) :: col
+    type(NL_DS_Column) :: column
 !
-    character(len=9), parameter :: cols_name(nb_cols_defi) = (/&
+    character(len=24), parameter :: cols_name(nb_cols_defi) = (/&
                   'INCR_INST','BOUC_GEOM','BOUC_FROT',&
                   'BOUC_CONT','ITER_NUME','RESI_RELA',&
                   'RELA_NOEU','RESI_MAXI','MAXI_NOEU',&
@@ -117,26 +118,21 @@ implicit none
 ! - Set list of columns in convergence table
 !
     do i_col = 1, nb_cols_defi
-        col%width       = 16
-        col%mark        = ' '
-        col%name        = cols_name(i_col)
-        col%l_vale_affe = .false._1
-        col%l_vale_real = .false._1
-        col%l_vale_inte = .false._1
-        col%l_vale_strg = .false._1
+        call CreateVoidColumn(column)
+        column%name          = cols_name(i_col)
         if (cols_type(i_col).eq.'R') then
-            col%l_vale_real = .true._1
+            column%l_vale_real   = .true._1
         elseif (cols_type(i_col).eq.'I') then
-            col%l_vale_inte = .true._1
+            column%l_vale_inte   = .true._1
         elseif (cols_type(i_col).eq.'K') then
-            col%l_vale_strg = .true._1
+            column%l_vale_strg   = .true._1
         else
             ASSERT(.false.)
         endif
-        col%title(1) = cols_title_1(i_col)
-        col%title(2) = cols_title_2(i_col)
-        col%title(3) = cols_title_3(i_col)
-        table_cvg%cols(i_col)        = col
+        column%title(1)    = cols_title_1(i_col)
+        column%title(2)    = cols_title_2(i_col)
+        column%title(3)    = cols_title_3(i_col)
+        table_cvg%cols(i_col)        = column
         table_cvg%l_cols_acti(i_col) = .false._1
     end do
 !
@@ -145,18 +141,11 @@ implicit none
     i_col = nb_cols_defi
     do i_cols_dof = 1, nb_cols_dof_defi
         i_col = i_col+1
+        call CreateVoidColumn(column)
         call impfoi(0, 1, i_cols_dof, indsui)
-        col%width       = 16
-        col%mark        = ' '
-        col%name        = 'SUIVDDL'//indsui
-        col%l_vale_affe = .false._1
-        col%l_vale_real = .false._1
-        col%l_vale_inte = .false._1
-        col%l_vale_strg = .false._1
-        col%title(1)    = '   SUIVI DDL'//indsui
-        col%title(2)    = ' '
-        col%title(3)    = ' '
-        table_cvg%cols(i_col)        = col
+        column%name          = 'SUIVDDL'//indsui
+        column%title(1)      = '   SUIVI DDL'//indsui
+        table_cvg%cols(i_col)        = column
         table_cvg%l_cols_acti(i_col) = .false._1
     end do
 !

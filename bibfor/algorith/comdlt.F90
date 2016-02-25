@@ -1,7 +1,7 @@
 subroutine comdlt()
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -33,7 +33,9 @@ subroutine comdlt()
 !
 !     ------------------------------------------------------------------
 !
-    implicit none
+use NonLin_Datastructure_type
+!
+implicit none
 !
 !
 !
@@ -43,6 +45,8 @@ subroutine comdlt()
 #include "asterc/r8vide.h"
 #include "asterc/r8prem.h"
 #include "asterfort/cochre.h"
+#include "asterfort/CreateEnergyDS.h"
+#include "asterfort/InitEnergy.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/dladap.h"
 #include "asterfort/dldiff.h"
@@ -102,6 +106,7 @@ subroutine comdlt()
     complex(kind=8) :: calpha
     character(len=19) :: force0, force1
     character(len=46) :: champs
+    type(NL_DS_Energy) :: ds_energy
 
 !
     aster_logical :: lamort, lcrea, lprem, exipou
@@ -257,7 +262,7 @@ subroutine comdlt()
                 charge, infoch, fomult, modele, numedd,&
                 nume, solveu, criter, zr(idepl0), zr(ivite0),&
                 zr(iacce0), zr(ifexte+neq), zr(ifamor+neq), zr(ifliai+neq), baseno,&
-                zr(iwk), force0, force1)
+                zr(iwk), force0, force1, ds_energy)
 
     call utmess('I', 'DYNAMIQUE_80', nr=2, valr=[tinit, tfin])
 
@@ -295,8 +300,14 @@ subroutine comdlt()
         end do
         AS_DEALLOCATE(vk8 = chexc)
     endif
-
+!
+! - Energy management
+!
+    call CreateEnergyDS(ds_energy)
     call getfac('ENERGIE', iret)
+    ds_energy%l_comp  = iret.gt.0
+    ds_energy%command = 'DYNA_VIBRA'
+    call InitEnergy(result, ds_energy)
     if (iret .eq. 0) then
         nomsym(4) = ' '
         nomsym(5) = ' '
@@ -327,7 +338,7 @@ subroutine comdlt()
                     zr(ifamor), zr(ifliai), t0, nchar, nveca,&
                     zi(iaadve), zk24(ialifo), modele, mate, carele,&
                     charge, infoch, fomult, numedd, nume,&
-                    solveu, criter, zk8(iondp), nondp, numrep)
+                    solveu, criter, zk8(iondp), nondp, numrep, ds_energy)
 !
     else if (iinteg.eq.2) then
 !
@@ -337,7 +348,7 @@ subroutine comdlt()
                     zr(ifamor), zr(ifliai), t0, nchar, nveca,&
                     zi(iaadve), zk24(ialifo), modele, mate, carele,&
                     charge, infoch, fomult, numedd, nume,&
-                    solveu, criter, zk8(iondp), nondp, numrep)
+                    solveu, criter, zk8(iondp), nondp, numrep, ds_energy)
 !
     else if (iinteg.eq.3) then
 !
@@ -346,7 +357,7 @@ subroutine comdlt()
                     zr(ivite0), zr(iacce0), zr(ifexte), zr(ifamor), zr(ifliai),&
                     t0, nchar, nveca, zi(iaadve), zk24(ialifo),&
                     modele, mate, carele, charge, infoch,&
-                    fomult, numedd, nume, solveu, numrep)
+                    fomult, numedd, nume, numrep, ds_energy)
 !
     else if (iinteg.eq.4) then
 !
@@ -355,7 +366,7 @@ subroutine comdlt()
                     zr(ivite0), zr(iacce0), zr(ifexte), zr(ifamor), zr(ifliai),&
                     nchar, nveca, zi(iaadve), zk24(ialifo), modele,&
                     mate, carele, charge, infoch, fomult,&
-                    numedd, nume, solveu, numrep)
+                    numedd, nume, numrep, ds_energy)
 !
     endif
 !

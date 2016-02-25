@@ -1,7 +1,19 @@
-subroutine nmevdt(sdtime, sderro, timer)
+subroutine nmevdt(ds_measure, sderro, timer)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterc/etausr.h"
+#include "asterfort/asmpi_comm_vect.h"
+#include "asterfort/assert.h"
+#include "asterfort/nmcrel.h"
+#include "asterfort/nmleeb.h"
+#include "asterfort/nmtima.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,19 +30,8 @@ subroutine nmevdt(sdtime, sderro, timer)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/etausr.h"
-#include "asterfort/asmpi_comm_vect.h"
-#include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/nmcrel.h"
-#include "asterfort/nmleeb.h"
-#include "asterfort/nmtima.h"
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=24), intent(in) :: sderro
-    character(len=24), intent(in) :: sdtime
     character(len=3), intent(in) :: timer
 !
 ! ----------------------------------------------------------------------
@@ -41,9 +42,8 @@ subroutine nmevdt(sdtime, sderro, timer)
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  SDERRO : SD GESTION DES ERREURS
-! IN  SDTIME : SD TIMER
+! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  TIMER  : NOM DU TIMER
 !                'PAS'   TIMER POUR UN PAS DE TEMPS
 !                'ITE'   TIMER POUR UNE ITERATION DE NEWTON
@@ -56,25 +56,19 @@ subroutine nmevdt(sdtime, sderro, timer)
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
-!
-! --- INITIALISATIONS
-!
     itcpup = 0
     itcpui = 0
     isusr1 = 0
 !
+! - Enough time ?
+!
     if (timer .eq. 'PAS') then
-!
-! ----- ASSEZ DE TEMPS POUR UN NOUVEAU PAS ?
-!
-        call nmtima(sdtime, 'PAS', itcpup)
+        call nmtima(ds_measure, 'Time_Step', itcpup)
     else if (timer.eq.'ITE') then
         call nmleeb(sderro, 'NEWT', etnewt)
-!
-! ----- ASSEZ DE TEMPS POUR UNE NOUVELLE ITERATION DE NEWTON ?
-!
-        if (etnewt .ne. 'CONV') call nmtima(sdtime, 'ITE', itcpui)
+        if (etnewt .ne. 'CONV') then
+            call nmtima(ds_measure, 'Newt_Iter', itcpui)
+        endif
     else
         ASSERT(.false.)
     endif
@@ -98,5 +92,4 @@ subroutine nmevdt(sdtime, sderro, timer)
     call nmcrel(sderro, 'ERRE_TIMN', mtcpui)
     call nmcrel(sderro, 'ERRE_EXCP', stopus)
 !
-    call jedema()
 end subroutine

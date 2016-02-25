@@ -1,4 +1,4 @@
-subroutine mmmbca(mesh  , iter_newt, nume_inst, sddyna    , sdstat,&
+subroutine mmmbca(mesh  , iter_newt, nume_inst, sddyna    , ds_measure,&
                   sddisc, hval_incr, hval_algo, ds_contact)
 !
 use NonLin_Datastructure_type
@@ -40,7 +40,7 @@ implicit none
 #include "asterfort/mreacg.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -61,7 +61,7 @@ implicit none
     integer, intent(in) :: iter_newt
     integer, intent(in) :: nume_inst
     character(len=19), intent(in) :: sddyna
-    character(len=24), intent(in) :: sdstat
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19), intent(in) :: sddisc
     character(len=19), intent(in) :: hval_incr(*)
     character(len=19), intent(in) :: hval_algo(*)
@@ -79,7 +79,7 @@ implicit none
 ! In  iter_newt        : index of current Newton iteration
 ! In  nume_inst        : index of current time step
 ! In  sddyna           : dynamic parameters datastructure
-! In  sdstat           : datastructure for statistics
+! IO  ds_measure       : datastructure for measure and statistics management
 ! In  sddisc           : datastructure for time discretization
 ! In  hval_incr        : hat-variable for incremental values fields
 ! In  hval_algo        : hat-variable for algorithms fields
@@ -389,7 +389,7 @@ implicit none
 !
 ! - Statistics for cycling
 !
-    call mm_cycl_stat(sdstat, ds_contact)
+    call mm_cycl_stat(ds_measure, ds_contact)
 !
 ! - Propagation of coefficient
 !

@@ -1,6 +1,6 @@
-subroutine nmcofr(mesh    , disp_curr, disp_cumu_inst, disp_iter, solver        ,&
-                  nume_dof, matr_asse, iter_newt     , time_curr, resi_glob_rela,&
-                  sdstat  , sdtime   , ds_contact    , ctccvg)
+subroutine nmcofr(mesh      , disp_curr, disp_cumu_inst, disp_iter, solver        ,&
+                  nume_dof  , matr_asse, iter_newt     , time_curr, resi_glob_rela,&
+                  ds_measure, ds_contact    , ctccvg)
 !
 use NonLin_Datastructure_type
 !
@@ -16,7 +16,7 @@ implicit none
 #include "asterfort/nmtime.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -43,8 +43,7 @@ implicit none
     integer, intent(in) :: iter_newt
     real(kind=8), intent(in) :: time_curr
     real(kind=8), intent(in) :: resi_glob_rela
-    character(len=24), intent(in) :: sdstat
-    character(len=24), intent(in) :: sdtime 
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     type(NL_DS_Contact), intent(inout) :: ds_contact 
     integer, intent(out) :: ctccvg
 !
@@ -66,8 +65,7 @@ implicit none
 ! In  iter_newt        : index of current Newton iteration
 ! In  time_curr        : current time
 ! In  resi_glob_rela   : current value of RESI_GLOB_RELA
-! In  sdstat           : datastructure for statistics
-! In  sdtime           : datastructure for timers management
+! IO  ds_measure       : datastructure for measure and statistics management
 ! IO  ds_contact       : datastructure for contact management
 ! Out ctccvg           : output code for contact algorithm
 !                        -1 - No solving
@@ -92,17 +90,17 @@ implicit none
 !
 ! - Pairing
 !
-    call cfgeom(iter_newt, mesh     , sdtime, sdstat, ds_contact,&
+    call cfgeom(iter_newt, mesh     , ds_measure, ds_contact,&
                 disp_curr, time_curr)
 !
 ! - Contact solving
 !
-    call nmtime(sdtime, 'INI', 'CTCD_ALGO')
-    call nmtime(sdtime, 'RUN', 'CTCD_ALGO')
-    call cfalgo(mesh          , sdstat    , resi_glob_rela, iter_newt,&
+    call nmtime(ds_measure, 'Init'  , 'Contact_Algo')
+    call nmtime(ds_measure, 'Launch', 'Contact_Algo')
+    call cfalgo(mesh          , ds_measure, resi_glob_rela, iter_newt,&
                 solver        , nume_dof  , matr_asse     , disp_iter,&
                 disp_cumu_inst, ds_contact, ctccvg        )
-    call nmtime(sdtime, 'END', 'CTCD_ALGO')
+    call nmtime(ds_measure, 'Stop', 'Contact_Algo')
 !
 ! - Pairing ended
 !

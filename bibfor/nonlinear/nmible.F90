@@ -1,5 +1,5 @@
-subroutine nmible(cont_loop     , model   , mesh  , ds_contact,&
-                  list_func_acti, nume_dof, sdstat, sdtime    , ds_print)
+subroutine nmible(cont_loop     , model   , mesh      , ds_contact,&
+                  list_func_acti, nume_dof, ds_measure, ds_print)
 !
 use NonLin_Datastructure_type
 !
@@ -12,7 +12,7 @@ implicit none
 #include "asterfort/nmimci.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -35,8 +35,7 @@ implicit none
     type(NL_DS_Contact), intent(inout) :: ds_contact
     integer, intent(in):: list_func_acti(*)
     character(len=24), intent(in) :: nume_dof
-    character(len=24), intent(in) :: sdstat
-    character(len=24), intent(in) :: sdtime
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     type(NL_DS_Print), intent(inout) :: ds_print
 !
 ! --------------------------------------------------------------------------------------------------
@@ -57,8 +56,7 @@ implicit none
 ! IO  ds_contact       : datastructure for contact management
 ! In  list_func_acti   : list of active functionnalities
 ! In  nume_dof         : name of numbering object (NUME_DDL)
-! In  sdstat           : datastructure for statistics
-! In  sdtime           : datastructure for timers
+! IO  ds_measure       : datastructure for measure and statistics management
 ! IO  ds_print         : datastructure for printing parameters
 !
 ! --------------------------------------------------------------------------------------------------
@@ -94,8 +92,7 @@ implicit none
         if (l_loop_geom) then
             cont_loop = 3
             if (l_pair) then
-                call nmctcg(model   , mesh, ds_contact, sdstat, sdtime,&
-                            nume_dof)
+                call nmctcg(model, mesh, ds_contact, ds_measure, nume_dof)
             endif
         endif
         call mmbouc(ds_contact, 'Fric', 'Init_Counter')

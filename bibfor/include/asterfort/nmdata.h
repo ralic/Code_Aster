@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,7 +18,7 @@
 interface
     subroutine nmdata(model      , mesh    , mate      , carele, compor  ,&
                       lischa     , solveu  , ds_conv   , carcri, sddyna  ,&
-                      sdpost     , sderro  , sdener    , sdcriq, ds_print,&
+                      sdpost     , sderro  , ds_energy , sdcriq, ds_print,&
                       ds_algopara, ds_inout, ds_contact)
         use NonLin_Datastructure_type
         character(len=*), intent(out) :: model
@@ -32,7 +32,7 @@ interface
         character(len=19) :: sddyna
         character(len=19) :: sdpost
         character(len=24) :: sderro
-        character(len=19) :: sdener
+        type(NL_DS_Energy), intent(inout) :: ds_energy
         character(len=24) :: sdcriq
         type(NL_DS_Print), intent(inout) :: ds_print
         type(NL_DS_Conv), intent(inout)  :: ds_conv

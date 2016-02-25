@@ -1,5 +1,5 @@
 subroutine cfmmcv(mesh     , model_   , nume_dof , list_func_acti, iter_newt ,&
-                  nume_inst, sddyna   , sdstat   , sddisc        , sdtime    ,&
+                  nume_inst, sddyna   , ds_measure, sddisc       , &
                   sderro   , hval_incr, hval_algo, ds_print      , ds_contact)
 !
 use NonLin_Datastructure_type
@@ -21,7 +21,7 @@ implicit none
 #include "asterfort/nmimcr.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -46,8 +46,7 @@ implicit none
     integer, intent(in) :: nume_inst 
     character(len=19), intent(in) :: sddisc
     character(len=19), intent(in) :: sddyna
-    character(len=24), intent(in) :: sdtime
-    character(len=24), intent(in) :: sdstat
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=24), intent(in) :: sderro
     character(len=19), intent(in) :: hval_incr(*)
     character(len=19), intent(in) :: hval_algo(*)
@@ -69,13 +68,11 @@ implicit none
 ! In  nume_inst        : index of current time step
 ! In  sddisc           : datastructure for time discretization
 ! In  sddyna           : dynamic parameters datastructure
-! In  sdtime           : datastructure for timers management
-! In  sdstat           : datastructure for statistics
+! IO  ds_measure       : datastructure for measure and statistics management
 ! In  hval_incr        : hat-variable for incremental values fields
 ! In  hval_algo        : hat-variable for algorithms fields
 ! IO  ds_contact       : datastructure for contact management
 ! In  sderro           : datastructure for errors during algorithm
-! In  sdstat           : datastructure for statistics
 ! In  hval_algo        : hat-variable for algorithms fields
 ! IO  ds_print         : datastructure for printing parameters
 ! IO  ds_contact       : datastructure for contact management
@@ -106,15 +103,15 @@ implicit none
 ! - Convergence for contact discrete methods
 !
     if (l_cont_disc) then
-        call cfconv(mesh      , sdstat, sderro, hval_algo, ds_print,&
+        call cfconv(mesh      , ds_measure, sderro, hval_algo, ds_print,&
                     ds_contact)
     endif
 !
 ! - Applying generalized Newton method at Newton's iteration
 !
     if (l_newt_cont) then
-        call mmbclc(mesh  , model     , nume_dof, iter_newt, nume_inst,&
-                    sddisc, sddyna    , sdtime, sdstat, hval_incr,&
+        call mmbclc(mesh  , model     , nume_dof  , iter_newt, nume_inst,&
+                    sddisc, sddyna    , ds_measure, hval_incr,&
                     hval_algo, ds_contact)
         call mmbouc(ds_contact, 'Cont', 'Get_Vale'      , loop_vale_  = loop_cont_vale)
         call mmbouc(ds_contact, 'Cont', 'Is_Convergence', loop_state_ = loop_cont_conv)
@@ -130,7 +127,7 @@ implicit none
 ! - Cycling informations printing in convergence table
 !
     if (l_cont_cont) then
-        call mm_cycl_print(ds_print, sdstat)
+        call mm_cycl_print(ds_print, ds_measure)
     endif
 !
 end subroutine

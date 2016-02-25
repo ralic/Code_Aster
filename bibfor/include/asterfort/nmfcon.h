@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -17,7 +17,7 @@
 !
 interface
     subroutine nmfcon(modele, numedd, mate, fonact, ds_contact,&
-                      sdstat, sdtime, valinc, solalg,&
+                      ds_measure, valinc, solalg,&
                       veelem, veasse)
         use NonLin_Datastructure_type
         character(len=24) :: modele
@@ -25,8 +25,7 @@ interface
         character(len=24) :: mate
         integer :: fonact(*)
         type(NL_DS_Contact), intent(in) :: ds_contact
-        character(len=24) :: sdstat
-        character(len=24) :: sdtime
+        type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=19) :: valinc(*)
         character(len=19) :: solalg(*)
         character(len=19) :: veelem(*)

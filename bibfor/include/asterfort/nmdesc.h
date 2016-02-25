@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -23,7 +23,7 @@ interface
     subroutine nmdesc(modele, numedd  , numfix, mate  , carele     ,&
                       comref, compor  , lischa, ds_contact, ds_algopara,&
                       solveu, carcri  , fonact, numins, iterat     ,&
-                      sddisc, ds_print, sdstat, sdtime, sddyna     ,&
+                      sddisc, ds_print, ds_measure, sddyna     ,&
                       sdnume, sderro  , matass, maprec, &
                       valinc, solalg  , meelem, measse, veasse     ,&
                       veelem, lerrit  )
@@ -45,8 +45,7 @@ interface
         integer :: iterat
         character(len=19) :: sddisc
         type(NL_DS_Print), intent(inout) :: ds_print
-        character(len=24) :: sdstat
-        character(len=24) :: sdtime
+        type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=19) :: sddyna
         character(len=19) :: sdnume
         character(len=24) :: sderro

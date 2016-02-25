@@ -45,8 +45,8 @@ implicit none
 !
     integer :: i_keyw_fact, nb_title
     character(len=24) :: obsv_titl
-    character(len=80), pointer :: v_obsv_titl(:) => null()
-    character(len=80) :: title
+    character(len=16), pointer :: v_obsv_titl(:) => null()
+    character(len=16) :: title
     character(len=1) :: chaine
 !
 ! --------------------------------------------------------------------------------------------------
@@ -55,7 +55,7 @@ implicit none
 ! - Create vector for title
 !
     obsv_titl = sd_obsv(1:14)//'     .TITR'
-    call wkvect(obsv_titl, 'V V K80', nb_keyw_fact, vk80 = v_obsv_titl)
+    call wkvect(obsv_titl, 'V V K16', nb_keyw_fact, vk16 = v_obsv_titl)
 !
 ! - Set titles
 !

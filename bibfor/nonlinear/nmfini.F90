@@ -1,5 +1,5 @@
 subroutine nmfini(sddyna  , valinc, measse, modele, mate  ,&
-                  carele  , compor, sdtime, sddisc, numins,&
+                  carele  , compor, ds_measure, sddisc, numins,&
                   solalg  , lischa, comref,&
                   ds_inout, numedd, veelem, veasse)
 !
@@ -22,7 +22,7 @@ implicit none
 #include "asterfort/as_allocate.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -40,7 +40,8 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=19) :: sddyna, valinc(*), measse(*)
-    character(len=24) :: modele, mate, carele, compor, sdtime, comref
+    character(len=24) :: modele, mate, carele, compor, comref
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=24) :: numedd
     type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=19) :: sddisc, solalg(*), lischa, veelem(*), veasse(*)
@@ -62,7 +63,7 @@ implicit none
 ! IN  MATE   : CHAMP MATERIAU
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  COMPOR : COMPORTEMENT
-! IN  SDTIME : SD TIMER
+! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IN  NUMINS : NUMERO D'INSTANT
 ! In  ds_inout         : datastructure for input/output management
@@ -152,7 +153,7 @@ implicit none
     nbvect=0
     call nmcvec('AJOU', 'CNFNOD', 'SIGMOI', .true._1, .true._1,&
                 nbvect, ltypve, loptve, lcalve, lassve)
-    call nmxvec(modele  , mate  , carele, compor, sdtime,&
+    call nmxvec(modele  , mate  , carele, compor, ds_measure,&
                 sddisc  , sddyna, numins, valinc, solalg,&
                 lischa  , comref, numedd,&
                 ds_inout, veelem, veasse, measse, nbvect,&

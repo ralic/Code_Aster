@@ -1,6 +1,6 @@
 subroutine nmpred(modele  , numedd, numfix  , mate       , carele,&
                   comref  , compor, lischa  , ds_algopara, solveu,&
-                  fonact  , carcri, ds_print, sdstat     , sdtime,&
+                  fonact  , carcri, ds_print, ds_measure,&
                   sddisc  , sdnume, sderro  , numins     , valinc,&
                   solalg  , matass, maprec  , ds_contact , sddyna,&
                   ds_inout, meelem, measse  , veelem     , veasse,&
@@ -19,7 +19,7 @@ implicit none
 #include "asterfort/nmprta.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -41,7 +41,7 @@ implicit none
     integer :: numins
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=19) :: matass, maprec
-    character(len=24) :: sdtime, sdstat
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     type(NL_DS_Print), intent(inout) :: ds_print
     type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=19) :: lischa, solveu, sddisc, sddyna, sdnume
@@ -78,8 +78,7 @@ implicit none
 ! In  ds_inout         : datastructure for input/output management
 ! IO  ds_contact       : datastructure for contact management
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
-! IN  SDTIME : SD TIMER
-! IN  SDSTAT : SD STATISTIQUES
+! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IN  SDERRO : GESTION DES ERREURS
 ! IN  NUMINS : NUMERO D'INSTANT
@@ -122,7 +121,7 @@ implicit none
         (ds_algopara%matrix_pred .eq. 'TANGENTE')) then
         call nmprta(modele  , numedd, numfix  , mate       , carele,&
                     comref  , compor, lischa  , ds_algopara, solveu,&
-                    fonact  , carcri, ds_print, sdstat     , sdtime,&
+                    fonact  , carcri, ds_print, ds_measure,&
                     sddisc  , numins, valinc  , solalg     , matass,&
                     maprec  , ds_contact, sddyna,&
                     meelem  , measse, veelem  , veasse     , sdnume,&
@@ -135,7 +134,7 @@ implicit none
             (ds_algopara%matrix_pred .eq.'DEPL_CALCULE')) then
         call nmprde(modele, numedd, numfix  , mate       , carele,&
                     comref, compor, lischa  , ds_algopara, solveu,&
-                    fonact, carcri, ds_print, sdstat     , sdtime,&
+                    fonact, carcri, ds_print, ds_measure,&
                     sddisc, numins, valinc  , solalg     , matass,&
                     maprec, ds_contact, sddyna     , meelem,&
                     measse, veelem, veasse  , ldccvg     , faccvg,&

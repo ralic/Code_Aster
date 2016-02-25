@@ -1,5 +1,5 @@
 subroutine nmfcon(modele, numedd, mate, fonact, ds_contact,&
-                  sdstat, sdtime, valinc, solalg,&
+                  ds_measure, valinc, solalg,&
                   veelem, veasse)
 !
 use NonLin_Datastructure_type
@@ -11,7 +11,7 @@ implicit none
 #include "asterfort/nmfocc.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,7 +32,7 @@ implicit none
     character(len=24) :: modele, numedd, mate
     character(len=19) :: veelem(*), veasse(*)
     character(len=19) :: solalg(*), valinc(*)
-    character(len=24) :: sdstat, sdtime
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! ----------------------------------------------------------------------
@@ -48,8 +48,7 @@ implicit none
 ! IN  MATE   : CHAMP MATERIAU
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! In  ds_contact       : datastructure for contact management
-! IN  SDSTAT : SD STATISTIQUES
-! IN  SDTIME : SD TIMER
+! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
 ! IN  VEELEM : VARIABLE CHAPEAU POUR NOM DES VECT_ELEM
@@ -61,16 +60,13 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
-!
-! --- FONCTIONNALITES ACTIVEES
-!
     leltc = isfonc(fonact,'ELT_CONTACT')
 !
 ! --- CALCUL DU SECOND MEMBRE POUR CONTACT/XFEM
 !
     if (leltc) then
         call nmfocc('CORRECTION', modele, mate, numedd, fonact,&
-                    ds_contact, sdstat, sdtime, solalg,&
+                    ds_contact, ds_measure, solalg,&
                     valinc, veelem, veasse)
     endif
 !

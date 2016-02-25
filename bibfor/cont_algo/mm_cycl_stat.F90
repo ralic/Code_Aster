@@ -1,4 +1,4 @@
-subroutine mm_cycl_stat(sdstat, ds_contact)
+subroutine mm_cycl_stat(ds_measure, ds_contact)
 !
 use NonLin_Datastructure_type
 !
@@ -12,7 +12,7 @@ implicit none
 #include "asterfort/mm_cycl_erase.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -29,7 +29,7 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=24), intent(in) :: sdstat
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
@@ -40,7 +40,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sdstat           : datastructure for statistics
+! IO  ds_measure       : datastructure for measure and statistics management
 ! In  ds_contact       : datastructure for contact management
 !
 ! --------------------------------------------------------------------------------------------------
@@ -80,9 +80,9 @@ implicit none
 !
 ! - Saving for statistics
 !
-    call nmrvai(sdstat, 'CTCC_CYCL_1', 'E', cycl_nb(1))
-    call nmrvai(sdstat, 'CTCC_CYCL_2', 'E', cycl_nb(2))
-    call nmrvai(sdstat, 'CTCC_CYCL_3', 'E', cycl_nb(3))
-    call nmrvai(sdstat, 'CTCC_CYCL_4', 'E', cycl_nb(4))
+    call nmrvai(ds_measure, 'Contact_Cycl_1', input_count = cycl_nb(1))
+    call nmrvai(ds_measure, 'Contact_Cycl_2', input_count = cycl_nb(2))
+    call nmrvai(ds_measure, 'Contact_Cycl_3', input_count = cycl_nb(3))
+    call nmrvai(ds_measure, 'Contact_Cycl_4', input_count = cycl_nb(4))
 !
 end subroutine

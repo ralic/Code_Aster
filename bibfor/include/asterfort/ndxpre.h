@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -22,7 +22,7 @@
 interface
     subroutine ndxpre(modele, numedd, numfix  , mate       , carele,&
                       comref, compor, lischa  , ds_algopara, solveu,&
-                      fonact, carcri, sddisc  , sdstat     , sdtime,&
+                      fonact, carcri, sddisc  , ds_measure,&
                       numins, valinc, solalg  , matass     , maprec,&
                       sddyna, sderro, ds_inout, meelem     , measse,&
                       veelem, veasse, lerrit)
@@ -41,8 +41,7 @@ interface
         integer :: fonact(*)
         character(len=24) :: carcri
         character(len=19) :: sddisc
-        character(len=24) :: sdstat
-        character(len=24) :: sdtime
+        type(NL_DS_Measure), intent(inout) :: ds_measure
         integer :: numins
         character(len=19) :: valinc(*)
         character(len=19) :: solalg(*)

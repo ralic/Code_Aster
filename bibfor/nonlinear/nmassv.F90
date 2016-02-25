@@ -1,6 +1,6 @@
 subroutine nmassv(typvez  , modelz, lischa, mate  , carele,&
                   compor  , numedd, instam, instap, &
-                  sddyna, sdtime, valinc, comref,&
+                  sddyna  , ds_measure, valinc, comref,&
                   ds_inout, measse, vecelz, vecasz)
 !
 use NonLin_Datastructure_type
@@ -53,7 +53,8 @@ implicit none
     character(len=19) :: lischa
     real(kind=8) :: instap, instam
     character(len=19) :: sddyna
-    character(len=24) :: mate, carele, compor, numedd, comref, sdtime
+    character(len=24) :: mate, carele, compor, numedd, comref
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19) :: measse(*), valinc(*)
     type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=*) :: vecasz, vecelz
@@ -77,7 +78,7 @@ implicit none
 ! IN  SDDYNA : SD DYNAMIQUE
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  COMREF : VARI_COM DE REFERENCE
-! IN  SDTIME : SD TIMER
+! IO  ds_measure       : datastructure for measure and statistics management
 ! In  ds_inout         : datastructure for input/output management
 ! IN  VECELE : VECT_ELEM A ASSEMBLER
 ! OUT VECASS : VECT_ASSE CALCULEE
@@ -139,10 +140,10 @@ implicit none
         // ' DE TYPE <',typvec,'>'
     endif
 !
-! --- MESURES
+! - Launch timer
 !
-    call nmtime(sdtime, 'INI', 'SECO_MEMB')
-    call nmtime(sdtime, 'RUN', 'SECO_MEMB')
+    call nmtime(ds_measure, 'Init'  , 'Second_Member')
+    call nmtime(ds_measure, 'Launch', 'Second_Member')
 !
 ! --- FORCES NODALES
 !
@@ -288,7 +289,9 @@ implicit none
         call nmdebg('VECT', vecass, ifm)
     endif
 !
-    call nmtime(sdtime, 'END', 'SECO_MEMB')
+! - Stop timer
+!
+    call nmtime(ds_measure, 'Stop', 'Second_Member')
 !
     call jedema()
 !

@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,10 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmcalv(typvec, modelz, lischa, mate  , carele,&
-                      compor, numedd, comref, sdtime, instam,&
-                      instap, valinc, solalg, sddyna, option,&
+    subroutine nmcalv(typvec, modelz, lischa, mate      , carele,&
+                      compor, numedd, comref, ds_measure, instam,&
+                      instap, valinc, solalg, sddyna    , option,&
                       vecele)
+        use NonLin_Datastructure_type        
         character(len=6) :: typvec
         character(len=*) :: modelz
         character(len=19) :: lischa
@@ -28,7 +29,7 @@ interface
         character(len=24) :: compor
         character(len=24) :: numedd
         character(len=24) :: comref
-        character(len=24) :: sdtime
+        type(NL_DS_Measure), intent(inout) :: ds_measure
         real(kind=8) :: instam
         real(kind=8) :: instap
         character(len=19) :: valinc(*)

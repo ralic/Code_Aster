@@ -1,5 +1,5 @@
-subroutine nmnble(numins, modele, noma, numedd, sdstat,&
-                  sdtime, sddyna, sddisc, fonact, ds_contact,&
+subroutine nmnble(numins, modele, noma, numedd, ds_measure,&
+                  sddyna, sddisc, fonact, ds_contact,&
                   valinc, solalg)
 !
 use NonLin_Datastructure_type
@@ -22,7 +22,7 @@ implicit none
 #include "asterfort/r8inir.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -44,7 +44,7 @@ implicit none
     character(len=24) :: modele
     character(len=24) :: numedd
     type(NL_DS_Contact), intent(in) :: ds_contact
-    character(len=24) :: sdtime, sdstat
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19) :: sddyna, sddisc
     character(len=19) :: solalg(*), valinc(*)
     integer :: numins
@@ -61,8 +61,7 @@ implicit none
 ! IN  NOMA   : NOM DU MAILLAGE
 ! IN  NUMINS : NUMERO D'INSTANT
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
-! IN  SDTIME : SD TIMER
-! IN  SDSTAT : SD STATISTIQUES
+! IO  ds_measure       : datastructure for measure and statistics management
 ! In  ds_contact       : datastructure for contact management
 ! IN  SDDYNA : SD DEDIEE A LA DYNAMIQUE
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
@@ -121,18 +120,23 @@ implicit none
         call copisd('CHAMP_GD', 'V', accini, accplu)
     endif
 !
+! - Start timer for preparation of contact
+!
+    call nmtime(ds_measure, 'Launch', 'Contact_Prepare ')
+!
 ! - Create elements for contact
 !
-    call nmtime(sdtime, 'INI', 'CTCC_PREP')
-    call nmtime(sdtime, 'RUN', 'CTCC_PREP')
     call nmctcl(modele, noma, ds_contact)
 !
 ! - Create input fields for contact
 !
     call nmctce(modele, noma, ds_contact, sddyna, sddisc,&
                 numins)
-    call nmtime(sdtime, 'END', 'CTCC_PREP')
-    call nmrinc(sdstat, 'CTCC_PREP')
+!
+! - Stop timer for preparation of contact
+!
+    call nmtime(ds_measure, 'Stop', 'Contact_Prepare ')
+    call nmrinc(ds_measure, 'Contact_Prepare ')
 !
 999 continue
 !

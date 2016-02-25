@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -17,7 +17,7 @@
 !
 interface
     subroutine nmprac(fonact, lischa, numedd, numfix    , solveu     ,&
-                      sddyna, sdstat, sdtime, ds_contact, ds_algopara,&
+                      sddyna, ds_measure, ds_contact, ds_algopara,&
                       meelem, measse, maprec, matass    , faccvg)
         use NonLin_Datastructure_type        
         integer :: fonact(*)
@@ -26,8 +26,7 @@ interface
         character(len=24) :: numfix
         character(len=19) :: solveu
         character(len=19) :: sddyna
-        character(len=24) :: sdstat
-        character(len=24) :: sdtime
+        type(NL_DS_Measure), intent(inout) :: ds_measure
         type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19) :: meelem(*)
         character(len=19) :: measse(*)

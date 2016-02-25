@@ -1,7 +1,7 @@
 subroutine nmceta(modele, numedd, mate, carele, comref,&
-                  compor, lischa, carcri, fonact, sdstat,&
+                  compor, lischa, carcri, fonact, ds_measure,&
                   ds_contact, sdpilo, iterat, sdnume, valinc,&
-                  solalg, veelem, veasse, sdtime, sddisc,&
+                  solalg, veelem, veasse, sddisc,&
                   nbeffe, irecli, proeta, offset, rho,&
                   etaf, ldccvg, pilcvg, residu, matass)
 !
@@ -19,7 +19,7 @@ implicit none
 #include "asterfort/nmcese.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -46,7 +46,7 @@ implicit none
     character(len=24) :: modele, numedd, mate, carele, comref, compor
     character(len=24) :: carcri
     type(NL_DS_Contact), intent(in) :: ds_contact
-    character(len=24) :: sdstat, sdtime
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19) :: veelem(*), veasse(*)
     character(len=19) :: solalg(*), valinc(*)
 !
@@ -70,7 +70,6 @@ implicit none
 ! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! In  ds_contact       : datastructure for contact management
-! IN  SDSTAT : SD STATISTIQUES
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
 ! IN  ITERAT : NUMERO D'ITERATION DE NEWTON
@@ -78,7 +77,7 @@ implicit none
 ! IN  VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE
 ! IN  OFFSET : DECALAGE DE ETA_PILOTAGE EN FONCTION DE RHO
 ! IN  IRECLI : VRAI SI RECH LIN (ON VEUT LE RESIDU)
-! IN  SDTIME : SD TIMER
+! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  SDDISC : SD DISCRETISATION
 ! OUT ETAF   : PARAMETRE DE PILOTAGE
 ! I/O PILCVG : CODE DE CONVERGENCE POUR LE PILOTAGE
@@ -203,9 +202,9 @@ implicit none
 !        - ON DEMANDE A NMCESE DE CHOISIR
     if (nbeffe .eq. 2) then
         call nmcese(modele, numedd, mate, carele, comref,&
-                    compor, lischa, carcri, fonact, sdstat,&
+                    compor, lischa, carcri, fonact, ds_measure,&
                     ds_contact, iterat, sdnume, sdpilo, valinc,&
-                    solalg, veelem, veasse, sdtime, offset,&
+                    solalg, veelem, veasse, offset,&
                     typsel, sddisc, licite, rho, eta,&
                     etaf, residu, ldccvg, pilcvg, matass)
     else if (nbeffe.eq.1) then
@@ -221,9 +220,9 @@ implicit none
 ! ----- CETTE ETAPE EST SAUTEE SI LE RESIDU EST DEJA CALCULE DANS NMCESE
         if (typsel .eq. 'RESIDU' .and. nbeffe .eq. 2)     continue
         call nmcere(modele, numedd, mate, carele, comref,&
-                    compor, lischa, carcri, fonact, sdstat,&
+                    compor, lischa, carcri, fonact, ds_measure,&
                     ds_contact, iterat, sdnume, valinc, solalg,&
-                    veelem, veasse, sdtime, offset, rho,&
+                    veelem, veasse, offset, rho,&
                     etaf, residu, ldccvg, matass)
     endif
 !

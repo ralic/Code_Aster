@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -19,8 +19,8 @@
 !
 interface
     subroutine nmchht(model    , mate     , cara_elem  , compor        , comp_para ,&
-                      list_load, nume_dof , varc_refe  , list_func_acti, sdstat    ,&
-                      sddyna   , sdtime   , sddisc     , sdnume        , ds_contact,&
+                      list_load, nume_dof , varc_refe  , list_func_acti, ds_measure,&
+                      sddyna   , sddisc     , sdnume        , ds_contact,&
                       hval_incr, hval_algo, hval_veasse, hval_measse   , ds_inout)
         use NonLin_Datastructure_type
         character(len=24), intent(in) :: model
@@ -32,9 +32,8 @@ interface
         character(len=19), intent(in) :: list_load
         character(len=24), intent(in) :: varc_refe
         integer, intent(in) :: list_func_acti(*)
-        character(len=24), intent(in) :: sdstat
+        type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=19), intent(in) :: sddyna
-        character(len=24), intent(in) :: sdtime
         character(len=19), intent(in) :: sddisc
         character(len=19), intent(in) :: sdnume
         type(NL_DS_Contact), intent(in) :: ds_contact

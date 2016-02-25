@@ -13,7 +13,7 @@ implicit none
 #include "asterfort/PrepareTableLine.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -49,11 +49,11 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: i_col, nb_cols
-    type(NL_DS_col) :: col
+    type(NL_DS_Column) :: col
     integer :: vali
     integer :: pos, posfin, posmar, unibid
-    character(len=16) :: chvide, name
-    character(len=24) :: valk 
+    character(len=16) :: chvide
+    character(len=24) :: valk, name
     real(kind=8) :: valr
     character(len=255) :: table_line
     integer :: longr, precr, longi
@@ -85,7 +85,7 @@ implicit none
     do i_col = 1, nb_cols
         if (table%l_cols_acti(i_col)) then
             col         = table%cols(i_col)
-            col_width   = col%width
+            col_width   = 16
             mark        = col%mark
             name        = col%name
             l_vale_affe = col%l_vale_affe

@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -20,8 +20,8 @@
 interface
     subroutine nmcoma(modelz     , mate  , carele, compor  , carcri,&
                       ds_algopara, lischa, numedd, numfix  , solveu,&
-                      comref     , sddisc, sddyna, ds_print, sdstat,&
-                      sdtime     , numins, iterat, fonact  , ds_contact,&
+                      comref     , sddisc, sddyna, ds_print, ds_measure,&
+                      numins, iterat, fonact  , ds_contact,&
                       valinc     , solalg, veelem  , meelem,&
                       measse     , veasse, maprec, matass  , codere,&
                       faccvg     , ldccvg, sdnume)
@@ -40,8 +40,7 @@ interface
         character(len=19) :: sddisc
         character(len=19) :: sddyna
         type(NL_DS_Print), intent(inout) :: ds_print
-        character(len=24) :: sdstat
-        character(len=24) :: sdtime
+        type(NL_DS_Measure), intent(inout) :: ds_measure
         integer :: numins
         integer :: iterat
         integer :: fonact(*)

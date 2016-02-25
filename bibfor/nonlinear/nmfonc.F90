@@ -1,6 +1,6 @@
-subroutine nmfonc(ds_conv  , ds_algopara, solver   , model         , ds_contact,&
-                  list_load, sdnume     , sddyna   , sdcriq        , mate      ,&
-                  compor_  , ds_inout   , comp_para, list_func_acti)
+subroutine nmfonc(ds_conv  , ds_algopara, solver   , model    , ds_contact    ,&
+                  list_load, sdnume     , sddyna   , sdcriq   , mate          ,&
+                  compor_  , ds_inout   , comp_para, ds_energy, list_func_acti)
 !
 use NonLin_Datastructure_type
 !
@@ -28,7 +28,7 @@ implicit none
 #include "asterfort/nmlssv.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -58,6 +58,7 @@ implicit none
     character(len=*), intent(in) :: compor_
     type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=24), intent(in) :: comp_para
+    type(NL_DS_Energy), intent(in) :: ds_energy
     integer, intent(inout) :: list_func_acti(*)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -83,6 +84,7 @@ implicit none
 ! In  compor           : name of comportment definition (field)
 ! In  ds_inout         : datastructure for input/output management
 ! In  comp_para        : parameters for comportment
+! In  ds_energy        : datastructure for energy management
 ! IO  list_func_acti   : list of active functionnalities
 !
 ! --------------------------------------------------------------------------------------------------
@@ -153,8 +155,9 @@ implicit none
 !
 ! - Energy computation
 !
-    call getfac('ENERGIE', nocc)
-    if (nocc .ne. 0) list_func_acti(50) = 1
+    if (ds_energy%l_comp) then
+        list_func_acti(50) = 1
+    endif
 !
 ! - Modal projection for dynamic
 !

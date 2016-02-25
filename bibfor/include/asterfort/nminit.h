@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,14 +18,14 @@
 ! aslint: disable=W1504
 !
 interface
-    subroutine nminit(result , model , numedd   , numfix     , mate      ,&
-                      compor , carele, list_load, ds_algopara, maprec    ,&
-                      solveu , carcri, numins   , sdstat     , sddisc    ,&
-                      sdnume , sdcrit, varc_refe, fonact     , mesh      ,&
-                      sdpilo , sddyna, ds_print , sd_suiv    , sd_obsv   ,&
-                      sdtime , sderro, sdpost   , ds_inout   , sdener    ,&
-                      ds_conv, sdcriq, valinc   , solalg     , measse    ,&
-                      veelem , meelem, veasse   , codere     , ds_contact)
+    subroutine nminit(result, model    , numedd    , numfix     , mate  ,&
+                      compor, carele   , list_load , ds_algopara, maprec,&
+                      solveu, carcri   , numins    , sddisc     , sdnume,&
+                      sdcrit, varc_refe, fonact    , mesh       , sdpilo,&
+                      sddyna, ds_print , sd_suiv   , sd_obsv    , sderro,&
+                      sdpost, ds_inout , ds_energy , ds_conv    , sdcriq,&
+                      valinc, solalg   , measse    , veelem     , meelem,&
+                      veasse, codere   , ds_contact, ds_measure)
         use NonLin_Datastructure_type
         type(NL_DS_InOut), intent(inout) :: ds_inout
         character(len=8) :: result
@@ -40,7 +40,6 @@ interface
         character(len=19) :: solveu
         character(len=24) :: carcri
         integer :: numins
-        character(len=24) :: sdstat
         character(len=19) :: sddisc
         character(len=19) :: sdnume
         character(len=19) :: sdcrit
@@ -51,11 +50,10 @@ interface
         character(len=19) :: sddyna
         type(NL_DS_Print), intent(inout) :: ds_print
         character(len=24), intent(out) :: sd_suiv
-        character(len=24) :: sdtime
         character(len=24) :: sderro
         character(len=19) :: sdpost
         character(len=19), intent(out) :: sd_obsv
-        character(len=19) :: sdener
+        type(NL_DS_Energy), intent(inout) :: ds_energy
         type(NL_DS_Conv), intent(inout) :: ds_conv
         type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
         character(len=24) :: sdcriq
@@ -67,5 +65,6 @@ interface
         character(len=19) :: veasse(*)
         character(len=24) :: codere
         type(NL_DS_Contact), intent(inout) :: ds_contact
+        type(NL_DS_Measure), intent(inout) :: ds_measure
     end subroutine nminit
 end interface

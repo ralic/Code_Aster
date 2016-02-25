@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,15 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xminit(mesh  , model , ds_contact, nume_inst, sdtime,&
-                      sdstat, sddyna, hat_valinc)
+    subroutine xminit(mesh  , model , ds_contact, nume_inst, ds_measure,&
+                      sddyna, hat_valinc)
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
         character(len=8), intent(in) :: model
         type(NL_DS_Contact), intent(inout) :: ds_contact
         integer, intent(in) :: nume_inst
-        character(len=24), intent(in) :: sdtime
-        character(len=24), intent(in) :: sdstat
+        type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=19), intent(in) :: hat_valinc(*)
         character(len=19), intent(in) :: sddyna
     end subroutine xminit

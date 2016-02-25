@@ -1,6 +1,6 @@
 subroutine nmnpas(modele  , noma  , mate  , carele , fonact    ,&
                   ds_print, sddisc, sdsuiv, sddyna , sdnume    ,&
-                  sdstat  , sdtime, numedd, numins , ds_contact,&
+                  ds_measure, numedd, numins , ds_contact,&
                   valinc  , solalg, solveu, ds_conv, lischa)
 !
 use NonLin_Datastructure_type
@@ -28,7 +28,7 @@ implicit none
 #include "asterfort/SetResi.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -51,7 +51,8 @@ implicit none
     character(len=24) :: modele, mate, carele
     integer :: numins
     type(NL_DS_Print), intent(inout) :: ds_print
-    character(len=24) :: sdstat, sdtime, sdsuiv
+    character(len=24) :: sdsuiv
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=24) :: numedd
     type(NL_DS_Contact), intent(inout) :: ds_contact
     character(len=19) :: solalg(*), valinc(*)
@@ -74,8 +75,7 @@ implicit none
 ! IN  NUMEDD : NUME_DDL
 ! IN  NUMINS : NUMERO INSTANT COURANT
 ! IO  ds_print         : datastructure for printing parameters
-! IN  SDTIME : SD TIMER
-! IN  SDSTAT : SD STATISTIQUES
+! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IN  SDSUIV : SD SUIVI_DDL
 ! IN  SDNUME : NOM DE LA SD NUMEROTATION
@@ -188,9 +188,8 @@ implicit none
 ! - Initializations of contact for current time step
 !
     if (l_cont) then
-        call cont_init(noma  , modele, ds_contact, numins, sdtime,&
-                       sdstat, sddyna, valinc    , sdnume, numedd,&
-                       fonact)
+        call cont_init(noma  , modele, ds_contact, numins, ds_measure,&
+                       sddyna, valinc, sdnume    , numedd, fonact)
     endif
 !
 end subroutine

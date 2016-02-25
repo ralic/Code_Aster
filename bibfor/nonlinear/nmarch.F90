@@ -1,7 +1,7 @@
-subroutine nmarch(numins  , modele  , mate  , carele, fonact,&
-                  carcri  , ds_print, sddisc, sdpost, sdcrit,&
-                  sdtime  , sderro  , sddyna, sdpilo, sdener,&
-                  ds_inout, sdcriq  )
+subroutine nmarch(numins    , modele  , mate  , carele, fonact   ,&
+                  carcri    , ds_print, sddisc, sdpost, sdcrit   ,&
+                  ds_measure, sderro  , sddyna, sdpilo, ds_energy,&
+                  ds_inout  , sdcriq  )
 !
 use NonLin_Datastructure_type
 !
@@ -16,6 +16,7 @@ implicit none
 #include "asterfort/nmarpc.h"
 #include "asterfort/nmfinp.h"
 #include "asterfort/nmleeb.h"
+#include "asterfort/nmrinc.h"
 #include "asterfort/nmtime.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsagsd.h"
@@ -24,7 +25,7 @@ implicit none
 #include "asterfort/uttcpg.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -45,8 +46,9 @@ implicit none
     integer :: numins
     type(NL_DS_Print), intent(in) :: ds_print
     type(NL_DS_InOut), intent(in) :: ds_inout
-    character(len=24) :: sdtime
-    character(len=19) :: sddisc, sdcrit, sddyna, sdpost, sdpilo, sdener
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    type(NL_DS_Energy), intent(in) :: ds_energy
+    character(len=19) :: sddisc, sdcrit, sddyna, sdpost, sdpilo
     character(len=24) :: carcri
     character(len=24) :: sderro, sdcriq
     character(len=24) :: modele, mate, carele
@@ -74,8 +76,8 @@ implicit none
 ! IN  SDERRO : SD ERREUR
 ! IN  SDDYNA : SD DEDIEE A LA DYNAMIQUE
 ! IN  SDPILO : SD PILOTAGE
-! IN  SDTIME : SD TIMER
-! IN  SDENER : SD ENERGIE
+! IO  ds_measure       : datastructure for measure and statistics management
+! In  ds_energy        : datastructure for energy management
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 !
 ! --------------------------------------------------------------------------------------------------
@@ -92,10 +94,6 @@ implicit none
 !
     result         = ds_inout%result
     list_load_resu = ds_inout%list_load_resu
-!
-! - Begin timer
-!
-    call nmtime(sdtime, 'RUN', 'ARC')
 !
 ! - Loop state.
 !
@@ -127,9 +125,9 @@ implicit none
 !
     instan = diinst(sddisc,numins)
 !
-! - Stroring in PARA_CALC table
+! - Save energy parameters in output table
 !
-    call nmarpc(result, sdener, numrep, instan)
+    call nmarpc(ds_energy, numrep, instan)
 !
 ! - Print or not ?
 !
@@ -149,6 +147,10 @@ implicit none
                 goto 999
             endif
         endif
+!
+! ----- Begin timer
+!
+        call nmtime(ds_measure, 'Launch', 'Store')
 !
 ! ----- Print head
 !
@@ -174,12 +176,13 @@ implicit none
 !
         call nmarce(ds_inout, result  , sddisc, instan, numarc,&
                     force   , ds_print)
+!
+! ----- End timer
+!
+        call nmtime(ds_measure, 'Stop', 'Store')
+        call nmrinc(ds_measure, 'Store')
     endif
 !
 999 continue
-!
-! - End timer
-!
-    call nmtime(sdtime, 'END', 'ARC')
 !
 end subroutine

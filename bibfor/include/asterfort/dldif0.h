@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -23,10 +23,11 @@ interface
                       dep0, vit0, acc0, depl1, vite1,&
                       acce1, vite2, fexte, famor, fliai,&
                       nchar, nveca, liad, lifo, modele,&
-                      ener, solveu, mate, carele, charge,&
+                      ener, mate, carele, charge,&
                       infoch, fomult, numedd, dt, temps,&
                       tabwk0, tabwk1, archiv, nbtyar, typear,&
-                      numrep)
+                      numrep, ds_energy)
+        use NonLin_Datastructure_type
         integer :: nbtyar
         integer :: neq
         character(len=8) :: result
@@ -54,7 +55,6 @@ interface
         character(len=24) :: lifo(*)
         character(len=24) :: modele
         aster_logical :: ener
-        character(len=19) :: solveu
         character(len=24) :: mate
         character(len=24) :: carele
         character(len=24) :: charge
@@ -68,5 +68,6 @@ interface
         integer :: archiv
         character(len=16) :: typear(nbtyar)
         integer :: numrep
+        type(NL_DS_Energy), intent(inout) :: ds_energy
     end subroutine dldif0
 end interface

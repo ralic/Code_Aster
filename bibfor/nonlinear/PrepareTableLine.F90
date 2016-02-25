@@ -10,7 +10,7 @@ implicit none
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -64,7 +64,7 @@ implicit none
     total_width     = 1
     do i_col = 1, nb_cols
         if (table%l_cols_acti(i_col)) then
-            width       = table%cols(i_col)%width
+            width       = 16
             ASSERT(width.le.255)
             total_width = total_width + width + 1
             ASSERT(total_width + width + 1.le.255)

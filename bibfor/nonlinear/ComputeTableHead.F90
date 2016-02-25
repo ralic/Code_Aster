@@ -9,7 +9,7 @@ implicit none
 #include "asterfort/PrepareTableLine.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -76,7 +76,7 @@ implicit none
     pos = 2
     do i_col = 1, nb_cols
         if (table%l_cols_acti(i_col)) then
-            col_width    = table%cols(i_col)%width
+            col_width    = 16
             col_title(1) = table%cols(i_col)%title(1)
             if (title_height .ge. 2) then
                 col_title(2) = table%cols(i_col)%title(2)
@@ -98,4 +98,3 @@ implicit none
     ASSERT(pos.eq.table_width+1)
 !
 end subroutine
-!

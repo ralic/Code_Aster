@@ -1,4 +1,4 @@
-subroutine cfalgo(mesh          , sdstat    , resi_glob_rela, iter_newt,&
+subroutine cfalgo(mesh          , ds_measure, resi_glob_rela, iter_newt,&
                   solver        , nume_dof  , matr_asse     , disp_iter,&
                   disp_cumu_inst, ds_contact, ctccvg        )
 !
@@ -25,7 +25,7 @@ implicit none
 #include "asterfort/infdbg.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -43,7 +43,7 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
-    character(len=24), intent(in) :: sdstat
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     real(kind=8), intent(in) :: resi_glob_rela
     integer, intent(in) :: iter_newt
     character(len=19), intent(in) :: solver
@@ -63,7 +63,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  mesh             : name of mesh
-! In  sdstat           : datastructure for statistics
+! IO  ds_measure       : datastructure for measure and statistics management
 ! In  resi_glob_rela   : current value of RESI_GLOB_RELA
 ! In  iter_newt        : index of current Newton iteration
 ! In  solver           : datastructure for solver parameters
@@ -121,46 +121,46 @@ implicit none
 !
     if (algo_cont .eq. 4) then
         if (algo_frot .eq. 0) then
-            call algocp(sdstat, ds_contact%sdcont_solv, nume_dof, matr_asse)
+            call algocp(ds_measure, ds_contact%sdcont_solv, nume_dof, matr_asse)
         else if (algo_frot.eq.1) then
-            call frogdp(sdstat, ds_contact%sdcont_solv, nume_dof, matr_asse, resi_glob_rela)
+            call frogdp(ds_measure, ds_contact%sdcont_solv, nume_dof, matr_asse, resi_glob_rela)
         else
             ASSERT(.false.)
         endif
     else if (algo_cont.eq.1) then
         if (l_gliss) then
-            call algogl(sdstat, ds_contact%sdcont_defi, ds_contact%sdcont_solv,&
+            call algogl(ds_measure, ds_contact%sdcont_defi, ds_contact%sdcont_solv,&
                         solver, matr_asse             , mesh                  ,&
                         ctccvg)
         else
-            call algoco(sdstat, ds_contact%sdcont_defi, ds_contact%sdcont_solv,&
+            call algoco(ds_measure, ds_contact%sdcont_defi, ds_contact%sdcont_solv,&
                         solver, matr_asse             , mesh                  ,&
                         ctccvg)
         endif
     else if (algo_cont.eq.2) then
         if (algo_frot .eq. 0) then
-            call algocg(sdstat, ds_contact%sdcont_defi, ds_contact%sdcont_solv,&
+            call algocg(ds_measure, ds_contact%sdcont_defi, ds_contact%sdcont_solv,&
                         solver, matr_asse             , ctccvg)
         else
             ASSERT(.false.)
         endif
     else if (algo_cont.eq.5) then
         if (algo_frot .eq. 0) then
-            call algocl(sdstat, ds_contact%sdcont_defi, ds_contact%sdcont_solv,&
+            call algocl(ds_measure, ds_contact%sdcont_defi, ds_contact%sdcont_solv,&
                         solver, matr_asse             , mesh                  ,&
                         ctccvg, l_wait_conv)
         else if (algo_frot.eq.1) then
-            call fropgd(sdstat, ds_contact%sdcont_defi, ds_contact%sdcont_solv,&
+            call fropgd(ds_measure, ds_contact%sdcont_defi, ds_contact%sdcont_solv,&
                         solver, nume_dof              , matr_asse             ,&
                         mesh  , resi_glob_rela        , disp_cumu_inst        ,&
                         ctccvg, l_wait_conv)
         else if (algo_frot.eq.2) then
             if (model_ndim .eq. 2) then
-                call fro2gd(sdstat, ds_contact%sdcont_defi, ds_contact%sdcont_solv,&
+                call fro2gd(ds_measure, ds_contact%sdcont_defi, ds_contact%sdcont_solv,&
                             solver, matr_asse             , mesh                  ,&
                             ctccvg)
             else if (model_ndim.eq.3) then
-                call frolgd(sdstat      , ds_contact%sdcont_defi, ds_contact%sdcont_solv,&
+                call frolgd(ds_measure  , ds_contact%sdcont_defi, ds_contact%sdcont_solv,&
                             solver      , nume_dof              , matr_asse             ,&
                             mesh        , resi_glob_rela        , disp_cumu_inst        ,&
                             l_first_geom, ctccvg)

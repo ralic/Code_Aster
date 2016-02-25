@@ -1,7 +1,15 @@
-subroutine nmrinc(sdstat, phasez)
+subroutine nmrinc(ds_measure, device_type_)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/nmrvai.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,29 +26,22 @@ subroutine nmrinc(sdstat, phasez)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterfort/nmrvai.h"
-    character(len=*) :: phasez
-    character(len=24) :: sdstat
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    character(len=*), intent(in) :: device_type_
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (ALGORITHME)
+! MECA_NON_LINE - Measure and statistic management
 !
-! MESURE DE STATISTIQUES - INCREMENTATION NOMBRE
+! Increase counter
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! IO  ds_measure       : datastructure for measure and statistics management
+! In  device_type      : type of current device
 !
-! IN  SDSTAT : SD STATISTIQUES
-! IN  PHASE  : PHASE DE STATISTIQUE
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+    call nmrvai(ds_measure, device_type_, input_count = 1)
 !
-    integer :: vali
-!
-! ----------------------------------------------------------------------
-!
-    vali = 1
-    call nmrvai(sdstat, phasez, 'E', vali)
 end subroutine

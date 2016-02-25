@@ -70,7 +70,7 @@ implicit none
     character(len=24) :: list_node, list_elem, list_poin, list_spoi, list_cmp
     character(len=14) :: sdextr_obsv
     character(len=19) :: tabl_name
-    character(len=80) :: title
+    character(len=16) :: title
     integer :: nb_cmp, nb_node, nb_elem, nb_field, nb_field_comp
     integer :: nb_poin, nb_spoi
     integer :: i_keyw_fact, nb_keyw_fact, nb_obsf_effe, i_field, i_field_comp
@@ -82,7 +82,7 @@ implicit none
     character(len=19) :: work_poin, work_node, work_elem
     aster_logical :: l_obsv
     character(len=24) :: obsv_titl
-    character(len=80), pointer :: v_obsv_titl(:) => null()
+    character(len=16), pointer :: v_obsv_titl(:) => null()
     character(len=24) :: obsv_tabl
     character(len=24), pointer :: v_obsv_tabl(:) => null()
     character(len=24) :: extr_info, extr_type, extr_flag, extr_field, extr_comp
@@ -105,7 +105,7 @@ implicit none
 ! - Get vector for title
 !
     obsv_titl = sd_obsv(1:14)//'     .TITR'
-    call jeveuo(obsv_titl, 'L', vk80 = v_obsv_titl)
+    call jeveuo(obsv_titl, 'L', vk16 = v_obsv_titl)
 !
 ! - Access to extraction datastructure
 !

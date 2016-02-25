@@ -1,4 +1,4 @@
-subroutine nmxvec(modelz  , mate  , carele, compor, sdtime,&
+subroutine nmxvec(modelz  , mate  , carele, compor, ds_measure,&
                   sddisc  , sddyna, numins, valinc, solalg,&
                   lischa  , comref, numedd,&
                   ds_inout, veelem, veasse, measse, nbvect,&
@@ -16,7 +16,7 @@ implicit none
 #include "asterfort/nmchex.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -39,7 +39,8 @@ implicit none
     aster_logical :: lcalve(20), lassve(20)
     character(len=16) :: loptve(20)
     character(len=*) :: modelz
-    character(len=24) :: mate, carele, sdtime
+    character(len=24) :: mate, carele
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=24) :: compor, numedd
     integer :: numins
     type(NL_DS_InOut), intent(in) :: ds_inout
@@ -56,7 +57,6 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  MODELE : MODELE
 ! IN  NUMEDD : NUME_DDL
 ! IN  MATE   : CHAMP MATERIAU
@@ -65,7 +65,7 @@ implicit none
 ! IN  COMPOR : COMPORTEMENT
 ! IN  LISCHA : LISTE DES CHARGES
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
-! IN  SDTIME : SD TIMER
+! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  METHOD : INFORMATIONS SUR LES METHODES DE RESOLUTION (VOIR NMLECT)
 ! IN  PARMET : PARAMETRES DES METHODES DE RESOLUTION (VOIR NMLECT)
 ! IN  SOLVEU : SOLVEUR
@@ -112,30 +112,16 @@ implicit none
         lasse = lassve(ivect)
         option = loptve(ivect)
 !
-! --- UTILISER NMFINT
-!
-        if (typvec .eq. 'CNFINT') then
-            ASSERT(.false.)
-        endif
-!
-! --- UTILISER NMDIRI
-!
-        if (typvec .eq. 'CNDIRI') then
-            ASSERT(.false.)
-        endif
-!
-! --- UTILISER NMBUDI
-!
-        if (typvec .eq. 'CNBUDI') then
-            ASSERT(.false.)
-        endif
+        ASSERT(typvec .ne. 'CNFINT')
+        ASSERT(typvec .ne. 'CNDIRI')
+        ASSERT(typvec .ne. 'CNBUDI')
 !
 ! --- CALCULER VECT_ELEM
 !
         if (lcalc) then
             call nmchex(veelem, 'VEELEM', typvec, vecele)
             call nmcalv(typvec, modele, lischa, mate  , carele,&
-                        compor, numedd, comref, sdtime, instam,&
+                        compor, numedd, comref, ds_measure, instam,&
                         instap, valinc, solalg, sddyna, option,&
                         vecele)
         endif
@@ -146,7 +132,7 @@ implicit none
             call nmchex(veasse  , 'VEASSE', typvec, vecass)
             call nmassv(typvec  , modelz, lischa, mate, carele,&
                         compor  , numedd, instam, instap, &
-                        sddyna, sdtime, valinc, comref,&
+                        sddyna  , ds_measure, valinc, comref,&
                         ds_inout, measse, vecele, vecass)
         endif
     end do

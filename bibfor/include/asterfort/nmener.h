@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -19,9 +19,9 @@
 !
 interface
     subroutine nmener(valinc, veasse, measse, sddyna, eta        ,&
-                      sdener, fonact, numedd, numfix, ds_algopara,&
+                      ds_energy, fonact, numedd, numfix, ds_algopara,&
                       meelem, numins, modele, mate  , carele     ,&
-                      compor, sdtime, sddisc, solalg, lischa     ,&
+                      compor, ds_measure, sddisc, solalg, lischa     ,&
                       comref, veelem, ds_inout)
         use NonLin_Datastructure_type
         character(len=19) :: valinc(*)
@@ -29,7 +29,7 @@ interface
         character(len=19) :: measse(*)
         character(len=19) :: sddyna
         real(kind=8) :: eta
-        character(len=19) :: sdener
+        type(NL_DS_Energy), intent(inout) :: ds_energy
         integer :: fonact(*)
         character(len=24) :: numedd
         character(len=24) :: numfix
@@ -41,7 +41,7 @@ interface
         type(NL_DS_InOut), intent(in) :: ds_inout
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         character(len=24) :: compor
-        character(len=24) :: sdtime
+        type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=19) :: sddisc
         character(len=19) :: solalg(*)
         character(len=19) :: lischa

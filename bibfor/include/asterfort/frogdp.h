@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,8 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine frogdp(sdstat, resoco, numedd, matass, resigr)
-        character(len=24) :: sdstat
+    subroutine frogdp(ds_measure, resoco, numedd, matass, resigr)
+        use NonLin_Datastructure_type        
+        type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=24) :: resoco
         character(len=14) :: numedd
         character(len=19) :: matass

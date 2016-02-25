@@ -3,10 +3,10 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
                   vit0, acc0, fexte, famor, fliai,&
                   nchar, nveca, liad, lifo, modele,&
                   mate, carele, charge, infoch, fomult,&
-                  numedd, nume, solveu, numrep)
+                  numedd, nume, numrep, ds_energy)
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -61,7 +61,11 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
 !
 ! CORPS DU PROGRAMME
 ! aslint: disable=W1504
-    implicit none
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/etausr.h"
@@ -98,7 +102,6 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
     integer :: neq, imat(*), liad(*), nchar, nveca, nume, numrep
 !
     character(len=8) :: masse, rigid, amort, result
-    character(len=19) :: solveu
     character(len=24) :: modele, carele, charge, fomult, mate, numedd
     character(len=24) :: infoch, lifo(*)
 !
@@ -106,6 +109,7 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
     real(kind=8) :: fexte(*), famor(*), fliai(*)
 !
     aster_logical :: lamort, lcrea
+    type(NL_DS_Energy), intent(inout) :: ds_energy
 !
 !
     integer :: nbtyar
@@ -126,7 +130,7 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
     character(len=8) :: k8b
     character(len=8) :: vvar
     character(len=16) :: typres, k16bid, typear(nbtyar)
-    character(len=19) :: sdener, masse1, rigid1, amort1, k19bid
+    character(len=19) :: masse1, rigid1, amort1, k19bid
     character(len=24) :: sop
     character(len=24) :: ndeeq
     real(kind=8) :: tps1(4), tfin
@@ -137,7 +141,7 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
     real(kind=8) :: tjob
     real(kind=8) :: pas2
     real(kind=8) :: valr(3)
-    integer :: iwk1, iwk2, iforc1, iret, iexcl
+    integer :: iwk1, iwk2, iforc1, iexcl
     integer :: nper, nrmax, nr, npas, ipas, iparch, iarchi
     integer :: nnc, nbexcl, nbipas, iveri, nbordr, nbiter
     integer :: nbpasc, ifnobi, ifcibi
@@ -188,11 +192,7 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
     epsi = r8prem()
     npas = 0
     iarchi = nume
-    ener=.false.
-    call getfac('ENERGIE', iret)
-    if (iret .ne. 0) then
-        ener=.true.
-    endif
+    ener   = ds_energy%l_comp
 !
 ! 1.4. ==> PARAMETRES D'INTEGRATION
 !
@@ -485,7 +485,6 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
         end if
 !
 !
-        sdener=solveu(1:8)//'.ENER      '
         if (ener) then
             masse1=masse//'           '
             amort1=amort//'           '
@@ -496,14 +495,14 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
             call enerca(k19bid, zr(jdepl), zr(jvip1), vale, zr(jvip2),&
                         masse1, amort1, rigid1, fexte, famor,&
                         fliai, zr(ifnobi), zr(ifcibi), lamort, .true._1,&
-                        .false._1, sdener, '&&DLADAP')
+                        .false._1, ds_energy, '&&DLADAP')
             call jedetr('FNODABID')
             call jedetr('FCINEBID')
         endif
 !
 ! ------------- ARCHIVAGE DES PARAMETRES
 !
-        call nmarpc(result, sdener, numrep, temps)
+        call nmarpc(ds_energy, numrep, temps)
 !
 ! ------------- TRANSFERT DES NOUVELLES VALEURS DANS LES ANCIENNES
         temps = temp2

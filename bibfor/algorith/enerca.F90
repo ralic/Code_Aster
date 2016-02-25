@@ -1,11 +1,34 @@
 subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
                   masse, amort, rigid, fexte, famor,&
                   fliai, fnoda, fcine, lamort, ldyna,&
-                  lexpl, sdener, schema)
-    implicit none
+                  lexpl, ds_energy, schema)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/ddlphy.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mrmult.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/zerlag.h"
+#include "asterfort/GetEnergy.h"
+#include "asterfort/IncrEnergy.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
+#include "blas/dcopy.h"
+#include "blas/ddot.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,7 +43,15 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: ludovic.idoux at edf.fr
+! person_in_charge: mickael.abbas at edf.fr
+!
+    character(len=19) :: valinc(*), masse, amort, rigid
+    real(kind=8) :: dep0(*), vit0(*), depl1(*), vite1(*)
+    real(kind=8) :: fexte(*), famor(*), fliai(*), fnoda(*), fcine(*)
+    aster_logical :: lamort, ldyna, lexpl
+    character(len=8) :: schema
+    type(NL_DS_Energy), intent(inout) :: ds_energy
+!
 ! ----------------------------------------------------------------------
 !     CALCUL DES ENERGIES
 !     DONNEES (IN) :
@@ -63,41 +94,9 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
 !  IN  : LAMORT    : LOGICAL .TRUE. SI LA MATRICE AMORTISSEMENT EXISTE
 !  IN  : LDYNA     : LOGICAL .TRUE. SI CALCUL DYNAMIQUE
 !  IN  : LEXPL     : LOGICAL .TRUE. SI CALCUL EXPLICITE DANS DNL
-!  IN  : SDENER    : SD ENERGIE
+! IO  ds_energy        : datastructure for energy management
 !  IN  : SCHEMA    : NOM DU SCHEMA POUR DYNA_VIBRA//TRAN/PHYS
 !
-! ----------------------------------------------------------------------
-! DECLARATION PARAMETRES D'APPELS
-! ----------------------------------------------------------------------
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/ddlphy.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/mrmult.h"
-#include "asterfort/nmchex.h"
-#include "asterfort/wkvect.h"
-#include "asterfort/zerlag.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
-#include "blas/dcopy.h"
-#include "blas/ddot.h"
-!
-    character(len=19) :: valinc(*), masse, amort, rigid, sdener
-    real(kind=8) :: dep0(*), vit0(*), depl1(*), vite1(*)
-    real(kind=8) :: fexte(*), famor(*), fliai(*), fnoda(*), fcine(*)
-    aster_logical :: lamort, ldyna, lexpl
-    character(len=8) :: schema
-!
-!
-!
-!
-! ----------------------------------------------------------------------
-! DECLARATION VARIABLES LOCALES
-! ----------------------------------------------------------------------
     integer :: iaux, neq, nbcol, long
     integer :: jdeeq, icvmoz
     integer :: imasse, iamort, irigid
@@ -109,13 +108,13 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
     character(len=11) :: forma
     character(len=40) :: formb, formc
     real(kind=8) :: wint, wext, liai, ecin, amor, wsch
+    real(kind=8) :: wint_t, wext_t, liai_t, ecin_t, amor_t, wsch_t
     real(kind=8), pointer :: fmoy(:) => null()
     real(kind=8), pointer :: kumoyz(:) => null()
     real(kind=8), pointer :: mdv(:) => null()
     real(kind=8), pointer :: mumoyz(:) => null()
     real(kind=8), pointer :: vmoyz(:) => null()
     real(kind=8), pointer :: vpmvmz(:) => null()
-    real(kind=8), pointer :: vale(:) => null()
 !
 ! ----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
@@ -170,14 +169,16 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
         call dcopy(neq, zr(ivpmvm), 1, vpmvmz, 1)
         call dismoi('NOM_NUME_DDL', masse, 'MATR_ASSE', repk=numedd)
         call jeveuo(numedd(1:14)//'.NUME.DEEQ', 'L', jdeeq)
-        if (sdener(1:8) .eq. '&&OP0070') then
+        if (ds_energy%command .eq. 'MECA_NON_LINE') then
 ! ON NE GARDE QUE LES DDL NODAUX PHYSIQUES
             call nmchex(valinc, 'VALINC', 'DEPPLU', depplu)
-        else if (sdener(1:8).eq.'&&COMDLT') then
+        else if (ds_energy%command .eq. 'DYNA_VIBRA') then
             depplu=schema//'.DEPL1     '
             if (schema .eq. '&&DLADAP') then
                 depplu=schema//'.DEP2 '
             endif
+        else
+            ASSERT(.false.)
         endif
         call ddlphy(depplu, neq, zr(iupmuz), zk8(idesc))
         call ddlphy(depplu, neq, vmoyz, zk8(idesc))
@@ -219,7 +220,7 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
 ! - SI MECA_NON_LINE : TRAVAIL DES FORCES INTERNES
 ! --------------------------------------------------------------------
     AS_ALLOCATE(vr=fmoy, size=neq)
-    if (sdener(1:8) .eq. '&&COMDLT') then
+    if (ds_energy%command .eq. 'DYNA_VIBRA') then
         AS_ALLOCATE(vr=kumoyz, size=neq)
         call mrmult('ZERO', irigid, zr(iumoyz), kumoyz, 1,&
                     .true._1)
@@ -245,11 +246,11 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
 ! --------------------------------------------------------------------
     wext=0.d0
 ! 1. CONTRIBUTION AFFE_CHAR_CINE (MECA_NON_LINE UNIQUEMENT)
-    if (sdener(1:8) .eq. '&&OP0070') then
+    if (ds_energy%command .eq. 'MECA_NON_LINE') then
         wext=ddot(neq,fmoy,1,fcine(1),1)
     endif
 ! 2. CONTRIBUTION DE Bt.LAMBDA (DIRICHLETS) POUR COMDLT
-    if (sdener(1:8) .eq. '&&COMDLT') then
+    if (ds_energy%command .eq. 'DYNA_VIBRA') then
         if (lexpl) then
 ! LAGRANGES PORTES PAR LA MATRICE DE MASSE
             call wkvect('&&ENERCA.MUMOY', 'V V R', neq, imumoy)
@@ -328,20 +329,27 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
 ! MISE A JOUR DES ENERGIES
 ! - ORDRE : WEXT - ECIN - WINT - AMOR - LIAI - WSCH
 ! --------------------------------------------------------------------
-    call jeveuo(sdener//'.VALE', 'E', vr=vale)
-    nbcol=4
-    vale(1)=vale(1)+wext
-    vale(3)=vale(3)+wint
-    vale(6)=vale(6)+wsch
+    nbcol  = 4
+    liai_t = 0.d0
+    call IncrEnergy(ds_energy, 'TRAV_EXT', wext)
+    call IncrEnergy(ds_energy, 'ENER_TOT', wint)
+    call IncrEnergy(ds_energy, 'DISS_SCH', wsch)
     if (ldyna) then
-        vale(2)=vale(2)+ecin
-        vale(4)=vale(4)+amor
+        call IncrEnergy(ds_energy, 'ENER_CIN' , ecin)
+        call IncrEnergy(ds_energy, 'TRAV_AMOR', amor)
         nbcol=nbcol+2
     endif
-    vale(5)=vale(5)+liai
-    if ((vale(5).ne.0.d0) .or. (liai.ne.0.d0)) then
+    call IncrEnergy(ds_energy, 'TRAV_LIAI', liai)
+    if ((liai_t.ne.0.d0) .or. (liai.ne.0.d0)) then
         nbcol=nbcol+1
     endif
+    call GetEnergy(ds_energy, 'TRAV_EXT', wext_t)
+    call GetEnergy(ds_energy, 'ENER_TOT', wint_t)
+    call GetEnergy(ds_energy, 'DISS_SCH', wsch_t)
+    call GetEnergy(ds_energy, 'ENER_CIN' , ecin_t)
+    call GetEnergy(ds_energy, 'TRAV_AMOR', amor_t)
+    call GetEnergy(ds_energy, 'TRAV_LIAI', liai_t)
+ 
 ! --------------------------------------------------------------------
 ! AFFICHAGE DU BILAN
 ! MINIMUM : 4 COLONNES (TITRE, WEXT, WINT, WSCH)
@@ -350,35 +358,35 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
 ! 7 COLONNES : AJOUT DE LIAI, ECIN ET AMOR
 ! --------------------------------------------------------------------
     long=18+14*(nbcol-1)+1
-    write(forma,1001) long
+    write(forma,101) long
     write(6,forma) ('-',iaux=1,long)
-    write(formb,1002) nbcol-1
-    write(formc,1003) nbcol-1
+    write(formb,102) nbcol-1
+    write(formc,103) nbcol-1
     if (nbcol .eq. 4) then
         write(6,formb) '|','BILAN D''ENERGIE','|','  TRAV_EXT   ','|',&
      &                 '  ENER_TOT   ','|','  DISS_SCH   ','|'
         write(6,formc) '|','  PAS COURANT  ','|',wext,'|',wint,&
      &                 '|',wsch,'|'
-        write(6,formc) '|','     TOTAL     ','|',vale(1),&
-     &                 '|',vale(3),'|',vale(6),'|'
+        write(6,formc) '|','     TOTAL     ','|',wext_t,&
+     &                 '|',wint_t,'|',wsch_t,'|'
     else if (nbcol.eq.5) then
         write(6,formb) '|','BILAN D''ENERGIE','|','  TRAV_EXT   ','|',&
      &                 '  ENER_TOT   ','|','  TRAV_LIAI  ','|',&
      &                 '  DISS_SCH   ','|'
         write(6,formc) '|','  PAS COURANT  ','|',wext,'|',wint,'|',liai,&
      &                 '|',wsch,'|'
-        write(6,formc) '|','     TOTAL     ','|',vale(1),&
-     &                 '|',vale(3),'|',vale(5),&
-     &                 '|',vale(6),'|'
+        write(6,formc) '|','     TOTAL     ','|',wext_t,&
+     &                 '|',wint_t,'|',liai_t,&
+     &                 '|',wsch_t,'|'
     else if (nbcol.eq.6) then
         write(6,formb) '|','BILAN D''ENERGIE','|','  TRAV_EXT   ','|',&
      &                 '  ENER_TOT   ','|','  ENER_CIN   ','|',&
      &                 '  TRAV_AMOR  ','|','  DISS_SCH   ','|'
         write(6,formc) '|','  PAS COURANT  ','|',wext,'|',wint,'|',ecin,&
      &                 '|',amor,'|',wsch,'|'
-        write(6,formc) '|','     TOTAL     ','|',vale(1),&
-     &                 '|',vale(3),'|',vale(2),&
-     &                 '|',vale(4),'|',vale(6),'|'
+        write(6,formc) '|','     TOTAL     ','|',wext_t,&
+     &                 '|',wint_t,'|',ecin_t,&
+     &                 '|',amor_t,'|',wsch_t,'|'
     else if (nbcol.eq.7) then
         write(6,formb) '|','BILAN D''ENERGIE','|','  TRAV_EXT   ','|',&
      &                 '  ENER_TOT   ','|','  ENER_CIN   ','|',&
@@ -386,10 +394,10 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
      &                 '  DISS_SCH   ','|'
         write(6,formc) '|','  PAS COURANT  ','|',wext,'|',wint,'|',ecin,&
      &                 '|',amor,'|',liai,'|',wsch,'|'
-        write(6,formc) '|','     TOTAL     ','|',vale(1),&
-     &                 '|',vale(3),'|',vale(2),&
-     &                 '|',vale(4),'|',vale(5),&
-     &                 '|',vale(6),'|'
+        write(6,formc) '|','     TOTAL     ','|',wext_t,&
+     &                 '|',wint_t,'|',ecin_t,&
+     &                 '|',amor_t,'|',liai_t,&
+     &                 '|',wsch_t,'|'
     endif
     write(6,forma) ('-',iaux=1,long)
 !
@@ -413,8 +421,8 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
     call jedetr('&&ENERCA.VPMVM')
     AS_DEALLOCATE(vr=vpmvmz)
 !
-    1001 format ('(',i3,'A1)')
-    1002 format ('((A1,1X,A15,1X),',i1,'(A1,A13),A1)')
-    1003 format ('((A1,1X,A15,1X),',i1,'(A1,1X,ES11.4,1X),A1)')
+    101 format ('(',i3,'A1)')
+    102 format ('((A1,1X,A15,1X),',i1,'(A1,A13),A1)')
+    103 format ('((A1,1X,A15,1X),',i1,'(A1,1X,ES11.4,1X),A1)')
     call jedema()
 end subroutine

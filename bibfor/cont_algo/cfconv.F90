@@ -1,4 +1,4 @@
-subroutine cfconv(mesh      , sdstat, sderro, hval_algo, ds_print,&
+subroutine cfconv(mesh      , ds_measure, sderro, hval_algo, ds_print,&
                   ds_contact)
 !
 use NonLin_Datastructure_type
@@ -19,7 +19,7 @@ implicit none
 #include "asterfort/mmbouc.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -38,7 +38,7 @@ implicit none
 !
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: sderro
-    character(len=24), intent(in) :: sdstat
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19), intent(in) :: hval_algo(*)
     type(NL_DS_Print), intent(inout) :: ds_print
     type(NL_DS_Contact), intent(inout) :: ds_contact
@@ -53,7 +53,7 @@ implicit none
 !
 ! In  mesh             : name of mesh
 ! In  sderro           : datastructure for errors during algorithm
-! In  sdstat           : datastructure for statistics
+! IO  ds_measure       : datastructure for measure and statistics management
 ! In  hval_algo        : hat-variable for algorithms fields
 ! IO  ds_print         : datastructure for printing parameters
 ! IO  ds_contact       : datastructure for contact management
@@ -76,7 +76,7 @@ implicit none
 ! - Get contact parameters
 !
     l_all_verif = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF')
-    call nmrvai(sdstat, 'CTCD_ALGO_ITER', 'N', nb_cont_iter)
+    call nmrvai(ds_measure, 'Contact_Algo', phasis = 'N', input_count = nb_cont_iter)
 !
 ! - Values in convergence table: not affected
 !

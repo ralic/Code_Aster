@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -24,7 +24,8 @@ interface
                       charge, infoch, fomult, modele, numedd,&
                       nume, solveu, criter, dep0, vit0,&
                       acc0, fexte0, famor0, fliai0, baseno,&
-                      tabwk, force0, force1)
+                      tabwk, force0, force1, ds_energy)
+        use NonLin_Datastructure_type
         integer :: neq
         character(len=8) :: result
         integer :: imat(3)
@@ -58,5 +59,6 @@ interface
         real(kind=8) :: tabwk(*)
         character(len=19) :: force0
         character(len=19) :: force1
+        type(NL_DS_Energy), intent(inout) :: ds_energy
     end subroutine dltali
 end interface

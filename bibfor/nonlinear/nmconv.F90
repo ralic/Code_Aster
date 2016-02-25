@@ -1,6 +1,6 @@
 subroutine nmconv(noma    , modele, mate      , numedd  , sdnume     ,&
-                  fonact  , sddyna, ds_conv   , ds_print, sdstat     ,&
-                  sddisc  , sdtime, sdcrit    , sderro  , ds_algopara,&
+                  fonact  , sddyna, ds_conv   , ds_print, ds_measure ,&
+                  sddisc  , sdcrit, sderro    , ds_algopara,&
                   ds_inout, comref, matass    , solveu  , numins     ,&
                   iterat  , eta   , ds_contact, valinc  , solalg     ,&
                   measse  , veasse)
@@ -26,6 +26,7 @@ implicit none
 #include "asterfort/nmeceb.h"
 #include "asterfort/nmerge.h"
 #include "asterfort/nmevcv.h"
+#include "asterfort/nmimci.h"
 #include "asterfort/nmimr0.h"
 #include "asterfort/nmimrv.h"
 #include "asterfort/nmlecv.h"
@@ -37,7 +38,7 @@ implicit none
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -67,7 +68,8 @@ implicit none
     character(len=8) :: noma
     character(len=24) :: numedd, modele
     type(NL_DS_Contact), intent(inout) :: ds_contact
-    character(len=24) :: sderro, sdstat, sdtime
+    character(len=24) :: sderro
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     type(NL_DS_InOut), intent(in) :: ds_inout
     type(NL_DS_Print), intent(inout) :: ds_print
     type(NL_DS_Conv), intent(inout) :: ds_conv
@@ -84,7 +86,7 @@ implicit none
 ! IN  MODELE : NOM DU MODELE
 ! IO  ds_contact       : datastructure for contact management
 ! IO  ds_conv          : datastructure for convergence management
-! IN  SDTIME : SD TIMER
+! IO  ds_measure       : datastructure for measure and statistics management
 ! In  ds_inout         : datastructure for input/output management
 ! IO  ds_print         : datastructure for printing parameters
 ! IN  NUMEDD : NUMEROTATION NUME_DDL
@@ -103,7 +105,6 @@ implicit none
 ! IN  SDERRO : GESTION DES ERREURS
 ! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
-! IN  SDSTAT : SD STATISTIQUES
 ! IN  SDCRIT : SYNTHESE DES RESULTATS DE CONVERGENCE POUR ARCHIVAGE
 ! IN  COMREF : VARI_COM REFE
 !
@@ -177,8 +178,8 @@ implicit none
         if (lreli) then
             line_sear_coef = ds_conv%line_sear_coef
             line_sear_iter = ds_conv%line_sear_iter
+            call nmrvai(ds_measure, 'Line_Search', input_count = line_sear_iter)
         endif
-        call nmrvai(sdstat, 'RECH_LINE_ITER', 'E', line_sear_iter)
 !
 ! ----- Compute residuals
 !
@@ -203,7 +204,7 @@ implicit none
 !
         if (lcont) then
             call cfmmcv(noma  , modele, numedd, fonact  , iterat    ,&
-                        numins, sddyna, sdstat, sddisc  , sdtime    ,&
+                        numins, sddyna, ds_measure, sddisc  ,&
                         sderro, valinc, solalg, ds_print, ds_contact)
         endif
 !
@@ -255,6 +256,10 @@ implicit none
             endif
         endif
     endif
+!
+! - Set iteration number in convergence table
+!
+    call nmimci(ds_print, 'ITER_NUME', iterat, .true._1)
 !
 ! --- MISE A JOUR DE L'INDICATEUR DE SUCCES SUR LES ITERATIONS DE NEWTON
 !

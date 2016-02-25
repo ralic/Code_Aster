@@ -1,8 +1,8 @@
-subroutine algocl(sdstat, defico, resoco, solveu, matass,&
+subroutine algocl(ds_measure, defico, resoco, solveu, matass,&
                   noma, ctccvg, ctcfix)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,7 +19,11 @@ subroutine algocl(sdstat, defico, resoco, solveu, matass,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -45,7 +49,7 @@ subroutine algocl(sdstat, defico, resoco, solveu, matass,&
 #include "asterfort/mtdsc3.h"
 #include "asterfort/nmrvai.h"
 #include "blas/daxpy.h"
-    character(len=24) :: sdstat
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=8) :: noma
     character(len=24) :: defico, resoco
     character(len=19) :: solveu, matass
@@ -81,7 +85,7 @@ subroutine algocl(sdstat, defico, resoco, solveu, matass,&
 !      F = ( L - QT.SIG - BT.LAM  ) AU COURS D'UNE ITERATION DE NEWTON
 !          (           0          )
 !
-! IN  SDSTAT : SD STATISTIQUES
+! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  DEFICO : SD DE DEFINITION DU CONTACT
 ! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
 ! IN  SOLVEU : SD SOLVEUR
@@ -334,8 +338,8 @@ subroutine algocl(sdstat, defico, resoco, solveu, matass,&
 !
 ! --- SAUVEGARDE DES INFOS DE DIAGNOSTIC
 !
-    call nmrvai(sdstat, 'CTCD_ALGO_ITER', 'E', iter)
-    call nmrvai(sdstat, 'CONT_NBLIAC', 'E', nbliac)
+    call nmrvai(ds_measure, 'Contact_Algo    ', input_count = iter)
+    call nmrvai(ds_measure, 'Contact_NumbCont', input_count = nbliac)
 !
     call jedema()
 !

@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -17,7 +17,7 @@
 !
 interface
     subroutine nmtble(cont_loop     , model   , mesh  , mate     , ds_contact,&
-                      list_func_acti, ds_print, sdstat, sdtime   , sddyna    ,&
+                      list_func_acti, ds_print, ds_measure, sddyna    ,&
                       sderro        , ds_conv , sddisc, nume_inst,hval_incr  ,&
                       hval_algo)
         use NonLin_Datastructure_type        
@@ -28,8 +28,7 @@ interface
         type(NL_DS_Contact), intent(inout) :: ds_contact
         integer, intent(in) :: list_func_acti(*)
         type(NL_DS_Print), intent(inout) :: ds_print
-        character(len=24), intent(in) :: sdstat
-        character(len=24), intent(in) :: sdtime
+        type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=19), intent(in) :: sddyna
         character(len=24), intent(in) :: sderro
         type(NL_DS_Conv), intent(in) :: ds_conv

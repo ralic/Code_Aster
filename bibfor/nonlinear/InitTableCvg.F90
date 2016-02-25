@@ -14,7 +14,7 @@ implicit none
 #include "asterfort/ComputeTableWidth.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -58,7 +58,7 @@ implicit none
     aster_logical :: l_newt_frot, l_newt_cont, l_newt_geom
     aster_logical :: l_info_resi, l_info_time, l_csv
     character(len=1) :: indsui
-    character(len=9) :: col_name
+    character(len=24) :: col_name
     character(len=255) :: sep_line
     character(len=24) :: sdsuiv_info
     integer, pointer :: v_sdsuiv_info(:) => null()

@@ -1,8 +1,8 @@
 subroutine nmrepl(modele , numedd, mate       , carele, comref,&
                   compor , lischa, ds_algopara, carcri, fonact,&
-                  iterat , sdstat, sdpilo     , sdnume, sddyna,&
+                  iterat , ds_measure, sdpilo     , sdnume, sddyna,&
                   ds_contact, deltat     , valinc, solalg,&
-                  veelem , veasse, sdtime     , sddisc, etan  ,&
+                  veelem , veasse, sddisc, etan  ,&
                   ds_conv, eta   , offset     , ldccvg, pilcvg,&
                   matass )
 !
@@ -29,7 +29,7 @@ implicit none
 #include "asterfort/nmrep2.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -54,7 +54,7 @@ implicit none
     character(len=19) :: lischa, sddyna, sdnume, sdpilo, sddisc, matass
     character(len=24) :: carcri
     type(NL_DS_Contact), intent(in) :: ds_contact
-    character(len=24) :: sdstat, sdtime
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=24) :: modele, numedd, mate, carele, comref, compor
     character(len=19) :: veelem(*), veasse(*)
     character(len=19) :: solalg(*), valinc(*)
@@ -82,7 +82,7 @@ implicit none
 ! IN  SDPILO : SD PILOTAGE
 ! IN  SDNUME : SD NUMEROTATION
 ! IN  SDDYNA : SD DYNAMIQUE
-! IN  SDSTAT : SD STATISTIQUES
+! IO  ds_measure       : datastructure for measure and statistics management
 ! In  ds_algopara      : datastructure for algorithm parameters
 ! In  ds_contact       : datastructure for contact management
 ! IN  DELTAT : INCREMENT DE TEMPS
@@ -91,7 +91,6 @@ implicit none
 ! IN  VEELEM : VARIABLE CHAPEAU POUR NOM DES VECT_ELEM
 ! IN  VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE
 ! IN  ETAN   : ETA_PILOTAGE AU DEBUT DE L'ITERATION
-! IN  SDTIME : SD TIMER
 ! IN  SDDISC : SD DISCRETISATION
 ! IO  ds_conv          : datastructure for convergence management
 ! OUT ETA    : PARAMETRE DE PILOTAGE
@@ -186,8 +185,8 @@ implicit none
     if (typilo .eq. 'DDL_IMPO') then
         call nmrelp(modele , numedd, mate  , carele     , comref,&
                     compor , lischa, carcri, fonact     , iterat,&
-                    sdstat , sdnume, sddyna, ds_algopara, ds_contact,&
-                    valinc , solalg, veelem, veasse     , sdtime,&
+                    ds_measure, sdnume, sddyna, ds_algopara, ds_contact,&
+                    valinc , solalg, veelem, veasse     , &
                     ds_conv, ldccvg)
         goto 999
     endif
@@ -261,9 +260,9 @@ implicit none
         call nmchso(veasse, 'VEASSE', 'CNDIRI', cndirs(act), veasst)
         call nmchso(veasse, 'VEASSE', 'CNFINT', cnfins(act), veasst)
         call nmceta(modele, numedd, mate, carele, comref,&
-                    compor, lischa, carcri, fonact, sdstat,&
+                    compor, lischa, carcri, fonact, ds_measure,&
                     ds_contact, sdpilo, iterat, sdnume, valint(1, act),&
-                    solalg, veelem, veasst, sdtime, sddisc,&
+                    solalg, veelem, veasst, sddisc,&
                     nbeffe, irecli, proeta, offset, rho,&
                     eta, ldccvg, pilcvg, residu, matass)
 !

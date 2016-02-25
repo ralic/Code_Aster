@@ -1,5 +1,5 @@
 subroutine nmchar(mode    , phasez, modele, numedd, mate  ,&
-                  carele  , compor, lischa, numins, sdtime,&
+                  carele  , compor, lischa, numins, ds_measure,&
                   sddisc  , fonact, comref,&
                   ds_inout, valinc, solalg, veelem, measse,&
                   veasse  , sddyna)
@@ -17,7 +17,7 @@ implicit none
 #include "asterfort/nmxvec.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -38,7 +38,8 @@ implicit none
     character(len=4) :: mode
     character(len=*) :: phasez
     character(len=19) :: lischa
-    character(len=24) :: modele, mate, carele, numedd, sdtime
+    character(len=24) :: modele, mate, carele, numedd
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=24) :: compor, comref
     character(len=19) :: sddyna, sddisc
     integer :: fonact(*)
@@ -55,7 +56,6 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  MODE   : 'FIXE' -> CALCUL CHARGES FIXES AU COURS DU TEMPS
 !              'VARI' -> CALCUL CHARGES VARIABLES AU COURS DU TEMPS
 !              'ACCI' -> CALCUL CHARGES POUR ACCELERATION INITIALE
@@ -69,7 +69,7 @@ implicit none
 ! IN  COMPOR : CARTE DECRIVANT LE TYPE DE COMPORTEMENT
 ! IN  NUMEDD : NUME_DDL
 ! IN  NUMINS : NUMERO INSTANT
-! IN  SDTIME : SD TIMER
+! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! IN  COMREF : VARI_COM DE REFERENCE
@@ -201,7 +201,7 @@ implicit none
 !
 ! --- CALCUL ET ASSEMBLAGE
 !
-        call nmxvec(modele  , mate  , carele, compor, sdtime,&
+        call nmxvec(modele  , mate  , carele, compor, ds_measure,&
                     sddisc  , sddyna, numins, valinc, solalg,&
                     lischa  , comref, numedd,&
                     ds_inout, veelem, veasse, measse, nbvect,&
@@ -278,7 +278,7 @@ implicit none
 !
 ! --- CALCUL EFFECTIF
 !
-        call nmxvec(modele  , mate  , carele, compor, sdtime,&
+        call nmxvec(modele  , mate  , carele, compor, ds_measure,&
                     sddisc  , sddyna, numins, valinc, solalg,&
                     lischa  , comref, numedd,&
                     ds_inout, veelem, veasse, measse, nbvect,&
@@ -346,7 +346,7 @@ implicit none
 !
 ! --- CALCUL ET ASSEMBLAGE
 !
-        call nmxvec(modele  , mate  , carele, compor, sdtime,&
+        call nmxvec(modele  , mate  , carele, compor, ds_measure,&
                     sddisc  , sddyna, numins, valinc, solalg,&
                     lischa  , comref, numedd,&
                     ds_inout, veelem, veasse, measse, nbvect,&

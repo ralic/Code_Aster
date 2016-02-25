@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,14 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmstat(phase     , list_func_acti, sdstat, sdtime, ds_print,&
-                      ds_contact)
+    subroutine nmstat(phasis, ds_measure, ds_print)
         use NonLin_Datastructure_type
-        character(len=1), intent(in) :: phase
-        character(len=24), intent(in) :: sdstat
-        character(len=24), intent(in) :: sdtime
-        type(NL_DS_Contact), intent(in) :: ds_contact
-        integer, intent(in) :: list_func_acti(*)
+        character(len=1), intent(in) :: phasis
+        type(NL_DS_Measure), intent(inout) :: ds_measure
         type(NL_DS_Print), intent(in) :: ds_print
     end subroutine nmstat
 end interface

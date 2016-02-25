@@ -1,7 +1,7 @@
 subroutine ndassp(modele, numedd, mate, carele, comref,&
-                  compor, lischa, carcri, sdstat, fonact,&
+                  compor, lischa, carcri, ds_measure, fonact,&
                   ds_contact, sddyna, valinc, solalg, veelem,&
-                  veasse, sdtime, ldccvg, codere, cndonn,&
+                  veasse, ldccvg, codere, cndonn,&
                   sdnume, matass)
 !
 use NonLin_Datastructure_type
@@ -27,7 +27,7 @@ implicit none
 #include "asterfort/vtzero.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -48,8 +48,8 @@ implicit none
     integer :: ldccvg
     integer :: fonact(*)
     character(len=19) :: lischa, sddyna, sdnume, matass
-    character(len=24) :: sdstat
-    character(len=24) :: modele, numedd, mate, codere, sdtime
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    character(len=24) :: modele, numedd, mate, codere
     character(len=24) :: carele, compor, comref, carcri
     type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19) :: solalg(*), valinc(*)
@@ -67,8 +67,7 @@ implicit none
 ! IN  MODELE : NOM DU MODELE
 ! IN  NUMEDD : NOM DE LA NUMEROTATION
 ! IN  LISCHA : SD LISTE CHARGES
-! IN  SDTIME : SD TIMER
-! IN  SDSTAT : SD STATISTIQUES
+! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! IN  SDDYNA : SD DYNAMIQUE
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
@@ -125,10 +124,10 @@ implicit none
 !
     coeequ = ndynre(sddyna,'COEF_MPAS_EQUI_COUR')
 !
-! --- MESURES
+! - Launch timer
 !
-    call nmtime(sdtime, 'INI', 'SECO_MEMB')
-    call nmtime(sdtime, 'RUN', 'SECO_MEMB')
+    call nmtime(ds_measure, 'Init'  , 'Second_Member')
+    call nmtime(ds_measure, 'Launch', 'Second_Member')
 !
 ! --- DECOMPACTION DES VARIABLES CHAPEAUX
 !
@@ -188,14 +187,15 @@ implicit none
     call nmadir(numedd, fonact, ds_contact, veasse, vediri,&
                 cndiri)
 !
-    call nmtime(sdtime, 'END', 'SECO_MEMB')
+! - End timer
+!
+    call nmtime(ds_measure, 'Stop', 'Second_Member')
 !
 ! --- CALCUL DES FORCES INTERIEURES
 !
-    call nmfint(modele, mate, carele, comref, compor,&
-                carcri, fonact, iterat, sddyna, sdstat,&
-                sdtime, valinc, solalg, ldccvg, codere,&
-                vefint)
+    call nmfint(modele, mate  , carele, comref, compor,&
+                carcri, fonact, iterat, sddyna, ds_measure,&
+                valinc, solalg, ldccvg, codere, vefint)
 !
 ! --- ERREUR SANS POSSIBILITE DE CONTINUER
 !

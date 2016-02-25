@@ -3,13 +3,13 @@ subroutine dldif0(result, force1, neq, istoc, iarchi,&
                   dep0, vit0, acc0, depl1, vite1,&
                   acce1, vite2, fexte, famor, fliai,&
                   nchar, nveca, liad, lifo, modele,&
-                  ener, solveu, mate, carele, charge,&
+                  ener, mate, carele, charge,&
                   infoch, fomult, numedd, dt, temps,&
                   tabwk0, tabwk1, archiv, nbtyar, typear,&
-                  numrep)
+                  numrep, ds_energy)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -53,7 +53,11 @@ subroutine dldif0(result, force1, neq, istoc, iarchi,&
 !
 ! CORPS DU PROGRAMME
 ! aslint: disable=W1504
-    implicit none
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
 ! DECLARATION PARAMETRES D'APPELS
 !
 #include "asterf_types.h"
@@ -84,7 +88,7 @@ subroutine dldif0(result, force1, neq, istoc, iarchi,&
     character(len=16) :: typear(nbtyar)
     character(len=24) :: modele, mate, carele, charge, infoch, fomult, numedd
     character(len=24) :: lifo(*)
-    character(len=19) :: solveu, sdener
+    type(NL_DS_Energy), intent(inout) :: ds_energy
     character(len=8) :: result
     character(len=19) :: force1
     integer :: numrep
@@ -148,8 +152,7 @@ subroutine dldif0(result, force1, neq, istoc, iarchi,&
 !
 !====
 !
-    sdener=solveu(1:8)//'.ENER      '
-    if (ener) then
+    if (ds_energy%l_comp) then
         masse1=masse//'           '
         amort1=amort//'           '
         rigid1=rigid//'           '
@@ -163,7 +166,7 @@ subroutine dldif0(result, force1, neq, istoc, iarchi,&
         call enerca(k19bid, dep0, zr(ivit0r), depl1, vite2,&
                     masse1, amort1, rigid1, fexte, famor,&
                     fliai, zr(ifnobi), zr(ifcibi), lamort, .true._1,&
-                    .false._1, sdener, '&&DLDIFF')
+                    .false._1, ds_energy, '&&DLDIFF')
         call jedetr('FNODABID')
         call jedetr('FCINEBID')
         call jedetr('VIT0_TR')
@@ -194,6 +197,6 @@ subroutine dldif0(result, force1, neq, istoc, iarchi,&
 !===
 ! 8. ARCHIVAGE DES PARAMETRES
 !===
-    call nmarpc(result, sdener, numrep, temps)
+    call nmarpc(ds_energy, numrep, temps)
 !
 end subroutine

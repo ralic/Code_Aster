@@ -1,7 +1,7 @@
-subroutine algocp(sdstat, resoco, numedd, matass)
+subroutine algocp(ds_measure, resoco, numedd, matass)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,7 +18,11 @@ subroutine algocp(sdstat, resoco, numedd, matass)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
 #include "jeveux.h"
 #include "asterfort/cfcpem.h"
 #include "asterfort/cfcpes.h"
@@ -30,7 +34,8 @@ subroutine algocp(sdstat, resoco, numedd, matass)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nmrvai.h"
-    character(len=24) :: sdstat, resoco
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    character(len=24) :: resoco
     character(len=19) :: matass
     character(len=14) :: numedd
 !
@@ -61,7 +66,7 @@ subroutine algocp(sdstat, resoco, numedd, matass)
 !      F = ( L - QT.SIG - BT.LAM  ) AU COURS D'UNE ITERATION DE NEWTON
 !          (           0          )
 !
-! IN  SDSTAT : SD STATISTIQUES
+! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
 ! IN  NUMEDD : NUME_DDL
 ! IN  MATASS : NOM DE LA MATRICE DU PREMIER MEMBRE ASSEMBLEE
@@ -130,8 +135,8 @@ subroutine algocp(sdstat, resoco, numedd, matass)
 !
 ! --- SAUVEGARDE DES INFOS DE DIAGNOSTIC
 !
-    call nmrvai(sdstat, 'CTCD_ALGO_ITER', 'E', iter)
-    call nmrvai(sdstat, 'CONT_NBLIAC', 'E', nbliac)
+    call nmrvai(ds_measure, 'Contact_Algo    ', input_count = iter)
+    call nmrvai(ds_measure, 'Contact_NumbCont', input_count = nbliac)
 !
     call jedema()
 !

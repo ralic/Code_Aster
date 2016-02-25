@@ -1,7 +1,7 @@
 subroutine nmpich(modele    , numedd, mate  , carele, comref,&
-                  compor    , lischa, carcri, fonact, sdstat,&
+                  compor    , lischa, carcri, fonact, ds_measure,&
                   ds_contact, sdpilo, iterat, sdnume, deltat,&
-                  valinc    , solalg, veelem, veasse, sdtime,&
+                  valinc    , solalg, veelem, veasse, &
                   sddisc    , eta   , rho   , offset, ldccvg,&
                   pilcvg    , matass)
 !
@@ -16,7 +16,7 @@ implicit none
 #include "asterfort/nmpilo.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -40,7 +40,7 @@ implicit none
     character(len=19) :: lischa, sdnume, sdpilo, sddisc, matass
     character(len=24) :: carcri, modele, numedd, mate, carele, comref, compor
     type(NL_DS_Contact), intent(in) :: ds_contact
-    character(len=24) :: sdstat, sdtime
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19) :: veelem(*), veasse(*)
     character(len=19) :: solalg(*), valinc(*)
 !
@@ -60,7 +60,7 @@ implicit none
 ! IN  COMREF : VARI_COM DE REFERENCE
 ! IN  COMPOR : COMPORTEMENT
 ! IN  LISCHA : LISTE DES CHARGES
-! IN  SDSTAT : SD STATISTIQUES
+! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  SDPILO : SD PILOTAGE
 ! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
@@ -71,7 +71,6 @@ implicit none
 ! IN  ITERAT : NUMERO D'ITERATION DE NEWTON
 ! IN  DELTAT : INCREMENT DE TEMPS
 ! IN  NBEFFE : NOMBRE DE VALEURS DE PILOTAGE ENTRANTES
-! IN  SDTIME : SD TIMER
 ! IN  SDDISC : SD DISCRETISATION
 ! OUT ETA    : PARAMETRE DE PILOTAGE
 ! OUT RHO    : PARAMETRE DE RECHERCHE_LINEAIRE
@@ -123,9 +122,9 @@ implicit none
 !
     if (pilcvg .ne. 1) then
         call nmceta(modele, numedd, mate, carele, comref,&
-                    compor, lischa, carcri, fonact, sdstat,&
+                    compor, lischa, carcri, fonact, ds_measure,&
                     ds_contact, sdpilo, iterat, sdnume, valinc,&
-                    solalg, veelem, veasse, sdtime, sddisc,&
+                    solalg, veelem, veasse, sddisc,&
                     nbeffe, irecli, proeta, offset, rho,&
                     eta, ldccvg, pilcvg, residu, matass)
     endif

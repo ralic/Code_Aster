@@ -1,7 +1,7 @@
 subroutine nmcese(modele, numedd, mate, carele, comref,&
-                  compor, lischa, carcri, fonact, sdstat,&
+                  compor, lischa, carcri, fonact, ds_measure,&
                   ds_contact, iterat, sdnume, sdpilo, valinc,&
-                  solalg, veelem, veasse, sdtime, offset,&
+                  solalg, veelem, veasse, offset,&
                   typsel, sddisc, licite, rho, eta,&
                   etaf, criter, ldccvg, pilcvg, matass)
 !
@@ -23,7 +23,7 @@ implicit none
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -48,9 +48,10 @@ implicit none
     character(len=24) :: modele, numedd, mate, carele, comref, compor
     character(len=24) :: carcri
     type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19) :: veelem(*), veasse(*)
     character(len=19) :: solalg(*), valinc(*)
-    character(len=24) :: typsel, sdtime, sdstat
+    character(len=24) :: typsel
     integer :: licite(2)
     integer :: ldccvg, pilcvg
     real(kind=8) :: etaf, criter
@@ -71,7 +72,7 @@ implicit none
 ! IN  COMPOR : COMPORTEMENT
 ! IN  LISCHA : LISTE DES CHARGES
 ! IN  SDPILO : SD PILOTAGE
-! IN  SDSTAT : SD STATISTIQUES
+! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  SDNUME : SD NUMEROTATION
 ! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
@@ -87,7 +88,6 @@ implicit none
 !                'NORM_INCR_DEPL'
 !                'RESIDU'
 ! In  sddisc           : datastructure for time discretization
-! IN  SDTIME : SD TIMER
 ! IN  LICITE : CODE RETOUR PILOTAGE DES DEUX PARAMETRES DE PILOTAGE
 ! IN  RHO    : PARAMETRE DE RECHERCHE_LINEAIRE
 ! IN  ETA    : LES DEUX PARAMETRES DE PILOTAGE
@@ -224,14 +224,14 @@ implicit none
 !
     if (typsel .eq. 'RESIDU' .or. mixte) then
         call nmcere(modele, numedd, mate, carele, comref,&
-                    compor, lischa, carcri, fonact, sdstat,&
+                    compor, lischa, carcri, fonact, ds_measure,&
                     ds_contact, iterat, sdnume, valinc, solalg,&
-                    veelem, veasse, sdtime, offset, rho,&
+                    veelem, veasse, offset, rho,&
                     eta(1), f(1), ldccv(1), matass)
         call nmcere(modele, numedd, mate, carele, comref,&
-                    compor, lischa, carcri, fonact, sdstat,&
+                    compor, lischa, carcri, fonact, ds_measure,&
                     ds_contact, iterat, sdnume, valinc, solalg,&
-                    veelem, veasse, sdtime, offset, rho,&
+                    veelem, veasse, offset, rho,&
                     eta(2), f(2), ldccv(2), matass)
 !
 ! ----- SI STRATEGIE MIXTE : EXAMEN DU CONTRASTE

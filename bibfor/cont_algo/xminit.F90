@@ -1,5 +1,5 @@
-subroutine xminit(mesh  , model , ds_contact, nume_inst, sdtime,&
-                  sdstat, sddyna, hat_valinc)
+subroutine xminit(mesh  , model , ds_contact, nume_inst, ds_measure,&
+                  sddyna, hat_valinc)
 !
 use NonLin_Datastructure_type
 !
@@ -18,7 +18,7 @@ implicit none
 #include "asterfort/mmbouc.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -39,8 +39,7 @@ implicit none
     character(len=8), intent(in) :: model
     type(NL_DS_Contact), intent(inout) :: ds_contact
     integer, intent(in) :: nume_inst
-    character(len=24), intent(in) :: sdtime
-    character(len=24), intent(in) :: sdstat
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19), intent(in) :: hat_valinc(*)
     character(len=19), intent(in) :: sddyna
 !
@@ -57,8 +56,7 @@ implicit none
 ! IO  ds_contact       : datastructure for contact management
 ! In  nume_inst        : index of current step time
 ! In  hat_valinc       : hat variable for algorithm fields
-! In  sdtime           : datastructure for timers
-! In  sdstat           : datastructure for statistics
+! IO  ds_measure       : datastructure for measure and statistics management
 ! In  sddyna           : datastructure for dynamic
 !
 ! --------------------------------------------------------------------------------------------------
@@ -125,7 +123,7 @@ implicit none
 ! - Initial pairing
 !
     if (l_cont_xfem_gg) then
-        call xmapin(mesh, model, ds_contact, sdtime, sdstat)
+        call xmapin(mesh, model, ds_contact, ds_measure)
     endif
 !
 ! - Initial options

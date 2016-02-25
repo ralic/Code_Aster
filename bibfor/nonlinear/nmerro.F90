@@ -1,7 +1,18 @@
-subroutine nmerro(sderro, sdtime, numins)
+subroutine nmerro(sderro, ds_measure, nume_inst)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterc/etausr.h"
+#include "asterfort/nmecev.h"
+#include "asterfort/nmerge.h"
+#include "asterfort/sigusr.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,69 +29,44 @@ subroutine nmerro(sderro, sdtime, numins)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/etausr.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/nmecev.h"
-#include "asterfort/nmerge.h"
-#include "asterfort/sigusr.h"
-#include "asterfort/utmess.h"
-    integer :: numins
-    character(len=24) :: sdtime, sderro
+    character(len=24), intent(in) :: sderro
+    type(NL_DS_Measure), intent(in) :: ds_measure
+    integer, intent(in) :: nume_inst
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (ALGORITHME)
+! MECA_NON_LINE - Error management
 !
-! GESTION DES ERREURS ET EXCEPTIONS
+! Write messages for errors
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sderro           : datastructure for errors during algorithm
+! In  ds_measure       : datastructure for measure and statistics management
+! In  nume_inst        : index of current time step
 !
-! IN  NUMINS : NUMERO DU PAS DE TEMPS
-! IN  SDTIME : SD TIMER
-! IN  SDERRO : SD GESTION ERREUR
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
-!
-    character(len=24) :: timpas, timite
-    integer :: jtpas, jtite
     real(kind=8) :: rtab(2)
     integer :: itab(2)
     aster_logical :: echldc, echeq1, echeq2, echco1, echco2, echpil
     aster_logical :: mtcpui, mtcpup, itemax
     aster_logical :: echpfg, echpff, echpfc
     aster_logical :: errres
-    real(kind=8) :: tpsrst, moyite, moypas
+    real(kind=8) :: remain_time, iter_mean_time, step_mean_time
     character(len=16) :: nomevd, action, valk(2)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
+    if (etausr() .eq. 1) then
+        call sigusr()
+    endif
 !
-! --- VERIFICATION SI INTERRUPTION DEMANDEE PAR SIGNAL USR1
+! - Get times
 !
-    if (etausr() .eq. 1) call sigusr()
-!
-! --- ACCES SD TIMER
-!
-    timpas = sdtime(1:19)//'.TPAS'
-    timite = sdtime(1:19)//'.TITE'
-    call jeveuo(timpas, 'L', jtpas)
-    call jeveuo(timite, 'L', jtite)
-!
-! --- TEMPS RESTANT
-!
-    tpsrst = zr(jtpas+1-1)
-!
-! --- TEMPS MOYENS
-!
-    moyite = zr(jtite+4-1)
-    moypas = zr(jtpas+4-1)
+    remain_time    = ds_measure%step_remain_time
+    iter_mean_time = ds_measure%iter_mean_time
+    step_mean_time = ds_measure%step_mean_time
 !
 ! --- RECUPERE LES CODES ERREURS ACTIFS
 !
@@ -101,15 +87,15 @@ subroutine nmerro(sderro, sdtime, numins)
 ! --- LANCEE EXCEPTIONS
 !
     if (mtcpui) then
-        itab(1) = numins
-        rtab(1) = moyite
-        rtab(2) = tpsrst
+        itab(1) = nume_inst
+        rtab(1) = iter_mean_time
+        rtab(2) = remain_time
         call utmess('Z', 'MECANONLINE9_1', si=itab(1), nr=2, valr=rtab,&
                     num_except=28)
     else if (mtcpup) then
-        itab(1) = numins
-        rtab(1) = moypas
-        rtab(2) = tpsrst
+        itab(1) = nume_inst
+        rtab(1) = step_mean_time
+        rtab(2) = remain_time
         call utmess('Z', 'MECANONLINE9_2', si=itab(1), nr=2, valr=rtab,&
                     num_except=28)
     else if (echldc) then
@@ -142,7 +128,5 @@ subroutine nmerro(sderro, sdtime, numins)
             call utmess('Z', 'MECANONLINE9_50', nk=2, valk=valk, num_except=34)
         endif
     endif
-!
-    call jedema()
 !
 end subroutine

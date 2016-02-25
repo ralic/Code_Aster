@@ -1,10 +1,22 @@
 subroutine nmrigi(modelz, mate, carele, compor, carcri,&
-                  sddyna, sdstat, sdtime, fonact, iterat,&
+                  sddyna, ds_measure, fonact, iterat,&
                   valinc, solalg, comref, meelem, veelem,&
                   optioz, ldccvg, codere)
 !
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/merimo.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmdep0.h"
+#include "asterfort/nmrinc.h"
+#include "asterfort/nmtime.h"
+!
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,18 +33,10 @@ subroutine nmrigi(modelz, mate, carele, compor, carcri,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "asterfort/isfonc.h"
-#include "asterfort/merimo.h"
-#include "asterfort/nmchex.h"
-#include "asterfort/nmdep0.h"
-#include "asterfort/nmrinc.h"
-#include "asterfort/nmtime.h"
     character(len=*) :: optioz
     character(len=*) :: modelz
     character(len=*) :: mate
-    character(len=24) :: sdstat, sdtime
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=24) :: compor, carcri, carele
     integer :: iterat, ldccvg
     character(len=19) :: sddyna
@@ -49,7 +53,6 @@ subroutine nmrigi(modelz, mate, carele, compor, carcri,&
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  MODELE : MODELE
 ! IN  OPTRIG : OPTION DE CALCUL POUR MERIMO
 ! IN  MATE   : CHAMP MATERIAU
@@ -57,8 +60,7 @@ subroutine nmrigi(modelz, mate, carele, compor, carcri,&
 ! IN  COMREF : VARI_COM DE REFERENCE
 ! IN  COMPOR : COMPORTEMENT
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
-! IN  SDTIME : SD TIMER
-! IN  SDSTAT : SD STATISTIQUES
+! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  CARCRI : PARAMETRES METHODES D'INTEGRATION LOCALES (VOIR NMLECT)
 ! IN  ITERAT : NUMERO D'ITERATION
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
@@ -81,10 +83,6 @@ subroutine nmrigi(modelz, mate, carele, compor, carcri,&
 !
 ! ----------------------------------------------------------------------
 !
-!
-!
-! --- INITIALISATIONS
-!
     base = 'V'
     modele = modelz
     ldccvg = 0
@@ -106,10 +104,10 @@ subroutine nmrigi(modelz, mate, carele, compor, carcri,&
         endif
     endif
 !
-! --- INIT TIMER
+! - Init timer
 !
-    call nmtime(sdtime, 'INI', 'INTEGRATION')
-    call nmtime(sdtime, 'RUN', 'INTEGRATION')
+    call nmtime(ds_measure, 'Init'  , 'Integration')
+    call nmtime(ds_measure, 'Launch', 'Integration')
 !
 ! --- CALCUL DES MATR_ELEM DE RIGIDITE
 !
@@ -118,10 +116,10 @@ subroutine nmrigi(modelz, mate, carele, compor, carcri,&
                 valinc, solalg, merigi, vefint, optrig,&
                 tabret, codere)
 !
-! --- FIN TIMER
+! - End timer
 !
-    call nmtime(sdtime, 'END', 'INTEGRATION')
-    call nmrinc(sdstat, 'INTEGRATION')
+    call nmtime(ds_measure, 'Stop', 'Integration')
+    call nmrinc(ds_measure, 'Integration')
 !
 ! --- CODE RETOUR ERREUR INTEGRATION LDC
 !

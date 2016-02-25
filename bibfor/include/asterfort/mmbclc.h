@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,8 +18,8 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine mmbclc(mesh     , model     , nume_dof, iter_newt, nume_inst,&
-                      sddisc   , sddyna    , sdtime  , sdstat   , hval_incr,&
+    subroutine mmbclc(mesh     , model     , nume_dof  , iter_newt, nume_inst,&
+                      sddisc   , sddyna    , ds_measure, hval_incr,&
                       hval_algo, ds_contact)
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
@@ -29,8 +29,7 @@ interface
         integer, intent(in) :: nume_inst
         character(len=19), intent(in) :: sddisc
         character(len=19), intent(in) :: sddyna
-        character(len=24), intent(in) :: sdtime
-        character(len=24), intent(in) :: sdstat
+        type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=19), intent(in) :: hval_incr(*)
         character(len=19), intent(in) :: hval_algo(*)
         type(NL_DS_Contact), intent(inout) :: ds_contact

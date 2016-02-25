@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,7 +18,7 @@
 interface
     subroutine accel0(modele    , numedd, numfix     , fonact, lischa,&
                       ds_contact, maprec, solveu     , valinc, sddyna,&
-                      sdstat    , sdtime, ds_algopara, meelem, measse,&
+                      ds_measure, ds_algopara, meelem, measse,&
                       veelem    , veasse, solalg)
         use NonLin_Datastructure_type        
         character(len=24) :: modele
@@ -31,8 +31,7 @@ interface
         character(len=19) :: solveu
         character(len=19) :: valinc(*)
         character(len=19) :: sddyna
-        character(len=24) :: sdstat
-        character(len=24) :: sdtime
+        type(NL_DS_Measure), intent(inout) :: ds_measure
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         character(len=19) :: meelem(*)
         character(len=19) :: measse(*)

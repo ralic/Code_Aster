@@ -1,5 +1,5 @@
 subroutine nmprac(fonact, lischa, numedd, numfix    , solveu     ,&
-                  sddyna, sdstat, sdtime, ds_contact, ds_algopara,&
+                  sddyna, ds_measure, ds_contact, ds_algopara,&
                   meelem, measse, maprec, matass    , faccvg)
 !
 use NonLin_Datastructure_type
@@ -25,7 +25,7 @@ implicit none
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -44,7 +44,7 @@ implicit none
 !
     integer :: fonact(*)
     character(len=19) :: sddyna, lischa
-    character(len=24) :: sdstat, sdtime
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=24) :: numedd, numfix
     character(len=19) :: solveu
     character(len=19) :: meelem(*), measse(*)
@@ -65,8 +65,7 @@ implicit none
 ! IN  NUMFIX : NUME_DDL (FIXE AU COURS DU CALCUL)
 ! IN  LISCHA : LISTE DES CHARGES
 ! In  ds_contact       : datastructure for contact management
-! IN  SDTIME : SD TIMER
-! IN  SDSTAT : SD STATISTIQUES
+! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
 ! IN  SOLVEU : SOLVEUR
 ! IN  MEELEM : VARIABLE CHAPEAU POUR NOM DES MATR_ELEM
@@ -159,12 +158,12 @@ implicit none
 !
 ! --- FACTORISATION DE LA MATRICE ASSEMBLEE GLOBALE
 !
-    call nmtime(sdtime, 'INI', 'FACTOR')
-    call nmtime(sdtime, 'RUN', 'FACTOR')
+    call nmtime(ds_measure, 'Init'  , 'Factor')
+    call nmtime(ds_measure, 'Launch', 'Factor')
     call preres(solveu, 'V', faccvg, maprec, matass,&
                 ibid, -9999)
-    call nmtime(sdtime, 'END', 'FACTOR')
-    call nmrinc(sdstat, 'FACTOR')
+    call nmtime(ds_measure, 'Stop', 'Factor')
+    call nmrinc(ds_measure, 'Factor')
 !
 ! --- RETABLISSEMENT CODE
 !

@@ -1,9 +1,9 @@
-subroutine nmdepl(modele, numedd , mate      , carele , comref     ,&
-                  compor, lischa , fonact    , sdstat , ds_algopara,&
-                  carcri, noma   , numins    , iterat , solveu     ,&
-                  matass, sddisc , sddyna    , sdnume , sdpilo     ,&
-                  sdtime, sderro , ds_contact, valinc , solalg     ,&
-                  veelem, veasse , eta       , ds_conv, lerrit)
+subroutine nmdepl(modele, numedd    , mate   , carele    , comref     ,&
+                  compor, lischa    , fonact , ds_measure, ds_algopara,&
+                  carcri, noma      , numins , iterat    , solveu     ,&
+                  matass, sddisc    , sddyna , sdnume    , sdpilo     ,&
+                  sderro, ds_contact, valinc , solalg    , veelem     ,&
+                  veasse, eta       , ds_conv, lerrit)
 !
 use NonLin_Datastructure_type
 !
@@ -30,7 +30,7 @@ implicit none
 #include "asterfort/nmsolu.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -55,9 +55,10 @@ implicit none
     type(NL_DS_Conv), intent(inout) :: ds_conv
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=19) :: sddisc, sdnume, sddyna, sdpilo
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19) :: lischa, matass, solveu
     character(len=24) :: modele, numedd, mate, carele, comref, compor
-    character(len=24) :: carcri, sdtime, sderro, sdstat
+    character(len=24) :: carcri, sderro
     character(len=19) :: veelem(*), veasse(*)
     character(len=19) :: solalg(*), valinc(*)
     type(NL_DS_Contact), intent(inout) :: ds_contact
@@ -81,8 +82,7 @@ implicit none
 ! IN  COMPOR : COMPORTEMENT
 ! IN  LISCHA : LISTE DES CHARGES
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
-! IN  SDTIME : SD TIMER
-! IN  SDSTAT : SD STATISTIQUES
+! IO  ds_measure       : datastructure for measure and statistics management
 ! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
 ! IN  NOMA   : NOM DU MAILLAGE
@@ -161,10 +161,10 @@ implicit none
     if (.not.lreli .or. iterat .eq. 0) then
         if (lpilo) then
             call nmpich(modele, numedd, mate  , carele, comref,&
-                        compor, lischa, carcri, fonact, sdstat,&
+                        compor, lischa, carcri, fonact, ds_measure,&
                         ds_contact, sdpilo, iterat, sdnume,&
                         deltat, valinc, solalg, veelem, veasse,&
-                        sdtime, sddisc, eta   , rho   , offset,&
+                        sddisc, eta   , rho   , offset,&
                         ldccvg, pilcvg, matass)
             ds_conv%line_sear_coef = 1.d0
             ds_conv%line_sear_iter = 0
@@ -176,16 +176,16 @@ implicit none
         if (lpilo) then
             call nmrepl(modele , numedd, mate       , carele, comref,&
                         compor , lischa, ds_algopara, carcri, fonact,&
-                        iterat , sdstat, sdpilo     , sdnume, sddyna,&
+                        iterat , ds_measure, sdpilo     , sdnume, sddyna,&
                         ds_contact, deltat  , valinc, solalg,&
-                        veelem , veasse, sdtime     , sddisc, etan  ,&
+                        veelem , veasse, sddisc, etan  ,&
                         ds_conv, eta   , offset     , ldccvg, pilcvg,&
                         matass )
         else
             call nmreli(modele , numedd, mate  , carele     , comref,&
                         compor , lischa, carcri, fonact     , iterat,&
-                        sdstat , sdnume, sddyna, ds_algopara, ds_contact,&
-                        valinc , solalg, veelem, veasse     , sdtime,&
+                        ds_measure , sdnume, sddyna, ds_algopara, ds_contact,&
+                        valinc , solalg, veelem, veasse     ,&
                         ds_conv, ldccvg)
         endif
     endif
@@ -207,7 +207,7 @@ implicit none
     if (lunil .or. lctcd) then
         call nmcoun(noma          , fonact, solveu, numedd    , matass,&
                     iterat        , instap, valinc, solalg    , veasse,&
-                    resi_glob_rela, sdtime, sdstat, ds_contact, ctccvg)
+                    resi_glob_rela, ds_measure, ds_contact, ctccvg)
         if (ctccvg .eq. 0) then
             call nmsolm(sddyna, solalg)
         else

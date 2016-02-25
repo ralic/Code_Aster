@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,7 +18,7 @@
 interface
     subroutine nmarch(numins  , modele  , mate  , carele, fonact,&
                       carcri  , ds_print, sddisc, sdpost, sdcrit,&
-                      sdtime  , sderro  , sddyna, sdpilo, sdener,&
+                      ds_measure, sderro  , sddyna, sdpilo, ds_energy,&
                       ds_inout, sdcriq  )
         use NonLin_Datastructure_type
         integer :: numins
@@ -31,11 +31,11 @@ interface
         character(len=19) :: sddisc
         character(len=19) :: sdpost
         character(len=19) :: sdcrit
-        character(len=24) :: sdtime
+        type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=24) :: sderro
         character(len=19) :: sddyna
         character(len=19) :: sdpilo
-        character(len=19) :: sdener
+        type(NL_DS_Energy), intent(in) :: ds_energy
         type(NL_DS_InOut), intent(in) :: ds_inout
         character(len=24) :: sdcriq
     end subroutine nmarch

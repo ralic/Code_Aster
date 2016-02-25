@@ -1,8 +1,25 @@
-subroutine nmassc(fonact, sddyna, sdtime, veasse, cnpilo,&
+subroutine nmassc(fonact, sddyna, ds_measure, veasse, cnpilo,&
                   cndonn)
 !
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/ndasva.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/ndynre.h"
+#include "asterfort/nmasdi.h"
+#include "asterfort/nmasfi.h"
+#include "asterfort/nmasva.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmtime.h"
+#include "asterfort/vtaxpy.h"
+!
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,24 +36,7 @@ subroutine nmassc(fonact, sddyna, sdtime, veasse, cnpilo,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-!
-#include "asterfort/assert.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/ndasva.h"
-#include "asterfort/ndynlo.h"
-#include "asterfort/ndynre.h"
-#include "asterfort/nmasdi.h"
-#include "asterfort/nmasfi.h"
-#include "asterfort/nmasva.h"
-#include "asterfort/nmchex.h"
-#include "asterfort/nmtime.h"
-#include "asterfort/vtaxpy.h"
-    character(len=24) :: sdtime
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19) :: cnpilo, cndonn
     integer :: fonact(*)
     character(len=19) :: sddyna
@@ -50,10 +50,9 @@ subroutine nmassc(fonact, sddyna, sdtime, veasse, cnpilo,&
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
-! IN  SDTIME : SD TIMER
+! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE
 ! OUT CNPILO : VECTEUR ASSEMBLE DES FORCES PILOTEES
 ! OUT CNDONN : VECTEUR ASSEMBLE DES FORCES DONNEES
@@ -75,11 +74,7 @@ subroutine nmassc(fonact, sddyna, sdtime, veasse, cnpilo,&
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('MECA_NON_LINE', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> ...... CALCUL SECOND MEMBRE'
     endif
@@ -98,10 +93,10 @@ subroutine nmassc(fonact, sddyna, sdtime, veasse, cnpilo,&
     call nmchex(veasse, 'VEASSE', 'CNDIRI', cndiri)
     ldyna = ndynlo(sddyna,'DYNAMIQUE')
 !
-! --- MESURES
+! - Launch timer
 !
-    call nmtime(sdtime, 'INI', 'SECO_MEMB')
-    call nmtime(sdtime, 'RUN', 'SECO_MEMB')
+    call nmtime(ds_measure, 'Init'  , 'Second_Member')
+    call nmtime(ds_measure, 'Launch', 'Second_Member')
 !
 ! --- CALCUL DU VECTEUR DES CHARGEMENTS FIXES        (NEUMANN)
 !
@@ -149,9 +144,9 @@ subroutine nmassc(fonact, sddyna, sdtime, veasse, cnpilo,&
     if (nbvec .gt. nbcoef) then
         ASSERT(.false.)
     endif
-    do 10 i = 1, nbvec
+    do i = 1, nbvec
         call vtaxpy(coef(i), vect(i), cndonn)
- 10 end do
+    end do
 !
 ! --- CHARGEMENTS PILOTES
 !
@@ -163,11 +158,12 @@ subroutine nmassc(fonact, sddyna, sdtime, veasse, cnpilo,&
     if (nbvec .gt. nbcoef) then
         ASSERT(.false.)
     endif
-    do 15 i = 1, nbvec
+    do i = 1, nbvec
         call vtaxpy(coef(i), vect(i), cnpilo)
- 15 end do
+    end do
 !
-    call nmtime(sdtime, 'END', 'SECO_MEMB')
+! - End timer
 !
-    call jedema()
+    call nmtime(ds_measure, 'Stop', 'Second_Member')
+!
 end subroutine

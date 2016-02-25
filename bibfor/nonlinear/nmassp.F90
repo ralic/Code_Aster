@@ -1,7 +1,7 @@
 subroutine nmassp(modele    , numedd, mate  , carele, comref,&
-                  compor    , lischa, carcri, fonact, sdstat,&
+                  compor    , lischa, carcri, fonact, ds_measure,&
                   ds_contact, sddyna, valinc, solalg, veelem,&
-                  veasse    , sdtime, ldccvg, codere, cnpilo,&
+                  veasse    , ldccvg, codere, cnpilo,&
                   cndonn    , sdnume, matass)
 !
 use NonLin_Datastructure_type
@@ -17,7 +17,7 @@ implicit none
 #include "asterfort/vtzero.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -38,7 +38,7 @@ implicit none
     integer :: ldccvg
     integer :: fonact(*)
     character(len=19) :: lischa, sddyna, sdnume, matass
-    character(len=24) :: sdtime, sdstat
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=24) :: modele, numedd, mate, codere
     character(len=24) :: carele, compor, comref, carcri
     type(NL_DS_Contact), intent(in) :: ds_contact
@@ -64,9 +64,7 @@ implicit none
 ! In  ds_contact       : datastructure for contact management
 ! IN  CARCRI : CARTE DES CRITERES DE CONVERGENCE LOCAUX
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
-! IN  SDSTAT : SD STATISTIQUES
-! IN  SDDYNA : SD DYNAMIQUE
-! IN  SDTIME : SD TIMER
+! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
 ! IN  VEELEM : VARIABLE CHAPEAU POUR NOM DES VECT_ELEM
@@ -81,8 +79,6 @@ implicit none
 !                 1 : ECHEC DE L'INTEGRATION DE LA LDC
 !                 2 : ERREUR SUR LA NON VERIF. DE CRITERES PHYSIQUES
 !                 3 : SIZZ PAS NUL POUR C_PLAN DEBORST
-!
-!
 !
 !
     integer :: ifm, niv
@@ -110,13 +106,13 @@ implicit none
 !
     if (ldyna) then
         call ndassp(modele, numedd, mate, carele, comref,&
-                    compor, lischa, carcri, sdstat, fonact,&
+                    compor, lischa, carcri, ds_measure, fonact,&
                     ds_contact, sddyna, valinc, solalg, veelem,&
-                    veasse, sdtime, ldccvg, codere, cndonn,&
+                    veasse, ldccvg, codere, cndonn,&
                     sdnume, matass)
     else if (lstat) then
         call nsassp(modele, numedd, lischa, fonact, sddyna,&
-                    sdtime, valinc, veelem, veasse, cnpilo,&
+                    ds_measure, valinc, veelem, veasse, cnpilo,&
                     cndonn, mate, carele, ds_contact, matass)
     else
         ASSERT(.false.)

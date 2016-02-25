@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -20,8 +20,8 @@
 interface
     subroutine ndexpl(modele, numedd  , numfix, mate       , carele  ,&
                       comref, compor  , lischa, ds_algopara, fonact  ,&
-                      carcri, ds_print, sdstat, sdnume     , sddyna  ,&
-                      sddisc, sdtime  , sderro, valinc     , numins  ,&
+                      carcri, ds_print, ds_measure, sdnume     , sddyna  ,&
+                      sddisc, sderro, valinc     , numins  ,&
                       solalg, solveu  , matass, maprec     , ds_inout,&
                       meelem, measse  , veelem, veasse     , nbiter)
         use NonLin_Datastructure_type
@@ -38,11 +38,10 @@ interface
         character(len=24) :: carcri
         type(NL_DS_InOut), intent(in) :: ds_inout
         type(NL_DS_Print), intent(inout) :: ds_print
-        character(len=24) :: sdstat
+        type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=19) :: sdnume
         character(len=19) :: sddyna
         character(len=19) :: sddisc
-        character(len=24) :: sdtime
         character(len=24) :: sderro
         character(len=19) :: valinc(*)
         integer :: numins

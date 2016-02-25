@@ -1,7 +1,7 @@
 subroutine nmcoma(modelz     , mate  , carele, compor  , carcri,&
                   ds_algopara, lischa, numedd, numfix  , solveu,&
-                  comref     , sddisc, sddyna, ds_print, sdstat,&
-                  sdtime     , numins, iterat, fonact  , ds_contact,&
+                  comref     , sddisc, sddyna, ds_print, ds_measure,&
+                  numins, iterat, fonact  , ds_contact,&
                   valinc     , solalg, veelem, meelem  ,&
                   measse     , veasse, maprec, matass  , codere,&
                   faccvg     , ldccvg, sdnume)
@@ -32,7 +32,7 @@ implicit none
 #include "asterfort/preres.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -54,7 +54,7 @@ implicit none
     integer :: fonact(*)
     character(len=*) :: modelz
     character(len=24) :: mate, carele
-    character(len=24) :: sdtime, sdstat
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=24) :: compor, carcri, numedd, numfix
     character(len=19) :: sddisc, sddyna, lischa, solveu, sdnume
     character(len=24) :: comref, codere
@@ -90,8 +90,7 @@ implicit none
 ! IN  CARCRI : PARAMETRES METHODES D'INTEGRATION LOCALES (VOIR NMLECT)
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IO  ds_print         : datastructure for printing parameters
-! IN  SDTIME : SD TIMER
-! IN  SDSTAT : SD STATISTIQUES
+! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  NUMINS : NUMERO D'INSTANT
 ! IN  ITERAT : NUMERO D'ITERATION
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
@@ -185,9 +184,8 @@ implicit none
 !
     if (lcfint) then
         call nmfint(modele, mate, carele, comref, compor,&
-                    carcri, fonact, iterat, sddyna, sdstat,&
-                    sdtime, valinc, solalg, ldccvg, codere,&
-                    vefint)
+                    carcri, fonact, iterat, sddyna, ds_measure,&
+                    valinc, solalg, ldccvg, codere, vefint)
     endif
 !
 ! --- ERREUR SANS POSSIBILITE DE CONTINUER
@@ -259,8 +257,8 @@ implicit none
         call nmxmat(modelz, mate, carele, compor, carcri,&
                     sddisc, sddyna, fonact, numins, iterat,&
                     valinc, solalg, lischa, comref,&
-                    numedd, numfix, sdstat, ds_algopara,&
-                    sdtime, nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
+                    numedd, numfix, ds_measure, ds_algopara,&
+                    nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
                     list_l_calc, list_l_asse, lcfint, meelem, measse,&
                     veelem, ldccvg, codere, ds_contact)
     endif
@@ -287,12 +285,12 @@ implicit none
 ! --- FACTORISATION DE LA MATRICE ASSEMBLEE GLOBALE
 !
     if (reasma) then
-        call nmtime(sdtime, 'INI', 'FACTOR')
-        call nmtime(sdtime, 'RUN', 'FACTOR')
+        call nmtime(ds_measure, 'Init', 'Factor')
+        call nmtime(ds_measure, 'Launch', 'Factor')
         call preres(solveu, 'V', faccvg, maprec, matass,&
                     ibid, -9999)
-        call nmtime(sdtime, 'END', 'FACTOR')
-        call nmrinc(sdstat, 'FACTOR')
+        call nmtime(ds_measure, 'Stop', 'Factor')
+        call nmrinc(ds_measure, 'Factor')
     endif
 !
 999 continue

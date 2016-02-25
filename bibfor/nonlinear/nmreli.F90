@@ -1,7 +1,7 @@
 subroutine nmreli(modele , numedd, mate  , carele     , comref,&
                   compor , lischa, carcri, fonact     , iterat,&
-                  sdstat , sdnume, sddyna, ds_algopara, ds_contact,&
-                  valinc , solalg, veelem, veasse     , sdtime,&
+                  ds_measure, sdnume, sddyna, ds_algopara, ds_contact,&
+                  valinc , solalg, veelem, veasse     ,&
                   ds_conv, ldccvg)
 !
 use NonLin_Datastructure_type
@@ -13,7 +13,7 @@ implicit none
 #include "asterfort/nmrelp.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,7 +34,8 @@ implicit none
     integer :: fonact(*)
     integer :: iterat, ldccvg
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-    character(len=24) :: carcri, sdtime, sdstat
+    character(len=24) :: carcri
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19) :: lischa, sddyna, sdnume
     character(len=24) :: modele, numedd, mate, carele, comref, compor
@@ -57,8 +58,7 @@ implicit none
 ! IN  COMREF : VARI_COM DE REFERENCE
 ! IN  COMPOR : COMPORTEMENT
 ! IN  LISCHA : LISTE DES CHARGES
-! IN  SDTIME : SD TIMER
-! IN  SDSTAT : SD STATISTIQUES
+! IO  ds_measure       : datastructure for measure and statistics management
 ! In  ds_contact       : datastructure for contact management
 ! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
@@ -94,8 +94,8 @@ implicit none
 !
     call nmrelp(modele , numedd, mate  , carele     , comref,&
                 compor , lischa, carcri, fonact     , iterat,&
-                sdstat , sdnume, sddyna, ds_algopara, ds_contact,&
-                valinc , solalg, veelem, veasse     , sdtime,&
+                ds_measure, sdnume, sddyna, ds_algopara, ds_contact,&
+                valinc , solalg, veelem, veasse     ,&
                 ds_conv, ldccvg)
 !
 end subroutine

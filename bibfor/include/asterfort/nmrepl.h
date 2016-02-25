@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -20,9 +20,9 @@
 interface
     subroutine nmrepl(modele , numedd, mate       , carele, comref,&
                       compor , lischa, ds_algopara, carcri, fonact,&
-                      iterat , sdstat, sdpilo     , sdnume, sddyna,&
+                      iterat , ds_measure, sdpilo     , sdnume, sddyna,&
                       ds_contact, deltat     , valinc, solalg,&
-                      veelem , veasse, sdtime     , sddisc, etan  ,&
+                      veelem , veasse, sddisc, etan  ,&
                       ds_conv, eta   , offset     , ldccvg, pilcvg,&
                       matass )
         use NonLin_Datastructure_type
@@ -37,7 +37,7 @@ interface
         character(len=24) :: carcri
         integer :: fonact(*)
         integer :: iterat
-        character(len=24) :: sdstat
+        type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=19) :: sdpilo
         character(len=19) :: sdnume
         character(len=19) :: sddyna
@@ -47,7 +47,6 @@ interface
         character(len=19) :: solalg(*)
         character(len=19) :: veelem(*)
         character(len=19) :: veasse(*)
-        character(len=24) :: sdtime
         character(len=19) :: sddisc
         real(kind=8) :: etan
         type(NL_DS_Conv), intent(inout) :: ds_conv

@@ -8,7 +8,6 @@ implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/diinst.h"
-#include "asterfort/lobs.h"
 #include "asterfort/nmobse.h"
 #include "asterfort/nmchex.h"
 #include "asterfort/nmextd.h"
@@ -67,7 +66,6 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: time
-    aster_logical :: l_obsv
     character(len=19) :: disp_curr, strx_curr, varc_curr
     character(len=24) :: field_type
     character(len=19) :: field
@@ -79,15 +77,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_obsv = .false.
-!
-! - Current time
-!
-    time = diinst(sddisc, nume_time)
-!
-! - Observation ?
-!
-    call lobs(sd_obsv, nume_time, time, l_obsv)
+    time   = diinst(sddisc, nume_time)
 !
 ! - Get fields
 !
@@ -97,11 +87,9 @@ implicit none
 !
 ! - Make observation 
 !
-    if (l_obsv) then
-        call nmobse(meshz     , sd_obsv  , time,&
-                    cara_elemz, modelz   , matez    , compor, disp_curr,&
-                    strx_curr , varc_curr, varc_refe)
-    endif
+    call nmobse(meshz     , sd_obsv  , time,&
+                cara_elemz, modelz   , matez    , compor, disp_curr,&
+                strx_curr , varc_curr, varc_refe)
 !
 ! - Change fields after initial observation
 !

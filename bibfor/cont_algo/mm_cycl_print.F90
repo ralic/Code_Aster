@@ -1,4 +1,4 @@
-subroutine mm_cycl_print(ds_print, sdstat)
+subroutine mm_cycl_print(ds_print, ds_measure)
 !
 use NonLin_Datastructure_type
 !
@@ -8,7 +8,7 @@ implicit none
 #include "asterfort/nmimci.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,7 +25,7 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=24), intent(in) :: sdstat
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     type(NL_DS_Print), intent(inout) :: ds_print
 !
 ! --------------------------------------------------------------------------------------------------
@@ -36,7 +36,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sdstat           : datastructure for statistics
+! IO  ds_measure       : datastructure for measure and statistics management
 ! IO  ds_print         : datastructure for printing parameters
 !
 ! --------------------------------------------------------------------------------------------------
@@ -45,10 +45,10 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call nmrvai(sdstat, 'CTCC_CYCL_1', 'N', cycl_nb(1))
-    call nmrvai(sdstat, 'CTCC_CYCL_2', 'N', cycl_nb(2))
-    call nmrvai(sdstat, 'CTCC_CYCL_3', 'N', cycl_nb(3))
-    call nmrvai(sdstat, 'CTCC_CYCL_4', 'N', cycl_nb(4))
+    call nmrvai(ds_measure, 'Contact_Cycl_1', phasis = 'N', output_count = cycl_nb(1))
+    call nmrvai(ds_measure, 'Contact_Cycl_2', phasis = 'N', output_count = cycl_nb(2))
+    call nmrvai(ds_measure, 'Contact_Cycl_3', phasis = 'N', output_count = cycl_nb(3))
+    call nmrvai(ds_measure, 'Contact_Cycl_4', phasis = 'N', output_count = cycl_nb(4))
     cycl_nb_tot = cycl_nb(1) + cycl_nb(2) + cycl_nb(3) + cycl_nb(4)
     call nmimci(ds_print, 'CTCC_CYCL', cycl_nb_tot, .true._1)
 

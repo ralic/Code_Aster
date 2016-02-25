@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -21,10 +21,10 @@
 !
 interface
     subroutine nmdepl(modele, numedd , mate      , carele , comref     ,&
-                      compor, lischa , fonact    , sdstat , ds_algopara,&
+                      compor, lischa , fonact    , ds_measure, ds_algopara,&
                       carcri, noma   , numins    , iterat , solveu     ,&
                       matass, sddisc , sddyna    , sdnume , sdpilo     ,&
-                      sdtime, sderro , ds_contact, valinc , solalg     ,&
+                      sderro , ds_contact, valinc , solalg     ,&
                       veelem, veasse , eta       , ds_conv, lerrit)
         use NonLin_Datastructure_type
         character(len=24) :: modele
@@ -35,7 +35,7 @@ interface
         character(len=24) :: compor
         character(len=19) :: lischa
         integer :: fonact(*)
-        character(len=24) :: sdstat
+        type(NL_DS_Measure), intent(inout) :: ds_measure
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         character(len=24) :: carcri
         character(len=8) :: noma
@@ -47,7 +47,6 @@ interface
         character(len=19) :: sddyna
         character(len=19) :: sdnume
         character(len=19) :: sdpilo
-        character(len=24) :: sdtime
         character(len=24) :: sderro
         type(NL_DS_Contact), intent(inout) :: ds_contact
         character(len=19) :: valinc(*)

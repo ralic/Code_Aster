@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -21,7 +21,7 @@ interface
     subroutine nminmc(fonact, lischa, sddyna    , modele, compor,&
                       numedd, numfix, ds_contact, ds_algopara,&
                       carcri, solalg, valinc    , mate, carele,&
-                      sddisc, sdstat, sdtime    , comref, meelem,&
+                      sddisc, ds_measure, comref, meelem,&
                       measse, veelem, codere)
         use NonLin_Datastructure_type        
         integer :: fonact(*)
@@ -39,8 +39,7 @@ interface
         character(len=24) :: mate
         character(len=24) :: carele
         character(len=19) :: sddisc
-        character(len=24) :: sdstat
-        character(len=24) :: sdtime
+        type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=24) :: comref
         character(len=19) :: meelem(*)
         character(len=19) :: measse(*)

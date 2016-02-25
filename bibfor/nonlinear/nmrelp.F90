@@ -1,7 +1,7 @@
 subroutine nmrelp(modele , numedd, mate  , carele     , comref    ,&
                   compor , lischa, carcri, fonact     , iterat    ,&
-                  sdstat , sdnume, sddyna, ds_algopara, ds_contact,&
-                  valinc , solalg, veelem, veasse     , sdtime    ,&
+                  ds_measure , sdnume, sddyna, ds_algopara, ds_contact,&
+                  valinc , solalg, veelem, veasse     ,&
                   ds_conv, ldccvg)
 !
 use NonLin_Datastructure_type
@@ -38,7 +38,7 @@ implicit none
 #include "blas/daxpy.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -60,7 +60,8 @@ implicit none
     integer :: iterat, ldccvg
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     type(NL_DS_Contact), intent(in) :: ds_contact
-    character(len=24) :: carcri, sdtime, sdstat
+    character(len=24) :: carcri
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19) :: lischa, sddyna, sdnume
     character(len=24) :: modele, numedd, mate, carele, comref, compor
     character(len=19) :: veelem(*), veasse(*)
@@ -83,8 +84,7 @@ implicit none
 ! IN  COMPOR : COMPORTEMENT
 ! IN  LISCHA : LISTE DES CHARGES
 ! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
-! IN  SDTIME : SD TIMER
-! IN  SDSTAT : SD STATISTIQUES
+! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! IN  ITERAT : NUMERO D'ITERATION DE NEWTON
 ! IN  SDNUME : SD NUMEROTATION
@@ -275,8 +275,8 @@ implicit none
 ! ----- REACTUALISATION DES FORCES INTERIEURES
 !
         call nmfint(modele, mate, carele, comref, compor,&
-                    carcri, fonact, iterat, sddyna, sdstat,&
-                    sdtime, valint(1, act), solalt, ldccvg, codere,&
+                    carcri, fonact, iterat, sddyna, ds_measure,&
+                    valint(1, act), solalt, ldccvg, codere,&
                     vefint)
 !
 ! ----- ASSEMBLAGE DES FORCES INTERIEURES
@@ -286,13 +286,13 @@ implicit none
 !
 ! ----- REACTUALISATION DES REACTIONS D'APPUI BT.LAMBDA
 !
-        call nmtime(sdtime, 'INI', 'SECO_MEMB')
-        call nmtime(sdtime, 'RUN', 'SECO_MEMB')
+        call nmtime(ds_measure, 'Init'  , 'Second_Member')
+        call nmtime(ds_measure, 'Launch', 'Second_Member')
         call nmdiri(modele, mate, carele, lischa, sddyna,&
                     depplt, k19bla, k19bla, vediri)
         call nmadir(numedd, fonact, ds_contact, veasse, vediri,&
                     cndirs(act))
-        call nmtime(sdtime, 'END', 'SECO_MEMB')
+        call nmtime(ds_measure, 'Stop', 'Second_Member')
         if (niv .ge. 2) then
             write (ifm,*) '<MECANONLINE> ...... FORCES INTERNES'
             call nmdebg('VECT', cnfins(act), 6)

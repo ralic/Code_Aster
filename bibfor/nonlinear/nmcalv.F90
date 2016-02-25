@@ -1,7 +1,9 @@
 subroutine nmcalv(typvec, modelz, lischa, mate  , carele,&
-                  compor, numedd, comref, sdtime, instam,&
+                  compor, numedd, comref, ds_measure, instam,&
                   instap, valinc, solalg, sddyna, option,&
                   vecele)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -27,7 +29,7 @@ implicit none
 #include "asterfort/veondp.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -46,7 +48,8 @@ implicit none
 !
     character(len=*) :: modelz
     character(len=24) :: mate, carele, compor, numedd
-    character(len=24) :: comref, sdtime
+    character(len=24) :: comref
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     real(kind=8) :: instam, instap
     character(len=19) :: lischa, sddyna
     character(len=19) :: solalg(*), valinc(*)
@@ -62,7 +65,6 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  TYPVEC : TYPE DE CALCUL VECT_ELEM
 ! IN  MODELE : MODELE
 ! IN  LISCHA : LISTE DES CHARGES
@@ -70,7 +72,7 @@ implicit none
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  COMPOR : CARTE DECRIVANT LE TYPE DE COMPORTEMENT
 ! IN  NUMEDD : NUME_DDL
-! IN  SDTIME : SD TIMER
+! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  COMREF : VARI_COM DE REFERENCE
 ! IN  INSTAM : INSTANT MOINS
 ! IN  INSTAP : INSTANT PLUS
@@ -139,10 +141,10 @@ implicit none
     charge = lischa(1:19)//'.LCHA'
     infoch = lischa(1:19)//'.INFC'
 !
-! --- MESURES
+! - Launch timer
 !
-    call nmtime(sdtime, 'INI', 'SECO_MEMB')
-    call nmtime(sdtime, 'RUN', 'SECO_MEMB')
+    call nmtime(ds_measure, 'Init'  , 'Second_Member')
+    call nmtime(ds_measure, 'Launch', 'Second_Member')
 !
 ! --- FORCES NODALES
 !
@@ -245,6 +247,8 @@ implicit none
         call nmdebg('VECT', vecele, ifm)
     endif
 !
-    call nmtime(sdtime, 'END', 'SECO_MEMB')
+! - Stop timer
+!
+    call nmtime(ds_measure, 'Stop', 'Second_Member')
 !
 end subroutine

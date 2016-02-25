@@ -1,7 +1,7 @@
 subroutine nmcere(modele, numedd, mate, carele, comref,&
-                  compor, lischa, carcri, fonact, sdstat,&
+                  compor, lischa, carcri, fonact, ds_measure,&
                   ds_contact, iterat, sdnume, valinc, solalg,&
-                  veelem, veasse, sdtime, offset, rho,&
+                  veelem, veasse, offset, rho,&
                   eta, residu, ldccvg, matass)
 !
 use NonLin_Datastructure_type
@@ -32,7 +32,7 @@ implicit none
 #include "blas/daxpy.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -57,7 +57,7 @@ implicit none
     character(len=24) :: modele, numedd, mate, carele, comref, compor
     character(len=24) :: carcri
     type(NL_DS_Contact), intent(in) :: ds_contact
-    character(len=24) :: sdtime, sdstat
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19) :: veelem(*), veasse(*)
     character(len=19) :: solalg(*), valinc(*)
 !
@@ -80,7 +80,7 @@ implicit none
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! In  ds_contact       : datastructure for contact management
 ! IN  SDNUME : SD NUMEROTATION
-! IN  SDSTAT : SD STATISTIQUES
+! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
 ! IN  ITERAT : NUMERO D'ITERATION DE NEWTON
@@ -90,7 +90,6 @@ implicit none
 ! IN  RHO    : PARAMETRE DE RECHERCHE_LINEAIRE
 ! IN  ETA    : PARAMETRE DE PILOTAGE
 ! IN  SDNUME : SD NUMEROTATION
-! IN  SDTIME : SD TIMER
 ! OUT LDCCVG : CODE RETOUR DE L'INTEGRATION DU COMPORTEMENT
 !                -1 : PAS D'INTEGRATION DU COMPORTEMENT
 !                 0 : CAS DU FONCTIONNEMENT NORMAL
@@ -202,21 +201,19 @@ implicit none
 !
 ! --- REACTUALISATION DES FORCES INTERIEURES
 !
-!
-    call nmfint(modele, mate, carele, comref, compor,&
-                carcri, fonact, iterat, k19bla, sdstat,&
-                sdtime, valint, solalt, ldccvg, codere,&
-                vefint)
+    call nmfint(modele, mate  , carele, comref, compor,&
+                carcri, fonact, iterat, k19bla, ds_measure,&
+                valint, solalt, ldccvg, codere, vefint)
 !
 ! --- ASSEMBLAGE DES FORCES INTERIEURES
 !
     call nmaint(numedd, fonact, ds_contact, veasse, vefint,&
                 cnfint, sdnume)
 !
-! --- MESURES
+! - Launch timer
 !
-    call nmtime(sdtime, 'INI', 'SECO_MEMB')
-    call nmtime(sdtime, 'RUN', 'SECO_MEMB')
+    call nmtime(ds_measure, 'Init'  , 'Second_Member')
+    call nmtime(ds_measure, 'Launch', 'Second_Member')
 !
 ! --- REACTUALISATION DES REACTIONS D'APPUI BT.LAMBDA
 !
@@ -235,7 +232,9 @@ implicit none
     call nmchex(veasse, 'VEASSE', 'CNFEXT', cnfext)
     call nmfext(eta, fonact, k19bla, veasse, cnfext)
 !
-    call nmtime(sdtime, 'END', 'SECO_MEMB')
+! - End timer
+!
+    call nmtime(ds_measure, 'Stop', 'Second_Member')
 !
 ! --- ON A FORCEMENT INTEGRE LA LDC !
 !

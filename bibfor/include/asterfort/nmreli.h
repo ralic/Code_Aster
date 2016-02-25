@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -20,8 +20,8 @@
 interface
     subroutine nmreli(modele, numedd , mate  , carele     , comref,&
                       compor , lischa, carcri, fonact     , iterat,&
-                      sdstat , sdnume, sddyna, ds_algopara, ds_contact,&
-                      valinc , solalg, veelem, veasse     , sdtime,&
+                      ds_measure, sdnume, sddyna, ds_algopara, ds_contact,&
+                      valinc , solalg, veelem, veasse     ,&
                       ds_conv, ldccvg)
         use NonLin_Datastructure_type
         character(len=24) :: modele
@@ -34,7 +34,7 @@ interface
         character(len=24) :: carcri
         integer :: fonact(*)
         integer :: iterat
-        character(len=24) :: sdstat
+        type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=19) :: sdnume
         character(len=19) :: sddyna
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
@@ -43,7 +43,6 @@ interface
         character(len=19) :: solalg(*)
         character(len=19) :: veelem(*)
         character(len=19) :: veasse(*)
-        character(len=24) :: sdtime
         type(NL_DS_Conv), intent(inout) :: ds_conv
         integer :: ldccvg
     end subroutine nmreli

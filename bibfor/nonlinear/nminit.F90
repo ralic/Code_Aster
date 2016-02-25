@@ -1,11 +1,11 @@
-subroutine nminit(result , model , numedd   , numfix     , mate      ,&
-                  compor , carele, list_load, ds_algopara, maprec    ,&
-                  solveu , carcri, numins   , sdstat     , sddisc    ,&
-                  sdnume , sdcrit, varc_refe, fonact     , mesh      ,&
-                  sdpilo , sddyna, ds_print , sd_suiv    , sd_obsv   ,&
-                  sdtime , sderro, sdpost   , ds_inout   , sdener    ,&
-                  ds_conv, sdcriq, valinc   , solalg     , measse    ,&
-                  veelem , meelem, veasse   , codere     , ds_contact)
+subroutine nminit(result, model    , numedd    , numfix     , mate  ,&
+                  compor, carele   , list_load , ds_algopara, maprec,&
+                  solveu, carcri   , numins    , sddisc     , sdnume,&
+                  sdcrit, varc_refe, fonact    , mesh       , sdpilo,&
+                  sddyna, ds_print , sd_suiv   , sd_obsv    , sderro,&
+                  sdpost, ds_inout , ds_energy , ds_conv    , sdcriq,&
+                  valinc, solalg   , measse    , veelem     , meelem,&
+                  veasse, codere   , ds_contact, ds_measure)
 !
 use NonLin_Datastructure_type
 !
@@ -24,6 +24,7 @@ implicit none
 #include "asterfort/isfonc.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/liscpy.h"
+#include "asterfort/lobs.h"
 #include "asterfort/ndynlo.h"
 #include "asterfort/nmchap.h"
 #include "asterfort/nmchar.h"
@@ -32,7 +33,6 @@ implicit none
 #include "asterfort/nmcrcv.h"
 #include "asterfort/nmcrob.h"
 #include "asterfort/nmcrdd.h"
-#include "asterfort/nmcrst.h"
 #include "asterfort/nmcrti.h"
 #include "asterfort/nmdidi.h"
 #include "asterfort/nmdoco.h"
@@ -47,6 +47,7 @@ implicit none
 #include "asterfort/InitAlgoPara.h"
 #include "asterfort/InitContact.h"
 #include "asterfort/InitConv.h"
+#include "asterfort/InitEnergy.h"
 #include "asterfort/InitPrint.h"
 #include "asterfort/nmrefe.h"
 #include "asterfort/nminma.h"
@@ -62,7 +63,7 @@ implicit none
 #include "asterfort/nmvcre.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -83,7 +84,8 @@ implicit none
     integer :: fonact(*)
     integer :: numins
     character(len=8) :: result, mesh
-    character(len=19) :: solveu, sdnume, sddisc, sdcrit, sdpilo, sdener
+    character(len=19) :: solveu, sdnume, sddisc, sdcrit, sdpilo
+    type(NL_DS_Energy), intent(inout) :: ds_energy
     character(len=19) :: sdpost
     character(len=19) :: list_load, sddyna
     character(len=19) :: maprec
@@ -93,7 +95,7 @@ implicit none
     character(len=19) :: veelem(*), meelem(*)
     character(len=19) :: veasse(*), measse(*)
     character(len=19) :: solalg(*), valinc(*)
-    character(len=24) :: sdtime, sderro, sdstat
+    character(len=24) :: sderro
     character(len=24) :: sdcriq
     character(len=24) :: varc_refe
     type(NL_DS_InOut), intent(inout) :: ds_inout
@@ -103,6 +105,7 @@ implicit none
     type(NL_DS_Conv), intent(inout) :: ds_conv
     type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
     type(NL_DS_Contact), intent(inout) :: ds_contact
+    type(NL_DS_Measure), intent(inout) :: ds_measure
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -119,6 +122,7 @@ implicit none
 ! OUT FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
 ! OUT NUMEDD : NUME_DDL (VARIABLE AU COURS DU CALCUL)
 ! OUT NUMFIX : NUME_DDL (FIXE AU COURS DU CALCUL)
+! IO  ds_energy        : datastructure for energy management
 ! IO  ds_inout         : datastructure for input/output management
 ! Out sd_obsv          : datastructure for observation parameters
 ! Out sd_suiv          : datastructure for dof monitoring parameters
@@ -126,30 +130,23 @@ implicit none
 ! IO  ds_conv          : datastructure for convergence management
 ! IO  ds_algopara      : datastructure for algorithm parameters
 ! IO  ds_contact       : datastructure for contact management
+! IO  ds_measure       : datastructure for measure and statistics management
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: iret, ibid
     real(kind=8) :: r8bid3(3)
-    real(kind=8) :: instin
+    real(kind=8) :: instin, time
     character(len=19) :: varc_prev, disp_prev, strx_prev
-    aster_logical :: lacc0, lpilo, lmpas, lsstf, lerrt, lviss, lrefe, ldidi
+    aster_logical :: lacc0, lpilo, lmpas, lsstf, lerrt, lviss, lrefe, ldidi, l_obsv
 !
 ! --------------------------------------------------------------------------------------------------
 !
     lacc0 = .false.
 !
-! --- CREATION DE LA STRUCTURE DE DONNEE GESTION DU TEMPS
-!
-    call nmcrti(sdtime)
-!
-! --- CREATION DE LA STRUCTURE DE DONNEE STATISTIQUES
-!
-    call nmcrst(sdstat)
-!
 ! - Initializations for contact parameters
 !
-    call InitContact(mesh, model(1:8), ds_contact)
+    call InitContact(mesh, model, ds_contact)
 !
 ! - Prepare list of loads (and late elements) for contact
 !
@@ -167,9 +164,9 @@ implicit none
 !
 ! - Prepare active functionnalities information
 !
-    call nmfonc(ds_conv  , ds_algopara, solveu, model , ds_contact,&
-                list_load, sdnume     , sddyna, sdcriq, mate      ,&
-                compor   , ds_inout   , carcri, fonact)
+    call nmfonc(ds_conv  , ds_algopara, solveu, model    , ds_contact,&
+                list_load, sdnume     , sddyna, sdcriq   , mate      ,&
+                compor   , ds_inout   , carcri, ds_energy, fonact)
 !
 ! - Check compatibility of some functionnalities
 !
@@ -196,6 +193,10 @@ implicit none
         call cucrsd(mesh, numedd, ds_contact)
     endif
 !
+! - Initializations for measure and statistic management
+!
+    call nmcrti(fonact, ds_contact, ds_measure)
+!
 ! - Initializations for algorithm parameters
 !
     call InitAlgoPara(fonact, ds_algopara)
@@ -203,6 +204,10 @@ implicit none
 ! - Initializations for convergence management
 !
     call InitConv(ds_conv, fonact, ds_contact)
+!
+! - Initializations for energy management
+!
+    call InitEnergy(result, ds_energy)
 !
 ! --- CREATION DES VECTEURS D'INCONNUS
 !
@@ -248,7 +253,7 @@ implicit none
     call nminmc(fonact, list_load, sddyna, model, compor,&
                 numedd, numfix, ds_contact, ds_algopara,&
                 carcri, solalg, valinc, mate, carele,&
-                sddisc, sdstat, sdtime, varc_refe, meelem,&
+                sddisc, ds_measure, varc_refe, meelem,&
                 measse, veelem, codere)
 !
 ! --- INSTANT INITIAL
@@ -263,7 +268,7 @@ implicit none
 !
 ! --- CALCUL ET ASSEMBLAGE DES VECT_ELEM CONSTANTS AU COURS DU CALCUL
 !
-    call nminvc(model    , mate  , carele, compor, sdtime   ,&
+    call nminvc(model    , mate  , carele, compor, ds_measure,&
                 sddisc   , sddyna, valinc, solalg, list_load,&
                 varc_refe, numedd, ds_inout ,&
                 veelem   , veasse, measse)
@@ -302,13 +307,13 @@ implicit none
 !
     if (lacc0) then
         call nmchar('ACCI'  , ' '   , model    , numedd, mate     ,&
-                    carele  , compor, list_load, numins, sdtime   ,&
+                    carele  , compor, list_load, numins, ds_measure   ,&
                     sddisc  , fonact, varc_refe,&
                     ds_inout, valinc, solalg   , veelem, measse   ,&
                     veasse  , sddyna)
         call accel0(model     , numedd, numfix     , fonact, list_load,&
                     ds_contact, maprec, solveu     , valinc, sddyna   ,&
-                    sdstat    , sdtime, ds_algopara, meelem, measse   ,&
+                    ds_measure, ds_algopara, meelem, measse   ,&
                     veelem    , veasse, solalg)
     endif
 !
@@ -342,14 +347,18 @@ implicit none
 !
     call nmnoli(sddisc, sderro, carcri, ds_print, sdcrit  ,&
                 fonact, sddyna, sdpost, model   , mate    ,&
-                carele, sdpilo, sdtime, sdener  , ds_inout,&
+                carele, sdpilo, ds_measure, ds_energy, ds_inout,&
                 sdcriq)
 !
 ! - Make initial observation
 !
-    call nmobsv(mesh    , model, sddisc, sd_obsv  , numins,&
-                carele  , mate , compor, varc_refe, valinc,&
-                ds_inout)
+    l_obsv = .false.
+    call lobs(sd_obsv, numins, instin, l_obsv)
+    if (l_obsv) then
+        call nmobsv(mesh    , model, sddisc, sd_obsv  , numins,&
+                    carele  , mate , compor, varc_refe, valinc,&
+                    ds_inout)
+    endif
 !
 ! - Update name of fields
 !
@@ -365,13 +374,13 @@ implicit none
 !
     if (lmpas) then
         call nmihht(model , numedd   , mate     , compor    , carcri,&
-                    carele, list_load, varc_refe, fonact    , sdstat,&
-                    sddyna, sdtime   , sdnume   , ds_contact, valinc,&
+                    carele, list_load, varc_refe, fonact    , ds_measure   ,&
+                    sddyna,  sdnume   , ds_contact, valinc,&
                     sddisc, solalg   , veasse   , measse    , ds_inout)
     endif
 !
-! --- INITIALISATIONS TIMERS ET STATISTIQUES
+! - Reset times and counters
 !
-    call nmrini(sdtime, sdstat, 'T')
+    call nmrini(ds_measure, 'T')
 !
 end subroutine

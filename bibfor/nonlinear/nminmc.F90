@@ -1,7 +1,7 @@
 subroutine nminmc(fonact, lischa, sddyna, modele, compor,&
                   numedd, numfix, ds_contact, ds_algopara,&
                   carcri, solalg, valinc, mate, carele,&
-                  sddisc, sdstat, sdtime, comref, meelem,&
+                  sddisc, ds_measure, comref, meelem,&
                   measse, veelem, codere)
 !
 use NonLin_Datastructure_type
@@ -11,15 +11,13 @@ implicit none
 #include "asterf_types.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/ndynlo.h"
 #include "asterfort/nmcmat.h"
 #include "asterfort/nmxmat.h"
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -48,7 +46,7 @@ implicit none
     character(len=19) :: veelem(*)
     character(len=19) :: solalg(*), valinc(*)
     character(len=19) :: sddisc
-    character(len=24) :: sdtime, sdstat
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=24) :: codere, comref
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
 !
@@ -59,7 +57,6 @@ implicit none
 ! PRE-CALCUL DES MATRICES ELEMENTAIRES CONSTANTES AU COURS DU CALCUL
 !
 ! ----------------------------------------------------------------------
-!
 !
 ! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
 ! IN  SDDYNA : SD DYNAMIQUE
@@ -76,8 +73,7 @@ implicit none
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
-! IN  SDSTAT : SD STATISTIQUES
-! IN  SDTIME : SD TIMER
+! IO  ds_measure       : datastructure for measure and statistics management
 ! OUT MEELEM : MATRICES ELEMENTAIRES
 ! OUT VEELEM : VECTEURS ELEMENTAIRES
 ! OUT MEASSE : MATRICES ASSEMBLEES
@@ -98,7 +94,6 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('MECA_NON_LINE', ifm, niv)
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> PRECALCUL DES MATR_ELEM CONSTANTES'
@@ -202,8 +197,8 @@ implicit none
         call nmxmat(modele, mate, carele, compor, carcri,&
                     sddisc, sddyna, fonact, numins, iterat,&
                     valinc, solalg, lischa, comref,&
-                    numedd, numfix, sdstat, ds_algopara,&
-                    sdtime, nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
+                    numedd, numfix, ds_measure, ds_algopara,&
+                    nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
                     list_l_calc, list_l_asse, lcfint, meelem, measse,&
                     veelem, ldccvg, codere, ds_contact)
         if (ldccvg .gt. 0) then
@@ -211,5 +206,4 @@ implicit none
         endif
     endif
 !
-    call jedema()
 end subroutine

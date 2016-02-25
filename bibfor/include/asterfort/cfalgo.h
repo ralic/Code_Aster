@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,12 +18,12 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine cfalgo(mesh          , sdstat    , resi_glob_rela, iter_newt,&
+    subroutine cfalgo(mesh          , ds_measure, resi_glob_rela, iter_newt,&
                       solver        , nume_dof  , matr_asse     , disp_iter,&
                       disp_cumu_inst, ds_contact, ctccvg        )
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
-        character(len=24), intent(in) :: sdstat
+        type(NL_DS_Measure), intent(inout) :: ds_measure
         real(kind=8), intent(in) :: resi_glob_rela
         integer, intent(in) :: iter_newt
         character(len=19), intent(in) :: solver

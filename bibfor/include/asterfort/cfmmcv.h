@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfmmcv(mesh     , model_   , nume_dof , list_func_acti, iter_newt ,&
-                      nume_inst, sddyna   , sdstat   , sddisc        , sdtime    ,&
-                      sderro   , hval_incr, hval_algo, ds_print      , ds_contact)
+    subroutine cfmmcv(mesh     , model_   , nume_dof  , list_func_acti, iter_newt ,&
+                      nume_inst, sddyna   , ds_measure, sddisc        ,&
+                      sderro   , hval_incr, hval_algo , ds_print      , ds_contact)
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: model_
@@ -28,8 +28,7 @@ interface
         integer, intent(in) :: nume_inst 
         character(len=19), intent(in) :: sddisc
         character(len=19), intent(in) :: sddyna
-        character(len=24), intent(in) :: sdtime
-        character(len=24), intent(in) :: sdstat
+        type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=24), intent(in) :: sderro
         character(len=19), intent(in) :: hval_incr(*)
         character(len=19), intent(in) :: hval_algo(*)

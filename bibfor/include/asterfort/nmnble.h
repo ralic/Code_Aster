@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,16 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmnble(numins, modele, noma, numedd, sdstat,&
-                      sdtime, sddyna, sddisc, fonact, ds_contact,&
+    subroutine nmnble(numins, modele, noma, numedd, ds_measure,&
+                      sddyna, sddisc, fonact, ds_contact,&
                       valinc, solalg)
         use NonLin_Datastructure_type
         integer :: numins
         character(len=24) :: modele
         character(len=8) :: noma
         character(len=24) :: numedd
-        character(len=24) :: sdstat
-        character(len=24) :: sdtime
+        type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=19) :: sddyna
         character(len=19) :: sddisc
         integer :: fonact(*)

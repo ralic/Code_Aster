@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -17,9 +17,9 @@
 !
 interface
     subroutine nmcere(modele, numedd, mate, carele, comref,&
-                      compor, lischa, carcri, fonact, sdstat,&
+                      compor, lischa, carcri, fonact, ds_measure,&
                       ds_contact, iterat, sdnume, valinc, solalg,&
-                      veelem, veasse, sdtime, offset, rho,&
+                      veelem, veasse, offset, rho,&
                       eta, residu, ldccvg, matass)
         use NonLin_Datastructure_type
         character(len=24) :: modele
@@ -31,7 +31,7 @@ interface
         character(len=19) :: lischa
         character(len=24) :: carcri
         integer :: fonact(*)
-        character(len=24) :: sdstat
+        type(NL_DS_Measure), intent(inout) :: ds_measure
         type(NL_DS_Contact), intent(in) :: ds_contact
         integer :: iterat
         character(len=19) :: sdnume
@@ -39,7 +39,6 @@ interface
         character(len=19) :: solalg(*)
         character(len=19) :: veelem(*)
         character(len=19) :: veasse(*)
-        character(len=24) :: sdtime
         real(kind=8) :: offset
         real(kind=8) :: rho
         real(kind=8) :: eta

@@ -1,10 +1,21 @@
-subroutine nmfint(modele, mate, carele, comref, compor,&
-                  carcri, fonact, iterat, sddyna, sdstat,&
-                  sdtime, valinc, solalg, ldccvg, codere,&
-                  vefint)
+subroutine nmfint(modele, mate  , carele, comref, compor    ,&
+                  carcri, fonact, iterat, sddyna, ds_measure,&
+                  valinc, solalg, ldccvg, codere, vefint)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/merimo.h"
+#include "asterfort/nmrinc.h"
+#include "asterfort/nmtime.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,20 +32,11 @@ subroutine nmfint(modele, mate, carele, comref, compor,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/merimo.h"
-#include "asterfort/nmrinc.h"
-#include "asterfort/nmtime.h"
     integer :: ldccvg
     integer :: iterat
     integer :: fonact(*)
     character(len=19) :: sddyna
-    character(len=24) :: sdtime, sdstat
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=24) :: modele, mate, codere
     character(len=24) :: carele, compor, comref, carcri
     character(len=19) :: solalg(*), valinc(*)
@@ -49,11 +51,9 @@ subroutine nmfint(modele, mate, carele, comref, compor,&
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  MODELE : NOM DU MODELE
 ! IN  MATE   : NOM DU CHAMP DE MATERIAU
-! IN  SDTIME : SD TIMER
-! IN  SDSTAT : SD STATISTIQUES
+! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  COMREF : VALEURS DE REF DES VARIABLES DE COMMANDE
 ! IN  COMPOR : CARTE DECRIVANT LE TYPE DE COMPORTEMENT
@@ -84,9 +84,6 @@ subroutine nmfint(modele, mate, carele, comref, compor,&
 !
     call jemarq()
     call infdbg('MECA_NON_LINE', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> ... CALCUL DES FORCES INTERNES'
     endif
@@ -100,10 +97,10 @@ subroutine nmfint(modele, mate, carele, comref, compor,&
     codere = '&&OP0070.CODERE'
     ldccvg = 0
 !
-! --- INIT TIMER
+! - Launch timer
 !
-    call nmtime(sdtime, 'INI', 'INTEGRATION')
-    call nmtime(sdtime, 'RUN', 'INTEGRATION')
+    call nmtime(ds_measure, 'Init', 'Integration')
+    call nmtime(ds_measure, 'Launch', 'Integration')
 !
 ! --- CALCUL DES FORCES INTERIEURES
 !
@@ -112,10 +109,10 @@ subroutine nmfint(modele, mate, carele, comref, compor,&
                 valinc, solalg, k19bla, vefint, option,&
                 tabret, codere)
 !
-! --- FIN TIMER
+! - End timer
 !
-    call nmtime(sdtime, 'END', 'INTEGRATION')
-    call nmrinc(sdstat, 'INTEGRATION')
+    call nmtime(ds_measure, 'Stop', 'Integration')
+    call nmrinc(ds_measure, 'Integration')
 !
 ! --- CODE RETOUR ERREUR INTEGRATION LDC
 !

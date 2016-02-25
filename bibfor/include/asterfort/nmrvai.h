@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,10 +16,12 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmrvai(sdstat, questz, phase, vali)
-        character(len=24) :: sdstat
-        character(len=*) :: questz
-        character(len=1) :: phase
-        integer :: vali
+    subroutine nmrvai(ds_measure, device_type_, phasis, input_count, output_count)
+        use NonLin_Datastructure_type
+        type(NL_DS_Measure), intent(inout) :: ds_measure
+        character(len=*), intent(in) :: device_type_
+        character(len=1), optional, intent(in) :: phasis
+        integer, optional, intent(in) :: input_count
+        integer, optional, intent(out) :: output_count
     end subroutine nmrvai
 end interface

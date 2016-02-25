@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -17,17 +17,17 @@
 !
 interface
     subroutine nmrigi(modelz, mate, carele, compor, carcri,&
-                      sddyna, sdstat, sdtime, fonact, iterat,&
+                      sddyna, ds_measure, fonact, iterat,&
                       valinc, solalg, comref, meelem, veelem,&
                       optioz, ldccvg, codere)
+        use NonLin_Datastructure_type
         character(len=*) :: modelz
         character(len=*) :: mate
         character(len=24) :: carele
         character(len=24) :: compor
         character(len=24) :: carcri
         character(len=19) :: sddyna
-        character(len=24) :: sdstat
-        character(len=24) :: sdtime
+        type(NL_DS_Measure), intent(inout) :: ds_measure
         integer :: fonact(*)
         integer :: iterat
         character(len=19) :: valinc(*)

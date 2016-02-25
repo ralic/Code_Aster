@@ -1,9 +1,9 @@
 subroutine dltini(lcrea, nume, result, depini, vitini,&
                   accini, fexini, famini, fliini, neq,&
-                  numedd, inchac, baseno)
+                  numedd, inchac, baseno, ds_energy)
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,7 +32,11 @@ subroutine dltini(lcrea, nume, result, depini, vitini,&
 ! VAR : INCHAC : CALCUL OU NON DE L'ACCELERATION INITIALE
 !     ------------------------------------------------------------------
 ! CORPS DU PROGRAMME
-    implicit none
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
 !
 ! DECLARATION PARAMETRES D'APPELS
 #include "asterf_types.h"
@@ -52,6 +56,7 @@ subroutine dltini(lcrea, nume, result, depini, vitini,&
 #include "blas/dcopy.h"
     real(kind=8) :: depini(*), vitini(*), accini(*)
     real(kind=8) :: fexini(*), famini(*), fliini(*)
+    type(NL_DS_Energy), intent(in) :: ds_energy
     character(len=8) :: baseno, result
     character(len=24) :: numedd
     aster_logical :: lcrea, lener, linfo
@@ -59,7 +64,7 @@ subroutine dltini(lcrea, nume, result, depini, vitini,&
     integer :: neq
     integer :: inchac
     integer :: ire, iret, jvale
-    integer :: nai, ndi, ndy, nvi, nocc
+    integer :: nai, ndi, ndy, nvi
     integer :: ierr
     character(len=8) :: reuse, dep, vit
     character(len=19) :: champ, cham2
@@ -74,11 +79,7 @@ subroutine dltini(lcrea, nume, result, depini, vitini,&
 !====
 !
     call getvid('ETAT_INIT', 'RESULTAT', iocc=1, scal=reuse, nbret=ndy)
-    lener=.false.
-    call getfac('ENERGIE', nocc)
-    if (nocc .gt. 0) then
-        lener = .true.
-    endif
+    lener=ds_energy%l_comp
 !
 !====
 ! 3. EN REPRISE

@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,9 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmerro(sderro, sdtime, numins)
-        character(len=24) :: sderro
-        character(len=24) :: sdtime
-        integer :: numins
+    subroutine nmerro(sderro, ds_measure, nume_inst)
+        use NonLin_Datastructure_type
+        character(len=24), intent(in) :: sderro
+        type(NL_DS_Measure), intent(in) :: ds_measure
+        integer, intent(in) :: nume_inst
     end subroutine nmerro
 end interface

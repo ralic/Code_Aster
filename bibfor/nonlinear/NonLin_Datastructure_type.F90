@@ -5,7 +5,7 @@ implicit none
 #include "asterf_types.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,34 +34,58 @@ implicit none
 !
 
 !
-! - Type: column for printing tables (convergence table for instance)
+! - Type: column for table
 ! 
-    type NL_DS_Col
-        aster_logical :: l_vale_affe
-        aster_logical :: l_vale_inte
-        aster_logical :: l_vale_real
-        aster_logical :: l_vale_strg
-        integer :: vale_inte
-        integer :: width
-        real(kind=8) :: vale_real
-        character(len=24) :: vale_strg
-        character(len=9) :: name
-        character(len=16) :: title(3)
-        character(len=1) :: mark
-    end type NL_DS_Col
+    type NL_DS_Column
+        character(len=24)  :: name
+        character(len=16)  :: title(3)
+        character(len=1)   :: mark
+        aster_logical      :: l_vale_affe
+        aster_logical      :: l_vale_inte
+        aster_logical      :: l_vale_real
+        aster_logical      :: l_vale_cplx
+        aster_logical      :: l_vale_strg
+        integer            :: vale_inte
+        real(kind=8)       :: vale_real
+        complex(kind=8)    :: vale_cplx
+        character(len=16)  :: vale_strg
+    end type NL_DS_Column
 !
-! - Type: table (convergence table for instance)
+! - Type: table 
 ! 
     type NL_DS_Table
-        integer :: nb_cols
-        integer :: nb_cols_maxi = 37
-        aster_logical :: l_csv
-        integer :: unit_csv
-        type(NL_DS_Col) :: cols(37)
-        aster_logical :: l_cols_acti(37)
-        integer :: width
-        integer :: title_height
-        character(len=255) :: sep_line
+! ----- Name of result datastructure
+        character(len=8)       :: result
+        character(len=19)      :: table_name
+        character(len=24)      :: table_type
+! ----- Number of active columns
+        integer                :: nb_cols
+! ----- Maximum number of columns in table
+        integer                :: nb_cols_maxi = 37
+! ----- List of columns in table
+        type(NL_DS_Column)     :: cols(37)
+! ----- List of _active_ columns in table
+        aster_logical          :: l_cols_acti(37)
+! ----- Total width of table
+        integer                :: width
+! ----- eNumber of lines for title
+        integer                :: title_height
+! ----- Separation line
+        character(len=255)     :: sep_line
+! ----- Flag for outside file (CSV)
+        aster_logical          :: l_csv
+! ----- Logical unit for outside file (CSV)
+        integer                :: unit_csv
+! ----- List of parameters (for table definition)
+        integer                :: nb_para
+        integer                :: nb_para_inte
+        integer                :: nb_para_real
+        integer                :: nb_para_cplx
+        integer                :: nb_para_strg
+        character(len=24)      :: list_para(37)
+        character(len=3)       :: type_para(37)
+! ----- Index to values
+        integer                :: indx_vale(37)
     end type NL_DS_Table
 !
 ! - Type: print
@@ -81,8 +105,8 @@ implicit none
 ! 
     type NL_DS_Resi
         character(len=16) :: type
-        character(len=16) :: col_name
-        character(len=16) :: col_name_locus
+        character(len=24) :: col_name
+        character(len=24) :: col_name_locus
         character(len=16) :: event_type
         real(kind=8)      :: vale_calc
         character(len=16) :: locus_calc
@@ -272,5 +296,71 @@ implicit none
 ! ----- Wait for contact sub-iterations convergence
         aster_logical     :: l_wait_conv
     end type NL_DS_Contact
+!
+! - Type: timer management
+! 
+    type NL_DS_Timer
+! ----- Type of timer
+        character(len=9)  :: type
+! ----- Internal name of timer
+        character(len=24) :: cpu_name
+! ----- Initial time
+        real(kind=8)      :: time_init
+    end type NL_DS_Timer
+!
+! - Type: device for measure
+! 
+    type NL_DS_Device
+! ----- Type of device
+        character(len=16) :: type
+! ----- Name of timer
+        character(len=9)  :: timer_name
+! ----- Times: for Newton iteration, time step and complete computation
+        integer           :: time_mesg
+        real(kind=8)      :: time_iter
+        real(kind=8)      :: time_step
+        real(kind=8)      :: time_comp
+        integer           :: time_indi_step
+        integer           :: time_indi_comp
+! ----- Counters: for Newton iteration, time step and complete computation
+        aster_logical     :: l_count_add
+        integer           :: count_mesg
+        integer           :: count_iter
+        integer           :: count_step
+        integer           :: count_comp
+        integer           :: count_indi_step
+        integer           :: count_indi_comp
+    end type NL_DS_Device
+!
+! - Type: measure and statistics management
+! 
+    type NL_DS_Measure
+! ----- List of timers
+        integer            :: nb_timer
+        integer            :: nb_timer_maxi = 7
+        type(NL_DS_Timer)  :: timer(7)
+! ----- List of devices
+        integer            :: nb_device
+        integer            :: nb_device_maxi = 23
+        type(NL_DS_Device) :: device(23)
+        aster_logical      :: l_device_acti(23)
+! ----- Some special times
+        real(kind=8)       :: store_mean_time
+        real(kind=8)       :: iter_mean_time
+        real(kind=8)       :: step_mean_time
+        real(kind=8)       :: iter_remain_time
+        real(kind=8)       :: step_remain_time
+    end type NL_DS_Measure
+!
+! - Type: energy management
+! 
+    type NL_DS_Energy
+! ----- Flag for energy computation
+        aster_logical         :: l_comp
+! ----- Command (MECA_NON_LINE or DYNA_VIBRA)
+        character(len=16)     :: command
+! ----- Table in results datastructures
+        type(NL_DS_Table)     :: table
+    end type NL_DS_Energy
 !
 end module

@@ -1,6 +1,6 @@
 subroutine accel0(modele    , numedd, numfix     , fonact, lischa,&
                   ds_contact, maprec, solveu     , valinc, sddyna,&
-                  sdstat    , sdtime, ds_algopara, meelem, measse,&
+                  ds_measure, ds_algopara, meelem, measse,&
                   veelem    , veasse, solalg)
 !
 use NonLin_Datastructure_type
@@ -22,7 +22,7 @@ implicit none
 #include "asterfort/vtzero.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -41,7 +41,7 @@ implicit none
 !
     character(len=19) :: solveu, maprec, lischa
     character(len=19) :: sddyna
-    character(len=24) :: sdtime, sdstat
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=24) :: numedd, numfix, modele
     type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19) :: meelem(*), measse(*), veasse(*), veelem(*)
@@ -70,8 +70,7 @@ implicit none
 ! IN  LISCHA : LISTE DES CHARGES
 ! In  ds_contact       : datastructure for contact management
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
-! IN  SDTIME : SD TIMER
-! IN  SDSTAT : SD STATISTIQUES
+! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
 ! IN  VEELEM : VARIABLE CHAPEAU POUR NOM DES VECT_ELEM
 ! IN  VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE
@@ -114,7 +113,7 @@ implicit none
 ! --- ASSEMBLAGE ET FACTORISATION DE LA MATRICE
 !
     call nmprac(fonact, lischa, numedd, numfix    , solveu     ,&
-                sddyna, sdstat, sdtime, ds_contact, ds_algopara,&
+                sddyna, ds_measure, ds_contact, ds_algopara,&
                 meelem, measse, maprec, matass    , faccvg)
     if (faccvg .eq. 2) then
         call vtzero(accmoi)

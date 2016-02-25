@@ -1,7 +1,7 @@
 subroutine ndexpl(modele, numedd  , numfix, mate       , carele  ,&
                   comref, compor  , lischa, ds_algopara, fonact  ,&
-                  carcri, ds_print, sdstat, sdnume     , sddyna  ,&
-                  sddisc, sdtime  , sderro, valinc     , numins  ,&
+                  carcri, ds_print, ds_measure, sdnume     , sddyna  ,&
+                  sddisc, sderro, valinc     , numins  ,&
                   solalg, solveu  , matass, maprec     , ds_inout,&
                   meelem, measse  , veelem, veasse     , nbiter  )
 !
@@ -18,7 +18,7 @@ implicit none
 #include "asterfort/nmchar.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -40,7 +40,8 @@ implicit none
     integer :: fonact(*)
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=24) :: carcri
-    character(len=24) :: sdstat, sdtime, sderro
+    character(len=24) :: sderro
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19) :: sdnume, sddyna, sddisc
     type(NL_DS_InOut), intent(in) :: ds_inout
     type(NL_DS_Print), intent(inout) :: ds_print
@@ -75,9 +76,8 @@ implicit none
 ! IN  SOLVEU : SOLVEUR
 ! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
 ! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
-! IN  SDSTAT : SD STATISTIQUES
+! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
-! IN  SDTIME : SD TIMER
 ! IN  NUMINS : NUMERO D'INSTANT
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
@@ -107,7 +107,7 @@ implicit none
 ! --- CALCUL DES CHARGEMENTS CONSTANTS AU COURS DU PAS DE TEMPS
 !
     call nmchar('FIXE'  , ' '   , modele, numedd, mate  ,&
-                carele  , compor, lischa, numins, sdtime,&
+                carele  , compor, lischa, numins, ds_measure,&
                 sddisc  , fonact, comref,&
                 ds_inout, valinc, solalg, veelem, measse,&
                 veasse  , sddyna)
@@ -116,7 +116,7 @@ implicit none
 !
     call ndxpre(modele, numedd, numfix  , mate       , carele,&
                 comref, compor, lischa  , ds_algopara, solveu,&
-                fonact, carcri, sddisc  , sdstat     , sdtime,&
+                fonact, carcri, sddisc  , ds_measure,&
                 numins, valinc, solalg  , matass     , maprec,&
                 sddyna, sderro, ds_inout, meelem     , measse,&
                 veelem, veasse, lerrit)

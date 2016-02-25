@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -20,7 +20,7 @@
 interface
     subroutine nmprta(modele  , numedd, numfix  , mate       , carele,&
                       comref  , compor, lischa  , ds_algopara, solveu,&
-                      fonact  , carcri, ds_print, sdstat     , sdtime,&
+                      fonact  , carcri, ds_print, ds_measure,&
                       sddisc  , numins, valinc  , solalg     , matass,&
                       maprec  , ds_contact, sddyna,&
                       meelem  , measse, veelem  , veasse     , sdnume,&
@@ -40,8 +40,7 @@ interface
         integer :: fonact(*)
         character(len=24) :: carcri
         type(NL_DS_Print), intent(inout) :: ds_print
-        character(len=24) :: sdstat
-        character(len=24) :: sdtime
+        type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=19) :: sddisc
         integer :: numins
         character(len=19) :: valinc(*)

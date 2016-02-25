@@ -1,7 +1,14 @@
-subroutine nmrini(sdtime, sdstat, phase)
+subroutine nmrini(ds_measure, phasis)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,97 +25,60 @@ subroutine nmrini(sdtime, sdstat, phase)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-    character(len=24) :: sdtime, sdstat
-    character(len=1) :: phase
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    character(len=1), intent(in) :: phasis
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (ALGORITHME)
+! MECA_NON_LINE - Measure and statistic management
 !
-! MESURE DE STATISTIQUES - REMISE A ZERO
+! Reset times and counters
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! IO  ds_measure       : datastructure for measure and statistics management
+! In  phasis           : phasis (time step, Newton iteration, all computation
 !
-! IN  SDSTAT : SD STATISTIQUES
-! IN  SDTIME : SD TIMER
-! IN  PHASE  : PHASE
-!               'N' SUR L'ITERATION DE NEWTON COURANTE
-!               'P' SUR LE PAS COURANT
-!               'T' SUR TOUT LE TRANSITOIRE
+! --------------------------------------------------------------------------------------------------
 !
+    integer :: i_device, nb_device 
 !
+! --------------------------------------------------------------------------------------------------
 !
+    nb_device  = ds_measure%nb_device
 !
-    character(len=24) :: timet, timep, timen
-    integer :: jtimet, jtimep, jtimen
-    character(len=24) :: stvip, stvit, stvin
-    integer :: jstvip, jstvit, jstvin
-    integer :: i, nmaxt, nmaxs
+! - Reset all timers
 !
-! ----------------------------------------------------------------------
+    do i_device = 1, nb_device  
+        if (phasis .eq. 'T') then
+            ds_measure%device(i_device)%time_comp = 0.d0
+            ds_measure%device(i_device)%time_step = 0.d0
+            ds_measure%device(i_device)%time_iter = 0.d0
+        elseif (phasis .eq. 'P') then
+            ds_measure%device(i_device)%time_step = 0.d0
+            ds_measure%device(i_device)%time_iter = 0.d0
+        elseif (phasis .eq. 'N') then
+            ds_measure%device(i_device)%time_iter = 0.d0
+        else
+            ASSERT(.false.)
+        endif
+    end do
 !
-    call jemarq()
+! - Reset all counters
 !
-! --- ACCES SDTIME
+    do i_device = 1, nb_device  
+        if (phasis .eq. 'T') then
+            ds_measure%device(i_device)%count_comp = 0
+            ds_measure%device(i_device)%count_step = 0
+            ds_measure%device(i_device)%count_iter = 0
+        elseif (phasis .eq. 'P') then
+            ds_measure%device(i_device)%count_step = 0
+            ds_measure%device(i_device)%count_iter = 0
+        elseif (phasis .eq. 'N') then
+            ds_measure%device(i_device)%count_iter = 0
+        else
+            ASSERT(.false.)
+        endif
+    end do
 !
-    timet = sdtime(1:19)//'.TIMT'
-    timep = sdtime(1:19)//'.TIMP'
-    timen = sdtime(1:19)//'.TIMN'
-    call jeveuo(timet, 'E', jtimet)
-    call jeveuo(timep, 'E', jtimep)
-    call jeveuo(timen, 'E', jtimen)
-    call jelira(timet, 'LONMAX', ival=nmaxt)
-!
-! --- ACCES SDSTAT
-!
-    stvip = sdstat(1:19)//'.VLIP'
-    stvit = sdstat(1:19)//'.VLIT'
-    stvin = sdstat(1:19)//'.VLIN'
-    call jeveuo(stvip, 'E', jstvip)
-    call jeveuo(stvit, 'E', jstvit)
-    call jeveuo(stvin, 'E', jstvin)
-    call jelira(stvit, 'LONMAX', ival=nmaxs)
-!
-! --- ENREGISTREMENT DES TEMPS
-!
-    if (phase .eq. 'T') then
-        do 10 i = 1, nmaxt
-            zr(jtimet+i-1) = 0.d0
-            zr(jtimep+i-1) = 0.d0
-            zr(jtimen+i-1) = 0.d0
-10      continue
-        do 20 i = 1, nmaxs
-            zi(jstvit+i-1) = 0
-            zi(jstvip+i-1) = 0
-            zi(jstvin+i-1) = 0
-20      continue
-    else if (phase.eq.'P') then
-        do 11 i = 1, nmaxt
-            zr(jtimep+i-1) = 0.d0
-            zr(jtimen+i-1) = 0.d0
-11      continue
-        do 21 i = 1, nmaxs
-            zi(jstvip+i-1) = 0
-            zi(jstvin+i-1) = 0
-21      continue
-    else if (phase.eq.'N') then
-        do 12 i = 1, nmaxt
-            zr(jtimen+i-1) = 0.d0
-12      continue
-        do 22 i = 1, nmaxs
-            zi(jstvin+i-1) = 0
-22      continue
-    else
-        ASSERT(.false.)
-    endif
-!
-    call jedema()
 end subroutine

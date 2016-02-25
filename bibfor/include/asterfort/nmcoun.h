@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,7 +18,7 @@
 interface
     subroutine nmcoun(mesh          , list_func_acti, solver   , nume_dof_ , matr_asse  ,&
                       iter_newt     , time_curr     , hval_incr, hval_algo , hval_veasse,&
-                      resi_glob_rela, sdtime        , sdstat   , ds_contact, ctccvg)
+                      resi_glob_rela, ds_measure    , ds_contact, ctccvg)
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
         integer, intent(in) :: list_func_acti(*)
@@ -31,8 +31,7 @@ interface
         character(len=19), intent(in) :: hval_algo(*)
         character(len=19), intent(in) :: hval_veasse(*)
         real(kind=8), intent(in) :: resi_glob_rela
-        character(len=24), intent(in) :: sdtime 
-        character(len=24), intent(in) :: sdstat
+        type(NL_DS_Measure), intent(inout) :: ds_measure
         type(NL_DS_Contact), intent(inout) :: ds_contact 
         integer, intent(out) :: ctccvg
     end subroutine nmcoun

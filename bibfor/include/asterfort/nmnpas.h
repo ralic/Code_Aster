@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -19,7 +19,7 @@
 interface
     subroutine nmnpas(modele  , noma  , mate  , carele , fonact    ,&
                       ds_print, sddisc, sdsuiv, sddyna , sdnume    ,&
-                      sdstat  , sdtime, numedd, numins , ds_contact,&
+                      ds_measure, numedd, numins , ds_contact,&
                       valinc  , solalg, solveu, ds_conv, lischa)
         use NonLin_Datastructure_type
         character(len=24) :: modele
@@ -32,8 +32,7 @@ interface
         character(len=24) :: sdsuiv
         character(len=19) :: sddyna
         character(len=19) :: sdnume
-        character(len=24) :: sdstat
-        character(len=24) :: sdtime
+        type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=24) :: numedd
         integer :: numins
         type(NL_DS_Contact), intent(inout) :: ds_contact

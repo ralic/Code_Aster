@@ -1,6 +1,6 @@
 subroutine nmihht(model    , nume_dof , mate       , compor        , comp_para,&
-                  cara_elem, list_load, varc_refe  , list_func_acti, sdstat   ,&
-                  sddyna   , sdtime   , sdnume     , ds_contact    , hval_incr,&
+                  cara_elem, list_load, varc_refe  , list_func_acti, ds_measure,&
+                  sddyna   , sdnume     , ds_contact    , hval_incr,&
                   sddisc   , hval_algo, hval_veasse, hval_measse   , ds_inout)
 !
 use NonLin_Datastructure_type
@@ -12,7 +12,7 @@ implicit none
 #include "asterfort/nmchht.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -39,9 +39,8 @@ implicit none
     character(len=19), intent(in) :: list_load
     character(len=24), intent(in) :: varc_refe
     integer, intent(in) :: list_func_acti(*)
-    character(len=24), intent(in) :: sdstat
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19), intent(in) :: sddyna
-    character(len=24), intent(in) :: sdtime
     character(len=19), intent(in) :: sddisc
     character(len=19), intent(in) :: sdnume
     type(NL_DS_Contact), intent(in) :: ds_contact
@@ -68,9 +67,8 @@ implicit none
 ! In  list_load        : name of datastructure for list of loads
 ! In  varc_refe        : name of reference command variables vector
 ! In  list_func_acti   : list of active functionnalities
-! In  sdstat           : datastructure for statistics
+! IO  ds_measure       : datastructure for measure and statistics management
 ! In  sddyna           : dynamic parameters datastructure
-! In  sdtime           : datastructure for timers management
 ! In  sddisc           : datastructure for time discretization
 ! In  sdnume           : datastructure for dof positions
 ! In  ds_contact       : datastructure for contact management
@@ -100,8 +98,8 @@ implicit none
 !
     if (l_reuse .or. l_init_state) then
         call nmchht(model    , mate     , cara_elem  , compor        , comp_para ,&
-                    list_load, nume_dof , varc_refe  , list_func_acti, sdstat    ,&
-                    sddyna   , sdtime   , sddisc     , sdnume        , ds_contact,&
+                    list_load, nume_dof , varc_refe  , list_func_acti, ds_measure ,&
+                    sddyna   , sddisc   , sdnume     , ds_contact,&
                     hval_incr, hval_algo, hval_veasse, hval_measse   , ds_inout)
     endif
 

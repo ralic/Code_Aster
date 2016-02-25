@@ -1,6 +1,6 @@
-subroutine nmfocc(phase      , model      , mate       , nume_dof , list_func_acti,&
-                  ds_contact , sdstat     , sdtime     , hval_algo, hval_incr     ,&
-                  hval_veelem, hval_veasse)
+subroutine nmfocc(phase      , model     , mate     , nume_dof , list_func_acti,&
+                  ds_contact , ds_measure, hval_algo, hval_incr, hval_veelem   ,&
+                  hval_veasse)
 !
 use NonLin_Datastructure_type
 !
@@ -19,7 +19,7 @@ implicit none
 #include "asterfort/vtaxpy.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -42,8 +42,7 @@ implicit none
     character(len=24), intent(in) :: nume_dof
     integer, intent(in) :: list_func_acti(*)
     type(NL_DS_Contact), intent(in) :: ds_contact
-    character(len=24), intent(in) :: sdstat
-    character(len=24), intent(in) :: sdtime
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19), intent(in) :: hval_algo(*)
     character(len=19), intent(in) :: hval_incr(*)
     character(len=19), intent(in) :: hval_veelem(*)
@@ -66,8 +65,7 @@ implicit none
 ! In  nume_dof         : name of numbering (NUME_DDL)
 ! In  list_func_acti   : list of active functionnalities
 ! In  ds_contact       : datastructure for contact management
-! In  sdstat           : datastructure for statistics
-! In  sdtime           : datastructure for timers
+! IO  ds_measure       : datastructure for measure and statistics management
 ! In  hval_incr        : hat-variable for incremental values fields
 ! In  hval_algo        : hat-variable for algorithms fields
 ! In  hval_veelem      : hat-variable for elementary vectors
@@ -131,15 +129,15 @@ implicit none
 ! - Compute contact forces
 !
     if (l_elem_cont .and. (.not.l_all_verif)) then
-        call nmtime(sdtime, 'INI', 'CTCC_VECT')
-        call nmtime(sdtime, 'RUN', 'CTCC_VECT')
+        call nmtime(ds_measure, 'Init'  , 'Contact_Elem')
+        call nmtime(ds_measure, 'Launch', 'Contact_Elem')
         call nmelcv('CONT'        , mesh     , model    , mate     , ds_contact    ,&
                     disp_prev     , vite_prev, acce_prev, vite_curr, disp_cumu_inst,&
                     vect_elem_cont)
         call assvec('V', vect_asse_cont, 1, vect_elem_cont, [1.d0],&
                     nume_dof, ' ', 'ZERO', 1)
-        call nmtime(sdtime, 'END', 'CTCC_VECT')
-        call nmrinc(sdstat, 'CTCC_VECT')
+        call nmtime(ds_measure, 'Stop', 'Contact_Elem')
+        call nmrinc(ds_measure, 'Contact_Elem')
         if (niv .eq. 2) then
             call nmdebg('VECT', vect_asse_cont, ifm)
         endif
@@ -148,15 +146,15 @@ implicit none
 ! - Compute friction forces
 !
     if (l_elem_frot .and. (.not.l_all_verif)) then
-        call nmtime(sdtime, 'INI', 'CTCC_VECT')
-        call nmtime(sdtime, 'RUN', 'CTCC_VECT')
+        call nmtime(ds_measure, 'Init'  , 'Contact_Elem')
+        call nmtime(ds_measure, 'Launch', 'Contact_Elem')
         call nmelcv('FROT'        , mesh     , model    , mate     , ds_contact    ,&
                     disp_prev     , vite_prev, acce_prev, vite_curr, disp_cumu_inst,&
                     vect_elem_frot)
         call assvec('V', vect_asse_frot, 1, vect_elem_frot, [1.d0],&
                     nume_dof, ' ', 'ZERO', 1)
-        call nmtime(sdtime, 'END', 'CTCC_VECT')
-        call nmrinc(sdstat, 'CTCC_VECT')
+        call nmtime(ds_measure, 'Stop', 'Contact_Elem')
+        call nmrinc(ds_measure, 'Contact_Elem')
         if (niv .eq. 2) then
             call nmdebg('VECT', vect_asse_frot, ifm)
         endif

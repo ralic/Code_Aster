@@ -1,7 +1,7 @@
 subroutine nmener(valinc, veasse, measse, sddyna, eta        ,&
-                  sdener, fonact, numedd, numfix, ds_algopara,&
+                  ds_energy, fonact, numedd, numfix, ds_algopara,&
                   meelem, numins, modele, mate  , carele     ,&
-                  compor, sdtime, sddisc, solalg, lischa     ,&
+                  compor, ds_measure, sddisc, solalg, lischa     ,&
                   comref, veelem, ds_inout)
 !
 use NonLin_Datastructure_type
@@ -27,7 +27,7 @@ implicit none
 #include "asterfort/wkvect.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -45,10 +45,12 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-    character(len=19) :: sddyna, sdener, valinc(*), veasse(*), measse(*)
+    character(len=19) :: sddyna, valinc(*), veasse(*), measse(*)
+    type(NL_DS_Energy), intent(inout) :: ds_energy
     character(len=19) :: meelem(*), sddisc, solalg(*), lischa, veelem(*)
     character(len=24) :: numedd, numfix, modele, mate, carele, compor
-    character(len=24) :: sdtime, comref
+    character(len=24) :: comref
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     real(kind=8) :: eta
     integer :: fonact(*), numins
     type(NL_DS_InOut), intent(in) :: ds_inout
@@ -67,7 +69,7 @@ implicit none
 ! IN  MEASSE : VARIABLE CHAPEAU POUR NOM DES MATR_ASSE
 ! IN  SDDYNA : SD DYNAMIQUE
 ! IN  ETA    : COEFFICIENT DU PILOTAGE
-! IN  SDENER : SD ENERGIE
+! IO  ds_energy        : datastructure for energy management
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! IN  NUMEDD : NUME_DDL
 ! IN  NUMFIX : NUME_DDL (FIXE AU COURS DU CALCUL)
@@ -79,7 +81,7 @@ implicit none
 ! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  COMPOR : COMPORTEMENT
-! IN  SDTIME : SD TIMER
+! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
 ! IN  LISCHA : LISTE DES CHARGES
@@ -334,7 +336,7 @@ implicit none
 !
     if (numins .eq. 1) then
         call nmfini(sddyna  , valinc, measse, modele, mate  ,&
-                    carele  , compor, sdtime, sddisc, numins,&
+                    carele  , compor, ds_measure, sddisc, numins,&
                     solalg  , lischa, comref,&
                     ds_inout, numedd, veelem, veasse)
     endif
@@ -355,7 +357,7 @@ implicit none
     call enerca(valinc, epmo, zr(ivitmo), eppl, zr(ivitpl),&
                 masse, amort, rigid, zr(ifexte), zr(ifamor),&
                 zr(ifliai), zr(ifnoda), zr(ifcine), lamor, ldyna,&
-                lexpl, sdener, k8bid)
+                lexpl, ds_energy, k8bid)
 !
 !     ON NE PEUT PAS UTILISER NMFPAS POUR METTRE LES CHAMPS PLUS
 !     EN CHAMP MOINS, SINON CA POSE PROBLEME EN LECTURE D'ETAT INITIAL

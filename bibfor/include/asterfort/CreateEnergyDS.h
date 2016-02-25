@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,8 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmdcin(sddisc, numins)
-        character(len=19) :: sddisc
-        integer :: numins
-    end subroutine nmdcin
+    subroutine CreateEnergyDS(ds_energy)
+        use NonLin_Datastructure_type
+        type(NL_DS_Energy), intent(out) :: ds_energy
+    end subroutine CreateEnergyDS
 end interface

@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -23,7 +23,8 @@ interface
                       vit0, acc0, fexte, famor, fliai,&
                       nchar, nveca, liad, lifo, modele,&
                       mate, carele, charge, infoch, fomult,&
-                      numedd, nume, solveu, numrep)
+                      numedd, nume, numrep, ds_energy)
+        use NonLin_Datastructure_type
         character(len=8) :: result
         real(kind=8) :: tinit
         aster_logical :: lcrea
@@ -51,7 +52,7 @@ interface
         character(len=24) :: fomult
         character(len=24) :: numedd
         integer :: nume
-        character(len=19) :: solveu
         integer :: numrep
+        type(NL_DS_Energy), intent(inout) :: ds_energy
     end subroutine dladap
 end interface

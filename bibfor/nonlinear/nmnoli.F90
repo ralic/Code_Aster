@@ -1,6 +1,6 @@
-subroutine nmnoli(sddisc, sderro, carcri, ds_print, sdcrit  ,&
-                  fonact, sddyna, sdpost, modele  , mate    ,&
-                  carele, sdpilo, sdtime, sdener  , ds_inout,&
+subroutine nmnoli(sddisc, sderro, carcri    , ds_print , sdcrit  ,&
+                  fonact, sddyna, sdpost    , modele   , mate    ,&
+                  carele, sdpilo, ds_measure, ds_energy, ds_inout,&
                   sdcriq)
 !
 use NonLin_Datastructure_type
@@ -18,7 +18,7 @@ implicit none
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -35,10 +35,12 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=19) :: sddisc, sdcrit, sddyna, sdpost, sdpilo, sdener
+    character(len=19) :: sddisc, sdcrit, sddyna, sdpost, sdpilo
+    type(NL_DS_Energy), intent(in) :: ds_energy
     character(len=24) :: sderro, carcri
     character(len=24) :: modele, mate, carele
-    character(len=24) :: sdtime, sdcriq
+    character(len=24) :: sdcriq
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     type(NL_DS_InOut), intent(inout) :: ds_inout
     integer :: fonact(*)
     type(NL_DS_Print), intent(in) :: ds_print
@@ -60,9 +62,9 @@ implicit none
 ! IO  ds_inout         : datastructure for input/output management
 ! IN  SDCRIT : INFORMATIONS RELATIVES A LA CONVERGENCE
 ! IN  SDPILO : SD PILOTAGE
-! IN  SDTIME : SD TIMER
+! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  SDERRO : SD ERREUR
-! IN  SDENER : SD ENERGIE
+! In  ds_energy        : datastructure for energy management
 ! IN  SDCRIQ : SD CRITERE QUALITE
 ! IN  MODELE : NOM DU MODELE
 ! IN  MATE   : CHAMP DE MATERIAU
@@ -122,10 +124,10 @@ implicit none
 !
     if (.not.lreuse) then
         call utmess('I', 'ARCHIVAGE_4')
-        call nmarch(numins  , modele  , mate  , carele, fonact,&
-                    carcri  , ds_print, sddisc, sdpost, sdcrit,&
-                    sdtime  , sderro  , sddyna, sdpilo, sdener,&
-                    ds_inout, sdcriq  )
+        call nmarch(numins    , modele  , mate  , carele, fonact   ,&
+                    carcri    , ds_print, sddisc, sdpost, sdcrit   ,&
+                    ds_measure, sderro  , sddyna, sdpilo, ds_energy,&
+                    ds_inout  , sdcriq  )
     endif
 !
 end subroutine

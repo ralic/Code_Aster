@@ -1,5 +1,4 @@
-subroutine nmctcg(model   , mesh, ds_contact, sdstat, sdtime,&
-                  nume_dof)
+subroutine nmctcg(model, mesh, ds_contact, ds_measure, nume_dof)
 !
 use NonLin_Datastructure_type
 !
@@ -12,7 +11,7 @@ implicit none
 #include "asterfort/mmctcg.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -33,8 +32,7 @@ implicit none
     character(len=24), intent(in) :: model
     type(NL_DS_Contact), intent(inout) :: ds_contact
     character(len=24), intent(in) :: nume_dof
-    character(len=24), intent(in) :: sdtime
-    character(len=24), intent(in) :: sdstat
+    type(NL_DS_Measure), intent(inout) :: ds_measure
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,8 +46,7 @@ implicit none
 ! In  model            : name of model
 ! IO  ds_contact       : datastructure for contact management
 ! In  nume_dof         : name of numbering object (NUME_DDL)
-! In  sdtime           : datastructure for timers
-! In  sdstat           : datastructure for statistics
+! IO  ds_measure       : datastructure for measure and statistics management
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -65,9 +62,9 @@ implicit none
 !
     if (.not.l_cont_allv) then
         if (cont_form .eq. 2) then
-            call mmctcg(mesh , ds_contact, nume_dof, sdstat, sdtime)
+            call mmctcg(mesh , ds_contact, nume_dof, ds_measure)
         elseif (cont_form .eq. 3) then
-            call xmctcg(model, mesh, ds_contact, sdstat, sdtime)
+            call xmctcg(model, mesh, ds_contact, ds_measure)
         endif
     endif
 !

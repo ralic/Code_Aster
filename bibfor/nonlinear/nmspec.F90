@@ -1,7 +1,7 @@
 subroutine nmspec(modele     , numedd, numfix, carele  , compor    ,&
                   numins     , mate  , comref, lischa  , ds_contact,&
-                  ds_algopara, fonact, carcri, ds_print, sdstat    ,&
-                  sdtime     , sddisc, valinc, solalg  , meelem    ,&
+                  ds_algopara, fonact, carcri, ds_print, ds_measure,&
+                  sddisc, valinc, solalg  , meelem    ,&
                   measse     , veelem, sddyna, sdpost  , sderro)
 !
 use NonLin_Datastructure_type
@@ -20,7 +20,7 @@ implicit none
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -42,7 +42,8 @@ implicit none
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=19) :: meelem(*)
     type(NL_DS_Contact), intent(in) :: ds_contact
-    character(len=24) :: sdstat, sdtime, sderro
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    character(len=24) :: sderro
     character(len=19) :: lischa, sddisc, sddyna, sdpost
     character(len=24) :: modele, numedd, numfix, carele, compor
     character(len=19) :: veelem(*), measse(*)
@@ -70,8 +71,7 @@ implicit none
 ! IN  LISCHA : LISTE DES CHARGES
 ! In  ds_contact       : datastructure for contact management
 ! In  ds_print         : datastructure for printing parameters
-! IN  SDTIME : SD TIMER
-! IN  SDSTAT : SD STATISTIQUES
+! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
 ! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  CARCRI : PARAMETRES METHODES D'INTEGRATION LOCALES (VOIR NMLECT)
@@ -139,7 +139,7 @@ implicit none
             call nmflam(option, modele, numedd, numfix     , carele,&
                         compor, numins, mate       , comref,&
                         lischa, ds_contact, ds_algopara, fonact,&
-                        carcri, sdstat, sddisc, sdtime     , sddyna,&
+                        carcri, ds_measure, sddisc, sddyna,&
                         sdpost, valinc, solalg, meelem     , measse,&
                         veelem, sderro)
         endif
@@ -162,7 +162,7 @@ implicit none
             call nmflam(option, modele, numedd, numfix     , carele,&
                         compor, numins, mate       , comref,&
                         lischa, ds_contact, ds_algopara, fonact,&
-                        carcri, sdstat, sddisc, sdtime     , sddyna,&
+                        carcri, ds_measure, sddisc, sddyna,&
                         sdpost, valinc, solalg, meelem     , measse,&
                         veelem, sderro)
         endif

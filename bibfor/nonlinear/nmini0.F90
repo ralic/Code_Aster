@@ -1,6 +1,7 @@
-subroutine nmini0(list_func_acti, eta    , nume_inst  , matass  , zmeelm    ,&
-                  zmeass        , zveelm , zveass     , zsolal  , zvalin    ,&
-                  ds_print      , ds_conv, ds_algopara, ds_inout, ds_contact)
+subroutine nmini0(list_func_acti, eta      , nume_inst  , matass  , zmeelm    ,&
+                  zmeass        , zveelm   , zveass     , zsolal  , zvalin    ,&
+                  ds_print      , ds_conv  , ds_algopara, ds_inout, ds_contact,&
+                  ds_measure    , ds_energy)
 !
 use NonLin_Datastructure_type
 !
@@ -15,9 +16,11 @@ implicit none
 #include "asterfort/CreateAlgoParaDS.h"
 #include "asterfort/CreateInOutDS.h"
 #include "asterfort/CreateContactDS.h"
+#include "asterfort/CreateMeasureDS.h"
+#include "asterfort/CreateEnergyDS.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -49,6 +52,8 @@ implicit none
     type(NL_DS_AlgoPara), intent(out) :: ds_algopara
     type(NL_DS_InOut), intent(out) :: ds_inout
     type(NL_DS_Contact), intent(out) :: ds_contact
+    type(NL_DS_Measure), intent(out) :: ds_measure
+    type(NL_DS_Energy), intent(out) :: ds_energy
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -65,6 +70,8 @@ implicit none
 ! Out ds_algopara      : datastructure for algorithm parameters
 ! Out ds_inout         : datastructure for input/output management
 ! Out ds_contact       : datastructure for contact management
+! Out ds_measure       : datastructure for measure and statistics management
+! Out ds_energy        : datastructure for energy management
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -98,6 +105,14 @@ implicit none
 ! - Create contact management datastructure
 !
     call CreateContactDS(ds_contact)
+!
+! - Create measure and statistics management datastructure
+!
+    call CreateMeasureDS(ds_measure)
+!
+! - Create energy management datastructure
+!
+    call CreateEnergyDS(ds_energy)
 !
 ! --- FONCTIONNALITES ACTIVEES               (NMFONC/ISFONC)
 !

@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -19,7 +19,7 @@
 !
 interface
     subroutine nmchar(mode    , phasez, modele, numedd, mate  ,&
-                      carele  , compor, lischa, numins, sdtime,&
+                      carele  , compor, lischa, numins, ds_measure,&
                       sddisc  , fonact, comref,&
                       ds_inout, valinc, solalg, veelem, measse,&
                       veasse  , sddyna)
@@ -33,7 +33,7 @@ interface
         character(len=24) :: compor
         character(len=19) :: lischa
         integer :: numins
-        character(len=24) :: sdtime
+        type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=19) :: sddisc
         integer :: fonact(*)
         character(len=24) :: comref

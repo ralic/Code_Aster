@@ -1,4 +1,4 @@
-subroutine mmmcpt(noma, sdstat, ds_contact, cnsinr)
+subroutine mmmcpt(noma, ds_measure, ds_contact, cnsinr)
 !
 use NonLin_Datastructure_type
 !
@@ -21,7 +21,7 @@ implicit none
 #include "asterfort/wkvect.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -39,9 +39,9 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8) :: noma
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19) :: cnsinr
     type(NL_DS_Contact), intent(in) :: ds_contact
-    character(len=24) :: sdstat
 !
 ! ----------------------------------------------------------------------
 !
@@ -52,7 +52,7 @@ implicit none
 ! ----------------------------------------------------------------------
 !
 ! IN  NOMA   : NOM DU MAILLAGE
-! IN  SDSTAT : SD STATISTIQUES
+! IO  ds_measure       : datastructure for measure and statistics management
 ! In  ds_contact       : datastructure for contact management
 ! IN  CNSINR : CHAM_NO_S POUR L'ARCHIVAGE DU CONTACT
 !
@@ -171,8 +171,8 @@ implicit none
 999 continue
 !
     call jedetr(dejcal)
-    call nmrvai(sdstat, 'CONT_NBLIAC', 'E', nbliac)
-    call nmrvai(sdstat, 'CONT_NBLIAF', 'E', nbliaf)
+    call nmrvai(ds_measure, 'Contact_NumbCont', input_count = nbliac)
+    call nmrvai(ds_measure, 'Contact_NumbFric', input_count = nbliaf)
 !
     call jedema()
 end subroutine

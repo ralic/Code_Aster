@@ -1,6 +1,6 @@
 subroutine nmprta(modele  , numedd, numfix  , mate       , carele,&
                   comref  , compor, lischa  , ds_algopara, solveu,&
-                  fonact  , carcri, ds_print, sdstat     , sdtime,&
+                  fonact  , carcri, ds_print, ds_measure,&
                   sddisc  , numins, valinc  , solalg     , matass,&
                   maprec  , ds_contact , sddyna,&
                   meelem  , measse, veelem  , veasse     , sdnume,&
@@ -25,7 +25,7 @@ implicit none
 #include "asterfort/vtzero.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -46,7 +46,7 @@ implicit none
     integer :: fonact(*)
     integer :: numins, faccvg, rescvg, ldccvg
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-    character(len=24) :: sdtime, sdstat
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     type(NL_DS_Print), intent(inout) :: ds_print
     type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=19) :: matass, maprec
@@ -82,8 +82,7 @@ implicit none
 ! IO  ds_print         : datastructure for printing parameters
 ! In  ds_inout         : datastructure for input/output management
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
-! IN  SDTIME : SD TIMER
-! IN  SDSTAT : SD STATISTIQUES
+! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IN  NUMINS : NUMERO D'INSTANT
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
@@ -161,7 +160,7 @@ implicit none
 !
     call nmprma(modele     , mate    , carele, compor, carcri,&
                 ds_algopara, lischa  , numedd, numfix, solveu,&
-                comref     , ds_print, sdstat, sdtime, sddisc,&
+                comref     , ds_print, ds_measure, sddisc,&
                 sddyna     , numins  , fonact, ds_contact,&
                 valinc     , solalg  , veelem, meelem, measse,&
                 maprec     , matass  , codere, faccvg, ldccvg)
@@ -174,7 +173,7 @@ implicit none
 ! --- CALCUL DES CHARGEMENTS VARIABLES AU COURS DU PAS DE TEMPS
 !
     call nmchar('VARI'  , 'PREDICTION', modele, numedd, mate,&
-                carele  , compor      , lischa, numins, sdtime,&
+                carele  , compor      , lischa, numins, ds_measure,&
                 sddisc  , fonact      , comref,&
                 ds_inout, valinc      , solalg, veelem, measse,&
                 veasse  , sddyna)
@@ -183,16 +182,16 @@ implicit none
 !
     if (leltc) then
         call nmfocc('PREDICTION', modele, mate, numedd, fonact,&
-                    ds_contact, sdstat, sdtime, solalg,&
+                    ds_contact, ds_measure, solalg,&
                     valinc, veelem, veasse)
     endif
 !
 ! --- CALCUL DU SECOND MEMBRE
 !
     call nmassp(modele, numedd, mate  , carele, comref,&
-                compor, lischa, carcri, fonact, sdstat,&
+                compor, lischa, carcri, fonact, ds_measure,&
                 ds_contact, sddyna, valinc, solalg, veelem,&
-                veasse, sdtime, ldccvg, codere, cnpilo,&
+                veasse, ldccvg, codere, cnpilo,&
                 cndonn, sdnume, matass)
 !
 ! --- INCREMENT DE DEPLACEMENT NUL EN PREDICTION
@@ -203,9 +202,9 @@ implicit none
 !
 ! --- RESOLUTION K.DU = DF
 !
-    call nmresd(fonact, sddyna, sdstat, sdtime, solveu,&
-                numedd, instap, maprec, matass, cndonn,&
-                cnpilo, cncine, solalg, rescvg)
+    call nmresd(fonact, sddyna, ds_measure, solveu, numedd,&
+                instap, maprec, matass    , cndonn, cnpilo,&
+                cncine, solalg, rescvg)
 !
 999 continue
 !

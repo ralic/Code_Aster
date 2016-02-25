@@ -2,7 +2,7 @@ subroutine nmflma(typmat, mod45 , defo  , ds_algopara, modelz,&
                   mate  , carele, sddisc, sddyna     , fonact,&
                   numins, valinc, solalg, lischa     , comref,&
                   ds_contact, numedd     , numfix,&
-                  compor, carcri, sdstat, sdtime     , meelem,&
+                  compor, carcri, ds_measure, meelem,&
                   measse, veelem, nddle , ddlexc     , modrig,&
                   ldccvg, matass, matgeo)
 !
@@ -34,7 +34,7 @@ implicit none
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -60,7 +60,7 @@ implicit none
     character(len=*) :: modelz
     character(len=24) :: mate, carele
     character(len=24) :: compor, carcri
-    character(len=24) :: sdtime, sdstat
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     integer :: numins, ldccvg, nddle
     character(len=19) :: sddisc, sddyna, lischa
     type(NL_DS_Contact), intent(in) :: ds_contact
@@ -76,7 +76,6 @@ implicit none
 ! CALCUL DE LA MATRICE GLOBALE POUR FLAMBEMENT/MODES VIBRATOIRES
 !
 ! ----------------------------------------------------------------------
-!
 !
 ! IN  TYPMAT : TYPE DE MATRICE DE RIGIDITE A UTILISER
 !                'ELASTIQUE/TANGENTE/SECANTE'
@@ -94,8 +93,7 @@ implicit none
 ! IN  COMREF : VARI_COM DE REFERENCE
 ! IN  COMPOR : COMPORTEMENT
 ! IN  LISCHA : LISTE DES CHARGES
-! IN  SDTIME : SD TIMER
-! IN  SDSTAT : SD STATISTIQUES
+! IO  ds_measure       : datastructure for measure and statistics management
 ! In  ds_contact       : datastructure for contact management
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
 ! In  ds_algopara      : datastructure for algorithm parameters
@@ -148,9 +146,6 @@ implicit none
 !
     call jemarq()
     call infdbg('MECA_NON_LINE', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> ...... CALCUL MATRICE'
     endif
@@ -274,8 +269,8 @@ implicit none
         call nmxmat(modelz, mate, carele, compor, carcri,&
                     sddisc, sddyna, fonact, numins, iterat,&
                     valin2, solalg, lischa, comref,&
-                    numedd, numfix, sdstat, ds_algopara,&
-                    sdtime, nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
+                    numedd, numfix, ds_measure, ds_algopara,&
+                    nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
                     list_l_calc, list_l_asse, lcfint, meelem, measse,&
                     veelem, ldccvg, codere, ds_contact)
     endif

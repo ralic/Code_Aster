@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -32,10 +32,11 @@ interface
                       a8, c0, c1, c2, c3,&
                       c4, c5, nodepl, novite, noacce,&
                       matres, maprec, solveu, criter, chondp,&
-                      ener, vitini, vitent, valmod, basmod,&
+                      vitini, vitent, valmod, basmod,&
                       veanec, vaanec, vaonde, veonde, dt,&
                       theta, tempm, temps, iforc2, tabwk1,&
-                      tabwk2, archiv, nbtyar, typear, numrep)
+                      tabwk2, archiv, nbtyar, typear, numrep, ds_energy)
+        use NonLin_Datastructure_type
         integer :: nbtyar
         integer :: nondp
         integer :: nbexci
@@ -108,7 +109,6 @@ interface
         character(len=19) :: solveu
         character(len=24) :: criter
         character(len=8) :: chondp(nondp)
-        aster_logical :: ener
         character(len=24) :: vitini
         character(len=24) :: vitent
         character(len=24) :: valmod
@@ -127,5 +127,6 @@ interface
         integer :: archiv
         character(len=16) :: typear(nbtyar)
         integer :: numrep
+        type(NL_DS_Energy), intent(inout) :: ds_energy
     end subroutine dlnew0
 end interface

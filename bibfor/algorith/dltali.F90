@@ -4,10 +4,10 @@ subroutine dltali(neq, result, imat, masse, rigid,&
                   charge, infoch, fomult, modele, numedd,&
                   nume, solveu, criter, dep0, vit0,&
                   acc0, fexte0, famor0, fliai0, baseno,&
-                  tabwk, force0, force1)
+                  tabwk, force0, force1, ds_energy)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -53,7 +53,11 @@ subroutine dltali(neq, result, imat, masse, rigid,&
 ! ----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
 ! aslint: disable=W1504
-    implicit none
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/ajlagr.h"
@@ -80,6 +84,7 @@ subroutine dltali(neq, result, imat, masse, rigid,&
     real(kind=8) :: fexte0(*), famor0(*), fliai0(*)
     real(kind=8) :: t0
     real(kind=8) :: tabwk(*)
+    type(NL_DS_Energy), intent(inout) :: ds_energy
 !
     character(len=8) :: baseno, result
     character(len=8) :: masse, rigid
@@ -135,7 +140,7 @@ subroutine dltali(neq, result, imat, masse, rigid,&
     lcrea = .true.
     call dltini(lcrea, nume, result, dep0, vit0,&
                 acc0, fexte0, famor0, fliai0, neq,&
-                numedd, inchac, baseno)
+                numedd, inchac, baseno, ds_energy)
 !
 !
 !====

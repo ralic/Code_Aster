@@ -1,10 +1,10 @@
 subroutine nmpost(modele , mesh    , numedd, numfix     , carele  ,&
                   compor , numins  , mate  , comref     , ds_inout,&
                   ds_contact, ds_algopara, fonact  ,&
-                  carcri , ds_print, sdstat, sddisc     , sdtime  ,&
+                  carcri , ds_print, ds_measure, sddisc     , &
                   sd_obsv, sderro  , sddyna, sdpost     , valinc  ,&
                   solalg , meelem  , measse, veelem     , veasse  ,&
-                  sdener , sdcriq  , eta   , lischa)
+                  ds_energy, sdcriq  , eta   , lischa)
 !
 use NonLin_Datastructure_type
 !
@@ -13,16 +13,19 @@ implicit none
 #include "asterf_types.h"
 #include "asterfort/cfmxpo.h"
 #include "asterfort/isfonc.h"
+#include "asterfort/lobs.h"
+#include "asterfort/diinst.h"
 #include "asterfort/nmener.h"
 #include "asterfort/nmetca.h"
 #include "asterfort/nmleeb.h"
 #include "asterfort/nmobsv.h"
 #include "asterfort/nmspec.h"
 #include "asterfort/nmtime.h"
+#include "asterfort/nmrinc.h"
 #include "asterfort/nmrest_ecro.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,7 +50,7 @@ implicit none
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=19) :: meelem(*)
     type(NL_DS_Contact), intent(in) :: ds_contact
-    character(len=19) :: sdener
+    type(NL_DS_Energy), intent(inout) :: ds_energy
     character(len=19) :: lischa
     character(len=19) :: sddisc, sddyna, sdpost
     character(len=19), intent(in) :: sd_obsv
@@ -55,7 +58,8 @@ implicit none
     character(len=24) :: modele, numedd, numfix, compor
     character(len=19) :: veelem(*), measse(*), veasse(*)
     character(len=19) :: solalg(*), valinc(*)
-    character(len=24) :: sdstat, sdtime, sderro, sdcriq
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    character(len=24) :: sderro, sdcriq
     character(len=24) :: mate, carele
     character(len=24) :: carcri, comref
     integer :: fonact(*)
@@ -78,10 +82,9 @@ implicit none
 ! In  ds_inout         : datastructure for input/output management
 ! In  ds_print         : datastructure for printing parameters
 ! In  ds_contact       : datastructure for contact management
-! IN  SDTIME : SD TIMER
-! IN  SDSTAT : SD STATISTIQUES
+! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
-! IN  SDDYNA : SD POUR LA DYNAMIQUE
+! IO  ds_energy        : datastructure for energy management
 ! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  CARCRI : PARAMETRES METHODES D'INTEGRATION LOCALES (VOIR NMLECT)
 ! IN  NUMINS : NUMERO D'INSTANT
@@ -92,8 +95,9 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
-    aster_logical :: lmvib, lflam, lerrt, lcont, lener, l_post_incr
+    aster_logical :: lmvib, lflam, lerrt, lcont, lener, l_post_incr, l_obsv, l_post
     character(len=4) :: etfixe
+    real(kind=8) :: time
 !
 ! ----------------------------------------------------------------------
 !
@@ -104,12 +108,29 @@ implicit none
     lener       = isfonc(fonact,'ENERGIE')
     l_post_incr = isfonc(fonact,'POST_INCR')
 !
-! --- LE PAS FIXE A NECESSAIREMENT CONVERGE
+! - Observation ?
+!
+    l_obsv = .false.
+    time   = diinst(sddisc, numins)
+    call lobs(sd_obsv, numins, time, l_obsv)
+!
+! - State of time loop
 !
     call nmleeb(sderro, 'FIXE', etfixe)
-    if (etfixe .ne. 'CONV') then
+!
+! - Post-treatment ?
+!
+    l_post = (lerrt .or. lcont .or. lmvib .or. lflam .or. lener .or. l_obsv .or. l_post_incr).and.&
+             etfixe .eq. 'CONV'
+!
+    if (.not.l_post) then
         goto 99
     endif
+!
+! - Launch timer for post-treatment
+!
+    call nmtime(ds_measure, 'Init'  , 'Post')
+    call nmtime(ds_measure, 'Launch', 'Post')
 !
 ! --- CALCUL EVENTUEL DE L'INDICATEUR D'ERREUR TEMPORELLE THM
 !
@@ -121,39 +142,32 @@ implicit none
 ! --- POST_TRAITEMENT DU CONTACT
 !
     if (lcont) then
-        call nmtime(sdtime, 'INI', 'POST_TRAITEMENT')
-        call nmtime(sdtime, 'RUN', 'POST_TRAITEMENT')
-        call cfmxpo(mesh  , modele, ds_contact, numins, sddisc,&
-                    sdstat, solalg, valinc    , veasse)
-        call nmtime(sdtime, 'END', 'POST_TRAITEMENT')
+        call cfmxpo(mesh      , modele, ds_contact, numins, sddisc,&
+                    ds_measure, solalg, valinc    , veasse)
     endif
 !
 ! --- CALCUL DE POST-TRAITEMENT: STABILITE ET MODES VIBRATOIRES
 !
     if (lmvib .or. lflam) then
-        call nmtime(sdtime, 'INI', 'POST_TRAITEMENT')
-        call nmtime(sdtime, 'RUN', 'POST_TRAITEMENT')
         call nmspec(modele  , numedd, numfix     , carele, compor,&
                     numins, mate       , comref, lischa,&
                     ds_contact, ds_algopara, fonact, carcri,&
-                    ds_print, sdstat, sdtime     , sddisc, valinc,&
+                    ds_print, ds_measure, sddisc, valinc,&
                     solalg  , meelem, measse     , veelem, sddyna,&
                     sdpost  , sderro)
-        call nmtime(sdtime, 'END', 'POST_TRAITEMENT')
     endif
 !
 ! --- CALCUL DES ENERGIES
 !
     if (lener) then
         call nmener(valinc, veasse, measse, sddyna, eta        ,&
-                    sdener, fonact, numedd, numfix, ds_algopara,&
+                    ds_energy, fonact, numedd, numfix, ds_algopara,&
                     meelem, numins, modele, mate  , carele     ,&
-                    compor, sdtime, sddisc, solalg, lischa     ,&
+                    compor, ds_measure, sddisc, solalg, lischa     ,&
                     comref, veelem, ds_inout)
     endif
-
 !
-! - Post-treatment for behavior laws.
+! - Post-treatment for behavior laws
 !
     if (l_post_incr) then
         call nmrest_ecro(modele, mate, compor, valinc, carcri)
@@ -161,8 +175,15 @@ implicit none
 !
 ! - Make observation
 !
-    call nmobsv(mesh  , modele, sddisc, sd_obsv, numins,&
-                carele, mate  , compor, comref , valinc)
+    if (l_obsv) then
+        call nmobsv(mesh  , modele, sddisc, sd_obsv, numins,&
+                    carele, mate  , compor, comref , valinc)
+    endif
+!
+! - End of timer for post-treatment
+!
+    call nmtime(ds_measure, 'Stop', 'Post')
+    call nmrinc(ds_measure, 'Post')
 !
 99  continue
 !

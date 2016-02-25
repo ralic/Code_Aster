@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,16 +16,16 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nsassp(modele, numedd, lischa, fonact    , sddyna,&
-                      sdtime, valinc, veelem, veasse    , cnpilo,&
-                      cndonn, mate  , carele, ds_contact, matass)
+    subroutine nsassp(modele    , numedd, lischa, fonact    , sddyna,&
+                      ds_measure, valinc, veelem, veasse    , cnpilo,&
+                      cndonn    , mate  , carele, ds_contact, matass)
         use NonLin_Datastructure_type
         character(len=24) :: modele
         character(len=24) :: numedd
         character(len=19) :: lischa
         integer :: fonact(*)
         character(len=19) :: sddyna
-        character(len=24) :: sdtime
+        type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=19) :: valinc(*)
         character(len=19) :: veelem(*)
         character(len=19) :: veasse(*)

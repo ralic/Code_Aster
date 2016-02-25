@@ -1,7 +1,14 @@
-subroutine nmlost(sdtime)
+subroutine nmlost(ds_measure)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "asterfort/nmrtim.h"
+#include "asterfort/nmtimr.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,41 +25,25 @@ subroutine nmlost(sdtime)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/nmrtim.h"
-#include "asterfort/nmtimr.h"
-    character(len=24) :: sdtime
+    type(NL_DS_Measure), intent(inout) :: ds_measure
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (UTILITAIRE)
+! MECA_NON_LINE - Measure and statistic management
 !
-! TEMPS PERDU (A CAUSE DECOUPE PAS DE TEMPS)
+! Save time lost in cut steps
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! IO  ds_measure       : datastructure for measure and statistics management
 !
-! IN  SDTIME : SD TIMER
+! --------------------------------------------------------------------------------------------------
 !
+    real(kind=8) :: time_lost
 !
+! --------------------------------------------------------------------------------------------------
 !
+    call nmtimr(ds_measure, 'Time_Step', 'P', time_lost)
+    call nmrtim(ds_measure, 'Lost_Time', time_lost)
 !
-    real(kind=8) :: time
-!
-! ----------------------------------------------------------------------
-!
-    call jemarq()
-!
-! --- TEMPS PASSE DANS LE PAS
-!
-    call nmtimr(sdtime, 'TEMPS_PHASE', 'P', time)
-!
-! --- SAUVEGARDE TEMPS GASPILLE
-!
-    call nmrtim(sdtime, 'PAS_LOST', time)
-!
-    call jedema()
 end subroutine

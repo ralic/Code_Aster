@@ -1,6 +1,6 @@
 subroutine ndxpre(modele, numedd, numfix  , mate       , carele,&
                   comref, compor, lischa  , ds_algopara, solveu,&
-                  fonact, carcri, sddisc  , sdstat     , sdtime,&
+                  fonact, carcri, sddisc  , ds_measure,&
                   numins, valinc, solalg  , matass     , maprec,&
                   sddyna, sderro, ds_inout, meelem     , measse,&
                   veelem, veasse, lerrit)
@@ -22,7 +22,7 @@ implicit none
 #include "asterfort/vtzero.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -45,7 +45,7 @@ implicit none
     type(NL_DS_InOut), intent(in) :: ds_inout
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=19) :: matass, maprec
-    character(len=24) :: sdtime, sdstat
+    type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19) :: lischa, solveu, sddisc, sddyna
     character(len=24) :: modele, mate, carele, comref, compor
     character(len=24) :: numedd, numfix
@@ -77,10 +77,8 @@ implicit none
 ! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
 ! IN  LISCHA : SD LISTE DES CHARGES
 ! IN  CARCRI : CARTE DES CRITERES DE CONVERGENCE LOCAUX
-! IN  SDSTAT : SD STATISTIQUES
+! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  SDDISC : SD DISCRETISATION
-! IN  SDTIME : SD TIMER
-! IN  SDSTAT : SD STATISTIQUES
 ! IN  NUMINS : NUMERO D'INSTANT
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
@@ -132,7 +130,7 @@ implicit none
 !
     call ndxprm(modele     , mate  , carele, compor, carcri,&
                 ds_algopara, lischa, numedd, numfix, solveu,&
-                comref     , sddisc, sddyna, sdstat, sdtime,&
+                comref     , sddisc, sddyna, ds_measure,&
                 numins     , fonact, valinc, solalg, veelem,&
                 meelem     , measse, maprec, matass, codere,&
                 faccvg     , ldccvg)
@@ -145,7 +143,7 @@ implicit none
 ! --- CALCUL DES CHARGEMENTS VARIABLES AU COURS DU PAS DE TEMPS
 !
     call nmchar('VARI'  , 'PREDICTION', modele, numedd, mate,&
-                carele  , compor, lischa, numins, sdtime,&
+                carele  , compor, lischa, numins, ds_measure,&
                 sddisc  , fonact, comref,&
                 ds_inout, valinc, solalg, veelem, measse,&
                 veasse  , sddyna)
@@ -153,9 +151,9 @@ implicit none
 ! --- CALCUL DU SECOND MEMBRE
 !
     call nmassx(modele, numedd, mate, carele, comref,&
-                compor, lischa, carcri, fonact, sdstat,&
+                compor, lischa, carcri, fonact, ds_measure,&
                 sddyna, valinc, solalg, veelem, veasse,&
-                sdtime, ldccvg, codere, cndonn)
+                ldccvg, codere, cndonn)
 !
 ! --- ERREUR SANS POSSIBILITE DE CONTINUER
 !
@@ -163,7 +161,7 @@ implicit none
 !
 ! --- RESOLUTION
 !
-    call nmresd(fonact, sddyna, sdstat, sdtime, solveu,&
+    call nmresd(fonact, sddyna, ds_measure, solveu,&
                 numedd, instap, maprec, matass, cndonn,&
                 cnzero, cncine, solalg, rescvg)
 !

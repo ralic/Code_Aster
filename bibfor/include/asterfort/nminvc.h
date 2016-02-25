@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,8 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nminvc(modelz, mate  , carele, compor, sdtime  ,&
-                      sddisc, sddyna, valinc, solalg, lischa  ,&
+    subroutine nminvc(modelz, mate  , carele, compor, ds_measure,&
+                      sddisc, sddyna, valinc, solalg, lischa    ,&
                       comref, numedd, ds_inout,&
                       veelem, veasse, measse)
         use NonLin_Datastructure_type
@@ -25,7 +25,7 @@ interface
         character(len=24) :: mate
         character(len=24) :: carele
         character(len=24) :: compor
-        character(len=24) :: sdtime
+        type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=19) :: sddisc
         character(len=19) :: sddyna
         character(len=19) :: valinc(*)

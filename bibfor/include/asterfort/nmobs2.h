@@ -25,7 +25,7 @@ interface
         character(len=19), intent(in) :: sd_obsv
         character(len=19), intent(in) :: tabl_name
         real(kind=8), intent(in) :: time
-        character(len=80), intent(in) :: title
+        character(len=16), intent(in) :: title
         character(len=19), intent(in) :: field
         character(len=24), intent(in) :: field_type
         character(len=24), intent(in) :: field_s

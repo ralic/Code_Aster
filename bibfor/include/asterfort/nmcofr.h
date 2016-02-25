@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmcofr(mesh    , disp_curr, disp_cumu_inst, disp_iter, solver        ,&
-                      nume_dof, matr_asse, iter_newt     , time_curr, resi_glob_rela,&
-                      sdstat  , sdtime   , ds_contact    , ctccvg)
+    subroutine nmcofr(mesh      , disp_curr, disp_cumu_inst, disp_iter, solver        ,&
+                      nume_dof  , matr_asse, iter_newt     , time_curr, resi_glob_rela,&
+                      ds_measure, ds_contact    , ctccvg)
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
         character(len=19), intent(in) :: disp_curr
@@ -30,8 +30,7 @@ interface
         integer, intent(in) :: iter_newt
         real(kind=8), intent(in) :: time_curr
         real(kind=8), intent(in) :: resi_glob_rela
-        character(len=24), intent(in) :: sdstat
-        character(len=24), intent(in) :: sdtime 
+        type(NL_DS_Measure), intent(inout) :: ds_measure
         type(NL_DS_Contact), intent(inout) :: ds_contact 
         integer, intent(out) :: ctccvg
     end subroutine nmcofr
