@@ -182,8 +182,8 @@ subroutine op0026()
     linst = ' '
     call getvis('INCREMENT', 'NUME_ORDRE', iocc=1, scal=numins, nbret=n1)
     call getvid('INCREMENT', 'LIST_INST', iocc=1, scal=linst, nbret=n1)
-    instap = diinst(linst,numins-1)
-    instam = diinst(linst,numins)
+    instam = diinst(linst,numins-1)
+    instap = diinst(linst,numins)
     partps(1) = instam
     partps(2) = instap
 !
