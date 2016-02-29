@@ -1,6 +1,6 @@
 # TITRE CONTACT AVEC FROTTEMENT D'UNE PLAQUE SUR UN PLAN RIGIDE
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -69,19 +69,6 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
                     PRES_REP=(_F(GROUP_MA = 'SPRESV', PRES = 5.E07,),
                               _F(GROUP_MA = 'SPRESH', PRES = 15.E07,))
                    )
-#
-CHA2=DEFI_CONTACT(MODELE         = MO,
-                  FORMULATION    = 'DISCRETE',
-                  FROTTEMENT     = 'COULOMB',
-                  ZONE=_F(
-                          GROUP_MA_MAIT  = 'SBATI',
-                          GROUP_MA_ESCL  = 'SCONTA',
-                          ALGO_CONT      = 'LAGRANGIEN',
-                          ALGO_FROT      = 'LAGRANGIEN',
-                          COEF_MATR_FROT = 0.8,
-                          COULOMB        = 1.0,
-                        )
-                  )
 
 #
 CHA3=DEFI_CONTACT(MODELE         = MO,
@@ -94,9 +81,10 @@ CHA3=DEFI_CONTACT(MODELE         = MO,
                           NORMALE        = 'ESCL',
                           GROUP_MA_MAIT  = 'SBATI',
                           GROUP_MA_ESCL  = 'SCONTA',
-                          ALGO_CONT      = 'LAGRANGIEN',
+                          ALGO_CONT      = 'PENALISATION',
                           ALGO_FROT      = 'PENALISATION',
                           E_T            = 1.0E14,
+                          E_N            = 1.0E14,
                           COULOMB        = 1.0,
                           COEF_MATR_FROT = 0.4,
                         )
@@ -112,90 +100,6 @@ RAMPE=DEFI_FONCTION(NOM_PARA='INST',
 L_INST=DEFI_LIST_REEL(DEBUT=0.,
                       INTERVALLE=_F(JUSQU_A = 1.0, NOMBRE = 1,)
                       )
-#
-#-----------------------------------------------------------
-#
-U2M=STAT_NON_LINE(SOLVEUR=_F(),
-                  MODELE    = MO,
-                CHAM_MATER = CHMAT,
-                EXCIT      =(_F(CHARGE = CHA1,
-                                FONC_MULT = RAMPE,),
-                             ),
-                CONTACT    = CHA2,
-                COMPORTEMENT  = _F(RELATION = 'ELAS',),
-                NEWTON     = _F(REAC_ITER = 1,),
-                INCREMENT  = _F(LIST_INST = L_INST,),
-                CONVERGENCE= _F(ARRET = 'OUI',
-                               ITER_GLOB_MAXI = 200,
-                               RESI_GLOB_RELA = 1.0E-5,),
-#                INFO=2,
-               )
-#
-TEST_RESU(RESU=(_F(GROUP_NO='PPA',
-                   INST=1.0,
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=U2M,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DX',
-                   VALE_CALC= 2.85057286E-05,
-                   VALE_REFE=2.8600000000000001E-05,
-                   PRECISION=0.050000000000000003,
-                   ),
-                _F(GROUP_NO='PPC',
-                   INST=1.0,
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=U2M,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DX',
-                   VALE_CALC= 2.27515229E-05,
-                   VALE_REFE=2.2799999999999999E-05,
-                   PRECISION=0.050000000000000003,
-                   ),
-                ),
-          )
-
-#-----------------------------------------------------------
-#
-U2L=STAT_NON_LINE(MODELE    = MO,
-                CHAM_MATER = CHMAT,
-                EXCIT      =(_F(CHARGE = CHA1,
-                                FONC_MULT = RAMPE,),
-                             ),
-                CONTACT    = CHA2,
-                COMPORTEMENT  = _F(RELATION = 'ELAS',),
-                SOLVEUR    = _F(
-                                METHODE = 'LDLT',),
-                NEWTON     = _F(REAC_ITER = 1,),
-                INCREMENT  = _F(LIST_INST = L_INST,),
-                CONVERGENCE= _F(ARRET = 'OUI',
-                               ITER_GLOB_MAXI = 200,
-                               RESI_GLOB_RELA = 1.0E-5,),
-#                INFO=2,
-               )
-#
-TEST_RESU(RESU=(_F(GROUP_NO='PPA',
-                   INST=1.0,
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=U2L,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DX',
-                   VALE_CALC= 2.85057286E-05,
-                   VALE_REFE=2.8600000000000001E-05,
-                   PRECISION=0.050000000000000003,
-                   ),
-                _F(GROUP_NO='PPC',
-                   INST=1.0,
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=U2L,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DX',
-                   VALE_CALC= 2.27515229E-05,
-                   VALE_REFE=2.2799999999999999E-05,
-                   PRECISION=0.050000000000000003,
-                   ),
-                ),
-          )
-
 #
 #-----------------------------------------------------------
 #
@@ -221,7 +125,7 @@ TEST_RESU(RESU=(_F(GROUP_NO='PPA',
                    RESULTAT=U3M,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC= 2.85051478E-05,
+                   VALE_CALC= 2.85051763098E-05,
                    VALE_REFE=2.8600000000000001E-05,
                    PRECISION=0.050000000000000003,
                    ),
@@ -231,7 +135,7 @@ TEST_RESU(RESU=(_F(GROUP_NO='PPA',
                    RESULTAT=U3M,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC= 2.27508858E-05,
+                   VALE_CALC= 2.27509221626E-05,
                    VALE_REFE=2.2799999999999999E-05,
                    PRECISION=0.050000000000000003,
                    ),
@@ -264,7 +168,7 @@ TEST_RESU(RESU=(_F(GROUP_NO='PPA',
                    RESULTAT=U3L,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC= 2.85051478E-05,
+                   VALE_CALC= 2.85051763098E-05,
                    VALE_REFE=2.8600000000000001E-05,
                    PRECISION=0.050000000000000003,
                    ),
@@ -274,7 +178,7 @@ TEST_RESU(RESU=(_F(GROUP_NO='PPA',
                    RESULTAT=U3L,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC= 2.27508858E-05,
+                   VALE_CALC= 2.27509221626E-05,
                    VALE_REFE=2.2799999999999999E-05,
                    PRECISION=0.050000000000000003,
                    ),

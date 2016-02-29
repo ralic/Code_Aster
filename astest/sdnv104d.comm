@@ -1,6 +1,6 @@
 # TITRE REPONSE DYNAMIQUE D'UN PATIN FROTTANT RIGIDE SOUMIS A UNE PRESSION ET UNE fORCE DE RAPPEL
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,9 +18,11 @@
 
 # - MODELISATION EN D_PLAN ,MAILLES QUA8
 # METHODES DE CONTACT :
-#  LAGRANGE
+# CONTINUE
 
-DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),)
+DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),
+IGNORE_ALARM=('DISCRETS_28'),
+)
 
 MAILL=LIRE_MAILLAGE(FORMAT='MED',)
 
@@ -49,10 +51,11 @@ MAILL=MODI_MAILLAGE(reuse =MAILL,
 #                         CARACTERISTIQUES ELEMENTAIRES
 #---------------------------------------------------------------------
 
+
 CARA=AFFE_CARA_ELEM(MODELE=MODE,
-                    DISCRET_2D=(_F(GROUP_MA='RESLAT',
-                                  CARA='K_T_D_L',
-                                  VALE=(12.E3,0.0),),
+                     DISCRET_2D=(_F(GROUP_MA='RESLAT',
+                                   CARA='K_T_D_L',
+                                   VALE=(12.E3,0.0),),
                                _F(GROUP_MA='RESLAT',
                                   CARA='M_T_L',
                                   VALE=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),),));
@@ -63,10 +66,12 @@ CARA=AFFE_CARA_ELEM(MODELE=MODE,
 
 MPATIN=DEFI_MATERIAU(ELAS=_F(E=2.1E11,
                              NU=0.0,
+                             AMOR_ALPHA=0.,
                              RHO=7.E3))
 
 MBATI=DEFI_MATERIAU(ELAS=_F(E=1.0E11,
                             NU=0.0,
+                            AMOR_ALPHA=0.,
                             RHO=0.0),)
 
 CM=AFFE_MATERIAU(MAILLAGE=MAILL,
@@ -100,21 +105,19 @@ PTAN=AFFE_CHAR_MECA(MODELE=MODE,
                                     PRES=200000.0))
 
 # DEFINITION DU CONTACT
-CTAC  = DEFI_CONTACT(MODELE         = MODE,
-                     FORMULATION    = 'DISCRETE',
-                     REAC_GEOM      = 'CONTROLE',
-                     NB_ITER_GEOM   = 2,
+CTACC = DEFI_CONTACT(MODELE         = MODE,
+                     FORMULATION    = 'CONTINUE',
                      FROTTEMENT     = 'COULOMB',
-                     ZONE=_F(
-                             APPARIEMENT    = 'MAIT_ESCL',
-                             ALGO_CONT      = 'LAGRANGIEN',
-                             ALGO_FROT      = 'LAGRANGIEN',
-                             COULOMB        = 0.3,
-                             COEF_MATR_FROT = 0.9,
-                             GROUP_MA_MAIT  = 'LMAI',
-                             GROUP_MA_ESCL  = 'LESC',
-                            ),
-                     )
+                     ALGO_RESO_CONT = 'POINT_FIXE',
+                     ALGO_RESO_GEOM = 'POINT_FIXE',
+                     ALGO_RESO_FROT = 'NEWTON',
+                     ZONE        =_F(
+                              GROUP_MA_MAIT='LMAI',
+                              GROUP_MA_ESCL='LESC',
+                              COULOMB = 0.3,
+                                   ),
+                   )
+
 #---------------------------------------------------------------------
 #                         RESOLUTION
 #--------------INST-------------------------------------------------------
@@ -132,53 +135,10 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                                     NOMBRE=350,),)
 
 
-ULM =  DYNA_NON_LINE(SOLVEUR=_F(),
-                     MODELE=MODE,
-                    CHAM_MATER=CM,
-                    CARA_ELEM=CARA,
-                    EXCIT=(_F(CHARGE=POIDS,
-                              FONC_MULT=RAMPE,),
-                           _F(
-                              CHARGE=PTAN,
-                              FONC_MULT=RAMPE,),
-                           _F(CHARGE=COND_LIM,),),
-                    CONTACT  = CTAC,
-                    COMPORTEMENT=_F(RELATION='ELAS',
-                                 TOUT='OUI',),
-                    INCREMENT=_F(LIST_INST=L_INST,
-                                 ),
-                    SCHEMA_TEMPS=_F(SCHEMA='HHT',FORMULATION='DEPLACEMENT'),
-                    NEWTON=_F(MATRICE='TANGENTE',
-                              REAC_ITER=1,),
-                    CONVERGENCE=_F(ITER_GLOB_MAXI=150,),
-                    )
 
+##############################
 
-TEST_RESU(RESU=(_F(GROUP_NO='A',
-                   INST=1.7,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=ULM,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DX',
-                   VALE_CALC=14.836109439525,
-                   VALE_REFE=14.91,
-                   PRECISION=0.05, ),
-                _F(GROUP_NO='A',
-                   INST=3.4,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=ULM,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DX',
-                   VALE_CALC=3.6247101181525,
-                   VALE_REFE=3.5,
-                   PRECISION=0.05, ),
-                ),
-          )
-
-#############################
-
-
-ULL =  DYNA_NON_LINE(MODELE=MODE,
+UCM =  DYNA_NON_LINE(MODELE=MODE,
                     CHAM_MATER=CM,
                     CARA_ELEM=CARA,
                     EXCIT=(_F(CHARGE=POIDS,
@@ -186,40 +146,81 @@ ULL =  DYNA_NON_LINE(MODELE=MODE,
                            _F(CHARGE=PTAN,
                               FONC_MULT=RAMPE,),
                            _F(CHARGE=COND_LIM,),),
-                    CONTACT  = CTAC,
+                    CONTACT  = CTACC,
                     COMPORTEMENT=_F(RELATION='ELAS',
                                  TOUT='OUI',),
                     INCREMENT=_F(LIST_INST=L_INST,),
                     SCHEMA_TEMPS=_F(SCHEMA='HHT',FORMULATION='DEPLACEMENT'),
                     NEWTON=_F(MATRICE='TANGENTE',
                               REAC_ITER=1,),
-                    SOLVEUR =_F(
-                                METHODE='LDLT',),
+                    SOLVEUR =_F(METHODE='MULT_FRONT',),
                     CONVERGENCE=_F(ITER_GLOB_MAXI=150,),
                      )
 
 TEST_RESU(RESU=(_F(GROUP_NO='A',
                    INST=1.7,
                    REFERENCE='ANALYTIQUE',
-                   RESULTAT=ULL,
+                   RESULTAT=UCM,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC=14.836109439525,
+                   VALE_CALC=14.836107487615,
                    VALE_REFE=14.91,
                    PRECISION=0.05, ),
                 _F(GROUP_NO='A',
                    INST=3.4,
                    REFERENCE='ANALYTIQUE',
-                   RESULTAT=ULL,
+                   RESULTAT=UCM,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC=3.6247101181525,
+                   VALE_CALC=3.6247095190207,
                    VALE_REFE=3.5,
                    PRECISION=0.05, ),
                 ),
           )
 
-################################
+###################################
+
+UCL =  DYNA_NON_LINE(MODELE=MODE,
+                    CHAM_MATER=CM,
+                    CARA_ELEM=CARA,
+                    EXCIT=(_F(CHARGE=POIDS,
+                              FONC_MULT=RAMPE,),
+                           _F(CHARGE=PTAN,
+                              FONC_MULT=RAMPE,),
+                           _F(CHARGE=COND_LIM,),),
+                    CONTACT   =CTACC,
+                    COMPORTEMENT=_F(RELATION='ELAS',
+                                 TOUT='OUI',),
+                    INCREMENT=_F(LIST_INST=L_INST,),
+                    SCHEMA_TEMPS=_F(SCHEMA='HHT',FORMULATION='DEPLACEMENT'),
+                    NEWTON=_F(MATRICE='TANGENTE',
+                              REAC_ITER=1,),
+                    SOLVEUR =_F(METHODE='LDLT',
+                               ),
+                    CONVERGENCE=_F(ITER_GLOB_MAXI=150,),
+                    )
+
+TEST_RESU(RESU=(_F(GROUP_NO='A',
+                   INST=1.7,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=UCL,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=14.8361094395,
+                   VALE_REFE=14.91,
+                   PRECISION=0.05, ),
+                _F(GROUP_NO='A',
+                   INST=3.4,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=UCL,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=3.62471011817,
+                   VALE_REFE=3.5,
+                   PRECISION=0.05, ),
+                ),
+          )
+
 
 
 FIN()

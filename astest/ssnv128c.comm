@@ -1,6 +1,6 @@
 # TITRE CONTACT AVEC FROTTEMENT D'UNE PLAQUE SUR UN PLAN RIGIDE
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -67,22 +67,6 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
                     PRES_REP=(_F(GROUP_MA = 'LPRESV', PRES = 5.E07,),
                               _F(GROUP_MA = 'LPRESH', PRES = 15.E07,))
                    )
-#
-CHA2=DEFI_CONTACT(MODELE         = MO,
-                  FORMULATION    = 'DISCRETE',
-                  FROTTEMENT     = 'COULOMB',
-                  REAC_GEOM      = 'SANS',
-                  ZONE=_F(
-                          GROUP_MA_MAIT  = 'LBATI',
-                          GROUP_MA_ESCL  = 'LCONTA',
-                          NORMALE        = 'MAIT',
-                          ALGO_CONT      = 'LAGRANGIEN',
-                          ALGO_FROT      = 'LAGRANGIEN',
-                          COEF_MATR_FROT = 0.8,
-                          COULOMB        = 1.0,
-                        )
-                  )
-
 
 CHA3=DEFI_CONTACT(MODELE         = MO,
                   FORMULATION    = 'DISCRETE',
@@ -103,6 +87,8 @@ CHA3=DEFI_CONTACT(MODELE         = MO,
 
 
 
+
+
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_GAUCHE='LINEAIRE',
                     PROL_DROITE='LINEAIRE',
@@ -112,169 +98,6 @@ RAMPE=DEFI_FONCTION(NOM_PARA='INST',
 L_INST=DEFI_LIST_REEL(DEBUT=0.,
                       INTERVALLE=_F(JUSQU_A = 1.0, NOMBRE = 5,)
                       )
-#
-##-----------------------------------------------------------
-#
-U2M=STAT_NON_LINE(SOLVEUR=_F(
-                  METHODE='MUMPS',),
-                  MODELE    = MO,
-                  CHAM_MATER = CHMAT,
-                  EXCIT       =(_F(CHARGE = CHA0,),
-                                _F(CHARGE = CHA1,
-                                   FONC_MULT = RAMPE,),),
-                  CONTACT    = CHA2,
-                  COMPORTEMENT  = _F(RELATION = 'ELAS',),
-                  INCREMENT  = _F(LIST_INST = L_INST,),
-                  CONVERGENCE= _F(ARRET = 'OUI',
-                                 ITER_GLOB_MAXI = 200,
-                                 RESI_GLOB_RELA = 1.0E-5,),
-#                  INFO=2,
-               )
-
-U2M=CALC_CHAMP(reuse=U2M,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U2M)
-
-
-DEPL2M=CREA_CHAMP(OPERATION='EXTR',
-                  TYPE_CHAM='NOEU_DEPL_R',
-                  NOM_CHAM='DEPL',
-                  RESULTAT=U2M,
-                  INST=1.0
-                )
-
-TEST_RESU(RESU=(_F(GROUP_NO='PPA',
-                   INST=1.0,
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=U2M,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DX',
-                   VALE_CALC= 2.84800415E-05,
-                   VALE_REFE=2.8600000000000001E-05,
-                   PRECISION=0.050000000000000003,
-                   ),
-                _F(GROUP_NO='PPB',
-                   INST=1.0,
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=U2M,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DX',
-                   VALE_CALC= 2.71186113E-05,
-                   VALE_REFE=2.72E-05,
-                   PRECISION=0.050000000000000003,
-                   ),
-                _F(GROUP_NO='PPC',
-                   INST=1.0,
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=U2M,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DX',
-                   VALE_CALC= 2.27906102E-05,
-                   VALE_REFE=2.2799999999999999E-05,
-                   PRECISION=0.050000000000000003,
-                   ),
-                _F(GROUP_NO='PPD',
-                   INST=1.0,
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=U2M,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DX',
-                   VALE_CALC= 1.97812402E-05,
-                   VALE_REFE=1.98E-05,
-                   PRECISION=0.050000000000000003,
-                   ),
-                _F(GROUP_NO='PPE',
-                   INST=1.0,
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=U2M,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DX',
-                   VALE_CALC= 1.53791835E-05,
-                   VALE_REFE=1.5E-05,
-                   PRECISION=0.050000000000000003,
-                   ),
-                ),
-          )
-
-#
-##-----------------------------------------------------------
-#
-U2L=STAT_NON_LINE(MODELE    = MO,
-                  CHAM_MATER = CHMAT,
-                  EXCIT       =(_F(CHARGE = CHA0,),
-                                _F(CHARGE = CHA1,
-                                   FONC_MULT = RAMPE,),),
-                  CONTACT    = CHA2,
-                  COMPORTEMENT  = _F(RELATION = 'ELAS',),
-                  SOLVEUR    = _F(
-                                  METHODE = 'MUMPS',),
-                  INCREMENT  = _F(LIST_INST = L_INST,),
-                  CONVERGENCE= _F(ARRET = 'OUI',
-                                 ITER_GLOB_MAXI = 200,
-                                 RESI_GLOB_RELA = 1.0E-5,),
-#                  INFO=2,
-               )
-
-U2L=CALC_CHAMP(reuse=U2L,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U2L)
-
-
-DEPL2L=CREA_CHAMP(OPERATION='EXTR',
-                  TYPE_CHAM='NOEU_DEPL_R',
-                  NOM_CHAM='DEPL',
-                  RESULTAT=U2L,
-                  INST=1.0
-                )
-
-TEST_RESU(RESU=(_F(GROUP_NO='PPA',
-                   INST=1.0,
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=U2L,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DX',
-                   VALE_CALC= 2.84800415E-05,
-                   VALE_REFE=2.8600000000000001E-05,
-                   PRECISION=0.050000000000000003,
-                   ),
-                _F(GROUP_NO='PPB',
-                   INST=1.0,
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=U2L,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DX',
-                   VALE_CALC= 2.71186113E-05,
-                   VALE_REFE=2.72E-05,
-                   PRECISION=0.050000000000000003,
-                   ),
-                _F(GROUP_NO='PPC',
-                   INST=1.0,
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=U2L,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DX',
-                   VALE_CALC= 2.27906102E-05,
-                   VALE_REFE=2.2799999999999999E-05,
-                   PRECISION=0.050000000000000003,
-                   ),
-                _F(GROUP_NO='PPD',
-                   INST=1.0,
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=U2L,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DX',
-                   VALE_CALC= 1.97812402E-05,
-                   VALE_REFE=1.98E-05,
-                   PRECISION=0.050000000000000003,
-                   ),
-                _F(GROUP_NO='PPE',
-                   INST=1.0,
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=U2L,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DX',
-                   VALE_CALC= 1.53791835E-05,
-                   VALE_REFE=1.5E-05,
-                   PRECISION=0.050000000000000003,
-                   ),
-                ),
-          )
 
 #-----------------------------------------------------------
 

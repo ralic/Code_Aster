@@ -6,5 +6,5 @@ P mpi_nbnoeud 1
 P testlist verification sequential
 
 F comm sdnv105c.comm D 1
-F datg sdnv105a.datg D 16
+F datg sdnv105b.datg D 16
 F mmed sdnv105c.mmed D 20

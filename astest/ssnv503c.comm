@@ -1,8 +1,6 @@
-# DATE     : 03/08/2001
-# AUTEUR   : F. LEBOUVIER (DELTACAD)
 # TITRE    : PATIN GLISSANT SUR UN PLAN RIGIDE
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -17,21 +15,22 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# CAS TEST SSNV503C
+# - CALCUL QUASI-STATIQUE D'UN PATIN GLISSANT SUR UN PLAN RIGIDE
 # - MODELISATION AVEC DES ELEMENTS D_PLAN (MAILLES QUA4)
 # - MODELISATION DU CONTACT AVEC LA METHODE CONTACT (AFFE_CHAR_MECA)
-# - METHODE LAGRANGIENNE POUR LE CONTACT ET PENALISEE POUR LE FROTTEMENT
+# - METHODE CONTINUE
+# - JEU DEFINI AVEC DIST_2
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
-MAILL=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI',),);
+MAILL=LIRE_MAILLAGE(FORMAT='MED',);
 
 MAILL=DEFI_GROUP(reuse =MAILL,
                  MAILLAGE=MAILL,
                  CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
 
 MODE=AFFE_MODELE(MAILLAGE=MAILL,
-
+                 
                  AFFE=(_F(TOUT='OUI',
                           PHENOMENE='MECANIQUE',
                           MODELISATION='D_PLAN',),
@@ -62,8 +61,6 @@ CARA=AFFE_CARA_ELEM(MODELE=MODE,
                                    VALE=(0.005,0.0),),
                               ),);
 
-IMPR_CO ( CONCEPT= _F(NOM=CARA )) ;
-
 #---------------------------------------------------------------------
 #                         CARACTERISTIQUES MATERIAUX
 #---------------------------------------------------------------------
@@ -80,7 +77,7 @@ CM=AFFE_MATERIAU(MAILLAGE=MAILL,
                           MATER=MPATIN,),
                        _F(GROUP_MA='BATI',
                           MATER=MBATI,),
-                       ),);
+                          ),);
 
 #---------------------------------------------------------------------
 #                         CHARGEMENTS
@@ -111,28 +108,31 @@ PTAN_101=AFFE_CHAR_MECA(MODELE=MODE,
                                     PRES=181.80000000000001,),);
 
 # DEFINITION DU CONTACT
-CTAC =DEFI_CONTACT(MODELE       = MODE,
-                   FORMULATION  = 'DISCRETE',
-                   FROTTEMENT   = 'COULOMB',
-                   REAC_GEOM    = 'CONTROLE',
-                   NB_ITER_GEOM = 2,
-                   ZONE=(
-                        _F(
-                          ALGO_CONT  = 'LAGRANGIEN',
-                          ALGO_FROT  = 'PENALISATION',
-                          COULOMB    = 0.3,
-                          COEF_MATR_FROT=0.9,
-                          E_T=1.E+6,
-                          GROUP_MA_MAIT='LMAI',
-                          GROUP_MA_ESCL='LESC',
-                         ),
-                       ),
-                  )
 
+F_DIST_E=DEFI_CONSTANTE(VALE=-2.)
+
+CTAC = DEFI_CONTACT(MODELE         = MODE,
+                    FORMULATION    = 'CONTINUE',
+                    FROTTEMENT     = 'COULOMB',
+                    ALGO_RESO_CONT = 'POINT_FIXE',
+                    ALGO_RESO_GEOM = 'POINT_FIXE',
+                    ALGO_RESO_FROT = 'NEWTON',
+                    ZONE =(
+                           _F(
+                             GROUP_MA_ESCL = 'LESC',
+                             GROUP_MA_MAIT = 'LMAI',
+                             COULOMB       = 0.3,
+                             COEF_FROT     = 1E-5,
+                             CONTACT_INIT  = 'NON',
+                             DIST_ESCL=F_DIST_E,
+                             ),
+                          ),
+                   );
 
 #---------------------------------------------------------------------
 #                         RESOLUTION
 #---------------------------------------------------------------------
+
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,0.0,
@@ -143,6 +143,7 @@ RAMPE=DEFI_FONCTION(NOM_PARA='INST',
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
                                     NOMBRE=2,),);
+
 
 # CHARGEMENT 1
 U_NOR=STAT_NON_LINE(MODELE=MODE,
@@ -157,15 +158,15 @@ U_NOR=STAT_NON_LINE(MODELE=MODE,
                     INCREMENT=_F(LIST_INST=L_INST,),
                     NEWTON=_F(MATRICE='TANGENTE',
                               REAC_ITER=1,),
-                    SOLVEUR=_F(
-                               METHODE='LDLT',),
                     CONVERGENCE=_F(ITER_GLOB_MAXI=30,),
                     INFO=1,);
 
 U_NOR=CALC_CHAMP(reuse =U_NOR,
               RESULTAT=U_NOR,
               FORCE='REAC_NODA',
-             );
+
+              );
+
 # CHARGEMENT 2
 U_99=STAT_NON_LINE(MODELE=MODE,
                    CHAM_MATER=CM,
@@ -175,20 +176,20 @@ U_99=STAT_NON_LINE(MODELE=MODE,
                           _F(CHARGE=PTAN_99,
                              FONC_MULT=RAMPE,),
                           _F(CHARGE=COND_LIM,),),
-                   CONTACT  =CTAC,
+                   CONTACT  = CTAC,
                    COMPORTEMENT=_F(RELATION='ELAS',
                                 TOUT='OUI',),
                    INCREMENT=_F(LIST_INST=L_INST,),
                    NEWTON=_F(MATRICE='TANGENTE',
                              REAC_ITER=1,),
-                   SOLVEUR=_F(
-                              METHODE='LDLT',),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=1500,),);
 
 U_99=CALC_CHAMP(reuse =U_99,
              RESULTAT=U_99,
              FORCE='REAC_NODA',
-             );
+
+              );
+
 # CHARGEMENT 3
 U_101=STAT_NON_LINE(MODELE=MODE,
                     CHAM_MATER=CM,
@@ -198,52 +199,65 @@ U_101=STAT_NON_LINE(MODELE=MODE,
                            _F(CHARGE=PTAN_101,
                               FONC_MULT=RAMPE,),
                            _F(CHARGE=COND_LIM,),),
-                    CONTACT  =CTAC,
+                    CONTACT  = CTAC,
                     COMPORTEMENT=_F(RELATION='ELAS',
                                  TOUT='OUI',),
                     INCREMENT=_F(LIST_INST=L_INST,),
                     NEWTON=_F(MATRICE='TANGENTE',
                               REAC_ITER=1,),
-                    SOLVEUR=_F(
-                               METHODE='LDLT',),
                     CONVERGENCE=_F(ITER_GLOB_MAXI=1500,),
                     );
 
 U_101=CALC_CHAMP(reuse =U_101,
               RESULTAT=U_101,
               FORCE='REAC_NODA',
-            );
+
+              );
+
 #---------------------------------------------------------------------
 #                         VERIFICATION DES RESULTATS
 #---------------------------------------------------------------------
+
 # CHARGEMENT 1
 TEST_RESU(RESU=(_F(GROUP_NO='A',
                    INST=1.0,
+                   REFERENCE='NON_DEFINI',
                    RESULTAT=U_NOR,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC=0.999999998805,
+                   VALE_CALC=1.000000000,
+                   VALE_REFE=1.0,
+                   PRECISION=1.E-2,
                    ),
                 _F(GROUP_NO='A',
                    INST=1.0,
+                   REFERENCE='NON_DEFINI',
                    RESULTAT=U_NOR,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
-                   VALE_CALC=-1.73205080768,
+                   VALE_CALC=-1.732050808,
+                   VALE_REFE=-1.732,
+                   PRECISION=1.E-2,
                    ),
                 _F(GROUP_NO='B',
                    INST=1.0,
+                   REFERENCE='NON_DEFINI',
                    RESULTAT=U_NOR,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC=1.00000000083,
+                   VALE_CALC=1.000000000,
+                   VALE_REFE=1.0,
+                   PRECISION=1.E-2,
                    ),
                 _F(GROUP_NO='B',
                    INST=1.0,
+                   REFERENCE='NON_DEFINI',
                    RESULTAT=U_NOR,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
-                   VALE_CALC=-1.73205080666,
+                   VALE_CALC=-1.732050808,
+                   VALE_REFE=-1.732,
+                   PRECISION=1.E-2,
                    ),
                 ),
           )
@@ -258,8 +272,8 @@ TU_NOR=POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',
                                INST=1.,),);
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.05,
-           VALE_CALC=11999.979712,
+           PRECISION=0.050000000000000003,
+           VALE_CALC= 1.19999797E+04,
            VALE_REFE=1.2000E4,
            NOM_PARA='DY',
            TYPE_TEST='SOMM',
@@ -267,9 +281,8 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
-           PRECISION=0.05,
-           ORDRE_GRANDEUR=1.E4,
-           VALE_CALC=0.0,
+           PRECISION=0.050000000000000003,
+           VALE_CALC=-2.20751360E-07,
            VALE_REFE=0.0,
            NOM_PARA='DX',
            TYPE_TEST='SOMM',
@@ -278,31 +291,43 @@ TEST_TABLE(CRITERE='ABSOLU',
 # CHARGEMENT 2
 TEST_RESU(RESU=(_F(GROUP_NO='A',
                    INST=1.0,
+                   REFERENCE='NON_DEFINI',
                    RESULTAT=U_99,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC=1.02185009227,
+                   VALE_CALC=1.021344408,
+                   VALE_REFE=1.0,
+                   PRECISION=0.023,
                    ),
                 _F(GROUP_NO='A',
                    INST=1.0,
+                   REFERENCE='NON_DEFINI',
                    RESULTAT=U_99,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
-                   VALE_CALC=-1.71943565042,
+                   VALE_CALC=-1.719727608,
+                   VALE_REFE=-1.732,
+                   PRECISION=1.E-2,
                    ),
                 _F(GROUP_NO='B',
                    INST=1.0,
+                   REFERENCE='NON_DEFINI',
                    RESULTAT=U_99,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC=1.00050570926,
+                   VALE_CALC=1.000000000,
+                   VALE_REFE=1.0,
+                   PRECISION=1.E-2,
                    ),
                 _F(GROUP_NO='B',
                    INST=1.0,
+                   REFERENCE='NON_DEFINI',
                    RESULTAT=U_99,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
-                   VALE_CALC=-1.73175883597,
+                   VALE_CALC=-1.732050808,
+                   VALE_REFE=-1.732,
+                   PRECISION=1.E-2,
                    ),
                 ),
           )
@@ -317,16 +342,16 @@ TU_99=POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',
                               INST=1.),);
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.05,
-           VALE_CALC=11999.9796826,
+           PRECISION=0.050000000000000003,
+           VALE_CALC= 1.19999797E+04,
            VALE_REFE=1.2000E4,
            NOM_PARA='DY',
            TYPE_TEST='SOMM',
            TABLE=TU_99,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.05,
-           VALE_CALC=-3563.95935607,
+           PRECISION=0.050000000000000003,
+           VALE_CALC=-3.56396168E+03,
            VALE_REFE=-3564.0,
            NOM_PARA='DX',
            TYPE_TEST='SOMM',
@@ -335,31 +360,43 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 # CHARGEMENT 3
 TEST_RESU(RESU=(_F(GROUP_NO='A',
                    INST=1.0,
+                   REFERENCE='NON_DEFINI',
                    RESULTAT=U_101,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC=8.80953344613,
+                   VALE_CALC=8.809533448,
+                   VALE_REFE=8.7940000000000005,
+                   PRECISION=1.E-2,
                    ),
                 _F(GROUP_NO='A',
                    INST=1.0,
+                   REFERENCE='NON_DEFINI',
                    RESULTAT=U_101,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
-                   VALE_CALC=2.776785432,
+                   VALE_CALC=2.776785431,
+                   VALE_REFE=2.7679999999999998,
+                   PRECISION=1.E-2,
                    ),
                 _F(GROUP_NO='B',
                    INST=1.0,
+                   REFERENCE='NON_DEFINI',
                    RESULTAT=U_101,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC=8.78694382209,
+                   VALE_CALC=8.786943823,
+                   VALE_REFE=8.7940000000000005,
+                   PRECISION=1.E-2,
                    ),
                 _F(GROUP_NO='B',
                    INST=1.0,
+                   REFERENCE='NON_DEFINI',
                    RESULTAT=U_101,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
-                   VALE_CALC=2.76374330348,
+                   VALE_CALC=2.763743305,
+                   VALE_REFE=2.7679999999999998,
+                   PRECISION=1.E-2,
                    ),
                 ),
           )
@@ -374,16 +411,16 @@ TU_101=POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',
                                INST=1.),);
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.05,
-           VALE_CALC=11999.9796372,
+           PRECISION=0.050000000000000003,
+           VALE_CALC= 1.19999797E+04,
            VALE_REFE=1.2000E4,
            NOM_PARA='DY',
            TYPE_TEST='SOMM',
            TABLE=TU_101,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.05,
-           VALE_CALC=-3599.9939854,
+           PRECISION=0.050000000000000003,
+           VALE_CALC=-3.59999391E+03,
            VALE_REFE=-3624.0,
            NOM_PARA='DX',
            TYPE_TEST='SOMM',

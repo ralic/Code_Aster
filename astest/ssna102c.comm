@@ -1,7 +1,7 @@
 #
 # TITRE CONTACT MULTICORPS ELASTIQUES
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -135,16 +135,19 @@ CONT = DEFI_CONTACT(MODELE      = MOD,
                                     GROUP_MA_ESCL = 'CEP2',
                                     SANS_GROUP_NO = ('PA1', 'PP2',),
                                     NORMALE = 'MAIT_ESCL',
-                                    ALGO_CONT = 'LAGRANGIEN'),
+                                    ALGO_CONT = 'PENALISATION',
+                                    E_N = 1E10,),
                                _F(  GROUP_MA_MAIT = 'CME2',
                                     GROUP_MA_ESCL = 'CEP3',
                                     NORMALE = 'MAIT_ESCL',
-                                    ALGO_CONT = 'LAGRANGIEN'),
+                                    ALGO_CONT = 'PENALISATION',
+                                    E_N = 1E10,),
                                _F(  GROUP_MA_MAIT = 'CME3',
                                     GROUP_MA_ESCL = 'LCD4',
                                     SANS_GROUP_NO = ('PM3', 'PD4',),
                                     NORMALE = 'MAIT_ESCL',
-                                    ALGO_CONT = 'LAGRANGIEN')
+                                    ALGO_CONT = 'PENALISATION',
+                                    E_N = 1E10,),
                           ),
                      );
 

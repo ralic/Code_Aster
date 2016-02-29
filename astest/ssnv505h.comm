@@ -17,7 +17,7 @@
 # ======================================================================
 #
 
-#       ELEMENTS DE POUTRE, METHODES LAGRANGIENNE ET CONTINUE
+#       ELEMENTS DE POUTRE, METHODE ET CONTINUE
 # CAS TEST  SSNV505H
 # MODELE
 # MAILLAGE : ELEMENT DE POUTRES SEG2 EN MODELISATION 3D
@@ -117,28 +117,6 @@ CH1=AFFE_CHAR_MECA(MODELE=MODE,
 F_DIST_M=DEFI_CONSTANTE(VALE=31.75);
 F_DIST_E=DEFI_CONSTANTE(VALE=31.75);
 
-CHLAG= DEFI_CONTACT(MODELE         = MODE,
-                    FORMULATION    = 'DISCRETE',
-                    FROTTEMENT     = 'COULOMB',
-                    ALGO_RESO_GEOM='POINT_FIXE',
-                    REAC_GEOM='CONTROLE',
-                    ZONE =(
-                           _F(
-                              GROUP_MA_MAIT  = 'POU1',
-                              GROUP_MA_ESCL  = 'POU2',
-                              ALGO_CONT      = 'LAGRANGIEN',
-                              ALGO_FROT      = 'LAGRANGIEN',
-                              COULOMB        = 0.,
-                              COEF_MATR_FROT = 1.,
-                              VECT_MAIT      = 'VECT_Y',
-                              MAIT_VECT_Y    = (0.,0.,-1.,),
-                              DIST_MAIT      = F_DIST_M,
-                              DIST_ESCL      = F_DIST_E,
-                              ),
-                          ),
-                    INFO = 1,
-                   );
-
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,0.0,1.0,1.0),
                     PROL_DROITE='LINEAIRE',
@@ -159,90 +137,6 @@ L_INST=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
                               SUBD_METHODE = 'MANUEL',
                               SUBD_PAS=5,
                               SUBD_NIVEAU=5,),);
-
-
-ULAG=STAT_NON_LINE(MODELE=MODE,
-                CHAM_MATER=CM,
-                CARA_ELEM=CHAMPCAR,
-                EXCIT=(_F(CHARGE=COND_LIM,),
-                       _F(CHARGE=CH1,
-                          FONC_MULT=RAMPE,),
-                      ),
-                SOLVEUR=_F(METHODE='LDLT'),
-                CONTACT  = CHLAG,
-                COMPORTEMENT=_F(RELATION='MULTIFIBRE',DEFORMATION='GROT_GDEP',),
-                INCREMENT=_F(LIST_INST=L_INST,
-                             ),
-                NEWTON=_F(REAC_ITER=1,),
-                # on diminue la valeur de RESI_GLOB_RELA pour eviter les "TOLE MACHINE" (issue24538) :
-                CONVERGENCE=_F(ITER_GLOB_MAXI=30,RESI_GLOB_RELA=1.e-7),
-                INFO=1,);
-
-ULAG=CALC_CHAMP(reuse =ULAG,
-          RESULTAT=ULAG,
-
-          FORCE='FORC_NODA',
-
-
-         );
-
-# ---- TABLEAUX ----
-
-T_REA_LA=POST_RELEVE_T(ACTION=_F(INTITULE='REAC',
-                                 GROUP_NO=('A','B'),
-                                 RESULTAT=ULAG,
-                                 NOM_CHAM='FORC_NODA',
-                                 RESULTANTE='DY',
-                                 OPERATION='EXTRACTION',),);
-
-T_DEP_LA=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
-                                 GROUP_NO=('C','A1','B1'),
-                                 RESULTAT=ULAG,
-                                 NOM_CHAM='DEPL',
-                                 TOUT_CMP='OUI',
-                                 OPERATION='EXTRACTION',),);
-
-#IMPR_TABLE(TABLE=T_REA_LA,);
-#IMPR_TABLE(TABLE=T_DEP_LA,);
-
-#IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=ULAG))
-
-TEST_TABLE(
-           VALE_CALC=311.885454276,
-           NOM_PARA='DY',
-           TABLE=T_REA_LA,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.2,),
-           )
-
-TEST_TABLE(
-           VALE_CALC=1208.97331437,
-           NOM_PARA='DY',
-           TABLE=T_REA_LA,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.4,),
-           )
-
-TEST_TABLE(
-           VALE_CALC=2428.93515796,
-           NOM_PARA='DY',
-           TABLE=T_REA_LA,
-           FILTRE=_F(NOM_PARA='INST', VALE=0.6,),
-           )
-
-TEST_TABLE(
-           VALE_CALC=2132.83607768,
-           NOM_PARA='DY',
-           TABLE=T_REA_LA,
-           FILTRE=_F(NOM_PARA='INST', VALE=0.8,),
-           )
-
-TEST_TABLE(
-           VALE_CALC=2374.45366133,
-           NOM_PARA='DY',
-           TABLE=T_REA_LA,
-           FILTRE=_F(NOM_PARA='INST', VALE=1.0,),
-           )
 
 #
 # ---- METHODE CONTINUE ----

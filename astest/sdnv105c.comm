@@ -1,5 +1,5 @@
 # TITRE ROCKING OF A 2D BLOCK RESTING ON A GROUND TABLE
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 #
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -209,20 +209,24 @@ ini_lach=AFFE_CHAR_MECA(MODELE=MO,
                                   _F(GROUP_NO='C1',
                                      DX=-0.008)));
 
-CHA_conp=DEFI_CONTACT(MODELE       = MO,
-                      FORMULATION  = 'DISCRETE',
-                      FROTTEMENT   = 'COULOMB',
+CHA_conp=DEFI_CONTACT(MODELE         = MO,
+                      FORMULATION    = 'CONTINUE',
+                      FROTTEMENT     = 'COULOMB',
+                      ALGO_RESO_CONT = 'NEWTON',
+                      ALGO_RESO_GEOM = 'NEWTON',
+                      ALGO_RESO_FROT = 'NEWTON',
+                      RESI_GEOM      = 0.01,
+                      #ITER_FROT_MAXI = 20,
                       ZONE = _F(
-                              ALGO_CONT    = 'LAGRANGIEN',
-                              ALGO_FROT    = 'LAGRANGIEN',
-                              APPARIEMENT   = 'MAIT_ESCL',
-                              NORMALE       = 'MAIT',
+                              ALGO_CONT     = 'STANDARD',
+                              COEF_CONT     = 1.0E-3,
                               GROUP_MA_MAIT = 'CONBAS',
                               GROUP_MA_ESCL = 'CONHAUT',
-                              TOLE_PROJ_EXT = 10000.0,
-                              COULOMB       = 0.0,
+                              COULOMB       = 0.,
+                              SEUIL_INIT=0.0,
                       ),
          )
+
 
 CHA_cont=DEFI_CONTACT(MODELE         = MO,
                       FORMULATION    = 'CONTINUE',

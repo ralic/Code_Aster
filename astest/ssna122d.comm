@@ -1,6 +1,6 @@
 # TITRE BENCHMARK NAFEMS DE VALIDATION DU CONTACT 2 PUNCH (ROUNDED EDGES)
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -85,18 +85,6 @@ Cont=DEFI_CONTACT(MODELE=MO,
                           ALGO_CONT='GCP'
                           ),);
 
-ContFr=DEFI_CONTACT(MODELE=MO,
-                  FORMULATION='DISCRETE',
-                  FROTTEMENT='COULOMB',
-                  ZONE=_F(GROUP_MA_MAIT='M_cont',
-                          GROUP_MA_ESCL='P_cont',
-                          COULOMB=0.1,
-                          ALGO_CONT='LAGRANGIEN',
-                          ALGO_FROT='LAGRANGIEN',
-                          #ALGO_FROT='PENALISATION',
-                          #E_T=100000*100*1.0E+3,
-                          ),);
-
 MESH=DEFI_GROUP(reuse =MESH,
                   MAILLAGE=MESH,
                   CREA_GROUP_NO=(_F(OPTION='NOEUD_ORDO',
@@ -134,40 +122,11 @@ RESU=CALC_CHAMP(reuse =RESU,
                RESULTAT=RESU,
                CONTRAINTE='SIEF_NOEU',FORCE=('FORC_NODA','REAC_NODA'));
 
-# Calcul avec frottement
-
-RESUFr=STAT_NON_LINE(MODELE=MO,
-                   CHAM_MATER=MA,
-                   CARA_ELEM=CELEM,
-                   EXCIT=(_F(CHARGE=Force,
-                             FONC_MULT=FONC,),
-                          _F(CHARGE=CL,),
-                         ),
-                   CONTACT=ContFr,
-                   COMPORTEMENT=(_F(RELATION='ELAS',
-                                DEFORMATION='GROT_GDEP',),
-                              _F(GROUP_MA=('Kp',),
-                                 RELATION='ELAS',),),
-                   INCREMENT=_F(LIST_INST=L_INST,),
-                   CONVERGENCE=_F(ITER_GLOB_MAXI=50,),
-                   SOLVEUR=_F(),
-                   NEWTON=_F(MATRICE='TANGENTE',
-                             REAC_ITER=1,),);
-
-RESUFr=CALC_CHAMP(reuse=RESUFr,RESULTAT=RESUFr,CONTRAINTE=('SIEF_ELNO'))
-
-
-RESUFr=CALC_CHAMP(reuse =RESUFr,
-               RESULTAT=RESUFr,
-               CONTRAINTE='SIEF_NOEU',FORCE=('FORC_NODA','REAC_NODA'));
-
-
 IMPR_RESU(FORMAT='MED',
           UNITE=80,
           RESU=(_F(RESULTAT=RESU,
                   NOM_CHAM=('DEPL','FORC_NODA',),),
-                _F(RESULTAT=RESUFr,
-                  NOM_CHAM=('DEPL','FORC_NODA',),),),
+                ),
                 );
 
 IMPR_RESU(FORMAT='MED',
@@ -175,9 +134,7 @@ IMPR_RESU(FORMAT='MED',
           RESU=(_F(RESULTAT=RESU,
                   NOM_CHAM='DEPL',
                   NOM_CMP=('DX','DY',),),
-                _F(RESULTAT=RESUFr,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP=('DX','DY',),),),
+                ),
                 );
 
 RELE=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
@@ -196,22 +153,6 @@ RELE=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                               NOM_CMP='DX',),
                            ),);
 
-RELEFr=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
-                              INTITULE='Depl. axial avec frott.',
-                              RESULTAT=RESUFr,
-                              NOM_CHAM='DEPL',
-                              INST=1,
-                              GROUP_NO='Bottom_n',
-                              NOM_CMP='DY',),
-                           _F(OPERATION='EXTRACTION',
-                              INTITULE='Depl. radial avec frott.',
-                              RESULTAT=RESUFr,
-                              NOM_CHAM='DEPL',
-                              INST=1,
-                              GROUP_NO='Bottom_n',
-                              NOM_CMP='DX',),
-                           ),);
-
 DEPLax=RECU_FONCTION(TABLE=RELE,
                      PARA_X='ABSC_CURV',
                      PARA_Y='DY',);
@@ -220,18 +161,10 @@ DEPLra=RECU_FONCTION(TABLE=RELE,
                      PARA_X='ABSC_CURV',
                      PARA_Y='DX',);
 
-DEPLaxFr=RECU_FONCTION(TABLE=RELEFr,
-                     PARA_X='ABSC_CURV',
-                     PARA_Y='DY',);
-
-DEPLraFr=RECU_FONCTION(TABLE=RELEFr,
-                     PARA_X='ABSC_CURV',
-                     PARA_Y='DX',);
 
 IMPR_FONCTION(FORMAT='XMGRACE',
               UNITE=29,
-              COURBE=(_F(FONCTION=DEPLax,LEGENDE='Sans frottement',MARQUEUR=0,),
-                      _F(FONCTION=DEPLaxFr,LEGENDE='Frottement 0.1',MARQUEUR=0,),),
+              COURBE=(_F(FONCTION=DEPLax,LEGENDE='Sans frottement',MARQUEUR=0,),),
               TITRE='Deplacement axial en fonction du rayon',
               BORNE_X=(0.0,100.0,),
               BORNE_Y=(-0.14,0.0,),
@@ -244,8 +177,7 @@ IMPR_FONCTION(FORMAT='XMGRACE',
 
 IMPR_FONCTION(FORMAT='XMGRACE',
               UNITE=30,
-              COURBE=(_F(FONCTION=DEPLra,LEGENDE='Sans frottement',MARQUEUR=0,),
-                      _F(FONCTION=DEPLraFr,LEGENDE='Frottement 0.1',MARQUEUR=0,),),
+              COURBE=(_F(FONCTION=DEPLra,LEGENDE='Sans frottement',MARQUEUR=0,),),
               TITRE='Deplacement radial en fonction du rayon',
               BORNE_X=(0.0,100.0,),
               BORNE_Y=(-0.018,0.002,),
@@ -276,27 +208,6 @@ TEST_RESU(RESU=(_F(GROUP_NO='M',
                    NOM_CMP='SIYY',
                    VALE_CALC=-93.626123310,
                    VALE_REFE=-93.626123536883995,
-                   ),
-                ),
-          )
-
-TEST_RESU(RESU=(_F(GROUP_NO='M',
-                   INST=1.0,
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=RESUFr,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DY',
-                   VALE_CALC=-0.130774952,
-                   VALE_REFE=-0.13077495250839999,
-                   ),
-                _F(GROUP_NO='M',
-                   INST=1.0,
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=RESUFr,
-                   NOM_CHAM='SIEF_NOEU',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=-95.191895659,
-                   VALE_REFE=-95.191895551334994,
                    ),
                 ),
           )

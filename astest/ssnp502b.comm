@@ -1,6 +1,6 @@
 # TITRE ECRASEMENT D'UN ANNEAU ENTRE DEUX PLAQUES AVEC FROTTEMENT.
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -89,9 +89,10 @@ CON    = DEFI_CONTACT(MODELE       = MO,
                       FROTTEMENT   = 'COULOMB',
                       ZONE=_F(
                                APPARIEMENT   = 'MAIT_ESCL',
-                               ALGO_CONT     = 'LAGRANGIEN',
+                               ALGO_CONT     = 'PENALISATION',
                                ALGO_FROT     = 'PENALISATION',
                                COULOMB       = 0.4,
+                               E_N           = 1.E9,
                                E_T           = 1.E6,
                                GROUP_MA_MAIT = 'LMAI',
                                GROUP_MA_ESCL = 'LESC',
@@ -127,7 +128,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
                    NEWTON=_F(MATRICE='TANGENTE',
                              REAC_ITER=1,),
                    CONVERGENCE=_F(RESI_GLOB_RELA=9.9999999999999995E-07,
-                                  ITER_GLOB_MAXI=50,
+                                  ITER_GLOB_MAXI=100,
                                   ARRET='OUI',),);
 
 

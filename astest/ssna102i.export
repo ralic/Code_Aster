@@ -5,6 +5,6 @@ P mpi_nbcpu 1
 P mpi_nbnoeud 1
 P testlist verification sequential
 
-F comm ssnp156c.comm D 1
-F comm ssnp156d.com1 D 1
-F mmed ssnp156b.mmed D 20
+F comm ssna102i.comm D 1
+F datg ssna102c.datg D 16
+F mmed ssna102a.mmed D 20

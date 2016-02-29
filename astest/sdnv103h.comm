@@ -18,7 +18,6 @@
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
-      IGNORE_ALARM='CONTACT_8',
 DEBUG=_F(SDVERI='OUI'))
 
 # IGNORE ALARM: ON UTILISE DES QUAD8 EN CONTACT
@@ -80,9 +79,10 @@ CHCONT  = DEFI_CONTACT(MODELE         = MODE,
                        FROTTEMENT     = 'COULOMB',
 
                        ZONE =_F(
-                             ALGO_CONT      = 'LAGRANGIEN',
+                             ALGO_CONT      = 'PENALISATION',
                              ALGO_FROT      = 'PENALISATION',
                              COULOMB        = 0.25,
+                             E_N            = 1.E5,
                              E_T            = 1.E5,
                              APPARIEMENT    = 'MAIT_ESCL',
                              GROUP_MA_MAIT  = 'RIGID',
@@ -223,7 +223,7 @@ TEST_RESU(RESU=(_F(GROUP_NO='B1',
                    RESULTAT=RESU1,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC=0.757151755763,
+                   VALE_CALC=0.721594949341,
                    TOLE_MACHINE=5.E-5,                  # TODO TOLE_MACHINE
                    ),
                 _F(GROUP_NO='A2',
@@ -240,7 +240,7 @@ TEST_RESU(RESU=(_F(GROUP_NO='B1',
                    RESULTAT=RESU1,
                    NOM_CHAM='VITE',
                    NOM_CMP='DX',
-                   VALE_CALC=78447.7043926,
+                   VALE_CALC=76897.0392859,
                    TOLE_MACHINE=5.E-5,                  # TODO TOLE_MACHINE
                    ),
                 _F(GROUP_NO='A2',
@@ -254,30 +254,6 @@ TEST_RESU(RESU=(_F(GROUP_NO='B1',
                    ),
                 ),
           )
-
-#
-### TESTS SUR LE CONTACT
-#
-
-TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.,
-           NOM_PARA='JEU',
-           TABLE=CONTB1_1,
-           FILTRE=_F(PRECISION=1.E-10,
-                     NOM_PARA='INST',
-                     VALE=1.0E-05,),
-           )
-
-TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=289.965049244,
-           TOLE_MACHINE=5.E-5,                  # TODO TOLE_MACHINE
-           NOM_PARA='R',
-           TABLE=CONTB1_1,
-           FILTRE=_F(PRECISION=2.5E-05,
-                     NOM_PARA='INST',
-                     VALE=1.0E-05,),
-           )
-
 #
 ### COURBES
 #
@@ -410,7 +386,7 @@ TEST_RESU(RESU=(_F(GROUP_NO='B1',
                    RESULTAT=RESU2,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC=0.759618772528,
+                   VALE_CALC=0.7203238575,
                    TOLE_MACHINE=5.E-5,                  # TODO TOLE_MACHINE
                    ),
                 _F(GROUP_NO='A2',
@@ -427,7 +403,7 @@ TEST_RESU(RESU=(_F(GROUP_NO='B1',
                    RESULTAT=RESU2,
                    NOM_CHAM='VITE',
                    NOM_CMP='DX',
-                   VALE_CALC=86687.0273109,
+                   VALE_CALC=77732.3691404,
                    TOLE_MACHINE=5.E-5,                  # TODO TOLE_MACHINE
                    ),
                 _F(GROUP_NO='A2',
@@ -441,29 +417,6 @@ TEST_RESU(RESU=(_F(GROUP_NO='B1',
                    ),
                 ),
           )
-
-#
-### TESTS SUR LE CONTACT
-#
-
-TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.,
-           NOM_PARA='JEU',
-           TABLE=CONTB1_2,
-           FILTRE=_F(PRECISION=1.E-10,
-                     NOM_PARA='INST',
-                     VALE=1.0E-05,),
-           )
-
-TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=277.996903856,
-           TOLE_MACHINE=2.E-04,                  # TODO TOLE_MACHINE
-           NOM_PARA='R',
-           TABLE=CONTB1_2,
-           FILTRE=_F(PRECISION=1.E-10,
-                     NOM_PARA='INST',
-                     VALE=1.0E-05,),
-           )
 
 #
 ### COURBES

@@ -1,6 +1,6 @@
 # TITRE CONTACT DE DEUX POUTRES EN PETITES DEFORMATIONS
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -15,7 +15,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-#       ELEMENTS DE POUTRE, METHODES LAGRANGIENNE ET CONTINUE
+#       ELEMENTS DE POUTRE, METHODES PENALISEE ET CONTINUE
 # CAS TEST  SSNV505F
 # MODELE
 # MAILLAGE : ELEMENT DE POUTRES SEG2 EN MODELISATION 3D
@@ -115,7 +115,7 @@ L_ARCH=DEFI_LIST_REEL(DEBUT=0.0,
                                      NOMBRE=25,),),);
 
 
-# ---- METHODE LAGRANGIENNE ----
+# ---- METHODE PENALISEE ----
 F_DIST_M=DEFI_CONSTANTE(VALE=31.75);
 F_DIST_E=DEFI_CONSTANTE(VALE=31.75);
 
@@ -127,14 +127,16 @@ CHLAG= DEFI_CONTACT(MODELE         = MODE,
                            _F(
                               GROUP_MA_MAIT  = 'POU1',
                               GROUP_MA_ESCL  = 'POU2',
-                              ALGO_CONT      = 'LAGRANGIEN',
-                              ALGO_FROT      = 'LAGRANGIEN',
+                              ALGO_CONT      = 'PENALISATION',
+                              ALGO_FROT      = 'PENALISATION',
                               COULOMB        = 0.,
                               COEF_MATR_FROT = 1.,
                               VECT_MAIT      = 'VECT_Y',
                               MAIT_VECT_Y    = (0.,0.,1.,),
                               DIST_MAIT      = F_DIST_M,
                               DIST_ESCL      = F_DIST_E,
+                              E_N            = 1.E8,
+                              E_T            = 1.E5,
                              ),
                           ),
                    );
@@ -248,6 +250,44 @@ T_DEP_CO=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
 
 
 # ---- VALIDATION ----
+TEST_TABLE(VALE_CALC=307.483964283,
+           NOM_PARA='DY',
+           TABLE=T_REA_LA,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.2,),
+           )
+
+TEST_TABLE(VALE_CALC=1251.48831783,
+           NOM_PARA='DY',
+           TABLE=T_REA_LA,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.4,),
+           )
+
+TEST_TABLE(VALE_CALC=3023.85136136,
+           NOM_PARA='DY',
+           TABLE=T_REA_LA,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.6,),
+           )
+
+TEST_TABLE(VALE_CALC=4829.42195447,
+           NOM_PARA='DY',
+           TABLE=T_REA_LA,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.8,),
+           )
+
+TEST_TABLE(VALE_CALC=6655.90338008,
+           NOM_PARA='DY',
+           TABLE=T_REA_LA,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.0,),
+           )
+
+
+
+
 TEST_TABLE(VALE_CALC=307.48396428377,
            NOM_PARA='DY',
            TABLE=T_REA_CO,
