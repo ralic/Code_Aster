@@ -172,7 +172,7 @@ res=STAT_NON_LINE(MODELE=MODELE,
                             FONC_MULT=fonc,),),
                   COMPORTEMENT=_F(RELATION='ELAS',),
                   INCREMENT=_F(LIST_INST=list1,),
-                  NEWTON=_F(MATRICE='TANGENTE',),
+                  NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=0),
                   CRIT_STAB=_F(CHAR_CRIT=(-2,0.)),
                   );
 
@@ -194,7 +194,7 @@ res2=STAT_NON_LINE(MODELE=MODELE,
                             FONC_MULT=fonc,),),
                    COMPORTEMENT=_F(RELATION='ELAS'),
                    INCREMENT=_F(LIST_INST=list1,),
-                   NEWTON=_F(MATRICE='TANGENTE',),
+                   NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=0),
                    CRIT_STAB=_F(CHAR_CRIT=(-2,0.)),
                    );
 

@@ -330,7 +330,7 @@ U1=STAT_NON_LINE(reuse=U1,
                 INST_FIN = 20.,
                 ),
                             NEWTON=_F(
-                MATRICE = 'TANGENTE',
+                MATRICE = 'TANGENTE',REAC_ITER=0,
                 ),
                        CONVERGENCE=_F(
                 RESI_GLOB_RELA = 1.E-6,

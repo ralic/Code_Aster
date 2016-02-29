@@ -117,6 +117,7 @@ MESTA2=STAT_NON_LINE(     MODELE=MOD,
                       CHAM_MATER=CHMAT,
                        CARA_ELEM=CARA,
                            EXCIT=_F(CHARGE=CH1,),
+                       NEWTON=_F(REAC_ITER=0),
                        COMPORTEMENT=_F(RELATION='ELAS',),
                        INCREMENT=_F(LIST_INST=LINST,),
                    )
