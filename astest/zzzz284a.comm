@@ -228,4 +228,148 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   MAILLE='M1',),
           )
 
+# ------------------------------------------------------------------
+# 5) Test FORC_VARC_ELEM dans CALCUL
+# ------------------------------------------------------------------
+
+M_EL=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                   MODELE=MO,
+                   CHAM_MATER=CHMA1,
+                   CHARGE=CHDIL,);
+
+NUMEDD=NUME_DDL(MATR_RIGI=M_EL,);
+
+
+MATAS=ASSE_MATRICE(MATR_ELEM=M_EL,
+                   NUME_DDL=NUMEDD,);
+
+MATAS=FACTORISER(reuse =MATAS,
+                MATR_ASSE=MATAS,);
+
+
+U=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+             OPERATION='AFFE',
+             MAILLAGE=MA,
+             AFFE=_F(TOUT='OUI',
+                     NOM_CMP=('DX','DY',),
+                     VALE=(0.,0.,),
+                     ),);
+
+
+SIGP=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
+                OPERATION='AFFE',
+                MODELE=MO,
+                AFFE=_F(TOUT='OUI',
+                        NOM_CMP=('SIXX','SIYY','SIZZ',
+                                 'SIXY',),
+                        VALE=(0.,0.,0.,0.,),
+                        ),);
+
+
+VARIP=CREA_CHAMP(OPERATION='AFFE',
+                 TYPE_CHAM='ELGA_VARI_R',
+                 MODELE=MO,
+                 AFFE=_F(TOUT='OUI',
+                         NOM_CMP= ('V1',),
+                         VALE =   (  0.,))
+                 )
+
+LIST1=DEFI_LIST_REEL(DEBUT=0.0,
+                    INTERVALLE=_F(JUSQU_A=1.0,
+                                  NOMBRE=1,),);
+
+CONT1=CALCUL(OPTION=('FORC_VARC_ELEM_P'),
+            MODELE=MO,
+            CHAM_MATER=CHMA1,
+            INCREMENT=_F(LIST_INST=LIST1,
+                         NUME_ORDRE=1),
+            EXCIT=_F(CHARGE=CHDIL),
+            DEPL=U,
+            INCR_DEPL=U,
+            SIGM=SIGP,
+            VARI=VARIP,
+            COMPORTEMENT=_F(RELATION='ELAS',),
+            );
+
+FEL_DIL1=EXTR_TABLE(TYPE_RESU='VECT_ELEM_DEPL_R',
+                 TABLE=CONT1,
+                 NOM_PARA='NOM_SD',
+                 FILTRE=_F(NOM_PARA='NOM_OBJET',
+                           VALE_K='FORC_VARC_ELEM_P'),)
+
+
+FAS_DIL1=ASSE_VECTEUR(VECT_ELEM=FEL_DIL1,
+                    NUME_DDL=NUMEDD,);
+
+
+LIST2=DEFI_LIST_REEL(DEBUT=-1.0,
+                    INTERVALLE=_F(JUSQU_A=1.0,
+                                  NOMBRE=2,),);
+
+CONT2=CALCUL(OPTION=('FORC_VARC_ELEM_M'),
+            MODELE=MO,
+            CHAM_MATER=CHMA1,
+            INCREMENT=_F(LIST_INST=LIST2,
+                         NUME_ORDRE=1),
+            EXCIT=_F(CHARGE=CHDIL),
+            DEPL=U,
+            INCR_DEPL=U,
+            SIGM=SIGP,
+            VARI=VARIP,
+            COMPORTEMENT=_F(RELATION='ELAS',),
+            );
+
+FEL_DIL2=EXTR_TABLE(TYPE_RESU='VECT_ELEM_DEPL_R',
+                 TABLE=CONT2,
+                 NOM_PARA='NOM_SD',
+                 FILTRE=_F(NOM_PARA='NOM_OBJET',
+                           VALE_K='FORC_VARC_ELEM_M'),)
+
+
+FAS_DIL2=ASSE_VECTEUR(VECT_ELEM=FEL_DIL2,
+                    NUME_DDL=NUMEDD,);
+
+
+DU1=RESOUDRE(MATR=MATAS,
+             CHAM_NO=FAS_DIL1,);
+
+
+DU2=RESOUDRE(MATR=MATAS,
+             CHAM_NO=FAS_DIL2,);
+
+TEST_RESU(CHAM_NO=(_F(
+                   GROUP_NO='A',
+                   CHAM_GD=DU1,
+                   NOM_CMP='DX',
+                   VALE_CALC=1.0562499149531001E-06,
+                   CRITERE='RELATIF',
+                   ),
+                _F(
+                   GROUP_NO='F',
+                   CHAM_GD=DU1,
+                   NOM_CMP='DX',
+                   VALE_CALC=-1.2376116900044999E-06,
+                   CRITERE='RELATIF',
+                   ),
+                ),
+          )
+
+TEST_RESU(CHAM_NO=(_F(
+                   GROUP_NO='A',
+                   CHAM_GD=DU2,
+                   NOM_CMP='DX',
+                   VALE_CALC=1.0562499149531001E-06,
+                   CRITERE='RELATIF',
+                   ),
+                _F(
+                   GROUP_NO='F',
+                   CHAM_GD=DU2,
+                   NOM_CMP='DX',
+                   VALE_CALC=-1.2376116900044999E-06,
+                   CRITERE='RELATIF',
+                   ),
+                ),
+          )
+
 FIN();
+
