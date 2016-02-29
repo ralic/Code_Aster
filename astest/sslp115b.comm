@@ -123,7 +123,7 @@ BLOCFISS=AFFE_CHAR_MECA(MODELE=ModX,
 
 ##Calcul thermomecanique avec fissure fermee pour extraction des contraintes
 RESUMECA=STAT_NON_LINE(MODELE=ModX,
-                       CHAM_MATER=MAMECA,
+                       CHAM_MATER=MAMECA,NEWTON=_F(REAC_ITER=0),
                        EXCIT=(_F(CHARGE=ENCASTRE,),
                               _F(CHARGE=BLOCFISS,),),
                        COMPORTEMENT=_F(RELATION='ELAS',),
@@ -146,7 +146,7 @@ SIEFELGA=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
 
 ##Calcul thermomecanique sans etat init ouverture de la fissure
 RESOUVFI=STAT_NON_LINE(MODELE=ModX,
-                       CHAM_MATER=MAMECA,
+                       CHAM_MATER=MAMECA,NEWTON=_F(REAC_ITER=0),
                        EXCIT=(_F(CHARGE=ENCASTRE,),),
                        COMPORTEMENT=_F(RELATION='ELAS',),
                        INCREMENT=_F(LIST_INST=INSTMECA,),);
@@ -208,7 +208,7 @@ MAMECA2=AFFE_MATERIAU(MAILLAGE=MAILMECA,
 
 ## Resolution ouverture de la fissure en presence d'un champ de contrainte residuelle
 RESUINI=STAT_NON_LINE(MODELE=ModX,
-                      CHAM_MATER=MAMECA2,
+                      CHAM_MATER=MAMECA2,NEWTON=_F(REAC_ITER=0),
                       EXCIT=(_F(CHARGE=ENCASTRE,),),
                       COMPORTEMENT=_F(RELATION='ELAS',),
                       ETAT_INIT=_F(SIGM=SIEFELGA,),

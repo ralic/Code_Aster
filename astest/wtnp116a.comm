@@ -183,7 +183,7 @@ PESA_00=AFFE_CHAR_MECA(MODELE=MODE_00,
 # 3.4. Calcul de la solution
 
 RESU_00=STAT_NON_LINE(MODELE=MODE_00,
-                      CHAM_MATER=CHMAT_00,
+                      CHAM_MATER=CHMAT_00,NEWTON=_F(REAC_ITER=0),
                       EXCIT=(_F(CHARGE=U_IMP_00,),
                              _F(CHARGE=PESA_00,),
                              _F(CHARGE=P_IMP_00,),
@@ -366,7 +366,7 @@ PESA_01=AFFE_CHAR_MECA(MODELE=MODE_01,
 # 7.4. Calcul de la solution
 
 RESU_01=STAT_NON_LINE(MODELE=MODE_01,
-                      CHAM_MATER=CHMAT_01,
+                      CHAM_MATER=CHMAT_01,NEWTON=_F(REAC_ITER=0),
                       EXCIT=(_F(CHARGE=U_IMP_01,),
                              _F(CHARGE=PESA_01,),
                              _F(CHARGE=P_IMP_01,),

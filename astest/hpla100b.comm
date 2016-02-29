@@ -242,7 +242,7 @@ LISTIME=DEFI_LIST_REEL(VALE=(0.0,1.0,),);
 
 STATNL1=STAT_NON_LINE(MODELE=MO,
                       CHAM_MATER=CHMAT1,
-                      CARA_ELEM=CARE,
+                      CARA_ELEM=CARE,NEWTON=_F(REAC_ITER=0),
                       COMPORTEMENT=_F(RELATION='ELAS'),
                       EXCIT=_F(CHARGE=CHDIL),
                       INCREMENT=_F(LIST_INST=LISTIME,),);
@@ -270,7 +270,7 @@ DEPLDIL2=POST_CHAMP(RESULTAT=DEPLDIL,
                                   NUME_COUCHE=1,
                                   NIVE_COUCHE='INF',),);
 STATNL2=STAT_NON_LINE(MODELE=MO,
-                      CHAM_MATER=CHMATH1,
+                      CHAM_MATER=CHMATH1,NEWTON=_F(REAC_ITER=0),
                       CARA_ELEM=CARE,
                       COMPORTEMENT=_F(RELATION='ELAS'),
                       EXCIT=_F(CHARGE=CHDIL),

@@ -164,7 +164,7 @@ COEF0=DEFI_FONCTION(NOM_PARA='INST',
 
 # ---- premier chargement isotrope en elastique jusqu'a 50kPa
 U0M=STAT_NON_LINE(MODELE    = MODELE,
-                 CHAM_MATER = CHMAT0,
+                 CHAM_MATER = CHMAT0,NEWTON=_F(REAC_ITER=0),
                  EXCIT=(_F(CHARGE    = CHAR_U1,
                            FONC_MULT = COEF0),
                         _F(CHARGE    = CHAR_U2,

@@ -115,7 +115,7 @@ INSTANTS=DEFI_LIST_REEL(DEBUT=0,
                                       NOMBRE=1,),);
 
 EVOL=STAT_NON_LINE(MODELE=MO,
-                   CHAM_MATER=CHMAT,
+                   CHAM_MATER=CHMAT,NEWTON=_F(REAC_ITER=0),
                    EXCIT=(_F(CHARGE=DEPL_IMP,),
                           _F(CHARGE=FORC_IMP,),),
                    COMPORTEMENT=_F(RELATION='ELAS',),

@@ -120,7 +120,7 @@ for i in range(2):
                               RESI_GLOB_MAXI=1e-07,
                               ITER_GLOB_MAXI = 15,
                   ),
-                        NEWTON     =_F ( REAC_INCR    = 1 ))
+                        NEWTON     =_F ( REAC_INCR    = 1 ,REAC_ITER=0))
 
    GDP[i]=CALC_G(RESULTAT=ELADP[i],
                  INST = 1,

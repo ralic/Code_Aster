@@ -122,7 +122,7 @@ L_INST=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LIST_R,),);
 
 RESU=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CH_MAT,
-                   ETAT_INIT=_F(SIGM=S_INIT),
+                   ETAT_INIT=_F(SIGM=S_INIT),NEWTON=_F(REAC_ITER=0),
                    EXCIT=_F(CHARGE=LIMIT),
                    COMPORTEMENT=_F(RELATION='ELAS',
                                    TOUT='OUI',),
