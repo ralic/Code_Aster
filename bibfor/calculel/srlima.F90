@@ -5,10 +5,11 @@ subroutine srlima(mo, mail2d, mail3d, mailto, nbma2d)
 #include "asterfort/alchml.h"
 #include "asterfort/celces.h"
 #include "asterfort/cesexi.h"
+#include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/detrsd.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/reliem.h"
@@ -23,7 +24,7 @@ subroutine srlima(mo, mail2d, mail3d, mailto, nbma2d)
     character(len=24) :: mail2d, mail3d, mailto
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -57,8 +58,8 @@ subroutine srlima(mo, mail2d, mail3d, mailto, nbma2d)
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: jma2d,  jma3d
-    integer :: ima,iret,jcesd,jcesl,iad1, numa2d, numa3d
+    integer :: jma2d, jma3d, n1, n2, n3
+    integer :: ima, iret, jcesd, jcesl, iad1, numa2d, numa3d
     integer :: nbma, nbmamo, jlima, nbmat, jmato
 !
     character(len=8) :: ma, limocl(3), tymocl(3)
@@ -73,13 +74,26 @@ subroutine srlima(mo, mail2d, mail3d, mailto, nbma2d)
 !
     call jemarq()
 !
-!   -- on recupere les mailles de peau
+!   -- on recupere les mailles de peau :
+!   ----------------------------------
     call dismoi('NOM_MAILLA', mo, 'MODELE', repk=ma)
     call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbmat)
     mesmai = '&&SRLIMA.MAILLU'
-    call reliem(mo, ma, 'NU_MAILLE', ' ', 0,&
-                3, limocl, tymocl, mesmai, nbma)
-
+!
+    call getvtx(' ', 'TOUT', nbret=n1)
+    call getvtx(' ', 'MAILLE', nbret=n2)
+    call getvtx(' ', 'GROUP_MA', nbret=n3)
+!
+!   -- on scrute les mot-clé :
+!   ------------------------
+    if (n1+n2+n3 .ne. 0) then
+        call reliem(mo, ma, 'NU_MAILLE', ' ', 0,&
+                    3, limocl, tymocl, mesmai, nbma)
+    else
+!   -- mais s'il n'y en a aucun on fait comme si TOUT='OUI' :
+!   -------------------------------------------------------
+        call utmamo(mo, nbma, mesmai)
+    endif
 
 !   -- on ne garde que les mailles surfaciques :
 !   ---------------------------------------------
@@ -90,7 +104,6 @@ subroutine srlima(mo, mail2d, mail3d, mailto, nbma2d)
     else
         call utmess('F', 'CALCULEL5_54')
     endif
-
 
 !   -- on recherche les mailles 3d qui bordent les mailles de peau :
 !   -- il faut se limiter aux mailles du modele qui savent calculer SIGM_ELNO :
