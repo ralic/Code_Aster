@@ -27,8 +27,12 @@ Pour affecter une liste de modélisations, il faut qu'elles soient de même dime
 La maille %(k1)s de type %(k2)s n'a pas pu être affectée.
 """),
 
-
-
+    3 : _(u"""
+Probable erreur de l'utilisateur :
+  La modélisation choisie est axisymétrique ou plane.
+  Il faut que le maillage soit dans le plan z=0.
+  Ce n'est pas le cas.
+"""),
 
     4 : _(u"""
 Sur les %(i1)d mailles du maillage %(k1)s, on a demandé l'affectation de %(i2)d, on a pu en affecter %(i3)d

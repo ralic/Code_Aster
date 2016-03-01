@@ -289,8 +289,8 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 T_RESU=MACR_LIGN_COUPE(RESULTAT=RESU,  NOM_CHAM='SIGM_ELNO',
                   LIGN_COUPE=(
                      _F(TYPE='SEGMENT', NB_POINTS=15, INTITULE='LIGNE',
-                        COOR_ORIG=( 0.1,  0.0, 0.0, ),
-                        COOR_EXTR=( 0.2,  0.0, 0.0, ),
+                        COOR_ORIG=( 0.1,  0.0,  ),
+                        COOR_EXTR=( 0.2,  0.0,  ),
                  )))
 
 T1=POST_RCCM(  OPTION='PM_PB',

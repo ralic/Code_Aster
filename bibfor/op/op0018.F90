@@ -74,7 +74,7 @@ subroutine op0018()
     integer :: dim_topo_curr, dim_topo_init
     integer :: ifm, niv
     character(len=8) :: mesh, model, sdpart
-    character(len=8) :: name_elem
+    character(len=8) :: name_elem, z_quasi_zero
     character(len=16) :: k16dummy, name_type_geom, repk, valk(2)
     character(len=16) :: phenom, modeli, list_modelisa(10), keywordfact
     character(len=19) :: ligrel
@@ -239,6 +239,15 @@ subroutine op0018()
                 else
                     if (dim_topo_init .ne. dim_topo_curr) then
                         call utmess('F', 'MODELE1_1')
+                    endif
+                endif
+!
+! ------------- 2D modelisations
+!
+                if (modeli(1:4).eq.'AXIS' .or. modeli(1:4).eq.'PLAN' .or. modeli(2:6).eq.'_PLAN') then
+                    call dismoi('Z_QUASI_ZERO', mesh, 'MAILLAGE', repk=z_quasi_zero)
+                    if (z_quasi_zero .ne. 'OUI') then
+                        call utmess('A', 'MODELE1_3')
                     endif
                 endif
 !

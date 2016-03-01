@@ -726,15 +726,15 @@ for i in range(5) :
                           NOM_CHAM='SIGM_ELNO',
                           LIGN_COUPE=_F(TYPE='SEGMENT',
                                         NB_POINTS=Nb_points,
-                                        COOR_ORIG=(Pointe_A + Decalage[i],0.,0.),       # Pointe A
-                                        COOR_EXTR=(Pointe_B + Decalage[i],0.,0.)))      # Pointe B
+                                        COOR_ORIG=(Pointe_A + Decalage[i],0.),       # Pointe A
+                                        COOR_EXTR=(Pointe_B + Decalage[i],0.)))      # Pointe B
 
    TEMPG[i] = MACR_LIGN_COUPE(RESULTAT=TEMP,
                               NOM_CHAM='TEMP',
                               LIGN_COUPE=_F(TYPE='SEGMENT',
                                             NB_POINTS=Nb_points,
-                                            COOR_ORIG=(Pointe_A + Decalage[i],0.,0.),   # Pointe A
-                                            COOR_EXTR=(Pointe_B + Decalage[i],0.,0.)))  # Pointe B
+                                            COOR_ORIG=(Pointe_A + Decalage[i],0.),   # Pointe A
+                                            COOR_EXTR=(Pointe_B + Decalage[i],0.)))  # Pointe B
 
    KBETA[i] = POST_K_BETA (MAILLAGE  = MAIL,
                            MATER_REV = MAME_RE2,

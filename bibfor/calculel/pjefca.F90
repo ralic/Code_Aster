@@ -119,7 +119,7 @@ subroutine pjefca(moa1, lima1, iocc, ncas)
 !
 !     DETERMINATION DE LA DIMENSION DE L'ESPACE (NDIM) :
 !     --------------------------------------------------------
-    call dismoi('Z_CST', noma1, 'MAILLAGE', repk=cdim1)
+    call dismoi('Z_QUASI_ZERO', noma1, 'MAILLAGE', repk=cdim1)
     if (cdim1 .eq. 'OUI') then
         ndim=2
     else

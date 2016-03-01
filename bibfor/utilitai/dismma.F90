@@ -52,7 +52,7 @@ subroutine dismma(questi, nomobz, repi, repkz, ierd)
     complex(kind=8) :: c16b
     character(len=19) :: table
     character(len=1) :: k1bid
-    real(kind=8) :: zmax, zmin
+    real(kind=8) :: xmax, xmin, ymax, ymin, zmax, zmin
     integer ::  ibid, ier, ilmaco, ism, k, nbma, nbno
     integer :: nbsm, nno, typv
     character(len=8) ::  typma
@@ -117,10 +117,10 @@ subroutine dismma(questi, nomobz, repi, repkz, ierd)
         else
             repk = 'NON'
         endif
-!
-!
-    else if (questi.eq.'Z_ZERO'.or.questi.eq.'DIM_GEOM') then
-!     ------------------------------------------------------------
+
+
+    else if (questi.eq.'Z_ZERO'.or.questi.eq.'Z_QUASI_ZERO'.or.questi.eq.'DIM_GEOM') then
+!     -----------------------------------------------------------------------------------
         call ltnotb(nomob, 'CARA_GEOM', table)
         call tbliva(table, 0, ' ', [ibid], [0.d0],&
                     [c16b], k1bid, 'ABSO', [0.d0], 'Z_MIN',&
@@ -130,15 +130,37 @@ subroutine dismma(questi, nomobz, repi, repkz, ierd)
                     [c16b], k1bid, 'ABSO', [0.d0], 'Z_MAX',&
                     k1bid, ibid, zmax, c16b, k1bid,&
                     ier)
-!
+
         if (zmin .eq. zmax .and. zmin .eq. 0.d0) then
             repk = 'OUI'
         else
             repk = 'NON'
         endif
-!
+
+        if (questi .eq. 'Z_QUASI_ZERO') then
+!       ------------------------------------
+            call tbliva(table, 0, ' ', [ibid], [0.d0],&
+                        [c16b], k1bid, 'ABSO', [0.d0], 'X_MIN',&
+                        k1bid, ibid, xmin, c16b, k1bid, ier)
+            call tbliva(table, 0, ' ', [ibid], [0.d0],&
+                        [c16b], k1bid, 'ABSO', [0.d0], 'X_MAX',&
+                        k1bid, ibid, xmax, c16b, k1bid, ier)
+            call tbliva(table, 0, ' ', [ibid], [0.d0],&
+                        [c16b], k1bid, 'ABSO', [0.d0], 'Y_MIN',&
+                        k1bid, ibid, ymin, c16b, k1bid, ier)
+            call tbliva(table, 0, ' ', [ibid], [0.d0],&
+                        [c16b], k1bid, 'ABSO', [0.d0], 'Y_MAX',&
+                        k1bid, ibid, ymax, c16b, k1bid, ier)
+            if (max(abs(zmax),abs(zmin))/max(xmax-xmin,ymax-ymin).lt.1.e-8) then
+                repk='OUI'
+            else
+                repk='NON'
+            endif
+            repi=0
+        endif
+
         if (questi .eq. 'DIM_GEOM') then
-!     ----------------------------------------
+!       --------------------------------
             repi = dime(6)
 !          -- ON RETOURNE 2 SI Z=0. PARTOUT :
             if ((repi.eq.3) .and. (repk.eq.'OUI')) then
@@ -146,8 +168,8 @@ subroutine dismma(questi, nomobz, repi, repkz, ierd)
             endif
             repk='???'
         endif
-!
-!
+
+
     else if (questi.eq.'DIM_GEOM_B') then
 !     ----------------------------------------
         repi = dime(6)
