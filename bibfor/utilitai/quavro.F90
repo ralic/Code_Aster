@@ -20,6 +20,7 @@ subroutine quavro(quater, theta)
 ! aslint: disable=
     implicit none
 #include "asterc/r8prem.h"
+#include "asterc/r8pi.h"
 #include "blas/ddot.h"
     real(kind=8) :: quater(4), theta(3)
 !
@@ -48,7 +49,7 @@ subroutine quavro(quater, theta)
     zero = 0.d0
     epsil = r8prem( )**2
     deux = 2.d0
-    pi = 3.14159265d0
+    pi = r8pi()
 !
     prosca = ddot(3,quater,1,quater,1)
     anorx = sqrt(prosca)

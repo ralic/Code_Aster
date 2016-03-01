@@ -45,6 +45,8 @@ subroutine nmtasp(ndimsi, crit, mat, sigel, vim,&
     integer :: niter, iret
     real(kind=8) :: g, fds, gds, fdp, gdp, fdx, gdx, dpmax, sig(6), tang(6, 6)
     real(kind=8) :: x(4), y(4), ff(4)
+
+    iret = 0
 !
 !
 !    EXAMEN DE LA SOLUTION SP = SP-
