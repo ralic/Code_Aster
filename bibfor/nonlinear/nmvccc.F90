@@ -1,6 +1,6 @@
-subroutine nmvccc(model    , nbin     , nbout    , lpain    , lchin,&
+subroutine nmvccc(model    , nbin     , nbout    , lpain    , lchin    ,&
                   lpaout   , lchout   , exis_temp, exis_hydr, exis_ptot,&
-                  exis_sech, exis_epsa, calc_meta, vect_elem)
+                  exis_sech, exis_epsa, calc_meta, base     , vect_elem)
 !
 implicit none
 !
@@ -11,7 +11,7 @@ implicit none
 #include "asterfort/reajre.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -28,7 +28,7 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=8) :: model
+    character(len=8), intent(in) :: model
     integer, intent(in) :: nbout
     integer, intent(in) :: nbin
     character(len=8), intent(in) :: lpain(nbin)
@@ -41,6 +41,7 @@ implicit none
     aster_logical, intent(in) :: exis_sech
     aster_logical, intent(in) :: exis_epsa
     aster_logical, intent(in) :: calc_meta
+    character(len=1), intent(in) :: base
     character(len=19), intent(in) :: vect_elem
 !
 ! --------------------------------------------------------------------------------------------------
@@ -64,6 +65,7 @@ implicit none
 ! In  exis_sech      : .true. if drying variable command exists
 ! In  exis_epsa      : .true. if non-elastic strain variable command exists
 ! In  calc_meta      : .true. to compute metallurgy variable command
+! In  base           : JEVEUX base to create objects
 ! In  vect_elem      : name of elementary vectors
 !
 ! --------------------------------------------------------------------------------------------------
@@ -87,9 +89,9 @@ implicit none
         lchout(1) = vect_elem(1:8)//masque
         option = 'CHAR_MECA_TEMP_R'
         call calcul('C'  , option, ligrmo, nbin  , lchin,&
-                    lpain, nbout , lchout, lpaout, 'V'  ,&
+                    lpain, nbout , lchout, lpaout, base,&
                     'OUI')
-        call reajre(vect_elem, lchout(1), 'V')
+        call reajre(vect_elem, lchout(1), base)
     endif
 !
 ! - Hydratation

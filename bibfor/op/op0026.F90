@@ -1,24 +1,7 @@
 subroutine op0026()
 !
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODifY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
+implicit none
 !
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-!
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; if NOT, WRITE TO EDF R&D CODE_ASTER,
-!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
-!
-    implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
@@ -60,50 +43,62 @@ subroutine op0026()
 #include "asterfort/vebtla.h"
 #include "asterfort/vefnme.h"
 #include "asterfort/vrcomp.h"
+#include "asterfort/nmvcpr.h"
 !
-! ----------------------------------------------------------------------
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODifY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
 !
-!           O P E R A T E U R    C A L C U L
-!           ================================
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 !
-! ----------------------------------------------------------------------
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; if NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: mickael.abbas at edf.fr
 !
+
 !
-    integer :: zsolal, zvalin
-    parameter       (zsolal=17,zvalin=28)
+! --------------------------------------------------------------------------------------------------
+!
+!  O P E R A T E U R    C A L C U L
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer, parameter :: zsolal = 17
+    integer, parameter :: zvalin = 28
     character(len=19) :: valinc(zvalin), solalg(zsolal)
-!
-    integer :: nbomax
-    parameter       (nbomax=7)
+    integer, parameter :: nbomax = 9
     character(len=16) :: newobj(nbomax)
     character(len=24) :: newsd(nbomax)
-!-----------------------------------------------------------------------
-    integer :: n1, nbopt, iterat, numins, i
+    integer :: n1, nbopt, iterat, numins
     integer :: niv, ifm
     integer :: iret, nuord, long
     integer :: nbnobj
     real(kind=8) :: instam, instap, partps(3)
     character(len=8) :: result, newtab, oldtab
     character(len=16) :: lopt(4), option
-    character(len=19) :: lischa, k19bla
+    character(len=19) :: lischa ='&&OP0026.LISCHA', k19bla = ' '
     character(len=19) :: linst
-    character(len=24) :: modele, mate, carele, compor, carcri
-    character(len=24) :: codere, ligrmo
-    character(len=24) :: comref, k24bid
+    character(len=24) :: modele, mate, carele = '&&OP0026.CARELE'
+    character(len=24) :: compor, carcri ='&&OP0026.CARCRI'
+    character(len=24) :: codere, ligrmo, k24bid
+    character(len=24) :: comref = '&&OP0026.COMREF'
     character(len=19) :: commoi, complu, depplu
     character(len=19) :: depmoi, depdel, varplu, sigplu, varmoi, sigmoi
-    character(len=19) :: mediri, merigi, vediri, vefint, veforc
-    aster_logical :: lmatr, lvnod, lvfin, lcomp
+    character(len=19) :: mediri, merigi, vediri, vefint, veforc, vevarc_prev, vevarc_curr
+    aster_logical :: lmatr, lvnod, lvfin, lcomp, l_varc_prev, l_varc_curr
     aster_logical :: l_merimo, l_medime, l_vefnme, l_etat_init
     aster_logical :: tabret(0:10)
     integer :: fonact(100)
-!-----------------------------------------------------------------------
-    data lischa     /'&&OP0026.LISCHA'/
-    data carele     /'&&OP0026.CARELE'/
-    data carcri     /'&&OP0026.CARCRI'/
-    data comref     /'&&OP0026.COMREF'/
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     call infmaj()
@@ -111,15 +106,12 @@ subroutine op0026()
 !
 ! - Initializations
 !
-    nuord = 0
-    modele = ' '
-    k19bla = ' '
-    do i = 1, 100
-        fonact(i) = 0
-    end do
-    oldtab = ' '
-    partps(1) = 0.d0
-    partps(2) = 0.d0
+    nuord         = 0
+    modele        = ' '
+    k19bla        = ' '
+    fonact(1:100) = 0
+    oldtab        = ' '
+    partps(1:2)   = 0.d0
 !
 ! - Name of created table
 !
@@ -140,7 +132,7 @@ subroutine op0026()
 !
 ! - Options
 !
-    call getvtx(' ', 'OPTION', nbval=4, vect=lopt, nbret=nbopt)
+    call getvtx(' ', 'OPTION', nbval=6, vect=lopt, nbret=nbopt)
 !
 ! - Model, material and loadings
 !
@@ -150,8 +142,8 @@ subroutine op0026()
 !
 ! - Get displacements
 !
-    call getvid(' ', 'DEPL', scal=depmoi, nbret=n1)
-    call getvid(' ', 'INCR_DEPL', scal=depdel, nbret=n1)
+    call getvid(' ', 'DEPL', scal=depmoi)
+    call getvid(' ', 'INCR_DEPL', scal=depdel)
     call nmcha0('VALINC', 'DEPMOI', depmoi, valinc)
     call nmcha0('SOLALG', 'DEPDEL', depdel, solalg)
 !
@@ -169,7 +161,7 @@ subroutine op0026()
 !
 ! - Get internal variables
 !
-    call getvid(' ', 'VARI', scal=varmoi, nbret=n1)
+    call getvid(' ', 'VARI', scal=varmoi)
     call chpver('F', varmoi, 'ELGA', 'VARI_R', iret)
     call nmcha0('VALINC', 'VARMOI', varmoi, valinc)
 !
@@ -180,8 +172,8 @@ subroutine op0026()
 ! - Get current time
 !
     linst = ' '
-    call getvis('INCREMENT', 'NUME_ORDRE', iocc=1, scal=numins, nbret=n1)
-    call getvid('INCREMENT', 'LIST_INST', iocc=1, scal=linst, nbret=n1)
+    call getvis('INCREMENT', 'NUME_ORDRE', iocc=1, scal=numins)
+    call getvid('INCREMENT', 'LIST_INST', iocc=1, scal=linst)
     instam = diinst(linst,numins-1)
     instap = diinst(linst,numins)
     partps(1) = instam
@@ -218,6 +210,8 @@ subroutine op0026()
     call gcncon('_', vediri)
     call gcncon('_', codere)
     call gcncon('_', veforc)
+    call gcncon('_', vevarc_prev)
+    call gcncon('_', vevarc_curr)
 !
 ! - Changeing names of variables
 !
@@ -230,6 +224,8 @@ subroutine op0026()
     lmatr = .false.
     lvfin = .false.
     lvnod = .false.
+    l_varc_prev = .false.
+    l_varc_curr = .false.
     if (knindi(16,'COMPORTEMENT',lopt,nbopt) .gt. 0) then
         lcomp = .true.
     endif
@@ -241,6 +237,12 @@ subroutine op0026()
     endif
     if (knindi(16,'FORC_NODA_ELEM',lopt,nbopt) .gt. 0) then
         lvnod = .true.
+    endif
+    if (knindi(16,'FORC_VARC_ELEM_M',lopt,nbopt) .gt. 0) then
+        l_varc_prev = .true.
+    endif
+    if (knindi(16,'FORC_VARC_ELEM_P',lopt,nbopt) .gt. 0) then
+        l_varc_curr = .true.
     endif
 !
 ! - Where we are computing
@@ -292,6 +294,17 @@ subroutine op0026()
                     sigplu, k24bid, depplu, ' ', veforc)
     endif
 !
+! - State variables
+!
+    if (l_varc_prev) then
+        call nmvcpr(modele, mate       , carele, comref     , compor   ,&
+                    valinc, base_ = 'G', vect_elem_prev_ = vevarc_prev)
+    endif
+    if (l_varc_curr) then
+        call nmvcpr(modele, mate       , carele, comref     , compor   ,&
+                    valinc, base_ = 'G', vect_elem_curr_ = vevarc_curr)
+    endif
+!
 ! - New objects in table
 !
     nbnobj = 0
@@ -330,6 +343,18 @@ subroutine op0026()
         ASSERT(nbnobj.le.nbomax)
         newobj(nbnobj) = 'FORC_NODA_ELEM'
         newsd(nbnobj) = veforc
+    endif
+    if (l_varc_prev) then
+        nbnobj = nbnobj + 1
+        ASSERT(nbnobj.le.nbomax)
+        newobj(nbnobj) = 'FORC_VARC_ELEM_M'
+        newsd(nbnobj) = vevarc_prev
+    endif
+    if (l_varc_curr) then
+        nbnobj = nbnobj + 1
+        ASSERT(nbnobj.le.nbomax)
+        newobj(nbnobj) = 'FORC_VARC_ELEM_P'
+        newsd(nbnobj) = vevarc_curr
     endif
 !
 ! - Table management

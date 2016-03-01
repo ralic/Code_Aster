@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -20,8 +20,8 @@
 interface
     subroutine nmvccc(model    , nbin     , nbout    , lpain    , lchin,&
                       lpaout   , lchout   , exis_temp, exis_hydr, exis_ptot,&
-                      exis_sech, exis_epsa, calc_meta, vect_elem)
-        character(len=8) :: model
+                      exis_sech, exis_epsa, calc_meta, base     , vect_elem)
+        character(len=8), intent(in) :: model
         integer, intent(in) :: nbout
         integer, intent(in) :: nbin
         character(len=8), intent(in) :: lpain(nbin)
@@ -34,6 +34,7 @@ interface
         aster_logical, intent(in) :: exis_sech
         aster_logical, intent(in) :: exis_epsa
         aster_logical, intent(in) :: calc_meta
+        character(len=1), intent(in) :: base
         character(len=19), intent(in) :: vect_elem
     end subroutine nmvccc
 end interface

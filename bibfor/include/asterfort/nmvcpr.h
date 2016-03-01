@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,15 +16,19 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmvcpr(modelz, numedd   , mate, cara_elem, varc_refe,&
-                      compor, hval_incr, cnvcpr)
+    subroutine nmvcpr(modelz   , mate , cara_elem      , varc_refe      , compor   ,&
+                      hval_incr, base_, vect_elem_curr_, vect_elem_prev_, nume_dof_,&
+                      cnvcpr_)
         character(len=*), intent(in) :: modelz
-        character(len=24), intent(in) :: numedd
         character(len=24), intent(in) :: mate
         character(len=24), intent(in) :: varc_refe
         character(len=24), intent(in) :: cara_elem
         character(len=24), intent(in) :: compor
         character(len=19), intent(in) :: hval_incr(*)
-        character(len=24), intent(in) :: cnvcpr
+        character(len=1), optional, intent(in) :: base_
+        character(len=*), optional, intent(in) :: vect_elem_curr_
+        character(len=*), optional, intent(in) :: vect_elem_prev_
+        character(len=24), optional, intent(in) :: nume_dof_
+        character(len=24), optional, intent(in) :: cnvcpr_
     end subroutine nmvcpr
 end interface

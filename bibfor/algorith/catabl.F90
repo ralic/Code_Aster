@@ -1,7 +1,7 @@
 subroutine catabl(newtab, oldtab, inst, numins, nbnobj,&
                   newobj, newsd)
 !
-    implicit none
+implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -19,7 +19,7 @@ subroutine catabl(newtab, oldtab, inst, numins, nbnobj,&
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODifY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -62,14 +62,24 @@ subroutine catabl(newtab, oldtab, inst, numins, nbnobj,&
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbpara
-    parameter       (nbpara=5)
-    character(len=19) :: nompar(nbpara), typpar(nbpara)
+    integer, parameter :: nbpara =5
+    character(len=19), parameter :: nompar(nbpara) = (/&
+        'NOM_OBJET ', 'TYPE_OBJET',&
+        'NOM_SD    ', 'NUME_ORDRE',&
+        'INST      ' /)
+    character(len=19), parameter :: typpar(nbpara) = (/&
+        'K16', 'K16', 'K24', 'I  ', 'R8 '/)
     integer :: prepar(nbpara)
 !
-    integer :: nbobje
-    parameter       (nbobje=7)
-    character(len=16) :: nomobj(nbobje), typobj(nbobje)
+    integer, parameter :: nbobje = 9
+    character(len=16), parameter :: nomobj(nbobje) = (/&
+        'MATR_TANG_ELEM  ', 'SIEF_ELGA       ', 'VARI_ELGA       ',&
+        'FORC_INTE_ELEM  ', 'FORC_DIRI_ELEM  ', 'FORC_NODA_ELEM  ',&
+        'CODE_RETOUR_INTE', 'FORC_VARC_ELEM_M', 'FORC_VARC_ELEM_P'/)
+    character(len=16), parameter :: typobj(nbobje) = (/&
+        'MATR_ELEM_DEPL_R', 'CHAM_ELEM       ', 'CHAM_ELEM       ',&
+        'VECT_ELEM_DEPL_R', 'VECT_ELEM_DEPL_R', 'VECT_ELEM_DEPL_R',&
+        'CHAM_ELEM       ', 'VECT_ELEM_DEPL_R', 'VECT_ELEM_DEPL_R'/)
 !
     character(len=19) :: nomtab
     aster_logical :: l_new_table, l_copy_table, l_repl_object
@@ -82,21 +92,7 @@ subroutine catabl(newtab, oldtab, inst, numins, nbnobj,&
     real(kind=8) :: r8bid, oldins
     complex(kind=8) :: c16bid
     character(len=24), pointer :: tblp(:) => null()
-    integer, pointer :: tbnp(:) => null()
-!
-! - Parameters of table
-!
-    data nompar     /'NOM_OBJET' ,'TYPE_OBJET', 'NOM_SD', 'NUME_ORDRE','INST'      /
-    data typpar     /'K16'       ,'K16'       , 'K24'   , 'I'         ,'R8'        /
-!
-! - Objects in table
-!
-    data nomobj     /'MATR_TANG_ELEM'  ,'SIEF_ELGA'       ,&
-                     'VARI_ELGA'       ,'FORC_INTE_ELEM'  ,&
-                     'FORC_DIRI_ELEM'  ,'FORC_NODA_ELEM'  ,'CODE_RETOUR_INTE'/
-    data typobj     /'MATR_ELEM_DEPL_R','CHAM_ELEM'       ,&
-                     'CHAM_ELEM'       ,'VECT_ELEM_DEPL_R',&
-                     'VECT_ELEM_DEPL_R','VECT_ELEM_DEPL_R','CHAM_ELEM'       /
+    integer, pointer :: tbnp(:) => null()    
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -104,14 +100,12 @@ subroutine catabl(newtab, oldtab, inst, numins, nbnobj,&
 !
 ! - Initializations
 !
-    nomtab = newtab
-    nboldp = 0
-    nblign = 0
-    l_new_table = .false.
-    l_copy_table = .false.
-    do ipara = 1, nbpara
-        prepar(ipara) = 0
-    enddo
+    nomtab           = newtab
+    nboldp           = 0
+    nblign           = 0
+    l_new_table      = .false.
+    l_copy_table     = .false.
+    prepar(1:nbpara) = 0
     call detrsd('TABLE_CONTAINER', newtab)
 !
 ! - New table or not ?
