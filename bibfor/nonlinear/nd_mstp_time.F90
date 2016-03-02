@@ -7,7 +7,6 @@ implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/isfonc.h"
-#include "asterc/isnnem.h"
 #include "asterc/r8vide.h"
 #include "asterfort/getvid.h"
 #include "asterfort/nmdoin.h"
@@ -55,7 +54,7 @@ implicit none
 !
     aster_logical :: l_reuse, l_init_state, l_stin_evol
     integer :: init_nume, nume_prev_step, nume_last
-    integer :: j_inst
+    integer :: jv_para
     character(len=24) :: stin_evol
     character(len=8) :: result
 !
@@ -92,11 +91,11 @@ implicit none
                 call utmess('I','DYNAMIQUE_50')
             else
                 call rsadpa(stin_evol, 'L', 1, 'INST_PREC', nume_prev_step,&
-                            0, sjv=j_inst, istop = 0)
-                if (j_inst.eq.isnnem()) then
+                            0, sjv=jv_para, istop = 0)
+                time_prev_step = zr(jv_para) 
+                if (time_prev_step .eq. r8vide()) then
                     call utmess('I','DYNAMIQUE_51')
                 else
-                    time_prev_step = zr(j_inst) 
                     l_comp_mstp    = .true.
                 endif
             endif
@@ -110,11 +109,11 @@ implicit none
     if (l_reuse) then
         call rs_getlast(result, nume_last)
         call rsadpa(result, 'L', 1, 'INST_PREC', nume_last,&
-                    0, sjv=j_inst)
-        if (j_inst.eq.isnnem()) then
+                    0, sjv=jv_para)
+        time_prev_step = zr(jv_para) 
+        if (time_prev_step .eq. r8vide()) then
             call utmess('I','DYNAMIQUE_51')
         else
-            time_prev_step = zr(j_inst)
             l_comp_mstp    = .true.
         endif
     endif
