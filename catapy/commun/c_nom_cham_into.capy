@@ -294,6 +294,8 @@ class NOM_CHAM_INTO:  #COMMUN#
                                  _(u"Vitesse aux noeuds"), ),
             "CONT_NOEU":        ( (),
                                  _(u"Statuts de contact aux noeuds"), ),
+            "CONT_ELEM":        ( (),
+                                 _(u"Statuts de contact aux éléments (LAC)"), ),
             "VARI_ELGA":        ( (),
                                  _(u"Variables internes aux points de Gauss"), ),
             "VITE_ABSOLU":      ( (),
