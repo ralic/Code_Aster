@@ -1,4 +1,6 @@
-subroutine xrela_elim(mesh, sdcont_defi, sd_iden_rela)
+subroutine xrela_elim(mesh, ds_contact, iden_rela, l_iden_rela)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -19,7 +21,7 @@ implicit none
 #include "asterfort/wkvect.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -36,29 +38,34 @@ implicit none
 ! ======================================================================
 !
     character(len=8), intent(in) :: mesh
-    character(len=24), intent(in) :: sdcont_defi
-    character(len=24), intent(out) :: sd_iden_rela
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=24), intent(in) :: iden_rela
+    aster_logical, intent(out) :: l_iden_rela
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! XFEM
+! Contact - Solve
 !
-! Transform linear relations into datastructure for elimination
+! XFEM - Transform linear relations into datastructure for elimination
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  mesh             : name of mesh
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
-! Out sd_iden_rela     : name of object for identity relations between dof
+! In  ds_contact       : datastructure for contact management
+! In  iden_rela        : name of object for identity relations between dof
+! Out l_iden_rela      : .true. if have linear relation to suppress
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbddl, nb_term_maxi
-    parameter  (nbddl=12, nb_term_maxi=6)
-    character(len=8) :: ddlc(nbddl)
+    integer, parameter :: nbddl = 12
+    integer, parameter :: nb_term_maxi = 6
+    character(len=8), parameter :: ddlc(nbddl) = &
+            (/'LAGS_C ','LAGS_F1','LAGS_F2',&
+              'LAG2_C ','LAG2_F1','LAG2_F2',&
+              'LAG3_C ','LAG3_F1','LAG3_F2',&
+              'LAG4_C ','LAG4_F1','LAG4_F2'/)
     integer :: node_nume(nb_term_maxi)
     character(len=8) :: node_name(nb_term_maxi), cmp_name(nb_term_maxi)
-!
     character(len=8) :: old_node_name, old_cmp_name
     character(len=8) :: new_node_name, new_cmp_name
     integer :: iret
@@ -66,20 +73,15 @@ implicit none
     integer :: nb_rela_init
     integer :: i_rela, i_dim, i_edge, i_crack, i_term, i_rela_find, i_rela_idx, i_rela_old
     aster_logical :: l_mult_crack, l_rela_find
-    character(len=14) :: sdline_crack
-    character(len=24) :: sdline
+    character(len=14) :: xnrell_crack
+    character(len=24) :: sdcont_xnrell
     character(len=8), pointer :: list_rela(:) => null()
-    character(len=24), pointer :: v_sdline(:) => null()
+    character(len=24), pointer :: v_sdcont_xnrell(:) => null()
     integer, pointer :: v_rela_node(:) => null()
     integer, pointer :: v_rela_cmp(:) => null()
     character(len=8), pointer :: v_sdiden_term(:) => null()
     integer, pointer :: v_sdiden_info(:) => null()
     integer, pointer :: v_sdiden_dime(:) => null()
-!
-    data ddlc /'LAGS_C','LAGS_F1','LAGS_F2',&
-               'LAG2_C','LAG2_F1','LAG2_F2',&
-               'LAG3_C','LAG3_F1','LAG3_F2',&
-               'LAG4_C','LAG4_F1','LAG4_F2'/
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -87,21 +89,20 @@ implicit none
     nb_iden_rela = 0
     nb_iden_term = 0
     nb_iden_dof  = 0
-    nb_dim       = cfdisi(sdcont_defi,'NDIM' )
-    sd_iden_rela = '&&IDENRELA'
+    nb_dim       = cfdisi(ds_contact%sdcont_defi,'NDIM' )
 !
 ! - Get datastructure for linear relations from DEFI_CONTACT
 !
-    sdline = sdcont_defi(1:16)//'.XNRELL'
-    call jeexin(sdline, iret)
+    sdcont_xnrell = ds_contact%sdcont_defi(1:16)//'.XNRELL'
+    call jeexin(sdcont_xnrell, iret)
     if (iret.eq.0) then
         goto 999
     endif
 !
 ! - Informations about linear relations from DEFI_CONTACT
 !
-    call jelira(sdline, 'LONMAX', nb_crack)
-    call jeveuo(sdline, 'L', vk24 = v_sdline)
+    call jelira(sdcont_xnrell, 'LONMAX', nb_crack)
+    call jeveuo(sdcont_xnrell, 'L', vk24 = v_sdcont_xnrell)
 !
 ! - Initial number of linear relations
 !
@@ -109,13 +110,13 @@ implicit none
 !
 ! ----- Current crack
 !
-        sdline_crack = v_sdline(i_crack)(1:14)
+        xnrell_crack = v_sdcont_xnrell(i_crack)(1:14)
 !
 ! ----- Number of edges to eliminate
 !
-        call jeexin(sdline_crack, iret)
+        call jeexin(xnrell_crack, iret)
         if (iret.ne.0) then
-            call jelira(sdline_crack, 'LONMAX', nb_edge)
+            call jelira(xnrell_crack, 'LONMAX', nb_edge)
             nb_edge      = nb_edge/2
             nb_rela_init = nb_rela_init + nb_dim*nb_edge
         endif
@@ -138,25 +139,25 @@ implicit none
 !
 ! ----- Current crack
 !
-        sdline_crack = v_sdline(i_crack)(1:14)
+        xnrell_crack = v_sdcont_xnrell(i_crack)(1:14)
 !
 ! ----- Number of edges
 !
-        call jelira(sdline_crack, 'LONMAX', nb_edge)
+        call jelira(xnrell_crack, 'LONMAX', nb_edge)
         nb_edge = nb_edge/2
 !
 ! ----- Access to nodes
 !
-        call jeveuo(sdline_crack, 'L', vi = v_rela_node)
+        call jeveuo(xnrell_crack, 'L', vi = v_rela_node)
 !
 ! ----- For multi-cracks
 !
-        call jeexin(sdline_crack(1:14)//'_LAGR', iret)
+        call jeexin(xnrell_crack(1:14)//'_LAGR', iret)
         if (iret .eq. 0) then
             l_mult_crack = .false.
         else
             l_mult_crack = .true.
-            call jeveuo(sdline_crack(1:14)//'_LAGR', 'L', vi = v_rela_cmp)
+            call jeveuo(xnrell_crack(1:14)//'_LAGR', 'L', vi = v_rela_cmp)
         endif
 !
 ! ----- Loop on edges
@@ -254,14 +255,14 @@ implicit none
 !
 ! - Create object for identity relations - Informations
 !
-    call wkvect(sd_iden_rela(1:19)//'.INFO', 'V V I', 4, vi = v_sdiden_info)
-    call wkvect(sd_iden_rela(1:19)//'.DIME', 'V V I', nb_iden_rela, vi = v_sdiden_dime)
+    call wkvect(iden_rela(1:19)//'.INFO', 'V V I', 4, vi = v_sdiden_info)
+    call wkvect(iden_rela(1:19)//'.DIME', 'V V I', nb_iden_rela, vi = v_sdiden_dime)
 !
 ! - Create object for identity relations - Collection
 !
-    call jecrec(sd_iden_rela(1:19)//'.COLL', 'V V K8', 'NU', 'CONTIG', 'VARIABLE',&
+    call jecrec(iden_rela(1:19)//'.COLL', 'V V K8', 'NU', 'CONTIG', 'VARIABLE',&
                 nb_iden_rela)
-    call jeecra(sd_iden_rela(1:19)//'.COLL', 'LONT', ival=nb_iden_term*2)
+    call jeecra(iden_rela(1:19)//'.COLL', 'LONT', ival=nb_iden_term*2)
 !
 ! - Set objects
 !
@@ -280,9 +281,9 @@ implicit none
 !
 ! ----- Create object in collection
 !
-        call jecroc(jexnum(sd_iden_rela(1:19)//'.COLL', i_rela))
-        call jeecra(jexnum(sd_iden_rela(1:19)//'.COLL', i_rela), 'LONMAX',nb_term*2)
-        call jeveuo(jexnum(sd_iden_rela(1:19)//'.COLL', i_rela), 'E', vk8 = v_sdiden_term)
+        call jecroc(jexnum(iden_rela(1:19)//'.COLL', i_rela))
+        call jeecra(jexnum(iden_rela(1:19)//'.COLL', i_rela), 'LONMAX',nb_term*2)
+        call jeveuo(jexnum(iden_rela(1:19)//'.COLL', i_rela), 'E', vk8 = v_sdiden_term)
 !
 ! ----- Set object in collection
 !
@@ -305,5 +306,7 @@ implicit none
     AS_DEALLOCATE(vk8=list_rela)
 !
 999 continue
-
+!
+    l_iden_rela = nb_iden_rela.gt.0
+!
 end subroutine

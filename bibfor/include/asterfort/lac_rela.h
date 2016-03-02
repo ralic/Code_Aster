@@ -18,11 +18,11 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine xrela_elim(mesh, ds_contact, iden_rela, l_iden_rela)
+    subroutine lac_rela(mesh, ds_contact, iden_rela, l_iden_rela)
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
         type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=24), intent(in) :: iden_rela
         aster_logical, intent(out) :: l_iden_rela
-    end subroutine xrela_elim
+    end subroutine lac_rela
 end interface

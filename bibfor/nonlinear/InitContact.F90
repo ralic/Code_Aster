@@ -12,6 +12,7 @@ implicit none
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/xrela_elim.h"
+#include "asterfort/lac_rela.h"
 #include "asterfort/wkvect.h"
 !
 ! ======================================================================
@@ -57,7 +58,7 @@ implicit none
     character(len=24) :: iden_rela
     aster_logical :: l_cont, l_unil
     aster_logical :: l_form_disc, l_form_cont, l_form_xfem, l_form_lac
-    aster_logical :: l_cont_xfem_gg, l_edge_elim, l_all_verif
+    aster_logical :: l_cont_xfem_gg, l_edge_elim, l_all_verif, l_iden_rela
     integer :: nt_patch
     integer :: i_exist
     character(len=8), pointer :: v_load_type(:) => null()
@@ -74,6 +75,7 @@ implicit none
     l_form_cont = .false._1
     l_form_xfem = .false._1
     l_form_lac  = .false._1
+    l_iden_rela = .false._1
 ! 
     if (ds_contact%l_contact) then
 !
@@ -148,13 +150,10 @@ implicit none
 !
         if (l_form_xfem) then
             ds_contact%field_input = ds_contact%sdcont_solv(1:14)//'.CHML'
+            ds_contact%iden_rela   = '&&CFMXR0.IDEN_RELA'
             if (l_edge_elim) then
-                call xrela_elim(mesh, sdcont_defi, iden_rela)
-                call jeexin(iden_rela(1:19)//'.INFO', i_exist)
-                if (i_exist .gt. 0) then
-                    ds_contact%iden_rela   = iden_rela
-                    ds_contact%l_iden_rela = .true._1
-                endif
+                call xrela_elim(mesh, ds_contact,ds_contact%iden_rela , l_iden_rela)
+                ds_contact%l_iden_rela = l_iden_rela
             else
                 call jeexin(sdcont(1:8)//'.CHME.LIGRE.LGRF', i_exist)
                 ds_contact%l_dof_rela = i_exist .gt. 0
@@ -198,6 +197,12 @@ implicit none
             call jelira(mesh//'.PATCH', 'NUTIOC', nt_patch)
             nt_patch = nt_patch-1
             ds_contact%nt_patch = nt_patch
+            iden_rela='&&CFMXR0.IDEN_RELA'                    
+            call lac_rela(mesh, ds_contact, iden_rela, l_iden_rela)
+            if (l_iden_rela) then
+                ds_contact%iden_rela   = '&&CFMXR0.IDEN_RELA'  
+                ds_contact%l_iden_rela = l_iden_rela
+            endif
         endif
 !
 ! ----- Flag for (re) numbering
