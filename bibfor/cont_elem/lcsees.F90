@@ -71,7 +71,7 @@ implicit none
     r_nb_lagr  = real(nb_lagr,kind=8)
 !
     if (norm_smooth .eq. 1) then
-        call jevech('NORMLI', 'L', jv_norm)
+        call jevech('PSNO', 'L', jv_norm)
         do i_node_slav=1, nb_node_slav
             shift=shift+indi_lagc(i_node_slav)
             do i_dime=1, elem_dime

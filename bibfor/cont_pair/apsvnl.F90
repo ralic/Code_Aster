@@ -43,7 +43,8 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: sdappa_psno, sdappa_norl
+    character(len=19) :: sdappa_psno
+    character(len=24) :: sdappa_norl
     real(kind=8), pointer :: v_sdappa_psno(:) => null()
     real(kind=8), pointer :: v_sdappa_norl(:) => null()
     integer :: i_node, i_dime, node_curr
