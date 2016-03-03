@@ -2,7 +2,7 @@ subroutine dtmprep(sd_dtm_)
     implicit none
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -57,6 +57,7 @@ subroutine dtmprep(sd_dtm_)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/jeveut.h"
 #include "asterfort/mdptem.h"
 #include "asterfort/mdrecf.h"
 #include "asterfort/mdrede.h"
@@ -397,16 +398,19 @@ subroutine dtmprep(sd_dtm_)
 !   -------------------------------------------------------------------------------------
 !
 !   --- 4.4 - Case of substructuring, saving matrices description pointers
+!   NOTE : EXCEPTIONAL USAGE OF JEVEUT SO THAT THE MATRIX DESCRIPTORS ARE NOT 
+!          INVALIDATED UPON EXIT OF DTMPREP AND REMAIN THUS ACCESSIBLE IN 
+!          THE SUBSEQUENT CALCULATION ROUTINES 
     if (substruc.eq.1) then
         call mtdscr(riggen//'           ')
-        call jeveuo(riggen//'           .&INT', 'E', descr)
+        call jeveut(riggen//'           .&INT', 'E', descr)
         call mtdscr(mastem//'           ')
         call jeveuo(mastem//'           .REFA', 'E', jrefa)
         zk24(jrefa-1+7) = solver
-        call jeveuo(mastem//'           .&INT', 'E', descm)
+        call jeveut(mastem//'           .&INT', 'E', descm)
         if (lamor.eq.0) then
             call mtdscr(amotem//'           ')
-            call jeveuo(amotem//'           .&INT', 'E', desca)
+            call jeveut(amotem//'           .&INT', 'E', desca)
         else
             desca = 0
         endif
